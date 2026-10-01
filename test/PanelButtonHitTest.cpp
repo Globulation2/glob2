@@ -19,7 +19,9 @@
 // PanelButtonHit.h only pulls in <optional> and is header-only, so this links
 // nothing — no globalContainer, no SDL.
 
-#include <cppunit/extensions/HelperMacros.h>
+#include "Glob2Test.h"
+#include <string>
+#include <utility>
 
 #include <optional>
 
@@ -54,24 +56,16 @@ namespace
 			+ " n=" + std::to_string(numButtons);
 	}
 
-	/// cppunit can't stream std::optional, so assert on the unwrapped parts.
+	/// doctest cannot stream std::optional, so assert on the unwrapped parts.
 	void assertIndexIs(int expected, std::optional<int> actual, const std::string& msg)
 	{
-		CPPUNIT_ASSERT_MESSAGE(msg, actual.has_value());
-		CPPUNIT_ASSERT_EQUAL_MESSAGE(msg, expected, *actual);
+		CHECK_MESSAGE(actual.has_value(), (msg));
+		CHECK_MESSAGE((expected) == (*actual), (msg));
 	}
 }
 
-class PanelButtonHitTest : public CppUnit::TestFixture
+class PanelButtonHitTest
 {
-	CPPUNIT_TEST_SUITE(PanelButtonHitTest);
-	CPPUNIT_TEST(testMatchesOldExpressionWhereDefined);
-	CPPUNIT_TEST(testIndexNeverNegative);
-	CPPUNIT_TEST(testLeftMarginSelectsFirstButton);
-	CPPUNIT_TEST(testInRangeButtons);
-	CPPUNIT_TEST(testBeyondLastButtonIsDead);
-	CPPUNIT_TEST(testReplayStripLayout);
-	CPPUNIT_TEST_SUITE_END();
 
 public:
 	/// Brute-force the new hit-test against the transcribed old expression over
@@ -89,11 +83,9 @@ public:
 				// which for these decs holds for every mx>=1).
 				const auto now = panelButtonIndex(mx, dec, buttons);
 				const auto before = referenceIndex(mx, dec, buttons);
-				CPPUNIT_ASSERT_MESSAGE(describe(mx, dec, buttons),
-				                       now.has_value() == before.has_value());
+				CHECK_MESSAGE(now.has_value() == before.has_value(), (describe(mx, dec, buttons)));
 				if (now)
-					CPPUNIT_ASSERT_EQUAL_MESSAGE(describe(mx, dec, buttons),
-					                             *before, *now);
+					CHECK_MESSAGE((*before) == (*now), (describe(mx, dec, buttons)));
 			}
 		}
 	}
@@ -108,7 +100,7 @@ public:
 			{
 				const auto id = panelButtonIndex(mx, leftMargin, PLAY_BUTTONS);
 				if (id)
-					CPPUNIT_ASSERT(*id >= 0);
+					CHECK(*id >= 0);
 			}
 	}
 
@@ -140,7 +132,7 @@ public:
 	{
 		const int firstDead = PLAY_DEC + PLAY_BUTTONS * PANEL_BUTTON_WIDTH; // 144
 		for (int mx = firstDead; mx <= 200; ++mx)
-			CPPUNIT_ASSERT(!panelButtonIndex(mx, PLAY_DEC, PLAY_BUTTONS).has_value());
+			CHECK(!panelButtonIndex(mx, PLAY_DEC, PLAY_BUTTONS).has_value());
 	}
 
 	/// The replay strip has one fewer button and a wider inset; its last cell
@@ -153,8 +145,16 @@ public:
 		                                  REPLAY_DEC, REPLAY_BUTTONS),
 		              "replay button 2");
 		const int firstDead = REPLAY_DEC + REPLAY_BUTTONS * PANEL_BUTTON_WIDTH; // 128
-		CPPUNIT_ASSERT(!panelButtonIndex(firstDead, REPLAY_DEC, REPLAY_BUTTONS).has_value());
+		CHECK(!panelButtonIndex(firstDead, REPLAY_DEC, REPLAY_BUTTONS).has_value());
 	}
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(PanelButtonHitTest);
+TEST_SUITE("PanelButtonHit")
+{
+	TEST_CASE_FIXTURE(PanelButtonHitTest, "MatchesOldExpressionWhereDefined") { testMatchesOldExpressionWhereDefined(); }
+	TEST_CASE_FIXTURE(PanelButtonHitTest, "IndexNeverNegative") { testIndexNeverNegative(); }
+	TEST_CASE_FIXTURE(PanelButtonHitTest, "LeftMarginSelectsFirstButton") { testLeftMarginSelectsFirstButton(); }
+	TEST_CASE_FIXTURE(PanelButtonHitTest, "InRangeButtons") { testInRangeButtons(); }
+	TEST_CASE_FIXTURE(PanelButtonHitTest, "BeyondLastButtonIsDead") { testBeyondLastButtonIsDead(); }
+	TEST_CASE_FIXTURE(PanelButtonHitTest, "ReplayStripLayout") { testReplayStripLayout(); }
+}

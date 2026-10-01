@@ -1,6 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "MapGeneratorContracts.h"
+#include <algorithm>
+#include <utility>
+#include <tuple>
+#include <cstdint>
 #include <map>
 namespace GeneratorContracts
 {

@@ -26,45 +26,14 @@
 // Post-fix tree: builds, runs, exits 0, prints a deterministic golden line
 // stream for diff-based verification.
 
+#include "Glob2Test.h"
 #include "Campaign.h"
-#include "Toolkit.h"
 
 #include <cstdio>
-#include <cstdlib>
 #include <string>
 
 namespace {
 
-int failures = 0;
-
-#define EXPECT(cond, msg)                                                  \
-	do {                                                                   \
-		if (!(cond)) {                                                     \
-			std::fprintf(stderr, "FAIL: %s  (%s:%d)\n",                    \
-			             (msg), __FILE__, __LINE__);                       \
-			++failures;                                                    \
-		}                                                                  \
-	} while (0)
-
-// Fixture files live under $TMPDIR (falling back to /tmp) so the harness
-// can run inside sandboxes that only allow the per-session temp directory.
-std::string tmpPath(const char* baseName)
-{
-	const char* dir = std::getenv("TMPDIR");
-	std::string path = (dir && *dir) ? dir : "/tmp";
-	if (path.back() != '/')
-		path += '/';
-	return path + baseName;
-}
-
-void writeFile(const std::string& path, const std::string& content)
-{
-	FILE* f = std::fopen(path.c_str(), "wb");
-	if (!f) { std::fprintf(stderr, "harness: cannot open %s\n", path.c_str()); std::exit(2); }
-	if (!content.empty())
-		std::fwrite(content.data(), 1, content.size(), f);
-	std::fclose(f);
-}
 
 // Minimal valid version-84 campaign file with a given campaign-level
 // description (the last field in the format).
@@ -98,52 +67,41 @@ std::string campaignFileText(const std::string& description)
 
 }  // namespace
 
-int main(int /*argc*/, char* /*argv*/[])
+TEST_SUITE("CampaignDescriptionCache")
 {
-	// Silence Campaign::load's cerr noise (missing-file case) so the golden
-	// output stays deterministic.
-	std::freopen("/dev/null", "w", stderr);
-
-	GAGCore::Toolkit::init("glob2");
-
-	std::printf("# CampaignDescriptionCacheHarness golden output\n");
-
-	const std::string valid = tmpPath("glob2_desc_cache_valid.txt");
-	const std::string missing = tmpPath("glob2_desc_cache_does_not_exist.txt");
-	writeFile(valid, campaignFileText("first description"));
-	std::remove(missing.c_str());
+TEST_CASE("descriptions are parsed once per cache instance")
+{
+	// Campaign::load logs to stderr for the missing-file case.
+	glob2test::CapturedStderr quiet;
+	glob2test::ToolkitScope toolkit;
+	glob2test::TempDir dir;
+	const std::string valid = (dir.path / "valid.txt").string();
+	const std::string missing = (dir.path / "does_not_exist.txt").string();
+	glob2test::writeFile(valid, campaignFileText("first description"));
 
 	CampaignDescriptionCache cache;
 
 	// 1. Valid file: the campaign-level description comes back.
 	const std::string& first = cache.getDescription(valid);
-	std::printf("valid    -> \"%s\"\n", first.c_str());
-	EXPECT(first == "first description",
+	GLOB2_CHECK(first == "first description",
 	       "cache should return the campaign-level description of a valid file");
 
 	// 2. Unreadable file: empty description, same as Campaign::load failure.
 	const std::string& gone = cache.getDescription(missing);
-	std::printf("missing  -> \"%s\"\n", gone.c_str());
-	EXPECT(gone.empty(), "unreadable file should yield an empty description");
+	GLOB2_CHECK(gone.empty(), "unreadable file should yield an empty description");
 
 	// 3. Rewrite the file; a repeated lookup must serve the cached value —
 	// this is the observable proof that the file is not re-parsed per call.
-	writeFile(valid, campaignFileText("second description"));
+	glob2test::writeFile(valid, campaignFileText("second description"));
 	const std::string& again = cache.getDescription(valid);
-	std::printf("cached   -> \"%s\"\n", again.c_str());
-	EXPECT(again == "first description",
+	GLOB2_CHECK(again == "first description",
 	       "repeated lookup must not re-parse the file (cache miss = bug)");
 
 	// 4. A fresh cache (a new selector screen) sees the current file content.
 	CampaignDescriptionCache freshCache;
 	const std::string& fresh = freshCache.getDescription(valid);
-	std::printf("fresh    -> \"%s\"\n", fresh.c_str());
-	EXPECT(fresh == "second description",
+	GLOB2_CHECK(fresh == "second description",
 	       "a new cache instance must read the current on-disk content");
 
-	std::remove(valid.c_str());
-	GAGCore::Toolkit::close();
-
-	std::printf("result: %d failure(s)\n", failures);
-	return failures == 0 ? 0 : 1;
+}
 }

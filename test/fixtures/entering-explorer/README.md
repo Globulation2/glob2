@@ -20,7 +20,7 @@ In a checkout of PR #166, from the repository root:
 
 ```sh
 scons -j4 release=1 server=0 entering-unit-save-test
-python3 test/inflate_gzip_fixture.py test/fixtures/entering-explorer/reproducer.game.gz /tmp/entering-explorer-reproducer.game
+gunzip -c test/fixtures/entering-explorer/reproducer.game.gz > /tmp/entering-explorer-reproducer.game
 ./build/src/EnteringUnitSaveHarness --load /tmp/entering-explorer-reproducer.game
 ./build/src/EnteringUnitSaveHarness
 ```
@@ -37,7 +37,7 @@ git worktree add --detach ../glob2-pr166-old-validator HEAD
 cd ../glob2-pr166-old-validator
 git apply test/fixtures/entering-explorer/restore-old-validator.patch
 scons -j4 release=1 server=0 entering-unit-save-test
-python3 test/inflate_gzip_fixture.py test/fixtures/entering-explorer/reproducer.game.gz /tmp/entering-explorer-reproducer.game
+gunzip -c test/fixtures/entering-explorer/reproducer.game.gz > /tmp/entering-explorer-reproducer.game
 ./build/src/EnteringUnitSaveHarness --load /tmp/entering-explorer-reproducer.game
 ```
 

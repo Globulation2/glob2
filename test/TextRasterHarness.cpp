@@ -1,9 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Text drawn on a scaled screen must be rasterised for the pixels it actually covers,
 // while the sizes it reports stay those of the authored font size.
+#include "Glob2Test.h"
+#include <utility>
+#include <cstdlib>
 #include "GraphicContextPrivate.h"
 #include <TrueTypeFont.h>
 #include <SDL_ttf.h>
+#include <FileManager.h>
 #include <Toolkit.h>
 #include <algorithm>
 #include <cmath>
@@ -37,8 +41,7 @@ class Context : public GraphicContext
 
 void require(bool condition, const std::string &message)
 {
-	if (!condition)
-		throw std::runtime_error(message);
+	GLOB2_REQUIRE(condition, message);
 }
 
 struct Metrics
@@ -156,7 +159,7 @@ void checkRasterIsPixelExact(const std::vector<unsigned char> &frame, int frameW
 							 int offX, int offY, const char *text, int logicalX, int logicalY)
 {
 	const int size = static_cast<int>(std::lround(20 * scale));
-	TTF_Font *reference = TTF_OpenFont("data/fonts/sans.ttf", size);
+	TTF_Font *reference = TTF_OpenFont((glob2test::sourceRoot() / "data/fonts/sans.ttf").string().c_str(), size);
 	require(reference != NULL, "Could not open the reference font at the scaled size");
 	SDL_Color white{255, 255, 255, 255};
 	SDL_Surface *rendered = TTF_RenderUTF8_Blended(reference, text, white);
@@ -317,30 +320,17 @@ void run(const std::string &outputDir)
 	std::printf("PASS text raster: scale %.2f, metrics unchanged across %zu samples, glyphs "
 				"pixel-exact, overlay text drawn, %ld detailed %dx%d blocks\n",
 				scale, reference.widths.size(), detailed, block, block);
+	// The context owns the TTF library; release the font while it is still alive.
+	Toolkit::releaseFont("harness");
 }
 } // namespace
 
-int main(int argc, char **argv)
+TEST_SUITE("TextRaster")
 {
-#ifndef HAVE_OPENGL
-	std::fprintf(stderr, "OpenGL support is required\n");
-	return 1;
-#else
-	const std::string outputDir = argc > 1 ? argv[1] : "";
-	SDL_setenv("SDL_AUDIODRIVER", "dummy", 1);
-	// Keep the run out of the player's own profile.
-	if (!outputDir.empty())
-		SDL_setenv("GLOB2_USER_DIR", outputDir.c_str(), 0);
-	Toolkit::init("glob2");
-	try
+	TEST_CASE("scaled and unscaled text rasterisation [display:1600x1400][artifacts]")
 	{
-		run(outputDir);
+		glob2test::ToolkitScope toolkit;
+		Toolkit::getFileManager()->addDir(glob2test::sourceRoot().string());
+		run(glob2test::artifactDir().string());
 	}
-	catch (const std::exception &error)
-	{
-		std::fprintf(stderr, "FAIL: %s\n", error.what());
-		return 1;
-	}
-	return 0;
-#endif
 }

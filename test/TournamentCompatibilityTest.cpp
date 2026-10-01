@@ -1,5 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Access relaxation is confined to this test translation unit by SCons.
+#include "EngineFixtures.h"
+#include <string>
+#include <memory>
+#include <iostream>
 #include "GlobalContainer.h"
 #include "Game.h"
 #include "Player.h"
@@ -12,21 +16,22 @@
 #include "Version.h"
 #include <BinaryStream.h>
 #include <StreamBackend.h>
-#include <iostream>
 #include <stdexcept>
 
-GlobalContainer* globalContainer=nullptr;
+namespace
+{
 static void require(bool value,const char* label)
 {
 	if(!value) throw std::runtime_error(label);
 	std::cout << "PASS " << label << '\n';
 }
-int main(int, char**)
+}
+
+TEST_SUITE("TournamentCompatibility")
 {
-	GlobalContainer globals("glob2-tournament-compatibility");globalContainer=&globals;
-	globals.runNoX=true;globals.load();
-	try
+	TEST_CASE("per-player AI configuration survives construction and partial network headers")
 	{
+		glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings = true});
 		Game game(nullptr);
 		GenerationRequest request;request.setMethodDefaults(15);request.seed=42;request.nbTeams=4;
 		require(bool(GenerationService().generate(game,request)),"fixture generation");
@@ -80,7 +85,5 @@ int main(int, char**)
 		Cortex::CortexTuning values;std::string error;
 		require(!Cortex::applyTuning(values,"tierMidDiv=0",error),"invalid Cortex divisor rejected");
 		require(!Cortex::applyTuning(values,"unknown=1",error),"unknown Cortex parameter rejected");
-		return 0;
 	}
-	catch(const std::exception& error){std::cerr<<error.what()<<'\n';return 1;}
 }

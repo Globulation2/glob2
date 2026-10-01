@@ -5,16 +5,13 @@
 // while serialize emits getByteLength() bytes — this exercises both units
 // on the same array so a bytes/bits mix-up at either end fails loudly.
 
-#include <cppunit/extensions/HelperMacros.h>
+#include "Glob2Test.h"
 
 #include "BitArray.h"
 
-class BitArrayTest: public CPPUNIT_NS::TestCase
+class BitArrayTest
 {
-CPPUNIT_TEST_SUITE(BitArrayTest);
-		CPPUNIT_TEST(testRoundTripOddBitLength);
-		CPPUNIT_TEST(testByteLengthIsCeilOfBits);
-	CPPUNIT_TEST_SUITE_END();
+public:
 
 protected:
 	void testRoundTripOddBitLength(void)
@@ -27,8 +24,8 @@ protected:
 		src.set(8, true);  // first bit of byte 1
 		src.set(12, true); // last valid bit
 
-		CPPUNIT_ASSERT_EQUAL(bitCount, src.getBitLength());
-		CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), src.getByteLength());
+		CHECK_EQ(bitCount, src.getBitLength());
+		CHECK_EQ(static_cast<size_t>(2), src.getByteLength());
 
 		unsigned char stream[2] = {0xFF, 0xFF};
 		src.serialize(stream);
@@ -36,18 +33,22 @@ protected:
 		Utilities::BitArray dst;
 		dst.deserialize(stream, bitCount);
 
-		CPPUNIT_ASSERT_EQUAL(bitCount, dst.getBitLength());
-		CPPUNIT_ASSERT_EQUAL(src.getByteLength(), dst.getByteLength());
+		CHECK_EQ(bitCount, dst.getBitLength());
+		CHECK_EQ(src.getByteLength(), dst.getByteLength());
 		for (size_t pos = 0; pos < bitCount; pos++)
-			CPPUNIT_ASSERT_EQUAL(src.get(pos), dst.get(pos));
+			CHECK_EQ(src.get(pos), dst.get(pos));
 	}
 
 	void testByteLengthIsCeilOfBits(void)
 	{
-		CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(0), Utilities::BitArray(0).getByteLength());
-		CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), Utilities::BitArray(1).getByteLength());
-		CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), Utilities::BitArray(8).getByteLength());
-		CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), Utilities::BitArray(9).getByteLength());
+		CHECK_EQ(static_cast<size_t>(0), Utilities::BitArray(0).getByteLength());
+		CHECK_EQ(static_cast<size_t>(1), Utilities::BitArray(1).getByteLength());
+		CHECK_EQ(static_cast<size_t>(1), Utilities::BitArray(8).getByteLength());
+		CHECK_EQ(static_cast<size_t>(2), Utilities::BitArray(9).getByteLength());
 	}
 };
-CPPUNIT_TEST_SUITE_REGISTRATION(BitArrayTest);
+TEST_SUITE("BitArray")
+{
+	TEST_CASE_FIXTURE(BitArrayTest, "RoundTripOddBitLength") { testRoundTripOddBitLength(); }
+	TEST_CASE_FIXTURE(BitArrayTest, "ByteLengthIsCeilOfBits") { testByteLengthIsCeilOfBits(); }
+}

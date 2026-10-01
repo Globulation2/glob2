@@ -9,9 +9,10 @@
 // in place rather than remove+re-add, so its list position (always the end)
 // never moves.
 
+#include "Glob2Test.h"
 #include "WinningConditions.h"
 
-#include <cstdio>
+#include <string>
 #include <list>
 #include <memory>
 #include <optional>
@@ -19,8 +20,6 @@
 
 namespace
 {
-	int failures = 0;
-
 	typedef std::list<std::shared_ptr<WinningCondition> > ConditionList;
 
 	std::vector<WinningConditionType> typesOf(const ConditionList& conditions)
@@ -49,26 +48,17 @@ namespace
 	                 const std::vector<WinningConditionType>& expected)
 	{
 		const std::vector<WinningConditionType> actual = typesOf(conditions);
-		if (actual == expected)
-		{
-			std::printf("PASS %s\n", what);
-			return;
-		}
-		++failures;
-		std::printf("FAIL %s\n  expected:", what);
+		std::string expectedText, actualText;
 		for (size_t i = 0; i < expected.size(); ++i)
-			std::printf(" %s", typeName(expected[i]));
-		std::printf("\n  actual:  ");
+			expectedText += std::string(" ") + typeName(expected[i]);
 		for (size_t i = 0; i < actual.size(); ++i)
-			std::printf(" %s", typeName(actual[i]));
-		std::printf("\n");
+			actualText += std::string(" ") + typeName(actual[i]);
+		CHECK_MESSAGE(actual == expected, (std::string(what) + "\n  expected:" + expectedText + "\n  actual:  " + actualText));
 	}
 
 	void check(bool ok, const char* what)
 	{
-		std::printf("%s: %s\n", ok ? "PASS" : "FAIL", what);
-		if (!ok)
-			++failures;
+		CHECK_MESSAGE(ok, (what));
 	}
 
 	Uint32 tickOf(const ConditionList& conditions)
@@ -80,7 +70,9 @@ namespace
 	}
 }
 
-int main()
+TEST_SUITE("WinningConditionSuddenDeathToggle")
+{
+TEST_CASE("sudden death toggle appends last and retunes in place")
 {
 	const std::vector<WinningConditionType> defaultOrder =
 		{ WCDeath, WCAllies, WCPrestige, WCScript, WCOpponentsDefeated };
@@ -131,7 +123,5 @@ int main()
 			conditions, { WCOpponentsDefeated, WCSuddenDeath });
 	}
 
-	if (failures == 0)
-		std::printf("all tests passed\n");
-	return failures == 0 ? 0 : 1;
+}
 }

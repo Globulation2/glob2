@@ -17,26 +17,18 @@
 // live Building array and is verified by reading, not unit-tested here (it
 // would be a fragile full-game-state integration test).
 
-#include <cppunit/extensions/HelperMacros.h>
+#include "Glob2Test.h"
 
 #include "../src/ai/cortex/CortexTypes.h"
 
 using namespace Cortex;
 
-class CortexUpgradeTest: public CPPUNIT_NS::TestCase
+class CortexUpgradeTest
 {
-CPPUNIT_TEST_SUITE(CortexUpgradeTest);
-	CPPUNIT_TEST(testLongLevelFinishedVsSite);
-	CPPUNIT_TEST(testMaxFinishedLevel);
-	CPPUNIT_TEST(testBuildingsUpgradingExcludesFreshSite);
-	CPPUNIT_TEST(testWorkerColumnMapping);
-	CPPUNIT_TEST(testMakeUpgradeAction);
-	CPPUNIT_TEST(testVersionBump);
-CPPUNIT_TEST_SUITE_END();
 
 public:
-	void setUp(void) {}
-	void tearDown(void) {}
+	CortexUpgradeTest() {}
+	~CortexUpgradeTest() {}
 
 protected:
 	// C++: CortexTypes.h long-level encoding — longLevel = (level<<1)+1-isSite,
@@ -52,10 +44,10 @@ protected:
 		obs.buildingCountPerLevel[type][2] = 1;
 
 		// Finished count must see only the odd slot, never the site.
-		CPPUNIT_ASSERT_EQUAL((Sint32)1, cortexFinishedBuildings(obs, type));
-		CPPUNIT_ASSERT_EQUAL((Sint32)1, cortexBuildingSites(obs, type));
+		CHECK_EQ((Sint32)1, cortexFinishedBuildings(obs, type));
+		CHECK_EQ((Sint32)1, cortexBuildingSites(obs, type));
 		// minLevel filter: nothing finished at level >= 1 yet.
-		CPPUNIT_ASSERT_EQUAL((Sint32)0, cortexFinishedBuildingsMinLevel(obs, type, 1));
+		CHECK_EQ((Sint32)0, cortexFinishedBuildingsMinLevel(obs, type, 1));
 	}
 
 	// C++: cortexMaxFinishedLevel scans odd slots high-to-low, -1 if none.
@@ -63,18 +55,18 @@ protected:
 	{
 		CortexObservation obs = makeEmptyObservation();
 		const int type = CORTEX_BUILD_SCIENCE;
-		CPPUNIT_ASSERT_EQUAL((Sint32)-1, cortexMaxFinishedLevel(obs, type)); // none
+		CHECK_EQ((Sint32)-1, cortexMaxFinishedLevel(obs, type)); // none
 
 		obs.buildingCountPerLevel[type][1] = 1; // finished level 0
-		CPPUNIT_ASSERT_EQUAL((Sint32)0, cortexMaxFinishedLevel(obs, type));
+		CHECK_EQ((Sint32)0, cortexMaxFinishedLevel(obs, type));
 
 		obs.buildingCountPerLevel[type][5] = 1; // finished level 2
-		CPPUNIT_ASSERT_EQUAL((Sint32)2, cortexMaxFinishedLevel(obs, type));
+		CHECK_EQ((Sint32)2, cortexMaxFinishedLevel(obs, type));
 
 		// A SITE must NOT count as a finished level.
 		CortexObservation obs2 = makeEmptyObservation();
 		obs2.buildingCountPerLevel[type][4] = 1; // level-2 site only
-		CPPUNIT_ASSERT_EQUAL((Sint32)-1, cortexMaxFinishedLevel(obs2, type));
+		CHECK_EQ((Sint32)-1, cortexMaxFinishedLevel(obs2, type));
 	}
 
 	// C++: cortexBuildingsUpgrading == slot2 + slot4 (sites of a RAISED level);
@@ -86,13 +78,13 @@ protected:
 		const int type = CORTEX_BUILD_ATTACK;
 
 		obs.buildingCountPerLevel[type][0] = 1; // fresh level-0 site (new build)
-		CPPUNIT_ASSERT_EQUAL((Sint32)0, cortexBuildingsUpgrading(obs, type));
+		CHECK_EQ((Sint32)0, cortexBuildingsUpgrading(obs, type));
 
 		obs.buildingCountPerLevel[type][2] = 1; // 0->1 upgrade site
-		CPPUNIT_ASSERT_EQUAL((Sint32)1, cortexBuildingsUpgrading(obs, type));
+		CHECK_EQ((Sint32)1, cortexBuildingsUpgrading(obs, type));
 
 		obs.buildingCountPerLevel[type][4] = 1; // 1->2 upgrade site
-		CPPUNIT_ASSERT_EQUAL((Sint32)2, cortexBuildingsUpgrading(obs, type));
+		CHECK_EQ((Sint32)2, cortexBuildingsUpgrading(obs, type));
 	}
 
 	// C++: AICortex.cpp:396-398 derives the worker columns the upgrade order
@@ -109,14 +101,14 @@ protected:
 			const int targetLevel  = currentLevel + 1;
 			const int siteCol      = targetLevel * 2;     // == 2
 			const int finishedCol  = targetLevel * 2 + 1; // == 3
-			CPPUNIT_ASSERT_EQUAL(2, siteCol);
-			CPPUNIT_ASSERT_EQUAL(3, finishedCol);
+			CHECK_EQ(2, siteCol);
+			CHECK_EQ(3, finishedCol);
 			// Engine convention cross-check: site@L1 = 1*2, finished@L1 = 1*2+1.
-			CPPUNIT_ASSERT_EQUAL(targetLevel * 2,     siteCol);
-			CPPUNIT_ASSERT_EQUAL(targetLevel * 2 + 1, finishedCol);
+			CHECK_EQ(targetLevel * 2, siteCol);
+			CHECK_EQ(targetLevel * 2 + 1, finishedCol);
 			// In range of defaultUnitsAssigned[type][6].
-			CPPUNIT_ASSERT(siteCol >= 0 && siteCol < 6);
-			CPPUNIT_ASSERT(finishedCol >= 0 && finishedCol < 6);
+			CHECK((siteCol >= 0 && siteCol < 6));
+			CHECK((finishedCol >= 0 && finishedCol < 6));
 		}
 		// Upgrading a level-1 building: targetLevel = 2 -> columns 4,5 (max).
 		{
@@ -124,9 +116,9 @@ protected:
 			const int targetLevel  = currentLevel + 1;
 			const int siteCol      = targetLevel * 2;     // == 4
 			const int finishedCol  = targetLevel * 2 + 1; // == 5
-			CPPUNIT_ASSERT_EQUAL(4, siteCol);
-			CPPUNIT_ASSERT_EQUAL(5, finishedCol);
-			CPPUNIT_ASSERT(finishedCol < 6); // top column still in range
+			CHECK_EQ(4, siteCol);
+			CHECK_EQ(5, finishedCol);
+			CHECK(finishedCol < 6); // top column still in range
 		}
 	}
 
@@ -135,13 +127,13 @@ protected:
 	void testMakeUpgradeAction(void)
 	{
 		CortexAction a = makeUpgradeAction(CORTEX_BUILD_ATTACK);
-		CPPUNIT_ASSERT_EQUAL((Uint32)ACTION_VERSION, a.version);
-		CPPUNIT_ASSERT_EQUAL((Sint32)ACTION_UPGRADE_BUILDING, a.kind);
-		CPPUNIT_ASSERT_EQUAL((Sint32)CORTEX_BUILD_ATTACK, a.buildingType);
+		CHECK_EQ((Uint32)ACTION_VERSION, a.version);
+		CHECK_EQ((Sint32)ACTION_UPGRADE_BUILDING, a.kind);
+		CHECK_EQ((Sint32)CORTEX_BUILD_ATTACK, a.buildingType);
 		// Unused params keep their no-op sentinels.
-		CPPUNIT_ASSERT_EQUAL((Sint32)-1, a.locationSlot);
-		CPPUNIT_ASSERT_EQUAL((Sint32)-1, a.flagRadius);
-		CPPUNIT_ASSERT_EQUAL((Sint32)-1, a.unitCount);
+		CHECK_EQ((Sint32)-1, a.locationSlot);
+		CHECK_EQ((Sint32)-1, a.flagRadius);
+		CHECK_EQ((Sint32)-1, a.unitCount);
 	}
 
 	// C++: CortexTypes.h — the observation layout is at v20 (forward-rally staging
@@ -150,12 +142,20 @@ protected:
 	// ACTION_VERSION constants.
 	void testVersionBump(void)
 	{
-		CPPUNIT_ASSERT_EQUAL((Uint32)20, (Uint32)OBSERVATION_VERSION);
-		CPPUNIT_ASSERT_EQUAL((Uint32)13, (Uint32)ACTION_VERSION);
+		CHECK_EQ((Uint32)20, (Uint32)OBSERVATION_VERSION);
+		CHECK_EQ((Uint32)13, (Uint32)ACTION_VERSION);
 		// makeEmptyObservation must stamp the current version (so a stale
 		// observation from an old layout is rejected by the policy).
 		CortexObservation obs = makeEmptyObservation();
-		CPPUNIT_ASSERT_EQUAL((Uint32)OBSERVATION_VERSION, obs.version);
+		CHECK_EQ((Uint32)OBSERVATION_VERSION, obs.version);
 	}
 };
-CPPUNIT_TEST_SUITE_REGISTRATION(CortexUpgradeTest);
+TEST_SUITE("CortexUpgrade")
+{
+	TEST_CASE_FIXTURE(CortexUpgradeTest, "LongLevelFinishedVsSite") { testLongLevelFinishedVsSite(); }
+	TEST_CASE_FIXTURE(CortexUpgradeTest, "MaxFinishedLevel") { testMaxFinishedLevel(); }
+	TEST_CASE_FIXTURE(CortexUpgradeTest, "BuildingsUpgradingExcludesFreshSite") { testBuildingsUpgradingExcludesFreshSite(); }
+	TEST_CASE_FIXTURE(CortexUpgradeTest, "WorkerColumnMapping") { testWorkerColumnMapping(); }
+	TEST_CASE_FIXTURE(CortexUpgradeTest, "MakeUpgradeAction") { testMakeUpgradeAction(); }
+	TEST_CASE_FIXTURE(CortexUpgradeTest, "VersionBump") { testVersionBump(); }
+}

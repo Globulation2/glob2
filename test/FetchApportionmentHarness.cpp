@@ -2,10 +2,8 @@
 // Real-engine regression: a building that wants several resources at once must
 // spread its fetchers across them, instead of sending everyone to whichever
 // resource happens to be nearest and leaving the others with nobody.
-#define SDL_MAIN_HANDLED
-#ifdef main
-#undef main
-#endif
+#include "EngineFixtures.h"
+#include <list>
 #include "GlobalContainer.h"
 #include "FileManager.h"
 #include <SDL.h>
@@ -23,11 +21,11 @@
 #include <cstdio>
 #include <cstdlib>
 
-GlobalContainer* globalContainer = nullptr;
-
+namespace
+{
 static void require(bool ok, const char* message)
 {
-	if (!ok) { std::fprintf(stderr, "FAIL: %s\n", message); std::exit(1); }
+	GLOB2_REQUIRE(ok, message);
 }
 
 // subscribeToBringResourcesStep() is the hiring pass Team::updateAllBuildingTasks
@@ -213,23 +211,23 @@ static void aLoadedUnitFarEnoughAheadIsStillHired()
 
 	std::puts("PASS a loaded candidate far enough ahead is hired despite the penalty");
 }
+}
 
-int main(int argc, char** argv)
+TEST_SUITE("FetchApportionment")
 {
-	SDL_SetMainReady();
-	require(argc == 3, "usage: harness PROFILE ROOT");
-	require(std::string(argv[1]).find("glob2-save-test-") == 0, "disposable profile required");
-	GlobalContainer globals(argv[1]);
-	globals.fileManager->addDir(argv[2]);
-	globalContainer = &globals;
-	globals.runNoX = true;
-	globals.settings.rememberUnit = false;
-	globals.buildingsTypes.init();
-	IntBuildingType::init();
-	Race::loadDefault();
-	siteSpreadsItsFetchersAcrossBothResources();
-	anEmptyHandedUnitWinsAllElseEqual();
-	aLoadedUnitFarEnoughAheadIsStillHired();
-	std::puts("Fetch apportionment regressions passed");
-	return 0;
+	TEST_CASE("site spreads its fetchers across both resources")
+	{
+		glob2test::HeadlessGlobals globals;
+		siteSpreadsItsFetchersAcrossBothResources();
+	}
+	TEST_CASE("an empty handed unit wins all else equal")
+	{
+		glob2test::HeadlessGlobals globals;
+		anEmptyHandedUnitWinsAllElseEqual();
+	}
+	TEST_CASE("a loaded unit far enough ahead is still hired")
+	{
+		glob2test::HeadlessGlobals globals;
+		aLoadedUnitFarEnoughAheadIsStillHired();
+	}
 }

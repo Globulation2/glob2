@@ -6,7 +6,44 @@
 #include "Map.h"
 #include "TerrainType.h"
 
-CPPUNIT_TEST_SUITE_REGISTRATION( MapQueryTest );
+TEST_SUITE("MapQuery")
+{
+	TEST_CASE_FIXTURE(MapQueryTest, "FreeForGroundUnit_CleanGrassPasses") { testFreeForGroundUnit_CleanGrassPasses(); }
+	TEST_CASE_FIXTURE(MapQueryTest, "FreeForGroundUnit_ResourceFails") { testFreeForGroundUnit_ResourceFails(); }
+	TEST_CASE_FIXTURE(MapQueryTest, "FreeForGroundUnit_BuildingFails") { testFreeForGroundUnit_BuildingFails(); }
+	TEST_CASE_FIXTURE(MapQueryTest, "FreeForGroundUnit_UnitFails") { testFreeForGroundUnit_UnitFails(); }
+	TEST_CASE_FIXTURE(MapQueryTest, "FreeForGroundUnit_WaterFailsWhenNotSwim") { testFreeForGroundUnit_WaterFailsWhenNotSwim(); }
+	TEST_CASE_FIXTURE(MapQueryTest, "FreeForGroundUnit_WaterPassesWhenSwim") { testFreeForGroundUnit_WaterPassesWhenSwim(); }
+	TEST_CASE_FIXTURE(MapQueryTest, "FreeForGroundUnit_ForbiddenFailsWhenMaskMatches") { testFreeForGroundUnit_ForbiddenFailsWhenMaskMatches(); }
+	TEST_CASE_FIXTURE(MapQueryTest, "FreeForGroundUnit_ForbiddenPassesWhenMaskDoesNotMatch") { testFreeForGroundUnit_ForbiddenPassesWhenMaskDoesNotMatch(); }
+	TEST_CASE_FIXTURE(MapQueryTest, "FreeForGroundUnitNoForbidden_IgnoresForbidden") { testFreeForGroundUnitNoForbidden_IgnoresForbidden(); }
+	TEST_CASE_FIXTURE(MapQueryTest, "FreeForGroundUnitNoForbidden_StillBlocksBuilding") { testFreeForGroundUnitNoForbidden_StillBlocksBuilding(); }
+	TEST_CASE_FIXTURE(MapQueryTest, "FreeForBuilding_GrassPasses") { testFreeForBuilding_GrassPasses(); }
+	TEST_CASE_FIXTURE(MapQueryTest, "FreeForBuilding_ResourceFails") { testFreeForBuilding_ResourceFails(); }
+	TEST_CASE_FIXTURE(MapQueryTest, "FreeForBuilding_BuildingFails") { testFreeForBuilding_BuildingFails(); }
+	TEST_CASE_FIXTURE(MapQueryTest, "FreeForBuilding_UnitFails") { testFreeForBuilding_UnitFails(); }
+	TEST_CASE_FIXTURE(MapQueryTest, "FreeForBuilding_WaterFails") { testFreeForBuilding_WaterFails(); }
+	TEST_CASE_FIXTURE(MapQueryTest, "FreeForBuilding_SandFails") { testFreeForBuilding_SandFails(); }
+	TEST_CASE_FIXTURE(MapQueryTest, "FreeForBuilding_RectAllGrassPasses") { testFreeForBuilding_RectAllGrassPasses(); }
+	TEST_CASE_FIXTURE(MapQueryTest, "FreeForBuilding_RectOneBadTileFails") { testFreeForBuilding_RectOneBadTileFails(); }
+	TEST_CASE_FIXTURE(MapQueryTest, "FreeForBuilding_RectGidTolerantSameGidPasses") { testFreeForBuilding_RectGidTolerantSameGidPasses(); }
+	TEST_CASE_FIXTURE(MapQueryTest, "FreeForBuilding_RectGidTolerantDifferentGidFails") { testFreeForBuilding_RectGidTolerantDifferentGidFails(); }
+	TEST_CASE_FIXTURE(MapQueryTest, "HardSpaceForGroundUnit_IgnoresUnit") { testHardSpaceForGroundUnit_IgnoresUnit(); }
+	TEST_CASE_FIXTURE(MapQueryTest, "HardSpaceForGroundUnit_ResourceStillFails") { testHardSpaceForGroundUnit_ResourceStillFails(); }
+	TEST_CASE_FIXTURE(MapQueryTest, "HardSpaceForGroundUnit_BuildingStillFails") { testHardSpaceForGroundUnit_BuildingStillFails(); }
+	TEST_CASE_FIXTURE(MapQueryTest, "HardSpaceForGroundUnit_WaterFailsWhenNotSwim") { testHardSpaceForGroundUnit_WaterFailsWhenNotSwim(); }
+	TEST_CASE_FIXTURE(MapQueryTest, "HardSpaceForGroundUnit_ForbiddenStillFails") { testHardSpaceForGroundUnit_ForbiddenStillFails(); }
+	TEST_CASE_FIXTURE(MapQueryTest, "HardSpaceForBuilding_IgnoresUnit") { testHardSpaceForBuilding_IgnoresUnit(); }
+	TEST_CASE_FIXTURE(MapQueryTest, "HardSpaceForBuilding_ResourceFails") { testHardSpaceForBuilding_ResourceFails(); }
+	TEST_CASE_FIXTURE(MapQueryTest, "HardSpaceForBuilding_BuildingFails") { testHardSpaceForBuilding_BuildingFails(); }
+	TEST_CASE_FIXTURE(MapQueryTest, "HardSpaceForBuilding_NonGrassFails") { testHardSpaceForBuilding_NonGrassFails(); }
+	TEST_CASE_FIXTURE(MapQueryTest, "HardSpaceForBuilding_RectAllGrassPasses") { testHardSpaceForBuilding_RectAllGrassPasses(); }
+	TEST_CASE_FIXTURE(MapQueryTest, "HardSpaceForBuilding_RectGidTolerantSameGidPasses") { testHardSpaceForBuilding_RectGidTolerantSameGidPasses(); }
+	TEST_CASE_FIXTURE(MapQueryTest, "HardSpaceForBuilding_RectGidTolerantDifferentGidFails") { testHardSpaceForBuilding_RectGidTolerantDifferentGidFails(); }
+	TEST_CASE_FIXTURE(MapQueryTest, "LocalTeam_DefaultsToSentinel") { testLocalTeam_DefaultsToSentinel(); }
+	TEST_CASE_FIXTURE(MapQueryTest, "LocalTeam_SetAndGet") { testLocalTeam_SetAndGet(); }
+	TEST_CASE_FIXTURE(MapQueryTest, "LocalTeam_SentinelValueIsMinusOne") { testLocalTeam_SentinelValueIsMinusOne(); }
+}
 
 namespace
 {
@@ -84,49 +121,49 @@ namespace
 void MapQueryTest::testFreeForGroundUnit_CleanGrassPasses()
 {
 	GrassMap g;
-	CPPUNIT_ASSERT( g.isFreeForGroundUnit(3, 3, false, kTeam0) );
+	CHECK(g.isFreeForGroundUnit(3, 3, false, kTeam0));
 }
 
 void MapQueryTest::testFreeForGroundUnit_ResourceFails()
 {
 	GrassMap g; g.putResource(3, 3);
-	CPPUNIT_ASSERT( !g.isFreeForGroundUnit(3, 3, false, kTeam0) );
+	CHECK(!g.isFreeForGroundUnit(3, 3, false, kTeam0));
 }
 
 void MapQueryTest::testFreeForGroundUnit_BuildingFails()
 {
 	GrassMap g; g.putBuilding(3, 3);
-	CPPUNIT_ASSERT( !g.isFreeForGroundUnit(3, 3, false, kTeam0) );
+	CHECK(!g.isFreeForGroundUnit(3, 3, false, kTeam0));
 }
 
 void MapQueryTest::testFreeForGroundUnit_UnitFails()
 {
 	GrassMap g; g.putGroundUnit(3, 3);
-	CPPUNIT_ASSERT( !g.isFreeForGroundUnit(3, 3, false, kTeam0) );
+	CHECK(!g.isFreeForGroundUnit(3, 3, false, kTeam0));
 }
 
 void MapQueryTest::testFreeForGroundUnit_WaterFailsWhenNotSwim()
 {
 	GrassMap g; g.makeWater(3, 3);
-	CPPUNIT_ASSERT( !g.isFreeForGroundUnit(3, 3, false, kTeam0) );
+	CHECK(!g.isFreeForGroundUnit(3, 3, false, kTeam0));
 }
 
 void MapQueryTest::testFreeForGroundUnit_WaterPassesWhenSwim()
 {
 	GrassMap g; g.makeWater(3, 3);
-	CPPUNIT_ASSERT( g.isFreeForGroundUnit(3, 3, true, kTeam0) );
+	CHECK(g.isFreeForGroundUnit(3, 3, true, kTeam0));
 }
 
 void MapQueryTest::testFreeForGroundUnit_ForbiddenFailsWhenMaskMatches()
 {
 	GrassMap g; g.setForbidden(3, 3, kTeam0);
-	CPPUNIT_ASSERT( !g.isFreeForGroundUnit(3, 3, false, kTeam0) );
+	CHECK(!g.isFreeForGroundUnit(3, 3, false, kTeam0));
 }
 
 void MapQueryTest::testFreeForGroundUnit_ForbiddenPassesWhenMaskDoesNotMatch()
 {
 	GrassMap g; g.setForbidden(3, 3, kTeam1);
-	CPPUNIT_ASSERT( g.isFreeForGroundUnit(3, 3, false, kTeam0) );
+	CHECK(g.isFreeForGroundUnit(3, 3, false, kTeam0));
 }
 
 // ---------------- isFreeForGroundUnitNoForbidden ----------------
@@ -135,13 +172,13 @@ void MapQueryTest::testFreeForGroundUnitNoForbidden_IgnoresForbidden()
 {
 	GrassMap g; g.setForbidden(3, 3, kTeam0);
 	// Forbidden bit is set for our team — but the NoForbidden variant ignores it.
-	CPPUNIT_ASSERT( g.isFreeForGroundUnitNoForbidden(3, 3, false) );
+	CHECK(g.isFreeForGroundUnitNoForbidden(3, 3, false));
 }
 
 void MapQueryTest::testFreeForGroundUnitNoForbidden_StillBlocksBuilding()
 {
 	GrassMap g; g.putBuilding(3, 3);
-	CPPUNIT_ASSERT( !g.isFreeForGroundUnitNoForbidden(3, 3, false) );
+	CHECK(!g.isFreeForGroundUnitNoForbidden(3, 3, false));
 }
 
 // ---------------- isFreeForBuilding ----------------
@@ -149,64 +186,64 @@ void MapQueryTest::testFreeForGroundUnitNoForbidden_StillBlocksBuilding()
 void MapQueryTest::testFreeForBuilding_GrassPasses()
 {
 	GrassMap g;
-	CPPUNIT_ASSERT( g.isFreeForBuilding(3, 3) );
+	CHECK(g.isFreeForBuilding(3, 3));
 }
 
 void MapQueryTest::testFreeForBuilding_ResourceFails()
 {
 	GrassMap g; g.putResource(3, 3);
-	CPPUNIT_ASSERT( !g.isFreeForBuilding(3, 3) );
+	CHECK(!g.isFreeForBuilding(3, 3));
 }
 
 void MapQueryTest::testFreeForBuilding_BuildingFails()
 {
 	GrassMap g; g.putBuilding(3, 3);
-	CPPUNIT_ASSERT( !g.isFreeForBuilding(3, 3) );
+	CHECK(!g.isFreeForBuilding(3, 3));
 }
 
 void MapQueryTest::testFreeForBuilding_UnitFails()
 {
 	GrassMap g; g.putGroundUnit(3, 3);
-	CPPUNIT_ASSERT( !g.isFreeForBuilding(3, 3) );
+	CHECK(!g.isFreeForBuilding(3, 3));
 }
 
 void MapQueryTest::testFreeForBuilding_WaterFails()
 {
 	GrassMap g; g.makeWater(3, 3);
 	// Buildings can never be placed on non-grass — canSwim is irrelevant here.
-	CPPUNIT_ASSERT( !g.isFreeForBuilding(3, 3) );
+	CHECK(!g.isFreeForBuilding(3, 3));
 }
 
 void MapQueryTest::testFreeForBuilding_SandFails()
 {
 	GrassMap g; g.makeSand(3, 3);
-	CPPUNIT_ASSERT( !g.isFreeForBuilding(3, 3) );
+	CHECK(!g.isFreeForBuilding(3, 3));
 }
 
 void MapQueryTest::testFreeForBuilding_RectAllGrassPasses()
 {
 	GrassMap g;
-	CPPUNIT_ASSERT( g.isFreeForBuilding(2, 2, 3, 3) );
+	CHECK(g.isFreeForBuilding(2, 2, 3, 3));
 }
 
 void MapQueryTest::testFreeForBuilding_RectOneBadTileFails()
 {
 	GrassMap g; g.putBuilding(3, 3);
 	// 3x3 starting at (2,2) covers (3,3) — single bad tile fails the whole rect.
-	CPPUNIT_ASSERT( !g.isFreeForBuilding(2, 2, 3, 3) );
+	CHECK(!g.isFreeForBuilding(2, 2, 3, 3));
 }
 
 void MapQueryTest::testFreeForBuilding_RectGidTolerantSameGidPasses()
 {
 	GrassMap g; g.putBuilding(3, 3, /*gbid=*/42);
 	// gid-tolerant overload accepts tiles already occupied by gid=42.
-	CPPUNIT_ASSERT( g.isFreeForBuilding(2, 2, 3, 3, /*gid=*/42) );
+	CHECK(g.isFreeForBuilding(2, 2, 3, 3, /*gid=*/42));
 }
 
 void MapQueryTest::testFreeForBuilding_RectGidTolerantDifferentGidFails()
 {
 	GrassMap g; g.putBuilding(3, 3, /*gbid=*/42);
-	CPPUNIT_ASSERT( !g.isFreeForBuilding(2, 2, 3, 3, /*gid=*/99) );
+	CHECK(!g.isFreeForBuilding(2, 2, 3, 3, /*gid=*/99));
 }
 
 // ---------------- isHardSpaceForGroundUnit ----------------
@@ -215,33 +252,33 @@ void MapQueryTest::testHardSpaceForGroundUnit_IgnoresUnit()
 {
 	GrassMap g; g.putGroundUnit(3, 3);
 	// HardSpace is "would be free if no unit were here" — so unit presence is OK.
-	CPPUNIT_ASSERT( g.isHardSpaceForGroundUnit(3, 3, false, kTeam0) );
+	CHECK(g.isHardSpaceForGroundUnit(3, 3, false, kTeam0));
 	// Sanity: the Free variant rejects the same tile.
-	CPPUNIT_ASSERT( !g.isFreeForGroundUnit(3, 3, false, kTeam0) );
+	CHECK(!g.isFreeForGroundUnit(3, 3, false, kTeam0));
 }
 
 void MapQueryTest::testHardSpaceForGroundUnit_ResourceStillFails()
 {
 	GrassMap g; g.putResource(3, 3);
-	CPPUNIT_ASSERT( !g.isHardSpaceForGroundUnit(3, 3, false, kTeam0) );
+	CHECK(!g.isHardSpaceForGroundUnit(3, 3, false, kTeam0));
 }
 
 void MapQueryTest::testHardSpaceForGroundUnit_BuildingStillFails()
 {
 	GrassMap g; g.putBuilding(3, 3);
-	CPPUNIT_ASSERT( !g.isHardSpaceForGroundUnit(3, 3, false, kTeam0) );
+	CHECK(!g.isHardSpaceForGroundUnit(3, 3, false, kTeam0));
 }
 
 void MapQueryTest::testHardSpaceForGroundUnit_WaterFailsWhenNotSwim()
 {
 	GrassMap g; g.makeWater(3, 3);
-	CPPUNIT_ASSERT( !g.isHardSpaceForGroundUnit(3, 3, false, kTeam0) );
+	CHECK(!g.isHardSpaceForGroundUnit(3, 3, false, kTeam0));
 }
 
 void MapQueryTest::testHardSpaceForGroundUnit_ForbiddenStillFails()
 {
 	GrassMap g; g.setForbidden(3, 3, kTeam0);
-	CPPUNIT_ASSERT( !g.isHardSpaceForGroundUnit(3, 3, false, kTeam0) );
+	CHECK(!g.isHardSpaceForGroundUnit(3, 3, false, kTeam0));
 }
 
 // ---------------- isHardSpaceForBuilding ----------------
@@ -249,44 +286,44 @@ void MapQueryTest::testHardSpaceForGroundUnit_ForbiddenStillFails()
 void MapQueryTest::testHardSpaceForBuilding_IgnoresUnit()
 {
 	GrassMap g; g.putGroundUnit(3, 3);
-	CPPUNIT_ASSERT( g.isHardSpaceForBuilding(3, 3) );
-	CPPUNIT_ASSERT( !g.isFreeForBuilding(3, 3) );
+	CHECK(g.isHardSpaceForBuilding(3, 3));
+	CHECK(!g.isFreeForBuilding(3, 3));
 }
 
 void MapQueryTest::testHardSpaceForBuilding_ResourceFails()
 {
 	GrassMap g; g.putResource(3, 3);
-	CPPUNIT_ASSERT( !g.isHardSpaceForBuilding(3, 3) );
+	CHECK(!g.isHardSpaceForBuilding(3, 3));
 }
 
 void MapQueryTest::testHardSpaceForBuilding_BuildingFails()
 {
 	GrassMap g; g.putBuilding(3, 3);
-	CPPUNIT_ASSERT( !g.isHardSpaceForBuilding(3, 3) );
+	CHECK(!g.isHardSpaceForBuilding(3, 3));
 }
 
 void MapQueryTest::testHardSpaceForBuilding_NonGrassFails()
 {
 	GrassMap g; g.makeSand(3, 3);
-	CPPUNIT_ASSERT( !g.isHardSpaceForBuilding(3, 3) );
+	CHECK(!g.isHardSpaceForBuilding(3, 3));
 }
 
 void MapQueryTest::testHardSpaceForBuilding_RectAllGrassPasses()
 {
 	GrassMap g;
-	CPPUNIT_ASSERT( g.isHardSpaceForBuilding(2, 2, 3, 3) );
+	CHECK(g.isHardSpaceForBuilding(2, 2, 3, 3));
 }
 
 void MapQueryTest::testHardSpaceForBuilding_RectGidTolerantSameGidPasses()
 {
 	GrassMap g; g.putBuilding(3, 3, /*gbid=*/42);
-	CPPUNIT_ASSERT( g.isHardSpaceForBuilding(2, 2, 3, 3, /*gid=*/42) );
+	CHECK(g.isHardSpaceForBuilding(2, 2, 3, 3, /*gid=*/42));
 }
 
 void MapQueryTest::testHardSpaceForBuilding_RectGidTolerantDifferentGidFails()
 {
 	GrassMap g; g.putBuilding(3, 3, /*gbid=*/42);
-	CPPUNIT_ASSERT( !g.isHardSpaceForBuilding(2, 2, 3, 3, /*gid=*/99) );
+	CHECK(!g.isHardSpaceForBuilding(2, 2, 3, 3, /*gid=*/99));
 }
 
 // ---------------- local-team mirror (CS-546) ----------------
@@ -294,16 +331,16 @@ void MapQueryTest::testHardSpaceForBuilding_RectGidTolerantDifferentGidFails()
 void MapQueryTest::testLocalTeam_DefaultsToSentinel()
 {
 	GrassMap g;
-	CPPUNIT_ASSERT_EQUAL( Map::NO_DISPLAYED_TEAM, g.getDisplayedTeam() );
+	CHECK_EQ(Map::NO_DISPLAYED_TEAM, g.getDisplayedTeam());
 }
 
 void MapQueryTest::testLocalTeam_SetAndGet()
 {
 	GrassMap g;
 	g.setDisplayedTeam(3);
-	CPPUNIT_ASSERT_EQUAL( static_cast<Sint32>(3), g.getDisplayedTeam() );
+	CHECK_EQ(static_cast<Sint32>(3), g.getDisplayedTeam());
 	g.setDisplayedTeam(0);
-	CPPUNIT_ASSERT_EQUAL( static_cast<Sint32>(0), g.getDisplayedTeam() );
+	CHECK_EQ(static_cast<Sint32>(0), g.getDisplayedTeam());
 }
 
 void MapQueryTest::testLocalTeam_SentinelValueIsMinusOne()
@@ -311,5 +348,5 @@ void MapQueryTest::testLocalTeam_SentinelValueIsMinusOne()
 	// Pinned: sim sites that consult getDisplayedTeam() compare against teamNumber (>=0),
 	// so the sentinel must never collide with a real team index. -1 is the convention
 	// used elsewhere for "no team" (see Game::syncStep's localTeam parameter).
-	CPPUNIT_ASSERT_EQUAL( static_cast<Sint32>(-1), Map::NO_DISPLAYED_TEAM );
+	CHECK_EQ(static_cast<Sint32>(-1), Map::NO_DISPLAYED_TEAM);
 }

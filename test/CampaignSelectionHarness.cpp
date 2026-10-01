@@ -23,6 +23,7 @@
 // Post-fix tree: this harness builds, runs, exits 0, and prints a
 // deterministic golden line for diff-based verification.
 
+#include "Glob2Test.h"
 #include "Campaign.h"
 
 #include <cstdio>
@@ -32,16 +33,6 @@
 
 namespace {
 
-int failures = 0;
-
-#define EXPECT(cond, msg)                                                  \
-	do {                                                                   \
-		if (!(cond)) {                                                     \
-			std::fprintf(stderr, "FAIL: %s  (%s:%d)\n",                    \
-			             (msg), __FILE__, __LINE__);                       \
-			++failures;                                                    \
-		}                                                                  \
-	} while (0)
 
 // Build the regression fixture in memory:
 //   maps[0] = "Map1" / "fake1.map"  unlocked
@@ -86,39 +77,32 @@ std::vector<std::string> buildDisplayedList(Campaign& c)
 
 }  // namespace
 
-int main(int /*argc*/, char* /*argv*/[])
+TEST_SUITE("CampaignSelection")
 {
-	std::printf("# CampaignSelectionHarness golden output\n");
+TEST_CASE("selection resolves the displayed name rather than the list index")
+{
 
 	Campaign campaign = buildNonLinearFixture();
 	std::vector<std::string> displayed = buildDisplayedList(campaign);
 
-	std::printf("fixture: maps=%zu displayed=%zu\n",
-	            campaign.getMapCount(), displayed.size());
 	for (size_t i = 0; i < displayed.size(); ++i)
-		std::printf("  displayed[%zu] = \"%s\"\n", i, displayed[i].c_str());
 
-	EXPECT(campaign.getMapCount() == 3, "fixture should have 3 maps");
-	EXPECT(displayed.size() == 2, "displayed list should hide the locked map");
-	EXPECT(displayed[0] == "Map1", "displayed[0] should be Map1");
-	EXPECT(displayed[1] == "Map3", "displayed[1] should be Map3 (skipping locked Map2)");
+	GLOB2_CHECK(campaign.getMapCount() == 3, "fixture should have 3 maps");
+	GLOB2_CHECK(displayed.size() == 2, "displayed list should hide the locked map");
+	GLOB2_CHECK(displayed[0] == "Map1", "displayed[0] should be Map1");
+	GLOB2_CHECK(displayed[1] == "Map3", "displayed[1] should be Map3 (skipping locked Map2)");
 
 	// Simulate the user clicking the second item in the displayed list.
 	const size_t userClickedIndex = 1;
 	const std::string userClickedName = displayed[userClickedIndex];
-	std::printf("user clicks displayed[%zu] = \"%s\"\n",
-	            userClickedIndex, userClickedName.c_str());
 
 	// === OLD algorithm (the bug) ===
 	// CampaignMenuScreen used to do `campaign.getMap(getSelectionIndex())`,
 	// treating the displayed-list index as a campaign.maps index.
 	CampaignMapEntry& byIndex = campaign.getMap(static_cast<unsigned>(userClickedIndex));
-	std::printf("[old]  campaign.getMap(%zu)              -> name=\"%s\" file=\"%s\"\n",
-	            userClickedIndex, byIndex.getMapName().c_str(),
-	            byIndex.getMapFileName().c_str());
-	EXPECT(byIndex.getMapName() == "Map2",
+	GLOB2_CHECK(byIndex.getMapName() == "Map2",
 	       "old algorithm reproduces the bug: returns Map2 instead of Map3");
-	EXPECT(byIndex.getMapName() != userClickedName,
+	GLOB2_CHECK(byIndex.getMapName() != userClickedName,
 	       "old algorithm must disagree with the user's click on this fixture; "
 	       "if this assertion fails the fixture no longer exercises the bug");
 
@@ -126,14 +110,10 @@ int main(int /*argc*/, char* /*argv*/[])
 	// The post-fix CampaignMenuScreen routes selection through
 	// Campaign::findUnlockedMap(displayedName).
 	CampaignMapEntry* byName = campaign.findUnlockedMap(userClickedName);
-	std::printf("[new]  campaign.findUnlockedMap(\"%s\") -> name=\"%s\" file=\"%s\"\n",
-	            userClickedName.c_str(),
-	            byName ? byName->getMapName().c_str() : "(null)",
-	            byName ? byName->getMapFileName().c_str() : "(null)");
-	EXPECT(byName != nullptr, "new algorithm should resolve the displayed name");
-	EXPECT(byName && byName->getMapName() == "Map3",
+	GLOB2_CHECK(byName != nullptr, "new algorithm should resolve the displayed name");
+	GLOB2_CHECK(byName && byName->getMapName() == "Map3",
 	       "new algorithm should return the actually-clicked map");
-	EXPECT(byName && byName->getMapFileName() == "fake3.map",
+	GLOB2_CHECK(byName && byName->getMapFileName() == "fake3.map",
 	       "new algorithm should yield the correct .map filename");
 
 	// === Boundary cases the old code crashed/asserted on ===
@@ -141,18 +121,13 @@ int main(int /*argc*/, char* /*argv*/[])
 	// getMissionName() hit `assert(false)`; the helper returns nullptr so
 	// the menu screen can no-op gracefully.
 	CampaignMapEntry* missing = campaign.findUnlockedMap("DoesNotExist");
-	std::printf("[new]  findUnlockedMap(\"DoesNotExist\") -> %s\n",
-	            missing ? "FOUND (BUG)" : "nullptr");
-	EXPECT(missing == nullptr, "lookup of missing name must return nullptr");
+	GLOB2_CHECK(missing == nullptr, "lookup of missing name must return nullptr");
 
 	// Lookup of a locked map's name: must not return the locked entry,
 	// even if the displayed list somehow contained it.
 	CampaignMapEntry* locked = campaign.findUnlockedMap("Map2");
-	std::printf("[new]  findUnlockedMap(\"Map2\" locked)   -> %s\n",
-	            locked ? "FOUND (BUG)" : "nullptr");
-	EXPECT(locked == nullptr,
+	GLOB2_CHECK(locked == nullptr,
 	       "findUnlockedMap must not return a locked entry");
 
-	std::printf("result: %d failure(s)\n", failures);
-	return failures == 0 ? 0 : 1;
+}
 }

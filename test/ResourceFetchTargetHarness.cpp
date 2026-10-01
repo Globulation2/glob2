@@ -2,10 +2,7 @@
 // Real-engine regression: a resource-fetch target must track the gradient
 // a walking unit actually follows, not a one-time snapshot from task
 // assignment.
-#define SDL_MAIN_HANDLED
-#ifdef main
-#undef main
-#endif
+#include "EngineFixtures.h"
 #include "GlobalContainer.h"
 #include "FileManager.h"
 #include <SDL.h>
@@ -22,11 +19,11 @@
 #include <cstdio>
 #include <cstdlib>
 
-GlobalContainer* globalContainer = nullptr;
-
+namespace
+{
 static void require(bool ok, const char* message)
 {
-	if (!ok) { std::fprintf(stderr, "FAIL: %s\n", message); std::exit(1); }
+	GLOB2_REQUIRE(ok, message);
 }
 
 // handleMovementGoingToResource() is protected; a subclass gets access the
@@ -180,24 +177,16 @@ static void targetTracksTheGradientTheUnitActuallyFollows()
 
 	std::puts("PASS resource-fetch target tracks the round-trip gradient and refreshes when it is rebuilt");
 }
+}
 
-int main(int argc, char** argv)
+TEST_SUITE("ResourceFetchTarget")
 {
-	SDL_SetMainReady();
-	require(argc == 3, "usage: harness PROFILE ROOT");
-	require(std::string(argv[1]).find("glob2-save-test-") == 0, "disposable profile required");
-	GlobalContainer globals(argv[1]);
-	globals.fileManager->addDir(argv[2]);
-	globalContainer = &globals;
-	globals.runNoX = true;
-	globals.settings.rememberUnit = false;
-	globals.buildingsTypes.init();
-	IntBuildingType::init();
-	Race::loadDefault();
-	const int swimSpeeds[] = {0, 20, 14, 10, 7, 5, 3};
-	for (int swimClass = 0; swimClass < SWIM_CLASS_COUNT; ++swimClass)
-		staleTargetIsRefreshedAfterGradientRebuild(swimClass, swimSpeeds[swimClass]);
-	targetTracksTheGradientTheUnitActuallyFollows();
-	std::puts("Resource fetch target regressions passed");
-	return 0;
+	TEST_CASE("a depleted target is refreshed after its gradient rebuild for every swim class")
+	{
+		glob2test::HeadlessGlobals globals;
+		const int swimSpeeds[] = {0, 20, 14, 10, 7, 5, 3};
+		for (int swimClass = 0; swimClass < SWIM_CLASS_COUNT; ++swimClass)
+			staleTargetIsRefreshedAfterGradientRebuild(swimClass, swimSpeeds[swimClass]);
+		targetTracksTheGradientTheUnitActuallyFollows();
+	}
 }

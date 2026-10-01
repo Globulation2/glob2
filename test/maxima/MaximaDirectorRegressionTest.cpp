@@ -1,4 +1,5 @@
 // Link with the game objects (excluding Glob2.cpp) to exercise the real runtime.
+#include "EngineFixtures.h"
 #include "../../src/GlobalContainer.h"
 #include "../../src/Game.h"
 #include "../../src/team/Team.h"
@@ -20,21 +21,17 @@
 #include <string>
 #include <vector>
 // Access the scheduler boundary without adding a production testing API.
-#define private public
 #include "../../src/ai/maxima/AIMaximaRuntime.h"
 #include "../../src/ai/maxima/AIMaxima.h"
-#undef private
 #include "../../src/building/Building.h"
 #include "../../src/game/entities/BuildingType.h"
 #include "../../src/building/IntBuildingType.h"
 #include "../../src/unit/Unit.h"
 #include <BinaryStream.h>
 #include <StreamBackend.h>
-#include <cassert>
 #include <iostream>
 #include <memory>
 
-GlobalContainer* globalContainer = NULL;
 using namespace AIMaximaRuntime;
 
 // Director decisions must survive scheduling, diplomacy and runtime lifecycles.
@@ -81,7 +78,7 @@ struct Fixture
     {
         ::Building* result=game.addBuilding(game.map.normalizeX(x),game.map.normalizeY(y),
             globalContainer->buildingsTypes.getTypeNum(type,level,false),team);
-        assert(result);
+        REQUIRE(result);
         return result;
     }
 
@@ -89,14 +86,14 @@ struct Fixture
     {
         for(auto record:ai->context.buildings.found())
             if(record.second.gid==building->gid) return record.first;
-        assert(false);
+        REQUIRE(false);
         return -1;
     }
 
     Unit* warrior(int x, int y, int level=1)
     {
         Unit* unit=game.addUnit(x,y,0,WARRIOR,level,0,0,0);
-        assert(unit);
+        REQUIRE(unit);
         unit->medical=Unit::MED_FREE;
         unit->activity=Unit::ACT_RANDOM;
         return unit;
@@ -140,29 +137,29 @@ static void reconnaissanceWaitsForEightyPercent()
     for(int y=0;y<64;++y)for(int x=0;x<64;++x)
         if(y*64+x<3276)f.game.map.setMapDiscovered(x,y,f.player.team->me);
     a.update_reconnaissance(c);
-    assert(a.reconnaissance.report().exploredPercent==79);
+    REQUIRE(a.reconnaissance.report().exploredPercent==79);
     a.plan_reconnaissance_objectives(c);
-    assert(a.budget.reconnaissance_suspended);
-    assert(a.budget.reconnaissance_objectives.empty());
-    assert(a.reconnaissance.report().desiredMissions==0);
+    REQUIRE(a.budget.reconnaissance_suspended);
+    REQUIRE(a.budget.reconnaissance_objectives.empty());
+    REQUIRE(a.reconnaissance.report().desiredMissions==0);
     // A stale loaded budget cannot start missions before the next director pass.
     a.budget.reconnaissance_suspended=false;
     a.update_reconnaissance_missions(c);
-    assert(a.reconnaissance_suspended);
+    REQUIRE(a.reconnaissance_suspended);
     // 3277 / 4096 tiles is the first count that reaches 80 percent.
     f.game.map.setMapDiscovered(12,51,f.player.team->me);
     a.update_reconnaissance(c);
-    assert(a.reconnaissance.report().exploredPercent==80);
+    REQUIRE(a.reconnaissance.report().exploredPercent==80);
     a.plan_reconnaissance_objectives(c);
-    assert(!a.budget.reconnaissance_suspended);
+    REQUIRE(!a.budget.reconnaissance_suspended);
     a.update_reconnaissance_missions(c);
-    assert(!a.reconnaissance_suspended);
+    REQUIRE(!a.reconnaissance_suspended);
     a.budget.food_emergency=true;
     a.plan_reconnaissance_objectives(c);
-    assert(!a.budget.reconnaissance_suspended);
+    REQUIRE(!a.budget.reconnaissance_suspended);
     a.budget.colony_emergency=true;
     a.plan_reconnaissance_objectives(c);
-    assert(a.budget.reconnaissance_suspended);
+    REQUIRE(a.budget.reconnaissance_suspended);
 }
 
 void cadence() {
@@ -170,13 +167,13 @@ void cadence() {
     a.strategy.scheduling.strategy_interval_ticks=10;
     a.snapshot.tick=100; a.timer=110; a.director.committed();
     a.director.evaluate(a,a.context);
-    assert(a.snapshot.tick==110);
+    REQUIRE(a.snapshot.tick==110);
     // Duplicate calls within one tick remain suppressed; invalidation overrides it.
     a.snapshot.population=123;
     a.director.evaluate(a,a.context);
-    assert(a.snapshot.population==123);
+    REQUIRE(a.snapshot.population==123);
     a.director.invalidate(); a.director.evaluate(a,a.context);
-    assert(a.snapshot.population!=123);
+    REQUIRE(a.snapshot.population!=123);
 }
 
 static void allyPrestige() {
@@ -186,12 +183,12 @@ static void allyPrestige() {
     f.game.teams[2]->prestige=100; f.game.totalPrestige=100;
     a.snapshot=a.collect_snapshot(a.context);
     a.large_economy_committed=true; a.build_policy_bids();
-    assert(a.snapshot.enemy_prestige==0);
-    assert(a.policy_bids[Maxima::PolicyDefense].desired_towers==0);
+    REQUIRE(a.snapshot.enemy_prestige==0);
+    REQUIRE(a.policy_bids[Maxima::PolicyDefense].desired_towers==0);
     f.game.teams[1]->prestige=50; f.game.totalPrestige=150;
     a.snapshot=a.collect_snapshot(a.context); a.build_policy_bids();
-    assert(a.snapshot.enemy_prestige==50);
-    assert(a.policy_bids[Maxima::PolicyDefense].desired_towers>0);
+    REQUIRE(a.snapshot.enemy_prestige==50);
+    REQUIRE(a.policy_bids[Maxima::PolicyDefense].desired_towers>0);
 }
 
 static void thirdPartyTower() {
@@ -207,12 +204,12 @@ static void thirdPartyTower() {
     a.reconnaissance.finishObservation();
     a.opponents[1].score=10000; a.opponents[2].score=0;
     a.plan_offense(c);
-    assert(a.budget.tactical_target_gid==target->gid);
+    REQUIRE(a.budget.tactical_target_gid==target->gid);
     // Remembered towers belonging to a current ally must not be counted.
     f.player.team->enemies &= ~f.game.teams[2]->me;
     f.player.team->allies |= f.game.teams[2]->me;
     a.plan_offense(c);
-    assert(a.budget.tactical_target_gid==target->gid);
+    REQUIRE(a.budget.tactical_target_gid==target->gid);
 }
 
 static void disconnectedArmy() {
@@ -224,11 +221,11 @@ static void disconnectedArmy() {
     }
     auto& a=*f.ai; auto& c=a.context; c.initialize(); f.remember(target);
     a.plan_offense(c);
-    assert(a.budget.tactical_kind==Tactics::MissionNone);
+    REQUIRE(a.budget.tactical_kind==Tactics::MissionNone);
     for(int i=0;i<4;++i) warriors[i]->performance[SWIM]=1;
     a.plan_offense(c);
-    assert(a.budget.tactical_kind==Tactics::MissionSiege);
-    assert(a.budget.tactical_requested_force==a.offense_diagnostics.eligibleWarriors);
+    REQUIRE(a.budget.tactical_kind==Tactics::MissionSiege);
+    REQUIRE(a.budget.tactical_requested_force==a.offense_diagnostics.eligibleWarriors);
     // Warriors already in the destination component need no swimming ability.
     for(int i=0;i<4;++i) {
         auto u=warriors[i];u->performance[SWIM]=0;
@@ -236,8 +233,8 @@ static void disconnectedArmy() {
         u->posX=30+i;u->posY=20;f.game.map.setGroundUnit(u->posX,u->posY,u->gid);
     }
     a.plan_offense(c);
-    assert(a.budget.tactical_kind==Tactics::MissionSiege);
-    assert(a.budget.tactical_requested_force==a.offense_diagnostics.eligibleWarriors);
+    REQUIRE(a.budget.tactical_kind==Tactics::MissionSiege);
+    REQUIRE(a.budget.tactical_requested_force==a.offense_diagnostics.eligibleWarriors);
 }
 
 static void reusedOwnId() {
@@ -251,32 +248,32 @@ static void reusedOwnId() {
         // between, which observes the emptied slot.
         c.buildings.observe_buildings();
         auto replacement=f.building(sameLocation?10:40,sameLocation?10:40,0);
-        assert(replacement->gid==oldGid);
+        REQUIRE(replacement->gid==oldGid);
         // Check before housekeeping, when deferred management work can execute.
-        assert(!c.buildings.get_building(oldId));
-        assert(Conditions::BuildingDestroyed(oldId).passes(c)==Conditions::Ready);
+        REQUIRE(!c.buildings.get_building(oldId));
+        REQUIRE(Conditions::BuildingDestroyed(oldId).passes(c)==Conditions::Ready);
         Management::AssignWorkers(7,oldId).modify(c);
-        assert(c.orders.empty());
+        REQUIRE(c.orders.empty());
         GAGCore::MemoryStreamBackend* backend=new GAGCore::MemoryStreamBackend;
         GAGCore::BinaryOutputStream output(backend);c.buildings.save(&output);
         std::string bytes(backend->getBuffer(),backend->getPosition());
         GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
         input.seekFromStart(0);
         Construction::BuildingRegister loaded(&f.player);loaded.load(&input);
-        assert(!loaded.is_building_found(oldId));
-        c.buildings.tick(); assert(c.buildings.found().empty());
+        REQUIRE(!loaded.is_building_found(oldId));
+        c.buildings.tick(); REQUIRE(c.buildings.found().empty());
     }
     // Moving flags and loading live registrations preserve valid identities.
     Fixture f; auto flag=f.building(10,10,0,"warflag");auto& c=f.ai->context;c.initialize();
     int id=f.id(flag);flag->posX=20;flag->posY=20;c.buildings.tick();
-    assert(c.buildings.get_building(id)==flag);
+    REQUIRE(c.buildings.get_building(id)==flag);
     GAGCore::MemoryStreamBackend* backend=new GAGCore::MemoryStreamBackend;
     GAGCore::BinaryOutputStream output(backend);c.buildings.save(&output);
     std::string bytes(backend->getBuffer(),backend->getPosition());
     GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
     input.seekFromStart(0);
     Construction::BuildingRegister loaded(&f.player);loaded.load(&input);
-    assert(loaded.get_building(id)==flag);
+    REQUIRE(loaded.get_building(id)==flag);
 }
 
 static void fortificationUsesOnlySpareLabour()
@@ -293,15 +290,15 @@ static void fortificationUsesOnlySpareLabour()
         return result;
     };
     a.labour_observation.idle=7;
-    assert(count(AIMaximaPlacement::Fortification)==0);
+    REQUIRE(count(AIMaximaPlacement::Fortification)==0);
     a.labour_observation.idle=8;
-    assert(count(AIMaximaPlacement::Fortification)==1);
+    REQUIRE(count(AIMaximaPlacement::Fortification)==1);
     a.budget.desired_towers=1;
-    assert(count(AIMaximaPlacement::Fortification)==0);
-    assert(count(AIMaximaPlacement::CoreCapacity)==1);
+    REQUIRE(count(AIMaximaPlacement::Fortification)==0);
+    REQUIRE(count(AIMaximaPlacement::CoreCapacity)==1);
     AIMaximaPlacement::WorldBuilding tower;tower.buildingType=IntBuildingType::DEFENSE_BUILDING;
     world.buildings.push_back(tower);
-    assert(count(AIMaximaPlacement::Fortification)==1);
+    REQUIRE(count(AIMaximaPlacement::Fortification)==1);
 }
 
 static void unifiedHospitalCapacity() {
@@ -318,43 +315,43 @@ static void unifiedHospitalCapacity() {
             if(intent.buildingType==IntBuildingType::HEAL_BUILDING) return intent.unmetCount;
         return 0;
     };
-    assert(a.committed_hospital_beds(world.buildings)==2);
-    assert(unmet()==4);
+    REQUIRE(a.committed_hospital_beds(world.buildings)==2);
+    REQUIRE(unmet()==4);
     DevelopmentAction upgrade; upgrade.id=1; upgrade.type=UpgradeBuilding;
     upgrade.buildingType=IntBuildingType::HEAL_BUILDING;
     upgrade.buildingId=10; upgrade.targetLevel=2; upgrade.state=ParcelReserved;
     a.development_planner.actionMap[1]=upgrade;
-    assert(a.committed_hospital_beds(world.buildings)==5);
-    assert(a.committed_hospital_beds(world.buildings,1)==2);
-    assert(unmet()==3);
+    REQUIRE(a.committed_hospital_beds(world.buildings)==5);
+    REQUIRE(a.committed_hospital_beds(world.buildings,1)==2);
+    REQUIRE(unmet()==3);
     world.buildings[0].level=2; world.buildings[0].site=true;
-    assert(a.committed_hospital_beds(world.buildings)==5); // No double credit.
+    REQUIRE(a.committed_hospital_beds(world.buildings)==5); // No double credit.
     DevelopmentAction build; build.id=2; build.type=BuildStandalone;
     build.buildingType=IntBuildingType::HEAL_BUILDING;
     build.buildingId=11; build.state=CreateIssued;
     a.development_planner.actionMap[2]=build;
-    assert(a.committed_hospital_beds(world.buildings)==7);
+    REQUIRE(a.committed_hospital_beds(world.buildings)==7);
     hospital.id=11; hospital.site=true; world.buildings.push_back(hospital);
-    assert(a.committed_hospital_beds(world.buildings)==7);
+    REQUIRE(a.committed_hospital_beds(world.buildings)==7);
     a.development_planner.actionMap[2].state=Completed;
-    assert(a.committed_hospital_beds(world.buildings)==7);
+    REQUIRE(a.committed_hospital_beds(world.buildings)==7);
     a.snapshot.warriors=0;
-    assert(unmet()==0); // No demolition when the army shrinks.
+    REQUIRE(unmet()==0); // No demolition when the army shrinks.
     // Existing hospitals upgrade only while the same capacity target is unmet.
     a.development_planner.actionMap.clear();
     f.building(20,20,0,"hospital"); a.context.initialize();
     a.budget.upgrade_level1_hospital_weight=20;
     a.snapshot.warriors=4;
-    assert(a.collect_development_limits(a.context).upgradePriority(IntBuildingType::HEAL_BUILDING,1)==0);
+    REQUIRE(a.collect_development_limits(a.context).upgradePriority(IntBuildingType::HEAL_BUILDING,1)==0);
     a.snapshot.warriors=10;
-    assert(a.collect_development_limits(a.context).upgradePriority(IntBuildingType::HEAL_BUILDING,1)==20);
+    REQUIRE(a.collect_development_limits(a.context).upgradePriority(IntBuildingType::HEAL_BUILDING,1)==20);
     int id=-1;
     for(const auto& entry:a.context.get_building_register().found())
         if(a.context.get_building_register().get_building(entry.first)->type->shortTypeNum==IntBuildingType::HEAL_BUILDING) id=entry.first;
-    assert(id>=0); upgrade.buildingId=id;
+    REQUIRE(id>=0); upgrade.buildingId=id;
     a.development_planner.actionMap[1]=upgrade;
-    assert(a.collect_development_limits(a.context).upgradePriority(IntBuildingType::HEAL_BUILDING,1)==0);
-    assert(a.collect_development_limits(a.context,1).upgradePriority(IntBuildingType::HEAL_BUILDING,1)==20);
+    REQUIRE(a.collect_development_limits(a.context).upgradePriority(IntBuildingType::HEAL_BUILDING,1)==0);
+    REQUIRE(a.collect_development_limits(a.context,1).upgradePriority(IntBuildingType::HEAL_BUILDING,1)==20);
 }
 
 static void proactiveProtection() {
@@ -371,39 +368,39 @@ static void proactiveProtection() {
     for(auto o:c.managementOrders) if(auto p=dynamic_cast<Management::AddArea*>(o.get()))
         if(p->areaType==ForbiddenArea) for(auto xy:p->locations) f.game.map.addForbidden(xy.x,xy.y,f.player.team->teamNumber);
     c.managementOrders.clear();a.manage_land_clearing(c);
-    int x=0,y=0;assert(c.get_building_position(a.proactive_clearing_flag,x,y));
+    int x=0,y=0;REQUIRE(c.get_building_position(a.proactive_clearing_flag,x,y));
     int released=0;
     for(auto o:c.managementOrders) if(auto p=dynamic_cast<Management::RemoveArea*>(o.get()))
         if(p->areaType==ForbiddenArea) for(auto xy:p->locations) {
             if(f.game.map.isForbidden(xy.x,xy.y,f.player.team->me))++released;
             f.game.map.removeForbidden(xy.x,xy.y,f.player.team->teamNumber);
         }
-    assert(released>0);c.managementOrders.clear();a.timer+=64;a.update_farming(c);
+    REQUIRE(released>0);c.managementOrders.clear();a.timer+=64;a.update_farming(c);
     int openWood=0;
     for(int i=0;i<4096;++i) if(f.game.map.getTile(i%64,i/64).resource.type==WOOD
         &&f.game.map.warpDistSquare(x,y,i%64,i/64)<=16) {
-        assert(!a.farm_protection_mask[i]);++openWood;
+        REQUIRE(!a.farm_protection_mask[i]);++openWood;
     }
-    assert(openWood>0);
+    REQUIRE(openWood>0);
     // Releasing the flag must allow the ordinary farming policy to resume.
     c.cancel_or_destroy_building(a.proactive_clearing_flag);
     c.managementOrders.clear();a.timer+=64;a.update_farming(c);
     int protectedAgain=0;
     for(int i=0;i<4096;++i) if(f.game.map.getTile(i%64,i/64).resource.type==WOOD
         &&f.game.map.warpDistSquare(x,y,i%64,i/64)<=16 && a.farm_protection_mask[i])++protectedAgain;
-    assert(protectedAgain>0);
+    REQUIRE(protectedAgain>0);
 }
 }
 
-int main() {
-    GlobalContainer container;globalContainer=&container;container.runNoX=true;
-    container.buildingsTypes.init();
-    IntBuildingType::init();
-    director_regressions::reconnaissanceWaitsForEightyPercent();
-    director_regressions::fortificationUsesOnlySpareLabour();
-    director_regressions::unifiedHospitalCapacity();
-    director_regressions::cadence();director_regressions::allyPrestige();
-    director_regressions::thirdPartyTower();director_regressions::disconnectedArmy();
-    director_regressions::proactiveProtection();director_regressions::reusedOwnId();
-    std::cout << "director review regressions passed\n";
+TEST_SUITE("Maxima.Director")
+{
+	TEST_CASE("reconnaissance waits for eighty percent") { glob2test::HeadlessGlobals globals; director_regressions::reconnaissanceWaitsForEightyPercent(); }
+	TEST_CASE("fortification uses only spare labour") { glob2test::HeadlessGlobals globals; director_regressions::fortificationUsesOnlySpareLabour(); }
+	TEST_CASE("unified hospital capacity") { glob2test::HeadlessGlobals globals; director_regressions::unifiedHospitalCapacity(); }
+	TEST_CASE("cadence") { glob2test::HeadlessGlobals globals; director_regressions::cadence(); }
+	TEST_CASE("ally prestige") { glob2test::HeadlessGlobals globals; director_regressions::allyPrestige(); }
+	TEST_CASE("third party tower") { glob2test::HeadlessGlobals globals; director_regressions::thirdPartyTower(); }
+	TEST_CASE("disconnected army") { glob2test::HeadlessGlobals globals; director_regressions::disconnectedArmy(); }
+	TEST_CASE("proactive protection") { glob2test::HeadlessGlobals globals; director_regressions::proactiveProtection(); }
+	TEST_CASE("reused own id") { glob2test::HeadlessGlobals globals; director_regressions::reusedOwnId(); }
 }

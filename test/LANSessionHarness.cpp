@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Exercise real LAN clients, lobby widgets, sockets, readiness and departures.
 #include "GlobalContainer.h"
+#include <vector>
 #include "Engine.h"
 #include "LANFindScreen.h"
 #include "LANSessionScreen.h"

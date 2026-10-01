@@ -66,9 +66,10 @@ approaches when crop plots fill, two-sided harvesting frontage, and outpost room
 
 `LastTreelineChecks.h` adds shape/count coverage, explicit refusals, resource
 extremes, deterministic telemetry, long growth containment and fault injection.
-Target it with `MapGeneratorDefaultsTest PROFILE --treeline-only`; it also runs
-as part of the regular defaults harness. `--treeline-profile` compares large-map
-generation with Orchard Commons, with and without telemetry.
+Target it with `python3 test/run_tests.py --filter 'MapGeneratorDefaults/Last Treeline checks'`;
+it also runs as part of the full `MapGeneratorDefaults` contract. The `[benchmark]`
+case `Last Treeline profile` compares large-map generation with Orchard Commons,
+with and without telemetry.
 
 Keep parameter studies, AI rotations, reproducible saves and profiling in the
 ignored `artifacts/last-treeline/` workspace or in pull-request attachments. Static access

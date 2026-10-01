@@ -1,3 +1,0 @@
-Settings::load("preferences.txt") : error, can't open file.
-PASS shared toolkit: floods, sketch, planting, roads, settlements, balanced starts, walls, stencil turns, routes, scatter, lattice noise, wedge frame, shuffle, drawing, branches, stretch, sand patches, algae growth, fields, clumps, walls, tower reach, territories, arena primitives, sealed lines, polygons, tessellations, warp, graph mazes, shortcuts, cell crossings, region labels, gate partitions, region leaks, grained landforms, teardrop homes, near trees and colony leaks
-PASS toolkit-only geometry, raster, resource and home contracts

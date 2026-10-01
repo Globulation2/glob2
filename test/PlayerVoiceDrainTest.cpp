@@ -11,7 +11,8 @@
 //
 // Links only ../src/PlayerVoice.cpp — no SDL / speex / vorbis.
 
-#include <cppunit/extensions/HelperMacros.h>
+#include "Glob2Test.h"
+#include <cmath>
 
 #include "../src/PlayerVoice.h"
 
@@ -37,18 +38,12 @@ namespace
 	}
 }
 
-class PlayerVoiceDrainTest: public CPPUNIT_NS::TestCase
+class PlayerVoiceDrainTest
 {
-CPPUNIT_TEST_SUITE(PlayerVoiceDrainTest);
-		CPPUNIT_TEST(testDrainReportsExhaustionExactlyOnce);
-		CPPUNIT_TEST(testSingleSampleQueueDrainsOnFirstRollover);
-		CPPUNIT_TEST(testNoRolloverKeepsQueueIntact);
-		CPPUNIT_TEST(testContributionUsesPreAdvanceState);
-	CPPUNIT_TEST_SUITE_END();
 
 public:
-	void setUp(void) override {}
-	void tearDown(void) override {}
+	PlayerVoiceDrainTest() {}
+	~PlayerVoiceDrainTest() {}
 
 protected:
 	// Drive a small queue to empty and confirm exhaustion is reported exactly
@@ -70,9 +65,9 @@ protected:
 				sawExhausted = true;
 			}
 		}
-		CPPUNIT_ASSERT(sawExhausted);
-		CPPUNIT_ASSERT_EQUAL(1, exhaustedCount);
-		CPPUNIT_ASSERT(pv.voiceData.empty());
+		CHECK(sawExhausted);
+		CHECK_EQ(1, exhaustedCount);
+		CHECK(pv.voiceData.empty());
 	}
 
 	// A one-sample queue: the very first rollover pops it and must report
@@ -88,8 +83,8 @@ protected:
 			pv.advanceOutputSample(exhausted);
 			sawExhausted = sawExhausted || exhausted;
 		}
-		CPPUNIT_ASSERT(sawExhausted);
-		CPPUNIT_ASSERT(pv.voiceData.empty());
+		CHECK(sawExhausted);
+		CHECK(pv.voiceData.empty());
 	}
 
 	// A single advance that does not cross a rollover must not pop anything and
@@ -100,8 +95,8 @@ protected:
 		const size_t before = pv.voiceData.size();
 		bool exhausted = false;
 		pv.advanceOutputSample(exhausted);
-		CPPUNIT_ASSERT(!exhausted);
-		CPPUNIT_ASSERT_EQUAL(before, pv.voiceData.size());
+		CHECK(!exhausted);
+		CHECK_EQ(before, pv.voiceData.size());
 	}
 
 	// The returned contribution is computed from the entry state (subIndex 0,
@@ -115,8 +110,14 @@ protected:
 		bool exhausted = false;
 		const float c = pv.advanceOutputSample(exhausted);
 		// (1-0)*2 + 0*6 == 2.
-		CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, static_cast<double>(c), 1e-6);
-		CPPUNIT_ASSERT(!exhausted);
+		CHECK(std::fabs((2.0) - (static_cast<double>(c))) <= (1e-6));
+		CHECK(!exhausted);
 	}
 };
-CPPUNIT_TEST_SUITE_REGISTRATION(PlayerVoiceDrainTest);
+TEST_SUITE("PlayerVoiceDrain")
+{
+	TEST_CASE_FIXTURE(PlayerVoiceDrainTest, "DrainReportsExhaustionExactlyOnce") { testDrainReportsExhaustionExactlyOnce(); }
+	TEST_CASE_FIXTURE(PlayerVoiceDrainTest, "SingleSampleQueueDrainsOnFirstRollover") { testSingleSampleQueueDrainsOnFirstRollover(); }
+	TEST_CASE_FIXTURE(PlayerVoiceDrainTest, "NoRolloverKeepsQueueIntact") { testNoRolloverKeepsQueueIntact(); }
+	TEST_CASE_FIXTURE(PlayerVoiceDrainTest, "ContributionUsesPreAdvanceState") { testContributionUsesPreAdvanceState(); }
+}

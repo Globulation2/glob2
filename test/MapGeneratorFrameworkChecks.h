@@ -1,6 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "Game.h"
+#include <vector>
+#include <string>
+#include <limits>
+#include <stdexcept>
+#include <utility>
+#include <tuple>
+#include <cstdlib>
 #include "GenerationService.h"
 #include "GenerationContext.h"
 #include "Utilities.h"

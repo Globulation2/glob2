@@ -78,16 +78,16 @@ to retain room for shoreline detours within the central walking budget.
 
 ## Verification
 
-The [fixture guide](../../test/fixtures/hungry-marches/README.md) gives the control
-studies, rotated AI games and profiling commands. Local evidence is indexed in
-`artifacts/hungry-marches/VERIFICATION.md`, including completed saves and logs.
+The control studies, rotated AI games, profiling commands and their retained
+evidence were reviewed in PR #355; the bundle is available from that PR and from git
+history (`git show af8f97308:test/fixtures/hungry-marches/README.md`), not in the tree.
 
 See `test/HungryMarchesContracts.h` for telemetry repeatability, supported shapes,
 resource extremes, late growth and deliberate corruption checks. Reproduce with:
 
 ```sh
-scons release=1 server=0 -j6 build/src/glob2 map-generator-defaults-test
-build/src/MapGeneratorDefaultsTest hungry-marches-contracts --hungry-marches-only
+scons release=1 server=0 -j6 build/src/glob2 engine-tests
+python3 test/run_tests.py --filter 'MapGeneratorDefaults/Hungry Marches*'
 build/src/glob2 --generate-map hungry-marches --seed 101 --width 256 --height 256 \
   --teams 4 --preview artifacts/hungry-marches.png --json artifacts/hungry-marches.json
 ```

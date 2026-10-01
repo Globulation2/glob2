@@ -129,12 +129,13 @@ The software path continues to draw the original surfaces.
 ### Large-map profiling
 
 A loaded-game benchmark is available with
-`scons release=1 opengl=1 torus-render-benchmark`. Run from the repository root:
+`scons release=1 opengl=1 torus-render-benchmark` (part of the `glob2-tools` group).
+Run from the repository root:
 
 ```sh
 GLOB2_USER_DIR="$PWD/experiment/test-profile" SDL_AUDIODRIVER=dummy \
   GLOB2_BENCH_MAP=maps/Oazis.map GLOB2_BENCH_FRAMES=100 \
-  build/src/torus-render-benchmark -g -F -m -s 1280x800
+  build/<toolchain>/client/release/test/torus-render-benchmark -g -F -m -s 1280x800
 ```
 
 The benchmark compares 2D and the torus with and without clouds on the same
@@ -204,8 +205,6 @@ c++ -std=c++14 -O2 test/MapRenderGeometryTest.cpp -o /tmp/map-render-geometry
 Checks cover flat endpoints, periodic seams, bounded camera distance, shared
 navigation, projection/picking round trips during unfolding, nearest-surface
 occlusion, empty-sky misses, world-pixel wrapping, and cloud sampling invariance.
-`test/AlphaMapRenderBenchmark.cpp` compares legacy and batched GL cloud paths;
-it needs SDL2, OpenGL and a display.
 
 The experiment is implemented with compatibility OpenGL, and has been built on
 macOS, Linux (Ubuntu 22.04 and 24.04), and Windows (MinGW-w64).
@@ -219,20 +218,17 @@ view. No torus camera state is serialized or sent over the network.
 
 ### Rendering regression
 
-Build the optional integration executable with
-`scons release=1 opengl=1 torus-render-test`. From the repository root, run:
+The `TorusRender` suite in `glob2-engine-tests` (`scons release=1 engine-tests`)
+covers this. From the repository root, run:
 
 ```sh
-mkdir -p experiment/test-profile
-GLOB2_USER_DIR="$PWD/experiment/test-profile" SDL_AUDIODRIVER=dummy \
-  build/src/torus-render-test -g -F -m -s 1120x720
-GLOB2_USER_DIR="$PWD/experiment/test-profile" SDL_AUDIODRIVER=dummy SDL_VIDEODRIVER=dummy \
-  build/src/torus-render-test -G -F -m -s 1120x720
+python3 test/run_tests.py --filter 'TorusRender/*'
 ```
 
-The first needs a display with compatibility OpenGL; Linux can use Xvfb. The
-second renders a loaded game through software and checks that torus inputs stay
-inactive. The same executable can be built with `opengl=0`, including a run with
+The OpenGL cases need a display with compatibility OpenGL; the runner opens an Xvfb
+screen on Linux. The software case renders a loaded game through software and
+checks that torus inputs stay inactive. The same binary can be built with
+`opengl=0`, including a run with
 `-g` requested to exercise the software fallback. The GPU test covers cloud
 transitions, both navigation axes, picking, return to 2D, and repeated teardown
 and recreation. No desktop input is generated.

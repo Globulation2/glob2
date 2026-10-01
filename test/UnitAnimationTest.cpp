@@ -1,13 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include <cppunit/extensions/HelperMacros.h>
+#include "Glob2Test.h"
 #include "../src/render/UnitAnimation.h"
 
-class UnitAnimationTest : public CPPUNIT_NS::TestCase
+class UnitAnimationTest
 {
-	CPPUNIT_TEST_SUITE(UnitAnimationTest);
-	CPPUNIT_TEST(testDirectionsAndProgress);
-	CPPUNIT_TEST(testTurningKeepsItsCadence);
-	CPPUNIT_TEST_SUITE_END();
+public:
 
 	void testDirectionsAndProgress()
 	{
@@ -19,15 +16,15 @@ class UnitAnimationTest : public CPPUNIT_NS::TestCase
 				for (int delta = 0; delta < 256; ++delta)
 				{
 					const int frame = unitAnimationFrame(base, direction, delta);
-					CPPUNIT_ASSERT(frame >= 0 && frame < 1792);
-					CPPUNIT_ASSERT(frame >= base * 4 + direction * 32);
-					CPPUNIT_ASSERT(frame < base * 4 + (direction + 1) * 32);
+					CHECK((frame >= 0 && frame < 1792));
+					CHECK(frame >= base * 4 + direction * 32);
+					CHECK(frame < base * 4 + (direction + 1) * 32);
 					if (delta % 32 == 0)
-						CPPUNIT_ASSERT_EQUAL((base + direction * 8 + delta / 32) * 4, frame);
+						CHECK_EQ((base + direction * 8 + delta / 32) * 4, frame);
 					if (frame != previous) ++changes;
 					previous = frame;
 				}
-				CPPUNIT_ASSERT_EQUAL(32, changes);
+				CHECK_EQ(32, changes);
 			}
 	}
 
@@ -37,10 +34,14 @@ class UnitAnimationTest : public CPPUNIT_NS::TestCase
 			for (int delta = 0; delta < 256; ++delta)
 			{
 				const int frame = unitAnimationFrame(base, 8, delta);
-				CPPUNIT_ASSERT_EQUAL((base + 8 * (delta / 32)) * 4, frame);
-				CPPUNIT_ASSERT(frame >= 0 && frame < 1792);
+				CHECK_EQ((base + 8 * (delta / 32)) * 4, frame);
+				CHECK((frame >= 0 && frame < 1792));
 			}
 	}
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(UnitAnimationTest);
+TEST_SUITE("UnitAnimation")
+{
+	TEST_CASE_FIXTURE(UnitAnimationTest, "DirectionsAndProgress") { testDirectionsAndProgress(); }
+	TEST_CASE_FIXTURE(UnitAnimationTest, "TurningKeepsItsCadence") { testTurningKeepsItsCadence(); }
+}

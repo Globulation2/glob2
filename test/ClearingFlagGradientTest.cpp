@@ -1,10 +1,4 @@
-#ifdef NDEBUG
-#undef NDEBUG
-#endif
-#define SDL_MAIN_HANDLED
-#ifdef main
-#undef main
-#endif
+#include "EngineFixtures.h"
 #include "../src/GlobalContainer.h"
 #include "../src/gui/GameGUI.h"
 #include "../src/Game.h"
@@ -14,11 +8,10 @@
 #include "../src/building/Building.h"
 #include "../src/game/entities/BuildingType.h"
 #include "../src/building/IntBuildingType.h"
-#include <cassert>
 #include <algorithm>
-#include <iostream>
 
-GlobalContainer* globalContainer = nullptr;
+namespace
+{
 namespace {
 struct Fixture {
     GameGUI gui;
@@ -33,7 +26,7 @@ struct Fixture {
     }
     Building* building(int x,int y,int team,const char* type="inn") {
         auto*b=game.addBuilding(x,y,globalContainer->buildingsTypes.getTypeNum(type,0,false),team);
-        assert(b);return b;
+        REQUIRE(b);return b;
     }
 };
 }
@@ -48,7 +41,7 @@ void fruitIsNeverAClearingTarget() {
     auto* bytes=reinterpret_cast<unsigned char*>(flag);
     const auto begin=reinterpret_cast<unsigned char*>(flag->clearingResources)-bytes+BASIC_COUNT;
     const auto end=reinterpret_cast<unsigned char*>(&flag->minLevelToFlag)-bytes;
-    assert(end>=begin);
+    REQUIRE(end>=begin);
     for(int swim=0;swim<SWIM_CLASS_COUNT;++swim) {
         flag->globalGradient[swim]=new Uint16[64*64];
         for(unsigned char padding:{0,1}) {
@@ -60,21 +53,20 @@ void fruitIsNeverAClearingTarget() {
                     if(resource<BASIC_COUNT)flag->clearingResources[resource]=enabled;
                     f.game.map.updateGlobalGradient(flag,swim);
                     const bool expected=resource<BASIC_COUNT && enabled;
-                    assert((flag->globalGradient[swim][21+20*64]==GRADIENT_AT_GOAL)==expected);
+                    REQUIRE((flag->globalGradient[swim][21+20*64]==GRADIENT_AT_GOAL)==expected);
                 }
             }
         }
     }
 }
 }
-int main(int argc, char** argv) {
-    SDL_SetMainReady();
-    assert(argc == 2);
-    assert(std::string(argv[1]).find("glob2-save-test-") == 0);
-    GlobalContainer container(argv[1]);globalContainer=&container;container.runNoX=true;
-    container.settings.rememberUnit=false;
-    container.buildingsTypes.init();IntBuildingType::init();
-    fruitIsNeverAClearingTarget();
-    std::cout<<"ClearingFlagGradientTest: basic switches, all fruit, empty tiles, padding independence and swimming variants PASS\n";
-    return 0;
+}
+
+TEST_SUITE("ClearingFlagGradient")
+{
+	TEST_CASE("basic switches; all fruit; empty tiles; padding independence and swimming variants")
+	{
+		glob2test::HeadlessGlobals globals;
+	    fruitIsNeverAClearingTarget();
+	}
 }

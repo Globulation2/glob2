@@ -1,15 +1,20 @@
 # Maxima tests
 
-Maxima's policy, configuration and engine integration tests live here. Build the
-game from the repository root, then run the suite against its engine objects:
+Maxima's policy, configuration and engine integration tests live here. The C++
+suites are doctest cases in the shared test binaries (`Maxima.*` suites; the
+standalone policy checks in `glob2-unit-tests`, the engine integrations in
+`glob2-engine-tests`); the Python tests are plain `unittest` files:
 
 ```sh
-scons --build=build release=1 server=0 -j4 build/src/glob2
-python3 test/maxima/run_maxima_implementation_regressions.py --build-dir build
+scons release=1 server=0 tests maxima-strategy-dump
+python3 test/run_tests.py --filter 'Maxima.*'
+MAXIMA_STRATEGY_DUMP=build/darwin/client/release/test/MaximaStrategyDump \
+  GLOB2_BUILD_DIR=build/darwin/client/release python3 test/maxima/MaximaStrategyConfigTest.py
+python3 -m unittest discover -s test/maxima -p '*Test.py'
 ```
 
-Use repeatable `--test NAME` arguments to select suites. The runner builds
-temporary test binaries and requires no external services.
+`--filter 'Maxima.Combat/*'` and friends select one suite. No external services
+are required.
 
 | Coverage | Suites |
 | --- | --- |
@@ -23,21 +28,21 @@ temporary test binaries and requires no external services.
 | Rally arrival, recruitment and attack waves | `MaximaTacticsStandaloneTest`, `MaximaCombatIntegrationTest` |
 | Runtime orders, building lifetimes and continuation | `MaximaImplementationIntegrationTest`, `MaximaLifecycleTest`, `MaximaDiagnosticsTest` |
 
-The top-level build also exposes dedicated harnesses:
+Three of these suites are doctest cases in the shared test binaries:
 
 ```sh
-scons release=1 server=0 maxima-food-ledger-test maxima-relocation-test maxima-continuation-test
-build/src/MaximaFoodLedgerStandaloneTest
-build/src/MaximaRelocationIntegrationTest
-build/src/MaximaContinuationTest
+scons release=1 server=0 tests
+python3 test/run_tests.py --filter 'Maxima.FoodLedger/*' --filter 'Maxima.Continuation/*'   # glob2-unit-tests
+python3 test/run_tests.py --filter 'Maxima.Relocation/*'                                    # glob2-engine-tests
 ```
 
-The food-ledger harness checks capped-query ordering, wrapped reach and scratch
-buffer reuse, and accepts `--benchmark` for CPU timings and deterministic
-result digests at several map sizes. Timing is informational. The relocation
-harness checks pending deletions, capacity protection, failed replacements and
-saved handovers against real buildings. The continuation harness checks binary
-and text archives, signed limits, nested records and buffered writes.
+The food-ledger suite checks capped-query ordering, wrapped reach and scratch
+buffer reuse; its `timing benchmark [benchmark]` case (run with `--tag benchmark`)
+prints CPU timings and deterministic result digests at several map sizes. Timing
+is informational. The relocation suite checks pending deletions, capacity
+protection, failed replacements and saved handovers against real buildings. The
+continuation suite checks binary and text archives, signed limits, nested records
+and buffered writes.
 
 See [Maxima](../../docs/ai/maxima/README.md) for current strategy behaviour and
 [engine tests](../README.md) for shared save, replay and simulation harnesses.

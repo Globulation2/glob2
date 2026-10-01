@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Exercise real terrain regeneration and resource clearing without a window.
+#include "EngineFixtures.h"
 #include "Building.h"
 #include "Game.h"
 #include "GameGUI.h"
@@ -9,18 +10,14 @@
 #include "Race.h"
 #include "Unit.h"
 
-#include <cassert>
 #include <cstdio>
 #include <vector>
 
-GlobalContainer* globalContainer = nullptr;
-
-int main()
+TEST_SUITE("TerrainResources")
 {
-	GlobalContainer globals;
-	globalContainer = &globals;
-	globals.runNoX = true;
-	globals.settings.rememberUnit = false;
+TEST_CASE("terrain strokes clear incompatible resources; buildings and units")
+{
+	glob2test::HeadlessGlobals globals;
 	const int positions[][2] = {{8, 8}, {0, 0}, {15, 0}, {0, 15}, {15, 15}};
 	int strokes = 0;
 	for (int type = 0; type < MAX_RESOURCES; ++type)
@@ -28,7 +25,7 @@ int main()
 			for (const auto& position : positions)
 			{
 				Map map;
-				map.setSize(4, 4, static_cast<TerrainType>(globals.resourcesTypes.get(type)->terrain));
+				map.setSize(4, 4, static_cast<TerrainType>(globals->resourcesTypes.get(type)->terrain));
 				for (int y = 0; y < 16; ++y)
 					for (int x = 0; x < 16; ++x)
 					{
@@ -64,25 +61,22 @@ int main()
 								(x == (px & 15) || x == ((px - 1) & 15)) &&
 								(y == (py & 15) || y == ((py - 1) & 15));
 							if (bareGrass || (expected.type != NO_RES_TYPE &&
-								map.getTerrainType(x, y) != globals.resourcesTypes.get(expected.type)->terrain))
+								map.getTerrainType(x, y) != globals->resourcesTypes.get(expected.type)->terrain))
 								expected.clear();
-							assert(map.getResource(x, y).getUint32() == expected.getUint32());
+							REQUIRE(map.getResource(x, y).getUint32() == expected.getUint32());
 						}
 					++strokes;
 				}
 			}
-	std::printf("Terrain resource regressions passed: %d strokes, all 8 resources, 3 terrains, interior and four wrapped corners\n", strokes);
+	MESSAGE("terrain resources: " << strokes << " strokes over all 8 resources, 3 terrains, interior and four wrapped corners");
 
 	// Buildings and units. After a stroke a building stands iff its whole footprint is
 	// still grass, a walker iff its tile is not water, an explorer always; the grass
 	// brush also clears the four tiles the cell touches. The oracle knows nothing about
 	// the stroke position, so it holds on every side of an entity alike.
-	globals.buildingsTypes.init();
-	IntBuildingType::init();
-	Race::loadDefault();
-	const int swarm = globals.buildingsTypes.getTypeNum("swarm", 0, false);
-	const int swarmW = globals.buildingsTypes.get(swarm)->width;
-	const int swarmH = globals.buildingsTypes.get(swarm)->height;
+	const int swarm = globals->buildingsTypes.getTypeNum("swarm", 0, false);
+	const int swarmW = globals->buildingsTypes.get(swarm)->width;
+	const int swarmH = globals->buildingsTypes.get(swarm)->height;
 	constexpr int swarmX = 8, swarmY = 8;
 
 	struct World
@@ -103,7 +97,7 @@ int main()
 			Building* building = game.addBuilding(swarmX, swarmY, swarm, 0);
 			Unit* worker = game.addUnit(workerX, workerY, 0, WORKER, 0, 0, 0, 0);
 			Unit* explorer = game.addUnit(explorerX, explorerY, 0, EXPLORER, 0, 0, 0, 0);
-			assert(building && worker && explorer && !worker->performance[SWIM]);
+			REQUIRE((building && worker && explorer && !worker->performance[SWIM]));
 			swarmGid = building->gid;
 			workerGid = worker->gid;
 			explorerGid = explorer->gid;
@@ -137,12 +131,12 @@ int main()
 						swarmStands = false;
 			const bool workerStands = !game.map.isWater(workerX, workerY) && !touched(workerX, workerY);
 			const bool explorerStands = !touched(explorerX, explorerY);
-			assert(alive(swarmGid, true) == swarmStands);
-			assert((game.map.getBuilding(swarmX, swarmY) != NOGBID) == swarmStands);
-			assert(alive(workerGid, false) == workerStands);
-			assert((game.map.getGroundUnit(workerX, workerY) != NOGUID) == workerStands);
-			assert(alive(explorerGid, false) == explorerStands);
-			assert((game.map.getAirUnit(explorerX, explorerY) != NOGUID) == explorerStands);
+			REQUIRE(alive(swarmGid, true) == swarmStands);
+			REQUIRE((game.map.getBuilding(swarmX, swarmY) != NOGBID) == swarmStands);
+			REQUIRE(alive(workerGid, false) == workerStands);
+			REQUIRE((game.map.getGroundUnit(workerX, workerY) != NOGUID) == workerStands);
+			REQUIRE(alive(explorerGid, false) == explorerStands);
+			REQUIRE((game.map.getAirUnit(explorerX, explorerY) != NOGUID) == explorerStands);
 		}
 	};
 
@@ -169,7 +163,7 @@ int main()
 			World west(swarm, swarmW, swarmH), east(swarm, swarmW, swarmH);
 			west.stroke(c, swarmY, paint);
 			east.stroke(2 * swarmX + swarmW - c, swarmY, paint);
-			assert(west.alive(west.swarmGid, true) == east.alive(east.swarmGid, true));
+			REQUIRE(west.alive(west.swarmGid, true) == east.alive(east.swarmGid, true));
 		}
 
 	// Co-located air units survive flooding, while only swimming ground units remain.
@@ -187,11 +181,11 @@ int main()
             for (int y = world.workerY; y <= world.workerY + 1; ++y)
                 for (int x = world.workerX; x <= world.workerX + 1; ++x)
                     world.stroke(x & 15, y & 15, WATER);
-            assert(world.game.map.isWater(world.workerX, world.workerY));
-            assert(world.alive(world.workerGid, false) == swimming);
-            assert(world.game.map.getGroundUnit(world.workerX, world.workerY) == (swimming ? world.workerGid : NOGUID));
-            assert(world.alive(world.explorerGid, false));
-            assert(world.game.map.getAirUnit(world.workerX, world.workerY) == world.explorerGid);
+            REQUIRE(world.game.map.isWater(world.workerX, world.workerY));
+            REQUIRE(world.alive(world.workerGid, false) == swimming);
+            REQUIRE(world.game.map.getGroundUnit(world.workerX, world.workerY) == (swimming ? world.workerGid : NOGUID));
+            REQUIRE(world.alive(world.explorerGid, false));
+            REQUIRE(world.game.map.getAirUnit(world.workerX, world.workerY) == world.explorerGid);
             ++entityStrokes;
         }
 
@@ -205,12 +199,12 @@ int main()
         explorer->posY = world.workerY;
         world.game.map.setAirUnit(explorer->posX, explorer->posY, explorer->gid);
         world.game.removeUnitAndBuildingAndFlags(world.workerX, world.workerY, 1, flag);
-        assert(world.alive(world.workerGid, false) == (flag == Game::DEL_AIR_UNIT));
-        assert(world.alive(world.explorerGid, false) == (flag == Game::DEL_GROUND_UNIT));
-        assert(world.game.map.getGroundUnit(world.workerX, world.workerY) == (flag == Game::DEL_AIR_UNIT ? world.workerGid : NOGUID));
-        assert(world.game.map.getAirUnit(world.workerX, world.workerY) == (flag == Game::DEL_GROUND_UNIT ? world.explorerGid : NOGUID));
-        assert(world.alive(world.swarmGid, true));
+        REQUIRE(world.alive(world.workerGid, false) == (flag == Game::DEL_AIR_UNIT));
+        REQUIRE(world.alive(world.explorerGid, false) == (flag == Game::DEL_GROUND_UNIT));
+        REQUIRE(world.game.map.getGroundUnit(world.workerX, world.workerY) == (flag == Game::DEL_AIR_UNIT ? world.workerGid : NOGUID));
+        REQUIRE(world.game.map.getAirUnit(world.workerX, world.workerY) == (flag == Game::DEL_GROUND_UNIT ? world.explorerGid : NOGUID));
+        REQUIRE(world.alive(world.swarmGid, true));
     }
-    std::printf("Terrain entity regressions passed: %d strokes, 3 terrains, interior and four wrapped corners, swimmers and separate occupancy layers\n", entityStrokes);
-    return 0;
+    MESSAGE("terrain entities: " << entityStrokes << " strokes, 3 terrains, interior and four wrapped corners, swimmers and separate occupancy layers");
+}
 }

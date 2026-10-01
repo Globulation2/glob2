@@ -504,6 +504,7 @@ def main():
         "scripts",
         "scons",
         "src",
+        "test",
         "tools",
         "windows"
     ]

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Compare the real global gradient implementation with an independent frontier solver.
+#include "Glob2Test.h"
 #include "GlobalContainer.h"
 #include "Map.h"
 
@@ -10,8 +11,8 @@
 #include <utility>
 #include <vector>
 
-GlobalContainer* globalContainer = nullptr;
-
+namespace
+{
 namespace
 {
 // Only grid geometry is needed for propagation; avoid allocating game state.
@@ -75,22 +76,13 @@ std::vector<Uint8> referenceGradient(std::vector<Uint8> values, int width, int h
 void check(int widthShift, int heightShift, const std::vector<Uint8>& input)
 {
 	GradientMap map(widthShift, heightShift);
-	if (input.size() != static_cast<size_t>(map.getW()) * map.getH())
-		std::abort();
+	REQUIRE(input.size() == static_cast<size_t>(map.getW()) * map.getH());
 	const auto expected = referenceGradient(input, map.getW(), map.getH());
 	auto actual = input;
 	map.updateGlobalGradient(actual.data());
-	if (actual != expected)
-	{
-		std::fprintf(stderr, "Global gradient differs on %dx%d grid\n", map.getW(), map.getH());
-		std::abort();
-	}
+	REQUIRE_MESSAGE(actual == expected, "global gradient differs on " << map.getW() << "x" << map.getH() << " grid");
 	map.updateGlobalGradient(actual.data());
-	if (actual != expected)
-	{
-		std::fprintf(stderr, "Global gradient is not idempotent\n");
-		std::abort();
-	}
+	REQUIRE_MESSAGE(actual == expected, "global gradient is not idempotent");
 }
 
 void checkBoundariesAndObstacles()
@@ -165,11 +157,20 @@ void checkRandomFields()
 	}
 }
 }
+}
 
-int main()
+TEST_SUITE("GlobalGradient")
 {
-	checkBoundariesAndObstacles();
-	checkInertFields();
-	checkRandomFields();
-	std::puts("GlobalGradientHarness: boundaries, obstacles, cutoff, inert fields, mixed seeds and 3000 random fields PASS");
+	TEST_CASE("check boundaries and obstacles")
+	{
+		checkBoundariesAndObstacles();
+	}
+	TEST_CASE("check inert fields")
+	{
+		checkInertFields();
+	}
+	TEST_CASE("check random fields")
+	{
+		checkRandomFields();
+	}
 }

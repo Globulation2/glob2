@@ -9,23 +9,19 @@
  * pin the exact tile mapping so a port (or future refactor) can be checked
  * against the original C++ behaviour without running a full game.
  *
- * Links only BuildingUtils.cpp (already in TestsRunner's sources) — no Game,
+ * Links only BuildingUtils.cpp (already among the unit binary's sources) — no Game,
  * Team, Map, or globalContainer needed, because turretScanTile is static and
  * touches no instance state.
  *
  ********************************************************/
 
-#include <cppunit/extensions/HelperMacros.h>
+#include "Glob2Test.h"
 
 #include "BuildingUtils.h"
 
-class TurretScanTileTest: public CPPUNIT_NS::TestCase
+class TurretScanTileTest
 {
-CPPUNIT_TEST_SUITE(TurretScanTileTest);
-		CPPUNIT_TEST(testAllOctantsAtRing);
-		CPPUNIT_TEST(testRingZeroOffsetZero);
-		CPPUNIT_TEST(testRingCoversFullSquare);
-	CPPUNIT_TEST_SUITE_END();
+public:
 
 private:
 	// Convenience wrapper returning the (x,y) for one octant call.
@@ -40,8 +36,8 @@ private:
 	{
 		int x = -999, y = -999;
 		scan(posX, posY, ring, offset, octant, x, y);
-		CPPUNIT_ASSERT_EQUAL(expectedX, x);
-		CPPUNIT_ASSERT_EQUAL(expectedY, y);
+		CHECK_EQ(expectedX, x);
+		CHECK_EQ(expectedY, y);
 	}
 
 protected:
@@ -90,14 +86,19 @@ protected:
 			{
 				int x = 0, y = 0;
 				scan(posX, posY, ring, j, k, x, y);
-				CPPUNIT_ASSERT(x >= minX && x <= maxX);
-				CPPUNIT_ASSERT(y >= minY && y <= maxY);
+				CHECK((x >= minX && x <= maxX));
+				CHECK((y >= minY && y <= maxY));
 				// must touch at least one of the four ring edges
 				const bool onEdge = (x == minX) || (x == maxX) ||
 				                    (y == minY) || (y == maxY);
-				CPPUNIT_ASSERT(onEdge);
+				CHECK(onEdge);
 			}
 		}
 	}
 };
-CPPUNIT_TEST_SUITE_REGISTRATION(TurretScanTileTest);
+TEST_SUITE("TurretScanTile")
+{
+	TEST_CASE_FIXTURE(TurretScanTileTest, "AllOctantsAtRing") { testAllOctantsAtRing(); }
+	TEST_CASE_FIXTURE(TurretScanTileTest, "RingZeroOffsetZero") { testRingZeroOffsetZero(); }
+	TEST_CASE_FIXTURE(TurretScanTileTest, "RingCoversFullSquare") { testRingCoversFullSquare(); }
+}

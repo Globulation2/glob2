@@ -8,7 +8,16 @@
 #include <string>
 #include <vector>
 
-CPPUNIT_TEST_SUITE_REGISTRATION( FetchApportionmentTest );
+TEST_SUITE("FetchApportionment")
+{
+	TEST_CASE_FIXTURE(FetchApportionmentTest, "EqualTargetsInterleave") { testEqualTargetsInterleave(); }
+	TEST_CASE_FIXTURE(FetchApportionmentTest, "UnequalTargetsFollowTheRatio") { testUnequalTargetsFollowTheRatio(); }
+	TEST_CASE_FIXTURE(FetchApportionmentTest, "EverySlotIsFilledExactlyToTarget") { testEverySlotIsFilledExactlyToTarget(); }
+	TEST_CASE_FIXTURE(FetchApportionmentTest, "SatisfiedResourcesAreDropped") { testSatisfiedResourcesAreDropped(); }
+	TEST_CASE_FIXTURE(FetchApportionmentTest, "DeliveriesAlreadyLandedCount") { testDeliveriesAlreadyLandedCount(); }
+	TEST_CASE_FIXTURE(FetchApportionmentTest, "TiesKeepTheLowerResourceIndex") { testTiesKeepTheLowerResourceIndex(); }
+	TEST_CASE_FIXTURE(FetchApportionmentTest, "NothingWantedRanksNothing") { testNothingWantedRanksNothing(); }
+}
 
 namespace
 {
@@ -46,15 +55,13 @@ void FetchApportionmentTest::testEqualTargetsInterleave()
 {
 	// A market wanting 4 wood and 4 stone alternates instead of sending everyone
 	// to whichever resource happens to be nearer.
-	CPPUNIT_ASSERT_EQUAL(std::string("wswswsws"),
-		spell(hireSequence({4, 4}, {0, 0}, 8), "ws"));
+	CHECK_EQ(std::string("wswswsws"), spell(hireSequence({4, 4}, {0, 0}, 8), "ws"));
 }
 
 void FetchApportionmentTest::testUnequalTargetsFollowTheRatio()
 {
 	// 4 wood and 1 algue: two wood, then the algue, then the rest of the wood.
-	CPPUNIT_ASSERT_EQUAL(std::string("wwaww"),
-		spell(hireSequence({4, 1}, {0, 0}, 5), "wa"));
+	CHECK_EQ(std::string("wwaww"), spell(hireSequence({4, 1}, {0, 0}, 5), "wa"));
 }
 
 void FetchApportionmentTest::testEverySlotIsFilledExactlyToTarget()
@@ -63,12 +70,12 @@ void FetchApportionmentTest::testEverySlotIsFilledExactlyToTarget()
 	// each resource ends up with exactly its own target. This is the property
 	// that caps the oversubscription: 8 wanted deliveries, never a ninth hire.
 	std::vector<int> sequence = hireSequence({4, 4}, {0, 0}, 100);
-	CPPUNIT_ASSERT_EQUAL((size_t)8, sequence.size());
+	CHECK_EQ((size_t)8, sequence.size());
 	int perResource[2] = {0, 0};
 	for(int r : sequence)
 		perResource[r]++;
-	CPPUNIT_ASSERT_EQUAL(4, perResource[0]);
-	CPPUNIT_ASSERT_EQUAL(4, perResource[1]);
+	CHECK_EQ(4, perResource[0]);
+	CHECK_EQ(4, perResource[1]);
 }
 
 void FetchApportionmentTest::testSatisfiedResourcesAreDropped()
@@ -78,16 +85,15 @@ void FetchApportionmentTest::testSatisfiedResourcesAreDropped()
 	int targets[2] = {10, 2};
 	int served[2] = {10, 0};
 	int order[2];
-	CPPUNIT_ASSERT_EQUAL(1, FetchApportionment::rank(targets, served, 2, order));
-	CPPUNIT_ASSERT_EQUAL(1, order[0]);
+	CHECK_EQ(1, FetchApportionment::rank(targets, served, 2, order));
+	CHECK_EQ(1, order[0]);
 }
 
 void FetchApportionmentTest::testDeliveriesAlreadyLandedCount()
 {
 	// served mixes deliveries that arrived with units still walking; a building
 	// holding 3 of its 4 wood and none of its 4 stone staffs stone next.
-	CPPUNIT_ASSERT_EQUAL(std::string("sssws"),
-		spell(hireSequence({4, 4}, {3, 0}, 5), "ws"));
+	CHECK_EQ(std::string("sssws"), spell(hireSequence({4, 4}, {3, 0}, 5), "ws"));
 }
 
 void FetchApportionmentTest::testTiesKeepTheLowerResourceIndex()
@@ -97,10 +103,10 @@ void FetchApportionmentTest::testTiesKeepTheLowerResourceIndex()
 	int targets[3] = {2, 2, 2};
 	int served[3] = {0, 0, 0};
 	int order[3];
-	CPPUNIT_ASSERT_EQUAL(3, FetchApportionment::rank(targets, served, 3, order));
-	CPPUNIT_ASSERT_EQUAL(0, order[0]);
-	CPPUNIT_ASSERT_EQUAL(1, order[1]);
-	CPPUNIT_ASSERT_EQUAL(2, order[2]);
+	CHECK_EQ(3, FetchApportionment::rank(targets, served, 3, order));
+	CHECK_EQ(0, order[0]);
+	CHECK_EQ(1, order[1]);
+	CHECK_EQ(2, order[2]);
 }
 
 void FetchApportionmentTest::testNothingWantedRanksNothing()
@@ -108,5 +114,5 @@ void FetchApportionmentTest::testNothingWantedRanksNothing()
 	int targets[3] = {0, 2, 5};
 	int served[3] = {0, 2, 5};
 	int order[3];
-	CPPUNIT_ASSERT_EQUAL(0, FetchApportionment::rank(targets, served, 3, order));
+	CHECK_EQ(0, FetchApportionment::rank(targets, served, 3, order));
 }

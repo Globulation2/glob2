@@ -14,20 +14,13 @@
  *
  ********************************************************/
 
-#include <cppunit/extensions/HelperMacros.h>
+#include "Glob2Test.h"
 
 #include "ParticleCrossfade.h"
 
-class ParticleCrossfadeTest: public CPPUNIT_NS::TestCase
+class ParticleCrossfadeTest
 {
-CPPUNIT_TEST_SUITE(ParticleCrossfadeTest);
-		CPPUNIT_TEST(testAlphaSplitIsConstantOpacity);
-		CPPUNIT_TEST(testFrameBIsAlwaysNextFrame);
-		CPPUNIT_TEST(testStartsAtStartImg);
-		CPPUNIT_TEST(testFrameBSuppressedAtLastFrame);
-		CPPUNIT_TEST(testFrameProgressionIsMonotonic);
-		CPPUNIT_TEST(testSmokeParticleRange);
-	CPPUNIT_TEST_SUITE_END();
+public:
 
 protected:
 	// The two frames crossfade at constant total opacity.
@@ -36,7 +29,7 @@ protected:
 		for (int age = 0; age <= 50; age++)
 		{
 			ParticleCrossfade c = computeParticleCrossfade(0, 8, age, 50);
-			CPPUNIT_ASSERT_EQUAL(PARTICLE_ALPHA_OPAQUE, (int)c.alphaA + (int)c.alphaB);
+			CHECK_EQ(PARTICLE_ALPHA_OPAQUE, (int)c.alphaA + (int)c.alphaB);
 		}
 	}
 
@@ -45,7 +38,7 @@ protected:
 		for (int age = 0; age <= 30; age++)
 		{
 			ParticleCrossfade c = computeParticleCrossfade(2, 7, age, 30);
-			CPPUNIT_ASSERT_EQUAL(c.frameA + 1, c.frameB);
+			CHECK_EQ(c.frameA + 1, c.frameB);
 		}
 	}
 
@@ -53,9 +46,9 @@ protected:
 	void testStartsAtStartImg(void)
 	{
 		ParticleCrossfade c = computeParticleCrossfade(3, 9, 0, 40);
-		CPPUNIT_ASSERT_EQUAL(3, c.frameA);
-		CPPUNIT_ASSERT_EQUAL((int)PARTICLE_ALPHA_OPAQUE, (int)c.alphaA);
-		CPPUNIT_ASSERT_EQUAL(0, (int)c.alphaB);
+		CHECK_EQ(3, c.frameA);
+		CHECK_EQ((int)PARTICLE_ALPHA_OPAQUE, (int)c.alphaA);
+		CHECK_EQ(0, (int)c.alphaB);
 	}
 
 	// endImg is one past the last drawable frame: once frameA reaches
@@ -66,12 +59,12 @@ protected:
 		for (int age = 0; age <= 20; age++)
 		{
 			ParticleCrossfade c = computeParticleCrossfade(0, 4, age, 20);
-			CPPUNIT_ASSERT(c.frameA < 4);
-			CPPUNIT_ASSERT_EQUAL(c.frameB < 4, c.hasFrameB);
+			CHECK(c.frameA < 4);
+			CHECK_EQ(c.frameB < 4, c.hasFrameB);
 			if (!c.hasFrameB)
 				sawSuppressed = true;
 		}
-		CPPUNIT_ASSERT(sawSuppressed);
+		CHECK(sawSuppressed);
 	}
 
 	void testFrameProgressionIsMonotonic(void)
@@ -80,11 +73,11 @@ protected:
 		for (int age = 0; age <= 60; age++)
 		{
 			ParticleCrossfade c = computeParticleCrossfade(0, 6, age, 60);
-			CPPUNIT_ASSERT(c.frameA >= prev);
+			CHECK(c.frameA >= prev);
 			prev = c.frameA;
 		}
 		// the interpolation must actually advance past the first frame
-		CPPUNIT_ASSERT(prev > 0);
+		CHECK(prev > 0);
 	}
 
 	// The in-game emitters (smoke, turret flash) use startImg=0, endImg=2:
@@ -94,11 +87,19 @@ protected:
 		for (int age = 0; age <= 50; age++)
 		{
 			ParticleCrossfade c = computeParticleCrossfade(0, 2, age, 50);
-			CPPUNIT_ASSERT(c.frameA == 0 || c.frameA == 1);
+			CHECK((c.frameA == 0 || c.frameA == 1));
 			if (c.hasFrameB)
-				CPPUNIT_ASSERT_EQUAL(1, c.frameB);
+				CHECK_EQ(1, c.frameB);
 		}
 	}
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(ParticleCrossfadeTest);
+TEST_SUITE("ParticleCrossfade")
+{
+	TEST_CASE_FIXTURE(ParticleCrossfadeTest, "AlphaSplitIsConstantOpacity") { testAlphaSplitIsConstantOpacity(); }
+	TEST_CASE_FIXTURE(ParticleCrossfadeTest, "FrameBIsAlwaysNextFrame") { testFrameBIsAlwaysNextFrame(); }
+	TEST_CASE_FIXTURE(ParticleCrossfadeTest, "StartsAtStartImg") { testStartsAtStartImg(); }
+	TEST_CASE_FIXTURE(ParticleCrossfadeTest, "FrameBSuppressedAtLastFrame") { testFrameBSuppressedAtLastFrame(); }
+	TEST_CASE_FIXTURE(ParticleCrossfadeTest, "FrameProgressionIsMonotonic") { testFrameProgressionIsMonotonic(); }
+	TEST_CASE_FIXTURE(ParticleCrossfadeTest, "SmokeParticleRange") { testSmokeParticleRange(); }
+}

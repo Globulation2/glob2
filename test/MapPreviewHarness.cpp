@@ -1,11 +1,16 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "MapThumbnail.h"
+#include <vector>
+#include <string>
+#include <utility>
+#include <cmath>
 #include "MapPreviewGeometry.h"
 #include "GUIMapPreview.h"
 #include "CustomGameScreen.h"
 #include <FileManager.h>
 #include <memory>
 #include "LobbyMapPreview.h"
+#include "EngineFixtures.h"
 #include "GlobalContainer.h"
 #include "Map.h"
 #include "YOGClient.h"
@@ -15,7 +20,6 @@
 #include "Toolkit.h"
 #include "StringTable.h"
 #include <array>
-#include <cassert>
 #include <chrono>
 #include <cstring>
 #include <cstdlib>
@@ -25,7 +29,6 @@
 #include <random>
 #include <zlib.h>
 using namespace GAGCore;
-GlobalContainer *globalContainer = nullptr;
 
 namespace
 {
@@ -58,7 +61,7 @@ std::vector<Uint8> packed(const std::vector<Uint8> &bytes)
 {
 	uLongf n = compressBound(bytes.size());
 	std::vector<Uint8> out(n);
-	assert(compress2(out.data(), &n, bytes.data(), bytes.size(), 6) == Z_OK);
+	REQUIRE(compress2(out.data(), &n, bytes.data(), bytes.size(), 6) == Z_OK);
 	out.resize(n);
 	return out;
 }
@@ -78,29 +81,31 @@ MapThumbnail terrain(int wDec, int hDec, bool noise = false)
 	return image;
 }
 } // namespace
+
+// Named in friend declarations, so it stays at global scope.
 struct MapPreviewHarness
 {
 	static void codec()
 	{
 		auto image = terrain(9, 8);
-		assert(image.pixels()->width == 512 && image.pixels()->height == 256);
+		REQUIRE((image.pixels()->width == 512 && image.pixels()->height == 256));
 		auto bytes = encode(image);
 		auto restored = decode(bytes);
-		assert(restored.isLoaded() && restored.getMapWidth() == 512 &&
-			   restored.getMapHeight() == 256);
-		assert(restored.pixels()->rgb == image.pixels()->rgb);
+		REQUIRE((restored.isLoaded() && restored.getMapWidth() == 512 &&
+			   restored.getMapHeight() == 256));
+		REQUIRE(restored.pixels()->rgb == image.pixels()->rgb);
 		// The old decoder's exact uncompress call must still return Z_OK.
 		BinaryInputStream wire(new MemoryStreamBackend(bytes.data(), bytes.size()));
 		wire.seekFromStart(0);
 		wire.readSint16("");
 		wire.readSint16("");
 		unsigned size = wire.readUint32("");
-		assert(size <= MapThumbnail::MaxEncodedBytes && bytes.size() + 3 < 65536);
+		REQUIRE((size <= MapThumbnail::MaxEncodedBytes && bytes.size() + 3 < 65536));
 		std::vector<Uint8> compressed(size), legacy(128 * 128 * 3);
 		wire.read(compressed.data(), size, "");
 		uLongf outputSize = legacy.size();
-		assert(uncompress(legacy.data(), &outputSize, compressed.data(), size) == Z_OK);
-		assert(outputSize == legacy.size());
+		REQUIRE(uncompress(legacy.data(), &outputSize, compressed.data(), size) == Z_OK);
+		REQUIRE(outputSize == legacy.size());
 		// Independent legacy column-major fixture: centered 128x64 map.
 		std::vector<Uint8> old(128 * 128 * 3, 0);
 		for (int x = 0; x < 128; ++x)
@@ -110,34 +115,34 @@ struct MapPreviewHarness
 				old[(x * 128 + y) * 3 + 1] = y - 32;
 			}
 		auto oldImage = decode(envelope(512, 256, packed(old)));
-		assert(oldImage.isLoaded() && oldImage.pixels()->width == 128 &&
-			   oldImage.pixels()->height == 64);
-		assert(oldImage.pixels()->rgb[(63 * 128 + 127) * 3] == 127);
-		assert(oldImage.pixels()->rgb[(63 * 128 + 127) * 3 + 1] == 63);
+		REQUIRE((oldImage.isLoaded() && oldImage.pixels()->width == 128 &&
+			   oldImage.pixels()->height == 64));
+		REQUIRE(oldImage.pixels()->rgb[(63 * 128 + 127) * 3] == 127);
+		REQUIRE(oldImage.pixels()->rgb[(63 * 128 + 127) * 3 + 1] == 63);
 		for (size_t n : {size_t(0), size_t(3), size_t(8), bytes.size() / 2, bytes.size() - 1})
-			assert(!decode(bytes.substr(0, n)).isLoaded());
-		assert(!decode(envelope(512, 256, {1, 2, 3, 4})).isLoaded());
-		assert(!decode(envelope(0, 256, packed(old))).isLoaded());
-		assert(!decode(envelope(-1, 256, packed(old))).isLoaded());
-		assert(!decode(envelope(512, 256, std::vector<Uint8>(60001, 0))).isLoaded());
+			REQUIRE(!decode(bytes.substr(0, n)).isLoaded());
+		REQUIRE(!decode(envelope(512, 256, {1, 2, 3, 4})).isLoaded());
+		REQUIRE(!decode(envelope(0, 256, packed(old))).isLoaded());
+		REQUIRE(!decode(envelope(-1, 256, packed(old))).isLoaded());
+		REQUIRE(!decode(envelope(512, 256, std::vector<Uint8>(60001, 0))).isLoaded());
 		old.resize(20);
-		assert(!decode(envelope(512, 256, packed(old))).isLoaded());
+		REQUIRE(!decode(envelope(512, 256, packed(old))).isLoaded());
 		std::vector<Uint8> bomb(128 * 128 * 3 + 1, 7);
-		assert(!decode(envelope(512, 256, packed(bomb))).isLoaded());
+		REQUIRE(!decode(envelope(512, 256, packed(bomb))).isLoaded());
 		auto corrupt = compressed;
 		corrupt.back() ^= 0xff;
-		assert(!decode(envelope(512, 256, corrupt)).isLoaded());
+		REQUIRE(!decode(envelope(512, 256, corrupt)).isLoaded());
 		for (auto shape : {std::pair<int, int>{9, 9}, {9, 7}, {7, 9}})
 		{
 			auto noisy = terrain(shape.first, shape.second, true);
 			auto wire = encode(noisy);
-			assert(wire.size() + 3 < 65536 && decode(wire).isLoaded());
+			REQUIRE((wire.size() + 3 < 65536 && decode(wire).isLoaded()));
 		}
 		MapThumbnail failed = image;
 		failed.loadFromMap("maps/does-not-exist-preview-regression.map");
-		assert(!failed.isLoaded() && failed.getMapWidth() == 0 && failed.getMapHeight() == 0);
+		REQUIRE((!failed.isLoaded() && failed.getMapWidth() == 0 && failed.getMapHeight() == 0));
 		failed.loadFromMap("");
-		assert(!failed.isLoaded());
+		REQUIRE(!failed.isLoaded());
 		std::cout << "PASS sharp terrain, legacy/new codecs, frame limit, "
 					 "malformed/short/oversized inputs and missing files\n";
 	}
@@ -145,35 +150,35 @@ struct MapPreviewHarness
 	{
 		using G = MapPreviewGeometry;
 		auto wide = G::fit({10, 20, 200, 200}, 512, 256);
-		assert(wide.x == 10 && wide.y == 70 && wide.w == 200 && wide.h == 100);
+		REQUIRE((wide.x == 10 && wide.y == 70 && wide.w == 200 && wide.h == 100));
 		G view;
-		assert(view.x(0, 512, wide) == 10 && view.y(0, 256, wide) == 70);
-		assert(view.x(256, 512, wide) == 110 && view.y(128, 256, wide) == 120);
+		REQUIRE((view.x(0, 512, wide) == 10 && view.y(0, 256, wide) == 70));
+		REQUIRE((view.x(256, 512, wide) == 110 && view.y(128, 256, wide) == 120));
 		// The previous marker formula placed this colony at y=20, in padding.
-		assert(20 + 0 * 200 / 256 != view.y(0, 256, wide));
+		REQUIRE(20 + 0 * 200 / 256 != view.y(0, 256, wide));
 		view.drag(50, 25, wide);
-		assert(view.x(0, 512, wide) == 60 && view.y(0, 256, wide) == 95);
+		REQUIRE((view.x(0, 512, wide) == 60 && view.y(0, 256, wide) == 95));
 		view.drag(200 * 37, 100 * -41, wide);
-		assert(view.x(0, 512, wide) == 60 && view.y(0, 256, wide) == 95);
+		REQUIRE((view.x(0, 512, wide) == 60 && view.y(0, 256, wide) == 95));
 		view.drag(-50, -25, wide);
-		assert(view.x(0, 512, wide) == 10 && view.y(0, 256, wide) == 70);
+		REQUIRE((view.x(0, 512, wide) == 10 && view.y(0, 256, wide) == 70));
 		auto tall = G::fit({0, 0, 200, 200}, 128, 512);
-		assert(tall.x == 75 && tall.y == 0 && tall.w == 50 && tall.h == 200);
+		REQUIRE((tall.x == 75 && tall.y == 0 && tall.w == 50 && tall.h == 200));
 		for (auto dimensions : {std::pair{64, 512}, std::pair{512, 64}})
 			for (auto slot : {G::Rect{15, 20, 38, 309}, G::Rect{15, 20, 11, 89},
 							  G::Rect{15, 20, 309, 38}, G::Rect{15, 20, 89, 11}})
 			{
 				auto fitted = G::fit(slot, dimensions.first, dimensions.second);
 				auto again = G::fit(fitted, dimensions.first, dimensions.second);
-				assert(again.x == fitted.x && again.y == fitted.y && again.w == fitted.w &&
-					   again.h == fitted.h);
+				REQUIRE((again.x == fitted.x && again.y == fitted.y && again.w == fitted.w &&
+					   again.h == fitted.h));
 			}
 		std::cout << "PASS rectangular placement, positive/negative multi-period drags and inverse "
 					 "drags\n";
 	}
 	static void network()
 	{
-		assert(SDLNet_Init() == 0);
+		REQUIRE(SDLNet_Init() == 0);
 		YOGClient client;
 		YOGClientDownloadableMapList list(&client);
 		MapHeader header;
@@ -185,44 +190,44 @@ struct MapPreviewHarness
 		list.receiveMessage(
 			std::make_shared<NetDownloadableMapInfos>(std::vector<YOGDownloadableMapInfo>{info}));
 		using S = YOGClientDownloadableMapList::ThumbnailState;
-		assert(list.getThumbnailState("Preview test") == S::Empty);
+		REQUIRE(list.getThumbnailState("Preview test") == S::Empty);
 		list.requestThumbnail("Preview test");
-		assert(list.getThumbnailState("Preview test") == S::Loading);
+		REQUIRE(list.getThumbnailState("Preview test") == S::Loading);
 		list.thumbnailCache[7].requestedAt = SDL_GetTicks() - 100;
 		auto requested = list.thumbnailCache[7].requestedAt;
 		list.requestThumbnail("Preview test");
-		assert(list.thumbnailCache[7].requestedAt == requested);
+		REQUIRE(list.thumbnailCache[7].requestedAt == requested);
 		list.thumbnailCache[7].requestedAt = SDL_GetTicks() - 8001;
-		assert(list.getThumbnailState("Preview test") == S::Failed);
+		REQUIRE(list.getThumbnailState("Preview test") == S::Failed);
 		list.requestThumbnail("Preview test", true);
-		assert(list.getThumbnailState("Preview test") == S::Loading);
+		REQUIRE(list.getThumbnailState("Preview test") == S::Loading);
 		list.receiveMessage(std::make_shared<NetSendMapThumbnail>(7, MapThumbnail()));
-		assert(list.getThumbnailState("Preview test") == S::Failed);
+		REQUIRE(list.getThumbnailState("Preview test") == S::Failed);
 		list.requestThumbnail("Preview test", true);
 		auto image = terrain(9, 8);
 		list.receiveMessage(std::make_shared<NetSendMapThumbnail>(7, image));
-		assert(list.getThumbnailState("Preview test") == S::Ready);
+		REQUIRE(list.getThumbnailState("Preview test") == S::Ready);
 		list.requestMapListUpdate();
 		list.receiveMessage(
 			std::make_shared<NetDownloadableMapInfos>(std::vector<YOGDownloadableMapInfo>{info}));
-		assert(list.getMapThumbnail("Preview test").pixels() == image.pixels());
+		REQUIRE(list.getMapThumbnail("Preview test").pixels() == image.pixels());
 		info.setSize(101);
 		list.receiveMessage(
 			std::make_shared<NetDownloadableMapInfos>(std::vector<YOGDownloadableMapInfo>{info}));
-		assert(list.getThumbnailState("Preview test") == S::Empty);
+		REQUIRE(list.getThumbnailState("Preview test") == S::Empty);
 		for (int id = 0; id < 50; ++id)
 		{
 			info.setMapID(id);
 			list.thumbnailEntry(info);
 		}
-		assert(list.thumbnailCache.size() == 32);
+		REQUIRE(list.thumbnailCache.size() == 32);
 		std::cout << "PASS online deduplication, timeout/retry, failure, refresh cache, revision "
 					 "invalidation and eviction\n";
 	}
 	static void visuals(const std::string &output)
 	{
-		assert(!Toolkit::getStringTable()->getString("[Map preview loading]").empty());
-		assert(!Toolkit::getStringTable()->getString("[Map preview drag help]").empty());
+		REQUIRE(!Toolkit::getStringTable()->getString("[Map preview loading]").empty());
+		REQUIRE(!Toolkit::getStringTable()->getString("[Map preview drag help]").empty());
 		std::filesystem::create_directories(output);
 		// The preview paints into whatever surface its owner hands it; here a
 		// plain menu-coloured background stands in for the framework canvas.
@@ -267,25 +272,24 @@ struct MapPreviewHarness
 			return std::array<int, 3>{r, g, b};
 		};
 		paintAll();
-		assert(preview->transitioning && !preview->transitionPending);
-		assert(
-			(pixel(area.x + area.w / 4, area.y + area.h / 4) == std::array<int, 3>{211, 223, 197}));
+		REQUIRE((preview->transitioning && !preview->transitionPending));
+		REQUIRE((pixel(area.x + area.w / 4, area.y + area.h / 4) == std::array<int, 3>{211, 223, 197}));
 		globalContainer->gfx->printScreen(output + "/fade-in-start.bmp");
 		preview->transitionStarted = SDL_GetTicks() - MapPreview::TransitionDurationMs / 2;
 		paintAll();
 		const auto fading = pixel(area.x + area.w / 4, area.y + area.h / 4);
-		assert(fading[0] > 0 && fading[0] < 211 && fading[1] > 90 && fading[1] < 223);
+		REQUIRE((fading[0] > 0 && fading[0] < 211 && fading[1] > 90 && fading[1] < 223));
 		globalContainer->gfx->printScreen(output + "/fade-in-half.bmp");
 		capture("wide-original");
-		assert(!preview->transitioning && !preview->previousFrame);
+		REQUIRE((!preview->transitioning && !preview->previousFrame));
 		auto green = pixel(area.x + area.w / 4, area.y + area.h / 4);
 		const std::array<int, 3> background{232, 237, 218};
-		assert(pixel(34, 34) == background);
-		assert(pixel(area.x + area.w / 2, area.y - 4) == background);
-		assert(pixel(area.x + area.w / 2, area.y + area.h + 4) == background);
+		REQUIRE(pixel(34, 34) == background);
+		REQUIRE(pixel(area.x + area.w / 2, area.y - 4) == background);
+		REQUIRE(pixel(area.x + area.w / 2, area.y + area.h + 4) == background);
 		auto blue = pixel(area.x + 3 * area.w / 4, area.y + area.h / 4);
-		assert((green == std::array<int, 3>{0, 90, 0}));
-		assert((blue == std::array<int, 3>{0, 40, 120}));
+		REQUIRE((green == std::array<int, 3>{0, 90, 0}));
+		REQUIRE((blue == std::array<int, 3>{0, 40, 120}));
 		SDL_Event event{};
 		event.type = SDL_MOUSEBUTTONDOWN;
 		event.button.button = SDL_BUTTON_LEFT;
@@ -299,14 +303,14 @@ struct MapPreviewHarness
 		event.motion.y = area.y + 50 + area.h / 2;
 		preview->handlePreviewEvent(&event);
 		capture("wide-dragged");
-		assert(pixel(area.x + area.w / 4, area.y + area.h / 4) == blue);
-		assert(pixel(area.x + 3 * area.w / 4, area.y + area.h / 4) == green);
-		assert(preview->dragging);
+		REQUIRE(pixel(area.x + area.w / 4, area.y + area.h / 4) == blue);
+		REQUIRE(pixel(area.x + 3 * area.w / 4, area.y + area.h / 4) == green);
+		REQUIRE(preview->dragging);
 		event = {};
 		event.type = SDL_MOUSEBUTTONUP;
 		event.button.button = SDL_BUTTON_LEFT;
 		preview->handlePreviewEvent(&event);
-		assert(!preview->dragging);
+		REQUIRE(!preview->dragging);
 		auto pointUnderMouse = [&]
 		{
 			auto world = preview->worldArea();
@@ -322,25 +326,25 @@ struct MapPreviewHarness
 		event.wheel.y = 2;
 		preview->handlePreviewEvent(&event);
 		auto zoomedAnchor = pointUnderMouse();
-		assert(std::abs(anchor[0] - zoomedAnchor[0]) < 1e-12 &&
-			   std::abs(anchor[1] - zoomedAnchor[1]) < 1e-12);
+		REQUIRE((std::abs(anchor[0] - zoomedAnchor[0]) < 1e-12 &&
+			   std::abs(anchor[1] - zoomedAnchor[1]) < 1e-12));
 		capture("wide-zoomed");
-		assert(preview->zoom > 1);
+		REQUIRE(preview->zoom > 1);
 		event.wheel.y = -1;
 		preview->handlePreviewEvent(&event);
 		zoomedAnchor = pointUnderMouse();
-		assert(std::abs(anchor[0] - zoomedAnchor[0]) < 1e-12 &&
-			   std::abs(anchor[1] - zoomedAnchor[1]) < 1e-12);
+		REQUIRE((std::abs(anchor[0] - zoomedAnchor[0]) < 1e-12 &&
+			   std::abs(anchor[1] - zoomedAnchor[1]) < 1e-12));
 		auto previous = preview->view.offsetX;
 		preview->setMapThumbnail(image);
-		assert(preview->view.offsetX == previous && preview->zoom > 1);
+		REQUIRE((preview->view.offsetX == previous && preview->zoom > 1));
 		event = {};
 		event.type = SDL_MOUSEBUTTONDOWN;
 		event.button.button = SDL_BUTTON_RIGHT;
 		event.button.x = area.x + 50;
 		event.button.y = area.y + 50;
 		preview->handlePreviewEvent(&event);
-		assert(preview->view.offsetX == 0 && preview->view.offsetY == 0 && preview->zoom == 1);
+		REQUIRE((preview->view.offsetX == 0 && preview->view.offsetY == 0 && preview->zoom == 1));
 		preview->resetView();
 		paintAll();
 		Map flat;
@@ -351,14 +355,14 @@ struct MapPreviewHarness
 		preview->starts = {{256, 128, Color(0, 255, 0)}};
 		paintAll();
 		const int sampleX = area.x + 3 * area.w / 4, sampleY = area.y + area.h / 4;
-		assert(pixel(sampleX, sampleY) == blue);
+		REQUIRE(pixel(sampleX, sampleY) == blue);
 		globalContainer->gfx->printScreen(output + "/cross-fade-start.bmp");
 		preview->transitionStarted = SDL_GetTicks() - MapPreview::TransitionDurationMs / 2;
 		paintAll();
 		const auto blended = pixel(sampleX, sampleY);
-		assert(blended[1] > 40 && blended[1] < 90 && blended[2] > 0 && blended[2] < 120);
+		REQUIRE((blended[1] > 40 && blended[1] < 90 && blended[2] > 0 && blended[2] < 120));
 		const auto marker = pixel(area.x + area.w / 2 - 7, area.y + area.h / 2 - 7);
-		assert(marker[0] > 0 && marker[0] < 255 && marker[1] > 0 && marker[1] < 255);
+		REQUIRE((marker[0] > 0 && marker[0] < 255 && marker[1] > 0 && marker[1] < 255));
 		globalContainer->gfx->printScreen(output + "/cross-fade-half.bmp");
 		// A second result arriving during a fade starts at the displayed blend.
 		flat.setSize(9, 8, WATER);
@@ -370,16 +374,16 @@ struct MapPreviewHarness
 		paintAll();
 		const auto restarted = pixel(sampleX, sampleY);
 		for (int c = 0; c < 3; ++c)
-			assert(std::abs(restarted[c] - blended[c]) < 12);
+			REQUIRE(std::abs(restarted[c] - blended[c]) < 12);
 		capture("cross-fade-complete");
-		assert(pixel(sampleX, sampleY) == blue && !preview->previousFrame);
+		REQUIRE((pixel(sampleX, sampleY) == blue && !preview->previousFrame));
 		std::cout << "PASS first-image fade, terrain/marker cross-fade, rapid replacement and "
 					 "frame release\n";
 		preview->setMapThumbnail(terrain(8, 9));
 		capture("tall-original");
 		area = preview->mapArea();
-		assert(pixel(area.x - 4, area.y + area.h / 2) == background);
-		assert(pixel(area.x + area.w + 4, area.y + area.h / 2) == background);
+		REQUIRE(pixel(area.x - 4, area.y + area.h / 2) == background);
+		REQUIRE(pixel(area.x + area.w + 4, area.y + area.h / 2) == background);
 		preview->setState(MapPreview::State::Loading);
 		capture("online-loading");
 		preview->retry = [] {};
@@ -390,7 +394,7 @@ struct MapPreviewHarness
 		custom.beginExecution(globalContainer->gfx);
 		custom.paintFrame(0);
 		MapPreview *lobby = custom.preview.get();
-		assert(lobby);
+		REQUIRE(lobby);
 		auto settleLobby = [&]
 		{
 			custom.paintFrame(SDL_GetTicks());
@@ -402,13 +406,13 @@ struct MapPreviewHarness
 			}
 		};
 		const auto fixture = output + "/selection-fixture.map.gz";
-		std::filesystem::copy_file(glob2PreferGzipReadPath(*Toolkit::getFileManager(), "maps/FourSquares1.map"), fixture,
+		std::filesystem::copy_file(glob2test::sourceRoot() / glob2PreferGzipReadPath(*Toolkit::getFileManager(), "maps/FourSquares1.map"), fixture,
 								   std::filesystem::copy_options::overwrite_existing);
 		auto start = std::chrono::steady_clock::now();
-		assert(custom.loadMap(fixture));
+		REQUIRE(custom.loadMap(fixture));
 		auto cold = std::chrono::steady_clock::now();
 		for (int i = 0; i < 20; ++i)
-			assert(custom.loadMap(fixture));
+			REQUIRE(custom.loadMap(fixture));
 		auto warm = std::chrono::steady_clock::now();
 		std::ofstream timing(output + "/timings.txt");
 		timing << "FourSquares1.map byte-identical copy, uncached selection ms: "
@@ -442,15 +446,15 @@ struct MapPreviewHarness
 		custom.setup.generator.wDec = 9;
 		custom.setup.generator.hDec = 7;
 		custom.setup.setCapacity(4);
-		assert(custom.generateMap());
+		REQUIRE(custom.generateMap());
 		// The generated snapshot lives in memory (CustomGameScreen::generateMap). Write it
 		// out as the gzip file the library would hold, so this check and the retained
 		// artifact go through the same loader as a premade map.
 		const auto generatedPath = output + "/generated-wide.map";
-		assert(Toolkit::getFileManager()->writeGzipAtomic(glob2GzipWritePath(generatedPath), *custom.generatedSnapshot));
+		REQUIRE(Toolkit::getFileManager()->writeGzipAtomic(glob2GzipWritePath(generatedPath), *custom.generatedSnapshot));
 		MapThumbnail snapshot;
 		snapshot.loadFromMap(generatedPath);
-		assert(snapshot.isLoaded() && snapshot.pixels()->rgb == lobby->thumbnail.pixels()->rgb);
+		REQUIRE((snapshot.isLoaded() && snapshot.pixels()->rgb == lobby->thumbnail.pixels()->rgb));
 		settleLobby();
 		globalContainer->gfx->printScreen(output + "/custom-wide-colonies.bmp");
 		area = lobby->mapArea();
@@ -472,20 +476,20 @@ struct MapPreviewHarness
 		event.type = SDL_WINDOWEVENT;
 		event.window.event = SDL_WINDOWEVENT_FOCUS_LOST;
 		custom.handleExecutionEvent(event);
-		assert(!lobby->dragging);
+		REQUIRE(!lobby->dragging);
 		const auto retained = lobby->thumbnail.pixels();
 		const auto retainedArea = lobby->mapArea();
 		const auto quality = custom.quality;
-		assert(quality.measured && custom.message.empty());
+		REQUIRE((quality.measured && custom.message.empty()));
 		custom.invalidatePreview();
 		custom.paintFrame(SDL_GetTicks());
 		const auto loadingArea = lobby->mapArea();
-		assert(!custom.validMap && custom.previewBusy() && custom.message.empty());
-		assert(lobby->thumbnail.pixels() == retained && custom.quality.measured &&
+		REQUIRE((!custom.validMap && custom.previewBusy() && custom.message.empty()));
+		REQUIRE((lobby->thumbnail.pixels() == retained && custom.quality.measured &&
 			   custom.quality.fairness == quality.fairness &&
-			   custom.quality.score == quality.score);
-		assert(loadingArea.x == retainedArea.x && loadingArea.y == retainedArea.y &&
-			   loadingArea.w == retainedArea.w && loadingArea.h == retainedArea.h);
+			   custom.quality.score == quality.score));
+		REQUIRE((loadingArea.x == retainedArea.x && loadingArea.y == retainedArea.y &&
+			   loadingArea.w == retainedArea.w && loadingArea.h == retainedArea.h));
 		globalContainer->gfx->printScreen(output + "/custom-reroll-retained.bmp");
 		std::cout
 			<< "PASS reroll preserves image, rectangle and scores without status-text flashes\n";
@@ -495,34 +499,38 @@ struct MapPreviewHarness
 		MapThumbnail first, second;
 		first.loadFromMap(invalidated);
 		second.loadFromMap(invalidated);
-		assert(first.isLoaded() && first.pixels() == second.pixels());
+		REQUIRE((first.isLoaded() && first.pixels() == second.pixels()));
 		{
 			std::ofstream broken(invalidated);
 			broken << "invalid map";
 		}
 		second.loadFromMap(invalidated);
-		assert(!second.isLoaded());
+		REQUIRE(!second.isLoaded());
 		std::filesystem::remove(invalidated);
 		std::cout << "PASS native widget events and custom lobby captures: " << output << "\n";
 	}
 };
-int main(int argc, char **argv)
+
+TEST_SUITE("MapPreview")
 {
-	const bool visual = argc > 2 && std::string(argv[2]) == "--visual";
-	GlobalContainer globals(argc > 1 ? argv[1] : "glob2-map-preview-tests");
-	globalContainer = &globals;
-	globals.runNoX = !visual;
-	globals.settings.rememberUnit = false;
-	globals.settings.screenWidth = argc > 4 ? std::max(640, std::atoi(argv[4])) : 800;
-	globals.settings.screenHeight = argc > 5 ? std::max(480, std::atoi(argv[5])) : 600;
-	globals.settings.screenFlags = 0;
-	globals.settings.mute = true;
-	globals.load();
-	MapPreviewHarness::geometry();
-	MapPreviewHarness::codec();
-	MapPreviewHarness::network();
-	if (visual)
-		MapPreviewHarness::visuals(argc > 3 ? argv[3] : "artifacts/map-preview");
-	std::cout << "ALL PRE-GAME MAP PREVIEW TESTS PASSED\n";
-	return 0; // On Windows SDL renames this entry point to SDL_main.
+	TEST_CASE("preview geometry")
+	{
+		glob2test::HeadlessGlobals globals({.loadStrings = true});
+		MapPreviewHarness::geometry();
+	}
+	TEST_CASE("thumbnail codec; envelope limits and corrupt input")
+	{
+		glob2test::HeadlessGlobals globals({.loadStrings = true});
+		MapPreviewHarness::codec();
+	}
+	TEST_CASE("map database messages and download previews")
+	{
+		glob2test::HeadlessGlobals globals({.loadStrings = true});
+		MapPreviewHarness::network();
+	}
+	TEST_CASE("native widget events and custom lobby captures [display][artifacts]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true, .loadStrings = true, .width = 800, .height = 600, .screenFlags = 0});
+		MapPreviewHarness::visuals(glob2test::artifactDirFromWorkingDirectory());
+	}
 }

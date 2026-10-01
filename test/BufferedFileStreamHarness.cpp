@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "Glob2Test.h"
+#include <string>
 #include <BufferedFileStreamBackend.h>
 #include <BinaryStream.h>
-#include "../gnupg/sha1.c"
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -16,15 +17,10 @@
 #include <unistd.h>
 #endif
 
-static void require(bool ok)
-{
-    if (!ok) { std::fprintf(stderr, "Buffered file stream regression\n"); std::exit(1); }
-}
-
 static std::vector<unsigned char> serialize(bool buffered, unsigned char digest[20])
 {
     FILE* file = std::tmpfile();
-    require(file != nullptr);
+    REQUIRE(file != nullptr);
     auto* backend = buffered ? static_cast<GAGCore::StreamBackend*>(new GAGCore::BufferedFileStreamBackend(file))
                              : new GAGCore::FileStreamBackend(file);
     GAGCore::BinaryOutputStream writer(backend);
@@ -52,20 +48,20 @@ static std::vector<unsigned char> serialize(bool buffered, unsigned char digest[
     writer.seekRelative(-2);
     backend->putc(92);
     writer.seekFromEnd(0);
-    require(writer.getPosition() == end);
+    REQUIRE(writer.getPosition() == end);
     writer.flush();
     writer.seekFromStart(0);
     std::vector<unsigned char> bytes(end);
     backend->read(bytes.data(), bytes.size());
-    require(backend->getPosition() == end);
+    REQUIRE(backend->getPosition() == end);
     writer.seekFromStart(0);
     unsigned char prefix[4];
-    require(backend->readExact(prefix, sizeof(prefix)));
-    require(std::memcmp(prefix, bytes.data(), sizeof(prefix)) == 0);
+    REQUIRE(backend->readExact(prefix, sizeof(prefix)));
+    REQUIRE(std::memcmp(prefix, bytes.data(), sizeof(prefix)) == 0);
     writer.seekFromEnd(-1);
-    require(!backend->readExact(prefix, sizeof(prefix)));
+    REQUIRE(!backend->readExact(prefix, sizeof(prefix)));
     writer.seekFromStart(3);
-    require(backend->getChar() == bytes[3]);
+    REQUIRE(backend->getChar() == bytes[3]);
     return bytes;
 }
 
@@ -78,36 +74,38 @@ static void checkMemoryBackend()
     memory.write("abcdef", 6);
     memory.seekFromStart(2);
     memory.write("XYZWV", 5);
-    require(memory.getPosition() == 7);
+    REQUIRE(memory.getPosition() == 7);
     memory.seekFromStart(1);
     memory.write("Q", 1);
-    require(memory.takeContents() == "aQXYZWV");
-    require(memory.getPosition() == 0);
+    REQUIRE(memory.takeContents() == "aQXYZWV");
+    REQUIRE(memory.getPosition() == 0);
     memory.write("n", 1);
-    require(memory.takeContents() == "n");
+    REQUIRE(memory.takeContents() == "n");
     GAGCore::MemoryStreamBackend gap;
     gap.write("ab", 2);
     gap.seekFromEnd(-2);
     gap.write("k", 1);
-    require(gap.takeContents() == std::string("ab\0\0k", 5));
+    REQUIRE(gap.takeContents() == std::string("ab\0\0k", 5));
 }
 
-int main()
+TEST_SUITE("BufferedFileStream")
+{
+TEST_CASE("bytes; SHA1; boundaries; seeks; reads; flush and destruction; memory stream writes")
 {
     checkMemoryBackend();
     unsigned char a[20], b[20];
-    require(serialize(false,a) == serialize(true,b));
-    require(std::memcmp(a,b,20) == 0);
+    REQUIRE(serialize(false,a) == serialize(true,b));
+    REQUIRE(std::memcmp(a,b,20) == 0);
     // The duplicated descriptor survives the backend's fclose.
     FILE* file = std::tmpfile();
-    require(file != nullptr);
+    REQUIRE(file != nullptr);
     FILE* verifier = fdopen(dup(fileno(file)), "rb");
-    require(verifier != nullptr);
+    REQUIRE(verifier != nullptr);
     { GAGCore::BufferedFileStreamBackend backend(file); backend.write("final buffered bytes",20); }
     std::rewind(verifier);
     char bytes[20];
-    require(std::fread(bytes, 1, sizeof(bytes), verifier) == sizeof(bytes));
-    require(std::memcmp(bytes,"final buffered bytes",20) == 0);
+    REQUIRE(std::fread(bytes, 1, sizeof(bytes), verifier) == sizeof(bytes));
+    REQUIRE(std::memcmp(bytes,"final buffered bytes",20) == 0);
     std::fclose(verifier);
-    std::puts("Buffered file stream: bytes, SHA1, boundaries, seeks, reads, flush and destruction passed; memory stream writes passed");
+}
 }

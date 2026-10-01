@@ -1,4 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "Glob2Test.h"
+#include <vector>
+#include <string>
+#include <memory>
+#include <functional>
+#include <utility>
+#include <chrono>
+#include <cstdint>
 #include <GUIBase.h>
 #include <ScreenStack.h>
 #include <InputState.h>
@@ -6,13 +14,14 @@
 #include <CooperativeSlice.h>
 #include <SDLGraphicContext.h>
 #include <stdexcept>
-#include <iostream>
 
 using namespace GAGGUI;
 
+namespace
+{
 void require(bool condition, const char* message)
 {
-    if (!condition) throw std::runtime_error(message);
+    GLOB2_REQUIRE(condition, message);
 }
 
 struct Probe : Screen
@@ -61,7 +70,11 @@ GAGCore::CooperativeTask timedWork(GAGCore::CooperativeSlice::Time& now, int& st
     }
     co_return true;
 }
-int main()
+}
+
+TEST_SUITE("ScreenExecution")
+{
+TEST_CASE("screen phases; completion; reuse; quit and compatibility host")
 {
     {
         using Slice = GAGCore::CooperativeSlice;
@@ -303,5 +316,5 @@ int main()
         hostCompleted = true;
     });
     require(hostCompleted, "Native host completes exactly once before returning");
-    std::cout << "PASS: screen phases, completion, reuse, quit and compatibility host\n";
+}
 }

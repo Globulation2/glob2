@@ -74,9 +74,10 @@ records for completed settlement proposals. It is observational and consumes no 
 
 The following results describe revision 1, before the larger reservoirs and
 woodlots. They establish the earlier validation baseline, not revision 2 balance.
-The retained [evidence bundle](../../test/fixtures/faulted-city/README.md) contains maps,
-previews, a finished save, every study request, game results, timings, and cross-platform
-replays/checksums. Reproduction scripts are included.
+The evidence bundle (maps, previews, a finished save, every study request, game
+results, timings, cross-platform replays/checksums and reproduction scripts) was reviewed
+in PR #350 and is available from that PR and from git history
+(`git show da0864264:test/fixtures/faulted-city/README.md`), not in the tree.
 
 - **Reliability:** 3,320/3,320 requests passed on Linux x86_64: 2,000 randomized requests,
   1,032 control cases and 288 size/team/worker cases. Random requests exercised every control

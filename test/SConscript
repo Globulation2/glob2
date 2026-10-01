@@ -1,0 +1,107 @@
+# Native test binaries, built from the registry in test/tests.py with the objects the
+# game itself is built from. See test/README.md.
+import sys
+Import('env')
+
+if env['server']:
+    Return()
+
+Import('client_objects', 'client_object_by_source', 'client_libs')
+
+sys.path.insert(0, Dir('.').srcnode().abspath)
+import tests as registry
+
+test_env = env.Clone()
+test_env.Append(CPPPATH=[Dir('.').srcnode(), Dir('support').srcnode(), Dir('#src/render'), Dir('#libgag/src')])
+# Console entry point for every test binary: no -mwindows, no SDL2main.
+test_env['LINKFLAGS'] = [flag for flag in test_env.Split(test_env['LINKFLAGS']) if flag != '-mwindows']
+test_env['LIBS'] = [lib for lib in test_env['LIBS'] if lib != 'SDL2main']
+# The mingw SDL configuration renames main to SDL_main so SDL2main's WinMain can call
+# it; these binaries carry their own console main, so drop the rename and tell SDL's
+# headers not to repeat it.
+
+
+def not_sdl_main(item):
+    # ParseConfig stores -Dmain=SDL_main as ['main', 'SDL_main']; accept every spelling.
+    if isinstance(item, str):
+        return item.split('=', 1)[0] != 'main'
+    if isinstance(item, (list, tuple)) and item:
+        return item[0] != 'main'
+    return True
+
+
+defines = test_env.get('CPPDEFINES', [])
+test_env['CPPDEFINES'] = [d for d in ([defines] if isinstance(defines, str) else list(defines)) if not_sdl_main(d)]
+for var in ('CCFLAGS', 'CXXFLAGS', 'CPPFLAGS'):
+    test_env[var] = [flag for flag in test_env.Split(test_env.get(var, [])) if flag != '-Dmain=SDL_main']
+test_env.Append(CPPDEFINES=['SDL_MAIN_HANDLED'])
+
+
+def available(options):
+    required = options.get('require', ())
+    if 'wss' in required and not env.get('wss', True):
+        return False
+    if 'not-mingw' in required and env.get('mingw'):
+        return False
+    if 'opengl' in required and not env.get('opengl', True):
+        return False
+    return True
+
+
+def source_node(source):
+    return File(source) if source.startswith('#') else File(source)
+
+
+def objects(entries, prefix):
+    """Compile registry entries; entries are 'path' or ('path', options)."""
+    out = []
+    for entry in entries:
+        source, options = (entry, {}) if isinstance(entry, str) else entry
+        if not available(options):
+            continue
+        compile_env = test_env
+        if options.get('cxxflags') or options.get('defines'):
+            compile_env = test_env.Clone()
+            compile_env.Append(CXXFLAGS=options.get('cxxflags', []))
+            compile_env.Append(CPPDEFINES=options.get('defines', []))
+        name = source.lstrip('#').replace('/', '_').rsplit('.', 1)[0]
+        out += compile_env.Object(prefix + name + '.o', source_node(source))
+    return out
+
+
+def production_objects(entries):
+    """Reuse the client build's object unless the entry needs its own defines."""
+    out = []
+    for entry in entries:
+        source, options = (entry, {}) if isinstance(entry, str) else entry
+        if not available(options):
+            continue
+        key = source[len('#src/'):] if source.startswith('#src/') else None
+        if key in client_object_by_source and not options.get('defines') and not options.get('cxxflags'):
+            out.append(client_object_by_source[key])
+        else:
+            out += objects([entry], 'unit-')
+    return out
+
+
+engine = test_env.Program('glob2-engine-tests',
+    objects(registry.SUPPORT + registry.ENGINE_SUPPORT + registry.ENGINE_TESTS, 'engine-')
+    + client_objects + client_libs)
+unit = test_env.Program('glob2-unit-tests',
+    objects(registry.SUPPORT + registry.UNIT_STUBS + registry.UNIT_TESTS, 'unit-')
+    + production_objects(registry.UNIT_PRODUCTION_SOURCES) + client_libs)
+test_env.Alias('engine-tests', engine)
+test_env.Alias('unit-tests', unit)
+test_env.Alias('tests', [engine, unit])
+
+tools = []
+for target, source, alias, group in registry.PROGRAMS:
+    program = test_env.Program(target, objects([source], 'program-') + client_objects + client_libs)
+    test_env.Alias(alias, program)
+    if group == 'tools':
+        tools += program
+test_env.Alias('glob2-tools', tools)
+
+binaries = {'glob2-engine-tests': engine, 'glob2-unit-tests': unit}
+for old, new in registry.LEGACY_ALIASES.items():
+    test_env.Alias(old, binaries[new])

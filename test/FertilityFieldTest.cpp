@@ -2,6 +2,9 @@
 // Copyright (C) 2026 glob2 contributors
 
 #include "FertilityFieldTest.h"
+#include <utility>
+#include <cmath>
+#include <cstdlib>
 
 #include "Map.h"
 #include "map/FertilityField.h"
@@ -10,7 +13,22 @@
 #include <cstdint>
 #include <vector>
 
-CPPUNIT_TEST_SUITE_REGISTRATION( FertilityFieldTest );
+TEST_SUITE("FertilityField")
+{
+	TEST_CASE_FIXTURE(FertilityFieldTest, "TriangularWeightsMatchGrowResourcesRng") { testTriangularWeightsMatchGrowResourcesRng(); }
+	TEST_CASE_FIXTURE(FertilityFieldTest, "ConvolutionMatchesDirectKernelWithoutSand") { testConvolutionMatchesDirectKernelWithoutSand(); }
+	TEST_CASE_FIXTURE(FertilityFieldTest, "SandCorrectionPathMatchesDirectKernel") { testSandCorrectionPathMatchesDirectKernel(); }
+	TEST_CASE_FIXTURE(FertilityFieldTest, "WaterSplatPathMatchesDirectKernel") { testWaterSplatPathMatchesDirectKernel(); }
+	TEST_CASE_FIXTURE(FertilityFieldTest, "AdaptivePathMatchesExplicitPaths") { testAdaptivePathMatchesExplicitPaths(); }
+	TEST_CASE_FIXTURE(FertilityFieldTest, "OpenWaterReachesFullScale") { testOpenWaterReachesFullScale(); }
+	TEST_CASE_FIXTURE(FertilityFieldTest, "SandOppositeWaterRemovesCredit") { testSandOppositeWaterRemovesCredit(); }
+	TEST_CASE_FIXTURE(FertilityFieldTest, "NonPowerOfTwoDimensionsWrap") { testNonPowerOfTwoDimensionsWrap(); }
+	TEST_CASE_FIXTURE(FertilityFieldTest, "ForMapZeroesNonGrass") { testForMapZeroesNonGrass(); }
+	TEST_CASE_FIXTURE(FertilityFieldTest, "ForMapZeroesGrassNoDepositReaches") { testForMapZeroesGrassNoDepositReaches(); }
+	TEST_CASE_FIXTURE(FertilityFieldTest, "ForMapUngatedKeepsUnreachableGrass") { testForMapUngatedKeepsUnreachableGrass(); }
+	TEST_CASE_FIXTURE(FertilityFieldTest, "UsefulExpansionCapacityFolds") { testUsefulExpansionCapacityFolds(); }
+	TEST_CASE_FIXTURE(FertilityFieldTest, "WithinPercentBand") { testWithinPercentBand(); }
+}
 
 namespace
 {
@@ -45,7 +63,7 @@ namespace
 		field.rebuild(w, h, water, sand, path);
 		for (int y = 0; y < h; ++y)
 			for (int x = 0; x < w; ++x)
-				CPPUNIT_ASSERT_EQUAL(directKernel(water, sand, w, h, x, y), field.at(x, y));
+				CHECK_EQ(directKernel(water, sand, w, h, x, y), field.at(x, y));
 	}
 
 	/// Deterministic so a failure is reproducible; syncRand is unavailable here anyway.
@@ -107,14 +125,14 @@ void FertilityFieldTest::testTriangularWeightsMatchGrowResourcesRng()
 		for (int b = 0; b <= 15; ++b)
 			++histogram[a - b + 15];
 	for (int offset = -15; offset <= 15; ++offset)
-		CPPUNIT_ASSERT_EQUAL(int(weight(offset)), histogram[offset + 15]);
+		CHECK_EQ(int(weight(offset)), histogram[offset + 15]);
 
 	// Both axes together span exactly the scale the field is expressed in.
 	std::uint32_t total = 0;
 	for (int dy = -15; dy <= 15; ++dy)
 		for (int dx = -15; dx <= 15; ++dx)
 			total += weight(dx) * weight(dy);
-	CPPUNIT_ASSERT_EQUAL(Fertility::kScale, total);
+	CHECK_EQ(Fertility::kScale, total);
 }
 
 void FertilityFieldTest::testConvolutionMatchesDirectKernelWithoutSand()
@@ -157,9 +175,9 @@ void FertilityFieldTest::testAdaptivePathMatchesExplicitPaths()
 		adaptive.rebuild(32, 32, water, sand, Fertility::Path::Adaptive);
 		correction.rebuild(32, 32, water, sand, Fertility::Path::SandCorrection);
 		splat.rebuild(32, 32, water, sand, Fertility::Path::WaterSplat);
-		CPPUNIT_ASSERT(adaptive.pathUsed() != Fertility::Path::Adaptive);
-		CPPUNIT_ASSERT(correction.values() == splat.values());
-		CPPUNIT_ASSERT(adaptive.values() == correction.values());
+		CHECK(adaptive.pathUsed() != Fertility::Path::Adaptive);
+		CHECK(correction.values() == splat.values());
+		CHECK(adaptive.values() == correction.values());
 	}
 }
 
@@ -170,7 +188,7 @@ void FertilityFieldTest::testOpenWaterReachesFullScale()
 	field.rebuild(32, 32, water, sand, Fertility::Path::SandCorrection);
 	for (int y = 0; y < 32; ++y)
 		for (int x = 0; x < 32; ++x)
-			CPPUNIT_ASSERT_EQUAL(Fertility::kScale, field.at(x, y));
+			CHECK_EQ(Fertility::kScale, field.at(x, y));
 }
 
 void FertilityFieldTest::testSandOppositeWaterRemovesCredit()
@@ -180,14 +198,14 @@ void FertilityFieldTest::testSandOppositeWaterRemovesCredit()
 	water[size_t(16) * 32 + 19] = 1;
 	Fertility::Field bare;
 	bare.rebuild(32, 32, water, sand, Fertility::Path::SandCorrection);
-	CPPUNIT_ASSERT_EQUAL(std::uint32_t(13 * 16), bare.at(16, 16));
+	CHECK_EQ(std::uint32_t(13 * 16), bare.at(16, 16));
 
 	// Sand on the far side of the centre from that water cancels it, and only there.
 	sand[size_t(16) * 32 + 13] = 1;
 	Fertility::Field corrected;
 	corrected.rebuild(32, 32, water, sand, Fertility::Path::SandCorrection);
-	CPPUNIT_ASSERT_EQUAL(std::uint32_t(0), corrected.at(16, 16));
-	CPPUNIT_ASSERT_EQUAL(bare.at(17, 16), corrected.at(17, 16));
+	CHECK_EQ(std::uint32_t(0), corrected.at(16, 16));
+	CHECK_EQ(bare.at(17, 16), corrected.at(17, 16));
 }
 
 void FertilityFieldTest::testNonPowerOfTwoDimensionsWrap()
@@ -206,9 +224,9 @@ void FertilityFieldTest::testForMapZeroesNonGrass()
 	map.makeSand(6, 6);
 	map.putResource(10, 10, WHEAT);
 	const Fertility::Field field = Fertility::forMap(map);
-	CPPUNIT_ASSERT_EQUAL(std::uint32_t(0), field.at(4, 4));
-	CPPUNIT_ASSERT_EQUAL(std::uint32_t(0), field.at(6, 6));
-	CPPUNIT_ASSERT(field.at(5, 4) > 0u);
+	CHECK_EQ(std::uint32_t(0), field.at(4, 4));
+	CHECK_EQ(std::uint32_t(0), field.at(6, 6));
+	CHECK(field.at(5, 4) > 0u);
 }
 
 void FertilityFieldTest::testForMapZeroesGrassNoDepositReaches()
@@ -224,8 +242,8 @@ void FertilityFieldTest::testForMapZeroesGrassNoDepositReaches()
 	}
 	map.putResource(25, 25, WHEAT);
 	const Fertility::Field field = Fertility::forMap(map);
-	CPPUNIT_ASSERT_EQUAL(std::uint32_t(0), field.at(14, 14));
-	CPPUNIT_ASSERT(field.at(25, 25) > 0u);
+	CHECK_EQ(std::uint32_t(0), field.at(14, 14));
+	CHECK(field.at(25, 25) > 0u);
 }
 
 void FertilityFieldTest::testForMapUngatedKeepsUnreachableGrass()
@@ -233,30 +251,29 @@ void FertilityFieldTest::testForMapUngatedKeepsUnreachableGrass()
 	TinyMap map;
 	map.makeWater(4, 4);
 	// No deposit anywhere: the gated field is empty, the ungated one is not.
-	CPPUNIT_ASSERT_EQUAL(std::uint32_t(0), Fertility::forMap(map).at(5, 4));
-	CPPUNIT_ASSERT(Fertility::forMap(map, false).at(5, 4) > 0u);
+	CHECK_EQ(std::uint32_t(0), Fertility::forMap(map).at(5, 4));
+	CHECK(Fertility::forMap(map, false).at(5, 4) > 0u);
 }
 
 void FertilityFieldTest::testUsefulExpansionCapacityFolds()
 {
 	// Wood: fertility * amount/8 * neighbours/8. Wheat additionally clears
 	// WHEAT_GROWTH_DIVISOR only one time in three.
-	CPPUNIT_ASSERT_EQUAL(std::uint32_t(65536), Fertility::usefulExpansionCapacity(65536, 8, 8, false));
-	CPPUNIT_ASSERT_EQUAL(std::uint32_t(65536 / 3), Fertility::usefulExpansionCapacity(65536, 8, 8, true));
-	CPPUNIT_ASSERT_EQUAL(std::uint32_t(0), Fertility::usefulExpansionCapacity(65536, 0, 8, false));
-	CPPUNIT_ASSERT_EQUAL(std::uint32_t(0), Fertility::usefulExpansionCapacity(65536, 8, 0, false));
+	CHECK_EQ(std::uint32_t(65536), Fertility::usefulExpansionCapacity(65536, 8, 8, false));
+	CHECK_EQ(std::uint32_t(65536 / 3), Fertility::usefulExpansionCapacity(65536, 8, 8, true));
+	CHECK_EQ(std::uint32_t(0), Fertility::usefulExpansionCapacity(65536, 0, 8, false));
+	CHECK_EQ(std::uint32_t(0), Fertility::usefulExpansionCapacity(65536, 8, 0, false));
 	// Out-of-range inputs clamp rather than overflow the fold.
-	CPPUNIT_ASSERT_EQUAL(Fertility::usefulExpansionCapacity(1024, 8, 8, false),
-		Fertility::usefulExpansionCapacity(1024, 99, 99, false));
-	CPPUNIT_ASSERT_EQUAL(std::uint32_t(0), Fertility::usefulExpansionCapacity(1024, -5, 8, false));
+	CHECK_EQ(Fertility::usefulExpansionCapacity(1024, 8, 8, false), Fertility::usefulExpansionCapacity(1024, 99, 99, false));
+	CHECK_EQ(std::uint32_t(0), Fertility::usefulExpansionCapacity(1024, -5, 8, false));
 }
 
 void FertilityFieldTest::testWithinPercentBand()
 {
-	CPPUNIT_ASSERT(Fertility::withinPercentBand(Fertility::kScale / 2, 40, 60));
-	CPPUNIT_ASSERT(!Fertility::withinPercentBand(Fertility::kScale / 2, 60, 90));
-	CPPUNIT_ASSERT(Fertility::withinPercentBand(0, 0, 10));
+	CHECK(Fertility::withinPercentBand(Fertility::kScale / 2, 40, 60));
+	CHECK(!Fertility::withinPercentBand(Fertility::kScale / 2, 60, 90));
+	CHECK(Fertility::withinPercentBand(0, 0, 10));
 	// Inclusive at both ends, and a reversed band is read as written.
-	CPPUNIT_ASSERT(Fertility::withinPercentBand(Fertility::kScale, 100, 100));
-	CPPUNIT_ASSERT(Fertility::withinPercentBand(Fertility::kScale / 2, 60, 40));
+	CHECK(Fertility::withinPercentBand(Fertility::kScale, 100, 100));
+	CHECK(Fertility::withinPercentBand(Fertility::kScale / 2, 60, 40));
 }

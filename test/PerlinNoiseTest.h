@@ -3,24 +3,14 @@
 
 #pragma once
 
-#include <cppunit/extensions/HelperMacros.h>
+#include "Glob2Test.h"
 
-class PerlinNoiseTest: public CppUnit::TestFixture
+class PerlinNoiseTest
 {
-	CPPUNIT_TEST_SUITE( PerlinNoiseTest );
-		CPPUNIT_TEST( testConstructor );
-		CPPUNIT_TEST( testNotZeroOne );
-		CPPUNIT_TEST( testReseed );
-		CPPUNIT_TEST( testReseedIntDifferent );
-		CPPUNIT_TEST( testReseedIntSame );
-		CPPUNIT_TEST( testnoise1d );
-		CPPUNIT_TEST( testnoise2d );
-		CPPUNIT_TEST( testnoise3d );
-	CPPUNIT_TEST_SUITE_END();
 
 public:
-	void setUp();
-	void tearDown();
+	PerlinNoiseTest();
+	~PerlinNoiseTest();
 
 	void testConstructor();
 	void testNotZeroOne();

@@ -1,16 +1,19 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Real game rendering regression. Run with an isolated GLOB2_USER_DIR and
 // either -g (OpenGL) or -G (software). No desktop input is generated.
+#include "EngineFixtures.h"
+#include <vector>
+#include <algorithm>
+#include <utility>
+#include <cstdlib>
 #include "GlobalContainer.h"
 #include "TorusPicking.h"
 #include "TorusGeometry.h"
 #include "DynamicClouds.h"
 #include <SDL.h>
 // Expose camera and settings widgets for deterministic integration checks.
-#define private public
 #include "TorusView.h"
 #include "SettingsScreen.h"
-#undef private
 #include "GameGUI.h"
 #include "GameGUIInternal.h"
 #include "gui/GameGUIViewport.h"
@@ -27,20 +30,18 @@
 #include <epoxy/gl.h>
 #endif
 #endif
-#include <cassert>
 #include <cmath>
 #include <iostream>
 
-GlobalContainer *globalContainer = nullptr;
 class TorusRenderIntegrationTest
 {
 public:
-static int run(int argc, char **argv)
+static void run(bool gpu, int width, int height)
 {
     SDL_SetHint(SDL_HINT_MAC_BACKGROUND_APP, "1");
-    globalContainer = new GlobalContainer;
-    globalContainer->parseArgs(argc, argv);
-    globalContainer->load();
+    // The old harness ran with -F (windowed) -m (mute) -s WxH and -g or -G.
+    glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.display = true, .loadStrings = true, .width = width, .height = height,
+                                                                 .screenFlags = gpu ? Uint32(GraphicContext::USEGPU) : 0u});
     if (SDL_GL_GetCurrentWindow())
         SDL_HideWindow(SDL_GL_GetCurrentWindow());
     {
@@ -52,7 +53,7 @@ static int run(int argc, char **argv)
                 BasePlayer(i, "Test", i, i == 0 ? BasePlayer::P_LOCAL : BasePlayer::P_AI);
         gameHeader.setNumberOfPlayers(mapHeader.getNumberOfTeams());
         gui.localPlayer = gui.localTeamNo = 0;
-        assert(gui.loadFromHeaders(mapHeader, gameHeader, true, true));
+        REQUIRE(gui.loadFromHeaders(mapHeader, gameHeader, true, true));
         gui.adjustLocalTeam();
         gui.adjustInitialViewport();
         gui.updateCamera();
@@ -80,23 +81,23 @@ static int run(int argc, char **argv)
                     break;
                 }
             }
-        assert(dragX >= 0);
+        REQUIRE(dragX >= 0);
         gui.view.mouseUnit = nullptr;
         SDL_MouseButtonEvent down{};
         down.button = SDL_BUTTON_LEFT;
         down.x = dragX;
         down.y = dragY;
         gui.handleMouseButtonDown(down);
-        assert(gui.mapPanPushed);
+        REQUIRE(gui.mapPanPushed);
         const double originX = gui.camera.originX;
         gui.handleMouseMotion(dragX + 12, dragY + 8, SDL_BUTTON(SDL_BUTTON_LEFT));
-        assert(std::abs(gui.camera.originX -
+        REQUIRE(std::abs(gui.camera.originX -
             MapCamera::wrap(originX - 12 / gui.camera.zoom, gui.camera.mapWidth)) < 0.01);
         gui.handleMouseButtonUp(down);
-        assert(!gui.mapPanPushed);
+        REQUIRE(!gui.mapPanPushed);
         const double releasedX = gui.camera.originX;
         gui.handleMouseMotion(dragX + 24, dragY + 8, 0);
-        assert(gui.camera.originX == releasedX);
+        REQUIRE(gui.camera.originX == releasedX);
         // Building and resource tiles must accept the same pan and wheel
         // gestures as empty ground, without queuing building orders.
         std::pair<int, int> building{-1, -1}, resource{-1, -1};
@@ -109,7 +110,7 @@ static int run(int argc, char **argv)
                     gui.game.map.isResource(x, y))
                     resource = {x, y};
             }
-        assert(building.first >= 0 && resource.first >= 0);
+        REQUIRE((building.first >= 0 && resource.first >= 0));
         for (const auto tile : {building, resource})
         {
             gui.camera.originX = tile.first * 32 + 16 - gui.camera.visibleW() / 2;
@@ -127,10 +128,10 @@ static int run(int argc, char **argv)
             press.y = y;
             const auto ordersBefore = gui.orderQueue.size();
             gui.handleMouseButtonDown(press);
-            assert(gui.mapPanPushed);
+            REQUIRE(gui.mapPanPushed);
             const double beforePan = gui.camera.originX;
             gui.handleMouseMotion(x + 12, y + 8, SDL_BUTTON(SDL_BUTTON_LEFT));
-            assert(std::abs(gui.camera.originX -
+            REQUIRE(std::abs(gui.camera.originX -
                 MapCamera::wrap(beforePan - 12 / gui.camera.zoom, gui.camera.mapWidth)) < 0.01);
             SDL_Event release{};
             release.type = SDL_MOUSEBUTTONUP;
@@ -138,7 +139,7 @@ static int run(int argc, char **argv)
             release.button.x = x;
             release.button.y = y;
             gui.processEvent(&release);
-            assert(gui.orderQueue.size() == ordersBefore);
+            REQUIRE(gui.orderQueue.size() == ordersBefore);
             gui.mouseX = x;
             gui.mouseY = y;
             SDL_Event wheel{};
@@ -149,8 +150,8 @@ static int run(int argc, char **argv)
 #endif
             const double beforeZoom = gui.camera.zoom;
             gui.processEvent(&wheel);
-            assert(gui.camera.zoom > beforeZoom);
-            assert(gui.orderQueue.size() == ordersBefore);
+            REQUIRE(gui.camera.zoom > beforeZoom);
+            REQUIRE(gui.orderQueue.size() == ordersBefore);
         }
         // A direct flag grab keeps its existing move gesture.
         if (!gui.localTeam->virtualBuildings.empty())
@@ -170,18 +171,18 @@ static int run(int argc, char **argv)
             press.x = x;
             press.y = y;
             gui.handleMouseButtonDown(press);
-            assert(!gui.mapPanPushed);
+            REQUIRE(!gui.mapPanPushed);
             const double origin = gui.camera.originX;
             const int flagX = gui.displayedPosX(*flag);
             gui.handleMouseMotion(x + 96, y, SDL_BUTTON(SDL_BUTTON_LEFT));
-            assert(gui.camera.originX == origin);
-            assert(gui.displayedPosX(*flag) != flagX);
+            REQUIRE(gui.camera.originX == origin);
+            REQUIRE(gui.displayedPosX(*flag) != flagX);
             gui.handleMouseButtonUp(press);
         }
         // Units in the last 15 tiles of a full-world capture must keep their
         // visible copy's position, including movement across either seam.
         Unit *explorer = gui.game.addUnit(0, 0, 0, EXPLORER, 0, 128, 1, 1);
-        assert(explorer);
+        REQUIRE(explorer);
         for (int x : {-1, 0, gui.game.map.getW() - 8, gui.game.map.getW()})
             for (int y : {-1, 0, gui.game.map.getH() - 8, gui.game.map.getH()})
             {
@@ -191,7 +192,7 @@ static int run(int argc, char **argv)
                 gui.game.drawUnit(x, y, explorer->gid, (-x) & gui.game.map.getMaskW(),
                     (-y) & gui.game.map.getMaskH(), gui.game.map.getW(), gui.game.map.getH(),
                     0, Game::DRAW_WHOLE_MAP, gui.view);
-                assert(gui.view.mouseUnit == explorer);
+                REQUIRE(gui.view.mouseUnit == explorer);
             }
         gui.view.mouseX = gui.view.mouseY = -1;
         gui.view.mouseUnit = nullptr;
@@ -204,61 +205,61 @@ static int run(int argc, char **argv)
         keyboard.getKeyboardShortcuts().push_back(custom);
         keyboard.addMissingDefaults(GameGUIKeyActions::getDefaultConfigurationFile());
         for (const auto &shortcut : keyboard.getKeyboardShortcuts())
-            assert(shortcut.format(GameGUIShortcuts) != "<g>=toggle torus view");
+            REQUIRE(shortcut.format(GameGUIShortcuts) != "<g>=toggle torus view");
         keyboard.getKeyboardShortcuts().clear();
         keyboard.addMissingDefaults(GameGUIKeyActions::getDefaultConfigurationFile());
         bool hasToggle = false;
         for (const auto &shortcut : keyboard.getKeyboardShortcuts())
             hasToggle |= shortcut.format(GameGUIShortcuts) == "<g>=toggle torus view";
-        assert(hasToggle);
-        assert(!Settings().automaticTorus);
+        REQUIRE(hasToggle);
+        REQUIRE(!Settings().automaticTorus);
         globalContainer->settings.automaticTorus = false;
         {
             SettingsScreen options;
             const int oldMute = globalContainer->settings.mute;
             const bool oldHighResolution = globalContainer->settings.highResolutionArtwork;
-            assert(options.changeSetting("graphics.torus",1));
-            assert(globalContainer->settings.automaticTorus);
-            assert(globalContainer->settings.mute == oldMute);
-            assert(globalContainer->settings.highResolutionArtwork == oldHighResolution);
+            REQUIRE(options.changeSetting("graphics.torus",1));
+            REQUIRE(globalContainer->settings.automaticTorus);
+            REQUIRE(globalContainer->settings.mute == oldMute);
+            REQUIRE(globalContainer->settings.highResolutionArtwork == oldHighResolution);
             options.done();
         }
         Settings restored;
         restored.load();
-        assert(restored.automaticTorus);
+        REQUIRE(restored.automaticTorus);
         {
             SettingsScreen options;
             // Discrete settings save immediately, including when the screen
             // closes without a separate Save action.
-            assert(options.changeSetting("graphics.torus",0));
-            assert(!globalContainer->settings.automaticTorus);
+            REQUIRE(options.changeSetting("graphics.torus",0));
+            REQUIRE(!globalContainer->settings.automaticTorus);
             restored.load();
-            assert(!restored.automaticTorus);
+            REQUIRE(!restored.automaticTorus);
             options.done();
-            assert(!globalContainer->settings.automaticTorus);
+            REQUIRE(!globalContainer->settings.automaticTorus);
         }
         restored.load();
-        assert(!restored.automaticTorus);
+        REQUIRE(!restored.automaticTorus);
         TorusView view;
         view.notifyMove();
-        assert(!view.active());
+        REQUIRE(!view.active());
         for (int i = 0; i < 100; ++i)
         {
             view.setViewport(i, i / 2);
-            assert(!view.active());
+            REQUIRE(!view.active());
         }
         const bool gpu = globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU;
-        assert(view.available() == gpu);
+        REQUIRE(view.available() == gpu);
         if (!gpu)
         {
             globalContainer->settings.automaticTorus = true;
             view.notifyMove();
             view.toggle();
-            assert(!view.active());
+            REQUIRE(!view.active());
             globalContainer->settings.automaticTorus = false;
             int x = 0, y = 0, px, py;
-            assert(!view.draw(gui.game, 0, 0, x, y, 960, 720));
-            assert(!view.pick(480, 560, px, py));
+            REQUIRE(!view.draw(gui.game, 0, 0, x, y, 960, 720));
+            REQUIRE(!view.pick(480, 560, px, py));
             gui.drawAll(0);
             std::cout << "Software game rendering and inactive torus controls passed\n";
         }
@@ -271,7 +272,7 @@ static int run(int argc, char **argv)
             {
                 Sprite::setHighResolution(highResolution);
                 Sprite resources;
-                assert(resources.load("data/gfx/ressource"));
+                REQUIRE(resources.load("data/gfx/ressource"));
                 GLint viewport[4];
                 glGetIntegerv(GL_VIEWPORT, viewport);
                 auto captureResources = [&](float scale, Uint8 alpha, bool immediate)
@@ -303,7 +304,7 @@ static int run(int argc, char **argv)
                 std::vector<std::pair<int, int>> sizes;
                 for (int i = 0; i < resources.getFrameCount(); ++i)
                     sizes.emplace_back(resources.getW(i), resources.getH(i));
-                assert(resources.createTextureAtlas(true));
+                REQUIRE(resources.createTextureAtlas(true));
                 int sample = 0, maximumDifference = 0;
                 for (float scale : {1.f, .5f, .75f, 2.f})
                     for (Uint8 alpha : {Uint8(255), Uint8(127)})
@@ -315,33 +316,33 @@ static int run(int argc, char **argv)
                         ++sample;
                     }
                 for (int i = 0; i < resources.getFrameCount(); ++i)
-                    assert(sizes[i] == std::make_pair(resources.getW(i), resources.getH(i)));
+                    REQUIRE(sizes[i] == std::make_pair(resources.getW(i), resources.getH(i)));
                 std::cout << (highResolution ? "HD" : "Original") << " resource atlas maximum pixel difference: " << maximumDifference << "/255\n";
-                assert(maximumDifference <= 1);
+                REQUIRE(maximumDifference <= 1);
             }
             Sprite::setHighResolution(globalContainer->settings.highResolutionArtwork);
             DynamicClouds clouds(&globalContainer->settings);
             std::valarray<unsigned char> pixels;
             int gridW, gridH;
             clouds.computeWorld(256, 256, 250, pixels, gridW, gridH, 128);
-            assert(gridW == 128 && gridH == 128);
+            REQUIRE((gridW == 128 && gridH == 128));
             const auto &settings = globalContainer->settings;
             CloudField field(8192, 8192, 250, settings.cloudSize, settings.cloudStability,
                 settings.cloudMaxSpeed, settings.cloudWindStability, settings.cloudMaxAlpha);
             for (int row = 0; row < gridH; ++row)
                 for (int col = 0; col < gridW; ++col)
-                    assert(pixels[row * gridW + col] == field.opacity(col * 64, row * 64,
+                    REQUIRE(pixels[row * gridW + col] == field.opacity(col * 64, row * 64,
                         std::max(.01f, settings.cloudHeight / 100.f)));
             int x = 11, y = 13;
             auto draw = [&](float amount)
             {
                 view.amount = amount;
                 view.lastFrame = SDL_GetTicks();
-                assert(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, x, y, 960, 720));
-                assert(glGetError() == GL_NO_ERROR);
+                REQUIRE(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, x, y, 960, 720));
+                REQUIRE(glGetError() == GL_NO_ERROR);
             };
             view.toggle();
-            assert(view.active());
+            REQUIRE(view.active());
             draw(0);
             for (float phase : {.01f, .25f, .5f, .75f, 1.f})
                 draw(phase);
@@ -350,13 +351,13 @@ static int run(int argc, char **argv)
             draw(1);
             const auto pausedClouds = view.cloudPixels;
             draw(1);
-            assert(gui.game.mapAnimationTime == pausedTime);
-            assert(pausedClouds.size() == view.cloudPixels.size());
+            REQUIRE(gui.game.mapAnimationTime == pausedTime);
+            REQUIRE(pausedClouds.size() == view.cloudPixels.size());
             for (size_t i = 0; i < pausedClouds.size(); ++i)
-                assert(pausedClouds[i] == view.cloudPixels[i]);
+                REQUIRE(pausedClouds[i] == view.cloudPixels[i]);
             gui.gamePaused = false;
             draw(1);
-            assert(gui.game.mapAnimationTime > pausedTime);
+            REQUIRE(gui.game.mapAnimationTime > pausedTime);
             // Selection markers are painted into the atlas, which is measured in
             // world pixels. The factor the window stretches the interface by must
             // not reach their line width, and every marker the flat view paints
@@ -366,10 +367,10 @@ static int run(int argc, char **argv)
                 Building *selected = nullptr;
                 for (int i = 0; i < 1024 && !selected; ++i)
                     selected = gui.game.teams[0]->myBuildings[i];
-                assert(selected);
+                REQUIRE(selected);
                 gui.showUnitWorkingToBuilding = true;
                 gui.setSelection(GameGUI::BUILDING_SELECTION, selected);
-                assert(gui.view.selectedBuilding == selected);
+                REQUIRE(gui.view.selectedBuilding == selected);
                 const int worldW = gui.game.map.getW() * 32, worldH = gui.game.map.getH() * 32;
                 std::vector<unsigned char> atlas;
                 // The atlas holds one upright copy of the world; GL hands rows back bottom-up.
@@ -389,7 +390,7 @@ static int run(int argc, char **argv)
                     atlas.assign(size_t(view.atlasW) * view.atlasH * 4, 0);
                     glBindTexture(GL_TEXTURE_2D, view.texture);
                     glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, atlas.data());
-                    assert(glGetError() == GL_NO_ERROR);
+                    REQUIRE(glGetError() == GL_NO_ERROR);
                 };
                 // A worker circle is white over whatever it covers, so count the
                 // bright pixels its own tile gains rather than trusting a threshold.
@@ -416,7 +417,7 @@ static int run(int argc, char **argv)
                 selected->unitsWorking.clear();
                 std::cout << "Torus worker marker bright pixels: " << withoutWorker << " -> "
                           << withWorker << "\n";
-                assert(withWorker > withoutWorker + 16);
+                REQUIRE(withWorker > withoutWorker + 16);
                 // Walk outwards from the ring's left edge: at one texel per world
                 // pixel the selection circle is the two pixels drawCircle asks for.
                 int cx, cy;
@@ -431,9 +432,9 @@ static int run(int argc, char **argv)
                 }
                 std::cout << "Torus selection circle: " << stroke << " atlas texels wide at interface scale "
                           << windowScale << "\n";
-                assert(stroke > 0 && stroke <= 3);
+                REQUIRE((stroke > 0 && stroke <= 3));
                 // The window is the drawable again once the atlas pass is over.
-                assert(globalContainer->gfx->getRasterScale() == windowScale);
+                REQUIRE(globalContainer->gfx->getRasterScale() == windowScale);
                 gui.clearSelection();
                 std::cout << "Torus selection markers passed\n";
             }
@@ -444,12 +445,12 @@ static int run(int argc, char **argv)
                 view.setViewport((x + 3) & gui.game.map.getMaskW(), (y + 5) & gui.game.map.getMaskH());
                 draw(1);
                 int px, py;
-                assert(view.pick(480, 560, px, py));
+                REQUIRE(view.pick(480, 560, px, py));
             }
             view.reset();
-            assert(!view.active());
+            REQUIRE(!view.active());
             int px, py;
-            assert(!view.pick(480, 560, px, py));
+            REQUIRE(!view.pick(480, 560, px, py));
             for (int i = 0; i < 3; ++i)
             {
                 view.toggle();
@@ -462,46 +463,46 @@ static int run(int argc, char **argv)
             view.toggle();
             view.lastFrame = SDL_GetTicks() - 100;
             view.amount = .04f;
-            assert(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, x, y, 960, 720));
-            assert(!view.active());
+            REQUIRE(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, x, y, 960, 720));
+            REQUIRE(!view.active());
             // Automatic motion opens slowly and returns quickly after inactivity.
             globalContainer->settings.automaticTorus = true;
             view.notifyMove();
-            assert(view.active() && !view.enabled());
+            REQUIRE((view.active() && !view.enabled()));
             draw(0);
             view.amount = .25f;
             view.lastMove = SDL_GetTicks();
             view.lastFrame = SDL_GetTicks() - 100;
-            assert(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, x, y, 960, 720));
-            assert(view.amount > .25f && view.amount <= .28f);
+            REQUIRE(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, x, y, 960, 720));
+            REQUIRE((view.amount > .25f && view.amount <= .28f));
             // Neither folding nor automatic return changes an active gesture's projection.
             view.setPointerHeld(true);
             float heldAmount = view.amount;
             view.lastMove = SDL_GetTicks() - 300;
             view.lastFrame = SDL_GetTicks() - 100;
-            assert(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, x, y, 960, 720));
-            assert(view.amount == heldAmount);
+            REQUIRE(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, x, y, 960, 720));
+            REQUIRE(view.amount == heldAmount);
             view.setPointerHeld(false);
             view.lastFrame = SDL_GetTicks() - 100;
-            assert(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, x, y, 960, 720));
-            assert(view.amount < heldAmount - .2f);
+            REQUIRE(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, x, y, 960, 720));
+            REQUIRE(view.amount < heldAmount - .2f);
             // G pins the overview even when no movement notifications arrive.
             view.toggle();
             view.lastMove = SDL_GetTicks() - 300;
             draw(1);
-            assert(view.enabled() && view.amount == 1);
+            REQUIRE((view.enabled() && view.amount == 1));
             view.toggle();
             view.amount = .1f;
             view.lastFrame = SDL_GetTicks() - 100;
-            assert(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, x, y, 960, 720));
-            assert(!view.active());
+            REQUIRE(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, x, y, 960, 720));
+            REQUIRE(!view.active());
             // Disabling the preference clears an automatic reveal before its first frame.
             view.notifyMove();
             globalContainer->settings.automaticTorus = false;
-            assert(!view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, x, y, 960, 720));
-            assert(!view.active());
+            REQUIRE(!view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, x, y, 960, 720));
+            REQUIRE(!view.active());
             view.notifyMove();
-            assert(!view.active());
+            REQUIRE(!view.active());
             globalContainer->gfx->setClipRect();
             gui.drawAll(0);
             // Preserve the map focus when entering from shared 2D zoom.
@@ -522,10 +523,10 @@ static int run(int argc, char **argv)
                     gui.torusView.lastFrame = SDL_GetTicks();
                     gui.drawAll(0);
                     int px, py;
-                    assert(gui.torusView.pick(cx, cy, px, py));
-                    assert(std::abs(TorusGeometry::wrappedDelta(px, int(center.first), gui.game.map.getW()*32)) <= 2);
-                    assert(std::abs(TorusGeometry::wrappedDelta(py, int(center.second), gui.game.map.getH()*32)) <= 2);
-                    assert(glGetError() == GL_NO_ERROR);
+                    REQUIRE(gui.torusView.pick(cx, cy, px, py));
+                    REQUIRE(std::abs(TorusGeometry::wrappedDelta(px, int(center.first), gui.game.map.getW()*32)) <= 2);
+                    REQUIRE(std::abs(TorusGeometry::wrappedDelta(py, int(center.second), gui.game.map.getH()*32)) <= 2);
+                    REQUIRE(glGetError() == GL_NO_ERROR);
                 }
                 gui.torusView.reset();
                 gui.drawAll(0);
@@ -550,27 +551,27 @@ static int run(int argc, char **argv)
                 {
                     rectangularView.amount = phase;
                     rectangularView.lastFrame = SDL_GetTicks();
-                    assert(rectangularView.draw(rectangular.game, 0, Game::DRAW_WHOLE_MAP, vx, vy, 960, 720));
-                    assert(glGetError() == GL_NO_ERROR);
+                    REQUIRE(rectangularView.draw(rectangular.game, 0, Game::DRAW_WHOLE_MAP, vx, vy, 960, 720));
+                    REQUIRE(glGetError() == GL_NO_ERROR);
                     // Picking the original screen center must still reach the
                     // same map location after each step of the transition.
                     int px, py;
-                    assert(rectangularView.pick(480, 368, px, py));
+                    REQUIRE(rectangularView.pick(480, 368, px, py));
                     const int expectedX = TorusPicking::worldPixel(rectangularView.pickU, rectangularView.originX, size.first);
                     const int expectedY = TorusPicking::worldPixel(rectangularView.pickV, rectangularView.originY, size.second);
-                    assert(std::abs(TorusGeometry::wrappedDelta(px, expectedX, size.first * 32)) <= 2);
-                    assert(std::abs(TorusGeometry::wrappedDelta(py, expectedY, size.second * 32)) <= 2);
+                    REQUIRE(std::abs(TorusGeometry::wrappedDelta(px, expectedX, size.first * 32)) <= 2);
+                    REQUIRE(std::abs(TorusGeometry::wrappedDelta(py, expectedY, size.second * 32)) <= 2);
                 }
-                assert(rectangularView.ringMapAspect == float(size.first) / size.second);
+                REQUIRE(rectangularView.ringMapAspect == float(size.first) / size.second);
                 for (const auto &vertex : rectangularView.vertices)
                 {
                     float x = vertex.position[0] / vertex.position[3];
                     float y = vertex.position[1] / vertex.position[3];
-                    assert(std::isfinite(x) && std::isfinite(y));
-                    assert(x >= 0 && x <= 960); // The distant rim may crop vertically.
+                    REQUIRE((std::isfinite(x) && std::isfinite(y)));
+                    REQUIRE((x >= 0 && x <= 960)); // The distant rim may crop vertically.
                 }
                 rectangularView.setViewport(size.first - 1, size.second - 1);
-                assert(rectangularView.draw(rectangular.game, 0, Game::DRAW_WHOLE_MAP, vx, vy, 960, 720));
+                REQUIRE(rectangularView.draw(rectangular.game, 0, Game::DRAW_WHOLE_MAP, vx, vy, 960, 720));
                 int hits = 0;
                 for (int y = 100; y < 700; y += 40)
                     for (int x = 100; x < 900; x += 40)
@@ -578,23 +579,28 @@ static int run(int argc, char **argv)
                         int px, py;
                         if (rectangularView.pick(x, y, px, py))
                         {
-                            assert(px >= 0 && px < size.first * 32 && py >= 0 && py < size.second * 32);
+                            REQUIRE((px >= 0 && px < size.first * 32 && py >= 0 && py < size.second * 32));
                             ++hits;
                         }
                     }
-                assert(hits > 10);
+                REQUIRE(hits > 10);
             }
             std::cout << "Rectangular-map rendering, fitting, picking and cache changes passed\n";
 
 #endif
         }
     }
-    delete globalContainer;
-    return 0;
 }
 };
 
-int main(int argc, char **argv)
+TEST_SUITE("TorusRender")
 {
-    return TorusRenderIntegrationTest::run(argc, argv);
+	TEST_CASE("game rendering; picking and cache changes in software rendering [writes-preferences]") { TorusRenderIntegrationTest::run(false, 1120, 720); }
+	TEST_CASE("game rendering; picking and cache changes in OpenGL [display][writes-preferences]") { TorusRenderIntegrationTest::run(true, 1120, 720); }
+	TEST_CASE("game rendering at triple UI scale in OpenGL [display:1920x1440][writes-preferences]")
+	{
+		SDL_setenv("GLOB2_UI_SCALE", "3", 1);
+		TorusRenderIntegrationTest::run(true, 1920, 1440);
+		unsetenv("GLOB2_UI_SCALE");
+	}
 }

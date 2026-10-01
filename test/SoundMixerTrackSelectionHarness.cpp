@@ -31,8 +31,9 @@
 // Defaults to "..", so it runs from test/ under CI's harness loop with no
 // arguments. Exits 0 if every check passes, 1 if any fails.
 
+#include "Glob2Test.h"
+
 #include <cstdio>
-#include <cstdlib>
 #include <string>
 
 #include <SDL.h>
@@ -55,25 +56,14 @@ namespace
 	const int kCallbackBytes = kDeviceFrameCount * 2 /*channels*/ * 2 /*Sint16*/;
 	const int kCallbacksPerFade = (4096 * 8) / (kDeviceFrameCount * 2);
 
-	int failures = 0;
-
 	void check(bool ok, const char *what)
 	{
-		std::printf("%-58s %s\n", what, ok ? "OK" : "FAILED");
-		if (!ok)
-			failures++;
+		CHECK_MESSAGE(ok, (what));
 	}
 
 	void checkTrack(int got, MusicTrack expected, const char *what)
 	{
-		const bool ok = got == static_cast<int>(expected);
-		std::printf("%-58s %s", what, ok ? "OK" : "FAILED");
-		if (!ok)
-		{
-			std::printf("  (expected %d, got %d)", static_cast<int>(expected), got);
-			failures++;
-		}
-		std::printf("\n");
+		CHECK_MESSAGE(got == static_cast<int>(expected), what << " (expected " << static_cast<int>(expected) << ", got " << got << ")");
 	}
 
 	//! Run the callback `count` times over a scratch buffer.
@@ -96,22 +86,18 @@ namespace
 	}
 }
 
-int main(int argc, char *argv[])
+TEST_SUITE("SoundMixerTrackSelection")
 {
-	// Built into test/, which is where CI runs it from, so the game's data
-	// directory is one level up unless told otherwise.
-	const char *dataDir = argc >= 2 ? argv[1] : "..";
+TEST_CASE("track selection while closed and queued mid-fade changes")
+{
+	const std::string dataDir = glob2test::sourceRoot().string();
 
 	// The dummy driver gives a real SDL_OpenAudio without needing hardware, so
 	// the muted-start / unmute path below is the production one.
 	SDL_setenv("SDL_AUDIODRIVER", "dummy", 1);
-	if (SDL_Init(SDL_INIT_AUDIO) < 0)
-	{
-		std::fprintf(stderr, "SDL_Init(SDL_INIT_AUDIO) failed: %s\n", SDL_GetError());
-		return 2;
-	}
+	REQUIRE_MESSAGE(SDL_InitSubSystem(SDL_INIT_AUDIO) == 0, (SDL_GetError()));
 
-	GAGCore::Toolkit::init("glob2-soundmixer-test");
+	glob2test::ToolkitScope toolkit;
 	GAGCore::Toolkit::getFileManager()->addDir(dataDir);
 
 	{
@@ -125,11 +111,7 @@ int main(int argc, char *argv[])
 			"data/zik/original/a3.ogg" };
 		for (int i = 0; i < 5; i++)
 		{
-			if (mix.loadTrack(names[i], i) < 0)
-			{
-				std::fprintf(stderr, "could not load %s from %s\n", names[i], dataDir);
-				return 2;
-			}
+			REQUIRE_MESSAGE(mix.loadTrack(names[i], i) >= 0, "could not load " << names[i] << " from " << dataDir);
 		}
 
 		// --- 1. selection while the device is closed ---------------------
@@ -212,9 +194,6 @@ int main(int argc, char *argv[])
 		SDL_UnlockAudio();
 	}
 
-	GAGCore::Toolkit::close();
-	SDL_Quit();
-
-	std::printf("\n%s\n", failures ? "FAILED" : "All checks passed");
-	return failures ? 1 : 0;
+	SDL_QuitSubSystem(SDL_INIT_AUDIO);
+}
 }

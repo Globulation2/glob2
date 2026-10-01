@@ -2,14 +2,21 @@
 // Copyright (C) 2010 Leo Wandersleb
 
 #include "NatSortTest.h"
-CPPUNIT_TEST_SUITE_REGISTRATION( NatSortTest );
+#include <vector>
+#include <string>
+TEST_SUITE("NatSort")
+{
+	TEST_CASE_FIXTURE(NatSortTest, "Strnatcmp") { testStrnatcmp(); }
+	TEST_CASE_FIXTURE(NatSortTest, "Strnatcasecmp") { testStrnatcasecmp(); }
+	TEST_CASE_FIXTURE(NatSortTest, "BothStrnatcmp") { testBothStrnatcmp(); }
+}
 
 std::vector<ABResult> aBResults;
 
-void NatSortTest::setUp()
+NatSortTest::NatSortTest()
 {
 }
-void NatSortTest::tearDown()
+NatSortTest::~NatSortTest()
 {
 	aBResults.clear();
 }
@@ -92,5 +99,5 @@ void NatSortTest::testOne(std::string leftString, std::string rightString,
 
 	int actualResult = func(left, right);
 
-	CPPUNIT_ASSERT_EQUAL_MESSAGE(message, expectedResult, actualResult);
+	CHECK_MESSAGE((expectedResult) == (actualResult), (message));
 }

@@ -1,4 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "EngineFixtures.h"
+#include <string>
+#include <memory>
+#include <algorithm>
+#include <iostream>
+#include <utility>
+#include <iterator>
+#include <cmath>
+#include <cstdlib>
 #include "Engine.h"
 #include "GameGUITouch.h"
 #include "InGameTouchTheme.h"
@@ -39,11 +48,9 @@
 #include <cstring>
 #include <stdexcept>
 
-GlobalContainer *globalContainer = nullptr;
 static void require(bool condition, const char *message)
 {
-	if (!condition)
-		throw std::runtime_error(message);
+	GLOB2_REQUIRE(condition, message);
 }
 
 // Exercise the portable renderer's first draw and alternating touch transforms.
@@ -1690,35 +1697,23 @@ class GameGUITouchHarness
 		editorAreaNameInteractions();
 	}
 };
-int main()
+TEST_SUITE("GameGUITouch")
 {
-	if (!SDL_getenv("GLOB2_USER_DATA_DIR"))
-		return 2;
-	SDL_setenv("SDL_AUDIODRIVER", "dummy", 1);
-	// Exercise the legacy mouse sidebar first, even on touch-capable hosts;
-	// run() explicitly switches to the phone presentation for the touch cases.
-	SDL_setenv("GLOB2_MOBILE_UI", "0", 1);
-	try
+	TEST_CASE("actual gameplay touch; toroidal pan; preview; confirmation; validation; cancellation and duplicate suppression [display][artifacts][writes-preferences]")
 	{
-		globalContainer = new GlobalContainer("glob2-touch-test");
-		globalContainer->settings.screenWidth = 800;
-		globalContainer->settings.screenHeight = 600;
-		globalContainer->settings.screenFlags = GAGCore::GraphicContext::PORTABLEGPU;
-		globalContainer->settings.mute = true;
-		globalContainer->load();
-		require(SDLNet_Init() == 0, "SDL networking init failed");
+		// Exercise the legacy mouse sidebar first, even on touch-capable hosts;
+		// run() explicitly switches to the phone presentation for the touch cases.
+		SDL_setenv("GLOB2_MOBILE_UI", "0", 1);
+		glob2test::GlobalsOptions options{.display = true, .loadStrings = true, .width = 800, .height = 600,
+		                                  .screenFlags = GAGCore::GraphicContext::PORTABLEGPU};
+		glob2test::HeadlessGlobals globals(options);
+		REQUIRE(SDLNet_Init() == 0);
 		verifyTouchFontRaster();
 		GameGUITouchHarness::run();
-		delete globalContainer;
-		globalContainer = nullptr;
 		SDLNet_Quit();
+		SDL_setenv("GLOB2_MOBILE_UI", "0", 1);
+		glob2test::retainFromProfile(".bmp");
 		std::puts("PASS: actual gameplay touch, toroidal pan, preview, confirmation, validation, "
 				  "cancellation and duplicate suppression");
-		return 0;
-	}
-	catch (const std::exception &e)
-	{
-		std::fprintf(stderr, "FAIL: %s\n", e.what());
-		return 1;
 	}
 }

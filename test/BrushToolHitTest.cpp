@@ -14,7 +14,8 @@
 // Brush.h only pulls in <cstddef>/<optional>/<vector> and forward-declares Color,
 // and hitTest is inline, so this links nothing — no globalContainer, no SDL.
 
-#include <cppunit/extensions/HelperMacros.h>
+#include "Glob2Test.h"
+#include <string>
 
 #include <optional>
 
@@ -57,17 +58,8 @@ namespace
 	}
 }
 
-class BrushToolHitTest : public CppUnit::TestFixture
+class BrushToolHitTest
 {
-	CPPUNIT_TEST_SUITE(BrushToolHitTest);
-	CPPUNIT_TEST(testOffByOneIsTheOnlyChange);
-	CPPUNIT_TEST(testOffByOneCellsNowHit);
-	CPPUNIT_TEST(testZoneStripClicksMissThePanel);
-	CPPUNIT_TEST(testModeRow);
-	CPPUNIT_TEST(testFigureGrid);
-	CPPUNIT_TEST(testEdges);
-	CPPUNIT_TEST(testLayoutConstants);
-	CPPUNIT_TEST_SUITE_END();
 
 public:
 	/// Brute-force the new grid against the old one over the panel and far past
@@ -82,11 +74,11 @@ public:
 					continue;
 				const auto now = BrushTool::hitTest(x, y);
 				const auto before = referenceHit(x, y);
-				CPPUNIT_ASSERT_MESSAGE(describe(x, y), now.has_value() == before.has_value());
+				CHECK_MESSAGE(now.has_value() == before.has_value(), (describe(x, y)));
 				if (now)
 				{
-					CPPUNIT_ASSERT_MESSAGE(describe(x, y), now->kind == before->kind);
-					CPPUNIT_ASSERT_MESSAGE(describe(x, y), now->value == before->value);
+					CHECK_MESSAGE(now->kind == before->kind, (describe(x, y)));
+					CHECK_MESSAGE(now->value == before->value, (describe(x, y)));
 				}
 			}
 		}
@@ -102,8 +94,8 @@ public:
 			{
 				if (!isOffByOneCell(x, y))
 					continue;
-				CPPUNIT_ASSERT_MESSAGE(describe(x, y), BrushTool::hitTest(x, y).has_value());
-				CPPUNIT_ASSERT_MESSAGE(describe(x, y), !referenceHit(x, y).has_value());
+				CHECK_MESSAGE(BrushTool::hitTest(x, y).has_value(), (describe(x, y)));
+				CHECK_MESSAGE(!referenceHit(x, y).has_value(), (describe(x, y)));
 			}
 		}
 	}
@@ -115,7 +107,7 @@ public:
 	{
 		for (int y = -39; y <= -1; ++y)
 			for (int x = 0; x < BrushTool::WIDTH; ++x)
-				CPPUNIT_ASSERT_MESSAGE(describe(x, y), !BrushTool::hitTest(x, y).has_value());
+				CHECK_MESSAGE(!BrushTool::hitTest(x, y).has_value(), (describe(x, y)));
 	}
 
 	void testModeRow()
@@ -125,12 +117,12 @@ public:
 			for (int x = 0; x < BrushTool::WIDTH; ++x)
 			{
 				const auto hit = BrushTool::hitTest(x, y);
-				CPPUNIT_ASSERT_MESSAGE(describe(x, y), hit.has_value());
-				CPPUNIT_ASSERT_MESSAGE(describe(x, y), hit->kind == BrushTool::Hit::ModeButton);
+				CHECK_MESSAGE(hit.has_value(), (describe(x, y)));
+				CHECK_MESSAGE(hit->kind == BrushTool::Hit::ModeButton, (describe(x, y)));
 				const unsigned expected = (x < BrushTool::MODE_BUTTON_WIDTH)
 					? static_cast<unsigned>(BrushTool::MODE_ADD)
 					: static_cast<unsigned>(BrushTool::MODE_DEL);
-				CPPUNIT_ASSERT_EQUAL(expected, hit->value);
+				CHECK_EQ(expected, hit->value);
 			}
 		}
 	}
@@ -149,9 +141,9 @@ public:
 					const int x = column * BrushTool::FIGURE_CELL_SIZE + dx;
 					const int y = BrushTool::MODE_ROW_HEIGHT + row * BrushTool::FIGURE_CELL_SIZE + dy;
 					const auto hit = BrushTool::hitTest(x, y);
-					CPPUNIT_ASSERT_MESSAGE(describe(x, y), hit.has_value());
-					CPPUNIT_ASSERT_MESSAGE(describe(x, y), hit->kind == BrushTool::Hit::FigureButton);
-					CPPUNIT_ASSERT_EQUAL(figure, hit->value);
+					CHECK_MESSAGE(hit.has_value(), (describe(x, y)));
+					CHECK_MESSAGE(hit->kind == BrushTool::Hit::FigureButton, (describe(x, y)));
+					CHECK_EQ(figure, hit->value);
 				}
 			}
 		}
@@ -160,35 +152,44 @@ public:
 	void testEdges()
 	{
 		// Corners of the panel are inside.
-		CPPUNIT_ASSERT(BrushTool::hitTest(0, 0).has_value());
-		CPPUNIT_ASSERT(BrushTool::hitTest(BrushTool::WIDTH - 1, 0).has_value());
-		CPPUNIT_ASSERT(BrushTool::hitTest(0, BrushTool::HEIGHT - 1).has_value());
-		CPPUNIT_ASSERT(BrushTool::hitTest(BrushTool::WIDTH - 1, BrushTool::HEIGHT - 1).has_value());
+		CHECK(BrushTool::hitTest(0, 0).has_value());
+		CHECK(BrushTool::hitTest(BrushTool::WIDTH - 1, 0).has_value());
+		CHECK(BrushTool::hitTest(0, BrushTool::HEIGHT - 1).has_value());
+		CHECK(BrushTool::hitTest(BrushTool::WIDTH - 1, BrushTool::HEIGHT - 1).has_value());
 
 		// One pixel past each is outside.
-		CPPUNIT_ASSERT(!BrushTool::hitTest(-1, 0).has_value());
-		CPPUNIT_ASSERT(!BrushTool::hitTest(0, -1).has_value());
-		CPPUNIT_ASSERT(!BrushTool::hitTest(BrushTool::WIDTH, 0).has_value());
-		CPPUNIT_ASSERT(!BrushTool::hitTest(0, BrushTool::HEIGHT).has_value());
+		CHECK(!BrushTool::hitTest(-1, 0).has_value());
+		CHECK(!BrushTool::hitTest(0, -1).has_value());
+		CHECK(!BrushTool::hitTest(BrushTool::WIDTH, 0).has_value());
+		CHECK(!BrushTool::hitTest(0, BrushTool::HEIGHT).has_value());
 
 		// The mode row / figure grid seam.
-		CPPUNIT_ASSERT(BrushTool::hitTest(0, BrushTool::MODE_ROW_HEIGHT - 1)->kind == BrushTool::Hit::ModeButton);
-		CPPUNIT_ASSERT(BrushTool::hitTest(0, BrushTool::MODE_ROW_HEIGHT)->kind == BrushTool::Hit::FigureButton);
+		CHECK(BrushTool::hitTest(0, BrushTool::MODE_ROW_HEIGHT - 1)->kind == BrushTool::Hit::ModeButton);
+		CHECK(BrushTool::hitTest(0, BrushTool::MODE_ROW_HEIGHT)->kind == BrushTool::Hit::FigureButton);
 
 		// The last figure reaches the bottom-right corner. The map editor's
 		// widget rect used to be 4px short of this, making it unreachable.
 		const auto corner = BrushTool::hitTest(BrushTool::WIDTH - 1, BrushTool::HEIGHT - 1);
-		CPPUNIT_ASSERT_EQUAL(BrushTool::BRUSH_COUNT - 1, corner->value);
+		CHECK_EQ(BrushTool::BRUSH_COUNT - 1, corner->value);
 	}
 
 	/// The literals the old code re-typed at each site.
 	void testLayoutConstants()
 	{
-		CPPUNIT_ASSERT_EQUAL(128, BrushTool::WIDTH);
-		CPPUNIT_ASSERT_EQUAL(100, BrushTool::HEIGHT);
-		CPPUNIT_ASSERT_EQUAL(64, BrushTool::MODE_BUTTON_WIDTH);
-		CPPUNIT_ASSERT_EQUAL(8u, BrushTool::BRUSH_COUNT);
+		CHECK_EQ(128, BrushTool::WIDTH);
+		CHECK_EQ(100, BrushTool::HEIGHT);
+		CHECK_EQ(64, BrushTool::MODE_BUTTON_WIDTH);
+		CHECK_EQ(8u, BrushTool::BRUSH_COUNT);
 	}
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(BrushToolHitTest);
+TEST_SUITE("BrushToolHit")
+{
+	TEST_CASE_FIXTURE(BrushToolHitTest, "OffByOneIsTheOnlyChange") { testOffByOneIsTheOnlyChange(); }
+	TEST_CASE_FIXTURE(BrushToolHitTest, "OffByOneCellsNowHit") { testOffByOneCellsNowHit(); }
+	TEST_CASE_FIXTURE(BrushToolHitTest, "ZoneStripClicksMissThePanel") { testZoneStripClicksMissThePanel(); }
+	TEST_CASE_FIXTURE(BrushToolHitTest, "ModeRow") { testModeRow(); }
+	TEST_CASE_FIXTURE(BrushToolHitTest, "FigureGrid") { testFigureGrid(); }
+	TEST_CASE_FIXTURE(BrushToolHitTest, "Edges") { testEdges(); }
+	TEST_CASE_FIXTURE(BrushToolHitTest, "LayoutConstants") { testLayoutConstants(); }
+}

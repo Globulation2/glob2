@@ -1,15 +1,3 @@
-# Build artifacts produced by test/SConstruct — never commit these.
-
-# Object files, static libraries, and scons bookkeeping
-*.o
-*.a
-*.dblite
-.sconsign.dblite
-.sconf_temp/
+# Test binaries build under build/<toolchain>/client/release/test/; nothing is
+# generated inside this directory any more.
 testResults.xml
-
-# Compiled test harnesses / runners (extensionless executables).
-# Sources keep their .cpp/.h extension, so these patterns never catch them.
-*Test
-*Harness
-TestsRunner

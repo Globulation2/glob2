@@ -19,13 +19,14 @@ scons release=1 server=0       # optimized client, including headless runs
 scons release=1 server=1       # server with the correct stripped library
 scons release=1 package        # macOS signed app bundle and DMG
 scons release=1 bundle         # macOS app bundle without the DMG
-scons -C test                 # rebuild the separate test suite
-(cd test && ./TestsRunner && ./WinningConditionsHarness)
+scons release=1 server=0 tests # glob2-engine-tests and glob2-unit-tests
+python3 test/run_tests.py      # run them; --list, --filter, --tag, --shard
 ```
 
-- Top-level `scons` does not rebuild the separate `test/` suite. Rebuild there
-  before trusting its binaries; explicit real-engine harness targets are listed
-  in `test/README.md` and CI. Extend an existing relevant harness where practical.
+- The test binaries are built by the same `scons` invocation as the game, from
+  the same objects, and listed in `test/tests.py`; `test/README.md` describes
+  the runner, the fixtures and where a new test goes. Extend an existing
+  relevant suite where practical.
 - Options are explicit on each invocation; there is no cross-invocation
   `options.py`. Outputs and generated configuration are isolated under
   `build/<toolchain>/<role>/<mode>`: `darwin`, `linux`, or `mingw` for native
@@ -106,8 +107,8 @@ scons -C test                 # rebuild the separate test suite
 - CI lets independent test steps finish after a failure and records their raw
   outcomes in the job summary. The final summary step fails the job if any
   required check failed. Keep build prerequisites as prerequisites, and use
-  `test/ci_run_commands.py` or `test/run-standalone-tests.py` when several
-  independent commands share one step. Artifact uploads run after failed checks
+  `test/ci_run_commands.py` when several independent commands share one step;
+  `test/run_tests.py` already isolates and aggregates the native test cases. Artifact uploads run after failed checks
   so reviewers can inspect the available evidence. The Linux client builds once
   per supported toolchain, then distributes its built programs to four parallel
   test shards per toolchain. The original `linux (...)` checks require every
@@ -307,12 +308,16 @@ For timing and scheduling, start with `src/Game_sync.cpp` and `src/EngineRun.cpp
 - Never bound simulation work by wall-clock time or a timeout: this is a lockstep
   engine, and two machines running the same tick at different real speeds must still
   do identical work. Use a fixed count of ticks, steps or comparisons instead.
-- A new regression harness only protects the codebase once
+- A new regression test only protects the codebase once
   `.github/workflows/build.yml` actually builds and runs it; one that only runs by
-  hand, once, is not a regression test. Add its SCons alias to the job's single
-  "Build glob2 and the regression harnesses" command and give it a step that only runs
-  it: a separate `scons` call per step re-reads the whole build and compiles one file at
-  a time. Builds that need other options (`server=1`, `opengl=0`, `test/`) belong in
+  hand, once, is not a regression test. Add its translation unit to `test/tests.py`:
+  the unit or engine binary is already in the job's single "Build glob2 and the
+  regression harnesses" command and `test/run_tests.py` picks the new cases up on
+  the next run, so no per-test step is needed. A harness that must stay a
+  separate program (two processes, a golden-table tool) gets a `PROGRAMS` entry
+  and one step that only runs it: a separate `scons` call per step re-reads the
+  whole build and compiles one file at a time. Builds that need other options
+  (`server=1`, `opengl=0`) belong in
   the `linux variants` job, and long CPU-bound checks in a job of their own, as the
   golden-map sweep does; its four sweep shards are split between two jobs per
   toolchain, alongside a job for telemetry and generator defaults. Jobs run in

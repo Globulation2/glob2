@@ -43,21 +43,6 @@ class CIFailureAggregationTests(unittest.TestCase):
             self.assertIn('first failure', summary.read_text())
             self.assertIn('second failure', summary.read_text())
 
-    def test_standalone_runner_finishes_after_two_failures(self):
-        with tempfile.TemporaryDirectory() as directory:
-            for name, code in [('TestsRunner', 0), ('FirstHarness', 2), ('SecondTest', 3)]:
-                executable = Path(directory) / name
-                executable.write_text(f'#!/bin/sh\necho ran-{name}\nexit {code}\n')
-                executable.chmod(0o755)
-            result = subprocess.run([
-                sys.executable, str(HERE / 'run-standalone-tests.py'),
-            ], cwd=directory, capture_output=True, text=True)
-            self.assertEqual(result.returncode, 1)
-            for name in ('TestsRunner', 'FirstHarness', 'SecondTest'):
-                self.assertIn(f'ran-{name}', result.stdout)
-            self.assertIn('FirstHarness (2)', result.stdout)
-            self.assertIn('SecondTest (3)', result.stdout)
-
 
 if __name__ == '__main__':
     unittest.main()

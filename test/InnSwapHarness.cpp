@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Hungry units swap inns when that shortens both walks: a unit that booked the
 // last place in the inn near a team mate, from farther away, hands it over.
+#include "EngineFixtures.h"
 #include "GlobalContainer.h"
 #include "Game.h"
 #include "GameGUI.h"
@@ -13,11 +14,11 @@
 #include <cstdio>
 #include <cstdlib>
 
-GlobalContainer* globalContainer = nullptr;
-
+namespace
+{
 static void require(bool ok, const char* message)
 {
-	if (!ok) { std::fprintf(stderr, "FAIL: %s\n", message); std::exit(1); }
+	GLOB2_REQUIRE(ok, message);
 }
 
 struct World
@@ -128,18 +129,18 @@ static void aGoodBookingStays()
 	require(world.game.integrity(), "integrity without a swap");
 	std::puts("PASS a booking that is already the shorter one is kept");
 }
+}
 
-int main()
+TEST_SUITE("InnSwap")
 {
-	GlobalContainer globals;
-	globalContainer = &globals;
-	globals.runNoX = true;
-	globals.settings.rememberUnit = false;
-	globals.buildingsTypes.init();
-	IntBuildingType::init();
-	Race::loadDefault();
-	theLaterBookerTradesWithTheOneItWouldCross();
-	aGoodBookingStays();
-	std::puts("Inn swap regressions passed");
-	return 0;
+	TEST_CASE("the later booker trades with the one it would cross")
+	{
+		glob2test::HeadlessGlobals globals;
+		theLaterBookerTradesWithTheOneItWouldCross();
+	}
+	TEST_CASE("a good booking stays")
+	{
+		glob2test::HeadlessGlobals globals;
+		aGoodBookingStays();
+	}
 }

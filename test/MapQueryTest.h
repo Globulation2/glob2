@@ -3,62 +3,13 @@
 
 #pragma once
 
-#include <cppunit/extensions/HelperMacros.h>
+#include "Glob2Test.h"
 
 // Characterization tests for the spatial-query predicates in MapQuery.cpp:
 // isFreeFor*, isHardSpaceFor*. The fixture builds an 8x8 grass map and pokes
 // individual tile state to exercise each (predicate × deny-reason) pair.
-class MapQueryTest: public CppUnit::TestFixture
+class MapQueryTest
 {
-	CPPUNIT_TEST_SUITE( MapQueryTest );
-		// isFreeForGroundUnit(x, y, canSwim, teamMask)
-		CPPUNIT_TEST( testFreeForGroundUnit_CleanGrassPasses );
-		CPPUNIT_TEST( testFreeForGroundUnit_ResourceFails );
-		CPPUNIT_TEST( testFreeForGroundUnit_BuildingFails );
-		CPPUNIT_TEST( testFreeForGroundUnit_UnitFails );
-		CPPUNIT_TEST( testFreeForGroundUnit_WaterFailsWhenNotSwim );
-		CPPUNIT_TEST( testFreeForGroundUnit_WaterPassesWhenSwim );
-		CPPUNIT_TEST( testFreeForGroundUnit_ForbiddenFailsWhenMaskMatches );
-		CPPUNIT_TEST( testFreeForGroundUnit_ForbiddenPassesWhenMaskDoesNotMatch );
-
-		// isFreeForGroundUnitNoForbidden(x, y, canSwim)
-		CPPUNIT_TEST( testFreeForGroundUnitNoForbidden_IgnoresForbidden );
-		CPPUNIT_TEST( testFreeForGroundUnitNoForbidden_StillBlocksBuilding );
-
-		// isFreeForBuilding(x, y) and rect variants
-		CPPUNIT_TEST( testFreeForBuilding_GrassPasses );
-		CPPUNIT_TEST( testFreeForBuilding_ResourceFails );
-		CPPUNIT_TEST( testFreeForBuilding_BuildingFails );
-		CPPUNIT_TEST( testFreeForBuilding_UnitFails );
-		CPPUNIT_TEST( testFreeForBuilding_WaterFails );
-		CPPUNIT_TEST( testFreeForBuilding_SandFails );
-		CPPUNIT_TEST( testFreeForBuilding_RectAllGrassPasses );
-		CPPUNIT_TEST( testFreeForBuilding_RectOneBadTileFails );
-		CPPUNIT_TEST( testFreeForBuilding_RectGidTolerantSameGidPasses );
-		CPPUNIT_TEST( testFreeForBuilding_RectGidTolerantDifferentGidFails );
-
-		// isHardSpaceForGroundUnit(x, y, canSwim, me)
-		CPPUNIT_TEST( testHardSpaceForGroundUnit_IgnoresUnit );
-		CPPUNIT_TEST( testHardSpaceForGroundUnit_ResourceStillFails );
-		CPPUNIT_TEST( testHardSpaceForGroundUnit_BuildingStillFails );
-		CPPUNIT_TEST( testHardSpaceForGroundUnit_WaterFailsWhenNotSwim );
-		CPPUNIT_TEST( testHardSpaceForGroundUnit_ForbiddenStillFails );
-
-		// isHardSpaceForBuilding family
-		CPPUNIT_TEST( testHardSpaceForBuilding_IgnoresUnit );
-		CPPUNIT_TEST( testHardSpaceForBuilding_ResourceFails );
-		CPPUNIT_TEST( testHardSpaceForBuilding_BuildingFails );
-		CPPUNIT_TEST( testHardSpaceForBuilding_NonGrassFails );
-		CPPUNIT_TEST( testHardSpaceForBuilding_RectAllGrassPasses );
-		CPPUNIT_TEST( testHardSpaceForBuilding_RectGidTolerantSameGidPasses );
-		CPPUNIT_TEST( testHardSpaceForBuilding_RectGidTolerantDifferentGidFails );
-
-		// Local-team mirror (CS-546): Map carries the locally-displayed team identity
-		// so sim code can consult it without reaching into GameGUI.
-		CPPUNIT_TEST( testLocalTeam_DefaultsToSentinel );
-		CPPUNIT_TEST( testLocalTeam_SetAndGet );
-		CPPUNIT_TEST( testLocalTeam_SentinelValueIsMinusOne );
-	CPPUNIT_TEST_SUITE_END();
 
 public:
 	void testFreeForGroundUnit_CleanGrassPasses();

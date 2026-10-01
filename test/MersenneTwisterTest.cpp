@@ -5,24 +5,17 @@
 // replay its draws. The expected values below were produced by Boost 1.83's
 // boost::mt19937.
 
+#include "Glob2Test.h"
 #include "../src/MersenneTwister.h"
 #include <cstdint>
-#include <cstdlib>
-#include <iostream>
 #include <sstream>
 #include <string>
 
 namespace
 {
-int failures = 0;
-
 void check(bool ok, const std::string& what)
 {
-	if (!ok)
-	{
-		std::cerr << "FAIL: " << what << '\n';
-		++failures;
-	}
+	CHECK_MESSAGE(ok, (what));
 }
 
 std::string text(const MersenneTwister& mt)
@@ -75,7 +68,9 @@ const StateCase stateCases[] = {
 };
 }
 
-int main()
+TEST_SUITE("MersenneTwister")
+{
+TEST_CASE("matches boost::mt19937 outputs and text state")
 {
 	// Reference value of the MT19937 definition: 10000th output of the default seed.
 	{
@@ -121,7 +116,5 @@ int main()
 		check(a == b && text(a) == text(b), "reseeding");
 	}
 
-	if (failures)
-		return EXIT_FAILURE;
-	std::cout << "MersenneTwister matches boost::mt19937 outputs and text state\n";
+}
 }

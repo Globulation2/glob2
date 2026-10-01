@@ -53,11 +53,11 @@ water, so an opening route is not a promise of permanent unrestricted movement.
 ## Reproduce and inspect
 
 ```sh
-scons release=1 server=0 -j6 build/src/glob2 map-generator-defaults-test map-generator-study
+scons release=1 server=0 -j6 build/src/glob2 engine-tests map-generator-study
 build/src/glob2 --generate-map who-ate-the-map --seed 7 \
   --width 128 --height 128 --teams 4 --set appetite=2 \
   --output artifacts/eaten.map --preview artifacts/eaten.png --json artifacts/eaten.json
-build/src/MapGeneratorDefaultsTest artifacts/eaten-test-profile --eaten-only
+python3 test/run_tests.py --filter 'MapGeneratorDefaults/Who Ate*'
 ```
 
 Use the [map CLI](CLI.md) for previews and reports and the map-design skill's

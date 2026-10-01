@@ -21,6 +21,10 @@
 // is reported and passes by default, so a new machine can run the check before its rows exist;
 // CI passes --require-rows so that the platforms it runs on cannot pass vacuously.
 #include "Game.h"
+#include <stdexcept>
+#include <cstdlib>
+#include <cstdint>
+#include <exception>
 #include "GenerationContext.h"
 #include "GenerationService.h"
 #include "GeneratorRegistry.h"

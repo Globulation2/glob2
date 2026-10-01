@@ -20,7 +20,7 @@ In a checkout of PR #165, from the repository root:
 
 ```sh
 scons -j4 release=1 server=0 building-footprint-test
-python3 test/inflate_gzip_fixture.py test/fixtures/wrapped-building/reproducer.game.gz /tmp/wrapped-building-reproducer.game
+gunzip -c test/fixtures/wrapped-building/reproducer.game.gz > /tmp/wrapped-building-reproducer.game
 ./build/src/BuildingFootprintHarness --load /tmp/wrapped-building-reproducer.game
 ./build/src/BuildingFootprintHarness
 ```
@@ -37,7 +37,7 @@ git worktree add --detach ../glob2-pr165-old-validator HEAD
 cd ../glob2-pr165-old-validator
 git apply test/fixtures/wrapped-building/restore-old-validator.patch
 scons -j4 release=1 server=0 building-footprint-test
-python3 test/inflate_gzip_fixture.py test/fixtures/wrapped-building/reproducer.game.gz /tmp/wrapped-building-reproducer.game
+gunzip -c test/fixtures/wrapped-building/reproducer.game.gz > /tmp/wrapped-building-reproducer.game
 ./build/src/BuildingFootprintHarness --load /tmp/wrapped-building-reproducer.game
 ```
 

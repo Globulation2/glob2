@@ -82,9 +82,9 @@ fruit, and only the contained home woodlots provide renewable wood.
 Build and exercise the real-engine mechanism test:
 
 ```sh
-scons release=1 server=0 -j8 build/src/glob2 orchard-conversion-test map-generator-defaults-test
-build/src/OrchardCommonsConversionTest orchard-conversion-test "$PWD" "$PWD/artifacts/orchard-commons/conversion"
-build/src/MapGeneratorDefaultsTest orchard-generator-contracts
+scons release=1 server=0 -j8 build/src/glob2 engine-tests
+python3 test/run_tests.py --filter 'OrchardCommons/*'
+python3 test/run_tests.py --filter 'MapGeneratorDefaults/*'
 build/src/glob2 --generate-map orchard-commons --seed 2 --teams 4 --width 256 --height 256 \
   --output artifacts/orchard-commons/example.map --preview artifacts/orchard-commons/example.png \
   --json artifacts/orchard-commons/example.json

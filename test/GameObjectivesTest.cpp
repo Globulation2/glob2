@@ -15,6 +15,7 @@
 //      longer diverge between memory and a save/load round-trip.
 // Links libgag_server.a for BinaryStream + MemoryStreamBackend.
 
+#include "Glob2Test.h"
 #include <cstdio>
 #include <memory>
 #include <SDL.h>
@@ -25,21 +26,12 @@
 
 using namespace GAGCore;
 
-// SHA1 is wired in this project by direct .c-into-.cpp inclusion (see
-// YOGServerPasswordRegistry.cpp); the .h has no extern "C" wrapper, so
-// libgag_server.a's BinaryOutputStream references C++-mangled SHA1 names.
-// Same trick as NetSendOrderDecodeTest.cpp to satisfy the linker.
-#include "../gnupg/sha1.c"
-
 namespace {
 
-int failures = 0;
 
 void check(bool ok, const char* what)
 {
-	std::printf("%s: %s\n", ok ? "PASS" : "FAIL", what);
-	if (!ok)
-		++failures;
+	CHECK_MESSAGE(ok, (what));
 }
 
 void testRemoveObjectiveOutOfRangeIsNoOp()
@@ -198,19 +190,13 @@ void testEncodeDecodeRoundTripMatchesMemory()
 
 } // namespace
 
-int main()
+TEST_SUITE("GameObjectives")
 {
-	testRemoveObjectiveOutOfRangeIsNoOp();
-	testRemoveObjectiveInRangeRemovesAcrossAllFields();
-	testRemoveObjectiveOnEmptyListIsNoOp();
-	testSettersIgnoreOutOfRangeIndices();
-	testGettersReturnDefaultsForOutOfRangeIndices();
-	testScriptNumberClampedToWireDomain();
-	testEncodeDecodeRoundTripMatchesMemory();
-
-	if (failures == 0)
-		std::printf("all tests passed\n");
-	else
-		std::printf("%d check(s) FAILED\n", failures);
-	return failures == 0 ? 0 : 1;
+	TEST_CASE("RemoveObjectiveOutOfRangeIsNoOp") { testRemoveObjectiveOutOfRangeIsNoOp(); }
+	TEST_CASE("RemoveObjectiveInRangeRemovesAcrossAllFields") { testRemoveObjectiveInRangeRemovesAcrossAllFields(); }
+	TEST_CASE("RemoveObjectiveOnEmptyListIsNoOp") { testRemoveObjectiveOnEmptyListIsNoOp(); }
+	TEST_CASE("SettersIgnoreOutOfRangeIndices") { testSettersIgnoreOutOfRangeIndices(); }
+	TEST_CASE("GettersReturnDefaultsForOutOfRangeIndices") { testGettersReturnDefaultsForOutOfRangeIndices(); }
+	TEST_CASE("ScriptNumberClampedToWireDomain") { testScriptNumberClampedToWireDomain(); }
+	TEST_CASE("EncodeDecodeRoundTripMatchesMemory") { testEncodeDecodeRoundTripMatchesMemory(); }
 }

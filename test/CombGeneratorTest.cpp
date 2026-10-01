@@ -1,9 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Contracts and a controlled firing probe on unmodified generated Comb terrain.
-#define SDL_MAIN_HANDLED
-#ifdef main
-#undef main
-#endif
+#include "EngineFixtures.h"
+#include <array>
 #include "GlobalContainer.h"
 #include "Game.h"
 #include "GameGUI.h"
@@ -31,17 +29,15 @@
 #include <cstdlib>
 #include <filesystem>
 #include <string>
+
+namespace
+{
 using namespace MapGeneration;
-GlobalContainer *globalContainer = nullptr;
 namespace
 {
 void require(bool ok, const std::string &message)
 {
-	if (!ok)
-	{
-		std::fprintf(stderr, "FAIL: %s\n", message.c_str());
-		std::exit(1);
-	}
+	GLOB2_REQUIRE(ok, message);
 }
 std::string serialized(Game &game)
 {
@@ -313,51 +309,42 @@ void firing(const std::filesystem::path &output, bool buildingTarget)
 				buildingTarget ? "building" : "unit");
 }
 } // namespace
-int main(int argc, char **argv)
+}
+
+TEST_SUITE("CombGenerator")
 {
-	require(argc == 4 || argc == 6,
-			"usage: CombGeneratorTest PROFILE ROOT OUTPUT [--benchmark COUNT]");
-	SDL_SetMainReady();
-	GlobalContainer globals(argv[1]);
-	globals.fileManager->addDir(argv[2]);
-	globalContainer = &globals;
-	globals.runNoX = true;
-	globals.settings.rememberUnit = false;
-	globals.buildingsTypes.init();
-	IntBuildingType::init();
-	Race::loadDefault();
-	GameGUIKeyActions::init();
-	MapEditKeyActions::init();
-	std::filesystem::create_directories(argv[3]);
-	if (argc == 6)
+	TEST_CASE("contracts") { glob2test::HeadlessGlobals globals; contracts(); }
+	TEST_CASE("feeding courts") { glob2test::HeadlessGlobals globals; feedingCourts(); }
+	TEST_CASE("cross-channel firing [artifacts]")
 	{
-		const bool telemetry = std::string(argv[4]) == "--benchmark-trace";
-		require(telemetry || std::string(argv[4]) == "--benchmark", "known benchmark mode");
-		const int count = std::atoi(argv[5]);
-		require(count > 0 && count <= 10000, "bounded benchmark");
-		auto r = request();
-		r.wDec = r.hDec = 9;
-		r.nbTeams = 8;
-		const auto start = std::chrono::steady_clock::now();
-		const auto cpuStart = std::clock();
-		for (int i = 0; i < count; ++i)
-		{
-			Game world(nullptr);
-			r.seed = 101 + i;
-			auto result = GenerationService().generate(world, r, telemetry);
-			require(bool(result), result.diagnostic());
-		}
-		const double ms =
-			std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - start)
-				.count();
-		const double cpuMs = 1000.0 * (std::clock() - cpuStart) / CLOCKS_PER_SEC;
-		std::printf("Comb benchmark maps=%d telemetry=%d wall-ms/map=%.3f cpu-ms/map=%.3f\n", count,
-					telemetry, ms / count, cpuMs / count);
-		return 0;
+		glob2test::HeadlessGlobals globals;
+		firing(glob2test::artifactDir(), false);
+		firing(glob2test::artifactDir(), true);
 	}
-	contracts();
-	feedingCourts();
-	firing(argv[3], false);
-	firing(argv[3], true);
-	return 0;
+	TEST_CASE("generation timing benchmark [benchmark][slow]")
+	{
+		glob2test::HeadlessGlobals globals;
+		for (bool telemetry : {false, true})
+		{
+					const int count = 60;
+					auto r = request();
+					r.wDec = r.hDec = 9;
+					r.nbTeams = 8;
+					const auto start = std::chrono::steady_clock::now();
+					const auto cpuStart = std::clock();
+					for (int i = 0; i < count; ++i)
+					{
+						Game world(nullptr);
+						r.seed = 101 + i;
+						auto result = GenerationService().generate(world, r, telemetry);
+						require(bool(result), result.diagnostic());
+					}
+					const double ms =
+						std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - start)
+							.count();
+					const double cpuMs = 1000.0 * (std::clock() - cpuStart) / CLOCKS_PER_SEC;
+					std::printf("Comb benchmark maps=%d telemetry=%d wall-ms/map=%.3f cpu-ms/map=%.3f\n", count,
+								telemetry, ms / count, cpuMs / count);
+		}
+	}
 }

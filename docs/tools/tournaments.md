@@ -406,8 +406,8 @@ planning/statistics, not SSH, process pools, retries or transfers.
 python3 test/test_tournaments.py
 python3 test/test_tournament_pipeline.py
 python3 test/test_map_fairness_tournament.py
-scons -j4 release=1 server=0 tournament-compatibility-test
-build/src/TournamentCompatibilityTest
+scons -j4 release=1 server=0 engine-tests
+python3 test/run_tests.py --filter 'TournamentCompatibility/*'
 python3 test/tournament_cli_integration.py --output artifacts/tournament-cli
 ```
 

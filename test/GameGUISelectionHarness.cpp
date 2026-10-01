@@ -1,16 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Link the real GameGUI and entities. No window or simulation loop is needed
 // to exercise cycling between entity destruction and the next GUI draw.
+#include "EngineFixtures.h"
 #include "GameGUI.h"
 #include "GlobalContainer.h"
 #include "GameGUIKeyActions.h"
 #include "IntBuildingType.h"
 #include "Unit.h"
 
-#include <cassert>
-#include <cstdio>
-
-GlobalContainer* globalContainer = nullptr;
 
 class GameGUISelectionHarness
 {
@@ -33,7 +30,7 @@ public:
 		gui.setSelection(GameGUI::BUILDING_SELECTION, building);
 		gui.onBuildingDestroyed(building);
 		team.myBuildings[2] = nullptr;
-		assert(gui.selectionBuilding() == building && !gui.view.selectedBuilding);
+		REQUIRE((gui.selectionBuilding() == building && !gui.view.selectedBuilding));
 		delete building;
 		gui.iterateSelection();
 		assertCleared(gui);
@@ -43,7 +40,7 @@ public:
 		gui.setSelection(GameGUI::UNIT_SELECTION, unit);
 		gui.onUnitDestroyed(unit);
 		team.myUnits[2] = nullptr;
-		assert(gui.selectionUnit() == unit && !gui.view.selectedUnit);
+		REQUIRE((gui.selectionUnit() == unit && !gui.view.selectedUnit));
 		delete unit;
 		gui.iterateSelection();
 		assertCleared(gui);
@@ -63,8 +60,8 @@ public:
 		team.myUnits[2] = unit;
 		gui.setSelection(GameGUI::UNIT_SELECTION, unit);
 		gui.iterateSelection();
-		assert(gui.selectionMode == GameGUI::UNIT_SELECTION);
-		assert(gui.selectionUnit() == unit && gui.view.selectedUnit == unit);
+		REQUIRE(gui.selectionMode == GameGUI::UNIT_SELECTION);
+		REQUIRE((gui.selectionUnit() == unit && gui.view.selectedUnit == unit));
 		gui.clearSelection();
 		gui.game.teams[0] = nullptr;
 	}
@@ -72,22 +69,18 @@ public:
 private:
 	static void assertCleared(const GameGUI& gui)
 	{
-		assert(gui.selectionMode == GameGUI::NO_SELECTION);
-		assert(std::holds_alternative<std::monostate>(gui.selection));
-		assert(!gui.view.selectedBuilding && !gui.view.selectedUnit);
-		assert(gui.viewportX == 0 && gui.viewportY == 0);
+		REQUIRE(gui.selectionMode == GameGUI::NO_SELECTION);
+		REQUIRE(std::holds_alternative<std::monostate>(gui.selection));
+		REQUIRE((!gui.view.selectedBuilding && !gui.view.selectedUnit));
+		REQUIRE((gui.viewportX == 0 && gui.viewportY == 0));
 	}
 };
 
-int main()
+TEST_SUITE("GameGUISelection")
 {
-	GlobalContainer globals;
-	globalContainer = &globals;
-	globals.runNoX = true;
-	globals.settings.rememberUnit = false;
-	globals.buildingsTypes.init();
-	IntBuildingType::init();
-	GameGUIKeyActions::init();
-	GameGUISelectionHarness::run();
-	std::puts("GameGUI selection lifetime regressions passed");
+	TEST_CASE("selection survives entity destruction until the next draw")
+	{
+		glob2test::HeadlessGlobals globals;
+		GameGUISelectionHarness::run();
+	}
 }

@@ -9,6 +9,7 @@
 // globalContainer is linked. Links libgag_server.a for BinaryStream +
 // MemoryStreamBackend.
 
+#include "Glob2Test.h"
 #include <cstdio>
 #include <cstring>
 #include <memory>
@@ -19,20 +20,12 @@
 
 using namespace GAGCore;
 
-// SHA1 is wired in this project by direct .c-into-.cpp inclusion (see
-// YOGServerPasswordRegistry.cpp); the .h has no extern "C" wrapper, so
-// libgag_server.a's BinaryOutputStream references C++-mangled SHA1 names.
-#include "../gnupg/sha1.c"
-
 namespace {
 
-int failures = 0;
 
 void check(bool ok, const char* what)
 {
-	std::printf("%s: %s\n", ok ? "PASS" : "FAIL", what);
-	if (!ok)
-		++failures;
+	CHECK_MESSAGE(ok, (what));
 }
 
 constexpr int kMapDec = 3;   // 8x8
@@ -148,10 +141,8 @@ void testDiscardConsumesSectionWithoutAllocating()
 
 }  // namespace
 
-int main(int /*argc*/, char* /*argv*/[])
+TEST_SUITE("MapExploredAreaSaveLoad")
 {
-	testRoundTripRestoresEveryTeam();
-	testDiscardConsumesSectionWithoutAllocating();
-	std::printf(failures == 0 ? "ALL PASS\n" : "FAILURES: %d\n", failures);
-	return failures == 0 ? 0 : 1;
+	TEST_CASE("RoundTripRestoresEveryTeam") { testRoundTripRestoresEveryTeam(); }
+	TEST_CASE("DiscardConsumesSectionWithoutAllocating") { testDiscardConsumesSectionWithoutAllocating(); }
 }

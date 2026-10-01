@@ -8,6 +8,7 @@
 // in Game::drawUnit reads `displacement`: at equal delta the two states are the
 // same picture, and any difference means the sprite is anchored on the wrong
 // tile — the "entering a building jumps back one square" regression.
+#include "EngineFixtures.h"
 #include "GlobalContainer.h"
 #include "Game.h"
 #include "Unit.h"
@@ -28,7 +29,6 @@
 #include <set>
 #include <vector>
 
-GlobalContainer* globalContainer = nullptr;
 
 namespace
 {
@@ -43,13 +43,14 @@ namespace
 	const int FROM_X = 8, FROM_Y = 8;
 	const int INTO_X = 9, INTO_Y = 8;
 
-	const char* outputDir = ".cache/entering-unit-draw-check";
+	std::string outputDirectory;
+	const char* outputDir = nullptr;
 	//! Sampled points of one step: arrival, three intermediates, departure.
 	const int DELTAS[] = {0, 63, 128, 191, 255};
 
 	void require(bool ok, const char* message)
 	{
-		if (!ok) { std::fprintf(stderr, "FAIL: %s\n", message); std::exit(1); }
+		GLOB2_REQUIRE(ok, message);
 	}
 
 	struct Frame
@@ -192,7 +193,7 @@ public:
 					"FAIL: at delta %d the entering worker is drawn %d px from where the same "
 					"step drawn as a walk puts it (one tile is 32 px); see %s/\n",
 					delta, enteringLeft - walkingLeft, outputDir);
-				std::exit(1);
+				FAIL("entering unit frame differs from the walking frame");
 			}
 			++checked;
 		}
@@ -201,18 +202,13 @@ public:
 	}
 };
 
-int main()
+TEST_SUITE("EnteringUnitDraw")
 {
-	std::filesystem::create_directories(outputDir);
-	GlobalContainer globals("glob2-entering-unit-draw-test");
-	globalContainer = &globals;
-	globals.settings.screenWidth = SCREEN_W;
-	globals.settings.screenHeight = SCREEN_H;
-	globals.settings.screenFlags = GraphicContext::USEGPU;
-	globals.settings.rememberUnit = false;
-	globals.settings.mute = 1;
-	globals.load();
-	IntBuildingType::init();
+TEST_CASE("a unit entering a building renders like the same step walked onto the tile [display:1024x768][artifacts]")
+{
+	outputDirectory = glob2test::artifactDir().string();
+	outputDir = outputDirectory.c_str();
+	glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.display = true, .loadStrings = true, .width = SCREEN_W, .height = SCREEN_H, .screenFlags = GraphicContext::USEGPU});
 	EnteringUnitDrawHarness::run();
-	return 0;
+}
 }

@@ -4,6 +4,9 @@
 // models, scattered sites and their graphs, patterns, wandering paths, channels, building room, homes
 // in any region and biome kits), each on a small map built by hand. Part of the toolkit checks.
 #include "Biomes.h"
+#include <string>
+#include <utility>
+#include <cstdlib>
 #include "Channels.h"
 #include "Contact.h"
 #include "Drawing.h"

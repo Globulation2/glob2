@@ -399,7 +399,7 @@ own terrain and resources:
 `GenerationService` rolls `kSampledCandidates` (5) seeds from a root seed and keeps the
 best-scoring one that generates successfully; `GenerationService::bestSeed` is the same search
 used by the map editor's regeneration action. Generation is deterministic and the score is a
-pure function of the finished map (asserted in `map-generator-defaults-test`), which is what
+pure function of the finished map (asserted by the `MapGeneratorDefaults` suite), which is what
 makes "roll several, keep the best" and "regenerate the winning seed later" both sound.
 
 The lobby's Landscape field opens `LandscapePickerScreen`, a full-window modal that shows every
@@ -1755,7 +1755,8 @@ refusal) and every constant's reason.
   (`growth`, the crop growth chance; `sites`, where a 4x4 building fits; `chop`, the cost from the
   nearest colony clearing crops on the way; `owner`, which colony that is); `--catalog` dumps every registered generator's
   controls as JSON, with each control's `kind` (`range` or `toggle`).
-- `test/MapGeneratorDefaultsTest.cpp` builds to `MapGeneratorDefaultsTest`, asserting the
+- `test/MapGeneratorDefaultsTest.cpp` is the `MapGeneratorDefaults` suite of
+  `glob2-engine-tests` (`python3 test/run_tests.py --filter 'MapGeneratorDefaults/*'`), asserting the
   registry's and every control's contract: discrete domains, shape bounds, topology, home
   footprints, exact worker counts, seed repeatability and RNG stream isolation, the
   lobby/editor UI's own control-editing behavior, and the shared toolkit's own guarantees:
@@ -1805,8 +1806,8 @@ refusal) and every constant's reason.
   a home and pond each, the kit and crop guarantee), the registry entry, the SConscript line, the
   next unused legacy id and its translation keys with English placeholders. Its golden rows come
   from `MapGeneratorGoldenTest <profile> --update`.
-- The cppunit suite under `test/` (`scons && ./TestsRunner`) covers the rest of the engine and
-  must stay green alongside all of the above.
+- The unit suite (`scons unit-tests && python3 test/run_tests.py --binary unit`) covers the
+  rest of the engine and must stay green alongside all of the above.
 
 Generators validate their own construction results rather than trusting the geometry to always
 succeed: a moat must connect to land at both bridge ends, jagged outlines must leave legal

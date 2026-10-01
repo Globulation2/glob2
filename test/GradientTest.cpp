@@ -2,6 +2,7 @@
 // Copyright (C) 2026 glob2 contributors
 
 #include "GradientTest.h"
+#include <cmath>
 
 #include "Map.h"
 #include "MapInternal.h"
@@ -16,7 +17,21 @@
 #include <utility>
 #include <functional>
 
-CPPUNIT_TEST_SUITE_REGISTRATION( GradientTest );
+TEST_SUITE("Gradient")
+{
+	TEST_CASE_FIXTURE(GradientTest, "OpenGridIsOctileOnTorus") { testOpenGridIsOctileOnTorus(); }
+	TEST_CASE_FIXTURE(GradientTest, "ObstaclesForcePathAround") { testObstaclesForcePathAround(); }
+	TEST_CASE_FIXTURE(GradientTest, "WaterCostsBySwimClass") { testWaterCostsBySwimClass(); }
+	TEST_CASE_FIXTURE(GradientTest, "UnreachableCellsStayUnreachable") { testUnreachableCellsStayUnreachable(); }
+	TEST_CASE_FIXTURE(GradientTest, "SeedBelowGoalPropagates") { testSeedBelowGoalPropagates(); }
+	TEST_CASE_FIXTURE(GradientTest, "SeedsBeyondBucketWindow") { testSeedsBeyondBucketWindow(); }
+	TEST_CASE_FIXTURE(GradientTest, "MaxCostStopsPropagation") { testMaxCostStopsPropagation(); }
+	TEST_CASE_FIXTURE(GradientTest, "DirectionPrefersCheapestTotal") { testDirectionPrefersCheapestTotal(); }
+	TEST_CASE_FIXTURE(GradientTest, "DirectionBlockedNeighbour") { testDirectionBlockedNeighbour(); }
+	TEST_CASE_FIXTURE(GradientTest, "SwimClassFromSpeeds") { testSwimClassFromSpeeds(); }
+	TEST_CASE_FIXTURE(GradientTest, "RandomFieldsAgainstReference") { testRandomFieldsAgainstReference(); }
+	TEST_CASE_FIXTURE(GradientTest, "MatchesLegacyKernelOnLargeMaps") { testMatchesLegacyKernelOnLargeMaps(); }
+}
 
 namespace
 {
@@ -175,7 +190,7 @@ void GradientTest::testOpenGridIsOctileOnTorus()
 	map.propagateGradient(g.data(), 0);
 	for (int y = 0; y < 8; y++)
 		for (int x = 0; x < 8; x++)
-			CPPUNIT_ASSERT_EQUAL(octile(wrapDist(x, gx, 8), wrapDist(y, gy, 8)), cost(g, map, x, y));
+			CHECK_EQ(octile(wrapDist(x, gx, 8), wrapDist(y, gy, 8)), cost(g, map, x, y));
 }
 
 void GradientTest::testObstaclesForcePathAround()
@@ -189,13 +204,13 @@ void GradientTest::testObstaclesForcePathAround()
 	g[map.coordToIndex(0, 0)] = GRADIENT_AT_GOAL;
 	map.propagateGradient(g.data(), 0);
 	// (3,0): two cardinal steps west.
-	CPPUNIT_ASSERT_EQUAL(30, cost(g, map, 3, 0));
+	CHECK_EQ(30, cost(g, map, 3, 0));
 	// (5,0): wrap east is 3 cardinal steps (5->6->7->0).
-	CPPUNIT_ASSERT_EQUAL(30, cost(g, map, 5, 0));
+	CHECK_EQ(30, cost(g, map, 5, 0));
 	// Obstacles keep their value.
-	CPPUNIT_ASSERT_EQUAL((int)GRADIENT_FORBIDDEN, (int)g[map.coordToIndex(4, 3)]);
+	CHECK_EQ((int)GRADIENT_FORBIDDEN, (int)g[map.coordToIndex(4, 3)]);
 	// (4,7) gap cell: diagonal to (3,0) wrapped = 14, then 30.
-	CPPUNIT_ASSERT_EQUAL(44, cost(g, map, 4, 7));
+	CHECK_EQ(44, cost(g, map, 4, 7));
 }
 
 void GradientTest::testWaterCostsBySwimClass()
@@ -211,16 +226,16 @@ void GradientTest::testWaterCostsBySwimClass()
 	g[map.coordToIndex(0, 0)] = GRADIENT_AT_GOAL;
 	map.propagateGradient(g.data(), 5); // water costs 20
 	// (3,0) -> (2,0) water 20 -> (1,0) water 20 -> (0,0) land 10 = 50; around the torus is 5 land steps = 50 too.
-	CPPUNIT_ASSERT_EQUAL(50, cost(g, map, 3, 0));
+	CHECK_EQ(50, cost(g, map, 3, 0));
 	// (2,0): enter (1,0) = 20, then (0,0) = 10.
-	CPPUNIT_ASSERT_EQUAL(30, cost(g, map, 2, 0));
-	CPPUNIT_ASSERT_EQUAL(10, cost(g, map, 1, 0));
+	CHECK_EQ(30, cost(g, map, 2, 0));
+	CHECK_EQ(10, cost(g, map, 1, 0));
 
 	// A class that swims as fast as it walks pays the land rate.
 	std::vector<Uint16> even = blank(map);
 	even[map.coordToIndex(0, 0)] = GRADIENT_AT_GOAL;
 	map.propagateGradient(even.data(), Map::SWIM_CLASS_EVEN);
-	CPPUNIT_ASSERT_EQUAL(30, cost(even, map, 3, 0));
+	CHECK_EQ(30, cost(even, map, 3, 0));
 
 	// Non-swimmer: the caller marks water as an obstacle, so (3,0) must go around.
 	std::vector<Uint16> walker = blank(map);
@@ -231,8 +246,8 @@ void GradientTest::testWaterCostsBySwimClass()
 	}
 	walker[map.coordToIndex(0, 0)] = GRADIENT_AT_GOAL;
 	map.propagateGradient(walker.data(), 0);
-	CPPUNIT_ASSERT_EQUAL(50, cost(walker, map, 3, 0));
-	CPPUNIT_ASSERT_EQUAL(40, cost(walker, map, 4, 0));
+	CHECK_EQ(50, cost(walker, map, 3, 0));
+	CHECK_EQ(40, cost(walker, map, 4, 0));
 }
 
 void GradientTest::testUnreachableCellsStayUnreachable()
@@ -246,10 +261,10 @@ void GradientTest::testUnreachableCellsStayUnreachable()
 				g[map.coordToIndex(6 + dx, 6 + dy)] = GRADIENT_FORBIDDEN;
 	g[map.coordToIndex(0, 0)] = GRADIENT_AT_GOAL;
 	map.propagateGradient(g.data(), 0);
-	CPPUNIT_ASSERT_EQUAL((int)GRADIENT_UNREACHABLE, (int)g[map.coordToIndex(6, 6)]);
-	CPPUNIT_ASSERT_EQUAL((int)GRADIENT_AT_GOAL, (int)g[map.coordToIndex(0, 0)]);
-	CPPUNIT_ASSERT_EQUAL(2, gradientTiles(g[map.coordToIndex(2, 0)]));
-	CPPUNIT_ASSERT_EQUAL(1, gradientTiles(g[map.coordToIndex(1, 1)]));
+	CHECK_EQ((int)GRADIENT_UNREACHABLE, (int)g[map.coordToIndex(6, 6)]);
+	CHECK_EQ((int)GRADIENT_AT_GOAL, (int)g[map.coordToIndex(0, 0)]);
+	CHECK_EQ(2, gradientTiles(g[map.coordToIndex(2, 0)]));
+	CHECK_EQ(1, gradientTiles(g[map.coordToIndex(1, 1)]));
 }
 
 void GradientTest::testSeedBelowGoalPropagates()
@@ -260,9 +275,9 @@ void GradientTest::testSeedBelowGoalPropagates()
 	// forbidden gradient does, spreads from its own cost.
 	g[map.coordToIndex(4, 4)] = GRADIENT_FORBIDDEN_BORDER;
 	map.propagateGradient(g.data(), 0);
-	CPPUNIT_ASSERT_EQUAL(GRADIENT_STEP, cost(g, map, 4, 4));
-	CPPUNIT_ASSERT_EQUAL(2 * GRADIENT_STEP, cost(g, map, 5, 4));
-	CPPUNIT_ASSERT_EQUAL(GRADIENT_STEP + GRADIENT_DIAGONAL_STEP, cost(g, map, 5, 5));
+	CHECK_EQ(GRADIENT_STEP, cost(g, map, 4, 4));
+	CHECK_EQ(2 * GRADIENT_STEP, cost(g, map, 5, 4));
+	CHECK_EQ(GRADIENT_STEP + GRADIENT_DIAGONAL_STEP, cost(g, map, 5, 5));
 }
 
 void GradientTest::testSeedsBeyondBucketWindow()
@@ -281,14 +296,14 @@ void GradientTest::testSeedsBeyondBucketWindow()
 	g[map.coordToIndex(3, 3)] = GRADIENT_AT_GOAL;
 	g[map.coordToIndex(1, 1)] = GRADIENT_AT_GOAL - 60;
 	map.propagateGradient(g.data(), 0);
-	CPPUNIT_ASSERT_EQUAL(0, cost(g, map, 3, 3));
-	CPPUNIT_ASSERT_EQUAL(60, cost(g, map, 1, 1));
+	CHECK_EQ(0, cost(g, map, 3, 3));
+	CHECK_EQ(60, cost(g, map, 1, 1));
 	// (0,0) and (1,0): 70 through the seed, 70 and 80 from the goal.
-	CPPUNIT_ASSERT_EQUAL(70, cost(g, map, 0, 0));
-	CPPUNIT_ASSERT_EQUAL(70, cost(g, map, 1, 0));
+	CHECK_EQ(70, cost(g, map, 0, 0));
+	CHECK_EQ(70, cost(g, map, 1, 0));
 	// (7,7): four diagonals from the goal beat 88 through the seed.
-	CPPUNIT_ASSERT_EQUAL(56, cost(g, map, 7, 7));
-	CPPUNIT_ASSERT_EQUAL((int)GRADIENT_FORBIDDEN, (int)g[map.coordToIndex(2, 5)]);
+	CHECK_EQ(56, cost(g, map, 7, 7));
+	CHECK_EQ((int)GRADIENT_FORBIDDEN, (int)g[map.coordToIndex(2, 5)]);
 }
 
 void GradientTest::testMaxCostStopsPropagation()
@@ -297,10 +312,10 @@ void GradientTest::testMaxCostStopsPropagation()
 	std::vector<Uint16> g = blank(map);
 	g[map.coordToIndex(0, 0)] = GRADIENT_AT_GOAL;
 	map.propagateGradient(g.data(), 0, 20);
-	CPPUNIT_ASSERT_EQUAL(20, cost(g, map, 2, 0));
-	CPPUNIT_ASSERT_EQUAL(14, cost(g, map, 1, 1));
-	CPPUNIT_ASSERT_EQUAL((int)GRADIENT_UNREACHABLE, (int)g[map.coordToIndex(3, 0)]);
-	CPPUNIT_ASSERT_EQUAL((int)GRADIENT_UNREACHABLE, (int)g[map.coordToIndex(2, 2)]);
+	CHECK_EQ(20, cost(g, map, 2, 0));
+	CHECK_EQ(14, cost(g, map, 1, 1));
+	CHECK_EQ((int)GRADIENT_UNREACHABLE, (int)g[map.coordToIndex(3, 0)]);
+	CHECK_EQ((int)GRADIENT_UNREACHABLE, (int)g[map.coordToIndex(2, 2)]);
 }
 
 void GradientTest::testDirectionPrefersCheapestTotal()
@@ -311,17 +326,17 @@ void GradientTest::testDirectionPrefersCheapestTotal()
 	map.propagateGradient(g.data(), 0);
 	int dx = 9, dy = 9;
 	// From (3,3) the cheapest neighbour is the diagonal (2,2).
-	CPPUNIT_ASSERT(map.directionByGradient(1, 0, 3, 3, g.data(), &dx, &dy, true));
-	CPPUNIT_ASSERT_EQUAL(-1, dx);
-	CPPUNIT_ASSERT_EQUAL(-1, dy);
+	CHECK(map.directionByGradient(1, 0, 3, 3, g.data(), &dx, &dy, true));
+	CHECK_EQ(-1, dx);
+	CHECK_EQ(-1, dy);
 	// From (3,0) it is straight west.
-	CPPUNIT_ASSERT(map.directionByGradient(1, 0, 3, 0, g.data(), &dx, &dy, true));
-	CPPUNIT_ASSERT_EQUAL(-1, dx);
-	CPPUNIT_ASSERT_EQUAL(0, dy);
+	CHECK(map.directionByGradient(1, 0, 3, 0, g.data(), &dx, &dy, true));
+	CHECK_EQ(-1, dx);
+	CHECK_EQ(0, dy);
 	// At the goal: stay.
-	CPPUNIT_ASSERT(map.directionByGradient(1, 0, 0, 0, g.data(), &dx, &dy, true));
-	CPPUNIT_ASSERT_EQUAL(0, dx);
-	CPPUNIT_ASSERT_EQUAL(0, dy);
+	CHECK(map.directionByGradient(1, 0, 0, 0, g.data(), &dx, &dy, true));
+	CHECK_EQ(0, dx);
+	CHECK_EQ(0, dy);
 
 	// Swimmer of class 5 (water costs 20) at (3,0) with water on (2,0) and (1,0).
 	// (2,0) is worth 28 (two land diagonals) minus a 20 water step, (2,1) and
@@ -332,11 +347,11 @@ void GradientTest::testDirectionPrefersCheapestTotal()
 	std::vector<Uint16> f = blank(water);
 	f[water.coordToIndex(0, 0)] = GRADIENT_AT_GOAL;
 	water.propagateGradient(f.data(), 5);
-	CPPUNIT_ASSERT_EQUAL(28, cost(f, water, 2, 0));
-	CPPUNIT_ASSERT_EQUAL(24, cost(f, water, 2, 1));
-	CPPUNIT_ASSERT(water.directionByGradient(1, 5, 3, 0, f.data(), &dx, &dy, true));
-	CPPUNIT_ASSERT_EQUAL(-1, dx);
-	CPPUNIT_ASSERT(dy != 0); // never straight into the water
+	CHECK_EQ(28, cost(f, water, 2, 0));
+	CHECK_EQ(24, cost(f, water, 2, 1));
+	CHECK(water.directionByGradient(1, 5, 3, 0, f.data(), &dx, &dy, true));
+	CHECK_EQ(-1, dx);
+	CHECK(dy != 0); // never straight into the water
 }
 
 void GradientTest::testDirectionBlockedNeighbour()
@@ -349,26 +364,26 @@ void GradientTest::testDirectionBlockedNeighbour()
 	// progress through (2,3) or (3,2), never the occupied diagonal.
 	map.putGroundUnit(2, 2);
 	int dx = 9, dy = 9;
-	CPPUNIT_ASSERT(map.directionByGradient(1, 0, 3, 3, g.data(), &dx, &dy, true));
-	CPPUNIT_ASSERT((dx == -1 && dy == 0) || (dx == 0 && dy == -1));
+	CHECK(map.directionByGradient(1, 0, 3, 3, g.data(), &dx, &dy, true));
+	CHECK(((dx == -1 && dy == 0) || (dx == 0 && dy == -1)));
 	// Fully surrounded by units: strict fails, and so does the sidestep (no free cell).
 	for (int ddy = -1; ddy <= 1; ddy++)
 		for (int ddx = -1; ddx <= 1; ddx++)
 			if (ddx || ddy)
 				map.putGroundUnit(3 + ddx, 3 + ddy);
-	CPPUNIT_ASSERT(!map.directionByGradient(1, 0, 3, 3, g.data(), &dx, &dy, true));
-	CPPUNIT_ASSERT(!map.directionByGradient(1, 0, 3, 3, g.data(), &dx, &dy, false));
+	CHECK(!map.directionByGradient(1, 0, 3, 3, g.data(), &dx, &dy, true));
+	CHECK(!map.directionByGradient(1, 0, 3, 3, g.data(), &dx, &dy, false));
 }
 
 void GradientTest::testSwimClassFromSpeeds()
 {
-	CPPUNIT_ASSERT_EQUAL(0, Map::swimClass(16, 0));
+	CHECK_EQ(0, Map::swimClass(16, 0));
 	// Equal speeds: water costs the same as land.
-	CPPUNIT_ASSERT_EQUAL(Map::SWIM_CLASS_EVEN, Map::swimClass(30, 30));
+	CHECK_EQ(Map::SWIM_CLASS_EVEN, Map::swimClass(30, 30));
 	// A slow walker that swims fast prefers water; a fast walker avoids it.
-	CPPUNIT_ASSERT(Map::swimClass(16, 30) < Map::SWIM_CLASS_EVEN);
-	CPPUNIT_ASSERT(Map::swimClass(30, 10) > Map::SWIM_CLASS_EVEN);
-	CPPUNIT_ASSERT_EQUAL(SWIM_CLASS_COUNT - 1, Map::swimClass(30, 10));
+	CHECK(Map::swimClass(16, 30) < Map::SWIM_CLASS_EVEN);
+	CHECK(Map::swimClass(30, 10) > Map::SWIM_CLASS_EVEN);
+	CHECK_EQ(SWIM_CLASS_COUNT - 1, Map::swimClass(30, 10));
 }
 
 void GradientTest::testRandomFieldsAgainstReference()
@@ -423,7 +438,7 @@ void GradientTest::testRandomFieldsAgainstReference()
 				}
 		}
 		map.propagateGradient(input.data(), swimClass);
-		CPPUNIT_ASSERT(input == expected);
+		CHECK(input == expected);
 	}
 }
 
@@ -463,6 +478,6 @@ void GradientTest::testMatchesLegacyKernelOnLargeMaps()
 				auto expected = input;
 				map.legacyPropagateGradient(expected.data(), swimClass, maxCost);
 				map.propagateGradient(input.data(), swimClass, maxCost);
-				CPPUNIT_ASSERT_MESSAGE("trial " + std::to_string(trial), input == expected);
+				CHECK_MESSAGE(input == expected, ("trial " + std::to_string(trial)));
 			}
 }

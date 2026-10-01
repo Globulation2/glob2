@@ -3,7 +3,9 @@
 
 #pragma once
 
-#include <cppunit/extensions/HelperMacros.h>
+#include "Glob2Test.h"
+#include <vector>
+#include <string>
 
 extern "C"
 {
@@ -22,17 +24,12 @@ public:
 	}
 };
 
-class NatSortTest: public CppUnit::TestFixture
+class NatSortTest
 {
-CPPUNIT_TEST_SUITE( NatSortTest );
-		CPPUNIT_TEST( testStrnatcmp );
-		CPPUNIT_TEST( testStrnatcasecmp );
-		CPPUNIT_TEST( testBothStrnatcmp );
-	CPPUNIT_TEST_SUITE_END();
 
 public:
-	void setUp();
-	void tearDown();
+	NatSortTest();
+	~NatSortTest();
 
 	void testStrnatcmp();
 	void testStrnatcasecmp();

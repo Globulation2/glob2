@@ -1,9 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Controlled mechanism test on unmodified generated terrain, not an AI balance test.
-#define SDL_MAIN_HANDLED
-#ifdef main
-#undef main
-#endif
+#include "EngineFixtures.h"
+#include <utility>
 #include "GlobalContainer.h"
 #include "Game.h"
 #include "GameGUI.h"
@@ -31,16 +29,13 @@
 #include <string>
 #include <vector>
 
-GlobalContainer *globalContainer = nullptr;
+namespace
+{
 namespace
 {
 void require(bool ok, const char *message)
 {
-	if (!ok)
-	{
-		std::fprintf(stderr, "FAIL: %s\n", message);
-		std::exit(1);
-	}
+	GLOB2_REQUIRE(ok, message);
 }
 // Compare full saves (after their header/content hash has been established),
 // including starting colony state rather than only a visual terrain hash.
@@ -327,38 +322,30 @@ void run(const Scenario &scenario, const std::filesystem::path &output, unsigned
 				scenario.name, seed, siteX, siteY, nearest, worker->owner->teamNumber);
 }
 } // namespace
-int main(int argc, char **argv)
+}
+
+TEST_SUITE("OrchardCommons")
 {
-	SDL_SetMainReady();
-	require(argc == 4 || argc == 5 || (argc == 6 && std::string(argv[4]) == "--benchmark"),
-			"usage: OrchardCommonsConversionTest PROFILE ROOT ARTIFACT_DIR [SEED | --benchmark "
-			"COUNT(1..1000)]");
-	const bool benchmarking = argc == 6;
-	const unsigned count = benchmarking ? parseUnsigned(argv[5], 1, 1000) : 0;
-	const unsigned seed = argc == 5 ? parseUnsigned(argv[4], 0, UINT32_MAX) : 2;
-	GlobalContainer globals(argv[1]);
-	globals.fileManager->addDir(argv[2]);
-	globalContainer = &globals;
-	globals.runNoX = true;
-	globals.settings.rememberUnit = false;
-	globals.buildingsTypes.init();
-	IntBuildingType::init();
-	Race::loadDefault();
-	GameGUIKeyActions::init();
-	MapEditKeyActions::init();
-	if (benchmarking)
-		return benchmark(count);
-	std::filesystem::create_directories(argv[3]);
-	const Scenario scenarios[] = {
-		{"superior-variety", 1, 3, true, true, true},
-		{"equal-friendly-diet", 3, 3, true, true, false},
-		{"no-advertising", 1, 3, false, true, false},
-		{"fruit-supply-lost", 1, 0, true, true, false},
-		{"wheat-supply-lost", 1, 3, true, false, false},
-	};
-	contracts(seed);
-	feedingCourts();
-	for (const auto &scenario : scenarios)
-		run(scenario, argv[3], seed);
-	return 0;
+	TEST_CASE("contracts; feeding courts and fruit conversion scenarios [artifacts]")
+	{
+		glob2test::HeadlessGlobals globals;
+		const unsigned seed = 2;
+		const std::string artifacts = glob2test::artifactDir().string();
+			const Scenario scenarios[] = {
+				{"superior-variety", 1, 3, true, true, true},
+				{"equal-friendly-diet", 3, 3, true, true, false},
+				{"no-advertising", 1, 3, false, true, false},
+				{"fruit-supply-lost", 1, 0, true, true, false},
+				{"wheat-supply-lost", 1, 3, true, false, false},
+			};
+			contracts(seed);
+			feedingCourts();
+			for (const auto &scenario : scenarios)
+				run(scenario, artifacts.c_str(), seed);
+	}
+	TEST_CASE("generation timing benchmark [benchmark][slow]")
+	{
+		glob2test::HeadlessGlobals globals;
+		REQUIRE(benchmark(60) == 0);
+	}
 }

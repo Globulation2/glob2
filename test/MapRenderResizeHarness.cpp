@@ -1,10 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Link the production game renderer; expose internals only in this test TU.
-#undef NDEBUG
-#define SDL_MAIN_HANDLED
-#ifdef main
-#undef main
-#endif
+#include "EngineFixtures.h"
+#include <vector>
+#include <string>
+#include <set>
+#include <algorithm>
+#include <utility>
+#include <cmath>
+#include <cstdlib>
 #include "GlobalContainer.h"
 #ifdef HAVE_OPENGL
 #include <SDL_opengl.h>
@@ -21,11 +24,10 @@
 #include <StringTable.h>
 #include <filesystem>
 #include "CreditScreen.h"
-#include <cassert>
 #include <iostream>
 
-GlobalContainer *globalContainer = nullptr;
-
+namespace
+{
 static int colored(SDL_Surface *surface, int x, int y, int w, int h)
 {
 	int count = 0;
@@ -50,7 +52,7 @@ static void capturePixels(GraphicContext *gfx)
 		std::vector<Uint8> pixels(surface->w*surface->h*4);
 		glReadBuffer(GL_BACK);
 		glReadPixels(0,0,surface->w,surface->h,GL_RGBA,GL_UNSIGNED_BYTE,pixels.data());
-		assert(glGetError()==GL_NO_ERROR);
+		REQUIRE(glGetError()==GL_NO_ERROR);
 		for(int y=0;y<surface->h;++y) for(int x=0;x<surface->w;++x)
 		{
 			const auto *p=&pixels[((surface->h-1-y)*surface->w+x)*4];
@@ -61,20 +63,11 @@ static void capturePixels(GraphicContext *gfx)
 #endif
 }
 
-int main(int argc, char **argv)
+void run(bool gpu)
 {
 	std::cout << std::unitbuf;
-	SDL_SetMainReady();
-	assert(argc == 2 || (argc == 3 && std::string(argv[2]) == "--gl"));
-	const bool gpu=argc==3;
-	GlobalContainer globals(argv[1]);
-	globalContainer = &globals;
-	globals.settings.screenWidth=1800;
-	globals.settings.screenHeight=1100;
-	globals.settings.screenFlags=GraphicContext::RESIZABLE | (gpu ? GraphicContext::USEGPU : 0);
-	globals.settings.mute=true;
-	globals.load();
-	globals.settings.rememberUnit=false;
+	glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.display = true, .loadStrings = true, .width = 1800, .height = 1100,
+	                                                             .screenFlags = Uint32(GraphicContext::RESIZABLE) | (gpu ? Uint32(GraphicContext::USEGPU) : 0)});
 	GameGUI gui;
 	Game &game=gui.game;
 	game.map.setSize(4,4,GRASS);
@@ -87,9 +80,9 @@ int main(int argc, char **argv)
 	gui.viewportX=gui.viewportY=0;
 	for(int y=0;y<16;++y) for(int x=0;x<16;++x) game.map.clearImmobileUnit(x,y);
 	auto *unit=game.addUnit(3,3,0,WORKER,0,255,0,0);
-	auto *building=game.addBuilding(7,7,globals.buildingsTypes.getTypeNum("inn",0,false),0);
-	assert(unit && building);
-	auto *gfx=globals.gfx;
+	auto *building=game.addBuilding(7,7,globals->buildingsTypes.getTypeNum("inn",0,false),0);
+	REQUIRE((unit && building));
+	auto *gfx=globals->gfx;
 	// The resize cases below need the desktop to actually fit an 1800x1100
 	// window; a shorter/narrower usable area (small display, no Xvfb) makes
 	// SDL clamp the requested size instead of honoring it. Checked for both
@@ -101,7 +94,7 @@ int main(int argc, char **argv)
 		{
 			std::cerr << "Rendering fixture requires an 1800x1100 desktop; usable area is "
 				<< usable.w << "x" << usable.h << ". Use a sufficiently large desktop or Xvfb.\n";
-			return 0;
+			return;
 		}
 	}
 	if (gpu)
@@ -112,7 +105,7 @@ int main(int argc, char **argv)
 		{
 			std::cerr << "Rendering fixture requires an unscaled 1800x1100 drawable; got "
 				<< drawableW << "x" << drawableH << ". Use a sufficiently large desktop or Xvfb.\n";
-			return 0;
+			return;
 		}
 	}
 	const auto resize = [&](int width, GAGGUI::Screen *screen = nullptr) {
@@ -122,7 +115,7 @@ int main(int argc, char **argv)
 		while (GraphicContext::pollEvent(&event))
 			if (screen) screen->handleExecutionEvent(event);
 		gfx->updateWindowSize();
-		assert(gfx->getW()==width && gfx->getH()==1100);
+		REQUIRE((gfx->getW()==width && gfx->getH()==1100));
 		// Keep a fixed test origin when changing size; camera centering itself
 		// is covered by the high-resolution integration harness.
 		gui.camera.width=gui.camera.height=0;
@@ -134,11 +127,11 @@ int main(int argc, char **argv)
 	const auto copies = [&](int x, int y, int w, int h) {
 		capturePixels(gfx);
 		int expected=colored(gfx->getSDLSurface(),x,y,w,h);
-		assert(expected > 0);
+		REQUIRE(expected > 0);
 		SDL_Surface *surface=gfx->getSDLSurface();
 		for(int row=0;row<2;++row) for(int col=0;col<3;++col)
 		{
-			assert(colored(surface,x+col*512,y+row*512,w,h)==expected);
+			REQUIRE(colored(surface,x+col*512,y+row*512,w,h)==expected);
 			int totalDifference=0;
 			for(int yy=0;yy<h;++yy) for(int xx=0;xx<w;++xx)
 			{
@@ -148,13 +141,13 @@ int main(int argc, char **argv)
 				Uint8 r,g,b,cr,cg,cb;
 				SDL_GetRGB(first,surface->format,&r,&g,&b);
 				SDL_GetRGB(copy,surface->format,&cr,&cg,&cb);
-				assert((r || g || b) == (cr || cg || cb));
+				REQUIRE((r || g || b) == (cr || cg || cb));
 				totalDifference += std::abs(r-cr)+std::abs(g-cg)+std::abs(b-cb);
 			}
 			// Require identical geometry. GL line antialiasing can change a
 			// single edge pixel substantially when translated, so bound mean
 			// RGB error over colored pixels (never dilute it with black padding).
-			assert(totalDifference <= (gpu ? expected*3 : 0));
+			REQUIRE(totalDifference <= (gpu ? expected*3 : 0));
 		}
 	};
 	Game::ViewState view;
@@ -173,7 +166,7 @@ int main(int argc, char **argv)
 	copies(200,200,160,160);
 	copies(94,94,36,36);
 	// GUI overlay must not paint into the right-hand menu.
-	assert(colored(gfx->getSDLSurface(),gfx->getW()-128,80,128,600)==0);
+	REQUIRE(colored(gfx->getSDLSurface(),gfx->getW()-128,80,128,600)==0);
 	building->unitsWorking.clear();
 	gui.setSelection(GameGUI::RESOURCE_SELECTION,static_cast<unsigned>(3+3*16));
 	clear(); gui.drawOverlayInfos(); copies(94,94,36,36);
@@ -190,8 +183,8 @@ int main(int argc, char **argv)
 	clear();
 	game.drawUnitPathLine(0,0,52,34,1600,1100,0,0,0,0,unit);
 	capturePixels(gfx);
-	assert(colored(gfx->getSDLSurface(),0,110,48,5)>0);
-	assert(colored(gfx->getSDLSurface(),100,110,350,5)==0);
+	REQUIRE(colored(gfx->getSDLSurface(),0,110,48,5)>0);
+	REQUIRE(colored(gfx->getSDLSurface(),100,110,350,5)==0);
 	copies(495,110,60,5);
 	unit->posX=3;
 	std::cout << "PASS repeated path lines and short seam crossings\n";
@@ -227,7 +220,7 @@ int main(int argc, char **argv)
 	copies(20,20,160,160);
 	int clipX,clipY,clipW,clipH;
 	gfx->getClipRect(&clipX,&clipY,&clipW,&clipH);
-	assert(clipX==0 && clipY==0 && clipW==gfx->getW() && clipH==gfx->getH());
+	REQUIRE((clipX==0 && clipY==0 && clipW==gfx->getW() && clipH==gfx->getH()));
 	clear();
 	auto *particle=new GameGUI::Particle{};
 	particle->x=112; particle->y=112; particle->lifeSpan=50;
@@ -235,23 +228,23 @@ int main(int argc, char **argv)
 	gui.particles.insert(particle);
 	gui.drawParticles(true);
 	copies(80,80,64,64);
-	assert(particle->age==1); // One update despite six displayed copies.
+	REQUIRE(particle->age==1); // One update despite six displayed copies.
 	particle->vx=1; particle->vy=-2;
 	for (int frame=0; frame<100; ++frame)
 		gui.drawParticles(false);
-	assert(particle->age==1 && particle->x==112 && particle->y==112);
+	REQUIRE((particle->age==1 && particle->x==112 && particle->y==112));
 	gui.drawParticles(true);
-	assert(particle->age==2 && particle->x==113 && particle->y==110);
+	REQUIRE((particle->age==2 && particle->x==113 && particle->y==110));
 	std::set<Building*> smokeBuildings{building};
 	building->hp=1;
 	game.stepCounter=4; // An emission tick remains fixed during pause.
 	gui.gamePaused=true;
 	for (int frame=0; frame<100; ++frame)
 		gui.generateNewParticles(&smokeBuildings);
-	assert(gui.particles.size()==1);
+	REQUIRE(gui.particles.size()==1);
 	gui.gamePaused=false;
 	gui.generateNewParticles(&smokeBuildings);
-	assert(gui.particles.size()==2);
+	REQUIRE(gui.particles.size()==2);
 	for (auto *p : gui.particles) delete p;
 	gui.particles.clear();
 	building->hp=building->type->hpMax;
@@ -270,10 +263,10 @@ int main(int argc, char **argv)
 			clear(); gui.drawOverlayInfos(); capturePixels(gfx);
 			const int start=int(96*zoom), diameter=int(32*zoom), period=int(512*zoom);
 			const int expected=colored(gfx->getSDLSurface(),start,start,diameter+1,diameter+1);
-			assert(expected>0);
+			REQUIRE(expected>0);
 			for (int y=start;y+diameter<1100;y+=period)
 				for (int x=start;x+diameter<gfx->getW()-GAME_GUI_RIGHT_MENU_WIDTH-32;x+=period)
-					assert(colored(gfx->getSDLSurface(),x,y,diameter+1,diameter+1)==expected);
+					REQUIRE(colored(gfx->getSDLSurface(),x,y,diameter+1,diameter+1)==expected);
 		}
 		gui.camera=MapCamera{}; gui.viewportX=gui.viewportY=0;
 		gui.clearSelection();
@@ -282,14 +275,14 @@ int main(int argc, char **argv)
 
 	// A complete production map frame catches the separate virtual-flag pass.
 	unit->validTarget=false;
-	globals.settings.optionFlags |= GlobalContainer::OPTION_LOW_SPEED_GFX;
+	globals->settings.optionFlags |= GlobalContainer::OPTION_LOW_SPEED_GFX;
 	clear();
 	game.drawMap(0,0,1800,1100,160,0,0,0,0,view,Game::DRAW_WHOLE_MAP);
 	capturePixels(gfx);
 	SDL_Surface *baseline=SDL_ConvertSurface(gfx->getSDLSurface(),gfx->getSDLSurface()->format,0);
-	assert(baseline);
-	auto *flag=game.addBuilding(3,3,globals.buildingsTypes.getTypeNum("warflag",0,false),0);
-	assert(flag); flag->unitStayRange=1; view.selectedBuilding=flag;
+	REQUIRE(baseline);
+	auto *flag=game.addBuilding(3,3,globals->buildingsTypes.getTypeNum("warflag",0,false),0);
+	REQUIRE(flag); flag->unitStayRange=1; view.selectedBuilding=flag;
 	clear();
 	game.drawMap(0,0,1800,1100,160,0,0,0,0,view,Game::DRAW_WHOLE_MAP);
 	capturePixels(gfx);
@@ -299,7 +292,7 @@ int main(int argc, char **argv)
 		for(int y=60+row*512;y<170+row*512;++y) for(int x=60+col*512;x<170+col*512;++x)
 			different += memcmp(static_cast<char*>(baseline->pixels)+y*baseline->pitch+x*4,
 				static_cast<char*>(gfx->getSDLSurface()->pixels)+y*gfx->getSDLSurface()->pitch+x*4,4)!=0;
-		assert(different>100);
+		REQUIRE(different>100);
 	}
 	SDL_FreeSurface(baseline);
 	std::cout << "PASS virtual flags and ranges in complete map frames\n";
@@ -314,8 +307,8 @@ int main(int argc, char **argv)
 		const int cx=((building->posX-14)&15)*32+building->type->width*16;
 		const int cy=((building->posY-14)&15)*32+building->type->height*16;
 		for(int y=cy;y+48<1100;y+=512) for(int x=cx;x+48<width-GAME_GUI_RIGHT_MENU_WIDTH;x+=512)
-			assert(colored(gfx->getSDLSurface(),x-48,y-48,96,96)>0);
-		assert(colored(gfx->getSDLSurface(),width-128,80,128,600)==0);
+			REQUIRE(colored(gfx->getSDLSurface(),x-48,y-48,96,96)>0);
+		REQUIRE(colored(gfx->getSDLSurface(),width-128,80,128,600)==0);
 	}
 	gui.clearSelection(); gui.viewportX=gui.viewportY=0;
 	std::cout << "PASS overlay resize, panning and sidebar clipping\n";
@@ -326,12 +319,12 @@ int main(int argc, char **argv)
 		editor.game.addTeam(0); editor.game.teams[0]->race.loadDefault();
 		editor.team=0; editor.viewportX=editor.viewportY=0;
 		editor.mouseX=300; editor.mouseY=300;
-		Building *selected=editor.game.addBuilding(7,7,globals.buildingsTypes.getTypeNum("inn",0,false),0);
-		assert(selected);
+		Building *selected=editor.game.addBuilding(7,7,globals->buildingsTypes.getTypeNum("inn",0,false),0);
+		REQUIRE(selected);
 		editor.selectionMode=MapEdit::PlaceNothing;
 		clear(); editor.drawMap(0,0,1800,1100); capturePixels(gfx);
 		SDL_Surface *before=SDL_ConvertSurface(gfx->getSDLSurface(),gfx->getSDLSurface()->format,0);
-		assert(before);
+		REQUIRE(before);
 		editor.selectionMode=MapEdit::EditingBuilding;
 		editor.selectedBuildingGID=selected->gid;
 		clear(); editor.drawMap(0,0,1800,1100); capturePixels(gfx);
@@ -341,7 +334,7 @@ int main(int argc, char **argv)
 			for(int y=200+row*512;y<330+row*512;++y) for(int x=200+col*512;x<330+col*512;++x)
 				different += memcmp(static_cast<char*>(before->pixels)+y*before->pitch+x*4,
 					static_cast<char*>(gfx->getSDLSurface()->pixels)+y*gfx->getSDLSurface()->pitch+x*4,4)!=0;
-			assert(different>10);
+			REQUIRE(different>10);
 		}
 		SDL_FreeSurface(before);
 	}
@@ -361,7 +354,7 @@ int main(int argc, char **argv)
 		const int mapW=world.map.getW(), mapH=world.map.getH();
 		for(int y=0;y<mapH;++y) for(int x=0;x<mapW;++x) world.map.clearImmobileUnit(x,y);
 		auto *walker=world.addUnit(1,1,0,WORKER,0,255,0,0);
-		assert(walker); walker->validTarget=true;
+		REQUIRE(walker); walker->validTarget=true;
 		for(int width : {640,1200,1800}) for(int reverse : {0,1})
 		{
 			resize(width);
@@ -373,24 +366,24 @@ int main(int argc, char **argv)
 			gfx->setClipRect(0,0,width-GAME_GUI_RIGHT_MENU_WIDTH,1100);
 			world.drawUnitPathLine(0,0,width/32,34,width-GAME_GUI_RIGHT_MENU_WIDTH,1100,0,0,0,0,walker);
 			capturePixels(gfx);
-			assert(colored(gfx->getSDLSurface(),0,0,50,50)>0);
-			assert(colored(gfx->getSDLSurface(),100,100,250,250)==0);
+			REQUIRE(colored(gfx->getSDLSurface(),0,0,50,50)>0);
+			REQUIRE(colored(gfx->getSDLSurface(),100,100,250,250)==0);
 			// The short diagonal continues through each visible map corner.
 			for(int y=0;y+50<1100;y+=mapH*32)
 				for(int x=0;x+50<width-GAME_GUI_RIGHT_MENU_WIDTH;x+=mapW*32)
-					assert(colored(gfx->getSDLSurface(),x,y,50,50)>0);
-			assert(colored(gfx->getSDLSurface(),width-GAME_GUI_RIGHT_MENU_WIDTH,0,GAME_GUI_RIGHT_MENU_WIDTH,1100)==0);
+					REQUIRE(colored(gfx->getSDLSurface(),x,y,50,50)>0);
+			REQUIRE(colored(gfx->getSDLSurface(),width-GAME_GUI_RIGHT_MENU_WIDTH,0,GAME_GUI_RIGHT_MENU_WIDTH,1100)==0);
 			// Pan the far corner into view, below the top status bar.
 			rectangular.camera=MapCamera{};
 			rectangular.viewportX=mapW-3; rectangular.viewportY=mapH-3;
 			rectangular.setSelection(GameGUI::RESOURCE_SELECTION,static_cast<unsigned>(mapW*mapH-1));
 			clear(); rectangular.drawOverlayInfos(); capturePixels(gfx);
 			const int selectionPixels=colored(gfx->getSDLSurface(),64,64,34,34);
-			assert(selectionPixels>0);
+			REQUIRE(selectionPixels>0);
 			for(int y=64;y+34<1100;y+=mapH*32)
 				for(int x=64;x+34<width-GAME_GUI_RIGHT_MENU_WIDTH-32;x+=mapW*32)
-					assert(colored(gfx->getSDLSurface(),x,y,34,34)==selectionPixels);
-			assert(colored(gfx->getSDLSurface(),width-128,80,128,600)==0);
+					REQUIRE(colored(gfx->getSDLSurface(),x,y,34,34)==selectionPixels);
+			REQUIRE(colored(gfx->getSDLSurface(),width-128,80,128,600)==0);
 		}
 	}
 	resize(1800);
@@ -402,13 +395,13 @@ int main(int argc, char **argv)
 	const auto settingsDirectory=files->getDir(0)+"/settings-ui";
 	std::filesystem::create_directory(settingsDirectory);
 	files->dirList.insert(files->dirList.begin(),settingsDirectory);
-	const Settings originalSettings=globals.settings;
+	const Settings originalSettings=globals->settings;
 	{
 	SettingsScreen settings;
 	settings.beginExecution(gfx);
 	auto settingRow = [&](const std::string& id) {
 		for(const auto& row : settings.rows()) if(row.id==id) return row;
-		assert(false && "Missing Settings row"); return SettingsScreen::Row{};
+		REQUIRE((false && "Missing Settings row")); return SettingsScreen::Row{};
 	};
 	for(int width : {640,1200,1800})
 	{
@@ -417,42 +410,42 @@ int main(int argc, char **argv)
 		const std::string expected=Toolkit::getStringTable()->getString("[settings Current display]")+": "+dimensions;
 		bool found=false;
 		for(const auto& row:settings.rows()) if(row.kind==SettingsScreen::Kind::Info && row.label.find(expected)==0) found=true;
-		assert(found);
+		REQUIRE(found);
 	}
 	std::cout << "PASS Settings display label follows native window resizing\n";
-	assert(settingRow("display.resolution").enabled);
+	REQUIRE(settingRow("display.resolution").enabled);
 	settings.selectCategory(SettingsScreen::Category::Controls);
-	for(const auto& row:settings.rows()) assert(row.id!="display.resolution");
+	for(const auto& row:settings.rows()) REQUIRE(row.id!="display.resolution");
 	settings.selectCategory(SettingsScreen::Category::Display);
-	assert(settingRow("display.resolution").enabled);
+	REQUIRE(settingRow("display.resolution").enabled);
 	// Save a pending GPU mode without recreating the dummy software window.
-	globals.settings.screenFlags |= GraphicContext::USEGPU;
-	assert(settings.changeSetting("display.mode",1));
-	assert(globals.settings.screenFlags & GraphicContext::FULLSCREEN);
+	globals->settings.screenFlags |= GraphicContext::USEGPU;
+	REQUIRE(settings.changeSetting("display.mode",1));
+	REQUIRE((globals->settings.screenFlags & GraphicContext::FULLSCREEN));
 	settings.selectCategory(SettingsScreen::Category::Controls);
 	settings.selectCategory(SettingsScreen::Category::Display);
-	assert(settingRow("display.mode").number==1);
+	REQUIRE(settingRow("display.mode").number==1);
 	const auto resolutions=settingRow("display.resolution");
-	assert(!resolutions.choices.empty());
+	REQUIRE(!resolutions.choices.empty());
 	const auto choice=resolutions.choices.front();
-	const auto separator=choice.find(" × ");assert(separator!=std::string::npos);
+	const auto separator=choice.find(" × ");REQUIRE(separator!=std::string::npos);
 	const int chosenW=std::stoi(choice),chosenH=std::stoi(choice.substr(separator+4));
 	const std::string windowOnly=Toolkit::getStringTable()->getString("[settings Windowed only]");
-	assert(settings.changeSetting("display.resolution",0));
-	assert(globals.settings.screenWidth==chosenW && globals.settings.screenHeight==chosenH);
-	assert(bool(globals.settings.screenFlags & GraphicContext::FULLSCREEN)==(choice.find(windowOnly)==std::string::npos));
-	assert(settings.changeSetting("display.mode",0));
-	assert(!(globals.settings.screenFlags & GraphicContext::FULLSCREEN));
-	assert(settingRow("display.resolution").enabled);
-	globals.settings.screenFlags=GraphicContext::RESIZABLE | (gpu ? GraphicContext::USEGPU : 0);
+	REQUIRE(settings.changeSetting("display.resolution",0));
+	REQUIRE((globals->settings.screenWidth==chosenW && globals->settings.screenHeight==chosenH));
+	REQUIRE(bool(globals->settings.screenFlags & GraphicContext::FULLSCREEN)==(choice.find(windowOnly)==std::string::npos));
+	REQUIRE(settings.changeSetting("display.mode",0));
+	REQUIRE(!(globals->settings.screenFlags & GraphicContext::FULLSCREEN));
+	REQUIRE(settingRow("display.resolution").enabled);
+	globals->settings.screenFlags=GraphicContext::RESIZABLE | (gpu ? GraphicContext::USEGPU : 0);
 	std::cout << "PASS resolution restrictions, pending display choices and category switching\n";
 	Settings savedSettings;savedSettings.load();
-	assert(!(savedSettings.screenFlags & GraphicContext::FULLSCREEN));
+	REQUIRE(!(savedSettings.screenFlags & GraphicContext::FULLSCREEN));
 	settings.abandon();
 	settings.finishExecution();
 	}
 	files->dirList.erase(files->dirList.begin());
-	globals.settings=originalSettings;
+	globals->settings=originalSettings;
 
 	{
 	CreditScreen credits;
@@ -462,7 +455,7 @@ int main(int argc, char **argv)
 		resize(width, &credits);
 		clear(); credits.paintFrame(0); capturePixels(gfx);
 		const auto bounds=credits.host().rootBounds();
-		assert(bounds.w>0 && std::abs((bounds.x+bounds.x+bounds.w)-width)<12);
+		REQUIRE((bounds.w>0 && std::abs((bounds.x+bounds.x+bounds.w)-width)<12));
 	}
 	credits.endExecute(0);
 	credits.finishExecution();
@@ -478,13 +471,19 @@ int main(int argc, char **argv)
 		// affect the color/opacity of subsequent untextured gameplay drawing.
 		gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),0,0,0);
 		capturePixels(gfx);
-		assert(colored(gfx->getSDLSurface(),0,0,gfx->getW(),gfx->getH())==0);
+		REQUIRE(colored(gfx->getSDLSurface(),0,0,gfx->getW(),gfx->getH())==0);
 		gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),255,255,255);
 		std::valarray<unsigned char> opaque(static_cast<unsigned char>(255),4);
 		gfx->drawAlphaMap(opaque,2,2,0,0,gfx->getW(),gfx->getH(),Color(0,0,0));
 		capturePixels(gfx);
-		assert(colored(gfx->getSDLSurface(),0,0,gfx->getW(),gfx->getH())==0);
+		REQUIRE(colored(gfx->getSDLSurface(),0,0,gfx->getW(),gfx->getH())==0);
 	}
 	std::cout << "PASS menu-to-game opaque drawing after cached presentation\n";
-	return 0;
+}
+}
+
+TEST_SUITE("MapRenderResize")
+{
+	TEST_CASE("repeated map copies; settings and credits after resizing in software rendering") { run(false); }
+	TEST_CASE("repeated map copies; settings and credits after resizing in OpenGL [display:1920x1200]") { run(true); }
 }

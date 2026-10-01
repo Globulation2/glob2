@@ -2,10 +2,11 @@
 // Software alpha-blend precision under many stacked draws onto the same
 // pixels, as repeated translucent effects produce. A single draw's rounding
 // bias is invisible; this catches it compounding into a visible darkening.
+#include "Glob2Test.h"
+#include <cmath>
 #include <Toolkit.h>
 #include <GraphicContext.h>
 #include <SDL.h>
-#include <cassert>
 #include <cstdlib>
 #include <iostream>
 using namespace GAGCore;
@@ -21,9 +22,11 @@ struct Inspect : GraphicContext
 		return r; // background and probe are greyscale; any channel matches
 	}
 };
-int main()
+TEST_SUITE("DrawableSurfaceBlend")
 {
-	Toolkit::init("drawable-surface-blend-test");
+TEST_CASE("software alpha blend stays accurate under stacked draws")
+{
+	glob2test::ToolkitScope toolkit;
 	auto *raw = Toolkit::initGraphic(64, 64, 0 /* software */, "blend precision");
 	auto *gfx = static_cast<Inspect *>(raw);
 	const Uint8 background = 200;
@@ -40,7 +43,7 @@ int main()
 
 	const Uint8 after = gfx->alphaAt(20, 20);
 	std::cout << "background=" << (int)background << " after 60 blended transparent draws=" << (int)after << std::endl;
-	assert(after == background);
+	REQUIRE(after == background);
 
 	// A half-opaque source drawn many times should converge to a stable
 	// value (a proper running blend), not drift away with each pass.
@@ -54,8 +57,7 @@ int main()
 		gfx->drawSurface(16, 16, &halfOpaque, 255);
 	const Uint8 restable = gfx->alphaAt(20, 20);
 	std::cout << "converged=" << (int)stable << " after 5 more passes=" << (int)restable << std::endl;
-	assert(std::abs(stable - restable) <= 1);
+	REQUIRE(std::abs(stable - restable) <= 1);
 
-	Toolkit::close();
-	std::cout << "PASS: software alpha blend stays accurate under many stacked draws\n";
+}
 }

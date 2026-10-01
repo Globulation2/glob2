@@ -3,29 +3,14 @@
 
 #pragma once
 
-#include <cppunit/extensions/HelperMacros.h>
+#include "Glob2Test.h"
 
 // Fertility::Field computes, in closed form, the probability that Map::growResources
 // lets a wheat or wood tile expand. These tests pin it to that definition: the kernel
 // against the RNG that produces it, and the separable four-pass convolution (plus both
 // sand paths) against a direct 961-tap evaluation.
-class FertilityFieldTest: public CppUnit::TestFixture
+class FertilityFieldTest
 {
-	CPPUNIT_TEST_SUITE( FertilityFieldTest );
-		CPPUNIT_TEST( testTriangularWeightsMatchGrowResourcesRng );
-		CPPUNIT_TEST( testConvolutionMatchesDirectKernelWithoutSand );
-		CPPUNIT_TEST( testSandCorrectionPathMatchesDirectKernel );
-		CPPUNIT_TEST( testWaterSplatPathMatchesDirectKernel );
-		CPPUNIT_TEST( testAdaptivePathMatchesExplicitPaths );
-		CPPUNIT_TEST( testOpenWaterReachesFullScale );
-		CPPUNIT_TEST( testSandOppositeWaterRemovesCredit );
-		CPPUNIT_TEST( testNonPowerOfTwoDimensionsWrap );
-		CPPUNIT_TEST( testForMapZeroesNonGrass );
-		CPPUNIT_TEST( testForMapZeroesGrassNoDepositReaches );
-		CPPUNIT_TEST( testForMapUngatedKeepsUnreachableGrass );
-		CPPUNIT_TEST( testUsefulExpansionCapacityFolds );
-		CPPUNIT_TEST( testWithinPercentBand );
-	CPPUNIT_TEST_SUITE_END();
 
 public:
 	void testTriangularWeightsMatchGrowResourcesRng();

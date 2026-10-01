@@ -12,7 +12,7 @@
 // Index 0 mirrors Building::UnitNotAvailable; the remaining indices are the
 // "real obstruction" reasons (too-low-level, can't-access, too-far, ...).
 
-#include <cppunit/extensions/HelperMacros.h>
+#include "Glob2Test.h"
 
 #include <cstdint>
 
@@ -35,53 +35,44 @@ namespace
 	}
 }
 
-class BuildingFailureDisplayTest: public CPPUNIT_NS::TestCase
+class BuildingFailureDisplayTest
 {
-CPPUNIT_TEST_SUITE(BuildingFailureDisplayTest);
-		CPPUNIT_TEST(testNoFailuresHidden);
-		CPPUNIT_TEST(testOnlyUnavailableHidden);
-		CPPUNIT_TEST(testRealObstructionShown);
-		CPPUNIT_TEST(testUnavailablePlusRealShown);
-		CPPUNIT_TEST(testLastReasonShown);
-		CPPUNIT_TEST(testMarkersFollowTheRows);
-		CPPUNIT_TEST(testMarkersHiddenWhenNotAsking);
-		CPPUNIT_TEST(testMarkersHiddenWhenOverstaffed);
-	CPPUNIT_TEST_SUITE_END();
+public:
 
 protected:
 	// Nothing is failing: no rows.
 	void testNoFailuresHidden(void)
 	{
 		uint32_t counts[kReasonCount] = {0, 0, 0, 0, 0, 0, 0, 0};
-		CPPUNIT_ASSERT(show(counts) == false);
+		CHECK(show(counts) == false);
 	}
 
 	// Only "units not available" is positive: the normal state, no rows.
 	void testOnlyUnavailableHidden(void)
 	{
 		uint32_t counts[kReasonCount] = {5, 0, 0, 0, 0, 0, 0, 0};
-		CPPUNIT_ASSERT(show(counts) == false);
+		CHECK(show(counts) == false);
 	}
 
 	// A real obstruction with no not-available count: rows shown.
 	void testRealObstructionShown(void)
 	{
 		uint32_t counts[kReasonCount] = {0, 0, 0, 3, 0, 0, 0, 0};
-		CPPUNIT_ASSERT(show(counts) == true);
+		CHECK(show(counts) == true);
 	}
 
 	// Not-available together with a real obstruction: rows shown.
 	void testUnavailablePlusRealShown(void)
 	{
 		uint32_t counts[kReasonCount] = {5, 0, 2, 0, 0, 0, 0, 0};
-		CPPUNIT_ASSERT(show(counts) == true);
+		CHECK(show(counts) == true);
 	}
 
 	// The gate scans the whole array, including the last reason index.
 	void testLastReasonShown(void)
 	{
 		uint32_t counts[kReasonCount] = {0, 0, 0, 0, 0, 0, 0, 1};
-		CPPUNIT_ASSERT(show(counts) == true);
+		CHECK(show(counts) == true);
 	}
 	// A building still short of its ratio shows badges exactly when it shows
 	// rows: the marker gate adds a condition, it never relaxes one.
@@ -89,8 +80,8 @@ protected:
 	{
 		uint32_t real[kReasonCount] = {5, 0, 2, 0, 0, 0, 0, 0};
 		uint32_t onlyUnavailable[kReasonCount] = {5, 0, 0, 0, 0, 0, 0, 0};
-		CPPUNIT_ASSERT(mark(real, 1, 3) == true);
-		CPPUNIT_ASSERT(mark(onlyUnavailable, 1, 3) == false);
+		CHECK(mark(real, 1, 3) == true);
+		CHECK(mark(onlyUnavailable, 1, 3) == false);
 	}
 
 	// Staffed to its ratio, the building has stopped asking for units and its
@@ -98,15 +89,25 @@ protected:
 	void testMarkersHiddenWhenNotAsking(void)
 	{
 		uint32_t real[kReasonCount] = {5, 0, 2, 0, 0, 0, 0, 0};
-		CPPUNIT_ASSERT(mark(real, 3, 3) == false);
+		CHECK(mark(real, 3, 3) == false);
 	}
 
 	// The ratio can be dragged below what is already hired.
 	void testMarkersHiddenWhenOverstaffed(void)
 	{
 		uint32_t real[kReasonCount] = {0, 4, 0, 0, 0, 0, 0, 0};
-		CPPUNIT_ASSERT(mark(real, 5, 2) == false);
+		CHECK(mark(real, 5, 2) == false);
 	}
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(BuildingFailureDisplayTest);
+TEST_SUITE("BuildingFailureDisplay")
+{
+	TEST_CASE_FIXTURE(BuildingFailureDisplayTest, "NoFailuresHidden") { testNoFailuresHidden(); }
+	TEST_CASE_FIXTURE(BuildingFailureDisplayTest, "OnlyUnavailableHidden") { testOnlyUnavailableHidden(); }
+	TEST_CASE_FIXTURE(BuildingFailureDisplayTest, "RealObstructionShown") { testRealObstructionShown(); }
+	TEST_CASE_FIXTURE(BuildingFailureDisplayTest, "UnavailablePlusRealShown") { testUnavailablePlusRealShown(); }
+	TEST_CASE_FIXTURE(BuildingFailureDisplayTest, "LastReasonShown") { testLastReasonShown(); }
+	TEST_CASE_FIXTURE(BuildingFailureDisplayTest, "MarkersFollowTheRows") { testMarkersFollowTheRows(); }
+	TEST_CASE_FIXTURE(BuildingFailureDisplayTest, "MarkersHiddenWhenNotAsking") { testMarkersHiddenWhenNotAsking(); }
+	TEST_CASE_FIXTURE(BuildingFailureDisplayTest, "MarkersHiddenWhenOverstaffed") { testMarkersHiddenWhenOverstaffed(); }
+}

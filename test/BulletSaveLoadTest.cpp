@@ -12,6 +12,7 @@
 //      and every following field still decodes from the right offset
 // Links libgag_server.a for BinaryStream + MemoryStreamBackend.
 
+#include "Glob2Test.h"
 #include <cstdio>
 #include <memory>
 #include <SDL.h>
@@ -22,21 +23,12 @@
 
 using namespace GAGCore;
 
-// SHA1 is wired in this project by direct .c-into-.cpp inclusion (see
-// YOGServerPasswordRegistry.cpp); the .h has no extern "C" wrapper, so
-// libgag_server.a's BinaryOutputStream references C++-mangled SHA1 names.
-// Same trick as NetSendOrderDecodeTest.cpp to satisfy the linker.
-#include "../gnupg/sha1.c"
-
 namespace {
 
-int failures = 0;
 
 void check(bool ok, const char* what)
 {
-	std::printf("%s: %s\n", ok ? "PASS" : "FAIL", what);
-	if (!ok)
-		++failures;
+	CHECK_MESSAGE(ok, (what));
 }
 
 std::unique_ptr<BinaryInputStream> makeInputStream(const MemoryStreamBackend& written)
@@ -101,10 +93,8 @@ void testPre85StreamDefaultsToTicksLeft()
 
 }  // namespace
 
-int main(int /*argc*/, char* /*argv*/[])
+TEST_SUITE("BulletSaveLoad")
 {
-	testRoundTripCurrentVersion();
-	testPre85StreamDefaultsToTicksLeft();
-	std::printf(failures == 0 ? "ALL PASS\n" : "FAILURES: %d\n", failures);
-	return failures == 0 ? 0 : 1;
+	TEST_CASE("RoundTripCurrentVersion") { testRoundTripCurrentVersion(); }
+	TEST_CASE("Pre85StreamDefaultsToTicksLeft") { testPre85StreamDefaultsToTicksLeft(); }
 }

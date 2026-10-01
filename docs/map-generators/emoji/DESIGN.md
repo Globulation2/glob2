@@ -134,7 +134,7 @@ the 19 standard-setting gameplay maps byte-identical to the tested candidate.
 ## Reproduction
 
 ```sh
-scons release=1 server=0 -j4 build/src/glob2 map-generator-defaults-test map-generator-golden-test
+scons release=1 server=0 -j4 build/src/glob2 engine-tests map-generator-golden-test
 build/src/glob2 --generate-map emoji --seed 7 --set character=1 \
   --set outline=1 --set inverse=1 --output artifacts/emoji/smile.map \
   --preview artifacts/emoji/smile.png --json artifacts/emoji/smile.json

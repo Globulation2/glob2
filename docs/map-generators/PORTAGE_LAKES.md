@@ -103,8 +103,8 @@ SDL_VIDEODRIVER=dummy build/src/glob2 --run-game --map-file /tmp/portage.map \
 Run the focused generation, containment, repeatability and scarcity regressions:
 
 ```sh
-scons release=1 server=0 -j8 build/src/MapGeneratorDefaultsTest
-build/src/MapGeneratorDefaultsTest /tmp/portage-contract-profile --portage-lakes-only
+scons release=1 server=0 -j8 engine-tests
+python3 test/run_tests.py --filter 'MapGeneratorDefaults/Portage*'
 ```
 
 Retained evidence lives in `artifacts/portage-lakes/`: exact request/statistics

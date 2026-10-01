@@ -11,8 +11,9 @@
 //     throws std::out_of_range deterministically.
 //
 // Link surface is identical to CampaignSelectionHarness (Campaign.cpp +
-// CampaignLoadTestStubs.cpp against libgag_server).
+// the shared unit stubs in test/unit/stubs/ against libgag_server).
 
+#include "Glob2Test.h"
 #include "Campaign.h"
 
 #include <cstdio>
@@ -21,16 +22,6 @@
 
 namespace {
 
-int failures = 0;
-
-#define EXPECT(cond, msg)                                                  \
-	do {                                                                   \
-		if (!(cond)) {                                                     \
-			std::fprintf(stderr, "FAIL: %s  (%s:%d)\n",                    \
-			             (msg), __FILE__, __LINE__);                       \
-			++failures;                                                    \
-		}                                                                  \
-	} while (0)
 
 Campaign buildFixture()
 {
@@ -47,50 +38,44 @@ Campaign buildFixture()
 
 }  // namespace
 
-int main(int /*argc*/, char* /*argv*/[])
+TEST_SUITE("CampaignBounds")
 {
-	std::printf("# CampaignBoundsHarness golden output\n");
+TEST_CASE("removeMap ignores and getMap rejects out-of-range indices")
+{
 
 	// === removeMap: in-bounds removal still works ===
 	{
 		Campaign c = buildFixture();
 		c.removeMap(1);
-		std::printf("removeMap(1): count=%zu\n", c.getMapCount());
-		EXPECT(c.getMapCount() == 2, "in-bounds removal shrinks the list");
-		EXPECT(c.getMap(0).getMapName() == "Map1", "entry before removed index kept");
-		EXPECT(c.getMap(1).getMapName() == "Map3", "entry after removed index shifts down");
+		GLOB2_CHECK(c.getMapCount() == 2, "in-bounds removal shrinks the list");
+		GLOB2_CHECK(c.getMap(0).getMapName() == "Map1", "entry before removed index kept");
+		GLOB2_CHECK(c.getMap(1).getMapName() == "Map3", "entry after removed index shifts down");
 	}
 
 	// === removeMap: out-of-range index is a no-op ===
 	{
 		Campaign c = buildFixture();
 		c.removeMap(3);  // one past the end — the stale-index case
-		std::printf("removeMap(3) on size 3: count=%zu\n", c.getMapCount());
-		EXPECT(c.getMapCount() == 3, "one-past-the-end removal must be ignored");
+		GLOB2_CHECK(c.getMapCount() == 3, "one-past-the-end removal must be ignored");
 
 		c.removeMap(static_cast<unsigned>(-1));  // pathological stale index
-		std::printf("removeMap(UINT_MAX): count=%zu\n", c.getMapCount());
-		EXPECT(c.getMapCount() == 3, "wildly out-of-range removal must be ignored");
-		EXPECT(c.getMap(2).getMapName() == "Map3", "list contents untouched");
+		GLOB2_CHECK(c.getMapCount() == 3, "wildly out-of-range removal must be ignored");
+		GLOB2_CHECK(c.getMap(2).getMapName() == "Map3", "list contents untouched");
 	}
 
 	// === removeMap: last valid index is still removable ===
 	{
 		Campaign c = buildFixture();
 		c.removeMap(2);
-		std::printf("removeMap(2) on size 3: count=%zu\n", c.getMapCount());
-		EXPECT(c.getMapCount() == 2, "last valid index is in bounds");
-		EXPECT(c.getMap(1).getMapName() == "Map2", "remaining entries intact");
+		GLOB2_CHECK(c.getMapCount() == 2, "last valid index is in bounds");
+		GLOB2_CHECK(c.getMap(1).getMapName() == "Map2", "remaining entries intact");
 	}
 
 	// === getMap: in-bounds access returns the right entry ===
 	{
 		Campaign c = buildFixture();
-		EXPECT(c.getMap(0).getMapName() == "Map1", "getMap(0) returns first entry");
-		EXPECT(c.getMap(2).getMapName() == "Map3", "getMap(size-1) returns last entry");
-		std::printf("getMap(0)=\"%s\" getMap(2)=\"%s\"\n",
-		            c.getMap(0).getMapName().c_str(),
-		            c.getMap(2).getMapName().c_str());
+		GLOB2_CHECK(c.getMap(0).getMapName() == "Map1", "getMap(0) returns first entry");
+		GLOB2_CHECK(c.getMap(2).getMapName() == "Map3", "getMap(size-1) returns last entry");
 	}
 
 	// === getMap: out-of-range index throws instead of UB ===
@@ -102,8 +87,7 @@ int main(int /*argc*/, char* /*argv*/[])
 		} catch (const std::out_of_range&) {
 			threw = true;
 		}
-		std::printf("getMap(3) on size 3: threw=%d\n", threw ? 1 : 0);
-		EXPECT(threw, "one-past-the-end access must throw std::out_of_range");
+		GLOB2_CHECK(threw, "one-past-the-end access must throw std::out_of_range");
 
 		threw = false;
 		try {
@@ -111,10 +95,8 @@ int main(int /*argc*/, char* /*argv*/[])
 		} catch (const std::out_of_range&) {
 			threw = true;
 		}
-		std::printf("getMap(UINT_MAX): threw=%d\n", threw ? 1 : 0);
-		EXPECT(threw, "wildly out-of-range access must throw std::out_of_range");
+		GLOB2_CHECK(threw, "wildly out-of-range access must throw std::out_of_range");
 	}
 
-	std::printf("result: %d failure(s)\n", failures);
-	return failures == 0 ? 0 : 1;
+}
 }

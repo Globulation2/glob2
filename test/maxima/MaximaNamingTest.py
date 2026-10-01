@@ -28,7 +28,7 @@ class MaximaNamingTest(unittest.TestCase):
             for name in (
                 "SConstruct",
                 "scons/sources.py",
-                "test/SConstruct",
+                "test/tests.py",
             )
         )
         self.assertIn("AIMaxima.cpp", manifests)

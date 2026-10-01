@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Real-engine and render regression: a selected building remembers, by gid,
 // the units it could not hire under each reason, and the map view draws the
-// reason's shape over exactly those units. Run under xvfb; writes the scene to
-// .cache/failing-unit-markers/scene.png for reviewers.
+// reason's shape over exactly those units. Needs a display; writes the scene to
+// scene.png in the case's artifact directory for reviewers.
+#include "EngineFixtures.h"
 #include "GlobalContainer.h"
 #include "Game.h"
 #include "GameGUI.h"
@@ -28,7 +29,6 @@
 #include <string>
 #include <vector>
 
-GlobalContainer* globalContainer = nullptr;
 
 namespace
 {
@@ -36,11 +36,12 @@ namespace
 	const int SCREEN_H = 768;
 	const int DRAW_W = 512;
 	const int DRAW_H = 512;
-	const char* outputDir = ".cache/failing-unit-markers";
+	std::string outputDirectory;
+	const char* outputDir = nullptr;
 
 	void require(bool ok, const char* message)
 	{
-		if (!ok) { std::fprintf(stderr, "FAIL: %s\n", message); std::exit(1); }
+		GLOB2_REQUIRE(ok, message);
 	}
 
 	struct Frame
@@ -298,20 +299,13 @@ public:
 }
 };
 
-int main()
+TEST_SUITE("FailingUnitMarkers")
 {
-	std::setvbuf(stdout, nullptr, _IONBF, 0);
-	std::filesystem::create_directories(outputDir);
-	GlobalContainer globals("glob2-failing-unit-markers-test");
-	globalContainer = &globals;
-	globals.settings.screenWidth = SCREEN_W;
-	globals.settings.screenHeight = SCREEN_H;
-	globals.settings.screenFlags = GraphicContext::USEGPU;
-	globals.settings.rememberUnit = false;
-	globals.settings.mute = 1;
-	globals.load();
-	IntBuildingType::init();
-	Race::loadDefault();
+TEST_CASE("units a building could not hire wear the reason marker [display:1024x768][artifacts]")
+{
+	outputDirectory = glob2test::artifactDir().string();
+	outputDir = outputDirectory.c_str();
+	glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.display = true, .loadStrings = true, .width = SCREEN_W, .height = SCREEN_H, .screenFlags = GraphicContext::USEGPU});
 	FailingUnitMarkersHarness::run();
-	return 0;
+}
 }

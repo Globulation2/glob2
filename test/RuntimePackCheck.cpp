@@ -1,5 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Exercise runtime loading, all manifest frames, recoloring, zoom and cache release.
+#include "Glob2Test.h"
+#include <string>
+#include <utility>
+#include <FileManager.h>
 #include <GraphicContext.h>
 #include <Toolkit.h>
 #include <SDL.h>
@@ -9,7 +13,6 @@
 #else
 #include <epoxy/gl.h>
 #endif
-#include <cassert>
 #include <algorithm>
 #include <fstream>
 #include <iostream>
@@ -27,37 +30,35 @@ static void capture(const std::string &name)
     std::vector<unsigned char>a(w*h*4),b(a.size());glReadPixels(v[0],v[1],w,h,GL_RGBA,GL_UNSIGNED_BYTE,a.data());
     for(int y=0;y<h;++y)std::copy_n(a.data()+y*w*4,w*4,b.data()+(h-1-y)*w*4);
     auto s=SDL_CreateRGBSurfaceWithFormatFrom(b.data(),w,h,32,w*4,SDL_PIXELFORMAT_RGBA32);
-    assert(s&&IMG_SavePNG(s,name.c_str())==0);SDL_FreeSurface(s);
+    REQUIRE((s&&IMG_SavePNG(s,name.c_str())==0));SDL_FreeSurface(s);
 }
-int main(int argc,char**argv)
+static void run(bool software,bool fallback,bool original)
 {
-    std::filesystem::create_directories(".cache/highres-runtime-check");
-    const bool software=argc>1&&std::string(argv[1])=="software";
-    const bool fallback=argc>1&&std::string(argv[1])=="fallback";
-    const bool original=argc>1&&std::string(argv[1])=="original";
-    Toolkit::init("glob2-hd-pack-check");
+    const std::string captureDir=glob2test::artifactDir().string();
+    glob2test::ToolkitScope toolkit;
+    Toolkit::getFileManager()->addDir(glob2test::sourceRoot().string());
     auto gfx=Toolkit::initGraphic(1280,960,software?0:GraphicContext::USEGPU,"HD runtime pack validation");
     {
-        std::ifstream input("data/highres/v1/frames.txt");std::string magic,id,base,team;int version,w,h,scale;
-        input>>magic>>version;assert(version==1);
+        std::ifstream input(glob2test::sourceRoot()/"data/highres/v1/frames.txt");std::string magic,id,base,team;int version,w,h,scale;
+        input>>magic>>version;REQUIRE(version==1);
         std::vector<Frame> frames;
         std::map<std::string,std::unique_ptr<Sprite>> sprites;
         while(input>>id>>w>>h>>scale>>base>>team)
         {
             auto split=id.find_last_not_of("0123456789")+1;auto prefix=id.substr(0,split);int index=std::stoi(id.substr(split));
-            if(!sprites.count(prefix)){auto s=std::make_unique<Sprite>();assert(s->load("data/gfx/"+prefix));sprites[prefix]=std::move(s);}
+            if(!sprites.count(prefix)){auto s=std::make_unique<Sprite>();REQUIRE(s->load("data/gfx/"+prefix));sprites[prefix]=std::move(s);}
             frames.push_back({prefix,id,index,w,h});
         }
         // Terrain tiles have no HD layer and so never appear in frames.txt,
         // but the dense-scene benchmark below draws them alongside frames
         // that do.
-        if(!sprites.count("terrain")){auto s=std::make_unique<Sprite>();assert(s->load("data/gfx/terrain"));sprites["terrain"]=std::move(s);}
+        if(!sprites.count("terrain")){auto s=std::make_unique<Sprite>();REQUIRE(s->load("data/gfx/terrain"));sprites["terrain"]=std::move(s);}
         Sprite::setHighResolution(!original);
-        for(auto f:frames){assert(sprites[f.prefix]->getW(f.index)==f.w);assert(sprites[f.prefix]->getH(f.index)==f.h);}
-        if(software||fallback){assert(Sprite::highResolutionStats().cpuBytes==0);std::cout<<"PASS software: original resources, all logical sizes\n";}
+        for(auto f:frames){REQUIRE(sprites[f.prefix]->getW(f.index)==f.w);REQUIRE(sprites[f.prefix]->getH(f.index)==f.h);}
+        if(software||fallback){REQUIRE(Sprite::highResolutionStats().cpuBytes==0);std::cout<<"PASS software: original resources, all logical sizes\n";}
         else
         {
-            const size_t initial=Sprite::highResolutionStats().cpuBytes;assert(original?initial==0:initial>0);
+            const size_t initial=Sprite::highResolutionStats().cpuBytes;REQUIRE((original?initial==0:initial>0));
             // Hue wheel covers all allowed team hues, including red wraparound.
             for(int color=0;color<16;++color)
             {
@@ -72,9 +73,9 @@ int main(int argc,char**argv)
                         gfx->drawSprite(col*320+20,row*240+20,f.w*2,f.h*2,sprite,f.index);gfx->finishDrawingSprite(sprite,255);
                     }
                     if(!original&&(page==0||color==0||color==5||color==10))
-                        capture(".cache/highres-runtime-check/team"+std::to_string(color)+"-page"+std::to_string(page)+".png");
+                        capture(captureDir+"/team"+std::to_string(color)+"-page"+std::to_string(page)+".png");
                 }
-                assert(glGetError()==GL_NO_ERROR);
+                REQUIRE(glGetError()==GL_NO_ERROR);
             }
             auto stats=Sprite::highResolutionStats();
             std::cout<<"All "<<frames.size()<<" frames, 16 team hues: CPU bytes="<<stats.cpuBytes<<", GPU bytes="<<DrawableSurface::allocatedTextureBytes()<<", colored frames="<<stats.coloredFrames<<"\n";
@@ -98,10 +99,15 @@ int main(int argc,char**argv)
                 double ms=std::chrono::duration<double,std::milli>(std::chrono::steady_clock::now()-start).count()/30;
                 std::cout<<zoom*100<<"% synthetic dense scene: "<<ms<<" ms/frame, "<<gfx->getDrawCallCount()/30<<" draw calls/frame\n";
             }
-            assert(Sprite::highResolutionStats().coloredFrames==stats.coloredFrames);
-            Sprite::setHighResolution(false);assert(Sprite::highResolutionStats().cpuBytes==0);
+            REQUIRE(Sprite::highResolutionStats().coloredFrames==stats.coloredFrames);
+            Sprite::setHighResolution(false);REQUIRE(Sprite::highResolutionStats().cpuBytes==0);
             std::cout<<"PASS logical sizes, all frames/team hues, GL errors, bounded cache, session release\n";
         }
     }
-    Toolkit::close();
+}
+
+TEST_SUITE("RuntimePack")
+{
+	TEST_CASE("HD runtime pack: logical sizes in software rendering") { run(true, false, false); }
+	TEST_CASE("HD runtime pack: frames; team hues; bounded cache and session release [display][artifacts][slow]") { run(false, false, false); }
 }

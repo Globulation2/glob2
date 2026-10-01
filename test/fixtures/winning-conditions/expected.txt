@@ -1,0 +1,750 @@
+# WinningConditionsHarness golden output
+DefaultList/0 type=1
+DefaultList/1 type=2
+DefaultList/2 type=3
+DefaultList/3 type=4
+DefaultList/4 type=5
+Death/aliveMask=0x0
+  Death team=0 won=0 lost=1
+  Death team=1 won=0 lost=1
+  Death team=2 won=0 lost=1
+Death/aliveMask=0x1
+  Death team=0 won=0 lost=0
+  Death team=1 won=0 lost=1
+  Death team=2 won=0 lost=1
+Death/aliveMask=0x2
+  Death team=0 won=0 lost=1
+  Death team=1 won=0 lost=0
+  Death team=2 won=0 lost=1
+Death/aliveMask=0x3
+  Death team=0 won=0 lost=0
+  Death team=1 won=0 lost=0
+  Death team=2 won=0 lost=1
+Death/aliveMask=0x4
+  Death team=0 won=0 lost=1
+  Death team=1 won=0 lost=1
+  Death team=2 won=0 lost=0
+Death/aliveMask=0x5
+  Death team=0 won=0 lost=0
+  Death team=1 won=0 lost=1
+  Death team=2 won=0 lost=0
+Death/aliveMask=0x6
+  Death team=0 won=0 lost=1
+  Death team=1 won=0 lost=0
+  Death team=2 won=0 lost=0
+Death/aliveMask=0x7
+  Death team=0 won=0 lost=0
+  Death team=1 won=0 lost=0
+  Death team=2 won=0 lost=0
+Allies/allyMask=0x0 winner=-1
+  Allies team=0 won=0 lost=0
+  Allies team=1 won=0 lost=0
+  Allies team=2 won=0 lost=0
+Allies/allyMask=0x0 winner=0
+  Allies team=0 won=0 lost=0
+  Allies team=1 won=0 lost=0
+  Allies team=2 won=0 lost=0
+Allies/allyMask=0x0 winner=1
+  Allies team=0 won=0 lost=0
+  Allies team=1 won=0 lost=0
+  Allies team=2 won=0 lost=0
+Allies/allyMask=0x0 winner=2
+  Allies team=0 won=0 lost=0
+  Allies team=1 won=0 lost=0
+  Allies team=2 won=0 lost=0
+Allies/allyMask=0x1 winner=-1
+  Allies team=0 won=0 lost=0
+  Allies team=1 won=0 lost=0
+  Allies team=2 won=0 lost=0
+Allies/allyMask=0x1 winner=0
+  Allies team=0 won=1 lost=0
+  Allies team=1 won=0 lost=0
+  Allies team=2 won=0 lost=0
+Allies/allyMask=0x1 winner=1
+  Allies team=0 won=0 lost=0
+  Allies team=1 won=0 lost=0
+  Allies team=2 won=0 lost=0
+Allies/allyMask=0x1 winner=2
+  Allies team=0 won=0 lost=0
+  Allies team=1 won=0 lost=0
+  Allies team=2 won=0 lost=0
+Allies/allyMask=0x2 winner=-1
+  Allies team=0 won=0 lost=0
+  Allies team=1 won=0 lost=0
+  Allies team=2 won=0 lost=0
+Allies/allyMask=0x2 winner=0
+  Allies team=0 won=0 lost=0
+  Allies team=1 won=0 lost=0
+  Allies team=2 won=0 lost=0
+Allies/allyMask=0x2 winner=1
+  Allies team=0 won=0 lost=0
+  Allies team=1 won=1 lost=0
+  Allies team=2 won=0 lost=0
+Allies/allyMask=0x2 winner=2
+  Allies team=0 won=0 lost=0
+  Allies team=1 won=0 lost=0
+  Allies team=2 won=0 lost=0
+Allies/allyMask=0x3 winner=-1
+  Allies team=0 won=0 lost=0
+  Allies team=1 won=0 lost=0
+  Allies team=2 won=0 lost=0
+Allies/allyMask=0x3 winner=0
+  Allies team=0 won=1 lost=0
+  Allies team=1 won=1 lost=0
+  Allies team=2 won=0 lost=0
+Allies/allyMask=0x3 winner=1
+  Allies team=0 won=1 lost=0
+  Allies team=1 won=1 lost=0
+  Allies team=2 won=0 lost=0
+Allies/allyMask=0x3 winner=2
+  Allies team=0 won=0 lost=0
+  Allies team=1 won=0 lost=0
+  Allies team=2 won=0 lost=0
+Allies/allyMask=0x4 winner=-1
+  Allies team=0 won=0 lost=0
+  Allies team=1 won=0 lost=0
+  Allies team=2 won=0 lost=0
+Allies/allyMask=0x4 winner=0
+  Allies team=0 won=0 lost=0
+  Allies team=1 won=0 lost=0
+  Allies team=2 won=0 lost=0
+Allies/allyMask=0x4 winner=1
+  Allies team=0 won=0 lost=0
+  Allies team=1 won=0 lost=0
+  Allies team=2 won=0 lost=0
+Allies/allyMask=0x4 winner=2
+  Allies team=0 won=0 lost=0
+  Allies team=1 won=0 lost=0
+  Allies team=2 won=1 lost=0
+Allies/allyMask=0x5 winner=-1
+  Allies team=0 won=0 lost=0
+  Allies team=1 won=0 lost=0
+  Allies team=2 won=0 lost=0
+Allies/allyMask=0x5 winner=0
+  Allies team=0 won=1 lost=0
+  Allies team=1 won=0 lost=0
+  Allies team=2 won=1 lost=0
+Allies/allyMask=0x5 winner=1
+  Allies team=0 won=0 lost=0
+  Allies team=1 won=0 lost=0
+  Allies team=2 won=0 lost=0
+Allies/allyMask=0x5 winner=2
+  Allies team=0 won=1 lost=0
+  Allies team=1 won=0 lost=0
+  Allies team=2 won=1 lost=0
+Allies/allyMask=0x6 winner=-1
+  Allies team=0 won=0 lost=0
+  Allies team=1 won=0 lost=0
+  Allies team=2 won=0 lost=0
+Allies/allyMask=0x6 winner=0
+  Allies team=0 won=0 lost=0
+  Allies team=1 won=0 lost=0
+  Allies team=2 won=0 lost=0
+Allies/allyMask=0x6 winner=1
+  Allies team=0 won=0 lost=0
+  Allies team=1 won=1 lost=0
+  Allies team=2 won=1 lost=0
+Allies/allyMask=0x6 winner=2
+  Allies team=0 won=0 lost=0
+  Allies team=1 won=1 lost=0
+  Allies team=2 won=1 lost=0
+Allies/allyMask=0x7 winner=-1
+  Allies team=0 won=0 lost=0
+  Allies team=1 won=0 lost=0
+  Allies team=2 won=0 lost=0
+Allies/allyMask=0x7 winner=0
+  Allies team=0 won=1 lost=0
+  Allies team=1 won=1 lost=0
+  Allies team=2 won=1 lost=0
+Allies/allyMask=0x7 winner=1
+  Allies team=0 won=1 lost=0
+  Allies team=1 won=1 lost=0
+  Allies team=2 won=1 lost=0
+Allies/allyMask=0x7 winner=2
+  Allies team=0 won=1 lost=0
+  Allies team=1 won=1 lost=0
+  Allies team=2 won=1 lost=0
+Allies/oneWay 0->1, 1 wins
+  Allies team=0 won=0 lost=0
+  Allies team=1 won=1 lost=0
+  Allies team=2 won=0 lost=0
+Prestige/all-zero-belowGate total=0 gate=100 prestiges=[0,0,0]
+  Prestige team=0 won=0 lost=0
+  Prestige team=1 won=0 lost=0
+  Prestige team=2 won=0 lost=0
+Prestige/all-zero-atGate total=100 gate=100 prestiges=[0,0,0]
+  Prestige team=0 won=1 lost=0
+  Prestige team=1 won=1 lost=0
+  Prestige team=2 won=1 lost=0
+Prestige/belowGate-noTie total=50 gate=100 prestiges=[10,30,10]
+  Prestige team=0 won=0 lost=0
+  Prestige team=1 won=0 lost=0
+  Prestige team=2 won=0 lost=0
+Prestige/atGate-uniqueMax total=100 gate=100 prestiges=[10,30,10]
+  Prestige team=0 won=0 lost=1
+  Prestige team=1 won=1 lost=0
+  Prestige team=2 won=0 lost=1
+Prestige/atGate-tieAtTop total=100 gate=100 prestiges=[30,30,10]
+  Prestige team=0 won=1 lost=0
+  Prestige team=1 won=1 lost=0
+  Prestige team=2 won=0 lost=1
+Prestige/atGate-allTied total=100 gate=100 prestiges=[25,25,25]
+  Prestige team=0 won=1 lost=0
+  Prestige team=1 won=1 lost=0
+  Prestige team=2 won=1 lost=0
+Prestige/aboveGate-uniqueMax total=200 gate=100 prestiges=[50,100,25]
+  Prestige team=0 won=0 lost=1
+  Prestige team=1 won=1 lost=0
+  Prestige team=2 won=0 lost=1
+Prestige/aboveGate-tieAtTop total=200 gate=100 prestiges=[100,100,25]
+  Prestige team=0 won=1 lost=0
+  Prestige team=1 won=1 lost=0
+  Prestige team=2 won=0 lost=1
+Prestige/negativePrestige total=100 gate=100 prestiges=[-5,0,-10]
+  Prestige team=0 won=0 lost=1
+  Prestige team=1 won=1 lost=0
+  Prestige team=2 won=0 lost=1
+SuddenDeath/beforeTick-noTie step=50 endTick=100 prestiges=[10,30,10]
+  SuddenDeath team=0 won=0 lost=0
+  SuddenDeath team=1 won=0 lost=0
+  SuddenDeath team=2 won=0 lost=0
+SuddenDeath/beforeTick-tieAtTop step=50 endTick=100 prestiges=[30,30,10]
+  SuddenDeath team=0 won=0 lost=0
+  SuddenDeath team=1 won=0 lost=0
+  SuddenDeath team=2 won=0 lost=0
+SuddenDeath/atTick-uniqueMax step=100 endTick=100 prestiges=[10,30,10]
+  SuddenDeath team=0 won=0 lost=1
+  SuddenDeath team=1 won=1 lost=0
+  SuddenDeath team=2 won=0 lost=1
+SuddenDeath/atTick-tieAtTop step=100 endTick=100 prestiges=[30,30,10]
+  SuddenDeath team=0 won=1 lost=0
+  SuddenDeath team=1 won=1 lost=0
+  SuddenDeath team=2 won=0 lost=1
+SuddenDeath/afterTick-uniqueMax step=150 endTick=100 prestiges=[10,30,10]
+  SuddenDeath team=0 won=0 lost=1
+  SuddenDeath team=1 won=1 lost=0
+  SuddenDeath team=2 won=0 lost=1
+SuddenDeath/negativePrestige step=100 endTick=100 prestiges=[-5,0,-10]
+  SuddenDeath team=0 won=0 lost=1
+  SuddenDeath team=1 won=1 lost=0
+  SuddenDeath team=2 won=0 lost=1
+SuddenDeath/allNegativePrestige step=100 endTick=100 prestiges=[-5,-2,-10]
+  SuddenDeath team=0 won=0 lost=1
+  SuddenDeath team=1 won=1 lost=0
+  SuddenDeath team=2 won=0 lost=1
+Script/wonMask=0x0 lostMask=0x0
+  Script team=0 won=0 lost=0
+  Script team=1 won=0 lost=0
+  Script team=2 won=0 lost=0
+Script/wonMask=0x0 lostMask=0x1
+  Script team=0 won=0 lost=1
+  Script team=1 won=0 lost=0
+  Script team=2 won=0 lost=0
+Script/wonMask=0x0 lostMask=0x2
+  Script team=0 won=0 lost=0
+  Script team=1 won=0 lost=1
+  Script team=2 won=0 lost=0
+Script/wonMask=0x0 lostMask=0x3
+  Script team=0 won=0 lost=1
+  Script team=1 won=0 lost=1
+  Script team=2 won=0 lost=0
+Script/wonMask=0x0 lostMask=0x4
+  Script team=0 won=0 lost=0
+  Script team=1 won=0 lost=0
+  Script team=2 won=0 lost=1
+Script/wonMask=0x0 lostMask=0x5
+  Script team=0 won=0 lost=1
+  Script team=1 won=0 lost=0
+  Script team=2 won=0 lost=1
+Script/wonMask=0x0 lostMask=0x6
+  Script team=0 won=0 lost=0
+  Script team=1 won=0 lost=1
+  Script team=2 won=0 lost=1
+Script/wonMask=0x0 lostMask=0x7
+  Script team=0 won=0 lost=1
+  Script team=1 won=0 lost=1
+  Script team=2 won=0 lost=1
+Script/wonMask=0x1 lostMask=0x0
+  Script team=0 won=1 lost=0
+  Script team=1 won=0 lost=0
+  Script team=2 won=0 lost=0
+Script/wonMask=0x1 lostMask=0x1
+  Script team=0 won=1 lost=1
+  Script team=1 won=0 lost=0
+  Script team=2 won=0 lost=0
+Script/wonMask=0x1 lostMask=0x2
+  Script team=0 won=1 lost=0
+  Script team=1 won=0 lost=1
+  Script team=2 won=0 lost=0
+Script/wonMask=0x1 lostMask=0x3
+  Script team=0 won=1 lost=1
+  Script team=1 won=0 lost=1
+  Script team=2 won=0 lost=0
+Script/wonMask=0x1 lostMask=0x4
+  Script team=0 won=1 lost=0
+  Script team=1 won=0 lost=0
+  Script team=2 won=0 lost=1
+Script/wonMask=0x1 lostMask=0x5
+  Script team=0 won=1 lost=1
+  Script team=1 won=0 lost=0
+  Script team=2 won=0 lost=1
+Script/wonMask=0x1 lostMask=0x6
+  Script team=0 won=1 lost=0
+  Script team=1 won=0 lost=1
+  Script team=2 won=0 lost=1
+Script/wonMask=0x1 lostMask=0x7
+  Script team=0 won=1 lost=1
+  Script team=1 won=0 lost=1
+  Script team=2 won=0 lost=1
+Script/wonMask=0x2 lostMask=0x0
+  Script team=0 won=0 lost=0
+  Script team=1 won=1 lost=0
+  Script team=2 won=0 lost=0
+Script/wonMask=0x2 lostMask=0x1
+  Script team=0 won=0 lost=1
+  Script team=1 won=1 lost=0
+  Script team=2 won=0 lost=0
+Script/wonMask=0x2 lostMask=0x2
+  Script team=0 won=0 lost=0
+  Script team=1 won=1 lost=1
+  Script team=2 won=0 lost=0
+Script/wonMask=0x2 lostMask=0x3
+  Script team=0 won=0 lost=1
+  Script team=1 won=1 lost=1
+  Script team=2 won=0 lost=0
+Script/wonMask=0x2 lostMask=0x4
+  Script team=0 won=0 lost=0
+  Script team=1 won=1 lost=0
+  Script team=2 won=0 lost=1
+Script/wonMask=0x2 lostMask=0x5
+  Script team=0 won=0 lost=1
+  Script team=1 won=1 lost=0
+  Script team=2 won=0 lost=1
+Script/wonMask=0x2 lostMask=0x6
+  Script team=0 won=0 lost=0
+  Script team=1 won=1 lost=1
+  Script team=2 won=0 lost=1
+Script/wonMask=0x2 lostMask=0x7
+  Script team=0 won=0 lost=1
+  Script team=1 won=1 lost=1
+  Script team=2 won=0 lost=1
+Script/wonMask=0x3 lostMask=0x0
+  Script team=0 won=1 lost=0
+  Script team=1 won=1 lost=0
+  Script team=2 won=0 lost=0
+Script/wonMask=0x3 lostMask=0x1
+  Script team=0 won=1 lost=1
+  Script team=1 won=1 lost=0
+  Script team=2 won=0 lost=0
+Script/wonMask=0x3 lostMask=0x2
+  Script team=0 won=1 lost=0
+  Script team=1 won=1 lost=1
+  Script team=2 won=0 lost=0
+Script/wonMask=0x3 lostMask=0x3
+  Script team=0 won=1 lost=1
+  Script team=1 won=1 lost=1
+  Script team=2 won=0 lost=0
+Script/wonMask=0x3 lostMask=0x4
+  Script team=0 won=1 lost=0
+  Script team=1 won=1 lost=0
+  Script team=2 won=0 lost=1
+Script/wonMask=0x3 lostMask=0x5
+  Script team=0 won=1 lost=1
+  Script team=1 won=1 lost=0
+  Script team=2 won=0 lost=1
+Script/wonMask=0x3 lostMask=0x6
+  Script team=0 won=1 lost=0
+  Script team=1 won=1 lost=1
+  Script team=2 won=0 lost=1
+Script/wonMask=0x3 lostMask=0x7
+  Script team=0 won=1 lost=1
+  Script team=1 won=1 lost=1
+  Script team=2 won=0 lost=1
+Script/wonMask=0x4 lostMask=0x0
+  Script team=0 won=0 lost=0
+  Script team=1 won=0 lost=0
+  Script team=2 won=1 lost=0
+Script/wonMask=0x4 lostMask=0x1
+  Script team=0 won=0 lost=1
+  Script team=1 won=0 lost=0
+  Script team=2 won=1 lost=0
+Script/wonMask=0x4 lostMask=0x2
+  Script team=0 won=0 lost=0
+  Script team=1 won=0 lost=1
+  Script team=2 won=1 lost=0
+Script/wonMask=0x4 lostMask=0x3
+  Script team=0 won=0 lost=1
+  Script team=1 won=0 lost=1
+  Script team=2 won=1 lost=0
+Script/wonMask=0x4 lostMask=0x4
+  Script team=0 won=0 lost=0
+  Script team=1 won=0 lost=0
+  Script team=2 won=1 lost=1
+Script/wonMask=0x4 lostMask=0x5
+  Script team=0 won=0 lost=1
+  Script team=1 won=0 lost=0
+  Script team=2 won=1 lost=1
+Script/wonMask=0x4 lostMask=0x6
+  Script team=0 won=0 lost=0
+  Script team=1 won=0 lost=1
+  Script team=2 won=1 lost=1
+Script/wonMask=0x4 lostMask=0x7
+  Script team=0 won=0 lost=1
+  Script team=1 won=0 lost=1
+  Script team=2 won=1 lost=1
+Script/wonMask=0x5 lostMask=0x0
+  Script team=0 won=1 lost=0
+  Script team=1 won=0 lost=0
+  Script team=2 won=1 lost=0
+Script/wonMask=0x5 lostMask=0x1
+  Script team=0 won=1 lost=1
+  Script team=1 won=0 lost=0
+  Script team=2 won=1 lost=0
+Script/wonMask=0x5 lostMask=0x2
+  Script team=0 won=1 lost=0
+  Script team=1 won=0 lost=1
+  Script team=2 won=1 lost=0
+Script/wonMask=0x5 lostMask=0x3
+  Script team=0 won=1 lost=1
+  Script team=1 won=0 lost=1
+  Script team=2 won=1 lost=0
+Script/wonMask=0x5 lostMask=0x4
+  Script team=0 won=1 lost=0
+  Script team=1 won=0 lost=0
+  Script team=2 won=1 lost=1
+Script/wonMask=0x5 lostMask=0x5
+  Script team=0 won=1 lost=1
+  Script team=1 won=0 lost=0
+  Script team=2 won=1 lost=1
+Script/wonMask=0x5 lostMask=0x6
+  Script team=0 won=1 lost=0
+  Script team=1 won=0 lost=1
+  Script team=2 won=1 lost=1
+Script/wonMask=0x5 lostMask=0x7
+  Script team=0 won=1 lost=1
+  Script team=1 won=0 lost=1
+  Script team=2 won=1 lost=1
+Script/wonMask=0x6 lostMask=0x0
+  Script team=0 won=0 lost=0
+  Script team=1 won=1 lost=0
+  Script team=2 won=1 lost=0
+Script/wonMask=0x6 lostMask=0x1
+  Script team=0 won=0 lost=1
+  Script team=1 won=1 lost=0
+  Script team=2 won=1 lost=0
+Script/wonMask=0x6 lostMask=0x2
+  Script team=0 won=0 lost=0
+  Script team=1 won=1 lost=1
+  Script team=2 won=1 lost=0
+Script/wonMask=0x6 lostMask=0x3
+  Script team=0 won=0 lost=1
+  Script team=1 won=1 lost=1
+  Script team=2 won=1 lost=0
+Script/wonMask=0x6 lostMask=0x4
+  Script team=0 won=0 lost=0
+  Script team=1 won=1 lost=0
+  Script team=2 won=1 lost=1
+Script/wonMask=0x6 lostMask=0x5
+  Script team=0 won=0 lost=1
+  Script team=1 won=1 lost=0
+  Script team=2 won=1 lost=1
+Script/wonMask=0x6 lostMask=0x6
+  Script team=0 won=0 lost=0
+  Script team=1 won=1 lost=1
+  Script team=2 won=1 lost=1
+Script/wonMask=0x6 lostMask=0x7
+  Script team=0 won=0 lost=1
+  Script team=1 won=1 lost=1
+  Script team=2 won=1 lost=1
+Script/wonMask=0x7 lostMask=0x0
+  Script team=0 won=1 lost=0
+  Script team=1 won=1 lost=0
+  Script team=2 won=1 lost=0
+Script/wonMask=0x7 lostMask=0x1
+  Script team=0 won=1 lost=1
+  Script team=1 won=1 lost=0
+  Script team=2 won=1 lost=0
+Script/wonMask=0x7 lostMask=0x2
+  Script team=0 won=1 lost=0
+  Script team=1 won=1 lost=1
+  Script team=2 won=1 lost=0
+Script/wonMask=0x7 lostMask=0x3
+  Script team=0 won=1 lost=1
+  Script team=1 won=1 lost=1
+  Script team=2 won=1 lost=0
+Script/wonMask=0x7 lostMask=0x4
+  Script team=0 won=1 lost=0
+  Script team=1 won=1 lost=0
+  Script team=2 won=1 lost=1
+Script/wonMask=0x7 lostMask=0x5
+  Script team=0 won=1 lost=1
+  Script team=1 won=1 lost=0
+  Script team=2 won=1 lost=1
+Script/wonMask=0x7 lostMask=0x6
+  Script team=0 won=1 lost=0
+  Script team=1 won=1 lost=1
+  Script team=2 won=1 lost=1
+Script/wonMask=0x7 lostMask=0x7
+  Script team=0 won=1 lost=1
+  Script team=1 won=1 lost=1
+  Script team=2 won=1 lost=1
+OpponentsDefeated/allyMask=0x0 lostMask=0x0
+  OppDef team=0 won=0 lost=0
+  OppDef team=1 won=0 lost=0
+  OppDef team=2 won=0 lost=0
+OpponentsDefeated/allyMask=0x0 lostMask=0x1
+  OppDef team=0 won=0 lost=0
+  OppDef team=1 won=0 lost=0
+  OppDef team=2 won=0 lost=0
+OpponentsDefeated/allyMask=0x0 lostMask=0x2
+  OppDef team=0 won=0 lost=0
+  OppDef team=1 won=0 lost=0
+  OppDef team=2 won=0 lost=0
+OpponentsDefeated/allyMask=0x0 lostMask=0x3
+  OppDef team=0 won=0 lost=0
+  OppDef team=1 won=0 lost=0
+  OppDef team=2 won=0 lost=0
+OpponentsDefeated/allyMask=0x0 lostMask=0x4
+  OppDef team=0 won=0 lost=0
+  OppDef team=1 won=0 lost=0
+  OppDef team=2 won=0 lost=0
+OpponentsDefeated/allyMask=0x0 lostMask=0x5
+  OppDef team=0 won=0 lost=0
+  OppDef team=1 won=0 lost=0
+  OppDef team=2 won=0 lost=0
+OpponentsDefeated/allyMask=0x0 lostMask=0x6
+  OppDef team=0 won=0 lost=0
+  OppDef team=1 won=0 lost=0
+  OppDef team=2 won=0 lost=0
+OpponentsDefeated/allyMask=0x0 lostMask=0x7
+  OppDef team=0 won=1 lost=0
+  OppDef team=1 won=1 lost=0
+  OppDef team=2 won=1 lost=0
+OpponentsDefeated/allyMask=0x1 lostMask=0x0
+  OppDef team=0 won=0 lost=0
+  OppDef team=1 won=0 lost=0
+  OppDef team=2 won=0 lost=0
+OpponentsDefeated/allyMask=0x1 lostMask=0x1
+  OppDef team=0 won=0 lost=0
+  OppDef team=1 won=0 lost=0
+  OppDef team=2 won=0 lost=0
+OpponentsDefeated/allyMask=0x1 lostMask=0x2
+  OppDef team=0 won=0 lost=0
+  OppDef team=1 won=0 lost=0
+  OppDef team=2 won=0 lost=0
+OpponentsDefeated/allyMask=0x1 lostMask=0x3
+  OppDef team=0 won=0 lost=0
+  OppDef team=1 won=0 lost=0
+  OppDef team=2 won=0 lost=0
+OpponentsDefeated/allyMask=0x1 lostMask=0x4
+  OppDef team=0 won=0 lost=0
+  OppDef team=1 won=0 lost=0
+  OppDef team=2 won=0 lost=0
+OpponentsDefeated/allyMask=0x1 lostMask=0x5
+  OppDef team=0 won=0 lost=0
+  OppDef team=1 won=0 lost=0
+  OppDef team=2 won=0 lost=0
+OpponentsDefeated/allyMask=0x1 lostMask=0x6
+  OppDef team=0 won=1 lost=0
+  OppDef team=1 won=0 lost=0
+  OppDef team=2 won=0 lost=0
+OpponentsDefeated/allyMask=0x1 lostMask=0x7
+  OppDef team=0 won=1 lost=0
+  OppDef team=1 won=1 lost=0
+  OppDef team=2 won=1 lost=0
+OpponentsDefeated/allyMask=0x2 lostMask=0x0
+  OppDef team=0 won=0 lost=0
+  OppDef team=1 won=0 lost=0
+  OppDef team=2 won=0 lost=0
+OpponentsDefeated/allyMask=0x2 lostMask=0x1
+  OppDef team=0 won=0 lost=0
+  OppDef team=1 won=0 lost=0
+  OppDef team=2 won=0 lost=0
+OpponentsDefeated/allyMask=0x2 lostMask=0x2
+  OppDef team=0 won=0 lost=0
+  OppDef team=1 won=0 lost=0
+  OppDef team=2 won=0 lost=0
+OpponentsDefeated/allyMask=0x2 lostMask=0x3
+  OppDef team=0 won=0 lost=0
+  OppDef team=1 won=0 lost=0
+  OppDef team=2 won=0 lost=0
+OpponentsDefeated/allyMask=0x2 lostMask=0x4
+  OppDef team=0 won=0 lost=0
+  OppDef team=1 won=0 lost=0
+  OppDef team=2 won=0 lost=0
+OpponentsDefeated/allyMask=0x2 lostMask=0x5
+  OppDef team=0 won=0 lost=0
+  OppDef team=1 won=1 lost=0
+  OppDef team=2 won=0 lost=0
+OpponentsDefeated/allyMask=0x2 lostMask=0x6
+  OppDef team=0 won=0 lost=0
+  OppDef team=1 won=0 lost=0
+  OppDef team=2 won=0 lost=0
+OpponentsDefeated/allyMask=0x2 lostMask=0x7
+  OppDef team=0 won=1 lost=0
+  OppDef team=1 won=1 lost=0
+  OppDef team=2 won=1 lost=0
+OpponentsDefeated/allyMask=0x3 lostMask=0x0
+  OppDef team=0 won=0 lost=0
+  OppDef team=1 won=0 lost=0
+  OppDef team=2 won=0 lost=0
+OpponentsDefeated/allyMask=0x3 lostMask=0x1
+  OppDef team=0 won=0 lost=0
+  OppDef team=1 won=0 lost=0
+  OppDef team=2 won=0 lost=0
+OpponentsDefeated/allyMask=0x3 lostMask=0x2
+  OppDef team=0 won=0 lost=0
+  OppDef team=1 won=0 lost=0
+  OppDef team=2 won=0 lost=0
+OpponentsDefeated/allyMask=0x3 lostMask=0x3
+  OppDef team=0 won=0 lost=0
+  OppDef team=1 won=0 lost=0
+  OppDef team=2 won=0 lost=0
+OpponentsDefeated/allyMask=0x3 lostMask=0x4
+  OppDef team=0 won=1 lost=0
+  OppDef team=1 won=1 lost=0
+  OppDef team=2 won=0 lost=0
+OpponentsDefeated/allyMask=0x3 lostMask=0x5
+  OppDef team=0 won=1 lost=0
+  OppDef team=1 won=1 lost=0
+  OppDef team=2 won=0 lost=0
+OpponentsDefeated/allyMask=0x3 lostMask=0x6
+  OppDef team=0 won=1 lost=0
+  OppDef team=1 won=1 lost=0
+  OppDef team=2 won=0 lost=0
+OpponentsDefeated/allyMask=0x3 lostMask=0x7
+  OppDef team=0 won=1 lost=0
+  OppDef team=1 won=1 lost=0
+  OppDef team=2 won=1 lost=0
+OpponentsDefeated/allyMask=0x4 lostMask=0x0
+  OppDef team=0 won=0 lost=0
+  OppDef team=1 won=0 lost=0
+  OppDef team=2 won=0 lost=0
+OpponentsDefeated/allyMask=0x4 lostMask=0x1
+  OppDef team=0 won=0 lost=0
+  OppDef team=1 won=0 lost=0
+  OppDef team=2 won=0 lost=0
+OpponentsDefeated/allyMask=0x4 lostMask=0x2
+  OppDef team=0 won=0 lost=0
+  OppDef team=1 won=0 lost=0
+  OppDef team=2 won=0 lost=0
+OpponentsDefeated/allyMask=0x4 lostMask=0x3
+  OppDef team=0 won=0 lost=0
+  OppDef team=1 won=0 lost=0
+  OppDef team=2 won=1 lost=0
+OpponentsDefeated/allyMask=0x4 lostMask=0x4
+  OppDef team=0 won=0 lost=0
+  OppDef team=1 won=0 lost=0
+  OppDef team=2 won=0 lost=0
+OpponentsDefeated/allyMask=0x4 lostMask=0x5
+  OppDef team=0 won=0 lost=0
+  OppDef team=1 won=0 lost=0
+  OppDef team=2 won=0 lost=0
+OpponentsDefeated/allyMask=0x4 lostMask=0x6
+  OppDef team=0 won=0 lost=0
+  OppDef team=1 won=0 lost=0
+  OppDef team=2 won=0 lost=0
+OpponentsDefeated/allyMask=0x4 lostMask=0x7
+  OppDef team=0 won=1 lost=0
+  OppDef team=1 won=1 lost=0
+  OppDef team=2 won=1 lost=0
+OpponentsDefeated/allyMask=0x5 lostMask=0x0
+  OppDef team=0 won=0 lost=0
+  OppDef team=1 won=0 lost=0
+  OppDef team=2 won=0 lost=0
+OpponentsDefeated/allyMask=0x5 lostMask=0x1
+  OppDef team=0 won=0 lost=0
+  OppDef team=1 won=0 lost=0
+  OppDef team=2 won=0 lost=0
+OpponentsDefeated/allyMask=0x5 lostMask=0x2
+  OppDef team=0 won=1 lost=0
+  OppDef team=1 won=0 lost=0
+  OppDef team=2 won=1 lost=0
+OpponentsDefeated/allyMask=0x5 lostMask=0x3
+  OppDef team=0 won=1 lost=0
+  OppDef team=1 won=0 lost=0
+  OppDef team=2 won=1 lost=0
+OpponentsDefeated/allyMask=0x5 lostMask=0x4
+  OppDef team=0 won=0 lost=0
+  OppDef team=1 won=0 lost=0
+  OppDef team=2 won=0 lost=0
+OpponentsDefeated/allyMask=0x5 lostMask=0x5
+  OppDef team=0 won=0 lost=0
+  OppDef team=1 won=0 lost=0
+  OppDef team=2 won=0 lost=0
+OpponentsDefeated/allyMask=0x5 lostMask=0x6
+  OppDef team=0 won=1 lost=0
+  OppDef team=1 won=0 lost=0
+  OppDef team=2 won=1 lost=0
+OpponentsDefeated/allyMask=0x5 lostMask=0x7
+  OppDef team=0 won=1 lost=0
+  OppDef team=1 won=1 lost=0
+  OppDef team=2 won=1 lost=0
+OpponentsDefeated/allyMask=0x6 lostMask=0x0
+  OppDef team=0 won=0 lost=0
+  OppDef team=1 won=0 lost=0
+  OppDef team=2 won=0 lost=0
+OpponentsDefeated/allyMask=0x6 lostMask=0x1
+  OppDef team=0 won=0 lost=0
+  OppDef team=1 won=1 lost=0
+  OppDef team=2 won=1 lost=0
+OpponentsDefeated/allyMask=0x6 lostMask=0x2
+  OppDef team=0 won=0 lost=0
+  OppDef team=1 won=0 lost=0
+  OppDef team=2 won=0 lost=0
+OpponentsDefeated/allyMask=0x6 lostMask=0x3
+  OppDef team=0 won=0 lost=0
+  OppDef team=1 won=1 lost=0
+  OppDef team=2 won=1 lost=0
+OpponentsDefeated/allyMask=0x6 lostMask=0x4
+  OppDef team=0 won=0 lost=0
+  OppDef team=1 won=0 lost=0
+  OppDef team=2 won=0 lost=0
+OpponentsDefeated/allyMask=0x6 lostMask=0x5
+  OppDef team=0 won=0 lost=0
+  OppDef team=1 won=1 lost=0
+  OppDef team=2 won=1 lost=0
+OpponentsDefeated/allyMask=0x6 lostMask=0x6
+  OppDef team=0 won=0 lost=0
+  OppDef team=1 won=0 lost=0
+  OppDef team=2 won=0 lost=0
+OpponentsDefeated/allyMask=0x6 lostMask=0x7
+  OppDef team=0 won=1 lost=0
+  OppDef team=1 won=1 lost=0
+  OppDef team=2 won=1 lost=0
+OpponentsDefeated/allyMask=0x7 lostMask=0x0
+  OppDef team=0 won=1 lost=0
+  OppDef team=1 won=1 lost=0
+  OppDef team=2 won=1 lost=0
+OpponentsDefeated/allyMask=0x7 lostMask=0x1
+  OppDef team=0 won=1 lost=0
+  OppDef team=1 won=1 lost=0
+  OppDef team=2 won=1 lost=0
+OpponentsDefeated/allyMask=0x7 lostMask=0x2
+  OppDef team=0 won=1 lost=0
+  OppDef team=1 won=1 lost=0
+  OppDef team=2 won=1 lost=0
+OpponentsDefeated/allyMask=0x7 lostMask=0x3
+  OppDef team=0 won=1 lost=0
+  OppDef team=1 won=1 lost=0
+  OppDef team=2 won=1 lost=0
+OpponentsDefeated/allyMask=0x7 lostMask=0x4
+  OppDef team=0 won=1 lost=0
+  OppDef team=1 won=1 lost=0
+  OppDef team=2 won=1 lost=0
+OpponentsDefeated/allyMask=0x7 lostMask=0x5
+  OppDef team=0 won=1 lost=0
+  OppDef team=1 won=1 lost=0
+  OppDef team=2 won=1 lost=0
+OpponentsDefeated/allyMask=0x7 lostMask=0x6
+  OppDef team=0 won=1 lost=0
+  OppDef team=1 won=1 lost=0
+  OppDef team=2 won=1 lost=0
+OpponentsDefeated/allyMask=0x7 lostMask=0x7
+  OppDef team=0 won=1 lost=0
+  OppDef team=1 won=1 lost=0
+  OppDef team=2 won=1 lost=0
+OpponentsDefeated/oneWay 0->1, 2 lost, 1 alive
+  OppDef team=0 won=0 lost=0
+  OppDef team=1 won=0 lost=0
+  OppDef team=2 won=0 lost=0

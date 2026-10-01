@@ -17,6 +17,7 @@
  */
 
 #include "GradientBFSTest.h"
+#include <cmath>
 #include "shared_runtime/Runtime.h"
 
 #include <algorithm>
@@ -24,7 +25,16 @@
 #include <queue>
 #include <vector>
 
-CPPUNIT_TEST_SUITE_REGISTRATION( GradientBFSTest );
+TEST_SUITE("GradientBFS")
+{
+	TEST_CASE_FIXTURE(GradientBFSTest, "EmptyQueueIsNoop") { testEmptyQueueIsNoop(); }
+	TEST_CASE_FIXTURE(GradientBFSTest, "SingleSourceMatchesChebyshev") { testSingleSourceMatchesChebyshev(); }
+	TEST_CASE_FIXTURE(GradientBFSTest, "WrapAroundSmallGrid") { testWrapAroundSmallGrid(); }
+	TEST_CASE_FIXTURE(GradientBFSTest, "ObstacleNotOverwritten") { testObstacleNotOverwritten(); }
+	TEST_CASE_FIXTURE(GradientBFSTest, "MultipleSourcesUseMinimum") { testMultipleSourcesUseMinimum(); }
+	TEST_CASE_FIXTURE(GradientBFSTest, "IsolatedCellRemainsUnreachable") { testIsolatedCellRemainsUnreachable(); }
+	TEST_CASE_FIXTURE(GradientBFSTest, "QueueIsDrained") { testQueueIsDrained(); }
+}
 
 using AISharedRuntime::position;
 using AISharedRuntime::Gradients::Gradient;
@@ -47,7 +57,7 @@ std::vector<Sint16> GradientBFSTest::run_bfs(int width, int height,
 	for (const auto& o : obstacles)
 		g.gradient[o.y * width + o.x] = 1;
 	g.expand_bfs(q);
-	CPPUNIT_ASSERT(q.empty());
+	CHECK(q.empty());
 	return g.gradient;
 }
 
@@ -74,7 +84,7 @@ void GradientBFSTest::testEmptyQueueIsNoop()
 {
 	auto g = run_bfs(4, 4, {}, {});
 	for (auto v : g)
-		CPPUNIT_ASSERT_EQUAL(Sint16(0), v);
+		CHECK_EQ(Sint16(0), v);
 }
 
 void GradientBFSTest::testSingleSourceMatchesChebyshev()
@@ -87,7 +97,7 @@ void GradientBFSTest::testSingleSourceMatchesChebyshev()
 		for (int x = 0; x < W; ++x)
 		{
 			Sint16 expected = static_cast<Sint16>(chebyshev_torus(x, y, 2, 2, W, H) + 2);
-			CPPUNIT_ASSERT_EQUAL(expected, at(g, W, x, y));
+			CHECK_EQ(expected, at(g, W, x, y));
 		}
 }
 
@@ -101,9 +111,9 @@ void GradientBFSTest::testWrapAroundSmallGrid()
 		for (int x = 0; x < W; ++x)
 		{
 			Sint16 expected = static_cast<Sint16>(chebyshev_torus(x, y, 0, 0, W, H) + 2);
-			CPPUNIT_ASSERT_EQUAL(expected, at(g, W, x, y));
+			CHECK_EQ(expected, at(g, W, x, y));
 		}
-	CPPUNIT_ASSERT_EQUAL(Sint16(3), at(g, W, 3, 3));
+	CHECK_EQ(Sint16(3), at(g, W, 3, 3));
 }
 
 void GradientBFSTest::testObstacleNotOverwritten()
@@ -120,7 +130,7 @@ void GradientBFSTest::testObstacleNotOverwritten()
 			if (x == 0 && y == 0) expected = 2;
 			else if (x == 1 && y == 1) expected = 1;
 			else expected = 3;
-			CPPUNIT_ASSERT_EQUAL(expected, at(g, W, x, y));
+			CHECK_EQ(expected, at(g, W, x, y));
 		}
 }
 
@@ -136,7 +146,7 @@ void GradientBFSTest::testMultipleSourcesUseMinimum()
 			int d1 = chebyshev_torus(x, y, 0, 0, W, H);
 			int d2 = chebyshev_torus(x, y, 5, 5, W, H);
 			Sint16 expected = static_cast<Sint16>(std::min(d1, d2) + 2);
-			CPPUNIT_ASSERT_EQUAL(expected, at(g, W, x, y));
+			CHECK_EQ(expected, at(g, W, x, y));
 		}
 }
 
@@ -152,9 +162,9 @@ void GradientBFSTest::testIsolatedCellRemainsUnreachable()
 	};
 	auto g = run_bfs(W, H, { position(0, 0) }, ring);
 
-	CPPUNIT_ASSERT_EQUAL(Sint16(0), at(g, W, 3, 3));
+	CHECK_EQ(Sint16(0), at(g, W, 3, 3));
 	for (const auto& cell : ring)
-		CPPUNIT_ASSERT_EQUAL(Sint16(1), at(g, W, cell.x, cell.y));
+		CHECK_EQ(Sint16(1), at(g, W, cell.x, cell.y));
 }
 
 void GradientBFSTest::testQueueIsDrained()
@@ -171,5 +181,5 @@ void GradientBFSTest::testQueueIsDrained()
 
 	g.expand_bfs(q);
 
-	CPPUNIT_ASSERT(q.empty());
+	CHECK(q.empty());
 }

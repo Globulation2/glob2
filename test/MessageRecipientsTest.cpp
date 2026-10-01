@@ -9,27 +9,22 @@
 // Game::players[] slot. The helper must instead return every in-range bit and
 // silently drop out-of-range ones.
 
-#include <cppunit/extensions/HelperMacros.h>
+#include "Glob2Test.h"
+#include <vector>
+#include <cstdint>
 
 #include "MessageRecipients.h"
 
-class MessageRecipientsTest: public CPPUNIT_NS::TestCase
+class MessageRecipientsTest
 {
-CPPUNIT_TEST_SUITE(MessageRecipientsTest);
-		CPPUNIT_TEST(testSingleRecipient);
-		CPPUNIT_TEST(testMultipleRecipientsAreAllReturned);
-		CPPUNIT_TEST(testBitsBeyondPlayerCountAreDropped);
-		CPPUNIT_TEST(testEmptyMaskYieldsNothing);
-		CPPUNIT_TEST(testNonPositivePlayerCountYieldsNothing);
-		CPPUNIT_TEST(testHighestBitIsReachable);
-	CPPUNIT_TEST_SUITE_END();
+public:
 
 protected:
 	void testSingleRecipient(void)
 	{
 		const std::vector<int> got = messageRecipientPlayers(1u << 3, 8);
 		const std::vector<int> want = {3};
-		CPPUNIT_ASSERT(got == want);
+		CHECK(got == want);
 	}
 
 	// The bug: only the lowest set bit used to be echoed; a multi-recipient
@@ -39,7 +34,7 @@ protected:
 		const std::uint32_t mask = (1u << 0) | (1u << 2) | (1u << 5);
 		const std::vector<int> got = messageRecipientPlayers(mask, 8);
 		const std::vector<int> want = {0, 2, 5};
-		CPPUNIT_ASSERT(got == want);
+		CHECK(got == want);
 	}
 
 	// A bit at or beyond the live player count must be ignored rather than
@@ -49,18 +44,18 @@ protected:
 		const std::uint32_t mask = (1u << 1) | (1u << 9) | (1u << 20);
 		const std::vector<int> got = messageRecipientPlayers(mask, 4);
 		const std::vector<int> want = {1};
-		CPPUNIT_ASSERT(got == want);
+		CHECK(got == want);
 	}
 
 	void testEmptyMaskYieldsNothing(void)
 	{
-		CPPUNIT_ASSERT(messageRecipientPlayers(0u, 12).empty());
+		CHECK(messageRecipientPlayers(0u, 12).empty());
 	}
 
 	void testNonPositivePlayerCountYieldsNothing(void)
 	{
-		CPPUNIT_ASSERT(messageRecipientPlayers(0xFFFFFFFFu, 0).empty());
-		CPPUNIT_ASSERT(messageRecipientPlayers(0xFFFFFFFFu, -3).empty());
+		CHECK(messageRecipientPlayers(0xFFFFFFFFu, 0).empty());
+		CHECK(messageRecipientPlayers(0xFFFFFFFFu, -3).empty());
 	}
 
 	// Player index 31 is the top of a 32-bit mask; the shift must not overflow.
@@ -68,8 +63,16 @@ protected:
 	{
 		const std::vector<int> got = messageRecipientPlayers(1u << 31, 32);
 		const std::vector<int> want = {31};
-		CPPUNIT_ASSERT(got == want);
+		CHECK(got == want);
 	}
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(MessageRecipientsTest);
+TEST_SUITE("MessageRecipients")
+{
+	TEST_CASE_FIXTURE(MessageRecipientsTest, "SingleRecipient") { testSingleRecipient(); }
+	TEST_CASE_FIXTURE(MessageRecipientsTest, "MultipleRecipientsAreAllReturned") { testMultipleRecipientsAreAllReturned(); }
+	TEST_CASE_FIXTURE(MessageRecipientsTest, "BitsBeyondPlayerCountAreDropped") { testBitsBeyondPlayerCountAreDropped(); }
+	TEST_CASE_FIXTURE(MessageRecipientsTest, "EmptyMaskYieldsNothing") { testEmptyMaskYieldsNothing(); }
+	TEST_CASE_FIXTURE(MessageRecipientsTest, "NonPositivePlayerCountYieldsNothing") { testNonPositivePlayerCountYieldsNothing(); }
+	TEST_CASE_FIXTURE(MessageRecipientsTest, "HighestBitIsReachable") { testHighestBitIsReachable(); }
+}

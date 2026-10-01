@@ -118,10 +118,10 @@ No pooled win rate is being used to claim balance or human fun.
 ## Reproduction
 
 ```sh
-scons release=1 server=0 -j3 map-generator-defaults-test map-generator-golden-test custom-setup-test build/src/glob2
-build/src/MapGeneratorDefaultsTest artifacts/fractal-maps/test-profile
+scons release=1 server=0 -j3 engine-tests map-generator-golden-test build/src/glob2
+python3 test/run_tests.py --filter 'MapGeneratorDefaults/*'
 build/src/MapGeneratorGoldenTest artifacts/fractal-maps/golden-framework-profile --require-rows
-env GLOB2_USER_DIR="$PWD/artifacts/fractal-maps/replay-framework-profile" build/src/CustomGameSetupHarness
+python3 test/run_tests.py --filter 'CustomGameSetup/*'
 python3 -m tools.fractal_maps.snapshot artifacts/fractal-maps/new-build
 python3 -m tools.fractal_maps.plan --bundle BUNDLE --output PLANS
 python3 -m tools.tournaments submit MANIFEST RESULTS --bundle BUNDLE

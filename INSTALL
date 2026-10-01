@@ -45,8 +45,9 @@ headers (libboost-dev). Use `scons wss=0` for a TCP-only client, which needs
 neither.
 The browser target uses the browser's WebSocket implementation.
 
-   To also build and run the test suite, add `libcppunit-dev', plus `xvfb',
-`xauth' and `libgl1-mesa-dri' for the tests that need a display.
+   The test suite (`scons tests', then `python3 test/run_tests.py') needs no
+extra library; add `xvfb', `xauth' and `libgl1-mesa-dri' for the tests that
+need a display.
 
    This list is kept in sync with the dependencies installed by the CI build in
 `.github/workflows/build.yml', which is what the project actually builds against.

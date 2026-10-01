@@ -1,18 +1,108 @@
 # glob2/test/
 
-The top-level commands below use `build/native-tests` for their executable
-paths. Add `--build=build/native-tests` to those SCons commands and set
-`GLOB2_BUILD_DIR=build/native-tests` for runner scripts, or substitute the
-default `build/<toolchain>/client/release` directory (`darwin`, `linux`, or
-`mingw`). The separate suite built with `scons -C test` keeps its own outputs.
+Native tests are doctest cases compiled into two binaries by the main build, from
+the same objects as the game:
 
-CppUnit-based test fixtures and standalone harnesses for the C++ codebase. Most use this directory's `SConstruct`: run `scons -j16` here, then the in-tree `./TestsRunner` and `./WinningConditionsHarness` binaries. Rebuild these tests here before trusting a result; the top-level build does not build them. The exceptions are `GameGUISelectionHarness` and `TerrainResourcesHarness`, which use the top-level `selection-test` and `terrain-test` targets described below.
+| Binary | Links | How it runs |
+| --- | --- | --- |
+| `glob2-unit-tests` | libgag, libusl, a few production sources and the stubs in `test/unit/stubs/` | one process, in-process |
+| `glob2-engine-tests` | every client object except the entry point | one process per test case, each in a disposable profile |
 
+Both are listed in `test/tests.py`, built by `test/SConscript` and land in
+`build/<toolchain>/client/release/test/` (`darwin`, `linux` or `mingw`; `--build=DIR`
+and `GLOB2_BUILD_DIR` override the directory as for the game). The standalone
+programs that remain come from the `PROGRAMS` table in the same file
+(`MapReportHarness`, `MenuColonyHarness`, and the `glob2-tools` group) or from
+`src/SConscript` (`MapGeneratorGoldenTest`, `LANSessionHarness`, the transport
+programs and the map generator study tools). The per-harness
+aliases documented below are kept as `LEGACY_ALIASES` for one release; they build
+the binary that now contains the test.
 
-The separate test build also creates `MersenneTwisterTest`, `TriboolTest`, and
-`LocalTimeTest`. Run them after `scons -C test` to check the compatibility
-implementations that replaced Boost's simulation RNG, Echo three-state boolean,
-and persisted YOG timestamps. CI runs these standalone checks on Linux and Windows.
+## Build and run
+
+```sh
+scons -j8 release=1 server=0 tests          # or unit-tests / engine-tests
+python3 test/run_tests.py                   # everything this platform can run
+python3 test/run_tests.py --list --tag display
+python3 test/run_tests.py --binary unit
+python3 test/run_tests.py --filter 'HungryDefeat/*' --verbose
+python3 test/run_tests.py --binary engine --shard 2/4 --junit artifacts/tests/junit.xml
+python3 test/run_tests.py --binary engine --in-process     # fast local loop, no isolation
+python3 test/run_tests.py --update-fixtures --filter 'WinningConditions/*'
+```
+
+`test/run_tests.py` lists the cases with doctest's `-ltc`, applies `--filter`
+(suite/name globs), `--tag`, `--exclude-tag`, `--quick` and `--shard K/N`
+(deterministic by sorted name), then runs each engine case in its own process with
+a fresh `GLOB2_USER_DATA_DIR`, `HOME`, temp directory and SDL's dummy drivers, a
+timeout by tag, output captured and shown only on failure, and a check that the
+profile's preferences were not rewritten. `[display]` cases get a real video driver,
+under `xvfb-run` on Linux without `DISPLAY`; they are skipped on Windows and with
+`--no-display`. Results merge into one JUnit file (`--junit`) and, under GitHub
+Actions, into the step summary with a `::error file=,line=` annotation per failure.
+`test/test_run_tests.py` covers the runner itself.
+
+Running a binary by hand is safe too: `TestMain.cpp` creates a temporary profile
+and selects the dummy drivers when the environment does not, so
+`build/darwin/client/release/test/glob2-unit-tests -ts=MapQuery` never touches
+`~/.glob2`. Doctest's own options apply: `-ltc`, `-tc=`, `-ts=`, `-s`, `-r=junit`.
+
+## Writing a test
+
+Include `Glob2Test.h` (unit tests) or `EngineFixtures.h` (engine tests) and use
+doctest's `TEST_SUITE`, `TEST_CASE`, `SUBCASE`, `CHECK`, `REQUIRE`, `CHECK_EQ` and
+`REQUIRE_MESSAGE`. Suites are named after the area (`HungryDefeat`, `MapQuery`,
+`Maxima.Combat`); case names are sentences without commas. Conditions that doctest
+cannot decompose (`a && b`) use `GLOB2_REQUIRE(cond, message)` or `GLOB2_CHECK`.
+Tags go at the end of the name, or through `GLOB2_TEST_CASE(name, "[display][slow]")`:
+
+| Tag | Meaning |
+| --- | --- |
+| `[display]`, `[display:WxH]` | needs a real window (300 s timeout, xvfb on Linux) |
+| `[slow]` | over a minute (600 s timeout; skipped by `--quick`) |
+| `[network]` | binds loopback sockets; never runs alongside another `[network]` case |
+| `[artifacts]` | writes review evidence under `glob2test::artifactDir()` |
+| `[golden]` | compares against a checked-in text; `--update-fixtures` rewrites it |
+| `[writes-preferences]` | legitimately saves settings |
+| `[benchmark]` | timing evidence, not pass/fail; runs only with `--tag benchmark` |
+| `[map-generators]` | the full generator contract; CI runs it in the map-generators job, the shards use `--exclude-tag map-generators` |
+| `[maxima]`, `[save-format]` | selection only |
+
+Where a test goes: `glob2-unit-tests` if it needs neither `GlobalContainer` nor any
+client object, otherwise `glob2-engine-tests`. Add the translation unit to
+`UNIT_TESTS` or `ENGINE_TESTS` in `test/tests.py` (with `cxxflags`, `defines` or
+`require={'wss','not-mingw','opengl'}` when needed); CI picks the new cases up on
+the next run. Keep helpers and fixtures inside an anonymous namespace: every test
+file in a binary is one link, so two global `struct World`s collide.
+
+`test/support/Glob2Test.h` provides, in `namespace glob2test`:
+
+- `sourceRoot()`, `fixture("dir/file")`, `inflated("dir/file.gz")` for repository data;
+- `profileDir()`, `TempDir`, `artifactDir()` for scratch and review output;
+- `CapturedStdout` / `CapturedStderr` (no `freopen`), `expectGolden(relative, text)`,
+  `readFile`, `writeFile`, `updatingFixtures()`;
+- `ToolkitScope` for tests that need a `FileManager` without an engine.
+
+`test/support/EngineFixtures.h` adds `HeadlessGlobals` (the RAII `GlobalContainer`
+every headless harness used to bootstrap by hand: `runNoX`, building types, races,
+key actions, the repository on the data path, a seeded simulation RNG; `Options`
+select a real display, string loading, screen size and seed) and `HeadlessGame`
+(a one-colony game on a small grass torus with `addBuilding`, `addUnit`, `step`
+and `checksum`). Unit tests that exercise `Map` without the game reuse the
+`GrassMap` subclass in `test/MapQueryTest.cpp`, which sizes the tile array
+directly instead of calling `Map::setSize`; the `Sector`, `MapHeader`, `Order`,
+`GameGUI`, `Race` and SHA-1 symbols such tests reach are supplied once by
+`test/unit/stubs/`, so every unit test shares one link surface. A test that needs a
+stub replacing a symbol another unit test links for real belongs in the engine
+binary instead.
+
+## Python tests
+
+`test/test_*.py` are `unittest` files; those that need a build take the binary
+path on the command line (`test_map_cli.py`, `test_map_report.py`). The `check_*.py`
+scripts compare full-game traces against retained fixtures and are documented with
+the harness they accompany below. `tests/` at the repository root tests the build
+system and the browser services.
 
 ## Maxima
 
@@ -27,20 +117,20 @@ null selections, and a live unit with no peer. It runs headlessly, using the rea
 `GameGUI`, entity classes, selection setters, and destruction hooks. A friend
 fixture accesses the private selection API without exposing it to game callers.
 
-Build and run it from the repository root (the Linux CI also runs this target):
+Runs as the `GameGUISelection` suite of `glob2-engine-tests`:
 
 ```sh
-scons -j8 release=1 server=0 selection-test
-./build/native-tests/src/GameGUISelectionHarness
+python3 test/run_tests.py --filter 'GameGUISelection/*'
 ```
 
-For AddressSanitizer and UndefinedBehaviorSanitizer on macOS or Linux:
+For AddressSanitizer and UndefinedBehaviorSanitizer on macOS or Linux, build the
+engine tests into a separate directory with the sanitizer flags and run the same filter:
 
 ```sh
-scons -j8 release=0 server=0 --build=build/selection-asan selection-test \
+scons -j8 release=0 server=0 --build=build/tests-asan engine-tests \
   CXXFLAGS='-g -fsanitize=address,undefined -fno-omit-frame-pointer' \
   LINKFLAGS='-g -fsanitize=address,undefined'
-./build/selection-asan/src/GameGUISelectionHarness
+python3 test/run_tests.py --build-dir build/tests-asan --filter 'GameGUISelection/*'
 ```
 
 If Homebrew sdl2-compat cannot locate SDL3 under the macOS sanitizer, prefix
@@ -51,9 +141,8 @@ normal build. This is a direct method regression, not an interactive replay test
 
 ## Terrain resource regression
 
-From the repository root, run `scons -j8 release=1 server=0 terrain-test`
-and `./build/native-tests/src/TerrainResourcesHarness`. The harness links the actual client
-objects and exercises terrain regeneration and resource clearing for all eight
+The `TerrainResources` suite (`python3 test/run_tests.py --filter 'TerrainResources/*'`)
+links the actual client objects and exercises terrain regeneration and resource clearing for all eight
 resource types, all three base terrains, overlapping strokes, and all four
 wrapped map corners. A whole-map oracle checks both removal and preservation.
 These are headless map-operation tests; they do not drive editor mouse events.
@@ -81,11 +170,13 @@ service failures and raw invalid requests. See [telemetry](../docs/map-generator
 
 ## Orchard Commons fruit conversion
 
-Build `scons release=1 server=0 orchard-conversion-test`, then run from the repository root:
+Runs as the `OrchardCommons` suite of `glob2-engine-tests`:
 
 ```sh
-build/native-tests/src/OrchardCommonsConversionTest orchard-contracts "$PWD" "$PWD/artifacts/orchard-conversion"
+python3 test/run_tests.py --filter 'OrchardCommons/*'
 ```
+
+Saved fixtures land under `artifacts/tests/OrchardCommons/`.
 
 The harness places competing inns on unmodified generated terrain and checks superior
 advertised fruit variety, equal friendly diet, advertising off, lost fruit and lost
@@ -93,11 +184,12 @@ wheat using real game ticks. It also checks full-save generation repeatability,
 telemetry neutrality, terrain/resource save-load preservation and invalid requests.
 Saved fixtures retain each scenario. Loading rebuilds the existing conversion cooldown;
 the test explicitly matures eligibility after loading, not immediate continuation.
-CI builds and runs this harness on Linux and Windows and retains the fixtures.
+CI runs this suite on Linux and Windows and retains the fixtures.
 
-For generation-only timing at 512×512/eight teams, append `--benchmark 60` to the
-command. This skips the scenarios and reports separate telemetry-off/on means and
-failure counts; it is a local profiling tool, not a timing threshold in CI.
+For generation-only timing at 512×512/eight teams, run the opt-in benchmark case with
+`python3 test/run_tests.py --tag benchmark --filter 'OrchardCommons/*'`. It skips the
+scenarios and reports separate telemetry-off/on means and failure counts; it is a local
+profiling tool, not a timing threshold in CI.
 
 ## Map generator profiling fixture
 
@@ -115,8 +207,8 @@ signal something changed, not just an optimization's timing.
 
 ## Android device execution
 
-The same CppUnit source list and selected client harnesses can run as native
-Android executables on a connected device. See the [device build and runner
+Selected client harnesses can run as native Android executables on a connected
+device. See the [device build and runner
 commands](../docs/mobile/development.md#native-tests-on-a-connected-android-device).
 Shell tests use SDL dummy video and have no audio or Java Activity; installed-APK
 interaction and lifecycle tests are separate. `python3 test/test_mobile_asset_bundle.py`
@@ -151,11 +243,11 @@ struct GrassMap : Map {
 
 ### Stubs for `Sector`
 
-Provide a `*TestStubs.cpp` (e.g. `MapQueryTestStubs.cpp`) with empty bodies for `Sector::Sector(Game*)`, `Sector::~Sector`, `Sector::setGame`, `Sector::step`, `Sector::save`, `Sector::load`, `Sector::free`, and `UnitDeathAnimation::UnitDeathAnimation`. `Map.o`'s compiled `setSize` / `setGame` reference `Sector` symbols even though the test never calls them. ~30 lines of stubs avoid pulling all of `Sector.cpp`'s real deps.
+`test/unit/stubs/MapSectorStubs.cpp` (linked into every unit binary through `UNIT_STUBS` in `test/tests.py`) provides empty bodies for `Sector::Sector(Game*)`, `Sector::~Sector`, `Sector::setGame`, `Sector::step`, `Sector::save`, `Sector::load`, `Sector::free`, and `UnitDeathAnimation::UnitDeathAnimation`. `Map.o`'s compiled `setSize` / `setGame` reference `Sector` symbols even though the test never calls them. ~30 lines of stubs avoid pulling all of `Sector.cpp`'s real deps.
 
-### `SConstruct` surgery
+### Build wiring
 
-The predicate test build needed these include paths beyond what existing tests had: `../src/building`, `../src/game/entities`, `../src/team`, `../src/unit`, `../src/gui`, `../src/net`, `../src/net/irc`, `../src/net/message`, `../src/yog`, `../libusl/src`. Linked sources for the predicate test: `Map.cpp`, `MapQuery.cpp`, `MapTerrain.cpp`, `BitArray.cpp`, `Utilities.cpp`, `building/BuildingUtils.cpp`, `unit/UnitUtils.cpp`, plus the stubs.
+Add the translation unit to `UNIT_TESTS` in `test/tests.py`. The production sources the unit binary links (`Map.cpp`, `MapQuery.cpp`, `MapTerrain.cpp`, `BitArray.cpp`, `Utilities.cpp`, `building/BuildingUtils.cpp`, `unit/UnitUtils.cpp`, ...) are listed once in `UNIT_PRODUCTION_SOURCES`; the include paths come from the client build environment, so nothing per-test is needed.
 
 ### Terrain encoding for tests
 
@@ -205,30 +297,29 @@ bounds startup, execution, and child cleanup. Logs and captures are written unde
 
 ## Aspect-ratio and screen-capture regression
 
-`FullscreenAspectHarness` links libgag and opens a real SDL window. It checks
-presentation pixels, clipping, logical-resolution screen captures, and translated
-mouse motion/button events and polling at equal, wide, tall, odd, and downscaled
-window sizes. It exercises the same scaling path used by desktop fullscreen.
-The software run also checks every pixel in 24 opaque/translucent rectangle
-intersections, including rectangles above the clip area and empty rectangles.
-It does not load a game profile or change saved display settings.
+The `FullscreenAspect` suite (`test/FullscreenAspectHarness.cpp`) opens a real SDL
+window and checks presentation pixels, clipping, logical-resolution screen captures,
+and translated mouse motion/button events and polling at equal, wide, tall, odd, and
+downscaled window sizes. It exercises the same scaling path used by desktop
+fullscreen. The software case also checks every pixel in 24 opaque/translucent
+rectangle intersections, including rectangles above the clip area and empty
+rectangles. It does not load a game profile or change saved display settings.
 
 ```sh
-scons -j2 release=1 server=0 aspect-test
-./build/native-tests/libgag/src/FullscreenAspectHarness gl
-./build/native-tests/libgag/src/FullscreenAspectHarness software
+python3 test/run_tests.py --filter 'FullscreenAspect/*'
 ```
 
-Ubuntu CI runs both under `xvfb-run -a -s '-screen 0 1600x1400x24'`, using Mesa
-software OpenGL (`LIBGL_ALWAYS_SOFTWARE=1`). Xvfb and xauth must be installed.
-The GL run requires an OpenGL-enabled build. On macOS, the Homebrew SDL workaround
-described above also applies. To run with sanitizers, use the flags in the selection
-regression instructions with the `aspect-test` target instead.
+Both cases are tagged `[display:1600x1400]`: the runner opens that Xvfb screen on
+Linux without a `DISPLAY` and uses Mesa software OpenGL (`LIBGL_ALWAYS_SOFTWARE=1`)
+in CI. The OpenGL case is skipped in `opengl=0` builds. The same goes for the
+`WindowResize` suite (`test/WindowResizeHarness.cpp`), which resizes the window
+through the cache, callbacks, reflow, context recreation and minimum-size paths and
+needs a desktop at least 1100x850 when run natively.
 
 ## Wrapped building footprint regression
 
-From the repository root, run `scons -j8 release=1 server=0 building-footprint-test`
-and `./build/native-tests/src/BuildingFootprintHarness`. The harness links the real engine and
+The `BuildingFootprint` suite (`python3 test/run_tests.py --filter 'BuildingFootprint/*'`)
+links the real engine and
 round-trips generated fixtures through binary saved games. It checks exact map
 occupancy, missing/stale-cell repair, repeated integrity checks, and ground exits
 for interior, negative-origin and positive wrapped footprints. It protects the
@@ -242,8 +333,8 @@ Saved state and step-by-step before/after reproduction: [PR #165 fixture](fixtur
 
 ## Entering unit save regression
 
-From the repository root, run `scons -j8 release=1 server=0 entering-unit-save-test`
-and `./build/native-tests/src/EnteringUnitSaveHarness`. The harness links the real engine and
+The `EnteringUnitSave` suite (`python3 test/run_tests.py --filter 'EnteringUnitSave/*'`)
+links the real engine and
 round-trips generated fixtures through binary saved games. It exercises eight
 entry directions at five interior/edge/corner positions, preserves the building
 reference and animation destination, and rejects both a misplaced entering
@@ -257,8 +348,8 @@ Saved state and step-by-step before/after reproduction: [PR #166 fixture](fixtur
 
 ## Entering unit draw regression
 
-From the repository root, run `scons -j8 release=1 server=0 entering-unit-draw-test`
-and `xvfb-run -a -s '-screen 0 1024x768x24' ./build/linux/client/release/src/EnteringUnitDrawHarness`.
+Run `python3 test/run_tests.py --filter 'EnteringUnitDraw/*'`; the case is tagged
+`[display:1024x768][artifacts]`.
 
 A unit on its final step into a building keeps its map slot on the tile it is
 leaving (`Unit::handleActionEnteringBuilding`) while `posX`/`posY` already name
@@ -271,35 +362,28 @@ against the 32 px tile size. It protects the fix in `src/render/UnitDrawGeometry
 for issue #230, where the sprite was anchored on the stale map slot and the glob
 walked backwards into the square it came from.
 
-Frames land in `.cache/entering-unit-draw-check/`: `entering-delta<N>.png` and,
-on failure, `walking-delta<N>.png` for the unit-only comparison, plus
-`scene-delta<N>.png` with terrain and the inn for looking at by eye. The
-comparison itself stays on the unit-only render, which has no animated water or
-clouds to make two frames differ by themselves.
-
-It needs a display and a GL context. CI already installs `xvfb` and mesa for the
-fullscreen aspect harness, so a job step is a two-liner:
-
-```yaml
-      - name: Build and run the entering unit draw regression
-        run: |
-          scons -j$(nproc) release=1 server=0 entering-unit-draw-test
-          timeout 300s xvfb-run -a -s '-screen 0 1024x768x24' ./build/linux/client/release/src/EnteringUnitDrawHarness
-```
+Frames land in the case's artifact directory (`artifacts/tests/EnteringUnitDraw/...`
+or `GLOB2_TEST_ARTIFACTS`): `entering-delta<N>.png` and, on failure,
+`walking-delta<N>.png` for the unit-only comparison, plus `scene-delta<N>.png` with
+terrain and the inn for looking at by eye. The comparison itself stays on the
+unit-only render, which has no animated water or clouds to make two frames differ
+by themselves. The `FailingUnitMarkers` suite works the same way and leaves its
+scene captures next to them. Both need a display and a GL context and are left
+out of `opengl=0` builds.
 
 ## Immobile unit gradient regression
 
-From the repository root, run `scons -j8 release=1 server=0 immobile-unit-gradient-test`
-and `./build/native-tests/src/ImmobileUnitGradientHarness`. The harness uses a fresh 64x64 map
+The `ImmobileUnitGradient` suite (`python3 test/run_tests.py --filter 'ImmobileUnitGradient/*'`)
+uses a fresh 64x64 map
 and real engine orders to check empty immobile-unit bookkeeping, exact blocked
 cells, and immediate building-route invalidation after painting and erasing a gap.
 It exercises all seven swim classes on weighted full-map gradients. No display or
 external save fixture is needed; normal game data must be available.
 
-Pass `fresh`, `occupancy`, or `forbidden` to run one scenario. The latter two clear
-the initial occupancy explicitly, so failures in painting or occupancy can be
-reproduced independently of the fresh-map initialization bug. Linux CI runs all
-scenarios.
+Each scenario is its own case (`fresh map has no immobile units`, `immobile unit blocks
+its own tile`, `painting forbidden area refreshes gradients`); the latter two clear the
+initial occupancy explicitly, so failures in painting or occupancy can be reproduced
+independently of the fresh-map initialization bug. Linux CI runs all of them.
 
 ## Building gradient invalidation regression
 
@@ -308,8 +392,8 @@ queries resolve their own inputs, that the array API returns a complete field,
 and that idle and invalidated field storage and search queues can be reused
 without stale routes.
 
-Building propagation is always lazy. Build `path-gradient-test` and run
-`PathGradientHarness` from your native build directory. Its independent heap oracle
+Building propagation is always lazy. The `PathGradient` unit suite
+(`python3 test/run_tests.py --binary unit --filter 'PathGradient/*'`) has an independent heap oracle that
 covers all seven swim classes, paused water snapshots, equal-cost movement neighbors,
 repeated and reordered requests, interleaved maps, disconnected/capped distances,
 toroidal geometry and reused frontiers. The existing eager-kernel cases remain.
@@ -322,17 +406,17 @@ on save in the standard game path.
 CI runs the oracle on Linux and Windows, the lazy invalidation/immobile-unit suites
 on Linux, and lazy save continuation on both.
 
-From the repository root, run `scons -j8 release=1 server=0 building-gradient-invalidation-test`
-and `./build/native-tests/src/BuildingGradientInvalidationHarness`. The harness links the real
-engine and places every building through `OrderCreate` / `OrderDelete`, so it
+The `BuildingGradientInvalidation` suite (`python3 test/run_tests.py --filter
+'BuildingGradientInvalidation/*'`) links the real engine and places every building through `OrderCreate` / `OrderDelete`, so it
 exercises `Game::addBuilding` and `Team::syncStep` rather than a test double. On a
 fresh 64x64 grass map with two teams, it checks that a cached route field notices
 the ground moving under it: a ring of inn sites closed around a site whose field is
 already cached stops offering that site to a unit outside, a site placed inside a
 standing ring is never offered, and clearing the ring restores it.
 
-Pass `ring-before`, `ring-after`, `ring-other-team` or `ring-flag` to run one
-scenario; the default is all four. Linux CI runs all of them.
+Each scenario is its own case (`centre placed inside an existing ring`, `ring placed around
+an existing field`, `a rival teams ring cuts off a cached field`, `a ring cuts off a virtual
+flags field`); Linux CI runs all of them.
 
 The last two cover what the proximity walk this replaced structurally could not
 reach. `ring-other-team` builds the ring as team 1 around team 0's site: the old
@@ -355,9 +439,8 @@ the ring exists — which is why it is not on its own sufficient.
 
 ## Forbidden-zone invalidation and escape recovery
 
-Build `scons -j8 release=1 server=0 gradient-invalidation-test` and run
-`MapGradientInvalidationTest` from the native build's `src` directory. The harness
-checks all seven swim classes against freshly rebuilt fields after forbidden
+The `MapGradientInvalidation` suite (`python3 test/run_tests.py --filter
+'MapGradientInvalidation/*'`) checks all seven swim classes against freshly rebuilt fields after forbidden
 brushes, including resource-only edits, clearing goals, other teams and previously
 stale caches. It also checks resource, terrain, building and immobility transitions,
 a depleted escape exit, unreachable pockets and the refresh budget across tick wrap.
@@ -375,8 +458,8 @@ it from previous clients. The supported save-format floor remains 58.
 
 ## Building expulsion regression
 
-From the repository root, run `scons -j8 release=1 server=0 building-expel-test`
-and `./build/native-tests/src/BuildingExpelHarness`. The harness links the real engine and
+The `BuildingExpel` suite (`python3 test/run_tests.py --filter 'BuildingExpel/*'`)
+links the real engine and
 checks that a destroyed building puts the units inside it, entering it, or
 waiting to leave it back on the map alive (footprint first, then the ring around
 it; a unit with no free tile dies), and that the expelled units keep the share of
@@ -387,11 +470,9 @@ external save files.
 
 ### Savegame safety
 
-Build `scons release=1 server=0 savegame-safety-test`, then run
-`python3 test/run-savegame-safety-tests.py build/native-tests/src/SavegameSafetyHarness`
-(use `.exe` on Windows). No display is required. The runner uses a disposable
-profile and working directory; an optional final argument supplies a truncated
-save that must be rejected.
+Runs as the `SavegameSafety` suite of `glob2-engine-tests`
+(`python3 test/run_tests.py --filter 'SavegameSafety/*'`). No display is required; the
+runner supplies the disposable profile and working directory.
 
 The harness checks the headless autosave-off default, explicit opt-in, autosave
 cadence, the production autosave path, byte equivalence with direct
@@ -408,10 +489,9 @@ buffered flush errors while checking that the previous save survives unchanged.
 
 ## Hunger and defeat detection
 
-Build the real-engine regression with `scons release=1 server=0 hungry-defeat-test`
-and run `python3 test/run-hungry-defeat-tests.py build/native-tests/src/HungryDefeatHarness`
-(use the `.exe` suffix on Windows). The runner uses a disposable profile and the
-harness owns a live headless GameGUI, with preference saving disabled.
+Runs as the `HungryDefeat` suite of `glob2-engine-tests`
+(`python3 test/run_tests.py --filter 'HungryDefeat/*'`) in a disposable profile; the
+case owns a live headless GameGUI with preference saving disabled.
 
 A hungry worker or warrior reserves the final inn place during Team::syncStep,
 then walks, enters, completes its meal, and exits without being declared defeated.
@@ -427,27 +507,24 @@ data before exercising the real unit activity and movement code.
 
 ## Cortex placement regression
 
-Build with `scons release=1 cortex-geometry-test` and run
-`./build/native-tests/src/CortexGeometryHarness`. It compares placement geometry against the tile-scan helpers and checks the
+The `CortexGeometry` suite (`python3 test/run_tests.py --filter 'CortexGeometry/*'`) compares placement geometry against the tile-scan helpers and checks the
 building-proximity mask against per-building edge distances. Coverage includes
 wrapped corners, upgrade reservations, construction sites, map-only occupants,
 dead buildings, empty colonies, and footprints or distance limits spanning the map.
 
 ## Clearing flag resource bounds
 
-Build `scons release=1 server=0 clearing-gradient-test` and run
-`python3 test/run-savegame-safety-tests.py --check-preferences build/native-tests/src/ClearingFlagGradientTest`
-(add `.exe` on Windows). The shared runner isolates the working directory and
-profile and verifies that preferences remain unchanged. The regression covers
+The `ClearingFlagGradient` suite (`python3 test/run_tests.py --filter
+'ClearingFlagGradient/*'`) runs in an isolated profile whose preferences must stay
+unchanged. The regression covers
 weighted building gradients, basic-resource switches, fruit, empty tiles,
 allocation padding and every swimming class. CI executes it on Linux and Windows.
 
 ### Trapped colony elimination
 
-Build `scons release=1 server=0 trapped-unit-test`, then run
-`python3 test/run-savegame-safety-tests.py --check-preferences build/native-tests/src/TrappedUnitLifecycleTest`
-(use `.exe` on Windows). The shared runner uses a disposable profile and checks
-that the normal preferences remain unchanged; Linux and Windows CI run it.
+The `TrappedUnitLifecycle` suite (`python3 test/run_tests.py --filter
+'TrappedUnitLifecycle/*'`) runs in a disposable profile whose preferences must stay
+unchanged; Linux and Windows CI run it.
 
 Normal simulation ticks exercise completed feeding/training behind wood or
 wheat, elimination without indoor starvation, active service, open exits,
@@ -462,15 +539,13 @@ older saves remain loadable.
 ## Team statistics save compatibility
 
 ```sh
-scons -j8 release=1 server=0 team-stats-save-test
-python3 test/run-savegame-safety-tests.py --check-preferences build/native-tests/src/TeamStatsSaveHarness .
-# The fixtures below are checked in gzip-compressed; inflate them to genuinely
-# raw files first so --legacy exercises loading an uncompressed legacy save.
-python3 test/inflate_gzip_fixture.py test/fixtures/team-stats/version88.game.gz /tmp/version88.game
-python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version88.expected.txt build/native-tests/src/TeamStatsSaveHarness . --legacy /tmp/version88.game
-python3 test/inflate_gzip_fixture.py games/gd-small-2ai.game.gz /tmp/gd-small-2ai.game
-python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version84.expected.txt build/native-tests/src/TeamStatsSaveHarness . --legacy /tmp/gd-small-2ai.game
+python3 test/run_tests.py --filter 'TeamStatsSave/*'
 ```
+
+The two legacy cases inflate the gzip-compressed fixtures (`test/fixtures/team-stats/version88.game.gz`,
+`games/gd-small-2ai.game.gz`) so they exercise loading a genuinely raw legacy save, and
+compare the printed trace with `version88.expected.txt` / `version84.expected.txt`
+(`--update-fixtures` rewrites them).
 
 This headless test verifies live statistics and smoothing across all 32 sampling
 positions and repeated binary reloads, with history-ring wrap, named text fields,
@@ -485,10 +560,10 @@ paths; 64-bit totals; timestamped coverage; pending projectile/death attribution
 and malformed new fields. `SavegameSafetyHarness` compares measurement totals
 through 700 engine ticks after reload, crossing a history sample.
 
-Optional UI artifacts (requires a graphical SDL driver):
+Optional UI artifacts (a `[display]` case, so xvfb or a real display):
 
 ```sh
-python3 test/run-savegame-safety-tests.py build/native-tests/src/TeamStatsSaveHarness . --screenshots output/gameplay-statistics-ui
+python3 test/run_tests.py --filter 'TeamStatsSave/measurement screenshots*'
 ```
 
 
@@ -498,29 +573,27 @@ python3 test/run-savegame-safety-tests.py build/native-tests/src/TeamStatsSaveHa
 Run its independent byte-for-byte oracle from the repository root:
 
 ```sh
-scons -j8 release=1 server=0 global-gradient-test
-./build/native-tests/src/GlobalGradientHarness
+python3 test/run_tests.py --binary unit --filter 'GlobalGradient/*'
 ```
 
 The harness covers 3,000 random fields, mixed seed strengths, inert inputs,
 toroidal seams, thin dimensions, obstacles, distance cutoff and idempotence.
-It runs in the Linux CI jobs; the weighted pathfinder has separate `GradientTest`
-coverage in `TestsRunner`.
+It runs in the Linux CI jobs; the weighted pathfinder has separate `Gradient`
+coverage in `glob2-unit-tests`.
 
 ## Resource-fetch target regression
 
 From the repository root:
 
 ```sh
-scons -j8 release=1 server=0 resource-fetch-target-test
-python3 test/run-savegame-safety-tests.py --check-preferences build/native-tests/src/ResourceFetchTargetHarness .
+python3 test/run_tests.py --filter 'ResourceFetchTarget/*'
 ```
 
 The real-engine movement-method fixture checks every swim class: a valid resource
 target remains unchanged, and a depleted target is refreshed after its resource
 gradient is rebuilt. It invokes the movement method directly, rather than running
-an entire match. The shared runner isolates the profile and working directory and
-checks that preferences remain unchanged. Linux CI runs this regression.
+an entire match. The runner isolates the profile and working directory and checks that preferences
+remain unchanged. Linux CI runs this regression.
 
 ## Hiring bucket iteration
 
@@ -530,11 +603,10 @@ the live bucket; iteration must keep following building identity. The old loop
 fails this fixture with two workers at the first inn and zero at the second. Run with:
 
 ```sh
-scons -j6 release=1 server=0 hiring-bucket-test
-python3 test/run-savegame-safety-tests.py --check-preferences build/native-tests/src/HiringBucketHarness .
+python3 test/run_tests.py --filter 'HiringBucket/*'
 ```
 
-The harness runs headlessly in disposable profile directories in Linux and Windows CI.
+It runs headlessly in disposable profile directories in Linux and Windows CI.
 
 ## AI save portability
 
@@ -546,8 +618,7 @@ that capture marks those columns unavailable while still sampling the six real
 policies. The legacy columns and historical samples remain readable.
 
 ```sh
-scons release=1 server=0 ai-save-portability-test
-python3 test/run-savegame-safety-tests.py build/native-tests/src/AISavePortabilityHarness .
+python3 test/run_tests.py --filter 'AISavePortability/*'
 ```
 
 The Linux CI regression job runs this harness. For portability changes, also run
@@ -559,8 +630,7 @@ GCC builds that transposed those coordinates. The saved layout is unchanged.
 ## Shared AI runtime/Nicowar save continuation
 
 ```sh
-scons release=1 server=0 runtime-continuation-test
-python3 test/run-savegame-safety-tests.py build/linux/client/release/src/RuntimeContinuationTest .
+python3 test/run_tests.py --filter 'RuntimeContinuation/*'
 ```
 
 The harness preserves stale fields, uncomputed gradients, ages and duplicate
@@ -605,36 +675,27 @@ Older saves do not carry it and load leaves the member at `-1`, the sentinel
 The fixture checks the version-96 round trip, that an unregistered order's `-1`
 survives the `Uint32` on the wire rather than returning as a huge positive key,
 and that a pre-96 stream leaves the sentinel with every following field still
-decoding from the right offset. `BuildingOrder.cpp` is linked against
-`RuntimeBuildingOrderTestStubs.cpp`, which satisfies the `find_location` /
-`passes_conditions` link surface (`globalContainer`, `BuildingsTypes`, `Map`,
-`FlagMap`, `GradientManager`, and the `Constraint` / `Condition` factories) that
-a constraint-free order never reaches at runtime. It needs no profile or display:
-
-```sh
-cd test
-scons -j8 RuntimeBuildingOrderSaveLoadTest
-./RuntimeBuildingOrderSaveLoadTest
-```
-
-Linux CI builds this directory's suite, then runs `./TestsRunner` and every
-`./*Harness` and `./*Test` binary. It reports all failing executables together.
+decoding from the right offset. `test/unit/stubs/RuntimeStubs.cpp` satisfies the
+`find_location` / `passes_conditions` link surface (`BuildingsTypes`, `FlagMap`,
+`GradientManager`, and the `Constraint` / `Condition` factories) that a
+constraint-free order never reaches at runtime. It is the `RuntimeBuildingOrderSaveLoad`
+suite of `glob2-unit-tests`.
 
 ### Native main Settings redesign
 
-Build `scons -j6 release=1 settings-tests speed-tests` and run
-`python3 test/run-settings-tests.py`. The harness uses disposable profiles and
-writes native captures to `artifacts/settings-redesign/`. It covers all six
-categories, building stages, automatic saving and retry, software display
-confirmation/rollback, pending OpenGL changes, language refresh, and keyboard
-sequence/conflict handling. The shared dropdown checks cover anchoring, mouse and
-keyboard selection, dismissal, wrapping, and scrolling without committing a value.
-It runs at 640×480, 800×600, 1000×700, and 1280×900,
-plus software rendering and doubled English strings. `--quick` runs only 1000×700
-OpenGL; Linux CI runs the full six-configuration matrix. Persistence failures use a directory at the
+Run `python3 test/run_tests.py --filter 'Settings/*'`. The `Settings` suite
+(`test/SettingsScreenTest.cpp`) runs one case per configuration of the old matrix:
+640×480, 800×600, 1000×700 and 1280×900 in OpenGL, 1000×700 in software rendering,
+and 640×480 with expanded English strings written into the case's disposable
+profile. Each case uses its own profile and writes its native captures to its
+artifact directory. It covers all six categories, building stages, automatic
+saving and retry, software display confirmation/rollback, pending OpenGL changes,
+language refresh, and keyboard sequence/conflict handling. The shared dropdown
+checks cover anchoring, mouse and keyboard selection, dismissal, wrapping, and
+scrolling without committing a value. Persistence failures use a directory at the
 destination path so both settings and shortcut retries exercise the atomic writer.
-Window and drawable dimensions are logged so 1× runs are not mistaken
-for physical HiDPI validation.
+Window and drawable dimensions are logged so 1× runs are not mistaken for physical
+HiDPI validation.
 
 The redesigned screen exposes semantic row IDs (for example `gameplay.speed`)
 for tests; do not locate settings controls by pixel coordinates. Slider updates
@@ -642,18 +703,21 @@ preview immediately and commit on release/idle, whereas discrete changes save
 immediately. Bindings commit only after a complete edit. Legacy preference and
 keyboard file formats remain unchanged.
 
-`python3 test/run-game-speed-tests.py --settings-only` runs the main/in-game
-settings, language, persistence, keyboard, multiplayer eligibility and camera
-cadence regressions without starting the unrelated engine/replay scenarios.
-The full invocation remains available and reports buffered diagnostics on timeout.
+The `GameSpeed` suite (`test/GameSpeedTest.cpp`) has a headless case for the speed
+presets, bounds, legacy settings and persistence, a display case for the main and
+in-game settings, language refresh, keyboard shortcuts, multiplayer eligibility and
+camera cadence, and a display case that runs the live engine at normal and maximum
+speed, through pause and hard pause, and plays the recorded replay back at 1x,
+maximum and fast-forward. The last case captures the engine's per-run checksums
+and requires the first four (speed and pause) and the last three (playback) to
+agree. `python3 test/run_tests.py --filter 'GameSpeed/settings*'` runs the settings
+case alone.
 
 ## Pre-game map preview regression
 
-Build `scons -j6 release=1 server=0 map-preview-test`, then run
-`python3 test/run-savegame-safety-tests.py --check-preferences build/native-tests/src/MapPreviewHarness`.
-For native software captures, run
-`./build/native-tests/src/MapPreviewHarness glob2-map-preview-tests --visual artifacts/map-preview` (under `xvfb-run -a` on
-headless Linux). Linux CI builds and runs both modes. Fixtures exercise rectangular
+Run `python3 test/run_tests.py --filter 'MapPreview/*'`: three headless cases (geometry,
+codec, network) and one `[display][artifacts]` case that writes the native software
+captures into its artifact directory. Fixtures exercise rectangular
 placement, toroidal dragging, legacy/new codecs, malformed input, network frame
 bounds, thumbnail request deduplication, timeout/retry and bounded cache reuse.
 See [pre-game preview behavior and compatibility](../docs/features/pre-game-map-preview.md).
@@ -671,8 +735,8 @@ measurement deciding nothing is fitted near zero, that the fairness definition r
 every colony count and ignores the offset softmax leaves unidentified, and that every measurement
 the model may select has a C++ expression waiting for it. The fitting checks need numpy and scipy
 and skip without them; the rest is stdlib.
-Build `scons -j4 release=1 server=0 tournament-compatibility-test` and run
-`build/native-tests/src/TournamentCompatibilityTest` for real per-player Cortex/Maxima and partial
+The `TournamentCompatibility` engine suite (`python3 test/run_tests.py --filter
+'TournamentCompatibility/*'`) covers real per-player Cortex/Maxima and partial
 network-header checks. `python3 test/tournament_cli_integration.py --output DIR`
 runs production CLI cases and retains saves, traces and logs. Use a fresh output
 directory. `--initial FILE --ticks N` runs a retained initial state on another platform.
@@ -699,7 +763,7 @@ See [map CLI documentation](../docs/map-generators/CLI.md).
 ### Map JSON reports
 
 Build `scons release=1 server=0 map-report-test`, then run
-`python3 test/test_map_report.py build/native-tests/src/glob2 build/native-tests/src/MapReportHarness`
+`python3 test/test_map_report.py build/native-tests/src/glob2 build/native-tests/test/MapReportHarness`
 (add `.exe` to both binaries on Windows). The suite runs without graphics, checks
 the [published report contract](../docs/map-generators/REPORT.md), recomputes fairness
 formulas, and uses analytic maps to check wraparound, disconnected islands, algae
@@ -728,8 +792,8 @@ See [AI telemetry](../docs/ai/telemetry.md) for the capture/extension contract.
 ## Performance telemetry
 
 ```sh
-scons -j8 release=1 server=0 performance-telemetry-test
-build/native-tests/libgag/src/PerformanceTelemetryHarness
+scons -j8 release=1 server=0 unit-tests
+python3 test/run_tests.py --binary unit --filter 'PerformanceTelemetry/*'
 ```
 
 The injected-clock harness checks online variance, nested timings, exclusion of sleep and
@@ -764,16 +828,15 @@ removal of conflicting farming protection, cleanup after wood and neighboring
 wheat disappear, and preservation of building clearing strips.
 
 ```sh
-scons release=1 server=0 nicowar-farming-test
-python3 test/run-savegame-safety-tests.py build/native-tests/src/NicowarFarmingHarness .
+python3 test/run_tests.py --filter 'NicowarFarming/*'
 ```
 
 
 
 ## Engine save continuation
 
-Build `scons release=1 server=0 unit-continuation-test`, then run
-`build/native-tests/src/UnitContinuationHarness`. Five checkpoints compare 256 subsequent
+The `UnitContinuation` suite (`python3 test/run_tests.py --filter 'UnitContinuation/*'`):
+five checkpoints compare 256 subsequent
 simulation ticks and the RNG state, including idle timers, clearing reservations,
 service-list ordering, building worker membership and a nonzero construction
 cooldown. Format 114 preserves that cooldown; older formats remain readable.
@@ -800,34 +863,32 @@ per-tick hashes, and reproduction commands are in
 
 ### AI strategy profile captures
 
-Build `scons release=1 server=0 custom-setup-test`, then run:
+The `CustomGameSetup` suite (`test/CustomGameSetupHarness.cpp`) has one case per
+mode of the old command line:
 
 ```sh
-./build/darwin/client/release/src/CustomGameSetupHarness snapshot-load
-mkdir -p artifacts/ai-profiles-small artifacts/ai-profiles-large
-./build/native-tests/src/CustomGameSetupHarness artifacts/ai-profiles-small profiles
-./build/native-tests/src/CustomGameSetupHarness artifacts/ai-profiles-large profiles-large
+python3 test/run_tests.py --filter 'CustomGameSetup/*'
+python3 test/run_tests.py --filter 'CustomGameSetup/generated map snapshot*'
+python3 test/run_tests.py --filter 'CustomGameSetup/AI strategy profiles*'
 ```
 
-`snapshot-load` checks that a freshly serialized map launches through the lobby's in-memory load path. The other focused modes capture the Players & Teams strategy button and every AI profile at its top and bottom, at 640×480 and 1000×700. They check that profile/summary keys resolve, including Maxima. The existing `ui` mode exercises opening the strategy screen from the lobby and choosing an AI before launching each controller mode. The harness uses its dedicated `glob2-custom-setup-tests` profile.
+The snapshot case checks that a freshly serialized map launches through the lobby's in-memory load path. The strategy profile cases capture the Players & Teams strategy button and every AI profile at its top and bottom, at 640×480 and 1000×700. They check that profile/summary keys resolve, including Maxima. The player control widgets case exercises opening the strategy screen from the lobby and choosing an AI before launching each controller mode. Every case uses its own disposable `glob2-custom-setup-tests` profile and leaves captures in its artifact directory.
 
-An optional language code after the mode (for example, `profiles ja` or
-`profiles-large ar`) captures that catalog, including localized section headings.
-Use `GLOB2_USER_DIR` to isolate captures in a disposable profile. Text wrapping
-for unspaced CJK text and long words is covered by `UILayoutHarness`.
+The strategy profile cases run in English; to capture another catalog with its
+localized section headings, pass that language code to `setupOptions` in a local
+copy of the case. Text wrapping for unspaced CJK text and long words is covered by
+the `UILayout` unit suite.
 
 ### Landscape preview scheduling and scrolling
 
-The existing `custom-setup-test` target also provides focused checks:
+The same suite provides focused checks:
 
 ```sh
-./build/darwin/client/release/src/CustomGameSetupHarness preview-queue
-./build/darwin/client/release/src/CustomGameSetupHarness artifacts/landscape landscape-responsive
+python3 test/run_tests.py --filter 'CustomGameSetup/preview queue*'
+python3 test/run_tests.py --filter 'CustomGameSetup/landscape preview*'
 ```
 
-Use the corresponding native build directory on other platforms and `xvfb-run -a`
-for the graphical mode on headless Linux. Run in a disposable home/profile as with
-other UI harnesses. `preview-queue` checks deferred startup, viewport-center
+The preview queue case checks deferred startup, viewport-center
 priority for grid and single-column layouts, scrolling/filtering, unchanged seeds,
 cooperative viewport-only polling, retries, and restart/reroll behavior. The
 normal headless harness also runs these checks. `landscape-responsive` verifies
@@ -846,17 +907,17 @@ The native portable-renderer checks exercise real SDL touch dispatch in portrait
 and landscape, including placement/confirmation, camera gestures, building
 controls, replay actions, setup/settings navigation and modal viewport changes.
 Build and run commands are in [Mobile development](../docs/mobile/development.md#verification).
-The harnesses require a windowing display (Xvfb on Linux), use isolated
-`GLOB2_USER_DATA_DIR` profiles, and capture screenshots there. They complement
+The `GameGUITouch` and `UIPresentation` cases need a windowing display (Xvfb on
+Linux), run in isolated profiles and copy their screenshots into their artifact
+directories. They complement
 Android/iOS device playtesting; they do not establish device lifecycle,
 performance, keyboard or cross-platform simulation compatibility.
 
 
 ## Zone boundary rendering
 
-Build `scons release=1 portable-renderer-test` and run
-`build/<toolchain>/client/release/libgag/src/PortableRendererHarness` on a
-windowing display. The boundary regression checks every pixel along joined
+Run `python3 test/run_tests.py --filter 'PortableRenderer/*'` on a windowing
+display. The boundary regression checks every pixel along joined
 outlines at 25%, 33%, 50%, 75%, 100% and 150% zoom, with fractional camera offsets
 and toroidal copies. It covers software, SDL portable and (when compiled) OpenGL
 renderers and verifies that later map artwork retains its transform.
@@ -869,8 +930,8 @@ Ordinary UI lines retain their existing sizing behavior.
 
 ## Parallel compute prototype
 
-Build `scons release=1 server=0 compute-executor-test path-gradient-test
-building-gradient-invalidation-test`. `ComputeExecutorHarness` checks exclusive
+Build `scons release=1 server=0 unit-tests path-gradient-test
+building-gradient-invalidation-test`. The `ComputeExecutor` unit suite checks exclusive
 slots, barriers, nested batches, exception propagation, reuse and reconfiguration.
 The path oracle also exercises independent eager/lazy searches at 1/2/4/8 threads;
 the building invalidation harness compares real area/building seed fields and
@@ -886,8 +947,8 @@ and paired CPU/wall-time benchmarking.
 
 ### Delayed gradient pipeline
 
-Build `gradient-pipeline-test` and run `GradientPipelineHarness` from the build's
-`src` directory. The standalone scheduler test varies completion order across
+The `GradientPipeline` unit suite (`python3 test/run_tests.py --binary unit --filter
+'GradientPipeline/*'`) varies completion order across
 0/1/2/4/8 workers and publication delays, checks synchronous supersession, bounded
 buffers, partial thread-creation failure, exception delivery and teardown. It can
 also be compiled directly with ThreadSanitizer without SDL.

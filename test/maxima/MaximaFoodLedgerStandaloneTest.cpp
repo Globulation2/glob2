@@ -1,7 +1,7 @@
+#include "Glob2Test.h"
 #include "AIMaximaFoodLedger.h"
 
 #include <algorithm>
-#include <cassert>
 #include <cstring>
 #include <ctime>
 #include <iostream>
@@ -33,14 +33,14 @@ static void supplyIsClaimedNearestFirst()
 	input.consumers.push_back(makeConsumer(1,InnConsumer,6,8,150));
 	Ledger ledger;Result result;
 	ledger.evaluate(input,result);
-	assert(result.totalSupply==200);
-	assert(result.totalDemand==150);
-	assert(result.consumers.size()==1);
-	assert(result.consumers[0].claimed==150);
-	assert(result.consumers[0].coveragePercent==100);
-	assert(result.totalResidual==50);
+	REQUIRE(result.totalSupply==200);
+	REQUIRE(result.totalDemand==150);
+	REQUIRE(result.consumers.size()==1);
+	REQUIRE(result.consumers[0].claimed==150);
+	REQUIRE(result.consumers[0].coveragePercent==100);
+	REQUIRE(result.totalResidual==50);
 	// The unclaimed remainder is still reachable, so the inn reports headroom.
-	assert(result.consumers[0].available==200);
+	REQUIRE(result.consumers[0].available==200);
 }
 
 /// A relocated building is judged against what is left once everyone else has
@@ -57,16 +57,16 @@ static void residualQualityFollowsUnclaimedSupply()
 	// Nothing claimed: the adjacent cell covers the whole demand from the door,
 	// which the walk counts as distance zero like evaluate does.
 	ledger.evaluate(input,result);
-	assert(ledger.residualQuality(input,result,7,8,0,0,1,1,100)==0);
+	REQUIRE(ledger.residualQuality(input,result,7,8,0,0,1,1,100)==0);
 	// A neighbour takes the near cell; the candidate must walk to the far one.
 	input.consumers.push_back(makeConsumer(1,InnConsumer,9,8,100));
 	ledger.evaluate(input,result);
-	assert(result.consumers[0].claimed==100);
-	assert(result.residual[input.index(8,8)]==0);
-	assert(ledger.residualQuality(input,result,7,8,0,0,1,1,100)==300);
+	REQUIRE(result.consumers[0].claimed==100);
+	REQUIRE(result.residual[input.index(8,8)]==0);
+	REQUIRE(ledger.residualQuality(input,result,7,8,0,0,1,1,100)==300);
 	// Demand beyond the residual is charged at radius plus penalty (10 tiles).
-	assert(ledger.residualQuality(input,result,7,8,0,0,1,1,150)==(300*100+50*10*100)/150);
-	assert(ledger.residualQuality(input,result,7,8,0,0,1,1,0)==0);
+	REQUIRE(ledger.residualQuality(input,result,7,8,0,0,1,1,150)==(300*100+50*10*100)/150);
+	REQUIRE(ledger.residualQuality(input,result,7,8,0,0,1,1,0)==0);
 }
 
 /// Placement quality decides who keeps the wheat. An early building in a poor
@@ -83,12 +83,12 @@ static void qualityOutranksBuildingAge()
 	ledger.evaluate(input,result);
 	const ConsumerResult* older=result.consumer(1);
 	const ConsumerResult* nearer=result.consumer(50);
-	assert(older&&nearer);
-	assert(nearer->quality<older->quality);
-	assert(nearer->order<older->order);
-	assert(nearer->claimed==150);
-	assert(older->claimed==50);
-	assert(older->coveragePercent==33);
+	REQUIRE((older&&nearer));
+	REQUIRE(nearer->quality<older->quality);
+	REQUIRE(nearer->order<older->order);
+	REQUIRE(nearer->claimed==150);
+	REQUIRE(older->claimed==50);
+	REQUIRE(older->coveragePercent==33);
 }
 
 /// Inns and swarms alternate so neither class is starved out of the order.
@@ -105,10 +105,10 @@ static void innsAndSwarmsInterleave()
 	ConsumerKind byOrder[4]={InnConsumer,InnConsumer,InnConsumer,InnConsumer};
 	for(size_t i=0;i<result.consumers.size();++i)
 		byOrder[result.consumers[i].order]=result.consumers[i].kind;
-	assert(byOrder[0]==InnConsumer);
-	assert(byOrder[1]==SwarmConsumer);
-	assert(byOrder[2]==InnConsumer);
-	assert(byOrder[3]==SwarmConsumer);
+	REQUIRE(byOrder[0]==InnConsumer);
+	REQUIRE(byOrder[1]==SwarmConsumer);
+	REQUIRE(byOrder[2]==InnConsumer);
+	REQUIRE(byOrder[3]==SwarmConsumer);
 }
 
 /// Claims are never stored: removing a consumer and rebuilding releases exactly
@@ -122,13 +122,13 @@ static void removingAConsumerReleasesItsClaim()
 	input.consumers.push_back(makeConsumer(2,SwarmConsumer,10,8,60));
 	Ledger ledger;Result both;
 	ledger.evaluate(input,both);
-	assert(both.totalClaimed==180);
-	assert(both.totalResidual==20);
+	REQUIRE(both.totalClaimed==180);
+	REQUIRE(both.totalResidual==20);
 	input.consumers.pop_back();
 	Result single;
 	ledger.evaluate(input,single);
-	assert(single.totalClaimed==120);
-	assert(single.totalResidual==80);
+	REQUIRE(single.totalClaimed==120);
+	REQUIRE(single.totalResidual==80);
 }
 
 /// An upgrade is judged on what it could reach, not only on what it holds.
@@ -140,13 +140,13 @@ static void upgradeDemandUsesAvailableSupply()
 	input.consumers.push_back(makeConsumer(1,InnConsumer,7,8,80));
 	Ledger ledger;Result result;
 	ledger.evaluate(input,result);
-	assert(result.consumer(1)->available==200);
+	REQUIRE(result.consumer(1)->available==200);
 	// Re-running with the upgraded demand is the whole upgrade check.
 	input.consumers[0].demand=200;
 	Result upgraded;
 	ledger.evaluate(input,upgraded);
-	assert(upgraded.consumer(1)->claimed==200);
-	assert(upgraded.consumer(1)->coveragePercent==100);
+	REQUIRE(upgraded.consumer(1)->claimed==200);
+	REQUIRE(upgraded.consumer(1)->coveragePercent==100);
 }
 
 /// The summed-area prefilter may overstate reachable supply, never understate
@@ -165,10 +165,10 @@ static void upperBoundNeverUnderstatesReach()
 				0,0,1,1,0);
 			const long long bound=ledger.residualUpperBound(input,result,x,y,
 				0,0,1,1);
-			assert(bound>=exact);
+			REQUIRE(bound>=exact);
 		}
-	assert(result.bestSiteResidual>=0);
-	assert(result.bestSiteResidual<=result.totalResidual);
+	REQUIRE(result.bestSiteResidual>=0);
+	REQUIRE(result.bestSiteResidual<=result.totalResidual);
 }
 
 /// Water, buildings and blocked ground genuinely separate farms from claimers.
@@ -185,9 +185,9 @@ static void untraversableGroundBlocksSupply()
 	input.consumers.push_back(makeConsumer(1,InnConsumer,2,8,150));
 	Ledger ledger;Result result;
 	ledger.evaluate(input,result);
-	assert(result.consumer(1)->claimed==0);
-	assert(result.consumer(1)->coveragePercent==0);
-	assert(result.totalResidual==200);
+	REQUIRE(result.consumer(1)->claimed==0);
+	REQUIRE(result.consumer(1)->coveragePercent==0);
+	REQUIRE(result.totalResidual==200);
 }
 
 /// Only supply within the harvesting radius counts.
@@ -198,21 +198,21 @@ static void supplyBeyondTheRadiusIsNotCounted()
 	input.consumers.push_back(makeConsumer(1,InnConsumer,2,8,150));
 	Ledger ledger;Result result;
 	ledger.evaluate(input,result);
-	assert(result.consumer(1)->claimed==0);
-	assert(result.consumer(1)->available==0);
+	REQUIRE(result.consumer(1)->claimed==0);
+	REQUIRE(result.consumer(1)->available==0);
 }
 
 /// Engine-derived rates: a swarm at full output eats one wheat every thirty
 /// ticks, and a fully fertile cell produces on its documented period.
 static void demandAndYieldMatchEngineRates()
 {
-	assert(swarmDemand(5,150,100)==33333);
-	assert(swarmDemand(5,150,50)==16666);
-	assert(innDemand(19,1000,100)==19000);
-	assert(cellYield(65536,8,186)==5376);
-	assert(cellYield(65536,4,186)==2688);
-	assert(cellYield(0,8,186)==0);
-	assert(cellYield(65536,0,186)==0);
+	REQUIRE(swarmDemand(5,150,100)==33333);
+	REQUIRE(swarmDemand(5,150,50)==16666);
+	REQUIRE(innDemand(19,1000,100)==19000);
+	REQUIRE(cellYield(65536,8,186)==5376);
+	REQUIRE(cellYield(65536,4,186)==2688);
+	REQUIRE(cellYield(0,8,186)==0);
+	REQUIRE(cellYield(65536,0,186)==0);
 }
 
 // Independent cell-by-cell oracle for the wrapped square prefilter, including
@@ -242,10 +242,10 @@ static void preparedBoundsMatchWrappedOracle()
 		for(int y=0;y<input.height;++y)for(int x=0;x<input.width;++x)
 		{
 			best=std::max(best,bruteBound(input,result,x,y,0,0,1,1));
-			assert(ledger.residualUpperBound(input,result,x,y,-2,-1,4,3)
+			REQUIRE(ledger.residualUpperBound(input,result,x,y,-2,-1,4,3)
 				==bruteBound(input,result,x,y,-2,-1,4,3));
 		}
-		assert(result.bestSiteResidual==best);
+		REQUIRE(result.bestSiteResidual==best);
 	}
 }
 
@@ -254,32 +254,32 @@ static void equalTotalChangesRefreshTheSnapshot()
 	Input input=makeInput(32,16);input.policy.supplyRadius=1;
 	input.yield[input.index(3,3)]=100;
 	Ledger ledger;Result result;ledger.evaluate(input,result);
-	assert(ledger.residualUpperBound(input,result,3,3,0,0,1,1)==100);
+	REQUIRE(ledger.residualUpperBound(input,result,3,3,0,0,1,1)==100);
 	Result original=result;
 	// Reuse the same result address and total while moving all the supply.
 	input.yield[input.index(3,3)]=0;input.yield[input.index(20,10)]=100;
 	ledger.evaluate(input,result);
-	assert(result.totalResidual==original.totalResidual);
-	assert(ledger.residualUpperBound(input,result,3,3,0,0,1,1)==0);
-	assert(ledger.residualUpperBound(input,result,20,10,0,0,1,1)==100);
+	REQUIRE(result.totalResidual==original.totalResidual);
+	REQUIRE(ledger.residualUpperBound(input,result,3,3,0,0,1,1)==0);
+	REQUIRE(ledger.residualUpperBound(input,result,20,10,0,0,1,1)==100);
 	// Copies retain their own prepared tables, even after another evaluation
 	// and when queried through a different ledger instance.
 	Ledger other;
-	assert(other.residualUpperBound(input,original,3,3,0,0,1,1)==100);
-	assert(ledger.residualUpperBound(input,result,3,3,0,0,1,1)==0);
+	REQUIRE(other.residualUpperBound(input,original,3,3,0,0,1,1)==100);
+	REQUIRE(ledger.residualUpperBound(input,result,3,3,0,0,1,1)==0);
 	result=original;
-	assert(ledger.residualUpperBound(input,result,3,3,0,0,1,1)==100);
+	REQUIRE(ledger.residualUpperBound(input,result,3,3,0,0,1,1)==100);
 	Input resized=makeInput(16,32);resized.policy.supplyRadius=1;
 	resized.yield[resized.index(0,0)]=50;
 	ledger.evaluate(resized,result);
-	assert(ledger.residualUpperBound(resized,result,0,0,0,0,1,1)==50);
+	REQUIRE(ledger.residualUpperBound(resized,result,0,0,0,0,1,1)==50);
 	const size_t capacity=result.residual.capacity();
 	ledger.evaluate(Input(),result);
-	assert(result.residual.empty()&&result.consumers.empty());
-	assert(result.totalSupply==0&&result.totalResidual==0&&result.bestSiteResidual==0);
-	assert(result.residual.capacity()==capacity);
-	assert(ledger.residualUpperBound(resized,result,0,0,0,0,1,1)==0);
-	assert(other.residualUpperBound(input,original,3,3,0,0,1,1)==100);
+	REQUIRE((result.residual.empty()&&result.consumers.empty()));
+	REQUIRE((result.totalSupply==0&&result.totalResidual==0&&result.bestSiteResidual==0));
+	REQUIRE(result.residual.capacity()==capacity);
+	REQUIRE(ledger.residualUpperBound(resized,result,0,0,0,0,1,1)==0);
+	REQUIRE(other.residualUpperBound(input,original,3,3,0,0,1,1)==100);
 }
 
 // Capped queries must retain the whole threshold-crossing cell and the same
@@ -297,21 +297,21 @@ static void cappedQueriesPreserveOrderAndScratchReuse()
 	ledger.evaluate(input,result);
 	for(int repeat=0;repeat<3;++repeat)
 	{
-		assert(ledger.reachableResidual(input,result,0,0,0,0,1,1,1)==70);
-		assert(ledger.reachableResidual(input,result,0,0,0,0,1,1,70)==70);
-		assert(ledger.reachableResidual(input,result,0,0,0,0,1,1,71)==110);
-		assert(ledger.reachableResidual(input,result,0,0,0,0,1,1,111)==140);
-		assert(ledger.residualQuality(input,result,0,0,0,0,1,1,100)==0);
-		assert(ledger.residualQuality(input,result,0,0,0,0,1,1,240)==83);
-		assert(ledger.residualQuality(input,result,0,0,0,0,1,1,300)==286);
-		assert(ledger.reachableResidual(input,result,0,0,0,0,1,1,1000)==240);
-		assert(ledger.reachableResidual(input,result,0,0,0,0,1,1,0)==240);
-		assert(ledger.reachableResidual(input,result,0,0,0,0,1,1,-1)==240);
+		REQUIRE(ledger.reachableResidual(input,result,0,0,0,0,1,1,1)==70);
+		REQUIRE(ledger.reachableResidual(input,result,0,0,0,0,1,1,70)==70);
+		REQUIRE(ledger.reachableResidual(input,result,0,0,0,0,1,1,71)==110);
+		REQUIRE(ledger.reachableResidual(input,result,0,0,0,0,1,1,111)==140);
+		REQUIRE(ledger.residualQuality(input,result,0,0,0,0,1,1,100)==0);
+		REQUIRE(ledger.residualQuality(input,result,0,0,0,0,1,1,240)==83);
+		REQUIRE(ledger.residualQuality(input,result,0,0,0,0,1,1,300)==286);
+		REQUIRE(ledger.reachableResidual(input,result,0,0,0,0,1,1,1000)==240);
+		REQUIRE(ledger.reachableResidual(input,result,0,0,0,0,1,1,0)==240);
+		REQUIRE(ledger.reachableResidual(input,result,0,0,0,0,1,1,-1)==240);
 	}
 	input.traversable[input.index(7,7)]=0;
 	ledger.evaluate(input,result);
-	assert(ledger.reachableResidual(input,result,0,0,0,0,1,1,1)==40);
-	assert(ledger.reachableResidual(input,result,0,0,0,0,1,1,0)==170);
+	REQUIRE(ledger.reachableResidual(input,result,0,0,0,0,1,1,1)==40);
+	REQUIRE(ledger.reachableResidual(input,result,0,0,0,0,1,1,0)==170);
 }
 
 // Opt-in measurement, never a timing assertion in CI. Compare the same driver
@@ -337,25 +337,20 @@ static void benchmark()
 	}
 }
 
-int main(int argc,char** argv)
+TEST_SUITE("Maxima.FoodLedger")
 {
-	if(argc==2&&std::strcmp(argv[1],"--benchmark")==0)
-	{
-		benchmark();return 0;
-	}
-	cappedQueriesPreserveOrderAndScratchReuse();
-	supplyIsClaimedNearestFirst();
-	qualityOutranksBuildingAge();
-	innsAndSwarmsInterleave();
-	removingAConsumerReleasesItsClaim();
-	upgradeDemandUsesAvailableSupply();
-	upperBoundNeverUnderstatesReach();
-	untraversableGroundBlocksSupply();
-	supplyBeyondTheRadiusIsNotCounted();
-	demandAndYieldMatchEngineRates();
-	residualQualityFollowsUnclaimedSupply();
-	preparedBoundsMatchWrappedOracle();
-	equalTotalChangesRefreshTheSnapshot();
-	std::cout<<"MaximaFoodLedgerStandaloneTest: PASS"<<std::endl;
-	return 0;
+	TEST_CASE("capped queries preserve order and scratch reuse") { cappedQueriesPreserveOrderAndScratchReuse(); }
+	TEST_CASE("supply is claimed nearest first") { supplyIsClaimedNearestFirst(); }
+	TEST_CASE("quality outranks building age") { qualityOutranksBuildingAge(); }
+	TEST_CASE("inns and swarms interleave") { innsAndSwarmsInterleave(); }
+	TEST_CASE("removing a consumer releases its claim") { removingAConsumerReleasesItsClaim(); }
+	TEST_CASE("upgrade demand uses available supply") { upgradeDemandUsesAvailableSupply(); }
+	TEST_CASE("upper bound never understates reach") { upperBoundNeverUnderstatesReach(); }
+	TEST_CASE("untraversable ground blocks supply") { untraversableGroundBlocksSupply(); }
+	TEST_CASE("supply beyond the radius is not counted") { supplyBeyondTheRadiusIsNotCounted(); }
+	TEST_CASE("demand and yield match engine rates") { demandAndYieldMatchEngineRates(); }
+	TEST_CASE("residual quality follows unclaimed supply") { residualQualityFollowsUnclaimedSupply(); }
+	TEST_CASE("prepared bounds match wrapped oracle") { preparedBoundsMatchWrappedOracle(); }
+	TEST_CASE("equal total changes refresh the snapshot") { equalTotalChangesRefreshTheSnapshot(); }
+	TEST_CASE("timing benchmark [benchmark][slow]") { benchmark(); }
 }
