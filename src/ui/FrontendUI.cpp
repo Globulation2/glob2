@@ -23,7 +23,7 @@ IconRef uiIcon(UIIcon icon)
 										 "world",          "network",    "info-circle",
 										 "logout",         "arrow-left", "dots",
 										 "send",           "x",          "refresh",
-										 "info-circle"};
+										 "info-circle",    "flask"};
 	static_assert(names.size() == static_cast<std::size_t>(UIIcon::Count));
 	const char *name = names.at(static_cast<std::size_t>(icon));
 	if (auto asset = assets[name].lock())
