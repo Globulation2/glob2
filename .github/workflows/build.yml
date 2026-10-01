@@ -1593,12 +1593,12 @@ jobs:
           from pathlib import Path
           traces = sorted(path for path in Path('artifacts/ci-traces').rglob('*.checksums')
                           if path.name in {'native.replay.checksums', 'wasm.replay.checksums'})
-          assert len(traces) == 4, f'Expected four platform traces, got {traces}'
+          assert len(traces) == 6, f'Expected Linux (2), Windows and three browser traces, got {traces}'
           reference = traces[0].read_bytes()
           assert len(reference) > 1000
           for trace in traces[1:]:
               assert trace.read_bytes() == reference, f'Simulation differs: {trace}'
-          print('All four per-tick simulation traces match')
+          print('All six per-tick simulation traces match')
           PY
 
       - uses: actions/download-artifact@v4
