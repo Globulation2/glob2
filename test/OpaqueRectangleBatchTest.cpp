@@ -84,13 +84,13 @@ public:
     {
         SDL_SetHint(SDL_HINT_MAC_BACKGROUND_APP, "1");
         glob2test::ToolkitScope toolkit;
-        const Uint32 flags = portable ? GraphicContext::PORTABLEGPU : GraphicContext::USEGPU;
+        const Uint32 flags = portable ? GAGCore::GraphicContext::PORTABLEGPU : GAGCore::GraphicContext::USEGPU;
         auto *gfx = GAGCore::Toolkit::initGraphic(640, 480, flags, "batch pixel parity");
         REQUIRE(gfx->hasPortableRenderer() == portable);
 #ifdef HAVE_OPENGL
         if (!portable)
         {
-            REQUIRE((gfx->getOptionFlags() & GraphicContext::USEGPU) != 0);
+            REQUIRE((gfx->getOptionFlags() & GAGCore::GraphicContext::USEGPU) != 0);
             REQUIRE(SDL_GL_GetCurrentContext() != nullptr);
         }
 #endif
