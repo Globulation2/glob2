@@ -523,7 +523,7 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
     const bool drawClouds =
-        (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0;
+        globalContainer->settings.clouds;
     if (drawClouds)
         updateClouds(game.mapAnimationTime);
 

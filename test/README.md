@@ -328,10 +328,10 @@ bounds startup, execution, and child cleanup. Logs and captures are written unde
 ## Aspect-ratio and screen-capture regression
 
 The `FullscreenAspect` suite (`test/FullscreenAspectHarness.cpp`) opens a real SDL
-window and checks presentation pixels, clipping, logical-resolution screen captures,
-and translated mouse motion/button events and polling at equal, wide, tall, odd, and
-downscaled window sizes. It exercises the same scaling path used by desktop
-fullscreen. The software case also checks every pixel in 24 opaque/translucent
+window and checks native presentation pixels, clipping, logical screen captures,
+and translated mouse motion/button events and polling at equal, wide, tall and odd
+window sizes, accepting actual OS constraints. Desktop fullscreen follows the same
+native display metrics. The software case also checks every pixel in 24 opaque/translucent
 rectangle intersections, including rectangles above the clip area and empty
 rectangles. It does not load a game profile or change saved display settings.
 
@@ -344,7 +344,9 @@ Linux without a `DISPLAY` and uses Mesa software OpenGL (`LIBGL_ALWAYS_SOFTWARE=
 in CI. The OpenGL case is skipped in `opengl=0` builds. The same goes for the
 `WindowResize` suite (`test/WindowResizeHarness.cpp`), which resizes the window
 through the cache, callbacks, reflow, context recreation and minimum-size paths and
-needs a desktop at least 1100x850 when run natively.
+checks live scale/fullscreen transitions, F11, preserved window dimensions and
+context identity. `TextRaster` checks glyph pixels against an independent native
+font raster in both OpenGL and software, including fractional output scaling.
 
 ## Wrapped building footprint regression
 

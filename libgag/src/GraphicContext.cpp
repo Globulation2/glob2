@@ -20,6 +20,9 @@
 #include <string>
 #include "SDL_ttf.h"
 #include <SDL_image.h>
+#ifdef _WIN32
+#include <SDL_syswm.h>
+#endif
 
 namespace GAGCore
 {
@@ -243,6 +246,9 @@ namespace GAGCore
 		sdlsurface = NULL;
 		optionFlags = DEFAULT;
 
+#ifdef _WIN32
+		SDL_SetHint(SDL_HINT_WINDOWS_DPI_AWARENESS, "permonitorv2");
+#endif
 		// Load the SDL library
 		if ( SDL_Init(SDL_INIT_AUDIO|SDL_INIT_VIDEO|SDL_INIT_TIMER)<0 )
 		{
@@ -302,15 +308,14 @@ namespace GAGCore
 
 	bool GraphicContext::isScalingActive(void)
 	{
-		return windowW && sdlsurface && (windowW != sdlsurface->w || windowH != sdlsurface->h);
+		return windowW && sdlsurface && (windowW != getW() || windowH != getH());
 	}
 
 	float GraphicContext::textRenderScale(void)
 	{
-        // Both GPU backends draw glyph textures directly to the output. Include
-        // the local UI transform: touch controls can enlarge text independently
-        // of the window's logical-to-drawable scale. Pure software composition
-        // still cannot preserve more pixels than its destination surface.
+        // GPU and native software backends rasterize glyphs at output density.
+        // Include the local UI transform used by enlarged touch controls.
+        // Unscaled software surfaces retain their authored raster size.
         if (!renderer && !(optionFlags & USEGPU)) return 1.0f;
         const float outputScale = softwareTransform ? 1.0f : drawableScale();
         const float scale = outputScale * (uiTransformActive ? uiTransformScale : 1.0f);
@@ -367,11 +372,47 @@ namespace GAGCore
 		}
 	}
 
+	void GraphicContext::refreshDesktopScale()
+	{
+		const int display = SDL_GetWindowDisplayIndex(window);
+#ifdef _WIN32
+		SDL_SysWMinfo info{};
+		SDL_VERSION(&info.version);
+		if (SDL_GetWindowWMInfo(window, &info))
+		{
+			using GetDpi = UINT (WINAPI *)(HWND);
+			auto getDpi = reinterpret_cast<GetDpi>(GetProcAddress(GetModuleHandleW(L"user32.dll"), "GetDpiForWindow"));
+			if (getDpi) desktopSystemScale = std::max(1.0f, getDpi(info.info.win.window) / 96.0f);
+		}
+#else
+		if (display != desktopDisplay)
+		{
+#ifdef __APPLE__
+			// Cocoa coordinates are already points; backing density only affects rasterization.
+			desktopSystemScale = 1.0f;
+#else
+			int pointsW,pointsH,pixelsW=0,pixelsH=0;
+			SDL_GetWindowSize(window,&pointsW,&pointsH);
+#ifdef HAVE_OPENGL
+			if (optionFlags & USEGPU) SDL_GL_GetDrawableSize(window,&pixelsW,&pixelsH);
+			else
+#endif
+			if (auto *target=SDL_GetWindowSurface(window)) { pixelsW=target->w; pixelsH=target->h; }
+			const float density=pointsW>0 && pointsH>0 && pixelsW>0 && pixelsH>0
+				? std::min(float(pixelsW)/pointsW,float(pixelsH)/pointsH) : 1.0f;
+			const float desktopScale=scaleFromXResources();
+			// Without a desktop preference, drawable density supplies the scale.
+			// Dividing it out keeps window points from counting density twice.
+			desktopSystemScale=std::max(1.0f,(desktopScale>0?desktopScale:density)/density);
+#endif
+		}
+#endif
+		desktopDisplay = display;
+	}
+
 	float GraphicContext::querySystemUiScale(void)
 	{
-		// Opens its own X connection, and the settings form asks on every rebuild.
-		static const float cached = scaleFromXResources();
-		return cached;
+		return _gc && _gc->nativeDesktop ? _gc->desktopSystemScale : scaleFromXResources();
 	}
 
 	float GraphicContext::effectiveUiScale(float preferred)
@@ -398,7 +439,7 @@ namespace GAGCore
 	{
 		if (!drawableW || !sdlsurface)
 			return 1.0f;
-		return std::min(static_cast<float>(drawableW) / sdlsurface->w, static_cast<float>(drawableH) / sdlsurface->h);
+		return std::min(static_cast<float>(drawableW) / getW(), static_cast<float>(drawableH) / getH());
 	}
 
 	float GraphicContext::rasterScale(void)
@@ -413,6 +454,7 @@ namespace GAGCore
 	void GraphicContext::glLetterbox(float &scale, int &offX, int &offY)
 	{
 		scale = drawableScale();
+		if (nativeDesktop) { offX=offY=0; return; }
 		offX = (drawableW - static_cast<int>(sdlsurface->w * scale + 0.5f)) / 2;
 		offY = (drawableH - static_cast<int>(sdlsurface->h * scale + 0.5f)) / 2;
 	}
@@ -423,13 +465,15 @@ namespace GAGCore
 		float scale;
 		int offX, offY;
 		glLetterbox(scale, offX, offY);
-		glViewport(offX, offY, static_cast<int>(sdlsurface->w * scale + 0.5f), static_cast<int>(sdlsurface->h * scale + 0.5f));
+		if (nativeDesktop) glViewport(0, 0, drawableW, drawableH);
+		else glViewport(offX, offY, static_cast<int>(sdlsurface->w * scale + 0.5f), static_cast<int>(sdlsurface->h * scale + 0.5f));
 		#endif
 	}
 
 	void GraphicContext::updateWindowSize(void)
 	{
 		if (!window || !sdlsurface) return;
+		if (nativeDesktop) { refreshNativeWindow(); return; }
 		SDL_GetWindowSize(window, &windowW, &windowH);
 		drawableW = windowW;
 		drawableH = windowH;
@@ -479,6 +523,12 @@ namespace GAGCore
 
 	void GraphicContext::windowToLogical(Sint32 &x, Sint32 &y)
 	{
+		if (nativeDesktop && windowW > 0 && windowH > 0)
+		{
+			x = std::clamp(int(double(x) * getW() / windowW), 0, getW()-1);
+			y = std::clamp(int(double(y) * getH() / windowH), 0, getH()-1);
+			return;
+		}
 		if (!isScalingActive())
 			return;
 		// letterboxed the same way as the GL viewport / software blit, but in
@@ -498,13 +548,84 @@ namespace GAGCore
 			y = sdlsurface->h - 1;
 	}
 
+    namespace {
+        bool confirmedFullscreen(SDL_Window *window, bool fullscreen)
+        {
+            // Cocoa can complete fullscreen-space changes in the event pump.
+            const Uint32 deadline = SDL_GetTicks() + 3000;
+            while (bool(SDL_GetWindowFlags(window) & SDL_WINDOW_FULLSCREEN) != fullscreen &&
+                   !SDL_TICKS_PASSED(SDL_GetTicks(), deadline)) {
+                SDL_PumpEvents();
+                SDL_Delay(10);
+            }
+            return bool(SDL_GetWindowFlags(window) & SDL_WINDOW_FULLSCREEN) == fullscreen;
+        }
+    }
+
+    bool GraphicContext::setFullscreen(bool fullscreen)
+    {
+        if (!window) return false;
+        const bool previous = bool(optionFlags & FULLSCREEN);
+        if (previous == fullscreen) return true;
+        if (!previous) SDL_GetWindowSize(window, &requestedW, &requestedH);
+        const SDL_bool previousResizable = (SDL_GetWindowFlags(window) & SDL_WINDOW_RESIZABLE) ? SDL_TRUE : SDL_FALSE;
+        // Cocoa fullscreen spaces require a resizable window. This temporary
+        // window style does not change the saved windowed resize preference.
+        if (nativeDesktop && fullscreen) SDL_SetWindowResizable(window, SDL_TRUE);
+        if (SDL_SetWindowFullscreen(window, fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0) != 0) {
+            SDL_SetWindowResizable(window, previousResizable);
+            return false;
+        }
+        bool applied = !nativeDesktop || confirmedFullscreen(window, fullscreen);
+        if (applied) {
+            if (fullscreen) optionFlags |= FULLSCREEN; else optionFlags &= ~FULLSCREEN;
+            if (!fullscreen) {
+                SDL_SetWindowResizable(window, (optionFlags & RESIZABLE) ? SDL_TRUE : SDL_FALSE);
+                SDL_SetWindowSize(window, requestedW, requestedH);
+            }
+            if (nativeDesktop) applied = refreshNativeWindow();
+        }
+        if (!applied) {
+            if (previous) optionFlags |= FULLSCREEN; else optionFlags &= ~FULLSCREEN;
+            SDL_SetWindowResizable(window, previousResizable);
+            SDL_SetWindowFullscreen(window, previous ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
+            updateWindowSize();
+            return false;
+        }
+        if (!nativeDesktop) updateWindowSize();
+        return true;
+    }
+
     bool GraphicContext::toggleFullscreen()
     {
-        if(!window)return false;
-        const bool fullscreen=(optionFlags & FULLSCREEN)==0;
-        if(SDL_SetWindowFullscreen(window,fullscreen?SDL_WINDOW_FULLSCREEN_DESKTOP:0)!=0)return false;
-        if(fullscreen)optionFlags|=FULLSCREEN;else optionFlags&=~FULLSCREEN;
-        updateWindowSize();
+        return setFullscreen(!(optionFlags & FULLSCREEN));
+    }
+
+    bool GraphicContext::setUiScale(float scale)
+    {
+        const float previous = preferredUiScale;
+        preferredUiScale = scale;
+        if (nativeDesktop)
+        {
+            if (!refreshNativeWindow()) { preferredUiScale = previous; return false; }
+        }
+        else
+        {
+            const float previousScale=uiScale, previousWanted=wantedUiScale;
+            uiScale=wantedUiScale=effectiveUiScale(scale);
+            try
+            {
+                if (responsiveViewport) setResponsiveViewport(true,responsiveMinW,responsiveMinH);
+                else if (!resizeViewport(windowW,windowH)) throw std::runtime_error(SDL_GetError());
+            }
+            catch (const std::exception &error)
+            {
+                SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION,"Interface scale: %s",error.what());
+                uiScale=previousScale; wantedUiScale=previousWanted; preferredUiScale=previous;
+                return false;
+            }
+        }
+        requestedUiScale = scale;
         return true;
     }
 
@@ -525,15 +646,47 @@ namespace GAGCore
                 // SDL's renderer event watch already maps polled events to its
                 // logical size. Raw SDL_GetMouseState coordinates still need
                 // translateMouseCoordinates below.
-				if (!_gc->renderer) _gc->windowToLogical(event->motion.x, event->motion.y);
+				if (!_gc->renderer || _gc->nativeSoftware)
+                {
+                    if (_gc->nativeDesktop && _gc->windowW>0 && _gc->windowH>0)
+                    {
+                        // Preserve subpixel motion between integer SDL events, so
+                        // slow editor dragging also follows the whole-view scale.
+                        struct RelativeState {
+                            GraphicContext *context=nullptr;
+                            Uint32 window=0;
+                            int pointsW=0,pointsH=0,logicalW=0,logicalH=0;
+                            double x=0,y=0;
+                        };
+                        static RelativeState relative;
+                        const Uint32 id=SDL_GetWindowID(_gc->window);
+                        if (relative.context!=_gc || relative.window!=id ||
+                            relative.pointsW!=_gc->windowW || relative.pointsH!=_gc->windowH ||
+                            relative.logicalW!=_gc->getW() || relative.logicalH!=_gc->getH())
+                            relative={_gc,id,_gc->windowW,_gc->windowH,_gc->getW(),_gc->getH(),0,0};
+                        auto delta=[](int value,int logical,int points,double &remainder) {
+                            const double mapped=remainder+double(value)*logical/points;
+                            const int result=int(std::lround(mapped));
+                            remainder=mapped-result; return result;
+                        };
+                        event->motion.xrel=delta(event->motion.xrel,relative.logicalW,relative.pointsW,relative.x);
+                        event->motion.yrel=delta(event->motion.yrel,relative.logicalH,relative.pointsH,relative.y);
+                    }
+                    _gc->windowToLogical(event->motion.x, event->motion.y);
+                }
 				break;
 			case SDL_MOUSEBUTTONDOWN:
 			case SDL_MOUSEBUTTONUP:
-				if (!_gc->renderer) _gc->windowToLogical(event->button.x, event->button.y);
+				if (!_gc->renderer || _gc->nativeSoftware) _gc->windowToLogical(event->button.x, event->button.y);
+				break;
+			case SDL_DISPLAYEVENT:
+				_gc->desktopDisplay = -1;
+				_gc->updateWindowSize();
 				break;
 			case SDL_WINDOWEVENT:
 				#ifndef GLOB2_WEBGL2
-				if (event->window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
+				if (event->window.event == SDL_WINDOWEVENT_DISPLAY_CHANGED) _gc->desktopDisplay = -1;
+				if (event->window.event == SDL_WINDOWEVENT_SIZE_CHANGED || event->window.event == SDL_WINDOWEVENT_DISPLAY_CHANGED)
 					_gc->updateWindowSize();
 				#endif
 				break;
@@ -556,6 +709,7 @@ namespace GAGCore
     bool GraphicContext::resizeViewport(int w, int h)
     {
         if (!window || !sdlsurface || w <= 0 || h <= 0) return false;
+        if (nativeDesktop) { SDL_SetWindowSize(window,w,h); return refreshNativeWindow(); }
         const int logicalW = std::max(1, static_cast<int>(w / uiScale + 0.5f));
         const int logicalH = std::max(1, static_cast<int>(h / uiScale + 0.5f));
         if (w == windowW && h == windowH && logicalW == getW() && logicalH == getH()) return true;
@@ -583,6 +737,7 @@ namespace GAGCore
             applyGLViewport();
         }
 #endif
+        if (renderer) { renderer->logicalSize(logicalW,logicalH); renderer->outputSize(drawableW,drawableH); }
         setClipRect();
         return true;
     }
@@ -605,6 +760,10 @@ namespace GAGCore
 
 		requestedW = w;
 		requestedH = h;
+		preferredUiScale = requestedUiScale;
+		desktopLogicalW = desktopLogicalH = 0;
+		nativeSoftware = false;
+		desktopDisplay = -1;
 		// The window keeps the requested size while the interface is laid out on a
 		// smaller logical surface that is scaled back up to fill it. Widgets, fonts and
 		// the map all keep their pixel sizes, so every screen grows by the same factor
@@ -630,13 +789,17 @@ namespace GAGCore
         flags |= PORTABLEGPU | RESIZABLE;
 #endif
         if (flags & PORTABLEGPU) flags &= ~USEGPU;
+#if !defined(GLOB2_MOBILE) && !defined(__EMSCRIPTEN__)
+        // The portable backend retains the mobile/browser viewport contract.
+        nativeDesktop = !(flags & PORTABLEGPU);
+#endif
 		optionFlags = flags;
         fixedLogicalW=logicalW; fixedLogicalH=logicalH; responsiveViewport=false;
-		Uint32 sdlFlags = (flags & PORTABLEGPU) ? SDL_WINDOW_ALLOW_HIGHDPI : 0;
+		Uint32 sdlFlags = (nativeDesktop || (flags & PORTABLEGPU)) ? SDL_WINDOW_ALLOW_HIGHDPI : 0;
 		if (flags & FULLSCREEN)
 			// Desktop fullscreen, not exclusive: Wayland can't modeswitch to a non-native mode.
 			sdlFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
-		if ((flags & RESIZABLE) && !(flags & FULLSCREEN))
+		if ((flags & RESIZABLE) || (nativeDesktop && (flags & FULLSCREEN)))
 			sdlFlags |= SDL_WINDOW_RESIZABLE;
 		#ifdef HAVE_OPENGL
 		if (flags & USEGPU)
@@ -720,8 +883,8 @@ namespace GAGCore
 				// The new context starts at the GL defaults, so a cache still describing the
 				// replaced one would skip the enables the next draw call needs.
 				glState.resetCache();
-				// Map the logical projection onto a centered, aspect-correct sub-rect of the
-				// drawable so fullscreen scales without distorting circles into ellipses.
+				// Map logical coordinates onto native drawable pixels. The legacy mobile
+				// viewport contract still retains its aspect-correct sub-rectangle.
 				// The drawable is in pixels; on HiDPI it is larger than the window points mouse events use.
 				SDL_GL_GetDrawableSize(window, &drawableW, &drawableH);
 				applyGLViewport();
@@ -817,8 +980,16 @@ namespace GAGCore
 			}
 			#endif
 
+            if (nativeDesktop && (flags & FULLSCREEN) && !confirmedFullscreen(window, true)) {
+                SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION,"Fullscreen was not applied; restoring windowed mode");
+                SDL_SetWindowFullscreen(window,0);
+                SDL_SetWindowResizable(window,(flags & RESIZABLE) ? SDL_TRUE : SDL_FALSE);
+                SDL_SetWindowSize(window,requestedW,requestedH);
+                optionFlags &= ~FULLSCREEN;
+            }
 			eventThread = SDL_ThreadID();
-			if (!renderer) {
+			if (nativeDesktop && !refreshNativeWindow()) return false;
+			if (!renderer || nativeSoftware) {
 				SDL_AddEventWatch(watchWindow, this);
 				watchingEvents = true;
 			}
@@ -859,7 +1030,8 @@ namespace GAGCore
                     if(!saved) std::cerr << "Cannot save screenshot: " << SDL_GetError() << std::endl;
                     pendingScreenshot.clear();
                 }
-                renderer->present(); return;
+                if (!nativeSoftware) { renderer->present(); return; }
+                renderer->flush();
             }
 			#ifdef HAVE_OPENGL
 			if (optionFlags & USEGPU) Sprite::checkAllSpritesDrawn();

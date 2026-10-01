@@ -281,8 +281,8 @@ static int run(int argc, char **argv)
         else
         for (bool clouds : {false, true})
         {
-            if (clouds) globalContainer->settings.optionFlags &= ~GlobalContainer::OPTION_LOW_SPEED_GFX;
-            else globalContainer->settings.optionFlags |= GlobalContainer::OPTION_LOW_SPEED_GFX;
+            globalContainer->settings.clouds = clouds;
+            globalContainer->settings.cloudShadows = clouds;
             measure(clouds ? "2D clouds" : "2D no clouds", [&] {
                 globalContainer->gfx->setClipRect();
                 gui.game.drawMap(0, 0, width, height, 0, 0, x, y, 0, gui.view, Game::DRAW_WHOLE_MAP);

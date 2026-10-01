@@ -71,7 +71,7 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 	Uint8 borderB;
 	Uint8 borderA;
 	// draw the either black or transparent border around the minimap
-	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
+	if (!globalContainer->settings.translucentPanels)
 	{
 		borderR = 0;
 		borderG = 0;

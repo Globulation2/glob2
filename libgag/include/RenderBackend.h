@@ -25,6 +25,8 @@ public:
     virtual void present() = 0;
     virtual void flush() = 0;
     virtual void logicalSize(int width, int height) = 0;
+    // Map logical geometry to the entire CPU pixel target, with no letterboxing.
+    virtual void nativeLogicalSize(int width, int height) { logicalSize(width, height); }
     virtual SDL_Surface* capture() = 0;
     virtual void outputSize(int& width, int& height) = 0;
 };

@@ -276,7 +276,7 @@ int main(int argc, char** argv)
 	globals.settings.screenWidth = 640;
 	globals.settings.screenHeight = 600;
 	globals.settings.screenFlags = 0;
-	globals.settings.optionFlags |= GlobalContainer::OPTION_LOW_SPEED_GFX;
+	globals.settings.setGraphicsDetail(false);
 	globals.settings.mute = true;
 	globals.settings.language = "en";
 	globals.settings.setUsername(std::string(argv[1]) == "host" ? "LAN host" : "LAN guest");

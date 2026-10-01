@@ -3,6 +3,7 @@
 #include "GraphicContextPrivate.h"
 #include <algorithm>
 #include <cassert>
+#include <cmath>
 
 namespace GAGCore
 {
@@ -15,6 +16,79 @@ namespace GAGCore
 			explicit FlagScope(bool &flag) : flag(flag), previous(flag) { flag = true; }
 			~FlagScope() { flag = previous; }
 		};
+	}
+
+	bool GraphicContext::refreshNativeWindow()
+	{
+		int pointsW, pointsH, pixelsW, pixelsH;
+		SDL_GetWindowSize(window, &pointsW, &pointsH);
+		if (pointsW <= 0 || pointsH <= 0 || (SDL_GetWindowFlags(window) & SDL_WINDOW_MINIMIZED)) return true;
+		pixelsW = pointsW; pixelsH = pointsH;
+#ifdef HAVE_OPENGL
+		if (optionFlags & USEGPU) SDL_GL_GetDrawableSize(window, &pixelsW, &pixelsH);
+		else
+#endif
+		if (renderer && !nativeSoftware) renderer->outputSize(pixelsW, pixelsH);
+		else
+		{
+			auto *target = SDL_GetWindowSurface(window);
+			if (!target) return false;
+			pixelsW = target->w; pixelsH = target->h;
+		}
+		if (pixelsW <= 0 || pixelsH <= 0) return true;
+		refreshDesktopScale();
+		float scale = effectiveUiScale(preferredUiScale);
+		const float wanted = scale;
+		if (!compactWindowAllowed)
+			scale = std::max(1.0f, std::min({scale, float(pointsW) / std::max(640,minW), float(pointsH) / std::max(480,minH)}));
+		const int logicalW = std::max(1, int(std::lround(pointsW / scale)));
+		const int logicalH = std::max(1, int(std::lround(pointsH / scale)));
+		const bool cpu = !(optionFlags & (USEGPU | PORTABLEGPU));
+		const bool needsBackend = cpu && (pixelsW != logicalW || pixelsH != logicalH);
+		const int surfaceW = cpu ? pixelsW : logicalW, surfaceH = cpu ? pixelsH : logicalH;
+		const bool changed = getW() != logicalW || getH() != logicalH ||
+			sdlsurface->w != surfaceW || sdlsurface->h != surfaceH || needsBackend != nativeSoftware;
+		if (changed)
+		{
+			std::unique_ptr<SDL_Surface, decltype(&SDL_FreeSurface)> replacement(
+				SDL_CreateRGBSurfaceWithFormat(0,surfaceW,surfaceH,32,sdlsurface->format->format), SDL_FreeSurface);
+			if (!replacement) return false;
+			std::unique_ptr<RenderBackend> backend;
+			try
+			{
+				if (needsBackend) { backend = makeSoftwareRenderBackend(replacement.get()); backend->nativeLogicalSize(logicalW,logicalH); }
+			}
+			catch (const std::exception &error) { SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION,"Native software target: %s",error.what()); return false; }
+			if (nativeSoftware) renderer.reset();
+			freeOwnedSurface();
+			sdlsurface = replacement.release(); ownsSurface = true;
+			if (cpu) { renderer = std::move(backend); nativeSoftware = needsBackend; }
+		}
+		windowW=pointsW; windowH=pointsH; drawableW=pixelsW; drawableH=pixelsH;
+		desktopLogicalW=logicalW; desktopLogicalH=logicalH;
+		uiScale=scale; wantedUiScale=wanted;
+		// Cocoa's native window button can also change fullscreen state.
+		const bool fullscreen=bool(SDL_GetWindowFlags(window) & SDL_WINDOW_FULLSCREEN);
+		if (fullscreen) optionFlags |= FULLSCREEN; else optionFlags &= ~FULLSCREEN;
+		if (!fullscreen) { requestedW=pointsW; requestedH=pointsH; }
+		if (changed)
+		{
+#ifdef HAVE_OPENGL
+			if (optionFlags & USEGPU)
+			{
+				glMatrixMode(GL_PROJECTION); glLoadIdentity(); glOrtho(0,logicalW,logicalH,0,-1,1);
+				glMatrixMode(GL_MODELVIEW); glLoadIdentity();
+			}
+#endif
+			if (renderer && !nativeSoftware) renderer->logicalSize(logicalW,logicalH);
+		}
+#ifdef HAVE_OPENGL
+		if (optionFlags & USEGPU) applyGLViewport();
+#endif
+		applyWindowMinimumSize();
+		setClipRect();
+		if (displayPreferenceCallback) displayPreferenceCallback(requestedW,requestedH,bool(optionFlags & FULLSCREEN));
+		return true;
 	}
 
 	int GraphicContext::pollEvent(SDL_Event *event)
@@ -124,10 +198,10 @@ namespace GAGCore
 			return;
 		}
 		#endif
-		if (!frameCache.surface || frameCache.surface->w != getW() || frameCache.surface->h != getH())
+		if (!frameCache.surface || frameCache.surface->w != sdlsurface->w || frameCache.surface->h != sdlsurface->h)
 		{
 			SDL_FreeSurface(frameCache.surface);
-			frameCache.surface = SDL_CreateRGBSurfaceWithFormat(0, getW(), getH(), 32, sdlsurface->format->format);
+			frameCache.surface = SDL_CreateRGBSurfaceWithFormat(0, sdlsurface->w, sdlsurface->h, 32, sdlsurface->format->format);
 			if (!frameCache.surface)
 			{
 				reportFrameCacheFailure(SDL_GetError());
@@ -136,7 +210,11 @@ namespace GAGCore
 			SDL_SetSurfaceBlendMode(frameCache.surface, SDL_BLENDMODE_NONE);
 		}
 		SDL_SetSurfaceBlendMode(sdlsurface, SDL_BLENDMODE_NONE);
-		if (SDL_BlitSurface(sdlsurface, nullptr, frameCache.surface, nullptr) != 0)
+		SDL_Rect previousClip; SDL_GetClipRect(sdlsurface,&previousClip);
+		SDL_SetClipRect(sdlsurface,nullptr);
+		const int copied=SDL_BlitSurface(sdlsurface,nullptr,frameCache.surface,nullptr);
+		SDL_SetClipRect(sdlsurface,&previousClip);
+		if (copied != 0)
 		{
 			reportFrameCacheFailure(SDL_GetError());
 			return;
