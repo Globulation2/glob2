@@ -15,9 +15,32 @@ import shutil
 import subprocess
 import tempfile
 import uuid
+import sys
+import xml.etree.ElementTree as ET
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "test"))
+from build_provenance import source_identity, build_issues
 
 ROOT = Path(__file__).resolve().parents[1]
 BINARIES = ('glob2-unit-tests', 'glob2-engine-tests')
+
+
+
+def retrieve(adb, remote, destination, errors, xml=False):
+    """Keep failed transfers actionable and never accept an absent/old report."""
+    result = subprocess.run(adb + ['pull', remote, str(destination)],
+                            stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+    try:
+        if result.returncode:
+            raise ValueError(result.stdout.strip() or 'adb pull failed')
+        if xml:
+            ET.parse(destination)
+        elif not destination.is_dir() or not any(destination.rglob('*')):
+            raise ValueError('Empty artifact directory')
+    except (OSError, ValueError, ET.ParseError) as error:
+        errors.append({'remote': remote, 'error': str(error)})
+        return False
+    return True
 
 
 def main():
@@ -49,12 +72,11 @@ def main():
     prebuilt = next((args.android_sdk / 'ndk' / ndk / 'toolchains/llvm/prebuilt').iterdir())
     remote = '/data/local/tmp/glob2-tests-' + uuid.uuid4().hex
     output = args.output.resolve()
-    output.mkdir(parents=True, exist_ok=True)
+    output.mkdir(parents=True, exist_ok=False)
     summary = {'serial': args.serial, 'arch': args.arch, 'remoteDirectory': remote,
                'mode': 'native Android CPU with SDL dummy video; no JVM or audio device',
-               'suite': args.suite or '*', 'tests': []}
-    summary['revision'] = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
-    summary['dirty'] = bool(subprocess.check_output(['git', 'status', '--porcelain'], cwd=ROOT, text=True).strip())
+               'suite': args.suite or '*', 'tests': [], 'retrievalErrors': [], 'remoteRetained': True}
+    summary.update(source_identity())
     summary['compilerVersion'] = subprocess.check_output([str(prebuilt / 'bin/clang++'), '--version'], text=True).strip()
     summary['buildConfiguration'] = {name: (build / name).read_text()
                                      for name in ('identity.json', 'toolchain.json', 'options.json')
@@ -64,6 +86,7 @@ def main():
                          for key in ('ro.product.model', 'ro.build.version.release', 'ro.build.version.sdk', 'ro.product.cpu.abilist')}
     summary['fixtureHashes'] = {p.relative_to(ROOT).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
                                 for p in sorted((ROOT / 'test/fixtures/javascript').rglob('*')) if p.is_file()}
+    (output / 'result.json').write_text(json.dumps(summary, indent=2) + '\n')
     with tempfile.TemporaryDirectory(prefix='glob2-device-tests-') as directory:
         payload = Path(directory)
         for name in names:
@@ -117,18 +140,28 @@ def main():
             except subprocess.TimeoutExpired as error:
                 code = 124
                 log.write(str(error) + '\n')
-        subprocess.run(adb + ['pull', remote + '/' + name + '.xml', str(output / (name + '.xml'))],
-                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        retrieve(adb, remote + '/' + name + '.xml', output / (name + '.xml'),
+                 summary['retrievalErrors'], xml=True)
+        proofs = [json.loads(line.partition('GLOB2_TEST_PROVENANCE ')[2])
+                  for line in (output / (name + '.log')).read_text().splitlines()
+                  if line.startswith('GLOB2_TEST_PROVENANCE ')]
+        proof = proofs[0] if len(proofs) == 1 else {}
         digest = hashlib.sha256((build / 'tests' / name).read_bytes()).hexdigest()
-        summary['tests'].append({'name': name, 'exitCode': code, 'binarySha256': digest, 'executedBinarySha256': executed_hashes[name]})
+        summary['tests'].append({'name': name, 'exitCode': code, 'build': proof,
+                                 'provenanceIssues': build_issues(proof, summary), 'binarySha256': digest, 'executedBinarySha256': executed_hashes[name]})
         (output / 'result.json').write_text(json.dumps(summary, indent=2) + '\n')
-        print(('PASS' if code == 0 else 'FAIL') + ': ' + name, flush=True)
+        print(('PASS' if code == 0 and not summary['tests'][-1]['provenanceIssues']
+               and not summary['retrievalErrors'] else 'FAIL') + ': ' + name, flush=True)
     # Retrieve all corpus bits, saves and traces, including failed-case evidence.
-    subprocess.run(adb + ['pull', remote + '/artifacts', str(output / 'corpus')], check=False)
-    if not args.keep_remote and not any(test['exitCode'] for test in summary['tests']):
+    retrieve(adb, remote + '/artifacts', output / 'corpus', summary['retrievalErrors'])
+    failed = bool(summary['retrievalErrors']) or any(
+        test['exitCode'] or test['provenanceIssues'] for test in summary['tests'])
+    if not args.keep_remote and not failed:
         command('shell', 'rm -rf ' + shlex.quote(remote))
+        summary['remoteRetained'] = False
+    (output / 'result.json').write_text(json.dumps(summary, indent=2) + '\n')
     # Keep remote fixtures for failure diagnosis. Never remove application data.
-    if any(test['exitCode'] for test in summary['tests']):
+    if failed:
         raise SystemExit(1)
 
 

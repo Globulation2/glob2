@@ -6,6 +6,7 @@
 using namespace GAGCore;
 
 #include "MapScriptUSL.h"
+#include <utility>
 #include "usl.h"
 #include "interpreter.h"
 #include "GameGUI.h"
@@ -114,6 +115,12 @@ MapScriptUSL::~MapScriptUSL()
 	
 }
 
+void MapScriptUSL::swap(MapScriptUSL& other) noexcept
+{
+	usl.swap(other.usl);
+	std::swap(error, other.error);
+}
+
 
 void MapScriptUSL::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -211,4 +218,3 @@ void MapScriptUSL::syncStep(GameGUI *gui)
 		usl->run(stepsMax);
 	#endif
 }
-

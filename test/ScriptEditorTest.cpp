@@ -75,6 +75,39 @@ TEST_CASE("Script language drafts survive switching and invalid JavaScript canno
 	world.game.mapscript.syncStep(&world.gui);
 }
 
+TEST_CASE("Cancelling script drafts preserves the source, globals and scenario text" *
+		  doctest::test_suite("ScriptEditor"))
+{
+	glob2test::GlobalsOptions options;
+	options.loadStrings = true;
+	glob2test::HeadlessGlobals globals(options);
+	glob2test::HeadlessGame world;
+	auto &map = world.game.mapscript;
+	map.setMapScriptMode(MapScript::JavaScript);
+	map.setMapScript("let calls=0; function step(ctx) { calls++; return []; }");
+	REQUIRE(map.compileCode());
+	map.syncStep(&world.gui);
+	const auto source = map.getMapScript();
+	const auto checksum = map.checkSum();
+	world.game.missionBriefing = "Keep this briefing";
+	ScriptEditorScreen editor(&world.game);
+	editor.setScriptText("function main(ctx) { return []; }");
+	REQUIRE(editor.compile());
+	editor.selectLanguage(Language::USL);
+	editor.setScriptText("");
+	REQUIRE(editor.compile());
+	SDL_Event cancel{};
+	cancel.type = SDL_KEYDOWN;
+	cancel.key.keysym.sym = SDLK_ESCAPE;
+	editor.event(cancel);
+	CHECK(editor.finished());
+	CHECK(editor.result() == ScriptEditorScreen::CANCEL);
+	CHECK(map.getMapScriptMode() == MapScript::JavaScript);
+	CHECK(map.getMapScript() == source);
+	CHECK(map.checkSum() == checksum);
+	CHECK(world.game.missionBriefing == "Keep this briefing");
+}
+
 TEST_CASE(
 	"Editor saves and reloads the selected JavaScript map mode and source [display][artifacts]" *
 	doctest::test_suite("ScriptEditor"))
@@ -83,6 +116,7 @@ TEST_CASE(
 	options.loadStrings = true;
 	options.display = true;
 	glob2test::HeadlessGlobals globals(options);
+	globals->settings.optionFlags &= ~GlobalContainer::OPTION_MAP_EDIT_USE_USL;
 	MapEdit map;
 	REQUIRE(map.load("maps/balanced.map"));
 	const auto legacy = map.game.sgslScript.sourceCode;
@@ -101,11 +135,26 @@ TEST_CASE(
 	ScriptEditorScreen reopened(&restored.game);
 	CHECK(reopened.language() == Language::JavaScript);
 	CHECK(reopened.scriptText() == editor.scriptText());
-	reopened.selectLanguage(Language::USL);
+	reopened.selectLanguage(Language::SGSL);
 	reopened.confirm();
 	CHECK(reopened.finished());
 	CHECK(restored.game.mapscript.getMapScriptMode() == MapScript::USL);
 	CHECK(restored.game.mapscript.getMapScript().empty());
+	CHECK(restored.game.sgslScript.sourceCode == legacy);
+	const auto sgslPath = glob2test::artifactDir() / "javascript-editor-sgsl.map.gz";
+	REQUIRE(restored.save(sgslPath.string(), "Restored SGSL editor"));
+	MapEdit legacyRestored;
+	REQUIRE(legacyRestored.load(sgslPath.string()));
+	CHECK(legacyRestored.game.mapscript.getMapScriptMode() == MapScript::USL);
+	CHECK(legacyRestored.game.mapscript.getMapScript().empty());
+	CHECK(legacyRestored.game.sgslScript.sourceCode == legacy);
+	ScriptEditorScreen sgslReopened(&legacyRestored.game);
+	CHECK(sgslReopened.language() == Language::SGSL);
+	sgslReopened.selectLanguage(Language::USL);
+	sgslReopened.confirm();
+	CHECK(sgslReopened.finished());
+	CHECK(legacyRestored.game.mapscript.getMapScriptMode() == MapScript::USL);
+	CHECK(legacyRestored.game.mapscript.getMapScript().empty());
 }
 
 TEST_CASE("JavaScript script file dialogs use js and leave loading as a draft" *
@@ -144,6 +193,93 @@ TEST_CASE("JavaScript script file dialogs use js and leave loading as a draft" *
 	CHECK(filenameToName("scripts/Map_Name.usl") == "Map Name");
 	CHECK(filenameToName("scripts/Map_Name.sgsl") == "Map Name");
 	CHECK(filenameToName("scripts/notes.txt") == "notes.txt");
+}
+
+TEST_CASE("JavaScript file loading preserves embedded NULs for validation" *
+		  doctest::test_suite("ScriptEditor"))
+{
+	glob2test::GlobalsOptions options;
+	options.loadStrings = true;
+	glob2test::HeadlessGlobals globals(options);
+	glob2test::HeadlessGame world;
+	ScriptEditorScreen editor(&world.game);
+	editor.selectLanguage(Language::JavaScript);
+	std::string source = "function step(ctx) { return []; }";
+	source.push_back('\0');
+	source += "invalid source tail";
+	editor.setScriptText(source);
+	editor.loadSave(false);
+	REQUIRE(editor.fileDialog());
+	editor.fileDialog()->setName("Editor NUL fixture");
+	editor.fileDialog()->confirmPresentedFile();
+	editor.finishFileDialog();
+	editor.setScriptText("function step(ctx) { return []; }");
+	editor.loadSave(true);
+	REQUIRE(editor.fileDialog());
+	const auto presented = editor.fileDialog()->filePresentation();
+	const auto found = std::find(presented.files.begin(), presented.files.end(), "Editor NUL fixture");
+	REQUIRE(found != presented.files.end());
+	editor.fileDialog()->selectPresentedFile(int(found - presented.files.begin()));
+	editor.fileDialog()->confirmPresentedFile();
+	editor.finishFileDialog();
+	CHECK(editor.scriptText() == source);
+	CHECK_FALSE(editor.compile());
+	CHECK_FALSE(editor.compilationText().empty());
+	CHECK(world.game.mapscript.getMapScript().empty());
+}
+
+TEST_CASE("Failed prepared map replacements preserve active globals and language" *
+		  doctest::test_suite("ScriptEditor"))
+{
+	glob2test::HeadlessGlobals globals;
+	glob2test::HeadlessGame world;
+	auto &map = world.game.mapscript;
+	map.setMapScriptMode(MapScript::JavaScript);
+	map.setMapScript("let calls=0; function step(ctx) { calls++; return []; }");
+	REQUIRE(map.compileCode());
+	map.syncStep(&world.gui);
+	const auto source = map.getMapScript();
+	const auto checksum = map.checkSum();
+	MapScriptError error;
+	CHECK_FALSE(map.replaceSource(MapScript::USL, "this is not valid USL !!!!", error));
+	CHECK(map.getMapScriptMode() == MapScript::JavaScript);
+	CHECK(map.getMapScript() == source);
+	CHECK(map.checkSum() == checksum);
+	CHECK_FALSE(map.replaceSource(MapScript::JavaScript, "function step( {", error));
+	CHECK(map.getMapScriptMode() == MapScript::JavaScript);
+	CHECK(map.getMapScript() == source);
+	CHECK(map.checkSum() == checksum);
+	REQUIRE(map.replaceSource(MapScript::USL, "", error));
+	CHECK(map.getMapScriptMode() == MapScript::USL);
+	CHECK(map.getMapScript().empty());
+	world.gui.setIsSpaceSet(true);
+	CHECK_FALSE(map.replaceSource(MapScript::JavaScript, "function step( {", error));
+	CHECK(map.getMapScriptMode() == MapScript::USL);
+	CHECK(map.getMapScript().empty());
+	CHECK(world.gui.isSpaceSet());
+	REQUIRE(map.replaceSource(MapScript::JavaScript, source, error));
+	CHECK_FALSE(world.gui.isSpaceSet());
+}
+
+TEST_CASE("Editing legacy SGSL retains the released USL and SGSL payload pairing" *
+		  doctest::test_suite("ScriptEditor"))
+{
+	glob2test::GlobalsOptions options;
+	options.loadStrings = true;
+	glob2test::HeadlessGlobals globals(options);
+	glob2test::HeadlessGame world;
+	auto &map = world.game.mapscript;
+	map.setMapScript("def retained := 1\n");
+	REQUIRE(map.compileCode());
+	const auto source = map.getMapScript();
+	ScriptEditorScreen editor(&world.game);
+	editor.selectLanguage(Language::SGSL);
+	editor.setScriptText("show(\"Edited legacy SGSL source\")\n");
+	editor.confirm();
+	CHECK(editor.finished());
+	CHECK(map.getMapScriptMode() == MapScript::USL);
+	CHECK(map.getMapScript() == source);
+	CHECK(world.game.sgslScript.sourceCode == editor.scriptText());
 }
 
 TEST_CASE("Script language dropdown selects JavaScript on desktop and phone [display][artifacts]" *

@@ -8,6 +8,10 @@ import shutil
 import subprocess
 import time
 import uuid
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "test"))
+from build_provenance import source_identity, build_issues
 
 ROOT = Path(__file__).resolve().parents[1]
 BUNDLE = 'org.globulation2.glob2.script-tests'
@@ -25,12 +29,11 @@ def main():
         raise ValueError('Build the separate --script-tests app first')
     output.mkdir(parents=True, exist_ok=False)
     run_id = uuid.uuid4().hex
-    manifest = {'runId': run_id, 'revision': subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),
-                'dirty': bool(subprocess.check_output(['git', 'status', '--porcelain'], cwd=ROOT, text=True).strip()),
+    manifest = dict(source_identity(), **{'runId': run_id,
                 'device': args.device, 'bundleId': BUNDLE, 'commands': [],
                 'executableSha256': hashlib.sha256((app / 'Glob2ScriptTests').read_bytes()).hexdigest(),
                 'fixtureHashes': {p.relative_to(ROOT).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
-                                  for p in sorted((ROOT / 'test/fixtures/javascript').rglob('*')) if p.is_file()}}
+                                  for p in sorted((ROOT / 'test/fixtures/javascript').rglob('*')) if p.is_file()}})
 
     def command(parts, capture=False):
         manifest['commands'].append(parts)
@@ -86,9 +89,12 @@ def main():
     summary = json.loads(result.read_text())
     if summary.get('runId') != run_id:
         raise RuntimeError('Harness did not finish this run; rejected stale evidence')
+    proofs = list((output / 'evidence').rglob('build-provenance.json'))
+    manifest['build'] = json.loads(proofs[0].read_text()) if len(proofs) == 1 else {}
+    manifest['provenanceIssues'] = build_issues(manifest['build'], manifest)
     manifest['result'] = summary
     (output / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
-    raise SystemExit(summary['exitCode'])
+    raise SystemExit(summary['exitCode'] or int(bool(manifest['provenanceIssues'])))
 
 
 if __name__ == '__main__':

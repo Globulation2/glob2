@@ -479,7 +479,7 @@ void GameGUI::drawOverlayInfos(void)
 
 		// TODO: die with SGSL
 		// show script text
-		if (game.sgslScript.isTextShown && !touch->usesHUD())
+		if (game.legacyScriptActive() && game.sgslScript.isTextShown && !touch->usesHUD())
 		{
 			std::vector<std::string> lines;
 			setMultiLine(game.sgslScript.textShown, &lines);
@@ -513,9 +513,9 @@ void GameGUI::drawOverlayInfos(void)
 		}
 
 		// show script counter
-		if (game.sgslScript.getMainTimer())
+		if (game.legacyScriptTimer())
 		{
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-165, ymesg, globalContainer->standardFont, FormattableString("%0").arg(game.sgslScript.getMainTimer()).c_str());
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-165, ymesg, globalContainer->standardFont, FormattableString("%0").arg(game.legacyScriptTimer()).c_str());
 			yinc = std::max(yinc, 32);
 		}
 

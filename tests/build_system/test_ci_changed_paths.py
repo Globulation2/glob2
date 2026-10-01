@@ -36,6 +36,20 @@ class ChangedPathsTest(unittest.TestCase):
             deployment=False, cross_platform=False,
         )
 
+    def test_shared_scripting_changes_run_native_browser_and_comparison(self):
+        for path in ("test/ScriptRuntimeTest.cpp", "test/ScriptSimulationTest.cpp",
+                     "test/ScriptEditorTest.cpp", "test/support/ScriptCorpus.h",
+                     "test/fixtures/javascript/numeric-corpus.js",
+                     "test/fixtures/javascript/profile1-initial.game.gz",
+                     "test/check_javascript_corpus.py", "test/check_javascript.py",
+                     "test/check_javascript_evidence.py", "test/build_provenance.py",
+                     "test/support/TestMain.cpp"):
+            with self.subTest(path=path):
+                self.assert_jobs(
+                    [path], native=True, browser=True, map_generators=False,
+                    deployment=False, cross_platform=True,
+                )
+
     def test_golden_table_only_runs_golden_job(self):
         self.assert_jobs(
             ["test/map-generator-golden.txt"],

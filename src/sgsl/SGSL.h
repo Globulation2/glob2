@@ -329,7 +329,7 @@ public:
 	Sint32 checkSum();
 	bool hasTeamWon(unsigned teamNumber) const;
 	bool hasTeamLost(unsigned teamNumber) const;
-	int getMainTimer(void) { return mainTimer; }
+	int getMainTimer(void) const { return mainTimer; }
 	
 	/// Adds a team
 	void addTeam();

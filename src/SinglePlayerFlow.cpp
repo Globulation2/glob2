@@ -29,7 +29,7 @@ void SinglePlayerFlow::launch(GameLoadScreen::Initializer initialize, bool repea
 			{
 				auto &strings = *GAGCore::Toolkit::getStringTable();
 				screens.push(std::make_unique<MessageScreen>(
-								 strings.getString("[ERROR_CANT_LOAD_MAP]"),
+								 static_cast<GameLoadScreen &>(screen).failureMessage(),
 								 std::vector<std::string>{strings.getString("[ok]")}),
 							 [this, repeatCustom](GAGGUI::Screen &, int)
 							 {

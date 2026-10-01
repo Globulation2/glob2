@@ -69,6 +69,9 @@ def build_web(directory, identity, arguments):
     files += ['libgag/src/' + s for s in GAG_SOURCES if s != 'ApplicationHost.cpp']
     files += ['libusl/src/' + s for s in USL_SOURCES]
     files += ['browser/VoiceRecorder.cpp', 'browser/ApplicationHost.cpp', 'browser/NetTransport.cpp', 'browser/IRCTextMessageHandler.cpp']
+    if any(target in COMMAND_LINE_TARGETS for target in ('android-tests', 'ios-tests', 'web-tests')):
+        from test_provenance import register_test_provenance
+        provenance_header = register_test_provenance(env, output)
     strict = env.Clone()
     strict.Append(CXXFLAGS=['-fno-fast-math', '-ffp-contract=off'])
     objects = [(strict if f.startswith('src/script/') or f == 'src/ai/AIJavaScript.cpp' else env)
@@ -93,7 +96,10 @@ def build_web(directory, identity, arguments):
             local.Append(CXXFLAGS=options.get('cxxflags', []))
             local.Append(CPPDEFINES=options.get('defines', []))
             path = 'test/' + source
-            test_objects += local.Object(str(output / 'obj/tests' / (path + '.o')), path)
+            targets = local.Object(str(output / 'obj/tests' / (path + '.o')), path)
+            if source.endswith('TestMain.cpp'):
+                local.Depends(targets, provenance_header)
+            test_objects += targets
         production = [obj for name, obj in zip(files, objects) if name != 'src/Glob2.cpp']
         production += objects[len(files):]
         harness = tests.Program(str(output / 'script-tests.html'), production + test_objects)

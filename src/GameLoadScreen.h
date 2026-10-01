@@ -17,6 +17,7 @@ class GameLoadScreen : public Glob2UI::Screen
 				   GAGCore::CooperativeSlice slice = GAGCore::CooperativeSlice());
 	~GameLoadScreen() override;
 	std::unique_ptr<Engine> takeEngine();
+	std::string failureMessage() const;
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
 	void onTimer(Uint32) override;
 	Uint32 executionDelay(Uint32, Uint32) override { return 1; }
@@ -30,5 +31,6 @@ class GameLoadScreen : public Glob2UI::Screen
 	std::unique_ptr<Engine> engine;
 	std::optional<GAGCore::CooperativeTask> task;
 	std::string status;
+	std::string failureDiagnostic;
 	bool accepted = false;
 };

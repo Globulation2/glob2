@@ -138,13 +138,13 @@ void GameGUI::init()
 	buildingsChoiceName.push_back("stonewall");
 	buildingsChoiceName.push_back("market");
 
-	buildingsChoiceState.resize(buildingsChoiceName.size(), true);
+	buildingsChoiceState.assign(buildingsChoiceName.size(), true);
 
 	flagsChoiceName.clear();
 	flagsChoiceName.push_back("explorationflag");
 	flagsChoiceName.push_back("warflag");
 	flagsChoiceName.push_back("clearingflag");
-	flagsChoiceState.resize(flagsChoiceName.size(), true);
+	flagsChoiceState.assign(flagsChoiceName.size(), true);
 
 	hiddenGUIElements=0;
 

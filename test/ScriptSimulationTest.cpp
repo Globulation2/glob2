@@ -3,6 +3,9 @@
 #include "ChecksumSidecar.h"
 #include "Engine.h"
 #include "ReplayWriter.h"
+#include "AIJavaScript.h"
+#include "Player.h"
+#include "IntBuildingType.h"
 #include <BinaryStream.h>
 #include <FileManager.h>
 #include <Toolkit.h>
@@ -62,8 +65,47 @@ struct Run
 {
 	std::string trace, finalSave, replay;
 };
+void prepareConversion(Engine &engine, const std::filesystem::path &directory)
+{
+	auto &game = engine.gui.game;
+	// Prime the actual controllers' global references/RNG before changing owner.
+	// Record replays only after this fixture setup, so they remain self-contained.
+	for (unsigned player = 0; player < 2; ++player)
+	{
+		auto order = game.players[player]->ai->getOrder(false);
+		order->sender = player;
+		game.executeOrder(order, 0);
+	}
+	auto *unit = game.teams[0]->myUnits[0];
+	REQUIRE(unit);
+	Building *inn = nullptr;
+	for (unsigned slot = 0; slot < Building::MAX_COUNT; ++slot)
+	{
+		auto *building = game.teams[1]->myBuildings[slot];
+		if (building && building->shortTypeNum == IntBuildingType::FOOD_BUILDING)
+			inn = building;
+	}
+	REQUIRE(inn);
+	inn->resources[WHEAT] = 10;
+	inn->resources[CHERRY] = 10;
+	inn->updateCallLists();
+	inn->canNotConvertUnitTimer = 0;
+	game.teams[1]->sharedVisionFood |= game.teams[0]->me;
+	game.teams[1]->allies &= ~game.teams[0]->me;
+	unit->hungry = unit->trigHungry;
+	unit->medical = Unit::MED_HUNGRY;
+	unit->needToRecheckMedical = true;
+	REQUIRE(game.teams[0]->findNearestFood(unit) == inn);
+	unit->handleActivity();
+	REQUIRE(unit->owner == game.teams[1]);
+	CHECK(unit->scriptIdentity == 2);
+	// Commit a callback observing the stale reference immediately before save.
+	game.mapscript.syncStep(&engine.gui);
+	CHECK(game.mapscript.javascript.runtime->inspectGlobals().get("stale").number == 1);
+	save(engine, directory / "conversion-0.game");
+}
 Run execute(const std::filesystem::path &input, const std::filesystem::path &directory,
-			unsigned workers, bool playback = false, bool checkpoints = false)
+			unsigned workers, bool playback = false, bool checkpoints = false, bool conversion = false)
 {
 	std::filesystem::create_directories(directory);
 	glob2test::GlobalsOptions options;
@@ -78,6 +120,8 @@ Run execute(const std::filesystem::path &input, const std::filesystem::path &dir
 		REQUIRE((playback ? engine.loadReplay(input.string())
 						  : engine.initCustom(input.string())) == Engine::EE_NO_ERROR);
 		engine.gui.game.map.configureCompute(workers, Map::ComputeAI);
+		if (conversion)
+			prepareConversion(engine, directory);
 		if (!playback)
 		{
 			globals->replayWriter = std::make_unique<ReplayWriter>();
@@ -100,6 +144,17 @@ Run execute(const std::filesystem::path &input, const std::filesystem::path &dir
 				save(engine, directory / ("checkpoint-" + std::to_string(tick) + ".game"));
 		}
 		REQUIRE(engine.gui.game.stepCounter == 256);
+		if (conversion || input.filename() == "conversion-0.game")
+		{
+			for (unsigned player = 0; player < 2; ++player)
+			{
+				auto *controller = static_cast<AIJavaScript *>(
+					engine.gui.game.players[player]->ai->aiImplementation);
+				CHECK_FALSE(controller->disabled);
+				CHECK(controller->runtime->inspectGlobals().get("calls").number > 8);
+			}
+			CHECK(engine.gui.game.mapscript.javascript.runtime->inspectGlobals().get("stale").number == 1);
+		}
 		save(engine, directory / "final.game");
 		engine.finishSessionForHost();
 	} // Flush the replay's terminating order through the production destructor.
@@ -171,4 +226,92 @@ TEST_CASE("JavaScript economic planners and map survey execute, resume and repla
 		  doctest::test_suite("JavaScriptSimulation"))
 {
 	fixture("realistic-profile1");
+}
+
+TEST_CASE("JavaScript conversion boundary resumes globals RNG references and complete tick records" *
+		  doctest::test_suite("JavaScriptSimulation"))
+{
+	const auto directory = glob2test::artifactDir();
+	const auto initial = directory / "conversion-initial.game";
+	{
+		glob2test::GlobalsOptions options;
+		options.loadStrings = true;
+		options.seed = 19;
+		glob2test::HeadlessGlobals globals(options);
+		glob2test::GameOptions gameOptions;
+		gameOptions.teams = 2;
+		gameOptions.discovered = true;
+		gameOptions.loadDefaultRace = true;
+		glob2test::HeadlessGame world(gameOptions);
+		world.gui.init();
+		world.gui.localPlayer = 0;
+		world.gui.localTeamNo = 0;
+		REQUIRE(world.game.sgslScript.compileScript(&world.game, "").type == ErrorReport::ET_OK);
+		world.addBuilding("swarm", 2, 2, 0, 0);
+		world.addBuilding("swarm", 24, 24, 0, 1);
+		world.addBuilding("inn", 8, 8, 0, 1);
+		world.addUnit(WORKER, 24, 20, 1); // Survival requires workers on both teams.
+		world.addUnit(EXPLORER, 20, 20, 1);
+		REQUIRE(world.game.removeUnitAndBuildingAndFlags(20, 20, Game::DEL_UNIT));
+		world.addUnit(EXPLORER, 12, 8, 0);
+		world.addUnit(WORKER, 20, 8, 0); // Keep the source team alive after conversion.
+		GameHeader header;
+		header.setNumberOfPlayers(2);
+		header.setRandomSeed(19);
+		header.setMapDiscovered(true);
+		const std::string aiSource = R"(
+let calls = 0, first = null, draws = [], sightings = [];
+function step(ctx) {
+  calls++;
+  const units = ctx.game.units({team:ctx.myTeam});
+  if (!first && units.length) first = units[0];
+  sightings.push(first ? ctx.game.unit(first)?.generation ?? null : null);
+  const sample = ctx.random();
+  draws.push(Math.hypot(sample, units.length + 0.25));
+  const building = ctx.game.buildings({team:ctx.myTeam})[0];
+  return {type:'workers',building,workers:1 + Math.floor(sample * 4)};
+})";
+		for (unsigned player = 0; player < 2; ++player)
+		{
+			header.getBasePlayer(player) = BasePlayer(player, "Conversion script", player,
+				BasePlayer::playerTypeFromImplementationID(AI::JAVASCRIPT));
+			header.setAIConfig(player, Script::config(aiSource));
+		}
+		world.game.setGameHeader(header);
+		auto &scenario = world.game.mapscript;
+		scenario.setMapScriptMode(MapScript::JavaScript);
+		scenario.setMapScript(R"(
+let first = null, stale = false, calls = 0, samples = [];
+function step(ctx) {
+  calls++;
+  if (!first) first = ctx.game.units({team:0})[0];
+  stale = ctx.game.unit(first) === null;
+  samples.push(Math.hypot(ctx.random(), calls));
+  return [{type:'message',text:stale ? 'Converted reference is stale' : 'Original reference'}];
+})");
+		REQUIRE(scenario.compileCode());
+		scenario.syncStep(&world.gui);
+		GAGCore::BinaryOutputStream output(
+			GAGCore::Toolkit::getFileManager()->openOutputStreamBackend(initial.string()));
+		REQUIRE(output.isValid());
+		world.gui.save(&output, "Conversion boundary");
+	}
+	const auto serial = execute(initial, directory / "workers1", 1, false, false, true);
+	const auto parallel = execute(initial, directory / "workers4", 4, false, false, true);
+	CHECK(parallel.trace == serial.trace);
+	CHECK(parallel.finalSave == serial.finalSave);
+	CHECK(parallel.replay == serial.replay);
+	const auto resumed = execute(directory / "workers1/conversion-0.game", directory / "resumed-conversion", 4);
+	const auto complete = records(serial.trace);
+	const auto tail = records(resumed.trace);
+	CHECK(tail.size() == 256);
+	for (const auto &[tick, record] : tail)
+	{
+		CAPTURE(tick);
+		REQUIRE(complete.contains(tick));
+		CHECK(record == complete.at(tick));
+	}
+	samePayload(resumed.finalSave, serial.finalSave);
+	const auto playback = execute(directory / "workers1/game.replay", directory / "playback", 1, true);
+	CHECK(playback.trace == serial.trace);
 }

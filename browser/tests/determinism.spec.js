@@ -60,6 +60,9 @@ test('WebAssembly executes the shared scripting corpus', async ({page}, info) =>
   test.setTimeout(600000);
   const root = path.resolve(__dirname, '../..');
   const output=path.join(root,'artifacts/browser-determinism/script-corpus',info.project.name);
+  // Remove only this case's previous exports, so a new successful manifest
+  // cannot accidentally certify artifacts left by an earlier execution.
+  fs.rmSync(output,{recursive:true,force:true});
   fs.mkdirSync(output,{recursive:true});
   const progress=[];
   page.on('console',message=>{progress.push(message.text());
@@ -116,16 +119,22 @@ test('WebAssembly executes the shared scripting corpus', async ({page}, info) =>
     fs.writeFileSync(destination,Buffer.from(base64,'base64'));
   }
   fs.writeFileSync(path.join(output,'run.log'),result.log.join('\n'));
-  const revision=require('node:child_process').execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim();
+  const source=JSON.parse(require('node:child_process').execFileSync('python3',
+    [path.join(root,'test/build_provenance.py')],{cwd:root,encoding:'utf8'}));
   const hash=file=>require('node:crypto').createHash('sha256').update(fs.readFileSync(file)).digest('hex');
   const build=path.join(root,'build/emscripten/client/release');
-  const dirty=require('node:child_process').execFileSync('git',['status','--porcelain'],{cwd:root,encoding:'utf8'}).trim()!=='';
   const fixtures={};
   for(const file of fs.readdirSync(path.join(root,'test/fixtures/javascript'))){
     const target=path.join(root,'test/fixtures/javascript',file);
     if(fs.statSync(target).isFile())fixtures[file]=hash(target);
   }
-  fs.writeFileSync(path.join(output,'manifest.json'),JSON.stringify({revision,dirty,
+  let producer, provenanceError;
+  try {producer=JSON.parse(fs.readFileSync(path.join(output,'corpus/build-provenance.json'),'utf8'));}
+  catch(error){provenanceError=String(error);}
+  const provenanceIssues=provenanceError ? ['Missing or invalid executed-binary build provenance: '+provenanceError]
+    : ['revision','dirty','sourceTreeSha256'].filter(key=>producer[key]!==source[key])
+      .map(key=>'Executed binary differs from runner source: '+key);
+  fs.writeFileSync(path.join(output,'manifest.json'),JSON.stringify({...source,build:producer||null,provenanceIssues,
     browser:info.project.name,browserVersion:page.context().browser().version(),
     toolchain:JSON.parse(fs.readFileSync(path.join(root,'browser/toolchain.json'))),
     buildIdentity:JSON.parse(fs.readFileSync(path.join(build,'identity.json'))),
@@ -134,6 +143,7 @@ test('WebAssembly executes the shared scripting corpus', async ({page}, info) =>
     command:'playwright test determinism.spec.js --grep "shared scripting corpus"',
     exit:result.exit,error:result.error,files:Object.keys(result.files)},null,2)+'\n');
   if(waitError)throw waitError;
+  expect(provenanceIssues).toEqual([]);
   expect(result.error).toBeUndefined();
   expect(result.exit).toBe(0);
   expect(Object.keys(result.files).some(name=>name.endsWith('numeric-profile1.value'))).toBeTruthy();

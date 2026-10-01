@@ -113,7 +113,8 @@ void Game::scriptSyncStep()
 	// headless Engine sessions both supply a GameGUI, as before.
 	if (!gui) return;
 	// do a script step
-	sgslScript.syncStep(gui);
+	if (legacyScriptActive())
+		sgslScript.syncStep(gui);
 	mapscript.syncStep(gui);
 }
 

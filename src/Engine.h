@@ -30,6 +30,7 @@ class Engine
 	friend struct CustomGameSetupHarness;
 	friend struct HeadlessRunner;
 	std::string headlessOutput;
+	std::string initializationDiagnostic;
 	int headlessSaveInterval = 0;
 	int previousCustomSpeed = -1;
 	friend class HighResolutionIntegrationHarness;
@@ -69,6 +70,7 @@ public:
     GAGCore::CooperativeTask initCampaignTask(std::string filename, Campaign* campaign = nullptr, std::string mission = {});
     GAGCore::CooperativeTask loadReplayTask(std::string filename);
     void cancelInitialization();
+    const std::string& getInitializationDiagnostic() const { return initializationDiagnostic; }
     void suspendInput() { gui.suspendInput(); }
     void viewportResized(int oldWidth, int oldHeight, int width, int height) { gui.viewportResized(oldWidth, oldHeight, width, height); }
 

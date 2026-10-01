@@ -9,21 +9,19 @@ import platform
 import subprocess
 import struct
 import sys
+from build_provenance import source_identity, build_issues
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
 def source_manifest():
-    def git(*arguments):
-        return subprocess.check_output(['git', *arguments], cwd=ROOT, text=True).strip()
     files = {}
     for directory in ('src/script', 'third_party/quickjs-ng', 'third_party/openlibm',
                       'test/fixtures/javascript'):
         for path in sorted((ROOT / directory).rglob('*')):
             if path.is_file():
                 files[path.relative_to(ROOT).as_posix()] = hashlib.sha256(path.read_bytes()).hexdigest()
-    return {'revision': git('rev-parse', 'HEAD'), 'dirty': bool(git('status', '--porcelain')),
-            'fixtureAndRuntimeHashes': files}
+    return dict(source_identity(), fixtureAndRuntimeHashes=files)
 
 
 def binary_architecture(binary):
@@ -68,11 +66,16 @@ def main():
         manifest['commands'].append(command)
         with (output / (name + '.log')).open('w') as log:
             code = subprocess.run(command, cwd=ROOT, env=env, stdout=log, stderr=subprocess.STDOUT).returncode
-        manifest['tests'].append({'binary': name, 'sha256': hashlib.sha256(binary.read_bytes()).hexdigest(),
+        proofs = [json.loads(line.partition('GLOB2_TEST_PROVENANCE ')[2])
+                  for line in (output / (name + '.log')).read_text().splitlines()
+                  if line.startswith('GLOB2_TEST_PROVENANCE ')]
+        proof = proofs[0] if len(proofs) == 1 else {}
+        issues = build_issues(proof, manifest)
+        manifest['tests'].append({'build': proof, 'provenanceIssues': issues, 'binary': name, 'sha256': hashlib.sha256(binary.read_bytes()).hexdigest(),
                                   'binaryArchitecture': binary_architecture(binary), 'exitCode': code})
         (output / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
-        print(f'{name}: {"PASS" if code == 0 else "FAIL"}', flush=True)
-    raise SystemExit(int(any(case['exitCode'] for case in manifest['tests'])))
+        print(f'{name}: {"PASS" if code == 0 and not issues else "FAIL"}', flush=True)
+    raise SystemExit(int(any(case['exitCode'] or case['provenanceIssues'] for case in manifest['tests'])))
 
 
 if __name__ == '__main__':

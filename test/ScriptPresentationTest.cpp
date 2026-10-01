@@ -2,6 +2,9 @@
 #include "EngineFixtures.h"
 #include "BinaryStream.h"
 #include "StreamBackend.h"
+#include "WinningConditions.h"
+#include <FileManager.h>
+#include <Toolkit.h>
 
 struct ScriptPresentationFixture
 {
@@ -9,6 +12,7 @@ struct ScriptPresentationFixture
 	static bool pending(const GameGUI &gui) { return gui.scriptTextUpdated; }
 	static void acknowledge(GameGUI &gui) { gui.scriptTextUpdated = false; }
 	static unsigned hidden(const GameGUI &gui) { return gui.hiddenGUIElements; }
+	static bool swallowingSpace(const GameGUI &gui) { return gui.swallowSpaceKey; }
 };
 
 TEST_CASE("JavaScript presentation publishes only changed localized messages" *
@@ -73,4 +77,104 @@ TEST_CASE("JavaScript load restores presentation without a callback or history e
 	loaded.game.mapscript.syncStep(&loaded);
 	CHECK_FALSE(ScriptPresentationFixture::pending(loaded));
 	CHECK(loaded.game.mapscript.checkSum() != checksum);
+}
+
+TEST_CASE("Leaving a JavaScript scenario resets choices before loading a legacy map" *
+		  doctest::test_suite("JavaScriptPresentation"))
+{
+	glob2test::GlobalsOptions options;
+	options.loadStrings = true;
+	glob2test::HeadlessGlobals globals(options);
+	glob2test::HeadlessGame world;
+	world.gui.init();
+	auto &mapScript = world.game.mapscript;
+	mapScript.setMapScriptMode(MapScript::JavaScript);
+	mapScript.setMapScript(
+		R"(function step(ctx) { return [{type:'message',text:'Previous scenario'}, {type:'buildingChoice',name:'swarm',enabled:false}, {type:'flagChoice',name:'warflag',enabled:false}, {type:'guiElement',id:1,enabled:false}]; })");
+	REQUIRE(mapScript.compileCode());
+	mapScript.syncStep(&world.gui);
+	REQUIRE_FALSE(world.gui.isBuildingEnabled("swarm"));
+	REQUIRE_FALSE(world.gui.isFlagEnabled("warflag"));
+	REQUIRE(ScriptPresentationFixture::hidden(world.gui) != 0);
+
+	GAGCore::BinaryInputStream input(glob2OpenMapOrSaveInputStreamBackend(
+		*GAGCore::Toolkit::getFileManager(), "maps/Sand_River.map.gz"));
+	REQUIRE(world.gui.load(&input));
+	CHECK(world.game.mapscript.getMapScriptMode() == MapScript::USL);
+	CHECK(world.gui.isBuildingEnabled("swarm"));
+	CHECK(world.gui.isFlagEnabled("warflag"));
+	CHECK(ScriptPresentationFixture::hidden(world.gui) == 0);
+	CHECK(ScriptPresentationFixture::text(world.gui).empty());
+	CHECK_FALSE(ScriptPresentationFixture::pending(world.gui));
+}
+
+TEST_CASE("JavaScript leaves stored SGSL execution and victory conditions dormant" *
+		  doctest::test_suite("JavaScriptPresentation"))
+{
+	glob2test::GlobalsOptions options;
+	options.loadStrings = true;
+	glob2test::HeadlessGlobals globals(options);
+	glob2test::HeadlessGame world;
+	world.gui.init();
+	auto &legacy = world.game.sgslScript;
+	legacy.sourceCode = R"(show("Legacy scenario") win(0) loose(0) space)";
+	REQUIRE(legacy.compileScript(&world.game).type == ErrorReport::ET_OK);
+	world.game.scriptSyncStep();
+	REQUIRE(legacy.isTextShown);
+	REQUIRE(ScriptPresentationFixture::swallowingSpace(world.gui));
+	WinningConditionScript victory;
+	REQUIRE(victory.hasTeamWon(0, &world.game));
+	REQUIRE(victory.hasTeamLost(0, &world.game));
+	auto serializedLegacy = [&] {
+		auto *storage = new GAGCore::MemoryStreamBackend;
+		GAGCore::BinaryOutputStream output(storage);
+		legacy.save(&output, &world.game);
+		return storage->takeContents();
+	};
+	const auto retained = serializedLegacy();
+	world.gui.setIsSpaceSet(true);
+	auto &mapScript = world.game.mapscript;
+	mapScript.setMapScriptMode(MapScript::JavaScript);
+	mapScript.setMapScript(
+		R"(let calls=0; function step(ctx) { calls++; return [{type:'message',text:'JavaScript scenario'}]; })");
+	REQUIRE(mapScript.compileCode());
+	CHECK_FALSE(world.game.legacyScriptActive());
+	CHECK_FALSE(ScriptPresentationFixture::swallowingSpace(world.gui));
+	CHECK_FALSE(world.gui.isSpaceSet());
+	CHECK_FALSE(victory.hasTeamWon(0, &world.game));
+	CHECK_FALSE(victory.hasTeamLost(0, &world.game));
+	for (unsigned i = 0; i < 3; ++i)
+		world.game.scriptSyncStep();
+	CHECK(ScriptPresentationFixture::text(world.gui) == "JavaScript scenario");
+	CHECK(serializedLegacy() == retained);
+
+	mapScript.reset();
+	CHECK(world.game.legacyScriptActive());
+	CHECK(victory.hasTeamWon(0, &world.game));
+	CHECK(victory.hasTeamLost(0, &world.game));
+	CHECK(legacy.sourceCode == R"(show("Legacy scenario") win(0) loose(0) space)");
+}
+
+TEST_CASE("JavaScript does not advance or display a retained SGSL timer" *
+		  doctest::test_suite("JavaScriptPresentation"))
+{
+	glob2test::GlobalsOptions options;
+	options.loadStrings = true;
+	glob2test::HeadlessGlobals globals(options);
+	glob2test::HeadlessGame world;
+	world.gui.init();
+	auto &legacy = world.game.sgslScript;
+	REQUIRE(legacy.compileScript(&world.game, "timer(9) space").type == ErrorReport::ET_OK);
+	world.game.scriptSyncStep();
+	REQUIRE(world.game.legacyScriptTimer() == 9);
+	auto &mapScript = world.game.mapscript;
+	mapScript.setMapScriptMode(MapScript::JavaScript);
+	mapScript.setMapScript("function step(ctx) { return []; }");
+	REQUIRE(mapScript.compileCode());
+	world.game.scriptSyncStep();
+	CHECK(world.game.legacyScriptTimer() == 0);
+	CHECK(legacy.getMainTimer() == 9);
+	mapScript.reset();
+	world.game.scriptSyncStep();
+	CHECK(world.game.legacyScriptTimer() == 8);
 }

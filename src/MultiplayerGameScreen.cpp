@@ -225,7 +225,7 @@ void MultiplayerGameScreen::launchScheduledGame()
 					 {
 						 game->sessionEnded(false);
 						 if (result == 2)
-							 screens.push(std::make_unique<MessageScreen>(fe::tr("[ERROR_CANT_LOAD_MAP]"), std::vector<std::string>{fe::tr("[ok]")}));
+							 screens.push(std::make_unique<MessageScreen>(static_cast<GameLoadScreen &>(load).failureMessage(), std::vector<std::string>{fe::tr("[ok]")}));
 						 return;
 					 }
 					 auto engine = static_cast<GameLoadScreen &>(load).takeEngine();

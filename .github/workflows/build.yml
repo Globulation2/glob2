@@ -122,8 +122,10 @@ jobs:
         id: test_ci_failure_aggregation
         continue-on-error: true
         run: |
-          python3 test/test_ci_failure_aggregation.py
-          python3 test/test_run_tests.py
+          python3 test/ci_run_commands.py \
+            --check 'CI failure aggregation' 'python3 test/test_ci_failure_aggregation.py' \
+            --check 'native test runner' 'python3 test/test_run_tests.py' \
+            --check 'scripting evidence provenance and retrieval' 'python3 -m unittest discover -s test -p test_javascript_evidence.py -v'
 
       - name: Restore the compiler cache
         id: restore_the_compiler_cache
@@ -1407,12 +1409,18 @@ jobs:
           - name: webkit
             browsers: webkit
             command: xvfb-run -a npx playwright test runtime-build.spec.js viewport.spec.js responsive-presentation.spec.js campaign-editor-storage.spec.js --project=webkit
+          - name: webkit scripting
+            browsers: webkit
+            command: xvfb-run -a npx playwright test determinism.spec.js --project=webkit --grep='shared scripting corpus'
           - name: chromium rendering
             browsers: chromium
             command: xvfb-run -a npx playwright test rendering.spec.js --project=chromium
           - name: firefox
             browsers: firefox
             command: GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test runtime-build.spec.js viewport.spec.js responsive-presentation.spec.js campaign-editor-storage.spec.js --project=firefox
+          - name: firefox scripting
+            browsers: firefox
+            command: GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test determinism.spec.js --project=firefox --grep='shared scripting corpus'
           # Repeat the remaining renderer-sensitive tests on WebGL2. New
           # untagged reload cases stay with the match reload group by default.
           - name: chromium webgl2 input
@@ -1470,7 +1478,8 @@ jobs:
         continue-on-error: true
         working-directory: browser
         run: ${{ matrix.command }}
-      # Only the shard that ran determinism.spec.js writes a trace.
+      # Baseline replay and per-browser scripting results share this artifact
+      # family; the comparison job selects each corpus explicitly.
       - uses: actions/upload-artifact@v4
         id: upload_artifact_1
         continue-on-error: true
@@ -1513,7 +1522,8 @@ jobs:
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          traces = sorted(Path('traces').rglob('*.checksums'))
+          traces = sorted(path for path in Path('traces').rglob('*.checksums')
+                          if path.name in {'native.replay.checksums', 'wasm.replay.checksums'})
           assert len(traces) == 4, f'Expected four platform traces, got {traces}'
           reference = traces[0].read_bytes()
           assert len(reference) > 1000
@@ -1521,6 +1531,34 @@ jobs:
               assert trace.read_bytes() == reference, f'Simulation differs: {trace}'
           print('All four per-tick simulation traces match')
           PY
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: javascript-profile-*
+          path: scripting
+      - name: Compare shared scripting results across native builds and every browser
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import subprocess
+          native = sorted(Path('scripting').glob('*/javascript-corpus'))
+          browsers = sorted(path.parent for path in Path('traces').glob('*/script-corpus/*/manifest.json'))
+          assert any('mingw' in path.parts[-2] for path in native), 'Missing Windows scripting evidence'
+          assert any('linux' in path.parts[-2] for path in native), 'Missing Linux scripting evidence'
+          assert {path.name for path in browsers} == {'chromium', 'firefox', 'webkit'}, browsers
+          assert len(browsers) == 3, f'Duplicate browser scripting runs: {browsers}'
+          reference = native[0]
+          for index, candidate in enumerate(native[1:] + browsers):
+              subprocess.run(['python3', 'test/check_javascript_evidence.py', str(reference),
+                              str(candidate), '--output', f'artifacts/javascript-ci/comparison-{index}.json'],
+                             check=True)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: javascript-cross-platform-comparisons
+          path: artifacts/javascript-ci/
+          if-no-files-found: ignore
 
       - name: Summarize CI failures
         if: always()

@@ -34,6 +34,35 @@ TEST_CASE("JavaScript shared numeric corpus" * doctest::test_suite("JavaScriptNu
 	glob2test::script::retain("numeric-profile1", results);
 }
 
+TEST_CASE("JavaScript shared saved global number corpus" *
+		  doctest::test_suite("JavaScriptNumbers"))
+{
+	Script::Host host;
+	const auto source =
+		glob2test::readFile(glob2test::fixture("javascript/global-number-corpus.js"));
+	auto continuous = Script::makeRuntime();
+	auto checkpoint = Script::Value::object();
+	auto snapshots = Script::Value::array();
+	for (unsigned tick = 0; tick < 4; ++tick)
+	{
+		CAPTURE(tick);
+		host.tick = tick;
+		auto uninterrupted = continuous->invoke(source, checkpoint, tick == 0, host);
+		auto reloaded = Script::makeRuntime()->invoke(
+			source, Script::Value::decode(checkpoint.encode()), tick == 0, host);
+		CHECK(uninterrupted.state.encode() == reloaded.state.encode());
+		CHECK(uninterrupted.effects.encode() == reloaded.effects.encode());
+		CHECK(uninterrupted.effects.get("calls").number == tick + 1);
+		CHECK(uninterrupted.effects.get("nan").number == 1);
+		CHECK(uninterrupted.effects.get("infinities").number == 1);
+		CHECK(uninterrupted.effects.get("zeros").number == 1);
+		checkpoint = std::move(uninterrupted.state);
+		snapshots.items.push_back(checkpoint);
+	}
+	// Retain the actual serialized state, not a lossy diagnostic view of NaNs.
+	glob2test::script::retain("global-numbers-profile1", snapshots);
+}
+
 TEST_CASE("JavaScript caught host resource failures remain fatal" *
 		  doctest::test_suite("JavaScriptTransactions"))
 {

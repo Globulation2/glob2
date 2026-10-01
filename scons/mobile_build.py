@@ -65,6 +65,9 @@ def build_mobile(directory, identity, arguments):
     env.Append(CPPPATH=["#third_party/quickjs-ng", str(output / 'include'), str(prefix / 'include'), str(prefix / 'include/SDL2')] + list(INCLUDE_DIRECTORIES),
         CPPDEFINES=['HAVE_CONFIG_H'], CCFLAGS=toolchain['cflags'] + ['-g', '-O2' if identity['mode'] == 'release' else '-O0'],
         CXXFLAGS=['-std=gnu++20', '-fexceptions'], LINKFLAGS=toolchain['ldflags'], LIBS=[env.File(path) for path in libraries])
+    if any(target in COMMAND_LINE_TARGETS for target in ('android-tests', 'ios-tests', 'web-tests')):
+        from test_provenance import register_test_provenance
+        provenance_header = register_test_provenance(env, output)
     strict = env.Clone()
     strict.Append(CXXFLAGS=['-fno-fast-math', '-ffp-contract=off'])
     script_objects = javascript_objects(env, object_root / 'third_party', identity['mode'] == 'release', shared=identity['target'] == 'android')
@@ -117,7 +120,10 @@ def build_mobile(directory, identity, arguments):
                         compile_env.Append(CPPDEFINES=options.get('defines', []))
                     path = source[1:] if source.startswith('#') else 'test/' + source
                     name = prefix + path.replace('/', '_').rsplit('.', 1)[0]
-                    out += compile_env.Object(str(object_root / 'tests' / (name + '.o')), path)
+                    targets = compile_env.Object(str(object_root / 'tests' / (name + '.o')), path)
+                    if source.endswith('TestMain.cpp'):
+                        compile_env.Depends(targets, provenance_header)
+                    out += targets
                 return out
 
             def production_objects(entries):
@@ -164,7 +170,10 @@ def build_mobile(directory, identity, arguments):
                 if source == 'support/TestMain.cpp':
                     local.Append(CPPDEFINES=[('main', 'glob2ScriptTestMain')])
                 path = 'test/' + source
-                test_objects += local.Object(str(object_root / 'tests' / archive_object_name(path)), path)
+                targets = local.Object(str(object_root / 'tests' / archive_object_name(path)), path)
+                if source.endswith('TestMain.cpp'):
+                    local.Depends(targets, provenance_header)
+                test_objects += targets
             harness = env.StaticLibrary(str(output / 'lib/glob2-script-tests'), objects + test_objects)
             env.Alias('ios-tests', harness)
 

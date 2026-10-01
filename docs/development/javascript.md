@@ -3,14 +3,16 @@
 Glob2's optional JavaScript AI and map-script backend uses vendored QuickJS-NG
 and OpenLibm. It exposes copied game observations and accepts validated existing
 orders or scenario effects. Existing AIs and USL/SGSL maps retain their execution
-paths. Scripts are **trusted developer code**. Loading a map, save or replay
+paths. Selecting JavaScript suppresses the map's retained legacy SGSL script,
+including its presentation and win/loss results. Scripts are **trusted developer
+code**. Loading a map, save or replay
 with embedded JavaScript executes it automatically, without an enablement setting
 or permission prompt. Review embedded sources before using files from an untrusted
 origin. Capability restrictions and resource limits support predictable execution
 and reliability; they do not protect the process against malicious scripts.
 
-This version provides developer commands; menus have no JavaScript
-selection control.
+The map scenario editor and developer commands can select JavaScript scripts.
+JavaScript AI source is currently configured through the developer commands.
 
 ## Documentation and examples
 
@@ -69,8 +71,13 @@ saving the map embeds them. JavaScript maps reopen with JavaScript selected,
 regardless of the legacy default-language setting. **Load** and **Save** use
 `.js` files while JavaScript is selected. Switching languages keeps separate
 drafts until the dialog closes; compilation and file loading leave the map
-unchanged until OK. SGSL remains a separate legacy payload and is preserved
-when editing USL or JavaScript.
+unchanged until OK. JavaScript and USL replacements are compiled separately before committing;
+failed compilation preserves the active source, language and saved globals.
+SGSL remains a separate legacy payload: its source is retained
+while JavaScript is selected, but it does not execute or present text/timers then.
+Choosing **SGSL** and pressing OK clears an active JavaScript map runtime and
+reactivates the legacy script. Released maps can pair USL and SGSL; editing either
+legacy payload preserves the other and retains their existing execution behavior.
 
 To replace a map's USL script from the command line, write a new map:
 
@@ -113,7 +120,10 @@ beginning with `__glob2_` are reserved for the engine.
 
 Global data supports plain objects and arrays, including aliases, cycles, sparse
 arrays, property attributes, undefined and non-finite numbers. Null prototypes,
-property order, extensibility and signed zero survive save/load. Symbol keys,
+property order, extensibility and signed zero survive save/load.
+NaN sign and payload are canonicalized at the snapshot boundary; profile 1
+does not expose their binary representation. Both infinities retain their signs.
+Symbol keys,
 accessors, custom prototypes, class definitions/instances, Map/Set instances and host context
 objects cannot be retained globally. References to built-ins or function-owned
 objects (such as a function prototype) are also rejected; use independent

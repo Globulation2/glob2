@@ -105,7 +105,7 @@ void GameSessionScreen::updateExecutionImpl(Uint32 tick)
 								   auto &strings = *GAGCore::Toolkit::getStringTable();
 								   stack.push(
 									   std::make_unique<MessageScreen>(
-										   strings.getString("[ERROR_CANT_LOAD_MAP]"),
+										   static_cast<GameLoadScreen &>(loading).failureMessage(),
 										   std::vector<std::string>{strings.getString("[ok]")}),
 									   [this](GAGGUI::Screen &, int choice)
 									   { endExecute(choice); });

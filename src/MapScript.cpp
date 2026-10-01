@@ -2,8 +2,11 @@
 // Copyright (C) 2008 Bradley Arsenault
 
 #include "MapScript.h"
+#include "GameGUI.h"
 #include <assert.h>
 #include <iostream>
+#include <type_traits>
+#include <utility>
 
 #include "Stream.h"
 
@@ -75,15 +78,15 @@ void MapScript::setMapScript(const std::string& newScript)
 }
 
 
-MapScript::MapScriptMode MapScript::getMapScriptMode() const
-{
-	return mode;
-}
-
-	
 void MapScript::setMapScriptMode(MapScript::MapScriptMode newMode)
 {
 	mode = newMode;
+	if (mode == JavaScript && gui)
+	{
+		// An SGSL space wait must not intercept input while that payload is dormant.
+		gui->setIsSpaceSet(false);
+		gui->setSwallowSpaceKey(false);
+	}
 }
 
 
@@ -104,6 +107,29 @@ bool MapScript::compileCode()
 	return false;
 }
 
+
+bool MapScript::replaceSource(MapScriptMode newMode, const std::string& newScript,
+							 MapScriptError& error)
+{
+	MapScript candidate(gui);
+	// Preparing a draft must not clear the GUI's legacy space-wait flags.
+	// The public mode setter applies that presentation change only on commit.
+	candidate.mode = newMode;
+	candidate.script = newScript;
+	if (!candidate.compileCode())
+	{
+		error = candidate.getError();
+		return false;
+	}
+	static_assert(std::is_nothrow_swappable_v<Script::JavaScriptMap>);
+	static_assert(std::is_nothrow_swappable_v<MapScriptError>);
+	script.swap(candidate.script);
+	usl.swap(candidate.usl);
+	std::swap(javascript, candidate.javascript);
+	std::swap(jsError, candidate.jsError);
+	setMapScriptMode(newMode);
+	return true;
+}
 
 const MapScriptError& MapScript::getError() const
 {

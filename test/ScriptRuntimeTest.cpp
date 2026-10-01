@@ -389,6 +389,48 @@ function step(ctx) {
 	}
 }
 
+TEST_CASE("JavaScript saved NaNs have canonical bits across architectures" *
+		  doctest::test_suite("JavaScriptRuntime"))
+{
+	const std::string source = R"(
+let calls = 0;
+let numbers = [];
+function step(ctx) {
+  calls++;
+  const zero = ctx.tick - ctx.tick;
+  numbers = [NaN, -NaN, zero / zero, Math.sqrt(-1), Math.log(-1)];
+  return {calls, nan: numbers.every(Number.isNaN)};
+}
+)";
+	Host host;
+	auto continuous = makeRuntime();
+	Value checkpoint = Value::object();
+	for (unsigned tick = 0; tick < 3; ++tick)
+	{
+		host.tick = tick;
+		auto uninterrupted = continuous->invoke(source, checkpoint, tick == 0, host);
+		auto reloaded = makeRuntime()->invoke(source, Value::decode(checkpoint.encode()),
+										 tick == 0, host);
+		CHECK(uninterrupted.state.encode() == reloaded.state.encode());
+		CHECK(uninterrupted.effects.get("calls").number == tick + 1);
+		CHECK(uninterrupted.effects.get("nan").number == 1);
+		unsigned nanCount = 0;
+		for (const auto &node : uninterrupted.state.get("__glob2_globals").get("nodes").items)
+			for (const auto &property : node.get("properties").items)
+			{
+				const auto &token = property.items[1];
+				if (token.kind == Value::Array && token.items.size() == 2 &&
+					token.items[0].text == "number")
+				{
+					CHECK(token.items[1].text == "7ff8000000000000");
+					++nanCount;
+				}
+			}
+		CHECK(nanCount == 5);
+		checkpoint = std::move(uninterrupted.state);
+	}
+}
+
 TEST_CASE("JavaScript unsaveable global values fail explicitly" *
 		  doctest::test_suite("JavaScriptRuntime"))
 {

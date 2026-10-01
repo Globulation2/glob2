@@ -41,6 +41,13 @@ std::unique_ptr<Engine> GameLoadScreen::takeEngine()
 	task.reset();
 	return std::move(engine);
 }
+std::string GameLoadScreen::failureMessage() const
+{
+	auto message = Glob2UI::tr("[ERROR_CANT_LOAD_MAP]");
+	if (!failureDiagnostic.empty())
+		message += "\n\n" + failureDiagnostic;
+	return message;
+}
 void GameLoadScreen::onTimer(Uint32)
 {
 	PERF_SCOPE_TIME(Load);
@@ -48,6 +55,8 @@ void GameLoadScreen::onTimer(Uint32)
 	{
 		if (slice.advance(*task))
 		{
+			if (!task->result())
+				failureDiagnostic = engine->getInitializationDiagnostic();
 			endExecute(task->result() ? 1 : 2);
 			return;
 		}
@@ -60,6 +69,7 @@ void GameLoadScreen::onTimer(Uint32)
 	}
 	catch (const std::exception &error)
 	{
+		failureDiagnostic = error.what();
 		std::cerr << "Game initialization failed: " << error.what() << '\n';
 		endExecute(2);
 	}

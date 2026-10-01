@@ -50,7 +50,7 @@ public:
 	void setMapScript(const std::string& newScript);
 	
 	///This returns the current map script mode
-	MapScriptMode getMapScriptMode() const;
+	MapScriptMode getMapScriptMode() const { return mode; }
 	
 	///This sets the current map script mode
 	void setMapScriptMode(MapScriptMode newMode);
@@ -58,6 +58,9 @@ public:
 	///This compiles the code and returns false on error.
 	///Both USL and JavaScript compile through their respective backends.
 	bool compileCode();
+	///Compile a replacement separately, then commit its source and runtime together.
+	///Failure leaves the active source, mode and saved globals unchanged.
+	bool replaceSource(MapScriptMode newMode, const std::string& newScript, MapScriptError& error);
 
 	///This returns the error
 	const MapScriptError& getError() const;

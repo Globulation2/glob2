@@ -517,6 +517,7 @@ export function __glob2_step(ctx, legacy) {
 // Functions are stable source definitions, addressed by binding name.
 class GlobalsCodec
 {
+	static constexpr std::uint64_t CanonicalNaNBits = UINT64_C(0x7ff8000000000000);
 	Environment &e;
 	JSValueConst definitions;
 	std::map<void *, unsigned> objects;
@@ -543,7 +544,12 @@ class GlobalsCodec
 					e.fail();
 				if (!std::isfinite(number))
 				{
-					const auto bits = std::bit_cast<std::uint64_t>(number);
+					// NaN signs/payloads are not observable in this profile, but hardware
+					// arithmetic and QuickJS's 32-bit NaN boxing produce different bits.
+					// Snapshots participate in saves and simulation checksums, so use one
+					// quiet NaN representation while retaining the sign of infinities.
+					const auto bits =
+						std::isnan(number) ? CanonicalNaNBits : std::bit_cast<std::uint64_t>(number);
 					std::string text(16, '0');
 					for (unsigned i = 0; i < 16; ++i)
 						text[i] = "0123456789abcdef"[(bits >> (4 * (15 - i))) & 15];
@@ -715,9 +721,12 @@ class GlobalsCodec
 				if (text.size() != 16 || parsed.ec != std::errc() ||
 					parsed.ptr != text.data() + text.size())
 					throw std::runtime_error("Invalid global snapshot number bits");
-				const auto number = std::bit_cast<double>(bits);
+				auto number = std::bit_cast<double>(bits);
 				if (std::isfinite(number))
 					throw std::runtime_error("Invalid global snapshot non-finite number");
+				// Older unpublished snapshots may contain architecture-specific NaNs.
+				if (std::isnan(number))
+					number = std::bit_cast<double>(CanonicalNaNBits);
 				return JS_NewFloat64(e.ctx, number);
 			}
 			throw std::runtime_error("Invalid global snapshot tag");

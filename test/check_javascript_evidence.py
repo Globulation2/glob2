@@ -6,6 +6,7 @@ import hashlib
 import json
 from pathlib import Path
 import struct
+from build_provenance import build_issues
 
 
 def payload(data):
@@ -36,10 +37,13 @@ def inventory(directory):
         if key in result:
             raise ValueError('Duplicate artifact key: ' + key)
         result[key] = hashlib.sha256(data).hexdigest()
-    if not any(key.endswith('numeric-profile1.value') for key in result):
-        raise ValueError('Missing numeric results: ' + str(directory))
+    for required in ('numeric-profile1.value', 'global-numbers-profile1.value'):
+        if not any(key.endswith(required) for key in result):
+            raise ValueError('Missing numeric results ' + required + ': ' + str(directory))
     if not any('JavaScriptSimulation/' in key for key in result):
         raise ValueError('Missing production simulation evidence: ' + str(directory))
+    if not any('conversion_boundary' in key and key.endswith('.checksums') for key in result):
+        raise ValueError('Missing conversion continuation evidence: ' + str(directory))
     return result
 
 
@@ -68,6 +72,11 @@ def provenance_issues(reference, candidate):
             issues.append(label + ' iOS execution failed')
         if not tests and 'exit' not in manifest and 'exitCode' not in result:
             issues.append(label + ' does not record successful execution')
+        if manifest.get('retrievalErrors') or manifest.get('provenanceIssues'):
+            issues.append(label + ' includes retrieval/provenance failures')
+        producer_builds = [test.get('build') for test in tests] if tests else [manifest.get('build')]
+        for build in producer_builds:
+            issues.extend(label + ': ' + issue for issue in build_issues(build, manifest))
         build = result.get('build', {})
         if build and (build.get('revision') != manifest.get('revision') or build.get('dirty')):
             issues.append(label + ' app build metadata differs from the runner source')

@@ -16,7 +16,6 @@
 #include <StringTable.h>
 #include <Toolkit.h>
 #include <algorithm>
-#include <valarray>
 
 namespace fe = Glob2UI;
 using fe::Element;
@@ -34,10 +33,12 @@ bool loadText(const std::string &filename, std::string &text)
 	stream->seekFromEnd(0);
 	const size_t len = stream->getPosition();
 	stream->seekFromStart(0);
-	std::valarray<char> buffer(len + 1);
-	stream->read(&buffer[0], len);
-	buffer[len] = 0;
-	text = &buffer[0];
+	std::string buffer(len, '\0');
+	if (!stream->readExact(buffer.data(), len))
+		return false;
+	// Keep every source byte so embedded NULs reach the language validator
+	// instead of silently turning the file into a different, valid prefix.
+	text = std::move(buffer);
 	return true;
 }
 
@@ -204,22 +205,42 @@ void ScriptEditorScreen::confirm()
 		return;
 	if (selectedLanguage != Language::SGSL)
 	{
-		mapScript->setMapScriptMode(selectedLanguage == Language::JavaScript ? MapScript::JavaScript
-																			 : MapScript::USL);
-		mapScript->setMapScript(script);
-		if (!mapScript->compileCode())
+		MapScriptError error;
+		try
+		{
+			if (!mapScript->replaceSource(selectedLanguage == Language::JavaScript
+											 ? MapScript::JavaScript : MapScript::USL, script, error))
+			{
+				compiled = false;
+				compilation = error.getMessage();
+				invalidate();
+				return;
+			}
+		}
+		catch (const std::exception& error)
 		{
 			compiled = false;
-			compilation = mapScript->getError().getMessage();
+			compilation = error.what();
 			invalidate();
 			return;
 		}
 	}
 	else
 	{
-		sgslMapScript->reset();
-		sgslMapScript->compileScript(game, script.c_str());
-		sgslMapScript->sourceCode = script;
+		std::string committedSource = script;
+		const ErrorReport error = sgslMapScript->compileScript(game, script.c_str());
+		if (error.type != ErrorReport::ET_OK)
+		{
+			compiled = false;
+			compilation = error.getErrorString();
+			invalidate();
+			return;
+		}
+		// Selecting SGSL stops JavaScript. Released maps may deliberately pair
+		// USL with SGSL, so editing that legacy payload must retain their USL.
+		if (mapScript->getMapScriptMode() == MapScript::JavaScript)
+			mapScript->reset();
+		sgslMapScript->sourceCode.swap(committedSource);
 	}
 
 	//Load the objectives
