@@ -14,27 +14,42 @@
 #include <cstdio>
 #include <TextStream.h>
 
-TEST_CASE("JavaScript test profile uses SDL environment ownership" *
+TEST_CASE("JavaScript test environment scopes restore SDL and CRT readers" *
 		  doctest::test_suite("JavaScriptCompatibility"))
 {
 	const auto original = glob2test::profileDir();
+	const auto originalCRT = []() -> std::optional<std::string> {
+		if (const char *value = std::getenv("GLOB2_USER_DATA_DIR"))
+			return std::string(value);
+		return std::nullopt;
+	}();
+	const auto currentCRT = [](const char *name) -> std::optional<std::string> {
+		if (const char *value = std::getenv(name))
+			return std::string(value);
+		return std::nullopt;
+	};
 	const auto outer = original / "environment-outer";
 	const auto inner = original / "environment-inner";
 	{
 		glob2test::ScopedEnvironment outerProfile("GLOB2_USER_DATA_DIR", outer.string().c_str());
 		CHECK(glob2test::profileDir() == outer);
+		CHECK(currentCRT("GLOB2_USER_DATA_DIR") == outer.string());
 		{
 			glob2test::ScopedEnvironment innerProfile("GLOB2_USER_DATA_DIR", inner.string().c_str());
 			CHECK(glob2test::profileDir() == inner);
+			CHECK(currentCRT("GLOB2_USER_DATA_DIR") == inner.string());
 		}
 		CHECK(glob2test::profileDir() == outer);
+		CHECK(currentCRT("GLOB2_USER_DATA_DIR") == outer.string());
 	}
 	CHECK(glob2test::profileDir() == original);
+	CHECK(currentCRT("GLOB2_USER_DATA_DIR") == originalCRT);
 
 	// Restore an absent variable through SDL's own environment, including
 	// Windows and SDL2-compat. An empty cached value is also inactive.
 	const auto absent = "GLOB2_TEST_SCOPED_ENV_" + original.filename().string();
 	REQUIRE(SDL_getenv(absent.c_str()) == nullptr);
+	REQUIRE(!currentCRT(absent.c_str()));
 	const auto currentValue = [&] {
 		const char *value = SDL_getenv(absent.c_str());
 		REQUIRE(value != nullptr);
@@ -43,14 +58,33 @@ TEST_CASE("JavaScript test profile uses SDL environment ownership" *
 	{
 		glob2test::ScopedEnvironment outerValue(absent.c_str(), "outer");
 		CHECK(currentValue() == "outer");
+		CHECK(currentCRT(absent.c_str()) == "outer");
 		{
 			glob2test::ScopedEnvironment innerValue(absent.c_str(), "inner");
 			CHECK(currentValue() == "inner");
+			CHECK(currentCRT(absent.c_str()) == "inner");
 		}
 		CHECK(currentValue() == "outer");
+		CHECK(currentCRT(absent.c_str()) == "outer");
 	}
 	const char *restored = SDL_getenv(absent.c_str());
 	CHECK((!restored || !*restored));
+	CHECK(!currentCRT(absent.c_str()));
+#ifdef _WIN32
+	// A previous SDL-only write can leave the process and CRT views different.
+	// Preserve both, rather than replacing one original with the other.
+	REQUIRE(_putenv_s(absent.c_str(), "crt-original") == 0);
+	REQUIRE(SDL_setenv(absent.c_str(), "sdl-original", 1) == 0);
+	{
+		glob2test::ScopedEnvironment value(absent.c_str(), "temporary");
+		CHECK(currentValue() == "temporary");
+		CHECK(currentCRT(absent.c_str()) == "temporary");
+	}
+	CHECK(currentValue() == "sdl-original");
+	CHECK(currentCRT(absent.c_str()) == "crt-original");
+	REQUIRE(_putenv_s(absent.c_str(), "") == 0);
+	REQUIRE(SDL_setenv(absent.c_str(), "", 1) == 0);
+#endif
 }
 
 TEST_CASE("JavaScript pass retains network protocol acceptance boundaries" *

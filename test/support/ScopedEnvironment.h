@@ -16,11 +16,35 @@ public:
 	{
 		if (const char *previous = SDL_getenv(name))
 			original = previous;
+#ifdef _WIN32
+		if (const char *previous = std::getenv(name))
+			originalCRT = previous;
+		// SDL writes the Windows process environment; CRT readers have their
+		// own cached view, used by the shader and UI-scale test overrides.
+		if (_putenv_s(name, value) != 0)
+		{
+			restore();
+			throw std::runtime_error("Cannot set test CRT environment variable " + this->name);
+		}
+#endif
 		if (SDL_setenv(name, value, 1) != 0)
+		{
+			restore();
 			throw std::runtime_error("Cannot set test environment variable " + this->name);
+		}
 	}
-	~ScopedEnvironment()
+	~ScopedEnvironment() { restore(); }
+	ScopedEnvironment(const ScopedEnvironment &) = delete;
+	ScopedEnvironment &operator=(const ScopedEnvironment &) = delete;
+
+private:
+	void restore() noexcept
 	{
+#ifdef _WIN32
+		// Restore CRT first: SDL then restores the process view independently,
+		// including when the two views differed before this scope.
+		_putenv_s(name.c_str(), originalCRT ? originalCRT->c_str() : "");
+#endif
 		if (original)
 			SDL_setenv(name.c_str(), original->c_str(), 1);
 		else
@@ -33,11 +57,10 @@ public:
 #endif
 		}
 	}
-	ScopedEnvironment(const ScopedEnvironment &) = delete;
-	ScopedEnvironment &operator=(const ScopedEnvironment &) = delete;
-
-private:
 	std::string name;
 	std::optional<std::string> original;
+#ifdef _WIN32
+	std::optional<std::string> originalCRT;
+#endif
 };
 }
