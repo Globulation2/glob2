@@ -104,6 +104,7 @@ ENGINE_TESTS = [
 UNIT_TESTS = [
     'ScriptRuntimeTest.cpp',
     'ScriptNumericTest.cpp',
+    ('OpaqueRectangleBatchTest.cpp', dict(cxxflags=['-fno-access-control'])),
     # Former CppUnit suite (TestsRunner).
     'AllyTeamWidgetIndexTest.cpp',
     'BitArrayTest.cpp',

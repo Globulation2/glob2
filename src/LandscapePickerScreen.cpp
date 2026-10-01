@@ -251,7 +251,7 @@ LandscapePickerScreen::LandscapePickerScreen(const std::string &title, std::vect
 	: title(title), entries(std::move(entries)), tiles(this->entries.size()), redraws(this->entries.size(), 0),
 	  filterCategories(categoriesOf(this->entries)), filters(filterCategories.size()),
 	  selected(std::clamp(selected, 0, std::max(0, int(this->entries.size()) - 1))), sortOrder(sortOrder),
-	  previewer(requestsOf(this->entries), 1, true)
+	  previewer(requestsOf(this->entries), 2, true)
 {
 	recomputeIncompatible();
 	rebuild();
