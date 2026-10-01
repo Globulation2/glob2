@@ -14,3 +14,5 @@ PR source: 89bf1dca772efde013e10e92f90d84e013d6503e
 Source distribution limitation: after fixing single-node handling, the existing dist target still requests the removed README file. Full source-archive validation remains blocked by that pre-existing input list. Other platforms await hosted CI.
 
 Screenshots are from this PR's current-master build. Ordinary builds need no SVG renderer or Node dependency.
+
+Windows CI: failed at SavegameSafetyHarness.cpp:652 (unchanged by this PR); the exact namespace error is documented and fixed by existing PR #475. Job: https://github.com/Globulation2/glob2/actions/runs/36820798770/job/110236586009
