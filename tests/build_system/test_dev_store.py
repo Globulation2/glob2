@@ -403,6 +403,65 @@ class StoreTests(unittest.TestCase):
         (source / "local-notes").write_text("keep")
         self.assertFalse(cli.equivalent(source, target))
 
+    @unittest.skipIf(os.name == "nt", "POSIX directory symlink")
+    def test_migration_skips_symlinked_parent_overrides(self):
+        import importlib.util
+
+        spec = importlib.util.spec_from_file_location(
+            "dev_cli", ROOT / "tools/dev_environment.py"
+        )
+        cli = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(cli)
+        external = self.base / "external-sdk"
+        (external / "compiler").mkdir(parents=True)
+        (self.a / "sdk").symlink_to(external, target_is_directory=True)
+        self.assertFalse(cli.local_directory(self.a / "sdk/compiler", self.a))
+        (self.a / "local-sdk/compiler").mkdir(parents=True)
+        self.assertTrue(cli.local_directory(self.a / "local-sdk/compiler", self.a))
+
+    @unittest.skipIf(
+        os.name == "nt", "Migration requires a supported open-file checker"
+    )
+    def test_browser_migration_preserves_config_caches_and_busy_checkouts(self):
+        import importlib.util
+
+        spec = importlib.util.spec_from_file_location(
+            "dev_cli", ROOT / "tools/dev_environment.py"
+        )
+        cli = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(cli)
+        target = store.browser_sdk(self.a, lease=False)
+        target.mkdir(parents=True)
+        manifest = self.a / "browser/toolchain.json"
+        (target / ".glob2-toolchain.json").write_text(manifest.read_text())
+        local = self.a / "tools/browser-emsdk"
+        for sdk in (local, target):
+            (sdk / "node").mkdir(parents=True)
+            (sdk / "node/binary").write_bytes(b"pinned node")
+            (sdk / "upstream/emscripten").mkdir(parents=True)
+            (sdk / "upstream/emscripten/compiler").write_bytes(b"pinned compiler")
+        (local / "upstream/emscripten/local-cache").write_bytes(b"retain")
+        (local / ".emscripten").write_text("checkout config")
+        (local / ".git").mkdir()
+        (local / ".git/source-history").write_text("retain")
+        receipt = {"browser_sdk": str(target), "checks": {"browser-build": 0}}
+        item = {
+            "busy": True,
+            "replacement_candidates": [],
+            "replaced": [],
+            "reclaimed_bytes": 0,
+        }
+        cli.migrate_browser(self.a, item, receipt, True)
+        self.assertFalse((local / "node").is_symlink())
+        item["busy"] = False
+        with patch.object(cli, "busy", return_value=False):
+            cli.migrate_browser(self.a, item, receipt, True)
+        self.assertEqual((local / "node").resolve(), target / "node")
+        self.assertGreater(item["reclaimed_bytes"], 0)
+        self.assertFalse((local / "upstream/emscripten").is_symlink())
+        self.assertEqual((local / ".emscripten").read_text(), "checkout config")
+        self.assertEqual((local / ".git/source-history").read_text(), "retain")
+
     @unittest.skipIf(os.name == "nt", "POSIX makefile alias")
     def test_sdk_alias_does_not_copy_installation(self):
         source = self.base / "NDK with spaces"

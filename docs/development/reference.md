@@ -433,7 +433,10 @@ The receipt records `tools`, `toolchain_key`, and zero
 exit codes for `checks.android-packaging` and `checks.build-system-tests`; it must
 refer to the installed toolchain being migrated. Only components with the same archive proof are eligible, so differing tool
 versions are left alone while identical components can be reused across Android
-API configurations. Older scripts that include installation paths in compiler
+API configurations. A receipt may also include `browser_sdk` and a zero exit code
+for `checks.browser-build` to replace identical installed Emscripten components.
+Browser migration retains the checkout SDK configuration and Git history;
+components containing different files or legacy caches stay local. Older scripts that include installation paths in compiler
 fingerprints may require a one-time dependency rebuild after linking. Preserve simulator
 state and signing material. Older checkouts may still reference their local tool
 paths and need compatibility links or updated scripts before cleanup. Migration

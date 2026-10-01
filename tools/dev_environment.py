@@ -124,6 +124,88 @@ def equivalent(source, target):
     return True
 
 
+def local_directory(candidate, checkout):
+    """Never remove an override reached through a directory symlink."""
+    if not candidate.is_dir() or not candidate.is_relative_to(checkout):
+        return False
+    return not any(
+        p.is_symlink()
+        for p in (candidate, *candidate.parents)
+        if p != checkout and p.is_relative_to(checkout)
+    )
+
+
+def replace_duplicate(candidate, target):
+    """Leave a compatibility link only after preserving a recoverable original."""
+    amount = store.size(candidate)
+    backup = candidate.with_name(candidate.name + ".glob2-migration")
+    if backup.exists():
+        raise ValueError("Previous migration backup needs inspection: " + str(backup))
+    candidate.rename(backup)
+    try:
+        candidate.symlink_to(target, target_is_directory=True)
+    except BaseException:
+        backup.rename(candidate)
+        raise
+    shutil.rmtree(backup)
+    return amount
+
+
+def migrate_browser(checkout, item, receipt, apply):
+    """Compare installed components, preserving local SDK configuration and caches."""
+    if not receipt or receipt.get("checks", {}).get("browser-build") != 0:
+        return
+    manifest = checkout / "browser/toolchain.json"
+    if not manifest.is_file():
+        return
+    target = store.browser_sdk(checkout, lease=False)
+    marker = target / ".glob2-toolchain.json"
+    if (
+        receipt.get("browser_sdk") != str(target)
+        or not marker.is_file()
+        or json.loads(marker.read_text()) != json.loads(manifest.read_text())
+    ):
+        return
+    local = checkout / "tools/browser-emsdk"
+    if local.is_symlink() or not local.is_dir():
+        return
+    # Avoid replacing the SDK root: keep its Git history and generated local config.
+    # A component containing different files (including a populated legacy cache)
+    # stays local. Revisions alone never authorize replacement.
+    components = (
+        "node",
+        "python",
+        "upstream/bin",
+        "upstream/lib",
+        "upstream/include",
+        "upstream/share",
+        "upstream/emscripten",
+    )
+    candidates = [
+        local / name
+        for name in components
+        if local_directory(local / name, checkout) and (target / name).is_dir()
+    ]
+    item["replacement_candidates"].extend(str(p) for p in candidates)
+    if not apply or item["busy"]:
+        return
+    from build_layout import BuildLock
+
+    state = checkout / "build/mobile-tools"
+    state.mkdir(parents=True, exist_ok=True)
+    with BuildLock(state), store.Lease(target):
+        for candidate in candidates:
+            destination = target / candidate.relative_to(local)
+            if not equivalent(candidate, destination):
+                item.setdefault("customized", []).append(str(candidate))
+                continue
+            if busy(checkout):
+                item["busy"] = True
+                break
+            item["reclaimed_bytes"] += replace_duplicate(candidate, destination)
+            item["replaced"].append(str(candidate))
+
+
 def migrate(apply=False, extra=(), validation=None):
     """Seed archives only. Duplicate removal needs independently recorded validation."""
     if store.isolated():
@@ -201,8 +283,7 @@ def migrate(apply=False, extra=(), validation=None):
                     if name in artifact
                 }
                 if (
-                    candidate.is_dir()
-                    and not candidate.is_symlink()
+                    local_directory(candidate, checkout)
                     and proof.is_file()
                     and json.loads(proof.read_text()) == expected
                 ):
@@ -224,8 +305,7 @@ def migrate(apply=False, extra=(), validation=None):
                                 if name in artifact
                             }
                             if (
-                                candidate.is_symlink()
-                                or not candidate.is_dir()
+                                not local_directory(candidate, checkout)
                                 or not proof.is_file()
                             ):
                                 continue
@@ -238,24 +318,10 @@ def migrate(apply=False, extra=(), validation=None):
                             if busy(checkout):
                                 item["busy"] = True
                                 break
-                            amount = store.size(candidate)
-                            backup = candidate.with_name(
-                                candidate.name + ".glob2-migration"
+                            item["reclaimed_bytes"] += replace_duplicate(
+                                candidate, target
                             )
-                            if backup.exists():
-                                raise ValueError(
-                                    "Previous migration backup needs inspection: "
-                                    + str(backup)
-                                )
-                            candidate.rename(backup)
-                            try:
-                                candidate.symlink_to(target, target_is_directory=True)
-                            except BaseException:
-                                backup.rename(candidate)
-                                raise
-                            shutil.rmtree(backup)
                             item["replaced"].append(str(candidate))
-                            item["reclaimed_bytes"] += amount
                         if not item["busy"]:
                             for artifact in artifacts(checkout):
                                 name = artifact["url"].rsplit("/", 1)[-1]
@@ -305,6 +371,10 @@ def migrate(apply=False, extra=(), validation=None):
                                 item["reclaimed_bytes"] += amount
                 except ValueError as error:
                     item["skipped"] = str(error)
+        try:
+            migrate_browser(checkout, item, receipt, apply)
+        except ValueError as error:
+            item["skipped"] = str(error)
         report.append(item)
     return report
 
