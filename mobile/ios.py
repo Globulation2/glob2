@@ -126,6 +126,11 @@ def main():
         if args.environment=='device' and args.team:
             build += ['--','-allowProvisioningUpdates']
         subprocess.run(build,env=env,check=True)
+        if args.environment=='simulator':
+            # Signing is disabled in Xcode to avoid requiring credentials. Seal
+            # the completed bundle: the linker-only signature omits resources.
+            subprocess.run(['codesign','--force','--sign','-',str(app)],env=env,check=True)
+            subprocess.run(['codesign','--verify','--deep','--strict',str(app)],env=env,check=True)
 
 if __name__=='__main__':
     try: main()

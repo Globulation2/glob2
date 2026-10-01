@@ -619,7 +619,8 @@ python3 mobile/ios.py launch --environment simulator --release --device SIMULATO
 ```
 
 The simulator tools use an isolated device set under
-`build/mobile-tools/ios-simulators`. Device builds use `--environment device` and
+`build/mobile-tools/ios-simulators`. Simulator builds ad hoc sign and verify the
+completed app bundle without Apple credentials. Device builds use `--environment device` and
 require either `--team TEAM_ID` with local provisioning or `--unsigned` for a
 compile-only build. An unsigned device app cannot be installed. Release symbols
 are retained alongside the application. With `--team`, Xcode must have the Apple
