@@ -90,6 +90,22 @@ class ListenerTests(unittest.TestCase):
         with self.assertRaises((EOFError, OSError)):
             self.connect(forwarded='198.51.100.50, 127.0.0.1')
 
+    def test_server_identity_is_loaded_once_at_startup(self):
+        self.start()
+        identities = [self.secrets/'lobby.pem', self.secrets/'lobby.key']
+        try:
+            for path in identities:
+                path.rename(path.with_suffix(path.suffix + '.offline'))
+            for _ in range(2):
+                with self.connect() as sock:
+                    send_frame(sock, b'cached-identity')
+                    self.assertEqual(read_frame(sock), (2, b'cached-identity'))
+        finally:
+            for path in identities:
+                offline = path.with_suffix(path.suffix + '.offline')
+                if offline.exists():
+                    offline.rename(path)
+
     def test_text_and_oversized_frames_rejected(self):
         self.start()
         for body, opcode in [(b'not-binary', 1), (bytes(65537), 2)]:

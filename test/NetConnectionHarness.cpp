@@ -8,6 +8,7 @@
 #include "NetListener.h"
 #include "NetworkConfig.h"
 #include "message/AuthMessages.h"
+#include "message/FileTransferMessages.h"
 #include "message/RegistrationMessages.h"
 #include "message/RouterAdminMessages.h"
 #include "GlobalContainer.h"
@@ -92,6 +93,8 @@ int main(int argc, char** argv) {
         require(connection.getMessage() && connection.getMessage() && !connection.getMessage(), "Coalesced frames lost boundaries");
         for (const auto& invalid : std::vector<std::vector<uint8_t>>{
             {0, 0}, {0, 1, 255},
+            {0, 13, MNetSendMapHeader, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 124},
+            {0, 5, MNetSendGamePlayerInfo, 0, 0, 0, 33},
             {0, 5, MNetAttemptLogin, 255, 255, 255, 255},
             {0, 5, MNetDownloadableMapInfos, 255, 255, 255, 255},
             {0, 5, MNetDownloadableMapInfos, 0, 0, 0, 1}, {0, 1, original->getMessageType()},
@@ -100,6 +103,27 @@ int main(int argc, char** argv) {
             connection.openConnection("unused", 0); wire.current = NetTransport::State::Connected;
             wire.input.push_back(invalid); connection.update();
             require(!connection.isConnected(), "Malformed message did not close the connection");
+        }
+        std::vector<uint8_t> invalidGame{0, 44, MNetSendGameHeader, 0, 0, 0, 0, 6};
+        invalidGame.insert(invalidGame.end(), 32, 0);
+        invalidGame.insert(invalidGame.end(), {0, 0, 0, 0, 1, 255});
+        connection.openConnection("unused", 0); wire.current = NetTransport::State::Connected;
+        wire.input.push_back(std::move(invalidGame)); connection.update();
+        require(!connection.isConnected(), "Invalid winning condition was accepted");
+        // Supply the entire oversized payload: truncation checks alone cannot protect
+        // the fixed chunk buffer. The exact 4096-byte capacity must still work.
+        for (unsigned size : {4096u, 4097u}) {
+            const unsigned length = 1 + 4 + size + 2;
+            std::vector<uint8_t> chunk{uint8_t(length >> 8), uint8_t(length),
+                MNetSendFileChunk, 0, 0, uint8_t(size >> 8), uint8_t(size)};
+            chunk.insert(chunk.end(), size, 0x5a);
+            chunk.insert(chunk.end(), {0, 17});
+            connection.openConnection("unused", 0); wire.current = NetTransport::State::Connected;
+            wire.input.push_back(std::move(chunk)); connection.update();
+            if (size == 4096)
+                require(connection.isConnected() && connection.getMessage(), "Maximum valid file chunk was rejected");
+            else
+                require(!connection.isConnected(), "Oversized complete file chunk was accepted");
         }
         connection.openConnection("unused", 0); wire.current = NetTransport::State::Connected;
         joined.clear();

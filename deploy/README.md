@@ -135,6 +135,24 @@ termination grace longer than the drain deadline; Compose defaults to 31 minutes
 During upgrades, drain the lobby before stopping its router. Router shutdown
 withdraws its registration while allowing its current connections to finish.
 
+Keep the public proxy running until both backends have exited. For a coordinated
+stop or upgrade with the default 30-minute deadline, run these commands in order:
+
+```sh
+docker compose -f deploy/compose.yaml stop --timeout 1860 lobby
+docker compose -f deploy/compose.yaml stop --timeout 1860 router
+docker compose -f deploy/compose.yaml stop web
+# Replace images/secrets or take the consistent backup, then restart:
+docker compose -f deploy/compose.yaml up -d
+```
+
+Increase the stop timeout when increasing `GLOB2_DRAIN_SECONDS`. A whole-stack
+`docker compose down` or simultaneous service termination is an interrupting
+shutdown: the proxy may close active WebSockets before backend draining finishes.
+Cloud rolling upgrades must retain the proxy/load-balancer connections until the
+backend drain completes, then replace that proxy instance. Backend drain tests
+do not qualify simultaneous proxy shutdown as preserving matches.
+
 A cloud load balancer must support WebSocket upgrades and long-lived connections.
 Use TLS passthrough to Caddy, or a balancer that verifies its TLS upstream's
 certificate chain and DNS identity. Re-encryption without certificate validation

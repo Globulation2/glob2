@@ -3,6 +3,7 @@
 
 #include "GameHeaderMessages.h"
 #include <sstream>
+#include <stdexcept>
 #include "Version.h"
 #include "BinaryStream.h"
 
@@ -34,7 +35,8 @@ void NetSendMapHeader::encodeData(GAGCore::OutputStream* stream) const
 void NetSendMapHeader::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetSendMapHeader");
-	mapHeader.load(stream);
+	if (!mapHeader.load(stream))
+		throw std::runtime_error("Invalid network map header");
 	stream->readLeaveSection();
 }
 
@@ -85,7 +87,8 @@ void NetSendGameHeader::encodeData(GAGCore::OutputStream* stream) const
 void NetSendGameHeader::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetSendGameHeader");
-	gameHeader.loadWithoutPlayerInfo(stream, VERSION_MINOR);
+	if (!gameHeader.loadWithoutPlayerInfo(stream, VERSION_MINOR))
+		throw std::runtime_error("Invalid network game header");
 	stream->readLeaveSection();
 }
 
@@ -148,7 +151,8 @@ void NetSendGamePlayerInfo::encodeData(GAGCore::OutputStream* stream) const
 void NetSendGamePlayerInfo::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetSendGamePlayerInfo");
-	gameHeader.loadPlayerInfo(stream, VERSION_MINOR);
+	if (!gameHeader.loadPlayerInfo(stream, VERSION_MINOR))
+		throw std::runtime_error("Invalid network player header");
 	stream->readLeaveSection();
 }
 
