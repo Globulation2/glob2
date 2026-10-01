@@ -1,0 +1,104 @@
+app-id: org.globulation2.Globulation2
+runtime: org.gnome.Platform
+runtime-version: '51'
+sdk: org.gnome.Sdk
+command: glob2
+rename-icon: glob2
+finish-args:
+  - --share=ipc
+  - --share=network
+  - --socket=wayland
+  - --socket=fallback-x11
+  - --socket=pulseaudio
+  - --device=dri
+modules:
+  - name: scons
+    buildsystem: simple
+    build-commands:
+      - python3 setup.py install --prefix=/app
+    sources:
+      - type: archive
+        url: https://files.pythonhosted.org/packages/source/s/scons/scons-4.8.1.tar.gz
+        sha256: 5b641357904d2f56f7bfdbb37e165ab996b6143c948b9df0efc7305f54949daa
+
+  - name: libogg
+    buildsystem: autotools
+    sources:
+      - type: archive
+        url: https://github.com/xiph/ogg/releases/download/v1.3.6/libogg-1.3.6.tar.gz
+        sha256: 83e6704730683d004d20e21b8f7f55dcb3383cdf84c0daedf30bde175f774638
+
+  - name: libvorbis
+    buildsystem: autotools
+    sources:
+      - type: archive
+        url: https://downloads.xiph.org/releases/vorbis/libvorbis-1.3.7.tar.gz
+        sha256: 0e982409a9c3fc82ee06e08205b1355e5c6aa4c36bca58146ef399621b0ce5ab
+
+  - name: speex
+    buildsystem: autotools
+    sources:
+      - type: archive
+        url: https://downloads.xiph.org/releases/speex/speex-1.2.1.tar.gz
+        sha256: 4b44d4f2b38a370a2d98a78329fefc56a0cf93d1c1be70029217baae6628feea
+
+  - name: SDL2_image
+    buildsystem: cmake-ninja
+    builddir: true
+    config-opts:
+      - -DSDL2IMAGE_DEPS_SHARED=OFF
+    sources:
+      - type: archive
+        url: https://github.com/libsdl-org/SDL_image/releases/download/release-2.8.8/SDL2_image-2.8.8.tar.gz
+        sha256: 2213b56fdaff2220d0e38c8e420cbe1a83c87374190cba8c70af2156097ce30a
+
+  - name: SDL2_ttf
+    buildsystem: cmake-ninja
+    builddir: true
+    sources:
+      - type: archive
+        url: https://github.com/libsdl-org/SDL_ttf/releases/download/release-2.24.0/SDL2_ttf-2.24.0.tar.gz
+        sha256: 0b2bf1e7b6568adbdbc9bb924643f79d9dedafe061fa1ed687d1d9ac4e453bfd
+
+  - name: SDL2_net
+    buildsystem: cmake-ninja
+    builddir: true
+    sources:
+      - type: archive
+        url: https://github.com/libsdl-org/SDL_net/releases/download/release-2.2.0/SDL2_net-2.2.0.tar.gz
+        sha256: 4e4a891988316271974ff4e9585ed1ef729a123d22c08bd473129179dc857feb
+
+  - name: glu
+    buildsystem: meson
+    sources:
+      - type: archive
+        url: https://archive.mesa3d.org/glu/glu-9.0.3.tar.xz
+        sha256: bd43fe12f374b1192eb15fe20e45ff456b9bc26ab57f0eee919f96ca0f8a330f
+
+  - name: libepoxy
+    buildsystem: meson
+    sources:
+      - type: archive
+        url: https://download.gnome.org/sources/libepoxy/1.5/libepoxy-1.5.10.tar.xz
+        sha256: 072cda4b59dd098bba8c2363a6247299db1fa89411dc221c8b81b8ee8192e623
+
+  - name: boost-headers
+    buildsystem: simple
+    build-commands:
+      - cp -a boost /app/include/
+    sources:
+      - type: archive
+        url: https://archives.boost.io/release/1.86.0/source/boost_1_86_0.tar.gz
+        sha256: 2575e74ffc3ef1cd0babac2c1ee8bdb5782a0ee672b1912da40e5b4b591ca01f
+
+  - name: glob2
+    buildsystem: simple
+    build-commands:
+      - scons -j2 release=1 server=0 CXXFLAGS="-I/app/include -I/app/include/SDL2" LINKFLAGS=-L/app/lib BINDIR=/app/bin INSTALLDIR=/app/share DATADIR=/app/share install
+      - test -f /app/share/metainfo/org.globulation2.Globulation2.metainfo.xml
+      - test -f /app/share/glob2/data/maxima/duel.strategy
+      - test -f /app/share/glob2/data/usl/Language/Runtime/Control.usl
+    sources:
+      - type: git
+        url: https://github.com/Globulation2/glob2.git
+        commit: 1adfa9cf2aeaff8f4bfabb6096b87689fbc16ffc
