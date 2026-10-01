@@ -7,6 +7,7 @@
 #include <locale>
 #include <stdexcept>
 #include <set>
+#include <charconv>
 
 #include "AICastor.h"
 #include "AINicowar.h"
@@ -18,6 +19,7 @@
 #include <algorithm>
 
 #include <BinaryStream.h>
+#include <TextStream.h>
 #include <StreamBackend.h>
 
 #include "BuildingType.h"
@@ -322,7 +324,22 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream)
 	{
 		GAGCore::BinaryInputStream::CheckedReads checked(stream);
 		stream->readEnterSection("scriptGenerations");
-		for(unsigned i=0;i<scriptGenerations.size();++i){stream->readEnterSection(i);scriptGenerations[i]=stream->readUint32("value");stream->readLeaveSection();}
+		const bool text = dynamic_cast<GAGCore::TextInputStream *>(stream) != nullptr;
+		for (unsigned i = 0; i < scriptGenerations.size(); ++i)
+		{
+			stream->readEnterSection(i);
+			if (text)
+			{
+				const auto encoded = stream->readText("value");
+				Uint32 generation = 0;
+				const auto parsed = std::from_chars(encoded.data(), encoded.data() + encoded.size(), generation);
+				if (parsed.ec != std::errc{} || parsed.ptr != encoded.data() + encoded.size())
+					throw std::runtime_error("Invalid or missing script generation counter");
+				scriptGenerations[i] = generation;
+			}
+			else scriptGenerations[i] = stream->readUint32("value");
+			stream->readLeaveSection();
+		}
 		stream->readLeaveSection();
         for(int t=0;t<mapHeader.getNumberOfTeams();++t)for(int i=0;i<1024;++i)
         {

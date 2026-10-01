@@ -11,6 +11,7 @@
 #include <Toolkit.h>
 #include <FileManager.h>
 #include <cstdio>
+#include <TextStream.h>
 
 TEST_CASE("JavaScript pass retains network protocol acceptance boundaries" *
 		  doctest::test_suite("JavaScriptCompatibility"))
@@ -39,6 +40,43 @@ TEST_CASE("JavaScript pass retains network protocol acceptance boundaries" *
 			CHECK(client.getLoginState() == YOGClientVersionTooOld);
 		}
 	}
+}
+
+TEST_CASE("JavaScript current text saves validate unused generation counters" *
+		  doctest::test_suite("JavaScriptCompatibility"))
+{
+	glob2test::HeadlessGlobals globals;
+	GameGUI original;
+	GAGCore::BinaryInputStream initial(glob2OpenMapOrSaveInputStreamBackend(
+		*GAGCore::Toolkit::getFileManager(),
+		glob2test::inflated("javascript/profile1-initial.game.gz").string()));
+	REQUIRE(original.game.load(&initial));
+	auto *storage = new GAGCore::MemoryStreamBackend;
+	GAGCore::TextOutputStream output(storage);
+	original.game.save(&output, false, "Counter validation");
+	const auto text = storage->takeContents();
+	const auto position = text.rfind("value = ");
+	REQUIRE(position != std::string::npos);
+	const auto end = text.find(';', position);
+	REQUIRE(end != std::string::npos);
+	const auto load = [](const std::string &bytes) {
+		GAGCore::MemoryStreamBackend backend(bytes.data(), bytes.size());
+		backend.seekFromStart(0);
+		GAGCore::TextInputStream input(&backend);
+		GameGUI restored;
+		return restored.game.load(&input);
+	};
+	REQUIRE(load(text));
+	for (const char *value : {"", "invalid", "-1", "4294967296", "0 trailing"})
+	{
+		CAPTURE(value);
+		auto corrupted = text;
+		corrupted.replace(position + 8, end - position - 8, value);
+		CHECK_THROWS_AS(load(corrupted), std::runtime_error);
+	}
+	auto missing = text;
+	missing.erase(position, end - position + 1);
+	CHECK_THROWS_AS(load(missing), std::runtime_error);
 }
 
 TEST_CASE("JavaScript pass retains released replay and acceptance boundaries" *
