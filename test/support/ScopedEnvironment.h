@@ -25,9 +25,10 @@ public:
 			SDL_setenv(name.c_str(), original->c_str(), 1);
 		else
 		{
-#ifdef _WIN32
-			_putenv_s(name.c_str(), "");
-#else
+			// Clear SDL's environment first: Windows deletes an empty value,
+			// while SDL2-compat keeps a separate SDL3 environment snapshot.
+			SDL_setenv(name.c_str(), "", 1);
+#ifndef _WIN32
 			unsetenv(name.c_str());
 #endif
 		}

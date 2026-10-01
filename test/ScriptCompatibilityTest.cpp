@@ -30,6 +30,27 @@ TEST_CASE("JavaScript test profile uses SDL environment ownership" *
 		CHECK(glob2test::profileDir() == outer);
 	}
 	CHECK(glob2test::profileDir() == original);
+
+	// Restore an absent variable through SDL's own environment, including
+	// Windows and SDL2-compat. An empty cached value is also inactive.
+	const auto absent = "GLOB2_TEST_SCOPED_ENV_" + original.filename().string();
+	REQUIRE(SDL_getenv(absent.c_str()) == nullptr);
+	const auto currentValue = [&] {
+		const char *value = SDL_getenv(absent.c_str());
+		REQUIRE(value != nullptr);
+		return std::string(value);
+	};
+	{
+		glob2test::ScopedEnvironment outerValue(absent.c_str(), "outer");
+		CHECK(currentValue() == "outer");
+		{
+			glob2test::ScopedEnvironment innerValue(absent.c_str(), "inner");
+			CHECK(currentValue() == "inner");
+		}
+		CHECK(currentValue() == "outer");
+	}
+	const char *restored = SDL_getenv(absent.c_str());
+	CHECK((!restored || !*restored));
 }
 
 TEST_CASE("JavaScript pass retains network protocol acceptance boundaries" *
