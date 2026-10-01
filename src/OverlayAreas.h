@@ -5,6 +5,7 @@
 
 #include <vector>
 #include "Types.h"
+#include <GraphicContext.h>
 
 class Game;
 
@@ -39,6 +40,19 @@ public:
 	
 	///Returns the last computed overlay type
 	OverlayType getOverlayType();
+
+	///The colour an overlay is drawn in (its alpha scales with the value)
+	static GAGCore::Color colorOf(OverlayType type)
+	{
+		switch (type)
+		{
+			case Starving: return GAGCore::Color(192, 0, 0);
+			case Damage: return GAGCore::Color(192, 0, 0);
+			case Defence: return GAGCore::Color(0, 0, 192);
+			case Fertility: return GAGCore::Color(0, 192, 128);
+			default: return GAGCore::Color();
+		}
+	}
 	
 	///Forces recomputing the overlay next round
 	void forceRecompute();

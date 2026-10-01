@@ -3170,6 +3170,8 @@ Jobb
 Bal
 [Undo stroke]
 Visszavonás
+[No overlay]
+Nincs réteg
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

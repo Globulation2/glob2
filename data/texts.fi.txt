@@ -3170,6 +3170,8 @@ Oikea
 Vasen
 [Undo stroke]
 Kumoa
+[No overlay]
+Ei tasoa
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

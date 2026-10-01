@@ -3178,6 +3178,8 @@ Vpravo
 Vľavo
 [Undo stroke]
 Späť
+[No overlay]
+Bez vrstvy
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

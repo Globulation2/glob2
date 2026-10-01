@@ -3180,6 +3180,8 @@ Eskuina
 Ezkerra
 [Undo stroke]
 Desegin
+[No overlay]
+Geruzarik ez
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

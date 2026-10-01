@@ -3170,6 +3170,8 @@ Derecha
 Izquierda
 [Undo stroke]
 Deshacer
+[No overlay]
+Sin capa
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

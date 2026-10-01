@@ -622,8 +622,26 @@ class MobileGalleryGameplay
 			gui.clearSelection();
 		}
 		gui.displayMode = GameGUI::STAT_TEXT_VIEW;
-		gui.touch->panelOpen = true;
+		// Phones show the lens strip; Spacious tablets and desktop the tactical list.
+		gui.touch->lensOpen = true;
+		gui.touch->panelOpen = desktopPresentation || gui.touch->layout().persistentPanel;
 		capture("game-tactical-tools");
+		if (!desktopPresentation)
+		{
+			gui.touch->lensOpen = false;
+			gui.touch->panelOpen = false;
+			gui.showStarvingMap = true;
+			gui.overlay.compute(gui.game, OverlayArea::Starving, gui.localTeamNo);
+			capture("game-lens-legend");
+			gui.showStarvingMap = false;
+			gui.touch->peekOpen = true;
+			capture("game-map-peek");
+			gui.touch->peekOpen = false;
+			gui.touch->statsOpen = true;
+			capture("game-stats-sheet");
+			gui.touch->statsOpen = false;
+		}
+		gui.touch->lensOpen = false;
 		gui.displayMode = GameGUI::FLAG_VIEW;
 		gui.touch->panelOpen = false;
 		gui.setSelection(GameGUI::TOOL_SELECTION, const_cast<char *>("inn"));
@@ -1085,6 +1103,9 @@ class MobileGalleryGameplay
 		{
 			editor.phone->undo.reset();
 			editor.performAction("select water");
+			editor.phone->peekOpen = true;
+			editCapture("editor-map-peek");
+			editor.phone->peekOpen = false;
 		}
 
 		if (editor.phone)

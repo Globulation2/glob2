@@ -3170,6 +3170,8 @@ Dreapta
 Stânga
 [Undo stroke]
 Anulează
+[No overlay]
+Fără strat
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

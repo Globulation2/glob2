@@ -3170,6 +3170,8 @@ Rechts
 Links
 [Undo stroke]
 Rückgängig
+[No overlay]
+Keine Ebene
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

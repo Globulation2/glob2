@@ -3242,6 +3242,8 @@ Emoji
 左側
 [Undo stroke]
 復原
+[No overlay]
+無圖層
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

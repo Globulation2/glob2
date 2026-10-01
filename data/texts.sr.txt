@@ -3170,6 +3170,8 @@ Emoji
 Лево
 [Undo stroke]
 Опозови
+[No overlay]
+Без слоја
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

@@ -34,7 +34,20 @@ uses the portable renderer.
 The gameplay toolbar opens build choices, flags/zones, tactical tools, objectives,
 alliances and the session menu. The minimap is a separate top-right HUD component.
 Tapping it centres the camera there; dragging keeps steering the camera and clamps
-at the minimap's edge when the finger leaves it;
+at the minimap's edge when the finger leaves it. A still 400 ms press on it, or the
+map lens, opens a map peek: a large minimap over the dimmed map that steers the
+camera while dragged, with Done, zoom out and zoom in (nearest the thumb) below
+it (beside it, zoom in lowest, on landscape screens); a tap outside, Done, focus
+loss or rotation closes it. On compact layouts the
+Tools button opens a lens strip in the thumb corner instead of the tactical list:
+No overlay and the four overlays (mutually exclusive), health bars, statistics,
+the map peek, message history, map marks and chat, each running the same
+`menuAction` as the list. Once the strip closes, a legend in the far corner names
+the active overlay and shows its intensity ramp (`OverlayArea::colorOf`). The
+statistics lens opens a sheet above the toolbar with the end-of-game chart for the
+player's own team only (opponents' histories stay hidden until the match ends),
+metric arrows under the thumb and current counters; × or pulling it down closes
+it. Spacious layouts and replays keep the tactical list;
 phone palettes float over the camera, while spacious touch layouts keep a
 content-sized palette open at the right. Both preserve the camera framing and
 leave the world visible below short panels. In-game surfaces use `InGameTouchTheme.h`; frontend paper styling remains
@@ -145,7 +158,8 @@ that a drag out of the rail places a building rather than navigating back.
   touch and desktop render the same tree in the in-match theme. File operations
   keep their existing persistence and error/retry state machines.
 - `EndGameScreen` owns a chart, metric dropdown, team filters, expansion and replay
-  export on both desktop and touch. `EndGameStat` retains history interpretation,
+  export on both desktop and touch. The chart itself is `TeamStatChart`, shared with
+  the compact in-match statistics sheet. `EndGameStat` retains history interpretation,
   including explanations for missing measurement coverage. Compact layouts put metric
   and team-filter entry points in one row, with scrollable filters over the plot.
   Axis labels stay outside the curves.
@@ -192,7 +206,10 @@ Pan, sizes). Zone, script-area and no-growth strokes offer Undo for six seconds,
 restoring the covered tiles and displayed zone bits exactly; terrain, resource
 and delete strokes remove units, buildings and resources, so they offer none.
 The editor does not pan while a stroke is held at an edge: its strokes are
-replayed in screen coordinates on release, so use Pan instead. The brush rail chooses the mask. Pending
+replayed in screen coordinates on release, so use Pan instead. A Map button in
+the content's bottom corner away from the thumb opens the same map peek as in
+gameplay (buttons below it in portrait, beside it in landscape) over the editor's
+own minimap; it only moves the view. The brush rail chooses the mask. Pending
 strokes draw their coverage before release without changing the map. Presentation measurements and drag thresholds are point-based
 policies at the top of `PhoneEditor.cpp`.
 

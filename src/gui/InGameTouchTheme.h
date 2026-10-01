@@ -62,6 +62,15 @@ inline constexpr double brushRailMinimumCell = 32;
 inline constexpr double brushPreviewSize = 96;
 inline constexpr double brushUndoWidth = 80;
 inline constexpr unsigned brushUndoMs = 6000;
+// Lens strip cells, the map peek's largest side and internal minimap size, and
+// how long a still press on the minimap takes to open the peek.
+inline constexpr double lensWidth = 128;
+inline constexpr double lensHeight = 48;
+inline constexpr double peekSide = 300;
+inline constexpr int peekMinimapSize = 256;
+inline constexpr unsigned peekPressMs = 400;
+inline constexpr double peekZoomStep = 1.25;
+inline constexpr double peekButtonColumn = 96; // Landscape: buttons beside the map.
 inline constexpr double dragThreshold = 8;
 inline constexpr double fingerLift = 48;
 inline constexpr double edgePanMargin = 24;

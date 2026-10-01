@@ -3178,6 +3178,8 @@ Sağ
 Sol
 [Undo stroke]
 Geri al
+[No overlay]
+Katman yok
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

@@ -3150,6 +3150,8 @@ Droite
 Gauche
 [Undo stroke]
 Annuler
+[No overlay]
+Aucun calque
 [zoom factor %0]
 %0×
 [More]

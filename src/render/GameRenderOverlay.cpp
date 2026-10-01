@@ -182,15 +182,7 @@ void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int sw, int
 			overlays=&edit->overlay;
 		else assert(false);
 		int overlayMax=overlays->getMaximum();
-		Color overlayColor;
-		switch(overlays->getOverlayType())
-		{
-			case OverlayArea::Starving:  overlayColor=Color(192, 0, 0);   break;
-			case OverlayArea::Damage:    overlayColor=Color(192, 0, 0);   break;
-			case OverlayArea::Defence:   overlayColor=Color(0, 0, 192);   break;
-			case OverlayArea::Fertility: overlayColor=Color(0, 192, 128); break;
-			case OverlayArea::None:      break;
-		}
+		const Color overlayColor = OverlayArea::colorOf(overlays->getOverlayType());
 		///Both width and height have +2 to cover half-squares around the edge of the viewport
 		int width = (right - left) + 2;
 		int height = (bot - top) + 2;

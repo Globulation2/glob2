@@ -3138,6 +3138,8 @@ Right
 Left
 [Undo stroke]
 Undo
+[No overlay]
+No overlay
 [zoom factor %0]
 %0×
 [More]
