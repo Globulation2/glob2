@@ -56,4 +56,10 @@ extern "C" SDL_AudioStream *SDL_OpenAudioDeviceStream(SDL_AudioDeviceID, const S
 extern "C" void *SDL_GetAndroidJNIEnv() { return nullptr; }
 extern "C" void *SDL_GetAndroidActivity() { return nullptr; }
 
-__attribute__((constructor)) static void prepareNativeTest() { SDL_SetMainReady(); }
+__attribute__((constructor)) static void prepareNativeTest()
+{
+    SDL_SetMainReady();
+    // SDL3 otherwise asks the Android JVM for the executable/package identity.
+    // These shell binaries have no JVM, even when using dummy video.
+    SDL_SetAppMetadata("Glob2 native tests", "test", "org.globulation2.glob2.native-tests");
+}

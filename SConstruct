@@ -394,7 +394,9 @@ def main():
         env.Append(RPATH=[sdl_prefix + '/lib'])
         env['ENV']['PATH'] = sdl_prefix + '/bin' + os.pathsep + env['ENV'].get('PATH', '')
         if not isDarwinPlatform and not isWindowsPlatform and not env['mingw'] and not env['mingwcross']:
-            env.Append(RPATH=[r'\$$ORIGIN/../lib/glob2'])
+            # RPATH entries undergo another SCons expansion; protect the linker
+            # flag directly so the loader receives a literal $ORIGIN.
+            env.Append(LINKFLAGS=[env.Literal("-Wl,-rpath,'$ORIGIN/../lib/glob2'")])
             runtime = env.Install(str(Path(env['BINDIR']).parent / 'lib/glob2'),
                                   list(Path(sdl_prefix, 'lib').glob('libSDL3*.so*')))
             env.Alias('install', runtime)
