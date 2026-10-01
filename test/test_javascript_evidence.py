@@ -46,6 +46,11 @@ class ProvenanceTests(unittest.TestCase):
             self.assertNotEqual(before['sourceTreeSha256'], after['sourceTreeSha256'])
             self.assertFalse(before['dirty'])
             self.assertTrue(after['dirty'])
+            self.assertEqual(before['sourceStatus'], [])
+            self.assertEqual(after['sourceStatus'], [' M runtime.cpp'])
+            (root / 'extra.js').write_text('new source input')
+            self.assertEqual(source_identity(root)['sourceStatus'],
+                             [' M runtime.cpp', '?? extra.js'])
 
     def test_older_subset_cannot_omit_retained_nan_or_conversion(self):
         with tempfile.TemporaryDirectory() as directory:

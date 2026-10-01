@@ -11,7 +11,8 @@ def source_identity(root=ROOT):
         return subprocess.check_output(['git', *args], cwd=root)
     # Refresh cached index stats first, so touching identical content does not
     # masquerade as a changed worktree input in diff-files.
-    dirty = bool(git('status', '--porcelain').strip())
+    status = git('status', '--porcelain')
+    dirty = bool(status.strip())
     # Git's blob representation normalizes checkout-only CRLF and symlink
     # differences. Hash dirty worktree inputs too; an edited binary cannot be
     # relabeled as its unchanged HEAD, even during development runs.
@@ -48,6 +49,7 @@ def source_identity(root=ROOT):
         digest.update(relative + b'\0' + identity + b'\0')
     return {'revision': git('rev-parse', 'HEAD').decode().strip(),
             'dirty': dirty,
+            'sourceStatus': status.decode('utf-8', errors='replace').splitlines(),
             'sourceTreeSha256': digest.hexdigest()}
 
 

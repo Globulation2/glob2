@@ -56,7 +56,9 @@ def main():
             manifest[name] = (build / name).read_text()
     (output / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
     if manifest['dirty'] and not args.allow_dirty:
-        raise RuntimeError('Commit the tested revision first, or use --allow-dirty for development runs')
+        changes = '\n'.join(manifest['sourceStatus'])
+        raise RuntimeError('Source checkout is dirty:\n' + changes +
+                           '\nCommit the tested revision first, or use --allow-dirty for development runs')
     env = dict(os.environ, GLOB2_TEST_ARTIFACTS_ROOT=str(output / 'corpus'))
     env.pop('GLOB2_TEST_UPDATE_FIXTURES', None)
     for name in ('glob2-unit-tests', 'glob2-engine-tests'):
