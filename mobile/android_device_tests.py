@@ -47,7 +47,7 @@ def main():
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=True)
     summary = {'serial': args.serial, 'arch': args.arch, 'remoteDirectory': remote,
-               'mode': 'native Android CPU with SDL dummy video; no JVM or audio device',
+               'mode': 'native Android CPU with SDL dummy video/audio; no JVM or hardware playback',
                'tests': []}
     with tempfile.TemporaryDirectory(prefix='glob2-device-tests-') as directory:
         payload = Path(directory)

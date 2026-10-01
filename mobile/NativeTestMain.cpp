@@ -47,12 +47,8 @@ extern "C" SDL_IOStream *SDL_IOFromFile(const char *path, const char *mode)
     return stream;
 }
 
-// Shell suites have no audio device. Installed-APK tests cover actual playback.
-extern "C" SDL_AudioStream *SDL_OpenAudioDeviceStream(SDL_AudioDeviceID, const SDL_AudioSpec *, SDL_AudioStreamCallback, void *)
-{
-    SDL_SetError("Audio device unavailable in native shell tests");
-    return nullptr;
-}
+// The runner selects SDL's real dummy audio driver. Installed-APK tests cover
+// hardware playback; shell suites still exercise stream creation and locking.
 extern "C" void *SDL_GetAndroidJNIEnv() { return nullptr; }
 extern "C" void *SDL_GetAndroidActivity() { return nullptr; }
 

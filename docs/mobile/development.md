@@ -601,7 +601,7 @@ those fixtures for diagnosis and never clears the installed app's data.
 
 The engine binary reuses the production client objects. `mobile/NativeTestMain.cpp` supplies only the
 shell platform bridges: filesystem assets, SDL main readiness, explicit app
-metadata, absent Activity, and unavailable audio. Its event poll drains SDL's
+metadata and absent Activity. Audio uses SDL's real dummy driver. Its event poll drains SDL's
 queue without pumping the absent Java lifecycle queue. SDL3 renderer creation
 waits for a Java Activity, so native dummy-video tools retain software rendering.
 These tests execute
