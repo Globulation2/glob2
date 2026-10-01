@@ -67,8 +67,19 @@ namespace GAGCore
                     {
                         glColor3ub(quad.color.r, quad.color.g, quad.color.b);
                         glVertex2f(quad.x, quad.y);
+#ifdef GLOB2_WEBGL2
+                        // Emscripten's immediate-mode emulation stores color
+                        // as a vertex attribute, rather than inherited state.
+                        glColor3ub(quad.color.r, quad.color.g, quad.color.b);
+#endif
                         glVertex2f(quad.x + quad.w, quad.y);
+#ifdef GLOB2_WEBGL2
+                        glColor3ub(quad.color.r, quad.color.g, quad.color.b);
+#endif
                         glVertex2f(quad.x + quad.w, quad.y + quad.h);
+#ifdef GLOB2_WEBGL2
+                        glColor3ub(quad.color.r, quad.color.g, quad.color.b);
+#endif
                         glVertex2f(quad.x, quad.y + quad.h);
                     }
                     glEnd();
