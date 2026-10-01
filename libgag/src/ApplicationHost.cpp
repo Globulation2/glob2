@@ -41,6 +41,7 @@ void wait(std::uint32_t milliseconds)
 	if (milliseconds)
 		SDL_Delay(milliseconds);
 }
+void initializeOpenGLContext() {}
 bool takeVisibilityChange(bool &)
 {
 	return false;

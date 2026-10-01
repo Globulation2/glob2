@@ -25,6 +25,9 @@ void run(std::unique_ptr<Loop> loop, std::function<void()> complete);
 // use scheduled screens or cooperative tasks; the browser implementation rejects it.
 void wait(std::uint32_t milliseconds);
 
+// Initialize host compatibility state after a new OpenGL context is current.
+void initializeOpenGLContext();
+
 // Consume the newest host viewport request at an application frame boundary.
 bool takeViewportSize(int &width, int &height);
 // Read current host points, safe areas, keyboard occlusion and input capabilities.

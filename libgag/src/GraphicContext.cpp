@@ -9,6 +9,7 @@
 #include <SupportFunctions.h>
 #include <InterfacePresentation.h>
 #include <BrowserTextInput.h>
+#include <ApplicationHost.h>
 #include <algorithm>
 #include <assert.h>
 #include <cstdlib>
@@ -21,9 +22,6 @@
 #include <string>
 #include <SDL3_ttf/SDL_ttf.h>
 #include <SDL3_image/SDL_image.h>
-#ifdef GLOB2_WEBGL2
-#include <emscripten.h>
-#endif
 
 namespace GAGCore
 {
@@ -687,16 +685,7 @@ namespace GAGCore
 					return false;
 				}
 				++glContextGeneration;
-#ifdef GLOB2_WEBGL2
-                // SDL3 creates its context through the HTML5 API rather than
-                // Browser.createContext. Notify the pinned Emscripten legacy
-                // GL emulation before using its matrices or client arrays.
-                EM_ASM({
-                    Browser.useWebGL = true;
-                    Module['ctx'] = GLctx;
-                    Browser.moduleContextCreatedCallbacks.forEach(function(callback) { callback(); });
-                });
-#endif
+                ApplicationHost::initializeOpenGLContext();
 				#ifdef HAVE_OPENGL
 				// The new context starts at the GL defaults, so a cache still describing the
 				// replaced one would skip the enables the next draw call needs.

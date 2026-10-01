@@ -11,6 +11,16 @@
 
 namespace GAGCore::ApplicationHost
 {
+void initializeOpenGLContext()
+{
+    // SDL3 uses the HTML5 context API, bypassing Browser.createContext and the
+    // callbacks that initialize the pinned Emscripten legacy GL emulation.
+    EM_ASM({
+        Browser.useWebGL = true;
+        Module['ctx'] = GLctx;
+        Browser.moduleContextCreatedCallbacks.forEach(function(callback) { callback(); });
+    });
+}
 namespace
 {
 struct ScheduledLoop { std::unique_ptr<Loop> loop; std::function<void()> complete; };
