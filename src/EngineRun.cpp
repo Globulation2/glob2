@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <PerformanceTelemetry.h>
+#include <EventQueue.h>
 #include <ApplicationHost.h>
 #include <FormatableString.h>
 
@@ -653,11 +654,11 @@ void Engine::beginSession(Uint64 now)
 
 bool Engine::stepSession(Uint64 now)
 {
-    std::vector<SDL_Event> events;
+    GAGCore::EventQueue events;
     SDL_Event event;
     if (!globalContainer->runNoX)
         while (SDL_PollEvent(&event)) events.push_back(event);
-    return stepSession(now, events);
+    return stepSession(now, events.events());
 }
 
 bool Engine::stepSession(Uint64 now, const std::vector<SDL_Event>& events)

@@ -2,6 +2,7 @@
 #include <ScreenStack.h>
 #include <BrowserTextInput.h>
 #include <ApplicationHost.h>
+#include <EventQueue.h>
 #include <GraphicContext.h>
 #include <stdexcept>
 #include <typeinfo>
@@ -188,11 +189,11 @@ int ScreenStack::execute(unsigned stepLength)
 	while (running())
 	{
 		const Uint64 start = SDL_GetTicks();
-		std::vector<SDL_Event> events;
+		GAGCore::EventQueue events;
 		SDL_Event event;
 		while (SDL_PollEvent(&event))
 			events.push_back(event);
-		frame(static_cast<Uint32>(start), events);
+		frame(static_cast<Uint32>(start), events.events());
 		if (running())
 		{
 			const Uint64 elapsed = SDL_GetTicks() - start;

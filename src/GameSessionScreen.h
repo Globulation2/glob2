@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include <GUIBase.h>
+#include <EventQueue.h>
 #include <InterfacePresentation.h>
 #include <ScreenStack.h>
 #include "FrontendTheme.h"
@@ -31,7 +32,7 @@ class GameSessionScreen : public GAGGUI::Screen
 	FrontendScope theme{false};
 	GAGGUI::ScreenStack &stack;
 	std::unique_ptr<Engine> engine;
-	std::vector<SDL_Event> input;
+	GAGCore::EventQueue input;
 	bool started = false, finished = false, resetClock = false;
 	Uint32 lastTick = 0;
 	Uint64 clock = 0, nextTick = 0;

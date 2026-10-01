@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <ApplicationHost.h>
+#include <EventQueue.h>
 #include <BrowserTextInput.h>
 #include <InterfacePresentation.h>
 #include <map>
@@ -57,10 +58,10 @@ void scheduledFrame(void* opaque)
             Module.gpuRestores = (Module.gpuRestores || 0) + 1;
         });
     }
-    std::vector<SDL_Event> events;
+    GAGCore::EventQueue events;
     SDL_Event event;
     while (SDL_PollEvent(&event)) events.push_back(event);
-    const bool running = state->loop->frame(SDL_GetTicks(), events);
+    const bool running = state->loop->frame(SDL_GetTicks(), events.events());
     // Diagnostics: one increment per processed host frame, so tests can wait
     // for queued input to be consumed.
     EM_ASM({ Module.glob2Loop = (Module.glob2Loop || 0) + 1; });

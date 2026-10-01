@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <PerformanceTelemetry.h>
+#include <EventQueue.h>
 #include <stdio.h>
 #include <stdarg.h>
 #include <math.h>
@@ -118,10 +119,10 @@ void GameGUI::dragStep(int mx, int my, int button)
    have not yet processed.) */
 void GameGUI::step(void)
 {
-    std::vector<SDL_Event> events;
+    GAGCore::EventQueue events;
     SDL_Event event;
     while (GAGCore::GraphicContext::pollEvent(&event)) events.push_back(event);
-    step(events, SDL_GetTicks());
+    step(events.events(), SDL_GetTicks());
 }
 
 void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)

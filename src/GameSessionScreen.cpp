@@ -46,7 +46,7 @@ void GameSessionScreen::updateExecution(Uint32 tick)
 	}
 	if (clock < nextTick)
 		return;
-	const bool running = engine->stepSession(clock, input);
+	const bool running = engine->stepSession(clock, input.events());
 	input.clear();
 	nextTick = clock + engine->sessionDelay(clock);
 	if (!running)

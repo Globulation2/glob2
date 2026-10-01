@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <ApplicationHost.h>
+#include <EventQueue.h>
 #include <BrowserTextInput.h>
 #ifndef YOG_SERVER_ONLY
 #include <GraphicContext.h>
@@ -20,7 +21,7 @@ void run(std::unique_ptr<Loop> loop, std::function<void()> complete)
 {
 	for (;;)
 	{
-		std::vector<SDL_Event> events;
+		GAGCore::EventQueue events;
 		SDL_Event event;
 #ifdef YOG_SERVER_ONLY
 		while (SDL_PollEvent(&event))
@@ -28,7 +29,7 @@ void run(std::unique_ptr<Loop> loop, std::function<void()> complete)
 		while (GraphicContext::pollEvent(&event))
 #endif
 			events.push_back(event);
-		if (!loop->frame(SDL_GetTicks(), events))
+		if (!loop->frame(SDL_GetTicks(), events.events()))
 			break;
 		wait(loop->delay(SDL_GetTicks()));
 	}
