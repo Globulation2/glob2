@@ -188,7 +188,7 @@ jobs:
         if: steps.build_glob2_and_the_regression_harnesses.outcome == 'success'
         run: |
           test -x build/linux/client/release/src/glob2
-          find build/linux/client/release build/sdl3-ci/prefix/lib -type f \( -perm /111 -o -name '*.so*' \) -print0 |
+          find build/linux/client/release build/sdl3-ci/prefix/lib \( -type f -o -type l \) \( -perm /111 -o -name '*.so*' \) -print0 |
             tar --null -czf linux-test-programs.tar.gz -T -
       - uses: actions/upload-artifact@v4
         id: upload_linux_test_programs
@@ -323,7 +323,9 @@ jobs:
           name: linux-test-programs-${{ matrix.runner }}
       - name: Unpack built Linux test programs
         id: unpack_linux_test_programs
-        run: tar -xzf linux-test-programs.tar.gz
+        run: |
+          tar -xzf linux-test-programs.tar.gz
+          echo "LD_LIBRARY_PATH=$PWD/build/sdl3-ci/prefix/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" >> "$GITHUB_ENV"
 
       - name: Run the unit tests
         if: ${{ matrix.shard == 4 }}
@@ -697,7 +699,9 @@ jobs:
       - name: Unpack built Linux test programs
         id: unpack_linux_test_programs
         if: ${{ needs.linux-build.result == 'success' }}
-        run: tar -xzf linux-test-programs.tar.gz
+        run: |
+          tar -xzf linux-test-programs.tar.gz
+          echo "LD_LIBRARY_PATH=$PWD/build/sdl3-ci/prefix/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" >> "$GITHUB_ENV"
 
       # Reads the main job's cache and never saves on the standalone path.
       - name: Restore the compiler cache
