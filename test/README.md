@@ -910,7 +910,9 @@ controls, replay actions, setup/settings navigation and modal viewport changes.
 Build and run commands are in [Mobile development](../docs/mobile/development.md#verification).
 The `GameGUITouch` and `UIPresentation` cases need a windowing display (Xvfb on
 Linux), run in isolated profiles and copy their screenshots into their artifact
-directories. They complement
+directories. `UIPresentation` has one case per viewport, so CI shards distribute
+the full screen/presentation/inset sweep and each viewport gets its own timeout
+and failure report. They complement
 Android/iOS device playtesting; they do not establish device lifecycle,
 performance, keyboard or cross-platform simulation compatibility.
 

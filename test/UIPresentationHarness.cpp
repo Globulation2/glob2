@@ -341,8 +341,11 @@ void verify(UIScreen &screen, const std::string &label)
 		}
 	require(host.focusOrder().size() >= 1, label + ": nothing is focusable");
 }
-void run()
+void run(const Viewport &viewport)
 {
+	if (const char *only = SDL_getenv("GLOB2_UI_VIEWPORT");
+		only && *only && std::string(only) != viewport.name)
+		return;
 	glob2test::GlobalsOptions options{.display = true, .loadStrings = true, .width = 800, .height = 600,
 	                                  .screenFlags = GAGCore::GraphicContext::PORTABLEGPU | GAGCore::GraphicContext::RESIZABLE};
 	glob2test::HeadlessGlobals globals(options);
@@ -352,67 +355,62 @@ void run()
 	for (const char *presentation : {"0", "1"})
 	{
 		SDL_setenv("GLOB2_MOBILE_UI", presentation, 1);
-		for (const auto &viewport : viewports)
+		if (presentation[0] == '0' && viewport.width < 600)
+			continue;
+		resize(viewport.width, viewport.height);
+		for (const auto &insets : insetSets)
 		{
-			if (const char *only = SDL_getenv("GLOB2_UI_VIEWPORT"); only && *only && std::string(only) != viewport.name)
-				continue;
-			if (presentation[0] == '0' && viewport.width < 600)
-				continue;
-			resize(viewport.width, viewport.height);
-			for (const auto &insets : insetSets)
+			GAGCore::mobileSafeInsetsForTesting = insets;
+			for (const auto &fixture : fixtures())
 			{
-				GAGCore::mobileSafeInsetsForTesting = insets;
-				for (const auto &fixture : fixtures())
-				{
-					if (const char *only = SDL_getenv("GLOB2_UI_ONLY"); only && *only && std::string(only) != fixture.name)
-						continue;
-					GAGGUI::ScreenStack stack(*globalContainer->gfx);
-					auto owned = fixture.make(stack);
-					auto *screen = dynamic_cast<UIScreen *>(owned.get());
-					require(screen != nullptr, std::string(fixture.name) + " is not a UIScreen");
-					stack.push(std::move(owned));
-					stack.frame(0, {});
-					stack.frame(40, {});
-					if (std::string(fixture.name) == "main-menu-more")
-						if (auto *more = screen->host().find("menu/more"))
-						{
-							const auto r = more->bounds;
-							screen->host().tapAt({r.x + r.w / 2, r.y + r.h / 2});
-							stack.frame(60, {});
-						}
-					require(stack.running(), std::string(fixture.name) + " ended during warm-up");
-					const std::string label = std::string(fixture.name) + " " + viewport.name +
-											  " touch=" + presentation + " bottom=" +
-											  std::to_string(int(insets.bottom));
-					if (const char *reveal = SDL_getenv("GLOB2_UI_REVEAL"); reveal && *reveal)
+				if (const char *only = SDL_getenv("GLOB2_UI_ONLY"); only && *only && std::string(only) != fixture.name)
+					continue;
+				GAGGUI::ScreenStack stack(*globalContainer->gfx);
+				auto owned = fixture.make(stack);
+				auto *screen = dynamic_cast<UIScreen *>(owned.get());
+				require(screen != nullptr, std::string(fixture.name) + " is not a UIScreen");
+				stack.push(std::move(owned));
+				stack.frame(0, {});
+				stack.frame(40, {});
+				if (std::string(fixture.name) == "main-menu-more")
+					if (auto *more = screen->host().find("menu/more"))
 					{
-						screen->host().scrollIntoView(reveal);
+						const auto r = more->bounds;
+						screen->host().tapAt({r.x + r.w / 2, r.y + r.h / 2});
 						stack.frame(60, {});
 					}
-					if (capture && insets.bottom == 0)
-						globalContainer->gfx->printScreen("ui-" + std::string(fixture.name) + "-" +
-														  viewport.name + "-touch" + presentation + ".bmp");
-					verifyOrDump(*screen, label);
-					stack.frame(80, {});
-					// Tab reaches every control and never throws.
-					for (std::size_t i = 0; fixture.navigable && i < screen->host().focusOrder().size(); ++i)
-					{
-						SDL_Event tab{};
-						tab.type = SDL_KEYDOWN;
-						tab.key.keysym.sym = SDLK_TAB;
-						stack.frame(120 + Uint32(i), {tab});
-					}
-					if (fixture.navigable && screen->host().focused().empty())
-					{
-						std::string order;
-						for (const auto &key : screen->host().focusOrder())
-							order += key + " ";
-						require(false, label + ": tab never focused a control (order: " + order + ", editing: " + screen->host().editing() + ")");
-					}
-					screen->endExecute(0);
-					stack.frame(200, {});
-					++checked;
+				require(stack.running(), std::string(fixture.name) + " ended during warm-up");
+				const std::string label = std::string(fixture.name) + " " + viewport.name +
+										  " touch=" + presentation + " bottom=" +
+										  std::to_string(int(insets.bottom));
+				if (const char *reveal = SDL_getenv("GLOB2_UI_REVEAL"); reveal && *reveal)
+				{
+					screen->host().scrollIntoView(reveal);
+					stack.frame(60, {});
 				}
+				if (capture && insets.bottom == 0)
+					globalContainer->gfx->printScreen("ui-" + std::string(fixture.name) + "-" +
+													  viewport.name + "-touch" + presentation + ".bmp");
+				verifyOrDump(*screen, label);
+				stack.frame(80, {});
+				// Tab reaches every control and never throws.
+				for (std::size_t i = 0; fixture.navigable && i < screen->host().focusOrder().size(); ++i)
+				{
+					SDL_Event tab{};
+					tab.type = SDL_KEYDOWN;
+					tab.key.keysym.sym = SDLK_TAB;
+					stack.frame(120 + Uint32(i), {tab});
+				}
+				if (fixture.navigable && screen->host().focused().empty())
+				{
+					std::string order;
+					for (const auto &key : screen->host().focusOrder())
+						order += key + " ";
+					require(false, label + ": tab never focused a control (order: " + order + ", editing: " + screen->host().editing() + ")");
+				}
+				screen->endExecute(0);
+				stack.frame(200, {});
+				++checked;
 			}
 		}
 	}
@@ -426,8 +424,28 @@ void run()
 
 TEST_SUITE("UIPresentation")
 {
-	TEST_CASE("every screen lays out; navigates and captures across viewports; presentations and insets [display:1600x1400][artifacts][slow]")
+	TEST_CASE("every screen lays out; navigates and captures at small portrait across presentations and insets [display:1600x1400][artifacts][slow]")
 	{
-		run();
+		run(viewports[0]);
+	}
+	TEST_CASE("every screen lays out; navigates and captures at small landscape across presentations and insets [display:1600x1400][artifacts][slow]")
+	{
+		run(viewports[1]);
+	}
+	TEST_CASE("every screen lays out; navigates and captures at tablet portrait across presentations and insets [display:1600x1400][artifacts][slow]")
+	{
+		run(viewports[2]);
+	}
+	TEST_CASE("every screen lays out; navigates and captures at tablet landscape across presentations and insets [display:1600x1400][artifacts][slow]")
+	{
+		run(viewports[3]);
+	}
+	TEST_CASE("every screen lays out; navigates and captures at laptop across presentations and insets [display:1600x1400][artifacts][slow]")
+	{
+		run(viewports[4]);
+	}
+	TEST_CASE("every screen lays out; navigates and captures at fullhd across presentations and insets [display:1600x1400][artifacts][slow]")
+	{
+		run(viewports[5]);
 	}
 }

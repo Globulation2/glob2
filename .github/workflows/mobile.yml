@@ -8,7 +8,8 @@ on:
       - 'SConstruct'
       - 'libgag/**'
       - 'src/**'
-      - 'test/**'
+      # APK checks do not build or run the native regression harnesses.
+      - 'test/ci_step_summary.py'
       - 'tests/build_system/**'
       - 'fdroid/**'
       - 'fastlane/**'

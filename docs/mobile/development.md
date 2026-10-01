@@ -183,7 +183,9 @@ per-architecture cache keyed by the pinned toolchain, dependency manifest and
 triplets. A cache miss still builds normally; ccache checks compiler content and
 source dependencies before reusing an object. Leave `CCACHE` unset when generating
 `compile_commands.json` for source analysis. A newer PR push cancels its older
-Android checks.
+Android checks. The APK workflow does not build the native doctest harnesses,
+so changes confined to those harnesses run native CI without rebuilding all three
+Android APKs. Changes to the shared CI summary script still select the APK jobs.
 
 Use `python3 mobile/doctor.py android` or `python3 mobile/doctor.py ios` to inspect
 SDK availability. iOS requires the pinned full Xcode 27.0 toolchain;
