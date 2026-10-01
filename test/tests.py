@@ -270,6 +270,7 @@ PROGRAMS = [
     ('MapReportHarness', 'MapReportHarness.cpp', 'map-report-test', 'test'),
     ('MaximaStrategyDump', 'maxima/MaximaStrategyDump.cpp', 'maxima-strategy-dump', 'tools'),
     ('MenuColonyHarness', '#tools/MenuColonyHarness.cpp', 'menu-colony-harness', 'test'),
+    ('SoftwareRenderBenchmark', 'SoftwareRenderBenchmark.cpp', 'software-render-benchmark', 'tools'),
     ('torus-render-benchmark', 'TorusRenderBenchmark.cpp', 'torus-render-benchmark', 'tools'),
 ]
 

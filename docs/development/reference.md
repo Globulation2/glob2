@@ -496,3 +496,52 @@ paths and need compatibility links or updated scripts before cleanup. Migration
 never infers that extracted tool directories are trustworthy from a version
 string alone. Windows inventory/seeding is supported; duplicate removal requires
 a supported open-file checker and is conservatively skipped there.
+
+## Software rendering profiling
+
+Build the opt-in saved-game benchmark with optimized production objects:
+
+```sh
+scons release=1 server=0 opengl=0 software-render-benchmark
+PROFILE_SAVE=artifacts/software-renderer/initial.game.gz PROFILE_ZOOM=0.5 \
+  PROFILE_FRAMES=240 PROFILE_WARMUP=30 PROFILE_NO_PRESENT=1 PROFILE_CPU_SCOPES=1 \
+  GLOB2_USER_DATA_DIR=artifacts/software-renderer/profile \
+  build/darwin/client/release/test/SoftwareRenderBenchmark -G -s 1280x800 -m -F
+```
+
+Use the appropriate `linux`/`mingw` build directory or an explicit `--build=DIR`.
+Resolution is the existing `-s WxH` argument. `PROFILE_OFFSET_X/Y` add logical-pixel camera
+offsets; `PROFILE_FRACTION=1` adds a half-pixel horizontal offset. `PROFILE_VISIBLE=1`
+shows the window; omit `PROFILE_NO_PRESENT` to include presentation. `PROFILE_CAPTURE`
+names an output BMP. The harness reports population, wall-time mean/median/p95,
+process CPU time and optional thread CPU stage costs. It also checks that drawing preserves the simulation checksum.
+Run captured fixtures from early, mid and late games; keep generated saves and profiles
+under ignored `artifacts/`. To advance a saved initial game into population fixtures,
+use the existing structured runner with its saved seed and orders, for example:
+
+```sh
+GLOB2_USER_DATA_DIR=artifacts/software-renderer/fixture-profile \
+  build/darwin/client/release/src/glob2 --run-game \
+  --load-game "$PWD/artifacts/software-renderer/initial.game.gz" --ticks 12000 \
+  --save every:6000 --save final --telemetry checksums \
+  --output-dir "$PWD/artifacts/software-renderer/populated"
+```
+
+Keep the initial save, generated checkpoints and runner metadata together. Fixture
+population matters more than the tick label; a late game can have fewer surviving units.
+
+For paired measurements, preserve a baseline benchmark executable before rebuilding and
+run at least seven alternating pairs on the same fixtures, resolution and hardware:
+
+```sh
+python3 tools/software_render_benchmark.py \
+  --baseline artifacts/software-renderer/baseline/SoftwareRenderBenchmark \
+  --candidate build/darwin/client/release/test/SoftwareRenderBenchmark \
+  --save artifacts/software-renderer/initial.game.gz --save artifacts/software-renderer/mid.game.gz \
+  --save artifacts/software-renderer/late.game.gz --repeat 7 \
+  --output artifacts/software-renderer/comparison
+```
+
+The runner records raw logs/captures, exact commands and CPU distributions for native,
+half, double and fractional-offset scenarios. Keep other heavy work off the measurement
+machine, and retain generated evidence under ignored `artifacts/`.
