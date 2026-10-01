@@ -98,7 +98,7 @@ def main():
         'target_sources(Glob2 PRIVATE '+cmake_quote(icons)+')',
         'set_source_files_properties('+cmake_quote(icons)+' PROPERTIES MACOSX_PACKAGE_LOCATION Resources)',
         'set_target_properties(Glob2 PROPERTIES XCODE_ATTRIBUTE_ASSETCATALOG_COMPILER_APPICON_NAME AppIcon)']
-    for framework in ('UniformTypeIdentifiers','UIKit','Foundation','AudioToolbox','CoreAudio','AVFoundation','CoreGraphics','CoreHaptics','CoreMotion','CoreBluetooth','GameController','Metal','QuartzCore','OpenGLES','Security','SystemConfiguration'):
+    for framework in ('UniformTypeIdentifiers','UIKit','Foundation','AudioToolbox','CoreAudio','AVFoundation','CoreGraphics','CoreHaptics','CoreMotion','CoreBluetooth','CoreMedia','CoreVideo','GameController','Metal','QuartzCore','OpenGLES','Security','SystemConfiguration'):
         lines.append('target_link_libraries(Glob2 PRIVATE "-framework '+framework+'")')
     for folder in ('data','maps','campaigns','scripts'):
         for resource in sorted((ROOT/folder).rglob('*')):
