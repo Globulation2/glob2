@@ -79,6 +79,9 @@ struct TeamStatsMeasurementFixture
 			game.addTeam(t);
 			game.teams[t]->race.loadDefault();
 		}
+        if (glob2test::currentTestSuite() == "JavaScriptLifecycle")
+            require(game.sgslScript.compileScript(&game, "").type == ErrorReport::ET_OK,
+                    "initialize the empty legacy scripting backend before saving");
 	}
 	Building *building(const char *name, int x = 8, int y = 8, int team = 0, bool site = false,
 					   int level = 0)

@@ -46,6 +46,7 @@ TEST_CASE("JavaScript observations visibility memory pagination and stale refere
 	game.addTeam();
 	game.addTeam();
 	Race::loadDefault();
+	REQUIRE(game.sgslScript.compileScript(&game, "").type == ErrorReport::ET_OK);
 	auto *own = game.addUnit(2, 2, 0, WORKER, 0, 0, 0, 0);
 	auto *enemy = game.addUnit(22, 22, 1, WORKER, 0, 0, 0, 0);
 	GLOB2_REQUIRE(own && enemy, "JavaScript contract");
@@ -141,6 +142,7 @@ TEST_CASE("JavaScript orders execute and survive save load" *
 	game.addTeam();
 	game.addTeam();
 	Race::loadDefault();
+	REQUIRE(game.sgslScript.compileScript(&game, "").type == ErrorReport::ET_OK);
 	auto *own = game.addUnit(2, 2, 0, WORKER, 0, 0, 0, 0);
 	auto *enemy = game.addUnit(22, 22, 1, WORKER, 0, 0, 0, 0);
 	GLOB2_REQUIRE(own && enemy, "JavaScript contract");
@@ -339,6 +341,7 @@ TEST_CASE("JavaScript scenario effects commit atomically and resume" *
 	game.addTeam();
 	game.addTeam();
 	Race::loadDefault();
+	REQUIRE(game.sgslScript.compileScript(&game, "").type == ErrorReport::ET_OK);
 	auto *own = game.addUnit(2, 2, 0, WORKER, 0, 0, 0, 0);
 	auto *enemy = game.addUnit(22, 22, 1, WORKER, 0, 0, 0, 0);
 	GLOB2_REQUIRE(own && enemy, "JavaScript contract");
@@ -413,6 +416,7 @@ TEST_CASE("JavaScript AI state RNG and disabled state survive continuation" *
 	game.addTeam();
 	game.addTeam();
 	Race::loadDefault();
+	REQUIRE(game.sgslScript.compileScript(&game, "").type == ErrorReport::ET_OK);
 	auto *own = game.addUnit(2, 2, 0, WORKER, 0, 0, 0, 0);
 	auto *enemy = game.addUnit(22, 22, 1, WORKER, 0, 0, 0, 0);
 	GLOB2_REQUIRE(own && enemy, "JavaScript contract");
@@ -506,6 +510,7 @@ TEST_CASE("JavaScript large world observations respect work limits" *
 	game.addTeam();
 	game.addTeam();
 	Race::loadDefault();
+	REQUIRE(game.sgslScript.compileScript(&game, "").type == ErrorReport::ET_OK);
 	auto *own = game.addUnit(2, 2, 0, WORKER, 0, 0, 0, 0);
 	auto *enemy = game.addUnit(22, 22, 1, WORKER, 0, 0, 0, 0);
 	GLOB2_REQUIRE(own && enemy, "JavaScript contract");
