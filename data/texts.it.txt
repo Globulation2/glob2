@@ -3212,6 +3212,30 @@ Salva automaticamente la partita circa ogni minuto.
 Avversari IA
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 La disposizione spaziosa usa un pannello laterale quando c’è spazio. Quella compatta usa una barra degli strumenti e pannelli a scomparsa.
+[settings One-finger zoom]
+Zoom con un dito
+[settings Double-tap the map, hold, then drag to zoom.]
+Tocca due volte la mappa, tieni premuto e trascina per lo zoom.
+[settings Platform default]
+Predefinito di sistema
+[settings Drag up zooms in]
+Trascina in su per ingrandire
+[settings Drag down zooms in]
+Trascina in giù per ingrandire
+[settings Thumb side]
+Lato del pollice
+[settings Phone controls gather in this bottom corner.]
+Sul telefono i comandi si raccolgono in questo angolo in basso.
+[settings Right]
+Destra
+[settings Left]
+Sinistra
+[Undo stroke]
+Annulla
+[No overlay]
+Nessun livello
+[zoom factor %0]
+%0×
 [Assigned %0 · Target %1]
 Assegnati %0 · Obiettivo %1
 [Range: %0]

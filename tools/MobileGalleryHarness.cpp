@@ -4,6 +4,8 @@
 // Run via tools/mobile_gallery/capture.py; see docs/mobile/development.md.
 // Stable capture names must also be documented in mobile_gallery/catalog.json.
 #include "GlobalContainer.h"
+#include <cmath>
+#include <algorithm>
 #include "MainMenuScreen.h"
 #include "CampaignMainMenu.h"
 #include "CampaignSelectorScreen.h"
@@ -542,6 +544,14 @@ class MobileGalleryGameplay
 		gui.displayMode = GameGUI::FLAG_VIEW;
 		gui.touch->panelScroll = 0;
 		capture("game-flags");
+		if (!desktopPresentation)
+		{
+			gui.displayMode = GameGUI::CONSTRUCTION_VIEW;
+			globalContainer->settings.thumbSide = Settings::THUMB_LEFT;
+			capture("game-build-left-thumb");
+			globalContainer->settings.thumbSide = Settings::THUMB_RIGHT;
+			gui.displayMode = GameGUI::FLAG_VIEW;
+		}
 		gui.setSelection(GameGUI::BRUSH_SELECTION);
 		gui.brush.defaultSelection();
 		gui.toolManager.activateZoneTool(GameGUIToolManager::ZoneType(1));
@@ -563,11 +573,75 @@ class MobileGalleryGameplay
 			}
 		}
 		capture("game-zone-paint");
+		if (!desktopPresentation)
+		{
+			// The rail with a size under the thumb, then the Undo chip a stroke
+			// leaves. Neither sends an order or changes the fixture's zones.
+			gui.touch->railTouched = 5;
+			capture("game-brush-rail");
+			gui.touch->railTouched = -1;
+			gui.touch->zoneUndo = GameGUITouch::ZoneUndo{};
+			gui.touch->zoneUndo->expires = SDL_GetTicks64() + 600000;
+			capture("game-brush-undo");
+			gui.touch->zoneUndo.reset();
+		}
 		gui.touch->cancel();
 		gui.clearSelection();
+		if (!desktopPresentation)
+		{
+			// A real one-finger zoom captured mid-drag with its readout. The tap
+			// is cleared before the second press so no inspector covers the map;
+			// the camera is restored so later states keep their framing.
+			const auto area = gui.touch->worldBounds();
+			const double zoomBefore = gui.camera.zoom, pressX = area.x + area.w * .45,
+						 pressY = area.y + area.h * .6;
+			const int direction = globalContainer->settings.oneFingerZoomDirection;
+			globalContainer->settings.oneFingerZoomDirection = Settings::ONE_FINGER_ZOOM_UP_IN;
+			Uint32 ticks = SDL_GetTicks();
+			auto send = [&](Uint32 type, double y)
+			{
+				SDL_Event event{};
+				event.type = type;
+				event.tfinger.timestamp = ticks += 60;
+				event.tfinger.touchId = 8;
+				event.tfinger.fingerId = 1;
+				event.tfinger.x = float(pressX / globalContainer->gfx->getW());
+				event.tfinger.y = float(y / globalContainer->gfx->getH());
+				gui.processEvent(&event);
+			};
+			send(SDL_FINGERDOWN, pressY);
+			send(SDL_FINGERUP, pressY);
+			gui.clearSelection();
+			gui.touch->panelOpen = false;
+			send(SDL_FINGERDOWN, pressY);
+			send(SDL_FINGERMOTION, pressY - area.h * .18);
+			capture("game-zoom-drag");
+			gui.touch->cancel();
+			globalContainer->settings.oneFingerZoomDirection = direction;
+			gui.zoomMap(std::log(zoomBefore / gui.camera.zoom) / std::log(1.1), int(pressX), int(pressY));
+			gui.clearSelection();
+		}
 		gui.displayMode = GameGUI::STAT_TEXT_VIEW;
-		gui.touch->panelOpen = true;
+		// Phones show the lens strip; Spacious tablets and desktop the tactical list.
+		gui.touch->lensOpen = true;
+		gui.touch->panelOpen = desktopPresentation || gui.touch->layout().persistentPanel;
 		capture("game-tactical-tools");
+		if (!desktopPresentation)
+		{
+			gui.touch->lensOpen = false;
+			gui.touch->panelOpen = false;
+			gui.showStarvingMap = true;
+			gui.overlay.compute(gui.game, OverlayArea::Starving, gui.localTeamNo);
+			capture("game-lens-legend");
+			gui.showStarvingMap = false;
+			gui.touch->peekOpen = true;
+			capture("game-map-peek");
+			gui.touch->peekOpen = false;
+			gui.touch->statsOpen = true;
+			capture("game-stats-sheet");
+			gui.touch->statsOpen = false;
+		}
+		gui.touch->lensOpen = false;
 		gui.displayMode = GameGUI::FLAG_VIEW;
 		gui.touch->panelOpen = false;
 		gui.setSelection(GameGUI::TOOL_SELECTION, const_cast<char *>("inn"));
@@ -624,6 +698,42 @@ class MobileGalleryGameplay
 				enemy = gui.game.teams[1]->myBuildings[i];
 		}
 		inspect("game-inspector-production", production);
+		if (!desktopPresentation)
+		{
+			// Phones: a real drag along the dial's worker ring, captured mid-gesture
+			// with its readout; cancelling afterwards sends no order. Spacious
+			// tablets show their row inspector unchanged.
+			if (gui.touch->usesDial())
+			{
+				const auto g = gui.touch->dialLayout(gui.touch->layout()).geometry;
+				const auto regions = gui.touch->dialRegions();
+				const auto arc = std::find_if(regions.begin(), regions.end(), [](const auto &r)
+											  { return r.part == GameGUITouch::DialRegion::Arc && r.action.kind == 6; });
+				if (arc != regions.end())
+				{
+					Uint32 ticks = SDL_GetTicks();
+					auto send = [&](Uint32 type, GAGCore::ViewPoint p)
+					{
+						SDL_Event event{};
+						event.type = type;
+						event.tfinger.timestamp = ticks += 60;
+						event.tfinger.touchId = 8;
+						event.tfinger.fingerId = 1;
+						event.tfinger.x = float(p.x / globalContainer->gfx->getW());
+						event.tfinger.y = float(p.y / globalContainer->gfx->getH());
+						gui.processEvent(&event);
+					};
+					const double radius = g.rings[arc->ring].middle();
+					send(SDL_FINGERDOWN, TouchDial::point(g, radius, arc->from + 1));
+					send(SDL_FINGERMOTION, TouchDial::point(g, radius, arc->from + (arc->to - arc->from) * .6));
+				}
+			}
+			capture("game-inspector-dial-drag");
+			gui.touch->cancel();
+			globalContainer->settings.thumbSide = Settings::THUMB_LEFT;
+			inspect("game-inspector-left-thumb", production);
+			globalContainer->settings.thumbSide = Settings::THUMB_RIGHT;
+		}
 		inspect("game-inspector-enemy", enemy);
 		const int hp = building->hp;
 		building->hp = std::max(1, hp / 2);
@@ -974,13 +1084,29 @@ class MobileGalleryGameplay
 		editor.performAction("select water");
 		if (editor.phone)
 		{
+			// The brush rail with a size under the thumb, magnified beside it.
 			editor.phone->tools = true;
 			editor.phone->prepare();
-			editor.phone->brushOpen = true;
+			editor.phone->railTouched = 7;
 		}
 		editCapture("editor-brush-choices");
 		if (editor.phone)
-			editor.phone->brushOpen = false;
+		{
+			editor.phone->railTouched = -1;
+			// The Undo chip a zone stroke leaves, without changing the fixture map.
+			editor.performAction("select forbidden zone");
+			editor.phone->undo = PhoneEditor::EditorUndo{};
+			editor.phone->undo->expires = SDL_GetTicks64() + 600000;
+		}
+		editCapture("editor-brush-undo");
+		if (editor.phone)
+		{
+			editor.phone->undo.reset();
+			editor.performAction("select water");
+			editor.phone->peekOpen = true;
+			editCapture("editor-map-peek");
+			editor.phone->peekOpen = false;
+		}
 
 		if (editor.phone)
 			editor.phone->tools = false;

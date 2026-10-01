@@ -192,6 +192,26 @@ void SettingsScreen::buildGeneral()
 					   presentationPreferenceName(presentationPreference);
 				   commit();
 			   });
+		if (touchLayout)
+			choice("display.zoomdrag", "One-finger zoom", "Double-tap the map, hold, then drag to zoom.",
+				   s.oneFingerZoomDirection,
+				   {tr("Platform default"), tr("Drag up zooms in"), tr("Drag down zooms in")},
+				   [this](int v)
+				   {
+					   globalContainer->settings.oneFingerZoomDirection =
+						   std::clamp(v, int(Settings::ONE_FINGER_ZOOM_PLATFORM),
+									  int(Settings::ONE_FINGER_ZOOM_DOWN_IN));
+					   commit();
+				   });
+		if (touchLayout)
+			choice("display.thumb", "Thumb side", "Phone controls gather in this bottom corner.",
+				   s.thumbSide, {tr("Right"), tr("Left")},
+				   [this](int v)
+				   {
+					   globalContainer->settings.thumbSide =
+						   std::clamp(v, int(Settings::THUMB_RIGHT), int(Settings::THUMB_LEFT));
+					   commit();
+				   });
 	}
 	else if (current == Category::Audio)
 	{

@@ -1,5 +1,6 @@
 #include <PerformanceTelemetry.h>
 #include "MapZoomControls.h"
+#include "DynamicClouds.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
@@ -378,7 +379,9 @@ void GameGUI::drawOverlayInfos(void)
 			globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
 			globalContainer->gfx->drawMapCopies(game.map.getW()*32,game.map.getH()*32,game.map.displayViewportW,game.map.displayViewportH,[&](){ toolManager.drawTool(int(MapCamera::wrap(mapMouseX(mouseX),game.map.getW()*32)), int(MapCamera::wrap(mapMouseY(mouseY),game.map.getH()*32)), localTeamNo, viewportX, viewportY, inputState.modifiers()); });
 		}
-		else if (selectionMode==BRUSH_SELECTION)
+		// The phone HUD previews strokes as cells under the finger; its mouse
+		// position is never updated by touch, so the hover cursor would be stale.
+		else if (selectionMode==BRUSH_SELECTION && !touch->usesHUD())
 		{
 			globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
 			globalContainer->gfx->drawMapCopies(game.map.getW()*32,game.map.getH()*32,game.map.displayViewportW,game.map.displayViewportH,[&](){ toolManager.drawTool(int(MapCamera::wrap(mapMouseX(mouseX),game.map.getW()*32)), int(MapCamera::wrap(mapMouseY(mouseY),game.map.getH()*32)), localTeamNo, viewportX, viewportY, inputState.modifiers()); });
@@ -614,11 +617,13 @@ void GameGUI::drawAll(int team)
 	GAGCore::ApplicationHost::overviewDrawn(drewTorus);
 	if (!drewTorus)
 	{
+        const int cloudGridLimit = DynamicClouds::gridLimitForZoom(game.map.getW(), game.map.getH(),
+            globalContainer->settings.cloudPatchSize, camera.zoom);
 		globalContainer->gfx->beginMapTransform(camera.zoom, camera.offsetX-camera.fractionX()*camera.zoom, camera.offsetY-camera.fractionY()*camera.zoom, camera.offsetX, std::max(16, int(camera.offsetY)), camera.visibleW()*camera.zoom, camera.visibleH()*camera.zoom-std::max(0,16-int(camera.offsetY)));
 		if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
 		{
 			globalContainer->gfx->setClipRect(0, 16, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-16);
-			game.drawMap(0, 0, int(std::ceil(camera.visibleW()+camera.fractionX())), int(std::ceil(camera.visibleH()+camera.fractionY())), 0, 0, viewportX, viewportY, localTeamNo, view, drawOptions, nullptr, &buildingGuiState, gamePaused);
+			game.drawMap(0, 0, int(std::ceil(camera.visibleW()+camera.fractionX())), int(std::ceil(camera.visibleH()+camera.fractionY())), 0, 0, viewportX, viewportY, localTeamNo, view, drawOptions, nullptr, &buildingGuiState, gamePaused, cloudGridLimit);
 		}
 		else
 		{
@@ -626,7 +631,7 @@ void GameGUI::drawAll(int team)
 
 			globalContainer->gfx->setClipRect();
 
-			game.drawMap(0, 0, int(std::ceil(camera.visibleW()+camera.fractionX())), int(std::ceil(camera.visibleH()+camera.fractionY())), 0, 0, viewportX, viewportY, localTeamNo, view, drawOptions, &visibleBuildings, &buildingGuiState, gamePaused);
+			game.drawMap(0, 0, int(std::ceil(camera.visibleW()+camera.fractionX())), int(std::ceil(camera.visibleH()+camera.fractionY())), 0, 0, viewportX, viewportY, localTeamNo, view, drawOptions, &visibleBuildings, &buildingGuiState, gamePaused, cloudGridLimit);
 
 			// generate and draw particles
 			generateNewParticles(&visibleBuildings);

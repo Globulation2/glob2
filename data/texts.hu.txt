@@ -3150,6 +3150,30 @@ A játék automatikus mentése körülbelül percenként.
 Gépi ellenfelek
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 A tágas elrendezés oldalsó panelt használ, ha van elég hely. A kompakt elrendezés eszköztárat és kinyitható paneleket használ.
+[settings One-finger zoom]
+Nagyítás egy ujjal
+[settings Double-tap the map, hold, then drag to zoom.]
+Koppints duplán a térképre, tartsd lenyomva, majd húzd a nagyításhoz.
+[settings Platform default]
+Rendszer alapértelmezése
+[settings Drag up zooms in]
+Felfelé húzás nagyít
+[settings Drag down zooms in]
+Lefelé húzás nagyít
+[settings Thumb side]
+Hüvelykujj oldala
+[settings Phone controls gather in this bottom corner.]
+Telefonon a kezelőszervek ebben az alsó sarokban gyűlnek össze.
+[settings Right]
+Jobb
+[settings Left]
+Bal
+[Undo stroke]
+Visszavonás
+[No overlay]
+Nincs réteg
+[zoom factor %0]
+%0×
 [Assigned %0 · Target %1]
 Kiosztva %0 · Cél %1
 [Range: %0]

@@ -3148,6 +3148,30 @@ Aŭtomate konservi la ludon proksimume ĉiun minuton.
 Komputilaj kontraŭuloj
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 La vasta aranĝo uzas flankan panelon kiam estas spaco. La kompakta uzas ilobreton kaj malfermeblajn panelojn.
+[settings One-finger zoom]
+Zomo per unu fingro
+[settings Double-tap the map, hold, then drag to zoom.]
+Duoble tuŝetu la mapon, tenu kaj trenu por zomi.
+[settings Platform default]
+Laŭ la sistemo
+[settings Drag up zooms in]
+Treni supren zomas pli proksimen
+[settings Drag down zooms in]
+Treni malsupren zomas pli proksimen
+[settings Thumb side]
+Flanko de la dikfingro
+[settings Phone controls gather in this bottom corner.]
+La telefonaj regiloj kolektiĝas en ĉi tiu malsupra angulo.
+[settings Right]
+Dekstre
+[settings Left]
+Maldekstre
+[Undo stroke]
+Malfari
+[No overlay]
+Sen tavolo
+[zoom factor %0]
+%0×
 [Assigned %0 · Target %1]
 Asignitaj %0 · Celo %1
 [Range: %0]

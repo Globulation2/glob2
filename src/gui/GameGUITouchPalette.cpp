@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GameGUITouch.h"
 #include "InGameTouchTheme.h"
+#include "ThumbSide.h"
 #include "GameGUI.h"
 #include "GameGUIInternal.h"
 #include "GlobalContainer.h"
@@ -34,13 +35,46 @@ std::vector<GameGUITouch::PaletteItem> GameGUITouch::paletteItems() const
 			items.push_back({"zone:" + std::to_string(i), true});
 	return items;
 }
+bool GameGUITouch::paletteRail(const MobileLayout &ui) const
+{
+	return usesHUD() && !ui.persistentPanel;
+}
+int GameGUITouch::paletteColumns(const MobileLayout &ui) const
+{
+	const int count = std::max(1, int(paletteItems().size()));
+	const bool flags = gui.displayMode == GameGUI::FLAG_VIEW;
+	if (!paletteRail(ui))
+		return flags ? count : 4;
+	const bool landscape = ui.safe.w > ui.safe.h;
+	if (flags)
+		return landscape ? count : 1;
+	return landscape ? InGameTouchTheme::railColumnsLandscape : InGameTouchTheme::railColumnsPortrait;
+}
+// The rail stacks upward from its bottom edge, so revealing hidden (higher)
+// rows moves content down: drags, wheels and paging scroll the other way.
+double GameGUITouch::paletteScrollSign() const
+{
+	return showsBuildPalette() && paletteRail(layout()) ? -1 : 1;
+}
 ViewRect GameGUITouch::paletteItemRect(size_t index) const
 {
 	const auto content = panelContent();
 	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
+	const auto ui = layout();
+	const int columns = paletteColumns(ui);
+	if (paletteRail(ui))
+	{
+		// Row-major from the thumb corner: the first item sits nearest the thumb.
+		const double cell = InGameTouchTheme::paletteCell * unit,
+					 stride = (InGameTouchTheme::paletteCell + InGameTouchTheme::gap) * unit,
+					 gap = InGameTouchTheme::gap * unit;
+		const int row = int(index) / columns, column = int(index) % columns;
+		const double x = ThumbSide::left() ? content.x + gap + column * stride
+										   : content.x + content.w - gap - cell - column * stride;
+		const double y = content.y + content.h - gap - cell - row * stride + panelScroll * unit;
+		return {x, y, cell, cell};
+	}
 	const bool flags = gui.displayMode == GameGUI::FLAG_VIEW;
-	const int columns =
-		flags ? int(paletteItems().size()) : std::max(1, int((content.w / unit - 8 + .01) / 60));
 	const double cell =
 		flags ? std::min(InGameTouchTheme::paletteCell,
 						 (content.w / unit - 8 - (columns - 1) * InGameTouchTheme::gap) / columns)

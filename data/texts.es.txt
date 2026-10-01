@@ -3150,6 +3150,30 @@ Guardar la partida automáticamente cada minuto aproximadamente.
 Oponentes de IA
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 La disposición amplia usa un panel lateral cuando hay espacio. La compacta usa una barra de herramientas y paneles desplegables.
+[settings One-finger zoom]
+Zoom con un dedo
+[settings Double-tap the map, hold, then drag to zoom.]
+Toca dos veces el mapa, mantén pulsado y arrastra para hacer zoom.
+[settings Platform default]
+Predeterminado del sistema
+[settings Drag up zooms in]
+Arrastrar hacia arriba acerca
+[settings Drag down zooms in]
+Arrastrar hacia abajo acerca
+[settings Thumb side]
+Lado del pulgar
+[settings Phone controls gather in this bottom corner.]
+Los controles del móvil se agrupan en esta esquina inferior.
+[settings Right]
+Derecha
+[settings Left]
+Izquierda
+[Undo stroke]
+Deshacer
+[No overlay]
+Sin capa
+[zoom factor %0]
+%0×
 [Assigned %0 · Target %1]
 Asignados %0 · Objetivo %1
 [Range: %0]

@@ -55,9 +55,10 @@ test.describe('responsive mixed input',()=>{
     await expect.poll(async()=>(await snapshot(page)).tick).toBeGreaterThan(tick);
     expect((await snapshot(page)).screenClass).toContain('GameSessionScreen');
     await page.screenshot({path:info.outputPath('phone-gameplay-mouse.png')});
-    // A real touch selects the first icon in the content-sized palette.
+    // A real touch selects the first icon of the palette rail, the bottom cell
+    // nearest the right thumb.
     await touchMatch(page,32,820);
-    await touchMatch(page,50,698);
+    await touchMatch(page,346,764);
     await touchMatch(page,195,400);
     await page.screenshot({path:info.outputPath('phone-placement-preview.png')});
     await page.setViewportSize({width:844,height:390});
@@ -65,8 +66,9 @@ test.describe('responsive mixed input',()=>{
     await expect.poll(async()=>{const s=await snapshot(page);return [s.width,s.height];}).toEqual([844,390]);
     await matchFrame(page);
     await page.screenshot({path:info.outputPath('phone-gameplay-landscape.png')});
-    // Cancel the retained preview, then save through the responsive dialog.
-    await touchMatch(page,630,366);
+    // Cancel the retained preview (Cancel is the left half; OK sits under the
+    // right thumb), then save through the responsive dialog.
+    await touchMatch(page,210,366);
     await page.locator('#canvas').press('Escape');
     await matchFrame(page);
     await tapControl(page,'save');

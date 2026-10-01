@@ -16,6 +16,7 @@
 #endif
 
 
+// Matches the global friend declared by Game.
 class PointBarRenderTest
 {
 public:
@@ -81,5 +82,7 @@ public:
 TEST_SUITE("PointBarRender")
 {
 	TEST_CASE("status-bar pixel bounds in software rendering") { PointBarRenderTest::run(false); }
+#ifdef HAVE_OPENGL
 	TEST_CASE("status-bar pixel bounds in OpenGL rendering [display]") { PointBarRenderTest::run(true); }
+#endif
 }

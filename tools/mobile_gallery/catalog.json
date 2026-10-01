@@ -210,25 +210,32 @@
     {
       "id": "game-build",
       "title": "Build drawer \u00b7 top",
-      "description": "Construction palette at its initial scroll position.",
+      "description": "Construction palette at its initial scroll position. Phones show a rail rising from the thumb corner with the first choice nearest the thumb; Spacious tablets keep the side grid.",
       "group": "Gameplay"
     },
     {
       "id": "game-build-bottom",
       "title": "Build drawer \u00b7 bottom",
-      "description": "Construction palette at its maximum scroll position.",
+      "description": "Construction palette at its maximum scroll position; a phone rail that fits its space does not scroll.",
       "group": "Gameplay"
     },
     {
       "id": "game-flags",
       "title": "Flags & zones",
-      "description": "Dedicated icon palette for flags and zone tools; the minimap is a separate HUD component.",
+      "description": "Dedicated icon palette for flags and zone tools, one rail column in portrait and one row in landscape; the minimap is a separate HUD component.",
       "group": "Gameplay"
+    },
+    {
+      "id": "game-build-left-thumb",
+      "title": "Build drawer \u00b7 left thumb",
+      "description": "The Thumb side setting mirrors the rail and placement bar into the bottom-left corner.",
+      "group": "Gameplay",
+      "availability": "mobile"
     },
     {
       "id": "game-placement",
       "title": "Building placement preview",
-      "description": "An inn preview awaiting explicit confirmation.",
+      "description": "An inn preview awaiting explicit confirmation; on phones OK sits on the thumb (right) side of the bar.",
       "group": "Gameplay"
     },
     {
@@ -258,8 +265,22 @@
     {
       "id": "game-inspector-production",
       "title": "Inspector \u00b7 production",
-      "description": "A real swarm selected to review production ratios and shared allocation controls.",
+      "description": "A real swarm selected to review production ratios and shared allocation controls. Phones show the thumb dial: workers on the outer ring, the chosen unit's ratio inside it, priority innermost, and unit and action chips on the far side.",
       "group": "Gameplay"
+    },
+    {
+      "id": "game-inspector-dial-drag",
+      "title": "Inspector \u00b7 dial drag",
+      "description": "Mid-gesture on a phone: the thumb sweeps the worker ring and the requested count sits above the finger; releasing sends one order. Spacious tablets show their row inspector.",
+      "group": "Gameplay",
+      "availability": "mobile"
+    },
+    {
+      "id": "game-inspector-left-thumb",
+      "title": "Inspector \u00b7 left thumb",
+      "description": "The Thumb side setting mirrors the dial and its chips into the bottom-left corner.",
+      "group": "Gameplay",
+      "availability": "mobile"
     },
     {
       "id": "game-inspector-enemy",
@@ -606,13 +627,55 @@
     {
       "id": "game-zone-paint",
       "title": "Zone painting",
-      "description": "Zone brush mode with Paint/Erase and Done; completed strokes remain applied.",
+      "description": "Zone brush mode: zones and Done along the toolbar (Done under the thumb) and the brush rail on the thumb edge; an unfinished stroke previews the exact cells it will paint, tinted like the zone. Completed strokes remain applied.",
       "group": "Gameplay"
+    },
+    {
+      "id": "game-brush-rail",
+      "title": "Zone painting \u00b7 brush rail",
+      "description": "Brush sizes as a rail on the thumb edge with the touched size magnified beside it, Paint/Erase at its foot and Pan at its head; zones and Done along the toolbar.",
+      "group": "Gameplay",
+      "availability": "mobile"
+    },
+    {
+      "id": "game-brush-undo",
+      "title": "Zone painting \u00b7 undo",
+      "description": "After a stroke the rail offers Undo for six seconds; it reverts only the cells that stroke changed.",
+      "group": "Gameplay",
+      "availability": "mobile"
+    },
+    {
+      "id": "game-lens-legend",
+      "title": "Overlay legend",
+      "description": "With a lens active and the strip closed, a legend in the far corner names the overlay and shows its intensity ramp.",
+      "group": "Gameplay",
+      "availability": "mobile"
+    },
+    {
+      "id": "game-map-peek",
+      "title": "Map peek",
+      "description": "A large minimap over the dimmed map, opened from the map lens or a long press on the minimap: drag to steer, zoom buttons below with + under the thumb, Done or a tap outside closes it.",
+      "group": "Gameplay",
+      "availability": "mobile"
+    },
+    {
+      "id": "game-stats-sheet",
+      "title": "Statistics sheet",
+      "description": "The statistics lens opens a sheet above the toolbar: the end-of-game chart for your own team, metric arrows under the thumb, current counters, and close; pulling it down also closes it.",
+      "group": "Gameplay",
+      "availability": "mobile"
+    },
+    {
+      "id": "game-zoom-drag",
+      "title": "One-finger zoom",
+      "description": "Mid-gesture: tap, then press again and drag. The zoom factor sits above the finger; releasing without travel restores 1:1.",
+      "group": "Gameplay",
+      "availability": "mobile"
     },
     {
       "id": "game-tactical-tools",
       "title": "Tactical tools",
-      "description": "Map overlays, allied markers, statistics and message history, separate from session actions.",
+      "description": "Phones: Tools opens a lens strip in the thumb corner (overlays, health bars, statistics, the map peek, history, map marks, chat). Spacious tablets and desktop keep the tactical list.",
       "group": "Gameplay"
     },
     {
@@ -654,7 +717,20 @@
     {
       "id": "editor-brush-choices",
       "title": "Editor \u00b7 brush choices",
-      "description": "Visual brush mask choices above the persistent palette. Desktop shows its existing brush selector.",
+      "description": "The brush rail on the thumb edge: sizes with the smallest nearest the thumb, the touched size magnified beside it, and Pan. Desktop shows its existing brush selector.",
+      "group": "Map & campaign editor"
+    },
+    {
+      "id": "editor-map-peek",
+      "title": "Editor \u00b7 map peek",
+      "description": "The Map button in the far bottom corner opens a large minimap: drag to steer the view, zoom buttons beside or below it, Done or a tap outside closes it.",
+      "group": "Map & campaign editor",
+      "availability": "mobile"
+    },
+    {
+      "id": "editor-brush-undo",
+      "title": "Editor \u00b7 brush undo",
+      "description": "After a zone, script-area or no-growth stroke the rail offers Undo for a few seconds; terrain and delete strokes do not. Desktop shows its existing brush selector.",
       "group": "Map & campaign editor"
     },
     {

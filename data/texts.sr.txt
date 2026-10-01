@@ -3150,6 +3150,30 @@ Emoji
 Рачунарски противници
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Простран распоред користи бочну таблу када има места. Компактан користи траку алатки и табле на извлачење.
+[settings One-finger zoom]
+Зумирање једним прстом
+[settings Double-tap the map, hold, then drag to zoom.]
+Двапут додирните мапу, задржите и превуците за зумирање.
+[settings Platform default]
+Подразумевано за систем
+[settings Drag up zooms in]
+Превлачење нагоре увећава
+[settings Drag down zooms in]
+Превлачење надоле увећава
+[settings Thumb side]
+Страна палца
+[settings Phone controls gather in this bottom corner.]
+На телефону се контроле окупљају у овом доњем углу.
+[settings Right]
+Десно
+[settings Left]
+Лево
+[Undo stroke]
+Опозови
+[No overlay]
+Без слоја
+[zoom factor %0]
+%0×
 [Assigned %0 · Target %1]
 Додељено %0 · Циљ %1
 [Range: %0]

@@ -3150,6 +3150,30 @@ Automatycznie zapisuj grę mniej więcej co minutę.
 Przeciwnicy SI
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Przestronny układ używa panelu bocznego, gdy jest miejsce. Kompaktowy używa paska narzędzi i wysuwanych paneli.
+[settings One-finger zoom]
+Powiększanie jednym palcem
+[settings Double-tap the map, hold, then drag to zoom.]
+Dotknij mapy dwukrotnie, przytrzymaj i przeciągnij, aby powiększyć.
+[settings Platform default]
+Domyślne systemu
+[settings Drag up zooms in]
+Przeciągnij w górę, aby przybliżyć
+[settings Drag down zooms in]
+Przeciągnij w dół, aby przybliżyć
+[settings Thumb side]
+Strona kciuka
+[settings Phone controls gather in this bottom corner.]
+Na telefonie przyciski gromadzą się w tym dolnym rogu.
+[settings Right]
+Prawa
+[settings Left]
+Lewa
+[Undo stroke]
+Cofnij
+[No overlay]
+Bez nakładki
+[zoom factor %0]
+%0×
 [Assigned %0 · Target %1]
 Przydzielono %0 · Cel %1
 [Range: %0]

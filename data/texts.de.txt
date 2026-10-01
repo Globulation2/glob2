@@ -3150,6 +3150,30 @@ Das Spiel etwa jede Minute automatisch speichern.
 KI-Gegner
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Geräumig verwendet bei genügend Platz eine Seitenleiste. Kompakt verwendet eine Werkzeugleiste und ausklappbare Bereiche.
+[settings One-finger zoom]
+Zoomen mit einem Finger
+[settings Double-tap the map, hold, then drag to zoom.]
+Doppelt auf die Karte tippen, halten und ziehen, um zu zoomen.
+[settings Platform default]
+Systemstandard
+[settings Drag up zooms in]
+Nach oben ziehen vergrößert
+[settings Drag down zooms in]
+Nach unten ziehen vergrößert
+[settings Thumb side]
+Daumenseite
+[settings Phone controls gather in this bottom corner.]
+Die Steuerelemente auf dem Telefon sammeln sich in dieser unteren Ecke.
+[settings Right]
+Rechts
+[settings Left]
+Links
+[Undo stroke]
+Rückgängig
+[No overlay]
+Keine Ebene
+[zoom factor %0]
+%0×
 [Assigned %0 · Target %1]
 Zugewiesen %0 · Ziel %1
 [Range: %0]

@@ -3150,6 +3150,30 @@ Automaticky ukládat hru přibližně každou minutu.
 Počítačoví soupeři
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Prostorné rozložení používá boční panel, pokud je dost místa. Kompaktní používá panel nástrojů a vysouvací panely.
+[settings One-finger zoom]
+Přiblížení jedním prstem
+[settings Double-tap the map, hold, then drag to zoom.]
+Dvakrát klepněte na mapu, podržte a tažením měňte přiblížení.
+[settings Platform default]
+Výchozí systému
+[settings Drag up zooms in]
+Tažením nahoru přiblížit
+[settings Drag down zooms in]
+Tažením dolů přiblížit
+[settings Thumb side]
+Strana palce
+[settings Phone controls gather in this bottom corner.]
+Ovládací prvky na telefonu se soustředí do tohoto dolního rohu.
+[settings Right]
+Vpravo
+[settings Left]
+Vlevo
+[Undo stroke]
+Zpět
+[No overlay]
+Bez vrstvy
+[zoom factor %0]
+%0×
 [Assigned %0 · Target %1]
 Přiděleno %0 · Cíl %1
 [Range: %0]

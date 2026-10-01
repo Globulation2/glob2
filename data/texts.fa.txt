@@ -3148,6 +3148,30 @@ Emoji
 حریفان هوش مصنوعی
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 چیدمان جادار در صورت وجود فضا از پنل کناری استفاده می‌کند. چیدمان فشرده از نوار ابزار و پنل‌های بازشو استفاده می‌کند.
+[settings One-finger zoom]
+بزرگ‌نمایی با یک انگشت
+[settings Double-tap the map, hold, then drag to zoom.]
+روی نقشه دو بار ضربه بزنید، نگه دارید و برای بزرگ‌نمایی بکشید.
+[settings Platform default]
+پیش‌فرض سیستم
+[settings Drag up zooms in]
+کشیدن به بالا بزرگ‌نمایی می‌کند
+[settings Drag down zooms in]
+کشیدن به پایین بزرگ‌نمایی می‌کند
+[settings Thumb side]
+سمت انگشت شست
+[settings Phone controls gather in this bottom corner.]
+کنترل‌های گوشی در این گوشهٔ پایین جمع می‌شوند.
+[settings Right]
+راست
+[settings Left]
+چپ
+[Undo stroke]
+واگرد
+[No overlay]
+بدون لایه
+[zoom factor %0]
+%0×
 [Assigned %0 · Target %1]
 تخصیص‌یافته %0 · هدف %1
 [Range: %0]

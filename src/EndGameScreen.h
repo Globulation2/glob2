@@ -6,6 +6,7 @@
 
 #include "GameGUI.h"
 #include "ui/FrontendUI.h"
+#include "TeamStatChart.h"
 #include <memory>
 #include <string>
 #include <vector>
@@ -84,9 +85,7 @@ class EndGameScreen : public GAGGUI::ui::UIScreen
 	void paintChart(Glob2UI::Canvas &canvas, Glob2UI::Rect r);
 	void paintCurves(GAGCore::DrawableSurface &surface, Glob2UI::Rect r);
 	void paintMeasurements(GAGCore::DrawableSurface &surface, Glob2UI::Rect r);
-	double getValue(double position, int team, int type) const;
-	static std::string getTimeText(int seconds);
-	static std::string getRightScaleText(int value, int digits);
+	TeamStatChart::Options chartOptions() const;
 	void saveReplay(const char *dir, const char *ext);
 	Glob2UI::Element teamRows(const Glob2UI::Presentation &p);
 };

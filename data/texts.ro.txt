@@ -3150,6 +3150,30 @@ Salvează automat jocul aproximativ o dată pe minut.
 Adversari IA
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Aranjarea spațioasă folosește un panou lateral când există loc. Cea compactă folosește o bară de instrumente și panouri extensibile.
+[settings One-finger zoom]
+Zoom cu un deget
+[settings Double-tap the map, hold, then drag to zoom.]
+Atinge harta de două ori, ține apăsat și trage pentru zoom.
+[settings Platform default]
+Implicit sistem
+[settings Drag up zooms in]
+Tragerea în sus mărește
+[settings Drag down zooms in]
+Tragerea în jos mărește
+[settings Thumb side]
+Partea degetului mare
+[settings Phone controls gather in this bottom corner.]
+Pe telefon, comenzile se grupează în acest colț de jos.
+[settings Right]
+Dreapta
+[settings Left]
+Stânga
+[Undo stroke]
+Anulează
+[No overlay]
+Fără strat
+[zoom factor %0]
+%0×
 [Assigned %0 · Target %1]
 Alocați %0 · Țintă %1
 [Range: %0]

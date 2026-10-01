@@ -3146,6 +3146,30 @@ Emoji
 AI対戦相手
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 ゆったり配置は十分な空間があるときにサイドパネルを使います。コンパクト配置はツールバーと開閉式パネルを使います。
+[settings One-finger zoom]
+片手ズーム
+[settings Double-tap the map, hold, then drag to zoom.]
+マップをダブルタップしたまま、ドラッグしてズームします。
+[settings Platform default]
+システムの既定
+[settings Drag up zooms in]
+上にドラッグで拡大
+[settings Drag down zooms in]
+下にドラッグで拡大
+[settings Thumb side]
+親指の側
+[settings Phone controls gather in this bottom corner.]
+スマートフォンでは操作ボタンがこの下隅に集まります。
+[settings Right]
+右
+[settings Left]
+左
+[Undo stroke]
+元に戻す
+[No overlay]
+オーバーレイなし
+[zoom factor %0]
+%0×
 [Assigned %0 · Target %1]
 割り当て %0 · 目標 %1
 [Range: %0]

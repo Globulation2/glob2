@@ -32,25 +32,72 @@ options because the operating system manages the viewport and the mobile build
 uses the portable renderer.
 
 The gameplay toolbar opens build choices, flags/zones, tactical tools, objectives,
-alliances and the session menu. The minimap is a separate top-right HUD component;
+alliances and the session menu. The minimap is a separate top-right HUD component.
+Tapping it centres the camera there; dragging keeps steering the camera and clamps
+at the minimap's edge when the finger leaves it. A still 400 ms press on it, or the
+map lens, opens a map peek: a large minimap over the dimmed map that steers the
+camera while dragged, with Done, zoom out and zoom in (nearest the thumb) below
+it (beside it, zoom in lowest, on landscape screens); a tap outside, Done, focus
+loss or rotation closes it. On compact layouts the
+Tools button opens a lens strip in the thumb corner instead of the tactical list:
+No overlay and the four overlays (mutually exclusive), health bars, statistics,
+the map peek, message history, map marks and chat, each running the same
+`menuAction` as the list. Once the strip closes, a legend in the far corner names
+the active overlay and shows its intensity ramp (`OverlayArea::colorOf`). The
+statistics lens opens a sheet above the toolbar with the end-of-game chart for the
+player's own team only (opponents' histories stay hidden until the match ends),
+metric arrows under the thumb and current counters; × or pulling it down closes
+it. Spacious layouts and replays keep the tactical list;
 phone palettes float over the camera, while spacious touch layouts keep a
 content-sized palette open at the right. Both preserve the camera framing and
 leave the world visible below short panels. In-game surfaces use `InGameTouchTheme.h`; frontend paper styling remains
 independent. A completed tap on empty map space dismisses building inspection
 and restores the previous palette state. Tapping another object switches selection;
 panning, cancelled gestures and taps inside the inspector do not dismiss it.
-Two quick taps on the same map position restore 1:1 zoom around that point;
-pinching still adjusts zoom continuously. Touches on controls do not reset zoom.
+The game is playable with one thumb. A completed map tap arms one-finger zoom for
+the next contact that lands within 300 ms of the release and 24 points of the tap.
+Dragging that contact vertically zooms about the point where it landed, doubling
+per 180 points of travel, with the factor shown above the finger; releasing it
+without travel restores 1:1 zoom there. A contact that sets off mostly sideways
+pans instead, so a quick tap followed by a pan still pans. The drag direction
+follows the platform's map app (Android: drag down zooms in; iOS and desktop:
+drag up zooms in) unless the One-finger zoom setting overrides it. A second finger,
+focus loss or rotation ends the gesture and keeps the zoom reached so far;
+pinching still adjusts zoom continuously. Touches on controls do not arm zoom, and
+placement taps never do. In paint mode a single tap is held for the same window
+before it paints, because it may be the first half of a zoom; drags paint on
+release as before. A held tap lands when the window closes, when any other contact
+begins, or on interruption, and is dropped only if its brush is no longer active.
 In the mobile/touch interface, flags on the flat map also accept selection within 24 screen points of their
 centres, independent of zoom. Exact flag hits retain priority; the extra halo
 does not override direct unit/building hits and chooses the nearest flag.
 Halo clicks select without moving the flag; direct flag grabs retain dragging.
 Desktop mouse selection retains its original exact-tile hit area.
-Flags and zones share one fitted row. Inspectors group production ratios side by
-side and use horizontal room for worker/priority and action controls. Ordinary
-phone inspectors fit without scrolling; overflow remains available for constrained
-safe areas and enlarged interfaces. Drawing, hit testing and slider geometry use
-the same action boxes.
+On compact layouts the build and flag palettes are a rail rising from the
+bottom corner under the thumb: two columns of buildings in portrait (four in
+landscape), flags and zones in one column (one row in landscape), filled
+row by row from the corner so the first choice sits nearest the thumb. The rail
+is inset from the side edge, and a rail taller than its space scrolls toward the
+thumb. The Thumb side setting (right by default) mirrors the rail and the
+placement bar; corner-anchored components mirror through `ThumbSide`, never on
+their own.
+
+On compact layouts the building inspector is a thumb dial: concentric quarter
+rings centred on the thumb's bottom corner, assigned outward-in by presence —
+workers (0–20), then a swarm's unit ratio or a flag's range, then priority as three
+segments (Low at the bottom, High at the top). Sliders run from the toolbar end
+(zero) toward the top, stopping short of the screen edge, with − and + pads at
+their ends; a drag previews the value above the thumb and sends one order on
+release, and a thin ink arc on the worker ring shows who is assigned. Unit-type
+choices (which ratio the slider edits), clearing resources, flag requirements,
+repair/upgrade and Destroy (with its confirmation) are chips on the far side of
+the dial, Destroy lowest. The read-only identity header sits under the minimap in
+portrait and beside the dial in landscape. Rings shrink to fit small screens; the
+map stays visible and tappable between rings. `dialRegions()` is the single
+source for drawing, hit testing, keyboard focus and the harness, and every change
+uses the same requests and orders as the Spacious row inspector, whose rows group
+production ratios side by side and share one set of action boxes for drawing, hit
+testing and slider geometry.
 
 ### Safe areas
 
@@ -67,7 +114,11 @@ cancels held input and invalidates layout when this happens. The UI presentation
 harness injects host-point gutters through `mobileSafeInsetsForTesting` and checks
 every screen and dialog fixture against them on phones, tablets and desktops.
 Keep this override unset outside tests. Device checks
-must also cover Android gesture/three-button navigation and rotation.
+must also cover Android gesture/three-button navigation and rotation. While the
+rail is open the HUD asks Android 10+ to exclude its rectangle from the system
+Back gesture (`hostGestureExclusion`), resending only when the rectangle
+changes; Android honours at most about 200 dp of exclusion per edge, so check
+that a drag out of the rail places a building rather than navigating back.
 
 ### Gameplay responsibilities and action flow
 
@@ -75,7 +126,7 @@ must also cover Android gesture/three-button navigation and rotation.
   and restores the previous palette after inspection. It never draws the desktop
   sidebar or forwards touch controls to its pixel hit tests.
 - `GameGUITouchPalette.cpp` reads available building/flag choices and draws artwork
-  in a content-sized grid. Zone entries enter painting mode instead of placement.
+  in the thumb-corner rail (compact) or the side grid (Spacious). Zone entries enter painting mode instead of placement.
 - `GameGUITouchView.cpp` draws independently bounded HUD components, the minimap,
   tutorial, tactical panel and contextual headers. It shares primitives, not the
   desktop sidebar composition.
@@ -85,7 +136,10 @@ must also cover Android gesture/three-button navigation and rotation.
 - `GameGUITouchPlacement.cpp` interprets palette taps and drags. Both commit through
   `GameGUIToolManager::confirmBuilding`, including its existing validation, defaults,
   ghost suppression, and order serialization. A valid drag release places once and
-  restores the palette; a tap selects a movable preview with Confirm/Cancel.
+  restores the palette; a tap selects a movable preview with Confirm/Cancel. In the
+  phone HUD, OK takes the right (thumb) half of the bar and Cancel the left; the
+  legacy touch layout keeps OK on the left. `confirmRect()` and `cancelRect()` are
+  the single source for drawing, hit testing and keyboard focus.
   Both patterns pan continuously while the owning finger stays near an exposed
   map edge. Speed is density- and zoom-aware, and the preview follows the camera.
   Release stops preview-mode panning without committing; a second contact,
@@ -95,24 +149,42 @@ must also cover Android gesture/three-button navigation and rotation.
   reading pending values through `GameGUI::displayed*` and using shared request
   methods for allocation, priority, range, construction and destruction. Enemy
   and replay selections are read-only. Specialized controls share the same panel.
-  Worker-slider drags own a local allocation session and emit one command on release;
-  a second contact, selection change, focus loss or rotation cancels the preview.
+  Slider drags (workers, and on the dial a unit ratio or flag range) own a local
+  allocation session and emit one command on release; a second contact, selection
+  change, focus loss or rotation cancels the preview. `GameGUITouchDial.cpp` and
+  `TouchDial.h` hold the dial's layout, regions and sector drawing.
 - In-game dialogs (`GameGUIDialog.cpp`, `LoadSaveDialog.cpp` and the message
   history) are framework dialogs hosted by `GameGUI` on every presentation;
   touch and desktop render the same tree in the in-match theme. File operations
   keep their existing persistence and error/retry state machines.
 - `EndGameScreen` owns a chart, metric dropdown, team filters, expansion and replay
-  export on both desktop and touch. `EndGameStat` retains history interpretation,
+  export on both desktop and touch. The chart itself is `TeamStatChart`, shared with
+  the compact in-match statistics sheet. `EndGameStat` retains history interpretation,
   including explanations for missing measurement coverage. Compact layouts put metric
   and team-filter entry points in one row, with scrollable filters over the plot.
   Axis labels stay outside the curves.
 
 A session cannot commit after a second finger, focus loss, rotation, selection
-change, or release over UI. Drag previews are lifted above the finger; edge panning
+change, or release over UI. While a zone stroke is held or a paint tap waits, the
+HUD draws the exact cells it will paint, tinted like the zone (dark when erasing),
+using `BrushCoverage`, the same helper the phone editor's preview uses; the
+desktop hover cursor is hidden in the phone HUD because touch never moves it. Drag previews are lifted above the finger; edge panning
 continues while held. Tap previews survive ordinary input suspension and require a
 new confirmation gesture. Painting buffers an unfinished stroke; release applies
 its existing brush operations, while interruption discards it. Completed strokes
 are never undone by leaving the tool. Two fingers navigate instead of painting.
+
+Zone painting is one-thumb too. The toolbar holds Forbidden, Guard, Clear and
+Done (Done under the thumb), and a brush rail on the thumb edge holds the brush
+sizes as detents (smallest lowest; touching one magnifies it beside the rail and
+the thumb can scrub along it), Paint/Erase at its foot and Pan at its head. Pan
+makes one finger move the map. A stroke held in the 24-point band along a map
+edge pans (as placement does) and keeps painting under the still finger. For six
+seconds after a stroke lands an Undo chip sits beside the rail foot: it sends
+inverse zone orders for exactly the cells that stroke changed in the player's
+displayed zones (in 32×32 blocks, after the stroke's own orders) and restores
+those cells' displayed state; a stroke that changed nothing offers no Undo.
+`BrushHUD` draws and hit-tests the rail for gameplay and the phone editor alike.
 
 To add another interaction pattern, make it update the owned preview and call the
 same commit operation. Keep gesture thresholds and sizing policies in the in-game
@@ -127,7 +199,17 @@ strip and horizontally scrolling artwork palette. Terrain and Resources share
 brush operations; Buildings and Flags expose team and level beside the map.
 Individual artwork widgets are reused, never the composed desktop sidebar or
 its minimap. Done leaves the active tool and returns to object selection; Pan
-switches one-finger navigation. Brush opens a visual mask chooser. Pending
+switches one-finger navigation. One-finger zoom, the 1:1 reset and held paint
+taps behave as in gameplay; taps that place buildings or units never arm zoom.
+Brush tools use the same rail as zone painting (Paint/Erase only where it applies,
+Pan, sizes). Zone, script-area and no-growth strokes offer Undo for six seconds,
+restoring the covered tiles and displayed zone bits exactly; terrain, resource
+and delete strokes remove units, buildings and resources, so they offer none.
+The editor does not pan while a stroke is held at an edge: its strokes are
+replayed in screen coordinates on release, so use Pan instead. A Map button in
+the content's bottom corner away from the thumb opens the same map peek as in
+gameplay (buttons below it in portrait, beside it in landscape) over the editor's
+own minimap; it only moves the view. The brush rail chooses the mask. Pending
 strokes draw their coverage before release without changing the map. Presentation measurements and drag thresholds are point-based
 policies at the top of `PhoneEditor.cpp`.
 

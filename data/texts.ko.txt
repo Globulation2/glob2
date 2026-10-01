@@ -3146,6 +3146,30 @@ Emoji
 컴퓨터 상대
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 여유로운 배치는 공간이 충분하면 측면 패널을 사용합니다. 간결한 배치는 도구 모음과 펼칠 수 있는 패널을 사용합니다.
+[settings One-finger zoom]
+한 손가락 확대/축소
+[settings Double-tap the map, hold, then drag to zoom.]
+지도를 두 번 탭한 채로 드래그하면 확대/축소됩니다.
+[settings Platform default]
+시스템 기본값
+[settings Drag up zooms in]
+위로 드래그하면 확대
+[settings Drag down zooms in]
+아래로 드래그하면 확대
+[settings Thumb side]
+엄지 방향
+[settings Phone controls gather in this bottom corner.]
+휴대전화에서는 조작 버튼이 이 아래쪽 모서리에 모입니다.
+[settings Right]
+오른쪽
+[settings Left]
+왼쪽
+[Undo stroke]
+실행 취소
+[No overlay]
+오버레이 없음
+[zoom factor %0]
+%0×
 [Assigned %0 · Target %1]
 배정 %0 · 목표 %1
 [Range: %0]

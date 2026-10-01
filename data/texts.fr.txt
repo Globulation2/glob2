@@ -3130,6 +3130,30 @@ Rapprochés
 Spacieuse
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 La disposition spacieuse utilise un panneau latéral si la place le permet. La disposition compacte utilise une barre d’outils et des panneaux escamotables.
+[settings One-finger zoom]
+Zoom à un doigt
+[settings Double-tap the map, hold, then drag to zoom.]
+Touchez deux fois la carte, maintenez, puis glissez pour zoomer.
+[settings Platform default]
+Par défaut du système
+[settings Drag up zooms in]
+Glisser vers le haut zoome
+[settings Drag down zooms in]
+Glisser vers le bas zoome
+[settings Thumb side]
+Côté du pouce
+[settings Phone controls gather in this bottom corner.]
+Les commandes sur téléphone se regroupent dans ce coin inférieur.
+[settings Right]
+Droite
+[settings Left]
+Gauche
+[Undo stroke]
+Annuler
+[No overlay]
+Aucun calque
+[zoom factor %0]
+%0×
 [More]
 Plus
 [No items]

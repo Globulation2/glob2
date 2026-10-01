@@ -248,6 +248,7 @@ private:
 	
 	friend class EndGameStat;
 	friend class EndGameScreen;
+	friend class TeamStatChart;
 	
 	//! Those stats are used when player has ended the game
 	friend class Team;

@@ -3150,6 +3150,30 @@ Samodejno shrani igro približno vsako minuto.
 Računalniški nasprotniki
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Prostorna postavitev uporablja stransko ploščo, kadar je dovolj prostora. Strnjena uporablja orodno vrstico in izvlečne plošče.
+[settings One-finger zoom]
+Povečava z enim prstom
+[settings Double-tap the map, hold, then drag to zoom.]
+Dvakrat tapnite zemljevid, pridržite in povlecite za povečavo.
+[settings Platform default]
+Privzeto za sistem
+[settings Drag up zooms in]
+Vlečenje navzgor poveča
+[settings Drag down zooms in]
+Vlečenje navzdol poveča
+[settings Thumb side]
+Stran palca
+[settings Phone controls gather in this bottom corner.]
+Na telefonu se kontrolniki zberejo v tem spodnjem kotu.
+[settings Right]
+Desno
+[settings Left]
+Levo
+[Undo stroke]
+Razveljavi
+[No overlay]
+Brez plasti
+[zoom factor %0]
+%0×
 [Assigned %0 · Target %1]
 Dodeljeno %0 · Cilj %1
 [Range: %0]

@@ -3226,6 +3226,30 @@ Gem spillet automatisk cirka hvert minut.
 AI-modstandere
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Rummelig bruger et sidepanel, når der er plads. Kompakt bruger en værktøjslinje og paneler, der kan foldes ud.
+[settings One-finger zoom]
+Zoom med én finger
+[settings Double-tap the map, hold, then drag to zoom.]
+Dobbelttryk på kortet, hold, og træk for at zoome.
+[settings Platform default]
+Systemstandard
+[settings Drag up zooms in]
+Træk op zoomer ind
+[settings Drag down zooms in]
+Træk ned zoomer ind
+[settings Thumb side]
+Tommelfingerside
+[settings Phone controls gather in this bottom corner.]
+Telefonens knapper samles i dette nederste hjørne.
+[settings Right]
+Højre
+[settings Left]
+Venstre
+[Undo stroke]
+Fortryd
+[No overlay]
+Intet lag
+[zoom factor %0]
+%0×
 [Assigned %0 · Target %1]
 Tildelt %0 · Mål %1
 [Range: %0]

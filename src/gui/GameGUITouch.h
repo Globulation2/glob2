@@ -3,6 +3,8 @@
 #include <TouchInput.h>
 #include <ScrollPhysics.h>
 #include "TouchInteractionSession.h"
+#include "TouchDial.h"
+#include "BrushHUD.h"
 #include <SDL.h>
 #include <string>
 #include <optional>
@@ -19,6 +21,7 @@ class DrawableSurface;
 class GameGUI;
 class Building;
 class Minimap;
+class Order;
 class GameGUITouch
 {
   public:
@@ -66,6 +69,11 @@ class GameGUITouch
 	};
 	std::vector<PaletteItem> paletteItems() const;
 	GAGCore::ViewRect paletteItemRect(size_t index) const;
+	// Compact phones show the palette as a rail rising from the thumb corner;
+	// the persistent (Spacious) panel keeps its top-down grid.
+	bool paletteRail(const GAGCore::MobileLayout &ui) const;
+	int paletteColumns(const GAGCore::MobileLayout &ui) const;
+	double paletteScrollSign() const;
 	std::optional<PaletteItem> paletteItemAt(GAGCore::ViewPoint point) const;
 	std::optional<TouchPlacementSession> placement;
 	// Preview contact pans while held; releasing it never commits construction.
@@ -73,6 +81,27 @@ class GameGUITouch
 	std::optional<TouchAllocationSession> allocation;
 	bool processAllocationPointer(const SDL_Event &event, GAGCore::ViewPoint point);
 	TouchStrokeSession stroke;
+	std::optional<TouchDeferredStroke> deferredStroke;
+	// Zone painting with one thumb: the brush rail, a Pan mode, panning while a
+	// held stroke touches a map edge, and undo of the last stroke's changes.
+	BrushHUD::Layout brushHUD() const;
+	std::vector<GAGCore::ViewRect> brushBarButtons() const; // Forbid, Guard, Clear, Done.
+	bool brushPan = false;
+	int railTouched = -1;
+	std::optional<TouchPlacementSession> strokeHold;
+	bool edgePan(GAGCore::ViewPoint point, std::uint64_t &lastUpdate);
+	struct ZoneUndo
+	{
+		std::vector<std::shared_ptr<Order>> orders; // Inverse orders for the changed cells only.
+		std::vector<std::pair<size_t, bool>> displayed; // Displayed-view bits to restore.
+		int zone = 0;
+		std::uint64_t expires = 0;
+	};
+	std::optional<ZoneUndo> zoneUndo;
+	void applyZoneUndo();
+	void replayStroke(const TouchStrokeSession &completed);
+	bool strokeMatchesTool(const TouchStrokeSession &candidate) const;
+	void commitDeferredStroke();
 	bool processPalettePointer(const SDL_Event &event, GAGCore::ViewPoint point);
 	void advancePlacement();
 	void updatePlacementPreview(GAGCore::ViewPoint point);
@@ -81,6 +110,41 @@ class GameGUITouch
 	GAGCore::ViewRect minimapRect() const;
 	void drawMinimap();
 	void navigateMinimap(GAGCore::ViewPoint point);
+	void navigateMinimapIn(Minimap &minimap, GAGCore::ViewRect rect, int size, GAGCore::ViewPoint point);
+	// Compact tactical tools: a lens strip in the thumb corner (overlays, health
+	// bars, statistics, the map peek, history, marks, chat), a legend for the
+	// active overlay, and a large map peek for one-thumb navigation.
+	struct Lens
+	{
+		std::string label;
+		int action;
+		bool selected;
+	};
+	bool lensOpen = false;
+	bool lensVisible() const;
+	std::vector<Lens> lenses() const;
+	std::vector<GAGCore::ViewRect> lensRects(const GAGCore::MobileLayout &ui) const;
+	void drawLenses();
+	GAGCore::ViewRect overlayLegendRect() const;
+	void drawOverlayLegend();
+	bool peekOpen = false;
+	std::unique_ptr<Minimap> peekMinimap;
+	std::optional<std::uint64_t> minimapPress;
+	GAGCore::ViewRect peekRect() const; // The map square.
+	std::vector<GAGCore::ViewRect> peekButtons() const; // Done, zoom out, zoom in (thumb side last).
+	void navigatePeek(GAGCore::ViewPoint point);
+	void drawPeek();
+	// Compact statistics: a bottom sheet with the team's history chart (the
+	// end-game chart, own team only), a metric switcher and current counters.
+	bool statsOpen = false;
+	int statsMetric = 0;
+	double statsDrag = 0;
+	struct StatsLayout
+	{
+		GAGCore::ViewRect sheet, close, previous, next, title, counters, chart;
+	};
+	StatsLayout statsLayout() const;
+	void drawStats();
 	void drawBuildPalette();
 	std::vector<std::pair<std::string, int>> tacticalActions() const;
 	void drawTacticalPanel();
@@ -99,6 +163,34 @@ class GameGUITouch
 	double buildingActionsHeight(double width) const;
 	void drawBuildingActions();
 	void tapBuildingAction(GAGCore::ViewPoint point);
+	void applyDiscreteAction(Building &building, const BuildingAction &row);
+	void setRatio(Building &building, int type, int value);
+	// Compact (phone) inspectors are a thumb dial: concentric quarter rings in
+	// the thumb corner for workers, priority and a ratio or range, with chips
+	// for discrete choices and actions. Spacious panels keep the row list.
+	struct DialLayout
+	{
+		TouchDial::Geometry geometry;
+		GAGCore::ViewRect header, chips, bounds;
+		bool portrait = true;
+	};
+	struct DialRegion
+	{
+		enum Part { Arc, Minus, Plus, Segment, Chip } part = Chip;
+		BuildingAction action;
+		int ring = -1, maximum = 0;
+		double from = 0, to = 0; // Sweep angles covered by the region.
+		double sliderFrom = 0, sliderTo = 0; // Sweep of the whole slider (Arc only).
+		GAGCore::ViewRect box;	// Chips; a thumb-sized box around ring regions.
+	};
+	bool usesDial() const;
+	DialLayout dialLayout(const GAGCore::MobileLayout &ui) const;
+	std::vector<DialRegion> dialRegions() const;
+	std::optional<DialRegion> dialRegionAt(GAGCore::ViewPoint point) const;
+	GAGCore::ViewPoint dialActionPoint(int kind, int value, int side) const;
+	void tapDial(Building &building, const DialRegion &region, GAGCore::ViewPoint point);
+	void drawDial();
+	int ratioType = 0; // Unit type whose swarm ratio the dial's inner ring edits.
 	int heldActionKind = -1, heldActionValue = 0;
 	std::string heldActionLabel;
 	bool heldActionConfirmation = false;
@@ -125,6 +217,11 @@ class GameGUITouch
 	void prepareTutorial();
 	void drawTutorial();
 	GAGCore::MobileLayout layout() const;
+	// Edge-hugging controls the host is asked to keep free of system gestures;
+	// synchronised only when the set changes.
+	std::vector<GAGCore::ViewRect> gestureExclusion;
+	int gestureExclusionUpdates = 0;
+	void syncGestureExclusion();
 	void clampScroll();
 	// HUD panel offsets with momentum and bounce; clampScroll() keeps them and
 	// the plain scroll variables in step.
@@ -138,6 +235,13 @@ class GameGUITouch
 	GAGCore::TouchInput gesture;
 	std::optional<Uint32> lastMapTapTicks;
 	GAGCore::ViewPoint lastMapTapPoint{};
+	// First contact of the current touch sequence, for tap/drag decisions
+	// that the recogniser does not expose (paint taps, zoom feedback).
+	GAGCore::ViewPoint touchStart{}, touchPoint{};
+	bool touchTravelled = false;
+	bool zoomTapArmed(Uint32 ticks, GAGCore::ViewPoint point) const;
+	bool resetZoom(GAGCore::ViewPoint point);
+	std::string zoomReadout() const;
 	std::vector<std::pair<SDL_TouchID, SDL_FingerID>> fingers;
 	bool touchActive = false, interfaceGesture = false, dispatching = false;
 	bool ownerOverlay = false;
@@ -152,6 +256,9 @@ class GameGUITouch
 	std::unique_ptr<GAGCore::DrawableSurface> confirmLabel, cancelLabel;
 	GAGCore::ViewRect world() const;
 	GAGCore::ViewRect controls() const;
+	// Placement confirmation halves of controls(); OK sits under the thumb.
+	GAGCore::ViewRect confirmRect() const;
+	GAGCore::ViewRect cancelRect() const;
 	GAGCore::ViewPoint previewCursor() const;
 	void actions(const std::vector<GAGCore::TouchAction> &actions);
 	void interfaceTap(GAGCore::ViewPoint point);
