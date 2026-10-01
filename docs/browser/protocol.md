@@ -1,7 +1,7 @@
 # YOG admission and compatibility
 
-YOG owns admission for both native TCP and browser/native WebSocket clients. The
-gateway forwards framed bytes to its configured backend; it does not maintain a
+YOG owns admission for native and browser WSS clients. The
+native WSS listener receives framed bytes directly; it does not maintain a
 second authentication state machine or grant room membership.
 
 ## Admission order
@@ -19,6 +19,9 @@ successful authentication. Invalid transitions close the connection. A rejected
 password leaves the client able to retry; rejection is not authentication.
 
 Protocol version 41 adds the versioned server greeting and symmetric admission.
+Protocol 48 requires direct WSS endpoints and versioned private router
+registration. Clients, lobby, and router must cut over together; production
+raw TCP listeners and the translation gateway are removed.
 This transport change leaves the save and replay format versions unchanged. Both older and newer protocol numbers are refused before
 server information and before a legitimate client sends credentials. Server information now carries the server protocol as well. Updated clients
 decode the shorter legacy greeting as version zero solely to report the
@@ -52,7 +55,7 @@ incompatible release does not require parsing that release's entire handshake.
 ## Evidence and next protocol work
 
 The maintained browser multiplayer suite sends invalid greeting/login/room
-sequences through the real WebSocket gateway and native lobby. It tests both
+sequences through native WSS listeners and the native lobby. It tests both
 version directions, duplicate greetings/logins, valid password retries and
 normal lobby entry. A transport fault changes the actual browser greeting to an
 incompatible version and verifies that no login or registration bytes follow.

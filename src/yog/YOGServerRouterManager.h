@@ -6,6 +6,7 @@
 #include <memory>
 #include <vector>
 #include "NetListener.h"
+#include "NetworkConfig.h"
 
 class NetConnection;
 class YOGServer;
@@ -15,7 +16,7 @@ class YOGServerRouterManager
 {
 public:
 	///Creates a YOGServerRouter
-	YOGServerRouterManager(YOGServer& server);
+	YOGServerRouterManager(YOGServer& server, const NetworkConfig& config);
 
 	///Adds a connection to a YOG
 	void addRouter(std::shared_ptr<NetConnection> connection);
@@ -28,9 +29,9 @@ public:
 	bool hasRouter() const;
 private:
 	std::vector<std::shared_ptr<NetConnection> > routers;
+    std::shared_ptr<NetConnection> registeredRouter;
 	NetListener listener;
 	std::shared_ptr<NetConnection> new_connection;
-	int n;
 };
 
 

@@ -6,6 +6,12 @@ Import('env')
 if not env.get('wss', True):
     source_files.remove('net/WssTransport.cpp')
 local = env.Clone()
+platform_trust_sources = []
+if env['PLATFORM'] in ('darwin', 'win32') or env.get('mingw') or env.get('mingwcross'):
+    platform_trust_sources = local.Object('PlatformTrustCore.o', '#mobile/CertificateTrust.cpp')
+    platform_trust_sources += local.Object('PlatformTrustPolicy.o', '#mobile/ios/CertificateTrust.cpp' if env['PLATFORM'] == 'darwin' else 'net/WindowsCertificateTrust.cpp')
+source_files += platform_trust_sources
+server_source_files += platform_trust_sources
 #Add libgag and USL, not as a library, but as an object
 source_files.append("../libgag/src/libgag.a")
 source_files.append("../libusl/src/libusl.a")
@@ -14,10 +20,11 @@ p1 = local.Program("glob2", source_files)
 # Shared with test/SConscript: every client object except the entry point, so test
 # binaries link exactly the objects the game was built from and nothing compiles twice.
 if not env['server']:
-    client_cpp_sources = [source for source in source_files if source != 'Glob2.cpp' and source.endswith('.cpp')]
+    client_cpp_sources = [source for source in source_files if isinstance(source, str) and source != 'Glob2.cpp' and source.endswith('.cpp')]
     client_objects = local.Object(client_cpp_sources)
     client_object_by_source = dict(zip(client_cpp_sources, client_objects))
-    client_libs = [local.File(source) for source in source_files if not source.endswith('.cpp')]
+    client_objects += platform_trust_sources
+    client_libs = [local.File(source) for source in source_files if isinstance(source, str) and not source.endswith('.cpp')]
     Export('client_objects', 'client_object_by_source', 'client_libs')
 
 
@@ -51,11 +58,19 @@ if not env['server']:
     peer_sources += local.Object('NativeMultiplayerPeer.o', '#test/NativeMultiplayerPeer.cpp')
     peer_test = local.Program('native-multiplayer-peer', peer_sources)
     local.Alias('transport-test', peer_test)
+    discovery_test = local.Program('lan-discovery-test', [
+        'net/NetBroadcastListener.cpp', 'net/NetBroadcaster.cpp', 'net/NetworkConfig.cpp', 'net/LanIdentity.cpp',
+        local.Object('LANDiscoveryHarness.o', '#test/LANDiscoveryHarness.cpp')])
+    local.Alias('transport-test', discovery_test)
     if env.get('wss', True):
         wss_test = local.Program('wss-transport-test', [
-            'net/NetTransport.cpp', 'net/WssTransport.cpp',
-            local.Object('WssTransportHarness.o', '#test/WssTransportHarness.cpp')])
+            'net/NetTransport.cpp', 'net/WssTransport.cpp', 'net/NetworkConfig.cpp', 'net/LanIdentity.cpp',
+            local.Object('WssTransportHarness.o', '#test/WssTransportHarness.cpp')] + platform_trust_sources)
         local.Alias('transport-test', wss_test)
+        listener_test = local.Program('wss-listener-test', [
+            'net/NetTransport.cpp', 'net/WssTransport.cpp', 'net/NetworkConfig.cpp', 'net/LanIdentity.cpp',
+            local.Object('WssListenerHarness.o', '#test/WssListenerHarness.cpp')] + platform_trust_sources)
+        local.Alias('transport-test', listener_test)
 
 #Add libgag, not as a library, but as an object
 server_source_files.append("../libgag/src/libgag_server.a")
@@ -85,5 +100,3 @@ if not env['server']:
     gallery_sources = [source for source in source_files if source != 'Glob2.cpp']
     gallery_sources += local.Object('MobileGalleryHarness.o', '#tools/MobileGalleryHarness.cpp')
     local.Alias('mobile-gallery', local.Program('mobile-gallery', gallery_sources))
-
-

@@ -40,7 +40,13 @@ void LANMenuScreen::host()
 			if (result != ChooseMapScreen::OK)
 				return;
 			auto client = std::make_shared<YOGClient>();
-			auto server = std::make_shared<YOGServer>(YOGAnonymousLogin, YOGSingleGame);
+			std::shared_ptr<YOGServer> server;
+            try { server = std::make_shared<YOGServer>(YOGAnonymousLogin, YOGSingleGame); }
+            catch (const std::exception& error) {
+                screens.push(std::make_unique<MessageScreen>("Unable to host a secure LAN game: " + std::string(error.what()),
+                    std::vector<std::string>{tr("[ok]")}));
+                return;
+            }
 			if (!server->isListening())
 			{
 				screens.push(std::make_unique<MessageScreen>(
@@ -50,7 +56,7 @@ void LANMenuScreen::host()
 			}
 			server->enableLANBroadcasting();
 			client->attachGameServer(server);
-			client->connect("127.0.0.1");
+			client->connect(server->networkConfig().lobbyEndpoint);
 			screens.push(std::make_unique<LANSessionScreen>(
 							 screens, client, globalContainer->settings.getUsername(),
 							 static_cast<ChooseMapScreen &>(selection).getMapHeader()),

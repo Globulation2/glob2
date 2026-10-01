@@ -528,6 +528,9 @@ CLIENT_SOURCES = (
     'FertilityScreen.cpp',
     'LANSessionScreen.cpp',
     'net/NetTransport.cpp',
+    'net/NetworkConfig.cpp',
+    'net/LanIdentity.cpp',
+    'net/ServerControl.cpp',
     'net/WssTransport.cpp',
 )
 
@@ -629,7 +632,11 @@ SERVER_SOURCES = (
     'yog/YOGServerRouter.cpp',
     'yog/YOGServerRouterManager.cpp',
     'yog/YOGServerRouterPlayer.cpp',
+    'net/WssTransport.cpp',
     'net/NetTransport.cpp',
+    'net/NetworkConfig.cpp',
+    'net/LanIdentity.cpp',
+    'net/ServerControl.cpp',
 )
 
 GAG_SOURCES = (

@@ -153,18 +153,22 @@ def configure(env, server_only):
         missing.append("regex")
 
     env.Append(LIBS=["pthread"])
-    if not server_only and env["wss"]:
+    if not env["wss"]:
+        print("Native multiplayer requires WSS; wss=0 is no longer supported")
+        Exit(1)
+    if True:
         if not conf.CheckCXXHeader("openssl/ssl.h") or not conf.CheckLib("ssl") or not conf.CheckLib("crypto"):
             missing.append("OpenSSL development headers and libraries")
         env.Append(LIBS=["ssl", "crypto"])
         # Boost.Beast and Boost.Asio (header-only) implement the WebSocket and TLS
         # transport; nothing else in the game uses Boost.
         if not conf.CheckCXXHeader("boost/beast/websocket.hpp") or not conf.CheckCXXHeader("boost/asio/ssl.hpp"):
-            missing.append("Boost.Beast and Boost.Asio headers (or build with wss=0)")
+            missing.append("Boost.Beast and Boost.Asio headers")
         configfile.add("GLOB2_NATIVE_WSS", "Defined when native secure WebSocket support is compiled")
-    if not server_only:
-        if env["mingw"] or env["mingwcross"]:
-            env.Append(LIBS=["ws2_32", "mswsock"])
+    if env["mingw"] or env["mingwcross"] or isWindowsPlatform:
+        env.Append(LIBS=["ws2_32", "mswsock", "crypt32"])
+    elif sys.platform == 'darwin':
+        env.Append(FRAMEWORKS=["Security", "CoreFoundation"])
 
     
 
@@ -291,10 +295,6 @@ def main():
     if identity['target'] in ('android', 'ios'):
         from mobile_build import build_mobile
         build_mobile(bdir, identity, ARGUMENTS)
-        return
-    if identity['role'] == 'gateway':
-        from gateway_build import build_gateway
-        build_gateway(bdir, identity, ARGUMENTS)
         return
     env = Environment(tools=[])
     # SCons scrubs the shell environment for build commands; without TMPDIR,

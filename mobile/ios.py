@@ -92,6 +92,7 @@ def main():
         'target_link_options(Glob2 PRIVATE -ObjC)',
         'set_target_properties(Glob2 PROPERTIES XCODE_ATTRIBUTE_PRODUCT_BUNDLE_IDENTIFIER '+BUNDLE_ID+' XCODE_ATTRIBUTE_INSTALL_PATH /Applications XCODE_ATTRIBUTE_SKIP_INSTALL NO XCODE_ATTRIBUTE_GCC_GENERATE_DEBUGGING_SYMBOLS YES XCODE_ATTRIBUTE_DEBUG_INFORMATION_FORMAT "dwarf-with-dsym")',
         'set_target_properties(Glob2 PROPERTIES MACOSX_BUNDLE_INFO_PLIST '+cmake_quote(project/'Info.plist')+' XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY "1,2")']
+    lines.append('set_target_properties(Glob2 PROPERTIES XCODE_ATTRIBUTE_CODE_SIGN_ENTITLEMENTS '+cmake_quote(ROOT/'mobile/ios/Glob2.entitlements')+')')
     # Xcode compiles the catalog and merges its icon metadata into Info.plist.
     icons=ROOT/'mobile/ios/Assets.xcassets'
     lines += [

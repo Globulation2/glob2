@@ -8,6 +8,7 @@
 #include <vector>
 #include <map>
 #include "NetListener.h"
+#include "NetworkConfig.h"
 #include "YOGServerRouterAdministrator.h"
 
 class NetConnection;
@@ -25,6 +26,7 @@ public:
 	
 	///This constructs a router with a specific ip address of the server
 	YOGServerRouter(const std::string& yogip);
+    explicit YOGServerRouter(const NetworkConfig& config);
 
 	///This updates the router
 	void update();
@@ -48,6 +50,7 @@ public:
 	std::string getStatusReport();
 
 private:
+	NetworkConfig configuration;
 	NetListener nl;
 	std::shared_ptr<NetConnection> new_connection;
 	std::shared_ptr<NetConnection> yog_connection;
@@ -55,5 +58,6 @@ private:
 	std::vector<std::shared_ptr<YOGServerRouterPlayer> > players;
 	YOGServerRouterAdministrator admin;
 	bool shutdownMode;
+    bool registrationSent = false, registrationConfirmed = false;
 };
 

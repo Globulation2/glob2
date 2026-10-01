@@ -44,6 +44,19 @@ void NetDownloadableMapInfos::decodeData(GAGCore::InputStream* stream)
 	stream->readEnterSection("NetDownloadableMapInfos");
 	stream->readEnterSection("maps");
 	Uint32 size = stream->readUint32("maps");
+	// Validate the count before allocating. Each entry has at least 24 bytes
+	// after its map header, within the 16-bit application-frame limit.
+	constexpr size_t minimumEntryBytes = 24;
+	if (size > 65535 / minimumEntryBytes)
+		throw std::ios_base::failure("Map catalogue exceeds the network frame limit");
+	if (stream->canSeek()) {
+		const auto position = stream->getPosition();
+		stream->seekFromEnd(0);
+		const auto end = stream->getPosition();
+		stream->seekFromStart(position);
+		if (end < position || size > (end - position) / minimumEntryBytes)
+			throw std::ios_base::failure("Map catalogue count exceeds its payload");
+	}
 	maps.resize(size);
 	for(unsigned int i=0; i<size; ++i)
 	{

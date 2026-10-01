@@ -20,6 +20,7 @@ public:
 	
 	///Updates this game log, periodically saving and changing the log file
 	void update();
+    void flush() { save(); }
 private:
 	///This saves the game log
 	void save();

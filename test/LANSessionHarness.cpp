@@ -17,6 +17,7 @@
 #include <filesystem>
 #include <fstream>
 #include <iterator>
+#include <iostream>
 #include <memory>
 #include <set>
 #include <string>
@@ -191,18 +192,18 @@ private:
 
 bool connectionFailureChecks()
 {
-    // Accept the TCP handshake at the OS level but never pump YOG, so the
-    // client really remains connected without receiving a protocol greeting.
+    // Never pump the WSS listener: cancellation and the TLS/greeting deadline
+    // must remain responsive while connection establishment is pending.
     YOGServer stalled(YOGAnonymousLogin, YOGSingleGame);
     if (!stalled.isListening()) return false;
     for (bool cancel : {true, false}) {
         auto client = std::make_shared<YOGClient>();
-        client->connect("127.0.0.1");
+        client->connect(stalled.networkConfig().lobbyEndpoint);
         const auto deadline = SDL_GetTicks64() + 2000;
         while (!client->isConnected() && SDL_GetTicks64() < deadline) {
             client->update(); SDL_Delay(1);
         }
-        if (!client->isConnected()) return false;
+        if (!client->isConnected() && !client->isConnecting()) return false;
         ScreenStack screens(*globalContainer->gfx);
         screens.push(std::make_unique<LANSessionScreen>(screens, client, "timeout probe"));
         screens.frame(0, {});
@@ -228,8 +229,9 @@ int host(int cycles, const std::string& capture)
 	auto server = std::make_shared<YOGServer>(YOGAnonymousLogin, YOGSingleGame);
 	if (!server->isListening()) { std::puts("HOST FAIL: port in use"); return 1; }
 	server->enableLANBroadcasting();
+    std::cout << "PAIRING " << server->networkConfig().lobbyEndpoint << std::endl;
 	client->attachGameServer(server);
-	client->connect("127.0.0.1");
+	client->connect(server->networkConfig().lobbyEndpoint);
 	// A private map name forces a real transfer without touching user maps.
 	MapHeader map = Engine::loadMapHeader("maps/FourSquares1.map");
 	map.setMapName("LAN regression transfer");

@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       browser_only:
-        description: Run only browser, transport, gateway, and deployment checks
+        description: Run only browser, transport and deployment checks
         required: false
         type: boolean
         default: false
@@ -558,7 +558,7 @@ jobs:
         id: build_without_opengl
         continue-on-error: true
         run: |
-          scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 opengl=0 wss=0 --build=build-software build-software/src/glob2 engine-tests
+          scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 opengl=0 --build=build-software build-software/src/glob2 engine-tests
           python3 test/SoftwareStartupTest.py build-software/src/glob2
           python3 test/run_tests.py --binary engine --build-dir build-software --no-display --filter 'TorusRender/*software*' --junit artifacts/tests/software-junit.xml
 
@@ -1137,7 +1137,7 @@ jobs:
         run: python3 test/ci_step_summary.py
 
   web-native:
-    name: browser gateway, router and transport
+    name: browser native WSS server, router and transport
     needs: changes
     if: ${{ needs.changes.outputs.browser == 'true' }}
     runs-on: ubuntu-24.04
@@ -1190,15 +1190,10 @@ jobs:
           ccache -z
           # Keep the build banner current even when every other object is reused.
           find build/linux -name GlobalContainerArgs.o -delete 2>/dev/null || true
-      - name: Build gateway
-        id: build_gateway
+      - name: Build headless server
+        id: build_headless_server
         continue-on-error: true
-        run: scons role=gateway release=1 -j$(nproc)
-      - name: Test gateway
-        id: test_gateway
-        continue-on-error: true
-        if: steps.build_gateway.outcome == 'success'
-        run: python3 -m unittest discover -s tests/gateway -v
+        run: scons role=server release=1 -j$(nproc)
       - name: Build headless router
         id: build_headless_router
         continue-on-error: true
@@ -1217,17 +1212,18 @@ jobs:
         run: |
           python3 test/ci_run_commands.py \
             --check 'network transport' 'python3 test/run-network-transport-tests.py' \
+            --check 'LAN discovery' 'build/linux/client/release/src/lan-discovery-test' \
             --check 'transport unit tests' 'python3 -m unittest discover -s tests/transport -v' \
             --check 'compiler cache statistics' 'ccache -s -v'
       - name: Package the programs the browser tests drive
         id: package_the_programs_the_browser_tests_drive
-        if: steps.build_gateway.outcome == 'success' && steps.build_transport_integration_fixture.outcome == 'success'
+        if: steps.build_headless_server.outcome == 'success' && steps.build_transport_integration_fixture.outcome == 'success'
         run: |
           tar -czf web-native.tar.gz \
             build/linux/client/release/src/glob2 \
             build/linux/client/release/src/net-connection-test \
             build/linux/client/release/src/native-multiplayer-peer \
-            build/linux/gateway/release/glob2-ws-gateway
+            build/linux/server/release/src/glob2-server
       - name: Save native object tree
         id: save_native_object_tree
         if: ${{ !cancelled() && steps.package_the_programs_the_browser_tests_drive.outcome == 'success' && ((github.event_name == 'push' && github.ref == 'refs/heads/master') || github.event_name == 'workflow_dispatch') }}
@@ -1358,6 +1354,12 @@ jobs:
           - name: firefox
             browsers: firefox
             command: GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test runtime-build.spec.js viewport.spec.js responsive-presentation.spec.js campaign-editor-storage.spec.js --project=firefox
+          - name: firefox WSS and simulation
+            browsers: firefox
+            command: GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test multiplayer.spec.js determinism.spec.js --project=firefox --grep='YOG admission enforces|browser and native players|WebAssembly produces'
+          - name: webkit WSS and simulation
+            browsers: webkit
+            command: xvfb-run -a npx playwright test multiplayer.spec.js determinism.spec.js --project=webkit --grep='YOG admission enforces|browser and native players|WebAssembly produces'
           # Repeat the remaining renderer-sensitive tests on WebGL2. New
           # untagged reload cases stay with the match reload group by default.
           - name: chromium webgl2 input

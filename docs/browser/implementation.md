@@ -33,7 +33,7 @@ experience or publish a Play button on the project website.
 - WebGL2 and software rendering share the renderer interfaces. Context recovery
   rebuilds renderer resources while retaining the current application state.
 - YOG continues to own identities, rooms, and match lifecycle. The WebSocket
-  gateway relays framed bytes to a fixed native backend and does not participate
+  native WSS transport delivers framed bytes directly and does not participate
   in simulation.
 
 ## Build identity
@@ -49,12 +49,12 @@ application to `build/emscripten/client/release`. The compatibility command
 `python3 browser/build.py` delegates to SCons.
 
 Browser and native multiplayer clients must use the same protocol version.
-Update the client, YOG services, and gateway deployment together. See the
-[protocol contract](protocol.md) and [gateway guide](gateway.md).
+Update the client and YOG services together. See the
+[protocol contract](protocol.md) and [secure transport guide](gateway.md).
 
 ## Verification
 
-CI builds native client/server, router, gateway, and browser identities. Native
+CI builds native client/server, router, and browser identities. Native
 harnesses cover screen/session ownership, loading and generation cancellation,
 save safety, transports, and deterministic replay. Chromium runs the complete
 browser behavior suite; Firefox and WebKit run focused startup, gameplay, and

@@ -5,6 +5,9 @@
 #include "GlobalContainer.h"
 #include "LANSessionScreen.h"
 #include "YOGClient.h"
+#include "MessageScreen.h"
+#include "FormatableString.h"
+#include <stdexcept>
 #include <ScreenStack.h>
 
 using namespace Glob2UI;
@@ -19,10 +22,11 @@ LANFindScreen::~LANFindScreen() = default;
 Element LANFindScreen::build(const Presentation &p)
 {
 	auto formPart = form({
-		field(tr("[svr hostname]"), textField("server", serverName, [this](const std::string &v) { serverName = v; })),
+		field(tr("[lan pairing field]"), textField("server", serverName, [this](const std::string &v) { serverName = v; })),
 		field(tr("[player name]"), textField("player", playerName, [this](const std::string &v) { playerName = v; }, {false, 32})),
 	});
 	auto gameList = column({label(tr("[available lan games]")),
+        paragraph(tr(listener.isListening() ? "[lan discovery instructions]" : "[lan discovery unavailable]")),
 							listView("games", games, selectedGame,
 									 [this](int i)
 									 {
@@ -38,7 +42,7 @@ Element LANFindScreen::build(const Presentation &p)
 			return row({expanded(formPart), expanded(gameList)}, {-1, CrossAlign::Start});
 		});
 	return page(tr("[join a game]"), body,
-				actions({{"connect", tr("[connect]"), [this] { connect(); }, true, SDLK_RETURN},
+				actions({{"connect", tr("[lan pairing connect]"), [this] { connect(); }, true, SDLK_RETURN},
 						 {"back", tr("[goto main menu]"), [this] { endExecute(QUIT); }, false, SDLK_ESCAPE}},
 						p),
 				p, 800);
@@ -52,7 +56,14 @@ void LANFindScreen::setServer(const std::string &address)
 
 void LANFindScreen::connect()
 {
-	auto client = std::make_shared<YOGClient>();
+	try {
+        const auto endpoint = NetEndpoint::parse(serverName);
+        if (endpoint.route != "/yog") throw std::invalid_argument(tr("[lan lobby endpoint required]"));
+    } catch (const std::exception& error) {
+        screens.push(std::make_unique<MessageScreen>(error.what(), std::vector<std::string>{tr("[ok]")}));
+        return;
+    }
+    auto client = std::make_shared<YOGClient>();
 	client->connect(serverName);
 	listener.disableListening();
 	screens.push(std::make_unique<LANSessionScreen>(screens, client, playerName),
@@ -68,8 +79,8 @@ void LANFindScreen::onTimer(Uint32)
 {
 	listener.update();
 	std::vector<std::string> names;
-	for (const auto &game : listener.getLANGames())
-		names.push_back(game.getGameInformation().getGameName());
+	for (const auto &host : listener.getLANHosts())
+        names.push_back(GAGCore::FormattableString(tr("[lan discovered host %0]")).arg(host.identifier.substr(0, 8)));
 	if (names != games)
 	{
 		games = std::move(names);

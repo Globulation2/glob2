@@ -6,6 +6,7 @@
 #include <utility>
 #include <exception>
 #include "NetListener.h"
+#include "NetworkConfig.h"
 #include "message/AuthMessages.h"
 #include "message/RegistrationMessages.h"
 #include "message/RouterAdminMessages.h"
@@ -91,7 +92,9 @@ int main(int argc, char** argv) {
         require(connection.getMessage() && connection.getMessage() && !connection.getMessage(), "Coalesced frames lost boundaries");
         for (const auto& invalid : std::vector<std::vector<uint8_t>>{
             {0, 0}, {0, 1, 255},
-            {0, 5, MNetAttemptLogin, 255, 255, 255, 255}, {0, 1, original->getMessageType()},
+            {0, 5, MNetAttemptLogin, 255, 255, 255, 255},
+            {0, 5, MNetDownloadableMapInfos, 255, 255, 255, 255},
+            {0, 5, MNetDownloadableMapInfos, 0, 0, 0, 1}, {0, 1, original->getMessageType()},
             {0, 4, original->getMessageType(), 0, 1, 0},
             {0, 6, MNetSendServerInformation, YOGRequirePassword, YOGMultipleGames, 0, 17, 0}}) {
             connection.openConnection("unused", 0); wire.current = NetTransport::State::Connected;
@@ -113,9 +116,12 @@ int main(int argc, char** argv) {
         if (argc == 2) {
             require(SDL_Init(0) == 0 && SDLNet_Init() == 0, "SDL network init failed");
             {
-                NetListener listener(static_cast<Uint16>(std::stoi(argv[1])));
+                auto config = makeNetworkConfig(true); config.lobby.bindAddress = "127.0.0.1";
+                config.lobby.port = std::stoi(argv[1]);
+                NetListener listener(config.lobby);
                 require(listener.isListening(), "Loopback listener failed");
-                NetConnection client("127.0.0.1", static_cast<Uint16>(std::stoi(argv[1]))), server;
+                NetConnection client("wss://localhost:" + std::string(argv[1]) + "/yog" +
+                    config.lobbyEndpoint.substr(config.lobbyEndpoint.find('#')), 0), server;
                 client.sendMessage(original); // Queue before connection completion.
                 bool accepted = false, echoed = false;
                 const auto deadline = SDL_GetTicks64() + 5000;
@@ -126,22 +132,23 @@ int main(int argc, char** argv) {
                     if (auto message = client.getMessage()) echoed = *message == *original;
                     SDL_Delay(1);
                 }
-                require(accepted && echoed, "Native TCP message round trip failed");
+                require(accepted && echoed, "Native WSS message round trip failed");
                 // A one-way burst must drain without waiting for replies between frames.
                 const auto burstStart = SDL_GetTicks64();
                 for (unsigned i = 0; i < 200; ++i) client.sendMessage(original);
                 unsigned delivered = 0;
-                while (delivered < 200 && SDL_GetTicks64() - burstStart < 1000) {
+                while (delivered < 200 && SDL_GetTicks64() - burstStart < 2000) {
+                    client.update();
                     while (auto message = server.getMessage()) {
-                        require(*message == *original, "TCP burst changed a message");
+                        require(*message == *original, "WSS burst changed a message");
                         ++delivered;
                     }
                     SDL_Delay(1);
                 }
-                require(delivered == 200, "TCP burst stalled waiting for unrelated incoming traffic");
+                require(delivered == 200, "WSS burst stalled waiting for unrelated incoming traffic");
             }
             SDLNet_Quit(); SDL_Quit();
         }
-        std::cout << "PASS: shared framing, malformed input, queue limits, queued greeting and TCP round trip\n";
+        std::cout << "PASS: shared framing, malformed input, queue limits, queued greeting and WSS round trip\n";
     } catch (const std::exception& error) { std::cerr << error.what() << '\n'; return 1; }
 }

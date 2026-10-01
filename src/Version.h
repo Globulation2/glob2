@@ -154,9 +154,11 @@
 
 //This must be updated when there are changes to YOG, MapHeader, GameHeader, BasePlayer, BaseTeam,
 //NetMessage, and the likes, in parallel to change of the VERSION_MINOR above
-#define NET_PROTOCOL_VERSION 47
+#define NET_PROTOCOL_VERSION 48
 //Clients with older versions than this will be rejected
-#define YOG_MIN_CLIENT_NET_PROTOCOL_VERSION 47
+#define YOG_MIN_CLIENT_NET_PROTOCOL_VERSION 48
+// version 48 requires native WSS endpoints and versioned mutual-TLS router registration.
+// Transport-only: save and replay formats remain version 124.
 // version 47 GameHeader carries the experiments list; older clients would misread it.
 // version 46 uses scoped invalidation, escape refresh and corrected Numbi RNG.
 // version 45 separates shared-runtime gradient caches in mixed-client games.

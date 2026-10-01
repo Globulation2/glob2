@@ -26,7 +26,7 @@ int main(int argc, char** argv) {
         } else if (mode == "refuse" || mode == "timeout") {
             if (transport->state() != NetTransport::State::Closed) throw std::runtime_error("Invalid peer accepted or timeout missing");
         } else {
-            if (transport->state() != NetTransport::State::Connected) throw std::runtime_error("Secure connection failed");
+            if (transport->state() != NetTransport::State::Connected) throw std::runtime_error("Secure connection failed: " + transport->error());
             if (transport->send(std::vector<uint8_t>(NetTransport::queueLimit + 1))) throw std::runtime_error("Outbound limit missing");
             std::vector<uint8_t> sent(64000), received, part;
             for (size_t i = 0; i < sent.size(); ++i) sent[i] = i % 251;
