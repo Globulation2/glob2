@@ -30,6 +30,8 @@ Use the normal executable's [map CLI](CLI.md) to generate maps and PNG previews,
 preview existing maps or saves, and configure generators with CLI settings or a config file.
 The [JSON report reference](REPORT.md) documents the output schema and the meaning
 of every metric, including fairness, resources, building room, and travel distances.
+The CLI also [exports and imports categorical map images](CLI.md#import-and-export-flat-map-images)
+for editing terrain, resource footprints and colony starts in an image editor.
 Use `python3 tools/map_fairness_tournament.py run smoke` to measure whether generated maps favour
 some start positions in real games; see [Map fairness tournament](FAIRNESS_TOURNAMENT.md).
 Study results and screenshots belong in ignored `artifacts/`, not in this directory.

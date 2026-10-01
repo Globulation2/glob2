@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
 #include "../src/MapRenderGeometry.h"
+#include "../src/DynamicClouds.h"
+#include <limits>
 #include <set>
 #include <utility>
 
@@ -44,5 +46,24 @@ TEST_CASE("whole-world buildings; seam overhang and repeated viewport copies")
                 REQUIRE(actual == expected);
             }
     MESSAGE("Whole-world buildings, seam overhang and repeated viewport copies passed");
+}
+}
+
+TEST_SUITE("MapRenderGeometry")
+{
+TEST_CASE("cloud detail follows camera zoom without changing normal detail")
+{
+    CHECK(DynamicClouds::gridLimitForZoom(256, 256, 16, 1.0) == 0);
+    CHECK(DynamicClouds::gridLimitForZoom(256, 256, 16, 3.0) == 0);
+    CHECK(DynamicClouds::gridLimitForZoom(256, 256, 16, .500001) == 0);
+    CHECK(DynamicClouds::gridLimitForZoom(256, 256, 16, .5) == 256);
+    CHECK(DynamicClouds::gridLimitForZoom(256, 256, 16, .25) == 128);
+    CHECK(DynamicClouds::gridLimitForZoom(256, 256, 16, 1120.0/8192) == 128);
+    CHECK(DynamicClouds::gridLimitForZoom(512, 64, 16, .25) == 256);
+    CHECK(DynamicClouds::gridLimitForZoom(64, 512, 16, .25) == 256);
+    CHECK(DynamicClouds::gridLimitForZoom(256, 256, 0, .25) == 2048);
+    CHECK(DynamicClouds::gridLimitForZoom(256, 256, 16, 0) == 0);
+    CHECK(DynamicClouds::gridLimitForZoom(256, 256, 16,
+        std::numeric_limits<double>::quiet_NaN()) == 0);
 }
 }
