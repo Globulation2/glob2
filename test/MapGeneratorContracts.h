@@ -1799,8 +1799,8 @@ inline void portageLakesContracts()
 	D compact = r;
 	compact.wDec = compact.hDec = 6;
 	compact.nbTeams = 2;
-	Game small(nullptr);
-	auto smallReport = service.generate(small, compact, true);
+	Game compactGame(nullptr);
+	auto smallReport = service.generate(compactGame, compact, true);
 	if (!smallReport)
 		std::fprintf(stderr, "%s\n", smallReport.diagnostic().c_str());
 	assert(smallReport);
@@ -1843,11 +1843,11 @@ inline void portageLakesContracts()
 		assert(result);
 	}
 	// A change to the lake/road terrain cannot silently validate as the original design.
-	const auto originalTerrain = small.map.getUMTerrain(0, 0);
-	small.map.setUMTerrain(0, 0, originalTerrain == WATER ? GRASS : WATER);
-	small.map.rebuildTerrain();
+	const auto originalTerrain = compactGame.map.getUMTerrain(0, 0);
+	compactGame.map.setUMTerrain(0, 0, originalTerrain == WATER ? GRASS : WATER);
+	compactGame.map.rebuildTerrain();
 	GenerationContext compactContext(compact);
-	assert(!definition.validateWorld(small, compactContext).empty());
+	assert(!definition.validateWorld(compactGame, compactContext).empty());
 	// Failed neutral bays restore a working layout; that must not invalidate its candidate scan.
 	// This crowded request exposed both nondeterministic reconstruction and an iterator lifetime bug.
 	{

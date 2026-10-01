@@ -990,18 +990,18 @@ inline void branchChecks()
 	assert(std::abs(pathClearance(dot, a) - 2) < 1e-9);
 	// tracePath: one tile thick and unbroken, even along a shallow diagonal and across the wrap.
 	{
-		const Torus small(32, 16);
-		std::vector<unsigned char> line(small.size(), 0);
-		tracePath(line, small, {{2, 3, 5}, {29, 11, 5}, {35, 12, 5}});
+		const Torus smallTorus(32, 16);
+		std::vector<unsigned char> line(smallTorus.size(), 0);
+		tracePath(line, smallTorus, {{2, 3, 5}, {29, 11, 5}, {35, 12, 5}});
 		for (int x = 2; x <= 29; ++x)
 		{
 			int column = 0;
-			for (int y = 0; y < small.h; ++y)
-				column += line[small.at(x, y)];
+			for (int y = 0; y < smallTorus.h; ++y)
+				column += line[smallTorus.at(x, y)];
 			assert(column >= 1 && column <= 2);
 		}
-		assert(line[small.at(2, 3)] && line[small.at(29, 11)] && line[small.at(3, 12)]);
-		assert(!line[small.at(15, 14)] && !line[small.at(10, 0)]);
+		assert(line[smallTorus.at(2, 3)] && line[smallTorus.at(29, 11)] && line[smallTorus.at(3, 12)]);
+		assert(!line[smallTorus.at(15, 14)] && !line[smallTorus.at(10, 0)]);
 	}
 	const PathBounds bounds = pathBounds(a);
 	assert(std::abs(bounds.x - 10) < 1e-9 && std::abs(bounds.radius - 11) < 1e-9);
