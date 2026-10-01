@@ -643,7 +643,9 @@ Element InGameTextInput::build(const Presentation &p)
 		return entry;
 	fe::ButtonOptions sendOptions;
 	sendOptions.primary = true;
-	auto send = fe::button("send", fe::tr("[Send]"), [this] { finish(0); }, sendOptions);
-	auto close = fe::button("close", fe::tr("[Close]"), [this] { finish(1); });
+	auto send = fe::compactButton(
+		"send", fe::tr("[Send]"), fe::UIIcon::Send, [this] { finish(0); }, p, sendOptions);
+	auto close =
+		fe::compactButton("close", fe::tr("[Close]"), fe::UIIcon::Close, [this] { finish(1); }, p);
 	return fe::row({fe::expanded(entry), send, close}, {p.pt(6), fe::CrossAlign::Center});
 }

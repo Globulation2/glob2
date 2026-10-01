@@ -513,6 +513,9 @@ Element SettingsScreen::categoryNavigation(const Presentation &p, bool sidebar)
 			options.alignLeft = true;
 			options.selected = category == current && modal == Modal::None;
 			options.minHeight = 42;
+			const UIIcon icons[] = {UIIcon::Display,   UIIcon::Audio,    UIIcon::Gameplay,
+									UIIcon::Buildings, UIIcon::Controls, UIIcon::Player};
+			options.icon = uiIcon(icons[int(category)]);
 			items.push_back(Glob2UI::button("nav." + std::to_string(int(category)), categoryName(category),
 											[this, category] { selectCategory(category); }, options));
 		}

@@ -134,7 +134,7 @@ Controls: `label`, `heading`, `title`, `caption`, `paragraph`, `button`,
 `segments`, `stepper`, `slider`, `textField` (single line, IME composition,
 browser text input), `textEditor` (multi-line), `listView` (virtualized rows
 with selection and activation), `progress`, `image`, `sprite`, `swatch`,
-`canvas` (custom painter with pointer and wheel callbacks).
+`icon`, `canvas` (custom painter with pointer and wheel callbacks).
 
 Game-side builders in `Glob2UI` reproduce the game's established look on
 each host, so a screen written with them looks as it did before the
@@ -173,6 +173,67 @@ colony backdrop and paper panel reads the frontend palette rather than
 keeping its own, and screens reach the palette through `theme().palette`.
 The only literals left are data painters (map preview frames, the end-game
 chart) that draw values rather than controls.
+
+### Icons
+
+Common interface icons use Tabler outlines, coloured with the active theme. Request
+assets with `Glob2UI::uiIcon(UIIcon::Settings)` (or another semantic name); screens
+must not load filenames. `icon(asset, {20})` creates a decorative element whose size
+is in points. `ButtonOptions::icon` adds an icon before the button label with a
+6-point gap; `iconSize` defaults to 20 points. The icon takes the button's resolved
+ink colour, including disabled, primary and danger states.
+
+For an icon-only button, pass empty visible text and a translated
+`accessibleLabel`; unnamed icon-only buttons are rejected. Set `tooltip` to the
+translated label. The host displays it after 600 ms of pointer hover or keyboard
+focus, keeps it inside the safe viewport, and dismisses it on activation or target
+change. Touch actions retain their normal minimum target size. A missing asset
+restores the accessible label as visible button text; missing raster files are
+logged when the asset is first requested. These names support diagnostics and
+harnesses; they do not establish native screen-reader integration.
+
+`GAGGUI::ui::IconAsset` owns white alpha-mask raster variants sorted by width. The
+canvas chooses the smallest adequate resolution and caches recolours, preserving
+coverage without changing the source mask. Recording canvases record `drawIcon`
+identity, bounds and colour without accessing pixels. Game-side lookup uses a weak
+cache keyed by asset name: live elements own their masks and recolours, aliases
+share them, and closing the last element releases the graphics resources.
+
+The main-menu Settings button uses a gear with its label in the desktop utility
+grid, and a gear alone beside the wordmark on touch hosts. Desktop Editor and Load
+game also retain their labels beside icons. Touch main-menu launch choices and
+More-page actions all use icons beside labels, including Back and More. Desktop
+settings-sidebar categories use labelled icons; the compact category dropdown
+and game-specific artwork retain their existing presentation.
+
+Choose icon-only controls for familiar actions in headers and toolbars. Keep
+labels in menu rows and desktop utility grids so neighbouring controls read
+consistently. Mobile interfaces can use icons more extensively to aid scanning,
+while retaining labels for destinations that need explanation.
+
+`Glob2UI::compactButton` applies that toolbar convention: translated text on
+pointer hosts, a 24-point icon in a button at least 48 points square on touch
+hosts, with a diagnostic name, tooltip and visible-text fallback. Mobile chat
+uses Send and Close icons, the compact landscape picker uses a Back arrow, and
+custom-game previews use Refresh and Info icons for reroll and start quality.
+Launch/confirmation choices, parameter operations and immediate file deletion
+keep their labels. Landscape parameter fields widen with mobile text size so
+numeric choices remain readable. The gameplay action strip retains its
+game-specific sprites and labels, which distinguish construction, flags and team tools.
+
+Original SVGs and a source manifest live in `datasrc/icons/tabler/`, pinned to
+Tabler v3.48.0. Generated PNGs live in `data/gui/`; the distributed MIT notice is
+`data/tabler-icons-license.txt`. Ordinary builds use the committed PNGs and need
+no SVG renderer or network access. To regenerate with the pinned development tool:
+
+```sh
+npm install --prefix artifacts/tabler/tooling --no-audit --no-fund @resvg/resvg-js@2.6.2
+NODE_PATH=artifacts/tabler/tooling/node_modules node tools/icons/export_tabler.cjs
+```
+
+The exporter verifies source hashes and writes 20- and 24-point icons at 1×, 2×
+and 3×. Add new assets deliberately to the manifest and semantic bindings, retain
+upstream notices, and capture desktop and phone views when introducing them.
 
 ### Hosting a dialog
 
@@ -217,7 +278,9 @@ press and release land on the same element.
   the theme minimum, no overlapping interactive elements, unique keys, something
   focusable, and a valid focus and scroll state after resize. It writes one
   image per screen and viewport into its artifact directory.
-  `GLOB2_UI_ONLY=<fixture>` restricts a run.
+  `GLOB2_UI_ONLY=<fixture>` restricts a run. `GLOB2_UI_VIEWPORT=<viewport>`
+  selects a named viewport, and `GLOB2_UI_REVEAL=<control-key>` scrolls a control
+  into view before capture and layout verification.
 - The `GameGUITouch`, `Settings`, `EngineSession`, `GameSpeed`,
   `CustomGameSetup` and `MapPreview` suites, `menu-colony-harness` and
   `mobile-gallery` drive the ported screens through their keys and semantic

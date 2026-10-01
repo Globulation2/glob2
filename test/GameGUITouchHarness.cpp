@@ -1517,6 +1517,18 @@ class GameGUITouchHarness
 			require(!gui.inGameMenu, "Save cancellation is always reachable");
 			gui.touch->menuAction(1);
 			require(bool(gui.typingInputScreen), "Tactical chat action opens the composer");
+			gui.drawAll(0);
+			gfx->nextFrame();
+			for (const auto &key : {"send", "close"})
+			{
+				const auto r = gui.typingInputScreen->host().bounds(key);
+				require(r.w >= 48 * gfx->logicalUnitsPerPoint() &&
+							r.h >= 48 * gfx->logicalUnitsPerPoint(),
+						"Chat icons retain 48-point tap targets");
+				require(!gui.typingInputScreen->host().find(key)->accessibleText().empty(),
+						"Chat icons retain translated names");
+			}
+			gfx->printScreen("chat-icons-" + std::to_string(width) + ".bmp");
 			SDL_Event composition{};
 			composition.type = SDL_TEXTEDITING;
 			std::strcpy(composition.edit.text, "provisional");
@@ -1539,6 +1551,11 @@ class GameGUITouchHarness
 						std::dynamic_pointer_cast<MessageOrder>(gui.orderQueue.front()),
 					"Chat sends once through shared orders");
 			gui.orderQueue.clear();
+			gui.touch->menuAction(1);
+			gui.processEvent(&text);
+			pressDialog("close");
+			require(!gui.typingInputScreen && gui.orderQueue.empty(),
+					"Closing the chat draft sends no message");
 		}
 
 		{

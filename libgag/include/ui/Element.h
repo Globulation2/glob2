@@ -116,6 +116,7 @@ class Node
 	virtual const char *name() const { return "node"; }
 	// Text a test or accessibility layer can read for this element.
 	virtual std::string accessibleText() const { return {}; }
+	virtual std::string tooltipText() const { return {}; }
 
 	// Interaction. Interactive nodes receive taps and keyboard activation.
 	virtual bool interactive() const { return false; }

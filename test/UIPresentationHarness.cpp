@@ -123,6 +123,7 @@ std::vector<Fixture> fixtures()
 	auto &strings = *GAGCore::Toolkit::getStringTable();
 	return {
 		{"main-menu", [](GAGGUI::ScreenStack &) { return std::make_unique<MainMenuScreen>(); }},
+		{"main-menu-more", [](GAGGUI::ScreenStack &) { return std::make_unique<MainMenuScreen>(); }},
 		{"campaign-menu", [](GAGGUI::ScreenStack &s) { return std::make_unique<CampaignMainMenu>(s); }},
 		{"editor-menu", [](GAGGUI::ScreenStack &s) { return std::make_unique<EditorMainMenu>(s); }},
 		{"lan-menu", [](GAGGUI::ScreenStack &s) { return std::make_unique<LANMenuScreen>(s); }},
@@ -148,6 +149,16 @@ std::vector<Fixture> fixtures()
 			 return lobby;
 		 }},
 		{"new-map", [](GAGGUI::ScreenStack &s) { return std::make_unique<NewMapScreen>(GeneratorRegistry::builtins(), &s); }},
+		{"landscape-navigation", [](GAGGUI::ScreenStack &)
+		 {
+			 // Navigation needs a production picker, without running every generator.
+			 GenerationRequest request;
+			 request.setMethodDefaults(GenerationRequest::eSWAMP);
+			 request.wDec = request.hDec = 6;
+			 request.nbTeams = 2;
+			 return std::make_unique<LandscapePickerScreen>("Choose a landscape",
+				 std::vector<LandscapePickerScreen::Entry>{{GenerationRequest::methodName(request.method), request, request.method}}, 0);
+		 }},
 		{"landscape", [](GAGGUI::ScreenStack &)
 		 {
 			 GenerationRequest request;
@@ -343,6 +354,8 @@ void run()
 		SDL_setenv("GLOB2_MOBILE_UI", presentation, 1);
 		for (const auto &viewport : viewports)
 		{
+			if (const char *only = SDL_getenv("GLOB2_UI_VIEWPORT"); only && *only && std::string(only) != viewport.name)
+				continue;
 			if (presentation[0] == '0' && viewport.width < 600)
 				continue;
 			resize(viewport.width, viewport.height);
@@ -360,10 +373,22 @@ void run()
 					stack.push(std::move(owned));
 					stack.frame(0, {});
 					stack.frame(40, {});
+					if (std::string(fixture.name) == "main-menu-more")
+						if (auto *more = screen->host().find("menu/more"))
+						{
+							const auto r = more->bounds;
+							screen->host().tapAt({r.x + r.w / 2, r.y + r.h / 2});
+							stack.frame(60, {});
+						}
 					require(stack.running(), std::string(fixture.name) + " ended during warm-up");
 					const std::string label = std::string(fixture.name) + " " + viewport.name +
 											  " touch=" + presentation + " bottom=" +
 											  std::to_string(int(insets.bottom));
+					if (const char *reveal = SDL_getenv("GLOB2_UI_REVEAL"); reveal && *reveal)
+					{
+						screen->host().scrollIntoView(reveal);
+						stack.frame(60, {});
+					}
 					if (capture && insets.bottom == 0)
 						globalContainer->gfx->printScreen("ui-" + std::string(fixture.name) + "-" +
 														  viewport.name + "-touch" + presentation + ".bmp");

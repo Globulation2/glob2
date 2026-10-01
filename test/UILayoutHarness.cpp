@@ -2,6 +2,7 @@
 // Layout-engine checks without fonts or a window: fixed-advance text, recording canvas.
 #include "Glob2Test.h"
 #include <string>
+#include <stdexcept>
 #include <functional>
 #include <utility>
 #include <ui/Containers.h>
@@ -26,6 +27,13 @@ struct RecordingCanvas : Canvas
 	const TextMeasurer &text_;
 	std::vector<Rect> clips;
 	std::vector<std::pair<Point, std::string>> texts;
+	struct IconDraw
+	{
+		Rect bounds;
+		std::string name;
+		GAGCore::Color color;
+	};
+	std::vector<IconDraw> icons;
 	int fills = 0;
 	RecordingCanvas(Size extent, const TextMeasurer &measurer) : extent(extent), text_(measurer)
 	{
@@ -39,7 +47,8 @@ struct RecordingCanvas : Canvas
 	void line(Point, Point, GAGCore::Color) override {}
 	void text(Point at, FontRole, const std::string &value, GAGCore::Color) override
 	{
-		texts.push_back({at, value});
+		if (!value.empty())
+			texts.push_back({at, value});
 	}
 	void pushClip(Rect rect) override { clips.push_back(clips.back().intersect(rect)); }
 	void popClip() override
@@ -49,6 +58,10 @@ struct RecordingCanvas : Canvas
 	}
 	Rect clip() const override { return clips.back(); }
 	void drawSurface(Rect, GAGCore::DrawableSurface *, unsigned char) override {}
+	void drawIcon(Rect r, const IconAsset &asset, GAGCore::Color color) override
+	{
+		icons.push_back({r, asset.name, color});
+	}
 	void drawSprite(Point, GAGCore::Sprite *, int) override {}
 	void transformed(double, Point, Rect, const std::function<void()> &paint) override { paint(); }
 };
@@ -122,6 +135,144 @@ struct Fixture
 		host.event(e);
 	}
 };
+
+void checkIconsAndTooltips()
+{
+	auto asset = std::make_shared<IconAsset>();
+	asset->name = "settings";
+	asset->rasters.push_back({24, {}}); // Identity only: recording never accesses raster pixels.
+	Fixture decorative([&](const Presentation &) { return row({icon(asset), expandedSpacer()}); },
+					   120, 60);
+	auto decoration = decorative.paint();
+	require(decoration.icons.front().bounds.w == 20, "standalone icon defaults to 20 points");
+	decorative.presentation.unit = 2;
+	decorative.host.setPresentation(decorative.presentation);
+	require(decorative.paint().icons.front().bounds.w == 40, "icon size follows point scale");
+	ButtonOptions gear;
+	gear.icon = asset;
+	gear.iconSize = 24;
+	gear.accessibleLabel = "Settings";
+	gear.tooltip = "Settings";
+	int clicks = 0;
+	Fixture f(
+		[&](const Presentation &p)
+		{
+			return row(
+				{width(p.pt(48), button("gear", "", [&] { ++clicks; }, gear)), expandedSpacer()});
+		},
+		200, 100, true);
+	require(f.host.find("gear")->accessibleText() == "Settings",
+			"icon button retains its accessible name");
+	require(f.host.bounds("gear").w == 48 && f.host.bounds("gear").h >= 48,
+			"gear keeps a full touch target");
+	auto painted = f.paint();
+	require(painted.icons.size() == 1 && painted.icons[0].bounds.w == 24,
+			"gear paints at 24 points");
+	require(f.host.bounds("gear").contains(painted.icons[0].bounds), "icon stays inside button");
+	f.host.focus("gear", true);
+	f.key(SDLK_SPACE);
+	require(clicks == 1, "icon button activates from keyboard");
+	f.click({24, 24});
+	require(clicks == 2, "icon button activates from pointer");
+	auto missing = std::make_shared<IconAsset>();
+	gear.icon = missing;
+	Fixture fallback([&](const Presentation &) { return button("missing", "", [] {}, gear); }, 200,
+					 100);
+	require(fallback.paint().texts.front().second == "Settings",
+			"missing icon restores translated text");
+	bool rejected = false;
+	try
+	{
+		ButtonOptions unnamed;
+		unnamed.icon = asset;
+		button("bad", "", [] {}, unnamed);
+	}
+	catch (const std::invalid_argument &)
+	{
+		rejected = true;
+	}
+	require(rejected, "icon-only buttons must be named");
+	gear.icon = asset;
+	gear.iconSize = 20;
+	Fixture combined([&](const Presentation &)
+					 { return button("combined", "A long translated label", [] {}, gear); }, 110,
+					 160);
+	auto combinedPaint = combined.paint();
+	require(combinedPaint.icons.size() == 1 && combinedPaint.texts.size() > 1,
+			"label wraps beside icon");
+	for (const auto &line : combinedPaint.texts)
+		require(line.first.x >= combinedPaint.icons[0].bounds.right() + 6,
+				"text reserves the icon and gap");
+	for (int state = 0; state < 4; ++state)
+	{
+		ButtonOptions options;
+		options.icon = asset;
+		options.enabled = state != 0;
+		options.primary = state == 1;
+		options.selected = state == 2;
+		options.danger = state == 3;
+		Fixture colours([&](const Presentation &)
+						{ return button("colour", "Label", [] {}, options); }, 200, 100);
+		const auto c = colours.paint().icons.front().color;
+		const auto expected = state == 0   ? theme.palette.muted
+							  : state == 1 ? theme.palette.accentInk
+							  : state == 3 ? theme.palette.danger
+										   : theme.palette.ink;
+		require(c.r == expected.r && c.g == expected.g && c.b == expected.b,
+				"icon inherits button ink state");
+	}
+	Fixture tip([&](const Presentation &)
+				{ return row({width(48, button("tip", "", [] {}, gear)), expandedSpacer()}); }, 100,
+				80);
+	tip.host.focus("tip", true);
+	auto draw = [&](Uint32 tick)
+	{
+		RecordingCanvas canvas({100, 80}, measurer);
+		tip.host.paint(canvas, tick);
+		return canvas;
+	};
+	require(draw(100).texts.empty() && draw(699).texts.empty(), "tooltip waits 600ms");
+	auto shown = draw(700);
+	require(shown.texts.size() == 1 && shown.texts[0].second == "Settings",
+			"keyboard focus shows translated tooltip");
+	require(shown.texts[0].first.x >= 0 && shown.texts[0].first.y >= 0 &&
+				shown.texts[0].first.x + measurer.width(FontRole::Support, "Settings") <= 100,
+			"tooltip remains in safe viewport");
+	tip.key(SDLK_SPACE);
+	require(draw(1400).texts.empty(), "activation suppresses tooltip until target changes");
+	tip.host.focus("", false);
+	draw(1401);
+	SDL_Event motion{};
+	motion.type = SDL_MOUSEMOTION;
+	motion.motion.x = 15;
+	motion.motion.y = 15;
+	tip.host.event(motion);
+	require(draw(1500).texts.empty(), "hover starts a new timer");
+	require(draw(2100).texts.size() == 1, "pointer hover shows tooltip");
+	SDL_Event press{};
+	press.type = SDL_MOUSEBUTTONDOWN;
+	press.button.button = SDL_BUTTON_LEFT;
+	press.button.x = 15;
+	press.button.y = 15;
+	tip.host.event(press);
+	draw(2101);
+	press.type = SDL_MOUSEBUTTONUP;
+	tip.host.event(press);
+	require(draw(2800).texts.empty(), "pointer activation hides tooltip even after pressed frame");
+	motion.motion.x = 99;
+	motion.motion.y = 79;
+	tip.host.event(motion);
+	require(draw(2200).texts.empty(), "pointer departure hides tooltip");
+	tip.host.focus("tip", true);
+	draw(2300);
+	PopupSpec popup;
+	popup.anchor = tip.host.bounds("tip");
+	popup.options = {"Choice"};
+	tip.host.openPopup(popup);
+	auto popupPaint = draw(3000);
+	for (const auto &text : popupPaint.texts)
+		require(text.second != "Settings", "popup hides background tooltip");
+}
 
 void checkGeometry()
 {
@@ -449,6 +600,10 @@ void checkInvariants()
 
 TEST_SUITE("UILayout")
 {
+	TEST_CASE("icons and tooltips")
+	{
+		checkIconsAndTooltips();
+	}
 	TEST_CASE("geometry") { checkGeometry(); }
 	TEST_CASE("text") { checkText(); }
 	TEST_CASE("column and flex") { checkColumnAndFlex(); }

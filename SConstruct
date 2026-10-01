@@ -435,10 +435,7 @@ def main():
     
     def PackTar(target, source):
         if "dist" in COMMAND_LINE_TARGETS:
-            if not list(source) == source:
-                source = [source]
-                
-            for s in source:
+            for s in Flatten(source):
                 if env.File(s).path.find("/") != -1:
                     new_dir = env.Dir("#").abspath + "/glob2-" + env["VERSION"] + "/"
                     f = env.Install(new_dir + env.File(s).path[:env.File(s).path.rfind("/")], s)
@@ -449,6 +446,8 @@ def main():
                     env.Tar(target, f)
               
     PackTar(env["TARFILE"], Split("COPYING INSTALL mkdist mkinstall mkuninstall README README.hg SConstruct"))
+    PackTar(env["TARFILE"], Glob("datasrc/icons/tabler/*"))
+    PackTar(env["TARFILE"], Split("tools/icons/export_tabler.cjs libgag/include/ui/Icon.h"))
     #packaging for apple
     if isDarwinPlatform and env["release"] and any(
             target in COMMAND_LINE_TARGETS for target in ("bundle", "package")):

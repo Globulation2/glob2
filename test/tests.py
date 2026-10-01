@@ -83,6 +83,7 @@ ENGINE_TESTS = [
     'SettingsScreenTest.cpp',
     'GameSpeedTest.cpp',
     'UIPresentationHarness.cpp',
+    'UIIconsTest.cpp',
     'GameGUITouchHarness.cpp',
     # Command-line harnesses whose modes became cases.
     'CustomGameSetupHarness.cpp',

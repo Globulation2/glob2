@@ -993,7 +993,12 @@ Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 		char summary[96];
 		std::snprintf(summary, sizeof summary, "%s %.2f", tr("Fairness").c_str(), quality.fairness);
 		infoRow.push_back(fe::caption(summary));
-		infoRow.push_back(fe::button("quality/info", "i", [this] { showStartQuality(); }, {false, false, true, false, false, false, SDLK_UNKNOWN, fe::FontRole::Support, 24}));
+		infoRow.push_back(p.touch ? fe::compactButton(
+										"quality/info", tr("[Start quality]"), fe::UIIcon::Info,
+										[this] { showStartQuality(); }, p)
+								  : fe::button("quality/info", "i", [this] { showStartQuality(); },
+											   {false, false, true, false, false, false,
+												SDLK_UNKNOWN, fe::FontRole::Support, 24}));
 	}
 	right.push_back(fe::row(std::move(infoRow), {p.pt(6), fe::CrossAlign::Center}));
 	// A reroll invalidates the launch snapshot, not the image being displayed.
@@ -1015,14 +1020,15 @@ Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 		right.push_back(fe::caption(tr(previewBusy() ? "Map preview controls" : "Preview unavailable. Adjust settings or start to retry.")));
 	}
 	if (setup.random)
-		right.push_back(fe::center(fe::button("map/randomize", tr("Randomize"),
-											  [this]
-											  {
-												  // Same settings, new seed: generateMap draws a fresh root seed on every run.
-												  invalidatePreview();
-												  previewDue = SDL_GetTicks();
-											  },
-											  {false, false, setup.validation().empty() && !previewBusy()})));
+		right.push_back(fe::center(
+			fe::compactButton("map/randomize", tr("Randomize"), fe::UIIcon::Refresh,
+							  [this]
+							  {
+								  // Same settings, new seed: generateMap draws a fresh root seed on every run.
+								  invalidatePreview();
+								  previewDue = SDL_GetTicks();
+							  },
+							  p, {false, false, setup.validation().empty() && !previewBusy()})));
 	auto rightColumn = fe::column(std::move(right), {p.pt(8)});
 	if (narrow)
 	{
