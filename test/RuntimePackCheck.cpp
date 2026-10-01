@@ -30,7 +30,7 @@ static void capture(const std::string &name)
     std::vector<unsigned char>a(w*h*4),b(a.size());glReadPixels(v[0],v[1],w,h,GL_RGBA,GL_UNSIGNED_BYTE,a.data());
     for(int y=0;y<h;++y)std::copy_n(a.data()+y*w*4,w*4,b.data()+(h-1-y)*w*4);
     auto s=SDL_CreateSurfaceFrom(w, h, SDL_PIXELFORMAT_RGBA32, b.data(), w*4);
-    REQUIRE((s&&IMG_SavePNG(s,name.c_str())==0));SDL_DestroySurface(s);
+    REQUIRE((s&&IMG_SavePNG(s,name.c_str())));SDL_DestroySurface(s);
 }
 static void run(bool software,bool fallback,bool original)
 {

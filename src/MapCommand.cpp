@@ -212,7 +212,7 @@ void exportPreview(const Game &game, const std::string &path, int size, int scal
 		preview.starts.push_back(
 			{game.teams[i]->startPosX, game.teams[i]->startPosY, game.teams[i]->color});
 	preview.paint(&target);
-	if (IMG_SavePNG(target.getSDLSurface(), path.c_str()) != 0)
+	if (!IMG_SavePNG(target.getSDLSurface(), path.c_str()))
 		throw std::runtime_error("Cannot write PNG " + path + ": " + SDL_GetError());
 }
 

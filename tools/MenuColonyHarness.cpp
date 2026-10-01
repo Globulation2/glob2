@@ -389,7 +389,7 @@ void capture(const std::string &name, const std::string &path)
 		require(false, "unknown screen");
 	DrawableSurface shot(globalContainer->gfx->getW(), globalContainer->gfx->getH());
 	shot.drawSurface(0, 0, globalContainer->gfx);
-	require(IMG_SavePNG(shot.getSDLSurface(), path.c_str()) == 0, "save PNG");
+	require(IMG_SavePNG(shot.getSDLSurface(), path.c_str()), "save PNG");
 }
 // Only the test driver uses a timer: inject normal UI events into session loops.
 struct SessionExit
@@ -813,7 +813,7 @@ int main(int argc, char **argv)
 			shot.drawSurface(0, 0, globals.gfx);
 			char name[32];
 			std::snprintf(name, sizeof(name), "/%04d.png", i);
-			require(IMG_SavePNG(shot.getSDLSurface(), (std::string(argv[2]) + name).c_str()) == 0,
+			require(IMG_SavePNG(shot.getSDLSurface(), (std::string(argv[2]) + name).c_str()),
 					"record PNG");
 			globals.gfx->nextFrame();
 		}

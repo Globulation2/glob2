@@ -48,7 +48,7 @@ namespace GAGCore
                     vertices.reserve(quads.size() * 6);
                     for (const auto &quad : quads)
                     {
-                        const SDL_Color color{quad.color.r, quad.color.g, quad.color.b, 255};
+                        const SDL_FColor color{quad.color.r / 255.0f, quad.color.g / 255.0f, quad.color.b / 255.0f, 1.0f};
                         const SDL_Vertex a{{quad.x, quad.y}, color, {}},
                                          b{{quad.x + quad.w, quad.y}, color, {}},
                                          c{{quad.x + quad.w, quad.y + quad.h}, color, {}},

@@ -4,7 +4,7 @@
 #include <OpaqueRectangleBatch.h>
 #include <RenderBackend.h>
 #include <Toolkit.h>
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <cstring>
 #include <memory>
 #include <stdexcept>
@@ -131,15 +131,15 @@ public:
                 else
 #endif
                 {
-                    std::unique_ptr<SDL_Surface, decltype(&SDL_FreeSurface)> surface(gfx->renderer->capture(), SDL_FreeSurface);
+                    std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> surface(gfx->renderer->capture(), SDL_DestroySurface);
                     REQUIRE(surface);
-                    auto converted = SDL_ConvertSurfaceFormat(surface.get(),SDL_PIXELFORMAT_RGBA32,0);
+                    auto converted = SDL_ConvertSurface(surface.get(),SDL_PIXELFORMAT_RGBA32);
                     REQUIRE(converted);
                     pixels.resize(converted->w*converted->h*4);
                     for (int row=0; row<converted->h; ++row)
                         std::memcpy(pixels.data()+row*converted->w*4,
                             static_cast<unsigned char*>(converted->pixels)+row*converted->pitch,converted->w*4);
-                    SDL_FreeSurface(converted);
+                    SDL_DestroySurface(converted);
                 }
                 return pixels;
             };

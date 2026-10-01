@@ -73,7 +73,7 @@ namespace
 				flipped.data() + (frame.h - 1 - y) * frame.w * 4);
 		auto* surface = SDL_CreateSurfaceFrom(frame.w, frame.h, SDL_PIXELFORMAT_RGBA32, flipped.data(), frame.w * 4);
 		require(surface != nullptr, "wrap the framebuffer for PNG output");
-		require(IMG_SavePNG(surface, (std::string(outputDir) + "/" + name + ".png").c_str()) == 0, "write the PNG");
+		require(IMG_SavePNG(surface, (std::string(outputDir) + "/" + name + ".png").c_str()), "write the PNG");
 		SDL_DestroySurface(surface);
 	}
 
