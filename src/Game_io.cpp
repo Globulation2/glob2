@@ -320,7 +320,7 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream)
 	for (int p = 0; p < gameHeader.getNumberOfPlayers(); ++p)
 		if (players[p] && players[p]->ai)
 			players[p]->ai->bindTelemetry();
-	if(versionMinor >= 124)
+	if(versionMinor >= FILE_FORMAT_VERSION_JAVASCRIPT)
 	{
 		GAGCore::BinaryInputStream::CheckedReads checked(stream);
 		stream->readEnterSection("scriptGenerations");

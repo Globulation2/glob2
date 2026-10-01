@@ -243,7 +243,7 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 
 	// identity
 	gid = stream->readUint16("gid");
-	scriptIdentity = versionMinor >= 124 ? stream->readUint32("scriptIdentity") : owner->game->allocateScriptIdentity(true,gid);
+	scriptIdentity = versionMinor >= FILE_FORMAT_VERSION_JAVASCRIPT ? stream->readUint32("scriptIdentity") : owner->game->allocateScriptIdentity(true,gid);
 	this->owner = owner;
 
 	// position
