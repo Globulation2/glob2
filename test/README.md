@@ -37,7 +37,8 @@ python3 test/run_tests.py --update-fixtures --filter 'WinningConditions/*'
 a fresh `GLOB2_USER_DATA_DIR`, `HOME`, temp directory and SDL's dummy drivers, a
 timeout by tag, output captured and shown only on failure, and a check that the
 profile's preferences were not rewritten. `[display]` cases get a real video driver,
-under `xvfb-run` on Linux without `DISPLAY`; they are skipped on Windows and with
+under `xvfb-run` on Linux without `DISPLAY`, with server resets disabled so SDL
+can recreate contexts without racing X server reinitialization; they are skipped on Windows and with
 `--no-display`. Results merge into one JUnit file (`--junit`) and, under GitHub
 Actions, into the step summary with a `::error file=,line=` annotation per failure.
 `test/test_run_tests.py` covers the runner itself.
@@ -909,7 +910,9 @@ controls, replay actions, setup/settings navigation and modal viewport changes.
 Build and run commands are in [Mobile development](../docs/mobile/development.md#verification).
 The `GameGUITouch` and `UIPresentation` cases need a windowing display (Xvfb on
 Linux), run in isolated profiles and copy their screenshots into their artifact
-directories. They complement
+directories. `UIPresentation` has one case per viewport, so CI shards distribute
+the full screen/presentation/inset sweep and each viewport gets its own timeout
+and failure report. They complement
 Android/iOS device playtesting; they do not establish device lifecycle,
 performance, keyboard or cross-platform simulation compatibility.
 

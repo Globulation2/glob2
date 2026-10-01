@@ -320,8 +320,10 @@ For timing and scheduling, start with `src/Game_sync.cpp` and `src/EngineRun.cpp
   (`server=1`, `opengl=0`) belong in
   the `linux variants` job, and long CPU-bound checks in a job of their own, as the
   golden-map sweep does; its four sweep shards are split between two jobs per
-  toolchain, alongside a job for telemetry and generator defaults. Jobs run in
-  parallel. The Linux variants matrix owns the YOG server build on both supported
+  toolchain, alongside a job for telemetry and generator defaults. These jobs reuse
+  the main Linux build artifacts when native checks are selected; map-only diffs
+  build the required programs themselves. Tests run in parallel after the shared
+  build. The Linux variants matrix owns the YOG server build on both supported
   toolchains; the main
   Linux jobs do not repeat that build. On Windows the `windows server` job owns it
   for the same reason.

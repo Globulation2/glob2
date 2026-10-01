@@ -597,8 +597,8 @@ jobs:
 
   linux-map-generators:
     name: linux map generators (${{ matrix.image }}, ${{ matrix.suite }})
-    needs: changes
-    if: ${{ needs.changes.outputs.map_generators == 'true' }}
+    needs: [changes, linux-build]
+    if: ${{ !cancelled() && needs.changes.outputs.map_generators == 'true' && (needs.linux-build.result == 'success' || needs.linux-build.result == 'skipped') }}
     runs-on: ${{ matrix.runner }}
     env:
       CCACHE: 1
@@ -670,10 +670,22 @@ jobs:
       - uses: actions/checkout@v4
         id: actions_checkout_v4_1
 
-      # Reads the main job's cache and never saves: it compiles a subset of the
-      # same objects with the same flags.
+      # Main builds already include both programs. Reuse the exact binaries;
+      # map-only diffs skip that build and keep the standalone path below.
+      - uses: actions/download-artifact@v4
+        id: download_linux_test_programs
+        if: ${{ needs.linux-build.result == 'success' }}
+        with:
+          name: linux-test-programs-${{ matrix.runner }}
+      - name: Unpack built Linux test programs
+        id: unpack_linux_test_programs
+        if: ${{ needs.linux-build.result == 'success' }}
+        run: tar -xzf linux-test-programs.tar.gz
+
+      # Reads the main job's cache and never saves on the standalone path.
       - name: Restore the compiler cache
         id: restore_the_compiler_cache
+        if: ${{ needs.linux-build.result == 'skipped' }}
         continue-on-error: true
         uses: actions/cache/restore@v4
         with:
@@ -683,6 +695,7 @@ jobs:
 
       - name: Build the map generator golden test
         id: build_the_map_generator_golden_test
+        if: ${{ needs.linux-build.result == 'skipped' }}
         run: |
           targets=(map-generator-golden-test)
           if [ '${{ matrix.suite }}' = telemetry ]; then
