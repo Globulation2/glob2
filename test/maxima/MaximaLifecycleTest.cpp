@@ -111,12 +111,12 @@ static void run(Uint32 seed)
         ("glob2-maxima-resume-"+std::to_string(seed)+".strategy");
     {std::ofstream file(layer);file<<"placement.unmet_demand_weight = 1\n"
         <<"recon.memory_horizon_ticks = 20000\n";}
-    setenv("GLOB2_MAXIMA_LAYERS",layer.string().c_str(),1);
+    glob2test::setEnv("GLOB2_MAXIMA_LAYERS",layer.string().c_str());
     GameGUI restored;
     BinaryInputStream input(new MemoryStreamBackend(bytes.data(),bytes.size()));
     input.seekFromStart(0);REQUIRE(restored.load(&input));
     restored.game.setGameHeader(header,true);
-    unsetenv("GLOB2_MAXIMA_LAYERS");
+    glob2test::unsetEnv("GLOB2_MAXIMA_LAYERS");
     std::filesystem::remove(layer);
     for(int tick=0;tick<300;++tick)
     {

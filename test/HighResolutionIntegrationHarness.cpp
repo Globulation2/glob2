@@ -287,17 +287,17 @@ public:
             REQUIRE((!editor.isDraggingZone && !editor.isScrollDragging));
         }
         {
-            MapEdit small;small.game.map.setSize(4,4,GRASS);small.game.map.setGame(&small.game);small.game.addTeam(0);
-            small.regenerateGameHeader();small.minimap.setGame(small.game);
-            small.game.addBuilding(5,5,globalContainer->buildingsTypes.getFinishedTypeNum("swarm"),0);
-            small.updateCamera();small.camera.setZoom(0.25,300,300);small.viewportX=small.camera.tileX();small.viewportY=small.camera.tileY();
-            small.drawMap(0,0,gfx->getW(),gfx->getH());small.drawMenu();small.drawMiniMap();small.drawWidgets();capture("small-map-repeated");
-            REQUIRE((small.camera.visibleW()>512&&small.camera.visibleH()>512));
-            REQUIRE(small.camera.contains(0,0));
+            MapEdit tinyEditor;tinyEditor.game.map.setSize(4,4,GRASS);tinyEditor.game.map.setGame(&tinyEditor.game);tinyEditor.game.addTeam(0);
+            tinyEditor.regenerateGameHeader();tinyEditor.minimap.setGame(tinyEditor.game);
+            tinyEditor.game.addBuilding(5,5,globalContainer->buildingsTypes.getFinishedTypeNum("swarm"),0);
+            tinyEditor.updateCamera();tinyEditor.camera.setZoom(0.25,300,300);tinyEditor.viewportX=tinyEditor.camera.tileX();tinyEditor.viewportY=tinyEditor.camera.tileY();
+            tinyEditor.drawMap(0,0,gfx->getW(),gfx->getH());tinyEditor.drawMenu();tinyEditor.drawMiniMap();tinyEditor.drawWidgets();capture("small-map-repeated");
+            REQUIRE((tinyEditor.camera.visibleW()>512&&tinyEditor.camera.visibleH()>512));
+            REQUIRE(tinyEditor.camera.contains(0,0));
             for(int px:{80,592})for(int py:{80,592})
             {
-                int tx,ty;small.game.map.displayToMapCaseAligned(small.mapMouseX(px),small.mapMouseY(py),&tx,&ty,small.viewportX,small.viewportY);
-                int firstX,firstY;small.game.map.displayToMapCaseAligned(small.mapMouseX(80),small.mapMouseY(80),&firstX,&firstY,small.viewportX,small.viewportY);
+                int tx,ty;tinyEditor.game.map.displayToMapCaseAligned(tinyEditor.mapMouseX(px),tinyEditor.mapMouseY(py),&tx,&ty,tinyEditor.viewportX,tinyEditor.viewportY);
+                int firstX,firstY;tinyEditor.game.map.displayToMapCaseAligned(tinyEditor.mapMouseX(80),tinyEditor.mapMouseY(80),&firstX,&firstY,tinyEditor.viewportX,tinyEditor.viewportY);
                 REQUIRE((tx==firstX&&ty==firstY));
             }
 

@@ -99,7 +99,7 @@ void run(bool software)
 	// Fresh context with the shader disabled (the software renderer takes this
 	// path unconditionally too): every draw now goes through the bounded cache.
 	if (!software)
-		setenv("GLOB2_DISABLE_UNIT_SHADER", "1", 1);
+		glob2test::setEnv("GLOB2_DISABLE_UNIT_SHADER", "1");
 	toolkit.emplace();
 	gfx = Toolkit::initGraphic(200, 200, software ? 0 : GraphicContext::USEGPU, "Unit team-color cache fallback checks");
 	if (!software)
@@ -156,7 +156,7 @@ void run(bool software)
 		          << std::endl;
 	}
 	toolkit.reset();
-	unsetenv("GLOB2_DISABLE_UNIT_SHADER");
+	glob2test::unsetEnv("GLOB2_DISABLE_UNIT_SHADER");
 }
 }
 

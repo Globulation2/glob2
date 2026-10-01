@@ -394,8 +394,12 @@ TEST_SUITE("EngineSession")
 		        require(writer.write(destination.string()) && read(destination) == bytes && !bytes.empty(),
 		            "Replay retry did not preserve the complete recording");
 		        GameGUI replayGui;
-		        BinaryInputStream header(globalContainer->fileManager->openInputStreamBackend(destination.string()));
-		        require(replayGui.load(&header), "Could not load replay header for the memory recording");
+		        {
+		            // Closed before the rewrites below: Windows cannot replace a file
+		            // that is still open for reading.
+		            BinaryInputStream header(globalContainer->fileManager->openInputStreamBackend(destination.string()));
+		            require(replayGui.load(&header), "Could not load replay header for the memory recording");
+		        }
 		        ReplayWriter memory;
 		        memory.init("", replayGui);
 		        for (ReplayWriter* recording : {&writer, &memory}) {
