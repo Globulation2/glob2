@@ -1650,8 +1650,8 @@ Cortex
 Готово
 [settings Edit shortcut]
 Уреди пречицу
-[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
-Увећава меније, текст и бочну траку на екрану високе резолуције.
+[settings Multiply the operating system display scale for menus, text and the sidebar.]
+Множи размеру приказа оперативног система за меније, текст и бочну траку.
 [settings Flags]
 Заставе
 [settings Full]

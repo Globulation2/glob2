@@ -1674,8 +1674,8 @@ Geef de Globulation 2-cursor weer.
 Klaar
 [settings Edit shortcut]
 Sneltoets bewerken
-[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
-Vergroot menu's, tekst en de zijbalk op een scherm met hoge resolutie.
+[settings Multiply the operating system display scale for menus, text and the sidebar.]
+Vermenigvuldig de schermschaal van het besturingssysteem voor menu’s, tekst en de zijbalk.
 [settings Flags]
 Vlaggen
 [settings Full]

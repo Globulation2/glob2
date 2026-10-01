@@ -1712,8 +1712,8 @@ Mostra il cursore di Globulation 2.
 Fatto
 [settings Edit shortcut]
 Modifica la scorciatoia da tastiera
-[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
-Ingrandisce menu, testo e barra laterale su uno schermo ad alta risoluzione.
+[settings Multiply the operating system display scale for menus, text and the sidebar.]
+Moltiplica la scala dello schermo del sistema operativo per menu, testo e barra laterale.
 [settings Flags]
 Bandiere
 [settings Full]

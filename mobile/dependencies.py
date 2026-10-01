@@ -62,7 +62,7 @@ def main():
                    VCPKG_BINARY_SOURCES='clear',VCPKG_MAX_CONCURRENCY=str(args.jobs),
                    VCPKG_REGISTRIES_CACHE=str(ROOT/'build/mobile-tools/registries'),TMPDIR=str(output/'tmp'))
         if args.developer_dir: env['DEVELOPER_DIR']=args.developer_dir
-        subprocess.run([str(vcpkg/'vcpkg'),'install','--triplet='+triplet,
+        subprocess.run([str(vcpkg/'vcpkg'),'install','--x-wait-for-lock','--triplet='+triplet,
             '--overlay-triplets='+str(ROOT/'mobile/triplets'),
             '--overlay-ports='+str(ROOT/'scons/vcpkg-ports'),
             '--x-manifest-root='+str(ROOT/'mobile'), '--x-install-root='+str(installed),

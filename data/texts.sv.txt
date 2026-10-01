@@ -1660,8 +1660,8 @@ Visa Globulation 2-markören.
 Klart
 [settings Edit shortcut]
 Redigera kortkommando
-[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
-Förstorar menyer, text och sidopanelen på en högupplöst skärm.
+[settings Multiply the operating system display scale for menus, text and the sidebar.]
+Multiplicera operativsystemets skärmskala för menyer, text och sidopanelen.
 [settings Flags]
 Flaggor
 [settings Full]

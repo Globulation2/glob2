@@ -3,6 +3,7 @@
 
 import argparse
 import hashlib
+import os
 import re
 import shutil
 import subprocess
@@ -22,7 +23,10 @@ def stage(binary, root):
                             capture_output=True, text=True)
     paths = re.findall(r"(?:/[^\s()]+|[A-Za-z]:\\[^\s()]+)\.dll",
                        result.stdout, flags=re.IGNORECASE)
-    dependencies = {path for path in paths if "/mingw64/bin/" in path.lower()
+    prefix = os.environ.get("GLOB2_SDL3_PREFIX")
+    prefix_bin = (str(Path(prefix).resolve() / "bin").replace("\\", "/").lower() + "/") if prefix else None
+    dependencies = {path for path in paths if (prefix_bin and path.replace("\\", "/").lower().startswith(prefix_bin))
+                    or "/mingw64/bin/" in path.lower()
                     or "\\mingw64\\bin\\" in path.lower()
                     or "/sdl3-ci/prefix/bin/" in path.lower()
                     or "\\sdl3-ci\\prefix\\bin\\" in path.lower()}
@@ -30,6 +34,9 @@ def stage(binary, root):
         native = (subprocess.check_output(["cygpath", "-w", path], text=True).strip()
                   if path.startswith("/") else path)
         shutil.copy2(native, root / Path(native).name)
+        licenses = Path(native).parent.parent / "share/licenses"
+        if licenses.is_dir():
+            shutil.copytree(licenses, root / "licenses", dirs_exist_ok=True)
     if not list(root.glob("SDL3*.dll")):
         raise SystemExit("no SDL3 DLLs found in executable dependencies")
     for directory in ("data", "maps", "campaigns", "scripts"):

@@ -58,6 +58,9 @@ def stage(source: Path, executable: Path, runtime: Path, output: Path, sdl_runti
     available = {path.name.lower(): path for path in runtime.glob("*.dll")}
     if sdl_runtime:
         available.update({path.name.lower(): path for path in sdl_runtime.glob('*.dll')})
+        licenses = sdl_runtime.parent / 'share/licenses'
+        if licenses.is_dir():
+            shutil.copytree(licenses, output / 'licenses', dirs_exist_ok=True)
     windows_root = Path(os.environ.get("WINDIR", "")) / "System32"
     windows_dlls = ({path.name.lower() for path in windows_root.glob("*.dll")}
                     if windows_root.is_dir() else set())

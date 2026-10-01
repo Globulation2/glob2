@@ -1646,8 +1646,8 @@ Menampilkan kursor Globulation 2.
 Selesai
 [settings Edit shortcut]
 Edit pintasan keyboard
-[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
-Memperbesar menu, teks, dan bilah sisi pada layar beresolusi tinggi.
+[settings Multiply the operating system display scale for menus, text and the sidebar.]
+Kalikan skala tampilan sistem operasi untuk menu, teks, dan bilah samping.
 [settings Flags]
 Bendera
 [settings Full]

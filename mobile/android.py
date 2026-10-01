@@ -158,7 +158,7 @@ def main():
             library_sets.append({p.name for p in jni.glob('*.so')})
         if len(library_sets)>1 and library_sets[0]!=library_sets[1]:
             raise ValueError('Amazon APK needs matching native libraries in both ARM ABIs')
-        java=list((dependency_outputs[args.arch]/'vcpkg-buildtrees/sdl2/src').glob('*/android-project/app/src/main/java'))
+        java=list((dependency_outputs[args.arch]/'vcpkg-buildtrees/sdl3/src').glob('*/android-project/app/src/main/java'))
         if len(java)!=1: raise ValueError('Expected one pinned SDL Java source tree; clean the SDL dependency buildtree and rebuild dependencies')
         shutil.copytree(java[0],generated/'java')
         assets=generated/'assets/glob2-bundle';assets.mkdir(parents=True)

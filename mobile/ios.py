@@ -78,7 +78,7 @@ def main():
     info['CFBundleVersion']=args.build_number
     write_if_changed(project/'Info.plist',plistlib.dumps(info).decode())
     manifest=json.loads((prefix/'manifest.json').read_text())
-    include=[output/'include',prefix/'include',prefix/'include/SDL2']+[ROOT/p for p in INCLUDE_DIRECTORIES]
+    include=[output/'include',prefix/'include',prefix/'include/SDL3']+[ROOT/p for p in INCLUDE_DIRECTORIES]
     libraries=[output/'lib/libglob2.a']+[prefix/p for p in manifest['archives']]
     lines=['cmake_minimum_required(VERSION 3.24)','project(Glob2 LANGUAGES C CXX OBJC OBJCXX)',
         'set(CMAKE_CXX_STANDARD 20)', 'set(CMAKE_CXX_STANDARD_REQUIRED ON)',

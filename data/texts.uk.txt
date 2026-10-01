@@ -1646,8 +1646,8 @@ Ysagoon Online Gaming
 Готово
 [settings Edit shortcut]
 Редагувати комбінацію клавіш
-[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
-Збільшує меню, текст і бічну панель на екрані з високою роздільною здатністю.
+[settings Multiply the operating system display scale for menus, text and the sidebar.]
+Множить масштаб екрана операційної системи для меню, тексту та бічної панелі.
 [settings Flags]
 Прапори
 [settings Full]

@@ -1648,8 +1648,8 @@ Cortex
 تم
 [settings Edit shortcut]
 تحرير اختصار لوحة المفاتيح
-[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
-تكبير القوائم والنص والشريط الجانبي على شاشة عالية الدقة.
+[settings Multiply the operating system display scale for menus, text and the sidebar.]
+ضاعف مقياس عرض نظام التشغيل للقوائم والنص والشريط الجانبي.
 [settings Flags]
 أعلام
 [settings Full]

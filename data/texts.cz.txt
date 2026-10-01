@@ -1650,8 +1650,8 @@ Zobrazovat kurzor hry Globulation 2.
 Hotovo
 [settings Edit shortcut]
 Upravit klávesovou zkratku
-[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
-Zvětší nabídky, text a postranní panel na obrazovce s vysokým rozlišením.
+[settings Multiply the operating system display scale for menus, text and the sidebar.]
+Násobí měřítko zobrazení operačního systému pro nabídky, text a postranní panel.
 [settings Flags]
 Vlajky
 [settings Full]

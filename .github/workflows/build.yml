@@ -99,6 +99,10 @@ jobs:
       - uses: actions/checkout@v4
         id: actions_checkout_v4_1
 
+      - name: Build pinned SDL3 dependencies
+        id: build_sdl3_dependencies
+        run: python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+
       - name: Validate translations
         id: validate_translations
         continue-on-error: true
@@ -106,7 +110,7 @@ jobs:
           python3 test/ci_run_commands.py \
             --check 'translation catalog' 'python3 data/check_translations.py --strict' \
             --check 'translation tests' 'python3 test/test_translations.py' \
-            --check 'font coverage' 'python3 test/test_font_coverage.py'
+            --check 'font coverage' 'GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix python3 test/test_font_coverage.py'
       - name: Test compiler cache integration
         id: test_compiler_cache_integration
         continue-on-error: true

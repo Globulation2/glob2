@@ -65,6 +65,18 @@ parts:
       - libglu1-mesa-dev
       - libepoxy-dev
     stage-packages:
+      - libx11-6
+      - libxext6
+      - libxcursor1
+      - libxi6
+      - libxrandr2
+      - libxss1
+      - libasound2t64
+      - libwayland-client0
+      - libwayland-cursor0
+      - libwayland-egl1
+      - libxkbcommon0
+      - libfreetype6
       - libvorbisfile3
       - libogg0
       - libspeex1

@@ -30,6 +30,9 @@ def stage_dlls(executable: Path, dll_dir: Path, destination: Path, sdl_runtime: 
     available = {path.name.lower(): path for path in dll_dir.glob("*.dll")}
     if sdl_runtime:
         available.update({path.name.lower(): path for path in sdl_runtime.glob("*.dll")})
+        licenses = sdl_runtime.parent / "share/licenses"
+        if licenses.is_dir():
+            shutil.copytree(licenses, destination / "licenses", dirs_exist_ok=True)
     while pending:
         binary = pending.pop()
         imports = DLL_PATTERN.findall(

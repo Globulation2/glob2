@@ -1642,8 +1642,8 @@ Display the Globulation 2 cursor.
 Done
 [settings Edit shortcut]
 Edit shortcut
-[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
-Enlarge menus, text and the sidebar on a high-resolution screen.
+[settings Multiply the operating system display scale for menus, text and the sidebar.]
+Multiply the operating system display scale for menus, text and the sidebar.
 [settings Flags]
 Flags
 [settings Full]

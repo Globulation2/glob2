@@ -838,3 +838,10 @@ table structurally complete; run `python3 data/check_translations.py` as well.
 Languages with pending translations remain marked incomplete and use the runtime
 English fallback. Frontend touch text uses separate 16/14-point font aliases so
 changes to menu readability do not alter in-game/editor metrics.
+
+The SDL3 dependency versions are pinned by the overlay ports in
+`scons/vcpkg-ports`, shared with the desktop manifest. Android packages load
+`SDL3` and compile the Java integration from that exact dependency source tree.
+Do not substitute host SDL libraries. UI scale multiplies OS display scale;
+SDL3 provides pixel density separately so Retina and Android density are not
+applied twice.

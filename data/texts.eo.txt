@@ -1648,8 +1648,8 @@ Montru la kursoron de Globulation 2.
 Farita
 [settings Edit shortcut]
 Redakti klavaran ŝparvojon
-[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
-Pligrandigas menuojn, tekston kaj la flankan strion sur altdistingiva ekrano.
+[settings Multiply the operating system display scale for menus, text and the sidebar.]
+Multipliku la ekranan skalon de la operaciumo por menuoj, teksto kaj la flanka panelo.
 [settings Flags]
 Flagoj
 [settings Full]

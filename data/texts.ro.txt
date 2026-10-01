@@ -1650,8 +1650,8 @@ Afișați cursorul Globulation 2.
 Gata
 [settings Edit shortcut]
 Editează scurtătura
-[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
-Mărește meniurile, textul și bara laterală pe un ecran de înaltă rezoluție.
+[settings Multiply the operating system display scale for menus, text and the sidebar.]
+Multiplică scala de afișare a sistemului de operare pentru meniuri, text și bara laterală.
 [settings Flags]
 Steaguri
 [settings Full]

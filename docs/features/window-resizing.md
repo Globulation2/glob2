@@ -2,8 +2,8 @@
 
 Windowed mode follows the OS window dimensions when `RESIZABLE` is enabled
 (`-r`; `-R` disables it). SDL enforces the minimum 640 x 480 game size. Desktop
-fullscreen retains its selected logical resolution and aspect-preserving scaling.
-Windows requires SDL 2.30 or newer; startup checks the runtime version.
+fullscreen follows the display size with aspect-preserving presentation. SDL3
+display scaling and the saved user multiplier determine the logical dimensions.
 
 ## Event and rendering ownership
 
@@ -13,7 +13,7 @@ is inside SDL's event pump may an exposed-event watcher present a cached frame.
 The watcher checks its thread and window and rejects recursive presentation. It
 never enters screen painting, timers, animation updates, or simulation.
 
-SDL 2.30's [Windows modal resize support](https://raw.githubusercontent.com/libsdl-org/SDL/release-2.30.0/src/video/windows/SDL_windowsevents.c)
+SDL3's Windows modal resize support
 sends exposed events while the OS holds the main thread in a move/resize loop.
 The cached image is scaled during that interaction. Once polling returns, the
 renderer queries the latest OS dimensions and updates the logical surface,
@@ -71,7 +71,7 @@ on window recreation. OpenGL pixels are captured at the swap boundary rather
 than reading the post-swap front buffer, which is unreliable under Mesa/Xvfb.
 Linux CI runs both backends under Xvfb/Mesa.
 
-The resize harness passes in a Windows Server 2022 desktop VM with SDL 2.32.10,
+The pre-migration SDL2 resize harness passed in a Windows Server 2022 desktop VM with SDL 2.32.10,
 using both software rendering and OpenGL 1.1 GDI Generic. The same checks pass on
 Linux X11/Mesa llvmpipe and macOS Apple M3 OpenGL. For Windows desktop tests, use
 at least 1100 x 850 pixels and disable automatic remote-desktop size changes.

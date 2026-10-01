@@ -398,6 +398,9 @@ def main():
             runtime = env.Install(str(Path(env['BINDIR']).parent / 'lib/glob2'),
                                   list(Path(sdl_prefix, 'lib').glob('libSDL3*.so*')))
             env.Alias('install', runtime)
+            for license in Path(sdl_prefix, 'share/licenses').glob('SDL3*/LICENSE.txt'):
+                notices = env.Install(str(Path(env['INSTALLDIR']) / 'glob2/licenses' / license.parent.name), str(license))
+                env.Alias('install', notices)
 
     server_only = False
     if env['server']:

@@ -1726,8 +1726,8 @@ Vis Globulation 2-markøren.
 Færdig
 [settings Edit shortcut]
 Rediger tastaturgenvej
-[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
-Forstør menuer, tekst og sidepanelet på en skærm med høj opløsning.
+[settings Multiply the operating system display scale for menus, text and the sidebar.]
+Gang operativsystemets skærmskalering for menuer, tekst og sidepanelet.
 [settings Flags]
 Flag
 [settings Full]

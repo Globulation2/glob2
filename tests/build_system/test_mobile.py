@@ -271,7 +271,7 @@ class MobileArtifactTests(unittest.TestCase):
     def test_reject_mislabeled_dependency_before_linking(self):
         from mobile_artifacts import verify_android_library
         with tempfile.TemporaryDirectory() as root:
-            path=Path(root)/'libSDL2.so';path.write_bytes(self.elf(40,1))
+            path=Path(root)/'libSDL3.so';path.write_bytes(self.elf(40,1))
             verify_android_library(path,'armeabi-v7a')
             with self.assertRaisesRegex(ValueError,'wrong architecture'):
                 verify_android_library(path,'arm64-v8a')

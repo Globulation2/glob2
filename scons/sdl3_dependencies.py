@@ -58,6 +58,8 @@ def build(prefix, work, jobs=2, emscripten=None, environment=None):
                    '-DSDLIMAGE_SAMPLES=OFF', '-DSDLIMAGE_TESTS=OFF', '-DSDLIMAGE_DEPS_SHARED=OFF',
                    '-DSDLTTF_SAMPLES=OFF', '-DSDLTTF_TESTS=OFF', '-DSDLTTF_HARFBUZZ=OFF',
                    '-DSDLNET_SAMPLES=OFF', '-DSDLNET_TESTS=OFF']
+        if not emscripten and platform.system() == "Linux":
+            command += ['-DCMAKE_INSTALL_RPATH=$ORIGIN']
         if emscripten:
             command = [str(Path(emscripten) / 'emcmake')] + command
             command += ['-DCMAKE_FIND_ROOT_PATH=' + str(prefix),

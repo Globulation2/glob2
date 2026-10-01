@@ -75,6 +75,10 @@ def addDependentLibsToBundle( bundle ) :
     prefix = os.environ.get("GLOB2_SDL3_PREFIX")
     if prefix:
         searchDirs.insert(0, os.path.join(os.path.abspath(prefix), "lib"))
+        import shutil
+        licenses = os.path.join(prefix, "share/licenses")
+        if os.path.isdir(licenses):
+            shutil.copytree(licenses, bundle + "/Contents/Resources/licenses", dirs_exist_ok=True)
     # entry (as it appears in some binary's load commands) -> real file to copy from
     resolved = {}
     visited = []

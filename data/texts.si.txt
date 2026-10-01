@@ -1650,8 +1650,8 @@ Prikaži kazalec igre Globulation 2.
 Končano
 [settings Edit shortcut]
 Uredi bližnjico na tipkovnici
-[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
-Poveča menije, besedilo in stransko vrstico na zaslonu z visoko ločljivostjo.
+[settings Multiply the operating system display scale for menus, text and the sidebar.]
+Pomnoži merilo zaslona operacijskega sistema za menije, besedilo in stransko vrstico.
 [settings Flags]
 Zastave
 [settings Full]

@@ -1720,8 +1720,8 @@ Cortex
 Έγινε
 [settings Edit shortcut]
 Επεξεργασία συντόμευσης
-[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
-Μεγεθύνει τα μενού, το κείμενο και την πλαϊνή μπάρα σε οθόνη υψηλής ανάλυσης.
+[settings Multiply the operating system display scale for menus, text and the sidebar.]
+Πολλαπλασιάζει την κλίμακα οθόνης του λειτουργικού συστήματος για μενού, κείμενο και πλαϊνή μπάρα.
 [settings Flags]
 Σημαίες
 [settings Full]

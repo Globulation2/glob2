@@ -1656,8 +1656,8 @@ Mostra o cursor do Globulation 2.
 Concluído
 [settings Edit shortcut]
 Editar atalho de teclado
-[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
-Amplia menus, texto e a barra lateral num ecrã de alta resolução.
+[settings Multiply the operating system display scale for menus, text and the sidebar.]
+Multiplica a escala de apresentação do sistema operativo para menus, texto e barra lateral.
 [settings Flags]
 Bandeiras
 [settings Full]

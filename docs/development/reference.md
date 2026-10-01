@@ -70,7 +70,25 @@ python3 test/run_tests.py      # run them; --list, --filter, --tag, --shard
   setting a build live.
 - `scons target=web release=1` builds the WebAssembly browser client; see
   `docs/browser/adr-001-build-isolation.md` for the toolchain isolation this relies on.
-- Dependencies include SDL2/net/ttf/image, Vorbis/Ogg, Speex, OpenGL/GLU, libepoxy,
+- The SDL3 family is pinned in `scons/sdl3-versions.json`. Build an isolated
+  native dependency prefix with `python3 scons/sdl3_dependencies.py --prefix
+  build/sdl3/native/prefix --work build/sdl3/native/sources --jobs 2`, then run
+  SCons with `GLOB2_SDL3_PREFIX=$PWD/build/sdl3/native/prefix`. This prefix takes
+  precedence over host SDL libraries. Mobile builds use the checked-in vcpkg
+  overlay ports; browser builds compile the same SDL releases with Emscripten.
+  Keep dependency hashes, manifests and platform packaging in sync when updating
+  the pins. Native Linux installation also stages the SDL3 shared libraries.
+  SDL3, SDL3_image, SDL3_ttf and SDL3_net use the zlib license; their notices
+  are installed from the dependency prefix alongside packaged runtimes.
+- Interface scale is a multiplier on the operating system display scale;
+  automatic means a multiplier of one. Monitor and OS scale changes update the
+  layout during play. `GLOB2_UI_SCALE` overrides the window-coordinate scale
+  directly. This changes the sizing of existing explicit scale preferences.
+- Native TCP connections accept IPv4, IPv6 and hostnames; servers listen on both
+  address families when available. LAN discovery remains IPv4-only. Browser
+  networking remains WebSocket-only. Save, replay and network version gates do
+  not change for the SDL migration.
+- Dependencies include SDL3/net/ttf/image, Vorbis/Ogg, Speex, OpenGL/GLU, libepoxy,
   zlib, fribidi and pcre; PortAudio is optional. The native secure WebSocket client
   (`wss=1`, the default) and the browser gateway also need OpenSSL and the header-only
   Boost.Beast and Boost.Asio; nothing else uses Boost.

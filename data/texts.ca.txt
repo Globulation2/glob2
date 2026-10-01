@@ -1658,8 +1658,8 @@ Mostra el cursor Globulation 2.
 Fet
 [settings Edit shortcut]
 Edita la drecera del teclat
-[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
-Amplia els menús, el text i la barra lateral en una pantalla d'alta resolució.
+[settings Multiply the operating system display scale for menus, text and the sidebar.]
+Multiplica l’escala de pantalla del sistema operatiu per als menús, el text i la barra lateral.
 [settings Flags]
 Banderes
 [settings Full]

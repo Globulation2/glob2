@@ -112,10 +112,10 @@ class AndroidReleaseTests(unittest.TestCase):
             manifest = (root / "build/android/device/arm64-v8a/24/client/release/vcpkg-installed"
                         / "glob2-arm64-android/manifest.json")
             manifest.parent.mkdir(parents=True)
-            manifest.write_text(json.dumps({"archives": {"lib/libSDL2.so": "digest"}}))
+            manifest.write_text(json.dumps({"archives": {"lib/libSDL3.so": "digest"}}))
             apk = root / "unexpected.apk"
             with zipfile.ZipFile(apk, "w") as package:
-                for name in ("libmain.so", "libc++_shared.so", "libSDL2.so", "libextra.so"):
+                for name in ("libmain.so", "libc++_shared.so", "libSDL3.so", "libextra.so"):
                     package.writestr("lib/arm64-v8a/" + name, b"native")
             with self.assertRaisesRegex(ValueError, "pinned dependency manifest"):
                 android_release.verify_apk(apk, "arm64-v8a", root, root=root)

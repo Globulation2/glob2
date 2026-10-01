@@ -49,9 +49,9 @@ single-player without producing overdue ticks on resume.
 
 ## Button coordinates in the pinned SDL browser backend
 
-SDL 2.32.8's Emscripten mouse-button callback uses SDL's last motion position,
-rather than the button event's coordinates. A missing/coalesced motion can
-therefore make a valid click hit the old position. The browser shell synchronizes
+The shell retains the motion synchronization introduced for the SDL2 browser
+backend: missing/coalesced motion previously made a click use the old position.
+The browser shell synchronizes
 absolute motion from each button event before SDL's button listener runs. It
 handles releases outside the canvas for a canvas-started press and skips relative
 pointer-lock input. This SDK adaptation stays in the browser platform layer.
