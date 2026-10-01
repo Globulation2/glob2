@@ -193,6 +193,55 @@ TEST_CASE("zoom anchoring; seams; rotation; safe layouts; gestures and cancellat
 		require(actions.size() == 2, "Device finger IDs collided");
 		touch.down(1, 3, {20, 20});
 		require(touch.move(2, 1, {50, 10}).empty(), "Third finger failed to cancel");
+		// One-finger zoom: the second contact of a double-tap.
+		touch.setMode(TouchMode::ZoomDrag);
+		require(touch.down(1, 1, {100, 300}).empty(), "Zoom contact acted on down");
+		require(touch.move(1, 1, {100, 295}).empty(), "Zoom slop changed zoom");
+		require(!touch.zoomDragging(), "Zoom feedback shown inside slop");
+		actions = touch.up(1, 1, {100, 295});
+		require(actions.size() == 1 && actions[0].kind == TouchActionKind::ZoomReset,
+				"Double-tap without travel must request the 1:1 reset");
+		near(actions[0].point.x, 100);
+		near(actions[0].point.y, 300);
+		touch.setMode(TouchMode::ZoomDrag);
+		touch.down(1, 1, {100, 300});
+		actions = touch.move(1, 1, {100, 300 - TouchInput::zoomDoublingPoints / 2});
+		require(actions.size() == 1 && actions[0].kind == TouchActionKind::Zoom,
+				"Upward travel missing zoom");
+		near(actions[0].factor, std::sqrt(2.0));
+		near(actions[0].point.y, 300); // Anchored where the contact landed.
+		require(touch.zoomDragging(), "Zoom feedback missing while dragging");
+		actions = touch.move(1, 1, {100, 300 - TouchInput::zoomDoublingPoints});
+		near(actions[0].factor, std::sqrt(2.0)); // Incremental, composing to 2x.
+		require(touch.up(1, 1, {100, 120}).empty(), "Zoom drag released as a tap");
+		touch.setMode(TouchMode::ZoomDrag);
+		touch.down(1, 1, {100, 300});
+		actions = touch.move(1, 1, {130, 290});
+		require(actions.size() == 1 && actions[0].kind == TouchActionKind::Pan,
+				"A sideways start after a tap must pan, not zoom");
+		near(actions[0].point.x, 30);
+		actions = touch.move(1, 1, {130, 200});
+		require(actions.size() == 1 && actions[0].kind == TouchActionKind::Pan,
+				"A pan that began sideways must not turn into a zoom");
+		actions = touch.up(1, 1, {130, 200});
+		require(actions.size() == 1 && actions[0].kind == TouchActionKind::PanEnd,
+				"A sideways zoom contact ends as a pan, so momentum can follow, never as a tap");
+		touch.setMode(TouchMode::ZoomDrag);
+		touch.setZoomDragDirection(false);
+		touch.down(1, 1, {100, 300});
+		actions = touch.move(1, 1, {100, 300 + TouchInput::zoomDoublingPoints});
+		near(actions[0].factor, 2);
+		touch.setZoomDragDirection(true);
+		actions = touch.move(1, 1, {100, 300 + 2 * TouchInput::zoomDoublingPoints});
+		near(actions[0].factor, 0.5);
+		actions = touch.down(1, 2, {200, 300});
+		require(actions.empty() && !touch.zoomDragging(), "Second finger must end one-finger zoom");
+		actions = touch.move(1, 2, {260, 300});
+		require(actions.size() == 2 && actions[1].kind == TouchActionKind::Zoom,
+				"Second finger did not hand over to a pinch");
+		touch.up(1, 2, {260, 300});
+		require(touch.move(1, 1, {100, 100}).empty(), "Zoom resumed after a pinch");
+		require(touch.up(1, 1, {100, 100}).empty(), "Zoom contact ended as a tap after a pinch");
 	}
 }
 }

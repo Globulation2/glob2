@@ -87,6 +87,17 @@ public:
     int touchScrollMomentum = 50; // lists, panels and trays keep moving after a flick
     int touchScrollBounce = 50;   // lists, panels and trays stretch past their ends
     int mapScrollMomentum = 50;   // game and editor maps keep panning after a flick
+	/// One-finger zoom (double-tap, hold, drag) direction; local UI preference.
+	enum OneFingerZoom
+	{
+		ONE_FINGER_ZOOM_PLATFORM = 0, ///< Match the system maps app
+		ONE_FINGER_ZOOM_UP_IN = 1,
+		ONE_FINGER_ZOOM_DOWN_IN = 2,
+	};
+	int oneFingerZoomDirection;
+	/// Resolves the platform default: Google Maps (Android) zooms in on a
+	/// downward drag, Apple Maps and others on an upward drag.
+	bool dragUpZoomsIn(void) const;
 
 	enum
 	{

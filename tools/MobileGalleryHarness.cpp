@@ -4,6 +4,7 @@
 // Run via tools/mobile_gallery/capture.py; see docs/mobile/development.md.
 // Stable capture names must also be documented in mobile_gallery/catalog.json.
 #include "GlobalContainer.h"
+#include <cmath>
 #include "MainMenuScreen.h"
 #include "CampaignMainMenu.h"
 #include "CampaignSelectorScreen.h"
@@ -565,6 +566,40 @@ class MobileGalleryGameplay
 		capture("game-zone-paint");
 		gui.touch->cancel();
 		gui.clearSelection();
+		if (!desktopPresentation)
+		{
+			// A real one-finger zoom captured mid-drag with its readout. The tap
+			// is cleared before the second press so no inspector covers the map;
+			// the camera is restored so later states keep their framing.
+			const auto area = gui.touch->worldBounds();
+			const double zoomBefore = gui.camera.zoom, pressX = area.x + area.w * .45,
+						 pressY = area.y + area.h * .6;
+			const int direction = globalContainer->settings.oneFingerZoomDirection;
+			globalContainer->settings.oneFingerZoomDirection = Settings::ONE_FINGER_ZOOM_UP_IN;
+			Uint32 ticks = SDL_GetTicks();
+			auto send = [&](Uint32 type, double y)
+			{
+				SDL_Event event{};
+				event.type = type;
+				event.tfinger.timestamp = ticks += 60;
+				event.tfinger.touchId = 8;
+				event.tfinger.fingerId = 1;
+				event.tfinger.x = float(pressX / globalContainer->gfx->getW());
+				event.tfinger.y = float(y / globalContainer->gfx->getH());
+				gui.processEvent(&event);
+			};
+			send(SDL_FINGERDOWN, pressY);
+			send(SDL_FINGERUP, pressY);
+			gui.clearSelection();
+			gui.touch->panelOpen = false;
+			send(SDL_FINGERDOWN, pressY);
+			send(SDL_FINGERMOTION, pressY - area.h * .18);
+			capture("game-zoom-drag");
+			gui.touch->cancel();
+			globalContainer->settings.oneFingerZoomDirection = direction;
+			gui.zoomMap(std::log(zoomBefore / gui.camera.zoom) / std::log(1.1), int(pressX), int(pressY));
+			gui.clearSelection();
+		}
 		gui.displayMode = GameGUI::STAT_TEXT_VIEW;
 		gui.touch->panelOpen = true;
 		capture("game-tactical-tools");

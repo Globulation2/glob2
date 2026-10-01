@@ -3148,6 +3148,18 @@ Emoji
 خصوم آليون
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 يستخدم التخطيط الواسع لوحة جانبية عند توفر مساحة. يستخدم التخطيط المضغوط شريط أدوات ولوحات قابلة للفتح.
+[settings One-finger zoom]
+التكبير بإصبع واحدة
+[settings Double-tap the map, hold, then drag to zoom.]
+انقر نقرًا مزدوجًا على الخريطة، واستمر بالضغط، ثم اسحب للتكبير.
+[settings Platform default]
+افتراضي النظام
+[settings Drag up zooms in]
+السحب لأعلى يكبّر
+[settings Drag down zooms in]
+السحب لأسفل يكبّر
+[zoom factor %0]
+%0×
 [Assigned %0 · Target %1]
 المعيّنون %0 · الهدف %1
 [Range: %0]

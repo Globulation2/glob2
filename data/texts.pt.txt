@@ -3156,6 +3156,18 @@ Guardar o jogo automaticamente a cada minuto, aproximadamente.
 Adversários de IA
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 A disposição espaçosa usa um painel lateral quando há espaço. A compacta usa uma barra de ferramentas e painéis retráteis.
+[settings One-finger zoom]
+Zoom com um dedo
+[settings Double-tap the map, hold, then drag to zoom.]
+Toque duas vezes no mapa, mantenha premido e arraste para ampliar.
+[settings Platform default]
+Predefinição do sistema
+[settings Drag up zooms in]
+Arrastar para cima amplia
+[settings Drag down zooms in]
+Arrastar para baixo amplia
+[zoom factor %0]
+%0×
 [Assigned %0 · Target %1]
 Atribuídos %0 · Alvo %1
 [Range: %0]

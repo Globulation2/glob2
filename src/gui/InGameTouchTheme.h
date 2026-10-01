@@ -11,6 +11,12 @@ inline const GAGCore::Color paper{43, 28, 66, 218};
 inline const GAGCore::Color field{65, 43, 88, 235};
 inline const GAGCore::Color selected{114, 78, 111, 245};
 inline const GAGCore::Color border{199, 165, 87};
+inline const GAGCore::Color readout{29, 18, 46, 240};
+// Pending zone-brush cells, indexed by GameGUIToolManager::ZoneType (forbidden,
+// guard, clearing): tinted like the zone they add, dark when erasing.
+inline const GAGCore::Color zonePreview[3] = {{235, 80, 70, 110}, {80, 130, 255, 120}, {245, 225, 90, 110}};
+inline const GAGCore::Color zonePreviewEdge[3] = {{255, 150, 140}, {160, 190, 255}, {255, 240, 150}};
+inline const GAGCore::Color erasePreview{20, 14, 30, 140};
 inline constexpr double textScale = 1.0;
 inline constexpr double target = 48;
 inline constexpr double inspectorRow = 44;
@@ -28,6 +34,14 @@ inline constexpr double dragThreshold = 8;
 inline constexpr double fingerLift = 48;
 inline constexpr double edgePanMargin = 24;
 inline constexpr double edgePanPixelsPerSecond = 240;
+// A completed map tap arms one-finger zoom for a second contact this soon
+// and this close; the second contact then drags to zoom or taps to reset 1:1.
+inline constexpr unsigned doubleTapWindowMs = 300;
+inline constexpr double doubleTapRadius = 24;
+// Readouts sit above the finger that is changing their value.
+inline constexpr double readoutLift = 60;
+inline constexpr double readoutHeight = 40;
+inline constexpr double readoutTextScale = 1.3;
 class TextStyle
 {
 	GAGCore::Font *font;

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GameGUI.h"
 #include "GameGUIInternal.h"
+#include "GameGUITouch.h"
 #include "GlobalContainer.h"
 #include "Unit.h"
 
@@ -80,7 +81,7 @@ void GameGUI::drawTorusMap(int originX, int originY, int team, unsigned options,
         return;
     ghostManager.drawAll(originX, originY, localTeamNo);
     int px, py;
-    if ((selectionMode == TOOL_SELECTION || selectionMode == BRUSH_SELECTION) &&
+    if ((selectionMode == TOOL_SELECTION || (selectionMode == BRUSH_SELECTION && !touch->usesHUD())) &&
         torusView.pick(mouseX, mouseY, px, py))
     {
         int mx = (px - originX * 32) & (game.map.getW() * 32 - 1);

@@ -6,6 +6,7 @@
 #include "MapEdit.h"
 #include "GlobalContainer.h"
 #include "InGameTouchTheme.h"
+#include "BrushCoverage.h"
 #include "Unit.h"
 #include "UnitType.h"
 #include "Utilities.h"
@@ -206,30 +207,23 @@ void PhoneEditor::drawInteractionPreview()
 	auto *gfx = globalContainer->gfx;
 	const double u = gfx->logicalUnitsPerPoint();
 	gfx->setClipRect(int(content.x), int(content.y), int(content.w), int(content.h));
-	if (!stroke.empty())
+	// A held tap stays visible while it waits to find out whether it starts a zoom.
+	const auto &pending = !stroke.empty() ? stroke : deferred ? deferred->points : stroke;
+	if (!pending.empty())
 	{
 		// Preview brush coverage without mutating terrain. The same brush mask
 		// drives the committed editor operation; screen/world conversion wraps.
-		const unsigned figure = editor.brush.getFigure();
-		std::set<std::pair<int, int>> cells;
 		const double corner = editor.selectionMode == MapEdit::PlaceTerrain &&
 									  editor.terrainType <= TerrainSelector::Water
 								  ? 16
 								  : 0;
-		auto [firstWX, firstWY] = editor.camera.screenToWorld(stroke.front().x, stroke.front().y);
-		const int firstX = int(std::floor((firstWX + corner) / 32)),
-				  firstY = int(std::floor((firstWY + corner) / 32));
-		for (auto p : stroke)
+		std::vector<BrushCoverage::Cell> centres;
+		for (auto p : pending)
 		{
 			auto [wx, wy] = editor.camera.screenToWorld(p.x, p.y);
-			int cx = int(std::floor((wx + corner) / 32)), cy = int(std::floor((wy + corner) / 32));
-			const int left = cx - BrushTool::getBrushDimXMinus(figure),
-					  top = cy - BrushTool::getBrushDimYMinus(figure);
-			for (int y = 0; y < BrushTool::getBrushHeight(figure); ++y)
-				for (int x = 0; x < BrushTool::getBrushWidth(figure); ++x)
-					if (BrushTool::getBrushValue(figure, x, y, cx, cy, firstX, firstY))
-						cells.insert({left + x, top + y});
+			centres.push_back(BrushCoverage::cellAt(wx, wy, corner));
 		}
+		const auto cells = BrushCoverage::cells(editor.brush.getFigure(), centres);
 		const bool erase = editor.brush.getType() == BrushTool::MODE_DEL ||
 						   editor.selectionMode == MapEdit::RemoveObject;
 		Color fill = erase ? Color(220, 80, 65, 115) : Color(240, 208, 110, 110);

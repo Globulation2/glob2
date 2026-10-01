@@ -3158,6 +3158,18 @@ Desa la partida automàticament cada minut aproximadament.
 Adversaris d’IA
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 La disposició espaiosa usa un panell lateral quan hi ha espai. La compacta usa una barra d’eines i panells desplegables.
+[settings One-finger zoom]
+Zoom amb un dit
+[settings Double-tap the map, hold, then drag to zoom.]
+Toca dues vegades el mapa, mantén premut i arrossega per fer zoom.
+[settings Platform default]
+Predeterminat del sistema
+[settings Drag up zooms in]
+Arrossegar amunt apropa
+[settings Drag down zooms in]
+Arrossegar avall apropa
+[zoom factor %0]
+%0×
 [Assigned %0 · Target %1]
 Assignats %0 · Objectiu %1
 [Range: %0]

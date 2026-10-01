@@ -3174,6 +3174,18 @@ Het spel ongeveer elke minuut automatisch opslaan.
 AI-tegenstanders
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 De ruime indeling gebruikt een zijpaneel als er plaats is. De compacte indeling gebruikt een werkbalk en uitklapbare panelen.
+[settings One-finger zoom]
+Zoomen met één vinger
+[settings Double-tap the map, hold, then drag to zoom.]
+Tik twee keer op de kaart, houd vast en sleep om te zoomen.
+[settings Platform default]
+Systeemstandaard
+[settings Drag up zooms in]
+Omhoog slepen zoomt in
+[settings Drag down zooms in]
+Omlaag slepen zoomt in
+[zoom factor %0]
+%0×
 [Assigned %0 · Target %1]
 Toegewezen %0 · Doel %1
 [Range: %0]

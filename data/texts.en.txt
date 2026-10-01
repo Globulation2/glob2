@@ -3118,6 +3118,18 @@ Compact
 Spacious
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.
+[settings One-finger zoom]
+One-finger zoom
+[settings Double-tap the map, hold, then drag to zoom.]
+Double-tap the map, hold, then drag to zoom.
+[settings Platform default]
+Platform default
+[settings Drag up zooms in]
+Drag up zooms in
+[settings Drag down zooms in]
+Drag down zooms in
+[zoom factor %0]
+%0×
 [More]
 More
 [No items]

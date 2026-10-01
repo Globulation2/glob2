@@ -3150,6 +3150,18 @@ Tallenna peli automaattisesti noin minuutin välein.
 Tietokonevastustajat
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Väljä asettelu käyttää sivupaneelia, kun tilaa on riittävästi. Tiivis asettelu käyttää työkalupalkkia ja avattavia paneeleja.
+[settings One-finger zoom]
+Yhden sormen zoomaus
+[settings Double-tap the map, hold, then drag to zoom.]
+Napauta karttaa kahdesti, pidä pohjassa ja vedä zoomataksesi.
+[settings Platform default]
+Järjestelmän oletus
+[settings Drag up zooms in]
+Ylös vetäminen lähentää
+[settings Drag down zooms in]
+Alas vetäminen lähentää
+[zoom factor %0]
+%0×
 [Assigned %0 · Target %1]
 Määrätty %0 · Tavoite %1
 [Range: %0]

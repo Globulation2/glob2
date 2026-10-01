@@ -3160,6 +3160,18 @@ Spara spelet automatiskt ungefär varje minut.
 AI-motståndare
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Rymlig layout använder en sidopanel när det finns plats. Kompakt layout använder ett verktygsfält och utfällbara paneler.
+[settings One-finger zoom]
+Zooma med ett finger
+[settings Double-tap the map, hold, then drag to zoom.]
+Dubbeltryck på kartan, håll kvar och dra för att zooma.
+[settings Platform default]
+Systemstandard
+[settings Drag up zooms in]
+Dra uppåt zoomar in
+[settings Drag down zooms in]
+Dra nedåt zoomar in
+[zoom factor %0]
+%0×
 [Assigned %0 · Target %1]
 Tilldelade %0 · Mål %1
 [Range: %0]
