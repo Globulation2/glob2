@@ -3454,6 +3454,28 @@ Kosketusvierityksen tuntuma. 0 poistaa tehosteen käytöstä; 50 on oletus.
 Listojen liike-energia
 [List bounce]
 Listojen kimmoisuus
+[lan pairing field]
+
+[lan pairing connect]
+
+[lan discovery instructions]
+
+[lan discovery unavailable]
+
+[lan discovered host %0]
+
+[lan share pairing]
+
+[lan copy pairing]
+
+[lan connection unavailable]
+
+[lan connection verification failed %0]
+
+[network start refused]
+
+[lan lobby endpoint required]
+
 [settings Artwork]
 
 [settings Original]
@@ -3510,25 +3532,3 @@ Listojen kimmoisuus
 
 [Map momentum]
 Kartan liike-energia
-[lan pairing field]
-
-[lan pairing connect]
-
-[lan discovery instructions]
-
-[lan discovery unavailable]
-
-[lan discovered host %0]
-
-[lan share pairing]
-
-[lan copy pairing]
-
-[lan connection unavailable]
-
-[lan connection verification failed %0]
-
-[network start refused]
-
-[lan lobby endpoint required]
-

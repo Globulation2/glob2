@@ -3462,6 +3462,28 @@ Dokunmatik kaydırma hissi. 0 bir efekti kapatır; 50 varsayılandır.
 Liste ivmesi
 [List bounce]
 Liste sekmesi
+[lan pairing field]
+
+[lan pairing connect]
+
+[lan discovery instructions]
+
+[lan discovery unavailable]
+
+[lan discovered host %0]
+
+[lan share pairing]
+
+[lan copy pairing]
+
+[lan connection unavailable]
+
+[lan connection verification failed %0]
+
+[network start refused]
+
+[lan lobby endpoint required]
+
 [settings Artwork]
 
 [settings Original]
@@ -3518,25 +3540,3 @@ Liste sekmesi
 
 [Map momentum]
 Harita ivmesi
-[lan pairing field]
-
-[lan pairing connect]
-
-[lan discovery instructions]
-
-[lan discovery unavailable]
-
-[lan discovered host %0]
-
-[lan share pairing]
-
-[lan copy pairing]
-
-[lan connection unavailable]
-
-[lan connection verification failed %0]
-
-[network start refused]
-
-[lan lobby endpoint required]
-

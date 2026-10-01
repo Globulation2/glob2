@@ -3454,6 +3454,28 @@ Az érintéses görgetés érzete. 0 kikapcsol egy hatást; 50 az alapértelmez�
 Listák lendülete
 [List bounce]
 Listák visszapattanása
+[lan pairing field]
+
+[lan pairing connect]
+
+[lan discovery instructions]
+
+[lan discovery unavailable]
+
+[lan discovered host %0]
+
+[lan share pairing]
+
+[lan copy pairing]
+
+[lan connection unavailable]
+
+[lan connection verification failed %0]
+
+[network start refused]
+
+[lan lobby endpoint required]
+
 [settings Artwork]
 
 [settings Original]
@@ -3510,25 +3532,3 @@ Listák visszapattanása
 
 [Map momentum]
 Térkép lendülete
-[lan pairing field]
-
-[lan pairing connect]
-
-[lan discovery instructions]
-
-[lan discovery unavailable]
-
-[lan discovered host %0]
-
-[lan share pairing]
-
-[lan copy pairing]
-
-[lan connection unavailable]
-
-[lan connection verification failed %0]
-
-[network start refused]
-
-[lan lobby endpoint required]
-

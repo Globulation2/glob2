@@ -3452,6 +3452,28 @@ Emoji
 شتاب فهرست‌ها
 [List bounce]
 واجهش فهرست‌ها
+[lan pairing field]
+
+[lan pairing connect]
+
+[lan discovery instructions]
+
+[lan discovery unavailable]
+
+[lan discovered host %0]
+
+[lan share pairing]
+
+[lan copy pairing]
+
+[lan connection unavailable]
+
+[lan connection verification failed %0]
+
+[network start refused]
+
+[lan lobby endpoint required]
+
 [settings Artwork]
 
 [settings Original]
@@ -3508,25 +3530,3 @@ Emoji
 
 [Map momentum]
 شتاب نقشه
-[lan pairing field]
-
-[lan pairing connect]
-
-[lan discovery instructions]
-
-[lan discovery unavailable]
-
-[lan discovered host %0]
-
-[lan share pairing]
-
-[lan copy pairing]
-
-[lan connection unavailable]
-
-[lan connection verification failed %0]
-
-[network start refused]
-
-[lan lobby endpoint required]
-
