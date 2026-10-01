@@ -3178,6 +3178,8 @@ På telefonen samlas kontrollerna i det här nedre hörnet.
 Höger
 [settings Left]
 Vänster
+[Undo stroke]
+Ångra
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

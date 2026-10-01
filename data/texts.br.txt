@@ -3164,6 +3164,8 @@ Os controles no celular ficam neste canto inferior.
 Direita
 [settings Left]
 Esquerda
+[Undo stroke]
+Desfazer
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

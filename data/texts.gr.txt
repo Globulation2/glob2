@@ -3238,6 +3238,8 @@ Emoji
 Δεξιά
 [settings Left]
 Αριστερά
+[Undo stroke]
+Αναίρεση
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

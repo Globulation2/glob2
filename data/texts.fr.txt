@@ -3148,6 +3148,8 @@ Les commandes sur téléphone se regroupent dans ce coin inférieur.
 Droite
 [settings Left]
 Gauche
+[Undo stroke]
+Annuler
 [zoom factor %0]
 %0×
 [More]

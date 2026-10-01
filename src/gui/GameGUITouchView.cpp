@@ -23,26 +23,30 @@ void GameGUITouch::drawControls()
 {
 	if (usesHUD() && gui.selectionMode == GameGUI::BRUSH_SELECTION && !activeDialog())
 	{
-		const auto rect = controls();
+		// Zone choices then Done along the bar, Done under the thumb; brush size,
+		// Paint/Erase, Pan and Undo on the rail above it.
 		auto *gfx = globalContainer->gfx;
-		const std::string zones[] = {GAGCore::Toolkit::getStringTable()->getString("[Forbidden]"),
-									 GAGCore::Toolkit::getStringTable()->getString("[Guard]"),
-									 GAGCore::Toolkit::getStringTable()->getString("[Clear]")};
-		const std::string labels[] = {
-			zones[gui.toolManager.getZoneType()],
-			GAGCore::FormattableString(GAGCore::Toolkit::getStringTable()->getString("[Brush %0]"))
-				.arg(gui.brush.getFigure() + 1),
-			gui.brush.getType() == BrushTool::MODE_ADD
-				? GAGCore::Toolkit::getStringTable()->getString("[Paint]")
-				: GAGCore::Toolkit::getStringTable()->getString("[Erase]"),
-			GAGCore::Toolkit::getStringTable()->getString("[Done]")};
+		auto *strings = GAGCore::Toolkit::getStringTable();
+		const std::string labels[] = {strings->getString("[Forbidden]"), strings->getString("[Guard]"),
+									  strings->getString("[Clear]"), strings->getString("[Done]")};
+		const auto buttons = brushBarButtons();
 		for (int i = 0; i < 4; ++i)
 		{
-			const ViewRect button{rect.x + i * rect.w / 4, rect.y, rect.w / 4 - 1, rect.h};
-			gfx->drawFilledRect(int(button.x), int(button.y), int(button.w), int(button.h),
-								InGameTouchTheme::field);
-			drawPointLabel(button, labels[i], .9);
+			const auto &b = buttons[i];
+			gfx->drawFilledRect(int(b.x), int(b.y), int(b.w) - 1, int(b.h),
+								i == int(gui.toolManager.getZoneType()) ? InGameTouchTheme::selected
+																		: InGameTouchTheme::field);
+			drawPointLabel(b, labels[i], .9);
 		}
+		BrushHUD::State state;
+		state.figure = gui.brush.getFigure();
+		state.erase = gui.brush.getType() == BrushTool::MODE_DEL;
+		state.pan = brushPan;
+		state.touched = railTouched;
+		state.modeLabel = state.erase ? strings->getString("[Erase]") : strings->getString("[Paint]");
+		state.panLabel = strings->getString("[Pan]");
+		state.undoLabel = strings->getString("[Undo stroke]");
+		BrushHUD::draw(brushHUD(), state);
 		return;
 	}
 	if (!active() || gui.selectionMode != GameGUI::TOOL_SELECTION || gui.inGameMenu ||

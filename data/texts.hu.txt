@@ -3168,6 +3168,8 @@ Telefonon a kezelőszervek ebben az alsó sarokban gyűlnek össze.
 Jobb
 [settings Left]
 Bal
+[Undo stroke]
+Visszavonás
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

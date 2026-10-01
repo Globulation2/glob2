@@ -3168,6 +3168,8 @@ Los controles del móvil se agrupan en esta esquina inferior.
 Derecha
 [settings Left]
 Izquierda
+[Undo stroke]
+Deshacer
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

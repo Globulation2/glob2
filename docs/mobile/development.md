@@ -160,6 +160,18 @@ new confirmation gesture. Painting buffers an unfinished stroke; release applies
 its existing brush operations, while interruption discards it. Completed strokes
 are never undone by leaving the tool. Two fingers navigate instead of painting.
 
+Zone painting is one-thumb too. The toolbar holds Forbidden, Guard, Clear and
+Done (Done under the thumb), and a brush rail on the thumb edge holds the brush
+sizes as detents (smallest lowest; touching one magnifies it beside the rail and
+the thumb can scrub along it), Paint/Erase at its foot and Pan at its head. Pan
+makes one finger move the map. A stroke held in the 24-point band along a map
+edge pans (as placement does) and keeps painting under the still finger. For six
+seconds after a stroke lands an Undo chip sits beside the rail foot: it sends
+inverse zone orders for exactly the cells that stroke changed in the player's
+displayed zones (in 32×32 blocks, after the stroke's own orders) and restores
+those cells' displayed state; a stroke that changed nothing offers no Undo.
+`BrushHUD` draws and hit-tests the rail for gameplay and the phone editor alike.
+
 To add another interaction pattern, make it update the owned preview and call the
 same commit operation. Keep gesture thresholds and sizing policies in the in-game
 theme, add cancellation/order-equivalence cases to `GameGUITouchHarness`, and
@@ -174,7 +186,13 @@ brush operations; Buildings and Flags expose team and level beside the map.
 Individual artwork widgets are reused, never the composed desktop sidebar or
 its minimap. Done leaves the active tool and returns to object selection; Pan
 switches one-finger navigation. One-finger zoom, the 1:1 reset and held paint
-taps behave as in gameplay; taps that place buildings or units never arm zoom. Brush opens a visual mask chooser. Pending
+taps behave as in gameplay; taps that place buildings or units never arm zoom.
+Brush tools use the same rail as zone painting (Paint/Erase only where it applies,
+Pan, sizes). Zone, script-area and no-growth strokes offer Undo for six seconds,
+restoring the covered tiles and displayed zone bits exactly; terrain, resource
+and delete strokes remove units, buildings and resources, so they offer none.
+The editor does not pan while a stroke is held at an edge: its strokes are
+replayed in screen coordinates on release, so use Pan instead. The brush rail chooses the mask. Pending
 strokes draw their coverage before release without changing the map. Presentation measurements and drag thresholds are point-based
 policies at the top of `PhoneEditor.cpp`.
 

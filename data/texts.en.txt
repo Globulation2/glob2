@@ -3136,6 +3136,8 @@ Phone controls gather in this bottom corner.
 Right
 [settings Left]
 Left
+[Undo stroke]
+Undo
 [zoom factor %0]
 %0×
 [More]

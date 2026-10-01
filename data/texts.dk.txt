@@ -3244,6 +3244,8 @@ Telefonens knapper samles i dette nederste hjørne.
 Højre
 [settings Left]
 Venstre
+[Undo stroke]
+Fortryd
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

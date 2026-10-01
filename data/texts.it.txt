@@ -3230,6 +3230,8 @@ Sul telefono i comandi si raccolgono in questo angolo in basso.
 Destra
 [settings Left]
 Sinistra
+[Undo stroke]
+Annulla
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

@@ -3174,6 +3174,8 @@ No telemóvel, os controlos ficam neste canto inferior.
 Direita
 [settings Left]
 Esquerda
+[Undo stroke]
+Anular
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

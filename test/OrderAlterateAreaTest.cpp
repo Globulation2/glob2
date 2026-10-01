@@ -118,6 +118,24 @@ void tc7_payloadTooLong()
 
 } // namespace
 
+// TC8 — an explicit-mask order (touch undo) round-trips through the wire format.
+static void tc8_explicitMask()
+{
+	Utilities::BitArray mask(3 * 2);
+	mask.set(0, true);
+	mask.set(4, true);
+	OrderAlterForbidden made(2, 2, 40, 17, 3, 2, mask);
+	OrderAlterForbidden read;
+	const bool ok = read.setData(made.getData(), made.getDataLength(), 0);
+	check(ok && read.teamNumber == 2 && read.type == 2 && read.centerX == 40 && read.centerY == 17 &&
+	          read.minX == 0 && read.minY == 0 && read.maxX == 3 && read.maxY == 2,
+	      "TC8", "explicit-mask order keeps its team, mode and box");
+	bool same = true;
+	for (size_t i = 0; i < 6; ++i)
+		same = same && read.mask.get(i) == mask.get(i);
+	check(ok && same, "TC8", "explicit-mask order keeps its mask bits");
+}
+
 TEST_SUITE("OrderAlterateArea")
 {
 	TEST_CASE("well-formed brush accepted") { tc1_happyPath(); }
@@ -127,4 +145,5 @@ TEST_SUITE("OrderAlterateArea")
 	TEST_CASE("overflow attack rejected") { tc5_overflowAttack(); }
 	TEST_CASE("payload too short rejected") { tc6_payloadTooShort(); }
 	TEST_CASE("payload too long rejected") { tc7_payloadTooLong(); }
+	TEST_CASE("explicit-mask order round-trips") { tc8_explicitMask(); }
 }

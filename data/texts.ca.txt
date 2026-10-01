@@ -3176,6 +3176,8 @@ Els controls del mòbil es col·loquen en aquest cantó inferior.
 Dreta
 [settings Left]
 Esquerra
+[Undo stroke]
+Desfés
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

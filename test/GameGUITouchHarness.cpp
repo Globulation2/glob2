@@ -9,6 +9,7 @@
 #include <cmath>
 #include <cstdlib>
 #include "Engine.h"
+#include <set>
 #include "GameGUITouch.h"
 #include <MapCamera.h>
 #include "InGameTouchTheme.h"
@@ -281,12 +282,69 @@ class GameGUITouchHarness
 		tap({touch.safe.x + touch.safe.w * 7 / 8, touch.safe.y + 22 * u});
 		require(editor.selectionMode == MapEdit::PlaceNothing && !touch.pan,
 				"Done did not return editor to selection");
+		auto centre = [](const GAGCore::ViewRect &r) { return GAGCore::ViewPoint{r.x + r.w / 2, r.y + r.h / 2}; };
 		editor.performAction("select sand");
-		tap({touch.safe.x + touch.safe.w * 3 / 8, touch.safe.y + 22 * u});
-		require(touch.brushOpen, "Brush control did not open visual brush choices");
-		tap({touch.brushPanel.x + touch.brushPanel.w * 7 / 8, touch.brushPanel.y + 84 * u});
-		require(editor.brush.getFigure() == 7 && !touch.brushOpen,
-				"Visual brush choice did not apply");
+		touch.prepare();
+		{
+			// The brush rail on the thumb edge: sizes, Pan; sand has no Erase.
+			const auto rail = touch.rail();
+			require(rail.detents.size() == BrushTool::BRUSH_COUNT && rail.mode.w == 0 && rail.pan.w > 0,
+					"Editor rail offers sizes and Pan; sand has no Erase");
+			tap(centre(rail.detents[2]));
+			require(editor.brush.getFigure() == 2, "Editor rail tap selects a size");
+			finger(SDL_FINGERDOWN, 1, centre(rail.detents[0]));
+			require(editor.brush.getFigure() == 0 && touch.railTouched == 0, "Touching a rail size selects it at once");
+			finger(SDL_FINGERMOTION, 1, centre(rail.detents[7]));
+			require(editor.brush.getFigure() == 7 && touch.railTouched == 7, "Scrubbing the editor rail changes the size");
+			touch.draw();
+			gfx->printScreen("touch-editor-rail.bmp");
+			gfx->nextFrame();
+			finger(SDL_FINGERUP, 1, centre(rail.detents[7]));
+			require(touch.railTouched == -1 && editor.brush.getFigure() == 7, "Releasing the editor rail keeps the size");
+			tap(centre(rail.pan));
+			require(touch.pan, "The editor rail head switches to Pan");
+			tap(centre(rail.pan));
+			require(!touch.pan, "Editor Pan toggles off");
+		}
+		{
+			// Zone strokes can be undone, restoring the tiles exactly.
+			editor.performAction("select forbidden zone");
+			touch.prepare();
+			require(touch.rail().mode.w > 0, "Zones offer Paint/Erase on the rail");
+			editor.brush.setFigure(6);
+			const GAGCore::ViewPoint a{touch.content.x + touch.content.w / 3, touch.content.y + touch.content.h / 2},
+				b{a.x + 40 * u, a.y};
+			const auto [wx, wy] = editor.camera.screenToWorld(a.x, a.y);
+			const int cx = int(std::floor(wx / 32)), cy = int(std::floor(wy / 32));
+			auto zones = [&]
+			{
+				std::vector<Uint32> v;
+				for (int dy = -3; dy <= 3; ++dy)
+					for (int dx = -3; dx <= 6; ++dx)
+						v.push_back(editor.game.map.getTile((cx + dx) & editor.game.map.wMask,
+															 (cy + dy) & editor.game.map.hMask).forbidden);
+				return v;
+			};
+			const auto zonesBefore = zones();
+			finger(SDL_FINGERDOWN, 1, a);
+			finger(SDL_FINGERMOTION, 1, b);
+			finger(SDL_FINGERUP, 1, b);
+			require(zones() != zonesBefore && touch.undo && touch.rail().undo.w > 0,
+					"An editor zone stroke changes the map and offers Undo");
+			touch.draw();
+			gfx->printScreen("touch-editor-undo.bmp");
+			gfx->nextFrame();
+			tap(centre(touch.rail().undo));
+			require(zones() == zonesBefore && !touch.undo, "Editor Undo restores the zone exactly");
+			finger(SDL_FINGERDOWN, 1, a);
+			finger(SDL_FINGERMOTION, 1, b);
+			finger(SDL_FINGERUP, 1, b);
+			require(bool(touch.undo), "A second zone stroke offers Undo");
+			touch.undo->expires = 0;
+			touch.draw();
+			require(!touch.undo, "Editor Undo expires");
+			editor.brush.setFigure(7);
+		}
 		touch.chooseMode(2);
 		editor.mouseX = destination.x;
 		editor.mouseY = destination.y - 40 * u;
@@ -304,6 +362,17 @@ class GameGUITouchHarness
 		tap({touch.inspector.x + touch.inspector.w - 26 * u, touch.inspector.y + 26 * u});
 		require(!touch.inspecting() && touch.paletteMode == 2,
 				"Closing inspector did not restore palette");
+		{
+			// Terrain strokes remove things, so they offer no Undo.
+			touch.chooseMode(0);
+			editor.performAction("select sand");
+			touch.prepare();
+			const GAGCore::ViewPoint a{touch.content.x + 24 * u, touch.content.y + touch.content.h - 24 * u};
+			finger(SDL_FINGERDOWN, 1, a);
+			finger(SDL_FINGERMOTION, 1, {a.x + 32 * u, a.y});
+			finger(SDL_FINGERUP, 1, {a.x + 32 * u, a.y});
+			require(!touch.undo && touch.rail().undo.w == 0, "Terrain strokes offer no Undo");
+		}
 		std::puts(
 			"PASS: editor buffered paint, focus/second-finger cancellation, one-building drag "
 			"and invalid/UI drops");
@@ -1116,6 +1185,162 @@ class GameGUITouchHarness
 				noOrder();
 				require(!gui.touch->deferredStroke, "A held tap must be dropped when its brush changes");
 				gui.clearSelection();
+			}
+			{
+				// The brush rail: sizes, Paint/Erase and Pan under the thumb, plus undo.
+				auto brush = [&]
+				{
+					gui.setSelection(GameGUI::BRUSH_SELECTION);
+					gui.toolManager.activateZoneTool(GameGUIToolManager::Forbidden);
+					gui.brush.defaultSelection();
+				};
+				auto drain = [&] { while (gui.toolManager.getOrder()) {} };
+				auto centre = [](const GAGCore::ViewRect &r) { return GAGCore::ViewPoint{r.x + r.w / 2, r.y + r.h / 2}; };
+				brush();
+				auto rail = gui.touch->brushHUD();
+				require(rail.detents.size() == BrushTool::BRUSH_COUNT && rail.mode.w > 0 && rail.pan.w > 0,
+						"The rail offers every brush size, Paint/Erase and Pan");
+				require(rail.detents.front().y > rail.detents.back().y,
+						"The smallest brush sits lowest, nearest the thumb");
+				const auto ui = gui.touch->layout();
+				require(rail.rail.x + rail.rail.w <= ui.safe.x + ui.safe.w && rail.rail.y + rail.rail.h <= ui.actions.y &&
+							rail.rail.y >= gui.touch->minimapRect().y + gui.touch->minimapRect().h,
+						"The rail sits on the thumb edge between the minimap and the toolbar");
+				auto p = centre(rail.detents[7]);
+				tap(p.x, p.y);
+				require(gui.brush.getFigure() == 7, "Tapping a rail size selects it");
+				p = centre(rail.detents[0]);
+				finger(SDL_FINGERDOWN, 1, p.x, p.y);
+				require(gui.brush.getFigure() == 0 && gui.touch->railTouched == 0,
+						"Touching a rail size selects it at once");
+				const auto to = centre(rail.detents[5]);
+				finger(SDL_FINGERMOTION, 1, to.x, to.y);
+				require(gui.brush.getFigure() == 5 && gui.touch->railTouched == 5,
+						"Scrubbing along the rail changes the size");
+				gui.drawAll(0);
+				gfx->printScreen(width < height ? "touch-brush-rail-portrait.bmp" : "touch-brush-rail-landscape.bmp");
+				gfx->nextFrame();
+				finger(SDL_FINGERUP, 1, to.x, to.y);
+				require(gui.touch->railTouched == -1, "Releasing the rail hides the magnified size");
+				noOrder();
+				p = centre(rail.mode);
+				tap(p.x, p.y);
+				require(gui.brush.getType() == BrushTool::MODE_DEL, "The rail foot switches to Erase");
+				tap(p.x, p.y);
+				require(gui.brush.getType() == BrushTool::MODE_ADD, "The rail foot switches back to Paint");
+				// Pan mode: one finger moves the map without painting.
+				p = centre(rail.pan);
+				tap(p.x, p.y);
+				require(gui.touch->brushPan, "The rail head switches to Pan");
+				const auto spot = emptyGround();
+				const int panX = gui.viewportX;
+				finger(SDL_FINGERDOWN, 1, spot.x, spot.y);
+				finger(SDL_FINGERMOTION, 1, spot.x + 64 * unit, spot.y);
+				finger(SDL_FINGERUP, 1, spot.x + 64 * unit, spot.y);
+				require(gui.viewportX != panX, "Pan mode moves the map with one finger");
+				noOrder();
+				tap(p.x, p.y);
+				require(!gui.touch->brushPan, "Pan mode toggles off");
+				// A stroke held at a map edge pans and keeps painting.
+				gui.brush.setFigure(0);
+				const auto area = gui.touch->worldBounds();
+				const GAGCore::ViewPoint edge{area.x + 6 * unit, area.y + area.h / 2};
+				require(gui.touch->interfaceRegion(edge) == 0, "Edge fixture must be on the map");
+				finger(SDL_FINGERDOWN, 1, edge.x + 30 * unit, edge.y);
+				finger(SDL_FINGERMOTION, 1, edge.x, edge.y);
+				require(bool(gui.touch->strokeHold), "A painting contact is held for edge panning");
+				const int beforeEdge = gui.viewportX;
+				const size_t points = gui.touch->stroke.points.size();
+				gui.touch->strokeHold->lastUpdate = SDL_GetTicks64() - 100;
+				gui.touch->prepareDraw();
+				require(gui.viewportX != beforeEdge && gui.touch->stroke.points.size() > points,
+						"Holding a stroke at the edge pans and extends the stroke");
+				noOrder();
+				finger(SDL_FINGERUP, 1, edge.x, edge.y);
+				require(bool(std::dynamic_pointer_cast<OrderAlterForbidden>(gui.toolManager.getOrder())),
+						"The panned stroke paints on release");
+				drain();
+				// Undo reverts exactly the cells the stroke changed.
+				gui.brush.setFigure(6); // 3x3
+				const auto target = emptyGround();
+				auto &map = gui.game.map;
+				const int cx = ((gui.mapMouseX(int(target.x)) + gui.viewportX * 32) >> 5) & map.getMaskW(),
+						  cy = ((gui.mapMouseY(int(target.y)) + gui.viewportY * 32) >> 5) & map.getMaskH();
+				auto index = [&](int dx, int dy) { return size_t(map.coordToIndex((cx + dx) & map.getMaskW(), (cy + dy) & map.getMaskH())); };
+				std::vector<bool> saved;
+				for (int dy = -1; dy <= 1; ++dy)
+					for (int dx = -1; dx <= 1; ++dx)
+					{
+						saved.push_back(map.displayedForbiddenView.get(index(dx, dy)));
+						map.displayedForbiddenView.set(index(dx, dy), dy == -1); // Top row already forbidden.
+					}
+				gui.orderQueue.clear();
+				finger(SDL_FINGERDOWN, 1, target.x, target.y);
+				finger(SDL_FINGERMOTION, 1, target.x + 12 * unit, target.y); // A drag commits at once.
+				finger(SDL_FINGERUP, 1, target.x + 12 * unit, target.y);
+				drain();
+				require(bool(gui.touch->zoneUndo) && gui.touch->brushHUD().undo.w > 0,
+						"A stroke that changed zones offers Undo");
+				gui.drawAll(0);
+				gfx->printScreen(width < height ? "touch-brush-undo-portrait.bmp" : "touch-brush-undo-landscape.bmp");
+				gfx->nextFrame();
+				p = centre(gui.touch->brushHUD().undo);
+				tap(p.x, p.y);
+				require(!gui.touch->zoneUndo && !gui.orderQueue.empty(), "Undo sends its orders once");
+				std::set<size_t> reverted;
+				for (const auto &order : gui.orderQueue)
+				{
+					auto inverse = std::dynamic_pointer_cast<OrderAlterForbidden>(order);
+					require(inverse && inverse->type == BrushTool::MODE_DEL && inverse->teamNumber == gui.localTeamNo,
+							"Undo removes the forbidden zone it added");
+					for (int y = 0; y < inverse->maxY - inverse->minY; ++y)
+						for (int x = 0; x < inverse->maxX - inverse->minX; ++x)
+							if (inverse->mask.get(size_t(y * (inverse->maxX - inverse->minX) + x)))
+								reverted.insert(size_t(map.coordToIndex((inverse->centerX + inverse->minX + x) & map.getMaskW(),
+																			(inverse->centerY + inverse->minY + y) & map.getMaskH())));
+				}
+				std::set<size_t> expected;
+				for (int dy = 0; dy <= 1; ++dy)
+					for (int dx = -1; dx <= 1; ++dx)
+						expected.insert(index(dx, dy));
+				// The drag also covered the next column; those cells count only if they changed.
+				for (auto cell : reverted)
+					require(!map.displayedForbiddenView.get(cell), "Undo restores the displayed zones");
+				for (auto cell : expected)
+					require(reverted.count(cell), "Undo reverts every cell the stroke changed");
+				for (int dx = -1; dx <= 1; ++dx)
+					require(!reverted.count(index(dx, -1)) && map.displayedForbiddenView.get(index(dx, -1)),
+							"Undo leaves cells that were forbidden before the stroke");
+				gui.orderQueue.clear();
+				// A stroke that changes nothing offers no undo; undo expires; a cancelled stroke leaves none.
+				tap(target.x, target.y);
+				SDL_Delay(InGameTouchTheme::doubleTapWindowMs + 20);
+				gui.touch->prepareDraw();
+				drain();
+				require(bool(gui.touch->zoneUndo), "Fixture stroke offers Undo");
+				gui.touch->zoneUndo->expires = 0;
+				gui.touch->prepareDraw();
+				require(!gui.touch->zoneUndo, "Undo expires");
+				tap(target.x, target.y);
+				SDL_Delay(InGameTouchTheme::doubleTapWindowMs + 20);
+				gui.touch->prepareDraw();
+				drain();
+				require(!gui.touch->zoneUndo, "A stroke that changes nothing offers no Undo");
+				gui.brush.setType(BrushTool::MODE_DEL);
+				finger(SDL_FINGERDOWN, 1, target.x, target.y);
+				finger(SDL_FINGERMOTION, 1, target.x + 20 * unit, target.y);
+				finger(SDL_FINGERDOWN, 2, target.x + 90 * unit, target.y);
+				finger(SDL_FINGERUP, 2, target.x + 90 * unit, target.y);
+				finger(SDL_FINGERUP, 1, target.x + 20 * unit, target.y);
+				noOrder();
+				require(!gui.touch->zoneUndo, "A cancelled stroke leaves no Undo");
+				size_t k = 0;
+				for (int dy = -1; dy <= 1; ++dy)
+					for (int dx = -1; dx <= 1; ++dx)
+						map.displayedForbiddenView.set(index(dx, dy), saved[k++]);
+				gui.brush.defaultSelection();
+				gui.clearSelection();
+				require(!gui.touch->zoneUndo && !gui.touch->brushPan, "Leaving the brush forgets Undo and Pan");
 			}
 			auto ui = gui.touch->layout();
 			const int cameraX = gui.viewportX, cameraY = gui.viewportY;
@@ -2171,6 +2396,61 @@ class GameGUITouchHarness
 		}
 		globalContainer->replaying = false;
 		globalContainer->replayReader.reset();
+		{
+			// Executed for real, a stroke and then its undo leave the authoritative
+			// zones exactly as they were, including cells forbidden beforehand.
+			gui.clearSelection();
+			gui.setSelection(GameGUI::BRUSH_SELECTION);
+			gui.toolManager.activateZoneTool(GameGUIToolManager::Forbidden);
+			gui.brush.defaultSelection();
+			gui.brush.setFigure(7); // 5x5
+			auto &map = gui.game.map;
+			const int cx = 40, cy = 40;
+			for (int dy = -2; dy <= 2; ++dy)
+			{
+				map.addForbidden(cx - 2, cy + dy, gui.localTeamNo);
+				map.displayedForbiddenView.set(size_t(map.coordToIndex(cx - 2, cy + dy)), true);
+			}
+			auto forbidden = [&]
+			{
+				std::vector<bool> v;
+				for (int dy = -4; dy <= 4; ++dy)
+					for (int dx = -4; dx <= 4; ++dx)
+						v.push_back(map.isForbidden(cx + dx, cy + dy, gui.localTeam->me));
+				return v;
+			};
+			const auto before = forbidden();
+			TouchStrokeSession stroke;
+			stroke.points = {{cx * 32.0 + 16, cy * 32.0 + 16}};
+			stroke.team = gui.localTeamNo;
+			stroke.zone = GameGUIToolManager::Forbidden;
+			stroke.figure = 7;
+			stroke.mode = BrushTool::MODE_ADD;
+			gui.touch->replayStroke(stroke);
+			std::vector<std::shared_ptr<Order>> forward;
+			while (auto order = gui.toolManager.getOrder())
+				forward.push_back(order);
+			require(!forward.empty() && gui.touch->zoneUndo, "Stroke fixture emits orders and offers Undo");
+			const auto inverse = gui.touch->zoneUndo->orders;
+			auto execute = [&](const std::vector<std::shared_ptr<Order>> &orders)
+			{
+				for (const auto &order : orders)
+				{
+					order->sender = gui.localPlayer;
+					gui.game.executeOrder(order, gui.localPlayer);
+				}
+			};
+			execute(forward);
+			bool painted = true;
+			for (int dy = -2; dy <= 2; ++dy)
+				for (int dx = -2; dx <= 2; ++dx)
+					painted = painted && map.isForbidden(cx + dx, cy + dy, gui.localTeam->me);
+			require(painted, "The executed stroke forbids its whole footprint");
+			execute(inverse);
+			require(forbidden() == before, "The executed undo restores the zones that existed before the stroke");
+			gui.touch->zoneUndo.reset();
+			gui.clearSelection();
+		}
 		editorInteractions();
 		editorFileInteractions();
 		editorAreaNameInteractions();

@@ -3168,6 +3168,8 @@ Na telefonie przyciski gromadzą się w tym dolnym rogu.
 Prawa
 [settings Left]
 Lewa
+[Undo stroke]
+Cofnij
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

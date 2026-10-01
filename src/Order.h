@@ -411,6 +411,15 @@ public:
 	#ifndef YOG_SERVER_ONLY
 	OrderAlterArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map);
 	#endif
+	//! An explicit row-major mask over the width x height box whose top-left
+	//! map cell is (centerX, centerY). Touch undo uses it to revert exactly the
+	//! cells a stroke changed; the wire format is the same.
+	OrderAlterArea(Uint8 teamNumber, Uint8 type, Sint16 centerX, Sint16 centerY, Sint16 width, Sint16 height,
+	               const Utilities::BitArray &mask)
+		: teamNumber(teamNumber), type(type), centerX(centerX), centerY(centerY), minX(0), minY(0),
+		  maxX(width), maxY(height), mask(mask)
+	{
+	}
 	virtual ~OrderAlterArea(void);
 
 	Uint8 *getData(void);
@@ -464,6 +473,8 @@ public:
 	#ifndef YOG_SERVER_ONLY
 	OrderAlterForbidden(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map) : OrderAlterArea(teamNumber, type, acc, map) { }
 	#endif
+	OrderAlterForbidden(Uint8 teamNumber, Uint8 type, Sint16 centerX, Sint16 centerY, Sint16 width, Sint16 height,
+	      const Utilities::BitArray &mask) : OrderAlterArea(teamNumber, type, centerX, centerY, width, height, mask) { }
 
 	//! See OrderModifyBuilding::deserialize.
 	static std::shared_ptr<OrderAlterForbidden> deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor);
@@ -478,6 +489,8 @@ public:
 	#ifndef YOG_SERVER_ONLY
 	OrderAlterGuardArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map) : OrderAlterArea(teamNumber, type, acc, map) { }
 	#endif
+	OrderAlterGuardArea(Uint8 teamNumber, Uint8 type, Sint16 centerX, Sint16 centerY, Sint16 width, Sint16 height,
+	      const Utilities::BitArray &mask) : OrderAlterArea(teamNumber, type, centerX, centerY, width, height, mask) { }
 
 	//! See OrderModifyBuilding::deserialize.
 	static std::shared_ptr<OrderAlterGuardArea> deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor);
@@ -492,6 +505,8 @@ public:
 	#ifndef YOG_SERVER_ONLY
 	OrderAlterClearArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map) : OrderAlterArea(teamNumber, type, acc, map) { }
 	#endif
+	OrderAlterClearArea(Uint8 teamNumber, Uint8 type, Sint16 centerX, Sint16 centerY, Sint16 width, Sint16 height,
+	      const Utilities::BitArray &mask) : OrderAlterArea(teamNumber, type, centerX, centerY, width, height, mask) { }
 
 	//! See OrderModifyBuilding::deserialize.
 	static std::shared_ptr<OrderAlterClearArea> deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor);

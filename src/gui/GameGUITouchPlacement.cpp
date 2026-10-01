@@ -90,6 +90,36 @@ bool GameGUITouch::processPalettePointer(const SDL_Event &event, ViewPoint point
 	return true;
 }
 
+// Pans while a held contact sits in the band along an exposed map edge. Speed is
+// in points per second, so it is density- and zoom-aware. Returns whether the
+// camera moved.
+bool GameGUITouch::edgePan(ViewPoint point, std::uint64_t &lastUpdate)
+{
+	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
+	const auto bounds = world();
+	const auto now = SDL_GetTicks64();
+	const double delta = std::min<std::uint64_t>(100, now - lastUpdate) / 1000.0;
+	lastUpdate = now;
+	const double margin = InGameTouchTheme::edgePanMargin * unit;
+	const double dx = point.x < bounds.x + margin              ? -1
+					  : point.x > bounds.x + bounds.w - margin ? 1
+															   : 0;
+	const double dy = point.y < bounds.y + margin              ? -1
+					  : point.y > bounds.y + bounds.h - margin ? 1
+															   : 0;
+	if ((!dx && !dy) || interfaceRegion(point) != 0 || delta <= 0)
+		return false;
+	gui.updateCamera();
+	const int oldX = gui.viewportX, oldY = gui.viewportY;
+	gui.camera.originX += dx * InGameTouchTheme::edgePanPixelsPerSecond * unit * delta / gui.camera.zoom;
+	gui.camera.originY += dy * InGameTouchTheme::edgePanPixelsPerSecond * unit * delta / gui.camera.zoom;
+	gui.camera.normalize();
+	gui.viewportX = gui.camera.tileX();
+	gui.viewportY = gui.camera.tileY();
+	gui.viewportChanged(oldX, gui.viewportX, oldY, gui.viewportY);
+	return true;
+}
+
 // Called by input and once per rendered frame so holding at an edge continues
 // panning. It only updates camera/preview state; release owns the commit.
 void GameGUITouch::advancePlacement()
@@ -111,30 +141,7 @@ void GameGUITouch::advancePlacement()
 			preview.reset();
 			return;
 		}
-		const auto bounds = world();
-		const auto now = SDL_GetTicks64();
-		const double delta = std::min<std::uint64_t>(100, now - session->lastUpdate) / 1000.0;
-		session->lastUpdate = now;
-		const double margin = InGameTouchTheme::edgePanMargin * unit;
-		const double dx = point.x < bounds.x + margin              ? -1
-						  : point.x > bounds.x + bounds.w - margin ? 1
-																   : 0;
-		const double dy = point.y < bounds.y + margin              ? -1
-						  : point.y > bounds.y + bounds.h - margin ? 1
-																   : 0;
-		if ((dx || dy) && interfaceRegion(point) == 0)
-		{
-			gui.updateCamera();
-			const int oldX = gui.viewportX, oldY = gui.viewportY;
-			gui.camera.originX +=
-				dx * InGameTouchTheme::edgePanPixelsPerSecond * unit * delta / gui.camera.zoom;
-			gui.camera.originY +=
-				dy * InGameTouchTheme::edgePanPixelsPerSecond * unit * delta / gui.camera.zoom;
-			gui.camera.normalize();
-			gui.viewportX = gui.camera.tileX();
-			gui.viewportY = gui.camera.tileY();
-			gui.viewportChanged(oldX, gui.viewportX, oldY, gui.viewportY);
-		}
+		edgePan(point, session->lastUpdate);
 		if (interfaceRegion(point) == 0)
 			updatePlacementPreview({point.x, point.y - (lifted ? InGameTouchTheme::fingerLift * unit : 0)});
 	}

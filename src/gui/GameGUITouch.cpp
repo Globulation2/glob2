@@ -7,6 +7,9 @@
 #include "MobileSafeArea.h"
 #include <HostViewport.h>
 #include "ThumbSide.h"
+#include "BrushCoverage.h"
+#include <map>
+#include <set>
 #include "GameGUI.h"
 #include "GameGUIDialog.h"
 #include "GameGUIInternal.h"
@@ -265,6 +268,8 @@ void GameGUITouch::cancel(bool preservePreview)
 	}
 	placement.reset();
 	placementHold.reset();
+	strokeHold.reset();
+	railTouched = -1;
 	allocation.reset();
 	stroke.cancel();
 	commitDeferredStroke(); // A completed tap is not undone by an interruption.
@@ -289,6 +294,9 @@ int GameGUITouch::interfaceRegion(ViewPoint point) const
 		return 4;
 	if (gui.selectionMode == GameGUI::BRUSH_SELECTION && controls().contains(point))
 		return 9;
+	if (usesHUD() && gui.selectionMode == GameGUI::BRUSH_SELECTION &&
+		BrushHUD::hit(brushHUD(), point).part != BrushHUD::Part::None)
+		return 16;
 	if (gui.selectionMode == GameGUI::TOOL_SELECTION && controls().contains(point))
 		return confirmRect().contains(point) ? 1 : 2;
 	if (usesHUD())
@@ -333,6 +341,16 @@ std::vector<ViewRect> GameGUITouch::keyboardTargets()
 	if (gui.selectionMode == GameGUI::TOOL_SELECTION)
 	{
 		targets = {confirmRect(), cancelRect()};
+	}
+	if (gui.selectionMode == GameGUI::BRUSH_SELECTION)
+	{
+		targets = brushBarButtons();
+		const auto rail = brushHUD();
+		targets.insert(targets.end(), rail.detents.begin(), rail.detents.end());
+		for (const auto &r : {rail.mode, rail.pan, rail.undo})
+			if (r.w > 0)
+				targets.push_back(r);
+		return targets;
 	}
 	const auto content = panelContent();
 	if (showsBuildPalette())
@@ -552,7 +570,7 @@ bool GameGUITouch::process(SDL_Event &event)
 			touchTravelled = false;
 			const TouchMode natural = interfaceGesture                                ? TouchMode::Navigate
 									  : gui.selectionMode == GameGUI::TOOL_SELECTION  ? TouchMode::Placement
-									  : gui.selectionMode == GameGUI::BRUSH_SELECTION ? TouchMode::Paint
+									  : gui.selectionMode == GameGUI::BRUSH_SELECTION && !brushPan ? TouchMode::Paint
 																					  : TouchMode::Navigate;
 			// The second contact of a double-tap zooms; any other contact first
 			// lets a waiting paint tap land, so nothing reorders the player's input.
@@ -565,7 +583,25 @@ bool GameGUITouch::process(SDL_Event &event)
 			lastMapTapTicks.reset();
 			gesture.setMode(zoomDrag ? TouchMode::ZoomDrag : natural);
 			gesture.setZoomDragDirection(globalContainer->settings.dragUpZoomsIn());
+			// Touching a size on the brush rail selects it at once, so its magnified
+			// preview follows the thumb while it scrubs along the rail.
+			railTouched = -1;
+			if (ownerRegion == 16)
+			{
+				const auto hit = BrushHUD::hit(brushHUD(), point);
+				if (hit.part == BrushHUD::Part::Detent)
+				{
+					gui.brush.setFigure(unsigned(hit.index));
+					railTouched = hit.index;
+				}
+			}
+			if (natural == TouchMode::Paint && !zoomDrag && ownerRegion == 0)
+				strokeHold = TouchPlacementSession{key, point, {}, true, {}, point, SDL_GetTicks64(), gui.localTeamNo};
+			else
+				strokeHold.reset();
 		}
+		else
+			strokeHold.reset(); // A second finger navigates instead of painting.
 		if (fingers.empty() && ownerRegion == 0 && gui.selectionMode == GameGUI::TOOL_SELECTION)
 			placementHold = TouchPlacementSession{key, point, gui.toolManager.getBuildingName(),
 				true, {}, point, SDL_GetTicks64(), gui.localTeamNo};
@@ -579,6 +615,14 @@ bool GameGUITouch::process(SDL_Event &event)
 	{
 		if (placementHold && placementHold->pointer == key)
 			placementHold->pointerPosition = point;
+		if (strokeHold && strokeHold->pointer == key)
+			strokeHold->pointerPosition = point;
+		if (ownerRegion == 16 && railTouched >= 0 && fingers.size() == 1 && fingers.front() == key)
+			if (const int detent = BrushHUD::detentAt(brushHUD(), point); detent >= 0)
+			{
+				gui.brush.setFigure(unsigned(detent));
+				railTouched = detent;
+			}
 		// A single finger that landed on the minimap keeps steering the camera,
 		// as a held mouse button does on desktop. Leaving the minimap clamps to
 		// its edge so a fast sweep never drops the drag.
@@ -596,6 +640,10 @@ bool GameGUITouch::process(SDL_Event &event)
 	{
 		if (placementHold && placementHold->pointer == key)
 			placementHold.reset();
+		if (strokeHold && strokeHold->pointer == key)
+			strokeHold.reset();
+		if (fingers.size() <= 1)
+			railTouched = -1;
 		auto changes = gesture.up(key.first, key.second, {point.x / scale, point.y / scale}, time);
 		// A completed tap on the world arms one-finger zoom for the next contact.
 		const bool worldTap = changes.size() == 1 && !interfaceGesture && world().contains(point) &&
@@ -639,6 +687,7 @@ void GameGUITouch::actions(const std::vector<TouchAction> &changes)
 		if (action.kind == TouchActionKind::Cancel)
 		{
 			placementHold.reset();
+			strokeHold.reset();
 			stroke.cancel();
 			preview.reset();
 			gui.toolManager.cancelDrag(gui.localTeamNo);
@@ -770,6 +819,23 @@ bool GameGUITouch::strokeMatchesTool(const TouchStrokeSession &candidate) const
 
 void GameGUITouch::replayStroke(const TouchStrokeSession &completed)
 {
+	// Record which displayed cells this stroke changes, so undo can revert
+	// exactly those and nothing that was already painted before it.
+	auto &map = gui.game.map;
+	const bool adding = completed.mode == BrushTool::MODE_ADD;
+	std::vector<BrushCoverage::Cell> centres;
+	for (const auto &p : completed.points)
+		centres.push_back({(int(p.x) >> 5) & map.getMaskW(), (int(p.y) >> 5) & map.getMaskH()});
+	std::set<BrushCoverage::Cell> changed;
+	for (const auto &[cx, cy] : BrushCoverage::cells(completed.figure, centres))
+	{
+		const int x = cx & map.getMaskW(), y = cy & map.getMaskH();
+		const bool before = completed.zone == GameGUIToolManager::Forbidden ? map.isForbiddenInDisplayedView(x, y)
+							: completed.zone == GameGUIToolManager::Guard	? map.isGuardAreaInDisplayedView(x, y)
+																			: map.isClearAreaInDisplayedView(x, y);
+		if (before != adding)
+			changed.insert({x, y});
+	}
 	for (size_t i = 0; i < completed.points.size(); ++i)
 	{
 		const auto p = completed.points[i];
@@ -779,6 +845,78 @@ void GameGUITouch::replayStroke(const TouchStrokeSession &completed)
 			gui.toolManager.handleMouseDrag(int(p.x), int(p.y), gui.localTeamNo, 0, 0);
 	}
 	gui.toolManager.finishPointerGesture(gui.localTeamNo);
+	zoneUndo.reset();
+	if (changed.empty())
+		return;
+	// Inverse orders in map-aligned blocks of at most 32x32 cells.
+	ZoneUndo undo;
+	undo.zone = completed.zone;
+	undo.expires = SDL_GetTicks64() + InGameTouchTheme::brushUndoMs;
+	std::map<std::pair<int, int>, std::vector<std::pair<int, int>>> blocks;
+	for (const auto &[x, y] : changed)
+	{
+		blocks[{x / 32, y / 32}].push_back({x, y});
+		undo.displayed.push_back({size_t(map.coordToIndex(x, y)), !adding});
+	}
+	const Uint8 inverse = adding ? BrushTool::MODE_DEL : BrushTool::MODE_ADD;
+	for (const auto &[block, cells] : blocks)
+	{
+		const int left = block.first * 32, top = block.second * 32;
+		const int width = std::min(32, map.getW() - left), height = std::min(32, map.getH() - top);
+		Utilities::BitArray mask(size_t(width * height));
+		for (const auto &[x, y] : cells)
+			mask.set(size_t((y - top) * width + (x - left)), true);
+		const Uint8 team = Uint8(gui.localTeamNo);
+		if (completed.zone == GameGUIToolManager::Forbidden)
+			undo.orders.push_back(std::make_shared<OrderAlterForbidden>(team, inverse, left, top, width, height, mask));
+		else if (completed.zone == GameGUIToolManager::Guard)
+			undo.orders.push_back(std::make_shared<OrderAlterGuardArea>(team, inverse, left, top, width, height, mask));
+		else
+			undo.orders.push_back(std::make_shared<OrderAlterClearArea>(team, inverse, left, top, width, height, mask));
+	}
+	zoneUndo = std::move(undo);
+}
+
+// The last stroke's changes are reverted by inverse orders sent after its own,
+// and the displayed zones return to what the player saw before it.
+void GameGUITouch::applyZoneUndo()
+{
+	if (!zoneUndo || globalContainer->isViewingGame())
+		return;
+	while (auto pending = gui.toolManager.getOrder())
+		gui.orderQueue.push_back(pending);
+	for (const auto &order : zoneUndo->orders)
+		gui.orderQueue.push_back(order);
+	auto &map = gui.game.map;
+	auto &view = zoneUndo->zone == GameGUIToolManager::Forbidden ? map.displayedForbiddenView
+				 : zoneUndo->zone == GameGUIToolManager::Guard	 ? map.displayedGuardAreaView
+																 : map.displayedClearAreaView;
+	for (const auto &[index, value] : zoneUndo->displayed)
+		view.set(index, value);
+	zoneUndo.reset();
+}
+
+BrushHUD::Layout GameGUITouch::brushHUD() const
+{
+	const auto ui = layout();
+	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
+	const auto mini = minimapRect();
+	const double top = mini.y + mini.h + 8 * unit, inset = InGameTouchTheme::railInset * unit;
+	return BrushHUD::layout({ui.safe.x + inset, top, ui.safe.w - 2 * inset, ui.actions.y - 8 * unit - top},
+							ThumbSide::left(), unit, true, true, bool(zoneUndo));
+}
+
+// Zone choices then Done, with Done under the thumb.
+std::vector<ViewRect> GameGUITouch::brushBarButtons() const
+{
+	const auto rect = controls();
+	std::vector<ViewRect> buttons;
+	for (int i = 0; i < 4; ++i)
+	{
+		const int slot = ThumbSide::left() ? 3 - i : i;
+		buttons.push_back({rect.x + slot * rect.w / 4, rect.y, rect.w / 4, rect.h});
+	}
+	return buttons;
 }
 
 // A held paint tap lands when its double-tap window closes, when any other
@@ -812,22 +950,34 @@ void GameGUITouch::interfaceTap(ViewPoint point)
 	}
 	if (usesHUD() && gui.selectionMode == GameGUI::BRUSH_SELECTION && controls().contains(point))
 	{
-		const auto rect = controls();
-		const int button = std::clamp(int((point.x - rect.x) / (rect.w / 4)), 0, 3);
+		const auto buttons = brushBarButtons();
 		stroke.cancel();
-		if (button == 0)
-			gui.toolManager.activateZoneTool(
-				static_cast<GameGUIToolManager::ZoneType>((gui.toolManager.getZoneType() + 1) % 3));
-		else if (button == 1)
-			gui.brush.setFigure((gui.brush.getFigure() + 1) % BrushTool::BRUSH_COUNT);
-		else if (button == 2)
+		for (int button = 0; button < int(buttons.size()); ++button)
+			if (buttons[button].contains(point))
+			{
+				if (button < 3)
+					gui.toolManager.activateZoneTool(static_cast<GameGUIToolManager::ZoneType>(button));
+				else
+				{
+					gui.clearSelection();
+					panelOpen = true;
+				}
+			}
+		return;
+	}
+	if (usesHUD() && gui.selectionMode == GameGUI::BRUSH_SELECTION && interfaceRegion(point) == 16)
+	{
+		const auto hit = BrushHUD::hit(brushHUD(), point);
+		stroke.cancel();
+		if (hit.part == BrushHUD::Part::Mode)
 			gui.brush.setType(gui.brush.getType() == BrushTool::MODE_ADD ? BrushTool::MODE_DEL
 																		 : BrushTool::MODE_ADD);
-		else
-		{
-			gui.clearSelection();
-			panelOpen = true;
-		}
+		else if (hit.part == BrushHUD::Part::Pan)
+			brushPan = !brushPan;
+		else if (hit.part == BrushHUD::Part::Detent)
+			gui.brush.setFigure(unsigned(hit.index));
+		else if (hit.part == BrushHUD::Part::Undo)
+			applyZoneUndo();
 		return;
 	}
 	if (!gui.inGameMenu && !gui.typingInputScreen && !gui.scrollableText &&
@@ -1058,6 +1208,21 @@ void GameGUITouch::prepareDraw()
 	if (deferredStroke &&
 		SDL_GetTicks64() - deferredStroke->ticks >= InGameTouchTheme::doubleTapWindowMs)
 		commitDeferredStroke();
+	if (gui.selectionMode != GameGUI::BRUSH_SELECTION)
+	{
+		zoneUndo.reset();
+		brushPan = false;
+	}
+	else if (zoneUndo && SDL_GetTicks64() >= zoneUndo->expires)
+		zoneUndo.reset();
+	// A stroke held at a map edge pans, and keeps painting under the still finger.
+	if (strokeHold && !stroke.points.empty() && gui.selectionMode == GameGUI::BRUSH_SELECTION)
+	{
+		const auto point = strokeHold->pointerPosition;
+		if (edgePan(point, strokeHold->lastUpdate) && interfaceRegion(point) == 0)
+			stroke.points.push_back({double(gui.mapMouseX(int(point.x)) + gui.viewportX * 32),
+									 double(gui.mapMouseY(int(point.y)) + gui.viewportY * 32)});
+	}
 	if (restorePalette && !inspectedBuilding())
 	{
 		panelOpen = previousPanelOpen;

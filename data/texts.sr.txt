@@ -3168,6 +3168,8 @@ Emoji
 Десно
 [settings Left]
 Лево
+[Undo stroke]
+Опозови
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

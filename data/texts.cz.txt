@@ -3168,6 +3168,8 @@ Ovládací prvky na telefonu se soustředí do tohoto dolního rohu.
 Vpravo
 [settings Left]
 Vlevo
+[Undo stroke]
+Zpět
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

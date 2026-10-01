@@ -1566,6 +1566,7 @@
 [settings Phone controls gather in this bottom corner.]
 [settings Right]
 [settings Left]
+[Undo stroke]
 [zoom factor %0]
 [More]
 [No items]

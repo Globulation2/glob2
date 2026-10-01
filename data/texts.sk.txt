@@ -3176,6 +3176,8 @@ Ovládacie prvky na telefóne sa sústredia do tohto dolného rohu.
 Vpravo
 [settings Left]
 Vľavo
+[Undo stroke]
+Späť
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

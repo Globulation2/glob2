@@ -54,6 +54,14 @@ inline const GAGCore::Color dialTrack{29, 20, 43, 225};
 inline const GAGCore::Color dialFill{199, 165, 87, 190};
 inline const GAGCore::Color dialPadFill{82, 56, 108, 245};
 inline const GAGCore::Color destroy{81, 36, 60, 235};
+// The brush rail (zones and editor): cell width, the smallest cell before it
+// folds into two columns, the magnified size preview and the Undo chip. A
+// stroke can be undone for this long after it lands.
+inline constexpr double brushRailWidth = 48;
+inline constexpr double brushRailMinimumCell = 32;
+inline constexpr double brushPreviewSize = 96;
+inline constexpr double brushUndoWidth = 80;
+inline constexpr unsigned brushUndoMs = 6000;
 inline constexpr double dragThreshold = 8;
 inline constexpr double fingerLift = 48;
 inline constexpr double edgePanMargin = 24;
