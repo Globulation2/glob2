@@ -1,0 +1,870 @@
+{
+  "simulation": {
+    "initial_save": "arena-populated/checkpoint-12000.game.gz",
+    "start_tick": 12000,
+    "end_tick": 12128,
+    "compute_threads": 1,
+    "game_seed": 4,
+    "checksums": {
+      "game.replay.checksums": {
+        "identical": true,
+        "bytes": 7041732,
+        "sha256": "67375cb699317b61285dd70676b881f75c76b7b9c56ffb65fb842f5c2756c74f"
+      },
+      "game.replay": {
+        "identical": true,
+        "bytes": 60540067,
+        "sha256": "2bd83ac28e9cbfcb66659ce1aa564b270bc282160641f0c85695f5bc05508df3"
+      },
+      "final.game.gz": {
+        "identical": true,
+        "bytes": 58573941,
+        "sha256": "3e9cfdb5f620adde197bce3d8236adbfc8b7ebc4b019d69736ec57e3b094d2f3"
+      }
+    },
+    "tick_count": 128
+  },
+  "native_capture_changed_pixels": 0,
+  "native_captures": {
+    "reference_changed_pixels": 0,
+    "late_game_changed_pixels": 0
+  },
+  "timing_evidence": [
+    "architecture-pairs/results.json",
+    "final-native-pairs/results.json",
+    "final-primitive-pairs/results.json",
+    "final-cache-pairs/results.json",
+    "final-presentation-pairs/results.json",
+    "early-scene-pairs/results.json",
+    "validated-pairs/results.json",
+    "completed-native-pairs/results.json",
+    "completed-transformed-pairs/results.json",
+    "completed-cache-pairs/results.json"
+  ],
+  "limits": [
+    "Linux and Windows runtime coverage unavailable",
+    "Maintainer playtesting pending",
+    "Host timing includes competing builds; retain distributions and rerun on a quiet host before merge"
+  ],
+  "architecture_capture_changed_pixels": {
+    "native": 0,
+    "half": 0,
+    "double": 0,
+    "fractional": 0
+  },
+  "branch": "codex/software-renderer-performance",
+  "native_timing": [
+    {
+      "fixture": "games/gd-small-2ai.game.gz",
+      "scenario": "native",
+      "baseline_ms": 0.7347,
+      "candidate_ms": 0.5059,
+      "speedup": 1.452263293140937,
+      "cpu_runs": {
+        "baseline": [
+          0.655,
+          0.8734,
+          0.7347,
+          0.6695,
+          0.6135,
+          0.764,
+          0.861
+        ],
+        "candidate": [
+          0.7106,
+          0.6708,
+          0.5059,
+          0.4655,
+          0.4742,
+          0.4688,
+          0.6665
+        ]
+      }
+    },
+    {
+      "fixture": "games/gd-archipelago.game.gz",
+      "scenario": "native",
+      "baseline_ms": 1.1387,
+      "candidate_ms": 0.8974,
+      "speedup": 1.2688878983730778,
+      "cpu_runs": {
+        "baseline": [
+          1.3115,
+          1.0979,
+          0.9323,
+          1.1387,
+          1.0336,
+          1.5903,
+          1.4635
+        ],
+        "candidate": [
+          0.745,
+          0.7912,
+          0.8974,
+          0.9793,
+          0.833,
+          1.2053,
+          0.9118
+        ]
+      }
+    },
+    {
+      "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+      "scenario": "native",
+      "baseline_ms": 1.219,
+      "candidate_ms": 0.8075,
+      "speedup": 1.5095975232198144,
+      "cpu_runs": {
+        "baseline": [
+          1.2864,
+          1.2179,
+          1.2294,
+          1.2292,
+          1.1674,
+          1.127,
+          1.219
+        ],
+        "candidate": [
+          0.7267,
+          0.8171,
+          0.8075,
+          0.9413,
+          0.8165,
+          0.6906,
+          0.7636
+        ]
+      }
+    },
+    {
+      "fixture": "artifacts/software-optimization/arena-populated/checkpoint-12000.game.gz",
+      "scenario": "native",
+      "baseline_ms": 1.1174,
+      "candidate_ms": 0.7887,
+      "speedup": 1.4167617598579942,
+      "cpu_runs": {
+        "baseline": [
+          1.2328,
+          1.1083,
+          1.1174,
+          1.1688,
+          1.2342,
+          0.8218,
+          0.7496
+        ],
+        "candidate": [
+          0.9257,
+          0.9481,
+          0.8556,
+          0.7887,
+          0.7697,
+          0.6636,
+          0.566
+        ]
+      }
+    }
+  ],
+  "native_acceptance": "Seven alternating pairs on each of four fixtures: 21\u201334% lower native CPU time. Each native capture matches the original RGBA output exactly.",
+  "tests": {
+    "software_latest": {
+      "passed": 19,
+      "failed": 0,
+      "log": "accepted-software-final.log",
+      "junit": "accepted-software-final/junit.xml"
+    },
+    "opengl_focused_latest": {
+      "passed": 18,
+      "failed": 0,
+      "log": "accepted-opengl-final.log",
+      "junit": "accepted-opengl-final/junit.xml"
+    },
+    "opengl_additional_prior": [
+      "HighResolutionIntegration",
+      "MapRenderResize",
+      "UnitTeamColorCache"
+    ],
+    "prior_full_gl_log": "final-opengl-tests.log",
+    "allocation_failure_retest": "allocation-opengl-tests.log"
+  },
+  "capture_comparisons": {
+    "final-native-pairs/0-checkpoint-6000.game-native-0-baseline.bmp": {
+      "changed_rgba_pixels": 0,
+      "total_pixels": 700000
+    },
+    "final-native-pairs/1-checkpoint-12000.game-native-0-baseline.bmp": {
+      "changed_rgba_pixels": 0,
+      "total_pixels": 700000
+    },
+    "validated-pairs/1-checkpoint-12000.game-half-0-baseline.bmp": {
+      "changed_rgba_pixels": 54860,
+      "total_pixels": 700000
+    },
+    "validated-pairs/0-checkpoint-6000.game-half-0-baseline.bmp": {
+      "changed_rgba_pixels": 109476,
+      "total_pixels": 700000
+    },
+    "validated-pairs/0-checkpoint-6000.game-native-0-baseline.bmp": {
+      "changed_rgba_pixels": 0,
+      "total_pixels": 700000
+    },
+    "validated-pairs/1-checkpoint-12000.game-double-0-baseline.bmp": {
+      "changed_rgba_pixels": 0,
+      "total_pixels": 700000
+    },
+    "validated-pairs/0-checkpoint-6000.game-double-0-baseline.bmp": {
+      "changed_rgba_pixels": 0,
+      "total_pixels": 700000
+    },
+    "validated-pairs/1-checkpoint-12000.game-native-0-baseline.bmp": {
+      "changed_rgba_pixels": 0,
+      "total_pixels": 700000
+    },
+    "validated-pairs/0-checkpoint-6000.game-fractional-0-baseline.bmp": {
+      "changed_rgba_pixels": 497769,
+      "total_pixels": 700000
+    },
+    "completed-native-pairs/1-gd-archipelago.game-native-0-baseline.bmp": {
+      "exact_rgba_match": true,
+      "total_pixels": 700000
+    },
+    "completed-native-pairs/3-checkpoint-12000.game-native-0-baseline.bmp": {
+      "exact_rgba_match": true,
+      "total_pixels": 700000
+    },
+    "completed-native-pairs/0-gd-small-2ai.game-native-0-baseline.bmp": {
+      "exact_rgba_match": true,
+      "total_pixels": 700000
+    },
+    "completed-native-pairs/2-checkpoint-6000.game-native-0-baseline.bmp": {
+      "exact_rgba_match": true,
+      "total_pixels": 700000
+    },
+    "completed-transformed-pairs/0-checkpoint-6000.game-half-0-baseline.bmp": {
+      "exact_rgba_match": false,
+      "total_pixels": 700000
+    },
+    "completed-transformed-pairs/0-checkpoint-6000.game-double-0-baseline.bmp": {
+      "exact_rgba_match": true,
+      "total_pixels": 700000
+    },
+    "completed-transformed-pairs/0-checkpoint-6000.game-fractional-0-baseline.bmp": {
+      "exact_rgba_match": false,
+      "total_pixels": 700000
+    }
+  },
+  "legacy_large_images": "Expanded owned textures use geometry fallback to preserve SDL fixed-point overflow appearance; borrowed cached tile views use direct rasterization.",
+  "commits": [
+    "3a7f4b430 Rotate completed software framebuffers and preserve partial updates",
+    "931ea6ae6 Cache opaque software terrain runs and bound water coverage",
+    "029c51294 Rasterize software sprites and solid rectangles directly",
+    "7c38e343a Separate drawing backend ownership and surface content revisions",
+    "fbfdddf8f Add opt-in saved-game software renderer benchmark"
+  ],
+  "final_phase_summaries": {
+    "final-native-pairs": [
+      {
+        "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "scenario": "native",
+        "baseline_ms": 1.5577,
+        "candidate_ms": 1.6233,
+        "speedup": 0.9595884925768497,
+        "cpu_runs": {
+          "baseline": [
+            2.2628,
+            1.9071,
+            1.5329,
+            1.5577,
+            1.45,
+            1.3673,
+            1.6047
+          ],
+          "candidate": [
+            2.1627,
+            1.9737,
+            1.4211,
+            1.6233,
+            1.7224,
+            1.3226,
+            1.463
+          ]
+        }
+      },
+      {
+        "fixture": "artifacts/software-optimization/arena-populated/checkpoint-12000.game.gz",
+        "scenario": "native",
+        "baseline_ms": 1.4766,
+        "candidate_ms": 1.4941,
+        "speedup": 0.9882872632353925,
+        "cpu_runs": {
+          "baseline": [
+            1.3216,
+            1.4766,
+            1.4903,
+            1.3793,
+            1.2268,
+            1.8376,
+            1.6079
+          ],
+          "candidate": [
+            1.201,
+            1.421,
+            1.4228,
+            1.9758,
+            1.4941,
+            1.6132,
+            1.9152
+          ]
+        }
+      }
+    ],
+    "final-primitive-pairs": [
+      {
+        "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "scenario": "half",
+        "baseline_ms": 23.4478,
+        "candidate_ms": 5.034,
+        "speedup": 4.657886372665873,
+        "cpu_runs": {
+          "baseline": [
+            25.2966,
+            25.1705,
+            23.4478,
+            20.8194,
+            18.5138,
+            22.1466,
+            27.8964
+          ],
+          "candidate": [
+            6.8005,
+            6.1841,
+            4.708,
+            5.034,
+            3.3769,
+            3.3736,
+            6.1847
+          ]
+        }
+      },
+      {
+        "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "scenario": "double",
+        "baseline_ms": 15.7588,
+        "candidate_ms": 2.6362,
+        "speedup": 5.977846900842121,
+        "cpu_runs": {
+          "baseline": [
+            14.9821,
+            16.1448,
+            16.4558,
+            16.5705,
+            15.7588,
+            14.3341,
+            13.7152
+          ],
+          "candidate": [
+            2.6362,
+            2.5685,
+            3.0628,
+            2.9539,
+            2.718,
+            2.6332,
+            2.5641
+          ]
+        }
+      },
+      {
+        "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "scenario": "fractional",
+        "baseline_ms": 28.1714,
+        "candidate_ms": 4.3026,
+        "speedup": 6.547529400827407,
+        "cpu_runs": {
+          "baseline": [
+            25.1282,
+            28.1714,
+            26.9904,
+            28.6868,
+            28.8527,
+            27.2372,
+            29.6328
+          ],
+          "candidate": [
+            4.6947,
+            4.2539,
+            3.553,
+            4.1963,
+            4.3283,
+            4.3026,
+            5.0164
+          ]
+        }
+      }
+    ],
+    "final-cache-pairs": [
+      {
+        "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "scenario": "half",
+        "baseline_ms": 6.9053,
+        "candidate_ms": 6.7357,
+        "speedup": 1.0251792686728924,
+        "cpu_runs": {
+          "baseline": [
+            7.888,
+            6.124,
+            6.0904,
+            7.7523,
+            7.2532,
+            6.8351,
+            6.9053
+          ],
+          "candidate": [
+            7.1899,
+            6.7413,
+            6.6946,
+            7.3554,
+            6.7086,
+            6.2519,
+            6.7357
+          ]
+        }
+      },
+      {
+        "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "scenario": "double",
+        "baseline_ms": 3.0677,
+        "candidate_ms": 3.064,
+        "speedup": 1.0012075718015665,
+        "cpu_runs": {
+          "baseline": [
+            3.0553,
+            3.0677,
+            2.8298,
+            3.2155,
+            2.9044,
+            3.5559,
+            3.7215
+          ],
+          "candidate": [
+            3.1813,
+            3.0349,
+            3.1348,
+            3.064,
+            2.9533,
+            2.8202,
+            3.5526
+          ]
+        }
+      },
+      {
+        "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "scenario": "fractional",
+        "baseline_ms": 5.502,
+        "candidate_ms": 5.4894,
+        "speedup": 1.0022953328232593,
+        "cpu_runs": {
+          "baseline": [
+            6.1196,
+            6.0994,
+            5.502,
+            4.738,
+            5.6277,
+            4.2825,
+            4.7313
+          ],
+          "candidate": [
+            6.8674,
+            7.4502,
+            4.8313,
+            4.5526,
+            5.4894,
+            5.5191,
+            4.6534
+          ]
+        }
+      }
+    ],
+    "final-presentation-pairs": [
+      {
+        "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "scenario": "native",
+        "baseline_ms": 6.3534,
+        "candidate_ms": 6.1357,
+        "speedup": 1.0354808742278794,
+        "cpu_runs": {
+          "baseline": [
+            6.2676,
+            6.3712,
+            6.3534,
+            6.3183,
+            6.2776,
+            6.4993,
+            6.3782
+          ],
+          "candidate": [
+            6.1689,
+            6.0708,
+            5.8584,
+            5.6369,
+            6.1887,
+            6.3055,
+            6.1357
+          ]
+        }
+      }
+    ],
+    "early-scene-pairs": [
+      {
+        "fixture": "games/gd-small-2ai.game.gz",
+        "scenario": "native",
+        "baseline_ms": 1.1645,
+        "candidate_ms": 1.2474,
+        "speedup": 0.9335417668751003,
+        "cpu_runs": {
+          "baseline": [
+            1.1645
+          ],
+          "candidate": [
+            1.2474
+          ]
+        }
+      },
+      {
+        "fixture": "games/gd-small-2ai.game.gz",
+        "scenario": "half",
+        "baseline_ms": 17.0157,
+        "candidate_ms": 2.8974,
+        "speedup": 5.872747980948436,
+        "cpu_runs": {
+          "baseline": [
+            17.0157
+          ],
+          "candidate": [
+            2.8974
+          ]
+        }
+      },
+      {
+        "fixture": "games/gd-small-2ai.game.gz",
+        "scenario": "double",
+        "baseline_ms": 14.603,
+        "candidate_ms": 3.6439,
+        "speedup": 4.007519416010319,
+        "cpu_runs": {
+          "baseline": [
+            14.603
+          ],
+          "candidate": [
+            3.6439
+          ]
+        }
+      },
+      {
+        "fixture": "games/gd-small-2ai.game.gz",
+        "scenario": "fractional",
+        "baseline_ms": 17.3121,
+        "candidate_ms": 2.2664,
+        "speedup": 7.63858983409813,
+        "cpu_runs": {
+          "baseline": [
+            17.3121
+          ],
+          "candidate": [
+            2.2664
+          ]
+        }
+      },
+      {
+        "fixture": "games/gd-archipelago.game.gz",
+        "scenario": "native",
+        "baseline_ms": 1.8258,
+        "candidate_ms": 2.8778,
+        "speedup": 0.6344429772743068,
+        "cpu_runs": {
+          "baseline": [
+            1.8258
+          ],
+          "candidate": [
+            2.8778
+          ]
+        }
+      },
+      {
+        "fixture": "games/gd-archipelago.game.gz",
+        "scenario": "half",
+        "baseline_ms": 25.366,
+        "candidate_ms": 5.2705,
+        "speedup": 4.812826107579926,
+        "cpu_runs": {
+          "baseline": [
+            25.366
+          ],
+          "candidate": [
+            5.2705
+          ]
+        }
+      },
+      {
+        "fixture": "games/gd-archipelago.game.gz",
+        "scenario": "double",
+        "baseline_ms": 15.4205,
+        "candidate_ms": 4.9409,
+        "speedup": 3.120990103017669,
+        "cpu_runs": {
+          "baseline": [
+            15.4205
+          ],
+          "candidate": [
+            4.9409
+          ]
+        }
+      },
+      {
+        "fixture": "games/gd-archipelago.game.gz",
+        "scenario": "fractional",
+        "baseline_ms": 26.5811,
+        "candidate_ms": 4.8054,
+        "speedup": 5.53150622216673,
+        "cpu_runs": {
+          "baseline": [
+            26.5811
+          ],
+          "candidate": [
+            4.8054
+          ]
+        }
+      }
+    ],
+    "completed-native-pairs": [
+      {
+        "fixture": "games/gd-small-2ai.game.gz",
+        "scenario": "native",
+        "baseline_ms": 0.7347,
+        "candidate_ms": 0.5059,
+        "speedup": 1.452263293140937,
+        "cpu_runs": {
+          "baseline": [
+            0.655,
+            0.8734,
+            0.7347,
+            0.6695,
+            0.6135,
+            0.764,
+            0.861
+          ],
+          "candidate": [
+            0.7106,
+            0.6708,
+            0.5059,
+            0.4655,
+            0.4742,
+            0.4688,
+            0.6665
+          ]
+        }
+      },
+      {
+        "fixture": "games/gd-archipelago.game.gz",
+        "scenario": "native",
+        "baseline_ms": 1.1387,
+        "candidate_ms": 0.8974,
+        "speedup": 1.2688878983730778,
+        "cpu_runs": {
+          "baseline": [
+            1.3115,
+            1.0979,
+            0.9323,
+            1.1387,
+            1.0336,
+            1.5903,
+            1.4635
+          ],
+          "candidate": [
+            0.745,
+            0.7912,
+            0.8974,
+            0.9793,
+            0.833,
+            1.2053,
+            0.9118
+          ]
+        }
+      },
+      {
+        "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "scenario": "native",
+        "baseline_ms": 1.219,
+        "candidate_ms": 0.8075,
+        "speedup": 1.5095975232198144,
+        "cpu_runs": {
+          "baseline": [
+            1.2864,
+            1.2179,
+            1.2294,
+            1.2292,
+            1.1674,
+            1.127,
+            1.219
+          ],
+          "candidate": [
+            0.7267,
+            0.8171,
+            0.8075,
+            0.9413,
+            0.8165,
+            0.6906,
+            0.7636
+          ]
+        }
+      },
+      {
+        "fixture": "artifacts/software-optimization/arena-populated/checkpoint-12000.game.gz",
+        "scenario": "native",
+        "baseline_ms": 1.1174,
+        "candidate_ms": 0.7887,
+        "speedup": 1.4167617598579942,
+        "cpu_runs": {
+          "baseline": [
+            1.2328,
+            1.1083,
+            1.1174,
+            1.1688,
+            1.2342,
+            0.8218,
+            0.7496
+          ],
+          "candidate": [
+            0.9257,
+            0.9481,
+            0.8556,
+            0.7887,
+            0.7697,
+            0.6636,
+            0.566
+          ]
+        }
+      }
+    ],
+    "completed-transformed-pairs": [
+      {
+        "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "scenario": "half",
+        "baseline_ms": 17.5737,
+        "candidate_ms": 2.2339,
+        "speedup": 7.866824835489501,
+        "cpu_runs": {
+          "baseline": [
+            17.5737,
+            16.0685,
+            15.7654,
+            15.379,
+            20.1619,
+            18.9055,
+            18.724
+          ],
+          "candidate": [
+            2.0772,
+            2.1525,
+            2.1194,
+            2.2339,
+            3.479,
+            2.9632,
+            2.7017
+          ]
+        }
+      },
+      {
+        "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "scenario": "double",
+        "baseline_ms": 9.1604,
+        "candidate_ms": 1.3241,
+        "speedup": 6.918208594517029,
+        "cpu_runs": {
+          "baseline": [
+            8.9874,
+            9.7013,
+            9.6144,
+            9.1604,
+            10.4793,
+            8.9435,
+            8.1529
+          ],
+          "candidate": [
+            1.7001,
+            1.2991,
+            1.3354,
+            1.4375,
+            1.3106,
+            1.3241,
+            1.1566
+          ]
+        }
+      },
+      {
+        "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "scenario": "fractional",
+        "baseline_ms": 15.1309,
+        "candidate_ms": 1.3464,
+        "speedup": 11.2380421865716,
+        "cpu_runs": {
+          "baseline": [
+            15.1578,
+            15.1309,
+            14.9049,
+            16.2439,
+            25.3848,
+            13.5004,
+            13.4071
+          ],
+          "candidate": [
+            1.3415,
+            1.821,
+            1.3464,
+            1.2866,
+            1.3883,
+            1.2054,
+            7.947
+          ]
+        }
+      }
+    ],
+    "completed-cache-pairs": [
+      {
+        "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "scenario": "half",
+        "baseline_ms": 3.8749,
+        "candidate_ms": 3.6328,
+        "speedup": 1.0666428099537546,
+        "cpu_runs": {
+          "baseline": [
+            3.4993,
+            3.9806,
+            3.6822,
+            3.7905,
+            4.3397,
+            3.937,
+            3.8749
+          ],
+          "candidate": [
+            3.1642,
+            3.6328,
+            4.3609,
+            3.4783,
+            3.3419,
+            3.6505,
+            4.1732
+          ]
+        }
+      }
+    ]
+  },
+  "rejected_optional_optimization": "Generic conditional source locking/RLE handling was rejected after encoded-source experiments failed under SDL2-compat. Production source locking remains unchanged. This separate SDK issue needs investigation before any source-lock optimization.",
+  "cache_benefit": "Latest seven half-zoom pairs: 3.8749 -> 3.6328 CPU ms/frame (6.7% faster). Prior double/fractional cache measurements were approximately neutral. Native drawing bypasses caching.",
+  "native_vectorization": {
+    "before": "previous-vectorization.log",
+    "after": "vectorization.log",
+    "change": "Copy SDL-written rectangle bounds into scalar locals before pixel writes, retain vectorized opaque stores and lock only targets requiring locking."
+  },
+  "final_transformed_speedup_range": [
+    6.918208594517029,
+    11.2380421865716
+  ]
+}

@@ -1,0 +1,1134 @@
+{
+  "hardware": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "processor": "arm",
+  "machine": "arm64",
+  "arguments": {
+    "baseline": "artifacts/software-optimization/baseline/SoftwareProfile",
+    "candidate": "artifacts/software-optimization/fill-bounds-benchmark",
+    "save": "[PosixPath('artifacts/software-profile/large-progress/checkpoint-6000.game.gz')]",
+    "output": "artifacts/software-optimization/completed-transformed-pairs",
+    "resolution": "1000x700",
+    "frames": "240",
+    "warmup": "30",
+    "repeat": "7",
+    "present": "False",
+    "visible": "True",
+    "no_terrain_cache": "False",
+    "baseline_no_terrain_cache": "False",
+    "baseline_preserve_frame": "False",
+    "scenario": "['half', 'double', 'fractional']"
+  },
+  "runs": [
+    {
+      "label": "0-checkpoint-6000.game-half-0-baseline",
+      "variant": "baseline",
+      "scenario": "half",
+      "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+      "command": [
+        "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/baseline/SoftwareProfile",
+        "-G",
+        "-s",
+        "1000x700",
+        "-m",
+        "-F"
+      ],
+      "environment": {
+        "PROFILE_SAVE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "PROFILE_ZOOM": "0.5",
+        "PROFILE_FRAMES": "240",
+        "PROFILE_WARMUP": "30",
+        "PROFILE_CPU_SCOPES": "1",
+        "PROFILE_CAPTURE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/completed-transformed-pairs/0-checkpoint-6000.game-half-0-baseline.bmp",
+        "PROFILE_NO_PRESENT": "1",
+        "PROFILE_VISIBLE": "1"
+      },
+      "cpu_ms": 17.5737
+    },
+    {
+      "label": "0-checkpoint-6000.game-half-0-candidate",
+      "variant": "candidate",
+      "scenario": "half",
+      "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+      "command": [
+        "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/fill-bounds-benchmark",
+        "-G",
+        "-s",
+        "1000x700",
+        "-m",
+        "-F"
+      ],
+      "environment": {
+        "PROFILE_SAVE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "PROFILE_ZOOM": "0.5",
+        "PROFILE_FRAMES": "240",
+        "PROFILE_WARMUP": "30",
+        "PROFILE_CPU_SCOPES": "1",
+        "PROFILE_CAPTURE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/completed-transformed-pairs/0-checkpoint-6000.game-half-0-candidate.bmp",
+        "PROFILE_NO_PRESENT": "1",
+        "PROFILE_VISIBLE": "1"
+      },
+      "cpu_ms": 2.0772
+    },
+    {
+      "label": "0-checkpoint-6000.game-half-1-candidate",
+      "variant": "candidate",
+      "scenario": "half",
+      "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+      "command": [
+        "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/fill-bounds-benchmark",
+        "-G",
+        "-s",
+        "1000x700",
+        "-m",
+        "-F"
+      ],
+      "environment": {
+        "PROFILE_SAVE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "PROFILE_ZOOM": "0.5",
+        "PROFILE_FRAMES": "240",
+        "PROFILE_WARMUP": "30",
+        "PROFILE_CPU_SCOPES": "1",
+        "PROFILE_NO_PRESENT": "1",
+        "PROFILE_VISIBLE": "1"
+      },
+      "cpu_ms": 2.1525
+    },
+    {
+      "label": "0-checkpoint-6000.game-half-1-baseline",
+      "variant": "baseline",
+      "scenario": "half",
+      "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+      "command": [
+        "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/baseline/SoftwareProfile",
+        "-G",
+        "-s",
+        "1000x700",
+        "-m",
+        "-F"
+      ],
+      "environment": {
+        "PROFILE_SAVE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "PROFILE_ZOOM": "0.5",
+        "PROFILE_FRAMES": "240",
+        "PROFILE_WARMUP": "30",
+        "PROFILE_CPU_SCOPES": "1",
+        "PROFILE_NO_PRESENT": "1",
+        "PROFILE_VISIBLE": "1"
+      },
+      "cpu_ms": 16.0685
+    },
+    {
+      "label": "0-checkpoint-6000.game-half-2-baseline",
+      "variant": "baseline",
+      "scenario": "half",
+      "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+      "command": [
+        "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/baseline/SoftwareProfile",
+        "-G",
+        "-s",
+        "1000x700",
+        "-m",
+        "-F"
+      ],
+      "environment": {
+        "PROFILE_SAVE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "PROFILE_ZOOM": "0.5",
+        "PROFILE_FRAMES": "240",
+        "PROFILE_WARMUP": "30",
+        "PROFILE_CPU_SCOPES": "1",
+        "PROFILE_NO_PRESENT": "1",
+        "PROFILE_VISIBLE": "1"
+      },
+      "cpu_ms": 15.7654
+    },
+    {
+      "label": "0-checkpoint-6000.game-half-2-candidate",
+      "variant": "candidate",
+      "scenario": "half",
+      "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+      "command": [
+        "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/fill-bounds-benchmark",
+        "-G",
+        "-s",
+        "1000x700",
+        "-m",
+        "-F"
+      ],
+      "environment": {
+        "PROFILE_SAVE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "PROFILE_ZOOM": "0.5",
+        "PROFILE_FRAMES": "240",
+        "PROFILE_WARMUP": "30",
+        "PROFILE_CPU_SCOPES": "1",
+        "PROFILE_NO_PRESENT": "1",
+        "PROFILE_VISIBLE": "1"
+      },
+      "cpu_ms": 2.1194
+    },
+    {
+      "label": "0-checkpoint-6000.game-half-3-candidate",
+      "variant": "candidate",
+      "scenario": "half",
+      "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+      "command": [
+        "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/fill-bounds-benchmark",
+        "-G",
+        "-s",
+        "1000x700",
+        "-m",
+        "-F"
+      ],
+      "environment": {
+        "PROFILE_SAVE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "PROFILE_ZOOM": "0.5",
+        "PROFILE_FRAMES": "240",
+        "PROFILE_WARMUP": "30",
+        "PROFILE_CPU_SCOPES": "1",
+        "PROFILE_NO_PRESENT": "1",
+        "PROFILE_VISIBLE": "1"
+      },
+      "cpu_ms": 2.2339
+    },
+    {
+      "label": "0-checkpoint-6000.game-half-3-baseline",
+      "variant": "baseline",
+      "scenario": "half",
+      "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+      "command": [
+        "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/baseline/SoftwareProfile",
+        "-G",
+        "-s",
+        "1000x700",
+        "-m",
+        "-F"
+      ],
+      "environment": {
+        "PROFILE_SAVE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "PROFILE_ZOOM": "0.5",
+        "PROFILE_FRAMES": "240",
+        "PROFILE_WARMUP": "30",
+        "PROFILE_CPU_SCOPES": "1",
+        "PROFILE_NO_PRESENT": "1",
+        "PROFILE_VISIBLE": "1"
+      },
+      "cpu_ms": 15.379
+    },
+    {
+      "label": "0-checkpoint-6000.game-half-4-baseline",
+      "variant": "baseline",
+      "scenario": "half",
+      "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+      "command": [
+        "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/baseline/SoftwareProfile",
+        "-G",
+        "-s",
+        "1000x700",
+        "-m",
+        "-F"
+      ],
+      "environment": {
+        "PROFILE_SAVE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "PROFILE_ZOOM": "0.5",
+        "PROFILE_FRAMES": "240",
+        "PROFILE_WARMUP": "30",
+        "PROFILE_CPU_SCOPES": "1",
+        "PROFILE_NO_PRESENT": "1",
+        "PROFILE_VISIBLE": "1"
+      },
+      "cpu_ms": 20.1619
+    },
+    {
+      "label": "0-checkpoint-6000.game-half-4-candidate",
+      "variant": "candidate",
+      "scenario": "half",
+      "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+      "command": [
+        "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/fill-bounds-benchmark",
+        "-G",
+        "-s",
+        "1000x700",
+        "-m",
+        "-F"
+      ],
+      "environment": {
+        "PROFILE_SAVE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "PROFILE_ZOOM": "0.5",
+        "PROFILE_FRAMES": "240",
+        "PROFILE_WARMUP": "30",
+        "PROFILE_CPU_SCOPES": "1",
+        "PROFILE_NO_PRESENT": "1",
+        "PROFILE_VISIBLE": "1"
+      },
+      "cpu_ms": 3.479
+    },
+    {
+      "label": "0-checkpoint-6000.game-half-5-candidate",
+      "variant": "candidate",
+      "scenario": "half",
+      "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+      "command": [
+        "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/fill-bounds-benchmark",
+        "-G",
+        "-s",
+        "1000x700",
+        "-m",
+        "-F"
+      ],
+      "environment": {
+        "PROFILE_SAVE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "PROFILE_ZOOM": "0.5",
+        "PROFILE_FRAMES": "240",
+        "PROFILE_WARMUP": "30",
+        "PROFILE_CPU_SCOPES": "1",
+        "PROFILE_NO_PRESENT": "1",
+        "PROFILE_VISIBLE": "1"
+      },
+      "cpu_ms": 2.9632
+    },
+    {
+      "label": "0-checkpoint-6000.game-half-5-baseline",
+      "variant": "baseline",
+      "scenario": "half",
+      "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+      "command": [
+        "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/baseline/SoftwareProfile",
+        "-G",
+        "-s",
+        "1000x700",
+        "-m",
+        "-F"
+      ],
+      "environment": {
+        "PROFILE_SAVE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "PROFILE_ZOOM": "0.5",
+        "PROFILE_FRAMES": "240",
+        "PROFILE_WARMUP": "30",
+        "PROFILE_CPU_SCOPES": "1",
+        "PROFILE_NO_PRESENT": "1",
+        "PROFILE_VISIBLE": "1"
+      },
+      "cpu_ms": 18.9055
+    },
+    {
+      "label": "0-checkpoint-6000.game-half-6-baseline",
+      "variant": "baseline",
+      "scenario": "half",
+      "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+      "command": [
+        "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/baseline/SoftwareProfile",
+        "-G",
+        "-s",
+        "1000x700",
+        "-m",
+        "-F"
+      ],
+      "environment": {
+        "PROFILE_SAVE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "PROFILE_ZOOM": "0.5",
+        "PROFILE_FRAMES": "240",
+        "PROFILE_WARMUP": "30",
+        "PROFILE_CPU_SCOPES": "1",
+        "PROFILE_NO_PRESENT": "1",
+        "PROFILE_VISIBLE": "1"
+      },
+      "cpu_ms": 18.724
+    },
+    {
+      "label": "0-checkpoint-6000.game-half-6-candidate",
+      "variant": "candidate",
+      "scenario": "half",
+      "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+      "command": [
+        "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/fill-bounds-benchmark",
+        "-G",
+        "-s",
+        "1000x700",
+        "-m",
+        "-F"
+      ],
+      "environment": {
+        "PROFILE_SAVE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "PROFILE_ZOOM": "0.5",
+        "PROFILE_FRAMES": "240",
+        "PROFILE_WARMUP": "30",
+        "PROFILE_CPU_SCOPES": "1",
+        "PROFILE_NO_PRESENT": "1",
+        "PROFILE_VISIBLE": "1"
+      },
+      "cpu_ms": 2.7017
+    },
+    {
+      "label": "0-checkpoint-6000.game-double-0-baseline",
+      "variant": "baseline",
+      "scenario": "double",
+      "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+      "command": [
+        "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/baseline/SoftwareProfile",
+        "-G",
+        "-s",
+        "1000x700",
+        "-m",
+        "-F"
+      ],
+      "environment": {
+        "PROFILE_SAVE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "PROFILE_ZOOM": "2",
+        "PROFILE_FRAMES": "240",
+        "PROFILE_WARMUP": "30",
+        "PROFILE_CPU_SCOPES": "1",
+        "PROFILE_CAPTURE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/completed-transformed-pairs/0-checkpoint-6000.game-double-0-baseline.bmp",
+        "PROFILE_NO_PRESENT": "1",
+        "PROFILE_VISIBLE": "1"
+      },
+      "cpu_ms": 8.9874
+    },
+    {
+      "label": "0-checkpoint-6000.game-double-0-candidate",
+      "variant": "candidate",
+      "scenario": "double",
+      "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+      "command": [
+        "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/fill-bounds-benchmark",
+        "-G",
+        "-s",
+        "1000x700",
+        "-m",
+        "-F"
+      ],
+      "environment": {
+        "PROFILE_SAVE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "PROFILE_ZOOM": "2",
+        "PROFILE_FRAMES": "240",
+        "PROFILE_WARMUP": "30",
+        "PROFILE_CPU_SCOPES": "1",
+        "PROFILE_CAPTURE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/completed-transformed-pairs/0-checkpoint-6000.game-double-0-candidate.bmp",
+        "PROFILE_NO_PRESENT": "1",
+        "PROFILE_VISIBLE": "1"
+      },
+      "cpu_ms": 1.7001
+    },
+    {
+      "label": "0-checkpoint-6000.game-double-1-candidate",
+      "variant": "candidate",
+      "scenario": "double",
+      "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+      "command": [
+        "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/fill-bounds-benchmark",
+        "-G",
+        "-s",
+        "1000x700",
+        "-m",
+        "-F"
+      ],
+      "environment": {
+        "PROFILE_SAVE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "PROFILE_ZOOM": "2",
+        "PROFILE_FRAMES": "240",
+        "PROFILE_WARMUP": "30",
+        "PROFILE_CPU_SCOPES": "1",
+        "PROFILE_NO_PRESENT": "1",
+        "PROFILE_VISIBLE": "1"
+      },
+      "cpu_ms": 1.2991
+    },
+    {
+      "label": "0-checkpoint-6000.game-double-1-baseline",
+      "variant": "baseline",
+      "scenario": "double",
+      "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+      "command": [
+        "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/baseline/SoftwareProfile",
+        "-G",
+        "-s",
+        "1000x700",
+        "-m",
+        "-F"
+      ],
+      "environment": {
+        "PROFILE_SAVE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "PROFILE_ZOOM": "2",
+        "PROFILE_FRAMES": "240",
+        "PROFILE_WARMUP": "30",
+        "PROFILE_CPU_SCOPES": "1",
+        "PROFILE_NO_PRESENT": "1",
+        "PROFILE_VISIBLE": "1"
+      },
+      "cpu_ms": 9.7013
+    },
+    {
+      "label": "0-checkpoint-6000.game-double-2-baseline",
+      "variant": "baseline",
+      "scenario": "double",
+      "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+      "command": [
+        "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/baseline/SoftwareProfile",
+        "-G",
+        "-s",
+        "1000x700",
+        "-m",
+        "-F"
+      ],
+      "environment": {
+        "PROFILE_SAVE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "PROFILE_ZOOM": "2",
+        "PROFILE_FRAMES": "240",
+        "PROFILE_WARMUP": "30",
+        "PROFILE_CPU_SCOPES": "1",
+        "PROFILE_NO_PRESENT": "1",
+        "PROFILE_VISIBLE": "1"
+      },
+      "cpu_ms": 9.6144
+    },
+    {
+      "label": "0-checkpoint-6000.game-double-2-candidate",
+      "variant": "candidate",
+      "scenario": "double",
+      "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+      "command": [
+        "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/fill-bounds-benchmark",
+        "-G",
+        "-s",
+        "1000x700",
+        "-m",
+        "-F"
+      ],
+      "environment": {
+        "PROFILE_SAVE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "PROFILE_ZOOM": "2",
+        "PROFILE_FRAMES": "240",
+        "PROFILE_WARMUP": "30",
+        "PROFILE_CPU_SCOPES": "1",
+        "PROFILE_NO_PRESENT": "1",
+        "PROFILE_VISIBLE": "1"
+      },
+      "cpu_ms": 1.3354
+    },
+    {
+      "label": "0-checkpoint-6000.game-double-3-candidate",
+      "variant": "candidate",
+      "scenario": "double",
+      "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+      "command": [
+        "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/fill-bounds-benchmark",
+        "-G",
+        "-s",
+        "1000x700",
+        "-m",
+        "-F"
+      ],
+      "environment": {
+        "PROFILE_SAVE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "PROFILE_ZOOM": "2",
+        "PROFILE_FRAMES": "240",
+        "PROFILE_WARMUP": "30",
+        "PROFILE_CPU_SCOPES": "1",
+        "PROFILE_NO_PRESENT": "1",
+        "PROFILE_VISIBLE": "1"
+      },
+      "cpu_ms": 1.4375
+    },
+    {
+      "label": "0-checkpoint-6000.game-double-3-baseline",
+      "variant": "baseline",
+      "scenario": "double",
+      "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+      "command": [
+        "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/baseline/SoftwareProfile",
+        "-G",
+        "-s",
+        "1000x700",
+        "-m",
+        "-F"
+      ],
+      "environment": {
+        "PROFILE_SAVE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "PROFILE_ZOOM": "2",
+        "PROFILE_FRAMES": "240",
+        "PROFILE_WARMUP": "30",
+        "PROFILE_CPU_SCOPES": "1",
+        "PROFILE_NO_PRESENT": "1",
+        "PROFILE_VISIBLE": "1"
+      },
+      "cpu_ms": 9.1604
+    },
+    {
+      "label": "0-checkpoint-6000.game-double-4-baseline",
+      "variant": "baseline",
+      "scenario": "double",
+      "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+      "command": [
+        "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/baseline/SoftwareProfile",
+        "-G",
+        "-s",
+        "1000x700",
+        "-m",
+        "-F"
+      ],
+      "environment": {
+        "PROFILE_SAVE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "PROFILE_ZOOM": "2",
+        "PROFILE_FRAMES": "240",
+        "PROFILE_WARMUP": "30",
+        "PROFILE_CPU_SCOPES": "1",
+        "PROFILE_NO_PRESENT": "1",
+        "PROFILE_VISIBLE": "1"
+      },
+      "cpu_ms": 10.4793
+    },
+    {
+      "label": "0-checkpoint-6000.game-double-4-candidate",
+      "variant": "candidate",
+      "scenario": "double",
+      "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+      "command": [
+        "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/fill-bounds-benchmark",
+        "-G",
+        "-s",
+        "1000x700",
+        "-m",
+        "-F"
+      ],
+      "environment": {
+        "PROFILE_SAVE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "PROFILE_ZOOM": "2",
+        "PROFILE_FRAMES": "240",
+        "PROFILE_WARMUP": "30",
+        "PROFILE_CPU_SCOPES": "1",
+        "PROFILE_NO_PRESENT": "1",
+        "PROFILE_VISIBLE": "1"
+      },
+      "cpu_ms": 1.3106
+    },
+    {
+      "label": "0-checkpoint-6000.game-double-5-candidate",
+      "variant": "candidate",
+      "scenario": "double",
+      "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+      "command": [
+        "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/fill-bounds-benchmark",
+        "-G",
+        "-s",
+        "1000x700",
+        "-m",
+        "-F"
+      ],
+      "environment": {
+        "PROFILE_SAVE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "PROFILE_ZOOM": "2",
+        "PROFILE_FRAMES": "240",
+        "PROFILE_WARMUP": "30",
+        "PROFILE_CPU_SCOPES": "1",
+        "PROFILE_NO_PRESENT": "1",
+        "PROFILE_VISIBLE": "1"
+      },
+      "cpu_ms": 1.3241
+    },
+    {
+      "label": "0-checkpoint-6000.game-double-5-baseline",
+      "variant": "baseline",
+      "scenario": "double",
+      "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+      "command": [
+        "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/baseline/SoftwareProfile",
+        "-G",
+        "-s",
+        "1000x700",
+        "-m",
+        "-F"
+      ],
+      "environment": {
+        "PROFILE_SAVE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "PROFILE_ZOOM": "2",
+        "PROFILE_FRAMES": "240",
+        "PROFILE_WARMUP": "30",
+        "PROFILE_CPU_SCOPES": "1",
+        "PROFILE_NO_PRESENT": "1",
+        "PROFILE_VISIBLE": "1"
+      },
+      "cpu_ms": 8.9435
+    },
+    {
+      "label": "0-checkpoint-6000.game-double-6-baseline",
+      "variant": "baseline",
+      "scenario": "double",
+      "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+      "command": [
+        "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/baseline/SoftwareProfile",
+        "-G",
+        "-s",
+        "1000x700",
+        "-m",
+        "-F"
+      ],
+      "environment": {
+        "PROFILE_SAVE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "PROFILE_ZOOM": "2",
+        "PROFILE_FRAMES": "240",
+        "PROFILE_WARMUP": "30",
+        "PROFILE_CPU_SCOPES": "1",
+        "PROFILE_NO_PRESENT": "1",
+        "PROFILE_VISIBLE": "1"
+      },
+      "cpu_ms": 8.1529
+    },
+    {
+      "label": "0-checkpoint-6000.game-double-6-candidate",
+      "variant": "candidate",
+      "scenario": "double",
+      "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+      "command": [
+        "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/fill-bounds-benchmark",
+        "-G",
+        "-s",
+        "1000x700",
+        "-m",
+        "-F"
+      ],
+      "environment": {
+        "PROFILE_SAVE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "PROFILE_ZOOM": "2",
+        "PROFILE_FRAMES": "240",
+        "PROFILE_WARMUP": "30",
+        "PROFILE_CPU_SCOPES": "1",
+        "PROFILE_NO_PRESENT": "1",
+        "PROFILE_VISIBLE": "1"
+      },
+      "cpu_ms": 1.1566
+    },
+    {
+      "label": "0-checkpoint-6000.game-fractional-0-baseline",
+      "variant": "baseline",
+      "scenario": "fractional",
+      "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+      "command": [
+        "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/baseline/SoftwareProfile",
+        "-G",
+        "-s",
+        "1000x700",
+        "-m",
+        "-F"
+      ],
+      "environment": {
+        "PROFILE_SAVE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "PROFILE_ZOOM": "1",
+        "PROFILE_FRAMES": "240",
+        "PROFILE_WARMUP": "30",
+        "PROFILE_CPU_SCOPES": "1",
+        "PROFILE_CAPTURE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/completed-transformed-pairs/0-checkpoint-6000.game-fractional-0-baseline.bmp",
+        "PROFILE_FRACTION": "1",
+        "PROFILE_NO_PRESENT": "1",
+        "PROFILE_VISIBLE": "1"
+      },
+      "cpu_ms": 15.1578
+    },
+    {
+      "label": "0-checkpoint-6000.game-fractional-0-candidate",
+      "variant": "candidate",
+      "scenario": "fractional",
+      "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+      "command": [
+        "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/fill-bounds-benchmark",
+        "-G",
+        "-s",
+        "1000x700",
+        "-m",
+        "-F"
+      ],
+      "environment": {
+        "PROFILE_SAVE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "PROFILE_ZOOM": "1",
+        "PROFILE_FRAMES": "240",
+        "PROFILE_WARMUP": "30",
+        "PROFILE_CPU_SCOPES": "1",
+        "PROFILE_CAPTURE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/completed-transformed-pairs/0-checkpoint-6000.game-fractional-0-candidate.bmp",
+        "PROFILE_FRACTION": "1",
+        "PROFILE_NO_PRESENT": "1",
+        "PROFILE_VISIBLE": "1"
+      },
+      "cpu_ms": 1.3415
+    },
+    {
+      "label": "0-checkpoint-6000.game-fractional-1-candidate",
+      "variant": "candidate",
+      "scenario": "fractional",
+      "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+      "command": [
+        "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/fill-bounds-benchmark",
+        "-G",
+        "-s",
+        "1000x700",
+        "-m",
+        "-F"
+      ],
+      "environment": {
+        "PROFILE_SAVE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "PROFILE_ZOOM": "1",
+        "PROFILE_FRAMES": "240",
+        "PROFILE_WARMUP": "30",
+        "PROFILE_CPU_SCOPES": "1",
+        "PROFILE_FRACTION": "1",
+        "PROFILE_NO_PRESENT": "1",
+        "PROFILE_VISIBLE": "1"
+      },
+      "cpu_ms": 1.821
+    },
+    {
+      "label": "0-checkpoint-6000.game-fractional-1-baseline",
+      "variant": "baseline",
+      "scenario": "fractional",
+      "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+      "command": [
+        "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/baseline/SoftwareProfile",
+        "-G",
+        "-s",
+        "1000x700",
+        "-m",
+        "-F"
+      ],
+      "environment": {
+        "PROFILE_SAVE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "PROFILE_ZOOM": "1",
+        "PROFILE_FRAMES": "240",
+        "PROFILE_WARMUP": "30",
+        "PROFILE_CPU_SCOPES": "1",
+        "PROFILE_FRACTION": "1",
+        "PROFILE_NO_PRESENT": "1",
+        "PROFILE_VISIBLE": "1"
+      },
+      "cpu_ms": 15.1309
+    },
+    {
+      "label": "0-checkpoint-6000.game-fractional-2-baseline",
+      "variant": "baseline",
+      "scenario": "fractional",
+      "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+      "command": [
+        "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/baseline/SoftwareProfile",
+        "-G",
+        "-s",
+        "1000x700",
+        "-m",
+        "-F"
+      ],
+      "environment": {
+        "PROFILE_SAVE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "PROFILE_ZOOM": "1",
+        "PROFILE_FRAMES": "240",
+        "PROFILE_WARMUP": "30",
+        "PROFILE_CPU_SCOPES": "1",
+        "PROFILE_FRACTION": "1",
+        "PROFILE_NO_PRESENT": "1",
+        "PROFILE_VISIBLE": "1"
+      },
+      "cpu_ms": 14.9049
+    },
+    {
+      "label": "0-checkpoint-6000.game-fractional-2-candidate",
+      "variant": "candidate",
+      "scenario": "fractional",
+      "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+      "command": [
+        "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/fill-bounds-benchmark",
+        "-G",
+        "-s",
+        "1000x700",
+        "-m",
+        "-F"
+      ],
+      "environment": {
+        "PROFILE_SAVE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "PROFILE_ZOOM": "1",
+        "PROFILE_FRAMES": "240",
+        "PROFILE_WARMUP": "30",
+        "PROFILE_CPU_SCOPES": "1",
+        "PROFILE_FRACTION": "1",
+        "PROFILE_NO_PRESENT": "1",
+        "PROFILE_VISIBLE": "1"
+      },
+      "cpu_ms": 1.3464
+    },
+    {
+      "label": "0-checkpoint-6000.game-fractional-3-candidate",
+      "variant": "candidate",
+      "scenario": "fractional",
+      "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+      "command": [
+        "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/fill-bounds-benchmark",
+        "-G",
+        "-s",
+        "1000x700",
+        "-m",
+        "-F"
+      ],
+      "environment": {
+        "PROFILE_SAVE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "PROFILE_ZOOM": "1",
+        "PROFILE_FRAMES": "240",
+        "PROFILE_WARMUP": "30",
+        "PROFILE_CPU_SCOPES": "1",
+        "PROFILE_FRACTION": "1",
+        "PROFILE_NO_PRESENT": "1",
+        "PROFILE_VISIBLE": "1"
+      },
+      "cpu_ms": 1.2866
+    },
+    {
+      "label": "0-checkpoint-6000.game-fractional-3-baseline",
+      "variant": "baseline",
+      "scenario": "fractional",
+      "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+      "command": [
+        "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/baseline/SoftwareProfile",
+        "-G",
+        "-s",
+        "1000x700",
+        "-m",
+        "-F"
+      ],
+      "environment": {
+        "PROFILE_SAVE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "PROFILE_ZOOM": "1",
+        "PROFILE_FRAMES": "240",
+        "PROFILE_WARMUP": "30",
+        "PROFILE_CPU_SCOPES": "1",
+        "PROFILE_FRACTION": "1",
+        "PROFILE_NO_PRESENT": "1",
+        "PROFILE_VISIBLE": "1"
+      },
+      "cpu_ms": 16.2439
+    },
+    {
+      "label": "0-checkpoint-6000.game-fractional-4-baseline",
+      "variant": "baseline",
+      "scenario": "fractional",
+      "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+      "command": [
+        "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/baseline/SoftwareProfile",
+        "-G",
+        "-s",
+        "1000x700",
+        "-m",
+        "-F"
+      ],
+      "environment": {
+        "PROFILE_SAVE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "PROFILE_ZOOM": "1",
+        "PROFILE_FRAMES": "240",
+        "PROFILE_WARMUP": "30",
+        "PROFILE_CPU_SCOPES": "1",
+        "PROFILE_FRACTION": "1",
+        "PROFILE_NO_PRESENT": "1",
+        "PROFILE_VISIBLE": "1"
+      },
+      "cpu_ms": 25.3848
+    },
+    {
+      "label": "0-checkpoint-6000.game-fractional-4-candidate",
+      "variant": "candidate",
+      "scenario": "fractional",
+      "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+      "command": [
+        "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/fill-bounds-benchmark",
+        "-G",
+        "-s",
+        "1000x700",
+        "-m",
+        "-F"
+      ],
+      "environment": {
+        "PROFILE_SAVE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "PROFILE_ZOOM": "1",
+        "PROFILE_FRAMES": "240",
+        "PROFILE_WARMUP": "30",
+        "PROFILE_CPU_SCOPES": "1",
+        "PROFILE_FRACTION": "1",
+        "PROFILE_NO_PRESENT": "1",
+        "PROFILE_VISIBLE": "1"
+      },
+      "cpu_ms": 1.3883
+    },
+    {
+      "label": "0-checkpoint-6000.game-fractional-5-candidate",
+      "variant": "candidate",
+      "scenario": "fractional",
+      "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+      "command": [
+        "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/fill-bounds-benchmark",
+        "-G",
+        "-s",
+        "1000x700",
+        "-m",
+        "-F"
+      ],
+      "environment": {
+        "PROFILE_SAVE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "PROFILE_ZOOM": "1",
+        "PROFILE_FRAMES": "240",
+        "PROFILE_WARMUP": "30",
+        "PROFILE_CPU_SCOPES": "1",
+        "PROFILE_FRACTION": "1",
+        "PROFILE_NO_PRESENT": "1",
+        "PROFILE_VISIBLE": "1"
+      },
+      "cpu_ms": 1.2054
+    },
+    {
+      "label": "0-checkpoint-6000.game-fractional-5-baseline",
+      "variant": "baseline",
+      "scenario": "fractional",
+      "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+      "command": [
+        "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/baseline/SoftwareProfile",
+        "-G",
+        "-s",
+        "1000x700",
+        "-m",
+        "-F"
+      ],
+      "environment": {
+        "PROFILE_SAVE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "PROFILE_ZOOM": "1",
+        "PROFILE_FRAMES": "240",
+        "PROFILE_WARMUP": "30",
+        "PROFILE_CPU_SCOPES": "1",
+        "PROFILE_FRACTION": "1",
+        "PROFILE_NO_PRESENT": "1",
+        "PROFILE_VISIBLE": "1"
+      },
+      "cpu_ms": 13.5004
+    },
+    {
+      "label": "0-checkpoint-6000.game-fractional-6-baseline",
+      "variant": "baseline",
+      "scenario": "fractional",
+      "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+      "command": [
+        "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/baseline/SoftwareProfile",
+        "-G",
+        "-s",
+        "1000x700",
+        "-m",
+        "-F"
+      ],
+      "environment": {
+        "PROFILE_SAVE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "PROFILE_ZOOM": "1",
+        "PROFILE_FRAMES": "240",
+        "PROFILE_WARMUP": "30",
+        "PROFILE_CPU_SCOPES": "1",
+        "PROFILE_FRACTION": "1",
+        "PROFILE_NO_PRESENT": "1",
+        "PROFILE_VISIBLE": "1"
+      },
+      "cpu_ms": 13.4071
+    },
+    {
+      "label": "0-checkpoint-6000.game-fractional-6-candidate",
+      "variant": "candidate",
+      "scenario": "fractional",
+      "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+      "command": [
+        "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-optimization/fill-bounds-benchmark",
+        "-G",
+        "-s",
+        "1000x700",
+        "-m",
+        "-F"
+      ],
+      "environment": {
+        "PROFILE_SAVE": "/Users/bradley/.codex/worktrees/05c6/glob2/artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+        "PROFILE_ZOOM": "1",
+        "PROFILE_FRAMES": "240",
+        "PROFILE_WARMUP": "30",
+        "PROFILE_CPU_SCOPES": "1",
+        "PROFILE_FRACTION": "1",
+        "PROFILE_NO_PRESENT": "1",
+        "PROFILE_VISIBLE": "1"
+      },
+      "cpu_ms": 7.947
+    }
+  ],
+  "summary": [
+    {
+      "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+      "scenario": "half",
+      "baseline_ms": 17.5737,
+      "candidate_ms": 2.2339,
+      "speedup": 7.866824835489501,
+      "cpu_runs": {
+        "baseline": [
+          17.5737,
+          16.0685,
+          15.7654,
+          15.379,
+          20.1619,
+          18.9055,
+          18.724
+        ],
+        "candidate": [
+          2.0772,
+          2.1525,
+          2.1194,
+          2.2339,
+          3.479,
+          2.9632,
+          2.7017
+        ]
+      }
+    },
+    {
+      "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+      "scenario": "double",
+      "baseline_ms": 9.1604,
+      "candidate_ms": 1.3241,
+      "speedup": 6.918208594517029,
+      "cpu_runs": {
+        "baseline": [
+          8.9874,
+          9.7013,
+          9.6144,
+          9.1604,
+          10.4793,
+          8.9435,
+          8.1529
+        ],
+        "candidate": [
+          1.7001,
+          1.2991,
+          1.3354,
+          1.4375,
+          1.3106,
+          1.3241,
+          1.1566
+        ]
+      }
+    },
+    {
+      "fixture": "artifacts/software-profile/large-progress/checkpoint-6000.game.gz",
+      "scenario": "fractional",
+      "baseline_ms": 15.1309,
+      "candidate_ms": 1.3464,
+      "speedup": 11.2380421865716,
+      "cpu_runs": {
+        "baseline": [
+          15.1578,
+          15.1309,
+          14.9049,
+          16.2439,
+          25.3848,
+          13.5004,
+          13.4071
+        ],
+        "candidate": [
+          1.3415,
+          1.821,
+          1.3464,
+          1.2866,
+          1.3883,
+          1.2054,
+          7.947
+        ]
+      }
+    }
+  ]
+}
