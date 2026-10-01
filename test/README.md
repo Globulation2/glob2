@@ -37,7 +37,8 @@ python3 test/run_tests.py --update-fixtures --filter 'WinningConditions/*'
 a fresh `GLOB2_USER_DATA_DIR`, `HOME`, temp directory and SDL's dummy drivers, a
 timeout by tag, output captured and shown only on failure, and a check that the
 profile's preferences were not rewritten. `[display]` cases get a real video driver,
-under `xvfb-run` on Linux without `DISPLAY`; they are skipped on Windows and with
+under `xvfb-run` on Linux without `DISPLAY`, with server resets disabled so SDL
+can recreate contexts without racing X server reinitialization; they are skipped on Windows and with
 `--no-display`. Results merge into one JUnit file (`--junit`) and, under GitHub
 Actions, into the step summary with a `::error file=,line=` annotation per failure.
 `test/test_run_tests.py` covers the runner itself.

@@ -237,7 +237,9 @@ def xvfb_prefix(job):
     xvfb = shutil.which('xvfb-run')
     if not xvfb:
         return []
-    return [xvfb, '-a', '-s', f'-screen 0 {job.screen}x24']
+    # SDL closes its last X connection between contexts. Keep Xvfb from
+    # resetting while the next context reconnects.
+    return [xvfb, '-a', '-s', f'-screen 0 {job.screen}x24 -noreset']
 
 
 def run_job(job, args, build_dir):
