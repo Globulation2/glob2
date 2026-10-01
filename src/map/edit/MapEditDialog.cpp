@@ -196,7 +196,7 @@ Element TeamsEditor::slotRow(int i, const Presentation &p, bool compact)
 		teams.push_back(std::to_string(j + 1));
 		groups.push_back(std::to_string(j + 1));
 	}
-	for (int aii = 0; aii < AI::SIZE; aii++)
+	for (int aii = 0; aii < AI::JAVASCRIPT; aii++)
 		ais.push_back(AINames::getAIText(aii));
 	const GAGCore::Color color = mapHeader.getNumberOfTeams() > 0 ? mapHeader.getBaseTeam(std::min(s.color, mapHeader.getNumberOfTeams() - 1)).color
 																   : GAGCore::Color::white;

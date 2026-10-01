@@ -84,6 +84,10 @@ Warrush
 Um construtor forte que coloca em campo forças de ataque treinadas.
 [AICabino]
 Cabino
+[AIJavaScript]
+JavaScript
+[AIJavaScript-Description]
+Ur merer a implij ur modul tarzh JavaScript enkorfet.
 [Alga]
 Alga
 [algae]

@@ -86,6 +86,10 @@ Warrush
 A strong builder that fields trained attacking forces.
 [AICabino]
 Cabino
+[AIJavaScript]
+JavaScript
+[AIJavaScript-Description]
+A controller using an embedded JavaScript source module.
 [Alga]
 Algae
 [algae]

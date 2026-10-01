@@ -11,6 +11,7 @@
 //     the same Sprite object (portraits/editor previews/indicators all route
 //     through the same DrawableSurface::drawSprite as world units).
 #include "Glob2Test.h"
+#include "ScopedEnvironment.h"
 #include <utility>
 #include <Toolkit.h>
 #include <GraphicContext.h>
@@ -98,8 +99,9 @@ void run(bool software)
 
 	// Fresh context with the shader disabled (the software renderer takes this
 	// path unconditionally too): every draw now goes through the bounded cache.
+	std::optional<glob2test::ScopedEnvironment> disableShader;
 	if (!software)
-		glob2test::setEnv("GLOB2_DISABLE_UNIT_SHADER", "1");
+		disableShader.emplace("GLOB2_DISABLE_UNIT_SHADER", "1");
 	toolkit.emplace();
 	gfx = Toolkit::initGraphic(200, 200, software ? 0 : GraphicContext::USEGPU, "Unit team-color cache fallback checks");
 	if (!software)
@@ -156,7 +158,6 @@ void run(bool software)
 		          << std::endl;
 	}
 	toolkit.reset();
-	glob2test::unsetEnv("GLOB2_DISABLE_UNIT_SHADER");
 }
 }
 

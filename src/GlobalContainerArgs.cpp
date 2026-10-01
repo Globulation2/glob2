@@ -98,7 +98,12 @@ namespace
 		while (std::getline(ss, item, ','))
 		{
 			int matched = AINames::parseAIName(item);
-			if (matched > 0)
+			if (matched == AI::JAVASCRIPT)
+            {
+                std::cerr << flagName << ": JavaScript requires --run-game --player javascript --ai-script player:source.js" << std::endl;
+                if (exitOnUnknown) exit(1);
+            }
+            else if (matched > 0)
 			{
 				out.push_back(matched);
 			}

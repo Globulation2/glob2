@@ -22,6 +22,19 @@ struct TouchPlacementSession
 	std::uint64_t lastUpdate = 0;
 	int team = -1;
 };
+// A finger that lands on or near one of the local team's flags owns that flag
+// instead of the map. Past the tap threshold the flag follows the finger, keeping
+// the offset it was grabbed at, and lands on release. Cancelling puts it back.
+struct TouchFlagSession
+{
+	TouchPlacementSession::Pointer pointer;
+	int gid = -1, team = -1;
+	GAGCore::ViewPoint start, position;
+	double offsetX = 0, offsetY = 0; // World pixels from the finger to the flag's centre.
+	int originX = 0, originY = 0;     // The flag's tile when it was grabbed.
+	bool dragging = false, moved = false;
+	std::uint64_t lastUpdate = 0;
+};
 struct TouchStrokeSession
 {
 	// World pixels keep a stroke anchored when the camera moves. No brush orders

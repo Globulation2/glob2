@@ -84,6 +84,10 @@ V: ﺇﺗﺎﺣﺔ ﺍﻟﺮﺅﻳﺔ ﻟﺠﻤﻴﻊ ﺍﻟﻤﺒﺎﻧﻲ
 بنّاء قوي ينشر قوات هجومية مدرّبة.
 [AICabino]
 Cabino
+[AIJavaScript]
+JavaScript
+[AIJavaScript-Description]
+وحدة تحكم تستخدم وحدة مصدر JavaScript مضمّنة.
 [Alga]
 ﻃﺤﺎﻟﺐ
 [algae]

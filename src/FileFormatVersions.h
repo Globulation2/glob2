@@ -165,3 +165,7 @@ static constexpr int FILE_FORMAT_VERSION_GRADIENT_PIPELINE = 120;
 //! The experiments list in GameHeader (ExperimentalFeatures.h). The default
 //! simulation is unchanged; only a game that carries an experiment differs.
 static constexpr int FILE_FORMAT_VERSION_EXPERIMENTS = 124;
+
+//! JavaScript AI/map state and per-entity identities with generation counters.
+//! Version 124 remains the released experiments layout without these fields.
+static constexpr int FILE_FORMAT_VERSION_JAVASCRIPT = 125;

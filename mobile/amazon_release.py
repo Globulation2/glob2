@@ -16,6 +16,7 @@ import zipfile
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scons'))
 from build_layout import PACKAGE_VERSION
+from dev_store import android_sdk
 from asset_bundle import verify_apk_assets
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -228,7 +229,7 @@ def main():
     for name in ('prepare', 'verify', 'sign', 'publish'):
         command = commands.add_parser(name)
         command.add_argument('--apk', type=Path, required=True)
-        command.add_argument('--android-sdk', type=Path, default=ROOT / 'build/mobile-tools/android-sdk')
+        command.add_argument('--android-sdk', type=Path, default=None)
         if name != 'prepare': command.add_argument('--manifest', type=Path, required=True)
         if name == 'prepare':
             command.add_argument('--source-commit', required=True)
@@ -242,6 +243,7 @@ def main():
         if name == 'publish': command.add_argument('--release-notes', required=True)
     args = parser.parse_args()
     if args.command == 'version-code': print(version_code()); return
+    args.android_sdk=android_sdk(ROOT,args.android_sdk)
     if args.command == 'prepare': result = prepare(args.apk, args.android_sdk, args.source_commit, args.tag, args.output)
     elif args.command == 'verify': result = verify_artifact(args.apk, args.manifest, args.android_sdk)
     elif args.command == 'sign': result = sign(args.apk, args.manifest, args.android_sdk, args.keystore,

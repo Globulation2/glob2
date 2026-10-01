@@ -32,6 +32,7 @@ namespace AINames
 		// These describe this duel cohort, not every map, format or human game.
 		// See docs/ai/ratings.md for exclusions and measurement scope.
 		const struct { int id; const char* cliName; const char* stringKey; const char* difficulty; int strength; } aiTable[] = {
+			{AI::JAVASCRIPT, "javascript", "AIJavaScript", "Script", 0},
 			{AI::NONE,            nullptr,           "AINone", "No AI orders", 0},
 			{AI::NUMBI,           "numbi",           "AINumbi", "Easy", 1204},
 			{AI::CASTOR,          "castor",          "AICastor", "Easy", 1280},

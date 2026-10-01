@@ -27,6 +27,9 @@ transparent either way: an existing `.gz` file is preferred when both it and a
 raw file of the same name exist, and legacy raw `.map`/`.game` files (no `.gz`
 suffix) keep loading unchanged. Replays are unaffected and stay uncompressed.
 
+For optional JavaScript controllers and map scripts, see
+[JavaScript scripting](javascript.md).
+
 ## CLI Flags
 
 ### `--nox <game-file> <steps> <runs>`

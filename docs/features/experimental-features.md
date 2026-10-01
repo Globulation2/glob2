@@ -36,9 +36,10 @@ The set lives in `GameHeader` (`src/GameHeader.h`) as an `ExperimentSet`
 save format 124 (`FILE_FORMAT_VERSION_EXPERIMENTS`). It travels in saves, replays,
 the network game-header messages and the YOG after-join information, so every
 peer of a game runs the same set. Adding the field changed the header's wire
-format: network protocol 47 refuses older clients. Replays recorded at format 123
-still play, because a header without the section loads as "no experiments" and
-the default simulation is unchanged.
+format and introduced network protocol 47. The current protocol is 48, which
+also adds JavaScript scripting compatibility and refuses older clients. Replays
+recorded at format 123 still play, because a header without the section loads as
+"no experiments" and the default simulation is unchanged.
 
 Saves, replays and the wire carry each enabled experiment's **key** (a stable
 kebab-case string such as `guard-area-balancing`), never a bit position. Retiring

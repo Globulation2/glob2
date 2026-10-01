@@ -39,6 +39,7 @@ int Engine::initCampaign(const std::string& filename)
 }
 GAGCore::CooperativeTask Engine::initCampaignTask(std::string filename, Campaign* campaign, std::string mission)
 {
+    initializationDiagnostic.clear();
     co_await GAGCore::CooperativeTask::checkpoint("[Loading headers]");
     auto map = loadMapHeader(filename);
     auto players = loadGameHeader(filename);
@@ -64,6 +65,7 @@ int Engine::initCustom(MapHeader& map, GameHeader& players, int localTeam, const
 }
 GAGCore::CooperativeTask Engine::initCustomTask(MapHeader map, GameHeader players, int localTeam, int speed, std::string sourceFileName)
 {
+    initializationDiagnostic.clear();
     gui.localPlayer = 0;
     gui.localTeamNo = localTeam;
     // Restored by ~Engine(); a negative speed means the caller doesn't offer
@@ -87,6 +89,7 @@ int Engine::initCustom(const std::string& filename)
 }
 GAGCore::CooperativeTask Engine::initCustomTask(std::string filename)
 {
+    initializationDiagnostic.clear();
     co_await GAGCore::CooperativeTask::checkpoint("[Loading headers]");
     auto map = loadMapHeader(filename);
     auto players = loadGameHeader(filename);
@@ -106,6 +109,7 @@ int Engine::initMultiplayer(std::shared_ptr<MultiplayerGame> multiplayerGame, st
 
 GAGCore::CooperativeTask Engine::initMultiplayerTask(std::shared_ptr<MultiplayerGame> multiplayerGame, std::shared_ptr<YOGClient> client, int localPlayer)
 {
+    initializationDiagnostic.clear();
     if (localPlayer < 0 || localPlayer >= multiplayerGame->getGameHeader().getNumberOfPlayers()) co_return false;
 	gui.localPlayer = localPlayer;
 	gui.localTeamNo = multiplayerGame->getGameHeader().getBasePlayer(localPlayer).teamNumber;
@@ -356,6 +360,7 @@ int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameH
 
 GAGCore::CooperativeTask Engine::initGameTask(MapHeader mapHeader, GameHeader gameHeader, bool setGameHeader, bool ignoreGUIData, bool saveAI, std::string sourceFileName)
 {
+	initializationDiagnostic.clear();
 	bool error = false;
 	try
 	{
@@ -363,7 +368,8 @@ GAGCore::CooperativeTask Engine::initGameTask(MapHeader mapHeader, GameHeader ga
 	}
 	catch (std::exception &e)
 	{
-		std::cerr << "Failed to load the map: exception received." << std::endl;
+		initializationDiagnostic = e.what();
+		std::cerr << "Failed to load the map: " << initializationDiagnostic << std::endl;
 		error = true;
 	}
 	if (error) {
@@ -446,6 +452,7 @@ void Engine::finishGameInit()
 
 GAGCore::CooperativeTask Engine::initCustomFromBytesTask(MapHeader map, GameHeader players, int localTeam, int speed, std::shared_ptr<std::string> bytes)
 {
+    initializationDiagnostic.clear();
     gui.localPlayer = 0;
     gui.localTeamNo = localTeam;
     if (speed >= 0)
@@ -467,7 +474,8 @@ GAGCore::CooperativeTask Engine::initCustomFromBytesTask(MapHeader map, GameHead
     }
     catch (std::exception &e)
     {
-        std::cerr << "Failed to load the generated map: exception received." << std::endl;
+        initializationDiagnostic = e.what();
+        std::cerr << "Failed to load the generated map: " << initializationDiagnostic << std::endl;
         error = true;
     }
     if (error) {
@@ -549,6 +557,7 @@ int Engine::loadReplay(const std::string& filename)
 
 GAGCore::CooperativeTask Engine::loadReplayTask(std::string fileName)
 {
+    initializationDiagnostic.clear();
     co_await GAGCore::CooperativeTask::checkpoint("[Loading headers]");
 	// Parse the replay file before committing any global state, so a failed
 	// load leaves globalContainer as if no replay had been requested.
@@ -588,7 +597,7 @@ GAGCore::CooperativeTask Engine::loadReplayTask(std::string fileName)
 	// Finally, initialise the Game. If the map embedded in the replay fails
 	// to load, drop the replay state committed above so the next game
 	// session starts as a normal game.
-	bool loaded = co_await initGameTask(mapHeader, gameHeader, true, false, true);
+	bool loaded = co_await initGameTask(mapHeader, gameHeader, true, false, true, fileName);
 	if (!loaded)
 	{
 		clearReplayState();
@@ -610,6 +619,8 @@ void Engine::showMapLoadError()
 	// Interactive flows run the task through GameLoadScreen, which reports the
 	// failure on the screen stack; the synchronous wrappers only log it.
 	std::cerr << Toolkit::getStringTable()->getString("[ERROR_CANT_LOAD_MAP]") << std::endl;
+	if (!initializationDiagnostic.empty())
+		std::cerr << initializationDiagnostic << std::endl;
 }
 
 void Engine::finalAdjustments(void)

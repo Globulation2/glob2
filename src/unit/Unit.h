@@ -216,6 +216,7 @@ public:
 	Race *race;
 
 	// identity
+	Uint32 scriptIdentity = 0; // Stable scripting identity; excluded from legacy simulation checksums.
 	Uint16 gid; // for reservation see GIDtoID() and GIDtoTeam().
 	Team *owner;
 	int diagnosticDeathCause = 4; // GameplayMeasurements::UNKNOWN; never checksum this field.

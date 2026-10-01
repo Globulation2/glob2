@@ -19,6 +19,9 @@ concurrency:
   group: fdroid-release-validation
   cancel-in-progress: false
 
+env:
+  GLOB2_DEV_MODE: isolated
+
 jobs:
   preflight:
     if: >-
@@ -102,11 +105,14 @@ jobs:
           python3 - <<'PY'
           import json, os, pathlib, subprocess
           root = pathlib.Path.cwd()
-          sdk = root / 'build/mobile-tools/android-sdk'
+          import sys; sys.path.insert(0, str(root/'scons'))
+          from dev_store import paths
+          dev=paths(root)
+          sdk=pathlib.Path(dev['android_sdk'])
           lock = json.loads((root / 'mobile/toolchain.json').read_text())['android']
           tools = json.loads((root / 'mobile/android-tools.json').read_text())
           jdk = tools['jdk-Linux-x86_64']
-          java = root / 'build/mobile-tools' / jdk['directory'] / jdk['java_home']
+          java=pathlib.Path(dev['java_home'])
           env = dict(os.environ, JAVA_HOME=str(java), ANDROID_HOME=str(sdk), ANDROID_SDK_ROOT=str(sdk))
           manager = sdk / 'cmdline-tools/19.0/bin/sdkmanager'
           subprocess.run([str(manager), f'--sdk_root={sdk}', '--licenses'],
@@ -122,7 +128,7 @@ jobs:
         run: |
           set -euo pipefail
           code="$(python3 mobile/android_release.py code --arch "$ARCH")"
-          sdk="$PWD/build/mobile-tools/android-sdk"
+          sdk="$(python3 tools/dev_environment.py paths --field android_sdk)"
           ndk="$(python3 -c 'import json; print(json.load(open("mobile/toolchain.json"))["android"]["ndk"])')"
           mkdir -p artifacts/fdroid
           python3 mobile/fdroid_build.py --version-code "$code" \

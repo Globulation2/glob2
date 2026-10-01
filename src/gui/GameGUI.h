@@ -61,6 +61,7 @@ class GameGUITouch;
 class GameGUI
 {
 	friend struct CustomGameSetupHarness;
+	friend struct ScriptPresentationFixture;
     friend class TorusRenderIntegrationTest;
     TorusView torusView;
     bool torusPointerDown = false;
@@ -147,6 +148,7 @@ public:
 	void setSwallowSpaceKey(bool value) { swallowSpaceKey=value; }
 	
 	void showScriptText(const std::string &text);
+	void setScriptPresentationText(std::string text, bool publishHistory = true);
 	void showScriptTextTr(const std::string &text, const std::string &lang);
 	void hideScriptText();
 
@@ -432,6 +434,15 @@ private:
 	void drawInGameScrollableText(void);
 	
 	void moveFlag(int mx, int my, bool drop);
+	//! Queues a move of one of the local team's flags to tile (x, y), replacing any
+	//! move of the same flag still in the queue, and shows the flag there at once.
+	void queueFlagMove(Building &flag, int x, int y, bool drop);
+	//! The local team's flag at a viewport-relative map point: an exact tile hit,
+	//! or else the nearest flag whose tile centre is within `reachPoints` screen
+	//! points (0 for exact hits only).
+	Building *flagAt(int mx, int my, double reachPoints);
+	//! The touch reach around flags for a contact at a screen point, in points.
+	double flagReachAt(double screenX, double screenY) const;
 	//! One viewport has moved and a flag or a brush is selected, update its position
 	void dragStep(int mx, int my, int button);
 	//! on each step, check if we have won or lost

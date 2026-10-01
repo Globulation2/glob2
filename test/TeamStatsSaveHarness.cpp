@@ -17,6 +17,7 @@
 #include <stdexcept>
 #include "TextStream.h"
 #include "Unit.h"
+#include "script/ScriptObservations.h"
 #include "Bullet.h"
 #include "Sector.h"
 #include "EndGameScreen.h"
@@ -64,6 +65,13 @@ struct TeamStatsMeasurementFixture
 	Game &game = gui.game;
 	TeamStatsMeasurementFixture()
 	{
+        if (glob2test::currentTestSuite() == "JavaScriptLifecycle")
+        {
+            // Both the serialized game seed and live simulation stream must
+            // be explicit; defaults otherwise depend on time and test order.
+            game.gameHeader.setRandomSeed(19);
+            setSyncRandSeed(19);
+        }
 		game.map.setSize(5, 5, GRASS);
 		game.map.setGame(&game);
 		for (int t = 0; t < 2; ++t)
@@ -71,6 +79,9 @@ struct TeamStatsMeasurementFixture
 			game.addTeam(t);
 			game.teams[t]->race.loadDefault();
 		}
+        if (glob2test::currentTestSuite() == "JavaScriptLifecycle")
+            require(game.sgslScript.compileScript(&game, "").type == ErrorReport::ET_OK,
+                    "initialize the empty legacy scripting backend before saving");
 	}
 	Building *building(const char *name, int x = 8, int y = 8, int team = 0, bool site = false,
 					   int level = 0)
@@ -157,6 +168,8 @@ static std::unique_ptr<GameGUI> roundTrip(Game& game)
     GAGCore::BinaryOutputStream writer(bytes);
     game.save(&writer, false, "team statistics regression");
     auto* copy = new GAGCore::MemoryStreamBackend(*bytes);
+    if (glob2test::currentTestSuite()=="JavaScriptLifecycle")
+        glob2test::writeFile(glob2test::artifactDir()/"lifecycle.game",bytes->takeContents());
     copy->seekFromStart(0);
     GAGCore::BinaryInputStream reader(copy);
     auto loaded = std::make_unique<GameGUI>();
@@ -771,12 +784,12 @@ static void measurementAttributionFields()
 
 static void measurementReplayBoundaries()
 {
-	// Format 124 (the experiments list) changed the header wire format, not the
-	// default simulation: replay floor still 123. WSS advances only protocol 48.
-	require(REPLAY_MINIMUM_VERSION_MINOR == 123 && NET_PROTOCOL_VERSION == 48 &&
-				YOG_MIN_CLIENT_NET_PROTOCOL_VERSION == 48,
+	// Format 124 introduced experiments; format 125 adds JavaScript identities.
+	// Protocol 49 adds WSS; default replay floor stays 123.
+	require(REPLAY_MINIMUM_VERSION_MINOR == 123 && NET_PROTOCOL_VERSION == 49 &&
+				YOG_MIN_CLIENT_NET_PROTOCOL_VERSION == 49,
 			"integrated simulation uses current replay and network gates");
-	for (int version : {98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 115, 119, 120, 121, 122, VERSION_MINOR, VERSION_MINOR+1})
+	for (int version : {98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 115, 119, 120, 121, 122, 123, 124, VERSION_MINOR, VERSION_MINOR+1})
 	{
 		auto *bytes = new GAGCore::MemoryStreamBackend;
 		GAGCore::BinaryOutputStream writer(bytes);
@@ -931,7 +944,7 @@ static void aiTelemetryScenarios()
 	for (int i = 0; i < AI::SIZE; ++i)
 	{
 		// Runtime settings belong to a controller implementation on master.
-		g.gameHeader.setAIConfig(0, "");
+		g.gameHeader.setAIConfig(0, i==AI::JAVASCRIPT?"glob2-js/1\nexport function step(){return null;}":"");
 		AI controller(static_cast<AI::ImplementationID>(i), g.players[0]);
 		require(controller.aiImplementation->telemetrySchema() == schema(i),
 				"every AI publishes its schema through the standard interface");
@@ -1266,4 +1279,164 @@ TEST_SUITE("TeamStatsSave")
 		// A four-controller game saved at tick 256 (see test/fixtures/echo/README.md).
 		aiTelemetryContinuation(glob2test::inflated("echo/v121-shared-gradient-256.game.gz").string().c_str());
 	}
+}
+
+TEST_CASE("Scripting identity survives conversion and save load" * doctest::test_suite("JavaScriptLifecycle"))
+{
+ glob2test::HeadlessGlobals globals;
+ TeamStatsMeasurementFixture w;
+ auto *inn=w.building("inn",8,8,1);
+ inn->resources[WHEAT]=10;
+ inn->resources[CHERRY]=10;
+ inn->updateCallLists();
+ TeamStatsMeasurementFixture::allowConversion(inn);
+ w.game.teams[1]->sharedVisionFood |= w.game.teams[0]->me;
+ w.game.teams[1]->allies &= ~w.game.teams[0]->me;
+ auto *u=w.unit(EXPLORER,12,8);
+ u->hungry=u->trigHungry;
+ u->medical=Unit::MED_HUNGRY;
+ u->needToRecheckMedical=true;
+ TeamStatsMeasurementFixture::activity(u);
+ REQUIRE(u->owner==w.game.teams[1]);
+ REQUIRE(w.game.scriptGenerations[1024+Unit::GIDtoID(u->gid)]==u->scriptIdentity);
+ auto loaded=roundTrip(w.game);
+ REQUIRE(loaded->game.teams[1]->myUnits[Unit::GIDtoID(u->gid)]->scriptIdentity==u->scriptIdentity);
+ CHECK(loaded->game.scriptGenerations==w.game.scriptGenerations);
+}
+
+TEST_CASE("Scripting level reset preserves generation counters" * doctest::test_suite("JavaScriptLifecycle"))
+{
+ glob2test::HeadlessGlobals globals;
+ TeamStatsMeasurementFixture w;
+ auto *u=w.unit();
+ auto generations=w.game.scriptGenerations;
+ auto identity=u->scriptIdentity;
+ u->resetAtLevel(1);
+ CHECK(u->scriptIdentity==identity);
+ CHECK(w.game.scriptGenerations==generations);
+}
+
+TEST_CASE("Scripting conversion allocates fresh identity in a reused destination slot" * doctest::test_suite("JavaScriptLifecycle"))
+{
+ glob2test::HeadlessGlobals globals;
+ TeamStatsMeasurementFixture w;
+ auto* previous=w.unit(EXPLORER,20,20,1);
+ auto previousReference=Script::Value::object().set("id",unsigned(previous->gid)).set("generation",previous->scriptIdentity);
+ REQUIRE(w.game.removeUnitAndBuildingAndFlags(20,20,Game::DEL_UNIT));
+ auto *inn=w.building("inn",8,8,1);
+ inn->resources[WHEAT]=10; inn->resources[CHERRY]=10; inn->updateCallLists();
+ TeamStatsMeasurementFixture::allowConversion(inn);
+ w.game.teams[1]->sharedVisionFood |= w.game.teams[0]->me;
+ w.game.teams[1]->allies &= ~w.game.teams[0]->me;
+ auto *u=w.unit(EXPLORER,12,8);
+ auto originalReference=Script::Value::object().set("id",unsigned(u->gid)).set("generation",u->scriptIdentity);
+ u->hungry=u->trigHungry; u->medical=Unit::MED_HUNGRY; u->needToRecheckMedical=true;
+ TeamStatsMeasurementFixture::activity(u);
+ REQUIRE(u->owner==w.game.teams[1]);
+ CHECK(u->scriptIdentity==2);
+ Script::Observations world(w.game,-1);
+ CHECK(world.query("unit",{previousReference}).kind==Script::Value::Null);
+ CHECK(world.query("unit",{originalReference}).kind==Script::Value::Null);
+ auto loaded=roundTrip(w.game);
+ Script::Observations restored(loaded->game,-1);
+ CHECK(restored.query("unit",{previousReference}).kind==Script::Value::Null);
+ CHECK(restored.query("unit",{originalReference}).kind==Script::Value::Null);
+}
+
+TEST_CASE("Scripting editor deletion and reuse never revive a reference" * doctest::test_suite("JavaScriptLifecycle"))
+{
+ glob2test::HeadlessGlobals globals;
+ TeamStatsMeasurementFixture w;
+ auto* unit=w.unit(); auto* building=w.building("inn");
+ auto unitRef=Script::Value::object().set("id",unsigned(unit->gid)).set("generation",unit->scriptIdentity);
+ auto buildingRef=Script::Value::object().set("id",unsigned(building->gid)).set("generation",building->scriptIdentity);
+ REQUIRE(w.game.removeUnitAndBuildingAndFlags(20,20,Game::DEL_UNIT));
+ REQUIRE(w.game.removeUnitAndBuildingAndFlags(8,8,Game::DEL_BUILDING));
+ Script::Observations world(w.game,-1);
+ CHECK(world.query("unit",{unitRef}).kind==Script::Value::Null);
+ CHECK(world.query("building",{buildingRef}).kind==Script::Value::Null);
+ unit=w.unit(); building=w.building("inn");
+ CHECK(unit->scriptIdentity==2); CHECK(building->scriptIdentity==2);
+ CHECK(world.query("unit",{unitRef}).kind==Script::Value::Null);
+ CHECK(world.query("building",{buildingRef}).kind==Script::Value::Null);
+ auto loaded=roundTrip(w.game);
+ Script::Observations restored(loaded->game,-1);
+ CHECK(restored.query("unit",{unitRef}).kind==Script::Value::Null);
+ CHECK(restored.query("building",{buildingRef}).kind==Script::Value::Null);
+}
+
+TEST_CASE("Scripting building completion upgrade and repair preserve identity" * doctest::test_suite("JavaScriptLifecycle"))
+{
+ glob2test::HeadlessGlobals globals;
+ for(auto kind:{Building::NEW_BUILDING,Building::UPGRADE,Building::REPAIR})
+ {
+  CAPTURE(kind);
+  TeamStatsMeasurementFixture w;
+  auto* site=w.building("inn",8,8,0,true,kind==Building::UPGRADE?1:0);
+  site->constructionResultState=kind;
+  auto generations=w.game.scriptGenerations; auto identity=site->scriptIdentity;
+  for(int resource=0;resource<MAX_RESOURCES;++resource) site->resources[resource]=site->type->maxResource[resource];
+  site->update(); site->update();
+  CHECK(site->scriptIdentity==identity);
+  CHECK(w.game.scriptGenerations==generations);
+  auto loaded=roundTrip(w.game);
+  CHECK(loaded->game.scriptGenerations==generations);
+ }
+}
+
+TEST_CASE("Scripting conversion back never resurrects the original reference" * doctest::test_suite("JavaScriptLifecycle"))
+{
+ glob2test::HeadlessGlobals globals;
+ TeamStatsMeasurementFixture world;
+ auto *destination=world.building("inn",8,8,1);
+ auto *home=world.building("inn",16,8,0);
+ destination->resources[WHEAT]=10; destination->resources[CHERRY]=10; destination->updateCallLists();
+ TeamStatsMeasurementFixture::allowConversion(destination);
+ world.game.teams[1]->sharedVisionFood |= world.game.teams[0]->me;
+ world.game.teams[1]->allies &= ~world.game.teams[0]->me;
+ auto *unit=world.unit(EXPLORER,12,8);
+ auto reference=Script::Value::object().set("id",unsigned(unit->gid)).set("generation",unit->scriptIdentity);
+ unit->hungry=unit->trigHungry; unit->medical=Unit::MED_HUNGRY; unit->needToRecheckMedical=true;
+ TeamStatsMeasurementFixture::activity(unit);
+ REQUIRE(unit->owner==world.game.teams[1]);
+ auto converted=Script::Value::object().set("id",unsigned(unit->gid)).set("generation",unit->scriptIdentity);
+ destination->resources[WHEAT]=0; destination->resources[CHERRY]=0; destination->updateCallLists();
+ home->resources[WHEAT]=10; home->resources[CHERRY]=10; home->updateCallLists();
+ TeamStatsMeasurementFixture::allowConversion(home);
+ world.game.teams[0]->sharedVisionFood |= world.game.teams[1]->me;
+ world.game.teams[0]->allies &= ~world.game.teams[1]->me;
+ unit->hungry=unit->trigHungry; unit->medical=Unit::MED_HUNGRY; unit->needToRecheckMedical=true;
+ TeamStatsMeasurementFixture::activity(unit);
+ REQUIRE(unit->owner==world.game.teams[0]);
+ CHECK(unit->scriptIdentity==2);
+ Script::Observations observations(world.game,-1);
+ CHECK(observations.query("unit",{reference}).kind==Script::Value::Null);
+ CHECK(observations.query("unit",{converted}).kind==Script::Value::Null);
+ auto loaded=roundTrip(world.game);
+ Script::Observations restored(loaded->game,-1);
+ CHECK(restored.query("unit",{reference}).kind==Script::Value::Null);
+ CHECK(restored.query("unit",{converted}).kind==Script::Value::Null);
+}
+
+TEST_CASE("Scripting normal death invalidates lookup before cleanup and slot reuse" * doctest::test_suite("JavaScriptLifecycle"))
+{
+ glob2test::HeadlessGlobals globals;
+ TeamStatsMeasurementFixture world;
+ world.building("inn");
+ auto *unit=world.unit();
+ auto reference=Script::Value::object().set("id",unsigned(unit->gid)).set("generation",unit->scriptIdentity);
+ auto slot=Unit::GIDtoID(unit->gid);
+ unit->hp=-1;
+ TeamStatsMeasurementFixture::medical(unit);
+ Script::Observations observations(world.game,-1);
+ CHECK(observations.query("unit",{reference}).kind==Script::Value::Null);
+ world.game.teams[0]->syncStep();
+ REQUIRE(world.game.teams[0]->myUnits[slot]==nullptr);
+ auto *replacement=world.unit();
+ CHECK(Unit::GIDtoID(replacement->gid)==slot);
+ CHECK(replacement->scriptIdentity==2);
+ CHECK(observations.query("unit",{reference}).kind==Script::Value::Null);
+ auto loaded=roundTrip(world.game);
+ Script::Observations restored(loaded->game,-1);
+ CHECK(restored.query("unit",{reference}).kind==Script::Value::Null);
 }
