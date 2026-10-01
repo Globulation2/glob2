@@ -1,8 +1,8 @@
 # Mobile builds and interface
 
 Android and iOS use the shared game sources and SDL renderer. The mobile targets
-have isolated toolchains, dependency archives and output directories; they do not
-use host libraries or install into the desktop application's directories.
+share pinned tool installations and validated dependency bundles across worktrees,
+with isolated build outputs and simulator state; they do not use host libraries or install into the desktop application's directories.
 
 The phone presentation shares simulation, game orders, settings persistence and
 lobby setup with desktop. `InterfacePresentation.h` selects the presentation;
@@ -329,6 +329,9 @@ NDK and packaging tools, then build target dependencies and stage the project:
 ```sh
 python3 mobile/setup_ndk.py
 python3 mobile/setup_tools.py
+sdk="$(python3 tools/dev_environment.py paths --field android_sdk)"
+python3 tools/dev_environment.py sdkmanager -- --licenses
+python3 mobile/setup_tools.py --sdk-packages
 python3 mobile/dependencies.py --arch arm64-v8a --release
 python3 mobile/android.py configure --arch arm64-v8a --release
 ```
@@ -359,7 +362,14 @@ device testing; F-Droid signs its own published APKs.
 The two stores use different signing keys, so switching stores requires
 uninstalling the existing app and backing up or exporting saves first.
 Omit `--release` consistently from both dependency and application commands for
-debug builds. An explicit `JAVA_HOME` takes precedence over the task-local JDK.
+debug builds. An explicit `JAVA_HOME` takes precedence over the shared pinned JDK.
+`--android-sdk PATH` selects an explicit matching SDK; ambient Android SDK variables
+do not replace the managed default. Use `GLOB2_DEV_MODE=isolated` for checkout-local
+tools and uncached dependency builds, including independent release verification.
+See [development storage](../development/reference.md#shared-development-storage)
+for overrides, cache budgets, reporting, and migration. Completed dependency
+bundles include pinned SDL Java sources; packaging never needs discarded vcpkg
+build intermediates.
 Release Android packages use the source package version as `versionName` by
 default; pass `--version-name` to choose a different store-facing value.
 The `--version-code` argument is carried into the generated Gradle project.

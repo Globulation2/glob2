@@ -5,6 +5,7 @@ import os
 import platform
 from pathlib import Path
 import subprocess
+from dev_paths import mobile_tools
 
 
 def digest(path):
@@ -17,7 +18,7 @@ def java_environment(root):
         lock = json.loads((root/'mobile/android-tools.json').read_text())
         artifact = lock.get('jdk-' + platform.system() + '-' + platform.machine())
         if artifact:
-            bundled = root/'build/mobile-tools'/artifact['directory']/artifact.get('java_home', '.')
+            bundled = mobile_tools(root)/artifact['directory']/artifact.get('java_home', '.')
             if (bundled/'bin/java').is_file(): env['JAVA_HOME'] = str(bundled)
 
     return env

@@ -31,13 +31,18 @@ python3 -m http.server 8765 --bind 127.0.0.1 --directory build/emscripten/client
 ```
 
 Open http://127.0.0.1:8765. The game starts automatically and fills the page.
-The SDK and build output are ignored by Git. Shared source manifests in
+The pinned SDK is installed once per user and host/version; build outputs remain
+checkout-local and ignored by Git. Shared source manifests in
 `scons/sources.py` drive native and browser builds. Each target owns its
-configuration, objects, compilation database, cache, and signature database.
+configuration, objects, compilation database, and signature database. Compatible
+SDK library and port caches are shared across worktrees.
 Native builds do not require Emscripten; browser builds do not probe system libraries.
 
 `browser/toolchain.json` pins the SDK revision and version. `emsdk=/path/to/emsdk`
-selects an already installed matching SDK. Omit `release=1` for a debug build.
+selects an already installed matching SDK. `GLOB2_DEV_MODE=isolated` restores
+checkout-local SDK and library/port caches for independent verification.
+See [development storage](../docs/development/reference.md#shared-development-storage)
+for configuration and cleanup. Omit `release=1` for a debug build.
 `python3 browser/build.py` remains a compatibility wrapper for the release build.
 See [delivery contracts](../docs/browser/implementation.md) for output paths and
 platform boundaries.

@@ -17,10 +17,37 @@ def run(command):
         raise ValueError(f'Cannot run {command[0]}: {getattr(error, "output", str(error))}') from None
 
 
+_COMPILER_DIGESTS = {}
+
+
+def compiler_digest(path):
+    path = Path(path).resolve()
+    if not path.is_file():
+        # Discovery unit tests mock compiler execution without creating an SDK tree.
+        return None
+    info = path.stat()
+    signature = (
+        str(path),
+        info.st_dev,
+        info.st_ino,
+        info.st_size,
+        info.st_mtime_ns,
+        info.st_ctime_ns,
+    )
+    if signature not in _COMPILER_DIGESTS:
+        digest = hashlib.sha256()
+        with path.open('rb') as source:
+            while block := source.read(1024 * 1024):
+                digest.update(block)
+        _COMPILER_DIGESTS[signature] = digest.hexdigest()
+    return _COMPILER_DIGESTS[signature]
+
+
 def discover(identity, arguments):
     lock = json.loads(LOCK.read_text())
     if identity['target'] == 'android':
-        sdk = Path(arguments.get('android_sdk', os.environ.get('ANDROID_SDK_ROOT', ROOT / 'build/mobile-tools/android-sdk'))).resolve()
+        from dev_store import android_sdk
+        sdk = android_sdk(ROOT, arguments.get('android_sdk'))
         ndk = sdk / 'ndk' / lock['android']['ndk']
         properties = ndk / 'source.properties'
         if not properties.is_file():
@@ -59,7 +86,23 @@ def discover(identity, arguments):
         flags = ['-target', triple, '-isysroot', sysroot]
         links = list(flags)
     compiler = run([str(cxx), '--version'])
-    fingerprint = hashlib.sha256(json.dumps({'identity': identity, 'compiler': compiler, 'sdk': sdk_id,
-        'lock': hashlib.sha256(LOCK.read_bytes()).hexdigest()}, sort_keys=True).encode()).hexdigest()
+    compiler_hashes = [compiler_digest(cxx)]
+    if identity['target'] == 'android':
+        compiler_hashes.append(compiler_digest(binaries / 'clang++'))
+    compiler_identity = '\n'.join(
+        line for line in compiler.splitlines() if not line.startswith('InstalledDir:')
+    )
+    fingerprint = hashlib.sha256(
+        json.dumps(
+            {
+                'identity': identity,
+                'compiler': compiler_identity,
+                'compiler_hashes': compiler_hashes,
+                'sdk': sdk_id,
+                'lock': hashlib.sha256(LOCK.read_bytes()).hexdigest(),
+            },
+            sort_keys=True,
+        ).encode()
+    ).hexdigest()
     return {'cc': str(cc), 'cxx': str(cxx), 'ar': str(ar), 'cflags': flags,
             'ldflags': links, 'fingerprint': fingerprint, 'compiler': compiler, 'sdk': sdk_id}

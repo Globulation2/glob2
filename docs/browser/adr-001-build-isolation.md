@@ -10,7 +10,9 @@ SCons now imports plain Python source manifests from `scons/sources.py`.
 Native and Emscripten code paths branch before dependency discovery. Every
 toolchain/role/configuration owns a directory, signature database, generated
 header, compilation database, compiler outputs, and temporary directory.
-Browser ports and compiled SDK libraries use that identity's cache.
+Browser ports and compiled SDK libraries share a cache keyed by the pinned SDK
+and port configuration, with Emscripten locking and process-held resource leases.
+`GLOB2_DEV_MODE=isolated` retains identity-local caches for clean verification.
 
 Source includes name `glob2/BuildConfig.h`, resolved through the target's
 generated include directory. An unrelated root `config.h` cannot satisfy this

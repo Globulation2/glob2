@@ -15,6 +15,9 @@ concurrency:
   group: browser-storage-release
   cancel-in-progress: false
 
+env:
+  GLOB2_DEV_MODE: isolated
+
 jobs:
   context:
     runs-on: ubuntu-24.04

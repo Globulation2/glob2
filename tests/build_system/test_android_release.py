@@ -117,8 +117,33 @@ class AndroidReleaseTests(unittest.TestCase):
             with zipfile.ZipFile(apk, "w") as package:
                 for name in ("libmain.so", "libc++_shared.so", "libSDL2.so", "libextra.so"):
                     package.writestr("lib/arm64-v8a/" + name, b"native")
-            with self.assertRaisesRegex(ValueError, "pinned dependency manifest"):
+            with mock.patch.dict("os.environ", {"GLOB2_DEV_MODE":"isolated"}), self.assertRaisesRegex(ValueError, "pinned dependency manifest"):
                 android_release.verify_apk(apk, "arm64-v8a", root, root=root)
+
+    def test_shared_apk_verification_preserves_release_identity(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for path in ("mobile/android-release.json", "mobile/toolchain.json", "scons/build_layout.py"):
+                target = root / path
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_bytes((ROOT / path).read_bytes())
+            prefix = root / "shared-dependencies"
+            prefix.mkdir()
+            (prefix / "manifest.json").write_text(json.dumps({"archives": {"lib/libSDL2.a": "digest"}}))
+            apk = root / "release.apk"
+            with zipfile.ZipFile(apk, "w") as package:
+                for name in ("libmain.so", "libc++_shared.so"):
+                    package.writestr("lib/arm64-v8a/" + name, b"native")
+                package.writestr("assets/glob2-bundle/index.list", hashlib.sha256(b"").hexdigest() + "\n")
+            badging = "package: name='org.globulation2.glob2' versionCode='905042' versionName='0.9.5.4'\n"
+            with (
+                mock.patch.object(android_release, "isolated", return_value=False),
+                mock.patch.object(android_release, "dependency_prefix", return_value=prefix),
+                mock.patch("mobile_toolchain.discover", return_value={"fingerprint": "pinned"}),
+                mock.patch.object(android_release.subprocess, "run", side_effect=[subprocess.CompletedProcess([], 0), subprocess.CompletedProcess([], 1)]),
+                mock.patch.object(android_release.subprocess, "check_output", return_value=badging),
+            ):
+                self.assertEqual(android_release.verify_apk(apk, "arm64-v8a", root, root=root), hashlib.sha256(apk.read_bytes()).hexdigest())
 
     def test_monitor_state_transitions(self):
         now = dt.datetime(2026, 10, 4, tzinfo=dt.timezone.utc)
