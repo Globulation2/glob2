@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <Environment.h>
 #include "Glob2Test.h"
 #include <algorithm>
 #include <cstdlib>
@@ -71,24 +72,24 @@ TEST_CASE("zoom anchoring; seams; rotation; safe layouts; gestures and cancellat
 				input.hover = true;
 			}
 		}
-		SDL_setenv_unsafe("GLOB2_MOBILE_UI", "0", 1);
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "0", 1);
 		require(presentationOverride() == PresentationPreference::Spacious &&
 					!phonePresentationRequested(),
 				"Desktop override uses legacy controls");
-		SDL_setenv_unsafe("GLOB2_MOBILE_UI", "1", 1);
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "1", 1);
 		require(presentationOverride() == PresentationPreference::Compact &&
 					phonePresentationRequested(),
 				"Compact override uses adapted controls");
-		SDL_setenv_unsafe("GLOB2_MOBILE_UI", "touch-auto", 1);
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "touch-auto", 1);
 		require(presentationOverride() == PresentationPreference::Automatic &&
 					phonePresentationRequested(),
 				"Touch automatic mode retains adapted controls");
-		SDL_setenv_unsafe("GLOB2_MOBILE_UI", "touch-spacious", 1);
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "touch-spacious", 1);
 		require(presentationOverride() == PresentationPreference::Spacious &&
 					phonePresentationRequested(),
 				"Touch spacious mode retains adapted controls");
 		// An empty development override must behave like an absent override.
-		SDL_setenv_unsafe("GLOB2_MOBILE_UI", "", 1);
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "", 1);
 		require(!presentationOverride(), "No override uses saved preference and host capabilities");
 		presentationPreference = PresentationPreference::Automatic;
 		updatePresentation({800, 600, 1, {}, 0}, {false, true, true, true});
@@ -263,5 +264,25 @@ TEST_CASE("OS scaling composes with preferences without doubling pixel density")
     CHECK(windowUiScale(2, 0, 0) == doctest::Approx(1));
     CHECK(windowUiScale(std::numeric_limits<float>::quiet_NaN(), 2, 0) == doctest::Approx(1));
     CHECK(windowUiScale(1, 1, 9) == doctest::Approx(4));
+}
+}
+
+TEST_SUITE("Environment")
+{
+TEST_CASE("Process overrides update SDL's cached environment")
+{
+    constexpr const char *name = "GLOB2_SDL3_ENVIRONMENT_TEST";
+    SDL_Environment *environment = SDL_GetEnvironment();
+    REQUIRE(GAGCore::setProcessEnvironment(name, "first", 1) == 0);
+    CHECK(std::string(SDL_getenv_unsafe(name)) == "first");
+    CHECK(std::string(SDL_GetEnvironmentVariable(environment, name)) == "first");
+    REQUIRE(GAGCore::setProcessEnvironment(name, "second", 1) == 0);
+    CHECK(std::string(SDL_getenv_unsafe(name)) == "second");
+    CHECK(std::string(SDL_GetEnvironmentVariable(environment, name)) == "second");
+    REQUIRE(GAGCore::setProcessEnvironment(name, "ignored", 0) == 0);
+    CHECK(std::string(SDL_getenv_unsafe(name)) == "second");
+    CHECK(std::string(SDL_GetEnvironmentVariable(environment, name)) == "second");
+    SDL_unsetenv_unsafe(name);
+    SDL_UnsetEnvironmentVariable(environment, name);
 }
 }

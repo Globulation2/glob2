@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // A real native simulation peer for browser/native cross-play integration tests.
+#include <Environment.h>
 #include "GlobalContainer.h"
 #include <memory>
 #include <exception>
@@ -26,10 +27,10 @@ public:
 int main(int argc, char** argv) {
     if (argc != 2 && argc != 4) return 2;
     try {
-        SDL_setenv_unsafe("SDL_VIDEODRIVER", "dummy", 1);
-        SDL_setenv_unsafe("SDL_AUDIODRIVER", "dummy", 1);
-        SDL_setenv_unsafe("GLOB2_CHECKSUM_SIDECAR", "1", 1);
-        if (argc == 4) SDL_setenv_unsafe("SSL_CERT_FILE", argv[3], 1);
+        GAGCore::setProcessEnvironment("SDL_VIDEODRIVER", "dummy", 1);
+        GAGCore::setProcessEnvironment("SDL_AUDIODRIVER", "dummy", 1);
+        GAGCore::setProcessEnvironment("GLOB2_CHECKSUM_SIDECAR", "1", 1);
+        if (argc == 4) GAGCore::setProcessEnvironment("SSL_CERT_FILE", argv[3], 1);
         globalContainer = new GlobalContainer(argv[1]);
         globalContainer->settings.screenWidth = 800;
         globalContainer->settings.screenHeight = 600;

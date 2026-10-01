@@ -54,7 +54,7 @@ jobs:
 
       - name: Install macOS build dependencies
         run: |
-          brew install cmake freetype scons pkgconf -compat    \
+          brew install cmake freetype scons pkgconf    \
             libvorbis libogg speex openssl@3 boost fribidi libepoxy
           xcodebuild -version
           sdk_version="$(xcrun --sdk macosx --show-sdk-version)"

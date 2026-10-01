@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Exercise real LAN clients, lobby widgets, sockets, readiness and departures.
+#include <Environment.h>
 #include "GlobalContainer.h"
 #include <vector>
 #include "Engine.h"
@@ -261,7 +262,7 @@ int main(int argc, char** argv)
 		return 2;
 	}
 	std::setvbuf(stdout, nullptr, _IONBF, 0);
-	SDL_setenv_unsafe("SDL_AUDIODRIVER", "dummy", 0);
+	GAGCore::setProcessEnvironment("SDL_AUDIODRIVER", "dummy", 0);
 	GlobalContainer globals;
 	globalContainer = &globals;
 	// Keep the harness's map downloads and anonymous server data separate

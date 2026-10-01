@@ -5,6 +5,7 @@
 #ifndef SDL_MAIN_HANDLED
 #define SDL_MAIN_HANDLED
 #endif
+#include <Environment.h>
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 #define DOCTEST_CONFIG_IMPLEMENT
@@ -38,17 +39,17 @@ namespace
 #endif
 			)));
 			std::filesystem::create_directories(selfMadeProfile);
-			SDL_setenv_unsafe("GLOB2_USER_DATA_DIR", selfMadeProfile.string().c_str(), 1);
+			GAGCore::setProcessEnvironment("GLOB2_USER_DATA_DIR", selfMadeProfile.string().c_str(), 1);
 		}
 		// GLOB2_TEST_DISPLAY=1 (set by the runner for [display] cases) keeps the real
 		// video driver; everything else renders nowhere.
 		const char* display = std::getenv("GLOB2_TEST_DISPLAY");
 		if (!display || !*display || std::string(display) == "0")
 		{
-			SDL_setenv_unsafe("SDL_VIDEODRIVER", "dummy", 0);
-			SDL_setenv_unsafe("SDL_RENDER_DRIVER", "software", 0);  // the dummy driver has no accelerated renderer
+			GAGCore::setProcessEnvironment("SDL_VIDEODRIVER", "dummy", 0);
+			GAGCore::setProcessEnvironment("SDL_RENDER_DRIVER", "software", 0);  // the dummy driver has no accelerated renderer
 		}
-		SDL_setenv_unsafe("SDL_AUDIODRIVER", "dummy", 0);
+		GAGCore::setProcessEnvironment("SDL_AUDIODRIVER", "dummy", 0);
 	}
 
 	void teardown()

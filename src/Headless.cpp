@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <Environment.h>
 #include "Headless.h"
 #include "PerformanceTelemetry.h"
 #include "Engine.h"
@@ -104,7 +105,7 @@ void isolateEnvironment()
 }
 void setHeadlessEnvironment(const char* key, const char* value)
 {
-	SDL_setenv_unsafe(key, value, 1);
+	GAGCore::setProcessEnvironment(key, value, 1);
 #ifdef WIN32
 	// The engine reads these flags with the C runtime's getenv. On Windows,
 	// SDL's environment update does not repopulate the runtime view after the
@@ -454,7 +455,7 @@ int runHeadlessCommand(int argc,char **argv)
 		output=fs::absolute(one(options,"--output-dir"));
 		fs::create_directories(output);
 		fs::create_directories(output / "profile");
-		SDL_setenv_unsafe("GLOB2_USER_DIR", (output / "profile").string().c_str(), 1);
+		GAGCore::setProcessEnvironment("GLOB2_USER_DIR", (output / "profile").string().c_str(), 1);
 		if(fs::exists(output/"result.json")) throw std::invalid_argument("output directory already contains a result");
 		int code;
 		if(command=="--run-game")
@@ -476,7 +477,7 @@ int runHeadlessCommand(int argc,char **argv)
 					manifest(output);return generated;
 				}
 				options["--map-file"]={glob2GzipWritePath((output/"generated/map-r0.map").string())};
-				SDL_setenv_unsafe("GLOB2_USER_DIR",(output/"profile").string().c_str(),1);
+				GAGCore::setProcessEnvironment("GLOB2_USER_DIR",(output/"profile").string().c_str(),1);
 			}
 			else if(options.count("--map-seed") || options.count("--param") || options.count("--candidates"))
 				throw std::invalid_argument("generator options require --generator");

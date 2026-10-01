@@ -31,6 +31,7 @@
 // Defaults to "..", so it runs from test/ under CI's harness loop with no
 // arguments. Exits 0 if every check passes, 1 if any fails.
 
+#include <Environment.h>
 #include "Glob2Test.h"
 
 #include <cstdio>
@@ -94,7 +95,7 @@ TEST_CASE("track selection while closed and queued mid-fade changes")
 
 	// The dummy driver gives a real SDL_OpenAudioDeviceStream without needing hardware, so
 	// the muted-start / unmute path below is the production one.
-	SDL_setenv_unsafe("SDL_AUDIODRIVER", "dummy", 1);
+	GAGCore::setProcessEnvironment("SDL_AUDIODRIVER", "dummy", 1);
 	REQUIRE_MESSAGE(SDL_InitSubSystem(SDL_INIT_AUDIO), (SDL_GetError()));
 
 	glob2test::ToolkitScope toolkit;

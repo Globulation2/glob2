@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <Environment.h>
 #include "MobilePaths.h"
 #include "TemporaryFiles.h"
 #include "Documents.h"
@@ -59,7 +60,7 @@ void initializeMobilePaths()
     std::filesystem::create_directories(root);
     MobileTemporaryFiles::cleanup(root.string());
     MobileDocuments::cleanupTemporaryExports();
-    SDL_setenv_unsafe("GLOB2_USER_DATA_DIR",root.string().c_str(),1);
+    GAGCore::setProcessEnvironment("GLOB2_USER_DATA_DIR",root.string().c_str(),1);
 #ifdef __ANDROID__
     std::istringstream index(readAsset("glob2-bundle/index.list"));
     std::string version;
@@ -98,10 +99,10 @@ void initializeMobilePaths()
         std::ofstream completed(assets/".complete");completed<<version;completed.close();
         if(!completed) throw std::runtime_error("Cannot commit asset installation");
     }
-    SDL_setenv_unsafe("GLOB2_ASSET_DIR",assets.string().c_str(),1);
+    GAGCore::setProcessEnvironment("GLOB2_ASSET_DIR",assets.string().c_str(),1);
 #else
     const char *assets = SDL_GetBasePath();
     if(!assets) throw std::runtime_error(SDL_GetError());
-    SDL_setenv_unsafe("GLOB2_ASSET_DIR",assets,1);
+    GAGCore::setProcessEnvironment("GLOB2_ASSET_DIR",assets,1);
 #endif
 }

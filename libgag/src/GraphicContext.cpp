@@ -583,7 +583,7 @@ namespace GAGCore
 		const int logicalH = std::max(1, static_cast<int>(h / uiScale + 0.5f));
 
 		// set flags
-        const char* selectedRenderer = SDL_getenv("GLOB2_RENDERER");
+        const char* selectedRenderer = SDL_getenv_unsafe("GLOB2_RENDERER");
         if (selectedRenderer && std::string(selectedRenderer) == "sdl") flags |= PORTABLEGPU;
 #ifdef GLOB2_MOBILE
         flags |= PORTABLEGPU | RESIZABLE;

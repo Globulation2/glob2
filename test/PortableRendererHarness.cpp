@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <Environment.h>
 #include "Glob2Test.h"
 #include <string>
 #include <memory>
@@ -164,7 +165,7 @@ void verifyMapBoundaries(unsigned flags)
 						expect(pixels, right, y, 255, 255, 0);
 				}
 			}
-			if (const char *directory = SDL_getenv("GLOB2_ZONE_EVIDENCE_DIR");
+			if (const char *directory = SDL_getenv_unsafe("GLOB2_ZONE_EVIDENCE_DIR");
 				directory && zoom == .33f && offset == .25f)
 			{
 				const auto path =
@@ -341,7 +342,7 @@ TEST_CASE("zone boundaries; UI transforms and portable rendering paths [display]
 		stack.frame(100120, {quit});
 		require(!stack.running(), "Quit must be honored while backgrounded");
 	}
-	SDL_setenv_unsafe("GLOB2_MOBILE_UI", "1", 1);
+	GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "1", 1);
 	context.setResponsiveViewport(true);
 	require(context.getW() == 640 && context.getH() == 480,
 			"Responsive viewport must fill window points");
@@ -412,7 +413,7 @@ TEST_CASE("zone boundaries; UI transforms and portable rendering paths [display]
 		require(context.getW() == 1065 && context.getH() == 600 && probe->changes == 4,
 				"Rotation must notify the retained game");
 	}
-	SDL_setenv_unsafe("GLOB2_MOBILE_UI", "", 1);
+	GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "", 1);
 	std::puts("PASS portable renderer: clipping, texture scaling, alpha, device reset, dirty "
 			  "textures, resized input");
 }

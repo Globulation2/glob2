@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <Environment.h>
 #include "MapCommand.h"
 #include "MapReport.h"
 #include "GUIMapPreview.h"
@@ -189,9 +190,9 @@ void exportPreview(const Game &game, const std::string &path, int size, int scal
 		size ? std::max(1, size * game.map.getH() / extent) : thumbnail.pixels()->height * scale;
 	// GAG surfaces need a context for their pixel format. SDL's dummy driver keeps
 	// this small software context independent of the desktop and export dimensions.
-	SDL_setenv_unsafe("SDL_VIDEODRIVER", "dummy", 1);
-	SDL_setenv_unsafe("SDL_AUDIODRIVER", "dummy", 1);
-	SDL_setenv_unsafe("GLOB2_UI_SCALE", "1", 1);
+	GAGCore::setProcessEnvironment("SDL_VIDEODRIVER", "dummy", 1);
+	GAGCore::setProcessEnvironment("SDL_AUDIODRIVER", "dummy", 1);
+	GAGCore::setProcessEnvironment("GLOB2_UI_SCALE", "1", 1);
 	globalContainer->gfx = Toolkit::initGraphic(640, 480, 0, "Map preview", "glob2");
 	const std::string font = std::string("data/fonts/") + PRIMARY_FONT;
 	Toolkit::loadFont(font, 13, "standard");

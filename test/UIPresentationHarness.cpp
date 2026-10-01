@@ -2,6 +2,7 @@
 // Renders every declarative screen at phone, tablet and desktop viewports with
 // platform gutters and text scales, checking the framework invariants and saving
 // captures for review. Run with SDL_VIDEODRIVER=dummy and a disposable profile.
+#include <Environment.h>
 #include "EngineFixtures.h"
 #include <vector>
 #include <string>
@@ -271,7 +272,7 @@ void verifyOrDump(UIScreen &screen, const std::string &label)
 	}
 	catch (const std::exception &)
 	{
-		if (SDL_getenv("GLOB2_UI_DUMP"))
+		if (SDL_getenv_unsafe("GLOB2_UI_DUMP"))
 			dump(*screen.host().root(), 0);
 		throw;
 	}
@@ -348,7 +349,7 @@ void verify(UIScreen &screen, const std::string &label)
 }
 void run(const Viewport &viewport)
 {
-	if (const char *only = SDL_getenv("GLOB2_UI_VIEWPORT");
+	if (const char *only = SDL_getenv_unsafe("GLOB2_UI_VIEWPORT");
 		only && *only && std::string(only) != viewport.name)
 		return;
 	glob2test::GlobalsOptions options{.display = true, .loadStrings = true, .width = 800, .height = 600,
@@ -359,7 +360,7 @@ void run(const Viewport &viewport)
 	const bool capture = true;
 	for (const char *presentation : {"0", "1"})
 	{
-		SDL_setenv_unsafe("GLOB2_MOBILE_UI", presentation, 1);
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", presentation, 1);
 		if (presentation[0] == '0' && viewport.width < 600)
 			continue;
 		resize(viewport.width, viewport.height);
@@ -368,7 +369,7 @@ void run(const Viewport &viewport)
 			GAGCore::mobileSafeInsetsForTesting = insets;
 			for (const auto &fixture : fixtures())
 			{
-				if (const char *only = SDL_getenv("GLOB2_UI_ONLY"); only && *only && std::string(only) != fixture.name)
+				if (const char *only = SDL_getenv_unsafe("GLOB2_UI_ONLY"); only && *only && std::string(only) != fixture.name)
 					continue;
 				GAGGUI::ScreenStack stack(*globalContainer->gfx);
 				auto owned = fixture.make(stack);
@@ -388,7 +389,7 @@ void run(const Viewport &viewport)
 				const std::string label = std::string(fixture.name) + " " + viewport.name +
 										  " touch=" + presentation + " bottom=" +
 										  std::to_string(int(insets.bottom));
-				if (const char *reveal = SDL_getenv("GLOB2_UI_REVEAL"); reveal && *reveal)
+				if (const char *reveal = SDL_getenv_unsafe("GLOB2_UI_REVEAL"); reveal && *reveal)
 				{
 					screen->host().scrollIntoView(reveal);
 					stack.frame(60, {});
@@ -421,7 +422,7 @@ void run(const Viewport &viewport)
 	}
 	GAGCore::mobileSafeInsetsForTesting.reset();
 	theme.reset();
-	SDL_setenv_unsafe("GLOB2_MOBILE_UI", "0", 1);
+	GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "0", 1);
 	glob2test::retainFromProfile(".bmp");
 	std::printf("PASS ui presentation: %d screen/viewport combinations verified\n", checked);
 }

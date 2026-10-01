@@ -72,7 +72,7 @@ namespace GAGCore
 
 	FileManager::FileManager(const std::string gameName)
 	{
-        const char* profile = SDL_getenv("GLOB2_USER_DATA_DIR");
+        const char* profile = SDL_getenv_unsafe("GLOB2_USER_DATA_DIR");
         if (profile && *profile) {
             std::filesystem::path path(profile);
             if (!path.is_absolute()) throw std::runtime_error("GLOB2_USER_DATA_DIR must be absolute");
@@ -107,7 +107,7 @@ namespace GAGCore
 #ifdef __APPLE__
 		addDir("./Contents/Resources");
 #endif
-		const char* assets = SDL_getenv("GLOB2_ASSET_DIR");
+		const char* assets = SDL_getenv_unsafe("GLOB2_ASSET_DIR");
 		if (assets && *assets) addDir(assets);
 		#ifdef WIN32
 		// Store launches do not promise that the current directory is the

@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <Environment.h>
 #include "EngineFixtures.h"
 #include <vector>
 #include <string>
@@ -71,7 +72,7 @@ TEST_SUITE("EngineSession")
 		glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.display = true, .loadStrings = true, .width = 800, .height = 600});
 		    // Session regressions use desktop menu coordinates and camera geometry.
 		    // GameGUITouchHarness covers the touch presentation with the same engine.
-		    SDL_setenv_unsafe("GLOB2_MOBILE_UI", "0", 1);
+		    GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "0", 1);
 			{
 				struct TrackedValue : Value
 				{

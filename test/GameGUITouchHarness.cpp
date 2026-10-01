@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <Environment.h>
 #include "EngineFixtures.h"
 #include <string>
 #include <memory>
@@ -614,7 +615,7 @@ class GameGUITouchHarness
 			require(writer.write("replays/touch-preview.replay"), "Replay fixture writes");
 			const auto position = writer.getBuffer()->getPosition();
 			const auto blocked =
-				std::filesystem::path(SDL_getenv("GLOB2_USER_DATA_DIR")) / "replays/blocked.replay";
+				std::filesystem::path(SDL_getenv_unsafe("GLOB2_USER_DATA_DIR")) / "replays/blocked.replay";
 			std::filesystem::create_directories(blocked);
 			{
 				std::ofstream marker(blocked / "keep");
@@ -629,7 +630,7 @@ class GameGUITouchHarness
 			std::filesystem::remove(blocked);
 			require(writer.write(blocked.string()) && writer.getBuffer()->getPosition() == position,
 					"Replay retries after a failed replacement");
-			std::ifstream original(std::filesystem::path(SDL_getenv("GLOB2_USER_DATA_DIR")) /
+			std::ifstream original(std::filesystem::path(SDL_getenv_unsafe("GLOB2_USER_DATA_DIR")) /
 									   "replays/touch-preview.replay",
 								   std::ios::binary);
 			std::ifstream retried(blocked, std::ios::binary);
@@ -871,7 +872,7 @@ class GameGUITouchHarness
 		globalContainer->gfx->printScreen("touch-placement.bmp");
 		globalContainer->gfx->nextFrame();
 		auto *capture = SDL_LoadBMP(
-			(std::string(SDL_getenv("GLOB2_USER_DATA_DIR")) + "/touch-placement.bmp").c_str());
+			(std::string(SDL_getenv_unsafe("GLOB2_USER_DATA_DIR")) + "/touch-placement.bmp").c_str());
 		require(capture && SDL_BYTESPERPIXEL(capture->format) == 4,
 				"Placement screenshot must be captured");
 		Uint8 r, g, b;
@@ -886,7 +887,7 @@ class GameGUITouchHarness
 		const auto hudChecksum = gui.game.checkSum();
 		gui.clearSelection();
 		gui.suspendInput();
-		SDL_setenv_unsafe("GLOB2_MOBILE_UI", "1", 1);
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "1", 1);
 		auto *gfx = globalContainer->gfx;
 		gfx->setResponsiveViewport(true, 800, 600);
 		for (auto [width, height] : {std::pair{320, 568}, {568, 320}})
@@ -1779,7 +1780,7 @@ class GameGUITouchHarness
 
 				// The larger target belongs to touch presentation only. Check
 				// both a near miss and an exact desktop hit at every zoom.
-				SDL_setenv_unsafe("GLOB2_MOBILE_UI", "0", 1);
+				GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "0", 1);
 				gui.clearSelection();
 				gui.updateCamera();
 				// Switching presentation preserves the camera centre; reset the
@@ -1798,7 +1799,7 @@ class GameGUITouchHarness
 							gui.selectionBuilding() == rangeFlag && gui.selectionPushed,
 						"Desktop exact flag hits retain selection and dragging");
 				gui.clearSelection();
-				SDL_setenv_unsafe("GLOB2_MOBILE_UI", "1", 1);
+				GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "1", 1);
 				gui.updateCamera();
 			}
 			gui.camera.zoom = 1;
@@ -2289,7 +2290,7 @@ class GameGUITouchHarness
 		}
 		{
 			// Spacious tablets keep the side panel's rows; only compact phones get the dial.
-			SDL_setenv_unsafe("GLOB2_MOBILE_UI", "touch-spacious", 1);
+			GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "touch-spacious", 1);
 			const int oldW = gfx->getW(), oldH = gfx->getH();
 			SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()), 1024, 768);
 			SDL_Event resized{};
@@ -2303,7 +2304,7 @@ class GameGUITouchHarness
 					"Spacious layouts keep the rectangular inspector");
 			gui.clearSelection();
 			gui.touch->panelOpen = false;
-			SDL_setenv_unsafe("GLOB2_MOBILE_UI", "1", 1);
+			GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "1", 1);
 		}
 
 		for (const auto *key : {"[Actions]", "[Info]", "[Minimap]", "[Fast forward]",
@@ -2731,7 +2732,7 @@ class GameGUITouchHarness
 		require(gui.game.checkSum() == checksum, "Touch navigation leaves the simulation alone");
 
 		// The phone HUD: the build palette coasts, rubber-bands and springs back.
-		SDL_setenv_unsafe("GLOB2_MOBILE_UI", "1", 1);
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "1", 1);
 		gfx->setResponsiveViewport(true, 800, 600);
 		auto resizeWindow = [&](int width, int height)
 		{
@@ -2848,7 +2849,7 @@ class GameGUITouchHarness
 		require(!gui.touch->scrollAnimating(), "A mouse drag has no momentum");
 		require(gui.selectionMode == GameGUI::NO_SELECTION, "Panel gestures never start a placement");
 		require(gui.game.checkSum() == checksum, "HUD scrolling leaves the simulation alone");
-		SDL_setenv_unsafe("GLOB2_MOBILE_UI", "0", 1);
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "0", 1);
 		resizeWindow(800, 600);
 	}
 
@@ -3046,22 +3047,22 @@ TEST_SUITE("GameGUITouch")
 {
 	GLOB2_TEST_CASE("touch scroll momentum on the map; the HUD palette and the editor", "[display]")
 	{
-		SDL_setenv_unsafe("GLOB2_MOBILE_UI", "0", 1);
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "0", 1);
 		glob2test::GlobalsOptions options{.display = true, .loadStrings = true, .width = 800, .height = 600,
 		                                  .screenFlags = GAGCore::GraphicContext::PORTABLEGPU};
 		glob2test::HeadlessGlobals globals(options);
 		REQUIRE(NET_Init());
 		GameGUITouchHarness::scrollPhysics();
-		SDL_setenv_unsafe("GLOB2_MOBILE_UI", "0", 1);
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "0", 1);
 		GameGUITouchHarness::editorScrollPhysics();
 		NET_Quit();
-		SDL_setenv_unsafe("GLOB2_MOBILE_UI", "0", 1);
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "0", 1);
 	}
 	TEST_CASE("actual gameplay touch; toroidal pan; preview; confirmation; validation; cancellation and duplicate suppression [display][artifacts][writes-preferences]")
 	{
 		// Exercise the legacy mouse sidebar first, even on touch-capable hosts;
 		// run() explicitly switches to the phone presentation for the touch cases.
-		SDL_setenv_unsafe("GLOB2_MOBILE_UI", "0", 1);
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "0", 1);
 		glob2test::GlobalsOptions options{.display = true, .loadStrings = true, .width = 800, .height = 600,
 		                                  .screenFlags = GAGCore::GraphicContext::PORTABLEGPU};
 		glob2test::HeadlessGlobals globals(options);
@@ -3069,7 +3070,7 @@ TEST_SUITE("GameGUITouch")
 		verifyTouchFontRaster();
 		GameGUITouchHarness::run();
 		NET_Quit();
-		SDL_setenv_unsafe("GLOB2_MOBILE_UI", "0", 1);
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "0", 1);
 		glob2test::retainFromProfile(".bmp");
 		std::puts("PASS: actual gameplay touch, toroidal pan, preview, confirmation, validation, "
 				  "cancellation and duplicate suppression");

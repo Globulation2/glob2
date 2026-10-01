@@ -93,7 +93,7 @@ inline ResolvedPresentation resolvePresentation(PresentationPreference preferenc
 }
 inline std::optional<PresentationPreference> presentationOverride()
 {
-	if (const char *value = SDL_getenv("GLOB2_MOBILE_UI"); value && *value)
+	if (const char *value = SDL_getenv_unsafe("GLOB2_MOBILE_UI"); value && *value)
 		return std::string_view(value) == "1"            ? PresentationPreference::Compact
 			   : std::string_view(value) == "touch-auto" ? PresentationPreference::Automatic
 														 : PresentationPreference::Spacious;
@@ -113,7 +113,7 @@ inline void updatePresentation(const ViewportMetrics &viewport, const InputCapab
 // Shared forms adapt for compact layouts and touch input, including tablets.
 inline bool phonePresentationRequested()
 {
-	if (const char *value = SDL_getenv("GLOB2_MOBILE_UI");
+	if (const char *value = SDL_getenv_unsafe("GLOB2_MOBILE_UI");
 		value && std::string_view(value).starts_with("touch-"))
 		return true;
 	if (const auto forced = presentationOverride())

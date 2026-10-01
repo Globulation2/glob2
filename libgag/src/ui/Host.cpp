@@ -26,7 +26,7 @@ Host::Host(const Theme &theme, Builder build) : themeValue(theme), build(std::mo
 	placeFn = [](Size, Rect available) { return available; };
 	current = Presentation::forSurface(640, 480);
 	metricsValue = resolveMetrics(themeValue, current);
-	debugOverlay = SDL_getenv("GLOB2_UI_DEBUG") && *SDL_getenv("GLOB2_UI_DEBUG") == '1';
+	debugOverlay = SDL_getenv_unsafe("GLOB2_UI_DEBUG") && *SDL_getenv_unsafe("GLOB2_UI_DEBUG") == '1';
 }
 
 Host::~Host()

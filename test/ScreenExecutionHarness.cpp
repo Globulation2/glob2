@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <Environment.h>
 #include "Glob2Test.h"
 #include <vector>
 #include <string>
@@ -128,8 +129,8 @@ TEST_CASE("screen phases; completion; reuse; quit and compatibility host")
         try { task.result(); } catch (const std::runtime_error&) { rejected = true; }
         require(rejected && live == 0, "Child exceptions propagate and release resources");
     }
-    SDL_setenv_unsafe("SDL_VIDEODRIVER", "dummy", 1);
-    SDL_setenv_unsafe("SDL_AUDIODRIVER", "dummy", 1);
+    GAGCore::setProcessEnvironment("SDL_VIDEODRIVER", "dummy", 1);
+    GAGCore::setProcessEnvironment("SDL_AUDIODRIVER", "dummy", 1);
     GAGCore::GraphicContext context(800, 600, 0, "Screen lifecycle regression");
     GAGCore::DrawableSurface surface(800, 600);
     Probe screen;

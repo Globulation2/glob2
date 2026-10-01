@@ -114,7 +114,7 @@ void SettingsScreen::measureRows()
 				return;
 			if (auto *node = host().find(key))
 				target = {node->bounds.x, node->bounds.y, node->bounds.w, node->bounds.h};
-			else if (SDL_getenv("GLOB2_UI_DEBUG"))
+			else if (SDL_getenv_unsafe("GLOB2_UI_DEBUG"))
 				std::fprintf(stderr, "settings: no element for row %s\n", key.c_str());
 		};
 		assign(row.id, row.control);

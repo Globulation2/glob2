@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <Environment.h>
 #include "Glob2Test.h"
 #include <memory>
 #include <utility>
@@ -278,7 +279,7 @@ void resizeChecks(bool gpu, bool benchmarkMode)
 		// the scale back to 1 and nothing is ever stretched. Before this was
 		// fixed, dragging the window down at scale 1.75 gave a 366x274 logical
 		// surface -- narrower than the 368px main menu panel.
-		SDL_setenv_unsafe("GLOB2_UI_SCALE", "", 1); // an inherited override would win
+		GAGCore::setProcessEnvironment("GLOB2_UI_SCALE", "", 1); // an inherited override would win
 		const Uint32 windowed = GraphicContext::RESIZABLE | (gpu ? GraphicContext::USEGPU : 0);
 		GraphicContext::setRequestedUiScale(1.75f);
 		gfx.setRes(1280, 960, windowed);

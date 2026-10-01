@@ -3,6 +3,7 @@
 // Build: scons release=1 mobile-gallery
 // Run via tools/mobile_gallery/capture.py; see docs/mobile/development.md.
 // Stable capture names must also be documented in mobile_gallery/catalog.json.
+#include <Environment.h>
 #include "GlobalContainer.h"
 #include <cmath>
 #include <algorithm>
@@ -129,7 +130,7 @@ struct MobileGallerySetup
 	static void run()
 	{
 		GAGGUI::ScreenStack stack(*globalContainer->gfx);
-		if (SDL_getenv("GLOB2_GALLERY_EDITOR_ONLY"))
+		if (SDL_getenv_unsafe("GLOB2_GALLERY_EDITOR_ONLY"))
 		{
 			stack.push(std::make_unique<MainMenuScreen>());
 			frame(stack);
@@ -462,13 +463,13 @@ class MobileGalleryGameplay
   public:
 	static void run()
 	{
-		if (SDL_getenv("GLOB2_GALLERY_EDITOR_ONLY"))
+		if (SDL_getenv_unsafe("GLOB2_GALLERY_EDITOR_ONLY"))
 		{
 			captureEditor();
 			return;
 		}
 		captureGame();
-		if (!SDL_getenv("GLOB2_GALLERY_GAME_ONLY"))
+		if (!SDL_getenv_unsafe("GLOB2_GALLERY_GAME_ONLY"))
 			captureEditor();
 	}
 
@@ -1179,7 +1180,7 @@ int dimension(const char *value)
 
 int main(int argc, char **argv)
 {
-	if ((argc != 3 && argc != 4) || !SDL_getenv("GLOB2_USER_DATA_DIR"))
+	if ((argc != 3 && argc != 4) || !SDL_getenv_unsafe("GLOB2_USER_DATA_DIR"))
 	{
 		std::cerr
 			<< "Set GLOB2_USER_DATA_DIR; usage: mobile-gallery WIDTH HEIGHT [compact|desktop]\n";
@@ -1192,12 +1193,12 @@ int main(int argc, char **argv)
 		std::cerr << "Presentation must be compact or desktop\n";
 		return 2;
 	}
-	SDL_setenv_unsafe("GLOB2_MOBILE_UI",
+	GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI",
 			   desktopPresentation                                            ? "0"
 			   : argc == 4 && std::string_view(argv[3]).starts_with("touch-") ? argv[3]
 																			  : "1",
 			   1);
-	SDL_setenv_unsafe("SDL_AUDIODRIVER", "dummy", 1);
+	GAGCore::setProcessEnvironment("SDL_AUDIODRIVER", "dummy", 1);
 	try
 	{
 		const int width = dimension(argv[1]), height = dimension(argv[2]);
@@ -1222,7 +1223,7 @@ int main(int argc, char **argv)
 		GAGCore::GraphicContext::translateMouseEvent(&resize);
 		{
 			FrontendTheme theme;
-			if (!SDL_getenv("GLOB2_GALLERY_GAME_ONLY"))
+			if (!SDL_getenv_unsafe("GLOB2_GALLERY_GAME_ONLY"))
 				MobileGallerySetup::run();
 			MobileGalleryGameplay::run();
 		}
