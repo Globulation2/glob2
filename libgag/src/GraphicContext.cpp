@@ -749,7 +749,7 @@ namespace GAGCore
 			}
 			#endif
 
-			eventThread = SDL_ThreadID();
+			eventThread = SDL_GetCurrentThreadID();
 			if (!renderer) {
 				SDL_AddEventWatch(watchWindow, this);
 				watchingEvents = true;

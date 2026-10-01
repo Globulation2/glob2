@@ -20,7 +20,7 @@ namespace GAGCore
 	int GraphicContext::pollEvent(SDL_Event *event)
 	{
 		if (!_gc) return SDL_PollEvent(event);
-		assert(SDL_ThreadID() == _gc->eventThread);
+		assert(SDL_GetCurrentThreadID() == _gc->eventThread);
 		int result;
 		{
 			FlagScope scope(_gc->pollingEvents);
@@ -35,7 +35,7 @@ namespace GAGCore
 	{
 		auto *gfx = static_cast<GraphicContext *>(userdata);
 		// SDL also invokes watchers for events pushed by other threads.
-		if (SDL_ThreadID() != gfx->eventThread) return 1;
+		if (SDL_GetCurrentThreadID() != gfx->eventThread) return 1;
 		if (gfx->pollingEvents && !gfx->presenting && (event->type >= SDL_EVENT_WINDOW_FIRST && event->type <= SDL_EVENT_WINDOW_LAST)
 			&& event->window.windowID == SDL_GetWindowID(gfx->window)
 			&& event->type == SDL_EVENT_WINDOW_EXPOSED)

@@ -213,7 +213,9 @@ void resizeChecks(bool gpu, bool benchmarkMode)
 	gfx.drawFilledRect(0, 0, 640, 480, Color(0, 0, 255));
 	gfx.resize(960, 720);
 	gfx.recursiveExpose();
+	const int presentationsBeforeForeign = gfx.cachedPresentations;
 	std::thread foreign([&] { gfx.expose(); }); foreign.join();
+	require(gfx.cachedPresentations == presentationsBeforeForeign, "Foreign thread presented the graphics cache");
 	gfx.expose(true);
 #ifdef HAVE_OPENGL
 	GLint viewport[4], scissor[4], binding;
