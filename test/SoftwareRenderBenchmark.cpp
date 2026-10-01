@@ -115,9 +115,6 @@ class SoftwareRenderBenchmark
 				for (int i = 0; i < Building::MAX_COUNT; i++)
 					buildings += gui.game.teams[t]->myBuildings[i] != nullptr;
 			}
-			printf("CAMERA zoom=%.4f fractional=%.4f,%.4f offset=%.4f,%.4f\n", gui.camera.zoom,
-				   gui.camera.fractionX(), gui.camera.fractionY(), gui.camera.offsetX,
-				   gui.camera.offsetY);
 			if (getenv("PROFILE_FRACTION"))
 			{
 				gui.updateCamera();
@@ -132,6 +129,9 @@ class SoftwareRenderBenchmark
 				throw std::runtime_error("Camera offsets must be finite");
 			gui.viewportX = gui.camera.tileX();
 			gui.viewportY = gui.camera.tileY();
+			printf("CAMERA zoom=%.4f fractional=%.4f,%.4f offset=%.4f,%.4f\n", gui.camera.zoom,
+				   gui.camera.fractionX(), gui.camera.fractionY(), gui.camera.offsetX,
+				   gui.camera.offsetY);
 			const int frames = getenv("PROFILE_FRAMES") ? atoi(getenv("PROFILE_FRAMES")) : 240;
 			const int warmup = getenv("PROFILE_WARMUP") ? atoi(getenv("PROFILE_WARMUP")) : 30;
 			if (frames < 1 || warmup < 0)

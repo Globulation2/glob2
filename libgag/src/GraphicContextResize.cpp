@@ -61,10 +61,15 @@ namespace GAGCore
 				if (needsBackend) { backend = makeSoftwareRenderBackend(replacement.get()); backend->nativeLogicalSize(logicalW,logicalH); }
 			}
 			catch (const std::exception &error) { SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION,"Native software target: %s",error.what()); return false; }
-			if (nativeSoftware) renderer.reset();
+			if (nativeSoftware) renderer = nullptr;
 			freeOwnedSurface();
 			sdlsurface = replacement.release(); ownsSurface = true;
-			if (cpu) { renderer = std::move(backend); nativeSoftware = needsBackend; }
+			if (cpu)
+			{
+				softwareRasterizer = std::move(backend);
+				renderer = softwareRasterizer.get();
+				nativeSoftware = needsBackend;
+			}
 		}
 		windowW=pointsW; windowH=pointsH; drawableW=pixelsW; drawableH=pixelsH;
 		desktopLogicalW=logicalW; desktopLogicalH=logicalH;

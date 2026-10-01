@@ -110,7 +110,8 @@ namespace GAGCore
 
     OpaqueRectangleBatch::OpaqueRectangleBatch(GraphicContext *context)
     {
-        bool enabled = context->hasPortableRenderer();
+        // CPU rectangles use direct fills; only accelerated paths batch geometry.
+        bool enabled = context->getOptionFlags() & GraphicContext::PORTABLEGPU;
 #ifdef HAVE_OPENGL
         enabled = enabled || (context->getOptionFlags() & GraphicContext::USEGPU);
 #endif
@@ -329,7 +330,6 @@ namespace GAGCore
 
 	void GraphicContext::drawPixel(int x, int y, const Color& color)
 	{
-		if (renderer) prepareDraw();
         if (renderer) { drawPixel(float(x), float(y), color); return; }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
@@ -341,7 +341,6 @@ namespace GAGCore
 
 	void GraphicContext::drawPixel(float x, float y, const Color& color)
 	{
-		if (renderer) prepareDraw();
         if (renderer) { drawFilledRect(x, y, 1.0f, 1.0f, color); return; }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
@@ -354,7 +353,6 @@ namespace GAGCore
 
 	void GraphicContext::drawRect(int x, int y, int w, int h, const Color& color)
 	{
-		if (renderer) prepareDraw();
         if (renderer) { drawRect(float(x), float(y), float(w), float(h), color); return; }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
@@ -405,7 +403,6 @@ namespace GAGCore
 
 	void GraphicContext::drawFilledRect(int x, int y, int w, int h, const Color& color)
 	{
-		if (renderer) prepareDraw();
         if (renderer) { drawFilledRect(float(x), float(y), float(w), float(h), color); return; }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
@@ -597,25 +594,21 @@ namespace GAGCore
 	// compat... this is there because it sems gcc is not able to do function overloading with several levels of inheritance
 	void GraphicContext::drawPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 	{
-		if (renderer) prepareDraw();
 		drawPixel(x, y, Color(r, g, b, a));
 	}
 
 	void GraphicContext::drawRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 	{
-		if (renderer) prepareDraw();
 		drawRect(x, y, w, h, Color(r, g, b, a));
 	}
 
 	void GraphicContext::drawFilledRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 	{
-		if (renderer) prepareDraw();
 		drawFilledRect(x, y, w, h, Color(r, g, b, a));
 	}
 
 	void GraphicContext::drawLine(int x1, int y1, int x2, int y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 	{
-		if (renderer) prepareDraw();
 		drawLine(x1, y1, x2, y2, Color(r, g, b, a));
 	}
 
@@ -624,7 +617,6 @@ namespace GAGCore
 	// adjacent lines (charts, sliders, training bars) leave gaps between them.
 	void GraphicContext::drawVertLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 	{
-		if (renderer) prepareDraw();
         if (renderer) { drawFilledRect(x,y,1, l,Color(r,g,b,a)); return; }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
@@ -636,7 +628,6 @@ namespace GAGCore
 
 	void GraphicContext::drawVertLine(int x, int y, int l, const Color& color)
 	{
-		if (renderer) prepareDraw();
         if (renderer) { drawFilledRect(x,y,1, l,color); return; }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
@@ -648,7 +639,6 @@ namespace GAGCore
 
 	void GraphicContext::drawHorzLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 	{
-		if (renderer) prepareDraw();
         if (renderer) { drawFilledRect(x,y,l, 1,Color(r,g,b,a)); return; }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
@@ -660,7 +650,6 @@ namespace GAGCore
 
 	void GraphicContext::drawHorzLine(int x, int y, int l, const Color& color)
 	{
-		if (renderer) prepareDraw();
         if (renderer) { drawFilledRect(x,y,l, 1,color); return; }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
@@ -672,7 +661,6 @@ namespace GAGCore
 
 	void GraphicContext::drawCircle(int x, int y, int radius, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 	{
-		if (renderer) prepareDraw();
 		drawCircle(x, y, radius, Color(r, g, b, a));
 	}
 }
