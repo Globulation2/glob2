@@ -12,7 +12,8 @@ export type Data = null | boolean | number | string | Data[] | {[key: string]: D
 
 /** Unit/building namespaces are separate. New/reused slots and conversion get a
  * fresh generation; reset, upgrade and repair preserve identity. Deletion makes
- * lookup return null. Save/load preserves current-format identity pairs. */
+ * lookup return null. Saves at format 125 and later preserve identity pairs;
+ * released formats 58–124 receive identities through version-gated loading. */
 export interface EntityRef { id: number; generation: number }
 export type UnitType = 0 | 1 | 2; // worker, explorer, warrior
 export type Priority = -1 | 0 | 1; // low, normal, high

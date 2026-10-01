@@ -1017,6 +1017,13 @@ one-local-player header and seed they need. Design and numbers:
 See the [scripting guide](../docs/development/javascript.md) and
 [API reference](../docs/development/javascript-api.md) for the public boundary.
 
+Current saves use format 125, preserving released format 124's experiment-header
+layout through version-gated loading. Formats 58–124 receive scripting identities
+on load; format 125 validates its stored identities and complete generation tables.
+The minimum save version remains 58, the network protocol is 48, and the replay
+minimum remains 123. Draft JavaScript fixtures use format 125; released historical
+fixtures remain unchanged.
+
 Build `unit-tests engine-tests` with SCons and run
 `python3 test/run_tests.py --build-dir build/darwin/client/release --filter 'JavaScript*/*'`
 (use the build directory for your platform).

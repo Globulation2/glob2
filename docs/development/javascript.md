@@ -230,10 +230,15 @@ Map source/state, RNG, presentation/objectives/hints and entity generation count
 participate in checksums when JavaScript map scripts are active. AI sources/state
 use existing player configuration/save mechanisms, and orders use the existing
 multiplayer/replay path. No additional synchronization protocol is introduced.
-Save format 124 uses version-gated loading with minimum save version 58 retained;
-network/YOG protocol 47 rejects older clients; replay minimum remains 123.
-Current saves preserve and validate entity identities and their counters; truncated
-counter tables are rejected, including missing entries for unused entity slots.
+Save format 125 adds the scripting identity fields and JavaScript map mode to
+format 124's released experiment-header layout. The loader preserves that layout
+for released format-124 saves and assigns entity identities when loading formats
+58–124. Format-125 saves preserve and validate stored identities and generation
+counters; truncated counter tables are rejected, including missing entries for
+unused entity slots. The minimum save version remains 58.
+Network/YOG protocol 48 retains the released client acceptance boundary; older
+protocols are rejected. The replay minimum remains 123. Scripting profile 1 is a
+separate unpublished contract; its number does not negotiate either engine gate.
 Profile versioning and API-maintenance obligations are in the reference.
 
 ## Verify a change

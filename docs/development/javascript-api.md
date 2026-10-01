@@ -81,8 +81,10 @@ both fields and can be passed directly as references. IDs are accepted in
 for each new entity, slot reuse and conversion into the destination team/slot.
 Converting back cannot restore an earlier reference. Level resets, upgrades,
 repairs and ordinary state changes preserve identity. Deletion invalidates lookup.
-Current saves preserve and validate live identities and generation counters;
-older saves receive identities during version-gated loading. Preserve the returned pair; never invent a generation or
+Save format 125 and later preserve and validate live identities and generation
+counters; released formats 58–124 receive identities during version-gated loading.
+Format 124's experiment header remains compatible. Preserve the returned pair;
+never invent a generation or
 assume an ID still identifies the same entity after loading or a later callback.
 A missing or nonnumeric generation returns `null`; a missing/invalid ID throws.
 
@@ -364,7 +366,9 @@ There are no spawn, terrain-write, objective-create or gameplay-order effects.
 Profile 1 is stored in AI source configuration (`glob2-js/1\n`) and saved runtime
 state; unsupported stored profiles are rejected. `ctx` has no runtime API-version
 property and there is no negotiation mechanism. Save format and network protocol
-versions are separate engine compatibility gates, described in the guide.
+versions are separate engine compatibility gates: current saves use format 125
+with minimum 58, the network protocol is 48, and replay acceptance starts at 123.
+See the [guide](javascript.md) for released-format loading behavior.
 
 When changing the exposed contract, update this reference, the declarations,
 examples and regression coverage together. Changes to numeric behavior,
