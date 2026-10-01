@@ -138,8 +138,8 @@ def verify_apk(apk, arch, sdk, root=ROOT, require_dependency_manifest=True):
         else:
             from build_layout import build_identity
             from mobile_toolchain import discover
-            identity=build_identity({'target':'android','arch':arch,'release':1})
-            prefix=dependency_prefix(root,identity,discover(identity,{'android_sdk':str(sdk)})['fingerprint'])
+            build_configuration = build_identity({'target':'android','arch':arch,'release':1})
+            prefix=dependency_prefix(root,build_configuration,discover(build_configuration,{'android_sdk':str(sdk)})['fingerprint'])
         manifest = prefix / "manifest.json"
         if not manifest.is_file():
             raise ValueError("Missing Android dependency manifest: " + str(manifest))
