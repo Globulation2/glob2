@@ -16,8 +16,7 @@
 #endif
 
 
-namespace
-{
+// Keep this harness in the global namespace to match Game's friend declaration.
 class PointBarRenderTest
 {
 public:
@@ -79,7 +78,6 @@ public:
         }
     }
 };
-}
 
 TEST_SUITE("PointBarRender")
 {
