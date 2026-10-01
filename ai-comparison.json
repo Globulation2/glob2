@@ -1,0 +1,158 @@
+{
+  "checkpointSHA256": "69292592d00836e13e6922348a73f97037d940fc5a2c4db3ab4ad21bea9cb325",
+  "results": [
+    {
+      "label": "ai-reference",
+      "exitCode": 0,
+      "command": [
+        "/Users/bradley/.codex/worktrees/a8b6/glob2/artifacts/render-profile/ai-reference-benchmark",
+        "-g",
+        "-F",
+        "-m",
+        "-s",
+        "1024x600"
+      ],
+      "environment": {
+        "GLOB2_USER_DATA_DIR": "/Users/bradley/.codex/worktrees/a8b6/glob2/artifacts/render-profile/map-profile",
+        "GLOB2_UI_SCALE": "1",
+        "SDL_AUDIODRIVER": "dummy",
+        "GLOB2_BENCH_FLAT": "1",
+        "GLOB2_BENCH_FULL_MAP": "1",
+        "GLOB2_BENCH_GAME": "/Users/bradley/.codex/worktrees/a8b6/glob2/artifacts/render-profile/ai-match-eight/checkpoint-20000.game.gz",
+        "GLOB2_BENCH_MIN_UNITS": "3000",
+        "GLOB2_BENCH_AI_TICKS": "100",
+        "GLOB2_BENCH_BARS": "1",
+        "GLOB2_BENCH_FRAMES": "30",
+        "GLOB2_BENCH_NATIVE_CLOUD_DETAIL": "1",
+        "GLOB2_BENCH_CAPTURE": "/Users/bradley/.codex/worktrees/a8b6/glob2/artifacts/render-profile/ai-reference.ppm"
+      },
+      "binarySHA256": "71c7866aceaa8a3914a89055e114729d96e9fc3415c2b72112c1b0c06cb1a4fe",
+      "measurements": [
+        "GPU=Apple M3 map=/Users/bradley/.codex/worktrees/a8b6/glob2/artifacts/render-profile/ai-match-eight/checkpoint-20000.game.gz 256x256 viewport=864x600 frames=30",
+        "AI checkpoint tick=20100 units=2518 natural_units=768 advanced_ticks=100",
+        "flat zoom=0.073242 world=11797x8192 total_units=2518 shader=1 cloud_grid_limit=0",
+        "2D no clouds median=1366.834 ms p95=1701.832 ms",
+        "2D no clouds process_cpu_median=124.570 ms process_cpu_p95=135.394 ms",
+        "draw_calls=67271 texture_bytes=255762720",
+        "simulation_checksum=ffd0609c",
+        "2D clouds median=3847.367 ms p95=4610.792 ms",
+        "2D clouds process_cpu_median=373.536 ms process_cpu_p95=408.058 ms",
+        "draw_calls=67273 texture_bytes=255762720",
+        "simulation_checksum=ffd0609c"
+      ]
+    },
+    {
+      "label": "ai-optimized",
+      "exitCode": 0,
+      "command": [
+        "/Users/bradley/.codex/worktrees/a8b6/glob2/build/darwin/client/release/test/torus-render-benchmark",
+        "-g",
+        "-F",
+        "-m",
+        "-s",
+        "1024x600"
+      ],
+      "environment": {
+        "GLOB2_USER_DATA_DIR": "/Users/bradley/.codex/worktrees/a8b6/glob2/artifacts/render-profile/map-profile",
+        "GLOB2_UI_SCALE": "1",
+        "SDL_AUDIODRIVER": "dummy",
+        "GLOB2_BENCH_FLAT": "1",
+        "GLOB2_BENCH_FULL_MAP": "1",
+        "GLOB2_BENCH_GAME": "/Users/bradley/.codex/worktrees/a8b6/glob2/artifacts/render-profile/ai-match-eight/checkpoint-20000.game.gz",
+        "GLOB2_BENCH_MIN_UNITS": "3000",
+        "GLOB2_BENCH_AI_TICKS": "100",
+        "GLOB2_BENCH_BARS": "1",
+        "GLOB2_BENCH_FRAMES": "30",
+        "GLOB2_BENCH_CAPTURE": "/Users/bradley/.codex/worktrees/a8b6/glob2/artifacts/render-profile/ai-optimized.ppm"
+      },
+      "binarySHA256": "f6fae13bb48918b34f1c38512e2e3616f25100087b30dc4e79e5d1be037ba3ba",
+      "measurements": [
+        "GPU=Apple M3 map=/Users/bradley/.codex/worktrees/a8b6/glob2/artifacts/render-profile/ai-match-eight/checkpoint-20000.game.gz 256x256 viewport=864x600 frames=30",
+        "AI checkpoint tick=20100 units=2518 natural_units=768 advanced_ticks=100",
+        "flat zoom=0.073242 world=11797x8192 total_units=2518 shader=1 cloud_grid_limit=64",
+        "2D no clouds median=1023.639 ms p95=1277.677 ms",
+        "2D no clouds process_cpu_median=90.957 ms process_cpu_p95=99.263 ms",
+        "draw_calls=25124 texture_bytes=255762720",
+        "simulation_checksum=ffd0609c",
+        "2D clouds median=1071.639 ms p95=1434.613 ms",
+        "2D clouds process_cpu_median=98.971 ms process_cpu_p95=112.422 ms",
+        "draw_calls=25126 texture_bytes=255762720",
+        "simulation_checksum=ffd0609c"
+      ]
+    },
+    {
+      "label": "ai-sweep",
+      "exitCode": 0,
+      "command": [
+        "/Users/bradley/.codex/worktrees/a8b6/glob2/build/darwin/client/release/test/torus-render-benchmark",
+        "-g",
+        "-F",
+        "-m",
+        "-s",
+        "1024x600"
+      ],
+      "environment": {
+        "GLOB2_USER_DATA_DIR": "/Users/bradley/.codex/worktrees/a8b6/glob2/artifacts/render-profile/map-profile",
+        "GLOB2_UI_SCALE": "1",
+        "SDL_AUDIODRIVER": "dummy",
+        "GLOB2_BENCH_FLAT": "1",
+        "GLOB2_BENCH_FULL_MAP": "1",
+        "GLOB2_BENCH_GAME": "/Users/bradley/.codex/worktrees/a8b6/glob2/artifacts/render-profile/ai-match-eight/checkpoint-20000.game.gz",
+        "GLOB2_BENCH_MIN_UNITS": "3000",
+        "GLOB2_BENCH_AI_TICKS": "100",
+        "GLOB2_BENCH_BARS": "1",
+        "GLOB2_BENCH_FRAMES": "120",
+        "GLOB2_BENCH_CAMERA_SWEEP": "1",
+        "GLOB2_BENCH_CAPTURE": "/Users/bradley/.codex/worktrees/a8b6/glob2/artifacts/render-profile/ai-sweep.ppm"
+      },
+      "binarySHA256": "f6fae13bb48918b34f1c38512e2e3616f25100087b30dc4e79e5d1be037ba3ba",
+      "measurements": [
+        "GPU=Apple M3 map=/Users/bradley/.codex/worktrees/a8b6/glob2/artifacts/render-profile/ai-match-eight/checkpoint-20000.game.gz 256x256 viewport=864x600 frames=120",
+        "AI checkpoint tick=20100 units=2518 natural_units=768 advanced_ticks=100",
+        "flat zoom=0.073242 world=11797x8192 total_units=2518 shader=1 cloud_grid_limit=64",
+        "2D no clouds median=54.755 ms p95=1422.474 ms",
+        "2D no clouds process_cpu_median=7.094 ms process_cpu_p95=133.970 ms",
+        "draw_calls=12554 texture_bytes=255762720",
+        "simulation_checksum=ffd0609c",
+        "2D clouds median=127.596 ms p95=1770.048 ms",
+        "2D clouds process_cpu_median=11.686 ms process_cpu_p95=150.895 ms",
+        "draw_calls=12556 texture_bytes=255762720",
+        "simulation_checksum=ffd0609c"
+      ]
+    }
+  ],
+  "scenario": {
+    "generator": 15,
+    "mapSeed": 42,
+    "mapDimensions": [
+      256,
+      256
+    ],
+    "teams": 8,
+    "gameSeed": 19,
+    "players": [
+      "maxima",
+      "maxima",
+      "maxima",
+      "maxima",
+      "maxima",
+      "maxima",
+      "maxima",
+      "maxima"
+    ],
+    "checkpointTick": 20000,
+    "naturalCheckpointUnits": 768,
+    "stressTargetPopulation": 3000,
+    "AIWarmupTicks": 100,
+    "survivingUnits": 2518,
+    "reveal": "DRAW_WHOLE_MAP",
+    "cameraZoom": 0.0732421875,
+    "host": "Apple M3",
+    "limitations": [
+      "Process CPU measurements from a heavily contended host; elapsed timings are not idle-machine FPS.",
+      "Native GL renderer; no Android or iOS device performance qualification.",
+      "Thousands-of-units AI scenario includes deliberately added units."
+    ],
+    "mappedUnitsExcludingInsideBuildings": 2441
+  }
+}

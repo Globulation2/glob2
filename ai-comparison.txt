@@ -1,0 +1,36 @@
+ai-reference 0 
+GPU=Apple M3 map=/Users/bradley/.codex/worktrees/a8b6/glob2/artifacts/render-profile/ai-match-eight/checkpoint-20000.game.gz 256x256 viewport=864x600 frames=30
+AI checkpoint tick=20100 units=2518 natural_units=768 advanced_ticks=100
+flat zoom=0.073242 world=11797x8192 total_units=2518 shader=1 cloud_grid_limit=0
+2D no clouds median=1366.834 ms p95=1701.832 ms
+2D no clouds process_cpu_median=124.570 ms process_cpu_p95=135.394 ms
+draw_calls=67271 texture_bytes=255762720
+simulation_checksum=ffd0609c
+2D clouds median=3847.367 ms p95=4610.792 ms
+2D clouds process_cpu_median=373.536 ms process_cpu_p95=408.058 ms
+draw_calls=67273 texture_bytes=255762720
+simulation_checksum=ffd0609c
+ai-optimized 0 
+GPU=Apple M3 map=/Users/bradley/.codex/worktrees/a8b6/glob2/artifacts/render-profile/ai-match-eight/checkpoint-20000.game.gz 256x256 viewport=864x600 frames=30
+AI checkpoint tick=20100 units=2518 natural_units=768 advanced_ticks=100
+flat zoom=0.073242 world=11797x8192 total_units=2518 shader=1 cloud_grid_limit=64
+2D no clouds median=1023.639 ms p95=1277.677 ms
+2D no clouds process_cpu_median=90.957 ms process_cpu_p95=99.263 ms
+draw_calls=25124 texture_bytes=255762720
+simulation_checksum=ffd0609c
+2D clouds median=1071.639 ms p95=1434.613 ms
+2D clouds process_cpu_median=98.971 ms process_cpu_p95=112.422 ms
+draw_calls=25126 texture_bytes=255762720
+simulation_checksum=ffd0609c
+ai-sweep 0 
+GPU=Apple M3 map=/Users/bradley/.codex/worktrees/a8b6/glob2/artifacts/render-profile/ai-match-eight/checkpoint-20000.game.gz 256x256 viewport=864x600 frames=120
+AI checkpoint tick=20100 units=2518 natural_units=768 advanced_ticks=100
+flat zoom=0.073242 world=11797x8192 total_units=2518 shader=1 cloud_grid_limit=64
+2D no clouds median=54.755 ms p95=1422.474 ms
+2D no clouds process_cpu_median=7.094 ms process_cpu_p95=133.970 ms
+draw_calls=12554 texture_bytes=255762720
+simulation_checksum=ffd0609c
+2D clouds median=127.596 ms p95=1770.048 ms
+2D clouds process_cpu_median=11.686 ms process_cpu_p95=150.895 ms
+draw_calls=12556 texture_bytes=255762720
+simulation_checksum=ffd0609c

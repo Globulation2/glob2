@@ -1,0 +1,10 @@
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+===============================================================================
+[doctest] test cases:   4 |   4 passed | 0 failed | 0 skipped
+[doctest] assertions: 472 | 472 passed | 0 failed |
+[doctest] Status: SUCCESS!

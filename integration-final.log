@@ -1,0 +1,14 @@
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+Original resource atlas maximum pixel difference: 0/255
+HD resource atlas maximum pixel difference: 0/255
+Torus worker marker bright pixels: 456 -> 587
+Torus selection circle: 2 atlas texels wide at interface scale 2
+Torus selection markers passed
+Manual/automatic modes, saved option and pointer hold passed
+Navigation, GL state, picking and reload lifecycle passed
+Rectangular-map rendering, fitting, picking and cache changes passed
+===============================================================================
+[doctest] test cases:      1 |      1 passed | 0 failed | 6 skipped
+[doctest] assertions: 241502 | 241502 passed | 0 failed |
+[doctest] Status: SUCCESS!
