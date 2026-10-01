@@ -329,7 +329,7 @@ jobs:
         env:
           LIBGL_ALWAYS_SOFTWARE: 1
         # The [map-generators] contract runs in the linux-map-generators telemetry job.
-        run: python3 test/run_tests.py --binary engine --build-dir build/linux/client/release --shard ${{ matrix.shard }}/4 --exclude-tag map-generators --junit artifacts/tests/engine-junit.xml
+        run: python3 test/run_tests.py --binary engine --build-dir build/linux/client/release --fullscreen --shard ${{ matrix.shard }}/4 --exclude-tag map-generators --junit artifacts/tests/engine-junit.xml
       - name: Upload native test results
         if: always()
         continue-on-error: true

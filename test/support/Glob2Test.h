@@ -91,6 +91,10 @@ namespace glob2test
 	// rewrite their expected text instead of checking it.
 	bool updatingFixtures();
 
+	// Fullscreen transitions are disruptive on a desktop. Enable explicitly with
+	// run_tests.py --fullscreen (or GLOB2_TEST_FULLSCREEN=1 for a direct binary run).
+	bool fullscreenEnabled();
+
 	// Compares `actual` with test/fixtures/<relative>, line endings normalised, and
 	// reports the first differing line. Rewrites the fixture when updatingFixtures().
 	void expectGolden(const std::string& relative, const std::string& actual);
