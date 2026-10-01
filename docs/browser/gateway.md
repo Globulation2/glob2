@@ -122,9 +122,11 @@ multiplayer suite. The default browser/browser cases use no AI and Cortex;
 cross-play currently tests a two-human match on the build host. These short
 matches do not qualify sustained platform parity, account migration, or recovery.
 
-Native TCP currently runs SDL networking on a worker. SDL's connect/send calls
-still need bounded cancellation/deadline handling before release qualification;
-native WSS is described below. The browser transport is
+Native TCP runs asynchronous SDL3_net resolution, connection and queued writes
+on a worker. Resolution and connection waits poll cancellation every ten
+milliseconds; closing joins the worker before releasing its socket. SDL_net's
+pending writes count toward the transport's queue limit. Native WSS is described
+below. The browser transport is
 callback driven and does not create a worker thread or use Asyncify itself.
 
 ## Native secure gateway connections
@@ -150,8 +152,8 @@ Connection establishment and writes have ten-second deadlines; WebSocket idle
 checking uses a thirty-second timeout with keepalive. Outbound/inbound payload
 queues are bounded by 1 MiB, incoming messages by 64 KiB, and incoming queued
 messages by 256. Outbound WebSocket chunks are at most 16 KiB. Closing cancels
-socket operations; stalled TLS cancellation is tested. System DNS resolver
-cancellation and the older SDL TCP worker still need platform-wide qualification.
+socket operations; stalled TLS cancellation is tested. Native WSS system DNS
+resolver cancellation still needs platform-wide qualification.
 The legacy default YOG endpoint has not yet been migrated to a TLS-only connection
 policy; explicitly configure WSS for the secure self-hosted path.
 
