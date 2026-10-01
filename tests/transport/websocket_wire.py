@@ -34,4 +34,3 @@ def read_frame(sock):
     elif length == 127:
         length = struct.unpack('!Q', receive(sock, 8))[0]
     return flags & 15, receive(sock, length)
-
