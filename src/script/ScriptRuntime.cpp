@@ -91,12 +91,42 @@ struct Environment
 		JSValueOwner math(ctx, get(global.get(), "Math"));
 		set(math.get(), "random", JS_NewCFunction(ctx, random, "random", 0));
 	}
-	void freeze(JSValueConst value, unsigned depth = 0)
+	void freeze(JSValueConst value, unsigned depth = 0, JSModuleDef *module = nullptr)
 	{
 		if (!JS_IsObject(value) || !frozen.insert(JS_VALUE_GET_PTR(value)).second)
 			return;
 		if (depth > 64)
 			throw std::runtime_error("Source function/prototype nesting limit exceeded");
+		if (module)
+		{
+			if (JS_IsFunction(ctx, value))
+			{
+				int persistent = JS_Glob2ModuleFunction(ctx, module, value);
+				if (persistent < 0)
+					fail();
+				if (!persistent)
+					throw std::runtime_error(
+						"Source functions cannot hide private closure or class state");
+			}
+			else if (JS_IsProxy(value) || (JS_GetClassID(value) != 1 && !JS_IsArray(value)))
+				throw std::runtime_error("Source function properties cannot retain opaque objects");
+			else
+			{
+				JSValueOwner prototype(ctx, JS_GetPrototype(ctx, value));
+				if (JS_IsException(prototype.get()))
+					fail();
+				if (!JS_IsNull(prototype.get()))
+				{
+					JSValueOwner global(ctx, JS_GetGlobalObject(ctx));
+					JSValueOwner array(ctx, get(global.get(), "Array"));
+					JSValueOwner arrayPrototype(ctx, get(array.get(), "prototype"));
+					auto expected = JS_IsArray(value) ? arrayPrototype.get() : recordPrototype;
+					if (JS_VALUE_GET_PTR(prototype.get()) != JS_VALUE_GET_PTR(expected))
+						throw std::runtime_error(
+							"Source function properties cannot retain class instances");
+				}
+			}
+		}
 		charge(1);
 		JSEnumerationOwner enumeration(ctx);
 		if (JS_GetOwnPropertyNames(ctx, &enumeration.keys, &enumeration.count, value,
@@ -108,9 +138,9 @@ struct Environment
 			JSPropertyOwner property(ctx);
 			if (JS_GetOwnProperty(ctx, &property.descriptor, value, enumeration.keys[i].atom) < 0)
 				fail();
-			freeze(property.descriptor.value, depth + 1);
-			freeze(property.descriptor.getter, depth + 1);
-			freeze(property.descriptor.setter, depth + 1);
+			freeze(property.descriptor.value, depth + 1, module);
+			freeze(property.descriptor.getter, depth + 1, module);
+			freeze(property.descriptor.setter, depth + 1, module);
 		}
 		JSValueOwner global(ctx, JS_GetGlobalObject(ctx));
 		JSValueOwner object(ctx, get(global.get(), "Object"));
@@ -535,6 +565,9 @@ class GlobalsCodec
 			reference.items = {Value("function"), Value(function->second)};
 			return reference;
 		}
+		if (e.frozen.contains(identity))
+			throw std::runtime_error("Persistent globals cannot retain built-ins or function-owned "
+									 "objects; use independent top-level data");
 		const bool array = JS_IsArray(value);
 		if (JS_IsProxy(value) || (JS_GetClassID(value) != 1 && !array))
 			throw std::runtime_error("Persistent globals require plain objects and arrays");
@@ -790,7 +823,7 @@ class QuickRuntime : public Runtime
 					if (!persistent)
 						throw std::runtime_error("Global functions cannot capture private local "
 												 "state; use top-level variables");
-					e.freeze(value.get());
+					e.freeze(value.get(), 0, module);
 					if (JS_DefinePropertyValue(e.ctx, definitions->get(), enumeration.keys[i].atom,
 											   value.release(), JS_PROP_C_W_E) < 0)
 						e.fail();

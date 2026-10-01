@@ -104,7 +104,9 @@ Global data supports plain objects and arrays, including aliases, cycles, sparse
 arrays, property attributes, undefined and non-finite numbers. Null prototypes,
 property order, extensibility and signed zero survive save/load. Symbol keys,
 accessors, custom prototypes, class definitions/instances, Map/Set instances and host context
-objects cannot be retained globally. Functions must remain unchanged definitions
+objects cannot be retained globally. References to built-ins or function-owned
+objects (such as a function prototype) are also rejected; use independent
+top-level data. Functions must remain unchanged definitions
 from the source and may close over top-level variables. Functions with private
 closure locals, or functions created during a callback, cannot be saved;
 move their memory to top-level variables. Source functions are frozen and

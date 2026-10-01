@@ -397,6 +397,11 @@ TEST_CASE("JavaScript unsaveable global values fail explicitly" *
 	rejects("class Counter {static #n=0;static next(){return ++this.#n;}} function step(){return "
 			"Counter.next();}");
 	rejects("let data;function step(){data=new Map();}");
+	rejects("function helper(){} const data=helper.prototype;function step(){return "
+			"{same:data===helper.prototype};}");
+	rejects("function helper(){} helper.next=(()=>{let n=0;return ()=>++n;})();function "
+			"step(){return helper.next();}");
+	rejects("function helper(){} helper.data=new Map();function step(){helper.data.set(1,2);}");
 	rejects("let data;function step(){data=new (class {})();}");
 	rejects("function step(){Math.extra=1;}");
 }
