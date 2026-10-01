@@ -71,8 +71,16 @@ begins, or on interruption, and is dropped only if its brush is no longer active
 In the mobile/touch interface, flags on the flat map also accept selection within 24 screen points of their
 centres, independent of zoom. Exact flag hits retain priority; the extra halo
 does not override direct unit/building hits and chooses the nearest flag.
-Halo clicks select without moving the flag; direct flag grabs retain dragging.
 Desktop mouse selection retains its original exact-tile hit area.
+On touch, a contact that lands on one of the player's flags, or within that
+same reach, carries the flag instead of panning the map, including straight
+after a tap. Below the tap threshold it is still a tap and selects the flag.
+Past it the flag follows the finger at the offset it was grabbed, so a grab
+beside the flag never makes it jump. It pans the map at a world edge and lands
+with one dropped move order on release. Over the HUD the flag waits where it
+last was. A second finger, focus loss or rotation returns it to where it was
+grabbed and ignores the rest of the touch. Spectators and replays only pan.
+The torus view keeps panning, as its selection has no touch reach.
 On compact layouts the build and flag palettes are a rail rising from the
 bottom corner under the thumb: two columns of buildings in portrait (four in
 landscape), flags and zones in one column (one row in landscape), filled

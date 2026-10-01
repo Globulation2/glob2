@@ -284,6 +284,7 @@ void GameGUITouch::cancel(bool preservePreview)
 	}
 	placement.reset();
 	placementHold.reset();
+	releaseFlagDrag(true); // An interrupted carry returns the flag.
 	strokeHold.reset();
 	railTouched = -1;
 	peekOpen = false;
@@ -578,6 +579,20 @@ bool GameGUITouch::process(SDL_Event &event)
 	const Uint64 time = eventTime(event);
 	if (event.type == SDL_FINGERDOWN)
 	{
+		// A second finger while a flag is carried puts the flag back and ignores the
+		// rest of the touch. Before the flag moved, the touch becomes a pinch.
+		if (!fingers.empty() && flagDrag)
+		{
+			if (flagDrag->dragging)
+			{
+				releaseFlagDrag(true);
+				if (std::find(fingers.begin(), fingers.end(), key) == fingers.end())
+					fingers.push_back(key);
+				ignoreTouchSequence = true;
+				return true;
+			}
+			flagDrag.reset();
+		}
 		if (fingers.empty())
 		{
 			touchActive = true;
@@ -626,9 +641,16 @@ bool GameGUITouch::process(SDL_Event &event)
 									  : gui.selectionMode == GameGUI::TOOL_SELECTION  ? TouchMode::Placement
 									  : gui.selectionMode == GameGUI::BRUSH_SELECTION && !brushPan ? TouchMode::Paint
 																					  : TouchMode::Navigate;
+			// A contact on or near one of the player's flags carries the flag rather
+			// than the map, even straight after a tap.
+			Building *grabbed = !interfaceGesture && natural == TouchMode::Navigate ? grabbableFlag(point) : nullptr;
+			if (grabbed)
+				beginFlagDrag(*grabbed, key, point);
+			else
+				flagDrag.reset();
 			// The second contact of a double-tap zooms; any other contact first
 			// lets a waiting paint tap land, so nothing reorders the player's input.
-			const bool zoomDrag = !interfaceGesture && natural != TouchMode::Placement &&
+			const bool zoomDrag = !interfaceGesture && !grabbed && natural != TouchMode::Placement &&
 								  zoomTapArmed(event.tfinger.timestamp, point);
 			if (zoomDrag)
 				deferredStroke.reset(); // That tap was the first half of the zoom.
@@ -673,6 +695,25 @@ bool GameGUITouch::process(SDL_Event &event)
 	}
 	else if (event.type == SDL_FINGERMOTION)
 	{
+		if (flagDrag && flagDrag->pointer == key)
+		{
+			flagDrag->position = point;
+			if (!flagDrag->dragging &&
+				std::hypot(point.x - flagDrag->start.x, point.y - flagDrag->start.y) >= TouchInput::slop * scale)
+			{
+				// Past the tap threshold the finger carries the flag; the map stays put.
+				flagDrag->dragging = true;
+				gesture.cancel();
+				stopScrolling();
+				lastMapTapTicks.reset();
+				minimapPress.reset();
+			}
+			if (flagDrag->dragging)
+			{
+				advanceFlagDrag();
+				return true;
+			}
+		}
 		if (placementHold && placementHold->pointer == key)
 			placementHold->pointerPosition = point;
 		if (strokeHold && strokeHold->pointer == key)
@@ -700,6 +741,19 @@ bool GameGUITouch::process(SDL_Event &event)
 	}
 	else
 	{
+		if (flagDrag && flagDrag->pointer == key)
+		{
+			if (flagDrag->dragging)
+			{
+				flagDrag->position = point;
+				advanceFlagDrag();
+				releaseFlagDrag(false);
+				std::erase(fingers, key);
+				lastMapTapTicks.reset();
+				return true;
+			}
+			flagDrag.reset(); // A tap selects the flag as before.
+		}
 		if (placementHold && placementHold->pointer == key)
 			placementHold.reset();
 		if (strokeHold && strokeHold->pointer == key)
@@ -1252,19 +1306,12 @@ void GameGUITouch::interfaceTap(ViewPoint point)
 	gui.selectionPushed = gui.panPushed = gui.miniMapPushed = false;
 }
 
-void GameGUITouch::select(ViewPoint point)
+// The visible unit drawn under a screen point, matching draw order: ground units
+// first, then flying units, using their interpolated rectangles.
+Unit *GameGUITouch::unitAt(ViewPoint screenPoint) const
 {
-	const auto screenPoint = point;
-	point = {double(gui.mapMouseX(point.x)), double(gui.mapMouseY(point.y))};
-	if (gui.putMark && !globalContainer->isViewingGame())
-	{
-		gui.orderQueue.push_back(std::make_shared<MapMarkOrder>(
-			gui.localTeamNo, (int(point.x) / 32 + gui.viewportX) & gui.game.map.getMaskW(),
-			(int(point.y) / 32 + gui.viewportY) & gui.game.map.getMaskH()));
-		gui.putMark = false;
-		return;
-	}
-	gui.view.mouseUnit = nullptr;
+	const ViewPoint point{double(gui.mapMouseX(int(screenPoint.x))), double(gui.mapMouseY(int(screenPoint.y)))};
+	Unit *found = nullptr;
 	const auto &map = gui.game.map;
 	const int mx = int(point.x) / 32 + gui.viewportX, my = int(point.y) / 32 + gui.viewportY;
 	const Uint32 visible =
@@ -1295,8 +1342,24 @@ void GameGUITouch::select(ViewPoint point)
 				if (point.x > px && point.x < px + 32 && point.y > py && point.y < py + 32 &&
 					(wholeMap || map.isFOWDiscovered(x, y, visible) ||
 					 Unit::GIDtoTeam(gid) == gui.localTeamNo))
-					gui.view.mouseUnit = unit;
+					found = unit;
 			}
+	return found;
+}
+
+void GameGUITouch::select(ViewPoint point)
+{
+	const auto screenPoint = point;
+	point = {double(gui.mapMouseX(point.x)), double(gui.mapMouseY(point.y))};
+	if (gui.putMark && !globalContainer->isViewingGame())
+	{
+		gui.orderQueue.push_back(std::make_shared<MapMarkOrder>(
+			gui.localTeamNo, (int(point.x) / 32 + gui.viewportX) & gui.game.map.getMaskW(),
+			(int(point.y) / 32 + gui.viewportY) & gui.game.map.getMaskH()));
+		gui.putMark = false;
+		return;
+	}
+	gui.view.mouseUnit = unitAt(screenPoint);
 	const bool wasInspecting = inspectedBuilding() != nullptr;
 	const bool wasOpen = panelOpen;
 	const int oldDisplay = gui.displayMode;
@@ -1326,6 +1389,7 @@ void GameGUITouch::prepareDraw()
 		return;
 	gui.checkSelection();
 	advancePlacement();
+	advanceFlagDrag();
 	if (deferredStroke &&
 		SDL_GetTicks64() - deferredStroke->ticks >= InGameTouchTheme::doubleTapWindowMs)
 		commitDeferredStroke();

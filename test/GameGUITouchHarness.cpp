@@ -2626,6 +2626,300 @@ class GameGUITouchHarness
 	// across the seam, a touch or suspendInput stops it, the phone build palette
 	// coasts and rubber-bands, a mouse drag has no momentum, and nothing reaches
 	// the simulation. Time is explicit: event timestamps and gui.step(now).
+	// Flags move by dragging them on touch. A contact on a flag, or within the
+	// 24-point reach that selects flags, carries the flag and never pans the map;
+	// a tap still selects; a second finger or an interruption puts the flag back.
+	static void flagDragging()
+	{
+		GameGUI gui;
+		auto map = Engine::loadMapHeader("maps/balanced.map");
+		GameHeader players;
+		players.setNumberOfPlayers(1);
+		players.getBasePlayer(0) = BasePlayer(0, "Touch", 0, BasePlayer::P_LOCAL);
+		require(gui.loadFromHeaders(map, players, true, true), "Fixture load failed");
+		gui.localTeamNo = 0;
+		gui.localPlayer = 0;
+		gui.adjustLocalTeam();
+		auto *gfx = globalContainer->gfx;
+		SDL_setenv("GLOB2_MOBILE_UI", "1", 1);
+		gfx->setResponsiveViewport(true, 800, 600);
+		auto resizeWindow = [&](int width, int height)
+		{
+			const int oldW = gfx->getW(), oldH = gfx->getH();
+			SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()), width, height);
+			SDL_Event resize{};
+			resize.type = SDL_WINDOWEVENT;
+			resize.window.event = SDL_WINDOWEVENT_SIZE_CHANGED;
+			GAGCore::GraphicContext::translateMouseEvent(&resize);
+			gui.viewportResized(oldW, oldH, gfx->getW(), gfx->getH());
+		};
+		Uint32 now = 20000;
+		auto finger = [&](Uint32 type, int id, double x, double y)
+		{
+			SDL_Event event{};
+			event.type = type;
+			event.tfinger.timestamp = now;
+			event.tfinger.touchId = 7;
+			event.tfinger.fingerId = id;
+			event.tfinger.x = float(x / gfx->getW());
+			event.tfinger.y = float(y / gfx->getH());
+			gui.processEvent(&event);
+			now += 16;
+		};
+		auto &gameMap = gui.game.map;
+		const int warflag = globalContainer->buildingsTypes.getTypeNum("warflag", 0, false);
+		for (const auto &[width, height] : {std::pair{390, 844}, std::pair{844, 390}})
+		{
+			resizeWindow(width, height);
+			require(gui.touch->usesHUD(), "Phone HUD must be active");
+			gui.clearSelection();
+			gui.touch->cancel();
+			gui.orderQueue.clear();
+			gui.camera.zoom = 1;
+			gui.camera.originX = gui.camera.originY = 0;
+			gui.updateCamera();
+			gui.viewportX = gui.camera.tileX();
+			gui.viewportY = gui.camera.tileY();
+			const double unit = gfx->logicalUnitsPerPoint();
+			const auto area = gui.touch->worldBounds();
+			// Open ground in the middle of the view: no building or unit within two
+			// tiles, so both the exact grab and the forgiving reach apply.
+			auto tileAt = [&](double x, double y)
+			{
+				return std::pair{((gui.mapMouseX(int(x)) >> 5) + gui.viewportX) & gameMap.getMaskW(),
+								 ((gui.mapMouseY(int(y)) >> 5) + gui.viewportY) & gameMap.getMaskH()};
+			};
+			auto clear = [&](int tx, int ty)
+			{
+				for (int dy = -2; dy <= 2; ++dy)
+					for (int dx = -2; dx <= 2; ++dx)
+						if (gameMap.getBuilding(tx + dx, ty + dy) != NOGBID ||
+							gameMap.getGroundUnit(tx + dx, ty + dy) != NOGUID ||
+							gameMap.getAirUnit(tx + dx, ty + dy) != NOGUID)
+							return false;
+				return true;
+			};
+			// Search outward from the middle, keeping every drag below at least
+			// five tiles from the view's edges, where a held flag pans the map.
+			const double reach = 5 * 32 * gui.camera.zoom;
+			auto inside = [&](double x, double y)
+			{
+				for (double dx : {-reach, 0., reach})
+					for (double dy : {-reach, 0., reach})
+						if (!area.contains({x + dx, y + dy}) || gui.touch->interfaceRegion({x + dx, y + dy}) != 0)
+							return false;
+				return true;
+			};
+			int fx = -1, fy = -1;
+			for (int ring = 0; ring <= 10 && fx < 0; ++ring)
+				for (int oy = -ring; oy <= ring && fx < 0; ++oy)
+					for (int ox = -ring; ox <= ring && fx < 0; ++ox)
+					{
+						if (std::max(std::abs(ox), std::abs(oy)) != ring)
+							continue;
+						const double x = area.x + area.w / 2 + ox * 32 * gui.camera.zoom;
+						const double y = area.y + area.h / 2 + oy * 32 * gui.camera.zoom;
+						if (!inside(x, y))
+							continue;
+						const auto [tx, ty] = tileAt(x, y);
+						if (clear(tx, ty))
+							fx = tx, fy = ty;
+					}
+			require(fx >= 0, "Flag fixture needs open ground in view");
+			Building *flag = gui.game.addBuilding(fx, fy, warflag, 0);
+			require(flag && std::find(gui.localTeam->virtualBuildings.begin(),
+									  gui.localTeam->virtualBuildings.end(),
+									  flag) != gui.localTeam->virtualBuildings.end(),
+					"The fixture flag is one of the player's flags");
+			const double tile = 32 * gui.camera.zoom;
+			auto centre = [&]()
+			{
+				// The copy of the flag in view, across the map's wrap.
+				const double w = gameMap.getW() * 32., h = gameMap.getH() * 32.;
+				const auto c = gui.camera.worldToScreen(
+					gui.camera.originX + MapCamera::wrap(gui.displayedPosX(*flag) * 32 + 16 - gui.camera.originX, w),
+					gui.camera.originY + MapCamera::wrap(gui.displayedPosY(*flag) * 32 + 16 - gui.camera.originY, h));
+				return GAGCore::ViewPoint{c.first, c.second};
+			};
+			auto moves = [&]()
+			{
+				std::vector<std::shared_ptr<OrderMoveFlag>> result;
+				for (const auto &order : gui.orderQueue)
+					if (order->getOrderType() == ORDER_MOVE_FLAG)
+						result.push_back(std::static_pointer_cast<OrderMoveFlag>(order));
+				return result;
+			};
+			// Lands the queued move as the simulation would, so the next case
+			// starts from settled state.
+			auto settle = [&]()
+			{
+				for (const auto &move : moves())
+				{
+					flag->posX = move->x;
+					flag->posY = move->y;
+				}
+				gui.orderQueue.clear();
+				gui.buildingGuiState.erase(flag->gid);
+			};
+			auto camera = [&]() { return std::pair{gui.camera.originX, gui.camera.originY}; };
+			const auto checksum = gui.game.checkSum();
+
+			// A drag that starts on the flag carries it three tiles; the map stays put.
+			auto start = centre();
+			auto cameraBefore = camera();
+			finger(SDL_FINGERDOWN, 1, start.x, start.y);
+			for (int i = 1; i <= 6; ++i)
+				finger(SDL_FINGERMOTION, 1, start.x + i * tile / 2, start.y);
+			require(gui.displayedPosX(*flag) == ((fx + 3) & gameMap.getMaskW()) &&
+						gui.displayedPosY(*flag) == fy,
+					"The flag follows the finger while it is dragged");
+			require(camera() == cameraBefore, "Dragging a flag must not pan the map");
+			finger(SDL_FINGERUP, 1, start.x + 3 * tile, start.y);
+			auto queued = moves();
+			require(queued.size() == 1 && queued[0]->gid == flag->gid &&
+						queued[0]->x == ((fx + 3) & gameMap.getMaskW()) && queued[0]->y == fy &&
+						queued[0]->drop,
+					"Releasing the flag sends one dropped move to where it was carried");
+			require(camera() == cameraBefore, "Releasing a flag must not pan the map");
+			require(gui.selectionMode == GameGUI::NO_SELECTION, "Carrying a flag does not open its inspector");
+			require(gui.game.checkSum() == checksum, "Moves wait in the order queue like any command");
+			settle();
+			const int afterX = flag->posX;
+
+			// Within the 24-point reach, the grab keeps its offset: no jump to the finger.
+			start = centre();
+			const GAGCore::ViewPoint beside{start.x + 18 * unit, start.y};
+			require(tileAt(beside.x, beside.y) != std::pair{flag->posX, flag->posY} ||
+						18 * unit < tile / 2,
+					"Near-grab fixture");
+			cameraBefore = camera();
+			finger(SDL_FINGERDOWN, 1, beside.x, beside.y);
+			for (int i = 1; i <= 4; ++i)
+				finger(SDL_FINGERMOTION, 1, beside.x, beside.y + i * tile / 2);
+			finger(SDL_FINGERUP, 1, beside.x, beside.y + 2 * tile);
+			queued = moves();
+			require(queued.size() == 1 && queued[0]->x == afterX &&
+						queued[0]->y == ((fy + 2) & gameMap.getMaskH()) && queued[0]->drop,
+					"A grab just beside the flag carries it by the finger's travel");
+			require(camera() == cameraBefore, "A grab beside the flag must not pan the map");
+			settle();
+
+			// A small wobble below the tap threshold is still a tap: it selects.
+			start = centre();
+			finger(SDL_FINGERDOWN, 1, start.x, start.y);
+			finger(SDL_FINGERMOTION, 1, start.x + 2 * unit, start.y);
+			finger(SDL_FINGERUP, 1, start.x + 2 * unit, start.y);
+			require(moves().empty(), "A tap on a flag sends no move");
+			require(gui.selectionMode == GameGUI::BUILDING_SELECTION && gui.selectionBuilding() == flag,
+					"A tap on a flag still selects it");
+			gui.clearSelection();
+			now += 1000; // Leave the double-tap window.
+
+			// Straight after a tap, a drag on the flag still carries the flag.
+			start = centre();
+			finger(SDL_FINGERDOWN, 1, start.x, start.y);
+			finger(SDL_FINGERUP, 1, start.x, start.y);
+			gui.clearSelection();
+			cameraBefore = camera();
+			const double zoom = gui.camera.zoom;
+			finger(SDL_FINGERDOWN, 1, start.x, start.y);
+			for (int i = 1; i <= 4; ++i)
+				finger(SDL_FINGERMOTION, 1, start.x, start.y - i * tile / 2);
+			finger(SDL_FINGERUP, 1, start.x, start.y - 2 * tile);
+			require(gui.camera.zoom == zoom && camera() == cameraBefore,
+					"A drag on a flag after a tap carries the flag, not a one-finger zoom");
+			queued = moves();
+			require(queued.size() == 1 && queued[0]->y == fy, "That drag carries the flag back up");
+			settle();
+			now += 1000;
+
+			// A drag well away from any flag pans the map as before.
+			start = centre();
+			cameraBefore = camera();
+			const GAGCore::ViewPoint away{start.x, start.y + 60 * unit};
+			require(!gui.touch->grabbableFlag(away), "Pan fixture lies outside the flag's reach");
+			finger(SDL_FINGERDOWN, 1, away.x, away.y);
+			for (int i = 1; i <= 4; ++i)
+				finger(SDL_FINGERMOTION, 1, away.x + i * 20 * unit, away.y);
+			finger(SDL_FINGERUP, 1, away.x + 80 * unit, away.y);
+			require(camera() != cameraBefore, "Dragging open ground still pans the map");
+			require(moves().empty(), "Panning the map moves no flag");
+			gui.touch->stopScrolling();
+			gui.camera.originX = cameraBefore.first;
+			gui.camera.originY = cameraBefore.second;
+			gui.viewportX = gui.camera.tileX();
+			gui.viewportY = gui.camera.tileY();
+			now += 1000;
+
+			// A second finger while carrying puts the flag back and ignores the touch.
+			start = centre();
+			const int homeX = flag->posX, homeY = flag->posY;
+			finger(SDL_FINGERDOWN, 1, start.x, start.y);
+			for (int i = 1; i <= 4; ++i)
+				finger(SDL_FINGERMOTION, 1, start.x + i * tile / 2, start.y);
+			require(gui.displayedPosX(*flag) != homeX, "The flag was being carried");
+			cameraBefore = camera();
+			finger(SDL_FINGERDOWN, 2, start.x - 80 * unit, start.y + 80 * unit);
+			queued = moves();
+			require(queued.size() == 1 && queued[0]->x == homeX && queued[0]->y == homeY && queued[0]->drop,
+					"A second finger returns the flag to where it was grabbed");
+			finger(SDL_FINGERMOTION, 1, start.x + 4 * tile, start.y);
+			finger(SDL_FINGERMOTION, 2, start.x - 40 * unit, start.y + 40 * unit);
+			finger(SDL_FINGERUP, 1, start.x + 4 * tile, start.y);
+			finger(SDL_FINGERUP, 2, start.x - 40 * unit, start.y + 40 * unit);
+			require(moves().size() == 1 && camera() == cameraBefore,
+					"The rest of a cancelled carry neither moves the flag nor the map");
+			settle();
+
+			// Losing focus mid-carry returns the flag too.
+			start = centre();
+			finger(SDL_FINGERDOWN, 1, start.x, start.y);
+			for (int i = 1; i <= 4; ++i)
+				finger(SDL_FINGERMOTION, 1, start.x, start.y + i * tile / 2);
+			SDL_Event focus{};
+			focus.type = SDL_WINDOWEVENT;
+			focus.window.event = SDL_WINDOWEVENT_FOCUS_LOST;
+			gui.touch->process(focus);
+			queued = moves();
+			require(queued.size() == 1 && queued[0]->x == homeX && queued[0]->y == homeY,
+					"An interrupted carry returns the flag");
+			require(!gui.touch->flagDrag, "An interrupted carry ends");
+			finger(SDL_FINGERUP, 1, start.x, start.y + 2 * tile);
+			settle();
+
+			// Held at the map's edge, the carried flag pans the map and rides along.
+			start = centre();
+			const GAGCore::ViewPoint edge{area.x + 6 * unit, start.y};
+			require(gui.touch->interfaceRegion(edge) == 0, "Edge fixture must be on the map");
+			finger(SDL_FINGERDOWN, 1, start.x, start.y);
+			for (int i = 1; i <= 8; ++i)
+				finger(SDL_FINGERMOTION, 1, start.x + (edge.x - start.x) * i / 8, start.y);
+			require(gui.touch->flagDrag && gui.touch->flagDrag->dragging, "The flag is carried to the edge");
+			const int beforeEdge = gui.viewportX;
+			const int carriedX = gui.displayedPosX(*flag);
+			gui.touch->flagDrag->lastUpdate = SDL_GetTicks64() - 400;
+			gui.touch->prepareDraw();
+			require(gui.viewportX != beforeEdge, "Holding a carried flag at the edge pans the map");
+			require(gui.displayedPosX(*flag) != carriedX, "The flag rides along as the map pans");
+			finger(SDL_FINGERUP, 1, edge.x, edge.y);
+			queued = moves();
+			require(queued.size() == 1 && queued[0]->drop && queued[0]->x == gui.displayedPosX(*flag),
+					"The flag lands where the edge pan took it");
+			settle();
+
+			// Spectators never carry flags: their drag pans the map.
+			globalContainer->liveSpectating = true;
+			require(!gui.touch->grabbableFlag(centre()), "A spectator cannot grab a flag");
+			globalContainer->liveSpectating = false;
+			require(gui.touch->grabbableFlag(centre()) == flag, "The player can grab the flag");
+			gui.localTeam->virtualBuildings.remove(flag);
+			gui.localTeam->myBuildings[Building::GIDtoID(flag->gid)] = nullptr;
+			delete flag;
+		}
+		SDL_setenv("GLOB2_MOBILE_UI", "0", 1);
+		resizeWindow(800, 600);
+	}
+
 	static void scrollPhysics()
 	{
 		GameGUI gui;
@@ -3044,6 +3338,17 @@ class GameGUITouchHarness
 };
 TEST_SUITE("GameGUITouch")
 {
+	GLOB2_TEST_CASE("a touch on or near a flag drags the flag; not the map", "[display]")
+	{
+		SDL_setenv("GLOB2_MOBILE_UI", "0", 1);
+		glob2test::GlobalsOptions options{.display = true, .loadStrings = true, .width = 800, .height = 600,
+		                                  .screenFlags = GAGCore::GraphicContext::PORTABLEGPU};
+		glob2test::HeadlessGlobals globals(options);
+		REQUIRE(SDLNet_Init() == 0);
+		GameGUITouchHarness::flagDragging();
+		SDLNet_Quit();
+		SDL_setenv("GLOB2_MOBILE_UI", "0", 1);
+	}
 	GLOB2_TEST_CASE("touch scroll momentum on the map; the HUD palette and the editor", "[display]")
 	{
 		SDL_setenv("GLOB2_MOBILE_UI", "0", 1);

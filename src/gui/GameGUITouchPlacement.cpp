@@ -5,6 +5,8 @@
 #include "GameGUIInternal.h"
 #include "GlobalContainer.h"
 #include "BuildingType.h"
+#include "Building.h"
+#include "Team.h"
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <algorithm>
@@ -145,4 +147,102 @@ void GameGUITouch::advancePlacement()
 		if (interfaceRegion(point) == 0)
 			updatePlacementPreview({point.x, point.y - (lifted ? InGameTouchTheme::fingerLift * unit : 0)});
 	}
+}
+
+// The local team's flag a new contact should carry instead of panning: one on
+// the touched tile, or on the phone HUD the nearest within the same 24-point
+// reach that selects flags. As with selection, that reach never claims a unit
+// or a building directly under the finger.
+Building *GameGUITouch::grabbableFlag(ViewPoint point)
+{
+	if (globalContainer->isViewingGame() || gui.torusView.active() || gui.putMark ||
+		!world().contains(point) || controls().contains(point) || interfaceRegion(point) != 0)
+		return nullptr;
+	gui.updateCamera();
+	if (!gui.camera.contains(int(point.x), int(point.y)))
+		return nullptr;
+	const int mx = gui.mapMouseX(int(point.x)), my = gui.mapMouseY(int(point.y));
+	if (auto *flag = gui.flagAt(mx, my, false))
+		return flag;
+	if (!usesHUD() || unitAt(point))
+		return nullptr;
+	int tileX, tileY;
+	gui.game.map.displayToMapCaseAligned(mx, my, &tileX, &tileY, gui.viewportX, gui.viewportY);
+	if (gui.game.map.getBuilding(tileX, tileY) != NOGBID)
+		return nullptr;
+	return gui.flagAt(mx, my, true);
+}
+
+Building *GameGUITouch::draggedFlag() const
+{
+	if (!flagDrag || flagDrag->team != gui.localTeamNo || globalContainer->isViewingGame())
+		return nullptr;
+	auto *team = gui.game.teams[Building::GIDtoTeam(Uint16(flagDrag->gid))];
+	auto *flag = team ? team->myBuildings[Building::GIDtoID(Uint16(flagDrag->gid))] : nullptr;
+	if (!flag || flag->gid != flagDrag->gid || flag->owner != gui.localTeam || !flag->type->isVirtual ||
+		flag->buildingState != Building::ALIVE)
+		return nullptr;
+	return flag;
+}
+
+void GameGUITouch::beginFlagDrag(Building &flag, TouchPlacementSession::Pointer pointer, ViewPoint point)
+{
+	const auto &map = gui.game.map;
+	const auto wrapped = [](double delta, double period)
+	{ return MapCamera::wrap(delta + period / 2, period) - period / 2; };
+	TouchFlagSession session;
+	session.pointer = pointer;
+	session.gid = flag.gid;
+	session.team = gui.localTeamNo;
+	session.start = session.position = point;
+	session.originX = gui.displayedPosX(flag);
+	session.originY = gui.displayedPosY(flag);
+	const double fingerX = gui.mapMouseX(int(point.x)) + gui.viewportX * 32.;
+	const double fingerY = gui.mapMouseY(int(point.y)) + gui.viewportY * 32.;
+	session.offsetX = wrapped(session.originX * 32. + 16 - fingerX, map.getW() * 32.);
+	session.offsetY = wrapped(session.originY * 32. + 16 - fingerY, map.getH() * 32.);
+	session.lastUpdate = SDL_GetTicks64();
+	flagDrag = session;
+}
+
+// Called on finger motion and once per rendered frame, so a flag held at a map
+// edge keeps the map panning under it. While the finger is over the HUD the flag
+// waits where it last was.
+void GameGUITouch::advanceFlagDrag()
+{
+	if (!flagDrag || !flagDrag->dragging)
+		return;
+	auto *flag = draggedFlag();
+	if (!flag)
+	{
+		flagDrag.reset();
+		return;
+	}
+	const auto point = flagDrag->position;
+	edgePan(point, flagDrag->lastUpdate);
+	if (interfaceRegion(point) != 0 || !world().contains(point))
+		return;
+	gui.updateCamera();
+	const int mx = int(std::floor(gui.mapMouseX(int(point.x)) + flagDrag->offsetX));
+	const int my = int(std::floor(gui.mapMouseY(int(point.y)) + flagDrag->offsetY));
+	int x, y;
+	gui.game.map.cursorToBuildingPos(mx, my, flag->type->width, flag->type->height, &x, &y,
+									 gui.viewportX, gui.viewportY);
+	if (x != gui.displayedPosX(*flag) || y != gui.displayedPosY(*flag))
+	{
+		gui.queueFlagMove(*flag, x, y, false);
+		flagDrag->moved = true;
+	}
+}
+
+// Lands the flag where it is, or with `restore` puts it back where it was
+// grabbed. A drag that moved the flag ends with a drop order, as a released mouse
+// sends; one that never left the flag's tile sends nothing.
+void GameGUITouch::releaseFlagDrag(bool restore)
+{
+	auto *flag = flagDrag && flagDrag->moved ? draggedFlag() : nullptr;
+	if (flag)
+		gui.queueFlagMove(*flag, restore ? flagDrag->originX : gui.displayedPosX(*flag),
+						  restore ? flagDrag->originY : gui.displayedPosY(*flag), true);
+	flagDrag.reset();
 }
