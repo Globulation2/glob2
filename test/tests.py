@@ -56,7 +56,7 @@ ENGINE_TESTS = [
     'TeamStatsSaveHarness.cpp',
     'EngineSessionHarness.cpp',
     ('MapRenderResizeHarness.cpp', dict(cxxflags=['-fno-access-control'])),
-    ('PointBarRenderTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    'PointBarRenderTest.cpp',
     ('maxima/MaximaCombatIntegrationTest.cpp', dict(cxxflags=['-fno-access-control'])),
     'maxima/MaximaDiagnosticsTest.cpp',
     ('maxima/MaximaDirectorRegressionTest.cpp', dict(cxxflags=['-fno-access-control'])),
@@ -95,6 +95,7 @@ ENGINE_TESTS = [
 
 # glob2-unit-tests: libgag, libusl, the production sources below and stubs.
 UNIT_TESTS = [
+    ('OpaqueRectangleBatchTest.cpp', dict(cxxflags=['-fno-access-control'])),
     # Former CppUnit suite (TestsRunner).
     'AllyTeamWidgetIndexTest.cpp',
     'BitArrayTest.cpp',
