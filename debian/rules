@@ -27,7 +27,10 @@ DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
 
 build: build-stamp
 
+export GLOB2_SDL3_PREFIX=$(CURDIR)/build/sdl3/prefix
+
 build-stamp: patch
+	python3 scons/sdl3_dependencies.py --prefix "$(GLOB2_SDL3_PREFIX)" --work build/sdl3/sources
 	dh_testdir
 
 #	Building without optimization.
@@ -59,8 +62,10 @@ install:
 	mkdir -p $(CURDIR)/debian/tmp/usr/share/games/glob2 $(CURDIR)/debian/tmp/usr/games
 
 	cp -a campaigns/ data/ maps/ scripts/ $(CURDIR)/debian/tmp/usr/share/games/glob2
-	cp -a src/glob2 $(CURDIR)/debian/tmp/usr/games/
-	cp -a src/glob2-server $(CURDIR)/debian/tmp/usr/games/
+	cp -a build/linux/client/release/src/glob2 $(CURDIR)/debian/tmp/usr/games/
+	cp -a build/linux/server/release/src/glob2-server $(CURDIR)/debian/tmp/usr/games/
+	mkdir -p $(CURDIR)/debian/tmp/usr/lib/glob2
+	cp -a $(GLOB2_SDL3_PREFIX)/lib/libSDL3*.so* $(CURDIR)/debian/tmp/usr/lib/glob2/
 	find $(CURDIR)/debian/tmp/usr/share/games/glob2 -type f -exec chmod 664 {} \;
 	find $(CURDIR)/debian/tmp/usr/share/games/glob2 -name SConscript -o -name \*.py -o -name \*.sh -o -name \*.perl | xargs rm
 

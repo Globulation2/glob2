@@ -42,31 +42,47 @@ modules:
         url: https://downloads.xiph.org/releases/speex/speex-1.2.1.tar.gz
         sha256: 4b44d4f2b38a370a2d98a78329fefc56a0cf93d1c1be70029217baae6628feea
 
-  - name: SDL2_image
+  - name: SDL3
     buildsystem: cmake-ninja
     builddir: true
     config-opts:
-      - -DSDL2IMAGE_DEPS_SHARED=OFF
+      - -DSDL_TESTS=OFF
+      - -DSDL_TEST_LIBRARY=OFF
     sources:
       - type: archive
-        url: https://github.com/libsdl-org/SDL_image/releases/download/release-2.8.8/SDL2_image-2.8.8.tar.gz
-        sha256: 2213b56fdaff2220d0e38c8e420cbe1a83c87374190cba8c70af2156097ce30a
+        url: https://github.com/libsdl-org/SDL/releases/download/release-3.4.16/SDL3-3.4.16.tar.gz
+        sha256: 7322236cd12090c3eb40b9728be4d49c76f66ad17d04369584d4ecad5cf77c68
 
-  - name: SDL2_ttf
+  - name: SDL3_image
     buildsystem: cmake-ninja
     builddir: true
+    config-opts:
+      - -DSDLIMAGE_SAMPLES=OFF
     sources:
       - type: archive
-        url: https://github.com/libsdl-org/SDL_ttf/releases/download/release-2.24.0/SDL2_ttf-2.24.0.tar.gz
-        sha256: 0b2bf1e7b6568adbdbc9bb924643f79d9dedafe061fa1ed687d1d9ac4e453bfd
+        url: https://github.com/libsdl-org/SDL_image/releases/download/release-3.4.6/SDL3_image-3.4.6.tar.gz
+        sha256: d2e4637ae700f72e5196b8fbd749850ed2e5e1e09c5a5be8d06ff55aaccf3b01
 
-  - name: SDL2_net
+  - name: SDL3_ttf
     buildsystem: cmake-ninja
     builddir: true
+    config-opts:
+      - -DSDLTTF_SAMPLES=OFF
+      - -DSDLTTF_HARFBUZZ=OFF
     sources:
       - type: archive
-        url: https://github.com/libsdl-org/SDL_net/releases/download/release-2.2.0/SDL2_net-2.2.0.tar.gz
-        sha256: 4e4a891988316271974ff4e9585ed1ef729a123d22c08bd473129179dc857feb
+        url: https://github.com/libsdl-org/SDL_ttf/releases/download/release-3.2.2/SDL3_ttf-3.2.2.tar.gz
+        sha256: 63547d58d0185c833213885b635a2c0548201cc8f301e6587c0be1a67e1e045d
+
+  - name: SDL3_net
+    buildsystem: cmake-ninja
+    builddir: true
+    config-opts:
+      - -DSDLNET_SAMPLES=OFF
+    sources:
+      - type: archive
+        url: https://github.com/libsdl-org/SDL_net/releases/download/release-3.2.0/SDL3_net-3.2.0.tar.gz
+        sha256: 098522fc26d4e302ef9348aee6e76e67fe504dfefd7f596236568f8330570c41
 
   - name: glu
     buildsystem: meson
@@ -94,7 +110,7 @@ modules:
   - name: glob2
     buildsystem: simple
     build-commands:
-      - scons -j2 release=1 server=0 CXXFLAGS="-I/app/include -I/app/include/SDL2" LINKFLAGS=-L/app/lib BINDIR=/app/bin INSTALLDIR=/app/share DATADIR=/app/share install
+      - scons -j2 release=1 server=0 CXXFLAGS="-I/app/include -I/app/include/SDL3" LINKFLAGS=-L/app/lib BINDIR=/app/bin INSTALLDIR=/app/share DATADIR=/app/share install
       - test -f /app/share/metainfo/org.globulation2.Globulation2.metainfo.xml
       - test -f /app/share/glob2/data/maxima/duel.strategy
       - test -f /app/share/glob2/data/usl/Language/Runtime/Control.usl

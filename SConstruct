@@ -104,18 +104,18 @@ def configure(env, server_only):
         missing.append("CXX compiler")
 
     #Simple checks for required libraries
-    if not server_only and not conf.CheckLib("SDL2"):
-        print("Could not find libSDL2")
-        missing.append("SDL2")
-    if not server_only and not conf.CheckLib("SDL2_ttf"):
+    if not server_only and not conf.CheckLib("SDL3"):
+        print("Could not find libSDL3")
+        missing.append("SDL3")
+    if not server_only and not conf.CheckLib("SDL3_ttf"):
         print("Could not find libSDL_ttf")
-        missing.append("SDL2_ttf")
-    if not server_only and not conf.CheckLib("SDL2_image"):
-        print("Could not find libSDL2_image")
-        missing.append("SDL2_image")
-    if not conf.CheckLib("SDL2_net"):
-        print("Could not find libSDL2_net")
-        missing.append("SDL2_net")
+        missing.append("SDL3_ttf")
+    if not server_only and not conf.CheckLib("SDL3_image"):
+        print("Could not find libSDL3_image")
+        missing.append("SDL3_image")
+    if not conf.CheckLib("SDL3_net"):
+        print("Could not find libSDL3_net")
+        missing.append("SDL3_net")
     if not server_only and (not conf.CheckLib("speex") or not conf.CheckCXXHeader("speex/speex.h")):
         print("Could not find libspeex or could not find 'speex/speex.h'")
         missing.append("speex")
@@ -385,6 +385,20 @@ def main():
         env.Append(LIBPATH=[crossroot_abs + '/lib'])
         env.Append(CPPPATH=[crossroot_abs + '/include'])
 
+    # Optional isolated dependency prefix, shared by native CI and local builds.
+    sdl_prefix = os.environ.get('GLOB2_SDL3_PREFIX')
+    if sdl_prefix:
+        sdl_prefix = str(Path(sdl_prefix).resolve())
+        env.Prepend(CPPPATH=[sdl_prefix + '/include'], LIBPATH=[sdl_prefix + '/lib'])
+        env['ENV']['PKG_CONFIG_PATH'] = sdl_prefix + '/lib/pkgconfig' + os.pathsep + os.environ.get('PKG_CONFIG_PATH', '')
+        env.Append(RPATH=[sdl_prefix + '/lib'])
+        env['ENV']['PATH'] = sdl_prefix + '/bin' + os.pathsep + env['ENV'].get('PATH', '')
+        if not isDarwinPlatform and not isWindowsPlatform and not env['mingw'] and not env['mingwcross']:
+            env.Append(RPATH=[r'\$$ORIGIN/../lib/glob2'])
+            runtime = env.Install(str(Path(env['BINDIR']).parent / 'lib/glob2'),
+                                  list(Path(sdl_prefix, 'lib').glob('libSDL3*.so*')))
+            env.Alias('install', runtime)
+
     server_only = False
     if env['server']:
         env.Append(CPPDEFINES=["YOG_SERVER_ONLY"])
@@ -405,9 +419,9 @@ def main():
         env.Append(CXXFLAGS=['-ftrivial-auto-var-init=' + _detinit])
         env.Append(CCFLAGS=' -ftrivial-auto-var-init=' + _detinit)
     env.Append(LINKFLAGS=["-Wall"])
-    env.Append(LIBS=['SDL2_net'])
+    env.Append(LIBS=['SDL3_net'])
     if not server_only:
-        env.Append(LIBS=['vorbisfile', 'SDL2_ttf', 'SDL2_image', 'speex'])
+        env.Append(LIBS=['vorbisfile', 'SDL3_ttf', 'SDL3_image', 'speex'])
 
     if env['release']:
         env.Append(CXXFLAGS=["-O3"])
@@ -424,9 +438,9 @@ def main():
         # TODO: Remove unneccessary dependencies for server.
         env.Append(LIBS=['vorbis', 'ogg', 'wsock32', 'winmm'])
         env.Append(LINKFLAGS=['-mwindows'])
-        env.ParseConfig("pkg-config sdl2 --cflags --libs")
+        env.ParseConfig("pkg-config sdl3 --cflags --libs")
     else:
-        env.ParseConfig("pkg-config sdl2 --cflags --libs")
+        env.ParseConfig("pkg-config sdl3 --cflags --libs")
     
     
     env["TARFILE"] = env.Dir("#").abspath + "/glob2-" + env["VERSION"] + ".tar.gz"

@@ -61,7 +61,7 @@ def build_mobile(directory, identity, arguments):
 #define GLOB2_NO_VOICE 1
 ''' + ('#define GLOB2_CHINA_RELEASE 1\n' if identity.get('china') else '')
         + ('#define GLOB2_AMAZON_RELEASE 1\n' if identity.get('amazon') else ''))
-    env.Append(CPPPATH=[str(output / 'include'), str(prefix / 'include'), str(prefix / 'include/SDL2')] + list(INCLUDE_DIRECTORIES),
+    env.Append(CPPPATH=[str(output / 'include'), str(prefix / 'include'), str(prefix / 'include/SDL3')] + list(INCLUDE_DIRECTORIES),
         CPPDEFINES=['HAVE_CONFIG_H'], CCFLAGS=toolchain['cflags'] + ['-g', '-O2' if identity['mode'] == 'release' else '-O0'],
         CXXFLAGS=['-std=gnu++20', '-fexceptions'], LINKFLAGS=toolchain['ldflags'], LIBS=[env.File(path) for path in libraries])
     files = ['src/' + name for name in CLIENT_SOURCES if name not in ('VoiceRecorder.cpp', 'net/irc/IRCTextMessageHandler.cpp')]
@@ -75,7 +75,7 @@ def build_mobile(directory, identity, arguments):
         files += ['mobile/android/Documents.cpp', 'mobile/android/CertificateTrust.cpp']
         env.Append(LIBS=['android', 'log', 'dl', 'm'])
         env['_LIBFLAGS'] = '-Wl,--start-group ' + env['_LIBFLAGS'] + ' -Wl,--end-group'
-        env.Append(CPPDEFINES=['main=SDL_main'])
+        # SDL3/SDL_main.h provides the Android entry point.
         objects = [env.SharedObject(str(object_root / (name + '.o')), name) for name in files]
         program = env.SharedLibrary(str(output / 'lib/main'), objects)
         if 'android-tests' in COMMAND_LINE_TARGETS:

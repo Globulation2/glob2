@@ -65,7 +65,7 @@ jobs:
         run: |
           sudo rm -f /etc/apt/sources.list.d/google-chrome.list /etc/apt/sources.list.d/google-chrome.sources
           sudo apt-get update -qq
-          sudo apt-get install -y scons g++-13 libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev libvorbis-dev libogg-dev libspeex-dev libboost-dev libssl-dev zlib1g-dev libfribidi-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
+          sudo apt-get install -y scons g++-13 cmake libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev libvorbis-dev libogg-dev libspeex-dev libboost-dev libssl-dev zlib1g-dev libfribidi-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
       - name: Build and package browser client
         run: |
           set -euo pipefail

@@ -4,10 +4,16 @@
   "license": "GPL-3.0",
   "version": "0.9.5.4",
   "dependencies": [
-    "sdl2",
-    "sdl2-net",
-    "sdl2-ttf",
-    "sdl2-image",
+    "sdl3",
+    "sdl3-net",
+    "sdl3-ttf",
+    {
+      "name": "sdl3-image",
+      "features": [
+        "png",
+        "jpeg"
+      ]
+    },
     "zlib",
     "fribidi",
     "libogg",
@@ -20,5 +26,10 @@
     "libepoxy",
     "pcre"
   ],
-  "builtin-baseline": "80d54ff62d528339c626a6fbc3489a7f25956ade"
+  "builtin-baseline": "80d54ff62d528339c626a6fbc3489a7f25956ade",
+  "vcpkg-configuration": {
+    "overlay-ports": [
+      "scons/vcpkg-ports"
+    ]
+  }
 }

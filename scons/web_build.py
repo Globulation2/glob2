@@ -7,9 +7,7 @@ from SCons.Script import Environment, Default, Value, GetOption, Action
 from build_layout import write_if_changed, PACKAGE_VERSION
 from sources import CLIENT_SOURCES, GAG_SOURCES, USL_SOURCES, INCLUDE_DIRECTORIES
 
-PORTS = ['--use-port=sdl2', '--use-port=sdl2_image:formats=png,jpg',
-         '--use-port=sdl2_ttf', '--use-port=sdl2_net', '--use-port=vorbis',
-         '--use-port=zlib']
+PORTS = ['--use-port=vorbis', '--use-port=zlib']
 
 
 def build_web(directory, identity, arguments):
@@ -25,11 +23,16 @@ def build_web(directory, identity, arguments):
         if lock['emscripten'] not in version.splitlines()[0]:
             raise ValueError('This target requires Emscripten ' + lock['emscripten'])
     emscripten = compiler.parent
+    from sdl3_dependencies import build as build_sdl3
+    sdl_prefix = output / 'sdl3/prefix'
     build_environment = dict(os.environ)
     # Cache is target/config-specific, including port downloads and compiled system libraries.
     build_environment['EM_CACHE'] = str(output / 'cache')
     build_environment['EM_PORTS'] = str(output / 'ports')
     build_environment.update(TMPDIR=str(output / 'tmp'), TMP=str(output / 'tmp'), TEMP=str(output / 'tmp'))
+    (output / 'tmp').mkdir(parents=True, exist_ok=True)
+    if not GetOption('clean'):
+        build_sdl3(sdl_prefix, output / 'sdl3/sources', 2, emscripten, build_environment)
     env = Environment(platform='posix', tools=['gcc', 'g++', 'ar', 'gnulink', 'compilation_db'],
                       ENV=build_environment, CC=str(emscripten / 'emcc'), CXX=str(compiler),
                       LINK=str(compiler), AR=str(emscripten / 'emar'), RANLIB=str(emscripten / 'emranlib'))
@@ -45,7 +48,7 @@ def build_web(directory, identity, arguments):
 #define PACKAGE_SOURCE_DIR "/"
 #define PRIMARY_FONT "sans.ttf"
 ''')
-    include_paths = [str(output / 'include')] + list(INCLUDE_DIRECTORIES)
+    include_paths = [str(output / 'include'), str(sdl_prefix / 'include')] + list(INCLUDE_DIRECTORIES)
     env.Append(CPPPATH=include_paths, CPPDEFINES=['HAVE_CONFIG_H'],
                CXXFLAGS=['-std=gnu++20', '-fexceptions', '-g2', '-O2' if identity['mode']=='release' else '-O0'] + PORTS)
     env.Append(LINKFLAGS=['-fexceptions', '-O2' if identity['mode']=='release' else '-O0',
@@ -57,6 +60,7 @@ def build_web(directory, identity, arguments):
         '--shell-file', 'browser/shell.html', '--pre-js', 'browser/storage.js', '--pre-js', 'browser/file-selection.js', '--pre-js', 'browser/audio.js'] + PORTS)
     for asset_directory in ('data', 'maps', 'campaigns', 'scripts'):
         env.Append(LINKFLAGS=['--preload-file', asset_directory + '@/' + asset_directory])
+    env.Append(LIBPATH=[str(sdl_prefix / 'lib')], LIBS=['SDL3_ttf', 'SDL3_image', 'SDL3_net', 'SDL3', 'freetype'])
     env['LINKCOM'] = '${TEMPFILE("$LINK -o $TARGET $LINKFLAGS $__RPATH $SOURCES $_LIBDIRFLAGS $_LIBFLAGS", "$LINKCOMSTR")}'
     def prepare_ports(target, source, env):
         return subprocess.run(

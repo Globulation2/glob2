@@ -24,10 +24,12 @@ SYSTEM_DLLS = {
 DLL_PATTERN = re.compile(r"^\s*DLL Name:\s*(\S+)\s*$", re.MULTILINE)
 
 
-def stage_dlls(executable: Path, dll_dir: Path, destination: Path) -> None:
+def stage_dlls(executable: Path, dll_dir: Path, destination: Path, sdl_runtime: Path | None = None) -> None:
     pending = [executable]
     visited = set()
     available = {path.name.lower(): path for path in dll_dir.glob("*.dll")}
+    if sdl_runtime:
+        available.update({path.name.lower(): path for path in sdl_runtime.glob("*.dll")})
     while pending:
         binary = pending.pop()
         imports = DLL_PATTERN.findall(
@@ -95,6 +97,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, required=True)
     parser.add_argument("--exe", type=Path, required=True)
+    parser.add_argument("--sdl-runtime", type=Path)
     parser.add_argument("--dll-dir", type=Path, required=True)
     parser.add_argument("--dest", type=Path, required=True)
     parser.add_argument("--identity-name", required=True)
@@ -133,7 +136,7 @@ def main() -> None:
         f"https://github.com/Globulation2/glob2/archive/{args.commit}.zip\n",
         encoding="utf-8",
     )
-    stage_dlls(args.exe, args.dll_dir, destination)
+    stage_dlls(args.exe, args.dll_dir, destination, args.sdl_runtime)
 
     icon = args.root / "data/icons/glob2-icon-128x128.png"
     write_shell_images(icon, destination)

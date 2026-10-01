@@ -4,21 +4,22 @@
   "builtin-baseline": "80d54ff62d528339c626a6fbc3489a7f25956ade",
   "dependencies": [
     {
-      "name": "sdl2",
+      "name": "sdl3",
       "default-features": false
     },
     {
-      "name": "sdl2-image",
+      "name": "sdl3-image",
       "default-features": false,
       "features": [
-        "libjpeg-turbo"
+        "jpeg",
+        "png"
       ]
     },
     {
-      "name": "sdl2-ttf",
+      "name": "sdl3-ttf",
       "default-features": false
     },
-    "sdl2-net",
+    "sdl3-net",
     "libvorbis",
     "zlib",
     "boost-date-time",
@@ -29,5 +30,10 @@
     "boost-math",
     "openssl",
     "boost-beast"
-  ]
+  ],
+  "vcpkg-configuration": {
+    "overlay-ports": [
+      "../scons/vcpkg-ports"
+    ]
+  }
 }

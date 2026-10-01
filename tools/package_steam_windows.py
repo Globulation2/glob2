@@ -36,7 +36,7 @@ def is_system_dll(name: str, windows_dlls: set[str]) -> bool:
             name.startswith(("api-ms-win-", "ext-ms-win-")))
 
 
-def stage(source: Path, executable: Path, runtime: Path, output: Path) -> None:
+def stage(source: Path, executable: Path, runtime: Path, output: Path, sdl_runtime: Path | None = None) -> None:
     if output.exists():
         raise ValueError(f"Output already exists: {output}")
     if not executable.is_file():
@@ -56,6 +56,8 @@ def stage(source: Path, executable: Path, runtime: Path, output: Path) -> None:
     shutil.copy2(attribution, output / "source-attribution.md")
 
     available = {path.name.lower(): path for path in runtime.glob("*.dll")}
+    if sdl_runtime:
+        available.update({path.name.lower(): path for path in sdl_runtime.glob('*.dll')})
     windows_root = Path(os.environ.get("WINDIR", "")) / "System32"
     windows_dlls = ({path.name.lower() for path in windows_root.glob("*.dll")}
                     if windows_root.is_dir() else set())
@@ -93,9 +95,10 @@ def main() -> None:
     parser.add_argument("--source", type=Path, required=True)
     parser.add_argument("--exe", type=Path, required=True)
     parser.add_argument("--runtime", type=Path, required=True)
+    parser.add_argument("--sdl-runtime", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
-    stage(args.source.resolve(), args.exe.resolve(), args.runtime.resolve(), args.output.resolve())
+    stage(args.source.resolve(), args.exe.resolve(), args.runtime.resolve(), args.output.resolve(), args.sdl_runtime.resolve() if args.sdl_runtime else None)
 
 
 if __name__ == "__main__":

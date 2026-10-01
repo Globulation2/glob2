@@ -90,7 +90,7 @@ jobs:
           sudo apt-get update -qq
           sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
             ca-certificates git ${{ matrix.compiler }} python3 scons pkg-config ccache \
-            libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev \
+            cmake libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev \
             libvorbis-dev libogg-dev libspeex-dev \
             libboost-dev libssl-dev \
             zlib1g-dev libfribidi-dev libpcre3-dev \
@@ -159,7 +159,10 @@ jobs:
       - name: Build glob2 and the regression harnesses
         id: build_glob2_and_the_regression_harnesses
         run: |
-          scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 build/linux/client/release/src/glob2 \
+          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+          echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
+          export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 build/linux/client/release/src/glob2 \
             unit-tests \
             engine-tests \
             maxima-strategy-dump \
@@ -181,7 +184,7 @@ jobs:
         if: steps.build_glob2_and_the_regression_harnesses.outcome == 'success'
         run: |
           test -x build/linux/client/release/src/glob2
-          find build/linux/client/release -type f \( -perm /111 -o -name '*.so*' \) -print0 |
+          find build/linux/client/release build/sdl3-ci/prefix/lib -type f \( -perm /111 -o -name '*.so*' \) -print0 |
             tar --null -czf linux-test-programs.tar.gz -T -
       - uses: actions/upload-artifact@v4
         id: upload_linux_test_programs
@@ -301,7 +304,7 @@ jobs:
           sudo apt-get update -qq
           sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
             ca-certificates git ${{ matrix.compiler }} python3 scons pkg-config ccache \
-            libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev \
+            cmake libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev \
             libvorbis-dev libogg-dev libspeex-dev \
             libboost-date-time-dev libboost-thread-dev libboost-system-dev libssl-dev \
             zlib1g-dev libfribidi-dev libpcre3-dev \
@@ -525,7 +528,7 @@ jobs:
           sudo apt-get update -qq
           sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
             ca-certificates git ${{ matrix.compiler }} python3 scons pkg-config ccache \
-            libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev \
+            cmake libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev \
             libvorbis-dev libogg-dev libspeex-dev \
             libboost-dev libssl-dev \
             zlib1g-dev libfribidi-dev libpcre3-dev \
@@ -552,13 +555,20 @@ jobs:
       - name: Build the YOG server
         id: build_the_yog_server
         continue-on-error: true
-        run: scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=1 --build=build-server
+        run: |
+          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+          echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
+          export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=1 --build=build-server
 
       - name: Build without OpenGL
         id: build_without_opengl
         continue-on-error: true
         run: |
-          scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 opengl=0 wss=0 --build=build-software build-software/src/glob2 engine-tests
+          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+          echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
+          export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 opengl=0 wss=0 --build=build-software build-software/src/glob2 engine-tests
           python3 test/SoftwareStartupTest.py build-software/src/glob2
           python3 test/run_tests.py --binary engine --build-dir build-software --no-display --filter 'TorusRender/*software*' --junit artifacts/tests/software-junit.xml
 
@@ -661,7 +671,7 @@ jobs:
           sudo apt-get update -qq
           sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
             ca-certificates git ${{ matrix.compiler }} python3 scons pkg-config ccache \
-            libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev \
+            cmake libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev \
             libvorbis-dev libogg-dev libspeex-dev \
             libboost-dev libssl-dev \
             zlib1g-dev libfribidi-dev libpcre3-dev \
@@ -701,7 +711,10 @@ jobs:
           if [ '${{ matrix.suite }}' = telemetry ]; then
             targets+=(engine-tests)
           fi
-          scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 "${targets[@]}"
+          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+          echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
+          export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 "${targets[@]}"
 
       - name: Check golden maps and sweep colony counts
         id: check_golden_maps_and_sweep_colony_counts
@@ -781,10 +794,8 @@ jobs:
             mingw-w64-x86_64-pkgconf
             mingw-w64-x86_64-python
             mingw-w64-x86_64-scons
-            mingw-w64-x86_64-SDL2
-            mingw-w64-x86_64-SDL2_image
-            mingw-w64-x86_64-SDL2_net
-            mingw-w64-x86_64-SDL2_ttf
+            mingw-w64-x86_64-cmake
+            mingw-w64-x86_64-freetype
             mingw-w64-x86_64-libvorbis
             mingw-w64-x86_64-libogg
             mingw-w64-x86_64-speex
@@ -818,7 +829,10 @@ jobs:
       - name: Build glob2 and the regression harnesses
         id: build_glob2_and_the_regression_harnesses
         run: |
-          scons -j$(nproc) release=1 mingw=1 server=0 build/mingw/client/release/src/glob2.exe \
+          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+          echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
+          export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j$(nproc) release=1 mingw=1 server=0 build/mingw/client/release/src/glob2.exe \
             unit-tests \
             engine-tests \
             map-report-test
@@ -948,10 +962,8 @@ jobs:
             mingw-w64-x86_64-pkgconf
             mingw-w64-x86_64-python
             mingw-w64-x86_64-scons
-            mingw-w64-x86_64-SDL2
-            mingw-w64-x86_64-SDL2_image
-            mingw-w64-x86_64-SDL2_net
-            mingw-w64-x86_64-SDL2_ttf
+            mingw-w64-x86_64-cmake
+            mingw-w64-x86_64-freetype
             mingw-w64-x86_64-libvorbis
             mingw-w64-x86_64-libogg
             mingw-w64-x86_64-speex
@@ -985,7 +997,11 @@ jobs:
       # runner instead of after the client's compile and tests.
       - name: Build the YOG server
         id: build_the_yog_server
-        run: scons -j$(nproc) release=1 mingw=1 server=1 --build=build-server
+        run: |
+          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+          echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
+          export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j$(nproc) release=1 mingw=1 server=1 --build=build-server
 
       - name: Report the cache statistics
         id: report_the_cache_statistics
@@ -1039,7 +1055,7 @@ jobs:
             /etc/apt/sources.list.d/google-chrome.list \
             /etc/apt/sources.list.d/google-chrome.sources
           sudo apt-get update -qq
-          sudo apt-get install -y scons ccache g++-13 libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev libvorbis-dev libogg-dev libspeex-dev libboost-dev libssl-dev zlib1g-dev libfribidi-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
+          sudo apt-get install -y scons ccache g++-13 cmake libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev libvorbis-dev libogg-dev libspeex-dev libboost-dev libssl-dev zlib1g-dev libfribidi-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
       - name: Install pinned Emscripten
         id: install_pinned_emscripten
         run: python3 browser/setup.py
@@ -1154,7 +1170,7 @@ jobs:
         id: install_native_build_dependencies
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y scons ccache g++-13 libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev libvorbis-dev libogg-dev libspeex-dev libboost-dev libssl-dev zlib1g-dev libfribidi-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
+          sudo apt-get install -y scons ccache g++-13 cmake libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev libvorbis-dev libogg-dev libspeex-dev libboost-dev libssl-dev zlib1g-dev libfribidi-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
       # Reuse the native client objects already populated by the main Linux job.
       # This job only reads that cache; transport-specific misses stay local.
       - name: Restore native compiler cache
@@ -1193,7 +1209,11 @@ jobs:
       - name: Build gateway
         id: build_gateway
         continue-on-error: true
-        run: scons role=gateway release=1 -j$(nproc)
+        run: |
+          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+          echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
+          export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons role=gateway release=1 -j$(nproc)
       - name: Test gateway
         id: test_gateway
         continue-on-error: true
@@ -1202,14 +1222,21 @@ jobs:
       - name: Build headless router
         id: build_headless_router
         continue-on-error: true
-        run: scons CXX=g++-13 role=router release=1 -j$(nproc)
+        run: |
+          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+          echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
+          export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons CXX=g++-13 role=router release=1 -j$(nproc)
       - name: Build transport integration fixture
         id: build_transport_integration_fixture
         continue-on-error: true
         run: |
           # The browser's editor tests read the native generator catalog, then
           # navigate the visible picker with real keyboard/pointer events.
-          scons CXX=g++-13 release=1 transport-test build/linux/client/release/src/glob2 -j$(nproc)
+          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+          echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
+          export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons CXX=g++-13 release=1 transport-test build/linux/client/release/src/glob2 -j$(nproc)
       - name: Test network transport
         id: test_network_transport
         continue-on-error: true
@@ -1227,7 +1254,8 @@ jobs:
             build/linux/client/release/src/glob2 \
             build/linux/client/release/src/net-connection-test \
             build/linux/client/release/src/native-multiplayer-peer \
-            build/linux/gateway/release/glob2-ws-gateway
+            build/linux/gateway/release/glob2-ws-gateway \
+            build/sdl3-ci/prefix/lib
       - name: Save native object tree
         id: save_native_object_tree
         if: ${{ !cancelled() && steps.package_the_programs_the_browser_tests_drive.outcome == 'success' && ((github.event_name == 'push' && github.ref == 'refs/heads/master') || github.event_name == 'workflow_dispatch') }}
@@ -1378,7 +1406,7 @@ jobs:
             /etc/apt/sources.list.d/google-chrome.list \
             /etc/apt/sources.list.d/google-chrome.sources
           sudo apt-get update -qq
-          sudo apt-get install -y scons ccache g++-13 libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev libvorbis-dev libogg-dev libspeex-dev libboost-dev libssl-dev zlib1g-dev libfribidi-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev xvfb xauth
+          sudo apt-get install -y scons ccache g++-13 cmake libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev libvorbis-dev libogg-dev libspeex-dev libboost-dev libssl-dev zlib1g-dev libfribidi-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev xvfb xauth
       - uses: actions/download-artifact@v4
         id: actions_download_artifact_v4_1
         with:

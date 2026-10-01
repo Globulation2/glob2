@@ -22,7 +22,7 @@ class WindowsPackageTests(unittest.TestCase):
             root = Path(temporary)
             binary = root / "glob2-build.exe"
             binary.write_bytes(b"game")
-            dll = root / "SDL2.dll"
+            dll = root / "SDL3.dll"
             dll.write_bytes(b"runtime")
             for name in ("data", "maps", "campaigns", "scripts"):
                 folder = root / name
@@ -35,7 +35,7 @@ class WindowsPackageTests(unittest.TestCase):
             try:
                 os.chdir(root)
                 with patch.object(MODULE.subprocess, "run", return_value=subprocess.CompletedProcess(
-                        [], 0, stdout="SDL2.dll => /mingw64/bin/SDL2.dll (0x0)")), \
+                        [], 0, stdout="SDL3.dll => /mingw64/bin/SDL3.dll (0x0)")), \
                      patch.object(MODULE.subprocess, "check_output", return_value=str(dll)):
                     MODULE.stage(binary, stage)
                     MODULE.package(binary, archive)

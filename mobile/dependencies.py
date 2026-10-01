@@ -64,6 +64,7 @@ def main():
         if args.developer_dir: env['DEVELOPER_DIR']=args.developer_dir
         subprocess.run([str(vcpkg/'vcpkg'),'install','--triplet='+triplet,
             '--overlay-triplets='+str(ROOT/'mobile/triplets'),
+            '--overlay-ports='+str(ROOT/'scons/vcpkg-ports'),
             '--x-manifest-root='+str(ROOT/'mobile'), '--x-install-root='+str(installed),
             '--x-buildtrees-root='+str(output/'vcpkg-buildtrees'),
             '--x-packages-root='+str(output/'vcpkg-packages')],env=env,check=True)

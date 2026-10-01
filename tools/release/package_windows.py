@@ -23,13 +23,15 @@ def stage(binary, root):
     paths = re.findall(r"(?:/[^\s()]+|[A-Za-z]:\\[^\s()]+)\.dll",
                        result.stdout, flags=re.IGNORECASE)
     dependencies = {path for path in paths if "/mingw64/bin/" in path.lower()
-                    or "\\mingw64\\bin\\" in path.lower()}
+                    or "\\mingw64\\bin\\" in path.lower()
+                    or "/sdl3-ci/prefix/bin/" in path.lower()
+                    or "\\sdl3-ci\\prefix\\bin\\" in path.lower()}
     for path in sorted(dependencies):
         native = (subprocess.check_output(["cygpath", "-w", path], text=True).strip()
                   if path.startswith("/") else path)
         shutil.copy2(native, root / Path(native).name)
-    if not list(root.glob("SDL2*.dll")):
-        raise SystemExit("no SDL2 DLLs found in executable dependencies")
+    if not list(root.glob("SDL3*.dll")):
+        raise SystemExit("no SDL3 DLLs found in executable dependencies")
     for directory in ("data", "maps", "campaigns", "scripts"):
         shutil.copytree(directory, root / directory,
                         ignore=shutil.ignore_patterns("SConscript", "*.py", "*.sh", "*.perl",
