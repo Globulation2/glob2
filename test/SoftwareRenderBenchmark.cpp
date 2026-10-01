@@ -67,6 +67,10 @@ class SoftwareRenderBenchmark
 	static int run(int argc, char **argv)
 	{
 		SDL_SetHint(SDL_HINT_MAC_BACKGROUND_APP, "1");
+		// Keep -s dimensions as measured pixels across display densities. Opt in
+		// to native Retina/HiDPI presentation explicitly for lifecycle profiling.
+		if (!getenv("PROFILE_NATIVE_DISPLAY"))
+			SDL_SetHint(SDL_HINT_VIDEO_HIGHDPI_DISABLED, "1");
 		globalContainer = new GlobalContainer;
 		globalContainer->parseArgs(argc, argv);
 		globalContainer->settings.mute = 1;
@@ -115,9 +119,6 @@ class SoftwareRenderBenchmark
 				for (int i = 0; i < Building::MAX_COUNT; i++)
 					buildings += gui.game.teams[t]->myBuildings[i] != nullptr;
 			}
-			printf("CAMERA zoom=%.4f fractional=%.4f,%.4f offset=%.4f,%.4f\n", gui.camera.zoom,
-				   gui.camera.fractionX(), gui.camera.fractionY(), gui.camera.offsetX,
-				   gui.camera.offsetY);
 			if (getenv("PROFILE_FRACTION"))
 			{
 				gui.updateCamera();
@@ -132,6 +133,9 @@ class SoftwareRenderBenchmark
 				throw std::runtime_error("Camera offsets must be finite");
 			gui.viewportX = gui.camera.tileX();
 			gui.viewportY = gui.camera.tileY();
+			printf("CAMERA zoom=%.4f fractional=%.4f,%.4f offset=%.4f,%.4f\n", gui.camera.zoom,
+				   gui.camera.fractionX(), gui.camera.fractionY(), gui.camera.offsetX,
+				   gui.camera.offsetY);
 			const int frames = getenv("PROFILE_FRAMES") ? atoi(getenv("PROFILE_FRAMES")) : 240;
 			const int warmup = getenv("PROFILE_WARMUP") ? atoi(getenv("PROFILE_WARMUP")) : 30;
 			if (frames < 1 || warmup < 0)
@@ -140,10 +144,8 @@ class SoftwareRenderBenchmark
 			if (!mode)
 				mode = "gui";
 			const bool clouds = !(getenv("PROFILE_CLOUDS") && atoi(getenv("PROFILE_CLOUDS")) == 0);
-			if (!clouds)
-				globalContainer->settings.optionFlags |= GlobalContainer::OPTION_LOW_SPEED_GFX;
-			else
-				globalContainer->settings.optionFlags &= ~GlobalContainer::OPTION_LOW_SPEED_GFX;
+			globalContainer->settings.clouds = clouds;
+			globalContainer->settings.cloudShadows = clouds;
 			printf("READY save=%s tick=%u map=%dx%d teams=%d units=%d buildings=%d surface=%dx%d "
 				   "camera=%d,%d mode=%s clouds=%d frames=%d driver=%s\n",
 				   path, gui.game.stepCounter, gui.game.map.getW(), gui.game.map.getH(),

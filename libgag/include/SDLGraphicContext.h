@@ -173,7 +173,8 @@ namespace GAGCore
 		std::optional<TextureInfo> textureInfo;
 		//! The clipping rect, we do not draw outside it
 		SDL_Rect clipRect;
-		//! this surface has been modified since latest blit
+		// Content revisions are never consumed by drawing. Each backend remembers
+		// its own uploaded revision; raw pixel writes must call markPixelsChanged().
 		std::uint64_t glUploadedRevision = 0; // Revision uploaded to this surface's legacy GL texture.
         std::uint64_t pixelRevision = 1, opacityRevision = 0;
         bool opaquePixels = false;

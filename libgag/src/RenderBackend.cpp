@@ -166,7 +166,8 @@ class SDLRenderBackend final : public RenderBackend
 		outputSize(pixelsW, pixelsH);
 		check(SDL_RenderSetLogicalSize(renderer, 0, 0));
 		check(SDL_RenderSetScale(renderer, float(pixelsW) / width, float(pixelsH) / height));
-		clear();
+		// Lazy CPU geometry may be created after direct writes. Scale setup
+		// must not clear the borrowed target or overwrite earlier layers.
 	}
 	void flush() override { check(SDL_RenderFlush(renderer)); }
 	void present() override

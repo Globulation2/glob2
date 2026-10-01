@@ -29,15 +29,27 @@ class SoftwareRenderBackend final : public RenderBackend
 {
 	SDL_Surface *target; // Borrowed; the context/presenter outlives this backend.
 	float scale = 1, offsetX = 0, offsetY = 0;
+	int logicalW = 0, logicalH = 0;
+	float nativeX = 1, nativeY = 1;
 	std::optional<SDL_Rect> bounds, localClip;
 	std::unique_ptr<RenderBackend> geometry;
 	RenderOperations counts;
 
+	SDL_Rect nativeClip(SDL_Rect rect) const
+	{
+		const int x = int(std::floor(rect.x * nativeX));
+		const int y = int(std::floor(rect.y * nativeY));
+		return {x, y, int(std::ceil((rect.x + rect.w) * nativeX)) - x,
+			int(std::ceil((rect.y + rect.h) * nativeY)) - y};
+	}
 	SDL_Rect outputClip() const
 	{
 		SDL_Rect result{0, 0, target->w, target->h};
 		if (bounds)
-			SDL_IntersectRect(&result, &*bounds, &result);
+		{
+			const auto mapped = nativeClip(*bounds);
+			SDL_IntersectRect(&result, &mapped, &result);
+		}
 		if (localClip)
 		{
 			const int x = int(std::floor(localClip->x * scale + offsetX));
@@ -45,7 +57,8 @@ class SoftwareRenderBackend final : public RenderBackend
 			const SDL_Rect transformed{
 				x, y, int(std::ceil((localClip->x + localClip->w) * scale + offsetX)) - x,
 				int(std::ceil((localClip->y + localClip->h) * scale + offsetY)) - y};
-			SDL_IntersectRect(&result, &transformed, &result);
+			const auto mapped = nativeClip(transformed);
+			SDL_IntersectRect(&result, &mapped, &result);
 		}
 		return result;
 	}
@@ -54,15 +67,18 @@ class SoftwareRenderBackend final : public RenderBackend
 		// Round shared endpoints, never origin and width independently. Adjacent
 		// tiles share exactly one edge even at 33% zoom and negative offsets.
 		const auto edge = [](double value) { return int(std::floor(value + 0.5)); };
-		const int x = edge(rect.x * scale + offsetX), y = edge(rect.y * scale + offsetY);
-		return {x, y, edge((rect.x + rect.w) * scale + offsetX) - x,
-				edge((rect.y + rect.h) * scale + offsetY) - y};
+		const int x = edge((rect.x * scale + offsetX) * nativeX),
+			y = edge((rect.y * scale + offsetY) * nativeY);
+		return {x, y, edge(((rect.x + rect.w) * scale + offsetX) * nativeX) - x,
+				edge(((rect.y + rect.h) * scale + offsetY) * nativeY) - y};
 	}
 	RenderBackend &fallback()
 	{
 		if (!geometry)
 		{
 			geometry = makeSDLSoftwareGeometryBackend(target);
+			if (logicalW)
+				geometry->nativeLogicalSize(logicalW, logicalH);
 			geometry->transform(scale, offsetX, offsetY, bounds ? &*bounds : nullptr);
 			geometry->clip(localClip ? &*localClip : nullptr);
 		}
@@ -78,6 +94,11 @@ class SoftwareRenderBackend final : public RenderBackend
 		flush();
 		geometry.reset(); // SDL's software renderer borrows its creation surface.
 		target = value;
+		if (logicalW)
+		{
+			nativeX = float(target->w) / logicalW;
+			nativeY = float(target->h) / logicalH;
+		}
 	}
 	void transform(float value, float x, float y, const SDL_Rect *clipBounds) override
 	{
@@ -157,6 +178,21 @@ class SoftwareRenderBackend final : public RenderBackend
 	}
 	void present() override { flush(); }
 	void logicalSize(int, int) override { reset(); }
+	void nativeLogicalSize(int width, int height) override
+	{
+		if (width <= 0 || height <= 0)
+			throw std::invalid_argument("Invalid software logical size");
+		flush();
+		logicalW = width;
+		logicalH = height;
+		// Native display scaling is independent of the map/UI transform.
+		nativeX = float(target->w) / width;
+		nativeY = float(target->h) / height;
+		if (SDL_FillRect(target, nullptr, SDL_MapRGBA(target->format, 0, 0, 0, 255)) < 0)
+			throw std::runtime_error(SDL_GetError());
+		if (geometry)
+			geometry->nativeLogicalSize(width, height);
+	}
 	void outputSize(int &w, int &h) override
 	{
 		w = target->w;

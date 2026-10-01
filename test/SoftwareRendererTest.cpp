@@ -46,6 +46,26 @@ std::vector<Uint32> snapshot(SDL_Surface *surface)
 } // namespace
 TEST_SUITE("SoftwareRenderer")
 {
+	TEST_CASE("native display scaling preserves direct pixels through lazy geometry and target rotation")
+	{
+		auto first = pixels(64, 72), second = pixels(32, 48);
+		auto backend = makeSoftwareRenderBackend(first.get());
+		backend->nativeLogicalSize(32, 24);
+		for (auto *target : {first.get(), second.get()})
+		{
+			backend->bindTarget(target);
+			SDL_FillRect(target, nullptr, SDL_MapRGBA(target->format, 0, 0, 0, 255));
+			backend->fill(SDL_FRect{1, 1, 3, 3}, SDL_Color{255, 0, 0, 255});
+			const SDL_Color green{0, 255, 0, 255};
+			const SDL_Vertex triangle[] = {{{8, 8}, green, {}}, {{12, 8}, green, {}},
+				{{8, 12}, green, {}}};
+			backend->triangles(triangle);
+			backend->flush();
+			CHECK(pixel(target, target->w * 3 / 64, target->h * 4 / 72) == SDL_MapRGBA(target->format, 255, 0, 0, 255));
+			CHECK(pixel(target, target->w * 18 / 64, target->h * 27 / 72) == SDL_MapRGBA(target->format, 0, 255, 0, 255));
+			CHECK(pixel(target, target->w * 40 / 64, target->h * 40 / 72) == SDL_MapRGBA(target->format, 0, 0, 0, 255));
+		}
+	}
 	TEST_CASE("nearest blits retain sampling under destination clipping and restore source state")
 	{
 		auto source = pixels(8, 8), full = pixels(32, 32), clipped = pixels(32, 32);
