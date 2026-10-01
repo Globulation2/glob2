@@ -1,0 +1,7 @@
+# Map editor JavaScript integration evidence
+
+Source `c7864e29dd32ba3a97988f3124b6785a9ef6c0e8` adds a language dropdown to the existing scenario editor. It detects saved JavaScript maps, supplies a minimal step callback, uses .js load/save, and validates drafts before OK commits source/mode. Compile and file loading do not execute JavaScript or reset live globals. Separate SGSL/USL/JavaScript drafts survive switching until the dialog closes.
+
+The macOS and Linux archives contain all five editor tests, existing session and Maxima lifecycle checks, and the shared scripting corpus, with commands, compiler/source/build/fixture/executable metadata and logs. The 44 numeric/data/complete-trace/decoded-save artifacts agree on the same clean revision. The macOS archive includes the saved/reloaded map plus desktop and phone portrait/landscape screenshots. WebAssembly builds and translation audit pass. Current CI is linked in validation.json and is still pending; the older CI failed on Windows test portability (corrected) and an unrelated all-screens presentation timeout.
+
+Source bundle prerequisite: `96f4537891928f86e82093c90af8172136012d32`. Existing scripting runtime, simulation, serialization, compatibility versions and vendors remain unchanged. The parent evidence retains its original 14-platform results at that earlier revision; those are not claimed as executions of this new UI revision. Required Vagrant Windows, physical iOS and independent-review gates remain incomplete. Nothing was merged.

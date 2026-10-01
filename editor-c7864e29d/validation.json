@@ -1,0 +1,29 @@
+{
+  "revision": "c7864e29dd32ba3a97988f3124b6785a9ef6c0e8",
+  "dirty": false,
+  "sourceHashes": {
+    "src/ScriptEditorScreen.cpp": "014c9f495fc329f18e7140d9aa6133669f9904f9350dced8eb4010e5b2732d55",
+    "src/ScriptEditorScreen.h": "9be2b15f4b8e8803927e1024f08388433f1788b5cddac06f638c0136a7ca8c65",
+    "test/ScriptEditorTest.cpp": "773306050faa4a79bde01fd6b771b0be46f51ae0ceecd6c13011b8f167625f5c",
+    "test/tests.py": "bb50643bd0a9900d7ded8f0e10572f729d5f2233107cfbf52ab1ff969c1eed37",
+    "test/maxima/MaximaLifecycleTest.cpp": "bd4a29a42acfcc94e2caba6d7399905dd71f079bd3cd90f258e6eda2a8fa7c47",
+    "docs/development/javascript.md": "5d36f68a880fddd87326c41207d3ea38357d0df14363d7ac0d17bd688a6e2940",
+    "test/README.md": "43959621fa5fafd870d2796dc0f8fc245bc9e8a7945bd7d8263bfd9abfe113d4"
+  },
+  "comparison": {
+    "reference": "artifacts/javascript-globals/macos-arm64-editor-c7864e29d",
+    "candidate": "artifacts/javascript-globals/linux-gcc13-editor-c7864e29d",
+    "comparedArtifacts": 44,
+    "referenceRevision": "c7864e29dd32ba3a97988f3124b6785a9ef6c0e8",
+    "candidateRevision": "c7864e29dd32ba3a97988f3124b6785a9ef6c0e8",
+    "provenanceIssues": [],
+    "acceptanceEligible": true,
+    "excludedSaveMetadata": "MapHeader SHA1 only",
+    "differences": {}
+  },
+  "executedTests": "ScriptEditor five cases, EngineSession and Maxima.Lifecycle pass on macOS ARM64 and Ubuntu 24.04/GCC13; shared scripting corpus passes on both",
+  "build": "Native game/test binaries and WebAssembly client/shared harness rebuilt",
+  "ci": "https://github.com/Globulation2/glob2/actions/runs/36845402014",
+  "previousCIFailures": "96f453789 Windows POSIX environment calls fixed in 25e8370f4; unrelated UIPresentation all-screens test exceeded its 600s deadline. Current CI pending.",
+  "previousMatrix": "The original 14-platform evidence remains on 8c92bc57d3abe4f2fcd1064c07bc11cae3be0559 for revision 96f453789. Runtime, simulation, serialization and vendor sources are unchanged by this UI integration."
+}
