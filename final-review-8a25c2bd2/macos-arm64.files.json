@@ -1,0 +1,2056 @@
+{
+  "revision": "8a25c2bd2440e99246171967a31c68dc15917f95",
+  "sourceTreeSha256": "1540813995310acf88924c167bbb9c80525eb9d5cd7fe4a421d8e7ee5b49a991",
+  "group": "macos-arm64",
+  "archive": "macos-arm64.tar.gz",
+  "archiveBytes": 16821829,
+  "archiveSha256": "de4eaf2f0aaf7eb046bdfe98223b76abe4f40aecea1defcd80c0bb86d5672257",
+  "verifiedFileCount": 409,
+  "files": {
+    "PACKAGE-MANIFEST.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/package-staging/macos-arm64.package-manifest.json",
+      "sha256": "da3fe129ec711bffc1ae6a061c458e2f8e2fd32ba868b178cfaf72539e3f42de",
+      "bytes": 137641
+    },
+    "comparisons/macos-cli-continuation-and-released.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/comparisons/macos-cli-continuation-and-released.json",
+      "sha256": "267a02197f3d5d3b52a8da87eb3106c530797b0cc53f707752faaca55183e709",
+      "bytes": 12212
+    },
+    "compatibility-macos-arm64.log": {
+      "repositoryPath": "artifacts/rebase-validation/final/compatibility-macos-arm64.log",
+      "sha256": "0e1901bd945dd0dc3b93103ff2f1964ecb8d5d564eb86850f333a8b9606a3616",
+      "bytes": 491
+    },
+    "compatibility-macos-arm64.log.command.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/compatibility-macos-arm64.log.command.json",
+      "sha256": "c93fd2a3194a2bc92675d504de7c51dd9c054fa439a8576a94dfa991b32b1625",
+      "bytes": 221
+    },
+    "compatibility-macos-arm64/gd-bigarena-long/artifacts.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/compatibility-macos-arm64/gd-bigarena-long/artifacts.json",
+      "sha256": "8c3e1c997021d80e0b6f22c02f5e0841c0a4223c32e892a808d2d72c4bb20ede",
+      "bytes": 160
+    },
+    "compatibility-macos-arm64/gd-bigarena-long/command.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/compatibility-macos-arm64/gd-bigarena-long/command.json",
+      "sha256": "dc95b6efa87ca3cad1ca7dcfeaad42aa7a0c423ef6965f9a2eb336ab9cf644a9",
+      "bytes": 461
+    },
+    "compatibility-macos-arm64/gd-bigarena-long/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/compatibility-macos-arm64/gd-bigarena-long/game.replay.checksums",
+      "sha256": "4f1c723a09dd9b0de4936d4e34184257c911255cfefa49d8225ed16ebce05181",
+      "bytes": 33903812
+    },
+    "compatibility-macos-arm64/gd-bigarena-long/profile/keyboard-gui.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/compatibility-macos-arm64/gd-bigarena-long/profile/keyboard-gui.txt",
+      "sha256": "4f7c638f91238c9ee26e10d127596ad1387c723697186152f4bb3b1706e542fd",
+      "bytes": 1670
+    },
+    "compatibility-macos-arm64/gd-bigarena-long/profile/keyboard-mapedit.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/compatibility-macos-arm64/gd-bigarena-long/profile/keyboard-mapedit.txt",
+      "sha256": "6475760c5d58125290f33349cc220dbf3cb04e0fa2c2dea08787c838631637f5",
+      "bytes": 624
+    },
+    "compatibility-macos-arm64/gd-bigarena-long/profile/preferences.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/compatibility-macos-arm64/gd-bigarena-long/profile/preferences.txt",
+      "sha256": "63cf9841fad67c826b42856e027c0b38bfb46933d535b030343d2f33285bcc0b",
+      "bytes": 2922
+    },
+    "compatibility-macos-arm64/gd-bigarena-long/progress.jsonl": {
+      "repositoryPath": "artifacts/rebase-validation/final/compatibility-macos-arm64/gd-bigarena-long/progress.jsonl",
+      "sha256": "b48c60e54c1f9891fe0aa8696f3a3c25a688e6d633009f20b9a0548b1e262efe",
+      "bytes": 261
+    },
+    "compatibility-macos-arm64/gd-bigarena-long/result.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/compatibility-macos-arm64/gd-bigarena-long/result.json",
+      "sha256": "6cad3e7635a584e1403eb5e7195da09908995c01783bbc0c8ac72a15179665bd",
+      "bytes": 22056
+    },
+    "compatibility-macos-arm64/gd-bigarena-long/run.log": {
+      "repositoryPath": "artifacts/rebase-validation/final/compatibility-macos-arm64/gd-bigarena-long/run.log",
+      "sha256": "75d057728fe0acdcfa5125a9e5077a24f0a7dfe24a6abb580eaaf73d0b189470",
+      "bytes": 414
+    },
+    "compatibility-macos-arm64/gd-large-4ai/artifacts.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/compatibility-macos-arm64/gd-large-4ai/artifacts.json",
+      "sha256": "72b9d5922d0cbd1f8f2cb8b0d457b1dcea8c2ac2bde5141da20496b146e8dcaf",
+      "bytes": 158
+    },
+    "compatibility-macos-arm64/gd-large-4ai/command.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/compatibility-macos-arm64/gd-large-4ai/command.json",
+      "sha256": "5ad79b201742251a11ff040e5de964786a7c8bb7e70e9915f59e8c26fd575f15",
+      "bytes": 453
+    },
+    "compatibility-macos-arm64/gd-large-4ai/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/compatibility-macos-arm64/gd-large-4ai/game.replay.checksums",
+      "sha256": "f9310adcddf3da47629244166b49b28360662f13880f9db1667b1e84935888d6",
+      "bytes": 5292818
+    },
+    "compatibility-macos-arm64/gd-large-4ai/profile/keyboard-gui.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/compatibility-macos-arm64/gd-large-4ai/profile/keyboard-gui.txt",
+      "sha256": "4f7c638f91238c9ee26e10d127596ad1387c723697186152f4bb3b1706e542fd",
+      "bytes": 1670
+    },
+    "compatibility-macos-arm64/gd-large-4ai/profile/keyboard-mapedit.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/compatibility-macos-arm64/gd-large-4ai/profile/keyboard-mapedit.txt",
+      "sha256": "6475760c5d58125290f33349cc220dbf3cb04e0fa2c2dea08787c838631637f5",
+      "bytes": 624
+    },
+    "compatibility-macos-arm64/gd-large-4ai/profile/preferences.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/compatibility-macos-arm64/gd-large-4ai/profile/preferences.txt",
+      "sha256": "63cf9841fad67c826b42856e027c0b38bfb46933d535b030343d2f33285bcc0b",
+      "bytes": 2922
+    },
+    "compatibility-macos-arm64/gd-large-4ai/progress.jsonl": {
+      "repositoryPath": "artifacts/rebase-validation/final/compatibility-macos-arm64/gd-large-4ai/progress.jsonl",
+      "sha256": "2c266bc933a9e16013b1e4be568a7b09da7e130492b385a5270465a1eb8ecf7d",
+      "bytes": 129
+    },
+    "compatibility-macos-arm64/gd-large-4ai/result.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/compatibility-macos-arm64/gd-large-4ai/result.json",
+      "sha256": "6668060161878a0d7045328662dfaaa00637588cef96665a09527c8005e8fd17",
+      "bytes": 8430
+    },
+    "compatibility-macos-arm64/gd-large-4ai/run.log": {
+      "repositoryPath": "artifacts/rebase-validation/final/compatibility-macos-arm64/gd-large-4ai/run.log",
+      "sha256": "ff50ab2927d2b604ac064e0ecd107e83f8a7e94a1de462f6c37b88f0e4ed8af3",
+      "bytes": 328
+    },
+    "compatibility-macos-arm64/manifest.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/compatibility-macos-arm64/manifest.json",
+      "sha256": "2d8242e937a5d857c6ade1e31b1fca12f8292bbda1736f7bbef04cfe3454de1e",
+      "bytes": 1516
+    },
+    "compatibility-macos-arm64/numbi-castor-v121.game/artifacts.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/compatibility-macos-arm64/numbi-castor-v121.game/artifacts.json",
+      "sha256": "57a0278bdefa6e5c8226e2e95c99f7485057200340043e5b8c22d345efd5d7d7",
+      "bytes": 158
+    },
+    "compatibility-macos-arm64/numbi-castor-v121.game/command.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/compatibility-macos-arm64/numbi-castor-v121.game/command.json",
+      "sha256": "1c99fb10f5ced7d7f246de0ad727a2f570593319ca597eba8cc9cb6a849aa661",
+      "bytes": 497
+    },
+    "compatibility-macos-arm64/numbi-castor-v121.game/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/compatibility-macos-arm64/numbi-castor-v121.game/game.replay.checksums",
+      "sha256": "07aa30aa3d2f2f4516ebee1a54ba0e889cb554575d6db53ba28d8ef08c403e28",
+      "bytes": 4683952
+    },
+    "compatibility-macos-arm64/numbi-castor-v121.game/profile/keyboard-gui.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/compatibility-macos-arm64/numbi-castor-v121.game/profile/keyboard-gui.txt",
+      "sha256": "4f7c638f91238c9ee26e10d127596ad1387c723697186152f4bb3b1706e542fd",
+      "bytes": 1670
+    },
+    "compatibility-macos-arm64/numbi-castor-v121.game/profile/keyboard-mapedit.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/compatibility-macos-arm64/numbi-castor-v121.game/profile/keyboard-mapedit.txt",
+      "sha256": "6475760c5d58125290f33349cc220dbf3cb04e0fa2c2dea08787c838631637f5",
+      "bytes": 624
+    },
+    "compatibility-macos-arm64/numbi-castor-v121.game/profile/preferences.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/compatibility-macos-arm64/numbi-castor-v121.game/profile/preferences.txt",
+      "sha256": "63cf9841fad67c826b42856e027c0b38bfb46933d535b030343d2f33285bcc0b",
+      "bytes": 2922
+    },
+    "compatibility-macos-arm64/numbi-castor-v121.game/progress.jsonl": {
+      "repositoryPath": "artifacts/rebase-validation/final/compatibility-macos-arm64/numbi-castor-v121.game/progress.jsonl",
+      "sha256": "b48c60e54c1f9891fe0aa8696f3a3c25a688e6d633009f20b9a0548b1e262efe",
+      "bytes": 261
+    },
+    "compatibility-macos-arm64/numbi-castor-v121.game/result.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/compatibility-macos-arm64/numbi-castor-v121.game/result.json",
+      "sha256": "9dec4a5ad4ba948074c20d9e1f6c7847789acc648655066e0b50983017d1bd64",
+      "bytes": 4658
+    },
+    "compatibility-macos-arm64/numbi-castor-v121.game/run.log": {
+      "repositoryPath": "artifacts/rebase-validation/final/compatibility-macos-arm64/numbi-castor-v121.game/run.log",
+      "sha256": "c8b460da819c7b922f7ed36a02004efce92537aea65b30e33f905cb08043a7d8",
+      "bytes": 287
+    },
+    "compatibility-macos-arm64/v108-continuation/checkpoint.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/compatibility-macos-arm64/v108-continuation/checkpoint.game",
+      "sha256": "a07502e108548d24009c7f058545b04f7cd65356b27f4f17920c835bf4c72f5d",
+      "bytes": 3888861
+    },
+    "compatibility-macos-arm64/v108-continuation/run/artifacts.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/compatibility-macos-arm64/v108-continuation/run/artifacts.json",
+      "sha256": "c32563dc7251b261a7fabc34be95f9171ed6be769d215728fb0581dcfe6f77a1",
+      "bytes": 157
+    },
+    "compatibility-macos-arm64/v108-continuation/run/command.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/compatibility-macos-arm64/v108-continuation/run/command.json",
+      "sha256": "ac51c046f83f69cc980d309d0a8a8d631b6140ef45753126a48e156fbc0ece02",
+      "bytes": 532
+    },
+    "compatibility-macos-arm64/v108-continuation/run/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/compatibility-macos-arm64/v108-continuation/run/game.replay.checksums",
+      "sha256": "03d8730273413f5223218d31f9f8a7e0f920cc09dd08a8508b855ea35bbd469e",
+      "bytes": 1890434
+    },
+    "compatibility-macos-arm64/v108-continuation/run/profile/keyboard-gui.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/compatibility-macos-arm64/v108-continuation/run/profile/keyboard-gui.txt",
+      "sha256": "4f7c638f91238c9ee26e10d127596ad1387c723697186152f4bb3b1706e542fd",
+      "bytes": 1670
+    },
+    "compatibility-macos-arm64/v108-continuation/run/profile/keyboard-mapedit.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/compatibility-macos-arm64/v108-continuation/run/profile/keyboard-mapedit.txt",
+      "sha256": "6475760c5d58125290f33349cc220dbf3cb04e0fa2c2dea08787c838631637f5",
+      "bytes": 624
+    },
+    "compatibility-macos-arm64/v108-continuation/run/profile/preferences.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/compatibility-macos-arm64/v108-continuation/run/profile/preferences.txt",
+      "sha256": "63cf9841fad67c826b42856e027c0b38bfb46933d535b030343d2f33285bcc0b",
+      "bytes": 2922
+    },
+    "compatibility-macos-arm64/v108-continuation/run/progress.jsonl": {
+      "repositoryPath": "artifacts/rebase-validation/final/compatibility-macos-arm64/v108-continuation/run/progress.jsonl",
+      "sha256": "7ff55f23772f574be884fd47d32e00dc38ce5f4d70814e083d1ea33997c14918",
+      "bytes": 33
+    },
+    "compatibility-macos-arm64/v108-continuation/run/result.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/compatibility-macos-arm64/v108-continuation/run/result.json",
+      "sha256": "22f41c9640ff538ad5cf765c752590c43ce40e7eb623a8d6158b5eb5d13852f0",
+      "bytes": 8489
+    },
+    "compatibility-macos-arm64/v108-continuation/run/run.log": {
+      "repositoryPath": "artifacts/rebase-validation/final/compatibility-macos-arm64/v108-continuation/run/run.log",
+      "sha256": "28eb47ba114b409c4a68478140f39b2bbeb881abc104860cb52867e9fed829ee",
+      "bytes": 328
+    },
+    "continuation-macos-arm64.log": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64.log",
+      "sha256": "cd4fe9ff9777253c1abab7961dd69a7226eae5d7934838213848c80cab275d1a",
+      "bytes": 208
+    },
+    "continuation-macos-arm64.log.command.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64.log.command.json",
+      "sha256": "c8af7a6279557871966e6a13b4f7630602a0bdaf34e170637177f954e7afb41e",
+      "bytes": 210
+    },
+    "continuation-macos-arm64/manifest.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/manifest.json",
+      "sha256": "7bd00cb33f330604e3b84d753f5f6170f771f6f21aec85d4d4bb252bc15fb0a0",
+      "bytes": 1055
+    },
+    "continuation-macos-arm64/profile1/resumed-128/artifacts.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/profile1/resumed-128/artifacts.json",
+      "sha256": "bb9f107b37e2281f5a3d9942a0984557380de89f24bb5026b4b88bb2cadfdb72",
+      "bytes": 303
+    },
+    "continuation-macos-arm64/profile1/resumed-128/command.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/profile1/resumed-128/command.json",
+      "sha256": "f372e96ce51ae8371d15471da9fa4c68daa7d135c1eee3b5b69d769cb2c53baf",
+      "bytes": 547
+    },
+    "continuation-macos-arm64/profile1/resumed-128/engine.log": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/profile1/resumed-128/engine.log",
+      "sha256": "89f0a507c91a50a4d48486109afeed1904ac7bde0e04a82e768fb7da7d367cbd",
+      "bytes": 446
+    },
+    "continuation-macos-arm64/profile1/resumed-128/final.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/profile1/resumed-128/final.game.gz",
+      "sha256": "b884429f9813d6c16796da2f8d704a8e3ef87df06d1de50487de16cb23ca55da",
+      "bytes": 58945
+    },
+    "continuation-macos-arm64/profile1/resumed-128/game.replay": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/profile1/resumed-128/game.replay",
+      "sha256": "225212c7fb03f82bfbd8e66175cff92ed825ad9c1002441902bc56ace50e5786",
+      "bytes": 981312
+    },
+    "continuation-macos-arm64/profile1/resumed-128/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/profile1/resumed-128/game.replay.checksums",
+      "sha256": "93ebea3e0bc20944f2427e5a74a1ed161c3358e3ba11ebe6f5855802af113315",
+      "bytes": 198164
+    },
+    "continuation-macos-arm64/profile1/resumed-128/profile/keyboard-gui.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/profile1/resumed-128/profile/keyboard-gui.txt",
+      "sha256": "4f7c638f91238c9ee26e10d127596ad1387c723697186152f4bb3b1706e542fd",
+      "bytes": 1670
+    },
+    "continuation-macos-arm64/profile1/resumed-128/profile/keyboard-mapedit.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/profile1/resumed-128/profile/keyboard-mapedit.txt",
+      "sha256": "6475760c5d58125290f33349cc220dbf3cb04e0fa2c2dea08787c838631637f5",
+      "bytes": 624
+    },
+    "continuation-macos-arm64/profile1/resumed-128/profile/preferences.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/profile1/resumed-128/profile/preferences.txt",
+      "sha256": "63cf9841fad67c826b42856e027c0b38bfb46933d535b030343d2f33285bcc0b",
+      "bytes": 2922
+    },
+    "continuation-macos-arm64/profile1/resumed-128/progress.jsonl": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/profile1/resumed-128/progress.jsonl",
+      "sha256": "b81a76b19f7553c8e795693c55c4e2c99c44ccd73102a6ec5b4bf3821816bc85",
+      "bytes": 32
+    },
+    "continuation-macos-arm64/profile1/resumed-128/result.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/profile1/resumed-128/result.json",
+      "sha256": "7f40b31401e95f92b993593c4c03597044aa03587855bb8f26086359be5c0323",
+      "bytes": 5414
+    },
+    "continuation-macos-arm64/profile1/workers1/artifacts.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/profile1/workers1/artifacts.json",
+      "sha256": "7810d4a674b84b7545dc18a87f4d38238f2a099d5b667ce1a8f7f495866ac2d0",
+      "bytes": 399
+    },
+    "continuation-macos-arm64/profile1/workers1/checkpoint-128.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/profile1/workers1/checkpoint-128.game.gz",
+      "sha256": "338dc8f653d7ebe482346cdbf765ffd3bdce0d777f9ad970186ab075e2a98f6d",
+      "bytes": 58181
+    },
+    "continuation-macos-arm64/profile1/workers1/checkpoint-256.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/profile1/workers1/checkpoint-256.game.gz",
+      "sha256": "8797cb5c0ab54435a862ac3675d40f81f48d40d6c5d2b71c176078988fbfd7d0",
+      "bytes": 58947
+    },
+    "continuation-macos-arm64/profile1/workers1/command.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/profile1/workers1/command.json",
+      "sha256": "9140823f4582f5d02decfa82005e63d043c93dda826aac6c1a00e58a1d89cca9",
+      "bytes": 521
+    },
+    "continuation-macos-arm64/profile1/workers1/engine.log": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/profile1/workers1/engine.log",
+      "sha256": "e6dba331d42b79a0c736c8f8fe1dc70f430adc8c2233177bae1d523928f3399c",
+      "bytes": 765
+    },
+    "continuation-macos-arm64/profile1/workers1/final.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/profile1/workers1/final.game.gz",
+      "sha256": "0178959c555aa2b6fb6dca64e87763d7063419b013b9655807e11a4f4d9974be",
+      "bytes": 58946
+    },
+    "continuation-macos-arm64/profile1/workers1/game.replay": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/profile1/workers1/game.replay",
+      "sha256": "81eed4896c1feb6e5b96cfc17ff4148830088a85b4a55d3f481bb16875dbc214",
+      "bytes": 811587
+    },
+    "continuation-macos-arm64/profile1/workers1/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/profile1/workers1/game.replay.checksums",
+      "sha256": "5cd18fbcb540ca079c58842f9733760d10290785bc01163873fd213986cb7f0c",
+      "bytes": 396308
+    },
+    "continuation-macos-arm64/profile1/workers1/profile/keyboard-gui.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/profile1/workers1/profile/keyboard-gui.txt",
+      "sha256": "4f7c638f91238c9ee26e10d127596ad1387c723697186152f4bb3b1706e542fd",
+      "bytes": 1670
+    },
+    "continuation-macos-arm64/profile1/workers1/profile/keyboard-mapedit.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/profile1/workers1/profile/keyboard-mapedit.txt",
+      "sha256": "6475760c5d58125290f33349cc220dbf3cb04e0fa2c2dea08787c838631637f5",
+      "bytes": 624
+    },
+    "continuation-macos-arm64/profile1/workers1/profile/preferences.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/profile1/workers1/profile/preferences.txt",
+      "sha256": "63cf9841fad67c826b42856e027c0b38bfb46933d535b030343d2f33285bcc0b",
+      "bytes": 2922
+    },
+    "continuation-macos-arm64/profile1/workers1/progress.jsonl": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/profile1/workers1/progress.jsonl",
+      "sha256": "b81a76b19f7553c8e795693c55c4e2c99c44ccd73102a6ec5b4bf3821816bc85",
+      "bytes": 32
+    },
+    "continuation-macos-arm64/profile1/workers1/result.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/profile1/workers1/result.json",
+      "sha256": "40cfb8495b20ed0d54c8ed07e15b2662fc7972cb00a55206d3e59719b13699e5",
+      "bytes": 5391
+    },
+    "continuation-macos-arm64/profile1/workers4/artifacts.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/profile1/workers4/artifacts.json",
+      "sha256": "d2c4f6f342bd81047e5217f05d8340520addfd98e6351145822d01e1e9e803fe",
+      "bytes": 399
+    },
+    "continuation-macos-arm64/profile1/workers4/checkpoint-128.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/profile1/workers4/checkpoint-128.game.gz",
+      "sha256": "338dc8f653d7ebe482346cdbf765ffd3bdce0d777f9ad970186ab075e2a98f6d",
+      "bytes": 58181
+    },
+    "continuation-macos-arm64/profile1/workers4/checkpoint-256.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/profile1/workers4/checkpoint-256.game.gz",
+      "sha256": "8797cb5c0ab54435a862ac3675d40f81f48d40d6c5d2b71c176078988fbfd7d0",
+      "bytes": 58947
+    },
+    "continuation-macos-arm64/profile1/workers4/command.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/profile1/workers4/command.json",
+      "sha256": "5a7cddaf5f89fe766ffe8d10b3d2eed818885dd585680f48c5704550a40dc098",
+      "bytes": 521
+    },
+    "continuation-macos-arm64/profile1/workers4/engine.log": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/profile1/workers4/engine.log",
+      "sha256": "a5dd265fe1992b8812887b02bbb25b35ea17ee93adf6ae42db6ee62540c5d84c",
+      "bytes": 765
+    },
+    "continuation-macos-arm64/profile1/workers4/final.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/profile1/workers4/final.game.gz",
+      "sha256": "0178959c555aa2b6fb6dca64e87763d7063419b013b9655807e11a4f4d9974be",
+      "bytes": 58946
+    },
+    "continuation-macos-arm64/profile1/workers4/game.replay": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/profile1/workers4/game.replay",
+      "sha256": "81eed4896c1feb6e5b96cfc17ff4148830088a85b4a55d3f481bb16875dbc214",
+      "bytes": 811587
+    },
+    "continuation-macos-arm64/profile1/workers4/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/profile1/workers4/game.replay.checksums",
+      "sha256": "5cd18fbcb540ca079c58842f9733760d10290785bc01163873fd213986cb7f0c",
+      "bytes": 396308
+    },
+    "continuation-macos-arm64/profile1/workers4/profile/keyboard-gui.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/profile1/workers4/profile/keyboard-gui.txt",
+      "sha256": "4f7c638f91238c9ee26e10d127596ad1387c723697186152f4bb3b1706e542fd",
+      "bytes": 1670
+    },
+    "continuation-macos-arm64/profile1/workers4/profile/keyboard-mapedit.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/profile1/workers4/profile/keyboard-mapedit.txt",
+      "sha256": "6475760c5d58125290f33349cc220dbf3cb04e0fa2c2dea08787c838631637f5",
+      "bytes": 624
+    },
+    "continuation-macos-arm64/profile1/workers4/profile/preferences.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/profile1/workers4/profile/preferences.txt",
+      "sha256": "63cf9841fad67c826b42856e027c0b38bfb46933d535b030343d2f33285bcc0b",
+      "bytes": 2922
+    },
+    "continuation-macos-arm64/profile1/workers4/progress.jsonl": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/profile1/workers4/progress.jsonl",
+      "sha256": "b81a76b19f7553c8e795693c55c4e2c99c44ccd73102a6ec5b4bf3821816bc85",
+      "bytes": 32
+    },
+    "continuation-macos-arm64/profile1/workers4/result.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/profile1/workers4/result.json",
+      "sha256": "86ce7742c8f3f705fc96eb602008f7ac751a7e3b0b6ca4a6cab45df4cbf5c335",
+      "bytes": 5419
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-128/artifacts.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-128/artifacts.json",
+      "sha256": "a0e710b8741f335ff7a14be46e26242854ab0e05f0e1352a15963dcdb91293f3",
+      "bytes": 303
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-128/command.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-128/command.json",
+      "sha256": "3883c27dd5d08ac941a50d06a5edb00f1b93592377f0a4407ec0b178b65e24d7",
+      "bytes": 567
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-128/engine.log": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-128/engine.log",
+      "sha256": "8e726135cc4f4e336c38a476fe5ecbcdaedf84bb9d9d0ccd2170fb3abea67cb0",
+      "bytes": 456
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-128/final.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-128/final.game.gz",
+      "sha256": "45775191fac2cf7fef2543b423ae07c448216d9145f77a4f81e29d533811d749",
+      "bytes": 59162
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-128/game.replay": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-128/game.replay",
+      "sha256": "01d75d7108166a33ab454db17192432e77cb60401b99f63d088b6bd9e48bb40b",
+      "bytes": 976248
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-128/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-128/game.replay.checksums",
+      "sha256": "499b031f0f8929aa6c6833dc7bcfadc3289238472dd3f80014c47695a78de866",
+      "bytes": 198164
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-128/profile/keyboard-gui.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-128/profile/keyboard-gui.txt",
+      "sha256": "4f7c638f91238c9ee26e10d127596ad1387c723697186152f4bb3b1706e542fd",
+      "bytes": 1670
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-128/profile/keyboard-mapedit.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-128/profile/keyboard-mapedit.txt",
+      "sha256": "6475760c5d58125290f33349cc220dbf3cb04e0fa2c2dea08787c838631637f5",
+      "bytes": 624
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-128/profile/preferences.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-128/profile/preferences.txt",
+      "sha256": "63cf9841fad67c826b42856e027c0b38bfb46933d535b030343d2f33285bcc0b",
+      "bytes": 2922
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-128/progress.jsonl": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-128/progress.jsonl",
+      "sha256": "b81a76b19f7553c8e795693c55c4e2c99c44ccd73102a6ec5b4bf3821816bc85",
+      "bytes": 32
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-128/result.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-128/result.json",
+      "sha256": "5d0efc5159d57e0aface072a784d2af4f9673626cd07ad6afa5fd7a0c647f9a4",
+      "bytes": 8078
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-224/artifacts.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-224/artifacts.json",
+      "sha256": "5336d53770f1a930bda52cc345afab5d9e62afe5d99df09a5b21e35d35e0b30c",
+      "bytes": 302
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-224/command.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-224/command.json",
+      "sha256": "c3703dad401b802578b44a19681583bbe629dd30cc0081f5bfa2297be086ce49",
+      "bytes": 567
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-224/engine.log": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-224/engine.log",
+      "sha256": "abd844ed2b13a9983a477daca3b42c8be99f2ff86d92d30df533a012c109c4bf",
+      "bytes": 455
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-224/final.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-224/final.game.gz",
+      "sha256": "45775191fac2cf7fef2543b423ae07c448216d9145f77a4f81e29d533811d749",
+      "bytes": 59162
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-224/game.replay": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-224/game.replay",
+      "sha256": "bdadd9313f9c887b760afd38077ba037dc7d9c1c161c2d549d250dfc8e8b3f67",
+      "bytes": 973002
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-224/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-224/game.replay.checksums",
+      "sha256": "b4f9ff9de5798bd5d15c5c9ff4f9499a2c745320d8fa3bc730930a173ca68076",
+      "bytes": 49556
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-224/profile/keyboard-gui.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-224/profile/keyboard-gui.txt",
+      "sha256": "4f7c638f91238c9ee26e10d127596ad1387c723697186152f4bb3b1706e542fd",
+      "bytes": 1670
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-224/profile/keyboard-mapedit.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-224/profile/keyboard-mapedit.txt",
+      "sha256": "6475760c5d58125290f33349cc220dbf3cb04e0fa2c2dea08787c838631637f5",
+      "bytes": 624
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-224/profile/preferences.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-224/profile/preferences.txt",
+      "sha256": "63cf9841fad67c826b42856e027c0b38bfb46933d535b030343d2f33285bcc0b",
+      "bytes": 2922
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-224/progress.jsonl": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-224/progress.jsonl",
+      "sha256": "b81a76b19f7553c8e795693c55c4e2c99c44ccd73102a6ec5b4bf3821816bc85",
+      "bytes": 32
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-224/result.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-224/result.json",
+      "sha256": "76d4a9d08e76e23beef5aa0a1ac56f75a648153cad71dd4d46ffbfacef744445",
+      "bytes": 8066
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-32/artifacts.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-32/artifacts.json",
+      "sha256": "8ae928fa2f56c04287c66be440bdc9a8bc1dc8661fc0374147f391b43ef4b538",
+      "bytes": 303
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-32/command.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-32/command.json",
+      "sha256": "4fd5f41bf47d99964123ecd7aeadae2cef268d5742a055aff035f9fca824e460",
+      "bytes": 565
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-32/engine.log": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-32/engine.log",
+      "sha256": "6930d7ffad657caf25b4424a176054f0b953adf1f613d537ffe6a45124f56976",
+      "bytes": 455
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-32/final.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-32/final.game.gz",
+      "sha256": "45775191fac2cf7fef2543b423ae07c448216d9145f77a4f81e29d533811d749",
+      "bytes": 59162
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-32/game.replay": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-32/game.replay",
+      "sha256": "f1e17c4b463099beaf3e6a72f948e3d03d624d4e8c252ae120daf8571539616a",
+      "bytes": 979001
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-32/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-32/game.replay.checksums",
+      "sha256": "b84b114281f43ef9b08f97e41e7844ce1a79366ae1f793ed5b1c806523b1c7dc",
+      "bytes": 346772
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-32/profile/keyboard-gui.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-32/profile/keyboard-gui.txt",
+      "sha256": "4f7c638f91238c9ee26e10d127596ad1387c723697186152f4bb3b1706e542fd",
+      "bytes": 1670
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-32/profile/keyboard-mapedit.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-32/profile/keyboard-mapedit.txt",
+      "sha256": "6475760c5d58125290f33349cc220dbf3cb04e0fa2c2dea08787c838631637f5",
+      "bytes": 624
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-32/profile/preferences.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-32/profile/preferences.txt",
+      "sha256": "63cf9841fad67c826b42856e027c0b38bfb46933d535b030343d2f33285bcc0b",
+      "bytes": 2922
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-32/progress.jsonl": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-32/progress.jsonl",
+      "sha256": "b81a76b19f7553c8e795693c55c4e2c99c44ccd73102a6ec5b4bf3821816bc85",
+      "bytes": 32
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-32/result.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-32/result.json",
+      "sha256": "96887000172cd5dc670680bd243a7cb90bc0275bbb7d26757f648783041d1980",
+      "bytes": 8076
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-64/artifacts.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-64/artifacts.json",
+      "sha256": "b8d175d7bd96e59bccebaba994d610febadd02cfa1afa4c9a571d213c6e1f88c",
+      "bytes": 303
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-64/command.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-64/command.json",
+      "sha256": "026c7a2bdcd96b31b1ee4140818f5c75c4ed04dae8fc98e8bc532a00fc5869ca",
+      "bytes": 565
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-64/engine.log": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-64/engine.log",
+      "sha256": "ca66ec58d1da1b270f81469b6ebd156c7efb75f82d71c579b577c992b51cb3f3",
+      "bytes": 455
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-64/final.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-64/final.game.gz",
+      "sha256": "45775191fac2cf7fef2543b423ae07c448216d9145f77a4f81e29d533811d749",
+      "bytes": 59162
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-64/game.replay": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-64/game.replay",
+      "sha256": "b928339e67f1ae3aabc3516e24e5e0407cea4ecc8fa8134e177b6b339527be25",
+      "bytes": 977969
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-64/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-64/game.replay.checksums",
+      "sha256": "2ae4496c8aeb99baf04a513282aa7ad537b0cfc482648d6df6aaa269cac3b1b0",
+      "bytes": 297236
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-64/profile/keyboard-gui.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-64/profile/keyboard-gui.txt",
+      "sha256": "4f7c638f91238c9ee26e10d127596ad1387c723697186152f4bb3b1706e542fd",
+      "bytes": 1670
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-64/profile/keyboard-mapedit.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-64/profile/keyboard-mapedit.txt",
+      "sha256": "6475760c5d58125290f33349cc220dbf3cb04e0fa2c2dea08787c838631637f5",
+      "bytes": 624
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-64/profile/preferences.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-64/profile/preferences.txt",
+      "sha256": "63cf9841fad67c826b42856e027c0b38bfb46933d535b030343d2f33285bcc0b",
+      "bytes": 2922
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-64/progress.jsonl": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-64/progress.jsonl",
+      "sha256": "b81a76b19f7553c8e795693c55c4e2c99c44ccd73102a6ec5b4bf3821816bc85",
+      "bytes": 32
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-64/result.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-64/result.json",
+      "sha256": "fe0598c6164992b82fdfab9f79fb04a2616b75e006715a0ca78202d81a42a9ec",
+      "bytes": 8076
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-96/artifacts.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-96/artifacts.json",
+      "sha256": "c5193cd11c5b358b01a2a359bed1a2f0ca5bc88a9cef703354e317e1a6fb6886",
+      "bytes": 303
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-96/command.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-96/command.json",
+      "sha256": "e6d0317895ca4f0924fb48e9af944e03ac7d3754222532fe8a1a597d82a4447d",
+      "bytes": 565
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-96/engine.log": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-96/engine.log",
+      "sha256": "137866c2b752747d02e17f7f81ec413e5f5a1f9ba86c633f321bdb405f063456",
+      "bytes": 455
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-96/final.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-96/final.game.gz",
+      "sha256": "45775191fac2cf7fef2543b423ae07c448216d9145f77a4f81e29d533811d749",
+      "bytes": 59162
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-96/game.replay": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-96/game.replay",
+      "sha256": "ffafad5f019f62bb6afe34bf86a600a1064ce7b3260dd4dcb52c003230fd6f06",
+      "bytes": 977056
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-96/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-96/game.replay.checksums",
+      "sha256": "b6db91723fcaafc1090bfafcb3ec3c02281cc0c3d0a7db6e6f2aecf1c473b993",
+      "bytes": 247700
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-96/profile/keyboard-gui.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-96/profile/keyboard-gui.txt",
+      "sha256": "4f7c638f91238c9ee26e10d127596ad1387c723697186152f4bb3b1706e542fd",
+      "bytes": 1670
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-96/profile/keyboard-mapedit.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-96/profile/keyboard-mapedit.txt",
+      "sha256": "6475760c5d58125290f33349cc220dbf3cb04e0fa2c2dea08787c838631637f5",
+      "bytes": 624
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-96/profile/preferences.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-96/profile/preferences.txt",
+      "sha256": "63cf9841fad67c826b42856e027c0b38bfb46933d535b030343d2f33285bcc0b",
+      "bytes": 2922
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-96/progress.jsonl": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-96/progress.jsonl",
+      "sha256": "b81a76b19f7553c8e795693c55c4e2c99c44ccd73102a6ec5b4bf3821816bc85",
+      "bytes": 32
+    },
+    "continuation-macos-arm64/realistic-profile1/resumed-96/result.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/resumed-96/result.json",
+      "sha256": "f3bc8e066bb40b800279610bdd964e6d21ba06b9fc4ffff1471f682fadaec696",
+      "bytes": 8076
+    },
+    "continuation-macos-arm64/realistic-profile1/workers1/artifacts.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/workers1/artifacts.json",
+      "sha256": "2743ed4cebb1e1ca7079d9c1e10db3e13f48d8b2faa015ccd332e2bdcb1cd19d",
+      "bytes": 685
+    },
+    "continuation-macos-arm64/realistic-profile1/workers1/checkpoint-128.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/workers1/checkpoint-128.game.gz",
+      "sha256": "466322419b04067cae46fc0a8a63b1c7b91a9b1efdb91674f1612c1d67befdd3",
+      "bytes": 58690
+    },
+    "continuation-macos-arm64/realistic-profile1/workers1/checkpoint-160.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/workers1/checkpoint-160.game.gz",
+      "sha256": "64283d7f6040d7c2c5c372be18d0125556a6190a0edfaa5cbbf9461e04bb77d9",
+      "bytes": 59173
+    },
+    "continuation-macos-arm64/realistic-profile1/workers1/checkpoint-192.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/workers1/checkpoint-192.game.gz",
+      "sha256": "0ff0115d5ae3c6e446eabe88e1bafc7e939758a0517994e42404cbb0981f51c6",
+      "bytes": 59070
+    },
+    "continuation-macos-arm64/realistic-profile1/workers1/checkpoint-224.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/workers1/checkpoint-224.game.gz",
+      "sha256": "991c0fb3ddd33844b7b481d90e78f6098c4f8f759abe870fc1316caea6348e0c",
+      "bytes": 59086
+    },
+    "continuation-macos-arm64/realistic-profile1/workers1/checkpoint-256.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/workers1/checkpoint-256.game.gz",
+      "sha256": "e6b94c76cb28295e7ba0cd562104b747173a7877865e7b8ccc07975ba2658810",
+      "bytes": 59161
+    },
+    "continuation-macos-arm64/realistic-profile1/workers1/checkpoint-32.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/workers1/checkpoint-32.game.gz",
+      "sha256": "f4d7e7ddaacc3dc90f8b6fb5ceae83cb416e1ba06c81c12915f4d6489442ddf3",
+      "bytes": 58057
+    },
+    "continuation-macos-arm64/realistic-profile1/workers1/checkpoint-64.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/workers1/checkpoint-64.game.gz",
+      "sha256": "69177a5a4c7e19a92324f1e92a217640061732abf6a222f59030f85a2ff2853c",
+      "bytes": 58238
+    },
+    "continuation-macos-arm64/realistic-profile1/workers1/checkpoint-96.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/workers1/checkpoint-96.game.gz",
+      "sha256": "fad21bc58ad824d7d8bcf973734670ab2e2cf400a81d1cc2696a0c36858c3720",
+      "bytes": 58424
+    },
+    "continuation-macos-arm64/realistic-profile1/workers1/command.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/workers1/command.json",
+      "sha256": "6686fe56a971c04b291362af9c747579bc30d9e5fc2d7b74c150ba2b2058b1c1",
+      "bytes": 540
+    },
+    "continuation-macos-arm64/realistic-profile1/workers1/engine.log": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/workers1/engine.log",
+      "sha256": "eea8feb353b791c9dc2ca3055a942479e40e3ad4b02f1a6ead1ff9eae0aa6a50",
+      "bytes": 1818
+    },
+    "continuation-macos-arm64/realistic-profile1/workers1/final.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/workers1/final.game.gz",
+      "sha256": "e6b94c76cb28295e7ba0cd562104b747173a7877865e7b8ccc07975ba2658810",
+      "bytes": 59161
+    },
+    "continuation-macos-arm64/realistic-profile1/workers1/game.replay": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/workers1/game.replay",
+      "sha256": "1a8d1883759b68ba29a3e4b17b5e19847d766a3a1e866b2bd33f7ffe6d8ea10b",
+      "bytes": 817006
+    },
+    "continuation-macos-arm64/realistic-profile1/workers1/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/workers1/game.replay.checksums",
+      "sha256": "8ffdfa9e17047f093cd66af1ff895cb96e40538737777de0cecfbd46fa08d4f6",
+      "bytes": 396308
+    },
+    "continuation-macos-arm64/realistic-profile1/workers1/profile/keyboard-gui.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/workers1/profile/keyboard-gui.txt",
+      "sha256": "4f7c638f91238c9ee26e10d127596ad1387c723697186152f4bb3b1706e542fd",
+      "bytes": 1670
+    },
+    "continuation-macos-arm64/realistic-profile1/workers1/profile/keyboard-mapedit.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/workers1/profile/keyboard-mapedit.txt",
+      "sha256": "6475760c5d58125290f33349cc220dbf3cb04e0fa2c2dea08787c838631637f5",
+      "bytes": 624
+    },
+    "continuation-macos-arm64/realistic-profile1/workers1/profile/preferences.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/workers1/profile/preferences.txt",
+      "sha256": "63cf9841fad67c826b42856e027c0b38bfb46933d535b030343d2f33285bcc0b",
+      "bytes": 2922
+    },
+    "continuation-macos-arm64/realistic-profile1/workers1/progress.jsonl": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/workers1/progress.jsonl",
+      "sha256": "b81a76b19f7553c8e795693c55c4e2c99c44ccd73102a6ec5b4bf3821816bc85",
+      "bytes": 32
+    },
+    "continuation-macos-arm64/realistic-profile1/workers1/result.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/workers1/result.json",
+      "sha256": "5102375df1f488a70560c3c2518980e94a0a07a8d791d1f4f07900170440aec3",
+      "bytes": 8043
+    },
+    "continuation-macos-arm64/realistic-profile1/workers4/artifacts.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/workers4/artifacts.json",
+      "sha256": "6cf20dbd65798f7b6f33de2a3f3bf6e2663821aeafe2453f78633057afa12400",
+      "bytes": 685
+    },
+    "continuation-macos-arm64/realistic-profile1/workers4/checkpoint-128.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/workers4/checkpoint-128.game.gz",
+      "sha256": "466322419b04067cae46fc0a8a63b1c7b91a9b1efdb91674f1612c1d67befdd3",
+      "bytes": 58690
+    },
+    "continuation-macos-arm64/realistic-profile1/workers4/checkpoint-160.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/workers4/checkpoint-160.game.gz",
+      "sha256": "64283d7f6040d7c2c5c372be18d0125556a6190a0edfaa5cbbf9461e04bb77d9",
+      "bytes": 59173
+    },
+    "continuation-macos-arm64/realistic-profile1/workers4/checkpoint-192.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/workers4/checkpoint-192.game.gz",
+      "sha256": "0ff0115d5ae3c6e446eabe88e1bafc7e939758a0517994e42404cbb0981f51c6",
+      "bytes": 59070
+    },
+    "continuation-macos-arm64/realistic-profile1/workers4/checkpoint-224.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/workers4/checkpoint-224.game.gz",
+      "sha256": "991c0fb3ddd33844b7b481d90e78f6098c4f8f759abe870fc1316caea6348e0c",
+      "bytes": 59086
+    },
+    "continuation-macos-arm64/realistic-profile1/workers4/checkpoint-256.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/workers4/checkpoint-256.game.gz",
+      "sha256": "e6b94c76cb28295e7ba0cd562104b747173a7877865e7b8ccc07975ba2658810",
+      "bytes": 59161
+    },
+    "continuation-macos-arm64/realistic-profile1/workers4/checkpoint-32.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/workers4/checkpoint-32.game.gz",
+      "sha256": "f4d7e7ddaacc3dc90f8b6fb5ceae83cb416e1ba06c81c12915f4d6489442ddf3",
+      "bytes": 58057
+    },
+    "continuation-macos-arm64/realistic-profile1/workers4/checkpoint-64.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/workers4/checkpoint-64.game.gz",
+      "sha256": "69177a5a4c7e19a92324f1e92a217640061732abf6a222f59030f85a2ff2853c",
+      "bytes": 58238
+    },
+    "continuation-macos-arm64/realistic-profile1/workers4/checkpoint-96.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/workers4/checkpoint-96.game.gz",
+      "sha256": "fad21bc58ad824d7d8bcf973734670ab2e2cf400a81d1cc2696a0c36858c3720",
+      "bytes": 58424
+    },
+    "continuation-macos-arm64/realistic-profile1/workers4/command.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/workers4/command.json",
+      "sha256": "e0e55aac400376b36dbc5cc2039c97f8a98665ce70434f8b5583638de7a0fd7c",
+      "bytes": 540
+    },
+    "continuation-macos-arm64/realistic-profile1/workers4/engine.log": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/workers4/engine.log",
+      "sha256": "25cb5b017137b6e7c63d40775b52dff269f04ce165731fe833098a954c124d90",
+      "bytes": 1818
+    },
+    "continuation-macos-arm64/realistic-profile1/workers4/final.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/workers4/final.game.gz",
+      "sha256": "e6b94c76cb28295e7ba0cd562104b747173a7877865e7b8ccc07975ba2658810",
+      "bytes": 59161
+    },
+    "continuation-macos-arm64/realistic-profile1/workers4/game.replay": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/workers4/game.replay",
+      "sha256": "1a8d1883759b68ba29a3e4b17b5e19847d766a3a1e866b2bd33f7ffe6d8ea10b",
+      "bytes": 817006
+    },
+    "continuation-macos-arm64/realistic-profile1/workers4/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/workers4/game.replay.checksums",
+      "sha256": "8ffdfa9e17047f093cd66af1ff895cb96e40538737777de0cecfbd46fa08d4f6",
+      "bytes": 396308
+    },
+    "continuation-macos-arm64/realistic-profile1/workers4/profile/keyboard-gui.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/workers4/profile/keyboard-gui.txt",
+      "sha256": "4f7c638f91238c9ee26e10d127596ad1387c723697186152f4bb3b1706e542fd",
+      "bytes": 1670
+    },
+    "continuation-macos-arm64/realistic-profile1/workers4/profile/keyboard-mapedit.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/workers4/profile/keyboard-mapedit.txt",
+      "sha256": "6475760c5d58125290f33349cc220dbf3cb04e0fa2c2dea08787c838631637f5",
+      "bytes": 624
+    },
+    "continuation-macos-arm64/realistic-profile1/workers4/profile/preferences.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/workers4/profile/preferences.txt",
+      "sha256": "63cf9841fad67c826b42856e027c0b38bfb46933d535b030343d2f33285bcc0b",
+      "bytes": 2922
+    },
+    "continuation-macos-arm64/realistic-profile1/workers4/progress.jsonl": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/workers4/progress.jsonl",
+      "sha256": "b81a76b19f7553c8e795693c55c4e2c99c44ccd73102a6ec5b4bf3821816bc85",
+      "bytes": 32
+    },
+    "continuation-macos-arm64/realistic-profile1/workers4/result.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/continuation-macos-arm64/realistic-profile1/workers4/result.json",
+      "sha256": "c09c36f8aea095746a8d9995f88325120edab5e045e1a98f7aaa0a08bb76bb38",
+      "bytes": 8078
+    },
+    "inputs/games/gd-bigarena-long.game.gz": {
+      "repositoryPath": "games/gd-bigarena-long.game.gz",
+      "sha256": "542c151e914440c4d501ca7019888103a1c52dd98f522a0837412fc00ae9bedf",
+      "bytes": 206904
+    },
+    "inputs/games/gd-large-4ai.game.gz": {
+      "repositoryPath": "games/gd-large-4ai.game.gz",
+      "sha256": "e2b1ba36d6ab0a2f6c3c4aebd7178a6df5f39f39fb1100fb52bd18e8f9f73d11",
+      "bytes": 55068
+    },
+    "inputs/master124-origin/baseline-command.json": {
+      "repositoryPath": "artifacts/rebase-validation/master124-origin/baseline-command.json",
+      "sha256": "0e7f64bf1e98766e4d4a66c4b55f54140efbf0422c86ab3deb6f13e1eb9fba07",
+      "bytes": 462
+    },
+    "inputs/master124-origin/baseline.log": {
+      "repositoryPath": "artifacts/rebase-validation/master124-origin/baseline.log",
+      "sha256": "c81c37349dc6f502680d2eac5628afcecdaeaa1aa99e0e9002d6fbba9d31ed42",
+      "bytes": 412
+    },
+    "inputs/master124-origin/baseline128/artifacts.json": {
+      "repositoryPath": "artifacts/rebase-validation/master124-origin/baseline128/artifacts.json",
+      "sha256": "f7b0bbe6c1b9f9fb8eaaaaed0de3d7e04c523117b5446bddf5999ba1ba1f3cb8",
+      "bytes": 198
+    },
+    "inputs/master124-origin/baseline128/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/master124-origin/baseline128/game.replay.checksums",
+      "sha256": "b83b6bfaebe2677f4b83eaf7d20a3fd38470393aba660be6883162cbbfde5278",
+      "bytes": 212574
+    },
+    "inputs/master124-origin/baseline128/result.json": {
+      "repositoryPath": "artifacts/rebase-validation/master124-origin/baseline128/result.json",
+      "sha256": "535bb9ca92bee2225d48e451b570cfcbcaa38100b962468b551fec34255662aa",
+      "bytes": 4595
+    },
+    "inputs/master124-origin/build-config/compile_commands.json": {
+      "repositoryPath": "artifacts/rebase-validation/master124-origin/build-config/compile_commands.json",
+      "sha256": "1551550ac98fd09b89b6009dfe4371ba6569235762fe8bb307dacd00448b6511",
+      "bytes": 4894423
+    },
+    "inputs/master124-origin/build-config/identity.json": {
+      "repositoryPath": "artifacts/rebase-validation/master124-origin/build-config/identity.json",
+      "sha256": "bc3e32111a5d61ba4b45c14a01e9d5e2bffe77d30026ff60bd60f881bec91499",
+      "bytes": 113
+    },
+    "inputs/master124-origin/build.log": {
+      "repositoryPath": "artifacts/rebase-validation/master124-origin/build.log",
+      "sha256": "f9b49bcb421edbffd5f4fa8667f62484379d025696dca638176ac2d78684b1d6",
+      "bytes": 1765736
+    },
+    "inputs/master124-origin/command.json": {
+      "repositoryPath": "artifacts/rebase-validation/master124-origin/command.json",
+      "sha256": "a0329cd39d36950180a5064a981c4a0bb929a8e2340d77f1bb87173cd886aa65",
+      "bytes": 596
+    },
+    "inputs/master124-origin/driver.log": {
+      "repositoryPath": "artifacts/rebase-validation/master124-origin/driver.log",
+      "sha256": "966404e77d8cce9965a50d826d41b178bb7ab4a463b2399abd691d1f6dfc86c6",
+      "bytes": 616
+    },
+    "inputs/master124-origin/generate.log": {
+      "repositoryPath": "artifacts/rebase-validation/master124-origin/generate.log",
+      "sha256": "9f0e161b8a40ee0de527bb513d55ad275d2eead3bb6cdd3e1aa38c8b365bf6d3",
+      "bytes": 533
+    },
+    "inputs/master124-origin/generate/artifacts.json": {
+      "repositoryPath": "artifacts/rebase-validation/master124-origin/generate/artifacts.json",
+      "sha256": "71207e3b7b703d158555c608911e9b4510b047bfef85cd716f2caa1f53fd0ead",
+      "bytes": 198
+    },
+    "inputs/master124-origin/generate/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/master124-origin/generate/game.replay.checksums",
+      "sha256": "871681819fdb66a4c0b05db908bcccbb594a6ddb4931ed581348ea8090ae0fb9",
+      "bytes": 1568
+    },
+    "inputs/master124-origin/generate/result.json": {
+      "repositoryPath": "artifacts/rebase-validation/master124-origin/generate/result.json",
+      "sha256": "a461bd32264095ff362dcf9b4bfe8a912a7245a368c280a8600bc2040383a713",
+      "bytes": 4555
+    },
+    "inputs/master124-origin/manifest.json": {
+      "repositoryPath": "artifacts/rebase-validation/master124-origin/manifest.json",
+      "sha256": "89a8ca17b38124812945bf7bb3b586ab4c28ffe4327650a6d1a4ed250a0e2bc3",
+      "bytes": 811
+    },
+    "inputs/reproduction/check-master124-cli.py": {
+      "repositoryPath": "artifacts/rebase-validation/check-master124-cli.py",
+      "sha256": "4d9e674ff9eb30bf78a0b30d636f4c7499fc56a139871a44e03d43d796258d5f",
+      "bytes": 5250
+    },
+    "inputs/reproduction/package-owned-final.py": {
+      "repositoryPath": "artifacts/rebase-validation/package-owned-final.py",
+      "sha256": "f1d9f4345d96ab5e20a819fbec421ac1ce245d058bd57a8325e8fe4408c9914d",
+      "bytes": 10649
+    },
+    "inputs/reproduction/run-owned-final.py": {
+      "repositoryPath": "artifacts/rebase-validation/run-owned-final.py",
+      "sha256": "e8c0380fa7fd33ff2c413d7509466d9379fb638647648971233383019cc1cc9c",
+      "bytes": 5113
+    },
+    "inputs/test/fixtures/ai-random-streams/numbi-castor-v121.game.gz": {
+      "repositoryPath": "test/fixtures/ai-random-streams/numbi-castor-v121.game.gz",
+      "sha256": "5c80f02ec6b37b2b8b49e181366949bd1f0812039a53fbbe9f755f1e32659307",
+      "bytes": 85834
+    },
+    "inputs/test/fixtures/javascript/README.md": {
+      "repositoryPath": "test/fixtures/javascript/README.md",
+      "sha256": "c47d2f092aa07e64d00623b6e7773ddd655e948935dbe82da5304179e2cae4f1",
+      "bytes": 6548
+    },
+    "inputs/test/fixtures/javascript/ai-realistic.js": {
+      "repositoryPath": "test/fixtures/javascript/ai-realistic.js",
+      "sha256": "5c07eb0da4cf5431ee13b1a646fbc44d9c8da9266367a5aae1d7a7b8f7b4fedf",
+      "bytes": 1574
+    },
+    "inputs/test/fixtures/javascript/ai.js": {
+      "repositoryPath": "test/fixtures/javascript/ai.js",
+      "sha256": "573a8a2706a140dceb4e3f7ad631ff3207dfa50b508ba6d69ea8854fc0b2ef2a",
+      "bytes": 356
+    },
+    "inputs/test/fixtures/javascript/global-number-corpus.js": {
+      "repositoryPath": "test/fixtures/javascript/global-number-corpus.js",
+      "sha256": "579592a35233542b5c2c327a5edb57b4dfe68181ed4660a21b3d941191b13472",
+      "bytes": 616
+    },
+    "inputs/test/fixtures/javascript/global-numbers-profile1.txt": {
+      "repositoryPath": "test/fixtures/javascript/global-numbers-profile1.txt",
+      "sha256": "617f47f300d7408bb749cc4fbab424899ec82ccea7267682dff0c0d64ef9f94f",
+      "bytes": 24685
+    },
+    "inputs/test/fixtures/javascript/map-realistic.js": {
+      "repositoryPath": "test/fixtures/javascript/map-realistic.js",
+      "sha256": "2dd886a8ee823bc7529d23ee0296d64e1e5dcc5ef76b7da8594c9ee497d589d3",
+      "bytes": 1253
+    },
+    "inputs/test/fixtures/javascript/map.js": {
+      "repositoryPath": "test/fixtures/javascript/map.js",
+      "sha256": "b789a81ddce067b9ec094ba03bd13de6d9439150a6aa6ad0872de4288a00f224",
+      "bytes": 376
+    },
+    "inputs/test/fixtures/javascript/master-v124-experiments.game.gz": {
+      "repositoryPath": "test/fixtures/javascript/master-v124-experiments.game.gz",
+      "sha256": "55b972bb3c22b9238645d3f6f33479c0259868baefb2f487808201b7d3758ed5",
+      "bytes": 78408
+    },
+    "inputs/test/fixtures/javascript/numeric-corpus.js": {
+      "repositoryPath": "test/fixtures/javascript/numeric-corpus.js",
+      "sha256": "b455fc13c728dc109604745f5d89dccc7299a9518b6a3da29ef4d00d0d2237ac",
+      "bytes": 3530
+    },
+    "inputs/test/fixtures/javascript/numeric-profile1.txt": {
+      "repositoryPath": "test/fixtures/javascript/numeric-profile1.txt",
+      "sha256": "b62390e5dbeec9fd27b73d2c3a4c19430263a7340fb7f3615d4ad40343df77ac",
+      "bytes": 372219
+    },
+    "inputs/test/fixtures/javascript/profile1-256.checksums.gz": {
+      "repositoryPath": "test/fixtures/javascript/profile1-256.checksums.gz",
+      "sha256": "1352462590ef0d47b5b71742ef126bd48678d63c6c1cf96888fb3b86ab9035eb",
+      "bytes": 30962
+    },
+    "inputs/test/fixtures/javascript/profile1-initial.game.gz": {
+      "repositoryPath": "test/fixtures/javascript/profile1-initial.game.gz",
+      "sha256": "5d3264136360c2cbe50947c1e680ead0703c14279d4987a05db94482e75ad0eb",
+      "bytes": 32940
+    },
+    "inputs/test/fixtures/javascript/realistic-economy-0.txt": {
+      "repositoryPath": "test/fixtures/javascript/realistic-economy-0.txt",
+      "sha256": "db429443b96acb1c48ab40a43032d396c89afe1d80bcbfa0d89c1290b3193576",
+      "bytes": 6262
+    },
+    "inputs/test/fixtures/javascript/realistic-economy-1.txt": {
+      "repositoryPath": "test/fixtures/javascript/realistic-economy-1.txt",
+      "sha256": "8aaaa821965262ebf0a05a1e0d4bf93fb075e1a7533b34d1f1b1bb96b9bb52f6",
+      "bytes": 6262
+    },
+    "inputs/test/fixtures/javascript/realistic-economy-2.txt": {
+      "repositoryPath": "test/fixtures/javascript/realistic-economy-2.txt",
+      "sha256": "1d2df787047b04efe4b012654f7fe65526c8f51b4531bf0b33c727c94c4fdcf4",
+      "bytes": 6262
+    },
+    "inputs/test/fixtures/javascript/realistic-economy-3.txt": {
+      "repositoryPath": "test/fixtures/javascript/realistic-economy-3.txt",
+      "sha256": "88776e570f5d636259dfba94ccc7a661f4aadcd534b02645dd7f5e97b8685631",
+      "bytes": 6262
+    },
+    "inputs/test/fixtures/javascript/realistic-profile1-256.checksums.gz": {
+      "repositoryPath": "test/fixtures/javascript/realistic-profile1-256.checksums.gz",
+      "sha256": "f32bd9fe0a5b81bec5759fa181407e8db5a0b3e7f29da406a6dca11ea18c29a6",
+      "bytes": 26945
+    },
+    "inputs/test/fixtures/javascript/realistic-profile1-initial.game.gz": {
+      "repositoryPath": "test/fixtures/javascript/realistic-profile1-initial.game.gz",
+      "sha256": "b1394f861f2bbf3ab399c1e355c61baed936506155a39a64834c0f36e61e6516",
+      "bytes": 34082
+    },
+    "inputs/test/fixtures/javascript/realistic-survey-0.txt": {
+      "repositoryPath": "test/fixtures/javascript/realistic-survey-0.txt",
+      "sha256": "a233e335a432d393cc358d7f27186d389183b3be40f5f55abd2d74a40e9dd682",
+      "bytes": 1059
+    },
+    "inputs/test/fixtures/javascript/realistic-survey-1.txt": {
+      "repositoryPath": "test/fixtures/javascript/realistic-survey-1.txt",
+      "sha256": "e122d807cd9868d44be267f1088cbe2d2c1ee348223472c7c41e49fe4dafd8f3",
+      "bytes": 1059
+    },
+    "inputs/test/fixtures/javascript/realistic-survey-2.txt": {
+      "repositoryPath": "test/fixtures/javascript/realistic-survey-2.txt",
+      "sha256": "929807fe728b7418359289449cc637cc331aff6ab13ab48dc03b63dd2d1ad7fd",
+      "bytes": 1059
+    },
+    "inputs/test/fixtures/javascript/realistic-survey-3.txt": {
+      "repositoryPath": "test/fixtures/javascript/realistic-survey-3.txt",
+      "sha256": "bf6d49b7f266c402c629b43bf3c9f6c1ee1ac560150ef7cc47e71b5edc7402a2",
+      "bytes": 1059
+    },
+    "inputs/test/fixtures/javascript/released-v123.replay.gz": {
+      "repositoryPath": "test/fixtures/javascript/released-v123.replay.gz",
+      "sha256": "0b1079b16961738b2ac2223eff9da26c6d9f1aa5b26cfe7c16f1581b463d6d24",
+      "bytes": 31263
+    },
+    "inputs/test/fixtures/scoped-gradients/gd-bigarena-2048.checksums.gz": {
+      "repositoryPath": "test/fixtures/scoped-gradients/gd-bigarena-2048.checksums.gz",
+      "sha256": "5fc5bca054b02dd013ea4ed88dfc6986d591d25d935862e96809530059de03d1",
+      "bytes": 2040741
+    },
+    "inputs/test/fixtures/scoped-gradients/gd-large-4ai-1024.checksums.gz": {
+      "repositoryPath": "test/fixtures/scoped-gradients/gd-large-4ai-1024.checksums.gz",
+      "sha256": "4cc8a28d746bfddf22b51d5a116f46d36190deb51f9ed4ba5fac345046e73e64",
+      "bytes": 371151
+    },
+    "inputs/test/fixtures/scoped-gradients/numbi-castor-2048.checksums.gz": {
+      "repositoryPath": "test/fixtures/scoped-gradients/numbi-castor-2048.checksums.gz",
+      "sha256": "f922b723cf12e6e9f41731c6dde70f4eb83029a9a59bbc04d56efc1c9f6cc8ce",
+      "bytes": 243019
+    },
+    "inputs/test/fixtures/scoped-gradients/v108-reload-256.checksums.gz": {
+      "repositoryPath": "test/fixtures/scoped-gradients/v108-reload-256.checksums.gz",
+      "sha256": "09bf98cdff4232bd4ff525a0ad963c370aaf96168c99f6ca5b027ce62bddcc71",
+      "bytes": 112988
+    },
+    "inputs/test/fixtures/team-stats/telemetry-expansion-validation/checkpoint-1024-v108.game.gz": {
+      "repositoryPath": "test/fixtures/team-stats/telemetry-expansion-validation/checkpoint-1024-v108.game.gz",
+      "sha256": "eeefbbe29f3b8e08a1b15fed408378530bf963858d970706091e85cd33aab4f4",
+      "bytes": 311882
+    },
+    "macos-arm64-build.log": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64-build.log",
+      "sha256": "7164fb0c024718e208908e7f6dd92d04cae06fc91aa493dcb5301a9396d260af",
+      "bytes": 570069
+    },
+    "macos-arm64-corpus.log": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64-corpus.log",
+      "sha256": "1fc20e87530fdecc174625256ce2cfe3c71bd9789d235cd6c8a910d41ae7d474",
+      "bytes": 48
+    },
+    "macos-arm64/corpus/JavaScriptCompatibility/JavaScript_current_saves_reject_truncated_generation_tables/truncated-generations-1.bin": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptCompatibility/JavaScript_current_saves_reject_truncated_generation_tables/truncated-generations-1.bin",
+      "sha256": "ae064928f4d4d915f0555afbf4a054bdd1d0947e2269bcce771f246c240e8b5b",
+      "bytes": 804016
+    },
+    "macos-arm64/corpus/JavaScriptCompatibility/JavaScript_current_saves_reject_truncated_generation_tables/truncated-generations-2.bin": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptCompatibility/JavaScript_current_saves_reject_truncated_generation_tables/truncated-generations-2.bin",
+      "sha256": "4cbd70f3d458874ffd2e2baaf7b07310bf81ca9a5960e449f66ecf7db734cb77",
+      "bytes": 804015
+    },
+    "macos-arm64/corpus/JavaScriptCompatibility/JavaScript_current_saves_reject_truncated_generation_tables/truncated-generations-3.bin": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptCompatibility/JavaScript_current_saves_reject_truncated_generation_tables/truncated-generations-3.bin",
+      "sha256": "57ff89468b7090959a0a6236ee09148df774388bf959cf436620064b57bb3c9d",
+      "bytes": 804014
+    },
+    "macos-arm64/corpus/JavaScriptCompatibility/JavaScript_current_saves_reject_truncated_generation_tables/truncated-generations-4.bin": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptCompatibility/JavaScript_current_saves_reject_truncated_generation_tables/truncated-generations-4.bin",
+      "sha256": "7fd68a55a7fdea4f2abe9d4e56b9eb39fd63ce40ad767f639495ffc0a14e3fc9",
+      "bytes": 804013
+    },
+    "macos-arm64/corpus/JavaScriptCompatibility/JavaScript_upgrade_retains_genuine_master124_experiments_and_continuation/master124-upgraded.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptCompatibility/JavaScript_upgrade_retains_genuine_master124_experiments_and_continuation/master124-upgraded.game",
+      "sha256": "5215a9b7dd523a11b2152f5b9cd895e2761012ae1d4925b6612c1bb0c16d8f85",
+      "bytes": 1479477
+    },
+    "macos-arm64/corpus/JavaScriptCompatibility/JavaScript_upgrade_retains_genuine_master124_experiments_and_continuation/master124-world-fields.value": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptCompatibility/JavaScript_upgrade_retains_genuine_master124_experiments_and_continuation/master124-world-fields.value",
+      "sha256": "baaf3063c26f0a26ea54bbc3ae9418bc4f4847e549d77ea3018f3064384a7f1a",
+      "bytes": 112166
+    },
+    "macos-arm64/corpus/JavaScriptCompatibility/JavaScript_upgrade_retains_genuine_master124_experiments_and_continuation/master125-world-fields.value": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptCompatibility/JavaScript_upgrade_retains_genuine_master124_experiments_and_continuation/master125-world-fields.value",
+      "sha256": "baaf3063c26f0a26ea54bbc3ae9418bc4f4847e549d77ea3018f3064384a7f1a",
+      "bytes": 112166
+    },
+    "macos-arm64/corpus/JavaScriptIntegration/JavaScript_orders_execute_and_survive_save_load/supported-orders.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptIntegration/JavaScript_orders_execute_and_survive_save_load/supported-orders.game",
+      "sha256": "6d644fefa0b1de0a2873abb3dd9a5b68ea372a8ee34405832834983f19aa198d",
+      "bytes": 603590
+    },
+    "macos-arm64/corpus/JavaScriptLifecycle/Scripting_building_completion_upgrade_and_repair_preserve_identity/lifecycle.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptLifecycle/Scripting_building_completion_upgrade_and_repair_preserve_identity/lifecycle.game",
+      "sha256": "a91bd9c743b7354029c1cef8cc46d6aaf22cc6e119fff035d845706e20b865b3",
+      "bytes": 595885
+    },
+    "macos-arm64/corpus/JavaScriptLifecycle/Scripting_conversion_allocates_fresh_identity_in_a_reused_destination_slot/lifecycle.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptLifecycle/Scripting_conversion_allocates_fresh_identity_in_a_reused_destination_slot/lifecycle.game",
+      "sha256": "87788f2086d0e93347c4dc0607d22de21bc16aa4abe35f8a5f981af3ebe0bcee",
+      "bytes": 596243
+    },
+    "macos-arm64/corpus/JavaScriptLifecycle/Scripting_conversion_back_never_resurrects_the_original_reference/lifecycle.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptLifecycle/Scripting_conversion_back_never_resurrects_the_original_reference/lifecycle.game",
+      "sha256": "cdf63342de586de7e3a97e230b110fc9c4724ba6511a684b561b117745fc67c3",
+      "bytes": 597640
+    },
+    "macos-arm64/corpus/JavaScriptLifecycle/Scripting_editor_deletion_and_reuse_never_revive_a_reference/lifecycle.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptLifecycle/Scripting_editor_deletion_and_reuse_never_revive_a_reference/lifecycle.game",
+      "sha256": "61a1aea43811a9ff963c20c5f3e0258157ebc0c5f634b0f8d488ff34a118ccfe",
+      "bytes": 596229
+    },
+    "macos-arm64/corpus/JavaScriptLifecycle/Scripting_identity_survives_conversion_and_save_load/lifecycle.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptLifecycle/Scripting_identity_survives_conversion_and_save_load/lifecycle.game",
+      "sha256": "a98cc197daec59aa67cede947fc7f07cabd3215380a4cde6858f48daaa83d6c9",
+      "bytes": 596243
+    },
+    "macos-arm64/corpus/JavaScriptLifecycle/Scripting_normal_death_invalidates_lookup_before_cleanup_and_slot_reuse/lifecycle.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptLifecycle/Scripting_normal_death_invalidates_lookup_before_cleanup_and_slot_reuse/lifecycle.game",
+      "sha256": "84f0e9185eb5b5563510aaa6eff8f790ec60a92181a611a976eae0559e37da34",
+      "bytes": 604607
+    },
+    "macos-arm64/corpus/JavaScriptNumbers/JavaScript_shared_numeric_corpus/numeric-profile1.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptNumbers/JavaScript_shared_numeric_corpus/numeric-profile1.txt",
+      "sha256": "b62390e5dbeec9fd27b73d2c3a4c19430263a7340fb7f3615d4ad40343df77ac",
+      "bytes": 372219
+    },
+    "macos-arm64/corpus/JavaScriptNumbers/JavaScript_shared_numeric_corpus/numeric-profile1.value": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptNumbers/JavaScript_shared_numeric_corpus/numeric-profile1.value",
+      "sha256": "5220d8c67375eba774f6d97b7d224b4b79f792944dcb43b04af6ef6320978c68",
+      "bytes": 103890
+    },
+    "macos-arm64/corpus/JavaScriptNumbers/JavaScript_shared_saved_global_number_corpus/global-numbers-profile1.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptNumbers/JavaScript_shared_saved_global_number_corpus/global-numbers-profile1.txt",
+      "sha256": "617f47f300d7408bb749cc4fbab424899ec82ccea7267682dff0c0d64ef9f94f",
+      "bytes": 24685
+    },
+    "macos-arm64/corpus/JavaScriptNumbers/JavaScript_shared_saved_global_number_corpus/global-numbers-profile1.value": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptNumbers/JavaScript_shared_saved_global_number_corpus/global-numbers-profile1.value",
+      "sha256": "e792b307328eadd0031daef9511eb8c09a468d3d862f30b3a58e0632dd335812",
+      "bytes": 3965
+    },
+    "macos-arm64/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-0.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-0.txt",
+      "sha256": "db429443b96acb1c48ab40a43032d396c89afe1d80bcbfa0d89c1290b3193576",
+      "bytes": 6262
+    },
+    "macos-arm64/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-0.value": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-0.value",
+      "sha256": "a803885f80eeeab5d66f5fa53c3fc92c19f292bbc8056be8265f65d59b6cdba5",
+      "bytes": 1764
+    },
+    "macos-arm64/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-1.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-1.txt",
+      "sha256": "8aaaa821965262ebf0a05a1e0d4bf93fb075e1a7533b34d1f1b1bb96b9bb52f6",
+      "bytes": 6262
+    },
+    "macos-arm64/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-1.value": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-1.value",
+      "sha256": "21655cdf8e94b46fb0c5198372c3ed4cc56e1e1552d75889c5b8dee8ad1c7a14",
+      "bytes": 1764
+    },
+    "macos-arm64/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-2.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-2.txt",
+      "sha256": "1d2df787047b04efe4b012654f7fe65526c8f51b4531bf0b33c727c94c4fdcf4",
+      "bytes": 6262
+    },
+    "macos-arm64/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-2.value": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-2.value",
+      "sha256": "61dc26baa53aef1ef9701158191c46f387819f662d0b4cb2be6c3a621faa1785",
+      "bytes": 1764
+    },
+    "macos-arm64/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-3.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-3.txt",
+      "sha256": "88776e570f5d636259dfba94ccc7a661f4aadcd534b02645dd7f5e97b8685631",
+      "bytes": 6262
+    },
+    "macos-arm64/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-3.value": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-3.value",
+      "sha256": "be88a19fd3257ded47f1f15aa1f133ae240b2cd3e52f08699a81b7be1ec5d67e",
+      "bytes": 1764
+    },
+    "macos-arm64/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-0.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-0.txt",
+      "sha256": "a233e335a432d393cc358d7f27186d389183b3be40f5f55abd2d74a40e9dd682",
+      "bytes": 1059
+    },
+    "macos-arm64/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-0.value": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-0.value",
+      "sha256": "c7a9d3e386e73b01cb91d70719547dfb58c7b01777e9af1d877beccb00c6fcf8",
+      "bytes": 401
+    },
+    "macos-arm64/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-1.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-1.txt",
+      "sha256": "e122d807cd9868d44be267f1088cbe2d2c1ee348223472c7c41e49fe4dafd8f3",
+      "bytes": 1059
+    },
+    "macos-arm64/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-1.value": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-1.value",
+      "sha256": "f9bb4ebc7186a1867af65b32404e85c388e43df51815a08b3c13efff6fd7aea5",
+      "bytes": 401
+    },
+    "macos-arm64/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-2.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-2.txt",
+      "sha256": "929807fe728b7418359289449cc637cc331aff6ab13ab48dc03b63dd2d1ad7fd",
+      "bytes": 1059
+    },
+    "macos-arm64/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-2.value": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-2.value",
+      "sha256": "b7411f705983f7ea2c6593ebf4636a04fd5a9d9bfd4d15e0d470f67c3db0a095",
+      "bytes": 401
+    },
+    "macos-arm64/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-3.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-3.txt",
+      "sha256": "bf6d49b7f266c402c629b43bf3c9f6c1ee1ac560150ef7cc47e71b5edc7402a2",
+      "bytes": 1059
+    },
+    "macos-arm64/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-3.value": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-3.value",
+      "sha256": "4df083ebe4b589d14b092f9da636823fa48f0b84cb20d9dc8699d8cc639612ae",
+      "bytes": 401
+    },
+    "macos-arm64/corpus/JavaScriptSession/JavaScript_initialization_errors_reach_headless_and_UI_load_diagnostics/invalid-embedded-ai.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSession/JavaScript_initialization_errors_reach_headless_and_UI_load_diagnostics/invalid-embedded-ai.game",
+      "sha256": "7678eeabd263502176612b2dc4cd64488353bca9e079612cdbcd44e3ed8aa7fb",
+      "bytes": 804126
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/conversion-initial.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/conversion-initial.game",
+      "sha256": "6e824d8351f7bf7f0607f74474fd6723c1d9ca9b064a83a4202a2f192001a59c",
+      "bytes": 656647
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/playback/final.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/playback/final.game",
+      "sha256": "929d57c7584a810713e4a2c452e6d6d373c45811d9e7154943b71a80fbb37bc8",
+      "bytes": 738696
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/playback/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/playback/game.replay.checksums",
+      "sha256": "d1d61a9602234149e94dffe3561f053668bb1b85ced665c49154bfa546ff1faf",
+      "bytes": 217108
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/resumed-conversion/final.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/resumed-conversion/final.game",
+      "sha256": "0165b6da64508e0a8a56f08df1c4e3639d11cde0d4263e999b960aa06999029f",
+      "bytes": 760565
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/resumed-conversion/game.replay": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/resumed-conversion/game.replay",
+      "sha256": "e1cb89f870e201ae1d3c57e338bf1798d152e8f0ca0f9d54c78fbeb390a6e252",
+      "bytes": 671931
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/resumed-conversion/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/resumed-conversion/game.replay.checksums",
+      "sha256": "d1d61a9602234149e94dffe3561f053668bb1b85ced665c49154bfa546ff1faf",
+      "bytes": 217108
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers1/conversion-0.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers1/conversion-0.game",
+      "sha256": "5b3fd2397816a2cc5df044a0023f75e34cd40903db34a75b4c6875222bd2cd17",
+      "bytes": 662704
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers1/final.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers1/final.game",
+      "sha256": "0165b6da64508e0a8a56f08df1c4e3639d11cde0d4263e999b960aa06999029f",
+      "bytes": 760565
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers1/game.replay": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers1/game.replay",
+      "sha256": "e1cb89f870e201ae1d3c57e338bf1798d152e8f0ca0f9d54c78fbeb390a6e252",
+      "bytes": 671931
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers1/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers1/game.replay.checksums",
+      "sha256": "d1d61a9602234149e94dffe3561f053668bb1b85ced665c49154bfa546ff1faf",
+      "bytes": 217108
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers4/conversion-0.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers4/conversion-0.game",
+      "sha256": "5b3fd2397816a2cc5df044a0023f75e34cd40903db34a75b4c6875222bd2cd17",
+      "bytes": 662704
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers4/final.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers4/final.game",
+      "sha256": "0165b6da64508e0a8a56f08df1c4e3639d11cde0d4263e999b960aa06999029f",
+      "bytes": 760565
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers4/game.replay": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers4/game.replay",
+      "sha256": "e1cb89f870e201ae1d3c57e338bf1798d152e8f0ca0f9d54c78fbeb390a6e252",
+      "bytes": 671931
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers4/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers4/game.replay.checksums",
+      "sha256": "d1d61a9602234149e94dffe3561f053668bb1b85ced665c49154bfa546ff1faf",
+      "bytes": 217108
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/playback/final.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/playback/final.game",
+      "sha256": "30297776623dbc140c73bcedc8f44ee9823a9d9d4104a195f1e100cedd3c1c70",
+      "bytes": 963529
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/playback/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/playback/game.replay.checksums",
+      "sha256": "8ffdfa9e17047f093cd66af1ff895cb96e40538737777de0cecfbd46fa08d4f6",
+      "bytes": 396308
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-128/final.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-128/final.game",
+      "sha256": "c318027cd0f7bd5d2f75aeea2388b8729c42997e29f76041cd12912153cd3cdc",
+      "bytes": 971835
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-128/game.replay": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-128/game.replay",
+      "sha256": "01d75d7108166a33ab454db17192432e77cb60401b99f63d088b6bd9e48bb40b",
+      "bytes": 976248
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-128/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-128/game.replay.checksums",
+      "sha256": "499b031f0f8929aa6c6833dc7bcfadc3289238472dd3f80014c47695a78de866",
+      "bytes": 198164
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-32/final.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-32/final.game",
+      "sha256": "c318027cd0f7bd5d2f75aeea2388b8729c42997e29f76041cd12912153cd3cdc",
+      "bytes": 971835
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-32/game.replay": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-32/game.replay",
+      "sha256": "f1e17c4b463099beaf3e6a72f948e3d03d624d4e8c252ae120daf8571539616a",
+      "bytes": 979001
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-32/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-32/game.replay.checksums",
+      "sha256": "b84b114281f43ef9b08f97e41e7844ce1a79366ae1f793ed5b1c806523b1c7dc",
+      "bytes": 346772
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers1/checkpoint-128.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers1/checkpoint-128.game",
+      "sha256": "f90813043c5ab4ff9494262c9b815162d74e4241d56d31a3ba18001a1c7ac26a",
+      "bytes": 971624
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers1/checkpoint-32.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers1/checkpoint-32.game",
+      "sha256": "d04edab6d41baf8495fb7680fad9ad6e48d4656691250abe9b196da890cd7b02",
+      "bytes": 970921
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers1/final.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers1/final.game",
+      "sha256": "6e336d1f3aa2f929460f15dd3797cd6ef4f2e9e7b9570f6326942cff7652423b",
+      "bytes": 971835
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers1/game.replay": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers1/game.replay",
+      "sha256": "1a8d1883759b68ba29a3e4b17b5e19847d766a3a1e866b2bd33f7ffe6d8ea10b",
+      "bytes": 817006
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers1/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers1/game.replay.checksums",
+      "sha256": "8ffdfa9e17047f093cd66af1ff895cb96e40538737777de0cecfbd46fa08d4f6",
+      "bytes": 396308
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers4/checkpoint-128.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers4/checkpoint-128.game",
+      "sha256": "f90813043c5ab4ff9494262c9b815162d74e4241d56d31a3ba18001a1c7ac26a",
+      "bytes": 971624
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers4/checkpoint-32.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers4/checkpoint-32.game",
+      "sha256": "d04edab6d41baf8495fb7680fad9ad6e48d4656691250abe9b196da890cd7b02",
+      "bytes": 970921
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers4/final.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers4/final.game",
+      "sha256": "6e336d1f3aa2f929460f15dd3797cd6ef4f2e9e7b9570f6326942cff7652423b",
+      "bytes": 971835
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers4/game.replay": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers4/game.replay",
+      "sha256": "1a8d1883759b68ba29a3e4b17b5e19847d766a3a1e866b2bd33f7ffe6d8ea10b",
+      "bytes": 817006
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers4/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers4/game.replay.checksums",
+      "sha256": "8ffdfa9e17047f093cd66af1ff895cb96e40538737777de0cecfbd46fa08d4f6",
+      "bytes": 396308
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/playback/final.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/playback/final.game",
+      "sha256": "68ef95d1a4b1225d711d765e5727e5d171612060b253f7b6ba169fefaba9042f",
+      "bytes": 970280
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/playback/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/playback/game.replay.checksums",
+      "sha256": "5cd18fbcb540ca079c58842f9733760d10290785bc01163873fd213986cb7f0c",
+      "bytes": 396308
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-128/final.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-128/final.game",
+      "sha256": "3b8ac2249e13d733d1935351e6d593b093b314a86e3e8e4452674664923bcb18",
+      "bytes": 978586
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-128/game.replay": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-128/game.replay",
+      "sha256": "225212c7fb03f82bfbd8e66175cff92ed825ad9c1002441902bc56ace50e5786",
+      "bytes": 981312
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-128/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-128/game.replay.checksums",
+      "sha256": "93ebea3e0bc20944f2427e5a74a1ed161c3358e3ba11ebe6f5855802af113315",
+      "bytes": 198164
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-32/final.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-32/final.game",
+      "sha256": "9a155ac1c408c1963be98f9f28c89642baa1433c295ad27c9e1489ea43f5cb04",
+      "bytes": 978586
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-32/game.replay": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-32/game.replay",
+      "sha256": "788688c661ba6ff2c6adc8dda524386b7b62270c237c90c485010c4ef89e22d8",
+      "bytes": 983504
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-32/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-32/game.replay.checksums",
+      "sha256": "8a92fe5db5c6940388a653c9ed6d6904b6dbf024f2cfced296d1ead86af6e7ff",
+      "bytes": 346772
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers1/checkpoint-128.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers1/checkpoint-128.game",
+      "sha256": "2381c22426622c65419d925bf9d1fef013549011ebf80b2e7cfb624ce82215a4",
+      "bytes": 977768
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers1/checkpoint-32.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers1/checkpoint-32.game",
+      "sha256": "71be4dd4e6f0e4a4acd8b8613d08630fea3a74c7e5b09ed9d70d3d4a14b7eb1c",
+      "bytes": 977224
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers1/final.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers1/final.game",
+      "sha256": "f57aba5a32399a1d62ead1185bc51859b4c3b67564d06894fffb9c2fc813dea4",
+      "bytes": 978586
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers1/game.replay": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers1/game.replay",
+      "sha256": "81eed4896c1feb6e5b96cfc17ff4148830088a85b4a55d3f481bb16875dbc214",
+      "bytes": 811587
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers1/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers1/game.replay.checksums",
+      "sha256": "5cd18fbcb540ca079c58842f9733760d10290785bc01163873fd213986cb7f0c",
+      "bytes": 396308
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers4/checkpoint-128.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers4/checkpoint-128.game",
+      "sha256": "2381c22426622c65419d925bf9d1fef013549011ebf80b2e7cfb624ce82215a4",
+      "bytes": 977768
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers4/checkpoint-32.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers4/checkpoint-32.game",
+      "sha256": "71be4dd4e6f0e4a4acd8b8613d08630fea3a74c7e5b09ed9d70d3d4a14b7eb1c",
+      "bytes": 977224
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers4/final.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers4/final.game",
+      "sha256": "f57aba5a32399a1d62ead1185bc51859b4c3b67564d06894fffb9c2fc813dea4",
+      "bytes": 978586
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers4/game.replay": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers4/game.replay",
+      "sha256": "81eed4896c1feb6e5b96cfc17ff4148830088a85b4a55d3f481bb16875dbc214",
+      "bytes": 811587
+    },
+    "macos-arm64/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers4/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers4/game.replay.checksums",
+      "sha256": "5cd18fbcb540ca079c58842f9733760d10290785bc01163873fd213986cb7f0c",
+      "bytes": 396308
+    },
+    "macos-arm64/corpus/build-provenance.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/corpus/build-provenance.json",
+      "sha256": "5f62d476bf3c2335c9b1ab683633972f7c78594c0650a8aa492203bce88de12b",
+      "bytes": 407
+    },
+    "macos-arm64/glob2-engine-tests.log": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/glob2-engine-tests.log",
+      "sha256": "c2cb6386d8ddda8d6951a4b2f5bf6de3a9bda46be7c74f48915037f765cc6d63",
+      "bytes": 8509
+    },
+    "macos-arm64/glob2-engine-tests.xml": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/glob2-engine-tests.xml",
+      "sha256": "a6ba24af8417189f7638cb2f0162e3650d2276b035e37514e45a66c21bda9b40",
+      "bytes": 5558
+    },
+    "macos-arm64/glob2-unit-tests.log": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/glob2-unit-tests.log",
+      "sha256": "0cd7059b85fef91a8ab0aa51aba6d0f8d4df411b35d7a837aa93edc87e58a28e",
+      "bytes": 3398
+    },
+    "macos-arm64/glob2-unit-tests.xml": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/glob2-unit-tests.xml",
+      "sha256": "b56bbbe1fac13f963bfa37b22ed108daa673d9796518f211f7b2357fd70e151a",
+      "bytes": 3308
+    },
+    "macos-arm64/manifest.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/macos-arm64/manifest.json",
+      "sha256": "c352667a61940d5d6bd224f70a321447cd63c11f7e75502a576c86df34723b49",
+      "bytes": 17291
+    },
+    "master124-macos-arm64.log": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-macos-arm64.log",
+      "sha256": "faead9c051399fc1ca5612dd3e28599a33e0be6e1958849b8bab499b27a02283",
+      "bytes": 106
+    },
+    "master124-macos-arm64/manifest.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-macos-arm64/manifest.json",
+      "sha256": "157c0049735a3c6d97b206620bcd3a71a687568e2b0ea2f67e1803a7a3ec5de8",
+      "bytes": 5363
+    },
+    "master124-macos-arm64/resumed-upstream124.log": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-macos-arm64/resumed-upstream124.log",
+      "sha256": "82f7c72548b50625c93d65b8f7ac528cb611ef3514134c9362ceeacc9417b6a5",
+      "bytes": 591
+    },
+    "master124-macos-arm64/resumed-upstream124/artifacts.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-macos-arm64/resumed-upstream124/artifacts.json",
+      "sha256": "c519f8a741148b964b86809710cd7139abc10f2cced56e99c787ed8e69796dff",
+      "bytes": 247
+    },
+    "master124-macos-arm64/resumed-upstream124/checkpoint-128.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-macos-arm64/resumed-upstream124/checkpoint-128.game.gz",
+      "sha256": "181d5b1914a7ffb9bf0987127facb9171472c086bc655dc1a758beb4d6bedf6d",
+      "bytes": 214969
+    },
+    "master124-macos-arm64/resumed-upstream124/final.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-macos-arm64/resumed-upstream124/final.game.gz",
+      "sha256": "e0fe12d9bfc157f34fed485d6c6d8b9214f95531e322990b2bbda9d91a83d4d2",
+      "bytes": 214969
+    },
+    "master124-macos-arm64/resumed-upstream124/game.replay": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-macos-arm64/resumed-upstream124/game.replay",
+      "sha256": "58f3155a5fde73ad2d31cb534e244b4fb2f2bbe62a03c5aca55f591fea18b1ca",
+      "bytes": 2131806
+    },
+    "master124-macos-arm64/resumed-upstream124/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-macos-arm64/resumed-upstream124/game.replay.checksums",
+      "sha256": "729ddfd5ad3b44e1911b7e729cdaa39baabd8812c134c60a4b1222c3743d3be1",
+      "bytes": 107672
+    },
+    "master124-macos-arm64/resumed-upstream124/profile/keyboard-gui.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-macos-arm64/resumed-upstream124/profile/keyboard-gui.txt",
+      "sha256": "4f7c638f91238c9ee26e10d127596ad1387c723697186152f4bb3b1706e542fd",
+      "bytes": 1670
+    },
+    "master124-macos-arm64/resumed-upstream124/profile/keyboard-mapedit.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-macos-arm64/resumed-upstream124/profile/keyboard-mapedit.txt",
+      "sha256": "6475760c5d58125290f33349cc220dbf3cb04e0fa2c2dea08787c838631637f5",
+      "bytes": 624
+    },
+    "master124-macos-arm64/resumed-upstream124/profile/preferences.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-macos-arm64/resumed-upstream124/profile/preferences.txt",
+      "sha256": "63cf9841fad67c826b42856e027c0b38bfb46933d535b030343d2f33285bcc0b",
+      "bytes": 2922
+    },
+    "master124-macos-arm64/resumed-upstream124/result.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-macos-arm64/resumed-upstream124/result.json",
+      "sha256": "84c07614bb9ad7706b23b55160550e6c883f38ab54e274935395265bc2a0bbd8",
+      "bytes": 4592
+    },
+    "master124-macos-arm64/resumed64.log": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-macos-arm64/resumed64.log",
+      "sha256": "7cac646e5eec6819a40ed17530f1fc9a703cf39722812d9355467c6f29655897",
+      "bytes": 571
+    },
+    "master124-macos-arm64/resumed64/artifacts.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-macos-arm64/resumed64/artifacts.json",
+      "sha256": "2d8db3e3ba776c9ba9bdf9c17c1625bebe8b19089d694d198a3df45a98d9282d",
+      "bytes": 247
+    },
+    "master124-macos-arm64/resumed64/checkpoint-128.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-macos-arm64/resumed64/checkpoint-128.game.gz",
+      "sha256": "181d5b1914a7ffb9bf0987127facb9171472c086bc655dc1a758beb4d6bedf6d",
+      "bytes": 214969
+    },
+    "master124-macos-arm64/resumed64/final.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-macos-arm64/resumed64/final.game.gz",
+      "sha256": "e0fe12d9bfc157f34fed485d6c6d8b9214f95531e322990b2bbda9d91a83d4d2",
+      "bytes": 214969
+    },
+    "master124-macos-arm64/resumed64/game.replay": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-macos-arm64/resumed64/game.replay",
+      "sha256": "14dd8d043cd05df7e8268d598d8313de307703ab4aff915060d903f4a5829e69",
+      "bytes": 2131806
+    },
+    "master124-macos-arm64/resumed64/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-macos-arm64/resumed64/game.replay.checksums",
+      "sha256": "9991e9539462b28925756aa902646e98e92fcc0c77cdf7f499ca14b1f03d9ceb",
+      "bytes": 107672
+    },
+    "master124-macos-arm64/resumed64/profile/keyboard-gui.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-macos-arm64/resumed64/profile/keyboard-gui.txt",
+      "sha256": "4f7c638f91238c9ee26e10d127596ad1387c723697186152f4bb3b1706e542fd",
+      "bytes": 1670
+    },
+    "master124-macos-arm64/resumed64/profile/keyboard-mapedit.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-macos-arm64/resumed64/profile/keyboard-mapedit.txt",
+      "sha256": "6475760c5d58125290f33349cc220dbf3cb04e0fa2c2dea08787c838631637f5",
+      "bytes": 624
+    },
+    "master124-macos-arm64/resumed64/profile/preferences.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-macos-arm64/resumed64/profile/preferences.txt",
+      "sha256": "63cf9841fad67c826b42856e027c0b38bfb46933d535b030343d2f33285bcc0b",
+      "bytes": 2922
+    },
+    "master124-macos-arm64/resumed64/result.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-macos-arm64/resumed64/result.json",
+      "sha256": "6de5ccfe478a28d7a84f426203fb39a4100778f567e6231e161ae7af2e6bbcfe",
+      "bytes": 4593
+    },
+    "master124-macos-arm64/workers1.log": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-macos-arm64/workers1.log",
+      "sha256": "a602dca57fa490dbd9fc6971d127008a82bfa178240e227c53896e14f208e0ad",
+      "bytes": 717
+    },
+    "master124-macos-arm64/workers1/artifacts.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-macos-arm64/workers1/artifacts.json",
+      "sha256": "dada2787cbfaf56d0cd40f375811ae9109ff3aa46246cfd8b4bd6c7207b20433",
+      "bytes": 295
+    },
+    "master124-macos-arm64/workers1/checkpoint-128.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-macos-arm64/workers1/checkpoint-128.game.gz",
+      "sha256": "e2cd40f39f8148f7a1ffb99b033927b9206a557eefb0d801dc720e6ce34dcafd",
+      "bytes": 229500
+    },
+    "master124-macos-arm64/workers1/checkpoint-64.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-macos-arm64/workers1/checkpoint-64.game.gz",
+      "sha256": "86b1cdf10d03ca29dad69c2f60c621bb08a2be427b72edde750f4a3ed8a83618",
+      "bytes": 197204
+    },
+    "master124-macos-arm64/workers1/final.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-macos-arm64/workers1/final.game.gz",
+      "sha256": "40c174e37d095738daf467ac536ddd5e054a6bb35be171df4a72f43172316fd6",
+      "bytes": 229498
+    },
+    "master124-macos-arm64/workers1/game.replay": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-macos-arm64/workers1/game.replay",
+      "sha256": "600e6a7a46ed8c1790718b555eacb4e3ba981f7d4068ca1f2c8eb5e1fcb648a2",
+      "bytes": 1480169
+    },
+    "master124-macos-arm64/workers1/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-macos-arm64/workers1/game.replay.checksums",
+      "sha256": "b83b6bfaebe2677f4b83eaf7d20a3fd38470393aba660be6883162cbbfde5278",
+      "bytes": 212574
+    },
+    "master124-macos-arm64/workers1/profile/keyboard-gui.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-macos-arm64/workers1/profile/keyboard-gui.txt",
+      "sha256": "4f7c638f91238c9ee26e10d127596ad1387c723697186152f4bb3b1706e542fd",
+      "bytes": 1670
+    },
+    "master124-macos-arm64/workers1/profile/keyboard-mapedit.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-macos-arm64/workers1/profile/keyboard-mapedit.txt",
+      "sha256": "6475760c5d58125290f33349cc220dbf3cb04e0fa2c2dea08787c838631637f5",
+      "bytes": 624
+    },
+    "master124-macos-arm64/workers1/profile/preferences.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-macos-arm64/workers1/profile/preferences.txt",
+      "sha256": "63cf9841fad67c826b42856e027c0b38bfb46933d535b030343d2f33285bcc0b",
+      "bytes": 2922
+    },
+    "master124-macos-arm64/workers1/result.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-macos-arm64/workers1/result.json",
+      "sha256": "1912c2972cb2e7c78c51bed002e4a66731d2b6927ffca1d6e772f0b5305a62d7",
+      "bytes": 4572
+    },
+    "master124-macos-arm64/workers4.log": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-macos-arm64/workers4.log",
+      "sha256": "815ca6c375148ab5063615697e82b1030a8f2cf68f5b660c5aaf094b6d168ab3",
+      "bytes": 717
+    },
+    "master124-macos-arm64/workers4/artifacts.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-macos-arm64/workers4/artifacts.json",
+      "sha256": "a53c76acb304e002fd5e0914c0e5395d13a02dadbd21b7150de6477b0c2aa482",
+      "bytes": 295
+    },
+    "master124-macos-arm64/workers4/checkpoint-128.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-macos-arm64/workers4/checkpoint-128.game.gz",
+      "sha256": "e2cd40f39f8148f7a1ffb99b033927b9206a557eefb0d801dc720e6ce34dcafd",
+      "bytes": 229500
+    },
+    "master124-macos-arm64/workers4/checkpoint-64.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-macos-arm64/workers4/checkpoint-64.game.gz",
+      "sha256": "86b1cdf10d03ca29dad69c2f60c621bb08a2be427b72edde750f4a3ed8a83618",
+      "bytes": 197204
+    },
+    "master124-macos-arm64/workers4/final.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-macos-arm64/workers4/final.game.gz",
+      "sha256": "40c174e37d095738daf467ac536ddd5e054a6bb35be171df4a72f43172316fd6",
+      "bytes": 229498
+    },
+    "master124-macos-arm64/workers4/game.replay": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-macos-arm64/workers4/game.replay",
+      "sha256": "600e6a7a46ed8c1790718b555eacb4e3ba981f7d4068ca1f2c8eb5e1fcb648a2",
+      "bytes": 1480169
+    },
+    "master124-macos-arm64/workers4/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-macos-arm64/workers4/game.replay.checksums",
+      "sha256": "b83b6bfaebe2677f4b83eaf7d20a3fd38470393aba660be6883162cbbfde5278",
+      "bytes": 212574
+    },
+    "master124-macos-arm64/workers4/profile/keyboard-gui.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-macos-arm64/workers4/profile/keyboard-gui.txt",
+      "sha256": "4f7c638f91238c9ee26e10d127596ad1387c723697186152f4bb3b1706e542fd",
+      "bytes": 1670
+    },
+    "master124-macos-arm64/workers4/profile/keyboard-mapedit.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-macos-arm64/workers4/profile/keyboard-mapedit.txt",
+      "sha256": "6475760c5d58125290f33349cc220dbf3cb04e0fa2c2dea08787c838631637f5",
+      "bytes": 624
+    },
+    "master124-macos-arm64/workers4/profile/preferences.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-macos-arm64/workers4/profile/preferences.txt",
+      "sha256": "63cf9841fad67c826b42856e027c0b38bfb46933d535b030343d2f33285bcc0b",
+      "bytes": 2922
+    },
+    "master124-macos-arm64/workers4/result.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-macos-arm64/workers4/result.json",
+      "sha256": "fd06a003b0b9ad682e7217cc8cf3852c903c3a2d86de56f477ceb51def369fc5",
+      "bytes": 4598
+    },
+    "master124-upstream-resume-classification/SHA256SUMS": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/SHA256SUMS",
+      "sha256": "1145b7167fcd3ed540594f6a2a9165a61141e50f9a3ec56011d25b3cd87895ac",
+      "bytes": 4718
+    },
+    "master124-upstream-resume-classification/build-command.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/build-command.json",
+      "sha256": "a231e31ad08a0665454276607d7b85d9712337b4d9b2a96156efe629dc8d4eec",
+      "bytes": 370
+    },
+    "master124-upstream-resume-classification/build.log": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/build.log",
+      "sha256": "2ffd0a4f6588ad3cc77843f141778fde0f966e6d21d3f279148ff7be60eb2b62",
+      "bytes": 446139
+    },
+    "master124-upstream-resume-classification/classification.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/classification.json",
+      "sha256": "f3660d4b6154ce2d65f8887c7202021f22718db88247f3dfbf34743745f45f2a",
+      "bytes": 1039
+    },
+    "master124-upstream-resume-classification/classify-master124-resume.py": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/classify-master124-resume.py",
+      "sha256": "7ec727ff08dc4cf7a1bb5c84ff105eadda40f8355924707075e8bb807149d484",
+      "bytes": 3297
+    },
+    "master124-upstream-resume-classification/final-load-upstream124.log": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/final-load-upstream124.log",
+      "sha256": "989fd0947eb36de49b3a969430a0560918e8c2f797459cc20f9d32edda2cf7f5",
+      "bytes": 371
+    },
+    "master124-upstream-resume-classification/final-load-upstream124/artifacts.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/final-load-upstream124/artifacts.json",
+      "sha256": "0165331732ebfe9363e3412592674b433f177ff96372cba65a85985f1dca8ac0",
+      "bytes": 198
+    },
+    "master124-upstream-resume-classification/final-load-upstream124/command.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/final-load-upstream124/command.json",
+      "sha256": "1f27682b15c1af4cec28783d0ffc260757c4e9a8300f11b8483d99183890505a",
+      "bytes": 409
+    },
+    "master124-upstream-resume-classification/final-load-upstream124/final.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/final-load-upstream124/final.game.gz",
+      "sha256": "181d5b1914a7ffb9bf0987127facb9171472c086bc655dc1a758beb4d6bedf6d",
+      "bytes": 214969
+    },
+    "master124-upstream-resume-classification/final-load-upstream124/game.replay": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/final-load-upstream124/game.replay",
+      "sha256": "58f3155a5fde73ad2d31cb534e244b4fb2f2bbe62a03c5aca55f591fea18b1ca",
+      "bytes": 2131806
+    },
+    "master124-upstream-resume-classification/final-load-upstream124/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/final-load-upstream124/game.replay.checksums",
+      "sha256": "729ddfd5ad3b44e1911b7e729cdaa39baabd8812c134c60a4b1222c3743d3be1",
+      "bytes": 107672
+    },
+    "master124-upstream-resume-classification/final-load-upstream124/producer.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/final-load-upstream124/producer.json",
+      "sha256": "d44a7908ceffa8a4944653f7543723aec943c7eb837e213d43afedbf48dcbde4",
+      "bytes": 500
+    },
+    "master124-upstream-resume-classification/final-load-upstream124/result.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/final-load-upstream124/result.json",
+      "sha256": "467ae98bada2b8a335c36c2c81795977329fd87fbc7a0c0c44a914743fe14dcc",
+      "bytes": 4586
+    },
+    "master124-upstream-resume-classification/final125/manifest.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/final125/manifest.json",
+      "sha256": "9cc98cdb30cbf227171bf2a1179cfd7c32ba4ad42d1eecd570e0feeaad2a1386",
+      "bytes": 2482
+    },
+    "master124-upstream-resume-classification/final125/resumed64.log": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/final125/resumed64.log",
+      "sha256": "26ac38b220f152ccf130cd8a4ebbe516014b50db7b12860f5df9be1f7d43f0ab",
+      "bytes": 463
+    },
+    "master124-upstream-resume-classification/final125/resumed64/artifacts.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/final125/resumed64/artifacts.json",
+      "sha256": "5fd74fb47fb8f52c965ee955b338f58b3d8d01257394fe3d5b09a2a6012c8206",
+      "bytes": 247
+    },
+    "master124-upstream-resume-classification/final125/resumed64/checkpoint-128.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/final125/resumed64/checkpoint-128.game.gz",
+      "sha256": "181d5b1914a7ffb9bf0987127facb9171472c086bc655dc1a758beb4d6bedf6d",
+      "bytes": 214969
+    },
+    "master124-upstream-resume-classification/final125/resumed64/final.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/final125/resumed64/final.game.gz",
+      "sha256": "e0fe12d9bfc157f34fed485d6c6d8b9214f95531e322990b2bbda9d91a83d4d2",
+      "bytes": 214969
+    },
+    "master124-upstream-resume-classification/final125/resumed64/game.replay": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/final125/resumed64/game.replay",
+      "sha256": "14dd8d043cd05df7e8268d598d8313de307703ab4aff915060d903f4a5829e69",
+      "bytes": 2131806
+    },
+    "master124-upstream-resume-classification/final125/resumed64/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/final125/resumed64/game.replay.checksums",
+      "sha256": "9991e9539462b28925756aa902646e98e92fcc0c77cdf7f499ca14b1f03d9ceb",
+      "bytes": 107672
+    },
+    "master124-upstream-resume-classification/final125/resumed64/result.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/final125/resumed64/result.json",
+      "sha256": "77e453a2609347474fd86dbf8a35cad164925f847412ccacfb77256bc96689d5",
+      "bytes": 4563
+    },
+    "master124-upstream-resume-classification/final125/workers1.log": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/final125/workers1.log",
+      "sha256": "a79897916e9b64f05f704d9fe9694583ff053782223b17924b8bf72bf9beaa20",
+      "bytes": 555
+    },
+    "master124-upstream-resume-classification/final125/workers1/artifacts.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/final125/workers1/artifacts.json",
+      "sha256": "4708b1ee04dcfd343fe4681a05d83067a1606a9f303d33ed2fa9cac203124472",
+      "bytes": 295
+    },
+    "master124-upstream-resume-classification/final125/workers1/checkpoint-128.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/final125/workers1/checkpoint-128.game.gz",
+      "sha256": "e2cd40f39f8148f7a1ffb99b033927b9206a557eefb0d801dc720e6ce34dcafd",
+      "bytes": 229500
+    },
+    "master124-upstream-resume-classification/final125/workers1/checkpoint-64.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/final125/workers1/checkpoint-64.game.gz",
+      "sha256": "86b1cdf10d03ca29dad69c2f60c621bb08a2be427b72edde750f4a3ed8a83618",
+      "bytes": 197204
+    },
+    "master124-upstream-resume-classification/final125/workers1/final.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/final125/workers1/final.game.gz",
+      "sha256": "40c174e37d095738daf467ac536ddd5e054a6bb35be171df4a72f43172316fd6",
+      "bytes": 229498
+    },
+    "master124-upstream-resume-classification/final125/workers1/game.replay": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/final125/workers1/game.replay",
+      "sha256": "600e6a7a46ed8c1790718b555eacb4e3ba981f7d4068ca1f2c8eb5e1fcb648a2",
+      "bytes": 1480169
+    },
+    "master124-upstream-resume-classification/final125/workers1/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/final125/workers1/game.replay.checksums",
+      "sha256": "b83b6bfaebe2677f4b83eaf7d20a3fd38470393aba660be6883162cbbfde5278",
+      "bytes": 212574
+    },
+    "master124-upstream-resume-classification/final125/workers1/result.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/final125/workers1/result.json",
+      "sha256": "c77631536182fed8a12bc5a498528e9e3f292dbd5b7585bda20e548e84ad0315",
+      "bytes": 4567
+    },
+    "master124-upstream-resume-classification/master-BuildConfig.h": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/master-BuildConfig.h",
+      "sha256": "e5014bd811f47b42fe07a36be91db4ac22efd7e33501c2bdc0fef5ee7f6c02ae",
+      "bytes": 1032
+    },
+    "master124-upstream-resume-classification/master-options.py": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/master-options.py",
+      "sha256": "46a5b9269d5a6c8ced20e2ca2c8fc50f8beb7bdc7a1a3886b8815380f269d950",
+      "bytes": 15
+    },
+    "master124-upstream-resume-classification/proof-index.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/proof-index.json",
+      "sha256": "8d2cead591b02efd442b4620d0b9d989b33721156f74542757ff84e3b48ae785",
+      "bytes": 874
+    },
+    "master124-upstream-resume-classification/upstream124/manifest.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/upstream124/manifest.json",
+      "sha256": "a24404a223b76b843dcffd4c65d817e4d07372d6e6ddcc7b423090700813ad0a",
+      "bytes": 4141
+    },
+    "master124-upstream-resume-classification/upstream124/resumed64.log": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/upstream124/resumed64.log",
+      "sha256": "6057e223ea729a9cfce37a90c38e2f141799768afa043ef921b3e83b612e0fe1",
+      "bytes": 469
+    },
+    "master124-upstream-resume-classification/upstream124/resumed64/artifacts.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/upstream124/resumed64/artifacts.json",
+      "sha256": "c244de883cb7066d8fb6d455f1688853e0e3dcc4d372497187e0ad741c3ef244",
+      "bytes": 247
+    },
+    "master124-upstream-resume-classification/upstream124/resumed64/checkpoint-128.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/upstream124/resumed64/checkpoint-128.game.gz",
+      "sha256": "340d285ddfa828c7a598572a9468aa9f3f3db6ba45d0e76e2bb517970ef08341",
+      "bytes": 214376
+    },
+    "master124-upstream-resume-classification/upstream124/resumed64/final.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/upstream124/resumed64/final.game.gz",
+      "sha256": "ba5d822537c33797d039f1de20ad4990c3a20a0fd0b908ffde25120997a47d32",
+      "bytes": 214376
+    },
+    "master124-upstream-resume-classification/upstream124/resumed64/game.replay": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/upstream124/resumed64/game.replay",
+      "sha256": "d9d5a61c1f18e1fec7bcc629504e85963e8226194aa4ee7eba98a07797b431d8",
+      "bytes": 2033458
+    },
+    "master124-upstream-resume-classification/upstream124/resumed64/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/upstream124/resumed64/game.replay.checksums",
+      "sha256": "729ddfd5ad3b44e1911b7e729cdaa39baabd8812c134c60a4b1222c3743d3be1",
+      "bytes": 107672
+    },
+    "master124-upstream-resume-classification/upstream124/resumed64/result.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/upstream124/resumed64/result.json",
+      "sha256": "b8f9ca5549d9c4ae2052433939e693dbd7a2a717d7bf4552ad71b6d92c4a3954",
+      "bytes": 4564
+    },
+    "master124-upstream-resume-classification/upstream124/workers1.log": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/upstream124/workers1.log",
+      "sha256": "0480d517279cd3f5b269b8df1692e776ef1a1d91f06b4236552bb65191e6d9d4",
+      "bytes": 564
+    },
+    "master124-upstream-resume-classification/upstream124/workers1/artifacts.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/upstream124/workers1/artifacts.json",
+      "sha256": "ae3c50eb7b6146820218fd1c4a1249cff9a6e925f6ae32fc7a7b2140f5e5d8e7",
+      "bytes": 295
+    },
+    "master124-upstream-resume-classification/upstream124/workers1/checkpoint-128.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/upstream124/workers1/checkpoint-128.game.gz",
+      "sha256": "221a72fcc2991d95c3d84f21bfbf13e1bbaa31a33a5f39e02ce7384a6fb3d28c",
+      "bytes": 229026
+    },
+    "master124-upstream-resume-classification/upstream124/workers1/checkpoint-64.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/upstream124/workers1/checkpoint-64.game.gz",
+      "sha256": "d9f909a9971efc6a940993bbf1dbb9eb461b1a327e4ffeee47a90f2ad96d3ca5",
+      "bytes": 196695
+    },
+    "master124-upstream-resume-classification/upstream124/workers1/final.game.gz": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/upstream124/workers1/final.game.gz",
+      "sha256": "69ef90d65c6aa0f3d922b343e2d8154b80bd7fa5028a3c783253de323ff9a044",
+      "bytes": 229029
+    },
+    "master124-upstream-resume-classification/upstream124/workers1/game.replay": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/upstream124/workers1/game.replay",
+      "sha256": "7e55636202b1c3202d0601908171658c946b93cc66566b09fe0fadafd38ffd89",
+      "bytes": 1381825
+    },
+    "master124-upstream-resume-classification/upstream124/workers1/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/upstream124/workers1/game.replay.checksums",
+      "sha256": "b83b6bfaebe2677f4b83eaf7d20a3fd38470393aba660be6883162cbbfde5278",
+      "bytes": 212574
+    },
+    "master124-upstream-resume-classification/upstream124/workers1/result.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/master124-upstream-resume-classification/upstream124/workers1/result.json",
+      "sha256": "05874496a40f85e323a89f28781d4d349e21710a44bb84f88bc67872a87492fe",
+      "bytes": 4565
+    }
+  }
+}

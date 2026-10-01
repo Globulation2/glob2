@@ -1,0 +1,671 @@
+{
+  "revision": "8a25c2bd2440e99246171967a31c68dc15917f95",
+  "sourceTreeSha256": "1540813995310acf88924c167bbb9c80525eb9d5cd7fe4a421d8e7ee5b49a991",
+  "group": "android-emulator",
+  "archive": "android-emulator.tar.gz",
+  "archiveBytes": 2717092,
+  "archiveSha256": "14845f887ab622befe6f8d94f552bc3c9ed76d84a9e170dc37364de8ab4ce2be",
+  "verifiedFileCount": 132,
+  "files": {
+    "PACKAGE-MANIFEST.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/package-staging/android-emulator.package-manifest.json",
+      "sha256": "c2b59b7ca9df4bd32f3433c538819a3beb7ce369e9de658dee838c6ebbc49626",
+      "bytes": 53337
+    },
+    "android-x86_64-build.log": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-build.log",
+      "sha256": "e698b388d23cb754503a1e38a5119cbf74a5894db0395751a216073aac8b724d",
+      "bytes": 2289391
+    },
+    "android-x86_64-emulator-boot.log": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator-boot.log",
+      "sha256": "36ac78a7e5b478bf7b845524574f575494beda8ebf587c64ae8f97a98a31211b",
+      "bytes": 539
+    },
+    "android-x86_64-emulator-cleanup.log": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator-cleanup.log",
+      "sha256": "3621ef09e745c49723942260138da1121e6fea9b5e2a2498e96b3da09912639e",
+      "bytes": 445
+    },
+    "android-x86_64-emulator-comparison.log": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator-comparison.log",
+      "sha256": "eda18bde9dda18b0ef43aa41578ea6a98d65f2bba6867b467be2972752324b3f",
+      "bytes": 66
+    },
+    "android-x86_64-emulator-config.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator-config.json",
+      "sha256": "a1d0131bfe2a4a8d1854927737a971deba496337802a0ea6b08dd2e4412fbf57",
+      "bytes": 1089
+    },
+    "android-x86_64-emulator-environment.log": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator-environment.log",
+      "sha256": "6ea3efdd4a0fb27e39e33fa5b2990437e12ca3d2a4759c9cd9a6d762832c5e19",
+      "bytes": 1015
+    },
+    "android-x86_64-emulator-properties.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator-properties.txt",
+      "sha256": "3a0b4af9c301a71d97b3ff6c2b6a099b39ddc10e8f78fbd37c4bc51b69e0e415",
+      "bytes": 24066
+    },
+    "android-x86_64-emulator-run.log": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator-run.log",
+      "sha256": "8ac79f51dbe1b5000a9372c560c69b9329e262ceaf15033732d6c4dc2a135dde",
+      "bytes": 195
+    },
+    "android-x86_64-emulator-run.log.command.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator-run.log.command.json",
+      "sha256": "9b3ce2b8b5bd8f54c40bdece1326ab910b1730f34b66795d70214f2694ad7913",
+      "bytes": 319
+    },
+    "android-x86_64-emulator-start.log": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator-start.log",
+      "sha256": "ec05baaf6506f8e83c671a2fdd4b9f4c0156a90563d8b28d4370614067f9176c",
+      "bytes": 86
+    },
+    "android-x86_64-emulator-tunnel.log": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator-tunnel.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "android-x86_64-emulator-tunnel.pid": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator-tunnel.pid",
+      "sha256": "1c918f3107cfb761654acdb08e7a83ce790e747021dfe34bc4dccc8a0b14fc48",
+      "bytes": 6
+    },
+    "android-x86_64-emulator/corpus/JavaScriptCompatibility/JavaScript_current_saves_reject_truncated_generation_tables/truncated-generations-1.bin": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptCompatibility/JavaScript_current_saves_reject_truncated_generation_tables/truncated-generations-1.bin",
+      "sha256": "ae064928f4d4d915f0555afbf4a054bdd1d0947e2269bcce771f246c240e8b5b",
+      "bytes": 804016
+    },
+    "android-x86_64-emulator/corpus/JavaScriptCompatibility/JavaScript_current_saves_reject_truncated_generation_tables/truncated-generations-2.bin": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptCompatibility/JavaScript_current_saves_reject_truncated_generation_tables/truncated-generations-2.bin",
+      "sha256": "4cbd70f3d458874ffd2e2baaf7b07310bf81ca9a5960e449f66ecf7db734cb77",
+      "bytes": 804015
+    },
+    "android-x86_64-emulator/corpus/JavaScriptCompatibility/JavaScript_current_saves_reject_truncated_generation_tables/truncated-generations-3.bin": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptCompatibility/JavaScript_current_saves_reject_truncated_generation_tables/truncated-generations-3.bin",
+      "sha256": "57ff89468b7090959a0a6236ee09148df774388bf959cf436620064b57bb3c9d",
+      "bytes": 804014
+    },
+    "android-x86_64-emulator/corpus/JavaScriptCompatibility/JavaScript_current_saves_reject_truncated_generation_tables/truncated-generations-4.bin": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptCompatibility/JavaScript_current_saves_reject_truncated_generation_tables/truncated-generations-4.bin",
+      "sha256": "7fd68a55a7fdea4f2abe9d4e56b9eb39fd63ce40ad767f639495ffc0a14e3fc9",
+      "bytes": 804013
+    },
+    "android-x86_64-emulator/corpus/JavaScriptCompatibility/JavaScript_upgrade_retains_genuine_master124_experiments_and_continuation/master124-upgraded.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptCompatibility/JavaScript_upgrade_retains_genuine_master124_experiments_and_continuation/master124-upgraded.game",
+      "sha256": "5215a9b7dd523a11b2152f5b9cd895e2761012ae1d4925b6612c1bb0c16d8f85",
+      "bytes": 1479477
+    },
+    "android-x86_64-emulator/corpus/JavaScriptCompatibility/JavaScript_upgrade_retains_genuine_master124_experiments_and_continuation/master124-world-fields.value": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptCompatibility/JavaScript_upgrade_retains_genuine_master124_experiments_and_continuation/master124-world-fields.value",
+      "sha256": "baaf3063c26f0a26ea54bbc3ae9418bc4f4847e549d77ea3018f3064384a7f1a",
+      "bytes": 112166
+    },
+    "android-x86_64-emulator/corpus/JavaScriptCompatibility/JavaScript_upgrade_retains_genuine_master124_experiments_and_continuation/master125-world-fields.value": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptCompatibility/JavaScript_upgrade_retains_genuine_master124_experiments_and_continuation/master125-world-fields.value",
+      "sha256": "baaf3063c26f0a26ea54bbc3ae9418bc4f4847e549d77ea3018f3064384a7f1a",
+      "bytes": 112166
+    },
+    "android-x86_64-emulator/corpus/JavaScriptIntegration/JavaScript_orders_execute_and_survive_save_load/supported-orders.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptIntegration/JavaScript_orders_execute_and_survive_save_load/supported-orders.game",
+      "sha256": "6d644fefa0b1de0a2873abb3dd9a5b68ea372a8ee34405832834983f19aa198d",
+      "bytes": 603590
+    },
+    "android-x86_64-emulator/corpus/JavaScriptLifecycle/Scripting_building_completion_upgrade_and_repair_preserve_identity/lifecycle.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptLifecycle/Scripting_building_completion_upgrade_and_repair_preserve_identity/lifecycle.game",
+      "sha256": "a91bd9c743b7354029c1cef8cc46d6aaf22cc6e119fff035d845706e20b865b3",
+      "bytes": 595885
+    },
+    "android-x86_64-emulator/corpus/JavaScriptLifecycle/Scripting_conversion_allocates_fresh_identity_in_a_reused_destination_slot/lifecycle.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptLifecycle/Scripting_conversion_allocates_fresh_identity_in_a_reused_destination_slot/lifecycle.game",
+      "sha256": "87788f2086d0e93347c4dc0607d22de21bc16aa4abe35f8a5f981af3ebe0bcee",
+      "bytes": 596243
+    },
+    "android-x86_64-emulator/corpus/JavaScriptLifecycle/Scripting_conversion_back_never_resurrects_the_original_reference/lifecycle.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptLifecycle/Scripting_conversion_back_never_resurrects_the_original_reference/lifecycle.game",
+      "sha256": "cdf63342de586de7e3a97e230b110fc9c4724ba6511a684b561b117745fc67c3",
+      "bytes": 597640
+    },
+    "android-x86_64-emulator/corpus/JavaScriptLifecycle/Scripting_editor_deletion_and_reuse_never_revive_a_reference/lifecycle.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptLifecycle/Scripting_editor_deletion_and_reuse_never_revive_a_reference/lifecycle.game",
+      "sha256": "61a1aea43811a9ff963c20c5f3e0258157ebc0c5f634b0f8d488ff34a118ccfe",
+      "bytes": 596229
+    },
+    "android-x86_64-emulator/corpus/JavaScriptLifecycle/Scripting_identity_survives_conversion_and_save_load/lifecycle.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptLifecycle/Scripting_identity_survives_conversion_and_save_load/lifecycle.game",
+      "sha256": "a98cc197daec59aa67cede947fc7f07cabd3215380a4cde6858f48daaa83d6c9",
+      "bytes": 596243
+    },
+    "android-x86_64-emulator/corpus/JavaScriptLifecycle/Scripting_normal_death_invalidates_lookup_before_cleanup_and_slot_reuse/lifecycle.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptLifecycle/Scripting_normal_death_invalidates_lookup_before_cleanup_and_slot_reuse/lifecycle.game",
+      "sha256": "84f0e9185eb5b5563510aaa6eff8f790ec60a92181a611a976eae0559e37da34",
+      "bytes": 604607
+    },
+    "android-x86_64-emulator/corpus/JavaScriptNumbers/JavaScript_shared_numeric_corpus/numeric-profile1.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptNumbers/JavaScript_shared_numeric_corpus/numeric-profile1.txt",
+      "sha256": "b62390e5dbeec9fd27b73d2c3a4c19430263a7340fb7f3615d4ad40343df77ac",
+      "bytes": 372219
+    },
+    "android-x86_64-emulator/corpus/JavaScriptNumbers/JavaScript_shared_numeric_corpus/numeric-profile1.value": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptNumbers/JavaScript_shared_numeric_corpus/numeric-profile1.value",
+      "sha256": "5220d8c67375eba774f6d97b7d224b4b79f792944dcb43b04af6ef6320978c68",
+      "bytes": 103890
+    },
+    "android-x86_64-emulator/corpus/JavaScriptNumbers/JavaScript_shared_saved_global_number_corpus/global-numbers-profile1.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptNumbers/JavaScript_shared_saved_global_number_corpus/global-numbers-profile1.txt",
+      "sha256": "617f47f300d7408bb749cc4fbab424899ec82ccea7267682dff0c0d64ef9f94f",
+      "bytes": 24685
+    },
+    "android-x86_64-emulator/corpus/JavaScriptNumbers/JavaScript_shared_saved_global_number_corpus/global-numbers-profile1.value": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptNumbers/JavaScript_shared_saved_global_number_corpus/global-numbers-profile1.value",
+      "sha256": "e792b307328eadd0031daef9511eb8c09a468d3d862f30b3a58e0632dd335812",
+      "bytes": 3965
+    },
+    "android-x86_64-emulator/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-0.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-0.txt",
+      "sha256": "db429443b96acb1c48ab40a43032d396c89afe1d80bcbfa0d89c1290b3193576",
+      "bytes": 6262
+    },
+    "android-x86_64-emulator/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-0.value": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-0.value",
+      "sha256": "a803885f80eeeab5d66f5fa53c3fc92c19f292bbc8056be8265f65d59b6cdba5",
+      "bytes": 1764
+    },
+    "android-x86_64-emulator/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-1.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-1.txt",
+      "sha256": "8aaaa821965262ebf0a05a1e0d4bf93fb075e1a7533b34d1f1b1bb96b9bb52f6",
+      "bytes": 6262
+    },
+    "android-x86_64-emulator/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-1.value": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-1.value",
+      "sha256": "21655cdf8e94b46fb0c5198372c3ed4cc56e1e1552d75889c5b8dee8ad1c7a14",
+      "bytes": 1764
+    },
+    "android-x86_64-emulator/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-2.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-2.txt",
+      "sha256": "1d2df787047b04efe4b012654f7fe65526c8f51b4531bf0b33c727c94c4fdcf4",
+      "bytes": 6262
+    },
+    "android-x86_64-emulator/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-2.value": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-2.value",
+      "sha256": "61dc26baa53aef1ef9701158191c46f387819f662d0b4cb2be6c3a621faa1785",
+      "bytes": 1764
+    },
+    "android-x86_64-emulator/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-3.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-3.txt",
+      "sha256": "88776e570f5d636259dfba94ccc7a661f4aadcd534b02645dd7f5e97b8685631",
+      "bytes": 6262
+    },
+    "android-x86_64-emulator/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-3.value": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-3.value",
+      "sha256": "be88a19fd3257ded47f1f15aa1f133ae240b2cd3e52f08699a81b7be1ec5d67e",
+      "bytes": 1764
+    },
+    "android-x86_64-emulator/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-0.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-0.txt",
+      "sha256": "a233e335a432d393cc358d7f27186d389183b3be40f5f55abd2d74a40e9dd682",
+      "bytes": 1059
+    },
+    "android-x86_64-emulator/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-0.value": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-0.value",
+      "sha256": "c7a9d3e386e73b01cb91d70719547dfb58c7b01777e9af1d877beccb00c6fcf8",
+      "bytes": 401
+    },
+    "android-x86_64-emulator/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-1.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-1.txt",
+      "sha256": "e122d807cd9868d44be267f1088cbe2d2c1ee348223472c7c41e49fe4dafd8f3",
+      "bytes": 1059
+    },
+    "android-x86_64-emulator/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-1.value": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-1.value",
+      "sha256": "f9bb4ebc7186a1867af65b32404e85c388e43df51815a08b3c13efff6fd7aea5",
+      "bytes": 401
+    },
+    "android-x86_64-emulator/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-2.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-2.txt",
+      "sha256": "929807fe728b7418359289449cc637cc331aff6ab13ab48dc03b63dd2d1ad7fd",
+      "bytes": 1059
+    },
+    "android-x86_64-emulator/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-2.value": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-2.value",
+      "sha256": "b7411f705983f7ea2c6593ebf4636a04fd5a9d9bfd4d15e0d470f67c3db0a095",
+      "bytes": 401
+    },
+    "android-x86_64-emulator/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-3.txt": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-3.txt",
+      "sha256": "bf6d49b7f266c402c629b43bf3c9f6c1ee1ac560150ef7cc47e71b5edc7402a2",
+      "bytes": 1059
+    },
+    "android-x86_64-emulator/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-3.value": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-3.value",
+      "sha256": "4df083ebe4b589d14b092f9da636823fa48f0b84cb20d9dc8699d8cc639612ae",
+      "bytes": 401
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSession/JavaScript_initialization_errors_reach_headless_and_UI_load_diagnostics/invalid-embedded-ai.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSession/JavaScript_initialization_errors_reach_headless_and_UI_load_diagnostics/invalid-embedded-ai.game",
+      "sha256": "7678eeabd263502176612b2dc4cd64488353bca9e079612cdbcd44e3ed8aa7fb",
+      "bytes": 804126
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/conversion-initial.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/conversion-initial.game",
+      "sha256": "6e824d8351f7bf7f0607f74474fd6723c1d9ca9b064a83a4202a2f192001a59c",
+      "bytes": 656647
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/playback/final.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/playback/final.game",
+      "sha256": "929d57c7584a810713e4a2c452e6d6d373c45811d9e7154943b71a80fbb37bc8",
+      "bytes": 738696
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/playback/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/playback/game.replay.checksums",
+      "sha256": "d1d61a9602234149e94dffe3561f053668bb1b85ced665c49154bfa546ff1faf",
+      "bytes": 217108
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/resumed-conversion/final.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/resumed-conversion/final.game",
+      "sha256": "0165b6da64508e0a8a56f08df1c4e3639d11cde0d4263e999b960aa06999029f",
+      "bytes": 760565
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/resumed-conversion/game.replay": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/resumed-conversion/game.replay",
+      "sha256": "e1cb89f870e201ae1d3c57e338bf1798d152e8f0ca0f9d54c78fbeb390a6e252",
+      "bytes": 671931
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/resumed-conversion/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/resumed-conversion/game.replay.checksums",
+      "sha256": "d1d61a9602234149e94dffe3561f053668bb1b85ced665c49154bfa546ff1faf",
+      "bytes": 217108
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers1/conversion-0.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers1/conversion-0.game",
+      "sha256": "5b3fd2397816a2cc5df044a0023f75e34cd40903db34a75b4c6875222bd2cd17",
+      "bytes": 662704
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers1/final.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers1/final.game",
+      "sha256": "0165b6da64508e0a8a56f08df1c4e3639d11cde0d4263e999b960aa06999029f",
+      "bytes": 760565
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers1/game.replay": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers1/game.replay",
+      "sha256": "e1cb89f870e201ae1d3c57e338bf1798d152e8f0ca0f9d54c78fbeb390a6e252",
+      "bytes": 671931
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers1/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers1/game.replay.checksums",
+      "sha256": "d1d61a9602234149e94dffe3561f053668bb1b85ced665c49154bfa546ff1faf",
+      "bytes": 217108
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers4/conversion-0.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers4/conversion-0.game",
+      "sha256": "5b3fd2397816a2cc5df044a0023f75e34cd40903db34a75b4c6875222bd2cd17",
+      "bytes": 662704
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers4/final.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers4/final.game",
+      "sha256": "0165b6da64508e0a8a56f08df1c4e3639d11cde0d4263e999b960aa06999029f",
+      "bytes": 760565
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers4/game.replay": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers4/game.replay",
+      "sha256": "e1cb89f870e201ae1d3c57e338bf1798d152e8f0ca0f9d54c78fbeb390a6e252",
+      "bytes": 671931
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers4/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers4/game.replay.checksums",
+      "sha256": "d1d61a9602234149e94dffe3561f053668bb1b85ced665c49154bfa546ff1faf",
+      "bytes": 217108
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/playback/final.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/playback/final.game",
+      "sha256": "30297776623dbc140c73bcedc8f44ee9823a9d9d4104a195f1e100cedd3c1c70",
+      "bytes": 963529
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/playback/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/playback/game.replay.checksums",
+      "sha256": "8ffdfa9e17047f093cd66af1ff895cb96e40538737777de0cecfbd46fa08d4f6",
+      "bytes": 396308
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-128/final.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-128/final.game",
+      "sha256": "c318027cd0f7bd5d2f75aeea2388b8729c42997e29f76041cd12912153cd3cdc",
+      "bytes": 971835
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-128/game.replay": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-128/game.replay",
+      "sha256": "01d75d7108166a33ab454db17192432e77cb60401b99f63d088b6bd9e48bb40b",
+      "bytes": 976248
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-128/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-128/game.replay.checksums",
+      "sha256": "499b031f0f8929aa6c6833dc7bcfadc3289238472dd3f80014c47695a78de866",
+      "bytes": 198164
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-32/final.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-32/final.game",
+      "sha256": "c318027cd0f7bd5d2f75aeea2388b8729c42997e29f76041cd12912153cd3cdc",
+      "bytes": 971835
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-32/game.replay": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-32/game.replay",
+      "sha256": "f1e17c4b463099beaf3e6a72f948e3d03d624d4e8c252ae120daf8571539616a",
+      "bytes": 979001
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-32/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-32/game.replay.checksums",
+      "sha256": "b84b114281f43ef9b08f97e41e7844ce1a79366ae1f793ed5b1c806523b1c7dc",
+      "bytes": 346772
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers1/checkpoint-128.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers1/checkpoint-128.game",
+      "sha256": "f90813043c5ab4ff9494262c9b815162d74e4241d56d31a3ba18001a1c7ac26a",
+      "bytes": 971624
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers1/checkpoint-32.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers1/checkpoint-32.game",
+      "sha256": "d04edab6d41baf8495fb7680fad9ad6e48d4656691250abe9b196da890cd7b02",
+      "bytes": 970921
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers1/final.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers1/final.game",
+      "sha256": "6e336d1f3aa2f929460f15dd3797cd6ef4f2e9e7b9570f6326942cff7652423b",
+      "bytes": 971835
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers1/game.replay": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers1/game.replay",
+      "sha256": "1a8d1883759b68ba29a3e4b17b5e19847d766a3a1e866b2bd33f7ffe6d8ea10b",
+      "bytes": 817006
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers1/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers1/game.replay.checksums",
+      "sha256": "8ffdfa9e17047f093cd66af1ff895cb96e40538737777de0cecfbd46fa08d4f6",
+      "bytes": 396308
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers4/checkpoint-128.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers4/checkpoint-128.game",
+      "sha256": "f90813043c5ab4ff9494262c9b815162d74e4241d56d31a3ba18001a1c7ac26a",
+      "bytes": 971624
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers4/checkpoint-32.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers4/checkpoint-32.game",
+      "sha256": "d04edab6d41baf8495fb7680fad9ad6e48d4656691250abe9b196da890cd7b02",
+      "bytes": 970921
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers4/final.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers4/final.game",
+      "sha256": "6e336d1f3aa2f929460f15dd3797cd6ef4f2e9e7b9570f6326942cff7652423b",
+      "bytes": 971835
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers4/game.replay": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers4/game.replay",
+      "sha256": "1a8d1883759b68ba29a3e4b17b5e19847d766a3a1e866b2bd33f7ffe6d8ea10b",
+      "bytes": 817006
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers4/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers4/game.replay.checksums",
+      "sha256": "8ffdfa9e17047f093cd66af1ff895cb96e40538737777de0cecfbd46fa08d4f6",
+      "bytes": 396308
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/playback/final.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/playback/final.game",
+      "sha256": "68ef95d1a4b1225d711d765e5727e5d171612060b253f7b6ba169fefaba9042f",
+      "bytes": 970280
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/playback/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/playback/game.replay.checksums",
+      "sha256": "5cd18fbcb540ca079c58842f9733760d10290785bc01163873fd213986cb7f0c",
+      "bytes": 396308
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-128/final.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-128/final.game",
+      "sha256": "3b8ac2249e13d733d1935351e6d593b093b314a86e3e8e4452674664923bcb18",
+      "bytes": 978586
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-128/game.replay": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-128/game.replay",
+      "sha256": "225212c7fb03f82bfbd8e66175cff92ed825ad9c1002441902bc56ace50e5786",
+      "bytes": 981312
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-128/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-128/game.replay.checksums",
+      "sha256": "93ebea3e0bc20944f2427e5a74a1ed161c3358e3ba11ebe6f5855802af113315",
+      "bytes": 198164
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-32/final.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-32/final.game",
+      "sha256": "9a155ac1c408c1963be98f9f28c89642baa1433c295ad27c9e1489ea43f5cb04",
+      "bytes": 978586
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-32/game.replay": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-32/game.replay",
+      "sha256": "788688c661ba6ff2c6adc8dda524386b7b62270c237c90c485010c4ef89e22d8",
+      "bytes": 983504
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-32/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-32/game.replay.checksums",
+      "sha256": "8a92fe5db5c6940388a653c9ed6d6904b6dbf024f2cfced296d1ead86af6e7ff",
+      "bytes": 346772
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers1/checkpoint-128.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers1/checkpoint-128.game",
+      "sha256": "2381c22426622c65419d925bf9d1fef013549011ebf80b2e7cfb624ce82215a4",
+      "bytes": 977768
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers1/checkpoint-32.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers1/checkpoint-32.game",
+      "sha256": "71be4dd4e6f0e4a4acd8b8613d08630fea3a74c7e5b09ed9d70d3d4a14b7eb1c",
+      "bytes": 977224
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers1/final.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers1/final.game",
+      "sha256": "f57aba5a32399a1d62ead1185bc51859b4c3b67564d06894fffb9c2fc813dea4",
+      "bytes": 978586
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers1/game.replay": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers1/game.replay",
+      "sha256": "81eed4896c1feb6e5b96cfc17ff4148830088a85b4a55d3f481bb16875dbc214",
+      "bytes": 811587
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers1/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers1/game.replay.checksums",
+      "sha256": "5cd18fbcb540ca079c58842f9733760d10290785bc01163873fd213986cb7f0c",
+      "bytes": 396308
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers4/checkpoint-128.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers4/checkpoint-128.game",
+      "sha256": "2381c22426622c65419d925bf9d1fef013549011ebf80b2e7cfb624ce82215a4",
+      "bytes": 977768
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers4/checkpoint-32.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers4/checkpoint-32.game",
+      "sha256": "71be4dd4e6f0e4a4acd8b8613d08630fea3a74c7e5b09ed9d70d3d4a14b7eb1c",
+      "bytes": 977224
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers4/final.game": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers4/final.game",
+      "sha256": "f57aba5a32399a1d62ead1185bc51859b4c3b67564d06894fffb9c2fc813dea4",
+      "bytes": 978586
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers4/game.replay": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers4/game.replay",
+      "sha256": "81eed4896c1feb6e5b96cfc17ff4148830088a85b4a55d3f481bb16875dbc214",
+      "bytes": 811587
+    },
+    "android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers4/game.replay.checksums": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers4/game.replay.checksums",
+      "sha256": "5cd18fbcb540ca079c58842f9733760d10290785bc01163873fd213986cb7f0c",
+      "bytes": 396308
+    },
+    "android-x86_64-emulator/corpus/build-provenance.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/corpus/build-provenance.json",
+      "sha256": "5340e45e4b8d0e9955f12e5072ae5925e6535e509439dd33ad4bc040c5d720f8",
+      "bytes": 532
+    },
+    "android-x86_64-emulator/glob2-engine-tests.log": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/glob2-engine-tests.log",
+      "sha256": "17729b7b0a7362e721a87b21ad634307a0772757b0ad3fb13a5d28be292c6687",
+      "bytes": 8771
+    },
+    "android-x86_64-emulator/glob2-engine-tests.xml": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/glob2-engine-tests.xml",
+      "sha256": "bfb2195afcb37c12d762b71ba3db72061a48e33579c65ad42477f02fc063d02b",
+      "bytes": 5500
+    },
+    "android-x86_64-emulator/glob2-unit-tests.log": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/glob2-unit-tests.log",
+      "sha256": "addaa1cb6200884b47be00f4d152a93ba33ac6110aa459799ed162ad43b5a5c9",
+      "bytes": 3660
+    },
+    "android-x86_64-emulator/glob2-unit-tests.xml": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/glob2-unit-tests.xml",
+      "sha256": "88500a7b9bc76c296b1b589d355c7f133dbdda3cfa64d8d96f7544865bb78ecb",
+      "bytes": 3235
+    },
+    "android-x86_64-emulator/result.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-x86_64-emulator/result.json",
+      "sha256": "14618cb56b26993f925e928dbedfe68ebd9d888598c3b164011d8c6910c9e5aa",
+      "bytes": 10268
+    },
+    "build-history/android-x86_64-space-rebuild.log": {
+      "repositoryPath": "artifacts/review-final/android-x86_64-space-rebuild.log",
+      "sha256": "c3a06dfa2c1bdf242f0a050dffdcf122f2d9f469584a7f1a1aa4c32e50ce2e7b",
+      "bytes": 1253903
+    },
+    "comparisons/android-x86_64-emulator.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/comparisons/android-x86_64-emulator.json",
+      "sha256": "aa6a8f5b88b9bf90797e458d17ec3e782bec61b3054af8018b8a5307d75a3b77",
+      "bytes": 430
+    },
+    "inputs/reproduction/check-master124-cli.py": {
+      "repositoryPath": "artifacts/rebase-validation/check-master124-cli.py",
+      "sha256": "4d9e674ff9eb30bf78a0b30d636f4c7499fc56a139871a44e03d43d796258d5f",
+      "bytes": 5250
+    },
+    "inputs/reproduction/package-owned-final.py": {
+      "repositoryPath": "artifacts/rebase-validation/package-owned-final.py",
+      "sha256": "f1d9f4345d96ab5e20a819fbec421ac1ce245d058bd57a8325e8fe4408c9914d",
+      "bytes": 10649
+    },
+    "inputs/reproduction/run-owned-final.py": {
+      "repositoryPath": "artifacts/rebase-validation/run-owned-final.py",
+      "sha256": "e8c0380fa7fd33ff2c413d7509466d9379fb638647648971233383019cc1cc9c",
+      "bytes": 5113
+    },
+    "inputs/test/fixtures/javascript/README.md": {
+      "repositoryPath": "test/fixtures/javascript/README.md",
+      "sha256": "c47d2f092aa07e64d00623b6e7773ddd655e948935dbe82da5304179e2cae4f1",
+      "bytes": 6548
+    },
+    "inputs/test/fixtures/javascript/ai-realistic.js": {
+      "repositoryPath": "test/fixtures/javascript/ai-realistic.js",
+      "sha256": "5c07eb0da4cf5431ee13b1a646fbc44d9c8da9266367a5aae1d7a7b8f7b4fedf",
+      "bytes": 1574
+    },
+    "inputs/test/fixtures/javascript/ai.js": {
+      "repositoryPath": "test/fixtures/javascript/ai.js",
+      "sha256": "573a8a2706a140dceb4e3f7ad631ff3207dfa50b508ba6d69ea8854fc0b2ef2a",
+      "bytes": 356
+    },
+    "inputs/test/fixtures/javascript/global-number-corpus.js": {
+      "repositoryPath": "test/fixtures/javascript/global-number-corpus.js",
+      "sha256": "579592a35233542b5c2c327a5edb57b4dfe68181ed4660a21b3d941191b13472",
+      "bytes": 616
+    },
+    "inputs/test/fixtures/javascript/global-numbers-profile1.txt": {
+      "repositoryPath": "test/fixtures/javascript/global-numbers-profile1.txt",
+      "sha256": "617f47f300d7408bb749cc4fbab424899ec82ccea7267682dff0c0d64ef9f94f",
+      "bytes": 24685
+    },
+    "inputs/test/fixtures/javascript/map-realistic.js": {
+      "repositoryPath": "test/fixtures/javascript/map-realistic.js",
+      "sha256": "2dd886a8ee823bc7529d23ee0296d64e1e5dcc5ef76b7da8594c9ee497d589d3",
+      "bytes": 1253
+    },
+    "inputs/test/fixtures/javascript/map.js": {
+      "repositoryPath": "test/fixtures/javascript/map.js",
+      "sha256": "b789a81ddce067b9ec094ba03bd13de6d9439150a6aa6ad0872de4288a00f224",
+      "bytes": 376
+    },
+    "inputs/test/fixtures/javascript/master-v124-experiments.game.gz": {
+      "repositoryPath": "test/fixtures/javascript/master-v124-experiments.game.gz",
+      "sha256": "55b972bb3c22b9238645d3f6f33479c0259868baefb2f487808201b7d3758ed5",
+      "bytes": 78408
+    },
+    "inputs/test/fixtures/javascript/numeric-corpus.js": {
+      "repositoryPath": "test/fixtures/javascript/numeric-corpus.js",
+      "sha256": "b455fc13c728dc109604745f5d89dccc7299a9518b6a3da29ef4d00d0d2237ac",
+      "bytes": 3530
+    },
+    "inputs/test/fixtures/javascript/numeric-profile1.txt": {
+      "repositoryPath": "test/fixtures/javascript/numeric-profile1.txt",
+      "sha256": "b62390e5dbeec9fd27b73d2c3a4c19430263a7340fb7f3615d4ad40343df77ac",
+      "bytes": 372219
+    },
+    "inputs/test/fixtures/javascript/profile1-256.checksums.gz": {
+      "repositoryPath": "test/fixtures/javascript/profile1-256.checksums.gz",
+      "sha256": "1352462590ef0d47b5b71742ef126bd48678d63c6c1cf96888fb3b86ab9035eb",
+      "bytes": 30962
+    },
+    "inputs/test/fixtures/javascript/profile1-initial.game.gz": {
+      "repositoryPath": "test/fixtures/javascript/profile1-initial.game.gz",
+      "sha256": "5d3264136360c2cbe50947c1e680ead0703c14279d4987a05db94482e75ad0eb",
+      "bytes": 32940
+    },
+    "inputs/test/fixtures/javascript/realistic-economy-0.txt": {
+      "repositoryPath": "test/fixtures/javascript/realistic-economy-0.txt",
+      "sha256": "db429443b96acb1c48ab40a43032d396c89afe1d80bcbfa0d89c1290b3193576",
+      "bytes": 6262
+    },
+    "inputs/test/fixtures/javascript/realistic-economy-1.txt": {
+      "repositoryPath": "test/fixtures/javascript/realistic-economy-1.txt",
+      "sha256": "8aaaa821965262ebf0a05a1e0d4bf93fb075e1a7533b34d1f1b1bb96b9bb52f6",
+      "bytes": 6262
+    },
+    "inputs/test/fixtures/javascript/realistic-economy-2.txt": {
+      "repositoryPath": "test/fixtures/javascript/realistic-economy-2.txt",
+      "sha256": "1d2df787047b04efe4b012654f7fe65526c8f51b4531bf0b33c727c94c4fdcf4",
+      "bytes": 6262
+    },
+    "inputs/test/fixtures/javascript/realistic-economy-3.txt": {
+      "repositoryPath": "test/fixtures/javascript/realistic-economy-3.txt",
+      "sha256": "88776e570f5d636259dfba94ccc7a661f4aadcd534b02645dd7f5e97b8685631",
+      "bytes": 6262
+    },
+    "inputs/test/fixtures/javascript/realistic-profile1-256.checksums.gz": {
+      "repositoryPath": "test/fixtures/javascript/realistic-profile1-256.checksums.gz",
+      "sha256": "f32bd9fe0a5b81bec5759fa181407e8db5a0b3e7f29da406a6dca11ea18c29a6",
+      "bytes": 26945
+    },
+    "inputs/test/fixtures/javascript/realistic-profile1-initial.game.gz": {
+      "repositoryPath": "test/fixtures/javascript/realistic-profile1-initial.game.gz",
+      "sha256": "b1394f861f2bbf3ab399c1e355c61baed936506155a39a64834c0f36e61e6516",
+      "bytes": 34082
+    },
+    "inputs/test/fixtures/javascript/realistic-survey-0.txt": {
+      "repositoryPath": "test/fixtures/javascript/realistic-survey-0.txt",
+      "sha256": "a233e335a432d393cc358d7f27186d389183b3be40f5f55abd2d74a40e9dd682",
+      "bytes": 1059
+    },
+    "inputs/test/fixtures/javascript/realistic-survey-1.txt": {
+      "repositoryPath": "test/fixtures/javascript/realistic-survey-1.txt",
+      "sha256": "e122d807cd9868d44be267f1088cbe2d2c1ee348223472c7c41e49fe4dafd8f3",
+      "bytes": 1059
+    },
+    "inputs/test/fixtures/javascript/realistic-survey-2.txt": {
+      "repositoryPath": "test/fixtures/javascript/realistic-survey-2.txt",
+      "sha256": "929807fe728b7418359289449cc637cc331aff6ab13ab48dc03b63dd2d1ad7fd",
+      "bytes": 1059
+    },
+    "inputs/test/fixtures/javascript/realistic-survey-3.txt": {
+      "repositoryPath": "test/fixtures/javascript/realistic-survey-3.txt",
+      "sha256": "bf6d49b7f266c402c629b43bf3c9f6c1ee1ac560150ef7cc47e71b5edc7402a2",
+      "bytes": 1059
+    },
+    "inputs/test/fixtures/javascript/released-v123.replay.gz": {
+      "repositoryPath": "test/fixtures/javascript/released-v123.replay.gz",
+      "sha256": "0b1079b16961738b2ac2223eff9da26c6d9f1aa5b26cfe7c16f1581b463d6d24",
+      "bytes": 31263
+    }
+  }
+}

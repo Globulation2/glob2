@@ -1,0 +1,5 @@
+Name                    Hostname   Identifier                                    State      Model                              Reality  
+---------------------   --------   -------------------------------------------   --------   --------------------------------   ---------
+Glob2-PR208-iPhone                 BDEF1F91-88A0-41E5-8FC1-02D68FADE41A (UDID)   shutdown   iPhone 17 Pro (iPhone18,1)         simulated
+iPad Pro 13-inch (M5)              65A38F3B-E012-41FD-A77E-4135676A29B1 (UDID)   shutdown   iPad Pro 13-inch (M5) (iPad17,4)   simulated
+iPhone 17                          FD61B030-DC9F-4F81-921F-9D96E7CFAE13 (UDID)   shutdown   iPhone 17 (iPhone18,3)             simulated

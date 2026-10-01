@@ -1,0 +1,17 @@
+{
+  "prHeadRevision": "59904fb4719144621c00ed185b7d9d507287e4ec",
+  "ciCheckoutRevision": "8eea9d953f4462de97711b58de296896df34a01e",
+  "gitTreeSha": "b80b370764f31113602bef320182a581da2e10df",
+  "gitTreeEqual": true,
+  "ciCheckoutParents": [
+    "f1c15bfeb1e10ac73caaa4289f0d5790ea3a91eb",
+    "59904fb4719144621c00ed185b7d9d507287e4ec"
+  ],
+  "canonicalSourceTreeSha256Expected": "17dd05be8a2826c649762874c64b42234509c986ed4e616b3c132507f5fa6690",
+  "producerManifestCanonicalHashVerification": "pending actual executed-binary artifacts; GitHub checkout commit alone is not execution evidence",
+  "sourceInputs": [
+    "github-synthetic-merge-commit.json",
+    "github-pr-head-commit.json",
+    "selection.log"
+  ]
+}

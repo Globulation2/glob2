@@ -1,0 +1,11 @@
+{
+  "reference": "artifacts/rebase-validation/final/macos-arm64",
+  "candidate": "artifacts/rebase-validation/final/ci-linux-gcc13/javascript-corpus",
+  "comparedArtifacts": 60,
+  "referenceRevision": "8a25c2bd2440e99246171967a31c68dc15917f95",
+  "candidateRevision": "8a25c2bd2440e99246171967a31c68dc15917f95",
+  "provenanceIssues": [],
+  "acceptanceEligible": true,
+  "excludedSaveMetadata": "MapHeader SHA1 only",
+  "differences": {}
+}

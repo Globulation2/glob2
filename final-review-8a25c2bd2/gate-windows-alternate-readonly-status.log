@@ -1,0 +1,31 @@
+VBoxManage: error: Could not find a registered machine named 'glob2-store-windows-test'
+VBoxManage: error: Details: code VBOX_E_OBJECT_NOT_FOUND (0x80bb0001), component VirtualBoxWrap, interface IVirtualBox, callee nsISupports
+VBoxManage: error: Context: "FindMachine(Bstr(VMNameOrUuid).raw(), machine.asOutParam())" at line 3248 of file VBoxManageInfo.cpp
+id       name    provider   state   directory                                  
+-------------------------------------------------------------------------------
+9148cd7  default virtualbox running /home/bradley/vms/pharaoh-windows-runner   
+0f31259  default virtualbox aborted /home/bradley/vms/glob2-windows-test       
+8ff8309  default virtualbox running /home/bradley/vms/glob2-store-windows-test 
+ 
+The above shows information about all known Vagrant environments
+on this machine. This data is cached and may not be completely
+up-to-date (use "vagrant global-status --prune" to prune invalid
+entries). To interact with any of the machines, you can go to that
+directory and run Vagrant, or you can use the ID directly with
+Vagrant commands from any directory. For example:
+"vagrant destroy 1a2b3c4d"
+Vagrant directory /home/bradley/vms/glob2-store-windows-test
+ProviderUUID e6b702b6-9cc1-4829-9701-7e525162d1c2
+showvminfoExit 0
+name="glob2-store-windows-11-test"
+ostype="Windows 11 (64-bit)"
+VMState="aborted"
+VMStateChangeTime="2026-10-01T10:45:17.000000000"
+Forwarding(0)="ssh,tcp,127.0.0.1,2207,,22"
+Forwarding(1)="tcp53389,tcp,127.0.0.1,2204,,3389"
+Forwarding(2)="winrm,tcp,127.0.0.1,2205,,5985"
+Forwarding(3)="winrm-ssl,tcp,127.0.0.1,2206,,5986"
+No VM state changes performed.
+LocalForwardPort 2207 ConnectionRefusedError [Errno 111] Connection refused
+LocalForwardPort 2205 ConnectionRefusedError [Errno 111] Connection refused
+LocalForwardPort 2206 ConnectionRefusedError [Errno 111] Connection refused

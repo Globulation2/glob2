@@ -1,0 +1,34 @@
+{
+  "revision": "8a25c2bd2440e99246171967a31c68dc15917f95",
+  "sourceTreeSha256": "1540813995310acf88924c167bbb9c80525eb9d5cd7fe4a421d8e7ee5b49a991",
+  "verifiedArchives": [
+    {
+      "group": "macos-arm64",
+      "members": 409,
+      "archiveSha256": "de4eaf2f0aaf7eb046bdfe98223b76abe4f40aecea1defcd80c0bb86d5672257"
+    },
+    {
+      "group": "macos-x86_64",
+      "members": 424,
+      "archiveSha256": "7f7fcc4725f645cd8f8ca8f7cdb62dca7e0ba52f894ef78b52b14c9e7dafd195"
+    },
+    {
+      "group": "android-emulator",
+      "members": 132,
+      "archiveSha256": "14845f887ab622befe6f8d94f552bc3c9ed76d84a9e170dc37364de8ab4ce2be"
+    },
+    {
+      "group": "browsers-8a",
+      "members": 367,
+      "archiveSha256": "ead159c1bee4f8016fbb9ec7432e6e87cf782251eeadbe1b188e29d666d9e7f1"
+    },
+    {
+      "group": "ci-native-8a",
+      "members": 1112,
+      "archiveSha256": "2fbc0bb9e9bdfbf5b9fefdd0cb169ed5f65b24951747ad73bb382d1366b75e9c"
+    }
+  ],
+  "sourceHEADUnchanged": true,
+  "sourceIndexUnchanged": true,
+  "publicationScope": "Complete Mac/browser/native-CI8a bundles and selected Android x64 emulator. Final599 CI/iOS Simulator still pending."
+}

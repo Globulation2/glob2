@@ -1,0 +1,19 @@
+{
+  "revision": "59904fb4719144621c00ed185b7d9d507287e4ec",
+  "sourceTreeSha256": "17dd05be8a2826c649762874c64b42234509c986ed4e616b3c132507f5fa6690",
+  "validatedScriptingRevision": "8a25c2bd2440e99246171967a31c68dc15917f95",
+  "validatedScriptingSourceTreeSha256": "1540813995310acf88924c167bbb9c80525eb9d5cd7fe4a421d8e7ee5b49a991",
+  "unavailableExecution": {
+    "androidPhysicalFinalRerun": "Neither previously used physical serial is visible in local ADB; reconnect/location question pending. Prior25 source physical evidence retained separately.",
+    "iosPhysical": "No paired physical iOS device or usable test signing profile.",
+    "windowsVagrant": "Designated VM in error/aborted state; SSH unavailable. No power/reset changes."
+  },
+  "missingGateLogs": [
+    "android-device-inventory.log",
+    "../ios-device-gate.log",
+    "../ios-xctrace-gate.log",
+    "../windows-vagrant-current-gate.log",
+    "package-staging/windows-alternate-readonly-status.log"
+  ],
+  "inheritedCompatibilityLimit": "Castor reconstructs unpersisted scheduling after load in upstream723 and candidate125. Candidate fresh/resumed traces match respective upstream fresh/resumed baselines; do not claim resumed Castor equals uninterrupted execution."
+}
