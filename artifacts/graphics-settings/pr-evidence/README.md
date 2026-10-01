@@ -63,8 +63,16 @@ PR #490 integrates master f1c15bfeb. The settings/native commits were rebased to
 
 The requested second agent reviewed migration, effect wiring, native target replacement, input transforms, fullscreen rollback and the fallback exception scope. Its two cleanup suggestions are implemented; no remaining correctness finding was reported. This is technical feedback by an agent for the same author, not independent maintainer approval.
 
-Screenshots and platform XML above predate the rebase; post-integration results will be added when complete. Some XML deliberately retains earlier fixture failures; the corrected reruns and limits are explained above.
+Earlier screenshots and platform XML predate the rebase; current post-integration results are linked below. Some XML deliberately retains earlier fixture failures; the corrected reruns and limits are explained above.
 
 ![Gameplay, editor, settings and torus inspection](review-linux.png)
 ![Main graphics text-size setting](text-size-native.png)
 ![Native Retina glyph crops](retina-text-review.png)
+
+## Current post-integration results
+
+Both release clients and engine-test binaries built successfully. Full selected reruns: **33 Linux cases passed** (`linux-pr-final.xml`, `linux-pr-final.log`), **25 macOS/Retina cases passed** (`mac-pr-final.xml`, `mac-pr-final.log`), zero failures/skips. After integrating master’s WebGL batching/test-access repair, **8 affected cases passed on each platform** (`linux-pr-master-integration.xml`, `mac-master-integration.xml`, matching logs). These additional runs include both native renderers’ clipping and text, portable renderer ownership and point-bar bounds.
+
+Final source head: `36b1eecec8ed1bb4d3fa6e59041a064f54253652`. The final rebase only incorporates master’s AGENTS.md approval-policy update; rendering/test source is identical to the last tested head `54fd1fa58`. GitHub platform builds were still queued when this evidence was prepared; no Windows, Android or browser build success is claimed. The unverified hardware and focused Cocoa-Space limits above remain.
+
+The user approved the change after the review findings and platform limits were reported. All actionable subagent feedback is implemented. Main graphics Text size, independent effects, original/HD artwork, native software/OpenGL targets and live display settings are covered by the passing runs.

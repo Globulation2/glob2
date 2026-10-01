@@ -1,0 +1,11 @@
+PASS FullscreenAspect/presentation; clipping; captures and input translation in software rendering [display:1600x1400] (2.1s)
+PASS PointBarRender/status-bar pixel bounds in software rendering (2.7s)
+PASS FullscreenAspect/presentation; clipping; captures and input translation in OpenGL [display:1600x1400] (2.4s)
+PASS PointBarRender/status-bar pixel bounds in OpenGL rendering [display] (7.9s)
+PASS PortableRenderer/live scale retains portable viewport ownership [display] (0.8s)
+PASS PortableRenderer/zone boundaries; UI transforms and portable rendering paths [display] (1.8s)
+PASS TextRaster/native software glyphs at fractional scale [display][artifacts] (0.8s)
+PASS TextRaster/scaled and unscaled text rasterisation [display:1600x1400][artifacts] (1.2s)
+
+8 passed, 0 failed, 0 skipped (19.5s of test time)
+[run_tests] JUnit report: artifacts/graphics-settings/mac-master-integration.xml (8 cases)
