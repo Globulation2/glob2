@@ -288,6 +288,8 @@ def paths(root):
 
 
 def size(path):
+    if Path(path).is_symlink():
+        return 0
     total = 0
     for base, dirs, files in os.walk(path, followlinks=False):
         dirs[:] = [d for d in dirs if not (Path(base) / d).is_symlink()]

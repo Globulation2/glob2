@@ -413,6 +413,7 @@ class StoreTests(unittest.TestCase):
             self.assertNotIn(" ", str(alias))
             self.assertTrue(alias.is_symlink())
             self.assertEqual(alias.resolve(), source)
+            self.assertEqual(store.size(alias), 0)
             self.assertEqual(store.space_free_alias(source), alias)
         finally:
             alias.unlink()

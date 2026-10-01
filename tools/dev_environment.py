@@ -44,16 +44,17 @@ def busy(checkout):
     """Conservative process/open-file check; failure means migration cannot delete."""
     if os.name == "nt":
         return True  # Inventory/seed is supported; deletion requires an OS open-file checker.
-    command = subprocess.run(
-        ["lsof", "-n", "-P", "+D", str(checkout / "build/mobile-tools")],
-        check=False,
-        capture_output=True,
-        text=True,
-    )
-    if command.returncode not in (0, 1):
-        return True
-    if command.stdout.strip():
-        return True
+    for tools in (checkout / "build/mobile-tools", checkout / "tools/browser-emsdk"):
+        if not tools.is_dir() or tools.is_symlink():
+            continue
+        command = subprocess.run(
+            ["lsof", "-n", "-P", "+D", str(tools)],
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        if command.returncode not in (0, 1) or command.stdout.strip():
+            return True
     # A build can be between file opens; inspect cwd of all processes too.
     cwd = subprocess.run(
         ["lsof", "-n", "-P", "-a", "-d", "cwd", "-F", "n"],
@@ -148,11 +149,14 @@ def migrate(apply=False, extra=(), validation=None):
         downloads.mkdir(parents=True, exist_ok=True)
     for checkout in checkouts(extra):
         local = checkout / "build/mobile-tools"
-        if not local.is_dir():
+        browser = checkout / "tools/browser-emsdk"
+        if not local.is_dir() and not browser.is_dir():
             continue
         item = {
             "checkout": str(checkout),
             "local_bytes": store.size(local),
+            "legacy_browser_bytes": store.size(browser),
+            "legacy_browser_path": str(browser),
             "busy": busy(checkout),
             "seeded": [],
             "replaced": [],

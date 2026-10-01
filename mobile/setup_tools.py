@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
-"""Install checksum-pinned Gradle and optional JDK in the isolated build tree."""
+"""Install checksum-pinned packaging tools in the selected development store."""
 
 import argparse
 import json
 import os
 import platform
-import shutil
 import subprocess
 import sys
 import xml.etree.ElementTree as ET
@@ -13,7 +12,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scons"))
 
-from build_layout import BuildLock
+from build_layout import BuildLock, write_if_changed
 from dev_store import Lease, android_java_command, cache, isolated, mobile_tools
 from setup_ndk import ROOT
 from tool_archives import install
@@ -51,9 +50,7 @@ def ensure_sdk_metadata(destination, artifact):
                 "Installed SDK package metadata does not match the pinned archive"
             )
     else:
-        temporary = target.with_suffix(".xml.tmp")
-        shutil.copyfile(template, temporary)
-        temporary.replace(target)
+        write_if_changed(target, template.read_text())
 
 
 def main():
