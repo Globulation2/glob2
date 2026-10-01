@@ -5,6 +5,7 @@
 
 #include "Settings.h"
 #include <algorithm>
+#include <cmath>
 #include <valarray>
 
 namespace GAGCore
@@ -61,6 +62,17 @@ public:
 		/// gets rendered black.
 		SHADOW
 	};
+    // Keep patches no larger on screen than at 1:1, using power-of-two
+    // world lattices so panning stays anchored and normal zoom is unchanged.
+    static int gridLimitForZoom(int worldWidth, int worldHeight, int patchSize, double zoom)
+    {
+        if (!(zoom > 0) || !std::isfinite(zoom)) return 0;
+        const int nativeCell = std::max(1, patchSize);
+        const int extent = std::max(worldWidth, worldHeight) * 32;
+        int cell = nativeCell;
+        while (cell <= extent / 2 && cell * 2 * zoom <= nativeCell) cell *= 2;
+        return cell == nativeCell ? 0 : (extent + cell - 1) / cell;
+    }
 	///initializes DynamicClouds using the settings file (preferences.txt)
 	DynamicClouds(Settings * settings)
 	{
