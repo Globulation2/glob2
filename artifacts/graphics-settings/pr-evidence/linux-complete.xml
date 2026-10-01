@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="7" failures="0" errors="0" skipped="0"><testsuite name="Settings"><testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 1000x700 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="5.7571" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 1000x700 in software rendering [display:1600x1400][artifacts][writes-preferences]" time="3.21164" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 1280x900 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="6.53493" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 640x480 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="4.33484" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 800x600 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="5.12086" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization with expanded wording at 640x480 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="5.68877" status="run" />
+  </testsuite><testsuite name="TorusRender"><testcase classname="TorusRender" name="game rendering; picking and cache changes in software rendering [writes-preferences]" time="0.575463" status="run" />
+  </testsuite></testsuites>

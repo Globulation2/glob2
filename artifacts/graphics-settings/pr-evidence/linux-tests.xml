@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="31" failures="3" errors="0" skipped="0"><testsuite name="FullscreenAspect"><testcase classname="FullscreenAspect" name="presentation; clipping; captures and input translation in OpenGL [display:1600x1400]" time="0.954358" status="run" />
+  <testcase classname="FullscreenAspect" name="presentation; clipping; captures and input translation in software rendering [display:1600x1400]" time="1.11083" status="run">
+      <failure message="false" type="REQUIRE">
+test/FullscreenAspectHarness.cpp:36:
+REQUIRE( static_cast&lt;bool&gt;(condition) ) is NOT correct!
+  values: REQUIRE( false )
+  logged: Screen capture includes bars or loses logical edges
+
+      </failure>
+    </testcase>
+  </testsuite><testsuite name="HighResolutionIntegration"><testcase classname="HighResolutionIntegration" name="HD artwork; cursor scaling and replay fixture in OpenGL [display:1024x768][artifacts]" time="36.8507" status="run"><failure message="run_tests: the test changed the profile preferences; tag it [writes-preferences] if that is intended" type="run_tests">PASS full-period seam sprite coverage, single building identity, minimap outline and native cursor scale
+original gameplay 42.1875%: 86.9815 ms, 4655 calls, 79289408 GPU bytes
+original gameplay 50%: 63.2968 ms, 3468 calls, 79291456 GPU bytes
+original gameplay 100%: 14.9173 ms, 1111 calls, 79291456 GPU bytes
+original gameplay 200%: 13.3623 ms, 512 calls, 79293504 GPU bytes
+original gameplay 300%: 11.1891 ms, 352 calls, 79295552 GPU bytes
+HD gameplay 42.1875%: 114.842 ms, 4679 calls, 295892000 GPU bytes
+HD gameplay 50%: 64.0309 ms, 3492 calls, 295892000 GPU bytes
+HD gameplay 100%: 15.7009 ms, 1135 calls, 295892000 GPU bytes
+HD gameplay 200%: 14.8386 ms, 534 calls, 295892000 GPU bytes
+HD gameplay 300%: 14.6654 ms, 352 calls, 295892000 GPU bytes
+original dense map 42.1875%: 46.696 ms, 4563 calls, 81153088 GPU bytes, 0 HD CPU bytes, 0 colored frames
+original dense map 50%: 31.0129 ms, 3799 calls, 81153088 GPU bytes, 0 HD CPU bytes, 0 colored frames
+original dense map 300%: 7.02649 ms, 39 calls, 81153088 GPU bytes, 0 HD CPU bytes, 0 colored frames
+HD dense map 42.1875%: 48.5629 ms, 4563 calls, 298579648 GPU bytes, 208697856 HD CPU bytes, 2 colored frames
+HD dense map 50%: 32.1448 ms, 3799 calls, 298579648 GPU bytes, 208697856 HD CPU bytes, 2 colored frames
+HD dense map 300%: 6.85298 ms, 39 calls, 298579648 GPU bytes, 208697856 HD CPU bytes, 2 colored frames
+PASS gameplay/editor conversions, wheel zoom, zoom controls, replay drawing, stable simulation checksums and resource release
+
+[run_tests] the test changed the profile preferences; tag it [writes-preferences] if that is intended
+</failure></testcase>
+  <testcase classname="HighResolutionIntegration" name="HD artwork; cursor scaling and replay fixture in software rendering [display:1024x768][artifacts]" time="0.801926" status="run" />
+  </testsuite><testsuite name="MapRenderResize"><testcase classname="MapRenderResize" name="repeated map copies; settings and credits after resizing in OpenGL [display:1920x1200]" time="7.80099" status="run" />
+  <testcase classname="MapRenderResize" name="repeated map copies; settings and credits after resizing in software rendering" time="0.580952" status="run" />
+  </testsuite><testsuite name="PortableRenderer"><testcase classname="PortableRenderer" name="live scale retains portable viewport ownership [display]" time="0.212858" status="run" />
+  <testcase classname="PortableRenderer" name="zone boundaries; UI transforms and portable rendering paths [display]" time="1.01876" status="run" />
+  </testsuite><testsuite name="Settings"><testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 1000x700 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="5.81492" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 1000x700 in software rendering [display:1600x1400][artifacts][writes-preferences]" time="3.1651" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 1280x900 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="6.5683" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 640x480 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="4.33224" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 800x600 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="5.15678" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization with expanded wording at 640x480 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="5.68279" status="run" />
+  </testsuite><testsuite name="SettingsGraphics"><testcase classname="SettingsGraphics" name="legacy preferences migrate and independent effects round trip" time="0.002704" status="run" />
+  <testcase classname="SettingsGraphics" name="text size applies to desktop and touch independently of interface scale" time="0.000321" status="run" />
+  </testsuite><testsuite name="TextRaster"><testcase classname="TextRaster" name="native software glyphs at fractional scale [display][artifacts]" time="0.257437" status="run" />
+  <testcase classname="TextRaster" name="scaled and unscaled text rasterisation [display:1600x1400][artifacts]" time="0.900948" status="run" />
+  </testsuite><testsuite name="TorusRender"><testcase classname="TorusRender" name="game rendering at triple UI scale in OpenGL [display:1920x1440][writes-preferences]" time="30.662" status="run" />
+  <testcase classname="TorusRender" name="game rendering; picking and cache changes in OpenGL [display][writes-preferences]" time="29.0848" status="run" />
+  <testcase classname="TorusRender" name="game rendering; picking and cache changes in software rendering [writes-preferences]" time="0.561332" status="run">
+      <failure message="false" type="REQUIRE">
+test/TorusRenderIntegrationTest.cpp:222:
+REQUIRE( options.changeSetting("graphics.torus",1) ) is NOT correct!
+  values: REQUIRE( false )
+
+      </failure>
+    </testcase>
+  </testsuite><testsuite name="UIPresentation"><testcase classname="UIPresentation" name="every screen lays out; navigates and captures at fullhd across presentations and insets [display:1600x1400][artifacts][slow]" time="86.814" status="run" />
+  <testcase classname="UIPresentation" name="every screen lays out; navigates and captures at laptop across presentations and insets [display:1600x1400][artifacts][slow]" time="75.2881" status="run" />
+  <testcase classname="UIPresentation" name="every screen lays out; navigates and captures at small landscape across presentations and insets [display:1600x1400][artifacts][slow]" time="22.4041" status="run" />
+  <testcase classname="UIPresentation" name="every screen lays out; navigates and captures at small portrait across presentations and insets [display:1600x1400][artifacts][slow]" time="24.8527" status="run" />
+  <testcase classname="UIPresentation" name="every screen lays out; navigates and captures at tablet landscape across presentations and insets [display:1600x1400][artifacts][slow]" time="62.6615" status="run" />
+  <testcase classname="UIPresentation" name="every screen lays out; navigates and captures at tablet portrait across presentations and insets [display:1600x1400][artifacts][slow]" time="58.9455" status="run" />
+  </testsuite><testsuite name="WindowResize"><testcase classname="WindowResize" name="cache; callbacks; reflow; context lifetime; input; minimum size and recreation in OpenGL [display:1600x1400]" time="1.15237" status="run" />
+  <testcase classname="WindowResize" name="cache; callbacks; reflow; context lifetime; input; minimum size and recreation in software rendering [display:1600x1400]" time="1.07552" status="run" />
+  <testcase classname="WindowResize" name="native display and live preferences in OpenGL [display]" time="0.569573" status="run" />
+  <testcase classname="WindowResize" name="native display and live preferences in software [display]" time="0.600439" status="run" />
+  </testsuite></testsuites>

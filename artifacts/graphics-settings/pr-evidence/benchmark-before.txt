@@ -1,0 +1,9 @@
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+SDL 2.32.70; video driver cocoa
+BENCH 640x480: frame 8.301 ms; cache-only 0.037 ms (median of 5 x 60, GPU completion included)
+BENCH 1024x697: frame 16.533 ms; cache-only 0.136 ms (median of 5 x 60, GPU completion included)
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 249 skipped
+[doctest] assertions: 0 | 0 passed | 0 failed |
+[doctest] Status: SUCCESS!

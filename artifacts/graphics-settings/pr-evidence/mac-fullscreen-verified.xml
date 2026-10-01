@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="12" failures="0" errors="0" skipped="0"><testsuite name="Settings"><testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 1000x700 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="7.39023" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 1000x700 in software rendering [display:1600x1400][artifacts][writes-preferences]" time="13.0887" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 1280x900 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="7.66218" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 640x480 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="6.29068" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 800x600 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="7.51954" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization with expanded wording at 640x480 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="9.31247" status="run" />
+  </testsuite><testsuite name="TextRaster"><testcase classname="TextRaster" name="native software glyphs at fractional scale [display][artifacts]" time="0.321803" status="run" />
+  <testcase classname="TextRaster" name="scaled and unscaled text rasterisation [display:1600x1400][artifacts]" time="0.621722" status="run" />
+  </testsuite><testsuite name="WindowResize"><testcase classname="WindowResize" name="cache; callbacks; reflow; context lifetime; input; minimum size and recreation in OpenGL [display:1600x1400]" time="1.10442" status="run" />
+  <testcase classname="WindowResize" name="cache; callbacks; reflow; context lifetime; input; minimum size and recreation in software rendering [display:1600x1400]" time="1.05365" status="run" />
+  <testcase classname="WindowResize" name="native display and live preferences in OpenGL [display]" time="0.407618" status="run" />
+  <testcase classname="WindowResize" name="native display and live preferences in software [display]" time="0.489313" status="run" />
+  </testsuite></testsuites>

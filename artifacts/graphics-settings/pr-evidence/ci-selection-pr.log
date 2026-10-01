@@ -1,0 +1,17 @@
+test_ai_and_ui_changes_skip_map_sweep_and_deployment (test_ci_changed_paths.ChangedPathsTest.test_ai_and_ui_changes_skip_map_sweep_and_deployment) ... ok
+test_browser_shell_only (test_ci_changed_paths.ChangedPathsTest.test_browser_shell_only) ... ok
+test_cross_platform_fixtures_run_everything (test_ci_changed_paths.ChangedPathsTest.test_cross_platform_fixtures_run_everything) ... ok
+test_deployment_changes_only_run_browser_and_deployment (test_ci_changed_paths.ChangedPathsTest.test_deployment_changes_only_run_browser_and_deployment) ... ok
+test_documentation_only (test_ci_changed_paths.ChangedPathsTest.test_documentation_only) ... ok
+test_empty_diff_runs_everything (test_ci_changed_paths.ChangedPathsTest.test_empty_diff_runs_everything) ... ok
+test_golden_table_only_runs_golden_job (test_ci_changed_paths.ChangedPathsTest.test_golden_table_only_runs_golden_job) ... ok
+test_mixed_independent_changes (test_ci_changed_paths.ChangedPathsTest.test_mixed_independent_changes) ... ok
+test_native_test_only (test_ci_changed_paths.ChangedPathsTest.test_native_test_only) ... ok
+test_network_changes_keep_deployment (test_ci_changed_paths.ChangedPathsTest.test_network_changes_keep_deployment) ... ok
+test_shared_source_runs_everything (test_ci_changed_paths.ChangedPathsTest.test_shared_source_runs_everything) ... ok
+test_transport_fixture_only_runs_browser_jobs (test_ci_changed_paths.ChangedPathsTest.test_transport_fixture_only_runs_browser_jobs) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.001s
+
+OK

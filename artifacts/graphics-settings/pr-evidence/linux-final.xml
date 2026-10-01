@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="8" failures="1" errors="0" skipped="0"><testsuite name="FullscreenAspect"><testcase classname="FullscreenAspect" name="presentation; clipping; captures and input translation in OpenGL [display:1600x1400]" time="0.917749" status="run" />
+  <testcase classname="FullscreenAspect" name="presentation; clipping; captures and input translation in software rendering [display:1600x1400]" time="0.903506" status="run" />
+  </testsuite><testsuite name="HighResolutionIntegration"><testcase classname="HighResolutionIntegration" name="HD artwork; cursor scaling and replay fixture in OpenGL [display:1024x768][artifacts][writes-preferences]" time="36.6729" status="run" />
+  </testsuite><testsuite name="TorusRender"><testcase classname="TorusRender" name="game rendering; picking and cache changes in software rendering [writes-preferences]" time="0.557102" status="run">
+      <failure message="false" type="REQUIRE">
+test/TorusRenderIntegrationTest.cpp:243:
+REQUIRE( options.changeSetting("graphics.torus",0) ) is NOT correct!
+  values: REQUIRE( false )
+
+      </failure>
+    </testcase>
+  </testsuite><testsuite name="WindowResize"><testcase classname="WindowResize" name="cache; callbacks; reflow; context lifetime; input; minimum size and recreation in OpenGL [display:1600x1400]" time="1.18183" status="run" />
+  <testcase classname="WindowResize" name="cache; callbacks; reflow; context lifetime; input; minimum size and recreation in software rendering [display:1600x1400]" time="1.07198" status="run" />
+  <testcase classname="WindowResize" name="native display and live preferences in OpenGL [display]" time="0.559227" status="run" />
+  <testcase classname="WindowResize" name="native display and live preferences in software [display]" time="0.606686" status="run" />
+  </testsuite></testsuites>
