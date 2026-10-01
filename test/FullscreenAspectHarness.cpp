@@ -22,6 +22,7 @@ public:
 	{
 		if (windowW == w && windowH == h) return;
 		SDL_SetWindowSize(window, w, h);
+		GLOB2_REQUIRE(SDL_SyncWindow(window), "Window resize must settle before layout assertions");
 		SDL_Delay(100);
 		SDL_PumpEvents();
 		updateWindowSize();

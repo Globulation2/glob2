@@ -120,7 +120,9 @@ public:
 
 	void resize(int w, int h)
 	{
-		SDL_SetWindowSize(window, w, h); SDL_Delay(60); SDL_PumpEvents();
+		SDL_SetWindowSize(window, w, h);
+		GLOB2_REQUIRE(SDL_SyncWindow(window), "Window resize must settle before layout assertions");
+		SDL_PumpEvents();
 		int actualW, actualH;
 		SDL_GetWindowSize(window, &actualW, &actualH);
 		REQUIRE_MESSAGE((actualW == std::max(w, minW) && actualH == std::max(h, minH)),
@@ -133,7 +135,9 @@ public:
 	// the scaled minimum.
 	void shrinkTo(int w, int h)
 	{
-		SDL_SetWindowSize(window, w, h); SDL_Delay(60); SDL_PumpEvents();
+		SDL_SetWindowSize(window, w, h);
+		GLOB2_REQUIRE(SDL_SyncWindow(window), "Window resize must settle before layout assertions");
+		SDL_PumpEvents();
 	}
 	void expose(bool otherWindow = false)
 	{

@@ -110,6 +110,7 @@ void run(bool gpu)
 	}
 	const auto resize = [&](int width, GAGGUI::Screen *screen = nullptr) {
 		SDL_SetWindowSize(gfx->window,width,1100);
+		GLOB2_REQUIRE(SDL_SyncWindow(gfx->window), "Window resize must settle before layout assertions");
 		SDL_Delay(60);
 		SDL_Event event;
 		while (GraphicContext::pollEvent(&event))
