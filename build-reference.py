@@ -5,7 +5,7 @@ commands = [shlex.split(line) for line in (p/'cpu-build.log').read_text().splitl
 compilecmd = next(c for c in commands if '-c' in c and c[-1] == 'test/TorusRenderBenchmark.cpp')
 for name in ('GameRender', 'GameRenderTerrain'):
     source = p/('reference-'+name+'.cpp')
-    source.write_bytes(subprocess.check_output(['git', 'show', 'HEAD:src/render/'+name+'.cpp']))
+    source.write_bytes(subprocess.check_output(['git', 'show', '777d19e09:src/render/'+name+'.cpp']))
     cmd = compilecmd.copy()
     cmd[cmd.index('-o')+1] = str(p/('reference-'+name+'.o'))
     cmd[-1] = str(source)

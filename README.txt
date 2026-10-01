@@ -21,8 +21,7 @@ clipping, overlaps, outlines, transparency and the 4096-quad boundary.
 Reproduce from the source PR checkout with a release native OpenGL benchmark:
 1. Copy these evidence files under artifacts/render-profile (preserve ai-match-eight/).
 2. Build: scons release=1 server=0 torus-render-benchmark
-3. Run build-reference.py (change git show HEAD to baseline commit 777d19e09
-   if reproducing after merge; baseline sources must exclude these optimizations).
+3. Run build-reference.py (it reads baseline commit 777d19e09).
 4. Run run-ai-comparison.py. It uses an isolated profile and -g -F -m -s 1024x600.
 The historical cpu-build.log supplies matching compiler/linker flags to the helper.
 Use your current build's flags on another platform. Environment settings and
@@ -36,4 +35,8 @@ exercise destructor, capacity and body errors with subsequent scope reuse.
 Follow-up review reported no remaining blockers (same-author review, not an
 independent maintainer approval).
 
-The final post-review test logs are appended to this branch after validation.
+Final post-review library tests: batch-errors-review.log (9 assertions) and
+batch-pixels-review.log (36 assertions): all pass. Error tests use dummy video;
+pixel tests use real native OpenGL and portable SDL contexts on macOS.
+The library-only tests now live in test/OpaqueRectangleBatchTest.cpp.
+
