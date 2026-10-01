@@ -7,6 +7,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -23,6 +24,24 @@ LISTING = """<?xml version="1.0" encoding="UTF-8"?>
   <OverallResultsTestCases unskipped="4"/>
 </doctest>
 """
+
+FAKE_CLASSNAME_SHELL = (
+    'case "$name" in\n'
+    '"feeds the last worker") class="test/HungryDefeatHarness.cpp";;\n'
+    '"sweeps every landscape [slow]") class="test/MapGeneratorDefaultsTest.cpp";;\n'
+    '"binds a port [network]") class="test/NetConnectionHarness.cpp";;\n'
+    '*) class="test/PointBarRenderTest.cpp";; esac\n'
+)
+
+
+def junit_for(cases, skipped=False):
+    report = ET.Element('testsuites')
+    suite = ET.SubElement(report, 'testsuite', tests='999')
+    for case in cases:
+        child = ET.SubElement(suite, 'testcase', classname=case.file, name=case.name)
+        if skipped:
+            ET.SubElement(child, 'skipped')
+    return ET.tostring(report, encoding='unicode')
 
 
 def args(**overrides):
@@ -116,6 +135,46 @@ class ShardTest(unittest.TestCase):
         self.assertEqual(engine[2].timeout, run_tests.SLOW_TIMEOUT)
         self.assertEqual(engine[1].timeout, run_tests.DISPLAY_TIMEOUT)
 
+    def test_filter_quotes_comma_and_backslash_in_names_and_suites(self):
+        case = run_tests.Case('engine', r'Suite,with\path', r'cancel, globals\saved')
+        second = run_tests.Case('engine', case.suite, 'second, case')
+        self.assertEqual(run_tests.doctest_filter(run_tests.Job('engine', [case])),
+                         [r'-tc=cancel\, globals\\saved', r'-ts=Suite\,with\\path'])
+        self.assertEqual(run_tests.doctest_filter(run_tests.Job('engine', [case, second], whole=True, subset=True)),
+                         [r'-tc=cancel\, globals\\saved,second\, case', r'-ts=Suite\,with\\path'])
+
+
+class JunitExecutionTest(unittest.TestCase):
+    def setUp(self):
+        self.cases = run_tests.parse_listing(LISTING, 'engine')[:2]
+        self.job = run_tests.Job('engine', self.cases, whole=True, subset=True)
+
+    def test_complete_actual_cases_pass_regardless_of_reported_test_count(self):
+        self.assertEqual(run_tests.junit_execution_issue(self.job, junit_for(self.cases)), '')
+
+    def test_empty_missing_malformed_and_only_skipped_reports_fail(self):
+        for report in ('', '<testsuites tests="999"/>', '<broken', junit_for(self.cases, skipped=True)):
+            with self.subTest(report=report):
+                self.assertTrue(run_tests.junit_execution_issue(self.job, report))
+
+    def test_incomplete_duplicate_and_foreign_cases_fail(self):
+        for cases in (self.cases[:1], [self.cases[0]] * 2,
+                      [*self.cases, run_tests.Case('engine', 'Other', self.cases[0].name, 'other.cpp')]):
+            with self.subTest(cases=cases):
+                issue = run_tests.junit_execution_issue(self.job, junit_for(cases))
+                self.assertIn('does not match selection', issue)
+
+    def test_same_name_from_wrong_file_does_not_satisfy_selection(self):
+        wrong = run_tests.Case('engine', 'Other', self.cases[0].name, 'other.cpp')
+        issue = run_tests.junit_execution_issue(self.job, junit_for([wrong, self.cases[1]]))
+        self.assertIn('missing selected cases', issue)
+        self.assertIn('unexpected executed cases', issue)
+
+    def test_failure_in_successful_exit_report_is_rejected(self):
+        report = ET.fromstring(junit_for(self.cases))
+        ET.SubElement(report.find('.//testcase'), 'failure', message='actual failure')
+        self.assertIn('failures', run_tests.junit_execution_issue(self.job, ET.tostring(report, encoding='unicode')))
+
 
 class JunitTest(unittest.TestCase):
     def test_merges_doctest_reports_and_synthesises_errors(self):
@@ -148,7 +207,7 @@ class EndToEndTest(unittest.TestCase):
             binary.write_text('#!/bin/sh\n'
                               'for a in "$@"; do case "$a" in -ltc) printf "%b" "' + listing + '"; exit 0;; esac; done\n'
                               'test "$GLOB2_TEST_FULLSCREEN" = "$EXPECTED_FULLSCREEN" || exit 9\n'
-                              'for a in "$@"; do case "$a" in -o=*) echo "<testsuites/>" > "${a#-o=}";; esac; done\n')
+                              'for a in "$@"; do case "$a" in -o=*) echo "<testsuites><testsuite><testcase classname=\\"test/HungryDefeatHarness.cpp\\" name=\\"feeds the last worker\\"/></testsuite></testsuites>" > "${a#-o=}";; esac; done\n')
             binary.chmod(binary.stat().st_mode | stat.S_IEXEC)
             for in_process in (False, True):
                 for fullscreen in (False, True):
@@ -165,6 +224,52 @@ class EndToEndTest(unittest.TestCase):
                                                          EXPECTED_FULLSCREEN='1' if fullscreen else '0'))
                         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
+    def run_python_fake(self, cases, report, extra=(), required_filters=()):
+        listing = ET.Element('doctest')
+        for case in cases:
+            ET.SubElement(listing, 'TestCase', name=case.name, testsuite=case.suite,
+                          filename=case.file, line='1', skipped='false')
+        with tempfile.TemporaryDirectory() as directory:
+            build = Path(directory) / 'build'
+            (build / 'test').mkdir(parents=True)
+            binary = build / 'test' / run_tests.BINARIES['engine']
+            binary.write_text(
+                f'#!{sys.executable}\n'
+                'import sys\nfrom pathlib import Path\n'
+                f'listing = {ET.tostring(listing, encoding="unicode")!r}\n'
+                'if "-ltc" in sys.argv:\n print(listing); raise SystemExit(0)\n'
+                f'report = {report!r}\n'
+                f'if not all(value in sys.argv for value in {tuple(required_filters)!r}): report = "<testsuites/>"\n'
+                'output = next(value[3:] for value in sys.argv if value.startswith("-o="))\n'
+                'Path(output).write_text(report)\n')
+            binary.chmod(binary.stat().st_mode | stat.S_IEXEC)
+            junit = Path(directory) / 'junit.xml'
+            completed = subprocess.run([sys.executable, str(HERE / 'run_tests.py'), '--binary', 'engine',
+                                        '--build-dir', str(build), '--no-display', '--junit', str(junit),
+                                        '--artifacts', str(Path(directory) / 'artifacts'), *extra],
+                                       capture_output=True, text=True)
+            return completed, junit.read_text()
+
+    def test_separator_names_run_instead_of_silently_selecting_nothing(self):
+        case = run_tests.Case('engine', r'Suite,with\path', r'cancel, globals\saved', 'fixture.cpp')
+        completed, report = self.run_python_fake(
+            [case], junit_for([case]),
+            required_filters=(r'-tc=cancel\, globals\\saved', r'-ts=Suite\,with\\path'))
+        self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
+        self.assertIn('PASS', completed.stdout)
+        self.assertEqual(len(ET.fromstring(report).findall('.//testcase')), 1)
+
+    def test_successful_process_with_empty_or_partial_junit_is_an_error(self):
+        cases = [run_tests.Case('engine', 'Runner', 'first', 'first.cpp'),
+                 run_tests.Case('engine', 'Runner', 'second', 'second.cpp')]
+        for report, diagnostic in (('<testsuites tests="999"/>', 'no executed test cases'),
+                                   (junit_for(cases[:1]), 'missing selected cases')):
+            with self.subTest(report=report):
+                completed, merged = self.run_python_fake(cases, report, extra=('--in-process',))
+                self.assertEqual(completed.returncode, 1, completed.stdout + completed.stderr)
+                self.assertIn(diagnostic, completed.stdout)
+                self.assertEqual(len(ET.fromstring(merged).findall('.//testcase/error')), 2)
+
     def test_runs_a_fake_binary_per_case(self):
         with tempfile.TemporaryDirectory() as directory:
             build = Path(directory) / 'build'
@@ -178,7 +283,8 @@ class EndToEndTest(unittest.TestCase):
                               'echo "running $name"\n'
                               'test -n "$GLOB2_USER_DATA_DIR" || exit 9\n'
                               'if [ "$name" = "binds a port [network]" ]; then echo "<testsuites/>" > "$out"; echo boom; exit 1; fi\n'
-                              'echo "<testsuites><testsuite name=\\"x\\"><testcase classname=\\"x\\" name=\\"$name\\"/></testsuite></testsuites>" > "$out"\n'
+                              + FAKE_CLASSNAME_SHELL +
+                              'echo "<testsuites><testsuite name=\\"x\\"><testcase classname=\\"$class\\" name=\\"$name\\"/></testsuite></testsuites>" > "$out"\n'
                               'exit 0\n')
             binary.chmod(binary.stat().st_mode | stat.S_IEXEC)
             junit = Path(directory) / 'junit.xml'
@@ -206,7 +312,8 @@ class EndToEndTest(unittest.TestCase):
                               'for a in "$@"; do case "$a" in -o=*) out="${a#-o=}";; -tc=*) name="${a#-tc=}";; esac; done\n'
                               'if [ "$name" = "sweeps every landscape [slow]" ]; then sleep 30; fi\n'
                               'if [ "$name" = "feeds the last worker" ]; then echo "musicVolume=3" > "$GLOB2_USER_DATA_DIR/preferences.txt"; fi\n'
-                              'echo "<testsuites><testsuite name=\\"x\\"><testcase classname=\\"test/HungryDefeatHarness.cpp\\" name=\\"$name\\"/></testsuite></testsuites>" > "$out"\n'
+                              + FAKE_CLASSNAME_SHELL +
+                              'echo "<testsuites><testsuite name=\\"x\\"><testcase classname=\\"$class\\" name=\\"$name\\"/></testsuite></testsuites>" > "$out"\n'
                               'exit 0\n')
             binary.chmod(binary.stat().st_mode | stat.S_IEXEC)
             junit = Path(directory) / 'junit.xml'

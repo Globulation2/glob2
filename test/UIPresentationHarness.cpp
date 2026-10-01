@@ -367,6 +367,8 @@ void run(const Viewport &viewport)
 	auto theme = std::make_unique<FrontendTheme>();
 	int checked = 0;
 	const bool capture = true;
+	const auto captures = glob2test::artifactDir();
+	const std::string capturePath = glob2test::artifactDirFromWorkingDirectory();
 	for (const char *presentation : {"0", "1"})
 	{
 		SDL_setenv("GLOB2_MOBILE_UI", presentation, 1);
@@ -413,11 +415,22 @@ void run(const Viewport &viewport)
 					frame();
 				}
 				require(stack.top() == screen, label + ": fixture is hidden beneath a child screen");
+				std::string screenshot;
 				if (capture && insets.bottom == 0)
-					globalContainer->gfx->printScreen("ui-" + std::string(fixture.name) + "-" +
-													  viewport.name + "-touch" + presentation + ".bmp");
+				{
+					screenshot = "ui-" + std::string(fixture.name) + "-" +
+						viewport.name + "-touch" + presentation + ".bmp";
+					// Retain captures directly; profile fallback can write to the
+					// source tree, and copying captures doubles disk requirements.
+					std::filesystem::remove(captures / screenshot);
+					globalContainer->gfx->printScreen(capturePath + "/" + screenshot);
+				}
 				verifyOrDump(*screen, label);
 				frame();
+				if (!screenshot.empty())
+					require(std::filesystem::exists(captures / screenshot) &&
+						std::filesystem::file_size(captures / screenshot) > 0,
+						label + ": screenshot was not retained");
 				// Tab reaches every control and never throws.
 				for (std::size_t i = 0; fixture.navigable && i < screen->host().focusOrder().size(); ++i)
 				{
@@ -442,7 +455,6 @@ void run(const Viewport &viewport)
 	GAGCore::mobileSafeInsetsForTesting.reset();
 	theme.reset();
 	SDL_setenv("GLOB2_MOBILE_UI", "0", 1);
-	glob2test::retainFromProfile(".bmp");
 	std::printf("PASS ui presentation: %d screen/viewport combinations verified\n", checked);
 }
 } // namespace

@@ -832,6 +832,11 @@ jobs:
       - uses: actions/checkout@v4
         id: actions_checkout_v4_1
 
+      # Checkout uses Git for Windows; MSYS Git otherwise defaults to different
+      # newline handling and reports unchanged CRLF source files as modifications.
+      - name: Align Git newline handling for Windows builds
+        run: git config --local core.autocrlf true
+
       - name: Restore the compiler cache
         id: restore_the_compiler_cache
         continue-on-error: true
@@ -1053,6 +1058,11 @@ jobs:
 
       - uses: actions/checkout@v4
         id: actions_checkout_v4_1
+
+      # Checkout uses Git for Windows; MSYS Git otherwise defaults to different
+      # newline handling and reports unchanged CRLF source files as modifications.
+      - name: Align Git newline handling for Windows builds
+        run: git config --local core.autocrlf true
 
       - name: Restore the compiler cache
         id: restore_the_compiler_cache

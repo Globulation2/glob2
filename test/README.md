@@ -43,6 +43,8 @@ can recreate contexts without racing X server reinitialization; they are skipped
 `--no-display`. Results merge into one JUnit file (`--junit`) and, under GitHub
 Actions, into the step summary with a `::error file=,line=` annotation per failure.
 `test/test_run_tests.py` covers the runner itself.
+The runner escapes commas and backslashes in selected names and checks that JUnit
+records every selected case; a successful exit with missing tests is an error.
 
 Standard runs keep display tests windowed. The HD artwork integration test's
 fullscreen camera-continuity checks and the text raster test's fullscreen
@@ -62,7 +64,7 @@ and selects the dummy drivers when the environment does not, so
 Include `Glob2Test.h` (unit tests) or `EngineFixtures.h` (engine tests) and use
 doctest's `TEST_SUITE`, `TEST_CASE`, `SUBCASE`, `CHECK`, `REQUIRE`, `CHECK_EQ` and
 `REQUIRE_MESSAGE`. Suites are named after the area (`HungryDefeat`, `MapQuery`,
-`Maxima.Combat`); case names are sentences without commas. Conditions that doctest
+`Maxima.Combat`); case names are descriptive sentences. Conditions that doctest
 cannot decompose (`a && b`) use `GLOB2_REQUIRE(cond, message)` or `GLOB2_CHECK`.
 Tags go at the end of the name, or through `GLOB2_TEST_CASE(name, "[display][slow]")`:
 

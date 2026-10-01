@@ -184,6 +184,23 @@ class ChangedPathsTest(unittest.TestCase):
                         # Evaluate only the exact, asserted expression above.
                         self.assertEqual(eval(expression, {"__builtins__": {}}, context), allowed)
 
+    def test_windows_git_newline_policy_is_pinned_before_cache_and_build(self):
+        workflow = (SCRIPT.parents[2] / ".github/workflows/build.yml").read_text()
+        for job, build in (("windows", "Build glob2 and the regression harnesses"),
+                           ("windows-server", "Build the YOG server")):
+            block = workflow.split(f"  {job}:\n", 1)[1].split("\n  # The browser checks", 1)[0]
+            if job == "windows":
+                block = block.split("\n  windows-server:", 1)[0]
+            with self.subTest(job=job):
+                checkout = block.index("      - uses: actions/checkout@v4")
+                pin = block.index("        run: git config --local core.autocrlf true")
+                cache = block.index("      - name: Restore the compiler cache")
+                compile = block.index(f"      - name: {build}")
+                self.assertLess(checkout, pin)
+                self.assertLess(pin, cache)
+                self.assertLess(cache, compile)
+                self.assertEqual(block.count("git config --local core.autocrlf true"), 1)
+
 
 if __name__ == "__main__":
     unittest.main()

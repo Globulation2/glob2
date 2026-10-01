@@ -26,6 +26,7 @@ Examples:
 """
 
 import argparse
+from collections import Counter
 import concurrent.futures
 import fnmatch
 import os
@@ -214,22 +215,55 @@ def make_jobs(cases, args, all_cases=None):
     return jobs
 
 
+def doctest_pattern(name):
+    """Quote separators in doctest's comma-separated filter grammar."""
+    return name.replace('\\', '\\\\').replace(',', '\\,')
+
+
 def doctest_filter(job):
     if job.whole:
         if job.without_benchmarks:
             return ['-tce=*[benchmark]*']
         if not job.subset:
             return []
-        # doctest takes comma-separated name patterns; test names never contain commas.
-        filters = ['-tc=' + ','.join(case.name for case in job.cases)]
+        filters = ['-tc=' + ','.join(doctest_pattern(case.name) for case in job.cases)]
         if job.cases[0].suite:
-            filters.append('-ts=' + job.cases[0].suite)
+            filters.append('-ts=' + doctest_pattern(job.cases[0].suite))
         return filters
     case = job.cases[0]
-    filters = ['-tc=' + case.name]
+    filters = ['-tc=' + doctest_pattern(case.name)]
     if case.suite:
-        filters.append('-ts=' + case.suite)
+        filters.append('-ts=' + doctest_pattern(case.suite))
     return filters
+
+
+def junit_execution_issue(job, junit_text):
+    """A successful exit must prove that every selected case actually executed."""
+    if not junit_text:
+        return 'test process produced no JUnit report'
+    try:
+        document = ET.fromstring(junit_text)
+    except ET.ParseError as error:
+        return f'invalid JUnit report: {error}'
+    executed = [case for case in document.iter('testcase') if case.find('skipped') is None]
+    if not executed:
+        return 'JUnit report contains no executed test cases'
+    expected = Counter((case.file, case.name) for case in job.cases)
+    actual = Counter((case.get('classname', ''), case.get('name', '')) for case in executed)
+    missing, unexpected = expected - actual, actual - expected
+    if missing or unexpected:
+        def describe(cases):
+            return '; '.join(f'{file}/{name} ({count})' for (file, name), count in cases.items())
+
+        details = []
+        if missing:
+            details.append('missing selected cases: ' + describe(missing))
+        if unexpected:
+            details.append('unexpected executed cases: ' + describe(unexpected))
+        return 'JUnit execution does not match selection: ' + '; '.join(details)
+    if any(case.find('failure') is not None or case.find('error') is not None for case in executed):
+        return 'JUnit records test failures despite a successful process exit'
+    return ''
 
 
 def xvfb_prefix(job):
@@ -313,6 +347,12 @@ def run_job(job, args, build_dir):
             note = 'the test changed the profile preferences; tag it [writes-preferences] if that is intended'
             output += f'\n[run_tests] {note}\n'
     junit_text = junit.read_text(encoding='utf-8', errors='replace') if junit.exists() else ''
+    if status == 'pass':
+        issue = junit_execution_issue(job, junit_text)
+        if issue:
+            status = 'error'
+            note = issue
+            output += f'\n[run_tests] {issue}\n'
     if status != 'pass' and junit_text:
         output += failure_details(junit_text)
     result = Result(job, status, seconds, output, junit_text, str(root), note)
