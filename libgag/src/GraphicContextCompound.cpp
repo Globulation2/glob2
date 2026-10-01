@@ -72,7 +72,7 @@ namespace GAGCore
             auto* pixels=surface->getSDLSurface();
             if (!pixels || pixels->w <= 0 || pixels->h <= 0) return;
             renderer->blit(surface, pixels, surface->contentRevision(),
-                           false,
+                           renderer == softwareRasterizer.get() && surface->hasOpaquePixels(),
                            SDL_Rect{sx,sy,sw,sh}, SDL_FRect{x,y,w,h}, alpha);
             return;
         }
