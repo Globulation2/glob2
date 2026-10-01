@@ -5,6 +5,7 @@
 #include "Map.h"
 #include "Utilities.h"
 #include "Unit.h"
+#include "Game.h"
 #include "MapInternal.h"
 
 
@@ -68,19 +69,30 @@ void Map::pathfindRandom(Unit *unit)
 	}
 	else
 	{
+		// Guard-area balancing: a warrior on the paint steps onto a free painted
+		// neighbour first, so a full area does not empty all at once, and takes
+		// the ordinary step when none is free rather than standing still.
+		const bool keepInGuardArea = unit->typeNum == WARRIOR
+			&& unit->owner->game->gameHeader.hasExperiment(ExperimentId::GuardAreaBalancing)
+			&& (tiles[coordToIndex(x, y)].guardArea & unit->owner->me);
 		bool da[8];
 		int count=0;
-		for (int di=0; di<8; di++)
+		for (int pass = keepInGuardArea ? 0 : 1; pass < 2 && count == 0; pass++)
 		{
-			int tx=(x+tabClose[di][0])&wMask;
-			int ty=(y+tabClose[di][1])&hMask;
-			if (isFreeForGroundUnit(tx, ty, (unit->performance[SWIM]>0), unit->owner->me))
+			for (int di=0; di<8; di++)
 			{
-				da[di]=true;
-				count++;
+				int tx=(x+tabClose[di][0])&wMask;
+				int ty=(y+tabClose[di][1])&hMask;
+				if (pass == 0 && !(tiles[coordToIndex(tx, ty)].guardArea & unit->owner->me))
+					da[di]=false;
+				else if (isFreeForGroundUnit(tx, ty, (unit->performance[SWIM]>0), unit->owner->me))
+				{
+					da[di]=true;
+					count++;
+				}
+				else
+					da[di]=false;
 			}
-			else
-				da[di]=false;
 		}
 		if (count==0)
 		{

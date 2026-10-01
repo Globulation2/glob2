@@ -54,12 +54,16 @@ Element CustomGameOtherOptions::build(const Presentation &p)
 													  [this, i](int v) { setAllyTeam(i, v); }, options))},
 							  {-1, CrossAlign::Center}));
 	}
-	auto options = column({toggle("teams-fixed", tr("[Teams Fixed]"), gameHeader.areAllyTeamsFixed(),
-								  [this](bool v) { gameHeader.setAllyTeamsFixed(v); }, !readOnly),
-						   toggle("prestige", tr("[Prestige Win Enabled]"), prestigeWinEnabled(),
-								  [this](bool v) { WinningCondition::setPrestigeWinCondition(gameHeader.getWinningConditions(), v); }, !readOnly),
-						   toggle("discovered", tr("[Map Discovered]"), gameHeader.isMapDiscovered(),
-								  [this](bool v) { gameHeader.setMapDiscovered(v); }, !readOnly)});
+	std::vector<Element> optionRows{toggle("teams-fixed", tr("[Teams Fixed]"), gameHeader.areAllyTeamsFixed(),
+										   [this](bool v) { gameHeader.setAllyTeamsFixed(v); }, !readOnly),
+									toggle("prestige", tr("[Prestige Win Enabled]"), prestigeWinEnabled(),
+										   [this](bool v) { WinningCondition::setPrestigeWinCondition(gameHeader.getWinningConditions(), v); }, !readOnly),
+									toggle("discovered", tr("[Map Discovered]"), gameHeader.isMapDiscovered(),
+										   [this](bool v) { gameHeader.setMapDiscovered(v); }, !readOnly)};
+	// Read-only: the host's Settings > Experiments decide these.
+	if (!gameHeader.getExperiments().empty())
+		optionRows.push_back(caption(tr("[Experiments set by the host]") + ": " + experimentLabelList(gameHeader.getExperiments())));
+	auto options = column(std::move(optionRows));
 	auto playersColumn = column(std::move(players));
 	Element body = adaptive(
 		[playersColumn, options](const LayoutContext &ctx, Size available)

@@ -3392,3 +3392,19 @@ Emoji
 بازی‌ها
 [Add AI]
 افزودن هوش مصنوعی
+[settings Experiments]
+آزمایش‌ها
+[settings Try features we are still testing. They can change balance and pacing.]
+قابلیت‌هایی را امتحان کنید که هنوز در حال آزمایش آن‌ها هستیم. ممکن است تعادل و سرعت بازی را تغییر دهند.
+[settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]
+آزمایش‌ها برای بازی‌های جدیدی که شروع یا میزبانی می‌کنید اعمال می‌شوند، اما هرگز برای مأموریت‌های کارزار نه. بازی ذخیره‌شده آزمایش‌هایی را که با آن‌ها شروع شده نگه می‌دارد.
+[Experiments set by the host]
+آزمایش‌های انتخاب‌شده توسط میزبان
+[settings No experiments in this build.]
+در این نسخه آزمایشی وجود ندارد.
+[Experiments]
+آزمایش‌ها
+[experiment guard-area-balancing]
+توازن مناطق نگهبانی
+[experiment guard-area-balancing help]
+جنگجویان آزاد به جای اینکه همه به نزدیک‌ترین منطقه بروند، بین مناطق نگهبانی رنگ‌شده پخش می‌شوند: منطقهٔ بزرگ‌تر تعداد بیشتری می‌گیرد و منطقهٔ بیش از حد پر به‌تدریج به مناطق دیگر خالی می‌شود.

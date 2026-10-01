@@ -4,6 +4,7 @@
 #pragma once
 
 #include "Header.h"
+#include "ExperimentalFeatures.h"
 #include <string>
 #include <map>
 #include "IntBuildingType.h"
@@ -72,6 +73,10 @@ public:
 	bool highResolutionArtwork;
 	/// Periodically saves the game in progress as "Auto save".
 	bool autosaveGames;
+	/// Experimental features to bake into every new game this player starts or
+	/// hosts (Settings > Experiments). Saved as comma-separated keys; a key this
+	/// build no longer knows is dropped on load.
+	ExperimentSet experiments;
 	/// Simulation speed preset. Zero is the original 25 ticks/second;
 	/// higher values progressively reduce delays and then skip rendered frames.
 	int gameSpeed;

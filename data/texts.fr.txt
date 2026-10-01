@@ -3404,3 +3404,19 @@ Reprendre le jeu
 Parties
 [Add AI]
 Ajouter une IA
+[settings Experiments]
+Expérimentations
+[settings Try features we are still testing. They can change balance and pacing.]
+Essayez des fonctionnalités encore en test. Elles peuvent changer l'équilibre et le rythme.
+[settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]
+Les expérimentations s'appliquent aux nouvelles parties que vous lancez ou hébergez, jamais aux missions de campagne. Une partie sauvegardée garde celles avec lesquelles elle a commencé.
+[Experiments set by the host]
+Expérimentations choisies par l'hôte
+[settings No experiments in this build.]
+Aucune expérimentation dans cette version.
+[Experiments]
+Expérimentations
+[experiment guard-area-balancing]
+Équilibrage des zones de garde
+[experiment guard-area-balancing help]
+Les guerriers libres se répartissent entre les zones de garde peintes au lieu de tous rejoindre la plus proche : une zone plus grande en reçoit davantage, et une zone surpeuplée se vide peu à peu vers les autres.

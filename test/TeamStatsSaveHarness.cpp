@@ -771,8 +771,10 @@ static void measurementAttributionFields()
 
 static void measurementReplayBoundaries()
 {
-	require(REPLAY_MINIMUM_VERSION_MINOR == 123 && NET_PROTOCOL_VERSION == 46 &&
-				YOG_MIN_CLIENT_NET_PROTOCOL_VERSION == 46,
+	// Format 124 (the experiments list) changed the header wire format, not the
+	// default simulation: protocol 47, replay floor still 123.
+	require(REPLAY_MINIMUM_VERSION_MINOR == 123 && NET_PROTOCOL_VERSION == 47 &&
+				YOG_MIN_CLIENT_NET_PROTOCOL_VERSION == 47,
 			"integrated simulation uses current replay and network gates");
 	for (int version : {98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 115, 119, 120, 121, 122, VERSION_MINOR, VERSION_MINOR+1})
 	{

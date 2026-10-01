@@ -3394,3 +3394,19 @@ Jatka peliä
 Pelit
 [Add AI]
 Lisää AI
+[settings Experiments]
+Kokeilut
+[settings Try features we are still testing. They can change balance and pacing.]
+Kokeile ominaisuuksia, joita vielä testaamme. Ne voivat muuttaa tasapainoa ja tempoa.
+[settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]
+Kokeilut koskevat uusia pelejä, jotka aloitat tai joita isännöit, eivät koskaan kampanjatehtäviä. Tallennettu peli säilyttää ne, joilla se alkoi.
+[Experiments set by the host]
+Isännän valitsemat kokeilut
+[settings No experiments in this build.]
+Tässä versiossa ei ole kokeiluja.
+[Experiments]
+Kokeilut
+[experiment guard-area-balancing]
+Vartioalueiden tasapainotus
+[experiment guard-area-balancing help]
+Vapaat soturit jakautuvat maalattujen vartioalueiden kesken sen sijaan, että kaikki menisivät lähimpään: suurempi alue saa heitä enemmän, ja ylitäysi alue harvenee vähitellen muihin.

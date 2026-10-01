@@ -3402,3 +3402,19 @@ Reprèn la partida
 Partides
 [Add AI]
 Afegeix IA
+[settings Experiments]
+Funcions experimentals
+[settings Try features we are still testing. They can change balance and pacing.]
+Prova funcions que encara estem provant. Poden canviar l'equilibri i el ritme.
+[settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]
+Les funcions experimentals s'apliquen a les partides noves que inicies o allotges, mai a les missions de campanya. Una partida desada conserva les que tenia en començar.
+[Experiments set by the host]
+Funcions experimentals triades per l'amfitrió
+[settings No experiments in this build.]
+No hi ha funcions experimentals en aquesta versió.
+[Experiments]
+Funcions experimentals
+[experiment guard-area-balancing]
+Equilibri de les zones de guàrdia
+[experiment guard-area-balancing help]
+Els guerrers lliures es reparteixen entre les zones de guàrdia pintades en lloc d'anar tots a la més propera: una zona més gran en rep més, i una zona massa plena es buida a poc a poc cap a les altres.

@@ -108,6 +108,11 @@
       "name": "refresh",
       "upstream": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.48.0/icons/outline/refresh.svg",
       "sha256": "12927e445fd886d0e0fd538ba60fbea56ff8a456204481e233f77ad322e65062"
+    },
+    {
+      "name": "flask",
+      "upstream": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.48.0/icons/outline/flask.svg",
+      "sha256": "f126c4fd5c9935e03f808bdfeec2a3ac3a505f0d26c4fa4a821adfaeb6b0d825"
     }
   ]
 }

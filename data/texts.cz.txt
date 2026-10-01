@@ -3394,3 +3394,19 @@ Pokračovat ve hře
 Hry
 [Add AI]
 Přidat počítač
+[settings Experiments]
+Experimenty
+[settings Try features we are still testing. They can change balance and pacing.]
+Vyzkoušejte funkce, které stále testujeme. Mohou změnit vyváženost a tempo.
+[settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]
+Experimenty platí pro nové hry, které založíte nebo hostujete, nikdy pro mise kampaně. Uložená hra si ponechá ty, se kterými začala.
+[Experiments set by the host]
+Experimenty zvolené hostitelem
+[settings No experiments in this build.]
+V tomto sestavení nejsou žádné experimenty.
+[Experiments]
+Experimenty
+[experiment guard-area-balancing]
+Vyvažování strážních oblastí
+[experiment guard-area-balancing help]
+Volní bojovníci se rozdělí mezi vyznačené strážní oblasti, místo aby všichni šli do nejbližší: větší oblast jich dostane více a přeplněná oblast se postupně vyprázdní do ostatních.

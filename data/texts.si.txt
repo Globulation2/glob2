@@ -3394,3 +3394,19 @@ Nadaljuj igro
 Igre
 [Add AI]
 Dodaj UI
+[settings Experiments]
+Poskusi
+[settings Try features we are still testing. They can change balance and pacing.]
+Preizkusite funkcije, ki jih še testiramo. Lahko spremenijo ravnovesje in tempo.
+[settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]
+Poskusi veljajo za nove igre, ki jih začnete ali gostite, nikoli za misije kampanje. Shranjena igra obdrži tiste, s katerimi se je začela.
+[Experiments set by the host]
+Poskusi, ki jih je izbral gostitelj
+[settings No experiments in this build.]
+V tej različici ni poskusov.
+[Experiments]
+Poskusi
+[experiment guard-area-balancing]
+Uravnoteženje stražarskih območij
+[experiment guard-area-balancing help]
+Prosti bojevniki se porazdelijo med narisana stražarska območja, namesto da bi vsi šli v najbližje: večje območje jih dobi več, prenatrpano pa se postopoma prazni v druga.

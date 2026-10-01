@@ -50,6 +50,10 @@ keeps the match summary and launch action available while dense content scrolls.
 - Rules expose victory, terrain visibility, alliance changes, pace and generated
   workers. Standard, Quick clash, Open book and Last colony standing are visible
   presets. Session speed is restored when the match ends.
+- [Experimental features](../experimental-features.md) are not lobby rules: they
+  come from Settings → Experiments and are baked into the header of every game the
+  lobby starts. When any are enabled the footer summary lists them, so a player
+  sees what the match will carry.
 
 The lobby automatically saves choices to `custom-game-settings.txt` in the game's
 writable configuration directory, after edits and when leaving or starting a

@@ -3394,3 +3394,19 @@ Spiel fortsetzen
 Spiele
 [Add AI]
 KI hinzufügen
+[settings Experiments]
+Experimente
+[settings Try features we are still testing. They can change balance and pacing.]
+Probiere Funktionen aus, die wir noch testen. Sie können Balance und Tempo verändern.
+[settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]
+Experimente gelten für neue Spiele, die du startest oder hostest, nie für Kampagnenmissionen. Ein gespeichertes Spiel behält die, mit denen es begonnen hat.
+[Experiments set by the host]
+Vom Host gewählte Experimente
+[settings No experiments in this build.]
+Keine Experimente in dieser Version.
+[Experiments]
+Experimente
+[experiment guard-area-balancing]
+Ausgleich der Wachbereiche
+[experiment guard-area-balancing help]
+Freie Krieger verteilen sich auf die gemalten Wachbereiche, statt alle den nächsten zu wählen: ein größerer Bereich bekommt mehr von ihnen, und ein überfüllter Bereich dünnt sich zugunsten der anderen aus.

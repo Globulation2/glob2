@@ -6,7 +6,9 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 123
+#define VERSION_MINOR 124
+// version 124 adds the experiments list to GameHeader (Settings > Experiments), baked into
+//             every new game. The default simulation is unchanged, so replays from 123 still play.
 // version 123 scopes invalidation and bounds escape refresh; Numbi uses its AI RNG.
 // version 122 gives each shared-runtime controller a private gradient manager.
 // Econo and Nicowar decisions no longer depend on another controller's cache.
@@ -152,9 +154,10 @@
 
 //This must be updated when there are changes to YOG, MapHeader, GameHeader, BasePlayer, BaseTeam,
 //NetMessage, and the likes, in parallel to change of the VERSION_MINOR above
-#define NET_PROTOCOL_VERSION 46
+#define NET_PROTOCOL_VERSION 47
 //Clients with older versions than this will be rejected
-#define YOG_MIN_CLIENT_NET_PROTOCOL_VERSION 46
+#define YOG_MIN_CLIENT_NET_PROTOCOL_VERSION 47
+// version 47 GameHeader carries the experiments list; older clients would misread it.
 // version 46 uses scoped invalidation, escape refresh and corrected Numbi RNG.
 // version 45 separates shared-runtime gradient caches in mixed-client games.
 // version 44 keeps clients with different AI random streams out of mixed games.

@@ -45,9 +45,16 @@ GAGCore::CooperativeTask Engine::initCampaignTask(std::string filename, Campaign
     if (players.getNumberOfPlayers() == 0) players = prepareCampaign(map, gui.localPlayer, gui.localTeamNo);
     else { gui.localPlayer = 0; gui.localTeamNo = players.getBasePlayer(0).teamNumber; }
     if (campaign) players.getBasePlayer(0).name = campaign->getPlayerName();
+    // Missions and the tutorial play as authored: never with experiments.
+    if (!map.getIsSavedGame()) players.getExperiments().clear();
     const bool loaded = co_await initGameTask(map, players);
     if (loaded && campaign) gui.setCampaignGame(*campaign, mission);
     co_return loaded;
+}
+void Engine::applyLocalExperiments(GameHeader& header, const MapHeader& map)
+{
+    if (!map.getIsSavedGame())
+        header.setExperiments(globalContainer->settings.experiments);
 }
 int Engine::initCustom(MapHeader& map, GameHeader& players, int localTeam, const std::string& sourceFileName)
 {
@@ -85,6 +92,7 @@ GAGCore::CooperativeTask Engine::initCustomTask(std::string filename)
     auto players = loadGameHeader(filename);
     for (int p = 0; p < players.getNumberOfPlayers(); ++p)
         if (players.getBasePlayer(p).type == BasePlayer::P_IP) players.getBasePlayer(p).makeItAI(AI::toggleAI);
+    applyLocalExperiments(players, map);
     co_return co_await initGameTask(map, players, true, false, true, filename);
 }
 
@@ -142,7 +150,7 @@ namespace
 			long maximum;
 			std::function<void(GameHeader&, int)> apply;
 		};
-		const Rule rules[] = {
+		std::vector<Rule> rules = {
 			{"noGrowth", 1, [](GameHeader& h, int v) { h.setResourceGrowthDisabled(v); }},
 			{"scarcity", 3, [](GameHeader& h, int v) { h.setResourceScarcityLevel(v); }},
 			{"instantConstruction", 1, [](GameHeader& h, int v) { h.setInstantConstructionEnabled(v); }},
@@ -160,6 +168,9 @@ namespace
 						v ? std::optional<Uint32>(v) : std::nullopt);
 				}},
 		};
+		// One 0/1 rule per experiment, named by its key (ExperimentalFeatures.cpp).
+		for (const auto& definition : experimentDefinitions())
+			rules.push_back({definition.key, 1, [id = definition.id](GameHeader& h, int v) { h.getExperiments().set(id, v != 0); }});
 		std::stringstream list(environment);
 		std::string item;
 		while (std::getline(list, item, ','))
@@ -277,6 +288,7 @@ void Engine::createRandomGame()
 	{
 		game.setRandomSeed(globalContainer->testGamesSeed);
 	}
+	applyLocalExperiments(game, map);
 	applyTestRules(game);
 	std::cout<<"Random Seed gameheader: "<<game.getRandomSeed();
 	for (int p=0; p<game.getNumberOfPlayers(); p++)

@@ -191,7 +191,7 @@ protected:
 	void sendToListeners(std::shared_ptr<MultiplayerGameEvent> event);
 	
 	///Puts together reteaming information from the game header in the file
-	NetReteamingInformation constructReteamingInformation(const std::string& file);
+	NetReteamingInformation constructReteamingInformation(const GameHeader& game);
 	
 private:
 	std::shared_ptr<YOGClient> client;

@@ -9,6 +9,7 @@
 #include <Toolkit.h>
 #include <algorithm>
 #include <cstdio>
+#include <iterator>
 
 using namespace GAGCore;
 using namespace Glob2UI;
@@ -80,7 +81,7 @@ void SettingsScreen::resetScroll()
 
 std::string SettingsScreen::categoryName(Category category) const
 {
-	const char *names[] = {"Display & graphics", "Audio", "Gameplay", "Building defaults", "Controls", "Language & player"};
+	const char *names[] = {"Display & graphics", "Audio", "Gameplay", "Building defaults", "Controls", "Language & player", "Experiments"};
 	return tr(names[int(category)]);
 }
 
@@ -176,6 +177,7 @@ std::vector<SettingsScreen::Category> SettingsScreen::visibleCategories() const
 	if (!touchLayout)
 		result.push_back(Category::Controls);
 	result.push_back(Category::Player);
+	result.push_back(Category::Experiments);
 	return result;
 }
 
@@ -513,8 +515,11 @@ Element SettingsScreen::categoryNavigation(const Presentation &p, bool sidebar)
 			options.alignLeft = true;
 			options.selected = category == current && modal == Modal::None;
 			options.minHeight = 42;
-			const UIIcon icons[] = {UIIcon::Display,   UIIcon::Audio,    UIIcon::Gameplay,
-									UIIcon::Buildings, UIIcon::Controls, UIIcon::Player};
+			// One icon per Category, in its order.
+			static constexpr UIIcon icons[] = {UIIcon::Display,   UIIcon::Audio,    UIIcon::Gameplay,
+											   UIIcon::Buildings, UIIcon::Controls, UIIcon::Player,
+											   UIIcon::Experiments};
+			static_assert(std::size(icons) == std::size_t(Category::Experiments) + 1, "an icon for every settings category");
 			options.icon = uiIcon(icons[int(category)]);
 			items.push_back(Glob2UI::button("nav." + std::to_string(int(category)), categoryName(category),
 											[this, category] { selectCategory(category); }, options));

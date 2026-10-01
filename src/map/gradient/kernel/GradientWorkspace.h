@@ -2,6 +2,8 @@
 #pragma once
 #include "GradientBucket.h"
 #include <array>
+#include <cstddef>
+#include <cstdint>
 #include <utility>
 #include <vector>
 
@@ -10,4 +12,11 @@ struct GradientWorkspace
 {
 	std::array<GradientBucket, GradientBucket::COUNT> buckets;
 	std::vector<std::pair<int, int>> deferredSeeds;
+	// Guard-area balancing's box-sum scratch (Map::seedGuardAreaCrowding).
+	struct Crowding
+	{
+		std::vector<std::uint16_t> warriors, paint, rows;
+		std::vector<int> columnSums;
+		std::vector<std::size_t> positions, seeds;
+	} crowding;
 };

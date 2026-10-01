@@ -4,6 +4,7 @@
 #pragma once
 
 #include "BasePlayer.h"
+#include "ExperimentalFeatures.h"
 #include "Stream.h"
 #include <list>
 #include <optional>
@@ -230,6 +231,17 @@ public:
 		static constexpr int multiplier[] = {1, 5, 10};
 		return multiplier[buildingHpLevel];
 	}
+
+	///The experimental features this game carries (ExperimentalFeatures.h). Set
+	///from Settings > Experiments when a game is created; saves, replays and
+	///multiplayer peers keep the set the game was started with.
+	inline const ExperimentSet& getExperiments() const { return experiments; }
+	///Mutable access, for building a header before the game starts only: changing
+	///it once the game runs would desync peers and replays.
+	inline ExperimentSet& getExperiments() { return experiments; }
+	inline void setExperiments(const ExperimentSet& set) { experiments = set; }
+	///The hot-path read for simulation code: is this experiment on in this game?
+	inline bool hasExperiment(ExperimentId id) const { return experiments.has(id); }
 private:
 	std::string aiConfig[Team::MAX_COUNT];
 	bool loadAIConfig(GAGCore::InputStream *stream, Sint32 versionMinor);
@@ -294,6 +306,9 @@ private:
 
 	///Custom-game rule: 0-2 tier scaling building max HP
 	Uint8 buildingHpLevel;
+
+	///Experimental features enabled for this game; empty is the default game
+	ExperimentSet experiments;
 };
 
 

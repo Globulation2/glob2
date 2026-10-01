@@ -3404,3 +3404,19 @@ Dialogtextstorlek: %0%
 Spel
 [Add AI]
 Lägg till AI
+[settings Experiments]
+Experiment
+[settings Try features we are still testing. They can change balance and pacing.]
+Prova funktioner som vi fortfarande testar. De kan ändra balans och tempo.
+[settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]
+Experiment gäller nya spel som du startar eller är värd för, aldrig kampanjuppdrag. Ett sparat spel behåller dem det startade med.
+[Experiments set by the host]
+Experiment valda av värden
+[settings No experiments in this build.]
+Inga experiment i den här versionen.
+[Experiments]
+Experiment
+[experiment guard-area-balancing]
+Balansering av vaktområden
+[experiment guard-area-balancing help]
+Fria krigare fördelar sig mellan de målade vaktområdena i stället för att alla ta det närmaste: ett större område får fler av dem, och ett överfullt område tunnas ut till de andra.

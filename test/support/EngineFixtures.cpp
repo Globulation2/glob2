@@ -63,6 +63,16 @@ namespace glob2test
 				game.teams[i]->race.loadDefault();
 		}
 		team = game.teams[0];
+		if (options.header)
+		{
+			GameHeader header;
+			header.setNumberOfPlayers(options.teams);
+			for (int i = 0; i < options.teams; ++i)
+				header.getBasePlayer(i) = BasePlayer(i, ("test " + std::to_string(i)).c_str(), i, BasePlayer::P_LOCAL);
+			header.setRandomSeed(options.seed);
+			header.setExperiments(options.experiments);
+			game.setGameHeader(header, true);
+		}
 		if (options.discovered)
 			game.map.setMapDiscovered();
 	}

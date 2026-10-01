@@ -77,8 +77,8 @@ static void run(int width,int height,bool gl,bool expanded)
         FrontendTheme theme;
         FrontendScope frontend;
         NativeSettings screen;
-        for(int category=0;category<6;++category){
-            screen.selectCategory(SettingsScreen::Category(category));
+        for(auto category:screen.visibleCategories()){
+            screen.selectCategory(category);
             for(const auto& r:screen.rows()){
                 if(r.id.empty())continue;
                 if(!(r.control.w>0 && r.control.h>0)){std::cerr<<"row without bounds: "<<r.id<<"\n";
@@ -88,7 +88,7 @@ static void run(int width,int height,bool gl,bool expanded)
                 REQUIRE((r.control.x>=r.bounds.x && r.control.x+r.control.w<=r.bounds.x+r.bounds.w));
                 REQUIRE((r.control.y>=r.bounds.y && r.control.y+r.control.h<=r.bounds.y+r.bounds.h));
             }
-            screen.capture(output+"/category-"+std::to_string(category)+".bmp");
+            screen.capture(output+"/category-"+std::to_string(int(category))+".bmp");
         }
         screen.selectCategory(SettingsScreen::Category::Display);
         const auto windowMode=screen.row("display.mode").number;
@@ -158,6 +158,15 @@ static void run(int width,int height,bool gl,bool expanded)
         REQUIRE(screen.changeSetting("gameplay.speed",4-Settings::GAME_SPEED_MINIMUM));loaded.load();REQUIRE(loaded.gameSpeed==4);
         REQUIRE(s.autosaveGames);REQUIRE(screen.changeSetting("gameplay.autosave",0));loaded.load();REQUIRE(!loaded.autosaveGames);
         REQUIRE(screen.changeSetting("gameplay.autosave",1));loaded.load();REQUIRE(loaded.autosaveGames);
+        // Experiments: one toggle per registry entry, saved as its key.
+        screen.selectCategory(SettingsScreen::Category::Experiments);
+        REQUIRE(screen.row("experiments.guard-area-balancing").kind==SettingsScreen::Kind::Toggle);
+        REQUIRE(!s.experiments.has(ExperimentId::GuardAreaBalancing));
+        REQUIRE(screen.changeSetting("experiments.guard-area-balancing",1));loaded.load();REQUIRE(loaded.experiments.has(ExperimentId::GuardAreaBalancing));
+        REQUIRE(readFile(profile+"/preferences.txt").find("experiments=guard-area-balancing\n")!=std::string::npos);
+        screen.capture(output+"/experiments.bmp");
+        REQUIRE(screen.changeSetting("experiments.guard-area-balancing",0));loaded.load();REQUIRE(loaded.experiments.empty());
+        screen.selectCategory(SettingsScreen::Category::Gameplay);
         const auto before=readFile(profile+"/preferences.txt");
         const auto permissions=std::filesystem::status(profile+"/preferences.txt").permissions();
         const auto directoryTarget=profile+"/atomic-directory";
@@ -178,7 +187,7 @@ static void run(int width,int height,bool gl,bool expanded)
         loaded.load();REQUIRE(loaded.getUsername()=="New player");
         screen.activateSetting("player.name");screen.key(SDLK_BACKSPACE);screen.key(SDLK_ESCAPE);REQUIRE(s.getUsername()=="New player");
         screen.changeSetting("player.language",Toolkit::getStringTable()->getLangCode("fr"));
-        for(int c=0;c<6;++c){screen.selectCategory(SettingsScreen::Category(c));screen.capture(output+"/french-"+std::to_string(c)+".bmp");}
+        for(auto c:screen.visibleCategories()){screen.selectCategory(c);screen.capture(output+"/french-"+std::to_string(int(c))+".bmp");}
         screen.selectCategory(SettingsScreen::Category::Player);screen.changeSetting("player.language",Toolkit::getStringTable()->getLangCode("en"));
         screen.selectCategory(SettingsScreen::Category::Controls);
         screen.activateSetting("keys.add.0");screen.key(SDLK_F12);screen.activateSetting("binding.save");

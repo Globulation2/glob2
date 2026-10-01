@@ -37,6 +37,7 @@ enum class UIIcon
 	Close,
 	Refresh,
 	Info,
+	Experiments,
 	Count
 };
 IconRef uiIcon(UIIcon icon);

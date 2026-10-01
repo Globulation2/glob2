@@ -26,6 +26,24 @@ inline void fill(std::vector<T>& vec, const T& value) {
 
 #include "gradient/GradientConstants.h"
 
+// Guard-area balancing (the "guard-area-balancing" experiment). A painted guard
+// tile is seeded GUARD_CROWD_COST_PER_WARRIOR below the goal for each of the
+// team's warriors within GUARD_CROWD_RADIUS tiles (Chebyshev), scaled by
+// GUARD_CROWD_REFERENCE_AREA over the painted tiles within the same radius and
+// capped at GUARD_CROWD_COST_MAX. A warrior on the paint follows the field out of
+// an over-full area one action in 2^GUARD_LEAVE_CHANCE_SHIFT. Mechanism and
+// tuning: docs/features/guard-area-balancing.md.
+constexpr int GUARD_CROWD_RADIUS           = 8;
+constexpr int GUARD_CROWD_COST_PER_WARRIOR = 4 * GRADIENT_STEP;
+constexpr int GUARD_CROWD_REFERENCE_AREA   = 25;
+constexpr int GUARD_CROWD_COST_MAX         = 400 * GRADIENT_STEP;
+constexpr int GUARD_LEAVE_CHANCE_SHIFT     = 6;
+// Seeds stay above the unreachable sentinel.
+static_assert(GUARD_CROWD_COST_MAX < GRADIENT_AT_GOAL - GRADIENT_UNREACHABLE - 1);
+// A leaver keeps counting toward its area for longer than the crowding it freed
+// is worth, so it does not turn back.
+static_assert(GUARD_CROWD_RADIUS * GRADIENT_STEP > GUARD_CROWD_COST_PER_WARRIOR);
+
 // Sentinel for Map::immobileUnits[]: byte stores the team number of the immobile
 // unit on the tile, or IMMOBILE_UNIT_NONE if no immobile unit is present.
 // Team::MAX_COUNT is well under 255, so the team-number range never collides.

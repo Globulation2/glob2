@@ -963,3 +963,29 @@ worker counts under the same delayed schedule. `check_gradient_pipeline.py` also
 checks the one-worker/eight-tick defaults and save/resume at each of the eight
 deadline phases with zero, one and two workers. Pending fields, supersession and
 remaining deadlines are versioned save state; worker count is not.
+
+## Experimental features and guard-area balancing
+
+`ExperimentalFeatures` (`glob2-unit-tests`) covers the experiments registry and
+the set a game carries: stable keys, the preferences text form, binary and text
+stream round trips, unknown keys dropped, and the `GameHeader` forms with a
+version 123 header reading no experiment. `SettingsExperiments` and the
+`experiments` case of `CustomGameSetup` (`glob2-engine-tests`) cover the
+preferences round trip, the string tables and the baked-in rule: every
+registry entry's label and help are listed keys matching the English table, a new
+game takes Settings → Experiments, its save keeps that set after the setting is
+turned off, a fresh game then carries nothing, and a campaign mission never takes
+the set. `test/tournament_cli_integration.py` covers `--run-game --experiment`. The `Settings` display cases toggle the switch on the
+settings page. See [experimental features](../docs/features/experimental-features.md).
+
+`GuardAreaBalance` (`glob2-engine-tests`, `python3 test/run_tests.py --filter
+'GuardAreaBalance/*'`) runs the real engine on a blank 64x64 map with 24 warriors
+for the `guard-area-balancing` experiment: spawn, drain, patches, size, three
+areas, erase, settled-guard movement, a save/load continuation and the crowding
+box sum against brute force, plus a `[benchmark]` timing case. Its first case
+runs spawn and drain without the experiment, expects the old outcome, and compares
+the default game's per-100-tick checksums with
+`test/fixtures/guard-area/off-path-checksums.txt` (`[golden]`). Games start with the experiment through
+`glob2test::GameOptions::experiments`; `GameOptions::header` installs the
+one-local-player header and seed they need. Design and numbers:
+[guard-area balancing](../docs/features/guard-area-balancing.md).

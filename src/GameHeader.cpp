@@ -44,6 +44,7 @@ void GameHeader::reset()
 	permadeathDisabled=false;
 	peacefulMode=false;
 	buildingHpLevel=0;
+	experiments.clear();
 }
 
 
@@ -151,6 +152,7 @@ bool GameHeader::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		peacefulMode = stream->readUint8("peacefulMode");
 		buildingHpLevel = std::min<Uint8>(stream->readUint8("buildingHpLevel"), 2);
 	}
+	if (!experiments.load(stream, versionMinor)) return false;
 	stream->readLeaveSection();
 	return true;
 }
@@ -207,6 +209,7 @@ void GameHeader::save(GAGCore::OutputStream *stream) const
 	stream->writeUint8(permadeathDisabled, "permadeathDisabled");
 	stream->writeUint8(peacefulMode, "peacefulMode");
 	stream->writeUint8(buildingHpLevel, "buildingHpLevel");
+	experiments.save(stream);
 	stream->writeLeaveSection();
 }
 
@@ -259,6 +262,7 @@ bool GameHeader::loadWithoutPlayerInfo(GAGCore::InputStream *stream, Sint32 vers
 		peacefulMode = stream->readUint8("peacefulMode");
 		buildingHpLevel = std::min<Uint8>(stream->readUint8("buildingHpLevel"), 2);
 	}
+	if (!experiments.load(stream, versionMinor)) return false;
 	stream->readLeaveSection();
 	return true;
 }
@@ -303,6 +307,7 @@ void GameHeader::saveWithoutPlayerInfo(GAGCore::OutputStream *stream) const
 	stream->writeUint8(permadeathDisabled, "permadeathDisabled");
 	stream->writeUint8(peacefulMode, "peacefulMode");
 	stream->writeUint8(buildingHpLevel, "buildingHpLevel");
+	experiments.save(stream);
 	stream->writeLeaveSection();
 }
 

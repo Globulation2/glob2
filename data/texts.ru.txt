@@ -3392,3 +3392,19 @@ Emoji
 Игры
 [Add AI]
 Добавить ИИ
+[settings Experiments]
+Эксперименты
+[settings Try features we are still testing. They can change balance and pacing.]
+Попробуйте функции, которые мы ещё тестируем. Они могут изменить баланс и темп.
+[settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]
+Эксперименты действуют в новых играх, которые вы начинаете или размещаете, но никогда в миссиях кампании. Сохранённая игра сохраняет те, с которыми началась.
+[Experiments set by the host]
+Эксперименты, выбранные хостом
+[settings No experiments in this build.]
+В этой сборке нет экспериментов.
+[Experiments]
+Эксперименты
+[experiment guard-area-balancing]
+Балансировка зон охраны
+[experiment guard-area-balancing help]
+Свободные воины распределяются между нарисованными зонами охраны, а не идут все в ближайшую: большая зона получает больше воинов, а переполненная постепенно перетекает в остальные.

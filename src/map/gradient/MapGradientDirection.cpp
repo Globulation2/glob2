@@ -45,7 +45,7 @@ int Map::stepCost(int dx, int dy, size_t targetIndex, int swimClass) const
 	return step;
 }
 
-bool Map::directionByGradient(Uint32 teamMask, int swimClass, int x, int y, const Uint16 *gradient, int *dx, int *dy, bool strict) const
+bool Map::directionByGradient(Uint32 teamMask, int swimClass, int x, int y, const Uint16 *gradient, int *dx, int *dy, bool strict, Uint32 guardAreaMask) const
 {
 	PERF_SCOPE_TIME(PathDirection);
 	const bool canSwim = swimClass > 0;
@@ -71,6 +71,8 @@ bool Map::directionByGradient(Uint32 teamMask, int swimClass, int x, int y, cons
 		size_t n = coordToIndex(x + ddx, y + ddy);
 		Uint16 g = gradient[n];
 		if (g <= GRADIENT_UNREACHABLE || !isFreeForGroundUnit(x + ddx, y + ddy, canSwim, teamMask))
+			continue;
+		if (guardAreaMask && !(tiles[n].guardArea & guardAreaMask))
 			continue;
 		if (g > here)
 		{

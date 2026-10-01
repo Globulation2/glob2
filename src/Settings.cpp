@@ -128,6 +128,11 @@ void Settings::load(std::string filename)
 		READ_PARSED_INT(scrollWheelEnabled);
 		READ_PARSED_INT(highResolutionArtwork);
 		READ_PARSED_INT(autosaveGames);
+		// The file decides the set: absent or empty means nothing enabled, the
+		// default, rather than whatever this object held before.
+		experiments.clear();
+		if (parsed.find("experiments") != parsed.end())
+			experiments = ExperimentSet::fromText(parsed["experiments"]);
 		READ_PARSED_INT(gameSpeed);
         READ_PARSED_INT(mobileDialogTextPercent);
         mobileDialogTextPercent=std::clamp(mobileDialogTextPercent,100,150);
@@ -199,6 +204,7 @@ bool Settings::save(std::string filename)
 		Utilities::streamprintf(stream, "scrollWheelEnabled=%d\n", scrollWheelEnabled);
 		Utilities::streamprintf(stream, "highResolutionArtwork=%d\n", highResolutionArtwork);
 		Utilities::streamprintf(stream, "autosaveGames=%d\n", autosaveGames);
+		Utilities::streamprintf(stream, "experiments=%s\n", experiments.toText().c_str());
 		Utilities::streamprintf(stream, "gameSpeed=%d\n", gameSpeed);
         Utilities::streamprintf(stream,"mobileDialogTextPercent=%d\n",mobileDialogTextPercent);
 

@@ -3394,3 +3394,19 @@ Wznów grę
 Gry
 [Add AI]
 Dodaj SI
+[settings Experiments]
+Eksperymenty
+[settings Try features we are still testing. They can change balance and pacing.]
+Wypróbuj funkcje, które wciąż testujemy. Mogą zmienić balans i tempo.
+[settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]
+Eksperymenty dotyczą nowych gier, które zaczynasz lub hostujesz, nigdy misji kampanii. Zapisana gra zachowuje te, z którymi się zaczęła.
+[Experiments set by the host]
+Eksperymenty wybrane przez hosta
+[settings No experiments in this build.]
+Brak eksperymentów w tej wersji.
+[Experiments]
+Eksperymenty
+[experiment guard-area-balancing]
+Równoważenie stref straży
+[experiment guard-area-balancing help]
+Wolni wojownicy rozdzielają się między namalowane strefy straży, zamiast wszyscy iść do najbliższej: większa strefa dostaje ich więcej, a przepełniona strefa stopniowo opróżnia się do pozostałych.

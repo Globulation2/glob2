@@ -4,6 +4,8 @@
 #include <PerformanceTelemetry.h>
 #include "Map.h"
 #include "MapInternal.h"
+#include "Game.h"
+#include "Utilities.h"
 
 #include <queue>
 
@@ -55,15 +57,31 @@ bool Map::pathfindArea(AreaKind kind, int teamNumber, int swimClass, int x, int 
 	const Uint16 *gradient = (kind == AreaKind::Guard)
 		? getGuardAreasGradient(teamNumber, swimClass)
 		: getClearAreasGradient(teamNumber, swimClass);
-	Uint16 here = gradient[coordToIndex(x, y)];
-	if (here == GRADIENT_AT_GOAL)
-		return false; // we already are in an area.
+	const Uint32 teamMask = Team::teamNumberToMask(teamNumber);
+	const size_t index = coordToIndex(x, y);
+	const Uint16 here = gradient[index];
 	if (here <= GRADIENT_UNREACHABLE)
 		return false; // any existing area is too far away.
+	if (kind == AreaKind::Guard && (tiles[index].guardArea & teamMask)
+		&& game->gameHeader.hasExperiment(ExperimentId::GuardAreaBalancing))
+	{
+		// Guard-area balancing: crowded seeds sit below the goal, so another
+		// area's field can lead out of an over-full one. Take that way out one
+		// action in 2^GUARD_LEAVE_CHANCE_SHIFT so the area trickles rather than
+		// empties; otherwise step to a higher painted neighbour, or report no
+		// move and let the caller's in-area wander take over.
+		if (here == GRADIENT_AT_GOAL)
+			return false;
+		if ((syncRand() & ((1 << GUARD_LEAVE_CHANCE_SHIFT) - 1)) == 0)
+			return directionByGradient(teamMask, swimClass, x, y, gradient, dx, dy, true);
+		return directionByGradient(teamMask, swimClass, x, y, gradient, dx, dy, true, teamMask);
+	}
+	if (here == GRADIENT_AT_GOAL)
+		return false; // we already are in an area.
 
-	if (directionByGradient(1<<teamNumber, swimClass, x, y, gradient, dx, dy, true))
+	if (directionByGradient(teamMask, swimClass, x, y, gradient, dx, dy, true))
 		return true;
-	if (directionByGradient(1<<teamNumber, swimClass, x, y, gradient, dx, dy, false))
+	if (directionByGradient(teamMask, swimClass, x, y, gradient, dx, dy, false))
 		return true;
 
 	// we are in a blocked situation, so we have to regenerate the gradient

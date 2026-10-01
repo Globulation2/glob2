@@ -1005,6 +1005,12 @@ struct CustomGameSetupHarness
 
     screen.selectTab(2);
     capture("rules-640");
+    // The footer names the experiments the match will carry.
+    globalContainer->settings.experiments.set(ExperimentId::GuardAreaBalancing);
+    screen.invalidate();
+    capture("experiments-footer-640");
+    globalContainer->settings.experiments.clear();
+    screen.invalidate();
     screen.setup.random = true;
     // The slider/failure checks below exercise River terrain weights explicitly.
     screen.setup.generatorHistory.select(screen.setup.generator, MapGenerationDescriptor::eRIVER);
@@ -1827,6 +1833,70 @@ struct CustomGameSetupHarness
 		std::cout << "PASS real match and replay playback: control " << control << " solo " << solo
 				  << "\n";
 	}
+	// Engine::gui is private; this struct is its friend.
+	static void experiments()
+	{
+		const auto dir = std::filesystem::temp_directory_path() / ("glob2-experiments-test-" + std::to_string(getpid()));
+		std::filesystem::create_directory(dir);
+		const auto save = (dir / "experiment.game").string();
+		const std::string map = "maps/FourSquares1.map";
+		// The lobby path: the screen builds the header and applies the player's
+		// experiments to it, and the game runs with that header.
+		auto launchFromLobby = [&](Engine &e)
+		{
+			auto header = Engine::loadMapHeader(map);
+			CustomGameSetup s;
+			s.setCapacity(header.getNumberOfTeams());
+			GameHeader game;
+			s.writeHeader(game, "test");
+			Engine::applyLocalExperiments(game, header);
+			REQUIRE(e.initGame(header, game, true, false, false, map) == Engine::EE_NO_ERROR);
+		};
+		globalContainer->settings.experiments.set(ExperimentId::GuardAreaBalancing);
+		{
+			Engine e;
+			launchFromLobby(e);
+			REQUIRE(e.gui.game.gameHeader.hasExperiment(ExperimentId::GuardAreaBalancing));
+			GAGCore::BinaryOutputStream out(Toolkit::getFileManager()->openOutputStreamBackend(save));
+			e.gui.save(&out, "Experiment test");
+		}
+		{
+			// Campaign missions play as authored, whatever the settings say.
+			Engine e;
+			REQUIRE(e.initCampaign(map) == Engine::EE_NO_ERROR);
+			REQUIRE(e.gui.game.gameHeader.getExperiments().empty());
+		}
+		{
+			// The helper leaves a saved game's header alone.
+			const auto savedMap = Engine::loadMapHeader(save);
+			REQUIRE(savedMap.getIsSavedGame());
+			GameHeader header;
+			Engine::applyLocalExperiments(header, savedMap);
+			REQUIRE(header.getExperiments().empty());
+		}
+		// The setting is turned off again: the save keeps the set it was started
+		// with, and a fresh game no longer gets it.
+		globalContainer->settings.experiments.clear();
+		{
+			Engine e;
+			REQUIRE(e.initCustom(save) == Engine::EE_NO_ERROR);
+			REQUIRE(e.gui.game.gameHeader.hasExperiment(ExperimentId::GuardAreaBalancing));
+		}
+		{
+			Engine e;
+			launchFromLobby(e);
+			REQUIRE(e.gui.game.gameHeader.getExperiments().empty());
+		}
+		// The lobby model itself stays free of settings: writeHeader() leaves the
+		// set alone for the screen to fill in.
+		CustomGameSetup setup;
+		GameHeader header;
+		header.getExperiments().set(ExperimentId::GuardAreaBalancing);
+		setup.writeHeader(header, "test");
+		REQUIRE(header.hasExperiment(ExperimentId::GuardAreaBalancing));
+		std::filesystem::remove_all(dir);
+		std::cout << "PASS experiments baked into a new game, kept by its save, never in a campaign\n";
+	}
 	static void reload(const std::string &save, bool watching, int controllers)
 	{
 		Engine e;
@@ -2038,6 +2108,11 @@ TEST_SUITE("CustomGameSetup")
 		Engine engine;
 		REQUIRE(engine.initCustomFromBytesTask(map.mapHeader, players, 0, -1, bytes).run());
 		std::cout << "PASS generated map snapshot launches from memory\n";
+	}
+	TEST_CASE("experiments from settings are baked into a new game; a save keeps them; campaigns never take them")
+	{
+		glob2test::HeadlessGlobals globals(setupOptions(false));
+		CustomGameSetupHarness::experiments();
 	}
 	TEST_CASE("preview queue priority and restart")
 	{

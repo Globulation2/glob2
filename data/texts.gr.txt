@@ -3464,3 +3464,19 @@ CPU %0%
 Παιχνίδια
 [Add AI]
 Προσθήκη AI
+[settings Experiments]
+Πειράματα
+[settings Try features we are still testing. They can change balance and pacing.]
+Δοκιμάστε λειτουργίες που ακόμα δοκιμάζουμε. Μπορεί να αλλάξουν την ισορροπία και τον ρυθμό.
+[settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]
+Τα πειράματα ισχύουν για νέα παιχνίδια που ξεκινάτε ή φιλοξενείτε, ποτέ για αποστολές εκστρατείας. Ένα αποθηκευμένο παιχνίδι κρατά όσα είχε όταν ξεκίνησε.
+[Experiments set by the host]
+Πειράματα που επέλεξε ο οικοδεσπότης
+[settings No experiments in this build.]
+Δεν υπάρχουν πειράματα σε αυτήν την έκδοση.
+[Experiments]
+Πειράματα
+[experiment guard-area-balancing]
+Εξισορρόπηση ζωνών φρούρησης
+[experiment guard-area-balancing help]
+Οι ελεύθεροι πολεμιστές μοιράζονται στις σχεδιασμένες ζώνες φρούρησης αντί να πηγαίνουν όλοι στην πλησιέστερη: μια μεγαλύτερη ζώνη παίρνει περισσότερους, και μια υπερπλήρης ζώνη αδειάζει σταδιακά προς τις άλλες.

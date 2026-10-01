@@ -3394,3 +3394,19 @@ Játék folytatása
 Játékok
 [Add AI]
 MI hozzáadása
+[settings Experiments]
+Kísérletek
+[settings Try features we are still testing. They can change balance and pacing.]
+Próbáld ki a még tesztelés alatt álló funkciókat. Megváltoztathatják az egyensúlyt és a tempót.
+[settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]
+A kísérletek az általad indított vagy hosztolt új játékokra vonatkoznak, a kampányküldetésekre soha. A mentett játék megtartja azokat, amelyekkel elkezdődött.
+[Experiments set by the host]
+A házigazda által választott kísérletek
+[settings No experiments in this build.]
+Ebben a kiadásban nincsenek kísérletek.
+[Experiments]
+Kísérletek
+[experiment guard-area-balancing]
+Őrterületek kiegyensúlyozása
+[experiment guard-area-balancing help]
+A szabad harcosok eloszlanak a kijelölt őrterületek között ahelyett, hogy mind a legközelebbibe mennének: a nagyobb terület többet kap belőlük, a túlzsúfolt terület pedig fokozatosan a többibe ürül.
