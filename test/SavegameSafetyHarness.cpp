@@ -40,10 +40,10 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include <csignal>
+#endif
 
 namespace
 {
-#endif
 
 using namespace GAGCore;
 namespace fs = std::filesystem;
