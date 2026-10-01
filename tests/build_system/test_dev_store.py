@@ -434,6 +434,40 @@ class StoreTests(unittest.TestCase):
         (self.a / "local-sdk/compiler").mkdir(parents=True)
         self.assertTrue(cli.local_directory(self.a / "local-sdk/compiler", self.a))
 
+    @unittest.skipUnless(shutil.which("lsof"), "Requires POSIX open-file checker")
+    def test_migration_ignores_own_lock_but_detects_other_processes(self):
+        import importlib.util
+
+        from build_layout import BuildLock
+
+        spec = importlib.util.spec_from_file_location(
+            "dev_cli", ROOT / "tools/dev_environment.py"
+        )
+        cli = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(cli)
+        state = self.a / "build/mobile-tools"
+        state.mkdir(parents=True)
+        with BuildLock(state):
+            self.assertFalse(cli.busy(self.a))
+            for cwd, opened in ((self.base, state / ".build-lock"), (self.a, None)):
+                code = (
+                    "import sys; f = open(sys.argv[1]) if sys.argv[1] else None; "
+                    "print('ready', flush=True); sys.stdin.readline()"
+                )
+                child = subprocess.Popen(
+                    [sys.executable, "-c", code, str(opened) if opened else ""],
+                    cwd=cwd,
+                    stdin=subprocess.PIPE,
+                    stdout=subprocess.PIPE,
+                    text=True,
+                )
+                try:
+                    self.assertEqual(child.stdout.readline().strip(), "ready")
+                    self.assertTrue(cli.busy(self.a))
+                finally:
+                    child.communicate("done\n", timeout=10)
+                self.assertFalse(cli.busy(self.a))
+
     @unittest.skipIf(
         os.name == "nt", "Migration requires a supported open-file checker"
     )

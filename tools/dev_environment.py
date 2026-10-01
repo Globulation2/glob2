@@ -40,6 +40,31 @@ def checkouts(extra=()):
     return sorted(p for p in result if (p / "mobile/toolchain.json").is_file())
 
 
+def open_paths(arguments):
+    """Read other processes' files, excluding this migrator and its inspector."""
+    try:
+        probe = subprocess.Popen(
+            ["lsof", "-n", "-P", "-F", "pn", *arguments],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
+    except OSError:
+        return None
+    output, _ = probe.communicate()
+    if probe.returncode not in (0, 1):
+        return None
+    excluded = {os.getpid(), probe.pid}
+    paths = []
+    pid = None
+    for line in output.splitlines():
+        if line.startswith("p"):
+            pid = int(line[1:])
+        elif line.startswith("n") and pid is not None and pid not in excluded:
+            paths.append(line[1:])
+    return paths
+
+
 def busy(checkout):
     """Conservative process/open-file check; failure means migration cannot delete."""
     if os.name == "nt":
@@ -47,27 +72,15 @@ def busy(checkout):
     for tools in (checkout / "build/mobile-tools", checkout / "tools/browser-emsdk"):
         if not tools.is_dir() or tools.is_symlink():
             continue
-        command = subprocess.run(
-            ["lsof", "-n", "-P", "+D", str(tools)],
-            check=False,
-            capture_output=True,
-            text=True,
-        )
-        if command.returncode not in (0, 1) or command.stdout.strip():
+        paths = open_paths(["+D", str(tools)])
+        if paths is None or paths:
             return True
-    # A build can be between file opens; inspect cwd of all processes too.
-    cwd = subprocess.run(
-        ["lsof", "-n", "-P", "-a", "-d", "cwd", "-F", "n"],
-        check=False,
-        capture_output=True,
-        text=True,
-    )
-    if cwd.returncode not in (0, 1):
+    # A build can be between file opens; inspect cwd of all other processes too.
+    paths = open_paths(["-a", "-d", "cwd"])
+    if paths is None:
         return True
     return any(
-        line.startswith("n" + str(checkout))
-        and (line[1:] == str(checkout) or line[1:].startswith(str(checkout) + "/"))
-        for line in cwd.stdout.splitlines()
+        path == str(checkout) or path.startswith(str(checkout) + "/") for path in paths
     )
 
 
