@@ -128,6 +128,7 @@ CLIENT_SOURCES = (
     'Game_sync.cpp',
     'Game_editor.cpp',
     'render/GameRender.cpp',
+    'render/SoftwareTerrainCache.cpp',
     'render/GameRenderUnits.cpp',
     'render/GameRenderBuildings.cpp',
     'render/GameRenderTerrain.cpp',

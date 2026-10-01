@@ -36,6 +36,7 @@
 
 #ifndef YOG_SERVER_ONLY
 #include "render/GameAnimations.h"
+#include "render/SoftwareTerrainCache.h"
 #endif  // !YOG_SERVER_ONLY
 
 #define BULLET_IMGID 0
@@ -87,6 +88,9 @@ void Game::init(GameGUI *gui, MapEdit* edit)
 /** Reset player and team lists, game end stuff and selection stuff. */
 void Game::clearGame()
 {
+#ifndef YOG_SERVER_ONLY
+    softwareTerrainCache.reset();
+#endif
 	hasSavedRandomState = false;
 	// Delete existing teams and players
 	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
