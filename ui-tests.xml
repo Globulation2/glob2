@@ -1,27 +1,17 @@
 <?xml version='1.0' encoding='utf-8'?>
-<testsuites tests="29" failures="0" errors="2" skipped="0"><testsuite name="DrawableSurfaceBlend"><testcase classname="DrawableSurfaceBlend" name="icon masks preserve resolution alpha and bounded recolours" time="0.008546" status="run" />
-  <testcase classname="DrawableSurfaceBlend" name="portable icon masks preserve resolution alpha and bounded recolours [display]" time="0.421263" status="run" />
-  <testcase classname="DrawableSurfaceBlend" name="software alpha blend stays accurate under stacked draws" time="0.006575" status="run" />
-  </testsuite><testsuite name="GameGUITouch"><testcase classname="GameGUITouch" name="actual gameplay touch; toroidal pan; preview; confirmation; validation; cancellation and duplicate suppression [display][artifacts][writes-preferences]" time="4.43065" status="run" />
-  </testsuite><testsuite name="Settings"><testcase classname="Settings" name="layout; persistence; display confirmation; bindings and localization at 1000x700 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="3.83477" status="run" />
-  <testcase classname="Settings" name="layout; persistence; display confirmation; bindings and localization at 1000x700 in software rendering [display:1600x1400][artifacts][writes-preferences]" time="2.10524" status="run" />
-  <testcase classname="Settings" name="layout; persistence; display confirmation; bindings and localization at 1280x900 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="3.50816" status="run" />
-  <testcase classname="Settings" name="layout; persistence; display confirmation; bindings and localization at 640x480 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="3.4537" status="run" />
-  <testcase classname="Settings" name="layout; persistence; display confirmation; bindings and localization at 800x600 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="3.90322" status="run" />
-  <testcase classname="Settings" name="layout; persistence; display confirmation; bindings and localization with expanded wording at 640x480 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="4.3475" status="run" />
-  </testsuite><testsuite name="UIIcons"><testcase classname="UIIcons" name="aliases share live assets and the cache releases unused graphics resources" time="0.486"><error message="error" type="error">Assertion failed: (dest), function convertForUpload, file DrawableSurface.cpp, line 28.
-
-[run_tests] exit status -6
-
-[error] aliases share live assets and the cache releases unused graphics resources: exception
-SIGABRT - Abort (abnormal termination) signal
-</error></testcase><testcase classname="UIIcons" name="all semantic icons have the pinned raster sizes" time="0.477"><error message="error" type="error">Assertion failed: (dest), function convertForUpload, file DrawableSurface.cpp, line 28.
-
-[run_tests] exit status -6
-
-[error] all semantic icons have the pinned raster sizes: exception
-SIGABRT - Abort (abnormal termination) signal
-</error></testcase></testsuite><testsuite name="UILayout"><testcase classname="UILayout" name="icons and tooltips" time="0.000335" status="run" />
+<testsuites tests="29" failures="0" errors="0" skipped="0"><testsuite name="DrawableSurfaceBlend"><testcase classname="DrawableSurfaceBlend" name="icon masks preserve resolution alpha and bounded recolours" time="0.006779" status="run" />
+  <testcase classname="DrawableSurfaceBlend" name="portable icon masks preserve resolution alpha and bounded recolours [display]" time="0.46328" status="run" />
+  <testcase classname="DrawableSurfaceBlend" name="software alpha blend stays accurate under stacked draws" time="0.002542" status="run" />
+  </testsuite><testsuite name="GameGUITouch"><testcase classname="GameGUITouch" name="actual gameplay touch; toroidal pan; preview; confirmation; validation; cancellation and duplicate suppression [display][artifacts][writes-preferences]" time="3.85903" status="run" />
+  </testsuite><testsuite name="Settings"><testcase classname="Settings" name="layout; persistence; display confirmation; bindings and localization at 1000x700 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="2.7821" status="run" />
+  <testcase classname="Settings" name="layout; persistence; display confirmation; bindings and localization at 1000x700 in software rendering [display:1600x1400][artifacts][writes-preferences]" time="3.57627" status="run" />
+  <testcase classname="Settings" name="layout; persistence; display confirmation; bindings and localization at 1280x900 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="3.84433" status="run" />
+  <testcase classname="Settings" name="layout; persistence; display confirmation; bindings and localization at 640x480 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="2.74192" status="run" />
+  <testcase classname="Settings" name="layout; persistence; display confirmation; bindings and localization at 800x600 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="3.96468" status="run" />
+  <testcase classname="Settings" name="layout; persistence; display confirmation; bindings and localization with expanded wording at 640x480 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="2.51925" status="run" />
+  </testsuite><testsuite name="UIIcons"><testcase classname="UIIcons" name="aliases share live assets and the cache releases unused graphics resources" time="0.002802" status="run" />
+  <testcase classname="UIIcons" name="all semantic icons have the pinned raster sizes" time="0.028493" status="run" />
+  </testsuite><testsuite name="UILayout"><testcase classname="UILayout" name="icons and tooltips" time="0.001219" status="run" />
     <testcase classname="UILayout" name="geometry" time="0" status="run" />
     <testcase classname="UILayout" name="text" time="0" status="run" />
     <testcase classname="UILayout" name="column and flex" time="0" status="run" />

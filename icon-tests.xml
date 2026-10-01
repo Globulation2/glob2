@@ -1,4 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<testsuites tests="2" failures="0" errors="0" skipped="0"><testsuite name="UIIcons"><testcase classname="UIIcons" name="aliases share live assets and the cache releases unused graphics resources" time="0.013011" status="run" />
-  <testcase classname="UIIcons" name="all semantic icons have the pinned raster sizes" time="0.160937" status="run" />
-  </testsuite></testsuites>
