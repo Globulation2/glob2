@@ -1,0 +1,17 @@
+{
+  "revision": "59904fb4719144621c00ed185b7d9d507287e4ec",
+  "sourceTreeSha256": "17dd05be8a2826c649762874c64b42234509c986ed4e616b3c132507f5fa6690",
+  "archiveSha256": "a673d9e279222d61720e5fb435084a91062d8262ba91b1343c057906512681da",
+  "members": 615,
+  "everyOriginalMemberHashMatches": true,
+  "partsVerified": true,
+  "actualJUnitCaseCounts": {
+    "glob2-unit-tests.xml": 21,
+    "glob2-engine-tests.xml": 33,
+    "ui-junit.xml": 15,
+    "opaque-render-junit.xml": 3,
+    "pointbar-render-junit.xml": 2
+  },
+  "allExecutionStatusZero": true,
+  "crossRevisionRelabeling": false
+}

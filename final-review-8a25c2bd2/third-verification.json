@@ -1,0 +1,19 @@
+{
+  "revision": "8a25c2bd2440e99246171967a31c68dc15917f95",
+  "sourceTreeSha256": "1540813995310acf88924c167bbb9c80525eb9d5cd7fe4a421d8e7ee5b49a991",
+  "verifiedArchives": [
+    {
+      "group": "ios-simulator",
+      "members": 145,
+      "archiveSha256": "0c6514cb02a61309bf350eed09f79a49b9b7f7fc7d5e75ffab9059c8fbc72e94"
+    },
+    {
+      "group": "candidate599-GCC13",
+      "members": 615,
+      "archiveSha256": "a673d9e279222d61720e5fb435084a91062d8262ba91b1343c057906512681da"
+    }
+  ],
+  "sourceHEADUnchanged": true,
+  "sourceIndexUnchanged": true,
+  "publicationScope": "iOS Simulator8a and exact final599 GCC13 with full UI/rendering and source bundle; final599 CI still pending."
+}

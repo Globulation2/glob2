@@ -1,0 +1,52 @@
+{
+  "revision": "59904fb4719144621c00ed185b7d9d507287e4ec",
+  "sourceTreeSha256": "17dd05be8a2826c649762874c64b42234509c986ed4e616b3c132507f5fa6690",
+  "archive": "linux-gcc13-59904fb47.tar.gz",
+  "archiveBytes": 166182122,
+  "archiveSha256": "a673d9e279222d61720e5fb435084a91062d8262ba91b1343c057906512681da",
+  "members": 615,
+  "allMemberHashesVerified": true,
+  "executionStatus": {
+    "build": 0,
+    "focusedMaster124": 0,
+    "corpus": 0,
+    "cliContinuations": 0,
+    "released": 0,
+    "releasedParallelAI": 0,
+    "master124Baseline": 0,
+    "master124ResumedBaselines": 0,
+    "ui": 0
+  },
+  "selectedJUnitCases": {
+    "glob2-unit-tests.xml": 21,
+    "glob2-engine-tests.xml": 33,
+    "ui-junit.xml": 15,
+    "opaque-render-junit.xml": 3,
+    "pointbar-render-junit.xml": 2
+  },
+  "comparisonArtifacts": 60,
+  "crossPlatformComparison": "This is the exact599 reference; final599 CI comparisons pending. No cross-revision acceptance relabeling.",
+  "originalFreshAndResumedBaselines": {
+    "fresh128MatchesEntireOriginalBaseline": true,
+    "genuine124CheckpointResumeMatchesEntireOriginalBaseline": true,
+    "new125CheckpointResumeMatchesEveryOriginalTeamEntityField": true,
+    "new125AggregateXors": [
+      "00800000"
+    ],
+    "ticks": 128,
+    "resumeBoundary": 64,
+    "legacyLimitation": "Castor resets unsaved boot/project/cache state; original resumed baseline differs from uninterrupted game beginningtick85. This check preserves original behavior and does not claim uninterrupted==resumed."
+  },
+  "parts": [
+    {
+      "file": "linux-gcc13-59904fb47.tar.gz.part-001",
+      "bytes": 83886080,
+      "sha256": "81da05b62d0967bef510c8c787ee0d124126fb8b51b5d682470c0e1533ec07b9"
+    },
+    {
+      "file": "linux-gcc13-59904fb47.tar.gz.part-002",
+      "bytes": 82296042,
+      "sha256": "8d34babdf3835660c237fb9a80f4b8d2d3fb632d963b86ce3db67404e4cd2c65"
+    }
+  ]
+}

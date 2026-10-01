@@ -1,0 +1,32 @@
+{
+  "records": [
+    {
+      "host": "therig.local",
+      "command": [
+        "ssh",
+        "therig.local",
+        "python3 -c 'from pathlib import Path\nimport json\nfound=[]\nfor p in Path('\"'\"'/sys/bus/usb/devices'\"'\"').glob('\"'\"'*'\"'\"'):\n d={k:(p/k).read_text().strip() for k in ['\"'\"'manufacturer'\"'\"','\"'\"'product'\"'\"','\"'\"'serial'\"'\"','\"'\"'idVendor'\"'\"','\"'\"'idProduct'\"'\"'] if (p/k).is_file()}\n if any(t in '\"'\"' '\"'\"'.join(d.values()).lower() for t in ['\"'\"'samsung'\"'\"','\"'\"'acer'\"'\"','\"'\"'android'\"'\"','\"'\"'835010250815'\"'\"','\"'\"'r8yy50t1rnm'\"'\"']):found.append(d)\nprint(json.dumps(found,indent=2))\n'"
+      ],
+      "returncode": 0,
+      "stdout": "[]\n",
+      "stderr": ""
+    },
+    {
+      "host": "devlaptop.local",
+      "command": [
+        "ssh",
+        "devlaptop.local",
+        "python3 -c 'from pathlib import Path\nimport json\nfound=[]\nfor p in Path('\"'\"'/sys/bus/usb/devices'\"'\"').glob('\"'\"'*'\"'\"'):\n d={k:(p/k).read_text().strip() for k in ['\"'\"'manufacturer'\"'\"','\"'\"'product'\"'\"','\"'\"'serial'\"'\"','\"'\"'idVendor'\"'\"','\"'\"'idProduct'\"'\"'] if (p/k).is_file()}\n if any(t in '\"'\"' '\"'\"'.join(d.values()).lower() for t in ['\"'\"'samsung'\"'\"','\"'\"'acer'\"'\"','\"'\"'android'\"'\"','\"'\"'835010250815'\"'\"','\"'\"'r8yy50t1rnm'\"'\"']):found.append(d)\nprint(json.dumps(found,indent=2))\n'"
+      ],
+      "returncode": 0,
+      "stdout": "[\n  {\n    \"manufacturer\": \"Quanta\",\n    \"product\": \"ACER HD User Facing\",\n    \"serial\": \"01.00.00\",\n    \"idVendor\": \"0408\",\n    \"idProduct\": \"4035\"\n  }\n]\n",
+      "stderr": ""
+    }
+  ],
+  "knownPhoneSerials": [
+    "835010250815",
+    "R8YY50T1RNM"
+  ],
+  "knownPhoneConnected": false,
+  "note": "ACER HD User Facing serial01.00.00 is the laptop webcam, not the Acer B1 tablet. Read-only sysfs inspection; no ADB service changes."
+}

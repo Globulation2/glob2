@@ -1,0 +1,7 @@
+/Users/bradley/.codex/worktrees/d912/glob2/artifacts/rebase-validation/final/third-publication/source-59904fb47.bundle is okay
+The bundle contains this ref:
+59904fb4719144621c00ed185b7d9d507287e4ec refs/heads/codex/javascript-merge-final
+The bundle requires these 2 refs:
+af675415598f125ad7daca4619ef6d81c0186a89 
+8a25c2bd2440e99246171967a31c68dc15917f95 
+The bundle uses this hash algorithm: sha1
