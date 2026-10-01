@@ -1280,7 +1280,7 @@ jobs:
         id: test_self_hosting_with_real_tls_and_persistent_volumes
         continue-on-error: true
         run: |
-          docker compose -f deploy/compose.yaml build lobby
+          docker compose -f deploy/compose.yaml build lobby web
           python3 -m unittest discover -s tests/deployment -v
 
       - name: Summarize CI failures
