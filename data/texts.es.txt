@@ -84,6 +84,10 @@ Warrush
 Un constructor eficaz que despliega fuerzas de ataque entrenadas.
 [AICabino]
 Cabino
+[AIJavaScript]
+JavaScript
+[AIJavaScript-Description]
+Un controlador que utiliza un módulo de código JavaScript integrado.
 [Alga]
 Algas
 [algae]

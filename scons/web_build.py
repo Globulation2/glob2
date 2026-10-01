@@ -97,6 +97,8 @@ def build_web(directory, identity, arguments):
         production = [obj for name, obj in zip(files, objects) if name != 'src/Glob2.cpp']
         production += objects[len(files):]
         harness = tests.Program(str(output / 'script-tests.html'), production + test_objects)
+        tests.Depends(harness, [str(p) for directory in ('data', 'maps', 'campaigns', 'scripts', 'test/fixtures', 'games')
+                               for p in Path(directory).rglob('*') if p.is_file()])
         tests.SideEffect([str(output / ('script-tests.' + extension)) for extension in ('js', 'wasm', 'data')], harness)
         env.Alias('web-tests', harness)
 

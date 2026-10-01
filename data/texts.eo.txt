@@ -84,6 +84,10 @@ Warrush
 Forta konstruanto, kiu sendas trejnitajn atakfortojn.
 [AICabino]
 Cabino
+[AIJavaScript]
+JavaScript
+[AIJavaScript-Description]
+Regilo uzanta enkorpigitan JavaScript-fontmodulon.
 [Alga]
 Algo
 [algae]

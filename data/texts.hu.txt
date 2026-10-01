@@ -84,6 +84,10 @@ MIWarrush
 Erős építő, amely képzett támadóerőket állít ki.
 [AICabino]
 Cabino
+[AIJavaScript]
+JavaScript
+[AIJavaScript-Description]
+Beágyazott JavaScript-forrásmodult használó vezérlő.
 [Alga]
 Alga
 [algae]

@@ -92,6 +92,10 @@ Warrush
 건설에 능하며 훈련된 공격 부대를 운용합니다.
 [AICabino]
 Cabino
+[AIJavaScript]
+JavaScript
+[AIJavaScript-Description]
+내장된 JavaScript 소스 모듈을 사용하는 컨트롤러.
 [Alga]
 해조류
 [algae]

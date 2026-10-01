@@ -84,6 +84,10 @@ Warrush
 Сильный строитель, выставляющий обученные ударные силы.
 [AICabino]
 Cabino
+[AIJavaScript]
+JavaScript
+[AIJavaScript-Description]
+Контроллер, использующий встроенный модуль исходного кода JavaScript.
 [Alga]
 Водоросли
 [algae]

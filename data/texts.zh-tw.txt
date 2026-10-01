@@ -84,6 +84,10 @@ AIWarrush
 擅長建設，並派出訓練有素的進攻部隊。
 [AICabino]
 Cabino
+[AIJavaScript]
+JavaScript
+[AIJavaScript-Description]
+使用內嵌 JavaScript 原始碼模組的控制器。
 [Alga]
 海藻
 [algae]

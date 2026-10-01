@@ -88,6 +88,10 @@ AIWarrush
 En stærk bygger, der stiller med trænede angrebsstyrker.
 [AICabino]
 Cabino
+[AIJavaScript]
+JavaScript
+[AIJavaScript-Description]
+En styring, der bruger et indlejret JavaScript-kildemodul.
 [Alga]
 Alger
 [algae]

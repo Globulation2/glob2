@@ -84,6 +84,10 @@ AIWarrush
 Ισχυρός οικοδόμος που παρατάσσει εκπαιδευμένες επιθετικές δυνάμεις.
 [AICabino]
 Cabino
+[AIJavaScript]
+JavaScript
+[AIJavaScript-Description]
+Ένας ελεγκτής που χρησιμοποιεί μια ενσωματωμένη μονάδα πηγαίου κώδικα JavaScript.
 [Alga]
 Φύκη
 [algae]
