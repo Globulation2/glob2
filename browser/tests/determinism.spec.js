@@ -101,7 +101,21 @@ test('WebAssembly executes the shared scripting corpus', async ({page}, info) =>
   }
   fs.writeFileSync(path.join(output,'run.log'),result.log.join('\n'));
   const revision=require('node:child_process').execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim();
-  fs.writeFileSync(path.join(output,'manifest.json'),JSON.stringify({revision,browser:info.project.name,
+  const hash=file=>require('node:crypto').createHash('sha256').update(fs.readFileSync(file)).digest('hex');
+  const build=path.join(root,'build/emscripten/client/release');
+  const dirty=require('node:child_process').execFileSync('git',['status','--porcelain'],{cwd:root,encoding:'utf8'}).trim()!=='';
+  const fixtures={};
+  for(const file of fs.readdirSync(path.join(root,'test/fixtures/javascript'))){
+    const target=path.join(root,'test/fixtures/javascript',file);
+    if(fs.statSync(target).isFile())fixtures[file]=hash(target);
+  }
+  fs.writeFileSync(path.join(output,'manifest.json'),JSON.stringify({revision,dirty,
+    browser:info.project.name,browserVersion:page.context().browser().version(),
+    toolchain:JSON.parse(fs.readFileSync(path.join(root,'browser/toolchain.json'))),
+    buildIdentity:JSON.parse(fs.readFileSync(path.join(build,'identity.json'))),
+    binaries:Object.fromEntries(['script-tests.js','script-tests.wasm','script-tests.data']
+      .map(file=>[file,hash(path.join(build,file))])),fixtureHashes:fixtures,
+    command:'playwright test determinism.spec.js --grep "shared scripting corpus"',
     exit:result.exit,error:result.error,files:Object.keys(result.files)},null,2)+'\n');
   expect(result.error).toBeUndefined();
   expect(result.exit).toBe(0);

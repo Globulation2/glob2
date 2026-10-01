@@ -49,8 +49,8 @@ TEST_CASE("JavaScript pass retains released replay and acceptance boundaries" *
 	CHECK(REPLAY_MINIMUM_VERSION_MINOR == 123);
 	CHECK(VERSION_MINOR == 124);
 	ReplayReader released;
-	REQUIRE(released.loadReplay(
-		glob2test::inflated("javascript/released-v123.replay.gz").string()));
+	REQUIRE(
+		released.loadReplay(glob2test::inflated("javascript/released-v123.replay.gz").string()));
 	CHECK(released.getNumStepsTotal() == 1500);
 	for (Uint16 version : {122, 123, 124, 125})
 	{
@@ -88,16 +88,16 @@ TEST_CASE("JavaScript pass assigns valid identities to released saves" *
 		unsigned entities = 0;
 		for (int team = 0; team < gui.game.teamsCount(); ++team)
 		{
-			for (auto *unit : gui.game.teams[team]->myUnits)
-				if (unit)
+			for (int slot = 0; slot < Unit::MAX_COUNT; ++slot)
+				if (auto *unit = gui.game.teams[team]->myUnits[slot])
 				{
 					++entities;
 					CHECK(unit->scriptIdentity > 0);
 					CHECK(unit->scriptIdentity ==
 						  gui.game.scriptGenerations[team * 1024 + Unit::GIDtoID(unit->gid)]);
 				}
-			for (auto *building : gui.game.teams[team]->myBuildings)
-				if (building)
+			for (int slot = 0; slot < Building::MAX_COUNT; ++slot)
+				if (auto *building = gui.game.teams[team]->myBuildings[slot])
 				{
 					++entities;
 					CHECK(building->scriptIdentity > 0);

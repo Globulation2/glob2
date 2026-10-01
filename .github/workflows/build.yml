@@ -131,7 +131,7 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: ${{ env.CCACHE_DIR }}
-          key: ccache-main-${{ matrix.runner }}-${{ github.run_id }}-${{ github.run_attempt }}
+          key: ccache-main-${{ matrix.runner }}-${{ matrix.compiler }}-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: ccache-main-${{ matrix.runner }}-
 
       - name: Identify Linux compiler
@@ -183,6 +183,9 @@ jobs:
       - name: Verify frozen JavaScript simulation profile
         run: python3 test/check_javascript.py build/linux/client/release/src/glob2 --output artifacts/javascript-profile
 
+      - name: Retain released simulation compatibility evidence
+        run: python3 test/check_telemetry_simulation.py build/linux/client/release/src/glob2 --output artifacts/released-compatibility
+
       - name: Upload JavaScript simulation evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -191,6 +194,7 @@ jobs:
           path: |
             artifacts/javascript-profile
             artifacts/javascript-corpus
+            artifacts/released-compatibility
 
       - name: Test Maxima strategy configuration and policies
         id: test_maxima_strategy_configuration_and_policies
@@ -212,7 +216,7 @@ jobs:
         if: steps.package_linux_test_programs.outcome == 'success'
 
         with:
-          name: linux-test-programs-${{ matrix.runner }}
+          name: linux-test-programs-${{ matrix.runner }}${{ matrix.compiler == 'clang-18' && '-clang-18' || '' }}
           path: linux-test-programs.tar.gz
           retention-days: 2
           if-no-files-found: error
@@ -258,7 +262,7 @@ jobs:
         uses: actions/cache/save@v4
         with:
           path: ${{ env.CCACHE_DIR }}
-          key: ccache-main-${{ matrix.runner }}-${{ github.run_id }}-${{ github.run_attempt }}
+          key: ccache-main-${{ matrix.runner }}-${{ matrix.compiler }}-${{ github.run_id }}-${{ github.run_attempt }}
 
       - name: Summarize CI failures
         if: always()
@@ -922,8 +926,15 @@ jobs:
         continue-on-error: true
         run: |
           python3 test/ci_run_commands.py \
-            --check 'default AI gradient schedule' 'python3 test/check_telemetry_simulation.py build/mingw/client/release/src/glob2.exe' \
-            --check 'parallel AI gradient schedule' 'python3 test/check_telemetry_simulation.py build/mingw/client/release/src/glob2.exe --parallel-ai'
+            --check 'default AI gradient schedule' 'python3 test/check_telemetry_simulation.py build/mingw/client/release/src/glob2.exe --output artifacts/released-compatibility/serial' \
+            --check 'parallel AI gradient schedule' 'python3 test/check_telemetry_simulation.py build/mingw/client/release/src/glob2.exe --parallel-ai --output artifacts/released-compatibility/parallel'
+
+      - name: Upload released compatibility evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: released-compatibility-windows
+          path: artifacts/released-compatibility/
 
       - name: Report the cache statistics
         id: report_the_cache_statistics

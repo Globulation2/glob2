@@ -34,11 +34,13 @@ TEST_CASE("JavaScript observations visibility memory pagination and stale refere
 {
 	glob2test::GlobalsOptions options;
 	options.loadStrings = true;
+	options.seed = 19;
 	options.profileName = "glob2-script-test";
 	glob2test::HeadlessGlobals bootstrap(options);
 	auto &globals = bootstrap.globals;
 	GameGUI gui;
 	auto &game = gui.game;
+	game.gameHeader.setRandomSeed(19);
 	game.map.setSize(5, 5, GRASS);
 	game.map.setGame(&game);
 	game.addTeam();
@@ -127,11 +129,13 @@ TEST_CASE("JavaScript orders execute and survive save load" *
 {
 	glob2test::GlobalsOptions options;
 	options.loadStrings = true;
+	options.seed = 19;
 	options.profileName = "glob2-script-test";
 	glob2test::HeadlessGlobals bootstrap(options);
 	auto &globals = bootstrap.globals;
 	GameGUI gui;
 	auto &game = gui.game;
+	game.gameHeader.setRandomSeed(19);
 	game.map.setSize(5, 5, GRASS);
 	game.map.setGame(&game);
 	game.addTeam();
@@ -253,8 +257,10 @@ TEST_CASE("JavaScript orders execute and survive save load" *
 	CHECK(market->sendResourceMask == 4);
 	execute(describe("range", clearing).set("range", 9));
 	CHECK(clearing->unitStayRange == 9);
-	execute(describe("minimumLevel", clearing).set("level", 2));
-	CHECK(clearing->minLevelToFlag == 2);
+	auto *war = game.addBuilding(25, 20, globals.buildingsTypes.getTypeNum("warflag", 0, false), 0);
+	REQUIRE(war);
+	execute(describe("minimumLevel", war).set("level", 2));
+	CHECK(war->minLevelToFlag == 2);
 	execute(describe("moveFlag", clearing).set("x", 14).set("y", 15));
 	CHECK(clearing->posX == 14);
 	CHECK(clearing->posY == 15);
@@ -273,12 +279,14 @@ TEST_CASE("JavaScript orders execute and survive save load" *
 	CHECK((game.map.getTile(3, 4).forbidden & 1u) != 0);
 	CHECK((game.map.getTile(3, 4).guardArea & 1u) != 0);
 	CHECK((game.map.getTile(3, 4).clearArea & 1u) != 0);
-	auto identity = ownedBuilding->scriptIdentity;
-	execute(describe("construction", ownedBuilding).set("workers", 2).set("futureWorkers", 3));
-	CHECK(ownedBuilding->buildingState != Building::ALIVE);
-	execute(describe("cancelConstruction", ownedBuilding).set("workers", 4));
-	CHECK(ownedBuilding->buildingState == Building::ALIVE);
-	CHECK(ownedBuilding->scriptIdentity == identity);
+	auto *inn = game.addBuilding(0, 16, globals.buildingsTypes.getTypeNum("inn", 0, false), 0);
+	REQUIRE(inn);
+	auto identity = inn->scriptIdentity;
+	execute(describe("construction", inn).set("workers", 2).set("futureWorkers", 3));
+	CHECK(inn->buildingState != Building::ALIVE);
+	execute(describe("cancelConstruction", inn).set("workers", 4));
+	CHECK(inn->buildingState == Building::ALIVE);
+	CHECK(inn->scriptIdentity == identity);
 	execute(describe("delete", market));
 	CHECK(market->buildingState == Building::WAITING_FOR_DESTRUCTION);
 	execute(describe("cancelDelete", market));
@@ -293,8 +301,9 @@ TEST_CASE("JavaScript orders execute and survive save load" *
 				.set("futureWorkers", 2)
 				.set("range", 7));
 	bool created = false;
-	for (auto *building : game.teams[0]->myBuildings)
-		if (building && building->typeNum == flagType && building->posX == 25 &&
+	for (int slot = 0; slot < Building::MAX_COUNT; ++slot)
+		if (auto *building = game.teams[0]->myBuildings[slot];
+			building && building->typeNum == flagType && building->posX == 25 &&
 			building->posY == 25)
 		{
 			created = true;
@@ -302,6 +311,7 @@ TEST_CASE("JavaScript orders execute and survive save load" *
 		}
 	CHECK(created);
 	auto bytes = save(game);
+	glob2test::writeFile(glob2test::artifactDir() / "supported-orders.game", bytes);
 	GameGUI clearingLoaded;
 	BinaryInputStream clearingIn(new MemoryStreamBackend(bytes.data(), bytes.size()));
 	clearingIn.seekFromStart(0);
@@ -317,11 +327,13 @@ TEST_CASE("JavaScript scenario effects commit atomically and resume" *
 {
 	glob2test::GlobalsOptions options;
 	options.loadStrings = true;
+	options.seed = 19;
 	options.profileName = "glob2-script-test";
 	glob2test::HeadlessGlobals bootstrap(options);
 	auto &globals = bootstrap.globals;
 	GameGUI gui;
 	auto &game = gui.game;
+	game.gameHeader.setRandomSeed(19);
 	game.map.setSize(5, 5, GRASS);
 	game.map.setGame(&game);
 	game.addTeam();
@@ -389,11 +401,13 @@ TEST_CASE("JavaScript AI state RNG and disabled state survive continuation" *
 {
 	glob2test::GlobalsOptions options;
 	options.loadStrings = true;
+	options.seed = 19;
 	options.profileName = "glob2-script-test";
 	glob2test::HeadlessGlobals bootstrap(options);
 	auto &globals = bootstrap.globals;
 	GameGUI gui;
 	auto &game = gui.game;
+	game.gameHeader.setRandomSeed(19);
 	game.map.setSize(5, 5, GRASS);
 	game.map.setGame(&game);
 	game.addTeam();
@@ -480,11 +494,13 @@ TEST_CASE("JavaScript large world observations respect work limits" *
 {
 	glob2test::GlobalsOptions options;
 	options.loadStrings = true;
+	options.seed = 19;
 	options.profileName = "glob2-script-test";
 	glob2test::HeadlessGlobals bootstrap(options);
 	auto &globals = bootstrap.globals;
 	GameGUI gui;
 	auto &game = gui.game;
+	game.gameHeader.setRandomSeed(19);
 	game.map.setSize(5, 5, GRASS);
 	game.map.setGame(&game);
 	game.addTeam();

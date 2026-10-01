@@ -1067,3 +1067,14 @@ payloads. Review each runner manifest to establish matching source revisions and
 successful execution before treating matching hashes as acceptance evidence.
 Use `mobile/ios_script_tests.py` with an explicit device identifier and, for a
 simulator, an owned `--simulator-set` to install, run and retrieve the separate app.
+
+To retain released simulation compatibility traces, replays, commands, and logs,
+pass `--output artifacts/released-compatibility` to
+`test/check_telemetry_simulation.py`. Fresh-load traces compare complete bytes;
+the legacy checkpoint comparison excludes the version-dependent aggregate and
+compares every stored team/entity record. The evidence manifest records this
+exception. CI retains these artifacts even when verification fails.
+
+The shared evidence comparator requires successful runs of the same clean source
+revision. `--allow-development` permits diagnostic comparisons while recording
+provenance failures; those comparisons do not satisfy the final acceptance gate.

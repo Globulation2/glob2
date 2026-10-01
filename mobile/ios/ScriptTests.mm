@@ -26,6 +26,10 @@ extern int glob2ScriptTestMain(int, char**);
   NSString* documents=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES).firstObject;
   NSString* evidence=[documents stringByAppendingPathComponent:@"ScriptingEvidence"];
   NSFileManager* files=NSFileManager.defaultManager;
+  [files removeItemAtPath:evidence error:nil];
+  NSString* runId=@"manual";
+  for(NSString* argument in NSProcessInfo.processInfo.arguments)
+   if([argument hasPrefix:@"--glob2-script-run="]) runId=[argument substringFromIndex:19];
   [files createDirectoryAtPath:evidence withIntermediateDirectories:YES attributes:nil error:nil];
   NSString* assets=NSBundle.mainBundle.resourcePath;
   setenv("GLOB2_TEST_SOURCE_ROOT",assets.fileSystemRepresentation,1);
@@ -40,7 +44,7 @@ extern int glob2ScriptTestMain(int, char**);
   char* arguments[]={name,filter,reporter,report.data()};
   int result=glob2ScriptTestMain(4,arguments);
   fflush(stdout); fflush(stderr);
-  NSMutableDictionary* summary=[@{@"exitCode":@(result),@"platform":UIDevice.currentDevice.systemVersion,
+  NSMutableDictionary* summary=[@{@"runId":runId,@"exitCode":@(result),@"platform":UIDevice.currentDevice.systemVersion,
     @"model":UIDevice.currentDevice.model,@"bundleId":NSBundle.mainBundle.bundleIdentifier} mutableCopy];
   NSData* metadata=[NSData dataWithContentsOfFile:[NSBundle.mainBundle pathForResource:@"scripting-build" ofType:@"json"]];
   if(metadata) summary[@"build"]=[NSJSONSerialization JSONObjectWithData:metadata options:0 error:nil];

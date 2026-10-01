@@ -55,6 +55,11 @@ def main():
                'suite': args.suite or '*', 'tests': []}
     summary['revision'] = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
     summary['dirty'] = bool(subprocess.check_output(['git', 'status', '--porcelain'], cwd=ROOT, text=True).strip())
+    summary['compilerVersion'] = subprocess.check_output([str(prebuilt / 'bin/clang++'), '--version'], text=True).strip()
+    summary['buildConfiguration'] = {name: (build / name).read_text()
+                                     for name in ('identity.json', 'toolchain.json', 'options.json')
+                                     if (build / name).is_file()}
+    executed_hashes = {}
     summary['device'] = {key: subprocess.check_output(adb + ['shell', 'getprop', key], text=True).strip()
                          for key in ('ro.product.model', 'ro.build.version.release', 'ro.build.version.sdk', 'ro.product.cpu.abilist')}
     summary['fixtureHashes'] = {p.relative_to(ROOT).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
@@ -65,6 +70,7 @@ def main():
             subprocess.run([str(prebuilt / 'bin/llvm-strip'), '--strip-debug', '-o',
                             str(payload / name), str(build / 'tests' / name)], check=True)
             (payload / name).chmod(0o755)
+            executed_hashes[name] = hashlib.sha256((payload / name).read_bytes()).hexdigest()
         # Shell test executables do not require an APK or generated Gradle
         # assets. Stage native dependencies and repository fixtures directly.
         prefix = args.mobile_deps
@@ -114,7 +120,7 @@ def main():
         subprocess.run(adb + ['pull', remote + '/' + name + '.xml', str(output / (name + '.xml'))],
                        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         digest = hashlib.sha256((build / 'tests' / name).read_bytes()).hexdigest()
-        summary['tests'].append({'name': name, 'exitCode': code, 'binarySha256': digest})
+        summary['tests'].append({'name': name, 'exitCode': code, 'binarySha256': digest, 'executedBinarySha256': executed_hashes[name]})
         (output / 'result.json').write_text(json.dumps(summary, indent=2) + '\n')
         print(('PASS' if code == 0 else 'FAIL') + ': ' + name, flush=True)
     # Retrieve all corpus bits, saves and traces, including failed-case evidence.

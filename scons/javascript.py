@@ -1,8 +1,10 @@
 """Vendored, synchronous scripting runtime for every client toolchain."""
 from pathlib import Path
-import importlib.util
 import shlex
 import shutil
+import subprocess
+import sys
+from SCons.Script import Action
 
 
 def javascript_objects(env, directory, release, shared=False):
@@ -26,22 +28,28 @@ def javascript_objects(env, directory, release, shared=False):
     return objects
 
 
+def verify_symbols(target, source, env):
+    # Keep the action free of dynamically imported module closures: those
+    # otherwise change SCons signatures and rebuild every numeric object.
+    subprocess.run([env['GLOB2_NUMERIC_PYTHON'], env['GLOB2_NUMERIC_GUARD'],
+                    '--nm', env['GLOB2_NUMERIC_NM'],
+                    *[node.abspath for node in target]], check=True)
+    return 0
+
+
 def numeric_guard(local, objects):
     """Check all script-reachable native numeric code, including host conversion."""
     guard = Path(local.Dir('#tools/javascript').abspath) / 'check-math-symbols.py'
-    specification = importlib.util.spec_from_file_location('glob2_math_guard', guard)
-    module = importlib.util.module_from_spec(specification)
-    specification.loader.exec_module(module)
     compiler = Path(shutil.which(shlex.split(str(local['CC']))[-1]) or str(local['CC']))
     candidates = [compiler.parent / 'llvm-nm', compiler.parent / 'emnm',
                   compiler.parent / (compiler.name.replace('gcc', 'nm'))]
     nm = next((str(path) for path in candidates if path.is_file() and path != compiler),
               str(local.get('NM', 'nm')))
-
-    def verify_symbols(target, source, env):
-        module.check([node.abspath for node in target], nm)
-        return 0
-
+    local['GLOB2_NUMERIC_GUARD'] = str(guard)
+    local['GLOB2_NUMERIC_NM'] = nm
+    local['GLOB2_NUMERIC_PYTHON'] = sys.executable
+    action = Action(verify_symbols, varlist=['GLOB2_NUMERIC_GUARD', 'GLOB2_NUMERIC_NM',
+                                            'GLOB2_NUMERIC_PYTHON'])
     for group in objects:
-        local.AddPostAction(group, verify_symbols)
+        local.AddPostAction(group, action)
         local.Depends(group, str(guard))
