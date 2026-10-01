@@ -62,6 +62,31 @@ class ProvenanceTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'conversion continuation'):
                 inventory(root)
 
+    def test_checkout_symlinks_and_crlf_have_identical_clean_identity(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / 'original'
+            clone = Path(directory) / 'windows-style'
+            subprocess.run(['git', 'init', '-q', str(root)], check=True)
+            def git(*args):
+                subprocess.run(['git', '-C', str(root), *args], check=True,
+                               stdout=subprocess.DEVNULL)
+            git('config', 'user.email', 'test@example.invalid')
+            git('config', 'user.name', 'Test')
+            (root / 'runtime.cpp').write_bytes(b'before\nnext line\n')
+            (root / 'alias').symlink_to('runtime.cpp')
+            git('add', '.')
+            git('commit', '-qm', 'fixture')
+            subprocess.run(['git', 'clone', '-q', '-c', 'core.symlinks=false', '-c', 'core.autocrlf=true',
+                            str(root), str(clone)], check=True)
+            self.assertFalse((clone / 'alias').is_symlink())
+            self.assertIn(b'\r\n', (clone / 'runtime.cpp').read_bytes())
+            self.assertEqual(source_identity(root), source_identity(clone))
+            changed = dict(source_identity(clone), sourceTreeSha256='different inputs',
+                           tests=[{'exitCode': 0, 'build': source_identity(clone)}])
+            original = dict(source_identity(root), tests=[{'exitCode': 0, 'build': source_identity(root)}])
+            self.assertTrue(any('Normalized source trees' in issue
+                                for issue in provenance_issues(original, changed)))
+
     def test_missing_producer_and_retrieval_failure_are_ineligible(self):
         manifest = {'revision': 'head', 'dirty': False, 'tests': [{'exitCode': 0}],
                     'retrievalErrors': [{'error': 'disconnected'}]}

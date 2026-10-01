@@ -1047,7 +1047,10 @@ uses the same native test registry.
 retains numeric bits, serialized results, simulation traces, saves, replays, logs,
 JUnit results, source/fixture hashes and compiler metadata. Harnesses emit their
 build-time source revision and content hash; runners reject binaries built from
-a different source tree. A clean runner checkout alone does not establish binary
+a different source tree. The shared comparator also requires identical normalized
+Git source hashes across platforms. Git blob normalization accounts for checkout
+line endings and symlink representations; modified and untracked inputs still
+make development builds ineligible for the clean revision gate. A clean runner checkout alone does not establish binary
 provenance. The native corpus runner requires a clean
 committed revision; `--allow-dirty` is for development evidence only. Use fresh
 output directories and compare identical final revisions across platforms.

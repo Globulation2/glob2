@@ -59,6 +59,9 @@ def provenance_issues(reference, candidate):
     issues = []
     if not reference.get('revision') or reference.get('revision') != candidate.get('revision'):
         issues.append('Source revisions are missing or different')
+    if (not reference.get('sourceTreeSha256') or
+            reference.get('sourceTreeSha256') != candidate.get('sourceTreeSha256')):
+        issues.append('Normalized source trees are missing or different')
     for label, manifest in (('reference', reference), ('candidate', candidate)):
         if manifest.get('dirty') is not False:
             issues.append(label + ' is dirty or does not record a clean source tree')
