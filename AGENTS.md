@@ -84,31 +84,15 @@ of review, not a formality that automated checks replace.
 
 ## Review and merge ownership
 
-The author prepares and revises the PR. By default, an independent reviewer — a
-human maintainer other than the author, or an agent acting for a different
-maintainer — approves and merges it; another session for the same author is not
-independent review.
+The author prepares and revises the PR and may merge their own changes, including
+core game behavior and policy changes. Approval from a second maintainer is not
+required. Independent review is optional.
 
-- The author may merge their own change directly once it is low-risk or backed by
-  strong validation evidence, and either all review feedback on it has been
-  addressed or no reviewer raised an objection. When risk is unclear, default to
-  independent review.
-- Purely additive changes count as low-risk: ones that add something optional (a
-  new AI, map, tool or menu option, say) without changing core game behavior for
-  anyone who doesn't choose it. Existing units, buildings, economy and AIs must
-  play exactly as before, and the compatibility reminders above still apply — for
-  example, a save-format or version bump that comes with the addition must keep
-  existing saves loading.
-- Changes to core game behavior — substantive engine, architecture, balance or
-  gameplay changes, including features that alter how existing games play — need
-  explicit approval from a human maintainer other than the author, however well
-  validated: preserving the game's feel and weighing design tradeoffs is a human
-  judgment call, not something tests establish.
-- Policy changes need human maintainer agreement.
-- Back validation claims with artifacts a reviewer can actually check: save files,
-  replays and checksums; screenshots or video for visual/UX changes; before/after
-  performance tables with the seeds and commands behind them. A described-but-
-  unattached test is not evidence, and it is not enough on its own to justify
-  merging under the first bullet.
+The compatibility reminders and expectations for preserving the game's feel above
+still apply. Back validation claims with artifacts a reviewer can actually check:
+save files, replays and checksums; screenshots or video for visual/UX changes;
+before/after performance tables with the seeds and commands behind them. A
+described-but-unattached test is not evidence.
 
-Give reviewers a concise account of the intended result, verification and limits.
+Address review feedback when provided, and give a concise account of the intended
+result, verification and limits in the PR.

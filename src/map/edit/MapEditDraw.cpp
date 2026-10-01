@@ -113,7 +113,7 @@ void MapEdit::drawMenu(void)
 	int menuStartW=globalContainer->gfx->getW()-menuWidth();
 	int yposition=133;
 
-	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
+	if (!globalContainer->settings.translucentPanels)
 		globalContainer->gfx->drawFilledRect(menuStartW, yposition, menuWidth(), globalContainer->gfx->getH()-128, 0, 0, 0);
 	else
 		globalContainer->gfx->drawFilledRect(menuStartW, yposition, menuWidth(), globalContainer->gfx->getH()-128, 0, 0, 40, 180);
@@ -222,7 +222,7 @@ void MapEdit::drawMenuEyeCandy()
 	globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH());
 
 	// bar background
-	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
+	if (!globalContainer->settings.translucentPanels)
 		globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW()-menuWidth(), 16, 0, 0, 0);
 	else
 		globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW()-menuWidth(), 16, 0, 0, 40, 180);

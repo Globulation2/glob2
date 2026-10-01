@@ -83,6 +83,14 @@ class TranslationAuditTest(unittest.TestCase):
             self.assertEqual(result['languages']['data/texts.xx.txt']['untranslated'], ['[absent]', '[new control]'])
             self.assertTrue(any('missing key [absent]' in e for e in result['errors']))
             self.assertTrue(any('would show an English second line' in e for e in result['errors']))
+            # An approved fallback only affects completeness, never structural errors.
+            (root / 'data/texts.pending.txt').write_text('[new control]\n[unknown]\n', encoding='utf-8')
+            pending_result = checker.audit(root)
+            self.assertEqual(pending_result['languages']['data/texts.xx.txt']['pending'], ['[new control]'])
+            self.assertEqual(pending_result['languages']['data/texts.en.txt']['pending'], [])
+            self.assertTrue(any('unknown pending key [unknown]' in e for e in pending_result['errors']))
+            self.assertTrue(any('invalid placeholders' in e for e in pending_result['errors']))
+            self.assertIn('[absent]', pending_result['languages']['data/texts.xx.txt']['untranslated'])
             (root / 'data/texts.incomplete.txt').write_text('data/texts.xx.txt\ndata/texts.en.txt\n', encoding='utf-8')
             self.assertTrue(any('must match texts.list.txt in order' in e for e in checker.audit(root)['errors']))
 

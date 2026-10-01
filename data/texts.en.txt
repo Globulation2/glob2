@@ -3458,3 +3458,57 @@ List momentum
 List bounce
 [Map momentum]
 Map momentum
+[settings Artwork]
+Artwork
+[settings Original]
+Original
+[settings High resolution]
+High resolution
+[settings Clouds]
+Clouds
+[settings Show cloud cover above the map.]
+Show cloud cover above the map.
+[settings Cloud shadows]
+Cloud shadows
+[settings Show cloud shadows on the ground independently of cloud cover.]
+Show cloud shadows on the ground independently of cloud cover.
+[settings Building particles]
+Building particles
+[settings Show smoke and other building particles.]
+Show smoke and other building particles.
+[settings Magic effects]
+Magic effects
+[settings Choose animated magic effects or a simple visible effect.]
+Choose animated magic effects or a simple visible effect.
+[settings Simple]
+Simple
+[settings Requires the OpenGL renderer. Your saved choice is retained.]
+Requires the OpenGL renderer. Your saved choice is retained.
+[settings Interface appearance]
+Interface appearance
+[settings Panels]
+Panels
+[settings Choose translucent or opaque interface panels.]
+Choose translucent or opaque interface panels.
+[settings Opaque]
+Opaque
+[settings Translucent]
+Translucent
+[settings Advanced graphics]
+Advanced graphics
+[settings Path lines]
+Path lines
+[settings Choose translucent or opaque unit path lines.]
+Choose translucent or opaque unit path lines.
+[settings Smooth progress indicators]
+Smooth progress indicators
+[settings Smooth the moving edges of progress indicators.]
+Smooth the moving edges of progress indicators.
+[settings Decorative interface animation]
+Decorative interface animation
+[settings Animate victory artwork. Reduced motion also disables this animation.]
+Animate victory artwork. Reduced motion also disables this animation.
+[settings Text size]
+Text size
+[settings Enlarge interface text without changing the map scale.]
+Enlarge interface text without changing the map scale.

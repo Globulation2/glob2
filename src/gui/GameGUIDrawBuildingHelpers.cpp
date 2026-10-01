@@ -554,7 +554,7 @@ void GameGUI::drawBuildingTimeToLeaveBar(Building* selBuild, BuildingType* build
 				int left=dividend/divisor;
 				int alpha=((dividend%divisor)*255)/divisor;
 
-				if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
+				if (!globalContainer->settings.smoothProgressIndicators)
 				{
 					globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-left-1-dec, ypos, 7, 17, 30, 64);
 					globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-left-dec, ypos, 7, 63, 111, 149);

@@ -86,7 +86,7 @@ Element InGameEndOfGameScreen::build(const Presentation &p)
 	if (!classic() && teamColor && globalContainer->unitmini)
 	{
 		const GAGCore::Color color = *teamColor;
-		const bool animate = won && !(globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) &&
+		const bool animate = won && globalContainer->settings.decorativeAnimations &&
 							 !(globalContainer->reducedMotion);
 		parts.push_back(fe::canvas("outcome/art", {p.pt(200), p.pt(72)},
 								   [color, animate, unit = p.unit](fe::Canvas &c, fe::Rect r, const fe::Frame &frame)

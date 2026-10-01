@@ -16,7 +16,7 @@
 #endif
 
 
-// Keep this harness in the global namespace to match Game's friend declaration.
+// This is the global class granted private rendering access by Game's friend declaration.
 class PointBarRenderTest
 {
 public:

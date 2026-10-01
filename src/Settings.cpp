@@ -35,6 +35,11 @@ Settings::Settings()
 	screenHeight = 600;
 	uiScale = 0;
 	optionFlags = 0;
+#ifdef __EMSCRIPTEN__
+	setGraphicsDetail(false);
+#else
+	setGraphicsDetail(true);
+#endif
 	automaticTorus = false;
 	language = "en";
 	musicVolume = 190;
@@ -80,6 +85,19 @@ Settings::Settings()
 }
 
 
+void Settings::setGraphicsDetail(bool full)
+{
+	clouds = full;
+	cloudShadows = full;
+	buildingParticles = full;
+	fullMagicEffects = full;
+	translucentPanels = full;
+	translucentPathLines = full;
+	smoothProgressIndicators = full;
+	decorativeAnimations = full;
+	optionFlags &= ~LEGACY_LOW_DETAIL;
+}
+
 std::string Settings::getUsername() { return username; }
 void Settings::setUsername(std::string s) { username.assign(s, 0, BasePlayer::MAX_NAME_LENGTH); }
 std::string Settings::getPasswd() { return password; }
@@ -87,6 +105,11 @@ void Settings::setPasswd(std::string s) { password = s; }
 
 void Settings::load(std::string filename)
 {
+#ifdef __EMSCRIPTEN__
+	setGraphicsDetail(false);
+#else
+	setGraphicsDetail(true);
+#endif
     interfacePresentation="automatic";
 	std::map<std::string, std::string> parsed;
 
@@ -121,6 +144,18 @@ void Settings::load(std::string filename)
         READ_PARSED_STRING(interfacePresentation);
         interfacePresentation=presentationPreferenceName(parsePresentationPreference(interfacePresentation));
 		READ_PARSED_INT(optionFlags);
+		// Old profiles seed each missing effect; explicit choices win.
+		if (parsed.count("optionFlags"))
+			setGraphicsDetail(!(optionFlags & LEGACY_LOW_DETAIL));
+		READ_PARSED_INT(clouds);
+		READ_PARSED_INT(cloudShadows);
+		READ_PARSED_INT(buildingParticles);
+		READ_PARSED_INT(fullMagicEffects);
+		READ_PARSED_INT(translucentPanels);
+		READ_PARSED_INT(translucentPathLines);
+		READ_PARSED_INT(smoothProgressIndicators);
+		READ_PARSED_INT(decorativeAnimations);
+
 		READ_PARSED_INT(automaticTorus);
 		READ_PARSED_STRING(language);
 		READ_PARSED_INT(musicVolume);
@@ -207,7 +242,7 @@ bool Settings::save(std::string filename)
 		Utilities::streamprintf(stream, "screenFlags=%d\n", screenFlags);
 		Utilities::streamprintf(stream, "uiScale=%d\n", uiScale);
         Utilities::streamprintf(stream, "interfacePresentation=%s\n", interfacePresentation.c_str());
-		Utilities::streamprintf(stream, "optionFlags=%d\n", optionFlags);
+		Utilities::streamprintf(stream, "optionFlags=%d\n", optionFlags & ~LEGACY_LOW_DETAIL);
 		Utilities::streamprintf(stream, "automaticTorus=%d\n", automaticTorus);
 		Utilities::streamprintf(stream, "language=%s\n", language.c_str());
 		Utilities::streamprintf(stream, "musicVolume=%d\n", musicVolume);
@@ -216,6 +251,14 @@ bool Settings::save(std::string filename)
 		Utilities::streamprintf(stream, "rememberUnit=%d\n", rememberUnit);
 		Utilities::streamprintf(stream, "scrollWheelEnabled=%d\n", scrollWheelEnabled);
 		Utilities::streamprintf(stream, "highResolutionArtwork=%d\n", highResolutionArtwork);
+		Utilities::streamprintf(stream, "clouds=%d\n", clouds);
+		Utilities::streamprintf(stream, "cloudShadows=%d\n", cloudShadows);
+		Utilities::streamprintf(stream, "buildingParticles=%d\n", buildingParticles);
+		Utilities::streamprintf(stream, "fullMagicEffects=%d\n", fullMagicEffects);
+		Utilities::streamprintf(stream, "translucentPanels=%d\n", translucentPanels);
+		Utilities::streamprintf(stream, "translucentPathLines=%d\n", translucentPathLines);
+		Utilities::streamprintf(stream, "smoothProgressIndicators=%d\n", smoothProgressIndicators);
+		Utilities::streamprintf(stream, "decorativeAnimations=%d\n", decorativeAnimations);
 		Utilities::streamprintf(stream, "autosaveGames=%d\n", autosaveGames);
 		Utilities::streamprintf(stream, "experiments=%s\n", experiments.toText().c_str());
 		Utilities::streamprintf(stream, "gameSpeed=%d\n", gameSpeed);
