@@ -102,6 +102,10 @@ namespace glob2test
 	std::string readFile(const std::filesystem::path& path);
 	void writeFile(const std::filesystem::path& path, const std::string& text);
 
+	// Portable setenv/unsetenv: mingw has neither, and SDL2 cannot unset.
+	void setEnv(const char* name, const char* value);
+	void unsetEnv(const char* name);
+
 	// Copies files with the given extension (".bmp", ".png") from the disposable
 	// profile into artifactDir(), so screenshots survive the profile's removal.
 	int retainFromProfile(const std::string& extension);

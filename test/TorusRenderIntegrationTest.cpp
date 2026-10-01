@@ -601,6 +601,6 @@ TEST_SUITE("TorusRender")
 	{
 		SDL_setenv("GLOB2_UI_SCALE", "3", 1);
 		TorusRenderIntegrationTest::run(true, 1920, 1440);
-		unsetenv("GLOB2_UI_SCALE");
+		glob2test::unsetEnv("GLOB2_UI_SCALE");
 	}
 }

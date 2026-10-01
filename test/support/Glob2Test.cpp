@@ -235,6 +235,24 @@ namespace glob2test
 		out << text;
 	}
 
+	void setEnv(const char* name, const char* value)
+	{
+#ifdef _WIN32
+		_putenv_s(name, value);
+#else
+		setenv(name, value, 1);
+#endif
+	}
+
+	void unsetEnv(const char* name)
+	{
+#ifdef _WIN32
+		_putenv_s(name, ""); // An empty value removes the variable on Windows.
+#else
+		unsetenv(name);
+#endif
+	}
+
 	int retainFromProfile(const std::string& extension)
 	{
 		int copied = 0;
