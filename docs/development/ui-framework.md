@@ -64,6 +64,11 @@ two themes, translation and shared page builders. Screens contain a model and a
     framework is a means of keeping screens responsive, not a redesign.
 12. **Register new text keys** in `data/texts.keys.txt` with English fallback
     text in `data/texts.en.txt`; the capture runs fail on missing keys.
+    Leave untranslated catalog values blank so the runtime uses English, and mark
+    those catalogs with `*` in `data/texts.incomplete.txt`. When English fallback
+    is accepted for new controls, list only those keys in `data/texts.pending.txt`;
+    strict validation still rejects other untranslated text and all structural
+    errors. Remove pending keys once every catalog has a translation.
 
 ## Anatomy of a screen
 

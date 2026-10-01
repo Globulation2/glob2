@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Read-only validation and coverage reporting for the runtime string tables.
 
-Run from any directory. --strict also fails on untranslated text; --json emits
+Run from any directory. --strict also fails on unapproved untranslated text; --json emits
 per-key findings for translators. No mode rewrites the translation files.
 """
 import argparse
@@ -74,6 +74,12 @@ def audit(root=ROOT):
     if len(set(listing)) != len(listing):
         errors.append('texts.list.txt: duplicate file')
     key_set = set(keys)
+    # Explicitly accepted English fallbacks stay visible in coverage reports.
+    # They do not exempt missing keys, malformed text or untranslated English.
+    pending_path = root / 'data/texts.pending.txt'
+    pending = set(read_lines(pending_path)) if pending_path.exists() else set()
+    for key in sorted(pending - key_set):
+        errors.append(f'texts.pending.txt: unknown pending key {key}')
     tables = {}
     for name in listing[1:]:
         table, table_errors = read_table(root / name)
@@ -106,6 +112,7 @@ def audit(root=ROOT):
         languages[name] = {
             'missing': missing,
             'untranslated': untranslated,
+            'pending': sorted(set(untranslated) & pending) if name != 'data/texts.en.txt' else [],
             'extra': sorted(table.keys() - key_set),
             # This is a review queue, NOT an automatic mistranslation test:
             # names, key labels and loanwords legitimately match English.
@@ -137,7 +144,7 @@ def audit(root=ROOT):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--strict', action='store_true', help='also fail on untranslated entries')
+    parser.add_argument('--strict', action='store_true', help='also fail on untranslated entries outside texts.pending.txt')
     parser.add_argument('--json', action='store_true', help='print per-key audit as JSON')
     args = parser.parse_args()
     try:
@@ -148,12 +155,12 @@ def main():
         print(json.dumps(result, ensure_ascii=False, indent=2))
     else:
         for name, report in result['languages'].items():
-            print(f"{name}: {len(report['untranslated'])} untranslated, "
+            print(f"{name}: {len(report['untranslated'])} untranslated ({len(report['pending'])} pending), "
                   f"{len(report['missing'])} missing keys, {len(report['extra'])} obsolete keys")
         for error in result['errors']:
             print(f'ERROR: {error}')
         print(f"{len(result['errors'])} structural errors")
-    incomplete = any(r['untranslated'] for r in result['languages'].values())
+    incomplete = any(set(r['untranslated']) - set(r['pending']) for r in result['languages'].values())
     return int(bool(result['errors']) or (args.strict and incomplete))
 
 

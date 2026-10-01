@@ -339,17 +339,29 @@ namespace GAGCore
 		int minW, minH;
 		//! window size in window points, as SDL reports mouse coordinates; differs from the logical resolution when fullscreen scaling is active
 		int windowW = 0, windowH = 0;
+#if !defined(GLOB2_MOBILE) && !defined(__EMSCRIPTEN__)
+		bool nativeDesktop = true;
+#else
+		bool nativeDesktop = false;
+#endif
+		bool nativeSoftware = false;
+		int desktopLogicalW = 0, desktopLogicalH = 0;
+		float preferredUiScale = 0, desktopSystemScale = 1;
+		int desktopDisplay = -1;
+		void refreshDesktopScale();
+		bool refreshNativeWindow();
+		std::function<void(int, int, bool)> displayPreferenceCallback;
         int fixedLogicalW=0, fixedLogicalH=0;
         bool responsiveViewport=false, compactWindowAllowed=false;
         bool uiTransformActive=false;
         SDL_Rect uiSavedClip{}, uiBounds{};
         float uiTransformScale=1, uiTransformX=0, uiTransformY=0;
         int responsiveMinW=0, responsiveMinH=0;
-		//! GL drawable size in pixels; exceeds the window size on HiDPI displays
+		//! Output drawable size in pixels; exceeds window points on HiDPI displays
 		int drawableW = 0, drawableH = 0;
 		//! resolution asked of setRes(), before the interface scale divides it
 		int requestedW = 0, requestedH = 0;
-		//! window pixels per logical pixel; widgets keep their pixel sizes and the frame is scaled up
+		//! Window points per logical layout unit; native rasterization applies backing density separately
 		float uiScale = 1.0f;
 		//! the scale setRes() was asked for, before the window floor reduced it
 		float wantedUiScale = 1.0f;
@@ -451,7 +463,7 @@ namespace GAGCore
             compactWindowAllowed=allowed;applyWindowMinimumSize();
         }
         bool isResponsiveViewport() const { return responsiveViewport; }
-        bool hasPortableRenderer() const { return bool(renderer); }
+        bool hasPortableRenderer() const { return bool(renderer) && !nativeSoftware; }
         double logicalUnitsPerPoint() const;
         void setUITransform(float scale=1, float x=0, float y=0, const SDL_Rect* bounds=nullptr);
         Uint32 windowID() const { return SDL_GetWindowID(window); }
@@ -476,6 +488,15 @@ namespace GAGCore
 		static float effectiveUiScale(float preferred);
 		//! true when the window pixel size differs from the logical resolution, so output is scaled
 		bool isScalingActive(void);
+		int getW() override { return nativeDesktop && desktopLogicalW ? desktopLogicalW : DrawableSurface::getW(); }
+		int getH() override { return nativeDesktop && desktopLogicalH ? desktopLogicalH : DrawableSurface::getH(); }
+		bool isNativeDesktop() const { return nativeDesktop; }
+		int getDrawableW() const { return drawableW; }
+		int getDrawableH() const { return drawableH; }
+		bool setFullscreen(bool fullscreen);
+		bool setUiScale(float scale);
+		void setDisplayPreferenceCallback(std::function<void(int, int, bool)> callback)
+		{ displayPreferenceCallback = std::move(callback); }
 		bool toggleFullscreen();
 		void beginMapTransform(float zoom,float x,float y,int clipX,int clipY,int clipW,int clipH);
 		void endMapTransform();
@@ -515,7 +536,7 @@ namespace GAGCore
 		virtual void shiftHSV(float hue, float sat, float lum) { }
 		
 		// reimplemented drawing commands for HW (GPU / GL) accelerated version
-		virtual bool canDrawStretchedSprite(void) { return renderer || (optionFlags & USEGPU) != 0; }
+		virtual bool canDrawStretchedSprite(void) { return hasPortableRenderer() || (optionFlags & USEGPU) != 0; }
 		
 		virtual void drawPixel(int x, int y, const Color& color);
 		virtual void drawPixel(float x, float y, const Color& color);

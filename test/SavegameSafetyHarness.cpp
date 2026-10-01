@@ -616,7 +616,7 @@ static void checkCampaignProgress(const fs::path& directory)
 static void checkPreferences(const fs::path& directory)
 {
     Settings settings;
-    settings.optionFlags = GlobalContainer::OPTION_LOW_SPEED_GFX;
+    settings.setGraphicsDetail(false);
     const auto file = directory / "preferences-test.txt";
     REQUIRE(settings.save(file.string()));
     Settings loaded;
