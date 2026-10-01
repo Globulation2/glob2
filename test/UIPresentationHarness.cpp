@@ -202,7 +202,12 @@ std::vector<Fixture> fixtures()
 		{"online-register", [](GAGGUI::ScreenStack &) { return std::make_unique<YOGRegisterScreen>(std::make_shared<YOGClient>()); }},
 		{"map-upload", [](GAGGUI::ScreenStack &s) { return std::make_unique<YOGClientMapUploadScreen>(s, std::make_shared<YOGClient>(), "maps/balanced.map"); }, false},
 		{"game-room", gameRoom},
-		{"online-lobby", [](GAGGUI::ScreenStack &s) { return session<YOGClientLobbyScreen>(s); }},
+		{"online-lobby", [](GAGGUI::ScreenStack &s)
+		 {
+			 auto client = std::make_shared<YOGClient>();
+			 return std::make_unique<SessionFixture<YOGClientLobbyScreen>>(
+				 client, nullptr, std::make_unique<YOGClientLobbyScreen>(s, client, false), false);
+		 }},
 		{"online-maps", [](GAGGUI::ScreenStack &s) { return session<YOGClientMapDownloadScreen>(s); }},
 		{"online-options", [](GAGGUI::ScreenStack &) { return session<YOGClientOptionsScreen>(); }},
 		{"setup-options", [](GAGGUI::ScreenStack &)
