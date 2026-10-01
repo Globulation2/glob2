@@ -1,14 +1,15 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#include <cmath>
-#include <cassert>
-#include <algorithm>
 #include "GraphicContextPrivate.h"
 #include "OpaqueRectangleBatch.h"
-#include <vector>
+
+#include <algorithm>
+#include <cassert>
+#include <cmath>
 #include <exception>
 #include <stdexcept>
+#include <vector>
 
 namespace GAGCore
 {

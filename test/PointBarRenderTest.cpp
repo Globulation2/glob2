@@ -104,16 +104,16 @@ public:
                 gfx->drawFilledRect(0,0,640,480,17,23,31);
                 gfx->beginMapTransform(zoom, 11.25f, 9.5f, 7, 5, 280, 240);
                 auto drawPrimitives = [&] {
-                // Overlap, outlines and transparency must retain submission order.
-                // Exceed the batch bound too, including clipping at fractional zoom.
-                for (int i=0; i<4200; ++i)
-                {
-                    gfx->drawFilledRect(i%120, i%97, 31, 5, i%256, 78, 187);
-                    if (i%101 == 0) gfx->drawRect(i%120, i%97, 4, 5, 31, 62, 19);
-                    if (i%103 == 0) gfx->drawFilledRect(i%120, i%97, 2, 3, 230, 18, 93, 127);
-                }
-                for (int i=0; i<4200; ++i)
-                    gfx->drawFilledRect(i%120, i%97, 2, 3, 78, 187, i%256);
+                    // Overlap, outlines and transparency must retain submission order.
+                    // Exceed the batch bound too, including clipping at fractional zoom.
+                    for (int i=0; i<4200; ++i)
+                    {
+                        gfx->drawFilledRect(i%120, i%97, 31, 5, i%256, 78, 187);
+                        if (i%101 == 0) gfx->drawRect(i%120, i%97, 4, 5, 31, 62, 19);
+                        if (i%103 == 0) gfx->drawFilledRect(i%120, i%97, 2, 3, 230, 18, 93, 127);
+                    }
+                    for (int i=0; i<4200; ++i)
+                        gfx->drawFilledRect(i%120, i%97, 2, 3, 78, 187, i%256);
                 };
                 if (batch)
                 {
