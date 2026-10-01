@@ -1,0 +1,19 @@
+{
+  "revision": "53d16aa37ae35748bf5b1458f79d0eba55fb3ab5",
+  "sourceTreeSha256": "60f140b19fbb3bd5dd2a82433435b911fb4b8f7575062d58d1df330c999a80b4",
+  "validatedScriptingRevision": "8a25c2bd2440e99246171967a31c68dc15917f95",
+  "validatedScriptingSourceTreeSha256": "1540813995310acf88924c167bbb9c80525eb9d5cd7fe4a421d8e7ee5b49a991",
+  "unavailableExecution": {
+    "androidPhysicalFinalRerun": "Previously used Acer and Samsung are absent from local ADB and read-only USB inventory on both Linux hosts. Earlier physical execution belongs to its original source.",
+    "iosPhysical": "No paired physical iOS device or usable test signing profile.",
+    "windowsVagrant": "Designated VM in error/aborted state; SSH unavailable. No power/reset changes."
+  },
+  "missingGateLogs": [
+    "android-device-inventory.log",
+    "../ios-device-gate.log",
+    "../ios-xctrace-gate.log",
+    "../windows-vagrant-current-gate.log",
+    "package-staging/windows-alternate-readonly-status.log"
+  ],
+  "inheritedCompatibilityLimit": "Castor reconstructs unpersisted scheduling after load in upstream723 and candidate125. Candidate fresh/resumed traces match respective upstream fresh/resumed baselines; do not claim resumed Castor equals uninterrupted execution."
+}

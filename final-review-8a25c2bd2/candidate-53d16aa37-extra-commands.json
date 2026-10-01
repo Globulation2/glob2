@@ -1,0 +1,76 @@
+{
+  "revision": "53d16aa37ae35748bf5b1458f79d0eba55fb3ab5",
+  "sourceTreeSha256": "60f140b19fbb3bd5dd2a82433435b911fb4b8f7575062d58d1df330c999a80b4",
+  "commands": [
+    [
+      "python3",
+      "test/run_tests.py",
+      "--build-dir",
+      "build/linux/client/release",
+      "--binary",
+      "unit",
+      "--filter",
+      "OpaqueRectangleBatch/*",
+      "--artifacts",
+      "artifacts/rebase-validation/final/merge-53d16aa37/opaque-render-tests",
+      "--junit",
+      "artifacts/rebase-validation/final/merge-53d16aa37/opaque-render-junit.xml",
+      "-j1"
+    ],
+    [
+      "xvfb-run",
+      "-a",
+      "-s",
+      "-screen 0 1600x1400x24 -noreset",
+      "python3",
+      "test/run_tests.py",
+      "--build-dir",
+      "build/linux/client/release",
+      "--binary",
+      "engine",
+      "--filter",
+      "PointBarRender/*",
+      "--filter",
+      "SettingsGraphics/*",
+      "--filter",
+      "SettingsScreen/*",
+      "--artifacts",
+      "artifacts/rebase-validation/final/merge-53d16aa37/graphics-settings-tests",
+      "--junit",
+      "artifacts/rebase-validation/final/merge-53d16aa37/graphics-settings-junit.xml",
+      "-j1"
+    ],
+    [
+      "xvfb-run",
+      "-a",
+      "-s",
+      "-screen 0 1600x1400x24 -noreset",
+      "python3",
+      "test/run_tests.py",
+      "--build-dir",
+      "build/linux/client/release",
+      "--binary",
+      "engine",
+      "--filter",
+      "Settings/*",
+      "--artifacts",
+      "artifacts/rebase-validation/final/merge-53d16aa37/settings-screen-tests",
+      "--junit",
+      "artifacts/rebase-validation/final/merge-53d16aa37/settings-screen-junit.xml",
+      "-j1"
+    ]
+  ],
+  "actualExecutedCounts": {
+    "OpaqueRectangleBatch": 3,
+    "PointBarRender": 2,
+    "SettingsGraphics": 2,
+    "Settings": 6
+  },
+  "selectionNote": "The initial combined command included unmatched SettingsScreen/*; the actual suite is Settings, separately selected and executed all six cases. No absent suite execution is claimed.",
+  "skipped": 0,
+  "exitCodes": [
+    0,
+    0,
+    0
+  ]
+}

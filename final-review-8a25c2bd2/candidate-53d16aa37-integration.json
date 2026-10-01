@@ -1,0 +1,47 @@
+{
+  "source": {
+    "revision": "53d16aa37ae35748bf5b1458f79d0eba55fb3ab5",
+    "dirty": false,
+    "sourceStatus": [],
+    "sourceTreeSha256": "60f140b19fbb3bd5dd2a82433435b911fb4b8f7575062d58d1df330c999a80b4"
+  },
+  "validatedScriptingRevision": "8a25c2bd2440e99246171967a31c68dc15917f95",
+  "unchangedPaths": [
+    "src/script",
+    "src/ai/AIJavaScript.cpp",
+    "src/ai/AIJavaScript.h",
+    "third_party/quickjs-ng",
+    "third_party/openlibm",
+    "test/fixtures/javascript",
+    "src/Game_sync.cpp",
+    "src/Version.h",
+    "src/unit",
+    "src/building",
+    "src/team",
+    "src/map/Map.cpp",
+    "src/map/io"
+  ],
+  "unchangedProofCommand": [
+    "git",
+    "diff",
+    "--exit-code",
+    "8a25c2bd2440e99246171967a31c68dc15917f95",
+    "HEAD",
+    "--",
+    "src/script",
+    "src/ai/AIJavaScript.cpp",
+    "src/ai/AIJavaScript.h",
+    "third_party/quickjs-ng",
+    "third_party/openlibm",
+    "test/fixtures/javascript",
+    "src/Game_sync.cpp",
+    "src/Version.h",
+    "src/unit",
+    "src/building",
+    "src/team",
+    "src/map/Map.cpp",
+    "src/map/io"
+  ],
+  "mergeConflict": "Upstream master 3cff33869 contains the same WebGL batch and test friend fixes. Selected exact upstream for those two comment/capture conflicts. Graphics settings integration otherwise merged automatically.",
+  "changesFromValidatedRevision": " .github/workflows/build.yml               |  16 +-\n AGENTS.md                                 |  40 +-\n data/check_translations.py                |  15 +-\n data/texts.ar.txt                         |  54 +++\n data/texts.br.txt                         |  54 +++\n data/texts.ca.txt                         |  54 +++\n data/texts.cz.txt                         |  54 +++\n data/texts.de.txt                         |  54 +++\n data/texts.dk.txt                         |  54 +++\n data/texts.en.txt                         |  54 +++\n data/texts.eo.txt                         |  54 +++\n data/texts.es.txt                         |  54 +++\n data/texts.eu.txt                         |  54 +++\n data/texts.fa.txt                         |  54 +++\n data/texts.fi.txt                         |  54 +++\n data/texts.fr.txt                         |  54 +++\n data/texts.gr.txt                         |  54 +++\n data/texts.hu.txt                         |  54 +++\n data/texts.id.txt                         |  54 +++\n data/texts.incomplete.txt                 |  64 +--\n data/texts.it.txt                         |  54 +++\n data/texts.ja.txt                         |  54 +++\n data/texts.keys.txt                       |  27 ++\n data/texts.ko.txt                         |  54 +++\n data/texts.nl.txt                         |  54 +++\n data/texts.pending.txt                    |  27 ++\n data/texts.pl.txt                         |  54 +++\n data/texts.pt.txt                         |  54 +++\n data/texts.ro.txt                         |  54 +++\n data/texts.ru.txt                         |  54 +++\n data/texts.si.txt                         |  54 +++\n data/texts.sk.txt                         |  54 +++\n data/texts.sr.txt                         |  54 +++\n data/texts.sv.txt                         |  54 +++\n data/texts.tr.txt                         |  54 +++\n data/texts.uk.txt                         |  54 +++\n data/texts.vi.txt                         |  54 +++\n data/texts.zh-cn.txt                      |  54 +++\n data/texts.zh-tw.txt                      |  54 +++\n docs/development/reference.md             |  54 +++\n docs/development/ui-framework.md          |   5 +\n docs/features/window-resizing.md          |  76 +++-\n docs/map-generators/CLI.md                | 156 ++++++-\n docs/map-generators/README.md             |   2 +\n libgag/include/OpaqueRectangleBatch.h     |  23 +\n libgag/include/RenderBackend.h            |   2 +\n libgag/include/SDLGraphicContext.h        |  29 +-\n libgag/src/DrawableSurfaceCompound.cpp    |  15 +\n libgag/src/GraphicContext.cpp             | 220 ++++++++--\n libgag/src/GraphicContextDraw.cpp         | 148 ++++++-\n libgag/src/GraphicContextMobile.cpp       |   4 +\n libgag/src/GraphicContextResize.cpp       |  84 +++-\n libgag/src/RenderBackend.cpp              |   7 +\n libgag/src/TrueTypeFont.cpp               |  36 +-\n scons/sources.py                          |   1 +\n src/DynamicClouds.h                       |  12 +\n src/GlobalContainer.cpp                   |  14 +-\n src/GlobalContainerArgs.cpp               |  10 +-\n src/LandscapePickerScreen.cpp             |   2 +-\n src/MapCommand.cpp                        | 106 ++++-\n src/MapImage.cpp                          | 681 ++++++++++++++++++++++++++++++\n src/MapImage.h                            |  24 ++\n src/Settings.cpp                          |  45 +-\n src/Settings.h                            |  11 +\n src/SettingsScreen.cpp                    | 100 +----\n src/SettingsScreen.h                      |   8 +-\n src/SettingsScreenGeneral.cpp             | 140 +++---\n src/SettingsScreenKeyboard.cpp            |   7 +-\n src/TorusViewRender.cpp                   |   2 +-\n src/gui/GameGUIDialog.cpp                 |   2 +-\n src/gui/GameGUIDraw.cpp                   |  28 +-\n src/gui/GameGUIDrawBuildingHelpers.cpp    |   2 +-\n src/gui/GameGUIDrawMiscPanels.cpp         |   4 +-\n src/map/edit/MapEditDraw.cpp              |   9 +-\n src/render/GameRender.cpp                 |  15 +-\n src/render/GameRenderTerrain.cpp          |  10 +-\n src/render/GameRenderUnits.cpp            |   4 +-\n src/render/Minimap.cpp                    |   2 +-\n src/ui/FrontendUI.cpp                     |   4 +-\n test/CustomGameSetupHarness.cpp           |   2 +-\n test/FullscreenAspectHarness.cpp          |  32 +-\n test/HighResolutionIntegrationHarness.cpp |  32 +-\n test/LANSessionHarness.cpp                |   2 +-\n test/MapRenderGeometryTest.cpp            |  21 +\n test/MapRenderResizeHarness.cpp           |  48 ++-\n test/OpaqueRectangleBatchTest.cpp         | 159 +++++++\n test/PointBarRenderTest.cpp               |   3 +\n test/PortableRendererHarness.cpp          |  23 +-\n test/README.md                            |  26 +-\n test/SavegameSafetyHarness.cpp            |   2 +-\n test/SettingsGraphicsTest.cpp             |  71 ++++\n test/SettingsScreenTest.cpp               |  72 ++--\n test/TextRasterHarness.cpp                |  35 +-\n test/TorusRenderBenchmark.cpp             | 225 ++++++++--\n test/TorusRenderIntegrationTest.cpp       |  35 +-\n test/WindowResizeHarness.cpp              |  91 +++-\n test/test_map_image.py                    | 291 +++++++++++++\n test/test_translations.py                 |   8 +\n test/tests.py                             |   2 +\n 99 files changed, 4759 insertions(+), 496 deletions(-)\n"
+}

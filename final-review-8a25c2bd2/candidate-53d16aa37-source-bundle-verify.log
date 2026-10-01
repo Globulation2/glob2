@@ -1,0 +1,7 @@
+artifacts/rebase-validation/final/merge-53d16aa37/source.bundle is okay
+The bundle contains this ref:
+53d16aa37ae35748bf5b1458f79d0eba55fb3ab5 refs/heads/codex/javascript-merge-final
+The bundle requires these 2 refs:
+f1c15bfeb1e10ac73caaa4289f0d5790ea3a91eb 
+59904fb4719144621c00ed185b7d9d507287e4ec 
+The bundle uses this hash algorithm: sha1
