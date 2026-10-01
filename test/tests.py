@@ -56,7 +56,7 @@ ENGINE_TESTS = [
     'TeamStatsSaveHarness.cpp',
     'EngineSessionHarness.cpp',
     ('MapRenderResizeHarness.cpp', dict(cxxflags=['-fno-access-control'])),
-    'PointBarRenderTest.cpp',
+    ('PointBarRenderTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('maxima/MaximaCombatIntegrationTest.cpp', dict(cxxflags=['-fno-access-control'])),
     'maxima/MaximaDiagnosticsTest.cpp',
     ('maxima/MaximaDirectorRegressionTest.cpp', dict(cxxflags=['-fno-access-control'])),
