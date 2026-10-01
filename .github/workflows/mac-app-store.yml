@@ -61,24 +61,15 @@ jobs:
           test "${sdk_version%%.*}" -ge 26
           test "$(uname -m)" = arm64
 
-      - name: Compile game; bundle only in release mirror
+      - name: Compile and bundle game
         run: |
           openssl="$(brew --prefix openssl@3)"
-          if [[ "$GITHUB_REPOSITORY" == genixpro/glob2-release ]]; then
-            python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
-            echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
-            export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
-            GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons release=1 bundle -j2 \
-              CXXFLAGS="-I$openssl/include" \
-              LINKFLAGS="-L$openssl/lib"
-          else
-            python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
-            echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
-            export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
-            GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons release=1 -j2 \
-              CXXFLAGS="-I$openssl/include" \
-              LINKFLAGS="-L$openssl/lib"
-          fi
+          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+          echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
+          export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons release=1 bundle -j2 \
+            CXXFLAGS="-I$openssl/include" \
+            LINKFLAGS="-L$openssl/lib"
 
       - name: Smoke test public compiled game
         if: ${{ github.repository == 'Globulation2/glob2' }}
@@ -87,6 +78,31 @@ jobs:
           test -x "$game"
           "$game" --list-map-generators > "$RUNNER_TEMP/glob2-generators.txt"
           test -s "$RUNNER_TEMP/glob2-generators.txt"
+
+      - name: Verify public bundle and retain simulation trace
+        if: ${{ github.repository == 'Globulation2/glob2' }}
+        run: |
+          app=build/darwin/client/release/Glob2.app
+          codesign --verify --deep --strict "$app"
+          python3 test/run-browser-determinism.py "$app/Contents/MacOS/glob2" artifacts/sdl3/macos-determinism
+          python3 - <<'PY'
+          from pathlib import Path
+          import subprocess
+          app = Path('build/darwin/client/release/Glob2.app')
+          binaries = [app / 'Contents/MacOS/glob2', *app.glob('Contents/Frameworks/*.dylib')]
+          for binary in binaries:
+              libraries = subprocess.check_output(['otool', '-L', str(binary)], text=True)
+              assert 'SDL2' not in libraries, libraries
+          PY
+          ditto -c -k --keepParent "$app" artifacts/sdl3/Glob2-macos.zip
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: ${{ github.repository == 'Globulation2/glob2' }}
+        with:
+          name: sdl3-macos-validation
+          path: artifacts/sdl3/
+          if-no-files-found: error
+          retention-days: 14
 
       - name: Stage sandbox candidate
         if: ${{ github.repository == 'genixpro/glob2-release' }}
