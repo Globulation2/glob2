@@ -44,3 +44,6 @@ Glob2-*.dmg
 /build-*.log
 /browser/node_modules
 gha-creds-*.json
+
+# Deployment TLS keys are local secrets, never release assets.
+/deploy/secrets/

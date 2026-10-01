@@ -128,6 +128,8 @@ public:
 
 	///This attaches a game server to this client, for client-hosted games (such as LAN)
 	void attachGameServer(std::shared_ptr<YOGServer> server);
+    std::shared_ptr<YOGServer> getGameServer() const { return server; }
+    std::string getConnectionError() const { return nc.getError(); }
 
 	///This retrieves the YOGClientGameListManager of this client
 	std::shared_ptr<YOGClientGameListManager> getGameListManager();

@@ -8,19 +8,16 @@
 
 using std::static_pointer_cast;
 
-YOGServerRouterManager::YOGServerRouterManager(YOGServer& /*server*/)
-	: listener(YOG_SERVER_ROUTER_PORT)
+YOGServerRouterManager::YOGServerRouterManager(YOGServer& /*server*/, const NetworkConfig& config)
+	: listener(config.registration)
 {
 	new_connection.reset(new NetConnection);
-	n=0;
 }
 
 
 
 void YOGServerRouterManager::addRouter(std::shared_ptr<NetConnection> connection)
 {
-	shared_ptr<NetAcknowledgeRouter> info(new NetAcknowledgeRouter);
-	connection->sendMessage(info);
 	routers.push_back(connection);
 }
 
@@ -47,10 +44,16 @@ void YOGServerRouterManager::update()
 			if(type==MNetRegisterRouter)
 			{
 				shared_ptr<NetRegisterRouter> info = static_pointer_cast<NetRegisterRouter>(message);
+                if (info->version != NET_PROTOCOL_VERSION || registeredRouter) (*i)->closeConnection();
+                else {
+                    registeredRouter = *i;
+                    registeredRouter->sendMessage(std::make_shared<NetAcknowledgeRouter>());
+                }
 			}
 		}
 	}
 	
+    if (registeredRouter && !registeredRouter->isConnected()) registeredRouter.reset();
 	for(std::vector<std::shared_ptr<NetConnection> >::iterator i = routers.begin(); i!=routers.end();)
 	{
 		if(!(*i)->isConnected())
@@ -69,14 +72,10 @@ void YOGServerRouterManager::update()
 
 std::shared_ptr<NetConnection> YOGServerRouterManager::chooseYOGRouter()
 {
-	if (routers.empty()) return {};
-	n %= routers.size();
-	auto selected = routers[n];
-	n = (n + 1) % routers.size();
-	return selected;
+    return registeredRouter;
 }
 
 bool YOGServerRouterManager::hasRouter() const
 {
-	return !routers.empty();
+	return registeredRouter && registeredRouter->isConnected();
 }

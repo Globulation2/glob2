@@ -29,8 +29,8 @@ YOGClientLobbyScreen::YOGClientLobbyScreen(GAGGUI::ScreenStack &screens, std::sh
 	lobbyChat.reset(new YOGClientChatChannel(LOBBY_CHAT_CHANNEL, client));
 	ircChat.reset(new IRCTextMessageHandler);
 	ircChat->addTextMessageListener(this);
-	if (connectIRC)
-		ircChat->startIRC(client->getUsername());
+	// Lobby chat now stays on authenticated WSS. The legacy IRC link was plaintext.
+    (void)connectIRC;
 	client->addEventListener(this);
 	client->getGameListManager()->addListener(this);
 	client->getPlayerListManager()->addListener(this);

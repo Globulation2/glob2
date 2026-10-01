@@ -3458,6 +3458,28 @@ Odczucie przewijania dotykiem. 0 wyłącza efekt; 50 to wartość domyślna.
 Rozpęd list
 [List bounce]
 Odbicie list
+[lan pairing field]
+
+[lan pairing connect]
+
+[lan discovery instructions]
+
+[lan discovery unavailable]
+
+[lan discovered host %0]
+
+[lan share pairing]
+
+[lan copy pairing]
+
+[lan connection unavailable]
+
+[lan connection verification failed %0]
+
+[network start refused]
+
+[lan lobby endpoint required]
+
 [settings Artwork]
 
 [settings Original]

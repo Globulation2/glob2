@@ -861,3 +861,20 @@ table structurally complete; run `python3 data/check_translations.py` as well.
 Languages with pending translations remain marked incomplete and use the runtime
 English fallback. Frontend touch text uses separate 16/14-point font aliases so
 changes to menu readability do not alter in-game/editor metrics.
+
+### Secure multiplayer and LAN discovery
+
+Multiplayer uses native WSS listeners and verified TLS on desktop and mobile.
+LAN hosts share a session certificate fingerprint in the waiting room; guests
+paste that pairing string before exchanging game details. See
+[secure multiplayer](../browser/gateway.md) for trust, framing, and compatibility.
+
+The iOS project includes `mobile/ios/Glob2.entitlements` for UDP broadcast LAN
+discovery. Device signing requires a provisioning profile approved for Apple's
+multicast entitlement, in addition to the existing local-network usage
+explanation. Manual pairing remains available when discovery cannot run.
+Android currently targets API 36 and uses INTERNET for LAN connections. A future
+API 37 target must add ACCESS_LOCAL_NETWORK and request it before LAN access,
+as described by [Android's local-network permission guide](https://developer.android.com/privacy-and-security/local-network-permission).
+Connection failures point players to local-network permission and certificate
+pairing rather than falling back to plaintext.

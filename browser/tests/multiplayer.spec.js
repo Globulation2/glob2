@@ -4,7 +4,7 @@ const {test, expect} = require('@playwright/test');
 // Continuous trace screenshots force readback from both WebGL contexts on each
 // input action. Keep diagnostic traces and capture gameplay explicitly below.
 test.use({trace:{mode:'retain-on-failure', screenshots:false, snapshots:true, sources:true}});
-const {spawn} = require('node:child_process');
+const {spawn, execFileSync} = require('node:child_process');
 const {createInterface} = require('node:readline');
 const {mkdtemp, rm, readFile} = require('node:fs/promises');
 const os = require('node:os');
@@ -13,9 +13,11 @@ const {randomUUID} = require('node:crypto');
 
 const root = path.resolve(__dirname, '../..');
 const platform = os.platform() === 'win32' ? 'windows' : os.platform();
-let lobby, gateway, tlsForwarder, work, profile, endpoint, secureEndpoint;
+let lobby, work, profile, endpoint, fixtureEnvironment;
+// Browser automation uses an isolated test CA; production never skips TLS trust.
+test.use({ignoreHTTPSErrors: true});
 async function start(binary, args, ready) {
-  const child = spawn(binary, args, {cwd: work, stdio: ['ignore', 'pipe', 'pipe']});
+  const child = spawn(binary, args, {cwd: work, env: fixtureEnvironment || process.env, stdio: ['ignore', 'pipe', 'pipe']});
   try {
     const line = await new Promise((resolve, reject) => {
       const lines = createInterface({input: child.stdout});
@@ -37,26 +39,25 @@ async function stop(child) {
 test.beforeAll(async ({baseURL}) => {
   work = await mkdtemp(path.join(os.tmpdir(), 'glob2-yog-'));
   profile = 'glob2-yog-test-' + randomUUID();
+  const secrets = path.join(work, 'tls');
+  execFileSync('python3', [path.join(root, 'deploy/provision_tls.py'), secrets]);
+  endpoint = 'wss://localhost:7489/yog';
+  fixtureEnvironment = {...process.env,
+    GLOB2_TLS_CERT: path.join(secrets, 'lobby.pem'), GLOB2_TLS_KEY: path.join(secrets, 'lobby.key'),
+    GLOB2_TLS_CA: path.join(secrets, 'ca.pem'), GLOB2_ALLOWED_ORIGINS: new URL(baseURL).origin,
+    GLOB2_PUBLIC_LOBBY_ENDPOINT: endpoint, GLOB2_PUBLIC_ROUTER_ENDPOINT: 'wss://localhost:7491/router',
+    GLOB2_REGISTRATION_ENDPOINT: 'wss://localhost:7490/register'};
   lobby = (await start(path.join(root, `build/${platform}/client/release/src/net-connection-test`),
     ['--serve', profile], line => line === 'YOG test server ready')).child;
-  const started = await start(path.join(root, `build/${platform}/gateway/release/glob2-ws-gateway`),
-    ['--port', '0', '--origin', new URL(baseURL).origin], line => line.startsWith('gateway listening on '));
-  gateway = started.child;
-  const port = started.line.split(':').pop().trim();
-  endpoint = 'ws://127.0.0.1:' + port;
-  const tls = await start('python3', [path.join(root, 'tests/transport/tls_forwarder.py'), work, port],
-    line => line.startsWith('TLS forwarder listening on '));
-  tlsForwarder = tls.child;
-  secureEndpoint = 'wss://localhost:' + tls.line.split(' ').pop();
 });
 test.afterAll(async () => {
-  await stop(tlsForwarder); await stop(gateway); await stop(lobby);
+  await stop(lobby);
   if (work) await rm(work, {recursive: true, force: true});
   if (profile) await rm(path.join(os.homedir(), '.' + profile), {recursive: true, force: true});
 });
 
-test('browser YOG login exchanges the native protocol through the real gateway', async ({page}) => {
-  await page.addInitScript(base => { globalThis.glob2Config = {websocketBase: base}; }, endpoint);
+test('browser YOG login exchanges the native protocol through native WSS listeners', async ({page}) => {
+  await page.addInitScript(base => { globalThis.glob2Config = {yogEndpoint: base}; }, endpoint);
   const received = [], sent = [], errors = [];
   page.on('pageerror', error => errors.push(String(error)));
   // Observe actual wire bytes; player actions below use only the real controls.
@@ -89,7 +90,7 @@ test('browser YOG login exchanges the native protocol through the real gateway',
 });
 
 test('registered browser player enters and leaves the native YOG lobby', async ({page}, testInfo) => {
-  await page.addInitScript(base => { globalThis.glob2Config = {websocketBase: base}; }, endpoint);
+  await page.addInitScript(base => { globalThis.glob2Config = {yogEndpoint: base}; }, endpoint);
   const errors = [];
   page.on('pageerror', error => errors.push(String(error)));
   const screen = name => expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).screen).toContain(name);
@@ -106,7 +107,7 @@ test('registered browser player enters and leaves the native YOG lobby', async (
 });
 
 async function loginPlayer(page, name) {
-  await page.addInitScript(base => { globalThis.glob2Config = {websocketBase: base}; }, endpoint);
+  await page.addInitScript(base => { globalThis.glob2Config = {yogEndpoint: base}; }, endpoint);
   const screen = target => expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).screen).toContain(target);
   await page.goto(gameURL()); await screen('MainMenuScreen');
   await clickMainMenu(page,'yog'); await screen('YOGLoginScreen');
@@ -220,7 +221,7 @@ test(`two browser players create, join and start a YOG match (${ai.name})`, asyn
   // Two WebGL clients share the headless browser's software GPU. This is a
   // correctness fixture; controlled performance gates use a reference GPU.
   test.setTimeout(180000);
-  const other = await browser.newContext({baseURL, viewport: {width: 1200, height: 900}});
+  const other = await browser.newContext({baseURL, ignoreHTTPSErrors: true, viewport: {width: 1200, height: 900}});
   const guest = await other.newPage();
   try {
     const hostTypes = receivedTypes(page), guestTypes = receivedTypes(guest);
@@ -276,7 +277,7 @@ test(`two browser players create, join and start a YOG match (${ai.name})`, asyn
 });
 
 
-for (const transport of ['TCP', 'WSS'])
+for (const transport of ['WSS'])
 test(`browser and native players complete matching simulation checkpoints (${transport})`, async ({page}, testInfo) => {
   const nativeProfile = 'glob2-native-peer-' + randomUUID();
   let peer;
@@ -290,7 +291,7 @@ test(`browser and native players complete matching simulation checkpoints (${tra
     await clickListRow(page,'files',0); await clickControl(page,'ok');
     await expect.poll(hostTypes).toContain(16);
     const started = await start(path.join(root, `build/${platform}/client/release/src/native-multiplayer-peer`),
-      transport === 'WSS' ? [nativeProfile, secureEndpoint, path.join(work, 'cert.pem')] : [nativeProfile],
+      [nativeProfile, endpoint, path.join(work, 'tls/ca.pem')],
       line => line.startsWith('native peer joined order-rate='));
     peer = started.child;
     peer.stdout.on('data', chunk => peerLog.push(String(chunk)));
@@ -359,9 +360,9 @@ test('YOG admission enforces greeting, exact version, authentication and retry o
   const version = Number((await readFile(path.join(root,'src/Version.h'),'utf8')).match(/^#define NET_PROTOCOL_VERSION (\d+)/m)[1]);
   await page.goto('/');
   for (const scenario of ['old version','future version','login before greeting','registration before greeting',
-      'room before greeting','room before login','repeated greeting','repeated login','greeting after login','retry login']) {
+      'room before greeting','oversized map catalogue','room before login','repeated greeting','repeated login','greeting after login','start without room','retry login']) {
     const result = await page.evaluate(({endpoint,version,scenario}) => new Promise((resolve,reject) => {
-      const socket = new WebSocket(endpoint+'/yog'); socket.binaryType='arraybuffer';
+      const socket = new WebSocket(endpoint); socket.binaryType='arraybuffer';
       let pending = new Uint8Array(), done=false, opened=false;
       const received=[];
       const timer=setTimeout(()=>finish(new Error('Admission did not finish: '+scenario)),5000);
@@ -381,6 +382,7 @@ test('YOG admission enforces greeting, exact version, authentication and retry o
         else if(scenario==='login before greeting')login('fixture-only');
         else if(scenario==='registration before greeting')send([2,...text('mustnotregister'),...text('fixture-only')]);
         else if(scenario==='room before greeting')room();
+        else if(scenario==='oversized map catalogue')send([52,255,255,255,255]);
         else hello(0);
       };
       socket.onmessage=event=>{
@@ -400,6 +402,7 @@ test('YOG admission enforces greeting, exact version, authentication and retry o
           }else if(body[0]===4){
             if(scenario==='repeated login')login('fixture-only');
             else if(scenario==='greeting after login')hello(0);
+            else if(scenario==='start without room')send([30]);
             else if(scenario==='retry login')finish();
             else finish(new Error('Unauthorized login accepted: '+scenario));
           }
@@ -413,7 +416,7 @@ test('YOG admission enforces greeting, exact version, authentication and retry o
     const types=result.map(body=>body[0]);
     if(scenario.endsWith('version')) {
       expect(result).toContainEqual([7,5]);expect(types).not.toContain(10);
-    }else if(['repeated login','greeting after login','retry login'].includes(scenario)) {
+    }else if(['repeated login','greeting after login','start without room','retry login'].includes(scenario)) {
       expect(types.filter(type=>type===4)).toHaveLength(1);
       if(scenario==='retry login')expect(types).toContain(7);
     }else {
@@ -427,7 +430,7 @@ test('YOG admission enforces greeting, exact version, authentication and retry o
 
 for (const mismatch of ['client version','legacy server','server version'])
 test(`browser reports incompatible release before transmitting credentials (${mismatch})`, async ({page}, info) => {
-  await page.addInitScript(base=>{globalThis.glob2Config={websocketBase:base};},endpoint);
+  await page.addInitScript(base=>{globalThis.glob2Config={yogEndpoint:base};},endpoint);
   const sent=[],received=[];
   await page.routeWebSocket('**/yog', route=>{
     const server=route.connectToServer();

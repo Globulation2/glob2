@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <iostream>
 #include <sstream>
+#include <stdexcept>
 
 using namespace GAGCore;
 
@@ -164,6 +165,8 @@ void NetSendFileChunk::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetSendFileChunk");
 	size = stream->readUint32("size");
+	if (size > sizeof(data))
+		throw std::runtime_error("File chunk exceeds its buffer capacity");
 	stream->read(data, size, "data");
 	fileID = stream->readUint16("fileID");
 	stream->readLeaveSection();

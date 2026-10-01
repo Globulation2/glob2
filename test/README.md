@@ -282,6 +282,16 @@ To poke `cases[i].terrain` directly (`regenerateMap` is protected): grass < 16, 
 
 ## Real LAN session regression
 
+The direct transport/security checks use `scons release=1 transport-test`,
+`python3 test/run-network-transport-tests.py`,
+`build/darwin/client/release/src/lan-discovery-test` (substitute your platform),
+and `python3 -m unittest discover -s tests/transport -v`. Container lifecycle
+checks use `python3 -m unittest discover -s tests/deployment -v` after building
+the server image and browser assets. They run an isolated Compose project and
+verify persistence, backup restoration, router-loss readiness, state ownership,
+graceful draining, and forced deadline interruption. Keep capture output from
+`tests/transport/capture_container.py` under ignored `artifacts/`.
+
 From the repository root:
 
 ```sh
@@ -290,8 +300,8 @@ python3 test/run_lan_session_test.py build/native-tests/src/LANSessionHarness
 ```
 
 This runs separate host and joining client processes with real SDL lobby widgets,
-YOG anonymous LAN server, game router, and TCP connections. The joiner uses the
-actual `LANFindScreen` Connect path. It clicks Ready and Leave Game, then rejoins.
+YOG anonymous LAN server, game router, and paired WSS connections. The joiner uses the
+actual `LANFindScreen` Pair and connect path with the host session fingerprint. It clicks Ready and Leave Game, then rejoins.
 Both cycles force a map download and compare the downloaded `.gz` bytes against
 the fixture source (`maps/FourSquares1.map.gz`) byte for byte: the host's private
 copy is already gzip-compressed, so the transfer exercises sending a locally
@@ -305,16 +315,17 @@ absolute capture prefixes whose parent directories already exist:
 
 ```sh
 SDL_VIDEODRIVER=dummy ./build/native-tests/src/LANSessionHarness host 127.0.0.1 2 /tmp/lan-host
-SDL_VIDEODRIVER=dummy ./build/native-tests/src/LANSessionHarness join HOST_IP 2 /tmp/lan-guest
+SDL_VIDEODRIVER=dummy ./build/native-tests/src/LANSessionHarness join 'HOST_PAIRING_STRING' 2 /tmp/lan-guest
 ```
 
-Start the joiner after the host prints `HOST roster=1`. TCP ports 7489 and 7491
+Start the joiner after the host prints `HOST roster=1`, copying its full
+`PAIRING` string. TLS/WebSocket TCP ports 7489 and 7491
 must be reachable; this does not connect to the public YOG service. Omit
 `SDL_VIDEODRIVER=dummy` to show the real window. Normal game profiles are preserved;
 the harness uses `.glob2-lan-test-host` and `.glob2-lan-test-join` profiles containing
 only test data. Fixed input timers allow map transfer before leaving; the runner
 bounds startup, execution, and child cleanup. Logs and captures are written under
-`output/lan-session-test` by default (`--output` overrides it).
+`artifacts/lan-session-test` by default (`--output` overrides it).
 
 ## Aspect-ratio and screen-capture regression
 

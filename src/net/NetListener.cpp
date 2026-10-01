@@ -1,90 +1,27 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Copyright (C) 2007 Bradley Arsenault
-
 #include "NetListener.h"
-#include <iostream>
-
-NetListener::NetListener(Uint16 port)
+void NetListener::startListening(const NetListenConfig &config)
 {
-	listening=false;
-	startListening(port);
+	listener = makeNetTransportListener(config);
 }
-
-
-	
-NetListener::NetListener()
-{
-	listening=false;
-}
-
-
-
-NetListener::~NetListener()
-{
-	stopListening();
-}
-
-
-
-void NetListener::startListening(Uint16 nport)
-{
-	if(!listening)
-	{
-		IPaddress address;
-		if(SDLNet_ResolveHost(&address, NULL, nport) == -1)
-		{
-			if(verbose)
-				std::cout<<"NetListener::startListening:"<<SDLNet_GetError()<<std::endl;
-			listening=false;
-		}
-		
-		socket=SDLNet_TCP_Open(&address);
-		if(!socket)
-		{
-			if(verbose)
-				std::cout<<"NetListener::startListening:"<<SDLNet_GetError()<<std::endl;
-			listening=false;
-		}
-		else
-		{
-			listening=true;
-			port = nport;
-		}
-	}
-	
-
-}
-
-
-
 void NetListener::stopListening()
 {
-	if(listening)
-		SDLNet_TCP_Close(socket);
-	listening=false;
+	if (listener)
+		listener->close();
 }
-
-
-	
-bool NetListener::isListening()
+bool NetListener::isListening() const
 {
-	return listening;
+	return listener && listener->listening();
 }
-
-
-	
-bool NetListener::attemptConnection(NetConnection& connection)
+bool NetListener::attemptConnection(NetConnection &connection)
 {
-	if(listening)
-	{
-		bool accepted = connection.attemptConnection(socket);
-		return accepted;
-	}
-	else
-	{
+	if (!listener)
 		return false;
-	}
-	return false;
+	auto transport = listener->accept();
+	if (!transport)
+		return false;
+	connection.closeConnection();
+	connection.address = transport->peerAddress();
+	connection.transport = std::move(transport);
+	return true;
 }
-
-

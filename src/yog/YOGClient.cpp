@@ -74,8 +74,7 @@ void YOGClient::connect(const std::string& server)
 	if (server == YOG_SERVER_IP)
 		return;
 #endif
-	const char* gateway = std::getenv("GLOB2_YOG_URL");
-    nc.openConnection(server == YOG_SERVER_IP && gateway ? gateway : server, YOG_SERVER_PORT);
+    nc.openConnection(server == YOG_SERVER_IP ? configuredYogEndpoint(server) : server, 0);
 	connectionState = NeedToSendClientInformation;
 	wasConnecting=true;
 }

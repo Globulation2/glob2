@@ -79,7 +79,7 @@ Continue on failure; Continue does not confirm a saved copy.
 ## Scope
 
 The browser client uses mouse and keyboard controls.
-The YOG entry uses the WebSocket gateway; LAN remains unavailable in browsers.
+The YOG entry uses native WSS lobby/router listeners. LAN joining requires a certificate trusted by the browser; browser hosting remains unavailable.
 The lobby uses YOG chat; the separate native IRC bridge is unavailable.
 See `docs/browser/gateway.md` for routing. Refreshing or disconnecting during a match ends that player's participation. Voice chat is a no-op; music uses the
 existing Vorbis mixer. Map fertility is staged privately before publication. Landscape previews run
@@ -152,7 +152,8 @@ release testing in actual Safari, nor Chromium for Edge.
 Use `GLOB2_TEST_RENDERER=webgl2` or `software` for renderer-sensitive tests.
 Dedicated renderer-contract tests select their own renderer explicitly.
 CI selects software for the full Chromium behavior suite
-and focused Firefox/WebKit startup, viewport, responsive-input and campaign-storage checks, then repeats the
+and focused Firefox/WebKit startup, viewport, responsive-input, campaign-storage,
+WSS/native cross-play, and per-tick simulation checks, then repeats the
 renderer-sensitive startup, input, viewport, responsive-presentation and reload checks in Chromium WebGL2.
 `rendering.spec.js` selects its own renderer and runs only in the full suite;
 `build-artifact.spec.js` checks the shared WASM binary once, without repeating it
@@ -176,10 +177,10 @@ uses deprecated ScriptProcessorNode.
 ### CI compiler caches
 
 CI builds the browser in parallel jobs. `web-build` compiles the WebAssembly
-client and `web-native` the gateway, router and transport fixtures; both hand
+client and `web-native` the native WSS server, router and transport fixtures; both hand
 their outputs to the `web-test` matrix as artifacts, which runs the Chromium
 suite in five shards (split by spec file) beside separate torus, rendering and
-settings-storage jobs, one job each for Firefox and WebKit, six focused WebGL2
+settings-storage jobs, two jobs each for Firefox and WebKit, six focused WebGL2
 jobs, and the lifecycle suite. Each long WebGL2 reload case runs on its own
 runner; new untagged reload cases run with the match reload group. `web-deploy` checks
 self-hosting on its own runner. A spec that needs a native program must use one
