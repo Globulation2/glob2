@@ -82,3 +82,10 @@ TEST_CASE("JavaScript runtime sandbox and resource limits and numeric profile" *
  auto absent=execute("export function step(ctx,s){s.secure=[typeof Date,typeof performance,typeof fetch,typeof eval,typeof Function,typeof Promise,typeof WeakRef,typeof SharedArrayBuffer,typeof Array.fromAsync].every(x=>x==='undefined');return null;}");GLOB2_REQUIRE(absent.state.get("secure").number==1, "JavaScript contract");
  std::cout<<"JavaScript runtime tests passed\n";
 }
+
+TEST_CASE("JavaScript hypot ARM64 and x86-64 regression" * doctest::test_suite("JavaScriptRuntime"))
+{
+ auto result=execute("export function step(c,s){s.hypot=Math.hypot(1.2154874465220262,1.8249387819142753);s.branch=s.hypot===2.192672180328695;}");
+ CHECK(std::bit_cast<std::uint64_t>(result.state.get("hypot").number)==UINT64_C(0x40018a97b64ae2d7));
+ CHECK(result.state.get("branch").number==0);
+}

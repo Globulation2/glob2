@@ -1267,3 +1267,38 @@ TEST_SUITE("TeamStatsSave")
 		aiTelemetryContinuation(glob2test::inflated("echo/v121-shared-gradient-256.game.gz").string().c_str());
 	}
 }
+
+TEST_CASE("Scripting identity survives conversion and save load" * doctest::test_suite("JavaScriptLifecycle"))
+{
+ glob2test::HeadlessGlobals globals;
+ TeamStatsMeasurementFixture w;
+ auto *inn=w.building("inn",8,8,1);
+ inn->resources[WHEAT]=10;
+ inn->resources[CHERRY]=10;
+ inn->updateCallLists();
+ TeamStatsMeasurementFixture::allowConversion(inn);
+ w.game.teams[1]->sharedVisionFood |= w.game.teams[0]->me;
+ w.game.teams[1]->allies &= ~w.game.teams[0]->me;
+ auto *u=w.unit(EXPLORER,12,8);
+ u->hungry=u->trigHungry;
+ u->medical=Unit::MED_HUNGRY;
+ u->needToRecheckMedical=true;
+ TeamStatsMeasurementFixture::activity(u);
+ REQUIRE(u->owner==w.game.teams[1]);
+ REQUIRE(w.game.scriptGenerations[1024+Unit::GIDtoID(u->gid)]==u->scriptIdentity);
+ auto loaded=roundTrip(w.game);
+ REQUIRE(loaded->game.teams[1]->myUnits[Unit::GIDtoID(u->gid)]->scriptIdentity==u->scriptIdentity);
+ CHECK(loaded->game.scriptGenerations==w.game.scriptGenerations);
+}
+
+TEST_CASE("Scripting level reset preserves generation counters" * doctest::test_suite("JavaScriptLifecycle"))
+{
+ glob2test::HeadlessGlobals globals;
+ TeamStatsMeasurementFixture w;
+ auto *u=w.unit();
+ auto generations=w.game.scriptGenerations;
+ auto identity=u->scriptIdentity;
+ u->resetAtLevel(1);
+ CHECK(u->scriptIdentity==identity);
+ CHECK(w.game.scriptGenerations==generations);
+}
