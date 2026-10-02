@@ -140,6 +140,14 @@ namespace GAGCore
 			}
 		}
 		
+		// A reload (the browser installs the full translations after startup)
+		// replaces the previous table.
+		for (size_t i=0; i<strings.size(); i++)
+			delete strings[i];
+		strings.clear();
+		stringAccess.clear();
+		languageCodes.clear();
+
 		// Create entries
 		for (size_t i=0; i<keys.size(); i++)
 		{

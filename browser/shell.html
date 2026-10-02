@@ -182,8 +182,9 @@ var Module = {
   },
   glob2WireSize: wireSize,
   glob2AssetProgress(name, loaded, total) {
-    // Until the menu is up every download is a startup package (core, and the
-    // full font for a Chinese, Japanese or Korean interface).
+    // Until the menu is up every download is a startup package (core; the full
+    // translations for an interface not in English; the full font for Chinese,
+    // Japanese or Korean).
     if (document.body.classList.contains('ready')) return;
     download.packages[name] = {loaded, total};
     const packages = Object.values(download.packages);
@@ -222,6 +223,9 @@ var Module = {
       if (err) Module.printErr('Save restore failed: ' + err);
       // The core package's font covers every interface language except Chinese,
       // Japanese and Korean; those need the full font before any text is drawn.
+      // Core has English and, of the other languages, only their names.
+      const language = savedPreference('language');
+      if (language && language !== 'en') Module.glob2RequireAsset?.('translations');
       if (cjkInterface()) Module.glob2RequireAsset?.('font-cjk');
       removeRunDependency('browser-saves');
     });
@@ -315,7 +319,8 @@ function cjkInterface() { return /^(zh|ja|ko)\b/.test(savedPreference('language'
 // - game: the in-game sprites. Every match and the editor wait for it ("Loading
 //   game graphics"); the menu shows the colony still image until it arrives.
 // - menu-music, then font-cjk: the full font, so Chinese, Japanese and Korean
-//   player names and language choices get their glyphs.
+//   player names and chat get their glyphs, then the other languages' full
+//   translations (English stands in for a language chosen before they arrive).
 // - music and hd: in-game music and high-resolution artwork. The game reads them
 //   again when a match starts, so a first match on a new device may still use the
 //   original artwork.
@@ -327,9 +332,9 @@ function loadStagedAssets(gpu) {
   if (!assets) return;
   const saveData = navigator.connection?.saveData === true;
   const artworkOff = savedPreference('highResolutionArtwork') === '0';
-  const required = new Set(['game', 'font-cjk']);
+  const required = new Set(['game', 'font-cjk', 'translations']);
   const wanted = [];
-  for (const name of ['game', 'menu-music', 'font-cjk', 'music', 'hd']) {
+  for (const name of ['game', 'menu-music', 'font-cjk', 'translations', 'music', 'hd']) {
     if (!assets.manifest.packages.some(entry => entry.name === name) || assets.states[name] === 'ready') continue;
     if (!required.has(name) && (saveData || (name === 'hd' && (!gpu || artworkOff)))) assets.states[name] = 'skipped';
     else wanted.push(name);

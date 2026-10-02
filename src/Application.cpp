@@ -230,6 +230,18 @@ void Application::installStagedAssets()
 				globalContainer->mix->setNextTrack(MusicTrack::Menu);
 			}
 		}
+		else if (package == "translations")
+		{
+			// Core had only each language's name and code; English stood in.
+			auto *strings = GAGCore::Toolkit::getStringTable();
+			if (strings->load("data/texts.list.txt"))
+				strings->setLang(strings->getLangCode(globalContainer->settings.language));
+			if (!inMatch)
+			{
+				const int width = globalContainer->gfx->getW(), height = globalContainer->gfx->getH();
+				screens.viewportResized(width, height, width, height);
+			}
+		}
 		else if (package == "font-cjk")
 		{
 			// Same Latin glyphs; Chinese, Japanese and Korean text now has glyphs.

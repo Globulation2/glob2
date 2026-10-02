@@ -36,7 +36,7 @@ class WebAssetPlanTests(unittest.TestCase):
         for path in ('data/fonts/sans.ttf', 'data/fonts/LICENSE-DejaVu.txt', 'data/texts.list.txt',
                      'data/texts.keys.txt', 'data/authors.txt', 'data/gfx/menu-wordmark.png',
                      'data/gfx/menu-colony.png', 'data/gfx/loading-wordmark.png', 'data/gfx/guitheme0.png',
-                     'data/gfx/cursor/normal0r.png', 'data/gfx/rotatingEarth0.png', 'data/menu/colony.bin',
+                     'data/gfx/rotatingEarth0.png', 'data/menu/colony.bin',
                      'data/gui/editor0.png', 'maps/FourSquares1.map.gz'):
             self.assertEqual(self.owner.get(path), 'core', path)
 
@@ -47,6 +47,8 @@ class WebAssetPlanTests(unittest.TestCase):
                      'data/gfx/inn0b0r.png', 'data/gfx/racetrack2b0.png', 'data/gfx/minibuildingsite5.png',
                      'data/gfx/explorationflag0r.png', 'data/gfx/wallc0.png'):
             self.assertEqual(self.owner.get(path), 'game', path)
+        # The browser never draws the game cursor (it always shows the system one).
+        self.assertEqual(self.owner['data/gfx/cursor/normal0r.png'], 'game')
         # Nothing else ends up there: every game file is a frame of a game sprite.
         self.assertTrue(all(p.startswith('data/gfx/') and p.endswith('.png') for p in self.packages['game']))
         self.assertFalse(web_assets.game_files(['data/gfx/unitmini0.png'], {'unit'}))
@@ -58,6 +60,19 @@ class WebAssetPlanTests(unittest.TestCase):
                          'browser/assets is stale: run python3 browser/derive_assets.py')
         self.assertEqual(self.packages['font-cjk'], ['data/fonts/sans.ttf'])
         self.assertIn('data/fonts/sans.ttf', self.packages['core'])
+
+    def test_core_has_english_and_every_language_name(self):
+        self.assertEqual(self.owner['data/texts.en.txt'], 'core')
+        self.assertIn('data/texts.ja.txt', self.packages['translations'])
+        self.assertNotIn('data/texts.en.txt', self.packages['translations'])
+        stub = web_assets.contents(ROOT, 'core', 'data/texts.ja.txt', {}).decode()
+        lines = stub.split('\n')
+        pairs = dict(zip(lines[0::2], lines[1::2]))
+        self.assertEqual(pairs['[language-code]'], 'ja')
+        self.assertEqual(pairs['[language]'], '日本語')
+        self.assertEqual(set(pairs) - {''}, set(web_assets.STUB_KEYS))
+        full = web_assets.contents(ROOT, 'translations', 'data/texts.ja.txt', {})
+        self.assertEqual(full, (ROOT / 'data/texts.ja.txt').read_bytes())
 
     def test_music_and_artwork_the_game_reloads_per_match_are_optional(self):
         self.assertEqual(self.owner['data/zik/intro.ogg'], 'menu-music')
@@ -93,8 +108,8 @@ class WebAssetPackageTests(unittest.TestCase):
                     if entry['optional'] and len(part['files']) > 1:
                         self.assertLessEqual(part['size'], web_assets.PART_BYTES + 2_000_000)
                     for path, start, end in part['files'][:50]:
-                        self.assertEqual(blob[start:end], web_assets.shipped(ROOT, entry['name'], path.lstrip('/'),
-                                                                             web_assets.derived_assets(ROOT)).read_bytes(), path)
+                        self.assertEqual(blob[start:end], web_assets.contents(ROOT, entry['name'], path.lstrip('/'),
+                                                                              web_assets.derived_assets(ROOT)), path)
             script = (output / 'asset-manifest.js').read_text()
             self.assertIn('Module["glob2AssetManifest"] ??= ', script)
             # A rebuild without changes writes the same names.

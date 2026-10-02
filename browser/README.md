@@ -56,7 +56,8 @@ tooling, documentation, icons and store screenshots stay out.
 `browser/asset-loader.js` downloads the `core` package while the WebAssembly
 module streams in, and the game starts once both are ready. `core` holds what
 the menus, the online hub and rooms need: the interface and menu sprites, the
-font, translations, maps, campaigns, scripts and every simulation data file, so
+font, English and every language's own name, maps, campaigns, scripts and every
+simulation data file, so
 the sim version and checksum traces are unchanged. Three of its files are smaller
 browser copies checked in under `browser/assets/` (`browser/derive_assets.py`):
 the font without its Chinese, Japanese and Korean outlines, the menu's still
@@ -78,6 +79,8 @@ The rest follows in the background once the main menu is up, most needed first:
   copy already has the characters of every language's own name). With a Chinese,
   Japanese or Korean interface it is a startup package instead; switching to one
   before it arrives shows missing glyphs until it does.
+- `translations`, the other languages' full catalogs; English stands in until
+  they arrive. An interface in another language loads them before the game starts.
 - `music` and `hd`: the in-game music and the high-resolution artwork (WebGL2
   only, and only while that setting is on). The game reads them when a match or
   the editor starts, so on a first visit a match started before the artwork
@@ -85,7 +88,7 @@ The rest follows in the background once the main menu is up, most needed first:
 
 Later packages download in parts of about 4 MB. Optional ones (music and
 artwork) pause while a match is running and are skipped when the browser asks to
-save data; `game` and `font-cjk` are retried until they arrive. A package becomes
+save data; `game`, `font-cjk` and `translations` are retried until they arrive. A package becomes
 visible to the game only when complete. Native builds load everything at startup
 as before (`ApplicationHost::assetPackageReady` is always true there).
 `glob2Diagnostics.snapshot().assets` reports each package's state.

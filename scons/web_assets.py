@@ -16,6 +16,9 @@ the game reads at run time into content-addressed packages under `assets/`, and
 - `font-cjk`: the full font, replacing the core copy. A startup package for a
   Chinese, Japanese or Korean interface; otherwise it follows in the background so
   CJK player names and language names get their glyphs.
+- `translations`: the full catalogs of every language but English. Core has
+  each language's name and code only; a startup package for an interface in
+  another language, otherwise the game reloads its string table when it arrives.
 - `menu-music`, `music` (in-game) and `hd` (high-resolution artwork): the game
   tolerates them being absent and loads them when they arrive or when a match
   starts.
@@ -50,15 +53,38 @@ EXCLUDED_DIRECTORIES = ('data/icons/', 'data/screenshots/')
 OPTIONAL = (
     ('font-cjk', ('data/fonts/sans.ttf',)),
     ('menu-music', ('data/zik/intro.ogg', 'data/zik/menu.ogg')),
+    ('translations', ('data/texts.',)),
     ('music', ('data/zik/original/',)),
     ('hd', ('data/highres/',)),
 )
 PACKAGES = ('core', 'game') + tuple(name for name, _ in OPTIONAL)
+# Also in `game`: the game cursor's frames. The browser always shows the system
+# cursor (the page passes -C and the setting is hidden there), so nothing loads
+# them before a match.
+GAME_EXTRA = ('data/gfx/cursor/',)
 # Later packages download in parts so the shell can stop between parts while a
 # match is running; each part is also cached on its own.
 PART_BYTES = 4 * 1024 * 1024
 MANIFEST_VERSION = 1
 SPRITE = re.compile(r'"data/gfx/([A-Za-z0-9_-]+)"')
+# Core keeps the key list, English and, of every other language, only what the
+# language list needs (stub()); `translations` brings the full catalogs.
+CORE_TEXTS = ('data/texts.keys.txt', 'data/texts.list.txt', 'data/texts.incomplete.txt', 'data/texts.en.txt')
+STUB_KEYS = ('[language]', '[language incomplete]', '[language-code]')
+
+
+def translation(path):
+    return path.startswith('data/texts.') and path.endswith('.txt') and path not in CORE_TEXTS
+
+
+def stub(data):
+    """A catalog with only its language's name and code; StringTable shows English for the rest."""
+    lines = data.decode('utf-8').split('\n')
+    kept = []
+    for index in range(0, len(lines) - 1, 2):
+        if lines[index] in STUB_KEYS:
+            kept += lines[index:index + 2]
+    return ('\n'.join(kept) + '\n').encode('utf-8')
 
 
 def excluded(path):
@@ -140,7 +166,7 @@ def plan(root):
     game = game_files(files, game_sprites(root))
     substitutes = derived_assets(root)
     for path in files:
-        name = 'game' if path in game else next(
+        name = 'game' if path in game or path.startswith(GAME_EXTRA) else next(
             (name for name, prefixes in OPTIONAL if path.startswith(prefixes)), 'core')
         if name == 'font-cjk':
             # Core has the font; with a current browser copy, core's is the copy and
@@ -148,6 +174,14 @@ def plan(root):
             packages['core'].append(path)
             if path in substitutes:
                 packages['font-cjk'].append(path)
+            continue
+        if name == 'translations':
+            # Core ships the stub (contents()); the full catalog replaces it.
+            if translation(path):
+                packages['core'].append(path)
+                packages['translations'].append(path)
+            else:
+                packages['core'].append(path)
             continue
         packages[name].append(path)
     missing = [f for f in sim_data_files(root) if f not in packages['core']]
@@ -170,9 +204,11 @@ def split(paths, sizes, limit):
     return parts
 
 
-def shipped(root, name, path, substitutes):
-    """The file whose bytes package `name` ships as `path`."""
-    return Path(root) / (substitutes.get(path, path) if name == 'core' else path)
+def contents(root, name, path, substitutes):
+    """The bytes package `name` ships as `path`."""
+    if name == 'core' and translation(path):
+        return stub((Path(root) / path).read_bytes())
+    return (Path(root) / (substitutes.get(path, path) if name == 'core' else path)).read_bytes()
 
 
 def write_packages(root, output):
@@ -183,15 +219,15 @@ def write_packages(root, output):
     packages, _, substitutes = plan(root)
     manifest, written = {'version': MANIFEST_VERSION, 'packages': []}, set()
     for name, paths in packages.items():
-        sources = {path: shipped(root, name, path, substitutes) for path in paths}
-        sizes = {path: source.stat().st_size for path, source in sources.items()}
+        data = {path: contents(root, name, path, substitutes) for path in paths}
+        sizes = {path: len(value) for path, value in data.items()}
         groups = [paths] if name == 'core' else split(paths, sizes, PART_BYTES)
         entry = {'name': name, 'optional': name != 'core', 'size': sum(sizes.values()), 'parts': []}
         for index, group in enumerate(groups):
             blob, files = bytearray(), []
             for path in group:
                 start = len(blob)
-                blob += sources[path].read_bytes()
+                blob += data[path]
                 files.append(['/' + path, start, len(blob)])
             digest = hashlib.sha256(blob).hexdigest()[:16]
             stem = name if len(groups) == 1 else f'{name}-{index + 1}'
@@ -246,10 +282,9 @@ def report(root):
     packages, skipped, substitutes = plan(root)
     game = set(packages.get('game', ()))
     rows = {}
-    entries = [(name, path, shipped(root, name, path, substitutes)) for name, paths in packages.items() for path in paths]
-    entries += [('-', path, root / path) for path in skipped]
-    for name, path, source in entries:
-        data = source.read_bytes()
+    entries = [(name, path, contents(root, name, path, substitutes)) for name, paths in packages.items() for path in paths]
+    entries += [('-', path, (root / path).read_bytes()) for path in skipped]
+    for name, path, data in entries:
         row = rows.setdefault((category(path, game), name), [0, 0, 0])
         row[0] += 1
         row[1] += len(data)
@@ -259,7 +294,7 @@ def report(root):
     for (label, package), (count, raw, packed) in sorted(rows.items(), key=lambda item: (order[item[0][1]], -item[1][1])):
         print(f'{label:45} {package:10} {count:6} {raw / 1e6:7.2f} {packed / 1e6:8.2f}')
     for name, paths in packages.items():
-        size = sum(shipped(root, name, p, substitutes).stat().st_size for p in paths)
+        size = sum(len(contents(root, name, p, substitutes)) for p in paths)
         print(f'package {name}: {len(paths)} files, {size / 1e6:.2f} MB')
     print(f'excluded: {len(skipped)} files')
     print('browser copies in core: ' + (', '.join(sorted(substitutes)) or 'none (run browser/derive_assets.py)'))
