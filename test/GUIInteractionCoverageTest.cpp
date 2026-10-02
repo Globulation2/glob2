@@ -2,8 +2,10 @@
 #include "EngineFixtures.h"
 #include "GameGUIViewport.h"
 #include "Order.h"
+#include "GameGUIKeyActions.h"
+#include "GameGUIDialog.h"
 #include <SDLGraphicContext.h>
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <set>
 
 namespace
@@ -21,7 +23,7 @@ Uint64 renderPanel(GameGUI& gui)
     const int left=(gfx->getW()-GAME_GUI_RIGHT_MENU_WIDTH)*frame->w/gfx->getW();
     const auto* pixels=static_cast<const Uint8*>(frame->pixels);
     for (int y=0; y<frame->h; ++y)
-        for (int x=left*frame->format->BytesPerPixel; x<frame->w*frame->format->BytesPerPixel; ++x)
+        for (int x=left*SDL_BYTESPERPIXEL(frame->format); x<frame->w*SDL_BYTESPERPIXEL(frame->format); ++x)
             hash=(hash^pixels[y*frame->pitch+x])*1099511628211ull;
     return hash;
 }
@@ -55,7 +57,7 @@ TEST_SUITE("GUIInteractionCoverage")
                 if (type==WORKER) ownerPanels.insert(healthy);
                 const auto path=glob2test::artifactDir()/(
                     "unit-"+std::to_string(type)+"-team-"+std::to_string(team)+".bmp");
-                REQUIRE(SDL_SaveBMP(globalContainer->gfx->completedFrame(),path.string().c_str())==0);
+                REQUIRE(SDL_SaveBMP(globalContainer->gfx->completedFrame(),path.string().c_str()));
                 world.game.gameHeader.setGlassCannonLevel(0);
             }
         CHECK(ownerPanels.size()==3);
@@ -95,4 +97,73 @@ TEST_SUITE("GUIInteractionCoverage")
         gui.handleMenuClick(content+119,300,SDL_BUTTON_LEFT);
         CHECK(gui.orderQueue.empty()); globalContainer->liveSpectating=false;
     }
+    TEST_CASE("configured keyboard actions toggle presentation and queue pause without changing simulation [display]")
+    {
+        glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.display=true,.width=1024,.height=768});
+        glob2test::HeadlessGame w(glob2test::GameOptions{.clearImmobile=true,.loadDefaultRace=true,.header=true});
+        auto& gui=w.gui; gui.localTeamNo=0; gui.localPlayer=0; gui.localTeam=w.team;
+        auto key=[&](Uint32 action) {
+            gui.keyboardManager.getKeyboardShortcuts().clear();
+            SDL_KeyboardEvent symbol{}; symbol.key=SDLK_F9;
+            KeyboardShortcut shortcut; shortcut.addKeyPress(KeyPress(symbol,true)); shortcut.setAction(action);
+            gui.keyboardManager.getKeyboardShortcuts().push_back(shortcut);
+            gui.handleKey(symbol,true,false);
+        };
+        const auto checksum=w.checksum();
+        const bool bars=gui.drawHealthFoodBar;
+        key(GameGUIKeyActions::ToggleDrawInformation); CHECK(gui.drawHealthFoodBar!=bars);
+        key(GameGUIKeyActions::ToggleDrawInformation); CHECK(gui.drawHealthFoodBar==bars);
+        const bool aids=gui.drawAccessibilityAids;
+        key(GameGUIKeyActions::ToggleDrawAccessibilityAids); CHECK(gui.drawAccessibilityAids!=aids);
+        key(GameGUIKeyActions::PauseGame);
+        REQUIRE(gui.orderQueue.size()==1);
+        CHECK(std::dynamic_pointer_cast<PauseGameOrder>(gui.orderQueue.front())!=nullptr);
+        CHECK(w.checksum()==checksum);
+        gui.orderQueue.clear();
+        gui.swallowSpaceKey=true;
+        SDL_KeyboardEvent space{}; space.key=SDLK_SPACE;
+        gui.handleKey(space,false,false); CHECK_FALSE(gui.isSpaceSet());
+        gui.handleKey(space,true,false); CHECK(gui.isSpaceSet());
+        CHECK(gui.orderQueue.empty());
+    }
+
+    TEST_CASE("home keyboard action wraps the camera and script messages preserve history [display]")
+    {
+        glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.display=true,.width=640,.height=480});
+        glob2test::HeadlessGame w(glob2test::GameOptions{.clearImmobile=true,.loadDefaultRace=true,.header=true});
+        auto& gui=w.gui; gui.localTeamNo=0; gui.localPlayer=0; gui.localTeam=w.team;
+        w.team->startPosX=31; w.team->startPosY=31;
+        gui.keyboardManager.getKeyboardShortcuts().clear();
+        SDL_KeyboardEvent symbol{}; symbol.key=SDLK_F9;
+        KeyboardShortcut shortcut; shortcut.addKeyPress(KeyPress(symbol,true)); shortcut.setAction(GameGUIKeyActions::GoToHome);
+        gui.keyboardManager.getKeyboardShortcuts().push_back(shortcut);
+        gui.viewportX=0; gui.viewportY=0;
+        const auto checksum=w.checksum(); gui.handleKey(symbol,true,false);
+        CHECK(gui.viewportX>=0); CHECK(gui.viewportX<32); CHECK(gui.viewportY>=0); CHECK(gui.viewportY<32);
+        CHECK(gui.viewportX!=0); CHECK(gui.viewportY!=0);
+        gui.showScriptText("first message"); gui.hideScriptText();
+        gui.showScriptText("second message"); gui.hideScriptText();
+        CHECK(w.checksum()==checksum); CHECK(gui.orderQueue.empty());
+    }
+
+    TEST_CASE("match dialogs accept return and distinguish continuing from ending a game [display]")
+    {
+        glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.display=true,.loadStrings=true,.width=640,.height=480});
+        SDL_Event key{}; key.type=SDL_EVENT_KEY_DOWN; key.key.key=SDLK_ESCAPE;
+        for(bool replay:{false,true}) {
+            InGameMainScreen dialog(replay,false,true); dialog.attach(*globals->gfx); dialog.update(0);
+            CHECK(dialog.host().find("save")==nullptr);
+            CHECK(dialog.host().bounds("return").w>0);
+            dialog.eventLogical(key); REQUIRE(dialog.finished()); CHECK(dialog.result()==InGameMainScreen::RETURN_GAME);
+        }
+        for(bool canContinue:{false,true}) {
+            InGameEndOfGameScreen dialog("Outcome",canContinue); dialog.attach(*globals->gfx); dialog.update(0);
+            dialog.eventLogical(key); REQUIRE(dialog.finished());
+            CHECK(dialog.result()==(canContinue ? InGameEndOfGameScreen::CONTINUE : InGameEndOfGameScreen::QUIT));
+        }
+        InGameEndOfGameScreen accepted("Outcome",true); accepted.attach(*globals->gfx); accepted.update(0);
+        key.key.key=SDLK_RETURN; accepted.eventLogical(key);
+        REQUIRE(accepted.finished()); CHECK(accepted.result()==InGameEndOfGameScreen::QUIT);
+    }
+
 }

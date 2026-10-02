@@ -270,7 +270,7 @@ public:
 	//! if this is not empty, then Engine should load the map with this filename.
 	std::string toLoadGameFileName;
 	bool drawHealthFoodBar, drawPathLines, drawAccessibilityAids;
-	int localPlayer, localTeamNo;
+	int localPlayer = 0, localTeamNo = 0;
 	int viewportX, viewportY;
 	MapCamera camera;
 	bool zoomControlPushed=false;
@@ -286,6 +286,7 @@ public:
 	int anyPlayerWaitedTimeFor;
 private:
 	friend class GameGUISelectionHarness;
+	friend class SavegameSafetyHarness;
 	friend class TorusRenderIntegrationTest;
 	friend class TorusRenderBenchmark;
 	friend class SoftwareRenderBenchmark;
@@ -299,8 +300,6 @@ private:
 	void autosave();
 	//! Tick of this session's latest autosave, or -1 before the first.
 	Sint64 lastAutosaveStep;
-	//! Size of the previous autosave, reserved up front for the next one.
-	size_t lastAutosaveSize = 0;
 	//! Writes autosaves off the game thread; created by the first autosave.
 	std::unique_ptr<GAGCore::BackgroundFileWriter> autosaveWriter;
 
@@ -312,7 +311,7 @@ private:
 	bool processTypingInput(SDL_Event *event);
 
 	void handleRightClick(void);
-	void handleKey(SDL_Keysym key, bool pressed, bool repeat = false);
+	void handleKey(SDL_KeyboardEvent key, bool pressed, bool repeat = false);
 	void toggleTorusView();
 	void handleKeyAlways(void);
 	void handleKeyDump(SDL_KeyboardEvent key);

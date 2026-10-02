@@ -17,7 +17,7 @@
 // Usage: twelve-team-benchmark [ticks=5000] [label=river] [hd]
 #include <Toolkit.h>
 #include <GraphicContext.h>
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #if defined(__APPLE__) || defined(OPENGL_HEADER_DIRECTORY_OPENGL)
 #include <OpenGL/gl.h>
 #else

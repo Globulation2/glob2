@@ -18,6 +18,7 @@
 #include <stdexcept>
 
 #include "Engine.h"
+#include "Environment.h"
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "Headless.h"
@@ -388,7 +389,10 @@ int runVerifyMatch(int argc, char** argv)
 			throw Usage("--map and --out are required");
 		output = fs::absolute(out);
 		fs::create_directories(output / "profile");
-		SDL_setenv("GLOB2_USER_DIR", (output / "profile").string().c_str(), 1);
+		// Both profile variables, as the other headless commands set them (#554).
+		const std::string profileDir = (output / "profile").string();
+		GAGCore::setProcessEnvironment("GLOB2_USER_DIR", profileDir.c_str(), 1);
+		GAGCore::setProcessEnvironment("GLOB2_USER_DATA_DIR", profileDir.c_str(), 1);
 		if (fs::exists(output / "result.json"))
 			throw Usage("output directory already contains a result");
 		return MatchVerifier::run(fs::absolute(record).string(), fs::absolute(map).string(), output, profile);

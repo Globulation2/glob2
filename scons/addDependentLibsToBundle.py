@@ -74,29 +74,19 @@ def addDependentLibsToBundle( bundle ) :
         "@executable_path/",
     ]
     searchDirs = homebrewLibDirs()
+    prefix = os.environ.get("GLOB2_SDL3_PREFIX")
+    if prefix:
+        searchDirs.insert(0, os.path.join(os.path.abspath(prefix), "lib"))
+        import shutil
+        licenses = os.path.join(prefix, "share/licenses")
+        if os.path.isdir(licenses):
+            shutil.copytree(licenses, bundle + "/Contents/Resources/licenses", dirs_exist_ok=True)
     # entry (as it appears in some binary's load commands) -> real file to copy from
     resolved = {}
     visited = []
     for binary in binaries :
         for line in subprocess.check_output(["otool", "-L", binary], text=True).splitlines()[1:] :
             libDependencies(line.strip().split(" (compatibility version", 1)[0], resolved, visited, doNotChange, searchDirs)
-
-    # Some bundled libraries dlopen() another one at runtime instead of declaring it
-    # as a normal linked dependency, so the otool -L walk above can never see it:
-    # Homebrew's sdl2 is sdl2-compat, a shim that wraps SDL3 and dlopen()s
-    # libSDL3.dylib (by @loader_path/@executable_path-relative name) the first time
-    # SDL initializes. Without SDL3 bundled alongside, that lookup fails and
-    # sdl2-compat aborts before glob2's own code ever runs.
-    runtimeDlopenDeps = {
-        "libSDL2-2.0.0.dylib": ["libSDL3.dylib"],
-    }
-    runtimeAliases = {}
-    for real in list(resolved.values()) :
-        for dep in runtimeDlopenDeps.get(os.path.basename(real), []) :
-            libDependencies(dep, resolved, visited, doNotChange, searchDirs)
-            if dep not in resolved:
-                raise RuntimeError("Required runtime dependency unavailable: " + dep)
-            runtimeAliases[dep] = os.path.basename(resolved[dep])
 
     libs = sorted(set( (os.path.basename(real), real) for real in resolved.values() ))
     os.makedirs(os.path.join(bundle, "Contents", "Frameworks"), exist_ok=True)
@@ -112,9 +102,6 @@ def addDependentLibsToBundle( bundle ) :
         shutil.copy2(path, destination)
         os.chmod(destination, os.stat(destination).st_mode | 0o200)
         subprocess.run(["install_name_tool", "-id", "@executable_path/../Frameworks/"+lib, destination], check=True)
-    for alias, canonical in runtimeAliases.items():
-        if alias != canonical:
-            os.symlink(canonical, os.path.join(bundle, "Contents", "Frameworks", alias))
     # fix every reference any binary or bundled lib made to a dependency, however it
     # originally named it (absolute path, @rpath/, or @loader_path/), to point at the
     # one bundled copy

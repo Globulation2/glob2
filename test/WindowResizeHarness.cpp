@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <Environment.h>
 #include "Glob2Test.h"
 #include <memory>
 #include <utility>
@@ -32,7 +33,7 @@ class Context : public GraphicContext
 #ifdef HAVE_OPENGL
 		// Read the exact frame submitted to the window system. Post-swap GL_FRONT
 		// readback is not reliable on Mesa/Xvfb (it can return an all-black image).
-		SDL_GL_GetDrawableSize(window, &presentedWidth, &presentedHeight);
+		SDL_GetWindowSizeInPixels(window, &presentedWidth, &presentedHeight);
 		presentedPixels.resize(presentedWidth * presentedHeight);
 		GLint previous;
 		glGetIntegerv(GL_READ_BUFFER, &previous);
@@ -75,7 +76,7 @@ public:
 #endif
 		};
         std::vector<std::pair<int,int>> sizes{{640,480},{1024,768}};
-        if (const char *requested=SDL_getenv("GLOB2_TEST_BENCHMARK_SIZE")) {
+        if (const char *requested=SDL_getenv_unsafe("GLOB2_TEST_BENCHMARK_SIZE")) {
             int w,h;
             require(std::sscanf(requested,"%dx%d",&w,&h)==2 && w>0 && h>0,"Invalid benchmark window size");
             sizes={{w,h}};
@@ -126,7 +127,9 @@ public:
 
 	void resize(int w, int h)
 	{
-		SDL_SetWindowSize(window, w, h); SDL_Delay(60); SDL_PumpEvents();
+		SDL_SetWindowSize(window, w, h);
+		GLOB2_REQUIRE(SDL_SyncWindow(window), "Window resize must settle before layout assertions");
+		SDL_PumpEvents();
 		int actualW, actualH;
 		SDL_GetWindowSize(window, &actualW, &actualH);
 		REQUIRE_MESSAGE((actualW >= minW && actualH >= minH),
@@ -139,12 +142,14 @@ public:
 	// the scaled minimum.
 	void shrinkTo(int w, int h)
 	{
-		SDL_SetWindowSize(window, w, h); SDL_Delay(60); SDL_PumpEvents();
+		SDL_SetWindowSize(window, w, h);
+		GLOB2_REQUIRE(SDL_SyncWindow(window), "Window resize must settle before layout assertions");
+		SDL_PumpEvents();
 	}
 	void expose(bool otherWindow = false)
 	{
-		SDL_Event event{}; event.type = SDL_WINDOWEVENT;
-		event.window.event = SDL_WINDOWEVENT_EXPOSED;
+		SDL_Event event{}; event.type = SDL_EVENT_WINDOW_RESIZED;
+		event.type = SDL_EVENT_WINDOW_EXPOSED;
 		event.window.windowID = SDL_GetWindowID(window) + (otherWindow ? 1 : 0);
 		pollingEvents = true;
 		watchWindow(this, &event);
@@ -188,9 +193,9 @@ public:
 			y = y * surface->h / windowHeight;
 			require(surface && x >= 0 && x < surface->w && y >= 0 && y < surface->h, "Readback outside software window surface");
 			Uint32 p = 0;
-			const int bytes = surface->format->BytesPerPixel;
+			const int bytes = SDL_BYTESPERPIXEL(surface->format);
 			memcpy(&p, static_cast<char*>(surface->pixels)+y*surface->pitch+x*bytes, bytes);
-			SDL_GetRGBA(p, surface->format, &c.r, &c.g, &c.b, &c.a);
+			SDL_GetRGBA(p, SDL_GetPixelFormatDetails(surface->format), SDL_GetSurfacePalette(surface), &c.r, &c.g, &c.b, &c.a);
 		}
 		return c;
 	}
@@ -198,9 +203,8 @@ public:
 void resizeChecks(bool gpu, bool benchmarkMode)
 {
 	Context gfx(gpu);
-	SDL_version version;
-	SDL_GetVersion(&version);
-	std::printf("SDL %d.%d.%d; video driver %s\n", version.major, version.minor, version.patch, SDL_GetCurrentVideoDriver());
+	const int version = SDL_GetVersion();
+	std::printf("SDL %d.%d.%d; video driver %s\n", SDL_VERSIONNUM_MAJOR(version), SDL_VERSIONNUM_MINOR(version), SDL_VERSIONNUM_MICRO(version), SDL_GetCurrentVideoDriver());
 #ifdef HAVE_OPENGL
 	if (gpu) std::printf("OpenGL %s; renderer %s\n", glGetString(GL_VERSION), glGetString(GL_RENDERER));
 #endif
@@ -220,7 +224,9 @@ void resizeChecks(bool gpu, bool benchmarkMode)
 	gfx.drawFilledRect(0, 0, 640, 480, Color(0, 0, 255));
 	gfx.resize(960, 720);
 	gfx.recursiveExpose();
+	const int presentationsBeforeForeign = gfx.cachedPresentations;
 	std::thread foreign([&] { gfx.expose(); }); foreign.join();
+	require(gfx.cachedPresentations == presentationsBeforeForeign, "Foreign thread presented the graphics cache");
 	gfx.expose(true);
 #ifdef HAVE_OPENGL
 	GLint viewport[4], scissor[4], binding;
@@ -267,7 +273,7 @@ void resizeChecks(bool gpu, bool benchmarkMode)
 		int actualW,actualH; SDL_GetWindowSize(SDL_GetWindowFromID(gfx.windowID()),&actualW,&actualH);
 		require(gfx.getW() == actualW && gfx.getH() == actualH, "Logical size did not follow actual window");
 		require(gfx.current() == originalContext, "Resize recreated GL context");
-		Sint32 x = actualW-1, y = actualH-1;
+		float x = actualW-1, y = actualH-1;
 		gfx.windowToLogical(x, y);
 		require(x == actualW-1 && y == actualH-1, "Input no longer matches logical size");
 		gfx.setClipRect();
@@ -287,7 +293,7 @@ void resizeChecks(bool gpu, bool benchmarkMode)
 		// the scale back to 1 and nothing is ever stretched. Before this was
 		// fixed, dragging the window down at scale 1.75 gave a 366x274 logical
 		// surface -- narrower than the 368px main menu panel.
-		SDL_setenv("GLOB2_UI_SCALE", "", 1); // an inherited override would win
+		GAGCore::setProcessEnvironment("GLOB2_UI_SCALE", "", 1); // an inherited override would win
 		const Uint32 windowed = GraphicContext::RESIZABLE | (gpu ? GraphicContext::USEGPU : 0);
 		GraphicContext::setRequestedUiScale(1.75f);
 		gfx.setRes(1280, 960, windowed);
@@ -332,11 +338,11 @@ void nativeDisplay(bool gpu)
 		require(gfx.pixel(2,2).r>200,"Native output lost the top-left edge");
 		int pointsW,pointsH; SDL_GetWindowSize(SDL_GetWindowFromID(window),&pointsW,&pointsH);
 		require(gfx.pixel(pointsW-2,pointsH-2).r>200,"Native output lost the bottom-right edge");
-		Sint32 x=pointsW/2,y=pointsH/2; gfx.windowToLogical(x,y);
+		float x=pointsW/2.0f,y=pointsH/2.0f; gfx.windowToLogical(x,y);
 		require(std::abs(x-gfx.getW()/2)<=1 && std::abs(y-gfx.getH()/2)<=1,"Scaled input missed the logical center");
-		int relativeX=0,relativeY=0;
+		float relativeX=0,relativeY=0;
 		for(int i=0;i<20;++i) {
-			SDL_Event motion{}; motion.type=SDL_MOUSEMOTION;
+			SDL_Event motion{}; motion.type=SDL_EVENT_MOUSE_MOTION;
 			motion.motion.x=pointsW/2; motion.motion.y=pointsH/2;
 			motion.motion.xrel=1; motion.motion.yrel=-1;
 			GraphicContext::translateMouseEvent(&motion);
@@ -344,6 +350,19 @@ void nativeDisplay(bool gpu)
 		}
 		require(std::abs(relativeX-int(std::lround(20.0*gfx.getW()/pointsW)))<=1 &&
 			std::abs(relativeY+int(std::lround(20.0*gfx.getH()/pointsH)))<=1,"Slow relative input lost the view scale");
+        relativeX = relativeY = 0;
+        for (int i = 0; i < 40; ++i) {
+            SDL_Event motion{};
+            motion.type = SDL_EVENT_MOUSE_MOTION;
+            motion.motion.xrel = .25f;
+            motion.motion.yrel = -.25f;
+            GraphicContext::translateMouseEvent(&motion);
+            relativeX += motion.motion.xrel;
+            relativeY += motion.motion.yrel;
+        }
+        require(std::abs(relativeX - 10.0f * gfx.getW() / pointsW) < .01f &&
+            std::abs(relativeY + 10.0f * gfx.getH() / pointsH) < .01f,
+            "Subpixel drag motion lost accumulated logical distance");
 		gfx.setClipRect(); gfx.drawFilledRect(0,0,gfx.getW(),gfx.getH(),Color(220,20,20));
 		gfx.setClipRect(0,0,gfx.getW()/2,gfx.getH());
 		gfx.drawFilledRect(0,0,gfx.getW(),gfx.getH(),Color(20,220,20)); gfx.nextFrame();
@@ -360,7 +379,7 @@ void nativeDisplay(bool gpu)
 		require(gfx.getW()>=640 && gfx.getH()>=480,"Fullscreen layout is too small");
 		require(gfx.current()==context && gfx.windowID()==window,"Fullscreen replaced the context");
 		gfx.setClipRect(); gfx.drawFilledRect(0,0,gfx.getW(),gfx.getH(),Color(220,20,20)); gfx.nextFrame();
-		SDL_Event event{}; event.type=SDL_KEYDOWN; event.key.keysym.sym=SDLK_F11;
+		SDL_Event event{}; event.type=SDL_EVENT_KEY_DOWN; event.key.key=SDLK_F11;
 		GraphicContext::translateMouseEvent(&event);
 		require(!(gfx.getOptionFlags() & GraphicContext::FULLSCREEN),"F11 did not use the fullscreen path");
 		require(gfx.getRequestedW()==savedW && gfx.getRequestedH()==savedH,"Window dimensions were not restored");

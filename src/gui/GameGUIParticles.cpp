@@ -183,7 +183,7 @@ void GameGUI::viewportChanged(int oldViewportX, int viewportX, int oldViewportY,
 		return;
 
     if (!typingInputScreen && inGameMenu == IGM_NONE && !scrollableText &&
-        !(lastMouseButtonState & SDL_BUTTON(SDL_BUTTON_LEFT)))
+        !(lastMouseButtonState & SDL_BUTTON_MASK(SDL_BUTTON_LEFT)))
         torusView.notifyMove();
     torusView.setViewport(viewportX, viewportY);
 

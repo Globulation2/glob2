@@ -1,0 +1,52 @@
+{
+  "aux:run_the_unit_tests": {
+    "step": "Run the unit tests",
+    "default_shard": 4,
+    "id": "run_the_unit_tests"
+  },
+  "aux:test_map_json_reports": {
+    "step": "Test map JSON reports",
+    "default_shard": 2,
+    "id": "test_map_json_reports"
+  },
+  "aux:test_headless_map_cli_with_the_shared_preview_renderer": {
+    "step": "Test headless map CLI with the shared preview renderer",
+    "default_shard": 3,
+    "id": "test_headless_map_cli_with_the_shared_preview_renderer"
+  },
+  "aux:test_tournament_protocol_ai_configuration_and_main_cli": {
+    "step": "Test tournament protocol, AI configuration and main CLI",
+    "default_shard": 1,
+    "id": "test_tournament_protocol_ai_configuration_and_main_cli"
+  },
+  "aux:verify_save_continuation_traces": {
+    "step": "Verify save continuation traces",
+    "default_shard": 3,
+    "id": "verify_save_continuation_traces"
+  },
+  "aux:verify_default_gradient_schedule_against_cross_platform": {
+    "step": "Verify default gradient schedule against cross-platform checksums",
+    "default_shard": 4,
+    "id": "verify_default_gradient_schedule_against_cross_platform"
+  },
+  "aux:verify_parallel_compute_and_save_continuation": {
+    "step": "Verify parallel compute and save continuation",
+    "default_shard": 1,
+    "id": "verify_parallel_compute_and_save_continuation"
+  },
+  "aux:build_and_run_the_lan_session_regression": {
+    "step": "Build and run the LAN session regression",
+    "default_shard": 3,
+    "id": "build_and_run_the_lan_session_regression"
+  },
+  "aux:test_front_end_colony_isolation_and_menu_navigation": {
+    "step": "Test front-end colony isolation and menu navigation",
+    "default_shard": 2,
+    "id": "test_front_end_colony_isolation_and_menu_navigation"
+  },
+  "aux:retain_browser_native_simulation_trace": {
+    "step": "Retain browser/native simulation trace",
+    "default_shard": 4,
+    "id": "retain_browser_native_simulation_trace"
+  }
+}

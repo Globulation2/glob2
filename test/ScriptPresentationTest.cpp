@@ -52,7 +52,9 @@ TEST_CASE("JavaScript load restores presentation without a callback or history e
 	glob2test::GlobalsOptions options;
 	options.loadStrings = true;
 	glob2test::HeadlessGlobals globals(options);
-	glob2test::HeadlessGame world;
+	glob2test::HeadlessGame::Options gameOptions;
+	gameOptions.header = true;
+	glob2test::HeadlessGame world(gameOptions);
 	auto &script = world.game.mapscript;
 	script.setMapScriptMode(MapScript::JavaScript);
 	script.setMapScript(

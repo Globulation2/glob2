@@ -19,6 +19,26 @@ int evaluate(Usl& usl,const std::string& source)
 }
 TEST_SUITE("USLCoverage")
 {
+    TEST_CASE("hostile calls arithmetic and nesting fail without process termination") {
+        for (const std::string source : {std::string("1(2)"), std::string("2147483647 + 1"),
+                std::string("50000 * 50000"), std::string("9999999999999999999999999"),
+                std::string(512, '(') + "1" + std::string(512, ')')}) {
+            Usl usl(false);
+            CHECK_THROWS_AS(evaluate(usl, source), Exception);
+            usl.collectGarbage();
+        }
+        Usl usl(false);
+        std::string chain = "1";
+        for (int i=0; i<1024; ++i) chain += " + 1";
+        CHECK_THROWS_AS(evaluate(usl, chain), Exception);
+        CHECK_THROWS_AS(evaluate(usl, "def f(x) := 1 + f(x)\nf(0)"), Exception);
+    }
+
+    TEST_CASE("native argument type mismatch raises a script error") {
+        Usl usl;
+        CHECK_THROWS_AS(evaluate(usl, "1 + \"text\""), Exception);
+    }
+
     TEST_CASE("released expression and recursion fixtures yield exact values")
     {
         struct Fixture { const char* name; int expected; };
@@ -92,4 +112,35 @@ TEST_SUITE("USLCoverage")
             CHECK(rejected);
         }
     }
+    TEST_CASE("root replacement and collection after compiler errors preserve live object methods")
+    {
+        Usl usl;
+        std::istringstream source("kept := [ def answer := 42 ]");
+        usl.includeScript("objects",source);
+                for (int round=0;round<20;++round)
+        {
+            const auto before=usl.root->locals.size();
+            usl.setConstant("scratch",new String(&usl.heap,std::string(4096,'x')));
+            CHECK(usl.root->locals.size()==before+(round==0 ? 1 : 0));
+            std::istringstream broken("val :=");
+            CHECK_THROWS_AS(usl.includeScript("broken",broken),Exception);
+            usl.collectGarbage(); CHECK(evaluate(usl,"kept.answer")==42);
+        }
+        usl.setConstant("scratch",new String(&usl.heap,"replacement"));
+        usl.collectGarbage();
+        auto* retained=dynamic_cast<String*>(usl.getConstant("scratch"));
+        REQUIRE(retained); CHECK(retained->value=="replacement");
+    }
+
+    TEST_CASE("replacing included constants updates expression access and keeps live closures")
+    {
+        Usl usl;
+        std::istringstream source("number := 7\nkept := [ def answer := 42 ]");
+        usl.includeScript("constants",source);
+        usl.setConstant("number",new Integer(&usl.heap,13));
+        CHECK(evaluate(usl,"number")==13);
+        usl.collectGarbage();
+        CHECK(evaluate(usl,"kept.answer")==42);
+    }
+
 }

@@ -2,6 +2,7 @@
 // Renders every declarative screen at phone, tablet and desktop viewports with
 // platform gutters and text scales, checking the framework invariants and saving
 // captures for review. Run with SDL_VIDEODRIVER=dummy and a disposable profile.
+#include <Environment.h>
 #include "EngineFixtures.h"
 #include "UIRecordingCanvas.h"
 #include <InterfacePresentation.h>
@@ -10,6 +11,7 @@
 #include <memory>
 #include <utility>
 #include <cstdlib>
+#include <cmath>
 #include <exception>
 #include "GlobalContainer.h"
 #include "CampaignEditor.h"
@@ -49,6 +51,7 @@
 #include <ScreenStack.h>
 #include <StringTable.h>
 #include <Toolkit.h>
+#include <SDL3_net/SDL_net.h>
 #include <cstdio>
 #include <functional>
 #include <set>
@@ -234,11 +237,35 @@ std::vector<Fixture> fixtures()
 void resize(int width, int height)
 {
 	auto *gfx = globalContainer->gfx;
-	SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()), width, height);
+	auto *window = SDL_GetWindowFromID(gfx->windowID());
+	int actualWidth = 0, actualHeight = 0;
+	REQUIRE(SDL_GetWindowSize(window, &actualWidth, &actualHeight));
+	if (actualWidth != width || actualHeight != height)
+		REQUIRE(SDL_SetWindowSize(window, width, height));
+	// X11 synchronization also waits for window position and can time out even
+	// when a repeated resize already has the requested dimensions.
+	const auto deadline = SDL_GetTicks() + 3000;
+	do
+	{
+		SDL_PumpEvents();
+		REQUIRE(SDL_GetWindowSize(window, &actualWidth, &actualHeight));
+		if (actualWidth == width && actualHeight == height)
+			break;
+		SDL_Delay(10);
+	} while (SDL_GetTicks() < deadline);
+	int minWidth = 0, minHeight = 0, maxWidth = 0, maxHeight = 0;
+	SDL_GetWindowMinimumSize(window, &minWidth, &minHeight);
+	SDL_GetWindowMaximumSize(window, &maxWidth, &maxHeight);
+	INFO("Requested " << width << "x" << height << "; actual " << actualWidth << "x" << actualHeight
+		 << "; minimum " << minWidth << "x" << minHeight << "; maximum " << maxWidth << "x" << maxHeight
+		 << "; flags " << SDL_GetWindowFlags(window) << "; SDL error: " << SDL_GetError());
+	REQUIRE(actualWidth == width);
+	REQUIRE(actualHeight == height);
 	SDL_Event event{};
-	event.type = SDL_WINDOWEVENT;
-	event.window.event = SDL_WINDOWEVENT_SIZE_CHANGED;
+	event.type = SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED;
 	GAGCore::GraphicContext::translateMouseEvent(&event);
+	REQUIRE(gfx->getW() == int(std::lround(width / gfx->getUiScale())));
+	REQUIRE(gfx->getH() == int(std::lround(height / gfx->getUiScale())));
 }
 
 // The part of a node that clipping ancestors leave visible.
@@ -283,7 +310,7 @@ void verifyOrDump(UIScreen &screen, const std::string &label)
 	}
 	catch (...)
 	{
-		if (SDL_getenv("GLOB2_UI_DUMP"))
+		if (SDL_getenv_unsafe("GLOB2_UI_DUMP"))
 			dump(*screen.host().root(), 0);
 		throw;
 	}
@@ -367,12 +394,19 @@ void verify(UIScreen &screen, const std::string &label)
 }
 void run(const Viewport &viewport)
 {
-	if (const char *only = SDL_getenv("GLOB2_UI_VIEWPORT");
+	if (const char *only = SDL_getenv_unsafe("GLOB2_UI_VIEWPORT");
 		only && *only && std::string(only) != viewport.name)
 		return;
 	glob2test::GlobalsOptions options{.display = true, .loadStrings = true, .width = 800, .height = 600,
 	                                  .screenFlags = GAGCore::GraphicContext::PORTABLEGPU | GAGCore::GraphicContext::RESIZABLE};
 	glob2test::HeadlessGlobals globals(options);
+	// This sweep constructs LAN discovery screens, just as Glob2::run does
+	// after network initialization. SDL3_net resolvers require initialized
+	// synchronization even when no connection is made by the fixture.
+	struct NetworkScope {
+		NetworkScope() { REQUIRE(NET_Init()); }
+		~NetworkScope() { NET_Quit(); }
+	} network;
 	auto theme = std::make_unique<FrontendTheme>();
 	int checked = 0;
 	const bool capture = true;
@@ -380,13 +414,13 @@ void run(const Viewport &viewport)
 	const std::string capturePath = glob2test::artifactDirFromWorkingDirectory();
 	for (const char *presentation : {"0", "1"})
 	{
-		SDL_setenv("GLOB2_MOBILE_UI", presentation, 1);
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", presentation, 1);
 		if (presentation[0] == '0' && viewport.width < 600)
 			continue;
 		resize(viewport.width, viewport.height);
 		for (const auto &fixture : fixtures())
 		{
-			if (const char *only = SDL_getenv("GLOB2_UI_ONLY"); only && *only && std::string(only) != fixture.name)
+			if (const char *only = SDL_getenv_unsafe("GLOB2_UI_ONLY"); only && *only && std::string(only) != fixture.name)
 				continue;
 			// Keep generated previews while the same viewport changes safe insets.
 			// Separate viewport cases remain independently shardable in CI.
@@ -421,7 +455,8 @@ void run(const Viewport &viewport)
 				const std::string label = std::string(fixture.name) + " " + viewport.name +
 										  " touch=" + presentation + " text=" + std::to_string(percent) +
 										  " bottom=" + std::to_string(int(insets.bottom));
-				if (const char *reveal = SDL_getenv("GLOB2_UI_REVEAL"); reveal && *reveal)
+				if (const char *reveal = SDL_getenv_unsafe("GLOB2_UI_REVEAL"); reveal && *reveal)
+
 				{
 					screen->host().scrollIntoView(reveal);
 					frame();
@@ -447,8 +482,8 @@ void run(const Viewport &viewport)
 				for (std::size_t i = 0; fixture.navigable && i < screen->host().focusOrder().size(); ++i)
 				{
 					SDL_Event tab{};
-					tab.type = SDL_KEYDOWN;
-					tab.key.keysym.sym = SDLK_TAB;
+					tab.type = SDL_EVENT_KEY_DOWN;
+					tab.key.key = SDLK_TAB;
 					frame({tab});
 				}
 				if (fixture.navigable && screen->host().focused().empty())
@@ -467,7 +502,7 @@ void run(const Viewport &viewport)
 	GAGCore::mobileSafeInsetsForTesting.reset();
 	GAGCore::userTextScale = 1;
 	theme.reset();
-	SDL_setenv("GLOB2_MOBILE_UI", "0", 1);
+	GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "0", 1);
 	std::printf("PASS ui presentation: %d screen/viewport combinations verified\n", checked);
 }
 } // namespace
@@ -494,7 +529,7 @@ TEST_SUITE("UIPresentation")
 	{
 		run(viewports[4]);
 	}
-	TEST_CASE("every screen lays out; navigates and captures at fullhd across presentations and insets [display:1600x1400][artifacts][slow]")
+	TEST_CASE("every screen lays out; navigates and captures at fullhd across presentations and insets [display:2200x1400][artifacts][slow]")
 	{
 		run(viewports[5]);
 	}

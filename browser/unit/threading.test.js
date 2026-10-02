@@ -1,6 +1,6 @@
 const {test} = require('node:test');
 const assert = require('node:assert/strict');
-const {threadingSupport} = require('../loader.js');
+const {threadingSupport,watchThreadStartup} = require('../loader.js');
 function scope(overrides={}) {
   return {
     crossOriginIsolated:true, SharedArrayBuffer, WebAssembly, Blob,
@@ -21,6 +21,40 @@ test('serial fallback explains missing isolation, memory and worker support',asy
 test('worker WebGL has an additional canvas-transfer requirement',async()=>{
   assert.match(await threadingSupport('webgl2',scope()),/WebGL/);
   assert.equal(await threadingSupport('webgl2',scope({HTMLCanvasElement:{prototype:{transferControlToOffscreen(){}}},OffscreenCanvas:class {}})),null);
+});
+
+function startupScope(Worker = class extends EventTarget {}) {
+  let timeout;
+  return {Worker, setTimeout(callback) { timeout = callback; return 1; },
+    clearTimeout() { timeout = null; }, expire() { timeout?.(); }};
+}
+test('actual pthread errors and silent startup stalls are observed, then detached', () => {
+  const scope = startupScope();
+  const NativeWorker = scope.Worker;
+  const failures = [];
+  const stop = watchThreadStartup(reason => failures.push(reason), scope);
+  const worker = new scope.Worker('threaded/index.js');
+  assert.ok(worker instanceof NativeWorker);
+  worker.onerror = () => {}; // SDK handler assignment cannot replace our listener
+  const error = new Event('error');
+  error.message = 'Unable to instantiate worker runtime';
+  worker.dispatchEvent(error);
+  assert.match(failures[0], /Unable to instantiate/);
+  scope.expire();
+  assert.match(failures[1], /timed out/);
+  stop(); stop();
+  assert.equal(scope.Worker, NativeWorker);
+  worker.dispatchEvent(error); scope.expire();
+  assert.equal(failures.length, 2);
+});
+test('synchronous pthread creation errors reach fallback and retain their exception', () => {
+  const error = new Error('Worker denied');
+  const scope = startupScope(class {constructor() {throw error;}});
+  let failure;
+  const stop = watchThreadStartup(reason => {failure = reason;}, scope);
+  assert.throws(() => new scope.Worker('threaded/index.js'), value => value === error);
+  assert.match(failure, /Worker denied/);
+  stop();
 });
 
 

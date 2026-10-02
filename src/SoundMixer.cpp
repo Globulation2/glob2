@@ -8,6 +8,8 @@
 using namespace GAGCore;
 #include <iostream>
 #include <assert.h>
+#include <array>
+#include <algorithm>
 
 #ifdef HAVE_CONFIG_H
 	#include <glob2/BuildConfig.h>
@@ -17,7 +19,7 @@ using namespace GAGCore;
 #include <speex/speex.h>
 #endif
 
-#include <SDL_endian.h>
+#include <SDL3/SDL_endian.h>
 
 #ifdef WIN32
 #include <malloc.h>
@@ -27,8 +29,7 @@ using namespace GAGCore;
 //! Independent of the device buffer size: a fade spans as many callbacks as
 //! it takes to cover this many samples.
 #define FADE_SAMPLE_COUNT 4096*8
-//! Frames per device buffer. SDL_CloseAudio waits for the in-flight callback,
-//! so this bounds how long teardown blocks.
+//! Maximum frames per mixing chunk, independent of the playback device buffer.
 #define DEVICE_FRAME_COUNT 1024
 #define INTERPOLATION_RANGE 65535
 #define INTERPOLATION_BITS 16
@@ -258,36 +259,40 @@ void mixaudio(void *voidMixer, Uint8 *stream, int len)
 			{
 				mixer->fadePos = 0;
 				mixer->mode = SoundMixer::MODE_STOPPED;
-				SDL_PauseAudio(1);
+				// The stream callback emits silence once the fade reaches MODE_STOPPED.
 			}
 		}
 	}
 }
 
+static void SDLCALL streamAudio(void *userdata, SDL_AudioStream *stream, int additional, int)
+{
+    auto *mixer = static_cast<SoundMixer *>(userdata);
+    // Bound stack and decoding work; SDL3 may ask for several device buffers.
+    alignas(Sint16) std::array<Uint8, DEVICE_FRAME_COUNT * 4> buffer;
+    while (additional > 0) {
+        const int count = std::min(additional, static_cast<int>(buffer.size()));
+        const int aligned = (count + 3) & ~3;
+        if (mixer->mode == SoundMixer::MODE_STOPPED || mixer->actTrack < 0)
+            std::fill(buffer.begin(), buffer.begin() + aligned, 0);
+        else
+            mixaudio(mixer, buffer.data(), aligned);
+        if (!SDL_PutAudioStreamData(stream, buffer.data(), aligned)) return;
+        additional -= aligned;
+    }
+}
+
 void SoundMixer::openAudio(void)
 {
-	SDL_AudioSpec as;
-	// Set 16-bit stereo audio at 44Khz
-	as.freq = 44100;
-	as.format = AUDIO_S16SYS;
-	as.channels = 2;
-	as.samples = DEVICE_FRAME_COUNT;
-	as.callback = mixaudio;
-	as.userdata = this;
-	
-	// Open the audio device and start playing sound!
-	if (SDL_OpenAudio(&as, NULL) < 0)
-	{
-		soundEnabled = false;
-		std::cerr << "SoundMixer : Unable to open audio: " << SDL_GetError() << std::endl;
-		return;
-	}
-	else
-	{
-		soundEnabled = true;
-		mode = MODE_STOPPED;
-	}
-	
+    const SDL_AudioSpec spec{SDL_AUDIO_S16, 2, 44100};
+    audioStream = SDL_OpenAudioDeviceStream(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &spec, streamAudio, this);
+    soundEnabled = audioStream != nullptr;
+    if (!soundEnabled) {
+        std::cerr << "SoundMixer: Unable to open audio: " << SDL_GetError() << std::endl;
+        return;
+    }
+    mode = MODE_STOPPED;
+
 #if !defined(__EMSCRIPTEN__) && !defined(GLOB2_NO_VOICE)
 	// Open Speex decoder
 #ifdef _MSC_VER
@@ -319,7 +324,7 @@ SoundMixer::SoundMixer(unsigned musicvol, unsigned voicevol, bool mute)
 	
 	// While muted there is nothing to play, so leave the device closed; the
 	// audio thread and its Ogg decoding never start, and there is nothing for
-	// SDL_CloseAudio to wait for at exit. setVolume() opens it on unmute.
+	// SDL_DestroyAudioStream to wait for at exit. setVolume() opens it on unmute.
 	if (mute)
 	{
 		this->musicVolume = 0;
@@ -333,8 +338,9 @@ SoundMixer::~SoundMixer()
 {
 	if (soundEnabled)
 	{
-		SDL_PauseAudio(1);
-		SDL_CloseAudio();
+		SDL_PauseAudioDevice(SDL_GetAudioStreamDevice(audioStream));
+		SDL_DestroyAudioStream(audioStream);
+        audioStream = nullptr;
 #if !defined(__EMSCRIPTEN__) && !defined(GLOB2_NO_VOICE)
 		speex_decoder_destroy(speexDecoderState);
 #endif
@@ -372,7 +378,7 @@ int SoundMixer::loadTrack(const std::string name, int index)
 	}
 	// ov_open succeeded: the OggVorbis_File now owns `fp` and will close it via ov_clear.
 
-	SDL_LockAudio();
+	SDL_LockAudioStream(audioStream);
 	if (index >= 0 && index< (int)tracks.size())
 	{
 		ov_clear(tracks[index]);
@@ -384,7 +390,7 @@ int SoundMixer::loadTrack(const std::string name, int index)
 		tracks.push_back(oggFile.release());
 		index = (int)tracks.size()-1;
 	}
-	SDL_UnlockAudio();
+	SDL_UnlockAudioStream(audioStream);
 	
 	return index;
 }
@@ -396,7 +402,8 @@ void SoundMixer::setNextTrack(unsigned i, bool earlyChange)
 	if (i >= tracks.size())
 		return;
 
-	SDL_LockAudio();
+	bool resume = false;
+	SDL_LockAudioStream(audioStream);
 
 	// A fade now spans many callbacks, so a track change can be asked for while
 	// one is still running — GameMusicController can emit on consecutive 40 ms
@@ -405,7 +412,7 @@ void SoundMixer::setNextTrack(unsigned i, bool earlyChange)
 	if (soundEnabled && mode == MODE_EARLY_CHANGE)
 	{
 		pendingTrack = static_cast<int>(i);
-		SDL_UnlockAudio();
+		SDL_UnlockAudioStream(audioStream);
 		return;
 	}
 
@@ -425,7 +432,7 @@ void SoundMixer::setNextTrack(unsigned i, bool earlyChange)
 		{
 			fadePos = 0;
 			pendingTrack = -1;
-			SDL_PauseAudio(0);
+			resume = true;
 			mode = MODE_START;
 		}
 		else if (earlyChange)
@@ -436,7 +443,8 @@ void SoundMixer::setNextTrack(unsigned i, bool earlyChange)
 		}
 	}
 
-	SDL_UnlockAudio();
+	SDL_UnlockAudioStream(audioStream);
+	if (resume) SDL_ResumeAudioDevice(SDL_GetAudioStreamDevice(audioStream));
 }
 
 int SoundMixer::loadTrack(const std::string name, MusicTrack track)
@@ -449,10 +457,10 @@ void SoundMixer::setNextTrack(MusicTrack track, bool earlyChange)
 	setNextTrack(static_cast<unsigned>(track), earlyChange);
 }
 
-// All writes to musicVolume/voiceVolume must hold SDL_LockAudio — mixaudio()
+// All writes to musicVolume/voiceVolume must hold SDL_LockAudioStream — mixaudio()
 // reads them on the audio thread. openAudio() is called *before* taking the
-// lock: SDL_OpenAudio opens the device in the paused state, so the callback
-// cannot fire until SDL_PauseAudio(0) is called from setNextTrack().
+// lock: SDL_OpenAudioDeviceStream opens the device in the paused state, so the callback
+// cannot fire until SDL_ResumeAudioDevice(SDL_GetAudioStreamDevice(audioStream)) is called from setNextTrack().
 void SoundMixer::setVolume(unsigned musicVolume, unsigned voiceVolume, bool mute)
 {
 	bool justOpened = false;
@@ -464,7 +472,7 @@ void SoundMixer::setVolume(unsigned musicVolume, unsigned voiceVolume, bool mute
 		justOpened = soundEnabled;
 	}
 
-	SDL_LockAudio();
+	SDL_LockAudioStream(audioStream);
 	if (mute)
 	{
 		this->musicVolume = 0;
@@ -475,7 +483,7 @@ void SoundMixer::setVolume(unsigned musicVolume, unsigned voiceVolume, bool mute
 		this->musicVolume = musicVolume;
 		this->voiceVolume = voiceVolume;
 	}
-	SDL_UnlockAudio();
+	SDL_UnlockAudioStream(audioStream);
 
 	// start the track that was selected while the device was closed, once the
 	// volumes are in place so the fade-in is not silent
@@ -486,24 +494,24 @@ void SoundMixer::setVolume(unsigned musicVolume, unsigned voiceVolume, bool mute
 // mode is read by mixaudio() on the audio thread; the write must hold the lock.
 void SoundMixer::stopMusic(void)
 {
-	SDL_LockAudio();
+	SDL_LockAudioStream(audioStream);
 	fadePos = 0;
 	pendingTrack = -1;
 	mode = MODE_STOP;
-	SDL_UnlockAudio();
+	SDL_UnlockAudioStream(audioStream);
 }
 
 
 
 bool SoundMixer::isPlayerTransmittingVoice(int player)
 {
-	SDL_LockAudio();
+	SDL_LockAudioStream(audioStream);
 	if(voices.find(player) != voices.end())
 	{
-		SDL_UnlockAudio();
+		SDL_UnlockAudioStream(audioStream);
 		return true;
 	}
-	SDL_UnlockAudio();
+	SDL_UnlockAudioStream(audioStream);
 	return false;
 }
 
@@ -513,12 +521,12 @@ void SoundMixer::addVoiceData(std::shared_ptr<OrderVoiceData> order)
 #if !defined(__EMSCRIPTEN__) && !defined(GLOB2_NO_VOICE)
 	if (soundEnabled)
 	{
-		SDL_LockAudio();
+		SDL_LockAudioStream(audioStream);
 		// get or create the voice
 		PlayerVoice &pv = voices[order->sender];
 		if (pv.voiceData.size() >= MAX_VOICE_BACKLOG_SAMPLES)
 		{
-			SDL_UnlockAudio();
+			SDL_UnlockAudioStream(audioStream);
 			return;
 		}
 		// insert 200 ms silence to let packets come if we aer the first
@@ -544,7 +552,7 @@ void SoundMixer::addVoiceData(std::shared_ptr<OrderVoiceData> order)
 		}
 		speex_bits_destroy(&bits);
 		
-		SDL_UnlockAudio();
+		SDL_UnlockAudioStream(audioStream);
 	}
 #endif
 }

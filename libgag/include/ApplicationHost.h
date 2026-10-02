@@ -2,7 +2,7 @@
 #pragma once
 #include <cstdint>
 #include <string>
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <functional>
 #include <memory>
 #include <vector>
@@ -24,6 +24,9 @@ void run(std::unique_ptr<Loop> loop, std::function<void()> complete);
 // Compatibility wait for native-only modal loops. Browser-reachable code must
 // use scheduled screens or cooperative tasks; the browser implementation rejects it.
 void wait(std::uint32_t milliseconds);
+
+// Initialize host compatibility state after a new OpenGL context is current.
+void initializeOpenGLContext();
 
 // Consume the newest host viewport request at an application frame boundary.
 bool takeViewportSize(int &width, int &height);

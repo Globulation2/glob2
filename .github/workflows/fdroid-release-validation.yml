@@ -62,7 +62,7 @@ jobs:
             git merge-base --is-ancestor "$SOURCE_COMMIT" refs/remotes/public/master
           fi
           git checkout --detach "$SOURCE_COMMIT"
-          python3 mobile/android_release.py check
+          python3 mobile/android_release.py ${{ inputs.tag && 'check' || 'check-candidate' }}
           python3 mobile/android_release.py check-listing
           version="$(python3 -c 'import sys; sys.path.insert(0,"mobile"); from android_release import release_identity; print(release_identity()["versionName"])')"
           if [[ -n "$RELEASE_TAG" ]]; then test "$RELEASE_TAG" = "v$version"; fi

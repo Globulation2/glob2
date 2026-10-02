@@ -2,6 +2,7 @@
 // Copyright (C) 2006 Bradley Arsenault
 
 #include "shared_runtime/Runtime.h"
+#include <memory>
 #include "Building.h"
 #include "IntBuildingType.h"
 
@@ -14,16 +15,17 @@ using namespace AISharedRuntime::Conditions;
 // BuildingCondition::load_condition), which is a friend of every derived class.
 #define LOAD_CASE(EnumVal, Type) \
 	case EnumVal: \
-		condition = new Type; \
-		condition->load(stream, player, versionMinor); \
+		condition.reset(new Type); \
+		if (!condition->load(stream, player, versionMinor)) throw std::runtime_error("Invalid saved AI object"); \
 		break;
 
 
 Condition* Condition::load_condition(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
+	GAGCore::InputStream::NestedRead nesting(*stream);
 	stream->readEnterSection("Condition");
-	ConditionType type=static_cast<ConditionType>(stream->readUint32("type"));
-	Condition* condition=NULL;
+	const Uint32 type=stream->readUint32("type");
+	std::unique_ptr<Condition> condition;
 	switch(type)
 	{
 		LOAD_CASE(CParticularBuilding,     ParticularBuilding)
@@ -33,7 +35,8 @@ Condition* Condition::load_condition(GAGCore::InputStream *stream, Player *playe
 		LOAD_CASE(CPopulation,             Population)
 	}
 	stream->readLeaveSection();
-	return condition;
+	if (!condition) throw std::runtime_error("Unknown saved AI object type");
+	return condition.release();
 }
 
 
@@ -50,9 +53,10 @@ void Condition::save_condition(Condition* condition, GAGCore::OutputStream *stre
 
 BuildingCondition* BuildingCondition::load_condition(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
+	GAGCore::InputStream::NestedRead nesting(*stream);
 	stream->readEnterSection("BuildingCondition");
-	BuildingConditionType type=static_cast<BuildingConditionType>(stream->readUint32("type"));
-	BuildingCondition* condition=NULL;
+	const Uint32 type=stream->readUint32("type");
+	std::unique_ptr<BuildingCondition> condition;
 	switch(type)
 	{
 		LOAD_CASE(CNotUnderConstruction,    NotUnderConstruction)
@@ -67,7 +71,8 @@ BuildingCondition* BuildingCondition::load_condition(GAGCore::InputStream *strea
 		LOAD_CASE(CResourceTrackerAge,     ResourceTrackerAge)
 	}
 	stream->readLeaveSection();
-	return condition;
+	if (!condition) throw std::runtime_error("Unknown saved AI object type");
+	return condition.release();
 }
 
 #undef LOAD_CASE

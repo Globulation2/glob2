@@ -81,4 +81,38 @@ TEST_SUITE("SceneExtract")
 		extractor.extract(world.game, request, scene);
 		CHECK(!scene.overlay);
 	}
+    TEST_CASE("published scene retains old entity fields while subsequent scenes reflect changes")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.clearImmobile=true,.loadDefaultRace=true});
+        auto* unit=world.addUnit(WORKER,10,10);
+        SceneExtractor extractor; SceneRequest request; Scene before,after;
+        const auto gid=unit->gid; const auto hp=unit->hp;
+        extractor.extract(world.game,request,before);
+        unit->hp=1;
+        extractor.extract(world.game,request,after);
+        REQUIRE(before.entities.unit(gid)); REQUIRE(after.entities.unit(gid));
+        CHECK(before.entities.unit(gid)->hp==hp); CHECK(after.entities.unit(gid)->hp==1);
+        REQUIRE(world.game.removeUnitAndBuildingAndFlags(10,10,Game::DEL_UNIT));
+        extractor.extract(world.game,request,after);
+        CHECK(after.entities.unit(gid)==nullptr);
+        CHECK(before.entities.unit(gid)->hp==hp);
+    }
+
+    TEST_CASE("stale selection generation never selects a replacement occupying the same gid")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.clearImmobile=true,.loadDefaultRace=true});
+        auto* unit=world.addUnit(WORKER,10,10);
+        SceneExtractor extractor; SceneRequest request; Scene scene;
+        request.selectedUnit=Game::refOf(unit); const auto gid=unit->gid;
+        extractor.extract(world.game,request,scene);
+        REQUIRE(scene.entities.unit(gid)); CHECK(scene.entities.isSelected(*scene.entities.unit(gid)));
+        REQUIRE(world.game.removeUnitAndBuildingAndFlags(10,10,Game::DEL_UNIT));
+        auto* replacement=world.addUnit(WORKER,10,10);
+        REQUIRE(replacement->gid==gid);
+        extractor.extract(world.game,request,scene);
+        REQUIRE(scene.entities.unit(gid)); CHECK_FALSE(scene.entities.isSelected(*scene.entities.unit(gid)));
+    }
+
 }

@@ -8,31 +8,31 @@
 #include "MapEdit.h"
 #include "PhoneEditor.h"
 #include "MapEditKeyActions.h"
-#include "SDLCompat.h"
+#include <SDL3/SDL.h>
 
 void MapEdit::processEvent(SDL_Event& event)
 {
 	updateCamera();
     inputState.observe(event);
-    if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_FOCUS_LOST) {
+    if ((event.type >= SDL_EVENT_WINDOW_FIRST && event.type <= SDL_EVENT_WINDOW_LAST) && event.type == SDL_EVENT_WINDOW_FOCUS_LOST) {
         suspendInput();
     }
-    if (!inputState.hasFocus() && (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP ||
-        event.type == SDL_MOUSEBUTTONDOWN || event.type == SDL_MOUSEBUTTONUP ||
-        event.type == SDL_MOUSEMOTION || event.type == SDL_MOUSEWHEEL)) return;
+    if (!inputState.hasFocus() && (event.type == SDL_EVENT_KEY_DOWN || event.type == SDL_EVENT_KEY_UP ||
+        event.type == SDL_EVENT_MOUSE_BUTTON_DOWN || event.type == SDL_EVENT_MOUSE_BUTTON_UP ||
+        event.type == SDL_EVENT_MOUSE_MOTION || event.type == SDL_EVENT_MOUSE_WHEEL)) return;
 
-	if (event.type==SDL_QUIT)
+	if (event.type==SDL_EVENT_QUIT)
 	{
 		doFullQuit=true;
 	}
 #	ifdef USE_OSX
-	else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_q && (event.key.keysym.mod & KMOD_GUI))
+	else if(event.type == SDL_EVENT_KEY_DOWN && event.key.key == SDLK_Q && (event.key.mod & SDL_KMOD_GUI))
 	{
 		doFullQuit=true;
 	}
 #	endif
 #	ifdef USE_WIN32
-	else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F4 && (event.key.keysym.mod & KMOD_ALT))
+	else if(event.type == SDL_EVENT_KEY_DOWN && event.key.key == SDLK_F4 && (event.key.mod & SDL_KMOD_ALT))
 	{
 		doFullQuit=true;
 	}
@@ -43,15 +43,15 @@ void MapEdit::processEvent(SDL_Event& event)
 		delegateMenu(event);
 		return;
 	}
-    else if(event.type==SDL_MOUSEWHEEL)
+    else if(event.type==SDL_EVENT_MOUSE_WHEEL)
     {
         double delta=event.wheel.y;
 #if SDL_VERSION_ATLEAST(2,0,18)
-        delta=event.wheel.preciseY;
+        delta=event.wheel.y;
 #endif
         zoomMap(delta*(event.wheel.direction==SDL_MOUSEWHEEL_FLIPPED?-1:1),mouseX,mouseY);
     }
-	else if(event.type==SDL_MOUSEMOTION)
+	else if(event.type==SDL_EVENT_MOUSE_MOTION)
 	{
 		mouseX=event.motion.x;
 		mouseY=event.motion.y;
@@ -91,7 +91,7 @@ void MapEdit::processEvent(SDL_Event& event)
 			performAction("no ressource growth area drag motion", relMouseX, relMouseY);
 		}
 	}
-	else if(event.type==SDL_MOUSEBUTTONDOWN || event.type==SDL_MOUSEBUTTONUP)
+	else if(event.type==SDL_EVENT_MOUSE_BUTTON_DOWN || event.type==SDL_EVENT_MOUSE_BUTTON_UP)
 	{
 		// Button events carry their own position; resync the cached motion
 		// position to it before dispatching. A warped or synthetic click can
@@ -101,17 +101,17 @@ void MapEdit::processEvent(SDL_Event& event)
 		// where the click landed.
 		mouseX=event.button.x;
 		mouseY=event.button.y;
-        if(event.type==SDL_MOUSEBUTTONDOWN && event.button.button==SDL_BUTTON_LEFT && clickMapZoomControls(camera,mouseX,mouseY))
+        if(event.type==SDL_EVENT_MOUSE_BUTTON_DOWN && event.button.button==SDL_BUTTON_LEFT && clickMapZoomControls(camera,mouseX,mouseY))
         {viewportX=camera.tileX();viewportY=camera.tileY();return;}
 		handleMouseButtonEvent(event);
 	}
-	else if(event.type==SDL_KEYDOWN)
+	else if(event.type==SDL_EVENT_KEY_DOWN)
 	{
-		handleKeyPressed(event.key.keysym, true);
+		handleKeyPressed(event.key, true);
 	}
-	else if(event.type==SDL_KEYUP)
+	else if(event.type==SDL_EVENT_KEY_UP)
 	{
-		handleKeyPressed(event.key.keysym, false);
+		handleKeyPressed(event.key, false);
 	}
 }
 
@@ -119,7 +119,7 @@ void MapEdit::processEvent(SDL_Event& event)
 
 void MapEdit::handleMouseButtonEvent(SDL_Event& event)
 {
-	if(event.type==SDL_MOUSEBUTTONDOWN && event.button.button==SDL_BUTTON_LEFT)
+	if(event.type==SDL_EVENT_MOUSE_BUTTON_DOWN && event.button.button==SDL_BUTTON_LEFT)
 	{
 		if((phone || !findAction(event.button.x, event.button.y)) && camera.contains(mouseX,mouseY) && widgetRectangle(0, 16, globalContainer->gfx->getW()-menuWidth(), globalContainer->gfx->getH()).is_in(mouseX, mouseY))
 		{
@@ -152,19 +152,19 @@ void MapEdit::handleMouseButtonEvent(SDL_Event& event)
 		else if(widgetRectangle(globalContainer->gfx->getW()-menuWidth()+RIGHT_MENU_OFFSET+14, 14, 100, 100).is_in(mouseX, mouseY))
 			performAction("minimap drag start");
 	}
-	else if(event.type==SDL_MOUSEBUTTONDOWN && event.button.button==SDL_BUTTON_RIGHT)
+	else if(event.type==SDL_EVENT_MOUSE_BUTTON_DOWN && event.button.button==SDL_BUTTON_RIGHT)
 	{
 		if(selectionMode==PlaceNothing || selectionMode==EditingUnit || selectionMode==EditingBuilding)
 			performAction("change menu");
 		if(selectionMode!=PlaceNothing)
 			performAction("unselect");
 	}
-	else if(event.type==SDL_MOUSEBUTTONDOWN && event.button.button==SDL_BUTTON_MIDDLE)
+	else if(event.type==SDL_EVENT_MOUSE_BUTTON_DOWN && event.button.button==SDL_BUTTON_MIDDLE)
 	{
 		isMiddleScrollDragging = true;
 		if (!isScrollDragging) performAction("scroll drag start");
 	}
-	else if(event.type==SDL_MOUSEBUTTONUP && event.button.button==SDL_BUTTON_LEFT)
+	else if(event.type==SDL_EVENT_MOUSE_BUTTON_UP && event.button.button==SDL_BUTTON_LEFT)
 	{
 		if(isDraggingMinimap)
 			performAction("minimap drag stop");
@@ -184,7 +184,7 @@ void MapEdit::handleMouseButtonEvent(SDL_Event& event)
 			if (!isMiddleScrollDragging) performAction("scroll drag stop");
 		}
 	}
-	else if(event.type==SDL_MOUSEBUTTONUP && event.button.button==SDL_BUTTON_MIDDLE)
+	else if(event.type==SDL_EVENT_MOUSE_BUTTON_UP && event.button.button==SDL_BUTTON_MIDDLE)
 	{
 		isMiddleScrollDragging = false;
 		if(isScrollDragging && !isLeftScrollDragging) performAction("scroll drag stop");
@@ -193,7 +193,7 @@ void MapEdit::handleMouseButtonEvent(SDL_Event& event)
 
 
 
-void MapEdit::handleKeyPressed(SDL_Keysym key, bool pressed)
+void MapEdit::handleKeyPressed(SDL_KeyboardEvent key, bool pressed)
 {
 	Uint32 action_t = keyboardManager.getAction(KeyPress(key, pressed));
 	switch(action_t)

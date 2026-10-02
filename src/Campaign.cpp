@@ -135,7 +135,7 @@ bool CampaignMapEntry::load(InputStream* stream, Uint32 versionMinor)
 	mapFileName = stream->readText("mapFileName");
 	isLocked = stream->readUint8("isLocked");
 	stream->readEnterSection("unlockedBy");
-	Uint32 size=stream->readUint32("size");
+	Uint32 size=stream->readCount("size");
 	unlockedBy.resize(size);
 	for(unsigned n=0; n<size; ++n)
 	{
