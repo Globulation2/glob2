@@ -171,13 +171,14 @@ def verify_apk(apk, arch, sdk, root=ROOT, require_dependency_manifest=True):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=("check", "check-listing", "verify-apk", "code"))
+    parser.add_argument("command", choices=("check", "check-build", "check-listing", "verify-apk", "code"))
     parser.add_argument("--arch", choices=tuple(ABI_CODES))
     parser.add_argument("--apk", type=Path)
     parser.add_argument("--android-sdk", type=Path, default=None)
     args = parser.parse_args()
-    if args.command == "check":
-        check_prior_tags()
+    if args.command in ("check", "check-build"):
+        if args.command == "check":
+            check_prior_tags()
         check_recipe()
         print(release_identity()["versionName"])
     elif args.command == "check-listing":
