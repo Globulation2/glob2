@@ -4540,3 +4540,29 @@ Maparen inertzia
 
 [maps mine]
 
+[results waiting for players]
+
+[results waiting detail]
+
+[results waiting slow]
+
+[results verifying slow]
+
+[results rematch]
+
+[results join rematch %0]
+
+[hub profile history]
+
+[hub my maps]
+
+[hub leaderboard %0]
+
+[hub leaderboard empty]
+
+[hub guests not ranked]
+
+[hub full leaderboard]
+
+[settings %0 is no longer linked.]
+

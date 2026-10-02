@@ -295,7 +295,9 @@ describe('local accounts', () => {
       .values({ account_id: accountId, provider: 'google', subject: 'carol-google-1' })
       .execute();
     expect(await unlink('local').then((r) => r.status)).toBe(204);
-    const self = await json(await fetch(`${api.url}/api/v1/accounts/me`, { headers: bearer(token) }));
+    const self = await json(
+      await fetch(`${api.url}/api/v1/accounts/me`, { headers: bearer(token) }),
+    );
     expect(self['identities']).toEqual([expect.objectContaining({ provider: 'google' })]);
     expect(await unlink('google').then((r) => r.status)).toBe(409);
 

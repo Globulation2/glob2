@@ -73,7 +73,9 @@ if not env['server']:
     lan_test = local.Program('LANSessionHarness', lan_sources)
     local.Alias('lan-test', lan_test)
     online_play_test = local.Program('OnlinePlayHarness', [strict_objects.get(source, source) for source in source_files if source != 'Glob2.cpp']
-                                     + local.Object('OnlinePlayHarness.o', '#test/OnlinePlayHarness.cpp'))
+                                     # It reads the engine's game state to report what it sees.
+                                     + local.Object('OnlinePlayHarness.o', '#test/OnlinePlayHarness.cpp',
+                                                    CXXFLAGS=local['CXXFLAGS'] + ['-fno-access-control']))
     local.Alias('online-play-test', online_play_test)
 
 # Twelve-team sprite benchmark; not part of the default build.

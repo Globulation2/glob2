@@ -26,6 +26,8 @@ class GameSessionScreen : public GAGGUI::Screen
     bool usesResponsiveViewport() const override { return GAGCore::phonePresentationRequested(); }
     std::pair<int,int> minimumViewportSize() const override { return {800,600}; }
     void cancelExecutionInput() override { suspendExecution(); }
+    // The running engine, for harnesses that watch the game and its turn session.
+    Engine *runningEngine() const { return engine.get(); }
 
   private:
     void updateExecutionImpl(Uint32 tick);

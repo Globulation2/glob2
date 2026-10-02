@@ -4528,3 +4528,29 @@ Sat
 Share online…
 [maps mine]
 Mine
+[results waiting for players]
+Waiting for the other players to leave…
+[results waiting detail]
+The result is recorded once everyone has left the match.
+[results waiting slow]
+A player who lost the connection has up to 3 minutes to come back. The result will appear in your history and on the match page.
+[results verifying slow]
+Verification is taking longer than usual. The result will appear in your history and on the match page.
+[results rematch]
+Rematch
+[results join rematch %0]
+Join %0's rematch
+[hub profile history]
+Profile & history
+[hub my maps]
+My maps
+[hub leaderboard %0]
+Leaderboard · %0
+[hub leaderboard empty]
+No ranked players yet.
+[hub guests not ranked]
+Guests aren't ranked. Sign in to appear here.
+[hub full leaderboard]
+Full leaderboard
+[settings %0 is no longer linked.]
+%0 is no longer linked.

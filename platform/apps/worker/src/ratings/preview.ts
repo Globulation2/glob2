@@ -98,15 +98,23 @@ export function previewFor(
   const before = ratings.get(seat);
   if (!mine || !before) return undefined;
   const mySide = sides.indexOf(allianceOf.get(mine.team));
-  const groups = sides.map((side) => rated.filter((s) => allianceOf.get(s.team) === side));
-  const position = groups[mySide]!.findIndex((s) => s.seat === seat);
-  const after = (myRank: number) => {
+  const groups = sides.map((side) =>
+    rated.flatMap((s) => {
+      const rating = ratings.get(s.seat);
+      return allianceOf.get(s.team) === side && rating ? [{ seat: s.seat, rating }] : [];
+    }),
+  );
+  const position = groups[mySide]?.findIndex((s) => s.seat === seat) ?? -1;
+  if (position < 0) return undefined;
+  const after = (myRank: number): number => {
     const ranks = sides.map((_, i) => (i === mySide ? myRank : 3 - myRank));
     const result = rateSides(
-      groups.map((g) => g.map((s) => ratings.get(s.seat)!)),
+      groups.map((g) => g.map((s) => s.rating)),
       ranks,
     );
-    return displayRating(result[mySide]![position]!);
+    const mineAfter = result[mySide]?.[position];
+    if (!mineAfter) throw new Error('openskill returned fewer ratings than it was given');
+    return displayRating(mineAfter);
   };
   return {
     ladder,

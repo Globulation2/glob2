@@ -194,35 +194,47 @@ mock-ups:
 
 | Screen | Code | What it does |
 | --- | --- | --- |
-| Online hub | `src/OnlineHubScreen.*` | "Play online" on the main menu. Starts the client (a guest is created on first contact), account chip with browser sign-in and the confirmation code, quick-match cards from `InstanceInfo.queues`, Create room, Join by code, public rooms (`GET /api/v1/rooms`), recent matches (hidden when empty), offline and update-required banners, and invite links (`takePendingJoin`) with the trust prompt for other instances. The legacy YOG lobby is reachable only through its "Legacy server" footer link until the cutover. |
+| Online hub | `src/OnlineHubScreen.*` | "Play online" on the main menu. Starts the client (a guest is created on first contact), account chip with browser sign-in and the confirmation code, quick-match cards from `InstanceInfo.queues`, Create room, Join by code, public rooms (`GET /api/v1/rooms`), recent matches (`GET /api/v1/players/{id}/matches`, with `match.updated` summaries seen since merged over them; hidden when empty), Profile & history and Maps (the profile and map-catalog screens), a leaderboard teaser (top five of the first rated queue, `GET /api/v1/leaderboards/{queue}`), offline and update-required banners, and invite links (`takePendingJoin`) with the trust prompt for other instances. The legacy YOG lobby is reachable only through its "Legacy server" footer link until the cutover. |
 | Room | `src/RoomScreen.*` over `RoomBackend` | One screen for online rooms (`Online::PlatformRoom`) and LAN rooms (`Lan::LanRoom`): Map / Players & Teams / Game Rules tabs, seats with controller, team and remove, invite (or how to join on the network), chat and ready. Phones get a Seats / Map / Rules / Chat bar and Start or Ready in the thumb corner, mirrored by the thumb-side setting. The host edits map and rules with the custom-game screen in room mode (`CustomGameScreen::useForRoom`); the server generates the map from the generator descriptor (`src/online/RoomSetup.*`). |
 | Starting match | `src/MatchStartScreen.*`, `src/online/OnlineMatch.*` | From `match.start` to the first tick: seat confirmed, map download by hash, engine load, relay connection (`Online::RelayTransport`), waiting for the other players' presence. A relay that refuses the match as new (Reject 5) is reported with `match.reconnect {relayUnavailable: true}` and the new assignment restarts the flow. |
 | In-game connection HUD | `src/gui/ConnectionOverlay.*` | Every turn game (online and LAN) shows a permanent panel with each player's state and latency where the "waiting for players" notice was, details on click or tap, one-line notices when a player drops or returns, and centre cards for this client's reconnect (with the grace time and Leave match), catch-up progress and desync rejoin. Presentation only: it reads `Engine::turnConnectionSnapshot()`. Other players' latency is their lag behind the relay from `Presence.lagTicks`; the relay does not report their round trip. |
-| Results | `src/EndGameScreen.*` | Online matches add the outcome banner and the rating card, which `match.updated` updates live (verifying, verified, unverifiable, unrated room match, draw), and a link to `<origin>/matches/<id>`. Room matches return to the room. |
+| Results | `src/EndGameScreen.*` | Online matches add the outcome banner and the rating card, which `match.updated` updates live and `GET /api/v1/matches/{id}` re-reads every 10 s while it is open. The card says where the result is: waiting for the other players to leave (the match still runs on the relay), recording or verifying (it ended; the verifier replays it), then verified, unverifiable, unrated room match or draw; after 45 s of waiting or 60 s of verifying it says that it is taking longer and that the result will appear in the history. A link opens `<origin>/matches/<id>`. Room matches return to the room; quick matches offer **Rematch** (`Online::requestRematch` → `match.rematch`, an unrated room with the same players; it reads "Join X's rematch" after `match.rematchOffered`). |
 | Settings › Online | `src/SettingsScreenOnline.cpp` | See above. |
 
-Quick-match cards call the handler registered with
-`OnlineHubScreen::setQuickMatch` (the queue screens); without one the hub says
-quick match is not available yet.
+Quick-match cards start the shared search (`Online::quickMatch()`) and open
+`QuickMatchScreen`; a handler registered with `OnlineHubScreen::setQuickMatch`
+replaces that. The hub registers `Online::setMatchHandler` (an assigned quick
+match opens the starting screen) and `Online::setRematchHandler`, and attaches
+`QuickMatchPresenter` so the match-found prompt appears over any screen. The
+Room screen registers `Online::setRoomMapHandler` for the map browser's "Use in a
+room".
 
-Assignment fields the client reads beyond `MatchAssignment`: an optional
-`mapTitle`, and an optional `ratingPreview {ladder, before, ifWon, ifLost,
-provisional}` for the greyed "1528 → 1543?" before verification. Until the
-platform sends them the card shows "Verifying result…" without numbers.
-Recent matches are the `match.updated` summaries this process has seen, until
-the platform has history endpoints.
+`MatchAssignment` carries `mapTitle` and, for rated queue matches,
+`ratingPreview {ladder, before, ifWon, ifLost, provisional}` for the greyed
+"1528 → 1543?" before verification.
+
+Leaving a match sends `Quit` to the relay; the connection stays open after the
+game's session is gone until it is written (at most 3 s, and the shutdown screen
+waits for it), so closing the window does not leave the seat in reconnect
+grace.
 
 **End-to-end check.** `OnlinePlayHarness` (`scons release=1 server=0
-online-play-test`) drives the real screens against a live instance in two
-processes: the host signs in as a guest, creates a room and writes its code;
-the guest joins by the code, takes a seat and readies; the host presses Start;
-both play; after a minute the guest closes its window, the host wins and
-reaches the results screen, then returns to the room. Every stage is captured:
+online-play-test`) drives the real screens against a live instance. In a room
+run, the host signs in as a guest, creates a room with a one-minute sudden-death
+timer and writes its code; the guest joins by the code, takes a seat and readies;
+the host presses Start; both play. The guest leaves after `GLOB2_E2E_GUEST_LEAVE`
+seconds (default 40; 0 stays to the end) by closing its window, or by the in-game
+Quit with `GLOB2_E2E_LEAVE_BY=menu`. The host logs the other seat's presence as its
+connection panel shows it, the game's end, and every change of the results card,
+and waits until the platform has settled the result before returning to the room.
+The `quick` role plays a casual quick match (AI backfill) and leaves after
+`GLOB2_E2E_QUICK_LEAVE` seconds. Every stage is captured:
 
 ```sh
 build/darwin/client/release/src/OnlinePlayHarness host https://glob2online.com artifacts/e2e &
 sleep 20
 build/darwin/client/release/src/OnlinePlayHarness guest https://glob2online.com artifacts/e2e
+build/darwin/client/release/src/OnlinePlayHarness quick https://glob2online.com artifacts/e2e-quick
 ```
 
 ## Map cache

@@ -1,35 +1,56 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 glob2 contributors
 //
-// Plays an online room end to end through the real screens against a live platform
-// instance: the online hub (guest sign-in), the Room screen, the starting screen, the
-// game with its connection panel, and the results screen. Run one process as host and
-// one as guest (docs/multiplayer/client.md, "End-to-end check"):
+// Plays online matches end to end through the real screens against a live platform
+// instance: the online hub (guest sign-in), the Room screen or quick match, the
+// starting screen, the game with its connection panel, and the results screen.
+// docs/multiplayer/client.md, "End-to-end check":
 //
 //   OnlinePlayHarness host  <origin> <dir>   creates a room, writes <dir>/code, starts
 //   OnlinePlayHarness guest <origin> <dir>   joins by the code, readies
+//   OnlinePlayHarness quick <origin> <dir>   casual quick match (AI backfill)
 //
-// The host sets a one-minute sudden-death timer so the match ends on its own and both
-// clients reach the results screen. Every stage is captured as <dir>/<role>-<stage>.bmp.
-// Controls are pressed by their keys, as a player would click them.
+// Environment (all optional):
+//   GLOB2_E2E_SUDDEN_DEATH   room sudden-death timer in minutes (default 1)
+//   GLOB2_E2E_GUEST_LEAVE    when the guest leaves, in seconds of play (default 40;
+//                            0 = it stays until the game ends)
+//   GLOB2_E2E_LEAVE_BY       window (default: close the window) | menu (the in-game
+//                            Quit: a sequenced PlayerQuitsGameOrder, then results)
+//   GLOB2_E2E_QUICK_QUEUE    quick-match queue id (default: the first unrated queue)
+//   GLOB2_E2E_QUICK_LEAVE    seconds of quick-match play before leaving (default 45)
+//
+// Every stage is captured as <dir>/<role>-<stage>.bmp, and every line of the log is
+// prefixed with the role and the seconds since start. Controls are pressed by their
+// keys, as a player would click them. The host's results stage waits until the
+// platform has settled the result (Phase::Done) and reports how long that took.
 #include "CustomGameSetup.h"
 #include "EndGameScreen.h"
+#include "Engine.h"
+#include "GameSessionScreen.h"
 #include "GlobalContainer.h"
 #include "InstanceConfig.h"
 #include "MatchStartScreen.h"
 #include "OnlineHubScreen.h"
 #include "OnlineMatch.h"
 #include "OnlineServices.h"
+#include "Order.h"
 #include "PlatformClient.h"
 #include "PlatformRoom.h"
+#include "QuickMatch.h"
+#include "QuickMatchScreen.h"
+#include "RelayTransport.h"
 #include "RoomScreen.h"
+#include "Team.h"
 #include "FileManager.h"
 #include "Toolkit.h"
+#include "TurnSession.h"
 #include <ScreenStack.h>
 #include <ui/Screen.h>
 
 #include <chrono>
+#include <cstdarg>
 #include <cstdio>
+#include <cstdlib>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -42,13 +63,40 @@ using namespace GAGGUI;
 namespace
 {
 std::string role, dir;
-int shots = 0;
+std::chrono::steady_clock::time_point began;
+
+double seconds()
+{
+	return std::chrono::duration<double>(std::chrono::steady_clock::now() - began).count();
+}
+
+void say(const char *format, ...)
+{
+	char line[1024];
+	va_list args;
+	va_start(args, format);
+	std::vsnprintf(line, sizeof line, format, args);
+	va_end(args);
+	std::printf("%7.1f %s %s\n", seconds(), role.c_str(), line);
+}
+
+int envInt(const char *name, int fallback)
+{
+	const char *value = std::getenv(name);
+	return value && *value ? std::atoi(value) : fallback;
+}
+
+std::string envText(const char *name, const std::string &fallback)
+{
+	const char *value = std::getenv(name);
+	return value && *value ? value : fallback;
+}
 
 void capture(const std::string &stage)
 {
 	const std::string path = dir + "/" + role + "-" + stage + ".bmp";
 	SDL_SaveBMP(globalContainer->gfx->getSDLSurface(), path.c_str());
-	std::printf("%s CAPTURE %s\n", role.c_str(), path.c_str());
+	say("CAPTURE %s", path.c_str());
 }
 
 bool press(ScreenStack &screens, const std::string &key, std::vector<SDL_Event> &events)
@@ -68,13 +116,101 @@ bool press(ScreenStack &screens, const std::string &key, std::vector<SDL_Event> 
 	event.type = SDL_MOUSEBUTTONUP;
 	event.button.state = SDL_RELEASED;
 	events.push_back(event);
-	std::printf("%s PRESS %s\n", role.c_str(), key.c_str());
+	say("PRESS %s", key.c_str());
 	return true;
 }
 
 template <class T> T *top(ScreenStack &screens)
 {
 	return dynamic_cast<T *>(screens.top());
+}
+
+const char *presenceName(Turn::PresenceState state)
+{
+	switch (state)
+	{
+	case Turn::PresenceState::NotConnected:
+		return "not-connected";
+	case Turn::PresenceState::Connected:
+		return "connected";
+	case Turn::PresenceState::Lagging:
+		return "lagging";
+	case Turn::PresenceState::Reconnecting:
+		return "reconnecting";
+	case Turn::PresenceState::Resyncing:
+		return "resyncing";
+	case Turn::PresenceState::Left:
+		return "left";
+	}
+	return "?";
+}
+
+const char *phaseName(Online::OnlineMatchResult::Phase phase)
+{
+	switch (phase)
+	{
+	case Online::OnlineMatchResult::Phase::Waiting:
+		return "waiting-for-players";
+	case Online::OnlineMatchResult::Phase::Verifying:
+		return "verifying";
+	case Online::OnlineMatchResult::Phase::Done:
+		return "done";
+	}
+	return "?";
+}
+
+const char *verificationName(Online::OnlineMatchResult::Verification v)
+{
+	using V = Online::OnlineMatchResult::Verification;
+	switch (v)
+	{
+	case V::Pending:
+		return "pending";
+	case V::Verified:
+		return "verified";
+	case V::Diverged:
+		return "diverged";
+	case V::Unverifiable:
+		return "unverifiable";
+	case V::NotApplicable:
+		return "not_applicable";
+	}
+	return "?";
+}
+
+// One line about the game: tick, end state and every other human seat's presence as
+// this client's turn session reports it (what the connection panel shows).
+std::string gameLine(Engine &engine)
+{
+	auto &game = engine.gui.game;
+	std::string line = "tick " + std::to_string(game.stepCounter);
+	if (game.isGameEnded)
+		line += " game-ended";
+	if (auto *team = engine.gui.getLocalTeam())
+		line += team->hasWon ? " local-won" : team->hasLost ? " local-lost" : "";
+	if (auto *session = engine.turnSession())
+		for (int seat = 0; seat < int(Turn::MAX_SEATS); ++seat)
+			if ((session->humanSeatMask() & (1u << seat)) && seat != session->localSeat())
+			{
+				const auto info = session->seatPresenceInfo(seat);
+				line += " seat" + std::to_string(seat) + "=" + presenceName(info.state);
+				if (info.state == Turn::PresenceState::Reconnecting || info.state == Turn::PresenceState::NotConnected)
+					line += "(grace " + std::to_string(info.graceRemainingTicks / 25) + "s)";
+			}
+	return line;
+}
+
+// After the window closed the stack is gone; the relay connection still has its Quit
+// to write, as the shutdown screen would let it.
+void drainRelayConnections()
+{
+	const double until = seconds() + 4;
+	while (Online::lingeringRelayConnections() > 0 && seconds() < until)
+	{
+		Online::pump();
+		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+	}
+	say("relay connections drained (%zu left)", Online::lingeringRelayConnections());
 }
 
 int play()
@@ -89,16 +225,19 @@ int play()
 		SigningIn,
 		Room,
 		Ready,
+		Queue,
 		Starting,
 		Playing,
 		Results,
 		Done
 	} stage = Stage::SigningIn;
-	const auto began = std::chrono::steady_clock::now();
-	auto seconds = [&] { return std::chrono::duration<double>(std::chrono::steady_clock::now() - began).count(); };
-	double stageAt = 0, lastShot = 0, lastKey = 0;
-	bool rulesSet = false, pressed = false;
-	std::string code;
+	const int suddenDeath = envInt("GLOB2_E2E_SUDDEN_DEATH", 1);
+	const int guestLeave = envInt("GLOB2_E2E_GUEST_LEAVE", 40);
+	const bool leaveByMenu = envText("GLOB2_E2E_LEAVE_BY", "window") == "menu";
+	const int quickLeave = envInt("GLOB2_E2E_QUICK_LEAVE", 45);
+	double stageAt = 0, lastShot = 0, lastKey = 0, lastLine = 0, endedAt = -1;
+	bool rulesSet = false, pressed = false, left = false;
+	std::string code, lastPresence, lastPhase, matchId;
 	int rc = 0;
 	while (screens.running() && stage != Stage::Done)
 	{
@@ -110,7 +249,7 @@ int play()
 		const double now = seconds();
 		if (now > 900)
 		{
-			std::printf("%s FAIL: timed out in stage %d\n", role.c_str(), int(stage));
+			say("FAIL: timed out in stage %d", int(stage));
 			rc = 1;
 			break;
 		}
@@ -119,17 +258,41 @@ int play()
 		case Stage::SigningIn:
 			if (client.connection() == Online::PlatformClient::Connection::Online && client.account() && hub->model().link == OnlineHubScreen::Model::Link::Online && now - stageAt > 3)
 			{
-				std::printf("%s signed in as %s (%s) on %s\n", role.c_str(), client.account()->displayName.c_str(), client.account()->kind.c_str(), client.origin().c_str());
+				say("signed in as %s (%s) on %s", client.account()->displayName.c_str(), client.account()->kind.c_str(), client.origin().c_str());
 				capture("hub");
 				if (role == "host")
 					hub->createRoom();
-				else
+				else if (role == "guest")
 				{
 					std::ifstream in(dir + "/code");
 					std::getline(in, code);
 					if (code.empty())
 						break;
 					hub->joinByCode(code);
+				}
+				else
+				{
+					// The quick-match card of the queue to play (the first unrated one).
+					const auto &queues = hub->model().queues;
+					if (!queues.is_array() || queues.empty())
+						break;
+					const std::string wanted = envText("GLOB2_E2E_QUICK_QUEUE", "");
+					int index = -1;
+					for (int i = 0; i < int(queues.size()) && index < 0; ++i)
+						if (wanted.empty() ? !queues[std::size_t(i)].value("rated", true) : queues[std::size_t(i)].value("id", "") == wanted)
+							index = i;
+					if (index < 0)
+					{
+						say("FAIL: no queue %s", wanted.empty() ? "(unrated)" : wanted.c_str());
+						rc = 1;
+						stage = Stage::Done;
+						break;
+					}
+					say("QUEUE %s", queues[std::size_t(index)].value("id", "").c_str());
+					hub->findMatch(index);
+					stage = Stage::Queue;
+					stageAt = now;
+					break;
 				}
 				stage = Stage::Room;
 				stageAt = now;
@@ -145,18 +308,18 @@ int play()
 			{
 				if (!rulesSet && backend.roomName().size())
 				{
-					// A one-minute sudden-death timer ends the match on its own.
+					// A short sudden-death timer ends the match on its own.
 					CustomGameSetup setup;
 					backend.setupDraft(setup);
-					setup.suddenDeathMinutes = 1;
+					setup.suddenDeathMinutes = suddenDeath;
 					backend.applySetup(setup);
 					rulesSet = true;
 					std::ofstream(dir + "/code") << backend.inviteCode() << "\n";
-					std::printf("host ROOM %s %s\n", backend.inviteCode().c_str(), backend.inviteLink().c_str());
+					say("ROOM %s %s sudden death %d min", backend.inviteCode().c_str(), backend.inviteLink().c_str(), suddenDeath);
 				}
 				if (!backend.mapStatus().empty() && now - lastShot > 5)
 				{
-					std::printf("host map: %s\n", backend.mapStatus().c_str());
+					say("map: %s", backend.mapStatus().c_str());
 					lastShot = now;
 				}
 				if (backend.canStart() && now - stageAt > 3)
@@ -215,47 +378,110 @@ int play()
 			}
 			break;
 		}
-		case Stage::Starting:
-			if (auto *start = top<MatchStartScreen>(screens))
+		case Stage::Queue:
+		{
+			auto &search = Online::quickMatch();
+			const std::string phase = Online::phaseName(search.phase());
+			if (phase != lastPhase)
 			{
-				if (shots == 0)
+				say("quick match %s", phase.c_str());
+				lastPhase = phase;
+				if (search.phase() == Online::QuickMatch::Phase::Searching)
+					capture("queue-searching");
+				if (search.phase() == Online::QuickMatch::Phase::Failed)
 				{
-					capture("starting");
-					++shots;
-				}
-				if (start->match().step() == Online::OnlineMatch::Step::Failed)
-				{
-					std::printf("%s FAIL: %s\n", role.c_str(), start->match().failure().c_str());
+					say("FAIL: quick match failed: %s", search.error().message.c_str());
 					rc = 1;
 					stage = Stage::Done;
 				}
 			}
-			else if (!top<RoomScreen>(screens) && !top<OnlineHubScreen>(screens))
+			if (top<MatchStartScreen>(screens))
 			{
-				std::printf("%s PLAYING after %.1f s\n", role.c_str(), now - stageAt);
+				lastPhase.clear();
+				stage = Stage::Starting;
+				stageAt = now;
+			}
+			break;
+		}
+		case Stage::Starting:
+			if (auto *start = top<MatchStartScreen>(screens))
+			{
+				if (lastShot < stageAt)
+				{
+					capture("starting");
+					lastShot = now;
+				}
+				if (start->match().step() == Online::OnlineMatch::Step::Failed)
+				{
+					say("FAIL: %s", start->match().failure().c_str());
+					rc = 1;
+					stage = Stage::Done;
+				}
+				matchId = start->match().matchId();
+			}
+			else if (top<GameSessionScreen>(screens))
+			{
+				say("PLAYING match %s after %.1f s", matchId.c_str(), now - stageAt);
 				stage = Stage::Playing;
 				stageAt = now;
 				lastShot = now;
 			}
 			break;
 		case Stage::Playing:
+		{
+			auto *session = top<GameSessionScreen>(screens);
+			Engine *engine = session ? session->runningEngine() : nullptr;
+			if (engine)
+			{
+				const std::string line = gameLine(*engine);
+				// The other seats' states without the grace countdown.
+				std::string presence;
+				if (auto *turn = engine->turnSession())
+					for (int seat = 0; seat < int(Turn::MAX_SEATS); ++seat)
+						if ((turn->humanSeatMask() & (1u << seat)) && seat != turn->localSeat())
+							presence += std::string(" ") + presenceName(turn->seatPresenceInfo(seat).state);
+				if (now - lastLine > 5 || presence != lastPresence)
+				{
+					say("%s", line.c_str());
+					lastLine = now;
+					if (presence != lastPresence && !lastPresence.empty())
+						capture("ingame-presence-" + std::to_string(int(now - stageAt)));
+					lastPresence = presence;
+				}
+				if (endedAt < 0 && (engine->gui.game.isGameEnded || engine->gui.getLocalTeam()->hasWon || engine->gui.getLocalTeam()->hasLost))
+				{
+					endedAt = now;
+					say("GAME END at tick %u: %s", engine->gui.game.stepCounter, line.c_str());
+					capture("game-end");
+				}
+			}
 			if (now - lastShot > 15)
 			{
 				capture("ingame-" + std::to_string(int(now - stageAt)));
 				lastShot = now;
 			}
-			// After a minute the guest closes its window: the relay sequences its
-			// PlayerQuitsGameOrder, its colony is out and the host's game ends in victory.
-			if (role == "guest" && !rulesSet && now - stageAt > 65)
+			const int leaveAt = role == "guest" ? guestLeave : role == "quick" ? quickLeave : 0;
+			if (!left && leaveAt > 0 && now - stageAt > leaveAt && engine)
 			{
-				std::printf("guest QUIT after %.1f s of play\n", now - stageAt);
-				SDL_Event quit{};
-				quit.type = SDL_QUIT;
-				events.push_back(quit);
-				rulesSet = true; // reused: the quit was sent
+				left = true;
+				if (leaveByMenu || role == "quick")
+				{
+					// The in-game Quit: a sequenced PlayerQuitsGameOrder, then the results.
+					say("LEAVE by the in-game Quit after %.1f s of play", now - stageAt);
+					engine->gui.orderQueue.push_back(std::make_shared<PlayerQuitsGameOrder>(engine->gui.localPlayer));
+					engine->gui.flushOutgoingAndExit = true;
+				}
+				else
+				{
+					say("LEAVE by closing the window after %.1f s of play", now - stageAt);
+					SDL_Event quit{};
+					quit.type = SDL_QUIT;
+					events.push_back(quit);
+				}
 			}
-			// The host's "You have won!" dialog: Ok (Enter) leads to the results screen.
-			if (role == "host" && now - stageAt > 70 && int(now) % 5 == 0 && now - lastKey > 2)
+			// The end dialog ("You have won!", the sudden-death timer): Ok (Enter) leads
+			// to the results screen a few seconds after it appears.
+			if (endedAt >= 0 && now - endedAt > 4 && now - lastKey > 2)
 			{
 				lastKey = now;
 				SDL_Event key{};
@@ -266,18 +492,16 @@ int play()
 				key.type = SDL_KEYUP;
 				events.push_back(key);
 			}
-			// Let the quit reach the relay before the process ends.
-			if (role == "guest" && rulesSet && now - stageAt > 75)
-				stage = Stage::Done;
-			if (auto *results = top<EndGameScreen>(screens))
+			if (top<EndGameScreen>(screens))
 			{
-				std::printf("%s RESULTS after %.1f s of play\n", role.c_str(), now - stageAt);
+				say("RESULTS after %.1f s of play", now - stageAt);
 				stage = Stage::Results;
 				stageAt = now;
 				lastShot = 0;
-				(void)results;
+				lastPhase.clear();
 			}
 			break;
+		}
 		case Stage::Results:
 			if (lastShot == 0 && now - stageAt > 2)
 			{
@@ -287,23 +511,50 @@ int play()
 			if (auto *results = top<EndGameScreen>(screens))
 			{
 				const auto &online = results->onlineResult();
-				if (online && online->verification != Online::OnlineMatchResult::Verification::Pending && now - lastShot > 1)
+				if (!online)
 				{
-					capture("results-updated");
-					std::printf("%s verification %d outcome %s\n", role.c_str(), int(online->verification), online->outcome.c_str());
-					lastShot = now + 1000;
+					say("FAIL: no online result");
+					rc = 1;
+					stage = Stage::Done;
+					break;
 				}
-				if (now - stageAt > 90)
+				const std::string phase = std::string(phaseName(online->phase())) + (online->slow ? " (slow)" : "") +
+										  " status=" + (online->status.empty() ? "?" : online->status) +
+										  " verification=" + verificationName(online->verification) +
+										  " outcome=" + (online->outcome.empty() ? "?" : online->outcome);
+				if (phase != lastPhase)
 				{
+					say("RESULT %s after %.1f s on the results screen", phase.c_str(), now - stageAt);
+					lastPhase = phase;
+					capture("results-" + std::string(phaseName(online->phase())) + (online->slow ? "-slow" : ""));
+				}
+				const bool done = online->phase() == Online::OnlineMatchResult::Phase::Done;
+				if ((done && now - stageAt > 3) || now - stageAt > 240)
+				{
+					if (!done)
+					{
+						say("FAIL: the result did not settle within 240 s");
+						rc = 1;
+					}
 					capture("results-final");
-					press(screens, "quit", events);
+					if (now - lastKey > 2)
+					{
+						lastKey = now;
+						press(screens, "quit", events);
+					}
 				}
 			}
 			else if (auto *room = top<RoomScreen>(screens))
 			{
 				capture("back-in-room");
-				std::printf("%s back in the room\n", role.c_str());
+				say("back in the room");
 				room->backend().leave();
+				stage = Stage::Done;
+			}
+			else if (top<OnlineHubScreen>(screens) || top<QuickMatchScreen>(screens))
+			{
+				capture("back-online");
+				say("back online");
 				stage = Stage::Done;
 			}
 			break;
@@ -313,7 +564,8 @@ int play()
 		screens.frame(SDL_GetTicks(), events);
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 	}
-	std::printf("%s %s\n", role.c_str(), rc ? "FAIL" : "PASS");
+	drainRelayConnections();
+	say("%s", rc ? "FAIL" : "PASS");
 	return rc;
 }
 } // namespace
@@ -322,10 +574,11 @@ int main(int argc, char **argv)
 {
 	if (argc != 4)
 	{
-		std::fprintf(stderr, "Usage: %s host|guest <origin> <directory>\n", argv[0]);
+		std::fprintf(stderr, "Usage: %s host|guest|quick <origin> <directory>\n", argv[0]);
 		return 2;
 	}
 	std::setvbuf(stdout, nullptr, _IONBF, 0);
+	began = std::chrono::steady_clock::now();
 	role = argv[1];
 	dir = argv[3];
 	std::filesystem::create_directories(dir);
