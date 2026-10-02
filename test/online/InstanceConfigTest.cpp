@@ -105,6 +105,42 @@ TEST_SUITE("InstanceConfig")
 		CHECK_EQ(config.find("https://ok.example")->refreshToken, "r");
 	}
 
+	TEST_CASE("a stored former official origin moves to the official one; credentials stay")
+	{
+		CHECK_FALSE(isFormerOfficialOrigin(OFFICIAL_INSTANCE_ORIGIN));
+		CHECK_FALSE(isFormerOfficialOrigin(""));
+		CHECK_EQ(currentOrigin("https://other.example"), "https://other.example");
+		// The default build: the app moved from the apex to app.glob2online.com.
+		if (std::string(OFFICIAL_INSTANCE_ORIGIN) != "https://app.glob2online.com")
+			return;
+		const std::string apex = "https://glob2online.com";
+		CHECK(isFormerOfficialOrigin(apex));
+		CHECK_FALSE(isFormerOfficialOrigin("https://www.glob2online.com"));
+		CHECK_EQ(currentOrigin(apex), OFFICIAL_INSTANCE_ORIGIN);
+
+		MemoryStorage storage;
+		storage.files[InstanceConfig::FILE_NAME] = R"({"version":1,"selected":"https://glob2online.com",
+			"instances":{"https://glob2online.com":{"deviceCredential":"apex-device","refreshToken":"apex-refresh",
+			"trusted":true,"lastDisplayName":"Guest-7"}}})";
+		InstanceConfig config(storage);
+		REQUIRE(config.load());
+		CHECK_EQ(config.selectedOrigin(), OFFICIAL_INSTANCE_ORIGIN);
+		// The apex record is untouched and nothing is copied to the app origin.
+		REQUIRE(config.find(apex));
+		CHECK_EQ(config.find(apex)->refreshToken, "apex-refresh");
+		CHECK_EQ(config.find(apex)->deviceCredential, "apex-device");
+		CHECK_FALSE(config.find(OFFICIAL_INSTANCE_ORIGIN));
+		CHECK(config.isTrusted(apex));
+		REQUIRE(config.save());
+		CHECK(nlohmann::json::parse(storage.files[InstanceConfig::FILE_NAME])["selected"] ==
+			  OFFICIAL_INSTANCE_ORIGIN);
+
+		REQUIRE(config.selectInstance("https://glob2online.com/"));
+		CHECK_EQ(config.selectedOrigin(), OFFICIAL_INSTANCE_ORIGIN);
+		REQUIRE(config.selectInstance("https://custom.example"));
+		CHECK_EQ(config.selectedOrigin(), "https://custom.example");
+	}
+
 	TEST_CASE("a failed write is reported and not persisted")
 	{
 		MemoryStorage storage;

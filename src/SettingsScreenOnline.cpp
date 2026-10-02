@@ -155,7 +155,7 @@ void SettingsScreen::buildOnline()
 											if (config.selectInstance(server))
 											{
 												config.save();
-												Online::services().client.start(server);
+												Online::services().client.start(config.selectedOrigin());
 											}
 											invalidate();
 										}, select))};
@@ -174,7 +174,9 @@ void SettingsScreen::buildOnline()
 	serverRow(Online::OFFICIAL_INSTANCE_ORIGIN, hostOf(Online::OFFICIAL_INSTANCE_ORIGIN), tr("The official Globulation 2 server · ranked queues, leaderboards, map catalog"), false);
 	for (const auto &[server, record] : config.instances())
 	{
-		if (server == Online::OFFICIAL_INSTANCE_ORIGIN)
+		// A former official origin keeps its record (credentials stay keyed by
+		// the origin that issued them) but is the official server's row.
+		if (server == Online::OFFICIAL_INSTANCE_ORIGIN || Online::isFormerOfficialOrigin(server))
 			continue;
 		std::string detail = tr("used before");
 		if (!record.lastDisplayName.empty())
@@ -194,8 +196,8 @@ void SettingsScreen::buildOnline()
 				invalidate();
 				return;
 			}
-			online->checkedOrigin = *normalized;
-			online->check = HttpFetch::start({HttpFetch::Method::Get, Online::apiUrl(*normalized, "/api/v1/instance")});
+			online->checkedOrigin = Online::currentOrigin(*normalized);
+			online->check = HttpFetch::start({HttpFetch::Method::Get, Online::apiUrl(online->checkedOrigin, "/api/v1/instance")});
 			invalidate();
 		};
 		TextFieldOptions options;
@@ -230,7 +232,7 @@ void SettingsScreen::buildOnline()
 					services.config.trust(target, true);
 					services.config.selectInstance(target);
 					services.config.save();
-					services.client.start(target);
+					services.client.start(services.config.selectedOrigin());
 					online->checked = Json();
 					online->serverDraft.clear();
 					invalidate();

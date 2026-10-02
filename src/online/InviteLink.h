@@ -9,6 +9,8 @@
 // Forms accepted (docs/multiplayer/client.md):
 //   glob2://join?instance=<origin>&code=<code>   custom scheme, any instance
 //   https://<host>/j/<code>                      web link of an instance
+//                                                (a former official origin's
+//                                                link means the official one)
 //   ?join=<code> on the web client's page        the page's own instance
 //   --join <link or code> [--instance <origin>]  command line
 //

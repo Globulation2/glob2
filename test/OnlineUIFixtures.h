@@ -52,7 +52,7 @@ inline Json roomState()
 	Json teams = Json::array({{{"team", 0}, {"alliance", 0}}, {{"team", 1}, {"alliance", 1}}, {{"team", 2}, {"alliance", 0}}, {{"team", 3}, {"alliance", 1}}});
 	return Json{{"id", "5b0f3c1e-0000-4a7e-8a51-3d0a1c0b0001"},
 				{"code", "KXQ742MNPR"},
-				{"inviteUrl", "https://glob2online.com/j/KXQ742MNPR"},
+				{"inviteUrl", "https://app.glob2online.com/j/KXQ742MNPR"},
 				{"name", "Bradley's room"},
 				{"visibility", "link"},
 				{"status", "open"},
@@ -183,7 +183,7 @@ class LanRoomFixture final : public RoomBackend
 inline OnlineHubScreen::Model hubModel()
 {
 	OnlineHubScreen::Model m;
-	m.origin = "https://glob2online.com";
+	m.origin = "https://app.glob2online.com";
 	m.instanceName = "Globulation 2 Online";
 	m.link = OnlineHubScreen::Model::Link::Online;
 	m.displayName = "Guest-4821";
@@ -237,9 +237,9 @@ inline std::shared_ptr<Online::OnlineMatch> startingMatch()
 					{"seat", 0},
 					{"ticket", "x"},
 					{"ticketExpiresAt", "2026-10-01T21:00:00Z"},
-					{"relayUrl", "wss://glob2online.com/relay/eu-west-2"},
+					{"relayUrl", "wss://app.glob2online.com/relay/eu-west-2"},
 					{"setup", setup},
-					{"mapUrl", "https://glob2online.com/api/v1/blobs/maps/aaaa"},
+					{"mapUrl", "https://app.glob2online.com/api/v1/blobs/maps/aaaa"},
 					{"mapTitle", "Even Ground"}};
 	Online::OnlineMatchContext context;
 	context.label = "1 vs 1 - Ranked";

@@ -276,8 +276,8 @@ describe('routing', () => {
   });
 
   it('builds Watch in browser links for the browser client', () => {
-    expect(watchUrl('https://glob2online.com/api/v1/matches/x/artifacts/replay')).toBe(
-      '/play/?replay=https%3A%2F%2Fglob2online.com%2Fapi%2Fv1%2Fmatches%2Fx%2Fartifacts%2Freplay',
+    expect(watchUrl('https://app.glob2online.com/api/v1/matches/x/artifacts/replay')).toBe(
+      '/play/?replay=https%3A%2F%2Fapp.glob2online.com%2Fapi%2Fv1%2Fmatches%2Fx%2Fartifacts%2Freplay',
     );
   });
 

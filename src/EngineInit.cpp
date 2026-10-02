@@ -229,7 +229,8 @@ ConnectionSnapshot Engine::turnConnectionSnapshot()
     for (int p = 0; p < header.getNumberOfPlayers() && p < int(Turn::MAX_SEATS); ++p)
     {
         const BasePlayer& player = header.getBasePlayer(p);
-        // Empty seats play as an inactive colony nobody controls; they are not players.
+        // Closed seats are no players at all. AI `none` (the empty seat of a match
+        // from before closed seats, or a seat whose player quit) controls nothing.
         if (player.type == BasePlayer::P_AI || player.type == BasePlayer::P_NONE)
             continue;
         ConnectionRow row;

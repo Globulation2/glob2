@@ -26,8 +26,13 @@ sockets it holds. Clients ignore states older than the last revision they saw.
 **Seats.** Seat *i* always plays map team *i*. `teams[i].alliance` groups teams into
 sides. The number of seats equals the map's team count, and changing the map
 resizes both. A seat is open, human, AI, or locked. A locked seat is empty, and
-nobody may take it. An empty or locked seat plays as an inactive player (AI `none`)
-when the match starts, so its colony stays on the map without anyone controlling it.
+nobody may take it. An empty or locked seat's team is closed when the match starts,
+exactly like a "Closed" colony in a custom game: the MatchSetup lists it as a `closed`
+seat, the engine removes its colony, and it has lost from the start. The taken seats
+become the match's players, numbered `0..p-1` in room seat order on their own map
+teams, so a player's match seat (ticket `seat`, `match_participants.seat`) differs from
+its room seat when an empty seat comes before it. See
+[MatchSetup to GameHeader](turn-protocol.md#matchsetup-to-gameheader).
 
 **Sim versions.** A room carries its host's sim version. A client whose sim version
 differs gets `update_required` from `room.join`, and a client whose version the

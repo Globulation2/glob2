@@ -13,7 +13,15 @@ import { useLoad, useSession } from '../state.tsx';
 
 /** Where the downloadable game lives; a build-time setting (VITE_DOWNLOAD_URL). */
 export const DOWNLOAD_URL: string =
-  (import.meta.env['VITE_DOWNLOAD_URL'] as string | undefined) ?? 'https://globulation2.org/';
+  (import.meta.env['VITE_DOWNLOAD_URL'] as string | undefined) || 'https://globulation2.org/';
+
+/**
+ * The instance's public website when it is hosted apart from this app (e.g.
+ * glob2online.com beside app.glob2online.com); a build-time setting
+ * (VITE_WEBSITE_URL). Unset: no website link.
+ */
+export const WEBSITE_URL: string | undefined =
+  (import.meta.env['VITE_WEBSITE_URL'] as string | undefined) || undefined;
 
 const CODE = /^[A-Za-z0-9]{6,16}$/;
 
