@@ -115,14 +115,16 @@ python3 test/run_tests.py      # run them; --list, --filter, --tag, --shard
   compatibility check run separately, so runtime shards do not wait for Clang.
   Each supported GCC build starts its own test shards and generator checks independently. The original `linux (...)` checks require every
   build and shard to pass, preserving their merge-blocking status. PRs compare
-  with their base commit, and master pushes compare with the pre-push commit;
-  unknown paths or unavailable diffs select full CI.
+  with their base commit; retained master pushes and scheduled runs always select
+  full CI. Unknown paths or unavailable PR diffs also select full CI.
   Changes confined to the render-backend and pixel-raster implementation files
   retain native, browser and cross-platform checks without repeating independent
   map-generator sweeps or container deployment tests. Shared headers, file I/O and
   unknown library files still select full CI.
   CI-tool unit-test-only edits run the selector's Python contract suites without
-  native compilation; changes to the runners themselves still select native checks.
+  native compilation. The selector runs the changed-path, coverage-tier, measurement,
+  native-runner and failure-aggregation contracts before selecting downstream jobs;
+  changes to the runners themselves still select native checks.
   Steam packaging helper/workflow changes retain their packaging and smoke checks;
   editing this reference guide alone does not rebuild the Steam client.
 
