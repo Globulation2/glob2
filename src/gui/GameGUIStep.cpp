@@ -130,6 +130,7 @@ void GameGUI::step(void)
 
 void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 {
+    consumeClientEvents();
     if (inGameMenu == IGM_SAVE && gameMenuScreen &&
         static_cast<LoadSaveDialog*>(gameMenuScreen.get())->pollPersistence())
         closeDialog();
@@ -271,12 +272,21 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 	}
 
 	assert(localTeam);
-	while(std::optional<GameEvent> gevent = localTeam->getEvent())
+	// The simulation forwards GameEvents through ClientEvents; show the ones
+	// for the team being viewed, oldest first.
+	const int viewedTeam = localTeam->teamNumber;
+	if (viewedTeam >= 0 && viewedTeam < Team::MAX_COUNT)
 	{
-		addMessage(gevent->formatColor(), gevent->formatMessage(game), false);
-		eventGoPosX = gevent->getX();
-		eventGoPosY = gevent->getY();
-		eventGoType = gevent->getEventType();
+		auto &teamEvents = pendingTeamEvents[viewedTeam];
+		while (!teamEvents.empty())
+		{
+			const GameEvent gevent = std::move(teamEvents.front());
+			teamEvents.pop_front();
+			addMessage(gevent.formatColor(), gevent.formatMessage(game), false);
+			eventGoPosX = gevent.getX();
+			eventGoPosY = gevent.getY();
+			eventGoType = gevent.getEventType();
+		}
 	}
 
 	// voice step
@@ -305,12 +315,19 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 	}
 
 	// music step
+	// Team::wasRecentEvent as of the last simulated tick (ClientEvents pulse).
+	const ClientEvents::TickPulse pulse = clientEvents.pulse();
+	auto recent = [&](GameEventType type)
+	{
+		return pulse.valid && viewedTeam >= 0 && viewedTeam < Team::MAX_COUNT
+			&& pulse.recentEvents[viewedTeam][type];
+	};
 	GameMusicEvents musicEvents;
-	musicEvents.unitUnderAttack       = localTeam->wasRecentEvent(GEUnitUnderAttack);
-	musicEvents.unitLostConversion    = localTeam->wasRecentEvent(GEUnitLostConversion);
-	musicEvents.unitGainedConversion  = localTeam->wasRecentEvent(GEUnitGainedConversion);
-	musicEvents.buildingUnderAttack   = localTeam->wasRecentEvent(GEBuildingUnderAttack);
-	musicEvents.buildingCompleted     = localTeam->wasRecentEvent(GEBuildingCompleted);
+	musicEvents.unitUnderAttack       = recent(GEUnitUnderAttack);
+	musicEvents.unitLostConversion    = recent(GEUnitLostConversion);
+	musicEvents.unitGainedConversion  = recent(GEUnitGainedConversion);
+	musicEvents.buildingUnderAttack   = recent(GEBuildingUnderAttack);
+	musicEvents.buildingCompleted     = recent(GEBuildingCompleted);
 	if (auto nextTrack = musicController.tick(musicEvents))
 		globalContainer->mix->setNextTrack(*nextTrack, true);
 

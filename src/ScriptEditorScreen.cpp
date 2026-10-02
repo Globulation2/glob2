@@ -150,7 +150,7 @@ bool ScriptEditorScreen::testCompile()
 		else if (selectedLanguage == Language::USL)
 		{
 			// Compile a draft without changing the map's source, mode or saved globals.
-			MapScript candidate(game->gui);
+			MapScript candidate(game, game->clientSink);
 			candidate.setMapScript(script);
 			if (candidate.compileCode())
 			{

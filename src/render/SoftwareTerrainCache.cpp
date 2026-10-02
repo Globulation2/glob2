@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "SoftwareTerrainCache.h"
-#include "Map.h"
+#include "scene/SceneMap.h"
 #include <PerformanceTelemetry.h>
 #include <algorithm>
 #include <cmath>
@@ -80,7 +80,7 @@ void buildOpaqueRuns(SoftwareTerrainCache::Chunk &chunk)
 			{rect, std::make_unique<OpaqueView>(chunk.image->getSDLSurface(), rect)});
 }
 } // namespace
-bool SoftwareTerrainCache::prepare(const Map &map, GAGCore::Sprite &terrain, int left, int top,
+bool SoftwareTerrainCache::prepare(const SceneMap &map, GAGCore::Sprite &terrain, int left, int top,
 								   int right, int bottom, int vx, int vy, Uint32 visibleTeams,
 								   bool wholeMap)
 {

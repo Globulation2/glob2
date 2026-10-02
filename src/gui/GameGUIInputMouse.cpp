@@ -176,7 +176,8 @@ void GameGUI::handleMapClick(int mx, int my, int button)
         // Keep exact flag hits above units/buildings as before. The extra
         // touch-only selection halo claims otherwise empty ground, so it cannot
         // steal direct clicks from a neighbouring building or unit.
-        if (touch->usesHUD() && !torusView.active() && !view.mouseUnit &&
+        Unit *mouseUnit = game.resolveUnit(view.mouseUnit);
+        if (touch->usesHUD() && !torusView.active() && !mouseUnit &&
             game.map.getBuilding(mapX, mapY) == NOGBID)
         {
             if (Building *nearest=flagAt(mx, my, flagReach))
@@ -190,10 +191,10 @@ void GameGUI::handleMapClick(int mx, int my, int button)
             }
         }
 		// then for unit
-		if (view.mouseUnit)
+		if (mouseUnit)
 		{
 			// a unit is selected:
-			setSelection(UNIT_SELECTION, view.mouseUnit);
+			setSelection(UNIT_SELECTION, mouseUnit);
 			selectionPushed = true;
 			// handle dump of unit characteristics
 			if ((inputState.modifiers() & SDL_KMOD_SHIFT) != 0)
@@ -205,13 +206,13 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 				}
 				else
 				{
-					std::cerr << "Dump unit " << view.mouseUnit->gid << " memory" << std::endl;
-					view.mouseUnit->save(stream);
-					view.mouseUnit->saveCrossRef(stream);
-					if (view.mouseUnit->attachedBuilding)
+					std::cerr << "Dump unit " << mouseUnit->gid << " memory" << std::endl;
+					mouseUnit->save(stream);
+					mouseUnit->saveCrossRef(stream);
+					if (mouseUnit->attachedBuilding)
 					{
-						view.mouseUnit->attachedBuilding->save(stream);
-						view.mouseUnit->attachedBuilding->saveCrossRef(stream);
+						mouseUnit->attachedBuilding->save(stream);
+						mouseUnit->attachedBuilding->saveCrossRef(stream);
 					}
 				}
 				delete stream;

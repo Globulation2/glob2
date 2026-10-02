@@ -257,6 +257,9 @@ void Engine::executeOrdersAndStep(bool readyNow)
 		}
 
 		gui.game.syncStep(gui.localTeamNo);
+		// Hand the tick's notices to the GUI now, also under --nox where
+		// gui.step never runs, so the event queue cannot grow unbounded.
+		gui.consumeClientEvents();
 		GAGCore::ApplicationHost::simulationAdvanced(gui.game.stepCounter);
 	}
 }

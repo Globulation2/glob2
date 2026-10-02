@@ -95,9 +95,9 @@ class SoftwareRenderBenchmark
 				glob2OpenMapOrSaveInputStreamBackend(*Toolkit::getFileManager(), path));
 			if (!gui.load(&stream, true))
 				throw std::runtime_error("Cannot load benchmark save");
-			gui.game.softwareTerrainCache = std::make_unique<SoftwareTerrainCache>();
+			auto &terrainCache = gui.view.render.terrainCache(gui.game.map.identity());
 			if (const char *c = getenv("PROFILE_TERRAIN_CACHE"))
-				gui.game.softwareTerrainCache->enabled = atoi(c) != 0;
+				terrainCache.enabled = atoi(c) != 0;
 			gui.localPlayer = gui.localTeamNo = 0;
 			gui.adjustLocalTeam();
 			gui.adjustInitialViewport();
@@ -172,8 +172,8 @@ class SoftwareRenderBenchmark
 				{
 					c0 = cpu();
 					initialOps = gfx->backendOperations();
-					initialHits = gui.game.softwareTerrainCache->cacheHits();
-					initialRebuilds = gui.game.softwareTerrainCache->cacheRebuilds();
+					initialHits = terrainCache.cacheHits();
+					initialRebuilds = terrainCache.cacheRebuilds();
 					PerformanceTelemetry::collector().reset();
 				}
 				Uint64 a = SDL_GetPerformanceCounter();
@@ -222,9 +222,9 @@ class SoftwareRenderBenchmark
 				   (unsigned long long)(ops.fills - initialOps.fills),
 				   (unsigned long long)(ops.triangles - initialOps.triangles));
 			printf("terrain_cache bytes=%zu hits=%llu rebuilds=%llu\n",
-				   gui.game.softwareTerrainCache->bytes(),
-				   (unsigned long long)(gui.game.softwareTerrainCache->cacheHits() - initialHits),
-				   (unsigned long long)(gui.game.softwareTerrainCache->cacheRebuilds() -
+				   terrainCache.bytes(),
+				   (unsigned long long)(terrainCache.cacheHits() - initialHits),
+				   (unsigned long long)(terrainCache.cacheRebuilds() -
 										initialRebuilds));
 			PerformanceTelemetry::collector().write(std::cout, "profile", gui.game.stepCounter,
 													false);

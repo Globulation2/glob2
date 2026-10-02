@@ -91,15 +91,19 @@ void GameGUI::init()
 	selectionMode=NO_SELECTION;
 	selectionPushed=false;
 	selection = std::monostate{};
-	// Reset the per-client view scratch (selection + mouse) the render path
-	// reads. Formerly cleared by Game::clearGame when these fields lived on
+	// Reset the per-client view scratch (selection, mouse and map render state)
+	// the render path reads. Formerly cleared by Game::clearGame when these fields lived on
 	// Game; now front-end-owned, so reset it here. See CS-661.
 	view = Game::ViewState{};
 	miniMapPushed=false;
 	putMark=false;
 	showUnitWorkingToBuilding=true;
 	chatMask=0xFFFFFFFF;
-	hasSpaceBeenClicked=false;
+	// A new game starts with empty client channels.
+	clientEvents.reset();
+	clientRequests.reset();
+	for (auto &queue : pendingTeamEvents)
+		queue.clear();
 	swallowSpaceKey=false;
 	scriptText.clear();
 	scriptTextUpdated = false;

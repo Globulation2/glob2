@@ -139,14 +139,23 @@ saved-game continuation coverage.
 
 `GameGUISelectionHarness.cpp` links the real client objects with a test entry
 point. It exercises selected building/unit deletion before the next GUI draw,
-null selections, and a live unit with no peer. It runs headlessly, using the real
-`GameGUI`, entity classes, selection setters, and destruction hooks. A friend
-fixture accesses the private selection API without exposing it to game callers.
+null selections, a live unit with no peer, gid reuse (the selection and the
+failing-unit recording must not move to the newcomer), a building destroyed by
+a tick (selection and pending shadow cleared through `ClientEvents`) and unit
+conversion (the selection follows the unit). It runs headlessly, using the real
+`GameGUI`, entity classes and selection setters. A friend fixture accesses the
+private selection API without exposing it to game callers.
 
-Runs as the `GameGUISelection` suite of `glob2-engine-tests`:
+`ClientChannelsTest.cpp` covers the `src/sim/` channels: team events reaching the
+GUI once, in order and aged like `Team::updateEvents`; script presentation going
+through `ClientCommandSink`; the SGSL Space acknowledgement in `ClientRequests`;
+and order effects such as pause arriving as events.
+
+Run as the `GameGUISelection` and `ClientChannels` suites of `glob2-engine-tests`:
 
 ```sh
 python3 test/run_tests.py --filter 'GameGUISelection/*'
+python3 test/run_tests.py --filter 'ClientChannels/*'
 ```
 
 For AddressSanitizer and UndefinedBehaviorSanitizer on macOS or Linux, build the

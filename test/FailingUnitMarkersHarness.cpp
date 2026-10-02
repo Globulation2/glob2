@@ -3,6 +3,7 @@
 // the units it could not hire under each reason, and the map view draws the
 // reason's shape over exactly those units. Needs a display; writes the scene to
 // scene.png in the case's artifact directory for reviewers.
+#include "scene/SceneMap.h"
 #include "EngineFixtures.h"
 #include "GlobalContainer.h"
 #include "Game.h"
@@ -153,7 +154,11 @@ public:
 		gui.localTeamNo = 0;
 		gui.localPlayer = 0;
 		gui.setSelection(GameGUI::BUILDING_SELECTION, static_cast<void*>(scene.inn));
-		require(scene.inn->recordFailingUnits, "selecting in the GUI switches recording on");
+		// The GUI publishes the observed building; the simulation switches
+		// recording on at the next tick boundary.
+		require(!scene.inn->recordFailingUnits, "selection alone does not touch the building");
+		gui.game.applyClientRequests();
+		require(scene.inn->recordFailingUnits, "the tick boundary switches recording on");
 		scene.team->updateAllBuildingTasks();
 		// Only the right-hand panel: drawAll also wants players, a minimap and
 		// a torus view this bare game does not have.
@@ -196,6 +201,7 @@ public:
 		gui.localTeam = gui.game.teams[0];
 		gui.teamStats = &gui.localTeam->stats;
 		gui.setSelection(GameGUI::BUILDING_SELECTION, static_cast<void*>(scene.inn));
+		gui.game.applyClientRequests(); // the tick boundary turns recording on
 		scene.team->updateAllBuildingTasks();
 		require(scene.inn->unitsFailingByReason[Building::UnitTooLowLevel].size() == LOW_COUNT,
 			"the scan with an open slot remembers every unschooled worker");
@@ -215,12 +221,12 @@ public:
 		Game::ViewState view;
 		view.selectedBuilding = scene.inn;
 		gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), 0, 0, 0);
-		gui.game.drawMapTerrain(0, 0, DRAW_W >> 5, DRAW_H >> 5, 0, 0, 0, Game::DRAW_WHOLE_MAP);
+		{ SceneMap layers; layers.extract(gui.game.map); gui.game.drawMapTerrain(0, 0, DRAW_W >> 5, DRAW_H >> 5, 0, 0, 0, Game::DRAW_WHOLE_MAP, layers); }
 		gui.game.drawMapGroundBuildings(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, &visible, nullptr);
 		gui.game.drawMapGroundUnits(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, view);
 		Frame stopped = grab();
 		gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), 0, 0, 0);
-		gui.game.drawMapTerrain(0, 0, DRAW_W >> 5, DRAW_H >> 5, 0, 0, 0, Game::DRAW_WHOLE_MAP);
+		{ SceneMap layers; layers.extract(gui.game.map); gui.game.drawMapTerrain(0, 0, DRAW_W >> 5, DRAW_H >> 5, 0, 0, 0, Game::DRAW_WHOLE_MAP, layers); }
 		gui.game.drawMapGroundBuildings(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, &visible, nullptr);
 		Game::ViewState none;
 		gui.game.drawMapGroundUnits(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, none);
@@ -266,7 +272,7 @@ public:
 	auto render = [&](Game::ViewState& view) {
 		std::set<Building*> visible;
 		gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), 0, 0, 0);
-		game.drawMapTerrain(0, 0, DRAW_W >> 5, DRAW_H >> 5, 0, 0, 0, Game::DRAW_WHOLE_MAP);
+		{ SceneMap layers; layers.extract(game.map); game.drawMapTerrain(0, 0, DRAW_W >> 5, DRAW_H >> 5, 0, 0, 0, Game::DRAW_WHOLE_MAP, layers); }
 		game.drawMapGroundBuildings(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, &visible, nullptr);
 		game.drawMapGroundUnits(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, view);
 		return grab();
