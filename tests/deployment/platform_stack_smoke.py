@@ -5,13 +5,13 @@ Builds the images (unless --no-build), starts an isolated Compose project on
 ephemeral ports with its own .env and instance.yaml, and checks:
 
   1. every service becomes healthy and the init job (keys, migrations) succeeds;
-  2. TLS from Caddy's local CA, the web app, and denial of private routes;
+  2. TLS from Caddy's local CA, the web app, invite pages from the API, and
+     denial of private routes;
   3. the instance lists the engine agent's sim version;
   4. guest sign-in over REST, then /realtime session.hello with the token;
   5. the JWKS publishes the generated signing key and the access token's kid;
   6. relays: healthy, reachable at /relay/<id> through Caddy (WebSocket 101),
-     and registered with the platform (an expected failure, reported clearly,
-     while /internal/v1/relays/register is not implemented);
+     and registered with the platform under that public URL;
   7. a generate-map engine job end to end: submitted to the queue, run by the
      engine agent with the real glob2 binary, applied by the worker, and the
      map stored in the blob volume;
@@ -255,9 +255,10 @@ class Smoke:
         status, headers, body = self.https('GET', '/')
         if status != 200 or b'<div id="root">' not in body:
             raise Failure(f'web app: {status} {body[:200]!r}')
+        # Invite pages are rendered by the API; an unknown code gets its own page.
         status_j, _, body_j = self.https('GET', '/j/ABCDEFGH')
-        if status_j != 200 or b'<div id="root">' not in body_j:
-            raise Failure(f'/j/ landing falls back to the web app: {status_j}')
+        if b'Invite not found' not in body_j or b'<div id="root">' in body_j:
+            raise Failure(f'/j/ is not served by the API: {status_j} {body_j[:200]!r}')
         status_play, _, body_play = self.https('GET', '/play/')
         if status_play != 200 or b'glob2 web client' not in body_play:
             raise Failure(f'/play/: {status_play}')
@@ -354,6 +355,14 @@ class Smoke:
         return {'kids': kids, 'alg': header.get('alg'), 'typ': header.get('typ')}
 
     def relays(self):
+        # Registration happens at start-up; allow a few heartbeats for retries.
+        deadline = time.monotonic() + 60
+        while time.monotonic() < deadline:
+            count = self.compose('exec', '-T', 'postgres', 'psql', '-U', 'glob2', '-d', 'glob2', '-At', '-c',
+                                 'SELECT count(*) FROM relays').strip()
+            if count == '2':
+                break
+            time.sleep(2)
         ids = self.compose('ps', '-q', 'relay').split()
         relay_ids = []
         for container in ids:
@@ -379,15 +388,9 @@ class Smoke:
                   'registered': registered}
         lines = [l.split('|', 1)[-1].strip() for l in logs.splitlines() if 'regist' in l.lower()]
         detail['registrationLog'] = lines[-4:]
-        self.results['relay_registration'] = (
-            {'ok': True, 'rows': registered} if len(registered) == len(relay_ids) else
-            {'ok': False, 'expected': True, 'reason': '/internal/v1/relays/register is not implemented on this '
-             'branch yet (multiplayer/m4-rooms); relays retry with backoff', 'log': lines[-4:]})
-        if len(registered) == len(relay_ids):
-            log('relays registered with the platform')
-        else:
-            log('EXPECTED FAILURE relay registration: /internal/v1/relays/register is not on this branch '
-                f'yet; relays keep retrying. Last log lines: {lines[-2:]}')
+        expected = sorted(f'{r} {u}' for r, u in zip(relay_ids, detail['publicUrls']))
+        if sorted(registered) != expected:
+            raise Failure(f'relays registered as {registered}, expected {expected}; log: {lines[-4:]}')
         return detail
 
     def engine_job(self):
