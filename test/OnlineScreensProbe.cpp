@@ -328,14 +328,16 @@ int profile(Probe &probe)
 	if (!probe.online() || !probe.client->account())
 		return 1;
 	const std::string id = probe.client->account()->id;
-	auto account = probe.call(HttpFetch::Method::Get, "/api/v1/accounts/" + id);
-	say({{"step", "account"}, {"ok", account.ok}, {"displayName", account.result.value("displayName", "")}});
-	auto history = probe.call(HttpFetch::Method::Get, "/api/v1/accounts/" + id + "/matches?limit=50");
+	auto player = probe.call(HttpFetch::Method::Get, "/api/v1/players/" + id);
+	auto profile = PlayerProfile::fromJson(player.result);
+	say({{"step", "player"}, {"ok", bool(profile)}, {"detail", profile && profile->full ? "full" : "minimal"},
+		 {"recentMatches", profile ? profile->recentMatches.size() : 0}, {"error", player.error.message}});
+	auto history = probe.call(HttpFetch::Method::Get, "/api/v1/players/" + id + "/matches?limit=50");
 	say({{"step", "history"}, {"ok", history.ok}, {"error", history.error.code}, {"message", history.error.message}});
 	if (!history.ok)
 		return 1;
 	auto page = parseMatchList(history.result);
-	auto summary = summarizeProfile(id, page.items);
+	auto summary = profile ? summarizeProfile(*profile, page.items) : summarizeProfile(id, page.items);
 	Json ladders = Json::array();
 	for (const auto &l : summary.ladders)
 		ladders.push_back({{"ladder", l.ladder}, {"rating", l.rating}, {"provisional", l.provisional}, {"games", l.games}});
