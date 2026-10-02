@@ -4,9 +4,12 @@ Globulation 2's online play is being rebuilt on a new foundation: a TypeScript
 platform service for accounts, rooms, matches, ratings and maps, and a C++ relay
 that sequences turns. This guide describes the design, the contracts between the
 parts, and how to work on the platform. Identity is covered in
-[identity](identity.md), and quick-match queues and ratings in
-[ratings and matchmaking](ratings-and-matchmaking.md). The binary turn protocol between clients and relays is
-owned by the turn-netcode work and documented in `docs/multiplayer/turn-protocol.md`.
+[identity](identity.md), rooms, the match start sequence, tickets, relay placement
+and the relays' internal API in [rooms and matches](rooms-and-matches.md), and
+quick-match queues and ratings in
+[ratings and matchmaking](ratings-and-matchmaking.md). The binary turn protocol
+between clients and relays is owned by the turn-netcode work and documented in
+`docs/multiplayer/turn-protocol.md`.
 
 The legacy YOG lobby, router and LAN code keep working unchanged until the
 cutover milestone (M9), when they are deleted. There is no data import from YOG.
@@ -153,13 +156,17 @@ events cover handoff completion, room state and chat, queue progress and
 match start. Room changes fan out to sockets on every API replica through
 NOTIFY (only ids and revisions travel; replicas re-read state).
 
-Implemented so far (M3): the envelope, `session.*` and `auth.handoff.*` (see
-[identity](identity.md#realtime-sessions)); other methods answer `unsupported`
-until their milestones. Each replica indexes its sockets by account, sign-in
-and pending handoff, and listens on one NOTIFY channel (`realtime`); anything
-addressed to a socket (`{t: "event", to: {account | family | connection}, …}`
-or `{t: "handoff", attemptId}`) is published there and delivered by the replica
-holding it (`platform/apps/api/src/realtime/hub.ts`). Malformed frames close
+Implemented: the envelope, `session.*` and `auth.handoff.*` (see
+[identity](identity.md#realtime-sessions)), and `room.*`, `queue.*` and
+`match.reconnect` (see [rooms and matches](rooms-and-matches.md)). Each replica
+indexes its sockets by account, sign-in and pending handoff, and listens on one
+NOTIFY channel (`realtime`). Anything addressed to a socket is published there and
+delivered by the replica holding it (`platform/apps/api/src/realtime/hub.ts`):
+`{t: "event", to: {account | family | connection}, …}`, `{t: "handoff", attemptId}`,
+and the room and match messages `{t: "room" | "roomChat" | "roomClosed" |
+"matchStart", …}`, which carry ids only. Replicas also listen on `queue_events`
+and `match_updates` (from the worker's matchmaker and ratings, and from match-end
+intake) and on `map_jobs` (finished map generations and upload validations). Malformed frames close
 the socket (1007/1008); a request with bad params gets a `bad_request`
 response with the schema issues in `details`.
 
@@ -183,9 +190,10 @@ database in tests.
 | Area | Tables |
 | --- | --- |
 | Identity | `accounts`, `identities`, `device_credentials`, `refresh_tokens`, `signin_attempts`, `web_sessions`, `auth_flows`, `entitlements`, `admin_audit_log` |
-| Infrastructure | `blobs`, `relays`, `engine_agents`, `engine_jobs` |
-| Rooms | `rooms` (settings JSON, revision), `room_members`, `room_seats`, `room_chat_messages` |
-| Matches | `matches` (the exact `MatchSetup`, seed, map hash, relay, verification), `match_participants`, `match_team_stats`, `match_artifacts` |
+| Infrastructure | `blobs`, `relays` (registration, load, drain, last heartbeat), `engine_agents`, `engine_jobs` |
+| Rooms | `rooms` (settings JSON, revision), `room_members` (with relay round trips), `room_seats` (with locks), `room_chat_messages` |
+| Map sources | `map_uploads` (private uploads and their validation), `generated_maps` (one generation per descriptor and sim version) |
+| Matches | `matches` (the exact `MatchSetup`, seed, map hash, relay and placement attempts, verification, the relay's end report), `match_participants`, `match_team_stats`, `match_artifacts` |
 | Ratings | `rating_entities` (an account, or an AI at one sim version), `ratings` (OpenSkill μ/σ per ladder, ordinal generated), `rating_history` (per-match change) |
 | Quick match | `queue_tickets` (one active ticket per account), `match_proposals` and `match_proposal_seats` (groups and accept prompts), `queue_cooldowns` |
 | Maps | `maps`, `map_versions` (content hash, size, dimensions, team count, preview), `map_likes`, `map_reports` |
@@ -216,7 +224,11 @@ Each service reads secrets and deployment settings from the environment (or a
 `.env` file; see `platform/.env.example`) and instance settings from
 `instance.yaml` (see `platform/instance.example.yaml`): name, guest access,
 sign-in providers (secrets referenced by environment-variable name), access
-policy and queues. Services log structured JSON to stdout, expose health
+policy, queues, and the browser client URL that invite pages link to. Relays
+authenticate to `/internal` with keys from `RELAY_KEYS` or `RELAY_KEYS_FILE` (see
+[rooms and matches](rooms-and-matches.md#internal-api-for-relays)); upload and
+match-record size limits are `UPLOAD_MAX_BYTES` and `RECORD_MAX_BYTES`. Services
+log structured JSON to stdout, expose health
 endpoints where they serve HTTP, and on SIGTERM stop taking work, finish what is
 running and close connections within `SHUTDOWN_GRACE_SECONDS`.
 

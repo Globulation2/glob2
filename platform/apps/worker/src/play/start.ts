@@ -406,6 +406,7 @@ export class PlatformMatchStarter implements MatchStarter {
     const warm = await (this.options.warmMaps ?? noWarmMaps).takeWarmMap(
       proposal.queueId,
       proposal.simVersion,
+      { entry: proposal.map },
     );
     if (warm) return { generator: warm.generator, mapHash: warm.mapHash };
     const generator: GeneratorDescriptor = {

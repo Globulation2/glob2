@@ -31,7 +31,8 @@ dated reports and pull-request artifacts do not belong here.
   [toroidal view](features/torus-experiment.md).
 - **Map generators:** [design and implementation index](map-generators/README.md).
 - **Online multiplayer:** [platform architecture](multiplayer/architecture.md),
-  [identity and sign-in](multiplayer/identity.md), and
+  [identity and sign-in](multiplayer/identity.md),
+  [rooms and matches](multiplayer/rooms-and-matches.md), and
   [ratings and matchmaking](multiplayer/ratings-and-matchmaking.md).
 - **Tools:** [distributed tournaments](tools/tournaments.md).
 
