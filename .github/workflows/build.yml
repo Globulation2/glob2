@@ -1496,10 +1496,10 @@ jobs:
             command: GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test runtime-build.spec.js viewport.spec.js responsive-presentation.spec.js campaign-editor-storage.spec.js --project=firefox
           - name: firefox WSS and simulation
             browsers: firefox
-            command: GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test multiplayer.spec.js determinism.spec.js --project=firefox --grep='YOG admission enforces|browser and native players|WebAssembly produces'
+            command: GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test multiplayer.spec.js determinism.spec.js --project=firefox --grep='YOG admission enforces|browser and native players|WebAssembly produces|WebAssembly verifies'
           - name: webkit WSS and simulation
             browsers: webkit
-            command: xvfb-run -a npx playwright test multiplayer.spec.js determinism.spec.js --project=webkit --grep='YOG admission enforces|browser and native players|WebAssembly produces'
+            command: xvfb-run -a npx playwright test multiplayer.spec.js determinism.spec.js --project=webkit --grep='YOG admission enforces|browser and native players|WebAssembly produces|WebAssembly verifies'
           - name: firefox scripting
             browsers: firefox
             command: GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test determinism.spec.js --project=firefox --grep='shared scripting corpus'
@@ -1613,6 +1613,23 @@ jobs:
           for trace in traces[1:]:
               assert trace.read_bytes() == reference, f'Simulation differs: {trace}'
           print('All six per-tick simulation traces match')
+          PY
+      - name: Compare every --verify-match trace across Linux, Windows and WebAssembly
+        id: compare_every_verify_match_trace
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          traces = sorted(Path('artifacts/ci-traces').rglob('verify-match.checksums.txt'))
+          assert len(traces) == 6, f'Expected Linux (2), Windows and three browser traces, got {traces}'
+          reference = traces[0].read_bytes().replace(b'\r\n', b'\n')
+          assert reference.count(b'\n') > 600
+          for trace in traces[1:]:
+              assert trace.read_bytes().replace(b'\r\n', b'\n') == reference, f'Verification differs: {trace}'
+          committed = Path('test/fixtures/multiplayer/FourSquares1.verify-trace.txt').read_bytes()
+          if committed.replace(b'\r\n', b'\n') != reference:
+              print('::warning::Every platform agrees, but not with the committed trace; '
+                    'regenerate test/fixtures/multiplayer with run_tests.py --update-fixtures')
+          print('All six --verify-match traces match')
           PY
 
       - uses: actions/download-artifact@v4

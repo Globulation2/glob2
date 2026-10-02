@@ -60,7 +60,7 @@ def build_web(directory, identity, arguments):
     env.Append(CPPPATH=include_paths + ["#third_party/quickjs-ng"], CPPDEFINES=['HAVE_CONFIG_H'],
                CXXFLAGS=['-std=gnu++20', '-fexceptions', '-g2', '-O2' if identity['mode']=='release' else '-O0'] + PORTS)
     env.Append(LINKFLAGS=['-fexceptions', '-O2' if identity['mode']=='release' else '-O0',
-        '-sLEGACY_GL_EMULATION=1', '-sMIN_WEBGL_VERSION=2', '-sMAX_WEBGL_VERSION=2',
+        '-sLEGACY_GL_EMULATION=1', '-sFETCH=1', '-sMIN_WEBGL_VERSION=2', '-sMAX_WEBGL_VERSION=2',
         '-sALLOW_MEMORY_GROWTH',
         '-sINITIAL_MEMORY=134217728', '-sSTACK_SIZE=8388608', '-sASSERTIONS=1',
         '-sFORCE_FILESYSTEM', '-lidbfs.js', '-lwebsocket.js',
@@ -75,10 +75,10 @@ def build_web(directory, identity, arguments):
             input='', text=True, env=env['ENV']).returncode
     ports = env.Command(str(output / 'ports-ready.o'), [Value(lock), Value(PORTS)],
                         Action(prepare_ports, 'Preparing pinned Emscripten ports'))
-    files = ['src/' + s for s in CLIENT_SOURCES if s not in ('VoiceRecorder.cpp', 'net/NetTransport.cpp', 'net/WssTransport.cpp', 'net/LanIdentity.cpp', 'net/ServerControl.cpp', 'net/irc/IRCTextMessageHandler.cpp')]
+    files = ['src/' + s for s in CLIENT_SOURCES if s not in ('VoiceRecorder.cpp', 'net/NetTransport.cpp', 'net/WssTransport.cpp', 'net/LanIdentity.cpp', 'net/ServerControl.cpp', 'net/irc/IRCTextMessageHandler.cpp', 'online/HttpFetch.cpp')]
     files += ['libgag/src/' + s for s in GAG_SOURCES if s != 'ApplicationHost.cpp']
     files += ['libusl/src/' + s for s in USL_SOURCES]
-    files += ['browser/VoiceRecorder.cpp', 'browser/ApplicationHost.cpp', 'browser/NetTransport.cpp', 'browser/IRCTextMessageHandler.cpp']
+    files += ['browser/VoiceRecorder.cpp', 'browser/ApplicationHost.cpp', 'browser/NetTransport.cpp', 'browser/IRCTextMessageHandler.cpp', 'browser/HttpFetch.cpp']
     if any(target in COMMAND_LINE_TARGETS for target in ('android-tests', 'ios-tests', 'web-tests')):
         from test_provenance import register_test_provenance
         provenance_header = register_test_provenance(env, output)

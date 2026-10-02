@@ -149,6 +149,59 @@ expected. Only the matchup AIs issue orders.
 
 Same as `-test-games-nox` but **with GUI** — useful for visually verifying AI behavior.
 
+## Verifying a match record
+
+```sh
+glob2 --verify-match <record.g2mr> --map <map-file> --out <dir> [--profile <name>]
+glob2 --sim-version
+```
+
+`--verify-match` replays a relay match record (the format is in the
+[turn protocol](../multiplayer/turn-protocol.md#match-record)) headlessly and judges the
+checksums the live clients reported. Pass absolute paths: a macOS build changes its
+working directory at startup. `--output-dir` is accepted for `--out`.
+
+It reads the record, parses its MatchSetup JSON and checks that the record's map hash
+and human seats agree with the setup. The map file must hash (SHA-256 of its
+decompressed bytes) to the setup's `map.hash`. It then builds the `GameHeader` from the
+setup with every human seat `P_IP`, as live clients do, and runs the match through
+`Engine::initTurnMatch` with the record standing in for the relay. Recorded human
+orders execute at their ticks and AI orders are computed locally. The end-of-replay GUI
+path is never involved, and a seat's quit order does not stop the run. The verifier
+takes the state checksum before every tick from 0 to the record's `endTick`, where a
+live client takes it, and compares every recorded report with it.
+
+Outputs in `<dir>`:
+
+| File | Contents |
+| --- | --- |
+| `verdict.json` | `{"verdict": "verified" \| "diverged" \| "unverifiable", "seats": [...], "reason": "..."}`; `seats` only when diverged, `reason` only when unverifiable. It also carries the protocol package's `VerifyVerdict` members: `clients` (the same seats) and, unless unverifiable, `outcome` (`finalTick`, per-team `outcome`, `prestige` and `eliminatedTick`, and the SHA-256 of `result.json` and `match.replay`). |
+| `result.json` | The `--run-game` result format (`players`, `teams` with outcomes, `standard_statistics` and the 512-tick `history`, `winning_teams`) with `"job_type": "verify_match"`, the match id, both sim versions, the record flags, and a `verification` object (verdict, compared reports, first divergent tick per seat). It has no wall-clock fields, so a record verifies to the same bytes everywhere. |
+| `checksums.txt` | One `tick checksum` line (hexadecimal) for every tick from 0 to `endTick`. |
+| `match.replay` | A standard replay of the verified match, written by `ReplayWriter`. |
+| `artifacts.json` | The file manifest, as for `--run-game`. |
+
+The verdict is **verified** when every seat that reported matched at every tick it
+reported; **diverged** when some seats differ and at least one matched, with the
+differing seats listed; and **unverifiable** when no seat matched (engine
+nondeterminism or a corrupt record), when no report could be compared, or when the
+setup's sim version is not this build's (the run still completes and writes its trace).
+
+The exit code is 0 for any verdict. It is 2 for a bad request (unreadable or corrupt
+record, invalid setup, a map whose hash or team count does not match) and 3 for an
+engine or I/O failure; both write a `result.json` with `status` and `diagnostic`.
+
+`--sim-version` prints this build's simulation version as JSON,
+`{"versionMinor": ..., "netProtocol": ..., "dataHash": "<64 hex>"}`. Engine agents
+partition verification jobs by it; the definition of the data hash is in the
+[turn protocol](../multiplayer/turn-protocol.md#simulation-version).
+
+CI verifies `test/fixtures/multiplayer/FourSquares1.g2mr` on Linux, Windows and in
+three browsers (`test/run-browser-determinism.py` and `browser/tests/determinism.spec.js`)
+and requires the six `checksums.txt` traces to be identical. The committed
+`FourSquares1.verify-trace.txt` is the expected trace; the engine test that checks it
+also regenerates both files under `--update-fixtures`.
+
 ## AI-Trainer Dataset Output
 
 When `GLOB2_DATASET_PATH` is set, the engine writes one binary record

@@ -18,6 +18,6 @@ TEST_SUITE("VendoredJson")
 		CHECK(message["seats"][0]["ai"].is_null());
 		CHECK_EQ(message["name"].get<std::string>(), "Caf\xc3\xa9");
 		CHECK_EQ(nlohmann::json::parse(message.dump()), message);
-		CHECK_THROWS_AS(nlohmann::json::parse("{\"unterminated\":"), nlohmann::json::parse_error);
+		CHECK_THROWS_AS(static_cast<void>(nlohmann::json::parse("{\"unterminated\":")), nlohmann::json::parse_error);
 	}
 }

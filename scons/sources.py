@@ -120,6 +120,7 @@ CLIENT_SOURCES = (
     'EngineLoaders.cpp',
     'EngineRun.cpp',
     'Headless.cpp',
+    'VerifyMatch.cpp',
     'MapStudy.cpp',
     'FertilityCalculator.cpp',
     'map/FertilityField.cpp',
@@ -414,6 +415,7 @@ CLIENT_SOURCES = (
     'net/turn/MatchRecord.cpp',
     'net/turn/TurnMessages.cpp',
     'net/turn/TurnSequencer.cpp',
+    'net/turn/TurnLockstep.cpp',
     'net/turn/TurnSession.cpp',
     'net/NetTestSuite.cpp',
     'NewMapScreen.cpp',
@@ -546,6 +548,11 @@ CLIENT_SOURCES = (
     'net/LanIdentity.cpp',
     'net/ServerControl.cpp',
     'net/WssTransport.cpp',
+    'online/HttpFetch.cpp',
+    'online/HttpFetchCommon.cpp',
+    'online/MatchSetup.cpp',
+    'online/Sha256.cpp',
+    'online/SimVersion.cpp',
 )
 
 SERVER_SOURCES = (
@@ -765,5 +772,5 @@ INCLUDE_DIRECTORIES = (
     'src/map/generator/shared/legacy',
     'src/map/generator/compatibility', 'src/map/gradient', 'src/map/io', 'src/map/pathfind',
     'src/net', 'src/net/irc', 'src/net/message', 'src/net/turn', 'src/sgsl', 'src/team', 'src/unit',
-    'third_party/nlohmann-json/include',
+    'src/online', 'third_party/nlohmann-json/include',
 )
