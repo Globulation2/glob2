@@ -69,6 +69,29 @@ inline Json roomState()
 				{"createdAt", "2026-10-01T20:00:00Z"}};
 }
 
+inline const char *const LATE_ID = "8f0e0c3a-3333-4c1e-9c51-0a6d6c1f0003";
+
+// Every seat taken (the open one locked) and a third member who joined late.
+inline Json fullRoomState()
+{
+	Json room = roomState();
+	room["seats"][3]["locked"] = true;
+	room["members"].push_back(
+		{{"accountId", LATE_ID}, {"displayName", "Guest-2472"}, {"kind", "guest"}, {"connected", true}});
+	return room;
+}
+
+// A premade map the host uploaded ("balanced for 2"), as the server reports it.
+inline Json premadeRoomState()
+{
+	Json room = roomState();
+	room["map"] = {{"kind", "upload"}, {"format", "map"}};
+	room["mapTitle"] = "balanced for 2";
+	room["seats"] = Json::array({room["seats"][0], room["seats"][1]});
+	room["teams"] = Json::array({{{"team", 0}, {"alliance", 0}}, {{"team", 1}, {"alliance", 1}}});
+	return room;
+}
+
 inline std::vector<std::pair<std::string, std::string>> roomChat()
 {
 	return {{"", "Ana_M joined from an invite link."},

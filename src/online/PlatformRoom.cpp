@@ -7,10 +7,12 @@
 #include "CustomGameSetup.h"
 #include "Game.h"
 #include "MapCache.h"
+#include "MapCatalog.h"
 #include "OnlineMatch.h"
 #include "OnlineServices.h"
 #include "PlatformClient.h"
 #include "RoomSetup.h"
+#include "SimVersion.h"
 #include "Team.h"
 #include "Utilities.h"
 
@@ -18,7 +20,11 @@
 #include <StringTable.h>
 #include <Toolkit.h>
 
+#include <GzipUtil.h>
+
 #include <algorithm>
+#include <fstream>
+#include <iterator>
 #include <random>
 
 namespace Online
@@ -293,7 +299,15 @@ void PlatformRoom::systemLinesFor(const Json &previous, const Json &next)
 	for (const auto &[id, name] : before)
 		if (!after.count(id))
 			notice(formatted("[room member left %0]", name));
-	if (previous.value("map", Json()) != next.value("map", Json()))
+	// A generated map gains its hash when generation finishes: the same choice, so
+	// it is not announced twice.
+	auto choice = [](const Json &room) {
+		Json map = room.value("map", Json());
+		if (map.is_object() && map.value("kind", "") == "generated")
+			map.erase("hash");
+		return map;
+	};
+	if (choice(previous) != choice(next))
 		notice(formatted("[room map changed %0]", mapName()));
 	else if (previous.value("rules", Json()) != next.value("rules", Json()))
 		notice(text("[room rules changed]"));
@@ -419,8 +433,13 @@ std::string PlatformRoom::mapName() const
 					std::to_string(1 << g["params"]["height"].get<int>());
 		return name;
 	}
+	if (state.contains("mapTitle") && state["mapTitle"].is_string() && !state["mapTitle"].get<std::string>().empty())
+		return state["mapTitle"].get<std::string>();
 	if (map.contains("title") && map["title"].is_string())
 		return map["title"].get<std::string>();
+	// The host knows the name of the file it just uploaded before the server does.
+	if (!uploadedTitle.empty() && map.value("hash", "") == uploadedHash)
+		return uploadedTitle;
 	return kind == "upload" ? text("[room uploaded map]") : text("[room catalog map]");
 }
 
@@ -590,6 +609,10 @@ std::string PlatformRoom::waitingFor() const
 		return text("[room connecting]");
 	if (starting())
 		return text("[room starting match]");
+	if (uploading)
+		return text("[room uploading map]");
+	if (const std::string blocker = readyBlocker(); !blocker.empty())
+		return blocker;
 	const std::string map = state.value("mapStatus", "ready");
 	if (map == "pending")
 		return text("[room preparing map]");
@@ -613,6 +636,52 @@ std::string PlatformRoom::waitingFor() const
 	if (!isHost())
 		return text("[room waiting for host]");
 	return {};
+}
+
+bool PlatformRoom::localUnseated() const
+{
+	if (state.is_null() || !member(myAccount()))
+		return false;
+	for (const auto &slot : slots())
+		if (slot.local)
+			return false;
+	return true;
+}
+
+std::vector<std::string> PlatformRoom::unseatedMembers() const
+{
+	std::vector<std::string> names;
+	if (state.is_null() || !state.contains("members"))
+		return names;
+	std::set<std::string> seated;
+	if (state.contains("seats"))
+		for (const auto &seat : state["seats"])
+			if (occupantKind(seat) == "human")
+				seated.insert(seat["occupant"].value("accountId", ""));
+	const std::string me = myAccount();
+	for (const auto &m : state["members"])
+	{
+		const std::string id = m.value("accountId", "");
+		if (seated.count(id))
+			continue;
+		std::string name = m.value("displayName", "");
+		if (id == me)
+			name += " (" + text("[room you]") + ")";
+		if (!m.value("connected", true))
+			name += " · " + text("[room disconnected]");
+		names.push_back(name);
+	}
+	return names;
+}
+
+std::string PlatformRoom::readyBlocker() const
+{
+	if (state.is_null() || isHost() || starting() || !localUnseated())
+		return {};
+	for (const auto &slot : slots())
+		if (canTakeSeat(slot))
+			return text("[room take a seat to play]");
+	return text("[room waiting for a seat]");
 }
 
 bool PlatformRoom::canStart() const
@@ -784,17 +853,38 @@ bool PlatformRoom::setupDraft(CustomGameSetup &draft) const
 
 void PlatformRoom::applySetup(const CustomGameSetup &setup)
 {
+	applyDraft(setup, false);
+}
+
+void PlatformRoom::useGeneratedMap(const CustomGameSetup &setup)
+{
+	applyDraft(setup, true);
+}
+
+void PlatformRoom::applyDraft(const CustomGameSetup &setup, bool chosenMap)
+{
 	if (!canEditSetup())
 		return;
 	Json changes{{"rules", matchRules(setup)}};
 	try
 	{
-		Json descriptor = generatorDescriptor(setup, std::random_device{}());
-		const Json current = state.value("map", Json());
-		const bool sameMap = current.is_object() && current.value("kind", "") == "generated" &&
-							 current.contains("generator") && current["generator"] == descriptor;
-		if (!sameMap)
-			changes["map"] = Json{{"kind", "generated"}, {"generator", descriptor}};
+		// A premade or catalog map stays when only the rules or teams changed: the
+		// draft's generator is then still the one setupDraft() filled in.
+		bool keepMap = false;
+		if (!chosenMap && !generatedMap() && state.contains("map") && state["map"].is_object())
+		{
+			CustomGameSetup current;
+			keepMap = setupDraft(current) && generatorDescriptor(current, 1) == generatorDescriptor(setup, 1);
+		}
+		if (!keepMap)
+		{
+			Json descriptor = generatorDescriptor(setup, std::random_device{}());
+			const Json current = state.value("map", Json());
+			const bool sameMap = current.is_object() && current.value("kind", "") == "generated" &&
+								 current.contains("generator") && current["generator"] == descriptor;
+			if (!sameMap)
+				changes["map"] = Json{{"kind", "generated"}, {"generator", descriptor}};
+		}
 	}
 	catch (const std::exception &error)
 	{
@@ -804,12 +894,101 @@ void PlatformRoom::applySetup(const CustomGameSetup &setup)
 		 [this, teams = setupTeams(setup)](const Json &result) {
 			 if (result.contains("room"))
 				 adopt(result["room"]);
-			 // Alliances need the seats the new map gave the room.
-			 if (!state.is_null() && state.contains("teams") && state["teams"].size() == teams.size() &&
-				 state["teams"] != teams)
-				 call("room.update",
-					  Json{{"roomId", state["id"]}, {"revision", state["revision"]}, {"changes", {{"teams", teams}}}});
+			 applyDraftTeams(teams);
 		 });
+}
+
+void PlatformRoom::applyDraftTeams(const Json &teams)
+{
+	// Alliances need the seats the new map gave the room.
+	if (!state.is_null() && state.contains("teams") && state["teams"].size() == teams.size() && state["teams"] != teams)
+		call("room.update", Json{{"roomId", state["id"]}, {"revision", state["revision"]}, {"changes", {{"teams", teams}}}});
+}
+
+bool PlatformRoom::generatedMap() const
+{
+	return !state.is_null() && state.contains("map") && state["map"].is_object() &&
+		   state["map"].value("kind", "") == "generated";
+}
+
+void PlatformRoom::usePremadeMap(const std::string &path, const std::string &title, const CustomGameSetup &setup)
+{
+	if (!canEditSetup())
+		return;
+	std::string bytes;
+	if (!readMapBytes(path, bytes) || bytes.empty())
+	{
+		// The custom-game screen may hand over an absolute path the Toolkit's file
+		// manager does not search: read it directly, inflating a gzip file.
+		std::ifstream file(path, std::ios::binary);
+		std::string raw((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+		bytes.clear();
+		if (raw.size() > 2 && static_cast<unsigned char>(raw[0]) == 0x1f && static_cast<unsigned char>(raw[1]) == 0x8b)
+		{
+			if (!GAGCore::gzipDecompress(raw, bytes, MapCache::MAX_MAP_BYTES + 1))
+				bytes.clear();
+		}
+		else
+			bytes = std::move(raw);
+	}
+	if (bytes.empty() || bytes.size() > MapCache::MAX_MAP_BYTES)
+	{
+		problem = text("[room map read failed]");
+		Event event;
+		event.kind = Event::Message;
+		event.text = problem;
+		push(std::move(event));
+		return;
+	}
+	useMapBytes(std::move(bytes), title, setup);
+}
+
+void PlatformRoom::useMapBytes(std::string bytes, const std::string &title, const CustomGameSetup &setup)
+{
+	if (!canEditSetup() || !client || uploading)
+		return;
+	uploading = true;
+	problem.clear();
+	{
+		Event event;
+		event.kind = Event::Changed;
+		push(std::move(event));
+	}
+	std::string path = "/api/v1/uploads?format=map&simVersion=" + urlEncode(SimVersion::local().key());
+	if (!title.empty())
+		path += "&fileName=" + urlEncode(title.substr(0, 120) + ".map");
+	auto keep = alive;
+	client->restRaw(
+		HttpFetch::Method::Post, path, std::move(bytes), "application/octet-stream",
+		[this, keep, title, rules = matchRules(setup), teams = setupTeams(setup)](const PlatformClient::Response &response) {
+			if (!*keep)
+				return;
+			uploading = false;
+			const std::string hash = response.ok ? response.result.value("sha256", "") : std::string();
+			const std::string status = response.ok ? response.result.value("status", "") : std::string();
+			if (!response.ok || hash.empty() || status == "invalid" || state.is_null())
+			{
+				problem = !response.ok ? (response.error.message.empty() ? response.error.code : response.error.message)
+						  : status == "invalid" ? response.result.value("reason", text("[room map upload failed]"))
+												: text("[room map upload failed]");
+				Event event;
+				event.kind = Event::Message;
+				event.text = formatted("[room map upload failed %0]", problem);
+				push(std::move(event));
+				return;
+			}
+			uploadedHash = hash;
+			uploadedTitle = title;
+			call("room.update",
+				 Json{{"roomId", state["id"]},
+					  {"revision", state["revision"]},
+					  {"changes", {{"map", {{"kind", "upload"}, {"format", "map"}, {"hash", hash}}}, {"rules", rules}}}},
+				 [this, teams](const Json &result) {
+					 if (result.contains("room"))
+						 adopt(result["room"]);
+					 applyDraftTeams(teams);
+				 });
+		});
 }
 
 void PlatformRoom::useCatalogMap(const std::string &hash, const std::string &mapId)

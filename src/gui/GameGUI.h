@@ -296,6 +296,16 @@ public:
 	/// replace the "[waiting for X]" notice. Null for every other game. Presentation
 	/// only, never simulated, networked or saved.
 	std::unique_ptr<ConnectionOverlay> connectionOverlay;
+	/// Turn-protocol games (online or LAN): what the in-game menu offers and what
+	/// leaving costs. Loading and saving have no meaning there, and leaving asks first.
+	/// Presentation only, never simulated, networked or saved.
+	struct NetworkMatch
+	{
+		bool active = false; ///< a turn-protocol game (online or LAN)
+		bool online = false; ///< on a platform instance (else LAN)
+		bool rated = false;
+		bool fromRoom = true; ///< a room match (else a quick match)
+	} networkMatch;
 	/// A one-line notice in the message list (connection changes).
 	void addNotice(const std::string &text);
 private:
@@ -647,7 +657,8 @@ private:
 		IGM_OPTION,
 		IGM_ALLIANCE,
 		IGM_OBJECTIVES,
-		IGM_END_OF_GAME
+		IGM_END_OF_GAME,
+		IGM_CONFIRM_LEAVE
 	} inGameMenu;
 	// The dialog receiving input, if any: the menu, the chat composer or the history.
 	Glob2UI::InGameDialog *activeDialog() const;
@@ -655,6 +666,8 @@ private:
 	void openDialog(InGameMenu menu, std::unique_ptr<Glob2UI::InGameDialog> dialog);
 	void closeDialog();
 	void openMainMenu();
+	/// "Leave match?" with what leaving costs (networkMatch).
+	std::unique_ptr<Glob2UI::InGameDialog> makeLeaveConfirmation() const;
 	void openChat();
 	void closeChat();
 	void toggleHistory();

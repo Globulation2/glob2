@@ -298,6 +298,18 @@ std::vector<Fixture> fixtures()
 			 return room;
 		 }},
 		{"room-lan", [](GAGGUI::ScreenStack &s) { return std::make_unique<RoomScreen>(s, std::make_shared<OnlineUIFixtures::LanRoomFixture>()); }},
+		// A member who joined a full room: listed as not seated, Ready disabled with why.
+		{"room-unseated", [](GAGGUI::ScreenStack &s)
+		 {
+			 return std::make_unique<RoomScreen>(s, Online::PlatformRoom::preview(OnlineUIFixtures::fullRoomState(), OnlineUIFixtures::LATE_ID, OnlineUIFixtures::roomChat()));
+		 }},
+		// A premade map uploaded for the room, named by the server's mapTitle.
+		{"room-premade-map", [](GAGGUI::ScreenStack &s)
+		 {
+			 auto room = std::make_unique<RoomScreen>(s, Online::PlatformRoom::preview(OnlineUIFixtures::premadeRoomState(), OnlineUIFixtures::HOST_ID, OnlineUIFixtures::roomChat()));
+			 room->selectTab(RoomScreen::MapTab);
+			 return room;
+		 }},
 		{"match-starting", [](GAGGUI::ScreenStack &s) { return std::make_unique<MatchStartScreen>(s, OnlineUIFixtures::startingMatch()); }},
 		{"settings-online", [](GAGGUI::ScreenStack &)
 		 {

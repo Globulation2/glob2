@@ -4564,3 +4564,57 @@ Guests aren't ranked. Sign in to appear here.
 Full leaderboard
 [settings %0 is no longer linked.]
 %0 is no longer linked.
+[room map read failed]
+This map file could not be read.
+[room map upload failed]
+The map could not be shared with the room.
+[room map upload failed %0]
+The map could not be shared with the room: %0
+[room uploading map]
+Sharing the map with the room…
+[room premade map shared]
+Everyone in the room plays this map file; it downloads before the match.
+[room take a seat to play]
+Take an open seat to play
+[room waiting for a seat]
+Every seat is taken. You can take one when it opens.
+[room not seated]
+Not seated
+[room copied]
+Copied
+[room copy failed]
+Could not copy
+[room closed title]
+Room closed
+[room removed title]
+Removed from the room
+[room back to online]
+Back to Online
+[leave match]
+Leave match
+[leave match title]
+Leave this match?
+[leave lan title]
+Leave this LAN game?
+[leave rated body]
+You lose this ranked match and your rating drops. The others play on, and you cannot come back to it.
+[leave casual body]
+This quick match counts as a loss for you. The others play on, and you cannot come back to it.
+[leave room body]
+You leave the room's match and it counts as a loss in your history. The others play on, and you cannot come back to it.
+[leave lan body]
+The others play on without you, and you cannot come back to this game.
+[leave match confirm]
+Leave match
+[keep playing]
+Keep playing
+[results team]
+Team
+[results quick unrated]
+Quick match · unrated
+[conn card cannot keep up]
+Your device can't keep up with this match
+[conn card cannot keep up body]
+It replays the match more slowly than the match runs, so it will not catch up. You can leave the match, or lower the graphics settings and keep waiting.
+[conn card not gaining]
+not gaining

@@ -412,6 +412,73 @@ TEST_SUITE("TurnSequencer")
 		CHECK(f.relay.horizon() == 21);
 	}
 
+	TEST_CASE("the load barrier holds the clock until every human seat has connected")
+	{
+		SequencerConfig config;
+		config.startBarrierMicros = 60 * 1000 * MS;
+		config.graceMicros = 10 * 1000 * MS;
+		RelayFixture f(0b11, config);
+		f.join(1, 0);
+		auto welcome = f.out.take<Welcome>(1, MSG_WELCOME);
+		REQUIRE(welcome.size() == 1);
+		CHECK(welcome[0]->relayTick == 0);
+		f.out.inbox[1].clear();
+		// Seat 1 is still loading for 20 s: no bundle, no clock, and no grace runs out.
+		for (std::uint64_t second = 1; second <= 20; ++second)
+		{
+			f.at(second * 1000 * MS);
+			CHECK(f.out.take<TurnBundle>(1, MSG_TURN_BUNDLE).empty());
+		}
+		CHECK_FALSE(f.relay.clockStarted());
+		CHECK(f.relay.horizon() == 0);
+		CHECK(f.relay.relayTick(f.now) == 0);
+		CHECK(f.relay.presence(1) == PresenceState::NotConnected);
+		// The last seat arrives: the clock starts from that moment, at tick 0.
+		f.join(2, 1);
+		CHECK(f.out.take<Welcome>(2, MSG_WELCOME).at(0)->relayTick == 0);
+		const std::uint64_t arrived = f.now;
+		f.at(arrived - 1000000 + 1 * MS);
+		CHECK(f.relay.clockStarted());
+		CHECK(f.relay.clockStartMicros() == arrived + 1 * MS);
+		f.at(arrived - 1000000 + 1 * MS + 2 * TICK + 1 * MS);
+		std::uint32_t horizon = 0;
+		f.out.bundleEntries(1, &horizon);
+		CHECK(horizon == 3);
+		CHECK(f.relay.horizon() == 3);
+	}
+
+	TEST_CASE("the load barrier gives up after its timeout; the late seat gets grace from the start")
+	{
+		SequencerConfig config;
+		config.startBarrierMicros = 30 * 1000 * MS;
+		config.graceMicros = 10 * 1000 * MS;
+		RelayFixture f(0b11, config);
+		f.join(1, 0);
+		f.at(29 * 1000 * MS);
+		CHECK_FALSE(f.relay.clockStarted());
+		f.at(30 * 1000 * MS);
+		CHECK(f.relay.clockStarted());
+		CHECK(f.relay.presence(1) == PresenceState::NotConnected);
+		// Without the barrier's reset the seat would already be out of grace (40 s
+		// since creation); it has 10 s from the start.
+		f.at(39 * 1000 * MS);
+		CHECK(f.relay.presence(1) == PresenceState::NotConnected);
+		f.join(2, 1);
+		CHECK(f.relay.presence(1) == PresenceState::Connected);
+		// It joined late: the relay is 9 s (225 ticks) in and sends it the log.
+		CHECK(f.out.take<Welcome>(2, MSG_WELCOME).at(0)->relayTick == 225);
+		CHECK_FALSE(f.out.take<TurnBundle>(2, MSG_TURN_BUNDLE).empty());
+	}
+
+	TEST_CASE("without a barrier the clock starts when the sequencer is created")
+	{
+		RelayFixture f(0b11);
+		CHECK(f.relay.clockStarted());
+		f.join(1, 0);
+		f.atTick(3);
+		CHECK(f.relay.horizon() == 4);
+	}
+
 	TEST_CASE("an order takes the earliest tick not yet broadcast, whatever the relay clock")
 	{
 		SequencerConfig config;

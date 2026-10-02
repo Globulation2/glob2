@@ -28,6 +28,8 @@ namespace
 constexpr std::size_t CHAT_HISTORY = 200;
 // The newest chat line shows above the phone tab bar for this long.
 constexpr Uint32 CHAT_TOAST_MS = 5000;
+// How long a copy button says "Copied".
+constexpr Uint32 COPIED_MS = 2000;
 
 std::string formatted(const char *key, const std::string &value)
 {
@@ -139,8 +141,29 @@ void RoomScreen::finish(int code, const std::string &message)
 		endExecute(code);
 		return;
 	}
-	screens.push(std::make_unique<MessageScreen>(message, std::vector<std::string>{tr("[ok]")}),
+	// A compact notice with a heading; online rooms go back to the Online hub.
+	const bool online = room->kind() == RoomBackend::Kind::Online;
+	const char *title = code == RoomBackend::Kicked ? "[room removed title]" : "[room closed title]";
+	screens.push(std::make_unique<MessageScreen>(tr(title), message, std::vector<std::string>{tr(online ? "[room back to online]" : "[ok]")}),
 				 [this, code](GAGGUI::Screen &, int) { endExecute(code); });
+}
+
+void RoomScreen::copy(const std::string &key, const std::string &text)
+{
+	if (text.empty())
+		return;
+	copyFailed = !GAGCore::ApplicationHost::copyText(text);
+	copiedKey = key;
+	copiedAt = now ? now : 1;
+	invalidate();
+}
+
+std::string RoomScreen::copyLabel(const std::string &key, const std::string &label) const
+{
+	// Two seconds of "Copied" (or why not) where the button's word was.
+	if (key != copiedKey || !copiedAt || now - copiedAt > COPIED_MS)
+		return label;
+	return tr(copyFailed ? "[room copy failed]" : "[room copied]");
 }
 
 void RoomScreen::handle(const RoomBackend::Event &event)
@@ -203,6 +226,8 @@ void RoomScreen::onTimer(Uint32 tick)
 		preview->setMapThumbnail(previewFile);
 		invalidate();
 	}
+	if (copiedAt && tick - copiedAt > COPIED_MS && tick - copiedAt < COPIED_MS + 200)
+		invalidate();
 	// The chat toast on phones fades after a few seconds.
 	if (lastChatAt && tick - lastChatAt > CHAT_TOAST_MS && tick - lastChatAt < CHAT_TOAST_MS + 200)
 		invalidate();
@@ -257,12 +282,27 @@ void RoomScreen::editSetup(int customGameTab)
 		return;
 	auto editor = std::make_unique<CustomGameScreen>(screens);
 	editor->useForRoom(draft, customGameTab);
-	screens.push(std::move(editor), [this](GAGGUI::Screen &screen, int result) {
+	screens.push(std::move(editor), [this, customGameTab](GAGGUI::Screen &screen, int result) {
 		if (result != CustomGameScreen::OK)
 			return;
-		auto edited = static_cast<CustomGameScreen &>(screen).draft();
-		edited.random = true;
-		room->applySetup(edited);
+		auto &editor = static_cast<CustomGameScreen &>(screen);
+		auto edited = editor.draft();
+		auto *online = dynamic_cast<Online::PlatformRoom *>(room.get());
+		// A premade (or own) map is uploaded for the room; a random one is generated
+		// on the server from its descriptor.
+		if (!edited.random)
+		{
+			if (online && !edited.premadeMap.empty())
+				online->usePremadeMap(edited.premadeMap, editor.getMapHeader().getMapName(), edited);
+			invalidate();
+			return;
+		}
+		// From "Change map…" a random map replaces a premade one; from "Change rules…"
+		// the room keeps its map.
+		if (online && customGameTab == 0)
+			online->useGeneratedMap(edited);
+		else
+			room->applySetup(edited);
 		invalidate();
 	});
 }
@@ -313,6 +353,7 @@ Element RoomScreen::tabs(const Presentation &p)
 	int people = 0, ais = 0, open = 0;
 	for (const auto &slot : room->slots())
 		(slot.ai ? ais : slot.open || slot.locked ? open : people)++;
+	people += int(room->unseatedMembers().size());
 	const std::vector<std::string> titles = {tr("[Map]"), tr("[Players & Teams]"), tr("[Game Rules]")};
 	const std::vector<std::string> details = {room->mapName(),
 											  GAGCore::FormattableString(tr("[room seats summary %0 %1 %2]")).arg(people).arg(ais).arg(open),
@@ -438,7 +479,7 @@ Element RoomScreen::seats(const Presentation &p, bool phone)
 		{
 			TextOptions readyText;
 			readyText.role = FontRole::Support;
-			readyText.color = slot.ready ? palette.success : palette.focus;
+			readyText.color = slot.ready ? palette.success : palette.warning;
 			readyLabel = label(slot.ready ? tr("[room ready]") : tr("[room not ready]"), readyText);
 			if (slot.progress >= 0 && slot.progress < 100)
 				add(formatted("[room downloading %0]", std::to_string(slot.progress)));
@@ -501,6 +542,19 @@ Element RoomScreen::seats(const Presentation &p, bool phone)
 		if (!phone)
 			rows.push_back(divider());
 	}
+	// Everyone in the room is listed, also those without a seat (a full room, or a
+	// member who left their seat), so nobody is invisible to the others.
+	if (const auto unseated = room->unseatedMembers(); !unseated.empty())
+	{
+		rows.push_back(label(tr("[room not seated]"), {FontRole::Support, true}));
+		for (const auto &text : unseated)
+		{
+			rows.push_back(row({sized({p.pt(26), p.pt(26)}, icon(uiIcon(UIIcon::Users), {16, palette.muted})), expanded(label(text, {FontRole::Body, true}))},
+							   {p.pt(phone ? 8 : 10), CrossAlign::Center}));
+		}
+		if (const auto why = room->readyBlocker(); !why.empty())
+			rows.push_back(paragraph(why, {FontRole::Support, true}));
+	}
 	if (rows.empty())
 		rows.push_back(paragraph(tr("[room connecting]"), {FontRole::Body, true}));
 	if (!phone && room->kind() == RoomBackend::Kind::Online)
@@ -514,9 +568,15 @@ Element RoomScreen::mapPanel(const Presentation &p, bool phone)
 	CustomGameSetup draft;
 	const bool haveDraft = room->setupDraft(draft);
 	facts.push_back(heading(room->mapName()));
-	if (const auto status = room->mapStatus(); !status.empty())
+	auto *online = dynamic_cast<Online::PlatformRoom *>(room.get());
+	std::string status = room->mapStatus();
+	if (online && online->uploadingMap())
+		status = tr("[room uploading map]");
+	if (!status.empty())
 		facts.push_back(row({icon(uiIcon(UIIcon::Spinner), {16, theme().palette.muted}), expanded(paragraph(status, {FontRole::Support, true}))}, {p.pt(6), CrossAlign::Center}));
-	if (haveDraft)
+	// Size and seed describe a generated map; a premade map's file is the map.
+	const bool generated = !online || online->generatedMap();
+	if (haveDraft && generated)
 	{
 		facts.push_back(field(tr("[room colonies]"), label(std::to_string(draft.capacity))));
 		const auto &request = draft.generator;
@@ -524,8 +584,10 @@ Element RoomScreen::mapPanel(const Presentation &p, bool phone)
 		if (request.seed)
 			facts.push_back(field(tr("[room seed]"), label(std::to_string(request.seed))));
 	}
-	if (room->kind() == RoomBackend::Kind::Online)
-		facts.push_back(paragraph(tr("[room generated on server]"), {FontRole::Support, true}));
+	else if (room->teamCount() > 0)
+		facts.push_back(field(tr("[room colonies]"), label(std::to_string(room->teamCount()))));
+	if (online)
+		facts.push_back(paragraph(tr(generated ? "[room generated on server]" : "[room premade map shared]"), {FontRole::Support, true}));
 	if (room->canEditSetup())
 		facts.push_back(button("map/change", tr("[room change map]"), [this] { editSetup(0); }, {.icon = uiIcon(UIIcon::Map)}));
 	else if (!room->isHost())
@@ -575,11 +637,11 @@ Element RoomScreen::invite(const Presentation &p, bool phone)
 		const std::string code = room->inviteCode();
 		parts.push_back(heading(tr("[room invite]")));
 		parts.push_back(row({expanded(label(link.empty() ? tr("[room connecting]") : link)),
-							 button("invite/copy", tr("[room copy]"), [link] { SDL_SetClipboardText(link.c_str()); }, {.enabled = !link.empty(), .icon = uiIcon(UIIcon::Copy), .iconSize = 16})},
+							 button("invite/copy", copyLabel("invite/copy", tr("[room copy]")), [this, link] { copy("invite/copy", link); }, {.enabled = !link.empty(), .icon = uiIcon(copiedKey == "invite/copy" && copiedAt && now - copiedAt <= COPIED_MS && !copyFailed ? UIIcon::Check : UIIcon::Copy), .iconSize = 16})},
 							{p.pt(6), CrossAlign::Center}));
 		const std::string share = formatted("[room share text %0]", link);
 		parts.push_back(row({expanded(paragraph(formatted("[room invite code %0]", code), {FontRole::Support, true})),
-							 button("invite/share", tr("[room share]"), [share] { SDL_SetClipboardText(share.c_str()); }, {.enabled = !link.empty(), .icon = uiIcon(UIIcon::Share), .iconSize = 16})},
+							 button("invite/share", copyLabel("invite/share", tr("[room share]")), [this, share] { copy("invite/share", share); }, {.enabled = !link.empty(), .icon = uiIcon(UIIcon::Share), .iconSize = 16})},
 							{p.pt(6), CrossAlign::Center}));
 	}
 	else
@@ -588,11 +650,11 @@ Element RoomScreen::invite(const Presentation &p, bool phone)
 		parts.push_back(paragraph(formatted("[room lan list hint %0]", room->roomName()), {FontRole::Support, true}));
 		if (const auto address = room->localAddress(); !address.empty())
 			parts.push_back(row({expanded(label(tr("[room address]") + "  " + address)),
-								 button("invite/address", tr("[room copy]"), [address] { SDL_SetClipboardText(address.c_str()); })},
+								 button("invite/address", copyLabel("invite/address", tr("[room copy]")), [this, address] { copy("invite/address", address); })},
 								{p.pt(6), CrossAlign::Center}));
 		if (const auto pairing = room->shareText(); !pairing.empty())
 			parts.push_back(row({expanded(paragraph(tr("[room browser pairing]") + "  " + pairing, {FontRole::Support})),
-								 button("invite/pairing", tr("[room copy]"), [pairing] { SDL_SetClipboardText(pairing.c_str()); })},
+								 button("invite/pairing", copyLabel("invite/pairing", tr("[room copy]")), [this, pairing] { copy("invite/pairing", pairing); })},
 								{p.pt(6), CrossAlign::Center}));
 	}
 	CardOptions options;
@@ -646,16 +708,23 @@ Element RoomScreen::primaryActions(const Presentation &p, bool phone)
 	}
 	else
 	{
+		// The tick is the icon; the label stays the plain word (no "✓ ✓ Ready").
 		primary.selected = room->localReady();
 		primary.icon = room->localReady() ? uiIcon(UIIcon::Check) : IconRef();
-		primary.enabled = room->lobbyReady() && !room->starting();
-		main = button("ready", tr(room->localReady() ? "[room ready]" : "[room ready?]"), [this] { room->setReady(!room->localReady()); invalidate(); }, primary);
+		const std::string blocker = room->readyBlocker();
+		primary.enabled = room->lobbyReady() && !room->starting() && blocker.empty();
+		if (!blocker.empty())
+		{
+			primary.tooltip = blocker;
+			primary.accessibleLabel = tr("[room ready?]") + ". " + blocker;
+		}
+		main = button(blocker.empty() ? "ready" : "ready/blocked", tr("[room ready?]"), [this] { room->setReady(!room->localReady()); invalidate(); }, primary);
 	}
 	if (phone)
 	{
 		std::vector<Element> line;
 		if (room->kind() == RoomBackend::Kind::Online)
-			line.push_back(expanded(button("invite/copy-phone", tr("[room invite]"), [link = room->inviteLink()] { SDL_SetClipboardText(link.c_str()); }, {.icon = uiIcon(UIIcon::Share)})));
+			line.push_back(expanded(button("invite/copy-phone", copyLabel("invite/copy-phone", tr("[room invite]")), [this, link = room->inviteLink()] { copy("invite/copy-phone", link); }, {.icon = uiIcon(UIIcon::Share)})));
 		line.push_back(expanded(main));
 		line.insert(line.begin(), leaveButton);
 		if (ThumbSide::left())
@@ -673,7 +742,7 @@ Element RoomScreen::build(const Presentation &p)
 	const auto palette = theme().palette;
 	TextOptions waitingText;
 	waitingText.role = FontRole::Support;
-	waitingText.color = palette.focus;
+	waitingText.color = palette.warning;
 	if (phone)
 	{
 		const int tab = currentTab == ChatTab ? ChatTab : currentTab;

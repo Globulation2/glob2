@@ -108,6 +108,7 @@ const Theme &inGameTheme()
 		c.selected = GAGCore::Color(114, 78, 111);
 		c.hover = GAGCore::Color(92, 62, 116);
 		c.focus = GAGCore::Color(255, 214, 120);
+		c.warning = GAGCore::Color(255, 214, 120);
 		c.scrim = GAGCore::Color(10, 6, 20, 140);
 		c.disabled = GAGCore::Color(52, 38, 70);
 		c.shadow = GAGCore::Color(10, 6, 20, 60);
@@ -140,6 +141,7 @@ const Theme &classicInGameTheme()
 		c.selected = GAGCore::Color(60, 60, 120);
 		c.hover = GAGCore::Color(120, 120, 200);
 		c.focus = GAGCore::Color(255, 214, 120);
+		c.warning = GAGCore::Color(255, 214, 120);
 		c.disabled = GAGCore::Color(40, 40, 70);
 		c.success = GAGCore::Color(100, 255, 100);
 		c.danger = GAGCore::Color(255, 80, 80);

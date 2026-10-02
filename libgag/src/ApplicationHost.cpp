@@ -100,6 +100,10 @@ bool openUrl(const std::string &url)
 	return false;
 #endif
 }
+bool copyText(const std::string &text)
+{
+	return SDL_SetClipboardText(text.c_str()) == 0;
+}
 void importChanged(const char *) {}
 void screenChanged(const char *name) {
 #ifdef GLOB2_MOBILE

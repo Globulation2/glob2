@@ -52,6 +52,35 @@ struct ConnectionRow
 	bool local = false;
 };
 
+/// Whether a client replaying missed turns is gaining on the relay. Fed the
+/// executed tick and the relay's horizon (both in ticks) with the time; the gap
+/// closes at (replay rate - match rate). A device that replays slower than the
+/// match runs never catches up, and saying "about N s left" would be a lie.
+class CatchUpPace
+{
+  public:
+	/// How long the gap must fail to shrink before the client is called too slow.
+	static constexpr std::uint64_t STUCK_MICROS = 15000000;
+	/// Samples are this far apart (shorter windows are noise from bundle bursts).
+	static constexpr std::uint64_t SAMPLE_MICROS = 2000000;
+	void reset() { *this = CatchUpPace(); }
+	void sample(std::uint64_t nowMicros, std::uint32_t executed, std::uint32_t horizon);
+	/// Ticks per second by which the gap closes (negative: it grows); NaN-free, 0
+	/// until two samples exist.
+	double closingRate() const { return rate; }
+	bool known() const { return samples >= 2; }
+	/// Seconds until the gap closes at the current pace, or -1 when it does not close.
+	int secondsLeft(std::uint32_t gapTicks, double ticksPerSecond) const;
+	/// The gap has not shrunk for STUCK_MICROS.
+	bool stuck(std::uint64_t nowMicros) const { return known() && notClosingSince && nowMicros - notClosingSince >= STUCK_MICROS; }
+
+  private:
+	std::uint64_t lastAt = 0, notClosingSince = 0;
+	std::uint32_t lastGap = 0;
+	double rate = 0;
+	int samples = 0;
+};
+
 struct ConnectionSnapshot
 {
 	std::vector<ConnectionRow> rows;
@@ -67,6 +96,8 @@ struct ConnectionSnapshot
 	std::uint32_t catchupDone = 0, catchupTotal = 0;
 	int missedSeconds = 0;
 	int secondsLeft = -1;
+	/// Catching up but replaying slower than the match runs (CatchUpPace::stuck).
+	bool cannotKeepUp = false;
 	int inputDelayMs = -1; ///< this client's Delay: click to effect for everyone
 	int jitterMs = -1;     ///< this client's measured jitter (details only)
 	std::string relay;

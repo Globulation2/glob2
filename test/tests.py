@@ -87,6 +87,7 @@ ENGINE_TESTS = [
     'TurnNetConnectionTest.cpp',
     'RelayTransportTest.cpp',
     'OnlineResultTest.cpp',
+    'online/PlatformRoomTest.cpp',
     ('WssBackpressureTest.cpp', dict(require={'wss'})),
     ('MapRenderResizeHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     ('PointBarRenderTest.cpp', dict(cxxflags=['-fno-access-control'])),

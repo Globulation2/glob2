@@ -111,10 +111,52 @@ describe('rooms', () => {
       regions: [{ region: 'eu-west', rttMs: 45 }],
     });
     expect((joined['room'] as Room).members).toHaveLength(2);
+    // A new member takes the first open seat ("anyone with the invite can take it").
+    expect((joined['room'] as Room).seats[1]!.occupant).toMatchObject({
+      kind: 'human',
+      accountId: guest.accountId,
+      ready: false,
+    });
+    expect(
+      (joined['room'] as Room).members.find((m) => m.accountId === guest.accountId)?.seat,
+    ).toBe(1);
     // The host (replica A) learns about the join that happened on replica B.
     room = (await roomState(host.client, (r) => (r['members'] as unknown[]).length === 2)) as Room;
     // Joining again is idempotent.
     await guest.client.ok('room.join', { code: room.code });
+  });
+
+  it('leaves a joiner unseated when every seat is taken or locked, and lists them as a member', async () => {
+    const other = await player(a);
+    const full = (
+      await other.client.ok('room.create', {
+        name: 'Full',
+        visibility: 'link',
+        map: {
+          kind: 'generated',
+          generator: { ...GENERATOR, params: { ...GENERATOR.params, teams: 2 } },
+        },
+      })
+    )['room'] as Room;
+    await other.client.ok('room.setSeat', {
+      roomId: full.id,
+      seat: 1,
+      occupant: { kind: 'locked' },
+    });
+    const late = await player(b);
+    const joined = (await late.client.ok('room.join', { code: full.code }))['room'] as Room;
+    expect(joined.seats.some((s) => s.occupant.accountId === late.accountId)).toBe(false);
+    const member = joined.members.find((m) => m.accountId === late.accountId);
+    expect(member).toBeDefined();
+    expect(member?.seat).toBeUndefined();
+    // Ready needs a seat.
+    const ready = await late.client.call('room.setReady', { roomId: full.id, ready: true });
+    expect(ready.error?.code).toBe('conflict');
+    // Rejoining (idempotent) does not move anyone.
+    const again = (await late.client.ok('room.join', { code: full.code }))['room'] as Room;
+    expect(again.seats.some((s) => s.occupant.accountId === late.accountId)).toBe(false);
+    await late.client.ok('room.leave', { roomId: full.id });
+    await other.client.ok('room.leave', { roomId: full.id });
   });
 
   it('enforces seat permissions and locks', async () => {

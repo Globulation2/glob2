@@ -125,11 +125,15 @@ public:
 	int initTurnMatch(TurnMatchStart start);
 	/// The running turn session, or null for every other kind of game.
 	Turn::TurnSession* turnSession();
+	/// A turn game replaying missed turns with ticks ready to run: the host may run
+	/// several ticks per frame (GameSessionScreen), rendering none of them.
+	bool turnFastForwarding();
 	Turn::TurnLockstepSession* turnLockstep() { return turn; }
 	/// The in-game connection lines for a turn game (GameGUI::connectionNotice).
 	std::vector<std::string> turnConnectionNotice();
 	/// Online matches: what the results screen shows (outcome, verification, rating).
-	void setOnlineResult(std::shared_ptr<Online::OnlineMatchResult> result) { onlineResult = std::move(result); }
+	/// The results card of an online match; also tells the in-game menu what leaving costs.
+	void setOnlineResult(std::shared_ptr<Online::OnlineMatchResult> result);
 	const std::shared_ptr<Online::OnlineMatchResult>& getOnlineResult() const { return onlineResult; }
 	/// A team of the loaded game, or null.
 	Team* gameTeam(int team);
@@ -330,6 +334,9 @@ private:
 	bool catchupActive = false;
 	Uint64 connectionLostMicros = 0;
 	Uint64 catchupStartedMicros = 0;
+	/// Catch-up progress sampled every few seconds: whether the gap to the relay
+	/// shrinks (CatchUpPace in ConnectionOverlay.h).
+	CatchUpPace catchupPace;
 	/// Reloads the turn game's initial state in place, keeping the session, after
 	/// TurnSession::needsReload(); the session then replays the log from tick 0.
 	void reloadTurnInitialState();

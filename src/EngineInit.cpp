@@ -209,6 +209,7 @@ GAGCore::CooperativeTask Engine::initTurnMatchTask(TurnMatchStart start)
     state.replayPath = envReplayPath ? envReplayPath : "replays/last_game.replay";
     turnMatch = std::move(state);
     // The connection HUD replaces the "waiting for players" notice.
+    gui.networkMatch.active = true;
     gui.connectionOverlay = std::make_unique<ConnectionOverlay>();
     gui.connectionOverlay->source = [this] { return turnConnectionSnapshot(); };
     gui.connectionOverlay->leave = [this] { gui.isRunning = false; };
@@ -319,14 +320,14 @@ ConnectionSnapshot Engine::turnConnectionSnapshot()
         snapshot.catchupDone = s.executedTick() - std::min(s.executedTick(), catchupFrom);
         snapshot.catchupTotal = std::max(snapshot.catchupDone, s.maxHorizon() - std::min(s.maxHorizon(), catchupFrom));
         snapshot.missedSeconds = int(Uint64(snapshot.catchupTotal) * period / 1000000);
-        const Uint64 elapsed = now - catchupStartedMicros;
-        if (snapshot.catchupDone > 50 && elapsed > 0)
-        {
-            const double rate = double(snapshot.catchupDone) / double(elapsed);
-            snapshot.secondsLeft = int(double(snapshot.catchupTotal - snapshot.catchupDone) / rate / 1000000.0);
-        }
+        // The gap closes at (replay rate - match rate): estimate from that, and say
+        // when it does not close at all.
+        catchupPace.sample(now, s.executedTick(), s.maxHorizon());
+        snapshot.secondsLeft = catchupPace.secondsLeft(behind, 1e6 / double(period));
+        snapshot.cannotKeepUp = !desync && catchupPace.stuck(now);
         return snapshot;
     }
+    catchupPace.reset();
     catchupActive = false;
     catchupFrom = 0;
     catchupStartedMicros = 0;
@@ -380,6 +381,14 @@ std::vector<std::string> Engine::turnConnectionNotice()
 Turn::TurnSession* Engine::turnSession()
 {
     return turn ? &turn->turn() : nullptr;
+}
+
+bool Engine::turnFastForwarding()
+{
+    if (!turn || !session || !gui.isRunning)
+        return false;
+    const Turn::TurnSession& s = turn->turn();
+    return s.state() == Turn::TurnSession::State::Running && s.catchingUp() && !s.needsReload() && s.bufferedTicks() > 0;
 }
 
 

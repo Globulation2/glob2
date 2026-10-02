@@ -89,12 +89,30 @@ class PlatformRoom final : public RoomBackend
 	void setOccupant(int slot, Occupant occupant, const std::string &aiId) override;
 	bool localReady() const override;
 	std::string waitingFor() const override;
+	std::string readyBlocker() const override;
+	std::vector<std::string> unseatedMembers() const override;
+	bool localUnseated() const override;
 	bool canEditSetup() const override { return isHost() && !starting(); }
 	bool setupDraft(CustomGameSetup &draft) const override;
 	void applySetup(const CustomGameSetup &setup) override;
 	std::shared_ptr<OnlineMatch> takeMatch() override;
 	/// Host: plays a catalog map ("Use in a room" from the map browser).
 	void useCatalogMap(const std::string &hash, const std::string &mapId);
+	/// Host: plays a premade or own map file from this device. The decompressed
+	/// bytes are uploaded (POST /api/v1/uploads?format=map), then the room switches to
+	/// {kind: "upload", hash} with the draft's rules and alliances. `title` names the
+	/// map until the server reports the title it read from the file.
+	void usePremadeMap(const std::string &path, const std::string &title, const CustomGameSetup &setup);
+	/// Host: plays already-read map bytes (usePremadeMap after reading the file).
+	void useMapBytes(std::string bytes, const std::string &title, const CustomGameSetup &setup);
+	/// Host: a generated map chosen in the map editor, even when the room plays a
+	/// premade map and the generator settings were left as they were (applySetup
+	/// then keeps the premade map and changes only rules and teams).
+	void useGeneratedMap(const CustomGameSetup &setup);
+	/// A premade map is being uploaded for the room.
+	bool uploadingMap() const { return uploading; }
+	/// The room plays a generated map (seed, size and generator apply).
+	bool generatedMap() const;
 
 	/// The current RoomState JSON (null before the first one).
 	const Json &roomState() const { return state; }
@@ -109,6 +127,8 @@ class PlatformRoom final : public RoomBackend
 	void push(Event event);
 	void notice(const std::string &text);
 	void systemLinesFor(const Json &previous, const Json &next);
+	void applyDraftTeams(const Json &teams);
+	void applyDraft(const CustomGameSetup &setup, bool chosenMap);
 	const Json *seatJson(int seat) const;
 	const Json *member(const std::string &accountId) const;
 	std::string myAccount() const;
@@ -128,6 +148,9 @@ class PlatformRoom final : public RoomBackend
 	struct MapFetch;
 	std::shared_ptr<MapFetch> mapFetch;
 	std::string mapHash, mapPath;
+	// Premade map upload (host).
+	bool uploading = false;
+	std::string uploadedTitle, uploadedHash;
 	std::shared_ptr<bool> alive = std::make_shared<bool>(true);
 };
 } // namespace Online

@@ -63,6 +63,7 @@ secrets.
 | `GLOB2_RELAY_FRAMES_PER_SECOND`, `GLOB2_RELAY_FRAME_BURST` | `200`, `600` | Token bucket for frames received per connection |
 | `GLOB2_RELAY_MAX_OUTGOING_BYTES` | `8388608` | Send backlog after which a connection that does not read is dropped |
 | `GLOB2_RELAY_GRACE_SECONDS` | `180` | Reconnect grace before the relay sequences a seat's quit (not waited out once a client has left with `Quit(GameFinished)` and nobody is connected; see turn-protocol.md) |
+| `GLOB2_RELAY_LOAD_WAIT_SECONDS` | `60` | Load barrier: a match's clock (tick 0) starts when every human seat has connected (clients connect once they have loaded the game), or this long after the first connection; a seat still loading then joins late under the reconnect grace. `0` starts the clock at the first connection |
 | `GLOB2_RELAY_DRAIN_TIMEOUT_SECONDS` | `14400` | Longest drain before the remaining matches are aborted; `0` waits forever |
 | `GLOB2_RELAY_RTT_PING_MS` | `2000` | WebSocket ping interval on match connections for the per-seat round trip in network telemetry; `0` disables |
 | `GLOB2_RELAY_JWKS_FILE` | unset | Static JWKS file, for tests and set-ups without a platform |

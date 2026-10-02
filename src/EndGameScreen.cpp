@@ -212,17 +212,29 @@ bool EndGameScreen::teamEnabled(int teamNum) const
 
 Element EndGameScreen::teamRows(const Presentation &p)
 {
+	// A summary table: each team's final units, buildings and prestige beside its
+	// chart toggle, so the outcome reads without the chart (where identical curves
+	// would hide each other).
+	const int stats[] = {EndOfGameStat::TYPE_UNITS, EndOfGameStat::TYPE_BUILDINGS, EndOfGameStat::TYPE_PRESTIGE};
+	const int column = p.pt(p.compact() ? 64 : 92);
+	fe::TextOptions head;
+	head.role = fe::FontRole::Support;
+	head.muted = true;
 	std::vector<Element> rows;
+	std::vector<Element> header{fe::expanded(fe::label(fe::tr("[results team]"), head))};
+	for (int stat : stats)
+		header.push_back(fe::width(column, fe::label(statTypeName(stat), head)));
+	rows.push_back(fe::row(std::move(header), {p.pt(6), fe::CrossAlign::Center}));
 	for (std::size_t i = 0; i < teams.size(); ++i)
 	{
 		const auto &team = teams[i];
-		rows.push_back(fe::row({fe::swatch(team.color, 12),
-								fe::expanded(fe::toggle("team/" + std::to_string(i), team.name, team.enabled, [this, i](bool) { toggleTeam(int(i)); }))},
-							   {p.pt(6), fe::CrossAlign::Center}));
+		std::vector<Element> cells{fe::swatch(team.color, 12),
+								   fe::expanded(fe::toggle("team/" + std::to_string(i), team.name, team.enabled, [this, i](bool) { toggleTeam(int(i)); }))};
+		for (int stat : stats)
+			cells.push_back(fe::width(column, fe::label(std::to_string(team.endVal[stat]))));
+		rows.push_back(fe::row(std::move(cells), {p.pt(6), fe::CrossAlign::Center}));
 	}
-	fe::WrapOptions grid;
-	grid.minChildWidth = p.pt(180);
-	return fe::wrap(std::move(rows), grid);
+	return fe::column(std::move(rows), {p.pt(2)});
 }
 
 void EndGameScreen::setOnlineResult(std::shared_ptr<Online::OnlineMatchResult> result)
@@ -286,7 +298,7 @@ Element EndGameScreen::ratingCard(const Presentation &p)
 	greyed.color = palette.muted;
 	std::vector<Element> lines;
 	std::string head = r.rated ? GAGCore::FormattableString(fe::tr("[results ladder rating %0]")).arg(r.ladder.empty() ? fe::tr("[results ranked]") : r.ladder)
-							   : fe::tr("[results room unrated]");
+					   : fe::tr(r.fromRoom ? "[results room unrated]" : "[results quick unrated]");
 	using Phase = Online::OnlineMatchResult::Phase;
 	const Phase phase = r.phase();
 	// While the match still runs on the relay (someone has not left yet) or the

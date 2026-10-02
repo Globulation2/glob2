@@ -46,6 +46,7 @@ are easy to change:
 | Rule | Default |
 | --- | --- |
 | Members move themselves into open, unlocked seats (`setSeat` `self`), and leave their own seat (`open`) | yes |
+| A new member (`room.join` by code or invite) takes the first open, unlocked seat; in a full room they stay an unseated member (`joinTakesOpenSeat`) | yes |
 | Adding AIs, locking seats, emptying other seats, changing settings and starting | host only |
 | Changing the map, teams, rules or experiments clears every Ready | yes |
 | The host is ready by starting; there is no force start past unready players | yes |
@@ -98,8 +99,12 @@ load. Every participant downloads those bytes from
 | Source | How the room gets its hash and team count |
 | --- | --- |
 | Catalog `{kind: "catalog", hash, mapId?}` | A valid `map_versions` row of a map that is not hidden and is public, unlisted or the host's own, saved by an engine no newer than the room's (`minVersionMinor`). See [Map catalog](architecture.md#map-catalog) |
-| Upload `{kind: "upload", format, hash}` | The host's own upload for the room's sim version, once validated |
+| Upload `{kind: "upload", format, hash}` | The host's own upload for the room's sim version, once validated. The client uploads a premade or own map chosen in the room's map editor this way (`PlatformRoom::usePremadeMap`) |
 | Generator `{kind: "generated", generator}` | A `generate-map` job. `params.teams` is required and sets the team count. The hash is filled in when the job finishes |
+
+`RoomState.mapTitle` names a catalog or uploaded map: the catalog title, or the
+title the engine read from the uploaded file, else its file name without the
+extension. Generated maps have none; clients name them from the generator.
 
 **Generated maps.** Generation is deterministic for a sim version, so
 `generated_maps` keeps one row per descriptor (SHA-256 of the canonical descriptor

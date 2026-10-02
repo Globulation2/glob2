@@ -11,6 +11,12 @@ MessageScreen::MessageScreen(const std::string &message, const std::vector<std::
 		throw std::invalid_argument("Messages need one to three choices");
 }
 
+MessageScreen::MessageScreen(const std::string &title, const std::string &message, const std::vector<std::string> &captions)
+	: MessageScreen(message, captions)
+{
+	this->title = title;
+}
+
 Element MessageScreen::build(const Presentation &p)
 {
 	std::vector<MenuAction> choices;
@@ -20,6 +26,12 @@ Element MessageScreen::build(const Presentation &p)
 		action.primary = i == 0;
 		action.shortcut = i == 0 ? SDLK_RETURN : i == captions.size() - 1 ? SDLK_ESCAPE : SDLK_UNKNOWN;
 		choices.push_back(std::move(action));
+	}
+	if (!title.empty())
+	{
+		CardOptions options;
+		options.padding = p.pt(18);
+		return center(maxWidth(p.pt(460), card(column({heading(title), paragraph(message), actions(std::move(choices), p)}, {p.pt(12)}), options)));
 	}
 	return page("", scroll("message", paragraph(message)), actions(std::move(choices), p), p);
 }
