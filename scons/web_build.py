@@ -131,7 +131,7 @@ def _build_variant(directory, identity, arguments, threaded=False):
         local = strict if f.startswith('src/script/') or f == 'src/ai/AIJavaScript.cpp' else env
         if f == 'src/Glob2.cpp':
             local = local.Clone()
-            local.Append(CPPDEFINES=[('main', 'glob2ApplicationMain')])
+            local.Append(CPPDEFINES=['SDL_MAIN_HANDLED', ('main', 'glob2ApplicationMain')])
         objects.append(local.Object(str(output / 'obj' / (f + '.o')), f))
     numeric_guard(strict, [obj for name, obj in zip(files, objects) if name.startswith('src/script/') or name == 'src/ai/AIJavaScript.cpp'])
     objects += javascript_objects(env, output / "obj/third_party", identity["mode"] == "release")
@@ -156,7 +156,7 @@ def _build_variant(directory, identity, arguments, threaded=False):
             local.Append(CPPDEFINES=options.get('defines', []))
             path = 'test/' + source
             if source.endswith('TestMain.cpp'):
-                local.Append(CPPDEFINES=[('main', 'glob2ApplicationMain')])
+                local.Append(CPPDEFINES=['SDL_MAIN_HANDLED', ('main', 'glob2ApplicationMain')])
             targets = local.Object(str(output / 'obj/tests' / (path + '.o')), path)
             if source.endswith('TestMain.cpp'):
                 local.Depends(targets, provenance_header)
