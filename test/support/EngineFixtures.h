@@ -16,9 +16,14 @@
 #include <functional>
 #include <optional>
 #include <string>
+#include <vector>
 
 namespace glob2test
 {
+	// Deterministic continuation scheduler: collect each unpaused AI decision,
+	// then apply in player order and advance one tick. Returns type+wire payload
+	// per AI so paired continuations can compare decisions as well as state.
+	std::vector<std::string> stepAI(Game &game);
 	// Extract the scene a draw pass reads, as Game::drawMap does for callers without a
 	// published scene. Without `into`, the result lives in shared storage that the next
 	// call overwrites; use it within the statement.

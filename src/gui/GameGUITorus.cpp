@@ -105,7 +105,7 @@ void GameGUI::drawTorusMap(int originX, int originY, int team, unsigned options,
             globalContainer->gfx->drawCircle(x, y, b.type->width * 16, 190, 0, 0);
 
         // draw a white circle around units that are working at building
-        if (showUnitWorkingToBuilding && (b.owner.allies & (1 << localTeamNo)))
+        if (showUnitWorkingToBuilding && (b.owner.allies & (Team::teamNumberToMask(localTeamNo))))
             for (Uint16 worker : scene.entities.selectedBuilding.unitsWorking)
             {
                 const SceneUnit *unit = scene.entities.unit(worker);

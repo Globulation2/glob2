@@ -25,7 +25,18 @@ ENGINE_SUPPORT = [
 
 # glob2-engine-tests: every client object except the entry point, plus these.
 ENGINE_TESTS = [
+    # This fixture selects SDL's dummy driver; isolate its client context from display cases.
+    'ScreenExecutionHarness.cpp',
+    ('GUIInteractionCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('GUIOrderCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('EditorActionCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    'LegacyAreaWaitTest.cpp',
+    ('LegacyScriptCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    'AIDecisionCoverageTest.cpp',
     'CastorContinuationTest.cpp',
+    'CortexNetCoverageTest.cpp',
+    ('CortexActionCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('CortexPolicyCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('ScriptCompatibilityTest.cpp', dict(cxxflags=['-fno-access-control'])),
     'ScriptIntegrationTest.cpp',
     'ScriptPresentationTest.cpp',
@@ -102,12 +113,16 @@ ENGINE_TESTS = [
     'GameGUITouchHarness.cpp',
     # Command-line harnesses whose modes became cases.
     'CustomGameSetupHarness.cpp',
+    'TeamLimitTest.cpp',
     'MapPreviewHarness.cpp',
     ('MapGeneratorDefaultsTest.cpp', dict(cxxflags=['-fno-access-control'])),
 ]
 
 # glob2-unit-tests: libgag, libusl, the production sources below and stubs.
 UNIT_TESTS = [
+    'MapGeneratorGoldenCoverageTest.cpp',
+    'USLCoverageTest.cpp',
+    'SurfaceCoverageTest.cpp',
     'ImageAssetTest.cpp',
     'ScriptRuntimeTest.cpp',
     'ScriptNumericTest.cpp',
@@ -185,7 +200,6 @@ UNIT_TESTS = [
     'MobileInputHarness.cpp',
     ('MobileTemporaryFilesHarness.cpp', dict(require={'not-mingw'})),
     'PerformanceTelemetryHarness.cpp',
-    'ScreenExecutionHarness.cpp',
     'ScrollPhysicsTest.cpp',
     'SoundMixerTrackSelectionHarness.cpp',
     'UILayoutHarness.cpp',

@@ -1,6 +1,6 @@
 # Encircled Kingdom
 
-A deliberately asymmetric siege landscape for **3–12 colonies**. Colony zero starts
+A deliberately asymmetric siege landscape for **3–16 colonies**. Colony zero starts
 inside a large fortified agricultural heartland. The other colonies occupy smaller
 fortified towns outside its perimeter. More opponents make the siege harder; the
 map does not compensate with extra starting units or finished economic buildings.
@@ -40,6 +40,7 @@ outside starts are shuffled; **colony zero always keeps the capital**.
 | 7–8 | 4 | 256×512 or 512×256 |
 | 9–11 | 5 | 256×512 or 512×256 |
 | 12 | 6 | 256×512 or 512×256 |
+| 13–16 | 6–7 | 512×512 |
 
 512×512 works for every supported count. Both dimensions must be at least 256,
 and aspect ratio must not exceed 2:1. The generator rejects unsupported requests

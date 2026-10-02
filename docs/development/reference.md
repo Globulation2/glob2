@@ -110,10 +110,21 @@ python3 test/run_tests.py      # run them; --list, --filter, --tag, --shard
   `test/run_tests.py` already isolates and aggregates the native test cases. Artifact uploads run after failed checks
   so reviewers can inspect the available evidence. The Linux client builds once
   per supported toolchain, then distributes its built programs to four parallel
-  test shards per toolchain. The original `linux (...)` checks require every
+  test shards per toolchain. Linux compiler builds share
+  `.github/workflows/ci-linux-build.yml`; the GCC artifact builds and Clang
+  compatibility check run separately, so runtime shards do not wait for Clang.
+  Both supported GCC builds still form a shared artifact barrier. The original `linux (...)` checks require every
   build and shard to pass, preserving their merge-blocking status. PRs compare
   with their base commit, and master pushes compare with the pre-push commit;
   unknown paths or unavailable diffs select full CI.
+  Changes confined to the render-backend and pixel-raster implementation files
+  retain native, browser and cross-platform checks without repeating independent
+  map-generator sweeps or container deployment tests. Shared headers, file I/O and
+  unknown library files still select full CI.
+  CI-tool unit-test-only edits run the selector's Python contract suites without
+  native compilation; changes to the runners themselves still select native checks.
+  Steam packaging helper/workflow changes retain their packaging and smoke checks;
+  editing this reference guide alone does not rebuild the Steam client.
 
 For headless games, use the client binary's `--nox <game-file> <steps> <runs>`
 option. `-test-games-nox` runs random AI games indefinitely unless bounded as
@@ -485,6 +496,23 @@ For timing and scheduling, start with `src/Game_sync.cpp` and `src/EngineRun.cpp
   Treat save-format, replay and network compatibility as separate questions. If
   simulation rules change, assess replay acceptance and protocol/version gates even
   when the saved byte layout is unchanged.
+- Team capacity is `Team::MAX_COUNT` (16), shared by colonies and controller slots.
+  `MAX_COUNT_ON_DISK` (32) is the fixed GameHeader player/alliance layout, not a
+  selectable match size. Team masks are 32-bit; packed growth coverage requires
+  three masks to fit a 64-bit word (at most 21 teams in that representation).
+  Unit/building identifiers must also fit below the 16-bit empty-entity sentinel.
+  Team iterators must use the live match count; a full array has no null end slot.
+  Format 127 counts Maxima opponent records and script-generation team slots;
+  older formats retain their historical 12-slot layouts. Text header alliances use
+  indexed slots from format 127; binary header bytes stay unchanged. Custom-game
+  preferences version 4 counts colony records and still reads the twelve records
+  written by versions 1–3. The building-generation
+  plane must be remapped when loading old saves. Never substitute a live capacity
+  for a historical serialized length. Save floor 58 remains unchanged.
+  Warrush probes one capacity slot every two ticks (32 ticks for sixteen slots).
+  Empty slots fall through to normal decisions, preserving smaller-match timing.
+  Replay floor 127 and network/YOG protocol 50 gate the new capacity and counted
+  state; older saves load into the current simulation.
 - Versioning rule: when the save format changes, bump `VERSION_MINOR` and preserve
   older saves through version-gated loading, or explicitly document an approved
   compatibility break. When simulation changes invalidate old replays or mixed-client
@@ -735,9 +763,11 @@ also remains the headless default and the equivalence reference.
 `GraphicContext` remains the drawing facade and retains existing capability queries.
 It owns the accelerated backend and software backend independently; transformed passes
 borrow them through scoped transform/clip state (`RenderStateScope.h`). The CPU backend
-in `SoftwareRenderBackend.cpp` implements sprite blits and rectangle fills directly on
-its borrowed framebuffer. It creates SDL's software renderer only when general triangle
-geometry is needed, and flushes that queue before direct writes or target replacement.
+in `SoftwareRenderBackend.cpp` implements verified same-format opaque sprite blits and
+opaque rectangle fills directly on its borrowed framebuffer. Translucent draws and
+mixed pixel formats retain SDL geometry rasterization so platform-specific blending
+rounding and source modulation match the reference. General triangles use that same
+lazy SDL renderer; its queue flushes before direct writes or target replacement.
 Large existing images expanded past 512 pixels, including water, retain SDL geometry
 rasterization because its fixed-point overflow behavior is visible at some transformed
 sizes. Borrowed terrain run views use direct rasterization: they replace small tiles and must not acquire that

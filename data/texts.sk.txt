@@ -1442,8 +1442,8 @@ Rieka
 Váha piesku
 [Select a valid map.]
 Vyberte platnú mapu.
-[Shared control needs a free controller slot (maximum 12).]
-Zdieľané ovládanie vyžaduje voľné miesto pre hráča alebo AI (najviac 12).
+[Shared control needs a free controller slot (maximum %0).]
+Zdieľané ovládanie vyžaduje voľné miesto pre hráča alebo AI (najviac %0).
 [Smoothing]
 Vyhladzovanie
 [Standard]
