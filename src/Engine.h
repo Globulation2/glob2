@@ -23,6 +23,7 @@
 
 class MultiplayersJoin;
 class SimulationRunner;
+namespace PerformanceTelemetry { struct Collector; }
 class NetGame;
 
 using std::shared_ptr;
@@ -258,6 +259,10 @@ private:
 
 	void drawFrame(MainLoopState& st);
 	void saveVideoshot(MainLoopState& st);
+	void configureSessionTelemetry(MainLoopState& st, PerformanceTelemetry::Collector& perf);
+	//! Threaded: fold the simulation thread's measurements into the session collector
+	//! (called with the simulation parked).
+	void absorbSimulationTelemetry();
     std::optional<MainLoopState> session;
     std::unique_ptr<SimulationRunner> runner;
     //! Host clock minus SDL_GetTicks(), published by the main thread for sessionClock.

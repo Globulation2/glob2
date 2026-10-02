@@ -18,6 +18,7 @@ bool SimulationRunner::start()
 	// its pthread variant; the native runner owns a separate simulation thread.
 	return false;
 #else
+	telemetry.reset();
 	try
 	{
 		thread = std::thread([this] { run(); });
@@ -51,6 +52,7 @@ void SimulationRunner::park(std::unique_lock<std::mutex> &lock)
 
 void SimulationRunner::run()
 {
+	PerformanceTelemetry::bindCollector(&telemetry);
 	try
 	{
 		std::unique_lock<std::mutex> lock(mutex);
@@ -86,6 +88,7 @@ void SimulationRunner::run()
 		std::lock_guard<std::mutex> lock(mutex);
 		failure = std::current_exception();
 	}
+	PerformanceTelemetry::bindCollector(nullptr);
 	std::lock_guard<std::mutex> lock(mutex);
 	finished = true;
 	parked = false;
