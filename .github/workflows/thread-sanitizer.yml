@@ -106,7 +106,8 @@ jobs:
 
       - name: Show sanitizer reports
         if: failure()
-        run: grep -h -A40 'WARNING: ThreadSanitizer' artifacts/tsan/*.log | head -400 || true
+        run: |
+          grep -h -A40 'WARNING: ThreadSanitizer' artifacts/tsan/*.log | head -400 || true
 
       - uses: actions/upload-artifact@v4
         if: always()
