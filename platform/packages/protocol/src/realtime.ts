@@ -52,6 +52,26 @@ const ExperimentKeys = Type.Array(Type.String({ pattern: '^[a-z0-9]+(-[a-z0-9]+)
   uniqueItems: true,
 });
 
+/** One seat of a queue proposal, as shown in the match-found prompt. */
+export const ProposalSeat = Open({
+  slot: Type.Integer({ minimum: 0, maximum: 11 }),
+  side: Type.Integer({ minimum: 0, maximum: 1 }),
+  kind: Type.Union([Type.Literal('human'), Type.Literal('ai')]),
+  displayName: Type.String({ maxLength: 64 }),
+  ai: Type.Optional(AiId),
+  rating: Type.Optional(Type.Number({ description: 'Displayed rating on the queue ladder.' })),
+  provisional: Type.Optional(Type.Boolean()),
+  response: Type.Union([
+    Type.Literal('pending'),
+    Type.Literal('accepted'),
+    Type.Literal('declined'),
+    Type.Literal('timeout'),
+    Type.Literal('not_required'),
+  ]),
+  you: Type.Optional(Type.Boolean({ description: 'The seat of the receiving client.' })),
+});
+export type ProposalSeat = Static<typeof ProposalSeat>;
+
 /** The match a client has been placed in, with its ticket for the relay. */
 export const MatchAssignment = Open(
   {
@@ -242,6 +262,12 @@ export const realtimeMethods = {
     params: Strict({ proposalId: Uuid, accept: Type.Boolean() }),
     result: EmptyResult,
   },
+  'queue.update': {
+    description:
+      'Change a waiting ticket without losing its place: "Allow an AI opponent" can be toggled while searching.',
+    params: Strict({ ticketId: Uuid, allowAiOpponent: Type.Boolean() }),
+    result: EmptyResult,
+  },
   'queue.leave': {
     description: 'Leave a queue.',
     params: Strict({ ticketId: Uuid }),
@@ -335,6 +361,33 @@ export const realtimeEvents = {
       waitedSeconds: Type.Integer({ minimum: 0 }),
       ratingWindow: Type.Optional(Type.Number({ minimum: 0 })),
       aiBackfillAt: Type.Optional(Timestamp),
+      ratingRange: Type.Optional(
+        Strict(
+          { min: Type.Number(), max: Type.Number() },
+          {
+            description:
+              'Opponent ratings the matchmaker accepts now (display scale): your skill ± ratingWindow.',
+          },
+        ),
+      ),
+      rating: Type.Optional(
+        Type.Number({ description: "Your displayed rating on this queue's ladder." }),
+      ),
+      provisional: Type.Optional(Type.Boolean()),
+      region: Type.Optional(RelayRegion),
+      rttMs: Type.Optional(
+        Type.Integer({ minimum: 0, description: 'Your round trip to region, as you probed it.' }),
+      ),
+      allowAiOpponent: Type.Optional(Type.Boolean()),
+      backfillAi: Type.Optional(
+        Open(
+          { ai: AiId, rating: Type.Number() },
+          { description: 'The AI that would take the empty seat now (closest skill).' },
+        ),
+      ),
+      typicalWaitSeconds: Type.Optional(
+        Type.Integer({ minimum: 0, description: 'Median wait of recent matched tickets.' }),
+      ),
     }),
   },
   'queue.proposal': {
@@ -348,6 +401,23 @@ export const realtimeEvents = {
       expiresAt: Type.Optional(Timestamp),
       humans: Type.Integer({ minimum: 1, maximum: 12 }),
       ais: Type.Integer({ minimum: 0, maximum: 12 }),
+      rated: Type.Optional(Type.Boolean()),
+      backfilled: Type.Optional(Type.Boolean()),
+      region: Type.Optional(RelayRegion),
+      map: Type.Optional(
+        Open({
+          generatorId: Type.String({ maxLength: 64 }),
+          width: Type.Optional(Type.Integer({ minimum: 1 })),
+          height: Type.Optional(Type.Integer({ minimum: 1 })),
+        }),
+      ),
+      seats: Type.Optional(
+        Type.Array(ProposalSeat, {
+          maxItems: 12,
+          description:
+            'Who is in the proposal. With requiresAccept the event is sent again whenever someone answers.',
+        }),
+      ),
     }),
   },
   'queue.proposalEnded': {

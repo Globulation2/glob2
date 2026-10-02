@@ -11,6 +11,7 @@ import formbody from '@fastify/formbody';
 import rateLimit from '@fastify/rate-limit';
 import websocket from '@fastify/websocket';
 import { sql, type Kysely } from 'kysely';
+import { resolveQueue } from '@glob2/core';
 import type { Database } from '@glob2/db';
 import {
   MATCH_RECORD_CONTENT_TYPE,
@@ -170,15 +171,19 @@ export async function buildApp(
           ? [{ id: 'local', kind: 'local' as const, displayName: 'Username and password' }]
           : []),
       ],
-      queues: config.instance.queues.map((queue) => ({
-        id: queue.id,
-        name: queue.name,
-        mode: queue.mode,
-        rated: queue.rated,
-        ...(queue.aiBackfillSeconds === undefined
-          ? {}
-          : { aiBackfillSeconds: queue.aiBackfillSeconds }),
-      })),
+      queues: config.instance.queues
+        .map((q) => resolveQueue(q))
+        .map((queue) => ({
+          id: queue.id,
+          name: queue.name,
+          mode: queue.mode,
+          rated: queue.rated,
+          ...(queue.aiBackfillSeconds === undefined
+            ? {}
+            : { aiBackfillSeconds: queue.aiBackfillSeconds }),
+          acceptSeconds: queue.acceptSeconds,
+          maps: [...new Set(queue.mapPool.map((entry) => entry.generatorId))].slice(0, 64),
+        })),
       guestsAllowed: config.instance.guests.enabled,
     };
   });

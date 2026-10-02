@@ -160,3 +160,33 @@ async function recordResponse(
     .execute();
   return 'recorded';
 }
+
+export type UpdateTicketResult = 'updated' | 'not_waiting' | 'not_found';
+
+/**
+ * Changes "Allow an AI opponent" of a ticket that is still waiting (or in a
+ * proposal), keeping its queue position.
+ */
+export async function updateTicket(
+  db: Db,
+  accountId: string,
+  ticketId: string,
+  allowAiOpponent: boolean,
+  now: Date = new Date(),
+): Promise<UpdateTicketResult> {
+  const updated = await db
+    .updateTable('queue_tickets')
+    .set({ allow_ai_opponent: allowAiOpponent, updated_at: now })
+    .where('id', '=', ticketId)
+    .where('account_id', '=', accountId)
+    .where('status', 'in', ['waiting', 'proposed'])
+    .executeTakeFirst();
+  if (updated.numUpdatedRows > 0n) return 'updated';
+  const exists = await db
+    .selectFrom('queue_tickets')
+    .select('id')
+    .where('id', '=', ticketId)
+    .where('account_id', '=', accountId)
+    .executeTakeFirst();
+  return exists ? 'not_waiting' : 'not_found';
+}

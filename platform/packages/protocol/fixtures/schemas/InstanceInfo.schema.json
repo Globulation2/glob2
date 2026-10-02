@@ -138,6 +138,15 @@
             "type": "integer",
             "minimum": 0,
             "description": "Accept prompt length for all-human groups; 0 = none."
+          },
+          "maps": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 64
+            },
+            "maxItems": 64,
+            "description": "Generator ids of the map pool, for display."
           }
         }
       }

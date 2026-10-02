@@ -22,8 +22,13 @@ import {
   respondToProposal,
   type PlayFanout,
   type QueueNotification,
+  sendProposal,
+  updateTicket,
+  PgQueueNotifier,
 } from '@glob2/worker';
 import { apiError } from '../errors.ts';
+
+const queueNotifier = new PgQueueNotifier();
 import { WindowCounter } from '../http/validate.ts';
 import type { RealtimeConnection, MethodHandler } from '../realtime/connection.ts';
 import type { RealtimeHub } from '../realtime/hub.ts';
@@ -347,6 +352,22 @@ export class PlayRealtime {
         );
         if (outcome === 'not_found') throw apiError('not_found', 'No such proposal.');
         if (outcome === 'not_pending') throw apiError('conflict', 'The proposal is over.');
+        // Everyone in the prompt sees who has answered.
+        if (outcome === 'recorded') await sendProposal(this.db, queueNotifier, params.proposalId);
+        return {};
+      },
+
+      'queue.update': async (connection, raw) => {
+        const params = raw as RealtimeParams<'queue.update'>;
+        const outcome = await updateTicket(
+          this.db,
+          connection.requireAccount().id,
+          params.ticketId,
+          params.allowAiOpponent,
+        );
+        if (outcome === 'not_found') throw apiError('not_found', 'No such queue ticket.');
+        if (outcome === 'not_waiting')
+          throw apiError('conflict', 'The ticket is no longer waiting.');
         return {};
       },
 

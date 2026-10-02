@@ -819,7 +819,7 @@ async function proposal(
   return value;
 }
 
-function proposalValue(humans: string[], overrides: Partial<MatchProposal>): MatchProposal {
+function proposalValue(humans: string[], overrides: Partial<MatchProposal> = {}): MatchProposal {
   return {
     id: crypto.randomUUID(),
     queueId: 'casual-1v1',
@@ -991,6 +991,126 @@ describe('queue methods and NOTIFY forwarding', () => {
       .executeTakeFirstOrThrow();
     expect(ticket).toEqual({ sim_version: SIM_KEY, status: 'waiting', queue_id: 'ranked-1v1' });
     expect(resolveQueue(queues[1]!).rated).toBe(true);
+  });
+
+  it('describes queues and lists relay regions with probe URLs', async () => {
+    const info = await json(await fetch(`${a.url}/api/v1/instance`));
+    const listed = info['queues'] as Record<string, unknown>[];
+    expect(listed.find((q) => q['id'] === 'ranked-1v1')).toMatchObject({ acceptSeconds: 10 });
+    expect(listed.find((q) => q['id'] === 'casual-1v1')).toMatchObject({ acceptSeconds: 0 });
+    expect(listed[0]!['maps']).toContain('even-ground');
+    expect(check('InstanceInfo', info).stage).toBe('ok');
+
+    await resetRelays();
+    expect(await json(await fetch(`${b.url}/api/v1/relays/regions`))).toEqual({ items: [] });
+    await registerRelay(a, 'relay-r1', { region: 'eu-west' });
+    await registerRelay(a, 'relay-r2', { region: 'eu-west' });
+    await registerRelay(a, 'relay-r3', { region: 'us-east', draining: true });
+    await registerRelay(a, 'relay-r4', { region: 'ap-south' });
+    const regions = await json(await fetch(`${b.url}/api/v1/relays/regions`));
+    expect(check('RelayRegionList', regions).stage).toBe('ok');
+    expect(regions).toEqual({
+      items: [
+        { region: 'ap-south', probeUrl: 'https://relay-r4.relays.test/relay', relays: 1 },
+        { region: 'eu-west', probeUrl: 'https://relay-r1.relays.test/relay', relays: 2 },
+      ],
+    });
+    await resetRelays();
+  });
+
+  it('toggles AI backfill on a waiting ticket and shows everyone who accepted', async () => {
+    const p1 = await player(a);
+    const p2 = await player(b);
+    const t1 = await p1.client.ok('queue.join', { queueId: 'casual-1v1', regions: [] });
+    const t2 = await p2.client.ok('queue.join', { queueId: 'casual-1v1', regions: [] });
+    await p1.client.ok('queue.update', { ticketId: t1['ticketId'], allowAiOpponent: false });
+    const stored = await harness.database.db
+      .selectFrom('queue_tickets')
+      .select(['allow_ai_opponent', 'status'])
+      .where('id', '=', t1['ticketId'] as string)
+      .executeTakeFirstOrThrow();
+    expect(stored).toEqual({ allow_ai_opponent: false, status: 'waiting' });
+    const stranger = await p2.client.call('queue.update', {
+      ticketId: t1['ticketId'],
+      allowAiOpponent: true,
+    });
+    expect(stranger.error?.code).toBe('not_found');
+
+    // A pending ranked-style prompt for both tickets.
+    const db = harness.database.db;
+    const proposalId = crypto.randomUUID();
+    await db
+      .insertInto('match_proposals')
+      .values({
+        id: proposalId,
+        queue_id: 'casual-1v1',
+        sim_version: SIM_KEY,
+        region: 'eu-west',
+        rated: false,
+        backfilled: false,
+        status: 'pending',
+        map: JSON.stringify(proposalValue([]).map),
+        expires_at: new Date(Date.now() + 60_000),
+        created_at: new Date(),
+      })
+      .execute();
+    for (const [slot, p, t] of [
+      [0, p1, t1],
+      [1, p2, t2],
+    ] as const) {
+      await db
+        .updateTable('queue_tickets')
+        .set({ status: 'proposed', proposal_id: proposalId })
+        .where('id', '=', t['ticketId'] as string)
+        .execute();
+      await db
+        .insertInto('match_proposal_seats')
+        .values({
+          proposal_id: proposalId,
+          slot,
+          side: slot,
+          kind: 'human',
+          ticket_id: t['ticketId'] as string,
+          account_id: p.accountId,
+          ai_id: null,
+          rating_entity_id: null,
+          mu: 25,
+          sigma: 25 / 3,
+          response: 'pending',
+        })
+        .execute();
+    }
+    p1.client.clear();
+    p2.client.clear();
+    await p1.client.ok('queue.respond', { proposalId, accept: true });
+    for (const p of [p1, p2]) {
+      const shown = await p.client.event('queue.proposal');
+      expect(check('RealtimeEventQueueProposal', shown).stage).toBe('ok');
+      const seats = shown['seats'] as { response: string; you?: boolean; slot: number }[];
+      expect(seats.map((seat) => seat.response)).toEqual(['accepted', 'pending']);
+      expect(seats.find((seat) => seat.you)?.slot).toBe(p === p1 ? 0 : 1);
+      expect(shown['map']).toEqual({ generatorId: 'even-ground', width: 128, height: 128 });
+    }
+    const late = await p1.client.call('queue.update', {
+      ticketId: t1['ticketId'],
+      allowAiOpponent: true,
+    });
+    expect(late.error).toBeUndefined();
+    await db
+      .updateTable('match_proposals')
+      .set({ status: 'cancelled' })
+      .where('id', '=', proposalId)
+      .execute();
+    await db
+      .updateTable('queue_tickets')
+      .set({ status: 'cancelled' })
+      .where('proposal_id', '=', proposalId)
+      .execute();
+    const gone = await p1.client.call('queue.update', {
+      ticketId: t1['ticketId'],
+      allowAiOpponent: true,
+    });
+    expect(gone.error?.code).toBe('conflict');
   });
 
   it('forwards worker queue events to sockets on any replica and follows matchFound with match.start', async () => {

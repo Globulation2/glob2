@@ -12,6 +12,7 @@ export * from './matchmaking/notifier.ts';
 export * from './matchmaking/starter.ts';
 export * from './matchmaking/matchmaker.ts';
 export * from './matchmaking/tickets.ts';
+export * from './matchmaking/proposalView.ts';
 export * from './play/notify.ts';
 export * from './play/relays.ts';
 export * from './play/maps.ts';

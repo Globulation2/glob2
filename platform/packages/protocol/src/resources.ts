@@ -183,6 +183,12 @@ export const QueueInfo = Open({
       description: 'Accept prompt length for all-human groups; 0 = none.',
     }),
   ),
+  maps: Type.Optional(
+    Type.Array(Type.String({ maxLength: 64 }), {
+      maxItems: 64,
+      description: 'Generator ids of the map pool, for display.',
+    }),
+  ),
 });
 export type QueueInfo = Static<typeof QueueInfo>;
 

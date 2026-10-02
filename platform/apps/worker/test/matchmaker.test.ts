@@ -15,7 +15,14 @@ import {
 import { Matchmaker } from '../src/matchmaking/matchmaker.ts';
 import { RecordingQueueNotifier } from '../src/matchmaking/notifier.ts';
 import { InMemoryMatchStarter } from '../src/matchmaking/starter.ts';
-import { joinQueue, leaveQueue, respondToProposal } from '../src/matchmaking/tickets.ts';
+import {
+  joinQueue,
+  leaveQueue,
+  respondToProposal,
+  updateTicket,
+} from '../src/matchmaking/tickets.ts';
+import { sendProposal } from '../src/matchmaking/proposalView.ts';
+import { checkDocument } from '@glob2/protocol';
 import { DISPLAY_PER_MU, MU0, aiSeedRating } from '../src/ratings/scale.ts';
 import { runScheduler } from '../src/scheduler.ts';
 import { SIM_A, SIM_B, createAccount, waitFor } from './support.ts';
@@ -355,7 +362,16 @@ describe('matchmaker', () => {
     expect(status.data).toMatchObject({
       waitedSeconds: 89,
       aiBackfillAt: '2026-10-01T12:01:30.000Z',
+      region: 'eu-west',
+      rttMs: 30,
+      allowAiOpponent: true,
+      backfillAi: { ai: 'nicowar' },
     });
+    const range = status.data.ratingRange!;
+    expect(range.min).toBeLessThan(1650);
+    expect(range.max).toBeGreaterThan(1650);
+    expect(Math.round((range.max - range.min) / 2)).toBe(status.data.ratingWindow);
+    expect(checkDocument('RealtimeEventQueueStatus', status.data).stage).toBe('ok');
     h.clock.advance(1);
     expect(await h.matchmaker.tick()).toMatchObject({ proposed: 1, started: 1 });
     const call = h.starter.calls[0]!;
@@ -363,10 +379,22 @@ describe('matchmaker', () => {
     const ai = call.seats.find((s) => s.kind === 'ai')!;
     expect(ai.ai).toBe('nicowar'); // 1653 is closest to 1650
     expect(ai.mu).toBeCloseTo(aiSeedRating('nicowar').mu, 9);
-    expect(h.notifier.of('queue.proposal', solo.accountId)[0]!.data).toMatchObject({
+    const shown = h.notifier.of('queue.proposal', solo.accountId)[0]!.data;
+    expect(shown).toMatchObject({
       requiresAccept: false,
       ais: 1,
+      rated: true,
+      backfilled: true,
+      map: { width: 128, height: 128 },
     });
+    expect(shown.seats).toHaveLength(2);
+    expect(shown.seats!.find((s) => s.kind === 'ai')).toMatchObject({
+      displayName: 'Nicowar',
+      ai: 'nicowar',
+      response: 'not_required',
+    });
+    expect(shown.seats!.find((s) => s.you)?.kind).toBe('human');
+    expect(checkDocument('RealtimeEventQueueProposal', shown).stage).toBe('ok');
     const match = await database.db
       .selectFrom('matches')
       .select(['rated', 'proposal_id'])
@@ -422,9 +450,38 @@ describe('matchmaker', () => {
     h.clock.advance(3);
     expect(await h.matchmaker.tick()).toMatchObject({ started: 0 });
     await respondToProposal(database.db, b.accountId, proposal!.id, true, h.clock.now());
+    // The API resends the prompt after each answer: both seats now show accepted.
+    h.notifier.clear();
+    await sendProposal(database.db, h.notifier, proposal!.id);
+    const resent = h.notifier.of('queue.proposal', b.accountId)[0]!.data;
+    expect(resent.seats!.map((s) => s.response)).toEqual(['accepted', 'accepted']);
+    expect(resent.seats!.filter((s) => s.you)).toHaveLength(1);
+    expect(h.notifier.of('queue.proposal', a.accountId)).toHaveLength(1);
     expect(await h.matchmaker.tick()).toMatchObject({ started: 1 });
     expect(h.notifier.of('queue.matchFound', b.accountId)).toHaveLength(1);
     expect((await ticketStatus(a.ticketId)).status).toBe('matched');
+    // Later searchers see the typical wait of matched tickets.
+    const c = await enqueue(h, RANKED);
+    h.clock.advance(5);
+    await h.matchmaker.tick();
+    expect(h.notifier.of('queue.status', c.accountId).at(-1)!.data.typicalWaitSeconds).toBe(3);
+  });
+
+  it('changes "Allow an AI opponent" without losing the queue position', async () => {
+    const h = harness();
+    const solo = await enqueue(h, RANKED);
+    expect(await updateTicket(database.db, solo.accountId, solo.ticketId, false)).toBe('updated');
+    h.clock.advance(3600);
+    expect(await h.matchmaker.tick()).toMatchObject({ proposed: 0 });
+    expect(await updateTicket(database.db, solo.accountId, solo.ticketId, true)).toBe('updated');
+    h.clock.advance(1);
+    expect(await h.matchmaker.tick()).toMatchObject({ proposed: 1 });
+    expect(await updateTicket(database.db, solo.accountId, solo.ticketId, false)).toBe(
+      'not_waiting',
+    );
+    expect(await updateTicket(database.db, solo.accountId, crypto.randomUUID(), false)).toBe(
+      'not_found',
+    );
   });
 
   it('removes a decliner with a cooldown and requeues the others at their original position', async () => {

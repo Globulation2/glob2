@@ -219,14 +219,33 @@ Each tick:
    - All-human groups in a queue with `acceptSeconds` > 0 (by default, the rated
      queues) become `pending`, with a deadline. Everything else, including every AI-backfilled group, goes
      straight to `starting`.
-   - Each human gets `queue.proposal`.
+   - Each human gets `queue.proposal` with the map (generator and size), the
+     region and every seat: name, rating, AI id and accept answer, with `you` on
+     the receiver's seat (`proposalView.ts`). After each `queue.respond` the API
+     sends it again to everyone in the proposal, so the prompt shows who accepted.
 4. **Starts** `starting` proposals through `MatchStarter`.
    - On success, the tickets become `matched` and each human gets
      `queue.matchFound`.
    - After three failed attempts the proposal fails and the players wait again
      (`reason: start_failed`).
 5. **Sends progress:** every 5 s, each waiting ticket gets `queue.status` with its
-   wait, current rating window and AI backfill time.
+   wait, current rating window and the opponent ratings it admits
+   (`ratingRange`, skill ± window), its own displayed rating, the region and round
+   trip of its best probe, the AI backfill time and the AI that would take the
+   seat now (`backfillAi`), and `typicalWaitSeconds`, the median wait of the
+   queue's tickets matched in the last day.
+
+`queue.update {ticketId, allowAiOpponent}` changes "Allow an AI opponent" on a
+waiting ticket without losing its position.
+
+**Relay probes.** `GET /api/v1/relays/regions` (public) lists each region with an
+available relay and a `probeUrl`: the https form of the public URL of its least
+loaded relay. Clients time a request to each (any HTTP response counts) and send
+the round trips with `queue.join` and `room.create`. The game client
+(`src/online/RelayProbe.cpp`) takes the fastest of three requests per region; a
+native request opens a new TCP and TLS connection each time, so it divides by
+three (TCP handshake, TLS 1.3 handshake, request), while the browser, which keeps
+the connection, reports the fastest request as is.
 
 ## Contracts with other workstreams
 
@@ -235,7 +254,9 @@ Each tick:
 - `queue.join` params gain `allowAiOpponent` ("Allow an AI opponent", default true).
 - New method `queue.respond {proposalId, accept}`.
 - New events `queue.proposal` and `queue.proposalEnded`.
-- `QueueInfo` gains `acceptSeconds`.
+- `QueueInfo` gains `acceptSeconds` and `maps` (generator ids of the pool).
+- Later: `queue.update`, the extra `queue.status` and `queue.proposal` fields
+  above, and `GET /api/v1/relays/regions` (`RelayRegionList`).
 
 **Schema** (`packages/db/migrations/0002_ratings_matchmaking.sql`):
 
