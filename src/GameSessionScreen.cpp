@@ -76,6 +76,7 @@ void GameSessionScreen::updateExecutionImpl(Uint32 tick)
 	{
 		// Input and GUI logic every frame, with the simulation parked between ticks;
 		// the simulation thread paces itself.
+		frameStarted = tick;
 		engine->resumeSimulation(clock);
 		try { running = engine->threadedClientFrame(clock, input); }
 		catch (...) { engine->abortSession(); throw; }
@@ -162,9 +163,9 @@ Uint32 GameSessionScreen::executionDelay(Uint32 now, Uint32 fallback)
 	if (!started || finished)
 		return 0;
 	// Threaded: draw at display rate (presentation paces with vsync where enabled);
-	// cap at about 120 frames per second otherwise.
+	// cap at about 120 frames per second otherwise, counting the frame's own time.
 	if (engine->simulationThreaded())
-		return 8;
+		return Engine::threadedFrameWait(now - frameStarted);
 	return engine->sessionDelay(clock + static_cast<Uint32>(now - lastTick));
 }
 

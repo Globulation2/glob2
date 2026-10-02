@@ -940,6 +940,7 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
         // GLOB2_SIM_THREAD test switch and then only take scenes.
         for (;;)
         {
+            const Uint64 frameStarted = SDL_GetTicks64();
             std::vector<SDL_Event> events;
             if (!globalContainer->runNoX)
             {
@@ -956,7 +957,7 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
             else
             {
                 drawSession();
-                GAGCore::ApplicationHost::wait(8);
+                GAGCore::ApplicationHost::wait(threadedFrameWait(SDL_GetTicks64() - frameStarted));
             }
         }
         doRunOnceAgain = finishSession();
