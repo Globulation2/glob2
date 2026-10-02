@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Write Brotli (.br) and gzip (.gz) copies of the browser client's large files.
 
-Web servers that serve precompressed files (Caddy's `file_server { precompressed }`
-in deploy/Caddyfile, or a bucket with Content-Encoding metadata) then send them
+Web servers that serve precompressed files (deploy/Caddyfile rewrites /play/ requests
+to them; a bucket can use Content-Encoding metadata) then send them
 without compressing on every request. Copies newer than their source are kept, so
 unchanged content-addressed data packages are not compressed again.
 
