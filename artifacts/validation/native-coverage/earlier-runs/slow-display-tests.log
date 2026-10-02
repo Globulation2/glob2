@@ -1,0 +1,28 @@
+FAIL CustomGameSetup/custom game screens; captures and translated keys [slow][display:1024x768][artifacts][writes-preferences] (933.9s)
+PASS UIPresentation/every screen lays out; navigates and captures at small portrait across presentations and insets [display:1600x1400][artifacts][slow] (39.6s)
+PASS UIPresentation/every screen lays out; navigates and captures at small landscape across presentations and insets [display:1600x1400][artifacts][slow] (36.5s)
+PASS UIPresentation/every screen lays out; navigates and captures at tablet portrait across presentations and insets [display:1600x1400][artifacts][slow] (69.1s)
+PASS UIPresentation/every screen lays out; navigates and captures at tablet landscape across presentations and insets [display:1600x1400][artifacts][slow] (70.3s)
+PASS UIPresentation/every screen lays out; navigates and captures at laptop across presentations and insets [display:1600x1400][artifacts][slow] (70.5s)
+PASS UIPresentation/every screen lays out; navigates and captures at fullhd across presentations and insets [display:1600x1400][artifacts][slow] (70.4s)
+PASS RuntimePack/HD runtime pack: frames; team hues; bounded cache and session release [display][artifacts][slow] (298.8s)
+
+===== FAIL CustomGameSetup/custom game screens; captures and translated keys [slow][display:1024x768][artifacts][writes-preferences] =====
+GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.3.34.2) platform=Mac OS X pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "clang++", "dirty": false, "flags": {"CCFLAGS": "", "CPPDEFINES": "HAVE_CONFIG_H GL_SILENCE_DEPRECATION _THREAD_SAFE SDL_MAIN_HANDLED", "CXXFLAGS": "-g -O0 -fprofile-instr-generate -fcoverage-mapping -std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-g -fprofile-instr-generate -Wall -Wl,-framework,Cocoa"}, "revision": "8fcb4857993f08841e0c31b6b967eae63afbf5a5", "sourceStatus": [], "sourceTreeSha256": "3abee65e7ecda2ba5daadfb98e3a7671d0a4bb208ea5ed3052b870ec038748a7"}
+PASS preferences round trip, hidden slots, bounds and corrupt-file recovery
+PASS preferences keep every generator option, and older files still load
+PASS landscape picker Random order is a real shuffle drawn once per process run, Alphabetical stays stable
+Landscape preview:  revision 0 seed 3819630554 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 3834270300 [validation]: Unknown generator
+Landscape preview: Could not place every colony
+PASS deferred viewport priority, reprioritization, stable seeds, yielding retries, restart/reroll
+
+[failure] custom game screens; captures and translated keys [slow][display:1024x768][artifacts][writes-preferences]: false
+test/CustomGameSetupHarness.cpp:1462:
+REQUIRE( pickerHost.popupOpen() ) is NOT correct!
+  values: REQUIRE( false )
+
+
+7 passed, 1 failed, 0 skipped (1589.1s of test time)
+[run_tests] JUnit report: /Users/bradley/glob2/artifacts/native-coverage-implementation/slow-display/junit.xml (8 cases)

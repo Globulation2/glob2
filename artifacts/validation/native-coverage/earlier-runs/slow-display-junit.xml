@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="8" failures="1" errors="0" skipped="0"><testsuite name="CustomGameSetup"><testcase classname="CustomGameSetup" name="custom game screens; captures and translated keys [slow][display:1024x768][artifacts][writes-preferences]" time="933.665" status="run">
+      <failure message="false" type="REQUIRE">
+test/CustomGameSetupHarness.cpp:1462:
+REQUIRE( pickerHost.popupOpen() ) is NOT correct!
+  values: REQUIRE( false )
+
+      </failure>
+    </testcase>
+  </testsuite><testsuite name="RuntimePack"><testcase classname="RuntimePack" name="HD runtime pack: frames; team hues; bounded cache and session release [display][artifacts][slow]" time="298.527" status="run" />
+  </testsuite><testsuite name="UIPresentation"><testcase classname="UIPresentation" name="every screen lays out; navigates and captures at fullhd across presentations and insets [display:1600x1400][artifacts][slow]" time="70.1734" status="run" />
+  <testcase classname="UIPresentation" name="every screen lays out; navigates and captures at laptop across presentations and insets [display:1600x1400][artifacts][slow]" time="70.354" status="run" />
+  <testcase classname="UIPresentation" name="every screen lays out; navigates and captures at small landscape across presentations and insets [display:1600x1400][artifacts][slow]" time="36.2886" status="run" />
+  <testcase classname="UIPresentation" name="every screen lays out; navigates and captures at small portrait across presentations and insets [display:1600x1400][artifacts][slow]" time="39.4753" status="run" />
+  <testcase classname="UIPresentation" name="every screen lays out; navigates and captures at tablet landscape across presentations and insets [display:1600x1400][artifacts][slow]" time="70.109" status="run" />
+  <testcase classname="UIPresentation" name="every screen lays out; navigates and captures at tablet portrait across presentations and insets [display:1600x1400][artifacts][slow]" time="68.9496" status="run" />
+  </testsuite></testsuites>

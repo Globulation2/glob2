@@ -1,0 +1,21 @@
+FAIL CustomGameSetup/custom game screens; captures and translated keys [slow][display:1024x768][artifacts][writes-preferences] (1553.4s)
+
+===== FAIL CustomGameSetup/custom game screens; captures and translated keys [slow][display:1024x768][artifacts][writes-preferences] =====
+GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.3.34.2) platform=Mac OS X pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "clang++", "dirty": true, "flags": {"CCFLAGS": "", "CPPDEFINES": "HAVE_CONFIG_H GL_SILENCE_DEPRECATION _THREAD_SAFE SDL_MAIN_HANDLED", "CXXFLAGS": "-g -O0 -fprofile-instr-generate -fcoverage-mapping -std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-g -fprofile-instr-generate -Wall -Wl,-framework,Cocoa"}, "revision": "a231b3ed4562a4ba5293acfd41de804c20d06702", "sourceStatus": [" M test/CustomGameSetupHarness.cpp", "?? default.profraw"], "sourceTreeSha256": "3853e7c674af622254bf4212e4dc3835e7e4d70113936fd11dda80cf7162ca52"}
+PASS preferences round trip, hidden slots, bounds and corrupt-file recovery
+PASS preferences keep every generator option, and older files still load
+PASS landscape picker Random order is a real shuffle drawn once per process run, Alphabetical stays stable
+Landscape preview:  revision 0 seed 4264426306 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 2099287532 [validation]: Unknown generator
+Landscape preview: Could not place every colony
+PASS deferred viewport priority, reprioritization, stable seeds, yielding retries, restart/reroll
+
+[failure] custom game screens; captures and translated keys [slow][display:1024x768][artifacts][writes-preferences]: 20 <  0
+test/CustomGameSetupHarness.cpp:1412:
+REQUIRE( Sint32(SDL_GetTicks() - deadline) < 0 ) is NOT correct!
+  values: REQUIRE( 20 <  0 )
+
+
+0 passed, 1 failed, 0 skipped (1553.4s of test time)
+[run_tests] JUnit report: /Users/bradley/glob2/artifacts/native-coverage-implementation/popup-diagnostic.xml (1 cases)

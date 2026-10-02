@@ -1,0 +1,41 @@
+{
+  "revision": "2895a7f3523747e8186047b090884ef026c100c2",
+  "source_root": "/Users/bradley/glob2/artifacts/castor-save-continuation",
+  "snapshot": "/Users/bradley/glob2/artifacts/native-coverage-final/20261002T043319Z-dc814863/source-snapshot",
+  "binaries": {
+    "unit": {
+      "path": "/Users/bradley/glob2/artifacts/native-coverage-final/20261002T043319Z-dc814863/glob2-unit-tests",
+      "sha256": "d0851b1c632981d56bccfa565b7fd36dc0a965a4b416ecf49ec516a41a923e50"
+    },
+    "engine": {
+      "path": "/Users/bradley/glob2/artifacts/native-coverage-final/20261002T043319Z-dc814863/glob2-engine-tests",
+      "sha256": "cd4368a60d79afe4e02bf71fa218938d6272ffe72a5ba30ce38e63813cd98c91"
+    }
+  },
+  "html_regeneration_commands": [
+    [
+      "xcrun",
+      "llvm-cov",
+      "show",
+      "/Users/bradley/glob2/artifacts/native-coverage-final/20261002T043319Z-dc814863/glob2-unit-tests",
+      "-instr-profile=/Users/bradley/glob2/artifacts/native-coverage-final/20261002T043319Z-dc814863/unit/coverage.profdata",
+      "-ignore-filename-regex=/test/|/third_party/|/build/|/src/net/|/src/yog/|^/usr/|^/opt/|^/Applications/|^/Library/",
+      "-format=html",
+      "-output-dir=/Users/bradley/glob2/artifacts/native-coverage-final/20261002T043319Z-dc814863/unit/html",
+      "-show-branches=count",
+      "-path-equivalence=/Users/bradley/glob2/artifacts/castor-save-continuation,/Users/bradley/glob2/artifacts/native-coverage-final/20261002T043319Z-dc814863/source-snapshot"
+    ],
+    [
+      "xcrun",
+      "llvm-cov",
+      "show",
+      "/Users/bradley/glob2/artifacts/native-coverage-final/20261002T043319Z-dc814863/glob2-engine-tests",
+      "-instr-profile=/Users/bradley/glob2/artifacts/native-coverage-final/20261002T043319Z-dc814863/engine/coverage.profdata",
+      "-ignore-filename-regex=/test/|/third_party/|/build/|/src/net/|/src/yog/|^/usr/|^/opt/|^/Applications/|^/Library/",
+      "-format=html",
+      "-output-dir=/Users/bradley/glob2/artifacts/native-coverage-final/20261002T043319Z-dc814863/engine/html",
+      "-show-branches=count",
+      "-path-equivalence=/Users/bradley/glob2/artifacts/castor-save-continuation,/Users/bradley/glob2/artifacts/native-coverage-final/20261002T043319Z-dc814863/source-snapshot"
+    ]
+  ]
+}

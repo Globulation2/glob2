@@ -1,0 +1,21 @@
+PASS CustomGameSetup/preferences; landscapes; AI catalogue; snapshot round trip; engine; reload and session replay [slow][writes-preferences] (139.6s)
+PASS MapGeneratorDefaults/Drowned Forest contracts [slow] (496.9s)
+PASS MapGeneratorDefaults/Portage Lakes contracts [slow] (359.1s)
+TIMEOUT MapGeneratorDefaults/full registry; editor and defaults contract [slow][map-generators] (1800.0s)
+
+===== TIMEOUT MapGeneratorDefaults/full registry; editor and defaults contract [slow][map-generators] =====
+GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.3.34.2) platform=Mac OS X pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "clang++", "dirty": false, "flags": {"CCFLAGS": "", "CPPDEFINES": "HAVE_CONFIG_H GL_SILENCE_DEPRECATION _THREAD_SAFE SDL_MAIN_HANDLED", "CXXFLAGS": "-g -O0 -fprofile-instr-generate -fcoverage-mapping -std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-g -fprofile-instr-generate -Wall -Wl,-framework,Cocoa"}, "revision": "8fcb4857993f08841e0c31b6b967eae63afbf5a5", "sourceStatus": [], "sourceTreeSha256": "3abee65e7ecda2ba5daadfb98e3a7671d0a4bb208ea5ed3052b870ec038748a7"}
+PASS Bastion Keys: envelope, variants, rectangles, twelve colonies, swimming isolation, land-bridge corruption, external crops, growth, pools and rampart corruption
+PASS Drowned Forest: envelope, repeatability, cache, growth containment, neck damage, compact workers
+PASS Portage Lakes: compact/full, repeatability, growth containment, missing portage, abundance extremes
+PASS Faulted City: envelope, refusal, resource extremes, growth containment, stable resource terrain, narrow junction, masonry and token food mutations
+PASS Encircled Kingdom: 3-12 colonies, all fortress plans, extremes, fixed capital, containment
+PASS Comb: distinct peninsula counts, finished-world contracts and telemetry
+PASS Even Ground: envelope including thin maps and refusal, water budget ordering, balance buys a measurably smaller catchment spread, crop reach enforced
+
+[run_tests] killed after 1800s
+
+
+3 passed, 1 failed, 8 skipped (2795.6s of test time)
+[run_tests] JUnit report: artifacts/native-coverage-implementation/slow/junit.xml (12 cases)

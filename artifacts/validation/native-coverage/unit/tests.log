@@ -1,0 +1,4 @@
+PASS glob2-unit-tests (391 cases) (36.1s)
+
+1 passed, 0 failed, 0 skipped (36.1s of test time)
+[run_tests] JUnit report: /Users/bradley/glob2/artifacts/native-coverage-final/20261002T043319Z-dc814863/unit/junit.xml (391 cases)
