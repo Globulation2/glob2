@@ -1,0 +1,11 @@
+{
+  "revision": "f7d105ba5d4a796efb9832fcc50a915121e3c354",
+  "build": "scons -j8 release=1 server=0 tests build/darwin/client/release/src/net-connection-test",
+  "regression_cases": 78,
+  "network": "FakeTransport framing and malformed-message checks; optional live WSS path not run",
+  "limits": [
+    "Hosted CI still queued",
+    "Windows/Linux checksum parity not verified",
+    "No historical version-58 fixture added"
+  ]
+}
