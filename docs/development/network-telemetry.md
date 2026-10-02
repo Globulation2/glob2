@@ -36,8 +36,8 @@ leave the outputs it describes as they were, apart from the additions listed her
 | `GLOB2_NET_SESSION`, `GLOB2_NET_SAMPLE`, `GLOB2_NET_FINAL`, `GLOB2_NET_SEAT`, `GLOB2_NET_SUMMARY` | stdout, the standard telemetry stream | `GLOB2_TEAM_TIMELINE=1`, turn games with a local seat |
 | `ClientNetworkSummary` (JSON) | `<replay>.network.json` next to the game's replay (`replays/last_game.network.json` by default, or beside `GLOB2_REPLAY_PATH`) | every turn game that writes a replay, at the end of the session |
 | `RelayNetworkSummary` (JSON) | LAN: `<user dir>/replays/lan-last.network.json` next to `lan-last.g2mr` | when the LAN host writes its record |
-| `RelayNetworkSummary` (JSON) | online: `TurnSequencer::networkSummary()` for the relay's `RelayMatchEnded` | see [relay integration](#relay-and-platform-integration) |
-| `glob2_relay_net_*` | relay Prometheus text (`RelayNetworkTotals::writePrometheus`) | see [relay integration](#relay-and-platform-integration) |
+| `RelayNetworkSummary` (JSON) | online: `RelayMatchEnded.network`, stored per participant by the platform | when the relay reports the match end |
+| `glob2_relay_net_*` | relay `/metrics` (`RelayNetworkTotals::writePrometheus`) | accumulated as matches end |
 | `network` (JSON) | `--verify-match` `result.json` | always; derived from the match record alone |
 | `pacing.network_sleep` | `GLOB2_PERF_*` records | see [pacing](#pacing-network-sleep) |
 
@@ -62,8 +62,9 @@ of one game can be joined. A distribution `name` exports `name.count`, `name.mea
 
 One stable, versioned JSON object per match (`Turn::clientNetworkSummary`, defined in
 `src/net/turn/TurnTelemetry.h`). It is written locally and nothing sends it; it is the
-shape a later platform upload would carry, to be lifted into
-`platform/packages/protocol` when that is decided. It contains no account ids,
+shape a later platform upload would carry. Its JSON Schema is `ClientNetworkSummary`
+in `platform/packages/protocol` (`src/network.ts`, with fixtures), so a future upload
+endpoint has a contract to validate against; no endpoint, table or upload exists. It contains no account ids,
 addresses, names or free text. Adding optional fields keeps version 1; renaming,
 removing or changing the meaning of a field requires version 2.
 
@@ -91,7 +92,7 @@ removing or changing the meaning of a field requires version 2.
 | `desync` | `rejoins` (this client told to rejoin), `flagged` (match flagged for the verifier), `resync_requests` |
 | `presence` | other seats as the relay reports them: `transitions` total; per seat `final_state`, `transitions` and `time_us` per state (`not_connected`, `connected`, `lagging`, `reconnecting`, `resyncing`, `left`) |
 | `ticks` | `executed` (all), `live` (outside catch-up) |
-| `order_validation` | per human seat `accepted`, `stale`, `rejected`, `voice_rejected`, `rejected_by_reason`, from the deterministic order check, or `null` when the engine has none. The check (`multiplayer/m1-order-validation`) is not on this branch; `Engine::turnNetworkSummary` marks where its `orderAudit()` is copied in |
+| `order_validation` | per human seat `accepted`, `stale`, `rejected`, `voice_rejected`, `rejected_by_reason` from the deterministic order check (`TurnLockstepSession::orderAudit()`, since the game last started from tick 0), or `null` when the engine installed no check. The same on every client of a match |
 | `series` | `interval_us`, `dropped_points`, and `points`: per interval `start_us`, `end_us`, `start_tick`, `end_tick`, the distributions `rtt_us`, `jitter_us`, `input_delay_us`, `buffered_ticks`, `target_ticks`, `stall_us`, and the interval's `bytes_sent`, `bytes_received`, `frames_sent`, `frames_received`, `ticks_executed`, `live_ticks`, `ticks_faster`, `ticks_slower`, `mean_nudge`, `catch_up_ticks`, `reconnects`, `downtime_us`, `orders_submitted`, `voice_sent`, `voice_received`, `presence_transitions`. Left out of `GLOB2_NET_SUMMARY` |
 
 Distributions are objects `{count, mean, p50, p95, max}`.
@@ -116,6 +117,7 @@ sequenced but not yet broadcast); `rejected_peers`. Per human seat:
 | `lag_ticks` | relay tick minus the client's executed tick, at each ping (arrival lateness of the client's progress) |
 | `checksums` | `reports`; `lateness_ticks` (relay tick at arrival minus the reported tick); `told_to_rejoin`; `flagged`; `late_mismatches` |
 | `connection` | `connects`, `disconnects`, `grace_used_ms` (time disconnected inside the grace period), `longest_absence_ms`, `left_by_grace`, `left_by_quit`, `left_tick` |
+| `rtt_us` | optional: round trips the host measured itself (`TurnSequencer::transportRoundTrip`). The online relay pings each match connection over WebSocket every `GLOB2_RELAY_RTT_PING_MS` (2 s); the LAN host measures none and leaves it out |
 
 The LAN host writes this file whenever it writes `lan-last.g2mr`.
 
@@ -126,7 +128,7 @@ log_bundles_sent,log_bundle_bytes_sent,checksum_reports,arbitrations,
 arbitrations_unanimous,arbitrations_majority,arbitrations_flagged,
 arbitrations_timed_out,disconnects,grace_expiries,grace_used_seconds,rejoins}_total`,
 the gauge `glob2_relay_net_peak_pending_bytes`, and summaries (`quantile` 0.5/0.95/0.99,
-`_sum`, `_count`) `glob2_relay_net_{lag_ticks,checksum_lateness_ticks,order_defer_ticks}`.
+`_sum`, `_count`) `glob2_relay_net_{lag_ticks,checksum_lateness_ticks,order_defer_ticks,rtt_us}`.
 
 ## Verifier: `RecordNetworkSummary`
 
@@ -150,18 +152,22 @@ host schedules frames itself and records neither.
 
 ## Relay and platform integration
 
-This branch contains the sequencer side only. The online relay (`src/relay/`, on
-`multiplayer/m2-relay`) and the platform are not on it; to integrate:
-
-- **Relay `/metrics`:** keep one `Turn::RelayNetworkTotals`, call `add(sequencer.telemetry())`
-  when a match ends, and append `writePrometheus` output to the existing metrics text.
-- **`RelayMatchEnded`:** add an optional `network` member carrying
-  `sequencer.networkSummary()` (`RelayNetworkSummary` v1). The `G2MR` record format is
-  unchanged. The protocol schema (`platform/packages/protocol/src/relay.ts`) gains
-  `network: Type.Optional(RelayNetworkSummary)` with fixtures for both shapes.
-- **Platform:** store each seat's summary (for example a `network jsonb` column on
-  `match_participants` in a new migration) and expose it on `MatchDetail` for a
-  "network quality" panel.
+- **Relay:** `glob2-relay` keeps one `Turn::RelayNetworkTotals` per process
+  (`RelayMetrics::matchNetwork`), adds each match's `SequencerTelemetry` when the match
+  ends, and appends its Prometheus text to `/metrics`. `RelayMatchEnded` carries
+  `sequencer.networkSummary()` as `network`. The `G2MR` record format is unchanged.
+- **Contract:** `platform/packages/protocol/src/network.ts` defines
+  `RelayNetworkSummary` and `ClientNetworkSummary` (JSON Schemas and fixtures under
+  `fixtures/`). Both are open objects: a newer engine may add fields within version 1.
+  `RelayMatchEnded.network` is optional, and the platform drops a summary that does
+  not validate rather than refuse the end report.
+- **Platform:** the match-end intake stores each seat's entry in
+  `match_participants.network` (migration 0009); `MatchDetail.network` condenses it
+  for the match page's connection panel
+  ([history and web](../multiplayer/history-and-web.md)).
+- **Client context:** online clients take `networkKind = "online"`, `relayId` and
+  `relayRegion` from `MatchAssignment` (`relayId`/`relayRegion` are optional there;
+  `glob2 --turn-client` reads them).
 - **Client upload:** none. Whether and how to collect `ClientNetworkSummary` is
   undecided; the file next to the replay is the only output.
 
