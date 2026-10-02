@@ -275,6 +275,8 @@ and a sparse tolerance of at most 100 changed channels with a maximum delta of
 1/255. That tolerance does not establish bit-exact moving-scene output. The
 immediate reference retains the ordinary resource sprite batch; it disables the
 mixed unit queue, texture arrays and persistent map geometry.
+`GLOB2_BENCH_COMPARE_CAPTURE_PREFIX=artifacts/render-profile/pair` saves the final
+pair as `pair-immediate.ppm` and `pair-optimized.ppm` for visual review.
 
 Timings include GPU completion (`glFinish`) and exclude frame presentation, AI,
 input and simulation work. They are renderer measurements, not whole-game FPS.

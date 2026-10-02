@@ -126,9 +126,9 @@ class TorusRenderBenchmark
     }
 
 #ifdef HAVE_OPENGL
-    static void captureFramebuffer()
+    static void captureFramebuffer(const char *path = nullptr)
     {
-        const char *path = std::getenv("GLOB2_BENCH_CAPTURE");
+        if (!path) path = std::getenv("GLOB2_BENCH_CAPTURE");
         if (!path) return;
         GLint viewport[4];
         glGetIntegerv(GL_VIEWPORT, viewport);
@@ -343,6 +343,13 @@ static int run(int argc, char **argv)
                                 std::fflush(stdout);
                                 assert(maximumDelta <= 1 && changed <= 100);
                             }
+                            if (pair == frames - 1)
+                                if (const char *prefix = std::getenv("GLOB2_BENCH_COMPARE_CAPTURE_PREFIX"))
+                                {
+                                    const std::string output = std::string(prefix) +
+                                        (variant ? "-optimized.ppm" : "-immediate.ppm");
+                                    captureFramebuffer(output.c_str());
+                                }
                             std::printf("PAIRED pair=%d impl=%s cpu_ms=%.6f draws=%lu\n",
                                 pair, variant ? "optimized" : "immediate", cpu, gfx->getDrawCallCount());
                         }
