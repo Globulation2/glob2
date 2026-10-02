@@ -414,6 +414,7 @@ CLIENT_SOURCES = (
     'net/turn/MatchRecord.cpp',
     'net/turn/TurnMessages.cpp',
     'net/turn/TurnSequencer.cpp',
+    'net/turn/TurnLockstep.cpp',
     'net/turn/TurnSession.cpp',
     'net/NetTestSuite.cpp',
     'NewMapScreen.cpp',

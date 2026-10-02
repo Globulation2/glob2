@@ -18,6 +18,7 @@
 #include "ReplayReader.h"
 #include "ReplayWriter.h"
 #include "SDLCompat.h"
+#include "TurnLockstep.h"
 #include "team/Team.h"
 #include "TeamStat.h"
 #include "building/IntBuildingType.h"
@@ -30,6 +31,7 @@
 #include <sstream>
 #include <iomanip>
 #include <cstdlib>
+#include <chrono>
 #include "Version.h"
 #include "script/ScriptRuntime.h"
 #include <stdexcept>
@@ -57,6 +59,16 @@ void Engine::updateTickSpeedAndDrawCadence(MainLoopState& st, Uint64 now)
 	{
 		st.speed = GAME_TICK_MS;
 		renderInterval = 1;
+	}
+
+	// Turn games run at the session's pace, even while paused (the relay's clock
+	// keeps going). A zero interval is catch-up: uncapped ticks with rendering
+	// skipped, the replay fast-forward preset.
+	if (turn)
+	{
+		const std::uint64_t interval = turn->turn().tickIntervalMicros();
+		st.speed = interval == 0 ? REPLAY_FAST_FORWARD_MS : static_cast<int>((interval + 500) / 1000);
+		renderInterval = interval == 0 ? REPLAY_FAST_FORWARD_DRAW_RATIO : 1;
 	}
 	if (st.nextGuiStep < 0 || st.nextGuiStep >= renderInterval)
 		st.nextGuiStep = renderInterval - 1;
@@ -196,7 +208,10 @@ void Engine::executeOrdersAndStep(bool readyNow)
 {
 	if (readyNow)
 	{
-		if (!net->matchCheckSums())
+		// A turn session never reports a mismatch here: the relay arbitrates the
+		// checksums, and a divergence reaches pumpTurnSession as a reload request
+		// or a flagged match. Single player and legacy games keep the dump.
+		if (!turn && !net->matchCheckSums())
 		{
 			std::cout << "Game desychronized." << std::endl;
 			gui.game.dumpAllData("glob2.world-desynchronization.dump.txt");
@@ -295,7 +310,9 @@ void Engine::drawSession()
 Uint32 Engine::sessionDelay(Uint64 now)
 {
     if (!session) throw std::logic_error("No active engine session");
-    if (globalContainer->runNoX) return 0;
+    // Headless games run uncapped, except turn games: their pace is the relay's
+    // (a headless client must not run ahead of the horizon in a busy loop).
+    if (globalContainer->runNoX && !turn) return 0;
     auto& st = *session;
 	// we compute timing
 
@@ -303,7 +320,9 @@ Uint32 Engine::sessionDelay(Uint64 now)
 	//if we are more than MAX_CATCHUP_MS milliseconds behind where we should be,
 	//then truncate it. This is to avoid playing "catchup" for long
 	//periods of time if Glob2 received allmost no cpu time
-	if ((currentTime - st.needToBeTime) > MAX_CATCHUP_MS)
+	// A turn session catching up runs uncapped, so the cap does not apply.
+	const bool turnCatchingUp = turn && turn->turn().catchingUp();
+	if (!turnCatchingUp && (currentTime - st.needToBeTime) > MAX_CATCHUP_MS)
 		st.needToBeTime = currentTime - MAX_CATCHUP_MS;
 
 	//Any inconsistancies in the delays will be smoothed throughout the following frames,
@@ -585,8 +604,89 @@ void Engine::teardownSession()
 	}
 
 	if (multiplayer) multiplayer->setNetEngine(nullptr);
+	leaveTurnMatch();
+	turn = nullptr;
+	turnMatch.reset();
 	net.reset();
 	multiplayer.reset();
+}
+
+void Engine::leaveTurnMatch()
+{
+	if (!turn)
+		return;
+	Turn::TurnSession& session = turn->turn();
+	if (session.state() == Turn::TurnSession::State::Ended || session.state() == Turn::TurnSession::State::Rejected)
+		return;
+	const bool finished = gui.game.isGameEnded || gui.game.totalPrestigeReached ||
+		(gui.localTeamNo >= 0 && gui.localTeamNo < gui.game.mapHeader.getNumberOfTeams() &&
+		 gui.game.teams[gui.localTeamNo] && (gui.game.teams[gui.localTeamNo]->hasWon || gui.game.teams[gui.localTeamNo]->hasLost));
+	session.quit(finished ? Turn::QuitReason::GameFinished : Turn::QuitReason::PlayerQuit);
+}
+
+void Engine::pumpTurnSession(Uint64 now)
+{
+	if (!turn)
+		return;
+	Turn::TurnSession& session = turn->turn();
+	session.update(now * 1000);
+	if (session.needsReload())
+		reloadTurnInitialState();
+	if (session.desyncFlagged() && turnMatch && !turnMatch->flagReported)
+	{
+		turnMatch->flagReported = true;
+		std::cerr << "Turn session: the relay flagged a desynchronization at or before tick "
+			<< session.executedTick() << "; the match result will be decided by verification" << std::endl;
+	}
+	if (session.state() == Turn::TurnSession::State::Rejected)
+	{
+		std::cerr << "Turn session: the relay refused this client (reason "
+			<< static_cast<int>(session.rejectReason()) << "); leaving the game" << std::endl;
+		gui.isRunning = false;
+	}
+}
+
+void Engine::reloadTurnInitialState()
+{
+	assert(turn && turnMatch);
+	TurnMatchState& state = *turnMatch;
+	const auto started = std::chrono::steady_clock::now();
+	if (!gui.loadFromHeaders(state.map, state.header, true, true, false, state.mapFile))
+	{
+		std::cerr << "Turn session: cannot reload the initial game state" << std::endl;
+		gui.isRunning = false;
+		return;
+	}
+	globalContainer->liveSpectating = false;
+	gui.localPlayer = state.localPlayer;
+	gui.localTeamNo = state.localTeam;
+	gui.game.clearingUncontrolledTeams();
+	finalAdjustments();
+	gui.localPlayer = state.localPlayer;
+	gui.localTeamNo = state.localTeam;
+	if (globalContainer->replayWriter)
+	{
+		// The replay restarts with the state it now describes.
+		globalContainer->replayWriter = std::make_unique<ReplayWriter>();
+		globalContainer->replayWriter->init(state.replayPath, gui);
+	}
+	if (checksumSidecar)
+	{
+		checksumSidecar->close();
+		checksumSidecar = std::make_unique<ChecksumSidecarWriter>();
+		if (!checksumSidecar->open(state.replayPath, gui.game))
+			checksumSidecar.reset();
+	}
+	if (!globalContainer->structuredHeadless)
+		gui.game.map.configureCompute(globalContainer->aiThreads ? globalContainer->aiThreads
+			: defaultAIThreadCount(gui.game), Map::ComputeAI);
+	teamEliminatedTick.clear();
+	if (session)
+		session->wasReadyLastTick = true;
+	turn->turn().reloadDone();
+	std::cerr << "Turn session: reloaded the initial state in "
+		<< std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - started).count()
+		<< " ms; fast-forwarding" << std::endl;
 }
 
 // Body of the outer "play one game and possibly load another" loop in run().
@@ -736,6 +836,7 @@ bool Engine::stepSessionImpl(Uint64 now, const std::vector<SDL_Event>& events)
         sessionInput.clear();
     }
 
+    pumpTurnSession(now);
     bool readyNow = st.wasReadyLastTick;
     if (!gui.hardPause) {
         if (multiplayer && multiplayer->getMultiplayerMode() == MultiplayerGame::NoMode)
@@ -762,7 +863,9 @@ bool Engine::stepSessionImpl(Uint64 now, const std::vector<SDL_Event>& events)
 		}
 
     st.wasReadyLastTick = readyNow;
-    if (!globalContainer->runNoX) st.needToBeTime += st.speed;
+    // A turn game's budget advances only with executed ticks, so frames spent
+    // waiting for the relay poll quickly instead of sleeping a whole tick.
+    if (turn ? readyNow : !globalContainer->runNoX) st.needToBeTime += st.speed;
     handleExitRequest();
     workTime.stop();
     loopTime.stop();
