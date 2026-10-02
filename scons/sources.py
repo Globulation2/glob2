@@ -549,7 +549,6 @@ CLIENT_SOURCES = (
     'net/lan/LanHost.cpp',
     'net/lan/LanProtocol.cpp',
     'net/lan/LanRoom.cpp',
-    'online/MapCache.cpp',
     'yog/YogRoom.cpp',
     'net/NetTransport.cpp',
     'net/NetworkConfig.cpp',
