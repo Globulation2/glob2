@@ -412,9 +412,17 @@ version. Listings show and filter on it.
 
 1. `POST /api/v1/maps` with `CreateMapRequest` creates the map (`201 MapInfo`).
 2. `POST /api/v1/maps/{id}/versions?simVersion=<key>&notes=…` takes the
-   uncompressed file as `application/octet-stream`, up to `UPLOAD_MAX_BYTES`. The
-   upload names its sim version; without one (web uploads), the newest version the
-   instance serves is used. Only the owner may upload.
+   file, plain or gzip-compressed, as `application/octet-stream`, up to
+   `UPLOAD_MAX_BYTES`. The API unpacks gzip and checks the map header first, with
+   the same plain-language `400` answers as room uploads
+   ([rooms and matches](rooms-and-matches.md)). The upload names its sim version;
+   without one (web uploads), the newest version the instance serves is used. Only
+   the owner may upload. If the same bytes were already checked as a room upload
+   (`/api/v1/uploads`) for that sim version, the version reuses the verdict.
+
+   The web app's upload form checks the file with `POST /api/v1/uploads` first and
+   polls it; only a file the game loads gets a map (step 1) and a version, so a
+   failed upload leaves no empty map page behind.
 3. The bytes become a private blob. The version row is written with two job ids,
    and only then are the jobs submitted, so a fast result always finds its row:
    - `validate-map` (format `map`);
