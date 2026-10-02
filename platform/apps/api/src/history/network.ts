@@ -1,19 +1,27 @@
 // The match page's "connection" panel: each human player's entry of the relay's
 // network summary (RelayNetworkSummary v1, match_participants.network since
 // 0009) condensed into a few numbers and a rough quality label.
-import type { ParticipantNetwork, RelayNetworkSeat } from '@glob2/protocol';
+import {
+  rateConnection,
+  worstRating,
+  type ConnectionRating,
+  type ParticipantNetwork,
+  type RelayNetworkSeat,
+} from '@glob2/protocol';
 
 /** GAME_TICKS_PER_SECOND at the default rate; reports carry their own rate. */
 const DEFAULT_TICK_RATE_MILLIHZ = 25000;
 
 /**
- * Thresholds behind ParticipantNetwork.quality. Presentation only: nothing
- * else (ratings, verification) reads the label. `fair` and `poor` are reached
- * by any one of their conditions.
+ * Thresholds behind ParticipantNetwork.quality beyond ping and behind, which
+ * use the shared table (@glob2/protocol connectionQuality.ts, the same one the
+ * in-game panel uses) on their typical (median) values. Presentation only:
+ * nothing else (ratings, verification) reads the label. `fair` and `poor` are
+ * reached by any one of their conditions.
  */
 export const QUALITY_THRESHOLDS = {
-  fair: { rttP95Ms: 200, lagP95Ms: 1000, disconnects: 1, deferredShare: 0.05 },
-  poor: { rttP95Ms: 400, lagP95Ms: 2000, disconnects: 3, offlineMs: 30_000, rejoins: 1 },
+  fair: { disconnects: 1, deferredShare: 0.05 },
+  poor: { disconnects: 3, offlineMs: 30_000, rejoins: 1 },
 } as const;
 
 function ms(us: number): number {
@@ -60,19 +68,14 @@ export function participantNetwork(
   const poor = QUALITY_THRESHOLDS.poor;
   const fair = QUALITY_THRESHOLDS.fair;
   const deferredShare = ordersSequenced > 0 ? ordersDeferred / ordersSequenced : 0;
-  const quality =
-    (rttMs && rttMs.p95 >= poor.rttP95Ms) ||
-    (lagMs && lagMs.p95 >= poor.lagP95Ms) ||
-    disconnects >= poor.disconnects ||
-    offlineMs >= poor.offlineMs ||
-    rejoins >= poor.rejoins
-      ? 'poor'
-      : (rttMs && rttMs.p95 >= fair.rttP95Ms) ||
-          (lagMs && lagMs.p95 >= fair.lagP95Ms) ||
-          disconnects >= fair.disconnects ||
-          deferredShare > fair.deferredShare
-        ? 'fair'
-        : 'good';
+  const ratings: ConnectionRating[] = [];
+  if (rttMs) ratings.push(rateConnection('ping', rttMs.p50));
+  if (lagMs) ratings.push(rateConnection('behind', lagMs.p50));
+  if (disconnects >= poor.disconnects || offlineMs >= poor.offlineMs || rejoins >= poor.rejoins)
+    ratings.push('poor');
+  else if (disconnects >= fair.disconnects || deferredShare > fair.deferredShare)
+    ratings.push('fair');
+  const quality = worstRating(...ratings);
 
   return {
     seat,
