@@ -218,7 +218,9 @@ Each service reads secrets and deployment settings from the environment (or a
 sign-in providers (secrets referenced by environment-variable name), access
 policy and queues. Services log structured JSON to stdout, expose health
 endpoints where they serve HTTP, and on SIGTERM stop taking work, finish what is
-running and close connections within `SHUTDOWN_GRACE_SECONDS`.
+running and close connections within `SHUTDOWN_GRACE_SECONDS`. The Compose stack
+that runs all of them, with Caddy and Postgres, is described in the
+[self-hosting guide](../hosting/README.md).
 
 ## Engine agents
 

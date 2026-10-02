@@ -32,6 +32,7 @@ jobs:
       deployment: ${{ steps.select.outputs.deployment }}
       cross_platform: ${{ steps.select.outputs.cross_platform }}
       platform: ${{ steps.select.outputs.platform }}
+      platform_stack: ${{ steps.select.outputs.platform_stack }}
     steps:
       - uses: actions/checkout@v4
       - name: Test changed-path selection
@@ -1407,7 +1408,7 @@ jobs:
         id: test_self_hosting_with_real_tls_and_persistent_volumes
         continue-on-error: true
         run: |
-          docker compose -f deploy/compose.yaml build lobby web
+          docker compose -f deploy/compose.legacy.yaml build lobby web
           python3 -m unittest discover -s tests/deployment -v
 
       - name: Summarize CI failures
@@ -1706,9 +1707,36 @@ jobs:
           npm run migrate -- latest
           npm run migrate -- status
 
+  platform-stack:
+    name: self-hosted platform stack
+    needs: changes
+    if: ${{ needs.changes.outputs.platform_stack == 'true' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        id: actions_checkout_v4_1
+      - name: Build the images and smoke-test deploy/compose.yaml
+        id: smoke_test_the_platform_stack
+        continue-on-error: true
+        run: python3 tests/deployment/platform_stack_smoke.py --jobs 4 --log-dir artifacts/platform-stack
+      - uses: actions/upload-artifact@v4
+        if: always()
+        id: upload_platform_stack_logs
+        continue-on-error: true
+        with:
+          name: platform-stack-smoke
+          path: artifacts/platform-stack
+          if-no-files-found: ignore
+      - name: Summarize CI failures
+        if: always()
+        env:
+          CI_STEPS_JSON: ${{ toJSON(steps) }}
+        run: python3 test/ci_step_summary.py
+
   ci-result:
     name: Relevant checks passed
-    needs: [changes, linux, linux-variants, linux-map-generators, windows, windows-server, web-build, web-native, web-deploy, web-test, browser-determinism, platform]
+    needs: [changes, linux, linux-variants, linux-map-generators, windows, windows-server, web-build, web-native, web-deploy, web-test, browser-determinism, platform, platform-stack]
     if: ${{ !cancelled() }}
     runs-on: ubuntu-24.04
     env:
@@ -1735,6 +1763,7 @@ jobs:
               'web-test': selected['browser'] == 'true',
               'browser-determinism': selected['cross_platform'] == 'true',
               'platform': selected['platform'] == 'true',
+              'platform-stack': selected['platform_stack'] == 'true',
           }
           for job, should_run in expected.items():
               required = 'success' if should_run else 'skipped'

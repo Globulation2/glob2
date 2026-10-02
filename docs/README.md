@@ -35,6 +35,9 @@ dated reports and pull-request artifacts do not belong here.
   [ratings and matchmaking](multiplayer/ratings-and-matchmaking.md), the
   [relay-sequenced turn protocol](multiplayer/turn-protocol.md) and the
   [match relay](multiplayer/relay.md) that hosts it.
+- **Hosting:** [self-hosting an online instance](hosting/README.md) with the
+  Compose stack in `deploy/`; the legacy YOG deployment is in
+  [deploy/README.md](../deploy/README.md) until the cutover.
 - **Tools:** [distributed tournaments](tools/tournaments.md).
 
 - **Mobile platforms:** [builds, responsive UI and verification](mobile/development.md),
