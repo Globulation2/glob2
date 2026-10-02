@@ -125,13 +125,13 @@ void GameGUI::generateNewParticles(std::set<Building*> *visibleBuildings)
 				p->y = y + type->height * HALF_TILE_PX;
 				if (hpRatio < SMOKE_HEAVY_HP_RATIO)
 				{
-					p->vx = 0.5f - (float)rand() / (float)RAND_MAX;
-					p->vy = - 3.f * (float)rand() / (float)RAND_MAX;
+					p->vx = 0.5f - effectsUnit();
+					p->vy = - 3.f * effectsUnit();
 				}
 				else
 				{
-					p->vx = 0.3f - (float)rand() / (float)RAND_MAX;
-					p->vy = - 1.8f * (float)rand() / (float)RAND_MAX;
+					p->vx = 0.3f - effectsUnit();
+					p->vy = - 1.8f * effectsUnit();
 				}
 				p->ax = 0.f;
 				p->ay = -0.01f;
@@ -156,8 +156,8 @@ void GameGUI::generateNewParticles(std::set<Building*> *visibleBuildings)
 					Particle* p = new Particle;
 					p->x = x + w2 + dx;
 					p->y = y + h2 + dy;
-					p->vx = 0.3f - (float)rand() / (float)RAND_MAX;
-					p->vy = - 1.2f * (float)rand() / (float)RAND_MAX;
+					p->vx = 0.3f - effectsUnit();
+					p->vy = - 1.2f * effectsUnit();
 					p->ax = 0.f;
 					p->ay = -0.02f;
 					p->age = 0;

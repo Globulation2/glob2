@@ -10,8 +10,9 @@
     {
       "name": "sdl3-image",
       "features": [
+        "jpeg",
         "png",
-        "jpeg"
+        "webp"
       ]
     },
     "zlib",

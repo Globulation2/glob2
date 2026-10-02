@@ -24,7 +24,15 @@ def download(work, versions):
                 temporary.write_bytes(response.read())
             temporary.replace(archive)
         if hashlib.sha256(archive.read_bytes()).hexdigest() != spec['sha256']:
-            raise ValueError(f'SDL archive checksum mismatch: {archive}')
+            raise ValueError(f'Dependency archive checksum mismatch: {archive}')
+
+
+def patch_image_exports(source):
+    # SDL_image3.4.6's SHELL linker option splits source paths containing spaces.
+    # CMake's LINKER form preserves the exports filename as one argument.
+    script = Path(source) / 'CMakeLists.txt'
+    contents = script.read_text()
+    script.write_text(contents.replace('SHELL:-Wl,-exported_symbols_list,', 'LINKER:-exported_symbols_list,'))
 
 
 def build(prefix, work, jobs=2, emscripten=None, environment=None):
@@ -32,7 +40,7 @@ def build(prefix, work, jobs=2, emscripten=None, environment=None):
     versions = json.loads(LOCK.read_text())
     if emscripten:
         versions = json.loads(LOCK.with_name('sdl3-vendored.json').read_text()) | versions
-    identity = {'configuration': 4, 'versions': versions, 'emscripten': str(emscripten) if emscripten else None,
+    identity = {'configuration': 6, 'versions': versions, 'emscripten': str(emscripten) if emscripten else None,
                 'platform': platform.platform(), 'machine': platform.machine()}
     manifest = prefix / 'sdl3-manifest.json'
     libraries = ('SDL3', 'SDL3_image', 'SDL3_ttf', 'SDL3_net')
@@ -50,6 +58,8 @@ def build(prefix, work, jobs=2, emscripten=None, environment=None):
         if not source.exists():
             with tarfile.open(archive) as package:
                 package.extractall(work, filter='data')
+        if name == 'SDL_image':
+            patch_image_exports(source)
         if name == 'SDL_net':
             # Same MinGW portability patch as the pinned vcpkg overlay. SDL_net
             # 3.2.0 names its Winsock helpers read/write, colliding with io.h.
@@ -65,9 +75,15 @@ def build(prefix, work, jobs=2, emscripten=None, environment=None):
                    '-DCMAKE_BUILD_TYPE=Release', '-DCMAKE_INSTALL_PREFIX=' + str(prefix),
                    '-DCMAKE_PREFIX_PATH=' + str(prefix), '-DCMAKE_INSTALL_LIBDIR=lib',
                    '-DSDL_TESTS=OFF', '-DSDL_TEST_LIBRARY=OFF', '-DSDL_EXAMPLES=OFF',
-                   '-DSDLIMAGE_SAMPLES=OFF', '-DSDLIMAGE_TESTS=OFF', '-DSDLIMAGE_DEPS_SHARED=OFF',
+                   '-DSDLIMAGE_WEBP=ON', '-DSDLIMAGE_WEBP_SAVE=OFF', '-DSDLIMAGE_SAMPLES=OFF', '-DSDLIMAGE_TESTS=OFF', '-DSDLIMAGE_DEPS_SHARED=OFF',
                    '-DSDLTTF_SAMPLES=OFF', '-DSDLTTF_TESTS=OFF', '-DSDLTTF_HARFBUZZ=OFF',
                    '-DSDLNET_SAMPLES=OFF', '-DSDLNET_TESTS=OFF']
+        if name == 'webp':
+            command += ['-DBUILD_SHARED_LIBS=OFF', '-DCMAKE_POSITION_INDEPENDENT_CODE=ON',
+                        '-DWEBP_BUILD_CWEBP=OFF', '-DWEBP_BUILD_DWEBP=OFF', '-DWEBP_BUILD_VWEBP=OFF',
+                        '-DWEBP_BUILD_WEBPINFO=OFF', '-DWEBP_BUILD_IMG2WEBP=OFF', '-DWEBP_BUILD_WEBPMUX=OFF',
+                        '-DWEBP_BUILD_EXTRAS=OFF', '-DWEBP_BUILD_ANIM_UTILS=OFF', '-DWEBP_BUILD_LIBWEBPMUX=ON',
+                        '-DBUILD_TESTING=OFF']
         if not emscripten and platform.system() == "Linux":
             command += ['-DCMAKE_INSTALL_RPATH=$ORIGIN']
         if emscripten:

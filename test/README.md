@@ -999,6 +999,19 @@ uses the C++ harnesses. See the existing performance guide for corpus preparatio
 and paired CPU/wall-time benchmarking.
 
 
+### Simulation-thread equivalence
+
+`python3 test/check_sim_thread.py CANDIDATE --baseline BASELINE` runs new games
+(RNG seeding), a generated map, a version 121 save and save continuation (RNG
+restore) with both executables, and requires identical checksum sidecars, final
+saves and replay bytes. `--candidate-args` passes extra engine arguments to the
+candidate only; `--output DIR` retains the evidence. Each scenario also runs the
+baseline twice: replay bytes that differ between those two runs (known
+run-varying header fields) are reported and excluded. Run it with
+`GLOB2_SYNC_RAND_STRICT=1` to abort on any synchronized draw that is not bound to
+the simulated game's stream. Unix only (`wait4`), like `check_parallel_compute.py`.
+
+
 ### Delayed gradient pipeline
 
 The `GradientPipeline` unit suite (`python3 test/run_tests.py --binary unit --filter

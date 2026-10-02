@@ -70,7 +70,7 @@ python3 test/run_tests.py      # run them; --list, --filter, --tag, --shard
   setting a build live.
 - `scons target=web release=1` builds the WebAssembly browser client; see
   `docs/browser/adr-001-build-isolation.md` for the toolchain isolation this relies on.
-- Dependencies include pinned SDL3/SDL3_net/SDL3_ttf/SDL3_image (see `scons/sdl3-versions.json`), Vorbis/Ogg, Speex, OpenGL/GLU, libepoxy,
+- Dependencies include pinned SDL3/SDL3_net/SDL3_ttf/SDL3_image (see `scons/sdl3-versions.json`) and WebP 1.6.0 for optimized packaged artwork, Vorbis/Ogg, Speex, OpenGL/GLU, libepoxy,
   zlib, fribidi and pcre; PortAudio is optional. All native multiplayer builds (client, server, and router) require OpenSSL and the header-only
   Boost.Beast and Boost.Asio; nothing else uses Boost.
 - `CCACHE=1` opts into the shared compiler cache. Unset it when generating
@@ -230,6 +230,61 @@ See Microsoft's [PC packaging guide](https://learn.microsoft.com/en-us/gaming/gd
 [MakePkg reference](https://learn.microsoft.com/en-us/gaming/gdk/docs/features/common/packaging/deployment/makepkg),
 and [Package Uploader setup](https://github.com/microsoft/PackageUploader).
 
+## Release asset and bundle sizes
+
+Release packagers share `tools/package_assets.py`. Original artwork stays in
+`data/` and `datasrc/`; generated runtime trees and per-image caches stay under
+`build/`. The exporter retains the smallest of original PNG, optimized PNG and
+pixel-exact lossless WebP. It preserves RGB beneath transparent pixels, dimensions,
+team-color masks and HD frame geometry. Normal source/debug builds use the
+originals. Image lookup searches directories in their existing order, checking a
+logical PNG first and its WebP alternative second within each directory; an
+original PNG override therefore retains precedence.
+
+Packaging bootstraps a private Pillow 12.2.0/libwebp 1.6.0 encoder environment
+when the current Python lacks the pinned encoder. This is a build dependency,
+never application content. It requires network access on first setup; subsequent
+exports reuse cached verified conversions. Flatpak supplies checksum-pinned
+encoder sources and build dependencies for its offline sandbox.
+Windows CI uses standard CPython for encoding and MinGW Python for building;
+`GLOB2_ASSET_ENCODER_PYTHON` selects a validated, already prepared interpreter.
+Python tests can use the same environment:
+
+```sh
+"$(python3 tools/package_assets.py --encoder-python)" -m unittest discover -s tests/build_system -v
+python3 tools/package_assets.py --platform linux --output build/runtime-assets
+```
+
+The export audit is beside the generated tree, outside shipped assets. Build
+helpers and the HD source provenance manifest are omitted, while `frames.txt`,
+font coverage, notices, music and all HD images are retained. Store screenshots
+remain in Linux packages where metainfo requires them. Android's installed asset
+index hashes the exported bytes. Run source `dist` and release `install` as
+separate SCons invocations; the latter installs the exported runtime tree.
+Release installs retain a compact compressed ownership index to remove obsolete
+managed files on upgrades. Unrelated files and modified obsolete files are kept.
+On the first upgrade from an install without that index, PNGs at current shipped
+image paths are replaced when WebP is selected, including artwork from older
+releases. Keep custom image overrides in the user profile so they retain priority.
+
+Mac `bundle`/`package` additionally builds a checksum-pinned SDL_image 2.8.12
+with PNG/JPEG/WebP loading and PNG/JPEG saving. The cache identity includes
+compiler, SDK, codec configuration, dependency versions and the actual libraries
+reported by pkg-config. Shared real files are hashed once; unrelated Homebrew
+libraries do not invalidate this cache. Missing or changed required libraries
+fail packaging rather than falling back to another decoder. The bundle stores
+one canonical copy per dylib, preserving required runtime aliases as symlinks.
+Its executable is stripped only after a matching dSYM has been retained in the
+build's `symbols/` directory, and before dependency rewriting and signing.
+Preserve that dSYM with release evidence for crash symbolication.
+
+The opaque `menu-colony.png` illustration uses visually reviewed quality-85
+lossy WebP in release exports. Use `--lossless-background` for an exact-artwork
+comparison export. Wordmarks, icons, sprites, masks and atlases remain lossless. No save,
+replay, network or simulation format changes are involved. Measure complete
+packages and startup separately: smaller compressed assets need not decode
+faster or use less GPU memory.
+
 ## Renderer stress measurements
 
 `torus-render-benchmark` uses the production loaded-map renderer. Its optional
@@ -381,9 +436,19 @@ For timing and scheduling, start with `src/Game_sync.cpp` and `src/EngineRun.cpp
   order, but does not make their shared map and caches safe for concurrent access.
   A controller must still have at most one `getOrder()` in flight; its stream
   and decision state are mutable.
-- The non-AI `syncRand()` generator is `thread_local`: the simulation normally uses
-  one thread, while background map generation seeds its own stream. A new thread
-  starts from the default seed; seed it before relying on its sequence.
+- Each `Game` owns its synchronized stream (`Game::syncRandom`), saved and restored
+  with the game. `Game::syncStep`, `Game::executeOrder`, load and save bind it with
+  `SyncRandScope`, so the simulation draws from the game it advances on whichever
+  thread runs it. Other code that advances a game's simulation must bind it with
+  `Game::bindRandom()`. Outside a bound scope, `syncRand()` uses a `thread_local`
+  default stream that map generation and other tools seed for themselves; a new
+  thread starts from the default seed. During an engine session an unbound draw is
+  a determinism bug: it is counted (`unboundSyncRandDraws()`), and
+  `GLOB2_SYNC_RAND_STRICT=1` aborts on it.
+- Keep rendering, particles, animation and other presentation-only randomness off
+  `syncRand()`. Use a presentation-owned generator such as `GameGUI::effectsRandom`,
+  so visual effects can change, run at any frame rate or move to another thread
+  without consuming simulation draws.
 - For behavior-preserving refactors and optimizations, compare base and changed
   builds using identical saves/maps, seeds, settings and orders. Compare per-tick
   state/checksums as well as replay bytes: matching orders alone do not prove that

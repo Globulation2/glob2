@@ -8,8 +8,13 @@ import re
 import shutil
 import subprocess
 import tempfile
+import sys
 import zipfile
 from pathlib import Path
+
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from tools.package_assets import export_assets
 
 
 def stage(binary, root):
@@ -40,10 +45,12 @@ def stage(binary, root):
             shutil.copytree(licenses, root / "licenses", dirs_exist_ok=True)
     if not list(root.glob("SDL3*.dll")):
         raise SystemExit("no SDL3 DLLs found in executable dependencies")
-    for directory in ("data", "maps", "campaigns", "scripts"):
-        shutil.copytree(directory, root / directory,
-                        ignore=shutil.ignore_patterns("SConscript", "*.py", "*.sh", "*.perl",
-                                                      "production", "README.md"))
+    with tempfile.TemporaryDirectory(prefix="glob2-assets-") as temporary:
+        assets = Path(temporary) / "runtime"
+        export_assets(Path.cwd(), assets, platform="windows")
+        for directory in ("data", "maps", "campaigns", "scripts"):
+            if (assets / directory).is_dir():
+                shutil.copytree(assets / directory, root / directory)
     shutil.copy2("COPYING", root / "COPYING")
     return root
 

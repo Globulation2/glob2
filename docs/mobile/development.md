@@ -887,3 +887,14 @@ API 37 target must add ACCESS_LOCAL_NETWORK and request it before LAN access,
 as described by [Android's local-network permission guide](https://developer.android.com/privacy-and-security/local-network-permission).
 Connection failures point players to local-network permission and certificate
 pairing rather than falling back to plaintext.
+
+## Packaged image assets
+
+Release Android and iOS packages use the shared runtime asset exporter described
+in [the development reference](../development/reference.md#release-asset-and-bundle-sizes).
+It generates verified WebP/PNG assets without editing source artwork. Debug
+packages retain PNGs; both profiles retain existing image-directory override
+precedence. Mobile SDL_image dependencies explicitly enable WebP, so rebuild the
+pinned dependency bundle after this manifest changes. Android indexes and hashes
+the exported payload; retain APK/AAB verification after AAPT packaging and after
+installing an update, which must not keep an obsolete PNG in front of a new WebP.

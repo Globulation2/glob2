@@ -7,9 +7,14 @@ import os
 import re
 import shutil
 import subprocess
+import sys
+import tempfile
 from collections import deque
 from pathlib import Path
 
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from tools.package_assets import export_assets
 
 ASSET_DIRS = ("data", "maps", "campaigns", "scripts")
 SYSTEM_DLLS = {
@@ -47,10 +52,14 @@ def stage(source: Path, executable: Path, runtime: Path, output: Path, sdl_runti
     output.mkdir(parents=True)
     shutil.copy2(executable, output / "glob2.exe")
     for directory in ASSET_DIRS:
-        asset_path = source / directory
-        if not asset_path.is_dir():
-            raise FileNotFoundError(asset_path)
-        shutil.copytree(asset_path, output / directory, ignore=shutil.ignore_patterns("SConscript"))
+        if not (source / directory).is_dir():
+            raise FileNotFoundError(source / directory)
+    with tempfile.TemporaryDirectory(prefix="glob2-assets-") as temporary:
+        assets = Path(temporary) / "runtime"
+        export_assets(source, assets, platform="windows")
+        for directory in ASSET_DIRS:
+            if (assets / directory).is_dir():
+                shutil.copytree(assets / directory, output / directory)
     shutil.copy2(source / "COPYING", output / "COPYING")
     attribution = source / "docs/assets/source-attribution.md"
     shutil.copy2(attribution, output / "source-attribution.md")

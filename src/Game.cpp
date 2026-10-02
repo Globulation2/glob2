@@ -171,7 +171,7 @@ void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 	// saves retain the seed-based initialization used by earlier versions.
 	const bool gameSeedChanged = newGameHeader.getRandomSeed() != gameHeader.getRandomSeed();
 	if (!hasSavedRandomState || !mapHeader.getIsSavedGame() || gameSeedChanged)
-		setSyncRandSeed(newGameHeader.getRandomSeed());
+		syncRandom.seed(newGameHeader.getRandomSeed());
 	if (gameSeedChanged)
 		for (int p=0; p<newGameHeader.getNumberOfPlayers(); ++p)
 			if (players[p] && players[p]->ai)

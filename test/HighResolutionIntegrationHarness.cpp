@@ -205,14 +205,14 @@ public:
 #endif
 				gui.processEvent(&wheel);REQUIRE(gui.orderQueue.size()==orders);
                 gui.camera.setZoom(zoom,300,300);gui.viewportX=gui.camera.tileX();gui.viewportY=gui.camera.tileY();
-                const auto randomState=syncRandEngine();
+                const auto randomState=syncRandEngine();const auto gameRandom=gui.game.syncRandom;
                 gfx->resetDrawCallCount();auto start=std::chrono::steady_clock::now();
                 for(int i=0;i<10;++i){gui.drawAll(0);glFinish();}
                 auto ms=std::chrono::duration<double,std::milli>(std::chrono::steady_clock::now()-start).count()/10;
                 std::cout<<(hd?"HD":"original")<<" gameplay "<<zoom*100<<"%: "<<ms<<" ms, "<<gfx->getDrawCallCount()/10<<" calls, "<<DrawableSurface::allocatedTextureBytes()<<" GPU bytes\n";
                 capture(std::string(hd?"game-hd-":"game-original-")+std::to_string(int(zoom*100)));
                 REQUIRE(gui.game.checkSum(nullptr,nullptr,nullptr,true)==checksum);
-                REQUIRE(syncRandEngine()==randomState);
+                REQUIRE((syncRandEngine()==randomState && gui.game.syncRandom==gameRandom));
                 if(hd && zoom==1.)
                 {
                     const Settings previous=globalContainer->settings;
@@ -222,7 +222,7 @@ public:
                     settings.fullMagicEffects=false; settings.smoothProgressIndicators=false;
                     gui.drawAll(0); capture("game-hd-independent-effects");
                     REQUIRE(gui.game.checkSum(nullptr,nullptr,nullptr,true)==checksum);
-                    REQUIRE(syncRandEngine()==randomState);
+                    REQUIRE((syncRandEngine()==randomState && gui.game.syncRandom==gameRandom));
                     settings=previous;
                 }
                 gui.selectionMode=GameGUI::TOOL_SELECTION;gui.toolManager.activateBuildingTool("explorationflag");

@@ -36,6 +36,7 @@ def classify(paths):
         if path.startswith(("test/fixtures/javascript/", "test/Script", "test/support/ScriptCorpus")) or path in {
             "test/check_javascript.py", "test/check_javascript_corpus.py", "test/check_javascript_evidence.py",
             "test/build_provenance.py", "test/support/TestMain.cpp",
+            "test/ImageAssetTest.cpp",
         }:
             # These cases and fixtures are compiled/executed in the production
             # WebAssembly harness too; native-only CI would leave that boundary untested.

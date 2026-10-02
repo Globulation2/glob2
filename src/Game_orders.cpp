@@ -39,6 +39,7 @@ Building* Game::lookupBuilding(Uint16 gid) const
 
 void Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 {
+	const auto random = bindRandom();
 	assert(order->sender>=0);
 	assert(order->sender<Team::MAX_COUNT);
 	assert(order->sender < gameHeader.getNumberOfPlayers());

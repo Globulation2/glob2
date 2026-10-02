@@ -29,7 +29,7 @@ def build_web(directory, identity, arguments):
     sdl_prefix = output / 'sdl3/prefix'
     build_environment = dict(os.environ)
     # Cache is target/config-specific, including port downloads and compiled system libraries.
-    shared_cache = cache(root, 'emscripten-' + key(root, ['browser/toolchain.json'], PORTS)) if not isolated() else output
+    shared_cache = cache(root, 'emscripten-' + key(root, ['browser/toolchain.json', 'scons/sdl3-versions.json', 'scons/sdl3-vendored.json'], PORTS)) if not isolated() else output
     build_environment['EM_CACHE'] = str(shared_cache / 'cache')
     build_environment['EM_PORTS'] = str(shared_cache / 'ports')
     # emsdk's template derives paths from EM_CONFIG; anchor it to the selected
@@ -69,9 +69,25 @@ def build_web(directory, identity, arguments):
         '-sFORCE_FILESYSTEM', '-lidbfs.js', '-lwebsocket.js',
         "'-sEXPORTED_RUNTIME_METHODS=[\"callMain\",\"FS\"]'",
         '--shell-file', 'browser/shell.html', '--pre-js', 'browser/storage.js', '--pre-js', 'browser/file-selection.js', '--pre-js', 'browser/audio.js'] + PORTS)
+    # Export during the build, not while evaluating SCons or during dry runs.
+    sys_path = __import__('sys').path
+    if str(root) not in sys_path: sys_path.insert(0, str(root))
+    from tools.package_assets import source_files, export_assets
+    asset_root = output / 'runtime-assets'
+    asset_stamp = asset_root.with_suffix('.json')
+    def prepare_assets(target, source, env):
+        export_assets(root, asset_root, platform='web', optimized=identity['mode']=='release')
+        return 0
+    asset_inputs = list(source_files(root, 'web'))
+    assets = env.Command(str(asset_stamp), [str(p) for p in asset_inputs] +
+        ['tools/package_assets.py', 'tools/asset-requirements.txt', Value([identity['mode'], [str(p) for p in asset_inputs]])],
+        Action(prepare_assets, 'Exporting verified browser assets'))
+    env.Precious(assets)  # Keep the ownership audit while an export is rebuilt.
+    if not (asset_root / 'data').is_dir():
+        env.AlwaysBuild(assets)
     for asset_directory in ('data', 'maps', 'campaigns', 'scripts'):
-        env.Append(LINKFLAGS=['--preload-file', asset_directory + '@/' + asset_directory])
-    env.Append(LIBPATH=[str(sdl_prefix / 'lib')], LIBS=['SDL3_ttf', 'SDL3_image', 'SDL3_net', 'SDL3', 'freetype'])
+        env.Append(LINKFLAGS=['--preload-file', str(asset_root / asset_directory) + '@/' + asset_directory])
+    env.Append(LIBPATH=[str(sdl_prefix / 'lib')], LIBS=['SDL3_ttf', 'SDL3_image', 'SDL3_net', 'SDL3', 'freetype', 'webpdemux', 'webpmux', 'webp', 'sharpyuv'])
     env['LINKCOM'] = '${TEMPFILE("$LINK -o $TARGET $LINKFLAGS $__RPATH $SOURCES $_LIBDIRFLAGS $_LIBFLAGS", "$LINKCOMSTR")}'
     def prepare_ports(target, source, env):
         return subprocess.run(
@@ -95,6 +111,7 @@ def build_web(directory, identity, arguments):
     env.Requires(objects, ports)
     env.Depends(objects, str(config))
     program = env.Program(str(output / 'index.html'), objects)
+    env.Depends(program, assets)
     if 'web-tests' in COMMAND_LINE_TARGETS:
         import sys
         sys.path.insert(0, str(root / 'test'))
@@ -117,6 +134,7 @@ def build_web(directory, identity, arguments):
         production = [obj for name, obj in zip(files, objects) if name != 'src/Glob2.cpp']
         production += objects[len(files):]
         harness = tests.Program(str(output / 'script-tests.html'), production + test_objects)
+        env.Depends(harness, assets)
         tests.Depends(harness, [str(p) for directory in ('data', 'maps', 'campaigns', 'scripts', 'test/fixtures', 'games')
                                for p in Path(directory).rglob('*') if p.is_file()])
         tests.SideEffect([str(output / ('script-tests.' + extension)) for extension in ('js', 'wasm', 'data')], harness)

@@ -124,11 +124,18 @@ def main():
     if args.script_tests:
         lines += ['set_target_properties(Glob2 PROPERTIES XCODE_ATTRIBUTE_CLANG_ENABLE_OBJC_ARC YES)']
         lines += ['target_link_options(Glob2 PRIVATE '+cmake_quote('-Wl,-force_load,'+str(output/'lib/libglob2-script-tests.a'))+')']
-    for folder in (('data','maps','campaigns','scripts','games','test/fixtures') if args.script_tests else ('data','maps','campaigns','scripts')):
-        for resource in sorted((ROOT/folder).rglob('*')):
+    sys.path.insert(0, str(ROOT))
+    from tools.package_assets import export_assets
+    asset_root = output/'runtime-assets'
+    export_assets(ROOT, asset_root, platform='ios', optimized=args.release)
+    resource_roots = [(asset_root, folder) for folder in ('data','maps','campaigns','scripts')]
+    if args.script_tests:
+        resource_roots += [(ROOT, folder) for folder in ('games','test/fixtures')]
+    for resource_root, folder in resource_roots:
+        for resource in sorted((resource_root/folder).rglob('*')):
             if resource.is_file():
                 lines.append('target_sources(Glob2 PRIVATE '+cmake_quote(resource)+')')
-                lines.append('set_source_files_properties('+cmake_quote(resource)+' PROPERTIES MACOSX_PACKAGE_LOCATION '+cmake_quote(resource.relative_to(ROOT).parent)+')')
+                lines.append('set_source_files_properties('+cmake_quote(resource)+' PROPERTIES MACOSX_PACKAGE_LOCATION '+cmake_quote(resource.relative_to(resource_root).parent)+')')
     if args.script_tests:
         # Rename CMake target tokens only; resource paths such as data/usl/Glob2
         # are source assets and must keep their names.

@@ -7,6 +7,9 @@ on:
       - 'SConstruct'
       - 'scons/bundle.py'
       - 'scons/addDependentLibsToBundle.py'
+      - 'scons/mac_image_dependency.py'
+      - 'tools/package_assets.py'
+      - 'tools/asset-requirements.txt'
       - 'darwin/**'
   workflow_dispatch:
     inputs:
@@ -54,7 +57,7 @@ jobs:
 
       - name: Install macOS build dependencies
         run: |
-          brew install cmake freetype scons pkgconf    \
+          brew install cmake freetype libpng jpeg-turbo scons pkgconf    \
             libvorbis libogg speex openssl@3 boost fribidi libepoxy
           xcodebuild -version
           sdk_version="$(xcrun --sdk macosx --show-sdk-version)"
@@ -138,6 +141,13 @@ jobs:
           path: artifacts/mac-app-store/source-app.zip
           if-no-files-found: error
           retention-days: 14
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: ${{ github.repository == 'genixpro/glob2-release' }}
+        with:
+          name: mac-app-store-symbols
+          path: build/darwin/client/release/symbols/
+          if-no-files-found: error
+          retention-days: 90
 
   upload:
     name: Sign and upload to App Store Connect

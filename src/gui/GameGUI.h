@@ -9,6 +9,7 @@
 #include <memory>
 #include <optional>
 #include <queue>
+#include <random>
 #include <unordered_map>
 #include <valarray>
 #include <variant>
@@ -728,6 +729,11 @@ private:
 	
 	//! All particles visible on screen
 	ParticleSet particles;
+	//! Presentation-only randomness for eye-candy. Never use syncRand() for visual
+	//! effects: the synchronized RNG belongs to the simulation and its checksums.
+	std::minstd_rand effectsRandom;
+	//! Uniform value in [0, 1] from effectsRandom.
+	float effectsUnit() { return std::uniform_real_distribution<float>(0.f, 1.f)(effectsRandom); }
 	
 	//! Generate new particles if required
 	void generateNewParticles(std::set<Building*> *visibleBuildings);

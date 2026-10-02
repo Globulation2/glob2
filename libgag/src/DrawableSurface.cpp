@@ -335,7 +335,7 @@ namespace GAGCore
 		if (name.size())
 		{
 			SDL_IOStream *imageStream;
-			if ((imageStream = Toolkit::getFileManager()->open(name, "rb")) != NULL)
+			if ((imageStream = Toolkit::getFileManager()->openImage(name)) != NULL)
 			{
 				SDL_Surface *loadedSurface;
 				loadedSurface = IMG_Load_IO(imageStream, 0);
