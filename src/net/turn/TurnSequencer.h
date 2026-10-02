@@ -80,6 +80,9 @@ namespace Turn
 		}
 		/// The peer's transport closed.
 		void onDisconnect(PeerId peer, std::uint64_t nowMicros);
+		/// A transport round trip the host measured on the peer's connection (the online
+		/// relay's WebSocket ping). Telemetry only: it changes nothing the sequencer does.
+		void transportRoundTrip(PeerId peer, std::uint64_t micros);
 		/// Advances the clock: grace expiry, bundles, arbitration timeouts, presence.
 		void update(std::uint64_t nowMicros);
 

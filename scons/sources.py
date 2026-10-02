@@ -697,6 +697,7 @@ RELAY_SOURCES = (
     'net/turn/MatchRecord.cpp',
     'net/turn/TurnMessages.cpp',
     'net/turn/TurnSequencer.cpp',
+    'net/turn/TurnTelemetry.cpp',
 )
 
 RELAY_GAG_SOURCES = (

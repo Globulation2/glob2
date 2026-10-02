@@ -284,6 +284,9 @@ namespace Turn
 			std::uint64_t checksumReports = 0;
 			Histogram reportLatenessTicks; ///< relay tick at arrival - reported tick
 			Histogram lagTicks;            ///< relay tick - client executed tick, at each ping
+			/// Transport round trips the host measured itself (the online relay's WebSocket
+			/// ping, TurnSequencer::transportRoundTrip); empty where it measures none (LAN).
+			Histogram rttMicros;
 			std::uint64_t pings = 0;
 			std::uint64_t connects = 0, disconnects = 0;
 			std::uint64_t graceMicrosTotal = 0, graceMicrosMax = 0;
@@ -319,7 +322,7 @@ namespace Turn
 		std::uint64_t checksumReports = 0, arbitrations = 0, unanimous = 0, majority = 0, flagged = 0, timedOut = 0;
 		std::uint64_t disconnects = 0, graceExpiries = 0, graceMicros = 0, rejoins = 0;
 		std::uint64_t peakPendingBytes = 0;
-		Histogram lagTicks, reportLatenessTicks, deferTicksHistogram;
+		Histogram lagTicks, reportLatenessTicks, deferTicksHistogram, rttMicros;
 		void add(const SequencerTelemetry& match);
 		/// Prometheus text exposition (glob2_relay_net_* metrics).
 		void writePrometheus(std::ostream& out) const;

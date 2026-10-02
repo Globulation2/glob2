@@ -12,6 +12,8 @@
 #include <mutex>
 #include <string>
 
+#include "TurnTelemetry.h"
+
 namespace Relay
 {
 	class RelayMetrics
@@ -48,6 +50,8 @@ namespace Relay
 		/// Labelled counters: tickets rejected by reason, matches ended by reason.
 		void ticketRejected(const std::string& reason);
 		void matchEnded(const std::string& reason);
+		/// Adds a finished match's network telemetry to the glob2_relay_net_* totals.
+		void matchNetwork(const Turn::SequencerTelemetry& telemetry);
 
 		std::string render() const;
 
@@ -55,5 +59,6 @@ namespace Relay
 		mutable std::mutex labelled;
 		std::map<std::string, std::uint64_t> rejectedTickets;
 		std::map<std::string, std::uint64_t> endedMatches;
+		Turn::RelayNetworkTotals network; ///< every finished match of this process
 	};
 }

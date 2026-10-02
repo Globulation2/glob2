@@ -145,6 +145,7 @@ RelayConfig RelayConfig::fromMap(const std::map<std::string, std::string>& value
 	c.graceSeconds = static_cast<unsigned>(r.number("GLOB2_RELAY_GRACE_SECONDS", c.graceSeconds, 1, 86400));
 	c.drainTimeoutSeconds =
 		static_cast<unsigned>(r.number("GLOB2_RELAY_DRAIN_TIMEOUT_SECONDS", c.drainTimeoutSeconds, 0, 7 * 86400));
+	c.rttPingMillis = static_cast<unsigned>(r.number("GLOB2_RELAY_RTT_PING_MS", c.rttPingMillis, 0, 3600000));
 
 	c.jwksFile = r.text("GLOB2_RELAY_JWKS_FILE", "");
 	c.jwksUrl = r.text("GLOB2_RELAY_JWKS_URL", "");

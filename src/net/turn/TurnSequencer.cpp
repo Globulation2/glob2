@@ -34,6 +34,15 @@ nlohmann::json TurnSequencer::networkSummary() const
 	return sequencerSummaryJson(net, humanMask, config.tickRateMilliHz, sentHorizon);
 }
 
+void TurnSequencer::transportRoundTrip(PeerId peer, std::uint64_t micros)
+{
+	const auto it = peers.find(peer);
+	if (it == peers.end())
+		return;
+	if (auto* t = net.seat(it->second.seat))
+		t->rttMicros.add(micros);
+}
+
 void TurnSequencer::notePending()
 {
 	net.peakPendingTicks = std::max<std::uint64_t>(net.peakPendingTicks, pending.size());

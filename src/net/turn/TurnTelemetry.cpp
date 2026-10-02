@@ -748,6 +748,9 @@ json sequencerSummaryJson(const SequencerTelemetry& t, std::uint32_t humanSeatMa
 		};
 		if (seat.leftTick >= 0)
 			entry["connection"]["left_tick"] = seat.leftTick;
+		// Optional (still version 1): only hosts that measure a transport round trip.
+		if (seat.rttMicros.count())
+			entry["rtt_us"] = summarize(seat.rttMicros);
 		seats.push_back(entry);
 	}
 	return {{"schema", "RelayNetworkSummary"},
@@ -789,6 +792,7 @@ void RelayNetworkTotals::add(const SequencerTelemetry& m)
 		rejoins += s.toldToRejoin;
 		lagTicks.merge(s.lagTicks);
 		reportLatenessTicks.merge(s.reportLatenessTicks);
+		rttMicros.merge(s.rttMicros);
 	}
 	arbitrations += m.arbitrations;
 	unanimous += m.unanimous;
@@ -840,6 +844,8 @@ void RelayNetworkTotals::writePrometheus(std::ostream& out) const
 	histogram("checksum_lateness_ticks", "Relay tick at a checksum report's arrival minus its tick.", reportLatenessTicks);
 	histogram("order_defer_ticks", "Ticks an order was deferred beyond the next tick (deferred orders only).",
 	          deferTicksHistogram);
+	histogram("rtt_us", "Round trip to clients in microseconds (the relay's WebSocket ping, GLOB2_RELAY_RTT_PING_MS).",
+	          rttMicros);
 }
 
 // --- Record-derived summary (verify-match) ---

@@ -129,6 +129,7 @@ class RelayMatchTest(unittest.TestCase):
             'GLOB2_RELAY_KEY': RELAY_KEY,
             'GLOB2_RELAY_ID': 'relay-test-1',
             'GLOB2_RELAY_REGION': 'test',
+            'GLOB2_RELAY_RTT_PING_MS': '50',
         })
         fake.wait(lambda p: p.registrations, what='registration')
         registration = fake.registrations[0]
@@ -244,6 +245,26 @@ class RelayMatchTest(unittest.TestCase):
         self.assertEqual(ended['desync'], {'flagged': False, 'minoritySeats': []})
         self.assertEqual(fake.unauthorized, 0)
 
+        # RelayNetworkSummary v1 (docs/development/network-telemetry.md) rides along.
+        network = ended['network']
+        self.assertEqual((network['schema'], network['schema_version']), ('RelayNetworkSummary', 1))
+        self.assertEqual(network['end_tick'], record['endTick'])
+        self.assertEqual([s['seat'] for s in network['seats']], seats)
+        orders_in_record = len([o for _, s, o in recorded if o[:1] != bytes([67])])
+        self.assertGreaterEqual(sum(s['orders']['sequenced'] for s in network['seats']), orders_in_record)
+        self.assertEqual([s['connection']['disconnects'] for s in network['seats']], [0, 1, 0])
+        self.assertTrue(all(s['connection']['left_by_quit'] or s['connection']['left_by_grace']
+                            for s in network['seats']))
+        self.assertTrue(all(s['checksums']['reports'] >= 1 for s in network['seats']))
+        # The relay's own WebSocket ping measured every seat's round trip.
+        for s in network['seats']:
+            self.assertGreater(s['rtt_us']['count'], 0, s)
+            self.assertLess(s['rtt_us']['p95'], 1000000, s)
+        evidence = os.environ.get('GLOB2_RELAY_EVIDENCE_DIR')
+        if evidence:
+            Path(evidence).mkdir(parents=True, exist_ok=True)
+            (Path(evidence) / 'relay-match-ended.json').write_text(json.dumps(ended, indent=2) + '\n')
+
         # A late ticket for the finished match cannot start it again.
         late = relay.client(tickets[0])
         late.wait_for(lambda c: c.of('reject'), what='Reject for ended match')
@@ -257,6 +278,17 @@ class RelayMatchTest(unittest.TestCase):
         self.assertIn('glob2_relay_matches_started_total 1', metrics)
         self.assertIn('glob2_relay_matches_ended_total{reason="completed"} 1', metrics)
         self.assertIn('glob2_relay_uploads_ok_total 1', metrics)
+        # Network totals over finished matches.
+        totals = {line.split(' ')[0]: line.split(' ')[1] for line in metrics.splitlines()
+                  if line.startswith('glob2_relay_net_')}
+        self.assertEqual(int(totals['glob2_relay_net_orders_sequenced_total']),
+                         sum(s['orders']['sequenced'] for s in network['seats']))
+        self.assertEqual(int(totals['glob2_relay_net_disconnects_total']), 1)
+        self.assertEqual(int(totals['glob2_relay_net_rtt_us_count']),
+                         sum(s['rtt_us']['count'] for s in network['seats']))
+        self.assertIn('glob2_relay_net_lag_ticks{quantile="0.95"}', totals)
+        if evidence:
+            (Path(evidence) / 'relay-metrics.txt').write_text(metrics)
         self.assertFalse(list((relay.directory / 'spool').glob('*')), 'spool emptied after upload')
 
     def test_refusals(self):

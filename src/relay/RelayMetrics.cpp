@@ -19,6 +19,12 @@ void RelayMetrics::matchEnded(const std::string& reason)
 	++endedMatches[reason];
 }
 
+void RelayMetrics::matchNetwork(const Turn::SequencerTelemetry& telemetry)
+{
+	std::lock_guard<std::mutex> lock(labelled);
+	network.add(telemetry);
+}
+
 std::string RelayMetrics::render() const
 {
 	std::ostringstream out;
@@ -65,6 +71,7 @@ std::string RelayMetrics::render() const
 	    << "# TYPE glob2_relay_matches_ended_total counter\n";
 	for (const auto& r : endedMatches)
 		out << "glob2_relay_matches_ended_total{reason=\"" << r.first << "\"} " << r.second << '\n';
+	network.writePrometheus(out);
 	return out.str();
 }
 }
