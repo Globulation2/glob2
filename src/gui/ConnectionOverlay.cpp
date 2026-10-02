@@ -68,16 +68,34 @@ void dot(int x, int y, int radius, const Color &color)
 	globalContainer->gfx->drawFilledRect(x - radius / 2, y - radius / 2, radius, radius, color);
 }
 
+// Text is drawn at the touch HUD's scale on phones (as TouchReadout does).
+double textScale = 1;
+int tw(Font *font, const std::string &value)
+{
+	return int(font->getStringWidth(value) * textScale);
+}
+int th(Font *font, const std::string &value)
+{
+	return int(font->getStringHeight(value) * textScale);
+}
+
 void textAt(int x, int y, Font *font, const std::string &value, const Color &color)
 {
 	font->pushStyle(Font::Style(Font::STYLE_NORMAL, color));
-	globalContainer->gfx->drawString(x, y, font, value);
+	if (textScale != 1)
+	{
+		globalContainer->gfx->setUITransform(textScale, x, y);
+		globalContainer->gfx->drawString(0, 0, font, value);
+		globalContainer->gfx->setUITransform();
+	}
+	else
+		globalContainer->gfx->drawString(x, y, font, value);
 	font->popStyle();
 }
 
 void textRight(int right, int y, Font *font, const std::string &value, const Color &color)
 {
-	textAt(right - font->getStringWidth(value), y, font, value, color);
+	textAt(right - tw(font, value), y, font, value, color);
 }
 
 // Word wrap to a pixel width.
@@ -89,7 +107,7 @@ std::vector<std::string> wrap(Font *font, const std::string &value, int width)
 		if (!word.empty())
 		{
 			const std::string candidate = line.empty() ? word : line + " " + word;
-			if (!line.empty() && font->getStringWidth(candidate) > width)
+			if (!line.empty() && tw(font, candidate) > width)
 			{
 				lines.push_back(line);
 				line = word;
@@ -192,6 +210,7 @@ void ConnectionOverlay::draw(bool touch, SDL_Rect area, double unit)
 		return;
 	snapshot = source();
 	observe(snapshot);
+	textScale = touch ? std::max(1.0, unit) : 1.0;
 	globalContainer->gfx->setClipRect();
 	drawPanel(touch, area, unit);
 	if (snapshot.card != ConnectionSnapshot::Card::None)
@@ -203,6 +222,7 @@ void ConnectionOverlay::draw(bool touch, SDL_Rect area, double unit)
 		drawDetails(touch, area, unit);
 	else
 		closeRect = leaveRect = {};
+	textScale = 1;
 }
 
 void ConnectionOverlay::drawPanel(bool touch, SDL_Rect area, double unit)
@@ -216,7 +236,7 @@ void ConnectionOverlay::drawPanel(bool touch, SDL_Rect area, double unit)
 	for (const auto &row : snapshot.rows)
 		humans += row.state != ConnectionRow::State::AI;
 	const int pad = 6 * u;
-	const int lineH = std::max(font->getStringHeight("Ag"), int(18 * unit));
+	const int lineH = std::max(th(font, "Ag"), int(18 * unit));
 	const int x = area.x + (touch ? 8 * u : 12);
 	const int y = area.y + (touch ? 6 * u : 8);
 	// Phones beyond four people: a grid of dots and numbers that never grows into the map.
@@ -234,12 +254,12 @@ void ConnectionOverlay::drawPanel(bool touch, SDL_Rect area, double unit)
 			const int cx = x + pad + int(i % columns) * cellW, cy = y + pad + int(i / columns) * cellH;
 			gfx->drawFilledRect(cx, cy + cellH / 2 - 5 * u, 10 * u, 10 * u, row.color);
 			dot(cx + 18 * u, cy + cellH / 2, 3 * u, stateColor(row));
-			textAt(cx + 26 * u, cy + (cellH - small->getStringHeight("0")) / 2, small, latencyText(row, true), row.local ? colors.ink : colors.muted);
+			textAt(cx + 26 * u, cy + (cellH - th(small, "0")) / 2, small, latencyText(row, true), row.local ? colors.ink : colors.muted);
 		}
 		return;
 	}
 	const int width = touch ? int(176 * unit) : 262;
-	const int header = touch ? 0 : small->getStringHeight("Ag") + 4;
+	const int header = touch ? 0 : th(small, "Ag") + 4;
 	panelRect = {x, y, width, header + int(snapshot.rows.size()) * lineH + 2 * pad};
 	gfx->drawFilledRect(panelRect.x, panelRect.y, panelRect.w, panelRect.h, colors.paper);
 	gfx->drawRect(panelRect.x, panelRect.y, panelRect.w, panelRect.h, colors.edge);
@@ -254,7 +274,7 @@ void ConnectionOverlay::drawPanel(bool touch, SDL_Rect area, double unit)
 	{
 		if (row.local)
 			gfx->drawFilledRect(x + 1, cy, width - 2, lineH, colors.own);
-		const int textY = cy + (lineH - font->getStringHeight("Ag")) / 2;
+		const int textY = cy + (lineH - th(font, "Ag")) / 2;
 		const int swatch = touch ? 10 * u : 10;
 		gfx->drawFilledRect(x + pad, cy + (lineH - swatch) / 2, swatch, swatch, row.color);
 		std::string name = row.local && touch ? text("[conn you]") : row.local ? text("[conn you %0]", row.name) : row.name;
@@ -264,10 +284,10 @@ void ConnectionOverlay::drawPanel(bool touch, SDL_Rect area, double unit)
 			name += " · " + text("[conn unstable]");
 		const int nameX = x + pad + swatch + 6;
 		const std::string value = latencyText(row, touch);
-		const int valueW = font->getStringWidth(value);
+		const int valueW = tw(font, value);
 		// Ellipsize names that would run into the state column.
 		const int nameMax = width - (nameX - x) - pad - valueW - (touch ? 14 * u : 70);
-		if (font->getStringWidth(name) > nameMax)
+		if (tw(font, name) > nameMax)
 		{
 			// Cut whole UTF-8 characters until the name and an ellipsis fit.
 			std::string base = name;
@@ -277,7 +297,7 @@ void ConnectionOverlay::drawPanel(bool touch, SDL_Rect area, double unit)
 				while (!base.empty() && (static_cast<unsigned char>(base.back()) & 0xC0) == 0x80)
 					base.pop_back();
 				name = base + "…";
-			} while (!base.empty() && font->getStringWidth(name) > nameMax);
+			} while (!base.empty() && tw(font, name) > nameMax);
 		}
 		textAt(nameX, textY, font, name, row.state == ConnectionRow::State::Left ? colors.muted : colors.ink);
 		const Color state = stateColor(row);
@@ -302,21 +322,21 @@ void ConnectionOverlay::drawDetails(bool touch, SDL_Rect area, double unit)
 	const int u = std::max(1, int(std::lround(unit)));
 	const int width = std::min(area.w - 24 * u, touch ? int(360 * unit) : 440);
 	const int pad = 12 * u;
-	const int lineH = std::max(font->getStringHeight("Ag") + 6, int(22 * unit));
+	const int lineH = std::max(th(font, "Ag") + 6, int(22 * unit));
 	std::string explanation = text("[conn delay explanation]");
 	if (!snapshot.relay.empty())
 		explanation += " " + GAGCore::FormattableString(text("[conn relay %0 %1]")).arg(snapshot.relay).arg(snapshot.rttMs >= 0 ? std::to_string(snapshot.rttMs) : "–");
 	const auto lines = wrap(small, explanation, width - 2 * pad);
-	const int textH = small->getStringHeight("Ag") + 2;
+	const int textH = th(small, "Ag") + 2;
 	const int buttonH = int((touch ? 44 : 28) * (touch ? unit : 1));
-	const int height = pad + font->getStringHeight("Ag") + 8 + int(snapshot.rows.size()) * lineH + 8 + int(lines.size()) * textH + 10 + buttonH + pad;
+	const int height = pad + th(font, "Ag") + 8 + int(snapshot.rows.size()) * lineH + 8 + int(lines.size()) * textH + 10 + buttonH + pad;
 	const int x = area.x + (area.w - width) / 2;
 	const int y = touch ? area.y + area.h - height - 8 * u : area.y + (area.h - height) / 2;
 	gfx->drawFilledRect(x, y, width, height, colors.paper.applyAlpha(245));
 	gfx->drawRect(x, y, width, height, touch ? colors.edge : Color(200, 170, 80));
 	int cy = y + pad;
 	textAt(x + pad, cy, font, text("[conn connections]"), colors.ink);
-	cy += font->getStringHeight("Ag") + 8;
+	cy += th(font, "Ag") + 8;
 	for (const auto &row : snapshot.rows)
 	{
 		gfx->drawFilledRect(x + pad, cy + lineH / 2 - 5, 10, 10, row.color);
@@ -327,7 +347,7 @@ void ConnectionOverlay::drawDetails(bool touch, SDL_Rect area, double unit)
 			state += " · " + clock(row.graceSeconds);
 		textAt(x + width / 2, cy + 5, small, state, stateColor(row));
 		if (row.state != ConnectionRow::State::AI)
-			textRight(x + width - pad, cy + 3, font, row.latencyMs >= 0 ? std::to_string(row.latencyMs) + " ms" : "–", colors.ink);
+			textRight(x + width - pad, cy + 3, font, row.latencyMs >= 0 && (row.state == ConnectionRow::State::Connected || row.state == ConnectionRow::State::Slow) ? std::to_string(row.latencyMs) + " ms" : "–", colors.ink);
 		cy += lineH;
 	}
 	cy += 8;
@@ -338,11 +358,11 @@ void ConnectionOverlay::drawDetails(bool touch, SDL_Rect area, double unit)
 	}
 	cy += 10;
 	const std::string close = text("[Close]");
-	const int buttonW = std::max(96, font->getStringWidth(close) + 32);
+	const int buttonW = std::max(96, tw(font, close) + 32);
 	closeRect = {x + width - pad - buttonW, cy, buttonW, buttonH};
 	gfx->drawFilledRect(closeRect.x, closeRect.y, closeRect.w, closeRect.h, touch ? InGameTouchTheme::field : Color(60, 50, 20, 230));
 	gfx->drawRect(closeRect.x, closeRect.y, closeRect.w, closeRect.h, touch ? colors.edge : Color(220, 190, 90));
-	textAt(closeRect.x + (buttonW - font->getStringWidth(close)) / 2, closeRect.y + (buttonH - font->getStringHeight(close)) / 2, font, close, colors.ink);
+	textAt(closeRect.x + (buttonW - tw(font, close)) / 2, closeRect.y + (buttonH - th(font, close)) / 2, font, close, colors.ink);
 }
 
 void ConnectionOverlay::drawCard(bool touch, SDL_Rect area, double unit)
@@ -383,10 +403,10 @@ void ConnectionOverlay::drawCard(bool touch, SDL_Rect area, double unit)
 	const int pad = 16 * u;
 	const auto bodyLines = wrap(small, body, width - 2 * pad);
 	const auto lineLines = wrap(font, line, width - 2 * pad);
-	const int textH = small->getStringHeight("Ag") + 2, lineH = font->getStringHeight("Ag") + 2;
+	const int textH = th(small, "Ag") + 2, lineH = th(font, "Ag") + 2;
 	const int buttonH = touch ? int(44 * unit) : 28;
 	const int barH = 10 * u;
-	int height = pad + title->getStringHeight("Ag") + 6 + int(lineLines.size()) * lineH + 6 + int(bodyLines.size()) * textH + pad;
+	int height = pad + th(title, "Ag") + 6 + int(lineLines.size()) * lineH + 6 + int(bodyLines.size()) * textH + pad;
 	if (showProgress)
 		height += barH + textH + 12;
 	if (showLeave)
@@ -396,7 +416,7 @@ void ConnectionOverlay::drawCard(bool touch, SDL_Rect area, double unit)
 	gfx->drawRect(x, y, width, height, touch ? colors.edge : Color(200, 170, 80));
 	int cy = y + pad;
 	textAt(x + pad, cy, title, heading, touch ? colors.ink : Color(240, 210, 120));
-	cy += title->getStringHeight("Ag") + 6;
+	cy += th(title, "Ag") + 6;
 	for (const auto &l : lineLines)
 	{
 		textAt(x + pad, cy, font, l, colors.ink);
@@ -425,11 +445,11 @@ void ConnectionOverlay::drawCard(bool touch, SDL_Rect area, double unit)
 	{
 		cy += 10;
 		const std::string label = text("[conn leave match]");
-		const int buttonW = std::max(120, font->getStringWidth(label) + 32);
+		const int buttonW = std::max(120, tw(font, label) + 32);
 		leaveRect = {x + width - pad - buttonW, cy, buttonW, buttonH};
 		gfx->drawFilledRect(leaveRect.x, leaveRect.y, leaveRect.w, leaveRect.h, touch ? InGameTouchTheme::field : Color(60, 50, 20, 230));
 		gfx->drawRect(leaveRect.x, leaveRect.y, leaveRect.w, leaveRect.h, touch ? colors.edge : Color(220, 190, 90));
-		textAt(leaveRect.x + (buttonW - font->getStringWidth(label)) / 2, leaveRect.y + (buttonH - font->getStringHeight(label)) / 2, font, label, colors.ink);
+		textAt(leaveRect.x + (buttonW - tw(font, label)) / 2, leaveRect.y + (buttonH - th(font, label)) / 2, font, label, colors.ink);
 	}
 }
 

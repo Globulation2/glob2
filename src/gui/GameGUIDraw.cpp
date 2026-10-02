@@ -693,9 +693,15 @@ void GameGUI::drawAll(int team)
 		SDL_Rect area{0, 16, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-16};
 		if (touch->usesHUD())
 		{
-			// Under the status strip, away from the thumb corner.
+			// Under the status strip, away from the thumb corner (layout is in drawable pixels).
 			const auto ui = touch->hudLayout();
-			area = {int(ui.world.x*unit), int((ui.status.y+ui.status.h)*unit), int(ui.world.w*unit), int((ui.world.y+ui.world.h-ui.status.y-ui.status.h)*unit)};
+			area = {int(ui.world.x), int(ui.status.y+ui.status.h), int(ui.world.w), int(ui.world.y+ui.world.h-ui.status.y-ui.status.h)};
+			// Narrow portrait phones wrap the status strip onto a second row.
+			if (ui.world.h > ui.world.w)
+			{
+				area.y += int(28*unit);
+				area.h -= int(28*unit);
+			}
 		}
 		connectionOverlay->draw(touch->usesHUD(), area, unit);
 	}

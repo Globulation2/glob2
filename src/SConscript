@@ -72,6 +72,9 @@ if not env['server']:
     lan_sources += local.Object('LANSessionHarness.o', '#test/LANSessionHarness.cpp')
     lan_test = local.Program('LANSessionHarness', lan_sources)
     local.Alias('lan-test', lan_test)
+    online_play_test = local.Program('OnlinePlayHarness', [strict_objects.get(source, source) for source in source_files if source != 'Glob2.cpp']
+                                     + local.Object('OnlinePlayHarness.o', '#test/OnlinePlayHarness.cpp'))
+    local.Alias('online-play-test', online_play_test)
 
 # Twelve-team sprite benchmark; not part of the default build.
 if not env['server']:

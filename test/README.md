@@ -336,6 +336,11 @@ restarts and rejoins by name, the host leaving, identical per-tick checksums and
 verified match record. Its `[benchmark]` case measures input delay
 (`docs/multiplayer/lan-playtest.md`).
 
+`OnlinePlayHarness` (`scons release=1 server=0 online-play-test`) plays an online
+room through the real hub, Room, starting and results screens against a live
+instance in a host and a guest process; see "End-to-end check" in
+[docs/multiplayer/client.md](../docs/multiplayer/client.md).
+
 For two physical machines, run these from each machine's repository root, using
 absolute capture prefixes whose parent directories already exist:
 
