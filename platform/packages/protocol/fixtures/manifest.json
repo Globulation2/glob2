@@ -360,6 +360,25 @@
       "note": "Counters are non-negative integers."
     },
     {
+      "file": "valid/ClientNetworkSummary/online-seat.json",
+      "schema": "ClientNetworkSummary",
+      "valid": true,
+      "note": "A client summary as the engine writes it next to the replay. Not uploaded anywhere."
+    },
+    {
+      "file": "valid/ClientNetworkSummary/without-series.json",
+      "schema": "ClientNetworkSummary",
+      "valid": true,
+      "note": "GLOB2_NET_SUMMARY leaves the series out; order_validation is null without the order check."
+    },
+    {
+      "file": "invalid/ClientNetworkSummary/unknown-transport.json",
+      "schema": "ClientNetworkSummary",
+      "valid": false,
+      "stage": "schema",
+      "note": "transport is lan or online."
+    },
+    {
       "file": "valid/RelayRecordReceipt/stored.json",
       "schema": "RelayRecordReceipt",
       "valid": true,
