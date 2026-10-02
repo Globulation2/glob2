@@ -52,6 +52,7 @@ ENGINE_TESTS = [
     'MapGradientInvalidationTest.cpp',
     ('NicowarFarmingHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     'RuntimeContinuationTest.cpp',
+    'SharedWorkerLifecycleTest.cpp',
     'TrappedUnitLifecycleTest.cpp',
     'UnitContinuationHarness.cpp',
     'SavegameSafetyHarness.cpp',

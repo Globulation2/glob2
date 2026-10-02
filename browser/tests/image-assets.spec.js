@@ -1,8 +1,9 @@
 const {test, expect} = require('@playwright/test');
+const {openRuntimeHost} = require('./runtime-host');
 
 test('WebAssembly decodes exact WebP pixels and preserves image overrides', async ({page}) => {
   test.setTimeout(180000);
-  await page.route('**/image-assets.html', route => route.fulfill({contentType:'text/html', body:`
+  await openRuntimeHost(page, `
     <!doctype html><canvas id="canvas"></canvas><script>
     window.imageResult=null;
     var Module={noInitialRun:true,canvas:document.getElementById('canvas'),
@@ -13,14 +14,13 @@ test('WebAssembly decodes exact WebP pixels and preserves image overrides', asyn
         ENV.GLOB2_TEST_SOURCE_ROOT='/';
         ENV.GLOB2_TEST_ARTIFACTS_ROOT='/tmp/image-evidence';
       }],
-      onRuntimeInitialized(){
+      async onRuntimeInitialized(){
         try {
-          const code=Module.callMain(['--test-suite=ImageAssets','--reporters=junit','--out=/tmp/image-tests.xml']);
+          const code=await Module.start(['--test-suite=ImageAssets','--reporters=junit','--out=/tmp/image-tests.xml']);
           window.imageResult={code:code??0,report:FS.readFile('/tmp/image-tests.xml',{encoding:'utf8'})};
         } catch(error){window.imageResult={error:String(error)};}
       }};
-    </script><script src="/script-tests.js"></script>`}));
-  await page.goto('/image-assets.html');
+    </script><script src="/script-tests.js"></script>`);
   await page.waitForFunction(() => window.imageResult !== null);
   const result=await page.evaluate(() => window.imageResult);
   expect(result.error).toBeUndefined();

@@ -35,6 +35,44 @@ class BrowserPackageTests(unittest.TestCase):
         self.assertEqual(version, module.package(self.source, self.output))
         module.verify(self.output)
 
+    def threaded_source(self):
+        (self.source / "index.html").write_text('<script src="loader.js"></script>')
+        (self.source / "loader.js").write_text('/* capability loader */')
+        thread = self.source / "threaded"
+        thread.mkdir()
+        for ext in ("js", "wasm", "data"):
+            (thread / ("index." + ext)).write_bytes((self.source / ("index." + ext)).read_bytes())
+        return thread
+
+    def test_dual_runtime_references_and_version_include_threaded_binary(self):
+        thread = self.threaded_source()
+        version = module.package(self.source, self.output)
+        module.verify(self.output)
+        html = (self.output / "index.html").read_text()
+        self.assertIn(f'threaded/index-{version}.js', html)
+        self.assertIn(f'loader-{version}.js', html)
+        js = (self.output / f'threaded/index-{version}.js').read_text()
+        self.assertIn(f'index-{version}.wasm', js)
+        self.assertIn(f'index-{version}.data', js)
+        self.assertEqual(version, module.package(self.source, self.output))
+        (thread / "index.wasm").write_bytes(b"changed worker binary")
+        self.assertNotEqual(version, module.package(self.source, self.output))
+        module.verify(self.output)
+
+    def test_dual_runtime_rejects_different_assets_and_missing_worker_sidecar(self):
+        thread = self.threaded_source()
+        version = module.package(self.source, self.output)
+        missing = f'threaded/index-{version}.wasm.gz'
+        (self.output / missing).unlink()
+        sums = self.output / "SHA256SUMS"
+        sums.write_text(''.join(line+'\n' for line in sums.read_text().splitlines()
+                                if not line.endswith('  '+missing)))
+        with self.assertRaises(ValueError):
+            module.verify(self.output)
+        (thread / "index.data").write_bytes(b"different assets")
+        with self.assertRaises(ValueError):
+            module.package(self.source, self.output)
+
     def test_stale_assets_removed(self):
         old = module.package(self.source, self.output)
         (self.source / "index.data").write_bytes(b"changed")

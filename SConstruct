@@ -416,7 +416,8 @@ def main():
     if isDarwinPlatform and env['release'] and not server_only and any(
             target in COMMAND_LINE_TARGETS for target in ('bundle', 'package')) and not GetOption('clean') and not GetOption('no_exec'):
         from mac_image_dependency import ensure
-        image_environment = dict(env["ENV"])
+        image_environment = dict(os.environ)
+        image_environment.update(env["ENV"])
         if sdl_prefix:
             image_environment["GLOB2_SDL3_PREFIX"] = sdl_prefix
         image_prefix = ensure(Path.cwd(), jobs=2, environment=image_environment)

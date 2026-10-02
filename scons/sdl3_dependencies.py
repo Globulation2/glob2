@@ -35,12 +35,12 @@ def patch_image_exports(source):
     script.write_text(contents.replace('SHELL:-Wl,-exported_symbols_list,', 'LINKER:-exported_symbols_list,'))
 
 
-def build(prefix, work, jobs=2, emscripten=None, environment=None):
+def build(prefix, work, jobs=2, emscripten=None, environment=None, threaded=False):
     prefix, work = Path(prefix).resolve(), Path(work).resolve()
     versions = json.loads(LOCK.read_text())
     if emscripten:
         versions = json.loads(LOCK.with_name('sdl3-vendored.json').read_text()) | versions
-    identity = {'configuration': 6, 'versions': versions, 'emscripten': str(emscripten) if emscripten else None,
+    identity = {'configuration': 7, 'threaded': threaded, 'versions': versions, 'emscripten': str(emscripten) if emscripten else None,
                 'platform': platform.platform(), 'machine': platform.machine()}
     manifest = prefix / 'sdl3-manifest.json'
     libraries = ('SDL3', 'SDL3_image', 'SDL3_ttf', 'SDL3_net')
@@ -91,7 +91,10 @@ def build(prefix, work, jobs=2, emscripten=None, environment=None):
             command += ['-DCMAKE_FIND_ROOT_PATH=' + str(prefix),
                         '-DSDL3_DIR=' + str(prefix / 'lib/cmake/SDL3'),
                         '-DFT_DISABLE_ZLIB=ON', '-DFT_DISABLE_BZIP2=ON', '-DFT_DISABLE_PNG=ON',
-                        '-DFT_DISABLE_BROTLI=ON', '-DFT_DISABLE_HARFBUZZ=ON', '-DSDL_PTHREADS=OFF',
+                        '-DFT_DISABLE_BROTLI=ON', '-DFT_DISABLE_HARFBUZZ=ON',
+                        '-DSDL_PTHREADS=' + ('ON' if threaded else 'OFF'),
+                        '-DCMAKE_C_FLAGS=' + ('-pthread' if threaded else ''),
+                        '-DCMAKE_CXX_FLAGS=' + ('-pthread' if threaded else ''),
                         '-DBUILD_SHARED_LIBS=OFF', '-DSDL_SHARED=OFF', '-DSDL_STATIC=ON',
                         '-DSDLTTF_VENDORED=OFF', '-DSDLTTF_HARFBUZZ=OFF']
         subprocess.run(command, env=env, check=True)

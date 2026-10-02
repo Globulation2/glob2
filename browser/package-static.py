@@ -25,6 +25,15 @@ def package(source, destination):
         ext: (source / f"index.{ext}").read_bytes()
         for ext in ("html", "js", "wasm", "data")
     }
+    threaded = 'src="loader.js"' in files["html"].decode()
+    if threaded:
+        files["loader"] = (source / "loader.js").read_bytes()
+        for ext in ("js", "wasm"):
+            files["threaded/" + ext] = (
+                source / "threaded" / ("index." + ext)
+            ).read_bytes()
+        if (source / "threaded/index.data").read_bytes() != files["data"]:
+            raise ValueError("Threaded and serial runtimes must share identical assets")
     version = hashlib.sha256(POLICY + b"".join(files.values())).hexdigest()[:16]
     names = {ext: f"index-{version}.{ext}" for ext in ("js", "wasm", "data")}
     script = files["js"].decode()
@@ -32,7 +41,7 @@ def package(source, destination):
         script = script.replace(f'"index.{ext}"', f'"{names[ext]}"')
     html = files["html"].decode().replace('src="index.js"', f'src="{names["js"]}"')
     html = html.replace("src=index.js>", f'src="{names["js"]}">')
-    if names["js"] not in html:
+    if not threaded and names["js"] not in html:
         raise ValueError("Expected Emscripten script tag")
     contents = {
         "index.html": html.encode(),
@@ -40,12 +49,28 @@ def package(source, destination):
         names["wasm"]: files["wasm"],
         names["data"]: files["data"],
     }
+    if threaded:
+        loader = f"loader-{version}.js"
+        # The runtime map is data, so loader selection and fallback remain shared.
+        mapping = {"serial": names["js"], "threaded": "threaded/" + names["js"]}
+        tag = '<script>Module.glob2RuntimeFiles=' + json.dumps(mapping) + ';</script>'
+        contents["index.html"] = html.replace(
+            '<script src="loader.js"></script>',
+            tag + f'<script src="{loader}"></script>',
+        ).encode()
+        contents[loader] = files["loader"]
+        thread_script = files["threaded/js"].decode()
+        for ext in ("wasm", "data"):
+            thread_script = thread_script.replace(f'"index.{ext}"', f'"{names[ext]}"')
+        contents["threaded/" + names["js"]] = thread_script.encode()
+        contents["threaded/" + names["wasm"]] = files["threaded/wasm"]
     destination.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(
         prefix="browser-static-", dir=destination.parent
     ) as temporary:
         stage = Path(temporary)
         for name, data in contents.items():
+            (stage / name).parent.mkdir(parents=True, exist_ok=True)
             (stage / name).write_bytes(data)
             stream = io.BytesIO()
             with gzip.GzipFile(
@@ -61,6 +86,7 @@ def package(source, destination):
                 {
                     "policy": POLICY.decode().rstrip("\0"),
                     "version": version,
+                    "threaded": threaded,
                 }
             )
             + "\n",
@@ -68,8 +94,10 @@ def package(source, destination):
         )
         (stage / "SHA256SUMS").write_text(
             "".join(
-                f"{hashlib.sha256(p.read_bytes()).hexdigest()}  {p.name}\n"
-                for p in sorted(stage.iterdir())
+                f"{hashlib.sha256(p.read_bytes()).hexdigest()}  "
+                f"{p.relative_to(stage).as_posix()}\n"
+                for p in sorted(stage.rglob("*"))
+                if p.is_file()
             ),
             encoding="utf-8",
         )
@@ -107,11 +135,19 @@ def verify(directory):
     expected = {}
     for line in (directory / "SHA256SUMS").read_text().splitlines():
         digest, name = line.split("  ", 1)
-        if Path(name).name != name or name in expected:
+        path = Path(name)
+        if (
+            path.is_absolute()
+            or ".." in path.parts
+            or path.as_posix() != name
+            or name in expected
+        ):
             raise ValueError("Invalid checksum entry")
         expected[name] = digest
     actual = {
-        p.name for p in directory.iterdir() if p.is_file() and p.name != "SHA256SUMS"
+        p.relative_to(directory).as_posix()
+        for p in directory.rglob("*")
+        if p.is_file() and p != directory / "SHA256SUMS"
     }
     if actual != set(expected):
         raise ValueError("Static package contains unexpected or missing files")
@@ -133,6 +169,10 @@ def verify(directory):
     names = ["index.html"] + [
         f"index-{marker['version']}.{ext}" for ext in ("js", "wasm", "data")
     ]
+    if marker.get("threaded"):
+        names += [f"loader-{marker['version']}.js"] + [
+            f"threaded/index-{marker['version']}.{ext}" for ext in ("js", "wasm")
+        ]
     required = {MARKER, *names, *(name + ".gz" for name in names)}
     if set(expected) != required:
         raise ValueError(
