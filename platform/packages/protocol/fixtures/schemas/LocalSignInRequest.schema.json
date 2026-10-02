@@ -1,15 +1,22 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "glob2-protocol:GuestSignInRequest",
-  "title": "GuestSignInRequest",
+  "$id": "glob2-protocol:LocalSignInRequest",
+  "title": "LocalSignInRequest",
   "type": "object",
   "required": [
+    "username",
+    "password",
     "platform"
   ],
   "properties": {
-    "deviceCredential": {
+    "username": {
       "type": "string",
-      "pattern": "^[A-Za-z0-9_-]{43}$"
+      "pattern": "^[A-Za-z0-9._-]{3,32}$"
+    },
+    "password": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
     },
     "platform": {
       "anyOf": [
@@ -33,6 +40,5 @@
       "description": "Kind of game client."
     }
   },
-  "additionalProperties": false,
-  "description": "Signs in a guest. Without a device credential a new guest account (with a generated Guest-NNNN name) is created and its credential returned once."
+  "additionalProperties": false
 }

@@ -2,6 +2,14 @@
   "description": "Contract fixtures generated from packages/protocol (npm run fixtures). Do not edit by hand.",
   "formatVersion": 1,
   "schemas": {
+    "AccessTokenClaims": "schemas/AccessTokenClaims.schema.json",
+    "AccessTokenHeader": "schemas/AccessTokenHeader.schema.json",
+    "AdminAccount": "schemas/AdminAccount.schema.json",
+    "AdminAccountList": "schemas/AdminAccountList.schema.json",
+    "AdminBanRequest": "schemas/AdminBanRequest.schema.json",
+    "AdminMuteRequest": "schemas/AdminMuteRequest.schema.json",
+    "AdminRenameRequest": "schemas/AdminRenameRequest.schema.json",
+    "AdminRoleRequest": "schemas/AdminRoleRequest.schema.json",
     "AuthTokens": "schemas/AuthTokens.schema.json",
     "CreateMapRequest": "schemas/CreateMapRequest.schema.json",
     "EngineJob": "schemas/EngineJob.schema.json",
@@ -11,8 +19,11 @@
     "GenerateMapResult": "schemas/GenerateMapResult.schema.json",
     "GeneratorDescriptor": "schemas/GeneratorDescriptor.schema.json",
     "GuestSignInRequest": "schemas/GuestSignInRequest.schema.json",
+    "IdentityConflict": "schemas/IdentityConflict.schema.json",
     "InstanceInfo": "schemas/InstanceInfo.schema.json",
     "LeaderboardPage": "schemas/LeaderboardPage.schema.json",
+    "LocalRegisterRequest": "schemas/LocalRegisterRequest.schema.json",
+    "LocalSignInRequest": "schemas/LocalSignInRequest.schema.json",
     "MapInfo": "schemas/MapInfo.schema.json",
     "MapList": "schemas/MapList.schema.json",
     "MapReportRequest": "schemas/MapReportRequest.schema.json",
@@ -26,11 +37,14 @@
     "MatchSummary": "schemas/MatchSummary.schema.json",
     "MatchTicketClaims": "schemas/MatchTicketClaims.schema.json",
     "MatchTicketHeader": "schemas/MatchTicketHeader.schema.json",
+    "PlatformJwks": "schemas/PlatformJwks.schema.json",
     "PublicAccount": "schemas/PublicAccount.schema.json",
     "RealtimeAuthHandoffBeginParams": "schemas/RealtimeAuthHandoffBeginParams.schema.json",
     "RealtimeAuthHandoffBeginResult": "schemas/RealtimeAuthHandoffBeginResult.schema.json",
     "RealtimeAuthHandoffCancelParams": "schemas/RealtimeAuthHandoffCancelParams.schema.json",
     "RealtimeAuthHandoffCancelResult": "schemas/RealtimeAuthHandoffCancelResult.schema.json",
+    "RealtimeAuthHandoffResumeParams": "schemas/RealtimeAuthHandoffResumeParams.schema.json",
+    "RealtimeAuthHandoffResumeResult": "schemas/RealtimeAuthHandoffResumeResult.schema.json",
     "RealtimeEvent": "schemas/RealtimeEvent.schema.json",
     "RealtimeEventAuthHandoffCompleted": "schemas/RealtimeEventAuthHandoffCompleted.schema.json",
     "RealtimeEventAuthHandoffFailed": "schemas/RealtimeEventAuthHandoffFailed.schema.json",
@@ -71,6 +85,8 @@
     "RealtimeSessionAuthenticateResult": "schemas/RealtimeSessionAuthenticateResult.schema.json",
     "RealtimeSessionHelloParams": "schemas/RealtimeSessionHelloParams.schema.json",
     "RealtimeSessionHelloResult": "schemas/RealtimeSessionHelloResult.schema.json",
+    "RealtimeSessionPingParams": "schemas/RealtimeSessionPingParams.schema.json",
+    "RealtimeSessionPingResult": "schemas/RealtimeSessionPingResult.schema.json",
     "RefreshRequest": "schemas/RefreshRequest.schema.json",
     "RelayHeartbeat": "schemas/RelayHeartbeat.schema.json",
     "RelayHeartbeatResponse": "schemas/RelayHeartbeatResponse.schema.json",
@@ -356,7 +372,7 @@
       "file": "valid/RealtimeEventAuthHandoffCompleted/completed.json",
       "schema": "RealtimeEventAuthHandoffCompleted",
       "valid": true,
-      "note": "Sign-in pushed to the waiting socket."
+      "note": "Sign-in pushed to the waiting socket, switching to the identity's account."
     },
     {
       "file": "valid/RealtimeRoomJoinParams/by-code.json",
@@ -438,6 +454,51 @@
       "schema": "LeaderboardPage",
       "valid": true,
       "note": "A ladder with a player and an AI entity."
+    },
+    {
+      "file": "valid/AccessTokenClaims/guest.json",
+      "schema": "AccessTokenClaims",
+      "valid": true,
+      "note": "Claims of a guest access token."
+    },
+    {
+      "file": "invalid/AccessTokenClaims/ticket-audience.json",
+      "schema": "AccessTokenClaims",
+      "valid": false,
+      "stage": "schema",
+      "note": "An access token never carries the relay audience."
+    },
+    {
+      "file": "valid/LocalRegisterRequest/upgrade.json",
+      "schema": "LocalRegisterRequest",
+      "valid": true,
+      "note": "A local username and password (only on instances that enable local accounts)."
+    },
+    {
+      "file": "invalid/LocalRegisterRequest/short-password.json",
+      "schema": "LocalRegisterRequest",
+      "valid": false,
+      "stage": "schema",
+      "note": "Passwords have at least 10 characters."
+    },
+    {
+      "file": "valid/RealtimeEventAuthHandoffCompleted/linked.json",
+      "schema": "RealtimeEventAuthHandoffCompleted",
+      "valid": true,
+      "note": "A guest linked a provider through the browser and is now registered."
+    },
+    {
+      "file": "valid/RealtimeEventAuthHandoffFailed/conflict.json",
+      "schema": "RealtimeEventAuthHandoffFailed",
+      "valid": true,
+      "note": "The identity already belongs to another account; the client may offer to switch."
+    },
+    {
+      "file": "invalid/AdminMuteRequest/too-long.json",
+      "schema": "AdminMuteRequest",
+      "valid": false,
+      "stage": "schema",
+      "note": "Mutes last at most a year."
     },
     {
       "file": "valid/EngineJob/generate-map.json",

@@ -70,6 +70,11 @@ export const SelfAccount = Open(
     mutedUntil: Type.Optional(Timestamp),
     identities: Type.Array(LinkedIdentity),
     entitlements: Type.Array(Type.String({ maxLength: 64 })),
+    canRename: Type.Optional(
+      Type.Boolean({ description: 'False for guests: they get generated names.' }),
+    ),
+    /** Earliest time of the next rename; absent when a rename is allowed now. */
+    renameAvailableAt: Type.Optional(Timestamp),
   },
   { description: 'The signed-in account as its owner sees it.' },
 );
@@ -94,12 +99,11 @@ export const DeviceCredential = Type.String({ pattern: '^[A-Za-z0-9_-]{43}$' });
 export const GuestSignInRequest = Strict(
   {
     deviceCredential: Type.Optional(DeviceCredential),
-    displayName: Type.Optional(DisplayName),
     platform: ClientPlatform,
   },
   {
     description:
-      'Signs in a guest. Without a device credential a new guest account is created and its credential returned once.',
+      'Signs in a guest. Without a device credential a new guest account (with a generated Guest-NNNN name) is created and its credential returned once.',
   },
 );
 export type GuestSignInRequest = Static<typeof GuestSignInRequest>;
@@ -124,6 +128,42 @@ export const SignOutRequest = Strict({
 });
 /** PATCH /api/v1/accounts/me */
 export const UpdateAccountRequest = Strict({ displayName: DisplayName });
+
+/** Local usernames: lowercase letters, digits, '.', '_' and '-'; compared case-insensitively. */
+export const LocalUsername = Type.String({ pattern: '^[A-Za-z0-9._-]{3,32}$' });
+export const LocalPassword = Type.String({ minLength: 10, maxLength: 256 });
+
+/**
+ * POST /api/v1/auth/local/register (only when auth.local.enabled). With a guest
+ * bearer token the guest is upgraded in place; otherwise a new account is created.
+ */
+export const LocalRegisterRequest = Strict({
+  username: LocalUsername,
+  password: LocalPassword,
+  displayName: Type.Optional(DisplayName),
+  platform: ClientPlatform,
+});
+export type LocalRegisterRequest = Static<typeof LocalRegisterRequest>;
+
+/** POST /api/v1/auth/local/sign-in */
+export const LocalSignInRequest = Strict({
+  username: LocalUsername,
+  password: Type.String({ minLength: 1, maxLength: 256 }),
+  platform: ClientPlatform,
+});
+export type LocalSignInRequest = Static<typeof LocalSignInRequest>;
+
+/**
+ * `details` of a `conflict` error when a sign-in identity is already linked to
+ * another account. Accounts are never merged: the client may offer to sign in
+ * as that account instead.
+ */
+export const IdentityConflict = Open({
+  reason: Type.Literal('identity_in_use'),
+  provider: Type.String({ maxLength: 64 }),
+  account: PublicAccount,
+});
+export type IdentityConflict = Static<typeof IdentityConflict>;
 
 export const AuthProviderInfo = Open({
   id: Type.String({ maxLength: 64 }),

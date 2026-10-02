@@ -45,7 +45,10 @@ import {
   AuthTokens,
   CreateMapRequest,
   GuestSignInRequest,
+  IdentityConflict,
   InstanceInfo,
+  LocalRegisterRequest,
+  LocalSignInRequest,
   LeaderboardPage,
   MapInfo,
   MapList,
@@ -66,7 +69,21 @@ import {
   UpdateAccountRequest,
 } from './resources.ts';
 import { SimVersion } from './simVersion.ts';
-import { MatchTicketClaims, MatchTicketHeader } from './ticket.ts';
+import {
+  AccessTokenClaims,
+  AccessTokenHeader,
+  MatchTicketClaims,
+  MatchTicketHeader,
+  PlatformJwks,
+} from './ticket.ts';
+import {
+  AdminAccount,
+  AdminAccountList,
+  AdminBanRequest,
+  AdminMuteRequest,
+  AdminRenameRequest,
+  AdminRoleRequest,
+} from './admin.ts';
 
 export interface RegisteredSchema {
   schema: TSchema;
@@ -118,6 +135,10 @@ export const schemaRegistry: Record<string, RegisteredSchema> = {
   // Tickets
   MatchTicketHeader: { schema: MatchTicketHeader },
   MatchTicketClaims: { schema: MatchTicketClaims },
+  // Access tokens and keys
+  AccessTokenHeader: { schema: AccessTokenHeader },
+  AccessTokenClaims: { schema: AccessTokenClaims },
+  PlatformJwks: { schema: PlatformJwks },
   // Relay ↔ platform
   RelayRegistration: { schema: RelayRegistration },
   RelayRegistrationResponse: { schema: RelayRegistrationResponse },
@@ -142,6 +163,15 @@ export const schemaRegistry: Record<string, RegisteredSchema> = {
   RefreshRequest: { schema: RefreshRequest },
   SignOutRequest: { schema: SignOutRequest },
   UpdateAccountRequest: { schema: UpdateAccountRequest },
+  LocalRegisterRequest: { schema: LocalRegisterRequest },
+  LocalSignInRequest: { schema: LocalSignInRequest },
+  IdentityConflict: { schema: IdentityConflict },
+  AdminAccount: { schema: AdminAccount },
+  AdminAccountList: { schema: AdminAccountList },
+  AdminRenameRequest: { schema: AdminRenameRequest },
+  AdminMuteRequest: { schema: AdminMuteRequest },
+  AdminBanRequest: { schema: AdminBanRequest },
+  AdminRoleRequest: { schema: AdminRoleRequest },
   RoomMapSelection: { schema: RoomMapSelection },
   RoomState: { schema: RoomState },
   RoomList: { schema: RoomList },
