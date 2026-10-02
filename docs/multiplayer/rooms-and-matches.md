@@ -92,7 +92,7 @@ load. Every participant downloads those bytes from
 
 | Source | How the room gets its hash and team count |
 | --- | --- |
-| Catalog `{kind: "catalog", hash}` | A valid `map_versions` row of a map that is not hidden and is public, unlisted or the host's own |
+| Catalog `{kind: "catalog", hash, mapId?}` | A valid `map_versions` row of a map that is not hidden and is public, unlisted or the host's own, saved by an engine no newer than the room's (`minVersionMinor`). See [Map catalog](architecture.md#map-catalog) |
 | Upload `{kind: "upload", format, hash}` | The host's own upload for the room's sim version, once validated |
 | Generator `{kind: "generated", generator}` | A `generate-map` job. `params.teams` is required and sets the team count. The hash is filled in when the job finishes |
 
@@ -121,9 +121,11 @@ resource with its status, map facts, and, for a save, the players recorded in it
   team count. Returning players take the seat of the team they played, because seat
   *i* is team *i*.
 
-**Downloads.** Public blobs, such as generated and catalog maps, need no sign-in.
-A private upload is served to an account that uploaded those bytes, a member of a
-room that uses them, or a participant of a match played on them. Every other
+**Downloads.** Public blobs, such as generated maps, and versions of public or
+unlisted catalog maps need no sign-in. A private upload or private catalog map is
+served to an account that uploaded those bytes (and, for catalog maps, to
+moderators), a member of a room that uses them, or a participant of a match played
+on them. Every other
 caller gets `404`. Responses carry `ETag: "<hash>"` and an immutable cache lifetime.
 
 **Warm maps.** Queue starts first take a pre-generated map of the queue, sim

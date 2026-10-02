@@ -495,21 +495,53 @@ export type MatchDetail = Static<typeof MatchDetail>;
 export const MatchList = Page(MatchSummary, 'Matches, newest first.');
 
 // -------------------------------------------------------------------- maps
+//
+// Map catalog (/api/v1/maps). Visibility: public maps are listed; unlisted
+// maps (the default) are reachable by id or link; private maps only by their
+// owner. Hidden maps (moderation) are seen only by their owner and moderators.
 
 export const MapVisibility = Type.Union([
   Type.Literal('public'),
   Type.Literal('unlisted'),
   Type.Literal('private'),
 ]);
+export type MapVisibility = Static<typeof MapVisibility>;
 
+export const MapMadeWith = Type.Union([Type.Literal('hand'), Type.Literal('generator')], {
+  description: 'How the owner says the map was made: in the editor, or by a map generator.',
+});
+
+const ValidationState = Type.Union([
+  Type.Literal('pending'),
+  Type.Literal('valid'),
+  Type.Literal('invalid'),
+]);
+
+/**
+ * One uploaded version of a catalog map. Map facts are present once an
+ * engine agent validated it. Rooms choose it as {kind: "catalog", hash}.
+ */
 export const MapVersionInfo = Open({
   hash: Sha256Hex,
   size: Type.Integer({ minimum: 0 }),
-  width: Type.Integer({ minimum: 1 }),
-  height: Type.Integer({ minimum: 1 }),
-  teamCount: Type.Integer({ minimum: 1, maximum: 12 }),
-  minVersionMinor: Type.Integer({ minimum: 0 }),
-  validation: Type.Union([Type.Literal('pending'), Type.Literal('valid'), Type.Literal('invalid')]),
+  width: Type.Optional(Type.Integer({ minimum: 1 })),
+  height: Type.Optional(Type.Integer({ minimum: 1 })),
+  teamCount: Type.Optional(Type.Integer({ minimum: 1, maximum: 12 })),
+  minVersionMinor: Type.Optional(
+    Type.Integer({
+      minimum: 0,
+      description:
+        'Format version the file was saved with: engines from this VERSION_MINOR load it.',
+    }),
+  ),
+  simVersion: Type.Optional(SimVersion),
+  validation: ValidationState,
+  reason: Type.Optional(Type.String({ maxLength: 2000, description: 'Why it is invalid.' })),
+  fileTitle: Type.Optional(
+    Type.String({ maxLength: 128, description: 'Map name stored in the file.' }),
+  ),
+  notes: Type.Optional(Type.String({ maxLength: 2000 })),
+  preview: Type.Union([Type.Literal('pending'), Type.Literal('ready'), Type.Literal('failed')]),
   previewUrl: Type.Optional(HttpsOrWssUrl),
   downloadUrl: HttpsOrWssUrl,
   createdAt: Timestamp,
@@ -524,10 +556,18 @@ export const MapInfo = Open(
     description: Type.String({ maxLength: 4000 }),
     visibility: MapVisibility,
     hidden: Type.Boolean({ description: 'Hidden by a moderator.' }),
+    hiddenReason: Type.Optional(
+      Type.String({ maxLength: 2000, description: 'Shown to the owner and moderators only.' }),
+    ),
+    madeWith: MapMadeWith,
+    generator: Type.Optional(GeneratorDescriptor),
     latestVersion: Type.Optional(MapVersionInfo),
     stats: Open({
-      plays: Type.Integer({ minimum: 0 }),
-      downloads: Type.Integer({ minimum: 0 }),
+      plays: Type.Integer({ minimum: 0, description: 'Ended matches played on any version.' }),
+      downloads: Type.Integer({
+        minimum: 0,
+        description: 'Downloads, counted once per downloader and day.',
+      }),
       likes: Type.Integer({ minimum: 0 }),
     }),
     createdAt: Timestamp,
@@ -537,25 +577,108 @@ export const MapInfo = Open(
 );
 export type MapInfo = Static<typeof MapInfo>;
 
+/**
+ * GET /api/v1/maps?owner=me|<accountId>&teams=&minSide=&maxSide=&madeWith=&q=&sort=recent|likes|plays|downloads&cursor=&limit=
+ * Without owner: public maps with a valid version. owner=me: all of the caller's maps.
+ */
 export const MapList = Page(MapInfo, 'Catalog maps.');
 
-/** POST /api/v1/maps; the bytes follow with PUT /api/v1/maps/{id}/versions. */
+/** GET /api/v1/maps/{id} */
+export const MapDetail = Open(
+  {
+    map: MapInfo,
+    versions: Type.Array(MapVersionInfo, {
+      description: 'Newest first; pending and invalid versions only for the owner and moderators.',
+    }),
+    viewer: Open({
+      owner: Type.Boolean(),
+      moderator: Type.Boolean(),
+      liked: Type.Boolean(),
+      reported: Type.Boolean({ description: 'The caller has an open report on this map.' }),
+    }),
+  },
+  { description: 'A catalog map with its versions.' },
+);
+export type MapDetail = Static<typeof MapDetail>;
+
+/**
+ * POST /api/v1/maps. The bytes follow with POST /api/v1/maps/{id}/versions
+ * (application/octet-stream, the uncompressed file; ?simVersion=<key>, default
+ * the newest the instance serves; &notes=).
+ */
 export const CreateMapRequest = Strict({
   title: Type.String({ minLength: 1, maxLength: 128 }),
-  description: Type.String({ maxLength: 4000 }),
-  visibility: MapVisibility,
+  description: Type.Optional(Type.String({ maxLength: 4000 })),
+  visibility: Type.Optional(MapVisibility),
+  madeWith: Type.Optional(MapMadeWith),
+  generator: Type.Optional(GeneratorDescriptor),
 });
+export type CreateMapRequest = Static<typeof CreateMapRequest>;
+
+/** PATCH /api/v1/maps/{id} (owner) */
+export const UpdateMapRequest = Strict({
+  title: Type.Optional(Type.String({ minLength: 1, maxLength: 128 })),
+  description: Type.Optional(Type.String({ maxLength: 4000 })),
+  visibility: Type.Optional(MapVisibility),
+});
+export type UpdateMapRequest = Static<typeof UpdateMapRequest>;
+
+/** PUT and DELETE /api/v1/maps/{id}/like */
+export const MapLikeResult = Open({ liked: Type.Boolean(), likes: Type.Integer({ minimum: 0 }) });
+export type MapLikeResult = Static<typeof MapLikeResult>;
+
+export const MapReportReason = Type.Union([
+  Type.Literal('broken'),
+  Type.Literal('offensive'),
+  Type.Literal('copyright'),
+  Type.Literal('other'),
+]);
+export const MapReportStatus = Type.Union([
+  Type.Literal('open'),
+  Type.Literal('resolved'),
+  Type.Literal('dismissed'),
+]);
 
 /** POST /api/v1/maps/{id}/reports */
 export const MapReportRequest = Strict({
-  reason: Type.Union([
-    Type.Literal('broken'),
-    Type.Literal('offensive'),
-    Type.Literal('copyright'),
-    Type.Literal('other'),
-  ]),
+  reason: MapReportReason,
   details: Type.String({ maxLength: 2000 }),
 });
+export type MapReportRequest = Static<typeof MapReportRequest>;
+
+export const MapReportReceipt = Open({ id: Uuid, status: MapReportStatus });
+export type MapReportReceipt = Static<typeof MapReportReceipt>;
+
+/** Moderation: GET /api/v1/admin/map-reports?status=open|resolved|dismissed|all&mapId=&cursor= */
+export const MapReportInfo = Open({
+  id: Uuid,
+  map: MapInfo,
+  reporter: PublicAccount,
+  reason: MapReportReason,
+  details: Type.String({ maxLength: 2000 }),
+  status: MapReportStatus,
+  createdAt: Timestamp,
+  resolvedAt: Type.Optional(Timestamp),
+  resolvedBy: Type.Optional(PublicAccount),
+  note: Type.Optional(Type.String({ maxLength: 2000 })),
+});
+export type MapReportInfo = Static<typeof MapReportInfo>;
+
+export const MapReportList = Page(MapReportInfo, 'Map reports, newest first.');
+export type MapReportList = Static<typeof MapReportList>;
+
+/** POST /api/v1/admin/map-reports/{id}/resolve (moderators) */
+export const ResolveMapReportRequest = Strict({
+  status: Type.Union([Type.Literal('resolved'), Type.Literal('dismissed')]),
+  note: Type.Optional(Type.String({ maxLength: 2000 })),
+  hideMap: Type.Optional(Type.Boolean({ description: 'Also hide the reported map.' })),
+  hideReason: Type.Optional(Type.String({ minLength: 1, maxLength: 2000 })),
+});
+export type ResolveMapReportRequest = Static<typeof ResolveMapReportRequest>;
+
+/** POST /api/v1/admin/maps/{id}/hide (moderators); /unhide takes no body. */
+export const MapHideRequest = Strict({ reason: Type.String({ minLength: 1, maxLength: 2000 }) });
+export type MapHideRequest = Static<typeof MapHideRequest>;
 
 // ------------------------------------------------------------ leaderboards
 
@@ -607,9 +730,6 @@ export type MatchParticipant = Static<typeof MatchParticipant>;
 export type MatchTeamStats = Static<typeof MatchTeamStats>;
 export type MatchArtifactInfo = Static<typeof MatchArtifactInfo>;
 export type MatchList = Static<typeof MatchList>;
-export type MapVisibility = Static<typeof MapVisibility>;
 export type MapList = Static<typeof MapList>;
-export type CreateMapRequest = Static<typeof CreateMapRequest>;
-export type MapReportRequest = Static<typeof MapReportRequest>;
 export type RatedEntity = Static<typeof RatedEntity>;
 export type LeaderboardEntry = Static<typeof LeaderboardEntry>;

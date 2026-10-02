@@ -19,6 +19,7 @@ import { WindowCounter } from '../http/validate.ts';
 import { authenticate, requireAccount, type Identity } from '../identity.ts';
 import { mapUrl } from '../play/assignments.ts';
 import type { RoomService } from '../play/rooms.ts';
+import { catalogAllowsMapBlob } from '../maps/catalog.ts';
 
 const SHA256 = /^[0-9a-f]{64}$/;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
@@ -259,9 +260,10 @@ export async function playRoutes(
   // -------------------------------------------------------------- downloads
 
   /**
-   * Map bytes by hash. Public blobs (generated and catalog maps) need no
-   * sign-in; a private upload is served to its owners, to members of a room
-   * using it and to participants of a match played on it.
+   * Map bytes by hash. Public blobs (generated maps) and versions of public
+   * or unlisted catalog maps need no sign-in; a private upload or catalog map
+   * is served to its owners (and, for catalog maps, moderators), to members
+   * of a room using it and to participants of a match played on it.
    */
   app.get<{ Params: { hash: string } }>('/api/v1/blobs/maps/:hash', async (request, reply) => {
     const hash = request.params.hash;
@@ -273,12 +275,16 @@ export async function playRoutes(
       .where('content_type', 'in', [MAP_CONTENT_TYPE, SAVE_CONTENT_TYPE])
       .executeTakeFirst();
     if (!blob) throw apiError('not_found', 'No such map.');
-    if (blob.visibility !== 'public') {
+    // Catalog versions anyone may see (public and unlisted maps) need no sign-in.
+    const openCatalog =
+      blob.visibility !== 'public' && (await catalogAllowsMapBlob(db, hash, undefined));
+    if (blob.visibility !== 'public' && !openCatalog) {
       const caller = await authenticate(identity, request);
       if (!caller) throw apiError('unauthenticated', 'Sign in to download this map.');
       const accountId = caller.account.id;
       const allowed =
         blob.owner_account_id === accountId ||
+        (await catalogAllowsMapBlob(db, hash, { account: caller.account })) ||
         (await db
           .selectFrom('map_uploads')
           .select('id')

@@ -13,6 +13,7 @@ import {
   type RelayMatchEnded,
 } from '@glob2/protocol';
 import { MATCH_UPDATES_CHANNEL } from '../ratings/apply.ts';
+import { countCatalogPlay } from './catalog.ts';
 import { insertBlob } from './maps.ts';
 import { publishPlay } from './notify.ts';
 
@@ -138,6 +139,8 @@ export async function recordMatchEnded(
         .execute();
     }
     if (match.room_id) await reopenRoom(trx, match.room_id, report.matchId);
+    // Catalog play counts (a lost match that turns out to have ended counts now).
+    await countCatalogPlay(trx, setup.map.hash);
     await sql`SELECT pg_notify(${MATCH_UPDATES_CHANNEL}, ${JSON.stringify({ matchId: report.matchId })})`.execute(
       trx,
     );

@@ -25,8 +25,14 @@
     "LeaderboardPage": "schemas/LeaderboardPage.schema.json",
     "LocalRegisterRequest": "schemas/LocalRegisterRequest.schema.json",
     "LocalSignInRequest": "schemas/LocalSignInRequest.schema.json",
+    "MapDetail": "schemas/MapDetail.schema.json",
+    "MapHideRequest": "schemas/MapHideRequest.schema.json",
     "MapInfo": "schemas/MapInfo.schema.json",
+    "MapLikeResult": "schemas/MapLikeResult.schema.json",
     "MapList": "schemas/MapList.schema.json",
+    "MapReportInfo": "schemas/MapReportInfo.schema.json",
+    "MapReportList": "schemas/MapReportList.schema.json",
+    "MapReportReceipt": "schemas/MapReportReceipt.schema.json",
     "MapReportRequest": "schemas/MapReportRequest.schema.json",
     "MapSource": "schemas/MapSource.schema.json",
     "MapUpload": "schemas/MapUpload.schema.json",
@@ -105,6 +111,7 @@
     "RelayRegistrationResponse": "schemas/RelayRegistrationResponse.schema.json",
     "RenderPreviewPayload": "schemas/RenderPreviewPayload.schema.json",
     "RenderPreviewResult": "schemas/RenderPreviewResult.schema.json",
+    "ResolveMapReportRequest": "schemas/ResolveMapReportRequest.schema.json",
     "RoomChatMessage": "schemas/RoomChatMessage.schema.json",
     "RoomList": "schemas/RoomList.schema.json",
     "RoomMapSelection": "schemas/RoomMapSelection.schema.json",
@@ -114,6 +121,7 @@
     "SignOutRequest": "schemas/SignOutRequest.schema.json",
     "SimVersion": "schemas/SimVersion.schema.json",
     "UpdateAccountRequest": "schemas/UpdateAccountRequest.schema.json",
+    "UpdateMapRequest": "schemas/UpdateMapRequest.schema.json",
     "ValidateMapPayload": "schemas/ValidateMapPayload.schema.json",
     "ValidateMapResult": "schemas/ValidateMapResult.schema.json",
     "VerifyMatchPayload": "schemas/VerifyMatchPayload.schema.json",
@@ -538,6 +546,44 @@
       "schema": "InviteInfo",
       "valid": true,
       "note": "What an invite link points at."
+    },
+    {
+      "file": "valid/MapVersionInfo/pending.json",
+      "schema": "MapVersionInfo",
+      "valid": true,
+      "note": "A catalog version just uploaded: no map facts until an engine agent validated it."
+    },
+    {
+      "file": "valid/MapDetail/public-map.json",
+      "schema": "MapDetail",
+      "valid": true,
+      "note": "GET /api/v1/maps/{id}: a public map with one valid, previewed version."
+    },
+    {
+      "file": "invalid/MapInfo/unknown-visibility.json",
+      "schema": "MapInfo",
+      "valid": false,
+      "stage": "schema",
+      "note": "Maps are public, unlisted or private."
+    },
+    {
+      "file": "valid/CreateMapRequest/title-only.json",
+      "schema": "CreateMapRequest",
+      "valid": true,
+      "note": "Everything but the title is optional; visibility defaults to unlisted."
+    },
+    {
+      "file": "invalid/CreateMapRequest/unknown-field.json",
+      "schema": "CreateMapRequest",
+      "valid": false,
+      "stage": "schema",
+      "note": "Request bodies are strict."
+    },
+    {
+      "file": "valid/ResolveMapReportRequest/resolve-and-hide.json",
+      "schema": "ResolveMapReportRequest",
+      "valid": true,
+      "note": "A moderator upholds a report and hides the map."
     },
     {
       "file": "valid/MapUpload/valid-save.json",
