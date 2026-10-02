@@ -25,9 +25,14 @@ public:
     bool fail = true;
     int submissions = 0;
     size_t submittedVertices = 0;
+    void blit(const void*, SDL_Surface*, std::uint64_t, bool,
+              const SDL_Rect&, const SDL_FRect&, Uint8) override
+    { throw std::logic_error("unexpected blit in rectangle batch"); }
+    void fill(const SDL_FRect&, SDL_Color) override
+    { throw std::logic_error("unexpected unbatched fill"); }
     void clip(const SDL_Rect*) override {}
     void transform(float, float, float, const SDL_Rect*) override {}
-    void triangles(std::span<const SDL_Vertex> vertices, const void*, SDL_Surface*, bool) override
+    void triangles(std::span<const SDL_Vertex> vertices, const void*, SDL_Surface*, std::uint64_t) override
     {
         ++submissions;
         if (fail) throw std::runtime_error("submission failed");
@@ -52,7 +57,11 @@ public:
         auto *gfx = GAGCore::Toolkit::initGraphic(640, 480, 0, "batch failure recovery");
         auto backend = std::make_unique<FailingRenderBackend>();
         auto *failure = backend.get();
-        gfx->renderer = std::move(backend);
+        gfx->portableRenderer = std::move(backend);
+        gfx->renderer = gfx->portableRenderer.get();
+        // Model an accelerated backend without requiring a GPU or display for
+        // this mock-only test. CPU rendering no longer batches rectangles.
+        gfx->optionFlags |= GAGCore::GraphicContext::PORTABLEGPU;
         auto draw = [&] {
             GAGCore::OpaqueRectangleBatch scope(gfx);
             gfx->drawFilledRect(0, 0, 10, 10, 78, 187, 78);
