@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
+#include "scene/SceneExtract.h"
 
 #include "FileManager.h"
 #include "AI.h"
@@ -33,6 +34,24 @@ namespace glob2test
 		for (const auto &order : pending) game.executeOrder(order, order->sender);
 		game.syncStep(0);
 		return orders;
+	}
+
+	const Scene &sceneOf(const Game &game, const Game::ViewState &view, int localTeam, Scene *into)
+	{
+		static Scene shared;
+		Scene &scene = into ? *into : shared;
+		SceneRequest request;
+		request.localTeam = localTeam;
+		request.selectedBuilding = Game::refOf(view.selectedBuilding);
+		request.selectedUnit = Game::refOf(view.selectedUnit);
+		extractScene(game, request, scene);
+		return scene;
+	}
+
+	const Scene &sceneOf(const Game &game)
+	{
+		static const Game::ViewState none;
+		return sceneOf(game, none);
 	}
 
 	HeadlessGlobals::HeadlessGlobals(Options options)

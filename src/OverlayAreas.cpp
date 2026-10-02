@@ -87,21 +87,21 @@ void OverlayArea::compute(Game& game, OverlayType ntype, int localteam)
 
 
 
-Uint32 OverlayArea::getValue(int x, int y)
+Uint32 OverlayArea::getValue(int x, int y) const
 {
 	return overlay[x * height + y];
 }
 
 
 	
-Uint32 OverlayArea::getMaximum()
+Uint32 OverlayArea::getMaximum() const
 {
 	return overlaymax;
 }
 
 
 
-OverlayArea::OverlayType OverlayArea::getOverlayType()
+OverlayArea::OverlayType OverlayArea::getOverlayType() const
 {
 	return type;
 }

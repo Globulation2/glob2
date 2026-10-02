@@ -24,6 +24,12 @@ namespace glob2test
 	// then apply in player order and advance one tick. Returns type+wire payload
 	// per AI so paired continuations can compare decisions as well as state.
 	std::vector<std::string> stepAI(Game &game);
+	// Extract the scene a draw pass reads, as Game::drawMap does for callers without a
+	// published scene. Without `into`, the result lives in shared storage that the next
+	// call overwrites; use it within the statement.
+	const Scene &sceneOf(const Game &game, const Game::ViewState &view, int localTeam = 0, Scene *into = nullptr);
+	const Scene &sceneOf(const Game &game);
+
 	// Binds a game's synchronized stream on this thread, as the engine does around
 	// simulation entry points, for fixtures that call game functions directly. The
 	// stream continues from the current process stream, so fixtures that seed with

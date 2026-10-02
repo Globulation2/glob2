@@ -101,6 +101,38 @@ class SoftwareRenderBenchmark
 			gui.adjustLocalTeam();
 			gui.adjustInitialViewport();
 			gui.gamePaused = false;
+			// PROFILE_SELECT=building|flag|unit selects the local team's first such entity,
+			// so captures include the selection panel and the map-view selection markers.
+			if (const char *select = getenv("PROFILE_SELECT"))
+			{
+				const std::string kind = select;
+				Team *team = gui.game.teams[0];
+				bool selected = false;
+				for (int i = 0; i < Building::MAX_COUNT && !selected && kind != "unit"; i++)
+					if (Building *b = team->myBuildings[i])
+						if (kind == "flag" ? b->type->isVirtual : (!b->type->isVirtual && b->type->maxUnitWorking))
+						{
+							gui.setSelection(GameGUI::BUILDING_SELECTION, b);
+							selected = true;
+						}
+				for (int i = 0; i < Unit::MAX_COUNT && !selected && kind == "unit"; i++)
+					if (Unit *u = team->myUnits[i])
+					{
+						gui.setSelection(GameGUI::UNIT_SELECTION, u);
+						selected = true;
+					}
+				if (!selected)
+					throw std::runtime_error("PROFILE_SELECT found nothing to select");
+			}
+			// PROFILE_TOOL=<building type> activates the building tool with the cursor
+			// over the middle of the map view, so captures include the placement preview.
+			if (const char *tool = getenv("PROFILE_TOOL"))
+			{
+				gui.toolManager.activateBuildingTool(tool);
+				gui.selectionMode = GameGUI::TOOL_SELECTION;
+				gui.mouseX = (gfx->getW() - 160) / 2;
+				gui.mouseY = gfx->getH() / 2;
+			}
 			if (const char *z = getenv("PROFILE_ZOOM"))
 			{
 				gui.updateCamera();

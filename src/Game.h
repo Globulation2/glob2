@@ -36,6 +36,7 @@ using namespace GAGCore;
 class GameGUI;
 class SceneMap;
 struct Scene;
+struct SceneUnit;
 class MapEdit;
 class ClientCommandSink;
 class ClientRequests;
@@ -269,7 +270,7 @@ public:
 	bool checkHardRoomForBuilding(int coordX, int coordY, const BuildingType *bt, int *mapX, int *mapY);
 	bool checkHardRoomForBuilding(int x, int y, const BuildingType *bt);
 
-	void drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int screenW, int screenH, int localTeam, Uint32 drawOptions, ViewState& view);
+	void drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int screenW, int screenH, int localTeam, Uint32 drawOptions, ViewState& view, const Scene& scene);
 	/// `view` carries the calling front-end's selection/mouse state (see
 	/// ViewState); render reads selectedUnit/selectedBuilding for highlights and
 	/// writes back mouseUnit from hit-testing. `buildingGuiState` (optional)
@@ -277,7 +278,7 @@ public:
 	/// move-flag order has executed. The map editor passes nullptr for it — it
 	/// mutates buildings directly without an orderQueue, so there is no pending
 	/// shadow to consult.
-	void drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargin, int viewportX, int viewportY, int teamSelected, ViewState& view, Uint32 drawOptions = 0, std::set<Building*> *visibleBuildings = 0, const BuildingGuiStateMap* buildingGuiState = nullptr, bool animationsPaused = false, int cloudGridLimit = 0);
+	void drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargin, int viewportX, int viewportY, int teamSelected, ViewState& view, Uint32 drawOptions = 0, std::set<Uint16> *visibleBuildings = 0, const BuildingGuiStateMap* buildingGuiState = nullptr, bool animationsPaused = false, int cloudGridLimit = 0);
 
 	///Sets the mask representing which players the game is waiting on
 	void setWaitingOnMask(Uint32 mask);
@@ -371,21 +372,21 @@ private:
 	///draws the resources like algae, wheat or fruit trees
 	void drawMapResources(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& sceneMap);
 	///draws the ground units. up till now those are workers and warriors
-	void drawMapGroundUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view);
+	void drawMapGroundUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view, const Scene& scene);
 	///draws debug information. switched in the code.
 	void drawMapDebugAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view);
-	void drawMapGroundBuildings(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, std::set<Building*> *visibleBuildings, const BuildingGuiStateMap* buildingGuiState);
-	void drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
+	void drawMapGroundBuildings(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, std::set<Uint16> *visibleBuildings, const BuildingGuiStateMap* buildingGuiState, const Scene& scene);
+	void drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const Scene& scene);
 	void drawMapAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view, const SceneMap& sceneMap);
 	void drawMapArea(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& map, bool (SceneMap::*mapIs)(int, int) const, int areaAnimationTick, AreaType areaType);
-	void drawMapAirUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view);
+	void drawMapAirUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view, const Scene& scene);
 	void drawMapScriptAreas(int left, int top, int right, int bot, int viewportX, int viewportY);
-	void drawMapBulletsExplosionsDeathAnimations(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
+	void drawMapBulletsExplosionsDeathAnimations(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const Scene& scene);
 	void drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& sceneMap);
 	void drawMapOverlayMaps(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view);
-	void drawUnitPathLines(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view);
-	void drawUnitPathLine(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, Unit* unit);
-	void drawUnitOffScreen(int sx, int sy, int sw, int sh, int viewportX, int viewportY, Unit* unit, Uint32 drawOptions);
+	void drawUnitPathLines(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view, const Scene& scene);
+	void drawUnitPathLine(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneUnit& unit, const Scene& scene);
+	void drawUnitOffScreen(int sx, int sy, int sw, int sh, int viewportX, int viewportY, const SceneUnit& unit, Uint32 drawOptions, const Scene& scene);
 	bool isOnScreen(int left, int top, int right, int bot, int viewportX, int viewportY, int x, int y);
 public:
 	Uint32 checkSum(std::vector<Uint32> *checkSumsVector=NULL, std::vector<Uint32> *checkSumsVectorForBuildings=NULL, std::vector<Uint32> *checkSumsVectorForUnits=NULL, bool heavy=false);
@@ -472,6 +473,8 @@ public:
 		MapRenderState render;            //!< This view's animation phases and render caches.
 		//! Scene to draw, published by the simulation; null to extract one from the game.
 		const Scene *scene = nullptr;
+		//! The scene the last drawMap drew: the published one, else the view's own.
+		const Scene &drawnScene() const { return scene ? *scene : render.ownScene; }
 #endif
 	};
 

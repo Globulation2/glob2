@@ -98,26 +98,31 @@ void GameGUI::drawParticles(bool advance)
 	}
 }
 
-void GameGUI::generateNewParticles(std::set<Building*> *visibleBuildings)
+void GameGUI::generateNewParticles(std::set<Uint16> *visibleBuildings)
 {
 	PERF_SCOPE_TIME(Particles);
 	if (gamePaused)
 		return;
 
-	for (std::set<Building*>::iterator it = visibleBuildings->begin(); it != visibleBuildings->end(); ++it)
+	const SceneEntities &entities = drawnScene().entities;
+	const Uint32 stepCounter = drawnScene().tick;
+	for (Uint16 gid : *visibleBuildings)
 	{
-		Building* building = *it;
+		const SceneBuilding* building = entities.building(gid);
+		if (!building)
+			continue;
 		BuildingType* type = building->type;
 		int x, y;
-		x=displayedPosX(*building)*32;y=displayedPosY(*building)*32;
+		x=::displayedPosX(buildingGuiState, building->gid, building->posX)*32;
+		y=::displayedPosY(buildingGuiState, building->gid, building->posY)*32;
 
 		if (!type->isBuildingSite)
 		{
 			// damaged building smoke
-			float hpRatio = (float)building->hp / (float)building->getEffectiveMaxHp();
+			float hpRatio = (float)building->hp / (float)building->effectiveMaxHp;
 			if (
-				(hpRatio < SMOKE_HEAVY_HP_RATIO && ((game.stepCounter & 0x1) == 0)) ||
-				(hpRatio < SMOKE_LIGHT_HP_RATIO && ((game.stepCounter & 0x3) == 0))
+				(hpRatio < SMOKE_HEAVY_HP_RATIO && ((stepCounter & 0x1) == 0)) ||
+				(hpRatio < SMOKE_LIGHT_HP_RATIO && ((stepCounter & 0x3) == 0))
 			)
 			{
 				Particle* p = new Particle;
@@ -139,14 +144,14 @@ void GameGUI::generateNewParticles(std::set<Building*> *visibleBuildings)
 				p->lifeSpan = SMOKE_LIFESPAN_TICKS;
 				p->startImg = PARTICLE_START_IMG;
 				p->endImg = PARTICLE_END_IMG;
-				p->color = building->owner->color;
+				p->color = entities.owner(*building).color;
 				particles.insert(p);
 			}
 
 			// turret firing
 			if (building->lastShootStep != Building::LAST_SHOOT_STEP_NEVER)
 			{
-				if ((game.stepCounter - building->lastShootStep < TURRET_FLASH_DURATION_TICKS) && (game.stepCounter % 2 == 0))
+				if ((stepCounter - building->lastShootStep < TURRET_FLASH_DURATION_TICKS) && (stepCounter % 2 == 0))
 				{
 					float norm = building->lastShootSpeedX * building->lastShootSpeedX + building->lastShootSpeedY * building->lastShootSpeedY;
 					float w2 = type->width * HALF_TILE_PX;
@@ -164,7 +169,7 @@ void GameGUI::generateNewParticles(std::set<Building*> *visibleBuildings)
 					p->lifeSpan = TURRET_FLASH_LIFESPAN_TICKS;
 					p->startImg = PARTICLE_START_IMG;
 					p->endImg = PARTICLE_END_IMG;
-					p->color = building->owner->color;
+					p->color = entities.owner(*building).color;
 					particles.insert(p);
 				}
 			}
