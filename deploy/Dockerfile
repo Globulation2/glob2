@@ -95,8 +95,13 @@ COPY platform/apps/web/package.json apps/web/
 RUN --mount=type=cache,id=glob2-npm,target=/root/.npm npm ci --no-audit --no-fund
 
 FROM node-deps AS web-build
+# Optional links from the web app to a separately hosted public website and its
+# download page (docs/hosting/README.md); empty keeps the defaults.
+ARG GLOB2_WEBSITE_URL=
+ARG GLOB2_DOWNLOAD_URL=
 COPY platform/ ./
-RUN npm run build --workspace @glob2/web
+RUN VITE_WEBSITE_URL="$GLOB2_WEBSITE_URL" VITE_DOWNLOAD_URL="$GLOB2_DOWNLOAD_URL" \
+    npm run build --workspace @glob2/web
 
 FROM node-deps AS platform-runtime-deps
 RUN --mount=type=cache,id=glob2-npm,target=/root/.npm npm ci --omit=dev --no-audit --no-fund

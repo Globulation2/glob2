@@ -205,6 +205,9 @@ services:
       context: ..
       dockerfile: deploy/Dockerfile
       target: caddy
+      args:
+        GLOB2_WEBSITE_URL: ${GLOB2_WEBSITE_URL:-}
+        GLOB2_DOWNLOAD_URL: ${GLOB2_DOWNLOAD_URL:-}
     # Permit standard HTTP/TLS ports only within this network namespace.
     sysctls:
       net.ipv4.ip_unprivileged_port_start: '0'
