@@ -4,7 +4,7 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import type { AccessPolicy } from '@glob2/core';
 import { resolveQueue } from '@glob2/core';
-import { checkDocument as check, simVersionKey } from '@glob2/protocol';
+import { checkDocument as check, playerSeats, simVersionKey } from '@glob2/protocol';
 import {
   PgQueueNotifier,
   PlatformMatchStarter,
@@ -1010,7 +1010,7 @@ describe('PlatformMatchStarter', () => {
     expect(matches).toHaveLength(1);
     const setup = matches[0]!.setup as ReturnType<typeof queueMatchSetup>;
     expect(check('MatchSetup', setup).stage).toBe('ok');
-    expect(setup.seats.map((s) => s.name)).toEqual([p1.displayName, p2.displayName]);
+    expect(playerSeats(setup).map((s) => s.name)).toEqual([p1.displayName, p2.displayName]);
     expect(matches[0]).toMatchObject({
       origin: 'queue',
       queue_id: 'casual-1v1',

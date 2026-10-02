@@ -87,6 +87,22 @@ statistics, and show as "D" in the web client. Allied teams that won together ar
 still one winning side. The verifier's raw per-team outcomes stay in the stored
 result artifact.
 
+### Empty seats are not participants
+
+A room sends each empty or locked seat as a `closed` seat: its team has no player,
+the engine removes its colony at the start and it has lost, exactly like a closed
+colony in a custom game. Closed seats get no `match_participants` row and no
+`match_team_stats` row, and a player who defeats every real opponent wins.
+
+Matches started before closed seats existed sent empty seats as AI `none`
+("Nobody"). Those colonies stayed on the map, alive and idle, and the engine scored
+them like any other team: a sudden-death buzzer with everyone on zero prestige
+reported them as won. The platform still ignores such teams, and closed ones
+(`isEmptySeat` and `contestedTeams` in `ratings/outcome.ts`): they never make a win
+shared, a `won` for them is recorded as `unresolved`, and they take no side and are
+never rated. A tie among real participants across alliances is still a draw. The
+in-game end screen applies the same rule (`WinningConditions` `isGameDrawn`).
+
 ### Applying a verdict exactly once
 
 1. The engine agent enqueues its verify-match result. The worker's

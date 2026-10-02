@@ -11,7 +11,10 @@
 //   OnlinePlayHarness quick <origin> <dir>   casual quick match (AI backfill)
 //
 // Environment (all optional):
-//   GLOB2_E2E_SUDDEN_DEATH   room sudden-death timer in minutes (default 1)
+//   GLOB2_E2E_SUDDEN_DEATH   room sudden-death timer in minutes (default 1; 0 = off)
+//   GLOB2_E2E_TEAMS          colonies of the room's generated map (default: the
+//                            room's own); seats nobody takes are closed at the start
+//   GLOB2_E2E_GUEST_SEAT     room seat the guest takes (default: the first open one)
 //   GLOB2_E2E_GUEST_LEAVE    when the guest leaves, in seconds of play (default 40;
 //                            0 = it stays until the game ends)
 //   GLOB2_E2E_LEAVE_BY       window (default: close the window) | menu (the in-game
@@ -232,11 +235,12 @@ int play()
 		Done
 	} stage = Stage::SigningIn;
 	const int suddenDeath = envInt("GLOB2_E2E_SUDDEN_DEATH", 1);
+	const int teams = envInt("GLOB2_E2E_TEAMS", 0);
 	const int guestLeave = envInt("GLOB2_E2E_GUEST_LEAVE", 40);
 	const bool leaveByMenu = envText("GLOB2_E2E_LEAVE_BY", "window") == "menu";
 	const int quickLeave = envInt("GLOB2_E2E_QUICK_LEAVE", 45);
 	double stageAt = 0, lastShot = 0, lastKey = 0, lastLine = 0, endedAt = -1;
-	bool rulesSet = false, pressed = false, left = false;
+	bool rulesSet = false, pressed = false, left = false, seatsShown = false;
 	std::string code, lastPresence, lastPhase, matchId;
 	int rc = 0;
 	while (screens.running() && stage != Stage::Done)
@@ -312,10 +316,13 @@ int play()
 					CustomGameSetup setup;
 					backend.setupDraft(setup);
 					setup.suddenDeathMinutes = suddenDeath;
+					if (teams > 0)
+						setup.setCapacity(teams);
 					backend.applySetup(setup);
 					rulesSet = true;
 					std::ofstream(dir + "/code") << backend.inviteCode() << "\n";
-					say("ROOM %s %s sudden death %d min", backend.inviteCode().c_str(), backend.inviteLink().c_str(), suddenDeath);
+					say("ROOM %s %s sudden death %d min, %d colonies", backend.inviteCode().c_str(), backend.inviteLink().c_str(),
+					    suddenDeath, setup.capacity);
 				}
 				if (!backend.mapStatus().empty() && now - lastShot > 5)
 				{
@@ -332,13 +339,14 @@ int play()
 			}
 			else if (now - stageAt > 3)
 			{
-				// Take the first open seat, then Ready.
+				// Take the first open seat (or the one asked for), then Ready.
+				const int wantedSeat = envInt("GLOB2_E2E_GUEST_SEAT", -1);
 				for (const auto &slot : backend.slots())
 					if (slot.local)
 						pressed = true;
 				if (!pressed)
 					for (const auto &slot : backend.slots())
-						if (backend.canTakeSeat(slot))
+						if (backend.canTakeSeat(slot) && (wantedSeat < 0 || slot.index == wantedSeat))
 						{
 							backend.takeSeat(slot.index);
 							pressed = true;
@@ -433,6 +441,19 @@ int play()
 			Engine *engine = session ? session->runningEngine() : nullptr;
 			if (engine)
 			{
+				if (!seatsShown && engine->gui.game.stepCounter > 50)
+				{
+					// Who plays which colony, and which colonies are closed (no player).
+					seatsShown = true;
+					auto &game = engine->gui.game;
+					std::string teams;
+					for (int t = 0; t < game.mapHeader.getNumberOfTeams(); ++t)
+						teams += " team" + std::to_string(t) + "=" +
+								 (game.teams[t]->playersMask == 0 ? "closed" : game.teams[t]->isAlive ? "alive" : "dead") +
+								 (game.teams[t]->hasLost ? "/lost" : "");
+					say("SEATS local seat %d team %d, %d players;%s", engine->turnSession() ? engine->turnSession()->localSeat() : -1,
+						engine->gui.localTeamNo, game.gameHeader.getNumberOfPlayers(), teams.c_str());
+				}
 				const std::string line = gameLine(*engine);
 				// The other seats' states without the grace countdown.
 				std::string presence;

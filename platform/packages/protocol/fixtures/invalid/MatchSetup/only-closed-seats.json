@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "simVersion": {
+    "versionMinor": 125,
+    "netProtocol": 49,
+    "dataHash": "3f9a6c1e8b2d47a05e6f1c2b3a4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f"
+  },
+  "seed": 77,
+  "map": {
+    "kind": "catalog",
+    "hash": "a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f90"
+  },
+  "teams": [
+    {
+      "team": 0,
+      "alliance": 0
+    },
+    {
+      "team": 1,
+      "alliance": 1
+    },
+    {
+      "team": 2,
+      "alliance": 2
+    },
+    {
+      "team": 3,
+      "alliance": 3
+    }
+  ],
+  "seats": [
+    {
+      "seat": 0,
+      "kind": "closed",
+      "team": 1
+    }
+  ],
+  "rules": {
+    "prestigeVictory": true,
+    "suddenDeathMinutes": 0,
+    "mapDiscovered": false,
+    "allyTeamsFixed": true,
+    "resourceGrowthDisabled": false,
+    "resourceScarcityLevel": 0,
+    "instantConstruction": false,
+    "stockpileStartLevel": 0,
+    "hungerDisabled": false,
+    "unitUpgradesDisabled": false,
+    "glassCannonLevel": 0,
+    "unitsFearless": false,
+    "permadeathDisabled": false,
+    "peacefulMode": false,
+    "buildingHpLevel": 0
+  },
+  "experiments": []
+}
