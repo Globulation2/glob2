@@ -2,6 +2,7 @@ import importlib.util
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 
 spec = importlib.util.spec_from_file_location(
     "package_static", Path(__file__).resolve().parents[2] / "browser/package-static.py"
@@ -54,6 +55,50 @@ class BrowserPackageTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             module.package(self.source, self.output)
         self.assertEqual(old, (self.output / "index.html").read_bytes())
+
+    def test_existing_website_is_not_an_owned_package(self):
+        self.output.mkdir()
+        index = self.output / "index.html"
+        index.write_bytes(b"existing website")
+        with self.assertRaises(ValueError):
+            module.package(self.source, self.output)
+        self.assertEqual(index.read_bytes(), b"existing website")
+
+    def test_non_html_sidecars_are_mandatory_even_if_checksums_are_removed(self):
+        for ext in ("js", "wasm", "data"):
+            with self.subTest(extension=ext):
+                version = module.package(self.source, self.output)
+                missing = f"index-{version}.{ext}.gz"
+                (self.output / missing).unlink()
+                sums = self.output / "SHA256SUMS"
+                sums.write_text(
+                    "\n".join(
+                        line
+                        for line in sums.read_text().splitlines()
+                        if not line.endswith("  " + missing)
+                    )
+                    + "\n"
+                )
+                with self.assertRaises(ValueError):
+                    module.verify(self.output)
+
+    def test_failed_directory_swap_keeps_previous_package(self):
+        module.package(self.source, self.output)
+        previous = {p.name: p.read_bytes() for p in self.output.iterdir()}
+        rename = Path.rename
+
+        def fail_swap(path, destination):
+            if path.name.startswith("browser-static-"):
+                raise OSError("Simulated directory swap failure")
+            return rename(path, destination)
+
+        with patch.object(Path, "rename", fail_swap):
+            with self.assertRaises(OSError):
+                module.package(self.source, self.output)
+        self.assertEqual(
+            {p.name: p.read_bytes() for p in self.output.iterdir()}, previous
+        )
+        module.verify(self.output)
 
 
 if __name__ == "__main__":

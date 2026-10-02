@@ -95,6 +95,9 @@ versioned JS, WASM and data files and the HTML entry point. Its packaging policy
 participates in the version identity so changing transfer representation does
 not overwrite an older immutable URL. `--verify DIRECTORY` checks file coverage,
 SHA-256 and each sidecar's decompressed bytes before publication.
+The generated `package.json` marker records ownership and package identity.
+Packaging refuses to replace an unmarked directory, even if it contains HTML;
+remove an older generated `build/browser-static` once before repackaging it.
 
 Caddy serves gzip sidecars through content negotiation and retains original files
 for uncompressed requests. The Google Cloud Storage publisher uploads gzip bytes

@@ -5,11 +5,13 @@ import argparse
 import gzip
 import hashlib
 import io
+import json
 from pathlib import Path
 import shutil
 import tempfile
 
 POLICY = b"browser-static-gzip-v1\0"
+MARKER = "package.json"
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -54,6 +56,16 @@ def package(source, destination):
             if gzip.decompress(compressed) != data:
                 raise ValueError("Gzip integrity failure: " + name)
             (stage / (name + ".gz")).write_bytes(compressed)
+        (stage / MARKER).write_text(
+            json.dumps(
+                {
+                    "policy": POLICY.decode().rstrip("\0"),
+                    "version": version,
+                }
+            )
+            + "\n",
+            encoding="utf-8",
+        )
         (stage / "SHA256SUMS").write_text(
             "".join(
                 f"{hashlib.sha256(p.read_bytes()).hexdigest()}  {p.name}\n"
@@ -61,16 +73,36 @@ def package(source, destination):
             ),
             encoding="utf-8",
         )
-        # Destination is the dedicated generated static package, not a deployed site.
+        verify(stage)
+        # The marker owns this entire generated directory; an HTML file alone
+        # is not evidence that another website can safely be replaced.
         if destination.exists():
-            if not (destination / "index.html").is_file():
+            try:
+                owned = json.loads((destination / MARKER).read_text())[
+                    "policy"
+                ] == POLICY.decode().rstrip("\0")
+            except (OSError, ValueError, KeyError, TypeError):
+                owned = False
+            if destination.is_symlink() or not owned:
                 raise ValueError("Refusing to replace an unowned static package")
-            shutil.rmtree(destination)
-        stage.rename(destination)
+        backup = destination.with_name(destination.name + "-previous")
+        if backup.exists():
+            raise ValueError("Unresolved previous static package: " + str(backup))
+        if destination.exists():
+            destination.rename(backup)
+        try:
+            stage.rename(destination)
+        except BaseException:
+            if backup.exists():
+                backup.rename(destination)
+            raise
+        if backup.exists():
+            shutil.rmtree(backup)
     return version
 
 
 def verify(directory):
+    """Check the complete package, including every required gzip representation."""
     directory = Path(directory)
     expected = {}
     for line in (directory / "SHA256SUMS").read_text().splitlines():
@@ -95,8 +127,17 @@ def verify(directory):
     for ext in ("js", "wasm", "data"):
         if len(list(directory.glob("index-*." + ext))) != 1:
             raise ValueError("Expected one versioned " + ext + " asset")
-    if not (directory / "index.html.gz").is_file():
-        raise ValueError("Missing HTML sidecar")
+    marker = json.loads((directory / MARKER).read_text())
+    if marker["policy"] != POLICY.decode().rstrip("\0"):
+        raise ValueError("Unknown static package policy")
+    names = ["index.html"] + [
+        f"index-{marker['version']}.{ext}" for ext in ("js", "wasm", "data")
+    ]
+    required = {MARKER, *names, *(name + ".gz" for name in names)}
+    if set(expected) != required:
+        raise ValueError(
+            "Static package requires all four original files and gzip sidecars"
+        )
 
 
 def main():
