@@ -360,7 +360,9 @@ export function savedPlayers(
     .slice(0, 12)
     .map((c) => {
       const kind = c.type >= PLAYER_AI ? 'ai' : 'human';
-      const stored = Array.from((c.name ?? '').trim()).slice(0, 64).join('');
+      const stored = Array.from((c.name ?? '').trim())
+        .slice(0, 64)
+        .join('');
       return {
         name: stored || `${kind === 'ai' ? 'AI' : 'Player'} ${c.slot + 1}`,
         team: c.team,

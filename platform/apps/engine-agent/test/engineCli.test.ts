@@ -115,7 +115,9 @@ describe('catalog and generation', () => {
       { name: 'nicowar', team: 0, kind: 'ai' },
       { name: 'Alice', team: 1, kind: 'human' },
     ]);
-    expect(savedPlayers([{ slot: 0, team: 0, type: 3, name: 'x'.repeat(80) }], 1)[0]?.name).toHaveLength(64);
+    expect(
+      savedPlayers([{ slot: 0, team: 0, type: 3, name: 'x'.repeat(80) }], 1)[0]?.name,
+    ).toHaveLength(64);
   });
 
   it('reads the header of a real generated map', () => {

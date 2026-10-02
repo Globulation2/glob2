@@ -691,9 +691,17 @@ describe('match-end intake', () => {
     expect(match.ended_at).not.toBeNull();
     // Nobody's rating moved, and no verify job was queued.
     expect(
-      await db.selectFrom('rating_history').select('entity_id').where('match_id', '=', matchId).execute(),
+      await db
+        .selectFrom('rating_history')
+        .select('entity_id')
+        .where('match_id', '=', matchId)
+        .execute(),
     ).toEqual([]);
-    const jobs = await db.selectFrom('engine_jobs').select('payload').where('kind', '=', 'verify-match').execute();
+    const jobs = await db
+      .selectFrom('engine_jobs')
+      .select('payload')
+      .where('kind', '=', 'verify-match')
+      .execute();
     expect(jobs.some((j) => (j.payload as { matchId: string }).matchId === matchId)).toBe(false);
 
     // Both players hear it (on either replica), and the room reopens.
