@@ -1285,3 +1285,10 @@ for real executable contracts: argument validation, map image/report workflows,
 headless worker parity and saved continuation. `test/run_coverage.py --with-cli`
 builds the instrumented client and exports these profiles separately under `client/`;
 never merge its counts with independently linked engine or unit reports.
+
+Native CLI platform evidence can be compared with
+`python3 test/check_cli_evidence.py <artifact-root> --require-platform linux --require-platform windows`.
+It compares all 64 complete tick records, including aggregate and entity checksums.
+The browser saved-match smoke checks resize, menu cancellation and resumed ticks;
+Android smoke also exercises Settings input and verifies application profile
+files survive background/resume and a fresh-process relaunch.
