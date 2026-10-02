@@ -136,7 +136,6 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 				showDefenseMap=false;
 				showFertilityMap=false;
 				showStarvingMap=!showStarvingMap;
-				overlay.compute(game, OverlayArea::Starving, localTeamNo);
 			}
 
 			if(my > YPOS_BASE_STAT+140+inc+88 && my < YPOS_BASE_STAT+140+inc+104)
@@ -145,7 +144,6 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 				showStarvingMap=false;
 				showDefenseMap=false;
 				showFertilityMap=false;
-				overlay.compute(game, OverlayArea::Damage, localTeamNo);
 			}
 
 			if(my > YPOS_BASE_STAT+140+inc+112 && my < YPOS_BASE_STAT+140+inc+128)
@@ -154,7 +152,6 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 				showStarvingMap=false;
 				showDamagedMap=false;
 				showFertilityMap=false;
-				overlay.compute(game, OverlayArea::Defence, localTeamNo);
 			}
 
 			if(my > YPOS_BASE_STAT+140+inc+136 && my < YPOS_BASE_STAT+140+inc+152)
@@ -163,7 +160,6 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 				showDefenseMap=false;
 				showStarvingMap=false;
 				showDamagedMap=false;
-				overlay.compute(game, OverlayArea::Fertility, localTeamNo);
 			}
 		}
 	}

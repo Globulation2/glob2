@@ -133,7 +133,7 @@ bool Story::areaContainsUnit(const Game *game, int &execLine) const
 	//A team number is given
 	if (line[execLine].type==SGSLToken::INT)
 	{
-		teamsToTestMask = 1<<(line[execLine].value);
+		teamsToTestMask = Team::teamNumberToMask(line[execLine].value);
 	}
 	//All of the enemies are given
 	else if (line[execLine].type==SGSLToken::S_ENEMY)
@@ -171,7 +171,7 @@ bool Story::areaContainsUnit(const Game *game, int &execLine) const
 				if (gid!=NOGUID)
 				{
 					int team=Unit::GIDtoTeam(gid);
-					if ((1<<team) & teamsToTestMask)
+					if ((Team::teamNumberToMask(team)) & teamsToTestMask)
 					{
 						foundUnit = true;
 					}
@@ -192,7 +192,7 @@ bool Story::areaContainsUnit(const Game *game, int &execLine) const
 					if (gid!=NOGUID)
 					{
 						int team=Unit::GIDtoTeam(gid);
-						if ((1<<team) & teamsToTestMask)
+						if ((Team::teamNumberToMask(team)) & teamsToTestMask)
 						{
 							foundUnit = true;
 						}

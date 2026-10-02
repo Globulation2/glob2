@@ -21,6 +21,8 @@ namespace Utilities
 }
 
 ///This class is meant to manage the game gui tool, such as placing a building, flag or zone
+struct Scene;
+
 class GameGUIToolManager
 {
 public:
@@ -57,6 +59,8 @@ public:
 
 	///Draws the tool on the map
 	void drawTool(int mouseX, int mouseY, int localteam, int viewportX, int viewportY, int modifiers);
+	//! Draw building previews from scene (the frame's extracted state).
+	void setDrawnScene(const Scene* scene) { drawnScene = scene; }
 	
 	///Returns the name of the current building
 	std::string getBuildingName() const;
@@ -111,6 +115,8 @@ private:
 	std::optional<FirstPlacement> firstPlacement;
 
 	Game& game;
+	//! The frame's Scene; the building preview reads placement room from it.
+	const Scene* drawnScene = nullptr;
 	BrushTool& brush;
 	GameGUIDefaultAssignManager& defaultAssign;
 	GameGUIGhostBuildingManager& ghostManager;

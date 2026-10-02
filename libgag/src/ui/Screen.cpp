@@ -256,6 +256,13 @@ bool UIDialog::event(const SDL_Event &raw)
 		return false;
 	SDL_Event event = raw;
 	GAGCore::GraphicContext::translateMouseEvent(&event);
+	return eventLogical(event);
+}
+
+bool UIDialog::eventLogical(const SDL_Event &event)
+{
+	if (done)
+		return false;
 	refreshPresentation();
 	if (onEvent(event))
 		return true;

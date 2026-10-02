@@ -25,6 +25,7 @@ struct Colony
 {
     GameGUI gui;
     Game& game = gui.game;
+    glob2test::BoundGameRandom random{game};
     Team* team;
     Building* inn;
     std::vector<Uint32> trace;

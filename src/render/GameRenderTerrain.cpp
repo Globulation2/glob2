@@ -27,6 +27,7 @@
 
 
 #include "GameRenderInternal.h"
+#include "scene/SceneMap.h"
 #include <SpriteDrawBatch.h>
 #include <MapGeometryCache.h>
 #include <RenderBatch.h>
@@ -93,7 +94,7 @@ bool drawCachedTerrain(const void *mapIdentity, Sprite *sprite, int left, int to
 // retain source traversal order inside texture runs, and select the exact source
 // tile range with binary searches. Splitting rectangles vertically would change
 // the painter order. Partial discovery uses the ordinary path below instead.
-bool drawCachedResources(const void *mapIdentity, Map& map, int left, int top,
+bool drawCachedResources(const void *mapIdentity, const SceneMap& map, int left, int top,
     int right, int bottom, int viewportX, int viewportY)
 {
     auto *gfx = globalContainer->gfx;
@@ -182,18 +183,18 @@ void Game::drawMapWater(int sw, int sh, int viewportX, int viewportY, int time)
 	globalContainer->gfx->finishDrawingSprite(globalContainer->terrainWater, 255);
 }
 
-void Game::drawMapTerrain(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
+void Game::drawMapTerrain(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& sceneMap)
 {
 	PERF_SCOPE_TIME(Terrain);
 	Uint32 visibleTeams = teams[localTeam]->me;
 	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 
-    if (drawCachedTerrain(&map, globalContainer->terrain, left, top, right, bot,
-            viewportX, viewportY, map.getMaskW(), map.getMaskH(), [&](int x, int y)
+    if (drawCachedTerrain(sceneMap.cacheKey(), globalContainer->terrain, left, top, right, bot,
+            viewportX, viewportY, sceneMap.getMaskW(), sceneMap.getMaskH(), [&](int x, int y)
             {
                 bool visible = (drawOptions & DRAW_WHOLE_MAP) ||
-                    map.isMapPartiallyDiscovered(x - 1, y - 1, x + 1, y + 1, visibleTeams);
-                int frame = map.getTerrain(x, y);
+                    sceneMap.isMapPartiallyDiscovered(x - 1, y - 1, x + 1, y + 1, visibleTeams);
+                int frame = sceneMap.getTerrain(x, y);
                 return visible && frame < 256 ? frame : -1; // Water is animated separately.
             })) return;
 
@@ -201,7 +202,7 @@ void Game::drawMapTerrain(int left, int top, int right, int bot, int viewportX, 
 	for (int y=top; y<=bot; y++)
 		for (int x=left; x<=right; x++)
 			if ((drawOptions & DRAW_WHOLE_MAP) != 0 ||
-					map.isMapPartiallyDiscovered(
+					sceneMap.isMapPartiallyDiscovered(
 							x+viewportX-1,
 							y+viewportY-1,
 							x+viewportX+1,
@@ -209,7 +210,7 @@ void Game::drawMapTerrain(int left, int top, int right, int bot, int viewportX, 
 							visibleTeams))
 			{
 				// draw terrain
-				int id=map.getTerrain(x+viewportX, y+viewportY);
+				int id=sceneMap.getTerrain(x+viewportX, y+viewportY);
 				Sprite *sprite;
 				if (id<272)
 				{
@@ -227,27 +228,27 @@ void Game::drawMapTerrain(int left, int top, int right, int bot, int viewportX, 
 	globalContainer->gfx->finishDrawingSprite(globalContainer->terrain, 255);
 }
 
-void Game::drawMapResources(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
+void Game::drawMapResources(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& sceneMap)
 {
 	PERF_SCOPE_TIME(Resources);
 	Uint32 visibleTeams = teams[localTeam]->me;
 	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 
-    if ((drawOptions & DRAW_WHOLE_MAP) && drawCachedResources(&map, map, left, top,
+    if ((drawOptions & DRAW_WHOLE_MAP) && drawCachedResources(sceneMap.cacheKey(), sceneMap, left, top,
             right, bot, viewportX, viewportY)) return;
     GAGCore::SpriteDrawBatch batch(globalContainer->gfx, globalContainer->resources);
 
 	for (int y=top; y<=bot; y++)
 		for (int x=left; x<=right; x++)
 			if ((drawOptions & DRAW_WHOLE_MAP) != 0 ||
-				map.isMapPartiallyDiscovered(
+				sceneMap.isMapPartiallyDiscovered(
 						x+viewportX-1,
 						y+viewportY-1,
 						x+viewportX+1,
 						y+viewportY+1,
 						visibleTeams))
 			{
-				const auto& r = map.getResource(x+viewportX, y+viewportY);
+				const auto& r = sceneMap.getResource(x+viewportX, y+viewportY);
 				if (r.type!=NO_RES_TYPE)
 				{
 					Sprite *sprite=globalContainer->resources;
@@ -274,9 +275,9 @@ void Game::drawMapResources(int left, int top, int right, int bot, int viewportX
 
 void Game::drawMapDebugAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view)
 {
-	if (view.selectedBuilding && (DEBUG_RENDER_GRADIENTS || view.selectedBuilding->verbose))
-		for (int c = 0; c < SWIM_CLASS_COUNT; ++c)
-			map.finishBuildingGradient(view.selectedBuilding, c);
+	// Rendering never advances simulation state: these debug views show building
+	// gradients as far as the lazy searches have resolved them (unresolved cells
+	// keep their initial value) rather than finishing the searches here.
 	// We draw debug area:
 	if (DEBUG_RENDER_GRADIENTS)
 	{
@@ -334,35 +335,35 @@ void Game::drawMapDebugAreas(int left, int top, int right, int bot, int sw, int 
 /**
  * Draws the visible (viewport) part of the given map
  */
-void Game::drawMapAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
+void Game::drawMapAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view, const SceneMap& sceneMap)
 {
 	PERF_SCOPE_TIME(Overlay);
-	static int areaAnimationTick = 0;
+	int &areaAnimationTick = view.render.areaAnimationTick;
 
 	if ((drawOptions & DRAW_AREA) != 0 && (!globalContainer->isViewingGame() || globalContainer->replayShowAreas))
 	{
-		drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, &map, &Map::isForbiddenInDisplayedView, areaAnimationTick, ForbiddenArea);
-		drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, &map, &Map::isGuardAreaInDisplayedView, areaAnimationTick, GuardArea);
-		drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, &map, &Map::isClearAreaInDisplayedView, areaAnimationTick, ClearingArea);
+		drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, sceneMap, &SceneMap::isForbiddenInDisplayedView, areaAnimationTick, ForbiddenArea);
+		drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, sceneMap, &SceneMap::isGuardAreaInDisplayedView, areaAnimationTick, GuardArea);
+		drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, sceneMap, &SceneMap::isClearAreaInDisplayedView, areaAnimationTick, ClearingArea);
 		for (int y=top; y<bot; y++)
 			for (int x=left; x<right; x++)
 			{
 				if((drawOptions & DRAW_NO_RESOURCE_GROWTH_AREAS) != 0)
 				{
-					if(!map.canResourcesGrow(x+viewportX, y+viewportY))
+					if(!sceneMap.canResourcesGrow(x+viewportX, y+viewportY))
 					{
 						globalContainer->gfx->drawLine((x<<5), 8+(y<<5), 32+(x<<5), 8+(y<<5), 128, 64, 0);
 						globalContainer->gfx->drawLine((x<<5), 16+(y<<5), 32+(x<<5), 16+(y<<5), 128, 64, 0);
 						globalContainer->gfx->drawLine((x<<5), 24+(y<<5), 32+(x<<5), 24+(y<<5), 128, 64, 0);
 
-						if (map.canResourcesGrow(x+viewportX, y+viewportY-1))
+						if (sceneMap.canResourcesGrow(x+viewportX, y+viewportY-1))
 							globalContainer->gfx->drawHorzLine((x<<5), (y<<5), 32, 255, 128, 0);
-						if (map.canResourcesGrow(x+viewportX, y+viewportY+1))
+						if (sceneMap.canResourcesGrow(x+viewportX, y+viewportY+1))
 							globalContainer->gfx->drawHorzLine((x<<5), 32+(y<<5), 32, 255, 128, 0);
 
-						if (map.canResourcesGrow(x+viewportX-1, y+viewportY))
+						if (sceneMap.canResourcesGrow(x+viewportX-1, y+viewportY))
 							globalContainer->gfx->drawVertLine((x<<5), (y<<5), 32, 255, 128, 0);
-						if (map.canResourcesGrow(x+viewportX+1, y+viewportY))
+						if (sceneMap.canResourcesGrow(x+viewportX+1, y+viewportY))
 							globalContainer->gfx->drawVertLine(32+(x<<5), (y<<5), 32, 255, 128, 0);
 						}
 				}
@@ -376,7 +377,7 @@ void Game::drawMapAreas(int left, int top, int right, int bot, int sw, int sh, i
  */
 void Game::drawMapArea(int left, int top, int right, int bot, int sw,
 		int sh, int viewportX, int viewportY, int localTeam,
-		Uint32 drawOptions, Map * map, bool (Map::*mapIs)(int, int) const, int areaAnimationTick,
+		Uint32 drawOptions, const SceneMap& map, bool (SceneMap::*mapIs)(int, int) const, int areaAnimationTick,
 		AreaType areaType)
 {
 	Sprite* sprite;
@@ -392,20 +393,20 @@ void Game::drawMapArea(int left, int top, int right, int bot, int sw,
 	{
 		for (int x=left; x<right; x++)
 		{
-			if ((map->*mapIs)(x+viewportX, y+viewportY))
+			if ((map.*mapIs)(x+viewportX, y+viewportY))
 			{
 				int randId = (x+viewportX) * 7919 + (y+viewportY) * 17;
 				int frame = ((randId + areaAnimationTick) % (sprite->getFrameCount() * 2)) / 2;
 				globalContainer->gfx->drawSprite((x<<5), (y<<5), sprite, frame);
 
-				if (!(map->*mapIs)(x+viewportX, y+viewportY-1))
+				if (!(map.*mapIs)(x+viewportX, y+viewportY-1))
 					globalContainer->gfx->drawMapBoundary(x*32, y*32, (x+1)*32, y*32, c);
-				if (!(map->*mapIs)(x+viewportX, y+viewportY+1))
+				if (!(map.*mapIs)(x+viewportX, y+viewportY+1))
 					globalContainer->gfx->drawMapBoundary(x*32, (y+1)*32, (x+1)*32, (y+1)*32, c);
 
-				if (!(map->*mapIs)(x+viewportX-1, y+viewportY))
+				if (!(map.*mapIs)(x+viewportX-1, y+viewportY))
 					globalContainer->gfx->drawMapBoundary(x*32, y*32, x*32, (y+1)*32, c);
-				if (!(map->*mapIs)(x+viewportX+1, y+viewportY))
+				if (!(map.*mapIs)(x+viewportX+1, y+viewportY))
 					globalContainer->gfx->drawMapBoundary((x+1)*32, y*32, (x+1)*32, (y+1)*32, c);
 			}
 		}
