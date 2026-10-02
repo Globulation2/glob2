@@ -8,6 +8,7 @@ from pathlib import Path
 import platform
 import subprocess
 import tarfile
+import tempfile
 import urllib.request
 
 LOCK = Path(__file__).with_name('sdl3-versions.json')
@@ -32,22 +33,28 @@ def download(work, versions):
 def apply_source_patches(source, patches=SDL_PATCHES):
     """Apply the same reviewed SDL fixes as vcpkg, rejecting unexpected sources."""
     source = Path(source).resolve()
-    # Archives can live inside the application checkout. Prevent git apply from
-    # discovering that repository and silently skipping paths outside its prefix.
-    environment = dict(os.environ, GIT_CEILING_DIRECTORIES=str(source.parent))
+    # A private repository anchors git's working tree even when Windows/MSYS
+    # disagree about path separators in GIT_CEILING_DIRECTORIES. Never discover
+    # the application repository or skip paths because the SDK is beneath it.
+    environment = dict(os.environ)
     for variable in ('GIT_DIR', 'GIT_WORK_TREE', 'GIT_INDEX_FILE', 'GIT_COMMON_DIR'):
         environment.pop(variable, None)
-    for patch in patches:
-        command = ['git', 'apply', '--check', str(Path(patch).resolve())]
-        check = subprocess.run(command, cwd=source, env=environment, capture_output=True, text=True)
-        if check.returncode:
-            reverse = subprocess.run(command[:2] + ['--reverse'] + command[2:],
-                                     cwd=source, env=environment, capture_output=True, text=True)
-            if reverse.returncode:
-                raise RuntimeError(f'SDL source patch does not apply: {patch}\n{check.stderr}')
-        else:
-            subprocess.run(['git', 'apply', '--whitespace=nowarn', command[-1]],
-                           cwd=source, env=environment, check=True)
+    with tempfile.TemporaryDirectory(prefix='glob2-sdl-patches-') as temporary:
+        subprocess.run(['git', 'init', '--bare', '--quiet', temporary],
+                       env=environment, check=True)
+        git = ['git', '--git-dir', temporary, '--work-tree', str(source), 'apply']
+        for patch in patches:
+            path = str(Path(patch).resolve())
+            check = subprocess.run(git + ['--check', path], cwd=source,
+                                   env=environment, capture_output=True, text=True)
+            if check.returncode:
+                reverse = subprocess.run(git + ['--reverse', '--check', path], cwd=source,
+                                         env=environment, capture_output=True, text=True)
+                if reverse.returncode:
+                    raise RuntimeError(f'SDL source patch does not apply: {patch}\n{check.stderr}')
+            else:
+                subprocess.run(git + ['--whitespace=nowarn', path],
+                               cwd=source, env=environment, check=True)
 
 
 def patch_image_exports(source):
@@ -85,7 +92,7 @@ def build(prefix, work, jobs=2, emscripten=None, environment=None, threaded=Fals
     versions = json.loads(LOCK.read_text())
     if emscripten:
         versions = json.loads(LOCK.with_name('sdl3-vendored.json').read_text()) | versions
-    identity = {'configuration': 10, 'threaded': threaded, 'versions': versions, 'emscripten': str(emscripten) if emscripten else None,
+    identity = {'configuration': 11, 'threaded': threaded, 'versions': versions, 'emscripten': str(emscripten) if emscripten else None,
                 'platform': platform.platform(), 'machine': platform.machine(),
                 'source_patches': {patch.name: hashlib.sha256(patch.read_bytes()).hexdigest()
                                    for patch in SDL_PATCHES}}
