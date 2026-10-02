@@ -36,6 +36,10 @@ Building* Game::lookupBuilding(Uint16 gid) const
 {
 	// Central order boundary: GIDtoID is modulo MAX_COUNT, but the decoded
 	// team must be checked before indexing. A missing building is also invalid.
+	// GIDtoTeam asserts on ids past the last team's range, which a hostile order
+	// can carry, so those are rejected first.
+	if (gid >= Building::MAX_COUNT * Team::MAX_COUNT)
+		return nullptr;
 	int team=Building::GIDtoTeam(gid);
 	int id=Building::GIDtoID(gid);
 	if (team >= mapHeader.getNumberOfTeams() || !teams[team]) return nullptr;

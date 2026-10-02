@@ -32,6 +32,7 @@ static_assert(ORDER_TYPE_ADJUST_LATENCY == ORDER_ADJUST_LATENCY, "relay order id
 
 namespace
 {
+constexpr std::uint64_t TICK = 40 * MS;
 
 template <typename T>
 std::shared_ptr<T> roundTrip(const T& message)
