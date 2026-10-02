@@ -39,6 +39,7 @@
 #include "MersenneTwister.h"
 #include "Order.h"
 #include "Player.h"
+#include "ReplayReader.h"
 #include "Sha256.h"
 #include "SimVersion.h"
 #include "TurnLockstep.h"
@@ -162,7 +163,11 @@ public:
 		wakeAt = 0;
 	}
 
-	Turn::TurnSession& session() { return engine->turnLockstep()->turn(); }
+	Turn::TurnSession& session()
+	{
+		REQUIRE_MESSAGE(engine->turnLockstep(), "client " << index << " has no running session");
+		return engine->turnLockstep()->turn();
+	}
 
 	void frame()
 	{
@@ -185,7 +190,8 @@ public:
 			if (after < before)
 				++reloads;
 			engine->trackTeamEliminations();
-			if (after > before && orderRate > 0 && std::uniform_real_distribution<double>(0, 1)(bot) < orderRate)
+			// A player acts in real time, not once per fast-forwarded tick.
+			if (after > before && !catching && orderRate > 0 && std::uniform_real_distribution<double>(0, 1)(bot) < orderRate)
 				queueBotOrder();
 			if (!running)
 			{
@@ -409,8 +415,11 @@ Verified verifyRecord(const Turn::MatchRecord& record, const EngineMatch& match,
 	v.verdict = MatchVerifier::verify(reread, match.setup, match.map, out);
 	v.result = json::parse(glob2test::readFile(out / "result.json"));
 	v.verdictJson = json::parse(glob2test::readFile(out / "verdict.json"));
-	CHECK(fs::exists(out / "match.replay"));
 	CHECK(fs::exists(out / "checksums.txt"));
+	// The replay is a standard one: the replay reader accepts it.
+	ReplayReader replay;
+	CHECK(replay.loadReplay((out / "match.replay").string()));
+	CHECK(replay.isValid());
 	return v;
 }
 
