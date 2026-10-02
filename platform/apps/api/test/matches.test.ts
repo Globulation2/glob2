@@ -1113,6 +1113,71 @@ describe('queue methods and NOTIFY forwarding', () => {
     expect(gone.error?.code).toBe('conflict');
   });
 
+  it('opens one unrated rematch room for the players of a quick match', async () => {
+    await registerRelay(a, 'relay-rm');
+    const p1 = await player(a);
+    const p2 = await player(b);
+    const outsider = await player(a);
+    const prop = await proposal([p1.accountId, p2.accountId]);
+    const setup = queueMatchSetup(prop, {
+      seed: 9,
+      generator: generator(2, 9),
+      mapHash: 'ab'.repeat(32),
+    });
+    const created = await createMatch(harness.database.db, {
+      setup,
+      origin: 'queue',
+      queueId: prop.queueId,
+      proposalId: prop.id,
+      rated: true,
+      placement: { players: [] },
+    });
+    const early = await p1.client.call('match.rematch', { matchId: created.matchId });
+    expect(early.error?.code).toBe('conflict');
+    await harness.database.db
+      .updateTable('matches')
+      .set({ status: 'ended', end_reason: 'completed', ended_at: new Date() })
+      .where('id', '=', created.matchId)
+      .execute();
+    const stranger = await outsider.client.call('match.rematch', { matchId: created.matchId });
+    expect(stranger.error?.code).toBe('not_found');
+
+    p2.client.clear();
+    const opened = (await p1.client.ok('match.rematch', { matchId: created.matchId }))['room'] as {
+      id: string;
+      code: string;
+      visibility: string;
+      host: string;
+      members: { accountId: string }[];
+      map?: { kind: string };
+    };
+    expect(opened.visibility).toBe('link');
+    expect(opened.members.map((m) => m.accountId)).toEqual([p1.accountId]);
+    expect(opened.map?.kind).toBe('generated');
+    const offered = await p2.client.event('match.rematchOffered');
+    expect(check('RealtimeEventMatchRematchOffered', offered).stage).toBe('ok');
+    expect(offered).toMatchObject({
+      matchId: created.matchId,
+      roomId: opened.id,
+      code: opened.code,
+    });
+
+    const joined = (await p2.client.ok('match.rematch', { matchId: created.matchId }))['room'] as {
+      id: string;
+      members: { accountId: string }[];
+    };
+    expect(joined.id).toBe(opened.id);
+    expect(joined.members.map((m) => m.accountId).sort()).toEqual(
+      [p1.accountId, p2.accountId].sort(),
+    );
+    // Asking again keeps the same room.
+    const again = (await p1.client.ok('match.rematch', { matchId: created.matchId }))['room'] as {
+      id: string;
+    };
+    expect(again.id).toBe(opened.id);
+    await resetRelays();
+  });
+
   it('forwards worker queue events to sockets on any replica and follows matchFound with match.start', async () => {
     await registerRelay(a, 'relay-n');
     const p1 = await player(b);

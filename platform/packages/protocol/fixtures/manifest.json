@@ -56,6 +56,7 @@
     "RealtimeEvent": "schemas/RealtimeEvent.schema.json",
     "RealtimeEventAuthHandoffCompleted": "schemas/RealtimeEventAuthHandoffCompleted.schema.json",
     "RealtimeEventAuthHandoffFailed": "schemas/RealtimeEventAuthHandoffFailed.schema.json",
+    "RealtimeEventMatchRematchOffered": "schemas/RealtimeEventMatchRematchOffered.schema.json",
     "RealtimeEventMatchStart": "schemas/RealtimeEventMatchStart.schema.json",
     "RealtimeEventMatchUpdated": "schemas/RealtimeEventMatchUpdated.schema.json",
     "RealtimeEventQueueMatchFound": "schemas/RealtimeEventQueueMatchFound.schema.json",
@@ -68,6 +69,8 @@
     "RealtimeEventSessionRevoked": "schemas/RealtimeEventSessionRevoked.schema.json",
     "RealtimeMatchReconnectParams": "schemas/RealtimeMatchReconnectParams.schema.json",
     "RealtimeMatchReconnectResult": "schemas/RealtimeMatchReconnectResult.schema.json",
+    "RealtimeMatchRematchParams": "schemas/RealtimeMatchRematchParams.schema.json",
+    "RealtimeMatchRematchResult": "schemas/RealtimeMatchRematchResult.schema.json",
     "RealtimeQueueJoinParams": "schemas/RealtimeQueueJoinParams.schema.json",
     "RealtimeQueueJoinResult": "schemas/RealtimeQueueJoinResult.schema.json",
     "RealtimeQueueLeaveParams": "schemas/RealtimeQueueLeaveParams.schema.json",
@@ -524,6 +527,18 @@
       "schema": "RealtimeQueueUpdateParams",
       "valid": true,
       "note": "Untick \"Allow an AI opponent\" while searching."
+    },
+    {
+      "file": "valid/RealtimeMatchRematchParams/after-quick-match.json",
+      "schema": "RealtimeMatchRematchParams",
+      "valid": true,
+      "note": "Ask for (or join) the rematch room of a quick match."
+    },
+    {
+      "file": "valid/RealtimeEventMatchRematchOffered/offered.json",
+      "schema": "RealtimeEventMatchRematchOffered",
+      "valid": true,
+      "note": "The other player opened the rematch room."
     },
     {
       "file": "valid/RelayRegionList/two-regions.json",

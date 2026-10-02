@@ -273,6 +273,12 @@ export const realtimeMethods = {
     params: Strict({ ticketId: Uuid }),
     result: EmptyResult,
   },
+  'match.rematch': {
+    description:
+      'Rematch after a quick match (Q9): an unrated link room with the same map, rules and players. The first player to ask hosts it and every other human player of the match gets match.rematchOffered; asking again, or after someone else did, joins that room.',
+    params: Strict({ matchId: Uuid, regions: Type.Optional(RegionRtts) }),
+    result: Open({ room: RoomState }),
+  },
   'match.reconnect': {
     description:
       'Get a fresh ticket for a starting or running match the caller is seated in (also the way to fetch a missed match.start).',
@@ -439,6 +445,11 @@ export const realtimeEvents = {
   'queue.matchFound': {
     description: 'The queue placed the client in a match; match.start follows.',
     data: Open({ ticketId: Uuid, matchId: Uuid }),
+  },
+  'match.rematchOffered': {
+    description:
+      'Another player of a quick match opened its rematch room; join it with room.join {code} (or match.rematch).',
+    data: Open({ matchId: Uuid, roomId: Uuid, code: InviteCode, host: DisplayName }),
   },
   'match.start': {
     description: 'Connect to the relay with the ticket and load the setup.',

@@ -930,6 +930,20 @@ export const fixtureCases: FixtureCase[] = [
     value: { ticketId: '5d0f2c43-6a3e-4c8e-b8f1-9e2a7c4d3b10', allowAiOpponent: false },
   },
   {
+    schema: 'RealtimeMatchRematchParams',
+    name: 'after-quick-match',
+    valid: true,
+    note: 'Ask for (or join) the rematch room of a quick match.',
+    value: { matchId: MATCH_ID, regions: [{ region: 'eu-west', rttMs: 28 }] },
+  },
+  {
+    schema: 'RealtimeEventMatchRematchOffered',
+    name: 'offered',
+    valid: true,
+    note: 'The other player opened the rematch room.',
+    value: { matchId: MATCH_ID, roomId: ROOM_ID, code: 'K7QX4M', host: 'Kestrel' },
+  },
+  {
     schema: 'RelayRegionList',
     name: 'two-regions',
     valid: true,

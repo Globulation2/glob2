@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:RealtimeEventMatchRematchOffered",
+  "title": "RealtimeEventMatchRematchOffered",
+  "type": "object",
+  "required": [
+    "matchId",
+    "roomId",
+    "code",
+    "host"
+  ],
+  "properties": {
+    "matchId": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "description": "Lowercase UUID."
+    },
+    "roomId": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "description": "Lowercase UUID."
+    },
+    "code": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9]{6,16}$"
+    },
+    "host": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 32,
+      "pattern": "^[^\\u0000-\\u001f\\u007f]+$",
+      "description": "Display name; at most 32 UTF-8 bytes (checked semantically)."
+    }
+  }
+}

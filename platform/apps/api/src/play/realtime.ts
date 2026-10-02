@@ -371,6 +371,33 @@ export class PlayRealtime {
         return {};
       },
 
+      'match.rematch': async (connection, raw) => {
+        const params = raw as RealtimeParams<'match.rematch'>;
+        const account = connection.requireAccount();
+        const result = await rooms.rematch(
+          account,
+          this.requireSim(connection),
+          params.matchId,
+          params.regions,
+        );
+        if (result.created) {
+          for (const accountId of result.others) {
+            await this.options.hub.publish({
+              t: 'event',
+              to: { account: accountId },
+              event: 'match.rematchOffered',
+              data: {
+                matchId: params.matchId,
+                roomId: result.room.id,
+                code: result.room.code,
+                host: account.display_name,
+              },
+            });
+          }
+        }
+        return { room: result.room };
+      },
+
       'match.reconnect': async (connection, raw) => {
         const params = raw as RealtimeParams<'match.reconnect'>;
         const account = connection.requireAccount();
