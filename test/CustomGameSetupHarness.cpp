@@ -96,7 +96,7 @@ struct CustomGameSetupHarness
 	{
 		CustomGamePreferences original;
 		original.setup.random = true;
-		original.setup.capacity = original.setup.generator.nbTeams = 12;
+		original.setup.capacity = original.setup.generator.nbTeams = Team::MAX_COUNT;
 		original.setup.premadeMap = "/maps/My \"favorite\" / 地図.map";
 		original.userMaps = true;
 		original.librarySelection[0] = "maps/FourSquares1.map";
@@ -125,8 +125,8 @@ struct CustomGameSetupHarness
 		checkExtraRules(restored.setup);
 		REQUIRE(restored.setup.mapRevision == 0);
 		REQUIRE(restored.landscapeSortOrder == 1);
-		// Both older formats still load; omitted rules take their normal defaults.
-		for (int version : {1, 2})
+		// All three older formats still load; omitted rules take their normal defaults.
+		for (int version : {1, 2, 3})
 		{
 			auto old = encoded;
 			auto removeLine = [&](const std::string &prefix) {
@@ -134,15 +134,26 @@ struct CustomGameSetupHarness
 				REQUIRE((at != std::string::npos && eol != std::string::npos));
 				old.erase(at, eol - at);
 			};
-			removeLine("rules ");
+			if (version < 3) removeLine("rules ");
 			if (version == 1) removeLine("picker ");
-			old.replace(0, std::string("glob2-custom-game 3").size(),
+			old.replace(0, std::string("glob2-custom-game 4").size(),
 				"glob2-custom-game " + std::to_string(version));
+			// Reproduce the old twelve-record wire layout, including its draft capacity.
+			const auto coloniesAt = old.find("colonies 16\n");
+			REQUIRE(coloniesAt != std::string::npos);
+			old.replace(coloniesAt, std::string("colonies 16").size(), "colonies");
+			size_t recordsEnd = old.find('\n', coloniesAt) + 1;
+			for (int i = 0; i < 12; ++i) recordsEnd = old.find('\n', recordsEnd) + 1;
+			old.erase(recordsEnd, old.find("end\n", recordsEnd) - recordsEnd);
+			REQUIRE(old.find("setup 1 16") != std::string::npos);
+			old.replace(old.find("setup 1 16"), 10, "setup 1 12");
+			REQUIRE(old.find("nbTeams 16") != std::string::npos);
+			old.replace(old.find("nbTeams 16"), 10, "nbTeams 12");
 			CustomGamePreferences fromOld;
-			REQUIRE((fromOld.decode(old) && fromOld.landscapeSortOrder == version - 1));
+			REQUIRE((fromOld.decode(old) && fromOld.landscapeSortOrder == (version == 1 ? 0 : 1)));
 			REQUIRE(fromOld.setup.premadeMap == original.setup.premadeMap);
-			REQUIRE((!fromOld.setup.unitUpgradesDisabled && !fromOld.setup.noHunger));
-			REQUIRE((fromOld.setup.startingUnitLevel == 0 && fromOld.setup.suddenDeathMinutes == 0));
+			REQUIRE((fromOld.setup.unitUpgradesDisabled == (version >= 3) && fromOld.setup.noHunger == (version >= 3)));
+			REQUIRE((fromOld.setup.startingUnitLevel == (version >= 3 ? 3 : 0) && fromOld.setup.suddenDeathMinutes == (version >= 3 ? 90 : 0)));
 		}
 		for (size_t length : {size_t(0), size_t(10), encoded.size() / 2, encoded.size() - 5})
 		{
@@ -150,13 +161,14 @@ struct CustomGameSetupHarness
 			REQUIRE(restored.encode() == encoded);
 		}
 		for (const auto &replacement : std::vector<std::pair<std::string, std::string>>{
-			{"glob2-custom-game 3", "glob2-custom-game 4"},
+			{"glob2-custom-game 4", "glob2-custom-game 5"},
 			{"rules 1 3", "rules 2 3"}, {"rules 1 3", "rules 1 4"},
 			{"2 3 90\nlabels", "2 4 90\nlabels"},
 			{"2 3 90\nlabels", "2 3 31\nlabels"},
 			{"wDec 9", "wDec 31"}, {"nbWorkers 8", "nbWorkers -1"},
 			{"generator 4 5", "generator 0 5"}, {"generator 4 5", "generator 4 100"},
-			{"colonies\n1 1 0", "colonies\n99 1 0"}})
+			{"colonies 16\n1 1 0", "colonies 16\n99 1 0"},
+			{"colonies 16", "colonies 17"}, {"colonies 16", "colonies 0"}})
 		{
 			auto corrupt = encoded;
 			auto at = corrupt.find(replacement.first);
@@ -222,7 +234,7 @@ struct CustomGameSetupHarness
 
 		// The same file as an older build wrote it, without the options section.
 		const auto at = encoded.find("\noptions ") + 1, eol = encoded.find('\n', at);
-		const auto end = encoded.find("colonies\n");
+		const auto end = encoded.find("colonies ");
 		REQUIRE((at > 0 && eol < end));
 		REQUIRE(restored.decode(encoded.substr(0, at) + encoded.substr(end)));
 		GenerationRequest defaults;
@@ -1662,13 +1674,13 @@ struct CustomGameSetupHarness
                 << " threads, selection, regeneration and the shown map played\n";
     }
     screen.setup.generatorHistory.select(screen.setup.generator, MapGenerationDescriptor::eRIVER);
-    screen.setup.setCapacity(12);
+    screen.setup.setCapacity(Team::MAX_COUNT);
     screen.setup.generator.wDec = screen.setup.generator.hDec = 8;
     screen.invalidatePreview();
     REQUIRE(screen.generateMap());
     screen.setup.setController(0, CustomGameSetup::Computer);
     screen.selectTab(1);
-    capture("players-12-1000");
+    capture("players-16-1000");
     clickControl("colony/0/controller");
     REQUIRE(host.popupOpen());
     REQUIRE(!screen.setup.setController(0, CustomGameSetup::Shared));
@@ -1677,17 +1689,17 @@ struct CustomGameSetupHarness
     keyEvent(SDLK_DOWN);
     keyEvent(SDLK_DOWN);
     keyEvent(SDLK_RETURN);
-    REQUIRE((host.popupOpen() && screen.setup.controllerCount() == 12));
+    REQUIRE((host.popupOpen() && screen.setup.controllerCount() == Team::MAX_COUNT));
     keyEvent(SDLK_ESCAPE);
     scrollTo("lobby/players", node("lobby/players")->scrollMaximum());
-    capture("players-12-scrolled");
-    clickControl("colony/11/ai");
+    capture("players-16-scrolled");
+    clickControl("colony/15/ai");
     const int rosterOffset = scrollOf("lobby/players");
     keyEvent(SDLK_DOWN);
     keyEvent(SDLK_RETURN);
     REQUIRE(scrollOf("lobby/players") == rosterOffset);
     // Sequential keyboard focus scrolls an off-screen control into view.
-    host.focus("colony/11/team", true);
+    host.focus("colony/15/team", true);
     keyEvent(SDLK_TAB);
 
 		screen.selectTab(2);
@@ -1721,11 +1733,11 @@ struct CustomGameSetupHarness
 		s.writeHeader(h, "test");
 		REQUIRE(h.getNumberOfPlayers() == 5);
 		REQUIRE(h.getBasePlayer(4).teamNumber == 3);
-		s.setCapacity(12);
+		s.setCapacity(Team::MAX_COUNT);
 		REQUIRE(!s.validation().empty());
 		REQUIRE(!s.setController(2, CustomGameSetup::Shared));
 		REQUIRE(s.setController(3, CustomGameSetup::Computer));
-		REQUIRE((s.controllerCount() == 12 && !s.humanColony()));
+		REQUIRE((s.controllerCount() == Team::MAX_COUNT && !s.humanColony()));
 		REQUIRE((!s.presetTeams(1) && !s.presetTeams(2)));
 		REQUIRE(s.presetTeams(0));
 		s.setCapacity(4);

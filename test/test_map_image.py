@@ -73,6 +73,29 @@ def main():
     exported=OUT/'export.png'; run('--export-map-image',dest,'--output',exported)
     ew,eh,pixels=png(exported); assert (ew,eh)==(64,64)
     for color in COLORS[3:11]: assert bytes(color) in [pixels[i:i+3] for i in range(0,len(pixels),3)],color
+    # Canonical image export/import must preserve the full live team capacity.
+    dense=[0]*(256*256)
+    for y in range(32,256,64):
+        for x in range(32,256,64): mark(dense,256,256,x,y)
+    dense_image=OUT/'sixteen.png';write_png(dense_image,256,256,dense)
+    dense_map=OUT/'sixteen.map.gz';dense_report=OUT/'sixteen.json'
+    run('--import-map-image',dense_image,'--width',256,'--height',256,'--teams',16,
+        '--seed',19,'--output',dense_map,'--json',dense_report)
+    first=json.loads(dense_report.read_text())
+    assert first['image_import']['markers']==16 and len(first['map']['colonies'])==16
+    dense_export=OUT/'sixteen-export.png'
+    run('--export-map-image',dense_map,'--output',dense_export)
+    run('--import-map-image',dense_export,'--width',256,'--height',256,'--teams',16,
+        '--seed',19,'--output',OUT/'sixteen-restored.map.gz','--json',OUT/'sixteen-restored.json')
+    restored=json.loads((OUT/'sixteen-restored.json').read_text())
+    assert restored['image_import']['markers']==16 and len(restored['map']['colonies'])==16
+    assert [c['start'] for c in restored['map']['colonies']]==[c['start'] for c in first['map']['colonies']]
+    mark(dense,256,256,0,0)
+    excessive=OUT/'seventeen.png';write_png(excessive,256,256,dense)
+    rejected=run('--import-map-image',excessive,'--width',256,'--height',256,
+        '--output',OUT/'seventeen.map.gz',ok=False)
+    assert '1..16 colony markers (observed 17)' in rejected.stdout+rejected.stderr
+    assert not (OUT/'seventeen.map.gz').exists()
     # Offset river banks must meet across the repaired wrap seam, including corners.
     river=[0]*4096
     for y in range(64):
@@ -231,6 +254,7 @@ def main():
     resized_export=OUT/'resized.png'; run('--export-map-image',resized,'--output',resized_export)
     assert png(resized_export)==png(exported)
     failure=OUT/'must-not-exist.map.gz'
+    failure.unlink(missing_ok=True)
     run(*args,'--teams',4,'--output',failure,'--json',OUT/'failure.json',ok=False)
     assert not failure.exists()
     assert json.loads((OUT/'failure.json').read_text())['report_type']=='image_import_failure'
@@ -263,6 +287,8 @@ def main():
         for x in (5,20,35,50):
             for dy in (0,1):
                 for dx in (0,1): excess[(y+dy)*64+x+dx]=11
+    for y in (0,1):
+        for x in (0,1): excess[y*64+x]=11  # seventeenth distinct marker
     too_many=OUT/'too-many.png'; write_png(too_many,64,64,excess)
     run('--import-map-image',too_many,'--width',64,'--height',64,'--output',failure,ok=False)
     overlap=[0]*4096

@@ -75,7 +75,8 @@ may contain more than 70% of their water.
 
 Sides are powers of two from 64 through 512, including rectangles. A 64-tile
 side selects compact construction. The colony cap is
-`min(12, max(2, width * height / 4096))`; one colony is a practice map.
+`min(12, max(2, width * height / 4096))` on smaller shapes, and sixteen
+on 512×512. Counts above twelve require that largest square; one colony is a practice map.
 Seed-dependent geometry failures return a diagnostic rather than a partial map.
 
 ## Verification and retained evidence

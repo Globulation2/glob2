@@ -149,7 +149,7 @@ InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI) : gameGUI(gameGUI)
 	for (int i = 0; i < players; i++)
 	{
 		const int otherTeam = game.players[i]->teamNumber;
-		const Uint32 otherTeamMask = 1 << otherTeam;
+		const Uint32 otherTeamMask = Team::teamNumberToMask(otherTeam);
 		teamOf[i] = otherTeam;
 		ownAlliance[i] = (gameGUI->localTeam->allies & otherTeamMask) != 0;
 		ownNormal[i] = (gameGUI->localTeam->sharedVisionOther & otherTeamMask) != 0;

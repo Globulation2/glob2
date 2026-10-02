@@ -1510,8 +1510,8 @@ Flodbredde
 Sandvægt
 [Select a valid map.]
 Vælg et gyldigt kort.
-[Shared control needs a free controller slot (maximum 12).]
-Delt styring kræver en ledig plads til en spiller eller AI (højst 12).
+[Shared control needs a free controller slot (maximum %0).]
+Delt styring kræver en ledig plads til en spiller eller AI (højst %0).
 [Smoothing]
 Udglatning
 [Standard]

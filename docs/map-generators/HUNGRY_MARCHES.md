@@ -42,7 +42,8 @@ concentration from 50 to 80 (default 65), and resource amounts from 0% to 200%.
 Zero resource settings retain essential starter supplies and grain seeds.
 
 Supported sides are 128, 256 and 512 tiles, including rectangles. Games support
-2–12 colonies, limited to four when either side is 128, and 1–8 starting workers.
+2–16 colonies, limited to four when either side is 128, and 1–8 starting workers.
+Counts above twelve require 512×512.
 Larger worlds retain bounded food journeys rather than scaling them with map
 width. Higher colony counts add districts; low-population large worlds retain a
 compact food front with more surrounding flanking ground. Unsupported crowded

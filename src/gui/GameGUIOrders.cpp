@@ -132,12 +132,12 @@ void GameGUI::executeOrder(std::shared_ptr<Order> order)
 
 			if (messageOrderType==MessageOrder::NORMAL_MESSAGE_TYPE)
 			{
-				if (mo->recipientsMask &(1<<localPlayer))
+				if (mo->recipientsMask &(Team::teamNumberToMask(localPlayer)))
 					addMessage(Color(230, 230, 230), FormattableString("%0 : %1").arg(game.players[sp]->name).arg(mo->getText()), true);
 			}
 			else if (messageOrderType==MessageOrder::PRIVATE_MESSAGE_TYPE)
 			{
-				if (mo->recipientsMask &(1<<localPlayer))
+				if (mo->recipientsMask &(Team::teamNumberToMask(localPlayer)))
 					addMessage(Color(99, 255, 242), FormattableString("<%0%1> %2").arg(Toolkit::getStringTable()->getString("[from:]")).arg(game.players[sp]->name).arg(mo->getText()), true);
 				else if (sp==localPlayer)
 				{
@@ -158,7 +158,7 @@ void GameGUI::executeOrder(std::shared_ptr<Order> order)
 		case ORDER_VOICE_DATA:
 		{
 			std::shared_ptr<OrderVoiceData> ov = static_pointer_cast<OrderVoiceData>(order);
-			if (ov->recipientsMask & (1<<localPlayer))
+			if (ov->recipientsMask & (Team::teamNumberToMask(localPlayer)))
 				globalContainer->mix->addVoiceData(ov);
 			game.executeOrder(order, localPlayer);
 		}

@@ -1434,8 +1434,8 @@ Reka
 Utež peska
 [Select a valid map.]
 Izberite veljaven zemljevid.
-[Shared control needs a free controller slot (maximum 12).]
-Skupno upravljanje zahteva prosto mesto za igralca ali UI (največ 12).
+[Shared control needs a free controller slot (maximum %0).]
+Skupno upravljanje zahteva prosto mesto za igralca ali UI (največ %0).
 [Smoothing]
 Glajenje
 [Standard]

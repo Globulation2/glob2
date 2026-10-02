@@ -806,10 +806,10 @@ public:
 	Game *game;
 	// Diagnostic tile masks and per-team overlap counts. Building changes update
 	// only their footprints, keeping growth-event lookups contiguous and O(1).
-	// Three 12-team masks fit one 64-bit tile entry, so an event fetches one
+	// The distance-band team masks fit one 64-bit tile entry, so an event fetches one
 	// cache line rather than three separately allocated band planes.
 	std::vector<Uint64> growthCoverage;
-	std::vector<Uint32> growthCoverageCounts[3];
+	std::vector<Uint32> growthCoverageCounts[GROWTH_COVERAGE_BANDS];
 	std::vector<TeamStats::CoverageBuilding> growthCoverageBuildings[Team::MAX_COUNT];
 	Uint32 growthCoverageGeneration[Team::MAX_COUNT]{};
 	bool growthCoverageValid = false;

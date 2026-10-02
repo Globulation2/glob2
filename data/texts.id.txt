@@ -1430,8 +1430,8 @@ Lebar sungai
 Bobot pasir
 [Select a valid map.]
 Pilih peta yang valid.
-[Shared control needs a free controller slot (maximum 12).]
-Kendali bersama memerlukan satu tempat pengendali kosong (maksimum 12).
+[Shared control needs a free controller slot (maximum %0).]
+Kendali bersama memerlukan satu tempat pengendali kosong (maksimum %0).
 [Smoothing]
 Penghalusan
 [Standard]

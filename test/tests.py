@@ -108,12 +108,14 @@ ENGINE_TESTS = [
     'GameGUITouchHarness.cpp',
     # Command-line harnesses whose modes became cases.
     'CustomGameSetupHarness.cpp',
+    'TeamLimitTest.cpp',
     'MapPreviewHarness.cpp',
     ('MapGeneratorDefaultsTest.cpp', dict(cxxflags=['-fno-access-control'])),
 ]
 
 # glob2-unit-tests: libgag, libusl, the production sources below and stubs.
 UNIT_TESTS = [
+    'MapGeneratorGoldenCoverageTest.cpp',
     'USLCoverageTest.cpp',
     'SurfaceCoverageTest.cpp',
     'ScriptRuntimeTest.cpp',

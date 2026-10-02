@@ -2,6 +2,9 @@
 #include "EngineFixtures.h"
 
 #include "FileManager.h"
+#include "AI.h"
+#include "Player.h"
+#include "Order.h"
 #include "GameGUIKeyActions.h"
 #include "IntBuildingType.h"
 #include "MapEditKeyActions.h"
@@ -11,6 +14,27 @@
 
 namespace glob2test
 {
+	std::vector<std::string> stepAI(Game &game)
+	{
+		std::vector<std::string> orders;
+		std::vector<std::shared_ptr<Order>> pending;
+		for (int p = 0; p < game.gameHeader.getNumberOfPlayers(); ++p)
+			if (game.players[p] && game.players[p]->ai)
+			{
+				auto order = game.players[p]->ai->getOrder(false);
+				std::string wire(1, char(order->getOrderType()));
+				if (order->getDataLength())
+					wire.append(reinterpret_cast<const char *>(order->getData()), order->getDataLength());
+				orders.push_back(std::move(wire));
+				order->sender = p;
+				pending.push_back(std::move(order));
+			}
+		// Production decisions all observe the same completed simulation tick.
+		for (const auto &order : pending) game.executeOrder(order, order->sender);
+		game.syncStep(0);
+		return orders;
+	}
+
 	HeadlessGlobals::HeadlessGlobals(Options options)
 		: globals(options.profileName.c_str())
 	{
