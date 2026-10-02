@@ -83,10 +83,12 @@ cp ../platform/instance.example.yaml instance.yaml
    [Sign-in providers](#sign-in-providers)), whether guests may play, and the
    quick-match queues.
 3. Optionally build the WebAssembly client to serve "Play in browser" at `/play/`:
-   `scons target=web release=1` from the repository root (see
-   [browser/README.md](../../browser/README.md)), then set
-   `GLOB2_WEB_CLIENT_DIR=../build/emscripten/client/release` in `.env`. Without it
-   `/play/` answers 404 and everything else works.
+   `scons target=web release=1` then `python3 browser/package-static.py` from the
+   repository root (see [browser/README.md](../../browser/README.md)), and set
+   `GLOB2_WEB_CLIENT_DIR=../build/browser-static` in `.env`. Caddy serves it with
+   the cross-origin isolation headers the threaded client needs and negotiates
+   the packaged gzip sidecars. Without it `/play/` answers 404 and everything
+   else works.
 4. Build and start:
 
    ```sh
