@@ -81,7 +81,8 @@ try {
       intervalMs: 30_000,
       run: async () => {
         const lost = await abortMatchesOnLostRelays(database.db);
-        if (lost.length > 0) logger.warn({ matches: lost }, 'aborted matches lost with their relay');
+        if (lost.length > 0)
+          logger.warn({ matches: lost }, 'aborted matches lost with their relay');
       },
     },
     { name: 'rating sweep', intervalMs: 30_000, run: () => applyPendingRatings(database.db) },
