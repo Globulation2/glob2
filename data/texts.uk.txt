@@ -1430,8 +1430,8 @@ Ysagoon Online Gaming
 Вага піску
 [Select a valid map.]
 Виберіть дійсну карту.
-[Shared control needs a free controller slot (maximum 12).]
-Спільне керування потребує вільного місця для гравця або ШІ (не більше 12).
+[Shared control needs a free controller slot (maximum %0).]
+Спільне керування потребує вільного місця для гравця або ШІ (не більше %0).
 [Smoothing]
 Згладжування
 [Standard]

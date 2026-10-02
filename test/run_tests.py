@@ -3,8 +3,7 @@
 
 Every engine test case runs in its own process with a disposable profile, dummy SDL
 drivers unless it is tagged [display], a timeout and captured output shown only on
-failure. Headless unit cases share a process; display unit cases run separately.
-Results are merged into one JUnit file
+failure. Headless unit cases share a process; display unit cases run separately. Results are merged into one JUnit file
 and, under GitHub Actions, into the step summary with per-failure annotations.
 Fullscreen checks within display cases run only with --fullscreen.
 
@@ -199,15 +198,16 @@ def make_jobs(cases, args, all_cases=None):
         if not mine:
             continue
         if kind == 'unit':
-            # Headless cases may change SDL's video driver. Display tests need
-            # isolated processes, even in the otherwise in-process unit suite.
+            # SDL's video driver cannot change after initialization. A headless
+            # fixture may initialize the dummy driver, so GPU cases need fresh processes.
             jobs += [Job(kind, [case]) for case in mine if case.display]
             mine = [case for case in mine if not case.display]
             if not mine:
                 continue
         if kind == 'unit' or args.in_process:
-            everything = [case for case in (all_cases or [])
-                          if case.binary == kind and (kind != 'unit' or not case.display)]
+            everything = [case for case in (all_cases or []) if case.binary == kind]
+            if kind == 'unit':
+                everything = [case for case in everything if not case.display]
             left_out = [case for case in everything if case not in mine]
             if left_out and all(case.has('benchmark') for case in left_out):
                 jobs.append(Job(kind, mine, whole=True, without_benchmarks=True, without_display=(kind == 'unit')))
@@ -232,14 +232,16 @@ def doctest_pattern(name):
 
 def doctest_filter(job):
     if job.whole:
+        exclusions = []
+        if job.binary == 'unit':
+            exclusions.append('*[display*')
         if job.without_benchmarks:
-            excluded = '*[benchmark]*' + (',*[display*' if job.without_display else '')
-            return ['-tce=' + excluded]
-        if not job.subset:
-            return ['-tce=*[display*'] if job.without_display else []
-        filters = ['-tc=' + ','.join(doctest_pattern(case.name) for case in job.cases)]
-        if job.cases[0].suite:
-            filters.append('-ts=' + doctest_pattern(job.cases[0].suite))
+            exclusions.append('*[benchmark]*')
+        filters = ['-tce=' + ','.join(exclusions)] if exclusions else []
+        if job.subset:
+            filters.append('-tc=' + ','.join(doctest_pattern(case.name) for case in job.cases))
+            if job.cases[0].suite:
+                filters.append('-ts=' + doctest_pattern(job.cases[0].suite))
         return filters
     case = job.cases[0]
     filters = ['-tc=' + doctest_pattern(case.name)]

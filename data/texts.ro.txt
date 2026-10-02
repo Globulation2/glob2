@@ -1434,8 +1434,8 @@ Lățimea râului
 Ponderea nisipului
 [Select a valid map.]
 Selectați o hartă validă.
-[Shared control needs a free controller slot (maximum 12).]
-Controlul partajat necesită un loc liber pentru un jucător sau IA (maximum 12).
+[Shared control needs a free controller slot (maximum %0).]
+Controlul partajat necesită un loc liber pentru un jucător sau IA (maximum %0).
 [Smoothing]
 Netezire
 [Standard]

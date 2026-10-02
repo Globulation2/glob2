@@ -158,14 +158,19 @@ static void run(int width,int height,bool gl,bool expanded)
             screen.failNextDisplay=true;
             REQUIRE(screen.changeSetting("display.mode",1));
             REQUIRE(s.screenFlags==previousFlags);
-            REQUIRE(screen.changeSetting("display.mode",1));
-            REQUIRE((globalContainer->gfx->getOptionFlags() & GraphicContext::FULLSCREEN));
-            REQUIRE((s.screenFlags & ~GraphicContext::FULLSCREEN)==(previousFlags & ~GraphicContext::FULLSCREEN));
-            loaded.load(); REQUIRE((loaded.screenFlags & GraphicContext::FULLSCREEN));
-            REQUIRE(!screen.restartRequired());
-            REQUIRE(screen.changeSetting("display.mode",0));
-            REQUIRE(!(globalContainer->gfx->getOptionFlags() & GraphicContext::FULLSCREEN));
-            loaded.load(); REQUIRE(!(loaded.screenFlags & GraphicContext::FULLSCREEN));
+            if (glob2test::fullscreenEnabled()) {
+                REQUIRE(screen.changeSetting("display.mode",1));
+                REQUIRE((globalContainer->gfx->getOptionFlags() & GraphicContext::FULLSCREEN));
+                REQUIRE((s.screenFlags & ~GraphicContext::FULLSCREEN)==(previousFlags & ~GraphicContext::FULLSCREEN));
+                loaded.load(); REQUIRE((loaded.screenFlags & GraphicContext::FULLSCREEN));
+                REQUIRE(!screen.restartRequired());
+                REQUIRE(screen.changeSetting("display.mode",0));
+                REQUIRE(!(globalContainer->gfx->getOptionFlags() & GraphicContext::FULLSCREEN));
+                loaded.load(); REQUIRE(!(loaded.screenFlags & GraphicContext::FULLSCREEN));
+            } else {
+                REQUIRE(!(globalContainer->gfx->getOptionFlags() & GraphicContext::FULLSCREEN));
+                loaded.load(); REQUIRE(loaded.screenFlags==previousFlags);
+            }
         }
 
         {

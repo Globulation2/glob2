@@ -15,7 +15,7 @@ namespace Cortex
 {
 	/// Fixed upper bound on enemy team slots in an Observation. 32 ==
 	/// Team::MAX_COUNT_ON_DISK; it is a safe over-bound on the live team ceiling
-	/// (Team::MAX_COUNT == 12), so every possible enemy team always has a slot.
+	/// (Team::MAX_COUNT <= MAX_ENEMY_SLOTS), so every possible enemy team always has a slot.
 	/// CortexObservation.cpp static_asserts MAX_ENEMY_SLOTS >= Team::MAX_COUNT.
 	/// Unused slots are flagged inactive rather than omitted (fixed shape).
 	static const int MAX_ENEMY_SLOTS = 32;

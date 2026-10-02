@@ -166,7 +166,7 @@ void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 		assert(tn >= 0 && tn < mapHeader.getNumberOfTeams());
 		assert(teams[tn] != NULL);
 		teams[tn]->numberOfPlayer+=1;
-		teams[tn]->playersMask|=(1<<i);
+		teams[tn]->playersMask |= Team::teamNumberToMask(i);
 	}
 
 	// A loaded saved game already restored the live RNG. New maps and old
@@ -398,7 +398,9 @@ Uint32 Game::allocateScriptIdentity(bool building, Uint16 gid)
  const int team=building?Building::GIDtoTeam(gid):Unit::GIDtoTeam(gid);
  const int slot=building?Building::GIDtoID(gid):Unit::GIDtoID(gid);
  if(team<0 || team>=Team::MAX_COUNT)throw std::runtime_error("Invalid scripting entity slot");
- auto& generation=scriptGenerations[(building?Team::MAX_COUNT*1024:0)+team*1024+slot];
+ static_assert(SCRIPT_ENTITY_SLOTS_PER_TEAM == Unit::MAX_COUNT &&
+     SCRIPT_ENTITY_SLOTS_PER_TEAM == Building::MAX_COUNT);
+ auto& generation=scriptGenerations[scriptGenerationIndex(building, team, slot)];
  if(generation==0xffffffffu)throw std::runtime_error("JavaScript entity generation exhausted");
  return ++generation;
 }

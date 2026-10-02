@@ -635,7 +635,6 @@ class MobileGalleryGameplay
 			gui.touch->lensOpen = false;
 			gui.touch->panelOpen = false;
 			gui.showStarvingMap = true;
-			gui.overlay.compute(gui.game, OverlayArea::Starving, gui.localTeamNo);
 			capture("game-lens-legend");
 			gui.showStarvingMap = false;
 			gui.touch->peekOpen = true;

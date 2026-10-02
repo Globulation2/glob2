@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include "scene/Scene.h"
 #include <PerformanceTelemetry.h>
 #include <iostream>
 
@@ -44,12 +45,14 @@ struct BuildingPosComp
 };
 
 
-void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
+void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const Scene& scene)
 {
-	Building *building = teams[Building::GIDtoTeam(gid)]->myBuildings[Building::GIDtoID(gid)];
+	const SceneEntities &entities = scene.entities;
+	const SceneMap &map = scene.map; // the extracted map, not Game::map
+	const SceneBuilding *building = entities.building(gid);
 	assert(building);
 	BuildingType *type=building->type;
-	Team *team=building->owner;
+	const SceneTeam *team=&entities.owner(*building);
 
 	int imgid;
 	if (type->crossConnectMultiImage)
@@ -63,7 +66,7 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 			Uint16 b = map.getBuilding(nx, ny);
 			return (b != NOGBID)
 				&& (Building::GIDtoTeam(b) == team->teamNumber)
-				&& (teams[Building::GIDtoTeam(b)]->myBuildings[Building::GIDtoID(b)]->type == type);
+				&& (entities.building(b)->type == type);
 		};
 		int add = 0;
 		if (sameTypeNeighbour(building->posX, building->posY-1))               // up
@@ -81,8 +84,8 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 		// hpMax+1 (not hpMax) so that at full HP the integer division stays strictly
 		// below gameSpriteCount, leaving damageImgShift == 0 (pristine sprite). Using
 		// plain hpMax would yield shift == -1 at hp == hpMax and trip the assert below.
-		assert(building->hp <= building->getEffectiveMaxHp());
-		int damageImgShift = type->gameSpriteCount - ((building->hp * type->gameSpriteCount) / (building->getEffectiveMaxHp()+1)) - 1;
+		assert(building->hp <= building->effectiveMaxHp);
+		int damageImgShift = type->gameSpriteCount - ((building->hp * type->gameSpriteCount) / (building->effectiveMaxHp+1)) - 1;
 		assert(damageImgShift >= 0);
 		imgid = type->gameSpriteImage + damageImgShift;
 	}
@@ -114,16 +117,16 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 		globalContainer->gfx->drawRect(upgradedRectX, upgradedRectY, upgradedRectW, upgradedRectH, 255, 255, 255, 127);
 	}
 
-	Uint32 visibleTeams = teams[localTeam]->me;
+	Uint32 visibleTeams = entities.teams[localTeam].me;
 	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 
-	if (((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0) && (building->owner->sharedVisionOther & visibleTeams))
+	if (((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0) && (team->sharedVisionOther & visibleTeams))
 	{
 		// TODO : find better color for this
 		if (type->hpMax)
 		{
 			int maxWidth, actWidth, addDec;
-			float hpRatio=(float)building->hp/(float)building->getEffectiveMaxHp();
+			float hpRatio=(float)building->hp/(float)building->effectiveMaxHp;
 			if (type->width==1)
 			{
 				maxWidth=8;
@@ -139,14 +142,14 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 			int decy=(type->height*32);
 			int healDecx=(type->width-(maxWidth>>3))*16+addDec;
 
-			if (building->hp!=building->getEffectiveMaxHp() || !building->type->crossConnectMultiImage)
+			if (building->hp!=building->effectiveMaxHp || !building->type->crossConnectMultiImage)
 				drawHealthBar(x+healDecx, y+decy-4, maxWidth, actWidth, hpRatio);
 		}
 
 		if (building->maxUnitInside>0)
-			drawPointBar(x+type->width*32-4, y+1, BOTTOM_TO_TOP, building->maxUnitInside, (signed)building->unitsInside.size(), 255, 255, 255);
+			drawPointBar(x+type->width*32-4, y+1, BOTTOM_TO_TOP, building->maxUnitInside, building->unitsInside, 255, 255, 255);
 		if (building->maxUnitWorking>0)
-			drawPointBar(x+type->width*16-((3*building->maxUnitWorking)>>1), y+1,LEFT_TO_RIGHT , building->maxUnitWorking, (signed)building->unitsWorking.size(), 0, 255, 255, 255, 255, 64, 0);
+			drawPointBar(x+type->width*16-((3*building->maxUnitWorking)>>1), y+1,LEFT_TO_RIGHT , building->maxUnitWorking, building->unitsWorking, 0, 255, 255, 255, 255, 64, 0);
 
 		if ((type->canFeedUnit) || (type->unitProductionTime))
 			drawBuildingResourceBar(x+1, y+1, type, type->maxResource[WHEAT], building->resources[WHEAT], 255, 255, 120);
@@ -158,7 +161,7 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 	if (drawOptions & DRAW_ACCESSIBILITY)
 	{
 		std::ostringstream oss;
-		oss << building->owner->teamNumber;
+		oss << team->teamNumber;
 		int accessW = globalContainer->littleFont->getStringWidth(oss.str().c_str());
 		int accessH = globalContainer->littleFont->getStringHeight(oss.str().c_str());
 		int accessX = x+(((type->width<<5)-accessW)>>1);
@@ -168,20 +171,22 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 		globalContainer->gfx->drawString(accessX, accessY, globalContainer->littleFont, oss.str());
 	}
 
-	if(highlightBuildingType & (1<<building->shortTypeNum))
+	if(entities.highlightBuildingType & (1<<building->shortTypeNum))
 	{
 		globalContainer->gfx->drawSprite(x + buildingSprite->getW(imgid)/2 - 16, y-36, globalContainer->gamegui, 36);
 	}
 }
 
 
-void Game::drawMapGroundBuildings(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, std::set<Building*> *visibleBuildings, const BuildingGuiStateMap* buildingGuiState)
+void Game::drawMapGroundBuildings(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, std::set<Uint16> *visibleBuildings, const BuildingGuiStateMap* buildingGuiState, const Scene& scene)
 {
 	PERF_SCOPE_TIME(GroundBuildings);
-	Uint32 visibleTeams = teams[localTeam]->me;
+	const SceneEntities &entities = scene.entities;
+	const SceneMap &map = scene.map; // the extracted map, not Game::map
+	Uint32 visibleTeams = entities.teams[localTeam].me;
 	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 
-	std::set<Building*> drawnBuildings;
+	std::set<Uint16> drawnBuildings;
 	std::set<std::tuple<Uint16, int, int>> drawnCopies;
 	for (int y=top-1; y<=bot; y++)
 		for (int x=left-1; x<=right; x++)
@@ -192,7 +197,9 @@ void Game::drawMapGroundBuildings(int left, int top, int right, int bot, int sw,
 				int id = Building::GIDtoID(gid);
 				int team = Building::GIDtoTeam(gid);
 
-				Building *building=teams[team]->myBuildings[id];
+				(void)id;
+				(void)team;
+				const SceneBuilding *building=entities.building(gid);
 				assert(building);
 				const int originX = x - ((x + viewportX - building->posX) & map.getMaskW());
 				const int originY = y - ((y + viewportY - building->posY) & map.getMaskH());
@@ -205,13 +212,13 @@ void Game::drawMapGroundBuildings(int left, int top, int right, int bot, int sw,
 						|| map.isFOWDiscovered(x+viewportX, y+viewportY, visibleTeams))
 					{
 						int px,py;
-						const Sint32 dispX = buildingGuiState ? displayedPosX(*buildingGuiState, *building) : building->posX;
-						const Sint32 dispY = buildingGuiState ? displayedPosY(*buildingGuiState, *building) : building->posY;
+						const Sint32 dispX = buildingGuiState ? displayedPosX(*buildingGuiState, building->gid, building->posX) : building->posX;
+						const Sint32 dispY = buildingGuiState ? displayedPosY(*buildingGuiState, building->gid, building->posY) : building->posY;
 						px = originX * 32 + (dispX - building->posX) * 32;
 						py = originY * 32 + (dispY - building->posY) * 32;
-					 	drawMapBuilding(px, py, gid, viewportX, viewportY, localTeam, drawOptions);
+						drawMapBuilding(px, py, gid, viewportX, viewportY, localTeam, drawOptions, scene);
 						drawnCopies.insert(copy);
-						drawnBuildings.insert(building);
+						drawnBuildings.insert(building->gid);
 					}
 				}
 			}

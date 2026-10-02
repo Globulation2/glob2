@@ -64,7 +64,12 @@ def main():
     names = ('profile1', 'realistic-profile1') if args.fixture == 'all' else (args.fixture,)
     (output / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
     for name in names:
-        expected = gzip.decompress((FIXTURE / (name + '-256.checksums.gz')).read_bytes())
+        released = gzip.decompress((FIXTURE / (name + '-256.checksums.gz')).read_bytes())
+        expected = gzip.decompress((FIXTURE / (name + '-256-teams16.checksums.gz')).read_bytes())
+        released_ticks, expanded_ticks = complete_ticks(released), complete_ticks(expected)
+        assert released_ticks.keys() == expanded_ticks.keys()
+        assert all(record[8:] == expanded_ticks[tick][8:]
+                   for tick, record in released_ticks.items()), name + ': released entity records differ'
         initial = FIXTURE / (name + '-initial.game.gz')
         manifest['fixtures'][name] = {'initialSha256': hashlib.sha256(initial.read_bytes()).hexdigest(),
                                      'traceSha256': hashlib.sha256(expected).hexdigest()}

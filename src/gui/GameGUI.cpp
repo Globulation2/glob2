@@ -102,6 +102,7 @@ void GameGUI::init()
 	// A new game starts with empty client channels.
 	clientEvents.reset();
 	clientRequests.reset();
+	clientRequests.publishDisplaySize(game.map.displayViewportW, game.map.displayViewportH);
 	for (auto &queue : pendingTeamEvents)
 		queue.clear();
 	swallowSpaceKey=false;
@@ -311,6 +312,7 @@ void GameGUI::updateCamera()
     viewportX=camera.tileX();viewportY=camera.tileY();
     game.map.displayViewportW=std::ceil(camera.visibleW()+camera.fractionX());
     game.map.displayViewportH=std::ceil(camera.visibleH()+camera.fractionY());
+    clientRequests.publishDisplaySize(game.map.displayViewportW,game.map.displayViewportH);
     view.mouseX=mapMouseX(mouseX);view.mouseY=mapMouseY(mouseY);
 }
 bool GameGUI::zoomMap(double steps,int x,int y)
@@ -321,6 +323,7 @@ bool GameGUI::zoomMap(double steps,int x,int y)
     viewportX=camera.tileX();viewportY=camera.tileY();
     game.map.displayViewportW=std::ceil(camera.visibleW()+camera.fractionX());
     game.map.displayViewportH=std::ceil(camera.visibleH()+camera.fractionY());
+    clientRequests.publishDisplaySize(game.map.displayViewportW,game.map.displayViewportH);
     view.mouseX=mapMouseX(mouseX);view.mouseY=mapMouseY(mouseY);
     return true;
 }

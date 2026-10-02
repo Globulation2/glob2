@@ -103,7 +103,7 @@ globalContainer->gfx->drawMapCopies(game.map.getW()*32,game.map.getH()*32,game.m
 
 void MapEdit::drawMiniMap(void)
 {
-	minimap.draw(team, viewportX, viewportY, int(std::ceil(camera.visibleW()/32)), int(std::ceil(camera.visibleH()/32)) );
+	minimap.draw(view.drawnScene(), team, viewportX, viewportY, int(std::ceil(camera.visibleW()/32)), int(std::ceil(camera.visibleH()/32)) );
 }
 
 

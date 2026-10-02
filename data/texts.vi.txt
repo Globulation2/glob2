@@ -1430,8 +1430,8 @@ Chiều rộng sông
 Trọng số cát
 [Select a valid map.]
 Chọn bản đồ hợp lệ.
-[Shared control needs a free controller slot (maximum 12).]
-Điều khiển chung cần một chỗ điều khiển còn trống (tối đa 12).
+[Shared control needs a free controller slot (maximum %0).]
+Điều khiển chung cần một chỗ điều khiển còn trống (tối đa %0).
 [Smoothing]
 Làm mịn
 [Standard]

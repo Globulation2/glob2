@@ -89,6 +89,13 @@ private:
 class TeamColorSelector : public MapEditorWidget
 {
 public:
+	// Share geometry between drawing, hit testing and widget bounds. Eight
+	// columns fit the desktop sidebar and keep all sixteen teams in two rows.
+	static constexpr int SWATCH_SIZE = 16;
+	static constexpr int COLUMNS = (RIGHT_MENU_WIDTH - 2 * RIGHT_MENU_OFFSET) / SWATCH_SIZE;
+	static constexpr int ROWS = (Team::MAX_COUNT + COLUMNS - 1) / COLUMNS;
+	static constexpr int WIDTH = COLUMNS * SWATCH_SIZE;
+	static constexpr int HEIGHT = ROWS * SWATCH_SIZE;
 	TeamColorSelector(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action);
 	void draw();
 };

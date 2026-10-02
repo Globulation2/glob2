@@ -239,6 +239,7 @@ struct MapPreviewHarness
 			gfx->setClipRect();
 			gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), Color(232, 237, 218));
 			preview->paint(gfx);
+			gfx->nextFrame();
 		};
 		auto settle = [&]
 		{
@@ -261,7 +262,10 @@ struct MapPreviewHarness
 		auto area = preview->mapArea();
 		auto pixel = [&](int x, int y)
 		{
-			auto surface = globalContainer->gfx->getSDLSurface();
+			auto surface = globalContainer->gfx->completedFrame();
+			// Completed software frames use backing pixels on high-DPI displays.
+			x = x * surface->w / globalContainer->gfx->getW();
+			y = y * surface->h / globalContainer->gfx->getH();
 			Uint32 value = 0;
 			std::memcpy(&value,
 						static_cast<Uint8 *>(surface->pixels) + y * surface->pitch +
@@ -273,7 +277,9 @@ struct MapPreviewHarness
 		};
 		paintAll();
 		REQUIRE((preview->transitioning && !preview->transitionPending));
-		REQUIRE((pixel(area.x + area.w / 4, area.y + area.h / 4) == std::array<int, 3>{211, 223, 197}));
+		const auto initialPixel=pixel(area.x + area.w / 4, area.y + area.h / 4);
+		INFO("initial pixel " << initialPixel[0] << "," << initialPixel[1] << "," << initialPixel[2]);
+		REQUIRE((initialPixel == std::array<int, 3>{211, 223, 197}));
 		globalContainer->gfx->printScreen(output + "/fade-in-start.bmp");
 		preview->transitionStarted = SDL_GetTicks() - MapPreview::TransitionDurationMs / 2;
 		paintAll();

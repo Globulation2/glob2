@@ -490,6 +490,23 @@ For timing and scheduling, start with `src/Game_sync.cpp` and `src/EngineRun.cpp
   Treat save-format, replay and network compatibility as separate questions. If
   simulation rules change, assess replay acceptance and protocol/version gates even
   when the saved byte layout is unchanged.
+- Team capacity is `Team::MAX_COUNT` (16), shared by colonies and controller slots.
+  `MAX_COUNT_ON_DISK` (32) is the fixed GameHeader player/alliance layout, not a
+  selectable match size. Team masks are 32-bit; packed growth coverage requires
+  three masks to fit a 64-bit word (at most 21 teams in that representation).
+  Unit/building identifiers must also fit below the 16-bit empty-entity sentinel.
+  Team iterators must use the live match count; a full array has no null end slot.
+  Format 127 counts Maxima opponent records and script-generation team slots;
+  older formats retain their historical 12-slot layouts. Text header alliances use
+  indexed slots from format 127; binary header bytes stay unchanged. Custom-game
+  preferences version 4 counts colony records and still reads the twelve records
+  written by versions 1–3. The building-generation
+  plane must be remapped when loading old saves. Never substitute a live capacity
+  for a historical serialized length. Save floor 58 remains unchanged.
+  Warrush probes one capacity slot every two ticks (32 ticks for sixteen slots).
+  Empty slots fall through to normal decisions, preserving smaller-match timing.
+  Replay floor 127 and network/YOG protocol 50 gate the new capacity and counted
+  state; older saves load into the current simulation.
 - Versioning rule: when the save format changes, bump `VERSION_MINOR` and preserve
   older saves through version-gated loading, or explicitly document an approved
   compatibility break. When simulation changes invalidate old replays or mixed-client
@@ -672,6 +689,68 @@ paths and need compatibility links or updated scripts before cleanup. Migration
 never infers that extracted tool directories are trustworthy from a version
 string alone. Windows inventory/seeding is supported; duplicate removal requires
 a supported open-file checker and is conservatively skipped there.
+
+## Scene renderer
+
+Drawing reads an immutable `Scene` (`src/scene/`), never live simulation objects, so it
+runs while the simulation advances on another thread.
+
+- `SceneExtractor::extract(game, request, scene)` (`src/scene/SceneExtract.cpp`) is the
+  only place presentation code reads the game. `GameGUI::drawAll` extracts
+  `frameScene` once per frame and publishes it in `Game::ViewState::scene`; `drawMap`
+  callers without a published scene (menu colony, editor, torus without a GUI, tests)
+  get one extracted into `ViewState::render.ownScene`. `ViewState::drawnScene()`
+  returns whichever was drawn.
+- `SceneMap` copies the per-tile layers whole (terrain, resources, occupancy, discovery
+  and fog, displayed areas); its queries match `Map`'s. `SceneEntities` holds
+  presentation copies of units, buildings and flags with lookup by gid (field names
+  follow `Unit`/`Building`; `team` indexes `SceneEntities::teams`), per-sector
+  bullets and animations, and the selected building's map-view data. Static
+  definitions (`BuildingType`, `Race`) are referenced, not copied.
+- The overlay map is computed during extraction and shared as an immutable snapshot;
+  it refreshes when the requested type or team changes and once per 25-tick window.
+- Adding something drawn on the map: extract what the drawing needs in
+  `SceneExtract.cpp` and read it from the `Scene` in the render pass. Never read
+  `Game`, `Map`, `Team`, `Unit` or `Building` state from drawing code.
+- Selection panels, the HUD, the top bar, statistics pages, the minimap and the building
+  tool's placement preview also draw from the Scene (`ScenePanels`, `SceneMap`). Input
+  handlers still act on the game, and validate against it before issuing an order.
+
+### Simulation thread
+
+Interactive sessions run the simulation on its own thread (`src/sim/SimulationRunner`)
+on native platforms; there is no setting. Both browser runtimes, and any platform where
+creating the simulation thread fails, run the same session serially (`Engine::stepSession`), which
+also remains the headless default and the equivalence reference.
+
+- The simulation thread paces itself with the speed presets and runs ticks
+  (`Engine::simulationStep`: orders, network, `Game::syncStep`). After a tick, if the main
+  thread has taken the previous Scene, it extracts the next one into a `SceneBuffer`
+  (lock-free triple buffer), so fast-forward extracts at most once per drawn frame.
+- The main thread draws the newest Scene every frame. Work that reads or writes the game —
+  input, `GameGUI::step`, consuming `ClientEvents`, checking the selection, script
+  highlights — runs in `SimulationRunner::withGame`, which parks the simulation between
+  ticks (immediately when it is sleeping between ticks).
+- Only state both threads use is shared: `ClientRequests`' view is locked; `gamePaused`,
+  `hardPause`, `isRunning` and the CPU-load history are atomics. A pause order or the local
+  player leaving takes effect on the simulation thread in the same tick, as in serial
+  execution. GUI state extraction reads (selection, local team) changes only while the
+  simulation is parked.
+- The synchronized RNG belongs to the game, so results do not depend on the thread.
+  `GLOB2_SIM_THREAD=1` runs headless sessions on the simulation thread for
+  `check_sim_thread.py --candidate-env GLOB2_SIM_THREAD=1`; `GLOB2_SIM_THREAD=0` keeps
+  any session serial, for tests that count frames against a scripted host clock.
+- The simulation thread paces on the host's clock (`Engine::sessionClock`): the clock the
+  host last passed in, advanced by real time. Time the application spent in the
+  background is therefore not caught up after resuming, as in serial execution.
+- Values the client sets while drawing and extraction reads (viewport, drawn map size,
+  overlay, observed building) go through `ClientRequests`, never through `Game` or `Map`
+  fields. To check for races, build with `CXXFLAGS="-g -fsanitize=thread"
+  LINKFLAGS="-fsanitize=thread"` and run a windowed `-test-games` session or a headless
+  `--run-game` with `GLOB2_SIM_THREAD=1`. Build against the pinned SDL3 prefix
+  with `GLOB2_SDL3_PREFIX`; sanitizer builds use the same native SDL3 dependency set.
+- `SceneBuffer<T>` (`src/scene/SceneBuffer.h`) hands Scenes between the threads without
+  either waiting for the other.
 
 ## Software rendering architecture and profiling
 

@@ -1434,8 +1434,8 @@ Szerokość rzeki
 Waga piasku
 [Select a valid map.]
 Wybierz prawidłową mapę.
-[Shared control needs a free controller slot (maximum 12).]
-Wspólne sterowanie wymaga wolnego miejsca dla gracza lub SI (maksymalnie 12).
+[Shared control needs a free controller slot (maximum %0).]
+Wspólne sterowanie wymaga wolnego miejsca dla gracza lub SI (maksymalnie %0).
 [Smoothing]
 Wygładzanie
 [Standard]

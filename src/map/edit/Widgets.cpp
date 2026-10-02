@@ -123,14 +123,14 @@ void TeamColorSelector::draw()
 {
 	for(int n=0; n<Team::MAX_COUNT; ++n)
 	{
-		const int xpos = area.x + (n%6)*16;
-		const int ypos = area.y + (n/6)*16;
+		const int xpos = area.x + (n % COLUMNS) * SWATCH_SIZE;
+		const int ypos = area.y + (n / COLUMNS) * SWATCH_SIZE;
 		if(me.game.teams[n])
 		{
 			if(me.team==n)
-				globalContainer->gfx->drawFilledRect(xpos, ypos, 16, 16, Color(me.game.teams[n]->color.r, me.game.teams[n]->color.g, me.game.teams[n]->color.b, 128));
+				globalContainer->gfx->drawFilledRect(xpos, ypos, SWATCH_SIZE, SWATCH_SIZE, Color(me.game.teams[n]->color.r, me.game.teams[n]->color.g, me.game.teams[n]->color.b, 128));
 			else
-				globalContainer->gfx->drawFilledRect(xpos, ypos, 16, 16, me.game.teams[n]->color);
+				globalContainer->gfx->drawFilledRect(xpos, ypos, SWATCH_SIZE, SWATCH_SIZE, me.game.teams[n]->color);
 
 		}
 	}

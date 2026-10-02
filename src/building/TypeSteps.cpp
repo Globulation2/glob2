@@ -207,7 +207,7 @@ void Building::considerScanTile(int targetX, int targetY, int ring, int ticksToH
 	{
 		Sint32 otherTeam = Unit::GIDtoTeam(targetGUID);
 		Sint32 targetID = Unit::GIDtoID(targetGUID);
-		Uint32 otherTeamMask = 1<<otherTeam;
+		Uint32 otherTeamMask = Team::teamNumberToMask(otherTeam);
 		if (enemies & otherTeamMask)
 		{
 			Unit *testUnit = owner->game->teams[otherTeam]->myUnits[targetID];
@@ -238,7 +238,7 @@ void Building::considerScanTile(int targetX, int targetY, int ring, int ticksToH
 	{
 		Sint32 otherTeam = Unit::GIDtoTeam(airTargetGUID);
 		Sint32 targetID = Unit::GIDtoID(airTargetGUID);
-		Uint32 otherTeamMask = 1<<otherTeam;
+		Uint32 otherTeamMask = Team::teamNumberToMask(otherTeam);
 		if (enemies & otherTeamMask)
 		{
 			Unit *testUnit = owner->game->teams[otherTeam]->myUnits[targetID];
@@ -263,7 +263,7 @@ void Building::considerScanTile(int targetX, int targetY, int ring, int ticksToH
 		if (targetGBID != NOGBID)
 		{
 			Sint32 otherTeam = Building::GIDtoTeam(targetGBID);
-			Uint32 otherTeamMask = 1<<otherTeam;
+			Uint32 otherTeamMask = Team::teamNumberToMask(otherTeam);
 			if (enemies & otherTeamMask)
 			{
 				// adjust score for range

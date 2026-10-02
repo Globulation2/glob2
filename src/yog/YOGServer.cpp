@@ -333,7 +333,7 @@ YOGServerGameJoinRefusalReason YOGServer::canJoinGame(Uint16 gameID)
 		return YOGServerGameDoesntExist;
 	if(games[gameID]->hasGameStarted())
 		return YOGServerGameHasAlreadyStarted;
-	if(games[gameID]->getGameHeader().getNumberOfPlayers() == 16)
+	if(games[gameID]->getGameHeader().getNumberOfPlayers() >= Team::MAX_COUNT)
 		return YOGServerGameIsFull;
 
 

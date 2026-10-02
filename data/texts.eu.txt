@@ -1444,8 +1444,8 @@ Ibaiaren zabalera
 Harea pisua
 [Select a valid map.]
 Hautatu baliozko mapa bat.
-[Shared control needs a free controller slot (maximum 12).]
-Kontrol partekatuak giza edo AI jokalari batentzako leku libre bat behar du (gehienez 12).
+[Shared control needs a free controller slot (maximum %0).]
+Kontrol partekatuak giza edo AI jokalari batentzako leku libre bat behar du (gehienez %0).
 [Smoothing]
 Leuntzea
 [Standard]

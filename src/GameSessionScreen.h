@@ -36,5 +36,7 @@ class GameSessionScreen : public GAGGUI::Screen
 	GAGCore::EventQueue input;
 	bool started = false, finished = false, resetClock = false;
 	Uint32 lastTick = 0;
+	//! Host tick at which the last threaded frame started (frame-rate cap).
+	Uint32 frameStarted = 0;
 	Uint64 clock = 0, nextTick = 0;
 };

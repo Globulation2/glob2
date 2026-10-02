@@ -325,8 +325,20 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream)
 		GAGCore::BinaryInputStream::CheckedReads checked(stream);
 		stream->readEnterSection("scriptGenerations");
 		const bool text = dynamic_cast<GAGCore::TextInputStream *>(stream) != nullptr;
-		for (unsigned i = 0; i < scriptGenerations.size(); ++i)
+		// Formats 125/126 wrote two uncounted planes of twelve teams. Never use
+		// the current capacity to infer those historical lengths or plane offsets.
+		constexpr unsigned legacyTeamSlots = 12;
+		const unsigned savedTeamSlots = versionMinor >= FILE_FORMAT_VERSION_COUNTED_TEAM_STATE
+			? stream->readUint32("teamSlots") : legacyTeamSlots;
+		if (savedTeamSlots == 0 || savedTeamSlots < unsigned(mapHeader.getNumberOfTeams()) || savedTeamSlots > Team::MAX_COUNT)
+			throw std::runtime_error("Invalid script generation team-slot count");
+		const unsigned savedPlaneSize = savedTeamSlots * SCRIPT_ENTITY_SLOTS_PER_TEAM;
+		scriptGenerations.fill(0);
+		for (unsigned i = 0; i < SCRIPT_ENTITY_KINDS * savedPlaneSize; ++i)
 		{
+			const unsigned inPlane = i % savedPlaneSize;
+			const unsigned destination = scriptGenerationIndex(i >= savedPlaneSize,
+				inPlane / SCRIPT_ENTITY_SLOTS_PER_TEAM, inPlane % SCRIPT_ENTITY_SLOTS_PER_TEAM);
 			stream->readEnterSection(i);
 			if (text)
 			{
@@ -335,18 +347,24 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream)
 				const auto parsed = std::from_chars(encoded.data(), encoded.data() + encoded.size(), generation);
 				if (parsed.ec != std::errc{} || parsed.ptr != encoded.data() + encoded.size())
 					throw std::runtime_error("Invalid or missing script generation counter");
-				scriptGenerations[i] = generation;
+				scriptGenerations[destination] = generation;
 			}
-			else scriptGenerations[i] = stream->readUint32("value");
+			else scriptGenerations[destination] = stream->readUint32("value");
 			stream->readLeaveSection();
 		}
 		stream->readLeaveSection();
-        for(int t=0;t<mapHeader.getNumberOfTeams();++t)for(int i=0;i<1024;++i)
-        {
-            auto* u=teams[t]->myUnits[i];auto* b=teams[t]->myBuildings[i];
-            if(u && (!u->scriptIdentity || u->scriptIdentity!=scriptGenerations[t*1024+i]))throw std::runtime_error("Invalid unit script identity");
-            if(b && (!b->scriptIdentity || b->scriptIdentity!=scriptGenerations[Team::MAX_COUNT*1024+t*1024+i]))throw std::runtime_error("Invalid building script identity");
-        }
+		for (int t = 0; t < mapHeader.getNumberOfTeams(); ++t)
+			for (int slot = 0; slot < SCRIPT_ENTITY_SLOTS_PER_TEAM; ++slot)
+			{
+				const auto *unit = teams[t]->myUnits[slot];
+				const auto *building = teams[t]->myBuildings[slot];
+				if (unit && (!unit->scriptIdentity || unit->scriptIdentity !=
+					scriptGenerations[scriptGenerationIndex(false, t, slot)]))
+					throw std::runtime_error("Invalid unit script identity");
+				if (building && (!building->scriptIdentity || building->scriptIdentity !=
+					scriptGenerations[scriptGenerationIndex(true, t, slot)]))
+					throw std::runtime_error("Invalid building script identity");
+			}
 	}
 	gameSection.commit();
 
@@ -663,7 +681,13 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 	}
 
 	stream->writeEnterSection("scriptGenerations");
-	for(unsigned i=0;i<scriptGenerations.size();++i){stream->writeEnterSection(i);stream->writeUint32(scriptGenerations[i],"value");stream->writeLeaveSection();}
+	stream->writeUint32(Team::MAX_COUNT, "teamSlots");
+	for (unsigned i = 0; i < scriptGenerations.size(); ++i)
+	{
+		stream->writeEnterSection(i);
+		stream->writeUint32(scriptGenerations[i], "value");
+		stream->writeLeaveSection();
+	}
 	stream->writeLeaveSection();
 
 	Uint8 sha1[SHA1_BYTE_LEN];

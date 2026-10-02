@@ -217,19 +217,19 @@ public:
 
 		gui.updateCamera();
 		auto* gfx = globalContainer->gfx;
-		std::set<Building*> visible;
+		std::set<Uint16> visible;
 		Game::ViewState view;
 		view.selectedBuilding = scene.inn;
 		gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), 0, 0, 0);
 		{ SceneMap layers; layers.extract(gui.game.map); gui.game.drawMapTerrain(0, 0, DRAW_W >> 5, DRAW_H >> 5, 0, 0, 0, Game::DRAW_WHOLE_MAP, layers); }
-		gui.game.drawMapGroundBuildings(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, &visible, nullptr);
-		gui.game.drawMapGroundUnits(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, view);
+		gui.game.drawMapGroundBuildings(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, &visible, nullptr, glob2test::sceneOf(gui.game));
+		gui.game.drawMapGroundUnits(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, view, glob2test::sceneOf(gui.game, view));
 		Frame stopped = grab();
 		gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), 0, 0, 0);
 		{ SceneMap layers; layers.extract(gui.game.map); gui.game.drawMapTerrain(0, 0, DRAW_W >> 5, DRAW_H >> 5, 0, 0, 0, Game::DRAW_WHOLE_MAP, layers); }
-		gui.game.drawMapGroundBuildings(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, &visible, nullptr);
+		gui.game.drawMapGroundBuildings(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, &visible, nullptr, glob2test::sceneOf(gui.game));
 		Game::ViewState none;
-		gui.game.drawMapGroundUnits(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, none);
+		gui.game.drawMapGroundUnits(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, none, glob2test::sceneOf(gui.game, none));
 		Frame baseline = grab();
 		for (int i = 0; i < LOW_COUNT; ++i)
 		{
@@ -270,11 +270,11 @@ public:
 	// are the red pixels the selection adds.
 	auto* gfx = globalContainer->gfx;
 	auto render = [&](Game::ViewState& view) {
-		std::set<Building*> visible;
+		std::set<Uint16> visible;
 		gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), 0, 0, 0);
 		{ SceneMap layers; layers.extract(game.map); game.drawMapTerrain(0, 0, DRAW_W >> 5, DRAW_H >> 5, 0, 0, 0, Game::DRAW_WHOLE_MAP, layers); }
-		game.drawMapGroundBuildings(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, &visible, nullptr);
-		game.drawMapGroundUnits(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, view);
+		game.drawMapGroundBuildings(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, &visible, nullptr, glob2test::sceneOf(game));
+		game.drawMapGroundUnits(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, view, glob2test::sceneOf(game, view));
 		return grab();
 	};
 	Game::ViewState none;

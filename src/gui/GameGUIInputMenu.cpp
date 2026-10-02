@@ -184,7 +184,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					if (playerMask[mi]&(1<<pi))
 					{
 						// player is set, set team
-						teamMask[mi]|=(1<<otherTeam);
+						teamMask[mi]|=(Team::teamNumberToMask(otherTeam));
 					}
 				}
 			}

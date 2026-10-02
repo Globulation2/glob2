@@ -25,6 +25,16 @@ ENGINE_SUPPORT = [
 
 # glob2-engine-tests: every client object except the entry point, plus these.
 ENGINE_TESTS = [
+    ('GUIInteractionCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('GUIOrderCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('EditorActionCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    'LegacyAreaWaitTest.cpp',
+    ('LegacyScriptCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    'AIDecisionCoverageTest.cpp',
+    'CastorContinuationTest.cpp',
+    'CortexNetCoverageTest.cpp',
+    ('CortexActionCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('CortexPolicyCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('ScriptCompatibilityTest.cpp', dict(cxxflags=['-fno-access-control'])),
     'ScriptIntegrationTest.cpp',
     'ScriptPresentationTest.cpp',
@@ -36,6 +46,7 @@ ENGINE_TESTS = [
     'BuildingGradientInvalidationHarness.cpp',
     'FetchApportionmentHarness.cpp',
     'GameGUISelectionHarness.cpp',
+    'SceneExtractTest.cpp',
     ('ClientChannelsTest.cpp', dict(cxxflags=['-fno-access-control'])),
     'HiringBucketHarness.cpp',
     'HungryDefeatHarness.cpp',
@@ -63,7 +74,7 @@ ENGINE_TESTS = [
     'OrchardCommonsConversionTest.cpp',
     'PortableGameHarness.cpp',
     'TeamStatsSaveHarness.cpp',
-    'EngineSessionHarness.cpp',
+    ('EngineSessionHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     ('MapRenderResizeHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     ('PointBarRenderTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('maxima/MaximaCombatIntegrationTest.cpp', dict(cxxflags=['-fno-access-control'])),
@@ -100,6 +111,7 @@ ENGINE_TESTS = [
     'GameGUITouchHarness.cpp',
     # Command-line harnesses whose modes became cases.
     'CustomGameSetupHarness.cpp',
+    'TeamLimitTest.cpp',
     'MapPreviewHarness.cpp',
     ('MapGeneratorDefaultsTest.cpp', dict(cxxflags=['-fno-access-control'])),
 ]
@@ -107,6 +119,9 @@ ENGINE_TESTS = [
 # glob2-unit-tests: libgag, libusl, the production sources below and stubs.
 UNIT_TESTS = [
     'EventQueueTest.cpp',
+    'MapGeneratorGoldenCoverageTest.cpp',
+    'USLCoverageTest.cpp',
+    'SurfaceCoverageTest.cpp',
     'ImageAssetTest.cpp',
     'ScriptRuntimeTest.cpp',
     'ScriptNumericTest.cpp',

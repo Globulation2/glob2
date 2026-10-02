@@ -5,7 +5,7 @@ the same objects as the game:
 
 | Binary | Links | How it runs |
 | --- | --- | --- |
-| `glob2-unit-tests` | libgag, libusl, a few production sources and the stubs in `test/unit/stubs/` | headless cases share a process; display cases run separately |
+| `glob2-unit-tests` | libgag, libusl, a few production sources and the stubs in `test/unit/stubs/` | headless cases share a process; display cases run in separate processes |
 | `glob2-engine-tests` | every client object except the entry point | one process per test case, each in a disposable profile |
 
 Both are listed in `test/tests.py`, built by `test/SConscript` and land in
@@ -129,6 +129,30 @@ path on the command line (`test_map_cli.py`, `test_map_report.py`). The `check_*
 scripts compare full-game traces against retained fixtures and are documented with
 the harness they accompany below. `tests/` at the repository root tests the build
 system and the browser services.
+
+## Team capacity and format 127
+
+`TeamLimit` checks all sixteen controller/header slots, entity identifiers, packed
+resource-growth attribution, full-array enemy iteration, indexed text alliances,
+dense-map request boundaries, malformed script-generation counts, and
+deterministic sixteen-team save/load continuation. `Maxima.Economy` covers counted opponents,
+legacy twelve-record loading and malformed counts. Replay and network boundaries
+remain covered by `JavaScriptCompatibility` and `TeamStatsSave`.
+
+`fixtures/team-limit/pre-v127-maxima.game.gz` is an actual format-126 tick-zero
+save: Even Ground (method 60), map/game seed 7, 256×256, four colonies with
+Maxima controllers and default generator controls. It checks both Maxima records
+and the unit/building generation-plane migration, compares serialized AI state,
+and advances paired continuations through 128 actual AI decisions and simulation
+ticks after a new-format reload. Each continuation owns its RNG snapshot.
+
+The five expanded designed generators retain golden cases at 13–16 colonies on
+512×512. Refresh selected landscapes on the current platform with
+`MapGeneratorGoldenTest <profile> --update --only=gauntlet,encircled-kingdom,faulted-city,portage-lakes,hungry-marches`.
+`--require-rows` requires the current revision of every registered generator on
+the executing platform; fresh foreign rows cannot substitute for local coverage.
+`MapGeneratorGoldenCoverageTest` covers stale, missing and mixed-revision tables.
+Regenerate each affected platform's rows using its actual binary.
 
 ## Maxima
 
@@ -1071,12 +1095,13 @@ one-local-player header and seed they need. Design and numbers:
 See the [scripting guide](../docs/development/javascript.md) and
 [API reference](../docs/development/javascript-api.md) for the public boundary.
 
-Current saves use format 125, preserving released format 124's experiment-header
-layout through version-gated loading. Formats 58–124 receive scripting identities
-on load; format 125 validates its stored identities and complete generation tables.
-The minimum save version remains 58, the network protocol is 48, and the replay
-minimum remains 123. Draft JavaScript fixtures use format 125; released historical
-fixtures remain unchanged.
+Current saves use format 127, with counted generation tables for sixteen teams.
+Version-gated loading preserves released format 124's experiment-header layout
+and remaps the twelve-team generation tables stored by formats 125 and 126.
+Formats 58–124 receive scripting identities on load; later formats validate their
+stored identities and generation tables. The minimum save version remains 58,
+the network protocol is 50, and the replay minimum is 127. Draft JavaScript
+fixtures use format 125; released historical fixtures remain unchanged.
 
 Build `unit-tests engine-tests` with SCons and run
 `python3 test/run_tests.py --build-dir build/darwin/client/release --filter 'JavaScript*/*'`
@@ -1180,3 +1205,78 @@ for fixture capture, paired CPU measurements and diagnostic overrides. The
 `SoftwareRenderer` suite checks raster sampling, ordering, opacity revisions and
 terrain-cache correctness; `PortableRenderer`, `WindowResize`, `MapRenderResize` and
 `HighResolutionIntegration` cover the shared facade and window lifecycle.
+
+## Castor saved-game continuation
+
+`CastorContinuationTest.cpp` compares emitted order bytes, per-tick simulation
+checksums and RNG state across saves during boot, map computation and active
+colony management. It also checks binary/text snapshot round trips and the
+historical timer-only Castor AI formats (versions 1 and 2).
+
+```sh
+python3 test/run_tests.py --filter 'CastorContinuation/*'
+```
+
+Save format 126 writes Castor AI format 3, preserving project order, boot progress,
+strategy, control timers and map-cache history. Older saves remain readable with
+their historical restart behavior; omitted state cannot be recovered from them.
+New games retain the existing decision sequence. This save change does not raise
+the replay acceptance floor.
+
+## Native coverage workflow
+
+Build and measure the regular native tier with a matching Clang/LLVM toolchain:
+
+```sh
+python3 test/run_coverage.py --quick --timeout 900 -j4
+python3 -m unittest discover -s test -p test_run_coverage.py -v
+```
+
+Use an optimized coverage build for the full tier, including expensive generator
+registry contracts and custom-game previews:
+
+```sh
+python3 test/run_coverage.py --optimization 1 --timeout 1800 -j4
+```
+
+Native macOS binaries hold a scoped user-initiated activity while tests run,
+preventing App Nap from throttling long background cases. The activity ends
+when the test binary exits.
+
+Each optimization level uses a separate default build directory. Keep reports
+from different optimization levels separate. The manifest records the flags and
+selection; the explicit timeout accommodates instrumented integration runs. Add `--fullscreen` only on a display that supports mode
+switches. `--no-display` selects a headless subset and is recorded in the report.
+Versioned Linux tools can be selected with `--cc clang-18 --cxx clang++-18
+--llvm-profdata llvm-profdata-18 --llvm-cov llvm-cov-18`.
+
+Each run gets a fresh directory under ignored `artifacts/native-coverage/`, with
+build/test logs, JUnit, compiler/tool versions, source revision, selection,
+profiles, full coverage JSON, weighted implementation summaries and HTML.
+Engine and unit profiles are merged and exported separately: the engine report
+is the implementation baseline, and the unit report supplements it. Never
+average their percentages or merge independently linked copies of the same
+source. Multiplayer (`src/net`, `src/yog` and network-tagged cases), external
+libraries and test implementations are excluded from implementation totals.
+Unlinked/platform-specific sources are listed as unmeasured, rather than assigned
+zero coverage. Header coverage remains in the file inventory, apart from the
+implementation area totals. Coverage-tool diagnostics fail the run so a damaged
+export cannot appear successful.
+
+The added behavior coverage focuses on the following native boundaries:
+
+| Cases | Behaviors protected |
+| --- | --- |
+| `AIDecisionCoverage`, `CastorContinuation` | Seeded AI orders, pause neutrality, saved continuation, simulation checksums and RNG state |
+| `CortexNetCoverage`, `CortexPolicyCoverage`, `CortexActionCoverage` | Integer model arithmetic, malformed models, eligibility and thresholds, worker budgets, and orders applied by the engine |
+| `LegacyScriptCoverage`, `USLCoverage` | Parsing failures, legacy and painted area waits, counts, flags and suspension, summons and alliances, recursion, thread yields, garbage collection and runtime errors |
+| `GUIOrderCoverage`, `GUIInteractionCoverage` | Queued requests, clamps, deduplication, field reconciliation, replay input, desktop menu interactions and unit information |
+| `EditorActionCoverage` | Action dispatch, unit/building editing, matching controls and save/load persistence |
+| `SurfaceCoverage` | Alpha grids, cropped/scaled blits, clip boundaries and progress-bar pixels |
+
+Use uncovered functions and branch annotations to choose the next scenario by
+consequence: saves and deterministic decisions first, then authoritative orders,
+script execution and editable state, followed by rendering and diagnostics.
+Line coverage alone does not establish save continuity, equivalent execution on
+another platform, or playable game behavior. The Linux CI coverage artifact
+uses the regular tier; slow integration and cross-platform checks remain separate.

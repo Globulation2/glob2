@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include "scene/Scene.h"
 #include <PerformanceTelemetry.h>
 #include "MapCopies.h"
 
@@ -36,40 +37,42 @@
 // Bullets/explosions/death animations, fog of war, and overlay maps. Split from Game_render.cpp.
 
 
-void Game::drawMapBulletsExplosionsDeathAnimations(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
+void Game::drawMapBulletsExplosionsDeathAnimations(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const Scene& scene)
 {
+	const SceneEntities &entities = scene.entities;
+	const SceneMap &map = scene.map; // the extracted map, not Game::map
 	PERF_SCOPE_TIME(Effects);
 	// Let's paint the bullets and explosions
 	// TODO : optimise : test only possible sectors to show bullets.
 
 	Sprite *bulletSprite = globalContainer->bullet;
 
-	Uint32 visibleTeams = teams[localTeam]->me;
+	Uint32 visibleTeams = entities.teams[localTeam].me;
 	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 
 	int mapPixW=(map.getW())<<5;
 	int mapPixH=(map.getH())<<5;
 
-	for (int i=0; i<(map.getSectorW()*map.getSectorH()); i++)
+	for (const SceneSectorEffects &sector : entities.sectors)
 	{
-		Sector *s=map.getSector(i);
 		// bullets
-		for (std::list<Bullet *>::iterator it=s->bullets.begin();it!=s->bullets.end();it++)
+		for (const SceneBullet &bullet : sector.bullets)
 		{
-			int x=(*it)->px-(viewportX<<5);
-			int y=(*it)->py-(viewportY<<5);
+			const SceneBullet *it = &bullet;
+			int x=it->px-(viewportX<<5);
+			int y=it->py-(viewportY<<5);
 			int ballisticShift = 0;
 
 			if (x<0)
 				x+=mapPixW;
 			if (y<0)
 				y+=mapPixH;
-			if ((*it)->ticksInitial)
+			if (it->ticksInitial)
 			{
-				float time = static_cast<float>((*it)->ticksLeft);
-				float duration = static_cast<float>((*it)->ticksInitial);
-				float speedX = static_cast<float>((*it)->speedX);
-				float speedY = static_cast<float>((*it)->speedY);
+				float time = static_cast<float>(it->ticksLeft);
+				float duration = static_cast<float>(it->ticksInitial);
+				float speedX = static_cast<float>(it->speedX);
+				float speedY = static_cast<float>(it->speedY);
 				float K = static_cast<float>(sqrt(speedX * speedX + speedY * speedY));
 				ballisticShift = static_cast<int>(K * ((-1.0f * time * time) / duration + time));
 			}
@@ -84,8 +87,9 @@ void Game::drawMapBulletsExplosionsDeathAnimations(int left, int top, int right,
 		}
 		globalContainer->gfx->finishDrawingSprite(bulletSprite, 255);
 		// explosions
-		for (BulletExplosion *e : animations->getExplosions(i))
+		for (const SceneExplosion &explosion : sector.explosions)
 		{
+			const SceneExplosion *e = &explosion;
 			if (map.isFOWDiscovered(e->x, e->y, visibleTeams))
 			{
 				int x, y;
@@ -102,8 +106,9 @@ void Game::drawMapBulletsExplosionsDeathAnimations(int left, int top, int right,
 		}
 		globalContainer->gfx->finishDrawingSprite(globalContainer->bulletExplosion, 255);
 		// death animations
-		for (UnitDeathAnimation *a : animations->getDeathAnimations(i))
+		for (const SceneDeathAnimation &death : sector.deaths)
 		{
+			const SceneDeathAnimation *a = &death;
 			if (map.isFOWDiscovered(a->x, a->y, visibleTeams))
 			{
 				int x, y;
@@ -111,9 +116,7 @@ void Game::drawMapBulletsExplosionsDeathAnimations(int left, int top, int right,
 				int frame = globalContainer->deathAnimation->getFrameCount() - a->ticksLeft - 1;
 				int decX = globalContainer->deathAnimation->getW(frame)>>1;
 				int decY = globalContainer->deathAnimation->getH(frame)>>1;
-				Team *team = a->team;
-
-				globalContainer->deathAnimation->setBaseColor(team->color);
+				globalContainer->deathAnimation->setBaseColor(entities.teams[a->team].color);
 				const int px = x+16-decX, py = y+16-decY-frame;
 				forEachMapCopy(px, py, px+globalContainer->deathAnimation->getW(frame)-1,
 					py+globalContainer->deathAnimation->getH(frame)-1, mapPixW, mapPixH, sw, sh, [&](int dx, int dy) {
@@ -176,12 +179,11 @@ void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int sw, int
 	PERF_SCOPE_TIME(Overlay);
 	if(drawOptions & DRAW_OVERLAY)
 	{
-		OverlayArea* overlays;
-		if(gui)
-			overlays=&gui->overlay;
-		else if(edit)
+		const OverlayArea* overlays = view.drawnScene().overlay.get();
+		if (!overlays && edit)
 			overlays=&edit->overlay;
-		else assert(false);
+		if (!overlays)
+			return;
 		int overlayMax=overlays->getMaximum();
 		const Color overlayColor = OverlayArea::colorOf(overlays->getOverlayType());
 		///Both width and height have +2 to cover half-squares around the edge of the viewport

@@ -1430,8 +1430,8 @@ AIの命令なし
 砂地の割合
 [Select a valid map.]
 有効なマップを選択してください。
-[Shared control needs a free controller slot (maximum 12).]
-共同操作には操作担当の空き枠が必要です（合計12枠まで）。
+[Shared control needs a free controller slot (maximum %0).]
+共同操作には操作担当の空き枠が必要です（合計%0枠まで）。
 [Smoothing]
 スムージング
 [Standard]

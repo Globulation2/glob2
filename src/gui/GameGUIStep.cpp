@@ -293,7 +293,7 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 	std::shared_ptr<OrderVoiceData> orderVoiceData;
 	while ((orderVoiceData = globalContainer->voiceRecorder->getNextOrder()) != NULL)
 	{
-		orderVoiceData->recipientsMask = chatMask ^ (chatMask & (1<<localPlayer));
+		orderVoiceData->recipientsMask = chatMask ^ (chatMask & (Team::teamNumberToMask(localPlayer)));
 		orderQueue.push_back(orderVoiceData);
 	}
 
@@ -347,17 +347,8 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 		}
 	}
 
-	if(game.stepCounter % 25 == 1)
-	{
-		if(showStarvingMap)
-			overlay.compute(game, OverlayArea::Starving, localTeamNo);
-		else if(showDamagedMap)
-			overlay.compute(game, OverlayArea::Damage, localTeamNo);
-		else if(showDefenseMap)
-			overlay.compute(game, OverlayArea::Defence, localTeamNo);
-		else if(showFertilityMap)
-			overlay.compute(game, OverlayArea::Fertility, localTeamNo);
-	}
+	// Overlay maps are computed during scene extraction (SceneExtractor), from the
+	// overlay drawAll publishes in clientRequests.
 
 	// do we have won or lost conditions
 	checkWonConditions();
@@ -371,7 +362,6 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 void GameGUI::syncStep(void)
 {
 	assert(localTeam);
-	assert(teamStats);
 
 	// Faster presets run more ticks per second, so they wait proportionally more ticks.
 	int stepMs = GAME_TICK_MS;

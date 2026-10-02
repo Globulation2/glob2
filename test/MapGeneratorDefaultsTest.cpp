@@ -404,7 +404,7 @@ class MapGeneratorDefaultsTest
 		// Exercise both opponents sharing two fronts, the usual four-colony arena,
 		// and the denser circuit at both supported sizes.
 		for (auto [dims, teams] : {std::pair{8, 2}, std::pair{8, 4}, std::pair{8, 8},
-								  std::pair{9, 8}})
+								  std::pair{9, 8}, std::pair{9, 13}, std::pair{9, 16}})
 		{
 			D sized = request;
 			sized.wDec = sized.hDec = dims;
@@ -419,7 +419,7 @@ class MapGeneratorDefaultsTest
 			REQUIRE(definition.validateWorld(world, probe).empty());
 		}
 		for (auto [width, height, teams] : {std::tuple{7, 7, 4}, std::tuple{9, 7, 4},
-										   std::tuple{8, 8, 1}, std::tuple{9, 9, 13}})
+										   std::tuple{8, 8, 1}, std::tuple{9, 9, 17}})
 		{
 			D invalid = request;
 			invalid.wDec = width;

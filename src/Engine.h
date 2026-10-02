@@ -5,7 +5,10 @@
 #pragma once
 
 #include "Header.h"
+#include <EventQueue.h>
 #include "GameGUI.h"
+#include <atomic>
+#include <functional>
 #include <memory>
 #include <optional>
 #include <string>
@@ -19,6 +22,7 @@
 
 
 class MultiplayersJoin;
+class SimulationRunner;
 class NetGame;
 
 using std::shared_ptr;
@@ -108,6 +112,34 @@ public:
     void abortSession() noexcept;
     void drawSession();
     Uint32 sessionDelay(Uint64 now);
+
+    // Threaded execution (the default where threads exist): the simulation runs on
+    // a SimulationRunner thread; the host calls threadedClientFrame and drawSession
+    // every frame. Serial execution (stepSession) remains for hosts without threads
+    // and for headless runs.
+    //! Start the simulation thread; false when threads are unavailable. `now` is
+    //! the host clock (see sessionClock).
+    bool startSimulationThread(Uint64 now);
+    //! Stop the simulation thread (at a tick boundary) and join it.
+    void stopSimulationThread();
+    bool simulationThreaded() const { return runner != nullptr; }
+    //! Main-thread GUI step with the simulation parked; rethrows simulation
+    //! failures. Returns false once the session has ended.
+    bool threadedClientFrame(Uint64 now, const std::vector<SDL_Event>& events);
+    //! Milliseconds to wait after a threaded frame that took `elapsed` ms, capping
+    //! drawing at about 120 frames per second without adding to vsync pacing.
+    static Uint32 threadedFrameWait(Uint64 elapsed) { return elapsed >= 8 ? 0 : Uint32(8 - elapsed); }
+    //! Keep the simulation parked while the host is in the background.
+    void suspendSimulation();
+    void resumeSimulation(Uint64 now);
+    // Called on the simulation thread by SimulationRunner.
+    //! The host clock the session is paced on, which excludes time the host spent
+    //! in the background: the latest clock the host passed in, advanced by real time.
+    Uint64 sessionClock() const;
+    bool simulationStep(Uint64 now);
+    void extractScene(Scene& scene);
+    // Called on the main thread with the simulation parked.
+    void clientStep(Uint64 now, const std::vector<SDL_Event>& events);
     struct PendingLoad { std::string filename; bool replay; };
     // Finalize without loading another game or entering a UI loop. The host
     // schedules a returned request, or presents the end screen when absent.
@@ -144,6 +176,9 @@ public:
 	
 private:
     bool stepSessionImpl(Uint64 now, const std::vector<SDL_Event>& events);
+    // One step of the session: pacing, the client work (GUI step) when given, orders
+    // and the simulation tick. Shared by serial and threaded execution.
+    bool advanceSession(Uint64 now, const std::function<void()>& clientWork, bool handleExit);
 	/// Initiates a game, provided the map and game header. This initiates the net
 	/// as well. When setGameHeader is true, the gameHeader given will replace the
 	/// one loaded with the map. When ignore GUI info is set, the game will ignore
@@ -221,10 +256,14 @@ private:
 
 	void drawFrame(MainLoopState& st);
     std::optional<MainLoopState> session;
+    std::unique_ptr<SimulationRunner> runner;
+    //! Host clock minus SDL_GetTicks(), published by the main thread for sessionClock.
+    std::atomic<Sint64> sessionClockOffset{0};
+    void publishSessionClock(Uint64 now);
     // Live while a session runs: synchronized draws must use the game's bound stream.
     std::optional<SyncRandRequirement> randomRequirement;
     int sessionEndingTarget = 0;
-    std::vector<SDL_Event> sessionInput;
+    GAGCore::EventQueue sessionInput;
 
 	/// If the GUI requested a clean exit, drain remaining local orders and
 	/// flush the net layer. Returns true if the engine loop should break.

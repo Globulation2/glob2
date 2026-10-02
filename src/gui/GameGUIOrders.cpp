@@ -128,7 +128,18 @@ void GameGUI::executeOrder(std::shared_ptr<Order> order)
 	// show; react to it right away so pause and quit take effect before the
 	// engine decides whether to run the next tick, exactly as before.
 	game.executeOrderAndNotify(order, localPlayer);
-	consumeClientEvents();
+	if (!simulationThreaded)
+	{
+		consumeClientEvents();
+		return;
+	}
+	// On the simulation thread, apply now only what decides the next tick (pause,
+	// the local player leaving); the GUI consumes the notices, including these
+	// again, in threadedClientStep.
+	if (order->getOrderType() == ORDER_PAUSE_GAME)
+		gamePaused = std::static_pointer_cast<PauseGameOrder>(order)->pause;
+	else if (order->getOrderType() == ORDER_PLAYER_QUIT_GAME && order->sender == localPlayer)
+		isRunning = false;
 }
 
 void GameGUI::handleClientEvent(ClientEventVariant&& event)
@@ -145,12 +156,12 @@ void GameGUI::handleClientEvent(ClientEventVariant&& event)
 		{
 			if (e.messageOrderType==MessageOrder::NORMAL_MESSAGE_TYPE)
 			{
-				if (e.recipientsMask &(1<<localPlayer))
+				if (e.recipientsMask &(Team::teamNumberToMask(localPlayer)))
 					addMessage(Color(230, 230, 230), FormattableString("%0 : %1").arg(e.senderName).arg(e.text), true);
 			}
 			else if (e.messageOrderType==MessageOrder::PRIVATE_MESSAGE_TYPE)
 			{
-				if (e.recipientsMask &(1<<localPlayer))
+				if (e.recipientsMask &(Team::teamNumberToMask(localPlayer)))
 					addMessage(Color(99, 255, 242), FormattableString("<%0%1> %2").arg(Toolkit::getStringTable()->getString("[from:]")).arg(e.senderName).arg(e.text), true);
 				else if (e.sender==localPlayer)
 				{
@@ -166,7 +177,7 @@ void GameGUI::handleClientEvent(ClientEventVariant&& event)
 		}
 		else if constexpr (std::is_same_v<T, ClientEvent::VoiceData>)
 		{
-			if (e.order->recipientsMask & (1<<localPlayer))
+			if (e.order->recipientsMask & (Team::teamNumberToMask(localPlayer)))
 				globalContainer->mix->addVoiceData(e.order);
 		}
 		else if constexpr (std::is_same_v<T, ClientEvent::PlayerQuit>)

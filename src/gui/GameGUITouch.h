@@ -18,7 +18,9 @@ namespace GAGCore
 {
 class DrawableSurface;
 }
+#include "sim/EntityRef.h"
 class GameGUI;
+struct SceneBuildingPanel;
 class Building;
 class Unit;
 class Minimap;
@@ -58,7 +60,7 @@ class GameGUITouch
 	std::optional<GAGCore::ViewRect> labelClip;
 	std::vector<std::string> pointLines(const std::string &text, double width,
 										double textScale = 1.15) const;
-	Building *allocationBuilding() const;
+	const SceneBuildingPanel *allocationBuilding() const;
 	GAGCore::ViewRect allocationRect() const;
 	GAGCore::ViewRect panelContent() const;
 	void drawAllocation();
@@ -164,7 +166,11 @@ class GameGUITouch
 		int kind, value = 0;
 		bool selected = false;
 	};
-	Building *inspectedBuilding() const;
+	//! Whether a building is selected for inspection (GUI state; for layout and input).
+	bool inspecting() const;
+	//! The inspected building as last drawn (the frame's Scene); null when none or not
+	//! extracted yet. For drawing its fields.
+	const SceneBuildingPanel *inspectedBuilding() const;
 	std::vector<BuildingAction> buildingActions() const;
 	// Shared geometry for painting, hit testing, sliders and accessibility.
 	std::vector<GAGCore::ViewRect> buildingActionBoxes(double width) const;
@@ -207,7 +213,7 @@ class GameGUITouch
 	std::optional<BuildingAction> actionAt(GAGCore::ViewPoint point) const;
 	double actionScroll = 0;
 	bool confirmDestroy = false;
-	const void *lastInspectedBuilding = nullptr;
+	BuildingRef lastInspectedBuilding;
 	void drawPointLabel(GAGCore::ViewRect rect, const std::string &text, double textScale = 1.15,
 						bool leading = false);
 	const void *ownerBuilding = nullptr;

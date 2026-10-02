@@ -1432,8 +1432,8 @@ Cortex
 سهم شن
 [Select a valid map.]
 یک نقشه معتبر انتخاب کنید.
-[Shared control needs a free controller slot (maximum 12).]
-کنترل مشترک به یک جایگاه خالی برای کنترل‌کننده نیاز دارد (حداکثر 12).
+[Shared control needs a free controller slot (maximum %0).]
+کنترل مشترک به یک جایگاه خالی برای کنترل‌کننده نیاز دارد (حداکثر %0).
 [Smoothing]
 صاف کردن
 [Standard]

@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <utility>
+#include <mutex>
 #include <variant>
 
 #include <SDL3/SDL_stdinc.h>
@@ -37,6 +38,8 @@ public:
 	{
 		//! Top-left tile and size, in tiles, of the visible map area.
 		int viewportX = 0, viewportY = 0, viewportW = 0, viewportH = 0;
+		//! Drawn map area in pixels, which decides where wrapped tiles appear.
+		int displayW = 0, displayH = 0;
 		//! Building whose panel is open (its failing units are recorded).
 		BuildingRef observedBuilding;
 		//! OverlayArea::OverlayType the client displays (None = 0).
@@ -45,18 +48,28 @@ public:
 		Uint32 debugLayers = 0;
 	};
 
+	// The view is written by the client while drawing and read by the simulation
+	// thread, so it is guarded; the command queue is only used while the
+	// simulation is parked or on the simulation thread.
 	void publishViewport(int x, int y, int w, int h)
 	{
+		std::lock_guard<std::mutex> lock(viewMutex);
 		view.viewportX = x;
 		view.viewportY = y;
 		view.viewportW = w;
 		view.viewportH = h;
 	}
-	void publishObservedBuilding(BuildingRef building) { view.observedBuilding = building; }
-	void publishOverlay(Uint8 overlay) { view.overlay = overlay; }
-	void publishDebugLayers(Uint32 layers) { view.debugLayers = layers; }
-	//! Newest published view (a copy, so it can later be read under a lock).
-	ClientView latest() const { return view; }
+	void publishDisplaySize(int w, int h)
+	{
+		std::lock_guard<std::mutex> lock(viewMutex);
+		view.displayW = w;
+		view.displayH = h;
+	}
+	void publishObservedBuilding(BuildingRef building) { std::lock_guard<std::mutex> lock(viewMutex); view.observedBuilding = building; }
+	void publishOverlay(Uint8 overlay) { std::lock_guard<std::mutex> lock(viewMutex); view.overlay = overlay; }
+	void publishDebugLayers(Uint32 layers) { std::lock_guard<std::mutex> lock(viewMutex); view.debugLayers = layers; }
+	//! Newest published view (a copy taken under the lock).
+	ClientView latest() const { std::lock_guard<std::mutex> lock(viewMutex); return view; }
 
 	void push(ClientCommandVariant command) { commands.push(std::move(command)); }
 	template <typename F>
@@ -78,11 +91,15 @@ public:
 
 	void reset()
 	{
-		view = ClientView();
+		{
+			std::lock_guard<std::mutex> lock(viewMutex);
+			view = ClientView();
+		}
 		commands.clear();
 	}
 
 private:
+	mutable std::mutex viewMutex;
 	ClientView view;
 	LosslessQueue<ClientCommandVariant> commands;
 };

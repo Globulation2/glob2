@@ -1434,8 +1434,8 @@ Flussbreite
 Sandanteil
 [Select a valid map.]
 Wählen Sie eine gültige Karte aus.
-[Shared control needs a free controller slot (maximum 12).]
-Gemeinsame Steuerung benötigt einen freien Platz für Mensch oder KI (höchstens 12).
+[Shared control needs a free controller slot (maximum %0).]
+Gemeinsame Steuerung benötigt einen freien Platz für Mensch oder KI (höchstens %0).
 [Smoothing]
 Glätten
 [Standard]

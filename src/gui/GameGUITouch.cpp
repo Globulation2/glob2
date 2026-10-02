@@ -90,9 +90,9 @@ MobileLayout GameGUITouch::layout() const
 	}
 	// Compact inspectors are the thumb dial; its bounds are set once the layout
 	// is in drawable units below.
-	const bool dial = (result.persistentPanel || panelOpen) && inspectedBuilding() &&
+	const bool dial = (result.persistentPanel || panelOpen) && inspecting() &&
 					  !result.persistentPanel && usesHUD();
-	if ((result.persistentPanel || panelOpen) && inspectedBuilding() && !dial)
+	if ((result.persistentPanel || panelOpen) && inspecting() && !dial)
 	{
 		// Use horizontal room before introducing overflow. Ordinary inspectors
 		// fit completely; only genuinely constrained/large-text views scroll.
@@ -215,7 +215,7 @@ void GameGUITouch::syncGestureExclusion()
 	if (usesHUD() && !activeDialog())
 	{
 		const auto ui = layout();
-		if (((showsBuildPalette() && paletteRail(ui)) || (inspectedBuilding() && !ui.persistentPanel) ||
+		if (((showsBuildPalette() && paletteRail(ui)) || (inspecting() && !ui.persistentPanel) ||
 			 lensVisible()) &&
 			ui.panel.w > 0 && ui.panel.h > 0)
 			wanted.push_back(ui.panel);
@@ -353,7 +353,7 @@ int GameGUITouch::interfaceRegion(ViewPoint point) const
 			return 38;
 		// The dial answers only on its rings, chips and header; the map shows
 		// (and stays tappable) between them.
-		if (inspectedBuilding() && usesDial())
+		if (inspecting() && usesDial())
 		{
 			if (header.contains(point) || dialRegionAt(point))
 				return 3;
@@ -417,13 +417,13 @@ std::vector<ViewRect> GameGUITouch::keyboardTargets()
 				targets.push_back(rect);
 		}
 	}
-	else if (inspectedBuilding() && usesDial())
+	else if (inspecting() && usesDial())
 	{
 		for (const auto &region : dialRegions())
 			if (region.part != DialRegion::Arc)
 				targets.push_back(region.box);
 	}
-	else if (inspectedBuilding())
+	else if (inspecting())
 	{
 		for (size_t i = 0; i < buildingActions().size(); ++i)
 		{
@@ -497,7 +497,7 @@ bool GameGUITouch::process(SDL_Event &event)
 			event.wheel.y * (event.wheel.direction == SDL_MOUSEWHEEL_FLIPPED ? -48 : 48);
 		if (region == 3)
 		{
-			if (inspectedBuilding())
+			if (inspecting())
 				actionScroll -= delta;
 			else
 				panelScroll -= delta * paletteScrollSign();
@@ -566,9 +566,11 @@ bool GameGUITouch::process(SDL_Event &event)
 		cancel();
 		return true;
 	}
-	if (!fingers.empty() && inspectedBuilding() &&
-		(heldBuildingState != inspectedBuilding()->buildingState ||
-		 heldConstructionState != inspectedBuilding()->constructionResultState))
+	// Input validates against the live building (authoritative state).
+	Building *held = inspecting() ? gui.selectionBuilding() : nullptr;
+	if (!fingers.empty() && held &&
+		(heldBuildingState != held->buildingState ||
+		 heldConstructionState != held->constructionResultState))
 	{
 		cancel();
 		return true;
@@ -614,7 +616,7 @@ bool GameGUITouch::process(SDL_Event &event)
 			ownerRegion = interfaceRegion(point);
 			heldActionKind = -1;
 			heldActionConfirmation = confirmDestroy;
-			if (auto *building = inspectedBuilding())
+			if (Building *building = inspecting() ? gui.selectionBuilding() : nullptr)
 			{
 				heldBuildingState = building->buildingState;
 				heldConstructionState = building->constructionResultState;
@@ -820,7 +822,7 @@ void GameGUITouch::actions(const std::vector<TouchAction> &changes)
 			{
 				const double unit = globalContainer->gfx->logicalUnitsPerPoint();
 				clampScroll();
-				auto &panel = ownerRegion == 7 ? tutorialAxis : inspectedBuilding() ? actionAxis : panelAxis;
+				auto &panel = ownerRegion == 7 ? tutorialAxis : inspecting() ? actionAxis : panelAxis;
 				if (action.kind == TouchActionKind::Pan)
 					// The thumb rail fills from the bottom, so its content follows the
 					// finger with the opposite sign.
@@ -1269,7 +1271,7 @@ void GameGUITouch::interfaceTap(ViewPoint point)
 		}
 		if (showsBuildPalette())
 			tapBuildPalette(point);
-		else if (inspectedBuilding())
+		else if (inspecting())
 			tapBuildingAction(point);
 		else if (gui.selectionMode == GameGUI::BRUSH_SELECTION)
 			return; // The brush toolbar owns painting commands, not this sidebar.
@@ -1360,7 +1362,7 @@ void GameGUITouch::select(ViewPoint point)
 		return;
 	}
 	gui.view.mouseUnit = Game::refOf(unitAt(screenPoint));
-	const bool wasInspecting = inspectedBuilding() != nullptr;
+	const bool wasInspecting = inspecting();
 	const bool wasOpen = panelOpen;
 	const int oldDisplay = gui.displayMode;
 	// Desktop selection deliberately sticks on empty terrain. A completed map
@@ -1369,7 +1371,7 @@ void GameGUITouch::select(ViewPoint point)
 	// Pan/cancel/UI gestures never reach this selection path.
 	if (usesHUD() && wasInspecting) gui.clearSelection();
 	gui.handleMapClick(int(screenPoint.x), int(screenPoint.y), SDL_BUTTON_LEFT);
-	if (!wasInspecting && inspectedBuilding())
+	if (!wasInspecting && inspecting())
 	{
 		restorePalette = true;
 		previousPanelOpen = wasOpen;
@@ -1417,18 +1419,20 @@ void GameGUITouch::prepareDraw()
 			stroke.points.push_back({double(gui.mapMouseX(int(point.x)) + gui.viewportX * 32),
 									 double(gui.mapMouseY(int(point.y)) + gui.viewportY * 32)});
 	}
-	if (restorePalette && !inspectedBuilding())
+	if (restorePalette && !inspecting())
 	{
 		panelOpen = previousPanelOpen;
 		gui.displayMode = static_cast<GameGUI::DisplayMode>(previousDisplayMode);
 		restorePalette = false;
 	}
-	if (inspectedBuilding() != lastInspectedBuilding)
+	// Compare the selected building's identity (gid and generation).
+	const BuildingRef inspected = inspecting() ? std::get<BuildingRef>(gui.selection) : BuildingRef();
+	if (!(inspected == lastInspectedBuilding))
 	{
 		confirmDestroy = false;
 		actionScroll = 0;
 		ratioType = 0;
-		lastInspectedBuilding = inspectedBuilding();
+		lastInspectedBuilding = inspected;
 	}
 	if (usesHUD())
 	{
@@ -1481,9 +1485,7 @@ void GameGUITouch::menuAction(int action)
 		for (auto *state : states)
 			*state = false;
 		*states[action - 20] = enabled;
-		const OverlayArea::OverlayType types[] = {OverlayArea::Starving, OverlayArea::Damage,
-												  OverlayArea::Defence, OverlayArea::Fertility};
-		gui.overlay.compute(gui.game, types[action - 20], gui.localTeamNo);
+		// The next frame's scene extraction computes the newly chosen overlay.
 		return;
 	}
 	if (globalContainer->replaying && action >= 31 && action < 56)
