@@ -150,7 +150,10 @@ any other transport loss, and the client resumes from its horizon when it reconn
 WebSocket keep-alive pings detect dead peers after 30 s of silence. Clients ping every
 500 ms anyway.
 
-A timer drives each match's `update` every 10 ms, a quarter of a tick.
+A timer drives each match's `update`. It wakes at `TurnSequencer::nextBundleMicros()`,
+so each bundle leaves on its tick boundary, and at least every 10 ms for grace expiry,
+arbitration timeouts and presence. At the default bundle interval of 1 the relay sends
+each client 25 bundles per second; client-to-relay frame limits are unaffected.
 
 ## Tickets
 

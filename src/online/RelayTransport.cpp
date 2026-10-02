@@ -110,6 +110,14 @@ bool RelayTransport::send(const std::vector<std::uint8_t>& payload)
 	return !frame.empty() && link->send(std::move(frame));
 }
 
+void RelayTransport::flush()
+{
+	// NetTransport has no explicit flush: WssTransport writes as its event loop runs,
+	// and state() runs it (received data stays queued for the next receive()).
+	if (link)
+		link->state();
+}
+
 void RelayTransport::pump()
 {
 	if (!link)

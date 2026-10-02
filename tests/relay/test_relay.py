@@ -150,7 +150,7 @@ class RelayMatchTest(unittest.TestCase):
             self.assertEqual(welcome['seat'], s)
             self.assertEqual(welcome['humanSeatMask'], 0b111)
             self.assertEqual(welcome['tickRateMilliHz'], 25000)
-            self.assertEqual(welcome['bundleInterval'], 2)
+            self.assertEqual(welcome['bundleInterval'], 1)
             self.assertEqual(welcome['resumeFromTick'], 0)
         for c in clients.values():
             c.wait_for(lambda c: c.of('presence') and all(
@@ -290,6 +290,31 @@ class RelayMatchTest(unittest.TestCase):
         if evidence:
             (Path(evidence) / 'relay-metrics.txt').write_text(metrics)
         self.assertFalse(list((relay.directory / 'spool').glob('*')), 'spool emptied after upload')
+
+    def test_bundles_leave_on_the_tick_clock(self):
+        """The match timer wakes when a bundle is due, not on a coarse period."""
+        match_id = str(uuid.uuid4())
+        relay = RelayProcess(self, {'GLOB2_RELAY_JWKS_FILE': str(FIXTURES / 'jwks.json')})
+        client = relay.client(self.ticket(match_id, 0, [0]))
+        client.wait_for(lambda c: c.of('welcome'), what='Welcome')
+        period = client.of('welcome')[0]['bundleInterval'] * 1000 / client.of('welcome')[0]['tickRateMilliHz']
+        client.wait_for(lambda c: len(c.bundle_arrivals) >= 80, timeout=15, what='80 bundles')
+        arrivals = list(client.bundle_arrivals)[10:]
+        # Arrival time minus the bundle's place on the relay clock: constant but for
+        # the timer and the loopback, so its spread is the jitter the relay adds.
+        offsets = sorted(at - horizon * period / client.of('welcome')[0]['bundleInterval']
+                         for at, horizon in arrivals)
+        spread_ms = [(o - offsets[0]) * 1000 for o in offsets]
+        p50, p95 = spread_ms[len(spread_ms) // 2], spread_ms[int(len(spread_ms) * 0.95)]
+        evidence = os.environ.get('GLOB2_RELAY_EVIDENCE_DIR')
+        if evidence:
+            Path(evidence).mkdir(parents=True, exist_ok=True)
+            (Path(evidence) / 'bundle-jitter.txt').write_text(
+                f'bundles={len(arrivals)} spread_ms p50={p50:.2f} p95={p95:.2f} max={spread_ms[-1]:.2f}\n')
+        # A fixed 10 ms timer spreads bundles over 10 ms; loaded machines add noise.
+        self.assertLess(p50, 6.0, spread_ms)
+        client.send(quit_message(1))
+        client.wait_closed()
 
     def test_refusals(self):
         relay = RelayProcess(self, {'GLOB2_RELAY_JWKS_FILE': str(FIXTURES / 'jwks.json'),

@@ -253,10 +253,20 @@ void Match::start(asio::any_io_executor executor)
 
 asio::awaitable<void> Match::tickLoop()
 {
-	// A quarter of a tick keeps bundle timing within 10 ms of the relay clock.
+	// Wake when the next live bundle is due (TurnSequencer::nextBundleMicros), so
+	// bundles leave on their tick boundary instead of up to a timer period late, which
+	// clients would see as jitter. Grace expiry, arbitration timeouts and presence
+	// need no more than the 10 ms fallback, also used while no bundle is due (before
+	// the first tick, or once the sequencer stops sending).
+	constexpr std::uint64_t FALLBACK_MICROS = 10000;
 	while (!ended)
 	{
-		timer->expires_after(std::chrono::milliseconds(10));
+		const std::uint64_t now = monotonicMicros();
+		std::uint64_t wake = now + FALLBACK_MICROS;
+		const std::uint64_t next = sequencer.nextBundleMicros();
+		if (next > now && next < wake)
+			wake = next;
+		timer->expires_at(std::chrono::steady_clock::time_point(std::chrono::microseconds(wake)));
 		boost::system::error_code ignored;
 		co_await timer->async_wait(asio::redirect_error(asio::use_awaitable, ignored));
 		if (ended)

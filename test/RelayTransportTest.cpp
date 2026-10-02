@@ -21,6 +21,7 @@ struct FakeLink
 	std::string opened;
 	NetTransport::State state = NetTransport::State::Connecting;
 	int opens = 0;
+	int polls = 0; ///< state() calls: WssTransport runs its I/O there
 };
 
 class FakeTransport : public NetTransport
@@ -34,7 +35,11 @@ public:
 		++link.opens;
 	}
 	void close() override { link.state = State::Closed; }
-	State state() const override { return link.state; }
+	State state() const override
+	{
+		++link.polls;
+		return link.state;
+	}
 	bool send(std::vector<uint8_t> bytes) override
 	{
 		link.sent.insert(link.sent.end(), bytes.begin(), bytes.end());
@@ -100,6 +105,13 @@ TEST_SUITE("RelayTransport")
 		CHECK(transport.state() == Turn::TurnTransport::State::Connected);
 		CHECK(transport.send({9, 8}));
 		CHECK(link.sent == std::vector<uint8_t>{0, 2, 9, 8});
+		// flush() runs the link's pending I/O now and leaves received data queued.
+		const int polls = link.polls;
+		link.incoming.push_back({0, 1, 4});
+		transport.flush();
+		CHECK(link.polls == polls + 1);
+		CHECK(link.incoming.size() == 1);
+		link.incoming.clear();
 		link.incoming.push_back({0, 3, 1, 2});
 		std::vector<uint8_t> out;
 		CHECK_FALSE(transport.receive(out));

@@ -245,7 +245,8 @@ bundle only arrives early, not executes early.
 
 `nextBundleMicros()` is when the next bundle is due. A host should call `update()` at
 that moment rather than on a coarse timer: a timer of `T` ms delays each bundle by up
-to `T`, which the clients see as jitter. The LAN host updates every millisecond.
+to `T`, which the clients see as jitter. The LAN host updates every millisecond; the
+online relay sets its match timer to `nextBundleMicros()` ([relay](relay.md)).
 
 ## Timing model and per-client delay
 
