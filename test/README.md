@@ -1279,3 +1279,9 @@ The slow `[map-generators]` tier reports default repeatability, rectangular-map
 and rejection checks separately for each registered generator. Registry stress,
 landscape, framework and editor-default checks also have independent timeouts
 and logs; a timeout must identify its case rather than hide the whole catalog.
+
+Use `python3 test/test_cli_smoke.py --binary <client> --artifacts artifacts/cli --junit artifacts/cli.xml`
+for real executable contracts: argument validation, map image/report workflows,
+headless worker parity and saved continuation. `test/run_coverage.py --with-cli`
+builds the instrumented client and exports these profiles separately under `client/`;
+never merge its counts with independently linked engine or unit reports.
