@@ -48,6 +48,7 @@ def repeatable_slowdown(pairs):
 
 def run(binary, fixture, output, correctness=False):
     output.mkdir(parents=True, exist_ok=False)
+    (output / "profile").mkdir()
     command = [
         str(binary),
         "--run-game",

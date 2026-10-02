@@ -465,7 +465,11 @@ jobs:
           Set-Content "$install/games/user.game" 'user save'
           Set-Content "$install/unrelated.txt" 'user content'
           Set-Content "$install/obsolete.dll" 'previously shipped'
-          Add-Content "$install/.glob2-owned-files.txt" 'obsolete.dll' -Encoding Unicode
+          $inventoryEncoding = [System.Text.UnicodeEncoding]::new($false, $false)
+          $inventoryPath = "$install/.glob2-owned-files.txt"
+          $inventory = [System.IO.File]::ReadAllText($inventoryPath, $inventoryEncoding)
+          $inventory = $inventory.Replace(':GLOB2-OWNED-END:v1', "obsolete.dll`r`n:GLOB2-OWNED-END:v1")
+          [System.IO.File]::WriteAllText($inventoryPath, $inventory, $inventoryEncoding)
           $process = Start-Process -FilePath $installer -ArgumentList "/S /D=$install" -Wait -PassThru
           if ($process.ExitCode -ne 0 -or (Test-Path "$install/obsolete.dll")) { throw 'Upgrade did not remove owned obsolete runtime' }
           $inventoryPath = "$install/.glob2-owned-files.txt"
@@ -473,9 +477,21 @@ jobs:
           Remove-Item $inventoryPath
           $failed = Start-Process -FilePath "$install/glob2win32-uninst.exe" -ArgumentList "/S _?=$install" -Wait -PassThru
           if ($failed.ExitCode -eq 0 -or !(Test-Path "$install/glob2.exe")) { throw 'Missing inventory was treated as a successful uninstall' }
-          [System.IO.File]::WriteAllText($inventoryPath, "..\outside.txt", [System.Text.Encoding]::Unicode)
-          $failed = Start-Process -FilePath "$install/glob2win32-uninst.exe" -ArgumentList "/S _?=$install" -Wait -PassThru
-          if ($failed.ExitCode -eq 0 -or !(Test-Path "$install/glob2.exe")) { throw 'Corrupt inventory was not rejected before cleanup' }
+          $outside = Join-Path (Split-Path $install) 'outside.txt'
+          Set-Content $outside 'outside user content'
+          # Include a valid first record so prevalidation must finish before deleting anything.
+          $invalidInventories = @(
+            ":GLOB2-OWNED-BEGIN:v1`r`nglob2.exe`r`n..\outside.txt`r`n:GLOB2-OWNED-END:v1`r`n",
+            ":GLOB2-OWNED-BEGIN:v1`r`nglob2.exe`r`n*.txt`r`n:GLOB2-OWNED-END:v1`r`n",
+            ":GLOB2-OWNED-BEGIN:v1`r`nglob2.exe`r`ngames\*`r`n:GLOB2-OWNED-END:v1`r`n",
+            ":GLOB2-OWNED-BEGIN:v1`r`nglob2.exe`r`n"
+          )
+          foreach ($invalidInventory in $invalidInventories) {
+            [System.IO.File]::WriteAllText($inventoryPath, $invalidInventory, $inventoryEncoding)
+            $failed = Start-Process -FilePath "$install/glob2win32-uninst.exe" -ArgumentList "/S _?=$install" -Wait -PassThru
+            if ($failed.ExitCode -eq 0 -or !(Test-Path "$install/glob2.exe")) { throw 'Corrupt inventory was not rejected before cleanup' }
+            if (!(Test-Path $outside) -or !(Test-Path "$install/unrelated.txt") -or !(Test-Path "$install/games/user.game")) { throw 'Invalid inventory removed user content' }
+          }
           [System.IO.File]::WriteAllBytes($inventoryPath, $inventoryBytes)
           $locked = [System.IO.File]::Open("$install/glob2.exe", 'Open', 'Read', 'None')
           try {
