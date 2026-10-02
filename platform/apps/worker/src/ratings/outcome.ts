@@ -13,10 +13,12 @@
 // - Both sides leaving within MUTUAL_LEAVE_TICKS of each other is a mutual
 //   leave, and an unresolved game nobody abandoned is unresolved: neither
 //   changes ratings.
-// - Empty seats are not participants. A room plays an empty or locked seat's
-//   colony as AI `none` ("Nobody"): it stays on the map, alive and idle, so
-//   the engine can report it as won (a sudden-death tie at zero prestige).
-//   It never wins, draws or takes a side here; see contestedTeams.
+// - Empty seats are not participants. Rooms send an empty or locked seat as a
+//   `closed` seat: its colony is removed at the start and has lost, as a
+//   closed colony in a custom game. Matches started before that played it as
+//   AI `none` ("Nobody"), an idle colony that stays alive, so the engine can
+//   report it as won (a sudden-death tie at zero prestige). Neither kind ever
+//   wins, draws or takes a side here; see contestedTeams.
 
 /** Two sides leaving within this many ticks (10 s at 25 ticks/s) left together. */
 export const MUTUAL_LEAVE_TICKS = 250;
@@ -26,19 +28,23 @@ export type TeamOutcome = 'won' | 'lost' | 'unresolved';
 /** A seat as far as outcomes care: MatchSetup seats[] or a match_participants row. */
 export interface OutcomeSeat {
   team: number;
-  kind: 'human' | 'ai';
-  /** AI id; `none` is an empty seat (an idle colony nobody plays). */
+  kind: 'human' | 'ai' | 'closed';
+  /** AI id; `none` is an older match's empty seat (an idle colony nobody plays). */
   ai?: string | null | undefined;
 }
 
-/** True for an empty (or locked) seat: AI `none`, which nobody plays. */
+/**
+ * True for an empty (or locked) seat: a closed seat, or AI `none`, which rooms
+ * sent for empty seats before closed seats existed and which nobody plays.
+ */
 export function isEmptySeat(seat: OutcomeSeat): boolean {
-  return seat.kind === 'ai' && seat.ai === 'none';
+  return seat.kind === 'closed' || (seat.kind === 'ai' && seat.ai === 'none');
 }
 
 /**
  * Map teams someone plays: a human or a real AI. Teams held only by empty
- * seats (AI `none`) are left out, so they never count as winners or sides.
+ * seats (closed, or AI `none`) are left out, so they never count as winners
+ * or sides.
  */
 export function contestedTeams(seats: readonly OutcomeSeat[]): Set<number> {
   return new Set(seats.filter((s) => !isEmptySeat(s)).map((s) => s.team));

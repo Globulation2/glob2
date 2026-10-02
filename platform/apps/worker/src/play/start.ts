@@ -12,6 +12,7 @@ import {
   STANDARD_RULES,
   matchSetupProblems,
   parseSimVersionKey,
+  playerSeats,
   type AiId,
   type GeneratorDescriptor,
   type MatchSetup,
@@ -182,7 +183,7 @@ export async function createMatch(db: Db, request: CreateMatchRequest): Promise<
       await trx
         .insertInto('match_participants')
         .values(
-          setup.seats.map((seat) => ({
+          playerSeats(setup).map((seat) => ({
             match_id: match.id,
             seat: seat.seat,
             team: seat.team,

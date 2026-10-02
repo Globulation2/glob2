@@ -103,14 +103,20 @@ export async function recordVerification(db: Db, jobId: string): Promise<Verific
       const outcome = verdict.outcome;
       // A shared win (teams of more than one alliance won, e.g. a sudden-death
       // tie) is recorded as a draw for those teams and their participants.
-      // Empty seats' idle colonies (AI `none`) never win or share a win.
+      // Empty seats never win or share a win: closed teams have lost from the
+      // start, and older matches' idle colonies (AI `none`) are left out.
       const setup = match.setup as unknown as MatchSetup | null;
       const recorded = participantOutcomes(
         new Map((setup?.teams ?? []).map((t) => [t.team, t.alliance])),
         new Map(outcome.teams.map((t) => [t.team, t.outcome])),
         setup ? contestedTeams(setup.seats) : undefined,
       );
+      // A closed team has no colony and nobody to show it for: no stats row.
+      const closed = new Set(
+        (setup?.seats ?? []).flatMap((s) => (s.kind === 'closed' ? [s.team] : [])),
+      );
       for (const team of outcome.teams) {
+        if (closed.has(team.team)) continue;
         const teamOutcome = recorded.get(team.team) ?? team.outcome;
         // Final counters and the 512-tick timeline come from the verifier's
         // result.json (engine-agent); older agents send neither.

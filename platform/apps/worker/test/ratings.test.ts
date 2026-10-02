@@ -22,6 +22,7 @@ import {
   MUTUAL_LEAVE_TICKS,
   contestedTeams,
   decideRating,
+  isEmptySeat,
   participantOutcomes,
   type OutcomeInput,
 } from '../src/ratings/outcome.ts';
@@ -368,6 +369,53 @@ describe('shared wins', () => {
         participants: [{ ...participants[0]!, quitTick: 100 }, participants[1]!],
       }),
     ).toEqual({ kind: 'unchanged', reason: 'draw' });
+  });
+});
+
+describe('closed seats', () => {
+  // A room on a four-team map with room seats 1 and 3 empty: the players are
+  // seats 0 and 1 on teams 0 and 2, and teams 1 and 3 are closed. The engine
+  // removes closed colonies at the start, so they have lost and the last
+  // player standing wins outright (opponents defeated).
+  const ffa = new Map([
+    [0, 0],
+    [1, 1],
+    [2, 2],
+    [3, 3],
+  ]);
+  const seats = [
+    { team: 0, kind: 'human' as const },
+    { team: 2, kind: 'human' as const },
+    { team: 1, kind: 'closed' as const },
+    { team: 3, kind: 'closed' as const },
+  ];
+  const outcomes = (o: ('won' | 'lost' | 'unresolved')[]) =>
+    new Map(o.map((outcome, team) => [team, outcome]));
+
+  it('are empty seats: never contested, never participants', () => {
+    expect([...contestedTeams(seats)].sort()).toEqual([0, 2]);
+    expect(seats.filter(isEmptySeat).map((s) => s.team)).toEqual([1, 3]);
+  });
+
+  it('a player who eliminates the other wins; the closed teams lost', () => {
+    const recorded = participantOutcomes(
+      ffa,
+      outcomes(['won', 'lost', 'lost', 'lost']),
+      contestedTeams(seats),
+    );
+    expect([...recorded.values()]).toEqual(['won', 'lost', 'lost', 'lost']);
+    const participants = [
+      { seat: 0, team: 0, kind: 'human' as const },
+      { seat: 1, team: 2, kind: 'human' as const },
+    ];
+    expect(
+      decideRating({
+        teamAlliance: ffa,
+        participants,
+        teamOutcomes: recorded,
+        finalTick: 2400,
+      }),
+    ).toEqual({ kind: 'rate', sides: [0, 2], ranks: [1, 2], reason: 'verified' });
   });
 });
 

@@ -125,6 +125,50 @@ type SeatRow = {
   locked: boolean;
 };
 
+/**
+ * The MatchSetup seats of a room's seats (in room seat order). Taken seats
+ * become the players, numbered 0..p-1 in room seat order, each keeping its
+ * room seat's map team. Every empty or locked seat becomes a `closed` seat
+ * after them: its team starts without a colony, exactly like a "Closed"
+ * colony in a custom game. So a match seat is a room seat only while no empty
+ * seat comes before it; the map team never changes (match_participants.team,
+ * match_team_stats.team and result.json all use it).
+ */
+export function roomMatchSeats(
+  rows: readonly Pick<SeatRow, 'seat' | 'team' | 'occupant' | 'account_id' | 'ai_id' | 'ai_name'>[],
+  names: ReadonlyMap<string, string>,
+): Seat[] {
+  const players: Seat[] = [];
+  const empty: number[] = [];
+  for (const s of rows) {
+    if (s.occupant === 'human' && s.account_id) {
+      players.push({
+        seat: players.length,
+        kind: 'human',
+        team: s.team,
+        name: truncateUtf8(names.get(s.account_id) ?? `Player ${s.seat + 1}`),
+        accountId: s.account_id,
+      });
+    } else if (s.occupant === 'ai' && s.ai_id) {
+      players.push({
+        seat: players.length,
+        kind: 'ai',
+        team: s.team,
+        name: truncateUtf8(s.ai_name ?? aiDisplayName(s.ai_id as AiId)),
+        ai: s.ai_id as AiId,
+      });
+    } else {
+      empty.push(s.team);
+    }
+  }
+  const played = new Set(players.map((p) => p.team));
+  const closed = [...new Set(empty)].filter((team) => !played.has(team));
+  return [
+    ...players,
+    ...closed.map((team, i): Seat => ({ seat: players.length + i, kind: 'closed', team })),
+  ];
+}
+
 export class RoomService {
   private readonly db: Db;
   private readonly jobs: JobQueue;
@@ -1272,28 +1316,7 @@ export class RoomService {
         seed: randomInt(0, 2 ** 32),
         map: mapSource(must(settings.map, 'room map')),
         teams: settings.teams,
-        seats: seats.map((s): Seat => {
-          if (s.occupant === 'human' && s.account_id) {
-            return {
-              seat: s.seat,
-              kind: 'human',
-              team: s.team,
-              name: truncateUtf8(names.get(s.account_id) ?? `Player ${s.seat + 1}`),
-              accountId: s.account_id,
-            };
-          }
-          if (s.occupant === 'ai' && s.ai_id) {
-            return {
-              seat: s.seat,
-              kind: 'ai',
-              team: s.team,
-              name: truncateUtf8(s.ai_name ?? aiDisplayName(s.ai_id as AiId)),
-              ai: s.ai_id as AiId,
-            };
-          }
-          // An empty (or locked) seat's colony stays on the map without a player.
-          return { seat: s.seat, kind: 'ai', team: s.team, name: 'Nobody', ai: 'none' };
-        }),
+        seats: roomMatchSeats(seats, names),
         rules: settings.rules,
         experiments: settings.experiments,
       };
