@@ -1,25 +1,25 @@
 // Platform REST client for the web app. The app is served from the instance
 // origin, so requests carry the web session cookie (set by /signin); writes are
 // same-origin fetches, which the API's CSRF check accepts.
-import {
+import type {
   InstanceInfo,
-  schemaIssues,
-  type AdminAccount,
-  type AdminAccountList,
-  type AiLeaderboard,
-  type ErrorBody,
-  type LeaderboardPage,
-  type MapDetail,
-  type MapInfo,
-  type MapLikeResult,
-  type MapList,
-  type MapReportList,
-  type MapReportReceipt,
-  type MapVersionInfo,
-  type MatchDetail,
-  type MatchList,
-  type PlayerProfile,
-  type SelfAccount,
+  InstanceStats,
+  AdminAccount,
+  AdminAccountList,
+  AiLeaderboard,
+  ErrorBody,
+  LeaderboardPage,
+  MapDetail,
+  MapInfo,
+  MapLikeResult,
+  MapList,
+  MapReportList,
+  MapReportReceipt,
+  MapVersionInfo,
+  MatchDetail,
+  MatchList,
+  PlayerProfile,
+  SelfAccount,
 } from '@glob2/protocol';
 
 export class ApiError extends Error {
@@ -71,15 +71,23 @@ export async function request<T>(
 const get = <T>(path: string, query?: Query, signal?: AbortSignal) =>
   request<T>('GET', path, { ...(query ? { query } : {}), ...(signal ? { signal } : {}) });
 
-/** Fetches the instance description, checking it against the protocol schema. */
+/**
+ * Fetches the instance description, checking it against the protocol schema.
+ * The schema library is large, so it loads alongside the request instead of
+ * with the app's first script.
+ */
 export async function fetchInstance(signal?: AbortSignal): Promise<InstanceInfo> {
-  const body = await get<unknown>('/api/v1/instance', undefined, signal);
-  const issues = schemaIssues(InstanceInfo, body);
+  const [body, protocol] = await Promise.all([
+    get<unknown>('/api/v1/instance', undefined, signal),
+    import('@glob2/protocol'),
+  ]);
+  const issues = protocol.schemaIssues(protocol.InstanceInfo, body);
   if (issues.length > 0) throw new Error(`unexpected instance response: ${issues[0]?.message}`);
   return body as InstanceInfo;
 }
 
 export const api = {
+  stats: (signal?: AbortSignal) => get<InstanceStats>('/api/v1/stats', undefined, signal),
   me: (signal?: AbortSignal) => get<SelfAccount>('/api/v1/accounts/me', undefined, signal),
   signOut: () => request<undefined>('POST', '/api/v1/auth/web/sign-out', { body: {} }),
 

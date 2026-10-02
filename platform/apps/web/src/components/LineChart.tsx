@@ -120,7 +120,7 @@ export function LineChart({
 
   return (
     <figure className="chart" ref={box} aria-labelledby={`${id}-title`} style={{ margin: 0 }}>
-      <figcaption id={`${id}-title`} className="caption" style={{ margin: '0 2px 4px' }}>
+      <figcaption id={`${id}-title`} style={{ margin: '0 2px 6px' }}>
         {title}
       </figcaption>
       <svg
@@ -147,6 +147,13 @@ export function LineChart({
               </text>
             </g>
           ))}
+          <line
+            className="baseline"
+            x1={PAD.left}
+            x2={WIDTH - PAD.right}
+            y1={height - PAD.bottom}
+            y2={height - PAD.bottom}
+          />
           {xTicks.map((x) => (
             <text key={`x${x}`} x={sx(x)} y={height - 6} textAnchor="middle">
               {xFormat(x)}
@@ -158,7 +165,7 @@ export function LineChart({
             <polyline
               fill="none"
               stroke={s.color}
-              strokeWidth={2}
+              strokeWidth={2.5}
               strokeLinejoin="round"
               strokeLinecap="round"
               strokeDasharray={s.dashed ? '5 4' : undefined}
@@ -172,7 +179,7 @@ export function LineChart({
                   cy={sy(p.y)}
                   r={4}
                   fill={s.color}
-                  stroke="var(--field)"
+                  stroke="var(--surface)"
                   strokeWidth={2}
                 />
               ))}
@@ -185,7 +192,8 @@ export function LineChart({
               x2={sx(hover.x)}
               y1={PAD.top}
               y2={height - PAD.bottom}
-              stroke="var(--muted)"
+              stroke="var(--ink-2)"
+              strokeDasharray="3 3"
               strokeWidth={1}
             />
             {hovered.map(({ s, point }) => (
@@ -195,7 +203,7 @@ export function LineChart({
                 cy={sy(point.y)}
                 r={5}
                 fill={s.color}
-                stroke="var(--field)"
+                stroke="var(--surface)"
                 strokeWidth={2}
               />
             ))}
@@ -229,28 +237,31 @@ export function LineChart({
           ))}
         </div>
       )}
-      <table className="sr-only">
-        <caption>{title}</caption>
-        <thead>
-          <tr>
-            <th>x</th>
-            {series.map((s) => (
-              <th key={s.name}>{s.name}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {allX.map((x) => (
-            <tr key={x}>
-              <td>{xFormat(x)}</td>
-              {series.map((s) => {
-                const point = s.points.find((p) => p.x === x);
-                return <td key={s.name}>{point ? yFormat(point.y) : ''}</td>;
-              })}
+      {/* Tables ignore the clip of .sr-only, so a wrapper hides it. */}
+      <div className="sr-only">
+        <table>
+          <caption>{title}</caption>
+          <thead>
+            <tr>
+              <th>x</th>
+              {series.map((s) => (
+                <th key={s.name}>{s.name}</th>
+              ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {allX.map((x) => (
+              <tr key={x}>
+                <td>{xFormat(x)}</td>
+                {series.map((s) => {
+                  const point = s.points.find((p) => p.x === x);
+                  return <td key={s.name}>{point ? yFormat(point.y) : ''}</td>;
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </figure>
   );
 }

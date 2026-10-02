@@ -2,7 +2,7 @@
 // Component tests of the web app's key pages with a stubbed API: routing of
 // the deep links the game uses, leaderboard, profile, match page (charts and
 // Watch in browser), sign-in state and the moderation guard.
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
 import { App } from '../src/App.tsx';
 import { LineChart } from '../src/components/LineChart.tsx';
@@ -209,6 +209,18 @@ const routes: Record<string, unknown> = {
 };
 
 let me: unknown;
+
+// The app loads the schema library and the less visited pages on demand;
+// load them once up front so each test sees the app as a warm browser would.
+beforeAll(async () => {
+  await Promise.all([
+    import('@glob2/protocol'),
+    import('../src/admin/Admin.tsx'),
+    import('../src/pages/Maps.tsx'),
+    import('../src/pages/Match.tsx'),
+    import('../src/pages/Player.tsx'),
+  ]);
+});
 
 beforeEach(() => {
   me = undefined;

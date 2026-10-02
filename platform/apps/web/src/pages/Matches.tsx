@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { MatchSummary } from '@glob2/protocol';
 import { api } from '../api.ts';
+import { GameArt } from '../art.tsx';
 import { Loaded, MatchListView } from '../components/common.tsx';
 import { useLoad, useSession } from '../state.tsx';
 
@@ -31,12 +32,18 @@ export function Matches() {
   return (
     <>
       <div className="page-head">
+        <GameArt name="swarm" size={72} className="head-art" />
         <div className="grow">
           <h1>Recent matches</h1>
-          <div className="caption">Quick-match games and public rooms, newest first.</div>
+          <p className="sub">Quick-match games and public rooms, newest first.</p>
         </div>
       </div>
-      <div className="seg" style={{ marginBottom: 10 }}>
+      <div
+        className="seg"
+        role="group"
+        aria-label="Show matches from"
+        style={{ marginBottom: 'var(--sp-4)' }}
+      >
         {filters.map((f) => (
           <button
             key={f.id}
@@ -56,7 +63,11 @@ export function Matches() {
           <>
             <MatchListView matches={data.items} />
             {data.cursor && (
-              <button className="small" style={{ marginTop: 8 }} onClick={() => setMore(more + 1)}>
+              <button
+                className="small"
+                style={{ marginTop: 'var(--sp-3)' }}
+                onClick={() => setMore(more + 1)}
+              >
                 Show more
               </button>
             )}

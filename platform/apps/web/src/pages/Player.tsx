@@ -8,22 +8,24 @@ import type {
   WinRate,
 } from '@glob2/protocol';
 import { api } from '../api.ts';
+import { GameArt } from '../art.tsx';
+import { seriesInk } from '../colors.ts';
 import { LineChart } from '../components/LineChart.tsx';
-import { Loaded, MatchListView } from '../components/common.tsx';
-import { date, duration, initial, percent, queueName, rating, tickTime } from '../format.ts';
+import { Avatar, Loaded, MatchListView } from '../components/common.tsx';
+import { date, duration, percent, queueName, rating, tickTime } from '../format.ts';
 import { Link } from '../router.tsx';
 import { isModerator, useLoad, useSession } from '../state.tsx';
-
-const LADDER_COLORS = ['var(--s1)', 'var(--s0)', 'var(--s2)', 'var(--s3)'];
+import { useTheme } from '../theme.tsx';
 
 function RatingGraph({ history, queues }: { history: RatingHistoryPoint[]; queues: string[] }) {
+  const { theme } = useTheme();
   if (history.length === 0) return null;
   const ladders = [...new Set(history.map((p) => p.ladder))];
   const series = ladders.map((ladder, i) => {
     const points = history.filter((p) => p.ladder === ladder);
     return {
       name: queues[i] ?? ladder,
-      color: LADDER_COLORS[i % LADDER_COLORS.length] ?? 'var(--s1)',
+      color: seriesInk(i, theme),
       points: points.map((p) => ({ x: Date.parse(p.at), y: p.after })),
     };
   });
@@ -42,9 +44,10 @@ function RatingGraph({ history, queues }: { history: RatingHistoryPoint[]; queue
 function WinRates({ title, rows }: { title: string; rows: WinRate[] }) {
   if (rows.length === 0) return null;
   return (
-    <div>
+    <div className="card">
       <h3>{title}</h3>
       <table className="data">
+        <caption className="sr-only">Win rate {title.toLowerCase()}</caption>
         <tbody>
           {rows.slice(0, 6).map((row) => (
             <tr key={row.key}>
@@ -70,6 +73,7 @@ function WinRates({ title, rows }: { title: string; rows: WinRate[] }) {
 }
 
 function Economy({ curve }: { curve: EconomyCurve }) {
+  const { theme } = useTheme();
   const at = (pick: (p: EconomyCurve['points'][number]) => number) =>
     curve.points.map((p) => ({ x: p.tick, y: pick(p) }));
   return (
@@ -77,10 +81,10 @@ function Economy({ curve }: { curve: EconomyCurve }) {
       <LineChart
         title="Units: latest verified match against your average"
         series={[
-          { name: 'This match', color: 'var(--s1)', points: at((p) => p.units) },
+          { name: 'This match', color: seriesInk(0, theme), points: at((p) => p.units) },
           {
             name: 'Your average',
-            color: 'var(--s2)',
+            color: seriesInk(1, theme),
             points: at((p) => p.averageUnits),
             dashed: true,
           },
@@ -91,10 +95,10 @@ function Economy({ curve }: { curve: EconomyCurve }) {
       <LineChart
         title="Buildings: latest verified match against your average"
         series={[
-          { name: 'This match', color: 'var(--s1)', points: at((p) => p.buildings) },
+          { name: 'This match', color: seriesInk(0, theme), points: at((p) => p.buildings) },
           {
             name: 'Your average',
-            color: 'var(--s2)',
+            color: seriesInk(1, theme),
             points: at((p) => p.averageBuildings),
             dashed: true,
           },
@@ -142,6 +146,7 @@ function Tiles({ profile }: { profile: PlayerProfile }) {
     <div className="tiles">
       {profile.ratings.map((r) => (
         <div className="tile" key={r.ladder} data-testid="rating-tile">
+          <GameArt name="warFlag" className="art" size={64} />
           <div className="caption">{queueName(instance?.queues, r.ladder)}</div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, flexWrap: 'wrap' }}>
             <span className="v">{rating(r.rating)}</span>
@@ -155,6 +160,7 @@ function Tiles({ profile }: { profile: PlayerProfile }) {
       ))}
       {a && a.games > 0 && (
         <div className="tile">
+          <GameArt name="fruit" className="art" size={64} />
           <div className="caption">Win rate, {a.windowDays} days</div>
           <div className="v">{percent(a.wins / a.games)}</div>
           <div className="caption">
@@ -165,6 +171,7 @@ function Tiles({ profile }: { profile: PlayerProfile }) {
       )}
       {a?.medianTicks !== undefined && (
         <div className="tile">
+          <GameArt name="racetrack" className="art" size={64} />
           <div className="caption">Typical game</div>
           <div className="v">{duration(a.medianTicks)}</div>
           <div className="caption">median length</div>
@@ -172,8 +179,12 @@ function Tiles({ profile }: { profile: PlayerProfile }) {
       )}
       {best && (
         <div className="tile">
+          <GameArt name="clearingFlag" className="art" size={64} />
           <div className="caption">Best {best.dimension}</div>
-          <div style={{ fontSize: 18, marginTop: 4 }} className="ell">
+          <div
+            style={{ fontSize: 'var(--text-lg)', fontWeight: 750, margin: '4px 0' }}
+            className="ell"
+          >
             {best.label ?? best.key}
           </div>
           <div className="caption">
@@ -214,7 +225,7 @@ function Matches({ id, initial: first }: { id: string; initial: MatchSummary[] }
         <h2 className="grow" style={{ margin: 0 }}>
           Matches
         </h2>
-        <span className="seg">
+        <span className="seg" role="group" aria-label="Show matches from">
           {filters.map((f) => (
             <button
               key={f.id}
@@ -240,7 +251,7 @@ function Matches({ id, initial: first }: { id: string; initial: MatchSummary[] }
               {data.nextCursor && (
                 <button
                   className="small"
-                  style={{ marginTop: 8 }}
+                  style={{ marginTop: 'var(--sp-3)' }}
                   onClick={() => setPages([...pages, data.nextCursor ?? ''])}
                 >
                   Show more
@@ -265,13 +276,11 @@ export function Player({ id }: { id: string }) {
         );
         return (
           <>
-            <div className="page-head">
-              <span className="avatar" aria-hidden="true">
-                {initial(profile.account.displayName)}
-              </span>
+            <div className="profile-head">
+              <Avatar account={profile.account} size="large" />
               <div className="grow">
                 <h1 data-testid="player-name">{profile.account.displayName}</h1>
-                <div className="caption">
+                <div className="caption" style={{ fontSize: 'var(--text-md)' }}>
                   {profile.account.kind === 'guest' ? 'Guest player' : 'Registered player'} ·
                   playing since {date(profile.account.createdAt)}
                   {profile.status && profile.status !== 'active' && (
