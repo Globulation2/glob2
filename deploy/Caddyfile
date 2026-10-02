@@ -64,10 +64,19 @@
 	redir /play /play/
 	handle_path /play/* {
 		root * /srv/play
-		header Cache-Control "no-cache"
+		# Data packages are named by their content (scons/web_assets.py) and never
+		# change; everything else revalidates so a new release is picked up at once.
+		@immutable path_regexp ^/assets/[a-z0-9-]+\.[0-9a-f]{16}\.data$
+		header @immutable Cache-Control "public, max-age=31536000, immutable"
+		@revalidate not path_regexp ^/assets/[a-z0-9-]+\.[0-9a-f]{16}\.data$
+		header @revalidate Cache-Control "no-cache"
 		header Cross-Origin-Opener-Policy "same-origin"
 		header Cross-Origin-Embedder-Policy "require-corp"
-		file_server
+		# Brotli and gzip copies written at build time (browser/precompress.py);
+		# `encode` above leaves responses that are already encoded alone.
+		file_server {
+			precompressed br gzip
+		}
 	}
 
 	handle {

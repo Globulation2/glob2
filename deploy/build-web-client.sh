@@ -1,8 +1,10 @@
 #!/bin/sh
 # Builds the WebAssembly client (scons target=web release=1) inside a container with
-# the pinned Emscripten SDK, and copies the result to the directory Caddy serves at
-# /play/ (GLOB2_WEB_CLIENT_DIR). Needs only Docker on the host; the SDK and the build
-# cache persist in the glob2-web-toolchain volume between runs.
+# the pinned Emscripten SDK, writes Brotli and gzip copies (browser/precompress.py),
+# and installs the result into the directory Caddy serves at /play/
+# (GLOB2_WEB_CLIENT_DIR) with deploy/install-web-client.py. Needs Docker and Python 3
+# on the host; the SDK and the build cache persist in the glob2-web-toolchain volume
+# between runs.
 #
 #   deploy/build-web-client.sh <output-dir> [scons arguments...]
 #
@@ -24,20 +26,12 @@ docker run --rm \
 	"$image" sh -euc '
 		export DEBIAN_FRONTEND=noninteractive
 		apt-get update -qq
-		apt-get install -y -qq --no-install-recommends ca-certificates git python3 scons xz-utils bzip2 libatomic1 >/dev/null
+		apt-get install -y -qq --no-install-recommends ca-certificates git python3 scons xz-utils bzip2 libatomic1 brotli >/dev/null
 		git config --global --add safe.directory "*"
 		python3 browser/setup.py
 		scons target=web release=1 -j"$JOBS" "$@" build/emscripten/client/release/index.html
+		python3 browser/precompress.py --require-brotli build/emscripten/client/release
 		chown -R "$OWNER" build/emscripten
 	' sh "$@"
 
-release="$root/build/emscripten/client/release"
-mkdir -p "$output"
-# Replace each file by rename inside the served directory (Caddy bind-mounts the
-# directory itself, so swapping the directory would hide the update). index.html
-# goes last, after the files it loads.
-for f in index.data index.wasm index.js index.html; do
-	cp "$release/$f" "$output/.$f.new"
-	mv -f "$output/.$f.new" "$output/$f"
-done
-echo "web client: $output"
+python3 "$root/deploy/install-web-client.py" "$root/build/emscripten/client/release" "$output"

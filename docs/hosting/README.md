@@ -86,7 +86,9 @@ cp ../platform/instance.example.yaml instance.yaml
    `scons target=web release=1` from the repository root (see
    [browser/README.md](../../browser/README.md)), then set
    `GLOB2_WEB_CLIENT_DIR=../build/emscripten/client/release` in `.env`. Without it
-   `/play/` answers 404 and everything else works.
+   `/play/` answers 404 and everything else works. Run
+   `python3 browser/precompress.py` after each build so Caddy can serve Brotli
+   copies; `deploy/build-web-client.sh` does both and installs the result.
 4. Build and start:
 
    ```sh
@@ -191,7 +193,7 @@ limited to the game route so the app's sign-in flows retain normal opener behavi
 | --- | --- |
 | `/api/*`, `/realtime`, `/signin`, `/signin/*`, `/auth/*`, `/.well-known/*`, `/j/*` (invite pages) | `platform-api`, round robin over healthy replicas |
 | `/relay/<relay id>` | that relay's WebSocket (path rewritten to `/relay`) |
-| `/play/*` | the WebAssembly client, `GLOB2_WEB_CLIENT_DIR` |
+| `/play/*` | the WebAssembly client, `GLOB2_WEB_CLIENT_DIR`: precompressed `.br`/`.gz` copies when present; `assets/*.data` (content-addressed) cached as immutable, everything else revalidated |
 | everything else | the web app (single-page app with `index.html` fallback) |
 | `/internal/*`, `/healthz`, `/readyz`, `/metrics` | `404` at the edge |
 
