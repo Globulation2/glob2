@@ -3,7 +3,7 @@ import io
 import json
 import os
 import zipfile
-from ci_run_metrics import api
+from ci_run_metrics import api, run_artifacts
 
 
 def validated_baseline(repo, run_id, token, read=api):
@@ -14,7 +14,7 @@ def validated_baseline(repo, run_id, token, read=api):
         run=read(prefix,token)
         if run.get('name')!='build' or run.get('head_branch')!='master' or run.get('conclusion')!='success' or run.get('event') not in ('push','schedule','workflow_dispatch'):
             return False
-        for artifact in read(prefix+'/artifacts?per_page=100',token)['artifacts']:
+        for artifact in run_artifacts(prefix,token,read):
             if artifact['name']!='ci-observation-selection' or artifact['expired']:continue
             data=read(f'repos/{repo}/actions/artifacts/{artifact["id"]}/zip',token,True)
             with zipfile.ZipFile(io.BytesIO(data)) as archive:

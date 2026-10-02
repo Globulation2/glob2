@@ -98,6 +98,16 @@ def api(path, token, binary=False):
     return body if binary else json.loads(body)
 
 
+def run_artifacts(prefix, token, read=api):
+    page = 1
+    while True:
+        batch = read(prefix + f'/artifacts?per_page=100&page={page}', token)['artifacts']
+        yield from batch
+        if len(batch) < 100:
+            return
+        page += 1
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--repo', default=os.environ.get('GITHUB_REPOSITORY'))
@@ -119,7 +129,7 @@ def main():
             if len(batch) < 100:
                 break
         observations = []
-        for artifact in api(prefix + '/artifacts?per_page=100', token)['artifacts']:
+        for artifact in run_artifacts(prefix, token):
             if artifact['name'].startswith('ci-observation-') and not artifact['expired']:
                 data = api(f'repos/{args.repo}/actions/artifacts/{artifact["id"]}/zip', token, True)
                 with zipfile.ZipFile(io.BytesIO(data)) as archive:
