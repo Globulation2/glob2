@@ -94,11 +94,7 @@ bool openUrl(const std::string &url)
 {
 	if (url.rfind("https://", 0) != 0 && url.rfind("http://", 0) != 0)
 		return false;
-#if SDL_VERSION_ATLEAST(2, 0, 14)
-	return SDL_OpenURL(url.c_str()) == 0;
-#else
-	return false;
-#endif
+	return SDL_OpenURL(url.c_str());
 }
 void importChanged(const char *) {}
 void screenChanged(const char *name) {

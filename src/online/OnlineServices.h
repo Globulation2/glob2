@@ -29,11 +29,11 @@ struct Services
 Services &services();
 bool servicesCreated();
 // Advances the client and picks up invite links delivered while running
-// (macOS/iOS URL events arrive as SDL_DROPFILE through acceptDroppedText;
+// (macOS/iOS URL events arrive as SDL_EVENT_DROP_FILE through acceptDroppedText;
 // Android intents and iOS universal links are polled here). Cheap when the
 // services were never created.
 void pump();
-// SDL_DROPFILE text: true (and pending join set) when it is an invite link,
+// SDL_EVENT_DROP_FILE text: true (and pending join set) when it is an invite link,
 // which the caller then must not treat as a file.
 bool acceptDroppedText(const std::string &text);
 } // namespace Online
