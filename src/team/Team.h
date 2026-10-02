@@ -34,14 +34,18 @@ Sint32 starvationLimitedTravelDistance(const Unit *unit);
 class Team:public BaseTeam
 {
 public:
-	//! In-memory cap on simultaneous teams and players. The engine has never
-	//! been tested above this — see `docs/replay-verification.md`.
-	static const int MAX_COUNT=12;
+	//! Live team and controller capacity. This is independent of historical save
+	//! layouts and generator density limits. Verify changes using
+	//! docs/development/headless-replays.md, including save continuation.
+	static const int MAX_COUNT=16;
 
 	//! Slot count of the GameHeader player/ally arrays. Only the first
 	//! MAX_COUNT are populated; the rest are padding that keeps the file
 	//! format byte-identical. Changing it requires a format version bump.
 	static const int MAX_COUNT_ON_DISK=32;
+	static_assert(MAX_COUNT > 0 && MAX_COUNT <= MAX_COUNT_ON_DISK);
+	static_assert(MAX_COUNT_ON_DISK <= sizeof(Uint32) * CHAR_BIT,
+		"Serialized team/player masks must fit Uint32");
 
 	//! "No candidate found yet" score in findBestUpgrade; every real score is lower.
 	static constexpr Sint32 UPGRADE_SCORE_NONE = INT32_MAX;

@@ -28,6 +28,7 @@
 #include "UnitAnimation.h"
 #include <algorithm>
 #include "UnitSkin.h"
+#include "scene/Scene.h"
 #include "Utilities.h"
 #include "GameGUI.h"
 #include "SDLCompat.h"
@@ -42,11 +43,11 @@
 // Unit rendering. Split from Game_render.cpp.
 
 
-void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int screenW, int screenH, int localTeam, Uint32 drawOptions, ViewState& view)
+void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int screenW, int screenH, int localTeam, Uint32 drawOptions, ViewState& view, const Scene& scene)
 {
-	int id=Unit::GIDtoID(gid);
-	int team=Unit::GIDtoTeam(gid);
-	Unit *unit=teams[team]->myUnits[id];
+	const SceneEntities &entities = scene.entities;
+	const SceneMap &map = scene.map; // the extracted map, not Game::map
+	const SceneUnit *unit = entities.unit(gid);
 	assert(unit);
 	if (!unit)
 	{
@@ -56,7 +57,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	int dx=unit->dx;
 	int dy=unit->dy;
 
-	Uint32 visibleTeams = teams[localTeam]->me;
+	Uint32 visibleTeams = entities.teams[localTeam].me;
 	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 
 	if ((drawOptions & DRAW_WHOLE_MAP) == 0)
@@ -95,7 +96,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 
 	// draw unit
 	Sprite *unitSprite = skin.sprite;
-	unitSprite->setBaseColor(teams[team]->color);
+	unitSprite->setBaseColor(entities.owner(*unit).color);
 	int decX = (unitSprite->getW(imgid)-32)>>1;
 	int decY = (unitSprite->getH(imgid)-32)>>1;
 	globalContainer->gfx->drawSprite(px-decX, py-decY, unitSprite, imgid);
@@ -103,14 +104,15 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	// Units the selected building could not hire wear the badge, the same one
 	// shown next to the tally in the building panel. The panel asks the same
 	// gate, so a unit never wears a badge the panel has no row to explain.
-	if (view.selectedBuilding && view.selectedBuilding->recordFailingUnits && unit->owner->teamNumber==localTeam
-		&& shouldShowFailingUnitMarkers(view.selectedBuilding->unitsFailingRequirements,
+	const SceneSelectedBuilding &selected = entities.selectedBuilding;
+	if (selected.recordFailingUnits && entities.owner(*unit).teamNumber==localTeam
+		&& shouldShowFailingUnitMarkers(selected.unitsFailingRequirements.data(),
 			Building::UnitCantWorkReasonSize, Building::UnitNotAvailable,
-			(int)view.selectedBuilding->unitsWorking.size(), view.selectedBuilding->desiredMaxUnitWorking))
+			(int)selected.unitsWorking.size(), selected.desiredMaxUnitWorking))
 	{
 		for (int reason=0; reason<Building::UnitCantWorkReasonSize; ++reason)
 		{
-			const std::vector<Uint16>& failing=view.selectedBuilding->unitsFailingByReason[reason];
+			const std::vector<Uint16>& failing=selected.unitsFailingByReason[reason];
 			if (std::find(failing.begin(), failing.end(), unit->gid)!=failing.end())
 				// Fist-size, in the tile's top-right corner: a badge, not a ring around the unit.
 				drawFailureShape(globalContainer->gfx, px+26, py+6, 4, static_cast<Building::UnitCantWorkReason>(reason), failureShapeColor());
@@ -118,12 +120,12 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	}
 
 	// draw selection
-	if (unit==view.selectedUnit)
+	if (entities.isSelected(*unit))
 	{
 		globalContainer->gfx->drawCircle(px+16, py+16, 16, 0, 0, 255);
-		if (unit->owner->teamNumber == localTeam)
+		if (entities.owner(*unit).teamNumber == localTeam)
 			globalContainer->gfx->drawCircle(px+16, py+16, 16, 0, 0, 190);
-		else if ((teams[localTeam]->allies) & (unit->owner->me))
+		else if ((entities.teams[localTeam].allies) & (entities.owner(*unit).me))
 			globalContainer->gfx->drawCircle(px+16, py+16, 16, 255, 196, 0);
 		else
 			globalContainer->gfx->drawCircle(px+16, py+16, 16, 190, 0, 0);
@@ -163,7 +165,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	}
 
 	if ((px<view.mouseX)&&((px+32)>view.mouseX)&&(py<view.mouseY)&&((py+32)>view.mouseY)&&(((drawOptions & DRAW_WHOLE_MAP) != 0) ||(map.isFOWDiscovered(x+viewportX, y+viewportY, visibleTeams))||(Unit::GIDtoTeam(gid)==localTeam)))
-		view.mouseUnit=unit;
+		view.mouseUnit=UnitRef{unit->gid, unit->generation};
 
 	if ((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0 )
 	{
@@ -180,7 +182,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	if (drawOptions & DRAW_ACCESSIBILITY)
 	{
 		std::ostringstream oss;
-		oss << unit->owner->teamNumber;
+		oss << entities.owner(*unit).teamNumber;
 		int accessW = globalContainer->littleFont->getStringWidth(oss.str().c_str());
 		int accessH = globalContainer->littleFont->getStringHeight(oss.str().c_str());
 		int accessX = px+((32-accessW)>>1);
@@ -189,71 +191,71 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 		globalContainer->gfx->drawRect(accessX-4, accessY, accessW+8, accessH, Color(255, 255, 255, 127));
 		globalContainer->gfx->drawString(accessX, accessY, globalContainer->littleFont, oss.str());
 	}
-	if(highlightUnitType & (1<<unit->typeNum))
+	if(entities.highlightUnitType & (1<<unit->typeNum))
 	{
 		globalContainer->gfx->drawSprite(px, py-decY-32, globalContainer->gamegui, 36);
 	}
 }
 
 
-void Game::drawMapGroundUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view)
+void Game::drawMapGroundUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view, const Scene& scene)
 {
 	PERF_SCOPE_TIME(GroundUnits);
     GAGCore::UnitDrawBatch unitBatch(globalContainer->gfx);
 	//Reset the mouse unit to NULL, as this time around there may not be a unit
 	//under the mouse pointer
-	view.mouseUnit=NULL;
+	view.mouseUnit=UnitRef();
 	for (int y=top-1; y<=bot; y++)
 		for (int x=left-1; x<=right; x++)
 		{
-			Uint16 gid=map.getGroundUnit(x+viewportX, y+viewportY);
+			Uint16 gid=scene.map.getGroundUnit(x+viewportX, y+viewportY);
 			if (gid!=NOGUID)
-				drawUnit(x, y, gid, viewportX, viewportY, (sw>>5), (sh>>5), localTeam, drawOptions, view);
+				drawUnit(x, y, gid, viewportX, viewportY, (sw>>5), (sh>>5), localTeam, drawOptions, view, scene);
 		}
 }
 
 
-void Game::drawMapAirUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view)
+void Game::drawMapAirUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view, const Scene& scene)
 {
 	PERF_SCOPE_TIME(AirUnits);
     GAGCore::UnitDrawBatch unitBatch(globalContainer->gfx);
 	for (int y=top-1; y<=bot; y++)
 		for (int x=left-1; x<=right; x++)
 		{
-			Uint16 gid=map.getAirUnit(x+viewportX, y+viewportY);
+			Uint16 gid=scene.map.getAirUnit(x+viewportX, y+viewportY);
 			if (gid!=NOGUID)
-				drawUnit(x, y, gid, viewportX, viewportY, (sw>>5), (sh>>5), localTeam, drawOptions, view);
+				drawUnit(x, y, gid, viewportX, viewportY, (sw>>5), (sh>>5), localTeam, drawOptions, view, scene);
 		}
 }
 
 
-void Game::drawUnitPathLines(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view)
+void Game::drawUnitPathLines(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view, const Scene& scene)
 {
+	const SceneEntities &entities = scene.entities;
 	if ((drawOptions & DRAW_PATH_LINE) != 0)
 	{
-		for(int i=0; i<Unit::MAX_COUNT; ++i)
-		{
-			Unit *unit=teams[localTeam]->myUnits[i];
-			if (unit)
-			{
-				drawUnitPathLine(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, unit);
-			}
-		}
+		// Units are extracted team by team in slot order, as the old loop visited them.
+		for (const SceneUnit &unit : entities.units)
+			if (unit.team == localTeam)
+				drawUnitPathLine(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, unit, scene);
 	}
-	if(view.selectedUnit != NULL)
+	const SceneUnit *selected = entities.unit(entities.selectedUnit.gid);
+	if (selected && entities.isSelected(*selected))
 	{
-		drawUnitPathLine(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, view.selectedUnit);
+		drawUnitPathLine(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, *selected, scene);
 	}
 }
 
 
 
-void Game::drawUnitPathLine(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, Unit* unit)
+void Game::drawUnitPathLine(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneUnit& sceneUnit, const Scene& scene)
 {
-	Uint32 visibleTeams = teams[localTeam]->me;
+	const SceneMap &map = scene.map; // the extracted map, not Game::map
+	const SceneUnit *unit = &sceneUnit;
+	Uint32 visibleTeams = scene.entities.teams[localTeam].me;
 	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 
-	if(unit->owner->sharedVisionOther & visibleTeams)
+	if(scene.entities.owner(*unit).sharedVisionOther & visibleTeams)
 	{
 		if (unit->validTarget)
 		{
@@ -283,8 +285,10 @@ void Game::drawUnitPathLine(int left, int top, int right, int bot, int sw, int s
 
 
 
-void Game::drawUnitOffScreen(int sx, int sy, int sw, int sh, int viewportX, int viewportY, Unit* unit, Uint32 drawOptions)
+void Game::drawUnitOffScreen(int sx, int sy, int sw, int sh, int viewportX, int viewportY, const SceneUnit& sceneUnit, Uint32 drawOptions, const Scene& scene)
 {
+	const SceneMap &map = scene.map; // the extracted map, not Game::map
+	const SceneUnit *unit = &sceneUnit;
 	// Get the direction to the unit
 	int px, py;
 	map.mapCaseToDisplayableVector(unit->posX, unit->posY, &px, &py, viewportX, viewportY, sw, sh);
@@ -361,7 +365,7 @@ void Game::drawUnitOffScreen(int sx, int sy, int sw, int sh, int viewportX, int 
 	imgid=unitAnimationFrame(imgid, dir, delta);
 
 	Sprite *unitSprite=globalContainer->units;
-	unitSprite->setBaseColor(unit->owner->color);
+	unitSprite->setBaseColor(scene.entities.owner(*unit).color);
 	int decX = (32-unitSprite->getW(imgid))>>1;
 	int decY = (32-unitSprite->getH(imgid))>>1;
 

@@ -9,6 +9,18 @@ import sys
 
 
 JOBS = ("native", "browser", "map_generators", "deployment", "cross_platform")
+# Implementation-only drawing changes retain native, browser, and equivalence
+# checks. Shared headers, file I/O, fonts and unknown library paths stay full CI.
+RENDER_IMPLEMENTATIONS = {
+    "libgag/src/RenderBackend.cpp",
+    "libgag/src/SoftwareRenderBackend.cpp",
+    "libgag/src/SurfaceRaster.cpp",
+}
+CI_TOOL_TESTS = {
+    "test/test_run_tests.py",
+    "test/test_ci_failure_aggregation.py",
+    "tests/build_system/test_ci_changed_paths.py",
+}
 TRANSPORT_TESTS = {
     "test/NetConnectionHarness.cpp",
     "test/NativeMultiplayerPeer.cpp",
@@ -25,6 +37,10 @@ def classify(paths):
 
     native = browser = map_generators = deployment = cross_platform = False
     for path in paths:
+        # These Python suites execute directly in the selector job, without
+        # compiling a client or launching platform/browser regressions.
+        if path in CI_TOOL_TESTS:
+            continue
         if path.startswith("docs/") or path.endswith(".md"):
             continue
         if path == "test/map-generator-golden.txt":
@@ -36,6 +52,7 @@ def classify(paths):
         if path.startswith(("test/fixtures/javascript/", "test/Script", "test/support/ScriptCorpus")) or path in {
             "test/check_javascript.py", "test/check_javascript_corpus.py", "test/check_javascript_evidence.py",
             "test/build_provenance.py", "test/support/TestMain.cpp",
+            "test/ImageAssetTest.cpp",
         }:
             # These cases and fixtures are compiled/executed in the production
             # WebAssembly harness too; native-only CI would leave that boundary untested.
@@ -56,7 +73,7 @@ def classify(paths):
         } and not Path(path).name.startswith("MapGenerator"):
             native = True
             continue
-        if path.startswith(("src/ai/", "src/gui/", "src/render/")):
+        if path in RENDER_IMPLEMENTATIONS or path.startswith(("src/ai/", "src/gui/", "src/render/")):
             native = browser = cross_platform = True
             continue
         if path.startswith(("src/net/", "src/yog/")):

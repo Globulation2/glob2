@@ -21,7 +21,7 @@ For a valley built around contested fruit and competing inns, see [Orchard Commo
 
 For finite opening food and exposed shared wheat, see [The Hungry Marches](HUNGRY_MARCHES.md).
 
-For an asymmetric player-zero siege supporting 3–12 colonies, see [Encircled Kingdom](ENCIRCLED_KINGDOM.md).
+For an asymmetric player-zero siege supporting 3–16 colonies (13–16 on 512×512), see [Encircled Kingdom](ENCIRCLED_KINGDOM.md).
 For a deliberately asymmetric woodland island with biscuit-shaped bites, see
 [Who Ate the Map?](WHO_ATE_THE_MAP.md).
 
@@ -242,7 +242,7 @@ down from the swarm anchor. Import joins white cells with eight-neighbor
 connectivity, including across opposite edges; the unwrapped component centroid,
 rounded to the nearest integer, minus two tiles determines its preferred swarm
 anchor. Components smaller than four target cells are ignored. There must be
-1–12 markers. `--teams` optionally asserts the detected count; it does not add
+1–16 markers. `--teams` optionally asserts the detected count; it does not add
 colonies. Team order follows component discovery in row order.
 
 Before engine shoreline correction, the importer repairs terrain in a narrow

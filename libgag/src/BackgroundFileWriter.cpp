@@ -5,6 +5,7 @@
 #include <Stream.h>
 #include <iostream>
 #include <system_error>
+#include <ThreadSupport.h>
 
 namespace GAGCore
 {
@@ -34,21 +35,17 @@ namespace GAGCore
 			return; // the running worker takes the newest snapshot next
 		writing = true;
 		lock.unlock();
-#ifdef __EMSCRIPTEN__
-        drain();
-#else
-		// A previous worker cleared writing before exiting, so this join is short.
-		if (worker.joinable())
-			worker.join();
-		try
+		if constexpr (!ThreadSupport::available)
 		{
-			worker = std::thread(&BackgroundFileWriter::drain, this);
+			drain();
 		}
-		catch (const std::system_error &)
+		else
 		{
-			drain(); // no thread available: write on this one instead
+			// A previous worker cleared writing before exiting, so this join is short.
+			if (worker.joinable()) worker.join();
+			try { worker = ThreadSupport::launch([this] { drain(); }); }
+			catch (const std::system_error &) { drain(); }
 		}
-#endif
 	}
 
 	void BackgroundFileWriter::waitUntilIdle()
