@@ -15,6 +15,8 @@
 #include "YOGLoginScreen.h"
 #include "YOGClient.h"
 #include "ui/FrontendUI.h"
+#include "OnlineServices.h"
+#include <algorithm>
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>
 #endif
@@ -175,9 +177,30 @@ void Application::choose(int choice)
 	}
 }
 
-bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event> &events)
+bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event> &incoming)
 {
 	lastFrame = tick;
+	// Invite links opened while running (macOS and iOS URL events) arrive as
+	// dropped "files"; they become the pending join instead.
+	std::vector<SDL_Event> withoutLinks;
+	const std::vector<SDL_Event> *delivered = &incoming;
+	if (std::any_of(incoming.begin(), incoming.end(),
+					[](const SDL_Event &event) { return event.type == SDL_DROPFILE; }))
+	{
+		for (const auto &event : incoming)
+		{
+			if (event.type == SDL_DROPFILE && event.drop.file &&
+				Online::acceptDroppedText(event.drop.file))
+			{
+				SDL_free(event.drop.file);
+				continue;
+			}
+			withoutLinks.push_back(event);
+		}
+		delivered = &withoutLinks;
+	}
+	const auto &events = *delivered;
+	Online::pump();
 	if (GAGCore::ApplicationHost::takeVisibilityChange(hidden))
 		screens.suspendExecution();
 	if (hidden)

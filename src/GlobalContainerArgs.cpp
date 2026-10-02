@@ -25,6 +25,7 @@
 #include "Version.h"
 #ifndef YOG_SERVER_ONLY
 #include "MapCommand.h"
+#include "OnlineServices.h"
 #endif
 
 namespace
@@ -363,6 +364,12 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			settings.setUsername(requireStringArg(i, argc, argv,
 				"usage:\n-u <username>"));
 		}
+		else if (const int consumed = Online::acceptLaunchArguments(argc, argv, i))
+		{
+			// Invite links (glob2://join?..., https://<instance>/j/<code>) and
+			// --join/--instance become the pending join for the online hub.
+			i += consumed - 1;
+		}
 		else
 #endif  // !YOG_SERVER_ONLY
 		if (strcmp(argv[i], "-version")==0 || strcmp(argv[i], "--version")==0)
@@ -404,6 +411,8 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("-dl\tprint the directory search list\n");
 			printf("-s <width>x<height>\tset initial window size (for instance: -s 800x600\n");
 			printf("-u <username>\tspecify a user name\n");
+			printf("--join <invite link or code>\tjoin an online room (also: a glob2:// or https://<instance>/j/<code> link)\n");
+			printf("--instance <origin>\tthe instance of an invite code given to --join\n");
 #ifndef GLOB2_CHINA_RELEASE
 			printf("-y <hostname>\tspecify an alternative hostname for YOG server\n");
 			printf("-daemon\t runs the YOG server\n");
