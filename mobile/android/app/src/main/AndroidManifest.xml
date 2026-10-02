@@ -2,11 +2,26 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-feature android:glEsVersion="0x00020000" android:required="true" />
     <application android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher" android:label="Globulation 2" android:allowBackup="false" android:usesCleartextTraffic="false" android:theme="@android:style/Theme.Material.NoActionBar.Fullscreen">
-        <activity android:name="org.globulation2.glob2.Glob2Activity" android:exported="true" android:windowSoftInputMode="adjustNothing"
+        <activity android:name="org.globulation2.glob2.Glob2Activity" android:exported="true" android:windowSoftInputMode="adjustNothing" android:launchMode="singleTask"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode|density">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <!-- Invite links from any instance: glob2://join?instance=...&code=... -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="glob2" android:host="join" />
+            </intent-filter>
+            <!-- App Link for the official instance only (src/online/InstanceConfig.h);
+                 verified through https://yog.globulation2.org/.well-known/assetlinks.json. -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" android:host="yog.globulation2.org" android:pathPrefix="/j/" />
             </intent-filter>
         </activity>
     </application>
