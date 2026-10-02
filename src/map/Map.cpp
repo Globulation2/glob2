@@ -4,6 +4,9 @@
 #include "Map.h"
 #include "gradient/GradientRuntime.h"
 #include "Game.h"
+#ifndef YOG_SERVER_ONLY
+#include "render/SoftwareTerrainCache.h"
+#endif
 #include "Utilities.h"
 #include "Unit.h"
 #include "MapInternal.h"
@@ -201,6 +204,10 @@ void Map::clear()
 
 void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 {
+#ifndef YOG_SERVER_ONLY
+    if (game) game->softwareTerrainCache.reset();
+#endif
+
 	clear();
 
 	assert(wDec<16);

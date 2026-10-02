@@ -67,24 +67,21 @@ namespace GAGCore
 
 	void GraphicContext::drawSurface(float x, float y, float w, float h, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha)
 	{
+		if (renderer) prepareDraw();
         if (renderer) {
             if (w <= 0 || h <= 0 || sw <= 0 || sh <= 0) return;
             auto* pixels=surface->getSDLSurface();
             if (!pixels || pixels->w <= 0 || pixels->h <= 0) return;
-            float u0=float(sx)/pixels->w, v0=float(sy)/pixels->h;
-            float u1=float(sx+sw)/pixels->w, v1=float(sy+sh)/pixels->h;
-            SDL_Color c{255,255,255,alpha};
-            SDL_Vertex a{{x,y},c,{u0,v0}}, b{{x+w,y},c,{u1,v0}}, d{{x,y+h},c,{u0,v1}}, e{{x+w,y+h},c,{u1,v1}};
-            const SDL_Vertex vertices[]={a,b,e,a,e,d};
-            renderer->triangles(vertices,surface,pixels,surface->dirty);
-            surface->dirty=false;
+            renderer->blit(surface, pixels, surface->contentRevision(),
+                           renderer == softwareRasterizer.get() && surface->hasOpaquePixels(),
+                           SDL_Rect{sx,sy,sw,sh}, SDL_FRect{x,y,w,h}, alpha);
             return;
         }
 		#ifdef HAVE_OPENGL
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{
 			// upload
-			if (surface->dirty)
+			if (surface->glUploadedRevision != surface->contentRevision())
 				surface->uploadToTexture();
 
 			// Bias nearest-neighbour ties toward the same texel for standalone
@@ -209,6 +206,7 @@ namespace GAGCore
 
 	void GraphicContext::drawAlphaMap(const std::valarray<float> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color)
 	{
+		if (renderer) prepareDraw();
         if (renderer) {
             if (mapW < 2 || mapH < 2 || size_t(mapW)*size_t(mapH) > map.size()) return;
             for(int j=0;j<mapH-1;++j) for(int i=0;i<mapW-1;++i) {
@@ -301,6 +299,7 @@ namespace GAGCore
 
 	void GraphicContext::drawAlphaMap(const std::valarray<unsigned char> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color)
 	{
+		if (renderer) prepareDraw();
         if (renderer) {
             if (mapW < 2 || mapH < 2 || size_t(mapW)*size_t(mapH) > map.size()) return;
             for(int j=0;j<mapH-1;++j) for(int i=0;i<mapW-1;++i) {

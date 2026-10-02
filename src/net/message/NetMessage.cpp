@@ -19,6 +19,7 @@
 #include "RegistrationMessages.h"
 #include "RouterAdminMessages.h"
 #include "RouterMessages.h"
+#include "TurnMessages.h"
 
 std::shared_ptr<NetMessage> NetMessage::getNetMessage(GAGCore::InputStream* stream)
 {
@@ -213,6 +214,12 @@ std::shared_ptr<NetMessage> NetMessage::getNetMessage(GAGCore::InputStream* stre
 		message.reset(new NetSubmitRatingOnMap);
 		break;
 		default:
+		if (netType >= MNetTurnFirst && netType <= MNetTurnLast)
+		{
+			message = Turn::TurnCodec::create(netType);
+			if (message)
+				break;
+		}
 		// Untrusted byte from the wire didn't match any known opcode.
 		// Drop the message and let the caller handle the null shared_ptr
 		// (existing call sites already guard with `if(!message) return;`).
@@ -221,9 +228,4 @@ std::shared_ptr<NetMessage> NetMessage::getNetMessage(GAGCore::InputStream* stre
 	}
 	message->decodeData(stream);
 	return message;
-}
-
-bool NetMessage::operator!=(const NetMessage& rhs) const
-{
-	return !(*this == rhs);
 }

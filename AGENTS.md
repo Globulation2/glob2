@@ -16,7 +16,7 @@ appear as plain text in a checkout, read `AGENTS.md` and `.agents/skills/` direc
 | Map state and pathfinding | `src/map/`, especially `gradient/` and `pathfind/` |
 | AI implementations | `src/ai/`, behind `AIImplementation` |
 | Rendering, menus and editor | `src/render/`, `src/gui/`, `src/*Screen*`, `src/map/edit/`; menu/dialog framework in `libgag/include/ui/` and `src/ui/`, see [UI framework](docs/development/ui-framework.md) |
-| Network and multiplayer service | `src/net/`, `src/yog/` |
+| Network and multiplayer service | `src/net/` (turn netcode in `src/net/turn/`), `src/yog/`, match relay in `src/relay/` ([relay](docs/multiplayer/relay.md)) |
 | Online platform (TypeScript: accounts, rooms, matches, JSON contracts) | `platform/`, [platform architecture](docs/multiplayer/architecture.md) |
 | Graphics/UI and scripting libraries | `libgag/`, `libusl/`, `src/sgsl/` |
 | Builds and platform coverage | `SConstruct`, `src/SConscript`, `scons/`, `.github/workflows/build.yml`, `vcpkg.json` |

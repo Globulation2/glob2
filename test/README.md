@@ -125,6 +125,14 @@ scripts compare full-game traces against retained fixtures and are documented wi
 the harness they accompany below. `tests/` at the repository root tests the build
 system and the browser services.
 
+## Match relay
+
+`scons role=relay release=1 relay` builds `glob2-relay` and `glob2-relay-tests`, a
+doctest binary of its own (the relay role builds no engine or SDL code). Run it
+directly, then `python3 -m unittest discover -s tests/relay -v` for the end-to-end
+tests against the real binary. `test/fixtures/relay-tickets/` copies the protocol
+package's ticket fixtures. See [docs/multiplayer/relay.md](../docs/multiplayer/relay.md#tests).
+
 ## Maxima
 
 See [Maxima tests](maxima/README.md) for policy, configuration, integration and
@@ -1143,3 +1151,13 @@ exception. CI retains these artifacts even when verification fails.
 The shared evidence comparator requires successful runs of the same clean source
 revision. `--allow-development` permits diagnostic comparisons while recording
 provenance failures; those comparisons do not satisfy the final acceptance gate.
+
+## Software renderer
+
+The opt-in `software-render-benchmark` tool profiles loaded games through the production
+software renderer. It is part of `glob2-tools`, not a CI timing threshold. See
+[Software rendering architecture and profiling](../docs/development/reference.md#software-rendering-architecture-and-profiling)
+for fixture capture, paired CPU measurements and diagnostic overrides. The
+`SoftwareRenderer` suite checks raster sampling, ordering, opacity revisions and
+terrain-cache correctness; `PortableRenderer`, `WindowResize`, `MapRenderResize` and
+`HighResolutionIntegration` cover the shared facade and window lifecycle.

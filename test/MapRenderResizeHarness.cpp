@@ -493,5 +493,7 @@ void run(bool gpu)
 TEST_SUITE("MapRenderResize")
 {
 	TEST_CASE("repeated map copies; settings and credits after resizing in software rendering") { run(false); }
+#ifdef HAVE_OPENGL
 	TEST_CASE("repeated map copies; settings and credits after resizing in OpenGL [display:1920x1200]") { run(true); }
+#endif
 }
