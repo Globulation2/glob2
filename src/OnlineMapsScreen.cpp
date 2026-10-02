@@ -770,7 +770,7 @@ Element OnlineMapsScreen::build(const Presentation &p)
 		body.push_back(caption(status, false));
 	const std::string mineLabel = data.mine.empty() ? tr("[maps my maps]")
 													: std::string(FormattableString(tr("[maps my maps %0]")).arg(int(data.mine.size())));
-	Element tabs = segments("maps/tab", {tr("[maps browse]"), mineLabel}, int(tab),
+	Element tabs = segments("maps/tab", {tr("[maps browse]"), phone ? tr("[maps mine]") : mineLabel}, int(tab),
 							[this](int i) { selectTab(i == 0 ? Tab::Browse : Tab::Mine); });
 
 	OnlinePanel panel;

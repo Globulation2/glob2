@@ -52,7 +52,7 @@ std::string outcomeLetter(const std::string &outcome)
 		return tr("[profile win letter]");
 	if (outcome == "lost" || outcome == "abandoned")
 		return tr("[profile loss letter]");
-	return tr("[profile draw letter]");
+	return tr("[profile draw letter]"); // draw, unresolved: a game, not a win or a loss
 }
 } // namespace
 
@@ -298,12 +298,13 @@ std::string OnlineProfileScreen::matchKind(const Online::MatchSummary &match) co
 
 Element OnlineProfileScreen::ratingCard(const Online::LadderSummary &ladder, const Presentation &p, bool phone)
 {
-	std::vector<Element> top{label(std::to_string(long(std::lround(ladder.rating))), {FontRole::Title})};
-	if (ladder.rank && !ladder.provisional)
+	std::vector<Element> top{label(std::to_string(long(std::lround(ladder.rating))), {phone ? FontRole::Heading : FontRole::Title})};
+	if (ladder.rank && !ladder.provisional && !phone)
 		top.push_back(caption("#" + std::to_string(*ladder.rank)));
-	if (ladder.provisional)
-		top.push_back(badge(FormattableString(tr("[profile provisional %0 games]")).arg(ladder.games), frontendTheme().palette.focus));
 	std::vector<Element> parts{caption(ladderName(ladder.ladder)), row(std::move(top), {p.pt(8), CrossAlign::Center})};
+	if (ladder.provisional)
+		parts.push_back(align(Alignment::Left, badge(FormattableString(tr("[profile provisional %0 games]")).arg(ladder.games),
+													 frontendTheme().palette.focus)));
 	if (ladder.lastChange && phone)
 		parts.push_back(caption((ladder.rank && !ladder.provisional ? "#" + std::to_string(*ladder.rank) + " \xC2\xB7 " : std::string()) +
 								signedText(*ladder.lastChange)));
@@ -353,7 +354,10 @@ Element OnlineProfileScreen::matchRow(int index, const Presentation &p, bool pho
 
 	if (phone)
 	{
-		auto text = column({label(matchTitle(match)), caption(sub + (minutes.empty() ? "" : " \xC2\xB7 " + minutes))}, {p.pt(2)});
+		std::string shortTitle = matchTitle(match);
+		if (auto dot = shortTitle.find(" \xC2\xB7 "); dot != std::string::npos)
+			shortTitle = shortTitle.substr(dot + 4);
+		auto text = column({label(shortTitle), caption(sub + (minutes.empty() ? "" : " \xC2\xB7 " + minutes))}, {p.pt(2)});
 		ButtonOptions options;
 		options.flat = true;
 		options.alignLeft = true;
@@ -361,7 +365,7 @@ Element OnlineProfileScreen::matchRow(int index, const Presentation &p, bool pho
 		options.accessibleLabel = matchTitle(match);
 		return stack({button(key, "", [this, index] { select(selected == index ? -1 : index); }, options),
 					  padding(Insets::symmetric(p.pt(8), p.pt(4)),
-							  row({mark, expanded(text), label(change, {FontRole::Heading, false, TextAlign::Right, changeColor})},
+							  row({mark, expanded(text), label(change, {FontRole::Body, false, TextAlign::Right, changeColor})},
 								  {p.pt(8), CrossAlign::Center}))});
 	}
 	ButtonOptions replayOptions;
@@ -396,14 +400,15 @@ Element OnlineProfileScreen::build(const Presentation &p)
 	{
 		const int percent = int(std::lround(100.0 * summary.wins / std::max(1, summary.recent)));
 		std::vector<Element> parts{caption(FormattableString(tr("[profile win rate last %0]")).arg(summary.recent)),
-								   label(std::to_string(percent) + " %", {FontRole::Title})};
+								   label(std::to_string(percent) + " %", {phone ? FontRole::Heading : FontRole::Title})};
 		if (!phone)
 			parts.push_back(caption(FormattableString(tr("[profile %0 w %1 l %2 d]")).arg(summary.wins).arg(summary.losses).arg(summary.draws)));
 		cards.push_back(card(column(std::move(parts), {p.pt(4)}), stat));
 	}
 	if (summary.medianMinutes)
 		cards.push_back(card(column({caption(tr("[profile typical game]")),
-									 label(FormattableString(tr("[profile %0 min]")).arg(*summary.medianMinutes), {FontRole::Title}),
+									 label(FormattableString(tr("[profile %0 min]")).arg(*summary.medianMinutes),
+										   {phone ? FontRole::Heading : FontRole::Title}),
 									 phone ? empty() : caption(tr("[profile median length]"))},
 									{p.pt(4)}),
 							 stat));
@@ -419,8 +424,10 @@ Element OnlineProfileScreen::build(const Presentation &p)
 
 	// Matches.
 	std::vector<std::string> filters{tr("[profile all]"), tr("[qm ranked]"), tr("[profile rooms]"), tr("[profile vs ai]")};
-	Element filterControl = segments("profile/filter", filters, int(filter), [this](int i) { setFilter(Filter(i)); });
-	body.push_back(phone ? column({label(tr("[profile matches]"), {FontRole::Heading}), filterControl}, {p.pt(6)})
+	Element filterControl = phone ? choice("profile/filter", filters, int(filter), [this](int i) { setFilter(Filter(i)); })
+								  : segments("profile/filter", filters, int(filter), [this](int i) { setFilter(Filter(i)); });
+	body.push_back(phone ? row({expanded(label(tr("[profile matches]"), {FontRole::Heading})), width(p.pt(150), filterControl)},
+							   {p.pt(8), CrossAlign::Center})
 						 : row({expanded(label(tr("[profile matches]"), {FontRole::Heading})), width(p.pt(360), filterControl)},
 							   {p.pt(8), CrossAlign::Center}));
 	std::vector<Element> rows;

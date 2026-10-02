@@ -3978,3 +3978,5 @@ AIを追加
 
 [maps share online]
 
+[maps mine]
+

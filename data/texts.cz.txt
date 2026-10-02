@@ -3982,3 +3982,5 @@ Setrvačnost mapy
 
 [maps share online]
 
+[maps mine]
+

@@ -3988,3 +3988,5 @@ Inércia do mapa
 
 [maps share online]
 
+[maps mine]
+

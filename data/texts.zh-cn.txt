@@ -3978,3 +3978,5 @@ CPU %0%
 
 [maps share online]
 
+[maps mine]
+

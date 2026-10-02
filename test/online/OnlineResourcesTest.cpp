@@ -275,5 +275,13 @@ TEST_SUITE("OnlineResources")
 		CHECK(summary.recent == 2);
 		CHECK(summary.wins == 1);
 		CHECK(summarizeProfile("nobody", matches).recent == 0);
+
+		// A draw (MatchOutcome "draw") is a game, neither a win nor a loss.
+		std::vector<MatchSummary> drawn{match("d1", "me", "draw", 1500, 1500, "Even Ground", 30)};
+		summary = summarizeProfile("me", drawn);
+		CHECK(summary.recent == 1);
+		CHECK(summary.draws == 1);
+		CHECK(summary.wins + summary.losses == 0);
+		CHECK(summary.bestMap.empty());
 	}
 }

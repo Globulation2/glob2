@@ -124,7 +124,7 @@ struct MatchParticipant
 	int seat = 0, team = 0;
 	bool human = true;
 	std::string displayName, accountId, ai;
-	std::string outcome; // won | lost | unresolved | abandoned, empty while unknown
+	std::string outcome; // won | lost | draw | unresolved | abandoned, empty while unknown
 	int disconnects = 0;
 	std::optional<RatingChange> rating;
 };

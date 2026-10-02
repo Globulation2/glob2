@@ -3980,3 +3980,5 @@ Inercio de la mapo
 
 [maps share online]
 
+[maps mine]
+

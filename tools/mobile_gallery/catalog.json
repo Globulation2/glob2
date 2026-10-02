@@ -576,7 +576,7 @@
     {
       "id": "match-found",
       "title": "Match found",
-      "description": "Ranked accept prompt with the 10-second ring; the player has accepted.",
+      "description": "Ranked accept prompt with the 10-second ring, before either player answers.",
       "group": "Online screens"
     },
     {

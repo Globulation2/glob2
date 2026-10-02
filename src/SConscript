@@ -124,7 +124,7 @@ if not env['server']:
             'online/HttpFetch.cpp', 'online/HttpFetchCommon.cpp', 'online/InstanceConfig.cpp',
             'online/MemoryStorage.cpp', 'online/PlatformClient.cpp', 'online/PlatformProtocol.cpp',
             'online/OnlineResources.cpp', 'online/QuickMatch.cpp', 'online/RelayProbe.cpp',
-            'online/MapCatalog.cpp',
+            'online/MapCatalog.cpp', 'online/SimVersion.cpp', 'online/Sha256.cpp',
             'net/NetTransport.cpp', 'net/WssTransport.cpp', 'net/NetworkConfig.cpp', 'net/LanIdentity.cpp',
             local.Object('OnlineScreensProbe.o', '#test/OnlineScreensProbe.cpp')] + platform_trust_sources)
         local.Alias('online-screens-probe', screens_probe)

@@ -597,7 +597,7 @@ Element MatchFoundScreen::build(const Presentation &p)
 			}
 	if (!regionText.empty())
 		info.push_back(caption(regionText));
-	const int pictureSize = phone ? std::min(p.safe.w - p.pt(24), p.pt(240)) : p.pt(170);
+	const int pictureSize = phone ? std::min(p.safe.w - p.pt(24), p.pt(previewReady ? 240 : 150)) : p.pt(170);
 	Element picture = previewReady && preview ? mapPreview("found/map", *preview, p.points(pictureSize))
 											  : previewPicture(nullptr, pictureSize);
 	Element content = phone && !p.landscape()

@@ -94,7 +94,7 @@ inline Online::Json proposalJson(bool ranked, std::int64_t now)
 {
 	Online::Json seats = Online::Json::array();
 	seats.push_back({{"slot", 0}, {"side", 0}, {"kind", "human"}, {"displayName", "Bradley"}, {"rating", 1528},
-					 {"response", ranked ? "accepted" : "not_required"}, {"you", true}});
+					 {"response", ranked ? "pending" : "not_required"}, {"you", true}});
 	if (ranked)
 		seats.push_back({{"slot", 1}, {"side", 1}, {"kind", "human"}, {"displayName", "Kestrel"}, {"rating", 1540},
 						 {"response", "pending"}});
@@ -124,8 +124,6 @@ inline std::unique_ptr<GAGGUI::Screen> matchFound(bool ranked)
 	m.setStartDelayMs(3600 * 1000); // keep the countdown on screen
 	m.presentSearching(queues()[0], status(now), now - 42000);
 	m.handleEvent("queue.proposal", proposalJson(ranked, now));
-	if (ranked)
-		m.handleEvent("queue.proposal", proposalJson(ranked, now)); // as resent after our accept
 	return std::make_unique<MatchFoundScreen>(m);
 }
 
@@ -158,7 +156,7 @@ inline Online::MatchSummary match(const std::string &id, const std::string &riva
 	other.human = !ai;
 	other.ai = ai ? "cortex" : "";
 	other.displayName = rival;
-	other.outcome = outcome == "won" ? "lost" : "won";
+	other.outcome = outcome == "won" ? "lost" : outcome == "lost" ? "won" : outcome;
 	m.participants = {me, other};
 	return m;
 }
@@ -184,6 +182,7 @@ inline std::unique_ptr<GAGGUI::Screen> profile(GAGGUI::ScreenStack &stack)
 		match("m3", "Ana_M", false, "won", 1499, 1530, "Marchland", 29, now - 4 * day),
 		match("m2", "Nyx", false, "lost", 1510, 1499, "Even Ground", 25, now - 5 * day),
 		match("m1", "Zed", false, "won", 1490, 1510, "Even Ground", 22, now - 6 * day),
+		match("m0", "Kestrel", false, "draw", 1490, 1490, "Marchland", 60, now - 7 * day),
 	};
 	auto team = match("m9", "Kestrel", false, "won", 1490, 1521, "Marchland", 29, now - 4 * day);
 	team.queueId = "ranked-2v2";

@@ -3990,3 +3990,5 @@ Zotrvačnosť mapy
 
 [maps share online]
 
+[maps mine]
+

@@ -3978,3 +3978,5 @@ AI 추가
 
 [maps share online]
 
+[maps mine]
+
