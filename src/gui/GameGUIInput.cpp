@@ -60,7 +60,7 @@ bool GameGUI::processScrollableWidget(SDL_Event *event)
 {
 	if (!scrollableText)
 		return false;
-	const bool consumed = scrollableText->event(*event);
+	const bool consumed = scrollableText->eventLogical(*event);
 	if (scrollableText->finished())
 		scrollableText.reset();
 	return consumed;
@@ -74,7 +74,7 @@ bool GameGUI::processTypingInput(SDL_Event *event)
 	if (!typingInputScreen)
 		return false;
 
-	const bool consumed = typingInputScreen->event(*event);
+	const bool consumed = typingInputScreen->eventLogical(*event);
 	if (!typingInputScreen->finished())
 		return consumed;
 

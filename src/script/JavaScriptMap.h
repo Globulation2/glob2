@@ -2,7 +2,8 @@
 #pragma once
 #include "ScriptRuntime.h"
 #include "MersenneTwister.h"
-class GameGUI;
+class Game;
+class ClientCommandSink;
 namespace GAGCore
 {
 class InputStream;
@@ -19,13 +20,15 @@ class JavaScriptMap
 
   public:
 	// Apply saved interface state without invoking JavaScript or changing simulation state.
-	void present(GameGUI &gui, bool publishHistory = true) const;
+	void present(ClientCommandSink &client, bool publishHistory = true) const;
 	void reset();
 	void validate(const std::string &source) { runtime->validate(source); }
-	void step(const std::string &source, GameGUI &gui);
+	void step(const std::string &source, Game &game, ClientCommandSink &client);
 	void save(GAGCore::OutputStream *stream) const;
 	void load(GAGCore::InputStream *stream);
-	unsigned checksum(GameGUI *gui) const;
+	// Objectives and hints are folded in only when `game` is given (historically:
+	// only when a GUI was attached).
+	unsigned checksum(Game *game) const;
 	bool buildingAllowed(const std::string &name, bool flag) const;
 };
 } // namespace Script

@@ -66,6 +66,8 @@ class UIDialog
 	virtual Element build(const Presentation &presentation) = 0;
 	void attach(GAGCore::DrawableSurface &surface);
 	bool event(const SDL_Event &event);
+	// Gameplay has already mapped window coordinates to the logical surface.
+	bool eventLogical(const SDL_Event &event);
 	void update(Uint32 tick);
 	void draw(Uint32 tick);
 	void cancelInput();

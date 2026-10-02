@@ -29,6 +29,10 @@ static constexpr int MAX_BUILDING_LONG_LEVEL = NB_BUILDING_LONG_LEVELS - 1;
 //! width is independent of Team::MAX_COUNT. See TeamStat.cpp:122.
 static constexpr int END_OF_GAME_STAT_INTERVAL_MASK = 0x1FF;
 
+// Wire-locked growth-distance bands: keep order and count stable for old saves.
+inline constexpr int GROWTH_COVERAGE_RADII[] = {8, 16, 32};
+inline constexpr int GROWTH_COVERAGE_BANDS = sizeof(GROWTH_COVERAGE_RADII) / sizeof(GROWTH_COVERAGE_RADII[0]);
+
 struct TeamStat
 {
 	TeamStat();
@@ -183,9 +187,9 @@ struct GameplayMeasurements
 	Uint64 lowFood[3][NB_UNIT_TYPE]{};
 	Uint32 trappedTick = 0;
 	// Cumulative natural map growth within 8, 16 and 32 tiles of this team.
-	Uint64 growthTiles[3][MAX_NB_RESOURCES]{};
-	Uint64 growthAmount[3][MAX_NB_RESOURCES]{};
-	Uint64 growthReduction[3][MAX_NB_RESOURCES]{};
+	Uint64 growthTiles[GROWTH_COVERAGE_BANDS][MAX_NB_RESOURCES]{};
+	Uint64 growthAmount[GROWTH_COVERAGE_BANDS][MAX_NB_RESOURCES]{};
+	Uint64 growthReduction[GROWTH_COVERAGE_BANDS][MAX_NB_RESOURCES]{};
 	Uint64 growthGlobal[3][MAX_NB_RESOURCES]{};
 };
 

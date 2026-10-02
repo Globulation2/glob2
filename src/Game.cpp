@@ -43,7 +43,7 @@
 #define BULLET_IMGID 0
 
 Game::Game(GameGUI *gui, MapEdit* edit):
-	mapscript(gui)
+	mapscript(this, gui)
 {
 	init(gui, edit);
 }
@@ -57,6 +57,10 @@ void Game::init(GameGUI *gui, MapEdit* edit)
 {
 	this->gui=gui;
 	this->edit=edit;
+	clientSink=gui;
+	clientEvents=gui ? &gui->clientEvents : nullptr;
+	clientRequests=gui ? &gui->clientRequests : nullptr;
+	recordingFailingUnits=BuildingRef();
 	buildProjects.clear();
 
 #ifndef YOG_SERVER_ONLY
@@ -90,9 +94,7 @@ void Game::init(GameGUI *gui, MapEdit* edit)
 void Game::clearGame()
 {
 	scriptGenerations.fill(0);
-#ifndef YOG_SERVER_ONLY
-    softwareTerrainCache.reset();
-#endif
+	recordingFailingUnits=BuildingRef();
 	hasSavedRandomState = false;
 	// Delete existing teams and players
 	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
@@ -164,14 +166,14 @@ void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 		assert(tn >= 0 && tn < mapHeader.getNumberOfTeams());
 		assert(teams[tn] != NULL);
 		teams[tn]->numberOfPlayer+=1;
-		teams[tn]->playersMask|=(1<<i);
+		teams[tn]->playersMask |= Team::teamNumberToMask(i);
 	}
 
 	// A loaded saved game already restored the live RNG. New maps and old
 	// saves retain the seed-based initialization used by earlier versions.
 	const bool gameSeedChanged = newGameHeader.getRandomSeed() != gameHeader.getRandomSeed();
 	if (!hasSavedRandomState || !mapHeader.getIsSavedGame() || gameSeedChanged)
-		setSyncRandSeed(newGameHeader.getRandomSeed());
+		syncRandom.seed(newGameHeader.getRandomSeed());
 	if (gameSeedChanged)
 		for (int p=0; p<newGameHeader.getNumberOfPlayers(); ++p)
 			if (players[p] && players[p]->ai)
@@ -337,12 +339,68 @@ bool Game::isPrestigeWinCondition(void)
 	return false;
 }
 
+static_assert(ClientEvents::MaxTeams >= Team::MAX_COUNT, "ClientEvents pulse must cover every team");
+
+BuildingRef Game::refOf(const Building *b)
+{
+	BuildingRef ref;
+	if (b)
+	{
+		ref.gid = b->gid;
+		ref.generation = b->scriptIdentity;
+	}
+	return ref;
+}
+
+UnitRef Game::refOf(const Unit *u)
+{
+	UnitRef ref;
+	if (u)
+	{
+		ref.gid = u->gid;
+		ref.generation = u->scriptIdentity;
+	}
+	return ref;
+}
+
+Building *Game::resolveBuilding(BuildingRef ref) const
+{
+	if (ref.empty())
+		return nullptr;
+	const int team = Building::GIDtoTeam(ref.gid);
+	const int id = Building::GIDtoID(ref.gid);
+	if (team < 0 || team >= Team::MAX_COUNT || !teams[team] || id < 0 || id >= Building::MAX_COUNT)
+		return nullptr;
+	Building *b = teams[team]->myBuildings[id];
+	return (b && b->scriptIdentity == ref.generation) ? b : nullptr;
+}
+
+Unit *Game::resolveUnit(UnitRef ref) const
+{
+	if (ref.empty())
+		return nullptr;
+	const int team = Unit::GIDtoTeam(ref.gid);
+	const int id = Unit::GIDtoID(ref.gid);
+	if (team < 0 || team >= Team::MAX_COUNT || !teams[team] || id < 0 || id >= Unit::MAX_COUNT)
+		return nullptr;
+	Unit *u = teams[team]->myUnits[id];
+	return (u && u->scriptIdentity == ref.generation) ? u : nullptr;
+}
+
+void Game::publishClientEvent(ClientEventVariant event)
+{
+	if (clientEvents)
+		clientEvents->push(std::move(event));
+}
+
 Uint32 Game::allocateScriptIdentity(bool building, Uint16 gid)
 {
  const int team=building?Building::GIDtoTeam(gid):Unit::GIDtoTeam(gid);
  const int slot=building?Building::GIDtoID(gid):Unit::GIDtoID(gid);
  if(team<0 || team>=Team::MAX_COUNT)throw std::runtime_error("Invalid scripting entity slot");
- auto& generation=scriptGenerations[(building?Team::MAX_COUNT*1024:0)+team*1024+slot];
+ static_assert(SCRIPT_ENTITY_SLOTS_PER_TEAM == Unit::MAX_COUNT &&
+     SCRIPT_ENTITY_SLOTS_PER_TEAM == Building::MAX_COUNT);
+ auto& generation=scriptGenerations[scriptGenerationIndex(building, team, slot)];
  if(generation==0xffffffffu)throw std::runtime_error("JavaScript entity generation exhausted");
  return ++generation;
 }

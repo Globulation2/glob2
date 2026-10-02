@@ -122,6 +122,15 @@ class SoftwareRenderBackend final : public RenderBackend
 			  const SDL_Rect &sourceRect, const SDL_FRect &destination, Uint8 alpha) override
 	{
 		++counts.blits;
+		// SDL's alpha blitters have platform-specific rounding, and format
+		// conversion can bake source modulation into the pixels. Retain the
+		// geometry reference for these cases; verified same-format opaque
+		// images still use the direct row-copy and nearest-sampling paths.
+		if (!opaque || alpha != 255 || source->format->format != target->format->format)
+		{
+			fallback().blit(key, source, revision, opaque, sourceRect, destination, alpha);
+			return;
+		}
 		// SDL's large textured triangles have observable fixed-point overflow
 		// behavior (notably the 512-pixel water asset). Preserve that behavior
 		// for existing images; changing it needs separate visual acceptance.
@@ -143,6 +152,13 @@ class SoftwareRenderBackend final : public RenderBackend
 	void fill(const SDL_FRect &rect, SDL_Color color) override
 	{
 		++counts.fills;
+		if (color.a == 0) return;
+		// Match SDL's separate-term/SIMD rounding on each supported platform.
+		if (color.a != 255)
+		{
+			fallback().fill(rect, color);
+			return;
+		}
 		flush();
 		TargetClip clip(target, outputClip());
 		SurfaceRaster::fill(target, pixels(rect),
