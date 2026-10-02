@@ -1,0 +1,16 @@
+# Repeated efficiency-core runs (taskpolicy -c background), alternating serial/threaded,
+# same build and counter as bench-matrix.txt. Load average 5.4 -> 2.2 during the runs.
+speed=10 mode=serial policy=background seed=5 BENCH frames=188 wall_ms=13920 ended: 3000 ticks
+speed=10 mode=threaded policy=background seed=5 BENCH frames=67 wall_ms=3967 ended: 3000 ticks
+speed=10 mode=serial policy=background seed=5 BENCH frames=188 wall_ms=13291 ended: 3000 ticks
+speed=10 mode=threaded policy=background seed=5 BENCH frames=70 wall_ms=3510 ended: 3000 ticks
+speed=10 mode=serial policy=background seed=5 BENCH frames=188 wall_ms=13136 ended: 3000 ticks
+speed=10 mode=threaded policy=background seed=5 BENCH frames=65 wall_ms=3896 ended: 3000 ticks
+speed=8 mode=serial policy=background seed=5 BENCH frames=600 wall_ms=33533 ended: 3000 ticks
+speed=8 mode=threaded policy=background seed=5 BENCH frames=174 wall_ms=9052 ended: 3000 ticks
+speed=8 mode=serial policy=background seed=5 BENCH frames=600 wall_ms=35182 ended: 3000 ticks
+speed=8 mode=threaded policy=background seed=5 BENCH frames=171 wall_ms=9074 ended: 3000 ticks
+speed=8 mode=serial policy=background seed=5 BENCH frames=600 wall_ms=34117 ended: 3000 ticks
+speed=8 mode=threaded policy=background seed=5 BENCH frames=162 wall_ms=9060 ended: 3000 ticks
+# Process wall time including startup (no frame counter), --ai-threads 4, preset 10:
+# serial 13.9 8.5 10.1 9.5 6.8 s; threaded 5.6 6.4 3.1 3.7 s

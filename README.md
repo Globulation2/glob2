@@ -57,4 +57,8 @@ uncommitted counter: `++benchFrames` at the top of `GameGUI::drawAll` and a
 `BENCH frames=N wall_ms=T` line (wall time since `Engine::beginSession`) printed
 with the end-of-game summary.
 
-See `bench-matrix.txt`; summary in the PR description.
+See `bench-matrix.txt` (one run per configuration) and `efficiency-repeats.txt`
+(three alternating runs of the efficiency-core rows). The matrix's single
+efficiency-core preset-10 run (threaded 11.4 s / 108 frames) did not reproduce in
+the repeats (3.5-4.0 s, faster than serial's 13.1-13.9 s); efficiency-core
+timings vary strongly with machine load. Summary in the PR description.
