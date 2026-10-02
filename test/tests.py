@@ -25,6 +25,7 @@ ENGINE_SUPPORT = [
 
 # glob2-engine-tests: every client object except the entry point, plus these.
 ENGINE_TESTS = [
+    'CastorContinuationTest.cpp',
     ('ScriptCompatibilityTest.cpp', dict(cxxflags=['-fno-access-control'])),
     'ScriptIntegrationTest.cpp',
     'ScriptPresentationTest.cpp',
