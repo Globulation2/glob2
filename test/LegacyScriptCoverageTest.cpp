@@ -4,6 +4,8 @@
 #include <BinaryStream.h>
 #include <StreamBackend.h>
 #include <array>
+#include "AI.h"
+#include "Player.h"
 
 namespace
 {
@@ -263,4 +265,53 @@ TEST_SUITE("LegacyScriptCoverage")
         w.world.gui.setIsSpaceSet(true);
         w.step(); CHECK(w.script.hasTeamLost(1)); CHECK_FALSE(w.world.gui.isSpaceSet());
     }
+    TEST_CASE("resetAI changes only the chosen player and rejects unsafe indices")
+    {
+        glob2test::HeadlessGlobals globals;
+        World w;
+        const auto other=w.world.game.players[1]->type;
+        REQUIRE(w.compile("resetAI(0,2)").type==ErrorReport::ET_OK);
+        w.step();
+        REQUIRE(w.world.game.players[0]->ai);
+        CHECK(w.world.game.players[0]->ai->implementationID==AI::CASTOR);
+        CHECK(w.world.game.players[1]->type==other);
+        for (const char* source : {"resetAI(2,2)","resetAI(999,2)","resetAI(0,10)","resetAI(0,999)"})
+        {
+            INFO(source);
+            CHECK(w.compile(source).type==ErrorReport::ET_INVALID_VALUE);
+        }
+    }
+
+    TEST_CASE("resetAI authoring accepts valid slots before an editor map has a player header")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame w(glob2test::GameOptions{.teams=2,.clearImmobile=true,.loadDefaultRace=true});
+        REQUIRE(w.game.gameHeader.getNumberOfPlayers()==0);
+        MapScriptSGSL script; script.sourceCode="resetAI(0,2)";
+        CHECK(script.compileScript(&w.game).type==ErrorReport::ET_OK);
+        script.syncStep(w.game,w.gui,w.gui.clientRequests); // No active player means no runtime replacement.
+        CHECK(w.game.players[0]==nullptr);
+        script.sourceCode="resetAI(16,2)";
+        CHECK(script.compileScript(&w.game).type==ErrorReport::ET_INVALID_VALUE);
+    }
+
+    TEST_CASE("legacy resetAI tokens with invalid player or implementation leave players intact")
+    {
+        glob2test::HeadlessGlobals globals;
+        World w;
+        for (const auto invalid : {std::pair{999,2},std::pair{0,999},std::pair{-1,2},std::pair{0,-1}})
+        {
+            REQUIRE(w.compile("resetAI(0,2)").type==ErrorReport::ET_OK);
+            REQUIRE(w.script.stories.size()==1);
+            auto& tokens=w.script.stories.front().line;
+            REQUIRE(tokens.size()>=3);
+            tokens[1].value=invalid.first; tokens[2].value=invalid.second;
+            const auto first=w.world.game.players[0]->type;
+            const auto second=w.world.game.players[1]->type;
+            w.step();
+            CHECK(w.world.game.players[0]->type==first);
+            CHECK(w.world.game.players[1]->type==second);
+        }
+    }
+
 }
