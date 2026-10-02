@@ -2,6 +2,8 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "scene/Scene.h"
+#include "ColonySkinPreview.h"
+#include "IntBuildingType.h"
 #include <PerformanceTelemetry.h>
 #include <iostream>
 
@@ -45,7 +47,7 @@ struct BuildingPosComp
 };
 
 
-void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const Scene& scene)
+void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const Scene& scene, ViewState* view)
 {
 	const SceneEntities &entities = scene.entities;
 	const SceneMap &map = scene.map; // the extracted map, not Game::map
@@ -99,7 +101,11 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 	buildingSprite->setBaseColor(team->color);
 
 	// draw building
-	globalContainer->gfx->drawSprite(x+dx, y+dy, buildingSprite, imgid);
+	const bool skinned = view && type->shortTypeNum == IntBuildingType::SWARM_BUILDING
+		&& !type->isBuildingSite && view->render.skinPreview().drawSwarm(
+			*globalContainer->gfx, team->teamNumber, x+dx, y+dy,
+			buildingSprite->getW(imgid), buildingSprite->getH(imgid));
+	if (!skinned) globalContainer->gfx->drawSprite(x+dx, y+dy, buildingSprite, imgid);
 	globalContainer->gfx->finishDrawingSprite(buildingSprite, 255);
 
 	if ((drawOptions & DRAW_BUILDING_RECT) != 0)
@@ -178,7 +184,7 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 }
 
 
-void Game::drawMapGroundBuildings(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, std::set<Uint16> *visibleBuildings, const BuildingGuiStateMap* buildingGuiState, const Scene& scene)
+void Game::drawMapGroundBuildings(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, std::set<Uint16> *visibleBuildings, const BuildingGuiStateMap* buildingGuiState, const Scene& scene, ViewState* view)
 {
 	PERF_SCOPE_TIME(GroundBuildings);
 	const SceneEntities &entities = scene.entities;
@@ -216,7 +222,7 @@ void Game::drawMapGroundBuildings(int left, int top, int right, int bot, int sw,
 						const Sint32 dispY = buildingGuiState ? displayedPosY(*buildingGuiState, building->gid, building->posY) : building->posY;
 						px = originX * 32 + (dispX - building->posX) * 32;
 						py = originY * 32 + (dispY - building->posY) * 32;
-						drawMapBuilding(px, py, gid, viewportX, viewportY, localTeam, drawOptions, scene);
+						drawMapBuilding(px, py, gid, viewportX, viewportY, localTeam, drawOptions, scene, view);
 						drawnCopies.insert(copy);
 						drawnBuildings.insert(building->gid);
 					}

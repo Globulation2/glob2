@@ -26,6 +26,7 @@
 namespace GAGCore
 {
     class RenderBatch;
+    struct SkinMesh;
 
     class RenderBackend;
     class SoftwareFramePresenter;
@@ -439,7 +440,17 @@ namespace GAGCore
 		// types, to keep GL headers out of this public header (see Sprite::vbo).
 		std::unique_ptr<RenderBatch> renderBatch;
         bool renderBatchEnabled=true;
-		unsigned unitShaderProgram = 0;
+		// Experimental live mesh renderer, owned by the GL context.
+        struct SkinResources
+        {
+            unsigned program = 0, framebuffer = 0, color = 0, depth = 0;
+            unsigned poses = 0, uv = 0, indices = 0;
+            std::uint64_t meshIdentity = 0;
+            unsigned frame = ~0u;
+            bool attempted = false;
+        } skinResources;
+        void destroySkinRenderer();
+        unsigned unitShaderProgram = 0;
 		int unitShaderLocBase = -1, unitShaderLocTeam = -1;
 		int unitShaderLocHasBase = -1, unitShaderLocHasTeam = -1;
 		bool unitShaderFailureLogged = false;
@@ -608,6 +619,9 @@ namespace GAGCore
         // Diagnostic comparison switches use the same context and assets.
         void setRenderBatchEnabled(bool enabled);
         bool hasUnitShader() const { return unitShaderProgram != 0; }
+        // Returns false without drawing when the backend or assets are unavailable.
+        bool drawSkinMesh(const SkinMesh &mesh, unsigned frame, DrawableSurface &texture,
+                          float x, float y, float w, float h);
 		
 		virtual void drawAlphaMap(const std::valarray<float> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
 		virtual void drawAlphaMap(const std::valarray<unsigned char> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);

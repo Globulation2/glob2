@@ -9,6 +9,7 @@
 #include <valarray>
 
 class DynamicClouds;
+class ColonySkinPreview;
 class SoftwareTerrainCache;
 
 //! Presentation state one map view keeps between frames: animation phases, the
@@ -36,6 +37,7 @@ struct MapRenderState
 
 	//! The cloud field for this view, created on first use.
 	DynamicClouds &clouds();
+	ColonySkinPreview &skinPreview();
 	//! The software terrain cache for map, rebuilt when the map was replaced.
 	//! May throw std::bad_alloc; callers fall back to uncached terrain.
 	SoftwareTerrainCache &terrainCache(Uint64 mapIdentity);
@@ -44,6 +46,7 @@ struct MapRenderState
 
 private:
 	std::unique_ptr<DynamicClouds> clouds_;
+	std::unique_ptr<ColonySkinPreview> skinPreview_;
 	std::unique_ptr<SoftwareTerrainCache> terrainCache_;
 	Uint64 terrainCacheMap = 0; //!< Map::identity() the cache was built for.
 };

@@ -280,7 +280,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 	tilePass(&Game::drawMapResources, scene.map);
 	scenePass(&Game::drawMapGroundUnits, view, scene);
 	scenePass(&Game::drawMapDebugAreas, view);
-	scenePass(&Game::drawMapGroundBuildings, visibleBuildings, buildingGuiState, scene);
+	scenePass(&Game::drawMapGroundBuildings, visibleBuildings, buildingGuiState, scene, &view);
 	scenePass(&Game::drawMapAirUnits, view, scene);
 	if ((drawOptions & DRAW_SCRIPT_AREAS) != 0)
 		drawMapScriptAreas(left, top, right, bot, viewportX, viewportY);

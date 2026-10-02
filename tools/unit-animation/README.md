@@ -160,3 +160,68 @@ combinations, cached versus repeated HD compositing, sharp fallback, texture
 invalidation on artwork changes, and map zoom. The `HighResolutionIntegration`
 suite exercises the game's camera/editor/replay integration; the `GameSpeed` suite
 remains applicable.
+
+## Experimental live colony skins
+
+The separate developer preview draws team zero's workers, warriors and explorers as textured meshes in
+an otherwise normal map. It is an asset-feasibility experiment: desktop OpenGL
+only, opt-in through `GLOB2_SKIN_PREVIEW_DIR`, with classic rendering on unsupported
+backends or asset failure. It does not change simulation state or save formats.
+Completed swarms also use the preview mesh when available; construction sites
+retain their existing art. Online ownership,
+the web editor and checkout are not implemented by this preview.
+
+From the repository root, using Blender **3.6.23**:
+
+```sh
+blender -b --disable-autoexec --python-exit-code 1 --python tools/skins/export_units.py -- \
+  --output artifacts/skins/units
+python3 tools/skins/make_paint.py artifacts/skins/units/paint.png
+python3 tools/skins/test_export.py artifacts/skins/units
+scons release=1 skin-preview
+build/linux/client/release/src/skin-preview artifacts/skins/units artifacts/skins/comparison
+GLOB2_SKIN_PREVIEW_DIR="$PWD/artifacts/skins/units" build/linux/client/release/src/glob2
+```
+
+The comparison harness writes all seven action sheets with classic poses
+above live GPU-rendered poses, at three times logical size. Generated files stay
+under `artifacts/`. `make_paint.py --pattern stripes` and `--pattern spots` provide
+simple alternative opaque textures; omit the option for a checkerboard with a
+pink registration stripe.
+
+`export_units.py` preserves all original source bytes. It evaluates a canonical
+surface once per unit type, unwraps it once, and transfers that fixed surface through the
+original named metaball centers and scales in the shared body orientation.
+Individual spherical components have no meaningful rotation; ignoring their
+independent bone rolls avoids twisting a welded surface between gait cycles.
+The explorer's ellipsoid body and wings retain their own orientations and field
+axes, so their animated rotation deforms the attached surface.
+Four fixed normalized influences
+per vertex preserve texture attachment and vertex identity across actions. This
+approximates the changing metaball surface; review silhouettes, seams and motion
+before approving an asset. Re-exported topology is versioned as an experimental
+UV layout, not yet a published customer paint format.
+
+GSK1 stores a bounded little-endian header (magic, vertex count, index count,
+one static pose or 256 unit poses, logical canvas size), shared UV float pairs, uint32 triangle indices,
+then camera-space position/normal float sextuples for each vertex of each pose.
+UVs use a top-left image origin. Directions and phases follow `unitAnimationFrame`.
+The renderer performs depth-tested mesh rasterization into a transparent GPU
+target, then composites into the existing sprite order. It currently switches
+targets per unit; batching, browser/mobile support, geometry review, shadow
+matching and late-game performance remain release requirements.
+
+For a full-map comparison, `scons release=1 skin-game-preview` builds a diagnostic
+harness. Set `SKIN_PREVIEW_SAVE` to a saved game with at least two colonies and
+`SKIN_PREVIEW_CAPTURE` to a relative BMP output path; run the harness with `-g`.
+It inserts a visible row of four team-zero workers and four team-one workers
+near the first colony, then captures the normal Scene renderer. Toggle
+`GLOB2_SKIN_PREVIEW_DIR` between runs to compare only the replaced workers.
+The diagnostic placements are never written back to the supplied save.
+
+The comparison harness also expects `swarm.gsk`. Generate it with Blender
+3.6.23 using `--python-exit-code 1 --python tools/skins/export_swarm.py --
+--output artifacts/skins/units`. This simplifies a reconstructed copy of the
+retained TRELLIS source and gives it a new paint layout. The swarm camera and
+silhouette are provisional; the map preview draws it at the existing swarm
+sprite anchor and size, preserving building overlays and visibility checks.

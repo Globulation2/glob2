@@ -184,6 +184,7 @@ UNIT_TESTS = [
     'PerlinNoiseTest.cpp',
     'PlayerVoiceDrainTest.cpp',
     'SpriteCenteringTest.cpp',
+    'SkinMeshTest.cpp',
     'TurretScanTileTest.cpp',
     'UnitAnimationTest.cpp',
     'UnitDrawGeometryTest.cpp',

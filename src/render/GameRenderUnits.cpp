@@ -27,6 +27,7 @@
 #include "UnitDrawGeometry.h"
 #include "UnitAnimation.h"
 #include "UnitMotion.h"
+#include "ColonySkinPreview.h"
 #include <algorithm>
 #include "UnitSkin.h"
 #include "scene/Scene.h"
@@ -101,7 +102,9 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	unitSprite->setBaseColor(entities.owner(*unit).color);
 	int decX = (unitSprite->getW(imgid)-32)>>1;
 	int decY = (unitSprite->getH(imgid)-32)>>1;
-	globalContainer->gfx->drawSprite(px-decX, py-decY, unitSprite, imgid);
+	if (!view.render.skinPreview().draw(*globalContainer->gfx, unit->typeNum, unit->team,
+		unit->action, dir, delta, px, py))
+		globalContainer->gfx->drawSprite(px-decX, py-decY, unitSprite, imgid);
 
 	// Units the selected building could not hire wear the badge, the same one
 	// shown next to the tally in the building panel. The panel asks the same
