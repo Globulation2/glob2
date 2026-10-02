@@ -1180,9 +1180,16 @@ python3 test/run_coverage.py --quick --timeout 900 -j4
 python3 -m unittest discover -s test -p test_run_coverage.py -v
 ```
 
-Omit `--quick` for the slow integration tier, which includes full generator
-registry generation and custom-game previews. The explicit timeout is useful for
-instrumented debug builds. Add `--fullscreen` only on a display that supports mode
+Use an optimized coverage build for the full tier, including expensive generator
+registry contracts and custom-game previews:
+
+```sh
+python3 test/run_coverage.py --optimization 1 --timeout 1800 -j4
+```
+
+Each optimization level uses a separate default build directory. Keep reports
+from different optimization levels separate. The manifest records the flags and
+selection; the explicit timeout accommodates instrumented integration runs. Add `--fullscreen` only on a display that supports mode
 switches. `--no-display` selects a headless subset and is recorded in the report.
 Versioned Linux tools can be selected with `--cc clang-18 --cxx clang++-18
 --llvm-profdata llvm-profdata-18 --llvm-cov llvm-cov-18`.

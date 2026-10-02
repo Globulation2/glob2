@@ -85,7 +85,9 @@ def summarize(export, root=ROOT):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--build-dir', type=Path, default=ROOT / 'build/native-coverage')
+    parser.add_argument('--build-dir', type=Path)
+    parser.add_argument('--optimization', type=int, choices=(0, 1, 2, 3), default=0,
+                        help='Clang optimization level; use 1 for expensive slow integration coverage')
     parser.add_argument('--output', type=Path, default=ROOT / 'artifacts/native-coverage')
     parser.add_argument('--filter', action='append', default=[])
     parser.add_argument('--exclude-tag', action='append', default=[])
@@ -99,7 +101,8 @@ def main():
     parser.add_argument('--fullscreen', action='store_true')
     parser.add_argument('-j', '--jobs', type=int, default=4)
     args = parser.parse_args()
-    build = args.build_dir.resolve()
+    default_build = 'native-coverage' if args.optimization == 0 else f'native-coverage-o{args.optimization}'
+    build = (args.build_dir or ROOT / 'build' / default_build).resolve()
     if (ROOT / 'build') not in build.parents:
         parser.error('--build-dir must be a dedicated directory under build/ in the repository')
     output = args.output.resolve() / (datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ') + '-' + uuid.uuid4().hex[:8])
@@ -116,7 +119,7 @@ def main():
             result = subprocess.run(command, cwd=ROOT, env=env, stdout=stream, stderr=subprocess.STDOUT)
         return result.returncode
 
-    flags = '-g -O0 -fprofile-instr-generate -fcoverage-mapping'
+    flags = f'-g -O{args.optimization} -fprofile-instr-generate -fcoverage-mapping'
     command = ['scons', f'-j{args.jobs}', 'release=0', 'server=0', f'--build={build}', 'tests',
                f'CC={args.cc}', f'CXX={args.cxx}', f'CFLAGS={flags}', f'CXXFLAGS={flags}',
                'LINKFLAGS=-g -fprofile-instr-generate']
