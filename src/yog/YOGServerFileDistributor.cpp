@@ -8,12 +8,23 @@
 #include "Toolkit.h"
 #include "YOGServerFileDistributor.h"
 #include "YOGServerPlayer.h"
+#include "GzipUtil.h"
 
 using namespace GAGCore;
 using std::static_pointer_cast;
 
+namespace
+{
+	constexpr Uint32 YOG_FILE_CHUNK_BYTES = 4096;
+
+	Uint32 chunkBudgetForFile(Uint32 fileSize)
+	{
+		return (fileSize + YOG_FILE_CHUNK_BYTES - 1) / YOG_FILE_CHUNK_BYTES;
+	}
+}
+
 YOGServerFileDistributor::YOGServerFileDistributor(Uint16 fileID)
-	: fileID(fileID), startedLoading(false), downloadFromPlayerCanceled(false)
+	: fileID(fileID), startedLoading(false), downloadFromPlayerCanceled(false), receivedBytes(0)
 {
 
 }
@@ -53,12 +64,7 @@ bool YOGServerFileDistributor::areAllChunksLoaded()
 {
 	if(!fileInfo)
 		return false;
-	Uint32 total = 0;
-	for(unsigned int i=0; i<chunks.size(); ++i)
-	{
-		total += chunks[i]->getChunkSize();
-	}
-	if(total == fileInfo->getFileSize())
+	if(receivedBytes == fileInfo->getFileSize())
 		return true;
 	return false;
 }
@@ -135,16 +141,42 @@ void YOGServerFileDistributor::handleMessage(std::shared_ptr<NetMessage> message
 	Uint8 messageType = message->getMessageType();
 	if(messageType == MNetSendFileInformation && nplayer == player)
 	{
-		fileInfo = static_pointer_cast<NetSendFileInformation>(message);
+		auto incoming = static_pointer_cast<NetSendFileInformation>(message);
+		if (fileInfo || incoming->getFileSize() == 0 ||
+			incoming->getFileSize() > GAGCore::MAX_COMPRESSED_GAME_FILE_BYTES)
+		{
+			downloadFromPlayerCanceled = true;
+			chunks.clear();
+			fileInfo.reset();
+			receivedBytes = 0;
+			return;
+		}
+		fileInfo = incoming;
 	}
 	else if(messageType == MNetSendFileChunk && nplayer == player)
 	{
-		chunks.push_back(static_pointer_cast<NetSendFileChunk>(message));
+		auto chunk = static_pointer_cast<NetSendFileChunk>(message);
+		// Bound both bytes and object count. Without the count limit, an uploader
+		// can satisfy the byte total with millions of tiny heap-backed messages.
+		if (!fileInfo || chunk->getChunkSize() == 0 ||
+			chunks.size() >= chunkBudgetForFile(fileInfo->getFileSize()) ||
+			receivedBytes > fileInfo->getFileSize() ||
+			chunk->getChunkSize() > fileInfo->getFileSize() - receivedBytes)
+		{
+			downloadFromPlayerCanceled = true;
+			chunks.clear();
+			fileInfo.reset();
+			receivedBytes = 0;
+			return;
+		}
+		receivedBytes += chunk->getChunkSize();
+		chunks.push_back(chunk);
 	}
 	else if(messageType == MNetCancelSendingFile && nplayer == player)
 	{
 		chunks.clear();
 		fileInfo.reset();
+		receivedBytes = 0;
 		downloadFromPlayerCanceled = true;
 	}
 }
@@ -169,6 +201,11 @@ void YOGServerFileDistributor::loadDataFromFile()
 		istream->seekFromEnd(0);
 		int size=istream->getPosition();
 		istream->seekFromStart(0);
+		if (size <= 0 || static_cast<size_t>(size) > GAGCore::MAX_COMPRESSED_GAME_FILE_BYTES)
+		{
+			downloadFromPlayerCanceled = true;
+			return;
+		}
 		fileInfo = std::shared_ptr<NetSendFileInformation>(new NetSendFileInformation(size, fileID));
 		
 		int amount=0;
@@ -178,6 +215,7 @@ void YOGServerFileDistributor::loadDataFromFile()
 			amount += message->getChunkSize();
 			chunks.push_back(message);
 		}
+		receivedBytes = amount;
 	}
 }
 
@@ -200,5 +238,3 @@ void YOGServerFileDistributor::guaranteeDataRequested()
 	else
 		loadDataFromFile();
 }
-
-

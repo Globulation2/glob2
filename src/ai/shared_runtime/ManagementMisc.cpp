@@ -5,9 +5,23 @@
 #include "Game.h"
 #include "Order.h"
 
+#include <stdexcept>
+
 using namespace AISharedRuntime;
 using namespace AISharedRuntime::Management;
 using std::shared_ptr;
+
+namespace
+{
+	tribool readTribool(GAGCore::InputStream *stream, const char *field)
+	{
+		const Uint8 value=stream->readUint8(field);
+		if(value==AI_SHARED_RUNTIME_TRIBOOL_TRUE) return true;
+		if(value==AI_SHARED_RUNTIME_TRIBOOL_FALSE) return false;
+		if(value==AI_SHARED_RUNTIME_TRIBOOL_INDETERMINATE) return indeterminate;
+		throw std::runtime_error("Invalid AI alliance tri-state");
+	}
+}
 
 
 ChangeAlliances::ChangeAlliances(int team, tribool is_allied, tribool is_enemy, tribool view_market, tribool view_inn, tribool view_other) : team(team), is_allied(is_allied), is_enemy(is_enemy), view_market(view_market), view_inn(view_inn), view_other(view_other)
@@ -19,6 +33,9 @@ ChangeAlliances::ChangeAlliances(int team, tribool is_allied, tribool is_enemy, 
 
 void ChangeAlliances::modify(Runtime& runtime)
 {
+	if (team < 0 || team >= runtime.player->game->mapHeader.getNumberOfTeams() ||
+		team >= Team::MAX_COUNT || !runtime.player->game->teams[team])
+		return;
 	Uint32 alliedmask=runtime.allies;
 	Uint32 enemymask=runtime.enemies;
 	Uint32 market_mask=runtime.market_view;
@@ -66,7 +83,8 @@ void ChangeAlliances::modify(Runtime& runtime)
 
 tribool ChangeAlliances::wait(Runtime& runtime)
 {
-	return true;
+	return team >= 0 && team < runtime.player->game->mapHeader.getNumberOfTeams() &&
+		team < Team::MAX_COUNT && runtime.player->game->teams[team];
 }
 
 
@@ -75,48 +93,16 @@ bool ChangeAlliances::load(GAGCore::InputStream *stream, Player *player, Sint32 
 {
 	stream->readEnterSection("ChangeAlliances");
 	ManagementOrder::load(stream, player, versionMinor);
-	team=stream->readUint32("team");
-	if (team < 0 || team >= player->game->mapHeader.getNumberOfTeams() || !player->game->teams[team]) return false;
-
-	Uint8 tmp=stream->readUint8("is_allied");
-	if(tmp==AI_SHARED_RUNTIME_TRIBOOL_TRUE)
-		is_allied=true;
-	else if(tmp==AI_SHARED_RUNTIME_TRIBOOL_FALSE)
-		is_allied=false;
-	else if(tmp==AI_SHARED_RUNTIME_TRIBOOL_INDETERMINATE)
-		is_allied=indeterminate;
-
-	tmp=stream->readUint8("is_enemy");
-	if(tmp==AI_SHARED_RUNTIME_TRIBOOL_TRUE)
-		is_enemy=true;
-	else if(tmp==AI_SHARED_RUNTIME_TRIBOOL_FALSE)
-		is_enemy=false;
-	else if(tmp==AI_SHARED_RUNTIME_TRIBOOL_INDETERMINATE)
-		is_enemy=indeterminate;
-
-	tmp=stream->readUint8("view_market");
-	if(tmp==AI_SHARED_RUNTIME_TRIBOOL_TRUE)
-		view_market=true;
-	else if(tmp==AI_SHARED_RUNTIME_TRIBOOL_FALSE)
-		view_market=false;
-	else if(tmp==AI_SHARED_RUNTIME_TRIBOOL_INDETERMINATE)
-		view_market=indeterminate;
-
-	tmp=stream->readUint8("view_inn");
-	if(tmp==AI_SHARED_RUNTIME_TRIBOOL_TRUE)
-		view_inn=true;
-	else if(tmp==AI_SHARED_RUNTIME_TRIBOOL_FALSE)
-		view_inn=false;
-	else if(tmp==AI_SHARED_RUNTIME_TRIBOOL_INDETERMINATE)
-		view_inn=indeterminate;
-
-	tmp=stream->readUint8("view_other");
-	if(tmp==AI_SHARED_RUNTIME_TRIBOOL_TRUE)
-		view_other=true;
-	else if(tmp==AI_SHARED_RUNTIME_TRIBOOL_FALSE)
-		view_other=false;
-	else if(tmp==AI_SHARED_RUNTIME_TRIBOOL_INDETERMINATE)
-		view_other=indeterminate;
+	const Uint32 rawTeam=stream->readUint32("team");
+	if (rawTeam >= static_cast<Uint32>(player->game->mapHeader.getNumberOfTeams()) ||
+		rawTeam >= Team::MAX_COUNT || !player->game->teams[rawTeam])
+		throw std::runtime_error("Invalid AI alliance team");
+	team=static_cast<int>(rawTeam);
+	is_allied=readTribool(stream, "is_allied");
+	is_enemy=readTribool(stream, "is_enemy");
+	view_market=readTribool(stream, "view_market");
+	view_inn=readTribool(stream, "view_inn");
+	view_other=readTribool(stream, "view_other");
 
 	stream->readLeaveSection();
 	return true;

@@ -4,6 +4,9 @@
 #include "shared_runtime/Runtime.h"
 #include "Building.h"
 
+#include <limits>
+#include <stdexcept>
+
 using namespace AISharedRuntime;
 using namespace AISharedRuntime::Management;
 
@@ -17,7 +20,9 @@ ResourceTracker::ResourceTracker(Runtime& runtime, int building_id, int length, 
 
 void ResourceTracker::tick()
 {
-	timer++;
+	if (record.empty() || position >= record.size() || resource < 0 || resource >= MAX_RESOURCES)
+		return;
+	timer = (timer == std::numeric_limits<int>::max()) ? 0 : timer + 1;
 	if((timer%AI_SHARED_RUNTIME_TRACKER_SAMPLE_INTERVAL_TICKS)==0)
 	{
 		Building* b = runtime.get_building_register().get_building(building_id);
@@ -32,12 +37,14 @@ void ResourceTracker::tick()
 
 int ResourceTracker::get_total_level()
 {
-	int sum=0;
+	long long sum=0;
 	for(unsigned int n=0; n<record.size(); ++n)
 	{
 		sum+=record[n];
+		if (sum > std::numeric_limits<int>::max())
+			return std::numeric_limits<int>::max();
 	}
-	return sum;
+	return static_cast<int>(sum);
 }
 
 
@@ -47,21 +54,36 @@ bool ResourceTracker::load(GAGCore::InputStream *stream, Player *player, Sint32 
 	stream->readEnterSection("RessourceTracker");
 	stream->readEnterSection("record");
 	Uint32 recordsize=stream->readCount("size");
+	if (recordsize == 0)
+		throw std::runtime_error("Invalid saved resource tracker length");
 	record.resize(recordsize);
 	for(unsigned int record_index=0; record_index<recordsize; ++record_index)
 	{
 		stream->readEnterSection(record_index);
-		record[record_index]=stream->readUint32("quantity_of_ressources");
+		const Uint32 quantity=stream->readUint32("quantity_of_ressources");
+		if (quantity > static_cast<Uint32>(std::numeric_limits<int>::max()))
+			throw std::runtime_error("Invalid saved resource tracker quantity");
+		record[record_index]=static_cast<int>(quantity);
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
 	position=stream->readUint32("position");
-	timer=stream->readUint32("timer");
-	building_id=stream->readUint32("building_id");
-	length=stream->readUint32("length");
-	resource=stream->readUint32("ressource");
-	if (record.empty() || position >= record.size() || length != record.size() || resource < 0 || resource >= MAX_RESOURCES)
+	const Uint32 rawTimer=stream->readUint32("timer");
+	const Uint32 rawBuildingId=stream->readUint32("building_id");
+	const Uint32 rawLength=stream->readUint32("length");
+	const Uint32 rawResource=stream->readUint32("ressource");
+	// These members are signed and participate in arithmetic or lookups. Reject
+	// out-of-domain wire values before narrowing instead of relying on an
+	// implementation-defined Uint32-to-int conversion.
+	if (rawTimer > static_cast<Uint32>(std::numeric_limits<int>::max()) ||
+		rawBuildingId > static_cast<Uint32>(std::numeric_limits<int>::max()) ||
+		rawLength > static_cast<Uint32>(std::numeric_limits<int>::max()) ||
+		rawResource >= MAX_RESOURCES || position >= record.size() || rawLength != record.size())
 		throw std::runtime_error("Invalid saved resource tracker");
+	timer=static_cast<int>(rawTimer);
+	building_id=static_cast<int>(rawBuildingId);
+	length=static_cast<int>(rawLength);
+	resource=static_cast<int>(rawResource);
 	stream->readLeaveSection();
 	return true;
 }
@@ -99,6 +121,8 @@ AddResourceTracker::AddResourceTracker(int length, int resource, int building_id
 
 void AddResourceTracker::modify(Runtime& runtime)
 {
+	if (length <= 0 || length > 1048576 || resource < 0 || resource >= MAX_RESOURCES)
+		return;
 	runtime.add_resource_tracker(new ResourceTracker(runtime, building_id, length, resource), building_id);
 }
 
@@ -115,11 +139,15 @@ bool AddResourceTracker::load(GAGCore::InputStream *stream, Player *player, Sint
 {
 	stream->readEnterSection("AddRessourceTracker");
 	ManagementOrder::load(stream, player, versionMinor);
-	length=stream->readUint32("length");
-	building_id=stream->readUint32("building_id");
-	resource=stream->readUint32("ressource");
-	if (length <= 0 || length > 1048576 || resource < 0 || resource >= MAX_RESOURCES)
+	const Uint32 rawLength=stream->readUint32("length");
+	const Uint32 rawBuildingId=stream->readUint32("building_id");
+	const Uint32 rawResource=stream->readUint32("ressource");
+	if (rawLength == 0 || rawLength > 1048576 ||
+		rawBuildingId > static_cast<Uint32>(std::numeric_limits<int>::max()) || rawResource >= MAX_RESOURCES)
 		throw std::runtime_error("Invalid resource tracker order");
+	length=static_cast<int>(rawLength);
+	building_id=static_cast<int>(rawBuildingId);
+	resource=static_cast<int>(rawResource);
 	stream->readLeaveSection();
 	return true;
 }

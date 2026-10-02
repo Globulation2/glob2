@@ -60,6 +60,7 @@ private:
 	Uint16 fileID;
 	bool startedLoading;
 	bool downloadFromPlayerCanceled;
+	Uint32 receivedBytes;
 	std::string fileName;
 	std::shared_ptr<YOGServerPlayer> player;
 	std::shared_ptr<NetSendFileInformation> fileInfo;
@@ -67,7 +68,6 @@ private:
 	std::vector<std::tuple<std::shared_ptr<YOGServerPlayer>, LocalTime, int> > players;
 
 };
-
 
 
 
