@@ -26,6 +26,8 @@ export interface SubmitEngineJob<K extends EngineJobKind> {
   payload: EngineJobPayload<K>;
   /** graphile-worker retry budget (default 3). */
   maxAttempts?: number;
+  /** Job id to use (default: a new UUID), for callers that record it before submitting. */
+  jobId?: string;
 }
 
 /** Records and enqueues an engine job; returns its id. */
@@ -35,7 +37,7 @@ export async function submitEngineJob<K extends EngineJobKind>(
   request: SubmitEngineJob<K>,
 ): Promise<string> {
   const job = {
-    jobId: randomUUID(),
+    jobId: request.jobId ?? randomUUID(),
     kind: request.kind,
     simVersion: request.simVersion,
     payload: request.payload,

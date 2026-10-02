@@ -2,6 +2,7 @@
 // scheduler (maintenance, matchmaker, rating sweep) on the one replica
 // holding the leader lock.
 import {
+  ConfigError,
   JobQueue,
   Shutdown,
   createAccessPolicy,
@@ -20,6 +21,7 @@ import { expireStartingMatches } from './play/intake.ts';
 import { PlatformMatchStarter } from './play/start.ts';
 import { applyPendingRatings, handleEngineJobResult } from './ratings/apply.ts';
 import { runScheduler, type ScheduledTask } from './scheduler.ts';
+import { WarmMapPool, takeWarmMap } from './warmMaps.ts';
 
 const config = loadConfig();
 const logger = createLogger('worker', config.logLevel);
@@ -55,12 +57,13 @@ try {
   const matchmaker = new Matchmaker({
     db: database.db,
     queues,
-    // Places queue matches on relays; the warm map pool (engine-agent work)
-    // plugs in through `warmMaps` once it exists.
+    // Places queue matches on relays, taking maps from the warm pool when
+    // one is ready and generating on demand otherwise.
     starter: new PlatformMatchStarter({
       db: database.db,
       jobs,
       access: createAccessPolicy(config.instance.access.policy),
+      warmMaps: { takeWarmMap: (q, s, o) => takeWarmMap(database.db, q, s, o) },
       logger,
     }),
     notifier: new PgQueueNotifier(),
@@ -78,6 +81,14 @@ try {
   if (queues.length > 0) {
     scheduled.push({ name: 'matchmaker', intervalMs: 1000, run: () => matchmaker.tick() });
   }
+  // Warm map pool: WARM_MAPS_PER_ENTRY pre-generated maps per queue map pool
+  // entry and served sim version (default 1; 0 turns the pool off).
+  const perEntry = Number(process.env['WARM_MAPS_PER_ENTRY'] ?? '1');
+  if (!Number.isInteger(perEntry) || perEntry < 0 || perEntry > 16) {
+    throw new ConfigError('WARM_MAPS_PER_ENTRY must be an integer from 0 to 16');
+  }
+  const warmMaps = new WarmMapPool({ db: database.db, queue: jobs, queues, perEntry, logger });
+  scheduled.push({ name: 'warm maps', intervalMs: 10_000, run: () => warmMaps.refill() });
   const leader = new LeaderElection({
     connectionString: config.databaseUrl,
     name: 'scheduler',

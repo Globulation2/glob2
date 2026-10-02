@@ -64,6 +64,58 @@
                   },
                   "prestige": {
                     "type": "integer"
+                  },
+                  "statistics": {
+                    "type": "object",
+                    "patternProperties": {
+                      "^[A-Za-z][A-Za-z0-9]{0,63}$": {
+                        "type": "number"
+                      }
+                    },
+                    "maxProperties": 64,
+                    "description": "Final team counters from the verifier result (units, workers, buildings, totalHp, food, …)."
+                  },
+                  "timeline": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "tick",
+                        "units",
+                        "buildings",
+                        "prestige",
+                        "hp",
+                        "attack",
+                        "defense"
+                      ],
+                      "properties": {
+                        "tick": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "units": {
+                          "type": "integer"
+                        },
+                        "buildings": {
+                          "type": "integer"
+                        },
+                        "prestige": {
+                          "type": "integer"
+                        },
+                        "hp": {
+                          "type": "integer"
+                        },
+                        "attack": {
+                          "type": "integer"
+                        },
+                        "defense": {
+                          "type": "integer"
+                        }
+                      },
+                      "description": "One sample of the engine's end-of-game statistics, taken every 512 ticks."
+                    },
+                    "maxItems": 4096,
+                    "description": "Team history from the verifier result, oldest first."
                   }
                 }
               }
@@ -156,6 +208,58 @@
                   },
                   "prestige": {
                     "type": "integer"
+                  },
+                  "statistics": {
+                    "type": "object",
+                    "patternProperties": {
+                      "^[A-Za-z][A-Za-z0-9]{0,63}$": {
+                        "type": "number"
+                      }
+                    },
+                    "maxProperties": 64,
+                    "description": "Final team counters from the verifier result (units, workers, buildings, totalHp, food, …)."
+                  },
+                  "timeline": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "tick",
+                        "units",
+                        "buildings",
+                        "prestige",
+                        "hp",
+                        "attack",
+                        "defense"
+                      ],
+                      "properties": {
+                        "tick": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "units": {
+                          "type": "integer"
+                        },
+                        "buildings": {
+                          "type": "integer"
+                        },
+                        "prestige": {
+                          "type": "integer"
+                        },
+                        "hp": {
+                          "type": "integer"
+                        },
+                        "attack": {
+                          "type": "integer"
+                        },
+                        "defense": {
+                          "type": "integer"
+                        }
+                      },
+                      "description": "One sample of the engine's end-of-game statistics, taken every 512 ticks."
+                    },
+                    "maxItems": 4096,
+                    "description": "Team history from the verifier result, oldest first."
                   }
                 }
               }

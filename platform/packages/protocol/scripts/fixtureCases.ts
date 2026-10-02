@@ -1250,6 +1250,26 @@ export const fixtureCases: FixtureCase[] = [
   },
   {
     schema: 'VerifyVerdict',
+    name: 'verified-with-history',
+    valid: true,
+    note: 'Teams may carry final counters and the 512-tick timeline from the verifier result.',
+    value: {
+      verdict: 'verified',
+      outcome: {
+        ...VERIFIED_OUTCOME,
+        teams: VERIFIED_OUTCOME.teams.map((team, index) => ({
+          ...team,
+          statistics: { units: 12 + index, workers: 9, buildings: 4, totalHp: 2400 },
+          timeline: [
+            { tick: 0, units: 4, buildings: 1, prestige: 0, hp: 800, attack: 0, defense: 0 },
+            { tick: 512, units: 6, buildings: 2, prestige: 0, hp: 1300, attack: 40, defense: 0 },
+          ],
+        })),
+      },
+    },
+  },
+  {
+    schema: 'VerifyVerdict',
     name: 'diverged',
     valid: true,
     note: 'Seat 1 reported checksums the verifier did not reproduce.',

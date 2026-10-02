@@ -140,4 +140,33 @@ describe('EngineAgent', () => {
     expect(result?.ok).toBe(false);
     expect(result?.error.code).toBe('unsupported');
   });
+
+  it('reports a retried error as internal on the last attempt', async () => {
+    const runner: EngineRunner = {
+      kinds: ['render-preview'],
+      run: async () => {
+        throw new Error('engine killed by SIGSEGV');
+      },
+    };
+    const agent = new EngineAgent({
+      id: 'agent-4',
+      simVersion: SIM,
+      build: 'test',
+      runner,
+      queue,
+      db: database.db,
+      logger,
+    });
+    await expect(agent.handle(previewJob(), { attempts: 1, maxAttempts: 3 })).rejects.toThrow(
+      /SIGSEGV/,
+    );
+    await agent.handle(previewJob(), { attempts: 3, maxAttempts: 3 });
+    const [result] = (await takeResults(1)) as {
+      ok: boolean;
+      error: { code: string; message: string };
+    }[];
+    expect(result?.ok).toBe(false);
+    expect(result?.error.code).toBe('internal');
+    expect(result?.error.message).toMatch(/gave up after 3 attempts: engine killed by SIGSEGV/);
+  });
 });
