@@ -17,12 +17,12 @@ def run(command):
     # Keep children in the runner's process group so timeout cleanup also kills
     # the window manager. Each xvfb-run invocation owns its separate display.
     wm = subprocess.Popen([manager, '--sm-disable'], stdout=subprocess.DEVNULL,
-                          stderr=subprocess.PIPE, text=True)
+                          stderr=None)
     try:
         deadline = time.monotonic() + 5
         while True:
             if wm.poll() is not None:
-                raise RuntimeError('Openbox exited before readiness: ' + wm.stderr.read())
+                raise RuntimeError(f'Openbox exited before readiness with status {wm.returncode}')
             state = subprocess.run([xprop, '-root', '_NET_SUPPORTING_WM_CHECK'],
                                    capture_output=True, text=True, timeout=2)
             match = re.search(r'window id #\s*(0x[0-9a-fA-F]+)', state.stdout)
@@ -39,7 +39,6 @@ def run(command):
         except subprocess.TimeoutExpired:
             wm.kill()
             wm.wait()
-        wm.stderr.close()
 
 
 if __name__ == '__main__':

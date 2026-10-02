@@ -102,6 +102,11 @@ def package(source, destination):
             encoding="utf-8",
         )
         verify(stage)
+        # These are public assets mounted by the unprivileged web service.
+        # TemporaryDirectory starts at 0700, and the caller may use umask 077.
+        stage.chmod(0o755)
+        for path in stage.rglob("*"):
+            path.chmod(0o755 if path.is_dir() else 0o644)
         # The marker owns this entire generated directory; an HTML file alone
         # is not evidence that another website can safely be replaced.
         if destination.exists():

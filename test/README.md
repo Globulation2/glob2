@@ -52,7 +52,10 @@ Standard runs keep display tests windowed. The HD artwork integration test's
 fullscreen camera-continuity checks and the text raster test's fullscreen
 downscaling check run only with `--fullscreen`; all their windowed checks still
 run by default, including with `--in-process`. Linux CI enables `--fullscreen`
-under its virtual display. To opt in when invoking a test binary directly, set
+under its virtual display, with `--display-jobs 1` to avoid concurrent software
+renderer startup stalls. Headless cases remain parallel. Linux timeout reports
+include the owned process group and thread wait locations; GitHub Actions also
+collects a bounded GDB backtrace before cleanup when available. To opt in when invoking a test binary directly, set
 `GLOB2_TEST_FULLSCREEN=1`; the Python runner overrides that variable according to
 its flag, so an inherited setting cannot enable fullscreen in a standard run.
 

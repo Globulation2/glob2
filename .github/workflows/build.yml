@@ -349,7 +349,7 @@ jobs:
             libvorbis-dev libogg-dev libspeex-dev \
             libboost-date-time-dev libboost-thread-dev libboost-system-dev libssl-dev \
             zlib1g-dev libfribidi-dev libpcre3-dev \
-            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth openbox x11-utils
+            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth openbox x11-utils gdb
 
       - uses: actions/checkout@v4
         id: actions_checkout_v4_1
@@ -369,14 +369,14 @@ jobs:
         if: ${{ matrix.shard == 4 }}
         id: run_the_unit_tests
         continue-on-error: true
-        run: python3 test/run_tests.py --binary unit --build-dir build/linux/client/release --junit artifacts/tests/unit-junit.xml
+        run: python3 test/run_tests.py --binary unit --build-dir build/linux/client/release --display-jobs 1 --junit artifacts/tests/unit-junit.xml
       - name: Run the engine tests
         id: run_the_engine_tests
         continue-on-error: true
         env:
           LIBGL_ALWAYS_SOFTWARE: 1
         # The [map-generators] contract runs in the linux-map-generators telemetry job.
-        run: python3 test/run_tests.py --binary engine --build-dir build/linux/client/release --fullscreen --shard ${{ matrix.shard }}/4 --exclude-tag map-generators --junit artifacts/tests/engine-junit.xml
+        run: python3 test/run_tests.py --binary engine --build-dir build/linux/client/release --display-jobs 1 --fullscreen --shard ${{ matrix.shard }}/4 --exclude-tag map-generators --junit artifacts/tests/engine-junit.xml
       - name: Upload native test results
         if: always()
         continue-on-error: true
@@ -1270,6 +1270,7 @@ jobs:
             build/emscripten/client/release/identity.json
             build/emscripten/client/release/index.html
             build/emscripten/client/release/loader.js
+            build/emscripten/client/release/threaded/identity.json
             build/emscripten/client/release/threaded/index.js
             build/emscripten/client/release/threaded/index.wasm
             build/emscripten/client/release/threaded/index.data

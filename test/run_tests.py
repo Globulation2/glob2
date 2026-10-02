@@ -331,6 +331,7 @@ def run_job(job, args, build_dir):
         command += ['-s']
     started = time.monotonic()
     status, output = 'pass', ''
+    diagnostics = ''
     with open(root / 'output.txt', 'w+', encoding='utf-8', errors='replace') as capture:
         popen_kwargs = dict(cwd=work, env=env, stdout=capture, stderr=subprocess.STDOUT)
         if os.name != 'nt':
@@ -339,10 +340,11 @@ def run_job(job, args, build_dir):
         try:
             code = process.wait(timeout=job.timeout)
         except subprocess.TimeoutExpired:
+            diagnostics = timeout_diagnostics(process.pid, binary)
             terminate(process)
             code = None
         capture.seek(0)
-        output = capture.read()
+        output = capture.read() + diagnostics
     seconds = time.monotonic() - started
     if code is None:
         status = 'timeout'
@@ -386,6 +388,43 @@ def failure_details(junit_text):
             if element.text and element.text.strip():
                 lines.append(element.text.strip())
     return ('\n' + '\n'.join(lines) + '\n') if lines else ''
+
+
+
+def timeout_diagnostics(group, binary):
+    """Inspect only this test's owned Linux process group before timeout cleanup."""
+    if platform.system() != 'Linux':
+        return ''
+    lines = ['\n[run_tests] timeout process group:']
+    try:
+        snapshot = subprocess.run(['ps', '-eo', 'pid=,ppid=,pgid=,stat=,args='],
+                                  capture_output=True, text=True, timeout=2, check=True)
+        children = []
+        for row in snapshot.stdout.splitlines():
+            fields = row.split(None, 4)
+            if len(fields) != 5 or fields[2] != str(group):
+                continue
+            lines.append(row)
+            pid = int(fields[0])
+            process_path = Path('/proc') / str(pid)
+            try:
+                for task in sorted((process_path / 'task').iterdir()):
+                    lines.append(f'  thread {task.name}: {(task / "wchan").read_text().strip()}')
+                if (process_path / 'exe').resolve() == binary.resolve():
+                    children.append(pid)
+            except OSError as error:
+                lines.append(f'  /proc/{pid}: {error}')
+        # GitHub's ptrace policy needs sudo for sibling processes. Only attach to
+        # the actual test executable in the owned group, never its X server/WM.
+        debugger = shutil.which('gdb')
+        if os.environ.get('GITHUB_ACTIONS') == 'true' and debugger and children:
+            command = ['sudo', '-n', debugger, '--nx', '--batch', '--quiet', '--iex', 'set auto-load off', '--pid', str(children[0]),
+                       '--ex', 'set pagination off', '--ex', 'thread apply all bt', '--ex', 'detach']
+            trace = subprocess.run(command, capture_output=True, text=True, timeout=10)
+            lines.extend([trace.stdout, trace.stderr])
+    except (OSError, subprocess.SubprocessError) as error:
+        lines.append(f'[run_tests] timeout diagnostics unavailable: {error}')
+    return '\n'.join(lines) + '\n'
 
 
 def terminate(process):

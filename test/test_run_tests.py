@@ -340,27 +340,51 @@ class EndToEndTest(unittest.TestCase):
             self.assertIn('<error message="timeout"', text)
 
 
+class TimeoutDiagnosticsTest(unittest.TestCase):
+    def test_ignores_processes_outside_owned_group(self):
+        snapshot = subprocess.CompletedProcess([], 0, '42 1 99 S unrelated-process\n')
+        with mock.patch.object(run_tests.platform, 'system', return_value='Linux'), \
+             mock.patch.object(run_tests.subprocess, 'run', return_value=snapshot) as inspect, \
+             mock.patch.object(run_tests.shutil, 'which', return_value=None):
+            output = run_tests.timeout_diagnostics(123, Path('/test-binary'))
+        self.assertNotIn('unrelated-process', output)
+        inspect.assert_called_once()
+        self.assertEqual(inspect.call_args.kwargs['timeout'], 2)
+
+    def test_diagnostic_timeout_does_not_interrupt_cleanup(self):
+        with mock.patch.object(run_tests.platform, 'system', return_value='Linux'), \
+             mock.patch.object(run_tests.subprocess, 'run', side_effect=subprocess.TimeoutExpired('ps', 2)):
+            output = run_tests.timeout_diagnostics(123, Path('/test-binary'))
+        self.assertIn('timeout diagnostics unavailable', output)
+
+    def test_skips_linux_diagnostics_on_other_platforms(self):
+        with mock.patch.object(run_tests.platform, 'system', return_value='Darwin'), \
+             mock.patch.object(run_tests.subprocess, 'run') as inspect:
+            self.assertEqual(run_tests.timeout_diagnostics(123, Path('/test-binary')), '')
+        inspect.assert_not_called()
+
+
 class XvfbSessionTest(unittest.TestCase):
     def test_waits_for_window_manager_and_preserves_test_exit_status(self):
         wm = mock.MagicMock()
         wm.poll.return_value = None
         state = subprocess.CompletedProcess([], 0, '_NET_SUPPORTING_WM_CHECK(WINDOW): window id # 0x400002')
         with mock.patch.object(xvfb_session.shutil, 'which', side_effect=lambda name: name), \
-             mock.patch.object(xvfb_session.subprocess, 'Popen', return_value=wm), \
+             mock.patch.object(xvfb_session.subprocess, 'Popen', return_value=wm) as launch, \
              mock.patch.object(xvfb_session.subprocess, 'run', return_value=state), \
              mock.patch.object(xvfb_session.subprocess, 'call', return_value=7) as test:
             self.assertEqual(xvfb_session.run(['test-binary']), 7)
             test.assert_called_once_with(['test-binary'])
         wm.terminate.assert_called_once()
         wm.wait.assert_called_once_with(timeout=5)
-        wm.stderr.close.assert_called_once()
+        self.assertIsNone(launch.call_args.kwargs['stderr'])
 
     def test_missing_window_manager_readiness_fails_and_cleans_up(self):
         wm = mock.MagicMock()
         wm.poll.return_value = None
         state = subprocess.CompletedProcess([], 0, 'no such atom')
         with mock.patch.object(xvfb_session.shutil, 'which', side_effect=lambda name: name), \
-             mock.patch.object(xvfb_session.subprocess, 'Popen', return_value=wm), \
+             mock.patch.object(xvfb_session.subprocess, 'Popen', return_value=wm) as launch, \
              mock.patch.object(xvfb_session.subprocess, 'run', return_value=state), \
              mock.patch.object(xvfb_session.subprocess, 'call') as test, \
              mock.patch.object(xvfb_session.time, 'monotonic', side_effect=[0, 10]):
