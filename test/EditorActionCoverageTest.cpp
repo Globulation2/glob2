@@ -153,4 +153,73 @@ TEST_SUITE("EditorActionCoverage")
         }
         CHECK_FALSE(restored.performBuildingAction("unknown action",0,0));
     }
+    TEST_CASE("zone brush addition removal and seam wrapping preserve other team paint and saved masks [display][artifacts]")
+    {
+        glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{
+            .display=true,.width=1024,.height=768,.screenFlags=GAGCore::GraphicContext::PORTABLEGPU});
+        MapEdit editor; blank(editor); editor.performAction("add team"); editor.team=0;
+        for (const auto& entry : {std::pair{"select forbidden zone",&Tile::forbidden},
+                                  std::pair{"select guard zone",&Tile::guardArea},
+                                  std::pair{"select clearing zone",&Tile::clearArea}})
+        {
+            INFO(entry.first);
+            editor.performAction(entry.first); editor.brush.setFigure(1); editor.brush.mode=BrushTool::MODE_ADD;
+            editor.game.map.getTile(0,31).*entry.second=2;
+            cursor(editor,31,31); editor.performAction("zone drag start"); editor.performAction("zone drag end");
+            CHECK((editor.game.map.getTile(31,31).*entry.second & 1)!=0);
+            CHECK(editor.game.map.getTile(0,31).*entry.second==3);
+            CHECK((editor.game.map.getTile(31,0).*entry.second & 1)!=0);
+            CHECK(editor.game.map.getTile(0,0).*entry.second==0);
+            CHECK(editor.hasMapBeenModified);
+            editor.brush.mode=BrushTool::MODE_DEL;
+            editor.performAction("zone drag start"); editor.performAction("zone drag end");
+            CHECK(editor.game.map.getTile(31,31).*entry.second==0);
+            CHECK(editor.game.map.getTile(0,31).*entry.second==2);
+        }
+        editor.performAction("select guard zone"); editor.brush.mode=BrushTool::MODE_ADD;
+        cursor(editor,6,6); editor.performAction("zone drag start"); editor.performAction("zone drag end");
+        glob2test::TempDir scratch; const auto filename=(scratch.path/"zones.map").string();
+        REQUIRE(editor.save(filename,"zone brushes")); MapEdit restored; REQUIRE(restored.load(filename));
+        CHECK(restored.game.map.getTile(6,6).guardArea==editor.game.map.getTile(6,6).guardArea);
+        CHECK(restored.game.map.getTile(0,31).guardArea==2);
+    }
+
+    TEST_CASE("resource brushes add erase and retain painted wheat through editor save-load [display]")
+    {
+        glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{
+            .display=true,.width=1024,.height=768,.screenFlags=GAGCore::GraphicContext::PORTABLEGPU});
+        MapEdit editor; blank(editor);
+        for (const auto& entry : {std::pair{"select wheat",WHEAT},std::pair{"select trees",WOOD},
+                                  std::pair{"select stone",STONE}})
+        {
+            INFO(entry.first);
+            editor.performAction(entry.first); editor.brush.setFigure(0); editor.brush.mode=BrushTool::MODE_ADD;
+            cursor(editor,6,6); editor.performAction("terrain drag start"); editor.performAction("terrain drag end");
+            CHECK(editor.game.map.getResource(6,6).type==entry.second);
+            editor.brush.mode=BrushTool::MODE_DEL;
+            editor.performAction("terrain drag start"); editor.performAction("terrain drag end");
+            CHECK(editor.game.map.getResource(6,6).type==NO_RES);
+        }
+        editor.performAction("select wheat"); editor.brush.mode=BrushTool::MODE_ADD;
+        cursor(editor,8,8); editor.performAction("terrain drag start"); editor.performAction("terrain drag end");
+        glob2test::TempDir scratch; const auto filename=(scratch.path/"resources.map").string();
+        REQUIRE(editor.save(filename,"resource brushes")); MapEdit restored; REQUIRE(restored.load(filename));
+        CHECK(restored.game.map.getResource(8,8).type==WHEAT);
+    }
+
+    TEST_CASE("base terrain brush changes water sand and grass and saves the final terrain [display]")
+    {
+        glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{
+            .display=true,.width=1024,.height=768,.screenFlags=GAGCore::GraphicContext::PORTABLEGPU});
+        MapEdit editor; blank(editor);
+        for(const auto& entry:{std::pair{"select water",WATER},std::pair{"select sand",SAND},std::pair{"select grass",GRASS}}) {
+            INFO(entry.first); editor.performAction(entry.first); editor.brush.setFigure(6);
+            cursor(editor,8,8); editor.performAction("terrain drag start"); editor.performAction("terrain drag end");
+            CHECK(editor.game.map.getTerrainType(8,8)==entry.second); CHECK(editor.hasMapBeenModified);
+        }
+        glob2test::TempDir scratch; const auto filename=(scratch.path/"terrain.map").string();
+        REQUIRE(editor.save(filename,"terrain brush")); MapEdit restored; REQUIRE(restored.load(filename));
+        CHECK(restored.game.map.getTerrainType(8,8)==GRASS);
+    }
+
 }
