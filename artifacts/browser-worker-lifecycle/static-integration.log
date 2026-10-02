@@ -1,0 +1,7 @@
+
+Running 2 tests using 1 worker
+
+  ✓  1 [chromium] › browser/tests/threading.spec.js:73:1 › a real pthread worker error after the probe reloads the serial runtime (4.2s)
+  ✓  2 [chromium] › browser/tests/threading.spec.js:96:1 › threaded audio produces PCM, keeps settings responsive and shuts down cleanly (12.4s)
+
+  2 passed (17.7s)

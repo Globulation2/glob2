@@ -1,0 +1,20 @@
+
+Running 15 tests using 1 worker
+
+  ✓   1 [chromium] › browser/tests/threading.spec.js:43:1 › serial selection preserves ordinary startup (3.4s)
+  ✓   2 [chromium] › browser/tests/threading.spec.js:50:1 › missing isolation headers automatically selects serial (3.6s)
+  ✓   3 [chromium] › browser/tests/threading.spec.js:62:1 › threaded startup failure reloads the serial runtime (3.3s)
+  ✓   4 [chromium] › browser/tests/threading.spec.js:73:1 › a real pthread worker error after the probe reloads the serial runtime (3.7s)
+  ✓   5 [chromium] › browser/tests/threading.spec.js:96:1 › threaded audio produces PCM, keeps settings responsive and shuts down cleanly (9.4s)
+  ✓   6 [firefox] › browser/tests/threading.spec.js:43:1 › serial selection preserves ordinary startup (5.4s)
+  ✓   7 [firefox] › browser/tests/threading.spec.js:50:1 › missing isolation headers automatically selects serial (4.8s)
+  ✓   8 [firefox] › browser/tests/threading.spec.js:62:1 › threaded startup failure reloads the serial runtime (5.7s)
+  ✓   9 [firefox] › browser/tests/threading.spec.js:73:1 › a real pthread worker error after the probe reloads the serial runtime (4.1s)
+  ✓  10 [firefox] › browser/tests/threading.spec.js:96:1 › threaded audio produces PCM, keeps settings responsive and shuts down cleanly (10.8s)
+  ✓  11 [webkit] › browser/tests/threading.spec.js:43:1 › serial selection preserves ordinary startup (2.2s)
+  ✓  12 [webkit] › browser/tests/threading.spec.js:50:1 › missing isolation headers automatically selects serial (1.7s)
+  ✓  13 [webkit] › browser/tests/threading.spec.js:62:1 › threaded startup failure reloads the serial runtime (1.9s)
+  ✓  14 [webkit] › browser/tests/threading.spec.js:73:1 › a real pthread worker error after the probe reloads the serial runtime (2.0s)
+  ✓  15 [webkit] › browser/tests/threading.spec.js:96:1 › threaded audio produces PCM, keeps settings responsive and shuts down cleanly (9.2s)
+
+  15 passed (1.2m)

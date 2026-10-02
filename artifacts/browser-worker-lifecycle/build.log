@@ -1,0 +1,3 @@
+scons: `build/emscripten/client/release/loader.js' is up to date.
+scons: `build/emscripten/client/release/index.html' is up to date.
+Building compilation database build/emscripten/client/release/compile_commands.json

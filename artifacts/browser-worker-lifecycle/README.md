@@ -29,3 +29,28 @@ node artifacts/browser-worker-lifecycle/run.cjs
 The harness asserts its owners have been reclaimed *before* exiting, so it does
 not depend on browser page teardown reclaiming the WebAssembly heap. Generated
 binaries and compiler caches are intentionally omitted from this evidence branch.
+
+Final integration verification
+
+The serial and threaded production runtimes build successfully. An incremental
+SCons build after merging current master into the fix branch (27eb95903) confirms
+both runtimes are up to date. The updated package and gzip sidecars verify.
+
+`browser-integration.log` records 15 passing Chromium/Firefox/WebKit cases:
+serial startup, automatic fallback without isolation, injected abort fallback,
+actual native Worker failure after the successful probe, and nonzero PCM output
+with responsive settings and clean quit. `static-integration.log` repeats actual
+worker failure/fallback and audio/quit on the hashed release package in Chromium.
+
+Serve the production build or static package using browser/serve.py, then run:
+
+```sh
+GLOB2_TEST_URL=http://127.0.0.1:8781 GLOB2_TEST_RENDERER=software \
+  browser/node_modules/.bin/playwright test --config browser/playwright.config.js \
+  browser/tests/threading.spec.js --project=chromium --project=firefox --project=webkit \
+  --grep 'serial selection|missing isolation|startup failure|real pthread|threaded audio' \
+  --reporter=list
+```
+
+For the static package use its server URL, Chromium, and
+`--grep 'real pthread|threaded audio'`.
