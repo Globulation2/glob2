@@ -39,7 +39,7 @@ bool GameGUI::handleTorusPointer(const SDL_Event &event)
         {
             // The atlas renderer's mouse hit refers to a previous capture.
             // Resolve units at the picked map cell, with normal visibility rules.
-            view.mouseUnit = NULL;
+            view.mouseUnit = UnitRef();
             int x = ((mx >> 5) + viewportX) & game.map.getMaskW();
             int y = ((my >> 5) + viewportY) & game.map.getMaskH();
             Uint16 gid = game.map.getAirUnit(x, y);
@@ -48,7 +48,7 @@ bool GameGUI::handleTorusPointer(const SDL_Event &event)
             if (gid != NOGUID &&
                 (Unit::GIDtoTeam(gid) == localTeamNo || game.map.isFOWDiscovered(x, y, localTeam->me) ||
                  globalContainer->replaying))
-                view.mouseUnit = game.teams[Unit::GIDtoTeam(gid)]->myUnits[Unit::GIDtoID(gid)];
+                view.mouseUnit = Game::refOf(game.teams[Unit::GIDtoTeam(gid)]->myUnits[Unit::GIDtoID(gid)]);
             handleMapClick(mx, my, SDL_BUTTON_LEFT);
         }
     }

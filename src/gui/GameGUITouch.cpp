@@ -1359,7 +1359,7 @@ void GameGUITouch::select(ViewPoint point)
 		gui.putMark = false;
 		return;
 	}
-	gui.view.mouseUnit = unitAt(screenPoint);
+	gui.view.mouseUnit = Game::refOf(unitAt(screenPoint));
 	const bool wasInspecting = inspectedBuilding() != nullptr;
 	const bool wasOpen = panelOpen;
 	const int oldDisplay = gui.displayMode;

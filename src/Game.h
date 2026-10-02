@@ -460,7 +460,9 @@ public:
 	struct ViewState
 	{
 		int mouseX = 0, mouseY = 0;       //!< Mouse position, mirror of GameGUI's own.
-		Unit *mouseUnit = nullptr;        //!< Unit under the cursor; hit-tested during render.
+		//! Unit under the cursor, recorded by the last draw. A reference, not a pointer:
+		//! resolve it through Game::resolveUnit when it is used.
+		UnitRef mouseUnit;
 		//! Currently selected unit/building, or null. GameGUI keeps its selection
 		//! as a UnitRef/BuildingRef and re-resolves these before drawing
 		//! (GameGUI::syncSelectionView); they are only valid for that frame.
