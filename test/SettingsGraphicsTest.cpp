@@ -19,15 +19,25 @@ TEST_SUITE("SettingsGraphics")
 	TEST_CASE("text size applies to desktop and touch independently of interface scale")
 	{
 		glob2test::HeadlessGlobals globals;
-		Glob2UI::Presentation presentation;
+		const double touchBase = Glob2UI::frontendTheme().touchTextScale;
+		CHECK(touchBase == doctest::Approx(1.15));
 		for (int percent : {100,125,150})
 		{
-			globals->settings.mobileDialogTextPercent = percent;
-			presentation.touch = false;
-			CHECK(Glob2UI::frontendTextScale(presentation) == doctest::Approx(percent / 100.0));
-			presentation.touch = true;
-			CHECK(Glob2UI::frontendTextScale(presentation) == doctest::Approx(1.15 * percent / 100.0));
+			globals->settings.setTextSizePercent(percent);
+			// Desktop: authored pixels times the preference, whatever the scale.
+			auto desktop = Glob2UI::Presentation::forSurface(800, 600, 1.5, false);
+			Glob2UI::applyTextSize(desktop, touchBase);
+			CHECK(desktop.textUnit == doctest::Approx(percent / 100.0));
+			// Touch: points, so the same physical size on every logical surface.
+			for (double unit : {1.0, 1.54, 2.05})
+			{
+				auto touch = Glob2UI::Presentation::forSurface(800, 600, unit, true);
+				Glob2UI::applyTextSize(touch, touchBase);
+				CHECK(touch.textUnit == doctest::Approx(unit * 1.15 * percent / 100.0));
+				CHECK(touch.textPt(100) == touch.pt(100 * percent / 100.0));
+			}
 		}
+		globals->settings.setTextSizePercent(100);
 	}
 	TEST_CASE("legacy preferences migrate and independent effects round trip")
 	{

@@ -92,7 +92,12 @@ public:
 	/// higher values progressively reduce delays and then skip rendered frames.
 	int gameSpeed;
     std::string interfacePresentation = "automatic";
-    int mobileDialogTextPercent; // Local UI preference; never part of saves/orders.
+    // Size of all touch interface text, 100..150 percent: menus, dialogs and the
+    // HUD. Local UI preference; never part of saves/orders. Replaces the former
+    // mobileDialogTextPercent, which only compensated in-game dialogs and is ignored.
+    int textSizePercent = 100;
+    // Store and apply the text size (clamped) to every touch text surface.
+    void setTextSizePercent(int percent);
     // Touch scroll feel, 0..100 each: 0 turns the effect off, 50 is the default.
     // Local presentation preferences; never part of saves or orders.
     int touchScrollMomentum = 50; // lists, panels and trays keep moving after a flick

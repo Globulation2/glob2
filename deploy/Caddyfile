@@ -65,7 +65,15 @@
 	handle_path /play/* {
 		root * /srv/play
 		header Cache-Control "no-cache"
-		file_server
+		# The threaded client needs cross-origin isolation (SharedArrayBuffer),
+		# as in the legacy stack; package-static.py writes the gzip sidecars.
+		header Cross-Origin-Opener-Policy "same-origin"
+		header Cross-Origin-Embedder-Policy "require-corp"
+		@assetData path *.data
+		header @assetData Content-Type application/octet-stream
+		file_server {
+			precompressed gzip
+		}
 	}
 
 	handle {

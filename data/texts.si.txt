@@ -1434,8 +1434,8 @@ Reka
 Utež peska
 [Select a valid map.]
 Izberite veljaven zemljevid.
-[Shared control needs a free controller slot (maximum 12).]
-Skupno upravljanje zahteva prosto mesto za igralca ali UI (največ 12).
+[Shared control needs a free controller slot (maximum %0).]
+Skupno upravljanje zahteva prosto mesto za igralca ali UI (največ %0).
 [Smoothing]
 Glajenje
 [Standard]
@@ -3072,8 +3072,6 @@ Mini zemljevid
 Hitro naprej
 [Hide keyboard]
 Skrij tipkovnico
-[Dialog text size]
-Velikost besedila pogovornih oken
 [Player slot]
 Mesto igralca
 [Team color]
@@ -3412,8 +3410,6 @@ Možnost zmage: %0 · Moč: %1
 Najnižja zahtevana stopnja %0
 [Confirm %0]
 Potrdi: %0
-[Dialog text size %0]
-Velikost besedila pogovornih oken: %0%
 [%0 %1]
 %0 %1
 [resume game]

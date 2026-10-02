@@ -30,6 +30,7 @@ secrets before starting services:
 
 ```sh
 scons target=web release=1 -j4
+python3 browser/package-static.py
 python3 deploy/provision_tls.py deploy/secrets
 docker compose -f deploy/compose.legacy.yaml build lobby web
 docker compose -f deploy/compose.legacy.yaml up -d --wait
@@ -38,7 +39,9 @@ docker compose -f deploy/compose.legacy.yaml up -d --wait
 Open https://localhost:8443. Caddy creates a local CA for localhost; install that
 CA in the testing browser/device trust store. Do not bypass verification in a
 production client. Its public CA is separate from the private deployment CA in
-`deploy/secrets`. Browser assets default to `build/emscripten/client/release`;
+`deploy/secrets`. Run `python3 browser/package-static.py` after building the
+browser client. Browser assets default to `build/browser-static`, whose verified
+gzip sidecars Caddy negotiates for HTML, JavaScript, WebAssembly and data;
 `GLOB2_ASSETS` overrides the mounted directory.
 
 The provisioning command refuses to overwrite existing material. The directory
