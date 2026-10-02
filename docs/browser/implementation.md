@@ -48,6 +48,13 @@ builds the desktop client, while `scons target=web release=1` writes the browser
 application to `build/emscripten/client/release`. The compatibility command
 `python3 browser/build.py` delegates to SCons.
 
+The served release is `index.html`, `index.js`, `index.wasm` and the
+content-addressed data packages in `assets/` (`<package>[-<part>].<hash>.data`),
+whose file table is compiled into `index.js`. Serve `assets/*.data` as immutable
+and the other files with revalidation. The
+[browser README](../../browser/README.md#game-data-and-loading) describes the core
+and optional packages and how the page loads them.
+
 Browser and native multiplayer clients must use the same protocol version.
 Update the client and YOG services together. See the
 [protocol contract](protocol.md) and [secure transport guide](gateway.md).

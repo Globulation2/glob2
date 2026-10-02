@@ -76,7 +76,7 @@ jobs:
           scons target=web release=1 -j$(nproc)
           python3 browser/package-static.py
           cd build/browser-static
-          sha256sum index* > SHA256SUMS
+          sha256sum index* assets/*.data > SHA256SUMS
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: browser-release
@@ -104,11 +104,13 @@ jobs:
           set -euo pipefail
           sha256sum --check SHA256SUMS
           test -s index.html
-          for ext in js wasm data; do
+          for ext in js wasm; do
             mapfile -t files < <(find . -maxdepth 1 -type f -name "index-*.$ext")
             test "${#files[@]}" -eq 1
             test -s "${files[0]}"
           done
+          mapfile -t packages < <(find assets -maxdepth 1 -type f -name '*.data')
+          test "${#packages[@]}" -ge 1
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3.0.0
         with:
           workload_identity_provider: ${{ vars.GLOB2_BROWSER_WIF_PROVIDER }}
@@ -120,7 +122,7 @@ jobs:
           set -euo pipefail
           gcloud storage cp candidate/index-*.js "$BUCKET/" --content-type=text/javascript --cache-control='public,max-age=31536000,immutable'
           gcloud storage cp candidate/index-*.wasm "$BUCKET/" --content-type=application/wasm --cache-control='public,max-age=31536000,immutable'
-          gcloud storage cp candidate/index-*.data "$BUCKET/" --content-type=application/octet-stream --cache-control='public,max-age=31536000,immutable'
+          gcloud storage cp candidate/assets/*.data "$BUCKET/assets/" --content-type=application/octet-stream --cache-control='public,max-age=31536000,immutable'
           gcloud storage cp candidate/index.html "$BUCKET/index.html" --content-type=text/html --cache-control='no-cache,max-age=0,must-revalidate'
       - name: Summarize publication
         env:

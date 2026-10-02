@@ -1,0 +1,134 @@
+const {test} = require('node:test');
+const assert = require('node:assert/strict');
+const {readFileSync} = require('node:fs');
+const path = require('node:path');
+const vm = require('node:vm');
+const Loader = require('../asset-loader');
+
+const text = value => new TextEncoder().encode(value);
+function manifest() {
+  return {version:1, packages:[
+    {name:'core', optional:false, size:9, parts:[{url:'assets/core.aaaaaaaaaaaaaaaa.data', size:9,
+      files:[['/data/a.txt', 0, 4], ['/maps/b.map', 4, 9]]}]},
+    {name:'hd', optional:true, size:6, parts:[
+      {url:'assets/hd-1.bbbbbbbbbbbbbbbb.data', size:3, files:[['/data/highres/v1/x.png', 0, 3]]},
+      {url:'assets/hd-2.cccccccccccccccc.data', size:3, files:[['/data/highres/v1/frames.txt', 0, 3]]}]},
+  ]};
+}
+const bodies = {
+  'assets/core.aaaaaaaaaaaaaaaa.data': ['abcd', 'efghi'],
+  'assets/hd-1.bbbbbbbbbbbbbbbb.data': ['png'],
+  'assets/hd-2.cccccccccccccccc.data': ['txt'],
+};
+// Responses stream their body in the given chunks, like a decoded HTTP body.
+function response(chunks, status = 200) {
+  const queue = chunks.map(text);
+  return {ok:status === 200, status, body:{getReader:() => ({read:async () => queue.length ? {done:false, value:queue.shift()} : {done:true}})}};
+}
+class MemoryCache {
+  constructor() { this.entries = new Map(); }
+  async match(url) { return this.entries.has(url) ? {arrayBuffer:async () => this.entries.get(url).buffer} : undefined; }
+  async put(url, value) { this.entries.set(url, value.bytes.slice()); }
+  async delete(request) { return this.entries.delete(request.url ?? request); }
+  async keys() { return [...this.entries.keys()].map(url => ({url})); }
+}
+function host(cache = new MemoryCache()) {
+  const requests = [], files = new Map(), directories = [], progress = [];
+  return {
+    requests, files, directories, progress, cache,
+    caches:{open:async () => cache},
+    Response:class { constructor(bytes) { this.bytes = bytes; } },
+    resolve:url => 'https://example.test/play/' + url,
+    fetch:async url => {
+      requests.push(url);
+      const name = url.replace('https://example.test/play/', '');
+      return bodies[name] ? response(bodies[name]) : response([], 404);
+    },
+    fs:{
+      createPath:(parent, directory) => directories.push(directory),
+      createDataFile:(directory, name, data, read, write, own) => {
+        assert.equal(own, true);
+        files.set(directory + '/' + name, new TextDecoder().decode(data));
+      },
+    },
+    onProgress:(name, loaded, total) => progress.push([name, loaded, total]),
+  };
+}
+
+test('installs a package into the file system with byte progress', async () => {
+  const environment = host();
+  const loader = new Loader(manifest(), environment);
+  assert.deepEqual(loader.state(), {core:'pending', hd:'idle'});
+  await loader.load('core');
+  assert.deepEqual(Object.fromEntries(environment.files), {'/data/a.txt':'abcd', '/maps/b.map':'efghi'});
+  assert.deepEqual(environment.progress, [['core', 0, 9], ['core', 4, 9], ['core', 9, 9]]);
+  assert.equal(loader.state().core, 'ready');
+});
+
+test('a later visit installs cached parts without the network', async () => {
+  const cache = new MemoryCache();
+  await new Loader(manifest(), host(cache)).load('core');
+  const second = host(cache);
+  await new Loader(manifest(), second).load('core');
+  assert.deepEqual(second.requests, []);
+  assert.equal(second.files.get('/maps/b.map'), 'efghi');
+});
+
+test('optional parts wait for the page between downloads and appear only when complete', async () => {
+  const environment = host();
+  const loader = new Loader(manifest(), environment);
+  let release;
+  let waits = 0;
+  const pending = loader.load('hd', () => { waits++; return waits === 2 ? new Promise(resolve => { release = resolve; }) : null; });
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(environment.requests.length, 1);
+  assert.equal(environment.files.size, 0, 'no file is visible before the last part');
+  release();
+  await pending;
+  assert.deepEqual([...environment.files.keys()], ['/data/highres/v1/x.png', '/data/highres/v1/frames.txt']);
+  assert.equal(loader.state().hd, 'ready');
+});
+
+test('failed downloads are reported and leave nothing behind', async () => {
+  const broken = manifest();
+  broken.packages[0].parts[0].url = 'assets/missing.dddddddddddddddd.data';
+  const environment = host();
+  const loader = new Loader(broken, environment);
+  await assert.rejects(loader.load('core'), /HTTP 404/);
+  assert.equal(loader.state().core, 'failed');
+  assert.equal(environment.files.size, 0);
+});
+
+test('a response of the wrong size is rejected', async () => {
+  const environment = host();
+  environment.fetch = async () => response(['abc']);
+  await assert.rejects(new Loader(manifest(), environment).load('core'), /Incomplete download/);
+});
+
+test('works without Cache Storage and prunes parts of older builds', async () => {
+  const environment = host();
+  environment.caches = null;
+  await new Loader(manifest(), environment).load('core');
+  assert.equal(environment.files.size, 2);
+  const cache = new MemoryCache();
+  cache.entries.set('https://example.test/play/assets/core.0000000000000000.data', text('old'));
+  const loader = new Loader(manifest(), host(cache));
+  await loader.load('core');
+  await loader.prune();
+  assert.deepEqual([...cache.entries.keys()], ['https://example.test/play/assets/core.aaaaaaaaaaaaaaaa.data']);
+});
+
+test('the loading page estimates remaining time from the rate so far', () => {
+  const shell = readFileSync(path.join(__dirname, '../shell.html'), 'utf8');
+  const start = shell.indexOf('function loadingEstimate(');
+  const end = shell.indexOf('// End loading estimate.', start);
+  const context = vm.createContext({});
+  vm.runInContext(shell.slice(start, end), context);
+  const estimate = (...args) => ({...context.loadingEstimate(...args)});
+  assert.deepEqual(estimate(0, 30e6, 0), {percent:0, text:'0.0 of 30 MB'});
+  assert.deepEqual(estimate(3e6, 30e6, 1000), {percent:10, text:'3.0 of 30 MB'});
+  assert.deepEqual(estimate(3e6, 30e6, 10000), {percent:10, text:'3.0 of 30 MB · about 2 min left'});
+  assert.deepEqual(estimate(15e6, 30e6, 30000), {percent:50, text:'15 of 30 MB · about 30 s left'});
+  assert.deepEqual(estimate(29e6, 30e6, 29000), {percent:96, text:'29 of 30 MB · a few seconds left'});
+  assert.deepEqual(estimate(30e6, 30e6, 30000), {percent:100, text:'30 of 30 MB'});
+});

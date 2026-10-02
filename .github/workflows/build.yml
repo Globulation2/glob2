@@ -1238,7 +1238,7 @@ jobs:
             build/emscripten/client/release/index.html
             build/emscripten/client/release/index.js
             build/emscripten/client/release/index.wasm
-            build/emscripten/client/release/index.data
+            build/emscripten/client/release/assets/
             build/emscripten/client/release/script-tests.html
             build/emscripten/client/release/script-tests.js
             build/emscripten/client/release/script-tests.wasm
@@ -1254,7 +1254,7 @@ jobs:
             build/emscripten/client/release/index.html
             build/emscripten/client/release/index.js
             build/emscripten/client/release/index.wasm
-            build/emscripten/client/release/index.data
+            build/emscripten/client/release/assets/
 
       - name: Summarize CI failures
         if: always()

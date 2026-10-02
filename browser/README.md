@@ -47,6 +47,33 @@ for configuration and cleanup. Omit `release=1` for a debug build.
 See [delivery contracts](../docs/browser/implementation.md) for output paths and
 platform boundaries.
 
+### Game data and loading
+
+The build packs the files the game reads at run time into content-addressed
+packages under `assets/` (`scons/web_assets.py`); build scripts, translation
+tooling, documentation, icons and store screenshots stay out.
+`python3 scons/web_assets.py --report` lists the size of each category and package.
+`browser/asset-loader.js` downloads the `core` package while the WebAssembly
+module streams in, and the game starts once both are ready. `core` holds the
+interface, sprites, font, translations, menu music, maps, campaigns, scripts and
+every simulation data file, so the sim version and checksum traces are unchanged.
+The loading page shows megabytes, a percentage and an estimate of the time left.
+
+Two optional packages follow in the background once the main menu is up: the
+in-game music and the high-resolution artwork (WebGL2 only, and only while that
+setting is on). They download in parts of about 4 MB, pause while a match is
+running, are skipped when the browser asks to save data, and become visible to
+the game only when complete. The game reads them when a match or the editor
+starts, so on a first visit a match started before the artwork arrives uses the
+original artwork; the next match uses the high-resolution set.
+`glob2Diagnostics.snapshot().assets` reports each package's state.
+
+Package parts are kept in the browser's Cache Storage, so later visits read them
+from the device. A new build changes only the names of the packages whose
+content changed. `python3 browser/precompress.py` writes Brotli and gzip copies
+of the module, script and packages for servers that serve precompressed files
+(`deploy/Caddyfile` does).
+
 ## Playing and saving
 
 Use the game's Quit button to wait for final storage writes before closing.

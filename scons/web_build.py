@@ -2,12 +2,14 @@
 from pathlib import Path
 import json
 import os
+import re
 import subprocess
 from SCons.Script import Environment, Default, Value, GetOption, Action, COMMAND_LINE_TARGETS
 from build_layout import write_if_changed, PACKAGE_VERSION
 from javascript import javascript_objects, numeric_guard
 import official_instance
 from sources import CLIENT_SOURCES, GAG_SOURCES, USL_SOURCES, INCLUDE_DIRECTORIES
+import web_assets
 
 PORTS = ['--use-port=sdl2', '--use-port=sdl2_image:formats=png,jpg',
          '--use-port=sdl2_ttf', '--use-port=sdl2_net', '--use-port=vorbis',
@@ -67,8 +69,15 @@ def build_web(directory, identity, arguments):
         '-sFORCE_FILESYSTEM', '-lidbfs.js', '-lwebsocket.js',
         "'-sEXPORTED_RUNTIME_METHODS=[\"callMain\",\"FS\"]'",
         '--shell-file', 'browser/shell.html', '--pre-js', 'browser/storage.js', '--pre-js', 'browser/file-selection.js', '--pre-js', 'browser/audio.js'] + PORTS)
-    for asset_directory in ('data', 'maps', 'campaigns', 'scripts'):
-        env.Append(LINKFLAGS=['--preload-file', asset_directory + '@/' + asset_directory])
+    # Game data ships as content-addressed packages next to the page (see
+    # scons/web_assets.py), not as one --preload-file blob: the loader shows
+    # progress, caches them across visits and fetches optional data later.
+    asset_manifest = output / 'asset-manifest.js'
+    asset_files = [str(p) for directory in web_assets.ROOTS for p in Path(directory).rglob('*') if p.is_file()]
+    assets = env.Command(str(asset_manifest), asset_files + ['scons/web_assets.py', 'deploy/sim_version.py'],
+                         Action(lambda target, source, env: web_assets.build(root, output, target[0].abspath) and 0,
+                                'Packaging browser game data'))
+    env.Append(LINKFLAGS=['--pre-js', str(asset_manifest), '--pre-js', 'browser/asset-loader.js'])
     env['LINKCOM'] = '${TEMPFILE("$LINK -o $TARGET $LINKFLAGS $__RPATH $SOURCES $_LIBDIRFLAGS $_LIBFLAGS", "$LINKCOMSTR")}'
     def prepare_ports(target, source, env):
         return subprocess.run(
@@ -119,11 +128,20 @@ def build_web(directory, identity, arguments):
         tests.SideEffect([str(output / ('script-tests.' + extension)) for extension in ('js', 'wasm', 'data')], harness)
         env.Alias('web-tests', harness)
 
-    env.Depends(program, ['browser/shell.html', 'browser/storage.js', 'browser/file-selection.js', 'browser/audio.js', 'browser/toolchain.json'])
-    env.Depends(program, [str(p) for directory in ('data','maps','campaigns','scripts')
-                         for p in Path(directory).rglob('*') if p.is_file()])
-    env.SideEffect([str(output / ('index.'+ext)) for ext in ('js','wasm','data')], program)
-    env.Clean(program, [str(output / ('index.'+ext)) for ext in ('js','wasm','data')])
+    env.Depends(program, ['browser/shell.html', 'browser/storage.js', 'browser/file-selection.js', 'browser/audio.js',
+                          'browser/asset-loader.js', 'browser/toolchain.json', assets])
+    # The page shows WebAssembly download progress against this size.
+    def record_wasm_size(target, source, env):
+        page = Path(target[0].abspath)
+        size = (page.parent / 'index.wasm').stat().st_size
+        # Release links minify the page, which drops the attribute's quotes.
+        text, count = re.subn(r'data-wasm-bytes=("?)0\1(?=[ >])', f'data-wasm-bytes={size}', page.read_text(), count=1)
+        if count != 1:
+            raise ValueError('browser/shell.html lacks the data-wasm-bytes placeholder')
+        page.write_text(text)
+    env.AddPostAction(program, Action(record_wasm_size, None))
+    env.SideEffect([str(output / ('index.'+ext)) for ext in ('js','wasm')], program)
+    env.Clean(program, [str(output / ('index.'+ext)) for ext in ('js','wasm','data')] + [str(output / 'assets')])
     database = env.CompilationDatabase(str(output / 'compile_commands.json'))
     env.Alias('compile_commands.json', database)
     Default(program, database)
