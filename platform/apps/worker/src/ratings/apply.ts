@@ -45,9 +45,9 @@ export async function handleEngineJobResult(db: Db, payload: unknown): Promise<b
     if (applied) {
       const jobId = (payload as { jobId: string }).jobId;
       await recordVerification(trx, jobId);
+      await recordWarmMapResult(trx, jobId);
       // Generated maps and uploads (no-op for verify-match jobs).
       await applyMapJobResult(trx, jobId);
-      await recordWarmMapResult(trx, jobId);
     }
     return applied;
   });

@@ -17,3 +17,8 @@ config.h
 deploy/secrets
 **/*.key
 **/*.pem
+
+**/node_modules
+platform/apps/web/dist
+deploy/instance.yaml
+deploy/.env

@@ -15,17 +15,45 @@ SPEC.loader.exec_module(ci_changed_paths)
 
 
 class ChangedPathsTest(unittest.TestCase):
-    def assert_jobs(self, paths, platform=None, **expected):
+    def assert_jobs(self, paths, platform=None, platform_stack=None, **expected):
         # The TypeScript platform job runs on platform/ changes and with full CI.
         if platform is None:
             platform = all(expected.values())
-        self.assertEqual(ci_changed_paths.classify(paths), {**expected, "platform": platform})
+        # The self-hosted stack smoke test runs on its own paths and with full CI.
+        if platform_stack is None:
+            platform_stack = not paths
+        self.assertEqual(ci_changed_paths.classify(paths),
+                         {**expected, "platform": platform, "platform_stack": platform_stack})
+
+    def test_platform_stack_paths(self):
+        for path in ("deploy/compose.yaml", "deploy/Caddyfile", "tests/deployment/platform_stack_smoke.py"):
+            with self.subTest(path=path):
+                self.assert_jobs(
+                    [path], native=False, browser=True, map_generators=False,
+                    deployment=True, cross_platform=False, platform_stack=True,
+                )
+        self.assert_jobs(
+            ["src/relay/RelayServer.cpp"], native=False, browser=True, map_generators=False,
+            deployment=False, cross_platform=False, platform_stack=True,
+        )
+        self.assert_jobs(
+            ["platform/packages/db/migrations/0005_rooms.sql"], native=False, browser=False,
+            map_generators=False, deployment=False, cross_platform=False, platform=True,
+            platform_stack=True,
+        )
+        # Engine changes rely on full CI for the stack, not every pull request.
+        self.assert_jobs(
+            ["src/map/Map.cpp", "deploy/Caddyfile"], native=True, browser=True, map_generators=True,
+            deployment=True, cross_platform=True, platform_stack=True,
+        )
 
     def test_platform_only(self):
         self.assert_jobs(
             ["platform/apps/api/src/app.ts", "platform/package-lock.json"],
             native=False, browser=False, map_generators=False,
             deployment=False, cross_platform=False, platform=True,
+            # Dependency changes also rebuild the stack's images.
+            platform_stack=True,
         )
 
     def test_platform_docs_only(self):
@@ -93,6 +121,15 @@ class ChangedPathsTest(unittest.TestCase):
                     deployment=False, cross_platform=False,
                 )
 
+    def test_relay_changes_run_the_relay_job_only(self):
+        for path in ("src/relay/RelayServer.cpp", "tests/relay/test_relay.py", "test/relay/RelayTicketTest.cpp",
+                     "test/fixtures/relay-tickets/valid.jwt"):
+            with self.subTest(path=path):
+                self.assert_jobs(
+                    [path], native=False, browser=True, map_generators=False,
+                    deployment=False, cross_platform=False, platform_stack=path.startswith("src/relay/"),
+                )
+
     def test_shared_source_runs_everything(self):
         self.assert_jobs(
             ["src/map/Map.cpp"],
@@ -134,9 +171,9 @@ class ChangedPathsTest(unittest.TestCase):
 
     def test_deployment_changes_only_run_browser_and_deployment(self):
         self.assert_jobs(
-            ["deploy/compose.yaml", "tests/deployment/test_compose.py"],
+            ["deploy/compose.legacy.yaml", "tests/deployment/test_compose.py"],
             native=False, browser=True, map_generators=False,
-            deployment=True, cross_platform=False,
+            deployment=True, cross_platform=False, platform_stack=True,
         )
 
     def test_empty_diff_runs_everything(self):

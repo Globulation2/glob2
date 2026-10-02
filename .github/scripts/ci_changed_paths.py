@@ -8,7 +8,16 @@ import subprocess
 import sys
 
 
-JOBS = ("native", "browser", "map_generators", "deployment", "cross_platform", "platform")
+JOBS = ("native", "browser", "map_generators", "deployment", "cross_platform", "platform", "platform_stack")
+# Paths whose changes rebuild and smoke-test the whole self-hosted stack
+# (deploy/compose.yaml). Its images compile the engine, so other engine changes
+# leave it to full CI rather than adding a second client build to every PR.
+PLATFORM_STACK_PATHS = (
+    "deploy/", "tests/deployment/", "src/relay/", "platform/package-lock.json",
+    "platform/packages/db/migrations/", "platform/apps/api/src/main.ts",
+    "platform/apps/worker/src/main.ts", "platform/apps/engine-agent/src/main.ts",
+)
+
 TRANSPORT_TESTS = {
     "test/NetConnectionHarness.cpp",
     "test/NativeMultiplayerPeer.cpp",
@@ -24,6 +33,7 @@ def classify(paths):
         return {job: True for job in JOBS}
 
     native = browser = map_generators = deployment = cross_platform = platform = False
+    platform_stack = any(path.startswith(PLATFORM_STACK_PATHS) and not path.endswith(".md") for path in paths)
     for path in paths:
         if path.startswith("docs/") or path.endswith(".md"):
             continue
@@ -59,6 +69,10 @@ def classify(paths):
         if path.startswith(("tests/transport/",)):
             browser = True
             continue
+        # The match relay builds and runs in the native-programs job only.
+        if path.startswith(("src/relay/", "tests/relay/", "test/relay/", "test/fixtures/relay-tickets/")):
+            browser = True
+            continue
         if path.startswith("test/") and path not in {
             "test/run-browser-determinism.py",
         } and not Path(path).name.startswith("MapGenerator"):
@@ -70,7 +84,7 @@ def classify(paths):
         if path.startswith(("src/net/", "src/yog/")):
             native = browser = deployment = cross_platform = True
             continue
-        return {job: True for job in JOBS}
+        return {**{job: True for job in JOBS}, "platform_stack": platform_stack}
 
     return {
         "native": native,
@@ -79,6 +93,7 @@ def classify(paths):
         "deployment": deployment,
         "cross_platform": cross_platform,
         "platform": platform,
+        "platform_stack": platform_stack,
     }
 
 
@@ -126,6 +141,7 @@ def main():
             "deployment": True,
             "cross_platform": False,
             "platform": False,
+            "platform_stack": False,
         }
 
     output = "".join(f"{job}={str(enabled).lower()}\n" for job, enabled in selected.items())

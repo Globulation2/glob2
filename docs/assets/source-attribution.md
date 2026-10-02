@@ -18,3 +18,6 @@ http://www.kde-look.org/usermanager/search.php?username=Amibug&PHPSESSID=3782d93
 Embedded JavaScript runtime:
 QuickJS-NG v0.17.0 (MIT) and OpenLibm v0.8.8 (MIT/BSD/ISC/Sun notices).
 See data/javascript-licenses.txt and third_party/README.md.
+
+JSON library (platform messages):
+nlohmann/json v3.12.0 (MIT). See data/json-license.txt and third_party/README.md.

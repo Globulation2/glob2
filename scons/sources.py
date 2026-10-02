@@ -132,6 +132,7 @@ CLIENT_SOURCES = (
     'render/GameRenderUnits.cpp',
     'render/GameRenderBuildings.cpp',
     'render/GameRenderTerrain.cpp',
+    'render/SoftwareTerrainCache.cpp',
     'render/GameRenderOverlay.cpp',
     'render/GameAnimations.cpp',
     'GameEvent.cpp',
@@ -409,6 +410,11 @@ CLIENT_SOURCES = (
     'net/message/RouterAdminMessages.cpp',
     'net/message/RouterMessages.cpp',
     'net/NetReteamingInformation.cpp',
+    'net/turn/JitterBuffer.cpp',
+    'net/turn/MatchRecord.cpp',
+    'net/turn/TurnMessages.cpp',
+    'net/turn/TurnSequencer.cpp',
+    'net/turn/TurnSession.cpp',
     'net/NetTestSuite.cpp',
     'NewMapScreen.cpp',
     'Order.cpp',
@@ -573,6 +579,7 @@ SERVER_SOURCES = (
     'net/message/RouterAdminMessages.cpp',
     'net/message/RouterMessages.cpp',
     'net/NetReteamingInformation.cpp',
+    'net/turn/TurnMessages.cpp',
     'net/NetTestSuite.cpp',
     'Order.cpp',
     'OrderBuilding.cpp',
@@ -647,10 +654,38 @@ SERVER_SOURCES = (
     'net/ServerControl.cpp',
 )
 
+# glob2-relay (role=relay): the match relay links only the turn core, the stream
+# classes its codecs use, OpenSSL and the header-only Boost.Beast; no SDL library.
+RELAY_SOURCES = (
+    'relay/HttpClient.cpp',
+    'relay/JwksStore.cpp',
+    'relay/MatchDirectory.cpp',
+    'relay/MatchReport.cpp',
+    'relay/PlatformLink.cpp',
+    'relay/RelayConfig.cpp',
+    'relay/RelayLog.cpp',
+    'relay/RelayMetrics.cpp',
+    'relay/RelayServer.cpp',
+    'relay/RelaySha1.cpp',
+    'relay/TicketVerifier.cpp',
+    'net/turn/MatchRecord.cpp',
+    'net/turn/TurnMessages.cpp',
+    'net/turn/TurnSequencer.cpp',
+)
+
+RELAY_GAG_SOURCES = (
+    'BinaryStream.cpp',
+    'Stream.cpp',
+    'StreamBackend.cpp',
+)
+
 GAG_SOURCES = (
     'PerformanceTelemetry.cpp',
     'BackgroundFileWriter.cpp',
     'RenderBackend.cpp',
+    'SoftwareRenderBackend.cpp',
+    'SurfaceRaster.cpp',
+    'SoftwareFramePresenter.cpp',
     'GraphicContextMobile.cpp',
     'BinaryStream.cpp',
     'CursorManager.cpp',
@@ -729,5 +764,6 @@ INCLUDE_DIRECTORIES = (
     'src/map/generator/shared',
     'src/map/generator/shared/legacy',
     'src/map/generator/compatibility', 'src/map/gradient', 'src/map/io', 'src/map/pathfind',
-    'src/net', 'src/net/irc', 'src/net/message', 'src/sgsl', 'src/team', 'src/unit',
+    'src/net', 'src/net/irc', 'src/net/message', 'src/net/turn', 'src/sgsl', 'src/team', 'src/unit',
+    'third_party/nlohmann-json/include',
 )

@@ -1,4 +1,4 @@
-"""Real Compose/TLS/YOG regression. Build deploy/Dockerfile and Wasm first.
+"""Real Compose/TLS/YOG regression of the legacy stack (deploy/compose.legacy.yaml). Build deploy/Dockerfile and Wasm first.
 
 Uses an isolated project, ephemeral host ports, and disposable volumes.
 """
@@ -42,7 +42,7 @@ class ComposeTests(unittest.TestCase):
     def compose(cls, *args):
         try:
             return subprocess.check_output(['docker', 'compose', '-p', cls.project,
-                '-f', str(ROOT / 'deploy/compose.yaml'), *args], env=cls.env, text=True,
+                '-f', str(ROOT / 'deploy/compose.legacy.yaml'), *args], env=cls.env, text=True,
                 stderr=subprocess.STDOUT, timeout=180)
         except subprocess.CalledProcessError as error:
             print(error.output)
@@ -131,7 +131,7 @@ class ComposeTests(unittest.TestCase):
         return self.compose('exec', '-T', service, 'python3', '-c', script)
 
     def test_exclusive_lobby_data_owner(self):
-        result = subprocess.run(['docker', 'compose', '-p', self.project, '-f', str(ROOT/'deploy/compose.yaml'),
+        result = subprocess.run(['docker', 'compose', '-p', self.project, '-f', str(ROOT/'deploy/compose.legacy.yaml'),
             'run', '--rm', '--no-deps', 'lobby'], env=self.env, text=True, capture_output=True, timeout=30)
         self.assertNotEqual(result.returncode, 0)
         self.assertIn('data directory already owned', result.stdout + result.stderr)

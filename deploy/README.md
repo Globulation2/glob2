@@ -1,4 +1,16 @@
-# Hosting the secure YOG services
+# Deployment files
+
+This directory holds two independent Compose stacks built from one `Dockerfile`:
+
+| Stack | Files | Guide |
+| --- | --- | --- |
+| Online platform (accounts, rooms, relays, engine agents) | `compose.yaml`, `Caddyfile`, `.env.example`, `*-entrypoint.sh`, `platform-init.sh`, `sim_version.py` | [Self-hosting guide](../docs/hosting/README.md) |
+| Legacy YOG lobby and router, until the M9 cutover | `compose.legacy.yaml`, `Caddyfile.legacy`, `provision_tls.py`, `healthcheck.py` | The rest of this file |
+
+The legacy stack keeps the Compose project name `glob2` and its volumes, so an
+existing deployment continues unchanged with `-f deploy/compose.legacy.yaml`.
+
+# Hosting the secure YOG services (legacy)
 
 The deployment runs one authoritative lobby, one game router, and a public Caddy
 proxy. Both backends implement WSS directly. Caddy terminates public TLS and
@@ -19,8 +31,8 @@ secrets before starting services:
 ```sh
 scons target=web release=1 -j4
 python3 deploy/provision_tls.py deploy/secrets
-docker compose -f deploy/compose.yaml build lobby web
-docker compose -f deploy/compose.yaml up -d --wait
+docker compose -f deploy/compose.legacy.yaml build lobby web
+docker compose -f deploy/compose.legacy.yaml up -d --wait
 ```
 
 Open https://localhost:8443. Caddy creates a local CA for localhost; install that
@@ -139,11 +151,11 @@ Keep the public proxy running until both backends have exited. For a coordinated
 stop or upgrade with the default 30-minute deadline, run these commands in order:
 
 ```sh
-docker compose -f deploy/compose.yaml stop --timeout 1860 lobby
-docker compose -f deploy/compose.yaml stop --timeout 1860 router
-docker compose -f deploy/compose.yaml stop web
+docker compose -f deploy/compose.legacy.yaml stop --timeout 1860 lobby
+docker compose -f deploy/compose.legacy.yaml stop --timeout 1860 router
+docker compose -f deploy/compose.legacy.yaml stop web
 # Replace images/secrets or take the consistent backup, then restart:
-docker compose -f deploy/compose.yaml up -d
+docker compose -f deploy/compose.legacy.yaml up -d
 ```
 
 Increase the stop timeout when increasing `GLOB2_DRAIN_SECONDS`. A whole-stack

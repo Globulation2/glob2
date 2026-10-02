@@ -1,0 +1,126 @@
+# Legacy YOG stack (lobby, router, proxy), kept unchanged until the M9 cutover.
+# The project name stays "glob2" so existing deployments keep their volumes.
+# The new platform stack is deploy/compose.yaml (project "glob2-platform").
+name: glob2
+x-server: &server
+  image: ${GLOB2_SERVER_IMAGE:-glob2-server:development}
+  build:
+    context: ..
+    dockerfile: deploy/Dockerfile
+    target: server
+  restart: unless-stopped
+  init: true
+  read_only: true
+  tmpfs: ['/tmp:size=16m,mode=1777']
+  networks: [backend]
+  security_opt: [no-new-privileges:true]
+  cap_drop: [ALL]
+  stop_grace_period: ${GLOB2_STOP_GRACE:-31m}
+  healthcheck:
+    interval: 10s
+    timeout: 5s
+    retries: 6
+    start_period: 10s
+x-environment: &environment
+  GLOB2_EXTERNAL_ROUTER: '1'
+  GLOB2_TLS_CA: /run/secrets/deployment-ca
+  GLOB2_BIND_ADDRESS: ${GLOB2_BIND_ADDRESS:-0.0.0.0}
+  GLOB2_CONNECTION_LIMIT: ${GLOB2_CONNECTION_LIMIT:-256}
+  GLOB2_CONTROL_BIND: 0.0.0.0
+  GLOB2_ALLOWED_ORIGINS: ${GLOB2_ORIGIN:-https://localhost:8443}
+  GLOB2_PUBLIC_LOBBY_ENDPOINT: ${GLOB2_LOBBY_ENDPOINT:-wss://localhost:8443/yog}
+  GLOB2_PUBLIC_ROUTER_ENDPOINT: ${GLOB2_ROUTER_ENDPOINT:-wss://localhost:8443/router}
+  GLOB2_REGISTRATION_ENDPOINT: wss://lobby:7490/register
+  GLOB2_TRUSTED_PROXY_ADDRESSES: ${GLOB2_PROXY_ADDRESS:-172.30.88.10}
+  GLOB2_DRAIN_SECONDS: ${GLOB2_DRAIN_SECONDS:-1800}
+services:
+  lobby:
+    <<: *server
+    command: [glob2-server]
+    environment:
+      <<: *environment
+      GLOB2_TLS_CERT: /run/secrets/lobby-cert
+      GLOB2_TLS_KEY: /run/secrets/lobby-key
+    secrets: [deployment-ca, lobby-cert, lobby-key]
+    volumes: [lobby-data:/var/lib/glob2]
+    healthcheck:
+      test: [CMD, python3, /usr/local/bin/glob2-healthcheck, lobby, live]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+  router:
+    <<: *server
+    command: [glob2-router]
+    environment:
+      <<: *environment
+      GLOB2_TLS_CERT: /run/secrets/router-cert
+      GLOB2_TLS_KEY: /run/secrets/router-key
+    secrets: [deployment-ca, router-cert, router-key]
+    volumes: [router-data:/var/lib/glob2]
+    depends_on:
+      lobby: {condition: service_healthy}
+    healthcheck:
+      test: [CMD, python3, /usr/local/bin/glob2-healthcheck, router, ready]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+  web:
+    image: ${GLOB2_PROXY_IMAGE:-glob2-proxy:development}
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+      target: proxy
+    restart: unless-stopped
+    read_only: true
+    tmpfs: ['/tmp:size=16m,mode=1777']
+    security_opt: [no-new-privileges:true]
+    cap_drop: [ALL]
+    # Permit standard HTTP/TLS ports only within this network namespace.
+    sysctls:
+      net.ipv4.ip_unprivileged_port_start: '0'
+    environment:
+      GLOB2_SITE: ${GLOB2_SITE:-https://localhost}
+      GLOB2_EDGE_TRUSTED_PROXIES: ${GLOB2_EDGE_TRUSTED_PROXIES:-127.0.0.1/32}
+    ports:
+      - '${GLOB2_BIND:-127.0.0.1}:${GLOB2_HTTP_PORT:-8080}:80'
+      - '${GLOB2_BIND:-127.0.0.1}:${GLOB2_HTTPS_PORT:-8443}:443'
+    secrets: [deployment-ca]
+    volumes:
+      - ./Caddyfile.legacy:/etc/caddy/Caddyfile:ro
+      - ${GLOB2_ASSETS:-../build/emscripten/client/release}:/srv:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    networks:
+      backend:
+        ipv4_address: ${GLOB2_PROXY_ADDRESS:-172.30.88.10}
+      public: {}
+    depends_on:
+      router: {condition: service_healthy}
+    healthcheck:
+      test: [CMD, wget, -q, -O, /dev/null, 'http://127.0.0.1:2015/livez']
+      interval: 10s
+      timeout: 5s
+      retries: 6
+secrets:
+  deployment-ca:
+    file: ${GLOB2_SECRETS_DIR:-./secrets}/ca.pem
+  lobby-cert:
+    file: ${GLOB2_SECRETS_DIR:-./secrets}/lobby.pem
+  lobby-key:
+    file: ${GLOB2_SECRETS_DIR:-./secrets}/lobby.key
+  router-cert:
+    file: ${GLOB2_SECRETS_DIR:-./secrets}/router.pem
+  router-key:
+    file: ${GLOB2_SECRETS_DIR:-./secrets}/router.key
+networks:
+  backend:
+    internal: true
+    ipam:
+      config:
+        - subnet: ${GLOB2_BACKEND_SUBNET:-172.30.88.0/24}
+  public: {}
+volumes:
+  lobby-data: {}
+  router-data: {}
+  caddy-data: {}
+  caddy-config: {}

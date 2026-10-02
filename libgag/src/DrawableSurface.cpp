@@ -9,6 +9,8 @@
 #include <string>
 #include <valarray>
 #include <SDL_image.h>
+#include <SurfaceRaster.h>
+#include <stdexcept>
 #ifdef GLOB2_WEBGL2
 #include <set>
 #endif
@@ -28,6 +30,16 @@ namespace GAGCore
 		assert(dest);
 		return dest;
 	}
+
+    bool DrawableSurface::hasOpaquePixels()
+    {
+        if (opacityRevision != pixelRevision)
+        {
+            opaquePixels = SurfaceRaster::opaque(sdlsurface);
+            opacityRevision = pixelRevision;
+        }
+        return opaquePixels;
+    }
 
 	// Drawable surface
 	DrawableSurface::DrawableSurface(const std::string &imageFileName)
@@ -53,7 +65,7 @@ namespace GAGCore
 		assert(sdlsurface);
 		setClipRect();
 		allocateTexture();
-		dirty = true;
+		markPixelsChanged();
 	}
 
     size_t DrawableSurface::allocatedTextureBytes()
@@ -74,7 +86,7 @@ namespace GAGCore
 
 	DrawableSurface::~DrawableSurface(void)
 	{
-		if (_gc && _gc->renderer) _gc->renderer->forget(this);
+		if (_gc && _gc->portableRenderer) _gc->portableRenderer->forget(this);
         if (_gc && _gc->softwareRasterizer) _gc->softwareRasterizer->forget(this);
 		SDL_FreeSurface(sdlsurface);
 		freeGPUTexture();
@@ -234,7 +246,7 @@ namespace GAGCore
 			}
 		}
 		#endif
-		dirty = false;
+		glUploadedRevision = pixelRevision;
 	}
 
 	void DrawableSurface::freeGPUTexture(void)
@@ -269,10 +281,10 @@ namespace GAGCore
 			SDL_FreeSurface(sdlsurface);
 
 		sdlsurface = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h, 32, _glFormat.Rmask, _glFormat.Gmask, _glFormat.Bmask, _glFormat.Amask);
-		assert(sdlsurface);
+		if (!sdlsurface) throw std::runtime_error(SDL_GetError());
 		setClipRect();
 		initTextureSize();
-		dirty = true;
+		markPixelsChanged();
 	}
 
 	void DrawableSurface::getClipRect(int *x, int *y, int *w, int *h)
@@ -329,7 +341,7 @@ namespace GAGCore
 					sdlsurface = convertForUpload(loadedSurface);
 					SDL_FreeSurface(loadedSurface);
 					setClipRect();
-					dirty = true;
+					markPixelsChanged();
 					return true;
 				}
 			}
@@ -369,7 +381,7 @@ namespace GAGCore
 			*mem = SDL_MapRGBA(sdlsurface->format, c.r, c.g, c.b, c.a);
 			mem++;
 		}
-		dirty = true;
+		markPixelsChanged();
 	}
 }
 

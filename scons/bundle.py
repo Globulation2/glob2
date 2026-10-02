@@ -29,6 +29,7 @@ def createBundle(target, source, env) :
         run('cp -r %s %s/Contents/Resources/' % (str(resdir), bundleDir) )
     run('cp COPYING %s/Contents/Resources/' % bundleDir)
     run('cp data/javascript-licenses.txt %s/Contents/Resources/' % bundleDir)
+    run('cp data/json-license.txt %s/Contents/Resources/' % bundleDir)
     run('cp docs/assets/source-attribution.md %s/Contents/Resources/' % bundleDir)
     # write Info.plist -- TODO actually write it not copy it
     plistFile = env['BUNDLE_PLIST']

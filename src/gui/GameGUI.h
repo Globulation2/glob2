@@ -257,6 +257,7 @@ private:
 	friend class GameGUISelectionHarness;
 	friend class TorusRenderIntegrationTest;
 	friend class TorusRenderBenchmark;
+	friend class SoftwareRenderBenchmark;
 	bool persistPreferences;
     friend class GameGUITouch;
     friend class GameGUITouchHarness;

@@ -298,12 +298,11 @@ so link previews get OpenGraph tags (`og:title`, `og:description`, `og:url`,
 - An unknown or expired code gets a `404` page that says so. It offers the app and
   the browser client without a code, and runs no script.
 
-Caddy must route `/j/*` to the API, as it routes `/api`, `/realtime` and
-`/internal`.
+Caddy routes `/j/*` to the API, as it routes `/api` and `/realtime`; `/internal`
+is never served publicly, and relays reach it on the backend network (see the
+[self-hosting guide](../hosting/README.md)).
 
 ## Not done yet
 
-- **Compose stack v2.** The relay service, `/internal` and `/j` routes in Caddy, and
-  `RELAY_KEYS` in the deployment are not done yet. Nothing here has run behind Caddy.
 - **Client side.** The room screen and the client side of `glob2://` and `?join=`
   wait for approved mock-ups and the client work.

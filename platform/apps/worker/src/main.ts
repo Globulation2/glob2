@@ -62,8 +62,11 @@ try {
     starter: new PlatformMatchStarter({
       db: database.db,
       jobs,
+      warmMaps: {
+        takeWarmMap: (queueId, simVersionKey, options) =>
+          takeWarmMap(database.db, queueId, simVersionKey, options),
+      },
       access: createAccessPolicy(config.instance.access.policy),
-      warmMaps: { takeWarmMap: (q, s, o) => takeWarmMap(database.db, q, s, o) },
       logger,
     }),
     notifier: new PgQueueNotifier(),
