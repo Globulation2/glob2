@@ -673,6 +673,8 @@ GAG_SOURCES = (
     'GraphicContextDraw.cpp',
     'GraphicContextCompound.cpp',
     'GraphicContextUnitShader.cpp',
+    'MapGeometryCache.cpp',
+    'RenderBatch.cpp',
     'DrawableSurface.cpp',
     'DrawableSurfaceDraw.cpp',
     'DrawableSurfaceCompound.cpp',

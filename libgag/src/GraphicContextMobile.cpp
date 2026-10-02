@@ -22,6 +22,11 @@ namespace GAGCore {
         return density*uiScale / std::min(double(windowW)/sdlsurface->w, double(windowH)/sdlsurface->h);
     }
 
+    double GraphicContext::textUnitsPerPoint() const
+    {
+        return logicalUnitsPerPoint() * (userTextScale > 0 ? userTextScale : 1);
+    }
+
     bool GraphicContext::refreshPresentation()
     {
         if (window) SDL_GetWindowSize(window,&windowW,&windowH);
@@ -122,6 +127,8 @@ void GraphicContext::endSoftwareTransform()
 
 void GraphicContext::setUITransform(float scale, float x, float y, const SDL_Rect* bounds)
 {
+	if (renderBatch)
+		renderBatch->stateChange();
     const bool reset=scale==1 && x==0 && y==0 && !bounds;
     if (uiTransformActive) {
         if (renderer) renderer->transform(1,0,0,nullptr);
