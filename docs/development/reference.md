@@ -958,10 +958,11 @@ finishes its running verification and retains the newest pending revision; each
 retained revision runs full coverage, including after a documentation-only push.
 Nightly verification runs at 06:00 UTC without invoking publication workflows.
 The separate CI measurements workflow reads job timestamps and inert observation
-artifacts using trusted master code. It reports initial queue delay, execution
-span, aggregate runner minutes, time to result, cancellations, and observed cache
-hits. Per-job queue estimates use job registration to first step; execution span
-includes dependency gaps and does not by itself identify runner saturation.
+artifacts using trusted master code. It reports initial queue delay, active execution
+time, execution span, idle gaps, aggregate runner minutes, time to result, cancellations, and observed cache
+hits. Per-job queue estimates use job registration to first step; execution time is the union of executing job intervals, while execution span
+includes idle gaps and does not by itself identify runner saturation. Overlapping
+jobs count once in wall execution time and separately in aggregate runner minutes.
 Compare ten successful runs with matching event and selected coverage using
 `python3 .github/scripts/ci_run_metrics.py --before before.json --after after.json`.
 Missing observations and insufficient samples must not be reported as savings.
