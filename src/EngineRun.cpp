@@ -284,8 +284,14 @@ void Engine::drawFrame(MainLoopState& st)
 		PerformanceTelemetry::collector().presented();
 	}
 
+	if (renderedFrame)
+		saveVideoshot(st);
+}
+
+void Engine::saveVideoshot(MainLoopState& st)
+{
 	// if required, save videoshot
-	if (renderedFrame && !(globalContainer->videoshotName.empty()) &&
+	if (!(globalContainer->videoshotName.empty()) &&
 		!(globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)
 		)
 	{
@@ -293,7 +299,6 @@ void Engine::drawFrame(MainLoopState& st)
 		printf("printing video shot %s\n", fileName.c_str());
 		globalContainer->gfx->printScreen(fileName.c_str());
 	}
-
 }
 
 void Engine::drawSession()
@@ -310,12 +315,14 @@ void Engine::drawSession()
     if (!scene)
         return;
     gui.setPublishedScene(scene);
+    GAGCore::ApplicationHost::matchFrame(gui.gamePaused);
     gui.drawAll(gui.localTeamNo);
     {
         PERF_SCOPE_TIME(Present);
         globalContainer->gfx->nextFrame();
     }
     PerformanceTelemetry::collector().presented();
+    saveVideoshot(*session);
 }
 
 bool Engine::startSimulationThread(Uint64 now)

@@ -257,6 +257,7 @@ private:
 	void executeOrdersAndStep(bool readyNow);
 
 	void drawFrame(MainLoopState& st);
+	void saveVideoshot(MainLoopState& st);
     std::optional<MainLoopState> session;
     std::unique_ptr<SimulationRunner> runner;
     //! Host clock minus SDL_GetTicks(), published by the main thread for sessionClock.
