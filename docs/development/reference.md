@@ -788,6 +788,8 @@ runs while the simulation advances on another thread.
 - Adding something drawn on the map: extract what the drawing needs in
   `SceneExtract.cpp` and read it from the `Scene` in the render pass. Never read
   `Game`, `Map`, `Team`, `Unit` or `Building` state from drawing code.
+  `tests/build_system/test_scene_boundary.py` rejects live entity reads in the render
+  passes, the minimap and `GameGUIDraw*`, and simulation includes in `src/scene/` headers.
 - Selection panels, the HUD, the top bar, statistics pages, the minimap and the building
   tool's placement preview also draw from the Scene (`ScenePanels`, `SceneMap`). Input
   handlers still act on the game, and validate against it before issuing an order.
