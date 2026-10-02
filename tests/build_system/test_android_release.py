@@ -81,6 +81,15 @@ class AndroidReleaseTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "already points to another commit"):
                 android_release.check_prior_tags()
 
+    def test_development_check_allows_released_version_but_not_lower_codes(self):
+        with mock.patch.object(android_release.subprocess, "check_output",
+                               return_value="v0.9.5.4\n"):
+            android_release.check_prior_tags(development=True)
+        with mock.patch.object(android_release.subprocess, "check_output",
+                               return_value="v0.9.5.4\nv0.9.6.0\n"):
+            with self.assertRaisesRegex(ValueError, "would not increase past v0.9.6.0"):
+                android_release.check_prior_tags(development=True)
+
     def test_apk_rejects_second_abi_and_wrong_version(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

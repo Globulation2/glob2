@@ -357,7 +357,11 @@ name and base code. The three single-ABI APKs have codes `10 * base + 1` for
 `armeabi-v7a`, `+ 2` for `arm64-v8a`, and `+ 3` for `x86_64`. `build --fdroid` checks the
 APK's package name, version, ABI, alignment, native symbols, and indexed assets.
 `mobile/android_release.py check` verifies the release manifest against the
-desktop package version. The signed output of `sign` is for development and
+desktop package version and requires the current version's tag, if it exists, to
+point at the checked-out commit. Pull-request CI adds `--development`, which
+accepts a version that was already tagged at an earlier commit (master keeps the
+last released version until the next release bumps it) but still rejects version
+codes that would not increase past any other tag. The signed output of `sign` is for development and
 device testing; F-Droid signs its own published APKs.
 The two stores use different signing keys, so switching stores requires
 uninstalling the existing app and backing up or exporting saves first.
