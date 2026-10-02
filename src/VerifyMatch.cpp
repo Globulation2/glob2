@@ -188,6 +188,32 @@ MatchVerifier::Verdict MatchVerifier::verify(const Turn::MatchRecord& record, co
 	const Uint32 finalTick = game.stepCounter;
 
 	Verdict verdict = judge(record, checksums, versionProblem);
+	verdict.orders = lockstep.orderAudit();
+	// Per human seat: orders checked before execution and what became of them. A
+	// rejected order is one no unmodified client sends (OrderValidation.h).
+	json orderChecks = json::object();
+	json rejections = json::array();
+	for (const auto& seat : setup.seats)
+	{
+		if (!seat.human || seat.seat < 0 || seat.seat >= static_cast<int>(OrderValidation::Audit::SEATS))
+			continue;
+		const auto& a = verdict.orders.seats[seat.seat];
+		json reasons = json::object();
+		for (std::size_t r = 1; r < OrderValidation::REASON_COUNT; ++r)
+			if (a.reasons[r])
+				reasons[OrderValidation::name(static_cast<OrderValidation::Reason>(r))] = a.reasons[r];
+		json entry = {{"accepted", a.accepted}, {"stale", a.stale}, {"rejected", a.rejected}, {"reasons", reasons}};
+		if (a.rejected)
+			entry["first_rejected_tick"] = a.firstRejectedTick;
+		orderChecks[std::to_string(seat.seat)] = entry;
+		if (a.rejected || a.stale)
+		{
+			json r = {{"seat", seat.seat}, {"rejected", a.rejected}, {"stale", a.stale}, {"reasons", reasons}};
+			if (a.rejected)
+				r["firstRejectedTick"] = a.firstRejectedTick;
+			rejections.push_back(r);
+		}
+	}
 
 	{
 		std::ofstream trace(output / "checksums.txt", std::ios::binary);
@@ -210,6 +236,7 @@ MatchVerifier::Verdict MatchVerifier::verify(const Turn::MatchRecord& record, co
 	for (const auto& [seat, tick] : verdict.firstDivergence)
 		first[std::to_string(seat)] = tick;
 	verification["first_divergence"] = first;
+	verification["order_checks"] = orderChecks;
 
 	// No wall-clock fields: the same record verifies to the same bytes everywhere.
 	std::ostringstream result;
@@ -280,6 +307,9 @@ MatchVerifier::Verdict MatchVerifier::verify(const Turn::MatchRecord& record, co
 		verdictJson["reason"] = verdict.reason;
 	else
 		verdictJson["outcome"] = outcome;
+	// Seats that sequenced orders the engine refused, for flagging cheating clients.
+	// An extra member: VerifyVerdict is an open object.
+	verdictJson["orderRejections"] = rejections;
 	Headless::writeJson((output / "verdict.json").string(), verdictJson.dump());
 	Headless::writeManifest(output.string());
 
@@ -288,6 +318,8 @@ MatchVerifier::Verdict MatchVerifier::verify(const Turn::MatchRecord& record, co
 		std::cout << " seat" << seat;
 	if (!verdict.reason.empty())
 		std::cout << " (" << verdict.reason << ")";
+	if (const auto refused = verdict.orders.totalRejected())
+		std::cout << "; " << refused << " orders rejected";
 	std::cout << "; " << checksums.size() << " checksums in "
 	          << std::chrono::duration_cast<std::chrono::milliseconds>(runEnd - runStart).count() << " ms" << std::endl;
 	return verdict;

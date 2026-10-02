@@ -126,6 +126,7 @@ CLIENT_SOURCES = (
     'map/FertilityField.cpp',
     'Game.cpp',
     'Game_orders.cpp',
+    'OrderValidation.cpp',
     'Game_io.cpp',
     'Game_sync.cpp',
     'Game_editor.cpp',

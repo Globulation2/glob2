@@ -17,6 +17,7 @@
 #include "Player.h"
 #include "ReplayReader.h"
 #include "ReplayWriter.h"
+#include "OrderValidation.h"
 #include "TurnLockstep.h"
 
 #include <cerrno>
@@ -188,6 +189,9 @@ GAGCore::CooperativeTask Engine::initTurnMatchTask(TurnMatchStart start)
 
     // Replaces the NetEngine finishGameInit created; nothing has used it yet.
     auto session = std::make_unique<Turn::TurnLockstepSession>(players, start.transport, start.config);
+    // Every human order is checked against this game before it executes, on every
+    // client and in the verifier alike (OrderValidation.h).
+    session->validator = [this](int player, Order& order) { return OrderValidation::validate(gui.game, player, order); };
     turn = session.get();
     net = std::move(session);
     const char* envReplayPath = getenv("GLOB2_REPLAY_PATH");
