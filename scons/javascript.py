@@ -13,6 +13,8 @@ def javascript_objects(env, directory, release, shared=False):
                          '#third_party/openlibm/src'])
     local.Append(CFLAGS=['-O2' if release else '-O0', '-std=c11', '-fno-fast-math',
                         '-ffp-contract=off', '-fno-strict-aliasing', '-fno-builtin'])
+    if env.get('size_optimization') == 'size':
+        local.Append(CFLAGS=['-Os'])
     local.Append(CPPDEFINES=['_GNU_SOURCE', 'QUICKJS_NG_BUILD', '__BSD_VISIBLE'])
     local['CCFLAGS'] = [flag for flag in local.Split(local.get('CCFLAGS', []))
                         if flag != '-Werror']

@@ -1,33 +1,42 @@
 name: mobile foundations
 on:
+  workflow_call:
+    inputs:
+      architectures:
+        type: string
+        default: '["arm64-v8a","armeabi-v7a","x86_64"]'
   workflow_dispatch:
-  pull_request:
-    paths:
-      - 'mobile/**'
-      - 'scons/**'
-      - 'SConstruct'
-      - 'tools/package_assets.py'
-      - 'tools/asset-requirements.txt'
-      - 'libgag/**'
-      - 'src/**'
-      # APK checks do not build or run the native regression harnesses.
-      - 'test/ci_step_summary.py'
-      - 'tests/build_system/**'
-      - 'fdroid/**'
-      - 'fastlane/**'
-      - '!tests/build_system/test_ci_changed_paths.py'
-      - '.github/workflows/mobile.yml'
 
 # A newer push supersedes an Android build for the same pull request.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: mobile-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
   GLOB2_DEV_MODE: isolated
 
 jobs:
+  changes:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      actions: read
+    outputs:
+      architectures: ${{ steps.select.outputs.android_arches }}
+      android: ${{ steps.select.outputs.android }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Select Android compatibility coverage
+        id: select
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          CI_TIERED_COVERAGE_ENABLED: ${{ vars.CI_TIERED_COVERAGE_ENABLED }}
+          CI_TIER_BASELINE_RUN_ID: ${{ vars.CI_TIER_BASELINE_RUN_ID }}
+          GH_TOKEN: ${{ github.token }}
+        run: python3 .github/scripts/ci_changed_paths.py --base "$BASE_SHA"
   android-release-apk:
+    needs: changes
+    if: ${{ inputs.architectures != '' || needs.changes.outputs.android == 'true' }}
     name: Android release APK (${{ matrix.arch }})
     runs-on: ubuntu-24.04
     env:
@@ -38,7 +47,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        arch: [arm64-v8a, armeabi-v7a, x86_64]
+        arch: ${{ fromJSON(inputs.architectures || needs.changes.outputs.architectures) }}
     steps:
       - uses: actions/checkout@v4
         id: actions_checkout_v4_1

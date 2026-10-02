@@ -55,8 +55,11 @@ the versioned release package with verified gzip sidecars for both runtimes. `we
 threaded `script-tests.js` harnesses.
 
 The loader prefers real shared-memory threads when isolation and worker startup
-checks succeed. Use `?threads=serial` to exercise the fallback. The threaded
-application owns simulation and worker pools on an application worker; the DOM
+checks succeed. Use `?threads=serial` to exercise the fallback. The loader
+also observes actual pthread startup errors and falls back after a
+two-minute startup timeout. It removes the startup watcher when the application
+is ready; errors in an already running game do not restart it.
+The threaded application owns simulation and worker pools on an application worker; the DOM
 thread stays available for input, filesystem proxying and software presentation.
 WebGL transfers its canvas to the application worker. Engine thread policies
 remain shared with native builds.

@@ -5,7 +5,7 @@
 #include "EngineFixtures.h"
 #include "GlobalContainer.h"
 #include "FileManager.h"
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <string>
 #include "Game.h"
 #include "GameGUI.h"

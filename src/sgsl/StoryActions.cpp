@@ -230,7 +230,9 @@ void Story::resetAI(StoryContext* gui)
 {
 	int player = line[++lineSelector].value;
 	int aitype = line[++lineSelector].value;
-	if(gui->game->players[player])
+	// Older saved scripts can contain arguments accepted before semantic validation.
+    if (player >= 0 && player < gui->game->gameHeader.getNumberOfPlayers()
+        && aitype >= 0 && aitype < AI::SIZE && gui->game->players[player])
 	{
 		gui->game->players[player]->makeItAI(static_cast<AI::ImplementationID>(aitype));
 	}

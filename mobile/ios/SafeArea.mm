@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "SafeArea.h"
-#include <SDL_syswm.h>
+#include <SDL3/SDL.h>
 #include <UIKit/UIKit.h>
 #include <GameController/GameController.h>
 
@@ -8,10 +8,9 @@ bool GAGCore::iosGameHasPointer() { return [GCMouse current] != nil; }
 
 GAGCore::SafeInsets GAGCore::iosGameSafeInsets(SDL_Window* window)
 {
-    SDL_SysWMinfo info{};
-    SDL_VERSION(&info.version);
-    if (!SDL_GetWindowWMInfo(window,&info) || info.subsystem!=SDL_SYSWM_UIKIT) return {};
-    const UIEdgeInsets insets=info.info.uikit.window.safeAreaInsets;
+    UIWindow *native = (__bridge UIWindow *)SDL_GetPointerProperty(SDL_GetWindowProperties(window), SDL_PROP_WINDOW_UIKIT_WINDOW_POINTER, nullptr);
+    if (!native) return {};
+    const UIEdgeInsets insets=native.safeAreaInsets;
     return {insets.left,insets.top,insets.right,insets.bottom};
 }
 
@@ -26,9 +25,8 @@ double GAGCore::iosGameKeyboardInset(SDL_Window* window)
     static id hidden=[[NSNotificationCenter defaultCenter] addObserverForName:UIKeyboardWillHideNotification
         object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification*) { keyboardFrame=CGRectZero; }];
     (void)changed; (void)hidden;
-    SDL_SysWMinfo info{};SDL_VERSION(&info.version);
-    if (!SDL_GetWindowWMInfo(window,&info) || info.subsystem!=SDL_SYSWM_UIKIT) return 0;
-    UIWindow* native=info.info.uikit.window;
+    UIWindow *native = (__bridge UIWindow *)SDL_GetPointerProperty(SDL_GetWindowProperties(window), SDL_PROP_WINDOW_UIKIT_WINDOW_POINTER, nullptr);
+    if (!native) return 0;
     CGRect frame=[native convertRect:keyboardFrame fromWindow:nil];
     CGRect overlap=CGRectIntersection(native.bounds,frame);
     if (CGRectIsNull(overlap) || CGRectIsEmpty(overlap)) return 0;

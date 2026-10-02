@@ -28,7 +28,7 @@ AINumbi::AINumbi(Player *player)
 AINumbi::AINumbi(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	bool goodLoad=load(stream, player, versionMinor);
-	assert(goodLoad);
+	if (!goodLoad) throw std::runtime_error("Invalid saved AI");
 }
 
 void AINumbi::init(Player *player)

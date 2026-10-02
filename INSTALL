@@ -27,17 +27,21 @@ The simplest way to compile this package is:
 Dependencies
 ============
 
-   Glob 2 needs a C++20 compiler, Python 3 and SCons. It builds against SDL 2;
-the SDL 1.2 packages are *not* needed and installing them does not help.
+   Glob 2 needs a C++20 compiler, Python 3 and SCons. It builds against native SDL 3 and its image, ttf and net libraries.
 
    On Debian and Ubuntu, the build dependencies are:
 
      apt install g++ python3 scons pkg-config \
-       libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev \
+       cmake libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libasound2-dev libpulse-dev \
        libvorbis-dev libogg-dev libspeex-dev \
        libboost-dev libssl-dev \
        zlib1g-dev libfribidi-dev libpcre3-dev \
        libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
+
+   Build the checksum-pinned SDL3 dependencies before compiling:
+
+     python3 scons/sdl3_dependencies.py --prefix build/sdl3/prefix --work build/sdl3/sources
+     export GLOB2_SDL3_PREFIX="$PWD/build/sdl3/prefix"
 
    Native clients enable secure WebSocket transport by default and require
 OpenSSL development headers and libraries, and the Boost.Beast and Boost.Asio

@@ -1654,8 +1654,8 @@ Jelenítse meg a Globulation 2 kurzort.
 Kész
 [settings Edit shortcut]
 Billentyűparancs szerkesztése
-[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
-Nagyítja a menüket, a szöveget és az oldalsávot nagy felbontású képernyőn.
+[settings Multiply the operating system display scale for menus, text and the sidebar.]
+Az operációs rendszer kijelzőméretezésének szorzója a menükhöz, szöveghez és oldalsávhoz.
 [settings Flags]
 Zászlók
 [settings Full]

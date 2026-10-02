@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "Canvas.h"
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <functional>
 #include <memory>
 #include <string>
@@ -59,8 +59,8 @@ struct KeyEvent
 	SDL_Keycode sym = SDLK_UNKNOWN;
 	Uint16 mod = 0;
 	bool repeat = false;
-	bool shift() const { return mod & KMOD_SHIFT; }
-	bool ctrl() const { return mod & (KMOD_CTRL | KMOD_GUI); }
+	bool shift() const { return mod & SDL_KMOD_SHIFT; }
+	bool ctrl() const { return mod & (SDL_KMOD_CTRL | SDL_KMOD_GUI); }
 };
 
 enum class PointerPhase

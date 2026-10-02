@@ -36,7 +36,7 @@ struct PathMap : Map
 		tiles.assign(size, Tile());
 		for (size_t i = 0; i < size; ++i) tiles[i].terrain = terrain[i];
 	}
-	void changeTerrain() { for (auto &tile : tiles) tile.terrain = tile.terrain == 256 ? 0 : 256; }
+	void changeTerrain() { for (size_t i=0; i<size; ++i) setTerrain(i & wMask, i >> wDec, tiles[i].terrain == 256 ? 0 : 256); }
 	~PathMap()
 	{
 		// Map::clear expects zero geometry when setSize has not built its arrays.
@@ -266,6 +266,21 @@ void analyticOracleCheck()
 
 TEST_SUITE("PathGradient")
 {
+TEST_CASE("immutable water snapshots share storage and retain their captured terrain [pathfinding]")
+{
+	std::vector<Uint16> terrain(16*16,0); terrain[0]=256;
+	PathMap map(4,4,terrain);
+	auto first=map.frozenWaterSnapshot();
+	auto second=map.frozenWaterSnapshot();
+	REQUIRE(first==second);
+	map.setTerrain(0,0,257); REQUIRE(map.frozenWaterSnapshot()==first);
+	map.setTerrain(0,0,0); auto changed=map.frozenWaterSnapshot();
+	REQUIRE(changed!=first); REQUIRE((*first)[0]==1); REQUIRE((*changed)[0]==0);
+	map.setTerrain(1,0,256); auto next=map.frozenWaterSnapshot();
+	REQUIRE((*changed)[1]==0); REQUIRE((*next)[1]==1);
+}
+
+
 	TEST_CASE("analytic oracle") { analyticOracleCheck(); }
 	TEST_CASE("parallel searches") { parallelChecks(); }
 	TEST_CASE("lazy building fields") { lazyBuildingChecks(); }

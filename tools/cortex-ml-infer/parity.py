@@ -148,7 +148,7 @@ def main():
     inc = ["-Isrc", "-Isrc/ai", "-I."]
     compile_cmd = [
         "g++", "-std=c++20", "-O2",
-        "-I/opt/homebrew/include/SDL2", "-I/opt/homebrew/include",
+        "-I/opt/homebrew/include/SDL3", "-I/opt/homebrew/include",
     ] + inc + [
         runner_src,
         os.path.join(GLOB2, "src", "ai", "cortex", "CortexNet.cpp"),

@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <PerformanceTelemetry.h>
+#include <EventQueue.h>
 #include <ApplicationHost.h>
 #include <FormatableString.h>
 
@@ -17,7 +18,7 @@
 #include "Player.h"
 #include "ReplayReader.h"
 #include "ReplayWriter.h"
-#include "SDLCompat.h"
+#include <SDL3/SDL.h>
 #include "team/Team.h"
 #include "TeamStat.h"
 #include "building/IntBuildingType.h"
@@ -375,12 +376,12 @@ void Engine::resumeSimulation(Uint64 now)
 
 void Engine::publishSessionClock(Uint64 now)
 {
-    sessionClockOffset.store(static_cast<Sint64>(now) - static_cast<Sint64>(SDL_GetTicks64()));
+    sessionClockOffset.store(static_cast<Sint64>(now) - static_cast<Sint64>(SDL_GetTicks()));
 }
 
 Uint64 Engine::sessionClock() const
 {
-    return static_cast<Uint64>(static_cast<Sint64>(SDL_GetTicks64()) + sessionClockOffset.load());
+    return static_cast<Uint64>(static_cast<Sint64>(SDL_GetTicks()) + sessionClockOffset.load());
 }
 
 void Engine::extractScene(Scene& scene)
@@ -751,11 +752,11 @@ void Engine::beginSession(Uint64 now)
 
 bool Engine::stepSession(Uint64 now)
 {
-    std::vector<SDL_Event> events;
+    GAGCore::EventQueue events;
     SDL_Event event;
     if (!globalContainer->runNoX)
         while (SDL_PollEvent(&event)) events.push_back(event);
-    return stepSession(now, events);
+    return stepSession(now, events.events());
 }
 
 bool Engine::stepSession(Uint64 now, const std::vector<SDL_Event>& events)
@@ -809,10 +810,10 @@ bool Engine::stepSessionImpl(Uint64 now, const std::vector<SDL_Event>& events)
     if (!gui.isRunning) return false;
     auto& st = *session;
     --st.nextGuiStep;
-    sessionInput.insert(sessionInput.end(), events.begin(), events.end());
+    for (const auto &event : events) sessionInput.push_back(event);
     return advanceSession(now, [&] {
         if (!globalContainer->runNoX && st.nextGuiStep == 0) {
-            gui.step(sessionInput, now);
+            gui.step(sessionInput.events(), now);
             sessionInput.clear();
         }
     }, true);
@@ -932,22 +933,22 @@ bool Engine::finishSession()
 
 void Engine::runOneGameSession(bool& doRunOnceAgain)
 {
-    beginSession(SDL_GetTicks64());
-    if (startSimulationThread(SDL_GetTicks64()))
+    beginSession(SDL_GetTicks());
+    if (startSimulationThread(SDL_GetTicks()))
     {
         // The simulation runs on its own thread; this thread handles input and draws
         // at up to about 120 frames per second. Headless runs get here only with the
         // GLOB2_SIM_THREAD test switch and then only take scenes.
         for (;;)
         {
-            const Uint64 frameStarted = SDL_GetTicks64();
-            std::vector<SDL_Event> events;
+            const Uint64 frameStarted = SDL_GetTicks();
+            GAGCore::EventQueue events;
             if (!globalContainer->runNoX)
             {
                 SDL_Event event;
                 while (SDL_PollEvent(&event)) events.push_back(event);
             }
-            if (!threadedClientFrame(SDL_GetTicks64(), events))
+            if (!threadedClientFrame(SDL_GetTicks(), events.events()))
                 break;
             if (globalContainer->runNoX)
             {
@@ -957,19 +958,19 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
             else
             {
                 drawSession();
-                GAGCore::ApplicationHost::wait(threadedFrameWait(SDL_GetTicks64() - frameStarted));
+                GAGCore::ApplicationHost::wait(threadedFrameWait(SDL_GetTicks() - frameStarted));
             }
         }
         doRunOnceAgain = finishSession();
         return;
     }
     while (gui.isRunning) {
-        stepSession(SDL_GetTicks64());
+        stepSession(SDL_GetTicks());
         drawSession();
         if (!globalContainer->runNoX) {
             PerformanceTelemetry::Scope delayTime(session->wasReadyLastTick
                 ? PerformanceTelemetry::Id::Sleep : PerformanceTelemetry::Id::NetworkSleep);
-            GAGCore::ApplicationHost::wait(sessionDelay(SDL_GetTicks64()));
+            GAGCore::ApplicationHost::wait(sessionDelay(SDL_GetTicks()));
         }
     }
     doRunOnceAgain = finishSession();
