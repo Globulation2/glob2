@@ -190,9 +190,11 @@ checks the redirects.
 
 #### The official instance
 
-`glob2online.com` is the public website: an Astro site in the separate
-`Globulation2/glob2-website` repository on Firebase Hosting (project
-`pharaoh-418820`), with the redirects above in its `firebase.json`.
+`glob2online.com` is the public website, **Globulation 2 Online**: an Astro site
+in the separate
+[Globulation2/glob2-online-website](https://github.com/Globulation2/glob2-online-website)
+repository on Firebase Hosting (project `pharaoh-418820`), with the redirects
+above in its `firebase.json`.
 `app.glob2online.com` runs this stack and is the official instance origin
 (`scons/official_instance.py`; its former origin is `https://glob2online.com`).
 Website releases never restart platform services or matches. Public rating
