@@ -60,9 +60,9 @@ class LinuxRuntimeInstallTests(unittest.TestCase):
             notice = prefix / 'share/licenses/SDL2_image/LICENSE.txt'
             notice.parent.mkdir(parents=True)
             notice.write_text('decoder license')
-            canonical = prefix / 'lib/libSDL2_image.so.0.800.12'
+            canonical = prefix / 'lib/libSDL2_image-2.0.so.0.800.12'
             canonical.write_bytes(b'decoder')
-            (prefix / 'lib/libSDL2_image.so.0').symlink_to(canonical.name)
+            (prefix / 'lib/libSDL2_image-2.0.so.0').symlink_to(canonical.name)
             (prefix / 'lib/libSDL2_image.so').symlink_to(canonical.name)
             (root / 'SConstruct').write_text(
                 'import sys\nsys.path.insert(0, '+repr(str(Path(__file__).resolve().parents[2] / 'scons'))+')\n'
@@ -72,7 +72,7 @@ class LinuxRuntimeInstallTests(unittest.TestCase):
             subprocess.run(['scons', '-Q', 'install'], cwd=root, check=True, capture_output=True)
             installed = root / 'stage/usr/lib/glob2'
             self.assertEqual((installed / canonical.name).read_bytes(), b'decoder')
-            self.assertTrue((installed / 'libSDL2_image.so.0').is_symlink())
+            self.assertTrue((installed / 'libSDL2_image-2.0.so.0').is_symlink())
             self.assertEqual((installed / 'libSDL2_image.so').resolve(), (installed / canonical.name).resolve())
 
 
