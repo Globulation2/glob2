@@ -122,7 +122,11 @@ export async function historyRoutes(app: FastifyInstance, identity: Identity): P
         .header('x-content-type-options', 'nosniff');
       // Replays and results are public: the browser client may fetch them
       // from another origin (Watch in browser on a separately hosted client).
-      if (artifact.kind !== 'record') void reply.header('access-control-allow-origin', '*');
+      if (artifact.kind !== 'record') {
+        void reply
+          .header('access-control-allow-origin', '*')
+          .header('access-control-expose-headers', 'content-disposition');
+      }
       return reply.send(stream);
     },
   );
