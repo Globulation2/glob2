@@ -1,0 +1,38 @@
+{
+  "schema_version": 2,
+  "report_type": "map",
+  "engine": { "version_major": 0, "version_minor": 123 },
+  "map": {
+    "name": "study-15-42-r0",
+    "width": 128,
+    "height": 128,
+    "tiles": 16384,
+    "wrap_x": true,
+    "wrap_y": true,
+    "player_slots": 2,
+    "controller_count": 2,
+    "saved_game": true,
+    "tick": 0,
+    "game_seed": 7,
+    "colonies": [
+      {
+        "team": 0,
+        "alive": true,
+        "start": { "x": 28, "y": 96, "source": 3 },
+        "units": { "workers": 4, "explorers": 0, "warriors": 0 },
+        "buildings_and_flags": 1
+      },
+      {
+        "team": 1,
+        "alive": true,
+        "start": { "x": 96, "y": 28, "source": 3 },
+        "units": { "workers": 4, "explorers": 0, "warriors": 0 },
+        "buildings_and_flags": 1
+      }
+    ],
+    "controllers": [
+      { "slot": 0, "team": 0, "type": 10 },
+      { "slot": 1, "team": 1, "type": 10 }
+    ]
+  }
+}
