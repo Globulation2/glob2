@@ -269,7 +269,9 @@ releases. Keep custom image overrides in the user profile so they retain priorit
 
 Mac `bundle`/`package` additionally builds a checksum-pinned SDL_image 2.8.12
 with PNG/JPEG/WebP loading and PNG/JPEG saving. The cache identity includes
-compiler, SDK, codec configuration and dependencies. Missing or changed libraries
+compiler, SDK, codec configuration, dependency versions and the actual libraries
+reported by pkg-config. Shared real files are hashed once; unrelated Homebrew
+libraries do not invalidate this cache. Missing or changed required libraries
 fail packaging rather than falling back to another decoder. The bundle stores
 one canonical copy per dylib, preserving required runtime aliases as symlinks.
 Its executable is stripped only after a matching dSYM has been retained in the

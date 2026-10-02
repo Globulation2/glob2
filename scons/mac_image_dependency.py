@@ -4,6 +4,7 @@ import hashlib
 import json
 from pathlib import Path
 import platform
+import shlex
 import shutil
 import subprocess
 import tempfile
@@ -33,6 +34,7 @@ CODECS = (
     "XPM",
     "XV",
 )
+DEPENDENCIES = ("SDL2", "libpng", "libjpeg", "libwebp", "libwebpdemux")
 
 
 def lean_options():
@@ -74,17 +76,11 @@ def verified(prefix, identity):
         return False
 
 
-def ensure(root, jobs=2):
-    brew = Path(subprocess.check_output(["brew", "--prefix"], text=True).strip())
-    identity = dict(
-        archive=ARTIFACT,
-        options=lean_options(),
-        arch=platform.machine(),
-        compiler=subprocess.check_output(["clang", "--version"], text=True),
-        sdk=subprocess.check_output(["xcrun", "--show-sdk-version"], text=True),
-        dependencies={},
-    )
-    for package in ("SDL2", "libpng", "libjpeg", "libwebp", "libwebpdemux"):
+def dependency_identity():
+    """Fingerprint linked libraries, not every unrelated dylib in Homebrew/lib."""
+    dependencies = {}
+    hashes = {}
+    for package in DEPENDENCIES:
         version = subprocess.check_output(
             ["pkg-config", "--modversion", package], text=True
         ).strip()
@@ -93,12 +89,62 @@ def ensure(root, jobs=2):
                 ["pkg-config", "--variable=libdir", package], text=True
             ).strip()
         )
-        identity["dependencies"][package] = dict(
-            version=version,
-            files={
-                p.name: digest(p) for p in sorted(libdir.glob("*.dylib")) if p.is_file()
-            },
+        flags = shlex.split(
+            subprocess.check_output(
+                ["pkg-config", "--libs-only-l", package],
+                text=True,
+            )
         )
+        directories = [libdir] + [
+            Path(flag[2:])
+            for flag in shlex.split(
+                subprocess.check_output(
+                    ["pkg-config", "--libs-only-L", package], text=True
+                )
+            )
+            if flag.startswith("-L")
+        ]
+        files = {}
+        for flag in flags:
+            if not flag.startswith("-l"):
+                continue
+            name = "lib" + flag[2:]
+            # SDL2's pkg-config file also lists the static SDL2main shim.
+            library = next(
+                (
+                    directory / (name + suffix)
+                    for directory in directories
+                    for suffix in (".dylib", ".a")
+                    if (directory / (name + suffix)).is_file()
+                ),
+                None,
+            )
+            if library is None:
+                raise RuntimeError(
+                    "Could not fingerprint " + package + " library: " + name
+                )
+            library = library.resolve()
+            # libwebp is also linked by libwebpdemux; hash shared real files once.
+            if library not in hashes:
+                hashes[library] = digest(library)
+            files[str(library)] = hashes[library]
+        if not files:
+            raise RuntimeError("No linked libraries found for " + package)
+        dependencies[package] = dict(version=version, files=files)
+    return dependencies
+
+
+def ensure(root, jobs=2):
+    """Return a leased, verified private build of the required image codecs."""
+    brew = Path(subprocess.check_output(["brew", "--prefix"], text=True).strip())
+    identity = dict(
+        archive=ARTIFACT,
+        options=lean_options(),
+        arch=platform.machine(),
+        compiler=subprocess.check_output(["clang", "--version"], text=True),
+        sdk=subprocess.check_output(["xcrun", "--show-sdk-version"], text=True),
+        dependencies=dependency_identity(),
+    )
     key = hashlib.sha256(json.dumps(identity, sort_keys=True).encode()).hexdigest()[:24]
     location = cache(root, "mac-sdl-image-" + key, lease=False)
     prefix = location / "prefix"

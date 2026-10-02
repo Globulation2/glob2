@@ -13,6 +13,32 @@ import dmg
 
 
 class MacImageTests(unittest.TestCase):
+    def test_identity_ignores_unrelated_libraries_and_hashes_shared_files_once(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            library = root / "libcodec.dylib"
+            library.write_bytes(b"codec")
+            (root / "libmain.a").write_bytes(b"static shim")
+            unrelated = root / "libunrelated.dylib"
+            unrelated.write_bytes(b"other")
+
+            def pkg_config(command, **kwargs):
+                return {
+                    "--modversion": "1.0",
+                    "--variable=libdir": str(root),
+                    "--libs-only-l": "-lcodec -lmain",
+                    "--libs-only-L": "",
+                }[command[1]]
+
+            with patch.object(lean.subprocess, "check_output", side_effect=pkg_config):
+                with patch.object(lean, "digest", wraps=lean.digest) as hash_file:
+                    first = lean.dependency_identity()
+                    self.assertEqual(hash_file.call_count, 2)
+                unrelated.write_bytes(b"unrelated update")
+                self.assertEqual(first, lean.dependency_identity())
+                library.write_bytes(b"codec update")
+                self.assertNotEqual(first, lean.dependency_identity())
+
     def test_only_required_codecs_and_saving_are_enabled(self):
         options = lean.lean_options()
         for name in lean.CODECS:
