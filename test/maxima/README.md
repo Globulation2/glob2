@@ -39,7 +39,10 @@ python3 test/run_tests.py --filter 'Maxima.Relocation/*'                        
 The food-ledger suite checks capped-query ordering, wrapped reach and scratch
 buffer reuse; its `timing benchmark [benchmark]` case (run with `--tag benchmark`)
 prints CPU timings and deterministic result digests at several map sizes. Timing
-is informational. The relocation suite checks pending deletions, capacity
+is informational. The farming correctness case also checks its existing 100 ms
+CPU budget for a 512×512 fertility rebuild and prints both CPU and elapsed time.
+The limit uses process CPU time so unrelated builds and runner scheduling do not
+turn elapsed-time contention into an algorithm regression. The relocation suite checks pending deletions, capacity
 protection, failed replacements and saved handovers against real buildings. The
 continuation suite checks binary and text archives, signed limits, nested records
 and buffered writes.

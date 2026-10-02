@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <chrono>
+#include <ctime>
 #include <iostream>
 #include <stdint.h>
 #include <vector>
@@ -213,10 +214,19 @@ TEST_SUITE("Maxima.Farming")
 		}
 		ExactFertilityCache benchmark;
 		const std::chrono::steady_clock::time_point begin=std::chrono::steady_clock::now();
+		const std::clock_t cpuBegin=std::clock();
+		REQUIRE(cpuBegin!=std::clock_t(-1));
 		benchmark.rebuild(size,size,water,sand,AdaptiveFertilityPath);
+		const std::clock_t cpuEnd=std::clock();
+		REQUIRE(cpuEnd!=std::clock_t(-1));
 		const long long microseconds=std::chrono::duration_cast<std::chrono::microseconds>(
 			std::chrono::steady_clock::now()-begin).count();
-		std::cout << "fertility_512_us=" << microseconds << '\n';
-		REQUIRE(microseconds<100000);
+		const double cpuMicroseconds=1000000.0*double(cpuEnd-cpuBegin)/CLOCKS_PER_SEC;
+		std::cout << "fertility_512_us=" << microseconds
+			<< " fertility_512_cpu_us=" << cpuMicroseconds << '\n';
+		// Keep the same work budget; elapsed time also counts unrelated builds
+		// and other processes that prevent this test from getting CPU time.
+		REQUIRE(cpuMicroseconds>=0);
+		REQUIRE(cpuMicroseconds<100000);
 	}
 }
