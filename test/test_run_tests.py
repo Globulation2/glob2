@@ -93,23 +93,29 @@ class ShardTest(unittest.TestCase):
         with self.assertRaises(SystemExit):
             run_tests.shard(jobs, '4/3')
 
-    def test_unit_binary_is_one_job(self):
+    def test_unit_display_cases_are_isolated_from_headless_driver_changes(self):
         cases = run_tests.parse_listing(LISTING, 'unit')
-        jobs = run_tests.make_jobs(cases, args())
-        self.assertEqual(len(jobs), 1)
-        self.assertTrue(jobs[0].whole)
-        self.assertEqual(run_tests.doctest_filter(jobs[0]), [])
+        for in_process in (False, True):
+            jobs = run_tests.make_jobs(cases, args(in_process=in_process), cases)
+            self.assertEqual(len(jobs), 2)
+            self.assertEqual(jobs[0].cases, [cases[1]])
+            self.assertTrue(jobs[0].display)
+            self.assertFalse(jobs[0].whole)
+            self.assertTrue(jobs[1].whole)
+            self.assertFalse(jobs[1].display)
+            self.assertEqual(run_tests.doctest_filter(jobs[1]), ['-tce=*[display*'])
         subset = run_tests.make_jobs(cases[:2], args(), cases)
-        self.assertEqual([job.subset for job in subset], [True, True])
-        self.assertEqual(run_tests.doctest_filter(subset[0]), ['-tc=feeds the last worker', '-ts=HungryDefeat'])
+        self.assertEqual([job.subset for job in subset], [False, True])
         self.assertEqual(run_tests.doctest_filter(subset[1]),
-                         ['-tc=renders the bar [display:1024x768][artifacts]', '-ts=PointBar'])
-        self.assertFalse(run_tests.make_jobs(cases, args(), cases)[0].subset)
-        benchmark = run_tests.parse_listing(LISTING.replace('sweeps every landscape [slow]', 'sweeps every landscape [benchmark]'), 'unit')
-        kept, _ = run_tests.select(benchmark, args())
-        self.assertEqual(len(kept), len(benchmark) - 1)
-        job, = run_tests.make_jobs(kept, args(), benchmark)
-        self.assertEqual(run_tests.doctest_filter(job), ['-tce=*[benchmark]*'])
+                         ['-tc=feeds the last worker', '-ts=HungryDefeat'])
+        benchmark = run_tests.Case('unit', '', 'timing [benchmark]', tags=['benchmark'])
+        jobs = run_tests.make_jobs(cases, args(), cases + [benchmark])
+        self.assertEqual(run_tests.doctest_filter(jobs[1]),
+                         ['-tce=*[benchmark]*,*[display*'])
+        headless = [case for case in cases if not case.display]
+        jobs = run_tests.make_jobs(headless, args(no_display=True), cases)
+        self.assertEqual(len(jobs), 1)
+        self.assertEqual(run_tests.doctest_filter(jobs[0]), ['-tce=*[display*'])
 
     def test_same_name_in_two_suites_stays_in_its_suite(self):
         listing = LISTING.replace('<OverallResultsTestCases', '<TestCase name="feeds the last worker" testsuite="InnSwap" '

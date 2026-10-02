@@ -3,7 +3,8 @@
 
 Every engine test case runs in its own process with a disposable profile, dummy SDL
 drivers unless it is tagged [display], a timeout and captured output shown only on
-failure. The unit binary runs in one process. Results are merged into one JUnit file
+failure. Headless unit cases share a process; display unit cases run separately.
+Results are merged into one JUnit file
 and, under GitHub Actions, into the step summary with per-failure annotations.
 Fullscreen checks within display cases run only with --fullscreen.
 
@@ -91,6 +92,7 @@ class Job:
     cases: list
     whole: bool = False
     subset: bool = False   # a whole-binary job that must run only its listed cases
+    without_display: bool = False  # headless unit group excludes separately scheduled display cases
     without_benchmarks: bool = False  # a whole-binary job that skips only the [benchmark] cases
 
     @property
@@ -196,11 +198,19 @@ def make_jobs(cases, args, all_cases=None):
         mine = [case for case in cases if case.binary == kind]
         if not mine:
             continue
+        if kind == 'unit':
+            # Headless cases may change SDL's video driver. Display tests need
+            # isolated processes, even in the otherwise in-process unit suite.
+            jobs += [Job(kind, [case]) for case in mine if case.display]
+            mine = [case for case in mine if not case.display]
+            if not mine:
+                continue
         if kind == 'unit' or args.in_process:
-            everything = [case for case in (all_cases or []) if case.binary == kind]
+            everything = [case for case in (all_cases or [])
+                          if case.binary == kind and (kind != 'unit' or not case.display)]
             left_out = [case for case in everything if case not in mine]
             if left_out and all(case.has('benchmark') for case in left_out):
-                jobs.append(Job(kind, mine, whole=True, without_benchmarks=True))
+                jobs.append(Job(kind, mine, whole=True, without_benchmarks=True, without_display=(kind == 'unit')))
             elif all_cases and len(mine) < len(everything):
                 # doctest selects by name and by suite separately, so a filtered run is
                 # one process per suite: -ts= keeps same-named cases of other suites out.
@@ -209,7 +219,7 @@ def make_jobs(cases, args, all_cases=None):
                     by_suite.setdefault(case.suite, []).append(case)
                 jobs += [Job(kind, group, whole=True, subset=True) for group in by_suite.values()]
             else:
-                jobs.append(Job(kind, mine, whole=True))
+                jobs.append(Job(kind, mine, whole=True, without_display=(kind == 'unit')))
         else:
             jobs += [Job(kind, [case]) for case in mine]
     return jobs
@@ -223,9 +233,10 @@ def doctest_pattern(name):
 def doctest_filter(job):
     if job.whole:
         if job.without_benchmarks:
-            return ['-tce=*[benchmark]*']
+            excluded = '*[benchmark]*' + (',*[display*' if job.without_display else '')
+            return ['-tce=' + excluded]
         if not job.subset:
-            return []
+            return ['-tce=*[display*'] if job.without_display else []
         filters = ['-tc=' + ','.join(doctest_pattern(case.name) for case in job.cases)]
         if job.cases[0].suite:
             filters.append('-ts=' + doctest_pattern(job.cases[0].suite))

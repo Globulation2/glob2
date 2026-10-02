@@ -5,7 +5,7 @@ the same objects as the game:
 
 | Binary | Links | How it runs |
 | --- | --- | --- |
-| `glob2-unit-tests` | libgag, libusl, a few production sources and the stubs in `test/unit/stubs/` | one process, in-process |
+| `glob2-unit-tests` | libgag, libusl, a few production sources and the stubs in `test/unit/stubs/` | headless cases share a process; display cases run separately |
 | `glob2-engine-tests` | every client object except the entry point | one process per test case, each in a disposable profile |
 
 Both are listed in `test/tests.py`, built by `test/SConscript` and land in
