@@ -88,7 +88,7 @@ RecentLine recentLine(const Json &match, const std::string &me)
 		else
 			others.push_back(p.value("displayName", ""));
 	}
-	line.outcome = myOutcome == "won" ? "W" : myOutcome == "lost" || myOutcome == "abandoned" ? "L" : "–";
+	line.outcome = myOutcome == "won" ? "W" : myOutcome == "lost" || myOutcome == "abandoned" ? "L" : myOutcome == "draw" ? "D" : "–";
 	std::string versus;
 	for (std::size_t i = 0; i < others.size() && i < 3; ++i)
 		versus += (i ? ", " : "") + others[i];

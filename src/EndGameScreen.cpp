@@ -247,9 +247,19 @@ std::string ratingText(double value)
 
 Element EndGameScreen::onlineBanner(const Presentation &p)
 {
-	const char *titleKey = outcome == Outcome::Victory ? "[results victory]"
-						   : outcome == Outcome::Defeat ? "[results defeat]"
-						   : outcome == Outcome::Left	? "[results left]"
+	// The platform's outcome wins once it has one: a verified result, or a draw
+	// (alliances tied at the top, e.g. equal prestige at the sudden-death timer),
+	// which the engine's own end condition may still call a win.
+	Outcome shown = outcome;
+	if (online->outcome == "won")
+		shown = Outcome::Victory;
+	else if (online->outcome == "lost" || online->outcome == "abandoned")
+		shown = Outcome::Defeat;
+	const bool draw = online->outcome == "draw";
+	const char *titleKey = draw							? "[results draw]"
+						   : shown == Outcome::Victory ? "[results victory]"
+						   : shown == Outcome::Defeat	? "[results defeat]"
+						   : shown == Outcome::Left		? "[results left]"
 														: "[results match over]";
 	std::string subtitle = online->label;
 	if (!online->mapTitle.empty())
@@ -259,7 +269,7 @@ Element EndGameScreen::onlineBanner(const Presentation &p)
 	trophy.size = p.touch ? 28 : 32;
 	trophy.color = fe::inGameTheme().palette.accent;
 	auto words = fe::column({fe::title(fe::tr(titleKey)), fe::caption(subtitle)}, {p.pt(2)});
-	return fe::row({outcome == Outcome::Victory ? fe::icon(fe::uiIcon(fe::UIIcon::Trophy), trophy) : nullptr,
+	return fe::row({shown == Outcome::Victory && !draw ? fe::icon(fe::uiIcon(fe::UIIcon::Trophy), trophy) : nullptr,
 					fe::expanded(words)},
 				   {p.pt(10), fe::CrossAlign::Center});
 }
@@ -306,7 +316,7 @@ Element EndGameScreen::ratingCard(const Presentation &p)
 	else
 	{
 		lines.push_back(fe::caption(head));
-		const bool won = outcome == Outcome::Victory;
+		const bool won = outcome == Outcome::Victory && r.outcome != "draw";
 		std::optional<double> expected = won ? r.ratingExpectedWin : r.ratingExpectedLoss;
 		if (r.ratingBefore && expected)
 			lines.push_back(fe::label(ratingText(*r.ratingBefore) + " → " + ratingText(*expected) + "?", greyed));

@@ -267,8 +267,18 @@ void ConnectionOverlay::drawPanel(bool touch, SDL_Rect area, double unit)
 		const int valueW = font->getStringWidth(value);
 		// Ellipsize names that would run into the state column.
 		const int nameMax = width - (nameX - x) - pad - valueW - (touch ? 14 * u : 70);
-		while (name.size() > 1 && font->getStringWidth(name) > nameMax)
-			name = name.substr(0, name.size() - 2) + "…";
+		if (font->getStringWidth(name) > nameMax)
+		{
+			// Cut whole UTF-8 characters until the name and an ellipsis fit.
+			std::string base = name;
+			do
+			{
+				base.pop_back();
+				while (!base.empty() && (static_cast<unsigned char>(base.back()) & 0xC0) == 0x80)
+					base.pop_back();
+				name = base + "…";
+			} while (!base.empty() && font->getStringWidth(name) > nameMax);
+		}
 		textAt(nameX, textY, font, name, row.state == ConnectionRow::State::Left ? colors.muted : colors.ink);
 		const Color state = stateColor(row);
 		textRight(x + width - pad, textY, font, value, row.state == ConnectionRow::State::Reconnecting ? lost : colors.ink);

@@ -12,6 +12,10 @@
 #include "Team.h"
 #include "TurnSession.h"
 #include "Utilities.h"
+#include "GeneratorRegistry.h"
+#include "GenerationRequest.h"
+#include <StringTable.h>
+#include <Toolkit.h>
 
 #include <CooperativeSlice.h>
 #include <CooperativeTask.h>
@@ -407,7 +411,17 @@ std::string OnlineMatch::mapTitle() const
 	if (assignment.contains("mapTitle") && assignment["mapTitle"].is_string())
 		return assignment["mapTitle"].get<std::string>();
 	if (setupJson.contains("map") && setupJson["map"].contains("generator"))
-		return setupJson["map"]["generator"].value("generatorId", "");
+	{
+		// The landscape's own (translated) name, as the custom-game screen shows it.
+		const std::string id = setupJson["map"]["generator"].value("generatorId", "");
+		const int method = GeneratorRegistry::builtins().idOf(id);
+		if (!GeneratorRegistry::builtins().find(method))
+			return id;
+		std::string name = GAGCore::Toolkit::getStringTable()->getString("[" + std::string(GenerationRequest::methodName(method)) + "]");
+		if (name.size() > 2 && name.front() == '[' && name.back() == ']')
+			name = name.substr(1, name.size() - 2);
+		return name;
+	}
 	return {};
 }
 
