@@ -178,6 +178,21 @@ static void checkGzipWrites(FileManager& files, const fs::path& directory)
         std::unique_ptr<StreamBackend> rejected(files.openInflatingInputStreamBackend(path));
         REQUIRE(!rejected->isValid());
     }
+    // Expansion budgets include the exact payload but must still validate its
+    // trailer. A full final block needs no spare block just to consume the CRC.
+    std::string bounded(ChunkedBuffer::blockSize, 'z'), boundedGzip;
+    REQUIRE(gzipCompress(bounded, 6, boundedGzip));
+    std::ofstream(path, std::ios::binary).write(boundedGzip.data(), boundedGzip.size());
+    std::unique_ptr<StreamBackend> exact(openInflatingFileStreamBackend(path, bounded.size()));
+    REQUIRE(exact->isValid());
+    auto* exactChunks = dynamic_cast<ChunkedStreamBackend*>(exact.get());
+    REQUIRE(exactChunks != nullptr);
+    REQUIRE(exactChunks->contents().size() == bounded.size());
+    REQUIRE(exactChunks->contents().allocatedCapacity() == bounded.size());
+    std::unique_ptr<StreamBackend> tooLarge(openInflatingFileStreamBackend(path, bounded.size() - 1));
+    REQUIRE(!tooLarge->isValid());
+    std::unique_ptr<StreamBackend> emptyBudget(openInflatingFileStreamBackend(path, 0));
+    REQUIRE(!emptyBudget->isValid());
     std::string corrupt = valid; corrupt[corrupt.size()-8] ^= 1;
     std::ofstream(path, std::ios::binary).write(corrupt.data(), corrupt.size());
     std::unique_ptr<StreamBackend> rejected(openInflatingFileStreamBackend(path));

@@ -187,6 +187,8 @@ class Reader
     GAGCore::InputStream* stream;
     uint32_t count()
     {
+        // Canonical nine-neighbor tables exceed the generic one-million limit
+        // on 512x512 maps. Keep Maxima's explicit existing collection bound.
         const uint32_t size=stream->readCount("size", 16777216u);
         if(size>16777216u) throw std::runtime_error("Invalid Maxima continuation container size");
         return size;

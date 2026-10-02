@@ -1044,7 +1044,9 @@ The separate expansion limit permits the existing late-game snapshots (roughly
 Scenario objectives, hints and legacy areas are limited to 65,536 records;
 building/unit reference lists are bounded by the corresponding entity capacity.
 AI and history collection reads are limited to 1,048,576 entries per collection,
-and nested AI condition graphs to 64 factory calls. Unknown AI implementations,
+with Maxima continuation retaining its explicit 16,777,216-entry bound for
+large saved geometry tables. Nested AI condition graphs are limited to 64
+factory calls. Unknown AI implementations,
 object tags, invalid module indices and malformed queued orders are rejected.
 These are reader limits, not a new disk format. Files exceeding these limits are
 rejected. Ordinary valid saves retain their format versions and continuation

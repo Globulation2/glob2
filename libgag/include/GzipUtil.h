@@ -35,5 +35,7 @@ namespace GAGCore
 	//! chunked in-memory backend when path ends in ".gz". Never returns nullptr; an
 	//! invalid backend means the file is missing, unreadable, or its gzip data
 	//! is corrupt or truncated.
-	StreamBackend *openInflatingFileStreamBackend(const std::string& path);
+	// Callers may impose a stricter expansion budget; the global cap still applies.
+	StreamBackend *openInflatingFileStreamBackend(const std::string& path,
+        size_t maxExpandedBytes = MAX_EXPANDED_GAME_FILE_BYTES);
 }

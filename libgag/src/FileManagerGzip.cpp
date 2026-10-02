@@ -159,6 +159,7 @@ namespace GAGCore
 			if (deflateSetHeader(&stream, &header) != Z_OK) return false;
 			std::array<unsigned char, 256 * 1024> output;
 			size_t consumed = 0;
+            size_t written = 0;
 			bool ok = true;
 			int result = Z_OK;
 			auto feed = [&](const unsigned char* bytes, size_t count) {
@@ -171,14 +172,17 @@ namespace GAGCore
 					stream.next_out = output.data(); stream.avail_out = output.size();
 					result = deflate(&stream, flush);
 					const size_t n = output.size() - stream.avail_out;
-					ok = (result == Z_OK || result == Z_STREAM_END) && fwrite(output.data(), 1, n, file) == n;
+					ok = (result == Z_OK || result == Z_STREAM_END) &&
+                        n <= MAX_COMPRESSED_GAME_FILE_BYTES - written &&
+                        fwrite(output.data(), 1, n, file) == n;
+                    if (ok) written += n;
 				} while (ok && result != Z_STREAM_END && (stream.avail_in || flush == Z_FINISH));
 			};
 			if (size) ranges(feed); else feed(nullptr, 0);
 			return ok && result == Z_STREAM_END;
 		}
 
-		StreamBackend* inflateBackend(std::unique_ptr<StreamBackend> raw)
+		StreamBackend* inflateBackend(std::unique_ptr<StreamBackend> raw, size_t maxExpandedBytes = MAX_EXPANDED_GAME_FILE_BYTES)
 		{
 			if (!raw->isValid()) return raw.release();
 			try
@@ -202,14 +206,18 @@ namespace GAGCore
 						remaining -= n;
 						stream.next_in = input.data(); stream.avail_in = n;
 					}
-					const auto space = inflated.prepareAppend();
+					// At the limit, consume the trailer without allocating another block.
+                    // Any further payload byte rejects the entire stream.
+                    unsigned char overflow;
+                    const auto space = inflated.size() == maxExpandedBytes
+                        ? std::make_pair(&overflow, size_t(1)) : inflated.prepareAppend();
 					stream.next_out = space.first; stream.avail_out = space.second;
 					const int result = inflate(&stream, Z_NO_FLUSH);
 					const size_t produced = space.second - stream.avail_out;
                     // Cap expansion independently: valid late saves exceed the
                     // compressed-input limit, but hostile streams stay bounded.
-                    if (produced > MAX_EXPANDED_GAME_FILE_BYTES - inflated.size()) break;
-                    inflated.commitAppend(produced);
+                    if (produced > maxExpandedBytes - inflated.size()) break;
+                    if (produced) inflated.commitAppend(produced);
 					if (result == Z_STREAM_END)
 					{
 						// Expose bytes only after CRC/end validation and rejection of all
@@ -229,13 +237,14 @@ namespace GAGCore
 
 	bool writeGzipAtomicToPath(const std::string& path, const std::string& contents, int level)
 	{
-		if (contents.size() > std::numeric_limits<uInt>::max()) return false;
+		if (contents.size() > MAX_EXPANDED_GAME_FILE_BYTES) return false;
 		return writeGzipAtomicImpl(path, [&](FILE* file) {
 			if (level == Z_NO_COMPRESSION)
 			{
 				// Stored-block boundaries depend on output capacity; keep this optional legacy path.
 				std::string compressed;
-				return gzipCompress(contents, level, compressed) && fwrite(compressed.data(), 1, compressed.size(), file) == compressed.size();
+				return gzipCompress(contents, level, compressed) &&
+                    compressed.size() <= MAX_COMPRESSED_GAME_FILE_BYTES && fwrite(compressed.data(), 1, compressed.size(), file) == compressed.size();
 			}
 			return deflateRanges(file, contents.size(), level, [&](auto feed) {
 				feed(reinterpret_cast<const unsigned char*>(contents.data()), contents.size());
@@ -245,7 +254,7 @@ namespace GAGCore
 
 	bool writeGzipAtomicToPath(const std::string& path, const ChunkedBuffer& contents, int level)
 	{
-		if (contents.size() > std::numeric_limits<uInt>::max()) return false;
+		if (contents.size() > MAX_EXPANDED_GAME_FILE_BYTES) return false;
 		if (level == Z_NO_COMPRESSION)
 		{
 			std::string legacy(contents.size(), '\0');
@@ -257,7 +266,7 @@ namespace GAGCore
 		});
 	}
 
-	StreamBackend *openInflatingFileStreamBackend(const std::string& path)
+	StreamBackend *openInflatingFileStreamBackend(const std::string& path, size_t maxExpandedBytes)
 	{
 		FILE *fp = fopen(path.c_str(), "rb");
 		if (!fp)
@@ -265,7 +274,7 @@ namespace GAGCore
 		if (!endsWith(path, ".gz"))
 			return new FileStreamBackend(fp);
 
-		return inflateBackend(std::make_unique<FileStreamBackend>(fp));
+		return inflateBackend(std::make_unique<FileStreamBackend>(fp), std::min(maxExpandedBytes, MAX_EXPANDED_GAME_FILE_BYTES));
 	}
 
 	bool FileManager::writeGzipAtomic(const std::string& filename, const std::string& contents, int level)
