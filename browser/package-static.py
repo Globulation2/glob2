@@ -102,6 +102,11 @@ def package(source, destination):
             encoding="utf-8",
         )
         verify(stage)
+        # TemporaryDirectory and restrictive build umasks create private paths.
+        # The static payload must also be readable by an unprivileged web server.
+        for path in stage.rglob("*"):
+            path.chmod(0o755 if path.is_dir() else 0o644)
+        stage.chmod(0o755)
         # The marker owns this entire generated directory; an HTML file alone
         # is not evidence that another website can safely be replaced.
         if destination.exists():

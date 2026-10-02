@@ -1,6 +1,7 @@
 import importlib.util
 from pathlib import Path
 import tempfile
+import os
 import unittest
 from unittest.mock import patch
 
@@ -12,6 +13,17 @@ spec.loader.exec_module(module)
 
 
 class BrowserPackageTests(unittest.TestCase):
+    @unittest.skipIf(os.name == "nt", "POSIX web-server permissions")
+    def test_threaded_package_is_public_readable_under_private_build_umask(self):
+        self.threaded_source()
+        previous = os.umask(0o077)
+        try:
+            module.package(self.source, self.output)
+        finally:
+            os.umask(previous)
+        for path in [self.output, *self.output.rglob("*")]:
+            expected = 0o755 if path.is_dir() else 0o644
+            self.assertEqual(path.stat().st_mode & 0o777, expected, str(path))
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)

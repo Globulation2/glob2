@@ -64,7 +64,7 @@ jobs:
           echo "version=$version" >> "$GITHUB_OUTPUT"
           echo "revision=$revision" >> "$GITHUB_OUTPUT"
       - name: Validate Android release identity
-        run: python3 mobile/android_release.py check
+        run: python3 mobile/android_release.py ${{ inputs.tag && 'check' || 'check-candidate' }}
       - name: Validate F-Droid listing for publication
         run: python3 mobile/android_release.py check-listing
       - name: Test Android release preflight and package checks
