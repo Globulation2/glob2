@@ -148,6 +148,13 @@ Uint32 GameSessionScreen::executionDelay(Uint32 now, Uint32 fallback)
 	return engine->sessionDelay(clock + static_cast<Uint32>(now - lastTick));
 }
 
+GAGGUI::Screen::ExecutionWait GameSessionScreen::executionWait() const
+{
+	if (!started || finished || !engine)
+		return ExecutionWait::Untimed;
+	return engine->waitingOnNetwork() ? ExecutionWait::Network : ExecutionWait::Pacing;
+}
+
 void GameSessionScreen::viewportResized(int oldWidth, int oldHeight, int width, int height)
 {
 	if (engine)

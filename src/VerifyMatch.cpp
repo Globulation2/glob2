@@ -25,6 +25,7 @@
 #include "Sha256.h"
 #include "SimVersion.h"
 #include "TurnLockstep.h"
+#include "TurnTelemetry.h"
 #include "Version.h"
 #include "WinningConditions.h"
 
@@ -243,7 +244,8 @@ MatchVerifier::Verdict MatchVerifier::verify(const Turn::MatchRecord& record, co
 	}
 	result << "]},";
 	Headless::playersAndTeamsJson(result, game, engine.teamEliminatedTick);
-	result << ",\"verification\":" << verification.dump() << '}';
+	result << ",\"verification\":" << verification.dump()
+	       << ",\"network\":" << Turn::recordNetworkSummary(record).dump() << '}';
 	Headless::writeJson((output / "result.json").string(), result.str());
 
 	json teams = json::array();

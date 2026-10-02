@@ -364,6 +364,7 @@ void LanRoom::leave()
 GAGCore::CooperativeTask LanRoom::initGame(Engine& engine)
 {
 	Engine::TurnMatchStart start;
+	start.networkKind = "lan";
 	if (pending)
 	{
 		start.setup = pending->setup;

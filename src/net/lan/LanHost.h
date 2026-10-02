@@ -46,6 +46,10 @@ namespace Lan
 		return config;
 	}
 
+	/// Where the host writes the relay's network summary for a record path:
+	/// "x.g2mr" -> "x.network.json".
+	std::string networkSummaryPath(const std::string& recordPath);
+
 	class LanHost : public std::enable_shared_from_this<LanHost>, private Turn::SequencerOutput
 	{
 	public:
@@ -131,6 +135,8 @@ namespace Lan
 		std::uint32_t horizon() const;
 		std::optional<std::uint32_t> agreedChecksum(std::uint32_t tick) const;
 		std::size_t guestCount() const;
+		/// The relay's per-seat network summary so far (null before the match starts).
+		nlohmann::json networkSummary() const;
 
 	private:
 		struct Peer

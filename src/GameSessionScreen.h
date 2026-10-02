@@ -21,6 +21,7 @@ class GameSessionScreen : public GAGGUI::Screen
 	void handleExecutionEvent(SDL_Event event) override;
 	void drawExecution() override;
 	Uint32 executionDelay(Uint32 now, Uint32 fallback) override;
+	ExecutionWait executionWait() const override;
 
     bool supportsCompactViewport() const override { return true; }
     bool usesResponsiveViewport() const override { return GAGCore::phonePresentationRequested(); }

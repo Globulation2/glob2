@@ -156,6 +156,11 @@ GAGCore::CooperativeTask Engine::initTurnMatchTask(TurnMatchStart start)
     co_await GAGCore::CooperativeTask::checkpoint("[Loading headers]");
     TurnMatchState state;
     state.mapFile = start.mapFile;
+    state.localSeat = start.localSeat;
+    state.simVersion = start.setup.simVersion.key();
+    state.networkKind = start.networkKind;
+    state.relayId = start.relayId;
+    state.relayRegion = start.relayRegion;
     state.map = loadMapHeader(start.mapFile);
     try { state.header = start.setup.toGameHeader(state.map); }
     catch (const Online::MatchSetupError& error)
