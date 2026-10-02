@@ -1,5 +1,5 @@
 const {editTextField}=require('./main-menu');
-const {gameURL,clickMainMenu,clickSettingsCancel,clickCustomGameStart,clickControl}=require('./main-menu');
+const {gameURL,clickMainMenu,clickSettingsCancel,clickCustomGameStart,clickControl,control}=require('./main-menu');
 const {test,expect}=require('@playwright/test');
 const fs=require('node:fs/promises');
 const {createHash}=require('node:crypto');
@@ -47,6 +47,10 @@ for (const fault of ['abort','quota']) test(`${fault} failure retains the previo
   await expect.poll(async ()=>(await state(page)).paused).toBe(true);
   await page.evaluate(()=>storageFault.enable());
   await save(page);
+  // Background writes can fail before the worker consumes the save click.
+  // Export appears only after this dialog's persistence operation has failed;
+  // the global storage status alone can still describe an earlier write.
+  await control(page,'export');
   await expect.poll(async ()=>(await state(page)).persistence).toBe('failed');
   const changed=await digest(); expect(changed).not.toEqual(original);
   const downloadEvent=page.waitForEvent('download');
