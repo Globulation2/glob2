@@ -64,7 +64,13 @@ aliases/cycles, undefined, signed zero, property attributes and rejection rollba
 with real AI callbacks, one/four workers, save/resume at ticks 32 and 128, and
 actual replay playback. It retains complete traces, saves and replays. The Python
 runner adds realistic continuations at 64, 96 and 224. All complete checks include
-the aggregate checksum as well as entity records; replay playback supplies AI
+the aggregate checksum as well as entity records. Saved continuation checks
+adjust only the known MapHeader version contribution when a legacy initial save
+is written in the current format: the version fields and team/player counts in
+both save headers determine that contribution. All entity bytes and the remaining
+aggregate checksum must still match, and the resumed tick range must be complete.
+The final save payload comparison still excludes only the history-dependent SHA1.
+Replay playback supplies AI
 orders, while the live runs prove AI execution and persisted AI state.
 
 The focused conversion fixture primes production AI globals, RNG and orders,

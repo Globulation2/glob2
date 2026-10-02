@@ -50,6 +50,43 @@ def compare_payloads(whole, resumed):
     assert whole[:sha1] == resumed[:sha1] and whole[sha1 + 20:] == resumed[sha1 + 20:]
 
 
+def save_header(path):
+    """Read the modern fixture's MapHeader and GameHeader player count."""
+    data = gzip.decompress(path.read_bytes())
+    name_length = struct.unpack_from('>I', data)[0]
+    major, minor, teams = struct.unpack_from('>3I', data, 4 + name_length)
+    assert minor >= 73, 'fixture predates fixed-size BaseTeam headers'
+    # Name, four MapHeader integers, saved flag, SHA1, then 20 bytes per team.
+    game_header = 4 + name_length + 16 + 1 + 20 + 20 * teams
+    players = struct.unpack_from('>I', data, game_header + 5)[0]
+    assert 0 < teams <= 32 and 0 < players <= 32
+    return major, minor, teams, players
+
+
+def continuation_matches(ticks, records, initial, checkpoint, boundary):
+    """Keep aggregate coverage while accounting only for serialized header version."""
+    before, after = save_header(initial), save_header(checkpoint)
+    assert before[0] == after[0], 'saved major version changed'
+    assert after[1] >= before[1], 'saved minor version moved backwards'
+    assert before[2:] == after[2:], 'saved team/player counts changed'
+    # MapHeader::checkSum rotates major ^ minor ^ teams once. Game::checkSum
+    # rotates that contribution once per team/player and four more times.
+    delta = before[0] ^ before[1] ^ after[0] ^ after[1]
+    rotations = (before[2] + before[3] + 5) % 32
+    if rotations:
+        delta = ((delta >> rotations) | (delta << (32 - rotations))) & 0xffffffff
+    if set(records) != set(range(boundary, 256)):
+        return False
+    for tick, actual in records.items():
+        expected = ticks[tick]
+        if actual[:4] != expected[:4] or actual[8:] != expected[8:]:
+            return False
+        checksum = struct.unpack_from('<I', expected, 4)[0] ^ delta
+        if struct.unpack_from('<I', actual, 4)[0] != checksum:
+            return False
+    return True
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('binary', type=Path)
@@ -60,7 +97,8 @@ def main():
     output.mkdir(parents=True, exist_ok=False)
     manifest = {'revision': subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),
                 'binarySha256': hashlib.sha256(binary.read_bytes()).hexdigest(), 'fixtures': {},
-                'checks': [], 'excludedSaveMetadata': 'MapHeader SHA1 only (depends on save history)'}
+                'checks': [], 'excludedSaveMetadata': 'MapHeader SHA1 only (depends on save history)',
+                'continuationChecksumAdjustment': 'MapHeader format-version contribution only'}
     names = ('profile1', 'realistic-profile1') if args.fixture == 'all' else (args.fixture,)
     (output / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
     for name in names:
@@ -89,7 +127,9 @@ def main():
             tail = output / name / ('resumed-' + str(boundary))
             resumed = run(binary, tail, baseline / f'checkpoint-{boundary}.game.gz', 4)
             records = complete_ticks(resumed)
-            assert len(records) == 256 - boundary and all(ticks[t] == v for t, v in records.items())
+            assert continuation_matches(ticks, records, initial,
+                                        baseline / f'checkpoint-{boundary}.game.gz', boundary), \
+                f'{name}: continuation differs at boundary {boundary}'
             compare_payloads((baseline / 'final.game.gz').read_bytes(), (tail / 'final.game.gz').read_bytes())
         manifest['checks'].append({'fixture': name, 'ticks': 256, 'workers': [1, 4], 'resumeBoundaries': list(boundaries)})
         (output / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
