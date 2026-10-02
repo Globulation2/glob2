@@ -11,6 +11,7 @@
 #include <memory>
 #include <utility>
 #include <cstdlib>
+#include <cmath>
 #include <exception>
 #include "GlobalContainer.h"
 #include "CampaignEditor.h"
@@ -236,12 +237,35 @@ std::vector<Fixture> fixtures()
 void resize(int width, int height)
 {
 	auto *gfx = globalContainer->gfx;
-	SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()), width, height);
-	GLOB2_REQUIRE(SDL_SyncWindow(SDL_GetWindowFromID(gfx->windowID())), "Window resize must settle before layout assertions");
+	auto *window = SDL_GetWindowFromID(gfx->windowID());
+	int actualWidth = 0, actualHeight = 0;
+	REQUIRE(SDL_GetWindowSize(window, &actualWidth, &actualHeight));
+	if (actualWidth != width || actualHeight != height)
+		REQUIRE(SDL_SetWindowSize(window, width, height));
+	// X11 synchronization also waits for window position and can time out even
+	// when a repeated resize already has the requested dimensions.
+	const auto deadline = SDL_GetTicks() + 3000;
+	do
+	{
+		SDL_PumpEvents();
+		REQUIRE(SDL_GetWindowSize(window, &actualWidth, &actualHeight));
+		if (actualWidth == width && actualHeight == height)
+			break;
+		SDL_Delay(10);
+	} while (SDL_GetTicks() < deadline);
+	int minWidth = 0, minHeight = 0, maxWidth = 0, maxHeight = 0;
+	SDL_GetWindowMinimumSize(window, &minWidth, &minHeight);
+	SDL_GetWindowMaximumSize(window, &maxWidth, &maxHeight);
+	INFO("Requested " << width << "x" << height << "; actual " << actualWidth << "x" << actualHeight
+		 << "; minimum " << minWidth << "x" << minHeight << "; maximum " << maxWidth << "x" << maxHeight
+		 << "; flags " << SDL_GetWindowFlags(window) << "; SDL error: " << SDL_GetError());
+	REQUIRE(actualWidth == width);
+	REQUIRE(actualHeight == height);
 	SDL_Event event{};
-	event.type = SDL_EVENT_WINDOW_RESIZED;
 	event.type = SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED;
 	GAGCore::GraphicContext::translateMouseEvent(&event);
+	REQUIRE(gfx->getW() == int(std::lround(width / gfx->getUiScale())));
+	REQUIRE(gfx->getH() == int(std::lround(height / gfx->getUiScale())));
 }
 
 // The part of a node that clipping ancestors leave visible.
@@ -505,7 +529,7 @@ TEST_SUITE("UIPresentation")
 	{
 		run(viewports[4]);
 	}
-	TEST_CASE("every screen lays out; navigates and captures at fullhd across presentations and insets [display:1600x1400][artifacts][slow]")
+	TEST_CASE("every screen lays out; navigates and captures at fullhd across presentations and insets [display:2200x1400][artifacts][slow]")
 	{
 		run(viewports[5]);
 	}
