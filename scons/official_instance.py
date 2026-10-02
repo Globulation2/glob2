@@ -9,7 +9,7 @@ App Link host and the iOS associated domain. Legacy YOG endpoints are separate.
 
 from urllib.parse import urlsplit
 
-DEFAULT_ORIGIN = 'https://glob2online.com'
+DEFAULT_ORIGIN = 'https://app.glob2online.com'
 
 
 def origin(arguments=None):

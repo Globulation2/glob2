@@ -210,6 +210,7 @@ services:
       net.ipv4.ip_unprivileged_port_start: '0'
     environment:
       GLOB2_DOMAIN: ${GLOB2_DOMAIN:-localhost}
+      GLOB2_ADDITIONAL_DOMAIN: ${GLOB2_ADDITIONAL_DOMAIN:-}
       GLOB2_REDIRECT_DOMAINS: ${GLOB2_REDIRECT_DOMAINS:-http://redirect.invalid}
       GLOB2_TLS_MODE: ${GLOB2_TLS_MODE:-auto}
       GLOB2_EDGE_TRUSTED_PROXIES: ${GLOB2_EDGE_TRUSTED_PROXIES:-127.0.0.1/32}

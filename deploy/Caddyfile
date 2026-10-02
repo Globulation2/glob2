@@ -19,7 +19,7 @@
 	}
 }
 
-{$GLOB2_DOMAIN:localhost} {
+{$GLOB2_DOMAIN:localhost} {$GLOB2_ADDITIONAL_DOMAIN:} {
 	# auto: public certificates via ACME for a real domain, Caddy's local CA for
 	# localhost; internal: always the local CA (LAN host names, staging).
 	import tls-{$GLOB2_TLS_MODE:auto}
@@ -65,6 +65,8 @@
 	handle_path /play/* {
 		root * /srv/play
 		header Cache-Control "no-cache"
+		header Cross-Origin-Opener-Policy "same-origin"
+		header Cross-Origin-Embedder-Policy "require-corp"
 		file_server
 	}
 

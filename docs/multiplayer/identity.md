@@ -90,7 +90,7 @@ phones and the web client, and needs no loopback server in the game.
    an 8-character `confirmationCode`, an expiry (`auth.handoffMinutes`, default
    10) and a `resumeToken`.
 2. The client opens the system browser at `signInUrl` and shows the code.
-3. `/signin` (server-rendered by the API, no scripts, strict CSP, no Referer)
+3. `/signin` (server-rendered by the API, no scripts, strict CSP, no cross-site Referer)
    shows the same code with a warning to continue only if the player started
    the sign-in, the provider buttons and, if enabled, the local password form.
    The first browser to open the link is bound to the attempt (a random cookie

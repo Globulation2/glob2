@@ -153,15 +153,23 @@ write with `ApplicationHost::persistStorage()`. Credentials are not in
 `preferences.txt`, which players attach to bug reports.
 
 The official origin is one build-time setting: `DEFAULT_ORIGIN` in
-`scons/official_instance.py` (currently `https://glob2online.com`), overridable
+`scons/official_instance.py` (currently `https://app.glob2online.com`), overridable
 with `scons official_instance=https://example.org`. Every build path passes it to
 the client as `GLOB2_OFFICIAL_INSTANCE_ORIGIN`, and the Android and iOS packaging
 scripts derive the App Link host and associated domain from it.
 
+The browser shell selects its serving origin for a fresh profile, so hosted
+`/play/` clients connect to their own platform even when the compiled default
+predates a hostname cutover. On the official app host it also changes a saved
+apex selection to `https://app.glob2online.com`. Custom instance selections stay
+intact, and device credentials and refresh tokens remain keyed to their original
+origin; the shell never copies them to the new origin. Initialization waits for
+successful storage restoration before writing configuration.
+
 ```json
 {
   "version": 1,
-  "selected": "https://glob2online.com",
+  "selected": "https://app.glob2online.com",
   "instances": {
     "https://games.example.org": {
       "trusted": true, "autoSignIn": true,
@@ -238,10 +246,10 @@ The `quick` role plays a casual quick match (AI backfill) and leaves after
 `GLOB2_E2E_QUICK_LEAVE` seconds. Every stage is captured:
 
 ```sh
-build/darwin/client/release/src/OnlinePlayHarness host https://glob2online.com artifacts/e2e &
+build/darwin/client/release/src/OnlinePlayHarness host https://app.glob2online.com artifacts/e2e &
 sleep 20
-build/darwin/client/release/src/OnlinePlayHarness guest https://glob2online.com artifacts/e2e
-build/darwin/client/release/src/OnlinePlayHarness quick https://glob2online.com artifacts/e2e-quick
+build/darwin/client/release/src/OnlinePlayHarness guest https://app.glob2online.com artifacts/e2e
+build/darwin/client/release/src/OnlinePlayHarness quick https://app.glob2online.com artifacts/e2e-quick
 ```
 
 ## Map cache

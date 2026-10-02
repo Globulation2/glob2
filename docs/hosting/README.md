@@ -151,6 +151,39 @@ Caddy's certificate, and list its source ranges in `GLOB2_EDGE_TRUSTED_PROXIES` 
 client addresses survive (rate limits and relay per-address limits use them). The
 balancer must allow WebSocket upgrades and idle connections of at least 60 seconds.
 
+### Separate public website and app
+
+The public Astro website lives in the separate `Globulation2/glob2-website`
+repository and deploys to Firebase Hosting in project `pharaoh-418820`.
+`glob2online.com` serves that static website; `app.glob2online.com` serves this
+stack. Website builds and releases do not restart platform services or matches.
+The website's Play and Sign in links navigate to `/play/` and `/signin` on the app
+origin. Public player-rating snapshots are published independently to GCS by the
+website repository's publisher using the existing public leaderboard API.
+
+For a domain cutover, first point `app.glob2online.com` at the backend and add
+`GLOB2_ADDITIONAL_DOMAIN=app.glob2online.com` while retaining the existing
+`GLOB2_DOMAIN` and `GLOB2_PUBLIC_ORIGIN`. This certifies and serves the extra name;
+it does not enable that origin for relay WebSockets. Test TLS and routes before
+changing the canonical origin. Once existing games have drained, set
+`GLOB2_DOMAIN=app.glob2online.com` and
+`GLOB2_PUBLIC_ORIGIN=https://app.glob2online.com`, update provider callback URIs,
+and recreate the affected API and relay services in a planned maintenance window.
+New `/api/v1/instance` responses must advertise `wss://app.glob2online.com/realtime`,
+and relay URLs and browser requests must use the same app origin. Do not combine
+old-origin sessions with new-origin relay endpoints. The Compose relay origin
+allowlist follows `GLOB2_PUBLIC_ORIGIN` automatically.
+
+Reload Caddy rather than replacing it while connections are active; its existing
+`stream_close_delay` permits a short reconnection grace period but does not promise
+indefinite connection retention. A Compose container replacement closes sockets.
+Only after app login and a real multiplayer match pass should the apex DNS move to
+Firebase and the temporary backend hostname be removed. Website rollout or
+rollback alone must not recreate any backend container. `/play/*` supplies COOP
+`same-origin` and COEP `require-corp` for WebAssembly browser isolation; keep its
+workers and assets on the app origin. These isolation headers are deliberately
+limited to the game route so the app's sign-in flows retain normal opener behavior.
+
 ### Routes
 
 | Path | Goes to |
@@ -200,6 +233,7 @@ its default.
 | Variable | Default | Meaning |
 | --- | --- | --- |
 | `GLOB2_DOMAIN` | `localhost` | Site name Caddy serves and certifies |
+| `GLOB2_ADDITIONAL_DOMAIN` | unset | Optional second served hostname during cutover; does not change the canonical origin |
 | `GLOB2_PUBLIC_ORIGIN` | `https://localhost:8443` | Origin clients use; also the relays' URL base |
 | `GLOB2_BIND`, `GLOB2_HTTP_PORT`, `GLOB2_HTTPS_PORT` | `127.0.0.1`, `8080`, `8443` | Published address and ports |
 | `GLOB2_TLS_MODE` | `auto` | `auto` or `internal` |

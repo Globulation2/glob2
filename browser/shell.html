@@ -52,6 +52,19 @@ fitCanvas();
 // opens it in the replay viewer instead of the main menu. Only http(s) URLs are
 // fetched, without credentials unless same-origin; the server must allow CORS
 // for other origins. The file lives in memory (/tmp), never in saved storage.
+// The browser instance is the host serving the game, independent of an older
+// compiled official-instance default. Never move credentials between origins.
+function browserInstanceConfig(text, origin) {
+  if (text === null) return JSON.stringify({version:1, selected:origin, instances:{}});
+  let config;
+  try { config = JSON.parse(text); } catch (_) { return null; }
+  if (!config || config.version !== 1 || typeof config.selected !== 'string' ||
+      !config.instances || typeof config.instances !== 'object' || Array.isArray(config.instances)) return null;
+  if (origin !== 'https://app.glob2online.com' || config.selected !== 'https://glob2online.com') return null;
+  config.selected = origin;
+  return JSON.stringify(config);
+}
+// End browser instance configuration.
 const WATCH_REPLAY_MAX_BYTES = 64 * 1024 * 1024;
 const watchReplay = (() => {
   const raw = new URLSearchParams(location.search).get('replay');
@@ -149,6 +162,16 @@ var Module = {
     const invite = join && /^[A-Za-z0-9]{6,16}$/.test(join) ? ['--join', join, '--instance', location.origin] : [];
     const args = ['-s', width + 'x' + height, '-F', '-C', gpu ? '-g' : '-G', ...invite];
     if (watchReplay && watchReplay.status === 'ready') args.push('-replay', watchReplay.path);
+    if (Module.storageRestore === 'ready') {
+      const path = '/home/web_user/.glob2/online/instances.json';
+      const previous = FS.analyzePath(path).exists ? FS.readFile(path, {encoding:'utf8'}) : null;
+      const configured = browserInstanceConfig(previous, location.origin);
+      if (configured !== null) {
+        FS.mkdirTree('/home/web_user/.glob2/online');
+        FS.writeFile(path, configured);
+        Module.storage.changed();
+      }
+    }
     Module.callMain(args);
     document.body.classList.add('ready');
     loading.setAttribute('aria-hidden','true');
