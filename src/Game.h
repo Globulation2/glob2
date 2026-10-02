@@ -49,6 +49,7 @@ class SetAllianceOrder;
 class PlayerQuitsGameOrder;
 #ifndef YOG_SERVER_ONLY
 class GameAnimations;
+class SoftwareTerrainCache;
 #endif  // !YOG_SERVER_ONLY
 
 // Minimum value of the prestige-victory threshold.
@@ -396,6 +397,7 @@ public:
 	//! gate is internal to GameAnimations. See
 	//! src/render/GameAnimations.h.
 	std::unique_ptr<GameAnimations> animations;
+    std::unique_ptr<SoftwareTerrainCache> softwareTerrainCache;
 #endif  // !YOG_SERVER_ONLY
 	std::list<BuildProject> buildProjects;
 	///Stores alpha values to be passed to the drawing system. kept here so it isn't re-allocated

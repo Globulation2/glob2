@@ -265,6 +265,18 @@ the checkpoint's natural population from this deliberately seeded stress case.
 and can go below the interactive camera's minimum zoom.
 `GLOB2_BENCH_CAMERA_SWEEP=1` repeatedly changes zoom and pans across wrap seams.
 Sweep measurements mix those view sizes; use a fixed camera for paired timings.
+`GLOB2_BENCH_COMPARE_RENDERER=1` additionally compares immediate and optimized
+native rendering in the same process, at the same camera and simulation state.
+It reports paired process CPU timings and checks pixel differences after timing
+ends. Set `GLOB2_BENCH_COMPARE_AI=1` to advance one AI tick before each pair;
+combine this with the camera sweep to exercise resource changes and wrap seams.
+The comparison uses the no-cloud pass, a fixed water phase, eight warmup pairs,
+and a sparse tolerance of at most 100 changed channels with a maximum delta of
+1/255. That tolerance does not establish bit-exact moving-scene output. The
+immediate reference retains the ordinary resource sprite batch; it disables the
+mixed unit queue, texture arrays and persistent map geometry.
+`GLOB2_BENCH_COMPARE_CAPTURE_PREFIX=artifacts/render-profile/pair` saves the final
+pair as `pair-immediate.ppm` and `pair-optimized.ppm` for visual review.
 
 Timings include GPU completion (`glFinish`) and exclude frame presentation, AI,
 input and simulation work. They are renderer measurements, not whole-game FPS.
@@ -283,6 +295,76 @@ Point bars batch opaque fills within each bar using bounded OpenGL or SDL geomet
 submissions. OpenGL outlines and translucent fills preserve their original order;
 software surfaces retain their existing path. Full-map terrain and resource passes
 skip fog discovery queries when `DRAW_WHOLE_MAP` already makes every tile visible.
+
+Flat-map resources use a bounded OpenGL/portable SDL sprite batch, including
+standalone frames from partial HD packs. Draws sharing a texture and alpha can join an earlier run
+only when their rectangles do not overlap intervening runs. Conservative bounds
+preserve the order of overlapping artwork while reducing draw submissions and
+texture switches without changing sampling or allocating another texture atlas.
+OpenGL texture uploads flush pending draws, and the scope flushes before leaving
+the resource pass. Software surfaces and dynamic team-color sprites retain their
+existing paths; cache-backed team-color surfaces cannot be deferred safely.
+
+
+For comparisons with another revision, set `GLOB2_BENCH_PAUSE_PRESENTATION=1`
+to freeze the water phase and `GLOB2_BENCH_WARMUP_FRAMES` to the same number of
+frames on both executables. Record cold-frame samples as well as steady-state
+medians, and confirm `STEADY_CACHE pending=0` before describing results as fully
+warmed. Compare complete builds from both revisions; the diagnostic immediate
+path is not an untouched-master baseline.
+
+### Batching and geometry cache invariants
+
+The native desktop OpenGL renderer batches ground and air passes with
+`UnitDrawBatch`. It keeps the original sprite, fill and line primitives and their
+painter order. A draw may join an earlier run only if its conservative bounds do
+not intersect any intervening run. Bounds include a physical-pixel sampling
+margin and half the requested outline width; they must be expressed in the
+current map transform. Capacity limits flush a batch rather than grow it without
+bound. Unsupported commands submit pending draws first. Clip and transform
+changes also flush, then disable culling and reordering for the remainder of the
+scope because the original bounds no longer describe its coordinates.
+
+Team hue and opacity travel with each vertex. Compatible HD textures can share
+array pages while retaining their original dimensions, mip levels, format and
+sampling parameters. The source textures remain available for fallback drawing.
+The array cache caps its additional texture payload at 64 MiB, separately from
+cached map geometry. Immutable slots survive source texture invalidation until
+context teardown; new textures use the ordinary path when that budget is full.
+Pages contain at most 64 layers to bound each driver allocation. `FrameDrawBatch`
+defers new array copies until after scene submission, attempting at most eight
+sources under a soft 2 ms budget. Original textures draw while preparation is
+pending, and mutation/deletion cancels pending IDs. A texture
+upload or deletion must flush commands referring to the old pixels and invalidate
+array views before the driver can reuse a texture name. Cached geometry must also
+be invalidated selectively when its source texture or array page changes; unrelated
+uploads must preserve reusable entries. A mutation serial rejects interrupted
+captures but does not globally clear the cache. These are
+presentation caches owned by the graphics context, released while that context
+is current; they are neither saved nor consulted by simulation code.
+
+Terrain geometry is cached in canonical 32 by 32 tile chunks. Fully revealed
+resources use canonical map rows, with sorted source-tile indices selecting the
+contiguous visible vertex range. Translation places a canonical chunk or row at
+its current wrapped-map position, so camera panning does not change its vertices.
+Each entry compares the exact current tile frame/visibility vector before reuse:
+a resource amount, terrain frame or discovery change must invalidate the entry.
+Partial-discovery resources keep the ordinary drawing path. The geometry budget
+is 32 MiB of buffer payload with at most 4096 entries and least-recently-used
+eviction; CPU metadata and driver allocation overhead are additional. Each scene
+attempts at most 16 geometry builds under a separate soft 2 ms budget; validated
+cache hits remain unrestricted. Deferred rows retain ordinary sprite batching.
+These time limits are soft because an individual driver call can exceed them.
+
+Native array/cache optimizations require supported desktop OpenGL features.
+Software, portable SDL and unsupported native contexts retain their existing
+rendering paths. Desktop measurements must not be presented as phone performance.
+When changing this code, compare immediate and batched output at several zooms,
+across wrap seams and clip boundaries, with overlapping translucent sprites,
+wide outlines, carried icons, texture mutation/deletion and context recreation.
+Advance an AI match between comparisons to exercise resource invalidation, and
+check that each render leaves its simulation checksum unchanged. Keep commands,
+seeds, binaries, captures and timing data under `artifacts/` for review.
 
 ## Simulation verification and diagnostics
 
@@ -496,3 +578,127 @@ paths and need compatibility links or updated scripts before cleanup. Migration
 never infers that extracted tool directories are trustworthy from a version
 string alone. Windows inventory/seeding is supported; duplicate removal requires
 a supported open-file checker and is conservatively skipped there.
+
+## Software rendering architecture and profiling
+
+`GraphicContext` remains the drawing facade and retains existing capability queries.
+It owns the accelerated backend and software backend independently; transformed passes
+borrow them through scoped transform/clip state (`RenderStateScope.h`). The CPU backend
+in `SoftwareRenderBackend.cpp` implements sprite blits and rectangle fills directly on
+its borrowed framebuffer. It creates SDL's software renderer only when general triangle
+geometry is needed, and flushes that queue before direct writes or target replacement.
+Large existing images expanded past 512 pixels, including water, retain SDL geometry
+rasterization because its fixed-point overflow behavior is visible at some transformed
+sizes. Borrowed terrain run views use direct rasterization: they replace small tiles and must not acquire that
+large-triangle behavior. Correcting the legacy large-image appearance needs separate
+visual acceptance.
+`RenderBackend.cpp` contains the accelerated SDL implementation and its texture uploads.
+
+`SurfaceRaster.cpp` owns pixel arithmetic. Unscaled sprites use opaque copies only
+when their pixels are verified opaque and draw opacity is 255; other sprites use the
+conservative blending path. Native drawing preserves the existing draw-opacity arithmetic. Fully unclipped native
+scaling uses SDL's optimized nearest scaler without classifying mutable UI surfaces.
+Clipped and transformed blits sample nearest source pixel centers from
+the original destination rectangle; clipping cannot change sampling. Transformed
+rectangles round both endpoints with `floor(edge + 0.5)` and derive their size afterward,
+so adjacent tiles share a boundary at fractional zoom. This can change fractional-scale
+sampling and boundary placement by one output pixel. Source blend/alpha modulation is
+restored after each operation. Transformed primitives preserve SDL triangle blending
+rounding, including independent source/destination truncation for textured draws. Native
+rectangle alpha arithmetic retains the legacy `/256` rounding. Sprite modulation uses
+exact `/255` arithmetic and zero-alpha sprite pixels leave the destination untouched.
+
+Surface content revisions are independent of texture upload revisions. Each accelerated
+backend tracks its own uploaded revision; opacity classification is cached against the
+content revision. Code that edits pixels through `getSDLSurface()` must call
+`markPixelsChanged()` afterward. This includes raw SDL copies and external rasterizers.
+
+`GameRenderFrame` groups the viewport, assets, visibility and draw options inside the
+existing game rendering entry point. `Game::softwareTerrainCache` is transient presentation
+state: 16×16 tile chunks, at most 32 MiB of pixel storage, least-recently-used eviction.
+The cache is used during transformed software passes. Ordinary native drawing keeps
+its per-tile opaque copies, avoiding full-chunk blending of mixed alpha. Within a
+transformed chunk, adjacent opaque tiles become borrowed surface views over the raw
+chunk pixels. Coastlines retain individual source blits, avoiding repeated alpha scans
+over transparent chunk holes. Views are destroyed before their backing chunk.
+Each chunk validates exact terrain IDs, the existing discovery decisions and source
+content revisions. It stores raw color/alpha, so coastlines blend over animated water
+once. Map replacement clears the cache; editor terrain changes and visible-team changes
+are detected during preparation. Resources, actors, fog and overlays keep their existing
+passes. Water coverage subtracts only verified opaque terrain rectangles, including discovery
+boundaries. A complete animated water tile is omitted only when all of it is covered;
+partially covered tiles retain their original source mapping and animation phase.
+Coverage includes the original water pass's overshoot outside the viewport, which a
+transform can bring onscreen. Fragmented coverage falls back to the full pass after
+64 rectangles. Oversized working sets and allocation failures use
+uncached terrain. None of these caches enter saves, simulation checksums or orders.
+
+`SoftwareFramePresenter` owns two framebuffers and retains the completed one for exposure
+repaint. `beginFrame(FullRedraw)` rotates without a retention copy. Partial updates,
+including legacy callers that begin implicitly on their first drawing operation, copy
+the completed frame into the next drawing target. Target rotation flushes queued work
+and rebinds the software backend. Resize retains the old completed image until the first
+replacement frame completes. Letterboxing and minimized-window handling remain in the
+window presentation boundary; failed spare-buffer allocation uses the prior frame-cache
+copy path. `completedFrame()` provides the retained software image; normal screenshot
+requests continue to capture the current drawing frame.
+
+Build the opt-in saved-game benchmark with optimized production objects:
+
+```sh
+scons release=1 server=0 opengl=0 software-render-benchmark
+PROFILE_SAVE=artifacts/software-renderer/initial.game.gz PROFILE_ZOOM=0.5 \
+  PROFILE_FRAMES=240 PROFILE_WARMUP=30 PROFILE_NO_PRESENT=1 PROFILE_CPU_SCOPES=1 \
+  GLOB2_USER_DATA_DIR=artifacts/software-renderer/profile \
+  build/darwin/client/release/test/SoftwareRenderBenchmark -G -s 1280x800 -m -F
+```
+
+Use the appropriate `linux`/`mingw` build directory or an explicit `--build=DIR`.
+Resolution is the existing `-s WxH` argument, measured in framebuffer pixels.
+The benchmark disables HiDPI by default so the workload does not change with the
+monitor density. `PROFILE_NATIVE_DISPLAY=1` retains native Retina/HiDPI presentation. `PROFILE_OFFSET_X/Y` add logical-pixel camera
+offsets; `PROFILE_FRACTION=1` adds a half-pixel horizontal offset. `PROFILE_VISIBLE=1`
+shows the window; omit `PROFILE_NO_PRESENT` to include presentation. `PROFILE_CAPTURE`
+names an output BMP. `PROFILE_TERRAIN_CACHE=0` isolates primitive performance without
+adding a user graphics setting. The harness reports population, wall-time mean/median/p95,
+process CPU time, optional thread CPU stage costs, backend operation counts, cache memory
+and cache hit/rebuild counts. It also checks that drawing preserves the simulation checksum.
+Run captured fixtures from early, mid and late games; keep generated saves and profiles
+under ignored `artifacts/`. To advance a saved initial game into population fixtures,
+use the existing structured runner with its saved seed and orders, for example:
+
+```sh
+GLOB2_USER_DATA_DIR=artifacts/software-renderer/fixture-profile \
+  build/darwin/client/release/src/glob2 --run-game \
+  --load-game "$PWD/artifacts/software-renderer/initial.game.gz" --ticks 12000 \
+  --save every:6000 --save final --telemetry checksums \
+  --output-dir "$PWD/artifacts/software-renderer/populated"
+```
+
+Keep the initial save, generated checkpoints and runner metadata together. Fixture
+population matters more than the tick label; a late game can have fewer surviving units.
+
+For paired measurements, preserve a baseline benchmark executable before rebuilding and
+run at least seven alternating pairs on the same fixtures, resolution and hardware:
+
+```sh
+python3 tools/software_render_benchmark.py \
+  --baseline artifacts/software-renderer/baseline/SoftwareRenderBenchmark \
+  --candidate build/darwin/client/release/test/SoftwareRenderBenchmark \
+  --save artifacts/software-renderer/initial.game.gz --save artifacts/software-renderer/mid.game.gz \
+  --save artifacts/software-renderer/late.game.gz --repeat 7 \
+  --output artifacts/software-renderer/comparison
+```
+
+The runner records raw logs/captures, exact commands and CPU distributions for native,
+half, double and fractional-offset scenarios. Use `--no-terrain-cache` for the primitive
+phase; compare the same binary with `--baseline-no-terrain-cache` to isolate caching.
+Use `--present --visible --scenario native --baseline-preserve-frame` with the same
+binary to measure the retention-copy savings. `PROFILE_PRESERVE_FRAME=1` begins each
+benchmark frame in preserve-content mode before the full redraw. Keep other heavy
+work off the measurement machine. On macOS, `sample PID SECONDS -file artifacts/profile.txt`
+can identify CPU stacks; Linux `perf` and Windows profiling tools can sample the same
+opt-in executable. Timing thresholds are review criteria, not CI assertions. Run
+`SoftwareRenderer`, `PortableRenderer`, `WindowResize`, `MapRenderResize` and
+`HighResolutionIntegration` suites on supported SDL/platform builds, retain before/after
+captures, and report unavailable platform and maintainer-playtesting coverage explicitly.

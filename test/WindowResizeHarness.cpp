@@ -152,7 +152,7 @@ public:
 	}
 	void recursiveExpose() { presenting = true; expose(); require(presenting, "Reentrant guard lost"); presenting = false; }
 	SDL_GLContext current() { return context; }
-	bool cached() { return frameCache.valid; }
+	bool cached() { return frameCache.valid || (softwarePresenter && completedFrame()); }
 	void checkTextureLimitRecovery()
 	{
 		const int maximum = frameCache.maximumTextureSize;
@@ -379,7 +379,9 @@ TEST_SUITE("WindowResize")
 	TEST_CASE("native display and live preferences in OpenGL [display]") { nativeDisplay(true); }
 #endif
 	TEST_CASE("cache; callbacks; reflow; context lifetime; input; minimum size and recreation in software rendering [display:1600x1400]") { resizeChecks(false, false); }
+#ifdef HAVE_OPENGL
 	TEST_CASE("cache; callbacks; reflow; context lifetime; input; minimum size and recreation in OpenGL [display:1600x1400]") { resizeChecks(true, false); }
 	TEST_CASE("presentation benchmark [benchmark][display]") { resizeChecks(true, true); }
+#endif
 	TEST_CASE("software presentation benchmark [benchmark][display]") { resizeChecks(false, true); }
 }
