@@ -8,6 +8,7 @@
 #include <RenderBackend.h>
 
 #include <GraphicContext.h>
+#include <RenderBatch.h>
 #include <SDL3/SDL.h>
 
 #ifdef HAVE_CONFIG_H

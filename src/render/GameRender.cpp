@@ -27,6 +27,7 @@
 #include "Brush.h"
 #include "DynamicClouds.h"
 #include <OpaqueRectangleBatch.h>
+#include <RenderBatch.h>
 
 
 #include "GameRenderInternal.h"
@@ -184,6 +185,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 				   const BuildingGuiStateMap *buildingGuiState, bool animationsPaused,
 				   int cloudGridLimit)
 {
+    GAGCore::FrameDrawBatch frameBatch(globalContainer->gfx);
 	// Frozen while paused, so the water and the clouds hold still with the rest.
 	int &time = mapAnimationTime;
 	static DynamicClouds ds(&globalContainer->settings);
