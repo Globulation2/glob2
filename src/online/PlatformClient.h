@@ -90,6 +90,9 @@ class PlatformClient
 		bool ok = false;
 		Json result;
 		ApiError error;
+		// restRaw only: the response bytes (also for errors).
+		std::string body;
+		std::string contentType;
 	};
 	using ResponseHandler = std::function<void(const Response &)>;
 	using EventHandler = std::function<void(const std::string &event, const Json &data)>;
@@ -192,6 +195,13 @@ class PlatformClient
 	// the token once and retries.
 	void rest(HttpFetch::Method method, const std::string &path, Json body,
 			  ResponseHandler handler);
+	// REST with raw bytes both ways (map files, previews, replays): body is sent
+	// with contentType when not empty; the handler gets the response bytes in
+	// Response::body, and result holds them parsed when they are JSON. path may
+	// also be an absolute URL on this instance's origin. Authenticated like rest().
+	void restRaw(HttpFetch::Method method, const std::string &path, std::string body,
+				 const std::string &contentType, ResponseHandler handler,
+				 std::size_t responseLimit = 16 * 1024 * 1024);
 	// GET /api/v1/accounts/me, updating account().
 	void refreshAccount(ResponseHandler handler = {});
 	// PATCH /api/v1/accounts/me {displayName}.

@@ -3558,3 +3558,999 @@ The connection to the host was lost.
 The host runs a different version of Globulation 2 (%0).
 [lan cannot host %0]
 Unable to host a LAN game: %0
+[play online]
+Play online
+[Use in room]
+Use in room
+[Custom rules]
+Custom rules
+[conn ai everywhere]
+AI, runs on every computer
+[conn ai]
+AI
+[conn card catching up]
+Catching up
+[conn card colony works]
+Your colony keeps working on its own: units finish their jobs and buildings keep running.
+[conn card desync detail]
+Rejoining from the match record so you see what everyone else sees. A report was sent automatically.
+[conn card desync]
+Your game fell out of sync
+[conn card grace %0]
+Your colony keeps working on its own: units finish their jobs and buildings keep running. You have %0 to come back before you're removed from the match.
+[conn card input paused]
+You are catching up · input paused
+[conn card lost]
+Connection lost
+[conn card progress %0 %1 %2]
+%0 % · %1 of %2 ticks
+[conn card reconnecting %0]
+Reconnecting to the match… attempt %0
+[conn card replaying %0]
+Replaying the %0 you missed. The screen updates when you're back to the present.
+[conn card seconds left %0]
+about %0 s left
+[conn connected]
+connected
+[conn connections]
+Connections
+[conn delay explanation]
+Your input delay is the time your orders take to reach everyone. It adjusts to your own connection and isn't affected by other players.
+[conn latency]
+latency
+[conn leave match]
+Leave match
+[conn left]
+left
+[conn lost]
+lost
+[conn notice back %0]
+%0 is back.
+[conn notice left %0]
+%0 left the match.
+[conn notice lost %0 %1]
+%0 lost connection. The game continues; their colony keeps working while they reconnect (%1 left).
+[conn players]
+Players
+[conn reconnecting]
+reconnecting
+[conn relay %0 %1]
+Relay %0 · round trip %1 ms.
+[conn resyncing]
+rejoining
+[conn slow]
+slow
+[conn unstable]
+unstable
+[conn waiting]
+connecting
+[conn you %0]
+%0 (you)
+[conn you]
+You
+[hub account menu]
+Account
+[hub ai joins after %0]
+AI joins after %0 s
+[hub all rooms]
+All
+[hub browse maps]
+Browse maps
+[hub cant reach %0]
+Can't reach %0.
+[hub change server]
+Change server…
+[hub check code]
+Check that the browser shows this code:
+[hub code placeholder]
+Code or invite link
+[hub connecting to %0]
+%0 · connecting…
+[hub continue with %0]
+Continue with %0
+[hub create room]
+Create room
+[hub find match]
+Find match
+[hub finish in browser]
+Finish signing in in your browser.
+[hub free seat]
+Free seat
+[hub get update]
+Get the update
+[hub guest kept on device]
+Guest · kept on this device
+[hub invalid code]
+That isn't an invite code or link.
+[hub join by code]
+Join by code
+[hub join code]
+Join code
+[hub join]
+Join
+[hub leaderboard]
+Leaderboard
+[hub legacy server]
+Legacy server
+[hub linked %0]
+Linked accounts · %0
+[hub linked accounts]
+Linked accounts
+[hub maps]
+Maps
+[hub no queues]
+This server has no quick-match queues.
+[hub no rooms]
+No open rooms right now. Create one and share the invite.
+[hub offline at %0]
+%0 · offline
+[hub offline detail %0]
+Trying again in %0 s. Quick match and online rooms are unavailable. LAN game on the main menu doesn't need this server.
+[hub online at %0]
+%0 · online
+[hub online settings]
+Online settings
+[hub online]
+Online
+[hub open page again]
+Open the page again
+[hub open rooms]
+Open rooms
+[hub page opened at %0]
+The page opened at %0. Nothing to type here.
+[hub queues unavailable]
+Quick match appears when the server answers.
+[hub quick match unavailable]
+Quick match isn't available in this version yet.
+[hub quick match]
+Quick match
+[hub ranked]
+Ranked
+[hub recent matches]
+Recent matches
+[hub refresh]
+Refresh
+[hub retry now]
+Retry now
+[hub room match]
+Room
+[hub room name %0]
+%0's room
+[hub room]
+Room
+[hub seats %0 %1]
+%0/%1 seats
+[hub server %0]
+Server: %0
+[hub sign in browser]
+Sign in in the browser
+[hub sign in conflict]
+That sign-in already belongs to another account.
+[hub sign in failed %0]
+Sign-in didn't finish (%0).
+[hub sign in intro]
+Choose how to sign in. Your guest matches move to the signed-in account.
+[hub sign in]
+Sign in
+[hub sign out]
+Sign out on this device
+[hub signed in as %0]
+Signed in as %0.
+[hub signed in on %0]
+Signed in on %0
+[hub signing in]
+Signing in…
+[hub sim %0]
+sim %0
+[hub unrated]
+Unrated
+[hub update required at %0]
+%0 · update required
+[hub update required detail %0]
+%0 plays a newer version, so this copy can't join online games until it updates. LAN games still work.
+[hub update required]
+Update required
+[hub versus %0]
+vs %0
+[match ai]
+AI
+[match downloading map %0]
+Downloading map %0
+[match failed]
+The match could not start.
+[match leave]
+Leave
+[match loading]
+Loading the game
+[match map cached]
+already on this device
+[match map]
+Downloading the map
+[match relay %0]
+Connected to relay %0
+[match seat confirmed]
+Seat confirmed
+[match starting]
+Starting match
+[match tip flags]
+Tip: exploration flags send explorers to reveal the map; war flags gather your warriors.
+[match tip input]
+Tip: your orders reach everyone after your own input delay; other players' connections don't slow you down.
+[match tip select]
+Tip: double-click a building to select every building of that type.
+[match waiting for players]
+Waiting for every player
+[match you %0]
+%0 (you)
+[match player map]
+map
+[match player loading]
+loading
+[match player connecting]
+connecting
+[match player ready]
+ready
+[match player left]
+left
+[results back to online]
+Back to online
+[results back to room]
+Back to room
+[results defeat]
+Defeat
+[results ladder rating %0]
+%0 rating
+[results left]
+You left the match
+[results match over]
+Match over
+[results match page]
+Match page
+[results minutes %0]
+%0 min
+[results no change]
+no change
+[results ranked]
+Ranked
+[results recording]
+Recording the result…
+[results room unrated]
+Room match · unrated
+[results saved to history]
+Saved to your history
+[results seconds %0]
+%0 s
+[results unverifiable]
+The server couldn't reproduce this match, so it doesn't count for anyone's rating. It has been reported for investigation; you don't need to do anything.
+[results verified provisional]
+Verified · provisional
+[results verified]
+Verified
+[results verifying detail]
+The server is replaying the match to confirm it. Usually under a minute.
+[results verifying]
+Verifying result…
+[results victory]
+Victory
+[room address]
+Address
+[room ai %0]
+AI: %0
+[room browser pairing]
+Browser pairing
+[room catalog map]
+Catalog map
+[room change map]
+Change map…
+[room change rules]
+Change rules…
+[room chat]
+Chat
+[room closed seat detail]
+Closed by the host
+[room closed seat]
+Closed
+[room colonies]
+Colonies
+[room connecting]
+Connecting to the room…
+[room copy]
+Copy
+[room disconnected]
+disconnected
+[room downloading %0]
+Downloading map %0 %
+[room downloading map]
+Downloading the map…
+[room expired]
+The room has closed.
+[room generated on server]
+Generated once on the server, so everyone plays exactly this map.
+[room guest]
+guest
+[room host %0]
+host %0
+[room host closed]
+The host closed the room.
+[room host]
+host
+[room humans vs ai]
+Humans vs AI
+[room invite code %0]
+Code %0 · opens in the app, on phones or in a browser
+[room invite not found]
+This invite has expired or does not exist.
+[room invite only]
+Invite only
+[room invite]
+Invite
+[room joining on network]
+Joining on this network
+[room lan badge]
+Local network · not rated
+[room lan list hint %0]
+Others on the same network see %0 in the LAN game list on the main menu.
+[room leave]
+Leave
+[room map changed %0]
+The map changed to %0.
+[room map failed]
+The map could not be prepared
+[room match label]
+Room
+[room member joined %0]
+%0 joined.
+[room member left %0]
+%0 left.
+[room member ready %0]
+%0 is ready.
+[room needs two seats]
+At least two seats must be taken to start
+[room no map]
+No map yet
+[room not ready]
+Not ready
+[room open for a person]
+Open for a person
+[room open seat detail]
+Anyone with the invite can take it
+[room open seat]
+Open seat
+[room person]
+Person
+[room preparing map]
+Preparing map on the server…
+[room public]
+Public
+[room ready?]
+Ready
+[room ready]
+✓ Ready
+[room remove from room]
+Remove from room
+[room rule conquest]
+Last colony standing
+[room rule fixed]
+Fixed
+[room rule free]
+Free
+[room rule hidden]
+Hidden
+[room rule off]
+Off
+[room rule on]
+On
+[room rule prestige]
+Prestige or conquest
+[room rule revealed]
+Revealed
+[room rules changed]
+The rules changed.
+[room rules]
+Rules
+[room say something]
+Say something…
+[room seat hint]
+Players can move to an open seat themselves. Change Team to rebalance.
+[room seat options]
+Seat options
+[room seats summary %0 %1 %2]
+%0 people · %1 AI · %2 open
+[room seats]
+Seats
+[room seed]
+Seed
+[room send]
+Send
+[room set by host]
+Set by the host
+[room share text %0]
+Join my Globulation 2 room: %0
+[room share]
+Share…
+[room size]
+Size
+[room starting match]
+Starting the match…
+[room take seat]
+Take seat
+[room team %0]
+Team %0
+[room update required]
+This room plays another version of the game. Update to join it.
+[room uploaded map]
+Uploaded map
+[room waiting for %0]
+Waiting for %0 to be ready
+[room waiting for host]
+Waiting for the host to start
+[room waiting for players %0]
+Waiting for %0 players to be ready
+[room who can find it]
+Who can find it
+[room you created]
+You created the room.
+[room you joined %0]
+You joined %0.
+[room you were removed]
+The host removed you from the room.
+[room you]
+you
+[settings Online]
+Online
+[settings Another server]
+Another server
+[settings Check]
+Check
+[settings Checking…]
+Checking…
+[settings Choose which server you play on and how you sign in to it.]
+Choose which server you play on and how you sign in to it.
+[settings Connecting…]
+Connecting…
+[settings Could not reach this server.]
+Could not reach this server.
+[settings Display name saved.]
+Display name saved.
+[settings Display name]
+Display name
+[settings Download or delete my data]
+Download or delete my data
+[settings Enter an https:// address.]
+Enter an https:// address.
+[settings Finish in your browser. It shows the code %0.]
+Finish in your browser. It shows the code %0.
+[settings Forget]
+Forget
+[settings Guests keep a generated name; sign in to choose one.]
+Guests keep a generated name; sign in to choose one.
+[settings Link]
+Link
+[settings Not a Globulation 2 server.]
+Not a Globulation 2 server.
+[settings Not linked]
+Not linked
+[settings Not signed in.]
+Not signed in.
+[settings Open]
+Open
+[settings Opens your account page on %0.]
+Opens your account page on %0.
+[settings Run by a community, a club or yourself. Paste its address.]
+Run by a community, a club or yourself. Paste its address.
+[settings Save]
+Save
+[settings Server]
+Server
+[settings Shown in rooms, matches and the leaderboard. Change once every 30 days.]
+Shown in rooms, matches and the leaderboard. Change once every 30 days.
+[settings Sign in with: %0 · queues: %1]
+Sign in with: %0 · queues: %1
+[settings Sign out on this device]
+Sign out on this device
+[settings Sign out]
+Sign out
+[settings Switch to this server]
+Switch to this server
+[settings The last sign-in method can't be unlinked.]
+The last sign-in method can't be unlinked.
+[settings The official Globulation 2 server · ranked queues, leaderboards, map catalog]
+The official Globulation 2 server · ranked queues, leaderboards, map catalog
+[settings Unlink]
+Unlink
+[settings Unlinking is done on the account page.]
+Unlinking is done on the account page.
+[settings You'll be a new guest until you sign in again. Your account and matches stay on the server.]
+You'll be a new guest until you sign in again. Your account and matches stay on the server.
+[settings Your account on %0]
+Your account on %0
+[settings compatible with this version]
+compatible with this version
+[settings connected]
+connected
+[settings connecting…]
+connecting…
+[settings guest]
+guest
+[settings linked]
+linked
+[settings plays another version]
+plays another version
+[settings trusted]
+trusted
+[settings used before]
+used before
+[settings you were %0 there]
+you were %0 there
+[trust invited to room %0]
+Invited to room %0
+[trust join as guest]
+Join as guest
+[trust not official]
+This server isn't run by the Globulation 2 project.
+[trust remember]
+Remember this server
+[trust separate identity %0]
+You'll join as a guest there. Your %0 account, rating and history stay where they are.
+[trust title]
+Join a game on another server?
+[trust what it sees]
+The server sees your display name, your connection's address and the games you play on it.
+[settings not connected]
+not connected
+[settings Open Play online to connect.]
+Open Play online to connect.
+[hub code]
+Code
+[results draw]
+Draw
+[qm 2 vs 2]
+2 vs 2
+[qm 1 vs 1]
+1 vs 1
+[qm ranked]
+Ranked
+[qm casual %0]
+Casual %0
+[qm rated]
+Ranked
+[qm unrated]
+Unrated
+[qm solo queue]
+solo queue
+[qm ai joins after %0]
+AI joins after %0
+[qm fair maps %0]
+Fair 128×128 maps: %0
+[qm cooldown %0]
+You declined a match. You can search again in %0.
+[qm sign in to play ranked]
+Ranked queues are for signed-in accounts; sign in first.
+[online update required]
+This version of the game is too old for the server; update to play online.
+[qm already searching]
+You are already searching or in a match.
+[online connection problem]
+The server could not be reached.
+[qm find match]
+Find match
+[qm opponents rated %0 to %1]
+Opponents rated %0 to %1
+[qm region %0 relay %1 ms]
+Region %0 · relay %1 ms
+[qm region %0]
+Region %0
+[qm searching]
+Searching
+[qm measuring relays]
+Measuring relays
+[qm joining queue]
+Joining the queue
+[qm waiting for a person]
+Waiting for a person: AI opponents are off.
+[qm ai in %0 rated]
+If no one is found, you'll play the closest-rated AI in %0
+[qm ai in %0]
+If no one is found, an AI joins in %0
+[qm ai after %0]
+If no one is found, an AI takes the seat after %0
+[qm allow ai short]
+Allow AI
+[qm allow ai]
+Allow an AI opponent
+[qm cancel]
+Cancel
+[qm cancel search]
+Cancel search
+[qm usual wait %0]
+usual wait ~%0
+[qm widening]
+widening as you wait
+[qm ais are rated]
+(rated: AIs have ratings too)
+[qm opponent declined]
+Your opponent didn't accept. You're back at the front of the queue.
+[qm %0 did not accept]
+%0 didn't accept. You're back at the front of the queue.
+[qm start failed]
+The match could not start. You're searching again.
+[qm you declined]
+You declined the match. You can search again after a short wait.
+[qm you did not answer]
+You didn't accept in time. You can search again after a short wait.
+[qm search ended]
+The search ended.
+[qm try again]
+Try again
+[online connecting]
+Connecting…
+[qm no queues]
+This server has no quick-match queues.
+[qm quick match]
+Quick match
+[qm phone searching note]
+Searching keeps running if you open Profile or Maps.
+[qm phone intro]
+Pick a queue below; the search runs while you browse.
+[qm online]
+Online
+[qm keeps running note]
+Searching keeps running if you open Profile or Maps.
+[qm ai]
+AI
+[qm provisional]
+provisional
+[qm accepted]
+✓ accepted
+[qm declined]
+declined
+[qm waiting]
+waiting…
+[qm ai badge]
+AI
+[qm match found]
+Match found
+[qm playing an ai]
+Playing an AI
+[qm vs]
+vs
+[qm ai explanation rated]
+No one in your rating range was searching. You'll play the AI closest to your rating; the result counts for your rating and the AI's.
+[qm ai explanation]
+No one was searching. You'll play the AI closest to your rating; this game is unrated.
+[qm casual explanation]
+The match starts straight away; casual games are unrated.
+[qm accepted button]
+Accepted
+[qm accept]
+Accept
+[qm decline]
+Decline
+[qm both must accept]
+Both must accept
+[qm accept explanation]
+Both players must accept. Declining or letting the timer run out puts you at the back of the queue.
+[qm starting in %0]
+Starting in %0…
+[qm preparing match]
+Preparing the match…
+[qm match assigned %0 %1]
+Match %0 is ready on %1, but this build cannot connect to online matches yet.
+[online jan]
+Jan
+[online feb]
+Feb
+[online mar]
+Mar
+[online apr]
+Apr
+[online may]
+May
+[online jun]
+Jun
+[online jul]
+Jul
+[online aug]
+Aug
+[online sep]
+Sep
+[online oct]
+Oct
+[online nov]
+Nov
+[online dec]
+Dec
+[profile win letter]
+W
+[profile loss letter]
+L
+[profile draw letter]
+–
+[profile history unavailable]
+This server does not offer match history yet.
+[profile downloading replay]
+Downloading the replay…
+[profile no replay]
+No replay is available for this match.
+[profile room with %0]
+Room · %0 colonies
+[profile with %0 vs %1]
+with %0 vs %1
+[profile vs %0]
+vs %0
+[profile room]
+Room
+[profile casual]
+Casual
+[profile ai filled]
+AI filled
+[profile provisional %0 games]
+provisional · %0 games
+[profile unrated]
+unrated
+[profile checking]
+checking…
+[profile %0 min]
+%0 min
+[profile match page]
+Match page
+[profile replay]
+Replay
+[profile win rate last %0]
+Win rate, last %0
+[profile %0 w %1 l %2 d]
+%0 W · %1 L · %2 draw
+[profile typical game]
+Typical game
+[profile median length]
+your median length
+[profile best map]
+Best map
+[profile %0 w %1 l]
+%0 W · %1 L
+[profile no rated games]
+Play a ranked match to get a rating.
+[profile all]
+All
+[profile rooms]
+Rooms
+[profile vs ai]
+vs AI
+[profile matches]
+Matches
+[online loading]
+Loading…
+[profile no matches]
+No matches yet.
+[online load more]
+Load more
+[profile title]
+Profile
+[profile guest]
+guest
+[profile playing since %0]
+playing since %0
+[profile full profile web]
+Full profile on the web
+[profile replays note]
+Replays are downloaded from the server when you open them; ones you saved locally stay in Load game → Replays.
+[profile web profile]
+Web profile
+[maps most played]
+Most played
+[maps most liked]
+Most liked
+[maps newest]
+Newest
+[maps most downloaded]
+Most downloaded
+[maps any size]
+Any size
+[maps up to 128]
+Up to 128 × 128
+[maps 256]
+256 × 256
+[maps 512 and larger]
+512 and larger
+[maps report broken]
+It does not work
+[maps report offensive]
+Offensive
+[maps report copyright]
+Someone else's work
+[maps report other]
+Something else
+[maps public]
+Public
+[maps unlisted]
+Unlisted
+[maps private]
+Private
+[maps cannot read file]
+The map file could not be read.
+[maps file too large]
+The map file is too large to share.
+[maps saved for next room]
+The map is downloaded; it will be used when you open a room.
+[maps download failed]
+The map could not be downloaded.
+[maps %0 colonies]
+%0 colonies
+[maps version %0]
+version %0
+[maps updated %0]
+updated %0
+[maps downloading]
+Downloading the map…
+[maps like needs account]
+Liking maps needs a signed-in account.
+[maps report sent]
+Thank you; the moderators will look at it.
+[maps select a map]
+Select a map to see its details.
+[maps by %0]
+by %0
+[maps stats %0 %1 %2]
+▶ %0 plays · ⬇ %1 downloads · ♥ %2
+[maps use in room]
+Use in a room
+[maps liked]
+Liked
+[maps like]
+Like
+[maps map page]
+Map page
+[maps reported]
+Reported
+[maps report]
+Report…
+[maps report why]
+What is wrong with this map?
+[maps search placeholder]
+Search maps or authors
+[maps none found]
+No maps match.
+[maps any colonies]
+Any colonies
+[maps checking]
+Checking…
+[maps no version yet]
+No version has been uploaded yet.
+[maps rejected]
+Rejected
+[maps did not load %0]
+The map did not load: %0
+[maps unknown reason]
+no reason was given
+[maps fix and upload again]
+fix it in the editor, then upload again
+[maps uploaded just now]
+uploaded just now
+[maps loading on server]
+loading it on the server
+[maps %0 plays]
+%0 plays
+[maps hidden]
+Hidden
+[maps upload again]
+Upload again…
+[maps delete]
+Delete
+[maps update]
+Update…
+[maps upload a map]
+Upload a map…
+[maps upload hint]
+.map files from your maps folder or the editor
+[maps no maps yet]
+You have not shared any maps yet.
+[maps my maps]
+My maps
+[maps my maps %0]
+My maps (%0)
+[maps browse]
+Browse
+[maps title]
+Maps
+[maps browse note %0]
+%0 catalog · only maps that load in this version are shown
+[maps visibility note]
+Public maps appear in Browse. Unlisted maps work in your rooms and through their link. Private maps only in your own rooms.
+[maps use %0]
+Use %0
+[maps %0 kb]
+%0 KB
+[maps field title]
+Title
+[maps field description]
+Description
+[maps who can use it]
+Who can use it
+[maps guests unlisted]
+Guests can share unlisted and private maps; sign in to publish to Browse.
+[maps visibility help]
+Unlisted maps work in your rooms and through their link; public maps also appear in Browse.
+[maps new version of %0]
+Upload this file as a new version of %0.
+[maps upload]
+Upload
+[maps uploading]
+Uploading…
+[maps checking detail]
+The server is loading the map and drawing its preview. Until then the map cannot be used.
+[maps ready]
+Ready
+[maps ready public]
+The map is ready and listed in Browse.
+[maps ready unlisted]
+The map is ready. Unlisted maps work in your rooms and through their link.
+[maps ready private]
+The map is ready. Private maps work only in your own rooms.
+[maps upload failed]
+The upload failed
+[maps server read %0 %1]
+The server read it as %0 with %1 colonies.
+[maps continue in background]
+Close
+[maps upload a map title]
+Upload a map
+[maps update map title]
+Update a map
+[maps upload note]
+The server loads every upload before it can be used.
+[online just now]
+just now
+[online today %0]
+today %0
+[online yesterday]
+yesterday
+[online sun]
+Sun
+[online mon]
+Mon
+[online tue]
+Tue
+[online wed]
+Wed
+[online thu]
+Thu
+[online fri]
+Fri
+[online sat]
+Sat
+[online %0 weeks ago]
+%0 weeks ago
+[online %0 months ago]
+%0 months ago
+[online %0 years ago]
+%0 years ago
+[maps share online]
+Share online…
+[maps mine]
+Mine
+[results waiting for players]
+Waiting for the other players to leave…
+[results waiting detail]
+The result is recorded once everyone has left the match.
+[results waiting slow]
+A player who lost the connection has up to 3 minutes to come back. The result will appear in your history and on the match page.
+[results verifying slow]
+Verification is taking longer than usual. The result will appear in your history and on the match page.
+[results rematch]
+Rematch
+[results join rematch %0]
+Join %0's rematch
+[hub profile history]
+Profile & history
+[hub my maps]
+My maps
+[hub leaderboard %0]
+Leaderboard · %0
+[hub leaderboard empty]
+No ranked players yet.
+[hub guests not ranked]
+Guests aren't ranked. Sign in to appear here.
+[hub full leaderboard]
+Full leaderboard
+[settings %0 is no longer linked.]
+%0 is no longer linked.

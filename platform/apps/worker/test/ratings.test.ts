@@ -26,6 +26,7 @@ import {
   handleEngineJobResult,
   recordVerification,
 } from '../src/ratings/apply.ts';
+import { matchRatingPreview } from '../src/ratings/preview.ts';
 import {
   SIM_A,
   SIM_B,
@@ -416,6 +417,56 @@ describe('rating application', () => {
       .where('id', '=', mutual)
       .executeTakeFirstOrThrow();
     expect(row).toEqual({ rating_status: 'unchanged', rating_note: 'mutual_leave' });
+  });
+
+  it('previews exactly the change a verified result then applies', async () => {
+    const db = database.db;
+    const winner = await createAccount(db, 'Preview winner');
+    const loser = await createAccount(db, 'Preview loser');
+    const seats = [
+      { side: 0, accountId: winner },
+      { side: 1, ai: 'nicowar' as RatedAi },
+      { side: 1, accountId: loser },
+    ];
+    // A first game gives the winner a settled-looking non-default rating.
+    const warmup = await createMatch(db, [
+      { side: 0, accountId: winner },
+      { side: 1, accountId: loser },
+    ]);
+    await handleEngineJobResult(
+      db,
+      resultPayload(await createVerifyJob(db, warmup), verified(['won', 'lost'])),
+    );
+    const matchId = await createMatch(db, seats);
+    const preview = await matchRatingPreview(db, matchId, winner);
+    const loserPreview = await matchRatingPreview(db, matchId, loser);
+    expect(preview).toMatchObject({ ladder: 'ranked-1v1', provisional: true });
+    expect(preview!.ifWon).toBeGreaterThan(preview!.before);
+    expect(preview!.ifLost).toBeLessThan(preview!.before);
+    // Nothing was created for the AI by previewing.
+    expect(
+      await db.selectFrom('rating_entities').select('id').where('ai_id', '=', 'nicowar').execute(),
+    ).toHaveLength(0);
+
+    await handleEngineJobResult(
+      db,
+      resultPayload(await createVerifyJob(db, matchId), verified(['won', 'lost', 'lost'])),
+    );
+    const after = await db
+      .selectFrom('match_participants')
+      .select(['seat', 'rating_before', 'rating_after'])
+      .where('match_id', '=', matchId)
+      .orderBy('seat')
+      .execute();
+    expect(after[0]!.rating_before).toBeCloseTo(preview!.before, 9);
+    expect(after[0]!.rating_after).toBeCloseTo(preview!.ifWon, 9);
+    expect(after[2]!.rating_after).toBeCloseTo(loserPreview!.ifLost, 9);
+
+    // Rooms, unrated queues and strangers get no preview.
+    const room = await createMatch(db, seats, { queueId: null, rated: false });
+    expect(await matchRatingPreview(db, room, winner)).toBeUndefined();
+    const stranger = await createAccount(db, 'Stranger');
+    expect(await matchRatingPreview(db, matchId, stranger)).toBeUndefined();
   });
 
   it('never rates rooms, unverifiable or diverged results', async () => {

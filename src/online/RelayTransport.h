@@ -36,6 +36,15 @@ namespace Online
 	/// Length prefix plus payload; empty if the payload exceeds 65535 bytes.
 	std::vector<std::uint8_t> relayFrame(const std::vector<std::uint8_t>& payload);
 
+	/// Connections of destroyed RelayTransports that still had frames to write, or
+	/// that sent a Quit, stay open (reading and dropping what arrives) until the
+	/// frames are out and, after a Quit, until the relay closes the connection; at
+	/// most `LINGER_MS`. Online::pump() drives them, and the shutdown screen waits for
+	/// them (lingeringRelayConnections() == 0) before the process exits.
+	constexpr std::uint32_t LINGER_MS = 3000;
+	void pumpLingeringRelayConnections();
+	std::size_t lingeringRelayConnections();
+
 	class RelayTransport : public Turn::TurnTransport
 	{
 	public:
@@ -61,5 +70,6 @@ namespace Online
 		std::unique_ptr<NetTransport> link;
 		RelayFrameReader reader;
 		std::string lastError;
+		bool sentQuit = false;
 	};
 }

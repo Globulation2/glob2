@@ -109,6 +109,36 @@ export async function availableRelays(db: Db): Promise<RelayCandidate[]> {
   }));
 }
 
+/**
+ * The regions clients should probe (GET /api/v1/relays/regions): every region
+ * with an available relay, and the https form of the public URL of its least
+ * loaded relay. Timing any HTTP response from it estimates the round trip.
+ */
+export async function relayRegions(
+  db: Db,
+): Promise<{ region: string; probeUrl: string; relays: number }[]> {
+  const byRegion = new Map<string, RelayCandidate[]>();
+  for (const relay of await availableRelays(db)) {
+    const list = byRegion.get(relay.region) ?? [];
+    list.push(relay);
+    byRegion.set(relay.region, list);
+  }
+  return [...byRegion.entries()]
+    .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
+    .slice(0, 32)
+    .flatMap(([region, relays]) => {
+      const best = [...relays].sort(
+        (a, b) => a.load / a.maxMatches - b.load / b.maxMatches || (a.id < b.id ? -1 : 1),
+      )[0];
+      if (!best) return [];
+      return {
+        region,
+        probeUrl: best.publicUrl.replace(/^ws(s?):/, 'http$1:'),
+        relays: relays.length,
+      };
+    });
+}
+
 /** Chooses a relay for a new match, or undefined when none is available. */
 export async function placeMatch(
   db: Db,

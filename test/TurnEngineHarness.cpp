@@ -799,7 +799,7 @@ TEST_SUITE("TurnEngineHarness")
 		MESSAGE(timing.str());
 	}
 
-	GLOB2_TEST_CASE("a player who quits leaves through the sequenced quit order and the rest play on", "[network-sim]")
+	GLOB2_TEST_CASE("a player who quits leaves through the relay's quit order and the rest play on", "[network-sim]")
 	{
 		glob2test::HeadlessGlobals globals(harnessGlobals());
 		EngineMatch m("FourSquares1", {{20 * MS}, {30 * MS}, {25 * MS}}, {"numbi"});
@@ -815,6 +815,9 @@ TEST_SUITE("TurnEngineHarness")
 		CHECK(leaver.stopped);
 		CHECK(leaver.engine->turnLockstep() == nullptr); // the host finished the session
 		CHECK(m.net.relay->presence(2) == Turn::PresenceState::Left);
+		// It left with a Quit (the quit order is the relay's), and an undecided game
+		// stays undecided: the others' reconnect grace still applies.
+		CHECK_FALSE(m.net.relay->gameDecided());
 		const int team = m.setup.seats[2].team;
 		CHECK_FALSE(m.clients[0]->engine->gui.game.teams[team]->isAlive);
 		CHECK_FALSE(m.clients[1]->engine->gui.game.teams[team]->isAlive);

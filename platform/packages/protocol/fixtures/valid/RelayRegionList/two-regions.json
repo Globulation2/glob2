@@ -1,0 +1,14 @@
+{
+  "items": [
+    {
+      "region": "eu-west",
+      "probeUrl": "https://play.example.org/relay/relay-1",
+      "relays": 1
+    },
+    {
+      "region": "us-east",
+      "probeUrl": "https://us.play.example.org/relay/relay-2",
+      "relays": 2
+    }
+  ]
+}

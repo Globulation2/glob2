@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <stdio.h>
+#include "ConnectionOverlay.h"
 #include <stdarg.h>
 #include <math.h>
 
@@ -44,6 +45,11 @@ GameGUI::GameGUI(bool persistPreferences)
 	  ghostManager(game)
 {
 	this->persistPreferences = persistPreferences;
+}
+
+void GameGUI::addNotice(const std::string &text)
+{
+	addMessage(GAGCore::Color(200, 200, 200), text, false);
 }
 
 GameGUI::~GameGUI()

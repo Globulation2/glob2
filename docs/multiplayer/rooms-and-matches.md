@@ -285,6 +285,21 @@ The API handles `queue.join`, `queue.leave` and `queue.respond`.
   sockets. It listens on `match_updates` and sends `match.updated` (`MatchSummary`)
   to the match's human participants.
 
+- `queue.update {ticketId, allowAiOpponent}` changes AI backfill on a waiting
+  ticket; after a `queue.respond` the API sends the proposal again to everyone in
+  it, so the prompt shows who accepted.
+
+## Rematch after a quick match
+
+`match.rematch {matchId, regions?}` turns an ended quick match into an unrated
+link room with the same map (the match's map source, as a room map selection),
+rules and experiments, as decided for Q9. Only human players of the match may
+ask; room matches go back to their room instead (`conflict`), and a match that
+has not ended answers `conflict`. The first player to ask hosts the room
+(`RoomSettings.rematchOf` records the match) and every other human player gets
+`match.rematchOffered {matchId, roomId, code, host}`; anyone asking again, or
+answering the offer with `match.rematch` or `room.join {code}`, joins that room.
+
 ## Invite links
 
 `https://<instance>/j/<code>` is served by the API as a small server-rendered page,

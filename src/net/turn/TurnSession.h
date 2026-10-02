@@ -137,6 +137,27 @@ namespace Turn
 		PresenceState presence(int seatNumber) const;
 		std::uint64_t tickPeriodMicros() const { return tickPeriod; }
 
+		// --- Presentation only (connection HUD); never part of simulation state ---
+		/// The last Presence entry for a seat: grace left while reconnecting and how
+		/// many ticks behind the relay its last Ping was.
+		struct SeatPresence
+		{
+			PresenceState state = PresenceState::NotConnected;
+			std::uint32_t graceRemainingTicks = 0;
+			std::uint32_t lagTicks = 0;
+			/// When the entry arrived (session clock), to count the grace down locally.
+			std::uint64_t receivedMicros = 0;
+		};
+		SeatPresence seatPresenceInfo(int seatNumber) const;
+		/// Connection attempts since the link was last up (0 while connected).
+		int reconnectAttempts() const { return attempts; }
+		/// The relay's grace period for a lost seat (from Welcome; 0 before it).
+		std::uint32_t graceTicks() const { return grace; }
+		/// The relay told this client it diverged; true until it has caught up again.
+		bool rejoiningAfterDesync() const { return desyncRejoin; }
+		/// Highest horizon seen, for catch-up progress.
+		std::uint32_t maxHorizon() const { return maxSeenHorizon; }
+
 	private:
 		struct Outstanding
 		{
@@ -189,6 +210,10 @@ namespace Turn
 		std::deque<Outstanding> outstanding;
 		std::deque<ChecksumReport> unsentReports;
 		std::array<PresenceState, MAX_SEATS> seatPresence{};
+		std::array<SeatPresence, MAX_SEATS> seatDetails{};
+		int attempts = 0;
+		std::uint32_t grace = 0;
+		bool desyncRejoin = false;
 
 		std::uint32_t pingNonce = 0;
 		std::uint64_t lastPingAt = 0;

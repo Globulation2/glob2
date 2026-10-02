@@ -93,6 +93,54 @@ sends `auth.handoff.resume`, so a phone that lost its socket while the browser
 was in front still receives `auth.handoff.completed`. Without a result the
 attempt fails locally as `expired` one minute after its expiry.
 
+## Online screens
+
+The quick-match, profile and map screens (multiplayer mock-up groups 3 and 7)
+build on the client with the `Glob2UI::Screen` pattern. They are reached from
+the online hub; the map chooser of the editor menu and the editor's own menu
+also offer **Share online…**.
+
+| Screen | File | What it does |
+| --- | --- | --- |
+| Quick match | `src/QuickMatchScreen.cpp` | Queue cards from `InstanceInfo.queues`; while searching, the timer, the opponent rating range, the relay region and round trip, the AI backfill countdown with the AI that would play and **Allow an AI opponent** (on by default). |
+| Match found | `src/QuickMatchScreen.cpp` | Ranked queues: both players accept within the countdown, each player's answer shown live. AI-backfilled and casual matches: who you play, then a 3-second start countdown. |
+| Profile | `src/OnlineProfileScreen.cpp` | Rating of each queue with its trend and provisional flag, win rate, typical game length and best map over recent games, the match list (filters All, Ranked, Rooms, vs AI) with Replay and the match page. |
+| Maps | `src/OnlineMapsScreen.cpp` | Browse (search, size, colonies, sort, detail with the server preview, Use in a room, Like, map page, Report) and My maps (upload, checking, rejected with the reason, visibility, update, delete). |
+| Share a map | `src/OnlineMapsScreen.cpp` (`MapShareScreen`) | Title, description and visibility (Unlisted by default), then the upload and the server's validation and preview. |
+
+**Search state.** `Online::QuickMatch` (`src/online/QuickMatch.h`) holds the one
+search: it probes the relays (`RelayProbe`), sends `queue.join`, follows
+`queue.status`, answers `queue.proposal` with `queue.respond`, toggles backfill
+with `queue.update` and leaves with `queue.leave`. It lives in the online
+services and is pumped by `Online::pump()`, so a search continues while the
+player opens Profile or Maps. `QuickMatchPresenter` shows the match-found
+prompt over whichever screen is in front and flashes the window
+(`SDL_FlashWindow`) when a match is found. There is no phone notification: the
+platform layer has no local notifications for a backgrounded app.
+
+**Hand-offs** (`src/online/OnlineHandoff.h`) connect screen groups built
+separately. The connecting flow registers `Online::setMatchHandler`; the quick
+match calls `Online::beginMatch(assignment)` with the `match.start`
+`MatchAssignment` once the prompt closes. "Use in a room" downloads the map
+into the map cache and calls `Online::useMapInRoom({mapId, hash, title, ...})`,
+which the room screen registers with `setRoomMapHandler`. The results screen
+offers a rematch through `Online::requestRematch`, registered by the room
+screen: an unrated room with the same players. A hand-off made before its
+handler exists is kept for it.
+
+**Data.** The profile reads `GET /api/v1/players/{id}` (`PlayerProfile`: the
+ratings with rank, the rating history for the trend lines and the aggregates)
+and `GET /api/v1/players/{id}/matches` (a `MatchList`) for the list;
+`summarizeProfile` falls back to the match list for anything the profile
+leaves out. Replays come from `GET /api/v1/matches/{id}/artifacts/replay` and
+open in the replay viewer; deep links go to `<origin>/players/<id>`,
+`<origin>/matches/<id>` and `<origin>/maps/<id>`. Map previews are the server's
+PNGs (`MapVersionInfo.previewUrl`), fetched with `PlatformClient::restRaw` and
+decoded with SDL_image. Uploads send the map's uncompressed bytes to
+`POST /api/v1/maps/{id}/versions?simVersion=<key>` and poll the version until
+`validation` is `valid` or `invalid` and the preview is no longer pending
+(`Online::MapShare`, `src/online/MapCatalog.h`).
+
 ## Instances and stored credentials
 
 `InstanceConfig` keeps the selected instance (the official one,
@@ -133,9 +181,68 @@ to any other instance needs the player's confirmation (`isTrusted`, then
 `trust(origin, remember)`); the prompt's "remember" box starts ticked
 (`REMEMBER_TRUST_BY_DEFAULT`). Unremembered trust lasts until the game exits.
 
-A settings screen for the instance and linked accounts is part of the hub
-mock-ups (plan section D); until then the instance is changed by editing the
-file or following a link.
+Settings › Online chooses the instance (the official one, a remembered one,
+or any address, checked with `GET /api/v1/instance` before switching), shows
+the display name and the sign-in methods linked on that instance, and signs
+out. "Forget" drops everything remembered about an instance.
+
+## Play screens
+
+The play path is built from these screens (`Glob2UI::Screen` pattern,
+`docs/development/ui-framework.md`), following the approved multiplayer
+mock-ups:
+
+| Screen | Code | What it does |
+| --- | --- | --- |
+| Online hub | `src/OnlineHubScreen.*` | "Play online" on the main menu. Starts the client (a guest is created on first contact), account chip with browser sign-in and the confirmation code, quick-match cards from `InstanceInfo.queues`, Create room, Join by code, public rooms (`GET /api/v1/rooms`), recent matches (`GET /api/v1/players/{id}/matches`, with `match.updated` summaries seen since merged over them; hidden when empty), Profile & history and Maps (the profile and map-catalog screens), a leaderboard teaser (top five of the first rated queue, `GET /api/v1/leaderboards/{queue}`), offline and update-required banners, and invite links (`takePendingJoin`) with the trust prompt for other instances. The legacy YOG lobby is reachable only through its "Legacy server" footer link until the cutover. |
+| Room | `src/RoomScreen.*` over `RoomBackend` | One screen for online rooms (`Online::PlatformRoom`) and LAN rooms (`Lan::LanRoom`): Map / Players & Teams / Game Rules tabs, seats with controller, team and remove, invite (or how to join on the network), chat and ready. Phones get a Seats / Map / Rules / Chat bar and Start or Ready in the thumb corner, mirrored by the thumb-side setting. The host edits map and rules with the custom-game screen in room mode (`CustomGameScreen::useForRoom`); the server generates the map from the generator descriptor (`src/online/RoomSetup.*`). |
+| Starting match | `src/MatchStartScreen.*`, `src/online/OnlineMatch.*` | From `match.start` to the first tick: seat confirmed, map download by hash, engine load, relay connection (`Online::RelayTransport`), waiting for the other players' presence. A relay that refuses the match as new (Reject 5) is reported with `match.reconnect {relayUnavailable: true}` and the new assignment restarts the flow. |
+| In-game connection HUD | `src/gui/ConnectionOverlay.*` | Every turn game (online and LAN) shows a permanent panel with each player's state and latency where the "waiting for players" notice was, details on click or tap, one-line notices when a player drops or returns, and centre cards for this client's reconnect (with the grace time and Leave match), catch-up progress and desync rejoin. Presentation only: it reads `Engine::turnConnectionSnapshot()`. Other players' latency is their lag behind the relay from `Presence.lagTicks`; the relay does not report their round trip. |
+| Results | `src/EndGameScreen.*` | Online matches add the outcome banner and the rating card, which `match.updated` updates live and `GET /api/v1/matches/{id}` re-reads every 10 s while it is open. The card says where the result is: waiting for the other players to leave (the match still runs on the relay), recording or verifying (it ended; the verifier replays it), then verified, unverifiable, unrated room match or draw; after 45 s of waiting or 60 s of verifying it says that it is taking longer and that the result will appear in the history. A link opens `<origin>/matches/<id>`. Room matches return to the room; quick matches offer **Rematch** (`Online::requestRematch` → `match.rematch`, an unrated room with the same players; it reads "Join X's rematch" after `match.rematchOffered`). |
+| Settings › Online | `src/SettingsScreenOnline.cpp` | See above. |
+
+Quick-match cards start the shared search (`Online::quickMatch()`) and open
+`QuickMatchScreen`; a handler registered with `OnlineHubScreen::setQuickMatch`
+replaces that. The hub registers `Online::setMatchHandler` (an assigned quick
+match opens the starting screen) and `Online::setRematchHandler`, and attaches
+`QuickMatchPresenter` so the match-found prompt appears over any screen. The
+Room screen registers `Online::setRoomMapHandler` for the map browser's "Use in a
+room".
+
+`MatchAssignment` carries `mapTitle` and, for rated queue matches,
+`ratingPreview {ladder, before, ifWon, ifLost, provisional}` for the greyed
+"1528 → 1543?" before verification.
+
+Leaving a match sends `Quit` to the relay; the connection stays open after the
+game's session is gone until it is written (at most 3 s, and the shutdown screen
+waits for it), so closing the window does not leave the seat in reconnect
+grace.
+
+A client that stops reading for a while (a backgrounded phone app, a long
+reload) is not disconnected. The native WebSocket keeps at most 4096 unread
+messages or 1 MiB. When that limit is reached it stops reading, and TCP flow
+control holds the rest at the relay until the game drains the queue. The
+browser cannot pause a WebSocket, so it queues up to 16384 messages or 4 MiB,
+about eleven minutes of bundles at 25 per second.
+
+**End-to-end check.** `OnlinePlayHarness` (`scons release=1 server=0
+online-play-test`) drives the real screens against a live instance. In a room
+run, the host signs in as a guest, creates a room with a one-minute sudden-death
+timer and writes its code; the guest joins by the code, takes a seat and readies;
+the host presses Start; both play. The guest leaves after `GLOB2_E2E_GUEST_LEAVE`
+seconds (default 40; 0 stays to the end) by closing its window, or by the in-game
+Quit with `GLOB2_E2E_LEAVE_BY=menu`. The host logs the other seat's presence as its
+connection panel shows it, the game's end, and every change of the results card,
+and waits until the platform has settled the result before returning to the room.
+The `quick` role plays a casual quick match (AI backfill) and leaves after
+`GLOB2_E2E_QUICK_LEAVE` seconds. Every stage is captured:
+
+```sh
+build/darwin/client/release/src/OnlinePlayHarness host https://glob2online.com artifacts/e2e &
+sleep 20
+build/darwin/client/release/src/OnlinePlayHarness guest https://glob2online.com artifacts/e2e
+build/darwin/client/release/src/OnlinePlayHarness quick https://glob2online.com artifacts/e2e-quick
+```
 
 ## Map cache
 
@@ -201,6 +308,14 @@ process that never initialized the Toolkit file system (some unit tests) reports
 64 zeros, which the platform answers with `simSupported: false`.
 
 ## Tests
+
+- `glob2-unit-tests` suites `QuickMatch`, `MapCatalog` and `OnlineResources`
+  (`test/online/`): relay probes before `queue.join`, search progress, ranked
+  prompts with live answers, AI backfill and its start countdown, requeues,
+  declines with a cooldown, cancelling at every step, the share flow, catalog
+  queries, hand-offs, and parsing of every protocol fixture the screens read.
+- The `UIPresentation` suite and the mobile gallery capture every online
+  screen state from canned data (`tools/OnlineScreenFixtures.h`).
 
 - `glob2-unit-tests` (`test/online/`): envelope codec, timestamps, token
   lifetimes and refresh scheduling, backoff, SHA-256 vectors, origin

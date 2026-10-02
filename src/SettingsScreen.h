@@ -24,6 +24,7 @@ class SettingsScreen : public Glob2UI::Screen
 		Buildings,
 		Controls,
 		Player,
+		Online,
 		Experiments
 	};
 	enum class Kind
@@ -36,7 +37,9 @@ class SettingsScreen : public Glob2UI::Screen
 		Number,
 		Text,
 		Button,
-		Binding
+		Binding,
+		// A row whose element the category builds itself (Settings > Online).
+		Custom
 	};
 	struct Rect
 	{
@@ -53,6 +56,7 @@ class SettingsScreen : public Glob2UI::Screen
 		std::vector<std::string> choices;
 		std::function<void(int)> change;
 		std::function<void()> action;
+		std::function<Glob2UI::Element(const Glob2UI::Presentation &)> render;
 		Rect bounds, control;
 		// Table entries share a line only when the viewport is wide enough.
 		int columns = 1, column = 0;
@@ -123,6 +127,14 @@ class SettingsScreen : public Glob2UI::Screen
 	void buildBuildings();
 	void buildBuildingDetail(int type);
 	void buildKeyboard();
+	// Settings > Online (SettingsScreenOnline.cpp): server choice, account, sign-in methods.
+	struct OnlineState;
+	std::shared_ptr<OnlineState> online;
+	void buildOnline();
+	void pollOnline();
+	// Settings > Online: removes a linked sign-in method (never the last one).
+	void unlinkProvider(const std::string &provider, const std::string &name);
+	void custom(const std::string &id, std::function<Glob2UI::Element(const Glob2UI::Presentation &)> render);
 	void buildModal();
 	void resetScroll();
 	Row &add(const std::string &id, Kind kind, const std::string &label, const std::string &help = "");

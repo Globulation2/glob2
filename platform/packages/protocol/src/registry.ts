@@ -40,6 +40,7 @@ import {
   RelayMatchEnded,
   RelayMatchEndedResponse,
   RelayRecordReceipt,
+  RelayRegionList,
   RelayRegistration,
   RelayRegistrationResponse,
 } from './relay.ts';
@@ -159,6 +160,7 @@ export const schemaRegistry: Record<string, RegisteredSchema> = {
   RelayMatchEnded: { schema: RelayMatchEnded },
   RelayMatchEndedResponse: { schema: RelayMatchEndedResponse },
   RelayRecordReceipt: { schema: RelayRecordReceipt },
+  RelayRegionList: { schema: RelayRegionList },
   // Realtime envelopes and messages
   RealtimeRequest: { schema: RealtimeRequest },
   RealtimeResponse: { schema: RealtimeResponse },

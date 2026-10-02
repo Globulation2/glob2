@@ -159,6 +159,43 @@ export class AccountService {
     };
   }
 
+  /**
+   * Removes every identity of `provider` from the account. A registered account
+   * keeps at least one sign-in method: removing the last one is a conflict.
+   */
+  async unlinkProvider(account: Account, provider: string): Promise<void> {
+    await this.db.transaction().execute(async (tx) => {
+      // Serialises concurrent unlinks of the same account's last two methods.
+      await tx
+        .selectFrom('accounts')
+        .select('id')
+        .where('id', '=', account.id)
+        .forUpdate()
+        .execute();
+      const linked = await tx
+        .selectFrom('identities')
+        .select(['id', 'provider'])
+        .where('account_id', '=', account.id)
+        .execute();
+      const removing = linked.filter((identity) => identity.provider === provider);
+      if (removing.length === 0) {
+        throw apiError('not_found', `No ${provider} sign-in is linked to this account.`);
+      }
+      if (account.kind === 'registered' && removing.length === linked.length) {
+        throw apiError(
+          'conflict',
+          'This is the last way to sign in to this account; link another method first.',
+          { reason: 'last_sign_in_method', provider },
+        );
+      }
+      await tx
+        .deleteFrom('identities')
+        .where('account_id', '=', account.id)
+        .where('provider', '=', provider)
+        .execute();
+    });
+  }
+
   /** Creates a guest with a generated name and a new device credential (returned once). */
   async createGuest(platform: ClientPlatform): Promise<{ account: Account; credential: string }> {
     const credential = randomSecret();

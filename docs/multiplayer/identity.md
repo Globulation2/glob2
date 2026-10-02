@@ -49,6 +49,7 @@ or surrounding spaces), a role (`user`, `moderator`, `admin`) and a status
 | `POST /api/v1/auth/local/sign-in` | `LocalSignInRequest` → `SignInResponse` |
 | `POST /api/v1/auth/web/sign-out` | ends the browser's web session |
 | `GET /api/v1/accounts/me`, `PATCH …/me` | `SelfAccount`; `UpdateAccountRequest` |
+| `DELETE /api/v1/accounts/me/identities/{provider}` | 204; unlinks that sign-in method. A registered account keeps at least one: removing the last is `409 conflict` (`details.reason: last_sign_in_method`); an unlinked provider is `404` |
 | `GET /api/v1/accounts/{id}` | `PublicAccount` |
 | `GET /.well-known/jwks.json` | `PlatformJwks` |
 

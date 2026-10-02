@@ -54,6 +54,7 @@ namespace Lan
 		int downloadPercent() const override;
 		std::string experimentsLabel() const override;
 		std::string shareText() const override;
+		bool localReady() const override { return isHost() || ready; }
 		GameHeader* optionsHeader() override;
 		MapHeader* optionsMap() override;
 		void optionsChanged() override;

@@ -605,6 +605,7 @@ void Engine::teardownSession()
 
 	if (multiplayer) multiplayer->setNetEngine(nullptr);
 	leaveTurnMatch();
+	gui.connectionOverlay.reset();
 	turn = nullptr;
 	turnMatch.reset();
 	net.reset();
@@ -618,9 +619,12 @@ void Engine::leaveTurnMatch()
 	Turn::TurnSession& session = turn->turn();
 	if (session.state() == Turn::TurnSession::State::Ended || session.state() == Turn::TurnSession::State::Rejected)
 		return;
+	// GameFinished means the game itself is decided (the relay may then end the match
+	// as soon as nobody is connected): the end condition fired, or this colony won. A
+	// colony that lost while others play on leaves like any other player.
 	const bool finished = gui.game.isGameEnded || gui.game.totalPrestigeReached ||
 		(gui.localTeamNo >= 0 && gui.localTeamNo < gui.game.mapHeader.getNumberOfTeams() &&
-		 gui.game.teams[gui.localTeamNo] && (gui.game.teams[gui.localTeamNo]->hasWon || gui.game.teams[gui.localTeamNo]->hasLost));
+		 gui.game.teams[gui.localTeamNo] && gui.game.teams[gui.localTeamNo]->hasWon);
 	session.quit(finished ? Turn::QuitReason::GameFinished : Turn::QuitReason::PlayerQuit);
 }
 
@@ -629,6 +633,7 @@ void Engine::pumpTurnSession(Uint64 now)
 	if (!turn)
 		return;
 	Turn::TurnSession& session = turn->turn();
+	turnNowMicros = now * 1000;
 	session.update(now * 1000);
 	if (session.needsReload())
 		reloadTurnInitialState();

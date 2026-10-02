@@ -51,8 +51,12 @@
 #include "PhoneEditor.h"
 #include "MapEditDialog.h"
 #include "ScriptEditorScreen.h"
+#include "OnlineScreenFixtures.h"
 #include <ScreenStack.h>
 #include <Toolkit.h>
+#include "gui/ConnectionOverlay.h"
+#include "test/OnlineUIFixtures.h"
+#include "SettingsScreen.h"
 #include <SDL_net.h>
 #include <charconv>
 #include <stdexcept>
@@ -275,11 +279,58 @@ struct MobileGallerySetup
 		screenShot(stack, "credits", std::make_unique<CreditScreen>());
 		screenShot(stack, "lan-menu", std::make_unique<LANMenuScreen>(stack));
 		screenShot(stack, "lan-find", std::make_unique<LANFindScreen>(stack));
+		// Online play (fixed models, no network): hub states, rooms, starting a match.
+		screenShot(stack, "online-hub", OnlineUIFixtures::hubFixture(stack));
+		screenShot(stack, "online-hub-signin", OnlineUIFixtures::hubFixture(stack, [](OnlineHubScreen::Model &m) {
+					   m.signIn = OnlineHubScreen::Model::SignIn::Waiting;
+					   m.confirmationCode = "KXQ742";
+				   }));
+		screenShot(stack, "online-hub-offline", OnlineUIFixtures::hubFixture(stack, [](OnlineHubScreen::Model &m) {
+					   m.link = OnlineHubScreen::Model::Link::Offline;
+					   m.retryInSeconds = 8;
+					   m.displayName = "Bradley";
+					   m.accountKind = "registered";
+					   m.rooms = Online::Json::array();
+				   }));
+		{
+			auto hub = OnlineUIFixtures::hubFixture(stack);
+			static_cast<OnlineHubScreen &>(*hub).acceptInvite("https://play.lanparty.net", "7HD21QABCD");
+			screenShot(stack, "online-hub-trust", std::move(hub));
+		}
+		screenShot(stack, "room-host", std::make_unique<RoomScreen>(stack, Online::PlatformRoom::preview(OnlineUIFixtures::roomState(), OnlineUIFixtures::HOST_ID, OnlineUIFixtures::roomChat())));
+		{
+			auto room = std::make_unique<RoomScreen>(stack, Online::PlatformRoom::preview(OnlineUIFixtures::roomState(), OnlineUIFixtures::GUEST_ID, OnlineUIFixtures::roomChat()));
+			room->selectTab(RoomScreen::MapTab);
+			screenShot(stack, "room-guest-map", std::move(room));
+		}
+		{
+			auto room = std::make_unique<RoomScreen>(stack, Online::PlatformRoom::preview(OnlineUIFixtures::roomState(), OnlineUIFixtures::HOST_ID, OnlineUIFixtures::roomChat()));
+			room->selectTab(RoomScreen::ChatTab);
+			screenShot(stack, "room-chat", std::move(room));
+		}
+		screenShot(stack, "room-lan", std::make_unique<RoomScreen>(stack, std::make_shared<OnlineUIFixtures::LanRoomFixture>()));
+		screenShot(stack, "match-starting", std::make_unique<MatchStartScreen>(stack, OnlineUIFixtures::startingMatch()));
+		{
+			auto settings = std::make_unique<SettingsScreen>();
+			settings->selectCategory(SettingsScreen::Category::Online);
+			screenShot(stack, "settings-online", std::move(settings));
+		}
 		auto client = std::make_shared<YOGClient>();
 		screenShot(stack, "online-login", std::make_unique<YOGLoginScreen>(stack, client));
 		screenShot(stack, "online-register", std::make_unique<YOGRegisterScreen>(client));
 		screenShot(stack, "map-upload",
 				   std::make_unique<YOGClientMapUploadScreen>(stack, client, "maps/balanced.map"));
+		// Online screens on canned data (tools/OnlineScreenFixtures.h).
+		screenShot(stack, "quick-match", OnlineScreenFixtures::quickMatch(stack, false));
+		screenShot(stack, "quick-match-searching", OnlineScreenFixtures::quickMatch(stack, true));
+		screenShot(stack, "match-found", OnlineScreenFixtures::matchFound(true));
+		screenShot(stack, "match-found-ai", OnlineScreenFixtures::matchFound(false));
+		screenShot(stack, "online-profile", OnlineScreenFixtures::profile(stack));
+		screenShot(stack, "online-maps", OnlineScreenFixtures::maps(stack, OnlineMapsScreen::Tab::Browse, ""));
+		screenShot(stack, "online-my-maps", OnlineScreenFixtures::maps(stack, OnlineMapsScreen::Tab::Mine, ""));
+		screenShot(stack, "map-share", OnlineScreenFixtures::share(0));
+		screenShot(stack, "map-share-checking", OnlineScreenFixtures::share(1));
+		screenShot(stack, "map-share-rejected", OnlineScreenFixtures::share(2));
 		screenShot(
 			stack, "confirmation",
 			std::make_unique<MessageScreen>("Save changes before leaving?",
@@ -858,11 +909,59 @@ class MobileGalleryGameplay
 			gui.touch->panelOpen = false;
 		}
 		{
+			// Online play: the connection panel and cards from fixed snapshots.
+			ConnectionSnapshot snapshot;
+			auto add = [&](int seat, const std::string &name, int team, ConnectionRow::State state, int ms, bool local = false) {
+				ConnectionRow row;
+				row.seat = seat;
+				row.name = name;
+				row.color = gui.game.teams[team]->color;
+				row.state = state;
+				row.latencyMs = ms;
+				row.local = local;
+				snapshot.rows.push_back(row);
+			};
+			add(0, "Amber colony", 0, ConnectionRow::State::Connected, 80, true);
+			add(1, "Violet colony", 1, ConnectionRow::State::Connected, 64);
+			add(2, "Jade colony", 2, ConnectionRow::State::AI, -1);
+			snapshot.inputDelayMs = 80;
+			snapshot.rttMs = 28;
+			snapshot.relay = "eu-west-2";
+			gui.connectionOverlay = std::make_unique<ConnectionOverlay>();
+			gui.connectionOverlay->source = [&] { return snapshot; };
+			capture("game-connection");
+			snapshot.rows[1].state = ConnectionRow::State::Reconnecting;
+			snapshot.rows[1].graceSeconds = 132;
+			capture("game-connection-trouble");
+			gui.connectionOverlay->openDetails(true);
+			capture("game-connection-details");
+			gui.connectionOverlay->openDetails(false);
+			snapshot.rows[1].state = ConnectionRow::State::Slow;
+			snapshot.rows[1].latencyMs = 310;
+			snapshot.rows[0].unstable = true;
+			snapshot.rows[0].latencyMs = 240;
+			capture("game-connection-own");
+			snapshot.card = ConnectionSnapshot::Card::Reconnecting;
+			snapshot.attempt = 2;
+			snapshot.graceSeconds = 161;
+			capture("game-connection-lost");
+			snapshot.card = ConnectionSnapshot::Card::CatchingUp;
+			snapshot.catchupDone = 3456;
+			snapshot.catchupTotal = 5100;
+			snapshot.missedSeconds = 102;
+			snapshot.secondsLeft = 6;
+			capture("game-catching-up");
+			snapshot.card = ConnectionSnapshot::Card::Desync;
+			capture("game-out-of-sync");
+			gui.connectionOverlay.reset();
+		}
+		{
 			class ResultsFixture : public EndGameScreen
 			{
 			  public:
 				using EndGameScreen::EndGameScreen;
 				void showFilters() { showTeamFilters(true); }
+				using EndGameScreen::showTeamFilters;
 				void inspectValue()
 				{
 					showTeamFilters(false);
@@ -879,6 +978,32 @@ class MobileGalleryGameplay
 			stackShot(stack, "game-results-filters");
 			view->inspectValue();
 			stackShot(stack, "game-results-value");
+			// Online results: the rating card while verifying, verified, and a room match.
+			auto online = std::make_shared<Online::OnlineMatchResult>("https://glob2online.com", "8f3k2q00-0000-4000-8000-000000000001", OnlineUIFixtures::HOST_ID);
+			online->label = "1 vs 1 · Ranked";
+			online->mapTitle = "Even Ground 128×128";
+			online->fromRoom = false;
+			online->rated = true;
+			online->ladder = "1 vs 1";
+			online->ratingBefore = 1528;
+			online->ratingExpectedWin = 1543;
+			online->ratingExpectedLoss = 1514;
+			view->showTeamFilters(false);
+			view->setOnlineResult(online);
+			view->setOutcome(EndGameScreen::Outcome::Victory);
+			stackShot(stack, "game-results-verifying");
+			online->verification = Online::OnlineMatchResult::Verification::Verified;
+			online->ratingAfter = 1543;
+			online->outcome = "won";
+			++online->revision;
+			stackShot(stack, "game-results-verified");
+			auto room = std::make_shared<Online::OnlineMatchResult>("https://glob2online.com", "8f3k2q00-0000-4000-8000-000000000002", OnlineUIFixtures::HOST_ID);
+			room->label = "Room · Sunday 2v2";
+			room->mapTitle = "Marchland";
+			room->verification = Online::OnlineMatchResult::Verification::NotApplicable;
+			room->outcome = "draw";
+			view->setOnlineResult(room);
+			stackShot(stack, "game-results-room");
 			view->endExecute(0);
 			frame(stack);
 		}

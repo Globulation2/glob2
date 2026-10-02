@@ -3,13 +3,19 @@
 
 #pragma once
 
-// What a multiplayer setup room needs from the network behind it. The room screen
-// (MultiplayerGameScreen today, the Room screen of the multiplayer revamp later) only
-// talks to this interface. Implementations: LanRoom (LAN games on the turn protocol),
-// YogRoom (the legacy YOG lobby, until YOG is removed) and, later, PlatformRoom.
+// What a multiplayer setup room needs from the network behind it. The room screens
+// (RoomScreen, and MultiplayerGameScreen for the legacy lobby) only talk to this
+// interface. Implementations: PlatformRoom (online rooms on a platform instance),
+// LanRoom (LAN games on the turn protocol) and YogRoom (the legacy YOG lobby, until
+// YOG is removed).
 //
 // Everything is polled from the UI thread: update() once per timer tick, then
 // takeEvent() until it returns nothing.
+//
+// The first block is the interface every backend implements. The second block
+// (below "Room screen") is what the shared Room screen of the multiplayer revamp
+// shows beyond it: invite, latency, seat controllers, setup editing. Each of those
+// has a default, so a backend that does not offer something simply does not show it.
 
 #include <array>
 #include <cstdint>
@@ -24,6 +30,11 @@
 class Engine;
 class GameHeader;
 class MapHeader;
+struct CustomGameSetup;
+namespace Online
+{
+class OnlineMatch;
+}
 
 class RoomBackend
 {
@@ -38,6 +49,15 @@ public:
 		bool ready = true;  ///< humans: ready to start
 		bool local = false; ///< this client's own seat
 		bool open = false;  ///< an empty seat a player may still take
+
+		// Room screen details; defaults show nothing.
+		bool host = false;    ///< the room's host sits here
+		bool guest = false;   ///< a guest account (online)
+		bool locked = false;  ///< closed by the host; nobody may take it
+		int latencyMs = -1;   ///< measured latency to the relay or host, -1 unknown
+		std::string detail;   ///< second line: device, address, AI description
+		int progress = -1;    ///< map download or loading progress 0..100, -1 none
+		std::string aiId;     ///< AI seats: the AI's stable CLI name (AINames)
 	};
 
 	struct Event
@@ -59,6 +79,10 @@ public:
 		Kind kind = Changed;
 		std::string text;
 		int code = 0;
+		/// Chat: a notice from the room (joins, setup changes), not a player's line.
+		bool system = false;
+		/// Chat: who wrote it, when known (text is then only the message).
+		std::string author;
 	};
 
 	/// Result codes carried by Finished events (MultiplayerGameScreen's values).
@@ -123,4 +147,72 @@ public:
 	virtual void gameStarted(bool running) = 0;
 	/// The game screen closed.
 	virtual void gameEnded(bool quitApplication) = 0;
+
+	// ---------------------------------------------------------------- Room screen
+
+	enum class Kind
+	{
+		Online, ///< a room on a platform instance: invite link, rated history
+		Lan,    ///< hosted on this network, not rated
+		Legacy, ///< the YOG lobby
+	};
+	virtual Kind kind() const { return Kind::Lan; }
+
+	/// The colour shown beside a seat (its map team's colour).
+	virtual std::optional<std::array<std::uint8_t, 3>> seatColor(const Slot& slot) const { return teamColor(slot.team); }
+	/// Name of a slot's team choice for the Team control ("Team 1").
+	virtual int teamChoices() const { return teamCount(); }
+
+	/// The room's title ("Bradley's room", "Living-room LAN").
+	virtual std::string roomName() const { return mapName(); }
+	/// Display name of the host, for guests ("host Bradley").
+	virtual std::string hostName() const { return {}; }
+
+	/// Visibility: listed in the hub (public) or reachable by invite only.
+	virtual bool canChangeVisibility() const { return false; }
+	virtual bool listed() const { return false; }
+	virtual void setListed(bool) {}
+
+	/// Online invite: the web link (https://<instance>/j/<code>) and the bare code.
+	virtual std::string inviteLink() const { return {}; }
+	virtual std::string inviteCode() const { return {}; }
+	/// LAN: the address others on this network join (shown with shareText()).
+	virtual std::string localAddress() const { return {}; }
+
+	/// One line summarising map, size, format and rules, under the room's title.
+	virtual std::string setupSummary() const { return mapName(); }
+	/// The current state of the map when it is not simply ready ("Preparing map on
+	/// the server…", a failure), else empty.
+	virtual std::string mapStatus() const { return {}; }
+	/// A local file of the room's map for the preview, once it is available.
+	virtual std::optional<std::string> mapFile() const { return {}; }
+
+	/// Taking an open seat (members move themselves), and the host's seat controls.
+	virtual bool canTakeSeat(const Slot&) const { return false; }
+	virtual void takeSeat(int) {}
+	enum class Occupant
+	{
+		Open,   ///< empty, anyone may take it
+		AI,     ///< an AI (aiId)
+		Closed, ///< locked: nobody, the colony stays inactive
+	};
+	virtual bool canSetOccupant(const Slot&) const { return false; }
+	virtual void setOccupant(int, Occupant, const std::string& /*aiId*/ = {}) {}
+
+	/// Ready: this client's own state (guests toggle it; hosts start instead).
+	virtual bool localReady() const { return false; }
+	/// Why Start is not available yet ("Waiting for Ana_M to be ready"), or empty.
+	virtual std::string waitingFor() const { return {}; }
+
+	/// The host's setup draft (map, teams, rules) for the custom-game editor, and
+	/// applying an edited draft back to the room. Empty when the backend keeps its
+	/// setup elsewhere (the options screen above).
+	virtual bool canEditSetup() const { return false; }
+	/// Fills `draft` with the room's setup; false when there is none to edit.
+	virtual bool setupDraft(CustomGameSetup& /*draft*/) const { return false; }
+	virtual void applySetup(const CustomGameSetup&) {}
+
+	/// Online rooms start through the match flow (ticket, relay, map download) instead
+	/// of initGame(): after a Launch event the screen hands this to the starting screen.
+	virtual std::shared_ptr<Online::OnlineMatch> takeMatch() { return {}; }
 };

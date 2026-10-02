@@ -5,6 +5,7 @@
 #include "MapCache.h"
 #include "OnlineStorage.h"
 #include "PlatformClient.h"
+#include "RelayTransport.h"
 
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>
@@ -12,6 +13,7 @@
 
 #include <SDL.h>
 #include <memory>
+#include <vector>
 
 #ifdef __ANDROID__
 #include <jni.h>
@@ -36,6 +38,11 @@ struct Owned
 	std::unique_ptr<Services> view;
 };
 Owned *owned = nullptr;
+std::vector<std::function<void()>> &hooks()
+{
+	static std::vector<std::function<void()>> value;
+	return value;
+}
 Uint32 lastPlatformPoll = 0;
 
 #ifdef __ANDROID__
@@ -116,8 +123,17 @@ bool servicesCreated()
 void pump()
 {
 	pollPlatformLinks();
-	if (owned)
-		owned->client->update();
+	pumpLingeringRelayConnections();
+	if (!owned)
+		return;
+	owned->client->update();
+	for (auto &hook : hooks())
+		hook();
+}
+
+void addPumpHook(std::function<void()> hook)
+{
+	hooks().push_back(std::move(hook));
 }
 
 bool acceptDroppedText(const std::string &text)

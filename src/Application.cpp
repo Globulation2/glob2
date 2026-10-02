@@ -5,6 +5,9 @@
 #include <StringTable.h>
 #include "GlobalContainer.h"
 #include "MainMenuScreen.h"
+#include "OnlineMapsScreen.h"
+#include "OnlineProfileScreen.h"
+#include "QuickMatchScreen.h"
 #include "MessageScreen.h"
 #include "CampaignMainMenu.h"
 #include "CampaignMenuScreen.h"
@@ -12,10 +15,11 @@
 #include "CreditScreen.h"
 #include "EditorMainMenu.h"
 #include "LANMenuScreen.h"
-#include "YOGLoginScreen.h"
-#include "YOGClient.h"
+#include "OnlineHubScreen.h"
+#include "InviteLink.h"
 #include "ui/FrontendUI.h"
 #include "OnlineServices.h"
+#include "RelayTransport.h"
 #include <algorithm>
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>
@@ -85,9 +89,13 @@ class ShutdownScreen : public Glob2UI::Screen
 	}
 	void onTimer(Uint32) override
 	{
-		// Present the final message for one frame before releasing graphics.
+		// Present the final message for one frame before releasing graphics. A relay
+		// connection still writing a Quit gets its few hundred milliseconds first
+		// (bounded by Online::LINGER_MS).
 		if (closing)
 		{
+			if (Online::lingeringRelayConnections() > 0)
+				return;
 			endExecute(0);
 			return;
 		}
@@ -118,7 +126,29 @@ Application::Application()
 	else if (globalContainer->replaying)
 		singlePlayer.replay(globalContainer->replayFileName);
 	else
+	{
 		mainMenu();
+		openOnlineScreenForDevelopment();
+	}
+}
+
+// GLOB2_ONLINE_SCREEN=quick-match|profile|maps opens that online screen over
+// the main menu, for development and checks against an instance before the
+// online hub links to it.
+void Application::openOnlineScreenForDevelopment()
+{
+	const char *which = SDL_getenv("GLOB2_ONLINE_SCREEN");
+	if (!which || !*which)
+		return;
+	const std::string name = which;
+	if (name == "quick-match")
+		screens.push(std::make_unique<QuickMatchScreen>(screens));
+	else if (name == "profile")
+		screens.push(std::make_unique<OnlineProfileScreen>(screens));
+	else if (name == "maps")
+		screens.push(std::make_unique<OnlineMapsScreen>(screens));
+	else if (name == "my-maps")
+		screens.push(std::make_unique<OnlineMapsScreen>(screens, OnlineMapsScreen::Tab::Mine));
 }
 
 Application::~Application() = default;
@@ -166,9 +196,9 @@ void Application::choose(int choice)
 	case MainMenuScreen::MULTIPLAYERS_LAN:
 		screens.push(std::make_unique<LANMenuScreen>(screens));
 		break;
-	case MainMenuScreen::MULTIPLAYERS_YOG:
+	case MainMenuScreen::PLAY_ONLINE:
 #if !defined(GLOB2_CHINA_RELEASE) && !defined(GLOB2_AMAZON_RELEASE)
-		screens.push(std::make_unique<YOGLoginScreen>(screens, std::make_shared<YOGClient>()));
+		screens.push(std::make_unique<OnlineHubScreen>(screens));
 #endif
 		break;
 	case MainMenuScreen::QUIT:
@@ -227,6 +257,16 @@ bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event> &incomi
 		return shutdownScreens.running();
 	}
 	screens.frame(tick, events);
+#if !defined(GLOB2_CHINA_RELEASE) && !defined(GLOB2_AMAZON_RELEASE)
+	// An invite link (at launch or while running) opens the online hub from the
+	// main menu; the hub consumes it.
+	static std::uint32_t hubOpenedAt = 0;
+	if (Online::pendingJoin() && dynamic_cast<MainMenuScreen *>(screens.top()) && tick - hubOpenedAt > 2000)
+	{
+		hubOpenedAt = tick;
+		screens.push(std::make_unique<OnlineHubScreen>(screens));
+	}
+#endif
 	if (!screens.running())
 	{
 		if (screens.result() == GAGGUI::Screen::QUIT_APPLICATION)

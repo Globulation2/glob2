@@ -3,6 +3,7 @@
 
 #include "InviteLink.h"
 
+#include <functional>
 #include <string>
 
 // The client's one connection to the online platform, shared by every
@@ -33,6 +34,9 @@ bool servicesCreated();
 // Android intents and iOS universal links are polled here). Cheap when the
 // services were never created.
 void pump();
+// Work that must continue between screens (a quick-match search): called by
+// pump() after the client updates, while the services exist.
+void addPumpHook(std::function<void()> hook);
 // SDL_DROPFILE text: true (and pending join set) when it is an invite link,
 // which the caller then must not treat as a file.
 bool acceptDroppedText(const std::string &text);

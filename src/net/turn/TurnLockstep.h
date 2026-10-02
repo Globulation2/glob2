@@ -16,6 +16,8 @@
 
 #include "LockstepSession.h"
 #include "MatchRecord.h"
+#include "NetConsts.h"
+#include "Order.h"
 #include "OrderValidation.h"
 #include "TurnSession.h"
 
@@ -49,7 +51,21 @@ namespace Turn
 		std::function<std::shared_ptr<Order>(std::uint32_t tick, int player, std::shared_ptr<Order>)> orderFilter;
 
 		void setLocalPlayer(int player) override { session.setLocalPlayer(player); }
-		void addLocalOrder(std::shared_ptr<Order> order) override { session.addLocalOrder(std::move(order)); }
+		/// The local player's own PlayerQuitsGameOrder (in-game Quit, end-of-game
+		/// dialog) is not submitted when this is set: the engine leaves with a Quit
+		/// message instead (the relay sequences the same quit order). Only Quit says
+		/// whether the game was decided, and once the relay has sequenced the order it
+		/// closes the seat before a Quit behind it could arrive.
+		std::function<void()> onLocalQuit;
+		void addLocalOrder(std::shared_ptr<Order> order) override
+		{
+			if (order && onLocalQuit && order->getOrderType() == ORDER_PLAYER_QUIT_GAME)
+			{
+				onLocalQuit();
+				return;
+			}
+			session.addLocalOrder(std::move(order));
+		}
 		void pushOrder(std::shared_ptr<Order> order, int playerNumber, bool isAI) override
 		{
 			session.pushOrder(std::move(order), playerNumber, isAI);

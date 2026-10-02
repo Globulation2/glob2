@@ -58,6 +58,7 @@
     "RealtimeEvent": "schemas/RealtimeEvent.schema.json",
     "RealtimeEventAuthHandoffCompleted": "schemas/RealtimeEventAuthHandoffCompleted.schema.json",
     "RealtimeEventAuthHandoffFailed": "schemas/RealtimeEventAuthHandoffFailed.schema.json",
+    "RealtimeEventMatchRematchOffered": "schemas/RealtimeEventMatchRematchOffered.schema.json",
     "RealtimeEventMatchStart": "schemas/RealtimeEventMatchStart.schema.json",
     "RealtimeEventMatchUpdated": "schemas/RealtimeEventMatchUpdated.schema.json",
     "RealtimeEventQueueMatchFound": "schemas/RealtimeEventQueueMatchFound.schema.json",
@@ -70,12 +71,16 @@
     "RealtimeEventSessionRevoked": "schemas/RealtimeEventSessionRevoked.schema.json",
     "RealtimeMatchReconnectParams": "schemas/RealtimeMatchReconnectParams.schema.json",
     "RealtimeMatchReconnectResult": "schemas/RealtimeMatchReconnectResult.schema.json",
+    "RealtimeMatchRematchParams": "schemas/RealtimeMatchRematchParams.schema.json",
+    "RealtimeMatchRematchResult": "schemas/RealtimeMatchRematchResult.schema.json",
     "RealtimeQueueJoinParams": "schemas/RealtimeQueueJoinParams.schema.json",
     "RealtimeQueueJoinResult": "schemas/RealtimeQueueJoinResult.schema.json",
     "RealtimeQueueLeaveParams": "schemas/RealtimeQueueLeaveParams.schema.json",
     "RealtimeQueueLeaveResult": "schemas/RealtimeQueueLeaveResult.schema.json",
     "RealtimeQueueRespondParams": "schemas/RealtimeQueueRespondParams.schema.json",
     "RealtimeQueueRespondResult": "schemas/RealtimeQueueRespondResult.schema.json",
+    "RealtimeQueueUpdateParams": "schemas/RealtimeQueueUpdateParams.schema.json",
+    "RealtimeQueueUpdateResult": "schemas/RealtimeQueueUpdateResult.schema.json",
     "RealtimeRequest": "schemas/RealtimeRequest.schema.json",
     "RealtimeResponse": "schemas/RealtimeResponse.schema.json",
     "RealtimeRoomChatParams": "schemas/RealtimeRoomChatParams.schema.json",
@@ -109,6 +114,7 @@
     "RelayMatchEnded": "schemas/RelayMatchEnded.schema.json",
     "RelayMatchEndedResponse": "schemas/RelayMatchEndedResponse.schema.json",
     "RelayRecordReceipt": "schemas/RelayRecordReceipt.schema.json",
+    "RelayRegionList": "schemas/RelayRegionList.schema.json",
     "RelayRegistration": "schemas/RelayRegistration.schema.json",
     "RelayRegistrationResponse": "schemas/RelayRegistrationResponse.schema.json",
     "RenderPreviewPayload": "schemas/RenderPreviewPayload.schema.json",
@@ -494,6 +500,55 @@
       "note": "A ranked 1v1 group waiting for both players to accept."
     },
     {
+      "file": "valid/RealtimeEventQueueProposal/ranked-accept-with-seats.json",
+      "schema": "RealtimeEventQueueProposal",
+      "valid": true,
+      "note": "The same prompt with the map and seats the client shows; resent when someone accepts."
+    },
+    {
+      "file": "valid/RealtimeEventQueueProposal/ai-backfill.json",
+      "schema": "RealtimeEventQueueProposal",
+      "valid": true,
+      "note": "No person was found: an AI takes the seat and the match starts without a prompt."
+    },
+    {
+      "file": "invalid/RealtimeEventQueueProposal/seat-bad-response.json",
+      "schema": "RealtimeEventQueueProposal",
+      "valid": false,
+      "stage": "schema",
+      "note": "Seat responses are pending, accepted, declined, timeout or not_required."
+    },
+    {
+      "file": "valid/RealtimeEventQueueStatus/searching.json",
+      "schema": "RealtimeEventQueueStatus",
+      "valid": true,
+      "note": "Search progress with the rating range, region and the AI that would fill the seat."
+    },
+    {
+      "file": "valid/RealtimeQueueUpdateParams/disallow-ai.json",
+      "schema": "RealtimeQueueUpdateParams",
+      "valid": true,
+      "note": "Untick \"Allow an AI opponent\" while searching."
+    },
+    {
+      "file": "valid/RealtimeMatchRematchParams/after-quick-match.json",
+      "schema": "RealtimeMatchRematchParams",
+      "valid": true,
+      "note": "Ask for (or join) the rematch room of a quick match."
+    },
+    {
+      "file": "valid/RealtimeEventMatchRematchOffered/offered.json",
+      "schema": "RealtimeEventMatchRematchOffered",
+      "valid": true,
+      "note": "The other player opened the rematch room."
+    },
+    {
+      "file": "valid/RelayRegionList/two-regions.json",
+      "schema": "RelayRegionList",
+      "valid": true,
+      "note": "Regions a client probes before queueing."
+    },
+    {
       "file": "valid/RealtimeEventQueueProposalEnded/removed-after-decline.json",
       "schema": "RealtimeEventQueueProposalEnded",
       "valid": true,
@@ -504,6 +559,19 @@
       "schema": "RealtimeEventMatchStart",
       "valid": true,
       "note": "match.start pushed to a seated client."
+    },
+    {
+      "file": "valid/RealtimeEventMatchStart/assignment-rated-preview.json",
+      "schema": "RealtimeEventMatchStart",
+      "valid": true,
+      "note": "A rated queue match: the map title and the rating preview the results screen greys out until verified."
+    },
+    {
+      "file": "invalid/RealtimeEventMatchStart/assignment-preview-missing-ifLost.json",
+      "schema": "RealtimeEventMatchStart",
+      "valid": false,
+      "stage": "schema",
+      "note": "A rating preview carries both outcomes."
     },
     {
       "file": "invalid/RealtimeEventMatchStart/assignment-with-bad-setup.json",

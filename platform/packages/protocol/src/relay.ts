@@ -20,6 +20,24 @@ export const RelayRegion = Type.String({
   description: 'Operator-chosen region id, e.g. "eu-west".',
 });
 
+/**
+ * GET /api/v1/relays/regions (public): the regions that have an available relay,
+ * with a URL a client can time to estimate its round trip before queue.join or
+ * room.create. Any HTTP response from probeUrl counts; its body is irrelevant.
+ */
+export const RelayRegionInfo = Open({
+  region: RelayRegion,
+  probeUrl: HttpsOrWssUrl,
+  relays: Type.Integer({ minimum: 1, description: 'Available relays in the region.' }),
+});
+export type RelayRegionInfo = Static<typeof RelayRegionInfo>;
+
+export const RelayRegionList = Open(
+  { items: Type.Array(RelayRegionInfo, { maxItems: 32 }) },
+  { description: 'Regions with an available relay, by region id.' },
+);
+export type RelayRegionList = Static<typeof RelayRegionList>;
+
 const RelayLoad = Strict({
   matches: Type.Integer({ minimum: 0 }),
   connections: Type.Integer({ minimum: 0 }),

@@ -386,7 +386,7 @@ int main(int argc, char** argv)
         }
         if (!rc) rc = screens.result();
 		std::string expected, actual;
-		if (!Online::readMapBytes(source, expected) || !Online::readMapBytes(downloaded.string(), actual) || actual != expected)
+		if (!Online::readMapBytes(source, expected) || !Online::readMapBytes(Online::services().maps.path(hash).value_or(std::string()), actual) || actual != expected)
 		{
 			std::puts("JOIN FAIL: downloaded map differs from source");
 			rc = 1;
