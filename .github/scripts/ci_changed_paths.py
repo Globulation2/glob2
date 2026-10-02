@@ -116,6 +116,13 @@ def coverage_profile(paths, event, selected):
         primary_safe = (path.startswith('test/') and not path.startswith(('test/Script','test/fixtures/','test/support/'))
                         and path not in ('test/run-browser-determinism.py','test/check_javascript.py','test/check_javascript_corpus.py','test/check_javascript_evidence.py','test/build_provenance.py','test/ImageAssetTest.cpp'))
         primary_safe = primary_safe or path in RENDER_IMPLEMENTATIONS or (path.startswith(('src/gui/','src/render/')) and path.endswith('.cpp')) or (path.startswith('browser/') and browser_only(path)) or path.startswith(('deploy/','tests/deployment/','tests/transport/'))
+        # Shard/runtime configuration changes must exercise the oldest supported
+        # platform too, even though their files live under test/.
+        if path.startswith('test/ci-timings/') or path in {
+            'test/run_tests.py', 'test/ci_native_shard_plan.py',
+            'test/ci-native-auxiliary.json', 'test/build_ci_timing_profile.py',
+        }:
+            primary_safe = False
         if path.endswith(('.h','.hpp','.hh')) or not primary_safe:
             compatibility = True
             if not path.startswith(('test/', 'tests/', '.github/')):
