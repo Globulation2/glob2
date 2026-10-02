@@ -15,13 +15,13 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="glob2" android:host="join" />
             </intent-filter>
-            <!-- App Link for the official instance only (src/online/InstanceConfig.h);
-                 verified through https://yog.globulation2.org/.well-known/assetlinks.json. -->
+            <!-- App Link for the official instance only (scons/official_instance.py fills
+                 officialInstanceHost); verified through https://<host>/.well-known/assetlinks.json. -->
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https" android:host="yog.globulation2.org" android:pathPrefix="/j/" />
+                <data android:scheme="https" android:host="${officialInstanceHost}" android:pathPrefix="/j/" />
             </intent-filter>
         </activity>
     </application>

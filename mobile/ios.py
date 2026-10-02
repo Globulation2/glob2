@@ -11,6 +11,7 @@ import sys
 from dev_paths import dependency_prefix
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scons'))
 from build_layout import build_identity, default_directory, write_if_changed
+import official_instance
 from mobile_toolchain import ROOT, discover
 from sources import INCLUDE_DIRECTORIES
 
@@ -101,7 +102,11 @@ def main():
         'target_link_options(Glob2 PRIVATE -ObjC)',
         'set_target_properties(Glob2 PROPERTIES XCODE_ATTRIBUTE_PRODUCT_BUNDLE_IDENTIFIER '+BUNDLE_ID+' XCODE_ATTRIBUTE_INSTALL_PATH /Applications XCODE_ATTRIBUTE_SKIP_INSTALL NO XCODE_ATTRIBUTE_GCC_GENERATE_DEBUGGING_SYMBOLS YES XCODE_ATTRIBUTE_DEBUG_INFORMATION_FORMAT "dwarf-with-dsym")',
         'set_target_properties(Glob2 PROPERTIES MACOSX_BUNDLE_INFO_PLIST '+cmake_quote(project/'Info.plist')+' XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY "1,2")']
-    lines.append('set_target_properties(Glob2 PROPERTIES XCODE_ATTRIBUTE_CODE_SIGN_ENTITLEMENTS '+cmake_quote(ROOT/'mobile/ios/Glob2.entitlements')+')')
+    # Associated domain of the official instance (scons/official_instance.py).
+    entitlements=plistlib.loads((ROOT/'mobile/ios/Glob2.entitlements').read_bytes())
+    entitlements['com.apple.developer.associated-domains']=['applinks:'+official_instance.host(official_instance.origin())]
+    write_if_changed(project/'Glob2.entitlements',plistlib.dumps(entitlements).decode())
+    lines.append('set_target_properties(Glob2 PROPERTIES XCODE_ATTRIBUTE_CODE_SIGN_ENTITLEMENTS '+cmake_quote(project/'Glob2.entitlements')+')')
     if args.script_tests:
         import hashlib
         provenance = {'revision': subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),

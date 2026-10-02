@@ -6,6 +6,7 @@ import subprocess
 from SCons.Script import Environment, Default, Value, GetOption, Action, COMMAND_LINE_TARGETS
 from build_layout import write_if_changed, prepare_directory, PACKAGE_VERSION
 from javascript import javascript_objects, numeric_guard
+import official_instance
 from sources import CLIENT_SOURCES, GAG_SOURCES, USL_SOURCES, INCLUDE_DIRECTORIES
 
 PORTS = ['--use-port=sdl2', '--use-port=browser/ports/glob2_webp.py',
@@ -71,7 +72,7 @@ def _build_variant(directory, identity, arguments, threaded=False):
 #define PRIMARY_FONT "sans.ttf"
 ''')
     include_paths = [str(output / 'include')] + list(INCLUDE_DIRECTORIES)
-    env.Append(CPPPATH=include_paths + ["#third_party/quickjs-ng"], CPPDEFINES=['HAVE_CONFIG_H'],
+    env.Append(CPPPATH=include_paths + ["#third_party/quickjs-ng"], CPPDEFINES=['HAVE_CONFIG_H', official_instance.cppdefine(official_instance.origin(arguments))],
                CXXFLAGS=['-std=gnu++20', '-fexceptions', '-g2', '-O2' if identity['mode']=='release' else '-O0'] + PORTS)
     env.Append(LINKFLAGS=['-fexceptions', '-O2' if identity['mode']=='release' else '-O0',
         '-sLEGACY_GL_EMULATION=1', '-sFETCH=1', '-sMIN_WEBGL_VERSION=2', '-sMAX_WEBGL_VERSION=2',
