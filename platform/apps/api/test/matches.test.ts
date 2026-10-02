@@ -22,6 +22,7 @@ import {
   PINNED_KEY,
   RELAY_KEY,
   fakeMapBytes,
+  unloadableMapBytes,
   fakeSaveBytes,
   guestPlayer,
   registerRelay,
@@ -269,7 +270,10 @@ describe('uploads', () => {
         'save',
       ),
     );
-    const junk = await json(await upload(owner, Buffer.from('not a map'), 'map'));
+    const notAMap = await upload(owner, Buffer.from('not a map'), 'map');
+    expect(notAMap.status).toBe(400);
+    expect(await json(notAMap)).toMatchObject({ details: { problem: 'not_a_map' } });
+    const junk = await json(await upload(owner, unloadableMapBytes(), 'map'));
     await engine.runPending();
     const readSave = await json(
       await fetch(`${a.url}/api/v1/uploads/${save['id']}`, {

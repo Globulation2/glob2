@@ -173,8 +173,11 @@ website stays static and links into the app:
 | Sign in, online hub | `https://app.example.org/signin`, `https://app.example.org/` |
 | Leaderboards, matches, players, maps | the app's pages (`/leaderboard`, `/matches/<id>`, `/players/<id>`, `/maps`) |
 
-The app links back with `GLOB2_WEBSITE_URL` and `GLOB2_DOWNLOAD_URL` (footer and
-download links in the web app; build-time, so rebuild the `caddy` image).
+The app links back with `GLOB2_WEBSITE_URL` and `GLOB2_DOWNLOAD_URL` (build-time,
+so rebuild the `caddy` image). With a website URL, a strip above the app's header
+links to the website's home, game, learn, news and downloads pages, and Download
+defaults to `<website>/downloads/`; without one, Download goes to the project's
+release page.
 
 The website needs no CORS or origin allow-list entry: it calls no app API from
 browsers. If it shows live numbers, fetch them server-side or at build time from
@@ -243,8 +246,10 @@ It is served by `platform-api` on the backend network only; relays reach it at
 too. Caddy never forwards it.
 
 Invite links `https://<origin>/j/<code>` are small pages rendered by the API; their
-"Play in browser" button opens `web.browserClientUrl` from `instance.yaml`, which
-defaults to `<origin>/play/`.
+primary "Play in browser" button opens `web.browserClientUrl` from `instance.yaml`,
+which defaults to `<origin>/play/`, and "Open in the Globulation 2 app" comes second
+(phones on an instance with `appLinks` get the app first; see
+[rooms and matches](../multiplayer/rooms-and-matches.md#invite-links)).
 
 ### Mobile app links
 
@@ -577,7 +582,8 @@ GLOB2_CADDY_IMAGE=ghcr.io/<owner>/<repository>-caddy@sha256:…
   container (local driver, five 20 MB files).
 - Relay metrics are Prometheus text at `http://<relay>:7495/metrics` on the backend
   network (not public).
-- Admin CLI: `docker compose run --rm --no-deps platform-api platform admin grant|revoke …`.
+- Admin CLI: `docker compose run --rm --no-deps platform-api platform admin grant|revoke|ban|delete …`
+  ([what deleting keeps and removes](../multiplayer/identity.md#administration)).
 - Migrations: `docker compose run --rm --no-deps init node packages/db/src/cli.ts status`.
 - Stopping: `docker compose stop` drains relays (up to `GLOB2_RELAY_STOP_GRACE`);
   `docker compose down` keeps volumes; `down --volumes` deletes all data.

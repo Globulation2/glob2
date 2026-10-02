@@ -488,6 +488,16 @@ describe('browser sign-in handoff', () => {
       action: 'register',
     });
     expect(short.status).toBe(400);
+    // Not a dead end: the same page again, the code still shown, the problem
+    // on the password field and the username kept (never the password).
+    const shortPage = await short.text();
+    expect(shortPage).toContain(attempt.confirmationCode);
+    expect(shortPage).toContain(
+      'This password is too short: it has 5 characters, and passwords need at least 10.',
+    );
+    expect(shortPage).toMatch(/id="register-username"[^>]*value="webuser"/);
+    expect(shortPage).toMatch(/id="register-password"[^>]*aria-invalid="true"/);
+    expect(shortPage).not.toContain('short"');
     const done = await browser.post(`${ORIGIN}/signin/local`, {
       attempt: attempt.attemptId,
       username: 'webuser',
@@ -504,6 +514,66 @@ describe('browser sign-in handoff', () => {
       kind: 'registered',
     });
     client.close();
+  });
+
+  it('explains web sign-in problems on the form instead of a bare error page', async () => {
+    const browser = browserViaB();
+    const page = await (await browser.get(`${ORIGIN}/signin`)).text();
+    // Separate forms, so password managers offer a new password for sign-up.
+    expect(page).toMatch(/id="signin-password"[^>]*autocomplete="current-password"/);
+    expect(page).toMatch(
+      /id="register-password"[^>]*autocomplete="new-password"[^>]*minlength="10"/,
+    );
+    expect(page).toContain('<title>Sign in · Globulation 2</title>');
+    const post = (form: Record<string, string>) => browser.post(`${ORIGIN}/signin/local`, form);
+    const problem = async (form: Record<string, string>) => {
+      const response = await post(form);
+      const text = await response.text();
+      expect(text).toContain('<form method="post" action="/signin/local"');
+      expect(text).not.toContain('Sign-in problem');
+      const error = /<p class="field-error[^"]*"[^>]*id="([^"]+)-error"[^>]*>([^<]*)</.exec(text);
+      return { status: response.status, field: error?.[1], message: error?.[2], text };
+    };
+    const bad = await problem({
+      action: 'register',
+      username: 'ux test',
+      password: 'long enough pw',
+    });
+    expect(bad).toMatchObject({
+      status: 400,
+      field: 'register-username',
+      message: 'Usernames can only use letters, digits, dots, dashes and underscores (no spaces).',
+    });
+    expect(bad.text).toMatch(/id="register-username"[^>]*value="ux test"/);
+    expect(bad.text).not.toContain('long enough pw');
+    expect(
+      (await problem({ action: 'register', username: 'ab', password: 'long enough pw' })).message,
+    ).toBe('Usernames are 3 to 32 characters long; this one has 2.');
+    const created = await post({
+      action: 'register',
+      username: 'formuser',
+      password: 'a long enough password',
+    });
+    expect(created.status).toBe(200);
+    const taken = await problem({
+      action: 'register',
+      username: 'FormUser',
+      password: 'another long password',
+    });
+    expect(taken).toMatchObject({ status: 409, field: 'register-username' });
+    expect(taken.message).toContain('The username FormUser is taken.');
+    const wrong = await problem({ action: 'signin', username: 'formuser', password: 'nope' });
+    expect(wrong).toMatchObject({
+      status: 401,
+      field: 'signin-password',
+      message: 'That password is not right for this username. Try again.',
+    });
+    expect(wrong.text).toMatch(/id="signin-username"[^>]*value="formuser"/);
+    const unknown = await problem({ action: 'signin', username: 'nobody-here', password: 'x' });
+    expect(unknown).toMatchObject({ status: 401, field: 'signin-username' });
+    expect(unknown.message).toContain('There is no account called nobody-here.');
+    const empty = await problem({ action: 'signin', username: 'formuser', password: '' });
+    expect(empty).toMatchObject({ field: 'signin-password', message: 'Enter your password.' });
   });
 
   it('lists the configured providers in the instance description', async () => {

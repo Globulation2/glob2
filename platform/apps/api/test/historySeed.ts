@@ -6,7 +6,7 @@
 // Rows are written directly: this is the state the worker leaves behind.
 import { createHash, randomBytes } from 'node:crypto';
 import { deflateSync } from 'node:zlib';
-import type { Kysely } from 'kysely';
+import { sql, type Kysely } from 'kysely';
 import { putContent, type BlobStore } from '@glob2/core';
 import type { Database } from '@glob2/db';
 import { STANDARD_RULES, simVersionKey, type MatchSetup, type SimVersion } from '@glob2/protocol';
@@ -710,6 +710,21 @@ export async function seedHistory(
     ],
     daysAgo: 0,
   });
+
+  // The relay's connection report for the featured match's human seats (the
+  // match page's Connection table; RelayNetworkSummary v1 seat entries).
+  await db
+    .updateTable('match_participants')
+    .set((eb) => ({
+      network: sql`jsonb_build_object(
+        'rtt_us', jsonb_build_object('count', 120, 'p50', 38000 + 40000 * ${eb.ref('seat')}, 'p95', 91000 + 160000 * ${eb.ref('seat')}),
+        'lag_ticks', jsonb_build_object('count', 120, 'p50', 4, 'p95', 9),
+        'connection', jsonb_build_object('disconnects', ${eb.ref('seat')}, 'grace_used_ms', 4200 * ${eb.ref('seat')}),
+        'orders', jsonb_build_object('sequenced', 412, 'deferred', 3))`,
+    }))
+    .where('match_id', '=', rankedMatches[0]!)
+    .where('kind', '=', 'human')
+    .execute();
 
   return {
     sim,

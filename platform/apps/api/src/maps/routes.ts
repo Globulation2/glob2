@@ -30,6 +30,7 @@ import { supportedSimVersions } from '../app.ts';
 import { apiError } from '../errors.ts';
 import { WindowCounter, body } from '../http/validate.ts';
 import { authenticate, requireAccount, requireRole, type Identity } from '../identity.ts';
+import { checkedUpload, newestSimVersion } from './upload.ts';
 import {
   CATALOG_RULES,
   SHA256,
@@ -68,13 +69,6 @@ function fileName(title: string): string {
       .trim()
       .slice(0, 64) || 'map';
   return `${base}.map`;
-}
-
-/** The newest sim version this instance serves (for uploads that name none, e.g. from the web). */
-function newest(versions: readonly SimVersion[]): SimVersion | undefined {
-  return [...versions].sort(
-    (a, b) => a.versionMinor - b.versionMinor || a.netProtocol - b.netProtocol,
-  )[versions.length - 1];
 }
 
 type ReportRow = {
@@ -380,18 +374,13 @@ export async function mapCatalogRoutes(app: FastifyInstance, identity: Identity)
         }
         simVersion = asked;
       } else {
-        simVersion = newest(served);
+        simVersion = newestSimVersion(served);
         if (!simVersion)
           throw apiError('unavailable', 'No engine agent can validate maps right now.');
       }
       const notes = (request.query.notes ?? '').slice(0, 2000);
-      const bytes = request.body;
-      if (!(bytes instanceof Buffer) || bytes.length === 0) {
-        throw apiError(
-          'bad_request',
-          'Send the map file as the request body (Content-Type: application/octet-stream).',
-        );
-      }
+      // Unpacked when gzip (.map.gz): the stored bytes are the ones the game loads.
+      const bytes = checkedUpload(request.body, 'map', simVersion.versionMinor);
       if (!uploads.take(viewer.account.id)) {
         throw apiError('rate_limited', 'Too many uploads; wait a while.');
       }
@@ -436,7 +425,20 @@ export async function mapCatalogRoutes(app: FastifyInstance, identity: Identity)
         .orderBy(sql`preview_status = 'ready'`, 'desc')
         .orderBy('created_at', 'desc')
         .executeTakeFirst()) as VersionRow | undefined;
-      const validateJobId = same?.validate_job_id ?? randomUUID();
+      // An upload checked before the map was created (the web app's upload
+      // form does that) already has the engine's verdict.
+      const checked = same
+        ? undefined
+        : await db
+            .selectFrom('map_uploads')
+            .selectAll()
+            .where('blob_sha256', '=', stored.sha256)
+            .where('format', '=', 'map')
+            .where('sim_version', '=', sim)
+            .where('status', '=', 'valid')
+            .where('job_id', 'is not', null)
+            .executeTakeFirst();
+      const validateJobId = same?.validate_job_id ?? checked?.job_id ?? randomUUID();
       const reusePreview = same && same.preview_status !== 'failed';
       const previewJobId = reusePreview ? (same.preview_job_id ?? randomUUID()) : randomUUID();
       const inserted = await db
@@ -460,7 +462,16 @@ export async function mapCatalogRoutes(app: FastifyInstance, identity: Identity)
                 min_version_minor: same.min_version_minor,
                 file_title: same.file_title,
               }
-            : {}),
+            : checked
+              ? {
+                  validation: 'valid' as const,
+                  width: checked.width,
+                  height: checked.height,
+                  team_count: checked.team_count,
+                  min_version_minor: checked.version_minor,
+                  file_title: checked.title,
+                }
+              : {}),
           ...(reusePreview && same.preview_status === 'ready'
             ? {
                 preview_status: 'ready' as const,
@@ -485,7 +496,7 @@ export async function mapCatalogRoutes(app: FastifyInstance, identity: Identity)
       }
       // Jobs are submitted after the row names them, so a fast result always
       // finds the version it completes.
-      if (!same) {
+      if (!same && !checked) {
         await submitEngineJob(db, jobs, {
           kind: 'validate-map',
           simVersion,

@@ -7,3 +7,4 @@ export * from './accessPolicy.ts';
 export * from './blobStore.ts';
 export * from './jobs.ts';
 export * from './engineJobs.ts';
+export * from './mapFile.ts';

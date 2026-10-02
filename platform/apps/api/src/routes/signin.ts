@@ -28,17 +28,39 @@ type Attempt = Selectable<Database['signin_attempts']>;
 
 const FLOW_SECONDS = 15 * 60;
 const USERNAME = /^[A-Za-z0-9._-]{3,32}$/;
+const MIN_PASSWORD = 10;
+const MAX_PASSWORD = 256;
 
 interface Form {
   [key: string]: string | undefined;
+}
+
+/**
+ * A local-account form as the player left it: which form, what they typed
+ * (never the password) and what is wrong, tied to a field so the page can
+ * point at it. Errors re-render the whole sign-in page around the form.
+ */
+interface LocalFormState {
+  action: 'signin' | 'register';
+  username: string;
+  field: 'username' | 'password' | 'form';
+  message: string;
 }
 
 export async function signinRoutes(app: FastifyInstance, identity: Identity): Promise<void> {
   const { db } = app.services;
   const authLimit = { rateLimit: { max: identity.limits.authPerMinute, timeWindow: 60_000 } };
 
+  // Never a dead end: every problem page offers a way back.
   const errorPage = (reply: FastifyReply, message: string, status = 400) =>
-    sendPage(reply, 'Sign-in problem', html`<div class="card"><p>${message}</p></div>`, status);
+    sendPage(
+      reply,
+      'Sign-in problem',
+      html`<div class="card" role="alert"><p>${message}</p></div>
+        <a class="button primary" href="/signin">Back to sign in</a>
+        <a class="button" href="/">Go to ${identity.instanceName}</a>`,
+      status,
+    );
 
   const bindingHash = (request: FastifyRequest) => {
     const cookie = request.cookies[bindingCookieName(identity)];
@@ -70,38 +92,164 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
     );
   };
 
-  const localForm = (attempt: Attempt | undefined): Html | undefined => {
+  /** One labelled input, with its problem (if any) tied to it by aria-describedby. */
+  const field = (options: {
+    id: string;
+    label: string;
+    name: string;
+    type?: string;
+    value?: string;
+    attrs: Html;
+    hint?: string;
+    error?: string;
+  }) => {
+    const described = [
+      options.hint ? `${options.id}-hint` : '',
+      options.error ? `${options.id}-error` : '',
+    ]
+      .filter(Boolean)
+      .join(' ');
+    return html`<label for="${options.id}">${options.label}</label
+      ><input
+        id="${options.id}"
+        name="${options.name}"
+        type="${options.type ?? 'text'}"
+        ${options.value !== undefined ? html`value="${options.value}"` : ''}
+        ${described ? html`aria-describedby="${described}"` : ''}
+        ${options.error ? html`aria-invalid="true" autofocus` : ''}
+        ${options.attrs}
+      />${options.hint ? html`<p class="hint" id="${options.id}-hint">${options.hint}</p>` : ''}${
+        options.error
+          ? html`<p class="field-error" id="${options.id}-error">${options.error}</p>`
+          : ''
+      }`;
+  };
+
+  /**
+   * Local accounts: a Sign in form and, when registration is open, a separate
+   * Create account form (so password managers offer to generate a password).
+   */
+  const localForms = (attempt: Attempt | undefined, state?: LocalFormState): Html | undefined => {
     if (!identity.localAuth.enabled) return undefined;
+    const hidden = attempt
+      ? html`<input type="hidden" name="attempt" value="${attempt.id}" />`
+      : '';
+    const mine = (action: LocalFormState['action']) =>
+      state?.action === action ? state : undefined;
+    const formError = (action: LocalFormState['action']) => {
+      const s = mine(action);
+      return s?.field === 'form'
+        ? html`<p class="field-error form-error" role="alert" id="${action}-error">${s.message}</p>`
+        : '';
+    };
+    const signin = mine('signin');
+    const register = mine('register');
     return html`<div class="card">
-      <form method="post" action="/signin/local">
-        ${attempt ? html`<input type="hidden" name="attempt" value="${attempt.id}" />` : ''}
-        <label for="username">Username</label
-        ><input
-          id="username"
-          name="username"
-          autocomplete="username"
-          required
-          minlength="3"
-          maxlength="32"
-        />
-        <label for="password">Password</label
-        ><input
-          id="password"
-          name="password"
-          type="password"
-          autocomplete="current-password"
-          required
-          maxlength="256"
-        />
-        <button class="primary" name="action" value="signin">Sign in</button>
-        ${
-          identity.localAuth.allowRegistration
-            ? html`<button name="action" value="register">Create account</button>
-                <p class="muted">New passwords need at least 10 characters.</p>`
+        <h2>Sign in</h2>
+        <form method="post" action="/signin/local" novalidate>
+          ${hidden}<input type="hidden" name="action" value="signin" />
+          ${formError('signin')}
+          ${field({
+            id: 'signin-username',
+            label: 'Username',
+            name: 'username',
+            value: signin?.username,
+            error: signin?.field === 'username' ? signin.message : undefined,
+            attrs: html`autocomplete="username" autocapitalize="none" spellcheck="false" required
+            maxlength="32"`,
+          })}
+          ${field({
+            id: 'signin-password',
+            label: 'Password',
+            name: 'password',
+            type: 'password',
+            error: signin?.field === 'password' ? signin.message : undefined,
+            attrs: html`autocomplete="current-password" required maxlength="${MAX_PASSWORD}"`,
+          })}
+          <button class="primary" type="submit">Sign in</button>
+        </form>
+      </div>
+      ${
+        identity.localAuth.allowRegistration
+          ? html`<div class="card">
+              <h2>New here? Create an account</h2>
+              <form method="post" action="/signin/local" novalidate>
+                ${hidden}<input type="hidden" name="action" value="register" />
+                ${formError('register')}
+                ${field({
+                  id: 'register-username',
+                  label: 'Choose a username',
+                  name: 'username',
+                  value: register?.username,
+                  hint: '3 to 32 letters, digits, dots, dashes or underscores. Other players see it.',
+                  error: register?.field === 'username' ? register.message : undefined,
+                  attrs: html`autocomplete="username" autocapitalize="none" spellcheck="false"
+                  required minlength="3" maxlength="32" pattern="[A-Za-z0-9._\\-]{3,32}"`,
+                })}
+                ${field({
+                  id: 'register-password',
+                  label: 'Choose a password',
+                  name: 'password',
+                  type: 'password',
+                  hint: `At least ${MIN_PASSWORD} characters.`,
+                  error: register?.field === 'password' ? register.message : undefined,
+                  attrs: html`autocomplete="new-password" required minlength="${MIN_PASSWORD}"
+                  maxlength="${MAX_PASSWORD}"`,
+                })}
+                <button type="submit">Create account</button>
+              </form>
+            </div>`
+          : ''
+      }`;
+  };
+
+  /** The sign-in page: the handoff confirmation (for the game) or plain web sign-in. */
+  const signinPage = (
+    reply: FastifyReply,
+    view: { attempt?: Attempt; signedInAs?: string; form?: LocalFormState },
+    status = 200,
+  ) => {
+    const { attempt, form } = view;
+    if (attempt) {
+      return sendPage(
+        reply,
+        'Sign in to Globulation 2',
+        html`<div class="card">
+            <p>Check that the game shows this code:</p>
+            <div class="code">${attempt.confirmation_code}</div>
+            <p class="muted warn">
+              Only continue if you started signing in from Globulation 2 yourself just now. Anyone
+              who sent you this link could otherwise use your account.
+            </p>
+            ${providerButtons(attempt)}
+          </div>
+          ${localForms(attempt, form)}
+          <form method="post" action="/signin/cancel">
+            <input type="hidden" name="attempt" value="${attempt.id}" /><button>Cancel</button>
+          </form>`,
+        status,
+      );
+    }
+    const providers = providerButtons(undefined);
+    return sendPage(
+      reply,
+      'Sign in',
+      html`${
+          view.signedInAs
+            ? html`<div class="card">
+                <p>Signed in as <strong>${view.signedInAs}</strong>.</p>
+                <a class="button primary" href="/">Continue to ${identity.instanceName}</a>
+              </div>`
             : ''
         }
-      </form>
-    </div>`;
+        ${providers.length > 0 ? html`<div class="card">${providers}</div>` : ''}
+        ${localForms(undefined, form)}
+        <p class="muted">
+          No account needed to try it: <a href="/play/">play in your browser</a> as a guest, and
+          sign in later to keep your games and rating.
+        </p>`,
+      status,
+    );
   };
 
   // ------------------------------------------------------------- /signin
@@ -110,20 +258,9 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
     const attemptId = request.query.attempt;
     if (!attemptId) {
       const caller = await authenticate(identity, request).catch(() => undefined);
-      return sendPage(
-        reply,
-        'Sign in',
-        html`${
-            caller
-              ? html`<div class="card">
-                  <p>Signed in as <strong>${caller.account.display_name}</strong>.</p>
-                  <a class="button primary" href="/">Continue to ${identity.instanceName}</a>
-                </div>`
-              : ''
-          }
-          <div class="card">${providerButtons(undefined)}</div>
-          ${localForm(undefined)}`,
-      );
+      return signinPage(reply, {
+        ...(caller ? { signedInAs: caller.account.display_name } : {}),
+      });
     }
     const attempt = await identity.handoff.pending(attemptId);
     if (!attempt) {
@@ -139,23 +276,7 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
       return errorPage(reply, 'This sign-in was already opened in another browser.', 409);
     }
     setBindingCookie(identity, reply, cookie);
-    return sendPage(
-      reply,
-      'Sign in to Globulation 2',
-      html`<div class="card">
-          <p>Check that the game shows this code:</p>
-          <div class="code">${attempt.confirmation_code}</div>
-          <p class="muted warn">
-            Only continue if you started signing in from Globulation 2 yourself just now. Anyone who
-            sent you this link could otherwise use your account.
-          </p>
-          ${providerButtons(attempt)}
-        </div>
-        ${localForm(attempt)}
-        <form method="post" action="/signin/cancel">
-          <input type="hidden" name="attempt" value="${attempt.id}" /><button>Cancel</button>
-        </form>`,
-    );
+    return signinPage(reply, { attempt });
   });
 
   app.post<{ Body: Form }>('/signin/cancel', async (request, reply) => {
@@ -424,18 +545,47 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
         return errorPage(reply, 'This sign-in has expired or belongs to another browser.', 410);
       attempt = bound;
     }
-    const username = form.username ?? '';
+    const username = (form.username ?? '').trim();
     const password = form.password ?? '';
-    if (!USERNAME.test(username) || password.length === 0 || password.length > 256) {
-      return errorPage(reply, 'Usernames have 3-32 letters, digits, dots, dashes or underscores.');
-    }
-    const subject = normalizeUsername(username);
-    if (form.action === 'register') {
+    const action = form.action === 'register' ? 'register' : 'signin';
+    // Problems re-render the page with the form as it was (minus the password).
+    const again = (field: LocalFormState['field'], message: string, status: number) =>
+      signinPage(
+        reply,
+        { ...(attempt ? { attempt } : {}), form: { action, username, field, message } },
+        status,
+      );
+    if (username.length === 0) return again('username', 'Enter a username.', 400);
+    if (action === 'register') {
       if (!identity.localAuth.allowRegistration)
-        return errorPage(reply, 'Registration is closed.', 403);
-      if (password.length < 10) return errorPage(reply, 'Passwords need at least 10 characters.');
+        return again('form', 'Creating accounts is turned off on this server.', 403);
+      if (!USERNAME.test(username)) {
+        return again(
+          'username',
+          username.length < 3 || username.length > 32
+            ? `Usernames are 3 to 32 characters long; this one has ${username.length}.`
+            : 'Usernames can only use letters, digits, dots, dashes and underscores (no spaces).',
+          400,
+        );
+      }
+      if (password.length < MIN_PASSWORD) {
+        return again(
+          'password',
+          password.length === 0
+            ? `Choose a password of at least ${MIN_PASSWORD} characters.`
+            : `This password is too short: it has ${password.length} characters, and passwords need at least ${MIN_PASSWORD}.`,
+          400,
+        );
+      }
+      if (password.length > MAX_PASSWORD)
+        return again('password', `Passwords can be at most ${MAX_PASSWORD} characters.`, 400);
+      const subject = normalizeUsername(username);
       if (await identity.accounts.localIdentity(subject)) {
-        return errorPage(reply, 'That username is taken.', 409);
+        return again(
+          'username',
+          `The username ${username} is taken. Choose another one, or sign in above if it is yours.`,
+          409,
+        );
       }
       return finish(
         request,
@@ -446,10 +596,30 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
         await hashPassword(password),
       );
     }
+    if (password.length === 0) return again('password', 'Enter your password.', 400);
+    if (!USERNAME.test(username) || password.length > MAX_PASSWORD) {
+      return again('username', `There is no account called ${username}.`, 401);
+    }
+    const subject = normalizeUsername(username);
+    // Usernames are public (and registration says when one is taken), so
+    // telling an unknown username from a wrong password reveals nothing new.
+    if (!(await identity.accounts.localIdentity(subject))) {
+      return again(
+        'username',
+        `There is no account called ${username}. Check the spelling${
+          identity.localAuth.allowRegistration ? ', or create an account below' : ''
+        }.`,
+        401,
+      );
+    }
     try {
       await localSignIn(identity, username, password);
     } catch (error) {
-      if (error instanceof HttpError) return errorPage(reply, error.body.message, error.statusCode);
+      if (error instanceof HttpError) {
+        return error.statusCode === 401 && error.body.message === 'Wrong username or password.'
+          ? again('password', 'That password is not right for this username. Try again.', 401)
+          : again('form', error.body.message, error.statusCode);
+      }
       throw error;
     }
     return finish(request, reply, attempt, { provider: LOCAL_PROVIDER, subject }, 'username');

@@ -335,6 +335,17 @@ describe('pages', () => {
       'Good under 1 s, fair under 2 s, poor from 2 s.',
     );
     expect(network[0]!.textContent).toContain('6 / 412');
+    // Tables that may scroll sideways are named, focusable regions; on phones the
+    // connection table stacks its rows into labelled cards instead.
+    const connection = screen.getByRole('region', { name: 'Connection quality per player' });
+    expect(connection.tabIndex).toBe(0);
+    expect(connection.className).toContain('stack');
+    expect(
+      within(network[0]!)
+        .getAllByRole('cell')
+        .map((cell) => cell.getAttribute('data-label')),
+    ).toEqual(['Player', 'Quality', 'Ping', 'Behind', 'Disconnects', 'Offline', 'Delayed orders']);
+    expect(screen.getByRole('region', { name: 'Players and results' }).tabIndex).toBe(0);
     expect(screen.getByTestId('watch').getAttribute('href')).toBe(
       watchUrl(`http://localhost/api/v1/matches/${MATCH}/artifacts/replay`),
     );

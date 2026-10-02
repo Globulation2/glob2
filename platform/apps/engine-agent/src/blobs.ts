@@ -3,9 +3,16 @@
 // hash every client computes over the bytes it loads. Stored blobs are also
 // registered in the `blobs` table, which match artifacts and map versions
 // reference.
-import { gunzipSync } from 'node:zlib';
 import type { Kysely } from 'kysely';
-import { contentKey, putContent, sha256Hex, type BlobStore } from '@glob2/core';
+import {
+  GzipError,
+  contentKey,
+  gunzipBounded,
+  isGzip,
+  putContent,
+  sha256Hex,
+  type BlobStore,
+} from '@glob2/core';
 import type { Database } from '@glob2/db';
 import { EngineInputError } from './engineCli.ts';
 
@@ -18,21 +25,16 @@ export const CONTENT_TYPES = {
   png: 'image/png',
 } as const;
 
-export function isGzip(bytes: Uint8Array): boolean {
-  return bytes.length >= 2 && bytes[0] === 0x1f && bytes[1] === 0x8b;
-}
+export { isGzip };
 
 /** Decompresses gzip input (as the engine's loader does transparently), bounded. */
 export function decompressIfGzip(bytes: Uint8Array, maxBytes: number): Uint8Array {
   if (!isGzip(bytes)) return bytes;
   try {
-    return gunzipSync(bytes, { maxOutputLength: maxBytes });
+    return gunzipBounded(bytes, maxBytes);
   } catch (error) {
-    const code = (error as NodeJS.ErrnoException).code;
-    if (code === 'ERR_BUFFER_TOO_LARGE' || /larger than/i.test((error as Error).message)) {
-      throw new EngineInputError(`decompressed file exceeds ${maxBytes} bytes`);
-    }
-    throw new EngineInputError(`corrupt gzip data: ${(error as Error).message}`);
+    if (error instanceof GzipError) throw new EngineInputError(error.message);
+    throw error;
   }
 }
 

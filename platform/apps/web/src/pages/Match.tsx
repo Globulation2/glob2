@@ -14,7 +14,7 @@ import { api } from '../api.ts';
 import { GameArt } from '../art.tsx';
 import { seriesInk, teamInk } from '../colors.ts';
 import { LineChart } from '../components/LineChart.tsx';
-import { Loaded, StatusBadge, VerificationBadge } from '../components/common.tsx';
+import { Loaded, StatusBadge, TableWrap, VerificationBadge } from '../components/common.tsx';
 import {
   aiName,
   dateTime,
@@ -98,7 +98,7 @@ function Participants({ detail }: { detail: MatchDetail }) {
   );
   const diverged = new Set(detail.verificationDetail?.divergedSeats ?? []);
   return (
-    <div className="table-wrap">
+    <TableWrap label="Players and results">
       <table className="data">
         <thead>
           <tr>
@@ -158,7 +158,7 @@ function Participants({ detail }: { detail: MatchDetail }) {
           })}
         </tbody>
       </table>
-    </div>
+    </TableWrap>
   );
 }
 
@@ -218,17 +218,17 @@ function Connection({ detail }: { detail: MatchDetail }) {
   return (
     <section className="net-quality" data-testid="network">
       <h2>Connection</h2>
-      <div className="table-wrap">
+      <TableWrap label="Connection quality per player" stack>
         <table className="data">
           <thead>
             <tr>
               <th>Player</th>
               <th>Quality</th>
               <th className="num">Ping</th>
-              <th className="num hide-phone">Behind</th>
+              <th className="num">Behind</th>
               <th className="num">Disconnects</th>
-              <th className="num hide-phone">Offline</th>
-              <th className="num hide-phone">Delayed orders</th>
+              <th className="num">Offline</th>
+              <th className="num">Delayed orders</th>
             </tr>
           </thead>
           <tbody>
@@ -236,7 +236,7 @@ function Connection({ detail }: { detail: MatchDetail }) {
               const t = team(n.seat);
               return (
                 <tr key={n.seat} data-testid="network-row">
-                  <td>
+                  <td data-label="Player" className="stack-head">
                     {t !== undefined && (
                       <>
                         <span className="sw" style={{ background: teamColor(t, count) }} />{' '}
@@ -256,18 +256,22 @@ function Connection({ detail }: { detail: MatchDetail }) {
                       </>
                     )}
                   </td>
-                  <td>
+                  <td data-label="Quality">
                     <span className={QUALITY_BADGE[n.quality]}>{QUALITY_LABEL[n.quality]}</span>
                   </td>
-                  <td className="num">
+                  <td className="num" data-label="Ping">
                     <Measured metric="ping" spread={n.rttMs} />
                   </td>
-                  <td className="num hide-phone">
+                  <td className="num" data-label="Behind">
                     <Measured metric="behind" spread={n.lagMs} />
                   </td>
-                  <td className="num">{n.disconnects}</td>
-                  <td className="num hide-phone">{seconds(n.offlineMs)}</td>
-                  <td className="num hide-phone">
+                  <td className="num" data-label="Disconnects">
+                    {n.disconnects}
+                  </td>
+                  <td className="num" data-label="Offline">
+                    {seconds(n.offlineMs)}
+                  </td>
+                  <td className="num" data-label="Delayed orders">
                     {n.ordersDeferred}
                     <span className="caption"> / {n.ordersSequenced}</span>
                   </td>
@@ -276,7 +280,7 @@ function Connection({ detail }: { detail: MatchDetail }) {
             })}
           </tbody>
         </table>
-      </div>
+      </TableWrap>
       <p className="caption" data-testid="network-legend">
         Measured by the relay; typical value first, then the 95th percentile. Ping: round trip
         between the player and the relay. {limits('ping')} Behind: how far the player’s game ran
@@ -469,7 +473,7 @@ function Statistics({ detail }: { detail: MatchDetail }) {
   return (
     <>
       <h2>Final statistics</h2>
-      <div className="table-wrap">
+      <TableWrap label="Final statistics">
         <table className="data">
           <thead>
             <tr>
@@ -505,7 +509,7 @@ function Statistics({ detail }: { detail: MatchDetail }) {
             ))}
           </tbody>
         </table>
-      </div>
+      </TableWrap>
     </>
   );
 }

@@ -545,6 +545,26 @@ describe('room REST and the invite page', () => {
     const nonce = /script-src 'nonce-([^']+)'/.exec(csp)?.[1];
     expect(nonce).toBeTruthy();
     expect(html).toContain(`<script nonce="${nonce}">`);
+    // Most people who get a link have no app: the browser comes first, the app
+    // second with a note, and the page never jumps to glob2:// by itself.
+    const play = html.indexOf('id="play-browser"');
+    const open = html.indexOf('id="open-app"');
+    expect(play).toBeGreaterThan(0);
+    expect(open).toBeGreaterThan(play);
+    expect(html.slice(html.lastIndexOf('<a', play), play)).toContain('class="button primary"');
+    expect(html).toContain('Open in the Globulation 2 app');
+    expect(html).toContain('id="app-fallback"');
+    expect(html).not.toMatch(/location\.href\s*=/);
+    expect(html).toContain(`${host.displayName} invited you to their Globulation 2 room`);
+    expect(html).toContain('<title>You’re invited · Globulation 2</title>');
+    // A phone on an instance without verified app links: still the browser first.
+    const android = await fetch(`${a.url}/j/${room.code}`, {
+      headers: { 'user-agent': 'Mozilla/5.0 (Linux; Android 14; Pixel 8) Mobile' },
+    });
+    const androidHtml = await android.text();
+    expect(androidHtml.indexOf('id="play-browser"')).toBeLessThan(
+      androidHtml.indexOf('id="open-app"'),
+    );
 
     const unknown = await fetch(`${a.url}/j/NOSUCHCODE`);
     expect(unknown.status).toBe(404);
@@ -553,6 +573,39 @@ describe('room REST and the invite page', () => {
     expect(unknownHtml).toContain('<meta property="og:title" content="Invite not found"');
     expect(unknownHtml).toContain(`href="${ORIGIN}/play/"`);
     expect(unknownHtml).not.toContain('<script');
+
+    // With verified app links (the official domain), a phone that still shows
+    // the page gets the app first; on Android as an intent that falls back to
+    // the browser client when the app is missing.
+    const official = await harness.start({
+      origin: ORIGIN,
+      instance: {
+        appLinks: {
+          android: { sha256CertFingerprints: [Array(32).fill('AB').join(':')] },
+          ios: { appIds: ['ABCDE12345.org.globulation2.glob2'] },
+        },
+      },
+    });
+    try {
+      const phone = async (userAgent: string) =>
+        (await fetch(`${official.url}/j/${room.code}`, { headers: { 'user-agent': userAgent } }))
+          .text()
+          .then((text) => ({
+            text,
+            appFirst: text.indexOf('id="open-app"') < text.indexOf('id="play-browser"'),
+          }));
+      const droid = await phone('Mozilla/5.0 (Linux; Android 14; Pixel 8) Mobile');
+      expect(droid.appFirst).toBe(true);
+      expect(droid.text).toContain(
+        `href="intent://join?instance=${encodeURIComponent(ORIGIN)}&#38;code=${room.code}#Intent;scheme=glob2;package=org.globulation2.glob2;S.browser_fallback_url=${encodeURIComponent(`${ORIGIN}/play/?join=${room.code}`)};end"`,
+      );
+      expect((await phone('Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X)')).appFirst).toBe(
+        true,
+      );
+      expect((await phone('Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0)')).appFirst).toBe(false);
+    } finally {
+      await official.close();
+    }
 
     // A closed room's code is expired.
     await host.client.ok('room.leave', { roomId: room.id });
