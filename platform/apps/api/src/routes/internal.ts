@@ -9,7 +9,9 @@ import type { RelayKey } from '@glob2/core';
 import {
   RelayHeartbeat,
   RelayMatchEnded,
+  RelayNetworkSummary,
   RelayRegistration,
+  schemaIssues,
   type RelayHeartbeatResponse,
   type RelayMatchEndedResponse,
   type RelayRecordReceipt,
@@ -163,7 +165,22 @@ export async function internalRoutes(app: FastifyInstance): Promise<void> {
     async (request): Promise<RelayMatchEndedResponse> => {
       const key = relayKey(request);
       const id = matchId(request);
-      const report = body(RelayMatchEnded, request.body);
+      // Network telemetry never blocks a match end: an unreadable summary (a
+      // relay newer or older than this platform) is dropped, the rest applies.
+      let raw = request.body;
+      if (raw && typeof raw === 'object' && 'network' in raw) {
+        const issues = schemaIssues(RelayNetworkSummary, (raw as { network: unknown }).network);
+        if (issues.length > 0) {
+          request.log.warn(
+            { match: id, issues: issues.slice(0, 5) },
+            'dropping an unreadable network summary from an end report',
+          );
+          const rest: Record<string, unknown> = { ...(raw as Record<string, unknown>) };
+          delete rest['network'];
+          raw = rest;
+        }
+      }
+      const report = body(RelayMatchEnded, raw);
       if (report.matchId !== id) throw apiError('bad_request', 'matchId differs from the path.');
       actAs(key, report.relayId);
       await checkMatchRelay(key, id);

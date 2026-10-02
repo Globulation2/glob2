@@ -45,7 +45,7 @@ export class Assignments {
     const match = await this.db
       .selectFrom('matches as m')
       .innerJoin('relays as r', 'r.id', 'm.relay_id')
-      .select(['m.id', 'm.status', 'm.setup', 'r.public_url'])
+      .select(['m.id', 'm.status', 'm.setup', 'r.id as relay_id', 'r.region', 'r.public_url'])
       .where('m.id', '=', matchId)
       .executeTakeFirst();
     if (!match || (match.status !== 'starting' && match.status !== 'running')) return undefined;
@@ -76,6 +76,8 @@ export class Assignments {
       ticket: this.keys.sign(MATCH_TICKET_TYPE, claims),
       ticketExpiresAt: new Date(claims.exp * 1000).toISOString(),
       relayUrl: match.public_url,
+      relayId: match.relay_id,
+      ...(match.region ? { relayRegion: match.region } : {}),
       setup,
       mapUrl: mapUrl(this.origin, setup.map.hash),
     };

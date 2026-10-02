@@ -415,6 +415,8 @@ export interface MatchParticipantsTable {
   outcome: Nullable<Outcome>;
   disconnects: Defaulted<number>;
   quit_tick: Nullable<number>;
+  /** The relay's RelayNetworkSummary seat entry (0009); null without one. */
+  network: NullableJson<JsonValue>;
   rating_before: Nullable<number>;
   rating_after: Nullable<number>;
 }

@@ -1,5 +1,10 @@
 import { useState } from 'react';
-import type { MatchDetail, MatchParticipant, TeamTimelinePoint } from '@glob2/protocol';
+import type {
+  MatchDetail,
+  MatchParticipant,
+  ParticipantNetwork,
+  TeamTimelinePoint,
+} from '@glob2/protocol';
 import { api } from '../api.ts';
 import { LineChart } from '../components/LineChart.tsx';
 import { Loaded, StatusBadge, VerificationBadge } from '../components/common.tsx';
@@ -104,6 +109,92 @@ function Participants({ detail }: { detail: MatchDetail }) {
         </tbody>
       </table>
     </div>
+  );
+}
+
+const QUALITY_BADGE: Record<ParticipantNetwork['quality'], string> = {
+  good: 'badge ok',
+  fair: 'badge warn',
+  poor: 'badge bad',
+};
+
+function seconds(ms: number): string {
+  if (ms === 0) return '–';
+  return ms < 10_000 ? `${(ms / 1000).toFixed(1)} s` : `${Math.round(ms / 1000)} s`;
+}
+
+/** Each human player's connection as the relay measured it (MatchDetail.network). */
+function Connection({ detail }: { detail: MatchDetail }) {
+  const rows = detail.network ?? [];
+  if (rows.length === 0) return null;
+  const player = (seat: number) => {
+    const p = detail.match.participants.find((x) => x.seat === seat);
+    return p ? participantName(p) : `Seat ${seat + 1}`;
+  };
+  const team = (seat: number) => detail.match.participants.find((x) => x.seat === seat)?.team;
+  return (
+    <section className="net-quality" data-testid="network">
+      <h2>Connection</h2>
+      <div className="table-wrap">
+        <table className="data">
+          <thead>
+            <tr>
+              <th>Player</th>
+              <th>Quality</th>
+              <th className="num">Ping</th>
+              <th className="num hide-phone">Behind</th>
+              <th className="num">Disconnects</th>
+              <th className="num hide-phone">Offline</th>
+              <th className="num hide-phone">Delayed orders</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((n) => {
+              const t = team(n.seat);
+              return (
+                <tr key={n.seat} data-testid="network-row">
+                  <td>
+                    {t !== undefined && (
+                      <>
+                        <span className="sw" style={{ background: teamColor(t) }} />{' '}
+                      </>
+                    )}
+                    {player(n.seat)}
+                    {n.rejoins > 0 && <span className="badge warn"> resynced</span>}
+                    {n.leftBy === 'grace' && <span className="badge bad"> dropped</span>}
+                  </td>
+                  <td>
+                    <span className={QUALITY_BADGE[n.quality]}>{n.quality}</span>
+                  </td>
+                  <td className="num">
+                    {n.rttMs ? (
+                      <>
+                        {n.rttMs.p50} ms<span className="caption"> · {n.rttMs.p95}</span>
+                      </>
+                    ) : (
+                      '–'
+                    )}
+                  </td>
+                  <td className="num hide-phone">{n.lagMs ? `${n.lagMs.p95} ms` : '–'}</td>
+                  <td className="num">{n.disconnects}</td>
+                  <td className="num hide-phone">{seconds(n.offlineMs)}</td>
+                  <td className="num hide-phone">
+                    {n.ordersDeferred}
+                    <span className="caption"> / {n.ordersSequenced}</span>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      <p className="caption">
+        Measured by the relay. Ping: round trip to the relay, typical · 95th percentile. Behind: how
+        far the player’s game ran behind the match clock (95th percentile, input delay included).
+        Offline: time disconnected before reconnecting. Delayed orders: orders that ran a tick later
+        than asked.
+      </p>
+    </section>
   );
 }
 
@@ -357,6 +448,7 @@ export function Match({ id }: { id: string }) {
               <Replay detail={detail} />
               <Verification detail={detail} />
             </div>
+            <Connection detail={detail} />
             <h2>Timeline</h2>
             <Timelines detail={detail} />
             <Economy detail={detail} />
