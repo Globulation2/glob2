@@ -180,7 +180,7 @@ void OnlineMatchResult::apply(const Json &summary)
 		verification = Verification::Pending;
 	rated = summary.value("rated", rated);
 	if (summary.contains("status") && summary["status"].is_string())
-		status = summary["status"].get<std::string>();
+		this->status = summary["status"].get<std::string>();
 	fromRoom = summary.value("origin", fromRoom ? "room" : "queue") == "room";
 	if (summary.contains("mapTitle") && summary["mapTitle"].is_string())
 		mapTitle = summary["mapTitle"].get<std::string>();
