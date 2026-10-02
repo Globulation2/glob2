@@ -241,6 +241,9 @@ class ComposeTests(unittest.TestCase):
                 client.request('HEAD', target)
                 response = client.getresponse()
                 self.assertEqual(response.status, status)
+                if status == 200:
+                    self.assertEqual(response.getheader('Cross-Origin-Opener-Policy'), 'same-origin')
+                    self.assertEqual(response.getheader('Cross-Origin-Embedder-Policy'), 'require-corp')
             finally:
                 client.close()
         self.connect('/router')
