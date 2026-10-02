@@ -1069,7 +1069,7 @@ CustomGameScreen::ColonyFields CustomGameScreen::colonyFields(int i, const Prese
 	}
 	fe::ChoiceOptions controllerOptions;
 	controllerOptions.enabled = enabled;
-	controllerOptions.help = tr("Shared control needs a free controller slot (maximum 12).");
+	controllerOptions.help = tr("Shared control needs a free controller slot (maximum %0).");
 	auto controller = fe::choice(id + "/controller", controllerNames, c.controller,
 								 [this, i](int value) { setup.setController(i, (CustomGameSetup::Controller)value); }, controllerOptions);
 	std::vector<std::string> teams;
