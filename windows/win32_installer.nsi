@@ -15,6 +15,7 @@ SetCompressorDictSize 32
 ${StrStr}
 ${UnStrStr}
 Var StartMenuFolder
+Var CleanupFailed
 !define MUI_ABORTWARNING
 !define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKCU"
 !define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\Globulation_2"
@@ -47,6 +48,7 @@ Var StartMenuFolder
 ; each relative path before accepting an inventory from a previous installation.
 !macro OwnedFunction PREFIX SEARCH TRIM
 Function ${PREFIX}ClearOwned
+  StrCpy $CleanupFailed 0
   Push $0
   Push $1
   Push $2
@@ -54,6 +56,7 @@ Function ${PREFIX}ClearOwned
   FileOpen $0 "$INSTDIR\.glob2-owned-files.txt" r
   IfErrors done
   loop:
+    ClearErrors
     FileReadUTF16LE $0 $1
     IfErrors closed
     ${${TRIM}} $1 $1
@@ -67,7 +70,10 @@ Function ${PREFIX}ClearOwned
     ${${SEARCH}} $2 $1 ":"
     StrCmp $2 "" +2
     Goto loop
+    ClearErrors
     Delete "$INSTDIR\$1"
+    IfErrors 0 +2
+      StrCpy $CleanupFailed 1
     Goto loop
   closed:
     FileClose $0
@@ -101,6 +107,10 @@ FunctionEnd
 Section "Install"
   SetShellVarContext all
   Call ClearOwned
+  ${If} $CleanupFailed != 0
+    SetErrorLevel 1
+    Abort "Close Globulation 2 and retry. Previous application files could not be removed."
+  ${EndIf}
   ClearErrors
   !include "${LIST_DIR}\install.nsh"
   IfErrors 0 +3
@@ -130,6 +140,10 @@ FunctionEnd
 Section "Uninstall"
   SetShellVarContext all
   Call un.ClearOwned
+  ${If} $CleanupFailed != 0
+    SetErrorLevel 1
+    Abort "Close Globulation 2 and retry uninstall. Recovery metadata has been retained."
+  ${EndIf}
   Delete "$INSTDIR\.glob2-owned-files.txt"
   Delete "$INSTDIR\glob2win32-uninst.exe"
   !include "${LIST_DIR}\directories.nsh"

@@ -68,6 +68,19 @@ def dependencies():
     return result
 
 
+def compiler_options(cc, cxx):
+    """Use the same driver/launcher split for probes and CMake builds."""
+    result = []
+    for language, command in (('C', cc), ('CXX', cxx)):
+        tokens = shlex.split(command)
+        if not tokens:
+            raise ValueError('Compiler command cannot be empty')
+        result.append('-DCMAKE_'+language+'_COMPILER='+tokens[-1])
+        if len(tokens) > 1:
+            result.append('-DCMAKE_'+language+'_COMPILER_LAUNCHER='+';'.join(tokens[:-1]))
+    return result
+
+
 def ensure(root, cc="gcc", cxx="g++", jobs=2):
     identity = dict(
         archive=ARTIFACT,
@@ -75,8 +88,8 @@ def ensure(root, cc="gcc", cxx="g++", jobs=2):
         platform=platform.system(),
         architecture=platform.machine(),
         dependencies=dependencies(),
-        cc=subprocess.check_output([cc, "--version"], text=True),
-        cxx=subprocess.check_output([cxx, "--version"], text=True),
+        cc=subprocess.check_output([*shlex.split(cc), "--version"], text=True),
+        cxx=subprocess.check_output([*shlex.split(cxx), "--version"], text=True),
         cmake=subprocess.check_output(["cmake", "--version"], text=True),
     )
     key = hashlib.sha256(json.dumps(identity, sort_keys=True).encode()).hexdigest()[:24]
@@ -110,8 +123,7 @@ def ensure(root, cc="gcc", cxx="g++", jobs=2):
                         "-DCMAKE_PREFIX_PATH=" + str(dependency_prefix),
                         "-DCMAKE_INSTALL_PREFIX=" + str(prefix),
                         "-DCMAKE_INSTALL_LIBDIR=lib",
-                        "-DCMAKE_C_COMPILER=" + cc,
-                        "-DCMAKE_CXX_COMPILER=" + cxx,
+                        *compiler_options(cc, cxx),
                         *lean_options(),
                     ],
                     check=True,

@@ -28,6 +28,13 @@ class NativeImageTests(unittest.TestCase):
                 library.write_bytes(b'new codec')
                 self.assertNotEqual(baseline, lean.dependencies())
 
+    def test_explicit_compiler_wrappers_reach_the_real_cmake_driver(self):
+        options = lean.compiler_options('ccache gcc', 'ccache "/compiler with spaces/g++"')
+        self.assertIn('-DCMAKE_C_COMPILER=gcc', options)
+        self.assertIn('-DCMAKE_C_COMPILER_LAUNCHER=ccache', options)
+        self.assertIn('-DCMAKE_CXX_COMPILER=/compiler with spaces/g++', options)
+        self.assertIn('-DCMAKE_CXX_COMPILER_LAUNCHER=ccache', options)
+
     def test_cached_decoder_acquires_the_supported_shared_lease(self):
         with tempfile.TemporaryDirectory() as temporary:
             location = Path(temporary)
