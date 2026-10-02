@@ -617,6 +617,7 @@ void GameGUI::drawAll(int team)
 	view.scene = &frameScene;
 	// Panels, the top bar and the statistics pages draw the frame's copy of the stats.
 	teamStats = frameScene.panels.localStats.get();
+	toolManager.setDrawnScene(&frameScene);
     globalContainer->gfx->beginFrame(GraphicContext::FrameMode::FullRedraw);
 	updateCamera();
 	globalContainer->gfx->setClipRect();

@@ -124,6 +124,15 @@ class SoftwareRenderBenchmark
 				if (!selected)
 					throw std::runtime_error("PROFILE_SELECT found nothing to select");
 			}
+			// PROFILE_TOOL=<building type> activates the building tool with the cursor
+			// over the middle of the map view, so captures include the placement preview.
+			if (const char *tool = getenv("PROFILE_TOOL"))
+			{
+				gui.toolManager.activateBuildingTool(tool);
+				gui.selectionMode = GameGUI::TOOL_SELECTION;
+				gui.mouseX = (gfx->getW() - 160) / 2;
+				gui.mouseY = gfx->getH() / 2;
+			}
 			if (const char *z = getenv("PROFILE_ZOOM"))
 			{
 				gui.updateCamera();
