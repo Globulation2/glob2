@@ -15,8 +15,32 @@ SPEC.loader.exec_module(ci_changed_paths)
 
 
 class ChangedPathsTest(unittest.TestCase):
-    def assert_jobs(self, paths, **expected):
-        self.assertEqual(ci_changed_paths.classify(paths), expected)
+    def assert_jobs(self, paths, platform=None, **expected):
+        # The TypeScript platform job runs on platform/ changes and with full CI.
+        if platform is None:
+            platform = all(expected.values())
+        self.assertEqual(ci_changed_paths.classify(paths), {**expected, "platform": platform})
+
+    def test_platform_only(self):
+        self.assert_jobs(
+            ["platform/apps/api/src/app.ts", "platform/package-lock.json"],
+            native=False, browser=False, map_generators=False,
+            deployment=False, cross_platform=False, platform=True,
+        )
+
+    def test_platform_docs_only(self):
+        self.assert_jobs(
+            ["platform/README.md", "docs/multiplayer/architecture.md"],
+            native=False, browser=False, map_generators=False,
+            deployment=False, cross_platform=False, platform=False,
+        )
+
+    def test_protocol_fixtures_run_platform_and_native_contract_tests(self):
+        self.assert_jobs(
+            ["platform/packages/protocol/fixtures/valid/MatchSetup/catalog-1v1.json"],
+            native=True, browser=False, map_generators=False,
+            deployment=False, cross_platform=False, platform=True,
+        )
 
     def test_documentation_only(self):
         self.assert_jobs(

@@ -8,7 +8,7 @@ import subprocess
 import sys
 
 
-JOBS = ("native", "browser", "map_generators", "deployment", "cross_platform")
+JOBS = ("native", "browser", "map_generators", "deployment", "cross_platform", "platform")
 TRANSPORT_TESTS = {
     "test/NetConnectionHarness.cpp",
     "test/NativeMultiplayerPeer.cpp",
@@ -23,9 +23,17 @@ def classify(paths):
     if not paths:
         return {job: True for job in JOBS}
 
-    native = browser = map_generators = deployment = cross_platform = False
+    native = browser = map_generators = deployment = cross_platform = platform = False
     for path in paths:
         if path.startswith("docs/") or path.endswith(".md"):
+            continue
+        if path.startswith("platform/packages/protocol/fixtures/"):
+            # Generated contract fixtures: checked by the platform job and
+            # consumed by the C++ contract tests.
+            native = platform = True
+            continue
+        if path.startswith("platform/"):
+            platform = True
             continue
         if path == "test/map-generator-golden.txt":
             map_generators = True
@@ -70,6 +78,7 @@ def classify(paths):
         "map_generators": map_generators,
         "deployment": deployment,
         "cross_platform": cross_platform,
+        "platform": platform,
     }
 
 
@@ -116,6 +125,7 @@ def main():
             "map_generators": False,
             "deployment": True,
             "cross_platform": False,
+            "platform": False,
         }
 
     output = "".join(f"{job}={str(enabled).lower()}\n" for job, enabled in selected.items())
