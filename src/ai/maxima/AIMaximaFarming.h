@@ -54,6 +54,8 @@ private:
 	FertilityCalculationPath usedPath;
 	// uint32_t is Glob2's Uint32 storage width without importing SDL here.
 	std::vector<uint32_t> fertility;
+	// Four length-16 box passes on binary water have maxima 16, 256, 4096,
+	// 65536. Temporary planes fit uint16; final fertility needs uint32.
 	std::vector<uint16_t> first;
 	std::vector<uint16_t> second;
 	std::vector<int> wrappedX;

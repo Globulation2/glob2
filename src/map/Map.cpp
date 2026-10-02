@@ -101,6 +101,8 @@ Map::~Map(void)
 
 std::shared_ptr<const std::vector<Uint8>> Map::frozenWaterSnapshot() const
 {
+	// Executor jobs may initialize together; terrain edits remain serialized by
+	// simulation scheduling. This mutex protects cache creation, not terrain writes.
 	std::lock_guard<std::mutex> lock(waterSnapshotMutex);
 	if (!waterSnapshot)
 	{

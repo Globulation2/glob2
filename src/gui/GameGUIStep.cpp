@@ -382,7 +382,8 @@ void GameGUI::syncStep(void)
 
 void GameGUI::autosave()
 {
-    // Wait before allocating: never overlap this capture with another snapshot.
+    // Wait before allocating. Capturing first can retain an active, queued and
+    // newly captured snapshot together; worker hashing/compression stays asynchronous.
     waitForAutosave();
     try
     {

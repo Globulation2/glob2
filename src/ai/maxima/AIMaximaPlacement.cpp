@@ -17,6 +17,8 @@ namespace AIMaximaPlacement
 
 namespace
 {
+	// Dimensions determine this immutable geometry. Weak entries share it across
+	// teams without retaining former maps; wrapped order and duplicates matter.
 	std::shared_ptr<const std::vector<int>> neighborhoodTable(int width,int height)
 	{
 		static std::mutex mutex;
@@ -3521,6 +3523,8 @@ void Planner::loadExecutionState(GAGCore::InputStream* stream,int)
        && uint64_t(scoringNeighborhoodWidth)*scoringNeighborhoodHeight*9==scoringNeighborhoodCache->size())
     {
         auto shared=neighborhoodTable(scoringNeighborhoodWidth,scoringNeighborhoodHeight);
+        // Share only exact canonical content: unusual saved tables must retain
+        // their original bytes and continuation behavior.
         if(*shared==*scoringNeighborhoodCache) scoringNeighborhoodCache=std::move(shared);
     }
     stream->readLeaveSection();

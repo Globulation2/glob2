@@ -212,6 +212,8 @@ namespace GAGCore
                     inflated.commitAppend(produced);
 					if (result == Z_STREAM_END)
 					{
+						// Expose bytes only after CRC/end validation and rejection of all
+						// trailing input, before headers or mutable game state can read them.
 						if (!remaining && !stream.avail_in && stream.total_out == inflated.size())
 							return new ChunkedStreamBackend(std::move(inflated));
 						break;

@@ -12,7 +12,10 @@
 
 namespace GAGCore
 {
-// A move-only snapshot. Growing the block table never copies snapshot bytes.
+// Snapshots can exceed a gigabyte: growing a contiguous buffer retains both
+// allocations during copying. Blocks avoid that peak; flattening would recreate it.
+// Only explicitly written/committed bytes are readable; the unused tail stays
+// uninitialized. Moving ownership transfers blocks without copying their payload.
 class ChunkedBuffer
 {
 public:
@@ -33,6 +36,7 @@ public:
     }
     size_t size() const { return length; }
     size_t allocatedCapacity() const { return blocks.size() * blockSize; }
+    // Pointer-table allocation is separate from the byte-capacity budget.
     size_t tableCapacity() const { return blocks.capacity() * sizeof(blocks[0]); }
 
     template<class Visitor> void forEachRange(size_t offset, size_t count, Visitor&& visit) const
@@ -101,7 +105,12 @@ private:
     {
         const size_t needed = end / blockSize + (end % blockSize != 0);
         while (blocks.size() < needed)
-            blocks.emplace_back(new unsigned char[blockSize]); // deliberately uninitialized
+        {
+            // Own the block before growing the pointer table: its allocation can
+            // also fail. Value-initializing these bytes would touch unused pages.
+            std::unique_ptr<unsigned char[]> block(new unsigned char[blockSize]);
+            blocks.push_back(std::move(block));
+        }
     }
     std::vector<std::unique_ptr<unsigned char[]>> blocks;
     size_t length = 0;

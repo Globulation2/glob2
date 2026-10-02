@@ -9,6 +9,7 @@ namespace AIMaximaPlacement
 {
 // Obstacle-free wrapped Manhattan fields are at most 512 on supported maps.
 // Expose the old INT_MAX infinity to scoring while storing it compactly.
+// Obstacle-constrained routes can exceed the geometric diameter and stay wide.
 class DistanceField
 {
 	std::vector<uint16_t> cells;

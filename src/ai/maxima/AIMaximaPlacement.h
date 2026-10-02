@@ -204,6 +204,8 @@ struct WorldTile
 	bool clearableResource;
 	bool occupied;
 	bool ownOccupied;
+	// Match the engine's byte-sized amount while retaining a signed empty type.
+	// These in-memory widths are independent of the legacy serialized widths.
 	int16_t resourceType;
 	uint8_t resourceAmount;
 	uint32_t fertility;

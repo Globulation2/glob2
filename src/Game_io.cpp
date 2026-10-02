@@ -521,6 +521,9 @@ bool Game::integrity(void)
 	return true;
 }
 
+// The legacy hash sees the header captured before backpatching. Hashing its
+// final serialized form instead would change save bytes, even with the same body.
+// Both storage adapters substitute initialHeader, then patch only the digest.
 void DeferredGameSHA1::apply(std::string& contents) const
 {
 	assert(start <= headerOffset && headerOffset + initialHeader.size() <= end && end <= contents.size());
