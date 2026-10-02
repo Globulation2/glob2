@@ -1065,7 +1065,10 @@ export const fixtureCases: FixtureCase[] = [
           outcome: 'won',
           prestige: 210,
           statistics: { units: 61 },
-          timeline: [[1, 2, 3]],
+          timeline: [
+            { tick: 0, units: 6, buildings: 1, prestige: 0, hp: 0, attack: 0, defense: 0 },
+            { tick: 512, units: 9, buildings: 3, prestige: 4, hp: 120, attack: 0, defense: 0 },
+          ],
         },
         {
           team: 1,
@@ -1079,9 +1082,149 @@ export const fixtureCases: FixtureCase[] = [
       artifacts: [
         {
           kind: 'replay',
-          url: `https://play.example.org/api/v1/blobs/${HASH_C}`,
+          url: `https://play.example.org/api/v1/matches/${MATCH_ID}/artifacts/replay`,
           size: 90211,
           sha256: HASH_C,
+        },
+      ],
+      map: { title: 'Even Ground', mapId: MAP_ID, width: 128, height: 128 },
+      verificationDetail: {
+        orderRejections: [
+          { seat: 1, rejected: 2, stale: 0, reasons: { foreign_unit: 2 }, firstRejectedTick: 812 },
+        ],
+      },
+      economy: [
+        {
+          matchId: MATCH_ID,
+          accountId: ACCOUNT_1,
+          seat: 0,
+          points: [
+            {
+              tick: 512,
+              units: 9,
+              buildings: 3,
+              prestige: 4,
+              averageUnits: 8.5,
+              averageBuildings: 3,
+              averagePrestige: 2,
+              gamesAtTick: 4,
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    schema: 'MatchDetail',
+    name: 'array-timeline',
+    valid: false,
+    stage: 'schema',
+    note: 'Timelines are sample objects, not bare rows.',
+    value: {
+      match: {
+        id: MATCH_ID,
+        simVersion: SIM_VERSION,
+        origin: 'room',
+        rated: false,
+        status: 'ended',
+        verification: 'verified',
+        mapHash: HASH_A,
+        participants: [],
+      },
+      setup: SETUP_CATALOG_1V1,
+      teams: [{ team: 0, outcome: 'won', prestige: 1, statistics: {}, timeline: [[1, 2, 3]] }],
+      artifacts: [],
+    },
+  },
+  {
+    schema: 'PlayerProfile',
+    name: 'registered',
+    valid: true,
+    note: 'A registered player with a rating, its history and aggregates.',
+    value: {
+      account: { id: ACCOUNT_1, displayName: 'Alice', kind: 'registered', createdAt: NOW },
+      detail: 'full',
+      ratings: [
+        {
+          ladder: 'ranked-1v1',
+          rating: 1532.4,
+          mu: 27.1,
+          sigma: 4.8,
+          games: 11,
+          wins: 7,
+          provisional: false,
+          rank: 3,
+        },
+      ],
+      ratingHistory: [
+        {
+          ladder: 'ranked-1v1',
+          matchId: MATCH_ID,
+          at: NOW,
+          result: 'won',
+          before: 1500,
+          after: 1532.4,
+          provisional: false,
+        },
+      ],
+      recentMatches: [],
+      aggregates: {
+        windowDays: 90,
+        games: 11,
+        wins: 7,
+        losses: 4,
+        winRates: [
+          {
+            dimension: 'queue',
+            key: 'ranked-1v1',
+            label: '1 vs 1 ranked',
+            games: 11,
+            wins: 7,
+            winRate: 0.6364,
+          },
+          { dimension: 'generator', key: 'evenGround', games: 5, wins: 4, winRate: 0.8 },
+        ],
+        medianTicks: 36000,
+        meanTicks: 37250.5,
+      },
+    },
+  },
+  {
+    schema: 'PlayerProfile',
+    name: 'guest',
+    valid: true,
+    note: 'Guests get a minimal profile.',
+    value: {
+      account: { id: ACCOUNT_2, displayName: 'Guest-4821', kind: 'guest', createdAt: NOW },
+      detail: 'minimal',
+      ratings: [],
+      ratingHistory: [],
+      recentMatches: [],
+    },
+  },
+  {
+    schema: 'AiLeaderboard',
+    name: 'one-version',
+    valid: true,
+    note: 'AI entities of a ladder grouped by sim version.',
+    value: {
+      ladder: 'ranked-1v1',
+      groups: [
+        {
+          simVersion: SIM_VERSION,
+          current: true,
+          entries: [
+            {
+              rank: 1,
+              entity: { kind: 'ai', ai: 'nicowar', simVersion: SIM_VERSION },
+              rating: 1610,
+              mu: 30.2,
+              sigma: 6.1,
+              games: 3,
+              wins: 2,
+              provisional: true,
+            },
+          ],
         },
       ],
     },
