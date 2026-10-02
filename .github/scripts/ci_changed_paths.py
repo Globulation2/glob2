@@ -51,6 +51,10 @@ def classify(paths):
         if path.startswith(("tests/transport/",)):
             browser = True
             continue
+        # The match relay builds and runs in the native-programs job only.
+        if path.startswith(("src/relay/", "tests/relay/", "test/relay/", "test/fixtures/relay-tickets/")):
+            browser = True
+            continue
         if path.startswith("test/") and path not in {
             "test/run-browser-determinism.py",
         } and not Path(path).name.startswith("MapGenerator"):

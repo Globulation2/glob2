@@ -69,6 +69,15 @@ class ChangedPathsTest(unittest.TestCase):
                     deployment=False, cross_platform=False,
                 )
 
+    def test_relay_changes_run_the_relay_job_only(self):
+        for path in ("src/relay/RelayServer.cpp", "tests/relay/test_relay.py", "test/relay/RelayTicketTest.cpp",
+                     "test/fixtures/relay-tickets/valid.jwt"):
+            with self.subTest(path=path):
+                self.assert_jobs(
+                    [path], native=False, browser=True, map_generators=False,
+                    deployment=False, cross_platform=False,
+                )
+
     def test_shared_source_runs_everything(self):
         self.assert_jobs(
             ["src/map/Map.cpp"],
