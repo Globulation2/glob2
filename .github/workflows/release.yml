@@ -7,6 +7,11 @@ on:
         description: Existing public vVERSION tag (optional for packaging checks)
         required: false
         type: string
+      benchmark_profiles:
+        description: Run isolated GCC size profiles and paired performance/checksum measurements
+        required: false
+        type: boolean
+        default: false
       build_flatpak:
         description: Build the Flatpak recipe
         required: false
@@ -17,6 +22,10 @@ on:
       tag:
         required: true
         type: string
+      benchmark_profiles:
+        required: false
+        type: boolean
+        default: false
       build_flatpak:
         required: false
         default: true
@@ -202,13 +211,43 @@ jobs:
           VERSION: ${{ needs.preflight.outputs.version }}
         run: |
           mkdir -p artifacts/release-output
-          tar -C artifacts/release-stage -czf \
-            "artifacts/release-output/glob2-${VERSION}-linux-x86_64-ubuntu22.04.tar.gz" usr
+          python3 tools/release/archives.py linux --stage artifacts/release-stage \
+            --output "artifacts/release-output/glob2-${VERSION}-linux-x86_64-ubuntu22.04.tar.gz" \
+            --report artifacts/package-sizes/linux-compression.json
           python3 tools/release/package_sizes.py report --staged-root artifacts/release-stage \
             --archive "artifacts/release-output/glob2-${VERSION}-linux-x86_64-ubuntu22.04.tar.gz" \
             --output artifacts/package-sizes/candidate.json
           python3 tools/release/package_sizes.py compare artifacts/package-sizes/baseline.json \
             artifacts/package-sizes/candidate.json --output artifacts/package-sizes/comparison.json
+      - name: Compare Linux decoder performance on identical packaged images
+        run: |
+          python3 tools/release/benchmark_decoder.py --assets artifacts/release-stage/usr/share/glob2 \
+            --baseline-runtime artifacts/size-baseline/usr/bin --candidate-runtime artifacts/release-stage/usr/bin \
+            --candidate-library "$PWD/artifacts/release-stage/usr/lib/glob2/libSDL2_image.so" \
+            --output artifacts/package-sizes/linux-decoder.json
+      - name: Measure isolated Linux compiler profiles
+        if: inputs.benchmark_profiles
+        run: |
+          for profile in gc lto size; do
+            stage="$PWD/artifacts/profile-$profile"
+            scons -j2 release=1 server=0 lean_images=1 size_optimization="$profile" \
+              BINDIR="$stage/usr/bin" INSTALLDIR="$stage/usr/share" DATADIR=/usr/share install
+            python3 tools/release/archives.py linux --stage "$stage" \
+              --output "$PWD/artifacts/profile-$profile.tar.gz" \
+              --report "artifacts/package-sizes/$profile-compression.json"
+            python3 tools/release/package_sizes.py report --staged-root "$stage" --profile "$profile" \
+              --archive "$PWD/artifacts/profile-$profile.tar.gz" \
+              --output "artifacts/package-sizes/$profile.json"
+            python3 tools/release/benchmark_profiles.py --baseline "$PWD/artifacts/release-stage/usr/bin/glob2" \
+              --candidate "$stage/usr/bin/glob2" --baseline-size artifacts/package-sizes/candidate.json \
+              --candidate-size "artifacts/package-sizes/$profile.json" --output "artifacts/profile-measurements/$profile"
+          done
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always()
+        with:
+          name: compiler-profile-measurements-linux
+          path: artifacts/profile-measurements
+          if-no-files-found: ignore
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: package-sizes-linux
@@ -363,23 +402,54 @@ jobs:
           PATH="$(cygpath -u "$image_prefix")/bin:$PATH" ./build/mingw/client/release/lean-images/test/glob2-engine-tests.exe --test-suite=ImageAssets
           python3 tools/release/package_windows.py \
             build/mingw/client/release/lean-images/src/glob2.exe \
-            "artifacts/release-output/glob2-${VERSION}-windows-x86_64.zip"
+            "artifacts/release-output/glob2-${VERSION}-windows-x86_64.zip" \
+            --compression-report artifacts/package-sizes/windows-zip-compression.json
           python3 -c 'import sys, zipfile; zipfile.ZipFile(sys.argv[1]).extractall("artifacts/release-smoke")' \
             "artifacts/release-output/glob2-${VERSION}-windows-x86_64.zip"
           ./artifacts/release-smoke/Globulation2/glob2.exe --version
           python3 tools/release/package_nsis.py --stage artifacts/release-smoke/Globulation2 \
             --output "artifacts/release-output/glob2-${VERSION}-windows-x86_64-setup.exe" --version "$VERSION"
           python3 tools/release/package_windows.py build/mingw/client/release/src/glob2.exe \
-            artifacts/package-sizes/baseline.zip --original-assets
+            artifacts/package-sizes/baseline.zip --original-assets \
+            --compression-report artifacts/package-sizes/baseline-zip-compression.json
           python3 -c 'import zipfile; zipfile.ZipFile("artifacts/package-sizes/baseline.zip").extractall("artifacts/size-baseline")'
           python3 tools/release/package_sizes.py report --staged-root artifacts/size-baseline/Globulation2 \
             --archive artifacts/package-sizes/baseline.zip --label original-assets \
             --output artifacts/package-sizes/baseline.json
           python3 tools/release/package_sizes.py report --staged-root artifacts/release-smoke/Globulation2 \
             --archive "artifacts/release-output/glob2-${VERSION}-windows-x86_64.zip" \
+            --archive "artifacts/release-output/glob2-${VERSION}-windows-x86_64-setup.exe" \
             --output artifacts/package-sizes/candidate.json
           python3 tools/release/package_sizes.py compare artifacts/package-sizes/baseline.json \
             artifacts/package-sizes/candidate.json --output artifacts/package-sizes/comparison.json
+      - name: Compare Windows decoder performance on identical packaged images
+        run: |
+          python3 tools/release/benchmark_decoder.py --assets artifacts/release-smoke/Globulation2 \
+            --baseline-runtime artifacts/size-baseline/Globulation2 \
+            --candidate-runtime artifacts/release-smoke/Globulation2 \
+            --output artifacts/package-sizes/windows-decoder.json
+      - name: Measure isolated Windows compiler profiles
+        if: inputs.benchmark_profiles
+        run: |
+          for profile in gc lto size; do
+            binary="build/mingw/client/release/size-$profile/lean-images/src/glob2.exe"
+            scons -j2 release=1 mingw=1 server=0 lean_images=1 size_optimization="$profile" "$binary"
+            python3 tools/release/package_windows.py "$binary" "artifacts/profile-$profile.zip"
+            python3 -c 'import sys,zipfile; zipfile.ZipFile(sys.argv[1]).extractall(sys.argv[2])' \
+              "artifacts/profile-$profile.zip" "artifacts/profile-$profile"
+            stage="$PWD/artifacts/profile-$profile/Globulation2"
+            python3 tools/release/package_sizes.py report --staged-root "$stage" --profile "$profile" \
+              --archive "artifacts/profile-$profile.zip" --output "artifacts/package-sizes/$profile.json"
+            python3 tools/release/benchmark_profiles.py --baseline "$PWD/artifacts/release-smoke/Globulation2/glob2.exe" \
+              --candidate "$stage/glob2.exe" --baseline-size artifacts/package-sizes/candidate.json \
+              --candidate-size "artifacts/package-sizes/$profile.json" --output "artifacts/profile-measurements/$profile"
+          done
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always()
+        with:
+          name: compiler-profile-measurements-windows
+          path: artifacts/profile-measurements
+          if-no-files-found: ignore
       - name: Validate installer, upgrade, uninstall and isolated DLL loading
         shell: pwsh
         run: |
@@ -398,6 +468,20 @@ jobs:
           Add-Content "$install/.glob2-owned-files.txt" 'obsolete.dll' -Encoding Unicode
           $process = Start-Process -FilePath $installer -ArgumentList "/S /D=$install" -Wait -PassThru
           if ($process.ExitCode -ne 0 -or (Test-Path "$install/obsolete.dll")) { throw 'Upgrade did not remove owned obsolete runtime' }
+          $inventoryPath = "$install/.glob2-owned-files.txt"
+          $inventoryBytes = [System.IO.File]::ReadAllBytes($inventoryPath)
+          Remove-Item $inventoryPath
+          $failed = Start-Process -FilePath "$install/glob2win32-uninst.exe" -ArgumentList "/S _?=$install" -Wait -PassThru
+          if ($failed.ExitCode -eq 0 -or !(Test-Path "$install/glob2.exe")) { throw 'Missing inventory was treated as a successful uninstall' }
+          [System.IO.File]::WriteAllText($inventoryPath, "..\outside.txt", [System.Text.Encoding]::Unicode)
+          $failed = Start-Process -FilePath "$install/glob2win32-uninst.exe" -ArgumentList "/S _?=$install" -Wait -PassThru
+          if ($failed.ExitCode -eq 0 -or !(Test-Path "$install/glob2.exe")) { throw 'Corrupt inventory was not rejected before cleanup' }
+          [System.IO.File]::WriteAllBytes($inventoryPath, $inventoryBytes)
+          $locked = [System.IO.File]::Open("$install/glob2.exe", 'Open', 'Read', 'None')
+          try {
+            $failed = Start-Process -FilePath "$install/glob2win32-uninst.exe" -ArgumentList "/S _?=$install" -Wait -PassThru
+            if ($failed.ExitCode -eq 0 -or !(Test-Path "$install/.glob2-owned-files.txt")) { throw 'Failed uninstall lost its recovery inventory' }
+          } finally { $locked.Dispose() }
           $process = Start-Process -FilePath "$install/glob2win32-uninst.exe" -ArgumentList "/S _?=$install" -Wait -PassThru
           if ($process.ExitCode -ne 0 -or (Test-Path "$install/glob2.exe")) { throw 'Uninstall failed' }
           if (!(Test-Path "$install/games/user.game") -or !(Test-Path "$install/unrelated.txt")) { throw 'Uninstall removed user content' }
@@ -507,3 +591,29 @@ jobs:
           name: release-snap
           path: ${{ steps.snap.outputs.snap }}
           if-no-files-found: error
+
+  compiler-profile-portability:
+    if: inputs.benchmark_profiles
+    needs: [linux-package, windows-package]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: ${{ inputs.tag && 'Globulation2/glob2' || github.repository }}
+          ref: ${{ inputs.tag || github.sha }}
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: compiler-profile-measurements-linux
+          path: artifacts/profile-platforms/linux
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: compiler-profile-measurements-windows
+          path: artifacts/profile-platforms/windows
+      - name: Compare complete per-tick execution across all profiles and platforms
+        run: |
+          python3 tools/release/check_profile_platforms.py artifacts/profile-platforms/linux \
+            artifacts/profile-platforms/windows --output artifacts/profile-platforms/portability.json
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: compiler-profile-portability
+          path: artifacts/profile-platforms/portability.json

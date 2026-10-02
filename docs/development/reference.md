@@ -322,6 +322,32 @@ same-source original/optimized reports for Linux tarballs and Windows ZIPs.
 Installed sizes exclude symlink targets counted elsewhere; download size is the
 actual archive byte count. Shared system runtimes are outside these artifacts.
 
+GCC/MinGW release experiments use `size_optimization=gc|lto|size`: section
+collection, section collection plus LTO, and those options with `-Os`, respectively.
+The default `none` keeps current flags. Each experiment has its own
+`size-<profile>` build directory and identity, including a separate directory
+when combined with `lean_images=1`. They are restricted to native Linux/MinGW
+release builds; mobile, browser and Mac builds retain their existing settings.
+
+The candidate release workflow's `benchmark_profiles` input builds all three
+experiments. `tools/release/benchmark_profiles.py` compares complete archive
+sizes and retains two batches of seven alternating simulation/process-launch
+pairs after warmups. It verifies exact per-tick traces, replay orders and saves
+from the same two frozen initial states. Adoption needs at least 1 MiB or 1%
+archive savings, no credible repeatable simulation slowdown, image/renderer
+checks, and a separate actual application-startup measurement within 10%.
+`--version` timing is labelled process launch and does not prove GUI startup.
+The tool never changes defaults or declares an experiment ready to adopt.
+`benchmark_decoder.py` compares stock/private decoders against identical exported
+images in separate processes; its scope excludes GPU upload and rendering.
+
+`tools/release/archives.py` compares ZIP levels 6/9 using one stage and keeps the
+smaller archive (level 6 on ties). Linux retains gzip and additionally emits xz
+only when it saves at least 1 MiB or 5%; xz level 9 must save a further 1 MiB over
+level 6. Tar metadata is normalized using `SOURCE_DATE_EPOCH` (zero by default).
+These are build-time compression settings; decompressed application content is
+unchanged. Compression reports remain review evidence outside package payloads.
+
 ## Renderer stress measurements
 
 `torus-render-benchmark` uses the production loaded-map renderer. Its optional
