@@ -57,7 +57,9 @@ Uint8 *MessageOrder::getData(void)
 
 bool MessageOrder::setData(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
-	if (dataLength<9)
+	// Header and at least the text's terminator (the constructor always writes one).
+	// With only the header, the text check below would read past the buffer.
+	if (dataLength<10)
 		return false;
 	this->length=dataLength;
 	this->recipientsMask=getUint32(data, 0);

@@ -11,7 +11,10 @@
 // check that all clients agree at every tick (after a reload, in their final run),
 // that --verify-match reproduces the same checksums and result outcomes from the
 // relay's record, and that a client which executes a tampered order is named by the
-// verifier. Timings of rejoin fast-forwards are written under artifacts/tests/.
+// verifier. A hostile client that sequences malformed and cross-team orders of every
+// type must not crash, desynchronize or change any client (OrderValidation.h): every
+// client and the verifier refuse the same orders. Timings of rejoin fast-forwards are
+// written under artifacts/tests/.
 //
 // The engines share one process and one GlobalContainer. Each keeps its own
 // synchronized RNG stream, swapped in while it runs (as MenuColony does), and none
@@ -37,7 +40,9 @@
 #include "MatchRecord.h"
 #include "MatchSetup.h"
 #include "MersenneTwister.h"
+#include "Brush.h"
 #include "Order.h"
+#include "OrderValidation.h"
 #include "Player.h"
 #include "ReplayReader.h"
 #include "Sha256.h"
@@ -62,6 +67,143 @@ struct RngScope
 	explicit RngScope(MersenneTwister& stream) : own(stream) { std::swap(syncRandEngine(), own); }
 	~RngScope() { std::swap(syncRandEngine(), own); }
 };
+
+/// An order given as its wire bytes (type byte first): what a modified client can
+/// submit, whatever the bytes.
+class RawOrder : public Order
+{
+public:
+	explicit RawOrder(std::vector<Uint8> wire) : bytes(std::move(wire)) {}
+	Uint8 getOrderType() override { return bytes[0]; }
+	Uint8* getData() override { return bytes.data() + 1; }
+	bool setData(const Uint8*, int, Uint32) override { return false; }
+	int getDataLength() override { return static_cast<int>(bytes.size()) - 1; }
+	std::vector<Uint8> bytes;
+};
+
+std::vector<Uint8> wire(Order&& order)
+{
+	return Turn::defaultOrderCodec().encode(order);
+}
+
+Utilities::BitArray filledMask(int cells)
+{
+	Utilities::BitArray mask(cells);
+	for (int i = 0; i < cells; ++i)
+		mask.set(i, true);
+	return mask;
+}
+
+/// One order of a cheating client playing `team` in `game`: each order type aimed at
+/// another team, its buildings or its player, or carrying fields no user interface
+/// produces; now and then a well-formed order of its own, and half of them mutated
+/// byte-wise (flipped, truncated, extended, retyped). Never a pause (it would stop
+/// the game for everyone, which is allowed) or the seat's own quit.
+std::vector<Uint8> hostileOrder(Game& game, int team, int seat, std::mt19937& rng)
+{
+	auto pick = [&](int n) { return static_cast<int>(rng() % static_cast<unsigned>(n)); };
+	const int teams = game.mapHeader.getNumberOfTeams();
+	const int other = (team + 1 + pick(teams - 1)) % teams;
+	auto anyBuilding = [&](int t, bool flag) -> Uint16 {
+		std::vector<Uint16> gids;
+		for (int i = 0; i < Building::MAX_COUNT; ++i)
+			if (const Building* b = game.teams[t]->myBuildings[i])
+				if (!flag || b->type->isVirtual)
+					gids.push_back(b->gid);
+		return gids.empty() ? Building::GIDfrom(pick(Building::MAX_COUNT), t) : gids[pick(static_cast<int>(gids.size()))];
+	};
+	const Team* own = game.teams[team];
+	const int x = own->startPosX + pick(21) - 10, y = own->startPosY + pick(21) - 10;
+	const int site = globalContainer->buildingsTypes.getTypeNum("inn", 0, true);
+	const int flag = globalContainer->buildingsTypes.getTypeNum("warflag", 0, false);
+	Sint32 ratio[NB_UNIT_TYPE];
+	for (auto& r : ratio)
+		r = pick(40) - 20;
+	bool clearing[BASIC_COUNT];
+	for (auto& c : clearing)
+		c = pick(2);
+	std::vector<Uint8> bytes;
+	switch (pick(27))
+	{
+	case 0: bytes = wire(OrderCreate(other, x, y, site, 2, 2)); break;
+	case 1: bytes = wire(OrderCreate(team, x, y, globalContainer->buildingsTypes.getTypeNum("inn", 2, false), 2, 2)); break;
+	case 2: bytes = wire(OrderCreate(team, x, y, pick(1 << 16) - 100, 2, 2)); break;
+	case 3: bytes = wire(OrderCreate(team, x, y, flag, 1000, -3, pick(2) ? 100000 : -9)); break;
+	case 4: bytes = wire(OrderDelete(anyBuilding(other, false))); break;
+	case 5:
+	{
+		OrderDelete order(0); // the constructor asserts on ids no client has
+		order.gid = static_cast<Uint16>(rng());
+		bytes = wire(std::move(order));
+		break;
+	}
+	case 6: bytes = wire(OrderCancelDelete(anyBuilding(pick(2) ? team : other, false))); break;
+	case 7: bytes = wire(OrderConstruction(anyBuilding(pick(2) ? team : other, false), rng(), rng())); break;
+	case 8: bytes = wire(OrderCancelConstruction(anyBuilding(pick(2) ? team : other, false), rng())); break;
+	case 9: bytes = wire(OrderChangePriority(anyBuilding(pick(2) ? team : other, false), static_cast<Sint32>(rng()))); break;
+	case 10: bytes = wire(OrderModifyBuilding(anyBuilding(pick(2) ? team : other, false), static_cast<Uint16>(pick(600)))); break;
+	case 11: bytes = wire(OrderModifyExchange(anyBuilding(other, false), rng(), rng())); break;
+	case 12: bytes = wire(OrderModifySwarm(anyBuilding(pick(2) ? team : other, false), ratio)); break;
+	case 13: bytes = wire(OrderModifyFlag(anyBuilding(pick(2) ? team : other, true), pick(2) ? pick(5000) : -pick(5000))); break;
+	case 14: bytes = wire(OrderModifyClearingFlag(anyBuilding(other, true), clearing)); break;
+	case 15: bytes = wire(OrderModifyMinLevelToFlag(anyBuilding(pick(2) ? team : other, true), static_cast<Uint16>(rng()))); break;
+	case 16: bytes = wire(OrderMoveFlag(anyBuilding(pick(2) ? team : other, true), static_cast<Sint32>(rng()), static_cast<Sint32>(rng()), true)); break;
+	case 17:
+	{
+		const int w = 1 + pick(40), h = 1 + pick(40);
+		const Uint8 t = static_cast<Uint8>(pick(2) ? other : pick(256));
+		const Uint8 mode = static_cast<Uint8>(pick(2) ? BrushTool::MODE_ADD : pick(256));
+		switch (pick(3))
+		{
+		case 0: bytes = wire(OrderAlterForbidden(t, mode, x, y, w, h, filledMask(w * h))); break;
+		case 1: bytes = wire(OrderAlterGuardArea(t, mode, x, y, w, h, filledMask(w * h))); break;
+		default: bytes = wire(OrderAlterClearArea(t, mode, x, y, w, h, filledMask(w * h))); break;
+		}
+		break;
+	}
+	case 18: bytes = wire(MessageOrder(rng(), 3 + pick(100), "cheat")); break;
+	case 19:
+	{
+		std::vector<Uint8> frames(1 + pick(200));
+		for (auto& b : frames)
+			b = static_cast<Uint8>(rng());
+		bytes = wire(OrderVoiceData(rng(), frames.size(), static_cast<Uint8>(pick(256)), frames.data()));
+		break;
+	}
+	case 20: bytes = wire(SetAllianceOrder(pick(2) ? other : rng(), rng(), rng(), rng(), rng(), rng())); break;
+	case 21: bytes = wire(SetAllianceOrder(team, ~0u, 0, ~0u, ~0u, ~0u)); break;
+	case 22: bytes = wire(MapMarkOrder(pick(2) ? other : rng(), rng(), rng())); break;
+	case 23: bytes = wire(PlayerQuitsGameOrder((seat + 1 + pick(31)) % 32)); break; // the relay drops these
+	case 24:
+		bytes.resize(1 + pick(64));
+		for (auto& b : bytes)
+			b = static_cast<Uint8>(rng());
+		break;
+	case 25: bytes = wire(OrderCreate(team, x, y, site, 1 + pick(5), 1 + pick(5))); break; // a fair one
+	default: bytes = wire(OrderModifyBuilding(anyBuilding(team, false), static_cast<Uint16>(pick(21)))); break;
+	}
+	if (pick(2))
+	{
+		switch (pick(4))
+		{
+		case 0:
+			for (int i = 0, n = 1 + pick(4); i < n && bytes.size() > 1; ++i)
+				bytes[1 + pick(static_cast<int>(bytes.size()) - 1)] ^= static_cast<Uint8>(1 + pick(255));
+			break;
+		case 1: bytes.resize(1 + pick(static_cast<int>(bytes.size()))); break;
+		case 2: bytes.resize(bytes.size() + 1 + pick(8), static_cast<Uint8>(rng())); break;
+		default: bytes[0] = static_cast<Uint8>(rng()); break;
+		}
+	}
+	std::uint8_t ownQuit[5];
+	Turn::encodePlayerQuitOrder(static_cast<std::uint8_t>(seat), ownQuit);
+	if (bytes.empty() || bytes[0] == ORDER_PAUSE_GAME ||
+	    (bytes.size() == 5 && std::equal(ownQuit, ownQuit + 5, bytes.begin())))
+		return {};
+	if (bytes.size() > Turn::MAX_ORDER_BYTES)
+		bytes.resize(Turn::MAX_ORDER_BYTES);
+	return bytes;
+}
 
 std::string mapPath(const std::string& name)
 {
@@ -193,6 +335,8 @@ public:
 			// A player acts in real time, not once per fast-forwarded tick.
 			if (after > before && !catching && orderRate > 0 && std::uniform_real_distribution<double>(0, 1)(bot) < orderRate)
 				queueBotOrder();
+			if (after > before && !catching && hostileRate > 0 && std::uniform_real_distribution<double>(0, 1)(bot) < hostileRate)
+				queueHostileOrder();
 			if (!running)
 			{
 				// What the host does when the loop ends: finish the session, which
@@ -258,6 +402,16 @@ public:
 		}
 	}
 
+	/// Submits a hostileOrder straight to the session, bypassing the user interface.
+	void queueHostileOrder()
+	{
+		auto bytes = hostileOrder(engine->gui.game, engine->gui.localTeamNo, seat, bot);
+		if (bytes.empty())
+			return;
+		session().addLocalOrder(std::make_shared<RawOrder>(std::move(bytes)));
+		++hostileSent;
+	}
+
 	SimNetwork& net;
 	int index;
 	int seat;
@@ -271,6 +425,8 @@ public:
 	bool stopped = false;
 	std::uint32_t finalTick = 0; ///< executed ticks when the engine stopped
 	double orderRate = 0.04;
+	double hostileRate = 0;
+	int hostileSent = 0;
 	std::uint32_t tamperAtTick = UINT32_MAX;
 	bool tampered = false;
 	int reloads = 0;
@@ -455,6 +611,20 @@ std::string summary(EngineMatch& m, std::uint32_t endTick)
 		out << c->catchUpTicks << ' ' << c->catchUpNs / 1000000 << '\n';
 	}
 	return out.str();
+}
+
+/// The order audits of two runs agree (voice aside: only live clients see it).
+void requireSameAudit(const OrderValidation::Audit& a, const OrderValidation::Audit& b)
+{
+	for (std::size_t seat = 0; seat < OrderValidation::Audit::SEATS; ++seat)
+	{
+		INFO("seat " << seat);
+		CHECK(a.seats[seat].accepted == b.seats[seat].accepted);
+		CHECK(a.seats[seat].stale == b.seats[seat].stale);
+		CHECK(a.seats[seat].rejected == b.seats[seat].rejected);
+		CHECK(a.seats[seat].firstRejectedTick == b.seats[seat].firstRejectedTick);
+		CHECK(a.seats[seat].reasons == b.seats[seat].reasons);
+	}
 }
 
 glob2test::GlobalsOptions harnessGlobals()
@@ -660,6 +830,143 @@ TEST_SUITE("TurnEngineHarness")
 		CHECK(quit);
 		const Verified v = verifyRecord(record, m, glob2test::artifactDir() / "quit");
 		CHECK(v.verdict.verdict == "verified");
+		requireSameOutcomes(v.result, liveTeams(*m.clients[0]));
+	}
+
+	GLOB2_TEST_CASE("a client sending hostile orders of every type crashes no one and is refused identically everywhere",
+	                "[network-sim][fuzz][artifacts]")
+	{
+		glob2test::HeadlessGlobals globals(harnessGlobals());
+		std::ostringstream report;
+		// Three matches, each with its own cheater stream and game seed.
+		for (const std::uint32_t seed : {101u, 202u, 303u})
+		{
+			INFO("seed " << seed);
+			// The previous round's verifier switched the replay writer on.
+			globals->headlessReplay = false;
+			globals->structuredHeadless = true;
+			EngineMatch m("FourSquares1", {{20 * MS}, {50 * MS, 30 * MS, 0.02}, {35 * MS, 15 * MS}}, {"nicowar"}, seed);
+			auto& cheater = *m.clients[1];
+			cheater.bot.seed(seed);
+			cheater.hostileRate = 0.6;
+			m.run(90 * SECOND);
+			const std::uint32_t end = m.finish();
+			CHECK(cheater.hostileSent > 300);
+			CHECK_FALSE(m.net.relay->desyncFlagged());
+			CHECK(m.requireIdenticalChecksums() == end + 1);
+			for (auto& c : m.clients)
+			{
+				INFO("client " << c->index);
+				CHECK(c->lives.size() == 1);
+			}
+
+			// Every client counted the same verdicts for the same seats. (The cheater may
+			// have destroyed its own colony and left; the honest seats play to the end.)
+			REQUIRE_FALSE(m.clients[0]->stopped);
+			const auto& audit = m.clients[0]->engine->turnLockstep()->orderAudit();
+			for (auto& c : m.clients)
+				if (!c->stopped)
+					requireSameAudit(audit, c->engine->turnLockstep()->orderAudit());
+			const auto& honest = audit.seats[0];
+			const auto& hostile = audit.seats[1];
+			CHECK(honest.rejected == 0);
+			CHECK(honest.stale == 0);
+			CHECK(honest.accepted > 20);
+			CHECK(audit.seats[2].rejected == 0);
+			CHECK(hostile.rejected > 100);
+			CHECK(hostile.accepted > 10);
+			using OrderValidation::Reason;
+			for (Reason r : {Reason::Undecodable, Reason::WrongTeam, Reason::ForeignBuilding, Reason::BadBuildingType,
+			                 Reason::OutOfRange, Reason::BadMode})
+			{
+				INFO(OrderValidation::name(r));
+				CHECK(hostile.reasons[static_cast<std::size_t>(r)] > 0);
+			}
+			CHECK(m.clients[0]->engine->turnLockstep()->orderAudit().seats[1].voiceRejected > 0);
+
+			// The verifier replays the record, refuses the same orders and agrees.
+			const auto record = m.record("hostile-orders");
+			const auto directory = glob2test::artifactDir() / ("hostile-orders-" + std::to_string(seed));
+			const Verified v = verifyRecord(record, m, directory);
+			CHECK(v.verdict.verdict == "verified");
+			requireSameAudit(v.verdict.orders, audit);
+			for (auto& c : m.clients)
+				requireSameOutcomes(v.result, liveTeams(*c));
+			const json& checks = v.result.at("verification").at("order_checks");
+			CHECK(checks.at("1").at("rejected") == hostile.rejected);
+			CHECK(checks.at("0").at("rejected") == 0);
+			const json& flagged = v.verdictJson.at("orderRejections");
+			REQUIRE(flagged.size() == 1);
+			CHECK(flagged[0].at("seat") == 1);
+			CHECK(flagged[0].at("rejected") == hostile.rejected);
+			CHECK(flagged[0].at("firstRejectedTick") == hostile.firstRejectedTick);
+
+			report << "seed " << seed << '\n' << summary(m, end) << "hostile orders sent " << cheater.hostileSent
+			       << "; seat 1 accepted " << hostile.accepted << " stale " << hostile.stale << " rejected " << hostile.rejected
+			       << " voice-rejected " << audit.seats[1].voiceRejected << "\n";
+			for (std::size_t r = 1; r < OrderValidation::REASON_COUNT; ++r)
+				report << "  " << OrderValidation::name(static_cast<Reason>(r)) << ' ' << hostile.reasons[r] << '\n';
+		}
+		glob2test::writeFile(glob2test::artifactDir() / "hostile-orders-summary.txt", report.str());
+		MESSAGE(report.str());
+	}
+
+	GLOB2_TEST_CASE("orders a hostile relay forges for a seat are refused by the verifier, which still verifies",
+	                "[network-sim]")
+	{
+		// The relay drops a client's quit order for another seat and its latency
+		// orders, but a modified relay or a doctored record need not. The engine
+		// refuses them on its own, so the record replays to the clients' checksums.
+		glob2test::HeadlessGlobals globals(harnessGlobals());
+		EngineMatch m("FourSquares1", {{20 * MS}, {30 * MS}}, {"warrush"});
+		m.run(10 * SECOND);
+		const std::uint32_t end = m.finish();
+		CHECK(m.requireIdenticalChecksums() == end + 1);
+		const auto record = m.record("forged-orders");
+		auto forged = record;
+		std::set<std::uint32_t> taken;
+		for (const auto& t : forged.turns)
+			if (t.seat == 1)
+				taken.insert(t.tick);
+		std::uint8_t quitSeat0[5];
+		Turn::encodePlayerQuitOrder(0, quitSeat0);
+		const std::vector<std::vector<std::uint8_t>> injected = {
+			{quitSeat0, quitSeat0 + 5},                                    // seat 1 quits for seat 0
+			wire(AdjustLatency(40)),                                       // a legacy latency order
+			{0xEE, 1, 2, 3},                                               // no such order type
+			wire(OrderCreate(0, 10, 10, 0, 1, 1)),                         // builds for seat 0's team
+			wire(SetAllianceOrder(0, ~0u, 0, ~0u, ~0u, ~0u)),             // allies seat 0 with everyone
+			wire(OrderVoiceData(~0u, 3, 250, std::vector<Uint8>{1, 2, 3}.data())), // oversized voice
+			wire(OrderVoiceData(~0u, 3, 1, std::vector<Uint8>{1, 2, 3}.data())),   // ordinary voice
+		};
+		std::uint32_t tick = 100;
+		for (const auto& bytes : injected)
+		{
+			while (taken.count(tick))
+				++tick;
+			Turn::TurnEntry entry;
+			entry.tick = tick++;
+			entry.seat = 1;
+			entry.order = bytes;
+			forged.turns.push_back(entry);
+		}
+		std::sort(forged.turns.begin(), forged.turns.end(), [](const Turn::TurnEntry& a, const Turn::TurnEntry& b) {
+			return a.tick != b.tick ? a.tick < b.tick : a.seat < b.seat;
+		});
+		const Verified v = verifyRecord(forged, m, glob2test::artifactDir() / "forged-orders");
+		CHECK(v.verdict.verdict == "verified");
+		const auto& seat1 = v.verdict.orders.seats[1];
+		using OrderValidation::Reason;
+		CHECK(seat1.rejected == 5);
+		CHECK(seat1.voiceRejected == 1);
+		CHECK(seat1.reasons[static_cast<std::size_t>(Reason::WrongPlayer)] == 1);
+		CHECK(seat1.reasons[static_cast<std::size_t>(Reason::NotPermitted)] == 1);
+		CHECK(seat1.reasons[static_cast<std::size_t>(Reason::Undecodable)] == 1);
+		CHECK(seat1.reasons[static_cast<std::size_t>(Reason::WrongTeam)] == 2);
+		CHECK(seat1.firstRejectedTick >= 100);
+		CHECK(v.verdict.orders.seats[0].rejected == 0);
+		// Seat 0 did not leave and its team kept its alliances.
+		CHECK(v.result.at("teams")[0].at("alive") == liveTeams(*m.clients[0]).at("teams")[0].at("alive"));
 		requireSameOutcomes(v.result, liveTeams(*m.clients[0]));
 	}
 

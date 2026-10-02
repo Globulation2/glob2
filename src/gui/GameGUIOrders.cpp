@@ -149,8 +149,7 @@ void GameGUI::executeOrder(std::shared_ptr<Order> order)
 						addMessage(Color(99, 255, 242), FormattableString("<%0%1> %2").arg(Toolkit::getStringTable()->getString("[to:]")).arg(game.players[k]->name).arg(mo->getText()), true);
 				}
 			}
-			else
-				assert(false);
+			// Any other type is not shown (it was an assert; a remote client chooses it).
 
 			game.executeOrder(order, localPlayer);
 		}
@@ -158,7 +157,8 @@ void GameGUI::executeOrder(std::shared_ptr<Order> order)
 		case ORDER_VOICE_DATA:
 		{
 			std::shared_ptr<OrderVoiceData> ov = static_pointer_cast<OrderVoiceData>(order);
-			if (ov->recipientsMask & (1<<localPlayer))
+			// Headless games (bots, the verifier) have no mixer.
+			if (globalContainer->mix && (ov->recipientsMask & (1u<<localPlayer)))
 				globalContainer->mix->addVoiceData(ov);
 			game.executeOrder(order, localPlayer);
 		}
@@ -177,8 +177,8 @@ void GameGUI::executeOrder(std::shared_ptr<Order> order)
 		{
 			std::shared_ptr<MapMarkOrder> mmo=static_pointer_cast<MapMarkOrder>(order);
 
-			assert(game.teams[mmo->teamNumber]->teamNumber<game.mapHeader.getNumberOfTeams());
-			if (game.teams[mmo->teamNumber]->allies & (game.teams[localTeamNo]->me))
+			// The team comes from a remote client: one this game lacks marks nothing.
+			if (game.isOrderTeam(mmo->teamNumber) && (game.teams[mmo->teamNumber]->allies & (game.teams[localTeamNo]->me)))
 				addMark(mmo);
 		}
 		break;

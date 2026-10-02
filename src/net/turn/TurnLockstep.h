@@ -16,6 +16,7 @@
 
 #include "LockstepSession.h"
 #include "MatchRecord.h"
+#include "OrderValidation.h"
 #include "TurnSession.h"
 
 namespace Turn
@@ -34,8 +35,17 @@ namespace Turn
 		/// Called on every advanceStep with the tick about to execute and the state
 		/// checksum before it: the value a ChecksumReport for that tick carries.
 		std::function<void(std::uint32_t tick, Uint32 checksum)> onChecksum;
-		/// Test hook: may replace the order retrieveOrder returns (a cheating or
-		/// diverging client). Never set in the game.
+		/// Checks every order of a human seat before the engine executes it (the engine
+		/// installs OrderValidation::validate on its game). An order that is not
+		/// Accepted, or that does not decode, is replaced by a NullOrder; the verdict is
+		/// counted in orderAudit(). Unset: orders pass through unchecked.
+		std::function<OrderValidation::Result(int player, Order& order)> validator;
+		/// Per-seat counts of checked orders since the game (re)started from tick 0.
+		const OrderValidation::Audit& orderAudit() const { return audit; }
+		/// Called when the engine reloads the initial state: the orders are checked again.
+		void resetOrderAudit() { audit = {}; }
+		/// Test hook: may replace the order retrieveOrder returns, after the check (a
+		/// cheating or diverging client). Never set in the game.
 		std::function<std::shared_ptr<Order>(std::uint32_t tick, int player, std::shared_ptr<Order>)> orderFilter;
 
 		void setLocalPlayer(int player) override { session.setLocalPlayer(player); }
@@ -58,6 +68,8 @@ namespace Turn
 	private:
 		std::shared_ptr<TurnTransport> link;
 		TurnSession session;
+		OrderValidation::Audit audit;
+		std::uint32_t loggedRejections = 0;
 	};
 
 	/// A TurnTransport that plays a recorded match: Welcome (as `seat`) followed by

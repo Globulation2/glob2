@@ -351,6 +351,13 @@ bool TurnSession::tickReady()
 
 std::shared_ptr<Order> TurnSession::retrieveOrder(int playerNumber)
 {
+	int undecodableType = -1;
+	return retrieveOrder(playerNumber, undecodableType);
+}
+
+std::shared_ptr<Order> TurnSession::retrieveOrder(int playerNumber, int& undecodableType)
+{
+	undecodableType = -1;
 	std::shared_ptr<Order> order;
 	if (playerNumber >= 0 && playerNumber < numberOfPlayers)
 	{
@@ -367,8 +374,8 @@ std::shared_ptr<Order> TurnSession::retrieveOrder(int playerNumber)
 					if (e.seat == playerNumber)
 					{
 						order = codec.decode(e.order.data(), e.order.size());
-						if (!order)
-							std::cerr << "Turn session: undecodable order at tick " << executed << "\n";
+						if (!order) // reported (rate-limited) by TurnLockstepSession
+							undecodableType = e.order.empty() ? 0 : e.order[0];
 						break;
 					}
 		}
