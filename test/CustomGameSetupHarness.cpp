@@ -1407,7 +1407,7 @@ struct CustomGameSetupHarness
         pickerPaint();
       }
       auto settle = [&] {
-        const Uint32 deadline = SDL_GetTicks() + 540000;
+        const Uint32 deadline = SDL_GetTicks() + 120000;
         while (picker.busy()) {
           REQUIRE(Sint32(SDL_GetTicks() - deadline) < 0);
           SDL_Delay(10);
@@ -1458,7 +1458,9 @@ struct CustomGameSetupHarness
           pick("landscape/" + name);
           return;
         }
+        INFO("action=" << name << " run=" << picker.run << " return=" << picker.returnCode << " focus=" << pickerHost.focused());
         pick("landscape/more");
+        INFO("after click: run=" << picker.run << " return=" << picker.returnCode << " focus=" << pickerHost.focused());
         REQUIRE(pickerHost.popupOpen());
         pick("popup/" + std::to_string(menuIndex));
         REQUIRE(!pickerHost.popupOpen());
