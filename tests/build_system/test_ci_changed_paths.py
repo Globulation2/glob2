@@ -127,6 +127,18 @@ class ChangedPathsTest(unittest.TestCase):
                     deployment=False, cross_platform=True,
                 )
 
+    def test_drawing_implementations_keep_all_platforms_without_map_sweeps(self):
+        for path in ci_changed_paths.RENDER_IMPLEMENTATIONS:
+            with self.subTest(path=path):
+                self.assert_jobs([path], native=True, browser=True, map_generators=False,
+                                 deployment=False, cross_platform=True)
+        for paths in (["libgag/include/RenderBackend.h"], ["libgag/src/FileManager.cpp"],
+                      ["libgag/src/SurfaceRaster.cpp", "src/map/generator/core/MapGenerator.cpp"],
+                      ["libgag/src/UnknownRenderer.cpp"]):
+            with self.subTest(paths=paths):
+                self.assert_jobs(paths, native=True, browser=True, map_generators=True,
+                                 deployment=True, cross_platform=True)
+
     def test_network_changes_keep_deployment(self):
         self.assert_jobs(
             ["src/yog/YOGServer.cpp", "src/net/Connection.cpp"],

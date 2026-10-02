@@ -9,6 +9,13 @@ import sys
 
 
 JOBS = ("native", "browser", "map_generators", "deployment", "cross_platform")
+# Implementation-only drawing changes retain native, browser, and equivalence
+# checks. Shared headers, file I/O, fonts and unknown library paths stay full CI.
+RENDER_IMPLEMENTATIONS = {
+    "libgag/src/RenderBackend.cpp",
+    "libgag/src/SoftwareRenderBackend.cpp",
+    "libgag/src/SurfaceRaster.cpp",
+}
 CI_TOOL_TESTS = {
     "test/test_run_tests.py",
     "test/test_ci_failure_aggregation.py",
@@ -66,7 +73,7 @@ def classify(paths):
         } and not Path(path).name.startswith("MapGenerator"):
             native = True
             continue
-        if path.startswith(("src/ai/", "src/gui/", "src/render/")):
+        if path in RENDER_IMPLEMENTATIONS or path.startswith(("src/ai/", "src/gui/", "src/render/")):
             native = browser = cross_platform = True
             continue
         if path.startswith(("src/net/", "src/yog/")):
