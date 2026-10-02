@@ -1432,8 +1432,8 @@ Cortex
 نسبة الرمال
 [Select a valid map.]
 حدد خريطة صالحة.
-[Shared control needs a free controller slot (maximum 12).]
-يتطلب التحكم المشترك خانة شاغرة لمتحكم إضافي (الحد الأقصى 12).
+[Shared control needs a free controller slot (maximum %0).]
+يتطلب التحكم المشترك خانة شاغرة لمتحكم إضافي (الحد الأقصى %0).
 [Smoothing]
 تنعيم
 [Standard]
@@ -1652,8 +1652,8 @@ Cortex
 تم
 [settings Edit shortcut]
 تحرير اختصار لوحة المفاتيح
-[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
-تكبير القوائم والنص والشريط الجانبي على شاشة عالية الدقة.
+[settings Multiply the operating system display scale for menus, text and the sidebar.]
+ضاعف مقياس عرض نظام التشغيل للقوائم والنص والشريط الجانبي.
 [settings Flags]
 أعلام
 [settings Full]
@@ -3070,8 +3070,6 @@ Emoji
 تقديم سريع
 [Hide keyboard]
 إخفاء لوحة المفاتيح
-[Dialog text size]
-حجم نص الحوار
 [Player slot]
 خانة اللاعب
 [Team color]
@@ -3410,8 +3408,6 @@ Emoji
 ﺍﻟﻤﺴﺘﻮﻯ ﺍﻷﺩﻧﻰ ﺍﻟﻤﻄﻠﻮﺏ: %0
 [Confirm %0]
 ﻧﻌﻢ: %0
-[Dialog text size %0]
-حجم نص الحوار: %0%
 [%0 %1]
 %0 %1
 [resume game]

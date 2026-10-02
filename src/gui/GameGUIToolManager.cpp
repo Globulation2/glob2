@@ -3,6 +3,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "GameGUIToolManager.h"
+#include "scene/Scene.h"
 #include "GlobalContainer.h"
 #include "GUIBase.h"
 #include "FormatableString.h"
@@ -80,17 +81,17 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 		
 		
 		const int modState = modifiers;
-		if(!(modState & KMOD_CTRL || modState & KMOD_SHIFT) || !firstPlacement)
+		if(!(modState & SDL_KMOD_CTRL || modState & SDL_KMOD_SHIFT) || !firstPlacement)
 		{
 			drawBuildingAt(mapX, mapY, localteam, viewportX, viewportY);
 		}
 		///This allows the drag-placing of walls
-		else if(modState & KMOD_CTRL)
+		else if(modState & SDL_KMOD_CTRL)
 		{
 			computeBuildingLine(firstPlacement->x, firstPlacement->y, mapX, mapY, localteam, viewportX, viewportY, 1);
 		}
 		///This allows the placing of a square of buildings
-		else if(modState & KMOD_SHIFT)
+		else if(modState & SDL_KMOD_SHIFT)
 		{
 			computeBuildingBox(firstPlacement->x, firstPlacement->y, mapX, mapY, localteam, viewportX, viewportY, 1);
 		}
@@ -201,17 +202,17 @@ void GameGUIToolManager::handleMouseUp(int mouseX, int mouseY, int localteam, in
 		game.map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &mapX, &mapY, viewportX, viewportY);
 
 		const int modState = modifiers;
-		if(!(modState & KMOD_CTRL || modState & KMOD_SHIFT) || !firstPlacement)
+		if(!(modState & SDL_KMOD_CTRL || modState & SDL_KMOD_SHIFT) || !firstPlacement)
 		{
 			placeBuildingAt(mapX, mapY, localteam);
 		}
 		///This allows the placing of a line of buildings
-		else if(modState & KMOD_CTRL)
+		else if(modState & SDL_KMOD_CTRL)
 		{
 			computeBuildingLine(firstPlacement->x, firstPlacement->y, mapX, mapY, localteam, viewportX, viewportY, 2);
 		}
 		///This allows the placing of a square of buildings
-		else if(modState & KMOD_SHIFT)
+		else if(modState & SDL_KMOD_SHIFT)
 		{
 			computeBuildingBox(firstPlacement->x, firstPlacement->y, mapX, mapY, localteam, viewportX, viewportY, 2);
 		}
@@ -380,12 +381,24 @@ void GameGUIToolManager::drawBuildingAt(int mapX, int mapY, int localteam, int v
 	BuildingType *bt = globalContainer->buildingsTypes.get(typeNum);
 	Sprite *sprite = bt->gameSpritePtr;
 		
-	int tempX = mapX, tempY = mapY;
-	bool isRoom;
+	// Room as Game::checkRoomForBuilding / checkHardRoomForBuilding decide it, read
+	// from the drawn Scene: flags need no own flag on the tile, buildings hard space.
+	assert(drawnScene);
+	const Scene &scene = *drawnScene;
+	int tempX = mapX + bt->decLeft, tempY = mapY + bt->decTop;
+	bool isRoom = true;
 	if (bt->isVirtual)
-		isRoom=game.checkRoomForBuilding(mapX, mapY, bt, &tempX, &tempY, localteam);
+	{
+		if (localteam >= 0)
+			for (Uint16 flag : scene.entities.virtualBuildings[localteam])
+			{
+				const SceneBuilding *b = scene.entities.building(flag);
+				if (b && b->posX == (tempX & scene.map.getMaskW()) && b->posY == (tempY & scene.map.getMaskH()))
+					isRoom = false;
+			}
+	}
 	else
-		isRoom=game.checkHardRoomForBuilding(mapX, mapY, bt, &tempX, &tempY);
+		isRoom = scene.map.isHardSpaceForBuilding(tempX, tempY, bt->width, bt->height);
 			
 	
 	if(ghostManager.isGhostBuilding(tempX, tempY, bt->width, bt->height))
@@ -402,11 +415,11 @@ void GameGUIToolManager::drawBuildingAt(int mapX, int mapY, int localteam, int v
 	// we get the screen dimensions of the building
 	int rectW = (bt->width) * 32;
 	int rectH = sprite->getH(bt->gameSpriteImage);
-	int rectX = (((tempX-viewportX)&(game.map.wMask)) * 32);
-	int rectY = (((tempY-viewportY)&(game.map.hMask)) * 32)-(rectH-(bt->height * 32));
+	int rectX = (((tempX-viewportX)&(scene.map.getMaskW())) * 32);
+	int rectY = (((tempY-viewportY)&(scene.map.getMaskH())) * 32)-(rectH-(bt->height * 32));
 	
 	// Draw the building
-	sprite->setBaseColor(game.teams[localteam]->color);
+	sprite->setBaseColor(scene.panels.local.color);
 	int spriteIntensity = 127+static_cast<int>(128.0f*splineInterpolation(1.f, 0.f, 1.f, highlightStrength));
 	globalContainer->gfx->drawSprite(rectX, rectY, sprite, bt->gameSpriteImage, spriteIntensity);
 	globalContainer->gfx->finishDrawingSprite(sprite, spriteIntensity);
@@ -414,14 +427,15 @@ void GameGUIToolManager::drawBuildingAt(int mapX, int mapY, int localteam, int v
 	if (!bt->isVirtual)
 	{
 		// Count down whether a building site can be placed
-		if (game.teams[localteam]->noMoreBuildingSitesCountdown>0)
+		const int countdown = scene.panels.local.noMoreBuildingSitesCountdown;
+		if (countdown>0)
 		{
 			globalContainer->gfx->drawRect(rectX, rectY, rectW, rectH, 255, 0, 0, 127);
 			globalContainer->gfx->drawLine(rectX, rectY, rectX+rectW-1, rectY+rectH-1, 255, 0, 0, 127);
 			globalContainer->gfx->drawLine(rectX+rectW-1, rectY, rectX, rectY+rectH-1, 255, 0, 0, 127);
 			
 			globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 255, 0, 0, 127));
-			globalContainer->gfx->drawString(rectX, rectY-12, globalContainer->littleFont, FormattableString("%0.%1").arg(game.teams[localteam]->noMoreBuildingSitesCountdown/40).arg((game.teams[localteam]->noMoreBuildingSitesCountdown%40)/4).c_str());
+			globalContainer->gfx->drawString(rectX, rectY-12, globalContainer->littleFont, FormattableString("%0.%1").arg(countdown/40).arg((countdown%40)/4).c_str());
 			globalContainer->littleFont->popStyle();
 		}
 		else
@@ -433,10 +447,10 @@ void GameGUIToolManager::drawBuildingAt(int mapX, int mapY, int localteam, int v
 				globalContainer->gfx->drawRect(rectX, rectY, rectW, rectH, 255, 0, 0, 127);
 			
 			BuildingType *upgradedType=globalContainer->buildingsTypes.getLastLevel(typeNum);
-			int upgradedMapX, upgradedMapY;
-			bool isUpgradedRoom = game.checkHardRoomForBuilding(mapX, mapY, upgradedType, &upgradedMapX, &upgradedMapY);
-			int upgradedRectX=((upgradedMapX-viewportX)&(game.map.wMask)) * 32;
-			int upgradedRectY=((upgradedMapY-viewportY)&(game.map.hMask)) * 32;
+			const int upgradedMapX = mapX + upgradedType->decLeft, upgradedMapY = mapY + upgradedType->decTop;
+			bool isUpgradedRoom = scene.map.isHardSpaceForBuilding(upgradedMapX, upgradedMapY, upgradedType->width, upgradedType->height);
+			int upgradedRectX=((upgradedMapX-viewportX)&(scene.map.getMaskW())) * 32;
+			int upgradedRectY=((upgradedMapY-viewportY)&(scene.map.getMaskH())) * 32;
 			int upgradedRectW=(upgradedType->width) * 32;
 			int upgradedRectH=(upgradedType->height) * 32;
 

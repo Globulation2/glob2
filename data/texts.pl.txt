@@ -1434,8 +1434,8 @@ Szerokość rzeki
 Waga piasku
 [Select a valid map.]
 Wybierz prawidłową mapę.
-[Shared control needs a free controller slot (maximum 12).]
-Wspólne sterowanie wymaga wolnego miejsca dla gracza lub SI (maksymalnie 12).
+[Shared control needs a free controller slot (maximum %0).]
+Wspólne sterowanie wymaga wolnego miejsca dla gracza lub SI (maksymalnie %0).
 [Smoothing]
 Wygładzanie
 [Standard]
@@ -1654,8 +1654,8 @@ Wyświetl kursor Globulation 2.
 Gotowe
 [settings Edit shortcut]
 Edytuj skrót klawiaturowy
-[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
-Powiększa menu, tekst i panel boczny na ekranie o wysokiej rozdzielczości.
+[settings Multiply the operating system display scale for menus, text and the sidebar.]
+Mnoży skalę wyświetlania systemu operacyjnego dla menu, tekstu i panelu bocznego.
 [settings Flags]
 Flagi
 [settings Full]
@@ -3072,8 +3072,6 @@ Minimapa
 Przewiń do przodu
 [Hide keyboard]
 Ukryj klawiaturę
-[Dialog text size]
-Rozmiar tekstu okien dialogowych
 [Player slot]
 Miejsce gracza
 [Team color]
@@ -3412,8 +3410,6 @@ Szansa na wygraną: %0 · Siła: %1
 Min. wymagany poziom: %0
 [Confirm %0]
 Ok: %0
-[Dialog text size %0]
-Rozmiar tekstu okien dialogowych: %0%
 [%0 %1]
 %0 %1
 [resume game]

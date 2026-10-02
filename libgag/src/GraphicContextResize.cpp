@@ -27,7 +27,7 @@ namespace GAGCore
 		if (pointsW <= 0 || pointsH <= 0 || (SDL_GetWindowFlags(window) & SDL_WINDOW_MINIMIZED)) return true;
 		pixelsW = pointsW; pixelsH = pointsH;
 #ifdef HAVE_OPENGL
-		if (optionFlags & USEGPU) SDL_GL_GetDrawableSize(window, &pixelsW, &pixelsH);
+		if (optionFlags & USEGPU) SDL_GetWindowSizeInPixels(window, &pixelsW, &pixelsH);
 		else
 #endif
 		if (renderer && !nativeSoftware) renderer->outputSize(pixelsW, pixelsH);
@@ -42,7 +42,7 @@ namespace GAGCore
 		float scale = effectiveUiScale(preferredUiScale);
 		const float wanted = scale;
 		if (!compactWindowAllowed)
-			scale = std::max(1.0f, std::min({scale, float(pointsW) / std::max(640,minW), float(pointsH) / std::max(480,minH)}));
+			scale = std::max(std::min(1.0f, scale), std::min({scale, float(pointsW) / std::max(640,minW), float(pointsH) / std::max(480,minH)}));
 		const int logicalW = std::max(1, int(std::lround(pointsW / scale)));
 		const int logicalH = std::max(1, int(std::lround(pointsH / scale)));
 		const bool cpu = !(optionFlags & (USEGPU | PORTABLEGPU));
@@ -52,8 +52,8 @@ namespace GAGCore
 			sdlsurface->w != surfaceW || sdlsurface->h != surfaceH || needsBackend != nativeSoftware;
 		if (changed)
 		{
-			std::unique_ptr<SDL_Surface, decltype(&SDL_FreeSurface)> replacement(
-				SDL_CreateRGBSurfaceWithFormat(0,surfaceW,surfaceH,32,sdlsurface->format->format), SDL_FreeSurface);
+			std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> replacement(
+				SDL_CreateSurface(surfaceW, surfaceH, sdlsurface->format), SDL_DestroySurface);
 			if (!replacement) return false;
 			std::unique_ptr<RenderBackend> backend;
 			try
@@ -101,7 +101,7 @@ namespace GAGCore
 	int GraphicContext::pollEvent(SDL_Event *event)
 	{
 		if (!_gc) return SDL_PollEvent(event);
-		assert(SDL_ThreadID() == _gc->eventThread);
+		assert(SDL_GetCurrentThreadID() == _gc->eventThread);
 		int result;
 		{
 			FlagScope scope(_gc->pollingEvents);
@@ -112,21 +112,21 @@ namespace GAGCore
 		return result;
 	}
 
-	int SDLCALL GraphicContext::watchWindow(void *userdata, SDL_Event *event)
+	bool SDLCALL GraphicContext::watchWindow(void *userdata, SDL_Event *event)
 	{
 		auto *gfx = static_cast<GraphicContext *>(userdata);
 		// SDL also invokes watchers for events pushed by other threads.
-		if (SDL_ThreadID() != gfx->eventThread) return 1;
-		if (gfx->pollingEvents && !gfx->presenting && event->type == SDL_WINDOWEVENT
+		if (SDL_GetCurrentThreadID() != gfx->eventThread) return 1;
+		if (gfx->pollingEvents && !gfx->presenting && (event->type >= SDL_EVENT_WINDOW_FIRST && event->type <= SDL_EVENT_WINDOW_LAST)
 			&& event->window.windowID == SDL_GetWindowID(gfx->window)
-			&& event->window.event == SDL_WINDOWEVENT_EXPOSED)
+			&& event->type == SDL_EVENT_WINDOW_EXPOSED)
 			gfx->presentLastFrame();
 		return 1;
 	}
 
 	void GraphicContext::releaseFrameCache()
 	{
-		SDL_FreeSurface(frameCache.surface);
+		SDL_DestroySurface(frameCache.surface);
 		#ifdef HAVE_OPENGL
 		if (frameCache.texture) glDeleteTextures(1, &frameCache.texture);
 		#endif
@@ -152,7 +152,7 @@ namespace GAGCore
 		if (optionFlags & USEGPU)
 		{
 			int w, h;
-			SDL_GL_GetDrawableSize(window, &w, &h);
+			SDL_GetWindowSizeInPixels(window, &w, &h);
 			if (w <= 0 || h <= 0) return;
 			// Copy-before-swap works with the legacy GL renderer and needs no FBO extension.
 			glPushAttrib(GL_TEXTURE_BIT | GL_PIXEL_MODE_BIT);
@@ -223,15 +223,15 @@ namespace GAGCore
         {
             if (softwareRasterizer) softwareRasterizer->flush();
             softwarePresenter->complete();
-            SDL_FreeSurface(frameCache.surface);
+            SDL_DestroySurface(frameCache.surface);
             frameCache.surface = nullptr;
             frameCache.valid = false;
             return;
         }
 		if (!frameCache.surface || frameCache.surface->w != sdlsurface->w || frameCache.surface->h != sdlsurface->h)
 		{
-			SDL_FreeSurface(frameCache.surface);
-			frameCache.surface = SDL_CreateRGBSurfaceWithFormat(0, sdlsurface->w, sdlsurface->h, 32, sdlsurface->format->format);
+			SDL_DestroySurface(frameCache.surface);
+			frameCache.surface = SDL_CreateSurface(sdlsurface->w, sdlsurface->h, sdlsurface->format);
 			if (!frameCache.surface)
 			{
 				reportFrameCacheFailure(SDL_GetError());
@@ -240,11 +240,11 @@ namespace GAGCore
 			SDL_SetSurfaceBlendMode(frameCache.surface, SDL_BLENDMODE_NONE);
 		}
 		SDL_SetSurfaceBlendMode(sdlsurface, SDL_BLENDMODE_NONE);
-		SDL_Rect previousClip; SDL_GetClipRect(sdlsurface,&previousClip);
-		SDL_SetClipRect(sdlsurface,nullptr);
-		const int copied=SDL_BlitSurface(sdlsurface,nullptr,frameCache.surface,nullptr);
-		SDL_SetClipRect(sdlsurface,&previousClip);
-		if (copied != 0)
+		SDL_Rect previousClip; SDL_GetSurfaceClipRect(sdlsurface,&previousClip);
+		SDL_SetSurfaceClipRect(sdlsurface,nullptr);
+		const bool copied=SDL_BlitSurface(sdlsurface,nullptr,frameCache.surface,nullptr);
+		SDL_SetSurfaceClipRect(sdlsurface,&previousClip);
+		if (!copied)
 		{
 			reportFrameCacheFailure(SDL_GetError());
 			return;
@@ -262,7 +262,7 @@ namespace GAGCore
         // The facade now exposes another pixel buffer, even before its first draw.
         markPixelsChanged();
         if (softwareRasterizer) softwareRasterizer->bindTarget(target);
-        SDL_SetClipRect(target, &clipRect);
+        SDL_SetSurfaceClipRect(target, &clipRect);
     }
 
     void GraphicContext::prepareDraw()
@@ -299,7 +299,7 @@ namespace GAGCore
 		if (optionFlags & USEGPU)
 		{
 			int w, h;
-			SDL_GL_GetDrawableSize(window, &w, &h);
+			SDL_GetWindowSizeInPixels(window, &w, &h);
 			if (w <= 0 || h <= 0) return;
 			// Restore actual GL state so the engine's GLState cache remains valid.
 			glPushAttrib(GL_ALL_ATTRIB_BITS);
@@ -353,11 +353,11 @@ namespace GAGCore
 		dst.y = (target->h - dst.h) / 2;
 		// An opaque, full-window copy already overwrites every pixel.
 		if (dst.w != target->w || dst.h != target->h)
-			SDL_FillRect(target, nullptr, SDL_MapRGB(target->format, 0, 0, 0));
+			SDL_FillSurfaceRect(target, nullptr, SDL_MapSurfaceRGB(target, 0, 0, 0));
 		if (dst.w == completed->w && dst.h == completed->h)
 			SDL_BlitSurface(completed, nullptr, target, &dst);
 		else
-			SDL_BlitScaled(completed, nullptr, target, &dst);
+			SDL_BlitSurfaceScaled(completed, nullptr, target, &dst, SDL_SCALEMODE_NEAREST);
 		SDL_UpdateWindowSurface(window);
 	}
 }

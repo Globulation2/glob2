@@ -242,7 +242,7 @@ struct CustomGameSetup
 				return error;
 		}
 		if (controllerCount() > Team::MAX_COUNT)
-			return "Shared control needs a free controller slot (maximum 12).";
+			return "Shared control needs a free controller slot (maximum %0).";
 		if (activeColonies() < 1)
 			return "Open at least one colony to start a match.";
 		return {};

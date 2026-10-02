@@ -13,89 +13,90 @@
 #include <string>
 
 #include "GameGUI.h"
+#include "sim/ClientCommandSink.h"
 #include "Player.h"
 #include "SGSL.h"
 
-void Story::toto(GameGUI* gui)
+void Story::toto(StoryContext* gui)
 {
 	std::cout << "toto func : ";
 	std::cout << SGSLToken::getNameByType(line[++lineSelector].type) << " ";
 	std::cout << line[++lineSelector].value << "\n";
 }
 
-void Story::objectiveHidden(GameGUI* gui)
+void Story::objectiveHidden(StoryContext* gui)
 {
 	int n = line[++lineSelector].value;
-	for(int i=0; i<gui->game.objectives.getNumberOfObjectives(); ++i)
+	for(int i=0; i<gui->game->objectives.getNumberOfObjectives(); ++i)
 	{
-		if(gui->game.objectives.getScriptNumber(i) == n)
+		if(gui->game->objectives.getScriptNumber(i) == n)
 		{
-			gui->game.objectives.setObjectiveHidden(i);
+			gui->game->objectives.setObjectiveHidden(i);
 			break;
 		}
 	}
 }
 
-void Story::objectiveVisible(GameGUI* gui)
+void Story::objectiveVisible(StoryContext* gui)
 {
 	int n = line[++lineSelector].value;
-	for(int i=0; i<gui->game.objectives.getNumberOfObjectives(); ++i)
+	for(int i=0; i<gui->game->objectives.getNumberOfObjectives(); ++i)
 	{
-		if(gui->game.objectives.getScriptNumber(i) == n)
+		if(gui->game->objectives.getScriptNumber(i) == n)
 		{
-			gui->game.objectives.setObjectiveVisible(i);
+			gui->game->objectives.setObjectiveVisible(i);
 			break;
 		}
 	}
 }
 
-void Story::objectiveComplete(GameGUI* gui)
+void Story::objectiveComplete(StoryContext* gui)
 {
 	int n = line[++lineSelector].value;
-	for(int i=0; i<gui->game.objectives.getNumberOfObjectives(); ++i)
+	for(int i=0; i<gui->game->objectives.getNumberOfObjectives(); ++i)
 	{
-		if(gui->game.objectives.getScriptNumber(i) == n)
+		if(gui->game->objectives.getScriptNumber(i) == n)
 		{
-			gui->game.objectives.setObjectiveComplete(i);
+			gui->game->objectives.setObjectiveComplete(i);
 			break;
 		}
 	}
 }
 
-void Story::objectiveFailed(GameGUI* gui)
+void Story::objectiveFailed(StoryContext* gui)
 {
 	int n = line[++lineSelector].value;
-	for(int i=0; i<gui->game.objectives.getNumberOfObjectives(); ++i)
+	for(int i=0; i<gui->game->objectives.getNumberOfObjectives(); ++i)
 	{
-		if(gui->game.objectives.getScriptNumber(i) == n)
+		if(gui->game->objectives.getScriptNumber(i) == n)
 		{
-			gui->game.objectives.setObjectiveFailed(i);
+			gui->game->objectives.setObjectiveFailed(i);
 			break;
 		}
 	}
 }
 
-void Story::hintHidden(GameGUI* gui)
+void Story::hintHidden(StoryContext* gui)
 {
 	int n = line[++lineSelector].value;
-	for(int i=0; i<gui->game.gameHints.getNumberOfHints(); ++i)
+	for(int i=0; i<gui->game->gameHints.getNumberOfHints(); ++i)
 	{
-		if(gui->game.gameHints.getScriptNumber(i) == n)
+		if(gui->game->gameHints.getScriptNumber(i) == n)
 		{
-			gui->game.gameHints.setHintHidden(i);
+			gui->game->gameHints.setHintHidden(i);
 			break;
 		}
 	}
 }
 
-void Story::hintVisible(GameGUI* gui)
+void Story::hintVisible(StoryContext* gui)
 {
 	int n = line[++lineSelector].value;
-	for(int i=0; i<gui->game.gameHints.getNumberOfHints(); ++i)
+	for(int i=0; i<gui->game->gameHints.getNumberOfHints(); ++i)
 	{
-		if(gui->game.gameHints.getScriptNumber(i) == n)
+		if(gui->game->gameHints.getScriptNumber(i) == n)
 		{
-			gui->game.gameHints.setHintVisible(i);
+			gui->game->gameHints.setHintVisible(i);
 			break;
 		}
 	}
@@ -162,7 +163,7 @@ namespace
 	}
 }
 
-void Story::setHighlightItem(GameGUI* gui, bool doSet)
+void Story::setHighlightItem(StoryContext* gui, bool doSet)
 {
 	const std::string n = line[++lineSelector].msg;
 	const std::optional<GameGUI::HighlightObject> object = highlightObjectFromName(n);
@@ -171,67 +172,69 @@ void Story::setHighlightItem(GameGUI* gui, bool doSet)
 
 	if(doSet)
 	{
-		gui->highlights.insert(*object);
+		gui->client->setHighlight(*object, true);
 	}
 	else
 	{
-		gui->highlights.erase(*object);
+		gui->client->setHighlight(*object, false);
 	}
 }
 
-void Story::highlightItem(GameGUI* gui)
+void Story::highlightItem(StoryContext* gui)
 {
 	setHighlightItem(gui, true);
 }
 
-void Story::unhighlightItem(GameGUI* gui)
+void Story::unhighlightItem(StoryContext* gui)
 {
 	setHighlightItem(gui, false);
 }
 
-void Story::highlightUnits(GameGUI* gui)
+void Story::highlightUnits(StoryContext* gui)
 {
 	int n = line[++lineSelector].type - SGSLToken::S_WORKER;
-	gui->highlights.insert(GameGUI::HighlightWorkers+n);
+	gui->client->setHighlight(GameGUI::HighlightWorkers+n, true);
 }
 
-void Story::unhighlightUnits(GameGUI* gui)
+void Story::unhighlightUnits(StoryContext* gui)
 {
 	int n = line[++lineSelector].type - SGSLToken::S_WORKER;
-	gui->highlights.erase(GameGUI::HighlightWorkers+n);
+	gui->client->setHighlight(GameGUI::HighlightWorkers+n, false);
 }
 
-void Story::highlightBuildings(GameGUI* gui)
+void Story::highlightBuildings(StoryContext* gui)
 {
 	int n = line[++lineSelector].type - SGSLToken::S_SWARM_B;
-	gui->highlights.insert(GameGUI::HighlightBuildingOnMap+n);
+	gui->client->setHighlight(GameGUI::HighlightBuildingOnMap+n, true);
 }
 
-void Story::unhighlightBuildings(GameGUI* gui)
+void Story::unhighlightBuildings(StoryContext* gui)
 {
 	int n = line[++lineSelector].type - SGSLToken::S_SWARM_B;
-	gui->highlights.erase(GameGUI::HighlightBuildingOnMap+n);
+	gui->client->setHighlight(GameGUI::HighlightBuildingOnMap+n, false);
 }
 
-void Story::highlightBuildingOnPanel(GameGUI* gui)
+void Story::highlightBuildingOnPanel(StoryContext* gui)
 {
 	int n = line[++lineSelector].type - SGSLToken::S_SWARM_B;
-	gui->highlights.insert(GameGUI::HighlightBuildingOnPanel+n);
+	gui->client->setHighlight(GameGUI::HighlightBuildingOnPanel+n, true);
 }
 
-void Story::unhighlightBuildingOnPanel(GameGUI* gui)
+void Story::unhighlightBuildingOnPanel(StoryContext* gui)
 {
 	int n = line[++lineSelector].type - SGSLToken::S_SWARM_B;
-	gui->highlights.erase(GameGUI::HighlightBuildingOnPanel+n);
+	gui->client->setHighlight(GameGUI::HighlightBuildingOnPanel+n, false);
 }
 
-void Story::resetAI(GameGUI* gui)
+void Story::resetAI(StoryContext* gui)
 {
 	int player = line[++lineSelector].value;
 	int aitype = line[++lineSelector].value;
-	if(gui->game.players[player])
+	// Older saved scripts can contain arguments accepted before semantic validation.
+    if (player >= 0 && player < gui->game->gameHeader.getNumberOfPlayers()
+        && aitype >= 0 && aitype < AI::SIZE && gui->game->players[player])
 	{
-		gui->game.players[player]->makeItAI(static_cast<AI::ImplementationID>(aitype));
+		gui->game->players[player]->makeItAI(static_cast<AI::ImplementationID>(aitype));
 	}
 }
 
@@ -245,7 +248,7 @@ void Story::resetAI(GameGUI* gui)
 //! Flags must therefore be matched before the "<= S_MARKET_B" buildings range,
 //! otherwise flag tokens fall into the buildings branch and silently no-op
 //! (a flag name is never found in the buildings choice list).
-void Story::setGUIChoice(GameGUI* gui, SGSLToken::TokenType object, bool enable)
+void Story::setGUIChoice(StoryContext* gui, SGSLToken::TokenType object, bool enable)
 {
 	if (object <= SGSLToken::S_WARRIOR)
 	{
@@ -256,26 +259,26 @@ void Story::setGUIChoice(GameGUI* gui, SGSLToken::TokenType object, bool enable)
 		const std::string& flag = IntBuildingType::typeFromShortNumber(
 			object - SGSLToken::S_EXPLOR_F + IntBuildingType::EXPLORATION_FLAG);
 		if (enable)
-			gui->enableFlagsChoice(flag);
+			gui->client->enableFlagsChoice(flag);
 		else
-			gui->disableFlagsChoice(flag);
+			gui->client->disableFlagsChoice(flag);
 	}
 	else if (object <= SGSLToken::S_MARKET_B)
 	{
 		const std::string& building = IntBuildingType::typeFromShortNumber(
 			object - SGSLToken::S_SWARM_B);
 		if (enable)
-			gui->enableBuildingsChoice(building);
+			gui->client->enableBuildingsChoice(building);
 		else
-			gui->disableBuildingsChoice(building);
+			gui->client->disableBuildingsChoice(building);
 	}
 	else if (object <= SGSLToken::S_ALLIANCESCREEN)
 	{
 		const int element = object - SGSLToken::S_BUILDINGTAB;
 		if (enable)
-			gui->enableGUIElement(element);
+			gui->client->enableGUIElement(element);
 		else
-			gui->disableGUIElement(element);
+			gui->client->disableGUIElement(element);
 	}
 }
 

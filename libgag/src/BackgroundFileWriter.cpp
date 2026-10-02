@@ -3,8 +3,10 @@
 #include <BackgroundFileWriter.h>
 #include <FileManager.h>
 #include <Stream.h>
+#include <ChunkedStreamBackend.h>
 #include <iostream>
 #include <system_error>
+#include <ThreadSupport.h>
 
 namespace GAGCore
 {
@@ -19,36 +21,59 @@ namespace GAGCore
 
 	void BackgroundFileWriter::write(const std::string &filename, std::string contents, std::function<void(std::string &)> finish, bool gzip)
 	{
+        std::string name = filename; // allocate before replacing a queued job
 		std::unique_lock<std::mutex> lock(mutex);
 		publishMetrics();
 		if (pending)
 			++replacedWrites;
 		pendingMeasured = PerformanceTelemetry::collector().enabled;
 		queuedAt = pendingMeasured ? PerformanceTelemetry::now() : 0;
-		pendingName = filename;
+		pendingChunks.reset();
+		pendingChunkFinish = {};
+		pendingName = std::move(name);
 		pendingGzip = gzip;
 		pendingContents = std::move(contents);
 		pendingFinish = std::move(finish);
 		pending = true;
+        startWorker(lock);
+    }
+
+    void BackgroundFileWriter::write(const std::string& filename, ChunkedBuffer contents, std::function<void(ChunkedBuffer&)> finish)
+    {
+        auto snapshot = std::make_unique<ChunkedBuffer>(std::move(contents));
+        std::string name = filename;
+        std::unique_lock<std::mutex> lock(mutex);
+        publishMetrics();
+        if (pending) ++replacedWrites;
+        pendingMeasured = PerformanceTelemetry::collector().enabled;
+        queuedAt = pendingMeasured ? PerformanceTelemetry::now() : 0;
+        pendingName = std::move(name);
+        std::string().swap(pendingContents);
+        pendingFinish = {};
+        pendingChunks = std::move(snapshot);
+        pendingChunkFinish = std::move(finish);
+        pendingGzip = true;
+        pending = true;
+        startWorker(lock);
+    }
+
+    void BackgroundFileWriter::startWorker(std::unique_lock<std::mutex>& lock)
+    {
 		if (writing)
 			return; // the running worker takes the newest snapshot next
 		writing = true;
 		lock.unlock();
-#ifdef __EMSCRIPTEN__
-        drain();
-#else
-		// A previous worker cleared writing before exiting, so this join is short.
-		if (worker.joinable())
-			worker.join();
-		try
+		if constexpr (!ThreadSupport::available)
 		{
-			worker = std::thread(&BackgroundFileWriter::drain, this);
+			drain();
 		}
-		catch (const std::system_error &)
+		else
 		{
-			drain(); // no thread available: write on this one instead
+			// A previous worker cleared writing before exiting, so this join is short.
+			if (worker.joinable()) worker.join();
+			try { worker = ThreadSupport::launch([this] { drain(); }); }
+			catch (const std::exception &) { drain(); } // includes allocation failure
 		}
-#endif
 	}
 
 	void BackgroundFileWriter::waitUntilIdle()
@@ -86,6 +111,8 @@ namespace GAGCore
 			const bool gzip = pendingGzip;
 			std::string contents = std::move(pendingContents);
 			const std::function<void(std::string &)> finish = std::move(pendingFinish);
+            auto chunks = std::move(pendingChunks);
+            const auto chunkFinish = std::move(pendingChunkFinish);
 			pendingFinish = nullptr;
 			const bool measured = pendingMeasured;
 			const auto started = measured ? PerformanceTelemetry::now() : 0;
@@ -93,14 +120,26 @@ namespace GAGCore
 				queueTimes.add(started - queuedAt);
 			pending = false;
 			lock.unlock();
-			if (finish)
-				finish(contents);
-			const auto hashed = measured ? PerformanceTelemetry::now() : 0;
-			const bool written = gzip ? fileManager->writeGzipAtomic(name, contents) : fileManager->writeAtomically(name, [&contents](OutputStream &stream) {
-				stream.write(contents.data(), contents.size(), "contents");
-			});
-			if (!written)
-				std::cerr << "BackgroundFileWriter: " << name << " was not replaced; the previous file is kept" << std::endl;
+            bool written = false;
+            auto hashed = started;
+            try
+            {
+                if (chunks) { if (chunkFinish) chunkFinish(*chunks); }
+                else if (finish) finish(contents);
+                hashed = measured ? PerformanceTelemetry::now() : 0;
+                if (chunks) written = fileManager->writeGzipAtomic(name, *chunks);
+                else written = gzip ? fileManager->writeGzipAtomic(name, contents) : fileManager->writeAtomically(name, [&contents](OutputStream& stream) {
+                    stream.write(contents.data(), contents.size(), "contents");
+                });
+            }
+            catch (const std::exception& error)
+            { std::cerr << "BackgroundFileWriter: " << error.what() << std::endl; }
+            catch (...) { std::cerr << "BackgroundFileWriter: finalization failed" << std::endl; }
+            if (!written)
+                std::cerr << "BackgroundFileWriter: " << name << " was not replaced; the previous file is kept" << std::endl;
+            // Idle must mean that snapshot memory has actually been released.
+            chunks.reset();
+            std::string().swap(contents);
 			const auto finished = measured ? PerformanceTelemetry::now() : 0;
 			lock.lock();
 			if (measured)

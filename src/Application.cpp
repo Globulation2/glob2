@@ -252,7 +252,7 @@ bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event> &incomi
 		// Repeated window-close events must not bypass a pending write or its
 		// explicit failure decision. Closing a browser tab remains abrupt.
 		auto input = events;
-		std::erase_if(input, [](const SDL_Event &event) { return event.type == SDL_QUIT; });
+		std::erase_if(input, [](const SDL_Event &event) { return event.type == SDL_EVENT_QUIT; });
 		shutdownScreens.frame(tick, input);
 		return shutdownScreens.running();
 	}

@@ -43,14 +43,16 @@ GAGCore::CooperativeTask Engine::initCampaignTask(std::string filename, Campaign
 {
     initializationDiagnostic.clear();
     co_await GAGCore::CooperativeTask::checkpoint("[Loading headers]");
-    auto map = loadMapHeader(filename);
-    auto players = loadGameHeader(filename);
+    MapHeader map;
+    GameHeader players;
+    auto stream = openGameInput(filename, map, players);
+    if (!stream) co_return false;
     if (players.getNumberOfPlayers() == 0) players = prepareCampaign(map, gui.localPlayer, gui.localTeamNo);
     else { gui.localPlayer = 0; gui.localTeamNo = players.getBasePlayer(0).teamNumber; }
     if (campaign) players.getBasePlayer(0).name = campaign->getPlayerName();
     // Missions and the tutorial play as authored: never with experiments.
     if (!map.getIsSavedGame()) players.getExperiments().clear();
-    const bool loaded = co_await initGameTask(map, players);
+    const bool loaded = co_await initGameFromStreamTask(map, players, std::move(stream), false);
     if (loaded && campaign) gui.setCampaignGame(*campaign, mission);
     co_return loaded;
 }
@@ -93,12 +95,15 @@ GAGCore::CooperativeTask Engine::initCustomTask(std::string filename)
 {
     initializationDiagnostic.clear();
     co_await GAGCore::CooperativeTask::checkpoint("[Loading headers]");
-    auto map = loadMapHeader(filename);
-    auto players = loadGameHeader(filename);
+    MapHeader map;
+    GameHeader players;
+    auto stream = openGameInput(filename, map, players);
+    if (!stream) co_return false;
     for (int p = 0; p < players.getNumberOfPlayers(); ++p)
         if (players.getBasePlayer(p).type == BasePlayer::P_IP) players.getBasePlayer(p).makeItAI(AI::toggleAI);
     applyLocalExperiments(players, map);
-    co_return co_await initGameTask(map, players, true, false, true, filename);
+    if (players.getNumberOfPlayers() == 0) co_return false;
+    co_return co_await initGameFromStreamTask(map, players, std::move(stream), true);
 }
 
 
@@ -609,6 +614,23 @@ GAGCore::CooperativeTask Engine::initGameTask(MapHeader mapHeader, GameHeader ga
 	}
 	finishGameInit();
 	co_return true;
+}
+
+GAGCore::CooperativeTask Engine::initGameFromStreamTask(MapHeader map, GameHeader players, std::unique_ptr<InputStream> stream, bool saveAI)
+{
+    bool loaded = false;
+    try
+    {
+        loaded = co_await gui.loadFromStreamTask(map, players, true, false, saveAI, stream.get());
+    }
+    catch (const std::exception& error)
+    {
+        initializationDiagnostic = error.what();
+        std::cerr << "Failed to load the map: " << initializationDiagnostic << std::endl;
+    }
+    stream.reset(); // release the snapshot before replay/network setup
+    if (loaded) finishGameInit();
+    co_return loaded;
 }
 
 void Engine::finishGameInit()

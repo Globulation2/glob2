@@ -35,8 +35,6 @@ class UIScreen : public Screen
 	void paintFrame(Uint32 tick);
 
   protected:
-	// User text enlargement for this presentation.
-	virtual double textScale(const Presentation &) const { return 1; }
 	virtual void paintBackground(Canvas &canvas);
 	virtual Rect available(const Presentation &presentation, const Metrics &metrics);
 	virtual Rect place(Size measured, Rect available) { return available; }
@@ -55,7 +53,7 @@ class UIScreen : public Screen
 	Host hostValue;
 	std::unique_ptr<ToolkitTextMeasurer> measurer;
 	bool measurerTouch = false;
-	double measurerScale = 0;
+	double measurerUnit = 0;
 	Uint32 lastTick = 0;
 };
 
@@ -67,7 +65,10 @@ class UIDialog
 	virtual ~UIDialog();
 	virtual Element build(const Presentation &presentation) = 0;
 	void attach(GAGCore::DrawableSurface &surface);
+	//! Mouse coordinates must already be in the owning surface's logical space.
 	bool event(const SDL_Event &event);
+	// Gameplay has already mapped window coordinates to the logical surface.
+	bool eventLogical(const SDL_Event &event);
 	void update(Uint32 tick);
 	void draw(Uint32 tick);
 	void cancelInput();
@@ -83,7 +84,6 @@ class UIDialog
 	Rect panelBounds() const;
 
   protected:
-	virtual double textScale(const Presentation &) const { return 1; }
 	virtual bool scrim() const { return true; }
 	virtual void onEscape() {}
 	// Per-frame hook before the host updates (model polling).
@@ -107,7 +107,7 @@ class UIDialog
 	GAGCore::DrawableSurface *surface = nullptr;
 	std::unique_ptr<ToolkitTextMeasurer> measurer;
 	bool measurerTouch = false;
-	double measurerScale = 0;
+	double measurerUnit = 0;
 	bool done = false;
 	int resultValue = -1;
 };

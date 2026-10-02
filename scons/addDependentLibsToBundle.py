@@ -2,6 +2,8 @@
 
 import os, glob
 import sys
+import shutil
+import subprocess
 
 def run(command) :
     print(("\033[32m:: ", command, "\033[0m"))
@@ -48,18 +50,18 @@ def needsChange(binary, blacklist) :
 # dependencies, and records path -> real file so every reference to the same library
 # resolves to one bundled copy regardless of which form named it.
 def libDependencies(entry, resolved, visited, blacklist, searchDirs) :
-    if entry in visited : return
+    if not needsChange(entry, blacklist) or entry in visited : return
     visited.append( entry )
     real = entry
     if not os.path.isabs(entry) :
         real = resolveByBasename(entry, searchDirs)
         if real is None :
-            norun("could not resolve %s to a real file (searched Homebrew lib dirs)" % entry)
-            return
+            raise RuntimeError("Could not resolve bundled dependency: " + entry)
     if not needsChange( real, blacklist ) : return
+    real = os.path.realpath(real)
     resolved[entry] = real
-    for line in os.popen("otool -L "+real).readlines()[1:] :
-        dep = line.split()[0]
+    for line in subprocess.check_output(["otool", "-L", real], text=True).splitlines()[1:] :
+        dep = line.strip().split(" (compatibility version", 1)[0]
         if dep == real or dep == entry : continue
         libDependencies(dep, resolved, visited, blacklist, searchDirs)
 
@@ -72,34 +74,34 @@ def addDependentLibsToBundle( bundle ) :
         "@executable_path/",
     ]
     searchDirs = homebrewLibDirs()
+    prefix = os.environ.get("GLOB2_SDL3_PREFIX")
+    if prefix:
+        searchDirs.insert(0, os.path.join(os.path.abspath(prefix), "lib"))
+        import shutil
+        licenses = os.path.join(prefix, "share/licenses")
+        if os.path.isdir(licenses):
+            shutil.copytree(licenses, bundle + "/Contents/Resources/licenses", dirs_exist_ok=True)
     # entry (as it appears in some binary's load commands) -> real file to copy from
     resolved = {}
     visited = []
     for binary in binaries :
-        for line in os.popen("otool -L "+binary).readlines()[1:] :
-            libDependencies(line.split()[0], resolved, visited, doNotChange, searchDirs)
-
-    # Some bundled libraries dlopen() another one at runtime instead of declaring it
-    # as a normal linked dependency, so the otool -L walk above can never see it:
-    # Homebrew's sdl2 is sdl2-compat, a shim that wraps SDL3 and dlopen()s
-    # libSDL3.dylib (by @loader_path/@executable_path-relative name) the first time
-    # SDL initializes. Without SDL3 bundled alongside, that lookup fails and
-    # sdl2-compat aborts before glob2's own code ever runs.
-    runtimeDlopenDeps = {
-        "libSDL2-2.0.0.dylib": ["libSDL3.dylib"],
-    }
-    for real in list(resolved.values()) :
-        for dep in runtimeDlopenDeps.get(os.path.basename(real), []) :
-            libDependencies(dep, resolved, visited, doNotChange, searchDirs)
+        for line in subprocess.check_output(["otool", "-L", binary], text=True).splitlines()[1:] :
+            libDependencies(line.strip().split(" (compatibility version", 1)[0], resolved, visited, doNotChange, searchDirs)
 
     libs = sorted(set( (os.path.basename(real), real) for real in resolved.values() ))
-    run("mkdir -p %(bundle)s/Contents/Frameworks/" % locals() )
+    os.makedirs(os.path.join(bundle, "Contents", "Frameworks"), exist_ok=True)
+    names = {}
+    for lib, path in libs:
+        if lib in names and names[lib] != path:
+            raise RuntimeError("Conflicting bundled library name: " + lib)
+        names[lib] = path
 
     # copy every dependent lib into the bundle once and set its own id to its bundled path
     for lib, path in libs :
-        run("cp %(path)s %(bundle)s/Contents/Frameworks/%(lib)s" % locals() )
-        run("chmod u+w %(bundle)s/Contents/Frameworks/%(lib)s" % locals() )
-        run("install_name_tool -id @executable_path/../Frameworks/%(lib)s %(bundle)s/Contents/Frameworks/%(lib)s" % locals() )
+        destination = os.path.join(bundle, "Contents", "Frameworks", lib)
+        shutil.copy2(path, destination)
+        os.chmod(destination, os.stat(destination).st_mode | 0o200)
+        subprocess.run(["install_name_tool", "-id", "@executable_path/../Frameworks/"+lib, destination], check=True)
     # fix every reference any binary or bundled lib made to a dependency, however it
     # originally named it (absolute path, @rpath/, or @loader_path/), to point at the
     # one bundled copy
@@ -108,18 +110,18 @@ def addDependentLibsToBundle( bundle ) :
         # Only rewrite load commands actually present in this Mach-O. Applying
         # every known dependency to every file creates thousands of no-op
         # install_name_tool invocations as the Homebrew dependency tree grows.
-        entries = [line.split()[0] for line in os.popen("otool -L "+current).readlines()[1:]]
+        entries = [line.strip().split(" (compatibility version", 1)[0] for line in subprocess.check_output(["otool", "-L", current], text=True).splitlines()[1:]]
         for entry in entries :
             real = resolved.get(entry)
             if real is None : continue
             lib = os.path.basename(real)
-            run("install_name_tool -change %(entry)s @executable_path/../Frameworks/%(lib)s %(current)s" % locals() )
+            subprocess.run(["install_name_tool", "-change", entry, "@executable_path/../Frameworks/"+lib, current], check=True)
     # install_name_tool invalidates whatever signature a Homebrew-built dylib or this
     # project's own binary shipped with, and macOS kills any process holding a page
     # with an invalid signature — sign the bundled libs first, then each binary, so
     # nothing in the bundle is left with a stale signature at any point.
     for current in frameworkFiles + binaries :
-        run("codesign --force --sign - %(current)s" % locals() )
+        subprocess.run(["codesign", "--force", "--sign", "-", current], check=True)
 
 if __name__ == "__main__":
     addDependentLibsToBundle( "Annotator.app" )

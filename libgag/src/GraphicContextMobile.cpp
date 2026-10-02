@@ -14,12 +14,13 @@ namespace GAGCore {
         // whole-view scaling are already applied by the native raster target.
         if (nativeDesktop) return 1;
         float density=1;
-#ifdef __ANDROID__
-        float dpi=160;
-        if (SDL_GetDisplayDPI(SDL_GetWindowDisplayIndex(window), &dpi, nullptr, nullptr)==0 && dpi>0) density=dpi/160;
-#endif
         if (!windowW || !windowH || !sdlsurface) return 1;
         return density*uiScale / std::min(double(windowW)/sdlsurface->w, double(windowH)/sdlsurface->h);
+    }
+
+    double GraphicContext::textUnitsPerPoint() const
+    {
+        return logicalUnitsPerPoint() * (userTextScale > 0 ? userTextScale : 1);
     }
 
     bool GraphicContext::refreshPresentation()
@@ -35,17 +36,13 @@ namespace GAGCore {
         metrics.safe=mobileSafeInsets(this);
         metrics.keyboardInset=mobileKeyboardInset(this);
         InputCapabilities input;
-        for (int i=0;i<SDL_GetNumTouchDevices();++i)
-            input.touch=input.touch || SDL_GetTouchDeviceType(SDL_GetTouchDevice(i))==SDL_TOUCH_DEVICE_DIRECT;
+        int touchCount = 0;
+        SDL_TouchID *touches = SDL_GetTouchDevices(&touchCount);
+        for (int i = 0; i < touchCount; ++i)
+            input.touch = input.touch || SDL_GetTouchDeviceType(touches[i]) == SDL_TOUCH_DEVICE_DIRECT;
+        SDL_free(touches);
 #if defined(__ANDROID__) || defined(__IPHONEOS__)
         input.touch=true;input.pointer=mobilePointerAvailable();input.hover=input.pointer;
-#endif
-#ifdef __ANDROID__
-        float dpi=160;
-        if (SDL_GetDisplayDPI(SDL_GetWindowDisplayIndex(window),&dpi,nullptr,nullptr)==0 && dpi>0) {
-            const double density=dpi/160;
-            metrics.width/=density;metrics.height/=density;
-        }
 #endif
         ApplicationHost::presentationMetrics(metrics,input);
         updatePresentation(metrics,input);
@@ -72,11 +69,6 @@ namespace GAGCore {
         if (enabled) {
             if (windowW<=0 || windowH<=0) return enabled;
             float density = 1;
-#ifdef __ANDROID__
-            float dpi = 160;
-            if (SDL_GetDisplayDPI(SDL_GetWindowDisplayIndex(window), &dpi, nullptr, nullptr) == 0 && dpi > 0)
-                density = dpi / 160;
-#endif
             width = std::max(1, static_cast<int>(windowW / (density*uiScale)));
             height = std::max(1, static_cast<int>(windowH / (density*uiScale)));
             // Retain enough room for legacy controls while extending the world
@@ -87,7 +79,7 @@ namespace GAGCore {
         }
         responsiveViewport = enabled;
         if (getW() == width && getH() == height) return enabled;
-        SDL_Surface* replacement = SDL_CreateRGBSurfaceWithFormat(0, width, height, 32, sdlsurface->format->format);
+        SDL_Surface* replacement = SDL_CreateSurface(width, height, sdlsurface->format);
         if (!replacement) throw std::runtime_error(SDL_GetError());
         if (renderer) renderer->logicalSize(width, height);
         freeOwnedSurface();
@@ -99,7 +91,7 @@ namespace GAGCore {
             glMatrixMode(GL_PROJECTION); glLoadIdentity();
             glOrtho(0,width,height,0,-1,1);
             glMatrixMode(GL_MODELVIEW); glLoadIdentity();
-            SDL_GL_GetDrawableSize(window,&drawableW,&drawableH);
+            SDL_GetWindowSizeInPixels(window,&drawableW,&drawableH);
             applyGLViewport();
         }
 #endif
@@ -122,6 +114,8 @@ void GraphicContext::endSoftwareTransform()
 
 void GraphicContext::setUITransform(float scale, float x, float y, const SDL_Rect* bounds)
 {
+	if (renderBatch)
+		renderBatch->stateChange();
     const bool reset=scale==1 && x==0 && y==0 && !bounds;
     if (uiTransformActive) {
         if (renderer) renderer->transform(1,0,0,nullptr);
@@ -136,7 +130,7 @@ void GraphicContext::setUITransform(float scale, float x, float y, const SDL_Rec
     assert(!mapTransformActive);
     uiSavedClip=clipRect;
     const SDL_Rect requested=bounds ? *bounds : SDL_Rect{0,0,getW(),getH()};
-    SDL_IntersectRect(&uiSavedClip,&requested,&uiBounds);
+    SDL_GetRectIntersection(&uiSavedClip,&requested,&uiBounds);
     uiTransformScale=scale; uiTransformX=x; uiTransformY=y;
     beginSoftwareTransform();
     if (renderer) renderer->transform(scale,x,y,&uiBounds);

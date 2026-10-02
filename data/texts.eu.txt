@@ -1444,8 +1444,8 @@ Ibaiaren zabalera
 Harea pisua
 [Select a valid map.]
 Hautatu baliozko mapa bat.
-[Shared control needs a free controller slot (maximum 12).]
-Kontrol partekatuak giza edo AI jokalari batentzako leku libre bat behar du (gehienez 12).
+[Shared control needs a free controller slot (maximum %0).]
+Kontrol partekatuak giza edo AI jokalari batentzako leku libre bat behar du (gehienez %0).
 [Smoothing]
 Leuntzea
 [Standard]
@@ -1664,8 +1664,8 @@ Bistaratu Globulation 2 jokoaren kurtsorea.
 Eginda
 [settings Edit shortcut]
 Editatu teklatuko lasterbidea
-[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
-Handitu menuak, testua eta alboko barra bereizmen handiko pantailan.
+[settings Multiply the operating system display scale for menus, text and the sidebar.]
+Biderkatu sistema eragilearen pantaila-eskala menuetarako, testurako eta alboko barrarako.
 [settings Flags]
 Banderak
 [settings Full]
@@ -3082,8 +3082,6 @@ Minimapa
 Aurreratu azkar
 [Hide keyboard]
 Ezkutatu teklatua
-[Dialog text size]
-Elkarrizketako testuaren tamaina
 [Player slot]
 Jokalariaren lekua
 [Team color]
@@ -3422,8 +3420,6 @@ Irabazteko aukera: %0 · Egokitasuna: %1
 Gutxienezko maila: %0
 [Confirm %0]
 Ados: %0
-[Dialog text size %0]
-Elkarrizketako testuaren tamaina: %0%
 [%0 %1]
 %0 %1
 [resume game]

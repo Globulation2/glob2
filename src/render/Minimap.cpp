@@ -47,21 +47,25 @@ Minimap::~Minimap()
 void Minimap::setGame(Game& ngame)
 {
 	if (noX) return;
-	game = &ngame;
+	mapW = ngame.map.getW();
+	mapH = ngame.map.getH();
 }
 
 void Minimap::resizeViewport(int width)
 {
 	gameWidth = width;
-	if (!noX && game) computeMinimapPositioning();
+	if (!noX && mapW) computeMinimapPositioning();
 }
 
 
 
-void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, int viewportH)
+void Minimap::draw(const Scene &drawn, int localteam, int viewportX, int viewportY, int viewportW, int viewportH)
 {
 	PERF_SCOPE_TIME(Minimap);
-	if (noX) return;
+	if (noX || !drawn.map.getW()) return; // nothing extracted yet
+	scene = &drawn;
+	mapW = drawn.map.getW();
+	mapH = drawn.map.getH();
 
   // Compute the position of the minimap if it needs to be scaled & centered
 	computeMinimapPositioning();
@@ -96,8 +100,8 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 	// bottom side not needed, because the menu draws up to it
   
   // calculate the offset for the viewport square
-	offset_x = game->teams[localteam]->startPosX - game->map.getW() / 2;
-	offset_y = game->teams[localteam]->startPosY - game->map.getH() / 2;
+	offset_x = scene->entities.teams[localteam].startPosX - mapW / 2;
+	offset_y = scene->entities.teams[localteam].startPosY - mapH / 2;
 
 	///What row the scan-line ("radar") is to be drawn at
 	int line_row = 0;
@@ -132,8 +136,8 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 
 	// Wrapped endpoints coincide for a complete period. Use the extent to
 	// distinguish a full-width/height viewport from an empty one.
-	if (viewportW >= game->map.getW()) { startx = mini_x; endx = mini_x + mini_w - 1; }
-	if (viewportH >= game->map.getH()) { starty = mini_y; endy = mini_y + mini_h - 1; }
+	if (viewportW >= mapW) { startx = mini_x; endx = mini_x + mini_w - 1; }
+	if (viewportH >= mapH) { starty = mini_y; endy = mini_y + mini_h - 1; }
 	const int spanX = (endx - startx + mini_w) % mini_w;
 	const int spanY = (endy - starty + mini_h) % mini_h;
 	for (int i=0; i<spanX; ++i)
@@ -162,6 +166,7 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 	                               width+2, 
 	                               height+2, 
 	                               200, 200, 200);
+	scene = nullptr;
 }
 
 
@@ -185,8 +190,8 @@ void Minimap::convertToMap(int nx, int ny, int& x, int& y)
 
 	int xpos = nx - mini_x;
 	int ypos = ny - mini_y;
-	x = (offset_x + (int)((float)(game->map.getW()) / (float)(mini_w) * (float)(xpos))) % game->map.getW();
-	y = (offset_y + (int)((float)(game->map.getH()) / (float)(mini_h) * (float)(ypos))) % game->map.getH();
+	x = (offset_x + (int)((float)(mapW) / (float)(mini_w) * (float)(xpos))) % mapW;
+	y = (offset_y + (int)((float)(mapH) / (float)(mini_h) * (float)(ypos))) % mapH;
 }
 
 
@@ -196,11 +201,11 @@ void Minimap::convertToScreen(int nx, int ny, int& x, int& y)
 	if (noX) return;
 	computeMinimapPositioning();
 
-	int xpos = game->map.normalizeX(nx - offset_x);
-	int ypos = game->map.normalizeY(ny - offset_y);
+	int xpos = (nx - offset_x) & (mapW - 1); // map sizes are powers of two
+	int ypos = (ny - offset_y) & (mapH - 1);
 
-	x = mini_x + (int)((float)(xpos) * (float)(mini_w) / (float)(game->map.getW())) % (mini_w);
-	y = mini_y + (int)((float)(ypos) * (float)(mini_h) / (float)(game->map.getH())) % (mini_h);
+	x = mini_x + (int)((float)(xpos) * (float)(mini_w) / (float)(mapW)) % (mini_w);
+	y = mini_y + (int)((float)(ypos) * (float)(mini_h) / (float)(mapH)) % (mini_h);
 }
 
 
@@ -224,11 +229,11 @@ void Minimap::computeMinimapPositioning()
 	if (noX) return;
 	gameWidth = globalContainer->gfx->getW();
 	
-	if(game->map.getW() > game->map.getH())
+	if(mapW > mapH)
 	{
 	  // If the width is greater than the height, normal width but shrink the height
 		mini_w = width;
-		mini_h = (game->map.getH()*height) / game->map.getW();
+		mini_h = (mapH*height) / mapW;
 		// Once the minimap has been scaled, center it on the minimap
 		mini_offset_x = 0;
 		mini_offset_y = (height-mini_h)/2;
@@ -239,7 +244,7 @@ void Minimap::computeMinimapPositioning()
 	else
 	{
 	  // Height is greater than width
-		mini_w = (game->map.getW()*width) / game->map.getH();
+		mini_w = (mapW*width) / mapH;
 		mini_h = height;
 		// Center it..
 		mini_offset_x = (width - mini_w)/2;
@@ -300,12 +305,13 @@ void Minimap::computeColors(int row, int localTeam)
 
 	// Variables for traversing each map square within a minimap square.
 	// Using ?.16 fixed-point representation (gives a 2x speedup):
-	const int dMx = ((game->map.getW())<<FIXED_POINT_SHIFT_16) / (mini_w);
-	const int dMy = ((game->map.getH())<<FIXED_POINT_SHIFT_16) / (mini_h);
+	const int dMx = ((scene->map.getW())<<FIXED_POINT_SHIFT_16) / (mini_w);
+	const int dMy = ((scene->map.getH())<<FIXED_POINT_SHIFT_16) / (mini_h);
 	const int decSPX=offset_x<<FIXED_POINT_SHIFT_16, decSPY=offset_y<<FIXED_POINT_SHIFT_16;
 	bool useMapDiscovered = (minimapMode == HideFOW);
 
-	Uint32 visibleTeams = game->teams[localTeam]->me;
+	const SceneEntities &entities = scene->entities;
+	Uint32 visibleTeams = entities.teams[localTeam].me;
 	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 
 	const int dy = row;
@@ -323,15 +329,16 @@ void Minimap::computeColors(int row, int localTeam)
 				int minidx = minidxFP>>FIXED_POINT_SHIFT_16;
 				bool seenUnderFOW = false;
 
-				Uint16 gid=game->map.getAirUnit(minidx, minidy);
+				Uint16 gid=scene->map.getAirUnit(minidx, minidy);
 				if (gid==NOGUID)
-					gid=game->map.getGroundUnit(minidx, minidy);
+					gid=scene->map.getGroundUnit(minidx, minidy);
 				if (gid==NOGUID)
 				{
-					gid=game->map.getBuilding(minidx, minidy);
+					gid=scene->map.getBuilding(minidx, minidy);
 					if (gid!=NOGUID)
 					{
-						if (game->teams[Building::GIDtoTeam(gid)]->myBuildings[Building::GIDtoID(gid)]->seenByMask & visibleTeams)
+						const SceneBuilding *building = entities.building(gid);
+						if (building && (building->seenByMask & visibleTeams))
 						{
 							seenUnderFOW = true;
 						}
@@ -340,11 +347,11 @@ void Minimap::computeColors(int row, int localTeam)
 				if (gid!=NOGUID)
 				{
 					int teamId=gid/Unit::MAX_COUNT;
-					if (useMapDiscovered || game->map.isFOWDiscovered(minidx, minidy, visibleTeams))
+					if (useMapDiscovered || scene->map.isFOWDiscovered(minidx, minidy, visibleTeams))
 					{
 						if (teamId==localTeam)
 							UnitOrBuildingIndex = 0;
-						else if ((game->teams[localTeam]->allies) & visibleTeams)
+						else if ((entities.teams[localTeam].allies) & visibleTeams)
 							UnitOrBuildingIndex = 1;
 						else
 							UnitOrBuildingIndex = 2;
@@ -354,7 +361,7 @@ void Minimap::computeColors(int row, int localTeam)
 					{
 						if (teamId==localTeam)
 							UnitOrBuildingIndex = 3;
-						else if ((game->teams[localTeam]->allies) & visibleTeams)
+						else if ((entities.teams[localTeam].allies) & visibleTeams)
 							UnitOrBuildingIndex = 4;
 						else
 							UnitOrBuildingIndex = 5;
@@ -362,23 +369,23 @@ void Minimap::computeColors(int row, int localTeam)
 					}
 				}
 				
-				if (useMapDiscovered || game->map.isMapDiscovered(minidx, minidy, visibleTeams))
+				if (useMapDiscovered || scene->map.isMapDiscovered(minidx, minidy, visibleTeams))
 				{
 					// get color to add
 					int pcolIndex;
-					const auto& r = game->map.getResource(minidx, minidy);
+					const auto& r = scene->map.getResource(minidx, minidy);
 					if (r.type!=NO_RES_TYPE)
 					{
 						pcolIndex=r.type + 3;
 					}
 					else
 					{
-						pcolIndex=game->map.getUMTerrain(minidx,minidy);
+						pcolIndex=scene->map.getUMTerrain(minidx,minidy);
 					}
 					
 					// get weight to add
 					int pcolAddValue;
-					if (useMapDiscovered || game->map.isFOWDiscovered(minidx, minidy, visibleTeams))
+					if (useMapDiscovered || scene->map.isFOWDiscovered(minidx, minidy, visibleTeams))
 						pcolAddValue=5;
 					else
 						pcolAddValue=3;

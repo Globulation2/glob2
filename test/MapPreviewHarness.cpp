@@ -178,7 +178,7 @@ struct MapPreviewHarness
 	}
 	static void network()
 	{
-		REQUIRE(SDLNet_Init() == 0);
+		REQUIRE(NET_Init());
 		YOGClient client;
 		YOGClientDownloadableMapList list(&client);
 		MapHeader header;
@@ -239,6 +239,7 @@ struct MapPreviewHarness
 			gfx->setClipRect();
 			gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), Color(232, 237, 218));
 			preview->paint(gfx);
+			gfx->nextFrame();
 		};
 		auto settle = [&]
 		{
@@ -261,19 +262,24 @@ struct MapPreviewHarness
 		auto area = preview->mapArea();
 		auto pixel = [&](int x, int y)
 		{
-			auto surface = globalContainer->gfx->getSDLSurface();
+			auto surface = globalContainer->gfx->completedFrame();
+			// Completed software frames use backing pixels on high-DPI displays.
+			x = x * surface->w / globalContainer->gfx->getW();
+			y = y * surface->h / globalContainer->gfx->getH();
 			Uint32 value = 0;
 			std::memcpy(&value,
 						static_cast<Uint8 *>(surface->pixels) + y * surface->pitch +
-							x * surface->format->BytesPerPixel,
-						surface->format->BytesPerPixel);
+							x * SDL_BYTESPERPIXEL(surface->format),
+						SDL_BYTESPERPIXEL(surface->format));
 			Uint8 r, g, b;
-			SDL_GetRGB(value, surface->format, &r, &g, &b);
+			SDL_GetRGB(value, SDL_GetPixelFormatDetails(surface->format), SDL_GetSurfacePalette(surface), &r, &g, &b);
 			return std::array<int, 3>{r, g, b};
 		};
 		paintAll();
 		REQUIRE((preview->transitioning && !preview->transitionPending));
-		REQUIRE((pixel(area.x + area.w / 4, area.y + area.h / 4) == std::array<int, 3>{211, 223, 197}));
+		const auto initialPixel=pixel(area.x + area.w / 4, area.y + area.h / 4);
+		INFO("initial pixel " << initialPixel[0] << "," << initialPixel[1] << "," << initialPixel[2]);
+		REQUIRE((initialPixel == std::array<int, 3>{211, 223, 197}));
 		globalContainer->gfx->printScreen(output + "/fade-in-start.bmp");
 		preview->transitionStarted = SDL_GetTicks() - MapPreview::TransitionDurationMs / 2;
 		paintAll();
@@ -291,13 +297,13 @@ struct MapPreviewHarness
 		REQUIRE((green == std::array<int, 3>{0, 90, 0}));
 		REQUIRE((blue == std::array<int, 3>{0, 40, 120}));
 		SDL_Event event{};
-		event.type = SDL_MOUSEBUTTONDOWN;
+		event.type = SDL_EVENT_MOUSE_BUTTON_DOWN;
 		event.button.button = SDL_BUTTON_LEFT;
 		event.button.x = area.x + 50;
 		event.button.y = area.y + 50;
 		preview->handlePreviewEvent(&event);
 		event = {};
-		event.type = SDL_MOUSEMOTION;
+		event.type = SDL_EVENT_MOUSE_MOTION;
 		event.motion.state = SDL_BUTTON_LMASK;
 		event.motion.x = area.x + 50 + area.w / 2;
 		event.motion.y = area.y + 50 + area.h / 2;
@@ -307,7 +313,7 @@ struct MapPreviewHarness
 		REQUIRE(pixel(area.x + 3 * area.w / 4, area.y + area.h / 4) == green);
 		REQUIRE(preview->dragging);
 		event = {};
-		event.type = SDL_MOUSEBUTTONUP;
+		event.type = SDL_EVENT_MOUSE_BUTTON_UP;
 		event.button.button = SDL_BUTTON_LEFT;
 		preview->handlePreviewEvent(&event);
 		REQUIRE(!preview->dragging);
@@ -322,7 +328,7 @@ struct MapPreviewHarness
 		};
 		const auto anchor = pointUnderMouse();
 		event = {};
-		event.type = SDL_MOUSEWHEEL;
+		event.type = SDL_EVENT_MOUSE_WHEEL;
 		event.wheel.y = 2;
 		preview->handlePreviewEvent(&event);
 		auto zoomedAnchor = pointUnderMouse();
@@ -339,7 +345,7 @@ struct MapPreviewHarness
 		preview->setMapThumbnail(image);
 		REQUIRE((preview->view.offsetX == previous && preview->zoom > 1));
 		event = {};
-		event.type = SDL_MOUSEBUTTONDOWN;
+		event.type = SDL_EVENT_MOUSE_BUTTON_DOWN;
 		event.button.button = SDL_BUTTON_RIGHT;
 		event.button.x = area.x + 50;
 		event.button.y = area.y + 50;
@@ -424,13 +430,13 @@ struct MapPreviewHarness
 		globalContainer->gfx->printScreen(output + "/custom-colonies.bmp");
 		area = lobby->mapArea();
 		event = {};
-		event.type = SDL_MOUSEBUTTONDOWN;
+		event.type = SDL_EVENT_MOUSE_BUTTON_DOWN;
 		event.button.button = SDL_BUTTON_LEFT;
 		event.button.x = area.x + area.w / 2;
 		event.button.y = area.y + area.h / 2;
 		custom.handleExecutionEvent(event);
 		event = {};
-		event.type = SDL_MOUSEMOTION;
+		event.type = SDL_EVENT_MOUSE_MOTION;
 		event.motion.state = SDL_BUTTON_LMASK;
 		event.motion.x = area.x + area.w;
 		event.motion.y = area.y + area.h;
@@ -438,7 +444,7 @@ struct MapPreviewHarness
 		custom.paintFrame(SDL_GetTicks());
 		globalContainer->gfx->printScreen(output + "/custom-colonies-wrapped.bmp");
 		event = {};
-		event.type = SDL_MOUSEBUTTONUP;
+		event.type = SDL_EVENT_MOUSE_BUTTON_UP;
 		event.button.button = SDL_BUTTON_LEFT;
 		custom.handleExecutionEvent(event);
 		custom.setup.random = true;
@@ -459,13 +465,13 @@ struct MapPreviewHarness
 		globalContainer->gfx->printScreen(output + "/custom-wide-colonies.bmp");
 		area = lobby->mapArea();
 		event = {};
-		event.type = SDL_MOUSEBUTTONDOWN;
+		event.type = SDL_EVENT_MOUSE_BUTTON_DOWN;
 		event.button.button = SDL_BUTTON_LEFT;
 		event.button.x = area.x + area.w / 2;
 		event.button.y = area.y + area.h / 2;
 		custom.handleExecutionEvent(event);
 		event = {};
-		event.type = SDL_MOUSEMOTION;
+		event.type = SDL_EVENT_MOUSE_MOTION;
 		event.motion.state = SDL_BUTTON_LMASK;
 		event.motion.x = area.x + area.w;
 		event.motion.y = area.y + area.h;
@@ -473,8 +479,8 @@ struct MapPreviewHarness
 		custom.paintFrame(SDL_GetTicks());
 		globalContainer->gfx->printScreen(output + "/custom-wide-wrapped.bmp");
 		event = {};
-		event.type = SDL_WINDOWEVENT;
-		event.window.event = SDL_WINDOWEVENT_FOCUS_LOST;
+		event.type = SDL_EVENT_WINDOW_RESIZED;
+		event.type = SDL_EVENT_WINDOW_FOCUS_LOST;
 		custom.handleExecutionEvent(event);
 		REQUIRE(!lobby->dragging);
 		const auto retained = lobby->thumbnail.pixels();

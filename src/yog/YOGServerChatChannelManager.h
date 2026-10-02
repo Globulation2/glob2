@@ -4,7 +4,7 @@
 #pragma once
 
 #include <map>
-#include "SDL_net.h"
+#include <SDL3_net/SDL_net.h>
 #include <memory>
 
 class YOGServerChatChannel;

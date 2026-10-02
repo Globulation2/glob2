@@ -1426,8 +1426,8 @@ River width
 Sand weight
 [Select a valid map.]
 Select a valid map.
-[Shared control needs a free controller slot (maximum 12).]
-Shared control needs a free controller slot (maximum 12).
+[Shared control needs a free controller slot (maximum %0).]
+Shared control needs a free controller slot (maximum %0).
 [Smoothing]
 Smoothing
 [Standard]
@@ -1646,8 +1646,8 @@ Display the Globulation 2 cursor.
 Done
 [settings Edit shortcut]
 Edit shortcut
-[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
-Enlarge menus, text and the sidebar on a high-resolution screen.
+[settings Multiply the operating system display scale for menus, text and the sidebar.]
+Multiply the operating system display scale for menus, text and the sidebar.
 [settings Flags]
 Flags
 [settings Full]
@@ -3070,8 +3070,6 @@ Minimap
 Fast forward
 [Hide keyboard]
 Hide keyboard
-[Dialog text size]
-Dialog text size
 [Player slot]
 Player slot
 [Team color]
@@ -3410,8 +3408,6 @@ Win chance: %0 · Fitness: %1
 Minimum required level: %0
 [Confirm %0]
 Ok: %0
-[Dialog text size %0]
-Dialog text size: %0%
 [%0 %1]
 %0 %1
 [resume game]

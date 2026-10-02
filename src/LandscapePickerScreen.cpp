@@ -351,18 +351,18 @@ void LandscapePickerScreen::onEvent(const SDL_Event &event)
 {
 	switch (event.type)
 	{
-	case SDL_MOUSEMOTION:
-	case SDL_MOUSEWHEEL:
-	case SDL_MOUSEBUTTONDOWN:
-	case SDL_KEYDOWN:
-	case SDL_FINGERDOWN:
-	case SDL_FINGERMOTION:
+	case SDL_EVENT_MOUSE_MOTION:
+	case SDL_EVENT_MOUSE_WHEEL:
+	case SDL_EVENT_MOUSE_BUTTON_DOWN:
+	case SDL_EVENT_KEY_DOWN:
+	case SDL_EVENT_FINGER_DOWN:
+	case SDL_EVENT_FINGER_MOTION:
 		nextPreviewTick = SDL_GetTicks() + 150;
 		break;
 	default:
 		break;
 	}
-	if (event.type == SDL_WINDOWEVENT && (event.window.event == SDL_WINDOWEVENT_FOCUS_LOST || event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED))
+	if ((event.type >= SDL_EVENT_WINDOW_FIRST && event.type <= SDL_EVENT_WINDOW_LAST) && (event.type == SDL_EVENT_WINDOW_FOCUS_LOST || event.type == SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED))
 	{
 		layoutReady = false;
 		for (auto &tile : tiles)
@@ -374,7 +374,7 @@ void LandscapePickerScreen::onEvent(const SDL_Event &event)
 // Arrow keys move the selection through the visible grid while a card (or nothing) has focus.
 bool LandscapePickerScreen::interceptEvent(const SDL_Event &event)
 {
-	if (event.type != SDL_KEYDOWN || host().popupOpen() || !host().editing().empty())
+	if (event.type != SDL_EVENT_KEY_DOWN || host().popupOpen() || !host().editing().empty())
 		return false;
 	// Only a card or its preview image (or nothing) leaves the arrows to the grid.
 	const auto &focused = host().focused();
@@ -382,7 +382,7 @@ bool LandscapePickerScreen::interceptEvent(const SDL_Event &event)
 						(focused.rfind("landscape/", 0) == 0 && focused.size() > 10 && std::isdigit(static_cast<unsigned char>(focused[10])));
 	if (!focused.empty() && !onTile)
 		return false;
-	const auto key = event.key.keysym.sym;
+	const auto key = event.key.key;
 	const int step = key == SDLK_LEFT ? -1 : key == SDLK_RIGHT ? 1 : key == SDLK_UP ? -columns : key == SDLK_DOWN ? columns : 0;
 	if (step != 0 && !visible.empty())
 	{
@@ -416,7 +416,9 @@ Element LandscapePickerScreen::tile(int i, const Presentation &p, bool compact)
 		box.color = theme().palette.disabled;
 		box.shadow = false;
 		box.padding = p.pt(12);
-		picture = fe::sized({image, image}, fe::card(fe::paragraph(incompatible[std::size_t(i)], {fe::FontRole::Support, true}), box));
+		// At least the preview's square, taller when the explanation needs it.
+		picture = fe::constrained({image, image, image, fe::Constraints::Unbounded},
+								  fe::card(fe::paragraph(incompatible[std::size_t(i)], {fe::FontRole::Support, true}), box));
 	}
 	else if (tileState.widget && tileState.widget->isThumbnailLoaded())
 	{
@@ -436,21 +438,21 @@ Element LandscapePickerScreen::tile(int i, const Presentation &p, bool compact)
 					reveal = false;
 					invalidate();
 				}
-				event.type = SDL_MOUSEBUTTONDOWN;
+				event.type = SDL_EVENT_MOUSE_BUTTON_DOWN;
 				event.button.button = SDL_BUTTON_LEFT;
 				event.button.x = at.x;
 				event.button.y = at.y;
 			}
 			else if (phase == fe::PointerPhase::Move)
 			{
-				event.type = SDL_MOUSEMOTION;
+				event.type = SDL_EVENT_MOUSE_MOTION;
 				event.motion.state = SDL_BUTTON_LMASK;
 				event.motion.x = at.x;
 				event.motion.y = at.y;
 			}
 			else if (phase == fe::PointerPhase::Up)
 			{
-				event.type = SDL_MOUSEBUTTONUP;
+				event.type = SDL_EVENT_MOUSE_BUTTON_UP;
 				event.button.button = SDL_BUTTON_LEFT;
 				event.button.x = at.x;
 				event.button.y = at.y;
@@ -466,7 +468,8 @@ Element LandscapePickerScreen::tile(int i, const Presentation &p, bool compact)
 							 [widget](fe::Canvas &c, fe::Rect r, const fe::Frame &)
 							 {
 								 widget->setScreenRectangle(r.x, r.y, r.w, r.h);
-								 widget->paint(c.surface());
+								 if (auto *surface = c.surface()) // null on a recording canvas
+									 widget->paint(surface);
 							 },
 							 options);
 		note = std::to_string(widget->getLastWidth()) + " x " + std::to_string(widget->getLastHeight()) + "  /  " +

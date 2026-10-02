@@ -75,10 +75,10 @@ void print(Value* value)
 	cout << endl;
 }
 
-Usl::Usl()
+Usl::Usl(bool allowFileLoading)
 {
 	prototype = std::make_unique<ScopePrototype>(&heap, nullptr);
-	prototype->addMethod(new Load());
+	if (allowFileLoading) prototype->addMethod(new Load());
 	prototype->addMethod(new Yield());
 	prototype->addMethod(new NativeFunction<void(Value*)>("print", print));
 
@@ -160,6 +160,20 @@ Thread* Usl::createThread(Scope* scope)
 void Usl::setConstant(const std::string& name, Value* value)
 {
 	ScopePrototype* prototype = root->scopePrototype();
+	const auto existing = find(prototype->locals.begin(), prototype->locals.end(), name);
+	if (existing != prototype->locals.end())
+	{
+		const size_t index = existing - prototype->locals.begin();
+		root->locals[index] = value;
+		// includeScript installs selection getters referring to its original scope.
+		// Replacing a value must also redirect those getters to the root slot.
+		auto* getter = new ThunkPrototype(&heap, prototype);
+		getter->body.push_back(new ThunkCode());
+		getter->body.push_back(new ParentCode());
+		getter->body.push_back(new ValRefCode(index));
+		prototype->members[name] = getter;
+		return;
+	}
 	size_t index = prototype->locals.size();
 
 	prototype->locals.push_back(name);
@@ -190,7 +204,10 @@ Scope* Usl::compile(const std::string& name, std::istream& stream)
 	string source;
 	char c;
 	while (stream.get(c))
+	{
+		if (source.size() >= 1048576) throw Exception(Position(name, 1, 1), "Script source limit exceeded");
 		source += c;
+	}
 	
 	Parser parser(name, source.c_str(), &heap);
 	#ifdef DEBUG_USL

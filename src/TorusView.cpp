@@ -103,9 +103,9 @@ bool TorusView::event(const SDL_Event &e, int width)
         return false;
     // The middle button pans through the ordinary 2D path in every mode, so the
     // ring moves at the speed the flat map does; only the wheel is handled here.
-    if (target && e.type == SDL_MOUSEWHEEL)
+    if (target && e.type == SDL_EVENT_MOUSE_WHEEL)
     {
-        int x, y;
+        float x, y;
         SDL_GetMouseState(&x, &y);
         if (x >= 0 && x < width && y >= 16 && y < globalContainer->gfx->getH())
         {

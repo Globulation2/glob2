@@ -1430,8 +1430,8 @@ Chiều rộng sông
 Trọng số cát
 [Select a valid map.]
 Chọn bản đồ hợp lệ.
-[Shared control needs a free controller slot (maximum 12).]
-Điều khiển chung cần một chỗ điều khiển còn trống (tối đa 12).
+[Shared control needs a free controller slot (maximum %0).]
+Điều khiển chung cần một chỗ điều khiển còn trống (tối đa %0).
 [Smoothing]
 Làm mịn
 [Standard]
@@ -1650,8 +1650,8 @@ Hiển thị con trỏ Globulation 2.
 Xong
 [settings Edit shortcut]
 Chỉnh sửa phím tắt
-[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
-Phóng to menu, văn bản và thanh bên trên màn hình độ phân giải cao.
+[settings Multiply the operating system display scale for menus, text and the sidebar.]
+Nhân tỷ lệ hiển thị của hệ điều hành cho menu, văn bản và thanh bên.
 [settings Flags]
 Cờ
 [settings Full]
@@ -3068,8 +3068,6 @@ Bản đồ nhỏ
 Tua nhanh
 [Hide keyboard]
 Ẩn bàn phím
-[Dialog text size]
-Cỡ chữ hộp thoại
 [Player slot]
 Vị trí người chơi
 [Team color]
@@ -3408,8 +3406,6 @@ Khả năng thắng: %0 · Sức mạnh: %1
 Cấp tối thiểu: %0
 [Confirm %0]
 Đồng ý: %0
-[Dialog text size %0]
-Cỡ chữ hộp thoại: %0%
 [%0 %1]
 %0 %1
 [resume game]

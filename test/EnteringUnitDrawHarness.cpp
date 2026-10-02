@@ -8,6 +8,7 @@
 // in Game::drawUnit reads `displacement`: at equal delta the two states are the
 // same picture, and any difference means the sprite is anchored on the wrong
 // tile — the "entering a building jumps back one square" regression.
+#include "scene/SceneMap.h"
 #include "EngineFixtures.h"
 #include "GlobalContainer.h"
 #include "Game.h"
@@ -15,7 +16,7 @@
 #include "Building.h"
 #include "IntBuildingType.h"
 #include "GraphicContext.h"
-#include <SDL_image.h>
+#include <SDL3_image/SDL_image.h>
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
 #else
@@ -80,12 +81,11 @@ namespace
 		for (int y = 0; y < frame.h; ++y)
 			std::copy_n(frame.data.data() + y * frame.w * 4, frame.w * 4,
 				flipped.data() + (frame.h - 1 - y) * frame.w * 4);
-		auto* surface = SDL_CreateRGBSurfaceWithFormatFrom(flipped.data(), frame.w, frame.h, 32,
-			frame.w * 4, SDL_PIXELFORMAT_RGBA32);
+		auto* surface = SDL_CreateSurfaceFrom(frame.w, frame.h, SDL_PIXELFORMAT_RGBA32, flipped.data(), frame.w * 4);
 		require(surface != nullptr, "wrap the framebuffer for PNG output");
-		require(IMG_SavePNG(surface, (std::string(outputDir) + "/" + name + ".png").c_str()) == 0,
+		require(IMG_SavePNG(surface, (std::string(outputDir) + "/" + name + ".png").c_str()),
 			"write the PNG");
-		SDL_FreeSurface(surface);
+		SDL_DestroySurface(surface);
 	}
 
 	//! Horizontal extent of everything drawn on the cleared background, in gfx
@@ -115,7 +115,7 @@ class EnteringUnitDrawHarness
 		auto* gfx = globalContainer->gfx;
 		gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), 0, 0, 0);
 		game.drawMapGroundUnits(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H,
-			0, 0, 0, Game::DRAW_WHOLE_MAP, view);
+			0, 0, 0, Game::DRAW_WHOLE_MAP, view, glob2test::sceneOf(game, view));
 		return grab();
 	}
 
@@ -125,16 +125,16 @@ class EnteringUnitDrawHarness
 	static void capturePresentation(Game& game, Unit* unit, Game::ViewState& view)
 	{
 		auto* gfx = globalContainer->gfx;
-		std::set<Building*> visible;
+		std::set<Uint16> visible;
 		for (int delta : DELTAS)
 		{
 			unit->delta = delta;
 			gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), 0, 0, 0);
-			game.drawMapTerrain(0, 0, DRAW_W >> 5, DRAW_H >> 5, 0, 0, 0, Game::DRAW_WHOLE_MAP);
+			{ SceneMap layers; layers.extract(game.map); game.drawMapTerrain(0, 0, DRAW_W >> 5, DRAW_H >> 5, 0, 0, 0, Game::DRAW_WHOLE_MAP, layers); }
 			game.drawMapGroundUnits(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H,
-				0, 0, 0, Game::DRAW_WHOLE_MAP, view);
+				0, 0, 0, Game::DRAW_WHOLE_MAP, view, glob2test::sceneOf(game, view));
 			game.drawMapGroundBuildings(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H,
-				0, 0, 0, Game::DRAW_WHOLE_MAP, &visible, nullptr);
+				0, 0, 0, Game::DRAW_WHOLE_MAP, &visible, nullptr, glob2test::sceneOf(game));
 			save(grab(), "scene-delta" + std::to_string(delta));
 		}
 	}

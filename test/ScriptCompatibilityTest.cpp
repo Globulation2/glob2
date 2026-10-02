@@ -1,3 +1,4 @@
+#include <Environment.h>
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
 #include "FileFormatVersions.h"
@@ -51,10 +52,10 @@ TEST_CASE("JavaScript test environment scopes restore SDL and CRT readers" *
 	// Restore an absent variable through SDL's own environment, including
 	// Windows and SDL2-compat. An empty cached value is also inactive.
 	const auto absent = "GLOB2_TEST_SCOPED_ENV_" + original.filename().string();
-	REQUIRE(SDL_getenv(absent.c_str()) == nullptr);
+	REQUIRE(SDL_getenv_unsafe(absent.c_str()) == nullptr);
 	REQUIRE(!currentCRT(absent.c_str()));
 	const auto currentValue = [&] {
-		const char *value = SDL_getenv(absent.c_str());
+		const char *value = SDL_getenv_unsafe(absent.c_str());
 		REQUIRE(value != nullptr);
 		return std::string(value);
 	};
@@ -70,14 +71,14 @@ TEST_CASE("JavaScript test environment scopes restore SDL and CRT readers" *
 		CHECK(currentValue() == "outer");
 		CHECK(currentCRT(absent.c_str()) == "outer");
 	}
-	const char *restored = SDL_getenv(absent.c_str());
+	const char *restored = SDL_getenv_unsafe(absent.c_str());
 	CHECK((!restored || !*restored));
 	CHECK(!currentCRT(absent.c_str()));
 #ifdef _WIN32
 	// A previous SDL-only write can leave the process and CRT views different.
 	// Preserve both, rather than replacing one original with the other.
 	REQUIRE(_putenv_s(absent.c_str(), "crt-original") == 0);
-	REQUIRE(SDL_setenv(absent.c_str(), "sdl-original", 1) == 0);
+	REQUIRE(GAGCore::setProcessEnvironment(absent.c_str(), "sdl-original", 1) == 0);
 	{
 		glob2test::ScopedEnvironment value(absent.c_str(), "temporary");
 		CHECK(currentValue() == "temporary");
@@ -86,18 +87,18 @@ TEST_CASE("JavaScript test environment scopes restore SDL and CRT readers" *
 	CHECK(currentValue() == "sdl-original");
 	CHECK(currentCRT(absent.c_str()) == "crt-original");
 	REQUIRE(_putenv_s(absent.c_str(), "") == 0);
-	REQUIRE(SDL_setenv(absent.c_str(), "", 1) == 0);
+	REQUIRE(GAGCore::setProcessEnvironment(absent.c_str(), "", 1) == 0);
 #endif
 }
 
-TEST_CASE("JavaScript pass retains network protocol acceptance boundaries" *
+TEST_CASE("Current clients enforce network protocol acceptance boundaries" *
 		  doctest::test_suite("JavaScriptCompatibility"))
 {
-	CHECK(NET_PROTOCOL_VERSION == 49);
-	CHECK(YOG_MIN_CLIENT_NET_PROTOCOL_VERSION == 49);
+	CHECK(NET_PROTOCOL_VERSION == 50);
+	CHECK(YOG_MIN_CLIENT_NET_PROTOCOL_VERSION == 50);
 	// Exercise the production client handshake branch; transport remains
 	// disconnected, and only the server-information message is injected.
-	for (Uint16 version : {48, 49, 50})
+	for (Uint16 version : {49, 50, 51})
 	{
 		CAPTURE(version);
 		YOGClient client;
@@ -107,7 +108,7 @@ TEST_CASE("JavaScript pass retains network protocol acceptance boundaries" *
 		info->netVersion = version;
 		client.nc.received.push(info);
 		client.update();
-		if (version == 49)
+		if (version == NET_PROTOCOL_VERSION)
 		{
 			CHECK(client.getConnectionState() == YOGClient::WaitingForLoginInformation);
 			CHECK(client.getPlayerID() == 19);
@@ -157,21 +158,20 @@ TEST_CASE("JavaScript current text saves validate unused generation counters" *
 	CHECK_THROWS_AS(load(missing), std::runtime_error);
 }
 
-TEST_CASE("JavaScript pass retains released replay and acceptance boundaries" *
+TEST_CASE("Team-capacity change rejects released replays and enforces acceptance boundaries" *
 		  doctest::test_suite("JavaScriptCompatibility"))
 {
 	glob2test::GlobalsOptions options;
 	options.loadStrings = true;
 	glob2test::HeadlessGlobals globals(options);
-	CHECK(REPLAY_MINIMUM_VERSION_MINOR == 123);
-	CHECK(VERSION_MINOR == 125);
+	CHECK(REPLAY_MINIMUM_VERSION_MINOR == 127);
+	CHECK(VERSION_MINOR == 127);
 	CHECK(FILE_FORMAT_VERSION_JAVASCRIPT == 125);
 	CHECK(FILE_FORMAT_VERSION_EXPERIMENTS == 124);
 	ReplayReader released;
-	REQUIRE(
+	CHECK_FALSE(
 		released.loadReplay(glob2test::inflated("javascript/released-v123.replay.gz").string()));
-	CHECK(released.getNumStepsTotal() == 1500);
-	for (Uint16 version : {122, 123, 124, 125, 126})
+	for (Uint16 version : {122, 123, 124, 125, 126, 127, 128})
 	{
 		CAPTURE(version);
 		auto *memory = new GAGCore::MemoryStreamBackend;
@@ -185,7 +185,7 @@ TEST_CASE("JavaScript pass retains released replay and acceptance boundaries" *
 			new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size()));
 		input->seekFromStart(0);
 		ReplayReader reader;
-		CHECK(reader.loadReplay(input, false) == (version >= 123 && version <= 125));
+		CHECK(reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR && version <= VERSION_MINOR));
 	}
 }
 
@@ -213,7 +213,7 @@ TEST_CASE("JavaScript pass assigns valid identities to released saves" *
 					++entities;
 					CHECK(unit->scriptIdentity > 0);
 					CHECK(unit->scriptIdentity ==
-						  gui.game.scriptGenerations[team * 1024 + Unit::GIDtoID(unit->gid)]);
+						  gui.game.scriptGenerations[Game::scriptGenerationIndex(false, team, Unit::GIDtoID(unit->gid))]);
 				}
 			for (int slot = 0; slot < Building::MAX_COUNT; ++slot)
 				if (auto *building = gui.game.teams[team]->myBuildings[slot])
@@ -221,8 +221,7 @@ TEST_CASE("JavaScript pass assigns valid identities to released saves" *
 					++entities;
 					CHECK(building->scriptIdentity > 0);
 					CHECK(building->scriptIdentity ==
-						  gui.game.scriptGenerations[Team::MAX_COUNT * 1024 + team * 1024 +
-													 Building::GIDtoID(building->gid)]);
+						  gui.game.scriptGenerations[Game::scriptGenerationIndex(true, team, Building::GIDtoID(building->gid))]);
 				}
 		}
 		CHECK(entities > 0);
@@ -251,7 +250,7 @@ TEST_CASE("JavaScript upgrade retains genuine master124 experiments and continua
 				{
 					++units;
 					CHECK(unit->scriptIdentity > 0);
-					CHECK(unit->scriptIdentity == game.scriptGenerations[team * 1024 + slot]);
+					CHECK(unit->scriptIdentity == game.scriptGenerations[Game::scriptGenerationIndex(false, team, slot)]);
 				}
 			for (int slot = 0; slot < Building::MAX_COUNT; ++slot)
 				if (auto *building = game.teams[team]->myBuildings[slot])
@@ -259,7 +258,7 @@ TEST_CASE("JavaScript upgrade retains genuine master124 experiments and continua
 					++buildings;
 					CHECK(building->scriptIdentity > 0);
 					CHECK(building->scriptIdentity ==
-						game.scriptGenerations[Team::MAX_COUNT * 1024 + team * 1024 + slot]);
+						game.scriptGenerations[Game::scriptGenerationIndex(true, team, slot)]);
 				}
 		}
 		CHECK(units > 0);
@@ -284,7 +283,7 @@ TEST_CASE("JavaScript upgrade retains genuine master124 experiments and continua
 			game.checkSum(&world, &buildings, &units);
 			REQUIRE(!world.empty());
 			// MapHeader includes the on-disk format in its checksum. Its sole
-			// field here is excluded for the 124 -> 125 comparison; retain all
+			// field here is excluded for the 124 -> current comparison; retain all
 			// remaining world, team, player, map and entity checksum fields.
 			world.erase(world.begin());
 			records << game.stepCounter;
@@ -309,11 +308,11 @@ TEST_CASE("JavaScript upgrade retains genuine master124 experiments and continua
 	upgradedInput.seekFromStart(0);
 	GameGUI upgraded;
 	REQUIRE(upgraded.game.load(&upgradedInput));
-	CHECK(upgraded.game.mapHeader.getVersionMinor() == FILE_FORMAT_VERSION_JAVASCRIPT);
+	CHECK(upgraded.game.mapHeader.getVersionMinor() == VERSION_MINOR);
 	CHECK(upgraded.game.gameHeader.getExperiments() == legacy.game.gameHeader.getExperiments());
 	CHECK(upgraded.game.scriptGenerations == identities);
 	checkIdentities(upgraded.game);
-	const auto upgradedTrace = continueGame(upgraded.game, "master125-world-fields.value");
+	const auto upgradedTrace = continueGame(upgraded.game, "upgraded-world-fields.value");
 	CHECK(upgradedTrace == legacyTrace);
 	CHECK(upgraded.game.scriptGenerations == legacy.game.scriptGenerations);
 }

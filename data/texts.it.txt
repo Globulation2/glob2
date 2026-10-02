@@ -1496,8 +1496,8 @@ Larghezza del fiume
 Peso della sabbia
 [Select a valid map.]
 Seleziona una mappa valida.
-[Shared control needs a free controller slot (maximum 12).]
-Il controllo condiviso richiede un posto libero per un giocatore umano o IA (massimo 12).
+[Shared control needs a free controller slot (maximum %0).]
+Il controllo condiviso richiede un posto libero per un giocatore umano o IA (massimo %0).
 [Smoothing]
 Smussatura
 [Standard]
@@ -1716,8 +1716,8 @@ Mostra il cursore di Globulation 2.
 Fatto
 [settings Edit shortcut]
 Modifica la scorciatoia da tastiera
-[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
-Ingrandisce menu, testo e barra laterale su uno schermo ad alta risoluzione.
+[settings Multiply the operating system display scale for menus, text and the sidebar.]
+Moltiplica la scala dello schermo del sistema operativo per menu, testo e barra laterale.
 [settings Flags]
 Bandiere
 [settings Full]
@@ -3134,8 +3134,6 @@ Minimappa
 Avanti veloce
 [Hide keyboard]
 Nascondi tastiera
-[Dialog text size]
-Dimensione testo dei dialoghi
 [Player slot]
 Posto giocatore
 [Team color]
@@ -3474,8 +3472,6 @@ Probabilità di vittoria: %0 · Idoneità: %1
 Livello min.richiesto: %0
 [Confirm %0]
 Ok: %0
-[Dialog text size %0]
-Dimensione testo dei dialoghi: %0%
 [%0 %1]
 %0 %1
 [resume game]

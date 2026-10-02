@@ -20,11 +20,13 @@
 #include <list>
 #include <unordered_map>
 
-#include <SDLCompat.h>
+#include <SDL3/SDL.h>
 
 
 namespace GAGCore
 {
+    class RenderBatch;
+
     class RenderBackend;
     class SoftwareFramePresenter;
     struct RenderOperations;
@@ -342,6 +344,8 @@ namespace GAGCore
 			RESIZABLE = 8,
 			CUSTOMCURSOR = 16,
 			PORTABLEGPU = 32,
+            //! Opt out of high-density backing pixels for fixed-pixel profiling.
+            LOWPIXELDENSITY = 64,
 		};
 		
 	protected:
@@ -406,7 +410,7 @@ namespace GAGCore
 		SDL_Window *window = nullptr;
 		unsigned glContextGeneration = 0;
 		SDL_GLContext context = nullptr;
-		SDL_threadID eventThread = 0;
+		SDL_ThreadID eventThread = 0;
 		bool pollingEvents = false;
 		bool presenting = false;
 		bool watchingEvents = false;
@@ -433,16 +437,17 @@ namespace GAGCore
 		// created while it is active. Created after the context above exists and
 		// destroyed before it is torn down. Plain unsigned/int fields, not GL
 		// types, to keep GL headers out of this public header (see Sprite::vbo).
+		std::unique_ptr<RenderBatch> renderBatch;
+        bool renderBatchEnabled=true;
 		unsigned unitShaderProgram = 0;
 		int unitShaderLocBase = -1, unitShaderLocTeam = -1;
 		int unitShaderLocHasBase = -1, unitShaderLocHasTeam = -1;
-		int unitShaderLocHueShift = -1, unitShaderLocAlpha = -1;
 		bool unitShaderFailureLogged = false;
 		void createUnitShader();
 		void destroyUnitShader();
 		// Central presentation boundary, also used by render-validation contexts.
 		virtual void swapBuffers();
-		static int SDLCALL watchWindow(void *userdata, SDL_Event *event);
+		static bool SDLCALL watchWindow(void *userdata, SDL_Event *event);
 		std::unique_ptr<RenderBackend> portableRenderer;
         RenderBackend* renderer = nullptr; // Borrowed active backend; ownership stays in the two unique_ptrs.
         // Rasterizes transformed passes into the existing software framebuffer.
@@ -478,6 +483,9 @@ namespace GAGCore
         bool isResponsiveViewport() const { return responsiveViewport; }
         bool hasPortableRenderer() const { return bool(renderer) && !nativeSoftware; }
         double logicalUnitsPerPoint() const;
+        //! Logical pixels per authored font pixel for text a touch painter sizes in
+        //! points: logicalUnitsPerPoint() times the player's text-size preference.
+        double textUnitsPerPoint() const;
         void setUITransform(float scale=1, float x=0, float y=0, const SDL_Rect* bounds=nullptr);
         Uint32 windowID() const { return SDL_GetWindowID(window); }
 #ifdef GLOB2_WEBGL2
@@ -525,7 +533,7 @@ namespace GAGCore
 		unsigned long getDrawCallCount() const {return drawCalls;}
 		void resetDrawCallCount(){drawCalls=0;}
 		//! convert window pixel coordinates (as delivered by SDL) to logical coordinates
-		void windowToLogical(Sint32 &x, Sint32 &y);
+		void windowToLogical(float &x, float &y);
 		//! set a GL line width in logical pixels; GL rasterises lines in window pixels, which the viewport does not scale
 		void setScaledLineWidth(float width);
 		//! declare that drawing now goes to an offscreen target with this many of its pixels per logical pixel; 0 restores the window
@@ -534,6 +542,7 @@ namespace GAGCore
 		float getRasterScale(void) {return rasterScale();}
 		//! translate SDL_GetMouseState coordinates through the active context's scaling
 		static void translateMouseCoordinates(int &x, int &y);
+        static void translateMouseCoordinates(float &x, float &y);
 		//! rewrite a polled event's mouse coordinates from window pixels to logical coordinates
 		static void translateMouseEvent(SDL_Event *event);
 		//! Pump events at a frame boundary; modal expose callbacks only present a cached frame.
@@ -592,7 +601,11 @@ namespace GAGCore
 		//! shader is unavailable so the caller can fall back to two ordinary
 		//! drawSurface calls (base, then the CPU-recoloured team layer).
 		bool drawTeamColoredQuad(DrawableSurface *base, DrawableSurface *team, float x, float y, float w, float h, Uint8 alpha, float hueShift);
-		bool hasUnitShader() const { return unitShaderProgram != 0; }
+		RenderBatch* getRenderBatch() const { return renderBatchEnabled?renderBatch.get():nullptr; }
+        void countRenderBatchDraw() { ++drawCalls; }
+        // Diagnostic comparison switches use the same context and assets.
+        void setRenderBatchEnabled(bool enabled);
+        bool hasUnitShader() const { return unitShaderProgram != 0; }
 		
 		virtual void drawAlphaMap(const std::valarray<float> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
 		virtual void drawAlphaMap(const std::valarray<unsigned char> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
@@ -702,7 +715,7 @@ namespace GAGCore
 		friend class DrawableSurface;
 		// Support functions
 		//! Load a frame from two file pointers
-		void loadFrame(SDL_RWops *frameStream, SDL_RWops *rotatedStream);
+		void loadFrame(SDL_IOStream *frameStream, SDL_IOStream *rotatedStream);
 		//! Check if index is within bound and return true, assert false and return false otherwise
 		bool checkBound(int index);
 		//! Return a rotated drawable surface for actColor, create it if necessary

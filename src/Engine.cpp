@@ -7,6 +7,7 @@
 
 #include "EndGameScreen.h"
 #include "Engine.h"
+#include "sim/SimulationRunner.h"
 #include "EngineTiming.h"
 #include "GlobalContainer.h"
 #include "ReplayWriter.h"
@@ -48,7 +49,7 @@ void Engine::prepareRun()
 	{
 		assert(globalContainer->mix==nullptr);
 		printf("nox::game started\n");
-		automaticGameStartTick = SDL_GetTicks64();
+		automaticGameStartTick = SDL_GetTicks();
 	}
 	else
 	{

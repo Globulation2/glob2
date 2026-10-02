@@ -76,6 +76,7 @@ bool GameHeader::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	stream->readEnterSection("GameHeader");
 	gameLatency = stream->readSint32("gameLatency");
 	orderRate = stream->readUint8("orderRate");
+	if (gameLatency < 0 || gameLatency > 65535 || orderRate == 0) throw std::runtime_error("Invalid saved network rate or latency");
 	numberOfPlayers = stream->readSint32("numberOfPlayers");
 	if (numberOfPlayers < 0 || numberOfPlayers > Team::MAX_COUNT)
 	{
@@ -111,9 +112,15 @@ bool GameHeader::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		stream->readEnterSection("allyTeamNumbers");
 		for(int i=0; i<Team::MAX_COUNT_ON_DISK; ++i)
 		{
+			// Binary sections carry no bytes. Text fields need a unique slot;
+			// repeating the same key made every alliance read as the last one.
+			if (versionMinor >= FILE_FORMAT_VERSION_COUNTED_TEAM_STATE)
+				stream->readEnterSection(i);
 			Uint8 v = stream->readUint8("allyTeamNumber");
 			if (i < Team::MAX_COUNT)
 				allyTeamNumbers[i] = v;
+			if (versionMinor >= FILE_FORMAT_VERSION_COUNTED_TEAM_STATE)
+				stream->readLeaveSection();
 		}
 		stream->readLeaveSection();
 		allyTeamsFixed = stream->readUint8("allyTeamsFixed");
@@ -179,8 +186,10 @@ void GameHeader::save(GAGCore::OutputStream *stream) const
 	stream->writeEnterSection("allyTeamNumbers");
 	for(int i=0; i<Team::MAX_COUNT_ON_DISK; ++i)
 	{
+		stream->writeEnterSection(i);
 		const Uint8 v = (i < Team::MAX_COUNT) ? allyTeamNumbers[i] : static_cast<Uint8>(i + 1);
 		stream->writeUint8(v, "allyTeamNumber");
+		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
 	stream->writeUint8(allyTeamsFixed, "allyTeamsFixed");
@@ -220,14 +229,21 @@ bool GameHeader::loadWithoutPlayerInfo(GAGCore::InputStream *stream, Sint32 vers
 	stream->readEnterSection("GameHeader");
 	gameLatency = stream->readSint32("gameLatency");
 	orderRate = stream->readUint8("orderRate");
+	if (gameLatency < 0 || gameLatency > 65535 || orderRate == 0) throw std::runtime_error("Invalid saved network rate or latency");
 	if(versionMinor >= FILE_FORMAT_VERSION_ALLIES_AND_WIN_CONDITIONS)
 	{
 		stream->readEnterSection("allyTeamNumbers");
 		for(int i=0; i<Team::MAX_COUNT_ON_DISK; ++i)
 		{
+			// Binary sections carry no bytes. Text fields need a unique slot;
+			// repeating the same key made every alliance read as the last one.
+			if (versionMinor >= FILE_FORMAT_VERSION_COUNTED_TEAM_STATE)
+				stream->readEnterSection(i);
 			Uint8 v = stream->readUint8("allyTeamNumber");
 			if (i < Team::MAX_COUNT)
 				allyTeamNumbers[i] = v;
+			if (versionMinor >= FILE_FORMAT_VERSION_COUNTED_TEAM_STATE)
+				stream->readLeaveSection();
 		}
 		stream->readLeaveSection();
 		allyTeamsFixed = stream->readUint8("allyTeamsFixed");
@@ -277,8 +293,10 @@ void GameHeader::saveWithoutPlayerInfo(GAGCore::OutputStream *stream) const
 	stream->writeEnterSection("allyTeamNumbers");
 	for(int i=0; i<Team::MAX_COUNT_ON_DISK; ++i)
 	{
+		stream->writeEnterSection(i);
 		const Uint8 v = (i < Team::MAX_COUNT) ? allyTeamNumbers[i] : static_cast<Uint8>(i + 1);
 		stream->writeUint8(v, "allyTeamNumber");
+		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
 	stream->writeUint8(allyTeamsFixed, "allyTeamsFixed");

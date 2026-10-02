@@ -1442,8 +1442,8 @@ Nehir genişliği
 Kum ağırlığı
 [Select a valid map.]
 Geçerli bir harita seçin.
-[Shared control needs a free controller slot (maximum 12).]
-Ortak kontrol için boş bir kontrolcü yeri gerekir (en fazla 12).
+[Shared control needs a free controller slot (maximum %0).]
+Ortak kontrol için boş bir kontrolcü yeri gerekir (en fazla %0).
 [Smoothing]
 Pürüzsüzleştirme
 [Standard]
@@ -1662,8 +1662,8 @@ Globulation 2 imlecini görüntüleyin.
 Bitti
 [settings Edit shortcut]
 Klavye kısayolunu düzenle
-[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
-Yüksek çözünürlüklü ekranda menüleri, metni ve yan çubuğu büyütür.
+[settings Multiply the operating system display scale for menus, text and the sidebar.]
+Menüler, metin ve kenar çubuğu için işletim sisteminin ekran ölçeğini çarpar.
 [settings Flags]
 Bayraklar
 [settings Full]
@@ -3080,8 +3080,6 @@ Mini harita
 İleri sar
 [Hide keyboard]
 Klavyeyi gizle
-[Dialog text size]
-İletişim kutusu yazı boyutu
 [Player slot]
 Oyuncu yuvası
 [Team color]
@@ -3420,8 +3418,6 @@ Kazanma şansı: %0 · Güç: %1
 Gerekli en düşük seviye: %0
 [Confirm %0]
 Tamam: %0
-[Dialog text size %0]
-İletişim kutusu yazı boyutu: %0%
 [%0 %1]
 %0 %1
 [resume game]

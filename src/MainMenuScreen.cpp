@@ -30,10 +30,10 @@ void MainMenuScreen::loadWordmark(int logoWidth)
 		return;
 	SDL_Rect crop{76, 232, 1956, 284};
 	const int logoHeight = std::max(1, logoWidth * crop.h / crop.w);
-	auto *fitted = SDL_CreateRGBSurfaceWithFormat(0, logoWidth, logoHeight, 32, SDL_PIXELFORMAT_RGBA32);
+	auto *fitted = SDL_CreateSurface(logoWidth, logoHeight, SDL_PIXELFORMAT_RGBA32);
 	if (!fitted)
 		return;
-	if (SDL_BlitScaled(source.getSDLSurface(), &crop, fitted, nullptr) == 0)
+	if (SDL_BlitSurfaceScaled(source.getSDLSurface(), &crop, fitted, nullptr, SDL_SCALEMODE_NEAREST))
 	{
 		// The source asset has a pale matte. Recover coverage for its two
 		// flat inks before compositing, including the letter openings.
@@ -43,18 +43,18 @@ void MainMenuScreen::loadWordmark(int logoWidth)
 			for (int col = 0; col < logoWidth; ++col)
 			{
 				Uint8 red, green, blue, alpha;
-				SDL_GetRGBA(pixels[col], fitted->format, &red, &green, &blue, &alpha);
+				SDL_GetRGBA(pixels[col], SDL_GetPixelFormatDetails(fitted->format), SDL_GetSurfacePalette(fitted), &red, &green, &blue, &alpha);
 				const bool goldInk = red > green;
 				double coverage = goldInk ? (int(green) - int(blue) - 20) / 65.0 : (232 - int(red)) / 200.0;
 				coverage = coverage < 0.03 ? 0.0 : std::min(1.0, coverage);
-				pixels[col] = SDL_MapRGBA(fitted->format, goldInk ? 227 : 36, goldInk ? 192 : 69,
+				pixels[col] = SDL_MapSurfaceRGBA(fitted, goldInk ? 227 : 36, goldInk ? 192 : 69,
 										  goldInk ? 119 : 49, static_cast<Uint8>(std::lround(255 * coverage)));
 			}
 		}
 		SDL_SetSurfaceBlendMode(fitted, SDL_BLENDMODE_BLEND);
 		wordmark = std::make_unique<GAGCore::DrawableSurface>(fitted);
 	}
-	SDL_FreeSurface(fitted);
+	SDL_DestroySurface(fitted);
 }
 
 Element MainMenuScreen::build(const Presentation &p)

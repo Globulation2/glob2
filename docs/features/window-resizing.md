@@ -5,10 +5,8 @@ Windowed mode follows the OS window dimensions when `RESIZABLE` is enabled
 fullscreen fills the current desktop at native drawable resolution. Saved width/height
 and `-s WIDTHxHEIGHT` specify the remembered initial window size. Resolution selection
 is removed; old fullscreen dimensions never set the raster target.
-Windows requires SDL 2.30 or newer; startup checks the runtime version. Software
-HiDPI output requires SDL 2.26 or newer, whose window surfaces expose drawable
-pixels rather than window points. See SDL’s
-[pixel-size API](https://wiki.libsdl.org/SDL2/SDL_GetWindowSizeInPixels).
+SDL3 exposes drawable pixels separately from window coordinates. See SDL’s
+[pixel-size API](https://wiki.libsdl.org/SDL3/SDL_GetWindowSizeInPixels).
 
 ## Event and rendering ownership
 
@@ -18,7 +16,7 @@ is inside SDL's event pump may an exposed-event watcher present a cached frame.
 The watcher checks its thread and window and rejects recursive presentation. It
 never enters screen painting, timers, animation updates, or simulation.
 
-SDL 2.30's [Windows modal resize support](https://raw.githubusercontent.com/libsdl-org/SDL/release-2.30.0/src/video/windows/SDL_windowsevents.c)
+SDL3's Windows modal resize support
 sends exposed events while the OS holds the main thread in a move/resize loop.
 The cached image is scaled during that interaction. Once polling returns, the
 renderer queries the latest OS dimensions and updates the logical surface,
@@ -79,7 +77,7 @@ on window recreation. OpenGL pixels are captured at the swap boundary rather
 than reading the post-swap front buffer, which is unreliable under Mesa/Xvfb.
 Linux CI runs both backends under Xvfb/Mesa.
 
-The resize harness passes in a Windows Server 2022 desktop VM with SDL 2.32.10,
+The pre-migration SDL2 resize harness passed in a Windows Server 2022 desktop VM with SDL 2.32.10,
 using both software rendering and OpenGL 1.1 GDI Generic. The same checks pass on
 Linux X11/Mesa llvmpipe and macOS Apple M3 OpenGL. For Windows desktop tests, use
 at least 1100 x 850 pixels and disable automatic remote-desktop size changes.
@@ -207,20 +205,18 @@ uses the complete native drawable viewport. Input and clipping compose this outp
 scale with existing map transforms. Minimized/zero-sized outputs retain the last
 valid target; a failed allocation also leaves that target intact.
 
-Automatic scale uses per-window DPI on Windows, macOS window points (backing density
-only affects rasterization), and Linux Xft desktop scale with native drawable density.
-Density is not multiplied into layout twice. Display/DPI events refresh metrics.
-`GLOB2_UI_SCALE` continues to override automatic/manual scale. Manual percentages
-enlarge the whole view, with the existing minimum layout floor; map zoom remains
-separate. Mobile and browser viewport ownership is unchanged.
+Desktop OS scale uses SDL3's window display scale divided by pixel density for
+window-coordinate layout. Display/DPI events refresh metrics. UI percentages
+multiply that OS scale; automatic applies multiplier 1. `GLOB2_UI_SCALE` remains
+an absolute window-coordinate override. The whole view retains its minimum layout
+floor, while map zoom stays separate. Mobile and browser avoid counting density twice.
 
 The Windows acceptance results above describe the earlier implementation. Linux
 X11/Mesa and macOS Retina regression checks cover native fullscreen, live scale
 changes, input and clipping in both renderers, with independent glyph-raster comparisons. Windows
 native-display acceptance, Wayland and physical mixed-DPI display changes still
 need platform review. Background macOS tests use
-`SDL_VIDEO_MAC_FULLSCREEN_SPACES=0` for desktop fullscreen. SDL2-compat 2.32.70
-can report success without applying a fullscreen Space in a background process.
+the existing fullscreen-space preference when testing in the background.
 Native fullscreen Spaces need a focused application play check. The transition
 confirms SDL’s resulting mode before persisting it and restores state on failure.
 A maintainer should play the native-display result before merging because fullscreen layout and text sharpness visibly change.
@@ -278,6 +274,8 @@ Old Full/Reduced preferences initialize missing individual choices to their form
 values. Explicit individual choices take precedence. The command-line `-h` and
 `-l` shortcuts still select the former Full and Reduced effects together.
 
-Text size (100%, 125%, 150%) adjusts frontend interface text independently of
-interface/map scale in both desktop and touch layouts. It shares the saved
-`mobileDialogTextPercent` preference with the in-game dialog text-size control.
+Text size (100%, 125%, 150%) adjusts interface text independently of
+interface/map scale in both desktop and touch layouts: menus, dialogs and, on
+touch, the gameplay HUD. It is saved as `textSizePercent` and shared with the
+in-game options' text-size control; the former `mobileDialogTextPercent` is
+ignored. See [Text size](../development/ui-framework.md#text-size).

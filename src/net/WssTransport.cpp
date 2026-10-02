@@ -21,6 +21,12 @@ namespace beast = boost::beast;
 namespace ws = beast::websocket;
 using tcp = asio::ip::tcp;
 using Error = boost::system::error_code;
+std::string canonicalAddress(const asio::ip::address &address)
+{
+    if (address.is_v6() && address.to_v6().is_v4_mapped())
+        return asio::ip::make_address_v4(asio::ip::v4_mapped, address.to_v6()).to_string();
+    return address.to_string();
+}
 
 // The same application thread that owns NetConnection pumps asynchronous I/O.
 // No blocking connect, TLS handshake, read, or write runs on that thread.
@@ -100,7 +106,7 @@ class WssTransport final : public NetTransport
 						{
 							if (!active(error))
 								return;
-							peer = endpoint.address().to_string();
+							peer = canonicalAddress(endpoint.address());
 							socket.next_layer().async_handshake(
 								ssl::stream_base::client,
 								[this](Error error)
@@ -125,7 +131,7 @@ class WssTransport final : public NetTransport
 				std::shared_ptr<ssl::context> serverContext)
 			: tls(std::move(serverContext)), mode(config.messageMode)
 		{
-			peer = accepted.remote_endpoint().address().to_string();
+			peer = canonicalAddress(accepted.remote_endpoint().address());
 			const auto protocol = accepted.local_endpoint().protocol();
 			beast::get_lowest_layer(socket).socket().assign(protocol, accepted.release());
 			if (config.tls.requireClientCertificate)
@@ -178,7 +184,7 @@ class WssTransport final : public NetTransport
 										cancel();
 										return;
 									}
-									peer = address.to_string();
+									peer = canonicalAddress(address);
 								}
 							}
 							socket.set_option(ws::stream_base::timeout{
@@ -464,11 +470,12 @@ class WssTransport final : public NetTransport
 				throw std::invalid_argument("A TLS server identity is required");
 			if (!c.connectionLimit)
 				throw std::invalid_argument("Connection limit must be positive");
-			for (const auto &proxy : c.trustedProxyAddresses)
-				asio::ip::make_address(proxy);
+			for (auto &proxy : config.trustedProxyAddresses)
+                proxy = canonicalAddress(asio::ip::make_address(proxy));
 			tcp::endpoint endpoint(asio::ip::make_address(c.bindAddress), c.port);
 			acceptor.open(endpoint.protocol());
 			acceptor.set_option(asio::socket_base::reuse_address(true));
+            if (endpoint.protocol() == tcp::v6()) acceptor.set_option(asio::ip::v6_only(false));
 			acceptor.bind(endpoint);
 			acceptor.listen();
 			acceptor.non_blocking(true);
@@ -539,7 +546,7 @@ std::unique_ptr<NetTransport> makeWssTransport(const NetTlsConfig &config, NetMe
 	return std::make_unique<WssTransport>(config, mode);
 }
 
-std::unique_ptr<NetTransportListener> makeNetTransportListener(const NetListenConfig &config)
+std::unique_ptr<NetTransportListener> makeWssTransportListener(const NetListenConfig &config)
 {
 	return std::make_unique<WssTransport::Listener>(config);
 }

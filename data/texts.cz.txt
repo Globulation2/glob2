@@ -1434,8 +1434,8 @@ Odhalený terén neodhalí veškerou nepřátelskou aktivitu.
 Váha písku
 [Select a valid map.]
 Vyberte platnou mapu.
-[Shared control needs a free controller slot (maximum 12).]
-Sdílené ovládání vyžaduje volné místo pro hráče nebo AI (nejvýše 12).
+[Shared control needs a free controller slot (maximum %0).]
+Sdílené ovládání vyžaduje volné místo pro hráče nebo AI (nejvýše %0).
 [Smoothing]
 Vyhlazování
 [Standard]
@@ -1654,8 +1654,8 @@ Zobrazovat kurzor hry Globulation 2.
 Hotovo
 [settings Edit shortcut]
 Upravit klávesovou zkratku
-[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
-Zvětší nabídky, text a postranní panel na obrazovce s vysokým rozlišením.
+[settings Multiply the operating system display scale for menus, text and the sidebar.]
+Násobí měřítko zobrazení operačního systému pro nabídky, text a postranní panel.
 [settings Flags]
 Vlajky
 [settings Full]
@@ -3072,8 +3072,6 @@ Minimapa
 Rychlý posun
 [Hide keyboard]
 Skrýt klávesnici
-[Dialog text size]
-Velikost textu dialogů
 [Player slot]
 Místo hráče
 [Team color]
@@ -3412,8 +3410,6 @@ Kolonie %0
 Min. úroveň jednotek: %0
 [Confirm %0]
 Budiž: %0
-[Dialog text size %0]
-Velikost textu dialogů: %0%
 [%0 %1]
 %0 %1
 [resume game]

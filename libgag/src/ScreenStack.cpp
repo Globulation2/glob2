@@ -4,6 +4,7 @@
 #include <optional>
 #include <BrowserTextInput.h>
 #include <ApplicationHost.h>
+#include <EventQueue.h>
 #include <GraphicContext.h>
 #include <stdexcept>
 #include <typeinfo>
@@ -118,19 +119,19 @@ void ScreenStack::frame(Uint32 tick, const std::vector<SDL_Event> &events)
 		~Guard() { flag = false; }
 	} guard(dispatching);
     for (const auto& event:events) {
-        if (event.type==SDL_APP_WILLENTERBACKGROUND || event.type==SDL_APP_DIDENTERBACKGROUND) {
+        if (event.type==SDL_EVENT_WILL_ENTER_BACKGROUND || event.type==SDL_EVENT_DID_ENTER_BACKGROUND) {
             backgrounded=true; suspendExecution();
             for (auto& entry:screens) entry.screen->cancelExecutionInput();
-        } else if (event.type==SDL_APP_DIDENTERFOREGROUND) {
+        } else if (event.type==SDL_EVENT_DID_ENTER_FOREGROUND) {
             backgrounded=false; suspendExecution();
         }
-        if (event.type==SDL_RENDER_DEVICE_RESET || event.type==SDL_RENDER_TARGETS_RESET || event.type==SDL_APP_LOWMEMORY) resetGraphics=true;
-        if (event.type==SDL_APP_TERMINATING || event.type==SDL_QUIT) stop();
+        if (event.type==SDL_EVENT_RENDER_DEVICE_RESET || event.type==SDL_EVENT_RENDER_TARGETS_RESET || event.type==SDL_EVENT_LOW_MEMORY) resetGraphics=true;
+        if (event.type==SDL_EVENT_TERMINATING || event.type==SDL_EVENT_QUIT) stop();
     }
     if (backgrounded) { if(stopped) boundary(); return; }
-    if (resetGraphics) { SDL_Event reset{};reset.type=SDL_RENDER_DEVICE_RESET;GAGCore::GraphicContext::translateMouseEvent(&reset);resetGraphics=false; }
+    if (resetGraphics) { SDL_Event reset{};reset.type=SDL_EVENT_RENDER_DEVICE_RESET;GAGCore::GraphicContext::translateMouseEvent(&reset);resetGraphics=false; }
 	if (std::any_of(events.begin(), events.end(),
-					[](const SDL_Event &e) { return e.type == SDL_QUIT; }))
+					[](const SDL_Event &e) { return e.type == SDL_EVENT_QUIT; }))
 		stop();
     const int frameWidth=surface.getW(), frameHeight=surface.getH();
     GAGCore::beginBrowserTextFrame();
@@ -140,7 +141,7 @@ void ScreenStack::frame(Uint32 tick, const std::vector<SDL_Event> &events)
 	boundary();
 	if (screens.empty() || stopped) { GAGCore::endBrowserTextFrame(); return; }
 	Screen &screen = *screens.back().screen;
-    for (auto event:events) if(event.type==SDL_WINDOWEVENT && (event.window.event==SDL_WINDOWEVENT_SIZE_CHANGED || event.window.event==SDL_WINDOWEVENT_RESIZED)) {
+    for (auto event:events) if((event.type >= SDL_EVENT_WINDOW_FIRST && event.type <= SDL_EVENT_WINDOW_LAST) && (event.type==SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED || event.type==SDL_EVENT_WINDOW_RESIZED)) {
         const int oldWidth=surface.getW(),oldHeight=surface.getH();
         GAGCore::GraphicContext::translateMouseEvent(&event);
         if(oldWidth!=surface.getW() || oldHeight!=surface.getH()) viewportResized(oldWidth,oldHeight,surface.getW(),surface.getH());
@@ -152,20 +153,20 @@ void ScreenStack::frame(Uint32 tick, const std::vector<SDL_Event> &events)
             viewportResized(surface.getW(),surface.getH(),surface.getW(),surface.getH());
     }
     for (const auto& event : events)
-        if ((event.type==SDL_WINDOWEVENT && (event.window.event==SDL_WINDOWEVENT_FOCUS_LOST || event.window.event==SDL_WINDOWEVENT_SIZE_CHANGED)) || event.type==SDL_APP_WILLENTERBACKGROUND)
+        if (((event.type >= SDL_EVENT_WINDOW_FIRST && event.type <= SDL_EVENT_WINDOW_LAST) && (event.type==SDL_EVENT_WINDOW_FOCUS_LOST || event.type==SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED)) || event.type==SDL_EVENT_WILL_ENTER_BACKGROUND)
             screen.cancelExecutionInput();
 	// Pending child transitions suspend the parent immediately.
 	for (const auto &event : events)
 	{
-		if (event.type == SDL_QUIT)
+		if (event.type == SDL_EVENT_QUIT)
 		{
 			stop();
 			break;
 		}
 		if (stopped || !pending.empty() || !screen.isExecutionRunning())
 			break;
-        if ((event.type==SDL_MOUSEMOTION && event.motion.which==SDL_TOUCH_MOUSEID) ||
-            ((event.type==SDL_MOUSEBUTTONDOWN || event.type==SDL_MOUSEBUTTONUP) && event.button.which==SDL_TOUCH_MOUSEID)) continue;
+        if ((event.type==SDL_EVENT_MOUSE_MOTION && event.motion.which==SDL_TOUCH_MOUSEID) ||
+            ((event.type==SDL_EVENT_MOUSE_BUTTON_DOWN || event.type==SDL_EVENT_MOUSE_BUTTON_UP) && event.button.which==SDL_TOUCH_MOUSEID)) continue;
 		screen.handleExecutionEvent(event);
 	}
 	// Admit queued cancellation before advancing a potentially expensive load.
@@ -189,17 +190,17 @@ int ScreenStack::execute(unsigned stepLength)
 {
 	while (running())
 	{
-		const Uint64 start = SDL_GetTicks64();
-		std::vector<SDL_Event> events;
+		const Uint64 start = SDL_GetTicks();
+		GAGCore::EventQueue events;
 		SDL_Event event;
 		while (SDL_PollEvent(&event))
 			events.push_back(event);
-		frame(static_cast<Uint32>(start), events);
+		frame(static_cast<Uint32>(start), events.events());
 		if (running())
 		{
-			const Uint64 elapsed = SDL_GetTicks64() - start;
+			const Uint64 elapsed = SDL_GetTicks() - start;
 			const Uint32 fallback = elapsed < stepLength ? stepLength - elapsed : 0;
-			const Uint32 wait = delay(static_cast<Uint32>(SDL_GetTicks64()), fallback);
+			const Uint32 wait = delay(static_cast<Uint32>(SDL_GetTicks()), fallback);
 			// A running game times its pacing waits, separating waits for the network.
 			const auto kind = backgrounded || !top() ? Screen::ExecutionWait::Untimed : top()->executionWait();
 			std::optional<PerformanceTelemetry::Scope> waitTime;

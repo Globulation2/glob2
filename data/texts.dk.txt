@@ -1510,8 +1510,8 @@ Flodbredde
 Sandvægt
 [Select a valid map.]
 Vælg et gyldigt kort.
-[Shared control needs a free controller slot (maximum 12).]
-Delt styring kræver en ledig plads til en spiller eller AI (højst 12).
+[Shared control needs a free controller slot (maximum %0).]
+Delt styring kræver en ledig plads til en spiller eller AI (højst %0).
 [Smoothing]
 Udglatning
 [Standard]
@@ -1730,8 +1730,8 @@ Vis Globulation 2-markøren.
 Færdig
 [settings Edit shortcut]
 Rediger tastaturgenvej
-[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
-Forstør menuer, tekst og sidepanelet på en skærm med høj opløsning.
+[settings Multiply the operating system display scale for menus, text and the sidebar.]
+Gang operativsystemets skærmskalering for menuer, tekst og sidepanelet.
 [settings Flags]
 Flag
 [settings Full]
@@ -3148,8 +3148,6 @@ Minikort
 Spol frem
 [Hide keyboard]
 Skjul tastatur
-[Dialog text size]
-Dialogtekststørrelse
 [Player slot]
 Spillerplads
 [Team color]
@@ -3488,8 +3486,6 @@ Vinderchance: %0 · Styrke: %1
 Minimum krævede niveau: %0
 [Confirm %0]
 Ok: %0
-[Dialog text size %0]
-Dialogtekststørrelse: %0%
 [%0 %1]
 %0 %1
 [resume game]

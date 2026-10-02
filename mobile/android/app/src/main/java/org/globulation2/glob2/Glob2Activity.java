@@ -236,6 +236,6 @@ public final class Glob2Activity extends SDLActivity {
 
     @Override
     protected String[] getLibraries() {
-        return new String[] { "c++_shared", "SDL2", "main" };
+        return new String[] { "c++_shared", "SDL3", "main" };
     }
 }

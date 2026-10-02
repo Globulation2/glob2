@@ -10,7 +10,7 @@
 #include <InterfacePresentation.h>
 #include "ScriptEditorScreen.h"
 #include "Utilities.h"
-#include "SDLCompat.h"
+#include <SDL3/SDL.h>
 
 
 MapEdit::MapEdit()
@@ -77,7 +77,7 @@ MapEdit::MapEdit()
 	defencetower = new BuildingSelectorWidget(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+64+12+decX, 128+32+46*3+6, 40, 40), "building view", "defencetower", "set place building selection defencetower", "defencetower", true);
 	stonewall = new BuildingSelectorWidget(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+12+decX, 128+32+46*4+6, 40, 40), "building view", "stonewall", "set place building selection stonewall", "stonewall", true);
 	market = new BuildingSelectorWidget(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+64+12+decX, 128+32+46*4+6, 40, 40), "building view", "market", "set place building selection market", "market", true);
-	building_view_tcs = new TeamColorSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH + 16+decX, globalContainer->gfx->getH()-74, 96, 32 ), "building view", "building view team selector", "select active team");
+	building_view_tcs = new TeamColorSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH + RIGHT_MENU_OFFSET+decX, globalContainer->gfx->getH()-42-TeamColorSelector::HEIGHT, TeamColorSelector::WIDTH, TeamColorSelector::HEIGHT ), "building view", "building view team selector", "select active team");
 	building_view_level1 = new SingleLevelSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+decX, globalContainer->gfx->getH()-36, 32, 32), "building view", "building view level 1", "switch to building level 1", 1, buildingLevel);
 	building_view_level2 = new SingleLevelSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+32+decX, globalContainer->gfx->getH()-36, 32, 32), "building view", "building view level 2", "switch to building level 2", 2, buildingLevel);
 	building_view_level3 = new SingleLevelSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+64+decX, globalContainer->gfx->getH()-36, 32, 32), "building view", "building view level 3", "switch to building level 3", 3, buildingLevel);
@@ -106,7 +106,7 @@ MapEdit::MapEdit()
 	worker = new UnitSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 385, 38, 38), "flag view", "worker selector", "select worker", WORKER);
 	explorer = new UnitSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+48+decX, 385, 38, 38), "flag view", "explorer selector", "select explorer", EXPLORER);
 	warrior = new UnitSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+88+decX, 385, 38, 38), "flag view", "warrior selector", "select warrior", WARRIOR);
-	flag_view_tcs = new TeamColorSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH + 16+decX, globalContainer->gfx->getH()-74, 96, 32 ), "flag view", "flag view team selector", "select active team");
+	flag_view_tcs = new TeamColorSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH + RIGHT_MENU_OFFSET+decX, globalContainer->gfx->getH()-42-TeamColorSelector::HEIGHT, TeamColorSelector::WIDTH, TeamColorSelector::HEIGHT ), "flag view", "flag view team selector", "select active team");
 	flag_view_level1 = new SingleLevelSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+decX, globalContainer->gfx->getH()-36, 32, 32), "flag view", "flag view level 1", "select unit level 1", 1, placingUnitLevel);
 	flag_view_level2 = new SingleLevelSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+32+decX, globalContainer->gfx->getH()-36, 32, 32), "flag view", "flag view level 2", "select unit level 2", 2, placingUnitLevel);
 	flag_view_level3 = new SingleLevelSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+64+decX, globalContainer->gfx->getH()-36, 32, 32), "flag view", "flag view level 3", "select unit level 3", 3, placingUnitLevel);
@@ -165,7 +165,7 @@ MapEdit::MapEdit()
 
 	increaseTeams = new PlusIcon(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+decX, 408, 32, 32), "teams view", "increase teams", "add team");
 	decreaseTeams = new MinusIcon(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+40+decX, 408, 32, 32), "teams view", "decrease teams", "remove team");
-	team_view_tcs = new TeamColorSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH + 16+decX, 168, 96, 32 ), "teams view", "team view team selector", "select active team");
+	team_view_tcs = new TeamColorSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH + RIGHT_MENU_OFFSET+decX, 168, TeamColorSelector::WIDTH, TeamColorSelector::HEIGHT ), "teams view", "team view team selector", "select active team");
 	addWidget(increaseTeams);
 	addWidget(decreaseTeams);
 	addWidget(team_view_tcs);

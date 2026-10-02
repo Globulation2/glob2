@@ -9,7 +9,7 @@ Run AI games without a GUI to generate `.replay` files for cross-codebase fideli
 Version 121 gives each AI controller an independent saved random stream. Version
 122 also gives each Econo and Nicowar controller a private gradient cache. AI
 orders and game trajectories can differ from earlier versions for the same
-seed. Replays recorded before version 123 are refused; older saved games still
+seed. Replays recorded before version 127 are refused; older saved games still
 load, with shared gradient cache state copied into each controller. Network
 protocol version 46 rejects clients that still share these caches.
 
@@ -371,7 +371,9 @@ pending fields and their remaining deadlines without publishing them early;
 older saves remain loadable and start with an empty queue. The save compatibility
 floor remains 58. Version 123 narrows forbidden-zone invalidations to affected
 fields and gives escape fields an independent bounded refresh schedule. Replay
-versions before 123 are rejected because their routing schedule differs. Network
-protocol 46 rejects older and newer clients. Worker
+versions before 123 used a different routing schedule. The current replay floor is
+127: the sixteen-team capacity changes Warrush's opening window from 24 to 32 ticks.
+Format 127 also counts Maxima opponents and script-generation team slots while
+keeping old saves loadable. Network protocol 50 rejects older and newer clients. Worker
 availability affects wall time only: the serial fallback publishes on the same
 ticks. Headless `--gradient-workers 0` is the deterministic serial control.

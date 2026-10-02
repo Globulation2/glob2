@@ -8,7 +8,7 @@
 #include <GUIStyle.h>
 #include <assert.h>
 #include <GraphicContext.h>
-#include <SDLCompat.h>
+#include <SDL3/SDL.h>
 
 using namespace GAGCore;
 
@@ -87,29 +87,29 @@ namespace GAGGUI
 	{
 		if (!run) return;
 		GraphicContext::translateMouseEvent(&event);
-		if (event.type == SDL_QUIT)
+		if (event.type == SDL_EVENT_QUIT)
 		{
 			endExecute(QUIT_APPLICATION);
 			return;
 		}
-		if (event.type == SDL_KEYDOWN)
+		if (event.type == SDL_EVENT_KEY_DOWN)
 		{
 #ifdef USE_OSX
-			if (event.key.keysym.sym == SDLK_q && (event.key.keysym.mod & KMOD_GUI))
+			if (event.key.key == SDLK_Q && (event.key.mod & SDL_KMOD_GUI))
 			{
 				endExecute(QUIT_APPLICATION);
 				return;
 			}
 #endif
 #ifdef USE_WIN32
-			if (event.key.keysym.sym == SDLK_F4 && (event.key.keysym.mod & KMOD_ALT))
+			if (event.key.key == SDLK_F4 && (event.key.mod & SDL_KMOD_ALT))
 			{
 				endExecute(QUIT_APPLICATION);
 				return;
 			}
 #endif
 		}
-		if (event.type == SDL_MOUSEWHEEL && !scrollWheelEnabled) return;
+		if (event.type == SDL_EVENT_MOUSE_WHEEL && !scrollWheelEnabled) return;
 		onSDLEvent(&event);
 	}
 
@@ -141,19 +141,19 @@ namespace GAGGUI
 		drawExecution();
 		while (isExecutionRunning())
 		{
-			const Uint64 frameStart = SDL_GetTicks64();
+			const Uint64 frameStart = SDL_GetTicks();
 			updateExecution(static_cast<Uint32>(frameStart));
 			SDL_Event lastMouseMotion{}, windowEvent{}, event{};
 			bool hadLastMouseMotion = false;
 			bool hadWindowEvent = false;
 			while (isExecutionRunning() && GraphicContext::pollEvent(&event))
 			{
-				if (event.type == SDL_MOUSEMOTION)
+				if (event.type == SDL_EVENT_MOUSE_MOTION)
 				{
 					lastMouseMotion = event;
 					hadLastMouseMotion = true;
 				}
-				else if (event.type == SDL_WINDOWEVENT)
+				else if ((event.type >= SDL_EVENT_WINDOW_FIRST && event.type <= SDL_EVENT_WINDOW_LAST))
 				{
 					windowEvent = event;
 					hadWindowEvent = true;
@@ -165,7 +165,7 @@ namespace GAGGUI
 			drawExecution();
 			if (isExecutionRunning())
 			{
-				const Sint64 elapsed = static_cast<Sint64>(SDL_GetTicks64() - frameStart);
+				const Sint64 elapsed = static_cast<Sint64>(SDL_GetTicks() - frameStart);
 				ApplicationHost::wait(std::max<Sint64>(stepLength - elapsed, 0));
 			}
 		}

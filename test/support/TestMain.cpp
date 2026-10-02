@@ -5,7 +5,9 @@
 #ifndef SDL_MAIN_HANDLED
 #define SDL_MAIN_HANDLED
 #endif
-#include <SDL.h>
+#include <Environment.h>
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_main.h>
 #define DOCTEST_CONFIG_IMPLEMENT
 #include "Glob2Test.h"
 #include <glob2/TestBuildProvenance.h>
@@ -28,7 +30,7 @@ std::filesystem::path selfMadeProfile;
 
 void install()
 {
-	const char *profile = SDL_getenv("GLOB2_USER_DATA_DIR");
+	const char *profile = SDL_getenv_unsafe("GLOB2_USER_DATA_DIR");
 	if (!profile || !*profile)
 	{
 		selfMadeProfile = std::filesystem::temp_directory_path() /
@@ -40,25 +42,25 @@ void install()
 #endif
 													)));
 		std::filesystem::create_directories(selfMadeProfile);
-		SDL_setenv("GLOB2_USER_DATA_DIR", selfMadeProfile.string().c_str(), 1);
+		GAGCore::setProcessEnvironment("GLOB2_USER_DATA_DIR", selfMadeProfile.string().c_str(), 1);
 	}
 	// GLOB2_TEST_DISPLAY=1 (set by the runner for [display] cases) keeps the real
 	// video driver; everything else renders nowhere.
-	const char *display = SDL_getenv("GLOB2_TEST_DISPLAY");
+	const char *display = SDL_getenv_unsafe("GLOB2_TEST_DISPLAY");
 	if (!display || !*display || std::string(display) == "0")
 	{
-		SDL_setenv("SDL_VIDEODRIVER", "dummy", 0);
-		SDL_setenv("SDL_RENDER_DRIVER", "software",
+		GAGCore::setProcessEnvironment("SDL_VIDEODRIVER", "dummy", 0);
+		GAGCore::setProcessEnvironment("SDL_RENDER_DRIVER", "software",
 				   0); // the dummy driver has no accelerated renderer
 	}
-	SDL_setenv("SDL_AUDIODRIVER", "dummy", 0);
+	GAGCore::setProcessEnvironment("SDL_AUDIODRIVER", "dummy", 0);
 }
 
 void teardown()
 {
 	if (selfMadeProfile.empty())
 		return;
-	const char *keep = SDL_getenv("GLOB2_TEST_KEEP_PROFILE");
+	const char *keep = SDL_getenv_unsafe("GLOB2_TEST_KEEP_PROFILE");
 	if (keep && *keep && std::string(keep) != "0")
 		return;
 	std::error_code ignored;
@@ -66,8 +68,28 @@ void teardown()
 }
 } // namespace
 
+#if defined(__APPLE__)
+#include <TargetConditionals.h>
+#if TARGET_OS_OSX
+extern "C" void* glob2BeginTestActivity();
+extern "C" void glob2EndTestActivity(void*);
+namespace
+{
+struct NativeTestActivity
+{
+    void* token = glob2BeginTestActivity();
+    ~NativeTestActivity() { if (token) glob2EndTestActivity(token); }
+};
+}
+#endif
+#endif
+
 int main(int argc, char **argv)
 {
+#if defined(__APPLE__) && TARGET_OS_OSX
+    NativeTestActivity activity;
+#endif
+
 	// Line-buffered output interleaves correctly with doctest's reporter when captured.
 	std::setvbuf(stdout, nullptr, _IOLBF, 0);
 	std::setvbuf(stderr, nullptr, _IOLBF, 0);
@@ -79,7 +101,7 @@ int main(int argc, char **argv)
 #endif
 				 SDL_GetPlatform(), sizeof(void *) * 8);
 	std::fprintf(stderr, "GLOB2_TEST_PROVENANCE %s\n", GLOB2_TEST_PROVENANCE_JSON);
-	if (const char *artifacts = SDL_getenv("GLOB2_TEST_ARTIFACTS_ROOT"))
+	if (const char *artifacts = SDL_getenv_unsafe("GLOB2_TEST_ARTIFACTS_ROOT"))
 	{
 		std::filesystem::create_directories(artifacts);
 		std::ofstream proof(std::filesystem::path(artifacts) / "build-provenance.json");

@@ -31,6 +31,10 @@ using namespace MapGeneration;
 namespace
 {
 constexpr double kTau = 2 * kPi;
+constexpr double kInnerCourtWidth = 27;
+constexpr double kOuterCourtWidth = 48;
+constexpr double kLakeCourtGap = 7;
+constexpr double kHomeFarmDepth = 22;
 struct Geometry
 {
 	int width, height, teams;
@@ -47,16 +51,25 @@ Geometry geometryFor(const GenerationRequest &r)
 	g.half = std::min(g.width, g.height) / 2.0;
 	g.wedge = kTau / std::max(1, g.teams);
 	g.lake = g.half * .22;
-	g.inner = g.lake + 7;
+	g.inner = g.lake + kLakeCourtGap;
+	// More courts need a longer inner circumference, not narrower defended fronts.
+	// Keep the original geometry for the previously supported counts.
+	if (g.teams > DENSE_COLONY_BASE_LIMIT)
+	{
+		g.inner = std::max(g.inner, (kInnerCourtWidth + 1) / g.wedge);
+		g.lake = g.inner - kLakeCourtGap;
+	}
 	g.outer = g.inner + std::max(30., g.half * .27 * o.courtSize / 100.);
 	g.rim = g.half - 4;
 	g.home = g.outer + 18;
 	// Keep both fronts within a compact defended frontage, including sparse large arenas.
 	g.frontAngle = std::min(g.wedge * .25, 22. / g.outer);
-	if (g.half < 128 || g.teams < 2 || g.teams > 12 || g.outer * g.wedge < 48 ||
-		g.inner * g.wedge < 27 || g.rim - g.home < 22)
+	if (g.half < 128 || g.teams < 2 || g.teams > Team::MAX_COUNT || g.outer * g.wedge < kOuterCourtWidth ||
+		g.inner * g.wedge < kInnerCourtWidth || g.rim - g.home < kHomeFarmDepth)
 		g.failure =
 			"The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.";
+	if (const auto error = denseColonySizeFailure(r); !error.empty())
+		g.failure = error;
 	return g;
 }
 struct Layout
@@ -576,7 +589,7 @@ GeneratorDefinition gauntletDefinition()
 	return {"gauntlet",
 			59,
 			"The Gauntlet",
-			1,
+			2,
 			false,
 			{{"court-size", "Court size", 80, 120, 10, 100, ControlGroup::Layout},
 			 {"gate-width", "Gate width", 5, 9, 2, 7, ControlGroup::Terrain},

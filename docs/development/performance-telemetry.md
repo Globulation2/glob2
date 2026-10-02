@@ -189,7 +189,8 @@ uses `--compute-threads N`; `--compute-experiments none` disables AI batching.
 A game-owned executor uses persistent workers, main-thread participation and a
 barrier before simulation resumes. Nested jobs run inline. Eager propagation
 scratch is owned by executor slot; lazy searches retain their own queues. Thread
-creation failure and the browser target use serial execution. Thread count and
+creation failure and the serial browser fallback use serial execution; threaded
+browser builds use the same executor as native builds. Thread count and
 performance counters are not saved or included in simulation checksums.
 
 `result.json` reports actual `compute_threads`, selected `compute_experiments`,

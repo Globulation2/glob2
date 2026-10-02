@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Real game rendering regression. Run with an isolated GLOB2_USER_DIR and
 // either -g (OpenGL) or -G (software). No desktop input is generated.
+#include <Environment.h>
 #include "EngineFixtures.h"
 #include "ScopedEnvironment.h"
 #include <vector>
@@ -11,7 +12,7 @@
 #include "TorusPicking.h"
 #include "TorusGeometry.h"
 #include "DynamicClouds.h"
-#include <SDL.h>
+#include <SDL3/SDL.h>
 // Expose camera and settings widgets for deterministic integration checks.
 #include "TorusView.h"
 #include "SettingsScreen.h"
@@ -84,7 +85,7 @@ static void run(bool gpu, int width, int height)
                 }
             }
         REQUIRE(dragX >= 0);
-        gui.view.mouseUnit = nullptr;
+        gui.view.mouseUnit = UnitRef();
         SDL_MouseButtonEvent down{};
         down.button = SDL_BUTTON_LEFT;
         down.x = dragX;
@@ -92,7 +93,7 @@ static void run(bool gpu, int width, int height)
         gui.handleMouseButtonDown(down);
         REQUIRE(gui.mapPanPushed);
         const double originX = gui.camera.originX;
-        gui.handleMouseMotion(dragX + 12, dragY + 8, SDL_BUTTON(SDL_BUTTON_LEFT));
+        gui.handleMouseMotion(dragX + 12, dragY + 8, SDL_BUTTON_MASK(SDL_BUTTON_LEFT));
         REQUIRE(std::abs(gui.camera.originX -
             MapCamera::wrap(originX - 12 / gui.camera.zoom, gui.camera.mapWidth)) < 0.01);
         gui.handleMouseButtonUp(down);
@@ -123,7 +124,7 @@ static void run(bool gpu, int width, int height)
             gui.updateCamera();
             const int x = int(gui.camera.offsetX + gui.camera.width / 2);
             const int y = int(gui.camera.offsetY + gui.camera.height / 2);
-            gui.view.mouseUnit = nullptr;
+            gui.view.mouseUnit = UnitRef();
             SDL_MouseButtonEvent press{};
             press.button = SDL_BUTTON_LEFT;
             press.x = x;
@@ -132,11 +133,11 @@ static void run(bool gpu, int width, int height)
             gui.handleMouseButtonDown(press);
             REQUIRE(gui.mapPanPushed);
             const double beforePan = gui.camera.originX;
-            gui.handleMouseMotion(x + 12, y + 8, SDL_BUTTON(SDL_BUTTON_LEFT));
+            gui.handleMouseMotion(x + 12, y + 8, SDL_BUTTON_MASK(SDL_BUTTON_LEFT));
             REQUIRE(std::abs(gui.camera.originX -
                 MapCamera::wrap(beforePan - 12 / gui.camera.zoom, gui.camera.mapWidth)) < 0.01);
             SDL_Event release{};
-            release.type = SDL_MOUSEBUTTONUP;
+            release.type = SDL_EVENT_MOUSE_BUTTON_UP;
             release.button.button = SDL_BUTTON_LEFT;
             release.button.x = x;
             release.button.y = y;
@@ -145,10 +146,10 @@ static void run(bool gpu, int width, int height)
             gui.mouseX = x;
             gui.mouseY = y;
             SDL_Event wheel{};
-            wheel.type = SDL_MOUSEWHEEL;
+            wheel.type = SDL_EVENT_MOUSE_WHEEL;
             wheel.wheel.y = 1;
 #if SDL_VERSION_ATLEAST(2,0,18)
-            wheel.wheel.preciseY = 1;
+            wheel.wheel.y = 1;
 #endif
             const double beforeZoom = gui.camera.zoom;
             gui.processEvent(&wheel);
@@ -167,7 +168,7 @@ static void run(bool gpu, int width, int height)
             gui.updateCamera();
             const int x = int(gui.camera.offsetX + gui.camera.width / 2);
             const int y = int(gui.camera.offsetY + gui.camera.height / 2);
-            gui.view.mouseUnit = nullptr;
+            gui.view.mouseUnit = UnitRef();
             SDL_MouseButtonEvent press{};
             press.button = SDL_BUTTON_LEFT;
             press.x = x;
@@ -176,7 +177,7 @@ static void run(bool gpu, int width, int height)
             REQUIRE(!gui.mapPanPushed);
             const double origin = gui.camera.originX;
             const int flagX = gui.displayedPosX(*flag);
-            gui.handleMouseMotion(x + 96, y, SDL_BUTTON(SDL_BUTTON_LEFT));
+            gui.handleMouseMotion(x + 96, y, SDL_BUTTON_MASK(SDL_BUTTON_LEFT));
             REQUIRE(gui.camera.originX == origin);
             REQUIRE(gui.displayedPosX(*flag) != flagX);
             gui.handleMouseButtonUp(press);
@@ -190,14 +191,14 @@ static void run(bool gpu, int width, int height)
             {
                 gui.view.mouseX = x * 32;
                 gui.view.mouseY = y * 32;
-                gui.view.mouseUnit = nullptr;
+                gui.view.mouseUnit = UnitRef();
                 gui.game.drawUnit(x, y, explorer->gid, (-x) & gui.game.map.getMaskW(),
                     (-y) & gui.game.map.getMaskH(), gui.game.map.getW(), gui.game.map.getH(),
-                    0, Game::DRAW_WHOLE_MAP, gui.view);
-                REQUIRE(gui.view.mouseUnit == explorer);
+                    0, Game::DRAW_WHOLE_MAP, gui.view, glob2test::sceneOf(gui.game, gui.view));
+                REQUIRE(gui.game.resolveUnit(gui.view.mouseUnit) == explorer);
             }
         gui.view.mouseX = gui.view.mouseY = -1;
-        gui.view.mouseUnit = nullptr;
+        gui.view.mouseUnit = UnitRef();
         // Upgrading an old keyboard layout must neither shadow custom keys
         // nor lose the new default when its key is available.
         KeyboardManager keyboard(GameGUIShortcuts);
@@ -216,6 +217,7 @@ static void run(bool gpu, int width, int height)
         REQUIRE(hasToggle);
         REQUIRE(!Settings().automaticTorus);
         globalContainer->settings.automaticTorus = false;
+#ifndef GLOB2_MOBILE
         {
             SettingsScreen options;
             const int oldMute = globalContainer->settings.mute;
@@ -257,6 +259,18 @@ static void run(bool gpu, int width, int height)
         }
         restored.load();
         REQUIRE(!restored.automaticTorus);
+#else
+        {
+            // Mobile deliberately omits the desktop OpenGL torus preference.
+            SettingsScreen options;
+            REQUIRE(!options.changeSetting("graphics.torus", 1));
+            REQUIRE(!globalContainer->settings.automaticTorus);
+            options.done();
+            Settings restored;
+            restored.load();
+            REQUIRE(!restored.automaticTorus);
+        }
+#endif
         TorusView view;
         view.notifyMove();
         REQUIRE(!view.active());
@@ -356,9 +370,10 @@ static void run(bool gpu, int width, int height)
                 view.amount = amount;
                 view.lastFrame = SDL_GetTicks();
                 const auto randomState=syncRandEngine();
+                const auto gameRandom=gui.game.syncRandom;
                 REQUIRE(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, x, y, 960, 720));
                 REQUIRE(glGetError() == GL_NO_ERROR);
-                REQUIRE(syncRandEngine()==randomState);
+                REQUIRE((syncRandEngine()==randomState && gui.game.syncRandom==gameRandom));
             };
             view.toggle();
             REQUIRE(view.active());
@@ -371,23 +386,23 @@ static void run(bool gpu, int width, int height)
                 std::vector<unsigned char> pixels(size_t(w)*h*4),upright(pixels.size());
                 glReadPixels(0,0,w,h,GL_RGBA,GL_UNSIGNED_BYTE,pixels.data());
                 for(int y=0;y<h;++y) std::copy_n(pixels.data()+size_t(y)*w*4,w*4,upright.data()+size_t(h-1-y)*w*4);
-                auto *frame=SDL_CreateRGBSurfaceWithFormatFrom(upright.data(),w,h,32,w*4,SDL_PIXELFORMAT_RGBA32);
+                auto *frame=SDL_CreateSurfaceFrom(w,h,SDL_PIXELFORMAT_RGBA32,upright.data(),w*4);
                 REQUIRE(frame!=nullptr);
-                REQUIRE(SDL_SaveBMP(frame,(glob2test::artifactDir()/"torus-native.bmp").string().c_str())==0);
-                SDL_FreeSurface(frame);
+                REQUIRE(SDL_SaveBMP(frame,(glob2test::artifactDir()/"torus-native.bmp").string().c_str()));
+                SDL_DestroySurface(frame);
             }
             gui.gamePaused = true;
-            const int pausedTime = gui.game.mapAnimationTime;
+            const int pausedTime = gui.view.render.animationTime;
             draw(1);
             const auto pausedClouds = view.cloudPixels;
             draw(1);
-            REQUIRE(gui.game.mapAnimationTime == pausedTime);
+            REQUIRE(gui.view.render.animationTime == pausedTime);
             REQUIRE(pausedClouds.size() == view.cloudPixels.size());
             for (size_t i = 0; i < pausedClouds.size(); ++i)
                 REQUIRE(pausedClouds[i] == view.cloudPixels[i]);
             gui.gamePaused = false;
             draw(1);
-            REQUIRE(gui.game.mapAnimationTime > pausedTime);
+            REQUIRE(gui.view.render.animationTime > pausedTime);
             // Selection markers are painted into the atlas, which is measured in
             // world pixels. The factor the window stretches the interface by must
             // not reach their line width, and every marker the flat view paints
@@ -411,9 +426,14 @@ static void run(bool gpu, int width, int height)
                         ((worldY % worldH) + worldH) % worldH * view.atlasH / worldH;
                     return &atlas[(size_t(row) * view.atlasW + col) * 4];
                 };
+                // Drawing reads the GUI's Scene; drawAll would extract it first.
+                Scene scene;
                 auto capture = [&]()
                 {
+                    gui.extractScene(scene);
+                    gui.setPublishedScene(&scene);
                     draw(1);
+                    gui.setPublishedScene(nullptr);
                     // Software GL renders on worker threads, and the readback below has been
                     // seen to return the previous frame's atlas: wait for the frame first.
                     glFinish();

@@ -1432,8 +1432,8 @@ Rivera larĝo
 Sablopezo
 [Select a valid map.]
 Elektu validan mapon.
-[Shared control needs a free controller slot (maximum 12).]
-Komuna regado bezonas liberan lokon por homa aŭ AI-ludanto (maksimume 12).
+[Shared control needs a free controller slot (maximum %0).]
+Komuna regado bezonas liberan lokon por homa aŭ AI-ludanto (maksimume %0).
 [Smoothing]
 Glatigado
 [Standard]
@@ -1652,8 +1652,8 @@ Montru la kursoron de Globulation 2.
 Farita
 [settings Edit shortcut]
 Redakti klavaran ŝparvojon
-[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
-Pligrandigas menuojn, tekston kaj la flankan strion sur altdistingiva ekrano.
+[settings Multiply the operating system display scale for menus, text and the sidebar.]
+Multipliku la ekranan skalon de la operaciumo por menuoj, teksto kaj la flanka panelo.
 [settings Flags]
 Flagoj
 [settings Full]
@@ -3070,8 +3070,6 @@ Mapeto
 Rapide antaŭen
 [Hide keyboard]
 Kaŝi klavaron
-[Dialog text size]
-Dialoga tekstogrando
 [Player slot]
 Ludantloko
 [Team color]
@@ -3410,8 +3408,6 @@ Kolonio %0
 Minimuma bezonata nivelo: %0
 [Confirm %0]
 Bone!: %0
-[Dialog text size %0]
-Dialoga tekstogrando: %0%
 [%0 %1]
 %0 %1
 [resume game]

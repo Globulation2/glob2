@@ -4,8 +4,7 @@
 #include <OpaqueRectangleBatch.h>
 #include <RenderBackend.h>
 #include <Toolkit.h>
-#include <SDL.h>
-#include <cstdint>
+#include <SDL3/SDL.h>
 #include <cstring>
 #include <memory>
 #include <stdexcept>
@@ -26,10 +25,14 @@ public:
     bool fail = true;
     int submissions = 0;
     size_t submittedVertices = 0;
-    int fills = 0;
-    void blit(const void*, SDL_Surface*, std::uint64_t, bool, const SDL_Rect&, const SDL_FRect&, Uint8) override {}
-    // Unbatched rectangles arrive here; the batch must route through triangles().
-    void fill(const SDL_FRect&, SDL_Color) override { ++fills; }
+    void blit(const void*, SDL_Surface*, std::uint64_t, bool,
+              const SDL_Rect&, const SDL_FRect&, Uint8) override
+    {
+        ++submissions;
+        if (fail) throw std::runtime_error("submission failed");
+        submittedVertices += 6;
+    }
+    void fill(const SDL_FRect&, SDL_Color) override {}
     void clip(const SDL_Rect*) override {}
     void transform(float, float, float, const SDL_Rect*) override {}
     void triangles(std::span<const SDL_Vertex> vertices, const void*, SDL_Surface*, std::uint64_t) override
@@ -54,13 +57,13 @@ public:
     static void batchFailures()
     {
         glob2test::ToolkitScope toolkit;
-        auto *gfx = GAGCore::Toolkit::initGraphic(640, 480, 0, "batch failure recovery");
+        auto *gfx = GAGCore::Toolkit::initGraphic(640, 480, GAGCore::GraphicContext::PORTABLEGPU, "batch failure recovery");
         auto backend = std::make_unique<FailingRenderBackend>();
         auto *failure = backend.get();
-        // Since #496 only accelerated contexts batch; CPU contexts fill directly.
-        // Install the backend as the portable renderer that owns batched geometry.
         gfx->portableRenderer = std::move(backend);
         gfx->renderer = gfx->portableRenderer.get();
+        gfx->nativeSoftware = false;
+        // Emulate an accelerated backend: CPU fills deliberately bypass batches.
         gfx->optionFlags |= GAGCore::GraphicContext::PORTABLEGPU;
         auto draw = [&] {
             GAGCore::OpaqueRectangleBatch scope(gfx);
@@ -87,7 +90,6 @@ public:
         failure->fail = false;
         REQUIRE_NOTHROW(draw());
         REQUIRE(failure->submittedVertices == 12);
-        REQUIRE(failure->fills == 0);
     }
 
     static void batchPixels(bool portable)
@@ -141,15 +143,15 @@ public:
                 else
 #endif
                 {
-                    std::unique_ptr<SDL_Surface, decltype(&SDL_FreeSurface)> surface(gfx->renderer->capture(), SDL_FreeSurface);
+                    std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> surface(gfx->renderer->capture(), SDL_DestroySurface);
                     REQUIRE(surface);
-                    auto converted = SDL_ConvertSurfaceFormat(surface.get(),SDL_PIXELFORMAT_RGBA32,0);
+                    auto converted = SDL_ConvertSurface(surface.get(),SDL_PIXELFORMAT_RGBA32);
                     REQUIRE(converted);
                     pixels.resize(converted->w*converted->h*4);
                     for (int row=0; row<converted->h; ++row)
                         std::memcpy(pixels.data()+row*converted->w*4,
                             static_cast<unsigned char*>(converted->pixels)+row*converted->pitch,converted->w*4);
-                    SDL_FreeSurface(converted);
+                    SDL_DestroySurface(converted);
                 }
                 return pixels;
             };

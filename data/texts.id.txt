@@ -1430,8 +1430,8 @@ Lebar sungai
 Bobot pasir
 [Select a valid map.]
 Pilih peta yang valid.
-[Shared control needs a free controller slot (maximum 12).]
-Kendali bersama memerlukan satu tempat pengendali kosong (maksimum 12).
+[Shared control needs a free controller slot (maximum %0).]
+Kendali bersama memerlukan satu tempat pengendali kosong (maksimum %0).
 [Smoothing]
 Penghalusan
 [Standard]
@@ -1650,8 +1650,8 @@ Menampilkan kursor Globulation 2.
 Selesai
 [settings Edit shortcut]
 Edit pintasan keyboard
-[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
-Memperbesar menu, teks, dan bilah sisi pada layar beresolusi tinggi.
+[settings Multiply the operating system display scale for menus, text and the sidebar.]
+Kalikan skala tampilan sistem operasi untuk menu, teks, dan bilah samping.
 [settings Flags]
 Bendera
 [settings Full]
@@ -3068,8 +3068,6 @@ Peta mini
 Percepat
 [Hide keyboard]
 Sembunyikan papan ketik
-[Dialog text size]
-Ukuran teks dialog
 [Player slot]
 Slot pemain
 [Team color]
@@ -3408,8 +3406,6 @@ Peluang menang: %0 · Kekuatan: %1
 Tingkat minimum: %0
 [Confirm %0]
 Oke: %0
-[Dialog text size %0]
-Ukuran teks dialog: %0%
 [%0 %1]
 %0 %1
 [resume game]

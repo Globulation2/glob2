@@ -69,18 +69,19 @@ class SoftwareRenderBenchmark
 		SDL_SetHint(SDL_HINT_MAC_BACKGROUND_APP, "1");
 		// Keep -s dimensions as measured pixels across display densities. Opt in
 		// to native Retina/HiDPI presentation explicitly for lifecycle profiling.
-		if (!getenv("PROFILE_NATIVE_DISPLAY"))
-			SDL_SetHint(SDL_HINT_VIDEO_HIGHDPI_DISABLED, "1");
+		const bool nativeDisplay = getenv("PROFILE_NATIVE_DISPLAY") != nullptr;
 		globalContainer = new GlobalContainer;
 		globalContainer->parseArgs(argc, argv);
 		globalContainer->settings.mute = 1;
 		globalContainer->settings.autosaveGames = false;
 		globalContainer->load();
 		auto *gfx = globalContainer->gfx;
-		SDL_version version;
-		SDL_GetVersion(&version);
-		printf("SDL version=%u.%u.%u revision=%s\n", version.major, version.minor, version.patch,
-			   SDL_GetRevision());
+        if (!nativeDisplay && !gfx->setRes(gfx->getRequestedW(), gfx->getRequestedH(),
+                gfx->getOptionFlags() | GraphicContext::LOWPIXELDENSITY))
+            throw std::runtime_error(std::string("Cannot create fixed-pixel benchmark window: ") + SDL_GetError());
+        const int version = SDL_GetVersion();
+        printf("SDL version=%d.%d.%d revision=%s\n", SDL_VERSIONNUM_MAJOR(version),
+            SDL_VERSIONNUM_MINOR(version), SDL_VERSIONNUM_MICRO(version), SDL_GetRevision());
 		if (!getenv("PROFILE_VISIBLE"))
 			SDL_HideWindow(SDL_GetWindowFromID(gfx->windowID()));
 		if (gfx->getOptionFlags() & (GraphicContext::USEGPU | GraphicContext::PORTABLEGPU))
@@ -94,13 +95,45 @@ class SoftwareRenderBenchmark
 				glob2OpenMapOrSaveInputStreamBackend(*Toolkit::getFileManager(), path));
 			if (!gui.load(&stream, true))
 				throw std::runtime_error("Cannot load benchmark save");
-			gui.game.softwareTerrainCache = std::make_unique<SoftwareTerrainCache>();
+			auto &terrainCache = gui.view.render.terrainCache(gui.game.map.identity());
 			if (const char *c = getenv("PROFILE_TERRAIN_CACHE"))
-				gui.game.softwareTerrainCache->enabled = atoi(c) != 0;
+				terrainCache.enabled = atoi(c) != 0;
 			gui.localPlayer = gui.localTeamNo = 0;
 			gui.adjustLocalTeam();
 			gui.adjustInitialViewport();
 			gui.gamePaused = false;
+			// PROFILE_SELECT=building|flag|unit selects the local team's first such entity,
+			// so captures include the selection panel and the map-view selection markers.
+			if (const char *select = getenv("PROFILE_SELECT"))
+			{
+				const std::string kind = select;
+				Team *team = gui.game.teams[0];
+				bool selected = false;
+				for (int i = 0; i < Building::MAX_COUNT && !selected && kind != "unit"; i++)
+					if (Building *b = team->myBuildings[i])
+						if (kind == "flag" ? b->type->isVirtual : (!b->type->isVirtual && b->type->maxUnitWorking))
+						{
+							gui.setSelection(GameGUI::BUILDING_SELECTION, b);
+							selected = true;
+						}
+				for (int i = 0; i < Unit::MAX_COUNT && !selected && kind == "unit"; i++)
+					if (Unit *u = team->myUnits[i])
+					{
+						gui.setSelection(GameGUI::UNIT_SELECTION, u);
+						selected = true;
+					}
+				if (!selected)
+					throw std::runtime_error("PROFILE_SELECT found nothing to select");
+			}
+			// PROFILE_TOOL=<building type> activates the building tool with the cursor
+			// over the middle of the map view, so captures include the placement preview.
+			if (const char *tool = getenv("PROFILE_TOOL"))
+			{
+				gui.toolManager.activateBuildingTool(tool);
+				gui.selectionMode = GameGUI::TOOL_SELECTION;
+				gui.mouseX = (gfx->getW() - 160) / 2;
+				gui.mouseY = gfx->getH() / 2;
+			}
 			if (const char *z = getenv("PROFILE_ZOOM"))
 			{
 				gui.updateCamera();
@@ -171,8 +204,8 @@ class SoftwareRenderBenchmark
 				{
 					c0 = cpu();
 					initialOps = gfx->backendOperations();
-					initialHits = gui.game.softwareTerrainCache->cacheHits();
-					initialRebuilds = gui.game.softwareTerrainCache->cacheRebuilds();
+					initialHits = terrainCache.cacheHits();
+					initialRebuilds = terrainCache.cacheRebuilds();
 					PerformanceTelemetry::collector().reset();
 				}
 				Uint64 a = SDL_GetPerformanceCounter();
@@ -221,9 +254,9 @@ class SoftwareRenderBenchmark
 				   (unsigned long long)(ops.fills - initialOps.fills),
 				   (unsigned long long)(ops.triangles - initialOps.triangles));
 			printf("terrain_cache bytes=%zu hits=%llu rebuilds=%llu\n",
-				   gui.game.softwareTerrainCache->bytes(),
-				   (unsigned long long)(gui.game.softwareTerrainCache->cacheHits() - initialHits),
-				   (unsigned long long)(gui.game.softwareTerrainCache->cacheRebuilds() -
+				   terrainCache.bytes(),
+				   (unsigned long long)(terrainCache.cacheHits() - initialHits),
+				   (unsigned long long)(terrainCache.cacheRebuilds() -
 										initialRebuilds));
 			PerformanceTelemetry::collector().write(std::cout, "profile", gui.game.stepCounter,
 													false);

@@ -1,5 +1,8 @@
 import SCons.Util, os
 import sys
+import shutil
+import subprocess
+from pathlib import Path
 sys.path.append( os.path.dirname(__file__) )
 from addDependentLibsToBundle import addDependentLibsToBundle
 
@@ -20,13 +23,31 @@ def createBundle(target, source, env) :
     run("mkdir -p %s/Contents/Resources" % bundleDir )
     run("mkdir -p %s/Contents/Frameworks" % bundleDir )
     run("mkdir -p %s/Contents/MacOS" % bundleDir )
+    if not env.get('LEAN_IMAGE_PREFIX'):
+        raise RuntimeError('Mac release packaging requires the pinned lean SDL_image build')
     # add binaries
     for bin in env.Flatten( env['BUNDLE_BINARIES'] ) :
-        run('cp %s %s/Contents/MacOS/' % (str(bin), bundleDir) )
-    # add resources
-    for resdir in env['BUNDLE_RESOURCEDIRS'] :
-        # TODO act sensitive to resdir being a scons target. now assuming a string
-        run('cp -r %s %s/Contents/Resources/' % (str(resdir), bundleDir) )
+        original = str(bin)
+        packaged = str(Path(bundleDir)/'Contents/MacOS'/Path(original).name)
+        shutil.copy2(original, packaged)
+        symbols = Path(env['BUNDLE_SYMBOL_DIR'])/(Path(original).name+'.dSYM')
+        symbols.parent.mkdir(parents=True, exist_ok=True)
+        def uuid(path):
+            return {line.split()[1] for line in subprocess.check_output(['dwarfdump', '--uuid', str(path)], text=True).splitlines() if line.startswith('UUID:')}
+        original_uuid = uuid(original)
+        if not symbols.exists() or original_uuid != uuid(symbols):
+            if symbols.exists(): shutil.rmtree(symbols)
+            subprocess.run(['dsymutil', original, '-o', str(symbols)], check=True)
+        if not original_uuid or original_uuid != uuid(symbols):
+            raise RuntimeError('Release dSYM UUID does not match executable')
+        subprocess.run(['strip', '-S', '-x', packaged], check=True)
+    # Exported image bytes and source notices are the only runtime resources.
+    from tools.package_assets import export_assets
+    assets = Path(env['BUILDDIR'])/'runtime-assets'
+    export_assets(Path.cwd(), assets, platform='macos')
+    for directory in ('data', 'maps', 'campaigns', 'scripts'):
+        if (assets/directory).is_dir():
+            shutil.copytree(assets/directory, Path(bundleDir)/'Contents/Resources'/directory)
     run('cp COPYING %s/Contents/Resources/' % bundleDir)
     run('cp data/javascript-licenses.txt %s/Contents/Resources/' % bundleDir)
     run('cp data/json-license.txt %s/Contents/Resources/' % bundleDir)

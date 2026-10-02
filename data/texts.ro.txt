@@ -1434,8 +1434,8 @@ Lățimea râului
 Ponderea nisipului
 [Select a valid map.]
 Selectați o hartă validă.
-[Shared control needs a free controller slot (maximum 12).]
-Controlul partajat necesită un loc liber pentru un jucător sau IA (maximum 12).
+[Shared control needs a free controller slot (maximum %0).]
+Controlul partajat necesită un loc liber pentru un jucător sau IA (maximum %0).
 [Smoothing]
 Netezire
 [Standard]
@@ -1654,8 +1654,8 @@ Afișați cursorul Globulation 2.
 Gata
 [settings Edit shortcut]
 Editează scurtătura
-[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
-Mărește meniurile, textul și bara laterală pe un ecran de înaltă rezoluție.
+[settings Multiply the operating system display scale for menus, text and the sidebar.]
+Multiplică scala de afișare a sistemului de operare pentru meniuri, text și bara laterală.
 [settings Flags]
 Steaguri
 [settings Full]
@@ -3072,8 +3072,6 @@ Minihartă
 Derulare rapidă
 [Hide keyboard]
 Ascunde tastatura
-[Dialog text size]
-Dimensiunea textului din dialoguri
 [Player slot]
 Loc de jucător
 [Team color]
@@ -3412,8 +3410,6 @@ Colonie %0
 Nivel minim necesar: %0
 [Confirm %0]
 Acceptă: %0
-[Dialog text size %0]
-Dimensiunea textului din dialoguri: %0%
 [%0 %1]
 %0 %1
 [resume game]

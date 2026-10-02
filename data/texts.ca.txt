@@ -1442,8 +1442,8 @@ Amplària del riu
 Pes de sorra
 [Select a valid map.]
 Seleccioneu un mapa vàlid.
-[Shared control needs a free controller slot (maximum 12).]
-El control compartit necessita una plaça lliure per a un jugador humà o IA (màxim 12).
+[Shared control needs a free controller slot (maximum %0).]
+El control compartit necessita una plaça lliure per a un jugador humà o IA (màxim %0).
 [Smoothing]
 Suavitzat
 [Standard]
@@ -1662,8 +1662,8 @@ Mostra el cursor Globulation 2.
 Fet
 [settings Edit shortcut]
 Edita la drecera del teclat
-[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
-Amplia els menús, el text i la barra lateral en una pantalla d'alta resolució.
+[settings Multiply the operating system display scale for menus, text and the sidebar.]
+Multiplica l’escala de pantalla del sistema operatiu per als menús, el text i la barra lateral.
 [settings Flags]
 Banderes
 [settings Full]
@@ -3080,8 +3080,6 @@ Minimapa
 Avanç ràpid
 [Hide keyboard]
 Amaga el teclat
-[Dialog text size]
-Mida del text dels diàlegs
 [Player slot]
 Plaça de jugador
 [Team color]
@@ -3420,8 +3418,6 @@ Probabilitat de guanyar: %0 · Aptitud: %1
 Nivell mínim requerit: %0
 [Confirm %0]
 OK: %0
-[Dialog text size %0]
-Mida del text dels diàlegs: %0%
 [%0 %1]
 %0 %1
 [resume game]

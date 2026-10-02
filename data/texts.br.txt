@@ -1430,8 +1430,8 @@ Largura do rio
 Peso da areia
 [Select a valid map.]
 Selecione um mapa válido.
-[Shared control needs a free controller slot (maximum 12).]
-O controle compartilhado exige uma vaga para um jogador humano ou IA (máximo 12).
+[Shared control needs a free controller slot (maximum %0).]
+O controle compartilhado exige uma vaga para um jogador humano ou IA (máximo %0).
 [Smoothing]
 Suavização
 [Standard]
@@ -1650,8 +1650,8 @@ Exibe o cursor do Globulation 2.
 Concluído
 [settings Edit shortcut]
 Editar atalho de teclado
-[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
-Amplia menus, texto e a barra lateral em telas de alta resolução.
+[settings Multiply the operating system display scale for menus, text and the sidebar.]
+Multiplique a escala de exibição do sistema operacional para menus, texto e barra lateral.
 [settings Flags]
 Bandeiras
 [settings Full]
@@ -3068,8 +3068,6 @@ Minimapa
 Avançar rápido
 [Hide keyboard]
 Ocultar teclado
-[Dialog text size]
-Tamanho do texto dos diálogos
 [Player slot]
 Vaga de jogador
 [Team color]
@@ -3408,8 +3406,6 @@ Chance de vitória: %0 · Aptidão: %1
 Nível mínimo requerido: %0
 [Confirm %0]
 Ok: %0
-[Dialog text size %0]
-Tamanho do texto dos diálogos: %0%
 [%0 %1]
 %0 %1
 [resume game]

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <string>
 #include <filesystem>
 #include <cstdio>
@@ -98,7 +98,7 @@ namespace glob2test
 	{
 		// SDL owns this variable in TestMain and FileManager. On Windows its
 		// environment can differ from the executable's CRT getenv cache.
-		const char* dir = SDL_getenv("GLOB2_USER_DATA_DIR");
+		const char* dir = SDL_getenv_unsafe("GLOB2_USER_DATA_DIR");
 		GLOB2_REQUIRE(dir && *dir, "GLOB2_USER_DATA_DIR must name the disposable profile (TestMain sets it)");
 		return std::filesystem::path(dir);
 	}
@@ -246,6 +246,7 @@ namespace glob2test
 
 	void setEnv(const char* name, const char* value)
 	{
+		SDL_SetEnvironmentVariable(SDL_GetEnvironment(), name, value, true);
 #ifdef _WIN32
 		_putenv_s(name, value);
 #else
@@ -255,6 +256,7 @@ namespace glob2test
 
 	void unsetEnv(const char* name)
 	{
+		SDL_UnsetEnvironmentVariable(SDL_GetEnvironment(), name);
 #ifdef _WIN32
 		_putenv_s(name, ""); // An empty value removes the variable on Windows.
 #else

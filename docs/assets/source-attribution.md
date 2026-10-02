@@ -24,3 +24,6 @@ See data/javascript-licenses.txt and third_party/README.md.
 
 JSON library (platform messages):
 nlohmann/json v3.12.0 (MIT). See data/json-license.txt and third_party/README.md.
+Runtime image codecs:
+SDL_image (zlib license) and libwebp (BSD license and patent grant).
+See data/image-codec-licenses.txt for notices shipped with runtime assets.
