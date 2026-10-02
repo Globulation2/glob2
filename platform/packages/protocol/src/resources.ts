@@ -397,12 +397,19 @@ export type MapUpload = Static<typeof MapUpload>;
 
 // ----------------------------------------------------------------- matches
 
-export const MatchOutcome = Type.Union([
-  Type.Literal('won'),
-  Type.Literal('lost'),
-  Type.Literal('unresolved'),
-  Type.Literal('abandoned'),
-]);
+export const MatchOutcome = Type.Union(
+  [
+    Type.Literal('won'),
+    Type.Literal('lost'),
+    Type.Literal('draw'),
+    Type.Literal('unresolved'),
+    Type.Literal('abandoned'),
+  ],
+  {
+    description:
+      'draw: a win shared by teams of more than one alliance (a prestige or sudden-death tie at the top). Draws are not rated.',
+  },
+);
 
 export const VerificationStatus = Type.Union([
   Type.Literal('pending'),

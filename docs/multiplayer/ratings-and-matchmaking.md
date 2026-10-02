@@ -51,6 +51,7 @@ Ratings change only for **rated queue matches** whose verify-match verdict is
 | Situation | Effect |
 | --- | --- |
 | The verifier reports a winning side | Winner rank 1, loser rank 2 |
+| The verifier reports winners on both sides (a shared win) | Draw: no change |
 | No winner, and one side's last human left first while an opponent stayed | Abandonment is a loss: the leaving side loses |
 | Both sides left within 250 ticks (10 s) of each other | Mutual leave: no change |
 | No winner and nobody left (or the match was cut off) | Unresolved: no change |
@@ -66,6 +67,25 @@ tick.
 `diverged` results are not rated. The verifier's replay is authoritative, but a
 divergence can come from a broken client as easily as from tampering, so applying
 it automatically could punish the wrong player.
+
+### Shared wins are draws
+
+The engine marks a team won when any winning condition says so, and ties count.
+When the prestige goal is reached, or the sudden-death timer runs out, every team
+tied for the most prestige has won, whatever its alliance; the in-game end screen
+tells each of those players "you have won". A sudden-death game in which every team is on
+the same prestige at the buzzer (often none at all) therefore ends with every team
+won, which
+`result.json` and the verify-match verdict report as such.
+
+The platform reads a win as a win only when one side holds it.
+`participantOutcomes` in `ratings/outcome.ts` records each won team as `draw` when
+teams of more than one alliance won, for both `match_team_stats` and
+`match_participants`; lost and unresolved teams keep their outcome. Draws are not
+rated (`rating_note = 'draw'`), count as games but not as wins or losses in profile
+statistics, and show as "D" in the web client. Allied teams that won together are
+still one winning side. The verifier's raw per-team outcomes stay in the stored
+result artifact.
 
 ### Applying a verdict exactly once
 

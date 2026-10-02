@@ -10,7 +10,7 @@ import { applyEngineJobResult } from '@glob2/core';
 import type { Database } from '@glob2/db';
 import { applyMapJobResult } from '../play/maps.ts';
 import type { MatchSetup, VerifyVerdict } from '@glob2/protocol';
-import { decideRating, type TeamOutcome } from './outcome.ts';
+import { decideRating, participantOutcomes, type RecordedOutcome } from './outcome.ts';
 import { ensureAccountEntity, ensureAiEntity, ensureRating, type RatedAi } from './entities.ts';
 import { displayRating, rateSides } from './scale.ts';
 import { recordWarmMapResult } from '../warmMaps.ts';
@@ -80,7 +80,7 @@ export async function recordVerification(db: Db, jobId: string): Promise<Verific
 
     const match = await trx
       .selectFrom('matches')
-      .select(['id', 'verification', 'final_tick'])
+      .select(['id', 'verification', 'final_tick', 'setup'])
       .where('id', '=', matchId)
       .forUpdate()
       .executeTakeFirst();
@@ -95,7 +95,15 @@ export async function recordVerification(db: Db, jobId: string): Promise<Verific
         .execute();
     } else {
       const outcome = verdict.outcome;
+      // A shared win (teams of more than one alliance won, e.g. a sudden-death
+      // tie) is recorded as a draw for those teams and their participants.
+      const setup = match.setup as unknown as MatchSetup | null;
+      const recorded = participantOutcomes(
+        new Map((setup?.teams ?? []).map((t) => [t.team, t.alliance])),
+        new Map(outcome.teams.map((t) => [t.team, t.outcome])),
+      );
       for (const team of outcome.teams) {
+        const teamOutcome = recorded.get(team.team) ?? team.outcome;
         // Final counters and the 512-tick timeline come from the verifier's
         // result.json (engine-agent); older agents send neither.
         const history = {
@@ -107,14 +115,14 @@ export async function recordVerification(db: Db, jobId: string): Promise<Verific
           .values({
             match_id: matchId,
             team: team.team,
-            outcome: team.outcome,
+            outcome: teamOutcome,
             prestige: team.prestige,
             eliminated_tick: team.eliminatedTick ?? null,
             ...history,
           })
           .onConflict((oc) =>
             oc.columns(['match_id', 'team']).doUpdateSet({
-              outcome: team.outcome,
+              outcome: teamOutcome,
               prestige: team.prestige,
               eliminated_tick: team.eliminatedTick ?? null,
               ...history,
@@ -124,7 +132,7 @@ export async function recordVerification(db: Db, jobId: string): Promise<Verific
         // Participants take their team's outcome unless intake marked them abandoned.
         await trx
           .updateTable('match_participants')
-          .set({ outcome: team.outcome })
+          .set({ outcome: teamOutcome })
           .where('match_id', '=', matchId)
           .where('team', '=', team.team)
           .where((eb) => eb.or([eb('outcome', 'is', null), eb('outcome', '!=', 'abandoned')]))
@@ -261,7 +269,7 @@ export async function applyMatchRatings(
       teamOutcomes: new Map(
         teamStats.map((t) => [
           t.team,
-          t.outcome === 'abandoned' ? 'lost' : (t.outcome as TeamOutcome),
+          t.outcome === 'abandoned' ? 'lost' : (t.outcome as RecordedOutcome),
         ]),
       ),
       finalTick: match.final_tick ?? 0,

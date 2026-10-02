@@ -401,7 +401,7 @@ export interface RatingHistoryTable {
   created_at: Timestamp;
 }
 
-export type Outcome = 'won' | 'lost' | 'unresolved' | 'abandoned';
+export type Outcome = 'won' | 'lost' | 'draw' | 'unresolved' | 'abandoned';
 
 export interface MatchParticipantsTable {
   match_id: string;
