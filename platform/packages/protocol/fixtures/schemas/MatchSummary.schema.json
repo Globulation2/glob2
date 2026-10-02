@@ -86,6 +86,23 @@
         }
       ]
     },
+    "endReason": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "completed"
+        },
+        {
+          "type": "string",
+          "const": "abandoned"
+        },
+        {
+          "type": "string",
+          "const": "aborted"
+        }
+      ],
+      "description": "Why an ended match ended. aborted: the match was lost (for example with its relay) and changes no rating."
+    },
     "verification": {
       "anyOf": [
         {

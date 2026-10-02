@@ -124,6 +124,7 @@ export class Assignments {
       rated: match.rated,
       status: match.status,
       verification: match.verification,
+      ...(match.end_reason ? { endReason: match.end_reason } : {}),
       mapHash: match.map_hash,
       ...(match.started_at ? { startedAt: match.started_at.toISOString() } : {}),
       ...(match.ended_at ? { endedAt: match.ended_at.toISOString() } : {}),

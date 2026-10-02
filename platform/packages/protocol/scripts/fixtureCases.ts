@@ -35,6 +35,39 @@ const MATCH_ID = '7e3c1d2b-9a8f-4e6d-8c5b-4a3f2e1d0c9b';
 const ROOM_ID = '5d4c3b2a-1f0e-4d9c-8b7a-6f5e4d3c2b1a';
 const JOB_ID = '9f8e7d6c-5b4a-4392-8170-6f5e4d3c2b1a';
 const NOW = '2026-10-01T12:00:00Z';
+const MAP_ID = '2a1b0c9d-8e7f-4a6b-9c5d-3e2f1a0b9c8d';
+const MAP_INFO = {
+  id: MAP_ID,
+  owner: {
+    id: ACCOUNT_1,
+    displayName: 'Alice',
+    kind: 'registered',
+    createdAt: NOW,
+  },
+  title: 'Two Rivers',
+  description: 'Two rivers split the land; fords in the middle.',
+  visibility: 'public',
+  hidden: false,
+  madeWith: 'hand',
+  latestVersion: {
+    hash: HASH_A,
+    size: 48211,
+    width: 128,
+    height: 128,
+    teamCount: 2,
+    minVersionMinor: 125,
+    simVersion: SIM_VERSION,
+    validation: 'valid',
+    fileTitle: 'Two Rivers',
+    preview: 'ready',
+    previewUrl: `https://play.example.org/api/v1/maps/${MAP_ID}/versions/${HASH_A}/preview.png`,
+    downloadUrl: `https://play.example.org/api/v1/maps/${MAP_ID}/versions/${HASH_A}/file`,
+    createdAt: NOW,
+  },
+  stats: { plays: 12, downloads: 30, likes: 4 },
+  createdAt: NOW,
+  updatedAt: NOW,
+};
 
 /** Two humans, one each on a two-team catalog map. */
 export const SETUP_CATALOG_1V1: MatchSetup = {
@@ -542,6 +575,21 @@ export const fixtureCases: FixtureCase[] = [
     },
   },
   {
+    schema: 'RealtimeRoomKickParams',
+    name: 'kick',
+    valid: true,
+    note: 'The host removes a member; they cannot rejoin the room for 10 minutes.',
+    value: { roomId: ROOM_ID, accountId: ACCOUNT_2 },
+  },
+  {
+    schema: 'RealtimeRoomKickParams',
+    name: 'missing-account',
+    valid: false,
+    stage: 'schema',
+    note: 'A kick names the member.',
+    value: { roomId: ROOM_ID },
+  },
+  {
     schema: 'RealtimeRequest',
     name: 'missing-id',
     valid: false,
@@ -872,6 +920,62 @@ export const fixtureCases: FixtureCase[] = [
       seatsTaken: 1,
       inviteUrl: 'https://play.example.org/j/K7QX2MWP4D',
     },
+  },
+  {
+    schema: 'MapVersionInfo',
+    name: 'pending',
+    valid: true,
+    note: 'A catalog version just uploaded: no map facts until an engine agent validated it.',
+    value: {
+      hash: HASH_A,
+      size: 48211,
+      simVersion: SIM_VERSION,
+      validation: 'pending',
+      preview: 'pending',
+      downloadUrl: `https://play.example.org/api/v1/maps/${MAP_ID}/versions/${HASH_A}/file`,
+      createdAt: NOW,
+    },
+  },
+  {
+    schema: 'MapDetail',
+    name: 'public-map',
+    valid: true,
+    note: 'GET /api/v1/maps/{id}: a public map with one valid, previewed version.',
+    value: {
+      map: MAP_INFO,
+      versions: [MAP_INFO.latestVersion],
+      viewer: { owner: false, moderator: false, liked: true, reported: false },
+    },
+  },
+  {
+    schema: 'MapInfo',
+    name: 'unknown-visibility',
+    valid: false,
+    stage: 'schema',
+    note: 'Maps are public, unlisted or private.',
+    value: { ...MAP_INFO, visibility: 'friends' },
+  },
+  {
+    schema: 'CreateMapRequest',
+    name: 'title-only',
+    valid: true,
+    note: 'Everything but the title is optional; visibility defaults to unlisted.',
+    value: { title: 'Two Rivers' },
+  },
+  {
+    schema: 'CreateMapRequest',
+    name: 'unknown-field',
+    valid: false,
+    stage: 'schema',
+    note: 'Request bodies are strict.',
+    value: { title: 'Two Rivers', hidden: true },
+  },
+  {
+    schema: 'ResolveMapReportRequest',
+    name: 'resolve-and-hide',
+    valid: true,
+    note: 'A moderator upholds a report and hides the map.',
+    value: { status: 'resolved', note: 'Offensive title.', hideMap: true },
   },
   {
     schema: 'MapUpload',

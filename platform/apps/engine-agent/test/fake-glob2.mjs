@@ -183,6 +183,16 @@ switch (command) {
             player_slots: map.teams,
             saved_game: map.saved,
             tick: 0,
+            // Saves name their players, except a save called "nameless"
+            // (engines before the name field). The last seat is an AI.
+            controllers: map.saved
+              ? Array.from({ length: map.teams }, (_, slot) => ({
+                  slot,
+                  team: slot,
+                  type: slot === map.teams - 1 ? 10 : 3,
+                  ...(map.name === 'nameless' ? {} : { name: `${map.name}-p${slot}` }),
+                }))
+              : [],
           },
         });
       }
