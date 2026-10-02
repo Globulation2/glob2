@@ -671,7 +671,7 @@ TEST_SUITE("TurnHarness")
 		// Jitter and the buffer it calls for are each client's own.
 		CHECK(t1.jitterMicros.quantile(0.95) > t0.jitterMicros.quantile(0.95));
 		CHECK(t1.targetTicks.quantile(0.95) > t0.targetTicks.quantile(0.95));
-		CHECK(t0.targetTicks.quantile(0.5) == 2);
+		CHECK(t0.targetTicks.quantile(0.5) == 0); // a steady link holds no buffer (turn-protocol.md)
 		CHECK(t0.liveTicks > 1000);
 		// Input delay agrees with the harness's own measurement (which also counts voice,
 		// and cannot tell a replayed order from a new one, so the reloading client 2 is

@@ -324,13 +324,15 @@ bool TurnSequencer::assign(std::uint8_t seat, std::vector<std::uint8_t> order, s
 			++t->ordersSequenced;
 			t->orderBytes += order.size();
 		}
-		const std::uint32_t earliest = std::max(currentTick + 1, sentHorizon);
-		if (tick > earliest)
+		// The earliest tick an order can get is the first unbroadcast one.
+		if (tick > sentHorizon)
 		{
 			++t->ordersDeferred;
-			t->deferTicks.add(tick - earliest);
+			t->deferTicks.add(tick - sentHorizon);
 		}
-		t->maxQueuedAhead = std::max<std::uint64_t>(t->maxQueuedAhead, tick - currentTick);
+		// How far the seat's next free tick runs ahead of the relay clock.
+		const std::uint32_t nextFree = tick + 1;
+		t->maxQueuedAhead = std::max<std::uint64_t>(t->maxQueuedAhead, nextFree > currentTick ? nextFree - currentTick : 0);
 	}
 	++pendingEntries;
 	pendingTotalBytes += order.size();
