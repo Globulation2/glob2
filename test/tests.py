@@ -46,6 +46,7 @@ ENGINE_TESTS = [
     'BuildingGradientInvalidationHarness.cpp',
     'FetchApportionmentHarness.cpp',
     'GameGUISelectionHarness.cpp',
+    ('ClientChannelsTest.cpp', dict(cxxflags=['-fno-access-control'])),
     'HiringBucketHarness.cpp',
     'HungryDefeatHarness.cpp',
     'ImmobileUnitGradientHarness.cpp',
@@ -62,6 +63,7 @@ ENGINE_TESTS = [
     'MapGradientInvalidationTest.cpp',
     ('NicowarFarmingHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     'RuntimeContinuationTest.cpp',
+    'SharedWorkerLifecycleTest.cpp',
     'TrappedUnitLifecycleTest.cpp',
     'UnitContinuationHarness.cpp',
     'SavegameSafetyHarness.cpp',
@@ -118,12 +120,17 @@ UNIT_TESTS = [
     'MapGeneratorGoldenCoverageTest.cpp',
     'USLCoverageTest.cpp',
     'SurfaceCoverageTest.cpp',
+    'ImageAssetTest.cpp',
     'ScriptRuntimeTest.cpp',
     'ScriptNumericTest.cpp',
+    ('UnitDrawBatchTest.cpp', dict(require={'opengl'})),
+    ('MapGeometryCacheTest.cpp', dict(require={'opengl'})),
+    ('SpriteDrawBatchTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('OpaqueRectangleBatchTest.cpp', dict(cxxflags=['-fno-access-control'])),
     # Former CppUnit suite (TestsRunner).
     'AllyTeamWidgetIndexTest.cpp',
     'BitArrayTest.cpp',
+    'SceneBufferTest.cpp',
     'BrushAccumulatorTest.cpp',
     'BrushCoverageTest.cpp',
     'BrushToolHitTest.cpp',
@@ -368,6 +375,6 @@ def scripting_entries():
     """
     selected = {'ScriptCompatibilityTest.cpp', 'ScriptIntegrationTest.cpp', 'ScriptPresentationTest.cpp',
                 'ScriptRealisticTest.cpp', 'ScriptSessionTest.cpp', 'ScriptSimulationTest.cpp',
-                'TeamStatsSaveHarness.cpp', 'ScriptRuntimeTest.cpp', 'ScriptNumericTest.cpp'}
+                'TeamStatsSaveHarness.cpp', 'ScriptRuntimeTest.cpp', 'ScriptNumericTest.cpp', 'ImageAssetTest.cpp'}
     return [entry for entry in ENGINE_TESTS + UNIT_TESTS
             if (entry if isinstance(entry, str) else entry[0]) in selected]

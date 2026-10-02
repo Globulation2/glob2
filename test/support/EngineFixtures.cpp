@@ -74,6 +74,7 @@ namespace glob2test
 		: gui(false), game(gui.game)
 	{
 		REQUIRE_MESSAGE(globalContainer != nullptr, "HeadlessGame needs a live HeadlessGlobals");
+		random.emplace(game);
 		game.map.setSize(options.wDec, options.hDec, options.terrain);
 		game.map.setGame(&game);
 		if (options.clearImmobile)
@@ -127,7 +128,10 @@ namespace glob2test
 	void HeadlessGame::step(int ticks)
 	{
 		for (int i = 0; i < ticks; ++i)
+		{
 			game.syncStep(0);  // advances stepCounter itself
+			gui.consumeClientEvents();  // as the engine does after every tick
+		}
 	}
 
 	Uint32 HeadlessGame::checksum()

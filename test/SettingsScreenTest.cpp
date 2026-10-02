@@ -140,7 +140,7 @@ static void run(int width,int height,bool gl,bool expanded)
         Settings effectSaved; effectSaved.load(); REQUIRE((!effectSaved.clouds && effectSaved.cloudShadows));
         for (int index : {1,2,0}) {
             REQUIRE(screen.changeSetting("display.textsize",index));
-            Settings savedText; savedText.load(); REQUIRE(savedText.mobileDialogTextPercent==100+25*index);
+            Settings savedText; savedText.load(); REQUIRE(savedText.textSizePercent==100+25*index);
             screen.paintFrame(SDL_GetTicks());
             screen.host().scrollIntoView("display.textsize");
             screen.capture(output+"/text-size-"+std::to_string(index)+".bmp");

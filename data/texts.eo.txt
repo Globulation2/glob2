@@ -3070,8 +3070,6 @@ Mapeto
 Rapide antaŭen
 [Hide keyboard]
 Kaŝi klavaron
-[Dialog text size]
-Dialoga tekstogrando
 [Player slot]
 Ludantloko
 [Team color]
@@ -3410,8 +3408,6 @@ Kolonio %0
 Minimuma bezonata nivelo: %0
 [Confirm %0]
 Bone!: %0
-[Dialog text size %0]
-Dialoga tekstogrando: %0%
 [%0 %1]
 %0 %1
 [resume game]

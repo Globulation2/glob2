@@ -653,6 +653,9 @@ public:
 	//! Transform coordinate from map (mx,my) to screen (px,py). Use this one to display a building or an unit to the screen.
 	// Presentation bounds only; never serialized or included in simulation checksums.
 	int displayViewportW=0, displayViewportH=0;
+	//! Process-unique identity, renewed whenever the map is cleared or resized.
+	//! Presentation caches key on it to notice a replaced map; never saved.
+	Uint64 identity() const { return identityValue; }
 	void mapCaseToDisplayable(int mx, int my, int *px, int *py, int viewportX, int viewportY) const;
 	//! Transform coordinate from map (mx,my) to screen (px,py). Use this one to display a path line to the screen.
 	void mapCaseToDisplayableVector(int mx, int my, int *px, int *py, int viewportX, int viewportY, int screenW, int screenH) const;
@@ -815,6 +818,7 @@ public:
 	bool growthCoverageValid = false;
 public:
 	std::vector<Tile> tiles;
+	Uint64 identityValue = 0;
 	Sint32 w, h;
 	Sint32 wMask, hMask;
 	Sint32 wDec, hDec;

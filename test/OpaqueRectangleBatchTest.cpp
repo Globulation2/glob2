@@ -26,7 +26,12 @@ public:
     int submissions = 0;
     size_t submittedVertices = 0;
     void blit(const void*, SDL_Surface*, std::uint64_t, bool,
-              const SDL_Rect&, const SDL_FRect&, Uint8) override {}
+              const SDL_Rect&, const SDL_FRect&, Uint8) override
+    {
+        ++submissions;
+        if (fail) throw std::runtime_error("submission failed");
+        submittedVertices += 6;
+    }
     void fill(const SDL_FRect&, SDL_Color) override {}
     void clip(const SDL_Rect*) override {}
     void transform(float, float, float, const SDL_Rect*) override {}
@@ -57,7 +62,8 @@ public:
         auto *failure = backend.get();
         gfx->portableRenderer = std::move(backend);
         gfx->renderer = gfx->portableRenderer.get();
-        // Exercise accelerated batching without requiring a real GPU backend.
+        gfx->nativeSoftware = false;
+        // Emulate an accelerated backend: CPU fills deliberately bypass batches.
         gfx->optionFlags |= GAGCore::GraphicContext::PORTABLEGPU;
         auto draw = [&] {
             GAGCore::OpaqueRectangleBatch scope(gfx);

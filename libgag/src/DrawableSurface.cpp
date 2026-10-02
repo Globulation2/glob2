@@ -120,6 +120,8 @@ namespace GAGCore
 
 	void DrawableSurface::initTextureSize(void)
 	{
+		if (!textureInfo && _gc && _gc->renderBatch)
+			_gc->renderBatch->textureChanged(texture);
         if (!texture || textureInfo) return;
 		#ifdef HAVE_OPENGL
 		if (_gc && (_gc->optionFlags & GraphicContext::USEGPU))
@@ -152,6 +154,8 @@ namespace GAGCore
 
 	void DrawableSurface::uploadToTexture(void)
 	{
+		if (!textureInfo && _gc && _gc->renderBatch)
+			_gc->renderBatch->textureChanged(texture);
 		#ifdef HAVE_OPENGL
 		if (textureInfo)
 		{
@@ -251,6 +255,8 @@ namespace GAGCore
 
 	void DrawableSurface::freeGPUTexture(void)
 	{
+		if (!textureInfo && _gc && _gc->renderBatch)
+			_gc->renderBatch->textureChanged(texture);
 #ifdef GLOB2_WEBGL2
         gpuSurfaces.erase(this);
 #endif
@@ -329,7 +335,7 @@ namespace GAGCore
 		if (name.size())
 		{
 			SDL_RWops *imageStream;
-			if ((imageStream = Toolkit::getFileManager()->open(name, "rb")) != NULL)
+			if ((imageStream = Toolkit::getFileManager()->openImage(name)) != NULL)
 			{
 				SDL_Surface *loadedSurface;
 				loadedSurface = IMG_Load_RW(imageStream, 0);

@@ -3080,8 +3080,6 @@ Minimapa
 Avanç ràpid
 [Hide keyboard]
 Amaga el teclat
-[Dialog text size]
-Mida del text dels diàlegs
 [Player slot]
 Plaça de jugador
 [Team color]
@@ -3420,8 +3418,6 @@ Probabilitat de guanyar: %0 · Aptitud: %1
 Nivell mínim requerit: %0
 [Confirm %0]
 OK: %0
-[Dialog text size %0]
-Mida del text dels diàlegs: %0%
 [%0 %1]
 %0 %1
 [resume game]

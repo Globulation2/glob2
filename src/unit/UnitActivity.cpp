@@ -145,6 +145,9 @@ void Unit::handleActivity(void)
 							assert(owner->map->getGroundUnit(posX, posY)==gid);
 							owner->map->setGroundUnit(posX, posY, targetGID);
 						}
+						// A client selection follows the unit across the conversion.
+						owner->game->publishClientEvent(ClientEvent::UnitConverted{
+							UnitRef{gid, scriptIdentity}, UnitRef{targetGID, identity}});
 						scriptIdentity = identity;
 						gid=targetGID;
 						owner=targetTeam;

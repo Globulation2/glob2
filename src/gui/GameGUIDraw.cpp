@@ -591,6 +591,15 @@ void GameGUI::drawInGameScrollableText(void)
 void GameGUI::drawAll(int team)
 {
 	PERF_SCOPE_TIME(Render);
+	// Apply any simulation notices not consumed yet and resolve the selection
+	// for the renderer (view.selectedBuilding/selectedUnit).
+	consumeClientEvents();
+	clientRequests.publishViewport(viewportX, viewportY, int(camera.visibleW() / 32), int(camera.visibleH() / 32));
+	clientRequests.publishOverlay(static_cast<Uint8>(showStarvingMap ? OverlayArea::Starving
+		: showDamagedMap ? OverlayArea::Damage
+		: showDefenseMap ? OverlayArea::Defence
+		: showFertilityMap ? OverlayArea::Fertility
+		: OverlayArea::None));
     globalContainer->gfx->beginFrame(GraphicContext::FrameMode::FullRedraw);
 	updateCamera();
 	globalContainer->gfx->setClipRect();

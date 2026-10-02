@@ -3072,8 +3072,6 @@ Emoji
 Премотај унапред
 [Hide keyboard]
 Сакриј тастатуру
-[Dialog text size]
-Величина текста дијалога
 [Player slot]
 Место играча
 [Team color]
@@ -3412,8 +3410,6 @@ Emoji
 Најмањи потребни ниво: %0
 [Confirm %0]
 У реду: %0
-[Dialog text size %0]
-Величина текста дијалога: %0%
 [%0 %1]
 %0 %1
 [resume game]

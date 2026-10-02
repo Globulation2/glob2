@@ -3072,8 +3072,6 @@ Minikarte
 Vorspulen
 [Hide keyboard]
 Tastatur ausblenden
-[Dialog text size]
-Dialogschriftgröße
 [Player slot]
 Spielerplatz
 [Team color]
@@ -3412,8 +3410,6 @@ Siegchance: %0 · Stärke: %1
 Mindestlevel: %0
 [Confirm %0]
 Ok: %0
-[Dialog text size %0]
-Dialogschriftgröße: %0%
 [%0 %1]
 %0 %1
 [resume game]

@@ -52,6 +52,7 @@ namespace
 struct Fixture
 {
     Game game;
+    glob2test::BoundGameRandom random{game};
     Player player;
     std::unique_ptr<AIMaxima::Maxima> ai;
     Fixture() : game(NULL)

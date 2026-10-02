@@ -46,7 +46,7 @@ class ChangedPathsTest(unittest.TestCase):
                      "test/fixtures/javascript/profile1-initial.game.gz",
                      "test/check_javascript_corpus.py", "test/check_javascript.py",
                      "test/check_javascript_evidence.py", "test/build_provenance.py",
-                     "test/support/TestMain.cpp"):
+                     "test/support/TestMain.cpp", "test/ImageAssetTest.cpp"):
             with self.subTest(path=path):
                 self.assert_jobs(
                     [path], native=True, browser=True, map_generators=False,

@@ -11,7 +11,7 @@ appear as plain text in a checkout, read `AGENTS.md` and `.agents/skills/` direc
 
 | Area | Start here |
 | --- | --- |
-| Simulation and orders | `src/Game_sync.cpp`, `src/EngineRun.cpp`, `src/Order*.cpp` |
+| Simulation and orders | `src/Game_sync.cpp`, `src/EngineRun.cpp`, `src/Order*.cpp`; simulation/client channels in `src/sim/` |
 | Units, buildings and teams | `src/unit/`, `src/building/`, `src/team/` |
 | Map state and pathfinding | `src/map/`, especially `gradient/` and `pathfind/` |
 | AI implementations | `src/ai/`, behind `AIImplementation` |

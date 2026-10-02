@@ -158,14 +158,23 @@ saved-game continuation coverage.
 
 `GameGUISelectionHarness.cpp` links the real client objects with a test entry
 point. It exercises selected building/unit deletion before the next GUI draw,
-null selections, and a live unit with no peer. It runs headlessly, using the real
-`GameGUI`, entity classes, selection setters, and destruction hooks. A friend
-fixture accesses the private selection API without exposing it to game callers.
+null selections, a live unit with no peer, gid reuse (the selection and the
+failing-unit recording must not move to the newcomer), a building destroyed by
+a tick (selection and pending shadow cleared through `ClientEvents`) and unit
+conversion (the selection follows the unit). It runs headlessly, using the real
+`GameGUI`, entity classes and selection setters. A friend fixture accesses the
+private selection API without exposing it to game callers.
 
-Runs as the `GameGUISelection` suite of `glob2-engine-tests`:
+`ClientChannelsTest.cpp` covers the `src/sim/` channels: team events reaching the
+GUI once, in order and aged like `Team::updateEvents`; script presentation going
+through `ClientCommandSink`; the SGSL Space acknowledgement in `ClientRequests`;
+and order effects such as pause arriving as events.
+
+Run as the `GameGUISelection` and `ClientChannels` suites of `glob2-engine-tests`:
 
 ```sh
 python3 test/run_tests.py --filter 'GameGUISelection/*'
+python3 test/run_tests.py --filter 'ClientChannels/*'
 ```
 
 For AddressSanitizer and UndefinedBehaviorSanitizer on macOS or Linux, build the
@@ -1019,6 +1028,19 @@ Omit `--baseline` to compare the candidate's default execution; `--output DIR`
 retains all evidence. This subprocess runner uses Unix `wait4`; native Windows
 uses the C++ harnesses. See the existing performance guide for corpus preparation
 and paired CPU/wall-time benchmarking.
+
+
+### Simulation-thread equivalence
+
+`python3 test/check_sim_thread.py CANDIDATE --baseline BASELINE` runs new games
+(RNG seeding), a generated map, a version 121 save and save continuation (RNG
+restore) with both executables, and requires identical checksum sidecars, final
+saves and replay bytes. `--candidate-args` passes extra engine arguments to the
+candidate only; `--output DIR` retains the evidence. Each scenario also runs the
+baseline twice: replay bytes that differ between those two runs (known
+run-varying header fields) are reported and excluded. Run it with
+`GLOB2_SYNC_RAND_STRICT=1` to abort on any synchronized draw that is not bound to
+the simulated game's stream. Unix only (`wait4`), like `check_parallel_compute.py`.
 
 
 ### Delayed gradient pipeline

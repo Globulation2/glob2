@@ -3070,8 +3070,6 @@ Emoji
 Перемотка вперёд
 [Hide keyboard]
 Скрыть клавиатуру
-[Dialog text size]
-Размер текста диалогов
 [Player slot]
 Место игрока
 [Team color]
@@ -3410,8 +3408,6 @@ Emoji
 Мин. необходимый уровень: %0
 [Confirm %0]
 ок: %0
-[Dialog text size %0]
-Размер текста диалогов: %0%
 [%0 %1]
 %0 %1
 [resume game]

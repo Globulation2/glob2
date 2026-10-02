@@ -8,6 +8,7 @@
 // in Game::drawUnit reads `displacement`: at equal delta the two states are the
 // same picture, and any difference means the sprite is anchored on the wrong
 // tile — the "entering a building jumps back one square" regression.
+#include "scene/SceneMap.h"
 #include "EngineFixtures.h"
 #include "GlobalContainer.h"
 #include "Game.h"
@@ -130,7 +131,7 @@ class EnteringUnitDrawHarness
 		{
 			unit->delta = delta;
 			gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), 0, 0, 0);
-			game.drawMapTerrain(0, 0, DRAW_W >> 5, DRAW_H >> 5, 0, 0, 0, Game::DRAW_WHOLE_MAP);
+			{ SceneMap layers; layers.extract(game.map); game.drawMapTerrain(0, 0, DRAW_W >> 5, DRAW_H >> 5, 0, 0, 0, Game::DRAW_WHOLE_MAP, layers); }
 			game.drawMapGroundUnits(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H,
 				0, 0, 0, Game::DRAW_WHOLE_MAP, view);
 			game.drawMapGroundBuildings(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H,

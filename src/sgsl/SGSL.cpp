@@ -16,7 +16,9 @@
 #include <Stream.h>
 
 #include "Building.h"
-#include "GameGUI.h"
+#include "Game.h"
+#include "sim/ClientCommandSink.h"
+#include "sim/ClientRequests.h"
 #include "SGSL.h"
 
 std::optional<int> mapAreaNumber(const Game *game, const std::string &name)
@@ -211,20 +213,23 @@ bool MapScriptSGSL::testMainTimer() const
 	return (mainTimer <= 0);
 }
 
-void MapScriptSGSL::syncStep(GameGUI *gui)
+void MapScriptSGSL::syncStep(Game &game, ClientCommandSink &client, ClientRequests &requests)
 {
+	StoryContext context{&game, &client};
 	if (mainTimer)
 		mainTimer--;
+	// Stories never post a Space acknowledgement, so one read serves them all.
+	const bool space = requests.scriptSpacePending();
 	for (std::vector<Story>::iterator it=stories.begin(); it!=stories.end(); ++it)
 	{
-		if (gui->isSpaceSet())
+		if (space)
 			it->sendSpace();
-		it->syncStep(gui);
+		it->syncStep(&context);
 	}
-	if(gui->isSpaceSet())
+	if(space)
 	{
-		gui->setIsSpaceSet(false);
-		gui->setSwallowSpaceKey(false);
+		requests.takeScriptSpace();
+		client.setSwallowSpaceKey(false);
 	}
 }
 
