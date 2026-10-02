@@ -180,7 +180,7 @@ indefinite connection retention. A Compose container replacement closes sockets.
 Only after app login and a real multiplayer match pass should the apex DNS move to
 Firebase and the temporary backend hostname be removed. Website rollout or
 rollback alone must not recreate any backend container. `/play/*` supplies COOP
-`same-origin` and COEP `require-corp` for the threaded WebAssembly client; keep its
+`same-origin` and COEP `require-corp` for WebAssembly browser isolation; keep its
 workers and assets on the app origin. These isolation headers are deliberately
 limited to the game route so the app's sign-in flows retain normal opener behavior.
 
