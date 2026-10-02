@@ -169,9 +169,18 @@ enum class TeamOutcome
 	Lost,
 };
 
+///Teams someone plays, as a mask with bit `t` set for team `t`: a team counts when
+///at least one of its players is a human or a real AI. An empty online seat is a
+///player with AI::NONE whose colony stays on the map, alive and idle; it is nobody's
+///win or draw. When no team has such a player -- a replay drives every player as
+///AI::NONE -- every team counts.
+Uint32 contestedTeamsMask(const Game* game);
+
 ///Classifies `team`'s result for end-of-game messages. Won only when every other
-///winning team is mutually allied with `team` (allied teams that win together
-///still see a win); Draw when `team` won alongside a non-allied winner.
-TeamOutcome classifyTeamOutcome(const Game* game, int team);
-///True when the winning teams span more than one alliance (a spectator's draw).
-bool isGameDrawn(const Game* game);
+///winning team in `contestedTeams` is mutually allied with `team` (allied teams that
+///win together still see a win); Draw when `team` won alongside a non-allied winner
+///that someone plays. Winners outside `contestedTeams` (empty seats) never make a draw.
+TeamOutcome classifyTeamOutcome(const Game* game, int team, Uint32 contestedTeams = ~Uint32(0));
+///True when the winning teams in `contestedTeams` span more than one alliance (a
+///spectator's draw).
+bool isGameDrawn(const Game* game, Uint32 contestedTeams = ~Uint32(0));

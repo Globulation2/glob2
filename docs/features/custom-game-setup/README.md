@@ -59,6 +59,9 @@ limits when their homes, resources or routes need more room.
   instead of a win. Allies that win together still see a win, and teams below the
   tie still lose. This is presentation only: the engine still marks every tied
   team as won, so saves, replays and result files are unchanged.
+  Colonies nobody plays -- empty or locked seats in an online room, which run as
+  AI `none` and stay alive and idle -- never share a win, so one player outlasting
+  everyone else still sees a win; the platform records results by the same rule.
 - [Experimental features](../experimental-features.md) are not lobby rules: they
   come from Settings → Experiments and are baked into the header of every game the
   lobby starts. When any are enabled the footer summary lists them, so a player
