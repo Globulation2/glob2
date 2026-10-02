@@ -1,0 +1,9 @@
+{
+  "ticks": 64,
+  "workers": [
+    1,
+    4
+  ],
+  "checkpoint": 32,
+  "records_sha256": "ba2607d448e28b241d70874cace3819d38be059f6b8fdaa6c1e535dc06e7ca17"
+}

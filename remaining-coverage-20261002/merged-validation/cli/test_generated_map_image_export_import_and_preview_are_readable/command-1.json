@@ -1,0 +1,21 @@
+{
+  "args": [
+    "--generate-map",
+    "river",
+    "--width",
+    "128",
+    "--height",
+    "128",
+    "--teams",
+    "2",
+    "--seed",
+    "713",
+    "--output",
+    "/Users/bradley/.codex/worktrees/remaining-test-coverage/glob2/artifacts/merged-validation/cli/test_generated_map_image_export_import_and_preview_are_readable/source.map",
+    "--json",
+    "/Users/bradley/.codex/worktrees/remaining-test-coverage/glob2/artifacts/merged-validation/cli/test_generated_map_image_export_import_and_preview_are_readable/map.json"
+  ],
+  "status": 0,
+  "stdout": "river revision 3 seed 713 [complete]: \nMap: /Users/bradley/.codex/worktrees/remaining-test-coverage/glob2/artifacts/merged-validation/cli/test_generated_map_image_export_import_and_preview_are_readable/source.map.gz\nMap report: /Users/bradley/.codex/worktrees/remaining-test-coverage/glob2/artifacts/merged-validation/cli/test_generated_map_image_export_import_and_preview_are_readable/map.json\n",
+  "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\n"
+}

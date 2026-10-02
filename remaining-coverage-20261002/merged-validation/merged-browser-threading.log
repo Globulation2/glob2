@@ -1,0 +1,40 @@
+TAP version 13
+# Subtest: threaded software mode requires a successful shared-memory worker
+ok 1 - threaded software mode requires a successful shared-memory worker
+  ---
+  duration_ms: 1.9345
+  ...
+# Subtest: serial fallback explains missing isolation, memory and worker support
+ok 2 - serial fallback explains missing isolation, memory and worker support
+  ---
+  duration_ms: 0.361541
+  ...
+# Subtest: worker WebGL has an additional canvas-transfer requirement
+ok 3 - worker WebGL has an additional canvas-transfer requirement
+  ---
+  duration_ms: 0.407167
+  ...
+# Subtest: actual pthread errors and silent startup stalls are observed, then detached
+ok 4 - actual pthread errors and silent startup stalls are observed, then detached
+  ---
+  duration_ms: 0.384
+  ...
+# Subtest: synchronous pthread creation errors reach fallback and retain their exception
+ok 5 - synchronous pthread creation errors reach fallback and retain their exception
+  ---
+  duration_ms: 0.306459
+  ...
+# Subtest: persistence snapshots survive worker rename and byte changes during the database scan
+ok 6 - persistence snapshots survive worker rename and byte changes during the database scan
+  ---
+  duration_ms: 1.088708
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 57.807166

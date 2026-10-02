@@ -1,0 +1,22 @@
+{
+  "args": [
+    "--run-game",
+    "--output-dir",
+    "/Users/bradley/.codex/worktrees/remaining-test-coverage/glob2/artifacts/merged-validation/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/resumed",
+    "--ticks",
+    "64",
+    "--compute-threads",
+    "1",
+    "--telemetry",
+    "checksums",
+    "--replay",
+    "true",
+    "--save",
+    "final",
+    "--load-game",
+    "/Users/bradley/.codex/worktrees/remaining-test-coverage/glob2/artifacts/merged-validation/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/one-worker/checkpoint-32.game.gz"
+  ],
+  "status": 0,
+  "stdout": "nox::game started\nnox::gui.game.checkSum() = fb0eb358\nautomaticEndingGame ended: 64 ticks, 0 minutes, 2 seconds\nGLOB2_GAME_END ticks=64 winner_team=-1 seed=713 map=\"source\" orders=4 players=team0:Castor,team1:Cortex\nfinal: wrote /Users/bradley/.codex/worktrees/remaining-test-coverage/glob2/artifacts/merged-validation/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/resumed/final.game.gz\n",
+  "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\n"
+}

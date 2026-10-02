@@ -1,0 +1,30 @@
+{
+  "args": [
+    "--run-game",
+    "--output-dir",
+    "/Users/bradley/.codex/worktrees/remaining-test-coverage/glob2/artifacts/merged-validation/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/four-workers",
+    "--ticks",
+    "64",
+    "--compute-threads",
+    "4",
+    "--telemetry",
+    "checksums",
+    "--replay",
+    "true",
+    "--save",
+    "final",
+    "--map-file",
+    "/Users/bradley/.codex/worktrees/remaining-test-coverage/glob2/artifacts/merged-validation/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/source.map.gz",
+    "--game-seed",
+    "713",
+    "--player",
+    "castor",
+    "--player",
+    "cortex",
+    "--save",
+    "every:32"
+  ],
+  "status": 0,
+  "stdout": "nox::game started\ncheckpoint: wrote /Users/bradley/.codex/worktrees/remaining-test-coverage/glob2/artifacts/merged-validation/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/four-workers/checkpoint-32.game.gz\nnox::gui.game.checkSum() = fb0eb358\ncheckpoint: wrote /Users/bradley/.codex/worktrees/remaining-test-coverage/glob2/artifacts/merged-validation/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/four-workers/checkpoint-64.game.gz\nautomaticEndingGame ended: 64 ticks, 0 minutes, 2 seconds\nGLOB2_GAME_END ticks=64 winner_team=-1 seed=713 map=\"source\" orders=8 players=team0:Castor,team1:Cortex\nfinal: wrote /Users/bradley/.codex/worktrees/remaining-test-coverage/glob2/artifacts/merged-validation/cli/test_headless_workers_and_saved_continuation_match_complete_tick_records/four-workers/final.game.gz\n",
+  "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\n"
+}

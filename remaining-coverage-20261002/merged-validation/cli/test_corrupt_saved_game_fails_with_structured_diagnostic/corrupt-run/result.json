@@ -1,0 +1,1 @@
+{"schema_version":1,"status":"artifact_failure","diagnostic":"String mapName length > 1048576: unspecified iostream_category error"}

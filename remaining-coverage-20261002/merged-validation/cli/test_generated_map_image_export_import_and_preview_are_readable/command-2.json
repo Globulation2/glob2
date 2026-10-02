@@ -1,0 +1,11 @@
+{
+  "args": [
+    "--export-map-image",
+    "/Users/bradley/.codex/worktrees/remaining-test-coverage/glob2/artifacts/merged-validation/cli/test_generated_map_image_export_import_and_preview_are_readable/source.map.gz",
+    "--output",
+    "/Users/bradley/.codex/worktrees/remaining-test-coverage/glob2/artifacts/merged-validation/cli/test_generated_map_image_export_import_and_preview_are_readable/map.png"
+  ],
+  "status": 0,
+  "stdout": "Map image: /Users/bradley/.codex/worktrees/remaining-test-coverage/glob2/artifacts/merged-validation/cli/test_generated_map_image_export_import_and_preview_are_readable/map.png\n",
+  "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\n"
+}

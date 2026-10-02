@@ -1,0 +1,24 @@
+{
+  "args": [
+    "--generate-map",
+    "--output-dir",
+    "/Users/bradley/.codex/worktrees/remaining-test-coverage/glob2/artifacts/merged-validation/cli/test_structured_map_study_writes_report_map_and_manifest/study",
+    "--generator",
+    "2",
+    "--map-seed",
+    "713",
+    "--param",
+    "width=7",
+    "--param",
+    "height=7",
+    "--param",
+    "teams=2",
+    "--write-map",
+    "true",
+    "--report",
+    "terrain"
+  ],
+  "status": 0,
+  "stdout": "STUDY,2,713,1,16384,9303,563,5404,1114,6429,4583,9673,1113,5598,0.027796,13220154730093549149\nTUNE,717,2,1,2,990,1012,815,963,2,1\nQUALITY,1,0.994381,0.994381,0.911867,0.923105,0.917486,2,0.002532\nCOLONY,0,2,1,1343,717,287,46,0,1605.8,0.923105,0.502809\nCOLONY,1,2,1,1708,1315,309,46,0,2102.7,0.911867,0.497191\nREQUEST,river,3,713,7,7,2,4\nOPTION,algae-amount,100\nOPTION,desert,0\nOPTION,fruit,4\nOPTION,grass,75\nOPTION,hilltop-stone,0\nOPTION,repeat,0\nOPTION,river-width,35\nOPTION,sand,3\nOPTION,smoothing,4\nOPTION,stone-amount,100\nOPTION,water,45\nOPTION,wheat-amount,100\nOPTION,winding-river,1\nOPTION,wood-amount,100\nSTART,0,6,37\nSTART,1,85,46\nMAPFILE,0,/Users/bradley/.codex/worktrees/remaining-test-coverage/glob2/artifacts/merged-validation/cli/test_structured_map_study_writes_report_map_and_manifest/study/map-r0.map.gz,1134927,2286067840712033302\nROTATIONS,2,1,0,1,1,1,1\n",
+  "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\n"
+}

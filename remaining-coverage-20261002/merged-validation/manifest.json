@@ -1,0 +1,24 @@
+{
+  "revision": "15f49776215d879fbc5f7e0de849e3f8be92fcfa",
+  "merged_prs": [
+    542,
+    543,
+    544,
+    545,
+    546,
+    547,
+    548,
+    549,
+    553,
+    554
+  ],
+  "native_focused_cases": 57,
+  "cli_cases": 7,
+  "ci_layout_tests": 22,
+  "parity_guard_tests": 4,
+  "browser_threading_unit_tests": 6,
+  "build_exit": 0,
+  "failures": 0,
+  "cross_platform_ci": "pending",
+  "source_comparison": "src, libgag and libusl are identical to the validated e528b3f368934019f32de28c87e89f7775e51166 stack. Master integration added image tests and moved CI into a reusable Linux workflow."
+}
