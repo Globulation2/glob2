@@ -99,20 +99,28 @@ Measured by `LanMatchHarness` ("LAN input delay ...", `python3 test/run_tests.py
 engine --tag benchmark --filter 'LanMatchHarness/*'`). A host and one guest on one
 machine over loopback WSS play FourSquares1 with a Nicowar AI. The guest's turn traffic
 can get an emulated one-way delay. Input delay is the time from an order entering the
-GUI's order queue (a click) to its execution, including up to one frame before the
-engine picks it up. Each row covers about 60 orders over 25 s, on macOS arm64.
+GUI's order queue (a click, at a random moment between frames) to its execution. Each
+row covers about 60 orders over 25 s, on macOS arm64. The benchmark also writes a
+per-stage breakdown (pickup, uplink, relay wait, downlink, buffer wait) and stall counts.
 
 | Link (guest, one way) | Host mean / p95 | Guest mean / p95 |
 | --- | --- | --- |
-| loopback | 201 / 221 ms | 230 / 277 ms |
-| +25 ms | 207 / 240 ms | 291 / 320 ms |
-| +50 ms | 200 / 200 ms | 370 / 400 ms |
+| loopback | 59 / 76 ms | 87 / 144 ms |
+| +50 ms | 59 / 77 ms | 164 / 262 ms |
 
-With the online relay's bundle interval of 2 ticks, the same runs measured about 240 ms
-for both on loopback and 419 ms for the guest at +50 ms. The host's delay does not depend
-on the guest's link. The old LAN game used one fixed delay for everyone, computed at the
-start from lobby pings. It is typically one or two ticks (40–80 ms) on a quiet LAN, but a
-single slow or stalled player held up every player. Expect the new LAN game to react
-later to clicks than the old one on a good network, and to keep running for everyone
-when one connection is bad. Whether that trade feels right is what this playtest
-decides.
+These are from a quiet machine. On a heavily loaded one (load average around 60), the
+engines' threads were descheduled often enough that each client measured more than
+10 ms of jitter and kept a two-tick buffer: host 140 / 162 ms and guest 193 / 241 ms on
+loopback, guest 261 / 292 ms at +50 ms. Before the latency work (see
+[measured delay](turn-protocol.md#measured-delay)) the same loaded machine measured
+197 / 238, 279 / 383 and 455 / 505 ms. The host's delay does not depend on the guest's
+link.
+
+The old LAN game used one fixed delay for everyone, computed at the start from lobby
+pings. It is typically one or two ticks (40–80 ms) on a quiet LAN, but a single slow or
+stalled player held up every player. On a good network the new LAN game should now
+react about as quickly as the old one: a click waits for the next frame, a round trip
+to the host and about a tick. It keeps running for everyone when one connection is
+bad. Whether it feels right is what this playtest decides. In particular, note any
+small hitches on Wi-Fi: a client with under 10 ms of jitter holds no buffer and absorbs
+a late bundle as a short wait.
