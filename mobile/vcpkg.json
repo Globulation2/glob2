@@ -11,7 +11,8 @@
       "name": "sdl2-image",
       "default-features": false,
       "features": [
-        "libjpeg-turbo"
+        "libjpeg-turbo",
+        "libwebp"
       ]
     },
     {

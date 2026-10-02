@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 #pragma once
 #include "ui/FrontendUI.h"
+#include "Team.h"
 #include <GraphicContext.h>
 #include <array>
 #include <optional>
@@ -110,8 +111,8 @@ class InGameAllianceScreen : public Glob2UI::InGameDialog
 	bool editable = true;
 	int players = 0;
 	// Settings of every player of the local team, kept for the masks.
-	std::array<bool, 16> ownAlliance{}, ownNormal{}, ownFood{}, ownMarket{}, ownChat{};
-	std::array<int, 16> teamOf{};
+	std::array<bool, Team::MAX_COUNT> ownAlliance{}, ownNormal{}, ownFood{}, ownMarket{}, ownChat{};
+	std::array<int, Team::MAX_COUNT> teamOf{};
 	bool &field(Entry &entry, Setting setting) const;
 	// Players of one team share alliance and vision.
 	void mirror(int player, Setting setting);

@@ -111,7 +111,9 @@ def verify_install(stage):
         "usr/share/glob2/campaigns/Tutorial_Campaign.txt",
         "usr/share/glob2/scripts/tutorial_part1.sgsl",
     )
-    missing = [name for name in required if not (stage / name).is_file()]
+    missing = [name for name in required if not (stage / name).is_file()
+               and not (name.startswith('usr/share/glob2/data/') and name.endswith('.png')
+                        and (stage / Path(name).with_suffix('.webp')).is_file())]
     if missing:
         raise SystemExit(f"incomplete installation: {missing}")
 

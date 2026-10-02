@@ -57,3 +57,38 @@ class Glob2Storage {
 }
 if (typeof module !== 'undefined' && module.exports) module.exports = Glob2Storage;
 if (typeof globalThis !== 'undefined') globalThis.Glob2Storage = Glob2Storage;
+
+// IDBFS normally reads file bytes after its asynchronous database scan. Worker
+// writes can rename/delete those paths meanwhile. Capture bytes and metadata in
+// one UI turn, then let the SDK commit that immutable snapshot asynchronously.
+function glob2SnapshotPersistence(idbfs) {
+  const original = idbfs.syncfs;
+  const load = idbfs.loadLocalEntry;
+  idbfs.syncfs = (mount, populate, callback) => {
+    if (populate) return original(mount, populate, callback);
+    idbfs.getLocalSet(mount, (error, local) => {
+      if (error) return callback(error);
+      const snapshot = new Map();
+      for (const path of Object.keys(local.entries)) {
+        // The pinned SDK's local loader is synchronous, as is reconciliation's
+        // invocation of it. Keep this adapter checked when upgrading IDBFS.
+        load(path, (failure, entry) => {
+          error ||= failure;
+          if (!failure) snapshot.set(path, {...entry,
+            ...(entry.contents ? {contents:entry.contents.slice()} : {})});
+        });
+      }
+      if (error) return callback(error);
+      idbfs.getRemoteSet(mount, (failure, remote) => {
+        if (failure) return callback(failure);
+        const previous = idbfs.loadLocalEntry;
+        idbfs.loadLocalEntry = (path, done) => done(null, snapshot.get(path));
+        try { idbfs.reconcile(local, remote, callback); }
+        catch (failure) { callback(failure); }
+        finally { idbfs.loadLocalEntry = previous; }
+      });
+    });
+  };
+}
+Glob2Storage.installSnapshotPersistence = glob2SnapshotPersistence;
+if (typeof globalThis !== 'undefined') globalThis.glob2SnapshotPersistence = glob2SnapshotPersistence;

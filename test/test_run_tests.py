@@ -93,23 +93,28 @@ class ShardTest(unittest.TestCase):
         with self.assertRaises(SystemExit):
             run_tests.shard(jobs, '4/3')
 
-    def test_unit_binary_is_one_job(self):
+    def test_unit_display_cases_are_isolated_from_headless_batch(self):
         cases = run_tests.parse_listing(LISTING, 'unit')
         jobs = run_tests.make_jobs(cases, args())
-        self.assertEqual(len(jobs), 1)
-        self.assertTrue(jobs[0].whole)
-        self.assertEqual(run_tests.doctest_filter(jobs[0]), [])
+        self.assertEqual(len(jobs), 2)
+        display, headless = jobs
+        self.assertEqual(display.cases, [cases[1]])
+        self.assertFalse(display.whole)
+        self.assertTrue(headless.whole)
+        self.assertFalse(headless.display)
+        self.assertEqual(headless.cases, [cases[0], cases[2], cases[3]])
+        self.assertEqual(run_tests.doctest_filter(headless), ['-tce=*[display*'])
         subset = run_tests.make_jobs(cases[:2], args(), cases)
-        self.assertEqual([job.subset for job in subset], [True, True])
-        self.assertEqual(run_tests.doctest_filter(subset[0]), ['-tc=feeds the last worker', '-ts=HungryDefeat'])
-        self.assertEqual(run_tests.doctest_filter(subset[1]),
+        self.assertEqual(run_tests.doctest_filter(subset[0]),
                          ['-tc=renders the bar [display:1024x768][artifacts]', '-ts=PointBar'])
-        self.assertFalse(run_tests.make_jobs(cases, args(), cases)[0].subset)
+        self.assertEqual(run_tests.doctest_filter(subset[1]),
+                         ['-tce=*[display*', '-tc=feeds the last worker', '-ts=HungryDefeat'])
+        self.assertEqual(run_tests.make_jobs([cases[1]], args(), cases)[0].cases, [cases[1]])
         benchmark = run_tests.parse_listing(LISTING.replace('sweeps every landscape [slow]', 'sweeps every landscape [benchmark]'), 'unit')
         kept, _ = run_tests.select(benchmark, args())
         self.assertEqual(len(kept), len(benchmark) - 1)
-        job, = run_tests.make_jobs(kept, args(), benchmark)
-        self.assertEqual(run_tests.doctest_filter(job), ['-tce=*[benchmark]*'])
+        display, headless = run_tests.make_jobs(kept, args(), benchmark)
+        self.assertEqual(run_tests.doctest_filter(headless), ['-tce=*[display*,*[benchmark]*'])
 
     def test_same_name_in_two_suites_stays_in_its_suite(self):
         listing = LISTING.replace('<OverallResultsTestCases', '<TestCase name="feeds the last worker" testsuite="InnSwap" '
@@ -118,7 +123,7 @@ class ShardTest(unittest.TestCase):
         kept, _ = run_tests.select(cases, args(filter=['InnSwap/*']))
         jobs = run_tests.make_jobs(kept, args(), cases)
         self.assertEqual(len(jobs), 1)
-        self.assertEqual(run_tests.doctest_filter(jobs[0]), ['-tc=feeds the last worker', '-ts=InnSwap'])
+        self.assertEqual(run_tests.doctest_filter(jobs[0]), ['-tce=*[display*', '-tc=feeds the last worker', '-ts=InnSwap'])
         foreign = run_tests.Result(jobs[0], 'pass', 0.1, junit=(
             '<testsuites><testsuite name="x"><testcase classname="test/HungryDefeatHarness.cpp" name="feeds the last worker"/>'
             '<testcase classname="test/InnSwapHarness.cpp" name="feeds the last worker"/></testsuite></testsuites>'))

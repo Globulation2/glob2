@@ -27,6 +27,18 @@ Sint32 displayedPosY(const BuildingGuiStateMap& m, const Building& b)
 	return (s && s->pendingPosY) ? *s->pendingPosY : b.posY;
 }
 
+Sint32 displayedPosX(const BuildingGuiStateMap& m, Uint16 gid, Sint32 posX)
+{
+	auto it = m.find(gid);
+	return (it != m.end() && it->second.pendingPosX) ? *it->second.pendingPosX : posX;
+}
+
+Sint32 displayedPosY(const BuildingGuiStateMap& m, Uint16 gid, Sint32 posY)
+{
+	auto it = m.find(gid);
+	return (it != m.end() && it->second.pendingPosY) ? *it->second.pendingPosY : posY;
+}
+
 Sint32 displayedMaxUnitWorking(const BuildingGuiStateMap& m, const Building& b)
 {
 	const BuildingGuiState* s = lookup(m, b);

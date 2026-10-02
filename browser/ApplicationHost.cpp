@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <ApplicationHost.h>
+#include "Runtime.h"
+#include <emscripten/threading.h>
 #include <BrowserTextInput.h>
 #include <InterfacePresentation.h>
 #include <map>
@@ -13,11 +15,73 @@ namespace GAGCore::ApplicationHost
 {
 namespace
 {
+struct Diagnostics {
+    std::string screen, screenClass, import;
+    std::uint32_t tick = 0;
+    unsigned frames = 0;
+    int paused = -1, torus = -1, room = -1, custom = -1;
+    bool hasTick = false;
+    std::map<std::uintptr_t, std::string> controls;
+};
+thread_local Diagnostics diagnostics;
+void publishDiagnostics() {
+    auto &d = diagnostics;
+    // One publication at a frame boundary; strings are consumed synchronously.
+    MAIN_THREAD_EM_ASM({
+        const screen = UTF8ToString($0); const imported = UTF8ToString($1);
+        if (screen) Module.glob2Screen = screen;
+        const screenClass = UTF8ToString($9);
+        if (screenClass) Module.glob2ScreenClass = screenClass;
+        if (imported) Module.importState = imported;
+        if ($2) Module.glob2Tick = $3 >>> 0;
+        Module.glob2Frames = (Module.glob2Frames || 0) + $4;
+        if ($5 >= 0) Module.glob2Paused = !!$5;
+        if ($6 >= 0) Module.glob2Torus = !!$6;
+        if ($7 >= 0) Module.glob2RoomCanStart = !!$7;
+        if ($8 >= 0) Module.glob2CustomGameReady = !!$8;
+    }, d.screen.c_str(), d.import.c_str(), d.hasTick, d.tick, d.frames,
+       d.paused, d.torus, d.room, d.custom, d.screenClass.c_str());
+    for (const auto &[owner, json] : d.controls) {
+        MAIN_THREAD_EM_ASM({
+            Module.glob2Controls ||= new Map();
+            const text = UTF8ToString($1);
+            if (text) Module.glob2Controls.set($0, JSON.parse(text));
+            else Module.glob2Controls.delete($0);
+        }, owner, json.c_str());
+    }
+    d = {};
+    // Context ownership can differ from DOM ownership in the threaded runtime.
+    int dimensions[3]{};
+    EM_ASM({
+        if (typeof GLctx === 'undefined' || !GLctx || GLctx.isContextLost()) return;
+        HEAP32[$0 >> 2] = GLctx.drawingBufferWidth;
+        HEAP32[($0 >> 2) + 1] = GLctx.drawingBufferHeight;
+        HEAP32[($0 >> 2) + 2] = GLctx.getError();
+    }, dimensions);
+    if (dimensions[0]) MAIN_THREAD_EM_ASM({
+        const previous = Module.glob2RenderContext;
+        Module.glob2RenderContext = ({width:$0, height:$1, error:$2 || previous?.error || 0});
+    }, dimensions[0], dimensions[1], dimensions[2]);
+}
 struct ScheduledLoop { std::unique_ptr<Loop> loop; std::function<void()> complete; };
 void scheduledFrame(void* opaque)
 {
     auto* state = static_cast<ScheduledLoop*>(opaque);
-    if (EM_ASM_INT({ return Module.gpuRestorePending ? 1 : 0; })) {
+    // Tests may hold a host turn without assuming its timer's JavaScript realm.
+    if (MAIN_THREAD_EM_ASM_INT({ return Module.glob2FrameGate?.() === false ? 1 : 0; })) {
+        emscripten_async_call(scheduledFrame, state, 10);
+        return;
+    }
+    EM_ASM({
+        if (typeof GLctx === 'undefined' || !GLctx || Module.contextEventsInstalled) return;
+        Module.contextEventsInstalled = true;
+        GLctx.canvas.addEventListener('webglcontextlost', event => {
+            event.preventDefault(); Module.gpuLost = true;
+        });
+        GLctx.canvas.addEventListener('webglcontextrestored', () => { Module.gpuRestorePending = true; });
+    });
+    if (EM_ASM_INT({ return Module.gpuRestorePending ? 1 : 0; }) ||
+        MAIN_THREAD_EM_ASM_INT({ return Module.gpuRestorePending ? 1 : 0; })) {
         // SDK-pinned compatibility state owns shaders and streaming buffers.
         // Recreate it before asking the shared renderer to restore textures.
         EM_ASM({
@@ -40,25 +104,33 @@ void scheduledFrame(void* opaque)
             GLctx.currentArrayBufferBinding = 0;
         });
         GraphicContext::restoreBrowserContext();
-        EM_ASM({
+        EM_ASM({ Module.gpuRestorePending = false; Module.gpuLost = false; });
+        MAIN_THREAD_EM_ASM({
             Module.gpuRestorePending = false;
             Module.gpuLost = false;
             Module.visibilityPending = true;
             Module.gpuRestores = (Module.gpuRestores || 0) + 1;
         });
     }
-    std::vector<SDL_Event> events;
-    SDL_Event event;
-    while (SDL_PollEvent(&event)) events.push_back(event);
-    const bool running = state->loop->frame(SDL_GetTicks(), events);
+    bool running;
+    {
+        std::vector<SDL_Event> events;
+        SDL_Event event;
+        while (SDL_PollEvent(&event)) events.push_back(event);
+        running = state->loop->frame(SDL_GetTicks(), events);
+    }
+    publishDiagnostics();
     // Diagnostics: one increment per processed host frame, so tests can wait
     // for queued input to be consumed.
-    EM_ASM({ Module.glob2Loop = (Module.glob2Loop || 0) + 1; });
+    MAIN_THREAD_EM_ASM({ Module.glob2Loop = (Module.glob2Loop || 0) + 1; });
     if (!running) {
         state->loop.reset();
-        auto complete = std::move(state->complete);
-        delete state;
-        complete();
+        {
+            auto complete = std::move(state->complete);
+            delete state;
+            complete();
+        }
+        Glob2Browser::releaseApplicationThread();
         return;
     }
     // Each callback completes before the next frame is scheduled. Browser UI
@@ -68,6 +140,7 @@ void scheduledFrame(void* opaque)
 }
 void run(std::unique_ptr<Loop> loop, std::function<void()> complete)
 {
+    Glob2Browser::hosted = true;
     auto* state = new ScheduledLoop{std::move(loop), std::move(complete)};
     emscripten_async_call(scheduledFrame, state, 0);
 }
@@ -78,7 +151,9 @@ void wait(std::uint32_t)
 }
 bool takeVisibilityChange(bool& hidden)
 {
-    const int state = EM_ASM_INT({
+    if (EM_ASM_INT({ return typeof GLctx !== 'undefined' && GLctx && GLctx.isContextLost() ? 1 : 0; }))
+        MAIN_THREAD_EM_ASM({ Module.gpuLost = true; });
+    const int state = MAIN_THREAD_EM_ASM_INT({
         // WebGL becomes lost before its DOM event is dispatched. Do not let
         // a scheduled frame query invalid GPU capabilities in that interval.
         if (typeof GLctx !== 'undefined' && GLctx && GLctx.isContextLost())
@@ -98,7 +173,7 @@ bool takeVisibilityChange(bool& hidden)
 bool presentationMetrics(ViewportMetrics& metrics,InputCapabilities& input)
 {
     double values[10]{};
-    EM_ASM({
+    MAIN_THREAD_EM_ASM({
         const v=Module.presentationMetrics;
         if (!v) return;
         const values=Array.of(v.width,v.height,v.safe.left,v.safe.top,v.safe.right,v.safe.bottom,
@@ -126,7 +201,7 @@ bool openUrl(const std::string& url)
 }
 bool takeViewportSize(int& width, int& height)
 {
-    return EM_ASM_INT({
+    return MAIN_THREAD_EM_ASM_INT({
         const size = Module.pendingViewport;
         Module.pendingViewport = null;
         if (!size || size.width <= 0 || size.height <= 0) return 0;
@@ -140,7 +215,7 @@ class BrowserFileSelection : public FileSelection {
     int id;
 public:
     explicit BrowserFileSelection(const std::string& extension) {
-        id = EM_ASM_INT({
+        id = MAIN_THREAD_EM_ASM_INT({
             Module.fileSelections ||= new Map();
             const id = Module.nextFileSelectionId = (Module.nextFileSelectionId || 0) + 1;
             const selection = new Glob2FileSelection([UTF8ToString($0)]);
@@ -150,22 +225,22 @@ public:
         }, extension.c_str());
     }
     ~BrowserFileSelection() override {
-        EM_ASM({ Module.fileSelections.get($0).dispose(); Module.fileSelections.delete($0); }, id);
+        MAIN_THREAD_EM_ASM({ Module.fileSelections.get($0).dispose(); Module.fileSelections.delete($0); }, id);
     }
     FileSelectionState state() const override {
-        return static_cast<FileSelectionState>(EM_ASM_INT({
+        return static_cast<FileSelectionState>(MAIN_THREAD_EM_ASM_INT({
             const state = Module.fileSelections.get($0).state;
             return state === 'selected' ? 1 : state === 'cancelled' ? 2 : state === 'failed' ? 3 : 0;
         }, id));
     }
     SelectedFile takeFile() override {
         if (state() != FileSelectionState::Selected) throw std::logic_error("No selected file is available");
-        const int nameSize = EM_ASM_INT({ return lengthBytesUTF8(Module.fileSelections.get($0).file.name) + 1; }, id);
-        const int size = EM_ASM_INT({ return Module.fileSelections.get($0).file.bytes.length; }, id);
+        const int nameSize = MAIN_THREAD_EM_ASM_INT({ return lengthBytesUTF8(Module.fileSelections.get($0).file.name) + 1; }, id);
+        const int size = MAIN_THREAD_EM_ASM_INT({ return Module.fileSelections.get($0).file.bytes.length; }, id);
         std::vector<char> name(nameSize);
         SelectedFile file;
         file.bytes.resize(size);
-        EM_ASM({
+        MAIN_THREAD_EM_ASM({
             const selection = Module.fileSelections.get($0);
             stringToUTF8(selection.file.name, $1, $2);
             HEAPU8.set(selection.file.bytes, $3);
@@ -181,11 +256,11 @@ bool canImportFiles() { return true; }
 std::unique_ptr<FileSelection> selectFile(const std::string& extension) {
     return std::make_unique<BrowserFileSelection>(extension);
 }
-bool storageRestoreFailed() { return EM_ASM_INT({ return Module.storageRestore === 'failed'; }); }
+bool storageRestoreFailed() { return MAIN_THREAD_EM_ASM_INT({ return Module.storageRestore === 'failed'; }); }
 bool canExportFiles() { return true; }
 bool exportFile(const std::string& name, const std::vector<unsigned char>& bytes)
 {
-    return EM_ASM_INT({
+    return MAIN_THREAD_EM_ASM_INT({
         try {
             const blob = new Blob([HEAPU8.slice($1, $1 + $2)], {type:'application/octet-stream'});
             const url = URL.createObjectURL(blob);
@@ -203,7 +278,7 @@ class BrowserPersistence : public Persistence {
     int id;
 public:
     BrowserPersistence() {
-        id = EM_ASM_INT({
+        id = MAIN_THREAD_EM_ASM_INT({
             Module.persistenceResults ||= new Map();
             const id = Module.nextPersistenceId = (Module.nextPersistenceId || 0) + 1;
             Module.persistenceResults.set(id, 0);
@@ -212,56 +287,32 @@ public:
             return id;
         });
     }
-    ~BrowserPersistence() override { EM_ASM({ Module.persistenceResults.delete($0); }, id); }
+    ~BrowserPersistence() override { MAIN_THREAD_EM_ASM({ Module.persistenceResults.delete($0); }, id); }
     PersistenceState state() const override {
-        return static_cast<PersistenceState>(EM_ASM_INT({ return Module.persistenceResults.get($0); }, id));
+        return static_cast<PersistenceState>(MAIN_THREAD_EM_ASM_INT({ return Module.persistenceResults.get($0); }, id));
     }
 };
 }
 std::unique_ptr<Persistence> persistStorage() { return std::make_unique<BrowserPersistence>(); }
-void importChanged(const char* state) { EM_ASM({ Module.importState = UTF8ToString($0); }, state); }
-void screenChanged(const char* name)
-{
-    EM_ASM({ Module['glob2Screen'] = Module['glob2ScreenClass'] = UTF8ToString($0); }, name);
+void importChanged(const char* state) { diagnostics.import = state; }
+void screenChanged(const char* name) { diagnostics.screen = diagnostics.screenClass = name; }
+void simulationAdvanced(std::uint32_t tick) {
+    diagnostics.tick = tick; diagnostics.hasTick = true; diagnostics.screen = "match";
 }
-void simulationAdvanced(std::uint32_t tick)
-{
-    EM_ASM({ Module['glob2Tick'] = $0; Module['glob2Screen'] = 'match'; }, tick);
+void exited(int result) {
+    diagnostics.screen = "exited";
+    publishDiagnostics();
+    Glob2Browser::completed(result);
 }
-void exited(int result)
-{
-    EM_ASM({
-        Module['glob2Screen'] = 'exited';
-        if (Module['onGameExit']) Module['onGameExit']($0);
-    }, result);
-}
-void roomReady(bool canStart) { EM_ASM({ Module.glob2RoomCanStart = Boolean($0); }, canStart); }
-void customGameReady(bool canStart) { EM_ASM({ Module.glob2CustomGameReady = Boolean($0); }, canStart); }
+void roomReady(bool canStart) { diagnostics.room = canStart; }
+void customGameReady(bool canStart) { diagnostics.custom = canStart; }
 bool controlsObserved() { return true; }
-void controlsChanged(const void *owner, const char *json)
-{
-    EM_ASM({
-        Module.glob2Controls ||= new Map();
-        const text = $1 ? UTF8ToString($1) : '';
-        if (text) Module.glob2Controls.set($0, JSON.parse(text));
-        else Module.glob2Controls.delete($0);
-    }, owner, json);
+void controlsChanged(const void *owner, const char *json) {
+    diagnostics.controls[reinterpret_cast<std::uintptr_t>(owner)] = json ? json : "";
 }
-void matchFrame(bool paused)
-{
-    EM_ASM({
-        Module['glob2Frames'] = (Module['glob2Frames'] || 0) + 1;
-        Module['glob2Paused'] = Boolean($0);
-    }, paused);
-}
-void overviewDrawn(bool drawn)
-{
-    // Reported every match frame; publish only changes.
-    static int published = -1;
-    if (published == int(drawn)) return;
-    published = drawn;
-    EM_ASM({ Module['glob2Torus'] = Boolean($0); }, drawn);
-}
+void matchFrame(bool paused) { ++diagnostics.frames; diagnostics.paused = paused; }
+void overviewDrawn(bool drawn) { diagnostics.torus = drawn; }
+
 }
 
 namespace GAGCore {
@@ -271,17 +322,17 @@ std::set<const void*> browserTextVisible;
 }
 void forgetBrowserTextInput(const void* owner) {
     browserTextCallbacks.erase(owner);browserTextVisible.erase(owner);
-    EM_ASM({ Module.textBridge?.remove($0); },owner);
+    MAIN_THREAD_EM_ASM({ Module.textBridge?.remove($0); },owner);
 }
 void focusBrowserTextInput(const void* owner) {
-    EM_ASM({ Module.textBridge?.focus($0); },owner);
+    MAIN_THREAD_EM_ASM({ Module.textBridge?.focus($0); },owner);
 }
 void beginBrowserTextFrame() {
     // DOM editing is synchronized before any dialog action can read its model.
     auto callbacks=browserTextCallbacks;
     for (const auto& [owner,changed]:callbacks) {
         size_t cursor=0;int action=0;
-        char* value=reinterpret_cast<char*>(EM_ASM_PTR({
+        char* value=reinterpret_cast<char*>(MAIN_THREAD_EM_ASM_PTR({
             const change=Module.textBridge?.take($0);
             if (!change) return 0;
             HEAPU32[$1>>2]=lengthBytesUTF8(change.value.slice(0,change.cursor));
@@ -294,14 +345,14 @@ void beginBrowserTextFrame() {
 }
 void endBrowserTextFrame() {
     std::erase_if(browserTextCallbacks,[](const auto& item){return !browserTextVisible.count(item.first);});
-    EM_ASM({ Module.textBridge?.end();Module.textBridge?.begin(); });
+    MAIN_THREAD_EM_ASM({ Module.textBridge?.end();Module.textBridge?.begin(); });
     browserTextVisible.clear();
 }
 void browserTextInput(const void* owner,SDL_Rect rect,int width,int height,const std::string& value,
     bool password,size_t maximum,BrowserTextChange changed,const SDL_Rect* clip) {
     browserTextVisible.insert(owner);browserTextCallbacks[owner]=std::move(changed);
     const SDL_Rect visible=clip ? *clip : SDL_Rect{0,0,width,height};
-    EM_ASM({ Module.textBridge?.field($0,{x:$1,y:$2,w:$3,h:$4},$5,$6,UTF8ToString($7),!!$8,$9,{x:$10,y:$11,w:$12,h:$13}); },
+    MAIN_THREAD_EM_ASM({ Module.textBridge?.field($0,{x:$1,y:$2,w:$3,h:$4},$5,$6,UTF8ToString($7),!!$8,$9,{x:$10,y:$11,w:$12,h:$13}); },
         owner,rect.x,rect.y,rect.w,rect.h,width,height,value.c_str(),password,maximum,visible.x,visible.y,visible.w,visible.h);
 }
 bool hasBrowserTextInput(const void* owner) { return browserTextCallbacks.count(owner)>0; }

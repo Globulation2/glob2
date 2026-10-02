@@ -47,8 +47,23 @@ function fitCanvas() {
 addEventListener('resize', fitCanvas);
 new MutationObserver(fitCanvas).observe(canvas, {attributes:true,attributeFilter:['width','height']});
 fitCanvas();
+function chooseRenderer() {
+    const requested = new URLSearchParams(location.search).get('renderer');
+    const accelerated = () => {
+      // Probe a scratch canvas: once the game canvas has a WebGL context it can't use 2D.
+      const probe = document.createElement('canvas').getContext('webgl2', {failIfMajorPerformanceCaveat:true});
+      if (!probe) return false;
+      const info = probe.getExtension('WEBGL_debug_renderer_info');
+      const name = String(probe.getParameter(info ? info.UNMASKED_RENDERER_WEBGL : probe.RENDERER));
+      probe.getExtension('WEBGL_lose_context')?.loseContext();
+      // Chrome doesn't flag SwiftShader as a performance caveat, so check the rasterizer too.
+      return !/SwiftShader|llvmpipe|softpipe|Software Rasterizer|Basic Render Driver/i.test(name);
+    };
+    return requested === 'webgl2' || (requested !== 'software' && accelerated());
+ }
 var Module = {
   noInitialRun: true,
+  renderer: chooseRenderer() ? 'webgl2' : 'software',
   canvas,
   GL_MAX_TEXTURE_IMAGE_UNITS: 1,
   browserLog: [],
@@ -62,6 +77,7 @@ var Module = {
     ENV.HOME = '/home/web_user';
     FS.mkdirTree('/home/web_user');
     Module.storage = new Glob2Storage(callback => FS.syncfs(false, callback));
+    glob2SnapshotPersistence(IDBFS);
     IDBFS.queuePersist = () => Module.storage.changed();
     Module.saveMount = FS.mount(IDBFS, {autoPersist:true}, '/home/web_user').mount;
     addRunDependency('browser-saves');
@@ -86,29 +102,14 @@ var Module = {
     // WebGL2 is the default when the browser accelerates it. Emulated WebGL2, such as
     // SwiftShader, costs several CPU cores where software rendering needs a fraction of
     // one, so it counts as unavailable unless ?renderer=webgl2 asks for it.
-    const requested = new URLSearchParams(location.search).get('renderer');
-    const accelerated = () => {
-      // Probe a scratch canvas: once the game canvas has a WebGL context it can't use 2D.
-      const probe = document.createElement('canvas').getContext('webgl2', {failIfMajorPerformanceCaveat:true});
-      if (!probe) return false;
-      const info = probe.getExtension('WEBGL_debug_renderer_info');
-      const name = String(probe.getParameter(info ? info.UNMASKED_RENDERER_WEBGL : probe.RENDERER));
-      probe.getExtension('WEBGL_lose_context')?.loseContext();
-      // Chrome doesn't flag SwiftShader as a performance caveat, so check the rasterizer too.
-      return !/SwiftShader|llvmpipe|softpipe|Software Rasterizer|Basic Render Driver/i.test(name);
-    };
-    const webgl2 = requested === 'webgl2' || (requested !== 'software' && accelerated());
-    // The torus overview depth-tests its ring, so the GPU context needs a depth buffer.
-    const context = webgl2 ? canvas.getContext('webgl2', {
-      alpha:false, antialias:false, depth:true, stencil:false
-    }) : null;
-    const gpu = Boolean(context);
-    Module.renderer = gpu ? 'webgl2' : 'software';
+    const gpu = Module.renderer === 'webgl2';
     // Invite links land here as ?join=<code> (see docs/multiplayer/client.md); the
     // instance serving this page is the one to join.
     const join = new URLSearchParams(location.search).get('join');
     const invite = join && /^[A-Za-z0-9]{6,16}$/.test(join) ? ['--join', join, '--instance', location.origin] : [];
-    Module.callMain(['-s', width + 'x' + height, '-F', '-C', gpu ? '-g' : '-G', ...invite]);
+    Module.start(['-s', width + 'x' + height, '-F', '-C', gpu ? '-g' : '-G', ...invite]).catch(error => Module.onAbort(String(error)));
+  },
+  onApplicationStarted() {
     document.body.classList.add('ready');
     loading.setAttribute('aria-hidden','true');
   },
@@ -140,9 +141,9 @@ function controls() {
 // Read-only observability shared by developer tools and automated assertions.
 Object.defineProperty(window, 'glob2Diagnostics', {value: Object.freeze({
   snapshot() {
-    return Object.freeze({version:1, renderer:Module.renderer || 'loading', contextLost:Boolean(Module.gpuLost), contextRestores:Module.gpuRestores || 0, screen:Module.glob2Screen || 'loading',
+    return Object.freeze({version:1, executionMode:Module.executionMode || 'loading', threadFallback:Module.threadFallback || null, workerCount:Module.glob2ApplicationStarted ? (Module._glob2_worker_count?.() || 0) : 0, renderer:Module.renderer || 'loading', renderContext:Module.glob2RenderContext || null, contextLost:Boolean(Module.gpuLost), contextRestores:Module.gpuRestores || 0, screen:Module.glob2Screen || 'loading',
       screenClass:Module.glob2ScreenClass || '', roomCanStart:Boolean(Module.glob2RoomCanStart), customGameReady:Boolean(Module.glob2CustomGameReady), tick:Module.glob2Tick || 0, frames:Module.glob2Frames || 0, loop:Module.glob2Loop || 0,
-      paused:Boolean(Module.glob2Paused), torus:Module.glob2Screen === 'match' && Boolean(Module.glob2Torus), width:canvas.width, height:canvas.height,
+      paused:Boolean(Module.glob2Paused), torus:Module.glob2Screen === 'match' && Boolean(Module.glob2Torus), width:Module.glob2RenderContext?.width || canvas.width, height:Module.glob2RenderContext?.height || canvas.height,
       restore:Module.storageRestore || 'restoring',
       import:Module.importState || 'idle',
       persisting:Module.storage?.state === 'writing',

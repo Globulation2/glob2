@@ -25,6 +25,8 @@
 
 namespace GAGCore
 {
+    class RenderBatch;
+
     class RenderBackend;
     class SoftwareFramePresenter;
     struct RenderOperations;
@@ -433,10 +435,11 @@ namespace GAGCore
 		// created while it is active. Created after the context above exists and
 		// destroyed before it is torn down. Plain unsigned/int fields, not GL
 		// types, to keep GL headers out of this public header (see Sprite::vbo).
+		std::unique_ptr<RenderBatch> renderBatch;
+        bool renderBatchEnabled=true;
 		unsigned unitShaderProgram = 0;
 		int unitShaderLocBase = -1, unitShaderLocTeam = -1;
 		int unitShaderLocHasBase = -1, unitShaderLocHasTeam = -1;
-		int unitShaderLocHueShift = -1, unitShaderLocAlpha = -1;
 		bool unitShaderFailureLogged = false;
 		void createUnitShader();
 		void destroyUnitShader();
@@ -478,6 +481,9 @@ namespace GAGCore
         bool isResponsiveViewport() const { return responsiveViewport; }
         bool hasPortableRenderer() const { return bool(renderer) && !nativeSoftware; }
         double logicalUnitsPerPoint() const;
+        //! Logical pixels per authored font pixel for text a touch painter sizes in
+        //! points: logicalUnitsPerPoint() times the player's text-size preference.
+        double textUnitsPerPoint() const;
         void setUITransform(float scale=1, float x=0, float y=0, const SDL_Rect* bounds=nullptr);
         Uint32 windowID() const { return SDL_GetWindowID(window); }
 #ifdef GLOB2_WEBGL2
@@ -592,7 +598,11 @@ namespace GAGCore
 		//! shader is unavailable so the caller can fall back to two ordinary
 		//! drawSurface calls (base, then the CPU-recoloured team layer).
 		bool drawTeamColoredQuad(DrawableSurface *base, DrawableSurface *team, float x, float y, float w, float h, Uint8 alpha, float hueShift);
-		bool hasUnitShader() const { return unitShaderProgram != 0; }
+		RenderBatch* getRenderBatch() const { return renderBatchEnabled?renderBatch.get():nullptr; }
+        void countRenderBatchDraw() { ++drawCalls; }
+        // Diagnostic comparison switches use the same context and assets.
+        void setRenderBatchEnabled(bool enabled);
+        bool hasUnitShader() const { return unitShaderProgram != 0; }
 		
 		virtual void drawAlphaMap(const std::valarray<float> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
 		virtual void drawAlphaMap(const std::valarray<unsigned char> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);

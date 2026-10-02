@@ -57,9 +57,6 @@ bool touchPresentation();
 // Translated string lookup, "[key]" convention.
 std::string tr(const std::string &key);
 
-// Presentation text scale from the local settings.
-double frontendTextScale(const Presentation &presentation);
-
 // Layout helpers shared by frontend screens.
 struct MenuAction
 {
@@ -79,7 +76,6 @@ class Screen : public UIScreen
 	~Screen() override;
 
   protected:
-	double textScale(const Presentation &presentation) const override;
 	void paintBackground(Canvas &canvas) override;
 	void beforePaint() override;
 	// Whether the content sits on a paper panel; menus and forms do, full-window views do not.
@@ -95,7 +91,6 @@ class Dialog : public UIDialog
 	Dialog();
 
   protected:
-	double textScale(const Presentation &presentation) const override;
 	bool scrim() const override { return false; }
 };
 
@@ -109,7 +104,6 @@ class InGameDialog : public UIDialog
 	bool classic() const { return classicLook; }
 
   protected:
-	double textScale(const Presentation &presentation) const override;
 	bool scrim() const override { return false; }
 	void paintPanel(GAGGUI::ui::Canvas &canvas, GAGGUI::ui::Rect panel) override;
 	// A classic button: 300 points wide, 40 tall, in the menu font.

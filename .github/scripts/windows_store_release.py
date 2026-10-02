@@ -5,10 +5,15 @@ import os
 import re
 import shutil
 import subprocess
+import sys
+import tempfile
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
 from PIL import Image
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from tools.package_assets import export_assets
 
 
 ASSET_DIRS = ("data", "maps", "campaigns", "scripts")
@@ -122,10 +127,14 @@ def main() -> None:
     destination.mkdir(parents=True)
     shutil.copy2(args.exe, destination / "glob2.exe")
     for folder in ASSET_DIRS:
-        source = args.root / folder
-        if not source.is_dir():
-            parser.error(f"missing game asset directory: {source}")
-        shutil.copytree(source, destination / folder, ignore=shutil.ignore_patterns("SConscript"))
+        if not (args.root / folder).is_dir():
+            parser.error(f"missing game asset directory: {args.root / folder}")
+    with tempfile.TemporaryDirectory(prefix="glob2-store-assets-") as temporary:
+        assets = Path(temporary) / 'runtime'
+        export_assets(args.root, assets, platform='windows')
+        for folder in ASSET_DIRS:
+            if (assets / folder).is_dir():
+                shutil.copytree(assets / folder, destination / folder)
     shutil.copy2(args.root / "COPYING", destination / "COPYING")
     (destination / "SOURCE.txt").write_text(
         "Globulation 2 is licensed under GPL version 3.\n"

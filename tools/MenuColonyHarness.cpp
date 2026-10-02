@@ -176,7 +176,9 @@ void generate(const char *path)
 	BinaryOutputStream out(Toolkit::getFileManager()->openOutputStreamBackend(path));
 	out.writeText("glob2-menu-colony-1", "format");
 	game.save(&out, false, "Menu colony");
-	out.writeText(getSyncRandState(), "rng");
+	std::ostringstream colonyRandom;
+	colonyRandom << game.syncRandom;
+	out.writeText(colonyRandom.str(), "rng");
 	std::cout << "Generated colony at tick " << game.stepCounter << '\n';
 }
 
@@ -551,7 +553,7 @@ int main(int argc, char **argv)
 			in.readText("format");
 			require(gui.game.load(&in), "load real-game fixture");
 			std::istringstream state(in.readText("rng") + " ");
-			state >> syncRandEngine();
+			state >> gui.game.syncRandom;
 			gui.game.map.getResourceGradient(0, WHEAT, 0);
 			gui.localTeamNo = 0;
 			gui.localPlayer = 0;
