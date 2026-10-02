@@ -267,7 +267,15 @@ class ComposeTests(unittest.TestCase):
                 try:
                     client.request('GET', '/'+name, headers={'Accept-Encoding': encoding})
                     response = client.getresponse()
-                    self.assertEqual(response.status, 200)
+                    # Caddy 2.10.2 adds Range: bytes=0- for precompressed files
+                    # to supply Content-Length. Accept only the complete sidecar,
+                    # never a truncated range or a partial identity response.
+                    if encoding == 'gzip' and response.status == 206:
+                        size = (assets/(name+'.gz')).stat().st_size
+                        self.assertEqual(response.getheader('Content-Range'), f'bytes 0-{size-1}/{size}')
+                        self.assertEqual(response.getheader('Content-Length'), str(size))
+                    else:
+                        self.assertEqual(response.status, 200)
                     self.assertIn('Accept-Encoding', response.getheader('Vary'))
                     self.assertEqual(response.getheader('Content-Encoding'), 'gzip' if encoding == 'gzip' else None)
                     self.assertIn('no-cache', response.getheader('Cache-Control'))

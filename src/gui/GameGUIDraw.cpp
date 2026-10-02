@@ -411,7 +411,7 @@ void GameGUI::drawOverlayInfos(void)
 
 			// draw a white circle around units that are working at building
 			if ((showUnitWorkingToBuilding)
-				&& ((selBuild->owner.allies) &(1<<localTeamNo)))
+				&& ((selBuild->owner.allies) &(Team::teamNumberToMask(localTeamNo))))
 			{
 				for (Uint16 worker : drawnScene().entities.selectedBuilding.unitsWorking)
 				{

@@ -6,6 +6,8 @@ on:
       - 'mobile/**'
       - 'scons/**'
       - 'SConstruct'
+      - 'tools/package_assets.py'
+      - 'tools/asset-requirements.txt'
       - 'libgag/**'
       - 'src/**'
       # APK checks do not build or run the native regression harnesses.
@@ -43,8 +45,10 @@ jobs:
         with:
           fetch-depth: 0
       - name: Validate Android release contract and F-Droid listing
+        # Pull requests land between releases, while master may still carry the
+        # last tagged version; release workflows run the strict check.
         run: |
-          python3 mobile/android_release.py check-candidate
+          python3 mobile/android_release.py check --development
           python3 mobile/android_release.py check-listing
       - name: Install build utilities
         id: install_build_utilities

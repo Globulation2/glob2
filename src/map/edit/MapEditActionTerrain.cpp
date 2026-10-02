@@ -274,7 +274,7 @@ bool MapEdit::performTerrainAction(const std::string& action, int relMouseX, int
 	}
 	else if(action=="add team")
 	{
-		if(game.mapHeader.getNumberOfTeams() < 12)
+		if(game.mapHeader.getNumberOfTeams() < Team::MAX_COUNT)
 		{
 			game.addTeam();
 			regenerateGameHeader();
@@ -294,7 +294,8 @@ bool MapEdit::performTerrainAction(const std::string& action, int relMouseX, int
 	}
 	else if(action=="select active team")
 	{
-		selectActiveTeam(relMouseX/16 + (relMouseY/16)*6);
+		selectActiveTeam(relMouseX / TeamColorSelector::SWATCH_SIZE
+		    + (relMouseY / TeamColorSelector::SWATCH_SIZE) * TeamColorSelector::COLUMNS);
 	}
 	else
 		return false;

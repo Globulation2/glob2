@@ -63,18 +63,19 @@ test('desktop right-click cancels a selection and cycles sidebar views without a
   await page.mouse.move(400,350);
   const construction=await page.screenshot({clip:panel});
   await page.mouse.click(400,350,{button:'right',delay:80});
-  await page.waitForTimeout(160);
+  await expect.poll(async()=>(await page.screenshot({clip:panel})).equals(construction)).toBe(false);
   const flags=await page.screenshot({clip:panel});
   expect(flags.equals(construction)).toBe(false);
   await info.attach('right-click-flags',{body:flags,contentType:'image/png'});
   for(let i=0;i<3;i++)await page.mouse.click(400,350,{button:'right',delay:80});
-  await page.waitForTimeout(160);
-  expect((await page.screenshot({clip:panel})).equals(construction)).toBe(true);
+  await expect.poll(async()=>(await page.screenshot({clip:panel})).equals(construction)).toBe(true);
   // Select the first building tool, then cancel it with a secondary click.
   await page.locator('#canvas').click({position:{x:1075,y:205},delay:80});
+  // Confirm the tool is visibly selected before sending the cancelling click.
+  // Input processing and screenshot capture can land on different frames.
+  await expect.poll(async()=>(await page.screenshot({clip:panel})).equals(construction)).toBe(false);
   await page.mouse.click(400,350,{button:'right',delay:80});
-  await page.waitForTimeout(160);
-  expect((await page.screenshot({clip:panel})).equals(construction)).toBe(true);
+  await expect.poll(async()=>(await page.screenshot({clip:panel})).equals(construction)).toBe(true);
   const menus=await page.evaluate(()=>window.canvasContextMenus);
   expect(menus.length).toBeGreaterThan(0);
   expect(menus.every(Boolean)).toBe(true);

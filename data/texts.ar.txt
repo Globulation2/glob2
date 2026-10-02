@@ -1432,8 +1432,8 @@ Cortex
 نسبة الرمال
 [Select a valid map.]
 حدد خريطة صالحة.
-[Shared control needs a free controller slot (maximum 12).]
-يتطلب التحكم المشترك خانة شاغرة لمتحكم إضافي (الحد الأقصى 12).
+[Shared control needs a free controller slot (maximum %0).]
+يتطلب التحكم المشترك خانة شاغرة لمتحكم إضافي (الحد الأقصى %0).
 [Smoothing]
 تنعيم
 [Standard]

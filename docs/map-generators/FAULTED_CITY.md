@@ -30,7 +30,7 @@ tiles of the plaza must survive in each of two districts.
   of renewable capacity at 100%, then increase to full capacity at 300%. Abundance never spills outside
   plots or onto streets, and decorative resources cannot obstruct junction reservations.
 
-Dimensions are 256 or 512 tiles on each axis, with 1–12 colonies. Unsupported dimensions
+Dimensions are 256 or 512 tiles on each axis, with 1–16 colonies. Counts above twelve require 512×512. Unsupported dimensions
 are rejected before generation. A particular seed can be refused if it lacks viable starts;
 the normal lobby's candidate mechanism can choose another seed. The generator searches
 up to eight deterministic city layouts before refusing a request. Layout and starting-site
