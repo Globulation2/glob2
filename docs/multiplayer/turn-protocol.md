@@ -70,8 +70,11 @@ disconnected. The limits come from `TurnProtocol.h`:
 | Order bytes per tick | 30,000 | A bundle of two ticks always fits one frame |
 | Seats | 0–31 | The engine's waiting mask is 32 bits |
 
-`TURN_PROTOCOL_VERSION` (currently 1) is carried in `Hello` and `Welcome`. The relay
-rejects a client whose protocol version differs. The relay does not compare simulation
+`TURN_PROTOCOL_VERSION` (currently 2) is carried in `Hello` and `Welcome`. A relay
+accepts every version from `MIN_PROTOCOL_VERSION` (1) to its own and answers `Welcome`
+in the client's version. It rejects anything outside that range. Version 2 adds
+`SeatLatency`, which the relay sends only to version-2 clients. A version-2 client
+that an older relay refuses with `Reject(1)` offers version 1 once before giving up. The relay does not compare simulation
 versions: that comparison happens on the platform, which issues tickets only for one
 sim version per match. A protocol change that alters any encoding bumps
 `TURN_PROTOCOL_VERSION`. A change that keeps the encodings but alters relay behaviour
@@ -101,6 +104,7 @@ C→R is client to relay, R→C is relay to client.
 | `0xA9` | `Quit` | C→R | `u8 reason` |
 | `0xAA` | `Ping` | C→R | `u32 nonce`, `u32 executedTick` |
 | `0xAB` | `Pong` | R→C | `u32 nonce`, `u32 relayTick`, `u32 lastClientSequence` |
+| `0xAC` | `SeatLatency` (v2) | R→C | `u8 count`, `count × (u8 seat, u32 rttMicros)` |
 
 Field rules that the decoder enforces:
 
@@ -109,6 +113,7 @@ Field rules that the decoder enforces:
   satisfies `fromTick ≤ tick < horizonTick` and `seat < 32`, and every order is 1–4,096
   bytes.
 - `Presence`: seats are below 32, unique and ascending; the state is a known value.
+- `SeatLatency`: seats are below 32, unique and ascending.
 - `Welcome`: `seat < 32`, the seat is in `humanSeatMask`, `bundleInterval ≥ 1`,
   `checksumInterval ≥ 1` and `tickRateMilliHz > 0`.
 - `Reject.reason`, `DesyncNotice.verdict` and `Quit.reason` must be known values.
@@ -402,8 +407,13 @@ about 25), the host held no buffer and measured 59 / 76 ms on loopback, and the 
 
 The relay keeps a presence state per human seat and broadcasts a full `Presence`
 snapshot when any state changes, and at least every 25 ticks. `lagTicks` is
-`R − executedTick` from the seat's last `Ping`. A connected seat whose lag exceeds 50
-ticks (2 s) is shown as lagging.
+`R − executedTick` when the seat's last `Ping` arrived. Once no `Ping` has come for a
+second (clients ping every 500 ms), the extra time counts as lag. A connected seat whose
+lag exceeds 50 ticks (2 s) is shown as lagging. Version-2 clients also receive
+`SeatLatency` with every `Presence`: each connected human seat's round trip as the
+relay measures it on its transport (the online relay's WebSocket ping, smoothed with
+weight ¼; 0 when not measured, as on a LAN host). The connection panel shows it as
+Ping ([connection quality](connection-quality.md)).
 
 - A seat starts as not yet connected. When its transport closes, it becomes
   reconnecting.
