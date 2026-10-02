@@ -33,7 +33,8 @@ NetEndpoint NetEndpoint::parse(const std::string &url)
 		throw std::invalid_argument("WebSocket URL requires an explicit route");
 	e.authority = rest.substr(0, slash);
 	e.route = rest.substr(slash);
-	if (e.route != "/yog" && e.route != "/router" && e.route != "/register")
+	if (e.route != "/yog" && e.route != "/router" && e.route != "/register" &&
+		e.route != "/realtime")
 		throw std::invalid_argument("Unknown WebSocket route");
 	e.service = "443";
 	if (!e.authority.empty() && e.authority.front() == '[')

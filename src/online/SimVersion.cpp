@@ -18,6 +18,13 @@
 
 namespace Online
 {
+// Defined here rather than in MatchSetup.cpp so that SimVersion (used by the online
+// client) links without the engine-side MatchSetup conversion.
+MatchSetupError::MatchSetupError(Stage stage, std::string path, const std::string& message)
+	: std::runtime_error((path.empty() ? std::string("/") : path) + ": " + message), stage(stage), path(std::move(path))
+{
+}
+
 namespace
 {
 bool lowercaseHex64(const std::string& text)
@@ -185,5 +192,18 @@ SimVersion currentSimVersion()
 	version.netProtocol = NET_PROTOCOL_VERSION;
 	version.dataHash = simDataHash();
 	return version;
+}
+
+SimVersion SimVersion::local()
+{
+	if (!GAGCore::Toolkit::getFileManager())
+	{
+		SimVersion version;
+		version.versionMinor = VERSION_MINOR;
+		version.netProtocol = NET_PROTOCOL_VERSION;
+		version.dataHash = std::string(64, '0');
+		return version;
+	}
+	return currentSimVersion();
 }
 }

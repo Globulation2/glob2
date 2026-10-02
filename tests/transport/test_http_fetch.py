@@ -48,7 +48,7 @@ class Handler(http.server.BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(payload)
 
-    do_GET = do_POST = do_PUT = reply
+    do_GET = do_POST = do_PUT = do_PATCH = do_DELETE = reply
 
 
 class Server(http.server.ThreadingHTTPServer):
@@ -99,7 +99,7 @@ class HttpFetchTests(unittest.TestCase):
         return json.loads(result.stdout)
 
     def check_methods(self, base):
-        for mode, method in [('get', 'GET'), ('post', 'POST'), ('put', 'PUT')]:
+        for mode, method in [('get', 'GET'), ('post', 'POST'), ('put', 'PUT'), ('patch', 'PATCH')]:
             body = '' if mode == 'get' else '{"seat": 2}'
             result = self.fetch(mode, base + '/api/v1/echo?x=1', *([body] if body else []))
             self.assertEqual(result['state'], 'done', result)

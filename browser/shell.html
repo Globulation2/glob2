@@ -104,7 +104,11 @@ var Module = {
     }) : null;
     const gpu = Boolean(context);
     Module.renderer = gpu ? 'webgl2' : 'software';
-    Module.callMain(['-s', width + 'x' + height, '-F', '-C', gpu ? '-g' : '-G']);
+    // Invite links land here as ?join=<code> (see docs/multiplayer/client.md); the
+    // instance serving this page is the one to join.
+    const join = new URLSearchParams(location.search).get('join');
+    const invite = join && /^[A-Za-z0-9]{6,16}$/.test(join) ? ['--join', join, '--instance', location.origin] : [];
+    Module.callMain(['-s', width + 'x' + height, '-F', '-C', gpu ? '-g' : '-G', ...invite]);
     document.body.classList.add('ready');
     loading.setAttribute('aria-hidden','true');
   },

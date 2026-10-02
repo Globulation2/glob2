@@ -300,6 +300,11 @@ verify persistence, backup restoration, router-loss readiness, state ownership,
 graceful draining, and forced deadline interruption. Keep capture output from
 `tests/transport/capture_container.py` under ignored `artifacts/`.
 
+The online client's integration test, `tests/online/test_platform_client.py`,
+drives `platform-client-probe` (also built by `transport-test`) against a real
+platform API; it needs a `platform/` checkout and a Postgres role that may
+create databases, and is skipped otherwise (see `docs/multiplayer/client.md`).
+
 From the repository root:
 
 ```sh

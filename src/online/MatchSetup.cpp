@@ -28,10 +28,7 @@ using nlohmann::json;
 
 namespace Online
 {
-MatchSetupError::MatchSetupError(Stage stage, std::string path, const std::string& message)
-	: std::runtime_error((path.empty() ? std::string("/") : path) + ": " + message), stage(stage), path(std::move(path))
-{
-}
+// MatchSetupError's constructor is in SimVersion.cpp.
 
 bool MatchRules::operator==(const MatchRules& o) const
 {

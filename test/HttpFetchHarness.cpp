@@ -18,9 +18,11 @@ int main(int argc, char **argv)
 	const std::string mode = argv[1];
 	HttpFetch::Request request;
 	request.url = argv[2];
-	request.method = mode == "post"  ? HttpFetch::Method::Post
-					 : mode == "put" ? HttpFetch::Method::Put
-									 : HttpFetch::Method::Get;
+	request.method = mode == "post"	   ? HttpFetch::Method::Post
+					 : mode == "put"	   ? HttpFetch::Method::Put
+					 : mode == "patch"  ? HttpFetch::Method::Patch
+					 : mode == "delete" ? HttpFetch::Method::Delete
+										: HttpFetch::Method::Get;
 	if (argc > 3)
 		request.body = argv[3];
 	if (argc > 4)

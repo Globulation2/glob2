@@ -32,6 +32,12 @@ namespace Online
 		/// throws MatchSetupError on a violation.
 		static SimVersion fromJson(const nlohmann::json& value, const std::string& path = "");
 
+		/// This build's SimVersion for the platform (session.hello): currentSimVersion()
+		/// once the Toolkit file system is up. Before that (only in tests that never
+		/// initialize it) the data hash is 64 zeros, which the platform answers with
+		/// simSupported=false.
+		static SimVersion local();
+
 		bool operator==(const SimVersion& o) const
 		{
 			return versionMinor == o.versionMinor && netProtocol == o.netProtocol && dataHash == o.dataHash;
