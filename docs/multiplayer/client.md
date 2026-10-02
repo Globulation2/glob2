@@ -218,6 +218,13 @@ game's session is gone until it is written (at most 3 s, and the shutdown screen
 waits for it), so closing the window does not leave the seat in reconnect
 grace.
 
+A client that stops reading for a while (a backgrounded phone app, a long
+reload) is not disconnected. The native WebSocket keeps at most 4096 unread
+messages or 1 MiB. When that limit is reached it stops reading, and TCP flow
+control holds the rest at the relay until the game drains the queue. The
+browser cannot pause a WebSocket, so it queues up to 16384 messages or 4 MiB,
+about eleven minutes of bundles at 25 per second.
+
 **End-to-end check.** `OnlinePlayHarness` (`scons release=1 server=0
 online-play-test`) drives the real screens against a live instance. In a room
 run, the host signs in as a guest, creates a room with a one-minute sudden-death

@@ -10,6 +10,8 @@
 
 namespace {
 class WebSocketTransport final : public NetTransport {
+    static constexpr size_t incomingMessageLimit = 16384;
+    static constexpr size_t incomingByteLimit = 4 * queueLimit;
     EMSCRIPTEN_WEBSOCKET_T socket = 0;
     State status = State::Closed;
     NetMessageMode mode;
@@ -60,8 +62,11 @@ public:
             const bool text = self.mode == NetMessageMode::Text;
             // Text payloads arrive NUL-terminated; the terminator is not part of the message.
             const size_t size = e->isText && e->numBytes ? e->numBytes - 1 : e->numBytes;
+            // The browser cannot pause a WebSocket, so a tab whose game loop is throttled
+            // (backgrounded) keeps queueing: allow about eleven minutes of relay bundles
+            // (25 per second) within a few megabytes before giving up on the connection.
             if (bool(e->isText) != text || size > (text ? textMessageLimit : 64 * 1024) ||
-                size > queueLimit - self.incomingBytes || self.incoming.size() >= 256) {
+                size > incomingByteLimit - self.incomingBytes || self.incoming.size() >= incomingMessageLimit) {
                 self.failure = "Invalid WebSocket message or input queue overflow"; self.close(); return true;
             }
             if (size || text) {

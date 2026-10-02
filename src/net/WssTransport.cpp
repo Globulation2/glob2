@@ -39,7 +39,10 @@ class WssTransport final : public NetTransport
 		size_t incomingBytes = 0, outgoingBytes = 0;
 		std::string host, authority, service, route, fingerprint, failure, peer;
 		beast::http::request_parser<beast::http::empty_body> request;
-		bool writing = false;
+		bool writing = false, readPaused = false;
+		// Unread messages kept before reading pauses (with queueLimit bytes): about
+		// three minutes of relay bundles at 25 per second.
+		static constexpr size_t incomingMessageLimit = 4096;
 		NetMessageMode mode = NetMessageMode::Binary;
 
 		static int verifyPin(X509_STORE_CTX *store, void *data)
@@ -255,14 +258,13 @@ class WssTransport final : public NetTransport
 								  if (!active(error))
 									  return;
 								  const bool binary = mode == NetMessageMode::Binary;
-								  if (socket.got_binary() != binary ||
-									  size > queueLimit - incomingBytes || incoming.size() >= 256)
+								  if (socket.got_binary() != binary || size > queueLimit)
 								  {
 									  failure = socket.got_binary() != binary
 													? (binary ? "Text WebSocket messages are not allowed"
 															  : "Binary WebSocket messages are not "
 																"allowed in text mode")
-													: "Network input queue overflow";
+													: "Network message too large";
 									  cancel();
 									  return;
 								  }
@@ -277,8 +279,27 @@ class WssTransport final : public NetTransport
 								  buffer.consume(size);
 								  incomingBytes += size;
 								  incoming.push_back(std::move(bytes));
-								  read();
+								  // A reader that falls behind (a backgrounded phone, a long
+								  // reload) is not dropped: reading pauses, TCP flow control
+								  // holds the rest at the sender, and takeMessage() resumes
+								  // reading once the queue has drained below its bounds.
+								  if (incomingFull())
+									  readPaused = true;
+								  else
+									  read();
 							  });
+		}
+		bool incomingFull() const
+		{
+			return incomingBytes >= queueLimit || incoming.size() >= incomingMessageLimit;
+		}
+		void resumeReading()
+		{
+			if (readPaused && status == State::Connected && !incomingFull())
+			{
+				readPaused = false;
+				read();
+			}
 		}
 		void write()
 		{
@@ -323,6 +344,7 @@ class WssTransport final : public NetTransport
 		bytes = std::move(session->incoming.front());
 		session->incoming.pop_front();
 		session->incomingBytes -= bytes.size();
+		session->resumeReading();
 		return true;
 	}
 

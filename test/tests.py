@@ -70,6 +70,7 @@ ENGINE_TESTS = [
     'TurnNetConnectionTest.cpp',
     'RelayTransportTest.cpp',
     'OnlineResultTest.cpp',
+    ('WssBackpressureTest.cpp', dict(require={'wss'})),
     ('MapRenderResizeHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     'PointBarRenderTest.cpp',
     ('maxima/MaximaCombatIntegrationTest.cpp', dict(cxxflags=['-fno-access-control'])),
