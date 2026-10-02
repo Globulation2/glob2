@@ -6,6 +6,17 @@ License:        GPL-3.0-or-later
 URL:            https://globulation2.org/
 Source0:        https://github.com/Globulation2/glob2/releases/download/v%{version}/glob2-%{version}.tar.gz
 
+Source1:        https://storage.googleapis.com/downloads.webmproject.org/releases/webp/libwebp-1.6.0.tar.gz
+Source2:        https://files.pythonhosted.org/packages/18/5d/3bf57dcd21979b887f014ea83c24ae194cfcd12b9e0fda66b957c69d1fca/setuptools-80.9.0.tar.gz
+Source3:        https://files.pythonhosted.org/packages/a5/98/9118a0659646f1628c592ef9bb48e0056efa6bf27c951fd12a178e0136fb/pybind11-3.0.2.tar.gz
+Source4:        https://files.pythonhosted.org/packages/8c/21/c2bcdd5906101a30244eaffc1b6e6ce71a31bd0742a01eb89e660ebfac2d/pillow-12.2.0.tar.gz
+
+BuildRequires:  cmake
+BuildRequires:  make
+BuildRequires:  python3-devel
+BuildRequires:  python3-pip
+BuildRequires:  python3-wheel
+BuildRequires:  libjpeg-turbo-devel
 BuildRequires:  gcc-c++
 BuildRequires:  python3
 BuildRequires:  scons
@@ -34,17 +45,21 @@ multiplayer play.
 %autosetup -n glob2-%{version}
 
 %build
+# Source1-4 are verified against committed checksums; this build uses no network.
+python3 tools/build_asset_encoder.py build --sources "%{_sourcedir}" \
+    --output "$PWD/artifacts/asset-encoder"
 export RPM_PACKAGE_NAME=%{name} RPM_PACKAGE_VERSION=%{version} \
     RPM_PACKAGE_RELEASE=%{release} RPM_ARCH=%{_arch}
 scons -j2 release=0 server=0 CXXFLAGS="%{optflags}" LINKFLAGS="%{build_ldflags}" \
     BINDIR=%{_bindir} INSTALLDIR=%{_datadir} DATADIR=%{_datadir}
 
 %install
+export GLOB2_ASSET_ENCODER_PYTHON="$PWD/artifacts/asset-encoder/venv/bin/python"
 export RPM_PACKAGE_NAME=%{name} RPM_PACKAGE_VERSION=%{version} \
     RPM_PACKAGE_RELEASE=%{release} RPM_ARCH=%{_arch}
 scons -j2 release=0 server=0 CXXFLAGS="%{optflags}" LINKFLAGS="%{build_ldflags}" \
     BINDIR=%{buildroot}%{_bindir} \
-    INSTALLDIR=%{buildroot}%{_datadir} DATADIR=%{_datadir} install
+    INSTALLDIR=%{buildroot}%{_datadir} DATADIR=%{_datadir} optimized_assets=1 install
 
 %files
 %license COPYING

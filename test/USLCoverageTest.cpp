@@ -92,4 +92,35 @@ TEST_SUITE("USLCoverage")
             CHECK(rejected);
         }
     }
+    TEST_CASE("root replacement and collection after compiler errors preserve live object methods")
+    {
+        Usl usl;
+        std::istringstream source("kept := [ def answer := 42 ]");
+        usl.includeScript("objects",source);
+                for (int round=0;round<20;++round)
+        {
+            const auto before=usl.root->locals.size();
+            usl.setConstant("scratch",new String(&usl.heap,std::string(4096,'x')));
+            CHECK(usl.root->locals.size()==before+(round==0 ? 1 : 0));
+            std::istringstream broken("val :=");
+            CHECK_THROWS_AS(usl.includeScript("broken",broken),Exception);
+            usl.collectGarbage(); CHECK(evaluate(usl,"kept.answer")==42);
+        }
+        usl.setConstant("scratch",new String(&usl.heap,"replacement"));
+        usl.collectGarbage();
+        auto* retained=dynamic_cast<String*>(usl.getConstant("scratch"));
+        REQUIRE(retained); CHECK(retained->value=="replacement");
+    }
+
+    TEST_CASE("replacing included constants updates expression access and keeps live closures")
+    {
+        Usl usl;
+        std::istringstream source("number := 7\nkept := [ def answer := 42 ]");
+        usl.includeScript("constants",source);
+        usl.setConstant("number",new Integer(&usl.heap,13));
+        CHECK(evaluate(usl,"number")==13);
+        usl.collectGarbage();
+        CHECK(evaluate(usl,"kept.answer")==42);
+    }
+
 }
