@@ -43,17 +43,17 @@ std::vector<std::function<void()>> &hooks()
 	static std::vector<std::function<void()>> value;
 	return value;
 }
-Uint32 lastPlatformPoll = 0;
+Uint64 lastPlatformPoll = 0;
 
 #ifdef __ANDROID__
 // Glob2Activity keeps the newest link it was opened with (onCreate,
 // onNewIntent); take it from the game thread.
 std::string takeAndroidLaunchLink()
 {
-	auto *env = static_cast<JNIEnv *>(SDL_AndroidGetJNIEnv());
+	auto *env = static_cast<JNIEnv *>(SDL_GetAndroidJNIEnv());
 	if (!env)
 		return {};
-	auto activity = static_cast<jobject>(SDL_AndroidGetActivity());
+	auto activity = static_cast<jobject>(SDL_GetAndroidActivity());
 	if (!activity)
 		return {};
 	std::string link;
@@ -83,7 +83,7 @@ std::string takeAndroidLaunchLink()
 void pollPlatformLinks()
 {
 #if defined(__ANDROID__) || (defined(__APPLE__) && TARGET_OS_IPHONE)
-	const Uint32 now = SDL_GetTicks();
+	const Uint64 now = SDL_GetTicks();
 	if (lastPlatformPoll && now - lastPlatformPoll < 250)
 		return;
 	lastPlatformPoll = now;

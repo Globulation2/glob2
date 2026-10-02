@@ -211,20 +211,18 @@ bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event> &incomi
 {
 	lastFrame = tick;
 	// Invite links opened while running (macOS and iOS URL events) arrive as
-	// dropped "files"; they become the pending join instead.
+	// dropped "files"; they become the pending join instead. SDL3 owns the
+	// event's text, so nothing is freed here.
 	std::vector<SDL_Event> withoutLinks;
 	const std::vector<SDL_Event> *delivered = &incoming;
 	if (std::any_of(incoming.begin(), incoming.end(),
-					[](const SDL_Event &event) { return event.type == SDL_DROPFILE; }))
+					[](const SDL_Event &event) { return event.type == SDL_EVENT_DROP_FILE; }))
 	{
 		for (const auto &event : incoming)
 		{
-			if (event.type == SDL_DROPFILE && event.drop.file &&
-				Online::acceptDroppedText(event.drop.file))
-			{
-				SDL_free(event.drop.file);
+			if (event.type == SDL_EVENT_DROP_FILE && event.drop.data &&
+				Online::acceptDroppedText(event.drop.data))
 				continue;
-			}
 			withoutLinks.push_back(event);
 		}
 		delivered = &withoutLinks;
