@@ -981,3 +981,20 @@ Xvfb and crash diagnostics. Enable `CI_RUNTIME_PACKAGES_ENABLED=true` only after
 until then ordinary shards keep their existing dependency installation. Dispatch
 that validation workflow manually; it runs the same unit, engine, image, CLI and
 continuation checks without publishing anything.
+
+### Reviewed native shard timing profiles
+
+Native runners optionally accept `--timing-profile` and `--auxiliary-jobs`.
+Nonempty profiles assign jobs longest first to the least-loaded shard, with label
+and shard-number tie breaks; unknown cases use the median recorded duration.
+Empty or omitted profiles preserve alphabetical slicing and existing auxiliary
+ownership. Unit tests and auxiliary groups participate in the same load plan,
+retaining their original commands, flags and timeouts. Every selected engine job
+runs exactly once. Auxiliary artifacts follow their assigned group.
+
+Successful job durations are retained alongside JUnit results. To propose updated
+weights, gather observations and run
+`python3 test/build_ci_timing_profile.py observations --family ubuntu-24.04 --output test/ci-timings/ubuntu-24.04.json`.
+Only platform-matched jobs with ten successful samples enter a profile. Review the
+resulting diff before shipping it; weights never change during a run. Profiles
+remain empty until measurements are available, rather than using invented data.

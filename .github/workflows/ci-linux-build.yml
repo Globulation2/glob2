@@ -277,6 +277,8 @@ jobs:
     needs: build
     container: ${{ inputs.validate_runtime && inputs.image || '' }}
     if: ${{ inputs.run_tests && needs.build.result == 'success' }}
+    env:
+      CI_RUNNER_FAMILY: ${{ inputs.runner }}
     runs-on: ${{ inputs.runner }}
     strategy:
       fail-fast: false
@@ -330,18 +332,21 @@ jobs:
             libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth
           fi
 
+      - name: Plan native and auxiliary shard workloads
+        id: shard_plan
+        run: python3 test/ci_native_shard_plan.py --build-dir build/linux/client/release --timing-profile test/ci-timings/${{ inputs.runner }}.json --auxiliary-jobs test/ci-native-auxiliary.json --count 4
       - name: Run the unit tests
-        if: ${{ matrix.shard == 4 }}
+        if: ${{ steps.shard_plan.outputs.run_the_unit_tests == format('{0}', matrix.shard) }}
         id: run_the_unit_tests
         continue-on-error: true
-        run: python3 test/run_tests.py --binary unit --build-dir build/linux/client/release --junit artifacts/tests/unit-junit.xml
+        run: python3 test/run_tests.py --binary unit --build-dir build/linux/client/release --junit artifacts/tests/unit-junit.xml --write-timings artifacts/tests/unit.timings.json
       - name: Run the engine tests
         id: run_the_engine_tests
         continue-on-error: true
         env:
           LIBGL_ALWAYS_SOFTWARE: 1
         # The [map-generators] contract runs in the linux-map-generators telemetry job.
-        run: python3 test/run_tests.py --binary engine --build-dir build/linux/client/release --fullscreen --shard ${{ matrix.shard }}/4 --exclude-tag map-generators --junit artifacts/tests/engine-junit.xml
+        run: python3 test/run_tests.py --binary engine --build-dir build/linux/client/release --fullscreen --shard ${{ matrix.shard }}/4 --exclude-tag map-generators --junit artifacts/tests/engine-junit.xml --timing-profile test/ci-timings/${{ inputs.runner }}.json --auxiliary-jobs test/ci-native-auxiliary.json --write-timings artifacts/tests/engine.timings.json
       - name: Diagnose accelerated renderer crashes
         if: ${{ always() && steps.run_the_engine_tests.outcome == 'failure' }}
         continue-on-error: true
@@ -381,7 +386,7 @@ jobs:
           if-no-files-found: ignore
 
       - name: Test map JSON reports
-        if: ${{ matrix.shard == 2 }}
+        if: ${{ steps.shard_plan.outputs.test_map_json_reports == format('{0}', matrix.shard) }}
         id: test_map_json_reports
         continue-on-error: true
         run: |
@@ -391,14 +396,14 @@ jobs:
       - name: Upload map JSON reports and command log
         id: upload_map_json_reports_and_command_log
         continue-on-error: true
-        if: ${{ always() && matrix.shard == 2 }}
+        if: ${{ always() && steps.shard_plan.outputs.test_map_json_reports == format('{0}', matrix.shard) }}
         uses: actions/upload-artifact@v4
         with:
           name: map-report-${{ inputs.runner }}
           path: artifacts/map-report/
 
       - name: Test headless map CLI with the shared preview renderer
-        if: ${{ matrix.shard == 3 }}
+        if: ${{ steps.shard_plan.outputs.test_headless_map_cli_with_the_shared_preview_renderer == format('{0}', matrix.shard) }}
         id: test_headless_map_cli_with_the_shared_preview_renderer
         continue-on-error: true
         run: |
@@ -409,7 +414,7 @@ jobs:
       - name: Upload map CLI previews and command log
         id: upload_map_cli_previews_and_command_log
         continue-on-error: true
-        if: ${{ always() && matrix.shard == 3 }}
+        if: ${{ always() && steps.shard_plan.outputs.test_headless_map_cli_with_the_shared_preview_renderer == format('{0}', matrix.shard) }}
         uses: actions/upload-artifact@v4
         with:
           name: map-cli-${{ inputs.runner }}
@@ -418,7 +423,7 @@ jobs:
             artifacts/map-image/
 
       - name: Test tournament protocol, AI configuration and main CLI
-        if: ${{ matrix.shard == 1 }}
+        if: ${{ steps.shard_plan.outputs.test_tournament_protocol_ai_configuration_and_main_cli == format('{0}', matrix.shard) }}
         id: test_tournament_protocol_ai_configuration_and_main_cli
         continue-on-error: true
         run: |
@@ -434,7 +439,7 @@ jobs:
       - name: Retain tournament CLI compatibility evidence
         id: retain_tournament_cli_compatibility_evidence
         continue-on-error: true
-        if: ${{ always() && matrix.shard == 1 }}
+        if: ${{ always() && steps.shard_plan.outputs.test_tournament_protocol_ai_configuration_and_main_cli == format('{0}', matrix.shard) }}
         uses: actions/upload-artifact@v4
         with:
           name: tournament-cli-${{ inputs.runner }}
@@ -442,7 +447,7 @@ jobs:
           if-no-files-found: ignore
 
       - name: Verify save continuation traces
-        if: ${{ matrix.shard == 3 }}
+        if: ${{ steps.shard_plan.outputs.verify_save_continuation_traces == format('{0}', matrix.shard) }}
         id: verify_save_continuation_traces
         continue-on-error: true
         run: |
@@ -451,13 +456,13 @@ jobs:
             --check 'Maxima save continuation fixture' 'python3 test/maxima/check_save_continuation_fixture.py build/linux/client/release/src/glob2'
 
       - name: Verify default gradient schedule against cross-platform checksums
-        if: ${{ matrix.shard == 4 }}
+        if: ${{ steps.shard_plan.outputs.verify_default_gradient_schedule_against_cross_platform == format('{0}', matrix.shard) }}
         id: verify_default_gradient_schedule_against_cross_platform
         continue-on-error: true
         run: python3 test/check_telemetry_simulation.py build/linux/client/release/src/glob2
 
       - name: Verify parallel compute and save continuation
-        if: ${{ matrix.shard == 1 }}
+        if: ${{ steps.shard_plan.outputs.verify_parallel_compute_and_save_continuation == format('{0}', matrix.shard) }}
         id: verify_parallel_compute_and_save_continuation
         continue-on-error: true
         run: |
@@ -465,14 +470,14 @@ jobs:
             --check 'parallel compute' 'python3 test/check_parallel_compute.py build/linux/client/release/src/glob2' \
             --check 'gradient pipeline' 'python3 test/check_gradient_pipeline.py build/linux/client/release/src/glob2'
       - name: Build and run the LAN session regression
-        if: ${{ matrix.shard == 3 }}
+        if: ${{ steps.shard_plan.outputs.build_and_run_the_lan_session_regression == format('{0}', matrix.shard) }}
         id: build_and_run_the_lan_session_regression
         continue-on-error: true
         run: |
           python3 test/run_lan_session_test.py build/linux/client/release/src/LANSessionHarness
 
       - name: Test front-end colony isolation and menu navigation
-        if: ${{ matrix.shard == 2 }}
+        if: ${{ steps.shard_plan.outputs.test_front_end_colony_isolation_and_menu_navigation == format('{0}', matrix.shard) }}
         id: test_front_end_colony_isolation_and_menu_navigation
         continue-on-error: true
         env:
@@ -483,12 +488,12 @@ jobs:
           ./build/linux/client/release/test/MenuColonyHarness navigation unused
 
       - name: Retain browser/native simulation trace
-        if: ${{ matrix.shard == 4 }}
+        if: ${{ steps.shard_plan.outputs.retain_browser_native_simulation_trace == format('{0}', matrix.shard) }}
         id: retain_browser_native_simulation_trace
         continue-on-error: true
         run: python3 test/run-browser-determinism.py build/linux/client/release/src/glob2 artifacts/browser-determinism/native
       - uses: actions/upload-artifact@v4
-        if: ${{ matrix.shard == 4 }}
+        if: ${{ steps.shard_plan.outputs.retain_browser_native_simulation_trace == format('{0}', matrix.shard) }}
         id: upload_artifact_1
         continue-on-error: true
         with:

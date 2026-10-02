@@ -27,7 +27,10 @@ def measure(run, jobs, observations):
         first = min(starts) if starts else None
         rows.append({'name': job['name'], 'conclusion': job.get('conclusion'),
                      'queue_seconds': seconds(job.get('started_at'), first),
-                     'execution_seconds': seconds(first, job.get('completed_at'))})
+                     'execution_seconds': seconds(first, job.get('completed_at')),
+                     'steps': [{'name': step.get('name', '(unknown step)'), 'conclusion': step.get('conclusion'),
+                                'seconds': seconds(step.get('started_at'), step.get('completed_at'))}
+                               for step in job.get('steps', [])]})
     starts = [s['started_at'] for j in jobs for s in j.get('steps', []) if s.get('started_at')]
     ends = [j['completed_at'] for j in jobs if j.get('completed_at')]
     selection = next((o for o in observations if 'selection' in o), {})
