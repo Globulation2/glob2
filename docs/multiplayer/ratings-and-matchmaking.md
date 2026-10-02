@@ -133,7 +133,8 @@ rejects map pools whose team count does not fit the mode.
 | `aiBackfillSeconds` | never | Wait before empty seats are filled with AIs |
 | `acceptSeconds` | 10 if rated, else 0 | Accept prompt length for all-human groups. 0 starts at once. AI-backfilled groups never prompt. |
 | `declineCooldownSeconds` | 60 | Queue ban after declining or ignoring a prompt |
-| `maxRttMs` | 250 | Highest relay round trip any member of a multi-player group may have |
+| `rttPreference` | `{initialMs: 100, perSecondMs: 5, anyRegionAfterSeconds: 30}` | Soft relay preference that widens with wait; never excludes a player |
+| `maxRttMs` | off | Opt-in hard cap on a group's worst round trip, for instances with relays near every player. With it set, a player no relay serves within the cap can only be matched through AI backfill. |
 | `ratingWindow` | `{initial: 100, perSecond: 5, max: 800}` | Accepted skill difference in display points |
 | `aiPool` | all eight rated AIs | AIs that may backfill |
 | `mapPool` | fair 128×128 set below | Generator descriptors without a seed |
@@ -191,15 +192,23 @@ Each tick:
    - **Rating window:** two tickets fit when their skill difference is within the
      wider of their two windows. Each window is
      `min(max, initial + perSecond × waited)`. Every pair in a 2v2 must fit.
-   - **Region:** the region that minimises the worst member round trip, among the
-     regions every member with probes reported. A group whose best region exceeds
-     `maxRttMs` does not form. Tickets without probes fit any region. With no
-     probes at all, the region is `null` (any).
+   - **Region (soft):** round trips never make a player unmatchable. The group
+     plays on the region (relay) that minimises its worst member round trip among
+     the relays that exist, even when the only relay is far away. Candidates are
+     the regions members probed. When no region is shared by every member with
+     probes, the one most members reached wins. Tickets without probes fit any
+     region; with no probes at all the region is `null` (any relay).
+   - **Region preference:** early in the wait, players are only paired when that
+     best relay is within the wider of their tolerances,
+     `initialMs + perSecondMs × waited`. After `anyRegionAfterSeconds` (30 s) any
+     relay will do, including no shared region at all. So nearby players pair
+     first, and everyone else is matched on the best available relay. The opt-in
+     `maxRttMs` cap is the only hard exclusion and is off by default.
    - **AI backfill:** an anchor ticket that cannot fill its group, has waited
      `aiBackfillSeconds` and allows AI opponents keeps its compatible AI-allowing
      partners. The remaining seats go to the distinct AIs whose ladder skill (for
      the anchor's sim version) is closest to the humans' mean. A lone player
-     always gets their best region.
+     always gets their best region, whatever its round trip.
    - **2v2 sides:** sides are split to minimise the difference in summed skill.
      Ties go to the split that spreads humans across sides.
    - **Map:** chosen uniformly from the queue's pool.
@@ -284,7 +293,10 @@ test database. They cover:
 - AI seeding and per-version entities;
 - abandonment and mutual leave;
 - idempotent and concurrent application;
-- grouping by sim version, region and widening window;
+- grouping by sim version and widening rating window;
+- relays: a single far relay still matches, missing round trips still match, a
+  partner on a good shared relay is preferred early and any partner later, and
+  the opt-in cap applies only when set;
 - backfill timing with a fake clock;
 - accept, decline, timeout and leave;
 - start failure;
