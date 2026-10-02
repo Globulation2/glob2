@@ -400,11 +400,15 @@ class Smoke:
         return {'kids': kids, 'alg': header.get('alg'), 'typ': header.get('typ')}
 
     def relays(self):
-        # Registration happens at start-up; allow a few heartbeats for retries.
-        deadline = time.monotonic() + 60
+        # Registration happens at start-up; allow a few heartbeats for retries. Only
+        # live relays count: an attached, long-running deployment keeps the rows of
+        # replaced relay containers, which the platform ignores once their heartbeat is
+        # older than RELAY_STALE_SECONDS (45 s, apps/worker/src/play/relays.ts).
+        live = "last_heartbeat_at > now() - interval '45 seconds'"
+        deadline = time.monotonic() + 90
         while time.monotonic() < deadline:
             count = self.compose('exec', '-T', 'postgres', 'psql', '-U', 'glob2', '-d', 'glob2', '-At', '-c',
-                                 'SELECT count(*) FROM relays').strip()
+                                 f'SELECT count(*) FROM relays WHERE {live}').strip()
             if count == str(self.expected_replicas['relay']):
                 break
             time.sleep(2)
@@ -426,7 +430,7 @@ class Smoke:
             raise Failure(f'unknown relay ids are routed: {unknown}, {dotted}')
         logs = self.compose('logs', '--no-color', 'relay')
         registered = self.compose('exec', '-T', 'postgres', 'psql', '-U', 'glob2', '-d', 'glob2', '-At', '-c',
-                                  'SELECT id || \' \' || public_url FROM relays ORDER BY id').split('\n')
+                                  f"SELECT id || ' ' || public_url FROM relays WHERE {live} ORDER BY id").split('\n')
         registered = [r for r in registered if r.strip()]
         detail = {'relayIds': relay_ids, 'routed': routed, 'unknownRelay': unknown, 'dottedRelay': dotted,
                   'publicUrls': [f'wss://{self.authority()}/relay/{r}' for r in relay_ids],
