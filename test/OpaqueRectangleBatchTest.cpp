@@ -63,6 +63,8 @@ public:
         gfx->portableRenderer = std::move(backend);
         gfx->renderer = gfx->portableRenderer.get();
         gfx->nativeSoftware = false;
+        // Emulate an accelerated backend: CPU fills deliberately bypass batches.
+        gfx->optionFlags |= GAGCore::GraphicContext::PORTABLEGPU;
         auto draw = [&] {
             GAGCore::OpaqueRectangleBatch scope(gfx);
             gfx->drawFilledRect(0, 0, 10, 10, 78, 187, 78);
