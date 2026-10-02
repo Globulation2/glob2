@@ -172,9 +172,18 @@ TEST_SUITE("MatchSetup")
 		if (!fs::exists(source / "manifest.json"))
 			return; // the platform workspace is not on this branch yet
 		const fs::path copy = glob2test::fixture("protocol");
-		CHECK(glob2test::readFile(copy / "manifest.json") == glob2test::readFile(source / "manifest.json"));
+		// The copy holds the MatchSetup and SimVersion cases only; other schemas may
+		// gain fixtures without touching it.
+		auto entries = [](const fs::path& root) {
+			std::vector<json> out;
+			for (const auto& entry : json::parse(glob2test::readFile(root / "manifest.json")).at("fixtures"))
+				if (entry.at("schema") == "MatchSetup" || entry.at("schema") == "SimVersion")
+					out.push_back(entry);
+			return out;
+		};
+		CHECK(entries(copy) == entries(source));
 		for (const auto& entry : fs::recursive_directory_iterator(copy))
-			if (entry.is_regular_file())
+			if (entry.is_regular_file() && entry.path().filename() != "manifest.json")
 			{
 				const auto relative = fs::relative(entry.path(), copy);
 				INFO(relative.generic_string());
