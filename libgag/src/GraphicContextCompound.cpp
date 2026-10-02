@@ -2,6 +2,8 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "GraphicContextPrivate.h"
+#include <SpriteDrawBatch.h>
+#include <RenderBackend.h>
 #ifdef HAVE_OPENGL
 #include <AlphaMapRender.h>
 #endif
@@ -9,9 +11,222 @@
 #include <valarray>
 #include <vector>
 #include <algorithm>
+#include <exception>
+#include <stdexcept>
 
 namespace GAGCore
 {
+namespace
+{
+struct SpriteBatchState
+{
+	static constexpr size_t maxQuads = 4096;
+	static constexpr size_t maxRuns = 32;
+	struct Bounds
+	{
+		float left, top, right, bottom;
+		bool overlaps(const Bounds &other) const
+		{
+			return left < other.right && right > other.left && top < other.bottom &&
+				   bottom > other.top;
+		}
+		void include(const Bounds &other)
+		{
+			left = std::min(left, other.left);
+			top = std::min(top, other.top);
+			right = std::max(right, other.right);
+			bottom = std::max(bottom, other.bottom);
+		}
+	};
+	struct Quad
+	{
+		float x, y, w, h, u0, v0, u1, v1;
+		int next = -1;
+	};
+	struct Texture
+	{
+		const void *key;
+		unsigned int id;
+		SDL_Surface *pixels;
+		std::uint64_t revision;
+	};
+	struct Run
+	{
+		Texture texture;
+		Uint8 alpha;
+		Bounds bounds;
+		int first, last;
+	};
+	GraphicContext *owner = nullptr;
+	RenderBackend *backend = nullptr;
+	Run runs[maxRuns];
+	size_t runCount = 0;
+	std::vector<Quad> quads;
+	std::vector<float> vertices, coordinates;
+	std::vector<SDL_Vertex> portableVertices;
+
+	void clear()
+	{
+		quads.clear();
+		vertices.clear();
+		coordinates.clear();
+		portableVertices.clear();
+		runCount = 0;
+	}
+	void discard()
+	{
+		clear();
+		owner = nullptr;
+		backend = nullptr;
+	}
+
+	void flush()
+	{
+		if (quads.empty())
+			return;
+		if (backend)
+		{
+			for (size_t i = 0; i < runCount; ++i)
+			{
+				const Run &run = runs[i];
+				portableVertices.clear();
+				const SDL_Color color{255, 255, 255, run.alpha};
+				for (int index = run.first; index != -1; index = quads[index].next)
+				{
+					const Quad &q = quads[index];
+					const SDL_Vertex a{{q.x, q.y}, color, {q.u0, q.v0}};
+					const SDL_Vertex b{{q.x + q.w, q.y}, color, {q.u1, q.v0}};
+					const SDL_Vertex c{{q.x + q.w, q.y + q.h}, color, {q.u1, q.v1}};
+					const SDL_Vertex d{{q.x, q.y + q.h}, color, {q.u0, q.v1}};
+					portableVertices.insert(portableVertices.end(), {a, b, c, a, c, d});
+				}
+				backend->triangles(portableVertices, run.texture.key, run.texture.pixels,
+								   run.texture.revision);
+			}
+			clear();
+			return;
+		}
+#ifdef HAVE_OPENGL
+		glState.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glState.doBlend(true);
+		glState.doTexture(true);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+		for (size_t i = 0; i < runCount; ++i)
+		{
+			const Run &run = runs[i];
+			vertices.clear();
+			coordinates.clear();
+			for (int index = run.first; index != -1; index = quads[index].next)
+			{
+				const Quad &q = quads[index];
+				vertices.insert(vertices.end(),
+								{q.x, q.y, q.x + q.w, q.y, q.x + q.w, q.y + q.h, q.x, q.y + q.h});
+				coordinates.insert(coordinates.end(),
+								   {q.u0, q.v0, q.u1, q.v0, q.u1, q.v1, q.u0, q.v1});
+			}
+			glState.setTexture(run.texture.id);
+			glColor4ub(255, 255, 255, run.alpha);
+			glVertexPointer(2, GL_FLOAT, 0, vertices.data());
+			glTexCoordPointer(2, GL_FLOAT, 0, coordinates.data());
+			glDrawArrays(GL_QUADS, 0, vertices.size() / 2);
+		}
+		glDisableClientState(GL_VERTEX_ARRAY);
+		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+#endif
+		clear();
+	}
+
+	bool append(Texture texture, Uint8 alpha, float x, float y, float w, float h, float u0,
+				float v0, float u1, float v1)
+	{
+		if (quads.size() == maxQuads)
+			flush();
+		const Bounds bounds{std::min(x, x + w), std::min(y, y + h), std::max(x, x + w),
+							std::max(y, y + h)};
+		size_t target = runCount;
+		// Move a quad into an earlier texture run only if it cannot cover
+		// any intervening run. Union bounds make this conservative and
+		// bound the search to 32 comparisons, rather than all queued quads.
+		for (size_t i = runCount; i > 0; --i)
+		{
+			const Run &run = runs[i - 1];
+			if (run.texture.key == texture.key && run.alpha == alpha)
+			{
+				target = i - 1;
+				break;
+			}
+			if (run.bounds.overlaps(bounds))
+				break;
+		}
+		const bool newSubmission = target == runCount;
+		if (newSubmission && runCount == maxRuns)
+		{
+			flush();
+			target = 0;
+		}
+		const int index = static_cast<int>(quads.size());
+		quads.push_back({x, y, w, h, u0, v0, u1, v1});
+		if (newSubmission)
+			runs[runCount++] = {texture, alpha, bounds, index, index};
+		else
+		{
+			Run &run = runs[target];
+			quads[run.last].next = index;
+			run.last = index;
+			run.bounds.include(bounds);
+		}
+		return newSubmission;
+	}
+};
+SpriteBatchState spriteBatch;
+} // namespace
+
+SpriteDrawBatch::SpriteDrawBatch(GraphicContext *context, Sprite *sprite)
+{
+	bool enabled = context && context->hasPortableRenderer();
+#ifdef HAVE_OPENGL
+	enabled = enabled || (context && (context->getOptionFlags() & GraphicContext::USEGPU));
+#endif
+	// Dynamic team-color surfaces can be evicted while a frame is being
+	// drawn. Keep their shader/cache path immediate, outside this batch.
+	if (enabled && sprite && !sprite->isDynamicTeamColor())
+	{
+		if (spriteBatch.owner)
+			throw std::logic_error("Sprite draw batches cannot nest");
+		context->finishDrawingSprite(sprite, Color::ALPHA_OPAQUE);
+		spriteBatch.quads.reserve(SpriteBatchState::maxQuads);
+		if (context->hasPortableRenderer())
+			spriteBatch.portableVertices.reserve(SpriteBatchState::maxQuads * 6);
+		else
+		{
+			spriteBatch.vertices.reserve(SpriteBatchState::maxQuads * 8);
+			spriteBatch.coordinates.reserve(SpriteBatchState::maxQuads * 8);
+		}
+		spriteBatch.owner = context;
+		active = true;
+	}
+}
+
+SpriteDrawBatch::~SpriteDrawBatch() noexcept(false)
+{
+	if (active)
+	{
+		try
+		{
+			if (std::uncaught_exceptions() == 0)
+				spriteBatch.flush();
+		}
+		catch (...)
+		{
+			spriteBatch.discard();
+			throw;
+		}
+		spriteBatch.discard();
+	}
+}
+
 	void GraphicContext::drawSurface(int x, int y, DrawableSurface *surface, Uint8 alpha)
 	{
 		drawSurface(x, y, surface, surface->getTexX(), surface->getTexY(), surface->getW(), surface->getH(), alpha);
@@ -72,6 +287,15 @@ namespace GAGCore
             if (w <= 0 || h <= 0 || sw <= 0 || sh <= 0) return;
             auto* pixels=surface->getSDLSurface();
             if (!pixels || pixels->w <= 0 || pixels->h <= 0) return;
+            if (spriteBatch.owner == this)
+            {
+                const float u0 = float(sx)/pixels->w, v0 = float(sy)/pixels->h;
+                const float u1 = float(sx+sw)/pixels->w, v1 = float(sy+sh)/pixels->h;
+                spriteBatch.backend = renderer;
+                if (spriteBatch.append({surface, 0, pixels, surface->contentRevision()},
+                                       alpha, x, y, w, h, u0, v0, u1, v1)) ++drawCalls;
+                return;
+            }
             renderer->blit(surface, pixels, surface->contentRevision(),
                            renderer == softwareRasterizer.get() && surface->hasOpaquePixels(),
                            SDL_Rect{sx,sy,sw,sh}, SDL_FRect{x,y,w,h}, alpha);
@@ -82,7 +306,12 @@ namespace GAGCore
 		{
 			// upload
 			if (surface->glUploadedRevision != surface->contentRevision())
+			{
+				// Submit pending quads before the source texture is uploaded again.
+				if (spriteBatch.owner == this && !surface->textureInfo)
+					spriteBatch.flush();
 				surface->uploadToTexture();
+			}
 
 			// Bias nearest-neighbour ties toward the same texel for standalone
 			// sprites and atlas frames. A symmetric inset crosses texel boundaries
@@ -96,6 +325,39 @@ namespace GAGCore
 			const float v1 = static_cast<float>(sy + sh) * surface->texMultY + biasY;
 
 			// draw
+			if (renderBatch && renderBatch->active())
+			{
+				const auto *atlas = surface->textureInfo ? surface->textureInfo->sprite : nullptr;
+				unsigned tex = atlas ? atlas->atlas->texture : surface->texture;
+				ArrayView array{};
+				if (surface->highResolutionSampling)
+					array = renderBatch->pack(tex);
+				std::array<QueueVertex, 8> v{};
+				v[0] = {x, y, u0, v0};
+				v[1] = {x + w, y, u1, v0};
+				v[2] = {x + w, y + h, u1, v1};
+				v[3] = {x, y + h, u0, v1};
+				for (int j = 0; j < 4; ++j)
+				{
+					v[j].color = Color(255, 255, 255, alpha);
+					v[j].alpha = alpha / 255.f;
+					v[j].baseLayer = array.layer;
+				}
+				renderBatch->append({array.texture ? QueueKey::ArrayTexture : QueueKey::Texture,
+									 array.texture ? array.texture : tex, 0, false, false, true, 1},
+									v, 4);
+				return;
+			}
+			if (spriteBatch.owner == this)
+			{
+				const auto *batch = surface->textureInfo ? surface->textureInfo->sprite : nullptr;
+				const GLuint texture = batch ? batch->atlas->texture : surface->texture;
+				const void *key = batch ? static_cast<const void *>(batch->atlas.get()) : surface;
+				if (spriteBatch.append({key, texture, nullptr, 0}, alpha, x, y, w, h, u0, v0,
+									   u1, v1))
+					++drawCalls;
+				return;
+			}
 			if (!surface->textureInfo) glState.setTexture(surface->texture);
 			if (surface->textureInfo && surface->textureInfo->sprite)
 			{
@@ -206,6 +468,8 @@ namespace GAGCore
 
 	void GraphicContext::drawAlphaMap(const std::valarray<float> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color)
 	{
+		if (renderBatch)
+			renderBatch->barrier();
 		if (renderer) prepareDraw();
         if (renderer) {
             if (mapW < 2 || mapH < 2 || size_t(mapW)*size_t(mapH) > map.size()) return;
@@ -299,6 +563,8 @@ namespace GAGCore
 
 	void GraphicContext::drawAlphaMap(const std::valarray<unsigned char> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color)
 	{
+		if (renderBatch)
+			renderBatch->barrier();
 		if (renderer) prepareDraw();
         if (renderer) {
             if (mapW < 2 || mapH < 2 || size_t(mapW)*size_t(mapH) > map.size()) return;

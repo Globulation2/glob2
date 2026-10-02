@@ -265,6 +265,16 @@ the checkpoint's natural population from this deliberately seeded stress case.
 and can go below the interactive camera's minimum zoom.
 `GLOB2_BENCH_CAMERA_SWEEP=1` repeatedly changes zoom and pans across wrap seams.
 Sweep measurements mix those view sizes; use a fixed camera for paired timings.
+`GLOB2_BENCH_COMPARE_RENDERER=1` additionally compares immediate and optimized
+native rendering in the same process, at the same camera and simulation state.
+It reports paired process CPU timings and checks pixel differences after timing
+ends. Set `GLOB2_BENCH_COMPARE_AI=1` to advance one AI tick before each pair;
+combine this with the camera sweep to exercise resource changes and wrap seams.
+The comparison uses the no-cloud pass, a fixed water phase, eight warmup pairs,
+and a sparse tolerance of at most 100 changed channels with a maximum delta of
+1/255. That tolerance does not establish bit-exact moving-scene output. The
+immediate reference retains the ordinary resource sprite batch; it disables the
+mixed unit queue, texture arrays and persistent map geometry.
 
 Timings include GPU completion (`glFinish`) and exclude frame presentation, AI,
 input and simulation work. They are renderer measurements, not whole-game FPS.
@@ -283,6 +293,60 @@ Point bars batch opaque fills within each bar using bounded OpenGL or SDL geomet
 submissions. OpenGL outlines and translucent fills preserve their original order;
 software surfaces retain their existing path. Full-map terrain and resource passes
 skip fog discovery queries when `DRAW_WHOLE_MAP` already makes every tile visible.
+
+Flat-map resources use a bounded OpenGL/portable SDL sprite batch, including
+standalone frames from partial HD packs. Draws sharing a texture and alpha can join an earlier run
+only when their rectangles do not overlap intervening runs. Conservative bounds
+preserve the order of overlapping artwork while reducing draw submissions and
+texture switches without changing sampling or allocating another texture atlas.
+OpenGL texture uploads flush pending draws, and the scope flushes before leaving
+the resource pass. Software surfaces and dynamic team-color sprites retain their
+existing paths; cache-backed team-color surfaces cannot be deferred safely.
+
+
+### Batching and geometry cache invariants
+
+The native desktop OpenGL renderer batches ground and air passes with
+`UnitDrawBatch`. It keeps the original sprite, fill and line primitives and their
+painter order. A draw may join an earlier run only if its conservative bounds do
+not intersect any intervening run. Bounds include a physical-pixel sampling
+margin and half the requested outline width; they must be expressed in the
+current map transform. Capacity limits flush a batch rather than grow it without
+bound. Unsupported commands submit pending draws first. Clip and transform
+changes also flush, then disable culling and reordering for the remainder of the
+scope because the original bounds no longer describe its coordinates.
+
+Team hue and opacity travel with each vertex. Compatible HD textures can share
+array pages while retaining their original dimensions, mip levels, format and
+sampling parameters. The source textures remain available for fallback drawing.
+The array cache caps its additional texture payload at 64 MiB, separately from
+cached map geometry. Immutable slots survive source texture invalidation until
+context teardown; new textures use the ordinary path when that budget is full. A texture
+upload or deletion must flush commands referring to the old pixels and invalidate
+array views before the driver can reuse a texture name. Cached geometry must also
+be invalidated when its referenced texture generation changes. These are
+presentation caches owned by the graphics context, released while that context
+is current; they are neither saved nor consulted by simulation code.
+
+Terrain geometry is cached in canonical 32 by 32 tile chunks. Fully revealed
+resources use canonical map rows, with sorted source-tile indices selecting the
+contiguous visible vertex range. Translation places a canonical chunk or row at
+its current wrapped-map position, so camera panning does not change its vertices.
+Each entry compares the exact current tile frame/visibility vector before reuse:
+a resource amount, terrain frame or discovery change must invalidate the entry.
+Partial-discovery resources keep the ordinary drawing path. The geometry budget
+is 32 MiB of buffer payload with at most 4096 entries and least-recently-used
+eviction; CPU metadata and driver allocation overhead are additional.
+
+Native array/cache optimizations require supported desktop OpenGL features.
+Software, portable SDL and unsupported native contexts retain their existing
+rendering paths. Desktop measurements must not be presented as phone performance.
+When changing this code, compare immediate and batched output at several zooms,
+across wrap seams and clip boundaries, with overlapping translucent sprites,
+wide outlines, carried icons, texture mutation/deletion and context recreation.
+Advance an AI match between comparisons to exercise resource invalidation, and
+check that each render leaves its simulation checksum unchanged. Keep commands,
+seeds, binaries, captures and timing data under `artifacts/` for review.
 
 ## Simulation verification and diagnostics
 

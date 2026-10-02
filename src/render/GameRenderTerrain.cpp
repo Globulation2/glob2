@@ -27,6 +27,128 @@
 
 
 #include "GameRenderInternal.h"
+#include <SpriteDrawBatch.h>
+#include <MapGeometryCache.h>
+#include <RenderBatch.h>
+#include <algorithm>
+#include <new>
+
+namespace
+{
+// Terrain fits its tile, so rectangular chunks preserve painter order. Split
+// at canonical 32-tile and torus boundaries; camera motion only changes the
+// translation, and visibility is included in the exact cached frame vector.
+template<class Describe>
+bool drawCachedTerrain(const void *mapIdentity, Sprite *sprite, int left, int top,
+    int right, int bottom, int viewportX, int viewportY, int maskW, int maskH,
+    Describe describe)
+{
+    auto *gfx = globalContainer->gfx;
+    auto *batch = gfx->getRenderBatch();
+    if (!batch) return false;
+    std::vector<int> frames;
+    GAGCore::MapGeometryCache *cache;
+    try { frames.reserve(32 * 32); cache = &batch->geometryCache(); }
+    catch (const std::bad_alloc&) { return false; }
+    GAGCore::MapGeometryCache::Layer layer(*cache);
+    for (int y = top; y <= bottom;)
+    {
+        int mapY = (y + viewportY) & maskH;
+        int height = std::min({bottom - y + 1, 32 - mapY % 32, maskH + 1 - mapY});
+        for (int x = left; x <= right;)
+        {
+            int mapX = (x + viewportX) & maskW;
+            int width = std::min({right - x + 1, 32 - mapX % 32, maskW + 1 - mapX});
+            frames.clear();
+            for (int dy = 0; dy < height; ++dy)
+                for (int dx = 0; dx < width; ++dx)
+                    frames.push_back(describe(mapX + dx, mapY + dy));
+            auto draw = [&](int originX, int originY)
+            {
+                std::size_t index = 0;
+                for (int dy = 0; dy < height; ++dy)
+                    for (int dx = 0; dx < width; ++dx)
+                    {
+                        int frame = frames[index++];
+                        if (frame >= 0) gfx->drawSprite((originX + dx) * 32, (originY + dy) * 32, sprite, frame);
+                    }
+                gfx->finishDrawingSprite(sprite, 255);
+            };
+            bool drawn = false;
+            try
+            {
+                drawn = cache->draw({mapIdentity, 0, mapX, mapY, width, height}, frames,
+                    [&] { draw(0, 0); }, -1, -1, float(x * 32), float(y * 32));
+            }
+            catch (const std::bad_alloc&) {} // std::function construction can fail before entering draw().
+            if (!drawn) { layer.prepareFallback(); draw(x, y); }
+            x += width;
+        }
+        y += height;
+    }
+    return true;
+}
+
+// Resource images overlap neighboring tiles. Cache ONE complete canonical row,
+// retain source traversal order inside texture runs, and select the exact source
+// tile range with binary searches. Splitting rectangles vertically would change
+// the painter order. Partial discovery uses the ordinary path below instead.
+bool drawCachedResources(const void *mapIdentity, Map& map, int left, int top,
+    int right, int bottom, int viewportX, int viewportY)
+{
+    auto *gfx = globalContainer->gfx;
+    auto *batch = gfx->getRenderBatch();
+    if (!batch) return false;
+    auto *sprite = globalContainer->resources;
+    std::vector<int> frames;
+    GAGCore::MapGeometryCache *cache;
+    try { frames.resize(map.getW()); cache = &batch->geometryCache(); }
+    catch (const std::bad_alloc&) { return false; }
+    GAGCore::MapGeometryCache::Layer layer(*cache);
+    for (int y = top; y <= bottom; ++y)
+    {
+        int mapY = (y + viewportY) & map.getMaskH();
+        for (int mapX = 0; mapX < map.getW(); ++mapX)
+        {
+            const auto& resource = map.getResource(mapX, mapY);
+            if (resource.type == NO_RES_TYPE) frames[mapX] = -1;
+            else
+            {
+                const auto *type = globalContainer->resourcesTypes.get(resource.type);
+                frames[mapX] = type->gfxId + resource.variety * type->sizesCount + resource.amount - (type->eternal ? 0 : 1);
+            }
+        }
+        auto draw = [&](int first, int last, int originX, int originY)
+        {
+            for (int mapX = first; mapX <= last; ++mapX)
+            {
+                int frame = frames[mapX];
+                if (frame < 0) continue;
+                int dx = (sprite->getW(frame) - 32) >> 1;
+                int dy = (sprite->getH(frame) - 32) >> 1;
+                gfx->drawSprite((originX + mapX) * 32 - dx, originY * 32 - dy, sprite, frame);
+            }
+            gfx->finishDrawingSprite(sprite, 255);
+        };
+        for (int x = left; x <= right;)
+        {
+            int mapX = (x + viewportX) & map.getMaskW();
+            int width = std::min(right - x + 1, map.getW() - mapX);
+            bool drawn = false;
+            try
+            {
+                drawn = cache->draw({mapIdentity, 1, 0, mapY, map.getW(), 1}, frames,
+                    [&] { draw(0, map.getW() - 1, 0, 0); }, mapX, mapX + width - 1,
+                    float((x - mapX) * 32), float(y * 32));
+            }
+            catch (const std::bad_alloc&) {}
+            if (!drawn) { layer.prepareFallback(); draw(mapX, mapX + width - 1, x - mapX, y); }
+            x += width;
+        }
+    }
+    return true;
+}
+}
 
 // Terrain, resource, and area rendering. Split from Game_render.cpp.
 
@@ -58,6 +180,15 @@ void Game::drawMapTerrain(int left, int top, int right, int bot, int viewportX, 
 	PERF_SCOPE_TIME(Terrain);
 	Uint32 visibleTeams = teams[localTeam]->me;
 	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
+
+    if (drawCachedTerrain(&map, globalContainer->terrain, left, top, right, bot,
+            viewportX, viewportY, map.getMaskW(), map.getMaskH(), [&](int x, int y)
+            {
+                bool visible = (drawOptions & DRAW_WHOLE_MAP) ||
+                    map.isMapPartiallyDiscovered(x - 1, y - 1, x + 1, y + 1, visibleTeams);
+                int frame = map.getTerrain(x, y);
+                return visible && frame < 256 ? frame : -1; // Water is animated separately.
+            })) return;
 
 	// we draw the terrains, eventually with debug rects:
 	for (int y=top; y<=bot; y++)
@@ -94,6 +225,10 @@ void Game::drawMapResources(int left, int top, int right, int bot, int viewportX
 	PERF_SCOPE_TIME(Resources);
 	Uint32 visibleTeams = teams[localTeam]->me;
 	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
+
+    if ((drawOptions & DRAW_WHOLE_MAP) && drawCachedResources(&map, map, left, top,
+            right, bot, viewportX, viewportY)) return;
+    GAGCore::SpriteDrawBatch batch(globalContainer->gfx, globalContainer->resources);
 
 	for (int y=top; y<=bot; y++)
 		for (int x=left; x<=right; x++)

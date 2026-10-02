@@ -17,6 +17,8 @@
 #include <BinaryStream.h>
 #include <Toolkit.h>
 #include <MapCamera.h>
+#include <RenderBatch.h>
+#include <MapGeometryCache.h>
 #include <PerformanceTelemetry.h>
 #include "TorusMapFixture.h"
 #include <algorithm>
@@ -83,6 +85,19 @@ class TorusRenderBenchmark
         }
     }
 
+    static void advanceAiTick(GameGUI &gui)
+    {
+        Game &game = gui.game;
+        for (int player = 0; player < game.gameHeader.getNumberOfPlayers(); ++player)
+            if (game.players[player]->ai)
+            {
+                auto order = game.players[player]->ai->getOrder(false);
+                order->sender = player;
+                gui.executeOrder(order);
+            }
+        game.syncStep(gui.localTeamNo);
+    }
+
     static void warmupCheckpoint(GameGUI &gui)
     {
         Game &game = gui.game;
@@ -98,17 +113,7 @@ class TorusRenderBenchmark
         }
         const char *requestedTicks = std::getenv("GLOB2_BENCH_AI_TICKS");
         const int ticks = requestedTicks ? std::atoi(requestedTicks) : 0;
-        for (int tick = 0; tick < ticks; ++tick)
-        {
-            for (int player = 0; player < game.gameHeader.getNumberOfPlayers(); ++player)
-                if (game.players[player]->ai)
-                {
-                    auto order = game.players[player]->ai->getOrder(false);
-                    order->sender = player;
-                    gui.executeOrder(order);
-                }
-            game.syncStep(gui.localTeamNo);
-        }
+        for (int tick = 0; tick < ticks; ++tick) advanceAiTick(gui);
         std::printf("AI checkpoint tick=%u units=%d natural_units=%d advanced_ticks=%d\n",
             game.stepCounter, population(game), naturalCount, ticks);
     }
@@ -238,17 +243,19 @@ static int run(int argc, char **argv)
             const int count = population(gui.game);
             const int cloudGridLimit = detailForZoom(gui.game, camera.zoom);
             const Uint32 options = Game::DRAW_WHOLE_MAP | (std::getenv("GLOB2_BENCH_BARS") ? Game::DRAW_HEALTH_FOOD_BAR : 0);
-            const Uint32 initialChecksum = gui.game.checkSum(nullptr, nullptr, nullptr, true);
             std::printf("mapped_units=%d (excludes units inside buildings)\n", mappedPopulation(gui.game));
             std::printf("flat zoom=%.6f world=%dx%d total_units=%d shader=%d cloud_grid_limit=%d\n", camera.zoom, worldW, worldH, count, globalContainer->gfx->hasUnitShader(), cloudGridLimit);
             for (bool clouds : {false, true})
             {
+                const Uint32 initialChecksum = gui.game.checkSum(nullptr, nullptr, nullptr, true);
                 if (clouds) globalContainer->settings.optionFlags &= ~GlobalContainer::OPTION_LOW_SPEED_GFX;
                 else globalContainer->settings.optionFlags |= GlobalContainer::OPTION_LOW_SPEED_GFX;
                 const char *mode = std::getenv("GLOB2_BENCH_MODE");
                 if (mode && std::strcmp(mode, clouds ? "2D clouds" : "2D no clouds")) continue;
                 PerformanceTelemetry::collector().reset();
                 int cameraFrame = 0;
+                if (!clouds && std::getenv("GLOB2_BENCH_COMPARE_RENDERER"))
+                    globalContainer->gfx->setRenderBatchEnabled(false);
                 measure(clouds ? "2D clouds" : "2D no clouds", [&] {
                     globalContainer->gfx->resetDrawCallCount();
                     globalContainer->gfx->setClipRect();
@@ -274,6 +281,89 @@ static int run(int argc, char **argv)
                 PerformanceTelemetry::collector().write(std::cout, "BENCH_SCOPE", 0, false);
                 assert(gui.game.checkSum(nullptr, nullptr, nullptr, true) == initialChecksum);
                 std::printf("simulation_checksum=%08x\n", initialChecksum);
+                // Optional same-process comparisons hold camera and simulation
+                // fixed within each pair. Readback/checksum work is deliberately
+                // outside the timing interval. Cloud animation has separate
+                // mutable presentation state, so compare only the no-cloud pass.
+                if (!clouds && std::getenv("GLOB2_BENCH_COMPARE_RENDERER"))
+                {
+                    const bool advance = std::getenv("GLOB2_BENCH_COMPARE_AI");
+                    std::vector<double> pairedCpu[2];
+                    for (int pair = -8; pair < frames; ++pair)
+                    {
+                        if (advance) advanceAiTick(gui);
+                        const auto checksum = gui.game.checkSum(nullptr, nullptr, nullptr, true);
+                        const int cameraIndex = pair + 8;
+                        const bool sweep = std::getenv("GLOB2_BENCH_CAMERA_SWEEP");
+                        const double zoom = sweep ? camera.zoom * (1 + cameraIndex % 8) : camera.zoom;
+                        const int panX = sweep ? (cameraIndex * 37) % gui.game.map.getW() : 0;
+                        const int panY = sweep ? (cameraIndex * 19) % gui.game.map.getH() : 0;
+                        int drawW = int(std::ceil(width / zoom)), drawH = int(std::ceil(height / zoom));
+                        if (!sweep && std::getenv("GLOB2_BENCH_FULL_MAP"))
+                        {
+                            drawW = std::min(drawW, gui.game.map.getW() * 32);
+                            drawH = std::min(drawH, gui.game.map.getH() * 32);
+                        }
+                        std::vector<unsigned char> reference;
+                        for (int variant = 0; variant < 2; ++variant)
+                        {
+                            auto *gfx = globalContainer->gfx;
+                            gfx->setRenderBatchEnabled(variant != 0);
+                            gfx->setClipRect();
+                            gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), GAGCore::Color(0, 0, 0));
+                            gfx->resetDrawCallCount();
+                            gfx->beginMapTransform(zoom, 0, 0, 0, 0, width, height);
+                            gui.game.mapAnimationTime = 22;
+                            glFinish();
+                            const auto cpuStart = std::clock();
+                            gui.game.drawMap(0, 0, drawW, drawH, 0, 0, panX, panY, 0,
+                                gui.view, options, nullptr, nullptr, true, detailForZoom(gui.game, zoom));
+                            gfx->endMapTransform();
+                            glFinish();
+                            const double cpu = 1000.0 * (std::clock() - cpuStart) / CLOCKS_PER_SEC;
+                            assert(glGetError() == GL_NO_ERROR);
+                            assert(gui.game.checkSum(nullptr, nullptr, nullptr, true) == checksum);
+                            if (pair >= 0) pairedCpu[variant].push_back(cpu);
+                            GLint viewport[4]; glGetIntegerv(GL_VIEWPORT, viewport);
+                            std::vector<unsigned char> pixels(size_t(viewport[2]) * viewport[3] * 4);
+                            glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3],
+                                GL_RGBA, GL_UNSIGNED_BYTE, pixels.data());
+                            if (!variant) reference = std::move(pixels);
+                            else
+                            {
+                                int maximumDelta = 0; size_t changed = 0;
+                                for (size_t i = 0; i < pixels.size(); ++i)
+                                {
+                                    const int delta = std::abs(int(reference[i]) - int(pixels[i]));
+                                    maximumDelta = std::max(maximumDelta, delta);
+                                    changed += delta != 0;
+                                }
+                                std::printf("COMPARE pair=%d tick=%u checksum=%08x max_delta=%d changed_channels=%zu\n",
+                                    pair, gui.game.stepCounter, checksum, maximumDelta, changed);
+                                std::fflush(stdout);
+                                assert(maximumDelta <= 1 && changed <= 100);
+                            }
+                            std::printf("PAIRED pair=%d impl=%s cpu_ms=%.6f draws=%lu\n",
+                                pair, variant ? "optimized" : "immediate", cpu, gfx->getDrawCallCount());
+                        }
+                    }
+                    globalContainer->gfx->setRenderBatchEnabled(true);
+                    for (int variant = 0; variant < 2; ++variant)
+                    {
+                        auto& values = pairedCpu[variant];
+                        std::sort(values.begin(), values.end());
+                        std::printf("PAIRED_SUMMARY impl=%s cpu_median=%.6f frames=%zu\n",
+                            variant ? "optimized" : "immediate", values[values.size() / 2], values.size());
+                    }
+                    if (auto *batch = globalContainer->gfx->getRenderBatch())
+                    {
+                        const auto stats = batch->geometryCache().stats();
+                        std::printf("RENDER_CACHE array_bytes=%zu geometry_bytes=%zu entries=%zu hits=%llu misses=%llu\n",
+                            batch->textureBytes(), stats.bytes, stats.entries, stats.hits, stats.misses);
+                    }
+                    std::printf("COMPARE_FINAL tick=%u checksum=%08x\n", gui.game.stepCounter,
+                        gui.game.checkSum(nullptr, nullptr, nullptr, true));
+                }
                 captureFramebuffer();
                 if (std::getenv("GLOB2_BENCH_VISIBLE")) globalContainer->gfx->nextFrame();
             }
