@@ -30,6 +30,7 @@ export interface AccountsTable {
   created_at: Timestamp;
   updated_at: Timestamp;
   last_seen_at: NullableTimestamp;
+  display_name_changed_at: NullableTimestamp;
 }
 
 export interface IdentitiesTable {
@@ -75,6 +76,38 @@ export interface SigninAttemptsTable {
   created_at: Timestamp;
   expires_at: RequiredTimestamp;
   completed_at: NullableTimestamp;
+  resume_hash: Nullable<string>;
+  mode: Defaulted<'link' | 'signin'>;
+  client_platform: Defaulted<'desktop' | 'android' | 'ios' | 'browser'>;
+  browser_binding_hash: Nullable<string>;
+  conflict_account_id: Nullable<string>;
+  failure_reason: Nullable<'expired' | 'denied' | 'cancelled' | 'conflict' | 'error'>;
+  linked: Nullable<boolean>;
+  delivered_at: NullableTimestamp;
+}
+
+export interface WebSessionsTable {
+  id: Generated<string>;
+  account_id: string;
+  token_hash: string;
+  created_at: Timestamp;
+  expires_at: RequiredTimestamp;
+  last_used_at: NullableTimestamp;
+  revoked_at: NullableTimestamp;
+}
+
+export interface AuthFlowsTable {
+  id: Generated<string>;
+  state_hash: string;
+  provider: string;
+  code_verifier: string;
+  nonce: string;
+  purpose: 'handoff' | 'web';
+  attempt_id: Nullable<string>;
+  browser_binding_hash: Nullable<string>;
+  created_at: Timestamp;
+  expires_at: RequiredTimestamp;
+  consumed_at: NullableTimestamp;
 }
 
 export interface EntitlementsTable {
@@ -489,6 +522,8 @@ export interface Database {
   device_credentials: DeviceCredentialsTable;
   refresh_tokens: RefreshTokensTable;
   signin_attempts: SigninAttemptsTable;
+  web_sessions: WebSessionsTable;
+  auth_flows: AuthFlowsTable;
   entitlements: EntitlementsTable;
   admin_audit_log: AdminAuditLogTable;
   blobs: BlobsTable;
