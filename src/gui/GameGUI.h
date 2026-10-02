@@ -6,6 +6,7 @@
 #include <MapCamera.h>
 
 #include <InputState.h>
+#include <atomic>
 #include <memory>
 #include <optional>
 #include <queue>
@@ -239,12 +240,28 @@ public:
 	Game game;
 	/// Live network games always use normal speed; replays remain adjustable.
 	bool canChangeGameSpeed() const;
+	/// The scene this frame draws: the simulation's published scene when the
+	/// simulation runs on its own thread, else the one drawAll extracted.
+	const Scene& drawnScene() const { return publishedScene ? *publishedScene : frameScene; }
+	/// Draw scenes published by the simulation thread (null: extract in drawAll).
+	void setPublishedScene(const Scene* scene) { publishedScene = scene; }
+	/// What the next scene should show; read by extraction, which runs where the
+	/// game may be read. GUI state it reads changes only while the simulation is parked.
+	SceneRequest sceneRequest();
+	/// Extract the next scene from the game (the simulation thread calls this).
+	void extractScene(Scene& scene) { sceneExtractor.extract(game, sceneRequest(), scene); }
+	/// Per-frame GUI work that reads or writes the game, for threaded execution:
+	/// the simulation is parked while it runs (SimulationRunner::withGame).
+	void threadedClientStep(const std::vector<SDL_Event>& events, Uint64 now);
+	/// True while the simulation runs on its own thread.
+	bool simulationThreaded = false;
 	/// Water and cloud animation phase of this GUI's map view (presentation only).
 	int mapAnimationTime() const { return view.render.animationTime; }
 	friend class Game;
-	bool gamePaused;
-	bool hardPause;
-	bool isRunning;
+	// Read by the simulation thread as well as the GUI (see SimulationRunner).
+	std::atomic<bool> gamePaused{false};
+	std::atomic<bool> hardPause{false};
+	std::atomic<bool> isRunning{false};
 	bool notmenu;
 	//! true if user close the glob2 window.
 	bool exitGlobCompletely;
@@ -696,8 +713,9 @@ private:
 	
 	// records CPU usage percentages 
 	static const unsigned SMOOTHED_CPU_SIZE=32;
-	int smoothedCPULoad[SMOOTHED_CPU_SIZE];
-	int smoothedCPUPos;
+	// Written by the simulation's pacing, read by the top bar.
+	std::atomic<int> smoothedCPULoad[SMOOTHED_CPU_SIZE];
+	std::atomic<int> smoothedCPUPos{0};
 
 	// Stuff for the correct working of the campaign
 	Campaign* campaign;
@@ -716,6 +734,9 @@ private:
 	Game::ViewState view;
 	///The scene drawn this frame, extracted from `game` at the start of drawAll.
 	Scene frameScene;
+	///Scene published by the simulation thread, or null when drawAll extracts
+	///frameScene itself (serial execution).
+	const Scene* publishedScene = nullptr;
 	///Extracts frameScene; keeps the state that spans frames (the overlay map).
 	SceneExtractor sceneExtractor;
 

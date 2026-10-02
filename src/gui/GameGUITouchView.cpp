@@ -215,13 +215,13 @@ void GameGUITouch::drawHUD()
 	}
 	stats.push_back(
 		{GAGCore::FormattableString(GAGCore::Toolkit::getStringTable()->getString("[P %0/%1/%2]"))
-			 .arg(gui.frameScene.panels.local.prestige)
-			 .arg(gui.frameScene.panels.hud.totalPrestige)
-			 .arg(gui.frameScene.panels.hud.prestigeToReach)});
-	stats.push_back({"+" + std::to_string(gui.frameScene.panels.local.unitConversionGained) + " / −" +
-					 std::to_string(gui.frameScene.panels.local.unitConversionLost)});
+			 .arg(gui.drawnScene().panels.local.prestige)
+			 .arg(gui.drawnScene().panels.hud.totalPrestige)
+			 .arg(gui.drawnScene().panels.hud.prestigeToReach)});
+	stats.push_back({"+" + std::to_string(gui.drawnScene().panels.local.unitConversionGained) + " / −" +
+					 std::to_string(gui.drawnScene().panels.local.unitConversionLost)});
 	int cpu = 0;
-	for (auto value : gui.smoothedCPULoad)
+	for (const auto &value : gui.smoothedCPULoad)
 		cpu += value;
 	cpu /= GameGUI::SMOOTHED_CPU_SIZE;
 	stats.push_back(
@@ -245,7 +245,7 @@ void GameGUITouch::drawHUD()
 		{
 			SDL_Rect clip{int(r.x), int(r.y), int(r.w), int(r.h)};
 			gfx->setUITransform(unit, r.x + 2 * unit, r.y + 3 * unit, &clip);
-			globalContainer->unitmini->setBaseColor(gui.frameScene.panels.local.color);
+			globalContainer->unitmini->setBaseColor(gui.drawnScene().panels.local.color);
 			gfx->drawSprite(0, 0, globalContainer->unitmini, stat.icon);
 			gfx->setUITransform();
 			gfx->setClipRect();
@@ -323,7 +323,7 @@ ViewRect GameGUITouch::tutorialRect() const
 }
 void GameGUITouch::prepareTutorial()
 {
-	std::string text = gui.frameScene.panels.hud.legacyScriptText;
+	std::string text = gui.drawnScene().panels.hud.legacyScriptText;
 	if (!gui.scriptText.empty())
 	{
 		if (!text.empty())
@@ -528,7 +528,7 @@ void GameGUITouch::drawAllocation()
 				GAGCore::Toolkit::getStringTable()->getString("[%0 / %1 HP · %2]"))
 				.arg(building->hp)
 				.arg(type->hpMax)
-				.arg(building->owner.teamNumber == gui.frameScene.panels.local.teamNumber
+				.arg(building->owner.teamNumber == gui.drawnScene().panels.local.teamNumber
 						 ? std::string(
 							   GAGCore::Toolkit::getStringTable()->getString("[Your colony]"))
 						 : GAGCore::FormattableString(
@@ -642,7 +642,7 @@ std::vector<std::pair<std::string, int>> GameGUITouch::tacticalActions() const
 			{toggle(GAGCore::Toolkit::getStringTable()->getString("[show flags]"),
 					globalContainer->replayShowFlags),
 			 34}};
-		for (int i = 0; i < gui.frameScene.entities.teamCount; ++i)
+		for (int i = 0; i < gui.drawnScene().entities.teamCount; ++i)
 			playback.push_back(
 				{toggle((GAGCore::FormattableString(
 							 GAGCore::Toolkit::getStringTable()->getString("[View team %0]"))

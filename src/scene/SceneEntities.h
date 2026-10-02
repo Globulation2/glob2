@@ -11,7 +11,7 @@
 #include <string>
 #include <vector>
 
-class BuildingType;
+struct BuildingType;
 class Race;
 
 //! Presentation copy of a team: what drawing needs to colour and filter its entities.

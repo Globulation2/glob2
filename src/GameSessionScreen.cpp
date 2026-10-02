@@ -56,6 +56,9 @@ void GameSessionScreen::updateExecutionImpl(Uint32 tick)
 		engine->beginSession(clock);
 		nextTick = clock;
 		started = true;
+		// The simulation runs on its own thread where threads exist; otherwise
+		// (the browser build, thread creation failure) this host steps it serially.
+		engine->startSimulationThread(clock);
 	}
 	else
 	{
@@ -68,11 +71,24 @@ void GameSessionScreen::updateExecutionImpl(Uint32 tick)
 		clock += static_cast<Uint32>(tick - lastTick);
 		lastTick = tick;
 	}
-	if (clock < nextTick)
-		return;
-	const bool running = engine->stepSession(clock, input);
-	input.clear();
-	nextTick = clock + engine->sessionDelay(clock);
+	bool running;
+	if (engine->simulationThreaded())
+	{
+		// Input and GUI logic every frame, with the simulation parked between ticks;
+		// the simulation thread paces itself.
+		engine->resumeSimulation(clock);
+		try { running = engine->threadedClientFrame(clock, input); }
+		catch (...) { engine->abortSession(); throw; }
+		input.clear();
+	}
+	else
+	{
+		if (clock < nextTick)
+			return;
+		running = engine->stepSession(clock, input);
+		input.clear();
+		nextTick = clock + engine->sessionDelay(clock);
+	}
 	if (!running)
 	{
 		if (auto request = engine->finishSessionForHost())
@@ -145,6 +161,10 @@ Uint32 GameSessionScreen::executionDelay(Uint32 now, Uint32 fallback)
 {
 	if (!started || finished)
 		return 0;
+	// Threaded: draw at display rate (presentation paces with vsync where enabled);
+	// cap at about 120 frames per second otherwise.
+	if (engine->simulationThreaded())
+		return 8;
 	return engine->sessionDelay(clock + static_cast<Uint32>(now - lastTick));
 }
 
@@ -159,7 +179,12 @@ void GameSessionScreen::viewportResized(int oldWidth, int oldHeight, int width, 
 void GameSessionScreen::suspendExecution()
 {
 	if (engine)
+	{
 		engine->suspendInput();
+		// No frames run in the background; the simulation thread waits too, as the
+		// serial loop did. updateExecution resumes it.
+		engine->suspendSimulation();
+	}
 	input.clear();
 	resetClock = true;
 }

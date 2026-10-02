@@ -361,7 +361,6 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 void GameGUI::syncStep(void)
 {
 	assert(localTeam);
-	assert(teamStats);
 
 	// Faster presets run more ticks per second, so they wait proportionally more ticks.
 	int stepMs = GAME_TICK_MS;

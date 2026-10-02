@@ -104,8 +104,8 @@ void GameGUI::generateNewParticles(std::set<Uint16> *visibleBuildings)
 	if (gamePaused)
 		return;
 
-	const SceneEntities &entities = frameScene.entities;
-	const Uint32 stepCounter = frameScene.tick;
+	const SceneEntities &entities = drawnScene().entities;
+	const Uint32 stepCounter = drawnScene().tick;
 	for (Uint16 gid : *visibleBuildings)
 	{
 		const SceneBuilding* building = entities.building(gid);

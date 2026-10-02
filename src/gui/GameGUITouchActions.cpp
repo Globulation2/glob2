@@ -57,7 +57,7 @@ const SceneBuildingPanel *GameGUITouch::inspectedBuilding() const
 	if (!inspecting())
 		return nullptr;
 	// The panel was extracted for the selection current when the frame was drawn.
-	const SceneBuildingPanel &panel = gui.frameScene.panels.building;
+	const SceneBuildingPanel &panel = gui.drawnScene().panels.building;
 	const BuildingRef selected = std::get<BuildingRef>(gui.selection);
 	if (!panel.valid || panel.gid != selected.gid || panel.generation != selected.generation)
 		return nullptr;
@@ -69,7 +69,7 @@ std::vector<GameGUITouch::BuildingAction> GameGUITouch::buildingActions() const
 	auto *b = inspectedBuilding();
 	if (!b)
 		return result;
-	if (b->owner.teamNumber != gui.frameScene.panels.local.teamNumber || globalContainer->isViewingGame())
+	if (b->owner.teamNumber != gui.drawnScene().panels.local.teamNumber || globalContainer->isViewingGame())
 		return result;
 	if (allocationBuilding())
 	{
@@ -114,7 +114,7 @@ std::vector<GameGUITouch::BuildingAction> GameGUITouch::buildingActions() const
 			result.push_back({tr(names[i]), 2, i, gui.displayedMinLevelToFlag(*b) == i});
 	}
 	const std::string construction = constructionActionLabel(b->constructionResultState, b->buildingState, b->type, b->hp,
-		b->hardSpaceForRepair, b->hardSpaceForUpgrade, gui.frameScene.panels.local.maxBuildLevel);
+		b->hardSpaceForRepair, b->hardSpaceForUpgrade, gui.drawnScene().panels.local.maxBuildLevel);
 	if (!construction.empty())
 		result.push_back({construction, 3});
 	if (b->buildingState == Building::WAITING_FOR_DESTRUCTION)

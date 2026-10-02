@@ -3,7 +3,9 @@
 
 #include "Map.h"
 
-void SceneMap::extract(const Map &map)
+void SceneMap::extract(const Map &map) { extract(map, map.displayViewportW, map.displayViewportH); }
+
+void SceneMap::extract(const Map &map, int displayW, int displayH)
 {
 	w = map.getW();
 	h = map.getH();
@@ -32,8 +34,8 @@ void SceneMap::extract(const Map &map)
 	undermap.resize(size);
 	for (size_t i = 0; i < size; ++i)
 		undermap[i] = Uint8(map.getUMTerrain(int(i) & wMask, int(i >> wDec)));
-	displayViewportW = map.displayViewportW;
-	displayViewportH = map.displayViewportH;
+	displayViewportW = displayW;
+	displayViewportH = displayH;
 	discovered.assign(map.mapDiscovered.begin(), map.mapDiscovered.end());
 	if (map.fogOfWar)
 		fogOfWar.assign(map.fogOfWar, map.fogOfWar + size);

@@ -9,7 +9,7 @@
 
 void GameGUI::drawBuildingInfos(void)
 {
-	const SceneBuildingPanel* selBuild = &frameScene.panels.building;
+	const SceneBuildingPanel* selBuild = &drawnScene().panels.building;
 	if (!selBuild->valid)
 		return;
 	BuildingType *buildingType = selBuild->type;

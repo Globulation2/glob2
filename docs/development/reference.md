@@ -670,8 +670,8 @@ a supported open-file checker and is conservatively skipped there.
 
 ## Scene renderer
 
-Map drawing reads an immutable `Scene` (`src/scene/`), never live simulation objects,
-so it can later run while the simulation advances on another thread.
+Drawing reads an immutable `Scene` (`src/scene/`), never live simulation objects, so it
+runs while the simulation advances on another thread.
 
 - `SceneExtractor::extract(game, request, scene)` (`src/scene/SceneExtract.cpp`) is the
   only place presentation code reads the game. `GameGUI::drawAll` extracts
@@ -690,8 +690,45 @@ so it can later run while the simulation advances on another thread.
 - Adding something drawn on the map: extract what the drawing needs in
   `SceneExtract.cpp` and read it from the `Scene` in the render pass. Never read
   `Game`, `Map`, `Team`, `Unit` or `Building` state from drawing code.
-- `SceneBuffer<T>` (`src/scene/SceneBuffer.h`) is the lock-free triple buffer that will
-  hand Scenes from the simulation thread to the render thread.
+- Selection panels, the HUD, the top bar, statistics pages, the minimap and the building
+  tool's placement preview also draw from the Scene (`ScenePanels`, `SceneMap`). Input
+  handlers still act on the game, and validate against it before issuing an order.
+
+### Simulation thread
+
+Interactive sessions run the simulation on its own thread (`src/sim/SimulationRunner`)
+wherever threads exist; there is no setting. The browser build, and any platform where
+creating the thread fails, run the same session serially (`Engine::stepSession`), which
+also remains the headless default and the equivalence reference.
+
+- The simulation thread paces itself with the speed presets and runs ticks
+  (`Engine::simulationStep`: orders, network, `Game::syncStep`). After a tick, if the main
+  thread has taken the previous Scene, it extracts the next one into a `SceneBuffer`
+  (lock-free triple buffer), so fast-forward extracts at most once per drawn frame.
+- The main thread draws the newest Scene every frame. Work that reads or writes the game —
+  input, `GameGUI::step`, consuming `ClientEvents`, checking the selection, script
+  highlights — runs in `SimulationRunner::withGame`, which parks the simulation between
+  ticks (immediately when it is sleeping between ticks).
+- Only state both threads use is shared: `ClientRequests`' view is locked; `gamePaused`,
+  `hardPause`, `isRunning` and the CPU-load history are atomics. A pause order or the local
+  player leaving takes effect on the simulation thread in the same tick, as in serial
+  execution. GUI state extraction reads (selection, local team) changes only while the
+  simulation is parked.
+- The synchronized RNG belongs to the game, so results do not depend on the thread.
+  `GLOB2_SIM_THREAD=1` runs headless sessions on the simulation thread for
+  `check_sim_thread.py --candidate-env GLOB2_SIM_THREAD=1`; `GLOB2_SIM_THREAD=0` keeps
+  any session serial, for tests that count frames against a scripted host clock.
+- The simulation thread paces on the host's clock (`Engine::sessionClock`): the clock the
+  host last passed in, advanced by real time. Time the application spent in the
+  background is therefore not caught up after resuming, as in serial execution.
+- Values the client sets while drawing and extraction reads (viewport, drawn map size,
+  overlay, observed building) go through `ClientRequests`, never through `Game` or `Map`
+  fields. To check for races, build with `CXXFLAGS="-g -fsanitize=thread"
+  LINKFLAGS="-fsanitize=thread"` and run a windowed `-test-games` session or a headless
+  `--run-game` with `GLOB2_SIM_THREAD=1`. With Homebrew's SDL2 compatibility library,
+  set `DYLD_LIBRARY_PATH=/opt/homebrew/lib` so it can load SDL3 under the sanitizer.
+- `SceneBuffer<T>` (`src/scene/SceneBuffer.h`) hands Scenes between the threads without
+  either waiting for the other.
 
 ## Software rendering architecture and profiling
 

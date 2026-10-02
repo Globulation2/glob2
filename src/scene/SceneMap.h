@@ -20,6 +20,9 @@ class SceneMap
 {
 public:
 	//! Copy the layers from map. Runs where the map may be read (the simulation side).
+	//! displayW/H: the drawn map area in pixels (a client value, see ClientRequests).
+	void extract(const Map &map, int displayW, int displayH);
+	//! Single-threaded callers (tests, tools): take the drawn area from the map.
 	void extract(const Map &map);
 
 	int getW() const { return w; }

@@ -128,7 +128,18 @@ void GameGUI::executeOrder(std::shared_ptr<Order> order)
 	// show; react to it right away so pause and quit take effect before the
 	// engine decides whether to run the next tick, exactly as before.
 	game.executeOrderAndNotify(order, localPlayer);
-	consumeClientEvents();
+	if (!simulationThreaded)
+	{
+		consumeClientEvents();
+		return;
+	}
+	// On the simulation thread, apply now only what decides the next tick (pause,
+	// the local player leaving); the GUI consumes the notices, including these
+	// again, in threadedClientStep.
+	if (order->getOrderType() == ORDER_PAUSE_GAME)
+		gamePaused = std::static_pointer_cast<PauseGameOrder>(order)->pause;
+	else if (order->getOrderType() == ORDER_PLAYER_QUIT_GAME && order->sender == localPlayer)
+		isRunning = false;
 }
 
 void GameGUI::handleClientEvent(ClientEventVariant&& event)

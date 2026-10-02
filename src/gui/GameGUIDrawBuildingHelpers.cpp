@@ -32,9 +32,9 @@ void GameGUI::drawBuildingHeader(const SceneBuildingPanel* selBuild, BuildingTyp
 		title += ")";
 	}
 
-	if (frameScene.panels.local.teamNumber == selBuild->owner.teamNumber)
+	if (drawnScene().panels.local.teamNumber == selBuild->owner.teamNumber)
 		{ r=160; g=160; b=255; }
-	else if (frameScene.panels.local.allies & selBuild->owner.me)
+	else if (drawnScene().panels.local.allies & selBuild->owner.me)
 		{ r=255; g=210; b=20; }
 	else
 		{ r=255; g=50; b=50; }
@@ -160,7 +160,7 @@ void GameGUI::drawBuildingFlagInfo(const SceneBuildingPanel* selBuild, BuildingT
 		const int posX = displayedPosX(*selBuild), posY = displayedPosY(*selBuild);
 		const int stayRange = displayedUnitStayRange(*selBuild);
 		const Sint32 stayRangeSquare = (1 + stayRange) * (1 + stayRange);
-		const int w = frameScene.map.getW(), h = frameScene.map.getH();
+		const int w = drawnScene().map.getW(), h = drawnScene().map.getH();
 		// Torus distance, exactly as Map::warpDist1d.
 		const auto warp = [](int a, int b, int size) { int d = std::abs(a - b) % size; return d > size / 2 ? size - d : d; };
 		for (const auto &[x, y] : selBuild->workerPositions)
@@ -469,7 +469,7 @@ void GameGUI::drawBuildingActionButtons(const SceneBuildingPanel* selBuild, Buil
 {
 	if (!((selBuild->owner.allies) & (1<<localTeamNo)))
 		return;
-	if (selBuild->owner.teamNumber != frameScene.panels.local.teamNumber)
+	if (selBuild->owner.teamNumber != drawnScene().panels.local.teamNumber)
 		return;
 
 	const int btnX = globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET;
@@ -494,7 +494,7 @@ void GameGUI::drawBuildingActionButtons(const SceneBuildingPanel* selBuild, Buil
 		if (selBuild->hp<selBuild->effectiveMaxHp)
 		{
 			// repair
-			if (selBuild->type->regenerationSpeed==0 && selBuild->hardSpaceForRepair && frameScene.panels.local.maxBuildLevel>=buildingType->level)
+			if (selBuild->type->regenerationSpeed==0 && selBuild->hardSpaceForRepair && drawnScene().panels.local.maxBuildLevel>=buildingType->level)
 			{
 				drawBlueButton(btnX, primaryY, "[repair]");
 				if ( mouseX>btnX+12 && mouseX<globalContainer->gfx->getW()-12
@@ -511,7 +511,7 @@ void GameGUI::drawBuildingActionButtons(const SceneBuildingPanel* selBuild, Buil
 		else if (buildingType->nextLevel!=-1)
 		{
 			// upgrade
-			if (selBuild->hardSpaceForUpgrade && (frameScene.panels.local.maxBuildLevel>buildingType->level))
+			if (selBuild->hardSpaceForUpgrade && (drawnScene().panels.local.maxBuildLevel>buildingType->level))
 			{
 				drawBlueButton(btnX, primaryY, "[upgrade]");
 				if ( mouseX>btnX+12 && mouseX<globalContainer->gfx->getW()-12

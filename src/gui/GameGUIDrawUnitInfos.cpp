@@ -36,7 +36,7 @@ void drawAbilityRow(int xpos, int ypos, const char* labelKey, int displayLevel, 
 
 void GameGUI::drawUnitInfos(void)
 {
-	const SceneUnitPanel* selUnit = &frameScene.panels.unit;
+	const SceneUnitPanel* selUnit = &drawnScene().panels.unit;
 	if (!selUnit->valid)
 		return;
 	int ypos = YPOS_BASE_UNIT;
@@ -50,9 +50,9 @@ void GameGUI::drawUnitInfos(void)
 	title += displayPlayerName(selUnit->owner.firstPlayerName);
 	title += ")";
 
-	if (frameScene.panels.local.teamNumber == selUnit->owner.teamNumber)
+	if (drawnScene().panels.local.teamNumber == selUnit->owner.teamNumber)
 		{ r=160; g=160; b=255; }
-	else if (frameScene.panels.local.allies & selUnit->owner.me)
+	else if (drawnScene().panels.local.allies & selUnit->owner.me)
 		{ r=255; g=210; b=20; }
 	else
 		{ r=255; g=50; b=50; }

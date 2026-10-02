@@ -289,7 +289,7 @@ namespace
 void SceneExtractor::extract(const Game &game, const SceneRequest &request, Scene &scene)
 {
 	scene.tick = game.stepCounter;
-	scene.map.extract(game.map);
+	scene.map.extract(game.map, request.view.displayW, request.view.displayH);
 	extractEntities(game, request, scene.entities);
 	extractPanels(game, request, scene.panels);
 

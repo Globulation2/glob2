@@ -11,7 +11,7 @@
 #include <utility>
 #include <vector>
 
-class BuildingType;
+struct BuildingType;
 class Race;
 class TeamStats;
 
