@@ -559,14 +559,16 @@ changing the protocol or the record: see [network telemetry](../development/netw
 1. `MatchSetup::parse` checks the JSON Schema rules (every field required, no unknown
    properties, ranges, patterns, the closed AI list without `javascript`), then the
    cross-field rules: teams listed `0..n-1` in order, seats numbered `0..k-1`, each seat
-   on a listed team, names at most 32 UTF-8 bytes, one seat per account, a generator's
-   `teams` equal to the number of teams, and only known experiment keys. Errors carry
-   the stage (`Schema`, `Semantic` or `Map`) and a JSON pointer.
+   on a listed team, names at most 32 UTF-8 bytes, one seat per account, at least one
+   human or AI seat, closed seats after every human and AI seat and each on a different
+   team that no human or AI seat plays, a generator's `teams` equal to the number of
+   teams, and only known experiment keys. Errors carry the stage (`Schema`, `Semantic`
+   or `Map`) and a JSON pointer.
 2. `resolveMatchMap` finds the map: a given file, or `<cache>/<hash>.map[.gz]` or
    `.game[.gz]`. The file's decompressed bytes must hash (SHA-256) to `map.hash`, and it
    must be a saved game exactly when the source is an uploaded save.
 3. `toGameHeader(mapHeader)` requires the map's team count to equal `teams.length`.
-   Seat `s` becomes player record `s` on its team. **Every human seat is `P_IP` on every
+   Human or AI seat `s` becomes player record `s` on its team. **Every human seat is `P_IP` on every
    client and in the verifier**, so the heavy checksum the engine enables when a
    network player exists is the same everywhere; the local seat is chosen by
    `localPlayer`, never by the player type. AI seats use the `AINames` CLI ids (`none`
@@ -575,6 +577,30 @@ changing the protocol or the record: see [network telemetry](../development/netw
    from the default winning conditions with prestige and the sudden-death timer
    (`minutes × 60 × 25` ticks) toggled.
 
+**Seats, players and teams.** A human or AI seat is a player: seat `s` is
+`BasePlayer` `s`, and that number is what tickets (`seat`, `humanSeats`), the relay,
+`TurnSession`'s local seat, the match record, `--verify-match`, the order audit and
+`match_participants.seat` use. A seat's `team` is the map team it controls. Team
+indices are never renumbered: `result.json`, `match_team_stats` and
+`match_participants.team` use the map's own numbering.
+
+**Closed teams.** A team that no human or AI seat controls is closed, exactly like a
+"Closed" colony in a custom game (`CustomGameSetup::writeHeader` gives it no player):
+the engine removes its colony at the start (`Game::clearingUncontrolledTeams`), and a
+team without players dies on its first step (`TeamStep`: `playersMask == 0`), so it has
+lost and never stands in the way of the opponents-defeated victory. A `closed` seat
+(`{seat, kind: "closed", team}`) says so explicitly. Closed seats are not players and
+create no `BasePlayer`; they are numbered after every human and AI seat so players
+keep the numbers `0..p-1`. Rooms send each empty or locked room seat this way
+(`roomMatchSeats` in `platform/apps/api/src/play/rooms.ts`): the taken room seats become
+match seats `0..p-1` in room seat order on their own map teams, and the empty ones
+follow as closed seats. A match seat therefore equals its room seat only while no empty
+room seat comes before it. LAN rooms list no seat at all for a team nobody took, which
+means the same. AI `none` is different: an idle player whose colony stays on the map,
+alive. Rooms used to send empty seats that way, which kept a player who had beaten
+every real opponent from ever winning; records of those matches still verify as they
+were played.
+
 `MatchSetup::fromGameHeader` is the inverse where it is meaningful, for a LAN host or
 an uploaded save: it rejects JavaScript AIs and winning-condition lists other than the
 standard one.
@@ -582,7 +608,8 @@ standard one.
 **Saves.** For an uploaded save, the seats replace every saved player record
 (`Game::setGameHeader` with `saveAI = false`). A seat takes control of its team as
 saved; naming any saved team is how reteaming works. AI seats start fresh AIs of the
-given kind, and teams no seat controls are cleared as on a new map. The rules, seed and
+given kind, and teams no human or AI seat controls (closed teams) are cleared as on a
+new map. The rules, seed and
 experiments come from the setup like any other match, so a platform that wants to
 continue a save unchanged builds the setup with `fromGameHeader` from the save's
 header. If the seed equals the saved one, the saved random state is kept; otherwise

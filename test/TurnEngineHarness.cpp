@@ -40,7 +40,12 @@
 #include "MatchRecord.h"
 #include "MatchSetup.h"
 #include "MersenneTwister.h"
+#include "BinaryStream.h"
 #include "Brush.h"
+#include "Building.h"
+#include "MapHeader.h"
+#include "StreamBackend.h"
+#include "Unit.h"
 #include "Order.h"
 #include "OrderValidation.h"
 #include "Player.h"
@@ -211,8 +216,10 @@ std::string mapPath(const std::string& name)
 	return (glob2test::sourceRoot() / "maps" / (name + ".map.gz")).string();
 }
 
-/// A setup on `map`: humans on the first teams, then the AIs, every team its own
-/// alliance. Unused map teams stay listed (the contract lists every map team).
+/// A setup on `map`: humans on the first teams, then one team per entry of `ais`,
+/// every team its own alliance. An entry "closed" closes its team (a closed seat
+/// after every player seat, as a room sends an empty seat). Unused map teams stay
+/// listed (the contract lists every map team).
 Online::MatchSetup makeSetup(const std::string& map, int humans, const std::vector<std::string>& ais, std::uint32_t seed)
 {
 	const MapHeader header = Engine::loadMapHeader(map);
@@ -234,14 +241,26 @@ Online::MatchSetup makeSetup(const std::string& map, int humans, const std::vect
 		seat.name = "Player " + std::to_string(h + 1);
 		setup.seats.push_back(seat);
 	}
+	std::vector<Online::SetupSeat> closed;
 	for (std::size_t a = 0; a < ais.size(); ++a)
 	{
 		Online::SetupSeat seat;
-		seat.seat = humans + static_cast<int>(a);
-		seat.team = seat.seat;
+		seat.team = humans + static_cast<int>(a);
 		seat.human = false;
+		if (ais[a] == "closed")
+		{
+			seat.closed = true;
+			closed.push_back(seat);
+			continue;
+		}
+		seat.seat = static_cast<int>(setup.seats.size());
 		seat.ai = ais[a];
 		seat.name = "AI " + std::to_string(a + 1);
+		setup.seats.push_back(seat);
+	}
+	for (auto& seat : closed)
+	{
+		seat.seat = static_cast<int>(setup.seats.size());
 		setup.seats.push_back(seat);
 	}
 	setup.validateSemantics();
@@ -458,10 +477,18 @@ struct EngineMatch
 
 	EngineMatch(const std::string& mapName, const std::vector<LinkProfile>& links, const std::vector<std::string>& ais,
 	            std::uint32_t seed = 4242, Turn::SequencerConfig config = {})
-		: map(mapPath(mapName))
+		: EngineMatch(makeSetup(mapPath(mapName), static_cast<int>(links.size()), ais, seed), mapPath(mapName), links,
+		              config)
+	{
+	}
+
+	/// A match of `given` on the map or save `mapFile`; its human seats are 0..links-1.
+	EngineMatch(Online::MatchSetup given, std::string mapFile, const std::vector<LinkProfile>& links,
+	            Turn::SequencerConfig config = {})
+		: setup(std::move(given)), map(std::move(mapFile))
 	{
 		const int humans = static_cast<int>(links.size());
-		setup = makeSetup(map, humans, ais, seed);
+		REQUIRE(setup.humanSeatMask() == (1u << humans) - 1);
 		net.links = links;
 		net.outageUntil.assign(links.size(), 0);
 		net.relay = std::make_unique<Turn::TurnSequencer>(
@@ -900,6 +927,193 @@ TEST_SUITE("TurnEngineHarness")
 		const Verified v = verifyRecord(record, m, glob2test::artifactDir() / "quit");
 		CHECK(v.verdict.verdict == "verified");
 		requireSameOutcomes(v.result, liveTeams(*m.clients[0]));
+	}
+
+	// Online rooms send empty and locked seats as closed seats. A closed team has no
+	// player, so it starts without a colony and has lost at once, exactly like a
+	// "Closed" colony in a custom game, and a player who defeats every real opponent
+	// wins. Rooms used to send them as AI `none`: idle colonies that stay alive, so
+	// opponents-defeated never fired and the game only ended by sudden death.
+	GLOB2_TEST_CASE("closed seats are closed colonies: the last player standing wins everywhere and the record verifies",
+	                "[network-sim]")
+	{
+		glob2test::HeadlessGlobals globals(harnessGlobals());
+		struct Outcome
+		{
+			std::uint32_t eliminatedAt = 0; ///< game tick team 1 lost (0: it did not)
+			bool survivorWon = false;       ///< on every client
+		};
+		// Two humans on FourSquares1 (four teams); teams 2 and 3 are `seats`. At 10 s
+		// player 2 gives up: it deletes every building it has, and its starving colony
+		// dies about half a minute later.
+		auto play = [](const std::vector<std::string>& seats, const std::string& name, bool verify) {
+			EngineMatch m("FourSquares1", {{20 * MS}, {45 * MS, 10 * MS, 0.01}}, seats, 4711);
+			for (auto& c : m.clients)
+				c->orderRate = 0;
+			m.run(10 * SECOND);
+			Outcome outcome;
+			for (auto& c : m.clients)
+			{
+				Game& game = c->engine->gui.game;
+				for (int team = 2; team < 4; ++team)
+				{
+					INFO("client " << c->index << " team " << team);
+					// A closed team was removed at the start and has lost; an idle
+					// AI `none` colony is still alive.
+					CHECK(game.teams[team]->hasLost == (seats[0] == "closed"));
+					CHECK(game.teams[team]->isAlive == (seats[0] != "closed"));
+				}
+				CHECK(game.gameHeader.getNumberOfPlayers() == (seats[0] == "closed" ? 2 : 4));
+			}
+			auto& loser = *m.clients[1];
+			{
+				RngScope scope(loser.rng);
+				Team* team = loser.engine->gui.game.teams[1];
+				for (int i = 0; i < Building::MAX_COUNT; ++i)
+					if (const Building* b = team->myBuildings[i])
+						loser.engine->gui.orderQueue.push_back(std::make_shared<OrderDelete>(b->gid));
+				REQUIRE(!loser.engine->gui.orderQueue.empty());
+			}
+			// Up to five game minutes for the colony to starve.
+			for (int second = 0; second < 300 && !outcome.eliminatedAt; ++second)
+			{
+				m.run(SECOND);
+				Game& game = m.clients[0]->engine->gui.game;
+				if (game.teams[1]->hasLost)
+					outcome.eliminatedAt = game.stepCounter;
+			}
+			REQUIRE(outcome.eliminatedAt > 0);
+			m.run(10 * SECOND);
+			outcome.survivorWon = true;
+			for (auto& c : m.clients)
+			{
+				Game& game = c->engine->gui.game;
+				INFO("client " << c->index);
+				CHECK(game.teams[1]->hasLost);
+				CHECK_FALSE(game.teams[0]->hasLost);
+				outcome.survivorWon &= game.teams[0]->hasWon;
+			}
+			const std::uint32_t end = m.finish();
+			CHECK_FALSE(m.net.relay->desyncFlagged());
+			CHECK(m.requireIdenticalChecksums() > outcome.eliminatedAt);
+			CHECK(end > outcome.eliminatedAt);
+			if (verify)
+			{
+				const Verified v = verifyRecord(m.record(name), m, glob2test::artifactDir() / name);
+				CHECK(v.verdict.verdict == "verified");
+				for (auto& c : m.clients)
+					requireSameOutcomes(v.result, liveTeams(*c));
+				CHECK(v.result.at("winning_teams") == json::array({0}));
+				CHECK(v.result.at("unresolved") == false);
+				for (int team = 1; team < 4; ++team)
+					CHECK(v.result.at("teams")[team].at("outcome") == "lost");
+				// The players are seats 0 and 1; the closed seats are no players.
+				CHECK(v.result.at("players").size() == 2);
+			}
+			MESSAGE(name << ": team 1 eliminated at tick " << outcome.eliminatedAt << ", survivor won: "
+			             << outcome.survivorWon);
+			return outcome;
+		};
+		const Outcome closed = play({"closed", "closed"}, "closed-seats", true);
+		CHECK(closed.survivorWon);
+		// The old representation of the same room: the survivor never wins.
+		const Outcome idle = play({"none", "none"}, "idle-seats", false);
+		CHECK_FALSE(idle.survivorWon);
+	}
+
+	// An uploaded save as the map, reteamed: the two returning players take saved
+	// teams 3 and 1, and the room's other seats were empty, so teams 0 and 2 are closed.
+	// Their saved colonies are cleared at the start, as on a new map.
+	GLOB2_TEST_CASE("a save with closed seats: reteamed players keep their colonies, closed ones are cleared",
+	                "[network-sim]")
+	{
+		glob2test::HeadlessGlobals globals(harnessGlobals());
+		const fs::path directory = glob2test::artifactDir() / "closed-save";
+		fs::create_directories(directory);
+		const std::string save = (directory / "source.game").string();
+		{
+			// Four live colonies, 20 seconds in.
+			EngineMatch source("FourSquares1", {{20 * MS}, {30 * MS}}, {"numbi", "numbi"}, 515);
+			source.run(20 * SECOND);
+			auto& c = *source.clients[0];
+			RngScope scope(c.rng);
+			FILE* file = std::fopen(save.c_str(), "wb");
+			REQUIRE(file);
+			GAGCore::BinaryOutputStream out(new GAGCore::FileStreamBackend(file));
+			c.engine->gui.save(&out, "closed seats source");
+		}
+		const MapHeader saved = Engine::loadMapHeader(save);
+		REQUIRE(saved.getIsSavedGame());
+		REQUIRE(saved.getNumberOfTeams() == 4);
+
+		Online::MatchSetup setup;
+		setup.simVersion = Online::currentSimVersion();
+		setup.seed = 99;
+		setup.map.kind = Online::MapSource::Kind::Upload;
+		setup.map.format = Online::MapSource::Format::Save;
+		setup.map.hash = Online::mapContentHash(save);
+		for (int t = 0; t < 4; ++t)
+			setup.teams.push_back({t, t});
+		auto human = [&](int seat, int team) {
+			Online::SetupSeat s;
+			s.seat = seat;
+			s.team = team;
+			s.name = "Returning " + std::to_string(seat + 1);
+			setup.seats.push_back(s);
+		};
+		auto closed = [&](int seat, int team) {
+			Online::SetupSeat s;
+			s.seat = seat;
+			s.team = team;
+			s.human = false;
+			s.closed = true;
+			setup.seats.push_back(s);
+		};
+		human(0, 3);
+		human(1, 1);
+		closed(2, 0);
+		closed(3, 2);
+		setup.validateSemantics();
+		// Through the JSON every client and the verifier parse.
+		setup = Online::MatchSetup::parse(setup.dump());
+
+		EngineMatch m(setup, save, {{20 * MS}, {40 * MS}});
+		m.run(10 * SECOND);
+		for (auto& c : m.clients)
+		{
+			INFO("client " << c->index);
+			Game& game = c->engine->gui.game;
+			CHECK(game.gameHeader.getNumberOfPlayers() == 2);
+			CHECK(c->engine->gui.localTeamNo == (c->seat == 0 ? 3 : 1));
+			for (int team : {0, 2})
+			{
+				INFO("closed team " << team);
+				CHECK(game.teams[team]->hasLost);
+				CHECK(game.teams[team]->playersMask == 0);
+				for (int i = 0; i < Unit::MAX_COUNT; ++i)
+					CHECK(game.teams[team]->myUnits[i] == nullptr);
+				for (int i = 0; i < Building::MAX_COUNT; ++i)
+					CHECK(game.teams[team]->myBuildings[i] == nullptr);
+			}
+			for (int team : {1, 3})
+			{
+				INFO("reteamed team " << team);
+				CHECK(game.teams[team]->isAlive);
+				int units = 0;
+				for (int i = 0; i < Unit::MAX_COUNT; ++i)
+					units += game.teams[team]->myUnits[i] != nullptr;
+				CHECK(units > 0);
+			}
+		}
+		const std::uint32_t end = m.finish();
+		CHECK_FALSE(m.net.relay->desyncFlagged());
+		CHECK(m.requireIdenticalChecksums() == end + 1);
+		const Verified v = verifyRecord(m.record("closed-save"), m, directory);
+		CHECK(v.verdict.verdict == "verified");
+		for (auto& c : m.clients)
+			requireSameOutcomes(v.result, liveTeams(*c));
+		CHECK(v.result.at("teams")[0].at("outcome") == "lost");
+		CHECK(v.result.at("teams")[2].at("outcome") == "lost");
 	}
 
 	GLOB2_TEST_CASE("a client sending hostile orders of every type crashes no one and is refused identically everywhere",
