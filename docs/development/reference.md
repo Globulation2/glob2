@@ -113,7 +113,7 @@ python3 test/run_tests.py      # run them; --list, --filter, --tag, --shard
   test shards per toolchain. Linux compiler builds share
   `.github/workflows/ci-linux-build.yml`; the GCC artifact builds and Clang
   compatibility check run separately, so runtime shards do not wait for Clang.
-  Both supported GCC builds still form a shared artifact barrier. The original `linux (...)` checks require every
+  Each supported GCC build starts its own test shards and generator checks independently. The original `linux (...)` checks require every
   build and shard to pass, preserving their merge-blocking status. PRs compare
   with their base commit, and master pushes compare with the pre-push commit;
   unknown paths or unavailable diffs select full CI.
@@ -965,3 +965,19 @@ includes dependency gaps and does not by itself identify runner saturation.
 Compare ten successful runs with matching event and selected coverage using
 `python3 .github/scripts/ci_run_metrics.py --before before.json --after after.json`.
 Missing observations and insufficient samples must not be reported as savings.
+
+### Linux execution dependencies
+
+Each GCC reusable-workflow invocation starts its own four test shards and three
+map-generator jobs after its build succeeds. Neither platform waits for the other
+GCC compiler or Clang. The final Linux result still requires all selected calls.
+Golden-only changes retain the standalone generator path.
+
+Build artifacts include runtime package owners resolved from actual ELF library
+dependencies. Unresolved or unowned system libraries fail collection rather than
+being silently omitted. The reduced shard environment retains software GL, Mesa,
+Xvfb and crash diagnostics. Enable `CI_RUNTIME_PACKAGES_ENABLED=true` only after
+`Validate clean Linux runtime images` passes both clean Ubuntu container images;
+until then ordinary shards keep their existing dependency installation. Dispatch
+that validation workflow manually; it runs the same unit, engine, image, CLI and
+continuation checks without publishing anything.
