@@ -21,6 +21,7 @@
     "GuestSignInRequest": "schemas/GuestSignInRequest.schema.json",
     "IdentityConflict": "schemas/IdentityConflict.schema.json",
     "InstanceInfo": "schemas/InstanceInfo.schema.json",
+    "InviteInfo": "schemas/InviteInfo.schema.json",
     "LeaderboardPage": "schemas/LeaderboardPage.schema.json",
     "LocalRegisterRequest": "schemas/LocalRegisterRequest.schema.json",
     "LocalSignInRequest": "schemas/LocalSignInRequest.schema.json",
@@ -28,6 +29,7 @@
     "MapList": "schemas/MapList.schema.json",
     "MapReportRequest": "schemas/MapReportRequest.schema.json",
     "MapSource": "schemas/MapSource.schema.json",
+    "MapUpload": "schemas/MapUpload.schema.json",
     "MapVersionInfo": "schemas/MapVersionInfo.schema.json",
     "MatchAssignment": "schemas/MatchAssignment.schema.json",
     "MatchDetail": "schemas/MatchDetail.schema.json",
@@ -95,6 +97,8 @@
     "RelayHeartbeat": "schemas/RelayHeartbeat.schema.json",
     "RelayHeartbeatResponse": "schemas/RelayHeartbeatResponse.schema.json",
     "RelayMatchEnded": "schemas/RelayMatchEnded.schema.json",
+    "RelayMatchEndedResponse": "schemas/RelayMatchEndedResponse.schema.json",
+    "RelayRecordReceipt": "schemas/RelayRecordReceipt.schema.json",
     "RelayRegistration": "schemas/RelayRegistration.schema.json",
     "RelayRegistrationResponse": "schemas/RelayRegistrationResponse.schema.json",
     "RenderPreviewPayload": "schemas/RenderPreviewPayload.schema.json",
@@ -310,6 +314,18 @@
       "note": "reason is completed, abandoned or aborted."
     },
     {
+      "file": "valid/RelayRecordReceipt/stored.json",
+      "schema": "RelayRecordReceipt",
+      "valid": true,
+      "note": "Answer to PUT /internal/v1/matches/{matchId}/record."
+    },
+    {
+      "file": "valid/RelayMatchEndedResponse/duplicate.json",
+      "schema": "RelayMatchEndedResponse",
+      "valid": true,
+      "note": "A repeated end report (relay spool retry) is acknowledged without changes."
+    },
+    {
       "file": "valid/RealtimeRequest/hello.json",
       "schema": "RealtimeRequest",
       "valid": true,
@@ -385,6 +401,12 @@
       "note": "Join by invite code."
     },
     {
+      "file": "valid/RealtimeRoomJoinParams/with-regions.json",
+      "schema": "RealtimeRoomJoinParams",
+      "valid": true,
+      "note": "Join by invite code, reporting relay round trips for match placement."
+    },
+    {
       "file": "invalid/RealtimeRoomJoinParams/code-with-punctuation.json",
       "schema": "RealtimeRoomJoinParams",
       "valid": false,
@@ -402,6 +424,25 @@
       "schema": "RealtimeRoomSetSeatParams",
       "valid": true,
       "note": "Host puts an AI in seat 1."
+    },
+    {
+      "file": "valid/RealtimeRoomSetSeatParams/lock.json",
+      "schema": "RealtimeRoomSetSeatParams",
+      "valid": true,
+      "note": "Host closes an empty seat."
+    },
+    {
+      "file": "invalid/RealtimeRoomSetSeatParams/human-for-someone-else.json",
+      "schema": "RealtimeRoomSetSeatParams",
+      "valid": false,
+      "stage": "schema",
+      "note": "Nobody can seat another player; players take seats themselves (kind self)."
+    },
+    {
+      "file": "valid/RealtimeMatchReconnectParams/relay-refused.json",
+      "schema": "RealtimeMatchReconnectParams",
+      "valid": true,
+      "note": "The assigned relay refused the new match (Reject 5); ask for another relay."
     },
     {
       "file": "valid/RealtimeQueueJoinParams/with-regions.json",
@@ -470,6 +511,31 @@
       "schema": "RoomState",
       "valid": true,
       "note": "A room."
+    },
+    {
+      "file": "valid/RoomState/generating-map-locked-seat.json",
+      "schema": "RoomState",
+      "valid": true,
+      "note": "A three-colony generated map still generating; the host locked seat 2."
+    },
+    {
+      "file": "valid/InviteInfo/open-room.json",
+      "schema": "InviteInfo",
+      "valid": true,
+      "note": "What an invite link points at."
+    },
+    {
+      "file": "valid/MapUpload/valid-save.json",
+      "schema": "MapUpload",
+      "valid": true,
+      "note": "A validated save with its players, for reteaming."
+    },
+    {
+      "file": "invalid/MapUpload/unknown-format.json",
+      "schema": "MapUpload",
+      "valid": false,
+      "stage": "schema",
+      "note": "Uploads are maps or saves."
     },
     {
       "file": "valid/MatchDetail/verified.json",
@@ -577,6 +643,18 @@
       "schema": "EngineJobResult",
       "valid": true,
       "note": "An agent reports a failure."
+    },
+    {
+      "file": "valid/ValidateMapResult/save-with-players.json",
+      "schema": "ValidateMapResult",
+      "valid": true,
+      "note": "A valid save: map facts plus the players recorded in it (for reteaming)."
+    },
+    {
+      "file": "valid/ValidateMapResult/invalid.json",
+      "schema": "ValidateMapResult",
+      "valid": true,
+      "note": "The engine could not load the file."
     },
     {
       "file": "valid/VerifyVerdict/verified.json",

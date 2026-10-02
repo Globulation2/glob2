@@ -246,6 +246,7 @@ export interface RoomMembersTable {
   connected: Defaulted<boolean>;
   joined_at: Timestamp;
   last_seen_at: Timestamp;
+  region_rtts: DefaultedJson<JsonValue>;
 }
 
 export interface RoomSeatsTable {
@@ -257,6 +258,7 @@ export interface RoomSeatsTable {
   ai_id: Nullable<string>;
   ai_name: Nullable<string>;
   ready: Defaulted<boolean>;
+  locked: Defaulted<boolean>;
 }
 
 export interface RoomChatMessagesTable {
@@ -290,6 +292,44 @@ export interface MatchesTable {
   rating_note: Nullable<string>;
   ratings_applied_at: NullableTimestamp;
   proposal_id: Nullable<string>;
+  relay_assigned_at: NullableTimestamp;
+  relay_attempts: Defaulted<number>;
+  end_report: NullableJson<JsonValue>;
+}
+
+export interface MapUploadsTable {
+  id: Generated<string>;
+  owner_account_id: string;
+  blob_sha256: string;
+  format: 'map' | 'save';
+  sim_version: string;
+  file_name: Nullable<string>;
+  status: Defaulted<'pending' | 'valid' | 'invalid'>;
+  job_id: Nullable<string>;
+  width: Nullable<number>;
+  height: Nullable<number>;
+  team_count: Nullable<number>;
+  version_minor: Nullable<number>;
+  title: Nullable<string>;
+  players: NullableJson<JsonValue>;
+  failure: Nullable<string>;
+  created_at: Timestamp;
+  completed_at: NullableTimestamp;
+}
+
+export interface GeneratedMapsTable {
+  descriptor_hash: string;
+  sim_version: string;
+  descriptor: Json<JsonValue>;
+  status: Defaulted<'pending' | 'ready' | 'failed'>;
+  job_id: Nullable<string>;
+  map_hash: Nullable<string>;
+  width: Nullable<number>;
+  height: Nullable<number>;
+  team_count: Nullable<number>;
+  failure: Nullable<string>;
+  created_at: Timestamp;
+  completed_at: NullableTimestamp;
 }
 
 export interface RatingEntitiesTable {
@@ -458,6 +498,8 @@ export interface Database {
   match_proposals: MatchProposalsTable;
   match_proposal_seats: MatchProposalSeatsTable;
   queue_cooldowns: QueueCooldownsTable;
+  map_uploads: MapUploadsTable;
+  generated_maps: GeneratedMapsTable;
 }
 
 export type Account = Selectable<AccountsTable>;

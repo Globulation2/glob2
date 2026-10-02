@@ -41,6 +41,12 @@ export const RequestId = Type.String({ minLength: 1, maxLength: 64 });
 
 const EmptyResult = Open({});
 
+/** Measured round trips to relay regions; the platform places matches on the closest relay. */
+const RegionRtts = Type.Array(
+  Strict({ region: RelayRegion, rttMs: Type.Integer({ minimum: 0, maximum: 60000 }) }),
+  { maxItems: 32, description: 'Measured round trip to each relay region.' },
+);
+
 const ExperimentKeys = Type.Array(Type.String({ pattern: '^[a-z0-9]+(-[a-z0-9]+)*$' }), {
   maxItems: 64,
   uniqueItems: true,
@@ -148,12 +154,14 @@ export const realtimeMethods = {
       map: Type.Optional(RoomMapSelection),
       rules: Type.Optional(MatchRules),
       experiments: Type.Optional(ExperimentKeys),
+      regions: Type.Optional(RegionRtts),
     }),
     result: Open({ room: RoomState }),
   },
   'room.join': {
-    description: 'Join a room by invite code (AccessPolicy.canJoin).',
-    params: Strict({ code: InviteCode }),
+    description:
+      'Join a room by invite code (AccessPolicy.canJoin). The room must be for the caller\'s sim version (update_required otherwise). Joining a room the caller is already in returns its state.',
+    params: Strict({ code: InviteCode, regions: Type.Optional(RegionRtts) }),
     result: Open({ room: RoomState }),
   },
   'room.leave': {
@@ -179,7 +187,8 @@ export const realtimeMethods = {
     result: Open({ room: RoomState }),
   },
   'room.setSeat': {
-    description: 'Take or leave a seat (self), or as host open a seat or put an AI in it.',
+    description:
+      'self: take an open, unlocked seat (moving from the current one). open: leave your own seat, or (host) empty or unlock any seat. ai (host): put an AI in an open or AI seat. locked (host): close an empty seat so nobody takes it.',
     params: Strict({
       roomId: Uuid,
       seat: SeatIndex,
@@ -187,6 +196,7 @@ export const realtimeMethods = {
         Strict({ kind: Type.Literal('self') }),
         Strict({ kind: Type.Literal('open') }),
         Strict({ kind: Type.Literal('ai'), ai: AiId, name: Type.Optional(DisplayName) }),
+        Strict({ kind: Type.Literal('locked') }),
       ]),
     }),
     result: Open({ room: RoomState }),
@@ -202,7 +212,8 @@ export const realtimeMethods = {
     result: Open({ message: RoomChatMessage }),
   },
   'room.start': {
-    description: 'Host starts the match; every member then receives match.start.',
+    description:
+      'Host starts the match once every seated human is ready (the host counts as ready); every seated member then receives match.start.',
     params: Strict({ roomId: Uuid }),
     result: Open({ matchId: Uuid }),
   },
@@ -210,10 +221,7 @@ export const realtimeMethods = {
     description: 'Enter a quick-match queue (AccessPolicy.canQueue).',
     params: Strict({
       queueId: Type.String({ pattern: '^[a-z0-9][a-z0-9-]{0,31}$' }),
-      regions: Type.Array(
-        Strict({ region: RelayRegion, rttMs: Type.Integer({ minimum: 0, maximum: 60000 }) }),
-        { maxItems: 32, description: 'Measured round trip to each relay region.' },
-      ),
+      regions: RegionRtts,
       allowAiOpponent: Type.Optional(
         Type.Boolean({
           description:
@@ -234,8 +242,17 @@ export const realtimeMethods = {
     result: EmptyResult,
   },
   'match.reconnect': {
-    description: 'Get a fresh ticket for a running match the caller is seated in.',
-    params: Strict({ matchId: Uuid }),
+    description:
+      'Get a fresh ticket for a starting or running match the caller is seated in (also the way to fetch a missed match.start).',
+    params: Strict({
+      matchId: Uuid,
+      relayUnavailable: Type.Optional(
+        Type.Boolean({
+          description:
+            'The assigned relay refused the match as new (Reject 5: draining or full). While no relay has reported the match running, the platform moves it to another relay and sends every player a new match.start.',
+        }),
+      ),
+    }),
     result: MatchAssignment,
   },
 } as const satisfies Record<string, MethodContract>;
