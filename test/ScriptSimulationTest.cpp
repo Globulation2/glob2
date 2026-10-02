@@ -119,6 +119,10 @@ Run execute(const std::filesystem::path &input, const std::filesystem::path &dir
 		Engine engine;
 		REQUIRE((playback ? engine.loadReplay(input.string())
 						  : engine.initCustom(input.string())) == Engine::EE_NO_ERROR);
+        // Released checksum fixtures include the map header's save-format number.
+        // Normalize that metadata after the real loader has validated the input:
+        // a new save version must not masquerade as simulation divergence.
+        engine.gui.game.mapHeader.versionMinor = 125;
 		engine.gui.game.map.configureCompute(workers, Map::ComputeAI);
 		if (conversion)
 			prepareConversion(engine, directory);
