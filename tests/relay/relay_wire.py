@@ -187,8 +187,10 @@ def decode(payload):
 class TurnClient:
     """A turn-protocol client over a plain WebSocket, reading on a thread."""
 
-    def __init__(self, port, origin=None, route='/relay'):
+    def __init__(self, port, origin=None, route='/relay', tls=None):
         self.sock = socket.create_connection(('127.0.0.1', port), timeout=10)
+        if tls:
+            self.sock = tls.wrap_socket(self.sock, server_hostname='localhost')
         key = base64.b64encode(os.urandom(16)).decode()
         request = (f'GET {route} HTTP/1.1\r\nHost: 127.0.0.1:{port}\r\nUpgrade: websocket\r\n'
                    f'Connection: Upgrade\r\nSec-WebSocket-Version: 13\r\nSec-WebSocket-Key: {key}\r\n')
@@ -322,7 +324,7 @@ def parse_record(data):
 class FakePlatform:
     """The relay-facing part of the platform's /internal/v1 API and its JWKS."""
 
-    def __init__(self, relay_key, jwks, setups=None):
+    def __init__(self, relay_key, jwks, setups=None, tls=None):
         self.relay_key = relay_key
         self.jwks = jwks
         self.setups = setups or {}
@@ -404,7 +406,10 @@ class FakePlatform:
                 self.reply(404)
 
         self.server = http.server.ThreadingHTTPServer(('127.0.0.1', 0), Handler)
-        self.url = f'http://127.0.0.1:{self.server.server_address[1]}'
+        if tls:
+            self.server.socket = tls.wrap_socket(self.server.socket, server_side=True)
+        scheme = 'https' if tls else 'http'
+        self.url = f'{scheme}://localhost:{self.server.server_address[1]}'
         self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)
         self.thread.start()
 

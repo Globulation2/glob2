@@ -7,8 +7,11 @@ import hashlib
 import json
 import os
 import platform
+import shutil
 import signal
+import ssl
 import subprocess
+import sys
 import tempfile
 import time
 import unittest
@@ -17,6 +20,8 @@ import urllib.request
 import uuid
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'deploy'))
+from provision_tls import provision  # noqa: E402
 from relay_wire import (ROOT, SIM_VERSION, FakePlatform, SigningKey, TurnClient, checksum_report, hello,
                         order_submit, parse_record, ping, quit_message, sign_jwt, ticket_claims)
 
@@ -57,6 +62,7 @@ class RelayProcess:
             self.process.kill()
             raise AssertionError(f'relay did not start: {line!r}\n{self.log_path.read_text()}')
         self.port = int(line.split()[1])
+        test.addCleanup(shutil.rmtree, self.directory, True)
         test.addCleanup(self.stop)
         self.test = test
 
@@ -69,17 +75,18 @@ class RelayProcess:
         if hasattr(self.test, '_outcome') and os.environ.get('GLOB2_RELAY_TEST_LOGS'):
             print(self.log_path.read_text())
 
-    def get(self, path, headers=None):
-        request = urllib.request.Request(f'http://127.0.0.1:{self.port}{path}', headers=headers or {})
+    def get(self, path, headers=None, tls=None):
+        scheme = 'https' if tls else 'http'
+        request = urllib.request.Request(f'{scheme}://localhost:{self.port}{path}', headers=headers or {})
         try:
-            with urllib.request.urlopen(request, timeout=5) as response:
+            with urllib.request.urlopen(request, timeout=5, context=tls) as response:
                 return response.status, response.read().decode()
         except urllib.error.HTTPError as error:
             with error:
                 return error.code, error.read().decode()
 
-    def client(self, ticket=None, have_horizon=0, origin=None):
-        client = TurnClient(self.port, origin=origin)
+    def client(self, ticket=None, have_horizon=0, origin=None, tls=None):
+        client = TurnClient(self.port, origin=origin, tls=tls)
         self.test.addCleanup(client.kill)
         if ticket is not None:
             client.send(hello(ticket, have_horizon))
@@ -350,6 +357,30 @@ class RelayMatchTest(unittest.TestCase):
         fake.wait(lambda p: match_id in p.ends, what='match end while draining')
         self.assertEqual(fake.ends[match_id]['reason'], 'abandoned')
         self.assertEqual(relay.process.wait(timeout=15), 0, 'relay exits once drained')
+
+    def test_tls_listener_and_https_platform(self):
+        root = tempfile.mkdtemp(prefix='glob2-relay-tls-')
+        self.addCleanup(shutil.rmtree, root, True)
+        secrets = Path(root) / 'tls'
+        provision(secrets)
+        server_tls = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+        server_tls.load_cert_chain(secrets / 'router.pem', secrets / 'router.key')
+        fake = FakePlatform(RELAY_KEY, {'keys': [self.key.jwk('fixture-key-1')]}, tls=server_tls)
+        self.addCleanup(fake.close)
+        relay = RelayProcess(self, {'GLOB2_RELAY_TLS_CERT': str(secrets / 'lobby.pem'),
+                                    'GLOB2_RELAY_TLS_KEY': str(secrets / 'lobby.key'),
+                                    'GLOB2_RELAY_PLATFORM_URL': fake.url,
+                                    'GLOB2_RELAY_PLATFORM_CA': str(secrets / 'ca.pem'),
+                                    'GLOB2_RELAY_PUBLIC_URL': 'wss://localhost/relay',
+                                    'GLOB2_RELAY_KEY': RELAY_KEY})
+        fake.wait(lambda p: p.registrations and p.jwks_fetches, what='registration and JWKS over HTTPS')
+        client_tls = ssl.create_default_context(cafile=secrets / 'ca.pem')
+        self.assertEqual(relay.get('/healthz', tls=client_tls), (200, 'ok\n'))
+        client = relay.client(self.ticket(str(uuid.uuid4()), 0, [0]), tls=client_tls)
+        client.wait_for(lambda c: c.of('welcome') and c.bundles(), what='Welcome and bundles over WSS')
+        # A plaintext client cannot speak to a TLS listener.
+        with self.assertRaises((OSError, EOFError, ValueError, IndexError)):
+            TurnClient(relay.port).sock.close()
 
 
 if __name__ == '__main__':
