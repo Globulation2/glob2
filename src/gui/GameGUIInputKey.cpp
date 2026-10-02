@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <algorithm>
 
-#include <SDL_keycode.h>
+#include <SDL3/SDL_keycode.h>
 
 #include <FormatableString.h>
 #include <StringTable.h>
@@ -101,11 +101,11 @@ void GameGUI::changeGameSpeed(int amount)
 		.arg(globalContainer->settings.getGameSpeedText()), false);
 }
 
-void GameGUI::handleKey(SDL_Keysym key, bool pressed, bool repeat)
+void GameGUI::handleKey(SDL_KeyboardEvent key, bool pressed, bool repeat)
 {
 	if (!typingInputScreen)
 	{
-		if(key.sym == SDLK_SPACE && pressed && swallowSpaceKey)
+		if(key.key == SDLK_SPACE && pressed && swallowSpaceKey)
 		{
 			setIsSpaceSet(true);
 		}
@@ -116,12 +116,12 @@ void GameGUI::handleKey(SDL_Keysym key, bool pressed, bool repeat)
 			// Provide a fallback when the configurable shortcut system did not
 			// resolve an action; configured actions still take precedence.
 			if(action_t==GameGUIKeyActions::DoNothing && pressed
-				&& (key.mod&KMOD_CTRL))
+				&& (key.mod&SDL_KMOD_CTRL))
 			{
-				if(key.sym==SDLK_PLUS || key.sym==SDLK_EQUALS
-					|| key.sym==SDLK_KP_PLUS)
+				if(key.key==SDLK_PLUS || key.key==SDLK_EQUALS
+					|| key.key==SDLK_KP_PLUS)
 					action_t=GameGUIKeyActions::IncreaseGameSpeed;
-				else if(key.sym==SDLK_MINUS || key.sym==SDLK_KP_MINUS)
+				else if(key.key==SDLK_MINUS || key.key==SDLK_KP_MINUS)
 					action_t=GameGUIKeyActions::DecreaseGameSpeed;
 			}
 
@@ -435,13 +435,13 @@ void GameGUI::handleKeyAlways(void)
 		/* We check that only Control is held to avoid accidentally
 			matching window manager bindings for switching windows
 			and/or desktops. */
-		if (!(modState & (KMOD_ALT|KMOD_SHIFT)))
+		if (!(modState & (SDL_KMOD_ALT|SDL_KMOD_SHIFT)))
 		{
 			/* It violates good abstraction principles that I
 				have to do the calculations in the next two
 				lines.  There should be methods that abstract
 				these computations. */
-			if ((modState & KMOD_CTRL))
+			if ((modState & SDL_KMOD_CTRL))
 			{
 				/* We move by half screens if Control is held while
 					the arrow keys are held.  So we shift by 6

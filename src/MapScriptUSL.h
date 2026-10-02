@@ -4,7 +4,7 @@
 #pragma once
 
 #include "MapScriptError.h"
-#include "SDL.h"
+#include <SDL3/SDL.h>
 
 #include <memory>
 

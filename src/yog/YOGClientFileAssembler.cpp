@@ -9,6 +9,7 @@
 #include "Toolkit.h"
 #include "YOGClientFileAssembler.h"
 #include "YOGClient.h"
+#include "GzipUtil.h"
 
 using namespace GAGCore;
 using std::static_pointer_cast;
@@ -58,6 +59,12 @@ void YOGClientFileAssembler::startSendingFile(std::string mapname)
 	istream->seekFromEnd(0);
 	size=istream->getPosition();
 	istream->seekFromStart(0);
+	if (size == 0 || size > MAX_COMPRESSED_GAME_FILE_BYTES)
+	{
+		istream.reset();
+		mode = NoTransfer;
+		return;
+	}
 	shared_ptr<NetSendFileInformation> message(new NetSendFileInformation(size, fileID));
 	nclient->sendNetMessage(message);
 	mode=SendingFile;
@@ -71,6 +78,7 @@ void YOGClientFileAssembler::startReceivingFile(std::string mapname)
 	obackend = new MemoryStreamBackend;
 	ostream.reset(new BinaryOutputStream(obackend));
 	mode=ReceivingFile;
+	size=0;
 	finished=0;
 }
 
@@ -82,7 +90,8 @@ void YOGClientFileAssembler::handleMessage(std::shared_ptr<NetMessage> message)
 	if(type == MNetSendFileInformation)
 	{
 		shared_ptr<NetSendFileInformation> info = static_pointer_cast<NetSendFileInformation>(message);
-		size = info->getFileSize();
+		if (mode == ReceivingFile && finished == 0 && info->getFileSize() <= MAX_COMPRESSED_GAME_FILE_BYTES)
+			size = info->getFileSize();
 	}
 	if(type == MNetSendFileChunk)
 	{
@@ -90,6 +99,11 @@ void YOGClientFileAssembler::handleMessage(std::shared_ptr<NetMessage> message)
 		{
 			shared_ptr<NetSendFileChunk> info = static_pointer_cast<NetSendFileChunk>(message);
 			Uint32 bsize = info->getChunkSize();
+			if (size == 0 || finished > size || bsize == 0 || bsize > size - finished)
+			{
+				cancelReceivingFile();
+				return;
+			}
 			const Uint8* buffer = info->getBuffer();
 			ostream->write(buffer, bsize, "");
 			finished+=bsize;
@@ -169,4 +183,3 @@ void YOGClientFileAssembler::sendNextChunk()
 	finished += message->getChunkSize();
 	nclient->sendNetMessage(message);
 }
-

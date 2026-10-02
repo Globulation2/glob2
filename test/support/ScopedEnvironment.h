@@ -1,6 +1,7 @@
+#include <Environment.h>
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <cstdlib>
 #include <optional>
 #include <stdexcept>
@@ -14,7 +15,7 @@ class ScopedEnvironment
 public:
 	ScopedEnvironment(const char *name, const char *value) : name(name)
 	{
-		if (const char *previous = SDL_getenv(name))
+		if (const char *previous = SDL_getenv_unsafe(name))
 			original = previous;
 #ifdef _WIN32
 		if (const char *previous = std::getenv(name))
@@ -27,7 +28,7 @@ public:
 			throw std::runtime_error("Cannot set test CRT environment variable " + this->name);
 		}
 #endif
-		if (SDL_setenv(name, value, 1) != 0)
+		if (GAGCore::setProcessEnvironment(name, value, 1) != 0)
 		{
 			restore();
 			throw std::runtime_error("Cannot set test environment variable " + this->name);
@@ -46,15 +47,15 @@ private:
 		_putenv_s(name.c_str(), originalCRT ? originalCRT->c_str() : "");
 #endif
 		if (original)
-			SDL_setenv(name.c_str(), original->c_str(), 1);
+			GAGCore::setProcessEnvironment(name.c_str(), original->c_str(), 1);
 		else
 		{
-			// Clear SDL's environment first: Windows deletes an empty value,
-			// while SDL2-compat keeps a separate SDL3 environment snapshot.
-			SDL_setenv(name.c_str(), "", 1);
-#ifndef _WIN32
-			unsetenv(name.c_str());
+#ifdef _WIN32
+            SDL_setenv_unsafe(name.c_str(), "", 1);
+#else
+            unsetenv(name.c_str());
 #endif
+            SDL_UnsetEnvironmentVariable(SDL_GetEnvironment(), name.c_str());
 		}
 	}
 	std::string name;

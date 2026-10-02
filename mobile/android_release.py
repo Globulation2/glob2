@@ -68,6 +68,13 @@ def check_prior_tags(root=ROOT, development=False):
             raise ValueError(f"Android version codes would not increase past {tag}")
 
 
+def check_candidate(root=ROOT):
+    """Validate build inputs without applying publication-only tag constraints."""
+    identity = release_identity(root)
+    check_recipe(root)
+    return identity
+
+
 def check_listing(root=ROOT):
     identity = release_identity(root)
     locale = root / "fastlane/metadata/android/en-US"
@@ -181,17 +188,17 @@ def verify_apk(apk, arch, sdk, root=ROOT, require_dependency_manifest=True):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=("check", "check-listing", "verify-apk", "code"))
+    parser.add_argument("command", choices=("check", "check-candidate", "check-listing", "verify-apk", "code"))
     parser.add_argument("--arch", choices=tuple(ABI_CODES))
     parser.add_argument("--apk", type=Path)
     parser.add_argument("--android-sdk", type=Path, default=None)
     parser.add_argument("--development", action="store_true",
                         help="check: allow the current version to be tagged at an earlier commit")
     args = parser.parse_args()
-    if args.command == "check":
-        check_prior_tags(development=args.development)
-        check_recipe()
-        print(release_identity()["versionName"])
+    if args.command in ("check", "check-candidate"):
+        if args.command == "check":
+            check_prior_tags(development=args.development)
+        print(check_candidate()["versionName"])
     elif args.command == "check-listing":
         check_listing()
         print("F-Droid listing ready")

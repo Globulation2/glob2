@@ -4,11 +4,14 @@
 #include "NetEngine.h"
 #include "Team.h"
 #include "OrderMessages.h"
+#include <stdexcept>
 
 
 NetEngine::NetEngine(int numberOfPlayers, int localPlayer, int networkOrderRate, std::shared_ptr<NetConnection> router)
 	: numberOfPlayers(numberOfPlayers), localPlayer(localPlayer), router(router), networkOrderRate(networkOrderRate)
 {
+	if (numberOfPlayers < 1 || numberOfPlayers > Team::MAX_COUNT || localPlayer < 0 || localPlayer >= numberOfPlayers || networkOrderRate < 1 || networkOrderRate > 255)
+		throw std::runtime_error("Invalid network game configuration");
 	step=0;
 	orders.resize(numberOfPlayers);
 	localOrderSendCountdown = 0;
@@ -19,6 +22,7 @@ NetEngine::NetEngine(int numberOfPlayers, int localPlayer, int networkOrderRate,
 
 void NetEngine::setNetworkInfo(int nnetworkOrderRate, std::shared_ptr<NetConnection> nrouter)
 {
+	if (nnetworkOrderRate < 1 || nnetworkOrderRate > 255) throw std::runtime_error("Invalid network order rate");
 	networkOrderRate = nnetworkOrderRate;
 	router = nrouter;
 }
@@ -62,6 +66,7 @@ void NetEngine::advanceStep(Uint32 checksum)
 
 void NetEngine::clearTopOrders()
 {
+	if (!allOrdersReceived()) return;
 	for(int p=0; p<numberOfPlayers; ++p)
 	{
 		std::shared_ptr<Order> o = orders[p].front();
@@ -92,7 +97,7 @@ void NetEngine::clearTopOrders()
 
 void NetEngine::pushOrder(std::shared_ptr<Order> order, int playerNumber, bool isAI)
 {
-	assert(playerNumber>=0);
+	if (!order || playerNumber < 0 || playerNumber >= numberOfPlayers) return;
 	order->sender=playerNumber;
 	orders[playerNumber].push_back(order); 
 
@@ -112,7 +117,8 @@ void NetEngine::pushOrder(std::shared_ptr<Order> order, int playerNumber, bool i
 
 std::shared_ptr<Order> NetEngine::retrieveOrder(int playerNumber)
 {
-  return *orders[playerNumber].begin();
+  if (playerNumber < 0 || playerNumber >= numberOfPlayers || orders[playerNumber].empty()) return {};
+  return orders[playerNumber].front();
 }
 
 
@@ -173,6 +179,8 @@ void NetEngine::flushAllOrders()
 
 void NetEngine::prepareForLatency(int playerNumber, int latency)
 {
+	if (playerNumber < 0 || playerNumber >= numberOfPlayers || latency < 0 || latency > 65535)
+		throw std::runtime_error("Invalid network latency configuration");
 	currentLatency = latency;
 	for(int s=0; s<latency; ++s)
 	{
@@ -184,6 +192,7 @@ void NetEngine::prepareForLatency(int playerNumber, int latency)
 
 bool NetEngine::orderReceived(int playerNumber)
 {
+	if (playerNumber < 0 || playerNumber >= numberOfPlayers) return false;
 	if(orders[playerNumber].empty())
 		return false;
 	return true;

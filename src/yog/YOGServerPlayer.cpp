@@ -19,7 +19,7 @@
 #include "YOGServer.h"
 #include "YOGServerFileDistributor.h"
 #include "YOGServerPlayer.h"
-#include "SDLCompat.h"
+#include <SDL3/SDL.h>
 
 using std::shared_ptr;
 using std::static_pointer_cast;
@@ -33,7 +33,7 @@ YOGServerPlayer::YOGServerPlayer(shared_ptr<NetConnection> connection, YOGPlayer
 	loginState = YOGLoginUnknown;
 	gameID=0;
 	netVersion=0;
-	pingCountdown=SDL_GetTicks64();
+	pingCountdown=SDL_GetTicks();
 	pingSendTime=0;
 	port = 0;
 }
@@ -46,11 +46,11 @@ void YOGServerPlayer::update()
 	updateConnectionSates();
 	updateGamePlayerLists();
 
-	if((static_cast<Sint64>(SDL_GetTicks64()) - static_cast<Sint64>(pingCountdown)) > 5000 && pingCountdown != 0)
+	if((static_cast<Sint64>(SDL_GetTicks()) - static_cast<Sint64>(pingCountdown)) > 5000 && pingCountdown != 0)
 	{
 		shared_ptr<NetPing> message(new NetPing);
 		connection->sendMessage(message);
-		pingSendTime = SDL_GetTicks64();
+		pingSendTime = SDL_GetTicks();
 		pingCountdown = 0;
 	}
 
@@ -286,11 +286,11 @@ void YOGServerPlayer::update()
 	else if(type==MNetPingReply)
 	{
 		shared_ptr<NetPingReply> info = static_pointer_cast<NetPingReply>(message);
-		pings.push_back(std::max<Sint64>(0, static_cast<Sint64>(SDL_GetTicks64()) - static_cast<Sint64>(pingSendTime)));
+		pings.push_back(std::max<Sint64>(0, static_cast<Sint64>(SDL_GetTicks()) - static_cast<Sint64>(pingSendTime)));
 		if(pings.size() > 16)
 			pings.erase(pings.begin());
 
-		pingCountdown = SDL_GetTicks64();
+		pingCountdown = SDL_GetTicks();
 	}
 	//This receives a ping reply
 	else if(type==MNetSendGameResult)

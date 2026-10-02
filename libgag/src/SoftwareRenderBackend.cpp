@@ -19,11 +19,12 @@ class TargetClip
 
   public:
 	TargetClip(SDL_Surface *value, const SDL_Rect &rect)
-		: surface(value), previous(value->clip_rect)
+		: surface(value)
 	{
-		SDL_SetClipRect(surface, &rect);
+		SDL_GetSurfaceClipRect(surface, &previous);
+		SDL_SetSurfaceClipRect(surface, &rect);
 	}
-	~TargetClip() { SDL_SetClipRect(surface, &previous); }
+	~TargetClip() { SDL_SetSurfaceClipRect(surface, &previous); }
 };
 class SoftwareRenderBackend final : public RenderBackend
 {
@@ -48,7 +49,7 @@ class SoftwareRenderBackend final : public RenderBackend
 		if (bounds)
 		{
 			const auto mapped = nativeClip(*bounds);
-			SDL_IntersectRect(&result, &mapped, &result);
+			SDL_GetRectIntersection(&result, &mapped, &result);
 		}
 		if (localClip)
 		{
@@ -58,7 +59,7 @@ class SoftwareRenderBackend final : public RenderBackend
 				x, y, int(std::ceil((localClip->x + localClip->w) * scale + offsetX)) - x,
 				int(std::ceil((localClip->y + localClip->h) * scale + offsetY)) - y};
 			const auto mapped = nativeClip(transformed);
-			SDL_IntersectRect(&result, &mapped, &result);
+			SDL_GetRectIntersection(&result, &mapped, &result);
 		}
 		return result;
 	}
@@ -126,7 +127,7 @@ class SoftwareRenderBackend final : public RenderBackend
 		// conversion can bake source modulation into the pixels. Retain the
 		// geometry reference for these cases; verified same-format opaque
 		// images still use the direct row-copy and nearest-sampling paths.
-		if (!opaque || alpha != 255 || source->format->format != target->format->format)
+		if (!opaque || alpha != 255 || source->format != target->format)
 		{
 			fallback().blit(key, source, revision, opaque, sourceRect, destination, alpha);
 			return;
@@ -138,7 +139,7 @@ class SoftwareRenderBackend final : public RenderBackend
 		// many small tile blits and must not acquire large-triangle artifacts.
 		const SDL_Rect mapped = pixels(destination);
 		if (sourceRect.w >= 512 && sourceRect.h >= 512 &&
-			(mapped.w > 512 || mapped.h > 512) && !(source->flags & SDL_PREALLOC))
+			(mapped.w > 512 || mapped.h > 512) && !(source->flags & SDL_SURFACE_PREALLOCATED))
 		{
 			fallback().blit(key, source, revision, opaque, sourceRect, destination, alpha);
 			return;
@@ -162,7 +163,7 @@ class SoftwareRenderBackend final : public RenderBackend
 		flush();
 		TargetClip clip(target, outputClip());
 		SurfaceRaster::fill(target, pixels(rect),
-							SDL_MapRGBA(target->format, color.r, color.g, color.b, 255), color.a,
+							SDL_MapSurfaceRGBA(target, color.r, color.g, color.b, 255), color.a,
 							SurfaceRaster::FillBlend::SourceOver);
 	}
 	void triangles(std::span<const SDL_Vertex> vertices, const void *key, SDL_Surface *source,
@@ -204,7 +205,7 @@ class SoftwareRenderBackend final : public RenderBackend
 		// Native display scaling is independent of the map/UI transform.
 		nativeX = float(target->w) / width;
 		nativeY = float(target->h) / height;
-		if (SDL_FillRect(target, nullptr, SDL_MapRGBA(target->format, 0, 0, 0, 255)) < 0)
+		if (!SDL_FillSurfaceRect(target, nullptr, SDL_MapSurfaceRGBA(target, 0, 0, 0, 255)))
 			throw std::runtime_error(SDL_GetError());
 		if (geometry)
 			geometry->nativeLogicalSize(width, height);
@@ -217,7 +218,7 @@ class SoftwareRenderBackend final : public RenderBackend
 	SDL_Surface *capture() override
 	{
 		flush();
-		auto *copy = SDL_ConvertSurfaceFormat(target, SDL_PIXELFORMAT_RGBA32, 0);
+		auto *copy = SDL_ConvertSurface(target, SDL_PIXELFORMAT_RGBA32);
 		if (!copy)
 			throw std::runtime_error(SDL_GetError());
 		return copy;
@@ -226,7 +227,7 @@ class SoftwareRenderBackend final : public RenderBackend
 } // namespace
 std::unique_ptr<RenderBackend> makeSoftwareRenderBackend(SDL_Surface *surface)
 {
-	if (!surface || surface->format->BytesPerPixel != 4)
+	if (!surface || SDL_GetPixelFormatDetails(surface->format)->bytes_per_pixel != 4)
 		throw std::invalid_argument("Software rendering requires a 32-bit target");
 	return std::make_unique<SoftwareRenderBackend>(surface);
 }

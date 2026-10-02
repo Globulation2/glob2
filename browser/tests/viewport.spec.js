@@ -87,7 +87,9 @@ test.describe('high density display', () => {
     // Reapply the real viewport so this still exercises a genuine 2x display.
     await page.setViewportSize(page.viewportSize());
     expect(await page.evaluate(() => devicePixelRatio)).toBe(2);
-    const backingScale = (await snapshot(page)).renderer === 'webgl2' ? 2 : 1;
+    // SDL3 high-density windows size the backing canvas for both software and
+    // WebGL. Control bounds still map to CSS pixels once at the input boundary.
+    const backingScale = 2;
     await resize(page,1100,750,backingScale);
     await clickMainMenu(page,'settings'); await screen(page,'SettingsScreen');
   });

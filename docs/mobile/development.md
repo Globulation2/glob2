@@ -627,8 +627,11 @@ ones in-process, and records each exit code, log and JUnit report. It retains
 those fixtures for diagnosis and never clears the installed app's data.
 
 The engine binary reuses the production client objects. `mobile/NativeTestMain.cpp` supplies only the
-shell platform bridges: filesystem assets, SDL main readiness, absent Activity,
-and unavailable audio. SDL dummy video runs without a Java UI. These tests execute
+shell platform bridges: filesystem assets, SDL main readiness, explicit app
+metadata and absent Activity. Audio uses SDL's real dummy driver. Its event poll drains SDL's
+queue without pumping the absent Java lifecycle queue. SDL3 renderer creation
+waits for a Java Activity, so native dummy-video tools retain software rendering.
+These tests execute
 on the device CPU but do **not** establish real rendering, audio, native keyboard,
 IME composition, lifecycle or physical gesture comfort. Test those separately in
 the installed APK, including rotation, background/resume, save/load and editor
@@ -646,7 +649,8 @@ python3 mobile/ios.py launch --environment simulator --release --device SIMULATO
 ```
 
 The simulator tools use an isolated device set under
-`build/mobile-tools/ios-simulators`. Device builds use `--environment device` and
+`build/mobile-tools/ios-simulators`. Simulator builds ad hoc sign and verify the
+completed app bundle without Apple credentials. Device builds use `--environment device` and
 require either `--team TEAM_ID` with local provisioning or `--unsigned` for a
 compile-only build. An unsigned device app cannot be installed. Release symbols
 are retained alongside the application. With `--team`, Xcode must have the Apple
@@ -893,3 +897,5 @@ precedence. Mobile SDL_image dependencies explicitly enable WebP, so rebuild the
 pinned dependency bundle after this manifest changes. Android indexes and hashes
 the exported payload; retain APK/AAB verification after AAPT packaging and after
 installing an update, which must not keep an obsolete PNG in front of a new WebP.
+
+Candidate validation uses `python3 mobile/android_release.py check-candidate`; this checks identity and build recipes without requiring a new publication tag. `check` retains strict tag-collision and version-code checks for release publication.
