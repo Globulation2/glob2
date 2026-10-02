@@ -38,10 +38,11 @@ still need the ordinary economy and training to maintain and upgrade them. A
 starting tower covers its own entrance's home-side mouth; a wide gate is not a
 promise that every tile is under fire.
 
-Maps need a shorter side of at least 256 tiles, 2–12 colonies, at least 48 tiles
+Maps need a shorter side of at least 256 tiles, 2–16 colonies, at least 48 tiles
 of outer-court arc and 27 tiles of inner-court arc per colony, and 22 tiles of
 depth behind the home anchor. This permits up to eight colonies at 256×256 and
-twelve at 512×512.
+sixteen at 512×512. Counts above twelve require 512×512; the inner ring
+expands to preserve court widths instead of squeezing the defended fronts.
 Requests that cannot meet these budgets are refused before generation. Rectangles
 use a circular arena sized to the shorter side; extra sea does not advantage a
 colony. A two-colony game has two different courts between the same opponents.

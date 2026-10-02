@@ -1444,8 +1444,8 @@ Flodens bredd
 Sandvikt
 [Select a valid map.]
 Välj en giltig karta.
-[Shared control needs a free controller slot (maximum 12).]
-Delad styrning kräver en ledig plats för en spelare eller AI (högst 12).
+[Shared control needs a free controller slot (maximum %0).]
+Delad styrning kräver en ledig plats för en spelare eller AI (högst %0).
 [Smoothing]
 Utjämning
 [Standard]

@@ -1506,8 +1506,8 @@ AI策略與對抗
 沙地權重
 [Select a valid map.]
 選擇有效的地圖。
-[Shared control needs a free controller slot (maximum 12).]
-共同操控需要一個空餘的操控者名額（最多12個）。
+[Shared control needs a free controller slot (maximum %0).]
+共同操控需要一個空餘的操控者名額（最多%0個）。
 [Smoothing]
 平滑
 [Standard]

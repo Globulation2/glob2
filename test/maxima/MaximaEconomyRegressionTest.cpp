@@ -52,6 +52,7 @@ namespace
 struct Fixture
 {
     Game game;
+    glob2test::BoundGameRandom random{game};
     Player player;
     std::unique_ptr<AIMaxima::Maxima> ai;
     Fixture() : game(NULL)
@@ -845,6 +846,75 @@ static void labourContinuation()
         REQUIRE(assigned);
     }
 
+}
+
+TEST_CASE("counted opponent records preserve slot fifteen and load the legacy twelve-record layout [save-format]" * doctest::test_suite("Maxima.Economy"))
+{
+    glob2test::HeadlessGlobals globals;
+    Fixture f;
+    auto &ai = *f.ai;
+    ai.context.initialize();
+    ai.ensure_strategy();
+    for (int i = 0; i < Team::MAX_COUNT; ++i)
+    {
+        ai.opponents[i].alive = true;
+        ai.opponents[i].visible_warriors = 100 + i;
+        ai.opponents[i].nearest_building = 200 + i;
+    }
+    // Capture the counted section boundary without searching for ambiguous byte patterns.
+    struct OpponentWriter : GAGCore::BinaryOutputStream
+    {
+        using BinaryOutputStream::BinaryOutputStream;
+        size_t countOffset = 0;
+        void writeUint32(Uint32 value, const std::string name) override
+        {
+            if (name == "count") countOffset = getPosition();
+            BinaryOutputStream::writeUint32(value, name);
+        }
+    };
+    auto *storage = new GAGCore::MemoryStreamBackend;
+    OpponentWriter output(storage);
+    ai.saveDirector(&output);
+    const std::string bytes = storage->takeContents();
+    REQUIRE(output.countOffset > 0);
+    const auto load = [&](const std::string &saved, int version)
+    {
+        GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(saved.data(), saved.size()));
+        input.seekFromStart(0);
+        REQUIRE(ai.loadDirector(&input, version));
+        CHECK(input.getPosition() == saved.size());
+    };
+    ai.opponents[15] = AIMaxima::Maxima::OpponentAssessment{};
+    load(bytes, VERSION_MINOR);
+    CHECK(ai.opponents[15].visible_warriors == 115);
+    CHECK(ai.opponents[15].nearest_building == 215);
+
+    // Reconstruct the pre-127 binary layout: no count, one byte and fourteen
+    // signed words per opponent, twelve records. The following director fields
+    // must still be consumed at precisely the same boundary.
+    constexpr size_t legacySlots = 12;
+    constexpr size_t opponentBytes = 1 + 14 * sizeof(Sint32);
+    auto legacy = bytes;
+    legacy.erase(output.countOffset + sizeof(Uint32) + legacySlots * opponentBytes,
+        (Team::MAX_COUNT - legacySlots) * opponentBytes);
+    legacy.erase(output.countOffset, sizeof(Uint32));
+    load(legacy, 126);
+    CHECK(ai.opponents[11].visible_warriors == 111);
+    for (int i = legacySlots; i < Team::MAX_COUNT; ++i)
+    {
+        CHECK_FALSE(ai.opponents[i].alive);
+        CHECK(ai.opponents[i].visible_warriors == 0);
+    }
+    for (unsigned char count : {0, 17, 255})
+    {
+        auto invalid = bytes;
+        // Uint32 uses network byte order; set all bytes to this value so every
+        // nonzero probe exceeds the limit regardless of endian representation.
+        invalid.replace(output.countOffset, sizeof(Uint32), sizeof(Uint32), char(count));
+        GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(invalid.data(), invalid.size()));
+        input.seekFromStart(0);
+        CHECK_THROWS_AS(ai.loadDirector(&input, VERSION_MINOR), std::runtime_error);
+    }
 }
 
 TEST_SUITE("Maxima.Economy")

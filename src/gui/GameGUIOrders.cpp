@@ -6,6 +6,8 @@
 #include <math.h>
 
 #include <optional>
+#include <type_traits>
+#include <variant>
 
 #include <StringTable.h>
 #include <Toolkit.h>
@@ -122,84 +124,102 @@ void GameGUI::reconcileBuildingGuiState(const std::shared_ptr<Order>& order)
 
 void GameGUI::executeOrder(std::shared_ptr<Order> order)
 {
-	switch (order->getOrderType())
+	// The simulation executes the order and publishes what the client should
+	// show; react to it right away so pause and quit take effect before the
+	// engine decides whether to run the next tick, exactly as before.
+	game.executeOrderAndNotify(order, localPlayer);
+	if (!simulationThreaded)
 	{
-		case ORDER_TEXT_MESSAGE :
-		{
-			std::shared_ptr<MessageOrder> mo=static_pointer_cast<MessageOrder>(order);
-			int sp=mo->sender;
-			Uint32 messageOrderType=mo->messageOrderType;
+		consumeClientEvents();
+		return;
+	}
+	// On the simulation thread, apply now only what decides the next tick (pause,
+	// the local player leaving); the GUI consumes the notices, including these
+	// again, in threadedClientStep.
+	if (order->getOrderType() == ORDER_PAUSE_GAME)
+		gamePaused = std::static_pointer_cast<PauseGameOrder>(order)->pause;
+	else if (order->getOrderType() == ORDER_PLAYER_QUIT_GAME && order->sender == localPlayer)
+		isRunning = false;
+}
 
-			if (messageOrderType==MessageOrder::NORMAL_MESSAGE_TYPE)
+void GameGUI::handleClientEvent(ClientEventVariant&& event)
+{
+	std::visit([this](auto&& e)
+	{
+		using T = std::decay_t<decltype(e)>;
+		if constexpr (std::is_same_v<T, ClientEvent::TeamEvent>)
+		{
+			if (e.team >= 0 && e.team < Team::MAX_COUNT)
+				pendingTeamEvents[e.team].push_back(std::move(e.event));
+		}
+		else if constexpr (std::is_same_v<T, ClientEvent::ChatMessage>)
+		{
+			if (e.messageOrderType==MessageOrder::NORMAL_MESSAGE_TYPE)
 			{
-				if (mo->recipientsMask &(1<<localPlayer))
-					addMessage(Color(230, 230, 230), FormattableString("%0 : %1").arg(game.players[sp]->name).arg(mo->getText()), true);
+				if (e.recipientsMask &(Team::teamNumberToMask(localPlayer)))
+					addMessage(Color(230, 230, 230), FormattableString("%0 : %1").arg(e.senderName).arg(e.text), true);
 			}
-			else if (messageOrderType==MessageOrder::PRIVATE_MESSAGE_TYPE)
+			else if (e.messageOrderType==MessageOrder::PRIVATE_MESSAGE_TYPE)
 			{
-				if (mo->recipientsMask &(1<<localPlayer))
-					addMessage(Color(99, 255, 242), FormattableString("<%0%1> %2").arg(Toolkit::getStringTable()->getString("[from:]")).arg(game.players[sp]->name).arg(mo->getText()), true);
-				else if (sp==localPlayer)
+				if (e.recipientsMask &(Team::teamNumberToMask(localPlayer)))
+					addMessage(Color(99, 255, 242), FormattableString("<%0%1> %2").arg(Toolkit::getStringTable()->getString("[from:]")).arg(e.senderName).arg(e.text), true);
+				else if (e.sender==localPlayer)
 				{
 					// Echo the outgoing private message once per recipient. The
-					// mask can carry several recipients, so iterate every set
-					// bit; messageRecipientPlayers drops any bit outside the
-					// live player range instead of indexing an empty slot.
-					for (int k : messageRecipientPlayers(mo->recipientsMask, game.gameHeader.getNumberOfPlayers()))
-						addMessage(Color(99, 255, 242), FormattableString("<%0%1> %2").arg(Toolkit::getStringTable()->getString("[to:]")).arg(game.players[k]->name).arg(mo->getText()), true);
+					// mask can carry several recipients; the simulation resolved
+					// each live recipient's name (messageRecipientPlayers).
+					for (const std::string& recipient : e.recipientNames)
+						addMessage(Color(99, 255, 242), FormattableString("<%0%1> %2").arg(Toolkit::getStringTable()->getString("[to:]")).arg(recipient).arg(e.text), true);
 				}
 			}
 			else
 				assert(false);
-
-			game.executeOrder(order, localPlayer);
 		}
-		break;
-		case ORDER_VOICE_DATA:
+		else if constexpr (std::is_same_v<T, ClientEvent::VoiceData>)
 		{
-			std::shared_ptr<OrderVoiceData> ov = static_pointer_cast<OrderVoiceData>(order);
-			if (ov->recipientsMask & (1<<localPlayer))
-				globalContainer->mix->addVoiceData(ov);
-			game.executeOrder(order, localPlayer);
+			if (e.order->recipientsMask & (Team::teamNumberToMask(localPlayer)))
+				globalContainer->mix->addVoiceData(e.order);
 		}
-		break;
-		case ORDER_PLAYER_QUIT_GAME :
+		else if constexpr (std::is_same_v<T, ClientEvent::PlayerQuit>)
 		{
-			int qp=order->sender;
-			if (qp==localPlayer)
+			if (e.player==localPlayer)
 				isRunning=false;
-			addMessage(Color(200, 200, 200), FormattableString(Toolkit::getStringTable()->getString("[%0 has left the game]")).arg(game.players[qp]->name), true);
-			game.executeOrder(order, localPlayer);
+			addMessage(Color(200, 200, 200), FormattableString(Toolkit::getStringTable()->getString("[%0 has left the game]")).arg(e.name), true);
 		}
-		break;
-
-		case ORDER_MAP_MARK:
+		else if constexpr (std::is_same_v<T, ClientEvent::MapMark>)
 		{
-			std::shared_ptr<MapMarkOrder> mmo=static_pointer_cast<MapMarkOrder>(order);
-
-			assert(game.teams[mmo->teamNumber]->teamNumber<game.mapHeader.getNumberOfTeams());
-			if (game.teams[mmo->teamNumber]->allies & (game.teams[localTeamNo]->me))
-				addMark(mmo);
+			if (e.markingTeamAllies & (game.teams[localTeamNo]->me))
+				addMark(e.order);
 		}
-		break;
-		case ORDER_PAUSE_GAME:
+		else if constexpr (std::is_same_v<T, ClientEvent::PauseChanged>)
 		{
-			std::shared_ptr<PauseGameOrder> pgo=static_pointer_cast<PauseGameOrder>(order);
-			gamePaused=pgo->pause;
+			gamePaused=e.paused;
 		}
-		break;
-		case ORDER_CREATE:
+		else if constexpr (std::is_same_v<T, ClientEvent::BuildingRequested>)
 		{
-			std::shared_ptr<OrderCreate> pgo=static_pointer_cast<OrderCreate>(order);
-			if(pgo->teamNumber == localTeamNo)
-				ghostManager.removeBuilding(pgo->posX, pgo->posY);
-			game.executeOrder(order, localPlayer);
+			if (e.team == localTeamNo)
+				ghostManager.removeBuilding(e.posX, e.posY);
 		}
-		break;
-		default:
+		else if constexpr (std::is_same_v<T, ClientEvent::OrderExecuted>)
 		{
-			game.executeOrder(order, localPlayer);
+			reconcileBuildingGuiState(e.order);
 		}
-	}
-	reconcileBuildingGuiState(order);
+		else if constexpr (std::is_same_v<T, ClientEvent::BuildingRemoved>)
+		{
+			// Drop this building's pending GUI shadow. buildingGuiState is keyed by
+			// gid, and gids are recycled by Game::addBuilding (lowest free slot), so a
+			// leftover entry would be inherited by the next building created on the
+			// same slot. For a dragged-then-destroyed flag that left pendingPosX/Y set,
+			// a freshly placed flag reusing the gid would render at the dead flag's
+			// position while the simulation used the real posX/posY.
+			buildingGuiState.erase(e.gid);
+		}
+		else if constexpr (std::is_same_v<T, ClientEvent::UnitConverted>)
+		{
+			// The unit object survives a conversion with a new gid and generation;
+			// keep it selected, as the pointer-based selection used to.
+			if (const UnitRef *selected = std::get_if<UnitRef>(&selection); selected && *selected == e.from)
+				selection = e.to;
+		}
+	}, std::move(event));
 }

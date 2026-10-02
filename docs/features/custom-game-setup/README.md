@@ -5,6 +5,10 @@ keeps the match summary and launch action available while dense content scrolls.
 
 ## Behavior
 
+Matches support up to **16 colonies and 16 controllers**. Shared human/AI control
+uses two controller slots for one colony. Individual landscapes can impose lower
+limits when their homes, resources or routes need more room.
+
 - Start on a random map with four colonies in a free-for-all: you plus three Numbi AIs
   (since 2026-09-14; the premade library, a tab away, preselects FourSquares1 the first time
   it is opened). A saved lobby restores whichever mode it was left in.

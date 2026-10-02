@@ -1434,8 +1434,8 @@ Odhalený terén neodhalí veškerou nepřátelskou aktivitu.
 Váha písku
 [Select a valid map.]
 Vyberte platnou mapu.
-[Shared control needs a free controller slot (maximum 12).]
-Sdílené ovládání vyžaduje volné místo pro hráče nebo AI (nejvýše 12).
+[Shared control needs a free controller slot (maximum %0).]
+Sdílené ovládání vyžaduje volné místo pro hráče nebo AI (nejvýše %0).
 [Smoothing]
 Vyhlazování
 [Standard]

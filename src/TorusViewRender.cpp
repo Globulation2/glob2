@@ -514,9 +514,11 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         else
         {
             Game::ViewState mapView;
+            mapView.render = std::move(standaloneRender);
             game.drawMap(0, 0, game.map.getW() * 32, game.map.getH() * 32, 0, 0,
                          originX, originY, team, mapView, options | Game::DRAW_NO_CLOUD_LAYER,
                          nullptr, nullptr, false, cloudGridLimit);
+            standaloneRender = std::move(mapView.render);
         }
         Sprite::flushBatches(gfx);
         gfx->setRenderTargetScale(0);
@@ -525,7 +527,7 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     const bool drawClouds =
         globalContainer->settings.clouds;
     if (drawClouds)
-        updateClouds(game.mapAnimationTime);
+        updateClouds(game.gui ? game.gui->mapAnimationTime() : standaloneRender.animationTime);
 
     // Save GL state AFTER the game renderer: its state cache must still match
     // the restored state when the ordinary HUD resumes drawing.

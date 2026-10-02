@@ -1434,8 +1434,8 @@ Folyó szélessége
 Homok súlyozása
 [Select a valid map.]
 Válasszon érvényes térképet.
-[Shared control needs a free controller slot (maximum 12).]
-A közös irányításhoz szabad játékos- vagy MI-hely kell (legfeljebb 12).
+[Shared control needs a free controller slot (maximum %0).]
+A közös irányításhoz szabad játékos- vagy MI-hely kell (legfeljebb %0).
 [Smoothing]
 Simítás
 [Standard]

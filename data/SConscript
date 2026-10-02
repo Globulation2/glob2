@@ -2,6 +2,18 @@ import os
     
 Import('env')
 Import("PackTar")
+
+if env.get('OPTIMIZED_ASSET_INSTALL') and 'dist' not in COMMAND_LINE_TARGETS:
+    env.InstallAs(env["INSTALLDIR"] + "/applications/org.globulation2.Globulation2.desktop", "glob2.desktop")
+    env.Install(env["INSTALLDIR"] + "/metainfo", "org.globulation2.Globulation2.metainfo.xml")
+    env.Alias("install", env["INSTALLDIR"] + "/applications")
+    env.Alias("install", env["INSTALLDIR"] + "/metainfo")
+    for size in (16, 24, 32, 48, 64, 128, 256):
+        icon = env.InstallAs(env['INSTALLDIR'] + '/icons/hicolor/%dx%d/apps/glob2.png' % (size, size),
+                             'icons/glob2-icon-%dx%d.png' % (size, size))
+        env.Alias('install', icon)
+    Return()
+
     
 if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
     for file in sorted(os.listdir(env.Dir(".").srcnode().abspath)):

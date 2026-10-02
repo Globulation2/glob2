@@ -1458,8 +1458,8 @@ Rivierbreedte
 Zandaandeel
 [Select a valid map.]
 Selecteer een geldige kaart.
-[Shared control needs a free controller slot (maximum 12).]
-Gedeelde besturing vereist een vrije plaats voor een mens of AI (maximaal 12).
+[Shared control needs a free controller slot (maximum %0).]
+Gedeelde besturing vereist een vrije plaats voor een mens of AI (maximaal %0).
 [Smoothing]
 Gladmaken
 [Standard]

@@ -1434,8 +1434,8 @@ Ancho del río
 Peso de arena
 [Select a valid map.]
 Seleccione un mapa válido.
-[Shared control needs a free controller slot (maximum 12).]
-El control compartido necesita una plaza libre para un jugador humano o IA (máximo 12).
+[Shared control needs a free controller slot (maximum %0).]
+El control compartido necesita una plaza libre para un jugador humano o IA (máximo %0).
 [Smoothing]
 Suavizado
 [Standard]

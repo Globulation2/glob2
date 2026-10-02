@@ -101,7 +101,8 @@ void Map::growResources(void)
 
 void Map::rebuildGrowthCoverage()
 {
-	static_assert(3 * Team::MAX_COUNT <= 64, "Growth distance masks must fit one tile word");
+	static_assert(GROWTH_COVERAGE_BANDS * Team::MAX_COUNT <= sizeof(Uint64) * CHAR_BIT,
+		"Growth distance masks must fit one tile word (currently at most 21 teams)");
 	// Old saves start the new diagnostic interval at the loaded tick.
 	for (int t = 0; t < game->mapHeader.getNumberOfTeams(); ++t)
 	{
@@ -136,22 +137,23 @@ void Map::rebuildGrowthCoverage()
 		std::fill(std::begin(growthCoverageGeneration), std::end(growthCoverageGeneration), Uint32(-1));
 		growthCoverageValid = true;
 	}
-	static constexpr int radius[3] = {8,16,32};
+	const auto &radius = GROWTH_COVERAGE_RADII;
+	constexpr int outerBand = GROWTH_COVERAGE_BANDS - 1;
 	// The count planes are team-major. A changed building touches only its
 	// Chebyshev footprint; growth events still read just three contiguous masks.
 	const auto paint = [&](int t, const TeamStats::CoverageBuilding &b, int delta)
 	{
 		const size_t plane = size_t(t) * tileCount;
-		for (int y = b.y - radius[2]; y < b.y + b.height + radius[2]; ++y)
+		for (int y = b.y - radius[outerBand]; y < b.y + b.height + radius[outerBand]; ++y)
 		{
 			const int dy = std::max({b.y - y, 0, y - (b.y + b.height - 1)});
 			const size_t row = size_t(y & hMask) * w;
-			for (int x = b.x - radius[2]; x < b.x + b.width + radius[2]; ++x)
+			for (int x = b.x - radius[outerBand]; x < b.x + b.width + radius[outerBand]; ++x)
 			{
 				const int dx = std::max({b.x - x, 0, x - (b.x + b.width - 1)});
 				const int d = std::max(dx,dy);
 				const size_t index = row + (x & wMask);
-				for (int band = 0; band < 3; ++band)
+				for (int band = 0; band < GROWTH_COVERAGE_BANDS; ++band)
 					if (d <= radius[band])
 				{
 					const Uint64 bit = Uint64(1) << (band * Team::MAX_COUNT + t);
@@ -197,8 +199,9 @@ void Map::recordNaturalGrowth(int x, int y, int resourceType, int oldType, int o
 	if (!tiles && !delta) return;
 	const size_t index = size_t(y & hMask) * w + (x & wMask);
 	const Uint64 packed = growthCoverage[index];
-	const Uint32 masks[3] = {Uint32(packed), Uint32(packed >> Team::MAX_COUNT),
-		Uint32(packed >> (2 * Team::MAX_COUNT))};
+	Uint32 masks[GROWTH_COVERAGE_BANDS];
+	for (int band = 0; band < GROWTH_COVERAGE_BANDS; ++band)
+		masks[band] = Uint32(packed >> (band * Team::MAX_COUNT));
 	for (int t = 0; t < game->mapHeader.getNumberOfTeams(); ++t)
 	{
 		Team *team = game->teams[t];
@@ -207,7 +210,7 @@ void Map::recordNaturalGrowth(int x, int y, int resourceType, int oldType, int o
 		m.growthGlobal[0][resourceType] += tiles;
 		m.growthGlobal[1][resourceType] += std::max(0,delta);
 		m.growthGlobal[2][resourceType] += std::max(0,-delta);
-		for (int band = 0; band < 3; ++band)
+		for (int band = 0; band < GROWTH_COVERAGE_BANDS; ++band)
 			if (masks[band] & (Uint32(1) << t))
 			{
 				m.growthTiles[band][resourceType] += tiles;
@@ -268,7 +271,10 @@ void Map::syncStep(Uint32 stepCounter)
 
 	if (stepCounter & 1)
 	{
-		int team = (stepCounter >> 1) & 31;
+		// Historical 64-tick exploration cycle: spare schedule slots are idle.
+		constexpr int explorationScheduleSlots = 32;
+		static_assert(Team::MAX_COUNT <= explorationScheduleSlots);
+		int team = (stepCounter >> 1) % explorationScheduleSlots;
 		if (team < game->mapHeader.getNumberOfTeams())
 			updateExploredArea(team);
 	}
