@@ -188,6 +188,13 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
     GAGCore::FrameDrawBatch frameBatch(globalContainer->gfx);
 	// Frozen while paused, so the water and the clouds hold still with the rest.
 	int &time = view.render.animationTime;
+	// Draw the scene the simulation published, else extract one now (serial callers).
+	if (!view.scene)
+	{
+		view.render.ownScene.tick = stepCounter;
+		view.render.ownScene.map.extract(map);
+	}
+	const Scene &scene = view.scene ? *view.scene : view.render.ownScene;
 	int left = (sx >> 5);
 	int top = (sy >> 5);
 	int right = ((sx + sw + 31) >> 5);
@@ -222,7 +229,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 	{
 		try
 		{
-			softwareTerrainCache = &view.render.terrainCache(map);
+			softwareTerrainCache = &view.render.terrainCache(scene.map.identity());
 		}
 		catch (const std::bad_alloc &)
 		{ /* Keep the uncached renderer available under memory pressure. */
@@ -230,7 +237,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 	}
 	bool cached =
 		softwareTerrainCache &&
-		softwareTerrainCache->prepare(map, frame.terrain, frame.left, frame.top, frame.right,
+		softwareTerrainCache->prepare(scene.map, frame.terrain, frame.left, frame.top, frame.right,
 									  frame.bottom, frame.viewportX, frame.viewportY,
 									  frame.visibleTeams, frame.options & DRAW_WHOLE_MAP);
 	bool coveredWater = false;
@@ -251,14 +258,14 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 		softwareTerrainCache->draw(frame.target);
 	}
 	else
-		drawMapTerrain(left, top, right, bot, viewportX, viewportY, localTeam, drawOptions);
+		drawMapTerrain(left, top, right, bot, viewportX, viewportY, localTeam, drawOptions, scene.map);
 
 	// Pass adapters keep the two coordinate conventions in one place. Individual
 	// layers still own their visibility decisions and their original draw order.
-	const auto tilePass = [&](auto method)
+	const auto tilePass = [&](auto method, auto &&...state)
 	{
 		(this->*method)(frame.left, frame.top, frame.right, frame.bottom, frame.viewportX,
-						frame.viewportY, frame.localTeam, frame.options);
+						frame.viewportY, frame.localTeam, frame.options, state...);
 	};
 	const auto scenePass = [&](auto method, auto &&...state)
 	{
@@ -266,7 +273,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 						frame.viewportX, frame.viewportY, frame.localTeam, frame.options, state...);
 	};
 
-	tilePass(&Game::drawMapResources);
+	tilePass(&Game::drawMapResources, scene.map);
 	scenePass(&Game::drawMapGroundUnits, view);
 	scenePass(&Game::drawMapDebugAreas, view);
 	scenePass(&Game::drawMapGroundBuildings, visibleBuildings, buildingGuiState);
@@ -285,8 +292,8 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 			view.render.clouds().render(globalContainer->gfx, sw, sh, DynamicClouds::SHADOW);
 	}
 
-	scenePass(&Game::drawMapFogOfWar);
-	scenePass(&Game::drawMapAreas, view);
+	scenePass(&Game::drawMapFogOfWar, scene.map);
+	scenePass(&Game::drawMapAreas, view, scene.map);
 	scenePass(&Game::drawMapOverlayMaps, view);
 
 	scenePass(&Game::drawUnitPathLines, view);

@@ -3,7 +3,6 @@
 
 #include "DynamicClouds.h"
 #include "GlobalContainer.h"
-#include "Map.h"
 #include "SoftwareTerrainCache.h"
 
 MapRenderState::MapRenderState() = default;
@@ -18,13 +17,13 @@ DynamicClouds &MapRenderState::clouds()
 	return *clouds_;
 }
 
-SoftwareTerrainCache &MapRenderState::terrainCache(const Map &map)
+SoftwareTerrainCache &MapRenderState::terrainCache(Uint64 mapIdentity)
 {
-	if (!terrainCache_ || terrainCacheMap != map.identity())
+	if (!terrainCache_ || terrainCacheMap != mapIdentity)
 	{
 		terrainCache_.reset();
 		terrainCache_ = std::make_unique<SoftwareTerrainCache>();
-		terrainCacheMap = map.identity();
+		terrainCacheMap = mapIdentity;
 	}
 	return *terrainCache_;
 }

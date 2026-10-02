@@ -1,13 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 
+#include "scene/Scene.h"
+
 #include <SDL_stdinc.h>
 
 #include <memory>
 #include <valarray>
 
 class DynamicClouds;
-class Map;
 class SoftwareTerrainCache;
 
 //! Presentation state one map view keeps between frames: animation phases, the
@@ -27,12 +28,14 @@ struct MapRenderState
 	int areaAnimationTick = 0;
 	//! Reused alpha buffer for overlay maps, kept to avoid per-frame allocation.
 	std::valarray<unsigned char> overlayAlphas;
+	//! Scene this view extracts for itself when drawn without a published one.
+	Scene ownScene;
 
 	//! The cloud field for this view, created on first use.
 	DynamicClouds &clouds();
 	//! The software terrain cache for map, rebuilt when the map was replaced.
 	//! May throw std::bad_alloc; callers fall back to uncached terrain.
-	SoftwareTerrainCache &terrainCache(const Map &map);
+	SoftwareTerrainCache &terrainCache(Uint64 mapIdentity);
 	//! The current software terrain cache, or null if none was created yet.
 	SoftwareTerrainCache *existingTerrainCache() const { return terrainCache_.get(); }
 

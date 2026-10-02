@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
 #include "render/SoftwareTerrainCache.h"
+#include "scene/SceneMap.h"
 #include <RenderBackend.h>
 #include <SoftwareFramePresenter.h>
 #include <SurfaceRaster.h>
@@ -335,7 +336,9 @@ TEST_SUITE("SoftwareRenderer")
 		auto &game = fixture.game;
 		// The view owns the cache and animation phase; the cache follows map replacement.
 		Game::ViewState view;
-		const auto cache = [&]() -> SoftwareTerrainCache & { return view.render.terrainCache(game.map); };
+		const auto cache = [&]() -> SoftwareTerrainCache & { return view.render.terrainCache(game.map.identity()); };
+		SceneMap extracted;
+		const auto sceneOf = [&](const Map &map) -> const SceneMap & { extracted.extract(map); return extracted; };
 		for (int y = 0; y < 32; ++y)
 			for (int x = 0; x < 32; ++x)
 				game.map.setTerrain(x, y, (x + y * 32) % 272);
@@ -384,19 +387,19 @@ TEST_SUITE("SoftwareRenderer")
 		REQUIRE(cache().bytes() == 0); // a replaced map starts an empty cache
 		for (int chunk = 0; chunk < 40; ++chunk)
 		{
-			REQUIRE(cache().prepare(game.map, *globals->terrain, 0, 0, 15, 15,
+			REQUIRE(cache().prepare(sceneOf(game.map), *globals->terrain, 0, 0, 15, 15,
 													   (chunk % 16) * 16, (chunk / 16) * 16,
 													   game.teams[0]->me, true));
 			CHECK(cache().bytes() <= SoftwareTerrainCache::Budget);
 		}
-		CHECK_FALSE(cache().prepare(game.map, *globals->terrain, 0, 0, 127, 127,
+		CHECK_FALSE(cache().prepare(sceneOf(game.map), *globals->terrain, 0, 0, 127, 127,
 													   0, 0, game.teams[0]->me, true));
 		game.map.setSize(4, 4, GRASS);
 		compare(0, 0, 0);
 		for (int y = 0; y < 16; ++y)
 			for (int x = 0; x < 16; ++x)
 				game.map.setTerrain(x, y, 256);
-		REQUIRE(cache().prepare(game.map, *globals->terrain, 0, 0, 159, 159, 0,
+		REQUIRE(cache().prepare(sceneOf(game.map), *globals->terrain, 0, 0, 159, 159, 0,
 												   0, game.teams[0]->me, true));
 		const auto coverage = cache().waterRegions(SDL_Rect{0, 0, 5120, 5120});
 		REQUIRE(coverage.size() == 1);
@@ -415,7 +418,7 @@ TEST_SUITE("SoftwareRenderer")
 		for (int y = 0; y < 16; ++y)
 			for (int x = 0; x < 16; ++x)
 				game.map.setTerrain(x, y, (x % 2 == 0 && y % 2 == 0) ? opaqueId : 256);
-		REQUIRE(cache().prepare(game.map, *globals->terrain, 0, 0, 159, 159, 0,
+		REQUIRE(cache().prepare(sceneOf(game.map), *globals->terrain, 0, 0, 159, 159, 0,
 												   0, game.teams[0]->me, true));
 		const auto fragmented = cache().waterRegions(SDL_Rect{0, 0, 5120, 5120});
 		REQUIRE(fragmented.size() == 1);
@@ -424,7 +427,7 @@ TEST_SUITE("SoftwareRenderer")
 		for (int y = 0; y < 16; ++y)
 			for (int x = 0; x < 16; ++x)
 				game.map.setTerrain(x, y, opaqueId);
-		REQUIRE(cache().prepare(game.map, *globals->terrain, 0, 0, 15, 15, 0, 0,
+		REQUIRE(cache().prepare(sceneOf(game.map), *globals->terrain, 0, 0, 15, 15, 0, 0,
 												   game.teams[0]->me, true));
 		CHECK(cache().waterRegions(SDL_Rect{0, 0, 512, 512}).empty());
 

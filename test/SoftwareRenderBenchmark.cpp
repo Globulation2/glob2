@@ -94,7 +94,7 @@ class SoftwareRenderBenchmark
 				glob2OpenMapOrSaveInputStreamBackend(*Toolkit::getFileManager(), path));
 			if (!gui.load(&stream, true))
 				throw std::runtime_error("Cannot load benchmark save");
-			auto &terrainCache = gui.view.render.terrainCache(gui.game.map);
+			auto &terrainCache = gui.view.render.terrainCache(gui.game.map.identity());
 			if (const char *c = getenv("PROFILE_TERRAIN_CACHE"))
 				terrainCache.enabled = atoi(c) != 0;
 			gui.localPlayer = gui.localTeamNo = 0;
