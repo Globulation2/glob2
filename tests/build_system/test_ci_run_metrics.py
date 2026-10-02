@@ -30,3 +30,9 @@ class MetricsTest(unittest.TestCase):
         self.assertIn("cron: '0 6 * * *'", workflow)
         self.assertIn('if [ "$GITHUB_EVENT_NAME" = pull_request ]', workflow)
         self.assertIn('cancel-in-progress: ${{ github.event_name == \'pull_request\' }}', workflow)
+
+    def test_idle_gaps_do_not_count_as_execution_and_overlap_is_not_double_counted(self):
+        jobs = [dict(steps=[dict(started_at='2026-10-02T00:00:00Z')],completed_at='2026-10-02T00:00:10Z'),
+                dict(steps=[dict(started_at='2026-10-02T00:00:05Z')],completed_at='2026-10-02T00:00:15Z'),
+                dict(steps=[dict(started_at='2026-10-02T00:02:00Z')],completed_at='2026-10-02T00:02:10Z')]
+        self.assertEqual(m.active_seconds(jobs),25)

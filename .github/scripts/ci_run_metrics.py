@@ -20,6 +20,22 @@ def seconds(start, end):
     return max(0, (stamp(end) - stamp(start)).total_seconds()) if start and end else None
 
 
+def active_seconds(jobs):
+    intervals = []
+    for job in jobs:
+        starts = [stamp(step['started_at']) for step in job.get('steps', []) if step.get('started_at')]
+        if starts and job.get('completed_at'):
+            intervals.append((min(starts), stamp(job['completed_at'])))
+    total = 0.0
+    end = None
+    for start, stop in sorted(intervals):
+        if stop <= start:
+            continue
+        total += max(0, (stop - max(start, end or start)).total_seconds())
+        end = max(stop, end or stop)
+    return total
+
+
 def measure(run, jobs, observations):
     rows = []
     for job in jobs:
@@ -34,10 +50,13 @@ def measure(run, jobs, observations):
     starts = [s['started_at'] for j in jobs for s in j.get('steps', []) if s.get('started_at')]
     ends = [j['completed_at'] for j in jobs if j.get('completed_at')]
     selection = next((o for o in observations if 'selection' in o), {})
-    return {'run_id': run['id'], 'sha': run['head_sha'], 'event': run['event'],
+    span = seconds(min(starts), max(ends)) if starts and ends else None
+    active = active_seconds(jobs) if starts else None
+    return {'metrics_schema': 2, 'run_id': run['id'], 'sha': run['head_sha'], 'event': run['event'],
             'conclusion': run.get('conclusion'), 'selection': selection.get('selection'),
             'queue_seconds': seconds(run['created_at'], min(starts)) if starts else None,
-            'execution_seconds': seconds(min(starts), max(ends)) if starts and ends else None,
+            'execution_seconds': active, 'execution_span_seconds': span,
+            'idle_after_start_seconds': max(0, span - active) if span is not None else None,
             'time_to_result_seconds': seconds(run['created_at'], max(ends)) if ends else None,
             'runner_minutes': sum(r['execution_seconds'] or 0 for r in rows) / 60,
             'cancelled_jobs': sum(r['conclusion'] == 'cancelled' for r in rows),
@@ -51,7 +70,7 @@ def compare(before, after):
         for run in runs:
             if run.get('conclusion') != 'success' or run.get('selection') is None:
                 continue
-            key = json.dumps([run['event'], run['selection']], sort_keys=True)
+            key = json.dumps([run.get('metrics_schema'), run['event'], run['selection']], sort_keys=True)
             cohorts.setdefault(key, {'before': [], 'after': []})[side].append(run)
     result = []
     for key, group in cohorts.items():
