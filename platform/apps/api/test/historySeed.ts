@@ -11,8 +11,24 @@ import { putContent, type BlobStore } from '@glob2/core';
 import type { Database } from '@glob2/db';
 import { STANDARD_RULES, simVersionKey, type MatchSetup, type SimVersion } from '@glob2/protocol';
 import { displayRating } from '@glob2/worker';
-import { OTHER_SIM, serveSim } from './playSupport.ts';
 import { SIM } from './support.ts';
+
+// Not imported from playSupport.ts, which needs the Vitest runtime: the
+// browser smoke test's server (apps/web/e2e) seeds with this module too.
+const OTHER_SIM: SimVersion = { ...SIM, dataHash: 'cd'.repeat(32) };
+
+async function serveSim(db: Db, sim: SimVersion): Promise<void> {
+  await db
+    .insertInto('engine_agents')
+    .values({
+      id: `seed-agent-${simVersionKey(sim).slice(0, 12)}`,
+      sim_version: simVersionKey(sim),
+      kinds: ['generate-map', 'validate-map', 'render-preview', 'verify-match'],
+      build: 'seed',
+    })
+    .onConflict((oc) => oc.column('id').doNothing())
+    .execute();
+}
 
 type Db = Kysely<Database>;
 
@@ -242,7 +258,7 @@ export async function seedHistory(
   await rate(db, entities.kestrel, 'ranked-1v1', 29.4, 3.1, 41, 27);
   await rate(db, entities.mirelle, 'ranked-1v1', 27.2, 4.2, 23, 12);
   await rate(db, entities.ana, 'ranked-1v1', 26.1, 6.3, 4, 3);
-  await rate(db, entities.bradley, 'ranked-1v1', 28.0, 3.6, 12, 8);
+  await rate(db, entities.bradley, 'ranked-1v1', 28.0, 3.6, 8, 6);
   await rate(db, entities.bradley, 'ranked-2v2', 26.5, 5.6, 5, 3);
   await rate(db, entities.banned, 'ranked-1v1', 40, 2, 80, 79);
   await rate(db, nicowar, 'ranked-1v1', 27.5, 3.2, 31, 15);
@@ -409,7 +425,7 @@ export async function seedHistory(
       .returning('id')
       .executeTakeFirstOrThrow();
     const before = { mu: bradleyMu, sigma: bradleySigma };
-    bradleyMu += won ? 1.1 : -0.8;
+    bradleyMu += won ? 1.3 : -2.6;
     bradleySigma = Math.max(3.6, bradleySigma - 0.6);
     const after = { mu: bradleyMu, sigma: bradleySigma };
     const opponentBefore = { mu: 28, sigma: 4 };
