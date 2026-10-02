@@ -67,6 +67,9 @@ struct Theme
 	double dialogMaxWidth = 640, panelMaxWidth = 960;
 	double scrollbarWidth = 6, touchScrollbarWidth = 10;
 	double focusRing = 2, lineGap = 4, stepperSide = 32, touchStepperSide = 48;
+	// Text enlargement on touch hosts before the player's preference; touch
+	// text is then sized in points (see Presentation::textUnit).
+	double touchTextScale = 1;
 	// Optional classic painter for button backgrounds; return false to use the
 	// palette. Lets a theme reuse legacy sprite artwork for an unchanged look.
 	std::function<bool(Canvas &, Rect, const ButtonPaintState &)> buttonPainter;

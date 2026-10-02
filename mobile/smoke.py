@@ -106,6 +106,31 @@ def main():
         if not first_pid: raise RuntimeError('Native process is missing')
         screenshot('startup')
         summary['checks'].append('native startup and bundled assets')
+        # The touch menu's first focusable control is Settings beside the wordmark.
+        # Drive SDL's actual keyboard focus and accept/cancel paths; no fixed pixels.
+        run('logcat', '-c')
+        run('shell', 'input', 'keyevent', 'KEYCODE_TAB')
+        run('shell', 'input', 'keyevent', 'KEYCODE_ENTER')
+        wait_for(lambda: 'Glob2 screen ready:' in logs() and 'SettingsScreen' in logs(), 'settings opened by real input')
+        screenshot('settings')
+        run('logcat', '-c')
+        run('shell', 'input', 'keyevent', 'KEYCODE_ESCAPE')
+        wait_for(lambda: 'Glob2 screen ready:' in logs() and 'MainMenuScreen' in logs(), 'settings dismissal')
+        summary['checks'].append('settings input and dismissal')
+        # Application-created profile files must survive lifecycle transitions.
+        # The release APK is not debuggable. The task-owned emulator
+        # permits root; read its profile without requiring a debug-only app build.
+        run('root'); run('wait-for-device')
+        if run('shell', 'id', '-u').strip() != '0':
+            raise RuntimeError('Owned emulator does not permit profile inspection')
+        def profile_files():
+            profile = '/data/user/0/' + package + '/files'
+            script = 'find ' + profile + r' -type f ! -path "*/assets/*" ! -name "*.log" ! -name "*.tmp" -exec sha256sum {} \;'
+            return '\n'.join(sorted(run('shell', script).splitlines()))
+        persisted_profile = profile_files()
+        if not persisted_profile:
+            raise RuntimeError('Settings did not produce persistent application profile files')
+        (output/'profile-before.txt').write_text(persisted_profile+'\n')
         run('shell', 'input', 'keyevent', 'KEYCODE_HOME')
         wait_for(lambda: not foreground(), 'background transition')
         time.sleep(2)
@@ -130,6 +155,11 @@ def main():
         if not pid() or pid() == first_pid: raise RuntimeError('Force-stop did not produce a fresh process')
         screenshot('relaunched')
         summary['checks'].append('force-stop and fresh-process relaunch')
+        restored_profile = profile_files()
+        (output/'profile-after.txt').write_text(restored_profile+'\n')
+        if restored_profile != persisted_profile:
+            raise RuntimeError('Profile contents changed across background/resume and relaunch')
+        summary['checks'].append('application profile persistence')
         summary['passed'] = True
     except Exception as failure:
         summary['error'] = str(failure)

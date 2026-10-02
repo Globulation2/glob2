@@ -91,11 +91,11 @@ namespace GAGCore
 		{
 			std::ostringstream frameName;
 			frameName << filename << i << ".png";
-			frameStream = Toolkit::getFileManager()->open(frameName.str().c_str(), "rb");
+			frameStream = Toolkit::getFileManager()->openImage(frameName.str());
 	
 			std::ostringstream frameNameRot;
 			frameNameRot << filename << i << "r.png";
-			rotatedStream = Toolkit::getFileManager()->open(frameNameRot.str().c_str(), "rb");
+			rotatedStream = Toolkit::getFileManager()->openImage(frameNameRot.str());
 	
 			if (!((frameStream) || (rotatedStream)))
 				break;
@@ -421,7 +421,7 @@ namespace GAGCore
         std::vector<std::unique_ptr<DrawableSurface>> levels;
         for(int mip=0;mip<4;++mip)
         {
-            auto rw=Toolkit::getFileManager()->open((directory+"/"+prefix+"-atlas-mip"+std::to_string(mip)+".png").c_str(),"rb");
+            auto rw=Toolkit::getFileManager()->openImage(directory+"/"+prefix+"-atlas-mip"+std::to_string(mip)+".png");
             if(!rw){reject();return;}
             auto s=IMG_Load_RW(rw,1);if(!s){reject();return;}
             if(s->w!=(atlasW>>mip)||s->h!=(atlasH>>mip)){SDL_FreeSurface(s);reject();return;}
@@ -506,7 +506,7 @@ namespace GAGCore
 			{
 				if(name=="-")return nullptr;
 				if(name.find_first_of("/\\:")!=std::string::npos || name.find("..")!=std::string::npos)return nullptr;
-				SDL_RWops *rw=Toolkit::getFileManager()->open((directory+"/"+name).c_str(),"rb");
+				SDL_RWops *rw=Toolkit::getFileManager()->openImage(directory+"/"+name);
 				if(!rw)return nullptr;
 				SDL_Surface *surface=IMG_Load_RW(rw,1);if(!surface)return nullptr;
 				int lw=original?original->getW():w,lh=original?original->getH():h;

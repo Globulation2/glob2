@@ -106,7 +106,7 @@ void GameGUITouch::drawPanel()
 		return;
 	auto *gfx = globalContainer->gfx;
 	gfx->setClipRect();
-	if (inspectedBuilding() && usesDial())
+	if (inspecting() && usesDial())
 	{
 		drawDial();
 		drawAllocation();
@@ -124,7 +124,7 @@ void GameGUITouch::drawPanel()
 		drawBuildPalette();
 		return;
 	}
-	if (inspectedBuilding())
+	if (inspecting())
 	{
 		drawBuildingActions();
 		drawAllocation();
@@ -215,13 +215,13 @@ void GameGUITouch::drawHUD()
 	}
 	stats.push_back(
 		{GAGCore::FormattableString(GAGCore::Toolkit::getStringTable()->getString("[P %0/%1/%2]"))
-			 .arg(gui.localTeam->prestige)
-			 .arg(gui.game.totalPrestige)
-			 .arg(gui.game.prestigeToReach)});
-	stats.push_back({"+" + std::to_string(gui.localTeam->unitConversionGained) + " / −" +
-					 std::to_string(gui.localTeam->unitConversionLost)});
+			 .arg(gui.drawnScene().panels.local.prestige)
+			 .arg(gui.drawnScene().panels.hud.totalPrestige)
+			 .arg(gui.drawnScene().panels.hud.prestigeToReach)});
+	stats.push_back({"+" + std::to_string(gui.drawnScene().panels.local.unitConversionGained) + " / −" +
+					 std::to_string(gui.drawnScene().panels.local.unitConversionLost)});
 	int cpu = 0;
-	for (auto value : gui.smoothedCPULoad)
+	for (const auto &value : gui.smoothedCPULoad)
 		cpu += value;
 	cpu /= GameGUI::SMOOTHED_CPU_SIZE;
 	stats.push_back(
@@ -245,7 +245,7 @@ void GameGUITouch::drawHUD()
 		{
 			SDL_Rect clip{int(r.x), int(r.y), int(r.w), int(r.h)};
 			gfx->setUITransform(unit, r.x + 2 * unit, r.y + 3 * unit, &clip);
-			globalContainer->unitmini->setBaseColor(gui.localTeam->color);
+			globalContainer->unitmini->setBaseColor(gui.drawnScene().panels.local.color);
 			gfx->drawSprite(0, 0, globalContainer->unitmini, stat.icon);
 			gfx->setUITransform();
 			gfx->setClipRect();
@@ -315,14 +315,15 @@ ViewRect GameGUITouch::tutorialRect() const
 	rect.w = std::min(rect.w - 16 * unit, 560 * unit);
 	rect.h = std::max(0.0, layout().actions.y - rect.y);
 	rect.h = tutorialCollapsed ? 48 * unit
-							   : std::min(rect.h, (std::min<size_t>(3, tutorialLines.size()) * 24 +
-												   16 + (gui.swallowSpaceKey ? 48 : 0)) *
+							   : std::min(rect.h, (std::min<size_t>(3, tutorialLines.size()) *
+														   InGameTouchTheme::tutorialPitch() +
+													   16 + (gui.swallowSpaceKey ? 48 : 0)) *
 													  unit);
 	return rect;
 }
 void GameGUITouch::prepareTutorial()
 {
-	std::string text = gui.game.legacyScriptActive() && gui.game.sgslScript.isTextShown ? gui.game.sgslScript.textShown : "";
+	std::string text = gui.drawnScene().panels.hud.legacyScriptText;
 	if (!gui.scriptText.empty())
 	{
 		if (!text.empty())
@@ -330,7 +331,8 @@ void GameGUITouch::prepareTutorial()
 		text += gui.scriptText;
 	}
 	const double width =
-		std::min(layout().world.w / globalContainer->gfx->logicalUnitsPerPoint() - 16, 560.0) - 64;
+		(std::min(layout().world.w / globalContainer->gfx->logicalUnitsPerPoint() - 16, 560.0) - 64) /
+		InGameTouchTheme::textGrowth();
 	if (text == tutorialText && width == tutorialWidth)
 		return;
 	tutorialCollapsed = false;
@@ -393,16 +395,20 @@ void GameGUITouch::drawTutorial()
 	const double footerHeight = gui.swallowSpaceKey ? 48 * unit : 0;
 	SDL_Rect clip{int(rect.x), int(rect.y), int(rect.w - 48 * unit),
 				  int(std::max(0.0, rect.h - footerHeight))};
-	const size_t first = std::min(tutorialLines.size(), size_t(std::max(0.0, tutorialScroll) / 24));
-	gfx->setUITransform(1.0 * unit, rect.x + 8 * unit,
-						rect.y + (8 - tutorialScroll + first * 24) * unit, &clip);
-	const size_t end = std::min(tutorialLines.size(), first + size_t(rect.h / unit / 24) + 1);
+	// Lines are tutorialLine authored pixels apart and drawn at the text unit,
+	// so they sit tutorialPitch() points apart.
+	const double pitch = InGameTouchTheme::tutorialPitch();
+	const size_t first = std::min(tutorialLines.size(), size_t(std::max(0.0, tutorialScroll) / pitch));
+	gfx->setUITransform(gfx->textUnitsPerPoint(), rect.x + 8 * unit,
+						rect.y + (8 - tutorialScroll + first * pitch) * unit, &clip);
+	const size_t end = std::min(tutorialLines.size(), first + size_t(rect.h / unit / pitch) + 1);
 	for (size_t i = first; i < end; ++i)
-		gfx->drawString(0, int((i - first) * 24), globalContainer->standardFont, tutorialLines[i]);
+		gfx->drawString(0, int((i - first) * InGameTouchTheme::tutorialLine), globalContainer->standardFont,
+						tutorialLines[i]);
 	gfx->setUITransform();
 	gfx->setClipRect();
 	const double textHeight = std::max(1.0, rect.h - footerHeight),
-				 content = tutorialLines.size() * 24 * unit;
+				 content = tutorialLines.size() * pitch * unit;
 	if (content > textHeight)
 	{
 		gfx->drawFilledRect(int(rect.x + rect.w - 3 * unit),
@@ -416,7 +422,9 @@ void GameGUITouch::drawTutorial()
 		gfx->drawFilledRect(int(rect.x), int(rect.y + rect.h - 48 * unit), int(rect.w),
 							int(48 * unit), InGameTouchTheme::selected);
 		SDL_Rect footer{int(rect.x), int(rect.y + rect.h - 48 * unit), int(rect.w), int(48 * unit)};
-		gfx->setUITransform(1.0 * unit, rect.x + 12 * unit, rect.y + rect.h - 32 * unit, &footer);
+		// 16 points below the footer's top at the authored size, centred as text grows.
+		gfx->setUITransform(gfx->textUnitsPerPoint(), rect.x + 12 * unit,
+							rect.y + rect.h - (24 + 8 * InGameTouchTheme::textGrowth()) * unit, &footer);
 		gfx->drawString(0, 0, globalContainer->standardFont,
 						Toolkit::getStringTable()->getString("[ok]"));
 		gfx->setUITransform();
@@ -424,12 +432,12 @@ void GameGUITouch::drawTutorial()
 	}
 }
 
-Building *GameGUITouch::allocationBuilding() const
+const SceneBuildingPanel *GameGUITouch::allocationBuilding() const
 {
 	if (gui.selectionMode != GameGUI::BUILDING_SELECTION || globalContainer->isViewingGame())
 		return nullptr;
-	auto *building = gui.selectionBuilding();
-	return building && building->owner->teamNumber == gui.localTeamNo &&
+	auto *building = inspectedBuilding();
+	return building && building->owner.teamNumber == gui.localTeamNo &&
 				   building->type->maxUnitWorking && building->buildingState == Building::ALIVE
 			   ? building
 			   : nullptr;
@@ -437,7 +445,7 @@ Building *GameGUITouch::allocationBuilding() const
 ViewRect GameGUITouch::allocationRect() const
 {
 	auto rect = layout().panel;
-	if (!inspectedBuilding() || rect.h <= 0)
+	if (!inspecting() || rect.h <= 0)
 		return {};
 	if (usesDial())
 		return dialLayout(layout()).header;
@@ -458,13 +466,13 @@ std::vector<std::string> GameGUITouch::pointLines(const std::string &text, doubl
 	auto *font = globalContainer->standardFont;
 	InGameTouchTheme::TextStyle textStyle(font);
 	return wrapTouchText(font, text,
-						 width / (textScale * globalContainer->gfx->logicalUnitsPerPoint()) - 8);
+						 width / (textScale * globalContainer->gfx->textUnitsPerPoint()) - 8);
 }
 void GameGUITouch::drawPointLabel(ViewRect rect, const std::string &text, double textScale,
 								  bool leading)
 {
 	auto *gfx = globalContainer->gfx;
-	const double unit = textScale * gfx->logicalUnitsPerPoint();
+	const double unit = textScale * gfx->textUnitsPerPoint();
 	auto clipped = rect;
 	if (labelClip)
 	{
@@ -504,7 +512,7 @@ void GameGUITouch::drawAllocation()
 	auto *sprite = type->miniSpriteImage >= 0 ? type->miniSpritePtr : type->gameSpritePtr;
 	const int frame = type->miniSpriteImage >= 0 ? type->miniSpriteImage : type->gameSpriteImage;
 	SDL_Rect clip{int(rect.x), int(rect.y), int(rect.w), int(rect.h)};
-	sprite->setBaseColor(building->owner->color);
+	sprite->setBaseColor(building->owner.color);
 	gfx->setUITransform(unit, rect.x + 4 * unit, rect.y + 4 * unit, &clip);
 	gfx->drawSprite(0, 0, sprite, frame);
 	gfx->setUITransform();
@@ -520,12 +528,12 @@ void GameGUITouch::drawAllocation()
 				GAGCore::Toolkit::getStringTable()->getString("[%0 / %1 HP · %2]"))
 				.arg(building->hp)
 				.arg(type->hpMax)
-				.arg(building->owner == gui.localTeam
+				.arg(building->owner.teamNumber == gui.drawnScene().panels.local.teamNumber
 						 ? std::string(
 							   GAGCore::Toolkit::getStringTable()->getString("[Your colony]"))
 						 : GAGCore::FormattableString(
 							   GAGCore::Toolkit::getStringTable()->getString("[Team %0]"))
-							   .arg(building->owner->teamNumber + 1)),
+							   .arg(building->owner.teamNumber + 1)),
 		.85);
 	drawPointLabel({rect.x + rect.w - 48 * unit, rect.y, 48 * unit, rect.h}, "×", 1.2);
 }
@@ -546,7 +554,7 @@ void GameGUITouch::drawMinimap()
 	hudMinimap->setMinimapMode(globalContainer->replaying && !globalContainer->replayShowFog
 								   ? Minimap::HideFOW
 								   : Minimap::ShowFOW);
-	hudMinimap->draw(gui.localTeamNo, gui.viewportX, gui.viewportY,
+	hudMinimap->draw(gui.view.drawnScene(), gui.localTeamNo, gui.viewportX, gui.viewportY,
 					 int(std::ceil(gui.camera.visibleW() / 32)),
 					 int(std::ceil(gui.camera.visibleH() / 32)));
 	gfx->setUITransform();
@@ -634,7 +642,7 @@ std::vector<std::pair<std::string, int>> GameGUITouch::tacticalActions() const
 			{toggle(GAGCore::Toolkit::getStringTable()->getString("[show flags]"),
 					globalContainer->replayShowFlags),
 			 34}};
-		for (int i = 0; i < gui.game.teamsCount(); ++i)
+		for (int i = 0; i < gui.drawnScene().entities.teamCount; ++i)
 			playback.push_back(
 				{toggle((GAGCore::FormattableString(
 							 GAGCore::Toolkit::getStringTable()->getString("[View team %0]"))

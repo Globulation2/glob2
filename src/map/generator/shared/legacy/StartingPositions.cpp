@@ -273,7 +273,7 @@ void chooseFreeForGroundUnits(Map &map, std::vector<MapGeneratorPoint> &points, 
 	std::vector<MapGeneratorPoint> newPoints;
 	for (unsigned int n = 0; n < points.size(); ++n)
 	{
-		if (map.isFreeForGroundUnit(points[n].x, points[n].y, false, 1 << team))
+		if (map.isFreeForGroundUnit(points[n].x, points[n].y, false, Team::teamNumberToMask(team)))
 		{
 			newPoints.push_back(MapGeneratorPoint(points[n].x, points[n].y));
 		}

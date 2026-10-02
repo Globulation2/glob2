@@ -136,10 +136,11 @@ void SettingsScreen::buildGeneral()
 		section("Interface appearance");
 		appearance("graphics.panels", "Panels", "Choose translucent or opaque interface panels.", &Settings::translucentPanels, "Opaque", "Translucent");
 		choice("display.textsize", "Text size", "Enlarge interface text without changing the map scale.",
-			   s.mobileDialogTextPercent >= 150 ? 2 : s.mobileDialogTextPercent >= 125 ? 1 : 0,
+			   s.textSizePercent >= 150 ? 2 : s.textSizePercent >= 125 ? 1 : 0,
 			   {"100 %", "125 %", "150 %"}, [this](int v)
 			   {
-				   globalContainer->settings.mobileDialogTextPercent = 100 + v * 25;
+				   // Menus, dialogs and the touch HUD all follow it on their next frame.
+				   globalContainer->settings.setTextSizePercent(100 + v * 25);
 				   commit();
 			   });
 		choice("display.presentation", "Interface layout",

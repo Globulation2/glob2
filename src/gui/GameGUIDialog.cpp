@@ -99,7 +99,7 @@ Element InGameEndOfGameScreen::build(const Presentation &p)
 										   const double bob = animate ? std::sin(frame.tick / 220.0 + i) * 3 * unit : 0;
 										   const int w = sprite->getW(i);
 										   c.transformed(2 * unit, {r.x + r.w / 2 + int((i - 1) * 44 * unit) - int(w * unit), r.y + int(12 * unit + bob)}, r,
-														 [&] { c.surface()->drawSprite(0, 0, sprite, i); });
+														 [&] { c.drawSprite({0, 0}, sprite, i); });
 									   }
 								   }));
 	}
@@ -149,7 +149,7 @@ InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI) : gameGUI(gameGUI)
 	for (int i = 0; i < players; i++)
 	{
 		const int otherTeam = game.players[i]->teamNumber;
-		const Uint32 otherTeamMask = 1 << otherTeam;
+		const Uint32 otherTeamMask = Team::teamNumberToMask(otherTeam);
 		teamOf[i] = otherTeam;
 		ownAlliance[i] = (gameGUI->localTeam->allies & otherTeamMask) != 0;
 		ownNormal[i] = (gameGUI->localTeam->sharedVisionOther & otherTeamMask) != 0;
@@ -489,18 +489,15 @@ Element InGameOptionScreen::build(const Presentation &p)
 									   },
 									   options));
 		}
-		const int percent = settings.mobileDialogTextPercent;
+		// The same preference as Settings > Display; every touch text surface follows it.
+		const int percent = settings.textSizePercent;
 		const int selected = percent >= 150 ? 2 : percent >= 125 ? 1 : 0;
 		std::vector<std::string> sizes;
 		for (int i = 0; i < 3; ++i)
-			sizes.push_back(GAGCore::FormattableString(fe::tr("[Dialog text size %0]")).arg(100 + i * 25));
-		parts.push_back(fe::label(fe::tr("[Dialog text size]"), {fe::FontRole::Support, true}));
+			sizes.push_back(std::to_string(100 + i * 25) + " %");
+		parts.push_back(fe::label(fe::tr("[settings Text size]"), {fe::FontRole::Support, true}));
 		parts.push_back(fe::segments("text-size", sizes, selected,
-									 [this](int index)
-									 {
-										 globalContainer->settings.mobileDialogTextPercent = 100 + index * 25;
-										 invalidate();
-									 }));
+									 [](int index) { globalContainer->settings.setTextSizePercent(100 + index * 25); }));
 	}
 	std::ostringstream oss;
 	oss << globalContainer->gfx->getW() << "x" << globalContainer->gfx->getH();

@@ -1430,8 +1430,8 @@ AI 명령 없음
 모래 비중
 [Select a valid map.]
 유효한 지도를 선택하세요.
-[Shared control needs a free controller slot (maximum 12).]
-공동 조종에는 조종자 자리가 하나 더 필요합니다(최대 12명).
+[Shared control needs a free controller slot (maximum %0).]
+공동 조종에는 조종자 자리가 하나 더 필요합니다(최대 %0명).
 [Smoothing]
 스무딩
 [Standard]
@@ -3068,8 +3068,6 @@ Emoji
 빨리 감기
 [Hide keyboard]
 키보드 숨기기
-[Dialog text size]
-대화 상자 글자 크기
 [Player slot]
 플레이어 슬롯
 [Team color]
@@ -3408,8 +3406,6 @@ CPU %0%
 최소 레벨: %0
 [Confirm %0]
 확인: %0
-[Dialog text size %0]
-대화 상자 글자 크기: %0%
 [%0 %1]
 %0 %1
 [resume game]

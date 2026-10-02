@@ -217,7 +217,7 @@ void GameGUITouch::drawPeek()
 	SDL_Rect clip{int(rect.x), int(rect.y), int(rect.w), int(rect.h)};
 	gfx->setUITransform(rect.w / size, rect.x - (gfx->getW() - size) * rect.w / size, rect.y, &clip);
 	peekMinimap->setMinimapMode(Minimap::ShowFOW);
-	peekMinimap->draw(gui.localTeamNo, gui.viewportX, gui.viewportY, int(std::ceil(gui.camera.visibleW() / 32)),
+	peekMinimap->draw(gui.view.drawnScene(), gui.localTeamNo, gui.viewportX, gui.viewportY, int(std::ceil(gui.camera.visibleW() / 32)),
 					  int(std::ceil(gui.camera.visibleH() / 32)));
 	gfx->setUITransform();
 	gfx->setClipRect();

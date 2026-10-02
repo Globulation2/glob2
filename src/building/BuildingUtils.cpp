@@ -4,6 +4,9 @@
 #include "BuildingUtils.h"
 #include "Team.h"
 
+// 0xffff is the map's empty-entity sentinel; valid GIDs must remain below it.
+static_assert(BuildingUtils::MAX_COUNT * Team::MAX_COUNT <= UINT16_MAX);
+
 
 Sint32 BuildingUtils::GIDtoID(Uint16 gid)
 {

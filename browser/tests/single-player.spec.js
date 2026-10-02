@@ -9,20 +9,16 @@ const screen = (page, name) => expect.poll(async () => (await state(page)).scree
 
 // Hold the first scheduled turn after entering a loader. The real Escape event
 // can then reach a pending job without racing a fast machine's completed load.
-// This injects the browser timer boundary; gameplay and diagnostics stay unchanged.
+// This holds the host frame boundary in either runtime without touching gameplay.
 async function holdLoader(page, name) {
   await page.evaluate(name => {
-    const schedule = window.setTimeout;
-    window.setTimeout = function(callback, delay, ...args) {
-      if (glob2Diagnostics.snapshot().screen.includes(name)) {
-        window.setTimeout = schedule;
-        window.releaseLoaderTurn = () => {
-          delete window.releaseLoaderTurn;
-          schedule(callback, delay, ...args);
-        };
-        return 0;
-      }
-      return schedule(callback, delay, ...args);
+    Module.glob2FrameGate = () => {
+      if (!glob2Diagnostics.snapshot().screen.includes(name)) return true;
+      window.releaseLoaderTurn = () => {
+        delete window.releaseLoaderTurn;
+        delete Module.glob2FrameGate;
+      };
+      return false;
     };
   }, name);
 }
@@ -404,4 +400,42 @@ test('landscape picker and start-quality details return to the retained custom s
   await screen(page,'CustomGameScreen');
   await clickCustomGameStart(page);
   await expect.poll(async () => (await state(page)).tick).toBeGreaterThan(25);
+});
+
+test('saved match survives resize and menu cancellation before resuming', async ({page}) => {
+  const errors=[];
+  page.on('pageerror',error=>errors.push(String(error)));
+  await clickMainMenu(page,'custom');
+  await screen(page,'CustomGameScreen');
+  await clickCustomGameStart(page);
+  await expect.poll(async()=>(await state(page)).tick).toBeGreaterThan(25);
+  await page.locator('#canvas').press('p',{delay:80});
+  await expect.poll(async()=>(await state(page)).paused).toBe(true);
+  const paused=await state(page);
+  await page.locator('#canvas').press('Escape',{delay:80});
+  await clickControl(page,'save');
+  await editTextField(page,'Coverage resume');
+  await clickControl(page,'ok');
+  const digest=()=>page.evaluate(()=>glob2Diagnostics.saveDigest('Coverage_resume.game.gz'));
+  await expect.poll(digest).not.toBeNull();
+  await expect.poll(async()=>(await state(page)).persistence).toBe('persisted');
+  const saved=await digest();
+  await page.reload(); await screen(page,'MainMenuScreen');
+  await page.setViewportSize({width:800,height:600});
+  await expect.poll(async()=>(await state(page)).width).toBe(800);
+  expect(await digest()).toEqual(saved);
+  await clickMainMenu(page,'load'); await screen(page,'ChooseMapScreen');
+  await clickListRow(page,'files',0); await clickControl(page,'ok');
+  await expect.poll(async()=>(await state(page)).tick).toBeGreaterThanOrEqual(paused.tick);
+  // Loading resumes the match; explicitly pause before testing menu cancellation.
+  await page.locator('#canvas').press('p',{delay:80});
+  await expect.poll(async()=>(await state(page)).paused).toBe(true);
+  const loaded=await state(page);
+  await page.locator('#canvas').press('Escape',{delay:80});
+  await clickControl(page,'return');
+  await expect.poll(async()=>(await state(page)).frames).toBeGreaterThan(loaded.frames+5);
+  expect((await state(page)).tick).toBe(loaded.tick);
+  await page.locator('#canvas').press('p',{delay:80});
+  await expect.poll(async()=>(await state(page)).tick).toBeGreaterThan(loaded.tick);
+  expect(errors).toEqual([]);
 });

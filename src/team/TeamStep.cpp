@@ -7,7 +7,6 @@
 
 #include "BuildingType.h"
 #include "Game.h"
-#include "GameGUI.h"
 #include "Map.h"
 #include "Team.h"
 #include "Unit.h"
@@ -371,9 +370,8 @@ void Team::syncStep(void)
 				hasFedOrFeedingUnit = true;
 			if (u->isDead)
 			{
-				// Sim must not read GameGUI state. Route the selection
-				// clear through a GUI hook (see GameGUI::onUnitDestroyed).
-				if (game->gui) game->gui->onUnitDestroyed(u);
+				// Client selections hold a UnitRef and notice the death when
+				// it no longer resolves; nothing to notify here.
 				delete u;
 				myUnits[i] = NULL;
 			}
@@ -427,9 +425,9 @@ void Team::syncStep(void)
 		//TODO: optimisation: we can avoid some of those remove(Building *) by keeping a building state to detect which remove() are needed.
 		buildingsTryToBuildingSiteRoom.remove(building);
 
-		// Sim must not read GameGUI state. Route the selection
-		// clear through a GUI hook (see GameGUI::onBuildingDestroyed).
-		if (game->gui) game->gui->onBuildingDestroyed(building);
+		// Selections notice the removal when their BuildingRef stops resolving;
+		// the client still needs the gid to drop its pending per-gid shadow.
+		game->publishClientEvent(ClientEvent::BuildingRemoved{building->gid});
 
 		myBuildings[Building::GIDtoID(building->gid)]=NULL;
 		delete building;
