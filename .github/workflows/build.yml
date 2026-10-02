@@ -1211,6 +1211,9 @@ jobs:
             build/emscripten/client/release/identity.json
             build/emscripten/client/release/include/glob2/BuildConfig.h
             build/emscripten/client/release/obj
+            build/emscripten/client/release/threaded/obj
+            build/emscripten/client/release/threaded/include
+            build/emscripten/client/release/threaded/identity.json
           key: wasm-objects-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('browser/toolchain.json') }}-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: wasm-objects-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('browser/toolchain.json') }}-
       - name: Build WebAssembly client
@@ -1223,7 +1226,7 @@ jobs:
           echo "WASM_CACHE_START=$(date +%s)" >> "$GITHUB_ENV"
           # This source embeds __DATE__ and __TIME__. Refresh it after restoring
           # objects so the binary still reports the current compilation time.
-          rm -f build/emscripten/client/release/obj/src/GlobalContainerArgs.cpp.o
+          rm -f build/emscripten/client/release/obj/src/GlobalContainerArgs.cpp.o build/emscripten/client/release/threaded/obj/src/GlobalContainerArgs.cpp.o
           scons target=web release=1 web-tests build/emscripten/client/release/index.html -j$(nproc)
           ccache -s -v
       - name: Save WebAssembly object tree
@@ -1237,6 +1240,9 @@ jobs:
             build/emscripten/client/release/identity.json
             build/emscripten/client/release/include/glob2/BuildConfig.h
             build/emscripten/client/release/obj
+            build/emscripten/client/release/threaded/obj
+            build/emscripten/client/release/threaded/include
+            build/emscripten/client/release/threaded/identity.json
           key: wasm-objects-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('browser/toolchain.json') }}-${{ github.run_id }}-${{ github.run_attempt }}
       - name: Prune WebAssembly compiler cache
         id: prune_webassembly_compiler_cache
@@ -1261,13 +1267,18 @@ jobs:
           path: |
             build/emscripten/client/release/identity.json
             build/emscripten/client/release/index.html
+            build/emscripten/client/release/loader.js
+            build/emscripten/client/release/threaded/index.js
+            build/emscripten/client/release/threaded/index.wasm
+            build/emscripten/client/release/threaded/index.data
             build/emscripten/client/release/index.js
             build/emscripten/client/release/index.wasm
             build/emscripten/client/release/index.data
-            build/emscripten/client/release/script-tests.html
             build/emscripten/client/release/script-tests.js
             build/emscripten/client/release/script-tests.wasm
             build/emscripten/client/release/script-tests.data
+            build/emscripten/client/release/threaded/script-tests.js
+            build/emscripten/client/release/threaded/script-tests.wasm
       - uses: actions/upload-artifact@v4
         id: upload_artifact_2
         continue-on-error: true
@@ -1277,6 +1288,10 @@ jobs:
           retention-days: 7
           path: |
             build/emscripten/client/release/index.html
+            build/emscripten/client/release/loader.js
+            build/emscripten/client/release/threaded/index.js
+            build/emscripten/client/release/threaded/index.wasm
+            build/emscripten/client/release/threaded/index.data
             build/emscripten/client/release/index.js
             build/emscripten/client/release/index.wasm
             build/emscripten/client/release/index.data
@@ -1501,7 +1516,7 @@ jobs:
             command: xvfb-run -a npx playwright test responsive-presentation.spec.js runtime-build.spec.js --project=chromium
           - name: webkit
             browsers: webkit
-            command: xvfb-run -a npx playwright test runtime-build.spec.js viewport.spec.js responsive-presentation.spec.js campaign-editor-storage.spec.js --project=webkit
+            command: xvfb-run -a npx playwright test runtime-build.spec.js threading.spec.js viewport.spec.js responsive-presentation.spec.js campaign-editor-storage.spec.js --project=webkit
           - name: webkit scripting
             browsers: webkit
             command: xvfb-run -a npx playwright test determinism.spec.js --project=webkit --grep='shared scripting corpus'
@@ -1510,7 +1525,7 @@ jobs:
             command: xvfb-run -a npx playwright test rendering.spec.js --project=chromium
           - name: firefox
             browsers: firefox
-            command: GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test runtime-build.spec.js viewport.spec.js responsive-presentation.spec.js campaign-editor-storage.spec.js --project=firefox
+            command: GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test runtime-build.spec.js threading.spec.js viewport.spec.js responsive-presentation.spec.js campaign-editor-storage.spec.js --project=firefox
           - name: firefox WSS and simulation
             browsers: firefox
             command: GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test multiplayer.spec.js determinism.spec.js --project=firefox --grep='YOG admission enforces|browser and native players|WebAssembly produces'
@@ -1624,12 +1639,12 @@ jobs:
           from pathlib import Path
           traces = sorted(path for path in Path('artifacts/ci-traces').rglob('*.checksums')
                           if path.name in {'native.replay.checksums', 'wasm.replay.checksums'})
-          assert len(traces) == 6, f'Expected Linux (2), Windows and three browser traces, got {traces}'
+          assert len(traces) == 18, f'Expected three native and fifteen browser variant traces, got {traces}'
           reference = traces[0].read_bytes()
           assert len(reference) > 1000
           for trace in traces[1:]:
               assert trace.read_bytes() == reference, f'Simulation differs: {trace}'
-          print('All six per-tick simulation traces match')
+          print('All native, serial browser and threaded browser per-tick traces match')
           PY
 
       - uses: actions/download-artifact@v4
@@ -1642,11 +1657,11 @@ jobs:
           from pathlib import Path
           import subprocess
           native = sorted(Path('artifacts/ci-scripting').glob('*/javascript-corpus'))
-          browsers = sorted(path.parent for path in Path('artifacts/ci-traces').glob('*/script-corpus/*/manifest.json'))
+          browsers = sorted(path.parent for path in Path('artifacts/ci-traces').glob('*/script-corpus*/*/manifest.json'))
           assert any('mingw' in path.parts[-2] for path in native), 'Missing Windows scripting evidence'
           assert any('linux' in path.parts[-2] for path in native), 'Missing Linux scripting evidence'
           assert {path.name for path in browsers} == {'chromium', 'firefox', 'webkit'}, browsers
-          assert len(browsers) == 3, f'Duplicate browser scripting runs: {browsers}'
+          assert len(browsers) == 6, f'Expected serial and threaded scripting runs for each browser: {browsers}'
           reference = native[0]
           for index, candidate in enumerate(native[1:] + browsers):
               subprocess.run(['python3', 'test/check_javascript_evidence.py', str(reference),

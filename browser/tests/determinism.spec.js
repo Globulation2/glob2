@@ -2,19 +2,20 @@ const {test, expect} = require('@playwright/test');
 const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
+const {openRuntimeHost} = require('./runtime-host');
 
 // Run the compiled engine with the same fixture and orders as the native CI
 // lanes. A minimal host supplies CLI arguments without changing the game shell.
-test('WebAssembly produces a complete per-tick simulation trace', async ({page}, info) => {
+for (const [variant, threads] of [['serial',1], ['threaded',1], ['threaded',2], ['threaded',4]]) {
+test(`WebAssembly produces a complete per-tick simulation trace (${variant}/${threads})`, async ({page}, info) => {
   const root = path.resolve(__dirname, '../..');
   const fixture = fs.readFileSync(path.join(root, 'games/cross-replay.game.gz'));
-  await page.route('**/determinism.html', route => route.fulfill({
-    contentType: 'text/html',
-    body: `<!doctype html><canvas id="canvas"></canvas><script>
+  await openRuntimeHost(page, `<!doctype html><canvas id="canvas"></canvas><script>
       window.engineLog = [];
       var Module = {
         noInitialRun: true,
         canvas: document.getElementById('canvas'),
+        locateFile:name=>name.endsWith('.data') ? '/' + name : '/${variant === 'threaded' ? 'threaded/' : ''}' + name,
         print: message => engineLog.push(String(message)),
         printErr: message => engineLog.push(String(message)),
         preRun: [function() {
@@ -22,8 +23,9 @@ test('WebAssembly produces a complete per-tick simulation trace', async ({page},
           ENV.GLOB2_CHECKSUM_SIDECAR = '1';
           FS.writeFile('/tmp/initial.game.gz', Uint8Array.from(atob('${fixture.toString('base64')}'), c => c.charCodeAt(0)));
         }],
-        onRuntimeInitialized() {
-          Module.callMain(['--nox', '/tmp/initial.game.gz', '1500', '1']);
+        async onRuntimeInitialized() {
+          const code = await Module.start(['--nox', '/tmp/initial.game.gz', '1500', '1', '--ai-threads', '${threads}']);
+          if (code !== 0) throw new Error('Engine exited: ' + code);
           // Avoid millions of individually serialized Playwright values.
           // Chunk the conversion so large traces do not overflow the call stack.
           const bytes = FS.readFile('/tmp/wasm.replay.checksums');
@@ -34,32 +36,34 @@ test('WebAssembly produces a complete per-tick simulation trace', async ({page},
           window.simulationTrace = btoa(binary);
         }
       };
-    </script><script src="/index.js"></script>`,
-  }));
-  await page.goto('/determinism.html');
+    </script><script src="/${variant === 'threaded' ? 'threaded/' : ''}index.js"></script>`);
   await page.waitForFunction(() => typeof window.simulationTrace === 'string');
   const trace = Buffer.from(await page.evaluate(() => window.simulationTrace), 'base64');
   expect(trace.length).toBeGreaterThan(1000);
   fs.mkdirSync(info.outputDir, {recursive: true});
   fs.writeFileSync(info.outputPath('wasm.replay.checksums'), trace);
-  const output = path.join(root, 'artifacts/browser-determinism/wasm');
+  const output = path.join(root, 'artifacts/browser-determinism/wasm', variant + '-' + threads);
   fs.mkdirSync(output, {recursive: true});
   fs.writeFileSync(path.join(output, 'wasm.replay.checksums'), trace);
+  fs.writeFileSync(path.join(root, 'artifacts/browser-determinism/wasm/wasm.replay.checksums'), trace);
+
   fs.writeFileSync(path.join(output, 'run.log'), (await page.evaluate(() => window.engineLog)).join('\n'));
   fs.writeFileSync(path.join(output, 'manifest.json'), JSON.stringify({
-    fixture: 'games/cross-replay.game.gz', seed: 42, ticks: 1500,
+    fixture: 'games/cross-replay.game.gz', seed: 42, ticks: 1500, variant, threads,
     fixture_sha256: crypto.createHash('sha256').update(fixture).digest('hex'),
     trace_sha256: crypto.createHash('sha256').update(trace).digest('hex'),
   }, null, 2) + '\n');
 });
+}
 
 // The same production-runtime cases and realistic engine observations used by
 // desktop and mobile harnesses. Golden comparisons occur inside C++, not in a
 // JavaScript reimplementation of the engine or its math.
-test('WebAssembly executes the shared scripting corpus', async ({page}, info) => {
+for (const variant of ['serial','threaded']) {
+test(`WebAssembly executes the shared scripting corpus (${variant})`, async ({page}, info) => {
   test.setTimeout(600000);
   const root = path.resolve(__dirname, '../..');
-  const output=path.join(root,'artifacts/browser-determinism/script-corpus',info.project.name);
+  const output=path.join(root,'artifacts/browser-determinism',variant==='serial'?'script-corpus':'script-corpus-threaded',info.project.name);
   // Remove only this case's previous exports, so a new successful manifest
   // cannot accidentally certify artifacts left by an earlier execution.
   fs.rmSync(output,{recursive:true,force:true});
@@ -69,10 +73,11 @@ test('WebAssembly executes the shared scripting corpus', async ({page}, info) =>
     fs.appendFileSync(path.join(output,'progress.log'),message.text()+'\n');});
   page.on('pageerror',error=>{progress.push(String(error));
     fs.appendFileSync(path.join(output,'progress.log'),String(error)+'\n');});
-  await page.route('**/script-corpus.html', route => route.fulfill({contentType:'text/html', body:`
+  await openRuntimeHost(page, `
     <!doctype html><canvas id="canvas"></canvas><script>
     window.engineLog=[]; window.corpusExit=null;
     var Module={noInitialRun:true,canvas:document.getElementById('canvas'),
+      locateFile:name=>name.endsWith('.data')?'/'+name:'/${variant==='threaded'?'threaded/':''}'+name,
       print:m=>{engineLog.push(String(m));console.log(String(m));},
       printErr:m=>{engineLog.push(String(m));console.error(String(m));},
       onExit:code=>window.corpusExit=code,
@@ -82,8 +87,8 @@ test('WebAssembly executes the shared scripting corpus', async ({page}, info) =>
         ENV.GLOB2_TEST_SOURCE_ROOT='/'; ENV.GLOB2_USER_DATA_DIR='/evidence/profile';
         ENV.GLOB2_TEST_ARTIFACTS_ROOT='/evidence/corpus';
       }],
-      onRuntimeInitialized(){
-        try { const result=Module.callMain(['--test-suite=JavaScript*,ImageAssets','--reporters=junit','--out=/evidence/tests.xml']);
+      async onRuntimeInitialized(){
+        try { const result=await Module.start(['--test-suite=JavaScript*,ImageAssets','--reporters=junit','--out=/evidence/tests.xml']);
           if(window.corpusExit===null) window.corpusExit=result??0;
         } catch(error){window.corpusError=String(error);}
         const files={};
@@ -98,8 +103,7 @@ test('WebAssembly executes the shared scripting corpus', async ({page}, info) =>
         }}
         collect('/evidence');window.corpusFiles=files;window.corpusDone=true;
       }};
-    </script><script src="/script-tests.js"></script>`}));
-  await page.goto('/script-corpus.html');
+    </script><script src="/${variant==='threaded'?'threaded/':''}script-tests.js"></script>`);
   let waitError;
   try {await page.waitForFunction(()=>window.corpusDone===true,null,{timeout:550000});}
   catch(error){waitError=error;}
@@ -122,7 +126,8 @@ test('WebAssembly executes the shared scripting corpus', async ({page}, info) =>
   const source=JSON.parse(require('node:child_process').execFileSync('python3',
     [path.join(root,'test/build_provenance.py')],{cwd:root,encoding:'utf8'}));
   const hash=file=>require('node:crypto').createHash('sha256').update(fs.readFileSync(file)).digest('hex');
-  const build=path.join(root,'build/emscripten/client/release');
+  const packageRoot=path.join(root,'build/emscripten/client/release');
+  const build=variant==='threaded'?path.join(packageRoot,'threaded'):packageRoot;
   const fixtures={};
   for(const file of fs.readdirSync(path.join(root,'test/fixtures/javascript'))){
     const target=path.join(root,'test/fixtures/javascript',file);
@@ -139,7 +144,7 @@ test('WebAssembly executes the shared scripting corpus', async ({page}, info) =>
     toolchain:JSON.parse(fs.readFileSync(path.join(root,'browser/toolchain.json'))),
     buildIdentity:JSON.parse(fs.readFileSync(path.join(build,'identity.json'))),
     binaries:Object.fromEntries(['script-tests.js','script-tests.wasm','script-tests.data']
-      .map(file=>[file,hash(path.join(build,file))])),fixtureHashes:fixtures,
+      .map(file=>[file,hash(path.join(file.endsWith('.data')?packageRoot:build,file))])),fixtureHashes:fixtures,
     command:'playwright test determinism.spec.js --grep "shared scripting corpus"',
     exit:result.exit,error:result.error,files:Object.keys(result.files)},null,2)+'\n');
   if(waitError)throw waitError;
@@ -149,3 +154,5 @@ test('WebAssembly executes the shared scripting corpus', async ({page}, info) =>
   expect(Object.keys(result.files).some(name=>name.endsWith('numeric-profile1.value'))).toBeTruthy();
   expect(Object.keys(result.files).some(name=>name.endsWith('realistic-economy-3.value'))).toBeTruthy();
 });
+
+}

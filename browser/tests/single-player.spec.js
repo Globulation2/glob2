@@ -9,20 +9,16 @@ const screen = (page, name) => expect.poll(async () => (await state(page)).scree
 
 // Hold the first scheduled turn after entering a loader. The real Escape event
 // can then reach a pending job without racing a fast machine's completed load.
-// This injects the browser timer boundary; gameplay and diagnostics stay unchanged.
+// This holds the host frame boundary in either runtime without touching gameplay.
 async function holdLoader(page, name) {
   await page.evaluate(name => {
-    const schedule = window.setTimeout;
-    window.setTimeout = function(callback, delay, ...args) {
-      if (glob2Diagnostics.snapshot().screen.includes(name)) {
-        window.setTimeout = schedule;
-        window.releaseLoaderTurn = () => {
-          delete window.releaseLoaderTurn;
-          schedule(callback, delay, ...args);
-        };
-        return 0;
-      }
-      return schedule(callback, delay, ...args);
+    Module.glob2FrameGate = () => {
+      if (!glob2Diagnostics.snapshot().screen.includes(name)) return true;
+      window.releaseLoaderTurn = () => {
+        delete window.releaseLoaderTurn;
+        delete Module.glob2FrameGate;
+      };
+      return false;
     };
   }, name);
 }
