@@ -3,7 +3,6 @@
 
 import argparse
 import hashlib
-import re
 import shutil
 import subprocess
 import tempfile
@@ -13,43 +12,24 @@ from pathlib import Path
 
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-from tools.package_assets import export_assets, source_files
+from tools.release.windows_runtime import stage_assets, stage_dlls
 
 
-def stage(binary, root, original_assets=False):
+def stage(binary, root, original_assets=False, runtime=None):
     if not binary.is_file():
         raise SystemExit(f"missing executable: {binary}")
     if root.exists():
         raise SystemExit(f"stage directory already exists: {root}")
     root.mkdir(parents=True)
     shutil.copy2(binary, root / "glob2.exe")
-    result = subprocess.run(["ldd", str(binary)], check=True,
-                            capture_output=True, text=True)
-    paths = re.findall(r"(?:/[^\s()]+|[A-Za-z]:\\[^\s()]+)\.dll",
-                       result.stdout, flags=re.IGNORECASE)
-    dependencies = {path for path in paths if "/mingw64/bin/" in path.lower()
-                    or "\\mingw64\\bin\\" in path.lower()}
-    for path in sorted(dependencies):
-        native = (subprocess.check_output(["cygpath", "-w", path], text=True).strip()
-                  if path.startswith("/") else path)
-        shutil.copy2(native, root / Path(native).name)
-    if not list(root.glob("SDL2*.dll")):
-        raise SystemExit("no SDL2 DLLs found in executable dependencies")
-    with tempfile.TemporaryDirectory(prefix="glob2-assets-") as temporary:
-        assets = Path(temporary) / "runtime"
-        if original_assets:
-            # Apply the shipping content policy to both sides of the comparison.
-            # Only image encodings differ; build helpers never enter the baseline.
-            for path in source_files(Path.cwd(), "windows"):
-                target = assets / path.relative_to(Path.cwd())
-                target.parent.mkdir(parents=True, exist_ok=True)
-                shutil.copy2(path, target)
-        else:
-            export_assets(Path.cwd(), assets, platform="windows")
-        for directory in ("data", "maps", "campaigns", "scripts"):
-            if (assets / directory).is_dir():
-                shutil.copytree(assets / directory, root / directory)
-    shutil.copy2("COPYING", root / "COPYING")
+    if runtime is None:
+        # MinGW Python's prefix is a native Windows path; cygpath handles an
+        # alternate interpreter without parsing ldd's whitespace-delimited text.
+        runtime = Path(sys.prefix) / "bin"
+        if not (runtime / "SDL2.dll").is_file():
+            runtime = Path(subprocess.check_output(["cygpath", "-w", "/mingw64/bin"], text=True).strip())
+    stage_dlls(binary, [runtime], root)
+    stage_assets(Path.cwd(), root, original_assets)
     return root
 
 

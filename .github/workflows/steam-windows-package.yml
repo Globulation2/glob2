@@ -6,6 +6,9 @@ on:
   pull_request:
     paths:
       - .github/workflows/steam-windows-package.yml
+      - SConstruct
+      - scons/**
+      - tools/release/windows_runtime.py
       - tools/package_steam_windows.py
       - tools/package_assets.py
       - tools/asset-requirements.txt
@@ -61,7 +64,7 @@ jobs:
             mingw-w64-x86_64-openssl
             mingw-w64-x86_64-boost
             mingw-w64-x86_64-libepoxy
-            mingw-w64-x86_64-libsystre
+            mingw-w64-x86_64-libsystre mingw-w64-x86_64-cmake mingw-w64-x86_64-ninja
             mingw-w64-x86_64-ccache
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Check packaging helper
@@ -73,7 +76,7 @@ jobs:
           key: ccache-windows-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: ccache-windows-
       - name: Build release client
-        run: scons -j$(nproc) release=1 mingw=1 server=0 build/mingw/client/release/src/glob2.exe
+        run: scons -j$(nproc) release=1 mingw=1 server=0 lean_images=1 build/mingw/client/release/lean-images/src/glob2.exe
       - uses: actions/cache/save@0400d5f644dc74513175e3cd8d07132dd4860809 # v4.2.4
         if: always()
         continue-on-error: true
@@ -84,7 +87,7 @@ jobs:
         run: |
           python tools/package_steam_windows.py \
             --source . \
-            --exe build/mingw/client/release/src/glob2.exe \
+            --exe build/mingw/client/release/lean-images/src/glob2.exe \
             --runtime "$(cygpath -w /mingw64/bin)" \
             --output artifacts/steam/windows
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2

@@ -31,6 +31,7 @@ def establish_options(env):
     opts.Add("BINDIR", "Binary Installation Directory", "/usr/local/bin")
     opts.Add("DATADIR", "Directory where data will be put, set to the same as INSTALLDIR", "/usr/local/share")
     opts.Add(BoolVariable("release", "Build for release", 0))
+    opts.Add(BoolVariable("lean_images", "Use private PNG/JPEG/WebP SDL_image for native release packages", 0))
     opts.Add("optimized_assets", "Optimize installed client assets: auto, 0, or 1", "auto")
     opts.Add(BoolVariable("china", "Build the mainland China local-play client", 0))
     opts.Add(BoolVariable("opengl", "Enable OpenGL detection; set to 0 for software rendering only", 1))
@@ -402,6 +403,17 @@ def main():
         image_prefix = ensure(Path.cwd(), jobs=2)
         env.Prepend(LIBPATH=[str(image_prefix/'lib')], CPPPATH=[str(image_prefix/'include/SDL2')])
         env['LEAN_IMAGE_PREFIX'] = str(image_prefix)
+    if identity.get('lean_images') and not GetOption('clean') and not GetOption('no_exec'):
+        from native_image_dependency import ensure
+        image_prefix = ensure(Path.cwd(), cc=str(env['CC']), cxx=str(env['CXX']), jobs=2)
+        env.Prepend(LIBPATH=[str(image_prefix/'lib')], CPPPATH=[str(image_prefix/'include/SDL2')])
+        env['LEAN_IMAGE_PREFIX'] = str(image_prefix)
+        from build_layout import write_if_changed
+        import json
+        write_if_changed(Path(bdir)/'image-runtime.json', json.dumps({'prefix': str(image_prefix)})+'\n')
+        if not (isWindowsPlatform or env['mingw']):
+            # The staged private decoder is next to the executable's lib tree.
+            env.Append(LINKFLAGS=[r'-Wl,-rpath,\$$ORIGIN/../lib/glob2'])
     configure(env, server_only)
 
     env.Append(CPPPATH=['#'+path for path in INCLUDE_DIRECTORIES])
@@ -529,6 +541,9 @@ def main():
         from runtime_assets import install_assets
         install_assets(env)
     env['OPTIMIZED_ASSET_INSTALL'] = bool(optimized_install)
+    if identity.get('lean_images') and env.get('LEAN_IMAGE_PREFIX') and 'install' in COMMAND_LINE_TARGETS and not (isWindowsPlatform or env['mingw']):
+        from install_image_runtime import install_runtime
+        install_runtime(env, env['LEAN_IMAGE_PREFIX'])
     for target in targets:
         # Upstream release archives omit the historical Debian packaging files.
         if target == "debian" and not os.path.isfile("debian/SConscript"):
