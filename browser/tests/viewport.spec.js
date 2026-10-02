@@ -83,6 +83,9 @@ test.describe('initial wide viewport', () => {
 test.describe('high density display', () => {
   test.use({deviceScaleFactor:2});
   test('uses the renderer-appropriate backing resolution', async ({page}) => {
+    // Firefox loses emulated density when COOP navigation replaces its process.
+    // Reapply the real viewport so this still exercises a genuine 2x display.
+    await page.setViewportSize(page.viewportSize());
     expect(await page.evaluate(() => devicePixelRatio)).toBe(2);
     // SDL3 high-density windows size the backing canvas for both software and
     // WebGL. Control bounds still map to CSS pixels once at the input boundary.

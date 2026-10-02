@@ -656,6 +656,7 @@ bool PhoneEditor::event(SDL_Event event)
 {
 	if (editor.hasDialog())
 	{
+		GAGCore::GraphicContext::translateMouseEvent(&event);
 		editor.delegateMenu(event);
 		return true;
 	}

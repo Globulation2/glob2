@@ -227,7 +227,12 @@ TEST_CASE("each accelerated backend uploads surface revisions independently [dis
     Window first(SDL_CreateWindow("First upload", 64, 48, SDL_WINDOW_HIDDEN), SDL_DestroyWindow);
     Window second(SDL_CreateWindow("Second upload", 64, 48, SDL_WINDOW_HIDDEN), SDL_DestroyWindow);
     REQUIRE(first); REQUIRE(second);
+    // SDL 2.0.20/X11 can dispatch a pending mouse-enter event while recreating
+    // a window for acceleration, when that window temporarily has no driver data.
+    // Settle native events while all windows are complete before each recreation.
+    SDL_PumpEvents();
     auto a = makeSDLRenderBackend(first.get(), 64, 48);
+    SDL_PumpEvents();
     auto b = makeSDLRenderBackend(second.get(), 64, 48);
     REQUIRE(a); REQUIRE(b);
     const auto draw = [&](RenderBackend& backend, int red, int green, int blue)

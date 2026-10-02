@@ -88,6 +88,23 @@ class BrowserPackageTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             module.package(self.source, self.output)
 
+    @unittest.skipUnless(os.name == "posix", "POSIX web-container access modes")
+    def test_public_package_is_readable_under_private_umask(self):
+        for threaded in (False, True):
+            with self.subTest(threaded=threaded):
+                if threaded:
+                    self.threaded_source()
+                previous = os.umask(0o077)
+                try:
+                    module.package(self.source, self.output)
+                finally:
+                    os.umask(previous)
+                self.assertEqual(stat.S_IMODE(self.output.stat().st_mode), 0o755)
+                for entry in self.output.rglob("*"):
+                    self.assertEqual(stat.S_IMODE(entry.stat().st_mode),
+                                     0o755 if entry.is_dir() else 0o644, str(entry))
+                module.verify(self.output)
+
     def test_stale_assets_removed(self):
         old = module.package(self.source, self.output)
         (self.source / "index.data").write_bytes(b"changed")

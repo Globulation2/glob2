@@ -67,6 +67,8 @@ class UIDialog
 	void attach(GAGCore::DrawableSurface &surface);
 	//! Mouse coordinates must already be in the owning surface's logical space.
 	bool event(const SDL_Event &event);
+	// Gameplay has already mapped window coordinates to the logical surface.
+	bool eventLogical(const SDL_Event &event);
 	void update(Uint32 tick);
 	void draw(Uint32 tick);
 	void cancelInput();

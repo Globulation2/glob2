@@ -362,7 +362,11 @@ previous release, but version rollback is still rejected. Publishing workflows
 use the strict check below, which rejects replacing an existing release tag.
 
 `mobile/android_release.py check` verifies the release manifest against the
-desktop package version. The signed output of `sign` is for development and
+desktop package version and requires the current version's tag, if it exists, to
+point at the checked-out commit. Pull-request CI adds `--development`, which
+accepts a version that was already tagged at an earlier commit (master keeps the
+last released version until the next release bumps it) but still rejects version
+codes that would not increase past any other tag. The signed output of `sign` is for development and
 device testing; F-Droid signs its own published APKs.
 The two stores use different signing keys, so switching stores requires
 uninstalling the existing app and backing up or exporting saves first.

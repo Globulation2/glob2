@@ -35,6 +35,11 @@ jobs:
       - uses: actions/checkout@v4
       - name: Test changed-path selection
         run: python3 -m unittest discover -s tests/build_system -p test_ci_changed_paths.py -v
+      - name: Test CI runners and failure reporting
+        run: |
+          python3 test/ci_run_commands.py \
+            --check 'native runner contracts' 'python3 -m unittest discover -s test -p test_run_tests.py -v' \
+            --check 'failure aggregation contracts' 'python3 -m unittest discover -s test -p test_ci_failure_aggregation.py -v'
       - name: Select checks for changed paths
         id: select
         env:
@@ -412,6 +417,35 @@ jobs:
           LIBGL_ALWAYS_SOFTWARE: 1
         # The [map-generators] contract runs in the linux-map-generators telemetry job.
         run: python3 test/run_tests.py --binary engine --build-dir build/linux/client/release --display-jobs 1 --fullscreen --shard ${{ matrix.shard }}/4 --exclude-tag map-generators --junit artifacts/tests/engine-junit.xml
+      - name: Diagnose accelerated renderer crashes
+        if: ${{ always() && steps.run_the_engine_tests.outcome == 'failure' }}
+        continue-on-error: true
+        timeout-minutes: 5
+        env:
+          LIBGL_ALWAYS_SOFTWARE: 1
+          GLOB2_TEST_DISPLAY: 1
+          GLOB2_TEST_FULLSCREEN: 1
+          SDL_AUDIODRIVER: dummy
+        run: |
+          # Retain the original failure; this separate invocation only collects a trace.
+          if ! python3 - <<'PYTRACE'
+          import xml.etree.ElementTree as ET
+          report = ET.parse('artifacts/tests/engine-junit.xml')
+          crashes = [case for case in report.iter('testcase')
+                     if 'each accelerated backend uploads surface revisions independently' in case.get('name', '')
+                     and case.find('error') is not None]
+          raise SystemExit(0 if crashes else 1)
+          PYTRACE
+          then
+            exit 0
+          fi
+          sudo apt-get install -y --no-install-recommends gdb
+          xvfb-run -a -s '-screen 0 1600x1400x24 -noreset' \
+            gdb --batch -ex run -ex 'thread apply all bt' -ex 'info sharedlibrary' \
+            --args build/linux/client/release/test/glob2-engine-tests \
+            '-tc=each accelerated backend uploads surface revisions independently [display]' \
+            --no-breaks=true > artifacts/tests/accelerated-renderer-gdb.log 2>&1
+
       - name: Upload native test results
         if: always()
         continue-on-error: true

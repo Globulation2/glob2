@@ -119,6 +119,14 @@ python3 test/run_tests.py      # run them; --list, --filter, --tag, --shard
   build and shard to pass, preserving their merge-blocking status. PRs compare
   with their base commit, and master pushes compare with the pre-push commit;
   unknown paths or unavailable diffs select full CI.
+  Changes confined to the render-backend and pixel-raster implementation files
+  retain native, browser and cross-platform checks without repeating independent
+  map-generator sweeps or container deployment tests. Shared headers, file I/O and
+  unknown library files still select full CI.
+  CI-tool unit-test-only edits run the selector's Python contract suites without
+  native compilation; changes to the runners themselves still select native checks.
+  Steam packaging helper/workflow changes retain their packaging and smoke checks;
+  editing this reference guide alone does not rebuild the Steam client.
 
 For headless games, use the client binary's `--nox <game-file> <steps> <runs>`
 option. `-test-games-nox` runs random AI games indefinitely unless bounded as
@@ -757,9 +765,11 @@ also remains the headless default and the equivalence reference.
 `GraphicContext` remains the drawing facade and retains existing capability queries.
 It owns the accelerated backend and software backend independently; transformed passes
 borrow them through scoped transform/clip state (`RenderStateScope.h`). The CPU backend
-in `SoftwareRenderBackend.cpp` implements sprite blits and rectangle fills directly on
-its borrowed framebuffer. It creates SDL's software renderer only when general triangle
-geometry is needed, and flushes that queue before direct writes or target replacement.
+in `SoftwareRenderBackend.cpp` implements verified same-format opaque sprite blits and
+opaque rectangle fills directly on its borrowed framebuffer. Translucent draws and
+mixed pixel formats retain SDL geometry rasterization so platform-specific blending
+rounding and source modulation match the reference. General triangles use that same
+lazy SDL renderer; its queue flushes before direct writes or target replacement.
 Large existing images expanded past 512 pixels, including water, retain SDL geometry
 rasterization because its fixed-point overflow behavior is visible at some transformed
 sizes. Borrowed terrain run views use direct rasterization: they replace small tiles and must not acquire that

@@ -254,9 +254,15 @@ bool UIDialog::event(const SDL_Event &raw)
 {
 	if (done)
 		return false;
-	// The owning game/editor loop has already converted window coordinates.
-	// Dialogs consume the same logical events as the rest of that loop.
 	SDL_Event event = raw;
+	GAGCore::GraphicContext::translateMouseEvent(&event);
+	return eventLogical(event);
+}
+
+bool UIDialog::eventLogical(const SDL_Event &event)
+{
+	if (done)
+		return false;
 	refreshPresentation();
 	if (onEvent(event))
 		return true;

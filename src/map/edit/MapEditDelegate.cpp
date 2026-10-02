@@ -53,7 +53,7 @@ void MapEdit::delegateMenu(SDL_Event& event)
 {
 	auto *dialog = activeDialog();
 	if (dialog && event.type != SDL_EVENT_USER)
-		dialog->event(event);
+		dialog->eventLogical(event);
 	if(showingMenuScreen && menuScreen->finished())
 	{
 		switch (menuScreen->result())

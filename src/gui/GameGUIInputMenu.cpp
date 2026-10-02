@@ -107,7 +107,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 		return false;
 	bool consumed = false;
 	if (event && event->type != SDL_EVENT_USER)
-		consumed = gameMenuScreen->event(*event);
+		consumed = gameMenuScreen->eventLogical(*event);
 	if (!gameMenuScreen->finished())
 		return consumed;
 	const int result = gameMenuScreen->result();
