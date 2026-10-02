@@ -42,9 +42,14 @@ def apply_source_patches(source, patches=SDL_PATCHES):
     with tempfile.TemporaryDirectory(prefix='glob2-sdl-patches-') as temporary:
         subprocess.run(['git', 'init', '--bare', '--quiet', temporary],
                        env=environment, check=True)
-        git = ['git', '--git-dir', temporary, '--work-tree', str(source), 'apply']
+        git = ['git', '-c', 'core.autocrlf=false', '-c', 'core.eol=lf',
+               '--git-dir', temporary, '--work-tree', str(source), 'apply']
         for patch in patches:
-            path = str(Path(patch).resolve())
+            # Windows checkout can use CRLF while checksum-verified archives use LF.
+            # Write canonical bytes, avoiding Python's Windows text-mode conversion.
+            normalized = Path(temporary) / 'source.patch'
+            normalized.write_bytes(Path(patch).read_bytes().replace(b'\r\n', b'\n'))
+            path = str(normalized)
             check = subprocess.run(git + ['--check', path], cwd=source,
                                    env=environment, capture_output=True, text=True)
             if check.returncode:
