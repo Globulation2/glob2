@@ -16,7 +16,7 @@
 #include "Glob2Test.h"
 #include <cstdio>
 #include <memory>
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include "BinaryStream.h"
 #include "StreamBackend.h"
 #include "GameHints.h"

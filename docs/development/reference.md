@@ -70,11 +70,16 @@ python3 test/run_tests.py      # run them; --list, --filter, --tag, --shard
   setting a build live.
 - `scons target=web release=1` builds the WebAssembly browser client; see
   `docs/browser/adr-001-build-isolation.md` for the toolchain isolation this relies on.
-- Dependencies include SDL2/net/ttf/image, Vorbis/Ogg, Speex, OpenGL/GLU, libepoxy,
+- Dependencies include pinned SDL3/SDL3_net/SDL3_ttf/SDL3_image (see `scons/sdl3-versions.json`) and WebP 1.6.0 for optimized packaged artwork, Vorbis/Ogg, Speex, OpenGL/GLU, libepoxy,
   zlib, fribidi and pcre; PortAudio is optional. All native multiplayer builds (client, server, router and relay) require OpenSSL and the header-only
   Boost.Beast and Boost.Asio; nothing else uses Boost. `role=relay` builds only
   `glob2-relay` and its tests and links no SDL library (it still needs SDL's headers);
   see [the relay guide](../multiplayer/relay.md).
+  The source helper and vcpkg overlay apply the same reviewed SDL3 X11 patches:
+  an [upstream reparenting fix](https://github.com/libsdl-org/SDL/commit/25f4af8fcf7d1a9a06be8d89694b1c612158f41f)
+  backported to 3.4.16, and a mapping wait that accepts confirmed window state
+  when its notification is missing. Patch hashes are recorded in the SDK manifest
+  and invalidate cached builds. Use this patched SDK for the pinned X11 build.
 - `CCACHE=1` opts into the shared compiler cache. Unset it when generating
   `compile_commands.json`; do not add `CCACHE_SLOPPINESS` settings that weaken
   content or time-macro validation (`include_file_mtime`, `include_file_ctime`,
@@ -112,16 +117,21 @@ python3 test/run_tests.py      # run them; --list, --filter, --tag, --shard
   `test/run_tests.py` already isolates and aggregates the native test cases. Artifact uploads run after failed checks
   so reviewers can inspect the available evidence. The Linux client builds once
   per supported toolchain, then distributes its built programs to four parallel
-  test shards per toolchain. The original `linux (...)` checks require every
+  test shards per toolchain. Linux compiler builds share
+  `.github/workflows/ci-linux-build.yml`; the GCC artifact builds and Clang
+  compatibility check run separately, so runtime shards do not wait for Clang.
+  Each supported GCC build starts its own test shards and generator checks independently. The original `linux (...)` checks require every
   build and shard to pass, preserving their merge-blocking status. PRs compare
-  with their base commit, and master pushes compare with the pre-push commit;
-  unknown paths or unavailable diffs select full CI.
+  with their base commit; retained master pushes and scheduled runs always select
+  full CI. Unknown paths or unavailable PR diffs also select full CI.
   Changes confined to the render-backend and pixel-raster implementation files
   retain native, browser and cross-platform checks without repeating independent
   map-generator sweeps or container deployment tests. Shared headers, file I/O and
   unknown library files still select full CI.
   CI-tool unit-test-only edits run the selector's Python contract suites without
-  native compilation; changes to the runners themselves still select native checks.
+  native compilation. The selector runs the changed-path, coverage-tier, measurement,
+  native-runner and failure-aggregation contracts before selecting downstream jobs;
+  changes to the runners themselves still select native checks.
   Steam packaging helper/workflow changes retain their packaging and smoke checks;
   editing this reference guide alone does not rebuild the Steam client.
 
@@ -255,7 +265,14 @@ Packaging bootstraps a private Pillow 12.2.0/libwebp 1.6.0 encoder environment
 when the current Python lacks the pinned encoder. This is a build dependency,
 never application content. It requires network access on first setup; subsequent
 exports reuse cached verified conversions. Flatpak supplies checksum-pinned
-encoder sources and build dependencies for its offline sandbox.
+encoder sources and build dependencies for its offline sandbox. RPM uses
+`tools/build_asset_encoder.py` with checksum-pinned Source archives; the helper
+builds a private encoder with pip's `--no-index --no-build-isolation` options.
+Fetch sources before entering an offline build with
+`python3 tools/build_asset_encoder.py fetch --sources <source-directory>`.
+Distro installs can request `optimized_assets=1` independently of `release=0`,
+preserving distro compiler flags and debug information. `optimized_assets=0`
+retains original asset bytes for a measurement baseline; `auto` follows `release`.
 Windows CI uses standard CPython for encoding and MinGW Python for building;
 `GLOB2_ASSET_ENCODER_PYTHON` selects a validated, already prepared interpreter.
 Python tests can use the same environment:
@@ -277,6 +294,26 @@ On the first upgrade from an install without that index, PNGs at current shipped
 image paths are replaced when WebP is selected, including artwork from older
 releases. Keep custom image overrides in the user profile so they retain priority.
 
+Windows distributions stage assets and recursively imported DLLs through
+`tools/release/windows_runtime.py`. ZIP, Steam, Epic, Store and NSIS use this
+shared policy; missing non-system imports fail packaging. `scons release=1
+mingw=1 lean_images=1 windows-installer` builds the x64 NSIS installer from that
+same staged tree. It retains the machine installation/shortcuts and legacy
+installation directory lookup, uses solid LZMA, and inventories installed files
+for upgrades and uninstall. Unrelated files and saved games are preserved.
+Compile an existing portable stage with `tools/release/package_nsis.py --stage
+<stage> --version <version> --output <setup.exe>`.
+
+Self-contained Linux/MinGW package builds use `lean_images=1` for a private,
+checksum-pinned PNG/JPEG/WebP SDL_image. Its cache identity includes compilers,
+CMake, codec options, dependency versions and selected library hashes. Linux
+installs its canonical decoder under `lib/glob2` with soname symlinks and an
+executable-relative search path. Windows staging automatically prioritizes the
+private runtime recorded beside its build binary. These builds use a separate
+`lean-images` build directory; ordinary builds and RPM retain system libraries.
+Snap stages the required JPEG/PNG/WebP runtimes; Flatpak builds the same codec
+allowlist directly. PNG/JPEG saving remains enabled for screenshots and maps.
+
 Mac `bundle`/`package` additionally builds a checksum-pinned SDL_image 2.8.12
 with PNG/JPEG/WebP loading and PNG/JPEG saving. The cache identity includes
 compiler, SDK, codec configuration, dependency versions and the actual libraries
@@ -294,6 +331,42 @@ comparison export. Wordmarks, icons, sprites, masks and atlases remain lossless.
 replay, network or simulation format changes are involved. Measure complete
 packages and startup separately: smaller compressed assets need not decode
 faster or use less GPU memory.
+
+`tools/release/package_sizes.py report --staged-root <root> --archive <package>
+--output <report.json>` records payload categories, file hashes, archive sizes,
+source revision, architecture and compiler. Its `compare` command rejects
+reports from different sources, platforms, compilers or measurement scopes.
+Use `--scope asset-only` for an export without a binary/runtime; it must not be
+reported as a complete application download. Candidate release CI retains
+same-source original/optimized reports for Linux tarballs and Windows ZIPs.
+Installed sizes exclude symlink targets counted elsewhere; download size is the
+actual archive byte count. Shared system runtimes are outside these artifacts.
+
+GCC/MinGW release experiments use `size_optimization=gc|lto|size`: section
+collection, section collection plus LTO, and those options with `-Os`, respectively.
+The default `none` keeps current flags. Each experiment has its own
+`size-<profile>` build directory and identity, including a separate directory
+when combined with `lean_images=1`. They are restricted to native Linux/MinGW
+release builds; mobile, browser and Mac builds retain their existing settings.
+
+The candidate release workflow's `benchmark_profiles` input builds all three
+experiments. `tools/release/benchmark_profiles.py` compares complete archive
+sizes and retains two batches of seven alternating simulation/process-launch
+pairs after warmups. It verifies exact per-tick traces, replay orders and saves
+from the same two frozen initial states. Adoption needs at least 1 MiB or 1%
+archive savings, no credible repeatable simulation slowdown, image/renderer
+checks, and a separate actual application-startup measurement within 10%.
+`--version` timing is labelled process launch and does not prove GUI startup.
+The tool never changes defaults or declares an experiment ready to adopt.
+`benchmark_decoder.py` compares stock/private decoders against identical exported
+images in separate processes; its scope excludes GPU upload and rendering.
+
+`tools/release/archives.py` compares ZIP levels 6/9 using one stage and keeps the
+smaller archive (level 6 on ties). Linux retains gzip and additionally emits xz
+only when it saves at least 1 MiB or 5%; xz level 9 must save a further 1 MiB over
+level 6. Tar metadata is normalized using `SOURCE_DATE_EPOCH` (zero by default).
+These are build-time compression settings; decompressed application content is
+unchanged. Compression reports remain review evidence outside package payloads.
 
 ## Renderer stress measurements
 
@@ -724,8 +797,8 @@ runs while the simulation advances on another thread.
 ### Simulation thread
 
 Interactive sessions run the simulation on its own thread (`src/sim/SimulationRunner`)
-wherever threads exist; there is no setting. The browser build, and any platform where
-creating the thread fails, run the same session serially (`Engine::stepSession`), which
+on native platforms; there is no setting. Both browser runtimes, and any platform where
+creating the simulation thread fails, run the same session serially (`Engine::stepSession`), which
 also remains the headless default and the equivalence reference.
 
 - The simulation thread paces itself with the speed presets and runs ticks
@@ -752,8 +825,8 @@ also remains the headless default and the equivalence reference.
   overlay, observed building) go through `ClientRequests`, never through `Game` or `Map`
   fields. To check for races, build with `CXXFLAGS="-g -fsanitize=thread"
   LINKFLAGS="-fsanitize=thread"` and run a windowed `-test-games` session or a headless
-  `--run-game` with `GLOB2_SIM_THREAD=1`. With Homebrew's SDL2 compatibility library,
-  set `DYLD_LIBRARY_PATH=/opt/homebrew/lib` so it can load SDL3 under the sanitizer.
+  `--run-game` with `GLOB2_SIM_THREAD=1`. Build against the pinned SDL3 prefix
+  with `GLOB2_SDL3_PREFIX`; sanitizer builds use the same native SDL3 dependency set.
 - `SceneBuffer<T>` (`src/scene/SceneBuffer.h`) hands Scenes between the threads without
   either waiting for the other.
 
@@ -839,8 +912,8 @@ PROFILE_SAVE=artifacts/software-renderer/initial.game.gz PROFILE_ZOOM=0.5 \
 
 Use the appropriate `linux`/`mingw` build directory or an explicit `--build=DIR`.
 Resolution is the existing `-s WxH` argument, measured in framebuffer pixels.
-The benchmark disables HiDPI by default so the workload does not change with the
-monitor density. `PROFILE_NATIVE_DISPLAY=1` retains native Retina/HiDPI presentation. `PROFILE_OFFSET_X/Y` add logical-pixel camera
+The benchmark creates its SDL3 window without high-density backing pixels by default,
+so the workload does not change with monitor density. `PROFILE_NATIVE_DISPLAY=1` retains native Retina/HiDPI presentation. `PROFILE_OFFSET_X/Y` add logical-pixel camera
 offsets; `PROFILE_FRACTION=1` adds a half-pixel horizontal offset. `PROFILE_VISIBLE=1`
 shows the window; omit `PROFILE_NO_PRESENT` to include presentation. `PROFILE_CAPTURE`
 names an output BMP. `PROFILE_TERRAIN_CACHE=0` isolates primitive performance without
@@ -886,3 +959,214 @@ opt-in executable. Timing thresholds are review criteria, not CI assertions. Run
 `SoftwareRenderer`, `PortableRenderer`, `WindowResize`, `MapRenderResize` and
 `HighResolutionIntegration` suites on supported SDL/platform builds, retain before/after
 captures, and report unavailable platform and maintainer-playtesting coverage explicitly.
+
+### CI timing and retained revisions
+
+Pull requests select relevant checks and cancel superseded revisions. Master
+finishes its running verification and retains the newest pending revision; each
+retained revision runs full coverage, including after a documentation-only push.
+Nightly verification runs at 06:00 UTC without invoking publication workflows.
+The separate CI measurements workflow reads job timestamps and inert observation
+artifacts using trusted master code. It reports initial queue delay, active execution
+time, execution span, idle gaps, aggregate runner minutes, time to result, cancellations, and observed cache
+hits. Per-job queue estimates use job registration to first step; execution time is the union of executing job intervals, while execution span
+includes idle gaps and does not by itself identify runner saturation. Overlapping
+jobs count once in wall execution time and separately in aggregate runner minutes.
+Compare ten successful runs with matching event and selected coverage using
+`python3 .github/scripts/ci_run_metrics.py --before before.json --after after.json`.
+Missing observations and insufficient samples must not be reported as savings.
+
+### Linux execution dependencies
+
+Each GCC reusable-workflow invocation starts its own four test shards and three
+map-generator jobs after its build succeeds. Neither platform waits for the other
+GCC compiler or Clang. The final Linux result still requires all selected calls.
+Golden-only changes retain the standalone generator path.
+
+Build artifacts include runtime package owners resolved from actual ELF library
+dependencies. Unresolved or unowned system libraries fail collection rather than
+being silently omitted. The reduced shard environment retains software GL, Mesa,
+Xvfb and crash diagnostics. Enable `CI_RUNTIME_PACKAGES_ENABLED=true` only after
+`Validate clean Linux runtime images` passes both clean Ubuntu container images;
+until then ordinary shards keep their existing dependency installation. Dispatch
+that validation workflow manually; it runs the same unit, engine, image, CLI and
+continuation checks without publishing anything.
+
+### Reviewed native shard timing profiles
+
+Native runners optionally accept `--timing-profile` and `--auxiliary-jobs`.
+Nonempty profiles assign jobs longest first to the least-loaded shard, with label
+and shard-number tie breaks; unknown cases use the median recorded duration.
+Empty or omitted profiles preserve alphabetical slicing and existing auxiliary
+ownership. Unit tests and auxiliary groups participate in the same load plan,
+retaining their original commands, flags and timeouts. Every selected engine job
+runs exactly once. Auxiliary artifacts follow their assigned group.
+
+Successful job durations are retained alongside JUnit results. To propose updated
+weights, gather observations and run
+`python3 test/build_ci_timing_profile.py observations --family ubuntu-24.04 --output test/ci-timings/ubuntu-24.04.json`.
+Only platform-matched jobs with ten successful samples enter a profile. Review the
+resulting diff before shipping it; weights never change during a run. Profiles
+remain empty until measurements are available, rather than using invented data.
+
+### Tiered pull-request coverage rollout
+
+The selector records both proposed and effective coverage, including the reason
+for compatibility coverage. Primary PR checks retain GCC 13, Windows, Chromium
+and affected Android arm64 builds. Shared headers, simulation/save/network code,
+platform/build/dependency changes, mixed changes and unknown paths retain full
+compatibility coverage. Browser/UI/rendering changes retain Firefox and WebKit.
+The full browser command inventory lives in `.github/scripts/ci_browser_matrix.json`.
+Android is called by the main build workflow, avoiding duplicate PR APK builds
+and including its selected result in the stable aggregate gate. Master and nightly
+run the complete matrix, including Android.
+
+PR tier reductions start disabled. Set `CI_TIER_BASELINE_RUN_ID` to a successful
+full master build, then set `CI_TIERED_COVERAGE_ENABLED=true`. Before each reduced
+PR matrix, the selector verifies the baseline is a successful master build with
+a matching SHA and unexpired full-matrix selection evidence (including Android).
+Unavailable, expired or invalid evidence falls back to existing full compatibility
+coverage. Review comparison artifacts before enabling the flag. Set the flag
+false to roll back coverage reductions without reverting scheduling improvements.
+
+## Untrusted maps, saved games and replays
+
+Treat serialized fields as untrusted before using them as indices, allocation
+sizes or runtime state. Map/save game and GUI decoding use checked binary reads;
+a short field raises an error instead of supplying partial or zero-filled state.
+Keep these scopes around the entire load, including legacy fields. Callers must
+handle both a false result and a decoding exception, and must not run a partially
+loaded game. Map headers validate their team records, and entity loaders validate
+types, identities, levels and cross-references before using them. Map sector
+dimensions must match the dimensions derived from the terrain grid.
+
+Names from headers are converted to a single portable filename component before
+download/save paths are built: separators, controls (including NUL), Windows
+reserved characters and device basenames cannot redirect writes outside the
+selected directory.
+
+Gzip file loaders limit compressed input to 256 MiB and expanded output to 2 GiB.
+The separate expansion limit permits the existing late-game snapshots (roughly
+1 GiB uncompressed) while still bounding hostile compressed streams.
+Scenario objectives, hints and legacy areas are limited to 65,536 records;
+building/unit reference lists are bounded by the corresponding entity capacity.
+AI and history collection reads are limited to 1,048,576 entries per collection,
+with Maxima continuation retaining its explicit 16,777,216-entry bound for
+large saved geometry tables. Nested AI condition graphs are limited to 64
+factory calls. Unknown AI implementations,
+object tags, invalid module indices and malformed queued orders are rejected.
+These are reader limits, not a new disk format. Files exceeding these limits are
+rejected. Ordinary valid saves retain their format versions and continuation
+semantics.
+
+Replays must contain a complete, valid order stream ending in a null order.
+Truncated recordings are rejected, including recordings with a valid prefix;
+playback no longer tries to recover a prefix from a malformed stream. Both scanning
+and playback check short reads, and the scan rejects overflowing step totals.
+Execution checks player/team references before indexing game state. This is not
+an authentication mechanism for multiplayer commands. Voice orders additionally
+limit encoded audio to 4,096 bytes and 121 frames before copying or decoding.
+The recorder flushes after crossing 2,048 bytes or 120 frames, so the receive
+limits retain headroom for its final frame and existing recordings.
+
+Embedded legacy USL has no `load` file capability. The application still loads its
+own runtime libraries through the host API. Native type errors stop the map script
+instead of asserting or dereferencing an invalid value. USL also rejects integer
+overflow, limits source to 1 MiB and 65,536 tokens, bounds parser nesting (128)
+and expression chains (256), and checks runtime frames (1,024), frame operands
+(65,536) and heap values (262,144) at instruction boundaries. Garbage marking
+uses an iterative traversal to avoid overflowing the native stack. Legacy SGSL saved program
+counters must match parser-derived statement boundaries or the integer suspension
+point of `wait(N)`.
+
+These checks do not establish a hostile-script sandbox. Script interpreters and
+native simulation code still share the game process. Per-collection and
+instruction-boundary limits are not an aggregate byte or execution-time budget.
+Keep dependency review, sanitizer fuzzing of the complete load-and-step path,
+and platform replay/checksum comparisons separate from targeted rejection tests.
+See [JavaScript scripting](javascript.md) for that interpreter's capability and
+resource boundaries.
+
+
+## Native simulation memory and CPU comparisons
+
+Build the client itself with `scons release=1 server=0`; the `tests` target alone
+can leave an older game executable in place. Preserve a baseline with the same
+benchmark instrumentation, build options and dependencies before rebuilding.
+The structured runner accepts `--benchmark-warmup N` when loading a saved game.
+It reports process CPU nanoseconds for setup/loading, execution after the warmup,
+and the final save in `result.json`. The measured execution includes pending
+pipeline completion; save compression is measured separately. `--ticks` remains
+an absolute game tick, and the warmup must leave a nonempty measured window.
+
+```sh
+python3 tools/memory_benchmark.py \
+  --baseline artifacts/memory/baseline/glob2 \
+  --candidate build/darwin/client/release/src/glob2 \
+  --fixture 0=artifacts/memory/initial.game.gz \
+  --fixture 15000=artifacts/memory/checkpoint-15000.game.gz \
+  --fixture 45000=artifacts/memory/checkpoint-45000.game.gz \
+  --output artifacts/memory/comparison
+```
+
+Use the appropriate platform build directory. The runner alternates seven pairs,
+checks identical final simulation checksums and compressed save bytes, and extends
+to at most 21 pairs if the one-sided 95% paired bootstrap upper bound exceeds the
+2% CPU regression limit. It retains binary/fixture hashes, commands, raw logs,
+timings and one final save per variant and fixture. Keep other heavy work off the
+machine. CPU comparisons explicitly disable malloc logging; collect heap profiles
+in separate runs using the same fixtures. Record actual capture ticks, distinguish
+live allocation totals from resident memory and allocator retention, and report
+platforms whose execution could not be checked.
+
+On POSIX, `--interleave-seconds 0.1` alternates the two processes with
+`SIGSTOP`/`SIGCONT` within each pair. Process CPU clocks exclude the pauses; this
+reduces drift from changing background load without changing the measured tick
+window. Both games remain resident, so this is a separate scheduling condition,
+not a peak-memory measurement. Retain sequential results too, and identify the
+measurement condition when reporting the gate.
+Use `--resume` with the same arguments to continue completed pairs after an
+interruption. Binary hashes, fixture hashes and measurement settings must match;
+the unfinished pair is rerun.
+
+Memory-only representation changes must preserve legacy serialized widths and
+sentinels. Maxima's obstacle-free distance fields use 16-bit storage with an
+internal 65535 infinity, translated to the existing signed 32-bit `INT_MAX` on
+save/load. Route distances retain their wider representation. Food source masks
+retain their legacy 64-bit encoding. Wrapped nine-cell geometry tables share
+immutable storage by map dimensions; loaded noncanonical tables retain their
+original content. Weighted gradient searches share an immutable water snapshot;
+water-classification changes invalidate the map's current snapshot while ongoing
+searches retain their frozen version. Growth overlap counters use 16-bit storage;
+removal precedes addition so both generations cannot temporarily exceed the bound.
+
+Game-file persistence uses move-only snapshots in uninitialized 1 MiB blocks.
+Growing the block table does not copy the saved bytes; allocated byte capacity is
+at most the snapshot length plus one block (with a separate small pointer table).
+Gzip loading reads compressed input in 64 KiB batches and inflates directly into
+these blocks. CRC/truncation/trailing-data validation completes before loading
+headers or simulation state. Filename-based custom and campaign initialization
+reuse one validated input for both headers and the body, then release it before
+replay/network setup. Standalone header readers retain their existing interfaces.
+
+Manual/headless saves and autosaves serialize into the same chunked storage;
+header backpatches and deferred SHA1 operate on ranges without flattening it.
+Normal gzip compression uses bounded 256 KiB output buffers without flushing at
+input-block boundaries. Optional level-zero compression retains the legacy
+whole-buffer path to preserve zlib's stored-block byte layout; it is outside the
+normal-save memory bound. Save/replay/network version gates are unchanged.
+
+For the 45,000-tick large-map fixture, the native macOS arm64 comparison measured
+1.93 GiB peak RSS for combined loading and saving, down from 3.96 GiB in the
+previous optimized build. The acceptance limit is 2.5 GiB for that fixture with
+default compression. This is a fixture-specific measurement, not a bound for
+arbitrary games or other platforms; preserve the commands, fixture hashes and
+raw measurements under ignored `artifacts/` when repeating it.
+
+Autosave waits for the previous writer before capturing a new snapshot at the
+current tick. Hashing and compression remain on the worker, which releases the
+snapshot before publishing idle. When writes fall behind, this can pause play;
+it prevents overlap of active, queued and newly captured autosave snapshots.
+Allocation, serialization and worker-finalization failures retain the previous
+file and allow subsequent writes. Other background string writers still keep
+the newest queued snapshot.

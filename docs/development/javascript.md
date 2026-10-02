@@ -11,6 +11,8 @@ or permission prompt. Review embedded sources before using files from an untrust
 origin. Capability restrictions and resource limits support predictable execution
 and reliability; they do not protect the process against malicious scripts.
 
+Map/save/replay readers also apply [untrusted-file validation](reference.md#untrusted-maps-saved-games-and-replays). Embedded USL cannot load arbitrary local files; these reader checks do not turn either legacy interpreter into a hostile-code sandbox.
+
 The map scenario editor and developer commands can select JavaScript scripts.
 JavaScript AI source is currently configured through the developer commands.
 

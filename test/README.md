@@ -38,8 +38,10 @@ python3 test/run_tests.py --update-fixtures --filter 'WinningConditions/*'
 a fresh `GLOB2_USER_DATA_DIR`, `HOME`, temp directory and SDL's dummy drivers, a
 timeout by tag, output captured and shown only on failure, and a check that the
 profile's preferences were not rewritten. `[display]` cases get a real video driver,
-under `xvfb-run` on Linux without `DISPLAY`, with server resets disabled so SDL
-can recreate contexts without racing X server reinitialization; they are skipped on Windows and with
+under `xvfb-run` on Linux without `DISPLAY`, with an isolated Openbox window
+manager to apply SDL3 fullscreen requests. Install `xvfb`, `xauth`, `openbox` and
+`x11-utils`. Server resets are disabled so SDL can recreate contexts without racing
+X server reinitialization; they are skipped on Windows and with
 `--no-display`. Results merge into one JUnit file (`--junit`) and, under GitHub
 Actions, into the step summary with a `::error file=,line=` annotation per failure.
 `test/test_run_tests.py` covers the runner itself.
@@ -50,7 +52,10 @@ Standard runs keep display tests windowed. The HD artwork integration test's
 fullscreen camera-continuity checks and the text raster test's fullscreen
 downscaling check run only with `--fullscreen`; all their windowed checks still
 run by default, including with `--in-process`. Linux CI enables `--fullscreen`
-under its virtual display. To opt in when invoking a test binary directly, set
+under its virtual display, with `--display-jobs 1` to avoid concurrent software
+renderer startup stalls. Headless cases remain parallel. Linux timeout reports
+include the owned process group, thread wait locations and Xvfb window mapping state; GitHub Actions also
+collects a bounded GDB backtrace before cleanup when available. To opt in when invoking a test binary directly, set
 `GLOB2_TEST_FULLSCREEN=1`; the Python runner overrides that variable according to
 its flag, so an inherited setting cannot enable fullscreen in a standard run.
 
@@ -195,8 +200,8 @@ scons -j8 release=0 server=0 --build=build/tests-asan engine-tests \
 python3 test/run_tests.py --build-dir build/tests-asan --filter 'GameGUISelection/*'
 ```
 
-If Homebrew sdl2-compat cannot locate SDL3 under the macOS sanitizer, prefix
-the harness command with `DYLD_LIBRARY_PATH=/opt/homebrew/lib`.
+Use `GLOB2_SDL3_PREFIX` when building against the pinned SDL3 dependency prefix.
+The native build records its library directory in the runtime search path.
 
 SCons caches compiler/linker flags; pass `CXXFLAGS=-g LINKFLAGS=-g` to return to a
 normal build. This is a direct method regression, not an interactive replay test.
@@ -1098,12 +1103,13 @@ one-local-player header and seed they need. Design and numbers:
 See the [scripting guide](../docs/development/javascript.md) and
 [API reference](../docs/development/javascript-api.md) for the public boundary.
 
-Current saves use format 126, preserving released format 124's experiment-header
-layout through version-gated loading. Formats 58–124 receive scripting identities
-on load; format 125 validates its stored identities and complete generation tables.
-The minimum save version remains 58, the network protocol is 49, and the replay
-minimum remains 123. Draft JavaScript fixtures use format 125; released historical
-fixtures remain unchanged.
+Current saves use format 127, with counted generation tables for sixteen teams.
+Version-gated loading preserves released format 124's experiment-header layout
+and remaps the twelve-team generation tables stored by formats 125 and 126.
+Formats 58–124 receive scripting identities on load; later formats validate their
+stored identities and generation tables. The minimum save version remains 58,
+the network protocol is 50, and the replay minimum is 127. Draft JavaScript
+fixtures use format 125; released historical fixtures remain unchanged.
 
 Build `unit-tests engine-tests` with SCons and run
 `python3 test/run_tests.py --build-dir build/darwin/client/release --filter 'JavaScript*/*'`
@@ -1282,3 +1288,61 @@ script execution and editable state, followed by rendering and diagnostics.
 Line coverage alone does not establish save continuity, equivalent execution on
 another platform, or playable game behavior. The Linux CI coverage artifact
 uses the regular tier; slow integration and cross-platform checks remain separate.
+
+The slow `[map-generators]` tier reports default repeatability, rectangular-map
+and rejection checks separately for each registered generator. Registry stress,
+landscape, framework and editor-default checks also have independent timeouts
+and logs; a timeout must identify its case rather than hide the whole catalog.
+
+Use `python3 test/test_cli_smoke.py --binary <client> --artifacts artifacts/cli --junit artifacts/cli.xml`
+for real executable contracts: argument validation, map image/report workflows,
+headless worker parity and saved continuation. `test/run_coverage.py --with-cli`
+builds the instrumented client and exports these profiles separately under `client/`;
+never merge its counts with independently linked engine or unit reports.
+
+Native CLI platform evidence can be compared with
+`python3 test/check_cli_evidence.py <artifact-root> --require-platform linux --require-platform windows`.
+It compares all 64 complete tick records, including aggregate and entity checksums.
+The browser saved-match smoke checks resize, menu cancellation and resumed ticks;
+Android smoke also exercises Settings input and verifies application profile
+files survive background/resume and a fresh-process relaunch.
+
+## Untrusted file regression coverage
+
+`UntrustedFiles` mutates serialized entity types, levels and identities, terrain
+resources/occupants, sector dimensions and SGSL resume points. It also checks the
+compressed-input size limit, the legacy twenty-byte create-order boundary, USL
+file-loading denial, unsafe output filenames, AI tags/counts/nesting, network
+queue indices and invalid replay order references. Every native AI also loads
+its initial saved state under checked reads. `ReplayStepCounter`
+checks every truncated prefix of a replay body and step-total overflow;
+`USLCoverage` checks native argument type errors, invalid calls, arithmetic
+overflow, excessive syntax nesting and runtime recursion limits. Run these alongside
+`SavegameSafety`, `LegacyScriptCoverage` and `TeamLimit` for continuation and
+legacy compatibility. These targeted tests are not an exhaustive fuzz campaign.
+
+
+## Memory representation compatibility
+
+`MaximaContinuation` compares compact distance fields and food source masks against
+the legacy binary and text encodings, including infinity and maximum finite values.
+`Maxima.Farming` checks the box sums against wide reference arithmetic, including
+maximum-density maps. `TeamStatsSave` compares compact overlap counters against a
+wide oracle on minimum-size tori with 1024 overlapping anchors and replacement of
+an entire generation. `PathGradient` checks shared water snapshots, classification
+invalidation and frozen readers; `GradientPipeline` checks job lifetime and scheduling.
+`SavegameSafety` compares chunked streams against the contiguous backend across
+block boundaries, gaps, seeks, zero-length writes and overreads; verifies moved
+ownership and byte-capacity bounds; and compares deferred SHA1 and exact gzip bytes
+for incompressible input and compression levels zero, one, six and nine. It rejects
+truncated, bad-CRC, trailing and concatenated gzip inputs before game loading,
+injects allocation/finalization exceptions, checks atomic failure cleanup, and
+stalls an autosave writer to verify waiting before the next capture and exact
+saved ticks. The optional level-zero compatibility path retains whole buffers;
+normal save-memory measurements use the default compression level.
+
+Run these alongside the existing placement, continuation and engine lifecycle suites.
+For full-game checks, retain identical initial saves, seeds and orders, compare
+per-tick simulation state and replay/save bytes, and test continuation from populated
+checkpoints. The native paired CPU runner and profiling workflow are described in
+[the development reference](../docs/development/reference.md#native-simulation-memory-and-cpu-comparisons).

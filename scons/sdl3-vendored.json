@@ -1,0 +1,8 @@
+{
+  "freetype": {
+    "commit": "9973564cfa63763a3e4ac67c09147899539b1e07",
+    "url": "https://codeload.github.com/libsdl-org/freetype/tar.gz/9973564cfa63763a3e4ac67c09147899539b1e07",
+    "sha256": "026a05a49d114a1235d2926f4c03a9330e4b1a6efe7c217ec9607904c32907d4",
+    "archive": "freetype-9973564cfa63763a3e4ac67c09147899539b1e07.tar.gz"
+  }
+}

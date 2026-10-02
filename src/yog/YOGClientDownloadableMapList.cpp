@@ -4,7 +4,7 @@
 #include "YOGClientDownloadableMapList.h"
 #include "YOGClient.h"
 #include "MapDatabaseMessages.h"
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <algorithm>
 
 using std::static_pointer_cast;

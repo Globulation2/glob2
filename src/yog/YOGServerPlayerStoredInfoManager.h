@@ -6,7 +6,7 @@
 #include "YOGPlayerStoredInfo.h"
 #include <string>
 #include <map>
-#include "SDL_net.h"
+#include <SDL3_net/SDL_net.h>
 #include <list>
 
 class YOGServer;

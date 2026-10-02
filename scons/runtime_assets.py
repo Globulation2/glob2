@@ -10,6 +10,15 @@ import sys
 STAMP = ".runtime-assets.json.gz"
 
 
+def optimized_install_enabled(release, choice="auto"):
+    """Let distro builds select optimized assets independently of compiler flags."""
+    if str(choice).lower() == "auto":
+        return bool(release)
+    if str(choice).lower() not in ("0", "1", "false", "true"):
+        raise ValueError("optimized_assets must be auto, 0, or 1")
+    return str(choice).lower() in ("1", "true")
+
+
 def install_export(exported, destination):
     """Merge owned runtime files while preserving unrelated installed content."""
     exported, destination = Path(exported), Path(destination)

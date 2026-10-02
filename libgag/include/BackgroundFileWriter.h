@@ -6,12 +6,14 @@
 #include <condition_variable>
 #include <functional>
 #include <mutex>
+#include <memory>
 #include <string>
 #include <thread>
 
 namespace GAGCore
 {
 	class FileManager;
+	class ChunkedBuffer;
 
 	//! Replaces whole files through FileManager::writeAtomically on a worker
 	//! thread, so the caller hands over a finished snapshot instead of waiting
@@ -30,11 +32,14 @@ namespace GAGCore
 		//! runs on the worker just before the write and may change the contents.
 		//! gzip compresses the finalized bytes on the worker before replacement.
 		void write(const std::string &filename, std::string contents, std::function<void(std::string &)> finish = {}, bool gzip = false);
+        //! Chunked snapshot; finish runs before compression, without flattening.
+        void write(const std::string& filename, ChunkedBuffer contents, std::function<void(ChunkedBuffer&)> finish = {});
 		//! Returns once nothing is queued or being written; no worker thread remains.
 		void waitUntilIdle();
 
 	private:
 		void drain();
+		void startWorker(std::unique_lock<std::mutex>& lock);
 		void publishMetrics(); // caller holds mutex, runs on the submitting thread
 		PerformanceTelemetry::Moments queueTimes, hashTimes, writeTimes;
 		std::uint64_t queuedAt = 0, completedWrites = 0, failedWrites = 0, replacedWrites = 0;
@@ -46,6 +51,8 @@ namespace GAGCore
 		std::string pendingName;
 		std::string pendingContents;
 		std::function<void(std::string &)> pendingFinish;
+		std::unique_ptr<ChunkedBuffer> pendingChunks;
+		std::function<void(ChunkedBuffer&)> pendingChunkFinish;
 		bool pending = false;
 		bool pendingGzip = false;
 		bool writing = false;

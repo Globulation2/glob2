@@ -27,14 +27,17 @@ DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
 
 build: build-stamp
 
+export GLOB2_SDL3_PREFIX=$(CURDIR)/build/sdl3/prefix
+
 build-stamp: patch
+	python3 scons/sdl3_dependencies.py --prefix "$(GLOB2_SDL3_PREFIX)" --work build/sdl3/sources
 	dh_testdir
 
 #	Building without optimization.
 #	Build server binary first.
-	scons -j3 INSTALLDIR=/usr/share/games/glob2 BINDIR=/usr/games/ --portaudio=true server=yes
-	scons -j3 INSTALLDIR=/usr/share/games/glob2 BINDIR=/usr/games/ --portaudio=true server=no -c
-	scons -j3 INSTALLDIR=/usr/share/games/glob2 BINDIR=/usr/games/ --portaudio=true server=no
+	scons -j3 release=1 INSTALLDIR=/usr/share/games/glob2 BINDIR=/usr/games/ --portaudio=true server=yes
+	scons -j3 release=1 INSTALLDIR=/usr/share/games/glob2 BINDIR=/usr/games/ --portaudio=true server=no -c
+	scons -j3 release=1 INSTALLDIR=/usr/share/games/glob2 BINDIR=/usr/games/ --portaudio=true server=no
 
 	touch build-stamp
 
@@ -59,8 +62,11 @@ install:
 	mkdir -p $(CURDIR)/debian/tmp/usr/share/games/glob2 $(CURDIR)/debian/tmp/usr/games
 
 	cp -a campaigns/ data/ maps/ scripts/ $(CURDIR)/debian/tmp/usr/share/games/glob2
-	cp -a src/glob2 $(CURDIR)/debian/tmp/usr/games/
-	cp -a src/glob2-server $(CURDIR)/debian/tmp/usr/games/
+	cp -a build/linux/client/release/src/glob2 $(CURDIR)/debian/tmp/usr/games/
+	cp -a build/linux/server/release/src/glob2-server $(CURDIR)/debian/tmp/usr/games/
+	mkdir -p $(CURDIR)/debian/tmp/usr/lib/glob2
+	cp -a $(GLOB2_SDL3_PREFIX)/lib/libSDL3*.so* $(CURDIR)/debian/tmp/usr/lib/glob2/
+	cp -a $(GLOB2_SDL3_PREFIX)/share/licenses $(CURDIR)/debian/tmp/usr/share/games/glob2/
 	find $(CURDIR)/debian/tmp/usr/share/games/glob2 -type f -exec chmod 664 {} \;
 	find $(CURDIR)/debian/tmp/usr/share/games/glob2 -name SConscript -o -name \*.py -o -name \*.sh -o -name \*.perl | xargs rm
 
@@ -120,7 +126,8 @@ binary-arch: install
 #	dh_python -a
 #	dh_makeshlibs -a
 	dh_installdeb -a
-	dh_shlibdeps -a
+	dh_makeshlibs -pglob2-sdl3-runtime
+	dh_shlibdeps -a -Lglob2-sdl3-runtime -ldebian/glob2-sdl3-runtime/usr/lib/glob2
 	dh_gencontrol -a
 	dh_md5sums -a
 	dh_builddeb -a

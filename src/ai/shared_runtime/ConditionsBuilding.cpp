@@ -144,6 +144,7 @@ bool EnemyBuildingDestroyed::load(GAGCore::InputStream *stream, Player *player, 
 {
 	stream->readEnterSection("EnemyBuildingDestroyed");
 	gbid=stream->readUint32("gbid");
+	if (gbid >= Building::MAX_COUNT * Team::MAX_COUNT || !player->game->teams[Building::GIDtoTeam(gbid)]) return false;
 	type=stream->readUint32("type");
 	level=stream->readUint32("level");
 	int posx=stream->readUint32("posx");

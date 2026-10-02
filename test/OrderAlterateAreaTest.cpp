@@ -10,7 +10,7 @@
 
 #include <cstdio>
 #include <string>
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include "Order.h"
 #include "Marshaling.h"
 

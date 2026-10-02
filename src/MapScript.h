@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "SDL.h"
+#include <SDL3/SDL.h>
 #include <memory>
 #include <string>
 #include "MapScriptUSL.h"

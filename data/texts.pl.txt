@@ -1654,8 +1654,8 @@ Wyświetl kursor Globulation 2.
 Gotowe
 [settings Edit shortcut]
 Edytuj skrót klawiaturowy
-[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
-Powiększa menu, tekst i panel boczny na ekranie o wysokiej rozdzielczości.
+[settings Multiply the operating system display scale for menus, text and the sidebar.]
+Mnoży skalę wyświetlania systemu operacyjnego dla menu, tekstu i panelu bocznego.
 [settings Flags]
 Flagi
 [settings Full]
