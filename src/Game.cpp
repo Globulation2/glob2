@@ -90,9 +90,6 @@ void Game::init(GameGUI *gui, MapEdit* edit)
 void Game::clearGame()
 {
 	scriptGenerations.fill(0);
-#ifndef YOG_SERVER_ONLY
-    softwareTerrainCache.reset();
-#endif
 	hasSavedRandomState = false;
 	// Delete existing teams and players
 	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)

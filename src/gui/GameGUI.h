@@ -228,6 +228,8 @@ public:
 	Game game;
 	/// Live network games always use normal speed; replays remain adjustable.
 	bool canChangeGameSpeed() const;
+	/// Water and cloud animation phase of this GUI's map view (presentation only).
+	int mapAnimationTime() const { return view.render.animationTime; }
 	friend class Game;
 	bool gamePaused;
 	bool hardPause;

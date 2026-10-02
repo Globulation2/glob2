@@ -378,17 +378,17 @@ static void run(bool gpu, int width, int height)
                 SDL_FreeSurface(frame);
             }
             gui.gamePaused = true;
-            const int pausedTime = gui.game.mapAnimationTime;
+            const int pausedTime = gui.view.render.animationTime;
             draw(1);
             const auto pausedClouds = view.cloudPixels;
             draw(1);
-            REQUIRE(gui.game.mapAnimationTime == pausedTime);
+            REQUIRE(gui.view.render.animationTime == pausedTime);
             REQUIRE(pausedClouds.size() == view.cloudPixels.size());
             for (size_t i = 0; i < pausedClouds.size(); ++i)
                 REQUIRE(pausedClouds[i] == view.cloudPixels[i]);
             gui.gamePaused = false;
             draw(1);
-            REQUIRE(gui.game.mapAnimationTime > pausedTime);
+            REQUIRE(gui.view.render.animationTime > pausedTime);
             // Selection markers are painted into the atlas, which is measured in
             // world pixels. The factor the window stretches the interface by must
             // not reach their line width, and every marker the flat view paints

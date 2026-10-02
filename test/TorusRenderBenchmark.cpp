@@ -277,7 +277,7 @@ static int run(int argc, char **argv)
                     }
                     globalContainer->gfx->beginMapTransform(zoom, 0, 0, 0, 0, width, height);
                     const bool pausePresentation = std::getenv("GLOB2_BENCH_PAUSE_PRESENTATION");
-                    if (pausePresentation) gui.game.mapAnimationTime = 22;
+                    if (pausePresentation) gui.view.render.animationTime = 22;
                     gui.game.drawMap(0, 0, drawW, drawH, 0, 0,
                         panX, panY, 0, gui.view, options, nullptr, nullptr, pausePresentation,
                         detailForZoom(gui.game, zoom));
@@ -328,7 +328,7 @@ static int run(int argc, char **argv)
                             gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), GAGCore::Color(0, 0, 0));
                             gfx->resetDrawCallCount();
                             gfx->beginMapTransform(zoom, 0, 0, 0, 0, width, height);
-                            gui.game.mapAnimationTime = 22;
+                            gui.view.render.animationTime = 22;
                             glFinish();
                             const auto cpuStart = std::clock();
                             gui.game.drawMap(0, 0, drawW, drawH, 0, 0, panX, panY, 0,

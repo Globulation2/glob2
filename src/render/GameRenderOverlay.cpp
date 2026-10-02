@@ -170,8 +170,9 @@ void Game::drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh
 	}
 }
 
-void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
+void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view)
 {
+	std::valarray<unsigned char> &overlayAlphas = view.render.overlayAlphas;
 	PERF_SCOPE_TIME(Overlay);
 	if(drawOptions & DRAW_OVERLAY)
 	{

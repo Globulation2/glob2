@@ -679,8 +679,12 @@ content revision. Code that edits pixels through `getSDLSurface()` must call
 `markPixelsChanged()` afterward. This includes raw SDL copies and external rasterizers.
 
 `GameRenderFrame` groups the viewport, assets, visibility and draw options inside the
-existing game rendering entry point. `Game::softwareTerrainCache` is transient presentation
-state: 16×16 tile chunks, at most 32 MiB of pixel storage, least-recently-used eviction.
+existing game rendering entry point. Presentation state a view keeps between frames —
+animation phases, the cloud field, the overlay scratch buffer and the software terrain
+cache — lives in `MapRenderState`, owned by `Game::ViewState`, never on `Game` or `Map`;
+the simulation neither reads nor writes it and each view animates independently. The
+terrain cache is transient presentation state: 16×16 tile chunks, at most 32 MiB of pixel
+storage, least-recently-used eviction.
 The cache is used during transformed software passes. Ordinary native drawing keeps
 its per-tile opaque copies, avoiding full-chunk blending of mixed alpha. Within a
 transformed chunk, adjacent opaque tiles become borrowed surface views over the raw
@@ -688,7 +692,7 @@ chunk pixels. Coastlines retain individual source blits, avoiding repeated alpha
 over transparent chunk holes. Views are destroyed before their backing chunk.
 Each chunk validates exact terrain IDs, the existing discovery decisions and source
 content revisions. It stores raw color/alpha, so coastlines blend over animated water
-once. Map replacement clears the cache; editor terrain changes and visible-team changes
+once. Map replacement (a new `Map::identity()`) clears the cache; editor terrain changes and visible-team changes
 are detected during preparation. Resources, actors, fog and overlays keep their existing
 passes. Water coverage subtracts only verified opaque terrain rectangles, including discovery
 boundaries. A complete animated water tile is omitted only when all of it is covered;

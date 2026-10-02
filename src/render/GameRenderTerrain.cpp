@@ -274,9 +274,9 @@ void Game::drawMapResources(int left, int top, int right, int bot, int viewportX
 
 void Game::drawMapDebugAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view)
 {
-	if (view.selectedBuilding && (DEBUG_RENDER_GRADIENTS || view.selectedBuilding->verbose))
-		for (int c = 0; c < SWIM_CLASS_COUNT; ++c)
-			map.finishBuildingGradient(view.selectedBuilding, c);
+	// Rendering never advances simulation state: these debug views show building
+	// gradients as far as the lazy searches have resolved them (unresolved cells
+	// keep their initial value) rather than finishing the searches here.
 	// We draw debug area:
 	if (DEBUG_RENDER_GRADIENTS)
 	{
@@ -334,10 +334,10 @@ void Game::drawMapDebugAreas(int left, int top, int right, int bot, int sw, int 
 /**
  * Draws the visible (viewport) part of the given map
  */
-void Game::drawMapAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
+void Game::drawMapAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view)
 {
 	PERF_SCOPE_TIME(Overlay);
-	static int areaAnimationTick = 0;
+	int &areaAnimationTick = view.render.areaAnimationTick;
 
 	if ((drawOptions & DRAW_AREA) != 0 && (!globalContainer->isViewingGame() || globalContainer->replayShowAreas))
 	{

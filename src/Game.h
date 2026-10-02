@@ -20,6 +20,9 @@
 #include "GameHints.h"
 #include "MapScript.h"
 #include "BuildingGuiState.h"
+#ifndef YOG_SERVER_ONLY
+#include "render/MapRenderState.h"
+#endif
 
 namespace GAGCore
 {
@@ -254,7 +257,6 @@ public:
 	bool checkHardRoomForBuilding(int coordX, int coordY, const BuildingType *bt, int *mapX, int *mapY);
 	bool checkHardRoomForBuilding(int x, int y, const BuildingType *bt);
 
-	int mapAnimationTime = 0;
 	void drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int screenW, int screenH, int localTeam, Uint32 drawOptions, ViewState& view);
 	/// `view` carries the calling front-end's selection/mouse state (see
 	/// ViewState); render reads selectedUnit/selectedBuilding for highlights and
@@ -362,13 +364,13 @@ private:
 	void drawMapDebugAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view);
 	void drawMapGroundBuildings(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, std::set<Building*> *visibleBuildings, const BuildingGuiStateMap* buildingGuiState);
 	void drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
-	void drawMapAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
+	void drawMapAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view);
 	void drawMapArea(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, Map * map, bool (Map::*mapIs)(int, int) const, int areaAnimationTick, AreaType areaType);
 	void drawMapAirUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view);
 	void drawMapScriptAreas(int left, int top, int right, int bot, int viewportX, int viewportY);
 	void drawMapBulletsExplosionsDeathAnimations(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
 	void drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
-	void drawMapOverlayMaps(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
+	void drawMapOverlayMaps(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view);
 	void drawUnitPathLines(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view);
 	void drawUnitPathLine(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, Unit* unit);
 	void drawUnitOffScreen(int sx, int sy, int sw, int sh, int viewportX, int viewportY, Unit* unit, Uint32 drawOptions);
@@ -406,12 +408,8 @@ public:
 	//! gate is internal to GameAnimations. See
 	//! src/render/GameAnimations.h.
 	std::unique_ptr<GameAnimations> animations;
-    std::unique_ptr<SoftwareTerrainCache> softwareTerrainCache;
 #endif  // !YOG_SERVER_ONLY
 	std::list<BuildProject> buildProjects;
-	///Stores alpha values to be passed to the drawing system. kept here so it isn't re-allocated
-	///every frame
-	std::valarray<unsigned char> overlayAlphas;
 
 public:
 	/// Non-simulation view scratch. These fields are NOT part of game state:
@@ -430,6 +428,9 @@ public:
 		Unit *mouseUnit = nullptr;        //!< Unit under the cursor; hit-tested during render.
 		Unit *selectedUnit = nullptr;     //!< Currently selected unit, or null.
 		Building *selectedBuilding = nullptr; //!< Currently selected building, or null.
+#ifndef YOG_SERVER_ONLY
+		MapRenderState render;            //!< This view's animation phases and render caches.
+#endif
 	};
 
 	Uint32 stepCounter;

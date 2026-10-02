@@ -333,7 +333,9 @@ TEST_SUITE("SoftwareRenderer")
 		glob2test::HeadlessGlobals globals({.display = true});
 		glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .teams = 2, .discovered = true});
 		auto &game = fixture.game;
-		game.softwareTerrainCache = std::make_unique<SoftwareTerrainCache>();
+		// The view owns the cache and animation phase; the cache follows map replacement.
+		Game::ViewState view;
+		const auto cache = [&]() -> SoftwareTerrainCache & { return view.render.terrainCache(game.map); };
 		for (int y = 0; y < 32; ++y)
 			for (int x = 0; x < 32; ++x)
 				game.map.setTerrain(x, y, (x + y * 32) % 272);
@@ -343,10 +345,9 @@ TEST_SUITE("SoftwareRenderer")
 			std::vector<Uint32> expected;
 			for (bool enabled : {false, true})
 			{
-				game.softwareTerrainCache->enabled = enabled;
+				cache().enabled = enabled;
 				globals->gfx->setClipRect();
 				globals->gfx->drawFilledRect(0, 0, 640, 480, Color(11, 22, 33));
-				Game::ViewState view;
 				globals->gfx->beginMapTransform(1, 1, 1, 0, 0, 640, 480);
 				game.drawMap(0, 0, 640, 480, 0, 0, vx, vy, team, view, Game::DRAW_NO_CLOUD_LAYER,
 							 nullptr, nullptr, true);
@@ -358,14 +359,14 @@ TEST_SUITE("SoftwareRenderer")
 					CHECK(image == expected);
 			}
 			CHECK(fixture.checksum() == checksum);
-			CHECK(game.softwareTerrainCache->bytes() <= SoftwareTerrainCache::Budget);
+			CHECK(cache().bytes() <= SoftwareTerrainCache::Budget);
 		};
 		compare(0, 0, 0);
 		compare(29, 30, 0);
 		compare(29, 30, 1);
 		for (int phase : {16, 511, 512, 913})
 		{
-			game.mapAnimationTime = phase;
+			view.render.animationTime = phase;
 			compare(29, 30, 0);
 		}
 		game.map.unsetMapDiscovered();
@@ -380,25 +381,24 @@ TEST_SUITE("SoftwareRenderer")
 		game.map.setTerrain(0, 0, 256);
 		compare(29, 30, 1);
 		game.map.setSize(8, 8, GRASS);
-		game.softwareTerrainCache = std::make_unique<SoftwareTerrainCache>();
+		REQUIRE(cache().bytes() == 0); // a replaced map starts an empty cache
 		for (int chunk = 0; chunk < 40; ++chunk)
 		{
-			REQUIRE(game.softwareTerrainCache->prepare(game.map, *globals->terrain, 0, 0, 15, 15,
+			REQUIRE(cache().prepare(game.map, *globals->terrain, 0, 0, 15, 15,
 													   (chunk % 16) * 16, (chunk / 16) * 16,
 													   game.teams[0]->me, true));
-			CHECK(game.softwareTerrainCache->bytes() <= SoftwareTerrainCache::Budget);
+			CHECK(cache().bytes() <= SoftwareTerrainCache::Budget);
 		}
-		CHECK_FALSE(game.softwareTerrainCache->prepare(game.map, *globals->terrain, 0, 0, 127, 127,
+		CHECK_FALSE(cache().prepare(game.map, *globals->terrain, 0, 0, 127, 127,
 													   0, 0, game.teams[0]->me, true));
 		game.map.setSize(4, 4, GRASS);
-		game.softwareTerrainCache = std::make_unique<SoftwareTerrainCache>();
 		compare(0, 0, 0);
 		for (int y = 0; y < 16; ++y)
 			for (int x = 0; x < 16; ++x)
 				game.map.setTerrain(x, y, 256);
-		REQUIRE(game.softwareTerrainCache->prepare(game.map, *globals->terrain, 0, 0, 159, 159, 0,
+		REQUIRE(cache().prepare(game.map, *globals->terrain, 0, 0, 159, 159, 0,
 												   0, game.teams[0]->me, true));
-		const auto coverage = game.softwareTerrainCache->waterRegions(SDL_Rect{0, 0, 5120, 5120});
+		const auto coverage = cache().waterRegions(SDL_Rect{0, 0, 5120, 5120});
 		REQUIRE(coverage.size() == 1);
 		CHECK(coverage[0].w == 5120);
 		CHECK(coverage[0].h == 5120);
@@ -415,18 +415,18 @@ TEST_SUITE("SoftwareRenderer")
 		for (int y = 0; y < 16; ++y)
 			for (int x = 0; x < 16; ++x)
 				game.map.setTerrain(x, y, (x % 2 == 0 && y % 2 == 0) ? opaqueId : 256);
-		REQUIRE(game.softwareTerrainCache->prepare(game.map, *globals->terrain, 0, 0, 159, 159, 0,
+		REQUIRE(cache().prepare(game.map, *globals->terrain, 0, 0, 159, 159, 0,
 												   0, game.teams[0]->me, true));
-		const auto fragmented = game.softwareTerrainCache->waterRegions(SDL_Rect{0, 0, 5120, 5120});
+		const auto fragmented = cache().waterRegions(SDL_Rect{0, 0, 5120, 5120});
 		REQUIRE(fragmented.size() == 1);
 		CHECK(fragmented[0].w == 5120);
 		CHECK(fragmented[0].h == 5120);
 		for (int y = 0; y < 16; ++y)
 			for (int x = 0; x < 16; ++x)
 				game.map.setTerrain(x, y, opaqueId);
-		REQUIRE(game.softwareTerrainCache->prepare(game.map, *globals->terrain, 0, 0, 15, 15, 0, 0,
+		REQUIRE(cache().prepare(game.map, *globals->terrain, 0, 0, 15, 15, 0, 0,
 												   game.teams[0]->me, true));
-		CHECK(game.softwareTerrainCache->waterRegions(SDL_Rect{0, 0, 512, 512}).empty());
+		CHECK(cache().waterRegions(SDL_Rect{0, 0, 512, 512}).empty());
 
 		const auto capture =
 			glob2test::artifactDirFromWorkingDirectory() + "/transformed-software.bmp";
