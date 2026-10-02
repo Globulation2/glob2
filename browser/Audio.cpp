@@ -77,7 +77,11 @@ extern "C" int __wrap_SDL_OpenAudio(SDL_AudioSpec* desired, SDL_AudioSpec* obtai
 extern "C" void __wrap_SDL_CloseAudio() {
     if (audio) audio->enabled = false;
     emscripten_proxy_sync(queue, emscripten_main_runtime_thread_id(), close, nullptr);
-    audio.reset(); // queued mixes retain the disabled device until they finish
+    // Close is a UI barrier: no more consume calls can enqueue a Mix. Reclaim
+    // disabled requests now; pthread shutdown discards async tasks without
+    // destroying their arguments.
+    emscripten_proxy_execute_queue(queue);
+    audio.reset();
 }
 extern "C" void __wrap_SDL_PauseAudio(int paused) {
     if (audio) audio->paused = paused != 0;
