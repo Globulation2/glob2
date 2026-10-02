@@ -235,12 +235,17 @@ class ComposeTests(unittest.TestCase):
             self.assertTrue(any(value.startswith('no-new-privileges') for value in config['HostConfig']['SecurityOpt']))
         assets = Path(os.environ.get('GLOB2_ASSETS', ROOT/'build/browser-static'))
         wasm = next(assets.glob('index-*.wasm')).name
-        for target, status in [('/', 200), ('/'+wasm, 200), ('/metrics', 404), ('/healthz', 404), ('/readyz', 404), ('/livez', 404), ('/register', 404)]:
+        threaded_wasm = next((assets/'threaded').glob('index-*.wasm')).name
+        loader = next(assets.glob('loader-*.js')).name
+        for target, status in [('/', 200), ('/'+wasm, 200), ('/threaded/'+threaded_wasm, 200), ('/'+loader, 200), ('/metrics', 404), ('/healthz', 404), ('/readyz', 404), ('/livez', 404), ('/register', 404)]:
             client = http.client.HTTPSConnection('localhost', self.port, context=self.tls, timeout=10)
             try:
                 client.request('HEAD', target)
                 response = client.getresponse()
                 self.assertEqual(response.status, status)
+                if status == 200:
+                    self.assertEqual(response.getheader('Cross-Origin-Opener-Policy'), 'same-origin')
+                    self.assertEqual(response.getheader('Cross-Origin-Embedder-Policy'), 'require-corp')
             finally:
                 client.close()
         self.connect('/router')
@@ -253,6 +258,8 @@ class ComposeTests(unittest.TestCase):
     def test_static_gzip_negotiation_and_mime_types(self):
         assets = Path(os.environ.get('GLOB2_ASSETS', ROOT/'build/browser-static'))
         names = ['index.html'] + [next(assets.glob('index-*.'+ext)).name for ext in ('js','wasm','data')]
+        names += [next(assets.glob('loader-*.js')).name]
+        names += ['threaded/'+next((assets/'threaded').glob('index-*.'+ext)).name for ext in ('js','wasm')]
         for name in names:
             responses = {}
             for encoding in ('identity', 'gzip'):
