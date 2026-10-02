@@ -116,6 +116,9 @@ void testFullRoundTrip()
 	check(loaded.getNumberOfPlayers() == 4, "full: numberOfPlayers preserved");
 	check(loaded.getGameLatency() == 12, "full: gameLatency preserved");
 	check(loaded.getOrderRate() == 3, "full: orderRate preserved");
+	for (int team = 0; team < Team::MAX_COUNT; ++team)
+		check(loaded.getAllyTeamNumber(team) == original.getAllyTeamNumber(team),
+		      "full: indexed alliance slots preserved");
 	check(loaded.getRandomSeed() == 0xCAFEBABE, "full: seed preserved");
 	check(loaded.isMapDiscovered(), "full: mapDiscovered preserved");
 	check(loaded.areAllyTeamsFixed(), "full: allyTeamsFixed preserved");

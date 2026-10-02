@@ -40,7 +40,7 @@ extern int glob2ScriptTestMain(int, char**);
   freopen([evidence stringByAppendingPathComponent:@"tests.log"].fileSystemRepresentation,"w",stdout);
   freopen([evidence stringByAppendingPathComponent:@"errors.log"].fileSystemRepresentation,"w",stderr);
   std::string report="--out="+std::string([evidence stringByAppendingPathComponent:@"tests.xml"].fileSystemRepresentation);
-  char name[]="glob2-script-tests",filter[]="--test-suite=JavaScript*",reporter[]="--reporters=junit";
+  char name[]="glob2-script-tests",filter[]="--test-suite=JavaScript*,ImageAssets",reporter[]="--reporters=junit";
   char* arguments[]={name,filter,reporter,report.data()};
   int result=glob2ScriptTestMain(4,arguments);
   fflush(stdout); fflush(stderr);

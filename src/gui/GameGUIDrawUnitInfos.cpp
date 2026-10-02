@@ -36,8 +36,9 @@ void drawAbilityRow(int xpos, int ypos, const char* labelKey, int displayLevel, 
 
 void GameGUI::drawUnitInfos(void)
 {
-	Unit* selUnit=selectionUnit();
-	assert(selUnit);
+	const SceneUnitPanel* selUnit = &drawnScene().panels.unit;
+	if (!selUnit->valid)
+		return;
 	int ypos = YPOS_BASE_UNIT;
 	Uint8 r, g, b;
 
@@ -46,12 +47,12 @@ void GameGUI::drawUnitInfos(void)
 	title += getUnitName(selUnit->typeNum);
 	title += " (";
 
-	title += displayPlayerName(*selUnit->owner);
+	title += displayPlayerName(selUnit->owner.firstPlayerName);
 	title += ")";
 
-	if (localTeam->teamNumber == selUnit->owner->teamNumber)
+	if (drawnScene().panels.local.teamNumber == selUnit->owner.teamNumber)
 		{ r=160; g=160; b=255; }
-	else if (localTeam->allies & selUnit->owner->me)
+	else if (drawnScene().panels.local.allies & selUnit->owner.me)
 		{ r=255; g=210; b=20; }
 	else
 		{ r=255; g=50; b=50; }
@@ -65,7 +66,7 @@ void GameGUI::drawUnitInfos(void)
 	ypos += YOFFSET_NAME;
 
 	// draw unit's image
-	Unit* unit=selUnit;
+	const SceneUnitPanel* unit=selUnit;
 	int imgid;
 	UnitType *ut=unit->race->getUnitType(unit->typeNum, 0);
 	assert(unit->action>=0);
@@ -81,7 +82,7 @@ void GameGUI::drawUnitInfos(void)
 	imgid=unitAnimationFrame(imgid, dir, delta);
 
 	Sprite *unitSprite=globalContainer->units;
-	unitSprite->setBaseColor(unit->owner->color);
+	unitSprite->setBaseColor(unit->owner.color);
 	// The unit icon is centered in a 32x32 tile-sized frame.
 	constexpr int UNIT_ICON_BOX_PX = 32;
 	const SpriteCenterOffset off = centerSprite(UNIT_ICON_BOX_PX, UNIT_ICON_BOX_PX, unitSprite, imgid);
@@ -105,7 +106,7 @@ void GameGUI::drawUnitInfos(void)
 	globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_HALF_WIDTH, ypos+YOFFSET_TEXT_LINE+YOFFSET_TEXT_PARA, globalContainer->littleFont, FormattableString("%0:").arg(Toolkit::getStringTable()->getString("[food]")).c_str());
 
 	// draw food
-	if (selUnit->isUnitHungry())
+	if (selUnit->unitHungry)
 		{ r=255; g=0; b=0; }
 	else
 		{ r=0; g=255; b=0; }
@@ -145,7 +146,7 @@ void GameGUI::drawUnitInfos(void)
 		// (getRealArmor()), not just the pre-scale breakdown below -- at the
 		// rule's default (scale 1), this is identical to the old
 		// performance[ARMOR]-fruitCount*reduction computation.
-		int realArmor = selUnit->getRealArmor(false);
+		int realArmor = selUnit->realArmor;
 		if (realArmor < 0)
 			globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 255, 0, 0));
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, FormattableString("%0 : %1 = %2 - %3 * %4").arg(Toolkit::getStringTable()->getString("[armor]")).arg(realArmor).arg(selUnit->performance[ARMOR]).arg(selUnit->fruitCount).arg(armorReductionPerHappyness).c_str());
@@ -184,7 +185,7 @@ void GameGUI::drawUnitInfos(void)
 		// stat and experience bonus exactly as it always has, so append the
 		// scale actual combat applies on top -- at the rule's default (scale
 		// 1) this appends nothing, leaving the line unchanged.
-		const int glassCannonScale = selUnit->owner->game->gameHeader.getGlassCannonScale();
+		const int glassCannonScale = selUnit->glassCannonScale;
 		if (glassCannonScale != 1)
 			attackLine += FormattableString(" x%0").arg(glassCannonScale).c_str();
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, attackLine.c_str());
@@ -207,5 +208,5 @@ void GameGUI::drawUnitInfos(void)
 	}
 
 	if (selUnit->performance[ATTACK_STRENGTH] || selUnit->performance[MAGIC_ATTACK_AIR] || selUnit->performance[MAGIC_ATTACK_GROUND])
-		drawXPProgressBar(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, ypos, selUnit->experience, selUnit->getNextLevelThreshold());
+		drawXPProgressBar(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, ypos, selUnit->experience, selUnit->nextLevelThreshold);
 }

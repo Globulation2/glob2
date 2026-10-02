@@ -116,6 +116,14 @@ python3 test/run_tests.py      # run them; --list, --filter, --tag, --shard
   build and shard to pass, preserving their merge-blocking status. PRs compare
   with their base commit, and master pushes compare with the pre-push commit;
   unknown paths or unavailable diffs select full CI.
+  Changes confined to the render-backend and pixel-raster implementation files
+  retain native, browser and cross-platform checks without repeating independent
+  map-generator sweeps or container deployment tests. Shared headers, file I/O and
+  unknown library files still select full CI.
+  CI-tool unit-test-only edits run the selector's Python contract suites without
+  native compilation; changes to the runners themselves still select native checks.
+  Steam packaging helper/workflow changes retain their packaging and smoke checks;
+  editing this reference guide alone does not rebuild the Steam client.
 
 For headless games, use the client binary's `--nox <game-file> <steps> <runs>`
 option. `-test-games-nox` runs random AI games indefinitely unless bounded as
@@ -232,6 +240,61 @@ See Microsoft's [PC packaging guide](https://learn.microsoft.com/en-us/gaming/gd
 [MakePkg reference](https://learn.microsoft.com/en-us/gaming/gdk/docs/features/common/packaging/deployment/makepkg),
 and [Package Uploader setup](https://github.com/microsoft/PackageUploader).
 
+## Release asset and bundle sizes
+
+Release packagers share `tools/package_assets.py`. Original artwork stays in
+`data/` and `datasrc/`; generated runtime trees and per-image caches stay under
+`build/`. The exporter retains the smallest of original PNG, optimized PNG and
+pixel-exact lossless WebP. It preserves RGB beneath transparent pixels, dimensions,
+team-color masks and HD frame geometry. Normal source/debug builds use the
+originals. Image lookup searches directories in their existing order, checking a
+logical PNG first and its WebP alternative second within each directory; an
+original PNG override therefore retains precedence.
+
+Packaging bootstraps a private Pillow 12.2.0/libwebp 1.6.0 encoder environment
+when the current Python lacks the pinned encoder. This is a build dependency,
+never application content. It requires network access on first setup; subsequent
+exports reuse cached verified conversions. Flatpak supplies checksum-pinned
+encoder sources and build dependencies for its offline sandbox.
+Windows CI uses standard CPython for encoding and MinGW Python for building;
+`GLOB2_ASSET_ENCODER_PYTHON` selects a validated, already prepared interpreter.
+Python tests can use the same environment:
+
+```sh
+"$(python3 tools/package_assets.py --encoder-python)" -m unittest discover -s tests/build_system -v
+python3 tools/package_assets.py --platform linux --output build/runtime-assets
+```
+
+The export audit is beside the generated tree, outside shipped assets. Build
+helpers and the HD source provenance manifest are omitted, while `frames.txt`,
+font coverage, notices, music and all HD images are retained. Store screenshots
+remain in Linux packages where metainfo requires them. Android's installed asset
+index hashes the exported bytes. Run source `dist` and release `install` as
+separate SCons invocations; the latter installs the exported runtime tree.
+Release installs retain a compact compressed ownership index to remove obsolete
+managed files on upgrades. Unrelated files and modified obsolete files are kept.
+On the first upgrade from an install without that index, PNGs at current shipped
+image paths are replaced when WebP is selected, including artwork from older
+releases. Keep custom image overrides in the user profile so they retain priority.
+
+Mac `bundle`/`package` additionally builds a checksum-pinned SDL_image 2.8.12
+with PNG/JPEG/WebP loading and PNG/JPEG saving. The cache identity includes
+compiler, SDK, codec configuration, dependency versions and the actual libraries
+reported by pkg-config. Shared real files are hashed once; unrelated Homebrew
+libraries do not invalidate this cache. Missing or changed required libraries
+fail packaging rather than falling back to another decoder. The bundle stores
+one canonical copy per dylib, preserving required runtime aliases as symlinks.
+Its executable is stripped only after a matching dSYM has been retained in the
+build's `symbols/` directory, and before dependency rewriting and signing.
+Preserve that dSYM with release evidence for crash symbolication.
+
+The opaque `menu-colony.png` illustration uses visually reviewed quality-85
+lossy WebP in release exports. Use `--lossless-background` for an exact-artwork
+comparison export. Wordmarks, icons, sprites, masks and atlases remain lossless. No save,
+replay, network or simulation format changes are involved. Measure complete
+packages and startup separately: smaller compressed assets need not decode
+faster or use less GPU memory.
+
 ## Renderer stress measurements
 
 `torus-render-benchmark` uses the production loaded-map renderer. Its optional
@@ -267,6 +330,18 @@ the checkpoint's natural population from this deliberately seeded stress case.
 and can go below the interactive camera's minimum zoom.
 `GLOB2_BENCH_CAMERA_SWEEP=1` repeatedly changes zoom and pans across wrap seams.
 Sweep measurements mix those view sizes; use a fixed camera for paired timings.
+`GLOB2_BENCH_COMPARE_RENDERER=1` additionally compares immediate and optimized
+native rendering in the same process, at the same camera and simulation state.
+It reports paired process CPU timings and checks pixel differences after timing
+ends. Set `GLOB2_BENCH_COMPARE_AI=1` to advance one AI tick before each pair;
+combine this with the camera sweep to exercise resource changes and wrap seams.
+The comparison uses the no-cloud pass, a fixed water phase, eight warmup pairs,
+and a sparse tolerance of at most 100 changed channels with a maximum delta of
+1/255. That tolerance does not establish bit-exact moving-scene output. The
+immediate reference retains the ordinary resource sprite batch; it disables the
+mixed unit queue, texture arrays and persistent map geometry.
+`GLOB2_BENCH_COMPARE_CAPTURE_PREFIX=artifacts/render-profile/pair` saves the final
+pair as `pair-immediate.ppm` and `pair-optimized.ppm` for visual review.
 
 Timings include GPU completion (`glFinish`) and exclude frame presentation, AI,
 input and simulation work. They are renderer measurements, not whole-game FPS.
@@ -286,6 +361,76 @@ submissions. OpenGL outlines and translucent fills preserve their original order
 software surfaces retain their existing path. Full-map terrain and resource passes
 skip fog discovery queries when `DRAW_WHOLE_MAP` already makes every tile visible.
 
+Flat-map resources use a bounded OpenGL/portable SDL sprite batch, including
+standalone frames from partial HD packs. Draws sharing a texture and alpha can join an earlier run
+only when their rectangles do not overlap intervening runs. Conservative bounds
+preserve the order of overlapping artwork while reducing draw submissions and
+texture switches without changing sampling or allocating another texture atlas.
+OpenGL texture uploads flush pending draws, and the scope flushes before leaving
+the resource pass. Software surfaces and dynamic team-color sprites retain their
+existing paths; cache-backed team-color surfaces cannot be deferred safely.
+
+
+For comparisons with another revision, set `GLOB2_BENCH_PAUSE_PRESENTATION=1`
+to freeze the water phase and `GLOB2_BENCH_WARMUP_FRAMES` to the same number of
+frames on both executables. Record cold-frame samples as well as steady-state
+medians, and confirm `STEADY_CACHE pending=0` before describing results as fully
+warmed. Compare complete builds from both revisions; the diagnostic immediate
+path is not an untouched-master baseline.
+
+### Batching and geometry cache invariants
+
+The native desktop OpenGL renderer batches ground and air passes with
+`UnitDrawBatch`. It keeps the original sprite, fill and line primitives and their
+painter order. A draw may join an earlier run only if its conservative bounds do
+not intersect any intervening run. Bounds include a physical-pixel sampling
+margin and half the requested outline width; they must be expressed in the
+current map transform. Capacity limits flush a batch rather than grow it without
+bound. Unsupported commands submit pending draws first. Clip and transform
+changes also flush, then disable culling and reordering for the remainder of the
+scope because the original bounds no longer describe its coordinates.
+
+Team hue and opacity travel with each vertex. Compatible HD textures can share
+array pages while retaining their original dimensions, mip levels, format and
+sampling parameters. The source textures remain available for fallback drawing.
+The array cache caps its additional texture payload at 64 MiB, separately from
+cached map geometry. Immutable slots survive source texture invalidation until
+context teardown; new textures use the ordinary path when that budget is full.
+Pages contain at most 64 layers to bound each driver allocation. `FrameDrawBatch`
+defers new array copies until after scene submission, attempting at most eight
+sources under a soft 2 ms budget. Original textures draw while preparation is
+pending, and mutation/deletion cancels pending IDs. A texture
+upload or deletion must flush commands referring to the old pixels and invalidate
+array views before the driver can reuse a texture name. Cached geometry must also
+be invalidated selectively when its source texture or array page changes; unrelated
+uploads must preserve reusable entries. A mutation serial rejects interrupted
+captures but does not globally clear the cache. These are
+presentation caches owned by the graphics context, released while that context
+is current; they are neither saved nor consulted by simulation code.
+
+Terrain geometry is cached in canonical 32 by 32 tile chunks. Fully revealed
+resources use canonical map rows, with sorted source-tile indices selecting the
+contiguous visible vertex range. Translation places a canonical chunk or row at
+its current wrapped-map position, so camera panning does not change its vertices.
+Each entry compares the exact current tile frame/visibility vector before reuse:
+a resource amount, terrain frame or discovery change must invalidate the entry.
+Partial-discovery resources keep the ordinary drawing path. The geometry budget
+is 32 MiB of buffer payload with at most 4096 entries and least-recently-used
+eviction; CPU metadata and driver allocation overhead are additional. Each scene
+attempts at most 16 geometry builds under a separate soft 2 ms budget; validated
+cache hits remain unrestricted. Deferred rows retain ordinary sprite batching.
+These time limits are soft because an individual driver call can exceed them.
+
+Native array/cache optimizations require supported desktop OpenGL features.
+Software, portable SDL and unsupported native contexts retain their existing
+rendering paths. Desktop measurements must not be presented as phone performance.
+When changing this code, compare immediate and batched output at several zooms,
+across wrap seams and clip boundaries, with overlapping translucent sprites,
+wide outlines, carried icons, texture mutation/deletion and context recreation.
+Advance an AI match between comparisons to exercise resource invalidation, and
+check that each render leaves its simulation checksum unchanged. Keep commands,
+seeds, binaries, captures and timing data under `artifacts/` for review.
+
 ## Simulation verification and diagnostics
 
 A `Team` is a colony; a `Player` controls a team, and several players can share one.
@@ -301,9 +446,43 @@ For timing and scheduling, start with `src/Game_sync.cpp` and `src/EngineRun.cpp
   order, but does not make their shared map and caches safe for concurrent access.
   A controller must still have at most one `getOrder()` in flight; its stream
   and decision state are mutable.
-- The non-AI `syncRand()` generator is `thread_local`: the simulation normally uses
-  one thread, while background map generation seeds its own stream. A new thread
-  starts from the default seed; seed it before relying on its sequence.
+- Each `Game` owns its synchronized stream (`Game::syncRandom`), saved and restored
+  with the game. `Game::syncStep`, `Game::executeOrder`, load and save bind it with
+  `SyncRandScope`, so the simulation draws from the game it advances on whichever
+  thread runs it. Other code that advances a game's simulation must bind it with
+  `Game::bindRandom()`. Outside a bound scope, `syncRand()` uses a `thread_local`
+  default stream that map generation and other tools seed for themselves; a new
+  thread starts from the default seed. During an engine session an unbound draw is
+  a determinism bug: it is counted (`unboundSyncRandDraws()`), and
+  `GLOB2_SYNC_RAND_STRICT=1` aborts on it.
+- Keep rendering, particles, animation and other presentation-only randomness off
+  `syncRand()`. Use a presentation-owned generator such as `GameGUI::effectsRandom`,
+  so visual effects can change, run at any frame rate or move to another thread
+  without consuming simulation draws.
+- Simulation/client boundary (`src/sim/`). Simulation code must not call `GameGUI`;
+  it talks to the client through three channels, which `GameGUI` owns and `Game`
+  points to (all null without a GUI):
+  - `ClientEvents`: lossless queue of notices the simulation publishes (team
+    `GameEvent`s, chat, voice, marks, pause, ghost removal, building removal, unit
+    conversion, executed orders) plus a per-tick latest-value pulse
+    (`Team::wasRecentEvent` for every team). `Game::executeOrderAndNotify` publishes
+    the order effects; `GameGUI::consumeClientEvents` applies them after each order,
+    after each engine tick, and at the start of `step` and `drawAll`.
+  - `ClientCommandSink`: the presentation commands map scripts issue (building and
+    flag choices, GUI elements, highlights, Space swallowing, script text). SGSL,
+    USL and JavaScript map scripts call it instead of `GameGUI`. Its two read
+    methods are legacy USL queries; do not add more.
+  - `ClientRequests`: a latest-value `ClientView` (viewport, observed building,
+    overlay, debug layers) and a lossless command queue (the SGSL Space
+    acknowledgement). `Game::applyClientRequests` applies them at the start of
+    `Game::syncStep`; only the observed building records
+    `Building::unitsFailingByReason`.
+
+  Client code holds entities as `BuildingRef`/`UnitRef` (gid plus `scriptIdentity`)
+  and resolves them through `Game::resolveBuilding`/`resolveUnit` at each use; do not
+  keep `Building*`/`Unit*` across ticks in client code. The channels are
+  single-threaded for now. Making them thread-safe only changes `LosslessQueue` and
+  the latest-value accessors.
 - For behavior-preserving refactors and optimizations, compare base and changed
   builds using identical saves/maps, seeds, settings and orders. Compare per-tick
   state/checksums as well as replay bytes: matching orders alone do not prove that
@@ -316,6 +495,23 @@ For timing and scheduling, start with `src/Game_sync.cpp` and `src/EngineRun.cpp
   Treat save-format, replay and network compatibility as separate questions. If
   simulation rules change, assess replay acceptance and protocol/version gates even
   when the saved byte layout is unchanged.
+- Team capacity is `Team::MAX_COUNT` (16), shared by colonies and controller slots.
+  `MAX_COUNT_ON_DISK` (32) is the fixed GameHeader player/alliance layout, not a
+  selectable match size. Team masks are 32-bit; packed growth coverage requires
+  three masks to fit a 64-bit word (at most 21 teams in that representation).
+  Unit/building identifiers must also fit below the 16-bit empty-entity sentinel.
+  Team iterators must use the live match count; a full array has no null end slot.
+  Format 127 counts Maxima opponent records and script-generation team slots;
+  older formats retain their historical 12-slot layouts. Text header alliances use
+  indexed slots from format 127; binary header bytes stay unchanged. Custom-game
+  preferences version 4 counts colony records and still reads the twelve records
+  written by versions 1–3. The building-generation
+  plane must be remapped when loading old saves. Never substitute a live capacity
+  for a historical serialized length. Save floor 58 remains unchanged.
+  Warrush probes one capacity slot every two ticks (32 ticks for sixteen slots).
+  Empty slots fall through to normal decisions, preserving smaller-match timing.
+  Replay floor 127 and network/YOG protocol 50 gate the new capacity and counted
+  state; older saves load into the current simulation.
 - Versioning rule: when the save format changes, bump `VERSION_MINOR` and preserve
   older saves through version-gated loading, or explicitly document an approved
   compatibility break. When simulation changes invalidate old replays or mixed-client
@@ -499,14 +695,78 @@ never infers that extracted tool directories are trustworthy from a version
 string alone. Windows inventory/seeding is supported; duplicate removal requires
 a supported open-file checker and is conservatively skipped there.
 
+## Scene renderer
+
+Drawing reads an immutable `Scene` (`src/scene/`), never live simulation objects, so it
+runs while the simulation advances on another thread.
+
+- `SceneExtractor::extract(game, request, scene)` (`src/scene/SceneExtract.cpp`) is the
+  only place presentation code reads the game. `GameGUI::drawAll` extracts
+  `frameScene` once per frame and publishes it in `Game::ViewState::scene`; `drawMap`
+  callers without a published scene (menu colony, editor, torus without a GUI, tests)
+  get one extracted into `ViewState::render.ownScene`. `ViewState::drawnScene()`
+  returns whichever was drawn.
+- `SceneMap` copies the per-tile layers whole (terrain, resources, occupancy, discovery
+  and fog, displayed areas); its queries match `Map`'s. `SceneEntities` holds
+  presentation copies of units, buildings and flags with lookup by gid (field names
+  follow `Unit`/`Building`; `team` indexes `SceneEntities::teams`), per-sector
+  bullets and animations, and the selected building's map-view data. Static
+  definitions (`BuildingType`, `Race`) are referenced, not copied.
+- The overlay map is computed during extraction and shared as an immutable snapshot;
+  it refreshes when the requested type or team changes and once per 25-tick window.
+- Adding something drawn on the map: extract what the drawing needs in
+  `SceneExtract.cpp` and read it from the `Scene` in the render pass. Never read
+  `Game`, `Map`, `Team`, `Unit` or `Building` state from drawing code.
+- Selection panels, the HUD, the top bar, statistics pages, the minimap and the building
+  tool's placement preview also draw from the Scene (`ScenePanels`, `SceneMap`). Input
+  handlers still act on the game, and validate against it before issuing an order.
+
+### Simulation thread
+
+Interactive sessions run the simulation on its own thread (`src/sim/SimulationRunner`)
+wherever threads exist; there is no setting. The browser build, and any platform where
+creating the thread fails, run the same session serially (`Engine::stepSession`), which
+also remains the headless default and the equivalence reference.
+
+- The simulation thread paces itself with the speed presets and runs ticks
+  (`Engine::simulationStep`: orders, network, `Game::syncStep`). After a tick, if the main
+  thread has taken the previous Scene, it extracts the next one into a `SceneBuffer`
+  (lock-free triple buffer), so fast-forward extracts at most once per drawn frame.
+- The main thread draws the newest Scene every frame. Work that reads or writes the game —
+  input, `GameGUI::step`, consuming `ClientEvents`, checking the selection, script
+  highlights — runs in `SimulationRunner::withGame`, which parks the simulation between
+  ticks (immediately when it is sleeping between ticks).
+- Only state both threads use is shared: `ClientRequests`' view is locked; `gamePaused`,
+  `hardPause`, `isRunning` and the CPU-load history are atomics. A pause order or the local
+  player leaving takes effect on the simulation thread in the same tick, as in serial
+  execution. GUI state extraction reads (selection, local team) changes only while the
+  simulation is parked.
+- The synchronized RNG belongs to the game, so results do not depend on the thread.
+  `GLOB2_SIM_THREAD=1` runs headless sessions on the simulation thread for
+  `check_sim_thread.py --candidate-env GLOB2_SIM_THREAD=1`; `GLOB2_SIM_THREAD=0` keeps
+  any session serial, for tests that count frames against a scripted host clock.
+- The simulation thread paces on the host's clock (`Engine::sessionClock`): the clock the
+  host last passed in, advanced by real time. Time the application spent in the
+  background is therefore not caught up after resuming, as in serial execution.
+- Values the client sets while drawing and extraction reads (viewport, drawn map size,
+  overlay, observed building) go through `ClientRequests`, never through `Game` or `Map`
+  fields. To check for races, build with `CXXFLAGS="-g -fsanitize=thread"
+  LINKFLAGS="-fsanitize=thread"` and run a windowed `-test-games` session or a headless
+  `--run-game` with `GLOB2_SIM_THREAD=1`. With Homebrew's SDL2 compatibility library,
+  set `DYLD_LIBRARY_PATH=/opt/homebrew/lib` so it can load SDL3 under the sanitizer.
+- `SceneBuffer<T>` (`src/scene/SceneBuffer.h`) hands Scenes between the threads without
+  either waiting for the other.
+
 ## Software rendering architecture and profiling
 
 `GraphicContext` remains the drawing facade and retains existing capability queries.
 It owns the accelerated backend and software backend independently; transformed passes
 borrow them through scoped transform/clip state (`RenderStateScope.h`). The CPU backend
-in `SoftwareRenderBackend.cpp` implements sprite blits and rectangle fills directly on
-its borrowed framebuffer. It creates SDL's software renderer only when general triangle
-geometry is needed, and flushes that queue before direct writes or target replacement.
+in `SoftwareRenderBackend.cpp` implements verified same-format opaque sprite blits and
+opaque rectangle fills directly on its borrowed framebuffer. Translucent draws and
+mixed pixel formats retain SDL geometry rasterization so platform-specific blending
+rounding and source modulation match the reference. General triangles use that same
+lazy SDL renderer; its queue flushes before direct writes or target replacement.
 Large existing images expanded past 512 pixels, including water, retain SDL geometry
 rasterization because its fixed-point overflow behavior is visible at some transformed
 sizes. Borrowed terrain run views use direct rasterization: they replace small tiles and must not acquire that
@@ -534,8 +794,12 @@ content revision. Code that edits pixels through `getSDLSurface()` must call
 `markPixelsChanged()` afterward. This includes raw SDL copies and external rasterizers.
 
 `GameRenderFrame` groups the viewport, assets, visibility and draw options inside the
-existing game rendering entry point. `Game::softwareTerrainCache` is transient presentation
-state: 16×16 tile chunks, at most 32 MiB of pixel storage, least-recently-used eviction.
+existing game rendering entry point. Presentation state a view keeps between frames —
+animation phases, the cloud field, the overlay scratch buffer and the software terrain
+cache — lives in `MapRenderState`, owned by `Game::ViewState`, never on `Game` or `Map`;
+the simulation neither reads nor writes it and each view animates independently. The
+terrain cache is transient presentation state: 16×16 tile chunks, at most 32 MiB of pixel
+storage, least-recently-used eviction.
 The cache is used during transformed software passes. Ordinary native drawing keeps
 its per-tile opaque copies, avoiding full-chunk blending of mixed alpha. Within a
 transformed chunk, adjacent opaque tiles become borrowed surface views over the raw
@@ -543,7 +807,7 @@ chunk pixels. Coastlines retain individual source blits, avoiding repeated alpha
 over transparent chunk holes. Views are destroyed before their backing chunk.
 Each chunk validates exact terrain IDs, the existing discovery decisions and source
 content revisions. It stores raw color/alpha, so coastlines blend over animated water
-once. Map replacement clears the cache; editor terrain changes and visible-team changes
+once. Map replacement (a new `Map::identity()`) clears the cache; editor terrain changes and visible-team changes
 are detected during preparation. Resources, actors, fog and overlays keep their existing
 passes. Water coverage subtracts only verified opaque terrain rectangles, including discovery
 boundaries. A complete animated water tile is omitted only when all of it is covered;

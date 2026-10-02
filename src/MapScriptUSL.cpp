@@ -9,7 +9,8 @@ using namespace GAGCore;
 #include <utility>
 #include "usl.h"
 #include "interpreter.h"
-#include "GameGUI.h"
+#include "Game.h"
+#include "sim/ClientCommandSink.h"
 
 #include "position.h"
 #include "native.h"
@@ -28,26 +29,21 @@ using std::endl;
 
 
 template<>
-inline void NativeValuePrototype<GameGUI*>::initialize()
+inline void NativeValuePrototype<ClientCommandSink*>::initialize()
 {
 	// For network safeness, this interface is not allowed to read user-defined variables
-	addMethod<void(GameGUI*,string)>("enableBuildingsChoice", &GameGUI::enableBuildingsChoice);
-	addMethod<void(GameGUI*,string)>("disableBuildingsChoice", &GameGUI::disableBuildingsChoice);
-	addMethod<bool(GameGUI*,string)>("isBuildingEnabled", &GameGUI::isBuildingEnabled);
-	addMethod<void(GameGUI*,string)>("enableFlagsChoice", &GameGUI::enableFlagsChoice);
-	addMethod<void(GameGUI*,string)>("disableFlagsChoice", &GameGUI::disableFlagsChoice);
-	addMethod<bool(GameGUI*,string)>("isFlagEnabled", &GameGUI::isFlagEnabled);
-	addMethod<void(GameGUI*,int)>("enableGUIElement", &GameGUI::enableGUIElement);
-	addMethod<void(GameGUI*,int)>("disableGUIElement", &GameGUI::disableGUIElement);
-	
-	//addMethod<bool(GameGUI*)>("isSpaceSet", &GameGUI::isSpaceSet);
-	//addMethod<void(GameGUI*,bool)>("setIsSpaceSet", &GameGUI::setIsSpaceSet);
-	//addMethod<bool(GameGUI*)>("isSwallowSpaceKey", &GameGUI::isSwallowSpaceKey);
-	//addMethod<void(GameGUI*,bool)>("setSwallowSpaceKey", &GameGUI::setSwallowSpaceKey);
-	
-	addMethod<void(GameGUI*,string)>("showScriptText", &GameGUI::showScriptText);
-	addMethod<void(GameGUI*,string,string)>("showScriptTextTr", &GameGUI::showScriptTextTr);
-	addMethod<void(GameGUI*)>("hideScriptText", &GameGUI::hideScriptText);
+	addMethod<void(ClientCommandSink*,string)>("enableBuildingsChoice", &ClientCommandSink::enableBuildingsChoice);
+	addMethod<void(ClientCommandSink*,string)>("disableBuildingsChoice", &ClientCommandSink::disableBuildingsChoice);
+	addMethod<bool(ClientCommandSink*,string)>("isBuildingEnabled", &ClientCommandSink::isBuildingEnabled);
+	addMethod<void(ClientCommandSink*,string)>("enableFlagsChoice", &ClientCommandSink::enableFlagsChoice);
+	addMethod<void(ClientCommandSink*,string)>("disableFlagsChoice", &ClientCommandSink::disableFlagsChoice);
+	addMethod<bool(ClientCommandSink*,string)>("isFlagEnabled", &ClientCommandSink::isFlagEnabled);
+	addMethod<void(ClientCommandSink*,int)>("enableGUIElement", &ClientCommandSink::enableGUIElement);
+	addMethod<void(ClientCommandSink*,int)>("disableGUIElement", &ClientCommandSink::disableGUIElement);
+
+	addMethod<void(ClientCommandSink*,string)>("showScriptText", &ClientCommandSink::showScriptText);
+	addMethod<void(ClientCommandSink*,string,string)>("showScriptTextTr", &ClientCommandSink::showScriptTextTr);
+	addMethod<void(ClientCommandSink*)>("hideScriptText", &ClientCommandSink::hideScriptText);
 }
 
 template<>
@@ -94,19 +90,19 @@ inline void NativeValuePrototype<GameObjectives*>::initialize()
 }
 
 
-void MapScriptUSL::addGlob2Values(GameGUI* gui)
+void MapScriptUSL::addGlob2Values()
 {
-	usl->setConstant("gui", new NativeValue<GameGUI*>(&usl->heap, gui));
-	usl->setConstant("engine", new NativeValue<Game*>(&usl->heap, &(gui->game)));
-	usl->setConstant("hints", new NativeValue<GameHints*>(&usl->heap, &(gui->game.gameHints)));
-	usl->setConstant("objectives", new NativeValue<GameObjectives*>(&usl->heap, &(gui->game.objectives)));
+	usl->setConstant("gui", new NativeValue<ClientCommandSink*>(&usl->heap, client));
+	usl->setConstant("engine", new NativeValue<Game*>(&usl->heap, game));
+	usl->setConstant("hints", new NativeValue<GameHints*>(&usl->heap, &(game->gameHints)));
+	usl->setConstant("objectives", new NativeValue<GameObjectives*>(&usl->heap, &(game->objectives)));
 }
 
 
-MapScriptUSL::MapScriptUSL(GameGUI* gui)
-	: usl(std::make_unique<Usl>())
+MapScriptUSL::MapScriptUSL(Game* game, ClientCommandSink* client)
+	: usl(std::make_unique<Usl>()), game(game), client(client)
 {
-	addGlob2Values(gui);
+	addGlob2Values();
 }
 
 
@@ -139,12 +135,11 @@ void MapScriptUSL::decodeData(GAGCore::InputStream* stream, Uint32 versionMinor)
 
 bool MapScriptUSL::compileCode(const std::string& code)
 {
-	GameGUI* gui = dynamic_cast<NativeValue<GameGUI*>*>(usl->getConstant("gui"))->value;
 	// Replace the interpreter wholesale; the old instance's destructor frees its
 	// GC heap, scopes and threads. Nothing outside this class holds pointers into
 	// the old heap, so this cannot dangle.
 	usl = std::make_unique<Usl>();
-	addGlob2Values(gui);
+	addGlob2Values();
 	
 	const char* dirsToLoad[] = { "data/usl/Language/Runtime" , "data/usl/Glob2/Runtime", 0 };
 	const char** dir = dirsToLoad;
@@ -210,7 +205,7 @@ const MapScriptError& MapScriptUSL::getError() const
 }
 
 
-void MapScriptUSL::syncStep(GameGUI *gui)
+void MapScriptUSL::syncStep()
 {
 	const size_t stepsMax = 10000;
 	

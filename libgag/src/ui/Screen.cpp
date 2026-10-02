@@ -90,14 +90,14 @@ bool quitRequest(const SDL_Event &event)
 	return false;
 }
 
-void ensureMeasurer(std::unique_ptr<ToolkitTextMeasurer> &measurer, bool &touch, double &scale,
+void ensureMeasurer(std::unique_ptr<ToolkitTextMeasurer> &measurer, bool &touch, double &unit,
 					const Theme &theme, const Presentation &p, Host &host)
 {
-	if (measurer && touch == p.touch && scale == p.textScale)
+	if (measurer && touch == p.touch && unit == p.textUnit)
 		return;
 	touch = p.touch;
-	scale = p.textScale;
-	measurer = std::make_unique<ToolkitTextMeasurer>(theme, touch, scale);
+	unit = p.textUnit;
+	measurer = std::make_unique<ToolkitTextMeasurer>(theme, touch, unit);
 	host.setMeasurer(measurer.get());
 }
 } // namespace
@@ -125,9 +125,8 @@ void UIScreen::refreshPresentation()
 {
 	if (!gfx)
 		return;
-	auto p = resolvePresentation(*gfx);
-	p.textScale = textScale(p);
-	ensureMeasurer(measurer, measurerTouch, measurerScale, themeValue, p, hostValue);
+	const auto p = resolvePresentation(*gfx, themeValue.touchTextScale);
+	ensureMeasurer(measurer, measurerTouch, measurerUnit, themeValue, p, hostValue);
 	hostValue.setPresentation(p);
 }
 
@@ -246,9 +245,8 @@ void UIDialog::refreshPresentation()
 {
 	if (!surface)
 		return;
-	auto p = resolvePresentation(*surface);
-	p.textScale = textScale(p);
-	ensureMeasurer(measurer, measurerTouch, measurerScale, themeValue, p, hostValue);
+	const auto p = resolvePresentation(*surface, themeValue.touchTextScale);
+	ensureMeasurer(measurer, measurerTouch, measurerUnit, themeValue, p, hostValue);
 	hostValue.setPresentation(p);
 }
 
@@ -258,6 +256,13 @@ bool UIDialog::event(const SDL_Event &raw)
 		return false;
 	SDL_Event event = raw;
 	GAGCore::GraphicContext::translateMouseEvent(&event);
+	return eventLogical(event);
+}
+
+bool UIDialog::eventLogical(const SDL_Event &event)
+{
+	if (done)
+		return false;
 	refreshPresentation();
 	if (onEvent(event))
 		return true;

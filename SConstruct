@@ -397,6 +397,12 @@ def main():
     # guards rely on it (including disabling the Unix OSS audio backend).
     if env['mingw'] or isWindowsPlatform or env['mingwcross']:
         env.Append(CPPDEFINES=["WIN32"])
+    if isDarwinPlatform and env['release'] and not server_only and any(
+            target in COMMAND_LINE_TARGETS for target in ('bundle', 'package')) and not GetOption('clean') and not GetOption('no_exec'):
+        from mac_image_dependency import ensure
+        image_prefix = ensure(Path.cwd(), jobs=2)
+        env.Prepend(LIBPATH=[str(image_prefix/'lib')], CPPPATH=[str(image_prefix/'include/SDL2')])
+        env['LEAN_IMAGE_PREFIX'] = str(image_prefix)
     configure(env, server_only, relay)
 
     env.Append(CPPPATH=['#'+path for path in INCLUDE_DIRECTORIES])
@@ -462,6 +468,7 @@ def main():
         dmg.generate(env)
         env.Replace(
             BUNDLE_NAME=bdir+"/Glob2",
+            BUNDLE_SYMBOL_DIR=bdir+"/symbols",
             BUNDLE_BINARIES=[bdir+"/src/glob2"],
             BUNDLE_RESOURCEDIRS=["data","maps", "campaigns", "scripts"],
             BUNDLE_PLIST="darwin/Info.plist",
@@ -481,6 +488,10 @@ def main():
         # A Dir node, not a string: bundleEmitter looks the app up as a directory,
         # and a string target would already have been created as a File.
         application = env.Bundle(env.Dir(env["BUNDLE_NAME"] + ".app"), env["BUNDLE_BINARIES"])
+        from tools.package_assets import source_files
+        bundle_assets = [str(p) for p in source_files(Path.cwd(), 'macos')]
+        env.Depends(application, bundle_assets + ['tools/package_assets.py', 'tools/asset-requirements.txt',
+            'scons/bundle.py', 'scons/addDependentLibsToBundle.py', Value(bundle_assets)])
         env.Alias("bundle", application)
         if "package" in COMMAND_LINE_TARGETS:
             image = env.Dmg("Glob2-%s.dmg" % env["VERSION"], application)
@@ -514,6 +525,13 @@ def main():
         "tools",
         "windows"
     ]
+    optimized_install = env['release'] and not env['server'] and 'install' in COMMAND_LINE_TARGETS
+    if optimized_install and 'dist' in COMMAND_LINE_TARGETS:
+        raise ValueError('Run release install and source dist as separate SCons invocations')
+    if optimized_install:
+        from runtime_assets import install_assets
+        install_assets(env)
+    env['OPTIMIZED_ASSET_INSTALL'] = bool(optimized_install)
     for target in targets:
         # Upstream release archives omit the historical Debian packaging files.
         if target == "debian" and not os.path.isfile("debian/SConscript"):

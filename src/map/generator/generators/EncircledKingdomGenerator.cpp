@@ -51,9 +51,11 @@ struct Layout
 };
 std::string validateRequest(const GenerationRequest &r)
 {
+	if (const auto error = denseColonySizeFailure(r); !error.empty())
+		return error;
 	const int w = 1 << r.wDec, h = 1 << r.hDec;
-	if (r.nbTeams < 3 || r.nbTeams > 12)
-		return "Encircled Kingdom supports 3 to 12 colonies; colony zero holds the heartland.";
+	if (r.nbTeams < 3 || r.nbTeams > Team::MAX_COUNT)
+		return "Invalid colony count.";
 	if (std::min(w, h) < 256 || std::max(w, h) > 2 * std::min(w, h))
 		return "Encircled Kingdom needs sides of at least 256 tiles and an aspect ratio at most "
 			   "2:1.";
@@ -925,7 +927,7 @@ GeneratorDefinition encircledKingdomDefinition()
 		"encircled-kingdom",
 		63,
 		"Encircled Kingdom",
-		1,
+		2,
 		false,
 		{GeneratorControl::choice(
 			 "fortress-plan", "Fortress plan",

@@ -64,7 +64,13 @@ aliases/cycles, undefined, signed zero, property attributes and rejection rollba
 with real AI callbacks, one/four workers, save/resume at ticks 32 and 128, and
 actual replay playback. It retains complete traces, saves and replays. The Python
 runner adds realistic continuations at 64, 96 and 224. All complete checks include
-the aggregate checksum as well as entity records; replay playback supplies AI
+the aggregate checksum as well as entity records. Saved continuation checks
+adjust only the known MapHeader version contribution when a legacy initial save
+is written in the current format: the version fields and team/player counts in
+both save headers determine that contribution. All entity bytes and the remaining
+aggregate checksum must still match, and the resumed tick range must be complete.
+The final save payload comparison still excludes only the history-dependent SHA1.
+Replay playback supplies AI
 orders, while the live runs prove AI execution and persisted AI state.
 
 The focused conversion fixture primes production AI globals, RNG and orders,
@@ -82,10 +88,11 @@ suite; map callbacks still execute when AI decisions are supplied by the replay.
 `released-v123.replay.gz` is a gzip copy of the existing browser replay import
 fixture (`browser/tests/fixtures/cross-replay.replay`), recorded for 1,500 ticks
 from `games/cross-replay.game.gz`, seed 42, by a format-123 build. The shared
-compatibility suite loads this released replay, accepts replay versions 123–125
-and rejects 122 and 126. It accepts client protocol 49 and rejects 48 and 50, and
-loads genuine v88, v108 and v121 saves while validating newly assigned entity
-identities. The save
+compatibility suite retains this replay as a rejection fixture after the
+sixteen-team replay floor moved to 127. It accepts replay version 127 and rejects
+versions outside the current acceptance range. It accepts client protocol 50
+and rejects adjacent protocols, and loads genuine v88, v108 and v121 saves while
+validating newly assigned entity identities. The save
 floor remains 58; these available historical fixtures do not cover every format
 between that floor and the current version.
 
@@ -96,3 +103,11 @@ entity identities, that the format-125 round trip retains both, and that 64
 subsequent ticks preserve world, team and entity execution. Only the MapHeader
 format contribution is excluded when comparing the released and upgraded
 aggregate checksums; the experiment and simulation records must match.
+
+The format-127 sixteen-team implementation hashes a larger script-generation
+table. `profile1-256-teams16.checksums.gz` and
+`realistic-profile1-256-teams16.checksums.gz` pin that aggregate checksum layout.
+The original traces remain intact: the native simulation test also requires every
+team, building and unit record to match them at all 256 ticks. The expanded traces
+were captured from Linux execution; one/four workers, save/resume and replay
+continue to compare complete records against the capacity-specific baseline.

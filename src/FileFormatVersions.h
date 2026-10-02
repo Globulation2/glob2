@@ -169,3 +169,6 @@ static constexpr int FILE_FORMAT_VERSION_EXPERIMENTS = 124;
 //! JavaScript AI/map state and per-entity identities with generation counters.
 //! Version 124 remains the released experiments layout without these fields.
 static constexpr int FILE_FORMAT_VERSION_JAVASCRIPT = 125;
+
+//! Counted team-dependent state: Maxima opponents and JavaScript generation planes.
+static constexpr int FILE_FORMAT_VERSION_COUNTED_TEAM_STATE = 127;
