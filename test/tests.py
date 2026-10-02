@@ -45,6 +45,7 @@ ENGINE_TESTS = [
     'RoundTripHungerGateHarness.cpp',
     'TerrainResourcesHarness.cpp',
     'LockstepSessionTest.cpp',
+    'MatchSetupTest.cpp',
     ('AISavePortabilityHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     'BuildingFootprintHarness.cpp',
     'ClearingFlagGradientTest.cpp',

@@ -548,6 +548,9 @@ CLIENT_SOURCES = (
     'net/WssTransport.cpp',
     'online/HttpFetch.cpp',
     'online/HttpFetchCommon.cpp',
+    'online/MatchSetup.cpp',
+    'online/Sha256.cpp',
+    'online/SimVersion.cpp',
 )
 
 SERVER_SOURCES = (
