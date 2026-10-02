@@ -89,7 +89,7 @@ void isolateEnvironment()
 		"GLOB2_MAXIMA_PLAYER_OVERRIDES", "GLOB2_MAXIMA_TUNING", "GLOB2_NICOWAR_V3_OVERRIDES",
 		"GLOB2_NICOWAR_V3_TUNING", "GLOB2_MAXIMA_TELEMETRY", "GLOB2_DATASET_PATH",
 		"GLOB2_CHECKSUM_SIDECAR", "GLOB2_REPLAY_PATH", "GLOB2_TEAM_TIMELINE", "GLOB2_TEAM_RESULTS",
-		"GLOB2_DUMP_GAME", "GLOB2_STUDY_EXPLAIN", "GLOB2_USER_DIR",
+		"GLOB2_DUMP_GAME", "GLOB2_STUDY_EXPLAIN", "GLOB2_USER_DIR", "GLOB2_USER_DATA_DIR",
 		"GLOB2_PERF_DISABLE", "GLOB2_PERF_BUILD_LABEL",
 		"GLOB2_CORTEX_POLICY", "GLOB2_CORTEX_NET", "GLOB2_CORTEX_DECISION_NET",
 		"GLOB2_CORTEX_TRACE", "GLOB2_CORTEX_DECIDE_TRACE", "GLOB2_CORTEX_INN_TRACE",
@@ -469,7 +469,8 @@ int runHeadlessCommand(int argc,char **argv)
 		output=fs::absolute(one(options,"--output-dir"));
 		fs::create_directories(output);
 		fs::create_directories(output / "profile");
-		SDL_setenv("GLOB2_USER_DIR", (output / "profile").string().c_str(), 1);
+		setHeadlessEnvironment("GLOB2_USER_DIR", (output / "profile").string().c_str());
+		setHeadlessEnvironment("GLOB2_USER_DATA_DIR", (output / "profile").string().c_str());
 		if(fs::exists(output/"result.json")) throw std::invalid_argument("output directory already contains a result");
 		int code;
 		if(command=="--run-game")
@@ -491,7 +492,8 @@ int runHeadlessCommand(int argc,char **argv)
 					manifest(output);return generated;
 				}
 				options["--map-file"]={glob2GzipWritePath((output/"generated/map-r0.map").string())};
-				SDL_setenv("GLOB2_USER_DIR",(output/"profile").string().c_str(),1);
+				setHeadlessEnvironment("GLOB2_USER_DIR",(output/"profile").string().c_str());
+				setHeadlessEnvironment("GLOB2_USER_DATA_DIR",(output/"profile").string().c_str());
 			}
 			else if(options.count("--map-seed") || options.count("--param") || options.count("--candidates"))
 				throw std::invalid_argument("generator options require --generator");

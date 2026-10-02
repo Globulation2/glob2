@@ -35,7 +35,7 @@ class CliSmoke(unittest.TestCase):
         self.calls = 0
 
     def command(self, *args, status=0):
-        env = dict(os.environ, GLOB2_USER_DIR=str(self.root/'profile'), SDL_VIDEODRIVER='dummy', SDL_AUDIODRIVER='dummy')
+        env = dict(os.environ, GLOB2_USER_DIR=str(self.root/'profile'),GLOB2_USER_DATA_DIR=str(self.root/'profile'), SDL_VIDEODRIVER='dummy', SDL_AUDIODRIVER='dummy')
         self.calls += 1
         result = subprocess.run([str(self.binary), *map(str,args)], cwd=ROOT, env=env,
                                 capture_output=True, text=True, timeout=180)
@@ -92,7 +92,7 @@ class CliSmoke(unittest.TestCase):
         source=self.root/'corrupt.game'; source.write_bytes(b'not a saved game')
         output=self.root/'corrupt-run'
         result=subprocess.run([str(self.binary),'--run-game','--load-game',str(source),'--ticks','64',
-                               '--output-dir',str(output)],cwd=ROOT,env=dict(os.environ,GLOB2_USER_DIR=str(self.root/'profile')),
+                               '--output-dir',str(output)],cwd=ROOT,env=dict(os.environ,GLOB2_USER_DIR=str(self.root/'profile'),GLOB2_USER_DATA_DIR=str(self.root/'profile')),
                               capture_output=True,text=True,timeout=180)
         self.assertNotEqual(result.returncode,0)
         report=json.loads((output/'result.json').read_text())
@@ -115,6 +115,7 @@ class CliSmoke(unittest.TestCase):
                      '--write-map','true','--report','terrain')
         report=json.loads((output/'result.json').read_text())
         self.assertEqual(report['status'],'completed')
+        self.assertFalse((self.root/'profile').exists(), 'headless commands must use their output profile, not inherited user data')
         self.assertTrue(list(output.glob('map-r*.map.gz')))
         self.assertGreater((output/'terrain.txt').stat().st_size,100)
         self.assertIsInstance(json.loads((output/'artifacts.json').read_text()),dict)
