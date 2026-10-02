@@ -317,6 +317,43 @@ void testFactoryOrder()
 	}
 }
 
+// Sets every team's hasWon/hasLost from `cond` the way Team::checkWinConditions
+// would for a single-condition list, then lets WinningConditionAllies spread a
+// win to mutual allies, as the default list does on later evaluation.
+void resolveFlags(const WinningCondition& cond, int n)
+{
+	bool won[kMaxTeams] = {}, lost[kMaxTeams] = {};
+	for (int t = 0; t < n; ++t)
+	{
+		won[t] = cond.hasTeamWon(t, g());
+		lost[t] = !won[t] && cond.hasTeamLost(t, g());
+	}
+	for (int t = 0; t < n; ++t)
+	{
+		T(t)->hasWon = won[t];
+		T(t)->hasLost = lost[t];
+	}
+	WinningConditionAllies allies;
+	for (int t = 0; t < n; ++t)
+		if (allies.hasTeamWon(t, g()))
+		{
+			T(t)->hasWon = true;
+			T(t)->hasLost = false;
+		}
+}
+
+void suddenDeathAtBuzzer(std::array<int, 3> prestige, Uint32 allianceMask)
+{
+	clearAll();
+	setupTeams(3);
+	mutualAlliances(3, allianceMask);
+	g()->stepCounter = 100;
+	for (int i = 0; i < 3; ++i) T(i)->prestige = prestige[i];
+	WinningConditionSuddenDeath wc;
+	wc.endStepTick = 100;
+	resolveFlags(wc, 3);
+}
+
 }  // namespace
 
 TEST_SUITE("WinningConditions")
@@ -333,5 +370,88 @@ TEST_CASE("every predicate matches the golden record stream [golden]")
 	testScript();
 	testOpponentsDefeated();
 	glob2test::expectGolden("winning-conditions/expected.txt", out);
+}
+
+TEST_CASE("draw outcome: before the buzzer nobody is decided")
+{
+	clearAll();
+	setupTeams(3);
+	g()->stepCounter = 50;
+	WinningConditionSuddenDeath wc;
+	wc.endStepTick = 100;
+	resolveFlags(wc, 3);
+	for (int t = 0; t < 3; ++t) CHECK(classifyTeamOutcome(g(), t) == TeamOutcome::Undecided);
+	CHECK_FALSE(isGameDrawn(g()));
+}
+
+TEST_CASE("draw outcome: a single winner wins and the rest lose")
+{
+	suddenDeathAtBuzzer({10, 30, 10}, 0);
+	CHECK(classifyTeamOutcome(g(), 0) == TeamOutcome::Lost);
+	CHECK(classifyTeamOutcome(g(), 1) == TeamOutcome::Won);
+	CHECK(classifyTeamOutcome(g(), 2) == TeamOutcome::Lost);
+	CHECK_FALSE(isGameDrawn(g()));
+}
+
+TEST_CASE("draw outcome: a tie at the top across alliances is a draw and teams below still lose")
+{
+	suddenDeathAtBuzzer({30, 30, 10}, 0);
+	// The engine's flags are untouched: both tied teams are still "won".
+	CHECK(T(0)->hasWon);
+	CHECK(T(1)->hasWon);
+	CHECK(classifyTeamOutcome(g(), 0) == TeamOutcome::Draw);
+	CHECK(classifyTeamOutcome(g(), 1) == TeamOutcome::Draw);
+	CHECK(classifyTeamOutcome(g(), 2) == TeamOutcome::Lost);
+	CHECK(isGameDrawn(g()));
+}
+
+TEST_CASE("draw outcome: allied teams tied at the top share a win")
+{
+	suddenDeathAtBuzzer({30, 30, 10}, 0x3);
+	CHECK(classifyTeamOutcome(g(), 0) == TeamOutcome::Won);
+	CHECK(classifyTeamOutcome(g(), 1) == TeamOutcome::Won);
+	CHECK(classifyTeamOutcome(g(), 2) == TeamOutcome::Lost);
+	CHECK_FALSE(isGameDrawn(g()));
+}
+
+TEST_CASE("draw outcome: an ally of the sole leader shares its win")
+{
+	suddenDeathAtBuzzer({10, 30, 5}, 0x3);
+	CHECK(T(0)->hasWon);
+	CHECK(classifyTeamOutcome(g(), 0) == TeamOutcome::Won);
+	CHECK(classifyTeamOutcome(g(), 1) == TeamOutcome::Won);
+	CHECK(classifyTeamOutcome(g(), 2) == TeamOutcome::Lost);
+	CHECK_FALSE(isGameDrawn(g()));
+}
+
+TEST_CASE("draw outcome: an alliance tied with an outsider is a draw for everyone at the top")
+{
+	suddenDeathAtBuzzer({30, 10, 30}, 0x3);
+	for (int t = 0; t < 3; ++t) CHECK(classifyTeamOutcome(g(), t) == TeamOutcome::Draw);
+	CHECK(isGameDrawn(g()));
+}
+
+TEST_CASE("draw outcome: a one-way alliance does not turn a tie into a shared win")
+{
+	suddenDeathAtBuzzer({30, 30, 10}, 0);
+	T(0)->allies = T(0)->me | T(1)->me;
+	CHECK(classifyTeamOutcome(g(), 0) == TeamOutcome::Draw);
+	CHECK(classifyTeamOutcome(g(), 1) == TeamOutcome::Draw);
+}
+
+TEST_CASE("draw outcome: a prestige finish tied at the top across alliances is a draw")
+{
+	clearAll();
+	setupTeams(3);
+	g()->totalPrestige = 100;
+	g()->prestigeToReach = 100;
+	T(0)->prestige = 45;
+	T(1)->prestige = 45;
+	T(2)->prestige = 10;
+	WinningConditionPrestige wc;
+	resolveFlags(wc, 3);
+	CHECK(classifyTeamOutcome(g(), 0) == TeamOutcome::Draw);
+	CHECK(classifyTeamOutcome(g(), 1) == TeamOutcome::Draw);
+	CHECK(classifyTeamOutcome(g(), 2) == TeamOutcome::Lost);
 }
 }

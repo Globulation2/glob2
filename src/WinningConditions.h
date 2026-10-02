@@ -157,5 +157,21 @@ public:
 	Uint32 endStepTick = 0;
 };
 
+///How a decided game reads from one team's point of view. Presentation only:
+///it is derived from the per-team hasWon/hasLost flags and never changes them.
+enum class TeamOutcome
+{
+	Undecided,
+	Won,
+	///The team won, but so did a team it is not mutually allied with -- e.g. a
+	///sudden-death or prestige finish tied at the top across alliances.
+	Draw,
+	Lost,
+};
 
-
+///Classifies `team`'s result for end-of-game messages. Won only when every other
+///winning team is mutually allied with `team` (allied teams that win together
+///still see a win); Draw when `team` won alongside a non-allied winner.
+TeamOutcome classifyTeamOutcome(const Game* game, int team);
+///True when the winning teams span more than one alliance (a spectator's draw).
+bool isGameDrawn(const Game* game);

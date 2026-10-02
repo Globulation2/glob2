@@ -3594,3 +3594,5 @@ Rimbalzo delle liste
 
 [Map momentum]
 Inerzia della mappa
+[game draw]
+

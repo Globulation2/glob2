@@ -3528,3 +3528,5 @@ Nảy của danh sách
 
 [Map momentum]
 Quán tính bản đồ
+[game draw]
+

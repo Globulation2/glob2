@@ -3532,3 +3532,5 @@ Odraz seznamů
 
 [Map momentum]
 Setrvačnost mapy
+[game draw]
+

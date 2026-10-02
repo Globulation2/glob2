@@ -3530,3 +3530,5 @@ Emoji
 
 [Map momentum]
 شتاب نقشه
+[game draw]
+

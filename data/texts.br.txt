@@ -3528,3 +3528,5 @@ Quique das listas
 
 [Map momentum]
 Inércia do mapa
+[game draw]
+

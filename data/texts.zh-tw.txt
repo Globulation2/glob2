@@ -3604,3 +3604,5 @@ CPU %0%
 
 [Map momentum]
 地圖慣性
+[game draw]
+

@@ -50,6 +50,11 @@ keeps the match summary and launch action available while dense content scrolls.
 - Rules expose victory, terrain visibility, alliance changes, pace and generated
   workers. Standard, Quick clash, Open book and Last colony standing are visible
   presets. Session speed is restored when the match ends.
+- When the sudden-death timer or prestige goal ends a match with non-allied teams
+  tied for the most prestige, the tied players and live watchers see **Draw**
+  instead of a win. Allies that win together still see a win, and teams below the
+  tie still lose. This is presentation only: the engine still marks every tied
+  team as won, so saves, replays and result files are unchanged.
 - [Experimental features](../experimental-features.md) are not lobby rules: they
   come from Settings → Experiments and are baked into the header of every game the
   lobby starts. When any are enabled the footer summary lists them, so a player

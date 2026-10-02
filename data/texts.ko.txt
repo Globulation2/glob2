@@ -3528,3 +3528,5 @@ AI 추가
 
 [Map momentum]
 지도 관성
+[game draw]
+

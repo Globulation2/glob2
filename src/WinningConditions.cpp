@@ -436,3 +436,26 @@ void WinningConditionSuddenDeath::decodeData(GAGCore::InputStream* stream, Uint3
 }
 
 
+
+TeamOutcome classifyTeamOutcome(const Game* game, int team)
+{
+	const Team* self = game->teams[team];
+	if (self->hasLost)
+		return TeamOutcome::Lost;
+	if (!self->hasWon)
+		return TeamOutcome::Undecided;
+	for (int i = 0; i < game->mapHeader.getNumberOfTeams(); ++i)
+		if (i != team && game->teams[i]->hasWon && !teamsAreMutuallyAllied(game, team, i))
+			return TeamOutcome::Draw;
+	return TeamOutcome::Won;
+}
+
+
+
+bool isGameDrawn(const Game* game)
+{
+	for (int i = 0; i < game->mapHeader.getNumberOfTeams(); ++i)
+		if (classifyTeamOutcome(game, i) == TeamOutcome::Draw)
+			return true;
+	return false;
+}

@@ -1763,3 +1763,4 @@
 [settings Animate victory artwork. Reduced motion also disables this animation.]
 [settings Text size]
 [settings Enlarge interface text without changing the map scale.]
+[game draw]

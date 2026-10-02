@@ -3528,3 +3528,5 @@ AIを追加
 
 [Map momentum]
 マップの慣性
+[game draw]
+

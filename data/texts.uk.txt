@@ -3528,3 +3528,5 @@ Emoji
 
 [Map momentum]
 Інерція мапи
+[game draw]
+

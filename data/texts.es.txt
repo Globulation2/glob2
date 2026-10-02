@@ -3532,3 +3532,5 @@ Rebote de las listas
 
 [Map momentum]
 Inercia del mapa
+[game draw]
+

@@ -3530,3 +3530,5 @@ Emoji
 
 [Map momentum]
 Инерция карты
+[game draw]
+

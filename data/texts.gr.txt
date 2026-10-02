@@ -3602,3 +3602,5 @@ CPU %0%
 
 [Map momentum]
 Ορμή χάρτη
+[game draw]
+
