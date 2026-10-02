@@ -124,7 +124,7 @@ void SettingsScreen::buildOnline()
 	section("Server");
 	auto serverRow = [this, origin, connected, stopped](const std::string &server, const std::string &title, const std::string &detail, bool forgettable) {
 		const bool current = server == origin;
-		const std::string key = "online.server." + hostOf(server);
+		const std::string key = "online.select." + hostOf(server);
 		custom(key, [this, server, title, detail, current, forgettable, connected, stopped](const Presentation &p) {
 			ButtonOptions select;
 			select.flat = true;
@@ -163,7 +163,7 @@ void SettingsScreen::buildOnline()
 			detail += " · " + tr("trusted");
 		serverRow(server, hostOf(server), detail, true);
 	}
-	custom("online.other", [this](const Presentation &p) {
+	custom("online.other.field", [this](const Presentation &p) {
 		auto check = [this] {
 			const auto normalized = Online::normalizeOrigin(online->serverDraft);
 			online->checked = Json();
@@ -201,7 +201,7 @@ void SettingsScreen::buildOnline()
 			methods += (methods.empty() ? "" : ", ") + providerLabel(provider);
 		const std::string name = online->checked.value("name", hostOf(online->checkedOrigin));
 		const std::string target = online->checkedOrigin;
-		custom("online.checked", [this, compatible, queues, methods, name, target](const Presentation &p) {
+		custom(compatible ? "online.switch" : "", [this, compatible, queues, methods, name, target](const Presentation &p) {
 			std::vector<Element> lines{row({label("\"" + name + "\""), caption(compatible ? tr("compatible with this version") : tr("plays another version"), false)}, {p.pt(8), CrossAlign::Center}),
 									   paragraph(GAGCore::FormattableString(tr("Sign in with: %0 · queues: %1")).arg(methods.empty() ? "–" : methods).arg(queues.empty() ? "–" : queues), {FontRole::Support, true})};
 			if (compatible)
@@ -225,7 +225,7 @@ void SettingsScreen::buildOnline()
 	else
 	{
 		const bool canRename = account->raw.value("canRename", account->kind == "registered");
-		custom("online.name", [this, canRename](const Presentation &p) {
+		custom("online.name.field", [this, canRename](const Presentation &p) {
 			TextFieldOptions options;
 			options.maxLength = 32;
 			options.enabled = canRename;
@@ -262,7 +262,7 @@ void SettingsScreen::buildOnline()
 					detail = identity.value("email", tr("linked"));
 				}
 			const std::string name = providerLabel(provider);
-			custom("online.provider." + id, [this, id, name, detail, isLinked, last = linked.size() <= 1](const Presentation &p) {
+			custom("online.link." + id, [this, id, name, detail, isLinked, last = linked.size() <= 1](const Presentation &p) {
 				ButtonOptions action;
 				action.enabled = !isLinked;
 				if (isLinked)
@@ -278,12 +278,12 @@ void SettingsScreen::buildOnline()
 		if (handoff.state == Online::PlatformClient::Handoff::State::Waiting)
 			info(GAGCore::FormattableString(tr("Finish in your browser. It shows the code %0.")).arg(handoff.confirmationCode));
 		if (account->kind == "registered")
-			custom("online.signout", [this](const Presentation &p) {
+			custom("online.signout.button", [this](const Presentation &p) {
 				return row({expanded(column({label(tr("Sign out on this device")), paragraph(tr("You'll be a new guest until you sign in again. Your account and matches stay on the server."), {FontRole::Support, true})}, {0})),
 							Glob2UI::button("online.signout.button", tr("Sign out"), [this] { Online::services().client.signOut(); invalidate(); })},
 						   {p.pt(8), CrossAlign::Center});
 			});
-		custom("online.data", [this, origin](const Presentation &p) {
+		custom("online.data.open", [this, origin](const Presentation &p) {
 			return row({expanded(column({label(tr("Download or delete my data")), caption(GAGCore::FormattableString(tr("Opens your account page on %0.")).arg(hostOf(origin)))}, {0})),
 						Glob2UI::button("online.data.open", tr("Open"), [origin] { GAGCore::ApplicationHost::openUrl(origin + "/account"); })},
 					   {p.pt(8), CrossAlign::Center});
