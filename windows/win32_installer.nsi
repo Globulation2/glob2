@@ -52,32 +52,65 @@ Function ${PREFIX}ClearOwned
   Push $0
   Push $1
   Push $2
+  Push $3
   ClearErrors
   FileOpen $0 "$INSTDIR\.glob2-owned-files.txt" r
-  IfErrors done
-  loop:
+  IfErrors 0 opened
+  ; Absence is expected during a first legacy upgrade; unreadable metadata is
+  ; different. The uninstall section independently requires the inventory.
+  IfFileExists "$INSTDIR\.glob2-owned-files.txt" 0 done
+    StrCpy $CleanupFailed 1
+    Goto done
+  opened:
+    FileSeek $0 0 END $3
+    StrCmp $3 0 invalid
+    IntOp $2 $3 % 2
+    StrCmp $2 0 +2
+    Goto invalid
+    FileSeek $0 0 SET
+  validate:
     ClearErrors
     FileReadUTF16LE $0 $1
-    IfErrors closed
+    IfErrors validated
     ${${TRIM}} $1 $1
-    StrCmp $1 "" loop
+    StrCmp $1 "" validate
     StrCpy $2 $1 1
-    StrCmp $2 "\" loop
-    StrCmp $2 "/" loop
+    StrCmp $2 "\" invalid
+    StrCmp $2 "/" invalid
     ${${SEARCH}} $2 $1 ".."
     StrCmp $2 "" +2
-    Goto loop
+    Goto invalid
     ${${SEARCH}} $2 $1 ":"
     StrCmp $2 "" +2
-    Goto loop
+    Goto invalid
+    Goto validate
+  validated:
+    FileSeek $0 0 CUR $2
+    StrCmp $2 $3 +2
+    Goto invalid
+    ; Validate the whole inventory before removing anything. An invalid path or
+    ; truncated UTF-16 record must leave a repairable installation intact.
+    FileSeek $0 0 SET
+  remove:
+    ClearErrors
+    FileReadUTF16LE $0 $1
+    IfErrors finished
+    ${${TRIM}} $1 $1
+    StrCmp $1 "" remove
     ClearErrors
     Delete "$INSTDIR\$1"
     IfErrors 0 +2
       StrCpy $CleanupFailed 1
-    Goto loop
+    Goto remove
+  finished:
+    FileSeek $0 0 CUR $2
+    StrCmp $2 $3 closed
+  invalid:
+    StrCpy $CleanupFailed 1
   closed:
     FileClose $0
   done:
+  Pop $3
   Pop $2
   Pop $1
   Pop $0
@@ -109,7 +142,7 @@ Section "Install"
   Call ClearOwned
   ${If} $CleanupFailed != 0
     SetErrorLevel 1
-    Abort "Close Globulation 2 and retry. Previous application files could not be removed."
+    Abort "Previous files or inventory could not be read/removed. Close Globulation 2, check the installation and retry."
   ${EndIf}
   ClearErrors
   !include "${LIST_DIR}\install.nsh"
@@ -139,10 +172,14 @@ FunctionEnd
 
 Section "Uninstall"
   SetShellVarContext all
+  IfFileExists "$INSTDIR\.glob2-owned-files.txt" inventoryPresent
+    SetErrorLevel 1
+    Abort "The installation inventory is missing. Reinstall Globulation 2 before uninstalling."
+  inventoryPresent:
   Call un.ClearOwned
   ${If} $CleanupFailed != 0
     SetErrorLevel 1
-    Abort "Close Globulation 2 and retry uninstall. Recovery metadata has been retained."
+    Abort "Application files or inventory could not be read/removed. Close Globulation 2 and retry; recovery metadata has been retained."
   ${EndIf}
   Delete "$INSTDIR\.glob2-owned-files.txt"
   Delete "$INSTDIR\glob2win32-uninst.exe"
