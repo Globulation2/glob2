@@ -1,47 +1,48 @@
 // The HTTP application, built from injected services so tests can run it
 // against a test database without listening on a port.
 //
-// Route prefixes: /api/v1 (public REST), /realtime (WebSocket, M3), /internal
-// (relays and agents, M4), /.well-known (JWKS, M3).
+// Route prefixes: /api/v1 (public REST), /realtime (WebSocket), /internal
+// (relays and agents, M4), /.well-known (JWKS), and the browser sign-in pages
+// /signin and /auth/<provider>/… (served here, so they share the API's origin
+// and cookies).
 import Fastify, { type FastifyBaseLogger, type FastifyError, type FastifyInstance } from 'fastify';
+import cookie from '@fastify/cookie';
+import formbody from '@fastify/formbody';
+import rateLimit from '@fastify/rate-limit';
+import websocket from '@fastify/websocket';
 import { sql, type Kysely } from 'kysely';
-import type { AccessPolicy, BlobStore, JobQueue, Logger, PlatformConfig } from '@glob2/core';
-import type { Database, PgPubSub } from '@glob2/db';
+import type { Database } from '@glob2/db';
 import {
   parseSimVersionKey,
   type ErrorBody,
   type InstanceInfo,
   type SimVersion,
 } from '@glob2/protocol';
+import { HttpError, apiError } from './errors.ts';
+import { createIdentity, type Identity } from './identity.ts';
+import type { ApiServices } from './services.ts';
+import { accountRoutes } from './routes/accounts.ts';
+import { adminRoutes } from './routes/admin.ts';
+import { authRoutes } from './routes/auth.ts';
+import { signinRoutes } from './routes/signin.ts';
+import { MAX_FRAME_BYTES, realtimeRoutes, type RealtimeOptions } from './realtime/server.ts';
 
-export interface ApiServices {
-  config: PlatformConfig;
-  logger: Logger;
-  db: Kysely<Database>;
-  pubsub: PgPubSub;
-  jobs: JobQueue;
-  blobs: BlobStore;
-  access: AccessPolicy;
-}
+export type { ApiServices } from './services.ts';
+export { HttpError } from './errors.ts';
 
 declare module 'fastify' {
   interface FastifyInstance {
     services: ApiServices;
+    identity: Identity;
   }
+}
+
+export interface BuildOptions {
+  realtime?: RealtimeOptions;
 }
 
 /** An engine agent counts as available if it was seen this recently. */
 const AGENT_FRESHNESS_SECONDS = 300;
-
-export class HttpError extends Error {
-  readonly statusCode: number;
-  readonly body: ErrorBody;
-  constructor(statusCode: number, body: ErrorBody) {
-    super(body.message);
-    this.statusCode = statusCode;
-    this.body = body;
-  }
-}
 
 function errorBodyFor(error: FastifyError): { status: number; body: ErrorBody } {
   if (error instanceof HttpError) return { status: error.statusCode, body: error.body };
@@ -76,14 +77,19 @@ export async function supportedSimVersions(db: Kysely<Database>): Promise<SimVer
   return rows.flatMap((row) => parseSimVersionKey(row.sim_version) ?? []);
 }
 
-export async function buildApp(services: ApiServices): Promise<FastifyInstance> {
+export async function buildApp(
+  services: ApiServices,
+  options: BuildOptions = {},
+): Promise<FastifyInstance> {
   const app = Fastify({
     loggerInstance: services.logger as FastifyBaseLogger,
     trustProxy: true,
     bodyLimit: 1024 * 1024,
     requestIdHeader: 'x-request-id',
   });
+  const identity = createIdentity(services);
   app.decorate('services', services);
+  app.decorate('identity', identity);
 
   app.setErrorHandler((error: FastifyError, request, reply) => {
     const { status, body } = errorBodyFor(error);
@@ -98,11 +104,22 @@ export async function buildApp(services: ApiServices): Promise<FastifyInstance> 
     void reply.status(404).send(body);
   });
 
+  await app.register(cookie);
+  await app.register(formbody, { bodyLimit: 64 * 1024 });
+  // Per-replica, per-address limits; auth routes set tighter ones of their own.
+  await app.register(rateLimit, {
+    global: true,
+    max: identity.limits.apiPerMinute,
+    timeWindow: 60_000,
+    errorResponseBuilder: () => apiError('rate_limited', 'Too many requests.'),
+  });
+  await app.register(websocket, { options: { maxPayload: MAX_FRAME_BYTES } });
+
   // Liveness: the process is up.
-  app.get('/healthz', async () => ({ status: 'ok' }));
+  app.get('/healthz', { config: { rateLimit: false } }, async () => ({ status: 'ok' }));
 
   // Readiness: the database answers. Load balancers route only to ready replicas.
-  app.get('/readyz', async (_request, reply) => {
+  app.get('/readyz', { config: { rateLimit: false } }, async (_request, reply) => {
     try {
       await sql`SELECT 1`.execute(services.db);
       return { status: 'ready' };
@@ -120,11 +137,16 @@ export async function buildApp(services: ApiServices): Promise<FastifyInstance> 
       origin,
       realtimeUrl: `${origin.replace(/^http/, 'ws')}/realtime`,
       supportedSimVersions: await supportedSimVersions(services.db),
-      authProviders: config.instance.auth.providers.map((provider) => ({
-        id: provider.id,
-        kind: provider.kind,
-        displayName: provider.displayName,
-      })),
+      authProviders: [
+        ...identity.providers.list().map((provider) => ({
+          id: provider.id,
+          kind: provider.kind,
+          displayName: provider.displayName,
+        })),
+        ...(identity.localAuth.enabled
+          ? [{ id: 'local', kind: 'local' as const, displayName: 'Username and password' }]
+          : []),
+      ],
       queues: config.instance.queues.map((queue) => ({
         id: queue.id,
         name: queue.name,
@@ -137,6 +159,13 @@ export async function buildApp(services: ApiServices): Promise<FastifyInstance> 
       guestsAllowed: config.instance.guests.enabled,
     };
   });
+
+  await authRoutes(app, identity);
+  await accountRoutes(app, identity);
+  await adminRoutes(app, identity);
+  await signinRoutes(app, identity);
+  await app.register(async (scope) => realtimeRoutes(scope, identity, options.realtime));
+  await identity.hub.start();
 
   return app;
 }
