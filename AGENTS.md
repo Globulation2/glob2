@@ -110,11 +110,18 @@ Fetch current master before final validation and resolve actual conflicts. Do no
 merge or rebase merely because unrelated commits advanced master: PR CI tests the
 merge result against its recorded base. If newer base changes affect the same
 components, dependencies or CI configuration, refresh integration validation.
-Respect branch protection and address failures from the selected checks before
-merging; do not shorten feedback loops by hiding failures or dropping relevant tests.
+Respect branch protection and address known regressions from selected checks.
+When a maintainer explicitly authorizes an incremental, low-risk CI repair with
+checks pending, record concrete validation, pending checks and material limits,
+then monitor and repair master promptly. This does not authorize merging known
+regressions or dropping relevant tests.
 
-For CI speed changes, compare runner queue time with execution time, preserve the
-selected-case inventory, and record the before/after job count and validation limits.
-Prefer reusing built artifacts and avoiding irrelevant jobs over repeatedly raising
+For CI speed changes, record queue delay, execution time, runner minutes and time
+to result separately. Preserve the selected-case inventory and compare ten
+successful runs with matching event and coverage before claiming savings. Keep
+projections distinct from measurements; require a complete hosted master pass
+before enabling reduced PR compatibility tiers.
+Reuse artifacts only when source revision, compiler, flags and dependency inputs
+match. Prefer reusing built artifacts and avoiding irrelevant jobs over repeatedly raising
 concurrency or rebuilding the same inputs. Keep repair PRs focused so unrelated
 feature work does not hold up a validated fix.
