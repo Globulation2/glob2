@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:MapLikeResult",
+  "title": "MapLikeResult",
+  "type": "object",
+  "required": [
+    "liked",
+    "likes"
+  ],
+  "properties": {
+    "liked": {
+      "type": "boolean"
+    },
+    "likes": {
+      "type": "integer",
+      "minimum": 0
+    }
+  }
+}

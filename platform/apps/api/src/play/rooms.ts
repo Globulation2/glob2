@@ -375,6 +375,13 @@ export class RoomService {
         .select(['v.team_count', 'm.id'])
         .where('v.hash', '=', selection.hash)
         .where('v.validation', '=', 'valid')
+        // Files saved by a newer engine than the room's cannot load.
+        .where((eb) =>
+          eb.or([
+            eb('v.min_version_minor', 'is', null),
+            eb('v.min_version_minor', '<=', parseSimVersionKey(simVersion)?.versionMinor ?? 0),
+          ]),
+        )
         .where('m.hidden', '=', false)
         .where((eb) =>
           eb.or([eb('m.visibility', '!=', 'private'), eb('m.owner_account_id', '=', hostId)]),
@@ -811,14 +818,18 @@ export class RoomService {
       }
       if (accountId === caller.id) throw apiError('bad_request', 'Leave the room instead.');
       if (room.status !== 'open') {
-        throw apiError('conflict', 'Players cannot be removed while a match is starting or running.');
+        throw apiError(
+          'conflict',
+          'Players cannot be removed while a match is starting or running.',
+        );
       }
       const removed = await trx
         .deleteFrom('room_members')
         .where('room_id', '=', roomId)
         .where('account_id', '=', accountId)
         .executeTakeFirst();
-      if (removed.numDeletedRows === 0n) throw apiError('not_found', 'That player is not in this room.');
+      if (removed.numDeletedRows === 0n)
+        throw apiError('not_found', 'That player is not in this room.');
       await trx
         .updateTable('room_seats')
         .set({ occupant: 'open', account_id: null, ready: false })
@@ -838,7 +849,12 @@ export class RoomService {
         )
         .execute();
       await this.bump(trx, roomId);
-      await publishPlay(trx, { t: 'roomClosed', roomId, reason: 'kicked', accountIds: [accountId] });
+      await publishPlay(trx, {
+        t: 'roomClosed',
+        roomId,
+        reason: 'kicked',
+        accountIds: [accountId],
+      });
     });
     return this.mustState(roomId);
   }
@@ -1354,7 +1370,10 @@ export class RoomService {
         });
       });
     }
-    await this.db.deleteFrom('room_kicks').where('until', '<=', sql<Date>`now()`).execute();
+    await this.db
+      .deleteFrom('room_kicks')
+      .where('until', '<=', sql<Date>`now()`)
+      .execute();
     return { closed, removed: gone.length };
   }
 }
