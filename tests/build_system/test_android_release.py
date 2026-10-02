@@ -81,6 +81,18 @@ class AndroidReleaseTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "already points to another commit"):
                 android_release.check_prior_tags()
 
+    def test_candidate_allows_current_release_tag_without_republishing(self):
+        with mock.patch.object(android_release.subprocess, "check_output",
+                               return_value="v0.9.5.4\n") as git:
+            android_release.check_prior_tags(candidate=True)
+            self.assertEqual(git.call_count, 1)
+
+    def test_candidate_still_rejects_version_rollback(self):
+        with mock.patch.object(android_release.subprocess, "check_output",
+                               return_value="v0.9.5.5\n"):
+            with self.assertRaisesRegex(ValueError, "would not increase"):
+                android_release.check_prior_tags(candidate=True)
+
     def test_apk_rejects_second_abi_and_wrong_version(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

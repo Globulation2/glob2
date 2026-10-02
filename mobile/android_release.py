@@ -40,7 +40,7 @@ def version_code(arch, root=ROOT):
     return release_identity(root)["versionCodeBase"] * 10 + ABI_CODES[arch]
 
 
-def check_prior_tags(root=ROOT):
+def check_prior_tags(root=ROOT, *, candidate=False):
     identity = release_identity(root)
     current = identity["versionCodeBase"]
     tags = subprocess.check_output(["git", "tag", "--list", "v*"], cwd=root, text=True).splitlines()
@@ -50,6 +50,10 @@ def check_prior_tags(root=ROOT):
             continue
         previous = sum(int(part) * factor for part, factor in zip(parts, (1000000, 10000, 100, 1)))
         if tag == "v" + identity["versionName"]:
+            # Candidate APKs validate the current identity without publishing
+            # or replacing the release tag. Publishing retains the strict check.
+            if candidate:
+                continue
             head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip()
             tagged = subprocess.check_output(["git", "rev-parse", tag + "^{commit}"], cwd=root, text=True).strip()
             if head != tagged:
@@ -172,12 +176,14 @@ def verify_apk(apk, arch, sdk, root=ROOT, require_dependency_manifest=True):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("command", choices=("check", "check-listing", "verify-apk", "code"))
+    parser.add_argument("--candidate", action="store_true",
+                        help="validate an unpublished candidate without reusing the release tag")
     parser.add_argument("--arch", choices=tuple(ABI_CODES))
     parser.add_argument("--apk", type=Path)
     parser.add_argument("--android-sdk", type=Path, default=None)
     args = parser.parse_args()
     if args.command == "check":
-        check_prior_tags()
+        check_prior_tags(candidate=args.candidate)
         check_recipe()
         print(release_identity()["versionName"])
     elif args.command == "check-listing":

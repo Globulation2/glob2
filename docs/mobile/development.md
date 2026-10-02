@@ -356,6 +356,11 @@ F-Droid release uses
 name and base code. The three single-ABI APKs have codes `10 * base + 1` for
 `armeabi-v7a`, `+ 2` for `arm64-v8a`, and `+ 3` for `x86_64`. `build --fdroid` checks the
 APK's package name, version, ABI, alignment, native symbols, and indexed assets.
+The mobile CI workflow uses `mobile/android_release.py check --candidate` for
+unpublished APKs: the existing tag for the current version may point to the
+previous release, but version rollback is still rejected. Publishing workflows
+use the strict check below, which rejects replacing an existing release tag.
+
 `mobile/android_release.py check` verifies the release manifest against the
 desktop package version. The signed output of `sign` is for development and
 device testing; F-Droid signs its own published APKs.
