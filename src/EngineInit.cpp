@@ -192,6 +192,7 @@ GAGCore::CooperativeTask Engine::initTurnMatchTask(TurnMatchStart start)
     // Every human order is checked against this game before it executes, on every
     // client and in the verifier alike (OrderValidation.h).
     session->validator = [this](int player, Order& order) { return OrderValidation::validate(gui.game, player, order); };
+    session->onLocalQuit = [this] { leaveTurnMatch(); };
     turn = session.get();
     net = std::move(session);
     const char* envReplayPath = getenv("GLOB2_REPLAY_PATH");

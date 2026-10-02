@@ -11,6 +11,7 @@
 
 #include "NetTransport.h"
 #include "RelayTransport.h"
+#include "TurnMessages.h"
 
 namespace
 {
@@ -140,6 +141,23 @@ TEST_SUITE("RelayTransport")
 		link.pending = 0;
 		CHECK(Online::lingeringRelayConnections() == 0);
 		CHECK(link.closed);
+
+		// After a Quit the relay closes the connection; it stays open (and is read)
+		// until then, even once everything is written.
+		FakeLink quitting;
+		{
+			Online::RelayTransport transport("wss://play.example.org/relay/relay-1",
+			                                 [&] { return std::make_unique<FakeTransport>(quitting); });
+			transport.connect();
+			quitting.state = NetTransport::State::Connected;
+			CHECK(transport.send(Turn::TurnCodec::encode(Turn::Quit())));
+		}
+		quitting.incoming.push_back({0, 1, 7}); // a bundle still on its way
+		CHECK(Online::lingeringRelayConnections() == 1);
+		CHECK(quitting.incoming.empty());
+		CHECK_FALSE(quitting.closed);
+		quitting.state = NetTransport::State::Closed; // the relay closed it
+		CHECK(Online::lingeringRelayConnections() == 0);
 
 		// Nothing queued: it closes at once.
 		FakeLink idle;

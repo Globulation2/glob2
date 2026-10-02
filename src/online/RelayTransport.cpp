@@ -59,6 +59,7 @@ struct Lingering
 {
 	std::unique_ptr<NetTransport> link;
 	std::uint32_t since = 0;
+	bool awaitClose = false; ///< a Quit was sent: wait for the relay to close
 };
 std::vector<Lingering> &lingering()
 {
@@ -73,8 +74,14 @@ void pumpLingeringRelayConnections()
 	const std::uint32_t now = SDL_GetTicks();
 	for (auto it = links.begin(); it != links.end();)
 	{
-		if (it->link->pendingOutgoing() == 0 || it->link->state() != NetTransport::State::Connected ||
-			now - it->since > LINGER_MS)
+		// Read and drop whatever still arrives: closing a socket with unread input
+		// resets it, and a reset can discard the Quit before the relay reads it.
+		std::vector<std::uint8_t> ignored;
+		while (it->link->receive(ignored))
+			ignored.clear();
+		const bool written = it->link->pendingOutgoing() == 0;
+		const bool closedByRelay = it->link->state() != NetTransport::State::Connected;
+		if (closedByRelay || (written && !it->awaitClose) || now - it->since > LINGER_MS)
 		{
 			it->link->close();
 			it = links.erase(it);
@@ -92,12 +99,13 @@ std::size_t lingeringRelayConnections()
 
 RelayTransport::~RelayTransport()
 {
-	// The last frames (Quit, a PlayerQuitsGameOrder) are usually still queued when the
-	// game tears the session down; closing now would drop them and the relay would
-	// hold the seat for its reconnect grace instead of sequencing the quit.
-	if (link && link->state() == NetTransport::State::Connected && link->pendingOutgoing() > 0)
+	// The last frames (Quit) are usually still queued when the game tears the session
+	// down. Closing now would drop them, or reset the connection before the relay has
+	// read them, and the relay would hold the seat for its reconnect grace. After a
+	// Quit the relay closes the connection itself; wait for that.
+	if (link && link->state() == NetTransport::State::Connected && (sentQuit || link->pendingOutgoing() > 0))
 	{
-		lingering().push_back({std::move(link), SDL_GetTicks()});
+		lingering().push_back({std::move(link), SDL_GetTicks(), sentQuit});
 		return;
 	}
 	close();
@@ -126,6 +134,7 @@ void RelayTransport::connect()
 	close();
 	reader.clear();
 	lastError.clear();
+	sentQuit = false;
 	link = factory();
 	try
 	{
@@ -153,7 +162,11 @@ bool RelayTransport::send(const std::vector<std::uint8_t>& payload)
 	if (!link || link->state() != NetTransport::State::Connected)
 		return false;
 	auto frame = relayFrame(payload);
-	return !frame.empty() && link->send(std::move(frame));
+	if (frame.empty() || !link->send(std::move(frame)))
+		return false;
+	if (!payload.empty() && payload[0] == Turn::MSG_QUIT)
+		sentQuit = true;
+	return true;
 }
 
 void RelayTransport::pump()

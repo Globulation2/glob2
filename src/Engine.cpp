@@ -29,6 +29,11 @@ Engine::~Engine()
         globalContainer->settings.save();
     }
     if (multiplayer) multiplayer->setNetEngine(nullptr);
+	// Closing the window stops every screen without finishing the session: a turn
+	// match still says goodbye, and its relay connection lingers until the Quit is
+	// written (RelayTransport).
+	try { leaveTurnMatch(); }
+	catch (...) {}
 	// Finalize the replay of the session this Engine ran, if any.
 	// initGame allocated the writer; destroying it (ReplayWriter::finish)
 	// writes the NullOrder terminator and flushes the replay file. This must
