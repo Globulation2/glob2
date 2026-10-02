@@ -38,14 +38,14 @@ class WindowsStoreReleaseTest(unittest.TestCase):
                     "libwinpthread-1.dll": "DLL Name: KERNEL32.dll\n",
                 }[name]
 
-            with patch.object(release.subprocess, "check_output", side_effect=imports):
+            with patch("tools.release.windows_runtime.subprocess.check_output", side_effect=imports):
                 release.stage_dlls(exe, dll_dir, destination)
             self.assertEqual({p.name for p in destination.iterdir()}, {"SDL3.dll", "libwinpthread-1.dll"})
 
     def test_missing_non_system_dll_fails(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            with patch.object(release.subprocess, "check_output", return_value="DLL Name: missing.dll\n"):
+            with patch("tools.release.windows_runtime.subprocess.check_output", return_value="DLL Name: missing.dll\n"):
                 with self.assertRaisesRegex(RuntimeError, "missing.dll"):
                     release.stage_dlls(root / "glob2.exe", root, root)
 

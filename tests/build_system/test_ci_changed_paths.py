@@ -240,8 +240,24 @@ class ChangedPathsTest(unittest.TestCase):
                 self.assertLess(cache, compile)
                 self.assertEqual(block.count("git config --local core.autocrlf true"), 1)
 
+    def test_linux_runtime_shards_do_not_wait_for_clang_but_gate_requires_it(self):
+        root = SCRIPT.parents[2]
+        workflow = (root / ".github/workflows/build.yml").read_text()
+        gcc = workflow.split("  linux-build:\n", 1)[1].split("  linux-clang:\n", 1)[0]
+        tests = workflow.split("  linux-tests:\n", 1)[1].split("  linux:\n", 1)[0]
+        gate = workflow.split("  linux:\n", 1)[1].split("  linux-variants:\n", 1)[0]
+        self.assertNotIn("clang-18", gcc)
+        self.assertIn("needs: [changes, linux-build]", tests)
+        self.assertNotIn("linux-clang", tests)
+        self.assertIn("needs: [changes, linux-build, linux-clang, linux-tests]", gate)
+        self.assertIn('test "$CLANG_RESULT" = success', gate)
+        self.assertEqual(workflow.count("uses: ./.github/workflows/ci-linux-build.yml"), 2)
+        self.assert_jobs([".github/workflows/ci-linux-build.yml"], native=True,
+                         browser=True, map_generators=True, deployment=True, cross_platform=True)
+
     def test_javascript_evidence_steps_are_visible_to_ci_failure_summary(self):
         workflow = (SCRIPT.parents[2] / ".github/workflows/build.yml").read_text()
+        workflow += (SCRIPT.parents[2] / ".github/workflows/ci-linux-build.yml").read_text()
         for name, identifier in (
             ("Execute shared JavaScript corpus", "execute_shared_javascript_corpus"),
             ("Verify frozen JavaScript simulation profile", "verify_frozen_javascript_simulation_profile"),

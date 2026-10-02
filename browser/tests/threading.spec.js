@@ -70,6 +70,28 @@ test('threaded startup failure reloads the serial runtime',async({page})=>{
   expect(state.threadFallback).toContain('test startup failure');
 });
 
+test('a real pthread worker error after the probe reloads the serial runtime', async ({page}) => {
+  await page.addInitScript(() => {
+    const NativeWorker = window.Worker;
+    window.Worker = class extends NativeWorker {
+      constructor(url, options) {
+        if (String(url).includes('/threaded/index')) {
+          url = URL.createObjectURL(new Blob([
+            'throw new Error("test pthread startup failure");'
+          ], {type:'text/javascript'}));
+        }
+        super(url, options);
+      }
+    };
+  });
+  await page.goto(gameURL());
+  await page.waitForURL(url => url.searchParams.get('threads') === 'serial');
+  await screen(page, 'MainMenuScreen');
+  const state = await page.evaluate(() => glob2Diagnostics.snapshot());
+  expect(state.executionMode).toBe('serial');
+  expect(state.threadFallback).toContain('test pthread startup failure');
+});
+
 
 test('threaded audio produces PCM, keeps settings responsive and shuts down cleanly', async ({page}) => {
   await page.goto('/?renderer=software');

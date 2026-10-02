@@ -70,8 +70,10 @@ modules:
 
   - name: pybind11-build-tool
     buildsystem: simple
+    # Pillow needs only this header-only project's Python build helpers/headers.
+    # Installing the source directly avoids scikit-build-core in the sandbox.
     build-commands:
-      - export PYTHONPATH="/app/lib/python$(python3 -c 'import sys; print(str(sys.version_info.major)+"."+str(sys.version_info.minor))')/site-packages${PYTHONPATH:+:$PYTHONPATH}"; python3 -m pip install --no-index --no-build-isolation --no-deps --prefix=/app .
+      - site="/app/lib/python$(python3 -c 'import sys; print(str(sys.version_info.major)+"."+str(sys.version_info.minor))')/site-packages"; mkdir -p "$site"; cp -a pybind11 "$site/"; cp -a include "$site/pybind11/"
     cleanup:
       - /lib/python*/site-packages/pybind11*
       - /lib/python*/site-packages/_distutils_hack
@@ -109,9 +111,35 @@ modules:
     buildsystem: cmake-ninja
     builddir: true
     config-opts:
+      - -DSDLIMAGE_ANI=OFF
+      - -DSDLIMAGE_AVIF=OFF
+      - -DSDLIMAGE_BMP=OFF
+      - -DSDLIMAGE_GIF=OFF
+      - -DSDLIMAGE_JPG=ON
+      - -DSDLIMAGE_JXL=OFF
+      - -DSDLIMAGE_LBM=OFF
+      - -DSDLIMAGE_PCX=OFF
+      - -DSDLIMAGE_PNG=ON
+      - -DSDLIMAGE_PNM=OFF
+      - -DSDLIMAGE_QOI=OFF
+      - -DSDLIMAGE_SVG=OFF
+      - -DSDLIMAGE_TGA=OFF
+      - -DSDLIMAGE_TIF=OFF
       - -DSDLIMAGE_WEBP=ON
+      - -DSDLIMAGE_XCF=OFF
+      - -DSDLIMAGE_XPM=OFF
+      - -DSDLIMAGE_XV=OFF
+      - -DBUILD_SHARED_LIBS=ON
       - -DSDLIMAGE_DEPS_SHARED=OFF
+      - -DSDLIMAGE_STRICT=ON
+      - -DSDLIMAGE_BACKEND_STB=OFF
+      - -DSDLIMAGE_BACKEND_IMAGEIO=OFF
       - -DSDLIMAGE_SAMPLES=OFF
+      - -DSDLIMAGE_TESTS=OFF
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DSDLIMAGE_PNG_SAVE=ON
+      - -DSDLIMAGE_JPG_SAVE=ON
+      - -DSDLIMAGE_WEBP_SAVE=OFF
     sources:
       - type: archive
         url: https://github.com/libsdl-org/SDL_image/releases/download/release-3.4.6/SDL3_image-3.4.6.tar.gz

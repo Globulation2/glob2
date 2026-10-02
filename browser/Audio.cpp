@@ -113,7 +113,10 @@ extern "C" void __wrap_SDL_DestroyAudioStream(SDL_AudioStream* stream) {
         SDL_SetError("Unable to close browser audio on the UI thread");
         return;
     }
-    audio.reset(); // queued mixes retain the disabled state, never callback-owned mixer data
+    // The UI barrier stops new requests. Drain disabled requests on the owner
+    // before pthread shutdown discards queued arguments.
+    emscripten_proxy_execute_queue(queue);
+    audio.reset();
 }
 extern "C" bool __wrap_SDL_PutAudioStreamData(SDL_AudioStream* stream, const void* data, int size) {
     if (!producing || !audio || audio->stream != stream)

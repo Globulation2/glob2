@@ -77,7 +77,7 @@ jobs:
             mingw-w64-x86_64-speex mingw-w64-x86_64-zlib
             mingw-w64-x86_64-fribidi mingw-w64-x86_64-pcre
             mingw-w64-x86_64-openssl mingw-w64-x86_64-boost
-            mingw-w64-x86_64-libepoxy mingw-w64-x86_64-libsystre
+            mingw-w64-x86_64-libepoxy mingw-w64-x86_64-libsystre mingw-w64-x86_64-cmake mingw-w64-x86_64-ninja
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: Globulation2/glob2
@@ -88,9 +88,9 @@ jobs:
           python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
-          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j$(nproc) release=1 mingw=1 server=0 build/mingw/client/release/src/glob2.exe
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j$(nproc) release=1 mingw=1 server=0 lean_images=1 build/mingw/client/release/lean-images/src/glob2.exe
           python3 tools/release/package_windows.py \
-            build/mingw/client/release/src/glob2.exe \
+            build/mingw/client/release/lean-images/src/glob2.exe \
             --stage-dir artifacts/epic/windows \
             --manifest artifacts/epic/SHA256SUMS.txt
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2

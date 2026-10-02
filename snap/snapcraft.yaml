@@ -44,6 +44,10 @@ parts:
       - python3-venv
       - scons
       - cmake
+      - ninja-build
+      - libpng-dev
+      - libjpeg-dev
+      - libwebp-dev
       - libfreetype-dev
       - libx11-dev
       - libxext-dev
@@ -92,7 +96,7 @@ parts:
       craftctl set version="$(python3 tools/release/release.py check)"
       python3 scons/sdl3_dependencies.py --prefix "$CRAFT_PART_BUILD/build/sdl3/prefix" --work "$CRAFT_PART_BUILD/build/sdl3/sources"
       export GLOB2_SDL3_PREFIX="$CRAFT_PART_BUILD/build/sdl3/prefix"
-      scons -j2 release=1 server=0 \
+      scons -j2 release=1 server=0 lean_images=1 \
         BINDIR="$CRAFT_PART_INSTALL/usr/bin" \
         INSTALLDIR="$CRAFT_PART_INSTALL/usr/share" \
         DATADIR=/usr/share install

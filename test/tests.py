@@ -27,6 +27,7 @@ ENGINE_SUPPORT = [
 ENGINE_TESTS = [
     # This fixture selects SDL's dummy driver; isolate its client context from display cases.
     'ScreenExecutionHarness.cpp',
+    ('AIRecoveryCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('GUIInteractionCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('GUIOrderCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('EditorActionCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
