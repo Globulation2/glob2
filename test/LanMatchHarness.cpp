@@ -28,6 +28,7 @@
 #include <sstream>
 #include <thread>
 
+#include <FormatableString.h>
 #include <StringTable.h>
 #include <Toolkit.h>
 
@@ -476,9 +477,23 @@ TEST_SUITE("LanMatchHarness")
 		CHECK(beforeDrop > 150);
 		bool hostSawReconnecting = false;
 		m.players[2]->room->guestSide()->dropConnection();
+		const auto& strings = *GAGCore::Toolkit::getStringTable();
+		const std::string guestReconnecting =
+			GAGCore::FormattableString(strings.getString("[turn player reconnecting %0]")).arg("Guest B");
+		const std::string hostLost = strings.getString("[turn reconnecting]");
+		bool hostNoticeShown = false, guestNoticeShown = false;
+		auto shows = [](const std::vector<std::string>& lines, const std::string& line) {
+			return std::find(lines.begin(), lines.end(), line) != lines.end();
+		};
 		m.runFor(6000, [&] {
 			hostSawReconnecting |= host.presence(2) == Turn::PresenceState::Reconnecting;
+			// The in-game notice: the host lists the reconnecting guest, the guest
+			// shows its own lost connection.
+			hostNoticeShown |= shows(m.host().engine->gui.connectionNotice(), guestReconnecting);
+			guestNoticeShown |= shows(m.players[2]->engine->gui.connectionNotice(), hostLost);
 		});
+		CHECK(hostNoticeShown);
+		CHECK(guestNoticeShown);
 		CHECK(m.players[2]->sawReconnecting);
 		CHECK(hostSawReconnecting);
 		CHECK(host.presence(2) == Turn::PresenceState::Connected);

@@ -35,7 +35,8 @@ namespace
 enum PressRequest
 {
 	PressReady = 1,
-	PressLeave = 2
+	PressLeave = 2,
+	PressStart = 3
 };
 void request(int code)
 {
@@ -57,7 +58,8 @@ Uint32 timeoutTimer(Uint32, void*)
 class JoinScreen : public LANFindScreen
 {
 public:
-	JoinScreen(ScreenStack& screens, const std::string& address, const std::string& capture) : LANFindScreen(screens), capture(capture)
+	JoinScreen(ScreenStack& screens, const std::string& address, const std::string& capture, bool play = false)
+		: LANFindScreen(screens), capture(capture), play(play)
 	{
 		// Use the real form's entry points; no networking is stubbed.
 		setServer(address);
@@ -71,8 +73,11 @@ public:
             started = true;
             start = SDL_GetTicks64();
             timers[0] = SDL_AddTimer(5000, readyTimer, nullptr);
-            timers[1] = SDL_AddTimer(25000, leaveTimer, nullptr);
-            timers[2] = SDL_AddTimer(40000, timeoutTimer, nullptr);
+            // Playing, the guest stays until the host leaves (the runner stops it).
+            if (!play) {
+                timers[1] = SDL_AddTimer(25000, leaveTimer, nullptr);
+                timers[2] = SDL_AddTimer(40000, timeoutTimer, nullptr);
+            }
             connect();
             return;
         }
@@ -84,6 +89,7 @@ public:
     }
 private:
     std::string capture;
+    bool play = false;
     bool started = false;
     Uint64 start = 0;
     SDL_TimerID timers[3]{};
@@ -94,7 +100,7 @@ private:
 // so the harness asks the layout rather than assuming pixel positions.
 bool press(ScreenStack& screens, int code, std::vector<SDL_Event>& events)
 {
-	const char* key = code == PressReady ? "ready" : "cancel";
+	const char* key = code == PressReady ? "ready" : code == PressStart ? "start" : "cancel";
 	auto* screen = dynamic_cast<GAGGUI::ui::UIScreen*>(screens.top());
 	auto* node = screen ? screen->host().find(key) : nullptr;
 	if (!node)
@@ -231,6 +237,60 @@ bool connectionFailureChecks()
     return true;
 }
 
+// Plays a real game through the room screen: the host presses Start once the guest
+// is ready, both games run in their GameSessionScreens, and after `seconds` of play
+// the host quits the application, which ends the game for the guest. The runner
+// compares both processes' per-tick checksum sidecars.
+int hostPlay(int seconds, const std::string& capture)
+{
+	int captures = 0;
+	Uint64 nextCapture = 0;
+	std::shared_ptr<Lan::LanRoom> room;
+	try { room = Lan::LanRoom::host(hostOptions(0)); }
+	catch (const std::exception& error) { std::printf("HOST FAIL: %s\n", error.what()); return 1; }
+	std::cout << "PAIRING " << room->shareText() << std::endl;
+	std::puts("HOST roster=1");
+	ScreenStack screens(*globalContainer->gfx);
+	screens.push(std::make_unique<LANSessionScreen>(screens, room));
+	auto& host = *room->hostSide();
+	bool pressed = false, quit = false;
+	const Uint64 start = SDL_GetTicks64();
+	while (screens.running()) {
+		std::vector<SDL_Event> events;
+		SDL_Event event;
+		while (SDL_PollEvent(&event)) events.push_back(event);
+		if (!pressed && host.guestCount() == 1 && host.canStart()) {
+			// Press Start once the room screen has rebuilt with the ready guest.
+			auto* screen = dynamic_cast<GAGGUI::ui::UIScreen*>(screens.top());
+			if (screen && screen->host().find("start")) {
+				press(screens, PressStart, events);
+				pressed = true;
+				std::puts("HOST PLAY pressed Start");
+			}
+		}
+		if (pressed && !quit && host.horizon() >= Uint32(seconds * 25)) {
+			std::printf("HOST PLAY horizon=%u, leaving\n", host.horizon());
+			SDL_Event exit{};
+			exit.type = SDL_QUIT;
+			events.push_back(exit);
+			quit = true;
+		}
+		screens.frame(SDL_GetTicks(), events);
+		// Captures of the first seconds of play show the in-game connection notice
+		// (waiting for every player to load).
+		if (pressed && captures < 10 && SDL_GetTicks64() >= nextCapture) {
+			SDL_SaveBMP(globalContainer->gfx->getSDLSurface(), (capture + "-" + std::to_string(captures++) + ".bmp").c_str());
+			nextCapture = SDL_GetTicks64() + 300;
+		}
+		if (SDL_GetTicks64() - start > Uint64(seconds + 120) * 1000) {
+			std::puts("HOST PLAY FAIL: timed out");
+			return 1;
+		}
+	}
+	std::puts(quit ? "HOST PLAY PASS" : "HOST PLAY FAIL: the session ended early");
+	return quit ? 0 : 1;
+}
+
 int host(int cycles, const std::string& capture)
 {
 	std::shared_ptr<Lan::LanRoom> room;
@@ -277,11 +337,28 @@ int main(int argc, char** argv)
 	globals.settings.setGraphicsDetail(false);
 	globals.settings.mute = true;
 	globals.settings.language = "en";
-	globals.settings.setUsername(std::string(argv[1]) == "host" ? "LAN host" : "LAN guest");
+	globals.settings.setUsername(std::string(argv[1]).rfind("host", 0) == 0 ? "LAN host" : "LAN guest");
 	globals.load();
 	if (SDLNet_Init() < 0) return 1;
 	int rc = 0;
 	if (std::string(argv[1]) == "host") rc = connectionFailureChecks() ? host(std::stoi(argv[3]), argv[4]) : 1;
+	else if (std::string(argv[1]) == "host-play") rc = hostPlay(std::stoi(argv[3]), argv[4]);
+	else if (std::string(argv[1]) == "join-play")
+	{
+		ScreenStack screens(*globals.gfx);
+		screens.push(std::make_unique<JoinScreen>(screens, argv[2], std::string(argv[4]) + ".bmp", true));
+		while (screens.running())
+		{
+			std::vector<SDL_Event> events;
+			SDL_Event event;
+			while (SDL_PollEvent(&event))
+			{
+				if (event.type == SDL_USEREVENT) { if (!press(screens, event.user.code, events)) rc = 1; }
+				else events.push_back(event);
+			}
+			screens.frame(SDL_GetTicks(), events);
+		}
+	}
 	else
 	{
 		const std::string source = glob2PreferGzipReadPath(*globals.fileManager, "maps/FourSquares1.map");

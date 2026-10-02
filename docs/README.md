@@ -30,7 +30,8 @@ dated reports and pull-request artifacts do not belong here.
   [window resizing](features/window-resizing.md), and the
   [toroidal view](features/torus-experiment.md).
 - **Map generators:** [design and implementation index](map-generators/README.md).
-- **Multiplayer:** [relay-sequenced turn protocol](multiplayer/turn-protocol.md).
+- **Multiplayer:** [relay-sequenced turn protocol](multiplayer/turn-protocol.md),
+  [LAN games](multiplayer/lan.md) and the [LAN playtest guide](multiplayer/lan-playtest.md).
 - **Tools:** [distributed tournaments](tools/tournaments.md).
 
 - **Mobile platforms:** [builds, responsive UI and verification](mobile/development.md),

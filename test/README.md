@@ -299,16 +299,29 @@ scons -j2 release=1 server=0 lan-test
 python3 test/run_lan_session_test.py build/native-tests/src/LANSessionHarness
 ```
 
-This runs separate host and joining client processes with real SDL lobby widgets,
-YOG anonymous LAN server, game router, and paired WSS connections. The joiner uses the
-actual `LANFindScreen` Pair and connect path with the host session fingerprint. It clicks Ready and Leave Game, then rejoins.
-Both cycles force a map download and compare the downloaded `.gz` bytes against
-the fixture source (`maps/FourSquares1.map.gz`) byte for byte: the host's private
-copy is already gzip-compressed, so the transfer exercises sending a locally
-compressed map without gzipping it again, and a new receiver stores the download
-as `.gz` without unzipping it. The host verifies readiness, roster size, unique
-player IDs, slot masks, and both departures. The map's current size is not hardcoded
-in the test. Linux CI runs this automatically with SDL's dummy video/audio drivers.
+This runs separate host and joining client processes with real SDL lobby widgets, a
+`LanRoom` host (room and in-process turn relay) and paired WSS connections. The joiner
+uses the actual `LANFindScreen` Pair and connect path with the host session fingerprint.
+It clicks Ready and Leave Game, then rejoins. Both cycles download the map into the
+guest's content-addressed map cache and compare its bytes with the fixture source
+(`maps/FourSquares1.map`). The host verifies readiness, roster size, unique names and
+seat numbering, and both departures. Linux CI runs this automatically with SDL's dummy
+video/audio drivers.
+
+`--play SECONDS` plays a real game instead: the host presses Start in the room, both
+processes run their `GameSessionScreen`s, the host quits after SECONDS, and the guest's
+game must end with "host left". The two processes' per-tick checksum sidecars must agree
+on every tick both executed:
+
+```sh
+python3 test/run_lan_session_test.py build/native-tests/src/LANSessionHarness --play 30
+```
+
+`LanMatchHarness` in the engine binary covers the match itself in one process: a host
+and two guests over loopback WSS with real engines, a dropped connection, a guest that
+restarts and rejoins by name, the host leaving, identical per-tick checksums and a
+verified match record. Its `[benchmark]` case measures input delay
+(`docs/multiplayer/lan-playtest.md`).
 
 For two physical machines, run these from each machine's repository root, using
 absolute capture prefixes whose parent directories already exist:
