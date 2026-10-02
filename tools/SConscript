@@ -10,7 +10,8 @@ Import("env")
 Import("PackTar")
     
 if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
-    PackTar(env["TARFILE"], ["package_assets.py", "asset-requirements.txt"])
+    PackTar(env["TARFILE"], ["package_assets.py", "asset-requirements.txt", "asset-encoder-sources.json", "build_asset_encoder.py"])
+    PackTar(env["TARFILE"], ["release/windows_runtime.py", "release/package_windows.py", "release/package_nsis.py", "release/package_sizes.py", "release/archives.py", "release/benchmark_profiles.py", "release/benchmark_decoder.py", "release/check_profile_platforms.py"])
     PackTar(env["TARFILE"], "mksprite.cpp")
     PackTar(env["TARFILE"], "MenuColonyHarness.cpp")
     PackTar(env["TARFILE"], "README")

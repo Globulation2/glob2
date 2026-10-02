@@ -95,7 +95,7 @@ jobs:
             mingw-w64-x86_64-openssl
             mingw-w64-x86_64-boost
             mingw-w64-x86_64-libepoxy
-            mingw-w64-x86_64-libsystre
+            mingw-w64-x86_64-libsystre mingw-w64-x86_64-cmake mingw-w64-x86_64-ninja
 
       - name: Check release staging logic
         shell: msys2 {0}
@@ -103,14 +103,14 @@ jobs:
 
       - name: Build Windows client
         shell: msys2 {0}
-        run: scons -j$(nproc) release=1 mingw=1 server=0 build/mingw/client/release/src/glob2.exe
+        run: scons -j$(nproc) release=1 mingw=1 server=0 lean_images=1 build/mingw/client/release/lean-images/src/glob2.exe
 
       - name: Stage game, DLLs, assets and Store identity
         shell: msys2 {0}
         run: |
           python .github/scripts/windows_store_release.py \
             --root . \
-            --exe build/mingw/client/release/src/glob2.exe \
+            --exe build/mingw/client/release/lean-images/src/glob2.exe \
             --dll-dir /mingw64/bin \
             --dest artifacts/windows-store/content \
             --identity-name "$STORE_IDENTITY_NAME" \
