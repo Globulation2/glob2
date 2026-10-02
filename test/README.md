@@ -1274,3 +1274,8 @@ script execution and editable state, followed by rendering and diagnostics.
 Line coverage alone does not establish save continuity, equivalent execution on
 another platform, or playable game behavior. The Linux CI coverage artifact
 uses the regular tier; slow integration and cross-platform checks remain separate.
+
+The slow `[map-generators]` tier reports default repeatability, rectangular-map
+and rejection checks separately for each registered generator. Registry stress,
+landscape, framework and editor-default checks also have independent timeouts
+and logs; a timeout must identify its case rather than hide the whole catalog.
