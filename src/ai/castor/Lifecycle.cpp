@@ -11,7 +11,7 @@
 #include "Utilities.h"
 
 #define AI_FILE_MIN_VERSION 1
-#define AI_FILE_VERSION 2
+#define AI_FILE_VERSION 3
 
 using std::shared_ptr;
 
@@ -69,6 +69,9 @@ void AICastor::Project::init(const char *suffix)
 
 AICastor::Strategy::Strategy()
 {
+	isFreePart=warAmountTrigger=strikeWarPowerTriggerUp=strikeWarPowerTriggerDown=0;
+	strikeTimeTrigger=0;
+	for (auto &entry : build) entry = {};
 	defined=false;
 	
 	successWait=0;
@@ -174,73 +177,77 @@ void AICastor::init(Player *player)
 	assert(size>0);
 	
 	computeBoot=0;
+	strategy=Strategy();
+	for (auto &types : buildingLevels)
+		for (auto &levels : types)
+			for (auto &level : levels) level=0;
 	
 	if (obstacleUnitMap!=NULL)
 		delete[] obstacleUnitMap;
-	obstacleUnitMap=new Uint8[size];
+	obstacleUnitMap=new Uint8[size]();
 	
 	if (obstacleBuildingMap!=NULL)
 		delete[] obstacleBuildingMap;
-	obstacleBuildingMap=new Uint8[size];
+	obstacleBuildingMap=new Uint8[size]();
 	
 	if (spaceForBuildingMap!=NULL)
 		delete[] spaceForBuildingMap;
-	spaceForBuildingMap=new Uint8[size];
+	spaceForBuildingMap=new Uint8[size]();
 	
 	if (buildingNeighbourMap!=NULL)
 		delete[] buildingNeighbourMap;
-	buildingNeighbourMap=new Uint8[size];
+	buildingNeighbourMap=new Uint8[size]();
 	
 	
 	if (workPowerMap!=NULL)
 		delete[] workPowerMap;
-	workPowerMap=new Uint8[size];
+	workPowerMap=new Uint8[size]();
 	
 	if (workRangeMap!=NULL)
 		delete[] workRangeMap;
-	workRangeMap=new Uint8[size];
+	workRangeMap=new Uint8[size]();
 	
 	if (workAbilityMap!=NULL)
 		delete[] workAbilityMap;
-	workAbilityMap=new Uint8[size];
+	workAbilityMap=new Uint8[size]();
 	
 	if (hydratationMap!=NULL)
 		delete[] hydratationMap;
-	hydratationMap=new Uint8[size];
+	hydratationMap=new Uint8[size]();
 
 	if (notGrassMap!=NULL)
 		delete[] notGrassMap;
-	notGrassMap=new Uint8[size];
+	notGrassMap=new Uint8[size]();
 	
 	if (wheatGrowthMap!=NULL)
 		delete[] wheatGrowthMap;
-	wheatGrowthMap=new Uint8[size];
+	wheatGrowthMap=new Uint8[size]();
 	
 	for (int i=0; i<4; i++)
 	{
 		if (oldWheatGradient[i]!=NULL)
 			delete[] oldWheatGradient[i];
-		oldWheatGradient[i]=new Uint8[size];
+		oldWheatGradient[i]=new Uint8[size]();
 	}
 	
 	for (int i=0; i<2; i++)
 	{
 		if (wheatCareMap[i]!=NULL)
 			delete[] wheatCareMap[i];
-		wheatCareMap[i]=new Uint8[size];
+		wheatCareMap[i]=new Uint8[size]();
 	}
 	
 	if (enemyPowerMap!=NULL)
 		delete[] enemyPowerMap;
-	enemyPowerMap=new Uint8[size];
+	enemyPowerMap=new Uint8[size]();
 	
 	if (enemyRangeMap!=NULL)
 		delete[] enemyRangeMap;
-	enemyRangeMap=new Uint8[size];
+	enemyRangeMap=new Uint8[size]();
 	
 	if (enemyWarriorsMap!=NULL)
 		delete[] enemyWarriorsMap;
-	enemyWarriorsMap=new Uint8[size];
+	enemyWarriorsMap=new Uint8[size]();
 }
 
 AICastor::~AICastor()
@@ -300,6 +307,161 @@ AICastor::~AICastor()
 
 }
 
+
+// Keep names unique for text saves and scalar encodings endian-safe for binary saves.
+
+namespace
+{
+struct SnapshotWriter
+{
+	GAGCore::OutputStream* stream;
+	template<class T> void value(T& v, const char* name) { stream->writeSint32(static_cast<Sint32>(v),name); }
+	void value(Uint32& v, const char* name) { stream->writeUint32(v,name); }
+	template<class T, size_t N> void value(T (&v)[N], const char* name)
+	{
+		stream->writeEnterSection(name);
+		unsigned i=0;
+		for (auto& item : v)
+		{
+			stream->writeEnterSection(i++);
+			value(item,"value");
+			stream->writeLeaveSection();
+		}
+		stream->writeLeaveSection();
+	}
+	void bytes(Uint8* data, size_t size, const char* name) { stream->write(data,size,name); }
+	void enter(const char* name) { stream->writeEnterSection(name); }
+	void enter(unsigned i) { stream->writeEnterSection(i); }
+	void leave() { stream->writeLeaveSection(); }
+};
+struct SnapshotReader
+{
+	GAGCore::InputStream* stream;
+	template<class T> void value(T& v, const char* name) { v=static_cast<T>(stream->readSint32(name)); }
+	void value(Uint32& v, const char* name) { v=stream->readUint32(name); }
+	template<class T, size_t N> void value(T (&v)[N], const char* name)
+	{
+		stream->readEnterSection(name);
+		unsigned i=0;
+		for (auto& item : v)
+		{
+			stream->readEnterSection(i++);
+			value(item,"value");
+			stream->readLeaveSection();
+		}
+		stream->readLeaveSection();
+	}
+	void bytes(Uint8* data, size_t size, const char* name) { stream->read(data,size,name); }
+	void enter(const char* name) { stream->readEnterSection(name); }
+	void enter(unsigned i) { stream->readEnterSection(i); }
+	void leave() { stream->readLeaveSection(); }
+};
+template<class Archive> void strategyBuild(Archive& archive, AICastor::Strategy::Build& b)
+{
+	archive.value(b.baseOrder,"baseOrder");
+	archive.value(b.base,"base");
+	archive.value(b.baseWorkers,"baseWorkers");
+	archive.value(b.baseUpgrade,"baseUpgrade");
+	archive.value(b.finalWorkers,"finalWorkers");
+	archive.value(b.newOrder,"newOrder");
+	archive.value(b.news,"news");
+	archive.value(b.newWorkers,"newWorkers");
+	archive.value(b.newUpgrade,"newUpgrade");
+}
+template<class Archive> void snapshot(Archive& archive, AICastor& ai)
+{
+	archive.value(ai.canSwim,"canSwim");
+	archive.value(ai.needSwim,"needSwim");
+	archive.value(ai.buildingSum,"buildingSum");
+	archive.value(ai.buildingLevels,"buildingLevels");
+	archive.value(ai.warLevel,"warLevel");
+	archive.value(ai.warTimeTriggerLevel,"warTimeTriggerLevel");
+	archive.value(ai.warLevelTriggerLevel,"warLevelTriggerLevel");
+	archive.value(ai.warAmountTriggerLevel,"warAmountTriggerLevel");
+	archive.value(ai.onStrike,"onStrike");
+	archive.value(ai.strikeTimeTrigger,"strikeTimeTrigger");
+	archive.value(ai.strikeTeamSelected,"strikeTeamSelected");
+	archive.value(ai.strikeTeam,"strikeTeam");
+	archive.value(ai.foodWarning,"foodWarning");
+	archive.value(ai.foodLock,"foodLock");
+	archive.value(ai.foodSurplus,"foodSurplus");
+	archive.value(ai.foodLockStats,"foodLockStats");
+	archive.value(ai.overWorkers,"overWorkers");
+	archive.value(ai.starvingWarning,"starvingWarning");
+	archive.value(ai.starvingWarningStats,"starvingWarningStats");
+	archive.value(ai.buildsAmount,"buildsAmount");
+	archive.value(ai.lastFreeWorkersComputed,"lastFreeWorkersComputed");
+	archive.value(ai.lastWheatGrowthMapComputed,"lastWheatGrowthMapComputed");
+	archive.value(ai.lastEnemyRangeMapComputed,"lastEnemyRangeMapComputed");
+	archive.value(ai.lastEnemyPowerMapComputed,"lastEnemyPowerMapComputed");
+	archive.value(ai.lastEnemyWarriorsMapComputed,"lastEnemyWarriorsMapComputed");
+	archive.value(ai.computeNeedSwimTimer,"computeNeedSwimTimer");
+	archive.value(ai.controlSwarmsTimer,"controlSwarmsTimer");
+	archive.value(ai.expandFoodTimer,"expandFoodTimer");
+	archive.value(ai.controlFoodTimer,"controlFoodTimer");
+	archive.value(ai.controlUpgradeTimer,"controlUpgradeTimer");
+	archive.value(ai.controlUpgradeDelay,"controlUpgradeDelay");
+	archive.value(ai.controlStrikesTimer,"controlStrikesTimer");
+	archive.value(ai.computeBoot,"computeBoot");
+	archive.value(ai.strategy.defined,"strategydefined");
+	archive.value(ai.strategy.successWait,"strategysuccessWait");
+	archive.value(ai.strategy.isFreePart,"strategyisFreePart");
+	archive.enter("strategyBuild");
+	unsigned index=0;
+	for (auto& b : ai.strategy.build)
+	{
+		archive.enter(index++);
+		strategyBuild(archive,b);
+		archive.leave();
+	}
+	archive.leave();
+	archive.value(ai.strategy.warTimeTrigger,"strategywarTimeTrigger");
+	archive.value(ai.strategy.warLevelTrigger,"strategywarLevelTrigger");
+	archive.value(ai.strategy.warAmountTrigger,"strategywarAmountTrigger");
+	archive.value(ai.strategy.strikeTimeTrigger,"strategystrikeTimeTrigger");
+	archive.value(ai.strategy.strikeWarPowerTriggerUp,"strategystrikeWarPowerTriggerUp");
+	archive.value(ai.strategy.strikeWarPowerTriggerDown,"strategystrikeWarPowerTriggerDown");
+	archive.value(ai.strategy.maxAmountGoal,"strategymaxAmountGoal");
+	const size_t size=ai.map->w*ai.map->h;
+	archive.bytes(ai.obstacleUnitMap,size,"obstacleUnitMap");
+	archive.bytes(ai.obstacleBuildingMap,size,"obstacleBuildingMap");
+	archive.bytes(ai.spaceForBuildingMap,size,"spaceForBuildingMap");
+	archive.bytes(ai.buildingNeighbourMap,size,"buildingNeighbourMap");
+	archive.bytes(ai.workPowerMap,size,"workPowerMap");
+	archive.bytes(ai.workRangeMap,size,"workRangeMap");
+	archive.bytes(ai.workAbilityMap,size,"workAbilityMap");
+	archive.bytes(ai.hydratationMap,size,"hydratationMap");
+	archive.bytes(ai.notGrassMap,size,"notGrassMap");
+	archive.bytes(ai.wheatGrowthMap,size,"wheatGrowthMap");
+	archive.bytes(ai.enemyPowerMap,size,"enemyPowerMap");
+	archive.bytes(ai.enemyRangeMap,size,"enemyRangeMap");
+	archive.bytes(ai.enemyWarriorsMap,size,"enemyWarriorsMap");
+	for (unsigned i=0; i<4; ++i) archive.bytes(ai.oldWheatGradient[i],size,("oldWheatGradient"+std::to_string(i)).c_str());
+	for (unsigned i=0; i<2; ++i) archive.bytes(ai.wheatCareMap[i],size,("wheatCareMap"+std::to_string(i)).c_str());
+}
+template<class Archive> void projectSnapshot(Archive& archive, AICastor::Project& p)
+{
+	archive.value(p.shortTypeNum,"shortTypeNum");
+	archive.value(p.amount,"amount");
+	archive.value(p.food,"food");
+	archive.value(p.defense,"defense");
+	archive.value(p.subPhase,"subPhase");
+	archive.value(p.successWait,"successWait");
+	archive.value(p.blocking,"blocking");
+	archive.value(p.critical,"critical");
+	archive.value(p.priority,"priority");
+	archive.value(p.triesLeft,"triesLeft");
+	archive.value(p.mainWorkers,"mainWorkers");
+	archive.value(p.foodWorkers,"foodWorkers");
+	archive.value(p.otherWorkers,"otherWorkers");
+	archive.value(p.multipleStart,"multipleStart");
+	archive.value(p.waitFinished,"waitFinished");
+	archive.value(p.finalWorkers,"finalWorkers");
+	archive.value(p.finished,"finished");
+	archive.value(p.timer,"timer");
+}
+}
+
 bool AICastor::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	init(player);
@@ -307,9 +469,9 @@ bool AICastor::load(GAGCore::InputStream *stream, Player *player, Sint32 version
 	
 	stream->readEnterSection("AICastor");
 	Sint32 aiFileVersion = stream->readSint32("aiFileVersion");
-	if (aiFileVersion<AI_FILE_MIN_VERSION)
+	if (aiFileVersion<AI_FILE_MIN_VERSION || aiFileVersion>AI_FILE_VERSION)
 	{
-		fprintf(stderr, " error: aiFileVersion=%d<AI_FILE_MIN_VERSION=%d\n", aiFileVersion, AI_FILE_MIN_VERSION);
+		fprintf(stderr, " error: unsupported Castor aiFileVersion=%d (supported %d..%d)\n", aiFileVersion, AI_FILE_MIN_VERSION, AI_FILE_VERSION);
 		stream->readLeaveSection();
 		return false;
 	}
@@ -318,8 +480,29 @@ bool AICastor::load(GAGCore::InputStream *stream, Player *player, Sint32 version
 	else
 		timer=0;
 		
+	if (aiFileVersion>=3)
+	{
+		SnapshotReader archive{stream};
+		snapshot(archive,*this);
+		const Uint32 count=stream->readUint32("projects");
+		if (count>4096) { stream->readLeaveSection(); return false; }
+		for (Uint32 i=0; i<count; ++i)
+		{
+			stream->readEnterSection(i);
+			auto project=std::make_unique<Project>(IntBuildingType::SWARM_BUILDING,"restored");
+			projectSnapshot(archive,*project);
+			if (project->shortTypeNum<0 || project->shortTypeNum>=IntBuildingType::NB_BUILDING)
+			{ stream->readLeaveSection(2); return false; }
+			project->debugStdName=stream->readText("debugName");
+			project->debugName=project->debugStdName.c_str();
+			stream->readLeaveSection();
+			projects.push_back(project.release());
+		}
+		if (computeBoot<0 || computeBoot>AI_CASTOR_BOOT_IDLE_TICKS+AI_CASTOR_BOOT_COMPUTE_STEPS)
+		{ stream->readLeaveSection(); return false; }
+	}
 	stream->readLeaveSection();
-	return true;
+	return stream->isValid();
 }
 
 void AICastor::save(GAGCore::OutputStream *stream)
@@ -327,5 +510,16 @@ void AICastor::save(GAGCore::OutputStream *stream)
 	stream->writeEnterSection("AICastor");
 	stream->writeSint32(AI_FILE_VERSION, "aiFileVersion");
 	stream->writeUint32(timer, "timer");
+	SnapshotWriter archive{stream};
+	snapshot(archive,*this);
+	stream->writeUint32(static_cast<Uint32>(projects.size()),"projects");
+	unsigned i=0;
+	for (auto* project : projects)
+	{
+		stream->writeEnterSection(i++);
+		projectSnapshot(archive,*project);
+		stream->writeText(project->debugStdName,"debugName");
+		stream->writeLeaveSection();
+	}
 	stream->writeLeaveSection();
 }

@@ -5,6 +5,7 @@
 #include "GenerationService.h"
 #include <algorithm>
 #include <iostream>
+#include <ThreadSupport.h>
 
 LandscapePreviewer::LandscapePreviewer(std::vector<GenerationRequest> requests, int threads,
 									   bool deferred)
@@ -14,19 +15,30 @@ LandscapePreviewer::LandscapePreviewer(std::vector<GenerationRequest> requests, 
 	seeds.resize(this->requests.size());
 	passes.resize(this->requests.size());
 	attempts.resize(this->requests.size());
-#ifndef __EMSCRIPTEN__
-	if (threads == 0)
+	regenerate();
+	if constexpr (GAGCore::ThreadSupport::available)
 	{
-		const unsigned cores = std::thread::hardware_concurrency();
-		threads = int(std::clamp(cores == 0 ? 1u : cores - 1, 1u, 4u));
+		if (threads == 0)
+		{
+			const unsigned cores = std::thread::hardware_concurrency();
+			threads = int(std::clamp(cores == 0 ? 1u : cores - 1, 1u, 4u));
+		}
+		threads = std::min(std::max(0, threads), int(std::max<std::size_t>(1, this->requests.size())));
+		try
+		{
+			for (int i = 0; i < threads; ++i)
+				workers.push_back(GAGCore::ThreadSupport::launch([this] { work(); }));
+		}
+		catch (const std::system_error &)
+		{
+			{ std::lock_guard<std::mutex> lock(mutex); stopping = true; }
+			wake.notify_all();
+			for (auto &worker : workers) worker.join();
+			workers.clear();
+			stopping = false; // remaining candidates use the cooperative path
+		}
 	}
-	threads = std::min(std::max(0, threads), int(std::max<std::size_t>(1, this->requests.size())));
-	regenerate();
-	for (int i = 0; i < threads; ++i)
-		workers.emplace_back([this] { work(); });
-#else
-	regenerate();
-#endif
+
 }
 
 LandscapePreviewer::~LandscapePreviewer()

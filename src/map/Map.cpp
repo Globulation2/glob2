@@ -1,9 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <atomic>
 #include "Map.h"
 #include "gradient/GradientRuntime.h"
 #include "Game.h"
+#ifndef YOG_SERVER_ONLY
+#include "render/SoftwareTerrainCache.h"
+#endif
 #include "Utilities.h"
 #include "Unit.h"
 #include "MapInternal.h"
@@ -138,6 +142,8 @@ void Map::configureCompute(unsigned threads, unsigned experiments)
 
 void Map::clear()
 {
+	static std::atomic<Uint64> nextIdentity{1};
+	identityValue = nextIdentity.fetch_add(1);
 	gradientRuntime->pipeline.reset();
 	clearGradientBufferPool();
 	clearBuildingGradientSearchPool();
@@ -201,6 +207,7 @@ void Map::clear()
 
 void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 {
+
 	clear();
 
 	assert(wDec<16);

@@ -3,6 +3,7 @@
 
 #include <PerformanceTelemetry.h>
 #include "GraphicContextPrivate.h"
+#include <SoftwareFramePresenter.h>
 #include <Toolkit.h>
 #include <FileManager.h>
 #include <SupportFunctions.h>
@@ -288,8 +289,10 @@ namespace GAGCore
 		// must run before SDL_Quit(): ~CursorManager() runs too late, after this
 		// destructor's body, and SDL_FreeCursor() after SDL_Quit() is undefined
 		cursorManager.releaseNativeCursor();
-		renderer.reset();
+		renderer = nullptr;
+        portableRenderer.reset();
 		if (watchingEvents) SDL_DelEventWatch(watchWindow, this);
+        watchingEvents = false;
 		releaseFrameCache();
 		freeOwnedSurface();
 #ifdef HAVE_OPENGL
@@ -428,7 +431,30 @@ namespace GAGCore
 
 	void GraphicContext::freeOwnedSurface(void)
 	{
+        if (softwareTransform)
+        {
+            if (softwareRasterizer) softwareRasterizer->flush();
+            renderer = nullptr;
+            softwareTransform = false;
+            mapTransformActive = uiTransformActive = false;
+            mapScale = 1;
+        }
+        // Both native-display and transformed passes borrow this owner.
+        // Invalidate the active pointer before destroying its target/backend.
+        if (renderer == softwareRasterizer.get()) renderer = nullptr;
         softwareRasterizer.reset();
+        // Retain the last completed image across a resize until the replacement
+        // framebuffer completes its first frame. No retention allocation is needed.
+        if (watchingEvents && softwarePresenter)
+        {
+            if (auto* completed = softwarePresenter->takeCompleted())
+            {
+                SDL_FreeSurface(frameCache.surface);
+                frameCache.surface = completed;
+                frameCache.valid = true;
+            }
+        }
+        softwarePresenter.reset();
 		if (ownsSurface && sdlsurface)
 			SDL_FreeSurface(sdlsurface);
 		sdlsurface = NULL;
@@ -827,7 +853,8 @@ namespace GAGCore
 #endif
 		if (context) SDL_GL_DeleteContext(context);
 		context = nullptr;
-		renderer.reset();
+		renderer = nullptr;
+        portableRenderer.reset();
 		freeOwnedSurface();
 		if (window) {
 			SDL_DestroyWindow(window);
@@ -847,7 +874,8 @@ namespace GAGCore
 		drawableW = windowW;
 		drawableH = windowH;
 		if (flags & PORTABLEGPU) {
-            renderer = makeSDLRenderBackend(window, logicalW, logicalH);
+            portableRenderer = makeSDLRenderBackend(window, logicalW, logicalH);
+            renderer = portableRenderer.get();
             if (!renderer) {
                 std::cerr << "Cannot initialize portable renderer: " << SDL_GetError() << std::endl;
                 return false;
@@ -1018,27 +1046,49 @@ namespace GAGCore
 				cursorManager.update(cursorScale);
 			}
 
-
-            if (renderer) {
-                if (!pendingScreenshot.empty()) {
-                    std::unique_ptr<SDL_Surface, decltype(&SDL_FreeSurface)> pixels(renderer->capture(), SDL_FreeSurface);
-                    bool saved=false;
-                    for (size_t i=0;i<Toolkit::getFileManager()->getDirCount();++i) {
-                        auto path=Toolkit::getFileManager()->getDir(i)+DIR_SEPARATOR_S+pendingScreenshot;
-                        if(SDL_SaveBMP(pixels.get(),path.c_str())==0) {saved=true;break;}
-                    }
-                    if(!saved) std::cerr << "Cannot save screenshot: " << SDL_GetError() << std::endl;
-                    pendingScreenshot.clear();
-                }
-                if (!nativeSoftware) { renderer->present(); return; }
-                renderer->flush();
-            }
-			#ifdef HAVE_OPENGL
-			if (optionFlags & USEGPU) Sprite::checkAllSpritesDrawn();
-			#endif
+			// A transformed software pass may end before nextFrame. Keep the
+			// request independent of the borrowed active-backend pointer.
+			if (!pendingScreenshot.empty())
+			{
+				std::unique_ptr<SDL_Surface, decltype(&SDL_FreeSurface)> pixels(
+					renderer ? renderer->capture()
+							 : SDL_ConvertSurfaceFormat(sdlsurface, SDL_PIXELFORMAT_RGBA32, 0),
+					SDL_FreeSurface);
+				bool saved = false;
+				if (pixels)
+					for (size_t i = 0; i < Toolkit::getFileManager()->getDirCount(); ++i)
+					{
+						auto path = Toolkit::getFileManager()->getDir(i) + DIR_SEPARATOR_S +
+									pendingScreenshot;
+						if (SDL_SaveBMP(pixels.get(), path.c_str()) == 0)
+						{
+							saved = true;
+							break;
+						}
+					}
+				if (!saved)
+					std::cerr << "Cannot save screenshot: " << SDL_GetError() << std::endl;
+				pendingScreenshot.clear();
+			}
+			if (renderer && !nativeSoftware)
+			{
+				if (renderer == portableRenderer.get())
+				{
+					renderer->present();
+					return;
+				}
+				renderer->flush();
+			}
+#ifdef HAVE_OPENGL
+			if (optionFlags & USEGPU)
+				Sprite::checkAllSpritesDrawn();
+#endif
+			if (renderer && nativeSoftware) renderer->flush();
 			cacheFrame();
-			if (optionFlags & USEGPU) swapBuffers();
-			else presentLastFrame();
+			if (optionFlags & USEGPU)
+				swapBuffers();
+			else
+				presentLastFrame();
 		}
 	}
 
@@ -1046,10 +1096,14 @@ namespace GAGCore
 	{
 		PERF_SCOPE_TIME(Screenshot);
 		SDL_Surface *toPrintSurface = NULL;
-        if (renderer) { pendingScreenshot=filename; return; }
+		if (renderer)
+		{
+			pendingScreenshot = filename;
+			return;
+		}
 
-		// Fetch the surface to print
-		#ifdef HAVE_OPENGL
+	// Fetch the surface to print
+#ifdef HAVE_OPENGL
 		std::unique_ptr<DrawableSurface> toPrint = nullptr;
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{
@@ -1059,7 +1113,7 @@ namespace GAGCore
 			toPrintSurface = toPrint->sdlsurface;
 		}
 		else
-		#endif
+#endif
 			toPrintSurface = sdlsurface;
 
 		// Print it using virtual filesystem

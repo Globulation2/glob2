@@ -4,10 +4,8 @@
 //
 // AIWarrushTuning.h
 //
-// Behavior-preserving tuning constants for AIWarrush, extracted from
-// AIWarrush.cpp during the magic-number cleanup pass that prepares the
-// codebase for the Rust port. Every value here is byte-for-byte identical
-// to the literal it replaces; nothing in the AI's decision logic changes.
+// Tuning constants for AIWarrush. Most retain the original literal values;
+// the bootstrap window deliberately follows the live team capacity below.
 //
 // Constants are file-scope `static constexpr int` per the slice convention.
 
@@ -30,13 +28,11 @@ static constexpr int AI_WARRUSH_BUILDING_DELAY_TICKS = 30;
 static constexpr int AI_WARRUSH_AREAS_DELAY_TICKS = 50;
 
 // ---------------------------------------------------------------------------
-// Bootstrap: place an exploration flag on each enemy team's starting swarm
-// during the first AI_WARRUSH_BOOTSTRAP_EXPLORE_WINDOW ticks of the game,
-// stepping by AI_WARRUSH_BOOTSTRAP_EXPLORE_INTERVAL (so two ticks per team,
-// mapping tick -> teamIndex via division by the interval). The window must
-// cover exactly Team::MAX_COUNT teams — making it any longer would index past
-// the end of game->teams[] (this was a latent OOB read when MAX_COUNT was 32
-// and the literal 64 happened to match; the derived form keeps them aligned).
+// Bootstrap: probe one team slot every two ticks, placing an exploration flag
+// only for an existing enemy. Derive the exclusive window from the array bound
+// so the last probe is MAX_COUNT - 1. Empty/allied slots fall through to normal
+// decisions without consuming RNG; a larger capacity does not delay smaller
+// matches. Matches with teams in the new slots can issue additional flags.
 // ---------------------------------------------------------------------------
 static constexpr int AI_WARRUSH_BOOTSTRAP_EXPLORE_INTERVAL = 2;
 static constexpr int AI_WARRUSH_BOOTSTRAP_EXPLORE_WINDOW   = Team::MAX_COUNT * AI_WARRUSH_BOOTSTRAP_EXPLORE_INTERVAL;

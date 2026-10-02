@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
+#include "ScopedEnvironment.h"
 #include <vector>
 #include <string>
 #include <memory>
@@ -510,6 +511,9 @@ TEST_SUITE("EngineSession")
 		            require(failed.result() == 2 && getSyncRandState() == rng && !globalContainer->replaying,
 		                "Failed startup must return an error and restore global state");
 		        }
+		        {
+		        // Serial execution: exact frame counts against the scripted host clock.
+		        glob2test::ScopedEnvironment serialSession("GLOB2_SIM_THREAD", "0");
 		        GAGGUI::ScreenStack screens(*globalContainer->gfx);
 		        unsigned frames = 0, loadingFrames = 0;
 		        screens.push(std::make_unique<GameLoadScreen>([](Engine& engine) { return engine.initCampaignTask("maps/balanced.map"); }, fixedSlice()),
@@ -530,6 +534,32 @@ TEST_SUITE("EngineSession")
 		        // Resumption keeps the pending 40ms tick deadline; hidden time is excluded.
 		        require(loadingFrames > 20 && frames == loadingFrames + 52 && screens.result() == GAGGUI::Screen::QUIT_APPLICATION,
 		                "Suspension must exclude hidden time and retain the pending tick deadline");
+		        }
+		        {
+		            // Threaded execution (the default): the simulation thread paces on the
+		            // host clock, so the session still ends, and the scripted 60 s spent
+		            // suspended is not caught up.
+		            GAGGUI::ScreenStack screens(*globalContainer->gfx);
+		            unsigned frames = 0, loadingFrames = 0, resumedAt = 0;
+		            screens.push(std::make_unique<GameLoadScreen>([](Engine& engine) { return engine.initCampaignTask("maps/balanced.map"); }, fixedSlice()),
+		                [&](GAGGUI::Screen& screen, int result) {
+		                    require(result == 1, "Scheduled game initialization failed");
+		                    loadingFrames = frames;
+		                    screens.push(std::make_unique<GameSessionScreen>(screens, static_cast<GameLoadScreen&>(screen).takeEngine()));
+		                });
+		            bool suspended = false;
+		            while (screens.running()) {
+		                if (loadingFrames && frames == loadingFrames + 10) {
+		                    screens.suspendExecution();
+		                    suspended = true;
+		                    resumedAt = frames;
+		                }
+		                screens.frame(1000 + frames * 40 + (suspended ? 60000 : 0), {});
+		                require(++frames <= 4000, "Threaded stack-driven session failed to finish");
+		            }
+		            require(loadingFrames > 20 && frames > resumedAt + 20 && screens.result() == GAGGUI::Screen::QUIT_APPLICATION,
+		                    "Threaded session must end on the host clock without catching up hidden time");
+		        }
 		    }
 		    for (bool cancel : {false, true}) {
 		        auto editor = std::make_unique<MapEdit>();
@@ -818,12 +848,14 @@ TEST_SUITE("EngineSession")
 		                "Discard must finish without advancing or drawing another editor frame");
 		    }
 		    SDLNet_Quit();
-		// The engine prints one checksum per completed session; all three must agree.
+		// The engine prints one checksum per completed session; all must agree,
+		// including the session that ran on the simulation thread.
 		const std::string output = trace.text();
 		std::vector<std::string> checksums;
 		for (size_t at = output.find("nox::gui.game.checkSum() = "); at != std::string::npos; at = output.find("nox::gui.game.checkSum() = ", at + 1))
 			checksums.push_back(output.substr(at + 27, output.find('\n', at) - at - 27));
-		REQUIRE_MESSAGE(checksums.size() == 3, "expected three session checksums, saw " << checksums.size());
-		CHECK_MESSAGE((checksums[0] == checksums[1] && checksums[1] == checksums[2]), "session checksums differ: " << checksums[0] << " " << checksums[1] << " " << checksums[2]);
+		REQUIRE_MESSAGE(checksums.size() == 4, "expected four session checksums, saw " << checksums.size());
+		CHECK_MESSAGE(std::all_of(checksums.begin(), checksums.end(), [&](const std::string &c) { return c == checksums[0]; }),
+			"session checksums differ: " << checksums[0] << " " << checksums[1] << " " << checksums[2] << " " << checksums[3]);
 	}
 }
