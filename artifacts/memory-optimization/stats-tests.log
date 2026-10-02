@@ -1,0 +1,8 @@
+PASS TeamStatsSave/legacy version 84 fixture replays the golden trace [save-format][golden] (0.1s)
+PASS TeamStatsSave/legacy version 88 fixture replays the golden trace [save-format][golden] (0.1s)
+PASS TeamStatsSave/AI telemetry continues across a save [save-format] (0.7s)
+PASS TeamStatsSave/measurement screenshots [display][artifacts] (1.9s)
+PASS TeamStatsSave/32 sampling phases; ring wrap; repeated loads; text streams and corruption controls [save-format] (3.4s)
+
+5 passed, 0 failed, 0 skipped (6.2s of test time)
+[run_tests] JUnit report: artifacts/memory-optimization/stats-junit.xml (5 cases)

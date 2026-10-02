@@ -1,0 +1,1854 @@
+{
+  "base_revision": "a231b3ed4562a4ba5293acfd41de804c20d06702",
+  "worktree": "/Users/bradley/.codex/worktrees/late-game-memory/glob2",
+  "cpu_gate_complete": true,
+  "cpu_fixtures": [
+    {
+      "save": "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/initial.game.gz",
+      "sha256": "0740cb514080c0d182420ee3ea06a6e06b6169a35eba777392f7d84deb20cc77",
+      "initial_tick": 0,
+      "pairs": [
+        {
+          "baseline": {
+            "benchmark_setup_cpu_ns": 255066000,
+            "benchmark_run_cpu_ns": 7960101000,
+            "benchmark_save_cpu_ns": 3526246000,
+            "checksum": "2ce4c8e4",
+            "saved_sha256": "13ecd0733e02fb101c0ead31741f322d9213a065005d8f41fa11c942619e6472",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/baseline-source/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/initial.game.gz",
+              "--ticks",
+              "5120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-final/fixture-0-pair-0-baseline"
+            ]
+          },
+          "candidate": {
+            "benchmark_setup_cpu_ns": 259448000,
+            "benchmark_run_cpu_ns": 7857462000,
+            "benchmark_save_cpu_ns": 3490585000,
+            "checksum": "2ce4c8e4",
+            "saved_sha256": "13ecd0733e02fb101c0ead31741f322d9213a065005d8f41fa11c942619e6472",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/initial.game.gz",
+              "--ticks",
+              "5120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-final/fixture-0-pair-0-candidate"
+            ]
+          }
+        },
+        {
+          "candidate": {
+            "benchmark_setup_cpu_ns": 253248000,
+            "benchmark_run_cpu_ns": 7780794000,
+            "benchmark_save_cpu_ns": 3480962000,
+            "checksum": "2ce4c8e4",
+            "saved_sha256": "13ecd0733e02fb101c0ead31741f322d9213a065005d8f41fa11c942619e6472",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/initial.game.gz",
+              "--ticks",
+              "5120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-final/fixture-0-pair-1-candidate"
+            ]
+          },
+          "baseline": {
+            "benchmark_setup_cpu_ns": 262027000,
+            "benchmark_run_cpu_ns": 7906611000,
+            "benchmark_save_cpu_ns": 3446489000,
+            "checksum": "2ce4c8e4",
+            "saved_sha256": "13ecd0733e02fb101c0ead31741f322d9213a065005d8f41fa11c942619e6472",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/baseline-source/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/initial.game.gz",
+              "--ticks",
+              "5120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-final/fixture-0-pair-1-baseline"
+            ]
+          }
+        },
+        {
+          "baseline": {
+            "benchmark_setup_cpu_ns": 258513000,
+            "benchmark_run_cpu_ns": 8212509000,
+            "benchmark_save_cpu_ns": 3491805000,
+            "checksum": "2ce4c8e4",
+            "saved_sha256": "13ecd0733e02fb101c0ead31741f322d9213a065005d8f41fa11c942619e6472",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/baseline-source/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/initial.game.gz",
+              "--ticks",
+              "5120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-final/fixture-0-pair-2-baseline"
+            ]
+          },
+          "candidate": {
+            "benchmark_setup_cpu_ns": 253533000,
+            "benchmark_run_cpu_ns": 7795863000,
+            "benchmark_save_cpu_ns": 3461982000,
+            "checksum": "2ce4c8e4",
+            "saved_sha256": "13ecd0733e02fb101c0ead31741f322d9213a065005d8f41fa11c942619e6472",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/initial.game.gz",
+              "--ticks",
+              "5120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-final/fixture-0-pair-2-candidate"
+            ]
+          }
+        },
+        {
+          "candidate": {
+            "benchmark_setup_cpu_ns": 254956000,
+            "benchmark_run_cpu_ns": 7762818000,
+            "benchmark_save_cpu_ns": 3448102000,
+            "checksum": "2ce4c8e4",
+            "saved_sha256": "13ecd0733e02fb101c0ead31741f322d9213a065005d8f41fa11c942619e6472",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/initial.game.gz",
+              "--ticks",
+              "5120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-final/fixture-0-pair-3-candidate"
+            ]
+          },
+          "baseline": {
+            "benchmark_setup_cpu_ns": 256430000,
+            "benchmark_run_cpu_ns": 7898720000,
+            "benchmark_save_cpu_ns": 3492033000,
+            "checksum": "2ce4c8e4",
+            "saved_sha256": "13ecd0733e02fb101c0ead31741f322d9213a065005d8f41fa11c942619e6472",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/baseline-source/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/initial.game.gz",
+              "--ticks",
+              "5120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-final/fixture-0-pair-3-baseline"
+            ]
+          }
+        },
+        {
+          "baseline": {
+            "benchmark_setup_cpu_ns": 258234000,
+            "benchmark_run_cpu_ns": 8364781000,
+            "benchmark_save_cpu_ns": 3555132000,
+            "checksum": "2ce4c8e4",
+            "saved_sha256": "13ecd0733e02fb101c0ead31741f322d9213a065005d8f41fa11c942619e6472",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/baseline-source/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/initial.game.gz",
+              "--ticks",
+              "5120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-final/fixture-0-pair-4-baseline"
+            ]
+          },
+          "candidate": {
+            "benchmark_setup_cpu_ns": 252940000,
+            "benchmark_run_cpu_ns": 7758299000,
+            "benchmark_save_cpu_ns": 3487361000,
+            "checksum": "2ce4c8e4",
+            "saved_sha256": "13ecd0733e02fb101c0ead31741f322d9213a065005d8f41fa11c942619e6472",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/initial.game.gz",
+              "--ticks",
+              "5120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-final/fixture-0-pair-4-candidate"
+            ]
+          }
+        },
+        {
+          "candidate": {
+            "benchmark_setup_cpu_ns": 252231000,
+            "benchmark_run_cpu_ns": 7765011000,
+            "benchmark_save_cpu_ns": 3577724000,
+            "checksum": "2ce4c8e4",
+            "saved_sha256": "13ecd0733e02fb101c0ead31741f322d9213a065005d8f41fa11c942619e6472",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/initial.game.gz",
+              "--ticks",
+              "5120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-final/fixture-0-pair-5-candidate"
+            ]
+          },
+          "baseline": {
+            "benchmark_setup_cpu_ns": 256616000,
+            "benchmark_run_cpu_ns": 8182268000,
+            "benchmark_save_cpu_ns": 3528740000,
+            "checksum": "2ce4c8e4",
+            "saved_sha256": "13ecd0733e02fb101c0ead31741f322d9213a065005d8f41fa11c942619e6472",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/baseline-source/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/initial.game.gz",
+              "--ticks",
+              "5120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-final/fixture-0-pair-5-baseline"
+            ]
+          }
+        },
+        {
+          "baseline": {
+            "benchmark_setup_cpu_ns": 261000000,
+            "benchmark_run_cpu_ns": 7918817000,
+            "benchmark_save_cpu_ns": 3528612000,
+            "checksum": "2ce4c8e4",
+            "saved_sha256": "13ecd0733e02fb101c0ead31741f322d9213a065005d8f41fa11c942619e6472",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/baseline-source/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/initial.game.gz",
+              "--ticks",
+              "5120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-final/fixture-0-pair-6-baseline"
+            ]
+          },
+          "candidate": {
+            "benchmark_setup_cpu_ns": 256260000,
+            "benchmark_run_cpu_ns": 7791314000,
+            "benchmark_save_cpu_ns": 3490331000,
+            "checksum": "2ce4c8e4",
+            "saved_sha256": "13ecd0733e02fb101c0ead31741f322d9213a065005d8f41fa11c942619e6472",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/initial.game.gz",
+              "--ticks",
+              "5120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-final/fixture-0-pair-6-candidate"
+            ]
+          }
+        }
+      ],
+      "cpu": {
+        "benchmark_setup_cpu_ns": {
+          "paired_change_percent": -1.3978275796527575,
+          "upper_95_percent": -0.4121056010823339,
+          "pairs": 7
+        },
+        "benchmark_run_cpu_ns": {
+          "paired_change_percent": -3.4019347963232875,
+          "upper_95_percent": -2.0616222431933173,
+          "pairs": 7
+        },
+        "benchmark_save_cpu_ns": {
+          "paired_change_percent": -0.5388071914178034,
+          "upper_95_percent": 0.21598738492298325,
+          "pairs": 7
+        }
+      },
+      "passed": true
+    },
+    {
+      "save": "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-15000.game.gz",
+      "sha256": "f4b0da84d3191b427c2d003ffd2ea906d38c4fa750d7ba5c9ecf433fa921b66f",
+      "initial_tick": 15000,
+      "pairs": [
+        {
+          "baseline": {
+            "benchmark_setup_cpu_ns": 3524068000,
+            "benchmark_run_cpu_ns": 25354430000,
+            "benchmark_save_cpu_ns": 6647015000,
+            "checksum": "6f76f91c",
+            "saved_sha256": "c1c916a79d27ffdf8bc5d0fc4ecfdd4784e59ac465e9a32b73794ac40343e404",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/baseline-source/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-15000.game.gz",
+              "--ticks",
+              "20120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-final/fixture-1-pair-0-baseline"
+            ]
+          },
+          "candidate": {
+            "benchmark_setup_cpu_ns": 3449458000,
+            "benchmark_run_cpu_ns": 24169237000,
+            "benchmark_save_cpu_ns": 6669181000,
+            "checksum": "6f76f91c",
+            "saved_sha256": "c1c916a79d27ffdf8bc5d0fc4ecfdd4784e59ac465e9a32b73794ac40343e404",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-15000.game.gz",
+              "--ticks",
+              "20120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-final/fixture-1-pair-0-candidate"
+            ]
+          }
+        },
+        {
+          "candidate": {
+            "benchmark_setup_cpu_ns": 3457302000,
+            "benchmark_run_cpu_ns": 24136594000,
+            "benchmark_save_cpu_ns": 6619647000,
+            "checksum": "6f76f91c",
+            "saved_sha256": "c1c916a79d27ffdf8bc5d0fc4ecfdd4784e59ac465e9a32b73794ac40343e404",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-15000.game.gz",
+              "--ticks",
+              "20120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-final/fixture-1-pair-1-candidate"
+            ]
+          },
+          "baseline": {
+            "benchmark_setup_cpu_ns": 3523443000,
+            "benchmark_run_cpu_ns": 25313561000,
+            "benchmark_save_cpu_ns": 6597961000,
+            "checksum": "6f76f91c",
+            "saved_sha256": "c1c916a79d27ffdf8bc5d0fc4ecfdd4784e59ac465e9a32b73794ac40343e404",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/baseline-source/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-15000.game.gz",
+              "--ticks",
+              "20120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-final/fixture-1-pair-1-baseline"
+            ]
+          }
+        },
+        {
+          "baseline": {
+            "benchmark_setup_cpu_ns": 3523120000,
+            "benchmark_run_cpu_ns": 25320179000,
+            "benchmark_save_cpu_ns": 6820313000,
+            "checksum": "6f76f91c",
+            "saved_sha256": "c1c916a79d27ffdf8bc5d0fc4ecfdd4784e59ac465e9a32b73794ac40343e404",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/baseline-source/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-15000.game.gz",
+              "--ticks",
+              "20120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-final/fixture-1-pair-2-baseline"
+            ]
+          },
+          "candidate": {
+            "benchmark_setup_cpu_ns": 3464476000,
+            "benchmark_run_cpu_ns": 24782793000,
+            "benchmark_save_cpu_ns": 6586507000,
+            "checksum": "6f76f91c",
+            "saved_sha256": "c1c916a79d27ffdf8bc5d0fc4ecfdd4784e59ac465e9a32b73794ac40343e404",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-15000.game.gz",
+              "--ticks",
+              "20120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-final/fixture-1-pair-2-candidate"
+            ]
+          }
+        },
+        {
+          "candidate": {
+            "benchmark_setup_cpu_ns": 3486700000,
+            "benchmark_run_cpu_ns": 24262134000,
+            "benchmark_save_cpu_ns": 6664325000,
+            "checksum": "6f76f91c",
+            "saved_sha256": "c1c916a79d27ffdf8bc5d0fc4ecfdd4784e59ac465e9a32b73794ac40343e404",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-15000.game.gz",
+              "--ticks",
+              "20120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-final/fixture-1-pair-3-candidate"
+            ]
+          },
+          "baseline": {
+            "benchmark_setup_cpu_ns": 3521375000,
+            "benchmark_run_cpu_ns": 25305607000,
+            "benchmark_save_cpu_ns": 6550518000,
+            "checksum": "6f76f91c",
+            "saved_sha256": "c1c916a79d27ffdf8bc5d0fc4ecfdd4784e59ac465e9a32b73794ac40343e404",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/baseline-source/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-15000.game.gz",
+              "--ticks",
+              "20120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-final/fixture-1-pair-3-baseline"
+            ]
+          }
+        },
+        {
+          "baseline": {
+            "benchmark_setup_cpu_ns": 3525566000,
+            "benchmark_run_cpu_ns": 25349412000,
+            "benchmark_save_cpu_ns": 6721934000,
+            "checksum": "6f76f91c",
+            "saved_sha256": "c1c916a79d27ffdf8bc5d0fc4ecfdd4784e59ac465e9a32b73794ac40343e404",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/baseline-source/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-15000.game.gz",
+              "--ticks",
+              "20120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-final/fixture-1-pair-4-baseline"
+            ]
+          },
+          "candidate": {
+            "benchmark_setup_cpu_ns": 3452070000,
+            "benchmark_run_cpu_ns": 24464202000,
+            "benchmark_save_cpu_ns": 6633114000,
+            "checksum": "6f76f91c",
+            "saved_sha256": "c1c916a79d27ffdf8bc5d0fc4ecfdd4784e59ac465e9a32b73794ac40343e404",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-15000.game.gz",
+              "--ticks",
+              "20120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-final/fixture-1-pair-4-candidate"
+            ]
+          }
+        },
+        {
+          "candidate": {
+            "benchmark_setup_cpu_ns": 3471201000,
+            "benchmark_run_cpu_ns": 24183534000,
+            "benchmark_save_cpu_ns": 6670001000,
+            "checksum": "6f76f91c",
+            "saved_sha256": "c1c916a79d27ffdf8bc5d0fc4ecfdd4784e59ac465e9a32b73794ac40343e404",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-15000.game.gz",
+              "--ticks",
+              "20120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-final/fixture-1-pair-5-candidate"
+            ]
+          },
+          "baseline": {
+            "benchmark_setup_cpu_ns": 3524476000,
+            "benchmark_run_cpu_ns": 25259083000,
+            "benchmark_save_cpu_ns": 6598200000,
+            "checksum": "6f76f91c",
+            "saved_sha256": "c1c916a79d27ffdf8bc5d0fc4ecfdd4784e59ac465e9a32b73794ac40343e404",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/baseline-source/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-15000.game.gz",
+              "--ticks",
+              "20120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-final/fixture-1-pair-5-baseline"
+            ]
+          }
+        },
+        {
+          "baseline": {
+            "benchmark_setup_cpu_ns": 3529737000,
+            "benchmark_run_cpu_ns": 25401015000,
+            "benchmark_save_cpu_ns": 6916803000,
+            "checksum": "6f76f91c",
+            "saved_sha256": "c1c916a79d27ffdf8bc5d0fc4ecfdd4784e59ac465e9a32b73794ac40343e404",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/baseline-source/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-15000.game.gz",
+              "--ticks",
+              "20120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-final/fixture-1-pair-6-baseline"
+            ]
+          },
+          "candidate": {
+            "benchmark_setup_cpu_ns": 3479149000,
+            "benchmark_run_cpu_ns": 25204288000,
+            "benchmark_save_cpu_ns": 7064520000,
+            "checksum": "6f76f91c",
+            "saved_sha256": "c1c916a79d27ffdf8bc5d0fc4ecfdd4784e59ac465e9a32b73794ac40343e404",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-15000.game.gz",
+              "--ticks",
+              "20120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-final/fixture-1-pair-6-candidate"
+            ]
+          }
+        }
+      ],
+      "cpu": {
+        "benchmark_setup_cpu_ns": {
+          "paired_change_percent": -1.66827176771332,
+          "upper_95_percent": -1.4324806363420226,
+          "pairs": 7
+        },
+        "benchmark_run_cpu_ns": {
+          "paired_change_percent": -3.4515780620477825,
+          "upper_95_percent": -2.5341595103429895,
+          "pairs": 7
+        },
+        "benchmark_save_cpu_ns": {
+          "paired_change_percent": 0.10871479038391918,
+          "upper_95_percent": 1.1699586941705942,
+          "pairs": 7
+        }
+      },
+      "passed": true
+    },
+    {
+      "save": "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-30000.game.gz",
+      "sha256": "e96626cc1f19e8115a785892caf7985a9c3c09a5edae65a85aa4d3dfbb7bd328",
+      "initial_tick": 30000,
+      "pairs": [
+        {
+          "baseline": {
+            "benchmark_setup_cpu_ns": 6000215000,
+            "benchmark_run_cpu_ns": 38274986000,
+            "benchmark_save_cpu_ns": 8963975000,
+            "checksum": "cbdb6c86",
+            "saved_sha256": "0b893ab4d8858e1a744767b0516fc89dbcd1adff674afc845d11a97eae2ee900",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/baseline-source/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-30000.game.gz",
+              "--ticks",
+              "35120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-interleaved/fixture-0-pair-0-baseline"
+            ]
+          },
+          "candidate": {
+            "benchmark_setup_cpu_ns": 5841176000,
+            "benchmark_run_cpu_ns": 36376762000,
+            "benchmark_save_cpu_ns": 8854714000,
+            "checksum": "cbdb6c86",
+            "saved_sha256": "0b893ab4d8858e1a744767b0516fc89dbcd1adff674afc845d11a97eae2ee900",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-30000.game.gz",
+              "--ticks",
+              "35120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-interleaved/fixture-0-pair-0-candidate"
+            ]
+          }
+        },
+        {
+          "candidate": {
+            "benchmark_setup_cpu_ns": 5379500000,
+            "benchmark_run_cpu_ns": 36914020000,
+            "benchmark_save_cpu_ns": 8402110000,
+            "checksum": "cbdb6c86",
+            "saved_sha256": "0b893ab4d8858e1a744767b0516fc89dbcd1adff674afc845d11a97eae2ee900",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-30000.game.gz",
+              "--ticks",
+              "35120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-interleaved/fixture-0-pair-1-candidate"
+            ]
+          },
+          "baseline": {
+            "benchmark_setup_cpu_ns": 5487523000,
+            "benchmark_run_cpu_ns": 38542568000,
+            "benchmark_save_cpu_ns": 8410566000,
+            "checksum": "cbdb6c86",
+            "saved_sha256": "0b893ab4d8858e1a744767b0516fc89dbcd1adff674afc845d11a97eae2ee900",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/baseline-source/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-30000.game.gz",
+              "--ticks",
+              "35120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-interleaved/fixture-0-pair-1-baseline"
+            ]
+          }
+        },
+        {
+          "baseline": {
+            "benchmark_setup_cpu_ns": 4952937000,
+            "benchmark_run_cpu_ns": 65678459000,
+            "benchmark_save_cpu_ns": 14909803000,
+            "checksum": "cbdb6c86",
+            "saved_sha256": "0b893ab4d8858e1a744767b0516fc89dbcd1adff674afc845d11a97eae2ee900",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/baseline-source/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-30000.game.gz",
+              "--ticks",
+              "35120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-interleaved/fixture-0-pair-2-baseline"
+            ]
+          },
+          "candidate": {
+            "benchmark_setup_cpu_ns": 4874910000,
+            "benchmark_run_cpu_ns": 61714107000,
+            "benchmark_save_cpu_ns": 14275916000,
+            "checksum": "cbdb6c86",
+            "saved_sha256": "0b893ab4d8858e1a744767b0516fc89dbcd1adff674afc845d11a97eae2ee900",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-30000.game.gz",
+              "--ticks",
+              "35120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-interleaved/fixture-0-pair-2-candidate"
+            ]
+          }
+        },
+        {
+          "candidate": {
+            "benchmark_setup_cpu_ns": 8125243000,
+            "benchmark_run_cpu_ns": 66783494000,
+            "benchmark_save_cpu_ns": 15415704000,
+            "checksum": "cbdb6c86",
+            "saved_sha256": "0b893ab4d8858e1a744767b0516fc89dbcd1adff674afc845d11a97eae2ee900",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-30000.game.gz",
+              "--ticks",
+              "35120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-interleaved/fixture-0-pair-3-candidate"
+            ]
+          },
+          "baseline": {
+            "benchmark_setup_cpu_ns": 8254157000,
+            "benchmark_run_cpu_ns": 70471792000,
+            "benchmark_save_cpu_ns": 15819204000,
+            "checksum": "cbdb6c86",
+            "saved_sha256": "0b893ab4d8858e1a744767b0516fc89dbcd1adff674afc845d11a97eae2ee900",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/baseline-source/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-30000.game.gz",
+              "--ticks",
+              "35120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-interleaved/fixture-0-pair-3-baseline"
+            ]
+          }
+        },
+        {
+          "baseline": {
+            "benchmark_setup_cpu_ns": 10286373000,
+            "benchmark_run_cpu_ns": 75689012000,
+            "benchmark_save_cpu_ns": 16004141000,
+            "checksum": "cbdb6c86",
+            "saved_sha256": "0b893ab4d8858e1a744767b0516fc89dbcd1adff674afc845d11a97eae2ee900",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/baseline-source/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-30000.game.gz",
+              "--ticks",
+              "35120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-interleaved/fixture-0-pair-4-baseline"
+            ]
+          },
+          "candidate": {
+            "benchmark_setup_cpu_ns": 10065512000,
+            "benchmark_run_cpu_ns": 71962037000,
+            "benchmark_save_cpu_ns": 15706558000,
+            "checksum": "cbdb6c86",
+            "saved_sha256": "0b893ab4d8858e1a744767b0516fc89dbcd1adff674afc845d11a97eae2ee900",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-30000.game.gz",
+              "--ticks",
+              "35120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-interleaved/fixture-0-pair-4-candidate"
+            ]
+          }
+        },
+        {
+          "candidate": {
+            "benchmark_setup_cpu_ns": 8232229000,
+            "benchmark_run_cpu_ns": 62537093000,
+            "benchmark_save_cpu_ns": 13567880000,
+            "checksum": "cbdb6c86",
+            "saved_sha256": "0b893ab4d8858e1a744767b0516fc89dbcd1adff674afc845d11a97eae2ee900",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-30000.game.gz",
+              "--ticks",
+              "35120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-interleaved/fixture-0-pair-5-candidate"
+            ]
+          },
+          "baseline": {
+            "benchmark_setup_cpu_ns": 8392538000,
+            "benchmark_run_cpu_ns": 65678827000,
+            "benchmark_save_cpu_ns": 13790274000,
+            "checksum": "cbdb6c86",
+            "saved_sha256": "0b893ab4d8858e1a744767b0516fc89dbcd1adff674afc845d11a97eae2ee900",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/baseline-source/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-30000.game.gz",
+              "--ticks",
+              "35120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-interleaved/fixture-0-pair-5-baseline"
+            ]
+          }
+        },
+        {
+          "baseline": {
+            "benchmark_setup_cpu_ns": 6159814000,
+            "benchmark_run_cpu_ns": 53266183000,
+            "benchmark_save_cpu_ns": 13171170000,
+            "checksum": "cbdb6c86",
+            "saved_sha256": "0b893ab4d8858e1a744767b0516fc89dbcd1adff674afc845d11a97eae2ee900",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/baseline-source/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-30000.game.gz",
+              "--ticks",
+              "35120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-interleaved/fixture-0-pair-6-baseline"
+            ]
+          },
+          "candidate": {
+            "benchmark_setup_cpu_ns": 6018409000,
+            "benchmark_run_cpu_ns": 50489419000,
+            "benchmark_save_cpu_ns": 11568996000,
+            "checksum": "cbdb6c86",
+            "saved_sha256": "0b893ab4d8858e1a744767b0516fc89dbcd1adff674afc845d11a97eae2ee900",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-30000.game.gz",
+              "--ticks",
+              "35120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-interleaved/fixture-0-pair-6-candidate"
+            ]
+          }
+        }
+      ],
+      "cpu": {
+        "benchmark_setup_cpu_ns": {
+          "paired_change_percent": -2.016253159938209,
+          "upper_95_percent": -1.7913681651255735,
+          "pairs": 7
+        },
+        "benchmark_run_cpu_ns": {
+          "paired_change_percent": -5.054936645233166,
+          "upper_95_percent": -4.751321513491522,
+          "pairs": 7
+        },
+        "benchmark_save_cpu_ns": {
+          "paired_change_percent": -3.4709277866346837,
+          "upper_95_percent": -1.4322012286484624,
+          "pairs": 7
+        }
+      },
+      "passed": true
+    },
+    {
+      "save": "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-45000.game.gz",
+      "sha256": "e2b49a862ddbdf9e3622be8ba4aa442b7927c5d89b5e5128537f7126cbe8bdb3",
+      "initial_tick": 45000,
+      "pairs": [
+        {
+          "baseline": {
+            "benchmark_setup_cpu_ns": 11393610000,
+            "benchmark_run_cpu_ns": 45054346000,
+            "benchmark_save_cpu_ns": 11151859000,
+            "checksum": "de800571",
+            "saved_sha256": "281512ac82475634adb3793aa806547a815b94b51fa9a57f745ba538b923d8e2",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/baseline-source/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-45000.game.gz",
+              "--ticks",
+              "50120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-interleaved/fixture-1-pair-0-baseline"
+            ]
+          },
+          "candidate": {
+            "benchmark_setup_cpu_ns": 11007376000,
+            "benchmark_run_cpu_ns": 43121045000,
+            "benchmark_save_cpu_ns": 10872714000,
+            "checksum": "de800571",
+            "saved_sha256": "281512ac82475634adb3793aa806547a815b94b51fa9a57f745ba538b923d8e2",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-45000.game.gz",
+              "--ticks",
+              "50120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-interleaved/fixture-1-pair-0-candidate"
+            ]
+          }
+        },
+        {
+          "candidate": {
+            "benchmark_setup_cpu_ns": 7500210000,
+            "benchmark_run_cpu_ns": 41096993000,
+            "benchmark_save_cpu_ns": 11238555000,
+            "checksum": "de800571",
+            "saved_sha256": "281512ac82475634adb3793aa806547a815b94b51fa9a57f745ba538b923d8e2",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-45000.game.gz",
+              "--ticks",
+              "50120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-interleaved/fixture-1-pair-1-candidate"
+            ]
+          },
+          "baseline": {
+            "benchmark_setup_cpu_ns": 7631798000,
+            "benchmark_run_cpu_ns": 43268771000,
+            "benchmark_save_cpu_ns": 11524594000,
+            "checksum": "de800571",
+            "saved_sha256": "281512ac82475634adb3793aa806547a815b94b51fa9a57f745ba538b923d8e2",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/baseline-source/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-45000.game.gz",
+              "--ticks",
+              "50120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-interleaved/fixture-1-pair-1-baseline"
+            ]
+          }
+        },
+        {
+          "baseline": {
+            "benchmark_setup_cpu_ns": 7593519000,
+            "benchmark_run_cpu_ns": 49184142000,
+            "benchmark_save_cpu_ns": 10281890000,
+            "checksum": "de800571",
+            "saved_sha256": "281512ac82475634adb3793aa806547a815b94b51fa9a57f745ba538b923d8e2",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/baseline-source/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-45000.game.gz",
+              "--ticks",
+              "50120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-interleaved/fixture-1-pair-2-baseline"
+            ]
+          },
+          "candidate": {
+            "benchmark_setup_cpu_ns": 7362049000,
+            "benchmark_run_cpu_ns": 47550380000,
+            "benchmark_save_cpu_ns": 10194781000,
+            "checksum": "de800571",
+            "saved_sha256": "281512ac82475634adb3793aa806547a815b94b51fa9a57f745ba538b923d8e2",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-45000.game.gz",
+              "--ticks",
+              "50120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-interleaved/fixture-1-pair-2-candidate"
+            ]
+          }
+        },
+        {
+          "candidate": {
+            "benchmark_setup_cpu_ns": 7099279000,
+            "benchmark_run_cpu_ns": 43579091000,
+            "benchmark_save_cpu_ns": 10217042000,
+            "checksum": "de800571",
+            "saved_sha256": "281512ac82475634adb3793aa806547a815b94b51fa9a57f745ba538b923d8e2",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-45000.game.gz",
+              "--ticks",
+              "50120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-interleaved/fixture-1-pair-3-candidate"
+            ]
+          },
+          "baseline": {
+            "benchmark_setup_cpu_ns": 7305522000,
+            "benchmark_run_cpu_ns": 44812927000,
+            "benchmark_save_cpu_ns": 10363902000,
+            "checksum": "de800571",
+            "saved_sha256": "281512ac82475634adb3793aa806547a815b94b51fa9a57f745ba538b923d8e2",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/baseline-source/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-45000.game.gz",
+              "--ticks",
+              "50120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-interleaved/fixture-1-pair-3-baseline"
+            ]
+          }
+        },
+        {
+          "baseline": {
+            "benchmark_setup_cpu_ns": 6857254000,
+            "benchmark_run_cpu_ns": 38485671000,
+            "benchmark_save_cpu_ns": 10467042000,
+            "checksum": "de800571",
+            "saved_sha256": "281512ac82475634adb3793aa806547a815b94b51fa9a57f745ba538b923d8e2",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/baseline-source/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-45000.game.gz",
+              "--ticks",
+              "50120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-interleaved/fixture-1-pair-4-baseline"
+            ]
+          },
+          "candidate": {
+            "benchmark_setup_cpu_ns": 6783013000,
+            "benchmark_run_cpu_ns": 36468539000,
+            "benchmark_save_cpu_ns": 10176570000,
+            "checksum": "de800571",
+            "saved_sha256": "281512ac82475634adb3793aa806547a815b94b51fa9a57f745ba538b923d8e2",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-45000.game.gz",
+              "--ticks",
+              "50120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-interleaved/fixture-1-pair-4-candidate"
+            ]
+          }
+        },
+        {
+          "candidate": {
+            "benchmark_setup_cpu_ns": 7025190000,
+            "benchmark_run_cpu_ns": 51786983000,
+            "benchmark_save_cpu_ns": 13032464000,
+            "checksum": "de800571",
+            "saved_sha256": "281512ac82475634adb3793aa806547a815b94b51fa9a57f745ba538b923d8e2",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-45000.game.gz",
+              "--ticks",
+              "50120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-interleaved/fixture-1-pair-5-candidate"
+            ]
+          },
+          "baseline": {
+            "benchmark_setup_cpu_ns": 7086337000,
+            "benchmark_run_cpu_ns": 55601189000,
+            "benchmark_save_cpu_ns": 12157373000,
+            "checksum": "de800571",
+            "saved_sha256": "281512ac82475634adb3793aa806547a815b94b51fa9a57f745ba538b923d8e2",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/baseline-source/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-45000.game.gz",
+              "--ticks",
+              "50120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-interleaved/fixture-1-pair-5-baseline"
+            ]
+          }
+        },
+        {
+          "baseline": {
+            "benchmark_setup_cpu_ns": 6805933000,
+            "benchmark_run_cpu_ns": 39628580000,
+            "benchmark_save_cpu_ns": 10213203000,
+            "checksum": "de800571",
+            "saved_sha256": "281512ac82475634adb3793aa806547a815b94b51fa9a57f745ba538b923d8e2",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/baseline-source/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-45000.game.gz",
+              "--ticks",
+              "50120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-interleaved/fixture-1-pair-6-baseline"
+            ]
+          },
+          "candidate": {
+            "benchmark_setup_cpu_ns": 6700582000,
+            "benchmark_run_cpu_ns": 37705005000,
+            "benchmark_save_cpu_ns": 10022096000,
+            "checksum": "de800571",
+            "saved_sha256": "281512ac82475634adb3793aa806547a815b94b51fa9a57f745ba538b923d8e2",
+            "command": [
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/build/darwin/client/release/src/glob2",
+              "--run-game",
+              "--load-game",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-45000.game.gz",
+              "--ticks",
+              "50120",
+              "--benchmark-warmup",
+              "1024",
+              "--save",
+              "final",
+              "--output-dir",
+              "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/cpu-interleaved/fixture-1-pair-6-candidate"
+            ]
+          }
+        }
+      ],
+      "cpu": {
+        "benchmark_setup_cpu_ns": {
+          "paired_change_percent": -2.0728707768934305,
+          "upper_95_percent": -1.5011324981041985,
+          "pairs": 7
+        },
+        "benchmark_run_cpu_ns": {
+          "paired_change_percent": -4.628253567671894,
+          "upper_95_percent": -3.8514653665640894,
+          "pairs": 7
+        },
+        "benchmark_save_cpu_ns": {
+          "paired_change_percent": -0.7229120451269081,
+          "upper_95_percent": 1.7328708394817884,
+          "pairs": 7
+        }
+      },
+      "passed": true
+    }
+  ],
+  "live_memory": [
+    {
+      "target_tick": 256,
+      "baseline_capture": {
+        "observed_tick_lower_bound": 256,
+        "target": 256,
+        "pause_seconds": 118.78142213821411
+      },
+      "candidate_capture": {
+        "observed_tick_lower_bound": 256,
+        "target": 256,
+        "pause_seconds": 9.88267183303833
+      },
+      "baseline_live_bytes": 338535264,
+      "candidate_live_bytes": 277245616,
+      "saved_bytes": 61289648,
+      "saved_percent": 18.10436150013607
+    },
+    {
+      "target_tick": 15000,
+      "baseline_capture": {
+        "observed_tick_lower_bound": 15104,
+        "target": 15000,
+        "pause_seconds": 119.3335919380188
+      },
+      "candidate_capture": {
+        "observed_tick_lower_bound": 15104,
+        "target": 15000,
+        "pause_seconds": 9.219590187072754
+      },
+      "baseline_live_bytes": 792303216,
+      "candidate_live_bytes": 672930416,
+      "saved_bytes": 119372800,
+      "saved_percent": 15.066555024560191
+    },
+    {
+      "target_tick": 30000,
+      "baseline_capture": {
+        "observed_tick_lower_bound": 30208,
+        "target": 30000,
+        "pause_seconds": 22.256067037582397
+      },
+      "candidate_capture": {
+        "observed_tick_lower_bound": 30208,
+        "target": 30000,
+        "pause_seconds": 4.624182939529419
+      },
+      "baseline_live_bytes": 1004747888,
+      "candidate_live_bytes": 906583360,
+      "saved_bytes": 98164528,
+      "saved_percent": 9.77006562267091
+    },
+    {
+      "target_tick": 45000,
+      "baseline_capture": {
+        "observed_tick_lower_bound": 45056,
+        "target": 45000,
+        "pause_seconds": 92.50155091285706
+      },
+      "candidate_capture": {
+        "observed_tick_lower_bound": 45056,
+        "target": 45000,
+        "pause_seconds": 6.9101080894470215
+      },
+      "baseline_live_bytes": 1353675920,
+      "candidate_live_bytes": 1165568880,
+      "saved_bytes": 188107040,
+      "saved_percent": 13.896017297847774
+    }
+  ],
+  "peak_memory": {
+    "baseline": {
+      "maximum_resident_bytes": 5273944064,
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/baseline-source/build/darwin/client/release/src/glob2",
+        "--run-game",
+        "--load-game",
+        "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-45000.game.gz",
+        "--ticks",
+        "45001",
+        "--benchmark-warmup",
+        "0",
+        "--save",
+        "final",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/peak-baseline"
+      ]
+    },
+    "candidate": {
+      "maximum_resident_bytes": 4251303936,
+      "command": [
+        "/usr/bin/time",
+        "-l",
+        "/Users/bradley/.codex/worktrees/late-game-memory/glob2/build/darwin/client/release/src/glob2",
+        "--run-game",
+        "--load-game",
+        "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-45000.game.gz",
+        "--ticks",
+        "45001",
+        "--benchmark-warmup",
+        "0",
+        "--save",
+        "final",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/peak-candidate"
+      ]
+    }
+  },
+  "determinism": {
+    "all_detail_bytes_equal": true,
+    "bytes": 6766753746,
+    "sha256": "cbb7b6f87deba7253646d244eb4e3caeb925db181a56b79dd9284fcf3aeaff1d",
+    "baseline_evidence": "matched-checksums.bin.gz",
+    "binaries": {
+      "baseline": "be500c6880a3dfd7069530e12df2499bd2ec9a44f4f29949863cdba6ded08c28",
+      "candidate": "d7d778fd3cf991d5f5c3cfdb055c959fc75d8168e669078427e45a30dc662285"
+    }
+  },
+  "save_and_replay": {
+    "checkpoint-15000.game.gz": {
+      "baseline": "821ab59f2cb30b641d084d4982ace7cdc64ad1312732077739c2cf34c9edf3b2",
+      "candidate": "821ab59f2cb30b641d084d4982ace7cdc64ad1312732077739c2cf34c9edf3b2"
+    },
+    "checkpoint-30000.game.gz": {
+      "baseline": "e96626cc1f19e8115a785892caf7985a9c3c09a5edae65a85aa4d3dfbb7bd328",
+      "candidate": "e96626cc1f19e8115a785892caf7985a9c3c09a5edae65a85aa4d3dfbb7bd328"
+    },
+    "checkpoint-45000.game.gz": {
+      "baseline": "e2b49a862ddbdf9e3622be8ba4aa442b7927c5d89b5e5128537f7126cbe8bdb3",
+      "candidate": "e2b49a862ddbdf9e3622be8ba4aa442b7927c5d89b5e5128537f7126cbe8bdb3"
+    },
+    "final.game.gz": {
+      "baseline": "27292f0357693414161f1c1da597d7224946e722d1218b40087b6a5059707cc4",
+      "candidate": "27292f0357693414161f1c1da597d7224946e722d1218b40087b6a5059707cc4"
+    },
+    "game.replay": {
+      "baseline": "5aa6473c852ece557552f287a90e0cec5b184c7b5e0ab7ce1266d8e49ad186a2",
+      "candidate": "5aa6473c852ece557552f287a90e0cec5b184c7b5e0ab7ce1266d8e49ad186a2"
+    }
+  },
+  "farming_kernels": {
+    "0": {
+      "pairs": [
+        {
+          "baseline": {
+            "cpu": 0.211075,
+            "digest": "3017981722425623427"
+          },
+          "candidate": {
+            "cpu": 0.159996,
+            "digest": "3017981722425623427"
+          }
+        },
+        {
+          "candidate": {
+            "cpu": 0.132876,
+            "digest": "3017981722425623427"
+          },
+          "baseline": {
+            "cpu": 0.174224,
+            "digest": "3017981722425623427"
+          }
+        },
+        {
+          "baseline": {
+            "cpu": 0.171415,
+            "digest": "3017981722425623427"
+          },
+          "candidate": {
+            "cpu": 0.130257,
+            "digest": "3017981722425623427"
+          }
+        },
+        {
+          "candidate": {
+            "cpu": 0.128072,
+            "digest": "3017981722425623427"
+          },
+          "baseline": {
+            "cpu": 0.172738,
+            "digest": "3017981722425623427"
+          }
+        },
+        {
+          "baseline": {
+            "cpu": 0.172246,
+            "digest": "3017981722425623427"
+          },
+          "candidate": {
+            "cpu": 0.129407,
+            "digest": "3017981722425623427"
+          }
+        },
+        {
+          "candidate": {
+            "cpu": 0.129624,
+            "digest": "3017981722425623427"
+          },
+          "baseline": {
+            "cpu": 0.171971,
+            "digest": "3017981722425623427"
+          }
+        },
+        {
+          "baseline": {
+            "cpu": 0.172246,
+            "digest": "3017981722425623427"
+          },
+          "candidate": {
+            "cpu": 0.128402,
+            "digest": "3017981722425623427"
+          }
+        }
+      ],
+      "cpu": {
+        "paired_change_percent": -24.68201335641245,
+        "upper_95_percent": -24.2491544980468,
+        "pairs": 7
+      },
+      "passed": true
+    },
+    "1": {
+      "pairs": [
+        {
+          "baseline": {
+            "cpu": 0.163884,
+            "digest": "7454954690236006539"
+          },
+          "candidate": {
+            "cpu": 0.127381,
+            "digest": "7454954690236006539"
+          }
+        },
+        {
+          "candidate": {
+            "cpu": 0.131638,
+            "digest": "7454954690236006539"
+          },
+          "baseline": {
+            "cpu": 0.165652,
+            "digest": "7454954690236006539"
+          }
+        },
+        {
+          "baseline": {
+            "cpu": 0.1637,
+            "digest": "7454954690236006539"
+          },
+          "candidate": {
+            "cpu": 0.127493,
+            "digest": "7454954690236006539"
+          }
+        },
+        {
+          "candidate": {
+            "cpu": 0.127378,
+            "digest": "7454954690236006539"
+          },
+          "baseline": {
+            "cpu": 0.176734,
+            "digest": "7454954690236006539"
+          }
+        },
+        {
+          "baseline": {
+            "cpu": 0.169529,
+            "digest": "7454954690236006539"
+          },
+          "candidate": {
+            "cpu": 0.127229,
+            "digest": "7454954690236006539"
+          }
+        },
+        {
+          "candidate": {
+            "cpu": 0.128538,
+            "digest": "7454954690236006539"
+          },
+          "baseline": {
+            "cpu": 0.164939,
+            "digest": "7454954690236006539"
+          }
+        },
+        {
+          "baseline": {
+            "cpu": 0.166024,
+            "digest": "7454954690236006539"
+          },
+          "candidate": {
+            "cpu": 0.122611,
+            "digest": "7454954690236006539"
+          }
+        }
+      ],
+      "cpu": {
+        "paired_change_percent": -23.757659833404134,
+        "upper_95_percent": -22.285503039837764,
+        "pairs": 7
+      },
+      "passed": true
+    },
+    "2": {
+      "pairs": [
+        {
+          "baseline": {
+            "cpu": 2.59398,
+            "digest": "3252972538285775355"
+          },
+          "candidate": {
+            "cpu": 2.6486,
+            "digest": "3252972538285775355"
+          }
+        },
+        {
+          "candidate": {
+            "cpu": 2.78919,
+            "digest": "3252972538285775355"
+          },
+          "baseline": {
+            "cpu": 2.70622,
+            "digest": "3252972538285775355"
+          }
+        },
+        {
+          "baseline": {
+            "cpu": 2.64928,
+            "digest": "3252972538285775355"
+          },
+          "candidate": {
+            "cpu": 2.65564,
+            "digest": "3252972538285775355"
+          }
+        },
+        {
+          "candidate": {
+            "cpu": 2.81335,
+            "digest": "3252972538285775355"
+          },
+          "baseline": {
+            "cpu": 2.79521,
+            "digest": "3252972538285775355"
+          }
+        },
+        {
+          "baseline": {
+            "cpu": 2.72444,
+            "digest": "3252972538285775355"
+          },
+          "candidate": {
+            "cpu": 2.59346,
+            "digest": "3252972538285775355"
+          }
+        },
+        {
+          "candidate": {
+            "cpu": 2.58129,
+            "digest": "3252972538285775355"
+          },
+          "baseline": {
+            "cpu": 2.56033,
+            "digest": "3252972538285775355"
+          }
+        },
+        {
+          "baseline": {
+            "cpu": 2.53306,
+            "digest": "3252972538285775355"
+          },
+          "candidate": {
+            "cpu": 2.58376,
+            "digest": "3252972538285775355"
+          }
+        }
+      ],
+      "cpu": {
+        "paired_change_percent": 0.5530014240857812,
+        "upper_95_percent": 1.8855064721954466,
+        "pairs": 7
+      },
+      "passed": true
+    }
+  },
+  "distance_kernel": {
+    "pairs": [
+      {
+        "baseline": {
+          "cpu": 0.074903,
+          "digest": "7598194734568746859"
+        },
+        "candidate": {
+          "cpu": 0.066832,
+          "digest": "7598194734568746859"
+        }
+      },
+      {
+        "baseline": {
+          "cpu": 0.073943,
+          "digest": "7598194734568746859"
+        },
+        "candidate": {
+          "cpu": 0.067365,
+          "digest": "7598194734568746859"
+        }
+      },
+      {
+        "baseline": {
+          "cpu": 0.074852,
+          "digest": "7598194734568746859"
+        },
+        "candidate": {
+          "cpu": 0.069356,
+          "digest": "7598194734568746859"
+        }
+      },
+      {
+        "baseline": {
+          "cpu": 0.078834,
+          "digest": "7598194734568746859"
+        },
+        "candidate": {
+          "cpu": 0.071571,
+          "digest": "7598194734568746859"
+        }
+      },
+      {
+        "baseline": {
+          "cpu": 0.077038,
+          "digest": "7598194734568746859"
+        },
+        "candidate": {
+          "cpu": 0.069908,
+          "digest": "7598194734568746859"
+        }
+      },
+      {
+        "baseline": {
+          "cpu": 0.077486,
+          "digest": "7598194734568746859"
+        },
+        "candidate": {
+          "cpu": 0.07241,
+          "digest": "7598194734568746859"
+        }
+      },
+      {
+        "baseline": {
+          "cpu": 0.076531,
+          "digest": "7598194734568746859"
+        },
+        "candidate": {
+          "cpu": 0.070842,
+          "digest": "7598194734568746859"
+        }
+      }
+    ],
+    "cpu": {
+      "paired_change_percent": -8.505128728182779,
+      "upper_95_percent": -7.668490264509168,
+      "pairs": 7
+    },
+    "passed": true
+  },
+  "tests": {
+    "unit": {
+      "tests": "393",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    "maxima": {
+      "tests": "142",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    "save": {
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    "stats": {
+      "tests": "5",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    "archive": {
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    "engine": {
+      "tests": "29",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    }
+  },
+  "platforms_verified": [
+    "macOS arm64"
+  ],
+  "platforms_unverified": [
+    "Linux",
+    "Windows"
+  ],
+  "limitations": [
+    "Later CPU fixtures use two resident processes alternating 100ms time slices; sequential populated measurements were inconclusive under changing background builds/tests.",
+    "Peak RSS is a single sequential load/one-tick/save pair.",
+    "Interactive maintainer playtesting was not performed.",
+    "Level-zero gzip retains legacy whole-buffer output for byte identity."
+  ]
+}

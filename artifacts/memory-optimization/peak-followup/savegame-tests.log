@@ -1,0 +1,4 @@
+PASS SavegameSafety/autosave defaults; atomic and background writes; truncated and malformed loads; imports and campaign progress [save-format][writes-preferences] (8.5s)
+
+1 passed, 0 failed, 0 skipped (8.5s of test time)
+[run_tests] JUnit report: artifacts/memory-optimization/peak-followup/savegame-tests.xml (1 cases)

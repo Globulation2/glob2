@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="7" failures="0" errors="0" skipped="0"><testsuite name="JavaScriptCompatibility"><testcase classname="JavaScriptCompatibility" name="JavaScript current saves reject truncated generation tables" time="1.00105" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript current text saves validate unused generation counters" time="4.23041" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript pass assigns valid identities to released saves" time="0.648079" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript pass retains network protocol acceptance boundaries" time="0.001574" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript pass retains released replay and acceptance boundaries" time="0.548104" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript test environment scopes restore SDL and CRT readers" time="0" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript upgrade retains genuine master124 experiments and continuation" time="0.614305" status="run" />
+  </testsuite></testsuites>

@@ -1,0 +1,4 @@
+PASS glob2-unit-tests Maxima.Continuation (2 cases) (0.3s)
+
+1 passed, 0 failed, 0 skipped (0.3s of test time)
+[run_tests] JUnit report: artifacts/memory-optimization/archive-junit.xml (2 cases)

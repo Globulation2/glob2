@@ -1,0 +1,54 @@
+{
+  "all_detail_bytes_equal": true,
+  "bytes": 6766753746,
+  "sha256_with_zero_tick_count_header": "cbb7b6f87deba7253646d244eb4e3caeb925db181a56b79dd9284fcf3aeaff1d",
+  "final_headers": [
+    "000000000000000000000000c8af000000000000",
+    "000000000000000000000000c8af000000000000"
+  ],
+  "segments": [
+    {
+      "offset": 0,
+      "bytes": 5096730624,
+      "prefix_sha256": "c0bc070f2f3ee081a0146ef1d5fa414f5af8e435de86c380881c52cf7fa7fa5f"
+    },
+    {
+      "offset": 5096730624,
+      "bytes": 271593472,
+      "prefix_sha256": "0e98fb42cd241661abaa7174f21f794b04e47989e5623b324261d410fc2529b2"
+    },
+    {
+      "offset": 5368324096,
+      "bytes": 274821120,
+      "prefix_sha256": "29cb3a8ccb129711b3ccb3f0a02c70f607ed79696df85581a0705a623b510caa"
+    },
+    {
+      "offset": 5643145216,
+      "bytes": 269643776,
+      "prefix_sha256": "937259a4360509a42df83590749c2a0e3f3f48db9b020a4943c4edea6629191b"
+    },
+    {
+      "offset": 5912788992,
+      "bytes": 268726272,
+      "prefix_sha256": "82ae79f63ac3eed42a48cd9c691e8495acf7a3bbf3314e42e9616de0cc504d36"
+    },
+    {
+      "offset": 6181515264,
+      "bytes": 272510976,
+      "prefix_sha256": "dc359ff1292a3c42a69eb55b5761367346cb3d1fcc3e5516a9eabfebc9192582"
+    },
+    {
+      "offset": 6454026240,
+      "bytes": 270499840,
+      "prefix_sha256": "056cb05cdb4e1594aa7decbc76972ef932ffef7676fb33d2ae9919c76a11ad99"
+    },
+    {
+      "offset": 6724526080,
+      "bytes": 42227666,
+      "prefix_sha256": "cbb7b6f87deba7253646d244eb4e3caeb925db181a56b79dd9284fcf3aeaff1d"
+    }
+  ],
+  "compressed_evidence": "matched-checksums.bin.gz",
+  "note": "Streaming comparison reclaimed consumed raw sidecar blocks. Compressed header tick count is zero; final count is in final_headers.",
+  "invalidated": "The tests target did not relink the native game. This compares the baseline executable to itself; retained only as baseline checksum evidence."
+}

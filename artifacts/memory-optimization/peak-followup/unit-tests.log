@@ -1,0 +1,4 @@
+PASS glob2-unit-tests (393 cases) (3.5s)
+
+1 passed, 0 failed, 0 skipped (3.5s of test time)
+[run_tests] JUnit report: artifacts/memory-optimization/peak-followup/unit-tests.xml (393 cases)

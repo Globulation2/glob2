@@ -1,0 +1,146 @@
+[
+  {
+    "baseline": {
+      "command": [
+        "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/peak-followup/baseline/glob2",
+        "--run-game",
+        "--load-game",
+        "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/initial.game.gz",
+        "--ticks",
+        "1024",
+        "--telemetry",
+        "checksums",
+        "--replay",
+        "true",
+        "--save",
+        "final",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/peak-followup/continuation-0-baseline"
+      ],
+      "save_sha256": "c9a95d4e304cfc2581af84dfa4fdfa94119731c92eb175374fe0ac743d6acc20",
+      "replay_sha256": "9f8ad04aa19cf8a887625c9063d4bf846a71de711463fdebe0bba6c942a3e0bc",
+      "checksum_sha256": "446633db061e8a7056e031ac64874619b7c993dd176d16741b1b895f0d447919",
+      "bytes": 20060940
+    },
+    "candidate": {
+      "command": [
+        "/Users/bradley/.codex/worktrees/late-game-memory/glob2/build/darwin/client/release/src/glob2",
+        "--run-game",
+        "--load-game",
+        "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/initial.game.gz",
+        "--ticks",
+        "1024",
+        "--telemetry",
+        "checksums",
+        "--replay",
+        "true",
+        "--save",
+        "final",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/peak-followup/continuation-0-candidate"
+      ],
+      "save_sha256": "c9a95d4e304cfc2581af84dfa4fdfa94119731c92eb175374fe0ac743d6acc20",
+      "replay_sha256": "9f8ad04aa19cf8a887625c9063d4bf846a71de711463fdebe0bba6c942a3e0bc",
+      "checksum_sha256": "446633db061e8a7056e031ac64874619b7c993dd176d16741b1b895f0d447919",
+      "bytes": 20060940
+    },
+    "ticks_written": 1024,
+    "initial_tick": 0
+  },
+  {
+    "baseline": {
+      "command": [
+        "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/peak-followup/baseline/glob2",
+        "--run-game",
+        "--load-game",
+        "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-15000.game.gz",
+        "--ticks",
+        "16024",
+        "--telemetry",
+        "checksums",
+        "--replay",
+        "true",
+        "--save",
+        "final",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/peak-followup/continuation-15000-baseline"
+      ],
+      "save_sha256": "a4fd4f13c1b037f838c9c10fe58ed03c81f0d0c16ddc33d11aeea86e86987355",
+      "replay_sha256": "ca029f66e64171ae8e83824b7ad2e6fd9446551c6dcfaed2d2c77bfe101bf08d",
+      "checksum_sha256": "c5e7c5d2ee609838db341b22936ee147a724e0ce53b2f50abe4537147b79b300",
+      "bytes": 139204034
+    },
+    "candidate": {
+      "command": [
+        "/Users/bradley/.codex/worktrees/late-game-memory/glob2/build/darwin/client/release/src/glob2",
+        "--run-game",
+        "--load-game",
+        "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-15000.game.gz",
+        "--ticks",
+        "16024",
+        "--telemetry",
+        "checksums",
+        "--replay",
+        "true",
+        "--save",
+        "final",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/peak-followup/continuation-15000-candidate"
+      ],
+      "save_sha256": "a4fd4f13c1b037f838c9c10fe58ed03c81f0d0c16ddc33d11aeea86e86987355",
+      "replay_sha256": "ca029f66e64171ae8e83824b7ad2e6fd9446551c6dcfaed2d2c77bfe101bf08d",
+      "checksum_sha256": "c5e7c5d2ee609838db341b22936ee147a724e0ce53b2f50abe4537147b79b300",
+      "bytes": 139204034
+    },
+    "ticks_written": 1024,
+    "initial_tick": 15000
+  },
+  {
+    "baseline": {
+      "command": [
+        "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/peak-followup/baseline/glob2",
+        "--run-game",
+        "--load-game",
+        "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-45000.game.gz",
+        "--ticks",
+        "46024",
+        "--telemetry",
+        "checksums",
+        "--replay",
+        "true",
+        "--save",
+        "final",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/peak-followup/continuation-45000-baseline"
+      ],
+      "save_sha256": "8bd856262686473f45679b371ea2ca538ae4dc08db897d3164bf8dd329fd89d3",
+      "replay_sha256": "ee9a960cb10184cfe1c8eba9d6219673a90bdd9869144c7a391308dab5bb6ecb",
+      "checksum_sha256": "e1f890749a7601fd62424a695cf42850ec4a437038d11f4337c3bba728448b0b",
+      "bytes": 212156976
+    },
+    "candidate": {
+      "command": [
+        "/Users/bradley/.codex/worktrees/late-game-memory/glob2/build/darwin/client/release/src/glob2",
+        "--run-game",
+        "--load-game",
+        "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-45000.game.gz",
+        "--ticks",
+        "46024",
+        "--telemetry",
+        "checksums",
+        "--replay",
+        "true",
+        "--save",
+        "final",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/peak-followup/continuation-45000-candidate"
+      ],
+      "save_sha256": "8bd856262686473f45679b371ea2ca538ae4dc08db897d3164bf8dd329fd89d3",
+      "replay_sha256": "ee9a960cb10184cfe1c8eba9d6219673a90bdd9869144c7a391308dab5bb6ecb",
+      "checksum_sha256": "e1f890749a7601fd62424a695cf42850ec4a437038d11f4337c3bba728448b0b",
+      "bytes": 212156976
+    },
+    "ticks_written": 1024,
+    "initial_tick": 45000
+  }
+]

@@ -1,0 +1,40 @@
+{
+  "baseline": {
+    "maximum_resident_bytes": 5273944064,
+    "command": [
+      "/usr/bin/time",
+      "-l",
+      "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/baseline-source/build/darwin/client/release/src/glob2",
+      "--run-game",
+      "--load-game",
+      "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-45000.game.gz",
+      "--ticks",
+      "45001",
+      "--benchmark-warmup",
+      "0",
+      "--save",
+      "final",
+      "--output-dir",
+      "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/peak-baseline"
+    ]
+  },
+  "candidate": {
+    "maximum_resident_bytes": 4251303936,
+    "command": [
+      "/usr/bin/time",
+      "-l",
+      "/Users/bradley/.codex/worktrees/late-game-memory/glob2/build/darwin/client/release/src/glob2",
+      "--run-game",
+      "--load-game",
+      "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-45000.game.gz",
+      "--ticks",
+      "45001",
+      "--benchmark-warmup",
+      "0",
+      "--save",
+      "final",
+      "--output-dir",
+      "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/peak-candidate"
+    ]
+  }
+}

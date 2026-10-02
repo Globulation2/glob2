@@ -1,0 +1,667 @@
+[
+  {
+    "path": "artifacts/memory-optimization/actual-binaries.json",
+    "bytes": 167,
+    "sha256": "1d817d9862418d31c7f81f172a855e4cf0a0210a7952ae0dd7e7b998799194b2"
+  },
+  {
+    "path": "artifacts/memory-optimization/archive-junit.xml",
+    "bytes": 551,
+    "sha256": "f3e6668488890579f294dd33e242e9f5fc7079cec8f9564def191ecc996ea1bc"
+  },
+  {
+    "path": "artifacts/memory-optimization/archive-tests.log",
+    "bytes": 194,
+    "sha256": "019ee8bfa19c96f0d8e829dd69b8e09526ad161e9356fcfd3b77f3d086eba72a"
+  },
+  {
+    "path": "artifacts/memory-optimization/baseline-tests-build.log",
+    "bytes": 2558515,
+    "sha256": "43cd6b02521a13b2913ddbfea156061777818977b84ee6645e8f6a438d45c3c2"
+  },
+  {
+    "path": "artifacts/memory-optimization/build.log",
+    "bytes": 54965,
+    "sha256": "f1abdb53dba526702907a06752c26d4de27882757dc3ed1fb029708aaaf4d22b"
+  },
+  {
+    "path": "artifacts/memory-optimization/build_validation_report.py",
+    "bytes": 4739,
+    "sha256": "ea2e94c43fb060be9952bf3199451fd73dcf7ec1480db0bec6f56a5cc1451c61"
+  },
+  {
+    "path": "artifacts/memory-optimization/checksum-comparison.json",
+    "bytes": 1915,
+    "sha256": "33db043dd2551da6bafd19c54c36097c08bc150516efb95391fece9965e9364c"
+  },
+  {
+    "path": "artifacts/memory-optimization/checksum-stream-progress.json",
+    "bytes": 1300,
+    "sha256": "4921f94911aff6b6ba618128f11b8971412cbb0ec89dd03977888e4ae0166020"
+  },
+  {
+    "path": "artifacts/memory-optimization/checksum-v2-comparison.json",
+    "bytes": 6985,
+    "sha256": "597ad259814079a71905c8afbf7d01b1b314d93c11952d7d36597b48d3bd9608"
+  },
+  {
+    "path": "artifacts/memory-optimization/checksum-v2-progress.json",
+    "bytes": 6639,
+    "sha256": "57e8e1304500eb2f2a5a04cccb7df9e630c469c11f89fce166961ccd09d420b0"
+  },
+  {
+    "path": "artifacts/memory-optimization/client-build.log",
+    "bytes": 55779,
+    "sha256": "fc70529aa2bf9ac5c54d8fb994b4af65d1bf8100d4d4b0563bfa205bb73f6de4"
+  },
+  {
+    "path": "artifacts/memory-optimization/compare_v2.py",
+    "bytes": 2239,
+    "sha256": "1337dd502a4cdf31691d30c72d9f2d3ac9f8e2f8d52587f03d9adb2f54d9c541"
+  },
+  {
+    "path": "artifacts/memory-optimization/distance-comparison.json",
+    "bytes": 1567,
+    "sha256": "d8f14205d8a2437ac5a473e832d2ca5f806c732ec12aafd490fd44174d933a1d"
+  },
+  {
+    "path": "artifacts/memory-optimization/distance_benchmark.py",
+    "bytes": 1083,
+    "sha256": "f88ad724e60b5c2bba47238339de892b3755449435ef36d3b8ff66198d6cd59b"
+  },
+  {
+    "path": "artifacts/memory-optimization/distance_probe.cpp",
+    "bytes": 837,
+    "sha256": "4009461c73e9f7373c27039c9d649bc2c00935bf90e9107e7bc4bdaaa44a5758"
+  },
+  {
+    "path": "artifacts/memory-optimization/edit_archive.py",
+    "bytes": 3132,
+    "sha256": "77de6f74be1f0060e58a7dde823c488506f2d3825fd1ff6a01f2fd36f8fb7717"
+  },
+  {
+    "path": "artifacts/memory-optimization/engine-junit.xml",
+    "bytes": 4644,
+    "sha256": "d925d4530ab75a6c9f635499dc72669a2925226e0ffce810e8d4572eeab87daf"
+  },
+  {
+    "path": "artifacts/memory-optimization/farming-tests.log",
+    "bytes": 222,
+    "sha256": "fb34f4c1a1db711ce59c435768853e128addc224d6a6183096fba6abe119aeb5"
+  },
+  {
+    "path": "artifacts/memory-optimization/farming_probe.cpp",
+    "bytes": 885,
+    "sha256": "ab055708763a1d604012342c1149dfd7318e12b4a27dacfc64b874cea7a4fe04"
+  },
+  {
+    "path": "artifacts/memory-optimization/gzip_probe.cpp",
+    "bytes": 1045,
+    "sha256": "319fc64848aeb82ed13e212cb2138dc5932a1f67169db5f71e7a0a9a3741fdf6"
+  },
+  {
+    "path": "artifacts/memory-optimization/interrupt_probe.py",
+    "bytes": 560,
+    "sha256": "9c4b7293c9634373217f6ff1c7edb8dcd7e286f7b87296210fa537792e89a3f8"
+  },
+  {
+    "path": "artifacts/memory-optimization/kernel-comparison.json",
+    "bytes": 5191,
+    "sha256": "2b203a99cf9f71686df480b1f8a90fec1c14d51400520882a093c61e4be45f74"
+  },
+  {
+    "path": "artifacts/memory-optimization/kernel_benchmark.py",
+    "bytes": 1426,
+    "sha256": "ecad3b17b468a3f90fa65409a126fb9f32338fba25cbbbd93f9801759e31bd25"
+  },
+  {
+    "path": "artifacts/memory-optimization/maxima-junit.xml",
+    "bytes": 17091,
+    "sha256": "d27af7744ed6a6d48f8008c8b23872019badc0d468eb84dc291696674474641f"
+  },
+  {
+    "path": "artifacts/memory-optimization/maxima-tests.log",
+    "bytes": 7000,
+    "sha256": "c37a2b6fca69dd7861166ba63758cd2d2cedb38a145707806a8287fcfecf4af7"
+  },
+  {
+    "path": "artifacts/memory-optimization/memory-comparison.json",
+    "bytes": 1836,
+    "sha256": "629bc8656ce1757cf545694affa68aa08cd4221d56a639c4c7aefcf0ee161039"
+  },
+  {
+    "path": "artifacts/memory-optimization/path-tests.log",
+    "bytes": 220,
+    "sha256": "e70167b9c70c90ff8b39b38dc6c4d24d54788822528a833b5e23af550b6282ed"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/build-tests.log",
+    "bytes": 1759184,
+    "sha256": "f3e94f0cc71778a0adb75e07c4bd53e7c89c4fab0ed81812871a0c692340d871"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/build_report.py",
+    "bytes": 6494,
+    "sha256": "10fd6ce717aa7958bf265cb69f37b827d012e01eac6ff10b45c272c959d9ced9"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/capture-comparison.json",
+    "bytes": 3676,
+    "sha256": "4e1318b0b8f51e12abf53e36168f5a780b7454fa68cde90f2f573ff9d3e028cc"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/capture-probe-commands.json",
+    "bytes": 38164,
+    "sha256": "224dfa92e9327164fbddd44382b04ad3212725addfe75f39d211fea55f1cd9d0"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/capture_probe.cpp",
+    "bytes": 2219,
+    "sha256": "74175c68a9faa1260e13bdf4ad605ce7f51da980b619c8f23bdb53df4fd2cac8"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/check_continuation.py",
+    "bytes": 2344,
+    "sha256": "4ac2b65e9ffecd86d47fbaa9d0efdce156d80526077f57634d030d144292f73e"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/compatibility-tests.log",
+    "bytes": 858,
+    "sha256": "32c2be652f37fdfb6ec6f82f8250497f4fb105307a30feb5bfe8dfc4c5a48f78"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/compatibility-tests.xml",
+    "bytes": 1215,
+    "sha256": "e1f63f84d637aa017f4a138a30fa271b886df2be575e4308405214c12da7066e"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/continuation-0-candidate/final.game.gz",
+    "bytes": 14218890,
+    "sha256": "c9a95d4e304cfc2581af84dfa4fdfa94119731c92eb175374fe0ac743d6acc20"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/continuation-0-candidate/game.replay",
+    "bytes": 29602675,
+    "sha256": "9f8ad04aa19cf8a887625c9063d4bf846a71de711463fdebe0bba6c942a3e0bc"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/continuation-0-checksums.bin.gz",
+    "bytes": 3569451,
+    "sha256": "95375faf4c98dd34673d6cda483953379162f61048bdb8e291ba03b3257fc452"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/continuation-comparison.json",
+    "bytes": 5821,
+    "sha256": "09828fa6bb5ec40940a42799a7b28c633c66f3c54b31a4cf18672b6ecf6cc3aa"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/continuation-tests.log",
+    "bytes": 3462,
+    "sha256": "4e612e049d34059f92bcccf4ef3986474fe60255f090e9e92e813d998ed28658"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/continuation-tests.xml",
+    "bytes": 5574,
+    "sha256": "10eac8e49aabc90e14f08d46edeb80b3899b351cf73db1a10aa3b9abb5611734"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/cpu-final/comparison.json",
+    "bytes": 45233,
+    "sha256": "bac1961a19edbb91dda252c66322f73d310cf4df2bd64200c153ee038959ca8c"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/cpu-final/fixture-0-pair-0-baseline/result.json",
+    "bytes": 93504,
+    "sha256": "d6d86f4a364e9ad76d4ef0b3fc9582a626e0ddd07de8d601a28d99a6cf68f1f2"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/cpu-final/fixture-0-pair-0-candidate/result.json",
+    "bytes": 93504,
+    "sha256": "18983d8d202c5624c6706327ea6d4e0b726f49a1b0228368f0bb65efc616a1fb"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/cpu-final/fixture-0-pair-1-baseline/result.json",
+    "bytes": 93507,
+    "sha256": "eeed8e5ed15549276c7e6b182c7db519484c70dbe3d87d3635407c5c6cac92d8"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/cpu-final/fixture-0-pair-1-candidate/result.json",
+    "bytes": 93507,
+    "sha256": "97b3fbb9c7f2158b4a33d553ea7ff9b5f41d7d48d578627a7f73d974ce939840"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/cpu-final/fixture-0-pair-2-baseline/result.json",
+    "bytes": 93508,
+    "sha256": "9ca3253ef2a267437ec98fdf66898260ba5944c256d380e0ad71fbfde92e1f3e"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/cpu-final/fixture-0-pair-2-candidate/result.json",
+    "bytes": 93507,
+    "sha256": "f4272ef2a38651801a05100b13b996eac7b775bc4776d860eb44ec330094a1af"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/cpu-final/fixture-0-pair-3-baseline/result.json",
+    "bytes": 93508,
+    "sha256": "7a74bc725c1fde2e22350bd8f9411b82616035e7314378046e042e3834df66b6"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/cpu-final/fixture-0-pair-3-candidate/result.json",
+    "bytes": 93507,
+    "sha256": "f87705c6565e52bfc5c7624e976538df4544d84f7d2e863866342c558c9d51e0"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/cpu-final/fixture-0-pair-4-baseline/result.json",
+    "bytes": 93509,
+    "sha256": "a4720578d99ae47dbd3a5bde732e37ba68b6d21186d7082199aa3b48af6d9c5d"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/cpu-final/fixture-0-pair-4-candidate/result.json",
+    "bytes": 93510,
+    "sha256": "2acc794e97e2e4138c1fc6eb22e02ed23597da89e20885d763be09bbe090dd67"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/cpu-final/fixture-0-pair-5-baseline/result.json",
+    "bytes": 93509,
+    "sha256": "6bcf135b40f6c786db00da541060e1657c0d73df8ce2b5ca9e2e3b71b55a40a9"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/cpu-final/fixture-0-pair-5-candidate/result.json",
+    "bytes": 93509,
+    "sha256": "0efbae1295651f2ab78f1f9a9f08632fb7bfad658ca7fdcfa2497925213d609f"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/cpu-final/fixture-0-pair-6-baseline/result.json",
+    "bytes": 93509,
+    "sha256": "5435c9111b61be0d70c79fadf94472081ebb1c50e07e86c8ee24f94125dc86c0"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/cpu-final/fixture-0-pair-6-candidate/result.json",
+    "bytes": 93509,
+    "sha256": "96962df2717a464ff31fcabea1f32da10450997ff19fb18ac9aff25a5c956e67"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/cpu-final/fixture-1-pair-0-baseline/result.json",
+    "bytes": 100902,
+    "sha256": "08f80571586b8c788412fd15e0f48bb466a61a93745804212378646c4a34c4a1"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/cpu-final/fixture-1-pair-0-candidate/result.json",
+    "bytes": 100902,
+    "sha256": "2ed6b06f99c802e14dbdff49f7317011d04e2a45a902d04db1c0ca86343f2ffc"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/cpu-final/fixture-1-pair-1-baseline/result.json",
+    "bytes": 100904,
+    "sha256": "4ff35b7675e5fe00e01beb4e49c11f4840f41bc4454d05a3a4db6d5e765db86b"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/cpu-final/fixture-1-pair-1-candidate/result.json",
+    "bytes": 100901,
+    "sha256": "53ba091120931cebdb8be02b41efeea69b4eefc0793fbdcbafbab4ef6b305ec5"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/cpu-final/fixture-1-pair-2-baseline/result.json",
+    "bytes": 100902,
+    "sha256": "af6574a2b41587bfde91107503329d682eadf8c3a680d2b5d9f54c955efbecb6"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/cpu-final/fixture-1-pair-2-candidate/result.json",
+    "bytes": 100902,
+    "sha256": "6237e7413c2e56d239f5109c1437b3ba925e71f9e39296f56449f0ef4d7dc556"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/cpu-final/fixture-1-pair-3-baseline/result.json",
+    "bytes": 100902,
+    "sha256": "589f6c41a97d330e9bb0eeb3d6d019371f48f091cc9696eaed12b58e2985b1ab"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/cpu-final/fixture-1-pair-3-candidate/result.json",
+    "bytes": 100902,
+    "sha256": "ba02f3857fde147f3486a6becf9e595b56d443828134f6262584af8b78bc2371"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/cpu-final/fixture-1-pair-4-baseline/result.json",
+    "bytes": 100902,
+    "sha256": "2d45dfae14dd2bcbfdb658c364fb7766fbc4ee0cc2109b4812b71f0a6f664426"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/cpu-final/fixture-1-pair-4-candidate/result.json",
+    "bytes": 100902,
+    "sha256": "d2f50afb6c984990d9f25edcec58f028e8765d2a3b34afd39198283172b36f72"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/cpu-final/fixture-1-pair-5-baseline/result.json",
+    "bytes": 100901,
+    "sha256": "4fd48a99194a50063e76eb8798390eb3484304847288fd43975dd94f34a13c50"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/cpu-final/fixture-1-pair-5-candidate/result.json",
+    "bytes": 100901,
+    "sha256": "e185d0ce7a96c9e6d93cca9776c8a76f0be3311bf2bda00a4d621af44ef0c32e"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/cpu-final/fixture-1-pair-6-baseline/result.json",
+    "bytes": 100901,
+    "sha256": "10095ee1ac417634212c7ef63d07eadabc011f661d6b7003ce15837a96b76613"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/cpu-final/fixture-1-pair-6-candidate/result.json",
+    "bytes": 100900,
+    "sha256": "b9e4b30f14af1b3cc506f3dd0d24b9f0f4f5c584eab2624b940dfcace950163c"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/cpu-final/fixture-2-pair-0-baseline/result.json",
+    "bytes": 115529,
+    "sha256": "42cc8d75d96cc2fd77e7f0518c37e03125bfda806d47b092927e0383a4a2f34e"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/cpu-final/fixture-2-pair-0-candidate/result.json",
+    "bytes": 115530,
+    "sha256": "bb6bf6461095664ec2e854dec3289623521c2684837af4b5e5b37fd98e569b4f"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/cpu-final/fixture-2-pair-1-baseline/result.json",
+    "bytes": 115528,
+    "sha256": "fb19beec96da6f70270d18deabc9b67941ddc74eebfef60d5f4e88974b752dfb"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/cpu-final/fixture-2-pair-1-candidate/result.json",
+    "bytes": 115528,
+    "sha256": "116fd88e42d1ee374b908ca3ef6cc5a9ab8fe3351fa9c619e9ca5f3b8ca00227"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/cpu-final/fixture-2-pair-2-baseline/result.json",
+    "bytes": 115530,
+    "sha256": "e08462f96c46d77662860e0121015bc3503bdeefcbe8b84d93d2dd79395d171a"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/cpu-final/fixture-2-pair-2-candidate/result.json",
+    "bytes": 115530,
+    "sha256": "0c6d463da908f604675022ac342aa479223d54ec8cf1266a34f4108e4a05eefd"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/cpu-final/fixture-2-pair-3-baseline/result.json",
+    "bytes": 115530,
+    "sha256": "d8eb012b86a2d78031ab70d3ca15cba868473d9392c96ecfb65e64674e001eb1"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/cpu-final/fixture-2-pair-3-candidate/result.json",
+    "bytes": 115530,
+    "sha256": "9e5618baa56a5e0e4ae08afd62375ba2e59f415a2806cfc0a681795945dc92a4"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/cpu-final/fixture-2-pair-4-baseline/result.json",
+    "bytes": 115530,
+    "sha256": "ecb5e0d5d673d7fd5a05397926dff7c6346ae2baaefeecca61be9f534b299fc5"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/cpu-final/fixture-2-pair-4-candidate/result.json",
+    "bytes": 115530,
+    "sha256": "d267fe2e06ac11c6e96a079009bafe6eac0ec7858ebb9e4fbc0db9426f6e3b76"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/cpu-final/fixture-2-pair-5-baseline/result.json",
+    "bytes": 115532,
+    "sha256": "42127fd8f6a8edf20513e664cf0320c6be400139a96d2311791e00bacf02fad6"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/cpu-final/fixture-2-pair-5-candidate/result.json",
+    "bytes": 115530,
+    "sha256": "a17cded2310101eb81c6ae20feead390516aa8471b784fd695cbd84a3a7b2a7c"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/cpu-final/fixture-2-pair-6-baseline/result.json",
+    "bytes": 115530,
+    "sha256": "8d7e3d8413d558e0ff50896f0075704e9c69fa853e8b5e25bc427ab9b9b8651d"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/cpu-final/fixture-2-pair-6-candidate/result.json",
+    "bytes": 115530,
+    "sha256": "8e0d5f2c056b5638f2bedde733077bd27da148c985e691e251bbc4f494739d49"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/final-functional-recheck.json",
+    "bytes": 520,
+    "sha256": "05749cf40c59521b1bd54fb1095cdd5f4d033337d48ab5c5d3588c031e85e657"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/gzip_probe.cpp",
+    "bytes": 1632,
+    "sha256": "359e91bce105d863458e6abb7f0c837356b8bf2d2dfdb65d28537b0c6c13b502"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/measure_peak.py",
+    "bytes": 1733,
+    "sha256": "44e898818dcc37bff25903457d47eb1dc086c4e82697bf67412f2aff4c7c40d8"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/peak-0-baseline-load/result.json",
+    "bytes": 91198,
+    "sha256": "704c41d11d17a9b93eb6597543a11b6646f3ba114f6693c31568ae025943f067"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/peak-0-baseline-save/result.json",
+    "bytes": 91200,
+    "sha256": "947b424d299ab0bfa3693da6a050a7a94f0c1f366e414348e573087776f41362"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/peak-0-candidate-load/result.json",
+    "bytes": 91200,
+    "sha256": "24d274f9c23a9b451ceffff43cbd3321bae547e96507ded86c806c9e1d9ca7e6"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/peak-0-candidate-save/result.json",
+    "bytes": 91205,
+    "sha256": "468f39542524381dec6d58ce2382b063f5335803d8002b1e6871c68d6d5659a5"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/peak-15000-baseline-load/result.json",
+    "bytes": 98354,
+    "sha256": "1477b4c509b30fb1b9856ce746874c49365f657a99a30aa76249c4116049aef2"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/peak-15000-baseline-save/result.json",
+    "bytes": 98355,
+    "sha256": "821b0264c58756d4f470416628df90872dd7cca9f80c13fcb0d221e1c3d6aa44"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/peak-15000-candidate-load/result.json",
+    "bytes": 98348,
+    "sha256": "d9e5987239d10bc8c0d2df005d0298354287db582b79da87f121321fe02ddc1c"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/peak-15000-candidate-save/result.json",
+    "bytes": 98356,
+    "sha256": "332d0ef0111e50ba4bcff7df249ab40f1623fecdd4425262ce5b3c304ebec527"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/peak-45000-baseline-load/result.json",
+    "bytes": 112946,
+    "sha256": "2aad8a8a4c4f43786077ac7d9f3d50f2d07014667bc62f929123de4296ff34ef"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/peak-45000-baseline-save/result.json",
+    "bytes": 112953,
+    "sha256": "840a2345d8d665ef5177edc695cf5af7f6da021d5b2490e71db3ef4379d73c80"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/peak-45000-candidate-load/result.json",
+    "bytes": 112951,
+    "sha256": "0af2ee636da66d700d53423b2a4a1c40b8f19d8d964895f3766602fb78f09dec"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/peak-45000-candidate-save/result.json",
+    "bytes": 112954,
+    "sha256": "7379f9aff5d4abf04c1e950e96b1fd94fb5ec0c7ca8128a296f44893132937d8"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/peak-comparison.json",
+    "bytes": 10090,
+    "sha256": "f11f691c4971aeb4cfceb819e2ff407610ede97c2f1fb9e4aabb32e8fb310db4"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/peak-pre-edgefix.json",
+    "bytes": 10090,
+    "sha256": "b4f085c4f242f3f1d39b3c9c727fd8eb4c14371255549ca96fe2c32b509bfd4b"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/phase-comparison.json",
+    "bytes": 25838,
+    "sha256": "7f92e0f6efe917c43c01a2341af67b5248679c65e03bc74cb08999055bd73a0d"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/phase-probe-commands.json",
+    "bytes": 38081,
+    "sha256": "2106e64ee46bc5ddd2045ccb4262efabb5d9c7e61136b5449c05e8034496ad81"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/phase_benchmark.py",
+    "bytes": 2506,
+    "sha256": "1d15f2536ae698456642f0f60536b085690b6303eda81362d2a7d76b2b40256b"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/phase_probe.cpp",
+    "bytes": 3438,
+    "sha256": "ec717d46548cf13456dcf73c708759541228bb939d85a4e7d517a4688d46af79"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/rebuild-tests.log",
+    "bytes": 72618,
+    "sha256": "36cd7b31bdb03d19b92c13434bf005f9c17930a67019c0780c41f3012bfcae04"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/recheck_continuation.py",
+    "bytes": 1756,
+    "sha256": "7b6db25c0b4367b22017944ad91060527cf743c22df2089a0b3a008f34480e90"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/review.md",
+    "bytes": 4325,
+    "sha256": "cc0121713863a87462ccc795489a935b9892dd4f4c77dd41703195b510e51313"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/run_capture_probe.py",
+    "bytes": 3120,
+    "sha256": "43cf58e3d6c2f7d5ebdffed233e151e143c0d8951d01eece9a8fd1d968203649"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/savegame-tests.log",
+    "bytes": 321,
+    "sha256": "8afcf97dda27569f015502e45e1e1d76c430b218f63b2e2983f3494ccf6cc309"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/savegame-tests.xml",
+    "bytes": 376,
+    "sha256": "a6dbeb30de294b4b98222fcabca9ef2489cdad78e522b15d1fd29f342ccd9d63"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/unit-tests.log",
+    "bytes": 189,
+    "sha256": "e0fc0d1ca085cdc7cd6b9cc4fa4c82e100e2d7c266e36aaab524df0df4842722"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/unit-tests.xml",
+    "bytes": 46966,
+    "sha256": "7adcc00c76a516f0f5d856c44a1c4727a71a8f55da3fc7a2f31e4129ae6f0ece"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-followup/validation.json",
+    "bytes": 96310,
+    "sha256": "db8431250002aef43759e60a5b5273ba054e03c90b94e75dfe26570dcc6cf34d"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak-memory.json",
+    "bytes": 1278,
+    "sha256": "de9a9b32af058b94a7a55e884d65d648f64dc8a4717f81148db2cf3d9fe57a46"
+  },
+  {
+    "path": "artifacts/memory-optimization/peak_memory.py",
+    "bytes": 1139,
+    "sha256": "55c1ab9a66e3736b491287fad79227d6eaa8352e1635e38eee800d833ac97602"
+  },
+  {
+    "path": "artifacts/memory-optimization/performance-final.json",
+    "bytes": 59,
+    "sha256": "8943a51961266cbc63d6a8ffe54a9a6a226ada285dbf8e46236bbe494fc04c27"
+  },
+  {
+    "path": "artifacts/memory-optimization/performance_final.py",
+    "bytes": 1616,
+    "sha256": "432cafe77edac87187d56a9e9bf2576827365a33d691a726d2ba417cb3a0614b"
+  },
+  {
+    "path": "artifacts/memory-optimization/pipeline-tests.log",
+    "bytes": 224,
+    "sha256": "3f2fab2fd243077e2108847e02e23872fdaa990f4acfa2850b6fe995e0a1e878"
+  },
+  {
+    "path": "artifacts/memory-optimization/placement-tests.log",
+    "bytes": 224,
+    "sha256": "0aa5ae63b258fcd59a164932b85afec0840d8234ba0e95e82743cc2551725af1"
+  },
+  {
+    "path": "artifacts/memory-optimization/post_validate.py",
+    "bytes": 964,
+    "sha256": "06cd6a10490bebf7d482f79abe4346f20a13b552d3d2c5b2df893e1d4d0dfc96"
+  },
+  {
+    "path": "artifacts/memory-optimization/profile_candidate.py",
+    "bytes": 1980,
+    "sha256": "d95b976689cf8641e50c565f704bca5530bb487757cdcdb23b7e61a8e1ac7d51"
+  },
+  {
+    "path": "artifacts/memory-optimization/pump_sidecars.py",
+    "bytes": 2496,
+    "sha256": "16fe3b130e9671eae7567842adff91ac22198859a652b368b95b346055031a5c"
+  },
+  {
+    "path": "artifacts/memory-optimization/review.md",
+    "bytes": 2703,
+    "sha256": "27da1c70f84ecda2824a333dab40d92f49734cf7ff35be0f9c6d7fe8440b397e"
+  },
+  {
+    "path": "artifacts/memory-optimization/save-junit.xml",
+    "bytes": 376,
+    "sha256": "60bfde1897354b2a7dfb357781f8fe7916e592512cdc1f39b30963896d904f85"
+  },
+  {
+    "path": "artifacts/memory-optimization/save-tests.log",
+    "bytes": 303,
+    "sha256": "4a14ab8434c106db51d697f73b971f4128457daabf5a650b919135a4be27b337"
+  },
+  {
+    "path": "artifacts/memory-optimization/save-v2-comparison.json",
+    "bytes": 1003,
+    "sha256": "33f2ed67d66f3c51c5a7ceacf48ddfdb0e5fcfead9cb6d5276a90da10a2d059c"
+  },
+  {
+    "path": "artifacts/memory-optimization/stats-junit.xml",
+    "bytes": 877,
+    "sha256": "b550825261a48a55adab78ed5f7b5a969b15830a8f9ac4654221e78c9932d8d5"
+  },
+  {
+    "path": "artifacts/memory-optimization/stats-tests.log",
+    "bytes": 603,
+    "sha256": "d77716e327a04e90c59a0886dbac14bebbd20d5b7daf4db4fc363be30961a23d"
+  },
+  {
+    "path": "artifacts/memory-optimization/unit-junit.xml",
+    "bytes": 46959,
+    "sha256": "f258619f49c168151763885cd523d0f14be1fa8b8661b469c7c424f17b2bc2ea"
+  },
+  {
+    "path": "artifacts/memory-optimization/unit-tests.log",
+    "bytes": 175,
+    "sha256": "ac9c79b72726bf4040ca3f24ae2f0d941d38a7281b204eaa94f3c1478f32886d"
+  },
+  {
+    "path": "artifacts/memory-optimization/validation.json",
+    "bytes": 73269,
+    "sha256": "2f9e48c85e34a1b0242aacdfc589ce995c2200cd4bcce13744e00a339f34ff7e"
+  },
+  {
+    "path": "artifacts/memory-profile/game/initial.game.gz",
+    "bytes": 670264,
+    "sha256": "0740cb514080c0d182420ee3ea06a6e06b6169a35eba777392f7d84deb20cc77"
+  }
+]

@@ -1,0 +1,27 @@
+{
+  "command": [
+    "python3",
+    "test/run_tests.py",
+    "--binary",
+    "engine",
+    "--filter",
+    "AISavePortability/*",
+    "--filter",
+    "CastorContinuation/*",
+    "--filter",
+    "CustomGameSetup/*",
+    "--filter",
+    "TeamStatsSave/*",
+    "--filter",
+    "BuildingGradientInvalidation/*",
+    "--filter",
+    "AIDecisionCoverage/*",
+    "--junit",
+    "artifacts/memory-optimization/peak-followup/continuation-tests.xml"
+  ],
+  "paused_parent": 83211,
+  "paused_children": [
+    29737,
+    29738
+  ]
+}

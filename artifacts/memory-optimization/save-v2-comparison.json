@@ -1,0 +1,22 @@
+{
+  "checkpoint-15000.game.gz": {
+    "baseline": "821ab59f2cb30b641d084d4982ace7cdc64ad1312732077739c2cf34c9edf3b2",
+    "candidate": "821ab59f2cb30b641d084d4982ace7cdc64ad1312732077739c2cf34c9edf3b2"
+  },
+  "checkpoint-30000.game.gz": {
+    "baseline": "e96626cc1f19e8115a785892caf7985a9c3c09a5edae65a85aa4d3dfbb7bd328",
+    "candidate": "e96626cc1f19e8115a785892caf7985a9c3c09a5edae65a85aa4d3dfbb7bd328"
+  },
+  "checkpoint-45000.game.gz": {
+    "baseline": "e2b49a862ddbdf9e3622be8ba4aa442b7927c5d89b5e5128537f7126cbe8bdb3",
+    "candidate": "e2b49a862ddbdf9e3622be8ba4aa442b7927c5d89b5e5128537f7126cbe8bdb3"
+  },
+  "final.game.gz": {
+    "baseline": "27292f0357693414161f1c1da597d7224946e722d1218b40087b6a5059707cc4",
+    "candidate": "27292f0357693414161f1c1da597d7224946e722d1218b40087b6a5059707cc4"
+  },
+  "game.replay": {
+    "baseline": "5aa6473c852ece557552f287a90e0cec5b184c7b5e0ab7ce1266d8e49ad186a2",
+    "candidate": "5aa6473c852ece557552f287a90e0cec5b184c7b5e0ab7ce1266d8e49ad186a2"
+  }
+}

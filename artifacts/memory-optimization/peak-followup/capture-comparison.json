@@ -1,0 +1,177 @@
+{
+  "condition": "same loaded engine; 7 alternating triplets; no injected scheduler pauses; reserve included in capture time",
+  "raw": [
+    {
+      "pair": 0,
+      "variant": "growing",
+      "cpu_ns": 984183000,
+      "wall_ns": 1094368666,
+      "bytes": 1023964068
+    },
+    {
+      "pair": 0,
+      "variant": "reserved",
+      "cpu_ns": 749321000,
+      "wall_ns": 755453333,
+      "bytes": 1023964068
+    },
+    {
+      "pair": 0,
+      "variant": "chunked",
+      "cpu_ns": 738007000,
+      "wall_ns": 785436792,
+      "bytes": 1023964068
+    },
+    {
+      "pair": 1,
+      "variant": "chunked",
+      "cpu_ns": 698703000,
+      "wall_ns": 706897959,
+      "bytes": 1023964068
+    },
+    {
+      "pair": 1,
+      "variant": "reserved",
+      "cpu_ns": 762735000,
+      "wall_ns": 776260292,
+      "bytes": 1023964068
+    },
+    {
+      "pair": 1,
+      "variant": "growing",
+      "cpu_ns": 781666000,
+      "wall_ns": 788938750,
+      "bytes": 1023964068
+    },
+    {
+      "pair": 2,
+      "variant": "growing",
+      "cpu_ns": 780223000,
+      "wall_ns": 787015834,
+      "bytes": 1023964068
+    },
+    {
+      "pair": 2,
+      "variant": "reserved",
+      "cpu_ns": 741242000,
+      "wall_ns": 748106333,
+      "bytes": 1023964068
+    },
+    {
+      "pair": 2,
+      "variant": "chunked",
+      "cpu_ns": 687250000,
+      "wall_ns": 691749041,
+      "bytes": 1023964068
+    },
+    {
+      "pair": 3,
+      "variant": "chunked",
+      "cpu_ns": 737149000,
+      "wall_ns": 765624458,
+      "bytes": 1023964068
+    },
+    {
+      "pair": 3,
+      "variant": "reserved",
+      "cpu_ns": 767903000,
+      "wall_ns": 780415834,
+      "bytes": 1023964068
+    },
+    {
+      "pair": 3,
+      "variant": "growing",
+      "cpu_ns": 780541000,
+      "wall_ns": 782671416,
+      "bytes": 1023964068
+    },
+    {
+      "pair": 4,
+      "variant": "growing",
+      "cpu_ns": 786587000,
+      "wall_ns": 789467000,
+      "bytes": 1023964068
+    },
+    {
+      "pair": 4,
+      "variant": "reserved",
+      "cpu_ns": 763288000,
+      "wall_ns": 776910125,
+      "bytes": 1023964068
+    },
+    {
+      "pair": 4,
+      "variant": "chunked",
+      "cpu_ns": 677845000,
+      "wall_ns": 681318959,
+      "bytes": 1023964068
+    },
+    {
+      "pair": 5,
+      "variant": "chunked",
+      "cpu_ns": 681088000,
+      "wall_ns": 696059208,
+      "bytes": 1023964068
+    },
+    {
+      "pair": 5,
+      "variant": "reserved",
+      "cpu_ns": 737613000,
+      "wall_ns": 740484000,
+      "bytes": 1023964068
+    },
+    {
+      "pair": 5,
+      "variant": "growing",
+      "cpu_ns": 803315000,
+      "wall_ns": 817984125,
+      "bytes": 1023964068
+    },
+    {
+      "pair": 6,
+      "variant": "growing",
+      "cpu_ns": 788057000,
+      "wall_ns": 793986000,
+      "bytes": 1023964068
+    },
+    {
+      "pair": 6,
+      "variant": "reserved",
+      "cpu_ns": 724148000,
+      "wall_ns": 726140292,
+      "bytes": 1023964068
+    },
+    {
+      "pair": 6,
+      "variant": "chunked",
+      "cpu_ns": 669628000,
+      "wall_ns": 673195833,
+      "bytes": 1023964068
+    }
+  ],
+  "cpu": {
+    "growing": {
+      "paired_change_percent": -14.062230936992906,
+      "upper_95_percent": -10.725749457789865,
+      "pairs": 7
+    },
+    "reserved": {
+      "paired_change_percent": -6.842093145297063,
+      "upper_95_percent": -4.983823377749677,
+      "pairs": 7
+    }
+  },
+  "wall": {
+    "growing": {
+      "paired_change_percent": -14.129474980001474,
+      "upper_95_percent": -9.760738110809108,
+      "pairs": 7
+    },
+    "reserved": {
+      "paired_change_percent": -5.837093189372606,
+      "upper_95_percent": -2.6663424053824514,
+      "pairs": 7
+    }
+  },
+  "passed": true
+}

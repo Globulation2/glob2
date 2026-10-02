@@ -1,0 +1,10 @@
+PASS JavaScriptCompatibility/JavaScript pass retains network protocol acceptance boundaries (0.2s)
+PASS JavaScriptCompatibility/JavaScript test environment scopes restore SDL and CRT readers (0.0s)
+PASS JavaScriptCompatibility/JavaScript pass retains released replay and acceptance boundaries (0.8s)
+PASS JavaScriptCompatibility/JavaScript upgrade retains genuine master124 experiments and continuation (0.8s)
+PASS JavaScriptCompatibility/JavaScript pass assigns valid identities to released saves (0.8s)
+PASS JavaScriptCompatibility/JavaScript current saves reject truncated generation tables (1.1s)
+PASS JavaScriptCompatibility/JavaScript current text saves validate unused generation counters (4.3s)
+
+7 passed, 0 failed, 0 skipped (7.9s of test time)
+[run_tests] JUnit report: artifacts/memory-optimization/peak-followup/compatibility-tests.xml (7 cases)

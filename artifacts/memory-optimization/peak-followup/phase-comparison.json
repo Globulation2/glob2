@@ -1,0 +1,735 @@
+{
+  "binary_sha256": "3923dc50c4188bc0cedc6562cd3cc253f98c38ada4b756ac973fec7ab2ab8f93",
+  "fixture_sha256": "e2b49a862ddbdf9e3622be8ba4aa442b7927c5d89b5e5128537f7126cbe8bdb3",
+  "condition": "0.1 second interleaved processes; same engine, contiguous versus chunked deferred capture",
+  "pairs": [
+    {
+      "baseline": {
+        "load": {
+          "phase": "load",
+          "resident_bytes": 2016788480,
+          "peak_bytes": 2016788480,
+          "cpu_ns": 4707578000,
+          "wall_ns": 10797050167
+        },
+        "capture": {
+          "phase": "capture",
+          "resident_bytes": 3997073408,
+          "peak_bytes": 4234035200,
+          "cpu_ns": 1238213000,
+          "wall_ns": 3247978875
+        },
+        "hash": {
+          "phase": "hash",
+          "resident_bytes": 3585196032,
+          "peak_bytes": 4234035200,
+          "cpu_ns": 1459404000,
+          "wall_ns": 3756065541
+        },
+        "compression": {
+          "phase": "compression",
+          "resident_bytes": 3585835008,
+          "peak_bytes": 4234035200,
+          "cpu_ns": 10141240000,
+          "wall_ns": 21685909625
+        },
+        "released": {
+          "phase": "released",
+          "resident_bytes": 3585835008,
+          "peak_bytes": 4234035200,
+          "cpu_ns": 2000,
+          "wall_ns": 2292
+        },
+        "save_sha256": "27263d23ebf5e7a3d44094c9ed50191b420d96cddcab6e9a38e09c4cbfa4b6a9",
+        "command": [
+          "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/peak-followup/phase-probe",
+          "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-45000.game.gz",
+          "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/peak-followup/phase-pair-0-baseline/final.game.gz",
+          "legacy"
+        ],
+        "total_cpu_ns": 12838857000
+      },
+      "candidate": {
+        "load": {
+          "phase": "load",
+          "resident_bytes": 2016755712,
+          "peak_bytes": 2016755712,
+          "cpu_ns": 4698526000,
+          "wall_ns": 10792323792
+        },
+        "capture": {
+          "phase": "capture",
+          "resident_bytes": 2182217728,
+          "peak_bytes": 2182217728,
+          "cpu_ns": 782043000,
+          "wall_ns": 1903769834,
+          "snapshot_bytes": 1023964056,
+          "snapshot_capacity": 1024458752,
+          "table_capacity": 8192
+        },
+        "hash": {
+          "phase": "hash",
+          "resident_bytes": 1718943744,
+          "peak_bytes": 2182234112,
+          "cpu_ns": 1232397000,
+          "wall_ns": 2925802500,
+          "snapshot_bytes": 1023964056,
+          "snapshot_capacity": 1024458752,
+          "table_capacity": 8192
+        },
+        "compression": {
+          "phase": "compression",
+          "resident_bytes": 1852669952,
+          "peak_bytes": 2182234112,
+          "cpu_ns": 10331902000,
+          "wall_ns": 23663042166,
+          "snapshot_bytes": 1023964056,
+          "snapshot_capacity": 1024458752,
+          "table_capacity": 8192
+        },
+        "released": {
+          "phase": "released",
+          "resident_bytes": 1855029248,
+          "peak_bytes": 2182234112,
+          "cpu_ns": 6000,
+          "wall_ns": 4625
+        },
+        "save_sha256": "27263d23ebf5e7a3d44094c9ed50191b420d96cddcab6e9a38e09c4cbfa4b6a9",
+        "command": [
+          "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/peak-followup/phase-probe",
+          "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-45000.game.gz",
+          "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/peak-followup/phase-pair-0-candidate/final.game.gz"
+        ],
+        "total_cpu_ns": 12346342000
+      }
+    },
+    {
+      "baseline": {
+        "load": {
+          "phase": "load",
+          "resident_bytes": 2016935936,
+          "peak_bytes": 2016935936,
+          "cpu_ns": 5206311000,
+          "wall_ns": 11571042791
+        },
+        "capture": {
+          "phase": "capture",
+          "resident_bytes": 4635623424,
+          "peak_bytes": 4635623424,
+          "cpu_ns": 1196112000,
+          "wall_ns": 2682158000
+        },
+        "hash": {
+          "phase": "hash",
+          "resident_bytes": 4596301824,
+          "peak_bytes": 4635639808,
+          "cpu_ns": 1383419000,
+          "wall_ns": 3288679916
+        },
+        "compression": {
+          "phase": "compression",
+          "resident_bytes": 2526674944,
+          "peak_bytes": 4635639808,
+          "cpu_ns": 13081314000,
+          "wall_ns": 40342702625
+        },
+        "released": {
+          "phase": "released",
+          "resident_bytes": 2526691328,
+          "peak_bytes": 4635639808,
+          "cpu_ns": 3000,
+          "wall_ns": 2709
+        },
+        "save_sha256": "27263d23ebf5e7a3d44094c9ed50191b420d96cddcab6e9a38e09c4cbfa4b6a9",
+        "command": [
+          "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/peak-followup/phase-probe",
+          "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-45000.game.gz",
+          "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/peak-followup/phase-pair-1-baseline/final.game.gz",
+          "legacy"
+        ],
+        "total_cpu_ns": 15660845000
+      },
+      "candidate": {
+        "load": {
+          "phase": "load",
+          "resident_bytes": 2016673792,
+          "peak_bytes": 2016673792,
+          "cpu_ns": 5206477000,
+          "wall_ns": 11538159125
+        },
+        "capture": {
+          "phase": "capture",
+          "resident_bytes": 2171584512,
+          "peak_bytes": 2171584512,
+          "cpu_ns": 778669000,
+          "wall_ns": 1697967500,
+          "snapshot_bytes": 1023964056,
+          "snapshot_capacity": 1024458752,
+          "table_capacity": 8192
+        },
+        "hash": {
+          "phase": "hash",
+          "resident_bytes": 2171600896,
+          "peak_bytes": 2171600896,
+          "cpu_ns": 1368990000,
+          "wall_ns": 3134499458,
+          "snapshot_bytes": 1023964056,
+          "snapshot_capacity": 1024458752,
+          "table_capacity": 8192
+        },
+        "compression": {
+          "phase": "compression",
+          "resident_bytes": 1009434624,
+          "peak_bytes": 2171928576,
+          "cpu_ns": 13109200000,
+          "wall_ns": 38704005375,
+          "snapshot_bytes": 1023964056,
+          "snapshot_capacity": 1024458752,
+          "table_capacity": 8192
+        },
+        "released": {
+          "phase": "released",
+          "resident_bytes": 1013350400,
+          "peak_bytes": 2171928576,
+          "cpu_ns": 5000,
+          "wall_ns": 4666
+        },
+        "save_sha256": "27263d23ebf5e7a3d44094c9ed50191b420d96cddcab6e9a38e09c4cbfa4b6a9",
+        "command": [
+          "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/peak-followup/phase-probe",
+          "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-45000.game.gz",
+          "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/peak-followup/phase-pair-1-candidate/final.game.gz"
+        ],
+        "total_cpu_ns": 15256859000
+      }
+    },
+    {
+      "baseline": {
+        "load": {
+          "phase": "load",
+          "resident_bytes": 2016837632,
+          "peak_bytes": 2016837632,
+          "cpu_ns": 6445098000,
+          "wall_ns": 21179121625
+        },
+        "capture": {
+          "phase": "capture",
+          "resident_bytes": 3818258432,
+          "peak_bytes": 3818258432,
+          "cpu_ns": 1516062000,
+          "wall_ns": 4743795500
+        },
+        "hash": {
+          "phase": "hash",
+          "resident_bytes": 3818143744,
+          "peak_bytes": 3818274816,
+          "cpu_ns": 1511541000,
+          "wall_ns": 3953173333
+        },
+        "compression": {
+          "phase": "compression",
+          "resident_bytes": 2379988992,
+          "peak_bytes": 3818815488,
+          "cpu_ns": 13326202000,
+          "wall_ns": 33165332792
+        },
+        "released": {
+          "phase": "released",
+          "resident_bytes": 2380005376,
+          "peak_bytes": 3818815488,
+          "cpu_ns": 2000,
+          "wall_ns": 2625
+        },
+        "save_sha256": "27263d23ebf5e7a3d44094c9ed50191b420d96cddcab6e9a38e09c4cbfa4b6a9",
+        "command": [
+          "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/peak-followup/phase-probe",
+          "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-45000.game.gz",
+          "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/peak-followup/phase-pair-2-baseline/final.game.gz",
+          "legacy"
+        ],
+        "total_cpu_ns": 16353805000
+      },
+      "candidate": {
+        "load": {
+          "phase": "load",
+          "resident_bytes": 2016935936,
+          "peak_bytes": 2016935936,
+          "cpu_ns": 6426956000,
+          "wall_ns": 21278408750
+        },
+        "capture": {
+          "phase": "capture",
+          "resident_bytes": 1980153856,
+          "peak_bytes": 2019147776,
+          "cpu_ns": 1018768000,
+          "wall_ns": 3293447584,
+          "snapshot_bytes": 1023964056,
+          "snapshot_capacity": 1024458752,
+          "table_capacity": 8192
+        },
+        "hash": {
+          "phase": "hash",
+          "resident_bytes": 2068447232,
+          "peak_bytes": 2069118976,
+          "cpu_ns": 1442305000,
+          "wall_ns": 3769476167,
+          "snapshot_bytes": 1023964056,
+          "snapshot_capacity": 1024458752,
+          "table_capacity": 8192
+        },
+        "compression": {
+          "phase": "compression",
+          "resident_bytes": 854966272,
+          "peak_bytes": 2069118976,
+          "cpu_ns": 13494220000,
+          "wall_ns": 34119734542,
+          "snapshot_bytes": 1023964056,
+          "snapshot_capacity": 1024458752,
+          "table_capacity": 8192
+        },
+        "released": {
+          "phase": "released",
+          "resident_bytes": 858685440,
+          "peak_bytes": 2069118976,
+          "cpu_ns": 7000,
+          "wall_ns": 5500
+        },
+        "save_sha256": "27263d23ebf5e7a3d44094c9ed50191b420d96cddcab6e9a38e09c4cbfa4b6a9",
+        "command": [
+          "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/peak-followup/phase-probe",
+          "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-45000.game.gz",
+          "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/peak-followup/phase-pair-2-candidate/final.game.gz"
+        ],
+        "total_cpu_ns": 15955293000
+      }
+    },
+    {
+      "baseline": {
+        "load": {
+          "phase": "load",
+          "resident_bytes": 2017378304,
+          "peak_bytes": 2017394688,
+          "cpu_ns": 5261424000,
+          "wall_ns": 12072097000
+        },
+        "capture": {
+          "phase": "capture",
+          "resident_bytes": 3848273920,
+          "peak_bytes": 4037033984,
+          "cpu_ns": 1278344000,
+          "wall_ns": 3370655833
+        },
+        "hash": {
+          "phase": "hash",
+          "resident_bytes": 3887611904,
+          "peak_bytes": 4037033984,
+          "cpu_ns": 1595343000,
+          "wall_ns": 4056054083
+        },
+        "compression": {
+          "phase": "compression",
+          "resident_bytes": 3187228672,
+          "peak_bytes": 4037033984,
+          "cpu_ns": 12155314000,
+          "wall_ns": 29816891333
+        },
+        "released": {
+          "phase": "released",
+          "resident_bytes": 3187245056,
+          "peak_bytes": 4037033984,
+          "cpu_ns": 2000,
+          "wall_ns": 2500
+        },
+        "save_sha256": "27263d23ebf5e7a3d44094c9ed50191b420d96cddcab6e9a38e09c4cbfa4b6a9",
+        "command": [
+          "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/peak-followup/phase-probe",
+          "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-45000.game.gz",
+          "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/peak-followup/phase-pair-3-baseline/final.game.gz",
+          "legacy"
+        ],
+        "total_cpu_ns": 15029001000
+      },
+      "candidate": {
+        "load": {
+          "phase": "load",
+          "resident_bytes": 2017787904,
+          "peak_bytes": 2017787904,
+          "cpu_ns": 5273431000,
+          "wall_ns": 12009286000
+        },
+        "capture": {
+          "phase": "capture",
+          "resident_bytes": 2268413952,
+          "peak_bytes": 2268413952,
+          "cpu_ns": 676896000,
+          "wall_ns": 1539964208,
+          "snapshot_bytes": 1023964056,
+          "snapshot_capacity": 1024458752,
+          "table_capacity": 8192
+        },
+        "hash": {
+          "phase": "hash",
+          "resident_bytes": 1811431424,
+          "peak_bytes": 2268430336,
+          "cpu_ns": 1477364000,
+          "wall_ns": 3562872917,
+          "snapshot_bytes": 1023964056,
+          "snapshot_capacity": 1024458752,
+          "table_capacity": 8192
+        },
+        "compression": {
+          "phase": "compression",
+          "resident_bytes": 1521844224,
+          "peak_bytes": 2268430336,
+          "cpu_ns": 12145617000,
+          "wall_ns": 30287794792,
+          "snapshot_bytes": 1023964056,
+          "snapshot_capacity": 1024458752,
+          "table_capacity": 8192
+        },
+        "released": {
+          "phase": "released",
+          "resident_bytes": 1524465664,
+          "peak_bytes": 2268430336,
+          "cpu_ns": 10000,
+          "wall_ns": 7875
+        },
+        "save_sha256": "27263d23ebf5e7a3d44094c9ed50191b420d96cddcab6e9a38e09c4cbfa4b6a9",
+        "command": [
+          "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/peak-followup/phase-probe",
+          "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-45000.game.gz",
+          "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/peak-followup/phase-pair-3-candidate/final.game.gz"
+        ],
+        "total_cpu_ns": 14299877000
+      }
+    },
+    {
+      "baseline": {
+        "load": {
+          "phase": "load",
+          "resident_bytes": 2017181696,
+          "peak_bytes": 2017181696,
+          "cpu_ns": 6169403000,
+          "wall_ns": 21209930458
+        },
+        "capture": {
+          "phase": "capture",
+          "resident_bytes": 4635852800,
+          "peak_bytes": 4635852800,
+          "cpu_ns": 1198353000,
+          "wall_ns": 3166436375
+        },
+        "hash": {
+          "phase": "hash",
+          "resident_bytes": 4635869184,
+          "peak_bytes": 4635869184,
+          "cpu_ns": 1413828000,
+          "wall_ns": 4628226625
+        },
+        "compression": {
+          "phase": "compression",
+          "resident_bytes": 3501096960,
+          "peak_bytes": 4636164096,
+          "cpu_ns": 11333113000,
+          "wall_ns": 28130169250
+        },
+        "released": {
+          "phase": "released",
+          "resident_bytes": 3501096960,
+          "peak_bytes": 4636164096,
+          "cpu_ns": 3000,
+          "wall_ns": 1792
+        },
+        "save_sha256": "27263d23ebf5e7a3d44094c9ed50191b420d96cddcab6e9a38e09c4cbfa4b6a9",
+        "command": [
+          "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/peak-followup/phase-probe",
+          "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-45000.game.gz",
+          "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/peak-followup/phase-pair-4-baseline/final.game.gz",
+          "legacy"
+        ],
+        "total_cpu_ns": 13945294000
+      },
+      "candidate": {
+        "load": {
+          "phase": "load",
+          "resident_bytes": 2016854016,
+          "peak_bytes": 2016854016,
+          "cpu_ns": 6183464000,
+          "wall_ns": 21256656958
+        },
+        "capture": {
+          "phase": "capture",
+          "resident_bytes": 2035974144,
+          "peak_bytes": 2035974144,
+          "cpu_ns": 785627000,
+          "wall_ns": 2288725417,
+          "snapshot_bytes": 1023964056,
+          "snapshot_capacity": 1024458752,
+          "table_capacity": 8192
+        },
+        "hash": {
+          "phase": "hash",
+          "resident_bytes": 2035990528,
+          "peak_bytes": 2035990528,
+          "cpu_ns": 1361332000,
+          "wall_ns": 4248057000,
+          "snapshot_bytes": 1023964056,
+          "snapshot_capacity": 1024458752,
+          "table_capacity": 8192
+        },
+        "compression": {
+          "phase": "compression",
+          "resident_bytes": 1552220160,
+          "peak_bytes": 2036482048,
+          "cpu_ns": 11565357000,
+          "wall_ns": 29038159000,
+          "snapshot_bytes": 1023964056,
+          "snapshot_capacity": 1024458752,
+          "table_capacity": 8192
+        },
+        "released": {
+          "phase": "released",
+          "resident_bytes": 1552302080,
+          "peak_bytes": 2036482048,
+          "cpu_ns": 2000,
+          "wall_ns": 1875
+        },
+        "save_sha256": "27263d23ebf5e7a3d44094c9ed50191b420d96cddcab6e9a38e09c4cbfa4b6a9",
+        "command": [
+          "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/peak-followup/phase-probe",
+          "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-45000.game.gz",
+          "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/peak-followup/phase-pair-4-candidate/final.game.gz"
+        ],
+        "total_cpu_ns": 13712316000
+      }
+    },
+    {
+      "baseline": {
+        "load": {
+          "phase": "load",
+          "resident_bytes": 2016690176,
+          "peak_bytes": 2016690176,
+          "cpu_ns": 4413369000,
+          "wall_ns": 9350019542
+        },
+        "capture": {
+          "phase": "capture",
+          "resident_bytes": 4635394048,
+          "peak_bytes": 4635394048,
+          "cpu_ns": 1028829000,
+          "wall_ns": 2332534917
+        },
+        "hash": {
+          "phase": "hash",
+          "resident_bytes": 4635410432,
+          "peak_bytes": 4635410432,
+          "cpu_ns": 1055761000,
+          "wall_ns": 2117100500
+        },
+        "compression": {
+          "phase": "compression",
+          "resident_bytes": 3903995904,
+          "peak_bytes": 4635705344,
+          "cpu_ns": 10092775000,
+          "wall_ns": 20994452250
+        },
+        "released": {
+          "phase": "released",
+          "resident_bytes": 3903995904,
+          "peak_bytes": 4635705344,
+          "cpu_ns": 2000,
+          "wall_ns": 1875
+        },
+        "save_sha256": "27263d23ebf5e7a3d44094c9ed50191b420d96cddcab6e9a38e09c4cbfa4b6a9",
+        "command": [
+          "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/peak-followup/phase-probe",
+          "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-45000.game.gz",
+          "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/peak-followup/phase-pair-5-baseline/final.game.gz",
+          "legacy"
+        ],
+        "total_cpu_ns": 12177365000
+      },
+      "candidate": {
+        "load": {
+          "phase": "load",
+          "resident_bytes": 2016690176,
+          "peak_bytes": 2016690176,
+          "cpu_ns": 4411764000,
+          "wall_ns": 9226616333
+        },
+        "capture": {
+          "phase": "capture",
+          "resident_bytes": 2066808832,
+          "peak_bytes": 2066808832,
+          "cpu_ns": 732124000,
+          "wall_ns": 1710799125,
+          "snapshot_bytes": 1023964056,
+          "snapshot_capacity": 1024458752,
+          "table_capacity": 8192
+        },
+        "hash": {
+          "phase": "hash",
+          "resident_bytes": 2066825216,
+          "peak_bytes": 2066825216,
+          "cpu_ns": 1043899000,
+          "wall_ns": 2115362208,
+          "snapshot_bytes": 1023964056,
+          "snapshot_capacity": 1024458752,
+          "table_capacity": 8192
+        },
+        "compression": {
+          "phase": "compression",
+          "resident_bytes": 2055274496,
+          "peak_bytes": 2067267584,
+          "cpu_ns": 9949501000,
+          "wall_ns": 20978809458,
+          "snapshot_bytes": 1023964056,
+          "snapshot_capacity": 1024458752,
+          "table_capacity": 8192
+        },
+        "released": {
+          "phase": "released",
+          "resident_bytes": 2055372800,
+          "peak_bytes": 2067267584,
+          "cpu_ns": 3000,
+          "wall_ns": 2542
+        },
+        "save_sha256": "27263d23ebf5e7a3d44094c9ed50191b420d96cddcab6e9a38e09c4cbfa4b6a9",
+        "command": [
+          "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/peak-followup/phase-probe",
+          "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-45000.game.gz",
+          "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/peak-followup/phase-pair-5-candidate/final.game.gz"
+        ],
+        "total_cpu_ns": 11725524000
+      }
+    },
+    {
+      "baseline": {
+        "load": {
+          "phase": "load",
+          "resident_bytes": 2016870400,
+          "peak_bytes": 2016870400,
+          "cpu_ns": 6115288000,
+          "wall_ns": 14494219125
+        },
+        "capture": {
+          "phase": "capture",
+          "resident_bytes": 4635590656,
+          "peak_bytes": 4635590656,
+          "cpu_ns": 1139112000,
+          "wall_ns": 2532061458
+        },
+        "hash": {
+          "phase": "hash",
+          "resident_bytes": 4635607040,
+          "peak_bytes": 4635607040,
+          "cpu_ns": 987313000,
+          "wall_ns": 1933305291
+        },
+        "compression": {
+          "phase": "compression",
+          "resident_bytes": 4635901952,
+          "peak_bytes": 4635901952,
+          "cpu_ns": 8430404000,
+          "wall_ns": 16727855875
+        },
+        "released": {
+          "phase": "released",
+          "resident_bytes": 4635901952,
+          "peak_bytes": 4635901952,
+          "cpu_ns": 2000,
+          "wall_ns": 2042
+        },
+        "save_sha256": "27263d23ebf5e7a3d44094c9ed50191b420d96cddcab6e9a38e09c4cbfa4b6a9",
+        "command": [
+          "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/peak-followup/phase-probe",
+          "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-45000.game.gz",
+          "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/peak-followup/phase-pair-6-baseline/final.game.gz",
+          "legacy"
+        ],
+        "total_cpu_ns": 10556829000
+      },
+      "candidate": {
+        "load": {
+          "phase": "load",
+          "resident_bytes": 2016444416,
+          "peak_bytes": 2016444416,
+          "cpu_ns": 6096620000,
+          "wall_ns": 13756895333
+        },
+        "capture": {
+          "phase": "capture",
+          "resident_bytes": 2068676608,
+          "peak_bytes": 2068676608,
+          "cpu_ns": 845707000,
+          "wall_ns": 2092939458,
+          "snapshot_bytes": 1023964056,
+          "snapshot_capacity": 1024458752,
+          "table_capacity": 8192
+        },
+        "hash": {
+          "phase": "hash",
+          "resident_bytes": 2068692992,
+          "peak_bytes": 2068692992,
+          "cpu_ns": 1074172000,
+          "wall_ns": 2246270333,
+          "snapshot_bytes": 1023964056,
+          "snapshot_capacity": 1024458752,
+          "table_capacity": 8192
+        },
+        "compression": {
+          "phase": "compression",
+          "resident_bytes": 2069184512,
+          "peak_bytes": 2069184512,
+          "cpu_ns": 8475200000,
+          "wall_ns": 17134958500,
+          "snapshot_bytes": 1023964056,
+          "snapshot_capacity": 1024458752,
+          "table_capacity": 8192
+        },
+        "released": {
+          "phase": "released",
+          "resident_bytes": 2069184512,
+          "peak_bytes": 2069184512,
+          "cpu_ns": 3000,
+          "wall_ns": 2000
+        },
+        "save_sha256": "27263d23ebf5e7a3d44094c9ed50191b420d96cddcab6e9a38e09c4cbfa4b6a9",
+        "command": [
+          "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/peak-followup/phase-probe",
+          "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-profile/game/checkpoint-45000.game.gz",
+          "/Users/bradley/.codex/worktrees/late-game-memory/glob2/artifacts/memory-optimization/peak-followup/phase-pair-6-candidate/final.game.gz"
+        ],
+        "total_cpu_ns": 10395079000
+      }
+    }
+  ],
+  "cpu": {
+    "capture": {
+      "paired_change_percent": -34.69176919448198,
+      "upper_95_percent": -30.897920134888818,
+      "pairs": 7
+    },
+    "hash": {
+      "paired_change_percent": -3.757395472233556,
+      "upper_95_percent": 0.35929296274407974,
+      "pairs": 7
+    },
+    "compression": {
+      "paired_change_percent": 0.62730632822305,
+      "upper_95_percent": 1.3183811942835106,
+      "pairs": 7
+    },
+    "total": {
+      "paired_change_percent": -2.9519906124703783,
+      "upper_95_percent": -2.273146031277501,
+      "pairs": 7
+    }
+  },
+  "capture_wall": {
+    "paired_change_percent": -34.526831931882626,
+    "upper_95_percent": -27.430628474243495,
+    "pairs": 7
+  },
+  "passed": true
+}
