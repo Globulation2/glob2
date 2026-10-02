@@ -485,6 +485,23 @@ For timing and scheduling, start with `src/Game_sync.cpp` and `src/EngineRun.cpp
   Treat save-format, replay and network compatibility as separate questions. If
   simulation rules change, assess replay acceptance and protocol/version gates even
   when the saved byte layout is unchanged.
+- Team capacity is `Team::MAX_COUNT` (16), shared by colonies and controller slots.
+  `MAX_COUNT_ON_DISK` (32) is the fixed GameHeader player/alliance layout, not a
+  selectable match size. Team masks are 32-bit; packed growth coverage requires
+  three masks to fit a 64-bit word (at most 21 teams in that representation).
+  Unit/building identifiers must also fit below the 16-bit empty-entity sentinel.
+  Team iterators must use the live match count; a full array has no null end slot.
+  Format 127 counts Maxima opponent records and script-generation team slots;
+  older formats retain their historical 12-slot layouts. Text header alliances use
+  indexed slots from format 127; binary header bytes stay unchanged. Custom-game
+  preferences version 4 counts colony records and still reads the twelve records
+  written by versions 1–3. The building-generation
+  plane must be remapped when loading old saves. Never substitute a live capacity
+  for a historical serialized length. Save floor 58 remains unchanged.
+  Warrush probes one capacity slot every two ticks (32 ticks for sixteen slots).
+  Empty slots fall through to normal decisions, preserving smaller-match timing.
+  Replay floor 127 and network/YOG protocol 50 gate the new capacity and counted
+  state; older saves load into the current simulation.
 - Versioning rule: when the save format changes, bump `VERSION_MINOR` and preserve
   older saves through version-gated loading, or explicitly document an approved
   compatibility break. When simulation changes invalidate old replays or mixed-client

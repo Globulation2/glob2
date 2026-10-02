@@ -50,9 +50,13 @@ struct Layout
 };
 std::string validateRequest(const GenerationRequest &r)
 {
-	if (r.wDec < 7 || r.hDec < 7 || r.wDec > 9 || r.hDec > 9 || r.nbTeams < 2 || r.nbTeams > 12)
-		return "The Hungry Marches needs 128 to 512 tiles per side and two to twelve colonies.";
-	if (r.nbTeams > ((1 << std::min(r.wDec, r.hDec)) == 128 ? 4 : 12))
+	if (const auto error = denseColonySizeFailure(r); !error.empty())
+		return error;
+	if (r.nbTeams < 2 || r.nbTeams > Team::MAX_COUNT)
+		return "Invalid colony count.";
+	if (r.wDec < 7 || r.hDec < 7 || r.wDec > 9 || r.hDec > 9)
+		return "Too many colonies for this map; use a bigger map or fewer colonies.";
+	if (r.nbTeams > ((1 << std::min(r.wDec, r.hDec)) == 128 ? 4 : Team::MAX_COUNT))
 		return "This narrow floodplain needs fewer colonies or a wider map.";
 	return {};
 }
@@ -673,7 +677,7 @@ GeneratorDefinition hungryMarchesDefinition()
 		"hungry-marches",
 		69,
 		"The Hungry Marches",
-		1,
+		2,
 		false,
 		{{"opening-ration", "Opening ration", 20, 100, 10, 50, ControlGroup::Layout},
 		 {"central-concentration", "Central concentration", 50, 80, 5, 65, ControlGroup::Layout},
