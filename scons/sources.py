@@ -120,6 +120,7 @@ CLIENT_SOURCES = (
     'EngineLoaders.cpp',
     'EngineRun.cpp',
     'Headless.cpp',
+    'VerifyMatch.cpp',
     'MapStudy.cpp',
     'FertilityCalculator.cpp',
     'map/FertilityField.cpp',
