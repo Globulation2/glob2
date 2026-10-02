@@ -1,0 +1,484 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:MapReportInfo",
+  "title": "MapReportInfo",
+  "type": "object",
+  "required": [
+    "id",
+    "map",
+    "reporter",
+    "reason",
+    "details",
+    "status",
+    "createdAt"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "description": "Lowercase UUID."
+    },
+    "map": {
+      "type": "object",
+      "required": [
+        "id",
+        "owner",
+        "title",
+        "description",
+        "visibility",
+        "hidden",
+        "madeWith",
+        "stats",
+        "createdAt",
+        "updatedAt"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "description": "Lowercase UUID."
+        },
+        "owner": {
+          "type": "object",
+          "required": [
+            "id",
+            "displayName",
+            "kind",
+            "createdAt"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+              "description": "Lowercase UUID."
+            },
+            "displayName": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$",
+              "description": "Display name; at most 32 UTF-8 bytes (checked semantically)."
+            },
+            "kind": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "const": "guest"
+                },
+                {
+                  "type": "string",
+                  "const": "registered"
+                }
+              ]
+            },
+            "createdAt": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+              "description": "RFC 3339 date-time."
+            }
+          },
+          "description": "What anyone may see about an account."
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 4000
+        },
+        "visibility": {
+          "anyOf": [
+            {
+              "type": "string",
+              "const": "public"
+            },
+            {
+              "type": "string",
+              "const": "unlisted"
+            },
+            {
+              "type": "string",
+              "const": "private"
+            }
+          ]
+        },
+        "hidden": {
+          "type": "boolean",
+          "description": "Hidden by a moderator."
+        },
+        "hiddenReason": {
+          "type": "string",
+          "maxLength": 2000,
+          "description": "Shown to the owner and moderators only."
+        },
+        "madeWith": {
+          "anyOf": [
+            {
+              "type": "string",
+              "const": "hand"
+            },
+            {
+              "type": "string",
+              "const": "generator"
+            }
+          ],
+          "description": "How the owner says the map was made: in the editor, or by a map generator."
+        },
+        "generator": {
+          "type": "object",
+          "required": [
+            "generatorId",
+            "revision",
+            "params",
+            "seed",
+            "candidates",
+            "startingUnitLevel"
+          ],
+          "properties": {
+            "generatorId": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$",
+              "description": "GeneratorDefinition::id, e.g. \"even-ground\"."
+            },
+            "revision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4294967295
+            },
+            "params": {
+              "type": "object",
+              "patternProperties": {
+                "^[A-Za-z0-9_-]{1,64}$": {
+                  "type": "integer"
+                }
+              },
+              "description": "Every control value by GeneratorControl::id, including the shared \"width\" and \"height\" (log2 of the size), \"teams\" and \"workers\"."
+            },
+            "seed": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4294967295
+            },
+            "candidates": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 64,
+              "description": "Number of seeded rolls; the best-scoring one is kept (GenerationService::bestSeed)."
+            },
+            "startingUnitLevel": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 3,
+              "description": "Level the generated starting workers spawn at (0 = standard)."
+            }
+          },
+          "additionalProperties": false,
+          "description": "Deterministic description of a generated map."
+        },
+        "latestVersion": {
+          "type": "object",
+          "required": [
+            "hash",
+            "size",
+            "validation",
+            "preview",
+            "downloadUrl",
+            "createdAt"
+          ],
+          "properties": {
+            "hash": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$",
+              "description": "Lowercase hexadecimal SHA-256 digest."
+            },
+            "size": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "width": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "height": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "teamCount": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 12
+            },
+            "minVersionMinor": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Format version the file was saved with: engines from this VERSION_MINOR load it."
+            },
+            "simVersion": {
+              "type": "object",
+              "required": [
+                "versionMinor",
+                "netProtocol",
+                "dataHash"
+              ],
+              "properties": {
+                "versionMinor": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 65535,
+                  "description": "VERSION_MINOR in src/Version.h (save and simulation format)."
+                },
+                "netProtocol": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 65535,
+                  "description": "NET_PROTOCOL_VERSION in src/Version.h."
+                },
+                "dataHash": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$",
+                  "description": "Lowercase hex SHA-256 over the build's simulation data files, as computed by the engine."
+                }
+              },
+              "additionalProperties": false,
+              "description": "Identity of a deterministic simulation build."
+            },
+            "validation": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "const": "pending"
+                },
+                {
+                  "type": "string",
+                  "const": "valid"
+                },
+                {
+                  "type": "string",
+                  "const": "invalid"
+                }
+              ]
+            },
+            "reason": {
+              "type": "string",
+              "maxLength": 2000,
+              "description": "Why it is invalid."
+            },
+            "fileTitle": {
+              "type": "string",
+              "maxLength": 128,
+              "description": "Map name stored in the file."
+            },
+            "notes": {
+              "type": "string",
+              "maxLength": 2000
+            },
+            "preview": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "const": "pending"
+                },
+                {
+                  "type": "string",
+                  "const": "ready"
+                },
+                {
+                  "type": "string",
+                  "const": "failed"
+                }
+              ]
+            },
+            "previewUrl": {
+              "type": "string",
+              "pattern": "^(https|wss|http|ws)://[^\\s]+$",
+              "maxLength": 2048
+            },
+            "downloadUrl": {
+              "type": "string",
+              "pattern": "^(https|wss|http|ws)://[^\\s]+$",
+              "maxLength": 2048
+            },
+            "createdAt": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+              "description": "RFC 3339 date-time."
+            }
+          }
+        },
+        "stats": {
+          "type": "object",
+          "required": [
+            "plays",
+            "downloads",
+            "likes"
+          ],
+          "properties": {
+            "plays": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Ended matches played on any version."
+            },
+            "downloads": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Downloads, counted once per downloader and day."
+            },
+            "likes": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+          "description": "RFC 3339 date-time."
+        },
+        "updatedAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+          "description": "RFC 3339 date-time."
+        }
+      },
+      "description": "A catalog map."
+    },
+    "reporter": {
+      "type": "object",
+      "required": [
+        "id",
+        "displayName",
+        "kind",
+        "createdAt"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "description": "Lowercase UUID."
+        },
+        "displayName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32,
+          "pattern": "^[^\\u0000-\\u001f\\u007f]+$",
+          "description": "Display name; at most 32 UTF-8 bytes (checked semantically)."
+        },
+        "kind": {
+          "anyOf": [
+            {
+              "type": "string",
+              "const": "guest"
+            },
+            {
+              "type": "string",
+              "const": "registered"
+            }
+          ]
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+          "description": "RFC 3339 date-time."
+        }
+      },
+      "description": "What anyone may see about an account."
+    },
+    "reason": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "broken"
+        },
+        {
+          "type": "string",
+          "const": "offensive"
+        },
+        {
+          "type": "string",
+          "const": "copyright"
+        },
+        {
+          "type": "string",
+          "const": "other"
+        }
+      ]
+    },
+    "details": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "status": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "open"
+        },
+        {
+          "type": "string",
+          "const": "resolved"
+        },
+        {
+          "type": "string",
+          "const": "dismissed"
+        }
+      ]
+    },
+    "createdAt": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+      "description": "RFC 3339 date-time."
+    },
+    "resolvedAt": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+      "description": "RFC 3339 date-time."
+    },
+    "resolvedBy": {
+      "type": "object",
+      "required": [
+        "id",
+        "displayName",
+        "kind",
+        "createdAt"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "description": "Lowercase UUID."
+        },
+        "displayName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32,
+          "pattern": "^[^\\u0000-\\u001f\\u007f]+$",
+          "description": "Display name; at most 32 UTF-8 bytes (checked semantically)."
+        },
+        "kind": {
+          "anyOf": [
+            {
+              "type": "string",
+              "const": "guest"
+            },
+            {
+              "type": "string",
+              "const": "registered"
+            }
+          ]
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+          "description": "RFC 3339 date-time."
+        }
+      },
+      "description": "What anyone may see about an account."
+    },
+    "note": {
+      "type": "string",
+      "maxLength": 2000
+    }
+  }
+}

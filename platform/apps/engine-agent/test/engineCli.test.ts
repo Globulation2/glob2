@@ -17,6 +17,7 @@ import {
   readMapHeader,
   supportsSimVersionFlag,
   verifyMatchArgs,
+  savedPlayers,
 } from '../src/engineCli.ts';
 import { limitPrefix, runProcess } from '../src/process.ts';
 import { detectSimVersion, resolveSimVersion, SimVersionError } from '../src/simVersion.ts';
@@ -81,8 +82,42 @@ describe('catalog and generation', () => {
       teamCount: 2,
       savedGame: true,
       tick: 0,
+      controllers: [
+        { slot: 0, team: 0, type: 10 },
+        { slot: 1, team: 1, type: 10 },
+      ],
     });
     expect(() => parseMapReport('{"schema_version":3}')).toThrow(EngineOutputError);
+  });
+
+  it('reads saved players from report controllers', () => {
+    // Shape of `--preview-map final.game.gz --json` with player names
+    // (multiplayer/map-report-players), from a nicowar vs cortex save.
+    const report = JSON.stringify({
+      schema_version: 2,
+      map: {
+        name: 'balanced for 2',
+        width: 64,
+        height: 64,
+        player_slots: 2,
+        saved_game: true,
+        tick: 50,
+        controllers: [
+          { slot: 0, team: 0, type: 10, name: 'nicowar' },
+          { slot: 1, team: 1, type: 4, name: '  Alice  ' },
+          { slot: 2, team: 1, type: 0, name: 'nobody' },
+          { slot: 3, team: 7, type: 3, name: 'out of range' },
+        ],
+      },
+    });
+    const map = parseMapReport(report);
+    expect(savedPlayers(map.controllers, map.teamCount)).toEqual([
+      { name: 'nicowar', team: 0, kind: 'ai' },
+      { name: 'Alice', team: 1, kind: 'human' },
+    ]);
+    expect(
+      savedPlayers([{ slot: 0, team: 0, type: 3, name: 'x'.repeat(80) }], 1)[0]?.name,
+    ).toHaveLength(64);
   });
 
   it('reads the header of a real generated map', () => {

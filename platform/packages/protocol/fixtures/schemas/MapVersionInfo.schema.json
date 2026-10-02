@@ -6,11 +6,8 @@
   "required": [
     "hash",
     "size",
-    "width",
-    "height",
-    "teamCount",
-    "minVersionMinor",
     "validation",
+    "preview",
     "downloadUrl",
     "createdAt"
   ],
@@ -39,7 +36,37 @@
     },
     "minVersionMinor": {
       "type": "integer",
-      "minimum": 0
+      "minimum": 0,
+      "description": "Format version the file was saved with: engines from this VERSION_MINOR load it."
+    },
+    "simVersion": {
+      "type": "object",
+      "required": [
+        "versionMinor",
+        "netProtocol",
+        "dataHash"
+      ],
+      "properties": {
+        "versionMinor": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65535,
+          "description": "VERSION_MINOR in src/Version.h (save and simulation format)."
+        },
+        "netProtocol": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65535,
+          "description": "NET_PROTOCOL_VERSION in src/Version.h."
+        },
+        "dataHash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "Lowercase hex SHA-256 over the build's simulation data files, as computed by the engine."
+        }
+      },
+      "additionalProperties": false,
+      "description": "Identity of a deterministic simulation build."
     },
     "validation": {
       "anyOf": [
@@ -54,6 +81,36 @@
         {
           "type": "string",
           "const": "invalid"
+        }
+      ]
+    },
+    "reason": {
+      "type": "string",
+      "maxLength": 2000,
+      "description": "Why it is invalid."
+    },
+    "fileTitle": {
+      "type": "string",
+      "maxLength": 128,
+      "description": "Map name stored in the file."
+    },
+    "notes": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "preview": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "pending"
+        },
+        {
+          "type": "string",
+          "const": "ready"
+        },
+        {
+          "type": "string",
+          "const": "failed"
         }
       ]
     },

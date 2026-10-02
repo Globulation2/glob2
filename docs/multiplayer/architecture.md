@@ -33,7 +33,7 @@ cutover milestone (M9), when they are deleted. There is no data import from YOG.
 | Part | Code | Role |
 | --- | --- | --- |
 | `platform-api` | `platform/apps/api` | Public REST (`/api/v1`), realtime WebSocket (`/realtime`), browser sign-in pages (`/signin`, `/auth/<provider>/…`), JWKS (`/.well-known/jwks.json`), internal endpoints for relays and agents (`/internal`), health (`/healthz`, `/readyz`). Stateless; run any number of replicas. |
-| `platform-worker` | `platform/apps/worker` | Applies engine-job results (recording verify-match verdicts and history, and applying ratings); runs the scheduler (maintenance, matchmaker, rating sweep, warm map pool) on the one replica holding the leader lock. |
+| `platform-worker` | `platform/apps/worker` | Applies engine-job results (recording verify-match verdicts and history, applying ratings, completing map jobs); runs the scheduler (maintenance, matchmaker, rating sweep, warm map pool, relay sweep) on the one replica holding the leader lock. |
 | `engine-agent` | `platform/apps/engine-agent` | Runs engine jobs for exactly one sim version with its glob2 binary; see [Engine agents](#engine-agents). |
 | web app | `platform/apps/web` | Sign-in pages, invite landing, profiles, leaderboards, maps (React + Vite). |
 | relay | `src/relay/` (M2) | Clock and turn sequencing for matches; trusts only signed tickets. |
@@ -191,12 +191,12 @@ database in tests.
 | --- | --- |
 | Identity | `accounts`, `identities`, `device_credentials`, `refresh_tokens`, `signin_attempts`, `web_sessions`, `auth_flows`, `entitlements`, `admin_audit_log` |
 | Infrastructure | `blobs`, `relays` (registration, load, drain, last heartbeat), `engine_agents`, `engine_jobs`, `warm_maps` (pre-generated quick-match maps) |
-| Rooms | `rooms` (settings JSON, revision), `room_members` (with relay round trips), `room_seats` (with locks), `room_chat_messages` |
+| Rooms | `rooms` (settings JSON, revision), `room_members` (with relay round trips), `room_seats` (with locks), `room_chat_messages`, `room_kicks` |
 | Map sources | `map_uploads` (private uploads and their validation), `generated_maps` (one generation per descriptor and sim version) |
 | Matches | `matches` (the exact `MatchSetup`, seed, map hash, relay and placement attempts, verification, the relay's end report), `match_participants`, `match_team_stats`, `match_artifacts` |
 | Ratings | `rating_entities` (an account, or an AI at one sim version), `ratings` (OpenSkill μ/σ per ladder, ordinal generated), `rating_history` (per-match change) |
 | Quick match | `queue_tickets` (one active ticket per account), `match_proposals` and `match_proposal_seats` (groups and accept prompts), `queue_cooldowns` |
-| Maps | `maps`, `map_versions` (content hash, size, dimensions, team count, preview), `map_likes`, `map_reports` |
+| Maps | `maps` (owner, visibility, moderation, counters, latest version), `map_versions` (content hash, size, dimensions, team count, preview, validation), `map_likes`, `map_reports`, `map_downloads`; see [Map catalog](#map-catalog) |
 
 Hashes are lowercase hex (`sha256_hex` domain), ids are UUIDs, and enumerations
 are text with CHECK constraints so they can grow without type migrations.
@@ -391,6 +391,104 @@ for any shortfall.
      `GET /api/v1/instance` lists the version as served, and its jobs flow to it.
   5. When no agent of a version has been seen for five minutes, clients of that
      version get `update_required`.
+
+## Map catalog
+
+The catalog (milestone M7) keeps shared maps and their versions. The REST routes
+are in `apps/api/src/maps/` (`routes.ts`; rules and views in `catalog.ts`). The
+worker applies engine-job results to versions (`apps/worker/src/play/catalog.ts`).
+Product defaults that are still provisional live in `CATALOG_RULES`.
+
+**Maps and versions.** A map has an owner, a title, a description, a visibility,
+how it was made (`hand` or `generator`, with the generator descriptor if known)
+and a moderation flag. Each upload of different bytes is a new version, keyed by the
+SHA-256 of the bytes clients load. A version records the sim version that checked
+it and, once valid, its dimensions, team count, the format version it was saved
+with (`minVersionMinor`, the oldest engine that can load it), the map name stored in
+the file and a preview. `maps.latest_version_id` points at the newest valid
+version. Listings show and filter on it.
+
+**Upload.**
+
+1. `POST /api/v1/maps` with `CreateMapRequest` creates the map (`201 MapInfo`).
+2. `POST /api/v1/maps/{id}/versions?simVersion=<key>&notes=…` takes the
+   uncompressed file as `application/octet-stream`, up to `UPLOAD_MAX_BYTES`. The
+   upload names its sim version; without one (web uploads), the newest version the
+   instance serves is used. Only the owner may upload.
+3. The bytes become a private blob. The version row is written with two job ids,
+   and only then are the jobs submitted, so a fast result always finds its row:
+   - `validate-map` (format `map`);
+   - `render-preview` (512 px).
+4. The worker applies the results: facts and `validation: valid`, or `invalid`
+   with a reason, then the preview. A file whose validated hash differs from the
+   upload (for example a gzip-compressed upload) is invalid.
+5. Bytes already checked for the same sim version, on any map, reuse that
+   validation and preview without new jobs. Uploading the same bytes to the same
+   map again answers the existing version (`200`).
+
+Each replica allows 20 new maps and 20 version uploads per account per hour, and
+a map keeps at most 50 versions. Owners edit title, description and visibility
+with `PATCH /api/v1/maps/{id}`. They delete a map with `DELETE /api/v1/maps/{id}`,
+or one version with `DELETE /api/v1/maps/{id}/versions/{hash}`. Deleting removes
+the catalog rows but keeps the blobs, because matches and rooms may still use the
+bytes.
+
+**Visibility.** Moderators and administrators see every map. Every other caller
+gets `404` for a map they may not see, so its existence does not leak.
+
+| Visibility | Listed | Map, versions, file, preview, blob by hash |
+| --- | --- | --- |
+| `public` | in `GET /api/v1/maps` and the owner's public list | anyone, signed in or not |
+| `unlisted` (default) | no | anyone with the id or hash |
+| `private` | no | the owner |
+| hidden by a moderator | no | the owner (with `hiddenReason`) |
+
+Pending and invalid versions are shown only to the owner. Guests may create
+unlisted and private maps but not publish them. `GET /api/v1/blobs/maps/{hash}`
+applies the same rules to catalog versions, alongside its upload, room and match
+rules. Rooms may choose `{kind: "catalog", hash, mapId?}` when the version is
+valid, its map is not hidden, the map is public, unlisted or the host's own, and
+`minVersionMinor` is no newer than the room's engine.
+
+**Browsing.** `GET /api/v1/maps` lists public maps that have a valid version. It
+takes these filters:
+
+- `owner=me` lists every map the caller owns; `owner=<accountId>` lists that
+  account's public maps, or all of them for the owner and moderators;
+- `teams` (exact), `minSide` and `maxSide` (the larger side, in tiles), `madeWith`
+  and `q` (title search) filter on the latest version;
+- `sort` is `recent` (default), `likes`, `plays` or `downloads`, newest or
+  highest first;
+- `limit` (default 30, at most 100) and `cursor` page through the results.
+
+`GET /api/v1/maps/{id}` returns `MapDetail`: the map, its versions (newest first)
+and what the caller may do (`viewer.owner`, `moderator`, `liked`, `reported`).
+`GET /api/v1/maps/{id}/versions/{hash}` returns one version. `…/file` serves the
+bytes as an attachment, and `…/preview.png` serves the preview.
+
+**Stats.**
+
+- **Plays:** ended matches on any version of the map, counted when the relay's end
+  report is applied (once per match).
+- **Downloads:** `…/file` requests, counted once per downloader and day (by account,
+  or by address when signed out). The owner's own downloads do not count.
+- **Likes:** `PUT` and `DELETE /api/v1/maps/{id}/like` count registered accounts once
+  each, and answer `MapLikeResult`.
+
+**Reports and moderation.** Any signed-in account may report a map it can see with
+`POST /api/v1/maps/{id}/reports` (`MapReportRequest`). Each account may have one
+open report per map; a repeat answers the open one. Each account may file 10 reports
+per hour. Moderators and administrators can then use these routes:
+
+| Route | Effect |
+| --- | --- |
+| `GET /api/v1/admin/map-reports?status=open\|resolved\|dismissed\|all&mapId=&cursor=` | Reports, newest first, with the map and reporter |
+| `POST /api/v1/admin/map-reports/{id}/resolve` | `ResolveMapReportRequest`: `resolved` or `dismissed`, an optional note, and optionally hide the map |
+| `POST /api/v1/admin/maps/{id}/hide` | Hide with a reason (`MapHideRequest`) |
+| `POST /api/v1/admin/maps/{id}/unhide` | Show again |
+
+Administrators may also delete any map. Every moderation action is written to
+`admin_audit_log` with `target_type` `map`.
 
 ## Working on the platform
 
