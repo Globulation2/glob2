@@ -1,0 +1,31 @@
+audio-baseline: Aborted(Assertion failed: device.expired(), at: artifacts/browser-worker-lifecycle/audio-baseline.cpp,23,test)
+audio-baseline: worker: onmessage() captured an uncaught exception: RuntimeError: Aborted(Assertion failed: device.expired(), at: artifacts/browser-worker-lifecycle/audio-baseline.cpp,23,test)
+audio-baseline: RuntimeError: Aborted(Assertion failed: device.expired(), at: artifacts/browser-worker-lifecycle/audio-baseline.cpp,23,test)
+    at abort (http://127.0.0.1:8778/audio-baseline.js:791:11)
+    at ___assert_fail (http://127.0.0.1:8778/audio-baseline.js:1690:7)
+    at http://127.0.0.1:8778/audio-baseline.wasm:wasm-function[68]:0x1b44
+    at invokeEntryPoint (http://127.0.0.1:8778/audio-baseline.js:1558:42)
+    at handleMessage (http://127.0.0.1:8778/audio-baseline.js:597:11)
+audio-baseline: user callback triggered after runtime exited or application aborted.  Ignoring.
+audio-baseline: Pthread 0x000131b8 sent an error! http://127.0.0.1:8778/audio-baseline.js:791: Uncaught RuntimeError: Aborted(Assertion failed: device.expired(), at: artifacts/browser-worker-lifecycle/audio-baseline.cpp,23,test)
+audio-baseline: ErrorEvent
+audio-baseline: RuntimeError: Aborted(Assertion failed: device.expired(), at: artifacts/browser-worker-lifecycle/audio-baseline.cpp,23,test)
+audio-baseline: {"failure":"Assertion failed: device.expired(), at: artifacts/browser-worker-lifecycle/audio-baseline.cpp,23,test"}
+net-baseline: Aborted(Assertion failed: weakA.expired() && targetA.expired(), at: artifacts/browser-worker-lifecycle/net-baseline.cpp,35,test)
+net-baseline: Pthread 0x00017228 sent an error! http://127.0.0.1:8778/net-baseline.js:808: Uncaught RuntimeError: Aborted(Assertion failed: weakA.expired() && targetA.expired(), at: artifacts/browser-worker-lifecycle/net-baseline.cpp,35,test)
+net-baseline: ErrorEvent
+net-baseline: worker: onmessage() captured an uncaught exception: RuntimeError: Aborted(Assertion failed: weakA.expired() && targetA.expired(), at: artifacts/browser-worker-lifecycle/net-baseline.cpp,35,test)
+net-baseline: RuntimeError: Aborted(Assertion failed: weakA.expired() && targetA.expired(), at: artifacts/browser-worker-lifecycle/net-baseline.cpp,35,test)
+    at abort (http://127.0.0.1:8778/net-baseline.js:808:11)
+    at ___assert_fail (http://127.0.0.1:8778/net-baseline.js:1707:7)
+    at invoke_viiii (http://127.0.0.1:8778/net-baseline.js:3028:29)
+    at http://127.0.0.1:8778/net-baseline.wasm:wasm-function[78]:0x2b63
+    at invokeEntryPoint (http://127.0.0.1:8778/net-baseline.js:1575:42)
+    at handleMessage (http://127.0.0.1:8778/net-baseline.js:614:11)
+net-baseline: user callback triggered after runtime exited or application aborted.  Ignoring.
+net-baseline: RuntimeError: Aborted(Assertion failed: weakA.expired() && targetA.expired(), at: artifacts/browser-worker-lifecycle/net-baseline.cpp,35,test)
+net-baseline: {"failure":"Assertion failed: weakA.expired() && targetA.expired(), at: artifacts/browser-worker-lifecycle/net-baseline.cpp,35,test"}
+audio: PASS pending audio reclaimed before pthread exit
+audio: {"result":0}
+net: PASS pending WebSocket events reclaimed independently before pthread exit
+net: {"result":0}
