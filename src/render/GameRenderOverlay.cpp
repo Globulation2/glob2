@@ -125,7 +125,7 @@ void Game::drawMapBulletsExplosionsDeathAnimations(int left, int top, int right,
 	}
 }
 
-void Game::drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
+void Game::drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& sceneMap)
 {
 	PERF_SCOPE_TIME(RenderFog);
 	if ((drawOptions & DRAW_WHOLE_MAP) == 0)
@@ -140,10 +140,10 @@ void Game::drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh
 				if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 
 				// first draw black
-				i0=!map.isMapDiscovered(x+viewportX+1, y+viewportY+1, visibleTeams) ? 1 : 0;
-				i1=!map.isMapDiscovered(x+viewportX, y+viewportY+1, visibleTeams) ? 1 : 0;
-				i2=!map.isMapDiscovered(x+viewportX+1, y+viewportY, visibleTeams) ? 1 : 0;
-				i3=!map.isMapDiscovered(x+viewportX, y+viewportY, visibleTeams) ? 1 : 0;
+				i0=!sceneMap.isMapDiscovered(x+viewportX+1, y+viewportY+1, visibleTeams) ? 1 : 0;
+				i1=!sceneMap.isMapDiscovered(x+viewportX, y+viewportY+1, visibleTeams) ? 1 : 0;
+				i2=!sceneMap.isMapDiscovered(x+viewportX+1, y+viewportY, visibleTeams) ? 1 : 0;
+				i3=!sceneMap.isMapDiscovered(x+viewportX, y+viewportY, visibleTeams) ? 1 : 0;
 				unsigned blackValue = i0 + (i1<<1) + (i2<<2) + (i3<<3);
 				if (blackValue==15)
 					globalContainer->gfx->drawFilledRect((x<<5)+16, (y<<5)+16, 32, 32, 0, 0, 0);
@@ -153,10 +153,10 @@ void Game::drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh
 				// then if it isn't full black, draw shade
 				if (blackValue!=15)
 				{
-					i0=!map.isFOWDiscovered(x+viewportX+1, y+viewportY+1, visibleTeams) ? 1 : 0;
-					i1=!map.isFOWDiscovered(x+viewportX, y+viewportY+1, visibleTeams) ? 1 : 0;
-					i2=!map.isFOWDiscovered(x+viewportX+1, y+viewportY, visibleTeams) ? 1 : 0;
-					i3=!map.isFOWDiscovered(x+viewportX, y+viewportY, visibleTeams) ? 1 : 0;
+					i0=!sceneMap.isFOWDiscovered(x+viewportX+1, y+viewportY+1, visibleTeams) ? 1 : 0;
+					i1=!sceneMap.isFOWDiscovered(x+viewportX, y+viewportY+1, visibleTeams) ? 1 : 0;
+					i2=!sceneMap.isFOWDiscovered(x+viewportX+1, y+viewportY, visibleTeams) ? 1 : 0;
+					i3=!sceneMap.isFOWDiscovered(x+viewportX, y+viewportY, visibleTeams) ? 1 : 0;
 					unsigned shadeValue = i0 + (i1<<1) + (i2<<2) + (i3<<3);
 
 					if (shadeValue==15)
@@ -170,8 +170,9 @@ void Game::drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh
 	}
 }
 
-void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
+void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view)
 {
+	std::valarray<unsigned char> &overlayAlphas = view.render.overlayAlphas;
 	PERF_SCOPE_TIME(Overlay);
 	if(drawOptions & DRAW_OVERLAY)
 	{

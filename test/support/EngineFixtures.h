@@ -99,7 +99,8 @@ namespace glob2test
 		Building* addBuilding(const char* typeName, int x, int y, int level = 0, int teamNumber = 0);
 		// A unit at (x, y), or parked on a free tile in the lower-right quadrant.
 		Unit* addUnit(int typeNum, int x = -1, int y = -1, int teamNumber = 0, int level = 0);
-		// One simulation tick per call: Game::syncStep for the local team.
+		// One simulation tick per call: Game::syncStep for the local team, then
+		// GameGUI::consumeClientEvents as the engine does.
 		void step(int ticks = 1);
 		Uint32 checksum();
 	};
