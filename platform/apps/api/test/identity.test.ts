@@ -262,6 +262,48 @@ describe('local accounts', () => {
     expect(taken.status).toBe(409);
   });
 
+  it('unlinks a sign-in method but never the last one', async () => {
+    const registered = await json(
+      await postJson(`${api.url}/api/v1/auth/local/register`, {
+        username: 'carol_u',
+        password: 'a long password',
+        displayName: 'Carol',
+        platform: 'desktop',
+      }),
+    );
+    const accountId = (registered['account'] as { id: string }).id;
+    const token = (registered['tokens'] as { accessToken: string }).accessToken;
+    const unlink = (provider: string, auth: Record<string, string> = bearer(token)) =>
+      fetch(`${api.url}/api/v1/accounts/me/identities/${provider}`, {
+        method: 'DELETE',
+        headers: auth,
+      });
+
+    // The only method: refused, and still linked.
+    const last = await unlink('local');
+    expect(last.status).toBe(409);
+    expect(((await json(last))['details'] as Record<string, unknown>)['reason']).toBe(
+      'last_sign_in_method',
+    );
+    expect(await unlink('google').then((r) => r.status)).toBe(404);
+    expect(await unlink('Bad Provider!').then((r) => r.status)).toBe(400);
+    expect(await unlink('local', {}).then((r) => r.status)).toBe(401);
+
+    // With a second method, either one may go, but not both.
+    await harness.database.db
+      .insertInto('identities')
+      .values({ account_id: accountId, provider: 'google', subject: 'carol-google-1' })
+      .execute();
+    expect(await unlink('local').then((r) => r.status)).toBe(204);
+    const self = await json(await fetch(`${api.url}/api/v1/accounts/me`, { headers: bearer(token) }));
+    expect(self['identities']).toEqual([expect.objectContaining({ provider: 'google' })]);
+    expect(await unlink('google').then((r) => r.status)).toBe(409);
+
+    // A guest has nothing to unlink.
+    const guest = await newGuest();
+    expect(await unlink('local', bearer(guest.tokens.accessToken)).then((r) => r.status)).toBe(404);
+  });
+
   it('keeps registered display names unique and limits renames', async () => {
     const make = async (username: string, displayName: string) =>
       json(
