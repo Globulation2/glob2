@@ -1268,6 +1268,7 @@ jobs:
             build/emscripten/client/release/identity.json
             build/emscripten/client/release/index.html
             build/emscripten/client/release/loader.js
+            build/emscripten/client/release/threaded/identity.json
             build/emscripten/client/release/threaded/index.js
             build/emscripten/client/release/threaded/index.wasm
             build/emscripten/client/release/threaded/index.data
