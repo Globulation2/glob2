@@ -346,11 +346,20 @@ bool Engine::handleExitRequest()
 		return false;
 
 	shared_ptr<Order> localOrder = gui.getOrder();
+	bool leaving = false;
 	while (localOrder->getOrderType() != ORDER_NULL)
 	{
-		net->addLocalOrder(localOrder);
+		// A turn match leaves with a Quit message instead of the quit order: the relay
+		// sequences the same quit either way, but only Quit says whether the game was
+		// decided (GameFinished), which tells a completed match from an abandoned one.
+		if (turn && localOrder->getOrderType() == ORDER_PLAYER_QUIT_GAME)
+			leaving = true;
+		else
+			net->addLocalOrder(localOrder);
 		localOrder = gui.getOrder();
 	}
+	if (leaving)
+		leaveTurnMatch();
 
 	gui.isRunning = false;
 	net->flushAllOrders();

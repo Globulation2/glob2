@@ -413,8 +413,12 @@ the session (presence, latency, buffer) for a connection HUD.
   the local colony won) and `PlayerQuit` otherwise, including for a colony that lost
   while others play on. The relay connection stays open after the session is gone until
   the `Quit` is written (at most 3 s; the shutdown screen waits for it), so closing the
-  window still tells the relay the seat left. The in-game Quit menu also submits the usual
-  `PlayerQuitsGameOrder`; the relay sequences it and marks the seat left.
+  window still tells the relay the seat left. The in-game Quit menu and the end-of-game
+  dialog's Quit queue the usual `PlayerQuitsGameOrder`; in a turn match the engine
+  sends `Quit` in its place (with the reason above), and the relay sequences the
+  same quit order and marks the seat left. Submitting the order itself would leave
+  the seat before the `Quit` could say the game was decided, and every finished
+  match would be reported as abandoned.
 
 As in a legacy network game, executing the local seat's own `PlayerQuitsGameOrder`
 stops that client's loop.
