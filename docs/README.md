@@ -33,7 +33,8 @@ dated reports and pull-request artifacts do not belong here.
 - **Online multiplayer:** [platform architecture](multiplayer/architecture.md),
   [identity and sign-in](multiplayer/identity.md),
   [rooms and matches](multiplayer/rooms-and-matches.md),
-  [ratings and matchmaking](multiplayer/ratings-and-matchmaking.md), the
+  [ratings and matchmaking](multiplayer/ratings-and-matchmaking.md),
+  [match history and the web app](multiplayer/history-and-web.md), the
   [relay-sequenced turn protocol](multiplayer/turn-protocol.md) and the
   [match relay](multiplayer/relay.md) that hosts it.
 - **Hosting:** [self-hosting an online instance](hosting/README.md) with the
