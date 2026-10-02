@@ -1,0 +1,7 @@
+new-game: ok
+new-game-maxima: ok (36 run-varying replay bytes excluded)
+generated-load: ok
+legacy-v121: ok
+resume: ok
+PASS simulation equivalence: checksum sidecars, replay bytes and final saves match
+serial=0

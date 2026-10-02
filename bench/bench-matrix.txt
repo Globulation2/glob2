@@ -1,0 +1,12 @@
+speed=8 mode=serial policy=normal seed=5 BENCH frames=600 wall_ms=9000 ended: 3000 ticks
+speed=8 mode=threaded policy=normal seed=5 BENCH frames=1031 wall_ms=9006 ended: 3000 ticks
+speed=10 mode=serial policy=normal seed=5 BENCH frames=188 wall_ms=2244 ended: 3000 ticks
+speed=10 mode=threaded policy=normal seed=5 BENCH frames=75 wall_ms=697 ended: 3000 ticks
+speed=8 mode=serial policy=background seed=5 BENCH frames=600 wall_ms=24414 ended: 3000 ticks
+speed=8 mode=threaded policy=background seed=5 BENCH frames=280 wall_ms=9138 ended: 3000 ticks
+speed=10 mode=serial policy=background seed=5 BENCH frames=188 wall_ms=9088 ended: 3000 ticks
+speed=10 mode=threaded policy=background seed=5 BENCH frames=108 wall_ms=11365 ended: 3000 ticks
+speed=10 mode=serial policy=normal seed=5 BENCH frames=750 wall_ms=12086 ended: 12000 ticks
+speed=8 mode=serial policy=normal seed=5 BENCH frames=2400 wall_ms=36404 ended: 12000 ticks
+speed=10 mode=threaded policy=normal seed=5 BENCH frames=759 wall_ms=9269 ended: 12000 ticks
+speed=8 mode=threaded policy=normal seed=5 BENCH frames=3439 wall_ms=36000 ended: 12000 ticks
