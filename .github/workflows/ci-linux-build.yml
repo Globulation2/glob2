@@ -247,4 +247,10 @@ jobs:
         env:
           CI_STEPS_JSON: ${{ toJSON(steps) }}
         run: python3 test/ci_step_summary.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ci-observation-linux-${{ inputs.compiler }}
+          path: artifacts/ci-observation/
+          if-no-files-found: ignore
 

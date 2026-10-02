@@ -950,3 +950,18 @@ opt-in executable. Timing thresholds are review criteria, not CI assertions. Run
 `SoftwareRenderer`, `PortableRenderer`, `WindowResize`, `MapRenderResize` and
 `HighResolutionIntegration` suites on supported SDL/platform builds, retain before/after
 captures, and report unavailable platform and maintainer-playtesting coverage explicitly.
+
+### CI timing and retained revisions
+
+Pull requests select relevant checks and cancel superseded revisions. Master
+finishes its running verification and retains the newest pending revision; each
+retained revision runs full coverage, including after a documentation-only push.
+Nightly verification runs at 06:00 UTC without invoking publication workflows.
+The separate CI measurements workflow reads job timestamps and inert observation
+artifacts using trusted master code. It reports initial queue delay, execution
+span, aggregate runner minutes, time to result, cancellations, and observed cache
+hits. Per-job queue estimates use job registration to first step; execution span
+includes dependency gaps and does not by itself identify runner saturation.
+Compare ten successful runs with matching event and selected coverage using
+`python3 .github/scripts/ci_run_metrics.py --before before.json --after after.json`.
+Missing observations and insufficient samples must not be reported as savings.
