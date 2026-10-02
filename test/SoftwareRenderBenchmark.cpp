@@ -76,11 +76,11 @@ class SoftwareRenderBenchmark
 		globalContainer->settings.autosaveGames = false;
 		globalContainer->load();
 		auto *gfx = globalContainer->gfx;
-        if (!nativeDisplay)
-            gfx->setRes(gfx->getRequestedW(), gfx->getRequestedH(),
-                gfx->getOptionFlags() | GraphicContext::LOWPIXELDENSITY);
+        if (!nativeDisplay && !gfx->setRes(gfx->getRequestedW(), gfx->getRequestedH(),
+                gfx->getOptionFlags() | GraphicContext::LOWPIXELDENSITY))
+            throw std::runtime_error(std::string("Cannot create fixed-pixel benchmark window: ") + SDL_GetError());
         const int version = SDL_GetVersion();
-        printf("SDL version=%u.%u.%u revision=%s\n", SDL_VERSIONNUM_MAJOR(version),
+        printf("SDL version=%d.%d.%d revision=%s\n", SDL_VERSIONNUM_MAJOR(version),
             SDL_VERSIONNUM_MINOR(version), SDL_VERSIONNUM_MICRO(version), SDL_GetRevision());
 		if (!getenv("PROFILE_VISIBLE"))
 			SDL_HideWindow(SDL_GetWindowFromID(gfx->windowID()));
