@@ -345,6 +345,67 @@ describe('rooms', () => {
     await joiner.client.ok('room.leave', { roomId: kept.id });
     await roomState(third.client, (r) => (r['members'] as unknown[]).length === 1);
   });
+
+  it('lets the host kick a player, who cannot rejoin that room for ten minutes', async () => {
+    const owner = await player(a);
+    const kicked = (await owner.client.ok('room.create', { name: 'Kicks', visibility: 'link' }))[
+      'room'
+    ] as Room;
+    const target = await player(b);
+    const bystander = await player(a);
+    await target.client.ok('room.join', { code: kicked.code });
+    await bystander.client.ok('room.join', { code: kicked.code });
+    await target.client.ok('room.setSeat', {
+      roomId: kicked.id,
+      seat: 1,
+      occupant: { kind: 'self' },
+    });
+    // Only the host kicks, never themselves, and only members.
+    expect(
+      (await bystander.client.call('room.kick', { roomId: kicked.id, accountId: target.accountId }))
+        .error?.code,
+    ).toBe('forbidden');
+    expect(
+      (await owner.client.call('room.kick', { roomId: kicked.id, accountId: owner.accountId }))
+        .error?.code,
+    ).toBe('bad_request');
+    const outsider = await player(a);
+    expect(
+      (await owner.client.call('room.kick', { roomId: kicked.id, accountId: outsider.accountId }))
+        .error?.code,
+    ).toBe('not_found');
+
+    target.client.clear();
+    const result = await owner.client.ok('room.kick', {
+      roomId: kicked.id,
+      accountId: target.accountId,
+    });
+    expect(check('RealtimeRoomKickResult', result).stage).toBe('ok');
+    const after = result['room'] as Room;
+    expect(after.members.map((m) => m.accountId)).not.toContain(target.accountId);
+    expect(after.seats[1]!.occupant.kind).toBe('open');
+    // The kicked player (on the other replica) is told, and the rest see the new state.
+    expect(await target.client.event('room.closed')).toEqual({
+      roomId: kicked.id,
+      reason: 'kicked',
+    });
+    await roomState(bystander.client, (r) => (r['members'] as unknown[]).length === 2);
+
+    const refused = await target.client.call('room.join', { code: kicked.code });
+    expect(refused.error?.code).toBe('forbidden');
+    const until = Date.parse((refused.error?.details as { until: string }).until);
+    expect(until - Date.now()).toBeGreaterThan(9 * 60_000);
+    expect(until - Date.now()).toBeLessThanOrEqual(10 * 60_000 + 5_000);
+
+    // Once the ban runs out (and the sweep deletes it), joining works again.
+    const db = harness.database.db;
+    await db
+      .updateTable('room_kicks')
+      .set({ until: new Date(Date.now() - 1000) })
+      .where('room_id', '=', kicked.id)
+      .execute();
+    await target.client.ok('room.join', { code: kicked.code });
+  });
 });
 
 describe('sim versions and invite codes', () => {

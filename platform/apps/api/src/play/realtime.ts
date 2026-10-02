@@ -254,6 +254,13 @@ export class PlayRealtime {
         return { room };
       },
 
+      'room.kick': async (connection, raw) => {
+        const params = raw as RealtimeParams<'room.kick'>;
+        return {
+          room: await rooms.kick(connection.requireAccount(), params.roomId, params.accountId),
+        };
+      },
+
       'room.setReady': async (connection, raw) => {
         const params = raw as RealtimeParams<'room.setReady'>;
         return {

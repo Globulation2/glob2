@@ -76,6 +76,8 @@
     "RealtimeRoomCreateResult": "schemas/RealtimeRoomCreateResult.schema.json",
     "RealtimeRoomJoinParams": "schemas/RealtimeRoomJoinParams.schema.json",
     "RealtimeRoomJoinResult": "schemas/RealtimeRoomJoinResult.schema.json",
+    "RealtimeRoomKickParams": "schemas/RealtimeRoomKickParams.schema.json",
+    "RealtimeRoomKickResult": "schemas/RealtimeRoomKickResult.schema.json",
     "RealtimeRoomLeaveParams": "schemas/RealtimeRoomLeaveParams.schema.json",
     "RealtimeRoomLeaveResult": "schemas/RealtimeRoomLeaveResult.schema.json",
     "RealtimeRoomSetReadyParams": "schemas/RealtimeRoomSetReadyParams.schema.json",
@@ -330,6 +332,19 @@
       "schema": "RealtimeRequest",
       "valid": true,
       "note": "The first frame on a socket."
+    },
+    {
+      "file": "valid/RealtimeRoomKickParams/kick.json",
+      "schema": "RealtimeRoomKickParams",
+      "valid": true,
+      "note": "The host removes a member; they cannot rejoin the room for 10 minutes."
+    },
+    {
+      "file": "invalid/RealtimeRoomKickParams/missing-account.json",
+      "schema": "RealtimeRoomKickParams",
+      "valid": false,
+      "stage": "schema",
+      "note": "A kick names the member."
     },
     {
       "file": "invalid/RealtimeRequest/missing-id.json",

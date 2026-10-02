@@ -46,6 +46,8 @@ are easy to change:
 | The host is ready by starting; there is no force start past unready players | yes |
 | Seats that must be taken to start | 2 |
 | The host leaving closes the room (`room.closed` `host_closed`) | yes |
+| The host can remove a member from an open room (`room.kick`) | yes |
+| A kicked player cannot rejoin that room for | 10 min |
 | Open room closes when its host has been disconnected for | 120 s |
 | Disconnected members are removed from open rooms after | 10 min |
 | Open rooms close after no change for | 12 h |
@@ -55,6 +57,13 @@ are easy to change:
 room has changed since then. Room settings are frozen (`conflict`) while the room is
 starting or in a match. When the match ends, or is cancelled because nobody reached
 the relay, the room reopens with every Ready cleared.
+
+**Kicking.** `room.kick {roomId, accountId}` is host only and works while the room is
+open (not while a match is starting or running). The member's seat opens, they get
+`room.closed` with reason `kicked`, and the other members get the new `room.state`.
+The ban is kept in `room_kicks`: `room.join` answers `forbidden` with
+`details.until` until it runs out, and the room sweep deletes expired bans. A ban
+is per room, so the player can still join other rooms by the same host.
 
 **Presence.** A member is connected while any API replica holds a socket for the
 account. When a replica's last socket for an account closes, it marks the account
@@ -117,10 +126,12 @@ A private upload is served to an account that uploaded those bytes, a member of 
 room that uses them, or a participant of a match played on them. Every other
 caller gets `404`. Responses carry `ETag: "<hash>"` and an immutable cache lifetime.
 
-**Warm maps.** Queue starts first ask a `WarmMapSource` for a pre-generated map of
-the queue, sim version and pool entry. The engine-agent work provides
-`takeWarmMap(db, queueId, simVersionKey, { entry })`. Without a pool, or when it is
-empty, the starter generates on demand and waits up to 60 s.
+**Warm maps.** Queue starts first take a pre-generated map of the queue, sim
+version and pool entry from the warm map pool (`takeWarmMap` in
+`apps/worker/src/warmMaps.ts`, wired in the worker's `main.ts`; see
+[Warm map pool](architecture.md#warm-map-pool)). Warm maps are generated with one
+team per queue seat, as on-demand maps are. When the pool is empty or turned off
+(`WARM_MAPS_PER_ENTRY=0`), the starter generates on demand and waits up to 60 s.
 
 ## Start sequence
 
@@ -284,6 +295,5 @@ Caddy must route `/j/*` to the API, as it routes `/api`, `/realtime` and
   `RELAY_KEYS` in the deployment are not done yet. Nothing here has run behind Caddy.
 - **Client side.** The room screen and the client side of `glob2://` and `?join=`
   wait for approved mock-ups and the client work.
-- **Kicking.** There is no kick method. The host can only empty a seat.
 - **Lost relays.** A relay that dies with matches running leaves them `running`
   until its spool re-submits them. There is no sweep for that yet.

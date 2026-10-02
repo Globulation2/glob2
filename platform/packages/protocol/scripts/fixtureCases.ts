@@ -542,6 +542,21 @@ export const fixtureCases: FixtureCase[] = [
     },
   },
   {
+    schema: 'RealtimeRoomKickParams',
+    name: 'kick',
+    valid: true,
+    note: 'The host removes a member; they cannot rejoin the room for 10 minutes.',
+    value: { roomId: ROOM_ID, accountId: ACCOUNT_2 },
+  },
+  {
+    schema: 'RealtimeRoomKickParams',
+    name: 'missing-account',
+    valid: false,
+    stage: 'schema',
+    note: 'A kick names the member.',
+    value: { roomId: ROOM_ID },
+  },
+  {
     schema: 'RealtimeRequest',
     name: 'missing-id',
     valid: false,
