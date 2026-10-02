@@ -36,3 +36,13 @@ class MetricsTest(unittest.TestCase):
                 dict(steps=[dict(started_at='2026-10-02T00:00:05Z')],completed_at='2026-10-02T00:00:15Z'),
                 dict(steps=[dict(started_at='2026-10-02T00:02:00Z')],completed_at='2026-10-02T00:02:10Z')]
         self.assertEqual(m.active_seconds(jobs),25)
+
+    def test_all_artifact_pages_are_read_for_large_full_matrix(self):
+        calls=[]
+        def read(path,token):
+            calls.append(path)
+            self.assertLessEqual(len(calls),2)
+            return {'artifacts': list(range(100)) if path.endswith('&page=1') else ['selection']}
+        self.assertEqual(len(list(m.run_artifacts('run','token',read))),101)
+        self.assertEqual(len(calls),2)
+        self.assertTrue(calls[1].endswith('page=2'))
