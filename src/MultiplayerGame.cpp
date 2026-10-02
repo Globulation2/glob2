@@ -267,7 +267,7 @@ void MultiplayerGame::updatePlayerChanges()
 
 
 
-void MultiplayerGame::setNetEngine(NetEngine* nnetEngine)
+void MultiplayerGame::setNetEngine(LockstepSession* nnetEngine)
 {
 	netEngine = nnetEngine;
     if (netEngine) waitingForEngine = false;
