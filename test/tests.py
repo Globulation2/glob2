@@ -125,6 +125,7 @@ UNIT_TESTS = [
     'GradientBFSTest.cpp',
     'GradientTest.cpp',
     'HelloWorldTest.cpp',
+    'VendoredJsonTest.cpp',
     'KeyActionLookupTest.cpp',
     'MapQueryTest.cpp',
     'MessageRecipientsTest.cpp',
