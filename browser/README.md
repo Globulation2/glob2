@@ -88,6 +88,9 @@ Use Tutorial, Campaign, Custom Game or Editor. Clicking the canvas focuses
 keyboard input and enables music. Live resize updates the internal resolution
 at frame boundaries in scheduled browser flows.
 Add `?renderer=software` or `?renderer=webgl2` to the URL to force a renderer.
+`?replay=<url>` downloads a replay while the game loads and opens it in the replay
+viewer (the platform's "Watch in browser"; see
+[match history and the web app](../docs/multiplayer/history-and-web.md#watch-in-browser)).
 With WebGL2, press G in a match for the torus overview. Both rendering paths
 support the flat map camera's zoom and picking. Native HTML text fields handle
 browser keyboard editing, selection, paste, composition and password masking;
