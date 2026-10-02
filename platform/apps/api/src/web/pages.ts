@@ -82,8 +82,8 @@ export async function pageAssetRoutes(app: FastifyInstance): Promise<void> {
 const STYLE = `
 @font-face{font-family:'Glob2 Sans';src:url(${ASSETS}/glob2-sans.woff2) format('woff2');font-display:swap}
 @font-face{font-family:'Nunito Variable';src:url(${ASSETS}/nunito.woff2) format('woff2-variations');font-weight:200 1000;font-display:swap}
-:root{color-scheme:light dark;--bg:#f1f1e1;--surface:#fbfbf3;--surface-2:#eaedda;--ink:#1d4530;--ink-2:#4b604c;--line:#ccd5bf;--line-strong:#74866a;--accent:#e3c077;--accent-hover:#ecce8f;--accent-edge:#c69e4c;--accent-ink:#142a1f;--gold-ink:#835607;--focus:#9a5a0c;--warn:#87500a;--warn-bg:#fbf0d9;--warn-line:#e0b878;--two:#e2b85f;--tint:rgba(241,241,225,.0);--shadow:0 2px 0 rgba(15,39,25,.12),0 22px 50px -18px rgba(15,39,25,.55)}
-@media (prefers-color-scheme:dark){:root{--bg:#1b1229;--surface:#2b1c42;--surface-2:#34234f;--ink:#f9e8bb;--ink-2:#cfc1a0;--line:#4f3c6b;--line-strong:#8a6db3;--accent-ink:#1e1228;--gold-ink:#f0cf7c;--focus:#ffd678;--warn:#f6c46e;--warn-bg:#45301a;--warn-line:#8a6430;--tint:rgba(40,22,80,.55);--shadow:0 2px 0 rgba(0,0,0,.3),0 22px 50px -18px rgba(0,0,0,.85)}}
+:root{color-scheme:light dark;--bg:#f1f1e1;--surface:#fbfbf3;--surface-2:#eaedda;--ink:#1d4530;--ink-2:#4b604c;--line:#ccd5bf;--line-strong:#74866a;--accent:#e3c077;--accent-hover:#ecce8f;--accent-edge:#c69e4c;--accent-ink:#142a1f;--gold-ink:#835607;--focus:#9a5a0c;--warn:#87500a;--warn-bg:#fbf0d9;--warn-line:#e0b878;--danger:#a3362c;--danger-bg:#fbe9e5;--danger-line:#e3aaa1;--two:#e2b85f;--tint:rgba(241,241,225,.0);--shadow:0 2px 0 rgba(15,39,25,.12),0 22px 50px -18px rgba(15,39,25,.55)}
+@media (prefers-color-scheme:dark){:root{--bg:#1b1229;--surface:#2b1c42;--surface-2:#34234f;--ink:#f9e8bb;--ink-2:#cfc1a0;--line:#4f3c6b;--line-strong:#8a6db3;--accent-ink:#1e1228;--gold-ink:#f0cf7c;--focus:#ffd678;--warn:#f6c46e;--warn-bg:#45301a;--warn-line:#8a6430;--danger:#ff9488;--danger-bg:#4a1f2e;--danger-line:#8c4250;--tint:rgba(40,22,80,.55);--shadow:0 2px 0 rgba(0,0,0,.3),0 22px 50px -18px rgba(0,0,0,.85)}}
 *{box-sizing:border-box}
 html{background:#2f6526}
 body{margin:0;min-height:100vh;display:flex;flex-direction:column;align-items:center;color:var(--ink);font:16px/1.55 'Nunito Variable',ui-rounded,system-ui,-apple-system,'Segoe UI',sans-serif;background:#2f6526 url(${ASSETS}/colony.webp) center/cover fixed;padding:0 16px}
@@ -111,7 +111,13 @@ a.button,button{display:flex;align-items:center;justify-content:center;width:100
 a.button:hover,button:hover{background:var(--surface-2)}
 a.button.primary,button.primary{background:var(--accent);border-color:var(--accent-edge);color:var(--accent-ink);box-shadow:inset 0 -3px 0 rgba(120,80,10,.18),0 2px 0 var(--accent-edge)}
 a.button.primary:hover,button.primary:hover{background:var(--accent-hover)}
-label{display:block;margin:8px 0 4px;font-weight:700;font-size:.9rem;color:var(--ink-2)}
+label{display:block;margin:12px 0 4px;font-weight:700;font-size:.9rem;color:var(--ink-2)}
+h2{font:normal 1.2rem/1.2 'Glob2 Sans','DejaVu Sans',Verdana,sans-serif;margin:0 0 4px}
+.hint{margin:4px 0 0;font-size:.85rem;color:var(--ink-2)}
+.field-error{margin:6px 0 0;padding:8px 10px;border-radius:10px;font-weight:700;font-size:.9rem;color:var(--danger);background:var(--danger-bg);border:1px solid var(--danger-line)}
+.form-error{margin:8px 0}
+input[aria-invalid=true]{border-color:var(--danger);border-width:2px}
+form>button{margin-top:16px}
 input{width:100%;min-height:48px;padding:8px 12px;border-radius:10px;border:1.5px solid var(--line-strong);background:var(--surface);color:var(--ink);font:inherit}
 form.inline{display:flex;gap:8px}form.inline button{flex:1}
 footer{font-size:.85rem;text-align:center;padding:0 0 24px}
@@ -156,7 +162,7 @@ export function sendPage(
             <meta name="viewport" content="width=device-width,initial-scale=1" />
             <meta name="color-scheme" content="light dark" />
             <meta name="theme-color" content="#2f6526" />
-            <title>${title}</title>
+            <title>${title === 'Globulation 2' ? title : `${title} · Globulation 2`}</title>
             <link rel="icon" type="image/png" sizes="32x32" href="${ASSETS}/favicon-32.png" />
             ${extras.head}
             <style>
