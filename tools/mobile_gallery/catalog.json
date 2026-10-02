@@ -562,6 +562,66 @@
       "group": "Network entry screens"
     },
     {
+      "id": "quick-match",
+      "title": "Quick match",
+      "description": "Queue cards before a search; canned instance queues.",
+      "group": "Online screens"
+    },
+    {
+      "id": "quick-match-searching",
+      "title": "Quick match: searching",
+      "description": "A 1 vs 1 ranked search 42 s in: rating window, region, AI backfill countdown.",
+      "group": "Online screens"
+    },
+    {
+      "id": "match-found",
+      "title": "Match found",
+      "description": "Ranked accept prompt with the 10-second ring; the player has accepted.",
+      "group": "Online screens"
+    },
+    {
+      "id": "match-found-ai",
+      "title": "Playing an AI",
+      "description": "AI-backfilled match: who you play and the start countdown.",
+      "group": "Online screens"
+    },
+    {
+      "id": "online-profile",
+      "title": "Online profile",
+      "description": "Ratings per queue, aggregates and match history from canned matches.",
+      "group": "Online screens"
+    },
+    {
+      "id": "online-maps",
+      "title": "Map browser",
+      "description": "Catalog maps with server previews (generator PNGs) and the detail panel.",
+      "group": "Online screens"
+    },
+    {
+      "id": "online-my-maps",
+      "title": "My maps",
+      "description": "Own maps: published, checking on the server, rejected.",
+      "group": "Online screens"
+    },
+    {
+      "id": "map-share",
+      "title": "Share a map",
+      "description": "Upload form for maps/balanced.map; visibility defaults to Unlisted.",
+      "group": "Online screens"
+    },
+    {
+      "id": "map-share-checking",
+      "title": "Share a map: checking",
+      "description": "The server is loading the map and drawing its preview.",
+      "group": "Online screens"
+    },
+    {
+      "id": "map-share-rejected",
+      "title": "Share a map: rejected",
+      "description": "The server could not load the map; the reason in plain words.",
+      "group": "Online screens"
+    },
+    {
       "id": "setup-review",
       "title": "Review & Play",
       "group": "Custom game setup",

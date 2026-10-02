@@ -38,6 +38,18 @@ enum class UIIcon
 	Refresh,
 	Info,
 	Experiments,
+	// Online screens
+	Search,
+	Robot,
+	Trophy,
+	Upload,
+	Download,
+	Heart,
+	ExternalLink,
+	Check,
+	Map,
+	Bolt,
+	Users,
 	Count
 };
 IconRef uiIcon(UIIcon icon);

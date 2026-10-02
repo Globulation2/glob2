@@ -3534,3 +3534,425 @@ Emoji
 
 [Map momentum]
 شتاب نقشه
+[qm 2 vs 2]
+
+[qm 1 vs 1]
+
+[qm ranked]
+
+[qm casual %0]
+
+[qm rated]
+
+[qm unrated]
+
+[qm solo queue]
+
+[qm ai joins after %0]
+
+[qm fair maps %0]
+
+[qm cooldown %0]
+
+[qm sign in to play ranked]
+
+[online update required]
+
+[qm already searching]
+
+[online connection problem]
+
+[qm find match]
+
+[qm opponents rated %0 to %1]
+
+[qm region %0 relay %1 ms]
+
+[qm region %0]
+
+[qm searching]
+
+[qm measuring relays]
+
+[qm joining queue]
+
+[qm waiting for a person]
+
+[qm ai in %0 rated]
+
+[qm ai in %0]
+
+[qm ai after %0]
+
+[qm allow ai short]
+
+[qm allow ai]
+
+[qm cancel]
+
+[qm cancel search]
+
+[qm usual wait %0]
+
+[qm widening]
+
+[qm ais are rated]
+
+[qm opponent declined]
+
+[qm %0 did not accept]
+
+[qm start failed]
+
+[qm you declined]
+
+[qm you did not answer]
+
+[qm search ended]
+
+[qm try again]
+
+[online connecting]
+
+[qm no queues]
+
+[qm quick match]
+
+[qm phone searching note]
+
+[qm phone intro]
+
+[qm online]
+
+[qm keeps running note]
+
+[qm ai]
+
+[qm provisional]
+
+[qm accepted]
+
+[qm declined]
+
+[qm waiting]
+
+[qm ai badge]
+
+[qm match found]
+
+[qm playing an ai]
+
+[qm vs]
+
+[qm ai explanation rated]
+
+[qm ai explanation]
+
+[qm casual explanation]
+
+[qm accepted button]
+
+[qm accept]
+
+[qm decline]
+
+[qm both must accept]
+
+[qm accept explanation]
+
+[qm starting in %0]
+
+[qm preparing match]
+
+[online jan]
+
+[online feb]
+
+[online mar]
+
+[online apr]
+
+[online may]
+
+[online jun]
+
+[online jul]
+
+[online aug]
+
+[online sep]
+
+[online oct]
+
+[online nov]
+
+[online dec]
+
+[profile win letter]
+
+[profile loss letter]
+
+[profile draw letter]
+
+[profile history unavailable]
+
+[profile downloading replay]
+
+[profile no replay]
+
+[profile room with %0]
+
+[profile with %0 vs %1]
+
+[profile vs %0]
+
+[profile room]
+
+[profile casual]
+
+[profile ai filled]
+
+[profile provisional %0 games]
+
+[profile unrated]
+
+[profile checking]
+
+[profile %0 min]
+
+[profile match page]
+
+[profile replay]
+
+[profile win rate last %0]
+
+[profile %0 w %1 l %2 d]
+
+[profile typical game]
+
+[profile median length]
+
+[profile best map]
+
+[profile %0 w %1 l]
+
+[profile no rated games]
+
+[profile all]
+
+[profile rooms]
+
+[profile vs ai]
+
+[profile matches]
+
+[online loading]
+
+[profile no matches]
+
+[online load more]
+
+[profile title]
+
+[profile guest]
+
+[profile playing since %0]
+
+[profile full profile web]
+
+[profile replays note]
+
+[profile web profile]
+
+[maps most played]
+
+[maps most liked]
+
+[maps newest]
+
+[maps most downloaded]
+
+[maps any size]
+
+[maps up to 128]
+
+[maps 256]
+
+[maps 512 and larger]
+
+[maps report broken]
+
+[maps report offensive]
+
+[maps report copyright]
+
+[maps report other]
+
+[maps public]
+
+[maps unlisted]
+
+[maps private]
+
+[maps cannot read file]
+
+[maps file too large]
+
+[maps saved for next room]
+
+[maps download failed]
+
+[maps %0 colonies]
+
+[maps version %0]
+
+[maps updated %0]
+
+[maps downloading]
+
+[maps like needs account]
+
+[maps report sent]
+
+[maps select a map]
+
+[maps by %0]
+
+[maps stats %0 %1 %2]
+
+[maps use in room]
+
+[maps liked]
+
+[maps like]
+
+[maps map page]
+
+[maps reported]
+
+[maps report]
+
+[maps report why]
+
+[maps search placeholder]
+
+[maps none found]
+
+[maps any colonies]
+
+[maps checking]
+
+[maps no version yet]
+
+[maps rejected]
+
+[maps did not load %0]
+
+[maps unknown reason]
+
+[maps fix and upload again]
+
+[maps uploaded just now]
+
+[maps loading on server]
+
+[maps %0 plays]
+
+[maps hidden]
+
+[maps upload again]
+
+[maps delete]
+
+[maps update]
+
+[maps upload a map]
+
+[maps upload hint]
+
+[maps no maps yet]
+
+[maps my maps]
+
+[maps my maps %0]
+
+[maps browse]
+
+[maps title]
+
+[maps browse note %0]
+
+[maps visibility note]
+
+[maps use %0]
+
+[maps %0 kb]
+
+[maps field title]
+
+[maps field description]
+
+[maps who can use it]
+
+[maps guests unlisted]
+
+[maps visibility help]
+
+[maps new version of %0]
+
+[maps upload]
+
+[maps uploading]
+
+[maps checking detail]
+
+[maps ready]
+
+[maps ready public]
+
+[maps ready unlisted]
+
+[maps ready private]
+
+[maps upload failed]
+
+[maps server read %0 %1]
+
+[maps continue in background]
+
+[maps upload a map title]
+
+[maps update map title]
+
+[maps upload note]
+
+[online just now]
+
+[online today %0]
+
+[online yesterday]
+
+[online sun]
+
+[online mon]
+
+[online tue]
+
+[online wed]
+
+[online thu]
+
+[online fri]
+
+[online sat]
+
+[online %0 weeks ago]
+
+[online %0 months ago]
+
+[online %0 years ago]
+
+[maps share online]
+
+[qm match assigned %0 %1]
+

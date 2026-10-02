@@ -93,6 +93,53 @@ sends `auth.handoff.resume`, so a phone that lost its socket while the browser
 was in front still receives `auth.handoff.completed`. Without a result the
 attempt fails locally as `expired` one minute after its expiry.
 
+## Online screens
+
+The quick-match, profile and map screens (multiplayer mock-up groups 3 and 7)
+build on the client with the `Glob2UI::Screen` pattern. They are reached from
+the online hub; the map chooser of the editor menu and the editor's own menu
+also offer **Share online…**.
+
+| Screen | File | What it does |
+| --- | --- | --- |
+| Quick match | `src/QuickMatchScreen.cpp` | Queue cards from `InstanceInfo.queues`; while searching, the timer, the opponent rating range, the relay region and round trip, the AI backfill countdown with the AI that would play and **Allow an AI opponent** (on by default). |
+| Match found | `src/QuickMatchScreen.cpp` | Ranked queues: both players accept within the countdown, each player's answer shown live. AI-backfilled and casual matches: who you play, then a 3-second start countdown. |
+| Profile | `src/OnlineProfileScreen.cpp` | Rating of each queue with its trend and provisional flag, win rate, typical game length and best map over recent games, the match list (filters All, Ranked, Rooms, vs AI) with Replay and the match page. |
+| Maps | `src/OnlineMapsScreen.cpp` | Browse (search, size, colonies, sort, detail with the server preview, Use in a room, Like, map page, Report) and My maps (upload, checking, rejected with the reason, visibility, update, delete). |
+| Share a map | `src/OnlineMapsScreen.cpp` (`MapShareScreen`) | Title, description and visibility (Unlisted by default), then the upload and the server's validation and preview. |
+
+**Search state.** `Online::QuickMatch` (`src/online/QuickMatch.h`) holds the one
+search: it probes the relays (`RelayProbe`), sends `queue.join`, follows
+`queue.status`, answers `queue.proposal` with `queue.respond`, toggles backfill
+with `queue.update` and leaves with `queue.leave`. It lives in the online
+services and is pumped by `Online::pump()`, so a search continues while the
+player opens Profile or Maps. `QuickMatchPresenter` shows the match-found
+prompt over whichever screen is in front and flashes the window
+(`SDL_FlashWindow`) when a match is found. There is no phone notification: the
+platform layer has no local notifications for a backgrounded app.
+
+**Hand-offs** (`src/online/OnlineHandoff.h`) connect screen groups built
+separately. The connecting flow registers `Online::setMatchHandler`; the quick
+match calls `Online::beginMatch(assignment)` with the `match.start`
+`MatchAssignment` once the prompt closes. "Use in a room" downloads the map
+into the map cache and calls `Online::useMapInRoom({mapId, hash, title, ...})`,
+which the room screen registers with `setRoomMapHandler`. The results screen
+offers a rematch through `Online::requestRematch`, registered by the room
+screen: an unrated room with the same players. A hand-off made before its
+handler exists is kept for it.
+
+**Data.** The profile reads `GET /api/v1/accounts/{id}` and the account's
+history, `GET /api/v1/accounts/{id}/matches` (a `MatchList`), and computes the
+ladders and aggregates from it (`summarizeProfile`), so it needs no other
+endpoint. Replays come from the `replay` artifact of `GET /api/v1/matches/{id}`
+and open in the replay viewer; deep links go to `<origin>/players/<id>`,
+`<origin>/matches/<id>` and `<origin>/maps/<id>`. Map previews are the server's
+PNGs (`MapVersionInfo.previewUrl`), fetched with `PlatformClient::restRaw` and
+decoded with SDL_image. Uploads send the map's uncompressed bytes to
+`POST /api/v1/maps/{id}/versions?simVersion=<key>` and poll the version until
+`validation` is `valid` or `invalid` and the preview is no longer pending
+(`Online::MapShare`, `src/online/MapCatalog.h`).
+
 ## Instances and stored credentials
 
 `InstanceConfig` keeps the selected instance (the official one,
@@ -200,6 +247,14 @@ process that never initialized the Toolkit file system (some unit tests) reports
 64 zeros, which the platform answers with `simSupported: false`.
 
 ## Tests
+
+- `glob2-unit-tests` suites `QuickMatch`, `MapCatalog` and `OnlineResources`
+  (`test/online/`): relay probes before `queue.join`, search progress, ranked
+  prompts with live answers, AI backfill and its start countdown, requeues,
+  declines with a cooldown, cancelling at every step, the share flow, catalog
+  queries, hand-offs, and parsing of every protocol fixture the screens read.
+- The `UIPresentation` suite and the mobile gallery capture every online
+  screen state from canned data (`tools/OnlineScreenFixtures.h`).
 
 - `glob2-unit-tests` (`test/online/`): envelope codec, timestamps, token
   lifetimes and refresh scheduling, backoff, SHA-256 vectors, origin
