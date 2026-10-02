@@ -605,6 +605,7 @@ void Engine::teardownSession()
 
 	if (multiplayer) multiplayer->setNetEngine(nullptr);
 	leaveTurnMatch();
+	exportTurnTelemetry();
 	turn = nullptr;
 	turnMatch.reset();
 	net.reset();
@@ -630,6 +631,7 @@ void Engine::pumpTurnSession(Uint64 now)
 		return;
 	Turn::TurnSession& session = turn->turn();
 	session.update(now * 1000);
+	printTurnTelemetrySamples();
 	if (session.needsReload())
 		reloadTurnInitialState();
 	if (session.desyncFlagged() && turnMatch && !turnMatch->flagReported)
@@ -684,6 +686,8 @@ void Engine::reloadTurnInitialState()
 	if (session)
 		session->wasReadyLastTick = true;
 	turn->resetOrderAudit();
+	turn->turn().telemetry().reloadLoad(static_cast<std::uint64_t>(
+		std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - started).count()));
 	turn->turn().reloadDone();
 	std::cerr << "Turn session: reloaded the initial state in "
 		<< std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - started).count()
@@ -750,6 +754,7 @@ void Engine::beginSession(Uint64 now)
 			metadata << " build=" << std::quoted(label);
 		perf.describe(metadata.str());
 	}
+	printTurnTelemetrySession();
 
 }
 
@@ -913,8 +918,8 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
         stepSession(SDL_GetTicks64());
         drawSession();
         if (!globalContainer->runNoX) {
-            PerformanceTelemetry::Scope delayTime(session->wasReadyLastTick
-                ? PerformanceTelemetry::Id::Sleep : PerformanceTelemetry::Id::NetworkSleep);
+            PerformanceTelemetry::Scope delayTime(waitingOnNetwork()
+                ? PerformanceTelemetry::Id::NetworkSleep : PerformanceTelemetry::Id::Sleep);
             GAGCore::ApplicationHost::wait(sessionDelay(SDL_GetTicks64()));
         }
     }

@@ -1024,4 +1024,93 @@ TEST_SUITE("TurnEngineHarness")
 		glob2test::writeFile(glob2test::artifactDir() / "rejoin-fast-forward.txt", table.str());
 		MESSAGE(table.str());
 	}
+
+	GLOB2_TEST_CASE("engines report network telemetry, and its output changes nothing they execute",
+	                "[network-sim][artifacts]")
+	{
+		glob2test::HeadlessGlobals globals(harnessGlobals());
+		struct Run
+		{
+			std::vector<std::map<std::uint32_t, Uint32>> checksums;
+			std::vector<json> summaries;
+			json relay;
+			std::string output;
+		};
+		auto play = [](bool output) {
+			if (output)
+				glob2test::setEnv("GLOB2_TEAM_TIMELINE", "1");
+			Run run;
+			std::ostringstream captured;
+			std::streambuf* previous = output ? std::cout.rdbuf(captured.rdbuf()) : nullptr;
+			{
+				EngineMatch m("FourSquares1", {{20 * MS}, {70 * MS, 50 * MS, 0.03}}, {"nicowar"});
+				m.run(20 * SECOND);
+				m.net.outage(1, 3 * SECOND, *m.clients[1]->transport);
+				m.run(15 * SECOND);
+				m.finish();
+				m.requireIdenticalChecksums();
+				for (auto& c : m.clients)
+				{
+					run.checksums.push_back(c->lives.back());
+					run.summaries.push_back(c->engine->turnNetworkSummary());
+					RngScope scope(c->rng);
+					c->engine->abortSession(); // tears down: final telemetry records
+				}
+				run.relay = m.net.relay->networkSummary();
+			}
+			if (previous)
+				std::cout.rdbuf(previous);
+			if (output)
+				glob2test::unsetEnv("GLOB2_TEAM_TIMELINE");
+			run.output = captured.str();
+			return run;
+		};
+		const Run quiet = play(false);
+		const Run loud = play(true);
+		// Telemetry output on or off: every client executes exactly the same game.
+		REQUIRE(quiet.checksums.size() == 2);
+		CHECK(quiet.checksums == loud.checksums);
+		CHECK(quiet.checksums[0].size() > 800);
+
+		for (std::size_t i = 0; i < loud.summaries.size(); ++i)
+		{
+			const json& s = loud.summaries[i];
+			INFO("client " << i << ": " << s.dump());
+			REQUIRE(s.is_object());
+			CHECK(s.at("schema") == "ClientNetworkSummary");
+			CHECK(s.at("match").at("seat") == i);
+			CHECK(s.at("match").at("transport") == "online");
+			CHECK(s.at("match").at("sim_version") == Online::currentSimVersion().key());
+			CHECK(s.at("rtt_us").at("count").get<int>() > 20);
+			CHECK(s.at("input_delay_us").at("count").get<int>() > 5);
+			CHECK(s.at("traffic").at("bundles_received").get<int>() > 300);
+			CHECK(s.at("series").at("points").size() >= 6);
+		}
+		const json& c0 = loud.summaries[0];
+		const json& c1 = loud.summaries[1];
+		CHECK(c0.at("rtt_us").at("p50").get<std::uint64_t>() >= 40 * MS);
+		CHECK(c1.at("rtt_us").at("p50") > c0.at("rtt_us").at("p50"));
+		CHECK(c1.at("jitter_buffer").at("target_ticks").at("p95") > c0.at("jitter_buffer").at("target_ticks").at("p95"));
+		CHECK(c1.at("reconnects").at("count").get<int>() >= 1);
+		CHECK(c1.at("stalls").at("longest_us").get<std::uint64_t>() >= 2 * SECOND);
+		CHECK(c1.at("catch_up").at("episodes").get<int>() >= 1);
+		CHECK(c0.at("reconnects").at("count") == 0);
+		CHECK(loud.relay.at("seats")[1].at("connection").at("disconnects").get<int>() >= 1);
+		// The order check of multiplayer/m1-order-validation is not on this branch.
+		CHECK(c0.at("order_validation").is_null());
+
+		// The standard telemetry stream carries the same data.
+		for (const char* record : {"GLOB2_NET_SESSION ", "GLOB2_NET_SAMPLE ", "GLOB2_NET_FINAL ", "GLOB2_NET_SEAT ",
+		                           "GLOB2_NET_SUMMARY {"})
+			CHECK_MESSAGE(loud.output.find(record) != std::string::npos, record);
+		CHECK(quiet.output.empty());
+
+		const auto directory = glob2test::artifactDir() / "network-telemetry";
+		fs::create_directories(directory);
+		glob2test::writeFile(directory / "client0.network.json", c0.dump(1));
+		glob2test::writeFile(directory / "client1.network.json", c1.dump(1));
+		glob2test::writeFile(directory / "relay.network.json", loud.relay.dump(1));
+		glob2test::writeFile(directory / "timeline-records.txt", loud.output);
+	}
 }
+

@@ -101,6 +101,11 @@ public:
 		int localSeat = -1;
 		std::shared_ptr<Turn::TurnTransport> transport;
 		Turn::TurnSessionConfig config;
+		/// Classifies the connection in the ClientNetworkSummary: "online" or "lan",
+		/// and for online games the relay's id and region when known.
+		std::string networkKind = "online";
+		std::string relayId;
+		std::string relayRegion;
 	};
 
 	/// Starts a turn-protocol game: builds the GameHeader from the setup (every human
@@ -117,6 +122,13 @@ public:
 	Turn::TurnLockstepSession* turnLockstep() { return turn; }
 	/// The in-game connection lines for a turn game (GameGUI::connectionNotice).
 	std::vector<std::string> turnConnectionNotice();
+	/// True while the game loop waits for the network rather than pacing: a turn
+	/// game with its horizon used up, or a legacy game waiting on a peer's orders.
+	/// Hosts time the following wait as pacing.network_sleep instead of pacing.sleep.
+	bool waitingOnNetwork() const;
+	/// The ClientNetworkSummary (docs/development/network-telemetry.md) of the running
+	/// turn game; null when this is not a turn game with a local seat.
+	nlohmann::json turnNetworkSummary(bool includeSeries = true) const;
 
 	//! This function creates a game with a random map and random AI for every team
 	void createRandomGame();
@@ -267,6 +279,11 @@ private:
 	void reloadTurnInitialState();
 	/// Tells the relay this client is leaving, once.
 	void leaveTurnMatch();
+	/// Network telemetry output (EngineTurnTelemetry.cpp): GLOB2_NET_* records with
+	/// GLOB2_TEAM_TIMELINE, and the ClientNetworkSummary next to the replay.
+	void printTurnTelemetrySession();
+	void printTurnTelemetrySamples();
+	void exportTurnTelemetry();
     std::optional<MainLoopState> session;
     int sessionEndingTarget = 0;
     std::vector<SDL_Event> sessionInput;
@@ -325,6 +342,14 @@ private:
 		int localTeam = 0;
 		std::string replayPath;
 		bool flagReported = false;
+		// Network telemetry context and output progress.
+		int localSeat = -1;
+		std::string simVersion;
+		std::string networkKind;
+		std::string relayId;
+		std::string relayRegion;
+		std::size_t printedNetPoints = 0;
+		bool netExported = false;
 	};
 	std::optional<TurnMatchState> turnMatch;
 
