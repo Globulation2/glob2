@@ -298,9 +298,6 @@ private:
 	};
 
 public:
-	/// True for a team number this game has (orders carry team numbers as raw ints).
-	bool isOrderTeam(Sint64 teamNumber) const;
-
 	struct BuildProject
 	{
 		int posX;

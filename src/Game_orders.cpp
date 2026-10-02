@@ -42,11 +42,6 @@ Building* Game::lookupBuilding(Uint16 gid) const
 	return teams[team]->myBuildings[id];
 }
 
-bool Game::isOrderTeam(Sint64 teamNumber) const
-{
-	return teamNumber >= 0 && teamNumber < mapHeader.getNumberOfTeams() && teams[teamNumber];
-}
-
 void Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 {
 	const auto random = bindRandom();

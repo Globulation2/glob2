@@ -526,7 +526,7 @@ void SoundMixer::addVoiceData(std::shared_ptr<OrderVoiceData> order)
 		PlayerVoice &pv = voices[order->sender];
 		if (pv.voiceData.size() >= MAX_VOICE_BACKLOG_SAMPLES)
 		{
-			SDL_UnlockAudio();
+			SDL_UnlockAudioStream(audioStream);
 			return;
 		}
 		// insert 200 ms silence to let packets come if we aer the first
