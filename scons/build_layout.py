@@ -63,6 +63,10 @@ def build_identity(arguments, host=None):
     native_wss = target == 'native' and role == 'client' and enabled(arguments.get('wss', 1))
     identity = {'target': target, 'role': role, 'toolchain': toolchain, 'mode': mode,
                 'native_wss': native_wss}
+    if enabled(arguments.get('lean_images', 0)):
+        if target != 'native' or toolchain not in ('linux', 'mingw') or role != 'client' or not enabled(arguments.get('release', 0)) or enabled(arguments.get('mingwcross', 0)):
+            raise ValueError('lean_images requires a native Linux or MinGW release client')
+        identity['lean_images'] = True
     if china:
         identity['china'] = True
     return identity
@@ -79,6 +83,8 @@ def default_directory(identity):
     if role == 'client' and identity['target'] == 'native' and not identity['native_wss']:
         role += '-tcp'
     path = Path('build') / identity['toolchain'] / role / identity['mode']
+    if identity.get('lean_images'):
+        path /= 'lean-images'
     return path / 'china' if identity.get('china') else path
 
 

@@ -285,6 +285,26 @@ On the first upgrade from an install without that index, PNGs at current shipped
 image paths are replaced when WebP is selected, including artwork from older
 releases. Keep custom image overrides in the user profile so they retain priority.
 
+Windows distributions stage assets and recursively imported DLLs through
+`tools/release/windows_runtime.py`. ZIP, Steam, Epic, Store and NSIS use this
+shared policy; missing non-system imports fail packaging. `scons release=1
+mingw=1 lean_images=1 windows-installer` builds the x64 NSIS installer from that
+same staged tree. It retains the machine installation/shortcuts and legacy
+installation directory lookup, uses solid LZMA, and inventories installed files
+for upgrades and uninstall. Unrelated files and saved games are preserved.
+Compile an existing portable stage with `tools/release/package_nsis.py --stage
+<stage> --version <version> --output <setup.exe>`.
+
+Self-contained Linux/MinGW package builds use `lean_images=1` for a private,
+checksum-pinned PNG/JPEG/WebP SDL_image. Its cache identity includes compilers,
+CMake, codec options, dependency versions and selected library hashes. Linux
+installs its canonical decoder under `lib/glob2` with soname symlinks and an
+executable-relative search path. Windows staging automatically prioritizes the
+private runtime recorded beside its build binary. These builds use a separate
+`lean-images` build directory; ordinary builds and RPM retain system libraries.
+Snap stages the required JPEG/PNG/WebP runtimes; Flatpak builds the same codec
+allowlist directly. PNG/JPEG saving remains enabled for screenshots and maps.
+
 Mac `bundle`/`package` additionally builds a checksum-pinned SDL_image 2.8.12
 with PNG/JPEG/WebP loading and PNG/JPEG saving. The cache identity includes
 compiler, SDK, codec configuration, dependency versions and the actual libraries

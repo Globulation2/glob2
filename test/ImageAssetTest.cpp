@@ -25,6 +25,34 @@ TEST_CASE("WebP decoder preserves exact RGBA including transparent RGB") {
     for(int y=0;y<2;++y) CHECK(std::memcmp(static_cast<char*>(rgba->pixels)+y*rgba->pitch,pixels+y*8,8)==0);
     SDL_FreeSurface(rgba); SDL_FreeSurface(surface);
 }
+#ifndef __EMSCRIPTEN__
+TEST_CASE("Native PNG and JPEG loading and saving remain available") {
+    REQUIRE((IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG) & (IMG_INIT_PNG | IMG_INIT_JPG)) == (IMG_INIT_PNG | IMG_INIT_JPG));
+    glob2test::TempDir scratch("image-save-codecs");
+    auto surface = SDL_CreateRGBSurfaceWithFormat(0, 2, 2, 32, SDL_PIXELFORMAT_RGBA32);
+    REQUIRE(surface != nullptr);
+    for (int y = 0; y < 2; ++y)
+        std::memcpy(static_cast<char*>(surface->pixels) + y * surface->pitch, pixels + y * 8, 8);
+    const auto png = (scratch.path / "image.png").string();
+    const auto jpeg = (scratch.path / "image.jpg").string();
+    REQUIRE(IMG_SavePNG(surface, png.c_str()) == 0);
+    REQUIRE(IMG_SaveJPG(surface, jpeg.c_str(), 100) == 0);
+    SDL_FreeSurface(surface);
+    auto loaded = IMG_Load(png.c_str());
+    REQUIRE(loaded != nullptr);
+    auto rgba = SDL_ConvertSurfaceFormat(loaded, SDL_PIXELFORMAT_RGBA32, 0);
+    REQUIRE(rgba != nullptr);
+    for (int y = 0; y < 2; ++y)
+        CHECK(std::memcmp(static_cast<char*>(rgba->pixels) + y * rgba->pitch, pixels + y * 8, 8) == 0);
+    SDL_FreeSurface(rgba);
+    SDL_FreeSurface(loaded);
+    loaded = IMG_Load(jpeg.c_str());
+    REQUIRE(loaded != nullptr);
+    CHECK(loaded->w == 2);
+    CHECK(loaded->h == 2);
+    SDL_FreeSurface(loaded);
+}
+#endif
 TEST_CASE("Image alternatives preserve directory and original file precedence") {
     glob2test::ToolkitScope toolkit;
     glob2test::TempDir scratch("image-alternatives");

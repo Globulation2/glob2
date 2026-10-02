@@ -172,22 +172,25 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends \
-            g++ python3 python3-venv scons pkg-config libsdl2-dev libsdl2-image-dev \
+            g++ python3 python3-venv scons pkg-config cmake ninja-build libpng-dev libjpeg-dev libwebp-dev libsdl2-dev libsdl2-image-dev \
             libsdl2-net-dev libsdl2-ttf-dev libvorbis-dev libogg-dev \
             libspeex-dev libboost-dev libssl-dev zlib1g-dev libfribidi-dev \
             libpcre3-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
       - name: Build and stage Linux client
         run: |
           stage="$PWD/artifacts/release-stage"
-          scons -j2 release=1 server=0 \
+          scons -j2 release=1 server=0 lean_images=1 \
             BINDIR="$stage/usr/bin" INSTALLDIR="$stage/usr/share" \
             DATADIR=/usr/share install
           python3 tools/release/release.py verify-install --stage "$stage"
-          "$stage/usr/bin/glob2" --version
+          scons -j2 release=1 server=0 lean_images=1 engine-tests
+          LD_LIBRARY_PATH="$stage/usr/lib/glob2" build/linux/client/release/lean-images/test/glob2-engine-tests --test-suite=ImageAssets
+          env -u LD_LIBRARY_PATH "$stage/usr/bin/glob2" --version
+          ldd "$stage/usr/bin/glob2" | grep -F "$stage/usr/bin/../lib/glob2/libSDL2_image"
       - name: Measure original-assets Linux baseline
         run: |
           stage="$PWD/artifacts/size-baseline"
-          scons -j2 release=1 server=0 optimized_assets=0 \
+          scons -j2 release=1 server=0 lean_images=0 optimized_assets=0 \
             BINDIR="$stage/usr/bin" INSTALLDIR="$stage/usr/share" DATADIR=/usr/share install
           mkdir -p artifacts/package-sizes
           tar -C "$stage" -czf artifacts/package-sizes/baseline.tar.gz usr
@@ -343,7 +346,7 @@ jobs:
             mingw-w64-x86_64-speex mingw-w64-x86_64-zlib
             mingw-w64-x86_64-fribidi mingw-w64-x86_64-pcre
             mingw-w64-x86_64-openssl mingw-w64-x86_64-boost
-            mingw-w64-x86_64-libepoxy mingw-w64-x86_64-libsystre
+            mingw-w64-x86_64-libepoxy mingw-w64-x86_64-libsystre mingw-w64-x86_64-cmake mingw-w64-x86_64-ninja mingw-w64-x86_64-nsis
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: ${{ inputs.tag && 'Globulation2/glob2' || github.repository }}
@@ -353,13 +356,19 @@ jobs:
           VERSION: ${{ needs.preflight.outputs.version }}
         run: |
           scons -j2 release=1 mingw=1 server=0 build/mingw/client/release/src/glob2.exe
-          ./build/mingw/client/release/src/glob2.exe --version
+          scons -j2 release=1 mingw=1 server=0 lean_images=1 build/mingw/client/release/lean-images/src/glob2.exe
+          scons -j2 release=1 mingw=1 server=0 lean_images=1 engine-tests
+          ./build/mingw/client/release/lean-images/src/glob2.exe --version
+          image_prefix="$(python3 -c 'import json; print(json.load(open("build/mingw/client/release/lean-images/image-runtime.json"))["prefix"])')"
+          PATH="$(cygpath -u "$image_prefix")/bin:$PATH" ./build/mingw/client/release/lean-images/test/glob2-engine-tests.exe --test-suite=ImageAssets
           python3 tools/release/package_windows.py \
-            build/mingw/client/release/src/glob2.exe \
+            build/mingw/client/release/lean-images/src/glob2.exe \
             "artifacts/release-output/glob2-${VERSION}-windows-x86_64.zip"
           python3 -c 'import sys, zipfile; zipfile.ZipFile(sys.argv[1]).extractall("artifacts/release-smoke")' \
             "artifacts/release-output/glob2-${VERSION}-windows-x86_64.zip"
           ./artifacts/release-smoke/Globulation2/glob2.exe --version
+          python3 tools/release/package_nsis.py --stage artifacts/release-smoke/Globulation2 \
+            --output "artifacts/release-output/glob2-${VERSION}-windows-x86_64-setup.exe" --version "$VERSION"
           python3 tools/release/package_windows.py build/mingw/client/release/src/glob2.exe \
             artifacts/package-sizes/baseline.zip --original-assets
           python3 -c 'import zipfile; zipfile.ZipFile("artifacts/package-sizes/baseline.zip").extractall("artifacts/size-baseline")'
@@ -371,6 +380,27 @@ jobs:
             --output artifacts/package-sizes/candidate.json
           python3 tools/release/package_sizes.py compare artifacts/package-sizes/baseline.json \
             artifacts/package-sizes/candidate.json --output artifacts/package-sizes/comparison.json
+      - name: Validate installer, upgrade, uninstall and isolated DLL loading
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $installer = (Get-ChildItem artifacts/release-output/*-setup.exe).FullName
+          $install = Join-Path $PWD 'artifacts/installer smoke'
+          $process = Start-Process -FilePath $installer -ArgumentList "/S /D=$install" -Wait -PassThru
+          if ($process.ExitCode -ne 0) { throw "Installer failed: $($process.ExitCode)" }
+          $env:PATH = "$env:SystemRoot\System32;$env:SystemRoot"
+          & "$install/glob2.exe" --version
+          if ($LASTEXITCODE -ne 0) { throw 'Installed client could not load its runtime' }
+          New-Item -ItemType Directory -Force "$install/games" | Out-Null
+          Set-Content "$install/games/user.game" 'user save'
+          Set-Content "$install/unrelated.txt" 'user content'
+          Set-Content "$install/obsolete.dll" 'previously shipped'
+          Add-Content "$install/.glob2-owned-files.txt" 'obsolete.dll' -Encoding Unicode
+          $process = Start-Process -FilePath $installer -ArgumentList "/S /D=$install" -Wait -PassThru
+          if ($process.ExitCode -ne 0 -or (Test-Path "$install/obsolete.dll")) { throw 'Upgrade did not remove owned obsolete runtime' }
+          $process = Start-Process -FilePath "$install/glob2win32-uninst.exe" -ArgumentList "/S _?=$install" -Wait -PassThru
+          if ($process.ExitCode -ne 0 -or (Test-Path "$install/glob2.exe")) { throw 'Uninstall failed' }
+          if (!(Test-Path "$install/games/user.game") -or !(Test-Path "$install/unrelated.txt")) { throw 'Uninstall removed user content' }
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: package-sizes-windows
