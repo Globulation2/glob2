@@ -117,3 +117,14 @@ if not env['server']:
     gallery_sources = [strict_objects.get(source, source) for source in source_files if source != 'Glob2.cpp']
     gallery_sources += local.Object('MobileGalleryHarness.o', '#tools/MobileGalleryHarness.cpp')
     local.Alias('mobile-gallery', local.Program('mobile-gallery', gallery_sources))
+
+# Local original-derived skin feasibility comparison; not a release feature.
+if not env['server']:
+    skin_preview = local.Program('skin-preview',
+        local.Object('SkinPreview.o', '#tools/skins/preview.cpp')
+        + ['../libgag/src/libgag.a', '../libusl/src/libusl.a'])
+    local.Alias('skin-preview', skin_preview)
+if not env['server']:
+    local.Alias('skin-game-preview', local.Program('skin-game-preview',
+        [local.Object('SkinGamePreview.o', '#tools/skins/game_preview.cpp')]
+        + client_objects + client_libs))
