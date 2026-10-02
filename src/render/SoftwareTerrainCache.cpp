@@ -25,11 +25,11 @@ void copyRGBA(SDL_Surface *source, SDL_Surface *target, SDL_Rect destination)
 	SDL_SetSurfaceColorMod(source, 255, 255, 255);
 	SDL_SetSurfaceBlendMode(source, SDL_BLENDMODE_NONE);
 	SDL_SetSurfaceAlphaMod(source, 255);
-	const int result = SDL_BlitSurface(source, nullptr, target, &destination);
+	const bool result = SDL_BlitSurface(source, nullptr, target, &destination);
 	SDL_SetSurfaceBlendMode(source, blend);
 	SDL_SetSurfaceAlphaMod(source, alpha);
 	SDL_SetSurfaceColorMod(source, r, g, b);
-	if (result < 0)
+	if (!result)
 		throw std::runtime_error(SDL_GetError());
 }
 // A CPU-only view owns its SDL descriptor, but borrows immutable chunk pixels.
@@ -39,9 +39,8 @@ class OpaqueView final : public GAGCore::DrawableSurface
   public:
 	OpaqueView(SDL_Surface *owner, SDL_Rect rect)
 	{
-		sdlsurface = SDL_CreateSurfaceFrom(
-			static_cast<char *>(owner->pixels) + rect.y * owner->pitch + rect.x * 4, rect.w, rect.h,
-			32, owner->pitch, owner->format);
+		sdlsurface = SDL_CreateSurfaceFrom(rect.w, rect.h, owner->format,
+			static_cast<char *>(owner->pixels) + rect.y * owner->pitch + rect.x * 4, owner->pitch);
 		if (!sdlsurface)
 			throw std::runtime_error(SDL_GetError());
 		opaquePixels = true;

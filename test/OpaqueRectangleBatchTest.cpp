@@ -51,7 +51,7 @@ public:
     static void batchFailures()
     {
         glob2test::ToolkitScope toolkit;
-        auto *gfx = GAGCore::Toolkit::initGraphic(640, 480, 0, "batch failure recovery");
+        auto *gfx = GAGCore::Toolkit::initGraphic(640, 480, GAGCore::GraphicContext::PORTABLEGPU, "batch failure recovery");
         auto backend = std::make_unique<FailingRenderBackend>();
         auto *failure = backend.get();
         gfx->portableRenderer = std::move(backend);
