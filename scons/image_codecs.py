@@ -1,14 +1,13 @@
-"""Pinned SDL_image source and the release PNG/JPEG/WebP codec policy."""
+"""Pinned SDL3_image source and release PNG/JPEG/WebP codec policy."""
 
 import json
-
+from pathlib import Path
 from tool_archives import digest
 
-ARTIFACT = {
-    "url": "https://github.com/libsdl-org/SDL_image/releases/download/release-2.8.12/SDL2_image-2.8.12.tar.gz",
-    "sha256": "393f5efb50536ec13ca4f4affb69cc9966d3c3f969e6c5e701faddf9f9785381",
-}
+SDL_IMAGE = json.loads(Path(__file__).with_name("sdl3-versions.json").read_text())["SDL_image"]
+ARTIFACT = {key: SDL_IMAGE[key] for key in ("url", "sha256")}
 CODECS = (
+    "ANI",
     "AVIF",
     "BMP",
     "GIF",
@@ -27,27 +26,28 @@ CODECS = (
     "XPM",
     "XV",
 )
-DEPENDENCIES = ("SDL2", "libpng", "libjpeg", "libwebp", "libwebpdemux")
+DEPENDENCIES = ("sdl3", "libpng", "libjpeg", "libwebp", "libwebpdemux", "libwebpmux")
 
 
 def lean_options():
     return [
-        "-DSDL2IMAGE_"
+        "-DSDLIMAGE_"
         + name
         + "="
         + ("ON" if name in ("PNG", "JPG", "WEBP") else "OFF")
         for name in CODECS
     ] + [
         "-DBUILD_SHARED_LIBS=ON",
-        "-DSDL2IMAGE_DEPS_SHARED=OFF",
-        "-DSDL2IMAGE_STRICT=ON",
-        "-DSDL2IMAGE_BACKEND_STB=OFF",
-        "-DSDL2IMAGE_BACKEND_IMAGEIO=OFF",
-        "-DSDL2IMAGE_SAMPLES=OFF",
-        "-DSDL2IMAGE_TESTS=OFF",
+        "-DSDLIMAGE_DEPS_SHARED=OFF",
+        "-DSDLIMAGE_STRICT=ON",
+        "-DSDLIMAGE_BACKEND_STB=OFF",
+        "-DSDLIMAGE_BACKEND_IMAGEIO=OFF",
+        "-DSDLIMAGE_SAMPLES=OFF",
+        "-DSDLIMAGE_TESTS=OFF",
         "-DCMAKE_BUILD_TYPE=Release",
-        "-DSDL2IMAGE_PNG_SAVE=ON",
-        "-DSDL2IMAGE_JPG_SAVE=ON",
+        "-DSDLIMAGE_PNG_SAVE=ON",
+        "-DSDLIMAGE_JPG_SAVE=ON",
+        "-DSDLIMAGE_WEBP_SAVE=OFF",
     ]
 
 

@@ -5,7 +5,7 @@
 
 #include <string>
 #include <map>
-#include "SDL_net.h"
+#include <SDL3_net/SDL_net.h>
 #include "LocalTime.h"
 
 ///This class stores and records YOGPlayerStoredInfo for the server

@@ -59,11 +59,12 @@ void ValRefCode::execute(Thread* thread)
 {
 	Thread::Frame::Stack& stack = thread->frames.back().stack;
 	
+	if (stack.empty()) throw Exception(Position(), "Missing script operand");
 	Value* value = stack.back();
 	stack.pop_back();
 	
 	Scope* scope = dynamic_cast<Scope*>(value);
-	assert(scope != 0); // Should not fail if the parser is bug-free
+	if (!scope || index >= scope->locals.size()) throw Exception(Position(), "Invalid script local");
 	
 	stack.push_back(scope->locals[index]);
 }
@@ -78,17 +79,18 @@ void EvalCode::execute(Thread* thread)
 {
 	Thread::Frames& frames = thread->frames;
 	Thread::Frame::Stack& stack = frames.back().stack;
-	assert(stack.size() >= 1);
+	if (stack.empty()) throw Exception(Position(), "Missing script operand");
 	
 	// get the thunk
 	Thunk* thunk = dynamic_cast<Thunk*>(stack.back());
+	if (!thunk) throw Exception(Position(), "Value is not executable");
 	stack.pop_back();
 	
 	if (frames.back().nextInstr == frames.back().thunk->thunkPrototype()->body.size())
 		frames.pop_back();
 	
 	// push a new frame
-	assert(thunk != 0); // TODO: This assert can be triggered by the user
+
 	frames.push_back(thunk);
 }
 
@@ -102,6 +104,7 @@ void SelectCode::execute(Thread* thread)
 	Thread::Frame::Stack& stack = thread->frames.back().stack;
 	
 	// get receiver
+	if (stack.empty() || !stack.back()) throw Exception(Position(), "Missing script receiver");
 	Value* receiver = stack.back();
 	stack.pop_back();
 	
@@ -134,7 +137,7 @@ void ApplyCode::execute(Thread* thread)
 {
 	Thread::Frames& frames = thread->frames;
 	Thread::Frame::Stack& stack = frames.back().stack;
-	assert(stack.size() >= 2);
+	if (stack.size() < 2) throw Exception(Position(), "Missing script operands");
 	
 	// get argument
 	Value* argument = stack.back();
@@ -142,7 +145,7 @@ void ApplyCode::execute(Thread* thread)
 	
 	// get the function
 	Function* function = dynamic_cast<Function*>(stack.back());
-	assert(function != 0); // TODO: This assert can be triggered by the user
+	if (!function) throw Exception(Position(), "Value is not a function");
 	stack.pop_back();
 	
 	if (frames.back().nextInstr == frames.back().thunk->thunkPrototype()->body.size())
@@ -169,9 +172,7 @@ void ValCode::execute(Thread* thread)
 	Thread::Frame::Stack& stack = frame.stack;
 	Scope* scope = dynamic_cast<Scope*>(frame.thunk);
 	
-	assert(stack.size() > 0);
-	assert(scope);
-	assert(scope->locals.size() > index);
+	if (stack.empty() || !scope || index >= scope->locals.size()) throw Exception(Position(), "Invalid script local");
 	
 	scope->locals[index] = stack.back();
 	stack.pop_back();
@@ -187,11 +188,12 @@ void ParentCode::execute(Thread* thread)
 {
 	Thread::Frame::Stack& stack = thread->frames.back().stack;
 	
+	if (stack.empty()) throw Exception(Position(), "Missing script operand");
 	Value* value = stack.back();
 	stack.pop_back();
 	
 	Thunk* thunk = dynamic_cast<Thunk*>(value);
-	assert(thunk != 0); // Should not fail if the parser is bug-free
+	if (!thunk || !thunk->outer) throw Exception(Position(), "Invalid script parent");
 	
 	stack.push_back(thunk->outer);
 }
@@ -199,6 +201,7 @@ void ParentCode::execute(Thread* thread)
 
 void PopCode::execute(Thread* thread)
 {
+	if (thread->frames.back().stack.empty()) throw Exception(Position(), "Missing script operand");
 	thread->frames.back().stack.pop_back();
 }
 
@@ -210,6 +213,7 @@ DupCode::DupCode(size_t index):
 void DupCode::execute(Thread* thread)
 {
 	Thread::Frame::Stack& stack = thread->frames.back().stack;
+	if (index >= stack.size()) throw Exception(Position(), "Invalid script stack index");
 	stack.push_back(*(stack.rbegin() + index));
 }
 
@@ -247,10 +251,11 @@ void CreateCode<ThunkType>::execute(Thread* thread)
 	Thread::Frame::Stack& stack = thread->frames.back().stack;
 	
 	// get receiver
+	if (stack.empty() || !stack.back()) throw Exception(Position(), "Missing script receiver");
 	Value* receiver = stack.back();
 	stack.pop_back();
 	
-	assert(prototype->outer == 0 || prototype->outer == receiver->prototype); // Should not fail if the parser is bug-free
+	if (prototype->outer && prototype->outer != receiver->prototype) throw Exception(Position(), "Invalid script receiver");
 	
 	// create a thunk
 	ThunkType* thunk = new ThunkType(&thread->usl->heap, prototype, receiver);

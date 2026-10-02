@@ -6,7 +6,7 @@
 #include <mutex>
 #include <variant>
 
-#include <SDL_stdinc.h>
+#include <SDL3/SDL_stdinc.h>
 
 #include "sim/ClientEvents.h"
 #include "sim/EntityRef.h"

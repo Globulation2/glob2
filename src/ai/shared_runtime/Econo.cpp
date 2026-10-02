@@ -33,7 +33,7 @@ bool Econo::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMin
 	flag_on_prune=stream->readUint32("flag_on_prune");
 
 	stream->readEnterSection("flags_on_enemy");
-	Uint32 flagsOnEnemySize=stream->readUint32("size");
+	Uint32 flagsOnEnemySize=stream->readCount("size");
 	for(Uint32 flagsOnEnemyIndex=0; flagsOnEnemyIndex<flagsOnEnemySize; ++flagsOnEnemyIndex)
 	{
 		stream->readEnterSection(flagsOnEnemyIndex);

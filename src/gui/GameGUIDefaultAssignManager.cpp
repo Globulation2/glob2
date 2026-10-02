@@ -7,6 +7,7 @@
 #include "IntBuildingType.h"
 #include "GlobalContainer.h"
 #include "Stream.h"
+#include <stdexcept>
 
 GameGUIDefaultAssignManager::GameGUIDefaultAssignManager()
 {
@@ -76,6 +77,7 @@ void GameGUIDefaultAssignManager::load(GAGCore::InputStream* stream, Sint32 vers
 	stream->readEnterSection("GameGUIDefaultAssignManager");
 	stream->readEnterSection("unitCount");
 	Uint32 size = stream->readUint32("size");
+	if (size > globalContainer->buildingsTypes.size()) throw std::runtime_error("Invalid default assignment count");
 	unitCount.clear();
 	for(int i=0; i<(int)size; ++i)
 	{

@@ -124,7 +124,7 @@ namespace GAGCore
 			SDL_Rect dest{x,y,sw,sh};
 			SDL_SetSurfaceBlendMode(surface->sdlsurface, alpha==Color::ALPHA_OPAQUE ? SDL_BLENDMODE_NONE : SDL_BLENDMODE_BLEND);
 			SDL_SetSurfaceAlphaMod(surface->sdlsurface,alpha);
-			SDL_BlitScaled(surface->sdlsurface, &source, sdlsurface, &dest);
+			SDL_BlitSurfaceScaled(surface->sdlsurface, &source, sdlsurface, &dest, SDL_SCALEMODE_NEAREST);
 			SDL_SetSurfaceAlphaMod(surface->sdlsurface,255);
 			markPixelsChanged();
 			return;
@@ -471,7 +471,7 @@ namespace GAGCore
 			for (size_t i2 = 0; i2 < Toolkit::getFileManager()->getDirCount(); i2++)
 			{
 				std::string fullFileName = translationPicturesDirectory + DIR_SEPARATOR_S + "text-" + std::get<1>(*i);
-				if (SDL_SaveBMP(toPrint.sdlsurface, (fullFileName+".bmp").c_str()) == 0)
+				if (SDL_SaveBMP(toPrint.sdlsurface, (fullFileName+".bmp").c_str()))
 				{
 					break;
 				}

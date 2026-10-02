@@ -16,11 +16,13 @@ namespace {
 class Context : public GraphicContext
 {
 public:
-	Context(bool gpu) : GraphicContext(640, 480, gpu ? USEGPU : 0, "Glob2 aspect regression") {}
+	Context(bool gpu, bool fullscreen = false)
+        : GraphicContext(640, 480, (gpu ? USEGPU : 0) | (fullscreen ? FULLSCREEN : 0), "Glob2 aspect regression") {}
 	void resize(int w, int h)
 	{
 		if (windowW == w && windowH == h) return;
 		SDL_SetWindowSize(window, w, h);
+		GLOB2_REQUIRE(SDL_SyncWindow(window), "Window resize must settle before layout assertions");
 		SDL_Delay(100);
 		SDL_PumpEvents();
 		updateWindowSize();
@@ -39,9 +41,9 @@ void require(bool condition, const char* message)
 Color pixel(SDL_Surface* surface, int x, int y)
 {
 	Uint32 value = 0;
-	std::memcpy(&value, static_cast<char*>(surface->pixels) + y*surface->pitch + x*surface->format->BytesPerPixel, surface->format->BytesPerPixel);
+	std::memcpy(&value, static_cast<char*>(surface->pixels) + y*surface->pitch + x*SDL_BYTESPERPIXEL(surface->format), SDL_BYTESPERPIXEL(surface->format));
 	Color color;
-	SDL_GetRGB(value, surface->format, &color.r, &color.g, &color.b);
+	SDL_GetRGB(value, SDL_GetPixelFormatDetails(surface->format), SDL_GetSurfacePalette(surface), &color.r, &color.g, &color.b);
 	return color;
 }
 
@@ -133,7 +135,7 @@ void run(Context& context, bool gpu, int w, int h)
 		for (int row=0; row<dh/2; ++row)
 			for (int col=0; col<dw*4; ++col)
 				std::swap(pixels[row*dw*4+col], pixels[(dh-1-row)*dw*4+col]);
-		frame=SDL_CreateRGBSurfaceWithFormatFrom(pixels.data(), dw, dh, 32, dw*4, SDL_PIXELFORMAT_RGBA32);
+		frame=SDL_CreateSurfaceFrom(dw, dh, SDL_PIXELFORMAT_RGBA32, pixels.data(), dw*4);
 		require(glGetError()==GL_NO_ERROR, "OpenGL reported an error");
 #endif
 	}
@@ -146,19 +148,19 @@ void run(Context& context, bool gpu, int w, int h)
 	const float xScale=frame->w/float(w), yScale=frame->h/float(h);
 	checkBounds(frame, false, 0, 0, frame->w, frame->h);
 	checkBounds(frame, true, std::lround(200*xScale), std::lround(160*yScale), std::lround(80*xScale), std::lround(60*yScale));
-	if (gpu) SDL_FreeSurface(frame);
+	if (gpu) SDL_DestroySurface(frame);
 	// Coordinates are window points; backing density never changes hit testing.
 	for (auto point : {std::pair{20,20}, {240,190}, {w-20,h-20}})
 	{
 		int px=point.first, py=point.second;
-		for (Uint32 type : {SDL_MOUSEMOTION, SDL_MOUSEBUTTONDOWN, SDL_MOUSEBUTTONUP})
+		for (Uint32 type : {SDL_EVENT_MOUSE_MOTION, SDL_EVENT_MOUSE_BUTTON_DOWN, SDL_EVENT_MOUSE_BUTTON_UP})
 		{
 			SDL_Event event{}; event.type=type;
-			if (type==SDL_MOUSEMOTION) { event.motion.x=px; event.motion.y=py; }
+			if (type==SDL_EVENT_MOUSE_MOTION) { event.motion.x=px; event.motion.y=py; }
 			else { event.button.x=px; event.button.y=py; }
 			GraphicContext::translateMouseEvent(&event);
-			int x=type==SDL_MOUSEMOTION ? event.motion.x : event.button.x;
-			int y=type==SDL_MOUSEMOTION ? event.motion.y : event.button.y;
+			int x=type==SDL_EVENT_MOUSE_MOTION ? event.motion.x : event.button.x;
+			int y=type==SDL_EVENT_MOUSE_MOTION ? event.motion.y : event.button.y;
 			require(std::abs(x-point.first)<=2 && std::abs(y-point.second)<=2, "Mouse event misses rendered target");
 		}
 		GraphicContext::translateMouseCoordinates(px, py);
@@ -173,10 +175,30 @@ namespace
 {
 void aspect(bool gpu)
 {
-	Context context(gpu);
-	if (!gpu) checkSoftwareClipping();
-	for (auto size : {std::pair{640, 480}, {1280, 800}, {800, 1280}, {853, 641}, {480, 270}})
-		run(context, gpu, size.first, size.second);
+    // GraphicContext owns the SDL lifetime; finish it before opening another.
+    {
+        Context context(gpu);
+#ifdef HAVE_OPENGL
+        if (gpu) {
+            GLdouble projection[16];
+            glGetDoublev(GL_PROJECTION_MATRIX, projection);
+            CHECK(projection[0] == doctest::Approx(2.0 / context.getW()));
+            CHECK(projection[5] == doctest::Approx(-2.0 / context.getH()));
+        }
+#endif
+        if (!gpu) checkSoftwareClipping();
+        for (auto size : {std::pair{640, 480}, {1280, 800}, {800, 1280}, {853, 641}, {480, 270}})
+            run(context, gpu, size.first, size.second);
+    }
+#ifdef HAVE_OPENGL
+    if (gpu && glob2test::fullscreenEnabled()) {
+        Context fullscreen(true, true);
+        GLdouble projection[16];
+        glGetDoublev(GL_PROJECTION_MATRIX, projection);
+        CHECK(projection[0] == doctest::Approx(2.0 / fullscreen.getW()));
+        CHECK(projection[5] == doctest::Approx(-2.0 / fullscreen.getH()));
+    }
+#endif
 }
 }
 

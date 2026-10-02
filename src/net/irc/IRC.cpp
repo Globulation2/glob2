@@ -29,8 +29,7 @@ std::string errorString;
 
 IRC::IRC()
 {
-	socket = NULL;
-	socketSet = NULL;
+
 	errorString = "error, no such data";
 	usersOnChannelsModified=false;
 }
@@ -44,23 +43,8 @@ bool IRC::connect(const std::string &serverName, int serverPort, const std::stri
 {
 	disconnect();
 	
-	IPaddress ip;
-	socketSet = SDLNet_AllocSocketSet(1);
-	if (SDLNet_ResolveHost(&ip, (char *)serverName.c_str(), serverPort)==-1)
-	{
-		fprintf(stderr, "YOG : ResolveHost: %s\n", SDLNet_GetError());
-		return false;
-	}
-
-	socket = SDLNet_TCP_Open(&ip);
-	if (!socket)
-	{
-		fprintf(stderr, "YOG : TCP_Open: %s\n", SDLNet_GetError());
-		return false;
-	}
-
-	SDLNet_TCP_AddSocket(socketSet, socket);
-	
+    transport = makeNetTransport();
+    transport->open(serverName, serverPort);
 	// Here we change the nick on yog for the IRC
 	// changing from nick = "nick" to YOGnick = "YOGnick"
 	this->nick = "[YOG]" + nick;
@@ -79,16 +63,7 @@ bool IRC::disconnect(void)
 
 void IRC::forceDisconnect(void)
 {
-	if (socket)
-	{
-		SDLNet_TCP_Close(socket);
-		socket = NULL;
-	}
-	if (socketSet)
-	{
-		SDLNet_FreeSocketSet(socketSet);
-		socketSet = NULL;
-	}
+    transport.reset(); pending.clear(); input.clear();
 }
 
 void IRC::interpretIRCMessage(const std::string &message)
@@ -281,40 +256,27 @@ void IRC::interpretIRCMessage(const std::string &message)
 
 void IRC::step(void)
 {
-	if (!socket)
-		return;
-
-	while (1)
-	{
-		int check = SDLNet_CheckSockets(socketSet, 0);
-		if (check == 0)
-		{
-			break;
-		}
-		else if (check == 1)
-		{
-			char data[IRC_MESSAGE_SIZE];
-			bool res=getString(data);
-			if (res)
-			{
-				if (verbose)
-					printf("YOG (IRC) has received [%s]\n", data);
-				interpretIRCMessage(data);
-			}
-			else
-			{
-				printf("YOG (IRC) has received an error\n");
-				break;
-			}
-		}
-		else
-		{
-			printf("YOG (IRC) has a select error\n");
-			break;
-		}
-	}
+    if (!transport) return;
+    if (transport->state() == NetTransport::State::Closed) { forceDisconnect(); return; }
+    if (transport->state() != NetTransport::State::Connected) return;
+    while (!pending.empty()) {
+        const auto &text = pending.front();
+        if (!transport->send(std::vector<uint8_t>(text.begin(), text.end()))) break;
+        pending.pop_front();
+    }
+    std::vector<uint8_t> bytes;
+    while (transport->receive(bytes)) {
+        for (char c : bytes) {
+            if (c == '\n') {
+                if (!input.empty() && input.back() == '\r') input.pop_back();
+                interpretIRCMessage(input); input.clear();
+            } else {
+                if (input.size() >= IRC_MESSAGE_SIZE - 1) { forceDisconnect(); return; }
+                input += c;
+            }
+        }
+    }
 }
-
 
 bool IRC::isChatMessage(void)
 {
@@ -486,61 +448,9 @@ bool IRC::isChannelUserBeenModified(void)
 	return ret;
 }
 
-bool IRC::getString(char data[IRC_MESSAGE_SIZE])
-{
-	if (socket)
-	{
-		int i;
-		int value;
-		char c;
-
-		i=0;
-		while ( (  (value=SDLNet_TCP_Recv(socket, &c, 1)) >0) && (i<IRC_MESSAGE_SIZE-1))
-		{
-			if (c=='\r')
-			{
-				value=SDLNet_TCP_Recv(socket, &c, 1);
-				if (value<=0)
-					return false;
-				else if (c=='\n')
-					break;
-				else
-					return false;
-			}
-			else
-			{
-				data[i]=c;
-			}
-			i++;
-		}
-		data[i]=0;
-		if (value<=0)
-			return false;
-		else
-			return true;
-	}
-	else
-	{
-		return false;
-	}
-}
-
 bool IRC::sendString(const std::string &data)
 {
-	if (socket)
-	{
-		char ircMsg[IRC_MESSAGE_SIZE];
-		snprintf(ircMsg, IRC_MESSAGE_SIZE-1, "%s", data.c_str());
-		ircMsg[IRC_MESSAGE_SIZE-1] = 0;
-		int len=strlen(ircMsg);
-		ircMsg[len]='\r';
-		ircMsg[len+1]='\n';
-		len+=2;
-		int result=SDLNet_TCP_Send(socket, ircMsg, len);
-		return (result==len);
-	}
-	else
-	{
-		return false;
-	}
+    if (!transport || data.size() > IRC_MESSAGE_SIZE - 3 || pending.size() >= 256) return false;
+    pending.push_back(data + "\r\n");
+    return true;
 }

@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include <SDL_stdinc.h>
+#include <SDL3/SDL_stdinc.h>
 
 /// Ally team numbers in GameHeader are 1-based (its constructor assigns
 /// team i the value i+1), while the ally-team widget rows are 0-based and

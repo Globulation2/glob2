@@ -18,7 +18,7 @@
 #include "Building.h"
 #include "BinaryStream.h"
 #include "StreamBackend.h"
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <algorithm>
 #include <charconv>
 #include <chrono>

@@ -108,19 +108,19 @@ def configure(env, server_only, relay=False):
         missing.append("CXX compiler")
 
     #Simple checks for required libraries
-    if not server_only and not conf.CheckLib("SDL2"):
-        print("Could not find libSDL2")
-        missing.append("SDL2")
-    if not server_only and not conf.CheckLib("SDL2_ttf"):
+    if not server_only and not conf.CheckLib("SDL3"):
+        print("Could not find libSDL3")
+        missing.append("SDL3")
+    if not server_only and not conf.CheckLib("SDL3_ttf"):
         print("Could not find libSDL_ttf")
-        missing.append("SDL2_ttf")
-    if not server_only and not conf.CheckLib("SDL2_image"):
-        print("Could not find libSDL2_image")
-        missing.append("SDL2_image")
+        missing.append("SDL3_ttf")
+    if not server_only and not conf.CheckLib("SDL3_image"):
+        print("Could not find libSDL3_image")
+        missing.append("SDL3_image")
     # The relay links no SDL library; it only needs SDL's headers for libgag's types.
-    if not relay and not conf.CheckLib("SDL2_net"):
-        print("Could not find libSDL2_net")
-        missing.append("SDL2_net")
+    if not relay and not conf.CheckLib("SDL3_net"):
+        print("Could not find libSDL3_net")
+        missing.append("SDL3_net")
     if not server_only and (not conf.CheckLib("speex") or not conf.CheckCXXHeader("speex/speex.h")):
         print("Could not find libspeex or could not find 'speex/speex.h'")
         missing.append("speex")
@@ -161,15 +161,14 @@ def configure(env, server_only, relay=False):
     if not env["wss"]:
         print("Native multiplayer requires WSS; wss=0 is no longer supported")
         Exit(1)
-    if True:
-        if not conf.CheckCXXHeader("openssl/ssl.h") or not conf.CheckLib("ssl") or not conf.CheckLib("crypto"):
-            missing.append("OpenSSL development headers and libraries")
-        env.Append(LIBS=["ssl", "crypto"])
-        # Boost.Beast and Boost.Asio (header-only) implement the WebSocket and TLS
-        # transport; nothing else in the game uses Boost.
-        if not conf.CheckCXXHeader("boost/beast/websocket.hpp") or not conf.CheckCXXHeader("boost/asio/ssl.hpp"):
-            missing.append("Boost.Beast and Boost.Asio headers")
-        configfile.add("GLOB2_NATIVE_WSS", "Defined when native secure WebSocket support is compiled")
+    if not conf.CheckCXXHeader("openssl/ssl.h") or not conf.CheckLib("ssl") or not conf.CheckLib("crypto"):
+        missing.append("OpenSSL development headers and libraries")
+    env.Append(LIBS=["ssl", "crypto"])
+    # Boost.Beast and Boost.Asio (header-only) implement the WebSocket and TLS
+    # transport; nothing else in the game uses Boost.
+    if not conf.CheckCXXHeader("boost/beast/websocket.hpp") or not conf.CheckCXXHeader("boost/asio/ssl.hpp"):
+        missing.append("Boost.Beast and Boost.Asio headers")
+    configfile.add("GLOB2_NATIVE_WSS", "Defined when native secure WebSocket support is compiled")
     if env["mingw"] or env["mingwcross"] or isWindowsPlatform:
         env.Append(LIBS=["ws2_32", "mswsock", "crypt32"])
     elif sys.platform == 'darwin':
@@ -391,6 +390,26 @@ def main():
         env.Append(LIBPATH=[crossroot_abs + '/lib'])
         env.Append(CPPPATH=[crossroot_abs + '/include'])
 
+    # Optional isolated dependency prefix, shared by native CI and local builds.
+    sdl_prefix = os.environ.get('GLOB2_SDL3_PREFIX')
+    if sdl_prefix:
+        sdl_prefix = str(Path(sdl_prefix).resolve())
+        env.Prepend(CPPPATH=[sdl_prefix + '/include'], LIBPATH=[sdl_prefix + '/lib'])
+        env['ENV']['PKG_CONFIG_PATH'] = sdl_prefix + '/lib/pkgconfig' + os.pathsep + os.environ.get('PKG_CONFIG_PATH', '')
+        env.Append(RPATH=[sdl_prefix + '/lib'])
+        env['ENV']['PATH'] = sdl_prefix + '/bin' + os.pathsep + env['ENV'].get('PATH', '')
+        if not isDarwinPlatform and not isWindowsPlatform and not env['mingw'] and not env['mingwcross']:
+            # RPATH entries undergo another SCons expansion; protect the linker
+            # flag directly so the loader receives a literal $ORIGIN.
+            env.Append(LINKFLAGS=[env.Literal("-Wl,-rpath,$ORIGIN/../lib/glob2")])
+            runtime = env.Install(str(Path(env['BINDIR']).parent / 'lib/glob2'),
+                                  [path for path in Path(sdl_prefix, 'lib').glob('libSDL3*.so*')
+                                   if not (identity.get('lean_images') and path.name.startswith('libSDL3_image'))])
+            env.Alias('install', runtime)
+            for license in Path(sdl_prefix, 'share/licenses').glob('SDL3*/LICENSE.txt'):
+                notices = env.Install(str(Path(env['INSTALLDIR']) / 'glob2/licenses' / license.parent.name), str(license))
+                env.Alias('install', notices)
+
     server_only = False
     if env['server']:
         env.Append(CPPDEFINES=["YOG_SERVER_ONLY"])
@@ -403,13 +422,19 @@ def main():
     if isDarwinPlatform and env['release'] and not server_only and any(
             target in COMMAND_LINE_TARGETS for target in ('bundle', 'package')) and not GetOption('clean') and not GetOption('no_exec'):
         from mac_image_dependency import ensure
-        image_prefix = ensure(Path.cwd(), jobs=2)
-        env.Prepend(LIBPATH=[str(image_prefix/'lib')], CPPPATH=[str(image_prefix/'include/SDL2')])
+        image_environment = dict(os.environ)
+        image_environment.update(env["ENV"])
+        if sdl_prefix:
+            image_environment["GLOB2_SDL3_PREFIX"] = sdl_prefix
+        image_prefix = ensure(Path.cwd(), jobs=2, environment=image_environment)
+        env.Prepend(LIBPATH=[str(image_prefix/'lib')], CPPPATH=[str(image_prefix/'include')])
         env['LEAN_IMAGE_PREFIX'] = str(image_prefix)
     if identity.get('lean_images') and not GetOption('clean') and not GetOption('no_exec'):
         from native_image_dependency import ensure
-        image_prefix = ensure(Path.cwd(), cc=str(env['CC']), cxx=str(env['CXX']), jobs=2)
-        env.Prepend(LIBPATH=[str(image_prefix/'lib')], CPPPATH=[str(image_prefix/'include/SDL2')])
+        image_environment = dict(os.environ)
+        image_environment.update(env['ENV'])
+        image_prefix = ensure(Path.cwd(), cc=str(env['CC']), cxx=str(env['CXX']), jobs=2, environment=image_environment)
+        env.Prepend(LIBPATH=[str(image_prefix/'lib')], CPPPATH=[str(image_prefix/'include/SDL3')])
         env['LEAN_IMAGE_PREFIX'] = str(image_prefix)
         from build_layout import write_if_changed
         import json
@@ -429,9 +454,9 @@ def main():
         env.Append(CCFLAGS=' -ftrivial-auto-var-init=' + _detinit)
     env.Append(LINKFLAGS=["-Wall"])
     if not relay:
-        env.Append(LIBS=['SDL2_net'])
+        env.Append(LIBS=['SDL3_net'])
     if not server_only:
-        env.Append(LIBS=['vorbisfile', 'SDL2_ttf', 'SDL2_image', 'speex'])
+        env.Append(LIBS=['vorbisfile', 'SDL3_ttf', 'SDL3_image', 'speex'])
 
     if env['release']:
         env.Append(CXXFLAGS=["-O3"])
@@ -450,11 +475,11 @@ def main():
         # TODO: Remove unneccessary dependencies for server.
         env.Append(LIBS=['vorbis', 'ogg', 'wsock32', 'winmm'])
         env.Append(LINKFLAGS=['-mwindows'])
-        env.ParseConfig("pkg-config sdl2 --cflags --libs")
+        env.ParseConfig("pkg-config sdl3 --cflags --libs")
     elif relay:
-        env.ParseConfig("pkg-config sdl2 --cflags")
+        env.ParseConfig("pkg-config sdl3 --cflags")
     else:
-        env.ParseConfig("pkg-config sdl2 --cflags --libs")
+        env.ParseConfig("pkg-config sdl3 --cflags --libs")
     
     
     env["TARFILE"] = env.Dir("#").abspath + "/glob2-" + env["VERSION"] + ".tar.gz"

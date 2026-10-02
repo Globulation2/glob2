@@ -23,6 +23,7 @@
 // profiling sessions, not a regression check (see MapGeneratorGoldenTest and its --sweep and
 // --performance modes for that).
 #define SDL_MAIN_HANDLED
+#include <SDL3/SDL_main.h>
 #include "Game.h"
 #include <cstdint>
 #include "GenerationService.h"

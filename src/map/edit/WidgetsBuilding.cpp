@@ -9,7 +9,7 @@
 #include "TeamDisplay.h"
 #include <sstream>
 #include "Unit.h"
-#include "SDLCompat.h"
+#include <SDL3/SDL.h>
 
 BuildingInfoTitle::BuildingInfoTitle(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, Building* building)
 	: MapEditorWidget(me, area, group, name, action), building(building)

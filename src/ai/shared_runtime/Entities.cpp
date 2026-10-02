@@ -2,6 +2,7 @@
 // Copyright (C) 2006 Bradley Arsenault
 
 #include "shared_runtime/Runtime.h"
+#include <memory>
 
 using namespace AISharedRuntime;
 using namespace AISharedRuntime::Gradients;
@@ -9,24 +10,26 @@ using namespace AISharedRuntime::Gradients;
 
 Entities::Entity* Entities::Entity::load_entity(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
+	GAGCore::InputStream::NestedRead nesting(*stream);
 	stream->readEnterSection("Entity");
-	EntityType type = static_cast<EntityType>(stream->readUint32("type"));
-	Entity* entity = NULL;
+	const Uint32 type=stream->readUint32("type");
+	std::unique_ptr<Entity> entity;
 	switch(type)
 	{
-		case Entities::EBuilding:        entity = new Entities::Building; break;
-		case Entities::EAnyTeamBuilding: entity = new Entities::AnyTeamBuilding; break;
-		case Entities::EAnyBuilding:     entity = new Entities::AnyBuilding; break;
-		case Entities::EResource:       entity = new Entities::Resource; break;
-		case Entities::EAnyResource:    entity = new Entities::AnyResource; break;
-		case Entities::EWater:           entity = new Entities::Water; break;
-		case Entities::EPosition:        entity = new Entities::Position; break;
-		case Entities::ESand:            entity = new Entities::Sand; break;
+		case Entities::EBuilding:        entity.reset(new Entities::Building); break;
+		case Entities::EAnyTeamBuilding: entity.reset(new Entities::AnyTeamBuilding); break;
+		case Entities::EAnyBuilding:     entity.reset(new Entities::AnyBuilding); break;
+		case Entities::EResource:       entity.reset(new Entities::Resource); break;
+		case Entities::EAnyResource:    entity.reset(new Entities::AnyResource); break;
+		case Entities::EWater:           entity.reset(new Entities::Water); break;
+		case Entities::EPosition:        entity.reset(new Entities::Position); break;
+		case Entities::ESand:            entity.reset(new Entities::Sand); break;
 	};
 	if(entity)
-		entity->load(stream, player, versionMinor);
+		if (!entity->load(stream, player, versionMinor)) throw std::runtime_error("Invalid saved AI object");
 	stream->readLeaveSection();
-	return entity;
+	if (!entity) throw std::runtime_error("Unknown saved AI object type");
+	return entity.release();
 }
 
 

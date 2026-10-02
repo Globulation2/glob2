@@ -12,7 +12,7 @@
 #include "Unit.h"
 #include "render/UnitAnimation.h"
 #include "UnitType.h"
-#include "SDLCompat.h"
+#include <SDL3/SDL.h>
 
 UnitInfoTitle::UnitInfoTitle(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, Unit* unit)
 	: MapEditorWidget(me, area, group, name, action), unit(unit)

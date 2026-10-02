@@ -15,7 +15,7 @@
 
 ARG NODE_IMAGE=node:22-bookworm-slim
 ARG UBUNTU_IMAGE=ubuntu:24.04
-ARG CADDY_IMAGE=caddy:2.10.2-alpine
+ARG CADDY_IMAGE=caddy:2.11.4-alpine
 
 # ---------------------------------------------------------------- C++ build
 
@@ -26,9 +26,10 @@ COPY . /
 
 FROM ${UBUNTU_IMAGE} AS cpp-deps
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates g++ git python3 scons pkg-config libsdl2-dev libsdl2-net-dev \
-    libboost-dev libssl-dev zlib1g-dev libpcre3-dev libsdl2-ttf-dev libsdl2-image-dev \
-    libvorbis-dev libogg-dev libspeex-dev libfribidi-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev \
+    ca-certificates git g++ make python3 scons pkg-config cmake libfreetype-dev libvorbis-dev libogg-dev libspeex-dev \
+    libboost-dev libssl-dev zlib1g-dev \
+    libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxfixes-dev libxss-dev libxtst-dev \
+    libfribidi-dev libpcre3-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev \
     && rm -rf /var/lib/apt/lists/*
 COPY deploy/source-identity.sh /usr/local/bin/source-identity
 WORKDIR /source
@@ -41,15 +42,24 @@ RUN source-identity
 FROM cpp-base AS build
 ARG JOBS=4
 ARG TARGETARCH
-RUN --mount=type=cache,id=glob2-server-build-${TARGETARCH},target=/source/build,sharing=locked scons role=server release=1 -j${JOBS} && \
+ENV GLOB2_SDL3_PREFIX=/source/build/sdl3/prefix
+RUN --mount=type=cache,id=glob2-server-build-${TARGETARCH},target=/source/build,sharing=locked \
+    python3 scons/sdl3_dependencies.py --prefix "$GLOB2_SDL3_PREFIX" --work /source/build/sdl3/sources --jobs ${JOBS} && \
+    scons role=server release=1 -j${JOBS} && \
     scons role=router release=1 -j${JOBS} && \
     mkdir -p /output && \
-    cp build/linux/server/release/src/glob2-server build/linux/router/release/src/glob2-router /output/
+    cp build/linux/server/release/src/glob2-server build/linux/router/release/src/glob2-router /output/ && \
+    cp -a build/sdl3/prefix/lib/libSDL3* /output/ && \
+    cp -a build/sdl3/prefix/share/licenses /output/licenses
 
 FROM cpp-base AS relay-build
 ARG JOBS=4
 ARG TARGETARCH
+# The relay links no SDL library but compiles against SDL3's headers (libgag
+# types), so it builds the same pinned SDL3 prefix as the other C++ targets.
+ENV GLOB2_SDL3_PREFIX=/source/build/sdl3/prefix
 RUN --mount=type=cache,id=glob2-relay-build-${TARGETARCH},target=/source/build,sharing=locked \
+    python3 scons/sdl3_dependencies.py --prefix "$GLOB2_SDL3_PREFIX" --work /source/build/sdl3/sources --jobs ${JOBS} && \
     scons role=relay release=1 -j${JOBS} build/linux/relay/release/src/glob2-relay && \
     mkdir -p /output && cp build/linux/relay/release/src/glob2-relay /output/ && \
     strip /output/glob2-relay
@@ -69,10 +79,16 @@ ARG GLOB2_SIM_VERSION=
 COPY --from=engine-source / /source
 COPY deploy/sim_version.py /usr/local/bin/glob2-sim-version
 RUN source-identity
+# Like the legacy server image: the pinned SDL3 family is built into a prefix
+# and shipped next to the binary, which finds it through $ORIGIN/../lib/glob2.
+ENV GLOB2_SDL3_PREFIX=/source/build/sdl3/prefix
 RUN --mount=type=cache,id=glob2-engine-build-${TARGETARCH},target=/source/build,sharing=locked \
+    python3 scons/sdl3_dependencies.py --prefix "$GLOB2_SDL3_PREFIX" --work /source/build/sdl3/sources --jobs ${JOBS} && \
     scons release=1 server=0 -j${JOBS} build/linux/client/release/src/glob2 && \
-    mkdir -p /output/bin /output/share && \
+    mkdir -p /output/bin /output/lib/glob2 /output/share && \
     cp build/linux/client/release/src/glob2 /output/bin/ && strip /output/bin/glob2 && \
+    cp -a build/sdl3/prefix/lib/libSDL3* /output/lib/glob2/ && \
+    cp -a build/sdl3/prefix/share/licenses /output/licenses && \
     cp -r data maps campaigns scripts /output/share/ && \
     find /output/share -name SConscript -delete && \
     python3 /usr/local/bin/glob2-sim-version /source --expect "${GLOB2_SIM_VERSION}" > /output/sim-version && \
@@ -153,8 +169,7 @@ FROM ${NODE_IMAGE} AS node-binary
 FROM ${UBUNTU_IMAGE} AS engine-agent
 ARG GLOB2_SIM_VERSION=
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates \
-    libsdl2-2.0-0 libsdl2-image-2.0-0 libsdl2-net-2.0-0 libsdl2-ttf-2.0-0 \
-    libvorbisfile3 libvorbis0a libogg0 libspeex1 libfribidi0 libpcre3 libepoxy0 \
+    libfreetype6 libvorbisfile3 libvorbis0a libogg0 libspeex1 libfribidi0 libpcre3 libepoxy0 \
     libgl1 libglu1-mesa libssl3t64 zlib1g \
     && rm -rf /var/lib/apt/lists/* \
     && groupadd --gid 10001 glob2 && useradd --uid 10001 --gid 10001 --no-create-home --home-dir /nonexistent glob2 \
@@ -162,6 +177,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
 COPY --from=node-binary /usr/local/bin/node /usr/local/bin/node
 COPY --from=platform-runtime-deps /app/platform /app/platform
 COPY --from=engine-build /output/bin/glob2 /opt/glob2/bin/glob2
+COPY --from=engine-build /output/lib/glob2 /opt/glob2/lib/glob2
+COPY --from=engine-build /output/licenses /usr/local/share/licenses
 COPY --from=engine-build /output/share /opt/glob2/share
 COPY --from=engine-build /output/sim-version /output/sim-data-hash /opt/glob2/
 COPY deploy/engine-agent-entrypoint.sh /usr/local/bin/glob2-engine-agent-entrypoint
@@ -189,12 +206,15 @@ COPY --from=web-build /app/platform/apps/web/dist /srv/web
 
 FROM ${UBUNTU_IMAGE} AS server
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates python3 libsdl2-2.0-0 libsdl2-net-2.0-0 libssl3t64 libpcre3 zlib1g \
+    ca-certificates python3 libssl3t64 zlib1g libfreetype6 libvorbisfile3 libspeex1 \
+    libfribidi0 libpcre3 libepoxy0 \
     && rm -rf /var/lib/apt/lists/* \
     && useradd --uid 10001 --create-home glob2 \
     && mkdir -p /var/lib/glob2 && chown glob2:glob2 /var/lib/glob2
 COPY --from=build /output/glob2-server /usr/local/bin/
 COPY --from=build /output/glob2-router /usr/local/bin/
+COPY --from=build /output/libSDL3* /usr/local/lib/glob2/
+COPY --from=build /output/licenses /usr/local/share/licenses
 COPY data /opt/glob2/data
 COPY deploy/healthcheck.py /usr/local/bin/glob2-healthcheck
 ENV GLOB2_USER_DATA_DIR=/var/lib/glob2

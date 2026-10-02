@@ -118,7 +118,7 @@ bool GradientInfo::load(GAGCore::InputStream *stream, Player *player, Sint32 ver
 	stream->readEnterSection("GradientInfo");
 
 	stream->readEnterSection("sources");
-	int size=stream->readUint32("size");
+	int size=stream->readCount("size");
 	sources.resize(size);
 	for(int n=0; n<size; ++n)
 	{
@@ -129,7 +129,7 @@ bool GradientInfo::load(GAGCore::InputStream *stream, Player *player, Sint32 ver
 	stream->readLeaveSection();
 
 	stream->readEnterSection("obstacles");
-	size=stream->readUint32("size");
+	size=stream->readCount("size");
 	obstacles.resize(size);
 	for(int n=0; n<size; ++n)
 	{
@@ -410,7 +410,7 @@ bool GradientManager::load(GAGCore::InputStream* stream,Player* player,Sint32 ve
 	stream->readEnterSection("GradientManager");
 	timer=stream->readSint32("timer");
 	cur_update=stream->readUint32("curUpdate");
-	const Uint32 count=stream->readUint32("count");
+	const Uint32 count=stream->readCount("count");
 	stream->readEnterSection("gradients");
 	for(Uint32 i=0;i<count;++i)
 	{
@@ -421,7 +421,7 @@ bool GradientManager::load(GAGCore::InputStream* stream,Player* player,Sint32 ve
 		auto g=std::make_shared<Gradient>(info);
 		ticks_since_update.push_back(stream->readSint32("age"));
 		g->width=stream->readSint32("width");
-		const Uint32 size=stream->readUint32("size");
+		const Uint32 size=stream->readCount("size");
 		// A queued gradient can be uncomputed; materialized fields must match
 		// the loaded map. Values use explicit endian-safe signed 16-bit IO.
 		if(size ? (size!=Uint32(map->getW()*map->getH()) || g->width!=map->getW()) : g->width!=0)
@@ -434,7 +434,7 @@ bool GradientManager::load(GAGCore::InputStream* stream,Player* player,Sint32 ve
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
-	const Uint32 queued=stream->readUint32("queuedCount");
+	const Uint32 queued=stream->readCount("queuedCount");
 	stream->readEnterSection("queued");
 	for(Uint32 i=0;i<queued;++i)
 	{

@@ -112,7 +112,7 @@ void SettingsScreen::measureRows()
 				return;
 			if (auto *node = host().find(key))
 				target = {node->bounds.x, node->bounds.y, node->bounds.w, node->bounds.h};
-			else if (SDL_getenv("GLOB2_UI_DEBUG"))
+			else if (SDL_getenv_unsafe("GLOB2_UI_DEBUG"))
 				std::fprintf(stderr, "settings: no element for row %s\n", key.c_str());
 		};
 		assign(row.id, row.control);
@@ -319,15 +319,15 @@ void SettingsScreen::onEscape()
 // Shortcut capture must see raw keys before the framework interprets them.
 bool SettingsScreen::interceptEvent(const SDL_Event &event)
 {
-	if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_FOCUS_LOST)
+	if ((event.type >= SDL_EVENT_WINDOW_FIRST && event.type <= SDL_EVENT_WINDOW_LAST) && event.type == SDL_EVENT_WINDOW_FOCUS_LOST)
 	{
 		finishInteraction();
 		captureKey = -1;
 		return false;
 	}
-	if (modal != Modal::Binding || captureKey < 0 || event.type != SDL_KEYDOWN)
+	if (modal != Modal::Binding || captureKey < 0 || event.type != SDL_EVENT_KEY_DOWN)
 		return false;
-	const SDL_Keycode key = event.key.keysym.sym;
+	const SDL_Keycode key = event.key.key;
 	if (key == SDLK_ESCAPE)
 	{
 		captureKey = -1;
@@ -337,7 +337,7 @@ bool SettingsScreen::interceptEvent(const SDL_Event &event)
 	if (key == SDLK_LSHIFT || key == SDLK_RSHIFT || key == SDLK_LCTRL || key == SDLK_RCTRL || key == SDLK_LALT ||
 		key == SDLK_RALT || key == SDLK_LGUI || key == SDLK_RGUI)
 		return true;
-	bindingKeys[std::size_t(captureKey)] = KeyPress(event.key.keysym, bindingKeys[std::size_t(captureKey)].getPressed());
+	bindingKeys[std::size_t(captureKey)] = KeyPress(event.key, bindingKeys[std::size_t(captureKey)].getPressed());
 	captureKey = -1;
 	invalidate();
 	return true;

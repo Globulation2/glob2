@@ -145,24 +145,24 @@ MapPreviewGeometry::Rect MapPreview::worldArea()
 void MapPreview::cancelDrag()
 {
 	if (dragging)
-		SDL_CaptureMouse(SDL_FALSE);
+		SDL_CaptureMouse(false);
 	dragging = false;
 }
 bool MapPreview::handlePreviewEvent(SDL_Event *e)
 {
-	if (e->type == SDL_WINDOWEVENT && (e->window.event == SDL_WINDOWEVENT_FOCUS_LOST ||
-									   e->window.event == SDL_WINDOWEVENT_SIZE_CHANGED))
+	if ((e->type >= SDL_EVENT_WINDOW_FIRST && e->type <= SDL_EVENT_WINDOW_LAST) && (e->type == SDL_EVENT_WINDOW_FOCUS_LOST ||
+									   e->type == SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED))
 	{
 		cancelDrag();
 		return false;
 	}
-	if (e->type == SDL_MOUSEBUTTONUP && e->button.button == SDL_BUTTON_LEFT)
+	if (e->type == SDL_EVENT_MOUSE_BUTTON_UP && e->button.button == SDL_BUTTON_LEFT)
 	{
 		bool was = dragging;
 		cancelDrag();
 		return was;
 	}
-	if (e->type == SDL_MOUSEMOTION)
+	if (e->type == SDL_EVENT_MOUSE_MOTION)
 	{
 		if (dragging && !(e->motion.state & SDL_BUTTON_LMASK))
 			cancelDrag();
@@ -172,7 +172,7 @@ bool MapPreview::handlePreviewEvent(SDL_Event *e)
 		mouseY = e->motion.y;
 		return dragging;
 	}
-	if (e->type == SDL_MOUSEWHEEL && thumbnail.isLoaded() && inside(mapArea(), mouseX, mouseY))
+	if (e->type == SDL_EVENT_MOUSE_WHEEL && thumbnail.isLoaded() && inside(mapArea(), mouseX, mouseY))
 	{
 		const auto before = worldArea();
 		const double mapX = double(mouseX - before.x) / before.w - view.offsetX;
@@ -184,7 +184,7 @@ bool MapPreview::handlePreviewEvent(SDL_Event *e)
 		view.offsetY = MapPreviewGeometry::wrap(double(mouseY - after.y) / after.h - mapY);
 		return true;
 	}
-	if (e->type != SDL_MOUSEBUTTONDOWN || !inside(box(), e->button.x, e->button.y))
+	if (e->type != SDL_EVENT_MOUSE_BUTTON_DOWN || !inside(box(), e->button.x, e->button.y))
 		return false;
 	if (e->button.button == SDL_BUTTON_LEFT && state == State::Failed && retry)
 	{
@@ -204,7 +204,7 @@ bool MapPreview::handlePreviewEvent(SDL_Event *e)
 		dragging = true;
 		mouseX = e->button.x;
 		mouseY = e->button.y;
-		SDL_CaptureMouse(SDL_TRUE);
+		SDL_CaptureMouse(true);
 		return true;
 	}
 	return false;
@@ -255,8 +255,8 @@ void MapPreview::paint(DrawableSurface *target)
 				{
 					SDL_Rect destination{area.x - visible.x + dx + xx * area.w,
 										 area.y - visible.y + dy + yy * area.h, area.w, area.h};
-					SDL_BlitScaled(surface->getSDLSurface(), nullptr, raster->getSDLSurface(),
-								   &destination);
+					SDL_BlitSurfaceScaled(surface->getSDLSurface(), nullptr, raster->getSDLSurface(),
+								   &destination, SDL_SCALEMODE_NEAREST);
 				}
 		}
 		target->drawSurface(visible.x, visible.y, raster);
@@ -283,8 +283,8 @@ void MapPreview::paint(DrawableSurface *target)
 							MapPreviewGeometry::fit({0, 0, visible.w, visible.h},
 													previousFrame->getW(), previousFrame->getH());
 						SDL_Rect destination{fitted.x, fitted.y, fitted.w, fitted.h};
-						SDL_BlitScaled(previousFrame->getSDLSurface(), nullptr,
-									   frame->getSDLSurface(), &destination);
+						SDL_BlitSurfaceScaled(previousFrame->getSDLSurface(), nullptr,
+									   frame->getSDLSurface(), &destination, SDL_SCALEMODE_NEAREST);
 					}
 					previousFrame = std::move(frame);
 				}

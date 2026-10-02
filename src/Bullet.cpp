@@ -6,6 +6,7 @@
 #include "Team.h"
 #include <BinaryStream.h>
 #include <stdexcept>
+#include <limits>
 #include <assert.h>
 #include <Stream.h>
 
@@ -51,6 +52,15 @@ bool Bullet::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	revealY = stream->readSint32("revealY");
 	revealW = stream->readSint32("revealW");
 	revealH = stream->readSint32("revealH");
+	const auto endpointX = int64_t(px) + int64_t(speedX) * ticksLeft;
+	const auto endpointY = int64_t(py) + int64_t(speedY) * ticksLeft;
+	if (ticksLeft < 0 || ticksInitial < ticksLeft || shootDamage < 0 ||
+		endpointX < std::numeric_limits<Sint32>::min() || endpointX > std::numeric_limits<Sint32>::max() ||
+		endpointY < std::numeric_limits<Sint32>::min() || endpointY > std::numeric_limits<Sint32>::max() ||
+		revealW < 0 || revealW > 32767 || revealH < 0 || revealH > 32767 ||
+		int64_t(revealX)+revealW > std::numeric_limits<Sint32>::max() ||
+		int64_t(revealY)+revealH > std::numeric_limits<Sint32>::max())
+		throw std::runtime_error("Invalid saved bullet trajectory");
 	sourceTeam = -1;
 	if (versionMinor >= FILE_FORMAT_VERSION_GAMEPLAY_STATS)
 	{

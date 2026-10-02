@@ -71,8 +71,9 @@ jobs:
           install: >-
             git mingw-w64-x86_64-toolchain mingw-w64-x86_64-pkgconf
             mingw-w64-x86_64-python mingw-w64-x86_64-scons
-            mingw-w64-x86_64-SDL2 mingw-w64-x86_64-SDL2_image
-            mingw-w64-x86_64-SDL2_net mingw-w64-x86_64-SDL2_ttf
+            mingw-w64-x86_64-cmake
+            mingw-w64-x86_64-freetype
+            mingw-w64-x86_64-libpng mingw-w64-x86_64-libjpeg-turbo
             mingw-w64-x86_64-libvorbis mingw-w64-x86_64-libogg
             mingw-w64-x86_64-speex mingw-w64-x86_64-zlib
             mingw-w64-x86_64-fribidi mingw-w64-x86_64-pcre
@@ -85,7 +86,10 @@ jobs:
           persist-credentials: false
       - name: Build and stage Epic install directory
         run: |
-          scons -j$(nproc) release=1 mingw=1 server=0 lean_images=1 build/mingw/client/release/lean-images/src/glob2.exe
+          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+          echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
+          export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j$(nproc) release=1 mingw=1 server=0 lean_images=1 build/mingw/client/release/lean-images/src/glob2.exe
           python3 tools/release/package_windows.py \
             build/mingw/client/release/lean-images/src/glob2.exe \
             --stage-dir artifacts/epic/windows \
