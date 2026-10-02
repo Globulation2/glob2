@@ -158,6 +158,16 @@ with `scons official_instance=https://example.org`. Every build path passes it t
 the client as `GLOB2_OFFICIAL_INSTANCE_ORIGIN`, and the Android and iOS packaging
 scripts derive the App Link host and associated domain from it.
 
+When the official instance moves, the origin it leaves goes into `FORMER_ORIGINS`
+there (`https://glob2online.com` became the public website when the app moved to
+`app.glob2online.com`). The client then reads a stored selection of a former
+origin as the official one (`Online::currentOrigin`), treats it as trusted, maps
+its invite links (`https://glob2online.com/j/<code>`, which the website also
+redirects) and `glob2://join?instance=` links to the official origin, and hides
+its record from the server list. The record itself, with its device credential
+and refresh token, stays keyed by the origin that issued it and is never copied.
+Builds with another `official_instance` carry no former origins.
+
 The browser shell selects its serving origin for a fresh profile, so hosted
 `/play/` clients connect to their own platform even when the compiled default
 predates a hostname cutover. On the official app host it also changes a saved
@@ -305,7 +315,9 @@ App Links and universal links cover the official domain only; self-hosted
 instances use `glob2://`. They need the instance to serve
 `/.well-known/assetlinks.json` (the release signing certificate's SHA-256) and
 `/.well-known/apple-app-site-association` (team id plus
-`org.globulation2.glob2`, path `/j/*`).
+`org.globulation2.glob2`, path `/j/*`). For the official instance that is
+`app.glob2online.com`; the public website at the apex serves neither file and
+redirects `/j/*` to the app, so an apex invite opens in the browser first.
 
 ## Sim version
 

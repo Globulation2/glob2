@@ -22,6 +22,14 @@ class OnlineStorage;
 #error "GLOB2_OFFICIAL_INSTANCE_ORIGIN is defined by the build (scons/official_instance.py)"
 #endif
 inline constexpr const char *OFFICIAL_INSTANCE_ORIGIN = GLOB2_OFFICIAL_INSTANCE_ORIGIN;
+// Origins the official instance used before, space-separated (the same build
+// setting; empty for builds with another official origin). The official
+// glob2online.com app moved to app.glob2online.com when the apex became the
+// public website.
+#ifndef GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS
+#define GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS ""
+#endif
+inline constexpr const char *OFFICIAL_INSTANCE_FORMER_ORIGINS = GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS;
 // Whether the trust prompt's "remember this instance" box starts ticked.
 inline constexpr bool REMEMBER_TRUST_BY_DEFAULT = true;
 
@@ -30,6 +38,12 @@ inline constexpr bool REMEMBER_TRUST_BY_DEFAULT = true;
 // trailing slash is allowed. Empty for anything else, including user info,
 // paths, queries and fragments.
 std::optional<std::string> normalizeOrigin(const std::string &origin);
+// Whether a normalized origin is one the official instance used before.
+bool isFormerOfficialOrigin(const std::string &origin);
+// The origin to connect to for a normalized origin: the official origin for a
+// former official origin, the origin itself otherwise. Selections and invite
+// links move; credentials stay keyed by the origin that issued them.
+std::string currentOrigin(const std::string &origin);
 // wss://host[:port]/realtime (ws:// for a loopback http:// origin).
 std::string realtimeUrl(const std::string &origin);
 // origin + path, path starting with '/'.
@@ -69,7 +83,8 @@ class InstanceConfig
 	// Writes the configuration and asks the host to persist it.
 	bool save();
 
-	// The instance chosen in settings (the official one by default).
+	// The instance chosen in settings (the official one by default). A stored
+	// or selected former official origin reads as the official origin.
 	const std::string &selectedOrigin() const
 	{
 		return selected;
@@ -88,8 +103,8 @@ class InstanceConfig
 		return records;
 	}
 
-	// Trust for invite links: the official and the selected instance are
-	// always trusted; any other needs the player's confirmation, remembered
+	// Trust for invite links: the official instance (also under a former
+	// origin) and the selected instance are always trusted; any other needs the player's confirmation, remembered
 	// in the file when `remember` is set, otherwise until the client exits.
 	bool isTrusted(const std::string &origin) const;
 	void trust(const std::string &origin, bool remember = REMEMBER_TRUST_BY_DEFAULT);

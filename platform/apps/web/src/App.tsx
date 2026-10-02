@@ -5,7 +5,7 @@
 import { Suspense, lazy, useEffect, useRef, type ReactNode } from 'react';
 import { ART, GLOB_ICON, GameArt, Wordmark, type ArtName } from './art.tsx';
 import { Avatar, Loading } from './components/common.tsx';
-import { DOWNLOAD_URL, Home } from './pages/Home.tsx';
+import { DOWNLOAD_URL, Home, WEBSITE_URL } from './pages/Home.tsx';
 import { Leaderboard } from './pages/Leaderboard.tsx';
 import { Matches } from './pages/Matches.tsx';
 import { Link, RouterProvider, matchPath, useRouter } from './router.tsx';
@@ -157,6 +157,11 @@ function Footer() {
         <nav aria-label="About">
           <h2>About</h2>
           <ul>
+            {WEBSITE_URL && (
+              <li>
+                <a href={WEBSITE_URL}>Globulation 2 website</a>
+              </li>
+            )}
             <li>
               <a href={SOURCE_URL} rel="noopener">
                 Source code

@@ -24,7 +24,9 @@ With --attach PROJECT --env-file FILE it checks an already running deployment
 instead (run on its host, e.g. a live instance with a public certificate): the
 same checks against GLOB2_PUBLIC_ORIGIN, with the replica counts from the env
 file, publicly trusted TLS, and the deployed web client at /play/. Nothing is
-built, started or torn down.
+built, started or torn down. With --website ORIGIN it also checks a separately
+hosted public website (docs/hosting/README.md, "Separate public website and app"):
+its home page loads and old app paths there redirect to the instance origin.
 
 Not a unittest module on purpose: it needs the heavy images and runs in its own
 CI job (see .github/workflows/build.yml, platform-stack).
@@ -32,6 +34,8 @@ CI job (see .github/workflows/build.yml, platform-stack).
 import argparse
 import base64
 import http.client
+import urllib.error
+import urllib.request
 import ipaddress
 import json
 import os
@@ -301,6 +305,15 @@ class Smoke:
                                ('Cross-Origin-Embedder-Policy', 'require-corp')):
             if play_headers.get(name) != expected:
                 raise Failure(f'/play/ missing isolation header {name}: {play_headers.get(name)!r}')
+        # Phones fetch the app-link files from the instance origin; they must reach
+        # the API (JSON, or its JSON 404 when appLinks is unset), not the web app.
+        well_known = {}
+        for path in ('/.well-known/assetlinks.json', '/.well-known/apple-app-site-association'):
+            code, link_headers, body_link = self.https('GET', path)
+            well_known[path] = code
+            if code not in (200, 404) or 'application/json' not in link_headers.get('Content-Type', '') \
+                    or b'<div id="root">' in body_link:
+                raise Failure(f'{path} is not served by the API: {code} {body_link[:200]!r}')
         denied = {}
         for path in ('/internal/v1/relays/register', '/internal', '/healthz', '/readyz', '/metrics'):
             for method in ('GET', 'POST'):
@@ -313,7 +326,8 @@ class Smoke:
         redirect = connection.getresponse()
         if redirect.status not in (301, 308) or not redirect.getheader('Location', '').startswith('https://'):
             raise Failure(f'HTTP is not redirected to HTTPS: {redirect.status}')
-        detail = {'web': status, 'invite': status_j, 'play': status_play, 'private': denied,
+        detail = {'web': status, 'invite': status_j, 'play': status_play, 'wellKnown': well_known,
+                  'private': denied,
                   'http': redirect.status, 'hsts_or_server': headers.get('Server')}
         if self.arguments.attach:
             certificate = self.tls.wrap_socket(socket.create_connection((self.connect_host, self.https_port),
@@ -323,6 +337,37 @@ class Smoke:
             detail['certificate'] = {'issuer': dict(x[0] for x in peer['issuer']), 'notAfter': peer['notAfter'],
                                      'subjectAltName': [v for _, v in peer.get('subjectAltName', [])]}
         return detail
+
+    def website(self):
+        website = self.arguments.website.rstrip('/')
+
+        class NoRedirect(urllib.request.HTTPRedirectHandler):
+            def redirect_request(self, *args):
+                return None
+
+        opener = urllib.request.build_opener(NoRedirect)
+
+        def get(path):
+            try:
+                response = opener.open(urllib.request.Request(website + path, method='GET'), timeout=20)
+            except urllib.error.HTTPError as error:
+                return error.code, error.headers.get('Location', ''), b''
+            with response:
+                return response.status, response.headers.get('Location', ''), response.read(65536)
+
+        status, _, body = get('/')
+        if status != 200 or b'<div id="root">' in body:
+            raise Failure(f'website {website}/: {status} {body[:200]!r}')
+        redirects = {}
+        for path, permanent in (('/j/ABCDEFGH', True), ('/matches/00000000-0000-4000-8000-000000000000', True),
+                                ('/players/00000000-0000-4000-8000-000000000000', True), ('/leaderboard', True),
+                                ('/maps', True), ('/api/v1/instance', True), ('/play/?join=ABCDEFGH', False)):
+            code, location, _ = get(path)
+            redirects[path] = [code, location]
+            expected = self.origin + path
+            if code not in ((301, 308) if permanent else (301, 302, 307, 308)) or location != expected:
+                raise Failure(f'website {path}: {code} -> {location!r}, expected a redirect to {expected}')
+        return {'website': website, 'home': status, 'redirects': redirects}
 
     def env_value(self, name, default=None):
         for line in self.env_file.read_text().splitlines():
@@ -479,7 +524,8 @@ class Smoke:
             for name, function in (('services healthy', self.services_healthy), ('edge routing', self.edge),
                                    ('instance and engine agent', self.instance),
                                    ('guest sign-in and realtime', self.guest_and_realtime), ('jwks', self.jwks),
-                                   ('relays', self.relays), ('generate-map job', self.engine_job)):
+                                   ('relays', self.relays), ('generate-map job', self.engine_job),
+                                   *((('public website', self.website),) if self.arguments.website else ())):
                 ok = self.check(name, function) and ok
                 if name == 'guest sign-in and realtime' and not self.results[name]['ok']:
                     self.results['jwks'] = {'ok': False, 'error': 'skipped: no access token'}
@@ -507,6 +553,8 @@ def main():
     parser.add_argument('--attach', metavar='PROJECT', help='check this running Compose project instead')
     parser.add_argument('--env-file', help="with --attach: the deployment's env file")
     parser.add_argument('--sim-version', help='with --attach: expected sim version key (default: this checkout)')
+    parser.add_argument('--website', metavar='ORIGIN',
+                        help='with --attach: separately hosted public website whose old app paths redirect here')
     smoke = Smoke(parser.parse_args())
     ok = smoke.run()
     passed = [k for k, v in smoke.results.items() if isinstance(v, dict) and v.get('ok')]

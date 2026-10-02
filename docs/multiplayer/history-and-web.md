@@ -83,7 +83,9 @@ web session cookie that `/signin` sets; its writes are same-origin requests,
 which pass the API's cross-site check.
 
 `VITE_DOWNLOAD_URL` at build time sets the home page's download link
-(default `https://globulation2.org/`).
+(default `https://globulation2.org/`), and `VITE_WEBSITE_URL` adds a footer link
+to a separately hosted public website (none by default). The Compose deployment
+passes them from `GLOB2_DOWNLOAD_URL` and `GLOB2_WEBSITE_URL`.
 
 ### Watch in browser
 
