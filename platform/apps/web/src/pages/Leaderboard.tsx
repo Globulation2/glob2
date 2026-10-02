@@ -86,7 +86,7 @@ function AiLadder({ ladder }: { ladder: string }) {
                 </div>
                 <Rows
                   entries={group.entries}
-                  caption={`AI opponents, game version ${group.simVersion.versionMinor}`}
+                  caption={`AI opponents, game version ${group.simVersion.versionMinor} (data ${group.simVersion.dataHash.slice(0, 8)}${group.current ? ', current' : ''})`}
                 />
               </div>
             ))}
