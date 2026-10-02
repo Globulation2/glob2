@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from tools.release.package_nsis import file_lists, package, quote
+from tools.release.package_nsis import INVENTORY_BEGIN, INVENTORY_END, file_lists, package, quote
 from tools.release.windows_runtime import stage_dlls
 
 
@@ -61,7 +61,7 @@ class WindowsRuntimeTests(unittest.TestCase):
             self.assertIn('Delete "$INSTDIR\\data\\gfx\\image.png"', install)
             self.assertEqual(
                 (output / "owned.txt").read_text(encoding="utf-16-le").splitlines(),
-                ["data\\gfx\\image.webp", "glob2.exe"],
+                [INVENTORY_BEGIN, "data\\gfx\\image.webp", "glob2.exe", INVENTORY_END],
             )
             self.assertNotIn("/r", (output / "directories.nsh").read_text())
 

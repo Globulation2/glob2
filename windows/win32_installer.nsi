@@ -68,11 +68,15 @@ Function ${PREFIX}ClearOwned
     StrCmp $2 0 +2
     Goto invalid
     FileSeek $0 0 SET
+    FileReadUTF16LE $0 $1
+    ${${TRIM}} $1 $1
+    StrCmp $1 ":GLOB2-OWNED-BEGIN:v1" validate invalid
   validate:
     ClearErrors
     FileReadUTF16LE $0 $1
-    IfErrors validated
+    IfErrors invalid
     ${${TRIM}} $1 $1
+    StrCmp $1 ":GLOB2-OWNED-END:v1" validated
     StrCmp $1 "" validate
     StrCpy $2 $1 1
     StrCmp $2 "\" invalid
@@ -83,8 +87,20 @@ Function ${PREFIX}ClearOwned
     ${${SEARCH}} $2 $1 ":"
     StrCmp $2 "" +2
     Goto invalid
+    ${${SEARCH}} $2 $1 "*"
+    StrCmp $2 "" +2
+    Goto invalid
+    ${${SEARCH}} $2 $1 "?"
+    StrCmp $2 "" +2
+    Goto invalid
     Goto validate
   validated:
+    ; The terminal marker detects truncation even at a complete UTF-16 record.
+    ; No data may follow it, including a second inventory or extra file records.
+    ClearErrors
+    FileReadUTF16LE $0 $1
+    IfErrors +2
+    Goto invalid
     FileSeek $0 0 CUR $2
     StrCmp $2 $3 +2
     Goto invalid
@@ -97,6 +113,8 @@ Function ${PREFIX}ClearOwned
     IfErrors finished
     ${${TRIM}} $1 $1
     StrCmp $1 "" remove
+    StrCmp $1 ":GLOB2-OWNED-BEGIN:v1" remove
+    StrCmp $1 ":GLOB2-OWNED-END:v1" finished
     ClearErrors
     Delete "$INSTDIR\$1"
     IfErrors 0 +2

@@ -7,6 +7,8 @@ import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+INVENTORY_BEGIN = ":GLOB2-OWNED-BEGIN:v1"
+INVENTORY_END = ":GLOB2-OWNED-END:v1"
 
 
 def quote(value, runtime=True):
@@ -34,7 +36,7 @@ def file_lists(stage, output):
         if not path.is_file():
             continue
         relative = path.relative_to(stage)
-        if any(part in (".", "..") or ":" in part for part in relative.parts):
+        if any(part in (".", "..") or any(character in part for character in ":*?") for part in relative.parts):
             raise ValueError("Unsafe installer path: " + str(relative))
         native = str(relative).replace("/", "\\")
         files.append(native)
@@ -58,7 +60,7 @@ def file_lists(stage, output):
     output.mkdir(parents=True, exist_ok=True)
     (output / "install.nsh").write_text("\n".join(install) + "\n", encoding="utf-8")
     # Unicode filenames must survive inventory reads during upgrades/uninstall.
-    (output / "owned.txt").write_text("\n".join(files) + "\n", encoding="utf-16-le")
+    (output / "owned.txt").write_text("\n".join([INVENTORY_BEGIN, *files, INVENTORY_END]) + "\n", encoding="utf-16-le")
     (output / "directories.nsh").write_text(
         "\n".join(
             f'RMDir "$INSTDIR\\{quote(name)}"'
