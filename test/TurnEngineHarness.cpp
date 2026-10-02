@@ -47,6 +47,7 @@
 #include "ReplayReader.h"
 #include "Sha256.h"
 #include "SimVersion.h"
+#include "TurnLatencyTrace.h"
 #include "TurnLockstep.h"
 #include "TurnTestSupport.h"
 #include "Utilities.h"
@@ -289,7 +290,13 @@ public:
 				lives.emplace_back(); // reloaded in place: a new run from tick 0
 			lives.back()[tick] = checksum;
 		};
+		lockstep->turn().onSubmitted = [this](std::uint32_t sequence) {
+			trace.submitted(sequence, net.now, engine->turnLockstep()->turn().executedTick());
+		};
+		lockstep->turn().onHorizon = [this](std::uint32_t horizon) { trace.received(horizon, net.now); };
 		lockstep->orderFilter = [this](std::uint32_t tick, int player, std::shared_ptr<Order> order) {
+			if (player == seat)
+				trace.executed(tick, net.now);
 			if (tick == tamperAtTick && player == seat && !tampered)
 			{
 				// A cheating client: executes an order the relay never sequenced.
@@ -317,6 +324,8 @@ public:
 			return;
 		RngScope scope(rng);
 		const Uint64 now = net.now / MS;
+		if (now < wakeAt)
+			engine->pollTurnSession(now); // as GameSessionScreen between steps
 		for (int budget = 4000; budget > 0 && now >= wakeAt; --budget)
 		{
 			const bool catching = session().catchingUp();
@@ -398,6 +407,7 @@ public:
 		if (order)
 		{
 			engine->gui.orderQueue.push_back(order);
+			trace.queued(net.now);
 			++ordersQueued;
 		}
 	}
@@ -436,6 +446,7 @@ public:
 	/// Per run of the engine from tick 0 (a restart or an in-place reload starts a
 	/// new one): tick -> checksum before that tick.
 	std::vector<std::map<std::uint32_t, Uint32>> lives;
+	turntest::LatencyTrace trace;
 };
 
 struct EngineMatch
@@ -462,6 +473,14 @@ struct EngineMatch
 			net, 0);
 		for (int i = 0; i < humans; ++i)
 			clients.push_back(std::make_unique<EngineClient>(net, i, setup, map));
+		net.relay->onSequenced = [this](std::uint8_t seat, std::uint32_t sequence, std::uint32_t tick, std::uint32_t relayTick) {
+			if (seat < clients.size())
+				clients[seat]->trace.sequenced(sequence, tick, relayTick, net.now);
+		};
+		net.relay->onEmitted = [this](std::uint32_t, std::uint32_t horizon) {
+			for (auto& c : clients)
+				c->trace.emitted(horizon, net.now);
+		};
 	}
 
 	void run(std::uint64_t duration, const std::function<void()>& each = {})
@@ -641,6 +660,56 @@ glob2test::GlobalsOptions harnessGlobals()
 
 TEST_SUITE("TurnEngineHarness")
 {
+	GLOB2_TEST_CASE("input delay and stalls of real engines per link profile",
+	                "[network-sim][benchmark][artifacts]")
+	{
+		// Two real engines with an AI; the measured player's link varies, the other
+		// player is on a clean 15 ms link. Sim time, 5 ms frames; the bot clicks
+		// right after a tick, so pickup is about one tick.
+		glob2test::HeadlessGlobals globals(harnessGlobals());
+		struct Profile
+		{
+			const char* name;
+			LinkProfile link;
+		};
+		const std::vector<Profile> profiles = {
+			{"15 ms", {15 * MS}},
+			{"50 ms", {50 * MS}},
+			{"60 ms, 80 ms jitter", {60 * MS, 80 * MS}},
+			{"120 ms, 3% loss", {120 * MS, 0, 0.03}},
+			{"120 ms, 20 ms jitter, 3% loss", {120 * MS, 20 * MS, 0.03}},
+		};
+		std::ostringstream table, stages;
+		table << "Real engines on the simulated network (FourSquares1, two humans and a Nicowar AI), "
+		         "click to execution, 5 s settle then 50 s measured.\n"
+		         "link | samples | mean ms | p95 ms | target ticks | measured jitter ms | stalls | long stalls | "
+		         "stalled ms | longest stall ms\n";
+		stages << "link | " << turntest::LatencyTrace::header() << "\n";
+		for (const auto& profile : profiles)
+		{
+			EngineMatch m("FourSquares1", {profile.link, {15 * MS}}, {"nicowar"});
+			for (auto& c : m.clients)
+				c->orderRate = 0.1;
+			m.run(5 * SECOND);
+			auto& c = *m.clients[0];
+			const auto before = c.session().stallStats();
+			c.trace.measuring = true;
+			m.run(50 * SECOND);
+			const auto b = c.trace.breakdown();
+			const auto& st = c.session().stallStats();
+			table << profile.name << " | " << b.samples << " | " << b.total.mean << " | " << b.total.p95 << " | "
+			      << c.session().targetTicks() << " | " << c.session().jitterMicros() / 1000 << " | "
+			      << st.stalls - before.stalls << " | " << st.longStalls - before.longStalls << " | "
+			      << (st.stalledMicros - before.stalledMicros) / 1000 << " | " << st.longestMicros / 1000 << "\n";
+			stages << profile.name << " | " << turntest::LatencyTrace::row(b) << "\n";
+			const std::uint32_t end = m.finish();
+			CHECK(m.requireIdenticalChecksums() == end + 1);
+		}
+		table << "\n" << stages.str();
+		std::ofstream(glob2test::artifactDir() / "turn-engine-delay-profiles.txt") << table.str();
+		MESSAGE(table.str());
+	}
+
 	GLOB2_TEST_CASE("two engines with AI seats under latency, jitter and loss agree at every tick and the record verifies",
 	                "[network-sim][artifacts]")
 	{
@@ -673,20 +742,17 @@ TEST_SUITE("TurnEngineHarness")
 			requireSameOutcomes(v.result, liveTeams(*c));
 
 		// A record whose turns were tampered with matches no client.
+		// Dropping every order in the second half of the match changes the game
+		// whichever of them the engine would have accepted.
 		auto forged = record;
-		forged.turns[forged.turns.size() / 2].order = {ORDER_TYPE_NULL};
-		bool changed = false;
+		int dropped = 0;
 		for (auto& t : forged.turns)
-			if (t.order[0] != ORDER_TYPE_NULL && t.order[0] != ORDER_TYPE_PLAYER_QUIT && t.tick > 200)
+			if (t.order[0] != ORDER_TYPE_NULL && t.order[0] != ORDER_TYPE_PLAYER_QUIT && t.tick > end / 2)
 			{
-				// Move a real order to a later tick: same orders, different game.
-				t.tick += 1;
-				changed = true;
-				break;
+				t.order = {ORDER_TYPE_NULL};
+				++dropped;
 			}
-		REQUIRE(changed);
-		std::sort(forged.turns.begin(), forged.turns.end(),
-		          [](const Turn::TurnEntry& a, const Turn::TurnEntry& b) { return a.tick != b.tick ? a.tick < b.tick : a.seat < b.seat; });
+		REQUIRE(dropped > 5);
 		const Verified f = verifyRecord(forged, m, directory / "forged-turns");
 		CHECK(f.verdict.verdict == "unverifiable");
 		CHECK(f.verdictJson.at("reason").get<std::string>().find("no client matches") != std::string::npos);
@@ -1027,4 +1093,103 @@ TEST_SUITE("TurnEngineHarness")
 		glob2test::writeFile(glob2test::artifactDir() / "rejoin-fast-forward.txt", table.str());
 		MESSAGE(table.str());
 	}
+
+	GLOB2_TEST_CASE("engines report network telemetry, and its output changes nothing they execute",
+	                "[network-sim][artifacts]")
+	{
+		glob2test::HeadlessGlobals globals(harnessGlobals());
+		struct Run
+		{
+			std::vector<std::map<std::uint32_t, Uint32>> checksums;
+			std::vector<json> summaries;
+			json relay;
+			std::string output;
+		};
+		auto play = [](bool output) {
+			if (output)
+				glob2test::setEnv("GLOB2_TEAM_TIMELINE", "1");
+			Run run;
+			std::ostringstream captured;
+			std::streambuf* previous = output ? std::cout.rdbuf(captured.rdbuf()) : nullptr;
+			{
+				EngineMatch m("FourSquares1", {{20 * MS}, {70 * MS, 50 * MS, 0.03}}, {"nicowar"});
+				m.run(20 * SECOND);
+				m.net.outage(1, 3 * SECOND, *m.clients[1]->transport);
+				m.run(15 * SECOND);
+				m.finish();
+				m.requireIdenticalChecksums();
+				for (auto& c : m.clients)
+				{
+					run.checksums.push_back(c->lives.back());
+					run.summaries.push_back(c->engine->turnNetworkSummary());
+					RngScope scope(c->rng);
+					c->engine->abortSession(); // tears down: final telemetry records
+				}
+				run.relay = m.net.relay->networkSummary();
+			}
+			if (previous)
+				std::cout.rdbuf(previous);
+			if (output)
+				glob2test::unsetEnv("GLOB2_TEAM_TIMELINE");
+			run.output = captured.str();
+			return run;
+		};
+		const Run quiet = play(false);
+		const Run loud = play(true);
+		// Telemetry output on or off: every client executes exactly the same game.
+		REQUIRE(quiet.checksums.size() == 2);
+		CHECK(quiet.checksums == loud.checksums);
+		CHECK(quiet.checksums[0].size() > 800);
+
+		for (std::size_t i = 0; i < loud.summaries.size(); ++i)
+		{
+			const json& s = loud.summaries[i];
+			INFO("client " << i << ": " << s.dump());
+			REQUIRE(s.is_object());
+			CHECK(s.at("schema") == "ClientNetworkSummary");
+			CHECK(s.at("match").at("seat") == i);
+			CHECK(s.at("match").at("transport") == "online");
+			CHECK(s.at("match").at("sim_version") == Online::currentSimVersion().key());
+			CHECK(s.at("rtt_us").at("count").get<int>() > 20);
+			CHECK(s.at("input_delay_us").at("count").get<int>() > 5);
+			CHECK(s.at("traffic").at("bundles_received").get<int>() > 300);
+			CHECK(s.at("series").at("points").size() >= 6);
+		}
+		const json& c0 = loud.summaries[0];
+		const json& c1 = loud.summaries[1];
+		CHECK(c0.at("rtt_us").at("p50").get<std::uint64_t>() >= 40 * MS);
+		CHECK(c1.at("rtt_us").at("p50") > c0.at("rtt_us").at("p50"));
+		CHECK(c1.at("jitter_buffer").at("target_ticks").at("p95") > c0.at("jitter_buffer").at("target_ticks").at("p95"));
+		CHECK(c1.at("reconnects").at("count").get<int>() >= 1);
+		CHECK(c1.at("stalls").at("longest_us").get<std::uint64_t>() >= 2 * SECOND);
+		CHECK(c1.at("catch_up").at("episodes").get<int>() >= 1);
+		CHECK(c0.at("reconnects").at("count") == 0);
+		CHECK(loud.relay.at("seats")[1].at("connection").at("disconnects").get<int>() >= 1);
+		// The deterministic order check: every human seat, the same verdicts on every
+		// client, and an unmodified client has nothing refused.
+		const json& checks = c0.at("order_validation");
+		REQUIRE(checks.is_object());
+		REQUIRE(checks.at("seats").size() == 2);
+		CHECK(checks == c1.at("order_validation"));
+		for (const json& seat : checks.at("seats"))
+		{
+			CHECK(seat.at("rejected") == 0);
+			CHECK(seat.at("rejected_by_reason").empty());
+		}
+		CHECK(checks.at("seats")[0].at("accepted").get<int>() + checks.at("seats")[1].at("accepted").get<int>() > 0);
+
+		// The standard telemetry stream carries the same data.
+		for (const char* record : {"GLOB2_NET_SESSION ", "GLOB2_NET_SAMPLE ", "GLOB2_NET_FINAL ", "GLOB2_NET_SEAT ",
+		                           "GLOB2_NET_SUMMARY {"})
+			CHECK_MESSAGE(loud.output.find(record) != std::string::npos, record);
+		CHECK(quiet.output.empty());
+
+		const auto directory = glob2test::artifactDir() / "network-telemetry";
+		fs::create_directories(directory);
+		glob2test::writeFile(directory / "client0.network.json", c0.dump(1));
+		glob2test::writeFile(directory / "client1.network.json", c1.dump(1));
+		glob2test::writeFile(directory / "relay.network.json", loud.relay.dump(1));
+		glob2test::writeFile(directory / "timeline-records.txt", loud.output);
+	}
 }
+

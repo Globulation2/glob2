@@ -258,13 +258,18 @@
                   },
                   {
                     "type": "string",
+                    "const": "draw"
+                  },
+                  {
+                    "type": "string",
                     "const": "unresolved"
                   },
                   {
                     "type": "string",
                     "const": "abandoned"
                   }
-                ]
+                ],
+                "description": "draw: a win shared by teams of more than one alliance (a prestige or sudden-death tie at the top). Draws are not rated."
               },
               "disconnects": {
                 "type": "integer",
@@ -766,13 +771,18 @@
               },
               {
                 "type": "string",
+                "const": "draw"
+              },
+              {
+                "type": "string",
                 "const": "unresolved"
               },
               {
                 "type": "string",
                 "const": "abandoned"
               }
-            ]
+            ],
+            "description": "draw: a win shared by teams of more than one alliance (a prestige or sudden-death tie at the top). Draws are not rated."
           },
           "prestige": {
             "type": "integer"
@@ -1038,6 +1048,126 @@
         }
       },
       "description": "Each human player's curve in this match next to their own recent average."
+    },
+    "network": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "seat",
+          "quality",
+          "disconnects",
+          "offlineMs",
+          "ordersSequenced",
+          "ordersDeferred",
+          "rejoins"
+        ],
+        "properties": {
+          "seat": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 11
+          },
+          "quality": {
+            "anyOf": [
+              {
+                "type": "string",
+                "const": "good"
+              },
+              {
+                "type": "string",
+                "const": "fair"
+              },
+              {
+                "type": "string",
+                "const": "poor"
+              }
+            ],
+            "description": "A rough label from the numbers below (docs/development/network-telemetry.md, match page)."
+          },
+          "rttMs": {
+            "anyOf": [
+              {
+                "type": "object",
+                "required": [
+                  "p50",
+                  "p95"
+                ],
+                "properties": {
+                  "p50": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "p95": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                }
+              }
+            ],
+            "description": "Round trip to the relay (median and 95th percentile). Absent if not measured."
+          },
+          "lagMs": {
+            "anyOf": [
+              {
+                "type": "object",
+                "required": [
+                  "p50",
+                  "p95"
+                ],
+                "properties": {
+                  "p50": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "p95": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                }
+              }
+            ],
+            "description": "How far the player’s game ran behind the relay clock: input delay plus any stall."
+          },
+          "disconnects": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "offlineMs": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Time disconnected and inside the reconnect grace period."
+          },
+          "ordersSequenced": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "ordersDeferred": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Orders placed later than requested (one order per player per tick)."
+          },
+          "rejoins": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Times the relay told the game to reload after its state disagreed."
+          },
+          "leftBy": {
+            "anyOf": [
+              {
+                "type": "string",
+                "const": "quit"
+              },
+              {
+                "type": "string",
+                "const": "grace"
+              }
+            ]
+          }
+        },
+        "description": "Connection quality of one player in a match."
+      },
+      "description": "Per human player, from the relay’s report; absent when the relay sent none."
     }
   },
   "description": "GET /api/v1/matches/{id}."

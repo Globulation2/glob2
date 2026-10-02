@@ -134,6 +134,13 @@ public:
 		return c.link && !rejectQueued && c.link->send(payload);
 	}
 
+	void flush() override
+	{
+		auto& c = *connection;
+		if (c.link && !rejectQueued)
+			c.link->flush();
+	}
+
 	bool receive(std::vector<std::uint8_t>& payload) override
 	{
 		auto& c = *connection;

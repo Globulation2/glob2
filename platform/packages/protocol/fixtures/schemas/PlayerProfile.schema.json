@@ -437,13 +437,18 @@
                     },
                     {
                       "type": "string",
+                      "const": "draw"
+                    },
+                    {
+                      "type": "string",
                       "const": "unresolved"
                     },
                     {
                       "type": "string",
                       "const": "abandoned"
                     }
-                  ]
+                  ],
+                  "description": "draw: a win shared by teams of more than one alliance (a prestige or sudden-death tie at the top). Draws are not rated."
                 },
                 "disconnects": {
                   "type": "integer",

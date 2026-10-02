@@ -182,6 +182,7 @@ UNIT_TESTS = [
     'NetSendOrderDecodeTest.cpp',
     'TurnProtocolTest.cpp',
     'TurnHarnessTest.cpp',
+    'TurnTelemetryTest.cpp',
     'OrderAlterateAreaTest.cpp',
     'ReplayStepCounterTest.cpp',
     'CampaignBoundsHarness.cpp',
@@ -286,6 +287,7 @@ UNIT_PRODUCTION_SOURCES = [
     '#src/net/turn/TurnMessages.cpp',
     '#src/net/turn/TurnSequencer.cpp',
     '#src/net/turn/TurnSession.cpp',
+    '#src/net/turn/TurnTelemetry.cpp',
     '#src/ReplayReader.cpp',
     '#src/ReplayWriter.cpp',
     # Without the client's Brush and Game surfaces: only the byte marshalers are wanted.

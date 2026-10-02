@@ -288,6 +288,7 @@ const typedColumns: ColumnLists = {
     'outcome',
     'disconnects',
     'quit_tick',
+    'network',
     'rating_before',
     'rating_after',
   ],

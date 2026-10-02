@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <chrono>
+#include <fstream>
 #include <iostream>
 #include <random>
 #include <stdexcept>
@@ -934,6 +935,21 @@ std::size_t LanHost::guestCount() const
 	return room.members.size() - 1;
 }
 
+std::string networkSummaryPath(const std::string& recordPath)
+{
+	const std::string suffix = ".g2mr";
+	std::string base = recordPath;
+	if (base.size() > suffix.size() && base.compare(base.size() - suffix.size(), suffix.size(), suffix) == 0)
+		base.resize(base.size() - suffix.size());
+	return base + ".network.json";
+}
+
+nlohmann::json LanHost::networkSummary() const
+{
+	std::lock_guard<std::recursive_mutex> guard(mutex);
+	return relay ? relay->networkSummary() : nlohmann::json();
+}
+
 void LanHost::writeRecord()
 {
 	if (recordWritten || !relay || options.recordPath.empty())
@@ -952,5 +968,11 @@ void LanHost::writeRecord()
 	{
 		std::cerr << "LAN host: cannot write the match record (" << error.what() << ")" << std::endl;
 	}
+	// The relay's per-seat network summary (RelayNetworkSummary), next to the record.
+	const std::string path = networkSummaryPath(options.recordPath);
+	std::ofstream out(path, std::ios::binary | std::ios::trunc);
+	out << relay->networkSummary().dump() << '\n';
+	if (!out)
+		std::cerr << "LAN host: cannot write the network summary " << path << std::endl;
 }
 }

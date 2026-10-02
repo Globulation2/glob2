@@ -20,7 +20,7 @@ and fixtures under `fixtures/`). Lists are newest first and page with an opaque
 | `GET /api/v1/players/{accountId}` | `PlayerProfile`: ratings (with rank), rating history (oldest first), ten recent matches, aggregates |
 | `GET /api/v1/players/{accountId}/matches?queue=` | `MatchList`; `queue` is a queue id or `room` |
 | `GET /api/v1/matches?queue=` | `MatchList` of recent public matches: ended quick-match games and matches of public rooms |
-| `GET /api/v1/matches/{id}` | `MatchDetail`: summary, setup, team statistics and timelines, artifacts, map, verification detail, economy curves |
+| `GET /api/v1/matches/{id}` | `MatchDetail`: summary, setup, team statistics and timelines, artifacts, map, verification detail, economy curves, connection quality per human player |
 | `GET /api/v1/matches/{id}/artifacts/{replay\|result\|record}` | The file, as an attachment |
 | `GET /api/v1/admin/matches?q=&status=` | Moderators: `MatchList` of any status; `q` is a match, room or account id, part of a player name, or a relay id |
 
@@ -33,6 +33,18 @@ average at each tick. The match page has the same curve for every human player.
 Verification detail is read from the match's succeeded `verify-match` job:
 diverged seats, the unverifiable reason, `orderRejections` (seats whose orders
 the engine refused, with per-reason counts) and the rating note.
+
+`MatchDetail.network` condenses each human player's entry of the relay's network
+summary (`match_participants.network`; `apps/api/src/history/network.ts`): round
+trip to the relay and how far the player's game ran behind the match clock (median
+and 95th percentile, in ms), disconnects, time offline inside the grace period,
+orders sequenced and deferred, rejoins after a checksum disagreement, and how the
+player left. `quality` is a rough label for the page only: `poor` when the round-trip
+p95 is at least 400 ms, the lag p95 at least 2 s, there were 3 or more disconnects,
+30 s or more offline, or a rejoin; otherwise `fair` when the round-trip p95 is at least
+200 ms, the lag p95 at least 1 s, there was a disconnect, or more than 5% of orders
+were deferred; otherwise `good`. It is public with the match, and absent for matches
+whose relay sent no summary.
 
 ### Visibility
 
@@ -60,7 +72,7 @@ of `data/fonts/sans.ttf`), and lays out for phone width.
 | `/` | Instance, play in browser and download links, leaderboard teasers, recent matches |
 | `/leaderboard`, `/leaderboard/{queueId}` | Ladder of a rated queue, then its AI ladder |
 | `/players/{accountId}` | Ratings, rating graph, aggregates, economy curves, match history |
-| `/matches`, `/matches/{id}` | Recent matches; match page with players, rating changes, timelines, verification, replay |
+| `/matches`, `/matches/{id}` | Recent matches; match page with players, rating changes, connection quality, timelines, verification, replay |
 | `/maps`, `/maps/mine`, `/maps/new`, `/maps/{id}` | Map catalog, my maps, upload, map page (preview, versions, like, report, owner edits) |
 | `/admin/accounts`, `/admin/matches`, `/admin/reports` | Moderation: account search, rename, mute and (administrators) ban; match lookup; map report queue with hide and unhide |
 

@@ -438,6 +438,8 @@ describe('relays', () => {
     guest.client.clear();
     const moved = await guest.client.ok('match.reconnect', { matchId, relayUnavailable: true });
     expect(moved['relayUrl']).toBe('wss://relay-2.relays.test/relay');
+    // The client's network telemetry names the relay and its region.
+    expect([moved['relayId'], moved['relayRegion']]).toEqual(['relay-2', 'us-east']);
     // Everyone gets the new relay.
     const pushed = await host.client.event('match.start');
     expect((await verifyTicket(a, pushed['ticket'] as string)).relayUrl).toBe(
@@ -556,6 +558,10 @@ describe('match-end intake', () => {
       ],
       desync: { flagged: false, minoritySeats: [] },
       record: { sha256: receipt['sha256'], size: record.length, formatVersion: 1 },
+      network: relayNetwork([
+        { seat: 0, rttP50Us: 38_000, rttP95Us: 61_000, disconnects: 0, graceMs: 0 },
+        { seat: 1, rttP50Us: 150_000, rttP95Us: 420_000, disconnects: 2, graceMs: 9_400 },
+      ]),
     };
     host.client.clear();
     const ended = await relayCall(a, 'POST', `/matches/${matchId}/end`, report);
@@ -580,6 +586,45 @@ describe('match-end intake', () => {
     expect(participants).toEqual([
       { seat: 0, disconnects: 0, quit_tick: null, outcome: null },
       { seat: 1, disconnects: 2, quit_tick: 29000, outcome: null },
+    ]);
+    // Each seat's entry of the relay's network summary is kept with its participant.
+    const stored = await db
+      .selectFrom('match_participants')
+      .select(['seat', 'network'])
+      .where('match_id', '=', matchId)
+      .orderBy('seat')
+      .execute();
+    expect(stored.map((s) => s.network)).toEqual(report.network.seats);
+    // …and condensed on the match page.
+    const detailResponse = await fetch(`${a.url}/api/v1/matches/${matchId}`);
+    const detail = await json(detailResponse);
+    expect(detailResponse.status).toBe(200);
+    expect(check('MatchDetail', detail).stage).toBe('ok');
+    expect(detail['network']).toEqual([
+      {
+        seat: 0,
+        quality: 'good',
+        rttMs: { p50: 38, p95: 61 },
+        lagMs: { p50: 280, p95: 360 },
+        disconnects: 0,
+        offlineMs: 0,
+        ordersSequenced: 400,
+        ordersDeferred: 4,
+        rejoins: 0,
+        leftBy: 'quit',
+      },
+      {
+        seat: 1,
+        quality: 'poor',
+        rttMs: { p50: 150, p95: 420 },
+        lagMs: { p50: 280, p95: 360 },
+        disconnects: 2,
+        offlineMs: 9400,
+        ordersSequenced: 400,
+        ordersDeferred: 4,
+        rejoins: 0,
+        leftBy: 'quit',
+      },
     ]);
     const artifact = await db
       .selectFrom('match_artifacts')
@@ -771,11 +816,19 @@ describe('match-end intake', () => {
     );
     const mismatch = await relayCall(a, 'POST', `/matches/${matchId}/end`, report);
     expect(mismatch.status).toBe(409);
+    // Telemetry never blocks a match end: an unreadable network summary is dropped.
     const ok = await relayCall(a, 'POST', `/matches/${matchId}/end`, {
       ...report,
       record: { ...report.record, sha256: put['sha256'] },
+      network: { ...relayNetwork([]), schema_version: 2 },
     });
     expect(ok.status).toBe(200);
+    const network = await harness.database.db
+      .selectFrom('match_participants')
+      .select('network')
+      .where('match_id', '=', matchId)
+      .execute();
+    expect(network.every((n) => n.network === null)).toBe(true);
     const outcomes = await harness.database.db
       .selectFrom('match_participants')
       .select('outcome')
@@ -794,6 +847,70 @@ describe('match-end intake', () => {
     await resetRelays();
   });
 });
+
+/** A RelayNetworkSummary v1 (glob2-relay's shape) with the given per-seat numbers. */
+function relayNetwork(
+  seats: {
+    seat: number;
+    rttP50Us: number;
+    rttP95Us: number;
+    disconnects: number;
+    graceMs: number;
+  }[],
+) {
+  const dist = (p50: number, p95: number) => ({ count: 100, mean: p50, p50, p95, max: p95 });
+  return {
+    schema: 'RelayNetworkSummary',
+    schema_version: 1,
+    tick_rate_millihz: 25000,
+    end_tick: 30000,
+    duration_ms: 1_200_000,
+    bundles: { broadcast: 30000, bytes: 800_000 },
+    arbitration: { ticks: 1200, unanimous: 1200, majority: 0, flagged: 0, timed_out: 0 },
+    peak_backlog: { pending_ticks: 2, pending_entries: 2, pending_bytes: 40 },
+    rejected_peers: 0,
+    seats: seats.map((s) => ({
+      seat: s.seat,
+      orders: {
+        sequenced: 400,
+        bytes: 7000,
+        deferred: 4,
+        defer_ticks: dist(1, 2),
+        duplicates_ignored: 0,
+        dropped: 0,
+        flood_rejections: 0,
+        max_queued_ahead_ticks: 2,
+      },
+      voice: { sequenced: 0, bytes: 0 },
+      traffic: {
+        frames_received: 3000,
+        bytes_received: 40000,
+        bundles_sent: 30000,
+        bundle_bytes_sent: 800_000,
+        log_bundles_sent: 0,
+        log_bundle_bytes_sent: 0,
+      },
+      lag_ticks: dist(7, 9),
+      checksums: {
+        reports: 1200,
+        lateness_ticks: dist(7, 9),
+        told_to_rejoin: 0,
+        flagged: 0,
+        late_mismatches: 0,
+      },
+      connection: {
+        connects: 1 + s.disconnects,
+        disconnects: s.disconnects,
+        grace_used_ms: s.graceMs,
+        longest_absence_ms: s.graceMs,
+        left_by_grace: false,
+        left_by_quit: true,
+        left_tick: 29000,
+      },
+      rtt_us: dist(s.rttP50Us, s.rttP95Us),
+    })),
+  };
+}
 
 // --------------------------------------------------------- queue starter
 

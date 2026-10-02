@@ -69,7 +69,10 @@ void GameSessionScreen::updateExecutionImpl(Uint32 tick)
 		lastTick = tick;
 	}
 	if (clock < nextTick)
+	{
+		engine->pollTurnSession(clock);
 		return;
+	}
 	const bool running = engine->stepSession(clock, input);
 	input.clear();
 	nextTick = clock + engine->sessionDelay(clock);
@@ -145,7 +148,14 @@ Uint32 GameSessionScreen::executionDelay(Uint32 now, Uint32 fallback)
 {
 	if (!started || finished)
 		return 0;
-	return engine->sessionDelay(clock + static_cast<Uint32>(now - lastTick));
+	return engine->sessionPollDelay(clock + static_cast<Uint32>(now - lastTick));
+}
+
+GAGGUI::Screen::ExecutionWait GameSessionScreen::executionWait() const
+{
+	if (!started || finished || !engine)
+		return ExecutionWait::Untimed;
+	return engine->waitingOnNetwork() ? ExecutionWait::Network : ExecutionWait::Pacing;
 }
 
 void GameSessionScreen::viewportResized(int oldWidth, int oldHeight, int width, int height)

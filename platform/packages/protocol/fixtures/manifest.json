@@ -12,6 +12,7 @@
     "AdminRoleRequest": "schemas/AdminRoleRequest.schema.json",
     "AiLeaderboard": "schemas/AiLeaderboard.schema.json",
     "AuthTokens": "schemas/AuthTokens.schema.json",
+    "ClientNetworkSummary": "schemas/ClientNetworkSummary.schema.json",
     "CreateMapRequest": "schemas/CreateMapRequest.schema.json",
     "EngineJob": "schemas/EngineJob.schema.json",
     "EngineJobResult": "schemas/EngineJobResult.schema.json",
@@ -113,6 +114,7 @@
     "RelayHeartbeatResponse": "schemas/RelayHeartbeatResponse.schema.json",
     "RelayMatchEnded": "schemas/RelayMatchEnded.schema.json",
     "RelayMatchEndedResponse": "schemas/RelayMatchEndedResponse.schema.json",
+    "RelayNetworkSummary": "schemas/RelayNetworkSummary.schema.json",
     "RelayRecordReceipt": "schemas/RelayRecordReceipt.schema.json",
     "RelayRegionList": "schemas/RelayRegionList.schema.json",
     "RelayRegistration": "schemas/RelayRegistration.schema.json",
@@ -330,6 +332,57 @@
       "valid": false,
       "stage": "schema",
       "note": "reason is completed, abandoned or aborted."
+    },
+    {
+      "file": "valid/RelayMatchEnded/with-network.json",
+      "schema": "RelayMatchEnded",
+      "valid": true,
+      "note": "A relay that measures the network adds its RelayNetworkSummary (optional)."
+    },
+    {
+      "file": "valid/RelayNetworkSummary/one-vs-one.json",
+      "schema": "RelayNetworkSummary",
+      "valid": true,
+      "note": "Per-seat relay measurements of a 30-minute match; seat 1 reconnected once."
+    },
+    {
+      "file": "valid/RelayNetworkSummary/lan-host-without-rtt.json",
+      "schema": "RelayNetworkSummary",
+      "valid": true,
+      "note": "rtt_us is optional: a LAN host measures no round trip. Unknown fields are allowed (newer engines)."
+    },
+    {
+      "file": "invalid/RelayNetworkSummary/version-2.json",
+      "schema": "RelayNetworkSummary",
+      "valid": false,
+      "stage": "schema",
+      "note": "Version 1 readers refuse other versions; a v2 changes field meanings."
+    },
+    {
+      "file": "invalid/RelayNetworkSummary/negative-count.json",
+      "schema": "RelayNetworkSummary",
+      "valid": false,
+      "stage": "schema",
+      "note": "Counters are non-negative integers."
+    },
+    {
+      "file": "valid/ClientNetworkSummary/online-seat.json",
+      "schema": "ClientNetworkSummary",
+      "valid": true,
+      "note": "A client summary as the engine writes it next to the replay. Not uploaded anywhere."
+    },
+    {
+      "file": "valid/ClientNetworkSummary/without-series.json",
+      "schema": "ClientNetworkSummary",
+      "valid": true,
+      "note": "GLOB2_NET_SUMMARY leaves the series out; order_validation is null without the order check."
+    },
+    {
+      "file": "invalid/ClientNetworkSummary/unknown-transport.json",
+      "schema": "ClientNetworkSummary",
+      "valid": false,
+      "stage": "schema",
+      "note": "transport is lan or online."
     },
     {
       "file": "valid/RelayRecordReceipt/stored.json",
@@ -572,6 +625,12 @@
       "valid": false,
       "stage": "schema",
       "note": "A rating preview carries both outcomes."
+    },
+    {
+      "file": "valid/RealtimeEventMatchStart/assignment-with-relay.json",
+      "schema": "RealtimeEventMatchStart",
+      "valid": true,
+      "note": "Newer servers name the relay and its region (network telemetry context)."
     },
     {
       "file": "invalid/RealtimeEventMatchStart/assignment-with-bad-setup.json",

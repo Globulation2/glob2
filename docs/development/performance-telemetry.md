@@ -15,6 +15,13 @@ scanout. No GPU queries, synchronization, or additional world scans are introduc
 
 - `loop` measures complete main-loop iterations, including pacing.
 - `loop.work` excludes intentional sleep, network sleep, and the presentation call.
+- `pacing.sleep` and `pacing.network_sleep` time the host's wait between iterations.
+  A wait counts as network sleep only while `Engine::waitingOnNetwork()`: in turn games
+  while the relay's authorized horizon is used up, in legacy games while a peer's
+  orders are missing. Jitter-buffer pacing in a turn game is ordinary `pacing.sleep`.
+  Both the native loop and the in-game screen host time these waits; menus do not.
+  Turn games also export [network telemetry](network-telemetry.md) (`GLOB2_NET_*`
+  records and a per-match `ClientNetworkSummary`).
 - `simulation.tick` measures an executed simulation step; rendered frames and ticks need not
   have the same cadence.
 - `pacing.presentation_interval` measures time between presentation returns. Its population

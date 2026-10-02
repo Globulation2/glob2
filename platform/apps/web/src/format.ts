@@ -95,6 +95,7 @@ export function seatOf(match: MatchSummary, accountId: string | undefined) {
 export function outcomeLetter(outcome: string | undefined): { letter: string; className: string } {
   if (outcome === 'won') return { letter: 'W', className: 'res w' };
   if (outcome === 'lost' || outcome === 'abandoned') return { letter: 'L', className: 'res l' };
+  if (outcome === 'draw') return { letter: 'D', className: 'res d' };
   return { letter: '–', className: 'res' };
 }
 

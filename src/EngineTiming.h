@@ -29,6 +29,11 @@ static constexpr int GAME_TICK_MS = 40;
 //! EngineRun.cpp.
 static constexpr int MAX_CATCHUP_MS = 500;
 
+//! Turn games: the longest the host loop sleeps between polls of the relay
+//! connection while waiting for the next tick. Bundle arrival times are what the
+//! jitter buffer sizes itself from, so they must not be rounded up to whole frames.
+static constexpr unsigned TURN_POLL_MS = 5;
+
 //! Tick interval (ms) the engine targets while replaying with fast-forward
 //! enabled: zero means uncapped, the simulation runs as fast as the CPU
 //! allows. Pairs with REPLAY_FAST_FORWARD_DRAW_RATIO so the GUI is still

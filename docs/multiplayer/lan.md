@@ -77,9 +77,8 @@ with `version`.
   relay's admission function maps tickets to seats. LAN needs no signed tickets.
 - **Synchronized start.** The relay's clock starts once every human seat's first `Hello`
   has arrived, so no player starts behind while the others load (or after 30 s).
-- **Bundles.** The LAN relay sends a bundle every tick (`bundleInterval` 1); online
-  relays send one every 2 ticks. On a LAN the extra frames cost nothing, and the input
-  delay drops by about 40 ms.
+- **Bundles.** The LAN relay sends a bundle every tick (`bundleInterval` 1), as online
+  relays do by default.
 - **Reconnect.** A guest whose connection drops reconnects to the same pinned endpoint by
   itself and resumes from its horizon. A guest that hears nothing from the host for 5 s
   treats the connection as lost. After 2 minutes without reaching the host, the guest's
@@ -92,7 +91,8 @@ with `version`.
   transport then delivers `Reject(MatchOver)`, which ends its session cleanly, and the
   room shows "The host left the game."
 - **Record.** The host writes the match record to `<user dir>/replays/lan-last.g2mr`;
-  `glob2 --verify-match` replays it.
+  `glob2 --verify-match` replays it. Next to it, `lan-last.network.json` holds the
+  relay's per-seat network summary ([network telemetry](../development/network-telemetry.md)).
 
 ## In-game connection notice
 

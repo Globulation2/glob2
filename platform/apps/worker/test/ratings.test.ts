@@ -18,7 +18,12 @@ import {
   matchSkill,
   rateSides,
 } from '../src/ratings/scale.ts';
-import { MUTUAL_LEAVE_TICKS, decideRating, type OutcomeInput } from '../src/ratings/outcome.ts';
+import {
+  MUTUAL_LEAVE_TICKS,
+  decideRating,
+  participantOutcomes,
+  type OutcomeInput,
+} from '../src/ratings/outcome.ts';
 import { aiLadderRatings, ensureAiEntity, type RatedAi } from '../src/ratings/entities.ts';
 import {
   applyMatchRatings,
@@ -278,6 +283,93 @@ describe('rating decision', () => {
   });
 });
 
+describe('shared wins', () => {
+  // The live staging match: four free-for-all teams, sudden death, nobody
+  // with prestige at the buzzer. The engine reports all four as won.
+  const ffa = new Map([
+    [0, 0],
+    [1, 1],
+    [2, 2],
+    [3, 3],
+  ]);
+
+  it('records a win shared by several alliances as a draw for those teams', () => {
+    const allWon = new Map([0, 1, 2, 3].map((t) => [t, 'won' as const]));
+    expect([...participantOutcomes(ffa, allWon)]).toEqual([
+      [0, 'draw'],
+      [1, 'draw'],
+      [2, 'draw'],
+      [3, 'draw'],
+    ]);
+    // A tie at the top between two of four: the others lost.
+    const tieAtTop = new Map([
+      [0, 'won' as const],
+      [1, 'lost' as const],
+      [2, 'won' as const],
+      [3, 'lost' as const],
+    ]);
+    expect([...participantOutcomes(ffa, tieAtTop).values()]).toEqual([
+      'draw',
+      'lost',
+      'draw',
+      'lost',
+    ]);
+  });
+
+  it('keeps a win held by one alliance, however many of its teams won', () => {
+    const twoVsTwo = new Map([
+      [0, 0],
+      [1, 0],
+      [2, 1],
+      [3, 1],
+    ]);
+    const alliesWon = new Map([
+      [0, 'won' as const],
+      [1, 'won' as const],
+      [2, 'lost' as const],
+      [3, 'unresolved' as const],
+    ]);
+    expect([...participantOutcomes(twoVsTwo, alliesWon).values()]).toEqual([
+      'won',
+      'won',
+      'lost',
+      'unresolved',
+    ]);
+    const single = new Map([
+      [0, 'won' as const],
+      [1, 'lost' as const],
+    ]);
+    expect([...participantOutcomes(ffa, single).values()]).toEqual(['won', 'lost']);
+  });
+
+  it('does not rate a draw, whether the outcomes are raw or recorded', () => {
+    const teamAlliance = new Map([
+      [0, 0],
+      [1, 1],
+    ]);
+    const participants = [
+      { seat: 0, team: 0, kind: 'human' as const },
+      { seat: 1, team: 1, kind: 'ai' as const },
+    ];
+    const raw = new Map([
+      [0, 'won' as const],
+      [1, 'won' as const],
+    ]);
+    const input = { teamAlliance, participants, teamOutcomes: raw, finalTick: 6000 };
+    expect(decideRating(input)).toEqual({ kind: 'unchanged', reason: 'draw' });
+    expect(
+      decideRating({ ...input, teamOutcomes: participantOutcomes(teamAlliance, raw) }),
+    ).toEqual({ kind: 'unchanged', reason: 'draw' });
+    // A draw is a verified result: an earlier leaver does not turn it into a loss.
+    expect(
+      decideRating({
+        ...input,
+        participants: [{ ...participants[0]!, quitTick: 100 }, participants[1]!],
+      }),
+    ).toEqual({ kind: 'unchanged', reason: 'draw' });
+  });
+});
+
 describe('rating application', () => {
   let database: TestDatabase;
   beforeAll(async () => {
@@ -381,6 +473,67 @@ describe('rating application', () => {
     expect(results.filter((r) => r.status === 'applied')).toHaveLength(1);
     expect(results.filter((r) => r.status === 'already')).toHaveLength(3);
     expect(await ratingOf(db, q)).toMatchObject({ games: 1, wins: 1 });
+  });
+
+  it('records a shared win as a draw and leaves ratings unchanged', async () => {
+    const db = database.db;
+    const d1 = await createAccount(db, 'Draw1');
+    const d2 = await createAccount(db, 'Draw2');
+    const matchId = await createMatch(db, [
+      { side: 0, accountId: d1 },
+      { side: 1, accountId: d2 },
+    ]);
+    const job = await createVerifyJob(db, matchId);
+    await handleEngineJobResult(db, resultPayload(job, verified(['won', 'won'])));
+    const participants = await db
+      .selectFrom('match_participants')
+      .select(['outcome', 'rating_after'])
+      .where('match_id', '=', matchId)
+      .orderBy('seat')
+      .execute();
+    expect(participants).toEqual([
+      { outcome: 'draw', rating_after: null },
+      { outcome: 'draw', rating_after: null },
+    ]);
+    const stats = await db
+      .selectFrom('match_team_stats')
+      .select('outcome')
+      .where('match_id', '=', matchId)
+      .orderBy('team')
+      .execute();
+    expect(stats.map((s) => s.outcome)).toEqual(['draw', 'draw']);
+    const row = await db
+      .selectFrom('matches')
+      .select(['rating_status', 'rating_note'])
+      .where('id', '=', matchId)
+      .executeTakeFirstOrThrow();
+    expect(row).toEqual({ rating_status: 'unchanged', rating_note: 'draw' });
+    expect(await ratingOf(db, d1)).toBeUndefined();
+  });
+
+  it('records a four-way shared win in a room as draws', async () => {
+    const db = database.db;
+    const h1 = await createAccount(db, 'Room1');
+    const h2 = await createAccount(db, 'Room2');
+    const matchId = await createMatch(
+      db,
+      [
+        { side: 0, accountId: h1 },
+        { side: 1, accountId: h2 },
+        { side: 2, ai: 'nicowar' },
+        { side: 3, ai: 'warrush' },
+      ],
+      { queueId: null, rated: false },
+    );
+    const job = await createVerifyJob(db, matchId);
+    await handleEngineJobResult(db, resultPayload(job, verified(['won', 'won', 'won', 'won'])));
+    const participants = await db
+      .selectFrom('match_participants')
+      .select('outcome')
+      .where('match_id', '=', matchId)
+      .orderBy('seat')
+      .execute();
+    expect(participants.map((p) => p.outcome)).toEqual(['draw', 'draw', 'draw', 'draw']);
   });
 
   it('counts abandonment as a loss and leaves mutual leave unrated', async () => {

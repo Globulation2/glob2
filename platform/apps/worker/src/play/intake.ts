@@ -11,6 +11,7 @@ import {
   sameSimVersion,
   type MatchSetup,
   type RelayMatchEnded,
+  type RelayNetworkSeat,
 } from '@glob2/protocol';
 import { MATCH_UPDATES_CHANNEL } from '../ratings/apply.ts';
 import { countCatalogPlay } from './catalog.ts';
@@ -68,7 +69,8 @@ export type MatchEndedOutcome =
 /**
  * Applies a relay's end-of-match report: match status, final tick, end reason
  * and desync flag; per seat the disconnect count and quit tick (and outcome
- * 'abandoned' for players who left a game every human abandoned). The room
+ * 'abandoned' for players who left a game every human abandoned), and the
+ * seat's entry of the relay's network summary when the report has one. The room
  * that started the match reopens. A verify-match job is then submitted.
  */
 export async function recordMatchEnded(
@@ -124,12 +126,17 @@ export async function recordMatchEnded(
       })
       .where('id', '=', report.matchId)
       .execute();
+    const network = new Map<number, RelayNetworkSeat>(
+      (report.network?.seats ?? []).map((s) => [s.seat, s]),
+    );
     for (const seat of report.seats) {
+      const seatNetwork = network.get(seat.seat);
       await trx
         .updateTable('match_participants')
         .set({
           disconnects: seat.disconnects,
           quit_tick: seat.quitTick ?? null,
+          ...(seatNetwork ? { network: JSON.stringify(seatNetwork) } : {}),
           ...(report.reason === 'abandoned' && seat.quitTick !== undefined
             ? { outcome: 'abandoned' as const }
             : {}),
