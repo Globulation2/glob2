@@ -18,6 +18,7 @@ const typedColumns: ColumnLists = {
     'created_at',
     'updated_at',
     'last_seen_at',
+    'display_name_changed_at',
   ],
   identities: [
     'id',
@@ -59,6 +60,36 @@ const typedColumns: ColumnLists = {
     'created_at',
     'expires_at',
     'completed_at',
+    'resume_hash',
+    'mode',
+    'client_platform',
+    'browser_binding_hash',
+    'conflict_account_id',
+    'failure_reason',
+    'linked',
+    'delivered_at',
+  ],
+  web_sessions: [
+    'id',
+    'account_id',
+    'token_hash',
+    'created_at',
+    'expires_at',
+    'last_used_at',
+    'revoked_at',
+  ],
+  auth_flows: [
+    'id',
+    'state_hash',
+    'provider',
+    'code_verifier',
+    'nonce',
+    'purpose',
+    'attempt_id',
+    'browser_binding_hash',
+    'created_at',
+    'expires_at',
+    'consumed_at',
   ],
   entitlements: [
     'id',
@@ -260,7 +291,10 @@ afterAll(async () => {
 describe('migrations', () => {
   it('apply from an empty database and are idempotent', async () => {
     const first = await migrateToLatest(database.db);
-    expect(first.map((r) => [r.migrationName, r.status])).toEqual([['0001_initial', 'Success']]);
+    expect(first.map((r) => [r.migrationName, r.status])).toEqual([
+      ['0001_initial', 'Success'],
+      ['0002_identity', 'Success'],
+    ]);
     expect(await migrateToLatest(database.db)).toEqual([]);
     const status = await createMigrator(database.db).getMigrations();
     expect(status.every((m) => m.executedAt instanceof Date)).toBe(true);

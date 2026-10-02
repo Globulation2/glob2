@@ -13,10 +13,16 @@ export const OidcProviderConfig = Strict({
   /** Issuer URL, or a preset that fills it in. */
   preset: Type.Optional(Type.Union([Type.Literal('google'), Type.Literal('microsoft')])),
   issuer: Type.Optional(Type.String()),
+  /** microsoft preset: tenant (default `common`: work, school and personal accounts). */
+  tenant: Type.Optional(Type.String({ pattern: '^[A-Za-z0-9.-]{1,64}$' })),
   clientId: Type.String({ minLength: 1 }),
-  clientSecretEnv: Type.String({ pattern: '^[A-Z][A-Z0-9_]*$' }),
+  /** Omit for public clients (PKCE only). */
+  clientSecretEnv: Type.Optional(Type.String({ pattern: '^[A-Z][A-Z0-9_]*$' })),
   scopes: Type.Optional(Type.Array(Type.String())),
+  /** Development and tests only: allow an http:// issuer. */
+  allowInsecureIssuer: Type.Optional(Type.Boolean()),
 });
+export type OidcProviderConfig = Static<typeof OidcProviderConfig>;
 
 export const AppleProviderConfig = Strict({
   id: ProviderId,
@@ -25,8 +31,14 @@ export const AppleProviderConfig = Strict({
   clientId: Type.String({ minLength: 1, description: 'Services ID.' }),
   teamId: Type.String({ minLength: 1 }),
   keyId: Type.String({ minLength: 1 }),
+  /** Environment variable holding the .p8 private key (PEM). */
   privateKeyEnv: Type.String({ pattern: '^[A-Z][A-Z0-9_]*$' }),
+  /** Default https://appleid.apple.com; overridden only in tests. */
+  issuer: Type.Optional(Type.String()),
+  allowInsecureIssuer: Type.Optional(Type.Boolean()),
 });
+export type AppleProviderConfig = Static<typeof AppleProviderConfig>;
+export type ProviderConfig = OidcProviderConfig | AppleProviderConfig;
 
 export const QueueConfig = Strict({
   id: Type.String({ pattern: '^[a-z0-9][a-z0-9-]{0,31}$' }),
@@ -45,8 +57,53 @@ export const InstanceConfig = Strict({
   guests: Strict({ enabled: Type.Boolean() }),
   auth: Strict({
     providers: Type.Array(Type.Union([OidcProviderConfig, AppleProviderConfig])),
-    local: Strict({ enabled: Type.Boolean() }),
+    local: Strict({
+      enabled: Type.Boolean(),
+      /** Whether new local accounts may be created (default true when enabled). */
+      allowRegistration: Type.Optional(Type.Boolean()),
+    }),
+    /** Access token lifetime in minutes (default 10). */
+    accessTokenMinutes: Type.Optional(Type.Integer({ minimum: 1, maximum: 60 })),
+    /** Refresh token lifetime in days (default 60). */
+    refreshTokenDays: Type.Optional(Type.Integer({ minimum: 1, maximum: 365 })),
+    /** Browser sign-in attempt lifetime in minutes (default 10). */
+    handoffMinutes: Type.Optional(Type.Integer({ minimum: 1, maximum: 60 })),
+    /** Web session (cookie) lifetime in days (default 30). */
+    webSessionDays: Type.Optional(Type.Integer({ minimum: 1, maximum: 365 })),
   }),
+  accounts: Type.Optional(
+    Strict({
+      /** Days between renames of a registered account (default 30; 0 disables the limit). */
+      renameIntervalDays: Type.Optional(Type.Integer({ minimum: 0, maximum: 3650 })),
+    }),
+  ),
+  web: Type.Optional(
+    Strict({
+      /**
+       * Extra origins (besides PUBLIC_ORIGIN) allowed to open /realtime from a
+       * browser and to send cookie-authenticated requests, e.g. a separate web
+       * client host. Native clients send no Origin and are always allowed.
+       */
+      allowedOrigins: Type.Optional(
+        Type.Array(Type.String({ pattern: '^https?://[^/\\s]+$' }), { maxItems: 32 }),
+      ),
+    }),
+  ),
+  limits: Type.Optional(
+    Strict({
+      /** Sign-in, refresh and registration requests per client IP per minute (default 30). */
+      authPerMinute: Type.Optional(Type.Integer({ minimum: 1 })),
+      /** New guest accounts per client IP per hour (default 20). */
+      guestsPerHour: Type.Optional(Type.Integer({ minimum: 1 })),
+      /** Other API requests per client IP per minute (default 600). */
+      apiPerMinute: Type.Optional(Type.Integer({ minimum: 1 })),
+      /** Realtime messages per socket: sustained per second (default 10), burst (default 40). */
+      realtimePerSecond: Type.Optional(Type.Number({ exclusiveMinimum: 0 })),
+      realtimeBurst: Type.Optional(Type.Integer({ minimum: 1 })),
+      /** Open realtime sockets per client IP per replica (default 20). */
+      realtimeConnectionsPerIp: Type.Optional(Type.Integer({ minimum: 1 })),
+    }),
+  ),
   access: Strict({
     policy: Type.Literal('allow-all', {
       description: 'AccessPolicy implementation; only allow-all exists today.',
