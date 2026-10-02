@@ -3,6 +3,7 @@
 Uses an isolated project, ephemeral host ports, and disposable volumes.
 """
 import base64
+import gzip
 import ipaddress
 import json
 import http.client
@@ -232,7 +233,9 @@ class ComposeTests(unittest.TestCase):
             self.assertTrue(config['HostConfig']['ReadonlyRootfs'])
             self.assertIn('ALL', config['HostConfig']['CapDrop'])
             self.assertTrue(any(value.startswith('no-new-privileges') for value in config['HostConfig']['SecurityOpt']))
-        for target, status in [('/', 200), ('/index.wasm', 200), ('/metrics', 404), ('/healthz', 404), ('/readyz', 404), ('/livez', 404), ('/register', 404)]:
+        assets = Path(os.environ.get('GLOB2_ASSETS', ROOT/'build/browser-static'))
+        wasm = next(assets.glob('index-*.wasm')).name
+        for target, status in [('/', 200), ('/'+wasm, 200), ('/metrics', 404), ('/healthz', 404), ('/readyz', 404), ('/livez', 404), ('/register', 404)]:
             client = http.client.HTTPSConnection('localhost', self.port, context=self.tls, timeout=10)
             try:
                 client.request('HEAD', target)
@@ -246,6 +249,31 @@ class ComposeTests(unittest.TestCase):
         with self.assertRaises((EOFError, OSError)):
             while True: read_frame(malformed[0])
         self.assertTrue(self.control('lobby').startswith('200'))
+
+    def test_static_gzip_negotiation_and_mime_types(self):
+        assets = Path(os.environ.get('GLOB2_ASSETS', ROOT/'build/browser-static'))
+        names = ['index.html'] + [next(assets.glob('index-*.'+ext)).name for ext in ('js','wasm','data')]
+        for name in names:
+            responses = {}
+            for encoding in ('identity', 'gzip'):
+                client = http.client.HTTPSConnection('localhost', self.port, context=self.tls, timeout=30)
+                try:
+                    client.request('GET', '/'+name, headers={'Accept-Encoding': encoding})
+                    response = client.getresponse()
+                    self.assertEqual(response.status, 200)
+                    self.assertIn('Accept-Encoding', response.getheader('Vary'))
+                    self.assertEqual(response.getheader('Content-Encoding'), 'gzip' if encoding == 'gzip' else None)
+                    self.assertIn('no-cache', response.getheader('Cache-Control'))
+                    responses[encoding] = (response.read(), response.getheader('Content-Type'))
+                finally:
+                    client.close()
+            self.assertEqual(gzip.decompress(responses['gzip'][0]), responses['identity'][0])
+            self.assertEqual(responses['identity'][0], (assets/name).read_bytes())
+            self.assertEqual(responses['identity'][1], responses['gzip'][1])
+            if name.endswith('.wasm'):
+                self.assertEqual(responses['gzip'][1], 'application/wasm')
+            if name.endswith('.data'):
+                self.assertEqual(responses['gzip'][1], 'application/octet-stream')
 
     def test_account_survives_recreation_and_router_loss_is_refused(self):
         username = 'compose' + uuid.uuid4().hex

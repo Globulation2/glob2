@@ -230,6 +230,56 @@ See Microsoft's [PC packaging guide](https://learn.microsoft.com/en-us/gaming/gd
 [MakePkg reference](https://learn.microsoft.com/en-us/gaming/gdk/docs/features/common/packaging/deployment/makepkg),
 and [Package Uploader setup](https://github.com/microsoft/PackageUploader).
 
+## Release asset and bundle sizes
+
+Release packagers share `tools/package_assets.py`. Original artwork stays in
+`data/` and `datasrc/`; generated runtime trees and per-image caches stay under
+`build/`. The exporter retains the smallest of original PNG, optimized PNG and
+pixel-exact lossless WebP. It preserves RGB beneath transparent pixels, dimensions,
+team-color masks and HD frame geometry. Normal source/debug builds use the
+originals. Image lookup searches directories in their existing order, checking a
+logical PNG first and its WebP alternative second within each directory; an
+original PNG override therefore retains precedence.
+
+Packaging bootstraps a private Pillow 12.2.0/libwebp 1.6.0 encoder environment
+when the current Python lacks the pinned encoder. This is a build dependency,
+never application content. It requires network access on first setup; subsequent
+exports reuse cached verified conversions. Flatpak supplies checksum-pinned
+encoder sources and build dependencies for its offline sandbox.
+Windows CI uses standard CPython for encoding and MinGW Python for building;
+`GLOB2_ASSET_ENCODER_PYTHON` selects a validated, already prepared interpreter.
+Python tests can use the same environment:
+
+```sh
+"$(python3 tools/package_assets.py --encoder-python)" -m unittest discover -s tests/build_system -v
+python3 tools/package_assets.py --platform linux --output build/runtime-assets
+```
+
+The export audit is beside the generated tree, outside shipped assets. Build
+helpers and the HD source provenance manifest are omitted, while `frames.txt`,
+font coverage, notices, music and all HD images are retained. Store screenshots
+remain in Linux packages where metainfo requires them. Android's installed asset
+index hashes the exported bytes. Run source `dist` and release `install` as
+separate SCons invocations; the latter installs the exported runtime tree.
+Release installs retain a compact compressed ownership index to remove obsolete
+managed files on upgrades. Unrelated files and modified obsolete files are kept.
+
+Mac `bundle`/`package` additionally builds a checksum-pinned SDL_image 2.8.12
+with PNG/JPEG/WebP loading and PNG/JPEG saving. The cache identity includes
+compiler, SDK, codec configuration and dependencies. Missing or changed libraries
+fail packaging rather than falling back to another decoder. The bundle stores
+one canonical copy per dylib, preserving required runtime aliases as symlinks.
+Its executable is stripped only after a matching dSYM has been retained in the
+build's `symbols/` directory, and before dependency rewriting and signing.
+Preserve that dSYM with release evidence for crash symbolication.
+
+The opaque `menu-colony.png` illustration uses visually reviewed quality-85
+lossy WebP in release exports. Use `--lossless-background` for an exact-artwork
+comparison export. Wordmarks, icons, sprites, masks and atlases remain lossless. No save,
+replay, network or simulation format changes are involved. Measure complete
+packages and startup separately: smaller compressed assets need not decode
+faster or use less GPU memory.
+
 ## Renderer stress measurements
 
 `torus-render-benchmark` uses the production loaded-map renderer. Its optional

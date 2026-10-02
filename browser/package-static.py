@@ -1,24 +1,90 @@
 #!/usr/bin/env python3
-"""Package the release with versioned asset names for static bucket hosting."""
+"""Package versioned browser assets and verified deterministic gzip sidecars."""
+import argparse
+import gzip
 import hashlib
+import io
 from pathlib import Path
+import shutil
+import tempfile
 
-root = Path(__file__).resolve().parent.parent
-source = root / 'build/emscripten/client/release'
-destination = root / 'build/browser-static'
-destination.mkdir(parents=True, exist_ok=True)
-files = {ext: (source / f'index.{ext}').read_bytes()
-         for ext in ('html', 'js', 'wasm', 'data')}
-version = hashlib.sha256(b''.join(files.values())).hexdigest()[:16]
-names = {ext: f'index-{version}.{ext}' for ext in ('js', 'wasm', 'data')}
-script = files['js'].decode()
-for ext in ('wasm', 'data'):
-    script = script.replace(f'"index.{ext}"', f'"{names[ext]}"')
-(destination / names['js']).write_text(script)
-for ext in ('wasm', 'data'):
-    (destination / names[ext]).write_bytes(files[ext])
-html = files['html'].decode().replace('src="index.js"', f'src="{names["js"]}"')
-html = html.replace('src=index.js>', f'src="{names["js"]}">')
-assert names['js'] in html, 'Expected Emscripten script tag'
-(destination / 'index.html').write_text(html)
-print(f'Packaged {version} in {destination}')
+POLICY = b'browser-static-gzip-v1\0'
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def package(source, destination):
+    source, destination = Path(source), Path(destination)
+    if source.resolve() == destination.resolve() or source.resolve().is_relative_to(destination.resolve()):
+        raise ValueError('Package destination must not overlap build inputs')
+    files = {ext: (source / f'index.{ext}').read_bytes() for ext in ('html', 'js', 'wasm', 'data')}
+    version = hashlib.sha256(POLICY + b''.join(files.values())).hexdigest()[:16]
+    names = {ext: f'index-{version}.{ext}' for ext in ('js', 'wasm', 'data')}
+    script = files['js'].decode()
+    for ext in ('wasm', 'data'):
+        script = script.replace(f'"index.{ext}"', f'"{names[ext]}"')
+    html = files['html'].decode().replace('src="index.js"', f'src="{names["js"]}"')
+    html = html.replace('src=index.js>', f'src="{names["js"]}">')
+    if names['js'] not in html:
+        raise ValueError('Expected Emscripten script tag')
+    contents = {'index.html': html.encode(), names['js']: script.encode(),
+                names['wasm']: files['wasm'], names['data']: files['data']}
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(prefix='browser-static-', dir=destination.parent) as temporary:
+        stage = Path(temporary)
+        for name, data in contents.items():
+            (stage/name).write_bytes(data)
+            stream = io.BytesIO()
+            with gzip.GzipFile(fileobj=stream, filename='', mode='wb', compresslevel=9, mtime=0) as compressor:
+                compressor.write(data)
+            compressed = stream.getvalue()
+            if gzip.decompress(compressed) != data:
+                raise ValueError('Gzip integrity failure: ' + name)
+            (stage/(name+'.gz')).write_bytes(compressed)
+        (stage/'SHA256SUMS').write_text(''.join(
+            f'{hashlib.sha256(p.read_bytes()).hexdigest()}  {p.name}\n'
+            for p in sorted(stage.iterdir())), encoding='utf-8')
+        # Destination is the dedicated generated static package, not a deployed site.
+        if destination.exists():
+            if not (destination/'index.html').is_file():
+                raise ValueError('Refusing to replace an unowned static package')
+            shutil.rmtree(destination)
+        stage.rename(destination)
+    return version
+
+
+def verify(directory):
+    directory = Path(directory)
+    expected = {}
+    for line in (directory/'SHA256SUMS').read_text().splitlines():
+        digest, name = line.split('  ', 1)
+        if Path(name).name != name or name in expected:
+            raise ValueError('Invalid checksum entry')
+        expected[name] = digest
+    actual = {p.name for p in directory.iterdir() if p.is_file() and p.name!='SHA256SUMS'}
+    if actual != set(expected):
+        raise ValueError('Static package contains unexpected or missing files')
+    for name, digest in expected.items():
+        data = (directory/name).read_bytes()
+        if hashlib.sha256(data).hexdigest() != digest:
+            raise ValueError('Static checksum mismatch: '+name)
+        if name.endswith('.gz') and gzip.decompress(data) != (directory/name[:-3]).read_bytes():
+            raise ValueError('Sidecar does not match original: '+name)
+    for ext in ('js','wasm','data'):
+        if len(list(directory.glob('index-*.'+ext))) != 1:
+            raise ValueError('Expected one versioned '+ext+' asset')
+    if not (directory/'index.html.gz').is_file():
+        raise ValueError('Missing HTML sidecar')
+
+
+def main():
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--source',type=Path,default=ROOT/'build/emscripten/client/release')
+    parser.add_argument('--output',type=Path,default=ROOT/'build/browser-static')
+    parser.add_argument('--verify',type=Path)
+    args=parser.parse_args()
+    if args.verify:
+        verify(args.verify);print('Verified static package and gzip sidecars')
+    else:
+        print('Packaged '+package(args.source,args.output)+' in '+str(args.output))
+
+if __name__=='__main__':main()
