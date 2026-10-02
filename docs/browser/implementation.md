@@ -122,7 +122,11 @@ support. The pinned Emscripten SDK's standard SDL_image port lacks WebP, so
 with PNG/JPEG/WebP loading. Their recipes participate in the managed port cache
 identity; source/debug images remain PNG. Codec notices ship with runtime data.
 `browser/package-static.py` creates deterministic gzip sidecars for the
-versioned JS, WASM and data files and the HTML entry point. Its packaging policy
+versioned serial and threaded JS/WASM, the capability loader, shared data file,
+and HTML entry point. Both runtime binaries and the loader participate in the
+package identity; the loader selects versioned URLs from the entry point.
+Packaging verifies both runtime asset payloads are identical before retaining
+one shared data file. Its packaging policy
 participates in the version identity so changing transfer representation does
 not overwrite an older immutable URL. `--verify DIRECTORY` checks file coverage,
 SHA-256 and each sidecar's decompressed bytes before publication.

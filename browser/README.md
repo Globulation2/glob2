@@ -50,7 +50,8 @@ platform boundaries.
 The default build packages two runtimes: the root `index.js`/`index.wasm` serial
 fallback and `threaded/index.js`/`threaded/index.wasm`. Both use the root asset
 payload. Keep `index.html`, `loader.js`, both runtime directories and asset
-payloads together when publishing. `web-tests` additionally builds serial and
+payloads together when publishing. `python3 browser/package-static.py` produces
+the versioned release package with verified gzip sidecars for both runtimes. `web-tests` additionally builds serial and
 threaded `script-tests.js` harnesses.
 
 The loader prefers real shared-memory threads when isolation and worker startup
