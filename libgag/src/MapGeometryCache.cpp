@@ -4,6 +4,7 @@
 #include "GraphicContextPrivate.h"
 #include <algorithm>
 #include <cassert>
+#include <chrono>
 #include <cmath>
 #include <cstdint>
 #include <limits>
@@ -46,6 +47,10 @@ struct Entry
     unsigned buffer = 0;
     std::size_t bytes = 0;
     std::uint64_t touched = 0;
+    // Distinct (array-page?, texture-name) references make invalidation precise
+    // and let a cheap union lookup reject unrelated unit texture changes.
+    std::vector<std::pair<bool, unsigned>> references;
+    bool referencesRegistered = false;
 };
 struct MatrixScope
 {
@@ -59,14 +64,54 @@ struct MapGeometryCache::Impl
     RenderBatch *batch;
     std::unordered_map<Key, Entry, KeyHash> entries;
     Stats counters;
-    std::uint64_t clock = 0, generation = 0;
+    std::uint64_t clock = 0;
+    std::unordered_map<unsigned, std::size_t> nativeReferences, arrayReferences;
+    bool frame = false;
+    unsigned frameBuilds = 0;
+    std::chrono::steady_clock::duration frameBuildTime{};
     bool layer = false, prepared = false;
     QueueKey previous;
     bool hasPrevious = false;
     Impl(GraphicContext *gfx, RenderBatch *batch) : gfx(gfx), batch(batch) {}
 
+    void unregisterReferences(const Entry& entry) noexcept
+    {
+        for (const auto& [array, texture] : entry.references)
+        {
+            auto& references = array ? arrayReferences : nativeReferences;
+            auto found = references.find(texture);
+            assert(found != references.end());
+            if (--found->second == 0) references.erase(found);
+        }
+    }
+    void registerReferences(Entry& entry)
+    {
+        std::size_t registered = 0;
+        try
+        {
+            for (const auto& [array, texture] : entry.references)
+            {
+                ++(array ? arrayReferences : nativeReferences)[texture];
+                ++registered;
+            }
+            entry.referencesRegistered = true;
+        }
+        catch (...)
+        {
+            // Roll back the partial index without allocating during unwinding.
+            for (std::size_t i = 0; i < registered; ++i)
+            {
+                const auto& [array, texture] = entry.references[i];
+                auto& references = array ? arrayReferences : nativeReferences;
+                auto found = references.find(texture);
+                if (--found->second == 0) references.erase(found);
+            }
+            throw;
+        }
+    }
     void erase(std::unordered_map<Key, Entry, KeyHash>::iterator entry) noexcept
     {
+        if (entry->second.referencesRegistered) unregisterReferences(entry->second);
         if (entry->second.buffer) glDeleteBuffers(1, &entry->second.buffer);
         counters.bytes -= entry->second.bytes;
         entries.erase(entry);
@@ -81,6 +126,7 @@ struct MapGeometryCache::Impl
     {
         resetLayout();
         while (!entries.empty()) erase(entries.begin());
+        assert(nativeReferences.empty() && arrayReferences.empty());
     }
     void trim(std::size_t incoming)
     {
@@ -176,6 +222,44 @@ void MapGeometryCache::endLayer() noexcept
     impl->layer = false;
 #endif
 }
+void MapGeometryCache::beginFrame()
+{
+#if defined(HAVE_OPENGL) && !defined(GLOB2_WEBGL2)
+    assert(!impl->frame);
+    impl->frame = true;
+    impl->frameBuilds = 0;
+    impl->frameBuildTime = {};
+#endif
+}
+void MapGeometryCache::endFrame() noexcept
+{
+#if defined(HAVE_OPENGL) && !defined(GLOB2_WEBGL2)
+    impl->resetLayout();
+    impl->frame = false;
+#endif
+}
+void MapGeometryCache::abortFrame() noexcept { endFrame(); }
+void MapGeometryCache::invalidateTexture(unsigned sourceID, unsigned oldArrayPage) noexcept
+{
+#if defined(HAVE_OPENGL) && !defined(GLOB2_WEBGL2)
+    auto& cache = *impl;
+    const bool native = sourceID && cache.nativeReferences.contains(sourceID);
+    const bool array = oldArrayPage && cache.arrayReferences.contains(oldArrayPage);
+    if (!native && !array) return;
+    cache.resetLayout();
+    for (auto entry = cache.entries.begin(); entry != cache.entries.end();)
+    {
+        bool matches = std::any_of(entry->second.references.begin(), entry->second.references.end(),
+            [&](const auto& reference)
+            {
+                return reference.first ? array && reference.second == oldArrayPage
+                                       : native && reference.second == sourceID;
+            });
+        if (matches) { auto doomed = entry++; cache.erase(doomed); }
+        else ++entry;
+    }
+#endif
+}
 void MapGeometryCache::clear() noexcept { impl->clear(); }
 MapGeometryCache::Stats MapGeometryCache::stats() const
 {
@@ -193,11 +277,6 @@ bool MapGeometryCache::draw(const Key& key, const std::vector<int>& frames,
     auto& cache = *impl;
     if (cache.batch->active()) return false;
     MatrixScope matrix(translateX, translateY);
-    if (cache.generation != cache.batch->textureGeneration())
-    {
-        cache.clear();
-        cache.generation = cache.batch->textureGeneration();
-    }
     auto found = cache.entries.find(key);
     if (found != cache.entries.end() && found->second.frames == frames)
     {
@@ -208,6 +287,19 @@ bool MapGeometryCache::draw(const Key& key, const std::vector<int>& frames,
     }
     cache.resetLayout(); // Capturing/fallback paths require ordinary GL state.
     ++cache.counters.misses;
+    if (cache.frame && (cache.frameBuilds >= 16 || cache.frameBuildTime >= std::chrono::milliseconds(2)))
+    {
+        ++cache.counters.deferred;
+        return false;
+    }
+    ++cache.counters.builds;
+    ++cache.frameBuilds;
+    struct BuildTimer
+    {
+        Impl& cache;
+        std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
+        ~BuildTimer() { if (cache.frame) cache.frameBuildTime += std::chrono::steady_clock::now() - start; }
+    } timer{cache};
     if (found != cache.entries.end()) cache.erase(found);
     const auto captureGeneration = cache.batch->textureGeneration();
     Entry entry;
@@ -231,6 +323,7 @@ bool MapGeometryCache::draw(const Key& key, const std::vector<int>& frames,
             for (std::size_t i = 0; i < input.size(); i += 4)
                 run.tiles.push_back(int(std::floor((input[i].x + input[i + 2].x) / 64.f)));
             if (firstTile >= 0 && !std::is_sorted(run.tiles.begin(), run.tiles.end())) valid = false;
+            entry.references.emplace_back(drawKey.kind == QueueKey::ArrayTexture, drawKey.base);
             entry.runs.push_back(std::move(run));
         });
         emit();
@@ -238,6 +331,8 @@ bool MapGeometryCache::draw(const Key& key, const std::vector<int>& frames,
         entry.bytes = vertices.size() * sizeof(MapVertex);
         if (cache.batch->textureGeneration() != captureGeneration) valid = false;
         if (!valid || entry.bytes > byteLimit || vertices.size() > std::size_t(std::numeric_limits<int>::max())) return false;
+        std::sort(entry.references.begin(), entry.references.end());
+        entry.references.erase(std::unique(entry.references.begin(), entry.references.end()), entry.references.end());
         cache.trim(entry.bytes);
         if (entry.bytes)
         {
@@ -258,7 +353,10 @@ bool MapGeometryCache::draw(const Key& key, const std::vector<int>& frames,
         }
         entry.touched = ++cache.clock;
         auto inserted = cache.entries.emplace(key, std::move(entry));
+        entry.buffer = 0; // The installed entry now owns the buffer, including on index failure.
         cache.counters.bytes += inserted.first->second.bytes;
+        try { cache.registerReferences(inserted.first->second); }
+        catch (...) { cache.erase(inserted.first); throw; }
         cache.replay(inserted.first->second, firstTile, lastTile);
         return true;
     }

@@ -59,6 +59,18 @@ class RenderBatch
 	~RenderBatch();
 	RenderBatch(const RenderBatch &) = delete;
 	RenderBatch &operator=(const RenderBatch &) = delete;
+	struct Stats
+	{
+		size_t pendingTextures = 0, textureBytes = 0;
+		uint64_t warmAttempts = 0, warmPromotions = 0;
+	};
+	// Preparation runs only after scene submission, outside geometry capture.
+	// Each frame attempts at most eight source copies with a soft 2 ms budget;
+	// an individual driver allocation/readback can exceed that budget.
+	void beginFrame();
+	void endFrame();
+	void abortFrame() noexcept;
+	Stats stats() const;
 	void configure(unsigned, int, int, const char *, const char *);
 	void begin();
 	void end();
@@ -77,6 +89,20 @@ class RenderBatch
 	uint64_t textureGeneration() const;
 	size_t textureBytes() const;
 	MapGeometryCache &geometryCache();
+};
+// Delimit one scene so first-use array preparation cannot form an unbounded
+// loop during zoom-out. Until promoted, sprites use their original 2D textures.
+// Pending source IDs are canceled before mutation/deletion or failed frames.
+class FrameDrawBatch
+{
+	RenderBatch *batch;
+	int exceptions;
+
+  public:
+	explicit FrameDrawBatch(GraphicContext *);
+	~FrameDrawBatch() noexcept(false);
+	FrameDrawBatch(const FrameDrawBatch &) = delete;
+	FrameDrawBatch &operator=(const FrameDrawBatch &) = delete;
 };
 // A scope encompasses a ground or air pass, preserving painter order with
 // bars, icons and overlapping sprites. Unwinding discards pending commands.

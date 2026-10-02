@@ -142,7 +142,14 @@ bool drawCachedResources(const void *mapIdentity, Map& map, int left, int top,
                     float((x - mapX) * 32), float(y * 32));
             }
             catch (const std::bad_alloc&) {}
-            if (!drawn) { layer.prepareFallback(); draw(mapX, mapX + width - 1, x - mapX, y); }
+            if (!drawn)
+            {
+                layer.prepareFallback();
+                // Cold-cache budget exhaustion must retain the resource-family
+                // batching path instead of reverting to one HD bind per sprite.
+                GAGCore::SpriteDrawBatch fallback(gfx, sprite);
+                draw(mapX, mapX + width - 1, x - mapX, y);
+            }
             x += width;
         }
     }

@@ -306,6 +306,13 @@ the resource pass. Software surfaces and dynamic team-color sprites retain their
 existing paths; cache-backed team-color surfaces cannot be deferred safely.
 
 
+For comparisons with another revision, set `GLOB2_BENCH_PAUSE_PRESENTATION=1`
+to freeze the water phase and `GLOB2_BENCH_WARMUP_FRAMES` to the same number of
+frames on both executables. Record cold-frame samples as well as steady-state
+medians, and confirm `STEADY_CACHE pending=0` before describing results as fully
+warmed. Compare complete builds from both revisions; the diagnostic immediate
+path is not an untouched-master baseline.
+
 ### Batching and geometry cache invariants
 
 The native desktop OpenGL renderer batches ground and air passes with
@@ -323,10 +330,16 @@ array pages while retaining their original dimensions, mip levels, format and
 sampling parameters. The source textures remain available for fallback drawing.
 The array cache caps its additional texture payload at 64 MiB, separately from
 cached map geometry. Immutable slots survive source texture invalidation until
-context teardown; new textures use the ordinary path when that budget is full. A texture
+context teardown; new textures use the ordinary path when that budget is full.
+Pages contain at most 64 layers to bound each driver allocation. `FrameDrawBatch`
+defers new array copies until after scene submission, attempting at most eight
+sources under a soft 2 ms budget. Original textures draw while preparation is
+pending, and mutation/deletion cancels pending IDs. A texture
 upload or deletion must flush commands referring to the old pixels and invalidate
 array views before the driver can reuse a texture name. Cached geometry must also
-be invalidated when its referenced texture generation changes. These are
+be invalidated selectively when its source texture or array page changes; unrelated
+uploads must preserve reusable entries. A mutation serial rejects interrupted
+captures but does not globally clear the cache. These are
 presentation caches owned by the graphics context, released while that context
 is current; they are neither saved nor consulted by simulation code.
 
@@ -338,7 +351,10 @@ Each entry compares the exact current tile frame/visibility vector before reuse:
 a resource amount, terrain frame or discovery change must invalidate the entry.
 Partial-discovery resources keep the ordinary drawing path. The geometry budget
 is 32 MiB of buffer payload with at most 4096 entries and least-recently-used
-eviction; CPU metadata and driver allocation overhead are additional.
+eviction; CPU metadata and driver allocation overhead are additional. Each scene
+attempts at most 16 geometry builds under a separate soft 2 ms budget; validated
+cache hits remain unrestricted. Deferred rows retain ordinary sprite batching.
+These time limits are soft because an individual driver call can exceed them.
 
 Native array/cache optimizations require supported desktop OpenGL features.
 Software, portable SDL and unsupported native contexts retain their existing

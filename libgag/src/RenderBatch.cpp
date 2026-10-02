@@ -11,6 +11,9 @@
 #include <exception>
 #include <cstring>
 #include <stdexcept>
+#include <deque>
+#include <unordered_set>
+#include <chrono>
 namespace GAGCore
 {
 #if defined(HAVE_OPENGL) && !defined(GLOB2_WEBGL2)
@@ -65,6 +68,11 @@ struct RenderBatch::State
 	size_t bytes = 0;
 	int maxLayers = 0;
 	uint64_t generation = 0;
+	bool frame = false;
+	static constexpr size_t maxPendingTextures = 4096;
+	std::deque<unsigned> pending;
+	std::unordered_set<unsigned> pendingIDs;
+	uint64_t warmAttempts = 0, warmPromotions = 0;
 	Capture capture;
 	std::unique_ptr<MapGeometryCache> geometry;
 	explicit State(GraphicContext *g) : gfx(g) {}
@@ -358,6 +366,31 @@ ArrayView RenderBatch::pack(unsigned texture)
 		return {};
 	if (auto i = s.views.find(texture); i != s.views.end())
 		return i->second;
+	if (s.frame)
+	{
+		// A deferred miss is not a permanent negative entry: later frames may
+		// promote it. Keep the FIFO bounded and deduplicate all source IDs.
+		if (!s.pendingIDs.contains(texture) && s.pending.size() < State::maxPendingTextures)
+		{
+			try
+			{
+				s.pendingIDs.insert(texture);
+				try
+				{
+					s.pending.push_back(texture);
+				}
+				catch (...)
+				{
+					s.pendingIDs.erase(texture);
+					throw;
+				}
+			}
+			catch (const std::bad_alloc &)
+			{ /* Keep native drawing available. */
+			}
+		}
+		return {};
+	}
 	barrier();
 	// Remember stable ineligibility and budget/driver failures. Otherwise a
 	// full page budget would force expensive GPU queries for every sprite.
@@ -390,7 +423,9 @@ ArrayView RenderBatch::pack(unsigned texture)
 			maxLevel = std::min(maxLevel, int(std::floor(std::log2(std::max(w, h)))));
 		State::ArrayDescriptor desc{w, h, fmt, maxLevel, minFilter, magFilter, ws, wt};
 		auto &pages = s.pages[desc];
-		const int layers = std::min(s.maxLayers, (w == 128 && h == 128) ? 256 : 64);
+		// Smaller pages bound a single cold allocation and leave fewer unused
+		// slots when a scene sees only a fraction of the animation library.
+		const int layers = std::min(s.maxLayers, 64);
 		if (layers < 1)
 			return fallback();
 		if (pages.empty() || pages.back().used >= layers)
@@ -564,6 +599,57 @@ void RenderBatch::configure(unsigned p, int b, int t, const char *vertex, const 
 	s.arrayHasBase = glGetUniformLocation(s.arrayUnitProgram, "uHasBase");
 	s.arrayHasTeam = glGetUniformLocation(s.arrayUnitProgram, "uHasTeam");
 }
+void RenderBatch::beginFrame()
+{
+	if (state->frame)
+		throw std::logic_error("Frame draw batch scopes cannot nest");
+	state->frame = true;
+	if (state->geometry)
+		state->geometry->beginFrame();
+}
+void RenderBatch::endFrame()
+{
+	barrier();
+	state->frame = false;
+	if (state->geometry)
+		state->geometry->endFrame();
+	// Driver calls are indivisible; this is a soft wall-time ceiling checked
+	// between attempts, plus a strict count limit on new source work.
+	const auto started = std::chrono::steady_clock::now();
+	for (unsigned attempts = 0; attempts < 8 && !state->pending.empty(); ++attempts)
+	{
+		if (std::chrono::steady_clock::now() - started >= std::chrono::milliseconds(2))
+			break;
+		const unsigned texture = state->pending.front();
+		state->pending.pop_front();
+		state->pendingIDs.erase(texture);
+		++state->warmAttempts;
+		const auto view = pack(texture);
+		if (view.texture)
+		{
+			++state->warmPromotions;
+			// Existing geometry owns its original keys. Drop only entries
+			// referencing this native source so the next capture may use the
+			// newly ready immutable array slot. Unrelated terrain stays hot.
+			if (state->geometry)
+				state->geometry->invalidateTexture(texture);
+		}
+	}
+	finishReplay();
+}
+void RenderBatch::abortFrame() noexcept
+{
+	abortCapture();
+	state->frame = false;
+	state->pending.clear();
+	state->pendingIDs.clear();
+	if (state->geometry)
+		state->geometry->abortFrame();
+}
+RenderBatch::Stats RenderBatch::stats() const
+{
+	return {state->pending.size(), state->bytes, state->warmAttempts, state->warmPromotions};
+}
 RenderBatch::RenderBatch(GraphicContext *g) : state(std::make_unique<State>(g)) {}
 RenderBatch::~RenderBatch() = default;
 void RenderBatch::begin()
@@ -581,9 +667,13 @@ void RenderBatch::barrier()
 }
 void RenderBatch::stateChange()
 {
-    // Transform scopes restore state while unwinding. Discard a failed pass
-    // before that restore, rather than risk a second allocation exception.
-    if (std::uncaught_exceptions() > 0) { abortCapture(); return; }
+	// Transform scopes restore state while unwinding. Discard a failed pass
+	// before that restore, rather than risk a second allocation exception.
+	if (std::uncaught_exceptions() > 0)
+	{
+		abortCapture();
+		return;
+	}
 	state->stateChange();
 }
 bool RenderBatch::active() const
@@ -624,10 +714,15 @@ void RenderBatch::textureChanged(unsigned texture)
 	if (!texture)
 		return;
 	barrier();
+	unsigned oldPage = 0;
+	if (auto view = state->views.find(texture); view != state->views.end())
+		oldPage = view->second.texture;
 	if (state->geometry)
-		state->geometry->clear();
-	++state->generation;
+		state->geometry->invalidateTexture(texture, oldPage);
+	++state->generation; // Captures reject mutation while their emitter runs.
 	state->views.erase(texture);
+	if (state->pendingIDs.erase(texture))
+		std::erase(state->pending, texture);
 }
 uint64_t RenderBatch::textureGeneration() const
 {
@@ -640,7 +735,11 @@ size_t RenderBatch::textureBytes() const
 MapGeometryCache &RenderBatch::geometryCache()
 {
 	if (!state->geometry)
+	{
 		state->geometry = std::make_unique<MapGeometryCache>(state->gfx, this);
+		if (state->frame)
+			state->geometry->beginFrame();
+	}
 	return *state->geometry;
 }
 void RenderBatch::bind(const QueueKey &k)
@@ -677,6 +776,13 @@ struct RenderBatch::State
 };
 RenderBatch::RenderBatch(GraphicContext *) : state(std::make_unique<State>()) {}
 RenderBatch::~RenderBatch() = default;
+void RenderBatch::beginFrame() {}
+void RenderBatch::endFrame() {}
+void RenderBatch::abortFrame() noexcept {}
+RenderBatch::Stats RenderBatch::stats() const
+{
+	return {};
+}
 void RenderBatch::configure(unsigned, int, int, const char *, const char *) {}
 void RenderBatch::begin() {}
 void RenderBatch::end() {}
@@ -722,6 +828,31 @@ void GraphicContext::setRenderBatchEnabled(bool enabled)
 	if (renderBatch)
 		renderBatch->barrier();
 	renderBatchEnabled = enabled;
+}
+FrameDrawBatch::FrameDrawBatch(GraphicContext *gfx)
+	: batch(gfx->getRenderBatch()), exceptions(std::uncaught_exceptions())
+{
+	if (batch)
+		batch->beginFrame();
+}
+FrameDrawBatch::~FrameDrawBatch() noexcept(false)
+{
+	if (!batch)
+		return;
+	if (std::uncaught_exceptions() > exceptions)
+		batch->abortFrame();
+	else
+	{
+		try
+		{
+			batch->endFrame();
+		}
+		catch (...)
+		{
+			batch->abortFrame();
+			throw;
+		}
+	}
 }
 UnitDrawBatch::UnitDrawBatch(GraphicContext *g)
 	: batch(g->getRenderBatch()), exceptions(std::uncaught_exceptions())

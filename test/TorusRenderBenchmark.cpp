@@ -201,7 +201,9 @@ static int run(int argc, char **argv)
             const char *mode = std::getenv("GLOB2_BENCH_MODE");
             if (mode && std::strcmp(mode, label)) return;
             std::vector<double> times, cpuTimes;
-            for (int i = -2; i < frames; ++i)
+            const int warmupFrames = std::max(0, std::getenv("GLOB2_BENCH_WARMUP_FRAMES")
+                ? std::atoi(std::getenv("GLOB2_BENCH_WARMUP_FRAMES")) : 2);
+            for (int i = -warmupFrames; i < frames; ++i)
             {
                 glFinish();
                 Uint64 start = SDL_GetPerformanceCounter();
@@ -210,6 +212,9 @@ static int run(int argc, char **argv)
                 glFinish();
                 assert(glGetError() == GL_NO_ERROR);
                 double ms = 1000.0 * (SDL_GetPerformanceCounter() - start) / SDL_GetPerformanceFrequency();
+                if (i < 0 && i >= -warmupFrames && i < -warmupFrames + 8)
+                    std::printf("WARMUP frame=%d elapsed_ms=%.3f process_cpu_ms=%.3f\n", i + warmupFrames, ms,
+                        1000.0 * (std::clock() - cpuStart) / CLOCKS_PER_SEC);
                 if (i >= 0)
                 {
                     times.push_back(ms);
@@ -271,13 +276,23 @@ static int run(int argc, char **argv)
                         drawH = std::min(drawH, gui.game.map.getH()*32);
                     }
                     globalContainer->gfx->beginMapTransform(zoom, 0, 0, 0, 0, width, height);
+                    const bool pausePresentation = std::getenv("GLOB2_BENCH_PAUSE_PRESENTATION");
+                    if (pausePresentation) gui.game.mapAnimationTime = 22;
                     gui.game.drawMap(0, 0, drawW, drawH, 0, 0,
-                        panX, panY, 0, gui.view, options, nullptr, nullptr, false,
+                        panX, panY, 0, gui.view, options, nullptr, nullptr, pausePresentation,
                         detailForZoom(gui.game, zoom));
                     globalContainer->gfx->endMapTransform();
                     ++cameraFrame;
                 });
                 std::printf("draw_calls=%lu texture_bytes=%zu\n", globalContainer->gfx->getDrawCallCount(), GAGCore::DrawableSurface::allocatedTextureBytes());
+                if (auto *batch = globalContainer->gfx->getRenderBatch())
+                {
+                    const auto geometry = batch->geometryCache().stats();
+                    const auto textures = batch->stats();
+                    std::printf("STEADY_CACHE pending=%zu attempts=%llu promotions=%llu array_bytes=%zu geometry_bytes=%zu builds=%llu deferred=%llu\n",
+                        textures.pendingTextures, textures.warmAttempts, textures.warmPromotions,
+                        textures.textureBytes, geometry.bytes, geometry.builds, geometry.deferred);
+                }
                 PerformanceTelemetry::collector().write(std::cout, "BENCH_SCOPE", 0, false);
                 assert(gui.game.checkSum(nullptr, nullptr, nullptr, true) == initialChecksum);
                 std::printf("simulation_checksum=%08x\n", initialChecksum);

@@ -27,7 +27,7 @@ public:
     struct Stats
     {
         std::size_t bytes = 0, entries = 0;
-        unsigned long long hits = 0, misses = 0;
+        unsigned long long hits = 0, misses = 0, builds = 0, deferred = 0;
     };
     MapGeometryCache(GraphicContext *context, RenderBatch *batch);
     ~MapGeometryCache();
@@ -56,6 +56,16 @@ public:
         Layer(const Layer&) = delete;
         Layer& operator=(const Layer&) = delete;
     };
+    // A scene limits cold geometry builds to 16 attempts and a soft 2 ms of
+    // elapsed build work. Hits remain unlimited; one driver call can overshoot
+    // the time limit. Standalone draws outside a frame have no warming budget.
+    void beginFrame();
+    void endFrame() noexcept;
+    void abortFrame() noexcept;
+    // Promotion invalidates native source references. Mutation/deletion also
+    // invalidates the old array page conservatively, without flushing unrelated
+    // terrain or resource rows (unit texture changes usually match nothing).
+    void invalidateTexture(unsigned sourceID, unsigned oldArrayPage = 0) noexcept;
     void clear() noexcept;
     Stats stats() const;
 private:

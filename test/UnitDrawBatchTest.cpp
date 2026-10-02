@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <memory>
 #include <vector>
+#include <stdexcept>
 #ifdef HAVE_OPENGL
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
@@ -159,5 +160,163 @@ TEST_CASE("unit batch outline bounds preserve all clip edges [display]")
             };
             REQUIRE(draw(false) == draw(true));
         }
+}
+namespace
+{
+// Expose source identity only in this fixture; production callers draw surfaces
+// normally and the batch discovers their immutable HD texture IDs itself.
+class ColdBatchSurface : public GAGCore::DrawableSurface
+{
+public:
+    explicit ColdBatchSurface(int index) : DrawableSurface(128, 128)
+    {
+        highResolutionSampling = true;
+        drawFilledRect(0, 0, 128, 128, GAGCore::Color(43 + index * 7, 73, 137));
+        drawFilledRect(16, 16, 32, 64, GAGCore::Color(19, 181, 67, 127));
+    }
+    unsigned sourceID() const { return texture; }
+};
+}
+
+TEST_CASE("cold frame batches defer and bound texture preparation without changing pixels [display]")
+{
+    SDL_SetHint(SDL_HINT_MAC_BACKGROUND_APP, "1");
+    glob2test::ToolkitScope toolkit;
+    auto* gfx = GAGCore::Toolkit::initGraphic(320, 240,
+        GAGCore::GraphicContext::USEGPU, "cold preparation regression");
+    auto* batch = gfx->getRenderBatch();
+    REQUIRE(batch);
+    std::vector<std::unique_ptr<ColdBatchSurface>> sources;
+    for (int i = 0; i < 16; ++i)
+    {
+        sources.push_back(std::make_unique<ColdBatchSurface>(i));
+        // Source upload is ordinary rendering work; the frame preparation
+        // budget limits copying ready source mip data into array pages.
+        gfx->drawSurface(0, 0, sources.back().get());
+    }
+    auto scene = [&]
+    {
+        for (int i = 0; i < int(sources.size()); ++i)
+        {
+            const float x = float(i % 8) * 30, y = float(i / 8) * 45;
+            for (int repeat = 0; repeat < 3; ++repeat)
+                gfx->drawSurface(x + repeat * 3, y + repeat * 4, 24.f, 32.f,
+                                 sources[i].get(), 0, 0, 128, 128, 127);
+            gfx->drawFilledRect(x + 1, y + 31, 20.f, 2.f, GAGCore::Color(71, 113, 197, 127));
+        }
+    };
+    auto clear = [&]
+    {
+        gfx->setClipRect();
+        gfx->drawFilledRect(0, 0, 320, 240, 17, 23, 31);
+    };
+    clear(); scene(); glFinish();
+    const auto reference = captureBatchPixels();
+
+    // A desktop without successfully linked array programs must retain native
+    // rendering. Capability failure is separate from preparation budgeting.
+    if (!batch->pack(sources.back()->sourceID()).texture)
+    {
+        clear();
+        { GAGCore::FrameDrawBatch frame(gfx); GAGCore::UnitDrawBatch units(gfx); scene(); }
+        REQUIRE(batch->stats().pendingTextures == 0);
+        glFinish(); requireBatchParity(reference, captureBatchPixels());
+        return;
+    }
+    const auto before = batch->stats();
+    clear();
+    {
+        GAGCore::FrameDrawBatch frame(gfx);
+        { GAGCore::UnitDrawBatch units(gfx); scene(); }
+        // The last source was prepared only to establish capability above.
+        // Every other ID is queued once despite three repeated draws.
+        REQUIRE(batch->stats().pendingTextures == sources.size() - 1);
+        REQUIRE(batch->pack(sources.front()->sourceID()).texture == 0);
+        REQUIRE(batch->stats().pendingTextures == sources.size() - 1);
+        REQUIRE(batch->stats().warmAttempts == before.warmAttempts);
+    }
+    auto previous = batch->stats();
+    REQUIRE(previous.warmAttempts - before.warmAttempts <= 8);
+    REQUIRE(previous.pendingTextures >= sources.size() - 1 - 8);
+    glFinish(); requireBatchParity(reference, captureBatchPixels());
+
+    for (int frameIndex = 0; frameIndex < 128 && previous.pendingTextures; ++frameIndex)
+    {
+        clear();
+        { GAGCore::FrameDrawBatch frame(gfx); GAGCore::UnitDrawBatch units(gfx); scene(); }
+        const auto current = batch->stats();
+        REQUIRE(current.warmAttempts - previous.warmAttempts <= 8);
+        REQUIRE(current.warmPromotions - previous.warmPromotions <=
+                current.warmAttempts - previous.warmAttempts);
+        glFinish(); requireBatchParity(reference, captureBatchPixels());
+        previous = current;
+    }
+    REQUIRE(previous.pendingTextures == 0);
+    REQUIRE(previous.textureBytes <= 64 * 1024 * 1024);
+    {
+        GAGCore::FrameDrawBatch frame(gfx);
+        REQUIRE(batch->pack(sources.front()->sourceID()).texture != 0);
+        REQUIRE(batch->stats().pendingTextures == 0);
+    }
+    REQUIRE(batch->stats().warmAttempts == previous.warmAttempts);
+}
+
+TEST_CASE("cold frame preparation cancels changed and deleted source IDs while disabled [display]")
+{
+    SDL_SetHint(SDL_HINT_MAC_BACKGROUND_APP, "1");
+    glob2test::ToolkitScope toolkit;
+    auto* gfx = GAGCore::Toolkit::initGraphic(320, 240,
+        GAGCore::GraphicContext::USEGPU, "cold lifetime regression");
+    auto* batch = gfx->getRenderBatch();
+    REQUIRE(batch);
+    auto source = std::make_unique<ColdBatchSurface>(0);
+    gfx->drawSurface(0, 0, source.get());
+    if (!batch->pack(source->sourceID()).texture) return;
+    // Mutation drops a previously ready view before its next source upload.
+    gfx->setRenderBatchEnabled(false);
+    source->drawFilledRect(0, 0, 128, 128, GAGCore::Color(173, 29, 91));
+    gfx->drawSurface(0, 0, source.get());
+    gfx->setRenderBatchEnabled(true);
+    const auto before = batch->stats();
+    {
+        GAGCore::FrameDrawBatch frame(gfx);
+        REQUIRE(batch->pack(source->sourceID()).texture == 0);
+        REQUIRE(batch->stats().pendingTextures == 1);
+        gfx->setRenderBatchEnabled(false);
+        REQUIRE(gfx->getRenderBatch() == nullptr);
+        source->drawFilledRect(0, 0, 128, 128, GAGCore::Color(19, 151, 61));
+        gfx->drawSurface(0, 0, source.get());
+        REQUIRE(batch->stats().pendingTextures == 0);
+        gfx->setRenderBatchEnabled(true);
+        REQUIRE(batch->pack(source->sourceID()).texture == 0);
+        REQUIRE(batch->stats().pendingTextures == 1);
+        gfx->setRenderBatchEnabled(false);
+        source.reset();
+        REQUIRE(batch->stats().pendingTextures == 0);
+        gfx->setRenderBatchEnabled(true);
+        // Reallocation may reuse the GLuint; it must never inherit a ready
+        // mapping or deferred work belonging to the destroyed surface.
+        source = std::make_unique<ColdBatchSurface>(1);
+        gfx->drawSurface(0, 0, source.get());
+        REQUIRE(batch->pack(source->sourceID()).texture == 0);
+        REQUIRE(batch->stats().pendingTextures == 1);
+        source.reset();
+        REQUIRE(batch->stats().pendingTextures == 0);
+    }
+    REQUIRE(batch->stats().warmAttempts == before.warmAttempts);
+
+    source = std::make_unique<ColdBatchSurface>(2);
+    gfx->drawSurface(0, 0, source.get());
+    try
+    {
+        GAGCore::FrameDrawBatch frame(gfx);
+        REQUIRE(batch->pack(source->sourceID()).texture == 0);
+        throw std::runtime_error("simulated failed scene");
+    }
+    catch (const std::runtime_error&) {}
+    REQUIRE(batch->stats().pendingTextures == 0);
+    REQUIRE_FALSE(batch->active());
+    { GAGCore::FrameDrawBatch frame(gfx); REQUIRE(batch->pack(source->sourceID()).texture == 0); }
+    REQUIRE(batch->stats().warmAttempts - before.warmAttempts <= 1);
 }
 #endif
