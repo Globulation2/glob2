@@ -39,11 +39,11 @@ def main():
         if not target.is_file() or target.stat().st_size != (release / 'assets' / name).stat().st_size:
             copy(release / 'assets' / name, target)
     for name in ENTRY_FILES + ('index.html',):
-        for suffix in ENCODINGS[1:] if name != 'index.html' else ():
+        for suffix in ENCODINGS[1:]:
             if not (release / (name + suffix)).is_file():
                 (served / (name + suffix)).unlink(missing_ok=True)
         # Precompressed copies first: Caddy prefers them, so a stale one would win.
-        for suffix in sorted(ENCODINGS, reverse=True) if name != 'index.html' else ('',):
+        for suffix in sorted(ENCODINGS, reverse=True):
             if (release / (name + suffix)).is_file():
                 copy(release / (name + suffix), served / (name + suffix))
     # Earlier builds shipped one data file without compression.

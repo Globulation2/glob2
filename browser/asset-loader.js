@@ -31,13 +31,16 @@ class Glob2AssetLoader {
     })();
     return this.cacheReady;
   }
-  // Report decoded bytes, the unit the manifest records, whatever the transfer encoding.
-  report(name, loaded) {
+  // Progress in transfer bytes where the page knows a compressed part's size
+  // (host.wireSize), otherwise in the decoded bytes the manifest records.
+  report(name, loaded, total) {
     this.progress[name] = loaded;
-    const entry = this.package(name);
-    this.host.onProgress?.(name, Math.min(loaded, entry.size), entry.size);
+    this.host.onProgress?.(name, Math.min(loaded, total), total);
   }
-  async fetchPart(part, counted) {
+  wire(part, encoding) {
+    return this.host.wireSize?.(part.url, encoding) || part.size;
+  }
+  async fetchPart(part, counted, sized) {
     await this.openCache();
     const url = this.host.resolve(part.url);
     if (this.cache) {
@@ -45,13 +48,17 @@ class Glob2AssetLoader {
         const cached = await this.cache.match(url);
         if (cached) {
           const bytes = new Uint8Array(await cached.arrayBuffer());
-          if (bytes.length === part.size) { counted(bytes.length); return {bytes, cached:true}; }
+          if (bytes.length === part.size) return {bytes, cached:true};
           await this.cache.delete(url);
         }
       } catch (_) { /* fall through to the network */ }
     }
     const response = await this.host.fetch(url, {credentials:'same-origin'});
     if (!response.ok) throw Error('HTTP ' + response.status + ' for ' + part.url);
+    const encoding = response.headers?.get?.('Content-Encoding');
+    const wire = encoding ? this.wire(part, encoding) : part.size;
+    sized?.(wire);
+    const scale = wire / part.size;
     const bytes = new Uint8Array(part.size);
     let offset = 0;
     if (response.body?.getReader) {
@@ -62,14 +69,14 @@ class Glob2AssetLoader {
         if (offset + value.length > bytes.length) throw Error('Unexpected size for ' + part.url);
         bytes.set(value, offset);
         offset += value.length;
-        counted(value.length);
+        counted(value.length * scale);
       }
     } else {
       const whole = new Uint8Array(await response.arrayBuffer());
       if (whole.length > bytes.length) throw Error('Unexpected size for ' + part.url);
       bytes.set(whole);
       offset = whole.length;
-      counted(whole.length);
+      counted(whole.length * scale);
     }
     if (offset !== part.size) throw Error('Incomplete download of ' + part.url);
     if (this.cache) {
@@ -83,11 +90,19 @@ class Glob2AssetLoader {
   async download(name, between) {
     const entry = this.package(name);
     const contents = [];
+    // Expect the Brotli copies until a response says otherwise.
+    const totals = entry.parts.map(part => this.wire(part, 'br'));
+    const total = () => totals.reduce((sum, size) => sum + size, 0);
     let loaded = 0;
-    this.report(name, 0);
-    for (const part of entry.parts) {
+    this.report(name, 0, total());
+    for (const [index, part] of entry.parts.entries()) {
       await between?.();
-      contents.push((await this.fetchPart(part, count => { loaded += count; this.report(name, loaded); })).bytes);
+      const start = loaded;
+      const counted = count => { loaded += count; this.report(name, loaded, total()); };
+      // A cached part counts as its expected size, reached at once.
+      const {cached, bytes} = await this.fetchPart(part, counted, size => { totals[index] = size; });
+      if (cached) { loaded = start + totals[index]; this.report(name, loaded, total()); }
+      contents.push(bytes);
     }
     return contents;
   }
@@ -140,6 +155,7 @@ if (typeof Module !== 'undefined' && Module.glob2AssetManifest && typeof window 
     caches: typeof caches !== 'undefined' ? caches : null,
     Response,
     resolve,
+    wireSize: (url, encoding) => Module.glob2WireSize?.(url, encoding),
     get fs() { return FS; },
     onProgress: (name, loaded, total) => Module.glob2AssetProgress?.(name, loaded, total),
   });

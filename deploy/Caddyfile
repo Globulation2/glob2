@@ -23,7 +23,9 @@
 	# auto: public certificates via ACME for a real domain, Caddy's local CA for
 	# localhost; internal: always the local CA (LAN host names, staging).
 	import tls-{$GLOB2_TLS_MODE:auto}
-	encode zstd gzip
+	# /play/ serves copies compressed at build time (see below).
+	@encode not path /play/*
+	encode @encode zstd gzip
 
 	# First: `handle` blocks are exclusive and run before a bare `respond`.
 	@private path /internal /internal/* /healthz /readyz /metrics

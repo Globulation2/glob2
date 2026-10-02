@@ -118,6 +118,17 @@ test('works without Cache Storage and prunes parts of older builds', async () =>
   assert.deepEqual([...cache.entries.keys()], ['https://example.test/play/assets/core.aaaaaaaaaaaaaaaa.data']);
 });
 
+test('progress follows transfer bytes when a part arrives compressed', async () => {
+  const environment = host();
+  environment.wireSize = (url, encoding) => url.startsWith('assets/core.') && encoding === 'br' ? 3 : null;
+  const plain = environment.fetch;
+  environment.fetch = async url => Object.assign(await plain(url), {headers:{get:name => name === 'Content-Encoding' ? 'br' : null}});
+  await new Loader(manifest(), environment).load('core');
+  assert.deepEqual(environment.progress.map(([, loaded, total]) => [Number(loaded.toFixed(3)), total]),
+    [[0, 3], [1.333, 3], [3, 3]]);
+  assert.equal(environment.files.get('/maps/b.map'), 'efghi');
+});
+
 test('the loading page estimates remaining time from the rate so far', () => {
   const shell = readFileSync(path.join(__dirname, '../shell.html'), 'utf8');
   const start = shell.indexOf('function loadingEstimate(');

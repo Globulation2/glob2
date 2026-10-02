@@ -37,7 +37,7 @@ body.ready #loading{opacity:0;pointer-events:none}
 @media (prefers-reduced-motion:reduce){.loader{animation:none;border-color:#e4c969}canvas,#loading,#loading-bar>span{transition:none}}
 </style>
 </head>
-<body data-wasm-bytes="0">
+<body data-wasm-bytes="0" data-wire-sizes="{}">
 <div id="loading">
   <strong>Globulation 2</strong>
   <span class="loader" aria-hidden="true"></span>
@@ -61,9 +61,12 @@ function fitCanvas() {
 addEventListener('resize', fitCanvas);
 new MutationObserver(fitCanvas).observe(canvas, {attributes:true,attributeFilter:['width','height']});
 fitCanvas();
-// Download progress for the WebAssembly module and the core data package, in
-// decoded bytes (the sizes the build records), with a time estimate from the rate
-// so far. Cached visits finish before the estimate appears.
+// Download progress for the WebAssembly module and the core data package, with a
+// time estimate from the rate so far. Downloads report decoded bytes; responses
+// served from a compressed copy are scaled to its transfer size, which
+// browser/precompress.py records in data-wire-sizes, so the bar and estimate
+// follow the bytes actually on the wire. Cached visits finish before the
+// estimate appears.
 function loadingEstimate(loaded, total, elapsedMs) {
   const megabytes = bytes => (bytes / 1e6).toFixed(bytes < 1e7 ? 1 : 0);
   const percent = total > 0 ? Math.min(100, Math.floor(loaded * 100 / total)) : 0;
@@ -76,7 +79,15 @@ function loadingEstimate(loaded, total, elapsedMs) {
   return {percent, text};
 }
 // End loading estimate.
-const download = {started:performance.now(), wasm:0, wasmTotal:Number(document.body.dataset.wasmBytes) || 0, core:0, coreTotal:0, failed:false};
+let wireSizes = {};
+try { wireSizes = JSON.parse(document.body.dataset.wireSizes || '{}'); } catch (_) {}
+// The transfer size of a file for a response encoding, if the build recorded it.
+function wireSize(name, encoding) {
+  const size = encoding && wireSizes[name]?.[encoding === 'br' ? 'br' : encoding === 'gzip' ? 'gzip' : ''];
+  return Number.isFinite(size) && size > 0 ? size : null;
+}
+const wasmBytes = Number(document.body.dataset.wasmBytes) || 0;
+const download = {started:performance.now(), wasm:0, wasmTotal:wireSize('index.wasm', 'br') || wasmBytes, core:0, coreTotal:0, failed:false};
 const loadingProgress = document.getElementById('loading-progress');
 const loadingBar = document.getElementById('loading-bar');
 const loadingDetail = document.getElementById('loading-detail');
@@ -104,11 +115,14 @@ window.fetch = function(input) {
   if (/\.wasm(?:[?#]|$)/.test(String(input?.url ?? input))) {
     window.fetch = pageFetch;
     result.then(async response => {
+      const wire = wireSize('index.wasm', response.headers.get('Content-Encoding'));
+      const scale = wire && wasmBytes ? wire / wasmBytes : 1;
+      download.wasmTotal = wire || wasmBytes;
       const reader = response.clone().body?.getReader();
       for (;;) {
         const {done, value} = await reader.read();
         if (done) break;
-        download.wasm += value.length;
+        download.wasm += value.length * scale;
         showDownload();
       }
     }).catch(() => {});
@@ -166,6 +180,7 @@ var Module = {
     const message = String(text || '').replace(/\s*\([0-9]+\/[0-9]+\)\s*$/, '');
     loadingStatus.textContent = message || 'Loading game…';
   },
+  glob2WireSize: wireSize,
   glob2AssetProgress(name, loaded, total) {
     if (name !== 'core') return;
     download.core = loaded;
