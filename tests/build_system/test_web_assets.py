@@ -87,7 +87,8 @@ class InstallWebClientTests(unittest.TestCase):
             def release(name, packages, compressed=True):
                 path = base / name
                 (path / 'assets').mkdir(parents=True)
-                for file in ('index.html', 'index.js', 'index.wasm'):
+                (path / 'threaded').mkdir()
+                for file in ('index.html', 'index.js', 'index.wasm', 'loader.js', 'threaded/index.js', 'threaded/index.wasm'):
                     (path / file).write_text(name + file)
                     if compressed and file != 'index.html':
                         (path / (file + '.br')).write_text(name + file + '.br')
