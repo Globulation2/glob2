@@ -13,6 +13,7 @@
 //                                              repeatable (only the first report counts)
 import { Type, type Static } from 'typebox';
 import { HttpsOrWssUrl, Open, SeatIndex, Sha256Hex, Strict, Timestamp, Uuid } from './common.ts';
+import { RelayNetworkSummary } from './network.ts';
 import { SimVersion } from './simVersion.ts';
 
 export const RelayRegion = Type.String({
@@ -111,6 +112,12 @@ export const RelayMatchEnded = Strict(
       size: Type.Integer({ minimum: 0 }),
       formatVersion: Type.Integer({ minimum: 1 }),
     }),
+    network: Type.Optional(
+      Type.Union([RelayNetworkSummary], {
+        description:
+          "The relay's per-seat network measurements (RelayNetworkSummary v1). Optional: older relays omit it, and the platform drops an unreadable one rather than refuse the report.",
+      }),
+    ),
   },
   { description: 'Relay report of a finished match.' },
 );

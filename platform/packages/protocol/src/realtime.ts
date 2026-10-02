@@ -60,6 +60,13 @@ export const MatchAssignment = Open(
     ticket: Type.String({ description: 'Match ticket JWT (see MatchTicketClaims).' }),
     ticketExpiresAt: Timestamp,
     relayUrl: HttpsOrWssUrl,
+    relayId: Type.Optional(
+      Type.String({
+        pattern: '^[A-Za-z0-9._-]{1,64}$',
+        description: 'The relay the match runs on, for network telemetry (ClientNetworkSummary).',
+      }),
+    ),
+    relayRegion: Type.Optional(Type.String({ pattern: '^[a-z0-9][a-z0-9-]{0,31}$' })),
     setup: MatchSetup,
     mapUrl: HttpsOrWssUrl,
   },
