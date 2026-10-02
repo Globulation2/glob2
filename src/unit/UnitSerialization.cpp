@@ -23,6 +23,7 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 
 	// unit specification
 	typeNum = stream->readSint32("typeNum");
+	if (typeNum < 0 || typeNum >= NB_UNIT_TYPE) throw std::runtime_error("Invalid unit type");
 	if (versionMinor < FILE_FORMAT_VERSION_DROP_UNIT_SKIN_NAME)
 	{
 		// Pre-v84 saves carried a per-unit skinName string; skin is now derived
@@ -34,6 +35,8 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 
 	// identity
 	gid = stream->readUint16("gid");
+	if (gid >= MAX_COUNT * Team::MAX_COUNT || GIDtoTeam(gid) != owner->teamNumber)
+		throw std::runtime_error("Invalid unit identity");
 	scriptIdentity=versionMinor >= FILE_FORMAT_VERSION_JAVASCRIPT ? stream->readUint32("scriptIdentity") : owner->game->allocateScriptIdentity(false,gid);
 	this->owner = owner;
 	isDead = stream->readSint32("isDead");
@@ -58,11 +61,19 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 
 	// states
 	needToRecheckMedical = (bool)stream->readUint32("needToRecheckMedical");
-	medical = (Medical)stream->readUint32("medical");
-	activity = (Activity)stream->readUint32("activity");
-	displacement = (Displacement)stream->readUint32("displacement");
-	movement = (Movement)stream->readUint32("movement");
-	action = (Abilities)stream->readUint32("action");
+	auto readState = [&](const char* name, Uint32 maximum) {
+		const Uint32 value = stream->readUint32(name);
+		if (value > maximum) throw std::runtime_error("Invalid unit action state");
+		return value;
+	};
+	medical = static_cast<Medical>(readState("medical", MED_DAMAGED));
+	activity = static_cast<Activity>(readState("activity", ACT_UPGRADING));
+	displacement = static_cast<Displacement>(readState("displacement", DIS_EXITING_BUILDING));
+	movement = static_cast<Movement>(readState("movement", MOV_ATTACKING_TARGET));
+	action = static_cast<Abilities>(readState("action", NB_ABILITY - 1));
+	if ((displacement % 2) != 0 || movement == 10 ||
+		direction < 0 || direction > UNIT_DIRECTION_NONE || dx < -1 || dx > 1 || dy < -1 || dy > 1)
+		throw std::runtime_error("Invalid unit action state");
 	targetX = (Sint32)stream->readSint32("targetX");
 	targetY = (Sint32)stream->readSint32("targetY");
 	validTarget = (bool)stream->readSint32("validTarget");
@@ -94,6 +105,7 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 		stream->readEnterSection(i);
 		performance[i] = stream->readSint32("performance");
 		level[i] = stream->readSint32("level");
+		if (level[i] < 0 || level[i] >= NB_UNIT_LEVELS) throw std::runtime_error("Invalid unit level");
 		canLearn[i] = (bool)stream->readUint32("canLearn");
 		stream->readLeaveSection();
 	}
@@ -111,6 +123,11 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 
 	destinationPurpose = stream->readSint32("destinationPurpose");
 	carriedResource = stream->readSint32("carriedRessource");
+	if (carriedResource < -1 || carriedResource >= MAX_RESOURCES || destinationPurpose < -1 || destinationPurpose > FEED)
+		throw std::runtime_error("Invalid unit resource or destination");
+	if ((activity == ACT_FILLING && (destinationPurpose < 0 || destinationPurpose >= MAX_RESOURCES)) ||
+		(activity == ACT_UPGRADING && destinationPurpose < 0))
+		throw std::runtime_error("Invalid unit activity destination");
 
 	jobTimer = stream->readSint32("jobTimer");
 
@@ -227,25 +244,17 @@ void Unit::save(GAGCore::OutputStream *stream)
 void Unit::loadCrossRef(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 {
 	stream->readEnterSection("Unit");
-	Uint16 gbid;
-
-	gbid = stream->readUint16("attachedBuilding");
-	if (gbid == NOGBID)
-		attachedBuilding = NULL;
-	else
-		attachedBuilding = owner->myBuildings[Building::GIDtoID(gbid)];
-
-	gbid = stream->readUint16("targetBuilding");
-	if (gbid == NOGBID)
-		targetBuilding = NULL;
-	else
-		targetBuilding = owner->myBuildings[Building::GIDtoID(gbid)];
-
-	gbid = stream->readUint16("ownExchangeBuilding");
-	if (gbid == NOGBID)
-		ownExchangeBuilding = NULL;
-	else
-		ownExchangeBuilding = owner->myBuildings[Building::GIDtoID(gbid)];
+	auto readBuilding = [&](const char* name) -> Building* {
+		const Uint16 gid = stream->readUint16(name);
+		if (gid == NOGBID) return nullptr;
+		if (gid >= Building::MAX_COUNT * Team::MAX_COUNT || Building::GIDtoTeam(gid) != owner->teamNumber ||
+			!owner->myBuildings[Building::GIDtoID(gid)])
+			throw std::runtime_error("Invalid unit building reference");
+		return owner->myBuildings[Building::GIDtoID(gid)];
+	};
+	attachedBuilding = readBuilding("attachedBuilding");
+	targetBuilding = readBuilding("targetBuilding");
+	ownExchangeBuilding = readBuilding("ownExchangeBuilding");
 
 	stream->readLeaveSection();
 }

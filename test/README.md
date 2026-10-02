@@ -1292,3 +1292,17 @@ It compares all 64 complete tick records, including aggregate and entity checksu
 The browser saved-match smoke checks resize, menu cancellation and resumed ticks;
 Android smoke also exercises Settings input and verifies application profile
 files survive background/resume and a fresh-process relaunch.
+
+## Untrusted file regression coverage
+
+`UntrustedFiles` mutates serialized entity types, levels and identities, terrain
+resources/occupants, sector dimensions and SGSL resume points. It also checks the
+compressed-input size limit, the legacy twenty-byte create-order boundary, USL
+file-loading denial, unsafe output filenames, AI tags/counts/nesting, network
+queue indices and invalid replay order references. Every native AI also loads
+its initial saved state under checked reads. `ReplayStepCounter`
+checks every truncated prefix of a replay body and step-total overflow;
+`USLCoverage` checks native argument type errors, invalid calls, arithmetic
+overflow, excessive syntax nesting and runtime recursion limits. Run these alongside
+`SavegameSafety`, `LegacyScriptCoverage` and `TeamLimit` for continuation and
+legacy compatibility. These targeted tests are not an exhaustive fuzz campaign.

@@ -171,13 +171,14 @@ namespace GAGCore
 		FileStreamBackend raw(fp);
 		raw.seekFromEnd(0);
 		const size_t length = raw.getPosition();
+		if (length > MAX_COMPRESSED_GAME_FILE_BYTES) return new FileStreamBackend(NULL);
 		raw.seekFromStart(0);
 		std::string compressed(length, '\0');
 		if (length > 0)
 			raw.read(&compressed[0], length);
 
 		std::string inflated;
-		if (!gzipDecompress(compressed, inflated))
+		if (!gzipDecompress(compressed, inflated, MAX_COMPRESSED_GAME_FILE_BYTES))
 		{
 			std::cerr << "openInflatingFileStreamBackend: corrupt or truncated gzip data in " << path << std::endl;
 			return new FileStreamBackend(NULL);
@@ -225,6 +226,7 @@ namespace GAGCore
 			return raw;
 		raw->seekFromEnd(0);
 		const size_t length = raw->getPosition();
+		if (length > MAX_COMPRESSED_GAME_FILE_BYTES) { delete raw; return new FileStreamBackend(NULL); }
 		raw->seekFromStart(0);
 		std::string compressed(length, '\0');
 		if (length > 0)
@@ -232,7 +234,7 @@ namespace GAGCore
 		delete raw;
 
 		std::string inflated;
-		if (!gzipDecompress(compressed, inflated))
+		if (!gzipDecompress(compressed, inflated, MAX_COMPRESSED_GAME_FILE_BYTES))
 		{
 			std::cerr << "FileManager::openInflatingInputStreamBackend: corrupt or truncated gzip data in " << filename << std::endl;
 			return new FileStreamBackend(NULL);

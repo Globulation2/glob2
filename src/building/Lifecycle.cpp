@@ -238,11 +238,17 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	stream->readEnterSection("Building");
 
 	// construction state
-	buildingState = (BuildingState)stream->readUint32("buildingState");
-	constructionResultState = (ConstructionResultState)stream->readUint32("constructionResultState");
+	const Uint32 savedState = stream->readUint32("buildingState");
+	const Uint32 savedResult = stream->readUint32("constructionResultState");
+	if (savedState > WAITING_FOR_CONSTRUCTION_ROOM || savedResult > REPAIR)
+		throw std::runtime_error("Invalid building construction state");
+	buildingState = static_cast<BuildingState>(savedState);
+	constructionResultState = static_cast<ConstructionResultState>(savedResult);
 
 	// identity
 	gid = stream->readUint16("gid");
+	if (gid >= MAX_COUNT * Team::MAX_COUNT || GIDtoTeam(gid) != owner->teamNumber)
+		throw std::runtime_error("Invalid building identity");
 	scriptIdentity = versionMinor >= FILE_FORMAT_VERSION_JAVASCRIPT ? stream->readUint32("scriptIdentity") : owner->game->allocateScriptIdentity(true,gid);
 	this->owner = owner;
 
@@ -277,6 +283,7 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 
 	// Flag specific
 	unitStayRange = stream->readUint32("unitStayRange");
+	if (unitStayRange < 0 || unitStayRange > 32767) throw std::runtime_error("Invalid flag range");
 
 	for (int i=0; i<BASIC_COUNT; i++)
 	{
@@ -284,9 +291,10 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 		oss << "clearingRessources[" << i << "]";
 		clearingResources[i] = (bool)stream->readSint32(oss.str().c_str());
 	}
-	assert(clearingResources[STONE] == false);
+	if (clearingResources[STONE]) throw std::runtime_error("Invalid stone clearing flag");
 
 	minLevelToFlag = stream->readSint32("minLevelToFlag");
+	if (minLevelToFlag < 0 || minLevelToFlag >= NB_UNIT_LEVELS) throw std::runtime_error("Invalid flag level");
 
 	// Building Specific
 	for (int i=0; i<MAX_NB_RESOURCES; i++)
@@ -308,11 +316,13 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 			std::ostringstream oss;
 			oss << "ratio[" << i << "]";
 			ratio[i] = stream->readSint32(oss.str().c_str());
+			if (ratio[i] < 0 || ratio[i] > 32767) throw std::runtime_error("Invalid swarm ratio");
 		}
 		{
 			std::ostringstream oss;
 			oss << "percentUsed[" << i << "]";
 			percentUsed[i] = stream->readSint32(oss.str().c_str());
+			if (percentUsed[i] < 0 || percentUsed[i] > 32767) throw std::runtime_error("Invalid swarm production state");
 		}
 	}
 
@@ -325,6 +335,8 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 
 	// type
 	typeNum = stream->readSint32("typeNum");
+	if (typeNum < 0 || static_cast<size_t>(typeNum) >= types->size())
+		throw std::runtime_error("Invalid building type");
 	type = types->get(typeNum);
 	assert(type);
 	updateResourcesPointer();
@@ -456,16 +468,20 @@ void Building::loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types,
 
 	// units
 	maxUnitInside = stream->readSint32("maxUnitInside");
-	assert(maxUnitInside < MAX_UNIT_INSIDE_LIMIT);
+	if (maxUnitInside < 0 || maxUnitInside >= MAX_UNIT_INSIDE_LIMIT)
+		throw std::runtime_error("Invalid building capacity");
 
 	unsigned nbWorking = stream->readUint32("nbWorking");
+	if (nbWorking > Unit::MAX_COUNT) throw std::runtime_error("Invalid building unit list size");
 	unitsWorking.clear();
 	for (unsigned i=0; i<nbWorking; i++)
 	{
 		std::ostringstream oss;
 		oss << "unitsWorking[" << i << "]";
-		Unit *unit = owner->myUnits[Unit::GIDtoID(stream->readUint16(oss.str().c_str()))];
-		assert(unit);
+		const Uint16 unitGid = stream->readUint16(oss.str().c_str());
+		if (unitGid >= Unit::MAX_COUNT * Team::MAX_COUNT || Unit::GIDtoTeam(unitGid) != owner->teamNumber || !owner->myUnits[Unit::GIDtoID(unitGid)])
+			throw std::runtime_error("Invalid building unit reference");
+		Unit *unit = owner->myUnits[Unit::GIDtoID(unitGid)];
 		if (versionMinor >= FILE_FORMAT_VERSION_SIMULATION_CONTINUATION) unitsWorking.push_back(unit);
 		else unitsWorking.push_front(unit);
 	}
@@ -498,13 +514,16 @@ void Building::loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types,
 	}
 
 	unsigned nbInside = stream->readUint32("nbInside");
+	if (nbInside > Unit::MAX_COUNT) throw std::runtime_error("Invalid building unit list size");
 	unitsInside.clear();
 	for (unsigned i=0; i<nbInside; i++)
 	{
 		std::ostringstream oss;
 		oss << "unitsInside[" << i << "]";
-		Unit *unit = owner->myUnits[Unit::GIDtoID(stream->readUint16(oss.str().c_str()))];
-		assert(unit);
+		const Uint16 unitGid = stream->readUint16(oss.str().c_str());
+		if (unitGid >= Unit::MAX_COUNT * Team::MAX_COUNT || Unit::GIDtoTeam(unitGid) != owner->teamNumber || !owner->myUnits[Unit::GIDtoID(unitGid)])
+			throw std::runtime_error("Invalid building unit reference");
+		Unit *unit = owner->myUnits[Unit::GIDtoID(unitGid)];
 		if (versionMinor >= FILE_FORMAT_VERSION_SIMULATION_CONTINUATION) unitsInside.push_back(unit);
 		else unitsInside.push_front(unit);
 	}
@@ -512,13 +531,16 @@ void Building::loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types,
 	if (versionMinor>=FILE_FORMAT_VERSION_UNITS_HARVESTING_LIST)
 	{
 		unsigned nbHarvesting = stream->readUint32("nbHarvesting");
+		if (nbHarvesting > Unit::MAX_COUNT) throw std::runtime_error("Invalid building unit list size");
 		unitsHarvesting.clear();
 		for (unsigned i=0; i<nbHarvesting; i++)
 		{
 			std::ostringstream oss;
 			oss << "unitsHarvesting[" << i << "]";
-			Unit *unit = owner->myUnits[Unit::GIDtoID(stream->readUint16(oss.str().c_str()))];
-			assert(unit);
+			const Uint16 unitGid = stream->readUint16(oss.str().c_str());
+			if (unitGid >= Unit::MAX_COUNT * Team::MAX_COUNT || Unit::GIDtoTeam(unitGid) != owner->teamNumber || !owner->myUnits[Unit::GIDtoID(unitGid)])
+				throw std::runtime_error("Invalid building unit reference");
+			Unit *unit = owner->myUnits[Unit::GIDtoID(unitGid)];
 			if (versionMinor >= FILE_FORMAT_VERSION_SIMULATION_CONTINUATION) unitsHarvesting.push_back(unit);
 			else unitsHarvesting.push_front(unit);
 		}

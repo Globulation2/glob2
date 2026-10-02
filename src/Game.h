@@ -56,6 +56,7 @@ class OrderDelete;
 class OrderChangePriority;
 class OrderCancelDelete;
 class OrderConstruction;
+class OrderCancelConstruction;
 class SetAllianceOrder;
 class PlayerQuitsGameOrder;
 #ifndef YOG_SERVER_ONLY
@@ -339,7 +340,7 @@ private:
 	void executeChangePriority(const OrderChangePriority& order);
 	void executeCancelDelete(const OrderCancelDelete& order);
 	void executeConstruction(const OrderConstruction& order);
-	void executeCancelConstruction(const OrderConstruction& order);
+	void executeCancelConstruction(const OrderCancelConstruction& order);
 	void executeSetAlliance(const SetAllianceOrder& order);
 	/// Marks the leaving player's team dead only if no other player still
 	/// controls that team; either way, the leaving player slot becomes AI::NONE.

@@ -270,7 +270,7 @@ public:
 	//! if this is not empty, then Engine should load the map with this filename.
 	std::string toLoadGameFileName;
 	bool drawHealthFoodBar, drawPathLines, drawAccessibilityAids;
-	int localPlayer, localTeamNo;
+	int localPlayer = 0, localTeamNo = 0;
 	int viewportX, viewportY;
 	MapCamera camera;
 	bool zoomControlPushed=false;

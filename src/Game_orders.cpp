@@ -36,15 +36,15 @@ Building* Game::lookupBuilding(Uint16 gid) const
 {
 	int team=Building::GIDtoTeam(gid);
 	int id=Building::GIDtoID(gid);
+	if (team >= mapHeader.getNumberOfTeams() || !teams[team]) return nullptr;
 	return teams[team]->myBuildings[id];
 }
 
 void Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 {
 	const auto random = bindRandom();
-	assert(order->sender>=0);
-	assert(order->sender<Team::MAX_COUNT);
-	assert(order->sender < gameHeader.getNumberOfPlayers());
+	if (!order || order->sender < 0 || order->sender >= gameHeader.getNumberOfPlayers() ||
+		!players[order->sender] || !players[order->sender]->team) return;
 
 	if (globalContainer->replayWriter && globalContainer->replayWriter->isValid())
 	{
@@ -123,10 +123,7 @@ void Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 			break;
 		case ORDER_CANCEL_CONSTRUCTION:
 			if (!isPlayerAlive) break;
-			// Historical: the cancel-construction case downcasts to OrderConstruction,
-			// not OrderCancelConstruction. Preserve that — the two layouts overlap on
-			// the fields read here, and changing it is a behavior change.
-			executeCancelConstruction(*std::static_pointer_cast<OrderConstruction>(order));
+			executeCancelConstruction(*std::static_pointer_cast<OrderCancelConstruction>(order));
 			break;
 		case ORDER_SET_ALLIANCE:
 			executeSetAlliance(*std::static_pointer_cast<SetAllianceOrder>(order));
@@ -139,6 +136,8 @@ void Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 
 void Game::executeOrderAndNotify(std::shared_ptr<Order> order, int localPlayer)
 {
+	if (!order || order->sender < 0 || order->sender >= gameHeader.getNumberOfPlayers() ||
+		!players[order->sender] || !players[order->sender]->team) return;
 	// Each client-visible effect is published before executeOrder runs, from the
 	// state the order found, so names and alliances match what GameGUI used to
 	// read when it handled the order itself.
@@ -175,7 +174,7 @@ void Game::executeOrderAndNotify(std::shared_ptr<Order> order, int localPlayer)
 		{
 			// Client-only: never reaches executeOrder (or the replay/dataset writers).
 			auto mmo = std::static_pointer_cast<MapMarkOrder>(order);
-			assert(teams[mmo->teamNumber]->teamNumber < mapHeader.getNumberOfTeams());
+			if (mmo->teamNumber >= static_cast<unsigned>(mapHeader.getNumberOfTeams()) || !teams[mmo->teamNumber]) return;
 			publishClientEvent(ClientEvent::MapMark{mmo, teams[mmo->teamNumber]->allies});
 			break;
 		}
@@ -201,7 +200,11 @@ void Game::executeCreate(const OrderCreate& oc, int localPlayer)
 {
 	int posX=(oc.posX)&map.getMaskW();
 	int posY=(oc.posY)&map.getMaskH();
-	assert(oc.teamNumber==players[oc.sender]->team->teamNumber);
+	if (oc.teamNumber != players[oc.sender]->team->teamNumber || oc.typeNum < 0 ||
+		static_cast<size_t>(oc.typeNum) >= globalContainer->buildingsTypes.size() ||
+		oc.unitWorking < 0 || oc.unitWorking > MAX_BUILDING_WORKER_REQUEST ||
+		oc.unitWorkingFuture < 0 || oc.unitWorkingFuture > MAX_BUILDING_WORKER_REQUEST ||
+		(oc.flagRadius && (*oc.flagRadius < 0 || *oc.flagRadius > 32767))) return;
 	BuildingType *bt=globalContainer->buildingsTypes.get(oc.typeNum);
 	if(!mapscript.buildingAllowed(IntBuildingType::typeFromShortNumber(bt->shortTypeNum),bt->isVirtual))return;
 	bool isVirtual=bt->isVirtual;
@@ -249,7 +252,7 @@ void Game::executeModifyBuilding(const OrderModifyBuilding& omb, int localPlayer
 	Building *b=lookupBuilding(omb.gid);
 	if ((b) && (b->buildingState==Building::ALIVE))
 	{
-		assert(omb.numberRequested <= MAX_BUILDING_WORKER_REQUEST);
+		if (omb.numberRequested > MAX_BUILDING_WORKER_REQUEST) return;
 		b->maxUnitWorking=omb.numberRequested;
 		b->maxUnitWorkingPreferred=b->maxUnitWorking;
 		b->update();
@@ -274,6 +277,7 @@ void Game::executeModifyFlag(const OrderModifyFlag& omf, int localPlayer)
 	{
 		int oldRange=b->unitStayRange;
 		int newRange=omf.range;
+		if (newRange < 0 || newRange > 32767) return;
 		b->unitStayRange=newRange;
 
 		if (b->type->zonableForbidden)
@@ -296,6 +300,7 @@ void Game::executeModifyClearingFlag(const OrderModifyClearingFlag& omcf, int lo
 		&& b->type->defaultUnitStayRange
 		&& b->type->zonable[WORKER])
 	{
+		if (omcf.clearingResources[STONE]) return;
 		memcpy(b->clearingResources, omcf.clearingResources, sizeof(bool)*BASIC_COUNT);
 	}
 }
@@ -308,6 +313,7 @@ void Game::executeModifyMinLevelToFlag(const OrderModifyMinLevelToFlag& omwf, in
 		&& b->type->defaultUnitStayRange
 		&& (b->type->zonable[WARRIOR] || b->type->zonable[EXPLORER]))
 	{
+		if (omwf.minLevelToFlag >= NB_UNIT_LEVELS) return;
 		b->minLevelToFlag = omwf.minLevelToFlag;
 
 		// flush all the actual units
@@ -342,6 +348,8 @@ void Game::executeMoveFlag(const OrderMoveFlag& omf, int localPlayer)
 
 void Game::executeAlterForbidden(const OrderAlterForbidden& oaa, int localPlayer)
 {
+	if (oaa.teamNumber >= mapHeader.getNumberOfTeams() || !teams[oaa.teamNumber] ||
+		(oaa.type != BrushTool::MODE_ADD && oaa.type != BrushTool::MODE_DEL)) return;
 	assert(oaa.type == BrushTool::MODE_ADD || oaa.type == BrushTool::MODE_DEL);
 	const bool adding = oaa.type == BrushTool::MODE_ADD;
 	const Uint32 oldGeneration = map.topologyGeneration;
@@ -397,6 +405,8 @@ void Game::executeAlterForbidden(const OrderAlterForbidden& oaa, int localPlayer
 
 void Game::executeAlterGuardArea(const OrderAlterGuardArea& oaa, int localPlayer)
 {
+	if (oaa.teamNumber >= mapHeader.getNumberOfTeams() || !teams[oaa.teamNumber] ||
+		(oaa.type != BrushTool::MODE_ADD && oaa.type != BrushTool::MODE_DEL)) return;
 	if (oaa.type == BrushTool::MODE_ADD)
 	{
 		Uint32 teamMask = Team::teamNumberToMask(oaa.teamNumber);
@@ -442,6 +452,8 @@ void Game::executeAlterGuardArea(const OrderAlterGuardArea& oaa, int localPlayer
 
 void Game::executeAlterClearArea(const OrderAlterClearArea& oaa, int localPlayer)
 {
+	if (oaa.teamNumber >= mapHeader.getNumberOfTeams() || !teams[oaa.teamNumber] ||
+		(oaa.type != BrushTool::MODE_ADD && oaa.type != BrushTool::MODE_DEL)) return;
 	if (oaa.type == BrushTool::MODE_ADD)
 	{
 		Uint32 teamMask = Team::teamNumberToMask(oaa.teamNumber);
@@ -487,6 +499,7 @@ void Game::executeAlterClearArea(const OrderAlterClearArea& oaa, int localPlayer
 
 void Game::executeModifySwarm(const OrderModifySwarm& oms, int localPlayer)
 {
+	for (int ratio : oms.ratio) if (ratio < 0 || ratio > 32767) return;
 	Building *b=lookupBuilding(oms.gid);
 	if ((b) && (b->buildingState==Building::ALIVE) && (b->type->unitProductionTime))
 	{
@@ -531,6 +544,7 @@ void Game::executeCancelDelete(const OrderCancelDelete& ocd)
 
 void Game::executeConstruction(const OrderConstruction& oc)
 {
+	if (oc.unitWorking > MAX_BUILDING_WORKER_REQUEST || oc.unitWorkingFuture > MAX_BUILDING_WORKER_REQUEST) return;
 	Building *b=lookupBuilding(oc.gid);
 	if (b)
 	{
@@ -538,8 +552,9 @@ void Game::executeConstruction(const OrderConstruction& oc)
 	}
 }
 
-void Game::executeCancelConstruction(const OrderConstruction& oc)
+void Game::executeCancelConstruction(const OrderCancelConstruction& oc)
 {
+	if (oc.unitWorking > MAX_BUILDING_WORKER_REQUEST) return;
 	Building *b=lookupBuilding(oc.gid);
 	if (b)
 	{
@@ -550,6 +565,7 @@ void Game::executeCancelConstruction(const OrderConstruction& oc)
 void Game::executeSetAlliance(const SetAllianceOrder& sao)
 {
 	Uint32 team=sao.teamNumber;
+	if (team >= static_cast<unsigned>(mapHeader.getNumberOfTeams()) || !teams[team]) return;
 	teams[team]->allies=sao.alliedMask;
 	teams[team]->enemies=sao.enemyMask;
 	teams[team]->sharedVisionExchange=sao.visionExchangeMask;
@@ -559,6 +575,7 @@ void Game::executeSetAlliance(const SetAllianceOrder& sao)
 
 void Game::executePlayerQuitGame(const PlayerQuitsGameOrder& pqgo)
 {
+	if (pqgo.player < 0 || pqgo.player >= gameHeader.getNumberOfPlayers() || !players[pqgo.player]) return;
 	bool found = false;
 	for(int i=0; i<Team::MAX_COUNT; ++i)
 	{

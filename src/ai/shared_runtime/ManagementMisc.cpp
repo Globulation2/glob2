@@ -76,6 +76,7 @@ bool ChangeAlliances::load(GAGCore::InputStream *stream, Player *player, Sint32 
 	stream->readEnterSection("ChangeAlliances");
 	ManagementOrder::load(stream, player, versionMinor);
 	team=stream->readUint32("team");
+	if (team < 0 || team >= player->game->mapHeader.getNumberOfTeams() || !player->game->teams[team]) return false;
 
 	Uint8 tmp=stream->readUint8("is_allied");
 	if(tmp==AI_SHARED_RUNTIME_TRIBOOL_TRUE)

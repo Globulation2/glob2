@@ -21,6 +21,8 @@ SGSLParseStatus MapScriptSGSL::parseWait(SGSLParseContext &ctx)
 	// int
 	if (ctx.token().type == SGSLToken::INT)
 	{
+		// wait(N) suspends on its integer operand, a valid saved resume point.
+		ctx.story->instructionStarts.insert(ctx.story->line.size());
 		if (ctx.token().value <=0)
 			return ctx.fail(ErrorReport::ET_INVALID_VALUE);
 		ctx.pushToken();

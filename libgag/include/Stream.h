@@ -6,6 +6,7 @@
 // For U/SintNN
 #include "Types.h"
 #include <string>
+#include <stdexcept>
 
 namespace GAGCore
 {
@@ -62,8 +63,31 @@ namespace GAGCore
 	//! The stream that can be read from
 	class InputStream : public Stream
 	{
+		unsigned nestingDepth = 0;
 	public:
 		virtual ~InputStream() { }
+
+		// Bound file-controlled allocation and recursion before creating objects.
+		Uint32 readCount(const std::string& name, Uint32 maximum = 1048576)
+		{
+			const Uint32 count = readUint32(name);
+			if (count > maximum) throw std::runtime_error("Oversized collection: " + name);
+			return count;
+		}
+		class NestedRead
+		{
+			InputStream& stream;
+		public:
+			explicit NestedRead(InputStream& input) : stream(input)
+			{
+				if (stream.nestingDepth >= 64) throw std::runtime_error("Saved object nesting limit exceeded");
+				++stream.nestingDepth;
+			}
+			~NestedRead() { --stream.nestingDepth; }
+			NestedRead(const NestedRead&) = delete;
+			NestedRead& operator=(const NestedRead&) = delete;
+		};
+
 	
 		virtual void read(void *data, size_t size, const std::string name) = 0;
 		virtual Sint8 readSint8(const std::string name) = 0;
