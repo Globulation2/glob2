@@ -1187,6 +1187,10 @@ registry contracts and custom-game previews:
 python3 test/run_coverage.py --optimization 1 --timeout 1800 -j4
 ```
 
+Native macOS binaries hold a scoped user-initiated activity while tests run,
+preventing App Nap from throttling long background cases. The activity ends
+when the test binary exits.
+
 Each optimization level uses a separate default build directory. Keep reports
 from different optimization levels separate. The manifest records the flags and
 selection; the explicit timeout accommodates instrumented integration runs. Add `--fullscreen` only on a display that supports mode
