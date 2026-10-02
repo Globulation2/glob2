@@ -143,6 +143,8 @@ public:
 	static void applyLocalExperiments(GameHeader &header, const MapHeader &map);
 	
 private:
+    static std::unique_ptr<GAGCore::InputStream> openGameInput(const std::string& filename, MapHeader& map, GameHeader& players);
+    GAGCore::CooperativeTask initGameFromStreamTask(MapHeader map, GameHeader players, std::unique_ptr<GAGCore::InputStream> stream, bool saveAI);
     bool stepSessionImpl(Uint64 now, const std::vector<SDL_Event>& events);
 	/// Initiates a game, provided the map and game header. This initiates the net
 	/// as well. When setGameHeader is true, the gameHeader given will replace the

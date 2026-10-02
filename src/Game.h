@@ -25,6 +25,7 @@ namespace GAGCore
 	class DrawableSurface;
 	class InputStream;
 	class OutputStream;
+	class ChunkedBuffer;
 }
 using namespace GAGCore;
 class GameGUI;
@@ -125,6 +126,7 @@ struct DeferredGameSHA1
 	size_t sha1Offset = 0;
 	//! Stores the hash in contents, giving the bytes an inline-hashed save writes.
 	void apply(std::string& contents) const;
+	void apply(GAGCore::ChunkedBuffer& contents) const;
 };
 
 class Game

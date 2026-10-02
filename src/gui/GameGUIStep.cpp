@@ -11,6 +11,7 @@
 #include <optional>
 
 #include <BackgroundFileWriter.h>
+#include <ChunkedStreamBackend.h>
 #include <FileManager.h>
 #include <SDLCompat.h>
 #include <StringTable.h>
@@ -374,20 +375,22 @@ void GameGUI::syncStep(void)
 
 void GameGUI::autosave()
 {
-	const std::string name = Toolkit::getStringTable()->getString("[auto save]");
-	// Serialize between ticks into memory sized from the previous autosave;
-	// autosaveWriter's thread hashes the snapshot and does the disk write.
-	auto *memory = new MemoryStreamBackend();
-	memory->reserve(lastAutosaveSize + lastAutosaveSize / 8);
-	BinaryOutputStream stream(memory);
-	DeferredGameSHA1 sha1;
-	save(&stream, name, &sha1);
-	std::string contents = memory->takeContents();
-	lastAutosaveSize = contents.size();
-	if (!autosaveWriter)
-		autosaveWriter = std::make_unique<BackgroundFileWriter>(Toolkit::getFileManager());
-	autosaveWriter->write(glob2GzipWritePath(glob2NameToFilename("games", name, "game")), std::move(contents),
-		[sha1 = std::move(sha1)](std::string& bytes) { sha1.apply(bytes); }, true);
+    // Wait before allocating: never overlap this capture with another snapshot.
+    waitForAutosave();
+    try
+    {
+        const std::string name = Toolkit::getStringTable()->getString("[auto save]");
+        auto* memory = new ChunkedStreamBackend();
+        BinaryOutputStream stream(memory);
+        DeferredGameSHA1 sha1;
+        save(&stream, name, &sha1);
+        if (!autosaveWriter)
+            autosaveWriter = std::make_unique<BackgroundFileWriter>(Toolkit::getFileManager());
+        autosaveWriter->write(glob2GzipWritePath(glob2NameToFilename("games", name, "game")), memory->takeContents(),
+            [sha1 = std::move(sha1)](ChunkedBuffer& bytes) { sha1.apply(bytes); });
+    }
+    catch (const std::exception& error)
+    { std::cerr << "Autosave failed; previous file retained: " << error.what() << std::endl; }
 }
 
 void GameGUI::waitForAutosave()

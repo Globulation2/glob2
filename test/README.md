@@ -1224,3 +1224,29 @@ script execution and editable state, followed by rendering and diagnostics.
 Line coverage alone does not establish save continuity, equivalent execution on
 another platform, or playable game behavior. The Linux CI coverage artifact
 uses the regular tier; slow integration and cross-platform checks remain separate.
+
+
+## Memory representation compatibility
+
+`MaximaContinuation` compares compact distance fields and food source masks against
+the legacy binary and text encodings, including infinity and maximum finite values.
+`Maxima.Farming` checks the box sums against wide reference arithmetic, including
+maximum-density maps. `TeamStatsSave` compares compact overlap counters against a
+wide oracle on minimum-size tori with 1024 overlapping anchors and replacement of
+an entire generation. `PathGradient` checks shared water snapshots, classification
+invalidation and frozen readers; `GradientPipeline` checks job lifetime and scheduling.
+`SavegameSafety` compares chunked streams against the contiguous backend across
+block boundaries, gaps, seeks, zero-length writes and overreads; verifies moved
+ownership and byte-capacity bounds; and compares deferred SHA1 and exact gzip bytes
+for incompressible input and compression levels zero, one, six and nine. It rejects
+truncated, bad-CRC, trailing and concatenated gzip inputs before game loading,
+injects allocation/finalization exceptions, checks atomic failure cleanup, and
+stalls an autosave writer to verify waiting before the next capture and exact
+saved ticks. The optional level-zero compatibility path retains whole buffers;
+normal save-memory measurements use the default compression level.
+
+Run these alongside the existing placement, continuation and engine lifecycle suites.
+For full-game checks, retain identical initial saves, seeds and orders, compare
+per-tick simulation state and replay/save bytes, and test continuation from populated
+checkpoints. The native paired CPU runner and profiling workflow are described in
+[the development reference](../docs/development/reference.md#native-simulation-memory-and-cpu-comparisons).
