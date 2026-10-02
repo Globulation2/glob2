@@ -153,7 +153,8 @@ balancer must allow WebSocket upgrades and idle connections of at least 60 secon
 
 ### Separate public website and app
 
-The public Astro website lives in the separate `Globulation2/glob2-website`
+The public Astro website, **Globulation 2 Online**, lives in the separate
+[Globulation2/glob2-online](https://github.com/Globulation2/glob2-online)
 repository and deploys to Firebase Hosting in project `pharaoh-418820`.
 `glob2online.com` serves that static website; `app.glob2online.com` serves this
 stack. Website builds and releases do not restart platform services or matches.
