@@ -110,7 +110,10 @@ python3 test/run_tests.py      # run them; --list, --filter, --tag, --shard
   `test/run_tests.py` already isolates and aggregates the native test cases. Artifact uploads run after failed checks
   so reviewers can inspect the available evidence. The Linux client builds once
   per supported toolchain, then distributes its built programs to four parallel
-  test shards per toolchain. The original `linux (...)` checks require every
+  test shards per toolchain. Linux compiler builds share
+  `.github/workflows/ci-linux-build.yml`; the GCC artifact builds and Clang
+  compatibility check run separately, so runtime shards do not wait for Clang.
+  Both supported GCC builds still form a shared artifact barrier. The original `linux (...)` checks require every
   build and shard to pass, preserving their merge-blocking status. PRs compare
   with their base commit, and master pushes compare with the pre-push commit;
   unknown paths or unavailable diffs select full CI.
