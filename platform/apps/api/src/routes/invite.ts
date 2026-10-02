@@ -4,8 +4,7 @@
 // offers "Play in browser", the web client with ?join=<code>. Unknown and
 // expired codes get the same page shape with a clear message.
 import type { FastifyInstance } from 'fastify';
-import { html } from '../web/pages.ts';
-import { sendPage } from '../web/pages.ts';
+import { ASSETS, html, sendPage } from '../web/pages.ts';
 import type { RoomService } from '../play/rooms.ts';
 
 export function appJoinLink(origin: string, code: string): string {
@@ -49,10 +48,19 @@ export async function inviteRoutes(app: FastifyInstance, rooms: RoomService): Pr
         <meta property="og:title" content="${title}" />
         <meta property="og:description" content="${description}" />
         <meta property="og:url" content="${pageUrl}" />
-        <meta name="twitter:card" content="summary" />
+        <meta property="og:image" content="${`${origin}${ASSETS}/og-colony.jpg`}" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta
+          property="og:image:alt"
+          content="A Globulation 2 colony: globs at work around their swarm"
+        />
+        <meta name="twitter:card" content="summary_large_image" />
         <meta name="robots" content="noindex" />`;
       const body = live
         ? html`<div class="card">
+              <p class="eyebrow">Room invite</p>
+              <p class="room">${live.name}</p>
               <p>${description}</p>
               ${
                 live.status === 'in_match'
@@ -65,10 +73,9 @@ export async function inviteRoutes(app: FastifyInstance, rooms: RoomService): Pr
               <a class="button primary" id="open-app" href="${appLink}">Open in Globulation 2</a>
               <a class="button" href="${browserLink}">Play in browser</a>
             </div>
-            <p class="muted">
-              Invite code <strong>${live.code}</strong>. In the game, choose Online, then Join by
-              code. If the game does not open, install it or play in the browser.
-            </p>`
+            <p class="muted">In the game, choose Online, then Join by code:</p>
+            <div class="code">${live.code}</div>
+            <p class="muted">If the game does not open, install it or play in the browser.</p>`
         : html`<div class="card">
             <p>${description}</p>
             <a class="button" href="${appLink}">Open Globulation 2</a>
