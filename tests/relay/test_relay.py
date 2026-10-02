@@ -136,7 +136,7 @@ class RelayMatchTest(unittest.TestCase):
         self.assertEqual(registration['relayId'], 'relay-test-1')
         self.assertEqual(registration['publicUrl'], 'ws://127.0.0.1/relay')
         self.assertEqual(registration['region'], 'test')
-        self.assertEqual(registration['turnProtocol'], 1)
+        self.assertEqual(registration['turnProtocol'], 2)
         self.assertEqual(registration['capacity'], {'maxMatches': 200})
         self.assertFalse(registration['draining'])
         self.assertEqual(relay.get('/healthz'), (200, 'ok\n'))
@@ -338,9 +338,10 @@ class RelayMatchTest(unittest.TestCase):
         expired = self.ticket(match_id, 0, [0, 1], lifetime=-31)
         self.assertEqual(refused(expired, REJECT_BAD_TICKET), 'Ticket refused: expired')
 
-        # Wrong protocol version, and anything other than Hello first.
+        # A protocol version newer than the relay's (it speaks 1 and 2), and anything
+        # other than Hello first.
         wrong = relay.client()
-        wrong.send(hello(self.ticket(match_id, 0, [0, 1]), version=2))
+        wrong.send(hello(self.ticket(match_id, 0, [0, 1]), version=3))
         wrong.wait_for(lambda c: c.of('reject'), what='protocol reject')
         self.assertEqual(wrong.of('reject')[0]['reason'], REJECT_PROTOCOL)
         early = relay.client()
