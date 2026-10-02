@@ -6,6 +6,8 @@ on:
       - 'mobile/**'
       - 'scons/**'
       - 'SConstruct'
+      - 'tools/package_assets.py'
+      - 'tools/asset-requirements.txt'
       - 'libgag/**'
       - 'src/**'
       # APK checks do not build or run the native regression harnesses.
