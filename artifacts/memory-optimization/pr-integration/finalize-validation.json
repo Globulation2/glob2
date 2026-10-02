@@ -1,0 +1,33 @@
+{
+  "commit": "5c4f47b0116f951786fe7434ae7fa2f70ad4fd17",
+  "base": "62b1988dab59c3549f7e14506ae3094a46763cbb",
+  "tests": {
+    "finalize-unit-tests": {
+      "tests": "420",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    "finalize-engine-tests": {
+      "tests": "54",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    }
+  },
+  "client_server_builds": "passed",
+  "security_prs": [
+    571,
+    576
+  ],
+  "binary_sha256": "a145320fe4921f851a4e6f4c80269d72f7a0c6941ff32fcfd09824d65b134e14",
+  "late_save_matches_before_576": true,
+  "late_save_sha256": "315131472f24440dd11ccd6fb9115f517b7bfeaa782d3d8c111743cb7a76ca80",
+  "late_peak_bytes": 2043625472,
+  "hosted_ci": "queued at merge preparation",
+  "unverified": [
+    "Linux/Windows execution",
+    "interactive playtest",
+    "paired CPU repeat on new master"
+  ]
+}

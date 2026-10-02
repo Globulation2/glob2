@@ -645,14 +645,64 @@
     "sha256": "74d0ff7b9c6112533dd157185450291889012fcacbcd08472c385d953f0ccc3b"
   },
   {
+    "path": "artifacts/memory-optimization/pr-integration/finalize-client-build.log.gz",
+    "bytes": 16321,
+    "sha256": "b5335fa8a8621187881ccb8ca66602580a6411e93457a44788ac10944e3f84d6"
+  },
+  {
+    "path": "artifacts/memory-optimization/pr-integration/finalize-engine-tests.log",
+    "bytes": 5290,
+    "sha256": "830ad819e2604032da6a2d720c0aa3c161d749131dfc688f536192552fad388e"
+  },
+  {
+    "path": "artifacts/memory-optimization/pr-integration/finalize-engine-tests.xml",
+    "bytes": 8325,
+    "sha256": "59e198baea7f44e2c08fbc4292b9570168a57cde0f5e92acb597c26a8e16be8e"
+  },
+  {
+    "path": "artifacts/memory-optimization/pr-integration/finalize-late-save.log.gz",
+    "bytes": 6300,
+    "sha256": "1484f8a6e40dd212495ec84597dfbda6a7a105db85f74f0b501c12f804f4968a"
+  },
+  {
+    "path": "artifacts/memory-optimization/pr-integration/finalize-late-save/result.json",
+    "bytes": 112928,
+    "sha256": "4ebe8adf967836c64f95cf476e112aa9dffbae74d3c7d5b86c691fa8dfcbdf8a"
+  },
+  {
+    "path": "artifacts/memory-optimization/pr-integration/finalize-server-build.log.gz",
+    "bytes": 18228,
+    "sha256": "a31944a28aecff41d209f5007340d877b7a8a1980ecfa9d4d00a0288fa449cea"
+  },
+  {
+    "path": "artifacts/memory-optimization/pr-integration/finalize-tests-build.log.gz",
+    "bytes": 10140,
+    "sha256": "f07a0ca93a6306b5829763a898774802093a78b675eb0101a5fe9e14ae5517b6"
+  },
+  {
+    "path": "artifacts/memory-optimization/pr-integration/finalize-unit-tests.log",
+    "bytes": 1172,
+    "sha256": "be4af6e08abb38335598e17f66ae172d1dd268d82d34a7f5be86af3a075fef0f"
+  },
+  {
+    "path": "artifacts/memory-optimization/pr-integration/finalize-unit-tests.xml",
+    "bytes": 51287,
+    "sha256": "a3627abaf83555c8cc659be764ebe1f2979ac088a43f58209987082ec3ebec03"
+  },
+  {
+    "path": "artifacts/memory-optimization/pr-integration/finalize-validation.json",
+    "bytes": 870,
+    "sha256": "54edd0eac74ea9031e6668a42a9e45694e086d9c1ced391cf2c554d923b2eafe"
+  },
+  {
     "path": "artifacts/memory-optimization/pr-integration/independent-review.md",
-    "bytes": 16533,
-    "sha256": "0e828c3f4babc39dcafd126cf56f9cbac5fd9f9a947512f12e14b74859ed73b1"
+    "bytes": 17585,
+    "sha256": "c735792d1a007cd4ea1f470f7835e1fe690a05c1d07ac95fc8c10f6a04de9d8f"
   },
   {
     "path": "artifacts/memory-optimization/pr-integration/integration-review.md",
-    "bytes": 1912,
-    "sha256": "6c9b199a85b6b991984cb18335fd4bcc10a8cd9ae089575bdd4fbb03542a4b47"
+    "bytes": 2494,
+    "sha256": "d8765d02f133759f492fd38d73215108f4d16eef9b1e7d5fb407979fbeb85418"
   },
   {
     "path": "artifacts/memory-optimization/pr-integration/integration-validation.json",
