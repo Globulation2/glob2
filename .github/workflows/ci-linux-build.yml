@@ -484,6 +484,8 @@ jobs:
         continue-on-error: true
         run: |
           python3 test/run_lan_session_test.py build/linux/client/release/src/LANSessionHarness
+          python3 test/run_lan_session_test.py build/linux/client/release/src/LANSessionHarness \
+            --play 30 --output artifacts/lan-play-test
 
       - name: Test front-end colony isolation and menu navigation
         if: ${{ steps.shard_plan.outputs.test_front_end_colony_isolation_and_menu_navigation == format('{0}', matrix.shard) }}

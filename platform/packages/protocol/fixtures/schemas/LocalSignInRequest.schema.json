@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:LocalSignInRequest",
+  "title": "LocalSignInRequest",
+  "type": "object",
+  "required": [
+    "username",
+    "password",
+    "platform"
+  ],
+  "properties": {
+    "username": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._-]{3,32}$"
+    },
+    "password": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "platform": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "desktop"
+        },
+        {
+          "type": "string",
+          "const": "android"
+        },
+        {
+          "type": "string",
+          "const": "ios"
+        },
+        {
+          "type": "string",
+          "const": "browser"
+        }
+      ],
+      "description": "Kind of game client."
+    }
+  },
+  "additionalProperties": false
+}

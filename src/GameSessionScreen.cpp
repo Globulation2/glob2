@@ -10,6 +10,12 @@
 #include <StringTable.h>
 #include <stdexcept>
 
+namespace
+{
+// Milliseconds of extra ticks a frame may run while a turn game catches up.
+constexpr Uint64 CATCH_UP_FRAME_BUDGET_MS = 30;
+} // namespace
+
 GameSessionScreen::GameSessionScreen(GAGGUI::ScreenStack &stack, std::unique_ptr<Engine> engine)
 	: stack(stack), engine(std::move(engine))
 {
@@ -85,9 +91,24 @@ void GameSessionScreen::updateExecutionImpl(Uint32 tick)
 	else
 	{
 		if (clock < nextTick)
+		{
+			// A turn game reads its relay connection between steps.
+			engine->pollTurnSession(clock);
 			return;
+		}
 		running = engine->stepSession(clock, input.events());
 		input.clear();
+		// Catching up in a turn game: the host calls this once per frame, so one tick per
+		// call caps the replay at the frame rate (in the browser, below real time on slow
+		// devices: the client falls further behind). Run more ticks within a frame
+		// budget; none of them is drawn (the catch-up draw ratio) and the frame still
+		// returns to the host in time for input and the card.
+		if (running && engine->turnFastForwarding())
+		{
+			const Uint64 deadline = SDL_GetTicks() + CATCH_UP_FRAME_BUDGET_MS;
+			while (running && engine->turnFastForwarding() && SDL_GetTicks() < deadline)
+				running = engine->stepSession(clock, {});
+		}
 		nextTick = clock + engine->sessionDelay(clock);
 	}
 	if (!running)
@@ -166,7 +187,17 @@ Uint32 GameSessionScreen::executionDelay(Uint32 now, Uint32 fallback)
 	// cap at about 120 frames per second otherwise, counting the frame's own time.
 	if (engine->simulationThreaded())
 		return Engine::threadedFrameWait(now - frameStarted);
-	return engine->sessionDelay(clock + static_cast<Uint32>(now - lastTick));
+	return engine->sessionPollDelay(clock + static_cast<Uint32>(now - lastTick));
+}
+
+GAGGUI::Screen::ExecutionWait GameSessionScreen::executionWait() const
+{
+	if (!started || finished || !engine)
+		return ExecutionWait::Untimed;
+	// The simulation thread owns the session state; its frame waits are pacing.
+	if (engine->simulationThreaded())
+		return ExecutionWait::Pacing;
+	return engine->waitingOnNetwork() ? ExecutionWait::Network : ExecutionWait::Pacing;
 }
 
 void GameSessionScreen::viewportResized(int oldWidth, int oldHeight, int width, int height)

@@ -1,0 +1,167 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:AdminAccountList",
+  "title": "AdminAccountList",
+  "type": "object",
+  "required": [
+    "items"
+  ],
+  "properties": {
+    "items": {
+      "type": "array",
+      "items": {
+        "allOf": [
+          {
+            "type": "object",
+            "required": [
+              "id",
+              "displayName",
+              "kind",
+              "createdAt",
+              "role",
+              "status",
+              "identities",
+              "entitlements"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+                "description": "Lowercase UUID."
+              },
+              "displayName": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 32,
+                "pattern": "^[^\\u0000-\\u001f\\u007f]+$",
+                "description": "Display name; at most 32 UTF-8 bytes (checked semantically)."
+              },
+              "kind": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "const": "guest"
+                  },
+                  {
+                    "type": "string",
+                    "const": "registered"
+                  }
+                ]
+              },
+              "createdAt": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+                "description": "RFC 3339 date-time."
+              },
+              "role": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "const": "user"
+                  },
+                  {
+                    "type": "string",
+                    "const": "moderator"
+                  },
+                  {
+                    "type": "string",
+                    "const": "admin"
+                  }
+                ]
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "const": "active"
+                  },
+                  {
+                    "type": "string",
+                    "const": "banned"
+                  },
+                  {
+                    "type": "string",
+                    "const": "deleted"
+                  }
+                ]
+              },
+              "mutedUntil": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+                "description": "RFC 3339 date-time."
+              },
+              "identities": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "provider",
+                    "linkedAt"
+                  ],
+                  "properties": {
+                    "provider": {
+                      "type": "string",
+                      "maxLength": 64,
+                      "description": "Provider id from instance config."
+                    },
+                    "linkedAt": {
+                      "type": "string",
+                      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+                      "description": "RFC 3339 date-time."
+                    },
+                    "email": {
+                      "type": "string",
+                      "maxLength": 320
+                    }
+                  }
+                }
+              },
+              "entitlements": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "maxLength": 64
+                }
+              },
+              "canRename": {
+                "type": "boolean",
+                "description": "False for guests: they get generated names."
+              },
+              "renameAvailableAt": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+                "description": "RFC 3339 date-time."
+              }
+            },
+            "description": "The signed-in account as its owner sees it."
+          },
+          {
+            "type": "object",
+            "required": [
+              "updatedAt"
+            ],
+            "properties": {
+              "lastSeenAt": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+                "description": "RFC 3339 date-time."
+              },
+              "updatedAt": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+                "description": "RFC 3339 date-time."
+              }
+            },
+            "description": "An account as moderators see it."
+          }
+        ]
+      }
+    },
+    "nextCursor": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    }
+  },
+  "description": "Accounts matching a search, newest first."
+}

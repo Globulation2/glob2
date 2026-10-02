@@ -77,6 +77,16 @@ class Persistence
 };
 std::unique_ptr<Persistence> persistStorage();
 
+// Opens an http(s) URL in the system browser (a new tab on the web). Returns
+// false when the host cannot, or a popup blocker refused it; browsers allow it
+// reliably only while handling a click.
+bool openUrl(const std::string &url);
+// Puts text on the system clipboard. In the browser this is the asynchronous
+// Clipboard API (with a fallback for browsers without it), which needs the
+// transient activation of a recent click; SDL's own clipboard does not reach
+// the page there. Returns false when the host certainly could not copy.
+bool copyText(const std::string &text);
+
 // Read-only diagnostics; hosts decide whether and how to publish them.
 void screenChanged(const char *name);
 void importChanged(const char *state);

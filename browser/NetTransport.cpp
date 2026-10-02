@@ -14,8 +14,15 @@
 
 namespace {
 class WebSocketTransport final : public NetTransport {
+    // The browser cannot pause a WebSocket, so a tab whose game loop is throttled
+    // (backgrounded) keeps queueing: allow about eleven minutes of relay bundles
+    // (25 per second) within a few megabytes before giving up on the connection.
+    static constexpr size_t incomingMessageLimit = 16384;
+    static constexpr size_t incomingByteLimit = 4 * queueLimit;
     struct CallbackTarget : std::enable_shared_from_this<CallbackTarget> {
         WebSocketTransport* transport;
+        // Copy of the transport's mode, fixed at construction and read on the callback thread.
+        const NetMessageMode mode;
         std::atomic<bool> active{true}, overflow{false};
         std::atomic<size_t> queuedBytes{0}, queuedEvents{0};
 #ifdef __EMSCRIPTEN_PTHREADS__
@@ -23,7 +30,7 @@ class WebSocketTransport final : public NetTransport {
         em_proxying_queue* queue = em_proxying_queue_create();
         ~CallbackTarget() { em_proxying_queue_destroy(queue); }
 #endif
-        explicit CallbackTarget(WebSocketTransport* transport) : transport(transport) {}
+        explicit CallbackTarget(WebSocketTransport* transport) : transport(transport), mode(transport->mode) {}
     };
     std::shared_ptr<CallbackTarget> callbacks;
     struct Event {
@@ -41,7 +48,7 @@ class WebSocketTransport final : public NetTransport {
         if (!target->active) return;
         const auto count = target->queuedEvents.fetch_add(1);
         const auto size = target->queuedBytes.fetch_add(bytes);
-        if (count >= 256 || size + bytes > queueLimit) {
+        if (count >= incomingMessageLimit || size + bytes > incomingByteLimit) {
             --target->queuedEvents; target->queuedBytes -= bytes;
             target->overflow = true;
             return;
@@ -58,11 +65,19 @@ class WebSocketTransport final : public NetTransport {
     }
     EMSCRIPTEN_WEBSOCKET_T socket = 0;
     State status = State::Closed;
+    NetMessageMode mode;
     std::deque<std::vector<uint8_t>> incoming;
     size_t incomingBytes = 0;
     std::string failure;
     std::chrono::steady_clock::time_point started;
+    bool take(std::vector<uint8_t>& bytes) {
+        if (incoming.empty()) return false;
+        bytes = std::move(incoming.front()); incoming.pop_front();
+        incomingBytes -= bytes.size();
+        return true;
+    }
 public:
+    explicit WebSocketTransport(NetMessageMode mode) : mode(mode) {}
     ~WebSocketTransport() override { close(); }
     void open(const std::string& address, uint16_t port) override {
         close();
@@ -105,18 +120,24 @@ public:
             return true;
         });
         emscripten_websocket_set_onmessage_callback(socket, callbacks.get(), [](int, const EmscriptenWebSocketMessageEvent* e, void* data) {
-            if (e->isText || e->numBytes > 64 * 1024) {
-                static_cast<CallbackTarget*>(data)->overflow = true;
+            auto* target = static_cast<CallbackTarget*>(data);
+            const bool text = target->mode == NetMessageMode::Text;
+            // Text payloads arrive NUL-terminated; the terminator is not part of the message.
+            const size_t size = e->isText && e->numBytes ? e->numBytes - 1 : e->numBytes;
+            // A message of the other kind, or an oversized one, closes the connection.
+            if (bool(e->isText) != text || size > (text ? textMessageLimit : 64 * 1024)) {
+                target->overflow = true;
                 return true;
             }
             std::vector<uint8_t> bytes;
-            if (e->numBytes) bytes.assign(e->data, e->data + e->numBytes);
-            post(data, e->numBytes, [socket=e->socket, bytes=std::move(bytes)](auto& self) mutable {
+            if (size) bytes.assign(e->data, e->data + size);
+            post(data, size, [socket=e->socket, text, bytes=std::move(bytes)](auto& self) mutable {
                 if (self.socket != socket) return;
-                if (bytes.size() > queueLimit - self.incomingBytes || self.incoming.size() >= 256) {
+                if (bytes.size() > incomingByteLimit - self.incomingBytes || self.incoming.size() >= incomingMessageLimit) {
                     self.failure = "Invalid WebSocket message or input queue overflow"; self.close(); return;
                 }
-                if (!bytes.empty()) {
+                // An empty text message is still a message; an empty binary one carries nothing.
+                if (!bytes.empty() || text) {
                     self.incomingBytes += bytes.size();
                     self.incoming.push_back(std::move(bytes));
                 }
@@ -158,7 +179,7 @@ public:
     std::string error() const override { return failure; }
     bool send(std::vector<uint8_t> bytes) override {
         size_t buffered = 0;
-        if (status != State::Connected ||
+        if (mode != NetMessageMode::Binary || status != State::Connected ||
             emscripten_websocket_get_buffered_amount(socket, &buffered) != EMSCRIPTEN_RESULT_SUCCESS ||
             buffered > queueLimit || bytes.size() > queueLimit - buffered) return false;
         // WebSocket messages are limited to 64 KiB. Protocol frames can cross
@@ -169,15 +190,26 @@ public:
         }
         return true;
     }
+    bool sendText(std::string text) override {
+        size_t buffered = 0;
+        if (mode != NetMessageMode::Text || status != State::Connected || text.size() > textMessageLimit ||
+            text.find('\0') != std::string::npos ||
+            emscripten_websocket_get_buffered_amount(socket, &buffered) != EMSCRIPTEN_RESULT_SUCCESS ||
+            buffered > queueLimit || text.size() > queueLimit - buffered) return false;
+        return emscripten_websocket_send_utf8_text(socket, text.c_str()) == EMSCRIPTEN_RESULT_SUCCESS;
+    }
     bool receive(std::vector<uint8_t>& bytes) override {
-        if (incoming.empty()) return false;
-        bytes = std::move(incoming.front()); incoming.pop_front();
-        incomingBytes -= bytes.size();
+        return mode == NetMessageMode::Binary && take(bytes);
+    }
+    bool receiveText(std::string& text) override {
+        std::vector<uint8_t> message;
+        if (mode != NetMessageMode::Text || !take(message)) return false;
+        text.assign(message.begin(), message.end());
         return true;
     }
 };
 }
-std::unique_ptr<NetTransport> makeNetTransport(const NetTlsConfig&) { return std::make_unique<WebSocketTransport>(); }
+std::unique_ptr<NetTransport> makeNetTransport(const NetTlsConfig&, NetMessageMode mode) { return std::make_unique<WebSocketTransport>(mode); }
 
 std::unique_ptr<NetTransportListener> makeNetTransportListener(const NetListenConfig&) {
     throw std::runtime_error("Browser LAN hosting is unavailable");

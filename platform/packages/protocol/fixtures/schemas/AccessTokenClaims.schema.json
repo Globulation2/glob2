@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:AccessTokenClaims",
+  "title": "AccessTokenClaims",
+  "type": "object",
+  "required": [
+    "iss",
+    "aud",
+    "sub",
+    "jti",
+    "iat",
+    "exp",
+    "client_id",
+    "sid",
+    "kind",
+    "role"
+  ],
+  "properties": {
+    "iss": {
+      "type": "string",
+      "description": "Instance origin."
+    },
+    "aud": {
+      "type": "string",
+      "const": "glob2-platform"
+    },
+    "sub": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "description": "Lowercase UUID."
+    },
+    "jti": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "description": "Lowercase UUID."
+    },
+    "iat": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "exp": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "client_id": {
+      "type": "string",
+      "maxLength": 64,
+      "description": "Client platform that signed in."
+    },
+    "sid": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "description": "Lowercase UUID."
+    },
+    "kind": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "guest"
+        },
+        {
+          "type": "string",
+          "const": "registered"
+        }
+      ]
+    },
+    "role": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "user"
+        },
+        {
+          "type": "string",
+          "const": "moderator"
+        },
+        {
+          "type": "string",
+          "const": "admin"
+        }
+      ]
+    }
+  },
+  "description": "Claims of an access token. `sub` is the account id, `sid` the refresh-token family (one sign-in). The platform re-reads account status on use, so a ban takes effect before expiry."
+}

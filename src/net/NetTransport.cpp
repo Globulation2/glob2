@@ -1,24 +1,30 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "NetTransport.h"
+#include "TlsSetup.h"
 #include <cstdlib>
-std::unique_ptr<NetTransport> makeWssTransport(const NetTlsConfig &);
+std::unique_ptr<NetTransport> makeWssTransport(const NetTlsConfig &, NetMessageMode);
 std::unique_ptr<NetTransportListener> makeWssTransportListener(const NetListenConfig &);
 #ifndef __EMSCRIPTEN__
 std::unique_ptr<NetTransport> makeTcpTransport();
 std::unique_ptr<NetTransportListener> makeTcpTransportListener(const NetListenConfig &);
 namespace
 {
+// Picks the transport from the URL when the connection opens: wss:// gets
+// WebSocket, anything else plain TCP. Text mode exists only on WebSocket, so a
+// text-mode connection always uses it (and reports a bad URL itself).
 class RoutedTransport final : public NetTransport
 {
 	NetTlsConfig tls;
+	NetMessageMode mode;
 	std::unique_ptr<NetTransport> selected;
 
   public:
-	explicit RoutedTransport(NetTlsConfig config) : tls(std::move(config)) {}
+	RoutedTransport(NetTlsConfig config, NetMessageMode mode) : tls(std::move(config)), mode(mode) {}
 	void open(const std::string &endpoint, uint16_t port) override
 	{
 		close();
-		selected = endpoint.rfind("wss://", 0) == 0 ? makeWssTransport(tls) : makeTcpTransport();
+		const bool wss = endpoint.rfind("wss://", 0) == 0 || mode == NetMessageMode::Text;
+		selected = wss ? makeWssTransport(tls, mode) : makeTcpTransport();
 		selected->open(endpoint, port);
 	}
 	void close() override
@@ -36,27 +42,33 @@ class RoutedTransport final : public NetTransport
 	{
 		return selected && selected->receive(bytes);
 	}
+	bool sendText(std::string text) override
+	{
+		return selected && selected->sendText(std::move(text));
+	}
+	bool receiveText(std::string &text) override
+	{
+		return selected && selected->receiveText(text);
+	}
 	std::string peerAddress() const override
 	{
 		return selected ? selected->peerAddress() : std::string();
+	}
+	size_t pendingOutgoing() const override
+	{
+		return selected ? selected->pendingOutgoing() : 0;
 	}
 	std::string error() const override { return selected ? selected->error() : std::string(); }
 };
 } // namespace
 #endif
-std::unique_ptr<NetTransport> makeNetTransport(const NetTlsConfig &tls)
+std::unique_ptr<NetTransport> makeNetTransport(const NetTlsConfig &tls, NetMessageMode mode)
 {
-	auto trust = tls;
-	if (trust.caFile.empty() && trust.caPem.empty())
-	{
-		const char *ca = std::getenv("SSL_CERT_FILE");
-		if (ca && *ca)
-			trust.caFile = ca;
-	}
+	auto trust = NetTls::withEnvironmentTrust(tls);
 #ifdef __EMSCRIPTEN__
-	return makeWssTransport(trust);
+	return makeWssTransport(trust, mode);
 #else
-	return std::make_unique<RoutedTransport>(std::move(trust));
+	return std::make_unique<RoutedTransport>(std::move(trust), mode);
 #endif
 }
 

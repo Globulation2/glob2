@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:RealtimeEventQueueStatus",
+  "title": "RealtimeEventQueueStatus",
+  "type": "object",
+  "required": [
+    "ticketId",
+    "queueId",
+    "waitedSeconds"
+  ],
+  "properties": {
+    "ticketId": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "description": "Lowercase UUID."
+    },
+    "queueId": {
+      "type": "string"
+    },
+    "waitedSeconds": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "ratingWindow": {
+      "type": "number",
+      "minimum": 0
+    },
+    "aiBackfillAt": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+      "description": "RFC 3339 date-time."
+    },
+    "ratingRange": {
+      "type": "object",
+      "required": [
+        "min",
+        "max"
+      ],
+      "properties": {
+        "min": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Opponent ratings the matchmaker accepts now (display scale): your skill ± ratingWindow."
+    },
+    "rating": {
+      "type": "number",
+      "description": "Your displayed rating on this queue's ladder."
+    },
+    "provisional": {
+      "type": "boolean"
+    },
+    "region": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{0,31}$",
+      "description": "Operator-chosen region id, e.g. \"eu-west\"."
+    },
+    "rttMs": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Your round trip to region, as you probed it."
+    },
+    "allowAiOpponent": {
+      "type": "boolean"
+    },
+    "backfillAi": {
+      "type": "object",
+      "required": [
+        "ai",
+        "rating"
+      ],
+      "properties": {
+        "ai": {
+          "anyOf": [
+            {
+              "type": "string",
+              "const": "none"
+            },
+            {
+              "type": "string",
+              "const": "numbi"
+            },
+            {
+              "type": "string",
+              "const": "castor"
+            },
+            {
+              "type": "string",
+              "const": "warrush"
+            },
+            {
+              "type": "string",
+              "const": "econo"
+            },
+            {
+              "type": "string",
+              "const": "nicowar"
+            },
+            {
+              "type": "string",
+              "const": "cortex"
+            },
+            {
+              "type": "string",
+              "const": "maxima"
+            },
+            {
+              "type": "string",
+              "const": "cabino"
+            }
+          ],
+          "description": "AI implementation, by its stable CLI name (src/ai/AINames.cpp)."
+        },
+        "rating": {
+          "type": "number"
+        }
+      },
+      "description": "The AI that would take the empty seat now (closest skill)."
+    },
+    "typicalWaitSeconds": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Median wait of recent matched tickets."
+    }
+  }
+}

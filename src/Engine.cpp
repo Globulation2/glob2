@@ -10,6 +10,7 @@
 #include "sim/SimulationRunner.h"
 #include "EngineTiming.h"
 #include "GlobalContainer.h"
+#include "OnlineMatch.h"
 #include "ReplayWriter.h"
 #include "SoundMixer.h"
 
@@ -30,6 +31,11 @@ Engine::~Engine()
         globalContainer->settings.save();
     }
     if (multiplayer) multiplayer->setNetEngine(nullptr);
+	// Closing the window stops every screen without finishing the session: a turn
+	// match still says goodbye, and its relay connection lingers until the Quit is
+	// written (RelayTransport).
+	try { leaveTurnMatch(); }
+	catch (...) {}
 	// Finalize the replay of the session this Engine ran, if any.
 	// initGame allocated the writer; destroying it (ReplayWriter::finish)
 	// writes the NullOrder terminator and flushes the replay file. This must
@@ -83,13 +89,34 @@ void Engine::prepareRun()
 
 }
 
+void Engine::setOnlineResult(std::shared_ptr<Online::OnlineMatchResult> result)
+{
+    onlineResult = std::move(result);
+    if (onlineResult)
+    {
+        gui.networkMatch.online = true;
+        gui.networkMatch.rated = onlineResult->rated;
+        gui.networkMatch.fromRoom = onlineResult->fromRoom;
+    }
+}
+
 std::unique_ptr<GAGGUI::Screen> Engine::endRunScreen()
 {
     if (gui.exitGlobCompletely || globalContainer->runNoX || globalContainer->automaticEndingGame)
         return {};
     assert(globalContainer->mix);
     globalContainer->mix->setNextTrack(MusicTrack::Menu, true);
-    return std::make_unique<EndGameScreen>(&gui);
+    auto screen = std::make_unique<EndGameScreen>(&gui);
+    if (onlineResult)
+        screen->setOnlineResult(onlineResult);
+    return screen;
+}
+
+Team* Engine::gameTeam(int team)
+{
+    if (team < 0 || team >= gui.game.mapHeader.getNumberOfTeams())
+        return nullptr;
+    return gui.game.teams[team];
 }
 
 void Engine::restoreCursor()

@@ -2,6 +2,7 @@
 #include <RenderStateScope.h>
 #include <PerformanceTelemetry.h>
 #include "MapZoomControls.h"
+#include "ConnectionOverlay.h"
 #include "DynamicClouds.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
@@ -454,7 +455,18 @@ void GameGUI::drawOverlayInfos(void)
 	// than this many GUI steps, so brief network hiccups don't flash the box.
 	constexpr int WAIT_NOTICE_DEBOUNCE_STEPS = 2;
 	const SceneHud &hud = drawnScene().panels.hud;
-	if (hud.anyPlayerWaited && hud.maskAwayPlayer && anyPlayerWaitedTimeFor>WAIT_NOTICE_DEBOUNCE_STEPS)
+	// Turn games show every player's connection in the panel instead (ConnectionOverlay).
+	const std::vector<std::string> connectionLines = connectionNotice && !connectionOverlay ? connectionNotice() : std::vector<std::string>();
+	if (!connectionLines.empty())
+	{
+		// Same box as the waiting notice below, one line per connection state.
+		const int lines = static_cast<int>(connectionLines.size());
+		globalContainer->gfx->drawFilledRect(32, 32, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-64, 22+lines*20, 0, 0, 140, 127);
+		globalContainer->gfx->drawRect(32, 32, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-64, 22+lines*20, 255, 255, 255);
+		for (int i = 0; i < lines; ++i)
+			globalContainer->gfx->drawString(44, 44+i*20, globalContainer->standardFont, connectionLines[i].c_str());
+	}
+	else if (!connectionOverlay && hud.anyPlayerWaited && hud.maskAwayPlayer && anyPlayerWaitedTimeFor>WAIT_NOTICE_DEBOUNCE_STEPS)
 	{
 		int nbap=0; // Number of away players
 		Uint32 pm=1;
@@ -705,6 +717,24 @@ void GameGUI::drawAll(int team)
 	globalContainer->gfx->setClipRect();
 	drawOverlayInfos();
     touch->drawHUD();
+	if (connectionOverlay)
+	{
+		const double unit = globalContainer->gfx->logicalUnitsPerPoint();
+		SDL_Rect area{0, 16, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-16};
+		if (touch->usesHUD())
+		{
+			// Under the status strip, away from the thumb corner (layout is in drawable pixels).
+			const auto ui = touch->hudLayout();
+			area = {int(ui.world.x), int(ui.status.y+ui.status.h), int(ui.world.w), int(ui.world.y+ui.world.h-ui.status.y-ui.status.h)};
+			// Narrow portrait phones wrap the status strip onto a second row.
+			if (ui.world.h > ui.world.w)
+			{
+				area.y += int(28*unit);
+				area.h -= int(28*unit);
+			}
+		}
+		connectionOverlay->draw(touch->usesHUD(), area, unit);
+	}
 
 	if (!torusView.active() && !touch->usesHUD()) drawMapZoomControls(camera, true, true);
 	// draw menu if any

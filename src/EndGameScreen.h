@@ -12,6 +12,10 @@
 #include <vector>
 
 class LoadSaveDialog;
+namespace Online
+{
+class OnlineMatchResult;
+}
 
 struct TeamEntry
 {
@@ -54,7 +58,23 @@ class EndGameScreen : public GAGGUI::ui::UIScreen
 	// Legacy action codes: 100 opens the metric picker, 101 toggles the expanded
 	// chart, 102 the team filters, 200+ toggles a team row, else a ButtonId.
 	void activateResultControl(int action);
+	//! Quick matches: opens (or joins) the unrated rematch room (Online::requestRematch)
+	//! and leaves the results; the room opens over the online screens.
+	void rematch();
 	bool metricPickerOpen() { return host().popupOpen(); }
+	//! Online matches: the outcome banner and the rating card, updated live while
+	//! the server verifies the result (docs/multiplayer/client.md).
+	void setOnlineResult(std::shared_ptr<Online::OnlineMatchResult> result);
+	const std::shared_ptr<Online::OnlineMatchResult> &onlineResult() const { return online; }
+	//! Harness: the outcome the banner names when the local game cannot tell.
+	enum class Outcome
+	{
+		Victory,
+		Defeat,
+		Ended,
+		Left
+	};
+	void setOutcome(Outcome value) { outcome = value; invalidate(); }
 
   protected:
 	void paintBackground(Glob2UI::Canvas &canvas) override;
@@ -77,6 +97,12 @@ class EndGameScreen : public GAGGUI::ui::UIScreen
 
   private:
 	std::unique_ptr<LoadSaveDialog> replaySave;
+	std::shared_ptr<Online::OnlineMatchResult> online;
+	unsigned onlineRevision = ~0u;
+	Outcome outcome = Outcome::Ended;
+	Uint32 durationSeconds = 0;
+	Glob2UI::Element onlineBanner(const Glob2UI::Presentation &p);
+	Glob2UI::Element ratingCard(const Glob2UI::Presentation &p);
 	// Chart-local pointer position, or -1 when outside.
 	int hoverX = -1, hoverY = -1;
 	Glob2UI::Rect chartBounds;

@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:UpdateMapRequest",
+  "title": "UpdateMapRequest",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 4000
+    },
+    "visibility": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "public"
+        },
+        {
+          "type": "string",
+          "const": "unlisted"
+        },
+        {
+          "type": "string",
+          "const": "private"
+        }
+      ]
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,41 @@
+{
+  "ladder": "ranked-1v1",
+  "entries": [
+    {
+      "rank": 1,
+      "entity": {
+        "kind": "account",
+        "account": {
+          "id": "0b8f6f2e-3c4d-4e5f-8a9b-0c1d2e3f4a5b",
+          "displayName": "Alice",
+          "kind": "registered",
+          "createdAt": "2026-10-01T12:00:00Z"
+        }
+      },
+      "rating": 1712,
+      "mu": 29.1,
+      "sigma": 2.2,
+      "games": 48,
+      "wins": 31,
+      "provisional": false
+    },
+    {
+      "rank": 2,
+      "entity": {
+        "kind": "ai",
+        "ai": "maxima",
+        "simVersion": {
+          "versionMinor": 125,
+          "netProtocol": 49,
+          "dataHash": "3f9a6c1e8b2d47a05e6f1c2b3a4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f"
+        }
+      },
+      "rating": 1690,
+      "mu": 28.4,
+      "sigma": 3.9,
+      "games": 12,
+      "wins": 7,
+      "provisional": true
+    }
+  ]
+}

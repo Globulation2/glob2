@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <ScreenStack.h>
+#include <PerformanceTelemetry.h>
+#include <optional>
 #include <BrowserTextInput.h>
 #include <ApplicationHost.h>
 #include <EventQueue.h>
@@ -198,7 +200,14 @@ int ScreenStack::execute(unsigned stepLength)
 		{
 			const Uint64 elapsed = SDL_GetTicks() - start;
 			const Uint32 fallback = elapsed < stepLength ? stepLength - elapsed : 0;
-			GAGCore::ApplicationHost::wait(delay(static_cast<Uint32>(SDL_GetTicks()), fallback));
+			const Uint32 wait = delay(static_cast<Uint32>(SDL_GetTicks()), fallback);
+			// A running game times its pacing waits, separating waits for the network.
+			const auto kind = backgrounded || !top() ? Screen::ExecutionWait::Untimed : top()->executionWait();
+			std::optional<PerformanceTelemetry::Scope> waitTime;
+			if (kind != Screen::ExecutionWait::Untimed)
+				waitTime.emplace(kind == Screen::ExecutionWait::Network ? PerformanceTelemetry::Id::NetworkSleep
+				                                                        : PerformanceTelemetry::Id::Sleep);
+			GAGCore::ApplicationHost::wait(wait);
 		}
 	}
 	return result();

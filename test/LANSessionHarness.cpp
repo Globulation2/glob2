@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Exercise real LAN clients, lobby widgets, sockets, readiness and departures.
+// Exercise real LAN rooms (LanRoom), lobby widgets, sockets, map transfer, readiness and departures.
 #include <Environment.h>
 #include "GlobalContainer.h"
 #include <vector>
@@ -8,7 +8,10 @@
 #include "LANSessionScreen.h"
 #include <optional>
 #include "MultiplayerGameScreen.h"
-#include "YOGServer.h"
+#include "LanRoom.h"
+#include "MapCache.h"
+#include "OnlineServices.h"
+#include "MatchSetup.h"
 #include "FileManager.h"
 #include "Toolkit.h"
 #include <ScreenStack.h>
@@ -34,7 +37,8 @@ namespace
 enum PressRequest
 {
 	PressReady = 1,
-	PressLeave = 2
+	PressLeave = 2,
+	PressStart = 3
 };
 void request(int code)
 {
@@ -56,7 +60,8 @@ Uint32 SDLCALL timeoutTimer(void*, SDL_TimerID, Uint32)
 class JoinScreen : public LANFindScreen
 {
 public:
-	JoinScreen(ScreenStack& screens, const std::string& address, const std::string& capture) : LANFindScreen(screens), capture(capture)
+	JoinScreen(ScreenStack& screens, const std::string& address, const std::string& capture, bool play = false)
+		: LANFindScreen(screens), capture(capture), play(play)
 	{
 		// Use the real form's entry points; no networking is stubbed.
 		setServer(address);
@@ -70,8 +75,11 @@ public:
             started = true;
             start = SDL_GetTicks();
             timers[0] = SDL_AddTimer(5000, readyTimer, nullptr);
-            timers[1] = SDL_AddTimer(25000, leaveTimer, nullptr);
-            timers[2] = SDL_AddTimer(40000, timeoutTimer, nullptr);
+            // Playing, the guest stays until the host leaves (the runner stops it).
+            if (!play) {
+                timers[1] = SDL_AddTimer(25000, leaveTimer, nullptr);
+                timers[2] = SDL_AddTimer(40000, timeoutTimer, nullptr);
+            }
             connect();
             return;
         }
@@ -83,6 +91,7 @@ public:
     }
 private:
     std::string capture;
+    bool play = false;
     bool started = false;
     Uint64 start = 0;
     SDL_TimerID timers[3]{};
@@ -93,7 +102,7 @@ private:
 // so the harness asks the layout rather than assuming pixel positions.
 bool press(ScreenStack& screens, int code, std::vector<SDL_Event>& events)
 {
-	const char* key = code == PressReady ? "ready" : "cancel";
+	const char* key = code == PressReady ? "ready" : code == PressStart ? "start" : "cancel";
 	auto* screen = dynamic_cast<GAGGUI::ui::UIScreen*>(screens.top());
 	auto* node = screen ? screen->host().find(key) : nullptr;
 	if (!node)
@@ -118,10 +127,10 @@ bool press(ScreenStack& screens, int code, std::vector<SDL_Event>& events)
 class HostObserver
 {
 public:
-	HostObserver(std::shared_ptr<YOGClient> client, int cycles, std::string capture)
-        : client(client), cycles(cycles), capture(capture), start(SDL_GetTicks()) {}
+	HostObserver(Lan::LanHost& host, int cycles, std::string capture)
+        : host(host), cycles(cycles), capture(capture), start(SDL_GetTicks()) {}
     std::optional<int> result;
-	void onTimer(Uint32 tick)
+	void onTimer(Uint32)
 	{
 
 		if (!pendingCapture.empty())
@@ -135,36 +144,36 @@ public:
 			result = 1;
 			return;
 		}
-        auto game = client->getMultiplayerGame();
-        if (!game) return;
-		auto& header = game->getGameHeader();
-		int count = header.getNumberOfPlayers();
+		const auto& room = host.state();
+		const int count = static_cast<int>(room.members.size());
 		if (count != previousCount)
 		{
-			std::printf("HOST roster=%d state=%d\n", count, int(game->getGameJoinCreationState()));
-			for (int i = 0; i < count; ++i)
-			{
-				const BasePlayer& p = header.getBasePlayer(i);
-				std::printf("  slot=%d id=%u name=%s mask=%u\n", p.number, p.playerID, p.name.c_str(), p.numberMask);
-			}
+			std::printf("HOST roster=%d seats=%zu\n", count, room.setup.seats.size());
+			for (const auto& m : room.members)
+				std::printf("  member=%u seat=%d name=%s ready=%d map=%d\n", m.id, m.seat, m.name.c_str(), int(m.ready), int(m.hasMap));
 			previousCount = count;
 		}
-		std::set<Uint32> ids;
-		for (int i = 0; i < count; ++i)
-		{
-			const BasePlayer& p = header.getBasePlayer(i);
-			if (!ids.insert(p.playerID).second || p.number != i || p.numberMask != (Uint32(1) << i))
+		std::set<int> seats;
+		std::set<std::string> names;
+		for (const auto& m : room.members)
+			if (!seats.insert(m.seat).second || !names.insert(m.name).second || m.seat < 0 ||
+			    m.seat >= int(room.setup.seats.size()) || room.setup.seats[m.seat].name != m.name)
 			{
-				std::puts("HOST FAIL: duplicate identity or invalid slot mask");
+				std::puts("HOST FAIL: duplicate identity or invalid seat");
 				result = 1;
 			}
-		}
+		for (std::size_t i = 0; i < room.setup.seats.size(); ++i)
+			if (room.setup.seats[i].seat != int(i))
+			{
+				std::puts("HOST FAIL: seats are not numbered in order");
+				result = 1;
+			}
 		if (count > 2)
 		{
 			std::puts("HOST FAIL: expected exactly one host and one guest");
 			result = 1;
 		}
-		if (count == 2 && game->isGameReadyToStart() && !readySeen)
+		if (count == 2 && host.canStart() && !readySeen)
 		{
 			readySeen = true;
 			std::printf("HOST guest ready, cycle=%d\n", completed + 1);
@@ -178,35 +187,40 @@ public:
 			if (completed == cycles)
 			{
 				std::puts("HOST PASS: all ready/join/leave cycles completed");
-				game->leaveGame();
 				result = 0;
 			}
 		}
 	}
 private:
-	std::shared_ptr<YOGClient> client;
+	Lan::LanHost& host;
 	int cycles, completed = 0, previousCount = -1;
 	bool readySeen = false;
 	std::string capture, pendingCapture;
 	Uint64 start;
 };
 
+Lan::LanHost::Options hostOptions(std::uint16_t port)
+{
+	Lan::LanHost::Options options;
+	options.hostName = "LAN host";
+	options.map = Engine::loadMapHeader("maps/FourSquares1.map");
+	options.port = port;
+	options.broadcast = port == 0;
+	return options;
+}
+
 bool connectionFailureChecks()
 {
-    // Never pump the WSS listener: cancellation and the TLS/greeting deadline
-    // must remain responsive while connection establishment is pending.
-    YOGServer stalled(YOGAnonymousLogin, YOGSingleGame);
-    if (!stalled.isListening()) return false;
+    // A host that is never updated: its listener never completes a handshake, so
+    // cancellation and the connection deadline must stay responsive meanwhile.
+    auto stalled = Lan::LanRoom::host(hostOptions(17489));
     for (bool cancel : {true, false}) {
-        auto client = std::make_shared<YOGClient>();
-        client->connect(stalled.networkConfig().lobbyEndpoint);
-        const auto deadline = SDL_GetTicks() + 2000;
-        while (!client->isConnected() && SDL_GetTicks() < deadline) {
-            client->update(); SDL_Delay(1);
-        }
-        if (!client->isConnected() && !client->isConnecting()) return false;
+        Lan::LanClient::Options options;
+        options.endpoint = stalled->shareText();
+        options.name = "timeout probe";
+        auto room = Lan::LanRoom::join(options);
         ScreenStack screens(*globalContainer->gfx);
-        screens.push(std::make_unique<LANSessionScreen>(screens, client, "timeout probe"));
+        screens.push(std::make_unique<LANSessionScreen>(screens, room));
         screens.frame(0, {});
         SDL_Event escape{};
         escape.type = SDL_EVENT_KEY_DOWN;
@@ -218,31 +232,76 @@ bool connectionFailureChecks()
             screens.frame(10000, {}); screens.frame(10001, {});
             screens.frame(10002, {escape}); screens.frame(10003, {}); screens.frame(10004, {});
         }
-        if (screens.running() || screens.result() != (cancel ? 0 : 1) || client->isConnected()) return false;
+        if (screens.running() || screens.result() != (cancel ? 0 : 1) ||
+            room->guestSide()->phase() != Lan::LanClient::Phase::Closed) return false;
     }
-    std::puts("LAN progress PASS: cancellation and greeting timeout release the connection");
+    std::puts("LAN progress PASS: cancellation and connection timeout release the connection");
     return true;
+}
+
+// Plays a real game through the room screen: the host presses Start once the guest
+// is ready, both games run in their GameSessionScreens, and after `seconds` of play
+// the host quits the application, which ends the game for the guest. The runner
+// compares both processes' per-tick checksum sidecars.
+int hostPlay(int seconds, const std::string& capture)
+{
+	int captures = 0;
+	Uint64 nextCapture = 0;
+	std::shared_ptr<Lan::LanRoom> room;
+	try { room = Lan::LanRoom::host(hostOptions(0)); }
+	catch (const std::exception& error) { std::printf("HOST FAIL: %s\n", error.what()); return 1; }
+	std::cout << "PAIRING " << room->shareText() << std::endl;
+	std::puts("HOST roster=1");
+	ScreenStack screens(*globalContainer->gfx);
+	screens.push(std::make_unique<LANSessionScreen>(screens, room));
+	auto& host = *room->hostSide();
+	bool pressed = false, quit = false;
+	const Uint64 start = SDL_GetTicks();
+	while (screens.running()) {
+		std::vector<SDL_Event> events;
+		SDL_Event event;
+		while (SDL_PollEvent(&event)) events.push_back(event);
+		if (!pressed && host.guestCount() == 1 && host.canStart()) {
+			// Press Start once the room screen has rebuilt with the ready guest.
+			auto* screen = dynamic_cast<GAGGUI::ui::UIScreen*>(screens.top());
+			if (screen && screen->host().find("start")) {
+				press(screens, PressStart, events);
+				pressed = true;
+				std::puts("HOST PLAY pressed Start");
+			}
+		}
+		if (pressed && !quit && host.horizon() >= Uint32(seconds * 25)) {
+			std::printf("HOST PLAY horizon=%u, leaving\n", host.horizon());
+			SDL_Event exit{};
+			exit.type = SDL_EVENT_QUIT;
+			events.push_back(exit);
+			quit = true;
+		}
+		screens.frame(SDL_GetTicks(), events);
+		// Captures of the first seconds of play show the in-game connection notice
+		// (waiting for every player to load).
+		if (pressed && captures < 10 && SDL_GetTicks() >= nextCapture) {
+			SDL_SaveBMP(globalContainer->gfx->getSDLSurface(), (capture + "-" + std::to_string(captures++) + ".bmp").c_str());
+			nextCapture = SDL_GetTicks() + 300;
+		}
+		if (SDL_GetTicks() - start > Uint64(seconds + 120) * 1000) {
+			std::puts("HOST PLAY FAIL: timed out");
+			return 1;
+		}
+	}
+	std::puts(quit ? "HOST PLAY PASS" : "HOST PLAY FAIL: the session ended early");
+	return quit ? 0 : 1;
 }
 
 int host(int cycles, const std::string& capture)
 {
-	auto client = std::make_shared<YOGClient>();
-	auto server = std::make_shared<YOGServer>(YOGAnonymousLogin, YOGSingleGame);
-	if (!server->isListening()) { std::puts("HOST FAIL: port in use"); return 1; }
-	server->enableLANBroadcasting();
-    std::cout << "PAIRING " << server->networkConfig().lobbyEndpoint << std::endl;
-	client->attachGameServer(server);
-	client->connect(server->networkConfig().lobbyEndpoint);
-	// A private map name forces a real transfer without touching user maps.
-	MapHeader map = Engine::loadMapHeader("maps/FourSquares1.map");
-	map.setMapName("LAN regression transfer");
-	const std::string sourcePath = glob2PreferGzipReadPath(*Toolkit::getFileManager(), "maps/FourSquares1.map");
-	std::filesystem::copy_file(sourcePath,
-		Toolkit::getFileManager()->getDir(0) + "/" + glob2GzipWritePath(map.getFileName()),
-		std::filesystem::copy_options::overwrite_existing);
+	std::shared_ptr<Lan::LanRoom> room;
+	try { room = Lan::LanRoom::host(hostOptions(0)); }
+	catch (const std::exception& error) { std::printf("HOST FAIL: %s\n", error.what()); return 1; }
+    std::cout << "PAIRING " << room->shareText() << std::endl;
     ScreenStack screens(*globalContainer->gfx);
-    screens.push(std::make_unique<LANSessionScreen>(screens, client, "LAN host", map));
-    HostObserver observer(client, cycles, capture);
+    screens.push(std::make_unique<LANSessionScreen>(screens, room));
+    HostObserver observer(*room->hostSide(), cycles, capture);
     while (screens.running() && !observer.result) {
         std::vector<SDL_Event> events;
         SDL_Event event;
@@ -280,19 +339,36 @@ int main(int argc, char** argv)
 	globals.settings.setGraphicsDetail(false);
 	globals.settings.mute = true;
 	globals.settings.language = "en";
-	globals.settings.setUsername(std::string(argv[1]) == "host" ? "LAN host" : "LAN guest");
+	globals.settings.setUsername(std::string(argv[1]).rfind("host", 0) == 0 ? "LAN host" : "LAN guest");
 	globals.load();
 	if (!NET_Init()) return 1;
 	int rc = 0;
 	if (std::string(argv[1]) == "host") rc = connectionFailureChecks() ? host(std::stoi(argv[3]), argv[4]) : 1;
-	else for (int cycle = 0; cycle < std::stoi(argv[3]) && !rc; ++cycle)
+	else if (std::string(argv[1]) == "host-play") rc = hostPlay(std::stoi(argv[3]), argv[4]);
+	else if (std::string(argv[1]) == "join-play")
 	{
-		// A new receiver stores the download as ".gz" without unzipping it (see
-		// YOGClientFileAssembler::handleMessage), so this is the file to expect.
-		const auto downloaded = std::filesystem::path(globals.fileManager->getDir(0)) / "maps/LAN_regression_transfer.map.gz";
-		// Force a second request too: rejoining must reuse the server's upload
-		// rather than append another copy of its chunks to the cached transfer.
-		std::filesystem::remove(downloaded);
+		ScreenStack screens(*globals.gfx);
+		screens.push(std::make_unique<JoinScreen>(screens, argv[2], std::string(argv[4]) + ".bmp", true));
+		while (screens.running())
+		{
+			std::vector<SDL_Event> events;
+			SDL_Event event;
+			while (SDL_PollEvent(&event))
+			{
+				if (event.type == SDL_EVENT_USER) { if (!press(screens, event.user.code, events)) rc = 1; }
+				else events.push_back(event);
+			}
+			screens.frame(SDL_GetTicks(), events);
+		}
+	}
+	else
+	{
+		const std::string source = glob2PreferGzipReadPath(*globals.fileManager, "maps/FourSquares1.map");
+		const std::string hash = Online::mapContentHash(source);
+		for (int cycle = 0; cycle < std::stoi(argv[3]) && !rc; ++cycle)
+		{
+		// Force a download every cycle: the guest's map cache is keyed by content hash.
+		Online::services().maps.remove(hash);
         ScreenStack screens(*globals.gfx);
         screens.push(std::make_unique<JoinScreen>(screens, argv[2], std::string(argv[4]) + "-" + std::to_string(cycle + 1) + ".bmp"));
         while (screens.running())
@@ -310,17 +386,15 @@ int main(int argc, char** argv)
             SDL_Delay(20);
         }
         if (!rc) rc = screens.result();
-		std::ifstream original(glob2PreferGzipReadPath(*globals.fileManager, "maps/FourSquares1.map"), std::ios::binary);
-		std::ifstream received(downloaded, std::ios::binary);
-		std::string expected((std::istreambuf_iterator<char>(original)), {});
-		std::string actual((std::istreambuf_iterator<char>(received)), {});
-		if (!original || !received || actual != expected)
+		std::string expected, actual;
+		if (!Online::readMapBytes(source, expected) || !Online::readMapBytes(Online::services().maps.path(hash).value_or(std::string()), actual) || actual != expected)
 		{
 			std::puts("JOIN FAIL: downloaded map differs from source");
 			rc = 1;
 		}
 		else std::printf("JOIN map verified: %zu bytes, cycle=%d\n", actual.size(), cycle + 1);
 		SDL_Delay(1000);
+		}
 	}
 	NET_Quit();
 	return rc;

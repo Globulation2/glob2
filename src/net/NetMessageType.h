@@ -74,4 +74,15 @@ enum NetMessageType
 	MNetRequestMapThumbnail,
 	MNetSendMapThumbnail,
 	MNetSubmitRatingOnMap,
+
+	// 0xA0-0xBF is reserved for the turn protocol (src/net/turn/TurnProtocol.h,
+	// docs/multiplayer/turn-protocol.md). The values are explicit so changes to the
+	// YOG messages above never renumber it.
+	MNetTurnFirst = 0xA0,
+	MNetTurnLast = 0xBF,
+	// 0xC0-0xCF is reserved for the LAN room protocol (src/net/lan/LanProtocol.h,
+	// docs/multiplayer/lan.md), which shares a LAN guest's connection with the turn
+	// protocol. NetMessage::getNetMessage does not decode it.
+	MNetLanRoomFirst = 0xC0,
+	MNetLanRoomLast = 0xCF,
 };

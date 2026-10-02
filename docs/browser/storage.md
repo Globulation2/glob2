@@ -100,6 +100,15 @@ absent previous file. Recovery is verified from another browser page and after
 reload. The native safety harness also checks every truncated backup, version
 and definition mismatches, legacy text round trips and injected write failures.
 
+## Online sign-in
+
+The online client keeps, per platform instance, the guest device credential and
+the current refresh token in `online/instances.json`, and downloaded maps in
+`online/maps/`, in the same browser storage, persisted after every change.
+Clearing site data signs the browser out and, for a guest that never linked a
+sign-in provider, loses that guest account. See
+[the online client](../multiplayer/client.md).
+
 ## Editor saves
 
 Map-editor saves use the same checked atomic file replacement as game saves.

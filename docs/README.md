@@ -25,7 +25,8 @@ dated reports and pull-request artifacts do not belong here.
   [headless replays](development/headless-replays.md),
   [JavaScript scripting](development/javascript.md) and
   [API reference](development/javascript-api.md),
-  [performance telemetry](development/performance-telemetry.md),
+  [performance telemetry](development/performance-telemetry.md) and
+  [network telemetry](development/network-telemetry.md),
   [save continuation](development/savegame-continuation.md), and the
   [historical architecture overview](development/legacy-architecture.txt).
 - **Features:** [custom-game setup](features/custom-game-setup/README.md),
@@ -35,11 +36,26 @@ dated reports and pull-request artifacts do not belong here.
   [window resizing](features/window-resizing.md), and the
   [toroidal view](features/torus-experiment.md).
 - **Map generators:** [design and implementation index](map-generators/README.md).
+- **Online multiplayer:** [platform architecture](multiplayer/architecture.md),
+  [identity and sign-in](multiplayer/identity.md),
+  [rooms and matches](multiplayer/rooms-and-matches.md),
+  [ratings and matchmaking](multiplayer/ratings-and-matchmaking.md),
+  [match history and the web app](multiplayer/history-and-web.md),
+  [connection quality](multiplayer/connection-quality.md) (Ping, Delay, Behind), the
+  [relay-sequenced turn protocol](multiplayer/turn-protocol.md), the
+  [match relay](multiplayer/relay.md) that hosts it, [LAN games](multiplayer/lan.md)
+  and the [LAN playtest guide](multiplayer/lan-playtest.md).
+- **Hosting:** [self-hosting an online instance](hosting/README.md) with the
+  Compose stack in `deploy/`; the legacy YOG deployment is in
+  [deploy/README.md](../deploy/README.md) until the cutover.
 - **Tools:** [distributed tournaments](tools/tournaments.md).
 
 - **Mobile platforms:** [builds, responsive UI and verification](mobile/development.md),
   [Android privacy policy](mobile/privacy-policy.md), and
   [Amazon Fire tablet privacy policy](mobile/amazon-privacy-policy.md).
+
+- **Online multiplayer:** [online client](multiplayer/client.md): platform
+  connection, sign-in, instances, map cache and invite links.
 
 - **Browser platform:** [build and play](../browser/README.md),
   [architecture](browser/implementation.md), [storage](browser/storage.md),

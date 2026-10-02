@@ -1,0 +1,38 @@
+{
+    servers {
+        trusted_proxies static {$GLOB2_EDGE_TRUSTED_PROXIES:127.0.0.1/32}
+        trusted_proxies_strict
+    }
+}
+{$GLOB2_SITE:https://localhost} {
+    @lobby path /yog
+    reverse_proxy @lobby https://lobby:7489 {
+        header_up X-Forwarded-For {client_ip}
+        transport http {
+            tls_trust_pool file /run/secrets/deployment-ca
+            tls_server_name lobby
+        }
+    }
+    @router path /router
+    reverse_proxy @router https://router:7491 {
+        header_up X-Forwarded-For {client_ip}
+        transport http {
+            tls_trust_pool file /run/secrets/deployment-ca
+            tls_server_name router
+        }
+    }
+    @private path /metrics /healthz /livez /readyz /register
+    respond @private 404
+    root * /srv
+    header Cache-Control "no-cache"
+    header Cross-Origin-Opener-Policy "same-origin"
+    header Cross-Origin-Embedder-Policy "require-corp"
+    @assetData path *.data
+    header @assetData Content-Type application/octet-stream
+    file_server {
+        precompressed gzip
+    }
+}
+http://127.0.0.1:2015 {
+    respond /livez 200
+}

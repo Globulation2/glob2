@@ -44,6 +44,8 @@ class GameGUITouch
 	void drawKeyboardFocus();
 	bool active() const { return touchActive || usesHUD(); }
 	bool usesHUD() const;
+	//! The phone HUD's regions in window points (status strip, world, actions).
+	GAGCore::MobileLayout hudLayout() const { return layout(); }
 	GAGCore::ViewRect worldBounds() const { return world(); }
 	void drawHUD();
 	void drawPanel();

@@ -48,9 +48,9 @@ See [delivery contracts](../docs/browser/implementation.md) for output paths and
 platform boundaries.
 
 The default build packages two runtimes: the root `index.js`/`index.wasm` serial
-fallback and `threaded/index.js`/`threaded/index.wasm`. Both use the root asset
-payload. Keep `index.html`, `loader.js`, both runtime directories and asset
-payloads together when publishing. `python3 browser/package-static.py` produces
+fallback and `threaded/index.js`/`threaded/index.wasm`. Both load the same game
+data packages from `assets/` (see below). Keep `index.html`, `loader.js`, both
+runtime directories and `assets/` together when publishing. `python3 browser/package-static.py` produces
 the versioned release package with verified gzip sidecars for both runtimes. `web-tests` additionally builds serial and
 threaded `script-tests.js` harnesses.
 
@@ -75,6 +75,32 @@ isolation headers before advertising it. `glob2Diagnostics.snapshot()` reports
 threads, excluding the application worker), and worker-owned `renderContext`
 metrics. Browser command-line hosts must await `Module.start(args)` for completion;
 `Module.callMain()` alone does not wait for a threaded command to finish.
+### Game data and loading
+
+The build packs the files the game reads at run time into content-addressed
+packages under `assets/` (`scons/web_assets.py`); build scripts, translation
+tooling, documentation, icons and store screenshots stay out.
+`python3 scons/web_assets.py --report` lists the size of each category and package.
+`browser/asset-loader.js` downloads the `core` package while the WebAssembly
+module streams in, and the game starts once both are ready. `core` holds the
+interface, sprites, font, translations, menu music, maps, campaigns, scripts and
+every simulation data file, so the sim version and checksum traces are unchanged.
+The loading page shows megabytes, a percentage and an estimate of the time left.
+
+Two optional packages follow in the background once the main menu is up: the
+in-game music and the high-resolution artwork (WebGL2 only, and only while that
+setting is on). They download in parts of about 4 MB, pause while a match is
+running, are skipped when the browser asks to save data, and become visible to
+the game only when complete. The game reads them when a match or the editor
+starts, so on a first visit a match started before the artwork arrives uses the
+original artwork; the next match uses the high-resolution set.
+`glob2Diagnostics.snapshot().assets` reports each package's state.
+
+Package parts are kept in the browser's Cache Storage, so later visits read them
+from the device. A new build changes only the names of the packages whose
+content changed. `python3 browser/precompress.py` writes Brotli and gzip copies
+of both runtimes' modules and scripts, the loader and the packages for servers that
+serve precompressed files (`deploy/Caddyfile` does).
 
 ## Playing and saving
 
@@ -88,6 +114,9 @@ Use Tutorial, Campaign, Custom Game or Editor. Clicking the canvas focuses
 keyboard input and enables music. Live resize updates the internal resolution
 at frame boundaries in scheduled browser flows.
 Add `?renderer=software` or `?renderer=webgl2` to the URL to force a renderer.
+`?replay=<url>` downloads a replay while the game loads and opens it in the replay
+viewer (the platform's "Watch in browser"; see
+[match history and the web app](../docs/multiplayer/history-and-web.md#watch-in-browser)).
 With WebGL2, press G in a match for the torus overview. Both rendering paths
 support the flat map camera's zoom and picking. Native HTML text fields handle
 browser keyboard editing, selection, paste, composition and password masking;

@@ -199,6 +199,47 @@ bool presentationMetrics(ViewportMetrics& metrics,InputCapabilities& input)
     }
     return false;
 }
+bool openUrl(const std::string& url)
+{
+    if (url.rfind("https://", 0) != 0 && url.rfind("http://", 0) != 0)
+        return false;
+    return EM_ASM_INT({
+        const opened = window.open(UTF8ToString($0), '_blank');
+        if (!opened) return 0;
+        try { opened.opener = null; } catch (error) {}
+        return 1;
+    }, url.c_str());
+}
+bool copyText(const std::string& text)
+{
+    return EM_ASM_INT({
+        const value = UTF8ToString($0);
+        Module.glob2LastCopy = value;
+        // A textarea and execCommand: older browsers and pages without the
+        // Clipboard API (http: origins); it also needs the click's activation.
+        const fallback = () => {
+            try {
+                const area = document.createElement('textarea');
+                area.value = value;
+                area.setAttribute('readonly', '');
+                area.style.cssText = 'position:fixed;left:-9999px;top:0;opacity:0';
+                document.body.appendChild(area);
+                area.select();
+                const copied = document.execCommand('copy');
+                area.remove();
+                return copied;
+            } catch (_) { return false; }
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(value).then(() => { Module.glob2CopyState = 'copied'; },
+                () => { Module.glob2CopyState = fallback() ? 'copied' : 'failed'; });
+            return 1;
+        }
+        const copied = fallback();
+        Module.glob2CopyState = copied ? 'copied' : 'failed';
+        return copied ? 1 : 0;
+    }, text.c_str());
+}
 bool takeViewportSize(int& width, int& height)
 {
     return MAIN_THREAD_EM_ASM_INT({

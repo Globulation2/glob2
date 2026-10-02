@@ -562,6 +562,66 @@
       "group": "Network entry screens"
     },
     {
+      "id": "quick-match",
+      "title": "Quick match",
+      "description": "Queue cards before a search; canned instance queues.",
+      "group": "Online screens"
+    },
+    {
+      "id": "quick-match-searching",
+      "title": "Quick match: searching",
+      "description": "A 1 vs 1 ranked search 42 s in: rating window, region, AI backfill countdown.",
+      "group": "Online screens"
+    },
+    {
+      "id": "match-found",
+      "title": "Match found",
+      "description": "Ranked accept prompt with the 10-second ring, before either player answers.",
+      "group": "Online screens"
+    },
+    {
+      "id": "match-found-ai",
+      "title": "Playing an AI",
+      "description": "AI-backfilled match: who you play and the start countdown.",
+      "group": "Online screens"
+    },
+    {
+      "id": "online-profile",
+      "title": "Online profile",
+      "description": "Ratings per queue, aggregates and match history from canned matches.",
+      "group": "Online screens"
+    },
+    {
+      "id": "online-maps",
+      "title": "Map browser",
+      "description": "Catalog maps with server previews (generator PNGs) and the detail panel.",
+      "group": "Online screens"
+    },
+    {
+      "id": "online-my-maps",
+      "title": "My maps",
+      "description": "Own maps: published, checking on the server, rejected.",
+      "group": "Online screens"
+    },
+    {
+      "id": "map-share",
+      "title": "Share a map",
+      "description": "Upload form for maps/balanced.map; visibility defaults to Unlisted.",
+      "group": "Online screens"
+    },
+    {
+      "id": "map-share-checking",
+      "title": "Share a map: checking",
+      "description": "The server is loading the map and drawing its preview.",
+      "group": "Online screens"
+    },
+    {
+      "id": "map-share-rejected",
+      "title": "Share a map: rejected",
+      "description": "The server could not load the map; the reason in plain words.",
+      "group": "Online screens"
+    },
+    {
       "id": "setup-review",
       "title": "Review & Play",
       "group": "Custom game setup",
@@ -744,6 +804,144 @@
       "title": "Script editor \u00b7 save file",
       "description": "Child script file dialog using the same persistence model and explicit touch file view.",
       "group": "Map & campaign editor"
+    },
+    {
+      "id": "online-hub",
+      "title": "Online hub",
+      "description": "Guest account, quick-match cards, rooms and recent matches (fixed model).",
+      "group": "Online play"
+    },
+    {
+      "id": "online-hub-signin",
+      "title": "Online hub: browser sign-in",
+      "description": "Waiting for the browser with the confirmation code.",
+      "group": "Online play"
+    },
+    {
+      "id": "online-hub-offline",
+      "title": "Online hub: server unreachable",
+      "description": "Retry banner; online controls disabled.",
+      "group": "Online play"
+    },
+    {
+      "id": "online-hub-trust",
+      "title": "Invite to another server",
+      "description": "Trust prompt for an instance the player has not used.",
+      "group": "Online play"
+    },
+    {
+      "id": "room-host",
+      "title": "Room: host, Players & Teams",
+      "description": "Online room seats, invite and chat (fixed RoomState).",
+      "group": "Online play"
+    },
+    {
+      "id": "room-guest-map",
+      "title": "Room: guest, Map tab",
+      "description": "Read-only setup for a guest.",
+      "group": "Online play"
+    },
+    {
+      "id": "room-chat",
+      "title": "Room: chat",
+      "description": "Phone Chat tab; desktop shows the Players tab.",
+      "group": "Online play"
+    },
+    {
+      "id": "room-lan",
+      "title": "Room: LAN",
+      "description": "The same Room screen on a LAN backend: joining on this network.",
+      "group": "Online play"
+    },
+    {
+      "id": "match-starting",
+      "title": "Starting match",
+      "description": "Steps between match.start and the first tick, with per-player progress.",
+      "group": "Online play"
+    },
+    {
+      "id": "settings-online",
+      "title": "Settings: Online",
+      "description": "Server choice and account; no client connection in the fixture.",
+      "group": "Online play"
+    },
+    {
+      "id": "game-connection",
+      "title": "Connection panel",
+      "description": "Every player's Ping with a word and marker, and your Delay underneath (docs/multiplayer/connection-quality.md).",
+      "group": "Online play"
+    },
+    {
+      "id": "game-connection-trouble",
+      "title": "Connection panel: reconnecting",
+      "description": "A player lost connection, with the grace time.",
+      "group": "Online play"
+    },
+    {
+      "id": "game-connection-details",
+      "title": "Connection details",
+      "description": "Details opened from the panel.",
+      "group": "Online play"
+    },
+    {
+      "id": "game-connection-own",
+      "title": "Connection panel: fair, poor and behind",
+      "description": "Own Ping fair and Delay poor and unstable; one player a second behind, another slow.",
+      "group": "Online play"
+    },
+    {
+      "id": "game-connection-own-details",
+      "title": "Connection details: fair, poor and behind",
+      "description": "Ping, Behind and state of every player, the legend and what each number means.",
+      "group": "Online play"
+    },
+    {
+      "id": "game-connection-grid",
+      "title": "Connection panel: more than four players",
+      "description": "Phones show a grid of markers and numbers beyond four people.",
+      "group": "Online play"
+    },
+    {
+      "id": "game-connection-grid-details",
+      "title": "Connection details: more than four players",
+      "description": "The details sheet explains the grid's numbers.",
+      "group": "Online play"
+    },
+    {
+      "id": "game-connection-lost",
+      "title": "Connection lost card",
+      "description": "Reconnecting with the grace time and Leave match.",
+      "group": "Online play"
+    },
+    {
+      "id": "game-catching-up",
+      "title": "Catching up card",
+      "description": "Fast-forward progress after a reconnect.",
+      "group": "Online play"
+    },
+    {
+      "id": "game-out-of-sync",
+      "title": "Out of sync card",
+      "description": "Rejoining after the relay's desync verdict.",
+      "group": "Online play"
+    },
+    {
+      "id": "game-results-verifying",
+      "title": "Results: verifying",
+      "description": "Victory with the provisional rating change greyed.",
+      "group": "Online play"
+    },
+    {
+      "id": "game-results-verified",
+      "title": "Results: verified",
+      "description": "Rating card after match.updated.",
+      "group": "Online play"
+    },
+    {
+      "id": "game-results-room",
+      "title": "Results: room match draw",
+      "description": "Unrated room match with a draw outcome.",
+      "group": "Online play"
     }
   ],
   "gaps": [

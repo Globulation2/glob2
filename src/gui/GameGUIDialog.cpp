@@ -38,13 +38,16 @@ Element InGameMainScreen::build(const Presentation &p)
 {
 	const std::string returnLabel = fe::tr(replay ? "[return to replay]" : "[return to game]");
 	const std::string loadLabel = fe::tr(replay ? "[load replay]" : "[load game]");
-	const std::string quitLabel = fe::tr(replay ? "[quit the replay]" : "[quit the game]");
+	const std::string quitLabel = fe::tr(replay ? "[quit the replay]" : networked ? "[leave match]" : "[quit the game]");
+	// A networked match cannot be loaded over or saved: the relay owns its turns.
+	const bool files = !networked;
 	if (classic())
 	{
 		// The classic desktop menu: a column of gold buttons, Return last.
 		std::vector<Element> buttons;
-		buttons.push_back(classicButton("load", loadLabel, [this] { finish(LOAD_GAME); }));
-		if (!replay && canSave)
+		if (files)
+			buttons.push_back(classicButton("load", loadLabel, [this] { finish(LOAD_GAME); }));
+		if (files && !replay && canSave)
 			buttons.push_back(classicButton("save", fe::tr("[save game]"), [this] { finish(SAVE_GAME); }));
 		buttons.push_back(classicButton("options", fe::tr("[Options]"), [this] { finish(OPTIONS); }));
 		buttons.push_back(classicButton("quit", quitLabel, [this] { finish(QUIT_GAME); }));
@@ -61,9 +64,10 @@ Element InGameMainScreen::build(const Presentation &p)
 		return fe::button(key, label, [this, code] { finish(code); }, options);
 	};
 	std::vector<Element> buttons;
-	if (!replay && canSave)
+	if (files && !replay && canSave)
 		buttons.push_back(item("save", fe::tr("[save game]"), SAVE_GAME));
-	buttons.push_back(item("load", loadLabel, LOAD_GAME));
+	if (files)
+		buttons.push_back(item("load", loadLabel, LOAD_GAME));
 	buttons.push_back(item("options", fe::tr("[Options]"), OPTIONS));
 	buttons.push_back(item("quit", quitLabel, QUIT_GAME));
 	buttons.push_back(item("pause", fe::tr(paused ? "[resume game]" : "[pause game]"), PAUSE_GAME));
@@ -72,6 +76,40 @@ Element InGameMainScreen::build(const Presentation &p)
 					   fe::footer(fe::scroll("menu/scroll", fe::column(std::move(buttons), {p.pt(8)})),
 								  item("return", returnLabel, RETURN_GAME, true, SDLK_ESCAPE))},
 					  {p.pt(12)});
+}
+
+InGameConfirmScreen::InGameConfirmScreen(std::string title, std::string body, std::string confirmLabel,
+										 std::string cancelLabel)
+	: title(std::move(title)), body(std::move(body)), confirmLabel(std::move(confirmLabel)),
+	  cancelLabel(std::move(cancelLabel))
+{
+}
+
+Element InGameConfirmScreen::build(const Presentation &p)
+{
+	std::vector<Element> parts;
+	parts.push_back(fe::paragraph(title, {fe::FontRole::Heading, false, fe::TextAlign::Center}));
+	parts.push_back(fe::paragraph(body, {fe::FontRole::Body}));
+	std::vector<Element> buttons;
+	if (classic())
+	{
+		buttons.push_back(classicButton("confirm", confirmLabel, [this] { finish(CONFIRM); }));
+		buttons.push_back(classicButton("cancel", cancelLabel, [this] { finish(CANCEL); }, SDLK_ESCAPE));
+	}
+	else
+	{
+		// Staying is the highlighted choice; leaving needs a deliberate tap.
+		fe::ButtonOptions stay;
+		stay.primary = true;
+		stay.shortcut = SDLK_ESCAPE;
+		stay.minHeight = 44;
+		fe::ButtonOptions go;
+		go.minHeight = 44;
+		buttons.push_back(fe::button("cancel", cancelLabel, [this] { finish(CANCEL); }, stay));
+		buttons.push_back(fe::button("confirm", confirmLabel, [this] { finish(CONFIRM); }, go));
+	}
+	parts.push_back(fe::column(std::move(buttons), {p.pt(classic() ? 10 : 8)}));
+	return fe::column(std::move(parts), {p.pt(12)});
 }
 
 InGameEndOfGameScreen::InGameEndOfGameScreen(std::string title, bool canContinue, std::optional<GAGCore::Color> teamColor,

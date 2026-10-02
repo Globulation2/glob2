@@ -24,6 +24,7 @@
 #include "EditorMainMenu.h"
 #include "Engine.h"
 #include "LANFindScreen.h"
+#include "LanRoom.h"
 #include "LANMenuScreen.h"
 #include "MainMenuScreen.h"
 #include "MessageScreen.h"
@@ -46,6 +47,8 @@
 #include "YOGLoginScreen.h"
 #include "YOGRegisterScreen.h"
 #include "FrontendTheme.h"
+#include "test/OnlineUIFixtures.h"
+#include "../tools/OnlineScreenFixtures.h"
 #include <ui/Screen.h>
 #include <HostViewport.h>
 #include <ScreenStack.h>
@@ -133,6 +136,32 @@ std::unique_ptr<GAGGUI::Screen> gameRoom(GAGGUI::ScreenStack &s)
 	return std::make_unique<SessionFixture<MultiplayerGameScreen>>(client, game, std::make_unique<MultiplayerGameScreen>(s, game, client), false);
 }
 
+// A LAN room as its host sees it, offline (no listener): the host, one AI and the
+// open seats, through the same MultiplayerGameScreen and LanRoom backend as a game.
+class LanRoomFixture final : public SessionTabsScreen
+{
+	std::shared_ptr<Lan::LanRoom> room;
+	MultiplayerGameScreen tab;
+
+  public:
+	LanRoomFixture(GAGGUI::ScreenStack &s, std::shared_ptr<Lan::LanRoom> room) : room(room), tab(s, room)
+	{
+		addTab(&tab, true);
+	}
+	~LanRoomFixture() override { removeTab(&tab); }
+};
+std::unique_ptr<GAGGUI::Screen> lanRoom(GAGGUI::ScreenStack &s)
+{
+	Lan::LanHost::Options options;
+	options.hostName = "Harness host";
+	options.map = Engine().loadMapHeader("maps/balanced.map");
+	options.network = false;
+	auto room = Lan::LanRoom::host(std::move(options));
+	room->addAI(AI::NICOWAR);
+	room->update();
+	return std::make_unique<LanRoomFixture>(s, room);
+}
+
 std::vector<Fixture> fixtures()
 {
 	auto &strings = *GAGCore::Toolkit::getStringTable();
@@ -217,6 +246,7 @@ std::vector<Fixture> fixtures()
 		{"online-register", [](GAGGUI::ScreenStack &) { return std::make_unique<YOGRegisterScreen>(std::make_shared<YOGClient>()); }},
 		{"map-upload", [](GAGGUI::ScreenStack &s) { return std::make_unique<MapUploadFixture>(s, std::make_shared<YOGClient>(), "maps/balanced.map"); }},
 		{"game-room", gameRoom},
+		{"lan-room", lanRoom},
 		{"online-lobby", [](GAGGUI::ScreenStack &s)
 		 {
 			 auto client = std::make_shared<YOGClient>();
@@ -225,6 +255,81 @@ std::vector<Fixture> fixtures()
 		 }},
 		{"online-maps", [](GAGGUI::ScreenStack &s) { return session<YOGClientMapDownloadScreen>(s); }},
 		{"online-options", [](GAGGUI::ScreenStack &) { return session<YOGClientOptionsScreen>(); }},
+		{"online-hub", [](GAGGUI::ScreenStack &s) { return OnlineUIFixtures::hubFixture(s); }},
+		{"online-hub-signin", [](GAGGUI::ScreenStack &s)
+		 {
+			 return OnlineUIFixtures::hubFixture(s, [](OnlineHubScreen::Model &m)
+												 {
+													 m.signIn = OnlineHubScreen::Model::SignIn::Waiting;
+													 m.confirmationCode = "KXQ742";
+												 });
+		 }},
+		{"online-hub-offline", [](GAGGUI::ScreenStack &s)
+		 {
+			 return OnlineUIFixtures::hubFixture(s, [](OnlineHubScreen::Model &m)
+												 {
+													 m.link = OnlineHubScreen::Model::Link::Offline;
+													 m.retryInSeconds = 8;
+													 m.displayName = "Bradley";
+													 m.accountKind = "registered";
+													 m.rooms = Online::Json::array();
+												 });
+		 }},
+		{"online-hub-trust", [](GAGGUI::ScreenStack &s)
+		 {
+			 auto hub = OnlineUIFixtures::hubFixture(s);
+			 static_cast<OnlineHubScreen &>(*hub).acceptInvite("https://play.lanparty.net", "7HD21QABCD");
+			 return hub;
+		 }},
+		{"room-host", [](GAGGUI::ScreenStack &s)
+		 {
+			 return std::make_unique<RoomScreen>(s, Online::PlatformRoom::preview(OnlineUIFixtures::roomState(), OnlineUIFixtures::HOST_ID, OnlineUIFixtures::roomChat()));
+		 }},
+		{"room-guest-map", [](GAGGUI::ScreenStack &s)
+		 {
+			 auto room = std::make_unique<RoomScreen>(s, Online::PlatformRoom::preview(OnlineUIFixtures::roomState(), OnlineUIFixtures::GUEST_ID, OnlineUIFixtures::roomChat()));
+			 room->selectTab(RoomScreen::MapTab);
+			 return room;
+		 }},
+		{"room-rules", [](GAGGUI::ScreenStack &s)
+		 {
+			 auto room = std::make_unique<RoomScreen>(s, Online::PlatformRoom::preview(OnlineUIFixtures::roomState(), OnlineUIFixtures::HOST_ID, OnlineUIFixtures::roomChat()));
+			 room->selectTab(RoomScreen::RulesTab);
+			 return room;
+		 }},
+		{"room-lan", [](GAGGUI::ScreenStack &s) { return std::make_unique<RoomScreen>(s, std::make_shared<OnlineUIFixtures::LanRoomFixture>()); }},
+		// A member who joined a full room: listed as not seated, Ready disabled with why.
+		{"room-unseated", [](GAGGUI::ScreenStack &s)
+		 {
+			 return std::make_unique<RoomScreen>(s, Online::PlatformRoom::preview(OnlineUIFixtures::fullRoomState(), OnlineUIFixtures::LATE_ID, OnlineUIFixtures::roomChat()));
+		 }},
+		// A premade map uploaded for the room, named by the server's mapTitle.
+		{"room-premade-map", [](GAGGUI::ScreenStack &s)
+		 {
+			 auto room = std::make_unique<RoomScreen>(s, Online::PlatformRoom::preview(OnlineUIFixtures::premadeRoomState(), OnlineUIFixtures::HOST_ID, OnlineUIFixtures::roomChat()));
+			 room->selectTab(RoomScreen::MapTab);
+			 return room;
+		 }},
+		{"match-starting", [](GAGGUI::ScreenStack &s) { return std::make_unique<MatchStartScreen>(s, OnlineUIFixtures::startingMatch()); }},
+		{"settings-online", [](GAGGUI::ScreenStack &)
+		 {
+			 auto settings = std::make_unique<SettingsScreen>();
+			 settings->selectCategory(SettingsScreen::Category::Online);
+			 return settings;
+		 }},
+		// Online screens (quick match, profile, maps) on canned data.
+		{"quick-match", [](GAGGUI::ScreenStack &s) { return OnlineScreenFixtures::quickMatch(s, false); }},
+		{"quick-match-searching", [](GAGGUI::ScreenStack &s) { return OnlineScreenFixtures::quickMatch(s, true); }},
+		{"match-found", [](GAGGUI::ScreenStack &) { return OnlineScreenFixtures::matchFound(true); }},
+		{"match-found-ai", [](GAGGUI::ScreenStack &) { return OnlineScreenFixtures::matchFound(false); }},
+		{"online-profile", [](GAGGUI::ScreenStack &s) { return OnlineScreenFixtures::profile(s); }},
+		{"online-maps", [](GAGGUI::ScreenStack &s)
+		 { return OnlineScreenFixtures::maps(s, OnlineMapsScreen::Tab::Browse, glob2test::sourceRoot().string() + "/"); }},
+		{"online-my-maps", [](GAGGUI::ScreenStack &s)
+		 { return OnlineScreenFixtures::maps(s, OnlineMapsScreen::Tab::Mine, glob2test::sourceRoot().string() + "/"); }},
+		{"map-share", [](GAGGUI::ScreenStack &) { return OnlineScreenFixtures::share(0); }},
+		{"map-share-checking", [](GAGGUI::ScreenStack &) { return OnlineScreenFixtures::share(1); }},
+		{"map-share-rejected", [](GAGGUI::ScreenStack &) { return OnlineScreenFixtures::share(2); }},
 		{"setup-options", [](GAGGUI::ScreenStack &)
 		 {
 			 static MapHeader mapHeader = Engine().loadMapHeader("maps/balanced.map");

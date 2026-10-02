@@ -1,0 +1,133 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:MapVersionInfo",
+  "title": "MapVersionInfo",
+  "type": "object",
+  "required": [
+    "hash",
+    "size",
+    "validation",
+    "preview",
+    "downloadUrl",
+    "createdAt"
+  ],
+  "properties": {
+    "hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "Lowercase hexadecimal SHA-256 digest."
+    },
+    "size": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "width": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "height": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "teamCount": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 12
+    },
+    "minVersionMinor": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Format version the file was saved with: engines from this VERSION_MINOR load it."
+    },
+    "simVersion": {
+      "type": "object",
+      "required": [
+        "versionMinor",
+        "netProtocol",
+        "dataHash"
+      ],
+      "properties": {
+        "versionMinor": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65535,
+          "description": "VERSION_MINOR in src/Version.h (save and simulation format)."
+        },
+        "netProtocol": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65535,
+          "description": "NET_PROTOCOL_VERSION in src/Version.h."
+        },
+        "dataHash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "Lowercase hex SHA-256 over the build's simulation data files, as computed by the engine."
+        }
+      },
+      "additionalProperties": false,
+      "description": "Identity of a deterministic simulation build."
+    },
+    "validation": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "pending"
+        },
+        {
+          "type": "string",
+          "const": "valid"
+        },
+        {
+          "type": "string",
+          "const": "invalid"
+        }
+      ]
+    },
+    "reason": {
+      "type": "string",
+      "maxLength": 2000,
+      "description": "Why it is invalid."
+    },
+    "fileTitle": {
+      "type": "string",
+      "maxLength": 128,
+      "description": "Map name stored in the file."
+    },
+    "notes": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "preview": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "pending"
+        },
+        {
+          "type": "string",
+          "const": "ready"
+        },
+        {
+          "type": "string",
+          "const": "failed"
+        }
+      ]
+    },
+    "previewUrl": {
+      "type": "string",
+      "pattern": "^(https|wss|http|ws)://[^\\s]+$",
+      "maxLength": 2048
+    },
+    "downloadUrl": {
+      "type": "string",
+      "pattern": "^(https|wss|http|ws)://[^\\s]+$",
+      "maxLength": 2048
+    },
+    "createdAt": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+      "description": "RFC 3339 date-time."
+    }
+  }
+}

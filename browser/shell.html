@@ -24,15 +24,29 @@ body.ready #loading{opacity:0;pointer-events:none}
 #loading-status{min-height:1.4em;font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:#c2cba9}
 .loader{width:42px;height:42px;border:4px solid rgba(232,237,207,.2);border-top-color:#e4c969;
   border-radius:50%;animation:spin .85s linear infinite;box-shadow:0 0 24px rgba(228,201,105,.18)}
+#loading-progress{display:grid;justify-items:center;gap:8px;width:min(320px,calc(100vw - 32px))}
+#loading-progress[hidden]{display:none}
+#loading-bar{width:100%;height:8px;border-radius:4px;background:rgba(232,237,207,.16);overflow:hidden;
+  box-shadow:inset 0 0 0 1px rgba(232,237,207,.12)}
+#loading-bar>span{display:block;height:100%;width:0;background:linear-gradient(90deg,#b28f41,#e4c969);transition:width .25s linear}
+#loading-detail{font-size:14px;font-variant-numeric:tabular-nums;color:#e8edcf}
+#loading-note{max-width:min(360px,calc(100vw - 32px));margin:0;font-size:13px;line-height:1.45;color:#aeb79a}
+#loading-retry{font:600 15px system-ui,sans-serif;padding:10px 22px;min-height:44px;border:0;border-radius:6px;
+  background:#e4c969;color:#173226;cursor:pointer}
 @keyframes spin{to{transform:rotate(360deg)}}
-@media (prefers-reduced-motion:reduce){.loader{animation:none;border-color:#e4c969}canvas,#loading{transition:none}}
+@media (prefers-reduced-motion:reduce){.loader{animation:none;border-color:#e4c969}canvas,#loading,#loading-bar>span{transition:none}}
 </style>
 </head>
-<body>
-<div id="loading" role="status" aria-live="polite">
+<body data-wasm-bytes="0" data-wire-sizes="{}">
+<div id="loading">
   <strong>Globulation 2</strong>
   <span class="loader" aria-hidden="true"></span>
-  <span id="loading-status">Loading game…</span>
+  <span id="loading-status" role="status" aria-live="polite">Loading game…</span>
+  <div id="loading-progress" hidden>
+    <div id="loading-bar" role="progressbar" aria-label="Download progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span></span></div>
+    <span id="loading-detail"></span>
+  </div>
+  <p id="loading-note" hidden>The first visit downloads the game once. Later visits start from this device's copy.</p>
 </div>
 <canvas id="canvas" width="800" height="600" tabindex="0" aria-label="Globulation 2" oncontextmenu="event.preventDefault()"></canvas>
 <script>
@@ -47,6 +61,127 @@ function fitCanvas() {
 addEventListener('resize', fitCanvas);
 new MutationObserver(fitCanvas).observe(canvas, {attributes:true,attributeFilter:['width','height']});
 fitCanvas();
+// Download progress for the WebAssembly module and the core data package, with a
+// time estimate from the rate so far. Downloads report decoded bytes; responses
+// served from a compressed copy are scaled to its transfer size, which
+// browser/precompress.py records in data-wire-sizes, so the bar and estimate
+// follow the bytes actually on the wire. Cached visits finish before the
+// estimate appears.
+function loadingEstimate(loaded, total, elapsedMs) {
+  const megabytes = bytes => (bytes / 1e6).toFixed(bytes < 1e7 ? 1 : 0);
+  const percent = total > 0 ? Math.min(100, Math.floor(loaded * 100 / total)) : 0;
+  let text = megabytes(loaded) + ' of ' + megabytes(total) + ' MB';
+  if (elapsedMs >= 2000 && loaded > 0 && loaded < total) {
+    const seconds = (total - loaded) / (loaded / elapsedMs) / 1000;
+    text += ' · ' + (seconds < 10 ? 'a few seconds left' : seconds < 90 ? 'about ' + Math.ceil(seconds / 5) * 5 + ' s left'
+      : 'about ' + Math.round(seconds / 60) + ' min left');
+  }
+  return {percent, text};
+}
+// End loading estimate.
+let wireSizes = {};
+try { wireSizes = JSON.parse(document.body.dataset.wireSizes || '{}'); } catch (_) {}
+// The transfer size of a file for a response encoding, if the build recorded it.
+function wireSize(name, encoding) {
+  const size = encoding && wireSizes[name]?.[encoding === 'br' ? 'br' : encoding === 'gzip' ? 'gzip' : ''];
+  return Number.isFinite(size) && size > 0 ? size : null;
+}
+// Uncompressed module size per runtime, written into the page by scons/web_build.py.
+let wasmSizes = {};
+try { wasmSizes = JSON.parse(document.body.dataset.wasmBytes || '{}') || {}; } catch (_) {}
+if (typeof wasmSizes !== 'object') wasmSizes = {};
+// The module of the runtime browser/loader.js picked (serial or threaded).
+function wasmName(url) {
+  if (url !== undefined) return /(?:^|\/)threaded\/[^/]*\.wasm(?:[?#]|$)/.test(url) ? 'threaded/index.wasm' : 'index.wasm';
+  return Module?.executionMode === 'threaded' ? 'threaded/index.wasm' : 'index.wasm';
+}
+const download = {started:performance.now(), wasm:0, wasmTotal:0, wasmKnown:false, core:0, coreTotal:0, failed:false};
+const loadingProgress = document.getElementById('loading-progress');
+const loadingBar = document.getElementById('loading-bar');
+const loadingDetail = document.getElementById('loading-detail');
+const loadingNote = document.getElementById('loading-note');
+function showDownload() {
+  if (download.failed || document.body.classList.contains('ready')) return;
+  // Expect the Brotli copy of the module until its response says otherwise.
+  if (!download.wasmKnown) download.wasmTotal = wireSize(wasmName(), 'br') || Number(wasmSizes[wasmName()]) || 0;
+  const total = download.coreTotal + download.wasmTotal;
+  const loaded = download.core + Math.min(download.wasm, download.wasmTotal);
+  if (!total) return;
+  const estimate = loadingEstimate(loaded, total, performance.now() - download.started);
+  loadingProgress.hidden = false;
+  loadingBar.firstElementChild.style.width = estimate.percent + '%';
+  loadingBar.setAttribute('aria-valuenow', estimate.percent);
+  loadingDetail.textContent = estimate.text;
+  // Say why it takes a while only when it does (a first visit or a new version).
+  if (performance.now() - download.started > 3000 && loaded < total) loadingNote.hidden = false;
+  const status = loaded < total ? 'Downloading the game…' : 'Starting the game…';
+  if (loadingStatus.textContent !== status) loadingStatus.textContent = status;
+}
+// Count the WebAssembly download from a copy of the response that Emscripten
+// compiles while it streams in; the first .wasm request is the module.
+const pageFetch = window.fetch;
+window.fetch = function(input) {
+  const result = pageFetch.apply(this, arguments);
+  const url = String(input?.url ?? input);
+  if (/\.wasm(?:[?#]|$)/.test(url)) {
+    window.fetch = pageFetch;
+    result.then(async response => {
+      const name = wasmName(url);
+      const raw = Number(wasmSizes[name]) || 0;
+      const wire = wireSize(name, response.headers.get('Content-Encoding'));
+      const scale = wire && raw ? wire / raw : 1;
+      download.wasmTotal = wire || raw;
+      download.wasmKnown = true;
+      const reader = response.clone().body?.getReader();
+      for (;;) {
+        const {done, value} = await reader.read();
+        if (done) break;
+        download.wasm += value.length * scale;
+        showDownload();
+      }
+    }).catch(() => {});
+  }
+  return result;
+};
+// Watch in browser: ?replay=<url> downloads a replay (for example a verified
+// match replay linked from the platform's match page) while the game loads and
+// opens it in the replay viewer instead of the main menu. Only http(s) URLs are
+// fetched, without credentials unless same-origin; the server must allow CORS
+// for other origins. The file lives in memory (/tmp), never in saved storage.
+// The browser instance is the host serving the game, independent of an older
+// compiled official-instance default. Never move credentials between origins.
+function browserInstanceConfig(text, origin) {
+  if (text === null) return JSON.stringify({version:1, selected:origin, instances:{}});
+  let config;
+  try { config = JSON.parse(text); } catch (_) { return null; }
+  if (!config || config.version !== 1 || typeof config.selected !== 'string' ||
+      !config.instances || typeof config.instances !== 'object' || Array.isArray(config.instances)) return null;
+  if (origin !== 'https://app.glob2online.com' || config.selected !== 'https://glob2online.com') return null;
+  config.selected = origin;
+  return JSON.stringify(config);
+}
+// End browser instance configuration.
+const WATCH_REPLAY_MAX_BYTES = 64 * 1024 * 1024;
+const watchReplay = (() => {
+  const raw = new URLSearchParams(location.search).get('replay');
+  if (!raw) return null;
+  let url;
+  try { url = new URL(raw, location.href); } catch (e) { return {status:'failed', error:'invalid replay URL'}; }
+  if (url.protocol !== 'https:' && url.protocol !== 'http:') return {status:'failed', error:'unsupported replay URL'};
+  const state = {status:'downloading', url:url.href};
+  state.bytes = fetch(url.href, {credentials:'same-origin'}).then(async response => {
+    if (!response.ok) throw Error('HTTP ' + response.status);
+    const length = Number(response.headers.get('content-length') || 0);
+    if (length > WATCH_REPLAY_MAX_BYTES) throw Error('replay too large');
+    // The replay viewer shows the file name: keep the server's, if it sends a safe one.
+    const named = /filename="?([A-Za-z0-9._-]{1,64})\.replay"?/.exec(response.headers.get('content-disposition') || '');
+    state.path = '/tmp/' + (named ? named[1] : 'watch') + '.replay';
+    const bytes = new Uint8Array(await response.arrayBuffer());
+    if (bytes.length === 0 || bytes.length > WATCH_REPLAY_MAX_BYTES) throw Error('replay empty or too large');
+    return bytes;
+  });
+  return state;
+})();
 function chooseRenderer() {
     const requested = new URLSearchParams(location.search).get('renderer');
     const accelerated = () => {
@@ -68,8 +203,34 @@ var Module = {
   GL_MAX_TEXTURE_IMAGE_UNITS: 1,
   browserLog: [],
   setStatus(text) {
+    // While download progress is shown it owns the status; Emscripten's own
+    // "Preparing…/Running…" messages would only flicker over it.
+    if (download.failed || !loadingProgress.hidden) return;
     const message = String(text || '').replace(/\s*\([0-9]+\/[0-9]+\)\s*$/, '');
     loadingStatus.textContent = message || 'Loading game…';
+  },
+  glob2WireSize: wireSize,
+  glob2AssetProgress(name, loaded, total) {
+    if (name !== 'core') return;
+    download.core = loaded;
+    download.coreTotal = total;
+    showDownload();
+  },
+  glob2AssetError(error) {
+    download.failed = true;
+    loadingStatus.textContent = 'The game could not be downloaded.';
+    loadingDetail.textContent = 'Check the connection, then try again. (' + String(error?.message || error) + ')';
+    loadingProgress.hidden = false;
+    loadingBar.hidden = true;
+    loadingNote.hidden = true;
+    document.querySelector('#loading .loader').hidden = true;
+    // Created only now: the running page has no HTML buttons of its own.
+    const retry = document.createElement('button');
+    retry.id = 'loading-retry';
+    retry.type = 'button';
+    retry.textContent = 'Try again';
+    retry.addEventListener('click', () => location.reload());
+    loading.appendChild(retry);
   },
   print(text) { Module.browserLog.push(String(text)); console.log(text); },
   printErr(text) { Module.browserLog.push(String(text)); console.error(text); },
@@ -87,6 +248,19 @@ var Module = {
       if (err) Module.printErr('Save restore failed: ' + err);
       removeRunDependency('browser-saves');
     });
+    if (watchReplay && watchReplay.bytes) {
+      addRunDependency('watch-replay');
+      Module.setStatus('Downloading replay…');
+      watchReplay.bytes.then(bytes => {
+        FS.writeFile(watchReplay.path, bytes);
+        watchReplay.status = 'ready';
+        watchReplay.size = bytes.length;
+      }, error => {
+        watchReplay.status = 'failed';
+        watchReplay.error = String(error && error.message || error);
+        Module.printErr('Replay download failed: ' + watchReplay.error);
+      }).finally(() => removeRunDependency('watch-replay'));
+    }
   }],
   onRuntimeInitialized() {
     const width = Math.max(1, Math.floor(innerWidth));
@@ -103,17 +277,63 @@ var Module = {
     // SwiftShader, costs several CPU cores where software rendering needs a fraction of
     // one, so it counts as unavailable unless ?renderer=webgl2 asks for it.
     const gpu = Module.renderer === 'webgl2';
-    Module.start(['-s', width + 'x' + height, '-F', '-C', gpu ? '-g' : '-G']).catch(error => Module.onAbort(String(error)));
+    // Invite links land here as ?join=<code> (see docs/multiplayer/client.md); the
+    // instance serving this page is the one to join.
+    const join = new URLSearchParams(location.search).get('join');
+    const invite = join && /^[A-Za-z0-9]{6,16}$/.test(join) ? ['--join', join, '--instance', location.origin] : [];
+    const args = ['-s', width + 'x' + height, '-F', '-C', gpu ? '-g' : '-G', ...invite];
+    if (watchReplay && watchReplay.status === 'ready') args.push('-replay', watchReplay.path);
+    if (Module.storageRestore === 'ready') {
+      const path = '/home/web_user/.glob2/online/instances.json';
+      const previous = FS.analyzePath(path).exists ? FS.readFile(path, {encoding:'utf8'}) : null;
+      const configured = browserInstanceConfig(previous, location.origin);
+      if (configured !== null) {
+        FS.mkdirTree('/home/web_user/.glob2/online');
+        FS.writeFile(path, configured);
+        Module.storage.changed();
+      }
+    }
+    Module.start(args).catch(error => Module.onAbort(String(error)));
   },
   onApplicationStarted() {
     document.body.classList.add('ready');
     loading.setAttribute('aria-hidden','true');
+    loadOptionalAssets(Module.renderer === 'webgl2');
   },
   onGameExit(code) {
     Module.print('Game exited with code ' + code + '. Reload the page to restart.');
   },
   onAbort(reason) { Module.printErr('Game stopped: ' + reason); }
 };
+// In-game music and high-resolution artwork download in the background once the
+// menu is up. The game reads them again when a match starts, so a first match on
+// a new device may still use the original artwork. Downloads pause during matches
+// (to leave the connection to the game) and are skipped in data-saver mode; the
+// artwork only when this device renders with WebGL2 and the setting is on.
+function loadOptionalAssets(gpu) {
+  const assets = Module.glob2Assets;
+  if (!assets) return;
+  const saveData = navigator.connection?.saveData === true;
+  const preferences = '/home/web_user/.glob2/preferences.txt';
+  const artworkOff = FS.analyzePath(preferences).exists &&
+    /^highResolutionArtwork=0$/m.test(FS.readFile(preferences, {encoding:'utf8'}));
+  const wanted = [];
+  for (const name of ['music', 'hd']) {
+    if (!assets.manifest.packages.some(entry => entry.name === name)) continue;
+    if (saveData || (name === 'hd' && (!gpu || artworkOff))) assets.states[name] = 'skipped';
+    else wanted.push(name);
+  }
+  const outsideMatch = () => new Promise(resolve => {
+    const check = () => Module.glob2Screen === 'match' ? setTimeout(check, 2000) : resolve();
+    check();
+  });
+  (async () => {
+    for (const name of wanted) {
+      try { await assets.load(name, outsideMatch); }
+      catch (error) { Module.printErr('Optional game data unavailable (' + name + '): ' + (error?.message || error)); }
+    }
+  })();
+}
 async function localFileDigest(directory, name, extension) {
   if (!/^[A-Za-z0-9 _().-]+$/.test(name) || name.includes('..') || !(name.endsWith('.' + extension) || (['game','map'].includes(extension) && name.endsWith('.' + extension + '.gz'))))
     throw Error('Invalid local file name');
@@ -141,10 +361,12 @@ Object.defineProperty(window, 'glob2Diagnostics', {value: Object.freeze({
       screenClass:Module.glob2ScreenClass || '', roomCanStart:Boolean(Module.glob2RoomCanStart), customGameReady:Boolean(Module.glob2CustomGameReady), tick:Module.glob2Tick || 0, frames:Module.glob2Frames || 0, loop:Module.glob2Loop || 0,
       paused:Boolean(Module.glob2Paused), torus:Module.glob2Screen === 'match' && Boolean(Module.glob2Torus), width:Module.glob2RenderContext?.width || canvas.width, height:Module.glob2RenderContext?.height || canvas.height,
       restore:Module.storageRestore || 'restoring',
+      watchReplay:watchReplay ? watchReplay.status : 'none',
       import:Module.importState || 'idle',
       persisting:Module.storage?.state === 'writing',
       persistence:Module.storage?.state || 'restoring',
       audio:Module.SDL3?.audioContext?.state || 'inactive',
+      assets:Module.glob2Assets?.state() || {},
       controls:controls()});
   },
   saves() {

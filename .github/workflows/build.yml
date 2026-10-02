@@ -36,6 +36,8 @@ jobs:
       map_generators: ${{ steps.select.outputs.map_generators }}
       deployment: ${{ steps.select.outputs.deployment }}
       cross_platform: ${{ steps.select.outputs.cross_platform }}
+      platform: ${{ steps.select.outputs.platform }}
+      platform_stack: ${{ steps.select.outputs.platform_stack }}
       compatibility: ${{ steps.select.outputs.compatibility }}
       browsers_all: ${{ steps.select.outputs.browsers_all }}
       android: ${{ steps.select.outputs.android }}
@@ -989,10 +991,9 @@ jobs:
             build/emscripten/client/release/threaded/identity.json
             build/emscripten/client/release/threaded/index.js
             build/emscripten/client/release/threaded/index.wasm
-            build/emscripten/client/release/threaded/index.data
             build/emscripten/client/release/index.js
             build/emscripten/client/release/index.wasm
-            build/emscripten/client/release/index.data
+            build/emscripten/client/release/assets/
             build/emscripten/client/release/script-tests.js
             build/emscripten/client/release/script-tests.wasm
             build/emscripten/client/release/script-tests.data
@@ -1010,10 +1011,9 @@ jobs:
             build/emscripten/client/release/loader.js
             build/emscripten/client/release/threaded/index.js
             build/emscripten/client/release/threaded/index.wasm
-            build/emscripten/client/release/threaded/index.data
             build/emscripten/client/release/index.js
             build/emscripten/client/release/index.wasm
-            build/emscripten/client/release/index.data
+            build/emscripten/client/release/assets/
 
       - name: Summarize CI failures
         if: always()
@@ -1097,6 +1097,21 @@ jobs:
           echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
           GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons CXX=g++-13 role=router release=1 -j$(nproc)
+      - name: Build match relay
+        id: build_match_relay
+        continue-on-error: true
+        run: |
+          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+          export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons CXX=g++-13 role=relay release=1 relay -j$(nproc)
+      - name: Test match relay
+        id: test_match_relay
+        continue-on-error: true
+        if: steps.build_match_relay.outcome == 'success'
+        run: |
+          python3 test/ci_run_commands.py \
+            --check 'relay unit tests' 'build/linux/relay/release/src/glob2-relay-tests' \
+            --check 'relay integration tests' 'python3 -m unittest discover -s tests/relay -v'
       - name: Build transport integration fixture
         id: build_transport_integration_fixture
         continue-on-error: true
@@ -1183,7 +1198,7 @@ jobs:
         run: |
           python3 browser/package-static.py
           python3 browser/package-static.py --verify build/browser-static
-          docker compose -f deploy/compose.yaml build lobby web
+          docker compose -f deploy/compose.legacy.yaml build lobby web
           python3 -m unittest discover -s tests/deployment -v
 
       - name: Summarize CI failures
@@ -1333,6 +1348,23 @@ jobs:
               assert trace.read_bytes() == reference, f'Simulation differs: {trace}'
           print('All native, serial browser and threaded browser per-tick traces match')
           PY
+      - name: Compare every --verify-match trace across Linux, Windows and WebAssembly
+        id: compare_every_verify_match_trace
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          traces = sorted(Path('artifacts/ci-traces').rglob('verify-match.checksums.txt'))
+          assert len(traces) >= 3, f'Expected native and browser --verify-match traces, got {traces}'
+          reference = traces[0].read_bytes().replace(b'\r\n', b'\n')
+          assert reference.count(b'\n') > 600
+          for trace in traces[1:]:
+              assert trace.read_bytes().replace(b'\r\n', b'\n') == reference, f'Verification differs: {trace}'
+          committed = Path('test/fixtures/multiplayer/FourSquares1.verify-trace.txt').read_bytes()
+          if committed.replace(b'\r\n', b'\n') != reference:
+              print('::warning::Every platform agrees, but not with the committed trace; '
+                    'regenerate test/fixtures/multiplayer with run_tests.py --update-fixtures')
+          print(f'All {len(traces)} --verify-match traces match')
+          PY
 
       - uses: actions/download-artifact@v4
         with:
@@ -1377,9 +1409,94 @@ jobs:
           path: artifacts/ci-observation/
           if-no-files-found: ignore
 
+  # The TypeScript platform (platform/): lint, type checks, the web build, and
+  # unit and integration tests against a real Postgres.
+  platform:
+    name: platform (TypeScript)
+    needs: changes
+    if: ${{ needs.changes.outputs.platform == 'true' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: glob2
+          POSTGRES_PASSWORD: glob2
+          POSTGRES_DB: glob2
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U glob2"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      TEST_DATABASE_URL: postgres://glob2:glob2@localhost:5432/postgres
+    defaults:
+      run:
+        working-directory: platform
+    steps:
+      - uses: actions/checkout@v4
+        id: actions_checkout_v4_1
+      - uses: actions/setup-node@v4
+        id: actions_setup_node_v4_1
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: platform/package-lock.json
+      - name: Install platform dependencies
+        id: install_platform_dependencies
+        run: npm ci
+      - name: Lint and check formatting
+        id: lint_and_check_formatting
+        run: npm run lint
+      - name: Type check
+        id: type_check
+        run: npm run typecheck
+      - name: Build the web app
+        id: build_the_web_app
+        run: npm run build -w @glob2/web
+      - name: Run tests
+        id: run_tests
+        run: npm test
+      - name: Apply migrations with the CLI
+        id: apply_migrations_with_the_cli
+        env:
+          DATABASE_URL: postgres://glob2:glob2@localhost:5432/glob2
+        run: |
+          npm run migrate -- latest
+          npm run migrate -- status
+
+  platform-stack:
+    name: self-hosted platform stack
+    needs: changes
+    if: ${{ needs.changes.outputs.platform_stack == 'true' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        id: actions_checkout_v4_1
+      - name: Build the images and smoke-test deploy/compose.yaml
+        id: smoke_test_the_platform_stack
+        continue-on-error: true
+        run: python3 tests/deployment/platform_stack_smoke.py --jobs 4 --log-dir artifacts/platform-stack
+      - uses: actions/upload-artifact@v4
+        if: always()
+        id: upload_platform_stack_logs
+        continue-on-error: true
+        with:
+          name: platform-stack-smoke
+          path: artifacts/platform-stack
+          if-no-files-found: ignore
+      - name: Summarize CI failures
+        if: always()
+        env:
+          CI_STEPS_JSON: ${{ toJSON(steps) }}
+        run: python3 test/ci_step_summary.py
+
   ci-result:
     name: Relevant checks passed
-    needs: [changes, android, native-coverage, linux, linux-variants, linux-map-generators, windows, windows-server, web-build, web-native, web-deploy, web-test, browser-determinism]
+    needs: [changes, android, native-coverage, linux, linux-variants, linux-map-generators, windows, windows-server, web-build, web-native, web-deploy, web-test, browser-determinism, platform, platform-stack]
     if: ${{ !cancelled() }}
     runs-on: ubuntu-24.04
     env:
@@ -1407,6 +1524,8 @@ jobs:
               'web-deploy': selected['deployment'] == 'true',
               'web-test': selected['browser'] == 'true',
               'browser-determinism': selected['cross_platform'] == 'true',
+              'platform': selected['platform'] == 'true',
+              'platform-stack': selected['platform_stack'] == 'true',
           }
           for job, should_run in expected.items():
               required = 'success' if should_run else 'skipped'

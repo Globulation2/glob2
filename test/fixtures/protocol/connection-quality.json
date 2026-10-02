@@ -1,0 +1,142 @@
+{
+  "description": "Connection-quality thresholds shared by the game and the platform (src/connectionQuality.ts). Generated; do not edit by hand.",
+  "formatVersion": 1,
+  "metrics": {
+    "ping": {
+      "label": "Ping",
+      "unit": "ms",
+      "fairMs": 150,
+      "poorMs": 300,
+      "description": "Round trip between a player and the relay. Before a match (quick match, start checklist) it is a probe of the region, an estimate."
+    },
+    "delay": {
+      "label": "Delay",
+      "unit": "ms",
+      "fairMs": 200,
+      "poorMs": 400,
+      "description": "Your input delay: from your click until it happens, for everyone. Half your ping plus the buffer your game holds against jitter."
+    },
+    "behind": {
+      "label": "Behind",
+      "unit": "s",
+      "fairMs": 1000,
+      "poorMs": 2000,
+      "description": "How far a player’s game runs behind the match clock. Under a second is normal (it includes their delay); the relay marks a player slow from 2 s."
+    }
+  },
+  "ratings": {
+    "good": "Good",
+    "fair": "Fair",
+    "poor": "Poor"
+  },
+  "cases": [
+    {
+      "metric": "ping",
+      "valueMs": 0,
+      "rating": "good",
+      "text": "0 ms"
+    },
+    {
+      "metric": "ping",
+      "valueMs": 42,
+      "rating": "good",
+      "text": "42 ms"
+    },
+    {
+      "metric": "ping",
+      "valueMs": 149,
+      "rating": "good",
+      "text": "149 ms"
+    },
+    {
+      "metric": "ping",
+      "valueMs": 150,
+      "rating": "fair",
+      "text": "150 ms"
+    },
+    {
+      "metric": "ping",
+      "valueMs": 299,
+      "rating": "fair",
+      "text": "299 ms"
+    },
+    {
+      "metric": "ping",
+      "valueMs": 300,
+      "rating": "poor",
+      "text": "300 ms"
+    },
+    {
+      "metric": "ping",
+      "valueMs": 1332,
+      "rating": "poor",
+      "text": "1332 ms"
+    },
+    {
+      "metric": "delay",
+      "valueMs": 171,
+      "rating": "good",
+      "text": "171 ms"
+    },
+    {
+      "metric": "delay",
+      "valueMs": 199,
+      "rating": "good",
+      "text": "199 ms"
+    },
+    {
+      "metric": "delay",
+      "valueMs": 200,
+      "rating": "fair",
+      "text": "200 ms"
+    },
+    {
+      "metric": "delay",
+      "valueMs": 399,
+      "rating": "fair",
+      "text": "399 ms"
+    },
+    {
+      "metric": "delay",
+      "valueMs": 400,
+      "rating": "poor",
+      "text": "400 ms"
+    },
+    {
+      "metric": "behind",
+      "valueMs": 760,
+      "rating": "good",
+      "text": "0.8 s"
+    },
+    {
+      "metric": "behind",
+      "valueMs": 999,
+      "rating": "good",
+      "text": "1.0 s"
+    },
+    {
+      "metric": "behind",
+      "valueMs": 1000,
+      "rating": "fair",
+      "text": "1.0 s"
+    },
+    {
+      "metric": "behind",
+      "valueMs": 1999,
+      "rating": "fair",
+      "text": "2.0 s"
+    },
+    {
+      "metric": "behind",
+      "valueMs": 2000,
+      "rating": "poor",
+      "text": "2.0 s"
+    },
+    {
+      "metric": "behind",
+      "valueMs": 12400,
+      "rating": "poor",
+      "text": "12 s"
+    }
+  ]
+}

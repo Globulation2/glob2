@@ -9,7 +9,16 @@ import subprocess
 import sys
 
 
-JOBS = ("native", "browser", "map_generators", "deployment", "cross_platform")
+JOBS = ("native", "browser", "map_generators", "deployment", "cross_platform", "platform", "platform_stack")
+# Paths whose changes rebuild and smoke-test the whole self-hosted stack
+# (deploy/compose.yaml). Its images compile the engine, so other engine changes
+# leave it to full CI rather than adding a second client build to every PR.
+PLATFORM_STACK_PATHS = (
+    "deploy/", "tests/deployment/", "src/relay/", "platform/package-lock.json",
+    "platform/packages/db/migrations/", "platform/apps/api/src/main.ts",
+    "platform/apps/worker/src/main.ts", "platform/apps/engine-agent/src/main.ts",
+)
+
 # Implementation-only drawing changes retain native, browser, and equivalence
 # checks. Shared headers, file I/O, fonts and unknown library paths stay full CI.
 RENDER_IMPLEMENTATIONS = {
@@ -38,13 +47,22 @@ def classify(paths):
     if not paths:
         return {job: True for job in JOBS}
 
-    native = browser = map_generators = deployment = cross_platform = False
+    native = browser = map_generators = deployment = cross_platform = platform = False
+    platform_stack = any(path.startswith(PLATFORM_STACK_PATHS) and not path.endswith(".md") for path in paths)
     for path in paths:
         # These Python suites execute directly in the selector job, without
         # compiling a client or launching platform/browser regressions.
         if path in CI_TOOL_TESTS:
             continue
         if path.startswith("docs/") or path.endswith(".md"):
+            continue
+        if path.startswith("platform/packages/protocol/fixtures/"):
+            # Generated contract fixtures: checked by the platform job and
+            # consumed by the C++ contract tests.
+            native = platform = True
+            continue
+        if path.startswith("platform/"):
+            platform = True
             continue
         if path == "test/map-generator-golden.txt":
             map_generators = True
@@ -61,6 +79,11 @@ def classify(paths):
             # WebAssembly harness too; native-only CI would leave that boundary untested.
             native = browser = cross_platform = True
             continue
+        if path.startswith("test/fixtures/multiplayer/"):
+            # The committed match record is verified natively and in every browser,
+            # and the comparison job requires identical traces.
+            native = browser = cross_platform = True
+            continue
         if path.startswith("browser/") and browser_only(path):
             browser = True
             continue
@@ -69,6 +92,10 @@ def classify(paths):
             deployment = True
             continue
         if path.startswith(("tests/transport/",)):
+            browser = True
+            continue
+        # The match relay builds and runs in the native-programs job only.
+        if path.startswith(("src/relay/", "tests/relay/", "test/relay/", "test/fixtures/relay-tickets/")):
             browser = True
             continue
         if path.startswith("test/") and path not in {
@@ -82,7 +109,7 @@ def classify(paths):
         if path.startswith(("src/net/", "src/yog/")):
             native = browser = deployment = cross_platform = True
             continue
-        return {job: True for job in JOBS}
+        return {**{job: True for job in JOBS}, "platform_stack": platform_stack}
 
     return {
         "native": native,
@@ -90,6 +117,8 @@ def classify(paths):
         "map_generators": map_generators,
         "deployment": deployment,
         "cross_platform": cross_platform,
+        "platform": platform,
+        "platform_stack": platform_stack,
     }
 
 
@@ -173,6 +202,8 @@ def main():
             "map_generators": False,
             "deployment": True,
             "cross_platform": False,
+            "platform": False,
+            "platform_stack": False,
         }
 
     desired = coverage_profile(paths, event, selected)

@@ -43,6 +43,13 @@ change. WebSocket messages are limited to 64 KiB; outgoing chunks are at most
 16 KiB. Each direction has a 1 MiB queue limit and incoming chunks are also
 limited to 256. Text messages and oversized input fail closed.
 
+A connection can instead be opened (`makeNetTransport(tls, NetMessageMode::Text)`)
+or accepted (`NetListenConfig::messageMode`) in text mode, for JSON protocols:
+`sendText`/`receiveText` exchange whole UTF-8 text messages of at most 256 KiB,
+binary messages close the connection, and the byte-stream calls are refused. The
+same queue limits apply. Native peers reject invalid UTF-8 (Beast validates text
+frames); the browser decodes text frames itself. Messages must not contain NUL.
+
 Native transport uses asynchronous Boost.Beast/Asio I/O, pumped by the owning
 application thread. Connection establishment and writes have ten-second
 deadlines; established sockets use idle timeouts and WebSocket keepalive pings.
@@ -102,8 +109,14 @@ python3 test/run-network-transport-tests.py
 python3 -m unittest discover -s tests/transport -v
 ```
 
+`tests/transport/test_http_fetch.py` drives the native `HttpFetch` client
+(`src/online/HttpFetch.h`, the platform's HTTPS requests; `emscripten_fetch` in the
+browser) against local HTTP and HTTPS servers: methods, headers and bodies, error
+statuses, certificate trust, response limits, timeouts and cancellation. It
+shares WssTransport's TLS trust through `src/net/TlsSetup.h`.
+
 These tests exercise verified native clients/listeners, explicit routes,
-certificate pinning, mutual TLS, Origin checks, binary framing, rejection,
+certificate pinning, mutual TLS, Origin checks, binary framing, text mode, rejection,
 backpressure, and stalled TLS cancellation. Browser multiplayer tests use native
 WSS lobby/router fixtures directly, with isolated test certificates. Their test
 browser trust exception is confined to automation.

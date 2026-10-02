@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:RealtimeMatchReconnectParams",
+  "title": "RealtimeMatchReconnectParams",
+  "type": "object",
+  "required": [
+    "matchId"
+  ],
+  "properties": {
+    "matchId": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "description": "Lowercase UUID."
+    },
+    "relayUnavailable": {
+      "type": "boolean",
+      "description": "The assigned relay refused the match as new (Reject 5: draining or full). While no relay has reported the match running, the platform moves it to another relay and sends every player a new match.start."
+    }
+  },
+  "additionalProperties": false
+}

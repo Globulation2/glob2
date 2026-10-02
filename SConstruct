@@ -7,6 +7,7 @@ import atexit
 from pathlib import Path
 sys.path.append( os.path.abspath("scons") )
 import bundle
+import official_instance
 import ccache
 import dmg
 import nsis
@@ -43,6 +44,7 @@ def establish_options(env):
     opts.Add("crossroot", "Path to include/ and lib/ containing Win32 files for cross-compiling", "../local")
     opts.Add(BoolVariable("server", "Build only the YOG server, excluding the game and any GUI/sound components", 0))
     opts.Add("font", "Build the game using an alternative font placed in the data/font folder", "sans.ttf")
+    opts.Add("official_instance", "Origin of the official multiplayer platform instance", official_instance.DEFAULT_ORIGIN)
     Help(opts.GenerateHelpText(env))
     opts.Update(env)
     opts.Save(str(Path(env["BUILDDIR"]) / "options.py"), env)
@@ -72,7 +74,7 @@ class Configuration:
         self.f.write("#define %s %s\n" % (variable, value))
         self.f.write("\n")
     
-def configure(env, server_only):
+def configure(env, server_only, relay=False):
     """Configures glob2"""
     conf = Configure(env.Clone(), conf_dir=str(Path(env["BUILDDIR"]) / "configure"), log_file=str(Path(env["BUILDDIR"]) / "configure.log"))
     configfile = Configuration(env)
@@ -117,7 +119,8 @@ def configure(env, server_only):
     if not server_only and not conf.CheckLib("SDL3_image"):
         print("Could not find libSDL3_image")
         missing.append("SDL3_image")
-    if not conf.CheckLib("SDL3_net"):
+    # The relay links no SDL library; it only needs SDL's headers for libgag's types.
+    if not relay and not conf.CheckLib("SDL3_net"):
         print("Could not find libSDL3_net")
         missing.append("SDL3_net")
     if not server_only and (not conf.CheckLib("speex") or not conf.CheckCXXHeader("speex/speex.h")):
@@ -322,6 +325,7 @@ def main():
     env['ENV'].update(TMPDIR=temporary, TMP=temporary, TEMP=temporary)
     env["VERSION"] = PACKAGE_VERSION
     establish_options(env)
+    env.Append(CPPDEFINES=official_instance.cppdefines(official_instance.origin({'official_instance': env['official_instance']})))
     # SCons treats a command-line flag string as one shell argument unless it
     # is split into a list. Distro RPM macros provide multiple flags at once.
     for flags in ('CXXFLAGS', 'LINKFLAGS'):
@@ -332,8 +336,9 @@ def main():
     if env['release'] and not isDarwinPlatform:
         for flags in ('CXXFLAGS', 'LINKFLAGS'):
             env[flags] = [flag for flag in env.Split(env[flags]) if flag != '-g']
-    env["server"] = identity["role"] in ("server", "router")
+    env["server"] = identity["role"] in ("server", "router", "relay")
     env["role"] = identity["role"]
+    relay = identity["role"] == "relay"
     if identity["role"] == "router":
         env.Append(CPPDEFINES=["GLOB2_ROUTER_ONLY"])
 
@@ -440,7 +445,7 @@ def main():
         if not (isWindowsPlatform or env['mingw']):
             # The staged private decoder is next to the executable's lib tree.
             env.Append(LINKFLAGS=[r'-Wl,-rpath,\$$ORIGIN/../lib/glob2'])
-    configure(env, server_only)
+    configure(env, server_only, relay)
 
     env.Append(CPPPATH=['#'+path for path in INCLUDE_DIRECTORIES])
     env.Append(CXXFLAGS=["-Wall", "-fPIC"])
@@ -451,7 +456,8 @@ def main():
         env.Append(CXXFLAGS=['-ftrivial-auto-var-init=' + _detinit])
         env.Append(CCFLAGS=' -ftrivial-auto-var-init=' + _detinit)
     env.Append(LINKFLAGS=["-Wall"])
-    env.Append(LIBS=['SDL3_net'])
+    if not relay:
+        env.Append(LIBS=['SDL3_net'])
     if not server_only:
         env.Append(LIBS=['vorbisfile', 'SDL3_ttf', 'SDL3_image', 'speex'])
 
@@ -473,6 +479,8 @@ def main():
         env.Append(LIBS=['vorbis', 'ogg', 'wsock32', 'winmm'])
         env.Append(LINKFLAGS=['-mwindows'])
         env.ParseConfig("pkg-config sdl3 --cflags --libs")
+    elif relay:
+        env.ParseConfig("pkg-config sdl3 --cflags")
     else:
         env.ParseConfig("pkg-config sdl3 --cflags --libs")
     
