@@ -67,13 +67,16 @@ namespace GAGCore
 	public:
 		virtual ~InputStream() { }
 
-		// Bound file-controlled allocation and recursion before creating objects.
+		// Bound file-controlled counts BEFORE allocating or resizing. The default
+		// is a backstop: pass the smallest domain limit available at each call.
 		Uint32 readCount(const std::string& name, Uint32 maximum = 1048576)
 		{
 			const Uint32 count = readUint32(name);
 			if (count > maximum) throw std::runtime_error("Oversized collection: " + name);
 			return count;
 		}
+		// Per-stream recursion budget for nested factory graphs; this does not
+		// bound aggregate memory or total parsing/execution time.
 		class NestedRead
 		{
 			InputStream& stream;

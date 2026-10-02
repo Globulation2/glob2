@@ -37,6 +37,19 @@ std::string poisoned(const std::string& bytes, const Fields& out, const char* fi
 }
 }
 TEST_SUITE("UntrustedFiles") {
+TEST_CASE("voice payload bounds preserve recorder overshoot and reject excessive work") {
+    std::vector<Uint8> bytes(OrderVoiceData::MAX_ENCODED_BYTES + 6, 0);
+    bytes[4] = OrderVoiceData::MAX_FRAMES;
+    OrderVoiceData order;
+    // Old producers flush after crossing their target, not before it.
+    CHECK(order.setData(bytes.data(), 2054, VERSION_MINOR));
+    CHECK(order.setData(bytes.data(), OrderVoiceData::MAX_ENCODED_BYTES + 5, VERSION_MINOR));
+    CHECK_FALSE(order.setData(bytes.data(), bytes.size(), VERSION_MINOR));
+    bytes[4] = OrderVoiceData::MAX_FRAMES + 1;
+    CHECK_FALSE(order.setData(bytes.data(), 6, VERSION_MINOR));
+    CHECK_FALSE(order.setData(bytes.data(), 4, VERSION_MINOR));
+}
+
 TEST_CASE("every native AI accepts its initial saved state") {
     glob2test::HeadlessGlobals globals;
     glob2test::GameOptions options; options.header=true; options.loadDefaultRace=true;

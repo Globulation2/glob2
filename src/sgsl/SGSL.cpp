@@ -96,6 +96,8 @@ bool MapScriptSGSL::load(GAGCore::InputStream *stream, Game *game)
 	for (unsigned i = 0; i < stories.size(); i++)
 	{
 		stream->readEnterSection(i);
+		// Saved PCs are untrusted. Only parser-reconstructed statement starts
+		// and the explicit wait(N) suspension operand may resume execution.
 		stories[i].lineSelector = stream->readSint32("ProgramCounter");
 		if (!stories[i].instructionStarts.count(stories[i].lineSelector)) return false;
 		stories[i].internTimer = stream->readSint32("internTimer");

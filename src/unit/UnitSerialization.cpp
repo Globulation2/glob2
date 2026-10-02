@@ -22,6 +22,8 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 	stream->readEnterSection("Unit");
 
 	// unit specification
+	// File-controlled types and identities reach fixed tables later. Validate
+	// before indexing or converting raw integers into simulation enums.
 	typeNum = stream->readSint32("typeNum");
 	if (typeNum < 0 || typeNum >= NB_UNIT_TYPE) throw std::runtime_error("Invalid unit type");
 	if (versionMinor < FILE_FORMAT_VERSION_DROP_UNIT_SKIN_NAME)

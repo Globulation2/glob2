@@ -237,7 +237,8 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 {
 	stream->readEnterSection("Building");
 
-	// construction state
+	// Validate raw file values before enum casts or table indexing: simulation
+	// code assumes named states and identities belonging to the owning team.
 	const Uint32 savedState = stream->readUint32("buildingState");
 	const Uint32 savedResult = stream->readUint32("constructionResultState");
 	if (savedState > WAITING_FOR_CONSTRUCTION_ROOM || savedResult > REPAIR)

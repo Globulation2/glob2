@@ -313,7 +313,7 @@ private:
 	///Clears existing game information, deleting the teams and players, in preparation of a new game.
 	void clearGame();
 
-	/// Look up a Building by its global ID. Returns nullptr if the slot is empty.
+	/// Validate an untrusted global ID; return nullptr for an invalid team or empty slot.
 	/// Collapses the gid → team-index → building-index → pointer decode that
 	/// would otherwise appear inline at every executeOrder caller.
 	Building* lookupBuilding(Uint16 gid) const;

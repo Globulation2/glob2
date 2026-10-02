@@ -1051,7 +1051,10 @@ Truncated recordings are rejected, including recordings with a valid prefix;
 playback no longer tries to recover a prefix from a malformed stream. Both scanning
 and playback check short reads, and the scan rejects overflowing step totals.
 Execution checks player/team references before indexing game state. This is not
-an authentication mechanism for multiplayer commands.
+an authentication mechanism for multiplayer commands. Voice orders additionally
+limit encoded audio to 4,096 bytes and 121 frames before copying or decoding.
+The recorder flushes after crossing 2,048 bytes or 120 frames, so the receive
+limits retain headroom for its final frame and existing recordings.
 
 Embedded legacy USL has no `load` file capability. The application still loads its
 own runtime libraries through the host API. Native type errors stop the map script
