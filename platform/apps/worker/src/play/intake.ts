@@ -78,12 +78,16 @@ export async function recordMatchEnded(
   const outcome = await db.transaction().execute(async (trx): Promise<MatchEndedOutcome> => {
     const match = await trx
       .selectFrom('matches')
-      .select(['id', 'status', 'setup', 'room_id', 'end_report'])
+      .select(['id', 'status', 'setup', 'room_id', 'end_report', 'end_reason'])
       .where('id', '=', report.matchId)
       .forUpdate()
       .executeTakeFirst();
     if (!match) return { ok: false, reason: 'not_found' };
     if (match.end_report) return { ok: true, duplicate: true };
+    // A match aborted as lost (abortMatchesOnLostRelays) whose relay was alive
+    // after all: its real result replaces the abort, and verification and
+    // ratings proceed as for any ended match.
+    const wasLost = match.status === 'ended' && match.end_reason === 'aborted';
     const setup = match.setup as unknown as MatchSetup;
     if (!sameSimVersion(setup.simVersion, report.simVersion)) {
       return { ok: false, reason: 'sim_version_mismatch' };
@@ -109,6 +113,13 @@ export async function recordMatchEnded(
         ended_at: new Date(report.endedAt),
         relay_id: report.relayId,
         end_report: JSON.stringify(report),
+        ...(wasLost
+          ? {
+              verification: 'pending' as const,
+              rating_status: 'pending' as const,
+              rating_note: null,
+            }
+          : {}),
       })
       .where('id', '=', report.matchId)
       .execute();
@@ -183,6 +194,53 @@ export async function ensureVerifyJob(
     kind: 'verify-match',
     simVersion: setup.simVersion,
     payload: { matchId, setup, recordHash: match.blob_sha256 },
+  });
+}
+
+/**
+ * A running match its relay has not listed as active in a heartbeat for this
+ * long is lost: the relay died, or restarted and forgot it. Relays heartbeat
+ * every RELAY_HEARTBEAT_SECONDS (15 s).
+ */
+export const LOST_MATCH_GRACE_SECONDS = 180;
+
+/**
+ * Ends running matches whose relay stopped reporting them (abortMatchesOnLostRelays):
+ * end reason 'aborted', no verification and no rating change. Rooms reopen and
+ * participants get match.updated through the match_updates NOTIFY. If the
+ * relay's end report arrives after all, recordMatchEnded applies it instead.
+ * Runs on the scheduler leader.
+ */
+export async function abortMatchesOnLostRelays(
+  db: Db,
+  graceSeconds: number = LOST_MATCH_GRACE_SECONDS,
+): Promise<string[]> {
+  return db.transaction().execute(async (trx) => {
+    const lost = await trx
+      .updateTable('matches')
+      .set({
+        status: 'ended',
+        end_reason: 'aborted',
+        ended_at: sql<Date>`now()`,
+        verification: 'not_applicable',
+        rating_status: 'not_rated',
+        rating_note: 'relay_lost',
+      })
+      .where('status', '=', 'running')
+      .where(
+        sql<Date>`coalesce(relay_seen_at, started_at, relay_assigned_at, created_at)`,
+        '<',
+        sql<Date>`now() - make_interval(secs => ${graceSeconds})`,
+      )
+      .returning(['id', 'room_id'])
+      .execute();
+    for (const match of lost) {
+      if (match.room_id) await reopenRoom(trx, match.room_id, match.id);
+      await sql`SELECT pg_notify(${MATCH_UPDATES_CHANNEL}, ${JSON.stringify({ matchId: match.id })})`.execute(
+        trx,
+      );
+    }
+    return lost.map((m) => m.id);
   });
 }
 

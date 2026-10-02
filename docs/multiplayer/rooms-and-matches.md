@@ -241,10 +241,20 @@ Keys are compared in constant time.
 | Call | Body → response | Notes |
 | --- | --- | --- |
 | `POST /internal/v1/relays/register` | `RelayRegistration` → `RelayRegistrationResponse` (`heartbeatIntervalSeconds: 15`, `jwksUrl`) | Upsert. Re-registering resets load and drain state |
-| `POST /internal/v1/relays/heartbeat` | `RelayHeartbeat` → `{ok: true}`, or `404` `{ok: false, reregister: true}` for an unknown relay | Updates load and draining. Listed `starting` matches become `running` |
+| `POST /internal/v1/relays/heartbeat` | `RelayHeartbeat` → `{ok: true}`, or `404` `{ok: false, reregister: true}` for an unknown relay | Updates load and draining. Listed `starting` matches become `running`, and every listed match records `relay_seen_at` |
 | `GET /internal/v1/matches/{id}/setup` | → the stored `MatchSetup` | Semantically identical to what clients received. Key order may differ |
 | `PUT /internal/v1/matches/{id}/record` | G2MR bytes (`application/vnd.glob2.match-record`, up to `RECORD_MAX_BYTES`, 64 MiB) → `RelayRecordReceipt` | Stored as the match's `record` artifact. Repeatable. After the end report, only the reported bytes are accepted (`409` otherwise) |
 | `POST /internal/v1/matches/{id}/end` | `RelayMatchEnded` → `RelayMatchEndedResponse` | `409` before the record upload, or when `record.sha256` or `simVersion` differ. A repeat answers `{ok: true, duplicate: true}` and changes nothing |
+
+**Lost relays.** The worker's scheduler checks every 30 s for `running` matches
+that their relay has not listed in a heartbeat for 180 s
+(`LOST_MATCH_GRACE_SECONDS`, `abortMatchesOnLostRelays` in
+`apps/worker/src/play/intake.ts`). This covers a relay that died and one that
+restarted and forgot its matches. Such a match ends with end reason `aborted`,
+verification `not_applicable` and rating status `not_rated`, so it changes no
+rating. Its room reopens, and its players get `match.updated` with `endReason:
+"aborted"`. If the relay was alive after all and its end report arrives later,
+the report replaces the abort, and verification and ratings proceed as usual.
 
 **Match-end intake.** The first end report does the following:
 
@@ -294,5 +304,3 @@ is never served publicly, and relays reach it on the backend network (see the
 
 - **Client side.** The room screen and the client side of `glob2://` and `?join=`
   wait for approved mock-ups and the client work.
-- **Lost relays.** A relay that dies with matches running leaves them `running`
-  until its spool re-submits them. There is no sweep for that yet.

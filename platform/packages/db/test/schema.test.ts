@@ -261,6 +261,7 @@ const typedColumns: ColumnLists = {
     'relay_assigned_at',
     'relay_attempts',
     'end_report',
+    'relay_seen_at',
   ],
   rating_entities: ['id', 'kind', 'account_id', 'ai_id', 'ai_sim_version', 'created_at'],
   ratings: [

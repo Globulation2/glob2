@@ -17,7 +17,7 @@ import { ENGINE_RESULT_TASK } from '@glob2/protocol';
 import { runMaintenance } from './maintenance.ts';
 import { Matchmaker } from './matchmaking/matchmaker.ts';
 import { PgQueueNotifier } from './matchmaking/notifier.ts';
-import { expireStartingMatches } from './play/intake.ts';
+import { abortMatchesOnLostRelays, expireStartingMatches } from './play/intake.ts';
 import { PlatformMatchStarter } from './play/start.ts';
 import { applyPendingRatings, handleEngineJobResult } from './ratings/apply.ts';
 import { runScheduler, type ScheduledTask } from './scheduler.ts';
@@ -78,6 +78,14 @@ try {
       name: 'starting matches',
       intervalMs: 30_000,
       run: () => expireStartingMatches(database.db),
+    },
+    {
+      name: 'lost relays',
+      intervalMs: 30_000,
+      run: async () => {
+        const lost = await abortMatchesOnLostRelays(database.db);
+        if (lost.length > 0) logger.warn({ matches: lost }, 'aborted matches lost with their relay');
+      },
     },
     { name: 'rating sweep', intervalMs: 30_000, run: () => applyPendingRatings(database.db) },
   ];
