@@ -9,10 +9,7 @@ from javascript import javascript_objects, numeric_guard
 import official_instance
 from sources import CLIENT_SOURCES, GAG_SOURCES, USL_SOURCES, INCLUDE_DIRECTORIES
 
-PORTS = ['--use-port=sdl2', '--use-port=browser/ports/glob2_webp.py',
-         '--use-port=browser/ports/glob2_sdl2_image.py',
-         '--use-port=sdl2_ttf', '--use-port=sdl2_net', '--use-port=vorbis',
-         '--use-port=zlib']
+PORTS = ['--use-port=vorbis', '--use-port=zlib']
 
 
 def _build_variant(directory, identity, arguments, threaded=False):
@@ -32,9 +29,11 @@ def _build_variant(directory, identity, arguments, threaded=False):
         if lock['emscripten'] not in version.splitlines()[0]:
             raise ValueError('This target requires Emscripten ' + lock['emscripten'])
     emscripten = compiler.parent
+    from sdl3_dependencies import build as build_sdl3
+    sdl_prefix = output / 'sdl3/prefix'
     build_environment = dict(os.environ)
     # Cache is target/config-specific, including port downloads and compiled system libraries.
-    shared_cache = cache(root, 'emscripten-' + key(root, ['browser/toolchain.json', 'browser/ports/glob2_webp.py', 'browser/ports/glob2_sdl2_image.py'], [PORTS, threaded])) if not isolated() else output
+    shared_cache = cache(root, 'emscripten-' + key(root, ['browser/toolchain.json', 'scons/sdl3-versions.json', 'scons/sdl3-vendored.json'], [PORTS, threaded])) if not isolated() else output
     build_environment['EM_CACHE'] = str(shared_cache / 'cache')
     build_environment['EM_PORTS'] = str(shared_cache / 'ports')
     # emsdk's template derives paths from EM_CONFIG; anchor it to the selected
@@ -46,6 +45,9 @@ def _build_variant(directory, identity, arguments, threaded=False):
         write_if_changed(output / '.emscripten', configuration)
         build_environment['EM_CONFIG'] = str(output / '.emscripten')
     build_environment.update(TMPDIR=str(output / 'tmp'), TMP=str(output / 'tmp'), TEMP=str(output / 'tmp'))
+    (output / 'tmp').mkdir(parents=True, exist_ok=True)
+    if not GetOption('clean'):
+        build_sdl3(sdl_prefix, output / 'sdl3/sources', 2, emscripten, build_environment, threaded=threaded)
     env = Environment(platform='posix', tools=['gcc', 'g++', 'ar', 'gnulink', 'compilation_db'],
                       ENV=build_environment, CC=command_path(emscripten / 'emcc'), CXX=command_path(compiler),
                       LINK=command_path(compiler), AR=command_path(emscripten / 'emar'), RANLIB=command_path(emscripten / 'emranlib'))
@@ -59,7 +61,8 @@ def _build_variant(directory, identity, arguments, threaded=False):
             '--js-library', 'browser/threaded-egl.js'])
     if threaded:
         env.Append(LINKFLAGS=['-Wl,--wrap=' + name for name in
-            ('SDL_OpenAudio', 'SDL_CloseAudio', 'SDL_PauseAudio', 'SDL_LockAudio', 'SDL_UnlockAudio')])
+            ('SDL_OpenAudioDeviceStream', 'SDL_DestroyAudioStream', 'SDL_PutAudioStreamData',
+             'SDL_LockAudioStream', 'SDL_UnlockAudioStream', 'SDL_PauseAudioDevice', 'SDL_ResumeAudioDevice')])
     config = output / 'include/glob2/BuildConfig.h'
     write_if_changed(config, f'''#pragma once
 #define HAVE_OPENGL 1
@@ -71,7 +74,7 @@ def _build_variant(directory, identity, arguments, threaded=False):
 #define PACKAGE_SOURCE_DIR "/"
 #define PRIMARY_FONT "sans.ttf"
 ''')
-    include_paths = [str(output / 'include')] + list(INCLUDE_DIRECTORIES)
+    include_paths = [str(output / 'include'), str(sdl_prefix / 'include')] + list(INCLUDE_DIRECTORIES)
     env.Append(CPPPATH=include_paths + ["#third_party/quickjs-ng"], CPPDEFINES=['HAVE_CONFIG_H', official_instance.cppdefine(official_instance.origin(arguments))],
                CXXFLAGS=['-std=gnu++20', '-fexceptions', '-g2', '-O2' if identity['mode']=='release' else '-O0'] + PORTS)
     env.Append(LINKFLAGS=['-fexceptions', '-O2' if identity['mode']=='release' else '-O0',
@@ -99,10 +102,10 @@ def _build_variant(directory, identity, arguments, threaded=False):
         env.AlwaysBuild(assets)
     for asset_directory in ('data', 'maps', 'campaigns', 'scripts'):
         env.Append(LINKFLAGS=['--preload-file', str(asset_root / asset_directory) + '@/' + asset_directory])
+    env.Append(LIBPATH=[str(sdl_prefix / 'lib')], LIBS=['SDL3_ttf', 'SDL3_image', 'SDL3_net', 'SDL3', 'freetype', 'webpdemux', 'webpmux', 'webp', 'sharpyuv'])
     env['LINKCOM'] = '${TEMPFILE("$LINK -o $TARGET $LINKFLAGS $__RPATH $SOURCES $_LIBDIRFLAGS $_LIBFLAGS", "$LINKCOMSTR")}'
     def prepare_ports(target, source, env):
-        # The pinned SDL_net port recursively requests non-threaded SDL while
-        # holding the cache lock. Warm that dependency before building mt ports.
+        # Warm serial system ports before requesting their threaded variants.
         if threaded:
             result = subprocess.run([str(compiler), *PORTS, '-x', 'c++', '-c',
                 '-o', str(output / 'ports-bootstrap.o'), '-'], input='', text=True, env=env['ENV'])
@@ -111,9 +114,9 @@ def _build_variant(directory, identity, arguments, threaded=False):
         return subprocess.run(
             [str(compiler), *(['-pthread'] if threaded else []), *PORTS, '-x', 'c++', '-c', '-o', str(target[0]), '-'],
             input='', text=True, env=env['ENV']).returncode
-    ports = env.Command(str(output / 'ports-ready.o'), [Value(lock), Value(PORTS), Value(threaded), 'browser/ports/glob2_webp.py', 'browser/ports/glob2_sdl2_image.py'],
+    ports = env.Command(str(output / 'ports-ready.o'), [Value(lock), Value(PORTS), Value(threaded)],
                         Action(prepare_ports, 'Preparing pinned Emscripten ports'))
-    files = ['src/' + s for s in CLIENT_SOURCES if s not in ('VoiceRecorder.cpp', 'net/NetTransport.cpp', 'net/WssTransport.cpp', 'net/LanIdentity.cpp', 'net/ServerControl.cpp', 'net/irc/IRCTextMessageHandler.cpp', 'online/HttpFetch.cpp')]
+    files = ['src/' + s for s in CLIENT_SOURCES if s not in ('VoiceRecorder.cpp', 'net/NetTransport.cpp', 'net/TcpTransport.cpp', 'net/WssTransport.cpp', 'net/LanIdentity.cpp', 'net/ServerControl.cpp', 'net/irc/IRCTextMessageHandler.cpp', 'online/HttpFetch.cpp')]
     files += ['libgag/src/' + s for s in GAG_SOURCES if s != 'ApplicationHost.cpp']
     files += ['libusl/src/' + s for s in USL_SOURCES]
     files += ['browser/VoiceRecorder.cpp', 'browser/ApplicationHost.cpp', 'browser/NetTransport.cpp', 'browser/IRCTextMessageHandler.cpp', 'browser/Launcher.cpp', 'browser/HttpFetch.cpp']
@@ -129,7 +132,7 @@ def _build_variant(directory, identity, arguments, threaded=False):
         local = strict if f.startswith('src/script/') or f == 'src/ai/AIJavaScript.cpp' else env
         if f == 'src/Glob2.cpp':
             local = local.Clone()
-            local.Append(CPPDEFINES=[('main', 'glob2ApplicationMain')])
+            local.Append(CPPDEFINES=['SDL_MAIN_HANDLED', ('main', 'glob2ApplicationMain')])
         objects.append(local.Object(str(output / 'obj' / (f + '.o')), f))
     numeric_guard(strict, [obj for name, obj in zip(files, objects) if name.startswith('src/script/') or name == 'src/ai/AIJavaScript.cpp'])
     objects += javascript_objects(env, output / "obj/third_party", identity["mode"] == "release")
@@ -154,7 +157,7 @@ def _build_variant(directory, identity, arguments, threaded=False):
             local.Append(CPPDEFINES=options.get('defines', []))
             path = 'test/' + source
             if source.endswith('TestMain.cpp'):
-                local.Append(CPPDEFINES=[('main', 'glob2ApplicationMain')])
+                local.Append(CPPDEFINES=['SDL_MAIN_HANDLED', ('main', 'glob2ApplicationMain')])
             targets = local.Object(str(output / 'obj/tests' / (path + '.o')), path)
             if source.endswith('TestMain.cpp'):
                 local.Depends(targets, provenance_header)

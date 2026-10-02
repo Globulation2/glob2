@@ -6,7 +6,7 @@
 #include "ScriptEditorScreen.h"
 #include "Unit.h"
 #include "Utilities.h"
-#include "SDLCompat.h"
+#include <SDL3/SDL.h>
 
 void MapEdit::beginZonePlacement(BrushType type)
 {
@@ -36,7 +36,7 @@ void MapEdit::resetPlacementTracking()
 	firstPlacement.reset();
 }
 
-bool MapEdit::performTerrainAction(const std::string& action, int relMouseX, int relMouseY)
+bool MapEdit::performTerrainAction(const std::string& action, float relMouseX, float relMouseY)
 {
 	if(action.substr(0, 29)=="set place building selection ")
 	{

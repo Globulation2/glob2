@@ -12,34 +12,34 @@
 using namespace GAGCore;
 using namespace GAGGUI;
 
-KeyPress::KeyPress(SDL_Keysym nkey, bool pressed)
+KeyPress::KeyPress(SDL_KeyboardEvent nkey, bool pressed)
 	: pressed(pressed)
 {
-	if(nkey.mod & KMOD_CTRL)
+	if(nkey.mod & SDL_KMOD_CTRL)
 		control = true;
 	else
 		control = false;
-	if(nkey.mod & KMOD_SHIFT)
+	if(nkey.mod & SDL_KMOD_SHIFT)
 		shift = true;
 	else
 		shift = false;
-	if(nkey.mod & KMOD_LGUI || nkey.mod & KMOD_RGUI)
+	if(nkey.mod & SDL_KMOD_LGUI || nkey.mod & SDL_KMOD_RGUI)
 		meta = true;
 	else
 		meta = false;
-	if(nkey.mod & KMOD_ALT)
+	if(nkey.mod & SDL_KMOD_ALT)
 		alt = true;
 	else
 		alt = false;
 
-	std::string name = SDL_GetKeyName(nkey.sym);
+	std::string name = SDL_GetKeyName(nkey.key);
 	std::transform(name.begin(), name.end(), name.begin(), ::tolower);
 	std::string key_s = std::string("[") + name + std::string("]");
 	Uint16 c=0;
 	//This is to get over a bug where ctrl-d ctrl-a etc... would cause nkey.unicode to be mangled,
-	//whereas nkey.sym is still fine
-	if(nkey.sym < 128)
-		c = nkey.sym;
+	//whereas nkey.key is still fine
+	if(nkey.key < 128)
+		c = nkey.key;
 	
 	if(Toolkit::getStringTable()->doesStringExist(key_s))
 	{

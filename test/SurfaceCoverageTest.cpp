@@ -13,8 +13,8 @@ std::array<int,3> pixel(DrawableSurface& surface,int x,int y)
 {
     SDL_Surface* raw=surface.getSDLSurface();
     Uint32 value=0;
-    std::memcpy(&value,static_cast<Uint8*>(raw->pixels)+y*raw->pitch+x*raw->format->BytesPerPixel,raw->format->BytesPerPixel);
-    Uint8 r,g,b; SDL_GetRGB(value,raw->format,&r,&g,&b);
+    std::memcpy(&value,static_cast<Uint8*>(raw->pixels)+y*raw->pitch+x*SDL_BYTESPERPIXEL(raw->format),SDL_BYTESPERPIXEL(raw->format));
+    Uint8 r,g,b; SDL_GetRGB(value,SDL_GetPixelFormatDetails(raw->format),SDL_GetSurfacePalette(raw),&r,&g,&b);
     return {r,g,b};
 }
 void black(DrawableSurface& surface)

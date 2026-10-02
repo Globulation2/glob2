@@ -20,7 +20,7 @@ void MapEdit::layoutOrDisableRow(FractionValueText* label, ValueScrollBox* scrol
 	}
 }
 
-bool MapEdit::performBuildingAction(const std::string& action, int relMouseX, int relMouseY)
+bool MapEdit::performBuildingAction(const std::string& action, float relMouseX, float relMouseY)
 {
 	if(action=="select map building")
 	{

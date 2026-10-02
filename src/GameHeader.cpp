@@ -76,6 +76,7 @@ bool GameHeader::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	stream->readEnterSection("GameHeader");
 	gameLatency = stream->readSint32("gameLatency");
 	orderRate = stream->readUint8("orderRate");
+	if (gameLatency < 0 || gameLatency > 65535 || orderRate == 0) throw std::runtime_error("Invalid saved network rate or latency");
 	numberOfPlayers = stream->readSint32("numberOfPlayers");
 	if (numberOfPlayers < 0 || numberOfPlayers > Team::MAX_COUNT)
 	{
@@ -228,6 +229,7 @@ bool GameHeader::loadWithoutPlayerInfo(GAGCore::InputStream *stream, Sint32 vers
 	stream->readEnterSection("GameHeader");
 	gameLatency = stream->readSint32("gameLatency");
 	orderRate = stream->readUint8("orderRate");
+	if (gameLatency < 0 || gameLatency > 65535 || orderRate == 0) throw std::runtime_error("Invalid saved network rate or latency");
 	if(versionMinor >= FILE_FORMAT_VERSION_ALLIES_AND_WIN_CONDITIONS)
 	{
 		stream->readEnterSection("allyTeamNumbers");

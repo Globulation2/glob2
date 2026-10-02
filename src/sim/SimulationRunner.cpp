@@ -2,7 +2,7 @@
 #include "sim/SimulationRunner.h"
 
 #include "Engine.h"
-#include "SDLCompat.h"
+#include <SDL3/SDL_stdinc.h>
 
 #include <chrono>
 #include <system_error>
@@ -14,7 +14,9 @@ SimulationRunner::~SimulationRunner() { stop(); }
 bool SimulationRunner::start()
 {
 #ifdef __EMSCRIPTEN__
-	return false; // The browser build has no threads; the session runs serially.
+	// Keep simulation serial within the browser application host, including
+	// its pthread variant; the native runner owns a separate simulation thread.
+	return false;
 #else
 	try
 	{

@@ -80,3 +80,37 @@ TEST_CASE("binary bytes; SHA1; text fallback; nested records; signed limits; 64-
  }
 }
 }
+
+TEST_SUITE("Maxima.Continuation")
+{
+TEST_CASE("compact fields retain legacy binary and text encodings [save-format]")
+{
+ using AIMaximaPlacement::DistanceField;
+ const std::vector<int32_t> oldDistances={0,1,512,65534,INT_MAX};
+ const std::vector<uint64_t> oldFood={0,1,UINT32_MAX};
+ DistanceField distances; distances.assign(oldDistances.size(),0);
+ for(size_t i=0;i<oldDistances.size();++i) distances[i]=oldDistances[i];
+ std::vector<uint32_t> food(oldFood.begin(),oldFood.end());
+ for(bool binary:{true,false}) for(bool scalar:{true,false}) {
+  auto emit=[&](bool compact){
+   auto* backend=new GAGCore::MemoryStreamBackend();
+   std::unique_ptr<GAGCore::OutputStream> out(binary?static_cast<GAGCore::OutputStream*>(new GAGCore::BinaryOutputStream(backend)):static_cast<GAGCore::OutputStream*>(new GAGCore::TextOutputStream(backend)));
+   ScalarStream wrapped(*out); AIMaximaContinuation::Writer a(scalar?&wrapped:out.get());
+   if(compact) {
+    a("distances",distances);
+    a.legacyVector<uint64_t>("food",food,[](uint32_t x){return uint64_t(x);},[](uint64_t){return uint32_t{};});
+   } else { a("distances",oldDistances); a("food",oldFood); }
+   return backend->takeContents();
+  };
+  const auto bytes=emit(false); REQUIRE(bytes==emit(true));
+  auto* backend=new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size());backend->seekFromStart(0);
+  std::unique_ptr<GAGCore::InputStream> in(binary?static_cast<GAGCore::InputStream*>(new GAGCore::BinaryInputStream(backend)):static_cast<GAGCore::InputStream*>(new GAGCore::TextInputStream(backend)));
+  AIMaximaContinuation::Reader reader(in.get()); DistanceField restored; std::vector<uint32_t> restoredFood;
+  reader("distances",restored);
+  reader.legacyVector<uint64_t>("food",restoredFood,[](uint32_t){return uint64_t{};},[](uint64_t x){return uint32_t(x);});
+  REQUIRE(restored.size()==oldDistances.size());
+  for(size_t i=0;i<oldDistances.size();++i) REQUIRE(int(restored[i])==oldDistances[i]);
+  REQUIRE(restoredFood==food);
+ }
+}
+}

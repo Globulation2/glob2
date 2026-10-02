@@ -38,6 +38,9 @@ async function loadSaved(page,replay=false,observeLoading=true) {
 }
 
 test('an active match can load the same saved game repeatedly through the scheduled loader',async({page})=>{
+  // Two full reloads exceed the suite's WebGL2 budget on software-backed CI.
+  // Match the existing replay reload budget while retaining every transition check.
+  if(process.env.GLOB2_TEST_RENDERER==='webgl2') test.setTimeout(420000);
   const errors=[];page.on('pageerror',error=>errors.push(String(error)));
   const name=await startAndSave(page);
   const digest=await page.evaluate(name=>glob2Diagnostics.saveDigest(name),name);

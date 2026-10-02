@@ -137,7 +137,7 @@ NetworkConfig makeNetworkConfig(bool lan, bool routerRole)
 	for (auto *listener : {&c.lobby, &c.router, &c.registration})
 	{
 		listener->tls = tls;
-		listener->bindAddress = setting("GLOB2_BIND_ADDRESS", "0.0.0.0");
+		listener->bindAddress = setting("GLOB2_BIND_ADDRESS", "::");
 		listener->connectionLimit = number("GLOB2_CONNECTION_LIMIT", 256, 65535);
 		listener->allowedOrigins = origins;
 	}

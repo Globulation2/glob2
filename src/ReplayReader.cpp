@@ -12,6 +12,7 @@
 #include "FileManager.h"
 
 #include <iomanip>
+#include <limits>
 
 ReplayReader::ReplayReader()
 {
@@ -53,109 +54,50 @@ bool ReplayReader::loadReplay(GAGCore::InputStream *inputStream, bool skipToOrde
 	// From now on we own the given stream
 	stream = inputStream;
 
-	currentStep = 0;
-	ordersProcessed = 0;
-	
-	// Skip to the section in the stream where the header ends
-	if (skipToOrders)
+	try
 	{
-		try
+		GAGCore::BinaryInputStream::CheckedReads checked(stream);
+		currentStep = 0;
+		ordersProcessed = 0;
+		numSteps = 0;
+		numOrders = 0;
+		if (skipToOrders)
 		{
-			// readEnterSection doesn't do anything, so just read the gui that is there and discard the data
 			GameGUI tempGui;
-			tempGui.load(stream);
+			if (!tempGui.load(stream)) throw std::ios_base::failure("Invalid replay game header");
 		}
-		catch (std::exception &e)
+		const Uint16 major = stream->readUint16("versionMajor");
+		const Uint16 minor = stream->readUint16("versionMinor");
+		if (major != VERSION_MAJOR || minor < REPLAY_MINIMUM_VERSION_MINOR || minor > VERSION_MINOR)
+			throw std::ios_base::failure("Unsupported replay version");
+		versionMinor = minor;
+		if (!stream->canSeek() || stream->getPosition() > static_cast<size_t>(std::numeric_limits<int>::max()))
+			throw std::ios_base::failure("Invalid replay position");
+		const int pos = static_cast<int>(stream->getPosition());
+		for (;;)
 		{
-			delete stream;
-			stream = NULL;
-			return false;
-		}
-	}
-
-	// Read the version numbers
-	Uint16 version_major = stream->readUint16("versionMajor");
-	Uint16 version_minor = stream->readUint16("versionMinor");
-
-	// Check the version number. Replays from before REPLAY_MINIMUM_VERSION_MINOR
-	// or from a newer version than this build cannot be played.
-	if (version_major != VERSION_MAJOR || version_minor < REPLAY_MINIMUM_VERSION_MINOR || version_minor > VERSION_MINOR)
-	{
-		delete stream;
-		stream = NULL;
-		return false;
-	}
-
-	versionMinor = version_minor;
-
-	// If there are no orders, this is also not a valid replay (there should be at least a NullOrder)
-	if (stream->isEndOfStream())
-	{
-		delete stream;
-		stream = NULL;
-		return false;
-	}
-
-	// Save the position in the stream
-	assert(stream->canSeek());
-	size_t pos = stream->getPosition();
-
-	// Calculate the length of this replay
-	std::shared_ptr<Order> order;
-	numSteps = 0;
-	numOrders = 0;
-	stepsUntilNextOrder = stream->readUint32("replayStepCounter");
-	do
-	{
-		try
-		{
-			// Read an order from the stream
+			const Uint32 steps = stream->readUint32("replayStepCounter");
 			NetSendOrder msg;
 			msg.setDecodeVersionMinor(versionMinor);
 			msg.decodeData(stream);
-			order = msg.getOrder();
-
-			// If we got here, it means the order was valid, so increase the replay length
-			numOrders++;
-			numSteps += stepsUntilNextOrder;
+			if (steps > std::numeric_limits<Uint32>::max() - numSteps ||
+				numOrders == std::numeric_limits<Uint32>::max())
+				throw std::ios_base::failure("Replay counters overflow");
+			numSteps += steps;
+			++numOrders;
+			if (msg.getOrder()->getOrderType() == ORDER_NULL) break;
 		}
-		catch (const std::ios_base::failure &e)
-		{
-			// The order in the stream was invalid
-			std::cout << "Error reading replay: " << e.what() << std::endl;
-
-			// If it was a replay with at least a few orders that were correct so far, use to plan B: play the replay up to this order
-			if (numOrders < REPLAY_MIN_VALID_ORDERS)
-			{
-				// Fail
-				delete stream;
-				stream = NULL;
-				return false;
-			}
-			else
-			{
-				// Overwrite the order as if it were a NullOrder
-				order = std::shared_ptr<Order>(new NullOrder());
-			}
-		}
-
-		// If it was a real order, read and increase numSteps accordingly
-		if (order->getOrderType() != ORDER_NULL)
-		{
-			stepsUntilNextOrder = stream->readUint32("replayStepCounter");
-		}
+		stream->seekFromStart(pos);
+		stepsUntilNextOrder = stream->readUint32("replayStepCounter");
+		return true;
 	}
-	while (order->getOrderType() != ORDER_NULL);
-
-	// Go back to the original position in the stream
-	stream->seekFromStart(pos);
-	
-	// Read the number of steps until the first order
-	stepsUntilNextOrder = stream->readUint32("replayStepCounter");
-
-	// If we get to this point, the replay file should be valid
-	assert(isValid());
-	return true;
+	catch (const std::exception& error)
+	{
+		std::cerr << "Error reading replay: " << error.what() << std::endl;
+		delete stream;
+		stream = NULL;
+		return false;
+	}
 }
 
 bool ReplayReader::loadReplay(const std::string &filename)
@@ -211,6 +153,7 @@ std::shared_ptr<Order> ReplayReader::retrieveOrder()
 
 	try
 	{
+		GAGCore::BinaryInputStream::CheckedReads checked(stream);
 		// Read the order from the stream
 		NetSendOrder msg;
 		msg.setDecodeVersionMinor(versionMinor);
@@ -227,25 +170,21 @@ std::shared_ptr<Order> ReplayReader::retrieveOrder()
 			std::cerr << "\tChecksum in replay file: 0x" << order->gameCheckSum << std::endl;
 			std::cerr << std::setbase(10);
 
-			delete stream;
-			stream = NULL;
-			return std::shared_ptr<Order>(new NullOrder());
+			throw std::ios_base::failure("Replay checksum mismatch");
 		}
+		if (order->getOrderType() != ORDER_NULL)
+			stepsUntilNextOrder = stream->readUint32("replayStepCounter");
 	}
-	catch (const std::ios_base::failure &e)
+	catch (const std::exception &e)
 	{
-		// We shouldn't ever get here. In init() we made sure that all the orders up to numOrders are valid.
+		// The backing file may have changed since the initial scan.
 		std::cerr << "Error reading replay: " << e.what() << std::endl;
 		delete stream;
 		stream = NULL;
-		assert(false);
+		return std::shared_ptr<Order>(new NullOrder());
 	}
 
 	ordersProcessed++;
-
-	// Read the number of steps until the next order, if there is one
-	if (order->getOrderType() != ORDER_NULL) stepsUntilNextOrder = stream->readUint32("replayStepCounter");
-	else assert(ordersProcessed >= numOrders && currentStep >= numSteps);
 
 	return order;
 }

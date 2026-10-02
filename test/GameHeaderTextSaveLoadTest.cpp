@@ -20,7 +20,7 @@
 #include <string>
 #include <cstdio>
 #include <memory>
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include "TextStream.h"
 #include "BinaryStream.h"
 #include "StreamBackend.h"

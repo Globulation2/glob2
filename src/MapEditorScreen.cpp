@@ -25,7 +25,7 @@ void MapEditorScreen::updateExecution(Uint32 tick)
 		editor->beginEditing();
 		started = true;
 	}
-	const bool running = editor->advanceEditing(input, tick);
+	const bool running = editor->advanceEditing(input.events(), tick);
 	input.clear();
 	if (!running)
 	{

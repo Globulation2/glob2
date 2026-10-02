@@ -6,6 +6,7 @@
 #include <Toolkit.h>
 #include <Stream.h>
 #include <BinaryStream.h>
+#include <StreamBackend.h>
 
 #include "AINames.h"
 #include "Engine.h"
@@ -19,6 +20,36 @@
 #include <optional>
 
 
+namespace
+{
+std::unique_ptr<BinaryInputStream> openOwnedGameStream(const std::string& filename)
+{
+    // Inflation may already own a large snapshot. Keep it owned if allocating
+    // the stream wrapper fails; BinaryInputStream takes ownership on success.
+    std::unique_ptr<StreamBackend> backend(glob2OpenMapOrSaveInputStreamBackend(*Toolkit::getFileManager(), filename));
+    auto stream = std::make_unique<BinaryInputStream>(backend.get());
+    backend.release();
+    return stream;
+}
+}
+
+// Header preflight used to inflate the whole file again for each reader.
+// One validated snapshot belongs to this load operation, through deserialization.
+std::unique_ptr<InputStream> Engine::openGameInput(const std::string& filename, MapHeader& map, GameHeader& players)
+{
+    try
+    {
+        auto stream = openOwnedGameStream(filename);
+        if (!stream->isValid() || !map.load(stream.get()) || !players.load(stream.get(), map.getVersionMinor()))
+            return {};
+        map.setMapName(glob2FilenameToName(filename));
+        stream->seekFromStart(0);
+        return stream;
+    }
+    catch (const std::exception& error)
+    { std::cerr << "Cannot load headers: " << error.what() << std::endl; return {}; }
+}
+
 // Loads a map header from disk. The two failure modes are asymmetric:
 //   * Missing or unreadable file: logs to stderr and returns a default-constructed
 //     MapHeader (numberOfTeams == 0). Callers must check.
@@ -26,7 +57,7 @@
 MapHeader Engine::loadMapHeader(const std::string &filename)
 {
 	MapHeader mapHeader;
-	std::unique_ptr<InputStream> stream = std::make_unique<BinaryInputStream>(glob2OpenMapOrSaveInputStreamBackend(*Toolkit::getFileManager(), filename));
+	std::unique_ptr<InputStream> stream = openOwnedGameStream(filename);
 	if (stream->isEndOfStream())
 	{
 		std::cerr << "Engine::loadMapHeader : error, can't open file " << filename  << std::endl;
@@ -67,7 +98,7 @@ GameHeader Engine::loadGameHeader(const std::string &filename)
 {
 	MapHeader mapHeader;
 	GameHeader gameHeader;
-	std::unique_ptr<InputStream> stream = std::make_unique<BinaryInputStream>(glob2OpenMapOrSaveInputStreamBackend(*Toolkit::getFileManager(), filename));
+	std::unique_ptr<InputStream> stream = openOwnedGameStream(filename);
 	if (stream->isEndOfStream())
 	{
 		std::cerr << "Engine::loadGameHeader : error, can't open file " << filename  << std::endl;
