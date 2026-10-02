@@ -991,10 +991,9 @@ jobs:
             build/emscripten/client/release/threaded/identity.json
             build/emscripten/client/release/threaded/index.js
             build/emscripten/client/release/threaded/index.wasm
-            build/emscripten/client/release/threaded/index.data
             build/emscripten/client/release/index.js
             build/emscripten/client/release/index.wasm
-            build/emscripten/client/release/index.data
+            build/emscripten/client/release/assets/
             build/emscripten/client/release/script-tests.js
             build/emscripten/client/release/script-tests.wasm
             build/emscripten/client/release/script-tests.data
@@ -1012,10 +1011,9 @@ jobs:
             build/emscripten/client/release/loader.js
             build/emscripten/client/release/threaded/index.js
             build/emscripten/client/release/threaded/index.wasm
-            build/emscripten/client/release/threaded/index.data
             build/emscripten/client/release/index.js
             build/emscripten/client/release/index.wasm
-            build/emscripten/client/release/index.data
+            build/emscripten/client/release/assets/
 
       - name: Summarize CI failures
         if: always()

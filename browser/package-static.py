@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Package versioned browser assets and verified deterministic gzip sidecars."""
+"""Package versioned browser assets and verified deterministic gzip sidecars.
+
+Game data packages (scons/web_assets.py) are already named by their content and
+listed inside both runtimes, so they keep their names under assets/."""
 
 import argparse
 import gzip
@@ -22,9 +25,13 @@ def package(source, destination):
     ):
         raise ValueError("Package destination must not overlap build inputs")
     files = {
-        ext: (source / f"index.{ext}").read_bytes()
-        for ext in ("html", "js", "wasm", "data")
+        ext: (source / f"index.{ext}").read_bytes() for ext in ("html", "js", "wasm")
     }
+    packages = {
+        "assets/" + p.name: p.read_bytes() for p in sorted((source / "assets").glob("*.data"))
+    }
+    if not packages:
+        raise ValueError("Expected game data packages in assets/")
     threaded = 'src="loader.js"' in files["html"].decode()
     if threaded:
         files["loader"] = (source / "loader.js").read_bytes()
@@ -32,13 +39,12 @@ def package(source, destination):
             files["threaded/" + ext] = (
                 source / "threaded" / ("index." + ext)
             ).read_bytes()
-        if (source / "threaded/index.data").read_bytes() != files["data"]:
-            raise ValueError("Threaded and serial runtimes must share identical assets")
-    version = hashlib.sha256(POLICY + b"".join(files.values())).hexdigest()[:16]
-    names = {ext: f"index-{version}.{ext}" for ext in ("js", "wasm", "data")}
+    version = hashlib.sha256(
+        POLICY + b"".join(files.values()) + b"".join(name.encode() for name in packages)
+    ).hexdigest()[:16]
+    names = {ext: f"index-{version}.{ext}" for ext in ("js", "wasm")}
     script = files["js"].decode()
-    for ext in ("wasm", "data"):
-        script = script.replace(f'"index.{ext}"', f'"{names[ext]}"')
+    script = script.replace('"index.wasm"', f'"{names["wasm"]}"')
     html = files["html"].decode().replace('src="index.js"', f'src="{names["js"]}"')
     html = html.replace("src=index.js>", f'src="{names["js"]}">')
     if not threaded and names["js"] not in html:
@@ -47,7 +53,7 @@ def package(source, destination):
         "index.html": html.encode(),
         names["js"]: script.encode(),
         names["wasm"]: files["wasm"],
-        names["data"]: files["data"],
+        **packages,
     }
     if threaded:
         loader = f"loader-{version}.js"
@@ -60,8 +66,7 @@ def package(source, destination):
         ).encode()
         contents[loader] = files["loader"]
         thread_script = files["threaded/js"].decode()
-        for ext in ("wasm", "data"):
-            thread_script = thread_script.replace(f'"index.{ext}"', f'"{names[ext]}"')
+        thread_script = thread_script.replace('"index.wasm"', f'"{names["wasm"]}"')
         contents["threaded/" + names["js"]] = thread_script.encode()
         contents["threaded/" + names["wasm"]] = files["threaded/wasm"]
     destination.parent.mkdir(parents=True, exist_ok=True)
@@ -165,15 +170,22 @@ def verify(directory):
             and gzip.decompress(data) != (directory / name[:-3]).read_bytes()
         ):
             raise ValueError("Sidecar does not match original: " + name)
-    for ext in ("js", "wasm", "data"):
+    for ext in ("js", "wasm"):
         if len(list(directory.glob("index-*." + ext))) != 1:
             raise ValueError("Expected one versioned " + ext + " asset")
     marker = json.loads((directory / MARKER).read_text())
     if marker["policy"] != POLICY.decode().rstrip("\0"):
         raise ValueError("Unknown static package policy")
     names = ["index.html"] + [
-        f"index-{marker['version']}.{ext}" for ext in ("js", "wasm", "data")
+        f"index-{marker['version']}.{ext}" for ext in ("js", "wasm")
     ]
+    names += [
+        name
+        for name in expected
+        if name.startswith("assets/") and name.endswith(".data")
+    ]
+    if not any(name.startswith("assets/") for name in names):
+        raise ValueError("Static package lacks game data packages")
     if marker.get("threaded"):
         names += [f"loader-{marker['version']}.js"] + [
             f"threaded/index-{marker['version']}.{ext}" for ext in ("js", "wasm")
@@ -181,7 +193,7 @@ def verify(directory):
     required = {MARKER, *names, *(name + ".gz" for name in names)}
     if set(expected) != required:
         raise ValueError(
-            "Static package requires all four original files and gzip sidecars"
+            "Static package requires every original file and its gzip sidecar"
         )
 
 

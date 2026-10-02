@@ -122,6 +122,9 @@ def free_subnet():
     raise RuntimeError('no free private /24 for the backend network')
 
 
+SMOKE_PACKAGE = 'assets/core.0123456789abcdef.data'
+
+
 class Failure(Exception):
     pass
 
@@ -173,6 +176,11 @@ class Smoke:
         (self.directory / 'instance.yaml').write_text(INSTANCE_YAML)
         (self.directory / 'web-client').mkdir()
         (self.directory / 'web-client/index.html').write_text('<!doctype html><title>glob2 web client</title>')
+        # A content-addressed data package with a precompressed copy, as
+        # browser/precompress.py and deploy/install-web-client.py lay them out.
+        (self.directory / 'web-client/assets').mkdir()
+        (self.directory / f'web-client/{SMOKE_PACKAGE}').write_bytes(b'package')
+        (self.directory / f'web-client/{SMOKE_PACKAGE}.br').write_bytes(b'brotli')
         self.env = {k: v for k, v in os.environ.items() if not k.startswith(('GLOB2_', 'POSTGRES_'))}
 
     def attach(self, arguments):
@@ -314,6 +322,16 @@ class Smoke:
             if code not in (200, 404) or 'application/json' not in link_headers.get('Content-Type', '') \
                     or b'<div id="root">' in body_link:
                 raise Failure(f'{path} is not served by the API: {code} {body_link[:200]!r}')
+        if 'no-cache' not in play_headers.get('Cache-Control', ''):
+            raise Failure(f'/play/ must revalidate: {play_headers.get("Cache-Control")!r}')
+        if not self.arguments.attach:
+            # Data packages: served from their Brotli copy, cached for good, isolated.
+            status_package, package_headers, body_package = self.https(
+                'GET', '/play/' + SMOKE_PACKAGE, headers={'Accept-Encoding': 'br, gzip'})
+            if (status_package != 200 or body_package != b'brotli' or package_headers.get('Content-Encoding') != 'br'
+                    or 'immutable' not in package_headers.get('Cache-Control', '')
+                    or package_headers.get('Cross-Origin-Embedder-Policy') != 'require-corp'):
+                raise Failure(f'/play/{SMOKE_PACKAGE}: {status_package} {package_headers} {body_package[:40]!r}')
         denied = {}
         for path in ('/internal/v1/relays/register', '/internal', '/healthz', '/readyz', '/metrics'):
             for method in ('GET', 'POST'):

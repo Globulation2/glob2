@@ -2,17 +2,19 @@
 from pathlib import Path
 import json
 import os
+import re
 import subprocess
 from SCons.Script import Environment, Default, Value, GetOption, Action, COMMAND_LINE_TARGETS
 from build_layout import write_if_changed, prepare_directory, PACKAGE_VERSION
 from javascript import javascript_objects, numeric_guard
 import official_instance
 from sources import CLIENT_SOURCES, GAG_SOURCES, USL_SOURCES, INCLUDE_DIRECTORIES
+import web_assets
 
 PORTS = ['--use-port=vorbis', '--use-port=zlib']
 
 
-def _build_variant(directory, identity, arguments, threaded=False):
+def _build_variant(directory, identity, arguments, threaded=False, packaged=None):
     root = Path.cwd()
     output = Path(directory).resolve()
     (output / 'tmp').mkdir(parents=True, exist_ok=True)
@@ -88,20 +90,31 @@ def _build_variant(directory, identity, arguments, threaded=False):
     sys_path = __import__('sys').path
     if str(root) not in sys_path: sys_path.insert(0, str(root))
     from tools.package_assets import source_files, export_assets
-    asset_root = output / 'runtime-assets'
-    asset_stamp = asset_root.with_suffix('.json')
-    def prepare_assets(target, source, env):
-        export_assets(root, asset_root, platform='web', optimized=identity['mode']=='release')
-        return 0
-    asset_inputs = list(source_files(root, 'web'))
-    assets = env.Command(str(asset_stamp), [str(p) for p in asset_inputs] +
-        ['tools/package_assets.py', 'tools/asset-requirements.txt', Value([identity['mode'], [str(p) for p in asset_inputs]])],
-        Action(prepare_assets, 'Exporting verified browser assets'))
-    env.Precious(assets)  # Keep the ownership audit while an export is rebuilt.
-    if not (asset_root / 'data').is_dir():
-        env.AlwaysBuild(assets)
-    for asset_directory in ('data', 'maps', 'campaigns', 'scripts'):
-        env.Append(LINKFLAGS=['--preload-file', str(asset_root / asset_directory) + '@/' + asset_directory])
+    # Game data ships as content-addressed packages next to the page (see
+    # scons/web_assets.py), not as one --preload-file blob: the page shows
+    # progress, caches them across visits and fetches optional data later. The
+    # serial variant exports and packages the data once; the threaded runtime
+    # embeds the same manifest and loads the same packages.
+    if packaged is None:
+        asset_root = output / 'runtime-assets'
+        asset_stamp = asset_root.with_suffix('.json')
+        def prepare_assets(target, source, env):
+            export_assets(root, asset_root, platform='web', optimized=identity['mode']=='release')
+            return 0
+        asset_inputs = list(source_files(root, 'web'))
+        exported = env.Command(str(asset_stamp), [str(p) for p in asset_inputs] +
+            ['tools/package_assets.py', 'tools/asset-requirements.txt', Value([identity['mode'], [str(p) for p in asset_inputs]])],
+            Action(prepare_assets, 'Exporting verified browser assets'))
+        env.Precious(exported)  # Keep the ownership audit while an export is rebuilt.
+        if not (asset_root / 'data').is_dir():
+            env.AlwaysBuild(exported)
+        asset_manifest = output / 'asset-manifest.js'
+        assets = env.Command(str(asset_manifest), [exported, 'scons/web_assets.py', 'deploy/sim_version.py'],
+            Action(lambda target, source, env: web_assets.build(root, output, target[0].abspath, asset_root) and 0,
+                   'Packaging browser game data'))
+    else:
+        assets, asset_manifest, asset_root = packaged
+    env.Append(LINKFLAGS=['--pre-js', str(asset_manifest), '--pre-js', 'browser/asset-loader.js'])
     env.Append(LIBPATH=[str(sdl_prefix / 'lib')], LIBS=['SDL3_ttf', 'SDL3_image', 'SDL3_net', 'SDL3', 'freetype', 'webpdemux', 'webpmux', 'webp', 'sharpyuv'])
     env['LINKCOM'] = '${TEMPFILE("$LINK -o $TARGET $LINKFLAGS $__RPATH $SOURCES $_LIBDIRFLAGS $_LIBFLAGS", "$LINKCOMSTR")}'
     def prepare_ports(target, source, env):
@@ -145,6 +158,16 @@ def _build_variant(directory, identity, arguments, threaded=False):
         sys.path.insert(0, str(root / 'test'))
         import tests as registry
         tests = env.Clone()
+        # The harness page has no asset packages beside it: preload the exported data.
+        flags, kept = list(tests['LINKFLAGS']), []
+        for index, flag in enumerate(flags):
+            if flag in (str(asset_manifest), 'browser/asset-loader.js') and kept and kept[-1] == '--pre-js':
+                kept.pop()
+            else:
+                kept.append(flag)
+        tests['LINKFLAGS'] = kept
+        for asset_directory in ('data', 'maps', 'campaigns', 'scripts'):
+            tests.Append(LINKFLAGS=['--preload-file', str(asset_root / asset_directory) + '@/' + asset_directory])
         tests.Append(CPPPATH=['test', 'test/support', 'src/render', 'libgag/src'])
         tests.Append(LINKFLAGS=['--preload-file', 'test/fixtures@/test/fixtures',
                                '--preload-file', 'games@/games', '-sEXIT_RUNTIME=0'])
@@ -176,26 +199,31 @@ def _build_variant(directory, identity, arguments, threaded=False):
             tests.Depends(harness, 'browser/threaded-egl.js')
         env.Alias('web-tests', harness)
 
-    env.Depends(program, ['browser/storage.js', 'browser/file-selection.js', 'browser/audio.js', 'browser/runtime.js', 'browser/toolchain.json'])
-    env.Depends(program, [str(p) for directory in ('data','maps','campaigns','scripts')
-                         for p in Path(directory).rglob('*') if p.is_file()])
+    env.Depends(program, ['browser/storage.js', 'browser/file-selection.js', 'browser/audio.js', 'browser/runtime.js',
+                          'browser/asset-loader.js', 'browser/toolchain.json', assets])
     if threaded:
         env.Depends(program, 'browser/threaded-egl.js')
-    env.SideEffect([str(output / ('index.'+ext)) for ext in ('wasm','data')], program)
-    env.Clean(program, [str(output / ('index.'+ext)) for ext in ('wasm','data')])
+    env.SideEffect([str(output / 'index.wasm')], program)
+    env.Clean(program, [str(output / ('index.'+ext)) for ext in ('wasm','data')] + ([] if threaded else [str(output / 'assets')]))
     database = env.CompilationDatabase(str(output / 'compile_commands.json'))
     env.Alias('compile_commands.json', database)
     write_if_changed(output / 'options.json', json.dumps(dict(arguments), sort_keys=True, indent=2)+'\n')
 
-    return env, program, database
+    return env, program, database, (assets, asset_manifest, asset_root)
 
 
 def build_web(directory, identity, arguments):
-    env, serial, database = _build_variant(directory, identity, arguments)
-    _, threaded, _ = _build_variant(Path(directory) / 'threaded', identity, arguments, True)
+    env, serial, database, packaged = _build_variant(directory, identity, arguments)
+    _, threaded, _, _ = _build_variant(Path(directory) / 'threaded', identity, arguments, True, packaged)
     def shell(target, source, env):
-        write_if_changed(str(target[0]), Path('browser/shell.html').read_text().replace(
-            '{{{ SCRIPT }}}', '<script src="loader.js"></script>'))
+        page = Path('browser/shell.html').read_text().replace('{{{ SCRIPT }}}', '<script src="loader.js"></script>')
+        # The page shows WebAssembly download progress against these sizes.
+        sizes = {'index.wasm': Path(directory) / 'index.wasm', 'threaded/index.wasm': Path(directory) / 'threaded/index.wasm'}
+        sizes = json.dumps({name: path.stat().st_size for name, path in sizes.items()}, separators=(',', ':'), sort_keys=True)
+        page, count = re.subn(r'data-wasm-bytes="0"', f"data-wasm-bytes='{sizes}'", page, count=1)
+        if count != 1:
+            raise ValueError('browser/shell.html lacks the data-wasm-bytes placeholder')
+        write_if_changed(str(target[0]), page)
         return 0
     page = env.Command(str(Path(directory) / 'index.html'),
         ['browser/shell.html', 'browser/loader.js', serial, threaded], Action(shell, 'Packaging browser runtimes'))
