@@ -7,14 +7,14 @@ import unittest
 import subprocess
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'scons'))
 from build_layout import build_identity, default_directory, prepare_directory, write_if_changed, BuildLock
-from sources import CLIENT_SOURCES, SERVER_SOURCES, GAG_SOURCES, USL_SOURCES
+from sources import CLIENT_SOURCES, SERVER_SOURCES, GAG_SOURCES, USL_SOURCES, RELAY_SOURCES, RELAY_GAG_SOURCES
 
 
 class BuildLayoutTests(unittest.TestCase):
     def test_all_supported_configurations_have_distinct_directories(self):
         configurations = []
         for release, host in itertools.product(('0','1'), ('darwin','linux','windows')):
-            for role in ('client','server','router'):
+            for role in ('client','server','router','relay'):
                 configurations.append(build_identity({'release':release,'role':role}, host))
         configurations += [build_identity({'target':'web','release':release}) for release in ('0','1')]
         directories = [default_directory(c) for c in configurations]
@@ -65,7 +65,7 @@ class BuildLayoutTests(unittest.TestCase):
 
     def test_shared_manifests_are_valid_and_unique(self):
         root=Path(__file__).resolve().parents[2]
-        for prefix,files in [('src',CLIENT_SOURCES),('src',SERVER_SOURCES),('libgag/src',GAG_SOURCES),('libusl/src',USL_SOURCES)]:
+        for prefix,files in [('src',CLIENT_SOURCES),('src',SERVER_SOURCES),('libgag/src',GAG_SOURCES),('libusl/src',USL_SOURCES),('src',RELAY_SOURCES),('libgag/src',RELAY_GAG_SOURCES)]:
             self.assertEqual(len(files),len(set(files)))
             for filename in files:
                 self.assertTrue((root/prefix/filename).is_file(),filename)
