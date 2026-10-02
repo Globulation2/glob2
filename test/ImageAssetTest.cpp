@@ -36,7 +36,12 @@ TEST_CASE("Native PNG and JPEG loading and saving remain available") {
     REQUIRE(IMG_SavePNG(surface, png.c_str()));
     REQUIRE(IMG_SaveJPG(surface, jpeg.c_str(), 100));
     SDL_DestroySurface(surface);
-    auto loaded = IMG_Load(png.c_str());
+    // Match FileManager's stream-based image loading. macOS's filename-only
+    // ImageIO path premultiplies RGB, losing invisible colors and rounding
+    // partial alpha; the configured PNG stream decoder remains lossless.
+    auto stream = SDL_IOFromFile(png.c_str(), "rb");
+    REQUIRE(stream != nullptr);
+    auto loaded = IMG_Load_IO(stream, true);
     REQUIRE(loaded != nullptr);
     auto rgba = SDL_ConvertSurface(loaded, SDL_PIXELFORMAT_RGBA32);
     REQUIRE(rgba != nullptr);
