@@ -28,7 +28,6 @@ function editorLandscapeNames() {
 }
 exports.chooseEditorLandscape = async (page,name) => {
   const {expect}=require('@playwright/test');
-  const canvas=page.locator('#canvas');
   const screen=()=>page.evaluate(()=>glob2Diagnostics.snapshot().screen);
   const names=editorLandscapeNames();
   if(!names.some(label=>label.toLowerCase()===name.toLowerCase())) throw new Error('Unknown editor landscape fixture: '+name);
@@ -37,8 +36,8 @@ exports.chooseEditorLandscape = async (page,name) => {
   await clickControl(page,'landscape/sort/1'); // Alphabetical.
   await clickByLabel(page,/^landscape\/\d+$/,name); // The card carries the landscape's name.
   // Confirmation is disabled while the selected preview is being generated.
-  await expect(async()=>{
-    await canvas.press('Enter');
-    await expect.poll(screen,{timeout:1000}).toContain('NewMapScreen');
-  }).toPass({timeout:60000,intervals:[500,1000]});
+  // Wait before acting: retrying Enter can reach the resumed parent's Create
+  // shortcut after a slow picker transition and start generation a second time.
+  await clickControl(page,'landscape/use',{timeout:60000});
+  await expect.poll(screen,{timeout:60000}).toContain('NewMapScreen');
 };
