@@ -4,6 +4,7 @@
 // one, a remembered one or any address, checked before switching), the display name,
 // the sign-in methods linked to the account on that server, and sign-out.
 #include "InstanceConfig.h"
+#include "MapCatalog.h"
 #include "OnlineServices.h"
 #include "PlatformClient.h"
 #include "SettingsScreen.h"
@@ -81,6 +82,25 @@ void SettingsScreen::pollOnline()
 			invalidate();
 		}
 	}
+}
+
+void SettingsScreen::unlinkProvider(const std::string &provider, const std::string &name)
+{
+	auto &platform = Online::services().client;
+	auto state = online;
+	platform.rest(HttpFetch::Method::Delete, "/api/v1/accounts/me/identities/" + Online::urlEncode(provider), Json(),
+				  [this, state, name](const Online::PlatformClient::Response &r) {
+					  if (state != online)
+						  return;
+					  online->notice = r.ok ? std::string(GAGCore::FormattableString(tr("%0 is no longer linked.")).arg(name))
+										   : r.error.message;
+					  invalidate();
+					  if (r.ok)
+						  Online::services().client.refreshAccount([this, state](const Online::PlatformClient::Response &) {
+							  if (state == online)
+								  invalidate();
+						  });
+				  });
 }
 
 void SettingsScreen::buildOnline()
@@ -264,12 +284,17 @@ void SettingsScreen::buildOnline()
 			const std::string name = providerLabel(provider);
 			custom("online.link." + id, [this, id, name, detail, isLinked, last = linked.size() <= 1](const Presentation &p) {
 				ButtonOptions action;
-				action.enabled = !isLinked;
-				if (isLinked)
-					action.tooltip = last ? tr("The last sign-in method can't be unlinked.") : tr("Unlinking is done on the account page.");
+				// The server refuses to remove an account's last way to sign in, so the
+				// button is off for it (DELETE /api/v1/accounts/me/identities/{provider}).
+				action.enabled = !isLinked || !last;
+				if (isLinked && last)
+					action.tooltip = tr("The last sign-in method can't be unlinked.");
 				return row({expanded(column({label(name), caption(detail)}, {0})),
-							Glob2UI::button("online.link." + id, isLinked ? tr("Unlink") : tr("Link"), [id] {
-								Online::services().client.beginBrowserSignIn("link", id);
+							Glob2UI::button("online.link." + id, isLinked ? tr("Unlink") : tr("Link"), [this, id, name, isLinked] {
+								if (isLinked)
+									unlinkProvider(id, name);
+								else
+									Online::services().client.beginBrowserSignIn("link", id);
 							}, action)},
 						   {p.pt(8), CrossAlign::Center});
 			});

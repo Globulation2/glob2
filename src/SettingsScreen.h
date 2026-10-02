@@ -132,6 +132,8 @@ class SettingsScreen : public Glob2UI::Screen
 	std::shared_ptr<OnlineState> online;
 	void buildOnline();
 	void pollOnline();
+	// Settings > Online: removes a linked sign-in method (never the last one).
+	void unlinkProvider(const std::string &provider, const std::string &name);
 	void custom(const std::string &id, std::function<Glob2UI::Element(const Glob2UI::Presentation &)> render);
 	void buildModal();
 	void resetScroll();
