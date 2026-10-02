@@ -93,6 +93,12 @@ if not env['server']:
             'online/HttpFetch.cpp', 'online/HttpFetchCommon.cpp',
             local.Object('HttpFetchHarness.o', '#test/HttpFetchHarness.cpp')] + platform_trust_sources)
         local.Alias('transport-test', http_test)
+        platform_probe = local.Program('platform-client-probe', [
+            'online/HttpFetch.cpp', 'online/HttpFetchCommon.cpp', 'online/InstanceConfig.cpp',
+            'online/MemoryStorage.cpp', 'online/PlatformClient.cpp', 'online/PlatformProtocol.cpp',
+            'net/NetTransport.cpp', 'net/WssTransport.cpp', 'net/NetworkConfig.cpp', 'net/LanIdentity.cpp',
+            local.Object('PlatformClientProbe.o', '#test/PlatformClientProbe.cpp')] + platform_trust_sources)
+        local.Alias('transport-test', platform_probe)
 
 #Add libgag, not as a library, but as an object
 server_source_files.append("../libgag/src/libgag_server.a")
