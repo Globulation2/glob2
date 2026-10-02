@@ -306,7 +306,7 @@ struct Match
 			// and one retransmission when the link loses frames).
 			const LinkProfile& link = net.links[i];
 			const std::uint64_t worstDelivery = link.latency + link.jitter + (link.loss > 0 ? link.retransmit : 0);
-			const std::uint64_t inFlight = bundleInterval + (worstDelivery + TICK - 1) / TICK;
+			const std::uint64_t inFlight = bundleInterval + (worstDelivery + TICK_PERIOD - 1) / TICK_PERIOD;
 			CHECK(net.relay->horizon() - c.session->executedTick() <= c.session->targetTicks() + inFlight + 2);
 			if (c.session->executedTick() == common)
 			{
