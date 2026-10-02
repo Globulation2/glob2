@@ -25,6 +25,9 @@
 #include "unit/Unit.h"
 #include "unit/UnitConsts.h"
 
+#include <functional>
+#include <chrono>
+#include <thread>
 #include <iostream>
 #include <array>
 #include <fstream>
@@ -33,6 +36,7 @@
 #include <cstdlib>
 #include <chrono>
 #include "Version.h"
+#include "sim/SimulationRunner.h"
 #include "script/ScriptRuntime.h"
 #include <stdexcept>
 
@@ -271,6 +275,11 @@ void Engine::executeOrdersAndStep(bool readyNow)
 		}
 
 		gui.game.syncStep(gui.localTeamNo);
+		// Hand the tick's notices to the GUI now, also under --nox where
+		// gui.step never runs, so the event queue cannot grow unbounded. With a
+		// simulation thread the GUI consumes them while the simulation is parked.
+		if (!gui.simulationThreaded)
+			gui.consumeClientEvents();
 		GAGCore::ApplicationHost::simulationAdvanced(gui.game.stepCounter);
 	}
 }
@@ -304,7 +313,94 @@ void Engine::drawFrame(MainLoopState& st)
 void Engine::drawSession()
 {
     if (!session) throw std::logic_error("No active engine session");
-    if (!globalContainer->runNoX) drawFrame(*session);
+    if (globalContainer->runNoX) return;
+    if (!runner)
+    {
+        drawFrame(*session);
+        return;
+    }
+    // Threaded: draw the newest scene the simulation published, every frame.
+    const Scene *scene = runner->acquireScene();
+    if (!scene)
+        return;
+    gui.setPublishedScene(scene);
+    gui.drawAll(gui.localTeamNo);
+    {
+        PERF_SCOPE_TIME(Present);
+        globalContainer->gfx->nextFrame();
+    }
+    PerformanceTelemetry::collector().presented();
+}
+
+bool Engine::startSimulationThread(Uint64 now)
+{
+    if (!session) throw std::logic_error("No active engine session");
+    if (runner) return true;
+    // Headless sessions run serially unless GLOB2_SIM_THREAD (a test switch for
+    // simulation-equivalence checks) asks for the simulation thread.
+    // GLOB2_SIM_THREAD=0 keeps any session serial, for tests that count frames
+    // against a scripted host clock.
+    const char* simThread = std::getenv("GLOB2_SIM_THREAD");
+    if (simThread && std::string(simThread) == "0") return false;
+    if (globalContainer->runNoX && !simThread) return false;
+    publishSessionClock(now);
+    auto started = std::make_unique<SimulationRunner>(*this);
+    gui.simulationThreaded = true;
+    if (!started->start())
+    {
+        gui.simulationThreaded = false;
+        return false;
+    }
+    runner = std::move(started);
+    return true;
+}
+
+void Engine::stopSimulationThread()
+{
+    if (!runner) return;
+    runner->stop();
+    runner.reset();
+    gui.simulationThreaded = false;
+    gui.setPublishedScene(nullptr);
+    // Notices published after the last client step.
+    gui.consumeClientEvents();
+}
+
+bool Engine::threadedClientFrame(Uint64 now, const std::vector<SDL_Event>& events)
+{
+    if (!runner) throw std::logic_error("Simulation thread not running");
+    publishSessionClock(now);
+    runner->rethrowFailure();
+    if (gui.isRunning)
+        runner->withGame([&] { clientStep(now, events); });
+    runner->rethrowFailure();
+    return gui.isRunning && !runner->ended();
+}
+
+void Engine::suspendSimulation()
+{
+    if (runner) runner->suspend();
+}
+
+void Engine::resumeSimulation(Uint64 now)
+{
+    publishSessionClock(now);
+    if (runner) runner->resume();
+}
+
+void Engine::publishSessionClock(Uint64 now)
+{
+    sessionClockOffset.store(static_cast<Sint64>(now) - static_cast<Sint64>(SDL_GetTicks64()));
+}
+
+Uint64 Engine::sessionClock() const
+{
+    return static_cast<Uint64>(static_cast<Sint64>(SDL_GetTicks64()) + sessionClockOffset.load());
+}
+
+void Engine::extractScene(Scene& scene)
+{
+    gui.extractScene(scene);
 }
 
 Uint32 Engine::sessionDelay(Uint64 now)
@@ -723,6 +819,7 @@ void Engine::beginSession(Uint64 now)
     st.startTime = now;
     teamEliminatedTick.clear();
     session = st;
+    randomRequirement.emplace();
     automaticGameStartTick = now;
 	auto &perf = PerformanceTelemetry::collector();
 	if (!perf.enabled && !perf.started)
@@ -775,6 +872,7 @@ bool Engine::stepSession(Uint64 now, const std::vector<SDL_Event>& events)
 
 void Engine::abortSession() noexcept
 {
+    try { stopSimulationThread(); } catch (...) {}
     gui.isRunning = false;
     gui.toLoadGameFileName.clear();
     if (multiplayer)
@@ -800,6 +898,7 @@ void Engine::abortSession() noexcept
         globalContainer->datasetWriter.reset();
     }
     session.reset();
+    randomRequirement.reset();
     sessionInput.clear();
     globalContainer->replayWriter.reset();
     PerformanceTelemetry::collector().reset();
@@ -811,6 +910,37 @@ bool Engine::stepSessionImpl(Uint64 now, const std::vector<SDL_Event>& events)
     if (!gui.isRunning) return false;
     auto& st = *session;
     --st.nextGuiStep;
+    sessionInput.insert(sessionInput.end(), events.begin(), events.end());
+    return advanceSession(now, [&] {
+        if (!globalContainer->runNoX && st.nextGuiStep == 0) {
+            gui.step(sessionInput, now);
+            sessionInput.clear();
+        }
+    }, true);
+}
+
+bool Engine::simulationStep(Uint64 now)
+{
+    if (!session) throw std::logic_error("No active engine session");
+    if (!gui.isRunning) return false;
+    // The client half runs on the main thread (clientStep), with the simulation parked.
+    return advanceSession(now, [] {}, false);
+}
+
+void Engine::clientStep(Uint64 now, const std::vector<SDL_Event>& events)
+{
+    if (!session) throw std::logic_error("No active engine session");
+    // Headless sessions never run the GUI step; they only take the notices.
+    if (globalContainer->runNoX)
+        gui.consumeClientEvents();
+    else
+        gui.threadedClientStep(events, now);
+    handleExitRequest();
+}
+
+bool Engine::advanceSession(Uint64 now, const std::function<void()>& clientWork, bool handleExit)
+{
+    auto& st = *session;
     updateTickSpeedAndDrawCadence(st, now);
     auto &perf = PerformanceTelemetry::collector();
 		const bool paused = gui.gamePaused || gui.hardPause;
@@ -831,11 +961,7 @@ bool Engine::stepSessionImpl(Uint64 now, const std::vector<SDL_Event>& events)
 		PerformanceTelemetry::Scope workTime(PerformanceTelemetry::Id::Work);
 
     pollAutomaticEndingConditions(now);
-    sessionInput.insert(sessionInput.end(), events.begin(), events.end());
-    if (!globalContainer->runNoX && st.nextGuiStep == 0) {
-        gui.step(sessionInput, now);
-        sessionInput.clear();
-    }
+    clientWork();
 
     pumpTurnSession(now);
     bool readyNow = st.wasReadyLastTick;
@@ -867,7 +993,7 @@ bool Engine::stepSessionImpl(Uint64 now, const std::vector<SDL_Event>& events)
     // A turn game's budget advances only with executed ticks, so frames spent
     // waiting for the relay poll quickly instead of sleeping a whole tick.
     if (turn ? readyNow : !globalContainer->runNoX) st.needToBeTime += st.speed;
-    handleExitRequest();
+    if (handleExit) handleExitRequest();
     workTime.stop();
     loopTime.stop();
     perf.capture(gui.game.stepCounter);
@@ -877,6 +1003,7 @@ bool Engine::stepSessionImpl(Uint64 now, const std::vector<SDL_Event>& events)
 std::optional<Engine::PendingLoad> Engine::finishSessionForHost()
 {
     if (!session) throw std::logic_error("No active engine session");
+    stopSimulationThread();
     if (gui.isRunning) throw std::logic_error("Cannot finish a running engine session");
     if (globalContainer->automaticEndingGame) printAutomaticEndingSummary();
     if (multiplayer) reportMultiplayerResult();
@@ -890,6 +1017,7 @@ std::optional<Engine::PendingLoad> Engine::finishSessionForHost()
 	}
 
     session.reset();
+    randomRequirement.reset();
     sessionInput.clear();
     const auto filename = std::exchange(gui.toLoadGameFileName, {});
     if (gui.exitGlobCompletely || filename.empty()) return std::nullopt;
@@ -909,6 +1037,36 @@ bool Engine::finishSession()
 void Engine::runOneGameSession(bool& doRunOnceAgain)
 {
     beginSession(SDL_GetTicks64());
+    if (startSimulationThread(SDL_GetTicks64()))
+    {
+        // The simulation runs on its own thread; this thread handles input and draws
+        // at up to about 120 frames per second. Headless runs get here only with the
+        // GLOB2_SIM_THREAD test switch and then only take scenes.
+        for (;;)
+        {
+            const Uint64 frameStarted = SDL_GetTicks64();
+            std::vector<SDL_Event> events;
+            if (!globalContainer->runNoX)
+            {
+                SDL_Event event;
+                while (SDL_PollEvent(&event)) events.push_back(event);
+            }
+            if (!threadedClientFrame(SDL_GetTicks64(), events))
+                break;
+            if (globalContainer->runNoX)
+            {
+                runner->acquireScene();
+                std::this_thread::sleep_for(std::chrono::milliseconds(8));
+            }
+            else
+            {
+                drawSession();
+                GAGCore::ApplicationHost::wait(threadedFrameWait(SDL_GetTicks64() - frameStarted));
+            }
+        }
+        doRunOnceAgain = finishSession();
+        return;
+    }
     while (gui.isRunning) {
         stepSession(SDL_GetTicks64());
         drawSession();

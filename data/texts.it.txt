@@ -1496,8 +1496,8 @@ Larghezza del fiume
 Peso della sabbia
 [Select a valid map.]
 Seleziona una mappa valida.
-[Shared control needs a free controller slot (maximum 12).]
-Il controllo condiviso richiede un posto libero per un giocatore umano o IA (massimo 12).
+[Shared control needs a free controller slot (maximum %0).]
+Il controllo condiviso richiede un posto libero per un giocatore umano o IA (massimo %0).
 [Smoothing]
 Smussatura
 [Standard]
@@ -3134,8 +3134,6 @@ Minimappa
 Avanti veloce
 [Hide keyboard]
 Nascondi tastiera
-[Dialog text size]
-Dimensione testo dei dialoghi
 [Player slot]
 Posto giocatore
 [Team color]
@@ -3474,8 +3472,6 @@ Probabilità di vittoria: %0 · Idoneità: %1
 Livello min.richiesto: %0
 [Confirm %0]
 Ok: %0
-[Dialog text size %0]
-Dimensione testo dei dialoghi: %0%
 [%0 %1]
 %0 %1
 [resume game]

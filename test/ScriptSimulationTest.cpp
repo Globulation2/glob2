@@ -119,6 +119,10 @@ Run execute(const std::filesystem::path &input, const std::filesystem::path &dir
 		Engine engine;
 		REQUIRE((playback ? engine.loadReplay(input.string())
 						  : engine.initCustom(input.string())) == Engine::EE_NO_ERROR);
+        // Released checksum fixtures include the map header's save-format number.
+        // Normalize that metadata after the real loader has validated the input:
+        // a new save version must not masquerade as simulation divergence.
+        engine.gui.game.mapHeader.versionMinor = 125;
 		engine.gui.game.map.configureCompute(workers, Map::ComputeAI);
 		if (conversion)
 			prepareConversion(engine, directory);
@@ -186,8 +190,21 @@ void fixture(const std::string &name)
 {
 	const auto initial =
 		glob2test::inflated("test/fixtures/javascript/" + name + "-initial.game.gz");
-	const auto expected = glob2test::readFile(
+	const auto released = glob2test::readFile(
 		glob2test::inflated("test/fixtures/javascript/" + name + "-256.checksums.gz"));
+	const auto expected = glob2test::readFile(
+		glob2test::inflated("test/fixtures/javascript/" + name + "-256-teams16.checksums.gz"));
+	// Expanding the generation table changes its aggregate hash, even when the
+	// extra slots are unused. Keep every released team/entity field pinned too.
+	const auto releasedRecords = records(released);
+	const auto expandedRecords = records(expected);
+	REQUIRE(releasedRecords.size() == expandedRecords.size());
+	for (const auto& [tick, record] : releasedRecords)
+	{
+		CAPTURE(tick);
+		REQUIRE(expandedRecords.contains(tick));
+		CHECK(record.substr(8) == expandedRecords.at(tick).substr(8));
+	}
 	const auto directory = glob2test::artifactDir();
 	const auto serial = execute(initial, directory / "workers1", 1, false, true);
 	CHECK(serial.trace == expected);

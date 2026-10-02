@@ -1,7 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
+#include "scene/SceneExtract.h"
 
 #include "FileManager.h"
+#include "AI.h"
+#include "Player.h"
+#include "Order.h"
 #include "GameGUIKeyActions.h"
 #include "IntBuildingType.h"
 #include "MapEditKeyActions.h"
@@ -11,6 +15,45 @@
 
 namespace glob2test
 {
+	std::vector<std::string> stepAI(Game &game)
+	{
+		std::vector<std::string> orders;
+		std::vector<std::shared_ptr<Order>> pending;
+		for (int p = 0; p < game.gameHeader.getNumberOfPlayers(); ++p)
+			if (game.players[p] && game.players[p]->ai)
+			{
+				auto order = game.players[p]->ai->getOrder(false);
+				std::string wire(1, char(order->getOrderType()));
+				if (order->getDataLength())
+					wire.append(reinterpret_cast<const char *>(order->getData()), order->getDataLength());
+				orders.push_back(std::move(wire));
+				order->sender = p;
+				pending.push_back(std::move(order));
+			}
+		// Production decisions all observe the same completed simulation tick.
+		for (const auto &order : pending) game.executeOrder(order, order->sender);
+		game.syncStep(0);
+		return orders;
+	}
+
+	const Scene &sceneOf(const Game &game, const Game::ViewState &view, int localTeam, Scene *into)
+	{
+		static Scene shared;
+		Scene &scene = into ? *into : shared;
+		SceneRequest request;
+		request.localTeam = localTeam;
+		request.selectedBuilding = Game::refOf(view.selectedBuilding);
+		request.selectedUnit = Game::refOf(view.selectedUnit);
+		extractScene(game, request, scene);
+		return scene;
+	}
+
+	const Scene &sceneOf(const Game &game)
+	{
+		static const Game::ViewState none;
+		return sceneOf(game, none);
+	}
+
 	HeadlessGlobals::HeadlessGlobals(Options options)
 		: globals(options.profileName.c_str())
 	{
@@ -50,6 +93,7 @@ namespace glob2test
 		: gui(false), game(gui.game)
 	{
 		REQUIRE_MESSAGE(globalContainer != nullptr, "HeadlessGame needs a live HeadlessGlobals");
+		random.emplace(game);
 		game.map.setSize(options.wDec, options.hDec, options.terrain);
 		game.map.setGame(&game);
 		if (options.clearImmobile)
@@ -103,7 +147,10 @@ namespace glob2test
 	void HeadlessGame::step(int ticks)
 	{
 		for (int i = 0; i < ticks; ++i)
+		{
 			game.syncStep(0);  // advances stepCounter itself
+			gui.consumeClientEvents();  // as the engine does after every tick
+		}
 	}
 
 	Uint32 HeadlessGame::checksum()

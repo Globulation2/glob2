@@ -1442,8 +1442,8 @@ Rieka
 Váha piesku
 [Select a valid map.]
 Vyberte platnú mapu.
-[Shared control needs a free controller slot (maximum 12).]
-Zdieľané ovládanie vyžaduje voľné miesto pre hráča alebo AI (najviac 12).
+[Shared control needs a free controller slot (maximum %0).]
+Zdieľané ovládanie vyžaduje voľné miesto pre hráča alebo AI (najviac %0).
 [Smoothing]
 Vyhladzovanie
 [Standard]
@@ -3080,8 +3080,6 @@ Minimapa
 Rýchly posun
 [Hide keyboard]
 Skryť klávesnicu
-[Dialog text size]
-Veľkosť textu dialógov
 [Player slot]
 Miesto hráča
 [Team color]
@@ -3420,8 +3418,6 @@ Kolónia %0
 Najnižšia potrebná úroveň: %0
 [Confirm %0]
 Ok: %0
-[Dialog text size %0]
-Veľkosť textu dialógov: %0%
 [%0 %1]
 %0 %1
 [resume game]

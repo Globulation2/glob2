@@ -41,7 +41,10 @@ def numeric_guard(local, objects):
     """Check all script-reachable native numeric code, including host conversion."""
     guard = Path(local.Dir('#tools/javascript').abspath) / 'check-math-symbols.py'
     compiler = Path(shutil.which(shlex.split(str(local['CC']))[-1]) or str(local['CC']))
-    candidates = [compiler.parent / 'llvm-nm', compiler.parent / 'emnm',
+    # emsdk's emnm shell wrapper does not quote dirname($0), so a managed SDK
+    # under macOS "Application Support" breaks it. Prefer LLVM's binary directly.
+    candidates = [compiler.parent / 'llvm-nm', compiler.parent.parent / 'bin/llvm-nm',
+                  compiler.parent / 'emnm',
                   compiler.parent / (compiler.name.replace('gcc', 'nm'))]
     nm = next((str(path) for path in candidates if path.is_file() and path != compiler),
               str(local.get('NM', 'nm')))

@@ -10,6 +10,7 @@
 #include <memory>
 
 #include "Map.h"
+#include "Utilities.h"
 #include "SGSL.h"
 #include <string>
 #include <valarray>
@@ -19,6 +20,11 @@
 #include "GameHints.h"
 #include "MapScript.h"
 #include "BuildingGuiState.h"
+#include "sim/ClientEvents.h"
+#include "sim/EntityRef.h"
+#ifndef YOG_SERVER_ONLY
+#include "render/MapRenderState.h"
+#endif
 
 namespace GAGCore
 {
@@ -28,7 +34,12 @@ namespace GAGCore
 }
 using namespace GAGCore;
 class GameGUI;
+class SceneMap;
+struct Scene;
+struct SceneUnit;
 class MapEdit;
+class ClientCommandSink;
+class ClientRequests;
 
 class OrderCreate;
 class OrderModifyBuilding;
@@ -131,6 +142,14 @@ class Game
 {
 	friend class PointBarRenderTest;
 	bool hasSavedRandomState = false;
+public:
+	//! This game's synchronized random stream. syncStep, executeOrder, load and save
+	//! bind it, so syncRand() draws from the game being simulated on whichever thread
+	//! simulates it. Saved and restored with the game; never shared between games.
+	MersenneTwister syncRandom;
+	//! Bind syncRandom for other code that advances this game's simulation.
+	SyncRandScope bindRandom() { return SyncRandScope(syncRandom); }
+private:
 	friend class HighResolutionIntegrationHarness;
 	friend class EnteringUnitDrawHarness;
 	friend class FailingUnitMarkersHarness;
@@ -239,14 +258,19 @@ public:
 	void removeUnallowedUnitsAndBuildings(int x, int y, int w, int h);
 	///A convenience function, returns a pointer to the unit with the guid, or NULL otherwise
 	Unit* getUnit(int guid);
+	///Client handles (see sim/EntityRef.h). resolve* returns null when the
+	///entity is gone or its slot now holds a different entity.
+	static BuildingRef refOf(const Building *b);
+	static UnitRef refOf(const Unit *u);
+	Building *resolveBuilding(BuildingRef ref) const;
+	Unit *resolveUnit(UnitRef ref) const;
 
 	bool checkRoomForBuilding(int mousePosX, int mousePosY, const BuildingType *bt, int *buildingPosX, int *buildingPosY, int teamNumber, bool checkFow=true);
 	bool checkRoomForBuilding(int x, int y, const BuildingType *bt, int teamNumber, bool checkFow=true);
 	bool checkHardRoomForBuilding(int coordX, int coordY, const BuildingType *bt, int *mapX, int *mapY);
 	bool checkHardRoomForBuilding(int x, int y, const BuildingType *bt);
 
-	int mapAnimationTime = 0;
-	void drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int screenW, int screenH, int localTeam, Uint32 drawOptions, ViewState& view);
+	void drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int screenW, int screenH, int localTeam, Uint32 drawOptions, ViewState& view, const Scene& scene);
 	/// `view` carries the calling front-end's selection/mouse state (see
 	/// ViewState); render reads selectedUnit/selectedBuilding for highlights and
 	/// writes back mouseUnit from hit-testing. `buildingGuiState` (optional)
@@ -254,7 +278,7 @@ public:
 	/// move-flag order has executed. The map editor passes nullptr for it — it
 	/// mutates buildings directly without an orderQueue, so there is no pending
 	/// shadow to consult.
-	void drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargin, int viewportX, int viewportY, int teamSelected, ViewState& view, Uint32 drawOptions = 0, std::set<Building*> *visibleBuildings = 0, const BuildingGuiStateMap* buildingGuiState = nullptr, bool animationsPaused = false, int cloudGridLimit = 0);
+	void drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargin, int viewportX, int viewportY, int teamSelected, ViewState& view, Uint32 drawOptions = 0, std::set<Uint16> *visibleBuildings = 0, const BuildingGuiStateMap* buildingGuiState = nullptr, bool animationsPaused = false, int cloudGridLimit = 0);
 
 	///Sets the mask representing which players the game is waiting on
 	void setWaitingOnMask(Uint32 mask);
@@ -347,25 +371,25 @@ private:
 	///draws the overlay representing water
 	void drawMapWater(int sw, int sh, int viewportX, int viewportY, int time);
 	///draws the terrain tiles of sand and gras
-	void drawMapTerrain(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
+	void drawMapTerrain(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& sceneMap);
 	///draws the resources like algae, wheat or fruit trees
-	void drawMapResources(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
+	void drawMapResources(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& sceneMap);
 	///draws the ground units. up till now those are workers and warriors
-	void drawMapGroundUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view);
+	void drawMapGroundUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view, const Scene& scene);
 	///draws debug information. switched in the code.
 	void drawMapDebugAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view);
-	void drawMapGroundBuildings(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, std::set<Building*> *visibleBuildings, const BuildingGuiStateMap* buildingGuiState);
-	void drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
-	void drawMapAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
-	void drawMapArea(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, Map * map, bool (Map::*mapIs)(int, int) const, int areaAnimationTick, AreaType areaType);
-	void drawMapAirUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view);
+	void drawMapGroundBuildings(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, std::set<Uint16> *visibleBuildings, const BuildingGuiStateMap* buildingGuiState, const Scene& scene);
+	void drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const Scene& scene);
+	void drawMapAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view, const SceneMap& sceneMap);
+	void drawMapArea(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& map, bool (SceneMap::*mapIs)(int, int) const, int areaAnimationTick, AreaType areaType);
+	void drawMapAirUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view, const Scene& scene);
 	void drawMapScriptAreas(int left, int top, int right, int bot, int viewportX, int viewportY);
-	void drawMapBulletsExplosionsDeathAnimations(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
-	void drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
-	void drawMapOverlayMaps(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
-	void drawUnitPathLines(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view);
-	void drawUnitPathLine(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, Unit* unit);
-	void drawUnitOffScreen(int sx, int sy, int sw, int sh, int viewportX, int viewportY, Unit* unit, Uint32 drawOptions);
+	void drawMapBulletsExplosionsDeathAnimations(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const Scene& scene);
+	void drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& sceneMap);
+	void drawMapOverlayMaps(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view);
+	void drawUnitPathLines(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view, const Scene& scene);
+	void drawUnitPathLine(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneUnit& unit, const Scene& scene);
+	void drawUnitOffScreen(int sx, int sy, int sw, int sh, int viewportX, int viewportY, const SceneUnit& unit, Uint32 drawOptions, const Scene& scene);
 	bool isOnScreen(int left, int top, int right, int bot, int viewportX, int viewportY, int x, int y);
 public:
 	Uint32 checkSum(std::vector<Uint32> *checkSumsVector=NULL, std::vector<Uint32> *checkSumsVectorForBuildings=NULL, std::vector<Uint32> *checkSumsVectorForUnits=NULL, bool heavy=false);
@@ -392,20 +416,39 @@ public:
 	GameObjectives objectives;
 	GameHints gameHints;
 	std::string missionBriefing;
+	///The front-end that owns this game, or null. Simulation code must not use
+	///it; it remains for the torus renderer and GUI-side helpers (see
+	///docs/development/reference.md, "Simulation/client boundary").
 	GameGUI *gui;
 	MapEdit *edit;
+	///Client channels (all null without a GameGUI). Scripts send presentation
+	///commands to clientSink; the simulation publishes notices to
+	///clientEvents and reads presentation requests from clientRequests at
+	///tick boundaries.
+	ClientCommandSink *clientSink = nullptr;
+	ClientEvents *clientEvents = nullptr;
+	ClientRequests *clientRequests = nullptr;
+	///Queue a notice for the client; a no-op without one.
+	void publishClientEvent(ClientEventVariant event);
+	///Execute an order and publish the client-visible effects it has
+	///(messages, voice, marks, pause, ghost removal, reconciliation). Orders
+	///that only concern the client (map marks, pause) are not passed to
+	///executeOrder, exactly as before.
+	void executeOrderAndNotify(std::shared_ptr<Order> order, int localPlayer);
+	///Apply the client's latest presentation requests (tick boundary).
+	void applyClientRequests();
+	///Forward every team's new GameEvents and the tick pulse to clientEvents.
+	void publishTickEvents();
+	///Building currently recording failing units for the client.
+	BuildingRef recordingFailingUnits;
 #ifndef YOG_SERVER_ONLY
 	//! Render-side container for bullet explosions and unit death
 	//! animations. Always non-null in non-server builds; the runNoX
 	//! gate is internal to GameAnimations. See
 	//! src/render/GameAnimations.h.
 	std::unique_ptr<GameAnimations> animations;
-    std::unique_ptr<SoftwareTerrainCache> softwareTerrainCache;
 #endif  // !YOG_SERVER_ONLY
 	std::list<BuildProject> buildProjects;
-	///Stores alpha values to be passed to the drawing system. kept here so it isn't re-allocated
-	///every frame
-	std::valarray<unsigned char> overlayAlphas;
 
 public:
 	/// Non-simulation view scratch. These fields are NOT part of game state:
@@ -421,13 +464,33 @@ public:
 	struct ViewState
 	{
 		int mouseX = 0, mouseY = 0;       //!< Mouse position, mirror of GameGUI's own.
-		Unit *mouseUnit = nullptr;        //!< Unit under the cursor; hit-tested during render.
-		Unit *selectedUnit = nullptr;     //!< Currently selected unit, or null.
-		Building *selectedBuilding = nullptr; //!< Currently selected building, or null.
+		//! Unit under the cursor, recorded by the last draw. A reference, not a pointer:
+		//! resolve it through Game::resolveUnit when it is used.
+		UnitRef mouseUnit;
+		//! Currently selected unit/building, or null. GameGUI keeps its selection
+		//! as a UnitRef/BuildingRef and re-resolves these before drawing
+		//! (GameGUI::syncSelectionView); they are only valid for that frame.
+		Unit *selectedUnit = nullptr;
+		Building *selectedBuilding = nullptr;
+#ifndef YOG_SERVER_ONLY
+		MapRenderState render;            //!< This view's animation phases and render caches.
+		//! Scene to draw, published by the simulation; null to extract one from the game.
+		const Scene *scene = nullptr;
+		//! The scene the last drawMap drew: the published one, else the view's own.
+		const Scene &drawnScene() const { return scene ? *scene : render.ownScene; }
+#endif
 	};
 
 	Uint32 stepCounter;
-	std::array<Uint32, 2 * Team::MAX_COUNT * 1024> scriptGenerations{};
+	// Units and buildings have independent generation planes. Their stride tracks
+	// live capacity; old saves must remap the building plane when capacity changes.
+	static constexpr int SCRIPT_ENTITY_SLOTS_PER_TEAM = 1024;
+	static constexpr int SCRIPT_ENTITY_KINDS = 2;
+	static constexpr unsigned scriptGenerationIndex(bool building, int team, int slot)
+	{
+		return ((building ? Team::MAX_COUNT : 0) + team) * SCRIPT_ENTITY_SLOTS_PER_TEAM + slot;
+	}
+	std::array<Uint32, SCRIPT_ENTITY_KINDS * Team::MAX_COUNT * SCRIPT_ENTITY_SLOTS_PER_TEAM> scriptGenerations{};
 	Uint32 allocateScriptIdentity(bool building, Uint16 gid);
 	int totalPrestige;
 	int prestigeToReach;

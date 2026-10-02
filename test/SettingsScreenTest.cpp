@@ -140,7 +140,7 @@ static void run(int width,int height,bool gl,bool expanded)
         Settings effectSaved; effectSaved.load(); REQUIRE((!effectSaved.clouds && effectSaved.cloudShadows));
         for (int index : {1,2,0}) {
             REQUIRE(screen.changeSetting("display.textsize",index));
-            Settings savedText; savedText.load(); REQUIRE(savedText.mobileDialogTextPercent==100+25*index);
+            Settings savedText; savedText.load(); REQUIRE(savedText.textSizePercent==100+25*index);
             screen.paintFrame(SDL_GetTicks());
             screen.host().scrollIntoView("display.textsize");
             screen.capture(output+"/text-size-"+std::to_string(index)+".bmp");
@@ -158,14 +158,19 @@ static void run(int width,int height,bool gl,bool expanded)
             screen.failNextDisplay=true;
             REQUIRE(screen.changeSetting("display.mode",1));
             REQUIRE(s.screenFlags==previousFlags);
-            REQUIRE(screen.changeSetting("display.mode",1));
-            REQUIRE((globalContainer->gfx->getOptionFlags() & GraphicContext::FULLSCREEN));
-            REQUIRE((s.screenFlags & ~GraphicContext::FULLSCREEN)==(previousFlags & ~GraphicContext::FULLSCREEN));
-            loaded.load(); REQUIRE((loaded.screenFlags & GraphicContext::FULLSCREEN));
-            REQUIRE(!screen.restartRequired());
-            REQUIRE(screen.changeSetting("display.mode",0));
-            REQUIRE(!(globalContainer->gfx->getOptionFlags() & GraphicContext::FULLSCREEN));
-            loaded.load(); REQUIRE(!(loaded.screenFlags & GraphicContext::FULLSCREEN));
+            if (glob2test::fullscreenEnabled()) {
+                REQUIRE(screen.changeSetting("display.mode",1));
+                REQUIRE((globalContainer->gfx->getOptionFlags() & GraphicContext::FULLSCREEN));
+                REQUIRE((s.screenFlags & ~GraphicContext::FULLSCREEN)==(previousFlags & ~GraphicContext::FULLSCREEN));
+                loaded.load(); REQUIRE((loaded.screenFlags & GraphicContext::FULLSCREEN));
+                REQUIRE(!screen.restartRequired());
+                REQUIRE(screen.changeSetting("display.mode",0));
+                REQUIRE(!(globalContainer->gfx->getOptionFlags() & GraphicContext::FULLSCREEN));
+                loaded.load(); REQUIRE(!(loaded.screenFlags & GraphicContext::FULLSCREEN));
+            } else {
+                REQUIRE(!(globalContainer->gfx->getOptionFlags() & GraphicContext::FULLSCREEN));
+                loaded.load(); REQUIRE(loaded.screenFlags==previousFlags);
+            }
         }
 
         {

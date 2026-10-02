@@ -6,13 +6,12 @@
 
 namespace GAGGUI::ui
 {
-Presentation resolvePresentation(GAGCore::GraphicContext &context, double textScale)
+Presentation resolvePresentation(GAGCore::GraphicContext &context, double touchTextScale)
 {
 	Presentation p;
 	const int w = context.getW(), h = context.getH();
 	p.viewport = {0, 0, w, h};
 	p.unit = context.logicalUnitsPerPoint();
-	p.textScale = textScale > 0 ? textScale : 1;
 	auto insets = GAGCore::mobileSafeInsets(&context);
 	const double uiScale = context.getUiScale();
 	insets.left /= uiScale;
@@ -34,15 +33,26 @@ Presentation resolvePresentation(GAGCore::GraphicContext &context, double textSc
 	p.hover = GAGCore::presentationState.hover && !p.touch;
 	if (forced && *forced == GAGCore::PresentationPreference::Spacious)
 		p.hover = true;
+	applyTextSize(p, touchTextScale);
 	return p;
 }
 
-Presentation resolvePresentation(GAGCore::DrawableSurface &surface, double textScale)
+void applyTextSize(Presentation &p, double touchTextScale)
+{
+	const double user = GAGCore::userTextScale > 0 ? GAGCore::userTextScale : 1;
+	p.textGrowth = user;
+	p.textScale = (p.touch && touchTextScale > 0 ? touchTextScale : 1) * user;
+	// Touch text is sized in points, so it keeps one physical size whatever
+	// logical surface a screen asks for (gameplay's 800x600 floor raises `unit`
+	// on phones). Pointer hosts keep the authored pixel sizes, enlarged only by
+	// the preference, so their established layouts stay as they were at 100%.
+	p.textUnit = p.touch ? p.unit * p.textScale : p.textScale;
+}
+
+Presentation resolvePresentation(GAGCore::DrawableSurface &surface, double touchTextScale)
 {
 	if (auto *context = dynamic_cast<GAGCore::GraphicContext *>(&surface))
-		return resolvePresentation(*context, textScale);
-	auto p = Presentation::forSurface(surface.getW(), surface.getH());
-	p.textScale = textScale > 0 ? textScale : 1;
-	return p;
+		return resolvePresentation(*context, touchTextScale);
+	return Presentation::forSurface(surface.getW(), surface.getH());
 }
 } // namespace GAGGUI::ui

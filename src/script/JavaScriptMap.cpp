@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "JavaScriptMap.h"
 #include "ScriptObservations.h"
-#include "GameGUI.h"
+#include "sim/ClientCommandSink.h"
 #include "Game.h"
 #include "Stream.h"
 #include "GlobalContainer.h"
@@ -218,24 +218,24 @@ PresentedInterface prepareInterface(const Value &presentation)
 		shown.text = translation.text;
 	return shown;
 }
-void applyInterface(PresentedInterface &&shown, GameGUI &gui, bool publishHistory) noexcept
+void applyInterface(PresentedInterface &&shown, ClientCommandSink &client, bool publishHistory) noexcept
 {
 	for (int i = 0; i < 10; ++i)
 		if (shown.buildings[i])
-			gui.enableBuildingsChoice(buildingNames[i]);
+			client.enableBuildingsChoice(buildingNames[i]);
 		else
-			gui.disableBuildingsChoice(buildingNames[i]);
+			client.disableBuildingsChoice(buildingNames[i]);
 	for (int i = 0; i < 3; ++i)
 		if (shown.flags[i])
-			gui.enableFlagsChoice(flagNames[i]);
+			client.enableFlagsChoice(flagNames[i]);
 		else
-			gui.disableFlagsChoice(flagNames[i]);
+			client.disableFlagsChoice(flagNames[i]);
 	for (int i = 0; i < 5; ++i)
 		if (shown.elements[i])
-			gui.enableGUIElement(i);
+			client.enableGUIElement(i);
 		else
-			gui.disableGUIElement(i);
-	gui.setScriptPresentationText(std::move(shown.text), publishHistory);
+			client.disableGUIElement(i);
+	client.setScriptPresentationText(std::move(shown.text), publishHistory);
 }
 
 } // namespace
@@ -253,27 +253,27 @@ bool JavaScriptMap::buildingAllowed(const std::string &name, bool flag) const
 	const auto &value = presentation.get(flag ? "flags" : "buildings").get(name);
 	return value.kind != Value::Boolean || value.number != 0;
 }
-void JavaScriptMap::present(GameGUI &gui, bool publishHistory) const
+void JavaScriptMap::present(ClientCommandSink &client, bool publishHistory) const
 {
-	applyInterface(prepareInterface(presentation), gui, publishHistory);
+	applyInterface(prepareInterface(presentation), client, publishHistory);
 }
-void JavaScriptMap::step(const std::string &source, GameGUI &gui)
+void JavaScriptMap::step(const std::string &source, Game &game, ClientCommandSink &client)
 {
 	auto checkpoint = random;
 	const bool wasSeeded = seeded;
 	if (!seeded)
 	{
-		random.seed(gui.game.gameHeader.getRandomSeed() ^ 0x4a534d50u);
+		random.seed(game.gameHeader.getRandomSeed() ^ 0x4a534d50u);
 		seeded = true;
 	}
 	try
 	{
-		Observations observations(gui.game, -1);
+		Observations observations(game, -1);
 		Host host;
-		host.tick = gui.game.stepCounter;
+		host.tick = game.stepCounter;
 		host.team = -1;
-		host.width = gui.game.map.getW();
-		host.height = gui.game.map.getH();
+		host.width = game.map.getW();
+		host.height = game.map.getH();
 		host.random = [this] { return random(); };
 		host.query = [&](const auto &name, const auto &args, const Script::QueryBudget &budget)
 		{
@@ -285,15 +285,15 @@ void JavaScriptMap::step(const std::string &source, GameGUI &gui)
 			return observations.query(name, args, budget);
 		};
 		auto result = runtime->invoke(source, state, !initialized, host);
-		auto prepared = prepareEffects(result.effects, presentation, gui.game);
+		auto prepared = prepareEffects(result.effects, presentation, game);
 		auto shown = prepareInterface(prepared.presentation);
 		// No potentially allocating work follows: publish the entire accepted
 		// callback (effects, global snapshot, presentation and private RNG).
-		commitEffects(prepared, gui.game);
+		commitEffects(prepared, game);
 		state = std::move(result.state);
 		presentation = std::move(prepared.presentation);
 		initialized = true;
-		applyInterface(std::move(shown), gui, true);
+		applyInterface(std::move(shown), client, true);
 	}
 	catch (const std::bad_alloc &)
 	{
@@ -344,23 +344,23 @@ void JavaScriptMap::load(GAGCore::InputStream *s)
 		throw std::runtime_error("Invalid map script RNG");
 	s->readLeaveSection();
 }
-unsigned JavaScriptMap::checksum(GameGUI *gui) const
+unsigned JavaScriptMap::checksum(Game *game) const
 {
 	unsigned h = mix(2166136261u, state.encode());
 	h = mix(h, presentation.encode());
 	h = mix(h, rng(random));
 	h = (h ^ initialized) * 16777619u;
 	h = (h ^ seeded) * 16777619u;
-	if (gui)
+	if (game)
 	{
-		auto &o = gui->game.objectives;
+		auto &o = game->objectives;
 		for (int i = 0; i < o.getNumberOfObjectives(); ++i)
 		{
 			h = (h ^ o.isObjectiveVisible(i)) * 16777619u;
 			h = (h ^ o.isObjectiveComplete(i)) * 16777619u;
 			h = (h ^ o.isObjectiveFailed(i)) * 16777619u;
 		}
-		auto &hints = gui->game.gameHints;
+		auto &hints = game->gameHints;
 		for (int i = 0; i < hints.getNumberOfHints(); ++i)
 			h = (h ^ hints.isHintVisible(i)) * 16777619u;
 	}
