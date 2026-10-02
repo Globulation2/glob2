@@ -40,6 +40,9 @@ namespace Turn
 		virtual bool send(const std::vector<std::uint8_t>& payload) = 0;
 		/// Pops the next received frame payload, if any.
 		virtual bool receive(std::vector<std::uint8_t>& payload) = 0;
+		/// Starts writing queued frames now rather than at the next receive or state
+		/// poll. Transports that write on send need not override it.
+		virtual void flush() {}
 	};
 
 	/// Converts Orders to and from their wire bytes (type byte + getData()).
@@ -151,6 +154,24 @@ namespace Turn
 		/// The session clock (the last time passed to update()).
 		std::uint64_t nowMicros() const { return now; }
 
+		/// Times the engine wanted to run a tick that was not yet authorized, outside
+		/// catch-up and reloads. A stall lasts from the first tickReady() that said no
+		/// to the next that said yes, measured with the times passed to update().
+		struct StallStats
+		{
+			std::uint64_t stalls = 0;
+			std::uint64_t longStalls = 0; ///< longer than half a tick: a visible hitch
+			std::uint64_t stalledMicros = 0;
+			std::uint64_t longestMicros = 0;
+		};
+		const StallStats& stallStats() const { return stallCounters; }
+
+		/// Optional latency probes for tests and diagnostics; unset by default. Called
+		/// when a local order is submitted (with its client sequence), and when a
+		/// bundle raises the horizon.
+		std::function<void(std::uint32_t sequence)> onSubmitted;
+		std::function<void(std::uint32_t horizon)> onHorizon;
+
 	private:
 		struct Outstanding
 		{
@@ -208,6 +229,10 @@ namespace Turn
 		std::uint64_t lastPingAt = 0;
 		std::map<std::uint32_t, std::uint64_t> pingsInFlight;
 		std::int64_t rtt = 0;
+
+		StallStats stallCounters;
+		bool stalled = false;
+		std::uint64_t stallStart = 0;
 
 		JitterEstimator jitter;
 		JitterBuffer buffer;

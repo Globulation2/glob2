@@ -36,9 +36,12 @@ JitterBuffer::JitterBuffer(JitterBufferConfig config) : config(config), target(c
 
 std::uint32_t JitterBuffer::requiredTicks(std::int64_t jitterMicros, std::uint64_t tickPeriodMicros) const
 {
+	// Jitter within the tolerance needs no buffer: a bundle that late costs a stall that
+	// short, and the engine then moves its schedule back rather than bursting.
 	const std::uint64_t jitter = jitterMicros > 0 ? static_cast<std::uint64_t>(jitterMicros) : 0;
-	const std::uint64_t jitterTicks = tickPeriodMicros ? (jitter + tickPeriodMicros - 1) / tickPeriodMicros : 0;
-	const std::uint64_t required = jitterTicks + (config.bundleInterval + 1) / 2 + config.safetyTicks;
+	std::uint64_t required = 0;
+	if (jitter > config.jitterToleranceMicros && tickPeriodMicros)
+		required = (jitter + tickPeriodMicros - 1) / tickPeriodMicros + config.safetyTicks;
 	return static_cast<std::uint32_t>(std::clamp<std::uint64_t>(required, config.minTargetTicks, config.maxTargetTicks));
 }
 
@@ -73,13 +76,23 @@ void JitterBuffer::reset()
 
 void DelayController::onTick(std::uint32_t bufferedTicks, std::uint32_t targetTicks)
 {
-	if (!primed)
+	// Average each bundle period first: the sawtooth's mean over a whole period does
+	// not depend on where the period starts, and its swing would otherwise ripple
+	// the average across the deadband.
+	periodSum += bufferedTicks;
+	if (++periodCount >= period)
 	{
-		ema = bufferedTicks;
-		primed = true;
+		const double sample = periodSum / period;
+		periodSum = 0;
+		periodCount = 0;
+		if (!primed)
+		{
+			ema = sample;
+			primed = true;
+		}
+		else
+			ema += periodAlpha * (sample - ema);
 	}
-	else
-		ema += config.emaAlpha * (static_cast<double>(bufferedTicks) - ema);
 	observe(bufferedTicks, targetTicks);
 }
 
@@ -95,11 +108,21 @@ void DelayController::observe(std::uint32_t bufferedTicks, std::uint32_t targetT
 	}
 }
 
+void DelayController::setBundleInterval(std::uint32_t ticks)
+{
+	period = ticks ? ticks : 1;
+	sawtoothMean = (period - 1) / 2.0;
+	// The same time constant per tick: one update per period of `period` ticks.
+	periodAlpha = 1.0 - std::pow(1.0 - config.emaAlpha, static_cast<double>(period));
+	periodSum = 0;
+	periodCount = 0;
+}
+
 double DelayController::rateMultiplier(std::uint32_t targetTicks) const
 {
 	if (!primed)
 		return 1.0;
-	double error = ema - static_cast<double>(targetTicks);
+	double error = ema - static_cast<double>(targetTicks) - sawtoothMean;
 	if (std::fabs(error) <= config.deadbandTicks)
 		return 1.0;
 	return 1.0 + std::clamp(config.gainPerTick * error, -config.maxNudge, config.maxNudge);

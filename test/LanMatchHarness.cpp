@@ -34,6 +34,7 @@
 
 #include "AINames.h"
 #include "Engine.h"
+#include "EngineTiming.h"
 #include "Game.h"
 #include "GameGUI.h"
 #include "GlobalContainer.h"
@@ -45,6 +46,7 @@
 #include "Order.h"
 #include "Player.h"
 #include "Team.h"
+#include "TurnLatencyTrace.h"
 #include "TurnLockstep.h"
 #include "Utilities.h"
 #include "VerifyMatch.h"
@@ -112,15 +114,26 @@ public:
 	}
 	bool receive(std::vector<std::uint8_t>& payload) override
 	{
-		pumpOut();
-		std::vector<std::uint8_t> frame;
-		while (inner->receive(frame))
-			in.emplace_back(Lan::nowMicros() + delay, std::move(frame));
+		pump();
 		if (in.empty() || in.front().first > Lan::nowMicros())
 			return false;
 		payload = std::move(in.front().second);
 		in.pop_front();
 		return true;
+	}
+	void flush() override
+	{
+		pumpOut();
+		inner->flush();
+	}
+	/// Moves frames along between the engine's frames, so the emulated delay is the
+	/// link's alone and not rounded up to the next engine frame at either end.
+	void pump()
+	{
+		pumpOut();
+		std::vector<std::uint8_t> frame;
+		while (inner->receive(frame))
+			in.emplace_back(Lan::nowMicros() + delay, std::move(frame));
 	}
 
 private:
@@ -137,6 +150,13 @@ private:
 	std::uint64_t delay;
 	std::deque<std::pair<std::uint64_t, std::vector<std::uint8_t>>> out, in;
 };
+
+/// Every emulated link in the process, pumped by LanMatch::step.
+std::vector<std::weak_ptr<DelayTransport>>& delayLinks()
+{
+	static std::vector<std::weak_ptr<DelayTransport>> links;
+	return links;
+}
 
 /// One player: a LanRoom and, once the host starts, an Engine.
 struct LanPlayer
@@ -158,6 +178,11 @@ struct LanPlayer
 	std::vector<double> delaysMs;
 	std::vector<std::map<std::uint32_t, Uint32>> lives;
 	bool sawReconnecting = false;
+	/// Clicks at random moments between engine frames, as a person does, instead of
+	/// right after a tick.
+	bool randomClicks = false;
+	std::uint64_t nextClickAt = 0;
+	turntest::LatencyTrace trace;
 
 	LanPlayer(std::string name, std::shared_ptr<Lan::LanRoom> room, unsigned seed)
 		: name(std::move(name)), room(std::move(room)), bot(seed)
@@ -200,7 +225,9 @@ struct LanPlayer
 				lives.emplace_back();
 			lives.back()[tick] = checksum;
 		};
-		lockstep->orderFilter = [this](std::uint32_t, int player, std::shared_ptr<Order> order) {
+		lockstep->orderFilter = [this](std::uint32_t tick, int player, std::shared_ptr<Order> order) {
+			if (player == engine->gui.localPlayer)
+				trace.executed(tick, Lan::nowMicros());
 			if (player == engine->gui.localPlayer && order && order->getOrderType() != ORDER_NULL && !queuedAt.empty())
 			{
 				if (measure)
@@ -209,6 +236,10 @@ struct LanPlayer
 			}
 			return order;
 		};
+		lockstep->turn().onSubmitted = [this](std::uint32_t sequence) {
+			trace.submitted(sequence, Lan::nowMicros(), session().executedTick());
+		};
+		lockstep->turn().onHorizon = [this](std::uint32_t horizon) { trace.received(horizon, Lan::nowMicros()); };
 		engine->beginSession(wallMs());
 		wakeAt = 0;
 	}
@@ -219,6 +250,12 @@ struct LanPlayer
 			return;
 		RngScope scope(rng);
 		const std::uint64_t now = wallMs();
+		// As GameSessionScreen: between steps, read the relay connection every few ms.
+		if (now < wakeAt && now >= lastPoll + TURN_POLL_MS)
+		{
+			engine->pollTurnSession(now);
+			lastPoll = now;
+		}
 		for (int budget = 4000; budget > 0 && now >= wakeAt; --budget)
 		{
 			const bool catching = session().catchingUp();
@@ -227,7 +264,7 @@ struct LanPlayer
 			if (session().state() == Turn::TurnSession::State::Reconnecting)
 				sawReconnecting = true;
 			const std::uint32_t after = session().executedTick();
-			if (after > before && !catching && orderRate > 0 &&
+			if (!randomClicks && after > before && !catching && orderRate > 0 &&
 			    std::uniform_real_distribution<double>(0, 1)(bot) < orderRate)
 				queueBotOrder();
 			if (!running)
@@ -238,8 +275,10 @@ struct LanPlayer
 				break;
 			}
 			wakeAt = now + engine->sessionDelay(now);
+			lastPoll = now;
 		}
 	}
+	std::uint64_t lastPoll = 0;
 
 	void queueBotOrder()
 	{
@@ -264,7 +303,26 @@ struct LanPlayer
 		}
 		engine->gui.orderQueue.push_back(order);
 		queuedAt.push_back(Lan::nowMicros());
+		trace.queued(queuedAt.back());
 		++ordersQueued;
+	}
+
+	/// A random click between frames, at orderRate clicks per tick on average.
+	void maybeClick()
+	{
+		if (!randomClicks || !engine || stopped || orderRate <= 0 || session().catchingUp())
+			return;
+		const std::uint64_t now = Lan::nowMicros();
+		if (nextClickAt && now >= nextClickAt)
+		{
+			RngScope scope(rng);
+			queueBotOrder();
+		}
+		if (!nextClickAt || now >= nextClickAt)
+		{
+			const double meanMicros = 40000.0 / orderRate;
+			nextClickAt = now + static_cast<std::uint64_t>(std::exponential_distribution<double>(1.0 / meanMicros)(bot));
+		}
 	}
 };
 
@@ -278,12 +336,52 @@ struct LanMatch
 
 	void step()
 	{
+		hookRelay();
 		for (auto& p : players)
 		{
 			p->pumpRoom();
+			p->maybeClick();
 			p->frame();
 		}
+		for (auto& weak : delayLinks())
+			if (auto link = weak.lock())
+				link->pump();
 		std::this_thread::sleep_for(std::chrono::microseconds(500));
+	}
+
+	~LanMatch()
+	{
+		if (!relayHooked || players.empty() || !host().room || !host().room->hostSide())
+			return;
+		auto& side = hostSide();
+		std::lock_guard<std::recursive_mutex> guard(side.mutex);
+		if (side.relay)
+		{
+			side.relay->onSequenced = nullptr;
+			side.relay->onEmitted = nullptr;
+		}
+	}
+
+	/// Feeds the in-process relay's probes into each player's trace.
+	bool relayHooked = false;
+	void hookRelay()
+	{
+		if (relayHooked || players.empty() || !host().room->hostSide())
+			return;
+		auto& side = hostSide();
+		std::lock_guard<std::recursive_mutex> guard(side.mutex);
+		if (!side.relay)
+			return;
+		relayHooked = true;
+		side.relay->onSequenced = [this](std::uint8_t seat, std::uint32_t sequence, std::uint32_t tick, std::uint32_t relayTick) {
+			for (auto& p : players)
+				if (p->seat == seat)
+					p->trace.sequenced(sequence, tick, relayTick, Lan::nowMicros());
+		};
+		side.relay->onEmitted = [this](std::uint32_t, std::uint32_t horizon) {
+			for (auto& p : players)
+				p->trace.emitted(horizon, Lan::nowMicros());
+		};
 	}
 	void runFor(std::uint64_t ms, const std::function<void()>& each = {})
 	{
@@ -331,7 +429,9 @@ std::shared_ptr<Lan::LanRoom> guestRoom(const std::string& endpoint, const std::
 	options.cacheDirectory = cache.string();
 	if (oneWayMicros)
 		options.wrapTransport = [oneWayMicros](std::shared_ptr<Turn::TurnTransport> inner) {
-			return std::make_shared<DelayTransport>(std::move(inner), oneWayMicros);
+			auto link = std::make_shared<DelayTransport>(std::move(inner), oneWayMicros);
+			delayLinks().push_back(link);
+			return link;
 		};
 	return Lan::LanRoom::join(std::move(options));
 }
@@ -588,14 +688,19 @@ TEST_SUITE("LanMatchHarness")
 	{
 		glob2test::HeadlessGlobals globals(harnessGlobals());
 		SDL_setenv("GLOB2_LAN_ADDRESS", "127.0.0.1", 1);
-		std::ostringstream table;
-		table << "LAN input delay: time from a click (an order queued by the GUI) to its execution, "
-		         "host and one guest, FourSquares1 with one Nicowar AI, 25 s of play each.\n";
-		table << "bundle interval | one-way delay | player | samples | mean ms | median ms | p95 ms | buffer target ticks | rtt ms\n";
+		std::ostringstream table, stages;
+		table << "LAN input delay: time from a click (an order queued by the GUI at a random moment between "
+		         "frames) to its execution, host and one guest, FourSquares1 with one Nicowar AI, 25 s of play each.\n";
+		table << "bundle interval | one-way delay | player | samples | mean ms | median ms | p95 ms | buffer target ticks | "
+		         "rtt ms | stalls | long stalls | stalled ms\n";
+		stages << "Per-stage breakdown of the same runs (" << turntest::LatencyTrace::header() << ")\n";
 		int offset = 1;
+		const char* only = std::getenv("GLOB2_LAN_DELAY_BUNDLE");
 		for (std::uint8_t bundle : {std::uint8_t(2), std::uint8_t(1)})
 		for (std::uint64_t oneWayMs : {0u, 25u, 50u})
 		{
+			if (only && std::atoi(only) != bundle)
+				continue;
 			LanMatch m;
 			m.directory = glob2test::artifactDir() / ("lan-delay-" + std::to_string(bundle) + "-" + std::to_string(oneWayMs));
 			fs::remove_all(m.directory);
@@ -606,29 +711,45 @@ TEST_SUITE("LanMatchHarness")
 				"Guest", guestRoom(endpoint, "Guest", m.directory / "cache", oneWayMs * 1000), 202));
 			joinAndStart(m, {"nicowar"});
 			for (auto& p : m.players)
+			{
 				p->orderRate = 0.1;
+				p->randomClicks = true;
+			}
 			m.runFor(5000); // let the delay controller settle
+			std::vector<Turn::TurnSession::StallStats> before;
 			for (auto& p : m.players)
+			{
 				p->measure = true;
+				p->trace.measuring = true;
+				before.push_back(p->session().stallStats());
+			}
 			m.runFor(25000);
 			std::vector<const LanPlayer*> all;
 			for (auto& p : m.players)
 				all.push_back(p.get());
 			CHECK(requireIdenticalChecksums(all, &m.hostSide()) > 500);
-			for (auto& p : m.players)
+			for (std::size_t i = 0; i < m.players.size(); ++i)
 			{
+				auto& p = m.players[i];
 				const DelayStats s = stats(p->delaysMs);
 				CHECK(s.samples > 20);
+				const auto& now = p->session().stallStats();
 				table << int(bundle) << " | " << oneWayMs << " ms | " << p->name << " | " << s.samples << " | " << s.mean << " | " << s.p50
 				      << " | " << s.p95 << " | " << p->session().targetTicks() << " | "
-				      << p->session().rttMicros() / 1000 << "\n";
+				      << p->session().rttMicros() / 1000 << " | " << now.stalls - before[i].stalls << " | "
+				      << now.longStalls - before[i].longStalls << " | "
+				      << (now.stalledMicros - before[i].stalledMicros) / 1000 << "\n";
+				stages << int(bundle) << " | " << oneWayMs << " ms | " << p->name << " | "
+				       << turntest::LatencyTrace::row(p->trace.breakdown()) << "\n";
 			}
 			for (auto& p : m.players)
 			{
 				RngScope scope(p->rng);
 				p->engine.reset();
 			}
+			delayLinks().clear();
 		}
+		table << "\n" << stages.str();
 		glob2test::writeFile(glob2test::artifactDir() / "lan-input-delay.txt", table.str());
 		MESSAGE(table.str());
 	}

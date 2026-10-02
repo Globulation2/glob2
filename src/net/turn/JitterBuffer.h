@@ -33,9 +33,9 @@ namespace Turn
 
 	struct JitterBufferConfig
 	{
-		std::uint32_t bundleInterval = 2;
-		std::uint32_t safetyTicks = 1;
-		std::uint32_t minTargetTicks = 2;
+		std::uint64_t jitterToleranceMicros = 10000; ///< jitter this small is absorbed by stalls this small
+		std::uint32_t safetyTicks = 1;          ///< added once jitter exceeds the tolerance
+		std::uint32_t minTargetTicks = 0;
 		std::uint32_t maxTargetTicks = 50;
 		std::uint64_t decreaseHoldMicros = 5000000; // 5 s
 	};
@@ -81,17 +81,26 @@ namespace Turn
 		void observe(std::uint32_t bufferedTicks, std::uint32_t targetTicks);
 		/// Tick-rate multiplier in [1 - maxNudge, 1 + maxNudge]; 1 means nominal speed.
 		double rateMultiplier(std::uint32_t targetTicks) const;
+		/// The relay's bundle interval. Sampled after every tick, the buffer level saws
+		/// between L and L + bundleInterval - 1 as bundles arrive, so the controller
+		/// holds its mean at the target plus (bundleInterval - 1) / 2.
+		void setBundleInterval(std::uint32_t ticks);
 		/// Interval to wait before the next tick, in microseconds (0 while catching up).
 		std::uint64_t tickIntervalMicros(std::uint64_t tickPeriodMicros, std::uint32_t targetTicks) const;
 		bool catchingUp() const { return catchUp; }
 		/// Forces catch-up, e.g. after a reload from tick 0.
 		void startCatchUp() { catchUp = true; }
 		double averageBuffered() const { return ema; }
-		void reset() { ema = 0; primed = false; catchUp = false; }
+		void reset() { ema = 0; primed = false; catchUp = false; periodSum = 0; periodCount = 0; }
 	private:
 		DelayControllerConfig config;
 		double ema = 0;
 		bool primed = false;
 		bool catchUp = false;
+		double sawtoothMean = 0;
+		unsigned period = 1;
+		double periodAlpha = config.emaAlpha;
+		double periodSum = 0;
+		unsigned periodCount = 0;
 	};
 }

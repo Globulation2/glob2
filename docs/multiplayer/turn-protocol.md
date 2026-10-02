@@ -25,10 +25,10 @@ opaque bytes. The only exceptions are the few order type ids in the
 
 - The relay owns the clock. Tick `t` starts `t × 40 ms` after the match starts
   (25 ticks/s, or `tickRateMilliHz / 1000` ticks per second).
-- Each human order gets an explicit **execution tick** from the relay when it arrives.
-  That tick is normally the one after the current relay tick. Each seat gets at most one
-  order per tick, and later orders from that seat queue onto later ticks.
-- Every `bundleInterval` ticks (2), the relay broadcasts a `TurnBundle` covering
+- Each human order gets an explicit **execution tick** from the relay when it arrives:
+  the earliest tick it has not yet broadcast. Each seat gets at most one order per tick,
+  and later orders from that seat queue onto later ticks.
+- Every `bundleInterval` ticks (1 by default), the relay broadcasts a `TurnBundle` covering
   `[fromTick, horizonTick)`, even when it is empty. The bundle authorizes clients to
   execute every tick below `horizonTick`. A seat with no entry at a tick executes a
   `NullOrder` there.
@@ -76,6 +76,12 @@ versions: that comparison happens on the platform, which issues tickets only for
 sim version per match. A protocol change that alters any encoding bumps
 `TURN_PROTOCOL_VERSION`. A change that keeps the encodings but alters relay behaviour
 that clients depend on also bumps it.
+
+Clients do not depend on which tick the relay picks for an order (only that it is at
+or above the horizon), on the bundle interval (it comes in `Welcome`), or on how they
+size their own buffer. The latency changes described under
+[timing](#timing-model-and-per-client-delay) therefore kept version 1: a client and a
+relay from either side of them play together, with the older side's delay.
 
 ## Messages
 
@@ -205,55 +211,97 @@ of valid orders run as before.
 
 ## Tick assignment
 
-When an order arrives at relay tick `R`, the relay assigns it to tick `t`, the smallest
-value that satisfies all of these:
+When an order arrives, the relay assigns it to tick `t`, the smallest value that
+satisfies all of these:
 
-- `t ≥ R + 1`, so the order lands after the tick in progress;
 - `t ≥ sentHorizon`, so it never lands in a tick already authorized;
 - `t ≥ nextFreeTick[seat]`, so a seat gets at most one order per tick;
 - `bytes[t] + size ≤ 30,000`.
 
-Then `nextFreeTick[seat] = t + 1`. A seat whose queue reaches more than 250 ticks
-(10 s) ahead of `R` is flooding: its order is dropped and the connection closed with
-`Reject(7)`. A client that keeps to the engine's rate of one order per tick never gets
-near this limit.
+Then `nextFreeTick[seat] = t + 1`. The relay's own clock plays no part: no client can
+run a tick before the relay broadcasts a horizon above it, so the first unbroadcast
+tick is the earliest safe one, and it rides in the very next bundle. (The first
+version also required `t ≥ R + 1`, where `R` is the relay tick in progress. With
+bundles every tick that is the same tick; with longer intervals or a coarse relay
+timer it cost up to `bundleInterval` ticks.) A seat whose queue reaches more than 250
+ticks (10 s) ahead of `R` is flooding: its order is dropped and the connection closed
+with `Reject(7)`. A client that keeps to the engine's rate of one order per tick never
+gets near this limit.
 
 ### Bundles
 
-`update(now)` computes `R = floor(elapsed × tickRate)`. Every tick up to `R` is closed,
-because new orders always land at `R + 1` or later. When `R + 1 − sentHorizon ≥
+`update(now)` computes `R = floor(elapsed × tickRate)`. When `R + 1 − sentHorizon ≥
 bundleInterval`, the relay emits a bundle `[sentHorizon, R + 1)` with every pending
 entry below `R + 1`, and sets `sentHorizon = R + 1`. A bundle is split at tick
 boundaries when it would exceed 60,000 bytes. The per-tick byte budget means a single
 tick always fits.
 
+The default `bundleInterval` is 1: a bundle every tick, 25 per second. An empty bundle
+is 11 bytes before framing, so this costs well under 2 KB/s per client, and it removes
+up to a tick of waiting for every order and a tick of buffer (see below). Longer
+intervals still work. Flushing a bundle early when an order arrives would not help:
+the client's buffer has to cover the longest gap between bundles anyway, so an early
+bundle only arrives early, not executes early.
+
+`nextBundleMicros()` is when the next bundle is due. A host should call `update()` at
+that moment rather than on a coarse timer: a timer of `T` ms delays each bundle by up
+to `T`, which the clients see as jitter. The LAN host updates every millisecond.
+
 ## Timing model and per-client delay
 
-Let `P` be the tick period (40 ms) and `B` the bundle interval (2). The relay emits
-horizon `H` at roughly time `(H − 1) × P`, measured from match start.
+Let `P` be the tick period (40 ms) and `B` the bundle interval. The relay emits horizon
+`H` at time `(H − 1) × P` after match start, on a tick boundary.
+
+### Input delay
+
+An order clicked on a client goes through these stages before that client executes it
+(`test/TurnLatencyTrace.h` measures each one):
+
+| Stage | Typical | What sets it |
+| --- | --- | --- |
+| Pickup | ½ frame (≈ 20 ms) | The GUI queues the order; the next engine step hands every queued order to the session |
+| Uplink | one-way latency | `addLocalOrder` sends and flushes at once |
+| Relay wait | ½ tick, plus up to `B − 1` ticks | The order waits for the next bundle boundary |
+| Downlink | one-way latency | Bundles are read every `TURN_POLL_MS` (5 ms) between engine steps |
+| Buffer wait | the client's margin | The client's schedule runs behind the horizon by its buffer |
+
+With `B = 1` and a steady link the total is about one round trip plus 1–1.5 ticks plus
+pickup. The buffer is the term the client controls.
+
+### Jitter estimate
 
 On each live bundle arrival at local time `a`, the client records the offset
 `o = a − H × P`. Bundles that replay the log after a `Welcome` or a resync are not
 live: a bundle counts only if its horizon is above both `Welcome.relayTick + 1` and
 every horizon seen before it. The offset equals a constant (one-way latency plus the
-unknown clock offset) plus the jitter on that path. `JitterEstimator` keeps the last 128 offsets
-(about 10 s) and reports:
+unknown clock offset) plus the jitter on that path. `JitterEstimator` keeps the last 128
+offsets (about 5 s at one bundle per tick) and reports:
 
 - `jitter = p95(o) − min(o)`, the 95th-percentile delay above the fastest delivery in
   the window. Using a minimum within the window, rather than over all time, absorbs
   clock drift over a long match.
 
+The arrival time is when the session reads the frame, so the engine reads the
+connection between its steps (`Engine::pollTurnSession`, at most `TURN_POLL_MS` = 5 ms
+apart). Reading it only once per frame would round every arrival up to the next
+frame, and a client's own speed changes would then look like jitter.
+
+### Buffer target
+
 `JitterBuffer` turns jitter into a target buffer level, measured in ticks of
-authorized-but-unexecuted work (`horizon − executedTick`):
+authorized-but-unexecuted work (`horizon − executedTick`, sampled after each tick):
 
 ```
-required = ceil(jitter / P) + ceil(B / 2) + safetyTicks      (safetyTicks = 1)
-required = clamp(required, minTarget = 2, maxTarget = 50)
+required = 0                                   if jitter ≤ tolerance (10 ms)
+required = ceil(jitter / P) + safetyTicks      otherwise (safetyTicks = 1)
+required = clamp(required, minTarget = 0, maxTarget = 50)
 ```
 
-The `B / 2` term is the mean of the sawtooth the bundle interval creates: the buffer
-level jumps by `B` on every arrival and drains by one each tick. Hysteresis keeps the
-target from oscillating:
+A target of 0 means the client runs one tick behind the horizon it has received: the
+bundle for tick `t` arrives during tick `t − 1`'s frame. Jitter within the tolerance
+needs no buffer, because the engine absorbs it as a stall of the same size and then
+moves its schedule (see [pacing](#the-engine-loop)). Hysteresis keeps the target from
+oscillating:
 
 - **Up:** when `required > target`, the target rises to `required` at once. Stalls are
   worse than a little extra delay.
@@ -262,12 +310,17 @@ target from oscillating:
   baseline at no more than one tick (40 ms) per 5 s once jitter subsides. Any update
   in which `required ≥ target` cancels the hold.
 
+### Rate control
+
 `DelayController` holds the buffer at the target by nudging the client's tick rate. It
-keeps an exponential moving average of the buffer level, sampled once per executed
-tick with α = 0.05 (a time constant of about 20 ticks, or 0.8 s):
+keeps an exponential moving average of the buffer level with a time constant of about
+20 ticks (0.8 s). With `B > 1` the level saws between `L` and `L + B − 1` as bundles
+arrive, so the controller first averages each bundle period (the mean of a whole period
+does not depend on where it starts), feeds those means to the average with the same
+per-tick time constant, and aims at `target + (B − 1) / 2`:
 
 ```
-error      = ema − target
+error      = ema − target − (B − 1) / 2
 error      = 0                                 if |error| ≤ 0.5   (deadband)
 multiplier = 1 + clamp(0.02 × error, −0.05, +0.05)
 interval   = P / multiplier
@@ -284,9 +337,65 @@ the `MAX_CATCHUP_MS` cap lifted. Catch-up ends when the buffer drops to `target 
 the moving average is reset to the current level. A reconnect or resync from tick 0
 always starts in catch-up.
 
-The input delay a player feels is therefore their own round trip, plus about one tick
-of assignment, plus up to `B` ticks of bundle wait, plus their own buffer. It no longer
-depends on the worst connection in the match.
+**Stalls.** `TurnSession::stallStats()` counts the times the engine wanted to run a tick
+the relay had not yet authorized (outside catch-up and reloads), their total length, and
+the long ones (over half a tick), which are visible hitches.
+
+### Measured delay
+
+Click (or submission) to execution, before and after the latency work (relay assigns
+the first unbroadcast tick, one-tick bundles by default, orders flushed at once, the
+buffer target and schedule changes above, connection polling between frames).
+
+Simulated network (`TurnHarness`, "input delay and stalls per link profile"): two
+humans and an AI, submission to execution, 60 s per run, five network seeds per row.
+
+Before, LAN used one-tick bundles and online relays two-tick bundles; after, both use
+one. Delay is mean / p95 in ms; stalls are counted over the five 60 s runs (long: over
+half a tick).
+
+| Measured link (one way) | Before, 1-tick bundles | Before, 2-tick bundles | After | Stalls before (1 / 2-tick) | Stalls after |
+| --- | --- | --- | --- | --- | --- |
+| loopback | 120 / 120 | 160 / 160 | 40 / 40 | 0 / 0 | 0 |
+| 15 ms | 160 / 160 | 160 / 160 | 80 / 80 | 0 / 0 | 0 |
+| 25 ms | 160 / 160 | 200 / 200 | 80 / 80 | 0 / 0 | 0 |
+| 50 ms | 200 / 200 | 240 / 240 | 120 / 120 | 0 / 0 | 0 |
+| 30 ms, 80 ms jitter | 346 / 376 | 367 / 400 | 299 / 320 | 0 / 0 | 0 |
+| 60 ms, 80 ms jitter | 407 / 440 | 425 / 472 | 358 / 400 | 0 / 0 | 0 |
+| 30 ms, 80 ms jitter, 3% loss | 515 / 607 | 499 / 599 | 476 / 559 | 0 / 7 (3 long, 170 ms) | 1 (10 ms) |
+| 120 ms, 3% loss | 561 / 617 | 554 / 651 | 509 / 590 | 0 / 17 (12 long, 495 ms) | 4 (35 ms) |
+
+Add about half a frame (20 ms) of pickup for a click. Real engines on the same
+simulated network (`TurnEngineHarness`, "input delay and stalls of real engines per
+link profile"; click to execution, where the bot's click waits a whole tick for
+pickup; before is the then-default two-tick bundles):
+
+| Measured link (one way) | Before | After | Stalls before | Stalls after |
+| --- | --- | --- | --- | --- |
+| 15 ms | 240 / 240 | 120 / 120 | 0 | 0 |
+| 50 ms | 320 / 320 | 200 / 200 | 0 | 0 |
+| 60 ms, 80 ms jitter | 466 / 480 | 409 / 440 | 0 | 0 |
+| 120 ms, 3% loss | 621 / 680 | 537 / 600 | 0 | 1 (5 ms) |
+| 120 ms, 20 ms jitter, 3% loss | 675 / 795 | 606 / 640 | 0 | 0 |
+
+LAN, real engines over loopback WSS (`LanMatchHarness`, "LAN input delay ..."): host
+and one guest, FourSquares1 with a Nicowar AI, clicks at random moments, 25 s per run,
+macOS arm64 on a shared, loaded machine (real-time numbers vary by a tick or so from
+run to run).
+
+| Guest link (one way) | Bundles | Host before | Host after | Guest before | Guest after |
+| --- | --- | --- | --- | --- | --- |
+| loopback | 1 tick (LAN) | 197 / 238 | 140 / 162 | 279 / 383 | 193 / 241 |
+| +25 ms | 1 tick (LAN) | 237 / 289 | 149 / 201 | 274 / 318 | 221 / 262 |
+| +50 ms | 1 tick (LAN) | 281 / 347 | 140 / 160 | 455 / 505 | 261 / 292 |
+| loopback | 2 ticks | 369 / 568 | 163 / 197 | 365 / 620 | 194 / 257 |
+| +50 ms | 2 ticks | 248 / 298 | 159 / 197 | 378 / 434 | 250 / 309 |
+
+No run stalled more than once. On that machine (load average around 60 on 8 cores)
+the engines' threads were descheduled often enough that every client measured over
+10 ms of jitter and held a two-tick buffer. In a quieter run of the same code (load
+about 25), the host held no buffer and measured 59 / 76 ms on loopback, and the guest
+87 / 144 ms on loopback and 164 / 262 ms at +50 ms.
 
 ## Presence, reconnect and grace
 
@@ -349,7 +458,7 @@ single player and the legacy games:
 
 | Engine call | `TurnSession` behaviour |
 | --- | --- |
-| `addLocalOrder` | Encodes and submits a human order; null and latency orders are ignored |
+| `addLocalOrder` | Encodes, submits and flushes a human order; null and latency orders are ignored |
 | `pushOrder(order, p, isAI)` | Queues a locally computed AI order, as today |
 | `advanceStep(checksum)` | Sends `ChecksumReport` when the executed tick is a multiple of `checksumInterval` |
 | `tickReady` (`allOrdersReceived`) | The next tick is below the horizon and every AI seat has its order |
@@ -385,12 +494,23 @@ the session (presence, latency, buffer) for a connection HUD.
 
 `Engine::stepSession` calls `pumpTurnSession` before gathering orders:
 
-- `TurnSession::update(now)` pumps the transport and timers every frame.
+- `TurnSession::update(now)` pumps the transport and timers every frame. Between
+  steps, the host loop calls `Engine::pollTurnSession` at least every `TURN_POLL_MS`
+  (5 ms; `sessionPollDelay()` caps the host's sleep), which only reads the connection.
+  A turn game draws only after a step, so these polls draw nothing.
+- **Orders.** Each step hands every order the GUI has queued to the session, even while
+  waiting for a bundle, rather than one order per executed tick. The relay still gives
+  each its own tick.
 - **Pacing.** A turn game's tick duration is `tickIntervalMicros()`, rounded to
   milliseconds (38–42 ms around 40), even while paused, because the relay's clock keeps
   going. The pacing budget advances only when a tick ran, so frames spent waiting for a
   bundle poll every millisecond instead of sleeping a whole tick. Headless turn clients
   are paced too; only `sessionDelay()`'s caller decides whether to wait.
+- **After a stall.** When a tick runs after waiting for a bundle, the schedule moves
+  back by the wait, up to one tick, instead of running the owed ticks back to back. A
+  bundle a few milliseconds late then costs a hitch of that length once and becomes a
+  little more buffer, which the rate control drains; a longer wait still catches up
+  the rest at once.
 - **Catch-up.** While `tickIntervalMicros()` is 0, the loop uses the replay fast-forward
   preset (`REPLAY_FAST_FORWARD_MS`, drawing one frame in
   `REPLAY_FAST_FORWARD_DRAW_RATIO`) and lifts the `MAX_CATCHUP_MS` cap.
@@ -547,9 +667,11 @@ The unit tests in `test/TurnProtocolTest.cpp` (in `glob2-unit-tests`) use a fake
 and drive the components directly:
 
 - codec round trips, and rejection of malformed or oversized input;
-- sequencer ordering, one order per seat per tick, the byte budget, flooding, grace and
-  quit, majority arbitration and the two-client flag;
-- jitter estimation and a target that rises and then falls back;
+- sequencer ordering, one order per seat per tick, assignment to the first unbroadcast
+  tick, the byte budget, flooding, grace and quit, majority arbitration and the
+  two-client flag;
+- jitter estimation, a target that rises and then falls back, and the controller's
+  handling of multi-tick bundles;
 - match record round trip and corruption detection.
 
 `test/TurnHarnessTest.cpp` connects 2–4 `TurnSession` clients to a `TurnSequencer` over
@@ -559,7 +681,10 @@ delay) and disconnects. It checks that every client executes the same
 with incremental resume, a client restart with a full reload, and a desync that the
 majority repairs. It also checks that a stalled client never stalls the others, that
 each client's buffer follows its own link's jitter, and that each player's input delay
-follows their own connection. Summaries are written under `artifacts/tests/`.
+follows their own connection. A regression case requires the mean and p95 input delay
+to stay within bounds on loopback (60 / 80 ms) and at 50 ms one way (150 / 170 ms),
+with no long stalls. A `[benchmark]` case writes the delay and stall table above
+(`turn-delay-profiles.txt`). Summaries are written under `artifacts/tests/`.
 
 The relay's own tests (`glob2-relay-tests` and `tests/relay/`) run this protocol over
 real WebSockets against `glob2-relay`; see [relay.md](relay.md#tests).

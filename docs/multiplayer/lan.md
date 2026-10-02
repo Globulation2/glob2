@@ -77,9 +77,8 @@ with `version`.
   relay's admission function maps tickets to seats. LAN needs no signed tickets.
 - **Synchronized start.** The relay's clock starts once every human seat's first `Hello`
   has arrived, so no player starts behind while the others load (or after 30 s).
-- **Bundles.** The LAN relay sends a bundle every tick (`bundleInterval` 1); online
-  relays send one every 2 ticks. On a LAN the extra frames cost nothing, and the input
-  delay drops by about 40 ms.
+- **Bundles.** The LAN relay sends a bundle every tick (`bundleInterval` 1), as online
+  relays do by default.
 - **Reconnect.** A guest whose connection drops reconnects to the same pinned endpoint by
   itself and resumes from its horizon. A guest that hears nothing from the host for 5 s
   treats the connection as lost. After 2 minutes without reaching the host, the guest's

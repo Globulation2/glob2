@@ -73,7 +73,7 @@ namespace Turn
 
 	// Timing defaults.
 	constexpr std::uint32_t DEFAULT_TICK_RATE_MILLIHZ = 25000; // 25 ticks/s
-	constexpr std::uint8_t DEFAULT_BUNDLE_INTERVAL = 2;
+	constexpr std::uint8_t DEFAULT_BUNDLE_INTERVAL = 1;
 	constexpr std::uint16_t DEFAULT_CHECKSUM_INTERVAL = 25;
 	constexpr std::uint64_t DEFAULT_GRACE_MICROS = 180ull * 1000000ull;
 

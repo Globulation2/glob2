@@ -158,6 +158,11 @@ public:
     void abortSession() noexcept;
     void drawSession();
     Uint32 sessionDelay(Uint64 now);
+    /// Turn games: reads the relay connection between steps (see TURN_POLL_MS), so
+    /// bundles are timed when they arrive rather than at the next frame. Nothing runs.
+    void pollTurnSession(Uint64 now);
+    /// The host's sleep before the next stepSession or pollTurnSession.
+    Uint32 sessionPollDelay(Uint64 now);
     struct PendingLoad { std::string filename; bool replay; };
     // Finalize without loading another game or entering a UI loop. The host
     // schedules a returned request, or presents the end screen when absent.
@@ -285,6 +290,8 @@ private:
 	void printTurnTelemetrySamples();
 	void exportTurnTelemetry();
     std::optional<MainLoopState> session;
+    /// A turn game draws only after a step: polls between steps change nothing visible.
+    bool turnDrawPending = true;
     int sessionEndingTarget = 0;
     std::vector<SDL_Event> sessionInput;
 

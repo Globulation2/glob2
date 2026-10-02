@@ -51,9 +51,12 @@ PresenceState TurnSession::presence(int seatNumber) const
 
 void TurnSession::send(const NetMessage& message)
 {
+	// Every message leaves at once: an order queued until the next frame's poll would
+	// add up to a frame to its input delay.
 	const auto payload = TurnCodec::encode(message);
 	stats.frameSent(payload.size());
 	transport.send(payload);
+	transport.flush();
 }
 
 void TurnSession::update(std::uint64_t nowMicros)
@@ -198,6 +201,7 @@ void TurnSession::onWelcome(const Welcome& w)
 	tickPeriod = ticksToMicros(1, tickRate);
 	checksumInterval = w.checksumInterval;
 	bundleInterval = w.bundleInterval;
+	delay.setBundleInterval(bundleInterval);
 	if (w.resumeFromTick != horizonTick)
 	{
 		// The relay serves the log from tick 0: drop what we hold. If we had already
@@ -264,6 +268,8 @@ void TurnSession::onBundle(const TurnBundle& b)
 		turns[e.tick].push_back(e);
 	}
 	horizonTick = b.horizonTick;
+	if (onHorizon && b.horizonTick > b.fromTick)
+		onHorizon(b.horizonTick);
 	if (b.horizonTick > threshold)
 		jitter.addSample(static_cast<std::int64_t>(now), b.horizonTick, tickPeriod);
 	delay.observe(bufferedTicks(), buffer.targetTicks());
@@ -330,6 +336,8 @@ void TurnSession::addLocalOrder(std::shared_ptr<Order> order)
 	stats.orderSubmitted(bytes[0], bytes.size(), linkUp());
 	stats.pendingInput(bytes.data(), bytes.size(), executed, now);
 	Outstanding o{nextSequence++, std::move(bytes)};
+	if (onSubmitted)
+		onSubmitted(o.sequence);
 	if (linkUp())
 	{
 		OrderSubmit submit;
@@ -376,6 +384,24 @@ bool TurnSession::orderReceived(int playerNumber)
 bool TurnSession::tickReady()
 {
 	const bool starved = !reloadPending && executed >= horizonTick;
+	if (starved)
+	{
+		if (!stalled && currentState == State::Running && !delay.catchingUp())
+		{
+			stalled = true;
+			stallStart = now;
+		}
+	}
+	else if (!reloadPending && stalled)
+	{
+		stalled = false;
+		const std::uint64_t length = now - stallStart;
+		++stallCounters.stalls;
+		if (length * 2 > tickPeriod)
+			++stallCounters.longStalls;
+		stallCounters.stalledMicros += length;
+		stallCounters.longestMicros = std::max(stallCounters.longestMicros, length);
+	}
 	bool ready = !reloadPending && !starved;
 	for (int p = 0; ready && p < numberOfPlayers; ++p)
 		if (!isHuman(p) && aiOrders[p].empty())
