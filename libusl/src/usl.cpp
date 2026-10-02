@@ -160,6 +160,20 @@ Thread* Usl::createThread(Scope* scope)
 void Usl::setConstant(const std::string& name, Value* value)
 {
 	ScopePrototype* prototype = root->scopePrototype();
+	const auto existing = find(prototype->locals.begin(), prototype->locals.end(), name);
+	if (existing != prototype->locals.end())
+	{
+		const size_t index = existing - prototype->locals.begin();
+		root->locals[index] = value;
+		// includeScript installs selection getters referring to its original scope.
+		// Replacing a value must also redirect those getters to the root slot.
+		auto* getter = new ThunkPrototype(&heap, prototype);
+		getter->body.push_back(new ThunkCode());
+		getter->body.push_back(new ParentCode());
+		getter->body.push_back(new ValRefCode(index));
+		prototype->members[name] = getter;
+		return;
+	}
 	size_t index = prototype->locals.size();
 
 	prototype->locals.push_back(name);

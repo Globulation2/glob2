@@ -26,14 +26,45 @@
       });
     } finally { scope.URL.revokeObjectURL(url); }
   }
+  function watchThreadStartup(failed, scope = root) {
+    const NativeWorker = scope.Worker;
+    const workers = new Map();
+    let stopped = false;
+    // The pinned SDK only throws from worker.onerror; it neither rejects its
+    // pool-loading promise nor invokes onAbort. Observe the actual workers.
+    class StartupWorker extends NativeWorker {
+      constructor(...args) {
+        try { super(...args); }
+        catch (error) { failed('pthread worker creation failed: ' + error); throw error; }
+        const error = event => failed('pthread worker startup failed: ' + (event.message || 'worker error'));
+        this.addEventListener('error', error);
+        workers.set(this, error);
+      }
+    }
+    scope.Worker = StartupWorker;
+    const timer = scope.setTimeout(() => failed('threaded runtime startup timed out'), 120000);
+    return () => {
+      if (stopped) return;
+      stopped = true;
+      scope.clearTimeout(timer);
+      if (scope.Worker === StartupWorker) scope.Worker = NativeWorker;
+      for (const [worker, error] of workers) worker.removeEventListener('error', error);
+      workers.clear();
+    };
+  }
   async function load() {
     const module = root.Module;
     const forced = new URLSearchParams(location.search).get('threads');
     const reason = forced === 'serial' ? (new URLSearchParams(location.search).get('thread-fallback') || 'serial requested') : await threadingSupport(module.renderer);
     module.executionMode = reason ? 'serial' : 'threaded';
     module.threadFallback = reason;
+    let stopWatching = () => {};
+    let fallingBack = false;
     const fallback = reason => {
       if (module.executionMode !== 'threaded' || module.glob2ApplicationStarted) return false;
+      if (fallingBack) return true;
+      fallingBack = true;
+      stopWatching();
       const url = new URL(location.href);
       url.searchParams.set('threads', 'serial');
       url.searchParams.set('thread-fallback', reason);
@@ -45,6 +76,11 @@
     module.onAbort = error => {
       if (!fallback('threaded runtime initialization failed: ' + error)) abort?.(error);
     };
+    if (!reason) {
+      stopWatching = watchThreadStartup(fallback);
+      const started = module.onApplicationStarted;
+      module.onApplicationStarted = (...args) => { stopWatching(); started?.(...args); };
+    }
     const prefix = reason ? '' : 'threaded/';
     module.locateFile = name => name.endsWith('.data') ? name : prefix + name;
     const script = document.createElement('script');
@@ -52,7 +88,7 @@
     script.onerror = () => module.onAbort?.('Unable to load game runtime');
     document.body.append(script);
   }
-  root.Glob2BrowserLoader = {threadingSupport, load};
+  root.Glob2BrowserLoader = {threadingSupport, watchThreadStartup, load};
   if (typeof module !== 'undefined' && module.exports) module.exports = root.Glob2BrowserLoader;
   else load().catch(error => root.Module.onAbort?.(String(error)));
 })(globalThis);

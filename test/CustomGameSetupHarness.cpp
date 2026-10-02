@@ -61,6 +61,24 @@ struct CountingAI : AIImplementation {
 // Named in friend declarations, so it stays at global scope.
 struct CustomGameSetupHarness
 {
+    static void controllerHelp()
+    {
+        GAGGUI::ScreenStack stack(*globalContainer->gfx);
+        CustomGameScreen screen(stack);
+        screen.beginExecution(globalContainer->gfx);
+        auto fields=screen.colonyFields(0,screen.presentation());
+        fields.controller->tap({},screen.host());
+        REQUIRE(screen.host().popupOpen());
+        std::string text;
+        std::function<void(GAGGUI::ui::Node*)> collect=[&](auto* node) {
+            text+=node->accessibleText();
+            for(auto& child:node->children) collect(child.get());
+        };
+        collect(screen.host().popupRoot());
+        CHECK(text.find(std::to_string(Team::MAX_COUNT))!=std::string::npos);
+        CHECK(text.find("%0")==std::string::npos);
+    }
+
 	// Every field() is set to its declared maximum, but only the options
 	// actually registered for the chosen method survive a GenerationRequest
 	// round trip (the rest reset to that method's own defaults) — this
@@ -2144,6 +2162,17 @@ TEST_SUITE("CustomGameSetup")
 	{
 		glob2test::HeadlessGlobals globals(setupOptions(true));
 		CustomGameSetupHarness::landscapePerformance(glob2test::artifactDirFromWorkingDirectory(), true);
+	}
+	TEST_CASE("controller help is localized with the current player capacity [display]")
+	{
+		glob2test::HeadlessGlobals globals(setupOptions(true));
+		std::string output;
+		{
+			glob2test::CapturedStdout out; glob2test::CapturedStderr err;
+			CustomGameSetupHarness::controllerHelp();
+			output=out.text()+err.text();
+		}
+		CHECK(output.find("no such key")==std::string::npos);
 	}
 	TEST_CASE("custom game screens; captures and translated keys [slow][display:1024x768][artifacts][writes-preferences]")
 	{

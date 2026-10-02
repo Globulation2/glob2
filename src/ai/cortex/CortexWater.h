@@ -45,11 +45,9 @@ namespace Cortex
 	/// no real building to anchor the reach flood-fill on.
 	///
 	/// algaeDiscovered and algaeReachable are always computed (the school gate needs
-	/// the latter throughout the game). The land/water reach COUNTS are only needed by
-	/// the one-shot swimming-pool decision, which never fires once a pool exists, so
-	/// they are computed only when `wantSwimReach` is true (the extra swim-pass fill is
-	/// skipped otherwise, leaving both counts 0); algaeReachable's ground-pass fill runs
-	/// regardless.
+	/// the latter throughout the game). landReach is computed by the ground flood-fill
+	/// used for shore harvesting. The additional swim flood-fill and waterReach count
+	/// are computed only when `wantSwimReach` is true; otherwise waterReach is zero.
 	SwimAssessment assessSwim(Player* player, bool wantSwimReach);
 
 	/// Result of the amphibious-campaign assessment for one (rally -> target) push.

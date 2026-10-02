@@ -1,0 +1,26 @@
+name: CI measurements
+on:
+  workflow_run:
+    workflows: [build]
+    types: [completed]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  measure:
+    runs-on: ubuntu-24.04
+    steps:
+      # Use trusted default-branch code, never the triggering PR checkout.
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+          persist-credentials: false
+      - name: Report queue, execution, runner minutes and cache observations
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+        run: python3 .github/scripts/ci_run_metrics.py --run-id "$RUN_ID"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ci-metrics-${{ github.event.workflow_run.id }}
+          path: artifacts/ci-metrics.json

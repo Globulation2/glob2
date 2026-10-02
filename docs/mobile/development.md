@@ -893,3 +893,5 @@ precedence. Mobile SDL_image dependencies explicitly enable WebP, so rebuild the
 pinned dependency bundle after this manifest changes. Android indexes and hashes
 the exported payload; retain APK/AAB verification after AAPT packaging and after
 installing an update, which must not keep an obsolete PNG in front of a new WebP.
+
+Candidate validation uses `python3 mobile/android_release.py check-candidate`; this checks identity and build recipes without requiring a new publication tag. `check` retains strict tag-collision and version-code checks for release publication.

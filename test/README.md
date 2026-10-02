@@ -1274,3 +1274,21 @@ script execution and editable state, followed by rendering and diagnostics.
 Line coverage alone does not establish save continuity, equivalent execution on
 another platform, or playable game behavior. The Linux CI coverage artifact
 uses the regular tier; slow integration and cross-platform checks remain separate.
+
+The slow `[map-generators]` tier reports default repeatability, rectangular-map
+and rejection checks separately for each registered generator. Registry stress,
+landscape, framework and editor-default checks also have independent timeouts
+and logs; a timeout must identify its case rather than hide the whole catalog.
+
+Use `python3 test/test_cli_smoke.py --binary <client> --artifacts artifacts/cli --junit artifacts/cli.xml`
+for real executable contracts: argument validation, map image/report workflows,
+headless worker parity and saved continuation. `test/run_coverage.py --with-cli`
+builds the instrumented client and exports these profiles separately under `client/`;
+never merge its counts with independently linked engine or unit reports.
+
+Native CLI platform evidence can be compared with
+`python3 test/check_cli_evidence.py <artifact-root> --require-platform linux --require-platform windows`.
+It compares all 64 complete tick records, including aggregate and entity checksums.
+The browser saved-match smoke checks resize, menu cancellation and resumed ticks;
+Android smoke also exercises Settings input and verifies application profile
+files survive background/resume and a fresh-process relaunch.
