@@ -9,6 +9,7 @@
 #include <memory>
 #include <optional>
 #include <queue>
+#include <random>
 #include <unordered_map>
 #include <valarray>
 #include <variant>
@@ -29,6 +30,9 @@
 #include "GameGUIGhostBuildingManager.h"
 #include "BuildingGuiState.h"
 #include "GameMusicController.h"
+#include "sim/ClientCommandSink.h"
+#include "sim/ClientEvents.h"
+#include "sim/ClientRequests.h"
 
 namespace GAGCore
 {
@@ -58,7 +62,7 @@ class MapMarkOrder;
 	Handle all user input during game, draw & handle menu.
 */
 class GameGUITouch;
-class GameGUI
+class GameGUI : public ClientCommandSink
 {
 	friend struct CustomGameSetupHarness;
 	friend struct ScriptPresentationFixture;
@@ -122,35 +126,37 @@ public:
 	//! return the local team of the player who is running glob2
 	Team *getLocalTeam(void) { return localTeam; }
 
-	// Sim → GUI lifecycle hooks. The simulation path (Team::syncStep)
-	// calls these when a unit dies or a building is demolished, so the
-	// sim itself never reads GameGUI-owned selection state. The hook
-	// runs entirely on the local client's GUI state; checkSelection()
-	// picks up the resulting NULL on the next draw and tears down the
-	// rest of the panel. In the Rust port, do not duplicate selection
-	// between sim and GUI — keep it solely on per-viewer GUI state and
-	// drop these hooks entirely.
-	void onUnitDestroyed(Unit *u);
-	void onBuildingDestroyed(Building *b);
+	//! Apply every queued simulation notice (ClientEvents) to the GUI. The
+	//! engine calls this after each tick; executeOrder, step and drawAll call
+	//! it too, so the GUI never acts on a stale view of the simulation.
+	void consumeClientEvents();
 
-	// Script interface
-	void enableBuildingsChoice(const std::string &name);
-	void disableBuildingsChoice(const std::string &name);
-	bool isBuildingEnabled(const std::string &name);
-	void enableFlagsChoice(const std::string &name);
-	void disableFlagsChoice(const std::string &name);
-	bool isFlagEnabled(const std::string &name);
-	void enableGUIElement(int id);
-	void disableGUIElement(int id);
-	
-	bool isSpaceSet() { return hasSpaceBeenClicked; }
-	void setIsSpaceSet(bool value) { hasSpaceBeenClicked=value; }
-	void setSwallowSpaceKey(bool value) { swallowSpaceKey=value; }
-	
-	void showScriptText(const std::string &text);
-	void setScriptPresentationText(std::string text, bool publishHistory = true);
-	void showScriptTextTr(const std::string &text, const std::string &lang);
-	void hideScriptText();
+	// Script interface (ClientCommandSink)
+	void enableBuildingsChoice(const std::string &name) override;
+	void disableBuildingsChoice(const std::string &name) override;
+	bool isBuildingEnabled(const std::string &name) override;
+	void enableFlagsChoice(const std::string &name) override;
+	void disableFlagsChoice(const std::string &name) override;
+	bool isFlagEnabled(const std::string &name) override;
+	void enableGUIElement(int id) override;
+	void disableGUIElement(int id) override;
+	void setHighlight(int highlight, bool on) override;
+
+	//! Whether a Space acknowledgement is waiting for the SGSL script.
+	bool isSpaceSet() const { return clientRequests.scriptSpacePending(); }
+	void setIsSpaceSet(bool value)
+	{
+		if (value)
+			clientRequests.requestScriptSpace();
+		else
+			clientRequests.discardScriptSpace();
+	}
+	void setSwallowSpaceKey(bool value) override { swallowSpaceKey=value; }
+
+	void showScriptText(const std::string &text) override;
+	void setScriptPresentationText(std::string text, bool publishHistory = true) override;
+	void showScriptTextTr(const std::string &text, const std::string &lang) override;
+	void hideScriptText() override;
 
 	// Stats for engine
 	void setCpuLoad(int s);
@@ -224,9 +230,16 @@ public:
 	
 	KeyboardManager keyboardManager;
 public:
+	///Simulation → client notices and client → simulation requests. Declared
+	///before `game`, which keeps pointers to both (Game::clientEvents,
+	///Game::clientRequests), so they outlive it.
+	ClientEvents clientEvents;
+	ClientRequests clientRequests;
 	Game game;
 	/// Live network games always use normal speed; replays remain adjustable.
 	bool canChangeGameSpeed() const;
+	/// Water and cloud animation phase of this GUI's map view (presentation only).
+	int mapAnimationTime() const { return view.render.animationTime; }
 	friend class Game;
 	bool gamePaused;
 	bool hardPause;
@@ -487,10 +500,13 @@ private:
 	//! Payload for the current selection, tagged by selectionMode. std::monostate
 	//! is the active alternative for the three payload-less modes (NO_SELECTION,
 	//! and TOOL_/BRUSH_SELECTION, whose real state lives in toolManager/brush).
-	//! BUILDING_/UNIT_/RESOURCE_SELECTION hold Building*/Unit*/int respectively.
-	//! Read it through selectionBuilding()/selectionUnit()/selectionResource(),
-	//! which assert (via std::get) that the active alternative matches the mode.
-	std::variant<std::monostate, Building*, Unit*, int> selection;
+	//! BUILDING_/UNIT_/RESOURCE_SELECTION hold BuildingRef/UnitRef/int
+	//! respectively. Entities are held by reference (gid + generation), never by
+	//! pointer, so a selection cannot dangle and cannot jump to a newcomer that
+	//! reuses the gid. Read it through selectionBuilding()/selectionUnit()/
+	//! selectionResource(), which assert (via std::get) that the active
+	//! alternative matches the mode and resolve the entity through Game.
+	std::variant<std::monostate, BuildingRef, UnitRef, int> selection;
 	
 	// Brushes
 	BrushTool brush;
@@ -505,10 +521,23 @@ private:
 	//! active variant alternative matches selectionMode; a tag/payload desync
 	//! throws std::bad_variant_access rather than silently reinterpreting bytes.
 	//! Precondition: selectionMode is the matching mode (caller-guaranteed).
-	Building* selectionBuilding() const { return std::get<Building*>(selection); }
-	Unit* selectionUnit() const { return std::get<Unit*>(selection); }
+	//! The entity accessors return null once the entity is gone.
+	Building* selectionBuilding() const { return game.resolveBuilding(std::get<BuildingRef>(selection)); }
+	Unit* selectionUnit() const { return game.resolveUnit(std::get<UnitRef>(selection)); }
 	int selectionResource() const { return std::get<int>(selection); }
+	//! Selected building/unit, or null in any other mode or once it is gone.
+	Building* selectedBuildingOrNull() const;
+	Unit* selectedUnitOrNull() const;
 	void checkSelection(void);
+	//! Refresh `view` (resolved pointers for the renderer) and publish the
+	//! observed building to clientRequests. Call after the selection or the
+	//! simulation changed and before drawing.
+	void syncSelectionView(void);
+	//! Apply one simulation notice; see consumeClientEvents().
+	void handleClientEvent(ClientEventVariant&& event);
+	//! GameEvents per team, aged like Team::updateEvents did, until step()
+	//! shows the local team's.
+	std::array<std::deque<GameEvent>, Team::MAX_COUNT> pendingTeamEvents;
 
 	// What's visible or hidden on GUI
 	std::vector<std::string> buildingsChoiceName;
@@ -524,9 +553,6 @@ private:
 		HIDABLE_ALLIANCE = 0x10,
 	};
 	Uint32 hiddenGUIElements;
-
-	//! Tells whether a space was clicked recently, to read in by the script engine
-	bool hasSpaceBeenClicked;
 
 	//! When set, tells the gui not to treat clicking the space key as usual, but instead, it will "swallow" (ignore) it
 	bool swallowSpaceKey;
@@ -728,6 +754,11 @@ private:
 	
 	//! All particles visible on screen
 	ParticleSet particles;
+	//! Presentation-only randomness for eye-candy. Never use syncRand() for visual
+	//! effects: the synchronized RNG belongs to the simulation and its checksums.
+	std::minstd_rand effectsRandom;
+	//! Uniform value in [0, 1] from effectsRandom.
+	float effectsUnit() { return std::uniform_real_distribution<float>(0.f, 1.f)(effectsRandom); }
 	
 	//! Generate new particles if required
 	void generateNewParticles(std::set<Building*> *visibleBuildings);

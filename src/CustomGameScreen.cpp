@@ -1052,6 +1052,59 @@ Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 				   {p.pt(16), fe::CrossAlign::Stretch});
 }
 
+CustomGameScreen::ColonyFields CustomGameScreen::colonyFields(int i, const Presentation &p)
+{
+	auto &c = setup.colonies[i];
+	const auto controllerNames = localized({"You", "AI", "You + AI", "Closed"});
+	const GAGCore::Color color = i < int(preview->starts.size()) ? preview->starts[std::size_t(i)].color : theme().palette.neutral;
+	const std::string id = "colony/" + std::to_string(i);
+	std::vector<bool> enabled;
+	for (int j = 0; j < 4; ++j)
+	{
+		auto draft = setup;
+		enabled.push_back(draft.setController(i, (CustomGameSetup::Controller)j));
+	}
+	fe::ChoiceOptions controllerOptions;
+	controllerOptions.enabled = enabled;
+	controllerOptions.help = tr("Shared control needs a free controller slot (maximum 12).");
+	auto controller = fe::choice(id + "/controller", controllerNames, c.controller,
+								 [this, i](int value) { setup.setController(i, (CustomGameSetup::Controller)value); }, controllerOptions);
+	std::vector<std::string> teams;
+	for (int j = 0; j < setup.capacity; ++j)
+		teams.push_back(tr("Team") + " " + std::to_string(j + 1));
+	auto team = fe::choice(id + "/team", teams, c.alliance,
+						   [this, i](int value)
+						   {
+							   setup.colonies[i].alliance = value;
+							   setup.format = "Custom teams";
+						   });
+	const bool hasAI = c.controller == CustomGameSetup::Computer || c.controller == CustomGameSetup::Shared;
+	Element aiControls;
+	if (hasAI)
+	{
+		std::vector<std::string> names;
+		for (int j : AINames::selectionOrder())
+			names.push_back(AINames::getAISelectorText(j));
+		const int selectedAI = AINames::selectionIndex(c.ai);
+		// The choice and its strategy button share a line only when both fit.
+		aiControls = fe::adaptive(
+			[this, i, id, names, selectedAI, p](const fe::LayoutContext &, fe::Size available) -> Element
+			{
+				auto ai = fe::choice(id + "/ai", names, selectedAI,
+									 [this, i](int value) { setup.colonies[i].ai = (AI::ImplementationID)AINames::selectionOrder()[std::size_t(value)]; });
+				auto info = fe::button(id + "/info", tr("AI strategy"), [this, i] { showAIProfile(i); });
+				if (available.w < p.textPt(300))
+					return fe::column({ai, info}, {p.pt(6)});
+				return fe::row({fe::expanded(ai), info}, {p.pt(6), fe::CrossAlign::Center});
+			});
+	}
+	else
+		aiControls = fe::caption(tr(c.controller == CustomGameSetup::Human ? "You control this colony." : "Closed"));
+	auto identity = fe::row({fe::swatch(color, 30), fe::expanded(fe::label(std::to_string(i + 1) + "  " + colorName(color)))},
+							{p.pt(8), fe::CrossAlign::Center});
+	return {identity, controller, aiControls, team};
+}
+
 Element CustomGameScreen::playersTab(const Presentation &p, bool narrow)
 {
 	std::vector<Element> parts;
@@ -1059,56 +1112,26 @@ Element CustomGameScreen::playersTab(const Presentation &p, bool narrow)
 	parts.push_back(fe::segments("format", localized({"FFA", "2 vs 2", "You vs all"}), selectedFormat, [this](int i) { setup.presetTeams(i); },
 								 {true, setup.activeColonies() == 4, bool(setup.humanColony()) && setup.activeColonies() > 1}));
 	parts.push_back(fe::caption(std::to_string(setup.controllerCount()) + " / 12 " + tr("controllers")));
-	const auto controllerNames = localized({"You", "AI", "You + AI", "Closed"});
 	for (int i = 0; i < setup.capacity; ++i)
 	{
 		auto &c = setup.colonies[i];
-		const GAGCore::Color color = i < int(preview->starts.size()) ? preview->starts[std::size_t(i)].color : theme().palette.neutral;
-		const std::string id = "colony/" + std::to_string(i);
-		std::vector<bool> enabled;
-		for (int j = 0; j < 4; ++j)
-		{
-			auto draft = setup;
-			enabled.push_back(draft.setController(i, (CustomGameSetup::Controller)j));
-		}
-		fe::ChoiceOptions controllerOptions;
-		controllerOptions.enabled = enabled;
-		controllerOptions.help = tr("Shared control needs a free controller slot (maximum 12).");
-		auto controller = fe::choice(id + "/controller", controllerNames, c.controller,
-									 [this, i](int value) { setup.setController(i, (CustomGameSetup::Controller)value); }, controllerOptions);
-		std::vector<std::string> teams;
-		for (int j = 0; j < setup.capacity; ++j)
-			teams.push_back(tr("Team") + " " + std::to_string(j + 1));
-		auto team = fe::choice(id + "/team", teams, c.alliance,
-							   [this, i](int value)
-							   {
-								   setup.colonies[i].alliance = value;
-								   setup.format = "Custom teams";
-							   });
-		const bool hasAI = c.controller == CustomGameSetup::Computer || c.controller == CustomGameSetup::Shared;
-		Element aiControls;
-		if (hasAI)
-		{
-			std::vector<std::string> names;
-			for (int j : AINames::selectionOrder())
-				names.push_back(AINames::getAISelectorText(j));
-			aiControls = fe::row({fe::expanded(fe::choice(id + "/ai", names, AINames::selectionIndex(c.ai),
-														  [this, i](int value) { setup.colonies[i].ai = (AI::ImplementationID)AINames::selectionOrder()[std::size_t(value)]; })),
-								  fe::button(id + "/info", tr("AI strategy"), [this, i] { showAIProfile(i); })},
-								 {p.pt(6), fe::CrossAlign::Center});
-		}
-		else
-			aiControls = fe::caption(tr(c.controller == CustomGameSetup::Human ? "You control this colony." : "Closed"));
-		auto identity = fe::row({fe::swatch(color, 30), fe::label(std::to_string(i + 1) + "  " + colorName(color))}, {p.pt(8), fe::CrossAlign::Center});
 		const std::string summary = c.controller == CustomGameSetup::Human ? username
 									: c.controller == CustomGameSetup::Closed ? tr("This colony will not join the match.")
 																			  : AINames::getAISummary(c.ai);
-		std::vector<Element> body;
-		if (narrow)
-			body = {identity, controller, aiControls, team};
-		else
-			body = {fe::row({fe::width(p.pt(150), identity), fe::width(p.pt(150), controller), fe::expanded(aiControls), fe::width(p.pt(120), team)},
-							{p.pt(8), fe::CrossAlign::Center})};
+		// Side by side when the offered width holds the columns at the current
+		// text size (the desktop page is narrower than the window), else stacked.
+		auto layout = [this, i, p](bool stacked) -> Element
+		{
+			auto f = colonyFields(i, p);
+			if (stacked)
+				return fe::column({f.identity, f.controller, f.ai, f.team}, {p.pt(6)});
+			return fe::row({fe::width(p.textPt(150), f.identity), fe::width(p.textPt(150), f.controller), fe::expanded(f.ai),
+							fe::width(p.textPt(120), f.team)},
+						   {p.pt(8), fe::CrossAlign::Center});
+		};
+		std::vector<Element> body{narrow ? layout(true)
+										 : fe::adaptive([layout, p](const fe::LayoutContext &, fe::Size available)
+														{ return layout(available.w < p.textPt(560)); })};
 		body.push_back(fe::caption(summary));
 		if (c.controller == CustomGameSetup::Shared)
 			body.push_back(fe::caption(tr("You and the AI both issue orders. Uses two controller slots.")));

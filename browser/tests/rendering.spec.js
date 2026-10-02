@@ -12,13 +12,13 @@ test('WebGL2 draws a playable match and resizes its drawing buffer', async ({pag
   await page.goto('/?renderer=webgl2');
   await screen(page, 'MainMenuScreen');
   expect((await state(page)).renderer).toBe('webgl2');
-  expect(await page.evaluate(() => document.querySelector('#canvas').getContext('webgl2') instanceof WebGL2RenderingContext)).toBe(true);
+  expect((await state(page)).renderContext.width).toBeGreaterThan(0);
   await clickMainMenu(page,'custom'); await screen(page, 'CustomGameScreen');
   await clickCustomGameStart(page); // The lobby prepares its selected generated landscape.
   await expect.poll(async () => (await state(page)).tick, {timeout:60000}).toBeGreaterThan(25);
   await page.setViewportSize({width:1280,height:720});
   await expect.poll(async () => { const s = await state(page); return [s.width,s.height]; }).toEqual([1280,720]);
-  expect(await page.evaluate(() => { const gl=document.querySelector('#canvas').getContext('webgl2'); return [gl.drawingBufferWidth,gl.drawingBufferHeight,gl.getError()]; })).toEqual([1280,720,0]);
+  await expect.poll(async () => { const gl=(await state(page)).renderContext; return [gl.width,gl.height,gl.error]; }).toEqual([1280,720,0]);
   await expect.poll(() => require('./pixels').hasRenderedPixels(page)).toBe(true);
   await page.screenshot({path:info.outputPath('webgl2-match.png')});
   await page.locator('#canvas').press('Escape',{delay:80});
@@ -50,7 +50,7 @@ test('the default renderer is WebGL2 when the browser accelerates it', async ({p
   }, UNMASKED_RENDERER_WEBGL);
   await page.goto('/'); await screen(page,'MainMenuScreen');
   expect((await state(page)).renderer).toBe('webgl2');
-  expect(await page.evaluate(() => document.querySelector('#canvas').getContext('webgl2') instanceof WebGL2RenderingContext)).toBe(true);
+  expect((await state(page)).renderContext.width).toBeGreaterThan(0);
 });
 
 const fallbacks = {
@@ -89,19 +89,18 @@ test('WebGL context restoration keeps the match and can recover repeatedly', asy
   await expect.poll(async () => (await state(page)).tick, {timeout:60000}).toBeGreaterThan(25);
   for (let count=1; count<=2; ++count) {
     await page.evaluate(() => {
-      window.contextLoss = document.querySelector('#canvas').getContext('webgl2').getExtension('WEBGL_lose_context');
-      contextLoss.loseContext();
+      Module._glob2_context_action(0);
     });
     await expect.poll(async () => (await state(page)).contextLost).toBe(true);
     const paused = (await state(page)).tick;
     // Exercise a real suspension interval, not just immediate restoration.
     await page.waitForTimeout(250);
     expect((await state(page)).tick).toBe(paused);
-    await page.evaluate(() => contextLoss.restoreContext());
+    await page.evaluate(() => Module._glob2_context_action(1));
     await expect.poll(async () => (await state(page)).contextRestores).toBe(count);
     await expect.poll(async () => (await state(page)).tick).toBeGreaterThan(paused);
     await expect.poll(() => require('./pixels').hasRenderedPixels(page)).toBe(true);
-    expect(await page.evaluate(() => document.querySelector('#canvas').getContext('webgl2').getError())).toBe(0);
+    expect((await state(page)).renderContext.error).toBe(0);
   }
   await page.screenshot({path:info.outputPath('webgl2-restored.png')});
   await page.locator('#canvas').press('Escape',{delay:80});
@@ -118,15 +117,14 @@ test('WebGL context restoration retains settings, editor and confirmation contro
   async function recover(expectedScreen) {
     await screen(page, expectedScreen);
     await page.evaluate(() => {
-      window.contextLoss = document.querySelector('#canvas').getContext('webgl2').getExtension('WEBGL_lose_context');
-      contextLoss.loseContext();
+      Module._glob2_context_action(0);
     });
     await expect.poll(async () => (await state(page)).contextLost).toBe(true);
-    await page.evaluate(() => contextLoss.restoreContext());
+    await page.evaluate(() => Module._glob2_context_action(1));
     await expect.poll(async () => (await state(page)).contextRestores).toBe(++restores);
     await screen(page, expectedScreen);
     await expect.poll(() => require('./pixels').hasRenderedPixels(page)).toBe(true);
-    expect(await page.evaluate(() => document.querySelector('#canvas').getContext('webgl2').getError())).toBe(0);
+    expect((await state(page)).renderContext.error).toBe(0);
   }
   await clickMainMenu(page,'settings'); await recover('SettingsScreen');
   await clickSettingsDone(page); await screen(page,'MainMenuScreen');

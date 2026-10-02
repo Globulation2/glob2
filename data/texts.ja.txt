@@ -3068,8 +3068,6 @@ Emoji
 早送り
 [Hide keyboard]
 キーボードを隠す
-[Dialog text size]
-ダイアログの文字サイズ
 [Player slot]
 プレイヤー枠
 [Team color]
@@ -3408,8 +3406,6 @@ CPU %0%
 最低必要レベル： %0
 [Confirm %0]
 OK: %0
-[Dialog text size %0]
-ダイアログの文字サイズ: %0%
 [%0 %1]
 %0 %1
 [resume game]

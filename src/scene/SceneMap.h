@@ -1,0 +1,60 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+#pragma once
+
+#include "BitArray.h"
+#include "Ressource.h"
+
+#include <SDL_stdinc.h>
+
+#include <cstddef>
+#include <vector>
+
+class Map;
+
+//! Immutable copy of the per-tile map layers the renderer reads: terrain,
+//! resources, discovery and fog of war for every team, and the locally displayed
+//! team's forbidden/guard/clear areas. Extracted from the simulation's Map at a
+//! tick boundary; afterwards it is only read, so the renderer can draw it while
+//! the simulation advances. The query functions match Map's exactly.
+class SceneMap
+{
+public:
+	//! Copy the layers from map. Runs where the map may be read (the simulation side).
+	void extract(const Map &map);
+
+	int getW() const { return w; }
+	int getH() const { return h; }
+	int getMaskW() const { return wMask; }
+	int getMaskH() const { return hMask; }
+	//! Identity of the source map (Map::identity()); renewed when the map is replaced.
+	Uint64 identity() const { return sourceIdentity; }
+	//! Stable key for caches of drawn geometry: the same for every extraction of one map.
+	const void *cacheKey() const { return sourceKey; }
+
+	size_t coordToIndex(int x, int y) const { return (size_t(y & hMask) << wDec) + (x & wMask); }
+	Uint16 getTerrain(int x, int y) const { return terrain[coordToIndex(x, y)]; }
+	const Resource &getResource(int x, int y) const { return resources[coordToIndex(x, y)]; }
+	bool isMapDiscovered(int x, int y, Uint32 visionMask) const
+	{
+		return (discovered[coordToIndex(x, y)] & visionMask) != 0;
+	}
+	bool isMapPartiallyDiscovered(int x1, int y1, int x2, int y2, Uint32 visionMask) const;
+	bool isFOWDiscovered(int x, int y, int visionMask) const
+	{
+		return (fogOfWar[coordToIndex(x, y)] & visionMask) != 0;
+	}
+	bool isForbiddenInDisplayedView(int x, int y) const { return forbiddenView.get(coordToIndex(x, y)); }
+	bool isGuardAreaInDisplayedView(int x, int y) const { return guardAreaView.get(coordToIndex(x, y)); }
+	bool isClearAreaInDisplayedView(int x, int y) const { return clearAreaView.get(coordToIndex(x, y)); }
+	bool canResourcesGrow(int x, int y) const { return resourcesGrow[coordToIndex(x, y)]; }
+
+private:
+	int w = 0, h = 0, wMask = 0, hMask = 0, wDec = 0;
+	Uint64 sourceIdentity = 0;
+	const void *sourceKey = nullptr;
+	std::vector<Uint16> terrain;
+	std::vector<Resource> resources;
+	std::vector<Uint8> resourcesGrow;
+	std::vector<Uint32> discovered, fogOfWar;
+	Utilities::BitArray forbiddenView, guardAreaView, clearAreaView;
+};

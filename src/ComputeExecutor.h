@@ -12,6 +12,7 @@
 #include <functional>
 #include <mutex>
 #include <thread>
+#include <ThreadSupport.h>
 #include <vector>
 
 // Blocking, single-submitter batches. Jobs may nest batches, but nested work
@@ -93,19 +94,20 @@ public:
 	// serial executor; caller reports the actual thread count.
 	void configure(unsigned threads,
 		const std::function<std::thread(std::function<void()>)> &launch =
-			[](std::function<void()> function) { return std::thread(std::move(function)); })
+			[](std::function<void()> function) { return GAGCore::ThreadSupport::launch(std::move(function)); })
 	{
 		assert(!active && threads >= 1 && threads <= 64);
 		stop();
-#ifndef __EMSCRIPTEN__
-		try
+		if constexpr (GAGCore::ThreadSupport::available)
 		{
-			workers.reserve(threads > 0 ? threads - 1 : 0);
-			for (unsigned i = 1; i < threads; ++i)
-				workers.push_back(launch([this, i] { worker(i); }));
+			try
+			{
+				workers.reserve(threads > 0 ? threads - 1 : 0);
+				for (unsigned i = 1; i < threads; ++i)
+					workers.push_back(launch([this, i] { worker(i); }));
+			}
+			catch (...) { stop(); }
 		}
-		catch (...) { stop(); }
-#endif
 		workerMetrics.assign(threadCount(), {});
 		totals = {};
 	}

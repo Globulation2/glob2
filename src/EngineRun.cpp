@@ -256,6 +256,9 @@ void Engine::executeOrdersAndStep(bool readyNow)
 		}
 
 		gui.game.syncStep(gui.localTeamNo);
+		// Hand the tick's notices to the GUI now, also under --nox where
+		// gui.step never runs, so the event queue cannot grow unbounded.
+		gui.consumeClientEvents();
 		GAGCore::ApplicationHost::simulationAdvanced(gui.game.stepCounter);
 	}
 }
@@ -622,6 +625,7 @@ void Engine::beginSession(Uint64 now)
     st.startTime = now;
     teamEliminatedTick.clear();
     session = st;
+    randomRequirement.emplace();
     automaticGameStartTick = now;
 	auto &perf = PerformanceTelemetry::collector();
 	if (!perf.enabled && !perf.started)
@@ -699,6 +703,7 @@ void Engine::abortSession() noexcept
         globalContainer->datasetWriter.reset();
     }
     session.reset();
+    randomRequirement.reset();
     sessionInput.clear();
     globalContainer->replayWriter.reset();
     PerformanceTelemetry::collector().reset();
@@ -786,6 +791,7 @@ std::optional<Engine::PendingLoad> Engine::finishSessionForHost()
 	}
 
     session.reset();
+    randomRequirement.reset();
     sessionInput.clear();
     const auto filename = std::exchange(gui.toLoadGameFileName, {});
     if (gui.exitGlobCompletely || filename.empty()) return std::nullopt;

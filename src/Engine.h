@@ -221,6 +221,8 @@ private:
 
 	void drawFrame(MainLoopState& st);
     std::optional<MainLoopState> session;
+    // Live while a session runs: synchronized draws must use the game's bound stream.
+    std::optional<SyncRandRequirement> randomRequirement;
     int sessionEndingTarget = 0;
     std::vector<SDL_Event> sessionInput;
 

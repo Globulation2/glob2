@@ -84,7 +84,7 @@ static void run(bool gpu, int width, int height)
                 }
             }
         REQUIRE(dragX >= 0);
-        gui.view.mouseUnit = nullptr;
+        gui.view.mouseUnit = UnitRef();
         SDL_MouseButtonEvent down{};
         down.button = SDL_BUTTON_LEFT;
         down.x = dragX;
@@ -123,7 +123,7 @@ static void run(bool gpu, int width, int height)
             gui.updateCamera();
             const int x = int(gui.camera.offsetX + gui.camera.width / 2);
             const int y = int(gui.camera.offsetY + gui.camera.height / 2);
-            gui.view.mouseUnit = nullptr;
+            gui.view.mouseUnit = UnitRef();
             SDL_MouseButtonEvent press{};
             press.button = SDL_BUTTON_LEFT;
             press.x = x;
@@ -167,7 +167,7 @@ static void run(bool gpu, int width, int height)
             gui.updateCamera();
             const int x = int(gui.camera.offsetX + gui.camera.width / 2);
             const int y = int(gui.camera.offsetY + gui.camera.height / 2);
-            gui.view.mouseUnit = nullptr;
+            gui.view.mouseUnit = UnitRef();
             SDL_MouseButtonEvent press{};
             press.button = SDL_BUTTON_LEFT;
             press.x = x;
@@ -190,14 +190,14 @@ static void run(bool gpu, int width, int height)
             {
                 gui.view.mouseX = x * 32;
                 gui.view.mouseY = y * 32;
-                gui.view.mouseUnit = nullptr;
+                gui.view.mouseUnit = UnitRef();
                 gui.game.drawUnit(x, y, explorer->gid, (-x) & gui.game.map.getMaskW(),
                     (-y) & gui.game.map.getMaskH(), gui.game.map.getW(), gui.game.map.getH(),
                     0, Game::DRAW_WHOLE_MAP, gui.view);
-                REQUIRE(gui.view.mouseUnit == explorer);
+                REQUIRE(gui.game.resolveUnit(gui.view.mouseUnit) == explorer);
             }
         gui.view.mouseX = gui.view.mouseY = -1;
-        gui.view.mouseUnit = nullptr;
+        gui.view.mouseUnit = UnitRef();
         // Upgrading an old keyboard layout must neither shadow custom keys
         // nor lose the new default when its key is available.
         KeyboardManager keyboard(GameGUIShortcuts);
@@ -356,9 +356,10 @@ static void run(bool gpu, int width, int height)
                 view.amount = amount;
                 view.lastFrame = SDL_GetTicks();
                 const auto randomState=syncRandEngine();
+                const auto gameRandom=gui.game.syncRandom;
                 REQUIRE(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, x, y, 960, 720));
                 REQUIRE(glGetError() == GL_NO_ERROR);
-                REQUIRE(syncRandEngine()==randomState);
+                REQUIRE((syncRandEngine()==randomState && gui.game.syncRandom==gameRandom));
             };
             view.toggle();
             REQUIRE(view.active());
@@ -377,17 +378,17 @@ static void run(bool gpu, int width, int height)
                 SDL_FreeSurface(frame);
             }
             gui.gamePaused = true;
-            const int pausedTime = gui.game.mapAnimationTime;
+            const int pausedTime = gui.view.render.animationTime;
             draw(1);
             const auto pausedClouds = view.cloudPixels;
             draw(1);
-            REQUIRE(gui.game.mapAnimationTime == pausedTime);
+            REQUIRE(gui.view.render.animationTime == pausedTime);
             REQUIRE(pausedClouds.size() == view.cloudPixels.size());
             for (size_t i = 0; i < pausedClouds.size(); ++i)
                 REQUIRE(pausedClouds[i] == view.cloudPixels[i]);
             gui.gamePaused = false;
             draw(1);
-            REQUIRE(gui.game.mapAnimationTime > pausedTime);
+            REQUIRE(gui.view.render.animationTime > pausedTime);
             // Selection markers are painted into the atlas, which is measured in
             // world pixels. The factor the window stretches the interface by must
             // not reach their line width, and every marker the flat view paints

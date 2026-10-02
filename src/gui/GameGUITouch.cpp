@@ -144,7 +144,7 @@ MobileLayout GameGUITouch::layout() const
 double GameGUITouch::tutorialMaximum() const
 {
 	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
-	return std::max(0.0, tutorialLines.size() * 24.0 - tutorialRect().h / unit + 16 +
+	return std::max(0.0, tutorialLines.size() * InGameTouchTheme::tutorialPitch() - tutorialRect().h / unit + 16 +
 							 (gui.swallowSpaceKey ? 48 : 0));
 }
 void GameGUITouch::clampScroll()
@@ -1359,7 +1359,7 @@ void GameGUITouch::select(ViewPoint point)
 		gui.putMark = false;
 		return;
 	}
-	gui.view.mouseUnit = unitAt(screenPoint);
+	gui.view.mouseUnit = Game::refOf(unitAt(screenPoint));
 	const bool wasInspecting = inspectedBuilding() != nullptr;
 	const bool wasOpen = panelOpen;
 	const int oldDisplay = gui.displayMode;

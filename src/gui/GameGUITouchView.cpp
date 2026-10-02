@@ -315,8 +315,9 @@ ViewRect GameGUITouch::tutorialRect() const
 	rect.w = std::min(rect.w - 16 * unit, 560 * unit);
 	rect.h = std::max(0.0, layout().actions.y - rect.y);
 	rect.h = tutorialCollapsed ? 48 * unit
-							   : std::min(rect.h, (std::min<size_t>(3, tutorialLines.size()) * 24 +
-												   16 + (gui.swallowSpaceKey ? 48 : 0)) *
+							   : std::min(rect.h, (std::min<size_t>(3, tutorialLines.size()) *
+														   InGameTouchTheme::tutorialPitch() +
+													   16 + (gui.swallowSpaceKey ? 48 : 0)) *
 													  unit);
 	return rect;
 }
@@ -330,7 +331,8 @@ void GameGUITouch::prepareTutorial()
 		text += gui.scriptText;
 	}
 	const double width =
-		std::min(layout().world.w / globalContainer->gfx->logicalUnitsPerPoint() - 16, 560.0) - 64;
+		(std::min(layout().world.w / globalContainer->gfx->logicalUnitsPerPoint() - 16, 560.0) - 64) /
+		InGameTouchTheme::textGrowth();
 	if (text == tutorialText && width == tutorialWidth)
 		return;
 	tutorialCollapsed = false;
@@ -393,16 +395,20 @@ void GameGUITouch::drawTutorial()
 	const double footerHeight = gui.swallowSpaceKey ? 48 * unit : 0;
 	SDL_Rect clip{int(rect.x), int(rect.y), int(rect.w - 48 * unit),
 				  int(std::max(0.0, rect.h - footerHeight))};
-	const size_t first = std::min(tutorialLines.size(), size_t(std::max(0.0, tutorialScroll) / 24));
-	gfx->setUITransform(1.0 * unit, rect.x + 8 * unit,
-						rect.y + (8 - tutorialScroll + first * 24) * unit, &clip);
-	const size_t end = std::min(tutorialLines.size(), first + size_t(rect.h / unit / 24) + 1);
+	// Lines are tutorialLine authored pixels apart and drawn at the text unit,
+	// so they sit tutorialPitch() points apart.
+	const double pitch = InGameTouchTheme::tutorialPitch();
+	const size_t first = std::min(tutorialLines.size(), size_t(std::max(0.0, tutorialScroll) / pitch));
+	gfx->setUITransform(gfx->textUnitsPerPoint(), rect.x + 8 * unit,
+						rect.y + (8 - tutorialScroll + first * pitch) * unit, &clip);
+	const size_t end = std::min(tutorialLines.size(), first + size_t(rect.h / unit / pitch) + 1);
 	for (size_t i = first; i < end; ++i)
-		gfx->drawString(0, int((i - first) * 24), globalContainer->standardFont, tutorialLines[i]);
+		gfx->drawString(0, int((i - first) * InGameTouchTheme::tutorialLine), globalContainer->standardFont,
+						tutorialLines[i]);
 	gfx->setUITransform();
 	gfx->setClipRect();
 	const double textHeight = std::max(1.0, rect.h - footerHeight),
-				 content = tutorialLines.size() * 24 * unit;
+				 content = tutorialLines.size() * pitch * unit;
 	if (content > textHeight)
 	{
 		gfx->drawFilledRect(int(rect.x + rect.w - 3 * unit),
@@ -416,7 +422,9 @@ void GameGUITouch::drawTutorial()
 		gfx->drawFilledRect(int(rect.x), int(rect.y + rect.h - 48 * unit), int(rect.w),
 							int(48 * unit), InGameTouchTheme::selected);
 		SDL_Rect footer{int(rect.x), int(rect.y + rect.h - 48 * unit), int(rect.w), int(48 * unit)};
-		gfx->setUITransform(1.0 * unit, rect.x + 12 * unit, rect.y + rect.h - 32 * unit, &footer);
+		// 16 points below the footer's top at the authored size, centred as text grows.
+		gfx->setUITransform(gfx->textUnitsPerPoint(), rect.x + 12 * unit,
+							rect.y + rect.h - (24 + 8 * InGameTouchTheme::textGrowth()) * unit, &footer);
 		gfx->drawString(0, 0, globalContainer->standardFont,
 						Toolkit::getStringTable()->getString("[ok]"));
 		gfx->setUITransform();
@@ -458,13 +466,13 @@ std::vector<std::string> GameGUITouch::pointLines(const std::string &text, doubl
 	auto *font = globalContainer->standardFont;
 	InGameTouchTheme::TextStyle textStyle(font);
 	return wrapTouchText(font, text,
-						 width / (textScale * globalContainer->gfx->logicalUnitsPerPoint()) - 8);
+						 width / (textScale * globalContainer->gfx->textUnitsPerPoint()) - 8);
 }
 void GameGUITouch::drawPointLabel(ViewRect rect, const std::string &text, double textScale,
 								  bool leading)
 {
 	auto *gfx = globalContainer->gfx;
-	const double unit = textScale * gfx->logicalUnitsPerPoint();
+	const double unit = textScale * gfx->textUnitsPerPoint();
 	auto clipped = rect;
 	if (labelClip)
 	{

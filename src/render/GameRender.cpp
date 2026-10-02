@@ -27,6 +27,7 @@
 #include "Brush.h"
 #include "DynamicClouds.h"
 #include <OpaqueRectangleBatch.h>
+#include <RenderBatch.h>
 
 
 #include "GameRenderInternal.h"
@@ -184,9 +185,16 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 				   const BuildingGuiStateMap *buildingGuiState, bool animationsPaused,
 				   int cloudGridLimit)
 {
+    GAGCore::FrameDrawBatch frameBatch(globalContainer->gfx);
 	// Frozen while paused, so the water and the clouds hold still with the rest.
-	int &time = mapAnimationTime;
-	static DynamicClouds ds(&globalContainer->settings);
+	int &time = view.render.animationTime;
+	// Draw the scene the simulation published, else extract one now (serial callers).
+	if (!view.scene)
+	{
+		view.render.ownScene.tick = stepCounter;
+		view.render.ownScene.map.extract(map);
+	}
+	const Scene &scene = view.scene ? *view.scene : view.render.ownScene;
 	int left = (sx >> 5);
 	int top = (sy >> 5);
 	int right = ((sx + sw + 31) >> 5);
@@ -216,19 +224,20 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 	// Native opaque tile copies beat blending mixed-alpha chunks. Cache only
 	// transformed CPU passes, where batching and per-pixel opaque copies help.
 	const bool cacheEligible = frame.software && frame.target.hasPortableRenderer();
-	if (cacheEligible && !softwareTerrainCache)
+	SoftwareTerrainCache *softwareTerrainCache = nullptr;
+	if (cacheEligible)
 	{
 		try
 		{
-			softwareTerrainCache = std::make_unique<SoftwareTerrainCache>();
+			softwareTerrainCache = &view.render.terrainCache(scene.map.identity());
 		}
 		catch (const std::bad_alloc &)
 		{ /* Keep the uncached renderer available under memory pressure. */
 		}
 	}
 	bool cached =
-		cacheEligible && softwareTerrainCache &&
-		softwareTerrainCache->prepare(map, frame.terrain, frame.left, frame.top, frame.right,
+		softwareTerrainCache &&
+		softwareTerrainCache->prepare(scene.map, frame.terrain, frame.left, frame.top, frame.right,
 									  frame.bottom, frame.viewportX, frame.viewportY,
 									  frame.visibleTeams, frame.options & DRAW_WHOLE_MAP);
 	bool coveredWater = false;
@@ -249,14 +258,14 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 		softwareTerrainCache->draw(frame.target);
 	}
 	else
-		drawMapTerrain(left, top, right, bot, viewportX, viewportY, localTeam, drawOptions);
+		drawMapTerrain(left, top, right, bot, viewportX, viewportY, localTeam, drawOptions, scene.map);
 
 	// Pass adapters keep the two coordinate conventions in one place. Individual
 	// layers still own their visibility decisions and their original draw order.
-	const auto tilePass = [&](auto method)
+	const auto tilePass = [&](auto method, auto &&...state)
 	{
 		(this->*method)(frame.left, frame.top, frame.right, frame.bottom, frame.viewportX,
-						frame.viewportY, frame.localTeam, frame.options);
+						frame.viewportY, frame.localTeam, frame.options, state...);
 	};
 	const auto scenePass = [&](auto method, auto &&...state)
 	{
@@ -264,7 +273,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 						frame.viewportX, frame.viewportY, frame.localTeam, frame.options, state...);
 	};
 
-	tilePass(&Game::drawMapResources);
+	tilePass(&Game::drawMapResources, scene.map);
 	scenePass(&Game::drawMapGroundUnits, view);
 	scenePass(&Game::drawMapDebugAreas, view);
 	scenePass(&Game::drawMapGroundBuildings, visibleBuildings, buildingGuiState);
@@ -277,22 +286,22 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 	// Compute once for the independently selected cloud layers.
 	if (globalContainer->settings.cloudShadows || (globalContainer->settings.clouds && !(drawOptions & DRAW_NO_CLOUD_LAYER)))
 	{
-		ds.compute(viewportX, viewportY, sw, sh, time, map.getW(), map.getH(),
+		view.render.clouds().compute(viewportX, viewportY, sw, sh, time, map.getW(), map.getH(),
 		           globalContainer->settings.clouds && !(drawOptions & DRAW_NO_CLOUD_LAYER), cloudGridLimit);
 		if (globalContainer->settings.cloudShadows)
-			ds.render(globalContainer->gfx, sw, sh, DynamicClouds::SHADOW);
+			view.render.clouds().render(globalContainer->gfx, sw, sh, DynamicClouds::SHADOW);
 	}
 
-	scenePass(&Game::drawMapFogOfWar);
-	scenePass(&Game::drawMapAreas);
-	scenePass(&Game::drawMapOverlayMaps);
+	scenePass(&Game::drawMapFogOfWar, scene.map);
+	scenePass(&Game::drawMapAreas, view, scene.map);
+	scenePass(&Game::drawMapOverlayMaps, view);
 
 	scenePass(&Game::drawUnitPathLines, view);
 
 
 	// Draw clouds above the world independently of shadows.
 	if (!(drawOptions & DRAW_NO_CLOUD_LAYER) && globalContainer->settings.clouds)
-		ds.render(globalContainer->gfx, sw, sh, DynamicClouds::CLOUD);
+		view.render.clouds().render(globalContainer->gfx, sw, sh, DynamicClouds::CLOUD);
 
 	// Draw units that are off the screen for the selected building
 

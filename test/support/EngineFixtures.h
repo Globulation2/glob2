@@ -14,10 +14,21 @@
 #include "Unit.h"
 
 #include <functional>
+#include <optional>
 #include <string>
 
 namespace glob2test
 {
+	// Binds a game's synchronized stream on this thread, as the engine does around
+	// simulation entry points, for fixtures that call game functions directly. The
+	// stream continues from the current process stream, so fixtures that seed with
+	// setSyncRandSeed before building the game keep their sequences.
+	struct BoundGameRandom
+	{
+		explicit BoundGameRandom(Game& game) : scope((game.syncRandom = syncRandEngine(), game.syncRandom)) {}
+		SyncRandScope scope;
+	};
+
 	struct GlobalsOptions
 	{
 		bool display = false;        // create a real window and load graphics
@@ -74,6 +85,9 @@ namespace glob2test
 
 		GameGUI gui;
 		Game& game;
+		// Binds the game's synchronized stream for the test's lifetime, so fixture code
+		// that calls game functions directly draws from the game, as the engine does.
+		std::optional<BoundGameRandom> random;
 		Team* team = nullptr;
 		int parked = 0;
 
@@ -85,7 +99,8 @@ namespace glob2test
 		Building* addBuilding(const char* typeName, int x, int y, int level = 0, int teamNumber = 0);
 		// A unit at (x, y), or parked on a free tile in the lower-right quadrant.
 		Unit* addUnit(int typeNum, int x = -1, int y = -1, int teamNumber = 0, int level = 0);
-		// One simulation tick per call: Game::syncStep for the local team.
+		// One simulation tick per call: Game::syncStep for the local team, then
+		// GameGUI::consumeClientEvents as the engine does.
 		void step(int ticks = 1);
 		Uint32 checksum();
 	};

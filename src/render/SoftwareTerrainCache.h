@@ -6,7 +6,7 @@
 #include <memory>
 #include <vector>
 
-class Map;
+class SceneMap;
 // Presentation-only state. It never participates in saves, orders or checksums.
 class SoftwareTerrainCache
 {
@@ -50,7 +50,7 @@ class SoftwareTerrainCache
 
   public:
 	bool enabled = true; // Benchmark switch, not a saved gameplay preference.
-	bool prepare(const Map &map, GAGCore::Sprite &terrain, int left, int top, int right, int bottom,
+	bool prepare(const SceneMap &map, GAGCore::Sprite &terrain, int left, int top, int right, int bottom,
 				 int viewportX, int viewportY, Uint32 visibleTeams, bool wholeMap);
 	void draw(GAGCore::GraphicContext &target);
 	std::vector<SDL_Rect> waterRegions(SDL_Rect bounds) const;

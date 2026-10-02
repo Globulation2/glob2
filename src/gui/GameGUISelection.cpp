@@ -9,30 +9,18 @@
 #include "GameGUIInternal.h"
 #include "GlobalContainer.h"
 #include "Unit.h"
+#include "EngineTiming.h"
 
 void GameGUI::cleanOldSelection(void)
 {
-	if (selectionMode==BUILDING_SELECTION)
-	{
-		if (view.selectedBuilding)
-			view.selectedBuilding->setRecordFailingUnits(false);
-		view.selectedBuilding=NULL;
-	}
-	else if (selectionMode==UNIT_SELECTION)
-	{
-		view.selectedUnit=NULL;
-	}
-	else if (selectionMode==BRUSH_SELECTION)
-	{
+	// Failing-unit recording follows the published observed building; the
+	// simulation switches it at the next tick boundary (Game::applyClientRequests).
+	if ((selectionMode==BRUSH_SELECTION) || (selectionMode==TOOL_SELECTION))
 		toolManager.deactivateTool();
-	}
-	else if (selectionMode==TOOL_SELECTION)
-	{
-		toolManager.deactivateTool();
-	}
 	// Drop any payload so the about-to-be-set mode starts from monostate; the
 	// payload-bearing setters below re-establish the matching alternative.
 	selection = std::monostate{};
+	syncSelectionView();
 }
 
 void GameGUI::setSelection(SelectionMode newSelMode, unsigned newSelection)
@@ -47,26 +35,19 @@ void GameGUI::setSelection(SelectionMode newSelMode, unsigned newSelection)
 	{
 		int id=Building::GIDtoID(newSelection);
 		int team=Building::GIDtoTeam(newSelection);
-		Building* b=game.teams[team]->myBuildings[id];
-		if (view.selectedBuilding && view.selectedBuilding!=b)
-			view.selectedBuilding->setRecordFailingUnits(false);
-		selection=b;
-		view.selectedBuilding=b;
-		if (b)
-			b->setRecordFailingUnits(true);
+		selection=Game::refOf(game.teams[team]->myBuildings[id]);
 	}
 	else if (selectionMode==UNIT_SELECTION)
 	{
 		int id=Unit::GIDtoID(newSelection);
 		int team=Unit::GIDtoTeam(newSelection);
-		Unit* u=game.teams[team]->myUnits[id];
-		selection=u;
-		view.selectedUnit=u;
+		selection=Game::refOf(game.teams[team]->myUnits[id]);
 	}
 	else if (selectionMode==RESOURCE_SELECTION)
 	{
 		selection=static_cast<int>(newSelection);
 	}
+	syncSelectionView();
 }
 
 void GameGUI::setSelection(SelectionMode newSelMode, void* newSelection)
@@ -79,24 +60,40 @@ void GameGUI::setSelection(SelectionMode newSelMode, void* newSelection)
 
 	if (selectionMode==BUILDING_SELECTION)
 	{
-		Building* b=(Building*)newSelection;
-		if (view.selectedBuilding && view.selectedBuilding!=b)
-			view.selectedBuilding->setRecordFailingUnits(false);
-		selection=b;
-		view.selectedBuilding=b;
-		if (b)
-			b->setRecordFailingUnits(true);
+		selection=Game::refOf(static_cast<Building*>(newSelection));
 	}
 	else if (selectionMode==UNIT_SELECTION)
 	{
-		Unit* u=(Unit*)newSelection;
-		selection=u;
-		view.selectedUnit=u;
+		selection=Game::refOf(static_cast<Unit*>(newSelection));
 	}
 	else if (selectionMode==TOOL_SELECTION)
 	{
 		toolManager.activateBuildingTool((char*)(newSelection));
 	}
+	syncSelectionView();
+}
+
+// These tolerate the transient state inside setSelection/cleanOldSelection,
+// where selectionMode still names the old mode but the payload is cleared.
+Building* GameGUI::selectedBuildingOrNull() const
+{
+	const BuildingRef *ref = std::get_if<BuildingRef>(&selection);
+	return (selectionMode==BUILDING_SELECTION && ref) ? game.resolveBuilding(*ref) : nullptr;
+}
+
+Unit* GameGUI::selectedUnitOrNull() const
+{
+	const UnitRef *ref = std::get_if<UnitRef>(&selection);
+	return (selectionMode==UNIT_SELECTION && ref) ? game.resolveUnit(*ref) : nullptr;
+}
+
+void GameGUI::syncSelectionView(void)
+{
+	view.selectedBuilding=selectedBuildingOrNull();
+	view.selectedUnit=selectedUnitOrNull();
+	const BuildingRef *observed = std::get_if<BuildingRef>(&selection);
+	clientRequests.publishObservedBuilding(
+		(selectionMode==BUILDING_SELECTION && observed) ? *observed : BuildingRef());
 }
 
 // Validate the current selection's referent and clear it if the referent is gone.
@@ -105,11 +102,11 @@ void GameGUI::setSelection(SelectionMode newSelMode, void* newSelection)
 // validation here rather than in draw functions — draws should be pure.
 void GameGUI::checkSelection(void)
 {
-	if ((selectionMode==BUILDING_SELECTION) && (view.selectedBuilding==NULL))
+	if ((selectionMode==BUILDING_SELECTION) && (selectionBuilding()==NULL))
 	{
 		clearSelection();
 	}
-	else if ((selectionMode==UNIT_SELECTION) && (view.selectedUnit==NULL))
+	else if ((selectionMode==UNIT_SELECTION) && (selectionUnit()==NULL))
 	{
 		clearSelection();
 	}
@@ -118,21 +115,24 @@ void GameGUI::checkSelection(void)
 	{
 		clearSelection();
 	}
+	else
+	{
+		syncSelectionView();
+	}
 }
 
 
 // Cycle the local team's selection forward to the next building or unit of
-// the same type, wrapping at MAX_COUNT. No-op when the selection cache is
-// stale (e.g. the selected building was destroyed in the previous sim tick
-// and the keyboard shortcut fires before checkSelection() runs at draw time),
+// the same type, wrapping at MAX_COUNT. No-op when the selected entity is
+// gone (e.g. the selected building was destroyed in the previous sim tick
+// and the keyboard shortcut fires before the next draw),
 // when no peer of the same type exists, or when the selected entity is not
 // owned by the local team. Invoked from the local keyboard handler only —
 // never produces a network order, never reads RNG, never mutates sim state.
 void GameGUI::iterateSelection(void)
 {
-	// Destruction clears the live view pointer, but the cached payload can
-	// still point to freed memory until the next draw. Validate before either
-	// the building or unit branch dereferences that payload.
+	// The selected entity may have died since the last draw; clear the
+	// selection first so neither branch below sees a null referent.
 	checkSelection();
 
 	if (selectionMode==BUILDING_SELECTION)
@@ -241,30 +241,16 @@ void GameGUI::centerViewportOnSelection(void)
 }
 
 
-// Called from the sim path (Team::syncStep) when a unit is about to be
-// deleted. Clears the GUI's selected-unit pointer if it referred to the
-// dying unit. The sim never reads view.selectedUnit directly — going
-// through this hook keeps the per-client GUI read out of the sim path,
-// where a divergent predicate could become a desync if anyone extended
-// the branch with sim-touching code.
-void GameGUI::onUnitDestroyed(Unit *u)
+void GameGUI::consumeClientEvents()
 {
-	if (view.selectedUnit == u)
-		view.selectedUnit = NULL;
+	clientEvents.drain([this](ClientEventVariant&& event) { handleClientEvent(std::move(event)); });
+	// Age undelivered GameEvents exactly as Team::updateEvents did before the
+	// client owned them: drop those older than GAME_EVENT_MAX_AGE_TICKS
+	// relative to the last simulated tick.
+	const ClientEvents::TickPulse pulse = clientEvents.pulse();
+	if (pulse.valid)
+		for (auto &queue : pendingTeamEvents)
+			while (!queue.empty() && (pulse.tick - queue.front().getStep()) > GAME_EVENT_MAX_AGE_TICKS)
+				queue.pop_front();
+	syncSelectionView();
 }
-
-// Mirror of onUnitDestroyed for building demolition. See that comment.
-void GameGUI::onBuildingDestroyed(Building *b)
-{
-	if (view.selectedBuilding == b)
-		view.selectedBuilding = NULL;
-
-	// Drop this building's pending GUI shadow. buildingGuiState is keyed by
-	// gid, and gids are recycled by Game::addBuilding (lowest free slot), so a
-	// leftover entry would be inherited by the next building created on the
-	// same slot. For a dragged-then-destroyed flag that left pendingPosX/Y set,
-	// a freshly placed flag reusing the gid would render at the dead flag's
-	// position while the simulation used the real posX/posY.
-	buildingGuiState.erase(b->gid);
-}
-
