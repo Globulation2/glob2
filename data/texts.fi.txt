@@ -1434,8 +1434,8 @@ Joen leveys
 Hiekan painotus
 [Select a valid map.]
 Valitse kelvollinen kartta.
-[Shared control needs a free controller slot (maximum 12).]
-Jaettu hallinta vaatii vapaan paikan pelaajalle tai tekoälylle (enintään 12).
+[Shared control needs a free controller slot (maximum %0).]
+Jaettu hallinta vaatii vapaan paikan pelaajalle tai tekoälylle (enintään %0).
 [Smoothing]
 Tasoitus
 [Standard]
@@ -3072,8 +3072,6 @@ Pienoiskartta
 Pikakelaus
 [Hide keyboard]
 Piilota näppäimistö
-[Dialog text size]
-Valintaikkunoiden tekstikoko
 [Player slot]
 Pelaajapaikka
 [Team color]
@@ -3412,8 +3410,6 @@ Voittomahdollisuus: %0 · Vahvuus: %1
 Alin vaadittu taso: %0
 [Confirm %0]
 Ok: %0
-[Dialog text size %0]
-Valintaikkunoiden tekstikoko: %0%
 [%0 %1]
 %0 %1
 [resume game]

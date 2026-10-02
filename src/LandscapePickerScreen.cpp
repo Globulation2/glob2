@@ -416,7 +416,9 @@ Element LandscapePickerScreen::tile(int i, const Presentation &p, bool compact)
 		box.color = theme().palette.disabled;
 		box.shadow = false;
 		box.padding = p.pt(12);
-		picture = fe::sized({image, image}, fe::card(fe::paragraph(incompatible[std::size_t(i)], {fe::FontRole::Support, true}), box));
+		// At least the preview's square, taller when the explanation needs it.
+		picture = fe::constrained({image, image, image, fe::Constraints::Unbounded},
+								  fe::card(fe::paragraph(incompatible[std::size_t(i)], {fe::FontRole::Support, true}), box));
 	}
 	else if (tileState.widget && tileState.widget->isThumbnailLoaded())
 	{
@@ -466,7 +468,8 @@ Element LandscapePickerScreen::tile(int i, const Presentation &p, bool compact)
 							 [widget](fe::Canvas &c, fe::Rect r, const fe::Frame &)
 							 {
 								 widget->setScreenRectangle(r.x, r.y, r.w, r.h);
-								 widget->paint(c.surface());
+								 if (auto *surface = c.surface()) // null on a recording canvas
+									 widget->paint(surface);
 							 },
 							 options);
 		note = std::to_string(widget->getLastWidth()) + " x " + std::to_string(widget->getLastHeight()) + "  /  " +

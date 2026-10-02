@@ -107,7 +107,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 		return false;
 	bool consumed = false;
 	if (event && event->type != SDL_USEREVENT)
-		consumed = gameMenuScreen->event(*event);
+		consumed = gameMenuScreen->eventLogical(*event);
 	if (!gameMenuScreen->finished())
 		return consumed;
 	const int result = gameMenuScreen->result();
@@ -184,7 +184,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					if (playerMask[mi]&(1<<pi))
 					{
 						// player is set, set team
-						teamMask[mi]|=(1<<otherTeam);
+						teamMask[mi]|=(Team::teamNumberToMask(otherTeam));
 					}
 				}
 			}
