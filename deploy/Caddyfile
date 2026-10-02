@@ -1,9 +1,10 @@
 # Public edge of the platform stack (deploy/compose.yaml). See docs/hosting/README.md.
 #
-#   /api/*, /realtime, /signin, /auth/*, /.well-known/*   platform-api (any replica)
+#   /api/*, /realtime, /signin, /auth/*, /.well-known/*,
+#   /j/<code> (invite pages)                               platform-api (any replica)
 #   /relay/<relay id>                                      that relay's match WebSocket
 #   /play/*                                                WebAssembly client (mounted at /srv/play)
-#   everything else                                        apps/web (invite links /j/<code> included)
+#   everything else                                        apps/web
 #   /internal/*, /healthz, /readyz, /metrics               never served publicly
 (tls-auto) {
 }
@@ -24,8 +25,11 @@
 	import tls-{$GLOB2_TLS_MODE:auto}
 	encode zstd gzip
 
+	# First: `handle` blocks are exclusive and run before a bare `respond`.
 	@private path /internal /internal/* /healthz /readyz /metrics
-	respond @private 404
+	handle @private {
+		respond 404
+	}
 
 	# Each relay registers wss://<domain>/relay/<relay id>; the id is its
 	# container name on the backend network. Only single-label names (no dots)
@@ -40,7 +44,7 @@
 		}
 	}
 
-	@platform path /api/* /realtime /signin /signin/* /auth/* /.well-known/*
+	@platform path /api/* /realtime /signin /signin/* /auth/* /.well-known/* /j/*
 	handle @platform {
 		# Every platform-api replica, re-resolved as replicas come and go.
 		reverse_proxy {

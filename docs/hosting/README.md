@@ -13,10 +13,10 @@ their own stack, `deploy/compose.legacy.yaml`, described in
 ## The stack
 
 ```
-             internet ── 80/443 ──► caddy ─┬─ /api /realtime /signin /auth /.well-known ─► platform-api ×N ─┐
-                                           ├─ /relay/<relay id> (WebSocket) ───────────► relay ×N ──────────┤ /internal (backend only)
-                                           ├─ /play/  WebAssembly client (static)                           │
-                                           └─ /       web app, invite links /j/<code> (static)              ▼
+             internet ── 80/443 ──► caddy ─┬─ /api /realtime /signin /auth /.well-known /j ─► platform-api ×N ─┐
+                                           ├─ /relay/<relay id> (WebSocket) ──────────────► relay ×N ──────────┤ /internal (backend only)
+                                           ├─ /play/  WebAssembly client (static)                              │
+                                           └─ /       web app (static)                                         ▼
   platform-worker ×1..N ── postgres 16 ◄── engine-agent ×N (one image per sim version) ◄── blob volume ──► platform-api
 ```
 
@@ -105,8 +105,8 @@ cp ../platform/instance.example.yaml instance.yaml
    docker compose exec caddy cat /data/caddy/pki/authorities/local/root.crt > glob2-local-ca.crt
    ```
 
-6. Make yourself an administrator: sign in once (as a guest or with a provider),
-   then
+6. Make yourself an administrator: sign in once with a provider or a local account
+   (guests cannot be administrators), then
 
    ```sh
    docker compose run --rm --no-deps platform-api platform admin grant "<display name or account id>"
@@ -155,15 +155,21 @@ balancer must allow WebSocket upgrades and idle connections of at least 60 secon
 
 | Path | Goes to |
 | --- | --- |
-| `/api/*`, `/realtime`, `/signin`, `/signin/*`, `/auth/*`, `/.well-known/*` | `platform-api`, round robin over healthy replicas |
+| `/api/*`, `/realtime`, `/signin`, `/signin/*`, `/auth/*`, `/.well-known/*`, `/j/*` (invite pages) | `platform-api`, round robin over healthy replicas |
 | `/relay/<relay id>` | that relay's WebSocket (path rewritten to `/relay`) |
 | `/play/*` | the WebAssembly client, `GLOB2_WEB_CLIENT_DIR` |
-| everything else, including `/j/<code>` invite links | the web app (single-page app with `index.html` fallback) |
+| everything else | the web app (single-page app with `index.html` fallback) |
 | `/internal/*`, `/healthz`, `/readyz`, `/metrics` | `404` at the edge |
 
-`/internal` is the relays' API. It is served by `platform-api` on the backend
-network only; relays reach it at `http://platform-api:8080` with their bearer key.
-Caddy never forwards it.
+`/internal` is the relays' API (registration, heartbeats, match setup, record
+upload, match end; see [rooms and matches](../multiplayer/rooms-and-matches.md#internal-api-for-relays)).
+It is served by `platform-api` on the backend network only; relays reach it at
+`http://platform-api:8080` with their bearer key, and fetch the JWKS from there
+too. Caddy never forwards it.
+
+Invite links `https://<origin>/j/<code>` are small pages rendered by the API; their
+"Play in browser" button opens `web.browserClientUrl` from `instance.yaml`, which
+defaults to `<origin>/play/`.
 
 ## Configuration
 
@@ -185,6 +191,8 @@ its default.
 | `GLOB2_RELAY_REGION` | `default` | Region these relays report |
 | `GLOB2_RELAY_MAX_MATCHES` | `200` | Matches per relay |
 | `GLOB2_RELAY_DRAIN_SECONDS`, `GLOB2_RELAY_STOP_GRACE` | `1800`, `31m` | Longest relay drain, and Compose's stop timeout (keep it longer) |
+| `UPLOAD_MAX_BYTES`, `RECORD_MAX_BYTES` | 16 MiB, 64 MiB | Largest map/save upload, and largest match record |
+| `RELAY_KEYS` | unset | Extra relay keys, `<relayId>:<key>` comma-separated (relays on other hosts, rotation) |
 | `JWT_ACTIVE_KID` | unset | Signing key id, needed while several keys exist ([rotation](#signing-keys-and-rotation)) |
 | `LOG_LEVEL` | `info` | Platform log level |
 | `GLOB2_WEB_CLIENT_DIR` | `./web-client` | Built WebAssembly client for `/play/` |
@@ -295,12 +303,19 @@ verifying at once, which signs every player out and refuses tickets for matches 
 yet joined. Refresh tokens are opaque database rows, not JWTs, and are unaffected
 by key rotation; revoke them with the admin tools if accounts may be compromised.
 
-The relay key (`relay-secret` volume, `relay.key`) authenticates relays on
-`/internal`. To replace it, delete it and let `init` write a new one, then recreate
-the API and relays together:
-`docker compose run --rm --no-deps init rm /var/lib/glob2/relay/relay.key && docker compose up -d --force-recreate init platform-api relay`
-(relays re-register within seconds; running matches continue, but uploads retry
-until the relay holds the new key).
+The relay key (`relay-secret` volume, `relay.key`, read by the API as
+`RELAY_KEYS_FILE` and by relays as `GLOB2_RELAY_KEY_FILE`) authenticates relays on
+`/internal`. The API accepts every key in that file and in `RELAY_KEYS`, so rotate
+without interruption:
+
+```sh
+# 1. Keep accepting the current key while relays switch.
+echo "RELAY_KEYS=$(docker compose run --rm --no-deps -T init cat /var/lib/glob2/relay/relay.key)" >> .env
+docker compose run --rm --no-deps init rm /var/lib/glob2/relay/relay.key
+docker compose up -d --force-recreate init platform-api   # init writes a new relay.key
+# 2. Replace the relays (drain them as in "Draining relays"), then drop the old key.
+sed -i '/^RELAY_KEYS=/d' .env && docker compose up -d platform-api
+```
 
 ## Scaling
 
@@ -377,7 +392,7 @@ without downtime instead:
 ```sh
 old=$(docker compose ps -q relay)
 docker compose up -d --no-recreate --scale relay=$((2 * ${GLOB2_RELAY_REPLICAS:-1})) relay   # new relays start, register
-docker stop --time 1860 $old   # each old relay drains: no new matches, running matches finish
+docker stop --timeout 1860 $old   # each old relay drains: no new matches, running matches finish
 docker rm $old
 docker compose up -d relay     # back to GLOB2_RELAY_REPLICAS, all on the new image
 ```
@@ -488,12 +503,12 @@ python3 tests/deployment/platform_stack_smoke.py --log-dir artifacts/platform-st
 
 The smoke test builds the images, starts an isolated project with its own ports,
 volumes and `.env`, and checks: every service healthy and `init` successful; TLS
-from the local CA, HTTP redirect, the web app, `/j/` and `/play/`, and that
+from the local CA, HTTP redirect, the web app, invite pages at `/j/` and `/play/`, and that
 `/internal`, `/healthz`, `/readyz` and `/metrics` are not public; the instance
 listing the agent's sim version; guest sign-in and `session.hello` over
 `/realtime` (and a foreign `Origin` refused); the JWKS against the key files and the
-token's `kid`; each relay reachable at `/relay/<id>` and unknown ids refused; relay
-registration with the platform; and a `generate-map` job run by the engine agent
+token's `kid`; each relay registered with the platform under its public URL,
+reachable at `/relay/<id>`, and unknown ids refused; and a `generate-map` job run by the engine agent
 with the real binary, applied by the worker and stored as a blob. It then removes
 the project and its volumes. `--no-build --tag <tag>` reuses built images; `--keep`
 leaves the stack running. CI runs it when `deploy/`, `tests/deployment/`,
