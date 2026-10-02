@@ -25,11 +25,11 @@ void copyRGBA(SDL_Surface *source, SDL_Surface *target, SDL_Rect destination)
 	SDL_SetSurfaceColorMod(source, 255, 255, 255);
 	SDL_SetSurfaceBlendMode(source, SDL_BLENDMODE_NONE);
 	SDL_SetSurfaceAlphaMod(source, 255);
-	const int result = SDL_BlitSurface(source, nullptr, target, &destination);
+	const bool result = SDL_BlitSurface(source, nullptr, target, &destination);
 	SDL_SetSurfaceBlendMode(source, blend);
 	SDL_SetSurfaceAlphaMod(source, alpha);
 	SDL_SetSurfaceColorMod(source, r, g, b);
-	if (result < 0)
+	if (!result)
 		throw std::runtime_error(SDL_GetError());
 }
 // A CPU-only view owns its SDL descriptor, but borrows immutable chunk pixels.
@@ -39,9 +39,8 @@ class OpaqueView final : public GAGCore::DrawableSurface
   public:
 	OpaqueView(SDL_Surface *owner, SDL_Rect rect)
 	{
-		sdlsurface = SDL_CreateRGBSurfaceWithFormatFrom(
-			static_cast<char *>(owner->pixels) + rect.y * owner->pitch + rect.x * 4, rect.w, rect.h,
-			32, owner->pitch, owner->format->format);
+		sdlsurface = SDL_CreateSurfaceFrom(rect.w, rect.h, owner->format,
+			static_cast<char *>(owner->pixels) + rect.y * owner->pitch + rect.x * 4, owner->pitch);
 		if (!sdlsurface)
 			throw std::runtime_error(SDL_GetError());
 		opaquePixels = true;
@@ -166,7 +165,7 @@ bool SoftwareTerrainCache::prepare(const SceneMap &map, GAGCore::Sprite &terrain
 				{
 					auto *target = entry->image->getSDLSurface();
 					entry->valid = false;
-					if (SDL_FillRect(target, nullptr, 0) < 0)
+					if (!SDL_FillSurfaceRect(target, nullptr, 0))
 						throw std::runtime_error(SDL_GetError());
 					entry->opaqueRuns.clear();
 					for (int y = 0; y < ChunkTiles; ++y)
@@ -214,7 +213,7 @@ void SoftwareTerrainCache::draw(GAGCore::GraphicContext &target)
 		{
 			SDL_Rect destination{copy.x + run.rect.x, copy.y + run.rect.y, run.rect.w, run.rect.h},
 				visible;
-			if (SDL_IntersectRect(&destination, &paintBounds, &visible))
+			if (SDL_GetRectIntersection(&destination, &paintBounds, &visible))
 				target.drawSurface(visible.x, visible.y, run.image.get(), visible.x - destination.x,
 								   visible.y - destination.y, visible.w, visible.h);
 		}
@@ -225,7 +224,7 @@ void SoftwareTerrainCache::draw(GAGCore::GraphicContext &target)
 				if (!image || image->hasOpaquePixels())
 					continue;
 				SDL_Rect destination{copy.x + x * 32, copy.y + y * 32, 32, 32}, visible;
-				if (SDL_IntersectRect(&destination, &paintBounds, &visible))
+				if (SDL_GetRectIntersection(&destination, &paintBounds, &visible))
 					target.drawSurface(visible.x, visible.y, image, visible.x - destination.x,
 									   visible.y - destination.y, visible.w, visible.h);
 			}
@@ -239,13 +238,13 @@ std::vector<SDL_Rect> SoftwareTerrainCache::waterRegions(SDL_Rect bounds) const
 		{
 			SDL_Rect destination{copy.x + run.rect.x, copy.y + run.rect.y, run.rect.w, run.rect.h},
 				coverage;
-			if (!SDL_IntersectRect(&destination, &paintBounds, &coverage))
+			if (!SDL_GetRectIntersection(&destination, &paintBounds, &coverage))
 				continue;
 			std::vector<SDL_Rect> next;
 			for (const auto &region : remaining)
 			{
 				SDL_Rect cut;
-				if (!SDL_IntersectRect(&region, &coverage, &cut))
+				if (!SDL_GetRectIntersection(&region, &coverage, &cut))
 				{
 					next.push_back(region);
 					continue;

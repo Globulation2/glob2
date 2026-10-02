@@ -13,7 +13,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from tools.release.windows_runtime import ASSET_DIRS as ASSET_DIRS, imports, stage_assets, stage_dlls
 
 
-def stage(source: Path, executable: Path, runtime: Path, output: Path) -> None:
+def stage(source: Path, executable: Path, runtime: Path, output: Path, sdl_runtime: Path | None = None) -> None:
     if output.exists():
         raise ValueError(f"Output already exists: {output}")
     if not executable.is_file():
@@ -24,7 +24,11 @@ def stage(source: Path, executable: Path, runtime: Path, output: Path) -> None:
     output.mkdir(parents=True)
     shutil.copy2(executable, output / "glob2.exe")
     stage_assets(source, output)
-    stage_dlls(executable, [runtime], output, inspect=imports)
+    runtimes = [executable.resolve().parent, runtime]
+    if sdl_runtime:
+        runtimes.insert(0, sdl_runtime)
+    stage_dlls(executable, runtimes, output, inspect=imports)
+
 
     manifest = output / "SHA256SUMS.txt"
     with manifest.open("w", encoding="utf-8", newline="\n") as stream:
@@ -42,9 +46,10 @@ def main() -> None:
     parser.add_argument("--source", type=Path, required=True)
     parser.add_argument("--exe", type=Path, required=True)
     parser.add_argument("--runtime", type=Path, required=True)
+    parser.add_argument("--sdl-runtime", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
-    stage(args.source.resolve(), args.exe.resolve(), args.runtime.resolve(), args.output.resolve())
+    stage(args.source.resolve(), args.exe.resolve(), args.runtime.resolve(), args.output.resolve(), args.sdl_runtime.resolve() if args.sdl_runtime else None)
 
 
 if __name__ == "__main__":

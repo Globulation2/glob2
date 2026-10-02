@@ -9,7 +9,7 @@
 #include "ScriptEditorScreen.h"
 #include "Unit.h"
 #include "Utilities.h"
-#include "SDLCompat.h"
+#include <SDL3/SDL.h>
 
 BrushSelector::BrushSelector(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, BrushTool& brushTool)
 	: MapEditorWidget(me, area, group, name, action), brushTool(brushTool)

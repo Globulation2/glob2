@@ -36,7 +36,8 @@ bool FlagMap::load(GAGCore::InputStream *stream, Player *player, Sint32 versionM
 {
 	stream->readEnterSection("FlagMap");
 	stream->readEnterSection("flagmap");
-	Uint32 size=stream->readUint32("size");
+	Uint32 size=stream->readCount("size");
+	if (size != static_cast<Uint32>(player->map->getW()*player->map->getH())) return false;
 	flagmap.resize(size);
 	for (Uint32 flagmap_index = 0; flagmap_index < size; flagmap_index++)
 	{
@@ -46,6 +47,7 @@ bool FlagMap::load(GAGCore::InputStream *stream, Player *player, Sint32 versionM
 	}
 	stream->readLeaveSection();
 	width=stream->readUint32("width");
+	if (width != player->map->getW()) return false;
 	stream->readLeaveSection();
 	return true;
 }
@@ -118,7 +120,7 @@ bool BuildingRegister::load(GAGCore::InputStream *stream, Player *player, Sint32
 	stream->readEnterSection("BuildingRegister");
 
 	stream->readEnterSection("pending_buildings");
-	Uint32 pending_size=stream->readUint32("size");
+	Uint32 pending_size=stream->readCount("size");
 	for(Uint32 pending_index=0; pending_index<pending_size; ++pending_index)
 	{
 		stream->readEnterSection(pending_index);
@@ -133,7 +135,7 @@ bool BuildingRegister::load(GAGCore::InputStream *stream, Player *player, Sint32
 	stream->readLeaveSection();
 
 	stream->readEnterSection("found_buildings");
-	Uint32 found_size=stream->readUint32("size");
+	Uint32 found_size=stream->readCount("size");
 	for(Uint32 found_index=0; found_index<found_size; ++found_index)
 	{
 		stream->readEnterSection(found_index);
@@ -142,6 +144,7 @@ bool BuildingRegister::load(GAGCore::InputStream *stream, Player *player, Sint32
 		Uint32 ypos=stream->readUint32("ypos");
 		Uint32 building_type=stream->readUint32("building_type");
 		Uint32 gid=stream->readUint32("gid");
+		if (gid >= ::Building::MAX_COUNT * Team::MAX_COUNT || ::Building::GIDtoTeam(gid) != player->team->teamNumber) return false;
 		Uint8 upgrade_status=stream->readUint8("upgrade_status");
 		tribool t;
 		if(upgrade_status==AI_SHARED_RUNTIME_TRIBOOL_FALSE)

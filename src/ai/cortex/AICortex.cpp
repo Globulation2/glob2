@@ -154,7 +154,7 @@ bool AICortex::load(GAGCore::InputStream* stream, Player* player, Sint32 version
 		swarmKickstarted = stream->readUint8("swarmKickstarted");
 		policy.expandWantStreak_ = stream->readSint32("expandWantStreak");
 		stream->readEnterSection("unownedFlagSeen");
-		const Uint32 unownedCount = stream->readUint32("count");
+		const Uint32 unownedCount = stream->readCount("count");
 		if (unownedCount > Building::MAX_COUNT) return false;
 		unownedFlagSeen.clear();
 		for (Uint32 i=0; i<unownedCount; ++i)
@@ -166,7 +166,7 @@ bool AICortex::load(GAGCore::InputStream* stream, Player* player, Sint32 version
 		}
 		stream->readLeaveSection();
 		stream->readEnterSection("innFinishedTick");
-		const Uint32 count = stream->readUint32("count");
+		const Uint32 count = stream->readCount("count");
 		if (count > Building::MAX_COUNT) return false;
 		innFinishedTick.clear();
 		for (Uint32 i=0; i<count; ++i)
@@ -178,7 +178,7 @@ bool AICortex::load(GAGCore::InputStream* stream, Player* player, Sint32 version
 		}
 		stream->readLeaveSection();
 		stream->readEnterSection("orderQueue");
-		const Uint32 orders = stream->readUint32("count");
+		const Uint32 orders = stream->readCount("count");
 		if (orders > 65536) return false;
 		while (!orderQueue.empty()) orderQueue.pop();
 		for (Uint32 i=0; i<orders; ++i)

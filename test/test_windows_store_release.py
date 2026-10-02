@@ -27,20 +27,20 @@ class WindowsStoreReleaseTest(unittest.TestCase):
             destination.mkdir()
             exe = root / "glob2.exe"
             exe.write_bytes(b"test")
-            (dll_dir / "SDL2.dll").write_bytes(b"sdl")
+            (dll_dir / "SDL3.dll").write_bytes(b"sdl")
             (dll_dir / "libwinpthread-1.dll").write_bytes(b"thread")
 
             def imports(command, text):
                 name = Path(command[-1]).name
                 return {
-                    "glob2.exe": "DLL Name: KERNEL32.dll\nDLL Name: SDL2.dll\n",
-                    "SDL2.dll": "DLL Name: libwinpthread-1.dll\n",
+                    "glob2.exe": "DLL Name: KERNEL32.dll\nDLL Name: SDL3.dll\n",
+                    "SDL3.dll": "DLL Name: libwinpthread-1.dll\n",
                     "libwinpthread-1.dll": "DLL Name: KERNEL32.dll\n",
                 }[name]
 
             with patch("tools.release.windows_runtime.subprocess.check_output", side_effect=imports):
                 release.stage_dlls(exe, dll_dir, destination)
-            self.assertEqual({p.name for p in destination.iterdir()}, {"SDL2.dll", "libwinpthread-1.dll"})
+            self.assertEqual({p.name for p in destination.iterdir()}, {"SDL3.dll", "libwinpthread-1.dll"})
 
     def test_missing_non_system_dll_fails(self):
         with tempfile.TemporaryDirectory() as temporary:

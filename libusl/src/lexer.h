@@ -66,6 +66,7 @@ public:
 	
 	const Token& next()
 	{
+		if (++tokenCount > 65536) throw Exception(token.position, "Script token limit exceeded");
 		token = _next();
 		return token;
 	}
@@ -83,5 +84,6 @@ private:
 	
 public:
 	Token token;
+	size_t tokenCount = 0;
 };
 

@@ -4,7 +4,7 @@
 #include "Team.h"
 #include "Unit.h"
 #include "Building.h"
-#include <SDL_endian.h>
+#include <SDL3/SDL_endian.h>
 #include <cassert>
 #include <cstring>
 #include <vector>
@@ -37,13 +37,13 @@ void ChecksumSidecarWriter::writeBytes(const void* data, size_t size)
 
 void ChecksumSidecarWriter::writeU16(Uint16 v)
 {
-	v = SDL_SwapLE16(v);
+	v = SDL_Swap16LE(v);
 	writeBytes(&v, sizeof(v));
 }
 
 void ChecksumSidecarWriter::writeU32(Uint32 v)
 {
-	v = SDL_SwapLE32(v);
+	v = SDL_Swap32LE(v);
 	writeBytes(&v, sizeof(v));
 }
 

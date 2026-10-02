@@ -16,7 +16,7 @@
 Sector::Sector(Game *game)
 {
 	this->game=game;
-	this->map=&(game->map);
+	this->map=game ? &(game->map) : nullptr;
 }
 
 Sector::~Sector(void)
@@ -28,7 +28,7 @@ void Sector::setGame(Game *game)
 {
 	free();
 	this->game=game;
-	this->map=&(game->map);
+	this->map=game ? &(game->map) : nullptr;
 }
 
 void Sector::free(void)
@@ -60,7 +60,7 @@ bool Sector::load(GAGCore::InputStream *stream, Game *game, Sint32 versionMinor)
 	// destroy all actual bullets
 	free();
 	// read the number of bullets
-	Uint32 bulletCount = stream->readUint32("bulletCount");
+	Uint32 bulletCount = stream->readCount("bulletCount");
 	// read all the bullets
 	stream->readEnterSection("bullets");
 	for (Uint32 i=0; i<bulletCount; i++)
@@ -71,7 +71,7 @@ bool Sector::load(GAGCore::InputStream *stream, Game *game, Sint32 versionMinor)
 	}
 	stream->readLeaveSection();
 	this->game=game;
-	this->map=&(game->map);
+	this->map=game ? &(game->map) : nullptr;
 	return true;
 }
 

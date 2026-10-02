@@ -7,8 +7,8 @@
 
 #include <atomic>
 #include <queue>
-#include <SDL.h>
-#include <SDL_thread.h>
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_thread.h>
 #include <memory>
 #include <glob2/BuildConfig.h>
 
@@ -38,7 +38,7 @@ public:
 	//! thread used for recording
 	SDL_Thread *recordingThread;
 	//! Mutex for orders
-	SDL_mutex *ordersMutex;
+	SDL_Mutex *ordersMutex;
 	//! Queue of orders to be sent through the network
 	std::queue<std::shared_ptr<OrderVoiceData> > orders;
 	//! True when recording

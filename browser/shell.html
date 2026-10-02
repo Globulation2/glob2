@@ -186,7 +186,7 @@ Object.defineProperty(window, 'glob2Diagnostics', {value: Object.freeze({
       import:Module.importState || 'idle',
       persisting:Module.storage?.state === 'writing',
       persistence:Module.storage?.state || 'restoring',
-      audio:Module.SDL2?.audioContext?.state || 'inactive',
+      audio:Module.SDL3?.audioContext?.state || 'inactive',
       controls:controls()});
   },
   saves() {
@@ -213,8 +213,8 @@ function focusGame() {
   activateAudio();
 }
 function activateAudio() {
-  if (!Module.SDL2?.audioContext) return;
-  glob2ActivateAudio(Module.SDL2?.audioContext, error => Module.printErr('Audio activation failed: ' + error));
+  if (!Module.SDL3?.audioContext) return;
+  glob2ActivateAudio(Module.SDL3?.audioContext, error => Module.printErr('Audio activation failed: ' + error));
 }
 addEventListener('unhandledrejection', event => {
   glob2ActivateAudio.ignoreClosedRejection(event, Module.glob2Screen === 'exited');

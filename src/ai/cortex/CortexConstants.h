@@ -3,13 +3,13 @@
 
 #pragma once
 
-#include <SDL_stdinc.h>
+#include <SDL3/SDL_stdinc.h>
 
 // AICortex tunable constants and enums shared across the observation -> policy
 // -> action layers. Split out of CortexTypes.h (the umbrella public header) so
 // each header stays under 500 lines; CortexTypes.h includes this near the top,
 // before the POD struct definitions that use these size constants for their
-// fixed-shape arrays. Self-contained: depends on nothing but <SDL_stdinc.h>.
+// fixed-shape arrays. Self-contained: depends on nothing but <SDL3/SDL_stdinc.h>.
 
 namespace Cortex
 {

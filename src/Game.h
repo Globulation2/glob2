@@ -31,6 +31,7 @@ namespace GAGCore
 	class DrawableSurface;
 	class InputStream;
 	class OutputStream;
+	class ChunkedBuffer;
 }
 using namespace GAGCore;
 class GameGUI;
@@ -56,6 +57,7 @@ class OrderDelete;
 class OrderChangePriority;
 class OrderCancelDelete;
 class OrderConstruction;
+class OrderCancelConstruction;
 class SetAllianceOrder;
 class PlayerQuitsGameOrder;
 #ifndef YOG_SERVER_ONLY
@@ -136,6 +138,7 @@ struct DeferredGameSHA1
 	size_t sha1Offset = 0;
 	//! Stores the hash in contents, giving the bytes an inline-hashed save writes.
 	void apply(std::string& contents) const;
+	void apply(GAGCore::ChunkedBuffer& contents) const;
 };
 
 class Game
@@ -312,7 +315,7 @@ private:
 	///Clears existing game information, deleting the teams and players, in preparation of a new game.
 	void clearGame();
 
-	/// Look up a Building by its global ID. Returns nullptr if the slot is empty.
+	/// Validate an untrusted global ID; return nullptr for an invalid team or empty slot.
 	/// Collapses the gid → team-index → building-index → pointer decode that
 	/// would otherwise appear inline at every executeOrder caller.
 	Building* lookupBuilding(Uint16 gid) const;
@@ -339,7 +342,7 @@ private:
 	void executeChangePriority(const OrderChangePriority& order);
 	void executeCancelDelete(const OrderCancelDelete& order);
 	void executeConstruction(const OrderConstruction& order);
-	void executeCancelConstruction(const OrderConstruction& order);
+	void executeCancelConstruction(const OrderCancelConstruction& order);
 	void executeSetAlliance(const SetAllianceOrder& order);
 	/// Marks the leaving player's team dead only if no other player still
 	/// controls that team; either way, the leaving player slot becomes AI::NONE.

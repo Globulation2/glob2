@@ -13,6 +13,12 @@ must run the rendering and recovery suite. A direct GLES3 implementation could
 replace it behind the same interface if browser compatibility or measured
 performance requires that later.
 
+SDL3 creates contexts through Emscripten's HTML5 API. The browser implementation
+of `ApplicationHost::initializeOpenGLContext` runs the SDK's context-created
+callbacks before shared drawing uses legacy matrices and vertex arrays. Batched
+immediate-mode rectangles emit a color for each vertex, as required by that
+emulation layer.
+
 ## Ownership and lifecycle
 
 The browser host uses WebGL2 by default when the browser provides a
@@ -29,8 +35,9 @@ sources. Texture names begin at zero and cannot be used before allocation. Atlas
 coordinates use the atlas's actual normalization, including power-of-two textures.
 
 Viewport changes update the drawable, projection, clipping, and screen layouts at
-a frame boundary without replacing the context. One CSS pixel maps to one drawing
-buffer pixel.
+a frame boundary without replacing the context. SDL3 sizes high-density drawing
+buffers using browser pixel density; layout and input remain in CSS/window
+coordinates, with the display scale and user multiplier applied once.
 
 On context loss, the browser host suspends application execution. Restoration
 recreates compatibility shaders and streaming buffers, then asks the renderer to

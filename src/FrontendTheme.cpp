@@ -96,7 +96,7 @@ void FrontendTheme::onFrame()
 	// An unfocused visible menu still animates (including the gallery host).
 	SDL_Window *window = SDL_GetWindowFromID(globalContainer->gfx->windowID());
 	const bool visible = window && !(SDL_GetWindowFlags(window) & SDL_WINDOW_MINIMIZED);
-	colony->update(SDL_GetTicks64(), visible);
+	colony->update(SDL_GetTicks(), visible);
 }
 void FrontendTheme::background(DrawableSurface *s, bool panel, const SDL_Rect *content)
 {
@@ -116,10 +116,10 @@ void FrontendTheme::background(DrawableSurface *s, bool panel, const SDL_Rect *c
 						  int(std::ceil(fallback->getH() * scale))};
 			dest.x = (w - dest.w) / 2;
 			dest.y = (h - dest.h) / 2;
-			auto *fitted = SDL_CreateRGBSurfaceWithFormat(0, w, h, 32, SDL_PIXELFORMAT_RGBA32);
-			if (fitted && SDL_BlitScaled(fallback->getSDLSurface(), nullptr, fitted, &dest) == 0)
+			auto *fitted = SDL_CreateSurface(w, h, SDL_PIXELFORMAT_RGBA32);
+			if (fitted && SDL_BlitSurfaceScaled(fallback->getSDLSurface(), nullptr, fitted, &dest, SDL_SCALEMODE_NEAREST))
 				fittedFallback = std::make_unique<DrawableSurface>(fitted);
-			SDL_FreeSurface(fitted);
+			SDL_DestroySurface(fitted);
 		}
 		if (fittedFallback)
 			s->drawSurface(0, 0, fittedFallback.get());

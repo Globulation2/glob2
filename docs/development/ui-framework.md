@@ -52,10 +52,15 @@ two themes, translation and shared page builders. Screens contain a model and a
    before the host) or `onEvent()` (after), and does so for keys, not
    positions. Custom painting goes through `canvas()`, which hands the painter
    the arranged rectangle.
+   Batch native events with `GAGCore::EventQueue`, which owns SDL3 text-input
+   and composition strings. Use it also when deferring input to a gameplay
+   tick; SDL's temporary text pointers must not survive another event pump.
 9. **Dialogs are hosted, never looped.** A `UIDialog` is driven by its owner
    (`GameGUI`, `MapEdit`, `EndGameScreen`, a parent screen) through
-   `event()`, `update()`, `draw()` and `finished()/result()`. There is no
-   nested event loop and no captured background; the scrim and panel are
+   `event()`, `update()`, `draw()` and `finished()/result()`.
+   Mouse events passed to `event()` already use the owner's logical
+   coordinates; its input boundary converts SDL window coordinates once.
+   There is no nested event loop and no captured background; the scrim and panel are
    painted onto the owner's surface each frame.
 10. **Keep harness entry points semantic.** Expose what a test needs as a
     method on the screen (`selectTab`, `setServer`, `confirm`) rather than

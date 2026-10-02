@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "../Documents.h"
-#include <SDL_system.h>
+#include <SDL3/SDL_system.h>
 #include <jni.h>
 
 namespace {
 struct Activity {
-    JNIEnv* env = static_cast<JNIEnv*>(SDL_AndroidGetJNIEnv());
-    jobject object = env ? static_cast<jobject>(SDL_AndroidGetActivity()) : nullptr;
+    JNIEnv* env = static_cast<JNIEnv*>(SDL_GetAndroidJNIEnv());
+    jobject object = env ? static_cast<jobject>(SDL_GetAndroidActivity()) : nullptr;
     jclass type = object ? env->GetObjectClass(object) : nullptr;
     ~Activity() {
         if (env && env->ExceptionCheck()) env->ExceptionClear();

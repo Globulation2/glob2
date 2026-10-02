@@ -267,21 +267,17 @@ class ComposeTests(unittest.TestCase):
                 try:
                     client.request('GET', '/'+name, headers={'Accept-Encoding': encoding})
                     response = client.getresponse()
-                    # Caddy 2.10.2 adds Range: bytes=0- for precompressed files
-                    # to supply Content-Length. Accept only the complete sidecar,
-                    # never a truncated range or a partial identity response.
-                    if encoding == 'gzip' and response.status == 206:
-                        size = (assets/(name+'.gz')).stat().st_size
-                        self.assertEqual(response.getheader('Content-Range'), f'bytes 0-{size-1}/{size}')
-                        self.assertEqual(response.getheader('Content-Length'), str(size))
-                    else:
-                        self.assertEqual(response.status, 200)
+                    diagnostic = (f'{name}, Accept-Encoding={encoding}: '
+                                  f'{response.status} {response.reason}, headers={response.getheaders()}')
+                    self.assertEqual(response.status, 200, diagnostic)
+                    self.assertIsNone(response.getheader('Content-Range'), diagnostic)
                     self.assertIn('Accept-Encoding', response.getheader('Vary'))
                     self.assertEqual(response.getheader('Content-Encoding'), 'gzip' if encoding == 'gzip' else None)
                     self.assertIn('no-cache', response.getheader('Cache-Control'))
                     responses[encoding] = (response.read(), response.getheader('Content-Type'))
                 finally:
                     client.close()
+            self.assertEqual(responses['gzip'][0], (assets/(name + '.gz')).read_bytes(), name)
             self.assertEqual(gzip.decompress(responses['gzip'][0]), responses['identity'][0])
             self.assertEqual(responses['identity'][0], (assets/name).read_bytes())
             self.assertEqual(responses['identity'][1], responses['gzip'][1])

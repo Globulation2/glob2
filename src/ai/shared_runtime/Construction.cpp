@@ -2,6 +2,7 @@
 // Copyright (C) 2006 Bradley Arsenault
 
 #include "shared_runtime/Runtime.h"
+#include <memory>
 
 using namespace AISharedRuntime;
 using namespace AISharedRuntime::Construction;
@@ -9,38 +10,40 @@ using namespace AISharedRuntime::Construction;
 
 Constraint* Constraint::load_constraint(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
+	GAGCore::InputStream::NestedRead nesting(*stream);
 	stream->readEnterSection("Constraint");
-	ConstraintType type=static_cast<ConstraintType>(stream->readUint32("type"));
-	Constraint* constraint=NULL;
+	const Uint32 type=stream->readUint32("type");
+	std::unique_ptr<Constraint> constraint;
 	switch(type)
 	{
 		case CTMinimumDistance:
-			constraint=new MinimumDistance;
-			constraint->load(stream, player, versionMinor);
+			constraint.reset(new MinimumDistance);
+			if (!constraint->load(stream, player, versionMinor)) throw std::runtime_error("Invalid saved AI object");
 		break;
 		case CTMaximumDistance:
-			constraint=new MaximumDistance;
-			constraint->load(stream, player, versionMinor);
+			constraint.reset(new MaximumDistance);
+			if (!constraint->load(stream, player, versionMinor)) throw std::runtime_error("Invalid saved AI object");
 		break;
 		case CTMinimizedDistance:
-			constraint=new MinimizedDistance;
-			constraint->load(stream, player, versionMinor);
+			constraint.reset(new MinimizedDistance);
+			if (!constraint->load(stream, player, versionMinor)) throw std::runtime_error("Invalid saved AI object");
 		break;
 		case CTMaximizedDistance:
-			constraint=new MaximizedDistance;
-			constraint->load(stream, player, versionMinor);
+			constraint.reset(new MaximizedDistance);
+			if (!constraint->load(stream, player, versionMinor)) throw std::runtime_error("Invalid saved AI object");
 		break;
 		case CTCenterOfBuilding:
-			constraint=new CenterOfBuilding;
-			constraint->load(stream, player, versionMinor);
+			constraint.reset(new CenterOfBuilding);
+			if (!constraint->load(stream, player, versionMinor)) throw std::runtime_error("Invalid saved AI object");
 		break;
 		case CTSinglePosition:
-			constraint=new SinglePosition;
-			constraint->load(stream, player, versionMinor);
+			constraint.reset(new SinglePosition);
+			if (!constraint->load(stream, player, versionMinor)) throw std::runtime_error("Invalid saved AI object");
 		break;
 	}
 	stream->readLeaveSection();
-	return constraint;
+	if (!constraint) throw std::runtime_error("Unknown saved AI object type");
+	return constraint.release();
 }
 
 
