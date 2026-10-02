@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="17" failures="0" errors="0" skipped="0"><testsuite name="CastorContinuation"><testcase classname="CastorContinuation" name="Castor boot and active projects survive save-load" time="2.37216" status="run" />
+  <testcase classname="CastorContinuation" name="Castor seeded boot and active decisions repeat exactly" time="0.152102" status="run" />
+  <testcase classname="CastorContinuation" name="binary and text snapshots preserve project fields and cache history" time="0.029283" status="run" />
+  <testcase classname="CastorContinuation" name="historical timer-only AI saves remain readable" time="0.001853" status="run" />
+  </testsuite><testsuite name="JavaScriptCompatibility"><testcase classname="JavaScriptCompatibility" name="JavaScript current saves reject truncated generation tables" time="0.439805" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript current text saves validate unused generation counters" time="4.21078" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript pass assigns valid identities to released saves" time="0.187813" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript pass retains network protocol acceptance boundaries" time="0.000267" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript pass retains released replay and acceptance boundaries" time="0.244071" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript test environment scopes restore SDL and CRT readers" time="0" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript upgrade retains genuine master124 experiments and continuation" time="0.159921" status="run" />
+  </testsuite><testsuite name="JavaScriptSimulation"><testcase classname="JavaScriptSimulation" name="JavaScript conversion boundary resumes globals RNG references and complete tick records" time="2.49128" status="run" />
+  <testcase classname="JavaScriptSimulation" name="JavaScript economic planners and map survey execute, resume and replay 256 ticks" time="4.36559" status="run" />
+  <testcase classname="JavaScriptSimulation" name="JavaScript original fixture executes, resumes and replays 256 ticks" time="2.48213" status="run" />
+  </testsuite><testsuite name="OpaqueRectangleBatch"><testcase classname="OpaqueRectangleBatch" name="recovers from submission errors" time="0.182799" status="run" />
+    <testcase classname="OpaqueRectangleBatch" name="retains OpenGL pixels [display]" time="0.079981" status="run" />
+    <testcase classname="OpaqueRectangleBatch" name="retains portable renderer pixels [display]" time="0.07642" status="run" />
+  </testsuite></testsuites>

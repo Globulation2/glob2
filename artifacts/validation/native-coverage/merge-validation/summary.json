@@ -1,0 +1,24 @@
+{
+  "unit": {
+    "cases": 410,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "engine": {
+    "cases": 68,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "castor": {
+    "cases": 17,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "coverage_head": "f75ec91cec171f5ddd9f4a494bd228d1914b388f",
+  "castor_head": "847b061f17b28ff78853320ef3bc6a9743e75d66",
+  "platform": "macOS ARM64, Apple Clang/LLVM 21, optimized instrumented native build",
+  "limits": "Focused engine integration plus regular unit suite; original full-registry timeout remains open; remote CI is not asserted green."
+}
