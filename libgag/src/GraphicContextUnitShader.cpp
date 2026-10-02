@@ -24,8 +24,10 @@ namespace GAGCore
 			"#version 120\n"
 			"varying vec2 vBaseUV;\n"
 			"varying vec2 vTeamUV;\n"
+			"varying vec2 vHueAlpha;\n"
 			"void main()\n"
 			"{\n"
+		"	vHueAlpha = gl_MultiTexCoord2.st;\n"
 			"	vBaseUV = gl_MultiTexCoord0.st;\n"
 			"	vTeamUV = gl_MultiTexCoord1.st;\n"
 			"	gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;\n"
@@ -41,10 +43,10 @@ namespace GAGCore
 			"uniform sampler2D uTeam;\n"
 			"uniform bool uHasBase;\n"
 			"uniform bool uHasTeam;\n"
-			"uniform float uHueShift;\n"
-			"uniform float uAlpha;\n"
+
 			"varying vec2 vBaseUV;\n"
 			"varying vec2 vTeamUV;\n"
+			"varying vec2 vHueAlpha;\n"
 			"vec3 rgb2hsv(vec3 c)\n"
 			"{\n"
 			"	float mx = max(c.r, max(c.g, c.b));\n"
@@ -88,7 +90,7 @@ namespace GAGCore
 			"	{\n"
 			"		vec4 raw = texture2D(uTeam, vTeamUV);\n"
 			"		vec3 hsv = rgb2hsv(raw.rgb);\n"
-			"		float h = mod(hsv.x + uHueShift, 360.0);\n"
+		"		float h = mod(hsv.x + vHueAlpha.x, 360.0);\n"
 			"		if (h < 0.0) h += 360.0;\n"
 			"		team = vec4(hsv2rgb(vec3(h, hsv.y, hsv.z)), raw.a);\n"
 			"	}\n"
@@ -102,7 +104,7 @@ namespace GAGCore
 			"	vec3 premultRGB = team.rgb * team.a + base.rgb * base.a * (1.0 - team.a);\n"
 			"	float a = team.a + base.a * (1.0 - team.a);\n"
 			"	vec3 rgb = (a > 0.0) ? premultRGB / a : vec3(0.0);\n"
-			"	gl_FragColor = vec4(rgb, a * uAlpha);\n"
+		"	gl_FragColor = vec4(rgb, a * vHueAlpha.y);\n"
 			"}\n";
 
 		unsigned compileShader(unsigned type, const char *source, const char *what)
@@ -183,19 +185,33 @@ namespace GAGCore
 		{
 			unitShaderLocBase = unitShaderLocTeam = -1;
 			unitShaderLocHasBase = unitShaderLocHasTeam = -1;
-			unitShaderLocHueShift = unitShaderLocAlpha = -1;
 			return;
 		}
 		unitShaderLocBase = glGetUniformLocation(program, "uBase");
 		unitShaderLocTeam = glGetUniformLocation(program, "uTeam");
 		unitShaderLocHasBase = glGetUniformLocation(program, "uHasBase");
 		unitShaderLocHasTeam = glGetUniformLocation(program, "uHasTeam");
-		unitShaderLocHueShift = glGetUniformLocation(program, "uHueShift");
-		unitShaderLocAlpha = glGetUniformLocation(program, "uAlpha");
+		glUseProgram(program);
+		glUniform1i(unitShaderLocBase, 0);
+		glUniform1i(unitShaderLocTeam, 1);
+		glUseProgram(0);
+		try
+		{
+			renderBatch = std::make_unique<RenderBatch>(this);
+			renderBatch->configure(program, unitShaderLocHasBase, unitShaderLocHasTeam,
+								   unitShaderVertexSource, unitShaderFragmentSource);
+		}
+		catch (const std::bad_alloc &)
+		{
+			renderBatch.reset();
+			glUseProgram(0);
+			// The existing immediate unit shader remains fully usable.
+		}
 	}
 
 	void GraphicContext::destroyUnitShader()
 	{
+		renderBatch.reset();
 		if (unitShaderProgram)
 			glDeleteProgram(unitShaderProgram);
 		unitShaderProgram = 0;
@@ -205,8 +221,10 @@ namespace GAGCore
 	{
 		if (!unitShaderProgram)
 			return false;
-		if (base && base->dirty) base->uploadToTexture();
-		if (team && team->dirty) team->uploadToTexture();
+		if (renderBatch && renderBatch->outside(x, y, w, h))
+			return true;
+		if (base && base->glUploadedRevision != base->contentRevision()) base->uploadToTexture();
+		if (team && team->glUploadedRevision != team->contentRevision()) team->uploadToTexture();
 		if ((base && !base->texture) || (team && !team->texture))
 			return false;
 
@@ -223,6 +241,39 @@ namespace GAGCore
 		if (base) uv(base, bu0, bv0, bu1, bv1);
 		if (team) uv(team, tu0, tv0, tu1, tv1);
 
+		if (renderBatch && renderBatch->active())
+		{
+			unsigned b = base ? base->texture : team->texture,
+					 t = team ? team->texture : base->texture;
+			ArrayView ba{}, ta{};
+			if (base && base->highResolutionSampling)
+				ba = renderBatch->pack(base->texture);
+			if (team && team->highResolutionSampling)
+				ta = renderBatch->pack(team->texture);
+			if (!base)
+				ba = ta;
+			if (!team)
+				ta = ba;
+			QueueKey key{QueueKey::TeamSprite, b, t, bool(base), bool(team), true, 1};
+			if (ba.texture && ta.texture)
+			{
+				key.kind = QueueKey::ArrayTeamSprite;
+				key.base = ba.texture;
+				key.team = ta.texture;
+			}
+			std::array<QueueVertex, 8> vertices{};
+			vertices[0] = {x, y, bu0, bv0, tu0, tv0, hueShift, alpha / 255.f};
+			vertices[1] = {x + w, y, bu1, bv0, tu1, tv0, hueShift, alpha / 255.f};
+			vertices[2] = {x + w, y + h, bu1, bv1, tu1, tv1, hueShift, alpha / 255.f};
+			vertices[3] = {x, y + h, bu0, bv1, tu0, tv1, hueShift, alpha / 255.f};
+			for (int n = 0; n < 4; ++n)
+			{
+				vertices[n].baseLayer = ba.layer;
+				vertices[n].teamLayer = ta.layer;
+			}
+			renderBatch->append(key, vertices, 4);
+			return true;
+		}
 		glUseProgram(unitShaderProgram);
 		glActiveTexture(GL_TEXTURE0);
 		glState.setTexture(base ? base->texture : (team ? team->texture : 0));
@@ -234,8 +285,7 @@ namespace GAGCore
 		glUniform1i(unitShaderLocTeam, 1);
 		glUniform1i(unitShaderLocHasBase, base ? 1 : 0);
 		glUniform1i(unitShaderLocHasTeam, team ? 1 : 0);
-		glUniform1f(unitShaderLocHueShift, hueShift);
-		glUniform1f(unitShaderLocAlpha, alpha / 255.0f);
+		glMultiTexCoord2f(GL_TEXTURE2, hueShift, alpha / 255.f);
 
 		glState.doBlend(true);
 		++drawCalls;

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Unit tests for test/run_tests.py: listing, selection, sharding and JUnit merging."""
 import argparse
+from types import SimpleNamespace
 import os
 import stat
 import subprocess
@@ -93,23 +94,28 @@ class ShardTest(unittest.TestCase):
         with self.assertRaises(SystemExit):
             run_tests.shard(jobs, '4/3')
 
-    def test_unit_binary_is_one_job(self):
+    def test_unit_display_cases_are_isolated_from_headless_batch(self):
         cases = run_tests.parse_listing(LISTING, 'unit')
         jobs = run_tests.make_jobs(cases, args())
-        self.assertEqual(len(jobs), 1)
-        self.assertTrue(jobs[0].whole)
-        self.assertEqual(run_tests.doctest_filter(jobs[0]), [])
+        self.assertEqual(len(jobs), 2)
+        display, headless = jobs
+        self.assertEqual(display.cases, [cases[1]])
+        self.assertFalse(display.whole)
+        self.assertTrue(headless.whole)
+        self.assertFalse(headless.display)
+        self.assertEqual(headless.cases, [cases[0], cases[2], cases[3]])
+        self.assertEqual(run_tests.doctest_filter(headless), ['-tce=*[display*'])
         subset = run_tests.make_jobs(cases[:2], args(), cases)
-        self.assertEqual([job.subset for job in subset], [True, True])
-        self.assertEqual(run_tests.doctest_filter(subset[0]), ['-tc=feeds the last worker', '-ts=HungryDefeat'])
-        self.assertEqual(run_tests.doctest_filter(subset[1]),
+        self.assertEqual(run_tests.doctest_filter(subset[0]),
                          ['-tc=renders the bar [display:1024x768][artifacts]', '-ts=PointBar'])
-        self.assertFalse(run_tests.make_jobs(cases, args(), cases)[0].subset)
+        self.assertEqual(run_tests.doctest_filter(subset[1]),
+                         ['-tce=*[display*', '-tc=feeds the last worker', '-ts=HungryDefeat'])
+        self.assertEqual(run_tests.make_jobs([cases[1]], args(), cases)[0].cases, [cases[1]])
         benchmark = run_tests.parse_listing(LISTING.replace('sweeps every landscape [slow]', 'sweeps every landscape [benchmark]'), 'unit')
         kept, _ = run_tests.select(benchmark, args())
         self.assertEqual(len(kept), len(benchmark) - 1)
-        job, = run_tests.make_jobs(kept, args(), benchmark)
-        self.assertEqual(run_tests.doctest_filter(job), ['-tce=*[benchmark]*'])
+        display, headless = run_tests.make_jobs(kept, args(), benchmark)
+        self.assertEqual(run_tests.doctest_filter(headless), ['-tce=*[display*,*[benchmark]*'])
 
     def test_same_name_in_two_suites_stays_in_its_suite(self):
         listing = LISTING.replace('<OverallResultsTestCases', '<TestCase name="feeds the last worker" testsuite="InnSwap" '
@@ -118,7 +124,7 @@ class ShardTest(unittest.TestCase):
         kept, _ = run_tests.select(cases, args(filter=['InnSwap/*']))
         jobs = run_tests.make_jobs(kept, args(), cases)
         self.assertEqual(len(jobs), 1)
-        self.assertEqual(run_tests.doctest_filter(jobs[0]), ['-tc=feeds the last worker', '-ts=InnSwap'])
+        self.assertEqual(run_tests.doctest_filter(jobs[0]), ['-tce=*[display*', '-tc=feeds the last worker', '-ts=InnSwap'])
         foreign = run_tests.Result(jobs[0], 'pass', 0.1, junit=(
             '<testsuites><testsuite name="x"><testcase classname="test/HungryDefeatHarness.cpp" name="feeds the last worker"/>'
             '<testcase classname="test/InnSwapHarness.cpp" name="feeds the last worker"/></testsuite></testsuites>'))
@@ -334,3 +340,42 @@ class EndToEndTest(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+class WeightedShardTest(unittest.TestCase):
+    def test_heavy_jobs_separate_and_all_jobs_execute_once(self):
+        jobs=[SimpleNamespace(label=label) for label in ['a','b','c','new']]
+        weights={'a':100.0,'b':90.0,'c':1.0}
+        parts=[run_tests.shard(jobs,f'{k}/2',weights,['aux:unit']) for k in [1,2]]
+        self.assertEqual(sorted(j.label for part in parts for j in part),['a','b','c','new'])
+        self.assertNotEqual(next(i for i,p in enumerate(parts) if jobs[0] in p),next(i for i,p in enumerate(parts) if jobs[1] in p))
+        self.assertEqual(parts,[run_tests.shard(list(reversed(jobs)),f'{k}/2',weights,['aux:unit']) for k in [1,2]])
+    def test_new_jobs_use_median_and_ties_use_shard_number(self):
+        self.assertEqual(run_tests.assignments(['new','known'],2,{'known':3}),{'known':1,'new':2})
+        self.assertEqual(run_tests.assignments(['b','a'],2,{'a':1,'b':1}),{'a':1,'b':2})
+    def test_profile_rejects_bad_weights_and_empty_preserves_original(self):
+        import tempfile,json
+        from pathlib import Path
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory)/'profile.json'
+            for value in [-1,float('nan'),True,'3']:
+                path.write_text(json.dumps({'schema':1,'seconds':{'a':value}}))
+                with self.assertRaises(SystemExit):run_tests.load_timings(path)
+            path.write_text(json.dumps({'schema':1,'seconds':{}}))
+            self.assertIsNone(run_tests.load_timings(path))
+
+class AuxiliaryShardTest(unittest.TestCase):
+    def test_auxiliary_assignment_agrees_with_native_partition(self):
+        import ci_native_shard_plan as planner
+        jobs=[SimpleNamespace(label=x) for x in ['native-a','native-b']]
+        aux={'aux:unit': {'id':'unit','default_shard':4}}
+        weights={'native-a':100,'native-b':80,'aux:unit':90}
+        mapped=planner.plan(jobs,aux,2,weights)
+        expected=run_tests.assignments(['native-a','native-b','aux:unit'],2,weights)
+        self.assertEqual(mapped['unit'],expected['aux:unit'])
+        self.assertEqual(planner.plan(jobs,aux,4,None),{'unit':4})
+    def test_profiles_need_ten_samples_and_same_platform(self):
+        import build_ci_timing_profile as builder
+        sample={'family':'ubuntu-24.04','seconds':{'native-a':3}}
+        self.assertEqual(builder.build([sample]*9,'ubuntu-24.04',{})['seconds'],{})
+        self.assertEqual(builder.build([sample]*10,'ubuntu-22.04',{})['seconds'],{})
+        self.assertEqual(builder.build([sample]*10,'ubuntu-24.04',{})['seconds'],{'native-a':3})

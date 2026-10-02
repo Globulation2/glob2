@@ -3,7 +3,7 @@
 
 Every engine test case runs in its own process with a disposable profile, dummy SDL
 drivers unless it is tagged [display], a timeout and captured output shown only on
-failure. The unit binary runs in one process. Results are merged into one JUnit file
+failure. Headless unit cases share a process; display unit cases run separately. Results are merged into one JUnit file
 and, under GitHub Actions, into the step summary with per-failure annotations.
 Fullscreen checks within display cases run only with --fullscreen.
 
@@ -26,6 +26,9 @@ Examples:
 """
 
 import argparse
+import json
+import math
+import statistics
 from collections import Counter
 import concurrent.futures
 import fnmatch
@@ -179,14 +182,43 @@ def select(cases, args):
     return kept, skipped
 
 
-def shard(items, spec):
+def load_timings(path):
+    if path is None:
+        return None
+    data = json.loads(path.read_text())
+    if data.get('schema') != 1 or not isinstance(data.get('seconds'), dict):
+        raise SystemExit('timing profile requires schema=1 and a seconds map')
+    weights = data['seconds']
+    if any(not isinstance(v, (int, float)) or isinstance(v, bool) or not math.isfinite(v) or v <= 0 for v in weights.values()):
+        raise SystemExit('timing weights must be finite positive seconds')
+    return weights or None
+
+
+def assignments(labels, count, timings):
+    default = statistics.median(timings.values()) if timings else 1.0
+    loads = [0.0] * count
+    chosen = {}
+    for label in sorted(labels, key=lambda label: (-timings.get(label, default), label)):
+        target = min(range(count), key=lambda index: (loads[index], index))
+        chosen[label] = target + 1
+        loads[target] += timings.get(label, default)
+    return chosen
+
+
+def shard(items, spec, timings=None, auxiliary=()):
     if not spec:
         return items
-    k, n = (int(part) for part in spec.split('/'))
+    try:
+        k, n = (int(part) for part in spec.split('/'))
+    except ValueError:
+        raise SystemExit(f'--shard {spec}: expected K/N with 1 <= K <= N')
     if not 1 <= k <= n:
         raise SystemExit(f'--shard {spec}: expected K/N with 1 <= K <= N')
     ordered = sorted(items, key=lambda item: item.label)
-    return [item for index, item in enumerate(ordered) if index % n == k - 1]
+    if timings is None:
+        return [item for index, item in enumerate(ordered) if index % n == k - 1]
+    chosen = assignments([item.label for item in ordered] + list(auxiliary), n, timings)
+    return [item for item in ordered if chosen[item.label] == k]
 
 
 def make_jobs(cases, args, all_cases=None):
@@ -196,8 +228,17 @@ def make_jobs(cases, args, all_cases=None):
         mine = [case for case in cases if case.binary == kind]
         if not mine:
             continue
+        if kind == 'unit':
+            # SDL's video driver cannot change after initialization. A headless
+            # fixture may initialize the dummy driver, so GPU cases need fresh processes.
+            jobs += [Job(kind, [case]) for case in mine if case.display]
+            mine = [case for case in mine if not case.display]
+            if not mine:
+                continue
         if kind == 'unit' or args.in_process:
             everything = [case for case in (all_cases or []) if case.binary == kind]
+            if kind == 'unit':
+                everything = [case for case in everything if not case.display]
             left_out = [case for case in everything if case not in mine]
             if left_out and all(case.has('benchmark') for case in left_out):
                 jobs.append(Job(kind, mine, whole=True, without_benchmarks=True))
@@ -222,13 +263,16 @@ def doctest_pattern(name):
 
 def doctest_filter(job):
     if job.whole:
+        exclusions = []
+        if job.binary == 'unit':
+            exclusions.append('*[display*')
         if job.without_benchmarks:
-            return ['-tce=*[benchmark]*']
-        if not job.subset:
-            return []
-        filters = ['-tc=' + ','.join(doctest_pattern(case.name) for case in job.cases)]
-        if job.cases[0].suite:
-            filters.append('-ts=' + doctest_pattern(job.cases[0].suite))
+            exclusions.append('*[benchmark]*')
+        filters = ['-tce=' + ','.join(exclusions)] if exclusions else []
+        if job.subset:
+            filters.append('-tc=' + ','.join(doctest_pattern(case.name) for case in job.cases))
+            if job.cases[0].suite:
+                filters.append('-ts=' + doctest_pattern(job.cases[0].suite))
         return filters
     case = job.cases[0]
     filters = ['-tc=' + doctest_pattern(case.name)]
@@ -482,6 +526,9 @@ def main(argv=None):
     parser.add_argument('--filter', action='append', default=[], metavar='GLOB', help='suite/name glob, repeatable')
     parser.add_argument('--tag', action='append', default=[], help='only cases with this tag, repeatable')
     parser.add_argument('--exclude-tag', action='append', default=[], help='skip cases with this tag, repeatable')
+    parser.add_argument('--timing-profile', type=Path, help='reviewed runtime weights; empty profile retains alphabetical slicing')
+    parser.add_argument('--auxiliary-jobs', type=Path, help='auxiliary groups to include in shard load estimates')
+    parser.add_argument('--write-timings', type=Path, help='retain successful job durations for reviewed profiles')
     parser.add_argument('--shard', metavar='K/N', help='run the K-th of N deterministic slices')
     parser.add_argument('-j', '--jobs', type=int, default=os.cpu_count() or 2)
     parser.add_argument('--display-jobs', type=int, default=None, help='parallelism for [display] cases (default: min(4, jobs))')
@@ -515,7 +562,9 @@ def main(argv=None):
             print(case.label)
         print(f'{len(kept)} cases' + (f', {len(skipped)} need a display' if skipped else ''))
         return 0
-    jobs = shard(make_jobs(kept, args, cases), args.shard)
+    timings = load_timings(args.timing_profile)
+    auxiliary = list(json.loads(args.auxiliary_jobs.read_text())) if args.auxiliary_jobs else []
+    jobs = shard(make_jobs(kept, args, cases), args.shard, timings, auxiliary)
     if args.timeout:
         Job.timeout = property(lambda self, t=args.timeout: t)
     network_lock = threading.Lock()
@@ -540,6 +589,10 @@ def main(argv=None):
             print(f'{mark} {result.job.label} ({result.seconds:.1f}s)', flush=True)
     results.sort(key=lambda result: result.job.label)
     skipped_results = [Result(Job(case.binary, [case]), 'skip', 0.0) for case in skipped]
+    if args.write_timings:
+        args.write_timings.parent.mkdir(parents=True, exist_ok=True)
+        args.write_timings.write_text(json.dumps({'schema': 1, 'family': os.environ.get('CI_RUNNER_FAMILY'),
+            'seconds': {r.job.label: max(0.001, r.seconds) for r in results if r.status == 'pass'}}, indent=2) + '\n')
     totals = merge_junit(results + skipped_results, args.junit)
     ok = report(results, skipped, args)
     print(f'[run_tests] JUnit report: {args.junit} ({totals["tests"]} cases)', flush=True)

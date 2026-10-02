@@ -222,12 +222,11 @@ LatticeSites roomyLatticeSites(int width, int height, int teams, double x0, doub
 	double bestSpacing = nearestSiteDistance(t, best.sites);
 	// A prime team count can be forced into a very long single row. A nearby composite
 	// count often has a balanced lattice; leave its surplus sites empty instead of rejecting
-	// a map on which even more colonies would fit. Four is enough to reach 12 from counts
-	// 8..11 (the lobby's maximum is 12); the loop remains bounded for other callers too.
-	// Cap caller-supplied work at four spare sites, the useful envelope for the
-	// registered 12-colony range; this also prevents a tuning typo from making a
-	// pathological search. The public request validator separately bounds teams.
-	for (int vacancies = 1; vacancies <= std::min(maxVacancies, 4); ++vacancies)
+	// a map on which even more colonies would fit. Four spare sites also cover prime
+	// counts 13 and 17 with nearby balanced lattices. This is a search-work budget,
+	// independent of the live team cap; do not scale it with every capacity increase.
+	constexpr int vacancySearchBudget = 4;
+	for (int vacancies = 1; vacancies <= std::min(maxVacancies, vacancySearchBudget); ++vacancies)
 	{
 		LatticeSites candidate = latticeSites(width, height, teams + vacancies, x0, y0);
 		if (candidate.sites.size() != size_t(teams + vacancies))

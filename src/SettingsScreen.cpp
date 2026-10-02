@@ -662,11 +662,13 @@ Element SettingsScreen::build(const Presentation &p)
 	}
 	auto footerRow = row({expanded(paragraph(status, {FontRole::Support, true})), actions(std::move(buttons), p, ActionStyle::Compact)}, {-1, CrossAlign::Center});
 
-	const bool sidebar = modal == Modal::None && !p.compact() && p.safe.w >= p.pt(760);
+	// The rail only when the body keeps its room beside it (760 points at 100% text).
+	const bool sidebar = modal == Modal::None && !p.compact() && p.safe.w >= p.pt(584) + p.textPt(176);
 	Element page;
 	if (sidebar)
 	{
-		auto rail = padding({0, 0, p.pt(8), 0}, width(p.pt(176), categoryNavigation(p, true)));
+		// Widens with larger text and scrolls when the categories outgrow the page.
+		auto rail = padding({0, 0, p.pt(8), 0}, width(p.textPt(176), scroll("nav", categoryNavigation(p, true))));
 		page = column({heading(tr("Settings")), expanded(row({rail, expanded(body)}, {-1, CrossAlign::Stretch})), divider(), footerRow}, {p.pt(10)});
 	}
 	else

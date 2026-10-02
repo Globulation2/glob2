@@ -6,16 +6,10 @@
 //   1. The long-level histogram decoders in CortexTypes.h (the encoding the
 //      observation and policy both rely on: odd long-levels are FINISHED,
 //      even are SITES; mid-upgrade == a site of a raised level).
-//   2. The worker-count column mapping the upgrade action layer uses
-//      (siteCol = targetLevel*2, finishedCol = targetLevel*2+1), proven to
-//      match the engine's GameGUIDefaultAssignManager column convention
-//      (finished -> level*2+1, site -> level*2; see
-//      gui/GameGUIDefaultAssignManager.cpp:21,26).
-//   3. The makeUpgradeAction factory contract.
+//   2. The makeUpgradeAction factory contract.
 //
-// The engine-coupled predicate (findUpgradeTarget / upgradableCount) needs a
-// live Building array and is verified by reading, not unit-tested here (it
-// would be a fragile full-game-state integration test).
+// Engine-backed upgrade eligibility and emitted worker columns are exercised
+// by CortexActionCoverageTest.cpp.
 
 #include "Glob2Test.h"
 
@@ -87,41 +81,6 @@ protected:
 		CHECK_EQ((Sint32)2, cortexBuildingsUpgrading(obs, type));
 	}
 
-	// C++: AICortex.cpp:396-398 derives the worker columns the upgrade order
-	// uses. They must equal the engine's GameGUIDefaultAssignManager mapping:
-	//   site variant at level L     -> defaultUnitsAssigned[type][L*2]
-	//   finished variant at level L -> defaultUnitsAssigned[type][L*2+1]
-	// (gui/GameGUIDefaultAssignManager.cpp:21,26). The GUI upgrade path reads
-	// the level-(L+1) site and finished columns, i.e. targetLevel = L+1.
-	void testWorkerColumnMapping(void)
-	{
-		// Upgrading a level-0 building: targetLevel = 1.
-		{
-			const int currentLevel = 0;
-			const int targetLevel  = currentLevel + 1;
-			const int siteCol      = targetLevel * 2;     // == 2
-			const int finishedCol  = targetLevel * 2 + 1; // == 3
-			CHECK_EQ(2, siteCol);
-			CHECK_EQ(3, finishedCol);
-			// Engine convention cross-check: site@L1 = 1*2, finished@L1 = 1*2+1.
-			CHECK_EQ(targetLevel * 2, siteCol);
-			CHECK_EQ(targetLevel * 2 + 1, finishedCol);
-			// In range of defaultUnitsAssigned[type][6].
-			CHECK((siteCol >= 0 && siteCol < 6));
-			CHECK((finishedCol >= 0 && finishedCol < 6));
-		}
-		// Upgrading a level-1 building: targetLevel = 2 -> columns 4,5 (max).
-		{
-			const int currentLevel = 1;
-			const int targetLevel  = currentLevel + 1;
-			const int siteCol      = targetLevel * 2;     // == 4
-			const int finishedCol  = targetLevel * 2 + 1; // == 5
-			CHECK_EQ(4, siteCol);
-			CHECK_EQ(5, finishedCol);
-			CHECK(finishedCol < 6); // top column still in range
-		}
-	}
-
 	// C++: CortexTypes.h:460 makeUpgradeAction sets kind + buildingType, leaves
 	// the rest at the no-op defaults; the version must be stamped.
 	void testMakeUpgradeAction(void)
@@ -155,7 +114,6 @@ TEST_SUITE("CortexUpgrade")
 	TEST_CASE_FIXTURE(CortexUpgradeTest, "LongLevelFinishedVsSite") { testLongLevelFinishedVsSite(); }
 	TEST_CASE_FIXTURE(CortexUpgradeTest, "MaxFinishedLevel") { testMaxFinishedLevel(); }
 	TEST_CASE_FIXTURE(CortexUpgradeTest, "BuildingsUpgradingExcludesFreshSite") { testBuildingsUpgradingExcludesFreshSite(); }
-	TEST_CASE_FIXTURE(CortexUpgradeTest, "WorkerColumnMapping") { testWorkerColumnMapping(); }
 	TEST_CASE_FIXTURE(CortexUpgradeTest, "MakeUpgradeAction") { testMakeUpgradeAction(); }
 	TEST_CASE_FIXTURE(CortexUpgradeTest, "VersionBump") { testVersionBump(); }
 }

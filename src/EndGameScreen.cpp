@@ -94,7 +94,6 @@ EndGameScreen::EndGameScreen(GameGUI *gui) : UIScreen(fe::inGameTheme())
 
 EndGameScreen::~EndGameScreen() = default;
 
-double EndGameScreen::textScale(const Presentation &p) const { return fe::frontendTextScale(p); }
 
 void EndGameScreen::paintBackground(fe::Canvas &canvas)
 {

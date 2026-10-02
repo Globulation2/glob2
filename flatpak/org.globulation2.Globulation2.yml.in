@@ -42,15 +42,95 @@ modules:
         url: https://downloads.xiph.org/releases/speex/speex-1.2.1.tar.gz
         sha256: 4b44d4f2b38a370a2d98a78329fefc56a0cf93d1c1be70029217baae6628feea
 
+  # Also supplies the pinned build-time encoder used by runtime asset export.
+  - name: libwebp
+    buildsystem: cmake-ninja
+    builddir: true
+    config-opts:
+      - -DBUILD_SHARED_LIBS=ON
+      - -DWEBP_BUILD_EXTRAS=OFF
+    sources:
+      - type: archive
+        url: https://storage.googleapis.com/downloads.webmproject.org/releases/webp/libwebp-1.6.0.tar.gz
+        sha256: e4ab7009bf0629fd11982d4c2aa83964cf244cffba7347ecd39019a9e38c4564
+
+  - name: setuptools-build-tool
+    buildsystem: simple
+    build-commands:
+      - export PYTHONPATH="/app/lib/python$(python3 -c 'import sys; print(str(sys.version_info.major)+"."+str(sys.version_info.minor))')/site-packages${PYTHONPATH:+:$PYTHONPATH}"; python3 -m pip install --no-index --no-build-isolation --no-deps --prefix=/app .
+    cleanup:
+      - /lib/python*/site-packages/setuptools*
+      - /lib/python*/site-packages/_distutils_hack
+      - /lib/python*/site-packages/pkg_resources
+      - /lib/python*/site-packages/distutils-precedence.pth
+    sources:
+      - type: archive
+        url: https://files.pythonhosted.org/packages/18/5d/3bf57dcd21979b887f014ea83c24ae194cfcd12b9e0fda66b957c69d1fca/setuptools-80.9.0.tar.gz
+        sha256: f36b47402ecde768dbfafc46e8e4207b4360c654f1f3bb84475f0a28628fb19c
+
+  - name: pybind11-build-tool
+    buildsystem: simple
+    # Pillow needs only this header-only project's Python build helpers/headers.
+    # Installing the source directly avoids scikit-build-core in the sandbox.
+    build-commands:
+      - site="/app/lib/python$(python3 -c 'import sys; print(str(sys.version_info.major)+"."+str(sys.version_info.minor))')/site-packages"; mkdir -p "$site"; cp -a pybind11 "$site/"; cp -a include "$site/pybind11/"
+    cleanup:
+      - /lib/python*/site-packages/pybind11*
+      - /lib/python*/site-packages/_distutils_hack
+      - /lib/python*/site-packages/pkg_resources
+      - /lib/python*/site-packages/distutils-precedence.pth
+    sources:
+      - type: archive
+        url: https://files.pythonhosted.org/packages/a5/98/9118a0659646f1628c592ef9bb48e0056efa6bf27c951fd12a178e0136fb/pybind11-3.0.2.tar.gz
+        sha256: 432f01aeb68e361a3a7fc7575c2c7f497595bf640f747acd909ff238dd766e06
+
+  - name: pillow-build-tool
+    buildsystem: simple
+    build-commands:
+      - export PYTHONPATH="/app/lib/python$(python3 -c 'import sys; print(str(sys.version_info.major)+"."+str(sys.version_info.minor))')/site-packages${PYTHONPATH:+:$PYTHONPATH}"; python3 -m pip install --no-index --no-build-isolation --no-deps --prefix=/app .
+    cleanup:
+      - /lib/python*/site-packages/PIL
+      - /lib/python*/site-packages/pillow*
+    sources:
+      - type: archive
+        url: https://files.pythonhosted.org/packages/8c/21/c2bcdd5906101a30244eaffc1b6e6ce71a31bd0742a01eb89e660ebfac2d/pillow-12.2.0.tar.gz
+        sha256: a830b1a40919539d07806aa58e1b114df53ddd43213d9c8b75847eee6c0182b5
+
   - name: SDL2_image
     buildsystem: cmake-ninja
     builddir: true
     config-opts:
+      - -DSDL2IMAGE_AVIF=OFF
+      - -DSDL2IMAGE_BMP=OFF
+      - -DSDL2IMAGE_GIF=OFF
+      - -DSDL2IMAGE_JPG=ON
+      - -DSDL2IMAGE_JXL=OFF
+      - -DSDL2IMAGE_LBM=OFF
+      - -DSDL2IMAGE_PCX=OFF
+      - -DSDL2IMAGE_PNG=ON
+      - -DSDL2IMAGE_PNM=OFF
+      - -DSDL2IMAGE_QOI=OFF
+      - -DSDL2IMAGE_SVG=OFF
+      - -DSDL2IMAGE_TGA=OFF
+      - -DSDL2IMAGE_TIF=OFF
+      - -DSDL2IMAGE_WEBP=ON
+      - -DSDL2IMAGE_XCF=OFF
+      - -DSDL2IMAGE_XPM=OFF
+      - -DSDL2IMAGE_XV=OFF
+      - -DBUILD_SHARED_LIBS=ON
       - -DSDL2IMAGE_DEPS_SHARED=OFF
+      - -DSDL2IMAGE_STRICT=ON
+      - -DSDL2IMAGE_BACKEND_STB=OFF
+      - -DSDL2IMAGE_BACKEND_IMAGEIO=OFF
+      - -DSDL2IMAGE_SAMPLES=OFF
+      - -DSDL2IMAGE_TESTS=OFF
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DSDL2IMAGE_PNG_SAVE=ON
+      - -DSDL2IMAGE_JPG_SAVE=ON
     sources:
       - type: archive
-        url: https://github.com/libsdl-org/SDL_image/releases/download/release-2.8.8/SDL2_image-2.8.8.tar.gz
-        sha256: 2213b56fdaff2220d0e38c8e420cbe1a83c87374190cba8c70af2156097ce30a
+        url: https://github.com/libsdl-org/SDL_image/releases/download/release-2.8.12/SDL2_image-2.8.12.tar.gz
+        sha256: 393f5efb50536ec13ca4f4affb69cc9966d3c3f969e6c5e701faddf9f9785381
 
   - name: SDL2_ttf
     buildsystem: cmake-ninja
@@ -94,7 +174,7 @@ modules:
   - name: glob2
     buildsystem: simple
     build-commands:
-      - scons -j2 release=1 server=0 CXXFLAGS="-I/app/include -I/app/include/SDL2" LINKFLAGS=-L/app/lib BINDIR=/app/bin INSTALLDIR=/app/share DATADIR=/app/share install
+      - export PYTHONPATH="/app/lib/python$(python3 -c 'import sys; print(str(sys.version_info.major)+"."+str(sys.version_info.minor))')/site-packages${PYTHONPATH:+:$PYTHONPATH}"; scons -j2 release=1 server=0 CXXFLAGS="-I/app/include -I/app/include/SDL2" LINKFLAGS=-L/app/lib BINDIR=/app/bin INSTALLDIR=/app/share DATADIR=/app/share install
       - test -f /app/share/metainfo/org.globulation2.Globulation2.metainfo.xml
       - test -f /app/share/glob2/data/maxima/duel.strategy
       - test -f /app/share/glob2/data/usl/Language/Runtime/Control.usl

@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "GraphicContextPrivate.h"
+#include <SurfaceRaster.h>
 #include <algorithm>
 #include <cstdlib>
 
@@ -9,6 +10,7 @@ namespace GAGCore
 {
 	void DrawableSurface::drawPixel(int x, int y, const Color& color)
 	{
+		prepareDraw();
 		// clip
 		if ((x<clipRect.x) || (x>=clipRect.x+clipRect.w) || (y<clipRect.y) || (y>=clipRect.y+clipRect.h))
 			return;
@@ -37,7 +39,7 @@ namespace GAGCore
 
 			*mem = ((surfacePreMult0 >> 8) & 0x00FF00FF) | (surfacePreMult1 & 0xFF00FF00);
 		}
-		dirty = true;
+		markPixelsChanged();
 	}
 
 	void DrawableSurface::drawPixel(float x, float y, const Color& color)
@@ -53,6 +55,7 @@ namespace GAGCore
 
 	void DrawableSurface::drawRect(int x, int y, int w, int h, const Color& color)
 	{
+		prepareDraw();
 		_drawHorzLine(x, y, w, color);
 		_drawHorzLine(x, y+h-1, w, color);
 		_drawVertLine(x, y, h, color);
@@ -72,68 +75,9 @@ namespace GAGCore
 
 	void DrawableSurface::drawFilledRect(int x, int y, int w, int h, const Color& color)
 	{
-		// clip
-		if (x < clipRect.x)
-		{
-			w -= clipRect.x - x;
-			x = clipRect.x;
-		}
-		if (y < clipRect.y)
-		{
-			h -= clipRect.y - y;
-			y = clipRect.y;
-		}
-		if (x + w >= clipRect.x + clipRect.w)
-		{
-			w = clipRect.x + clipRect.w - x;
-		}
-		if (y + h >= clipRect.y + clipRect.h)
-		{
-			h = clipRect.y + clipRect.h - y;
-		}
-		if ((w <= 0) || (h <= 0))
-			return;
-
-		// draw
-		if (color.a == Color::ALPHA_OPAQUE)
-		{
-			Uint32 colorValue = color.pack();
-			for (int dy = y; dy < y + h; dy++)
-			{
-				Uint32 *mem = ((Uint32 *)sdlsurface->pixels) + dy*(sdlsurface->pitch>>2) + x;
-				int dw = w;
-				do
-				{
-					*mem++ = colorValue;
-				}
-				while (--dw);
-			}
-		}
-		else
-		{
-			Uint32 a = color.a;
-			Uint32 na = 255 - a;
-			Uint32 colorValue = color.applyAlpha(Color::ALPHA_OPAQUE).pack();
-			Uint32 colorPreMult0 = (colorValue & 0x00FF00FF) * a;
-			Uint32 colorPreMult1 = ((colorValue >> 8) & 0x00FF00FF) * a;
-
-			for (int dy = y; dy < y + h; dy++)
-			{
-				Uint32 *mem = ((Uint32 *)sdlsurface->pixels) + dy*(sdlsurface->pitch>>2) + x;
-				int dw = w;
-				do
-				{
-					Uint32 surfaceValue = *mem;
-					Uint32 surfacePreMult0 = (surfaceValue & 0x00FF00FF) * na;
-					Uint32 surfacePreMult1 = ((surfaceValue >> 8) & 0x00FF00FF) * na;
-					surfacePreMult0 += colorPreMult0;
-					surfacePreMult1 += colorPreMult1;
-					*mem++ = ((surfacePreMult0 >> 8) & 0x00FF00FF) | (surfacePreMult1 & 0xFF00FF00);
-				}
-				while (--dw);
-			}
-		}
-		dirty = true;
+		prepareDraw();
+        SurfaceRaster::fill(sdlsurface, SDL_Rect{x, y, w, h}, color.applyAlpha(Color::ALPHA_OPAQUE).pack(), color.a);
+		markPixelsChanged();
 	}
 
 	void DrawableSurface::drawFilledRect(float x, float y, float w, float h, const Color& color)
@@ -211,7 +155,7 @@ namespace GAGCore
 			}
 			while (--l);
 		}
-		dirty = true;
+		markPixelsChanged();
 	}
 
 	void DrawableSurface::_drawHorzLine(int x, int y, int l, const Color& color)
@@ -276,11 +220,12 @@ namespace GAGCore
 			}
 			while (--l);
 		}
-		dirty = true;
+		markPixelsChanged();
 	}
 
 	void DrawableSurface::drawLine(int x1, int y1, int x2, int y2, const Color& _color)
 	{
+		prepareDraw();
 		// we want to modify the color
 		Color color = _color;
 
@@ -467,11 +412,13 @@ namespace GAGCore
 
 	void DrawableSurface::drawVertLine(int x, int y, int l, const Color& color)
 	{
+		prepareDraw();
 		 _drawVertLine(x, y, l, color);
 	}
 
 	void DrawableSurface::drawHorzLine(int x, int y, int l, const Color& color)
 	{
+		prepareDraw();
 		_drawHorzLine(x, y, l, color);
 	}
 }

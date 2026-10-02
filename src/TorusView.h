@@ -4,6 +4,7 @@
 #define GLOB2_TORUS_VIEW_H
 #include "TorusPicking.h"
 #include "DynamicClouds.h"
+#include "render/MapRenderState.h"
 #include <SDL.h>
 class Game;
 
@@ -57,6 +58,8 @@ class TorusView
     int atlasW, atlasH;
     Uint32 lastFrame;
     DynamicClouds clouds;
+    // Map animation state for games drawn without a GameGUI (whose view owns it).
+    MapRenderState standaloneRender;
     std::valarray<unsigned char> cloudPixels;
     int cloudW = 0, cloudH = 0;
     SDL_GLContext graphicsContext = nullptr;

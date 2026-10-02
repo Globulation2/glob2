@@ -263,7 +263,8 @@ static void checkRandomContinuation(bool text, bool ai)
 	header.setRandomSeed(123456);
 	header.getBasePlayer(0) = BasePlayer(0, "Test", 0, ai ? BasePlayer::playerTypeFromImplementationID(AI::NUMBI) : BasePlayer::P_LOCAL);
 	REQUIRE(gui.loadFromHeaders(map, header, true, true));
-	for (int i=0; i<713; ++i) syncRand();
+	// Advance the game's own stream away from its seed before checkpointing.
+	for (int i=0; i<713; ++i) gui.game.syncRandom();
 	const auto step = [](Game &game) {
 		if (game.players[0]->ai)
 		{
@@ -274,7 +275,7 @@ static void checkRandomContinuation(bool text, bool ai)
 		game.syncStep(0);
 	};
 	for (int i=0; i<100; ++i) step(gui.game);
-	const auto savedRandom = syncRandEngine();
+	const auto savedRandom = gui.game.syncRandom;
 	auto *backend = new MemoryStreamBackend();
 	class CheckpointOutput : public BinaryOutputStream
 	{
@@ -300,10 +301,10 @@ static void checkRandomContinuation(bool text, bool ai)
 		runtimeText.assign(storage->getBuffer(),storage->getPosition());
 	}
 
-	if (!(syncRandEngine() == savedRandom))
+	if (!(gui.game.syncRandom == savedRandom))
 	{
 		std::ostringstream now, was;
-		now << syncRandEngine();
+		now << gui.game.syncRandom;
 		was << savedRandom;
 		std::cerr << "sync RNG changed across save:\n  was " << was.str().substr(0, 96)
 				  << "\n  now " << now.str().substr(0, 96) << std::endl;
@@ -328,6 +329,7 @@ static void checkRandomContinuation(bool text, bool ai)
 		for (int t=0; t<gui.game.teamsCount(); ++t) measurements.push_back(gui.game.teams[t]->stats.measurements);
 		measurementContinuation.push_back(measurements);
 	}
+	// Unrelated draws from the process stream must not affect the restored game.
 	for (int i=0; i<37; ++i) syncRand();
 	GameGUI restored;
 	if (!text && !ai)
@@ -374,9 +376,7 @@ static void checkRandomContinuation(bool text, bool ai)
 
 	// The normal saved-game loader replaces the player header after loading.
 	restored.game.setGameHeader(header, true);
-	auto expected = savedRandom;
-	for (int i=0; i<2000; ++i) REQUIRE(syncRand() == expected());
-	syncRandEngine() = savedRandom;
+	REQUIRE(restored.game.syncRandom == savedRandom);
 	for (int i=0; i<700; ++i)
 	{
 		step(restored.game);

@@ -89,11 +89,17 @@ def production_objects(entries):
     return out
 
 
+# Foundation's scoped activity prevents App Nap from throttling background
+# native test processes. Mobile and browser builders use the portable registry.
+native_support = list(registry.SUPPORT)
+if env['PLATFORM'] == 'darwin':
+    native_support.append('support/TestActivity_mac.mm')
+
 engine = test_env.Program('glob2-engine-tests',
-    objects(registry.SUPPORT + registry.ENGINE_SUPPORT + registry.ENGINE_TESTS, 'engine-')
+    objects(native_support + registry.ENGINE_SUPPORT + registry.ENGINE_TESTS, 'engine-')
     + client_objects + client_libs)
 unit = test_env.Program('glob2-unit-tests',
-    objects(registry.SUPPORT + registry.UNIT_STUBS + registry.UNIT_TESTS, 'unit-')
+    objects(native_support + registry.UNIT_STUBS + registry.UNIT_TESTS, 'unit-')
     + production_objects(registry.UNIT_PRODUCTION_SOURCES) + client_libs)
 test_env.Alias('engine-tests', engine)
 test_env.Alias('unit-tests', unit)

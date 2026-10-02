@@ -18,6 +18,7 @@
 #include "GameGUIInternal.h"
 #include "GameUtilities.h"
 #include <Toolkit.h>
+#include <InterfacePresentation.h>
 #include <TrueTypeFont.h>
 #include <StringTable.h>
 #include "GlobalContainer.h"
@@ -1740,7 +1741,7 @@ class GameGUITouchHarness
 			const auto savedFlags = gui.localTeam->virtualBuildings;
 			gui.localTeam->virtualBuildings = {rangeFlag};
 			rangeFlag->posX = rangeFlag->posY = 2;
-			gui.view.mouseUnit = nullptr;
+			gui.view.mouseUnit = UnitRef();
 			{
 				// The reach is 30 points in the middle of the screen and grows to 36
 				// at its edges and corners, where thumbs are least accurate.
@@ -2362,11 +2363,11 @@ class GameGUITouchHarness
 			pressDialog("options");
 			require(gui.inGameMenu == GameGUI::IGM_OPTION, "Phone menu opens options");
 			pressDialog("text-size/2");
-			require(globalContainer->settings.mobileDialogTextPercent == 150,
-					"Dialog text size applies from the options dialog");
+			require(globalContainer->settings.textSizePercent == 150 && GAGCore::userTextScale == 1.5,
+					"Text size applies from the options dialog");
 			pressDialog("text-size/0");
-			require(globalContainer->settings.mobileDialogTextPercent == 100,
-					"Dialog text size restores");
+			require(globalContainer->settings.textSizePercent == 100 && GAGCore::userTextScale == 1,
+					"Text size restores");
 			const bool muted = globalContainer->settings.mute;
 			pressDialog("mute");
 			require(globalContainer->settings.mute != muted, "Mute toggles from the options dialog");
@@ -2478,6 +2479,7 @@ class GameGUITouchHarness
 		const int originalLanguage = strings->getLang();
 		gui.setSelection(GameGUI::BUILDING_SELECTION, building);
 		gui.touch->panelOpen = true;
+		gui.drawAll(0); // building actions describe the drawn scene
 		const auto originalActions = gui.touch->buildingActions();
 		const auto originalOrders = gui.orderQueue.size();
 		const auto originalChecksum = gui.game.checkSum();
@@ -3366,9 +3368,43 @@ class GameGUITouchHarness
 		require(!touch.animating() && touch.offset == trayEnd, "A mouse drag has no momentum");
 		require(checksum() == before, "Tray scrolling never touches the map data");
 	}
+	static void scaledDialogInput()
+	{
+		glob2test::GlobalsOptions options{.display = true, .loadStrings = true, .width = 1600, .height = 1200,
+		                                  .screenFlags = 0};
+		glob2test::HeadlessGlobals globals(options);
+		auto *gfx = globalContainer->gfx;
+		REQUIRE(gfx->setUiScale(2));
+		GameGUI gui;
+		gui.openDialog(GameGUI::IGM_SAVE, std::make_unique<LoadSaveDialog>(
+			"games", "game", false, "Save game", "Scaled", glob2FilenameToName, glob2NameToFilename));
+		auto *dialog = gui.gameMenuScreen.get();
+		dialog->draw(0);
+		const auto bounds = dialog->host().bounds("name");
+		SDL_Event event{};
+		event.type = SDL_MOUSEBUTTONDOWN;
+		event.button.button = SDL_BUTTON_LEFT;
+		// GameGUI::step has already converted these to logical coordinates.
+		event.button.x = bounds.x + bounds.w / 2;
+		event.button.y = bounds.y + bounds.h / 2;
+		gui.processEvent(&event);
+		event.type = SDL_MOUSEBUTTONUP;
+		gui.processEvent(&event);
+		REQUIRE(dialog->host().editing() == "name");
+		event = {};
+		event.type = SDL_TEXTINPUT;
+		std::strcpy(event.text.text, "2");
+		gui.processEvent(&event);
+		REQUIRE(std::string(static_cast<LoadSaveDialog *>(dialog)->getName()) == "Scaled2");
+	}
 };
 TEST_SUITE("GameGUITouch")
 {
+	GLOB2_TEST_CASE("scaled gameplay dialog input is translated once", "[display]")
+	{
+		GameGUITouchHarness::scaledDialogInput();
+	}
+
 	GLOB2_TEST_CASE("a touch on or near a flag drags the flag; not the map", "[display]")
 	{
 		SDL_setenv("GLOB2_MOBILE_UI", "0", 1);

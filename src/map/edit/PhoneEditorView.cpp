@@ -365,7 +365,7 @@ void PhoneEditor::drawPeek()
 	SDL_Rect clip{int(rect.x), int(rect.y), int(rect.w), int(rect.h)};
 	editor.updateCamera();
 	gfx->setUITransform(rect.w / size, rect.x - (gfx->getW() - size) * rect.w / size, rect.y, &clip);
-	peekMinimap->draw(editor.team, editor.viewportX, editor.viewportY, int(std::ceil(editor.camera.visibleW() / 32)),
+	peekMinimap->draw(editor.view.drawnScene(), editor.team, editor.viewportX, editor.viewportY, int(std::ceil(editor.camera.visibleW() / 32)),
 					  int(std::ceil(editor.camera.visibleH() / 32)));
 	gfx->setUITransform();
 	gfx->setClipRect();

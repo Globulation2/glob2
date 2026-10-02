@@ -27,20 +27,20 @@ TEST_CASE("JavaScript presentation publishes only changed localized messages" *
 	Script::JavaScriptMap script;
 	const std::string source =
 		R"(export function step(c,s){return [{type:'message',text:'English'}, {type:'messageTranslated',language:'fr',text:'Francais'}];})";
-	script.step(source, world.gui);
+	script.step(source, world.game, world.gui);
 	CHECK(ScriptPresentationFixture::text(world.gui) == "Francais");
 	CHECK(ScriptPresentationFixture::pending(world.gui));
 	ScriptPresentationFixture::acknowledge(world.gui);
-	script.step(source, world.gui);
+	script.step(source, world.game, world.gui);
 	CHECK_FALSE(ScriptPresentationFixture::pending(world.gui));
 	globals->settings.language = "en";
-	script.step(source, world.gui);
+	script.step(source, world.game, world.gui);
 	CHECK(ScriptPresentationFixture::text(world.gui) == "English");
 	CHECK(ScriptPresentationFixture::pending(world.gui));
-	script.step("export function step(c,s){return [{type:'hideMessage'}];}", world.gui);
+	script.step("export function step(c,s){return [{type:'hideMessage'}];}", world.game, world.gui);
 	CHECK(ScriptPresentationFixture::text(world.gui).empty());
 	CHECK_FALSE(ScriptPresentationFixture::pending(world.gui));
-	script.step(source, world.gui);
+	script.step(source, world.game, world.gui);
 	CHECK(ScriptPresentationFixture::pending(world.gui));
 	world.gui.init();
 	CHECK(ScriptPresentationFixture::text(world.gui).empty());
@@ -241,19 +241,19 @@ TEST_CASE("Prepared SGSL exchanges rebind stories in both runtimes" *
 	REQUIRE(first.compileScript(&world.game).type == ErrorReport::ET_OK);
 	REQUIRE(second.compileScript(&world.game).type == ErrorReport::ET_OK);
 	first.swap(second);
-	first.syncStep(&world.gui);
+	first.syncStep(world.game, world.gui, world.gui.clientRequests);
 	CHECK(first.textShown == "Second");
 	CHECK(first.getMainTimer() == 4);
 	CHECK(first.hasTeamLost(0));
 	CHECK_FALSE(first.hasTeamWon(0));
 	CHECK_FALSE(second.isTextShown);
 	CHECK(second.getMainTimer() == 0);
-	second.syncStep(&world.gui);
+	second.syncStep(world.game, world.gui, world.gui.clientRequests);
 	CHECK(second.textShown == "First");
 	CHECK(second.getMainTimer() == 7);
 	CHECK_FALSE(second.hasTeamWon(0));
 	for (int tick = 0; tick < 7; ++tick)
-		second.syncStep(&world.gui);
+		second.syncStep(world.game, world.gui, world.gui.clientRequests);
 	CHECK(second.getMainTimer() == 0);
 	CHECK(second.hasTeamWon(0));
 	CHECK_FALSE(second.hasTeamLost(0));

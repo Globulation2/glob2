@@ -1434,8 +1434,8 @@ Flussbreite
 Sandanteil
 [Select a valid map.]
 Wählen Sie eine gültige Karte aus.
-[Shared control needs a free controller slot (maximum 12).]
-Gemeinsame Steuerung benötigt einen freien Platz für Mensch oder KI (höchstens 12).
+[Shared control needs a free controller slot (maximum %0).]
+Gemeinsame Steuerung benötigt einen freien Platz für Mensch oder KI (höchstens %0).
 [Smoothing]
 Glätten
 [Standard]
@@ -3072,8 +3072,6 @@ Minikarte
 Vorspulen
 [Hide keyboard]
 Tastatur ausblenden
-[Dialog text size]
-Dialogschriftgröße
 [Player slot]
 Spielerplatz
 [Team color]
@@ -3412,8 +3410,6 @@ Siegchance: %0 · Stärke: %1
 Mindestlevel: %0
 [Confirm %0]
 Ok: %0
-[Dialog text size %0]
-Dialogschriftgröße: %0%
 [%0 %1]
 %0 %1
 [resume game]

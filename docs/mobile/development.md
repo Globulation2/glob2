@@ -357,7 +357,11 @@ name and base code. The three single-ABI APKs have codes `10 * base + 1` for
 `armeabi-v7a`, `+ 2` for `arm64-v8a`, and `+ 3` for `x86_64`. `build --fdroid` checks the
 APK's package name, version, ABI, alignment, native symbols, and indexed assets.
 `mobile/android_release.py check` verifies the release manifest against the
-desktop package version. The signed output of `sign` is for development and
+desktop package version and requires the current version's tag, if it exists, to
+point at the checked-out commit. Pull-request CI adds `--development`, which
+accepts a version that was already tagged at an earlier commit (master keeps the
+last released version until the next release bumps it) but still rejects version
+codes that would not increase past any other tag. The signed output of `sign` is for development and
 device testing; F-Droid signs its own published APKs.
 The two stores use different signing keys, so switching stores requires
 uninstalling the existing app and backing up or exporting saves first.
@@ -878,3 +882,16 @@ API 37 target must add ACCESS_LOCAL_NETWORK and request it before LAN access,
 as described by [Android's local-network permission guide](https://developer.android.com/privacy-and-security/local-network-permission).
 Connection failures point players to local-network permission and certificate
 pairing rather than falling back to plaintext.
+
+## Packaged image assets
+
+Release Android and iOS packages use the shared runtime asset exporter described
+in [the development reference](../development/reference.md#release-asset-and-bundle-sizes).
+It generates verified WebP/PNG assets without editing source artwork. Debug
+packages retain PNGs; both profiles retain existing image-directory override
+precedence. Mobile SDL_image dependencies explicitly enable WebP, so rebuild the
+pinned dependency bundle after this manifest changes. Android indexes and hashes
+the exported payload; retain APK/AAB verification after AAPT packaging and after
+installing an update, which must not keep an obsolete PNG in front of a new WebP.
+
+Candidate validation uses `python3 mobile/android_release.py check-candidate`; this checks identity and build recipes without requiring a new publication tag. `check` retains strict tag-collision and version-code checks for release publication.

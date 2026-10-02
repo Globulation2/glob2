@@ -2,6 +2,7 @@
 // Copyright (C) 2007 Bradley Arsenault
 
 #include "NetEngine.h"
+#include "Team.h"
 #include "OrderMessages.h"
 
 
@@ -197,7 +198,7 @@ Uint32 NetEngine::getWaitingOnMask()
 	{
 		if(orders[p].empty())
 		{
-			mask |= (1<<p);
+			mask |= Team::teamNumberToMask(p);
 		}
 	}
 	return mask;

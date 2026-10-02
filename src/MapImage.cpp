@@ -649,8 +649,8 @@ void importMapImage(Game &game, const std::string &path, GenerationRequest &requ
 	const int h = 1 << request.hDec;
 	const auto decoded = decodeMapImage(path, w, h);
 	const auto anchors = findImageMarkers(decoded.cells, w, h, report);
-	if (anchors.empty() || anchors.size() > 12)
-		throw std::runtime_error("Map image requires 1..12 colony markers (observed " +
+	if (anchors.empty() || anchors.size() > Team::MAX_COUNT)
+		throw std::runtime_error("Map image requires 1.." + std::to_string(Team::MAX_COUNT) + " colony markers (observed " +
 								 std::to_string(anchors.size()) + ")");
 	if (expectedTeams && expectedTeams != report.markers)
 		throw std::runtime_error("Expected " + std::to_string(expectedTeams) +

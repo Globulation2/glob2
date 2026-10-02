@@ -1434,8 +1434,8 @@ Cortex
 Удео песка
 [Select a valid map.]
 Изаберите важећу мапу.
-[Shared control needs a free controller slot (maximum 12).]
-За заједничко управљање потребно је слободно место за играча или ВИ (највише 12).
+[Shared control needs a free controller slot (maximum %0).]
+За заједничко управљање потребно је слободно место за играча или ВИ (највише %0).
 [Smoothing]
 Изглађивање
 [Standard]
@@ -3072,8 +3072,6 @@ Emoji
 Премотај унапред
 [Hide keyboard]
 Сакриј тастатуру
-[Dialog text size]
-Величина текста дијалога
 [Player slot]
 Место играча
 [Team color]
@@ -3412,8 +3410,6 @@ Emoji
 Најмањи потребни ниво: %0
 [Confirm %0]
 У реду: %0
-[Dialog text size %0]
-Величина текста дијалога: %0%
 [%0 %1]
 %0 %1
 [resume game]

@@ -13,7 +13,12 @@ def enabled(value):
 
 
 def build_identity(arguments, host=None):
+    size_profile = arguments.get('size_optimization', 'none')
+    if size_profile not in ('none', 'gc', 'lto', 'size'):
+        raise ValueError('size_optimization must be none, gc, lto, or size')
     target = arguments.get('target', 'native')
+    if size_profile != 'none' and target != 'native':
+        raise ValueError('size_optimization experiments require a native release build')
     if target not in ('native', 'web', 'android', 'ios'):
         raise ValueError('target must be native, web, android, or ios')
     role = arguments.get('role', 'server' if enabled(arguments.get('server', 0)) else 'client')
@@ -63,6 +68,14 @@ def build_identity(arguments, host=None):
     native_wss = target == 'native' and role == 'client' and enabled(arguments.get('wss', 1))
     identity = {'target': target, 'role': role, 'toolchain': toolchain, 'mode': mode,
                 'native_wss': native_wss}
+    if size_profile != 'none':
+        if mode != 'release' or toolchain not in ('linux', 'mingw'):
+            raise ValueError('size_optimization experiments require a Linux or MinGW release build')
+        identity['size_optimization'] = size_profile
+    if enabled(arguments.get('lean_images', 0)):
+        if target != 'native' or toolchain not in ('linux', 'mingw') or role != 'client' or not enabled(arguments.get('release', 0)) or enabled(arguments.get('mingwcross', 0)):
+            raise ValueError('lean_images requires a native Linux or MinGW release client')
+        identity['lean_images'] = True
     if china:
         identity['china'] = True
     return identity
@@ -79,6 +92,10 @@ def default_directory(identity):
     if role == 'client' and identity['target'] == 'native' and not identity['native_wss']:
         role += '-tcp'
     path = Path('build') / identity['toolchain'] / role / identity['mode']
+    if identity.get('size_optimization'):
+        path /= 'size-' + identity['size_optimization']
+    if identity.get('lean_images'):
+        path /= 'lean-images'
     return path / 'china' if identity.get('china') else path
 
 

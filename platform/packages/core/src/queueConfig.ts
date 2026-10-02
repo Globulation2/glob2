@@ -124,8 +124,19 @@ export interface ResolvedQueue {
   acceptSeconds: number;
   /** Queue ban after declining or ignoring an accept prompt. */
   declineCooldownSeconds: number;
-  /** Highest round trip any member may have to the chosen relay region. */
-  maxRttMs: number;
+  /**
+   * Soft region preference: how bad a shared relay may be for players to be
+   * paired, widening with wait until any region will do. Never excludes a
+   * player for good; the chosen relay is always the best available.
+   */
+  rttPreference: RttPreference;
+  /**
+   * Opt-in hard cap (undefined = off, the default): groups of two or more
+   * whose best relay is slower than this for some member do not form. Only
+   * for instances with relays near every player; with it set, a far-away
+   * player can be matched only through AI backfill.
+   */
+  maxRttMs: number | undefined;
   ratingWindow: RatingWindow;
   aiPool: readonly Exclude<AiId, 'none'>[];
   mapPool: MapPoolEntry[];
@@ -134,7 +145,20 @@ export interface ResolvedQueue {
 /** Ranked queues require a 10-second accept (user decision, 2026-10-01). */
 export const RANKED_ACCEPT_SECONDS = 10;
 export const DEFAULT_DECLINE_COOLDOWN_SECONDS = 60;
-export const DEFAULT_MAX_RTT_MS = 250;
+
+export interface RttPreference {
+  /** Worst round trip (ms) accepted for a pairing at once. */
+  initialMs: number;
+  /** Added per second of waiting. */
+  perSecondMs: number;
+  /** After this wait, any region (or no shared region at all) is accepted. */
+  anyRegionAfterSeconds: number;
+}
+export const DEFAULT_RTT_PREFERENCE: RttPreference = {
+  initialMs: 100,
+  perSecondMs: 5,
+  anyRegionAfterSeconds: 30,
+};
 export const DEFAULT_RATING_WINDOW: RatingWindow = { initial: 100, perSecond: 5, max: 800 };
 
 export class QueueConfigError extends Error {}
@@ -162,7 +186,8 @@ export function resolveQueue(queue: QueueConfig): ResolvedQueue {
     aiBackfillSeconds: queue.aiBackfillSeconds,
     acceptSeconds: queue.acceptSeconds ?? (queue.rated ? RANKED_ACCEPT_SECONDS : 0),
     declineCooldownSeconds: queue.declineCooldownSeconds ?? DEFAULT_DECLINE_COOLDOWN_SECONDS,
-    maxRttMs: queue.maxRttMs ?? DEFAULT_MAX_RTT_MS,
+    rttPreference: { ...DEFAULT_RTT_PREFERENCE, ...queue.rttPreference },
+    maxRttMs: queue.maxRttMs,
     ratingWindow: { ...DEFAULT_RATING_WINDOW, ...queue.ratingWindow },
     aiPool,
     mapPool: mapPool.map((entry) => ({

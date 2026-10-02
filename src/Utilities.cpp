@@ -19,6 +19,9 @@ using ssize_t = SSIZE_T;
 
 #include "Utilities.h"
 #include <random>
+#include <atomic>
+#include <cstdio>
+#include <cstdlib>
 #include "Game.h"
 
 #if defined(_MSC_VER) && _MSC_VER < 1900
@@ -29,6 +32,8 @@ using ssize_t = SSIZE_T;
 
 namespace
 {
+	std::atomic<int> requiredSyncRandScopes{0};
+	std::atomic<unsigned> unboundDraws{0};
 	thread_local MersenneTwister *activeSyncRandEngine = nullptr;
 	MersenneTwister &gameSyncRandEngine()
 	{
@@ -47,9 +52,32 @@ SyncRandScope::~SyncRandScope()
 	activeSyncRandEngine = previous;
 }
 
-MersenneTwister &syncRandEngine()
+SyncRandRequirement::SyncRandRequirement() { requiredSyncRandScopes.fetch_add(1); }
+SyncRandRequirement::~SyncRandRequirement() { requiredSyncRandScopes.fetch_sub(1); }
+
+unsigned unboundSyncRandDraws() { return unboundDraws.load(); }
+
+// The stream seeding and state helpers act on: the bound stream, else the default.
+static MersenneTwister &currentSyncRandEngine()
 {
 	return activeSyncRandEngine ? *activeSyncRandEngine : gameSyncRandEngine();
+}
+
+MersenneTwister &syncRandEngine()
+{
+	if (activeSyncRandEngine)
+		return *activeSyncRandEngine;
+	if (requiredSyncRandScopes.load(std::memory_order_relaxed) > 0)
+	{
+		unboundDraws.fetch_add(1);
+		static const bool strict = std::getenv("GLOB2_SYNC_RAND_STRICT") != nullptr;
+		if (strict)
+		{
+			std::fprintf(stderr, "GLOB2_SYNC_RAND_STRICT: synchronized draw without a bound game stream\n");
+			std::abort();
+		}
+	}
+	return gameSyncRandEngine();
 }
 
 int distSquare(int x1, int y1, int x2, int y2)
@@ -62,22 +90,22 @@ int distSquare(int x1, int y1, int x2, int y2)
 void setSyncRandSeed()
 {
 	///Sets the default seed
-	gameSyncRandEngine().seed();
+	currentSyncRandEngine().seed();
 }
 void setSyncRandSeed(Uint32 seed)
 {
-	gameSyncRandEngine().seed(seed);
+	currentSyncRandEngine().seed(seed);
 }
 
 void setRandomSyncRandSeed()
 {
-	gameSyncRandEngine().seed(std::random_device{}());
+	currentSyncRandEngine().seed(std::random_device{}());
 }
 
 std::string getSyncRandState()
 {
 	std::ostringstream stream;
-	stream<<gameSyncRandEngine();
+	stream<<currentSyncRandEngine();
 	return stream.str();
 }
 
@@ -92,7 +120,7 @@ bool setSyncRandState(const std::string& state)
 	stream>>restored;
 	if(stream.fail())
 		return false;
-	gameSyncRandEngine()=restored;
+	currentSyncRandEngine()=restored;
 	return true;
 }
 
