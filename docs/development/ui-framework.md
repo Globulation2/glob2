@@ -30,10 +30,12 @@ two themes, translation and shared page builders. Screens contain a model and a
    structure inside `build()`, or use `adaptive()` to choose by the width the
    parent actually offers. Do not keep separate desktop and phone build paths
    for one screen; both must share the model and the keys.
-5. **Sizes are points, resolved through `p.pt()`.** Theme metrics (control
-   height, gap, padding, minimum touch target, dialog width) are host points;
-   `p.pt(points)` converts to logical pixels for the current scale. Do not use
-   raw pixel constants.
+5. **Sizes and text are points, resolved through `p.pt()`.** Theme metrics
+   (control height, gap, padding, minimum touch target, dialog width) are host
+   points; `p.pt(points)` converts to logical pixels for the current scale. Do
+   not use raw pixel constants. The framework sizes text from the player's
+   text size (in points on touch hosts), so a screen never scales fonts itself
+   (see [Text size](#text-size)).
 6. **Text wraps or ellipsizes; it is never clipped silently.** Use
    `paragraph()` for wrapping text and `label()` for single lines that
    ellipsize. Controls shrink or wrap their labels within the framework's
@@ -105,8 +107,8 @@ Element LANFindScreen::build(const Presentation &p)
 }
 ```
 
-`Glob2UI::Screen` paints the live colony background, keeps the frontend theme
-active for its lifetime and applies the user's text scale. `Glob2UI::Dialog`
+`Glob2UI::Screen` paints the live colony background and keeps the frontend theme
+active for its lifetime. `Glob2UI::Dialog`
 is the same for frontend modals; `Glob2UI::InGameDialog` uses the dark in-match
 theme for gameplay and editor dialogs. `endExecute(code)` and the
 `ScreenStack` completion callback remain the navigation contract; push child
@@ -121,10 +123,37 @@ to `build()`:
 | --- | --- |
 | `viewport`, `safe`, `dialog` | Whole surface; minus platform gutters; minus the onscreen keyboard. Content goes in `safe`, forms and dialogs in `dialog`. |
 | `unit`, `pt()` | Logical pixels per point and the conversion. |
-| `textScale` | User text enlargement applied by the text measurer. |
+| `textScale` | Text enlargement over the fonts' authored size: the player's text size, times the theme's `touchTextScale` on touch hosts. |
+| `textGrowth`, `textPt()` | The player's text size alone (1 at 100%), and a length that grows with it, for widths that hold text such as a label column. |
+| `textUnit` | Logical pixels per authored font pixel, used by the text measurer and canvas: `unit × textScale` on touch hosts, `textScale` on pointer hosts. |
 | `touch`, `hover` | Touch capability (48-point targets) and pointer availability (tooltips). |
 | `compact()`, `expanded()` | Width class thresholds at 600 and 960 points. |
 | `phone()`, `landscape()`, `shortLandscape()` | Device shape helpers for structural choices. |
+
+### Text size
+
+Fonts are rasterized at authored pixel sizes, while the logical surface differs
+between screens: gameplay and the editor keep an 800x600 minimum, so on a phone
+their `unit` is 1.5–2 while menus run at 1. Touch text is therefore sized in
+points, like every other metric: the framework measures and draws it at
+`p.textUnit`, and glyphs are rasterized at the size they are drawn
+(`TrueTypeFont::updateRenderScale`). One text size then holds on every touch
+surface. Pointer hosts keep the authored pixel sizes times the preference, so
+desktop layouts are unchanged at 100% (`applyTextSize()` holds the rule).
+
+- The player's preference (`Settings::textSizePercent`, 100–150%, in Settings
+  > Display and the in-game options) sets `GAGCore::userTextScale` through
+  `Settings::setTextSizePercent()`. Every host picks it up on its next frame and
+  relayouts; screens need no code for it.
+- Themes carry the touch base (`Theme::touchTextScale`, 1.15 for the game's
+  themes), so menus, dialogs over gameplay and the end-of-game sheet match.
+- Bespoke touch painters (the gameplay HUD, the phone editor) draw text at
+  `gfx->textUnitsPerPoint()` times a role factor, never at
+  `logicalUnitsPerPoint()`, and grow rows that are sized by their text with
+  `InGameTouchTheme::textGrowth()`.
+- A control's measured size must hold the text it paints at every text size.
+  `test/UILayoutHarness.cpp` and the presentation harness check that no
+  painted line crosses a control's edge, at 100% and 150%.
 
 ### Containers and controls
 

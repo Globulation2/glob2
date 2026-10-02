@@ -1,5 +1,6 @@
 const {test,expect}=require('@playwright/test');
 const {clickMainMenu,gameURL,clickSettingsDone,clickControl,controlBox,rootBox}=require('./main-menu');
+const {preferences,lowPreferences}=require('./settings-preferences');
 const state=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
 const screen=(page,name)=>expect.poll(async()=>(await state(page)).screen).toContain(name);
 
@@ -38,7 +39,7 @@ test('quit waits for final persistence through resize and escape',async({page})=
   await screen(page,'exited');
   expect((await state(page)).persistence).toBe('persisted');
   await page.reload(); await screen(page,'MainMenuScreen');
-  expect(await page.evaluate(()=>glob2Diagnostics.preferences())).toEqual({optionFlags:0,mute:1});
+  expect(await preferences(page)).toEqual(lowPreferences);
 });
 
 test('quit offers visible retry after a failed final save',async({page},info)=>{

@@ -1,3 +1,4 @@
+#include <RenderBatch.h>
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
@@ -198,6 +199,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 void Game::drawMapGroundUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view)
 {
 	PERF_SCOPE_TIME(GroundUnits);
+    GAGCore::UnitDrawBatch unitBatch(globalContainer->gfx);
 	//Reset the mouse unit to NULL, as this time around there may not be a unit
 	//under the mouse pointer
 	view.mouseUnit=NULL;
@@ -214,6 +216,7 @@ void Game::drawMapGroundUnits(int left, int top, int right, int bot, int sw, int
 void Game::drawMapAirUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view)
 {
 	PERF_SCOPE_TIME(AirUnits);
+    GAGCore::UnitDrawBatch unitBatch(globalContainer->gfx);
 	for (int y=top-1; y<=bot; y++)
 		for (int x=left-1; x<=right; x++)
 		{

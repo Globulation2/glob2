@@ -3082,8 +3082,6 @@ Minikarta
 Spola framåt
 [Hide keyboard]
 Dölj tangentbordet
-[Dialog text size]
-Dialogtextstorlek
 [Player slot]
 Spelarplats
 [Team color]
@@ -3422,8 +3420,6 @@ Vinstchans: %0 · Styrka: %1
 Lägsta tillåtna nivå: %0
 [Confirm %0]
 Ok: %0
-[Dialog text size %0]
-Dialogtextstorlek: %0%
 [%0 %1]
 %0 %1
 [resume game]

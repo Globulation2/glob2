@@ -3072,8 +3072,6 @@ Minimapa
 Przewiń do przodu
 [Hide keyboard]
 Ukryj klawiaturę
-[Dialog text size]
-Rozmiar tekstu okien dialogowych
 [Player slot]
 Miejsce gracza
 [Team color]
@@ -3412,8 +3410,6 @@ Szansa na wygraną: %0 · Siła: %1
 Min. wymagany poziom: %0
 [Confirm %0]
 Ok: %0
-[Dialog text size %0]
-Rozmiar tekstu okien dialogowych: %0%
 [%0 %1]
 %0 %1
 [resume game]
