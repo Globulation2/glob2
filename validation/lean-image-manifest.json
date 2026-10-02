@@ -1,0 +1,88 @@
+{
+  "files": {
+    "include/SDL2/SDL_image.h": "f72b0187df3b81109d0a561db0fbde3f1be1ee10f30552a9fd4756ae11bcf7fd",
+    "lib/cmake/SDL2_image/Findlibjxl.cmake": "4de9f25e25717bead575f94410f4c1a7301e20bafb1f890414bc7616fcbaaa99",
+    "lib/cmake/SDL2_image/Findwebp.cmake": "a68b3daf874ddaacbf86e662f2d3c3f226ae0f22c8d775998d4091631b6f4c07",
+    "lib/cmake/SDL2_image/SDL2_image-shared-targets-release.cmake": "e20aa6c0501688f5feaacbd0f5e568997c5c41828cf068e58ac8f399fa364127",
+    "lib/cmake/SDL2_image/SDL2_image-shared-targets.cmake": "b5be345432e2c912e9a4aa58fd0b83099227f63f74987285fa2c4dfebe035e74",
+    "lib/cmake/SDL2_image/SDL2_imageConfig.cmake": "ab0b5e4aaab01ac1c7034930c4393ba0f0d755e8bfbcd07168197124ab1da6da",
+    "lib/cmake/SDL2_image/SDL2_imageConfigVersion.cmake": "842d7b84188a1a4d7dfea3df40b7c40a4ed77dd4c1f5e8c044342c9c0ad4b131",
+    "lib/libSDL2_image-2.0.0.800.12.dylib": "351ccf270b41c734cfa0c8cd2e1080cb8ebb50e631fb4b169f509366c2ed9e1c",
+    "lib/libSDL2_image-2.0.0.dylib": "351ccf270b41c734cfa0c8cd2e1080cb8ebb50e631fb4b169f509366c2ed9e1c",
+    "lib/libSDL2_image-2.0.dylib": "351ccf270b41c734cfa0c8cd2e1080cb8ebb50e631fb4b169f509366c2ed9e1c",
+    "lib/libSDL2_image.dylib": "351ccf270b41c734cfa0c8cd2e1080cb8ebb50e631fb4b169f509366c2ed9e1c",
+    "lib/pkgconfig/SDL2_image.pc": "b4cd764d9a520d5ad7d33bb61dda6950a11617bf057993d4c9b98c4134646484",
+    "share/licenses/SDL2_image/LICENSE.txt": "7826eca0a0f7e591f38dd844e207a200aac81a59b20d8a30c3af8c6282af13e6"
+  },
+  "identity": {
+    "arch": "arm64",
+    "archive": {
+      "sha256": "393f5efb50536ec13ca4f4affb69cc9966d3c3f969e6c5e701faddf9f9785381",
+      "url": "https://github.com/libsdl-org/SDL_image/releases/download/release-2.8.12/SDL2_image-2.8.12.tar.gz"
+    },
+    "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+    "dependencies": {
+      "SDL2": {
+        "files": {
+          "/opt/homebrew/Cellar/sdl2-compat/2.32.70/lib/libSDL2-2.0.0.dylib": "53f5a5ac80d12b996aa4c5c7cbab679aa7649c38d02f5bd6b5dac90db8e33b5c",
+          "/opt/homebrew/Cellar/sdl2-compat/2.32.70/lib/libSDL2main.a": "4a29f3f241c9598b1ab3af91ea360278e3fefff1cf44d70a486a1a78b92b562f"
+        },
+        "version": "2.32.70"
+      },
+      "libjpeg": {
+        "files": {
+          "/opt/homebrew/Cellar/jpeg-turbo/3.2.0/lib/libjpeg.8.3.2.dylib": "e6585d0aee1969a63f288f97bbe3ef100ac787bc25ebcc4e6487b82b96cdbcae"
+        },
+        "version": "3.2.0"
+      },
+      "libpng": {
+        "files": {
+          "/opt/homebrew/Cellar/libpng/1.6.58/lib/libpng16.16.dylib": "ed50e7c1582d94c40489a37097cbb2fcea81e5450173ee9bbe2871cbfdea27eb"
+        },
+        "version": "1.6.58"
+      },
+      "libwebp": {
+        "files": {
+          "/opt/homebrew/Cellar/webp/1.6.0/lib/libwebp.7.2.0.dylib": "f42f3e0687cf1f7fd5a42c608152e0d4187540ac2e6675cb8af297e7befc4258"
+        },
+        "version": "1.6.0"
+      },
+      "libwebpdemux": {
+        "files": {
+          "/opt/homebrew/Cellar/webp/1.6.0/lib/libwebpdemux.2.0.17.dylib": "d8b4a387561fd4c28aa7590fb41f62fbd6363f4c303d8cde2d2a971af4b6d699"
+        },
+        "version": "1.6.0"
+      }
+    },
+    "options": [
+      "-DSDL2IMAGE_AVIF=OFF",
+      "-DSDL2IMAGE_BMP=OFF",
+      "-DSDL2IMAGE_GIF=OFF",
+      "-DSDL2IMAGE_JPG=ON",
+      "-DSDL2IMAGE_JXL=OFF",
+      "-DSDL2IMAGE_LBM=OFF",
+      "-DSDL2IMAGE_PCX=OFF",
+      "-DSDL2IMAGE_PNG=ON",
+      "-DSDL2IMAGE_PNM=OFF",
+      "-DSDL2IMAGE_QOI=OFF",
+      "-DSDL2IMAGE_SVG=OFF",
+      "-DSDL2IMAGE_TGA=OFF",
+      "-DSDL2IMAGE_TIF=OFF",
+      "-DSDL2IMAGE_WEBP=ON",
+      "-DSDL2IMAGE_XCF=OFF",
+      "-DSDL2IMAGE_XPM=OFF",
+      "-DSDL2IMAGE_XV=OFF",
+      "-DBUILD_SHARED_LIBS=ON",
+      "-DSDL2IMAGE_DEPS_SHARED=OFF",
+      "-DSDL2IMAGE_STRICT=ON",
+      "-DSDL2IMAGE_BACKEND_STB=OFF",
+      "-DSDL2IMAGE_BACKEND_IMAGEIO=OFF",
+      "-DSDL2IMAGE_SAMPLES=OFF",
+      "-DSDL2IMAGE_TESTS=OFF",
+      "-DCMAKE_BUILD_TYPE=Release",
+      "-DSDL2IMAGE_PNG_SAVE=ON",
+      "-DSDL2IMAGE_JPG_SAVE=ON"
+    ],
+    "sdk": "27.0\n"
+  }
+}

@@ -8,7 +8,7 @@ Mac release copies retain matching dSYMs before stripping, use pinned lean SDL_i
 
 ## Verified evidence
 
-- 130 build-system Python tests pass, including actual SCons reinstall and export rollback (artifacts/size-study/final-build-system-tests.log).
+- 135 build-system Python tests pass, including actual SCons reinstall and export rollback (artifacts/size-study/review-build-system-tests.log).
 - 7 Windows packaging helper tests pass (windows-package-tests.log).
 - 16 browser JavaScript unit tests pass (browser-unit.log).
 - Caddy 2.10.2 identity/gzip negotiation and decompressed content pass for HTML/JS/WASM/data (http-compression.json); this is a local server test, not deployed hosting evidence.
@@ -27,3 +27,13 @@ Mac release copies retain matching dSYMs before stripping, use pinned lean SDL_i
 - Workflow/package YAML parses; Caddy configuration adapts; git diff whitespace checks pass.
 
 Windows/mobile/Linux/Flatpak full builds still require their platform CI; none is claimed verified locally. No publishing or deployment performed. Source artwork remains original. No simulation, save or replay-format changes made.
+
+## Independent PR review
+
+PR #530 follow-up head: ea5f3ed7968a66636588269ecab4eabe30a7ec73
+
+Read-only independent review found three defects, now addressed: stale legacy PNGs shadowing updated WebP; unowned browser directory replacement; and verification accepting missing non-HTML gzip sidecars. Added focused tests for each and directory-swap rollback. Cache architecture now fingerprints actual pkg-config linked libraries and deduplicates hashing, rather than all Homebrew dylibs. Python helpers formatted, unused imports removed, encoder probe pins centralized, and ownership/lease policies documented. Follow-up independent review found no introduced correctness defects.
+
+Native quick suite rerun with GLOB2_ASSET_DIR explicitly pointing at the built Glob2.app/Contents/Resources: 88 groups pass, one unchanged farming timing test fails, 12 skipped (native-packaged-assets.xml). Software graphics checks were also rerun against this actual package. Earlier commands using a missing final-macos directory fell back to source assets; they are not evidence of optimized-resource coverage. Browser builds already used the real optimized export.
+
+Final acceptance: 135 build/packaging tests pass; Ruff format and unused-name checks pass for new Python helpers/tests; actual browser package verify passes with ownership marker and all four gzip sidecars; lean SDL_image builds and verifies with the refined dependency identity. Full platform CI remains pending. The cache fingerprint includes explicit linked SDL/codec libraries, not every header/transitive toolchain input.
