@@ -53,6 +53,49 @@ test('WebAssembly produces a complete per-tick simulation trace', async ({page},
   }, null, 2) + '\n');
 });
 
+// The committed turn-protocol match record, verified by the WebAssembly engine
+// exactly as the native lanes verify it (test/run-browser-determinism.py). The
+// comparison job requires every platform's per-tick trace to be identical.
+test('WebAssembly verifies the committed match record', async ({page}, info) => {
+  test.setTimeout(300000);
+  const root = path.resolve(__dirname, '../..');
+  const record = fs.readFileSync(path.join(root, 'test/fixtures/multiplayer/FourSquares1.g2mr'));
+  const map = fs.readFileSync(path.join(root, 'maps/FourSquares1.map.gz'));
+  await page.route('**/verify-match.html', route => route.fulfill({
+    contentType: 'text/html',
+    body: `<!doctype html><canvas id="canvas"></canvas><script>
+      window.engineLog = [];
+      var Module = {
+        noInitialRun: true,
+        canvas: document.getElementById('canvas'),
+        print: message => engineLog.push(String(message)),
+        printErr: message => engineLog.push(String(message)),
+        preRun: [function() {
+          FS.writeFile('/tmp/match.g2mr', Uint8Array.from(atob('${record.toString('base64')}'), c => c.charCodeAt(0)));
+          FS.writeFile('/tmp/FourSquares1.map.gz', Uint8Array.from(atob('${map.toString('base64')}'), c => c.charCodeAt(0)));
+        }],
+        onRuntimeInitialized() {
+          window.verifyExit = Module.callMain(['--verify-match', '/tmp/match.g2mr', '--map', '/tmp/FourSquares1.map.gz', '--out', '/tmp/verify']);
+          window.verifyTrace = FS.readFile('/tmp/verify/checksums.txt', {encoding: 'utf8'});
+          window.verifyVerdict = FS.readFile('/tmp/verify/verdict.json', {encoding: 'utf8'});
+        }
+      };
+    </script><script src="/index.js"></script>`,
+  }));
+  await page.goto('/verify-match.html');
+  await page.waitForFunction(() => typeof window.verifyTrace === 'string', null, {timeout: 280000});
+  const trace = await page.evaluate(() => window.verifyTrace);
+  const verdict = JSON.parse(await page.evaluate(() => window.verifyVerdict));
+  expect(trace.split('\n').length).toBeGreaterThan(600);
+  const output = path.join(root, 'artifacts/browser-determinism/wasm');
+  fs.mkdirSync(output, {recursive: true});
+  fs.writeFileSync(path.join(output, 'verify-match.checksums.txt'), trace);
+  fs.writeFileSync(path.join(output, 'verify-match.verdict.json'), JSON.stringify(verdict) + '\n');
+  fs.writeFileSync(path.join(output, 'verify-match.log'), (await page.evaluate(() => window.engineLog)).join('\n'));
+  fs.mkdirSync(info.outputDir, {recursive: true});
+  fs.writeFileSync(info.outputPath('verify-match.checksums.txt'), trace);
+});
+
 // The same production-runtime cases and realistic engine observations used by
 // desktop and mobile harnesses. Golden comparisons occur inside C++, not in a
 // JavaScript reimplementation of the engine or its math.

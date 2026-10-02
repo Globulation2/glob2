@@ -14,6 +14,8 @@ sockets. Keep this document in step with that code.
 | Delay maths | `JitterBuffer.h/.cpp` | Jitter estimate, target buffer with hysteresis, tick-rate nudge, catch-up |
 | Client | `TurnSession.h/.cpp` | Lockstep session over an abstract transport |
 | Record | `MatchRecord.h/.cpp` | Versioned file of setup, map hash, turns and checksum reports |
+| Engine adapter | `TurnLockstep.h/.cpp` | `TurnSession` behind `LockstepSession`; `RecordTransport` replays a record |
+| Match setup | `src/online/MatchSetup.*`, `SimVersion.*` | MatchSetup JSON to `GameHeader`; the simulation version |
 
 The relay never simulates the game, so it does not know the rules. It treats orders as
 opaque bytes. The only exceptions are the few order type ids in the
@@ -308,9 +310,9 @@ arbitrated.
 
 ## Engine integration
 
-`TurnSession` implements the method set `EngineRun.cpp` uses from `NetEngine`, which the
-`LockstepSession` interface abstracts. Connecting it to the engine is a later step; the
-intended mapping is:
+`TurnLockstepSession` (`TurnLockstep.h/.cpp`) puts a `TurnSession` behind the engine's
+`LockstepSession` interface. The engine calls it exactly where it calls `NetEngine` for
+single player and the legacy games:
 
 | Engine call | `TurnSession` behaviour |
 | --- | --- |
@@ -325,19 +327,118 @@ intended mapping is:
 | `matchCheckSums` | Always true; the relay arbitrates |
 | `flushAllOrders` | Nothing to do: orders are sent as soon as they are added |
 
-The engine also needs four calls that `NetEngine` lacks:
+### Starting a turn game
 
-- `update(now)` each frame, before the step, to pump the transport and timers;
-- `tickIntervalMicros()` in place of the fixed tick duration. It is 0 in catch-up, when
-  the engine runs uncapped with rendering skipped, and otherwise 40 ms adjusted by at
-  most 5%;
-- `needsReload()` and `reloadDone()`: the engine reloads the initial game state, then
-  calls `reloadDone()`, which resets the session to tick 0;
-- `quit()` when the player leaves.
+LAN and the online client start a match with one call:
 
-This replaces `assert(false)` on a checksum mismatch (`EngineRun.cpp`) for online and
-LAN games. A rejoin request appears as `needsReload()`, and a flagged match as
-`desyncFlagged()`. Single player keeps `NetEngine` and the existing dump.
+```cpp
+Engine::TurnMatchStart start;
+start.setup = Online::MatchSetup::parse(setupJson);          // validated MatchSetup
+start.mapFile = Online::resolveMatchMap(start.setup, path);  // content hash checked
+start.localSeat = seat;                                      // from the ticket
+start.transport = transport;   // std::shared_ptr<Turn::TurnTransport> to the relay
+start.config.ticket = ticket;
+engine.initTurnMatchTask(std::move(start));  // or initTurnMatch(), then run()
+```
+
+`initTurnMatchTask` builds the `GameHeader` from the setup (see
+[match setup](#match-setup-and-simulation-version)), loads the map with the saved
+GUI data ignored, and installs the session in place of the `NetEngine`. The caller
+keeps its own reference to the transport and closes it after the session has ended,
+so frames queued by `quit()` can still be delivered. `Engine::turnSession()` exposes
+the session (presence, latency, buffer) for a connection HUD.
+
+### The engine loop
+
+`Engine::stepSession` calls `pumpTurnSession` before gathering orders:
+
+- `TurnSession::update(now)` pumps the transport and timers every frame.
+- **Pacing.** A turn game's tick duration is `tickIntervalMicros()`, rounded to
+  milliseconds (38–42 ms around 40), even while paused, because the relay's clock keeps
+  going. The pacing budget advances only when a tick ran, so frames spent waiting for a
+  bundle poll every millisecond instead of sleeping a whole tick. Headless turn clients
+  are paced too; only `sessionDelay()`'s caller decides whether to wait.
+- **Catch-up.** While `tickIntervalMicros()` is 0, the loop uses the replay fast-forward
+  preset (`REPLAY_FAST_FORWARD_MS`, drawing one frame in
+  `REPLAY_FAST_FORWARD_DRAW_RATIO`) and lifts the `MAX_CATCHUP_MS` cap.
+- **Reload.** When `needsReload()` is set (told to rejoin, or a resume the relay could
+  serve only from tick 0), the engine reloads the initial state in place from the same
+  map and `GameHeader`, restarts its replay and checksum sidecar, and calls
+  `reloadDone()`. The session then replays the turn log in catch-up mode.
+- **Desync.** `matchCheckSums()` never fails for a turn game, so the single-player
+  dump-and-assert path is not taken. A divergence reaches the engine as a reload
+  request, and a flagged match (`desyncFlagged()`) is logged once; the verifier then
+  decides the result. A refused client (`Rejected`) leaves the game.
+- **Leaving.** Tearing the session down (`finishSessionForHost`, `abortSession`) calls
+  `quit()`, with `GameFinished` once the game has ended for the local team and
+  `PlayerQuit` otherwise. The in-game Quit menu also submits the usual
+  `PlayerQuitsGameOrder`; the relay sequences it and marks the seat left.
+
+As in a legacy network game, executing the local seat's own `PlayerQuitsGameOrder`
+stops that client's loop.
+
+## Match setup and simulation version
+
+### MatchSetup to GameHeader
+
+`src/online/MatchSetup.{h,cpp}` turns the platform's MatchSetup JSON
+(`platform/packages/protocol`, `src/matchSetup.ts`, is the source of truth) into the
+`GameHeader` that every client and the verifier run:
+
+1. `MatchSetup::parse` checks the JSON Schema rules (every field required, no unknown
+   properties, ranges, patterns, the closed AI list without `javascript`), then the
+   cross-field rules: teams listed `0..n-1` in order, seats numbered `0..k-1`, each seat
+   on a listed team, names at most 32 UTF-8 bytes, one seat per account, a generator's
+   `teams` equal to the number of teams, and only known experiment keys. Errors carry
+   the stage (`Schema`, `Semantic` or `Map`) and a JSON pointer.
+2. `resolveMatchMap` finds the map: a given file, or `<cache>/<hash>.map[.gz]` or
+   `.game[.gz]`. The file's decompressed bytes must hash (SHA-256) to `map.hash`, and it
+   must be a saved game exactly when the source is an uploaded save.
+3. `toGameHeader(mapHeader)` requires the map's team count to equal `teams.length`.
+   Seat `s` becomes player record `s` on its team. **Every human seat is `P_IP` on every
+   client and in the verifier**, so the heavy checksum the engine enables when a
+   network player exists is the same everywhere; the local seat is chosen by
+   `localPlayer`, never by the player type. AI seats use the `AINames` CLI ids (`none`
+   is `AI::NONE`) and their `aiConfig`. Each team's ally-team number is
+   `alliance + 1`. The rules set the `GameHeader` setters of the same names, starting
+   from the default winning conditions with prestige and the sudden-death timer
+   (`minutes × 60 × 25` ticks) toggled.
+
+`MatchSetup::fromGameHeader` is the inverse where it is meaningful, for a LAN host or
+an uploaded save: it rejects JavaScript AIs and winning-condition lists other than the
+standard one.
+
+**Saves.** For an uploaded save, the seats replace every saved player record
+(`Game::setGameHeader` with `saveAI = false`). A seat takes control of its team as
+saved; naming any saved team is how reteaming works. AI seats start fresh AIs of the
+given kind, and teams no seat controls are cleared as on a new map. The rules, seed and
+experiments come from the setup like any other match, so a platform that wants to
+continue a save unchanged builds the setup with `fromGameHeader` from the save's
+header. If the seed equals the saved one, the saved random state is kept; otherwise
+the simulation is reseeded.
+
+### Simulation version
+
+A sim version identifies builds that produce identical games. Its JSON form is
+`{versionMinor, netProtocol, dataHash}` (`SimVersion` in the protocol package) and its
+key is `<versionMinor>-<netProtocol>-<dataHash>`, the string relays copy into the match
+record. `glob2 --sim-version` prints the JSON.
+
+- `versionMinor` is `VERSION_MINOR` and `netProtocol` is `NET_PROTOCOL_VERSION` in
+  `src/Version.h`.
+- `dataHash` is the lowercase hex SHA-256 of the simulation data files listed in
+  `Online::simDataFiles()`: the Maxima strategies (`data/maxima/*.strategy`), the
+  Nicowar tables (`data/nicowar.default.txt`, `data/nicowar.txt`) and the USL runtime
+  (`data/usl/*/Runtime/*.usl`), in byte-wise sorted path order. For each file the hash
+  takes the path bytes, one zero byte, the content length as a big-endian 64-bit number
+  and the content, with every CR LF pair replaced by LF so a Windows checkout with
+  automatic line-ending conversion hashes the same. A missing file contributes its path,
+  a zero byte and the length `0xFFFFFFFFFFFFFFFF`. Files are read through the engine's
+  file manager, so the browser's packaged file system gives the same value.
+
+A unit test checks that the list covers every file in those directories. Everything
+else the simulation depends on is compiled in: a change to simulation code must bump
+`VERSION_MINOR` or `NET_PROTOCOL_VERSION` to change the sim version.
 
 ## Match record
 
@@ -375,6 +476,11 @@ Readers reject unknown magic, a newer `formatVersion`, a bad CRC, trailing bytes
 violated ordering or limit. A future version may add fields, but only behind a version
 check, so older records stay readable.
 
+`glob2 --verify-match` replays a record through the same engine path a live client
+runs: `Engine::initTurnMatch` with a `RecordTransport` that serves the record's turns as
+one relay would. Its contract is in
+[headless replays](../development/headless-replays.md#verifying-a-match-record).
+
 ## Testing
 
 The unit tests in `test/TurnProtocolTest.cpp` (in `glob2-unit-tests`) use a fake clock
@@ -395,5 +501,36 @@ majority repairs. It also checks that a stalled client never stalls the others, 
 each client's buffer follows its own link's jitter, and that each player's input delay
 follows their own connection. Summaries are written under `artifacts/tests/`.
 
-Two parts follow once `LockstepSession` lands: the full-engine version of this harness
-(per-tick game checksums instead of a synthetic state hash), and `--verify-match`.
+`test/TurnEngineHarness.cpp` (in `glob2-engine-tests`) runs the same network with 2–4
+real engines started by `Engine::initTurnMatch` on one MatchSetup, AI seats computed on
+every client and each human seat driven by a bot that queues orders through the GUI's
+order queue. Every client records the checksum before each tick, and the cases require
+all of them to agree at every tick (and with the relay's agreed checksums):
+
+- two engines with AI seats under latency, jitter and loss;
+- four engines, one stalled for 5 s (incremental resume) and one restarted as a new
+  process (full log, fast-forward from tick 0);
+- three engines where one executes a tampered order: the majority tells it to rejoin,
+  it reloads in place and fast-forwards, and `--verify-match` names its seat;
+- a player who quits through the sequenced `PlayerQuitsGameOrder` while the others
+  play on.
+
+Each case verifies the relay's record with `--verify-match` and requires the verifier's
+per-tick checksums and `result.json` team outcomes to equal the live clients'. Forged
+turns make the record unverifiable, and a seat whose reports disagree is named. A
+`[benchmark]` case measures rejoin fast-forward time against game length and AI count
+(`python3 test/run_tests.py --tag benchmark --filter 'TurnEngineHarness/*'`).
+
+`test/MatchSetupTest.cpp` runs every MatchSetup and SimVersion contract fixture: valid
+ones must parse and round-trip, invalid ones must fail at the stage the manifest names.
+It reads `platform/packages/protocol/fixtures` when that directory exists; until the
+platform workspace is on the branch it reads the copy in `test/fixtures/protocol`, and
+once both exist it requires the copy to equal the source.
+
+`test/fixtures/multiplayer/FourSquares1.g2mr` is a short recorded match (two humans,
+Nicowar and Warrush) with its expected verification trace. The browser/native
+simulation equivalence job verifies it on Linux, Windows and in three browsers and
+requires identical traces (see
+[headless replays](../development/headless-replays.md#verifying-a-match-record)). A
+simulation change makes it stale; `python3 test/run_tests.py --update-fixtures --filter
+'TurnEngineHarness/the committed*'` records a fresh match and trace.
