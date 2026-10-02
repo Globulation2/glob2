@@ -1,5 +1,6 @@
 export * from './config.ts';
 export * from './instanceConfig.ts';
+export * from './queueConfig.ts';
 export * from './logging.ts';
 export * from './shutdown.ts';
 export * from './accessPolicy.ts';

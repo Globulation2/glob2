@@ -31,12 +31,45 @@ export const AppleProviderConfig = Strict({
 export const QueueConfig = Strict({
   id: Type.String({ pattern: '^[a-z0-9][a-z0-9-]{0,31}$' }),
   name: Type.String({ minLength: 1, maxLength: 64 }),
+  /** 1v1, or 2v2 solo queue (four players, two sides). */
   mode: Type.Union([Type.Literal('1v1'), Type.Literal('2v2')]),
+  /** Rated queues update the ladder named by the queue id; guests cannot join them. */
   rated: Type.Boolean(),
   /** Seconds before an empty seat is filled by the closest-rated AI; omit to never backfill. */
   aiBackfillSeconds: Type.Optional(Type.Integer({ minimum: 0 })),
-  /** Map pool: generator descriptors without seed (the platform picks one per match). */
-  mapPool: Type.Array(Type.Omit(GeneratorDescriptor, ['seed']), { minItems: 1 }),
+  /**
+   * Accept prompt for all-human groups, in seconds; 0 starts at once. Default:
+   * 10 for rated queues, 0 otherwise. AI-backfilled groups never prompt.
+   */
+  acceptSeconds: Type.Optional(Type.Integer({ minimum: 0, maximum: 120 })),
+  /** Queue ban after declining or ignoring an accept prompt (default 60). */
+  declineCooldownSeconds: Type.Optional(Type.Integer({ minimum: 0, maximum: 3600 })),
+  /** Highest relay round trip any grouped player may have (default 250 ms). */
+  maxRttMs: Type.Optional(Type.Integer({ minimum: 1, maximum: 60000 })),
+  /** Accepted skill difference in display points, widening with wait time. */
+  ratingWindow: Type.Optional(
+    Strict({
+      initial: Type.Optional(Type.Number({ minimum: 0 })),
+      perSecond: Type.Optional(Type.Number({ minimum: 0 })),
+      max: Type.Optional(Type.Number({ minimum: 0 })),
+    }),
+  ),
+  /** AIs that may backfill seats (default: every rated AI). */
+  aiPool: Type.Optional(
+    Type.Array(
+      Type.Union(
+        (
+          ['maxima', 'cabino', 'nicowar', 'cortex', 'warrush', 'econo', 'castor', 'numbi'] as const
+        ).map((id) => Type.Literal(id)),
+      ),
+      { uniqueItems: true },
+    ),
+  ),
+  /**
+   * Map pool: generator descriptors without seed (the platform picks one per
+   * match). Default: the 128x128 fair-by-construction generators for the mode.
+   */
+  mapPool: Type.Optional(Type.Array(Type.Omit(GeneratorDescriptor, ['seed']), { minItems: 1 })),
 });
 export type QueueConfig = Static<typeof QueueConfig>;
 
