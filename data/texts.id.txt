@@ -3068,8 +3068,6 @@ Peta mini
 Percepat
 [Hide keyboard]
 Sembunyikan papan ketik
-[Dialog text size]
-Ukuran teks dialog
 [Player slot]
 Slot pemain
 [Team color]
@@ -3408,8 +3406,6 @@ Peluang menang: %0 · Kekuatan: %1
 Tingkat minimum: %0
 [Confirm %0]
 Oke: %0
-[Dialog text size %0]
-Ukuran teks dialog: %0%
 [%0 %1]
 %0 %1
 [resume game]

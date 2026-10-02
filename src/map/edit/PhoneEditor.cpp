@@ -882,11 +882,11 @@ void PhoneEditor::label(ViewRect r, const std::string &text)
 {
 	auto *gfx = globalContainer->gfx;
 	auto *font = globalContainer->standardFont;
-	const double scale = gfx->logicalUnitsPerPoint();
+	const double unit = gfx->logicalUnitsPerPoint(), scale = gfx->textUnitsPerPoint();
 	font->pushStyle(Font::Style(Font::STYLE_NORMAL, Color(255, 249, 229)));
 	SDL_Rect clip{int(r.x), int(r.y), int(r.w), int(r.h)};
-	gfx->setUITransform(scale, r.x + 4 * scale, r.y + (r.h - 16 * scale) / 2, &clip);
-	gfx->drawString(0, 0, font, text, std::max(1, int(r.w / scale - 8)));
+	gfx->setUITransform(scale, r.x + 4 * unit, r.y + (r.h - 16 * scale) / 2, &clip);
+	gfx->drawString(0, 0, font, text, std::max(1, int((r.w - 8 * unit) / scale)));
 	gfx->setUITransform();
 	gfx->setClipRect();
 	font->popStyle();
