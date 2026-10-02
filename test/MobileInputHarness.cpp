@@ -1,8 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <Environment.h>
 #include "Glob2Test.h"
 #include <algorithm>
 #include <cstdlib>
 #include <TouchInput.h>
+#include <UiScale.h>
+#include <limits>
 #include <MapCamera.h>
 #include <InterfacePresentation.h>
 #include <cmath>
@@ -69,24 +72,24 @@ TEST_CASE("zoom anchoring; seams; rotation; safe layouts; gestures and cancellat
 				input.hover = true;
 			}
 		}
-		SDL_setenv("GLOB2_MOBILE_UI", "0", 1);
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "0", 1);
 		require(presentationOverride() == PresentationPreference::Spacious &&
 					!phonePresentationRequested(),
 				"Desktop override uses legacy controls");
-		SDL_setenv("GLOB2_MOBILE_UI", "1", 1);
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "1", 1);
 		require(presentationOverride() == PresentationPreference::Compact &&
 					phonePresentationRequested(),
 				"Compact override uses adapted controls");
-		SDL_setenv("GLOB2_MOBILE_UI", "touch-auto", 1);
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "touch-auto", 1);
 		require(presentationOverride() == PresentationPreference::Automatic &&
 					phonePresentationRequested(),
 				"Touch automatic mode retains adapted controls");
-		SDL_setenv("GLOB2_MOBILE_UI", "touch-spacious", 1);
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "touch-spacious", 1);
 		require(presentationOverride() == PresentationPreference::Spacious &&
 					phonePresentationRequested(),
 				"Touch spacious mode retains adapted controls");
 		// An empty development override must behave like an absent override.
-		SDL_setenv("GLOB2_MOBILE_UI", "", 1);
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "", 1);
 		require(!presentationOverride(), "No override uses saved preference and host capabilities");
 		presentationPreference = PresentationPreference::Automatic;
 		updatePresentation({800, 600, 1, {}, 0}, {false, true, true, true});
@@ -243,5 +246,60 @@ TEST_CASE("zoom anchoring; seams; rotation; safe layouts; gestures and cancellat
 		require(touch.move(1, 1, {100, 100}).empty(), "Zoom resumed after a pinch");
 		require(touch.up(1, 1, {100, 100}).empty(), "Zoom contact ended as a tap after a pinch");
 	}
+}
+}
+
+TEST_SUITE("MobileInput")
+{
+TEST_CASE("opaque SDL3 touch identifiers retain their high bits")
+{
+    const std::uint64_t device = (std::uint64_t{1} << 63) + 17;
+    const std::uint64_t finger = (std::uint64_t{1} << 63) + 31;
+    TouchInput input;
+    CHECK(input.down(device, finger, {100, 100}).empty());
+    CHECK(input.up(device + 1, finger, {100, 100}).empty());
+    const auto actions = input.up(device, finger, {100, 100});
+    REQUIRE(actions.size() == 1);
+    CHECK(actions[0].kind == TouchActionKind::Select);
+    near(actions[0].point.x, 100);
+    near(actions[0].point.y, 100);
+}
+}
+
+TEST_SUITE("DisplayScale")
+{
+TEST_CASE("OS scaling composes with preferences without doubling pixel density")
+{
+    for (float os : {1.0f, 1.5f, 2.0f})
+        for (float preference : {0.0f, 1.0f, 1.5f, 2.0f}) {
+            const float multiplier = preference == 0 ? 1 : preference;
+            CHECK(windowUiScale(os, 1, preference) == doctest::Approx(os * multiplier));
+            CHECK(windowUiScale(os, 2, preference) * 2 == doctest::Approx(os * multiplier));
+            CHECK(windowUiScale(os, 2, preference, 1.5f) == doctest::Approx(1.5f));
+        }
+    CHECK(windowUiScale(0, 2, 1.5f) == doctest::Approx(1.5f));
+    CHECK(windowUiScale(2, 0, 0) == doctest::Approx(1));
+    CHECK(windowUiScale(std::numeric_limits<float>::quiet_NaN(), 2, 0) == doctest::Approx(1));
+    CHECK(windowUiScale(1, 1, 9) == doctest::Approx(4));
+}
+}
+
+TEST_SUITE("Environment")
+{
+TEST_CASE("Process overrides update SDL's cached environment")
+{
+    constexpr const char *name = "GLOB2_SDL3_ENVIRONMENT_TEST";
+    SDL_Environment *environment = SDL_GetEnvironment();
+    REQUIRE(GAGCore::setProcessEnvironment(name, "first", 1) == 0);
+    CHECK(std::string(SDL_getenv_unsafe(name)) == "first");
+    CHECK(std::string(SDL_GetEnvironmentVariable(environment, name)) == "first");
+    REQUIRE(GAGCore::setProcessEnvironment(name, "second", 1) == 0);
+    CHECK(std::string(SDL_getenv_unsafe(name)) == "second");
+    CHECK(std::string(SDL_GetEnvironmentVariable(environment, name)) == "second");
+    REQUIRE(GAGCore::setProcessEnvironment(name, "ignored", 0) == 0);
+    CHECK(std::string(SDL_getenv_unsafe(name)) == "second");
+    CHECK(std::string(SDL_GetEnvironmentVariable(environment, name)) == "second");
+    SDL_unsetenv_unsafe(name);
+    SDL_UnsetEnvironmentVariable(environment, name);
 }
 }

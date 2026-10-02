@@ -32,5 +32,16 @@ private:
 	void accept(TokenType type);
 
 	Heap* heap;
+	unsigned depth = 0;
+	struct DepthGuard
+	{
+		Parser& parser;
+		explicit DepthGuard(Parser& p) : parser(p)
+		{
+			if (p.depth >= 128) throw Exception(p.token.position, "Script nesting limit exceeded");
+			++p.depth;
+		}
+		~DepthGuard() { --parser.depth; }
+	};
 };
 

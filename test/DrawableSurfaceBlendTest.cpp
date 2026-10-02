@@ -6,7 +6,7 @@
 #include <cmath>
 #include <Toolkit.h>
 #include <GraphicContext.h>
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <ui/Canvas.h>
 #include <cstdlib>
 #include <iostream>
@@ -18,7 +18,7 @@ struct Inspect : GraphicContext
 		SDL_LockSurface(sdlsurface);
 		Uint32 pixel = static_cast<Uint32 *>(sdlsurface->pixels)[y * (sdlsurface->pitch >> 2) + x];
 		Uint8 r, g, b, a;
-		SDL_GetRGBA(pixel, sdlsurface->format, &r, &g, &b, &a);
+		SDL_GetRGBA(pixel, SDL_GetPixelFormatDetails(sdlsurface->format), SDL_GetSurfacePalette(sdlsurface), &r, &g, &b, &a);
 		SDL_UnlockSurface(sdlsurface);
 		return r; // background and probe are greyscale; any channel matches
 	}
@@ -39,11 +39,11 @@ void checkIconRendering(unsigned flags)
 		for (int pixels : {20, 40})
 		{
 			SDL_Surface *rawMask =
-				SDL_CreateRGBSurfaceWithFormat(0, pixels, pixels, 32, SDL_PIXELFORMAT_RGBA32);
+				SDL_CreateSurface(pixels, pixels, SDL_PIXELFORMAT_RGBA32);
 			GLOB2_REQUIRE(rawMask, "icon raster and tint contract");
-			SDL_FillRect(rawMask, nullptr, SDL_MapRGBA(rawMask->format, 255, 255, 255, 128));
+			SDL_FillSurfaceRect(rawMask, nullptr, SDL_MapSurfaceRGBA(rawMask, 255, 255, 255, 128));
 			auto raster = std::make_shared<DrawableSurface>(rawMask);
-			SDL_FreeSurface(rawMask);
+			SDL_DestroySurface(rawMask);
 			asset.rasters.push_back({pixels, raster});
 		}
 		const Color tint(30, 60, 90, 128);
@@ -54,7 +54,7 @@ void checkIconRendering(unsigned flags)
 		SDL_Surface *surface = cached->getSDLSurface();
 		SDL_LockSurface(surface);
 		Uint8 r, g, b, a;
-		SDL_GetRGBA(*static_cast<Uint32 *>(surface->pixels), surface->format, &r, &g, &b, &a);
+		SDL_GetRGBA(*static_cast<Uint32 *>(surface->pixels), SDL_GetPixelFormatDetails(surface->format), SDL_GetSurfacePalette(surface), &r, &g, &b, &a);
 		SDL_UnlockSurface(surface);
 		GLOB2_REQUIRE(r == 30 && g == 60 && b == 90 && a == 64, "icon raster and tint contract");
 		canvas.drawIcon({24, 0, 24, 24}, asset, tint);

@@ -6,7 +6,7 @@
 #include <assert.h>
 #include <vector>
 
-#include <SDL_net.h>
+#include <SDL3_net/SDL_net.h>
 
 #include "AI.h"
 

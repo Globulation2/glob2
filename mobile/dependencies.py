@@ -57,8 +57,8 @@ def validate_bundle(prefix, identity, fingerprint):
 
 def java_sources(vcpkg, prefix, downloads):
     artifact = json.loads((ROOT / "mobile/sdl-java.json").read_text())
-    port = (vcpkg / "ports/sdl2/portfile.cmake").read_text()
-    version = json.loads((vcpkg / "ports/sdl2/vcpkg.json").read_text())["version"]
+    port = (ROOT / "scons/vcpkg-ports/sdl3/portfile.cmake").read_text()
+    version = json.loads((ROOT / "scons/vcpkg-ports/sdl3/vcpkg.json").read_text())["version"]
     if version != artifact["version"] or artifact["sha512"] not in port:
         raise ValueError("SDL Java source pin differs from the pinned vcpkg SDL port")
     source = cache(
@@ -233,6 +233,7 @@ def main():
                     "install",
                     "--triplet=" + triplet,
                     "--overlay-triplets=" + str(ROOT / "mobile/triplets"),
+                    "--overlay-ports=" + str(ROOT / "scons/vcpkg-ports"),
                     "--x-manifest-root=" + str(ROOT / "mobile"),
                     "--x-install-root=" + str(installed),
                     "--x-buildtrees-root=" + str(scratch / "vcpkg-buildtrees"),

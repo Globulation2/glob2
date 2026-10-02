@@ -3,7 +3,9 @@
 
 import argparse
 import hashlib
+import os
 import json
+
 import shutil
 import subprocess
 import tempfile
@@ -24,17 +26,19 @@ def stage(binary, root, original_assets=False, runtime=None):
     root.mkdir(parents=True)
     shutil.copy2(binary, root / "glob2.exe")
     if runtime is None:
-        # MinGW Python's prefix is a native Windows path; cygpath handles an
-        # alternate interpreter without parsing ldd's whitespace-delimited text.
+        # MinGW Python's prefix is native; cygpath handles other interpreters.
         runtime = Path(sys.prefix) / "bin"
-        if not (runtime / "SDL2.dll").is_file():
-            runtime = Path(
-                subprocess.check_output(
-                    ["cygpath", "-w", "/mingw64/bin"], text=True
-                ).strip()
-            )
-    stage_dlls(binary, [runtime], root)
+        if not (runtime / "SDL3.dll").is_file():
+            runtime = Path(subprocess.check_output(
+                ["cygpath", "-w", "/mingw64/bin"], text=True).strip())
+    runtimes = [binary.resolve().parent, runtime]
+    if prefix := os.environ.get("GLOB2_SDL3_PREFIX"):
+        runtimes.insert(0, Path(prefix) / "bin")
+    stage_dlls(binary, runtimes, root)
+    if not list(root.glob("SDL3*.dll")):
+        raise SystemExit("no SDL3 DLLs found in executable dependencies")
     stage_assets(Path.cwd(), root, original_assets)
+
     return root
 
 

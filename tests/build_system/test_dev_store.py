@@ -365,7 +365,7 @@ class StoreTests(unittest.TestCase):
             )
         )
         vcpkg = self.base / "vcpkg"
-        port = vcpkg / "ports/sdl2"
+        port = self.a / "scons/vcpkg-ports/sdl3"
         port.mkdir(parents=True)
         (port / "portfile.cmake").write_text("SHA512 " + checksum)
         (port / "vcpkg.json").write_text(json.dumps({"version": "test"}))

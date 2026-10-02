@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <Environment.h>
 #include "Glob2Test.h"
 #include <string>
 #include <memory>
@@ -13,7 +14,7 @@
 #include <cstring>
 #include <stdexcept>
 #ifdef HAVE_OPENGL
-#include <SDL_opengl.h>
+#include <SDL3/SDL_opengl.h>
 #endif
 
 using namespace GAGCore;
@@ -28,6 +29,7 @@ class Context : public GraphicContext
 	void resizeWindow(int width, int height)
 	{
 		SDL_SetWindowSize(window, width, height);
+		GLOB2_REQUIRE(SDL_SyncWindow(window), "Window resize must settle before layout assertions");
 		updateWindowSize();
 	}
 	Uint32 windowID() const { return SDL_GetWindowID(window); }
@@ -41,7 +43,7 @@ void expect(SDL_Surface *pixels, int x, int y, int r, int g, int b)
 	Uint32 value;
 	std::memcpy(&value, static_cast<char *>(pixels->pixels) + y * pixels->pitch + x * 4, 4);
 	Uint8 red, green, blue;
-	SDL_GetRGB(value, pixels->format, &red, &green, &blue);
+	SDL_GetRGB(value, SDL_GetPixelFormatDetails(pixels->format), SDL_GetSurfacePalette(pixels), &red, &green, &blue);
 	if (std::abs(int(red) - r) > 3 || std::abs(int(green) - g) > 3 || std::abs(int(blue) - b) > 3)
 	{
 		std::fprintf(stderr, "pixel %d,%d: %d,%d,%d expected %d,%d,%d\n", x, y, red, green, blue, r,
@@ -70,14 +72,14 @@ void verifyUITransform(unsigned flags)
 	if (flags & GraphicContext::USEGPU)
 	{
 		int width, height;
-		SDL_GL_GetDrawableSize(SDL_GetWindowFromID(context.windowID()), &width, &height);
-		pixels = SDL_CreateRGBSurfaceWithFormat(0, width, height, 32, SDL_PIXELFORMAT_RGBA32);
+		SDL_GetWindowSizeInPixels(SDL_GetWindowFromID(context.windowID()), &width, &height);
+		pixels = SDL_CreateSurface(width, height, SDL_PIXELFORMAT_RGBA32);
 		glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, pixels->pixels);
 		// GL's first row is the bottom of the drawable.
 		expect(pixels, 110 * width / 320, height - 1 - 60 * height / 240, 255, 0, 0);
 		expect(pixels, 118 * width / 320, height - 1 - 60 * height / 240, 0, 0, 0);
 		expect(pixels, 12 * width / 320, height - 1 - 12 * height / 240, 0, 255, 0);
-		SDL_FreeSurface(pixels);
+		SDL_DestroySurface(pixels);
 		return;
 	}
 #endif
@@ -98,19 +100,19 @@ class BoundaryContext : public GraphicContext
 		if (optionFlags & USEGPU)
 		{
 			int w, h;
-			SDL_GL_GetDrawableSize(SDL_GetWindowFromID(windowID()), &w, &h);
-			auto *pixels = SDL_CreateRGBSurfaceWithFormat(0, w, h, 32, SDL_PIXELFORMAT_RGBA32);
+			SDL_GetWindowSizeInPixels(SDL_GetWindowFromID(windowID()), &w, &h);
+			auto *pixels = SDL_CreateSurface(w, h, SDL_PIXELFORMAT_RGBA32);
 			glReadPixels(0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, pixels->pixels);
-			auto *upright = SDL_CreateRGBSurfaceWithFormat(0, w, h, 32, SDL_PIXELFORMAT_RGBA32);
+			auto *upright = SDL_CreateSurface(w, h, SDL_PIXELFORMAT_RGBA32);
 			for (int y = 0; y < h; ++y)
 				std::memcpy(static_cast<char *>(upright->pixels) + y * upright->pitch,
 							static_cast<char *>(pixels->pixels) + (h - y - 1) * pixels->pitch,
 							w * 4);
-			SDL_FreeSurface(pixels);
+			SDL_DestroySurface(pixels);
 			return upright;
 		}
 #endif
-		return SDL_ConvertSurfaceFormat(getSDLSurface(), SDL_PIXELFORMAT_RGBA32, 0);
+		return SDL_ConvertSurface(getSDLSurface(), SDL_PIXELFORMAT_RGBA32);
 	}
 };
 void verifyMapBoundaries(unsigned flags)
@@ -165,14 +167,14 @@ void verifyMapBoundaries(unsigned flags)
 						expect(pixels, right, y, 255, 255, 0);
 				}
 			}
-			if (const char *directory = SDL_getenv("GLOB2_ZONE_EVIDENCE_DIR");
+			if (const char *directory = SDL_getenv_unsafe("GLOB2_ZONE_EVIDENCE_DIR");
 				directory && zoom == .33f && offset == .25f)
 			{
 				const auto path =
 					std::string(directory) + "/borders-" + std::to_string(flags) + ".bmp";
-				require(SDL_SaveBMP(pixels, path.c_str()) == 0, "Cannot save zone evidence");
+				require(SDL_SaveBMP(pixels, path.c_str()), "Cannot save zone evidence");
 			}
-			SDL_FreeSurface(pixels);
+			SDL_DestroySurface(pixels);
 			context.nextFrame();
 		}
 	std::printf(
@@ -193,7 +195,7 @@ TEST_CASE("live scale retains portable viewport ownership [display]")
 	require(context.getW()==256 && context.getH()==192,"Portable logical scale was not applied");
 	require(context.getDrawableW()==pixelsW && context.getDrawableH()==pixelsH,"Scale changed native output dimensions");
 	context.setClipRect(); context.drawFilledRect(0,0,context.getW(),context.getH(),Color(255,0,0));
-	auto *pixels=context.capture(); expect(pixels,pixels->w-2,pixels->h-2,255,0,0); SDL_FreeSurface(pixels);
+	auto *pixels=context.capture(); expect(pixels,pixels->w-2,pixels->h-2,255,0,0); SDL_DestroySurface(pixels);
 	require(context.setUiScale(1),"Portable scale restore failed");
 	GraphicContext::setRequestedUiScale(0);
 }
@@ -222,8 +224,8 @@ TEST_CASE("each accelerated backend uploads surface revisions independently [dis
     DrawableSurface sprite(16, 16);
     sprite.drawFilledRect(0, 0, 16, 16, Color(0, 255, 0));
     using Window = std::unique_ptr<SDL_Window, decltype(&SDL_DestroyWindow)>;
-    Window first(SDL_CreateWindow("First upload", 0, 0, 64, 48, SDL_WINDOW_HIDDEN), SDL_DestroyWindow);
-    Window second(SDL_CreateWindow("Second upload", 0, 0, 64, 48, SDL_WINDOW_HIDDEN), SDL_DestroyWindow);
+    Window first(SDL_CreateWindow("First upload", 64, 48, SDL_WINDOW_HIDDEN), SDL_DestroyWindow);
+    Window second(SDL_CreateWindow("Second upload", 64, 48, SDL_WINDOW_HIDDEN), SDL_DestroyWindow);
     REQUIRE(first); REQUIRE(second);
     // SDL 2.0.20/X11 can dispatch a pending mouse-enter event while recreating
     // a window for acceleration, when that window temporarily has no driver data.
@@ -237,7 +239,7 @@ TEST_CASE("each accelerated backend uploads surface revisions independently [dis
     {
         backend.blit(&sprite, sprite.getSDLSurface(), sprite.contentRevision(), sprite.hasOpaquePixels(),
             SDL_Rect{0, 0, 16, 16}, SDL_FRect{0, 0, 16, 16}, 255);
-        std::unique_ptr<SDL_Surface, decltype(&SDL_FreeSurface)> image(backend.capture(), SDL_FreeSurface);
+        std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> image(backend.capture(), SDL_DestroySurface);
         expect(image.get(), image->w * 8 / 64, image->h * 8 / 48, red, green, blue);
     };
     draw(*a, 0, 255, 0); draw(*b, 0, 255, 0);
@@ -282,7 +284,7 @@ TEST_CASE("zone boundaries; UI transforms and portable rendering paths [display]
 		expect(pixels, int(110 * density), int(60 * density), 255, 0, 0);
 		expect(pixels, int(118 * density), int(60 * density), 0, 0, 0);
 		expect(pixels, int(12 * density), int(12 * density), 0, 255, 0);
-		SDL_FreeSurface(pixels);
+		SDL_DestroySurface(pixels);
 	}
 	DrawableSurface sprite(16, 16);
 	sprite.drawFilledRect(0, 0, 16, 16, Color(0, 255, 0));
@@ -305,7 +307,7 @@ TEST_CASE("zone boundaries; UI transforms and portable rendering paths [display]
 		check(16, 16, 0, 0, 255);
 		check(50, 50, pass == 2 ? 255 : 0, 255, 0);
 		check(85, 85, 128, 128, 128);
-		SDL_FreeSurface(pixels);
+		SDL_DestroySurface(pixels);
 		context.nextFrame();
 		if (pass == 0)
 			context.resetTextures();
@@ -316,11 +318,11 @@ TEST_CASE("zone boundaries; UI transforms and portable rendering paths [display]
 	SDL_Event event{};
 	while (SDL_PollEvent(&event))
 		GraphicContext::translateMouseEvent(&event);
-	for (auto type : {SDL_MOUSEMOTION, SDL_MOUSEBUTTONDOWN, SDL_MOUSEBUTTONUP})
+	for (auto type : {SDL_EVENT_MOUSE_MOTION, SDL_EVENT_MOUSE_BUTTON_DOWN, SDL_EVENT_MOUSE_BUTTON_UP})
 	{
 		event = {};
 		event.type = type;
-		if (type == SDL_MOUSEMOTION)
+		if (type == SDL_EVENT_MOUSE_MOTION)
 		{
 			event.motion.windowID = context.windowID();
 			event.motion.x = 240;
@@ -339,8 +341,8 @@ TEST_CASE("zone boundaries; UI transforms and portable rendering paths [display]
 			GraphicContext::translateMouseEvent(&event);
 			if (event.type == type)
 			{
-				int x = type == SDL_MOUSEMOTION ? event.motion.x : event.button.x;
-				int y = type == SDL_MOUSEMOTION ? event.motion.y : event.button.y;
+				int x = type == SDL_EVENT_MOUSE_MOTION ? event.motion.x : event.button.x;
+				int y = type == SDL_EVENT_MOUSE_MOTION ? event.motion.y : event.button.y;
 				require(x == 240 && y == 160,
 						"Desktop resize keeps logical input aligned with master");
 				observed = true;
@@ -369,7 +371,7 @@ TEST_CASE("zone boundaries; UI transforms and portable rendering paths [display]
 				context.drawSurface(40, 40, 32, 32, &sprite);
 				auto *pixels = context.capture();
 				expect(pixels, 50 * pixels->w / 320, 50 * pixels->h / 240, red, green, 0);
-				SDL_FreeSurface(pixels);
+				SDL_DestroySurface(pixels);
 				context.nextFrame();
 				++draws;
 			}
@@ -380,32 +382,32 @@ TEST_CASE("zone boundaries; UI transforms and portable rendering paths [display]
 		stack.push(std::move(owned));
 		stack.frame(0, {});
 		SDL_Event background{};
-		background.type = SDL_APP_WILLENTERBACKGROUND;
+		background.type = SDL_EVENT_WILL_ENTER_BACKGROUND;
 		SDL_Event reset{};
-		reset.type = SDL_RENDER_DEVICE_RESET;
+		reset.type = SDL_EVENT_RENDER_DEVICE_RESET;
 		stack.frame(40, {background, reset});
 		require(probe->draws == 1, "No rendering while backgrounded with a lost device");
 		// Change CPU pixels without the normal dirty notification: the
 		// deferred reset must recreate the previously cached texture.
 		auto *source = sprite.getSDLSurface();
-		SDL_FillRect(source, nullptr, SDL_MapRGB(source->format, 255, 0, 0));
+		SDL_FillSurfaceRect(source, nullptr, SDL_MapSurfaceRGB(source, 255, 0, 0));
 		probe->green = 0;
 		SDL_Event foreground{};
-		foreground.type = SDL_APP_DIDENTERFOREGROUND;
+		foreground.type = SDL_EVENT_DID_ENTER_FOREGROUND;
 		stack.frame(100000, {foreground});
 		require(probe->draws == 2, "Resource restoration precedes the first resumed draw");
-		SDL_FillRect(source, nullptr, SDL_MapRGB(source->format, 0, 255, 0));
+		SDL_FillSurfaceRect(source, nullptr, SDL_MapSurfaceRGB(source, 0, 255, 0));
 		probe->red = 0;
 		probe->green = 255;
-		reset.type = SDL_APP_LOWMEMORY;
+		reset.type = SDL_EVENT_LOW_MEMORY;
 		stack.frame(100040, {reset});
 		stack.frame(100080, {background});
 		SDL_Event quit{};
-		quit.type = SDL_QUIT;
+		quit.type = SDL_EVENT_QUIT;
 		stack.frame(100120, {quit});
 		require(!stack.running(), "Quit must be honored while backgrounded");
 	}
-	SDL_setenv("GLOB2_MOBILE_UI", "1", 1);
+	GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "1", 1);
 	context.setResponsiveViewport(true);
 	require(context.getW() == 640 && context.getH() == 480,
 			"Responsive viewport must fill window points");
@@ -415,7 +417,7 @@ TEST_CASE("zone boundaries; UI transforms and portable rendering paths [display]
 	context.drawFilledRect(0, 0, 320, 568, Color(90, 30, 150));
 	auto *portrait = context.capture();
 	expect(portrait, portrait->w / 2, portrait->h - 2, 90, 30, 150);
-	SDL_FreeSurface(portrait);
+	SDL_DestroySurface(portrait);
 	context.setResponsiveViewport(true, 800, 600);
 	require(context.getW() == 800 && context.getH() == 1420,
 			"Portrait game must extend to the full window height");
@@ -423,7 +425,7 @@ TEST_CASE("zone boundaries; UI transforms and portable rendering paths [display]
 	auto *full = context.capture();
 	expect(full, full->w / 2, 2, 90, 30, 150);
 	expect(full, full->w / 2, full->h - 2, 90, 30, 150);
-	SDL_FreeSurface(full);
+	SDL_DestroySurface(full);
 	context.nextFrame();
 	context.resizeWindow(568, 320);
 	require(context.getW() == 1065 && context.getH() == 600,
@@ -432,7 +434,7 @@ TEST_CASE("zone boundaries; UI transforms and portable rendering paths [display]
 	full = context.capture();
 	expect(full, 2, full->h / 2, 90, 30, 150);
 	expect(full, full->w - 2, full->h / 2, 90, 30, 150);
-	SDL_FreeSurface(full);
+	SDL_DestroySurface(full);
 	context.nextFrame();
 	context.resizeWindow(320, 568);
 	context.setResponsiveViewport(false);
@@ -440,7 +442,7 @@ TEST_CASE("zone boundaries; UI transforms and portable rendering paths [display]
 			"Legacy logical dimensions must be restored");
 	auto *letterbox = context.capture();
 	expect(letterbox, letterbox->w / 2, 2, 0, 0, 0);
-	SDL_FreeSurface(letterbox);
+	SDL_DestroySurface(letterbox);
 	{
 		struct ViewportScreen : GAGGUI::Screen
 		{
@@ -469,14 +471,15 @@ TEST_CASE("zone boundaries; UI transforms and portable rendering paths [display]
 		require(context.getH() == 1420 && probe->changes == 3,
 				"A modal round trip must restore and notify the game viewport");
 		SDL_SetWindowSize(SDL_GetWindowFromID(context.windowID()), 568, 320);
+		GLOB2_REQUIRE(SDL_SyncWindow(SDL_GetWindowFromID(context.windowID())), "Window resize must settle before layout assertions");
 		SDL_Event resize{};
-		resize.type = SDL_WINDOWEVENT;
-		resize.window.event = SDL_WINDOWEVENT_SIZE_CHANGED;
+		resize.type = SDL_EVENT_WINDOW_RESIZED;
+		resize.type = SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED;
 		stack.frame(120, {resize});
 		require(context.getW() == 1065 && context.getH() == 600 && probe->changes == 4,
 				"Rotation must notify the retained game");
 	}
-	SDL_setenv("GLOB2_MOBILE_UI", "", 1);
+	GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "", 1);
 	std::puts("PASS portable renderer: clipping, texture scaling, alpha, device reset, dirty "
 			  "textures, resized input");
 }

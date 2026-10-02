@@ -732,7 +732,7 @@ class TextField : public Node
 				submit(current);
 			return true;
 		}
-		case SDLK_a:
+		case SDLK_A:
 			if (event.ctrl())
 			{
 				selectAll = !value.empty();
@@ -740,17 +740,17 @@ class TextField : public Node
 				return true;
 			}
 			return false;
-		case SDLK_c:
-		case SDLK_x:
+		case SDLK_C:
+		case SDLK_X:
 			if (event.ctrl() && selectAll)
 			{
 				SDL_SetClipboardText(value.c_str());
-				if (event.sym == SDLK_x)
+				if (event.sym == SDLK_X)
 					commit(host, "", 0);
 				return true;
 			}
 			return false;
-		case SDLK_v:
+		case SDLK_V:
 			if (event.ctrl() && SDL_HasClipboardText())
 			{
 				char *clip = SDL_GetClipboardText();
@@ -1077,7 +1077,7 @@ class TextEditor : public Node
 			return textInput("\n", host);
 		case SDLK_TAB:
 			return false;
-		case SDLK_v:
+		case SDLK_V:
 			if (event.ctrl() && SDL_HasClipboardText())
 			{
 				char *clip = SDL_GetClipboardText();

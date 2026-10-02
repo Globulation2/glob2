@@ -14,7 +14,7 @@ void MapEdit::refreshSelectedUnitPerformance(int stat)
 	hasMapBeenModified = true;
 }
 
-bool MapEdit::performUnitAction(const std::string& action, int relMouseX, int relMouseY)
+bool MapEdit::performUnitAction(const std::string& action, float relMouseX, float relMouseY)
 {
 	if(action=="select worker")
 	{

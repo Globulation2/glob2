@@ -1,9 +1,12 @@
+#include <limits>
+#include <cstdint>
 #pragma once
 
 #include "usl.h"
 #include "interpreter.h"
 #include "code.h"
 #include "types.h"
+#include "position.h"
 
 #include <functional>
 #include <mutex>
@@ -110,7 +113,10 @@ inline const T& unbox(Thread* thread, Value*& value)
 {
 	NativeValue<T>* native = dynamic_cast<NativeValue<T>*>(value);
 	if (native == 0)
-		assert(false); // TODO: throw Exception
+		throw Exception(thread->usl->debug.find(thread->frames.back().thunk->thunkPrototype(),
+			thread->frames.back().nextInstr), "Invalid native argument type");
+	if constexpr (std::is_pointer_v<T>)
+		if (!native->value) throw Exception(Position(), "Unavailable native receiver");
 	return native->value;
 }
 
@@ -121,7 +127,7 @@ inline Value*const& unbox<Value*>(Thread* thread, Value*& value) // ugly referen
 }
 
 template<typename T>
-inline const T& pop(Thread* thread)
+inline T pop(Thread* thread)
 {
 	Thread::Frame::Stack& stack = thread->frames.back().stack;
 	Value* value = stack.back();
@@ -331,13 +337,20 @@ typedef NativeValue<int> Integer;
 typedef NativeValue<std::string> String;
 
 
+inline int checkedScriptInteger(std::int64_t value)
+{
+	if (value < std::numeric_limits<int>::min() || value > std::numeric_limits<int>::max())
+		throw Exception(Position(), "Script integer overflow");
+	return static_cast<int>(value);
+}
+
 template<>
 inline void NativeValuePrototype<int>::initialize()
 {
-	addMethod<int (int     )>("_-", std::negate<int>());
-	addMethod<int (int, int)>("+", std::plus<int>());
-	addMethod<int (int, int)>("-", std::minus<int>());
-	addMethod<int (int, int)>("*", std::multiplies<int>());
+	addMethod<int (int     )>("_-", [](int a) { return checkedScriptInteger(-std::int64_t(a)); });
+	addMethod<int (int, int)>("+", [](int a, int b) { return checkedScriptInteger(std::int64_t(a) + b); });
+	addMethod<int (int, int)>("-", [](int a, int b) { return checkedScriptInteger(std::int64_t(a) - b); });
+	addMethod<int (int, int)>("*", [](int a, int b) { return checkedScriptInteger(std::int64_t(a) * b); });
 	addMethod<bool(int, int)>("<", std::less<int>());
 	addMethod<bool(int, int)>(">", std::greater<int>());
 	addMethod<bool(int, int)>("<=", std::less_equal<int>());

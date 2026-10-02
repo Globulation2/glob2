@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <SDL_stdinc.h>
+#include <SDL3/SDL_stdinc.h>
 
 // AICortex shared data types: the Observation and Action structs that sit
 // between the three layers (observation -> policy -> action). See

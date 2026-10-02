@@ -61,7 +61,12 @@ bool MapScript::decodeData(GAGCore::InputStream* stream, Uint32 versionMinor)
 	}
 	else
 	{
-		usl.compileCode(script);usl.decodeData(stream, versionMinor);
+		if (!usl.compileCode(script))
+		{
+			stream->readLeaveSection();
+			return false;
+		}
+		usl.decodeData(stream, versionMinor);
 	}
 	stream->readLeaveSection();
 	return true;

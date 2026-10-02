@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <memory>
 
 namespace GAGCore
@@ -9,17 +9,17 @@ namespace GAGCore
 // starts on the other buffer. Neither the window nor a backend owns these pixels.
 class SoftwareFramePresenter
 {
-	using Surface = std::unique_ptr<SDL_Surface, decltype(&SDL_FreeSurface)>;
-	Surface drawing{nullptr, SDL_FreeSurface}, retained{nullptr, SDL_FreeSurface};
+	using Surface = std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)>;
+	Surface drawing{nullptr, SDL_DestroySurface}, retained{nullptr, SDL_DestroySurface};
 	bool pending = false, valid = false;
 
   public:
 	// Allocates the spare before taking ownership, so failure leaves the caller's
 	// current framebuffer and the legacy copy-based presenter intact.
-	using AllocateSurface = decltype(&SDL_CreateRGBSurfaceWithFormat);
+	using AllocateSurface = decltype(&SDL_CreateSurface);
 	// Allocation seam makes failure ownership testable without exhausting memory.
 	explicit SoftwareFramePresenter(SDL_Surface *initial,
-									AllocateSurface allocate = SDL_CreateRGBSurfaceWithFormat);
+									AllocateSurface allocate = SDL_CreateSurface);
 	SDL_Surface *begin(bool preserve);
 	bool needsBegin() const { return pending; }
 	SDL_Surface *takeCompleted()

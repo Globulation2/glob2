@@ -8,12 +8,14 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest import mock
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import run_tests  # noqa: E402
+import xvfb_session  # noqa: E402
 
 LISTING = """<?xml version="1.0" encoding="UTF-8"?>
 <doctest binary="x" version="2.4.11">
@@ -93,6 +95,30 @@ class ShardTest(unittest.TestCase):
         self.assertEqual(parts, [run_tests.shard(jobs, f'{k}/3') for k in (1, 2, 3)])
         with self.assertRaises(SystemExit):
             run_tests.shard(jobs, '4/3')
+
+    def test_unit_display_cases_are_isolated_from_headless_driver_changes(self):
+        cases = run_tests.parse_listing(LISTING, 'unit')
+        for in_process in (False, True):
+            jobs = run_tests.make_jobs(cases, args(in_process=in_process), cases)
+            self.assertEqual(len(jobs), 2)
+            self.assertEqual(jobs[0].cases, [cases[1]])
+            self.assertTrue(jobs[0].display)
+            self.assertFalse(jobs[0].whole)
+            self.assertTrue(jobs[1].whole)
+            self.assertFalse(jobs[1].display)
+            self.assertEqual(run_tests.doctest_filter(jobs[1]), ['-tce=*[display*'])
+        subset = run_tests.make_jobs(cases[:2], args(), cases)
+        self.assertEqual([job.subset for job in subset], [False, True])
+        self.assertEqual(run_tests.doctest_filter(subset[1]),
+                         ['-tce=*[display*', '-tc=feeds the last worker', '-ts=HungryDefeat'])
+        benchmark = run_tests.Case('unit', '', 'timing [benchmark]', tags=['benchmark'])
+        jobs = run_tests.make_jobs(cases, args(), cases + [benchmark])
+        self.assertEqual(run_tests.doctest_filter(jobs[1]),
+                         ['-tce=*[display*,*[benchmark]*'])
+        headless = [case for case in cases if not case.display]
+        jobs = run_tests.make_jobs(headless, args(no_display=True), cases)
+        self.assertEqual(len(jobs), 1)
+        self.assertEqual(run_tests.doctest_filter(jobs[0]), ['-tce=*[display*'])
 
     def test_unit_display_cases_are_isolated_from_headless_batch(self):
         cases = run_tests.parse_listing(LISTING, 'unit')
@@ -336,6 +362,86 @@ class EndToEndTest(unittest.TestCase):
             text = junit.read_text()
             self.assertIn('<failure message="run_tests: the test changed the profile preferences', text)
             self.assertIn('<error message="timeout"', text)
+
+
+class TimeoutDiagnosticsTest(unittest.TestCase):
+    def test_display_diagnostics_cannot_inspect_an_unowned_display(self):
+        proc = mock.MagicMock()
+        proc.__truediv__.return_value = proc
+        proc.read_bytes.return_value = b'DISPLAY=:7\0XAUTHORITY=/tmp/auth\0'
+        with mock.patch.object(run_tests, 'Path', return_value=proc), \
+             mock.patch.object(run_tests.subprocess, 'run') as inspect:
+            self.assertEqual(run_tests.timeout_display_state(123, {':99'}), '')
+        inspect.assert_not_called()
+
+    def test_display_diagnostics_capture_real_mapping_on_owned_server(self):
+        proc = mock.MagicMock()
+        proc.__truediv__.return_value = proc
+        proc.read_bytes.return_value = b'DISPLAY=:99\0XAUTHORITY=/tmp/auth\0'
+        states = [subprocess.CompletedProcess([], 0, 'root state', ''),
+                  subprocess.CompletedProcess([], 0, '  0x400001 "test window"', ''),
+                  subprocess.CompletedProcess([], 0, 'Map State: IsViewable', '')]
+        with mock.patch.object(run_tests, 'Path', return_value=proc), \
+             mock.patch.object(run_tests.shutil, 'which', side_effect=lambda name: name), \
+             mock.patch.object(run_tests.subprocess, 'run', side_effect=states) as inspect:
+            output = run_tests.timeout_display_state(123, {':99'})
+        self.assertIn('Map State: IsViewable', output)
+        self.assertEqual(inspect.call_args_list[-1].args[0],
+                         ['xwininfo', '-id', '0x400001', '-all'])
+        self.assertTrue(all(call.kwargs['timeout'] <= 2 for call in inspect.call_args_list))
+
+    def test_ignores_processes_outside_owned_group(self):
+        snapshot = subprocess.CompletedProcess([], 0, '42 1 99 S unrelated-process\n')
+        with mock.patch.object(run_tests.platform, 'system', return_value='Linux'), \
+             mock.patch.object(run_tests.subprocess, 'run', return_value=snapshot) as inspect, \
+             mock.patch.object(run_tests.shutil, 'which', return_value=None):
+            output = run_tests.timeout_diagnostics(123, Path('/test-binary'))
+        self.assertNotIn('unrelated-process', output)
+        inspect.assert_called_once()
+        self.assertEqual(inspect.call_args.kwargs['timeout'], 2)
+
+    def test_diagnostic_timeout_does_not_interrupt_cleanup(self):
+        with mock.patch.object(run_tests.platform, 'system', return_value='Linux'), \
+             mock.patch.object(run_tests.subprocess, 'run', side_effect=subprocess.TimeoutExpired('ps', 2)):
+            output = run_tests.timeout_diagnostics(123, Path('/test-binary'))
+        self.assertIn('timeout diagnostics unavailable', output)
+
+    def test_skips_linux_diagnostics_on_other_platforms(self):
+        with mock.patch.object(run_tests.platform, 'system', return_value='Darwin'), \
+             mock.patch.object(run_tests.subprocess, 'run') as inspect:
+            self.assertEqual(run_tests.timeout_diagnostics(123, Path('/test-binary')), '')
+        inspect.assert_not_called()
+
+
+class XvfbSessionTest(unittest.TestCase):
+    def test_waits_for_window_manager_and_preserves_test_exit_status(self):
+        wm = mock.MagicMock()
+        wm.poll.return_value = None
+        state = subprocess.CompletedProcess([], 0, '_NET_SUPPORTING_WM_CHECK(WINDOW): window id # 0x400002')
+        with mock.patch.object(xvfb_session.shutil, 'which', side_effect=lambda name: name), \
+             mock.patch.object(xvfb_session.subprocess, 'Popen', return_value=wm) as launch, \
+             mock.patch.object(xvfb_session.subprocess, 'run', return_value=state), \
+             mock.patch.object(xvfb_session.subprocess, 'call', return_value=7) as test:
+            self.assertEqual(xvfb_session.run(['test-binary']), 7)
+            test.assert_called_once_with(['test-binary'])
+        wm.terminate.assert_called_once()
+        wm.wait.assert_called_once_with(timeout=5)
+        self.assertIsNone(launch.call_args.kwargs['stderr'])
+
+    def test_missing_window_manager_readiness_fails_and_cleans_up(self):
+        wm = mock.MagicMock()
+        wm.poll.return_value = None
+        state = subprocess.CompletedProcess([], 0, 'no such atom')
+        with mock.patch.object(xvfb_session.shutil, 'which', side_effect=lambda name: name), \
+             mock.patch.object(xvfb_session.subprocess, 'Popen', return_value=wm) as launch, \
+             mock.patch.object(xvfb_session.subprocess, 'run', return_value=state), \
+             mock.patch.object(xvfb_session.subprocess, 'call') as test, \
+             mock.patch.object(xvfb_session.time, 'monotonic', side_effect=[0, 10]):
+            with self.assertRaisesRegex(RuntimeError, 'did not establish'):
+                xvfb_session.run(['test-binary'])
+            test.assert_not_called()
+        wm.terminate.assert_called_once()
+        wm.wait.assert_called_once_with(timeout=5)
 
 
 if __name__ == '__main__':

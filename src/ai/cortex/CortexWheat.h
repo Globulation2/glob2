@@ -6,7 +6,7 @@
 #include "CortexTypes.h" // WHEAT_PARITY and the other wheat tunables.
 
 #include "Brush.h"        // BrushAccumulator (the live wrapper builds the masks).
-#include <SDL_stdinc.h>
+#include <SDL3/SDL_stdinc.h>
 #include <vector>
 
 class Map;

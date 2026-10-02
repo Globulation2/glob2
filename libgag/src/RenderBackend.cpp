@@ -11,9 +11,9 @@ namespace GAGCore
 {
 namespace
 {
-void check(int result)
+void check(bool result)
 {
-	if (result < 0)
+	if (!result)
 		throw std::runtime_error(SDL_GetError());
 }
 class SDLRenderBackend final : public RenderBackend
@@ -53,10 +53,10 @@ class SDLRenderBackend final : public RenderBackend
 			SDL_Rect mapped{x, y, int(std::ceil((rect->x + rect->w) * scale + offsetX)) - x,
 							int(std::ceil((rect->y + rect->h) * scale + offsetY)) - y};
 			if (bounds)
-				SDL_IntersectRect(&mapped, &*bounds, &mapped);
+				SDL_GetRectIntersection(&mapped, &*bounds, &mapped);
 			result = mapped;
 		}
-		check(SDL_RenderSetClipRect(renderer, result ? &*result : nullptr));
+		check(SDL_SetRenderClipRect(renderer, result ? &*result : nullptr));
 	}
 	void triangles(std::span<const SDL_Vertex> vertices, const void *key, SDL_Surface *pixels,
 				   std::uint64_t revision) override
@@ -93,7 +93,7 @@ class SDLRenderBackend final : public RenderBackend
 				textures.emplace(key, texture);
 				revisions[key] = revision;
 				check(SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND));
-				check(SDL_SetTextureScaleMode(texture, SDL_ScaleModeNearest));
+				check(SDL_SetTextureScaleMode(texture, SDL_SCALEMODE_NEAREST));
 			}
 			else
 				texture = found->second;
@@ -115,7 +115,7 @@ class SDLRenderBackend final : public RenderBackend
 			  const SDL_Rect &src, const SDL_FRect &dst, Uint8 alpha) override
 	{
 		++counts.blits;
-		const SDL_Color c{255, 255, 255, alpha};
+		const SDL_FColor c{1, 1, 1, alpha / 255.0f};
 		const float u0 = float(src.x) / pixels->w, v0 = float(src.y) / pixels->h;
 		const float u1 = float(src.x + src.w) / pixels->w, v1 = float(src.y + src.h) / pixels->h;
 		const SDL_Vertex a{{dst.x, dst.y}, c, {u0, v0}}, b{{dst.x + dst.w, dst.y}, c, {u1, v0}},
@@ -123,8 +123,9 @@ class SDLRenderBackend final : public RenderBackend
 		const SDL_Vertex vertices[] = {a, b, e, a, e, d};
 		submit(vertices, key, pixels, revision, true);
 	}
-	void fill(const SDL_FRect &rect, SDL_Color c) override
+	void fill(const SDL_FRect &rect, SDL_Color color) override
 	{
+		const SDL_FColor c{color.r / 255.0f, color.g / 255.0f, color.b / 255.0f, color.a / 255.0f};
 		++counts.fills;
 		const SDL_Vertex a{{rect.x, rect.y}, c, {0, 0}}, b{{rect.x + rect.w, rect.y}, c, {0, 0}},
 			d{{rect.x, rect.y + rect.h}, c, {0, 0}},
@@ -157,19 +158,19 @@ class SDLRenderBackend final : public RenderBackend
 	}
 	void logicalSize(int width, int height) override
 	{
-		check(SDL_RenderSetLogicalSize(renderer, width, height));
+		check(SDL_SetRenderLogicalPresentation(renderer, width, height, SDL_LOGICAL_PRESENTATION_LETTERBOX));
 		clear();
 	}
 	void nativeLogicalSize(int width, int height) override
 	{
 		int pixelsW, pixelsH;
 		outputSize(pixelsW, pixelsH);
-		check(SDL_RenderSetLogicalSize(renderer, 0, 0));
-		check(SDL_RenderSetScale(renderer, float(pixelsW) / width, float(pixelsH) / height));
+		check(SDL_SetRenderLogicalPresentation(renderer, 0, 0, SDL_LOGICAL_PRESENTATION_DISABLED));
+		check(SDL_SetRenderScale(renderer, float(pixelsW) / width, float(pixelsH) / height));
 		// Lazy CPU geometry may be created after direct writes. Scale setup
 		// must not clear the borrowed target or overwrite earlier layers.
 	}
-	void flush() override { check(SDL_RenderFlush(renderer)); }
+	void flush() override { check(SDL_FlushRenderer(renderer)); }
 	void present() override
 	{
 		SDL_RenderPresent(renderer);
@@ -177,29 +178,19 @@ class SDLRenderBackend final : public RenderBackend
 	}
 	void outputSize(int &width, int &height) override
 	{
-		check(SDL_GetRendererOutputSize(renderer, &width, &height));
+		check(SDL_GetRenderOutputSize(renderer, &width, &height));
 	}
 	SDL_Surface *capture() override
 	{
-		int width, height;
-		outputSize(width, height);
-		SDL_Surface *pixels =
-			SDL_CreateRGBSurfaceWithFormat(0, width, height, 32, SDL_PIXELFORMAT_RGBA32);
-		if (!pixels)
-			throw std::runtime_error(SDL_GetError());
-		if (SDL_RenderReadPixels(renderer, nullptr, pixels->format->format, pixels->pixels,
-								 pixels->pitch) < 0)
-		{
-			SDL_FreeSurface(pixels);
-			throw std::runtime_error(SDL_GetError());
-		}
+		SDL_Surface *pixels = SDL_RenderReadPixels(renderer, nullptr);
+		if (!pixels) throw std::runtime_error(SDL_GetError());
 		return pixels;
 	}
 };
 } // namespace
 std::unique_ptr<RenderBackend> makeSDLRenderBackend(SDL_Window *window, int width, int height)
 {
-	SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+	SDL_Renderer *renderer = SDL_CreateRenderer(window, nullptr);
 	if (!renderer)
 		return {};
 	auto backend = std::make_unique<SDLRenderBackend>(renderer);
