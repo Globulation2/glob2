@@ -4,7 +4,7 @@
 // SHA-256 of the bytes clients load; clients download it by that hash.
 import { createHash } from 'node:crypto';
 import { sql, type Kysely } from 'kysely';
-import { contentKey, submitEngineJob, type JobQueue } from '@glob2/core';
+import { contentKey, submitEngineJob, type JobQueue, type MapPoolEntry } from '@glob2/core';
 import type { Database } from '@glob2/db';
 import {
   parseSimVersionKey,
@@ -163,7 +163,8 @@ export async function waitForGeneratedMap(
 
 // ------------------------------------------------------------------ warm pool
 
-export interface WarmMap {
+/** A pre-generated map handed to a match starter. */
+export interface PooledMap {
   /** The descriptor the map was generated from (seed included). */
   generator: GeneratorDescriptor;
   mapHash: string;
@@ -171,12 +172,18 @@ export interface WarmMap {
 
 /**
  * Pre-generated queue maps. The engine-agent work provides the real pool
- * (`takeWarmMap(queueId, simVersionKey)`, migration 0004); until then
+ * (`takeWarmMap(db, queueId, simVersionKey, { entry })` in warmMaps.ts,
+ * migration 0004): wire it as
+ * `{ takeWarmMap: (q, s, o) => takeWarmMap(db, q, s, o) }`. Without a pool,
  * queue matches generate on demand.
  */
 export interface WarmMapSource {
-  /** Takes one ready map for the queue and sim version out of the pool, if any. */
-  takeWarmMap(queueId: string, simVersionKey: string): Promise<WarmMap | undefined>;
+  /** Takes one ready map of the queue, sim version (and pool entry) out of the pool, if any. */
+  takeWarmMap(
+    queueId: string,
+    simVersionKey: string,
+    options?: { entry?: MapPoolEntry },
+  ): Promise<PooledMap | undefined>;
 }
 
 export const noWarmMaps: WarmMapSource = { takeWarmMap: async () => undefined };

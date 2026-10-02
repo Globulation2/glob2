@@ -37,6 +37,7 @@ dated reports and pull-request artifacts do not belong here.
 - **Map generators:** [design and implementation index](map-generators/README.md).
 - **Online multiplayer:** [platform architecture](multiplayer/architecture.md),
   [identity and sign-in](multiplayer/identity.md),
+  [rooms and matches](multiplayer/rooms-and-matches.md),
   [ratings and matchmaking](multiplayer/ratings-and-matchmaking.md), the
   [relay-sequenced turn protocol](multiplayer/turn-protocol.md) and the
   [match relay](multiplayer/relay.md) that hosts it.
