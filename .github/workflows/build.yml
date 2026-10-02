@@ -35,6 +35,11 @@ jobs:
       - uses: actions/checkout@v4
       - name: Test changed-path selection
         run: python3 -m unittest discover -s tests/build_system -p test_ci_changed_paths.py -v
+      - name: Test CI runners and failure reporting
+        run: |
+          python3 test/ci_run_commands.py \
+            --check 'native runner contracts' 'python3 -m unittest discover -s test -p test_run_tests.py -v' \
+            --check 'failure aggregation contracts' 'python3 -m unittest discover -s test -p test_ci_failure_aggregation.py -v'
       - name: Select checks for changed paths
         id: select
         env:

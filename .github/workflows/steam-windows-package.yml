@@ -12,7 +12,6 @@ on:
       - data/**
       - test/test_steam_windows_package.py
       - .github/workflows/steam-windows-upload.yml
-      - docs/development/reference.md
 
 permissions:
   contents: read

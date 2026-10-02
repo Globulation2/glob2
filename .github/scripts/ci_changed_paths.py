@@ -9,6 +9,11 @@ import sys
 
 
 JOBS = ("native", "browser", "map_generators", "deployment", "cross_platform")
+CI_TOOL_TESTS = {
+    "test/test_run_tests.py",
+    "test/test_ci_failure_aggregation.py",
+    "tests/build_system/test_ci_changed_paths.py",
+}
 TRANSPORT_TESTS = {
     "test/NetConnectionHarness.cpp",
     "test/NativeMultiplayerPeer.cpp",
@@ -25,6 +30,10 @@ def classify(paths):
 
     native = browser = map_generators = deployment = cross_platform = False
     for path in paths:
+        # These Python suites execute directly in the selector job, without
+        # compiling a client or launching platform/browser regressions.
+        if path in CI_TOOL_TESTS:
+            continue
         if path.startswith("docs/") or path.endswith(".md"):
             continue
         if path == "test/map-generator-golden.txt":

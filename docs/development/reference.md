@@ -114,6 +114,10 @@ python3 test/run_tests.py      # run them; --list, --filter, --tag, --shard
   build and shard to pass, preserving their merge-blocking status. PRs compare
   with their base commit, and master pushes compare with the pre-push commit;
   unknown paths or unavailable diffs select full CI.
+  CI-tool unit-test-only edits run the selector's Python contract suites without
+  native compilation; changes to the runners themselves still select native checks.
+  Steam packaging helper/workflow changes retain their packaging and smoke checks;
+  editing this reference guide alone does not rebuild the Steam client.
 
 For headless games, use the client binary's `--nox <game-file> <steps> <runs>`
 option. `-test-games-nox` runs random AI games indefinitely unless bounded as

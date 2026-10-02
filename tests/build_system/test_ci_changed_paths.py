@@ -25,6 +25,32 @@ class ChangedPathsTest(unittest.TestCase):
             deployment=False, cross_platform=False,
         )
 
+    def test_ci_tool_tests_only_run_selector_contracts(self):
+        for path in ci_changed_paths.CI_TOOL_TESTS:
+            with self.subTest(path=path):
+                self.assert_jobs([path], native=False, browser=False,
+                                 map_generators=False, deployment=False, cross_platform=False)
+        # Actual runner changes still exercise native execution, and mixed
+        # production changes must never inherit the test-only shortcut.
+        self.assert_jobs(["test/test_run_tests.py", "src/map/Map.cpp"],
+                         native=True, browser=True, map_generators=True,
+                         deployment=True, cross_platform=True)
+        self.assert_jobs(["test/run_tests.py"], native=True, browser=False,
+                         map_generators=False, deployment=False, cross_platform=False)
+
+    def test_lightweight_suites_are_executed_and_packaging_paths_remain(self):
+        root = SCRIPT.parents[2]
+        workflow = (root / ".github/workflows/build.yml").read_text()
+        selector = workflow.split("  changes:\n", 1)[1].split("\n  linux-build:", 1)[0]
+        for filename in ("test_run_tests.py", "test_ci_failure_aggregation.py", "test_ci_changed_paths.py"):
+            self.assertIn(filename, selector)
+        package = (root / ".github/workflows/steam-windows-package.yml").read_text()
+        paths = package.split("    paths:\n", 1)[1].split("\npermissions:", 1)[0]
+        self.assertNotIn("docs/development/reference.md", paths)
+        for filename in ("tools/package_steam_windows.py", "test/test_steam_windows_package.py",
+                         ".github/workflows/steam-windows-package.yml"):
+            self.assertIn(filename, paths)
+
     def test_browser_shell_only(self):
         self.assert_jobs(
             ["browser/storage.js", "browser/tests/storage.spec.js"],
