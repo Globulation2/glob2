@@ -23,25 +23,21 @@ def decode(assets, runtime, image_library=None):
         os.add_dll_directory(str(runtime.resolve())) if os.name == "nt" else None
     )
     sdl = ctypes.CDLL(
-        str(runtime / "SDL2.dll")
+        str(runtime / "SDL3.dll")
         if os.name == "nt"
-        else ctypes.util.find_library("SDL2")
+        else str(runtime.parent / "lib/glob2/libSDL3.so")
     )
     library = image_library or (
-        str(runtime / "SDL2_image.dll")
+        str(runtime / "SDL3_image.dll")
         if os.name == "nt"
-        else ctypes.util.find_library("SDL2_image")
+        else str(runtime.parent / "lib/glob2/libSDL3_image.so")
     )
     image = ctypes.CDLL(str(library))
-    image.IMG_Init.argtypes = [ctypes.c_int]
-    image.IMG_Init.restype = ctypes.c_int
     image.IMG_Load.argtypes = [ctypes.c_char_p]
     image.IMG_Load.restype = ctypes.c_void_p
-    sdl.SDL_FreeSurface.argtypes = [ctypes.c_void_p]
-    sdl.SDL_FreeSurface.restype = None
+    sdl.SDL_DestroySurface.argtypes = [ctypes.c_void_p]
+    sdl.SDL_DestroySurface.restype = None
     sdl.SDL_GetError.restype = ctypes.c_char_p
-    if image.IMG_Init(11) & 11 != 11:
-        raise ValueError("Decoder must initialize PNG, JPEG and WebP")
     files = sorted(
         path
         for path in assets.rglob("*")
@@ -54,7 +50,7 @@ def decode(assets, runtime, image_library=None):
         surface = image.IMG_Load(os.fsencode(path))
         if not surface:
             raise ValueError(f"Cannot decode {path}: {sdl.SDL_GetError()}")
-        sdl.SDL_FreeSurface(surface)
+        sdl.SDL_DestroySurface(surface)
     elapsed = time.perf_counter() - started
     if directory:
         directory.close()

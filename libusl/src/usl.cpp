@@ -75,10 +75,10 @@ void print(Value* value)
 	cout << endl;
 }
 
-Usl::Usl()
+Usl::Usl(bool allowFileLoading)
 {
 	prototype = std::make_unique<ScopePrototype>(&heap, nullptr);
-	prototype->addMethod(new Load());
+	if (allowFileLoading) prototype->addMethod(new Load());
 	prototype->addMethod(new Yield());
 	prototype->addMethod(new NativeFunction<void(Value*)>("print", print));
 
@@ -204,7 +204,10 @@ Scope* Usl::compile(const std::string& name, std::istream& stream)
 	string source;
 	char c;
 	while (stream.get(c))
+	{
+		if (source.size() >= 1048576) throw Exception(Position(name, 1, 1), "Script source limit exceeded");
 		source += c;
+	}
 	
 	Parser parser(name, source.c_str(), &heap);
 	#ifdef DEBUG_USL

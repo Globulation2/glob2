@@ -28,21 +28,21 @@ class SteamWindowsPackageTests(unittest.TestCase):
         attribution.write_text("attribution")
         self.exe = self.root / "glob2.exe"
         self.exe.write_bytes(b"exe")
-        (self.runtime / "SDL2.dll").write_bytes(b"sdl")
+        (self.runtime / "SDL3.dll").write_bytes(b"sdl")
         (self.runtime / "libwinpthread-1.dll").write_bytes(b"thread")
 
     def test_stages_transitive_dlls_and_assets(self):
         def fake_imports(binary):
             return {
-                "glob2.exe": {"sdl2.dll", "kernel32.dll"},
-                "SDL2.dll": {"libwinpthread-1.dll"},
+                "glob2.exe": {"sdl3.dll", "kernel32.dll"},
+                "SDL3.dll": {"libwinpthread-1.dll"},
                 "libwinpthread-1.dll": {"kernel32.dll"},
             }[binary.name]
 
         output = self.root / "depot"
         with patch("tools.package_steam_windows.imports", side_effect=fake_imports):
             stage(self.source, self.exe, self.runtime, output)
-        self.assertTrue((output / "SDL2.dll").is_file())
+        self.assertTrue((output / "SDL3.dll").is_file())
         self.assertTrue((output / "libwinpthread-1.dll").is_file())
         self.assertTrue((output / "data/asset.txt").is_file())
         self.assertTrue((output / "COPYING").is_file())

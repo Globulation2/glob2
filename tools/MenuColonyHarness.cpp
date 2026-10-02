@@ -41,7 +41,7 @@
 #include <FileManager.h>
 #include <Toolkit.h>
 #include <ScreenStack.h>
-#include <SDL_image.h>
+#include <SDL3_image/SDL_image.h>
 #include <cassert>
 #include <cstdlib>
 #include <cstdio>
@@ -235,17 +235,17 @@ template <class T> class Preview : public T
 		e.button.button = SDL_BUTTON_LEFT;
 		e.button.x = r.x + r.w / 2;
 		e.button.y = r.y + r.h / 2;
-		e.type = SDL_MOUSEBUTTONDOWN;
+		e.type = SDL_EVENT_MOUSE_BUTTON_DOWN;
 		this->handleExecutionEvent(e);
-		e.type = SDL_MOUSEBUTTONUP;
+		e.type = SDL_EVENT_MOUSE_BUTTON_UP;
 		this->handleExecutionEvent(e);
 	}
 	void key(SDL_Keycode code)
 	{
 		prepare();
 		SDL_Event e{};
-		e.type = SDL_KEYDOWN;
-		e.key.keysym.sym = code;
+		e.type = SDL_EVENT_KEY_DOWN;
+		e.key.key = code;
 		this->handleExecutionEvent(e);
 	}
 	int result() const { return GAGGUI::Screen::returnCode; }
@@ -391,7 +391,7 @@ void capture(const std::string &name, const std::string &path)
 		require(false, "unknown screen");
 	DrawableSurface shot(globalContainer->gfx->getW(), globalContainer->gfx->getH());
 	shot.drawSurface(0, 0, globalContainer->gfx);
-	require(IMG_SavePNG(shot.getSDLSurface(), path.c_str()) == 0, "save PNG");
+	require(IMG_SavePNG(shot.getSDLSurface(), path.c_str()), "save PNG");
 }
 // Only the test driver uses a timer: inject normal UI events into session loops.
 struct SessionExit
@@ -399,36 +399,36 @@ struct SessionExit
 	int phase = 0, tabs = 0;
 	bool replay = false;
 };
-Uint32 exitSession(Uint32, void *data)
+Uint32 SDLCALL exitSession(void *data, SDL_TimerID, Uint32)
 {
 	auto &state = *static_cast<SessionExit *>(data);
 	SDL_Event e{};
 	if (state.replay)
 	{
-		e.type = SDL_KEYDOWN;
-		e.key.keysym.sym = SDLK_RETURN;
+		e.type = SDL_EVENT_KEY_DOWN;
+		e.key.key = SDLK_RETURN;
 		SDL_PushEvent(&e);
 	}
 	else if (state.phase == 0)
 	{
-		e.type = SDL_KEYDOWN;
-		e.key.keysym.sym = SDLK_ESCAPE;
+		e.type = SDL_EVENT_KEY_DOWN;
+		e.key.key = SDLK_ESCAPE;
 		SDL_PushEvent(&e);
 	}
 	else if (state.phase == 1)
 	{
 		// Quit is the last action of the in-game and editor menus: Tab to it, then Return.
-		e.type = SDL_KEYDOWN;
-		e.key.keysym.sym = SDLK_TAB;
+		e.type = SDL_EVENT_KEY_DOWN;
+		e.key.key = SDLK_TAB;
 		for (int i = 0; i < state.tabs; ++i)
 			SDL_PushEvent(&e);
-		e.key.keysym.sym = SDLK_RETURN;
+		e.key.key = SDLK_RETURN;
 		SDL_PushEvent(&e);
 	}
 	else
 	{
-		e.type = SDL_KEYDOWN;
-		e.key.keysym.sym = SDLK_RETURN;
+		e.type = SDL_EVENT_KEY_DOWN;
+		e.key.key = SDLK_RETURN;
 		SDL_PushEvent(&e);
 	}
 	++state.phase;
@@ -486,10 +486,10 @@ int main(int argc, char **argv)
 		// Team tinting must preserve transparent sprite pixels in software mode.
 		DrawableSurface alpha(2, 2);
 		auto *pixels = static_cast<Uint32 *>(alpha.getSDLSurface()->pixels);
-		pixels[0] = SDL_MapRGBA(alpha.getSDLSurface()->format, 51, 255, 153, 0);
+		pixels[0] = SDL_MapSurfaceRGBA(alpha.getSDLSurface(), 51, 255, 153, 0);
 		alpha.shiftHSV(35, 0, 0);
 		Uint8 red, green, blue, opacity;
-		SDL_GetRGBA(pixels[0], alpha.getSDLSurface()->format, &red, &green, &blue, &opacity);
+		SDL_GetRGBA(pixels[0], SDL_GetPixelFormatDetails(alpha.getSDLSurface()->format), SDL_GetSurfacePalette(alpha.getSDLSurface()), &red, &green, &blue, &opacity);
 		require(opacity == 0, "team tint preserves transparency");
 		const auto rng = getSyncRandState();
 		const auto loadBegin = std::chrono::steady_clock::now();
@@ -648,16 +648,16 @@ int main(int argc, char **argv)
 			const auto name = dialog.host().bounds("name");
 			dialog.host().tapAt({name.x + name.w / 2, name.y + name.h / 2});
 			SDL_Event text{};
-			text.type = SDL_TEXTINPUT;
-			SDL_strlcpy(text.text.text, "colony-review", sizeof(text.text.text));
+			text.type = SDL_EVENT_TEXT_INPUT;
+			text.text.text = "colony-review";
 			dialog.event(text);
 			require(std::string(dialog.getName()) == "colony-review", "replay dialog text entry");
 			SDL_Event key{};
-			key.type = SDL_KEYDOWN;
-			key.key.keysym.sym = SDLK_BACKSPACE;
+			key.type = SDL_EVENT_KEY_DOWN;
+			key.key.key = SDLK_BACKSPACE;
 			dialog.event(key);
 			require(std::string(dialog.getName()) == "colony-revie", "replay dialog editing");
-			key.key.keysym.sym = SDLK_ESCAPE;
+			key.key.key = SDLK_ESCAPE;
 			dialog.event(key);
 			require(dialog.finished() && dialog.result() == LoadSaveDialog::CANCEL,
 					"replay dialog cancellation");
@@ -722,7 +722,7 @@ int main(int argc, char **argv)
 					"editor restores menu theme");
 		}
 		const auto tick = theme.colony->tick();
-		theme.colony->update(SDL_GetTicks64());
+		theme.colony->update(SDL_GetTicks());
 		require(theme.colony->tick() == tick, "session return has no catch-up burst");
 		std::cout << "PASS: game, replay, results and editor return to menu theme\n";
 		return 0;
@@ -775,8 +775,8 @@ int main(int argc, char **argv)
 			screens.frame(tick += 40, {});
 			screens.frame(tick += 40, {});
 			SDL_Event escape{};
-			escape.type = SDL_KEYDOWN;
-			escape.key.keysym.sym = SDLK_ESCAPE;
+			escape.type = SDL_EVENT_KEY_DOWN;
+			escape.key.key = SDLK_ESCAPE;
 			screens.frame(tick += 40, {escape});
 			for (int i = 0; i < 50 && screens.running(); ++i)
 				screens.frame(tick += 40, {});
@@ -815,7 +815,7 @@ int main(int argc, char **argv)
 			shot.drawSurface(0, 0, globals.gfx);
 			char name[32];
 			std::snprintf(name, sizeof(name), "/%04d.png", i);
-			require(IMG_SavePNG(shot.getSDLSurface(), (std::string(argv[2]) + name).c_str()) == 0,
+			require(IMG_SavePNG(shot.getSDLSurface(), (std::string(argv[2]) + name).c_str()),
 					"record PNG");
 			globals.gfx->nextFrame();
 		}
@@ -824,14 +824,14 @@ int main(int argc, char **argv)
 	if (mode == "soak")
 	{
 		require(theme.colony->load(), "load colony");
-		const Uint64 start = SDL_GetTicks64(), end = start + std::atoi(argv[2]) * 1000ULL;
+		const Uint64 start = SDL_GetTicks(), end = start + std::atoi(argv[2]) * 1000ULL;
 		Uint64 frames = 0, cost = 0, worst = 0;
 		double updateCost = 0, worstUpdate = 0, worstInput = 0;
 		FrontendScope scope;
 		Preview<MainMenuScreen> menu;
-		while (SDL_GetTicks64() < end)
+		while (SDL_GetTicks() < end)
 		{
-			const auto begin = SDL_GetTicks64();
+			const auto begin = SDL_GetTicks();
 			const auto updateStart = std::chrono::steady_clock::now();
 			theme.colony->update(begin);
 			const double updateMs = std::chrono::duration<double, std::milli>(
@@ -854,7 +854,7 @@ int main(int argc, char **argv)
 													  std::chrono::steady_clock::now() - inputStart)
 													  .count());
 			}
-			const auto elapsed = SDL_GetTicks64() - begin;
+			const auto elapsed = SDL_GetTicks() - begin;
 			cost += elapsed;
 			worst = std::max(worst, elapsed);
 			++frames;

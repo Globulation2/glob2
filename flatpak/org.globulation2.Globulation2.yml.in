@@ -96,57 +96,75 @@ modules:
         url: https://files.pythonhosted.org/packages/8c/21/c2bcdd5906101a30244eaffc1b6e6ce71a31bd0742a01eb89e660ebfac2d/pillow-12.2.0.tar.gz
         sha256: a830b1a40919539d07806aa58e1b114df53ddd43213d9c8b75847eee6c0182b5
 
-  - name: SDL2_image
+  - name: SDL3
     buildsystem: cmake-ninja
     builddir: true
     config-opts:
-      - -DSDL2IMAGE_AVIF=OFF
-      - -DSDL2IMAGE_BMP=OFF
-      - -DSDL2IMAGE_GIF=OFF
-      - -DSDL2IMAGE_JPG=ON
-      - -DSDL2IMAGE_JXL=OFF
-      - -DSDL2IMAGE_LBM=OFF
-      - -DSDL2IMAGE_PCX=OFF
-      - -DSDL2IMAGE_PNG=ON
-      - -DSDL2IMAGE_PNM=OFF
-      - -DSDL2IMAGE_QOI=OFF
-      - -DSDL2IMAGE_SVG=OFF
-      - -DSDL2IMAGE_TGA=OFF
-      - -DSDL2IMAGE_TIF=OFF
-      - -DSDL2IMAGE_WEBP=ON
-      - -DSDL2IMAGE_XCF=OFF
-      - -DSDL2IMAGE_XPM=OFF
-      - -DSDL2IMAGE_XV=OFF
+      - -DSDL_TESTS=OFF
+      - -DSDL_TEST_LIBRARY=OFF
+    sources:
+      - type: archive
+        url: https://github.com/libsdl-org/SDL/releases/download/release-3.4.16/SDL3-3.4.16.tar.gz
+        sha256: 7322236cd12090c3eb40b9728be4d49c76f66ad17d04369584d4ecad5cf77c68
+
+  - name: SDL3_image
+    buildsystem: cmake-ninja
+    builddir: true
+    config-opts:
+      - -DSDLIMAGE_ANI=OFF
+      - -DSDLIMAGE_AVIF=OFF
+      - -DSDLIMAGE_BMP=OFF
+      - -DSDLIMAGE_GIF=OFF
+      - -DSDLIMAGE_JPG=ON
+      - -DSDLIMAGE_JXL=OFF
+      - -DSDLIMAGE_LBM=OFF
+      - -DSDLIMAGE_PCX=OFF
+      - -DSDLIMAGE_PNG=ON
+      - -DSDLIMAGE_PNM=OFF
+      - -DSDLIMAGE_QOI=OFF
+      - -DSDLIMAGE_SVG=OFF
+      - -DSDLIMAGE_TGA=OFF
+      - -DSDLIMAGE_TIF=OFF
+      - -DSDLIMAGE_WEBP=ON
+      - -DSDLIMAGE_XCF=OFF
+      - -DSDLIMAGE_XPM=OFF
+      - -DSDLIMAGE_XV=OFF
       - -DBUILD_SHARED_LIBS=ON
-      - -DSDL2IMAGE_DEPS_SHARED=OFF
-      - -DSDL2IMAGE_STRICT=ON
-      - -DSDL2IMAGE_BACKEND_STB=OFF
-      - -DSDL2IMAGE_BACKEND_IMAGEIO=OFF
-      - -DSDL2IMAGE_SAMPLES=OFF
-      - -DSDL2IMAGE_TESTS=OFF
+      - -DSDLIMAGE_DEPS_SHARED=OFF
+      - -DSDLIMAGE_STRICT=ON
+      - -DSDLIMAGE_BACKEND_STB=OFF
+      - -DSDLIMAGE_BACKEND_IMAGEIO=OFF
+      - -DSDLIMAGE_SAMPLES=OFF
+      - -DSDLIMAGE_TESTS=OFF
       - -DCMAKE_BUILD_TYPE=Release
-      - -DSDL2IMAGE_PNG_SAVE=ON
-      - -DSDL2IMAGE_JPG_SAVE=ON
+      - -DSDLIMAGE_PNG_SAVE=ON
+      - -DSDLIMAGE_JPG_SAVE=ON
+      - -DSDLIMAGE_WEBP_SAVE=OFF
     sources:
       - type: archive
-        url: https://github.com/libsdl-org/SDL_image/releases/download/release-2.8.12/SDL2_image-2.8.12.tar.gz
-        sha256: 393f5efb50536ec13ca4f4affb69cc9966d3c3f969e6c5e701faddf9f9785381
+        url: https://github.com/libsdl-org/SDL_image/releases/download/release-3.4.6/SDL3_image-3.4.6.tar.gz
+        sha256: d2e4637ae700f72e5196b8fbd749850ed2e5e1e09c5a5be8d06ff55aaccf3b01
 
-  - name: SDL2_ttf
+  - name: SDL3_ttf
     buildsystem: cmake-ninja
     builddir: true
+    config-opts:
+      - -DSDLTTF_SAMPLES=OFF
+      - -DSDLTTF_HARFBUZZ=OFF
     sources:
       - type: archive
-        url: https://github.com/libsdl-org/SDL_ttf/releases/download/release-2.24.0/SDL2_ttf-2.24.0.tar.gz
-        sha256: 0b2bf1e7b6568adbdbc9bb924643f79d9dedafe061fa1ed687d1d9ac4e453bfd
+        url: https://github.com/libsdl-org/SDL_ttf/releases/download/release-3.2.2/SDL3_ttf-3.2.2.tar.gz
+        sha256: 63547d58d0185c833213885b635a2c0548201cc8f301e6587c0be1a67e1e045d
 
-  - name: SDL2_net
+  - name: SDL3_net
     buildsystem: cmake-ninja
     builddir: true
+    config-opts:
+      - -DSDLNET_SAMPLES=OFF
     sources:
       - type: archive
-        url: https://github.com/libsdl-org/SDL_net/releases/download/release-2.2.0/SDL2_net-2.2.0.tar.gz
-        sha256: 4e4a891988316271974ff4e9585ed1ef729a123d22c08bd473129179dc857feb
+        url: https://github.com/libsdl-org/SDL_net/releases/download/release-3.2.0/SDL3_net-3.2.0.tar.gz
+        sha256: 098522fc26d4e302ef9348aee6e76e67fe504dfefd7f596236568f8330570c41
 
   - name: glu
     buildsystem: meson
@@ -174,7 +192,7 @@ modules:
   - name: glob2
     buildsystem: simple
     build-commands:
-      - export PYTHONPATH="/app/lib/python$(python3 -c 'import sys; print(str(sys.version_info.major)+"."+str(sys.version_info.minor))')/site-packages${PYTHONPATH:+:$PYTHONPATH}"; scons -j2 release=1 server=0 CXXFLAGS="-I/app/include -I/app/include/SDL2" LINKFLAGS=-L/app/lib BINDIR=/app/bin INSTALLDIR=/app/share DATADIR=/app/share install
+      - export PYTHONPATH="/app/lib/python$(python3 -c 'import sys; print(str(sys.version_info.major)+"."+str(sys.version_info.minor))')/site-packages${PYTHONPATH:+:$PYTHONPATH}"; scons -j2 release=1 server=0 CXXFLAGS="-I/app/include -I/app/include/SDL3" LINKFLAGS=-L/app/lib BINDIR=/app/bin INSTALLDIR=/app/share DATADIR=/app/share install
       - test -f /app/share/metainfo/org.globulation2.Globulation2.metainfo.xml
       - test -f /app/share/glob2/data/maxima/duel.strategy
       - test -f /app/share/glob2/data/usl/Language/Runtime/Control.usl

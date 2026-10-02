@@ -3,6 +3,7 @@
 #include "types.h"
 #include "usl.h"
 #include "code.h"
+#include "position.h"
 
 #include <iostream>
 
@@ -12,9 +13,13 @@ bool Thread::step()
 {
 	if (state == RUN)
 	{
+		if (frames.empty() || frames.size() > 1024 || usl->heap.values.size() > 262144)
+			throw Exception(Position(), "Script runtime limit exceeded");
 		Thread::Frame& frame = frames.back();
 		ThunkPrototype* thunk = frame.thunk->thunkPrototype();
 		size_t nextInstr = frame.nextInstr;
+		if (nextInstr >= thunk->body.size() || frame.stack.size() > 65536)
+			throw Exception(Position(), "Invalid script instruction or stack limit");
 		Code* code = thunk->body[nextInstr];
 		frame.nextInstr++;
 		
@@ -33,6 +38,7 @@ bool Thread::step()
 			Thread::Frame& frame = frames.back();
 			if (frame.nextInstr < frame.thunk->thunkPrototype()->body.size())
 				break;
+			if (frame.stack.empty()) throw Exception(Position(), "Script returned no value");
 			Value* retVal = frame.stack.back();
 			frames.pop_back();
 			if (!frames.empty())

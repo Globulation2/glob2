@@ -43,14 +43,15 @@ class MacImageTests(unittest.TestCase):
         options = lean.lean_options()
         for name in lean.CODECS:
             self.assertIn(
-                "-DSDL2IMAGE_"
+                "-DSDLIMAGE_"
                 + name
                 + "="
                 + ("ON" if name in ("PNG", "JPG", "WEBP") else "OFF"),
                 options,
             )
-        self.assertIn("-DSDL2IMAGE_DEPS_SHARED=OFF", options)
-        self.assertIn("-DSDL2IMAGE_PNG_SAVE=ON", options)
+        self.assertIn("-DSDLIMAGE_DEPS_SHARED=OFF", options)
+        self.assertIn("-DSDLIMAGE_PNG_SAVE=ON", options)
+        self.assertIn("-DSDLIMAGE_WEBP_SAVE=OFF", options)
 
     def test_corrupted_dependency_rejected(self):
         import json, hashlib

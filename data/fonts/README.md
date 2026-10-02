@@ -38,7 +38,7 @@ python3 data/fonts/build_chinese_font.py /tmp/glob2-base.ttf /tmp/DroidSansFallb
 python3 test/test_font_coverage.py
 ```
 
-The coverage test uses the same SDL2_ttf library as the game and fails if any
+The coverage test uses the same SDL3_ttf library as the game and fails if any
 catalog character cannot be displayed. Font rebuilds should also be checked
 visually at the game's 10, 13 and 20 pixel sizes, with layout measurements and
 an original-glyph regression comparison.

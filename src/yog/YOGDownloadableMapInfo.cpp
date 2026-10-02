@@ -2,6 +2,8 @@
 // Copyright (C) 2008 Bradley Arsenault
 
 #include "YOGDownloadableMapInfo.h"
+#include <GzipUtil.h>
+#include <stdexcept>
 #include "Stream.h"
 
 
@@ -172,7 +174,8 @@ void YOGDownloadableMapInfo::encodeData(GAGCore::OutputStream* stream) const
 void YOGDownloadableMapInfo::decodeData(GAGCore::InputStream* stream, Uint32 versionMinor)
 {
 	stream->readEnterSection("YOGDownloadableMapInfo");
-	mapHeader.load(stream);
+	if (!mapHeader.load(stream))
+		throw std::runtime_error("Invalid downloadable map header");
 	total = stream->readUint32("total");
 	numberOfRatings = stream->readUint32("numberOfRatings");
 	author = stream->readText("author");
@@ -181,6 +184,8 @@ void YOGDownloadableMapInfo::decodeData(GAGCore::InputStream* stream, Uint32 ver
 	width = stream->readUint16("width");
 	height = stream->readUint16("height");
 	size = stream->readUint32("size");
+	if (author.size() > 256 || size == 0 || size > GAGCore::MAX_COMPRESSED_GAME_FILE_BYTES)
+		throw std::runtime_error("Invalid downloadable map metadata");
 	stream->readLeaveSection();
 }
 
@@ -200,6 +205,4 @@ bool YOGDownloadableMapInfo::operator!=(const YOGDownloadableMapInfo& rhs) const
 		return true;
 	return false;
 }
-
-
 

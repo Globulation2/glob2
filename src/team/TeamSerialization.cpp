@@ -39,7 +39,10 @@ GAGCore::CooperativeTask Team::loadTask(GAGCore::InputStream *stream, BuildingsT
 		stream->readEnterSection(i);
 		Uint32 isUsed = stream->readUint32("isUsed");
 		if (isUsed)
+			{
 			myUnits[i] = new Unit(stream, this, versionMinor);
+			if (Unit::GIDtoID(myUnits[i]->gid) != i) throw std::runtime_error("Unit identity does not match slot");
+		}
 		else
 			myUnits[i] = NULL;
 		stream->readLeaveSection();
@@ -66,6 +69,7 @@ GAGCore::CooperativeTask Team::loadTask(GAGCore::InputStream *stream, BuildingsT
 		if (isUsed)
 		{
 			myBuildings[i] = new Building(stream, buildingstypes, this, versionMinor);
+			if (Building::GIDtoID(myBuildings[i]->gid) != i) throw std::runtime_error("Building identity does not match slot");
 			if (myBuildings[i]->type->unitProductionTime)
 				swarms.push_back(myBuildings[i]);
 			if (myBuildings[i]->type->shootingRange)

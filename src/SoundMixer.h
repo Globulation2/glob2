@@ -3,8 +3,8 @@
 
 #pragma once
 
-#include <SDL.h>
-#include <SDL_audio.h>
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_audio.h>
 #include <vorbis/codec.h>
 #include <vorbis/vorbisfile.h>
 #include <vector>
@@ -37,9 +37,10 @@ public:
 	//! Track asked for while a fade was already running, or -1 for none. A
 	//! fade spans many callbacks, so the request is held here and started by
 	//! mixaudio() once the fade lands, rather than cutting it off mid-mix.
-	//! Guarded by SDL_LockAudio, like mode and fadePos.
+	//! Guarded by SDL_LockAudioStream, like mode and fadePos.
 	int pendingTrack;
 	bool soundEnabled;
+    SDL_AudioStream *audioStream = nullptr;
 	unsigned musicVolume;
 	unsigned voiceVolume;
 	

@@ -18,7 +18,7 @@
 #include <optional>
 #include <initializer_list>
 #include <cstdio>
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include "GameHeader.h"
 
 namespace {

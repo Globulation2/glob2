@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include <GUIBase.h>
+#include <EventQueue.h>
 #include <InterfacePresentation.h>
 #include <ScreenStack.h>
 #include "FrontendTheme.h"
@@ -26,7 +27,7 @@ class MapEditorScreen : public GAGGUI::Screen
 	FrontendScope theme{false};
 	GAGGUI::ScreenStack &screens;
 	std::unique_ptr<MapEdit> editor;
-	std::vector<SDL_Event> input;
+	GAGCore::EventQueue input;
 	bool started = false;
 	Uint32 lastFrame = 0;
 };

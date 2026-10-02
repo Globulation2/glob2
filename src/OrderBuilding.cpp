@@ -46,7 +46,7 @@ Uint8 *OrderCreate::getData(void)
 
 bool OrderCreate::setData(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
-	if(versionMinor<FILE_FORMAT_VERSION_ORDER_CREATE_FLAG_RADIUS && dataLength!=20)
+	if(versionMinor<FILE_FORMAT_VERSION_ORDER_CREATE_FLAG_RADIUS && dataLength!=20 && dataLength!=24)
 		return false;
 	else if (versionMinor>=FILE_FORMAT_VERSION_ORDER_CREATE_FLAG_RADIUS && dataLength!=getDataLength())
 		return false;
@@ -56,7 +56,8 @@ bool OrderCreate::setData(const Uint8 *data, int dataLength, Uint32 versionMinor
 	this->posY=getSint32(data, 8);
 	this->typeNum=getSint32(data, 12);
 	this->unitWorking=getSint32(data, 16);
-	this->unitWorkingFuture=getSint32(data, 20);
+	this->unitWorkingFuture = dataLength >= 24
+		? getSint32(data, 20) : this->unitWorking;
 	if(versionMinor>=FILE_FORMAT_VERSION_ORDER_CREATE_FLAG_RADIUS)
 	{
 		const Sint32 wireRadius=getSint32(data, 24);

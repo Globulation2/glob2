@@ -11,6 +11,9 @@ build = os.environ.get('GLOB2_BUILD_DIR', 'build/' + platform.system().lower() +
 with socket.socket() as listener:
     listener.bind(('127.0.0.1', 0))
     port = listener.getsockname()[1]
-raise SystemExit(subprocess.run(
-    [str(root / build / 'src/net-connection-test'), str(port)], cwd=root, timeout=15,
-).returncode)
+for address in ('127.0.0.1', '::1', 'localhost'):
+    result = subprocess.run(
+        [str(root / build / 'src/net-connection-test'), str(port), address], cwd=root, timeout=15,
+    )
+    if result.returncode:
+        raise SystemExit(result.returncode)

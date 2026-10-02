@@ -693,7 +693,7 @@ bool TeamStats::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 {
 	stream->readEnterSection("TeamStats");
 	Uint32 size=0;
-	size=stream->readUint32("size");
+	size=stream->readCount("size");
 
 	bool stop=false;
 	

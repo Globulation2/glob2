@@ -15,12 +15,16 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from tools.release.windows_runtime import stage_assets, stage_dlls as stage_runtime_dlls
 
 
-def stage_dlls(executable: Path, dll_dir: Path, destination: Path) -> None:
+def stage_dlls(executable: Path, dll_dir: Path, destination: Path, sdl_runtime: Path | None = None) -> None:
     """Keep the Store helper's public error contract around shared staging."""
+    runtimes = [executable.resolve().parent, dll_dir]
+    if sdl_runtime:
+        runtimes.insert(0, sdl_runtime)
     try:
-        stage_runtime_dlls(executable, [dll_dir], destination)
+        stage_runtime_dlls(executable, runtimes, destination)
     except FileNotFoundError as error:
         raise RuntimeError(str(error)) from error
+
 
 
 def write_game_config(destination: Path, args: argparse.Namespace) -> None:
@@ -68,6 +72,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, required=True)
     parser.add_argument("--exe", type=Path, required=True)
+    parser.add_argument("--sdl-runtime", type=Path)
     parser.add_argument("--dll-dir", type=Path, required=True)
     parser.add_argument("--dest", type=Path, required=True)
     parser.add_argument("--identity-name", required=True)
@@ -101,7 +106,7 @@ def main() -> None:
         f"https://github.com/Globulation2/glob2/archive/{args.commit}.zip\n",
         encoding="utf-8",
     )
-    stage_dlls(args.exe, args.dll_dir, destination)
+    stage_dlls(args.exe, args.dll_dir, destination, args.sdl_runtime)
 
     icon = args.root / "data/icons/glob2-icon-128x128.png"
     write_shell_images(icon, destination)

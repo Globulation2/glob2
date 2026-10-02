@@ -39,8 +39,12 @@ template<class A> void fields(A& a, WorldTile& value)
 	a("clearableResource",value.clearableResource);
 	a("occupied",value.occupied);
 	a("ownOccupied",value.ownOccupied);
-	a("resourceType",value.resourceType);
-	a("resourceAmount",value.resourceAmount);
+	// Preserve the signed 32-bit fields independently of compact storage.
+	int32_t resourceType=value.resourceType, resourceAmount=value.resourceAmount;
+	a("resourceType",resourceType); a("resourceAmount",resourceAmount);
+	if(resourceType < INT16_MIN || resourceType > INT16_MAX || resourceAmount < 0 || resourceAmount > UINT8_MAX)
+		throw std::runtime_error("Invalid compact world resource");
+	value.resourceType=int16_t(resourceType); value.resourceAmount=uint8_t(resourceAmount);
 	a("fertility",value.fertility);
 	a("farmCapacity",value.farmCapacity);
 	a("foodOpportunity",value.foodOpportunity);
