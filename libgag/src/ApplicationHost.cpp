@@ -88,6 +88,16 @@ std::unique_ptr<Persistence> persistStorage()
 {
 	return std::make_unique<NativePersistence>();
 }
+bool openUrl(const std::string &url)
+{
+	if (url.rfind("https://", 0) != 0 && url.rfind("http://", 0) != 0)
+		return false;
+#if SDL_VERSION_ATLEAST(2, 0, 14)
+	return SDL_OpenURL(url.c_str()) == 0;
+#else
+	return false;
+#endif
+}
 void importChanged(const char *) {}
 void screenChanged(const char *name) {
 #ifdef GLOB2_MOBILE

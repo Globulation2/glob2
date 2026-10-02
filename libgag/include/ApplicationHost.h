@@ -74,6 +74,11 @@ class Persistence
 };
 std::unique_ptr<Persistence> persistStorage();
 
+// Opens an http(s) URL in the system browser (a new tab on the web). Returns
+// false when the host cannot, or a popup blocker refused it; browsers allow it
+// reliably only while handling a click.
+bool openUrl(const std::string &url);
+
 // Read-only diagnostics; hosts decide whether and how to publish them.
 void screenChanged(const char *name);
 void importChanged(const char *state);
