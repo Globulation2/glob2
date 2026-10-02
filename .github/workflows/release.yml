@@ -184,6 +184,16 @@ jobs:
             DATADIR=/usr/share install
           python3 tools/release/release.py verify-install --stage "$stage"
           "$stage/usr/bin/glob2" --version
+      - name: Measure original-assets Linux baseline
+        run: |
+          stage="$PWD/artifacts/size-baseline"
+          scons -j2 release=1 server=0 optimized_assets=0 \
+            BINDIR="$stage/usr/bin" INSTALLDIR="$stage/usr/share" DATADIR=/usr/share install
+          mkdir -p artifacts/package-sizes
+          tar -C "$stage" -czf artifacts/package-sizes/baseline.tar.gz usr
+          python3 tools/release/package_sizes.py report --staged-root "$stage" \
+            --archive artifacts/package-sizes/baseline.tar.gz --label original-assets \
+            --output artifacts/package-sizes/baseline.json
       - name: Package Linux installation
         env:
           VERSION: ${{ needs.preflight.outputs.version }}
@@ -191,6 +201,15 @@ jobs:
           mkdir -p artifacts/release-output
           tar -C artifacts/release-stage -czf \
             "artifacts/release-output/glob2-${VERSION}-linux-x86_64-ubuntu22.04.tar.gz" usr
+          python3 tools/release/package_sizes.py report --staged-root artifacts/release-stage \
+            --archive "artifacts/release-output/glob2-${VERSION}-linux-x86_64-ubuntu22.04.tar.gz" \
+            --output artifacts/package-sizes/candidate.json
+          python3 tools/release/package_sizes.py compare artifacts/package-sizes/baseline.json \
+            artifacts/package-sizes/candidate.json --output artifacts/package-sizes/comparison.json
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: package-sizes-linux
+          path: artifacts/package-sizes/*.json
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: release-linux
@@ -259,7 +278,7 @@ jobs:
             SDL2-devel SDL2_image-devel SDL2_net-devel SDL2_ttf-devel \
             libvorbis-devel libogg-devel speex-devel boost-devel openssl-devel \
             zlib-devel fribidi-devel pcre-devel mesa-libGL-devel mesa-libGLU-devel \
-            libepoxy-devel
+            libepoxy-devel cmake make python3-devel python3-pip python3-wheel libjpeg-turbo-devel
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: ${{ inputs.tag && 'Globulation2/glob2' || github.repository }}
@@ -275,9 +294,20 @@ jobs:
           top="$GITHUB_WORKSPACE/artifacts/rpmbuild"
           mkdir -p "$top"/{BUILD,BUILDROOT,RPMS,SOURCES,SPECS,SRPMS}
           cp "artifacts/release-source/glob2-${VERSION}.tar.gz" "$top/SOURCES/"
+          python3 tools/build_asset_encoder.py fetch --sources "$top/SOURCES"
           rpmbuild -ba fedora/glob2.spec --define "_topdir $top"
+          stage="$GITHUB_WORKSPACE/artifacts/rpm-size-stage"
+          mkdir -p "$stage"
+          rpmfile="$(find "$top/RPMS" -name 'glob2-*.rpm' ! -name '*debuginfo*' ! -name '*debugsource*' -print -quit)"
+          (cd "$stage"; rpm2cpio "$rpmfile" | cpio -idm --quiet)
+          python3 tools/release/package_sizes.py report --staged-root "$stage" \
+            --archive "$rpmfile" --output artifacts/package-sizes/rpm.json
           mkdir -p artifacts/release-output
           find "$top/RPMS" "$top/SRPMS" -name '*.rpm' -exec cp '{}' artifacts/release-output/ \;
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: package-sizes-rpm
+          path: artifacts/package-sizes/rpm.json
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: release-rpm
@@ -330,6 +360,21 @@ jobs:
           python3 -c 'import sys, zipfile; zipfile.ZipFile(sys.argv[1]).extractall("artifacts/release-smoke")' \
             "artifacts/release-output/glob2-${VERSION}-windows-x86_64.zip"
           ./artifacts/release-smoke/Globulation2/glob2.exe --version
+          python3 tools/release/package_windows.py build/mingw/client/release/src/glob2.exe \
+            artifacts/package-sizes/baseline.zip --original-assets
+          python3 -c 'import zipfile; zipfile.ZipFile("artifacts/package-sizes/baseline.zip").extractall("artifacts/size-baseline")'
+          python3 tools/release/package_sizes.py report --staged-root artifacts/size-baseline/Globulation2 \
+            --archive artifacts/package-sizes/baseline.zip --label original-assets \
+            --output artifacts/package-sizes/baseline.json
+          python3 tools/release/package_sizes.py report --staged-root artifacts/release-smoke/Globulation2 \
+            --archive "artifacts/release-output/glob2-${VERSION}-windows-x86_64.zip" \
+            --output artifacts/package-sizes/candidate.json
+          python3 tools/release/package_sizes.py compare artifacts/package-sizes/baseline.json \
+            artifacts/package-sizes/candidate.json --output artifacts/package-sizes/comparison.json
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: package-sizes-windows
+          path: artifacts/package-sizes/*.json
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: release-windows
@@ -384,8 +429,18 @@ jobs:
         with:
           bundle: glob2.flatpak
           manifest-path: flatpak/org.globulation2.Globulation2.yml
+          build-dir: artifacts/flatpak-app
           cache-key: glob2-flatpak-${{ needs.preflight.outputs.revision }}
           upload-artifact: false
+      - name: Record Flatpak application and download sizes
+        run: |
+          python3 tools/release/package_sizes.py report --staged-root artifacts/flatpak-app/files \
+            --archive glob2.flatpak --compiler unrecorded \
+            --output artifacts/package-sizes/flatpak.json
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: package-sizes-flatpak
+          path: artifacts/package-sizes/flatpak.json
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: release-flatpak
@@ -410,6 +465,12 @@ jobs:
         run: |
           sudo snap install --dangerous "$SNAP"
           snap run globulation2 --version
+          python3 tools/release/package_sizes.py report --staged-root /snap/globulation2/current \
+            --archive "$SNAP" --compiler unrecorded --output artifacts/package-sizes/snap.json
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: package-sizes-snap
+          path: artifacts/package-sizes/snap.json
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: ${{ always() && steps.snap.outcome == 'success' }}
         with:

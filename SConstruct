@@ -31,6 +31,7 @@ def establish_options(env):
     opts.Add("BINDIR", "Binary Installation Directory", "/usr/local/bin")
     opts.Add("DATADIR", "Directory where data will be put, set to the same as INSTALLDIR", "/usr/local/share")
     opts.Add(BoolVariable("release", "Build for release", 0))
+    opts.Add("optimized_assets", "Optimize installed client assets: auto, 0, or 1", "auto")
     opts.Add(BoolVariable("china", "Build the mainland China local-play client", 0))
     opts.Add(BoolVariable("opengl", "Enable OpenGL detection; set to 0 for software rendering only", 1))
     opts.Add(BoolVariable("wss", "Enable native secure WebSocket transport", 1))
@@ -520,7 +521,8 @@ def main():
         "tools",
         "windows"
     ]
-    optimized_install = env['release'] and not env['server'] and 'install' in COMMAND_LINE_TARGETS
+    from runtime_assets import optimized_install_enabled
+    optimized_install = optimized_install_enabled(env['release'], env['optimized_assets']) and not env['server'] and 'install' in COMMAND_LINE_TARGETS
     if optimized_install and 'dist' in COMMAND_LINE_TARGETS:
         raise ValueError('Run release install and source dist as separate SCons invocations')
     if optimized_install:

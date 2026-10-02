@@ -245,7 +245,14 @@ Packaging bootstraps a private Pillow 12.2.0/libwebp 1.6.0 encoder environment
 when the current Python lacks the pinned encoder. This is a build dependency,
 never application content. It requires network access on first setup; subsequent
 exports reuse cached verified conversions. Flatpak supplies checksum-pinned
-encoder sources and build dependencies for its offline sandbox.
+encoder sources and build dependencies for its offline sandbox. RPM uses
+`tools/build_asset_encoder.py` with checksum-pinned Source archives; the helper
+builds a private encoder with pip's `--no-index --no-build-isolation` options.
+Fetch sources before entering an offline build with
+`python3 tools/build_asset_encoder.py fetch --sources <source-directory>`.
+Distro installs can request `optimized_assets=1` independently of `release=0`,
+preserving distro compiler flags and debug information. `optimized_assets=0`
+retains original asset bytes for a measurement baseline; `auto` follows `release`.
 Windows CI uses standard CPython for encoding and MinGW Python for building;
 `GLOB2_ASSET_ENCODER_PYTHON` selects a validated, already prepared interpreter.
 Python tests can use the same environment:
@@ -284,6 +291,16 @@ comparison export. Wordmarks, icons, sprites, masks and atlases remain lossless.
 replay, network or simulation format changes are involved. Measure complete
 packages and startup separately: smaller compressed assets need not decode
 faster or use less GPU memory.
+
+`tools/release/package_sizes.py report --staged-root <root> --archive <package>
+--output <report.json>` records payload categories, file hashes, archive sizes,
+source revision, architecture and compiler. Its `compare` command rejects
+reports from different sources, platforms, compilers or measurement scopes.
+Use `--scope asset-only` for an export without a binary/runtime; it must not be
+reported as a complete application download. Candidate release CI retains
+same-source original/optimized reports for Linux tarballs and Windows ZIPs.
+Installed sizes exclude symlink targets counted elsewhere; download size is the
+actual archive byte count. Shared system runtimes are outside these artifacts.
 
 ## Renderer stress measurements
 

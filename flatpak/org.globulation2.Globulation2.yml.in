@@ -70,8 +70,10 @@ modules:
 
   - name: pybind11-build-tool
     buildsystem: simple
+    # Pillow needs only this header-only project's Python build helpers/headers.
+    # Installing the source directly avoids scikit-build-core in the sandbox.
     build-commands:
-      - export PYTHONPATH="/app/lib/python$(python3 -c 'import sys; print(str(sys.version_info.major)+"."+str(sys.version_info.minor))')/site-packages${PYTHONPATH:+:$PYTHONPATH}"; python3 -m pip install --no-index --no-build-isolation --no-deps --prefix=/app .
+      - site="/app/lib/python$(python3 -c 'import sys; print(str(sys.version_info.major)+"."+str(sys.version_info.minor))')/site-packages"; mkdir -p "$site"; cp -a pybind11 "$site/"; cp -a include "$site/pybind11/"
     cleanup:
       - /lib/python*/site-packages/pybind11*
       - /lib/python*/site-packages/_distutils_hack
