@@ -47,6 +47,17 @@ class RuntimeInstallTests(unittest.TestCase):
         self.assertFalse((self.installed / "data/gfx/frame0.png").exists())
         self.assertEqual(custom.read_bytes(), b"user map")
 
+    def test_legacy_png_from_older_release_does_not_hide_updated_artwork(self):
+        old = self.installed / "data/gfx/frame0.png"
+        old.parent.mkdir(parents=True)
+        Image.new("RGBA", (64, 64), (180, 30, 90, 255)).save(old)
+        unrelated = old.with_name("custom.png")
+        unrelated.write_bytes(old.read_bytes())
+        install_export(self.exported, self.installed)
+        self.assertFalse(old.exists())
+        self.assertTrue((self.installed / self.relative).is_file())
+        self.assertTrue(unrelated.is_file())
+
     def test_modified_old_asset_is_preserved(self):
         install_export(self.exported, self.installed)
         old = self.installed / self.relative

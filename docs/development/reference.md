@@ -263,6 +263,9 @@ index hashes the exported bytes. Run source `dist` and release `install` as
 separate SCons invocations; the latter installs the exported runtime tree.
 Release installs retain a compact compressed ownership index to remove obsolete
 managed files on upgrades. Unrelated files and modified obsolete files are kept.
+On the first upgrade from an install without that index, PNGs at current shipped
+image paths are replaced when WebP is selected, including artwork from older
+releases. Keep custom image overrides in the user profile so they retain priority.
 
 Mac `bundle`/`package` additionally builds a checksum-pinned SDL_image 2.8.12
 with PNG/JPEG/WebP loading and PNG/JPEG saving. The cache identity includes

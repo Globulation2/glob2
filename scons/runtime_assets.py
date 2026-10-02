@@ -16,6 +16,7 @@ def install_export(exported, destination):
     audit = json.loads(exported.with_suffix(".json").read_text())
     current = {item["output"]: item["output_sha256"] for item in audit["files"]}
     marker = destination / STAMP
+    legacy_install = not marker.is_file()
     previous = {}
     if marker.is_file():
         record = json.loads(gzip.decompress(marker.read_bytes()))
@@ -23,14 +24,16 @@ def install_export(exported, destination):
             raise ValueError("Unknown installed asset policy")
         previous = record["files"]
     obsolete = set(previous) - set(current)
-    # Upgrade pre-export installations where original PNGs would shadow WebP.
+    # A legacy install has no hashes for its shipped artwork. Replace PNGs at
+    # current managed image paths even when an older release had different art;
+    # otherwise PNG precedence would hide the new WebP indefinitely. User-profile
+    # overrides live outside this installation tree and keep their precedence.
     for item in audit["files"]:
         if item["source"] != item["output"]:
             old = destination / item["source"]
-            if (
-                old.is_file()
-                and hashlib.sha256(old.read_bytes()).hexdigest()
-                == item["source_sha256"]
+            if old.is_file() and (
+                legacy_install
+                or hashlib.sha256(old.read_bytes()).hexdigest() == item["source_sha256"]
             ):
                 obsolete.add(item["source"])
     for relative in obsolete:
