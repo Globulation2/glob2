@@ -68,11 +68,17 @@ class RoomScreen : public Glob2UI::Screen
 	bool launched = false, closing = false;
 	std::unique_ptr<MapPreview> preview;
 	std::string previewFile;
+	// "Copied" feedback on the invite buttons for a moment after a copy.
+	std::string copiedKey;
+	Uint32 copiedAt = 0;
+	bool copyFailed = false;
 
 	void handle(const RoomBackend::Event &event);
 	void launch();
 	void finish(int code, const std::string &message);
 	void leave();
+	void copy(const std::string &key, const std::string &text);
+	std::string copyLabel(const std::string &key, const std::string &label) const;
 	Glob2UI::Element header(const Glob2UI::Presentation &p, bool phone);
 	Glob2UI::Element tabs(const Glob2UI::Presentation &p);
 	Glob2UI::Element seats(const Glob2UI::Presentation &p, bool phone);

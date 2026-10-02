@@ -75,6 +75,27 @@ export async function catalogTitles(
   return titles;
 }
 
+/**
+ * The name of an uploaded map (a premade map a room host sent with POST
+ * /api/v1/uploads): the title the engine read from the file, else the file name
+ * without its extension. `ownerId` limits it to one account's uploads.
+ */
+export async function uploadTitle(
+  db: Db,
+  hash: string,
+  ownerId?: string,
+): Promise<string | undefined> {
+  let query = db
+    .selectFrom('map_uploads')
+    .select(['title', 'file_name'])
+    .where('blob_sha256', '=', hash)
+    .orderBy('created_at', 'desc');
+  if (ownerId) query = query.where('owner_account_id', '=', ownerId);
+  const row = await query.executeTakeFirst();
+  const title = row?.title?.trim() || row?.file_name?.replace(/\.(map|game)(\.gz)?$/i, '').trim();
+  return title ? title.slice(0, 128) : undefined;
+}
+
 /** A readable name for a generator id ("even-ground" → "Even Ground"). */
 export function generatorLabel(id: string): string {
   return id

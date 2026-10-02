@@ -36,6 +36,10 @@ namespace Relay
 
 		// Matches
 		unsigned graceSeconds = 180;
+		/// Load barrier: a match's clock starts when every human seat has connected
+		/// (clients connect once loaded), or this long after the first one; 0 starts
+		/// it at the first connection.
+		unsigned loadWaitSeconds = 60;
 		unsigned drainTimeoutSeconds = 4 * 3600;
 		/// WebSocket ping interval for the per-seat round-trip telemetry; 0 disables.
 		unsigned rttPingMillis = 2000;

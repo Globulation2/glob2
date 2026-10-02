@@ -13,7 +13,7 @@ namespace Turn
 TurnSequencer::TurnSequencer(SequencerConfig config, std::uint32_t humanSeatMask, Admission admission,
                              SequencerOutput& output, std::uint64_t startMicros)
 	: config(config), humanMask(humanSeatMask), admission(std::move(admission)), output(output), start(startMicros),
-	  now(startMicros)
+	  created(startMicros), clockRunning(config.startBarrierMicros == 0), now(startMicros)
 {
 	if (!humanMask)
 		throw std::invalid_argument("A turn match needs at least one human seat");
@@ -52,7 +52,7 @@ void TurnSequencer::notePending()
 
 std::uint32_t TurnSequencer::relayTick(std::uint64_t nowMicros) const
 {
-	if (nowMicros <= start)
+	if (!clockRunning || nowMicros <= start)
 		return 0;
 	return static_cast<std::uint32_t>(microsToTicks(nowMicros - start, config.tickRateMilliHz));
 }
@@ -693,11 +693,39 @@ void TurnSequencer::broadcastPresence()
 	lastPresenceTick = relayTick(now);
 }
 
+void TurnSequencer::checkBarrier()
+{
+	if (clockRunning || over)
+		return;
+	bool everyone = true;
+	for (unsigned i = 0; i < MAX_SEATS; ++i)
+		if ((humanMask & (1u << i)) && seats[i].state == PresenceState::NotConnected)
+			everyone = false;
+	if (!everyone && now - created < config.startBarrierMicros)
+		return;
+	clockRunning = true;
+	start = now;
+	// A seat that has not loaded yet joins late: its grace runs from the start.
+	for (unsigned i = 0; i < MAX_SEATS; ++i)
+		if ((humanMask & (1u << i)) && seats[i].state == PresenceState::NotConnected)
+			seats[i].graceStart = now;
+	lastPresenceTick = 0;
+	presenceDirty = true;
+}
+
 void TurnSequencer::update(std::uint64_t nowMicros)
 {
 	now = std::max(now, nowMicros);
 	if (over)
 		return;
+	checkBarrier();
+	if (!clockRunning)
+	{
+		// Loading: only presence moves (who has connected), for the waiting screens.
+		if (presenceDirty)
+			broadcastPresence();
+		return;
+	}
 	const std::uint32_t tick = relayTick(now);
 
 	for (unsigned i = 0; i < MAX_SEATS && !over; ++i)

@@ -36,7 +36,10 @@ struct Palette
 	GAGCore::Color scrim{20, 32, 22, 160};
 	GAGCore::Color disabled{222, 226, 212};
 	GAGCore::Color danger{170, 60, 50};
-	GAGCore::Color success{60, 140, 70};
+	// Status text colours. On paper both keep at least 4.5:1 (WCAG AA for body text).
+	GAGCore::Color success{40, 110, 50};
+	// Something the player waits for or must do ("Waiting for Ana to be ready").
+	GAGCore::Color warning{140, 80, 10};
 	// Drop shadow under cards, panels and popups (alpha included).
 	GAGCore::Color shadow{15, 39, 25, 35};
 	// Tint over a pressed control.

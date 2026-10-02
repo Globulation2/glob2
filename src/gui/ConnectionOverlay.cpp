@@ -386,9 +386,21 @@ void ConnectionOverlay::drawCard(bool touch, SDL_Rect area, double unit)
 		showLeave = static_cast<bool>(leave);
 		break;
 	case ConnectionSnapshot::Card::CatchingUp:
-		heading = text("[conn card catching up]");
-		line = text("[conn card replaying %0]", clock(snapshot.missedSeconds));
-		body = text("[conn card input paused]");
+		// Always a way out; a device that replays slower than the match runs is told
+		// so instead of watching an estimate grow.
+		showLeave = static_cast<bool>(leave);
+		if (snapshot.cannotKeepUp)
+		{
+			heading = text("[conn card cannot keep up]");
+			line = text("[conn card replaying %0]", clock(snapshot.missedSeconds));
+			body = text("[conn card cannot keep up body]");
+		}
+		else
+		{
+			heading = text("[conn card catching up]");
+			line = text("[conn card replaying %0]", clock(snapshot.missedSeconds));
+			body = text("[conn card input paused]");
+		}
 		showProgress = true;
 		break;
 	case ConnectionSnapshot::Card::Desync:
@@ -433,6 +445,8 @@ void ConnectionOverlay::drawCard(bool touch, SDL_Rect area, double unit)
 		textAt(x + pad, cy, small, progress, colors.muted);
 		if (snapshot.secondsLeft >= 0)
 			textRight(x + width - pad, cy, small, text("[conn card seconds left %0]", std::to_string(snapshot.secondsLeft)), colors.muted);
+		else if (snapshot.card == ConnectionSnapshot::Card::CatchingUp && snapshot.cannotKeepUp)
+			textRight(x + width - pad, cy, small, text("[conn card not gaining]"), colors.muted);
 		cy += textH + 8;
 	}
 	for (const auto &l : bodyLines)
@@ -451,6 +465,38 @@ void ConnectionOverlay::drawCard(bool touch, SDL_Rect area, double unit)
 		gfx->drawRect(leaveRect.x, leaveRect.y, leaveRect.w, leaveRect.h, touch ? colors.edge : Color(220, 190, 90));
 		textAt(leaveRect.x + (buttonW - tw(font, label)) / 2, leaveRect.y + (buttonH - th(font, label)) / 2, font, label, colors.ink);
 	}
+}
+
+void CatchUpPace::sample(std::uint64_t nowMicros, std::uint32_t executed, std::uint32_t horizon)
+{
+	const std::uint32_t gap = horizon > executed ? horizon - executed : 0;
+	if (samples == 0)
+	{
+		lastAt = nowMicros;
+		lastGap = gap;
+		samples = 1;
+		return;
+	}
+	if (nowMicros - lastAt < SAMPLE_MICROS)
+		return;
+	const double seconds = double(nowMicros - lastAt) / 1e6;
+	const double closed = (double(lastGap) - double(gap)) / seconds;
+	// Smooth over a few samples; the first one sets the pace.
+	rate = samples < 2 ? closed : rate * 0.5 + closed * 0.5;
+	if (rate > 0.5)
+		notClosingSince = 0;
+	else if (!notClosingSince)
+		notClosingSince = lastAt;
+	lastAt = nowMicros;
+	lastGap = gap;
+	++samples;
+}
+
+int CatchUpPace::secondsLeft(std::uint32_t gapTicks, double) const
+{
+	if (!known() || rate <= 0.5)
+		return -1;
+	return int(double(gapTicks) / rate + 0.5);
 }
 
 bool ConnectionOverlay::handle(const SDL_Event &event)

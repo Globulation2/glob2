@@ -203,6 +203,13 @@ public:
 	virtual bool localReady() const { return false; }
 	/// Why Start is not available yet ("Waiting for Ana_M to be ready"), or empty.
 	virtual std::string waitingFor() const { return {}; }
+	/// Why this client cannot press Ready ("Take an open seat to play"), or empty.
+	virtual std::string readyBlocker() const { return {}; }
+	/// Members in the room without a seat, as display lines (this client's own is
+	/// marked "(you)"). They are listed under the seats.
+	virtual std::vector<std::string> unseatedMembers() const { return {}; }
+	/// This client is in the room but has no seat.
+	virtual bool localUnseated() const { return false; }
 
 	/// The host's setup draft (map, teams, rules) for the custom-game editor, and
 	/// applying an edited draft back to the room. Empty when the backend keeps its

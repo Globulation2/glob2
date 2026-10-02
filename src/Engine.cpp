@@ -9,6 +9,7 @@
 #include "Engine.h"
 #include "EngineTiming.h"
 #include "GlobalContainer.h"
+#include "OnlineMatch.h"
 #include "ReplayWriter.h"
 #include "SoundMixer.h"
 
@@ -85,6 +86,17 @@ void Engine::prepareRun()
 		globalContainer->gfx->cursorManager.setDrawColor(gui.getLocalTeam()->color);
 	}
 
+}
+
+void Engine::setOnlineResult(std::shared_ptr<Online::OnlineMatchResult> result)
+{
+    onlineResult = std::move(result);
+    if (onlineResult)
+    {
+        gui.networkMatch.online = true;
+        gui.networkMatch.rated = onlineResult->rated;
+        gui.networkMatch.fromRoom = onlineResult->fromRoom;
+    }
 }
 
 std::unique_ptr<GAGGUI::Screen> Engine::endRunScreen()

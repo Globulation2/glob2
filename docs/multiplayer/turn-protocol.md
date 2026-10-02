@@ -25,6 +25,15 @@ opaque bytes. The only exceptions are the few order type ids in the
 
 - The relay owns the clock. Tick `t` starts `t × 40 ms` after the match starts
   (25 ticks/s, or `tickRateMilliHz / 1000` ticks per second).
+- **Load barrier.** Clients connect once they have loaded the game, so the match
+  starts when every human seat has said `Hello`: until then the relay sends no bundle,
+  answers `Welcome` with `relayTick` 0 and runs no grace. After
+  `SequencerConfig::startBarrierMicros` (the online relay's
+  `GLOB2_RELAY_LOAD_WAIT_SECONDS`, 60 s by default) the clock starts anyway; a seat
+  still loading then shows as not connected and joins late under the reconnect grace,
+  counted from the start. The LAN host gets the same barrier by creating its sequencer
+  only after every `Hello` (`LanHost::Options::loadWaitMicros`). The barrier changes
+  no message and nothing a client simulates.
 - Each human order gets an explicit **execution tick** from the relay when it arrives:
   the earliest tick it has not yet broadcast. Each seat gets at most one order per tick,
   and later orders from that seat queue onto later ticks.
@@ -520,7 +529,13 @@ the session (presence, latency, buffer) for a connection HUD.
   the rest at once.
 - **Catch-up.** While `tickIntervalMicros()` is 0, the loop uses the replay fast-forward
   preset (`REPLAY_FAST_FORWARD_MS`, drawing one frame in
-  `REPLAY_FAST_FORWARD_DRAW_RATIO`) and lifts the `MAX_CATCHUP_MS` cap.
+  `REPLAY_FAST_FORWARD_DRAW_RATIO`) and lifts the `MAX_CATCHUP_MS` cap. The screen host
+  (`GameSessionScreen`, which the browser and every online match use) runs as many
+  ticks per frame as fit in 30 ms while `Engine::turnFastForwarding()`, so the replay
+  is not capped at the frame rate. The catching-up card estimates the time left from
+  the rate at which the gap to the relay closes (replay rate minus match rate,
+  `CatchUpPace`); when the gap has not shrunk for 15 s it says the device cannot keep
+  up instead of showing a growing estimate. The card always offers Leave match.
 - **Reload.** When `needsReload()` is set (told to rejoin, or a resume the relay could
   serve only from tick 0), the engine reloads the initial state in place from the same
   map and `GameHeader`, restarts its replay and checksum sidecar, and calls
