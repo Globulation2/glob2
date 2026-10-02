@@ -10,12 +10,34 @@
 #include <deque>
 #include <queue>
 #include <sstream>
+#include <mutex>
 
 namespace AIMaximaPlacement
 {
 
 namespace
 {
+	std::shared_ptr<const std::vector<int>> neighborhoodTable(int width,int height)
+	{
+		static std::mutex mutex;
+		static std::map<std::pair<int,int>,std::weak_ptr<const std::vector<int>>> tables;
+		std::lock_guard<std::mutex> lock(mutex);
+		for(auto i=tables.begin();i!=tables.end();)
+			if(i->second.expired()) i=tables.erase(i); else ++i;
+		const auto key=std::make_pair(width,height);
+		if(auto existing=tables[key].lock()) return existing;
+		auto table=std::make_shared<std::vector<int>>(size_t(width)*height*9);
+		for(int index=0;index<width*height;++index)
+		{
+			const int x=index%width,y=index/width;
+			int offset=0;
+			for(int dy=-1;dy<=1;++dy) for(int dx=-1;dx<=1;++dx)
+				(*table)[index*9+offset++]=((y+dy+height)%height)*width+(x+dx+width)%width;
+		}
+		tables[key]=table;
+		return table;
+	}
+
 	/// The engine's corn resource index, as carried in WorldTile::resourceType.
 	const int CornResourceType=1;
 
@@ -384,7 +406,7 @@ void Planner::reset()
 	completedBuildingDistanceCache.clear();criticalBuildingDistanceCache.clear();
 	towerBuildingDistanceCache.clear();completedBuildingCountCache.clear();
 	scoringReservedGeneration.clear();scoringAffectedGeneration.clear();
-	scoringBlockedNeighbors.clear();scoringNeighborhoodCache.clear();
+	scoringBlockedNeighbors.clear();scoringNeighborhoodCache.reset();
 	scoringNeighborhoodWidth=scoringNeighborhoodHeight=0;
 	scoringReservedScratch.clear();scoringAffectedScratch.clear();
 	scoringGeneration=0;
@@ -716,17 +738,8 @@ void Planner::prepareScoringCaches(const WorldState& world) const
 	{
 		scoringNeighborhoodWidth=world.width;
 		scoringNeighborhoodHeight=world.height;
-		scoringNeighborhoodCache.resize(size*9);
-		// Farm-loss scoring uses this same wrapped 3x3 stencil for every
-		// candidate.  Normalizing it once removes modulo operations from the hot
-		// loop without changing either traversal order or neighbour multiplicity.
-		for(int index=0;index<size;++index)
-		{
-			const int x=index%world.width,y=index/world.width;
-			int offset=0;
-			for(int dy=-1;dy<=1;++dy)for(int dx=-1;dx<=1;++dx)
-				scoringNeighborhoodCache[index*9+offset++]=world.index(x+dx,y+dy);
-		}
+		scoringNeighborhoodCache=neighborhoodTable(world.width,world.height);
+
 	}
 	// Compare complete building source data rather than a hash: an unchanged
 	// value is therefore an exact cache hit, not a probabilistic one.  Upgrading
@@ -770,7 +783,7 @@ void Planner::prepareScoringCaches(const WorldState& world) const
 			   &&towerBuildingDistanceCache[index]==INT_MAX)
 			{towerBuildingDistanceCache[index]=0;queues[2].push_back(index);}
 		}
-		std::vector<int>* fields[3]={&completedBuildingDistanceCache,
+		DistanceField* fields[3]={&completedBuildingDistanceCache,
 			&criticalBuildingDistanceCache,&towerBuildingDistanceCache};
 		// A four-neighbour multi-source BFS is exactly wrapped Manhattan distance,
 		// which replaces a full building scan at every candidate coordinate.
@@ -949,7 +962,7 @@ int Planner::resourceDistanceAt(const WorldState& world,int resourceType,
 	if(!resourceDistanceCacheValid[resourceType])
 	{
 		const int size=world.width*world.height;
-		std::vector<int>& distances=resourceDistanceCache[resourceType];
+		DistanceField& distances=resourceDistanceCache[resourceType];
 		distances.assign(size,INT_MAX);
 		std::vector<int> queue;queue.reserve(size);
 		for(int i=0;i<size;++i)if(resourceSourceCache[i]==resourceType)
@@ -2166,7 +2179,7 @@ UtilityComponents Planner::scoreCandidate(const WorldState& world,
 		int distance=INT_MAX;
 		for(size_t i=0;i<locationTiles->size();++i)
 			distance=std::min(distance,
-				footprintDistanceCache[(*locationTiles)[i]]);
+				int(footprintDistanceCache[(*locationTiles)[i]]));
 		const int gap=distance==INT_MAX ? placementPolicy.spacingTargetTiles
 			:std::max(0,distance-1);
 		u.friendlyDistance=gap;
@@ -2306,7 +2319,7 @@ UtilityComponents Planner::scoreCandidate(const WorldState& world,
 	affected.reserve(reserved.size()*9);
 	for(size_t i=0;i<reserved.size();++i)
 	{
-		const int* neighborhood=&scoringNeighborhoodCache[reserved[i]*9];
+		const int* neighborhood=&(*scoringNeighborhoodCache)[reserved[i]*9];
 		for(int offset=0;offset<9;++offset)
 		{
 			const int index=neighborhood[offset];
@@ -3439,7 +3452,11 @@ template<class Archive> void Planner::executionState(Archive& a)
 	a("resourceDistanceCacheValid",resourceDistanceCacheValid);
 	a("maximumFarmCapacityCache",maximumFarmCapacityCache);
 	a("maximumFoodOpportunityCache",maximumFoodOpportunityCache);
-	a("foodOpportunitySourceCache",foodOpportunitySourceCache);
+	a.template legacyVector<uint64_t>("foodOpportunitySourceCache",foodOpportunitySourceCache,
+		[](uint32_t x){return uint64_t(x);},[](uint64_t x){
+			if(x>UINT32_MAX) throw std::runtime_error("Invalid food opportunity source");
+			return uint32_t(x);
+		});
 	a("foodHaloMaximumCache",foodHaloMaximumCache);
 	a("foodHaloRadiusCache",foodHaloRadiusCache);
 	a("threatProtectionSourceCache",threatProtectionSourceCache);
@@ -3453,7 +3470,14 @@ template<class Archive> void Planner::executionState(Archive& a)
 	a("scoringReservedGeneration",scoringReservedGeneration);
 	a("scoringAffectedGeneration",scoringAffectedGeneration);
 	a("scoringBlockedNeighbors",scoringBlockedNeighbors);
-	a("scoringNeighborhoodCache",scoringNeighborhoodCache);
+	// Retain the legacy vector encoding, including empty/uninitialized state.
+	std::vector<int> emptyNeighborhood;
+	if constexpr(std::is_same_v<Archive,AIMaximaContinuation::Reader>)
+	{
+		a("scoringNeighborhoodCache",emptyNeighborhood);
+		scoringNeighborhoodCache=std::make_shared<const std::vector<int>>(std::move(emptyNeighborhood));
+	}
+	else a("scoringNeighborhoodCache",scoringNeighborhoodCache ? *scoringNeighborhoodCache : emptyNeighborhood);
 	a("scoringNeighborhoodWidth",scoringNeighborhoodWidth);
 	a("scoringNeighborhoodHeight",scoringNeighborhoodHeight);
 	a("scoringReservedScratch",scoringReservedScratch);
@@ -3492,6 +3516,13 @@ void Planner::loadExecutionState(GAGCore::InputStream* stream,int)
     stream->readEnterSection("PlacementExecution95");
     AIMaximaContinuation::Reader archive(stream);
     executionState(archive);
+    if(scoringNeighborhoodCache && !scoringNeighborhoodCache->empty()
+       && scoringNeighborhoodWidth>0 && scoringNeighborhoodHeight>0
+       && uint64_t(scoringNeighborhoodWidth)*scoringNeighborhoodHeight*9==scoringNeighborhoodCache->size())
+    {
+        auto shared=neighborhoodTable(scoringNeighborhoodWidth,scoringNeighborhoodHeight);
+        if(*shared==*scoringNeighborhoodCache) scoringNeighborhoodCache=std::move(shared);
+    }
     stream->readLeaveSection();
 }
 

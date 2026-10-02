@@ -99,6 +99,20 @@ Map::~Map(void)
 	clear();
 }
 
+std::shared_ptr<const std::vector<Uint8>> Map::frozenWaterSnapshot() const
+{
+	std::lock_guard<std::mutex> lock(waterSnapshotMutex);
+	if (!waterSnapshot)
+	{
+		auto snapshot = std::make_shared<std::vector<Uint8>>(size);
+		// Called by independent executor jobs too; do not dispatch while holding
+		// this lock. All readers share this one initialization pass.
+		for (size_t i = 0; i < size; ++i) (*snapshot)[i] = isWater(static_cast<unsigned>(i));
+		waterSnapshot = std::move(snapshot);
+	}
+	return waterSnapshot;
+}
+
 Uint16 *Map::acquireBuildingGradientBuffer()
 {
 	{
@@ -147,6 +161,10 @@ void Map::clear()
 	gradientRuntime->pipeline.reset();
 	clearGradientBufferPool();
 	clearBuildingGradientSearchPool();
+	{
+		std::lock_guard<std::mutex> lock(waterSnapshotMutex);
+		waterSnapshot.reset();
+	}
 	growthCoverage.clear();
 	for (auto &counts : growthCoverageCounts) counts.clear();
 	for (auto &buildings : growthCoverageBuildings) buildings.clear();

@@ -1038,7 +1038,9 @@ download/save paths are built: separators, controls (including NUL), Windows
 reserved characters and device basenames cannot redirect writes outside the
 selected directory.
 
-Gzip file loaders limit compressed input and expanded output to 256 MiB each.
+Gzip file loaders limit compressed input to 256 MiB and expanded output to 2 GiB.
+The separate expansion limit permits the existing late-game snapshots (roughly
+1 GiB uncompressed) while still bounding hostile compressed streams.
 Scenario objectives, hints and legacy areas are limited to 65,536 records;
 building/unit reference lists are bounded by the corresponding entity capacity.
 AI and history collection reads are limited to 1,048,576 entries per collection,
@@ -1075,3 +1077,87 @@ Keep dependency review, sanitizer fuzzing of the complete load-and-step path,
 and platform replay/checksum comparisons separate from targeted rejection tests.
 See [JavaScript scripting](javascript.md) for that interpreter's capability and
 resource boundaries.
+
+
+## Native simulation memory and CPU comparisons
+
+Build the client itself with `scons release=1 server=0`; the `tests` target alone
+can leave an older game executable in place. Preserve a baseline with the same
+benchmark instrumentation, build options and dependencies before rebuilding.
+The structured runner accepts `--benchmark-warmup N` when loading a saved game.
+It reports process CPU nanoseconds for setup/loading, execution after the warmup,
+and the final save in `result.json`. The measured execution includes pending
+pipeline completion; save compression is measured separately. `--ticks` remains
+an absolute game tick, and the warmup must leave a nonempty measured window.
+
+```sh
+python3 tools/memory_benchmark.py \
+  --baseline artifacts/memory/baseline/glob2 \
+  --candidate build/darwin/client/release/src/glob2 \
+  --fixture 0=artifacts/memory/initial.game.gz \
+  --fixture 15000=artifacts/memory/checkpoint-15000.game.gz \
+  --fixture 45000=artifacts/memory/checkpoint-45000.game.gz \
+  --output artifacts/memory/comparison
+```
+
+Use the appropriate platform build directory. The runner alternates seven pairs,
+checks identical final simulation checksums and compressed save bytes, and extends
+to at most 21 pairs if the one-sided 95% paired bootstrap upper bound exceeds the
+2% CPU regression limit. It retains binary/fixture hashes, commands, raw logs,
+timings and one final save per variant and fixture. Keep other heavy work off the
+machine. CPU comparisons explicitly disable malloc logging; collect heap profiles
+in separate runs using the same fixtures. Record actual capture ticks, distinguish
+live allocation totals from resident memory and allocator retention, and report
+platforms whose execution could not be checked.
+
+On POSIX, `--interleave-seconds 0.1` alternates the two processes with
+`SIGSTOP`/`SIGCONT` within each pair. Process CPU clocks exclude the pauses; this
+reduces drift from changing background load without changing the measured tick
+window. Both games remain resident, so this is a separate scheduling condition,
+not a peak-memory measurement. Retain sequential results too, and identify the
+measurement condition when reporting the gate.
+Use `--resume` with the same arguments to continue completed pairs after an
+interruption. Binary hashes, fixture hashes and measurement settings must match;
+the unfinished pair is rerun.
+
+Memory-only representation changes must preserve legacy serialized widths and
+sentinels. Maxima's obstacle-free distance fields use 16-bit storage with an
+internal 65535 infinity, translated to the existing signed 32-bit `INT_MAX` on
+save/load. Route distances retain their wider representation. Food source masks
+retain their legacy 64-bit encoding. Wrapped nine-cell geometry tables share
+immutable storage by map dimensions; loaded noncanonical tables retain their
+original content. Weighted gradient searches share an immutable water snapshot;
+water-classification changes invalidate the map's current snapshot while ongoing
+searches retain their frozen version. Growth overlap counters use 16-bit storage;
+removal precedes addition so both generations cannot temporarily exceed the bound.
+
+Game-file persistence uses move-only snapshots in uninitialized 1 MiB blocks.
+Growing the block table does not copy the saved bytes; allocated byte capacity is
+at most the snapshot length plus one block (with a separate small pointer table).
+Gzip loading reads compressed input in 64 KiB batches and inflates directly into
+these blocks. CRC/truncation/trailing-data validation completes before loading
+headers or simulation state. Filename-based custom and campaign initialization
+reuse one validated input for both headers and the body, then release it before
+replay/network setup. Standalone header readers retain their existing interfaces.
+
+Manual/headless saves and autosaves serialize into the same chunked storage;
+header backpatches and deferred SHA1 operate on ranges without flattening it.
+Normal gzip compression uses bounded 256 KiB output buffers without flushing at
+input-block boundaries. Optional level-zero compression retains the legacy
+whole-buffer path to preserve zlib's stored-block byte layout; it is outside the
+normal-save memory bound. Save/replay/network version gates are unchanged.
+
+For the 45,000-tick large-map fixture, the native macOS arm64 comparison measured
+1.93 GiB peak RSS for combined loading and saving, down from 3.96 GiB in the
+previous optimized build. The acceptance limit is 2.5 GiB for that fixture with
+default compression. This is a fixture-specific measurement, not a bound for
+arbitrary games or other platforms; preserve the commands, fixture hashes and
+raw measurements under ignored `artifacts/` when repeating it.
+
+Autosave waits for the previous writer before capturing a new snapshot at the
+current tick. Hashing and compression remain on the worker, which releases the
+snapshot before publishing idle. When writes fall behind, this can pause play;
+it prevents overlap of active, queued and newly captured autosave snapshots.
+Allocation, serialization and worker-finalization failures retain the previous
+file and allow subsequent writes. Other background string writers still keep
+the newest queued snapshot.

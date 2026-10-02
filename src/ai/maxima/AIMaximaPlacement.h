@@ -10,6 +10,8 @@
 #define AI_MAXIMA_PLACEMENT_H
 
 #include "AIMaximaFoodLedger.h"
+#include "AIMaximaDistanceField.h"
+#include <memory>
 
 #include <stdint.h>
 #include <map>
@@ -202,8 +204,8 @@ struct WorldTile
 	bool clearableResource;
 	bool occupied;
 	bool ownOccupied;
-	int resourceType;
-	int resourceAmount;
+	int16_t resourceType;
+	uint8_t resourceAmount;
 	uint32_t fertility;
 	uint32_t farmCapacity;
 	uint32_t foodOpportunity;
@@ -741,29 +743,29 @@ private:
 	mutable std::vector<int> routeDistanceCache[2];
 	mutable std::vector<int> routeParentCache[2];
 	mutable std::vector<uint8_t> waterMaskCache;
-	mutable std::vector<int> waterDistanceCache;
-	mutable std::vector<int> footprintDistanceCache;
+	mutable DistanceField waterDistanceCache;
+	mutable DistanceField footprintDistanceCache;
 	mutable uint32_t footprintDistanceCacheSignature;
 	mutable std::vector<int8_t> resourceSourceCache;
-	mutable std::vector<int> resourceDistanceCache[8];
+	mutable DistanceField resourceDistanceCache[8];
 	mutable bool resourceDistanceCacheValid[8];
 	mutable uint64_t maximumFarmCapacityCache;
 	mutable uint64_t maximumFoodOpportunityCache;
-	mutable std::vector<uint64_t> foodOpportunitySourceCache;
+	mutable std::vector<uint32_t> foodOpportunitySourceCache;
 	mutable std::vector<uint64_t> foodHaloMaximumCache;
 	mutable int foodHaloRadiusCache;
 	mutable std::vector<int> threatProtectionSourceCache;
 	mutable std::vector<int> threatPrefixCache;
 	mutable std::vector<int> protectionPrefixCache;
 	mutable std::vector<int> buildingDistanceSourceCache;
-	mutable std::vector<int> completedBuildingDistanceCache;
-	mutable std::vector<int> criticalBuildingDistanceCache;
-	mutable std::vector<int> towerBuildingDistanceCache;
+	mutable DistanceField completedBuildingDistanceCache;
+	mutable DistanceField criticalBuildingDistanceCache;
+	mutable DistanceField towerBuildingDistanceCache;
 	mutable std::map<int,int> completedBuildingCountCache;
 	mutable std::vector<uint32_t> scoringReservedGeneration;
 	mutable std::vector<uint32_t> scoringAffectedGeneration;
 	mutable std::vector<uint8_t> scoringBlockedNeighbors;
-	mutable std::vector<int> scoringNeighborhoodCache;
+	mutable std::shared_ptr<const std::vector<int>> scoringNeighborhoodCache;
 	mutable int scoringNeighborhoodWidth;
 	mutable int scoringNeighborhoodHeight;
 	mutable std::vector<int> scoringReservedScratch;

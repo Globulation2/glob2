@@ -3,6 +3,7 @@
 
 #include <StreamBackend.h>
 #include <iostream>
+#include <utility>
 #include "SDL_net.h"
 
 namespace GAGCore
@@ -15,6 +16,11 @@ namespace GAGCore
 			write(data, size);
 	}
 	
+	MemoryStreamBackend::MemoryStreamBackend(std::string&& contents)
+		: buffer(std::move(contents)), index(0)
+	{
+	}
+
 	void MemoryStreamBackend::write(const void *data, const size_t size)
 	{
 		const char *_data = static_cast<const char *>(data);

@@ -19,6 +19,22 @@
 #include <optional>
 
 
+// One validated input belongs to the complete initialization, including headers.
+std::unique_ptr<InputStream> Engine::openGameInput(const std::string& filename, MapHeader& map, GameHeader& players)
+{
+    try
+    {
+        auto stream = std::make_unique<BinaryInputStream>(glob2OpenMapOrSaveInputStreamBackend(*Toolkit::getFileManager(), filename));
+        if (!stream->isValid() || !map.load(stream.get()) || !players.load(stream.get(), map.getVersionMinor()))
+            return {};
+        map.setMapName(glob2FilenameToName(filename));
+        stream->seekFromStart(0);
+        return stream;
+    }
+    catch (const std::exception& error)
+    { std::cerr << "Cannot load headers: " << error.what() << std::endl; return {}; }
+}
+
 // Loads a map header from disk. The two failure modes are asymmetric:
 //   * Missing or unreadable file: logs to stderr and returns a default-constructed
 //     MapHeader (numberOfTeams == 0). Callers must check.
