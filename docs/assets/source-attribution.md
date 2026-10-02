@@ -5,6 +5,9 @@ Sources of files not created by the Globulation 2 project:
 Font :
 sans.ttf : Glob2 Sans, based on DejaVu Sans 2.26 from Ubuntu, with Droid Sans Fallback CJK outlines. See data/fonts/README.md and accompanying font licenses.
 
+Web font (platform web app and sign-in pages only, not the game) :
+Nunito, copyright 2014 The Nunito Project Authors, SIL Open Font License 1.1 (licence in platform/apps/web/public/fonts/LICENSE-Nunito.txt), from @fontsource-variable/nunito. See platform/apps/web/art/README.md.
+
 Emoticon for alliance :
 kopete http://kopete.kde.org/
 
