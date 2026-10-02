@@ -154,6 +154,12 @@ static int play(const Options& options, const fs::path& output)
 	start.localSeat = seat;
 	start.transport = transport;
 	start.config.ticket = assignment["ticket"].get<std::string>();
+	// Network telemetry context (ClientNetworkSummary.match); optional in MatchAssignment.
+	start.networkKind = "online";
+	if (assignment.contains("relayId") && assignment["relayId"].is_string())
+		start.relayId = assignment["relayId"].get<std::string>();
+	if (assignment.contains("relayRegion") && assignment["relayRegion"].is_string())
+		start.relayRegion = assignment["relayRegion"].get<std::string>();
 	if (engine.initTurnMatch(start) != Engine::EE_NO_ERROR)
 		throw Usage("cannot start the match: " + engine.getInitializationDiagnostic());
 	Turn::TurnLockstepSession& lockstep = *engine.turnLockstep();

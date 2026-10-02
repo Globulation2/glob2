@@ -1096,8 +1096,18 @@ TEST_SUITE("TurnEngineHarness")
 		CHECK(c1.at("catch_up").at("episodes").get<int>() >= 1);
 		CHECK(c0.at("reconnects").at("count") == 0);
 		CHECK(loud.relay.at("seats")[1].at("connection").at("disconnects").get<int>() >= 1);
-		// The order check of multiplayer/m1-order-validation is not on this branch.
-		CHECK(c0.at("order_validation").is_null());
+		// The deterministic order check: every human seat, the same verdicts on every
+		// client, and an unmodified client has nothing refused.
+		const json& checks = c0.at("order_validation");
+		REQUIRE(checks.is_object());
+		REQUIRE(checks.at("seats").size() == 2);
+		CHECK(checks == c1.at("order_validation"));
+		for (const json& seat : checks.at("seats"))
+		{
+			CHECK(seat.at("rejected") == 0);
+			CHECK(seat.at("rejected_by_reason").empty());
+		}
+		CHECK(checks.at("seats")[0].at("accepted").get<int>() + checks.at("seats")[1].at("accepted").get<int>() > 0);
 
 		// The standard telemetry stream carries the same data.
 		for (const char* record : {"GLOB2_NET_SESSION ", "GLOB2_NET_SAMPLE ", "GLOB2_NET_FINAL ", "GLOB2_NET_SEAT ",

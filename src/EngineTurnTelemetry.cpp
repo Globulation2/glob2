@@ -17,6 +17,7 @@
 
 #include "Engine.h"
 #include "GlobalContainer.h"
+#include "OrderValidation.h"
 #include "ReplayWriter.h"
 #include "TurnLockstep.h"
 
@@ -70,10 +71,29 @@ nlohmann::json Engine::turnNetworkSummary(bool includeSeries) const
 	context.players = gui.game.gameHeader.getNumberOfPlayers();
 	context.tickRateMilliHz = s.tickRateMilliHz();
 	context.finalTick = gui.game.stepCounter;
-	// Hook for the deterministic order check (multiplayer/m1-order-validation): when
-	// TurnLockstepSession has orderAudit(), copy each human seat's accepted / stale /
-	// rejected counts and nonzero reasons (OrderValidation::name) into
-	// context.orderValidation and set orderValidationAvailable.
+	// The deterministic order check (OrderValidation.h), when the engine installed it:
+	// per human seat, the verdicts since the game last (re)started from tick 0.
+	if (turn->validator)
+	{
+		context.orderValidationAvailable = true;
+		const OrderValidation::Audit& audit = turn->orderAudit();
+		for (unsigned seat = 0; seat < OrderValidation::Audit::SEATS && seat < 32; ++seat)
+		{
+			if (!(context.humanSeatMask & (1u << seat)))
+				continue;
+			const OrderValidation::SeatAudit& a = audit.seats[seat];
+			Turn::ClientNetworkContext::SeatVerdicts v;
+			v.seat = static_cast<int>(seat);
+			v.accepted = a.accepted;
+			v.stale = a.stale;
+			v.rejected = a.rejected;
+			v.voiceRejected = a.voiceRejected;
+			for (std::size_t r = 1; r < OrderValidation::REASON_COUNT; ++r)
+				if (a.reasons[r])
+					v.reasons.emplace_back(OrderValidation::name(static_cast<OrderValidation::Reason>(r)), a.reasons[r]);
+			context.orderValidation.push_back(std::move(v));
+		}
+	}
 	return Turn::clientNetworkSummary(s.telemetry(), context, s.nowMicros(), includeSeries);
 }
 
