@@ -198,7 +198,7 @@ TEST_SUITE("EditorActionCoverage")
             CHECK(editor.game.map.getResource(6,6).type==entry.second);
             editor.brush.mode=BrushTool::MODE_DEL;
             editor.performAction("terrain drag start"); editor.performAction("terrain drag end");
-            CHECK(editor.game.map.getResource(6,6).type==NO_RES);
+            CHECK(editor.game.map.getResource(6,6).type==NO_RES_TYPE);
         }
         editor.performAction("select wheat"); editor.brush.mode=BrushTool::MODE_ADD;
         cursor(editor,8,8); editor.performAction("terrain drag start"); editor.performAction("terrain drag end");

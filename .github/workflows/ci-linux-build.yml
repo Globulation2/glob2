@@ -137,6 +137,18 @@ jobs:
             lan-test \
             menu-colony-harness
 
+      - name: Exercise production CLI and retain continuation traces
+        if: ${{ !cancelled() && steps.build_glob2_and_the_regression_harnesses.outcome == 'success' }}
+        run: python3 test/test_cli_smoke.py --binary build/linux/client/release/src/glob2 --artifacts artifacts/cli-smoke --junit artifacts/cli-smoke.xml
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cli-linux-${{ inputs.compiler }}
+          path: |
+            artifacts/cli-smoke/
+            artifacts/cli-smoke.xml
+          if-no-files-found: ignore
+
       - name: Reconstruct scripting vendors
         run: python3 tools/javascript/verify-vendor.py
 
