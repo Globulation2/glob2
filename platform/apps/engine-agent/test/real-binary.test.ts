@@ -4,8 +4,12 @@
 // root). Example:
 //   GLOB2_BINARY=build/darwin/client/release/src/glob2 npx vitest run apps/engine-agent
 // GLOB2_EVIDENCE_DIR, when set, receives each preview PNG and the job results.
-import { mkdir, writeFile } from 'node:fs/promises';
-import { resolve } from 'node:path';
+import { execFile } from 'node:child_process';
+import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join, resolve } from 'node:path';
+import { promisify } from 'node:util';
+import { gunzipSync } from 'node:zlib';
 import { fileURLToPath } from 'node:url';
 import { randomUUID } from 'node:crypto';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
@@ -84,6 +88,52 @@ describe.runIf(binary)('real glob2 binary', () => {
       );
     }, 120_000);
   }
+
+  it('validates a saved game and lists its players', async () => {
+    // A short headless game on a repository map, saved at its end.
+    const out = await mkdtemp(join(tmpdir(), 'glob2-save-'));
+    try {
+      await promisify(execFile)(
+        binary!,
+        [
+          '--run-game',
+          '--map-file',
+          resolve(REPO, 'maps/balanced_for_2.map.gz'),
+          '--game-seed',
+          '2',
+          '--player',
+          'nicowar',
+          '--player',
+          'cortex',
+          '--ticks',
+          '20',
+          '--save',
+          'final',
+          '--output-dir',
+          join(out, 'game'),
+        ],
+        { cwd: workdir, env: { ...process.env, SDL_VIDEODRIVER: 'dummy' }, timeout: 60_000 },
+      );
+      const save = gunzipSync(await readFile(join(out, 'game', 'final.game.gz')));
+      const { sha256 } = await import('@glob2/core').then((core) => core.putContent(h.store, save));
+      const result = await run('validate-map', { blobHash: sha256, format: 'save' });
+      expect(result).toMatchObject({ valid: true, mapHash: sha256, map: { teamCount: 2 } });
+      // Names need an engine whose map report includes them; older ones get
+      // slot-numbered names.
+      const players = result['players'] as { name: string; team: number; kind: string }[];
+      expect(players.map((p) => [p.team, p.kind])).toEqual([
+        [0, 'ai'],
+        [1, 'ai'],
+      ]);
+      expect(['nicowar', 'AI 1']).toContain(players[0]!.name);
+      if (evidence) {
+        await mkdir(evidence, { recursive: true });
+        await writeFile(`${evidence}/save-validation.json`, JSON.stringify(result, null, 2));
+      }
+    } finally {
+      await rm(out, { recursive: true, force: true });
+    }
+  }, 120_000);
 
   it('rejects a corrupt map with the engine loader', async () => {
     const bytes = Buffer.alloc(4096, 7);
