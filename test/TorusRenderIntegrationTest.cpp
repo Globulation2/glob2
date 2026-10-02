@@ -215,6 +215,7 @@ static void run(bool gpu, int width, int height)
         REQUIRE(hasToggle);
         REQUIRE(!Settings().automaticTorus);
         globalContainer->settings.automaticTorus = false;
+#ifndef GLOB2_MOBILE
         {
             SettingsScreen options;
             const int oldMute = globalContainer->settings.mute;
@@ -241,6 +242,18 @@ static void run(bool gpu, int width, int height)
         }
         restored.load();
         REQUIRE(!restored.automaticTorus);
+#else
+        {
+            // Mobile deliberately omits the desktop OpenGL torus preference.
+            SettingsScreen options;
+            REQUIRE(!options.changeSetting("graphics.torus", 1));
+            REQUIRE(!globalContainer->settings.automaticTorus);
+            options.done();
+            Settings restored;
+            restored.load();
+            REQUIRE(!restored.automaticTorus);
+        }
+#endif
         TorusView view;
         view.notifyMove();
         REQUIRE(!view.active());

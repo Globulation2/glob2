@@ -64,6 +64,7 @@ def main():
         # Fixture-driven cases resolve everything through glob2test::sourceRoot().
         shutil.copytree(ROOT / 'games', payload / 'games')
         shutil.copytree(ROOT / 'test/fixtures', payload / 'test/fixtures')
+        shutil.copytree(ROOT / 'test/maxima/fixtures', payload / 'test/maxima/fixtures')
         command('push', str(payload), remote, stdout=subprocess.DEVNULL)
     for name in names:
         profile = remote + '/profiles/' + name
