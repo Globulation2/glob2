@@ -25,7 +25,7 @@ body.ready #loading{opacity:0;pointer-events:none}
 .loader{width:42px;height:42px;border:4px solid rgba(232,237,207,.2);border-top-color:#e4c969;
   border-radius:50%;animation:spin .85s linear infinite;box-shadow:0 0 24px rgba(228,201,105,.18)}
 #loading-progress{display:grid;justify-items:center;gap:8px;width:min(320px,calc(100vw - 32px))}
-#loading-progress[hidden],#loading-retry[hidden]{display:none}
+#loading-progress[hidden]{display:none}
 #loading-bar{width:100%;height:8px;border-radius:4px;background:rgba(232,237,207,.16);overflow:hidden;
   box-shadow:inset 0 0 0 1px rgba(232,237,207,.12)}
 #loading-bar>span{display:block;height:100%;width:0;background:linear-gradient(90deg,#b28f41,#e4c969);transition:width .25s linear}
@@ -47,7 +47,6 @@ body.ready #loading{opacity:0;pointer-events:none}
     <span id="loading-detail"></span>
   </div>
   <p id="loading-note" hidden>The first visit downloads the game once. Later visits start from this device's copy.</p>
-  <button id="loading-retry" type="button" hidden>Try again</button>
 </div>
 <canvas id="canvas" width="800" height="600" tabindex="0" aria-label="Globulation 2" oncontextmenu="event.preventDefault()"></canvas>
 <script>
@@ -116,7 +115,6 @@ window.fetch = function(input) {
   }
   return result;
 };
-document.getElementById('loading-retry').addEventListener('click', () => location.reload());
 // Watch in browser: ?replay=<url> downloads a replay (for example a verified
 // match replay linked from the platform's match page) while the game loads and
 // opens it in the replay viewer instead of the main menu. Only http(s) URLs are
@@ -182,7 +180,13 @@ var Module = {
     loadingBar.hidden = true;
     loadingNote.hidden = true;
     document.querySelector('#loading .loader').hidden = true;
-    document.getElementById('loading-retry').hidden = false;
+    // Created only now: the running page has no HTML buttons of its own.
+    const retry = document.createElement('button');
+    retry.id = 'loading-retry';
+    retry.type = 'button';
+    retry.textContent = 'Try again';
+    retry.addEventListener('click', () => location.reload());
+    loading.appendChild(retry);
   },
   print(text) { Module.browserLog.push(String(text)); console.log(text); },
   printErr(text) { Module.browserLog.push(String(text)); console.error(text); },
