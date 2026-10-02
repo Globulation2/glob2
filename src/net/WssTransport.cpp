@@ -45,6 +45,7 @@ class WssTransport final : public NetTransport
 		std::string host, authority, service, route, fingerprint, failure, peer;
 		beast::http::request_parser<beast::http::empty_body> request;
 		bool writing = false;
+		NetMessageMode mode = NetMessageMode::Binary;
 
 		static void configure(ssl::context &context, const NetTlsConfig &config,
 							  bool loadTrust = true)
@@ -104,9 +105,10 @@ class WssTransport final : public NetTransport
 					: X509_check_host(cert, self.host.c_str(), self.host.size(), 0, nullptr) == 1;
 			return identity && CRYPTO_memcmp(actual.data(), self.fingerprint.data(), 64) == 0;
 		}
-		Session(const std::string &address, const NetTlsConfig &config)
+		Session(const std::string &address, const NetTlsConfig &config, NetMessageMode messageMode)
 			: tls(contextFor(ssl::context::tls_client, config,
-							 NetEndpoint::parse(address).fingerprint.empty()))
+							 NetEndpoint::parse(address).fingerprint.empty())),
+			  mode(messageMode)
 		{
 			const auto endpoint = NetEndpoint::parse(address);
 			host = endpoint.host;
@@ -167,7 +169,7 @@ class WssTransport final : public NetTransport
 		// Transfer an accepted socket to this session's own I/O context.
 		Session(tcp::socket accepted, const NetListenConfig &config,
 				std::shared_ptr<ssl::context> serverContext)
-			: tls(std::move(serverContext))
+			: tls(std::move(serverContext)), mode(config.messageMode)
 		{
 			peer = accepted.remote_endpoint().address().to_string();
 			const auto protocol = accepted.local_endpoint().protocol();
@@ -246,8 +248,11 @@ class WssTransport final : public NetTransport
 
 		void setup()
 		{
-			socket.read_message_max(64 * 1024);
-			socket.binary(true);
+			const bool binary = mode == NetMessageMode::Binary;
+			socket.read_message_max(binary ? 64 * 1024 : textMessageLimit);
+			if (!binary)
+				buffer.max_size(textMessageLimit);
+			socket.binary(binary);
 			connectDeadline.expires_after(std::chrono::seconds(10));
 			connectDeadline.async_wait(
 				[this](Error error)
@@ -298,16 +303,20 @@ class WssTransport final : public NetTransport
 							  {
 								  if (!active(error))
 									  return;
-								  if (!socket.got_binary() || size > queueLimit - incomingBytes ||
-									  incoming.size() >= 256)
+								  const bool binary = mode == NetMessageMode::Binary;
+								  if (socket.got_binary() != binary ||
+									  size > queueLimit - incomingBytes || incoming.size() >= 256)
 								  {
-									  failure = !socket.got_binary()
-													? "Text WebSocket messages are not allowed"
+									  failure = socket.got_binary() != binary
+													? (binary ? "Text WebSocket messages are not allowed"
+															  : "Binary WebSocket messages are not "
+																"allowed in text mode")
 													: "Network input queue overflow";
 									  cancel();
 									  return;
 								  }
-								  if (!size)
+								  // An empty text message is still a message.
+								  if (!size && binary)
 								  {
 									  read();
 									  return;
@@ -351,10 +360,27 @@ class WssTransport final : public NetTransport
 	std::shared_ptr<Session> session;
 	NetTlsConfig config;
 	std::string failure;
+	NetMessageMode mode = NetMessageMode::Binary;
+
+	bool takeMessage(std::vector<uint8_t> &bytes)
+	{
+		if (!session)
+			return false;
+		session->poll();
+		if (session->incoming.empty())
+			return false;
+		bytes = std::move(session->incoming.front());
+		session->incoming.pop_front();
+		session->incomingBytes -= bytes.size();
+		return true;
+	}
 
   public:
-	explicit WssTransport(const NetTlsConfig &config) : config(config) {}
-	explicit WssTransport(std::shared_ptr<Session> session) : session(std::move(session)) {}
+	WssTransport(const NetTlsConfig &config, NetMessageMode mode) : config(config), mode(mode) {}
+	explicit WssTransport(std::shared_ptr<Session> session)
+		: session(std::move(session)), mode(this->session->mode)
+	{
+	}
 	std::string error() const override
 	{
 		return session ? session->failure : failure;
@@ -369,7 +395,7 @@ class WssTransport final : public NetTransport
 		try
 		{
 			failure.clear();
-			session = std::make_shared<Session>(address, config);
+			session = std::make_shared<Session>(address, config, mode);
 		}
 		catch (const std::exception &error)
 		{
@@ -396,7 +422,7 @@ class WssTransport final : public NetTransport
 	}
 	bool send(std::vector<uint8_t> bytes) override
 	{
-		if (state() != State::Connected)
+		if (mode != NetMessageMode::Binary || state() != State::Connected)
 			return false;
 		if (bytes.size() > queueLimit - session->outgoingBytes)
 		{
@@ -412,17 +438,32 @@ class WssTransport final : public NetTransport
 		session->write();
 		return true;
 	}
+	bool sendText(std::string text) override
+	{
+		if (mode != NetMessageMode::Text || text.size() > textMessageLimit ||
+			text.find('\0') != std::string::npos || state() != State::Connected)
+			return false;
+		if (text.size() > queueLimit - session->outgoingBytes)
+		{
+			session->failure = "Network output queue overflow";
+			return false;
+		}
+		session->outgoingBytes += text.size();
+		session->outgoing.emplace_back(text.begin(), text.end());
+		session->write();
+		return true;
+	}
+	bool receiveText(std::string &text) override
+	{
+		std::vector<uint8_t> message;
+		if (mode != NetMessageMode::Text || !takeMessage(message))
+			return false;
+		text.assign(message.begin(), message.end());
+		return true;
+	}
 	bool receive(std::vector<uint8_t> &bytes) override
 	{
-		if (!session)
-			return false;
-		session->poll();
-		if (session->incoming.empty())
-			return false;
-		bytes = std::move(session->incoming.front());
-		session->incoming.pop_front();
-		session->incomingBytes -= bytes.size();
-		return true;
+		return mode == NetMessageMode::Binary && takeMessage(bytes);
 	}
 	class Listener final : public NetTransportListener
 	{
@@ -513,9 +554,9 @@ class WssTransport final : public NetTransport
 	};
 };
 } // namespace
-std::unique_ptr<NetTransport> makeWssTransport(const NetTlsConfig &config)
+std::unique_ptr<NetTransport> makeWssTransport(const NetTlsConfig &config, NetMessageMode mode)
 {
-	return std::make_unique<WssTransport>(config);
+	return std::make_unique<WssTransport>(config, mode);
 }
 
 std::unique_ptr<NetTransportListener> makeNetTransportListener(const NetListenConfig &config)
