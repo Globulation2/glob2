@@ -1,0 +1,120 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+#include "EngineFixtures.h"
+#include "MapEdit.h"
+#include "Race.h"
+#include <filesystem>
+
+namespace
+{
+void blank(MapEdit& editor)
+{
+    editor.game.map.setSize(5,5,GRASS);
+    editor.game.map.setGame(&editor.game);
+    editor.game.addTeam(); editor.game.teams[0]->race.loadDefault();
+    for (int y=0; y<32; ++y) for (int x=0; x<32; ++x)
+        editor.game.map.clearImmobileUnit(x,y);
+    editor.viewportX=0; editor.viewportY=0;
+    editor.updateCamera();
+}
+void cursor(MapEdit& editor,int x,int y)
+{
+    // MapEdit's action layer consumes the last event position in logical pixels.
+    editor.mouseX=x*32+16; editor.mouseY=y*32+16;
+}
+}
+
+TEST_SUITE("EditorActionCoverage")
+{
+    TEST_CASE("unit placement selection and stat edits use the action dispatcher [display]")
+    {
+        glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{
+            .display=true,.width=1024,.height=768,.screenFlags=GAGCore::GraphicContext::PORTABLEGPU});
+        MapEdit editor; blank(editor);
+        for (const auto& entry : {std::pair{"select worker",WORKER},
+                                  std::pair{"select explorer",EXPLORER},
+                                  std::pair{"select warrior",WARRIOR}})
+        {
+            INFO(entry.first);
+            const int x=3+entry.second*3, y=4;
+            cursor(editor,x,y);
+            editor.performAction(entry.first);
+            editor.performAction("select unit level 3");
+            CHECK(editor.placingUnitLevel==2);
+            editor.hasMapBeenModified=false;
+            editor.performAction("place unit");
+            const auto gid=entry.second==EXPLORER ? editor.game.map.getAirUnit(x,y) : editor.game.map.getGroundUnit(x,y);
+            REQUIRE(gid!=NOGUID);
+            auto* unit=editor.game.teams[0]->myUnits[Unit::GIDtoID(gid)];
+            REQUIRE(unit!=nullptr);
+            CHECK(unit->typeNum==entry.second);
+            CHECK(editor.hasMapBeenModified);
+            editor.performAction("select map unit");
+            REQUIRE(editor.view.selectedUnit==unit);
+            for (const auto& update : {std::pair{"update unit walk level",WALK},
+                                      std::pair{"update unit swim level",SWIM},
+                                      std::pair{"update unit attack speed level",ATTACK_SPEED},
+                                      std::pair{"update unit attack strength level",ATTACK_STRENGTH},
+                                      std::pair{"update unit magic ground attack level",MAGIC_ATTACK_GROUND}})
+            {
+                unit->level[update.second]=1;
+                editor.hasMapBeenModified=false;
+                editor.performAction(update.first);
+                CHECK(unit->performance[update.second]==unit->race->getUnitType(unit->typeNum,1)->performance[update.second]);
+                CHECK(editor.hasMapBeenModified);
+            }
+            if (entry.second==WORKER)
+            {
+                unit->level[BUILD]=1;
+                editor.performAction("update unit build level");
+                CHECK(unit->level[HARVEST]==1);
+                CHECK(unit->performance[HARVEST]==unit->race->getUnitType(WORKER,1)->performance[HARVEST]);
+            }
+            editor.performAction("unselect");
+            CHECK(editor.view.selectedUnit==nullptr);
+        }
+        CHECK_FALSE(editor.performUnitAction("unknown action",0,0));
+    }
+
+    TEST_CASE("building selection exposes matching editor controls and save retains edits [display]")
+    {
+        glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{
+            .display=true,.width=1024,.height=768,.screenFlags=GAGCore::GraphicContext::PORTABLEGPU});
+        MapEdit editor; blank(editor);
+        int index=0;
+        for (const char* name : {"swarm","inn","hospital","racetrack","swimmingpool",
+                                 "barracks","school","defencetower","market","warflag","explorationflag","clearingflag","stonewall"})
+        {
+            INFO(std::string(name));
+            const int type=globals->buildingsTypes.getTypeNum(name,0,false);
+            REQUIRE(type>=0);
+            const int x=2+(index%4)*6, y=2+(index/4)*6; ++index;
+            auto* building=editor.game.addBuilding(x,y,type,0);
+            REQUIRE(building!=nullptr);
+            if (!building->type->isVirtual)
+                editor.game.map.setBuilding(x,y,building->type->width,building->type->height,building->gid);
+            cursor(editor,x,y);
+            editor.performAction("select map building");
+            CHECK(editor.selectedBuildingGID==building->gid);
+            CHECK(editor.selectionMode==MapEdit::EditingBuilding);
+            building->hp=building->type->hpMax/2;
+            editor.hasMapBeenModified=false;
+            editor.performAction("update building");
+            CHECK(editor.hasMapBeenModified);
+            editor.performAction("unselect");
+        }
+        glob2test::TempDir scratch;
+        const auto filename=(scratch.path/"edited.map").string();
+        REQUIRE(editor.save(filename,"coverage editor map"));
+        CHECK_FALSE(editor.hasMapBeenModified);
+        MapEdit restored;
+        REQUIRE(restored.load(filename));
+        for (int id=0; id<Building::MAX_COUNT; ++id)
+        {
+            const auto* expected=editor.game.teams[0]->myBuildings[id];
+            const auto* actual=restored.game.teams[0]->myBuildings[id];
+            REQUIRE(bool(actual)==bool(expected));
+            if (actual) { CHECK(actual->typeNum==expected->typeNum); CHECK(actual->hp==expected->hp); }
+        }
+        CHECK_FALSE(restored.performBuildingAction("unknown action",0,0));
+    }
+}

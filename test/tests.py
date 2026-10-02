@@ -25,7 +25,16 @@ ENGINE_SUPPORT = [
 
 # glob2-engine-tests: every client object except the entry point, plus these.
 ENGINE_TESTS = [
+    ('GUIInteractionCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('GUIOrderCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('EditorActionCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    'LegacyAreaWaitTest.cpp',
+    ('LegacyScriptCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    'AIDecisionCoverageTest.cpp',
     'CastorContinuationTest.cpp',
+    'CortexNetCoverageTest.cpp',
+    ('CortexActionCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('CortexPolicyCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('ScriptCompatibilityTest.cpp', dict(cxxflags=['-fno-access-control'])),
     'ScriptIntegrationTest.cpp',
     'ScriptPresentationTest.cpp',
@@ -105,6 +114,8 @@ ENGINE_TESTS = [
 
 # glob2-unit-tests: libgag, libusl, the production sources below and stubs.
 UNIT_TESTS = [
+    'USLCoverageTest.cpp',
+    'SurfaceCoverageTest.cpp',
     'ScriptRuntimeTest.cpp',
     'ScriptNumericTest.cpp',
     ('OpaqueRectangleBatchTest.cpp', dict(cxxflags=['-fno-access-control'])),

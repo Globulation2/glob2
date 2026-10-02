@@ -1170,3 +1170,50 @@ strategy, control timers and map-cache history. Older saves remain readable with
 their historical restart behavior; omitted state cannot be recovered from them.
 New games retain the existing decision sequence. This save change does not raise
 the replay acceptance floor.
+
+## Native coverage workflow
+
+Build and measure the regular native tier with a matching Clang/LLVM toolchain:
+
+```sh
+python3 test/run_coverage.py --quick --timeout 900 -j4
+python3 -m unittest discover -s test -p test_run_coverage.py -v
+```
+
+Omit `--quick` for the slow integration tier, which includes full generator
+registry generation and custom-game previews. The explicit timeout is useful for
+instrumented debug builds. Add `--fullscreen` only on a display that supports mode
+switches. `--no-display` selects a headless subset and is recorded in the report.
+Versioned Linux tools can be selected with `--cc clang-18 --cxx clang++-18
+--llvm-profdata llvm-profdata-18 --llvm-cov llvm-cov-18`.
+
+Each run gets a fresh directory under ignored `artifacts/native-coverage/`, with
+build/test logs, JUnit, compiler/tool versions, source revision, selection,
+profiles, full coverage JSON, weighted implementation summaries and HTML.
+Engine and unit profiles are merged and exported separately: the engine report
+is the implementation baseline, and the unit report supplements it. Never
+average their percentages or merge independently linked copies of the same
+source. Multiplayer (`src/net`, `src/yog` and network-tagged cases), external
+libraries and test implementations are excluded from implementation totals.
+Unlinked/platform-specific sources are listed as unmeasured, rather than assigned
+zero coverage. Header coverage remains in the file inventory, apart from the
+implementation area totals. Coverage-tool diagnostics fail the run so a damaged
+export cannot appear successful.
+
+The added behavior coverage focuses on the following native boundaries:
+
+| Cases | Behaviors protected |
+| --- | --- |
+| `AIDecisionCoverage`, `CastorContinuation` | Seeded AI orders, pause neutrality, saved continuation, simulation checksums and RNG state |
+| `CortexNetCoverage`, `CortexPolicyCoverage`, `CortexActionCoverage` | Integer model arithmetic, malformed models, eligibility and thresholds, worker budgets, and orders applied by the engine |
+| `LegacyScriptCoverage`, `USLCoverage` | Parsing failures, legacy and painted area waits, counts, flags and suspension, summons and alliances, recursion, thread yields, garbage collection and runtime errors |
+| `GUIOrderCoverage`, `GUIInteractionCoverage` | Queued requests, clamps, deduplication, field reconciliation, replay input, desktop menu interactions and unit information |
+| `EditorActionCoverage` | Action dispatch, unit/building editing, matching controls and save/load persistence |
+| `SurfaceCoverage` | Alpha grids, cropped/scaled blits, clip boundaries and progress-bar pixels |
+
+Use uncovered functions and branch annotations to choose the next scenario by
+consequence: saves and deterministic decisions first, then authoritative orders,
+script execution and editable state, followed by rendering and diagnostics.
+Line coverage alone does not establish save continuity, equivalent execution on
+another platform, or playable game behavior. The Linux CI coverage artifact
+uses the regular tier; slow integration and cross-platform checks remain separate.

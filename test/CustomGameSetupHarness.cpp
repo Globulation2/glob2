@@ -1407,7 +1407,7 @@ struct CustomGameSetupHarness
         pickerPaint();
       }
       auto settle = [&] {
-        const Uint32 deadline = SDL_GetTicks() + 120000;
+        const Uint32 deadline = SDL_GetTicks() + 540000;
         while (picker.busy()) {
           REQUIRE(Sint32(SDL_GetTicks() - deadline) < 0);
           SDL_Delay(10);
@@ -1951,7 +1951,7 @@ static void commonChecks()
 
 TEST_SUITE("CustomGameSetup")
 {
-	TEST_CASE("preferences; landscapes; AI catalogue; snapshot round trip; engine; reload and session replay [writes-preferences]")
+	TEST_CASE("preferences; landscapes; AI catalogue; snapshot round trip; engine; reload and session replay [slow][writes-preferences]")
 	{
 		glob2test::HeadlessGlobals globals(setupOptions(false));
 		commonChecks();
@@ -2131,7 +2131,7 @@ TEST_SUITE("CustomGameSetup")
 		glob2test::HeadlessGlobals globals(setupOptions(true));
 		CustomGameSetupHarness::landscapePerformance(glob2test::artifactDirFromWorkingDirectory(), true);
 	}
-	TEST_CASE("custom game screens; captures and translated keys [display:1024x768][artifacts][writes-preferences]")
+	TEST_CASE("custom game screens; captures and translated keys [slow][display:1024x768][artifacts][writes-preferences]")
 	{
 		glob2test::HeadlessGlobals globals(setupOptions(true));
 		commonChecks();
