@@ -54,6 +54,9 @@ class OnlineHubScreen : public Glob2UI::Screen
 		Online::Json providers = Online::Json::array();
 		Online::Json rooms = Online::Json::array();
 		Online::Json recent = Online::Json::array();
+		// Top of the main queue's ladder (LeaderboardEntry objects) and its name.
+		Online::Json leaderboard = Online::Json::array();
+		std::string leaderboardName;
 		// Browser sign-in: none, choosing a provider, or waiting with a code.
 		enum class SignIn
 		{
@@ -105,13 +108,23 @@ class OnlineHubScreen : public Glob2UI::Screen
 	std::optional<Invite> trustPrompt;
 	// An invite that waits for the client to reach its instance.
 	std::optional<Invite> pendingInvite;
-	bool fetchingInstance = false, fetchingRooms = false;
+	bool fetchingInstance = false, fetchingRooms = false, fetchingHistory = false, fetchingLeaderboard = false;
+	// This account's latest matches from GET /api/v1/players/{id}/matches; matches
+	// seen live (match.updated) are merged over them.
+	Online::Json history = Online::Json::array();
+	// A rematch room opened from the results screen; entered once the match's
+	// screens have closed.
+	std::shared_ptr<class RoomBackend> rematchRoom;
 
 	Online::PlatformClient &client();
 	void refresh(bool force);
 	void syncFromClient();
 	void showToast(const std::string &text);
 	void enterRoom(std::shared_ptr<class RoomBackend> room);
+	// An assigned quick match (Online::beginMatch): the starting screen, then the game.
+	void startMatch(const Online::Json &assignment);
+	void openProfile();
+	void openMaps(bool mine);
 	bool canPlay() const;
 
 	Glob2UI::Element accountChip(const Glob2UI::Presentation &p);
@@ -119,6 +132,7 @@ class OnlineHubScreen : public Glob2UI::Screen
 	Glob2UI::Element quickMatch(const Glob2UI::Presentation &p, bool phone);
 	Glob2UI::Element roomList(const Glob2UI::Presentation &p, bool phone);
 	Glob2UI::Element recentMatches(const Glob2UI::Presentation &p, bool phone);
+	Glob2UI::Element leaderboardTeaser(const Glob2UI::Presentation &p);
 	Glob2UI::Element signInPanel(const Glob2UI::Presentation &p);
 	Glob2UI::Element trustPanel(const Glob2UI::Presentation &p);
 	Glob2UI::Element accountPanel(const Glob2UI::Presentation &p);

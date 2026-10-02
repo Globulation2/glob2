@@ -182,6 +182,12 @@ inline OnlineHubScreen::Model hubModel()
 							 {{"displayName", "tuxboy"}, {"outcome", "lost"}}});
 	m.recent = Json::array({{{"id", "m1"}, {"origin", "queue"}, {"queueId", "1 vs 1"}, {"rated", true}, {"verification", "verified"}, {"mapTitle", "Even Ground"}, {"durationTicks", 31500}, {"participants", won}},
 							{{"id", "m2"}, {"origin", "room"}, {"rated", false}, {"verification", "not_applicable"}, {"mapTitle", "Marchland"}, {"durationTicks", 72000}, {"participants", room}}});
+	m.leaderboardName = "1 vs 1";
+	auto entry = [](int rank, const char *name, double rating) {
+		return Json{{"rank", rank}, {"rating", rating}, {"entity", {{"kind", "account"}, {"account", {{"displayName", name}}}}}};
+	};
+	m.leaderboard = Json::array({entry(1, "Mirelle", 1912), entry(2, "tuxboy", 1874), entry(3, "Kestrel", 1840),
+								 entry(4, "Ana_M", 1795), entry(5, "Bradley", 1760)});
 	return m;
 }
 

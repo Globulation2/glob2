@@ -5,7 +5,14 @@
 #include "GlobalContainer.h"
 #include "InstanceConfig.h"
 #include "InviteLink.h"
+#include "MapCatalog.h"
+#include "MatchStartScreen.h"
 #include "MessageScreen.h"
+#include "OnlineHandoff.h"
+#include "OnlineMapsScreen.h"
+#include "OnlineProfileScreen.h"
+#include "QuickMatch.h"
+#include "QuickMatchScreen.h"
 #include "OnlineMatch.h"
 #include "OnlineServices.h"
 #include "PlatformClient.h"
@@ -125,6 +132,15 @@ OnlineHubScreen::OnlineHubScreen(GAGGUI::ScreenStack &screens, bool connect) : s
 	});
 	if (connect)
 	{
+		// The hub owns the way into a match: quick matches (and their match-found
+		// prompt over any screen) start here, and so does a rematch room.
+		QuickMatchPresenter::attach(screens);
+		Online::setMatchHandler([this](const Online::MatchAssignment &assignment) {
+			startMatch(assignment.raw.is_object() ? assignment.raw : Json());
+		});
+		Online::setRematchHandler([this](const Online::RematchRequest &request) {
+			rematchRoom = Online::PlatformRoom::rematch(client(), request.matchId);
+		});
 		syncFromClient();
 		refresh(true);
 	}
@@ -132,11 +148,48 @@ OnlineHubScreen::OnlineHubScreen(GAGGUI::ScreenStack &screens, bool connect) : s
 
 OnlineHubScreen::~OnlineHubScreen()
 {
+	if (!previewing)
+	{
+		Online::setMatchHandler({});
+		Online::setRematchHandler({});
+	}
 	if (Online::servicesCreated())
 	{
 		client().removeListener(stateListener);
 		client().removeListener(updateListener);
 	}
+}
+
+void OnlineHubScreen::startMatch(const Json &assignment)
+{
+	if (!assignment.is_object())
+		return;
+	Online::OnlineMatch::Context context;
+	context.fromRoom = false;
+	if (const auto &queue = Online::quickMatch().queue())
+	{
+		context.label = queue->name.empty() ? queue->id : queue->name;
+		context.label += " · " + tr(queue->rated ? "[hub ranked]" : "[hub unrated]");
+		context.rated = queue->rated;
+		context.ladder = queue->id;
+	}
+	auto match = std::make_shared<Online::OnlineMatch>(client(), assignment, context);
+	screens.push(std::make_unique<MatchStartScreen>(screens, match), [this](GAGGUI::Screen &, int) {
+		// Rematch from the results screen: its room opens once the match has closed.
+		if (auto room = std::move(rematchRoom))
+			enterRoom(std::move(room));
+		refresh(true);
+	});
+}
+
+void OnlineHubScreen::openProfile()
+{
+	screens.push(std::make_unique<OnlineProfileScreen>(screens), [this](GAGGUI::Screen &, int) { refresh(true); });
+}
+
+void OnlineHubScreen::openMaps(bool mine)
+{
+	screens.push(std::make_unique<OnlineMapsScreen>(screens, mine ? OnlineMapsScreen::Tab::Mine : OnlineMapsScreen::Tab::Browse));
 }
 
 Online::PlatformClient &OnlineHubScreen::client()
@@ -195,7 +248,7 @@ void OnlineHubScreen::syncFromClient()
 		else if (handoff.state == H::Failed && handoff.failure != "cancelled")
 			showToast(handoff.failure == "conflict" ? tr("[hub sign in conflict]") : formatted("[hub sign in failed %0]", handoff.failure));
 	}
-	data.recent = Online::recentMatches();
+	data.recent = Online::mergeRecentMatches(history, Online::recentMatches(), 5);
 	invalidate();
 }
 
@@ -225,7 +278,49 @@ void OnlineHubScreen::refresh(bool force)
 			data.queues = r.result.value("queues", Json::array());
 			data.providers = r.result.value("authProviders", Json::array());
 			invalidate();
+			// The leaderboard teaser needs the queue list.
+			refresh(true);
 		});
+	}
+	// Recent matches come from the history API; a summary pushed live since
+	// (match.updated) replaces its row until the next fetch.
+	if (!fetchingHistory && !data.accountId.empty())
+	{
+		fetchingHistory = true;
+		platform.rest(HttpFetch::Method::Get, "/api/v1/players/" + Online::urlEncode(data.accountId) + "/matches?limit=5", Json(),
+					  [this, account = data.accountId](const Online::PlatformClient::Response &r) {
+						  fetchingHistory = false;
+						  if (!r.ok || account != data.accountId)
+							  return;
+						  history = r.result.value("items", Json::array());
+						  data.recent = Online::mergeRecentMatches(history, Online::recentMatches(), 5);
+						  invalidate();
+					  });
+	}
+	// The leaderboard teaser: the top five of the main queue (the first rated one).
+	if (!fetchingLeaderboard && data.queues.is_array() && !data.queues.empty())
+	{
+		const Json *main = &data.queues[0];
+		for (const auto &queue : data.queues)
+			if (queue.value("rated", false))
+			{
+				main = &queue;
+				break;
+			}
+		const std::string ladder = main->value("id", "");
+		if (!ladder.empty())
+		{
+			fetchingLeaderboard = true;
+			data.leaderboardName = main->value("name", ladder);
+			platform.rest(HttpFetch::Method::Get, "/api/v1/leaderboards/" + Online::urlEncode(ladder) + "?limit=5", Json(),
+						  [this](const Online::PlatformClient::Response &r) {
+							  fetchingLeaderboard = false;
+							  if (!r.ok)
+								  return;
+							  data.leaderboard = r.result.value("entries", Json::array());
+							  invalidate();
+						  });
+		}
 	}
 	if (!fetchingRooms)
 	{
@@ -359,12 +454,21 @@ void OnlineHubScreen::findMatch(int queueIndex)
 {
 	if (!canPlay() || !data.queues.is_array() || queueIndex < 0 || queueIndex >= int(data.queues.size()))
 		return;
+	const Json &queue = data.queues[std::size_t(queueIndex)];
 	if (const auto &start = quickMatchStarter())
 	{
-		start(screens, data.queues[std::size_t(queueIndex)], true);
+		start(screens, queue, true);
 		return;
 	}
-	showToast(tr("[hub quick match unavailable]"));
+	const auto info = Online::QueueInfo::fromJson(queue);
+	if (!info)
+	{
+		showToast(tr("[hub quick match unavailable]"));
+		return;
+	}
+	auto &search = Online::quickMatch();
+	search.search(*info, search.allowAiOpponent());
+	screens.push(std::make_unique<QuickMatchScreen>(screens), [this](GAGGUI::Screen &, int) { refresh(true); });
 }
 
 void OnlineHubScreen::openSignIn()
@@ -575,6 +679,33 @@ Element OnlineHubScreen::recentMatches(const Presentation &p, bool phone)
 	return column({heading(tr("[hub recent matches]")), column(std::move(rows), {p.pt(6)})}, {p.pt(6)});
 }
 
+Element OnlineHubScreen::leaderboardTeaser(const Presentation &p)
+{
+	std::vector<Element> rows;
+	for (std::size_t i = 0; i < data.leaderboard.size() && i < 5; ++i)
+	{
+		const Json &entry = data.leaderboard[i];
+		const Json &entity = entry.value("entity", Json::object());
+		std::string name = entity.value("kind", "") == "ai" ? entity.value("ai", "AI")
+															 : entity.value("account", Json::object()).value("displayName", "?");
+		const int rating = int(std::lround(entry.value("rating", 0.0)));
+		rows.push_back(row({width(p.pt(22), caption(std::to_string(entry.value("rank", int(i) + 1)), false)), expanded(label(name)),
+							caption(std::to_string(rating), false)},
+						   {p.pt(8), CrossAlign::Center}));
+	}
+	if (rows.empty())
+		rows.push_back(paragraph(tr("[hub leaderboard empty]"), {FontRole::Support, true}));
+	std::vector<Element> foot;
+	if (data.accountKind == "guest")
+		foot.push_back(expanded(paragraph(tr("[hub guests not ranked]"), {FontRole::Support, true})));
+	else
+		foot.push_back(expanded(spacer(0)));
+	foot.push_back(button("leaderboard/full", tr("[hub full leaderboard]"), [this] { GAGCore::ApplicationHost::openUrl(data.origin + "/leaderboard"); },
+						  {.icon = uiIcon(UIIcon::ExternalLink), .iconSize = 16}));
+	const std::string title = data.leaderboardName.empty() ? tr("[hub leaderboard]") : formatted("[hub leaderboard %0]", data.leaderboardName);
+	return column({heading(title), column(std::move(rows), {p.pt(4)}), row(std::move(foot), {p.pt(6), CrossAlign::Center})}, {p.pt(6)});
+}
+
 Element OnlineHubScreen::signInPanel(const Presentation &p)
 {
 	std::vector<Element> parts{heading(tr("[hub sign in]"))};
@@ -712,6 +843,9 @@ Element OnlineHubScreen::build(const Presentation &p)
 		list.push_back(roomList(p, true));
 		if (auto recent = recentMatches(p, true))
 			list.push_back(recent);
+		list.push_back(row({button("profile", tr("[hub profile history]"), [this] { openProfile(); }, {.enabled = canPlay(), .icon = uiIcon(UIIcon::Users), .iconSize = 16}),
+							button("maps/browse", tr("[hub maps]"), [this] { openMaps(false); }, {.enabled = canPlay(), .icon = uiIcon(UIIcon::Map), .iconSize = 16})},
+						   {p.pt(6)}));
 		Element body = overlay ? scroll("hub/overlay", overlay) : scroll("hub/scroll", column(std::move(list), {p.pt(12)}));
 		std::vector<Element> page{headline};
 		for (auto &t : toast)
@@ -744,10 +878,12 @@ Element OnlineHubScreen::build(const Presentation &p)
 	std::vector<Element> rightColumn;
 	if (auto recent = recentMatches(p, false))
 		rightColumn.push_back(recent);
+	rightColumn.push_back(row({button("profile", tr("[hub profile history]"), [this] { openProfile(); }, {.enabled = canPlay(), .icon = uiIcon(UIIcon::Users), .iconSize = 16})}, {p.pt(6)}));
 	rightColumn.push_back(heading(tr("[hub maps]")));
-	rightColumn.push_back(row({button("maps/browse", tr("[hub browse maps]"), [this] { GAGCore::ApplicationHost::openUrl(data.origin + "/maps"); }, {.icon = uiIcon(UIIcon::Map), .iconSize = 16}),
-							   button("maps/leaderboard", tr("[hub leaderboard]"), [this] { GAGCore::ApplicationHost::openUrl(data.origin + "/leaderboard"); }, {.icon = uiIcon(UIIcon::Trophy), .iconSize = 16})},
+	rightColumn.push_back(row({button("maps/browse", tr("[hub browse maps]"), [this] { openMaps(false); }, {.enabled = canPlay(), .icon = uiIcon(UIIcon::Map), .iconSize = 16}),
+							   button("maps/mine", tr("[hub my maps]"), [this] { openMaps(true); }, {.enabled = canPlay(), .icon = uiIcon(UIIcon::Upload), .iconSize = 16})},
 							  {p.pt(6)}));
+	rightColumn.push_back(leaderboardTeaser(p));
 	Element body;
 	if (overlay)
 		body = center(maxWidth(p.pt(480), overlay));

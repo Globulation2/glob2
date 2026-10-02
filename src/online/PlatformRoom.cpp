@@ -105,6 +105,17 @@ std::shared_ptr<PlatformRoom> PlatformRoom::join(PlatformClient &client, const s
 	return room;
 }
 
+std::shared_ptr<PlatformRoom> PlatformRoom::rematch(PlatformClient &client, const std::string &matchId)
+{
+	std::shared_ptr<PlatformRoom> room(new PlatformRoom(&client));
+	room->listen();
+	room->call("match.rematch", Json{{"matchId", matchId}}, [room = room.get()](const Json &result) {
+		if (result.contains("room"))
+			room->adopt(result["room"]);
+	});
+	return room;
+}
+
 std::shared_ptr<PlatformRoom> PlatformRoom::preview(Json roomState, std::string account,
 													std::vector<std::pair<std::string, std::string>> chat)
 {
@@ -798,6 +809,20 @@ void PlatformRoom::applySetup(const CustomGameSetup &setup)
 				 state["teams"] != teams)
 				 call("room.update",
 					  Json{{"roomId", state["id"]}, {"revision", state["revision"]}, {"changes", {{"teams", teams}}}});
+		 });
+}
+
+void PlatformRoom::useCatalogMap(const std::string &hash, const std::string &mapId)
+{
+	if (!canEditSetup() || hash.empty())
+		return;
+	Json map{{"kind", "catalog"}, {"hash", hash}};
+	if (!mapId.empty())
+		map["mapId"] = mapId;
+	call("room.update", Json{{"roomId", state["id"]}, {"revision", state["revision"]}, {"changes", {{"map", map}}}},
+		 [this](const Json &result) {
+			 if (result.contains("room"))
+				 adopt(result["room"]);
 		 });
 }
 

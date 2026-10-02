@@ -11,6 +11,8 @@
 #include "GameSessionScreen.h"
 #include "GlobalContainer.h"
 #include "MatchStartScreen.h"
+#include "OnlineHandoff.h"
+#include "PlatformRoom.h"
 #include "MessageScreen.h"
 #include "Order.h"
 #include "gui/ThumbSide.h"
@@ -69,12 +71,19 @@ std::vector<std::pair<std::string, std::string>> ruleLines(const CustomGameSetup
 RoomScreen::RoomScreen(GAGGUI::ScreenStack &screens, std::shared_ptr<RoomBackend> room)
 	: screens(screens), room(std::move(room)), preview(std::make_unique<MapPreview>())
 {
+	// "Use in a room" from the map browser lands in the open online room.
+	if (this->room->kind() == RoomBackend::Kind::Online)
+		Online::setRoomMapHandler([this](const Online::RoomMapChoice &choice) {
+			pendingCatalogMap = std::make_pair(choice.hash, choice.mapId);
+		});
 	// Pick up what the backend already queued (preview fixtures, early chat).
 	onTimer(0);
 }
 
 RoomScreen::~RoomScreen()
 {
+	if (room->kind() == RoomBackend::Kind::Online)
+		Online::setRoomMapHandler({});
 	GAGCore::ApplicationHost::roomReady(false);
 }
 
@@ -181,6 +190,12 @@ void RoomScreen::onTimer(Uint32 tick)
 	room->update();
 	while (auto event = room->takeEvent())
 		handle(*event);
+	if (pendingCatalogMap && room->lobbyReady())
+	{
+		if (auto *online = dynamic_cast<Online::PlatformRoom *>(room.get()); online && online->canEditSetup())
+			online->useCatalogMap(pendingCatalogMap->first, pendingCatalogMap->second);
+		pendingCatalogMap.reset();
+	}
 	if (auto file = room->mapFile(); file && *file != previewFile)
 	{
 		previewFile = *file;

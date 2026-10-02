@@ -231,6 +231,7 @@ std::optional<MatchAssignment> MatchAssignment::fromJson(const Json &json)
 	assignment.relayUrl = text(json, "relayUrl");
 	assignment.mapUrl = text(json, "mapUrl");
 	assignment.setup = json.at("setup");
+	assignment.raw = json;
 	if (assignment.matchId.empty() || assignment.seat < 0 || !assignment.setup.is_object())
 		return {};
 	return assignment;

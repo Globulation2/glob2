@@ -6,6 +6,7 @@
 #include <ScreenStack.h>
 #include <deque>
 #include <memory>
+#include <optional>
 #include <string>
 
 class MapPreview;
@@ -55,6 +56,9 @@ class RoomScreen : public Glob2UI::Screen
 	};
 	GAGGUI::ScreenStack &screens;
 	std::shared_ptr<RoomBackend> room;
+	// A catalog map from "Use in a room" (OnlineMapsScreen), applied once the room
+	// is ready and only by its host: {hash, mapId}.
+	std::optional<std::pair<std::string, std::string>> pendingCatalogMap;
 	std::deque<ChatLine> chat;
 	std::string chatDraft, notice;
 	int currentTab = PlayersTab;

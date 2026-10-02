@@ -107,6 +107,9 @@ struct MatchAssignment
 	std::optional<std::int64_t> ticketExpiresAt;
 	std::string relayUrl, mapUrl;
 	Json setup; // MatchSetup, parsed by Online::MatchSetup::fromJson when needed
+	// The whole MatchAssignment as received (mapTitle, ratingPreview and fields
+	// this struct does not name), for OnlineMatch.
+	Json raw;
 	// setup.map.hash
 	std::string mapHash() const;
 	static std::optional<MatchAssignment> fromJson(const Json &json);

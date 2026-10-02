@@ -33,6 +33,9 @@ class PlatformRoom final : public RoomBackend
 												const CustomGameSetup &setup);
 	/// Joins the room behind an invite code.
 	static std::shared_ptr<PlatformRoom> join(PlatformClient &client, const std::string &code);
+	/// Opens (or joins) the unrated rematch room of a finished quick match
+	/// (match.rematch); the other players are invited by the platform.
+	static std::shared_ptr<PlatformRoom> rematch(PlatformClient &client, const std::string &matchId);
 	/// A room shown from a fixed state, without a connection (harness, gallery).
 	static std::shared_ptr<PlatformRoom> preview(Json room, std::string accountId,
 												 std::vector<std::pair<std::string, std::string>> chat = {});
@@ -90,6 +93,8 @@ class PlatformRoom final : public RoomBackend
 	bool setupDraft(CustomGameSetup &draft) const override;
 	void applySetup(const CustomGameSetup &setup) override;
 	std::shared_ptr<OnlineMatch> takeMatch() override;
+	/// Host: plays a catalog map ("Use in a room" from the map browser).
+	void useCatalogMap(const std::string &hash, const std::string &mapId);
 
 	/// The current RoomState JSON (null before the first one).
 	const Json &roomState() const { return state; }
