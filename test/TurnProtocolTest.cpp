@@ -593,6 +593,63 @@ TEST_SUITE("TurnSequencer")
 		CHECK(f.relay.turnLog()[0].seat == 1);
 	}
 
+	TEST_CASE("a decided game ends when nobody is connected, without waiting out grace")
+	{
+		SequencerConfig config;
+		config.graceMicros = 180 * 1000 * MS;
+		// The guest closed its window without a Quit, then the host leaves the results
+		// screen with Quit(GameFinished): the match ends at once.
+		{
+			RelayFixture f(0b11, config);
+			f.join(1, 0);
+			f.join(2, 1);
+			f.atTick(100);
+			f.relay.onDisconnect(2, f.now);
+			CHECK(f.relay.presence(1) == PresenceState::Reconnecting);
+			f.atTick(120);
+			Quit finished;
+			finished.reason = QuitReason::GameFinished;
+			f.raw(1, finished);
+			CHECK(f.relay.gameDecided());
+			CHECK(f.relay.matchOver());
+			CHECK(f.relay.presence(0) == PresenceState::Left);
+			CHECK(f.relay.presence(1) == PresenceState::Left);
+			const auto record = f.relay.buildRecord("m", "v", "{}", {});
+			CHECK((record.flags & MatchRecord::FLAG_INCOMPLETE) == 0);
+			std::size_t byGrace = 0;
+			for (const auto& e : record.events)
+				byGrace += e.kind == MatchEventKind::LeftByGrace && e.seat == 1;
+			CHECK(byGrace == 1);
+		}
+		// The other order: the winner leaves first while the guest still watches the end;
+		// the guest's later disconnect ends the match.
+		{
+			RelayFixture f(0b11, config);
+			f.join(1, 0);
+			f.join(2, 1);
+			f.atTick(100);
+			Quit finished;
+			finished.reason = QuitReason::GameFinished;
+			f.raw(1, finished);
+			CHECK_FALSE(f.relay.matchOver());
+			f.atTick(150);
+			f.relay.onDisconnect(2, f.now);
+			CHECK(f.relay.matchOver());
+		}
+		// A plain PlayerQuit decides nothing: a disconnected seat keeps its grace.
+		{
+			RelayFixture f(0b11, config);
+			f.join(1, 0);
+			f.join(2, 1);
+			f.atTick(100);
+			f.relay.onDisconnect(2, f.now);
+			f.raw(1, Quit());
+			CHECK_FALSE(f.relay.gameDecided());
+			CHECK_FALSE(f.relay.matchOver());
+			CHECK(f.relay.presence(1) == PresenceState::Reconnecting);
+		}
+	}
+
 	TEST_CASE("three clients: the majority wins and the minority rejoins")
 	{
 		RelayFixture f(0b111);

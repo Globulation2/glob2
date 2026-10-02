@@ -79,7 +79,28 @@ void TurnSequencer::dropPeer(PeerId peer)
 		s.graceStart = now;
 		setState(static_cast<std::uint8_t>(seat), PresenceState::Reconnecting);
 		event(static_cast<std::uint8_t>(seat), MatchEventKind::Disconnected);
+		endIfDecided(now);
 	}
+}
+
+void TurnSequencer::endIfDecided(std::uint64_t nowMicros)
+{
+	if (!decided || over)
+		return;
+	for (unsigned i = 0; i < MAX_SEATS; ++i)
+	{
+		if (!(humanMask & (1u << i)))
+			continue;
+		const PresenceState state = seats[i].state;
+		if (state == PresenceState::Connected || state == PresenceState::Lagging || state == PresenceState::Resyncing)
+			return; // someone is still watching the end of the game
+	}
+	// The game is over and nobody is left to play it: the seats still in reconnect
+	// grace leave now (their quit orders land after the decisive tick, so they change
+	// nothing), and the last one finishes the match.
+	for (unsigned i = 0; i < MAX_SEATS && !over; ++i)
+		if ((humanMask & (1u << i)) && seats[i].state != PresenceState::Left)
+			sequenceQuit(static_cast<std::uint8_t>(i), MatchEventKind::LeftByGrace, nowMicros);
 }
 
 void TurnSequencer::setState(std::uint8_t seat, PresenceState state)
@@ -148,7 +169,10 @@ void TurnSequencer::onReceive(PeerId peer, const std::uint8_t* data, std::size_t
 		handleResync(peer, seat, static_cast<const ResyncRequest&>(*message).fromTick);
 		break;
 	case MSG_QUIT:
+		if (static_cast<const Quit&>(*message).reason == QuitReason::GameFinished)
+			decided = true;
 		sequenceQuit(static_cast<std::uint8_t>(seat), MatchEventKind::LeftByQuit, now);
+		endIfDecided(now);
 		break;
 	case MSG_PING:
 	{

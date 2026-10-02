@@ -304,6 +304,12 @@ ticks (2 s) is shown as lagging.
 - A left seat cannot reconnect: its `Hello` is refused with `Reject(4)`.
 - The match is over when every human seat has left. The relay then closes the match and
   produces the match record.
+- A decided game does not wait out grace. Once any client has left with
+  `Quit(GameFinished)` (its engine declared the game over), the relay ends the match as
+  soon as no human seat is connected, lagging or resyncing: seats still in grace are
+  marked left by grace at that moment (their quit orders land after the decisive tick,
+  so they change nothing). A player who closes the window after the end therefore does
+  not hold the result back for three minutes.
 
 Other clients keep running throughout. The absent seat simply sends no orders, so its
 colony keeps acting on its own.
@@ -403,8 +409,11 @@ the session (presence, latency, buffer) for a connection HUD.
   request, and a flagged match (`desyncFlagged()`) is logged once; the verifier then
   decides the result. A refused client (`Rejected`) leaves the game.
 - **Leaving.** Tearing the session down (`finishSessionForHost`, `abortSession`) calls
-  `quit()`, with `GameFinished` once the game has ended for the local team and
-  `PlayerQuit` otherwise. The in-game Quit menu also submits the usual
+  `quit()`, with `GameFinished` once the game is decided (the end condition fired, or
+  the local colony won) and `PlayerQuit` otherwise, including for a colony that lost
+  while others play on. The relay connection stays open after the session is gone until
+  the `Quit` is written (at most 3 s; the shutdown screen waits for it), so closing the
+  window still tells the relay the seat left. The in-game Quit menu also submits the usual
   `PlayerQuitsGameOrder`; the relay sequences it and marks the seat left.
 
 As in a legacy network game, executing the local seat's own `PlayerQuitsGameOrder`

@@ -92,6 +92,9 @@ namespace Turn
 		bool desyncFlagged() const { return flagged; }
 		/// True once every human seat has left.
 		bool matchOver() const { return over; }
+		/// True once a client has left with Quit(GameFinished): its engine declared
+		/// the game over.
+		bool gameDecided() const { return decided; }
 		std::optional<std::uint32_t> agreedChecksum(std::uint32_t tick) const;
 		const Stats& stats() const { return counters; }
 		std::uint32_t humanSeats() const { return humanMask; }
@@ -140,6 +143,9 @@ namespace Turn
 		void handleResync(PeerId peer, int seat, std::uint32_t fromTick);
 		bool assign(std::uint8_t seat, std::vector<std::uint8_t> order, std::uint32_t currentTick, bool floodLimit = true);
 		void sequenceQuit(std::uint8_t seat, MatchEventKind why, std::uint64_t now);
+		/// Once a client has reported the game finished, a match with no human still
+		/// connected ends now instead of waiting out reconnect grace.
+		void endIfDecided(std::uint64_t now);
 		void emitUpTo(std::uint32_t newHorizon);
 		void sendLog(PeerId peer, std::uint32_t fromTick);
 		void arbitrate(std::uint32_t tick);
@@ -173,6 +179,7 @@ namespace Turn
 		bool flagged = false;
 		bool over = false;
 		bool incomplete = false;
+		bool decided = false; ///< a client sent Quit(GameFinished)
 		Stats counters;
 	};
 }
