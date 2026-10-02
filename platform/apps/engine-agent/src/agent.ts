@@ -1,8 +1,8 @@
 // An engine agent serves one sim version: it runs only that version's engine
 // task identifiers, so jobs never reach a binary that would compute different
-// results. The engine work itself is behind EngineRunner; the glob2 headless
-// commands it calls (generation, validation, previews, --verify-match) arrive
-// in later milestones, so the default runner reports every kind unsupported.
+// results. The engine work itself is behind EngineRunner: HeadlessEngineRunner
+// (runners.ts) runs the glob2 headless binary; unsupportedRunner remains for
+// tests and for agents started without a binary.
 import { hostname } from 'node:os';
 import { sql, type Kysely } from 'kysely';
 import type { Task } from 'graphile-worker';
@@ -74,13 +74,25 @@ export class EngineAgent {
   tasks(): Record<string, Task> {
     const tasks: Record<string, Task> = {};
     for (const kind of this.options.runner.kinds) {
-      tasks[engineTaskIdentifier(kind, this.options.simVersion)] = (payload) =>
-        this.handle(payload);
+      tasks[engineTaskIdentifier(kind, this.options.simVersion)] = (payload, helpers) =>
+        this.handle(payload, {
+          attempts: helpers.job.attempts,
+          maxAttempts: helpers.job.max_attempts,
+        });
     }
     return tasks;
   }
 
-  async handle(payload: unknown): Promise<void> {
+  /**
+   * Runs one job. EngineJobError results are reported; other errors are
+   * thrown so the queue retries them, except on the job's last attempt, where
+   * the failure is reported as `internal` so the platform is not left waiting
+   * for a result that will never come.
+   */
+  async handle(
+    payload: unknown,
+    attempt?: { attempts: number; maxAttempts: number },
+  ): Promise<void> {
     const { queue, logger, runner, simVersion } = this.options;
     const job = parseEngineJob(payload);
     const log = logger.child({ jobId: job.jobId, kind: job.kind });
@@ -102,15 +114,26 @@ export class EngineAgent {
       });
       log.info({ ms: Date.now() - started }, 'engine job succeeded');
     } catch (error) {
-      if (!(error instanceof EngineJobError)) throw error;
+      const lastAttempt = attempt !== undefined && attempt.attempts >= attempt.maxAttempts;
+      if (!(error instanceof EngineJobError) && !lastAttempt) {
+        log.warn({ err: error, attempt }, 'engine job attempt failed; will retry');
+        throw error;
+      }
+      const failure =
+        error instanceof EngineJobError
+          ? error
+          : new EngineJobError(
+              'internal',
+              `gave up after ${attempt?.attempts ?? 1} attempts: ${String((error as Error)?.message ?? error).slice(0, 1800)}`,
+            );
       await reportEngineJobResult(queue, {
         jobId: job.jobId,
         kind: job.kind,
         ok: false,
-        error: { code: error.code, message: error.message },
+        error: { code: failure.code, message: failure.message.slice(0, 2000) },
         agent: this.id,
       });
-      log.warn({ code: error.code, err: error }, 'engine job failed');
+      log.warn({ code: failure.code, err: error }, 'engine job failed');
     }
   }
 
