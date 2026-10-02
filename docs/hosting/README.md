@@ -378,6 +378,12 @@ docker compose build           # skip with prebuilt images: docker compose pull
 docker compose up -d --wait
 ```
 
+On a single host, `deploy/update-host.sh <env-file> [git-ref]` does all of this in
+one command: it checks out the revision (when given), builds the WebAssembly client
+into `GLOB2_WEB_CLIENT_DIR` with `deploy/build-web-client.sh` (Emscripten runs in a
+container, so the host needs only Docker), builds the images with the checkout's
+sim version, and starts the stack, waiting until every service is healthy.
+
 `up` runs `init` first, which applies new migrations (forward only, each in a
 transaction) before the new API and worker start. `platform-api` and
 `platform-worker` replicas are replaced together: realtime clients reconnect after
@@ -513,6 +519,75 @@ with the real binary, applied by the worker and stored as a blob. It then remove
 the project and its volumes. `--no-build --tag <tag>` reuses built images; `--keep`
 leaves the stack running. CI runs it when `deploy/`, `tests/deployment/`,
 `src/relay/`, migrations or platform dependencies change, and on full runs.
+
+On a running deployment, the same checks run against the public origin with a
+publicly trusted certificate, the deployed web client and the replica counts in
+the env file (run on the host; nothing is started or removed):
+
+```sh
+python3 tests/deployment/platform_stack_smoke.py --attach glob2-platform \
+    --env-file /path/to/deployment.env --log-dir artifacts/live-smoke
+```
+
+`tests/deployment/live_match_e2e.py` then plays a real match on the instance: two
+guests create and join a room by invite code, start it with AI seats on a generated
+map, and two headless native clients (`glob2 --turn-client`, built from the same
+sim version) play it through the relay until a sudden-death rule ends it. It checks
+that both clients' per-tick checksums agree, and, with `--psql`, that the relay
+reported the match, uploaded its record and the verify-match job judged it
+`verified`:
+
+```sh
+python3 tests/deployment/live_match_e2e.py --origin https://play.example.org \
+    --glob2 build/linux/client/release/src/glob2 --out artifacts/live-e2e \
+    --psql "docker compose -p glob2-platform exec -T postgres psql -U glob2 -d glob2 -At"
+```
+
+## Example: one virtual machine on Google Cloud
+
+A small instance fits on one Compute Engine VM. Building the images and the
+WebAssembly client on the VM itself avoids a registry. The commands below use
+placeholders (`glob2-host`, `REGION`, `ZONE`, `play.example.org`); keep secrets on
+the VM only.
+
+1. **Machine.** `e2-standard-4` (4 vCPUs, 16 GB) with a 100 GB balanced disk and
+   Debian 12 is enough for the stack, one engine agent and image builds:
+
+   ```sh
+   gcloud compute addresses create glob2-host-ip --region REGION
+   gcloud compute firewall-rules create glob2-host-web --network default \
+       --allow tcp:80,tcp:443,udp:443 --target-tags glob2-host
+   gcloud compute instances create glob2-host --zone ZONE --machine-type e2-standard-4 \
+       --image-family debian-12 --image-project debian-cloud \
+       --boot-disk-size 100GB --boot-disk-type pd-balanced \
+       --address <reserved IP> --tags glob2-host --labels app=glob2
+   ```
+
+2. **DNS.** An `A` record for the domain (and `www` if wanted) pointing at the
+   reserved address, with a short TTL while setting up. Caddy obtains the
+   certificate from Let's Encrypt on first start, so the record must resolve before
+   that.
+3. **Docker.** Install Docker Engine and the Compose plugin from Docker's Debian
+   repository, add your user to the `docker` group, and clone the repository.
+4. **Configuration.** Keep the env file and `instance.yaml` outside the checkout,
+   e.g. in a `0700` directory. Beyond [Setup from zero](#setup-from-zero), set
+   `GLOB2_BIND=0.0.0.0`, `GLOB2_HTTP_PORT=80`, `GLOB2_HTTPS_PORT=443`,
+   `GLOB2_DOMAIN`, `GLOB2_PUBLIC_ORIGIN`, and point `GLOB2_INSTANCE_CONFIG`,
+   `GLOB2_ENV_FILE` and `GLOB2_WEB_CLIENT_DIR` at absolute paths. With no sign-in
+   providers yet, enable guests and `auth.local` in `instance.yaml`; a provider is
+   added later by registering it ([Sign-in providers](#sign-in-providers)), adding
+   it to `instance.yaml` and its secret to the env file, and redeploying.
+5. **Deploy and redeploy.** `deploy/update-host.sh /path/to/deployment.env
+   origin/<branch>` builds and starts everything; run it again for each new
+   revision. The first build takes about half an hour on four vCPUs; later builds
+   reuse the BuildKit caches.
+6. **Check.** Run the attached smoke test and the live match above.
+
+Approximate cost (2026 on-demand list prices, a Canadian region): the VM about
+US$110 a month, the disk about US$10, the static address in use about US$3, a
+Cloud DNS zone about US$0.20, plus egress. Stopping the VM stops the machine
+charge; the disk and a reserved but unattached address still cost. To remove
+everything: delete the VM, the address, the firewall rule and the DNS records.
 
 ## Limits
 
