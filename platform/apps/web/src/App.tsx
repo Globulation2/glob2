@@ -1,73 +1,167 @@
-// Placeholder home page: shows which instance this is and what it serves.
-// Sign-in, invite landing pages, profiles, leaderboards and maps arrive with
-// their milestones (M3-M7).
-import { useEffect, useState } from 'react';
-import { simVersionKey, type InstanceInfo } from '@glob2/protocol';
-import { fetchInstance } from './api.ts';
+// The platform web app: home, leaderboards, player and match pages, the map
+// catalog and moderation. Client routes the game links to must stay stable:
+// /players/<id>, /matches/<id>, /maps/<id>, /leaderboard/<queueId>. Invite
+// links (/j/<code>) and sign-in (/signin) are server-rendered by the API.
+import { useEffect, type ReactNode } from 'react';
+import { Admin } from './admin/Admin.tsx';
+import { initial } from './format.ts';
+import { Home } from './pages/Home.tsx';
+import { Leaderboard } from './pages/Leaderboard.tsx';
+import { MapPage, MapUpload, Maps } from './pages/Maps.tsx';
+import { Match } from './pages/Match.tsx';
+import { Matches } from './pages/Matches.tsx';
+import { Player } from './pages/Player.tsx';
+import { Link, RouterProvider, matchPath, useRouter } from './router.tsx';
+import { SessionProvider, isModerator, useSession } from './state.tsx';
 
-type State =
-  | { status: 'loading' }
-  | { status: 'ready'; instance: InstanceInfo }
-  | { status: 'error'; message: string };
+interface Route {
+  pattern: string;
+  section: string;
+  title: string;
+  render: (params: Record<string, string>) => ReactNode;
+}
 
-export function App() {
-  const [state, setState] = useState<State>({ status: 'loading' });
+export const ROUTES: Route[] = [
+  { pattern: '/', section: 'home', title: '', render: () => <Home /> },
+  {
+    pattern: '/leaderboard',
+    section: 'leaderboard',
+    title: 'Leaderboard',
+    render: () => <Leaderboard queueId={undefined} />,
+  },
+  {
+    pattern: '/leaderboard/:queueId',
+    section: 'leaderboard',
+    title: 'Leaderboard',
+    render: (p) => <Leaderboard key={p['queueId']} queueId={p['queueId']} />,
+  },
+  {
+    pattern: '/players/:id',
+    section: 'players',
+    title: 'Player',
+    render: (p) => <Player key={p['id']} id={p['id'] ?? ''} />,
+  },
+  { pattern: '/matches', section: 'matches', title: 'Matches', render: () => <Matches /> },
+  {
+    pattern: '/matches/:id',
+    section: 'matches',
+    title: 'Match',
+    render: (p) => <Match key={p['id']} id={p['id'] ?? ''} />,
+  },
+  { pattern: '/maps', section: 'maps', title: 'Maps', render: () => <Maps mine={false} /> },
+  { pattern: '/maps/mine', section: 'maps', title: 'My maps', render: () => <Maps mine /> },
+  { pattern: '/maps/new', section: 'maps', title: 'Upload a map', render: () => <MapUpload /> },
+  {
+    pattern: '/maps/:id',
+    section: 'maps',
+    title: 'Map',
+    render: (p) => <MapPage key={p['id']} id={p['id'] ?? ''} />,
+  },
+  {
+    pattern: '/admin',
+    section: 'admin',
+    title: 'Moderation',
+    render: () => <Admin tab={undefined} />,
+  },
+  {
+    pattern: '/admin/:tab',
+    section: 'admin',
+    title: 'Moderation',
+    render: (p) => <Admin tab={p['tab']} />,
+  },
+];
 
-  useEffect(() => {
-    const controller = new AbortController();
-    fetchInstance(controller.signal).then(
-      (instance) => setState({ status: 'ready', instance }),
-      (error: unknown) => {
-        if (!controller.signal.aborted) {
-          setState({
-            status: 'error',
-            message: error instanceof Error ? error.message : String(error),
-          });
-        }
-      },
-    );
-    return () => controller.abort();
-  }, []);
+function resolve(path: string) {
+  for (const route of ROUTES) {
+    const params = matchPath(route.pattern, path);
+    if (params) return { route, params };
+  }
+  return undefined;
+}
 
-  if (state.status === 'loading') return <main>Loading…</main>;
-  if (state.status === 'error') {
+function AccountChip() {
+  const { account, signOut } = useSession();
+  if (account === undefined) return null;
+  if (!account) {
     return (
-      <main>
-        <h1>Globulation 2</h1>
-        <p role="alert">The platform is unavailable: {state.message}</p>
-      </main>
+      <a className="btn primary small" href="/signin">
+        Sign in
+      </a>
     );
   }
-  const { instance } = state;
   return (
-    <main>
-      <h1>{instance.name}</h1>
-      <p>{instance.guestsAllowed ? 'Guests may play.' : 'Sign-in required.'}</p>
-      <h2>Game versions served</h2>
-      {instance.supportedSimVersions.length === 0 ? (
-        <p>No engine agents are online.</p>
-      ) : (
-        <ul>
-          {instance.supportedSimVersions.map((version) => (
-            <li key={simVersionKey(version)}>
-              Format {version.versionMinor}, network protocol {version.netProtocol}
-            </li>
+    <span style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}>
+      <Link className="chip" to={`/players/${account.id}`} data-testid="account-chip">
+        <span className="avatar small" aria-hidden="true">
+          {initial(account.displayName)}
+        </span>
+        {account.displayName}
+      </Link>
+      <button className="small" onClick={() => void signOut()}>
+        Sign out
+      </button>
+    </span>
+  );
+}
+
+function Layout() {
+  const { location } = useRouter();
+  const { instance, account } = useSession();
+  const found = resolve(location.path);
+  const section = found?.route.section;
+  const name = instance?.name ?? 'Globulation 2';
+  useEffect(() => {
+    document.title = found?.route.title ? `${found.route.title} · ${name}` : name;
+  }, [found?.route.title, name]);
+  const nav = [
+    { to: '/', id: 'home', name: 'Home' },
+    { to: '/leaderboard', id: 'leaderboard', name: 'Leaderboard' },
+    { to: '/matches', id: 'matches', name: 'Matches' },
+    { to: '/maps', id: 'maps', name: 'Maps' },
+    ...(isModerator(account) ? [{ to: '/admin', id: 'admin', name: 'Moderation' }] : []),
+  ];
+  return (
+    <div className="shell">
+      <header className="topbar">
+        <Link className="brand" to="/">
+          {name}
+        </Link>
+        <AccountChip />
+        <nav aria-label="Main">
+          {nav.map((item) => (
+            <Link
+              key={item.id}
+              to={item.to}
+              className={section === item.id ? 'on' : ''}
+              aria-current={section === item.id ? 'page' : undefined}
+            >
+              {item.name}
+            </Link>
           ))}
-        </ul>
-      )}
-      <h2>Quick match queues</h2>
-      {instance.queues.length === 0 ? (
-        <p>None configured.</p>
-      ) : (
-        <ul>
-          {instance.queues.map((queue) => (
-            <li key={queue.id}>
-              {queue.name} ({queue.mode}
-              {queue.rated ? ', rated' : ''})
-            </li>
-          ))}
-        </ul>
-      )}
-    </main>
+        </nav>
+      </header>
+      <main className="page">
+        {found ? (
+          found.route.render(found.params)
+        ) : (
+          <div className="notice">
+            Nothing here. <Link to="/">Go to the home page</Link>.
+          </div>
+        )}
+      </main>
+      <footer className="site">
+        Globulation 2 is free software (GPL 3). <a href="/play/">Play in browser</a>
+      </footer>
+    </div>
+  );
+}
+
+export function App() {
+  return (
+    <RouterProvider>
+      <SessionProvider>
+        <Layout />
+      </SessionProvider>
+    </RouterProvider>
   );
 }

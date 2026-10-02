@@ -17,8 +17,9 @@ import {
   Timestamp,
   Uuid,
 } from './common.ts';
-import { AiId, GeneratorDescriptor, MatchRules, MatchSetup, SetupTeam } from './matchSetup.ts';
+import { AiId, GeneratorDescriptor, MatchRules, SetupTeam } from './matchSetup.ts';
 import { SimVersion } from './simVersion.ts';
+import { TeamTimelinePoint } from './jobs.ts';
 
 /** A page of results with an opaque continuation cursor. */
 export function Page<T extends TSchema>(item: T, description?: string) {
@@ -469,8 +470,8 @@ export const MatchTeamStats = Open({
   statistics: Type.Record(Type.String(), Type.Number(), {
     description: 'standard_statistics from the verifier result.json.',
   }),
-  timeline: Type.Array(Type.Array(Type.Number()), {
-    description: 'End-of-game statistics history rows (result.json teams[].history).',
+  timeline: Type.Array(TeamTimelinePoint, {
+    description: 'Team history from the verifier result (one sample per 512 ticks), oldest first.',
   }),
 });
 
@@ -481,16 +482,7 @@ export const MatchArtifactInfo = Open({
   sha256: Sha256Hex,
 });
 
-export const MatchDetail = Open(
-  {
-    match: MatchSummary,
-    setup: MatchSetup,
-    teams: Type.Array(MatchTeamStats),
-    artifacts: Type.Array(MatchArtifactInfo),
-  },
-  { description: 'GET /api/v1/matches/{id}.' },
-);
-export type MatchDetail = Static<typeof MatchDetail>;
+// MatchDetail (GET /api/v1/matches/{id}) lives in history.ts.
 
 export const MatchList = Page(MatchSummary, 'Matches, newest first.');
 

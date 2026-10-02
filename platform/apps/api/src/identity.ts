@@ -32,6 +32,8 @@ export interface Identity {
   admin: AdminService;
   hub: RealtimeHub;
   origin: string;
+  /** Instance display name, for server-rendered pages. */
+  instanceName: string;
   allowedOrigins: Set<string>;
   secureCookies: boolean;
   limits: Limits;
@@ -73,6 +75,7 @@ export function createIdentity(services: ApiServices): Identity {
     admin,
     hub,
     origin: config.publicOrigin,
+    instanceName: config.instance.name,
     allowedOrigins: new Set([config.publicOrigin, ...(config.instance.web?.allowedOrigins ?? [])]),
     secureCookies: config.publicOrigin.startsWith('https://'),
     limits: {

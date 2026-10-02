@@ -171,6 +171,26 @@ Invite links `https://<origin>/j/<code>` are small pages rendered by the API; th
 "Play in browser" button opens `web.browserClientUrl` from `instance.yaml`, which
 defaults to `<origin>/play/`.
 
+### Mobile app links
+
+Android App Links and iOS universal links let an invite link open the installed
+app directly. Phones check two files on the domain, which `platform-api` serves
+from `appLinks` in `instance.yaml`:
+
+- `/.well-known/assetlinks.json` from `appLinks.android`: `packageName` (default
+  `org.globulation2.glob2`) and `sha256CertFingerprints`, the SHA-256 of the
+  release signing certificate as `AA:BB:…` (32 bytes). With Play App Signing,
+  copy it from Play Console > Test and release > App integrity > App signing key
+  certificate; otherwise `keytool -list -v -keystore <release keystore>`.
+- `/.well-known/apple-app-site-association` from `appLinks.ios.appIds`:
+  `<Team ID>.org.globulation2.glob2`, with the Team ID from the Apple Developer
+  account's Membership page.
+
+Both files cover `/j/*` only. The apps declare only the official domain, so a
+self-hosted instance leaves `appLinks` out (both files then answer 404) and its
+invites open the game through `glob2://`. Apple caches the file through its CDN;
+after a change, allow a day or reinstall the app.
+
 ## Configuration
 
 Everything is configured in `deploy/.env` (Compose variables, and the environment of
