@@ -456,17 +456,17 @@ void ConnectionOverlay::drawCard(bool touch, SDL_Rect area, double unit)
 bool ConnectionOverlay::handle(const SDL_Event &event)
 {
 	int x = 0, y = 0;
-	if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT && event.button.which != SDL_TOUCH_MOUSEID)
+	if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN && event.button.button == SDL_BUTTON_LEFT && event.button.which != SDL_TOUCH_MOUSEID)
 	{
-		x = event.button.x;
-		y = event.button.y;
+		x = int(event.button.x);
+		y = int(event.button.y);
 	}
-	else if (event.type == SDL_FINGERDOWN && globalContainer && globalContainer->gfx)
+	else if (event.type == SDL_EVENT_FINGER_DOWN && globalContainer && globalContainer->gfx)
 	{
 		x = int(event.tfinger.x * globalContainer->gfx->getW());
 		y = int(event.tfinger.y * globalContainer->gfx->getH());
 	}
-	else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE && details)
+	else if (event.type == SDL_EVENT_KEY_DOWN && event.key.key == SDLK_ESCAPE && details)
 	{
 		details = false;
 		return true;

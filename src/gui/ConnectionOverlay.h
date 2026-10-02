@@ -18,7 +18,7 @@
 // TurnSession) and is never simulated, networked or saved.
 
 #include <GraphicContext.h>
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 #include <cstdint>
 #include <functional>

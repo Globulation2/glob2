@@ -11,7 +11,7 @@
 #include <glob2/BuildConfig.h>
 #endif
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <memory>
 #include <vector>
 

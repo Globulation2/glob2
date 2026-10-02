@@ -273,7 +273,7 @@ int hostPlay(int seconds, const std::string& capture)
 		if (pressed && !quit && host.horizon() >= Uint32(seconds * 25)) {
 			std::printf("HOST PLAY horizon=%u, leaving\n", host.horizon());
 			SDL_Event exit{};
-			exit.type = SDL_QUIT;
+			exit.type = SDL_EVENT_QUIT;
 			events.push_back(exit);
 			quit = true;
 		}
@@ -355,7 +355,7 @@ int main(int argc, char** argv)
 			SDL_Event event;
 			while (SDL_PollEvent(&event))
 			{
-				if (event.type == SDL_USEREVENT) { if (!press(screens, event.user.code, events)) rc = 1; }
+				if (event.type == SDL_EVENT_USER) { if (!press(screens, event.user.code, events)) rc = 1; }
 				else events.push_back(event);
 			}
 			screens.frame(SDL_GetTicks(), events);

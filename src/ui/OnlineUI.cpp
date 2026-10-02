@@ -11,7 +11,7 @@
 
 #include <ApplicationHost.h>
 #include <GraphicContext.h>
-#include <SDL_image.h>
+#include <SDL3_image/SDL_image.h>
 
 #include <algorithm>
 #include <chrono>
@@ -178,15 +178,15 @@ bool PreviewImages::insert(const std::string &url, const std::string &png)
 {
 	auto &entry = entries[url];
 	entry.pending = false;
-	SDL_RWops *rw = SDL_RWFromConstMem(png.data(), static_cast<int>(png.size()));
-	SDL_Surface *decoded = rw ? IMG_Load_RW(rw, 1) : nullptr;
+	SDL_IOStream *stream = SDL_IOFromConstMem(png.data(), png.size());
+	SDL_Surface *decoded = stream ? IMG_Load_IO(stream, true) : nullptr;
 	if (!decoded)
 	{
 		entry.failed = true;
 		return false;
 	}
 	entry.surface = std::make_unique<GAGCore::DrawableSurface>(decoded);
-	SDL_FreeSurface(decoded);
+	SDL_DestroySurface(decoded);
 	entry.failed = false;
 	return true;
 }
@@ -202,7 +202,7 @@ bool PreviewImages::insertFile(const std::string &url, const std::string &path)
 		return false;
 	}
 	entry.surface = std::make_unique<GAGCore::DrawableSurface>(decoded);
-	SDL_FreeSurface(decoded);
+	SDL_DestroySurface(decoded);
 	return true;
 }
 

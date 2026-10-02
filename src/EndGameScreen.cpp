@@ -13,7 +13,7 @@
 #include "gui/LoadSaveDialog.h"
 #include "OnlineHandoff.h"
 #include "OnlineMatch.h"
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <ApplicationHost.h>
 #include <FormatableString.h>
 #include <StringTable.h>
@@ -488,7 +488,7 @@ void EndGameScreen::updateExecution(Uint32 tick)
 {
 	// Verification results arrive through the shared client (Online::pump).
 	if (online)
-		online->poll(SDL_GetTicks64());
+		online->poll(SDL_GetTicks());
 	if (online && online->revision != onlineRevision)
 	{
 		onlineRevision = online->revision;

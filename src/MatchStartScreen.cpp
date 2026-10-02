@@ -6,7 +6,7 @@
 #include "GameSessionScreen.h"
 #include "OnlineMatch.h"
 #include <FormatableString.h>
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <random>
 
 using namespace Glob2UI;
@@ -32,7 +32,7 @@ void MatchStartScreen::onTimer(Uint32 tick)
 {
 	if (playing)
 		return;
-	flow->update(SDL_GetTicks64());
+	flow->update(SDL_GetTicks());
 	const int step = int(flow->step());
 	if (step != lastStep || tick - lastRefresh > 250)
 	{

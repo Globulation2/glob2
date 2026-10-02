@@ -18,7 +18,7 @@
 #include "gui/ThumbSide.h"
 #include <ApplicationHost.h>
 #include <FormatableString.h>
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 using namespace Glob2UI;
 

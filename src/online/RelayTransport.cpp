@@ -3,7 +3,7 @@
 
 #include "RelayTransport.h"
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <iostream>
 #include <stdexcept>
 

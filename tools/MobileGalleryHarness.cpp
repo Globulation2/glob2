@@ -200,7 +200,7 @@ struct MobileGallerySetup
 		else
 			press(stack, *view, "description");
 		stackShot(stack, "campaign-description-editing");
-		SDL_StopTextInput();
+		SDL_StopTextInput(SDL_GetKeyboardFocus());
 		view->endExecute(CampaignMapEntryEditor::CANCEL);
 		frame(stack);
 	}

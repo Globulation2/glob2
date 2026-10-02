@@ -8,7 +8,7 @@
 // bot that queues ordinary orders, or by nobody; AI seats run locally as on every
 // client. Used for end-to-end tests of a deployed instance (docs/hosting/README.md).
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 #include <chrono>
 #include <filesystem>
@@ -177,14 +177,14 @@ static int play(const Options& options, const fs::path& output)
 	auto elapsed = [&] { return std::chrono::duration<double>(std::chrono::steady_clock::now() - began).count(); };
 	std::cout << "turn-client: match " << matchId << " seat " << seat << " via " << relayUrl << std::endl;
 
-	engine.beginSession(SDL_GetTicks64());
+	engine.beginSession(SDL_GetTicks());
 	std::uint32_t ordersQueued = 0;
 	double lastReport = 0, firstTickAt = -1;
 	bool quitQueued = false, timedOut = false;
 	std::string endedBy = "engine";
 	for (;;)
 	{
-		const Uint64 now = SDL_GetTicks64();
+		const Uint64 now = SDL_GetTicks();
 		Turn::TurnSession& session = lockstep.turn();
 		const std::uint32_t before = session.executedTick();
 		const bool running = engine.stepSession(now);

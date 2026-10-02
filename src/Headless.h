@@ -3,7 +3,7 @@
 #include <ostream>
 #include <string>
 #include <vector>
-#include <SDL_stdinc.h>
+#include <SDL3/SDL_stdinc.h>
 
 class Game;
 

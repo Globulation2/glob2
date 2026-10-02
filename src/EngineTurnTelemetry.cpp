@@ -12,7 +12,7 @@
 #include <FileManager.h>
 #include <PerformanceTelemetry.h>
 #include <Toolkit.h>
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <nlohmann/json.hpp>
 
 #include "Engine.h"

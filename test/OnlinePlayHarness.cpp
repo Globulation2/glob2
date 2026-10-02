@@ -110,14 +110,14 @@ bool press(ScreenStack &screens, const std::string &key, std::vector<SDL_Event> 
 		return false;
 	const auto r = node->bounds;
 	SDL_Event event{};
-	event.type = SDL_MOUSEBUTTONDOWN;
+	event.type = SDL_EVENT_MOUSE_BUTTON_DOWN;
 	event.button.button = SDL_BUTTON_LEFT;
-	event.button.state = SDL_PRESSED;
+	event.button.down = true;
 	event.button.x = r.x + r.w / 2;
 	event.button.y = r.y + r.h / 2;
 	events.push_back(event);
-	event.type = SDL_MOUSEBUTTONUP;
-	event.button.state = SDL_RELEASED;
+	event.type = SDL_EVENT_MOUSE_BUTTON_UP;
+	event.button.down = false;
 	events.push_back(event);
 	say("PRESS %s", key.c_str());
 	return true;
@@ -496,7 +496,7 @@ int play()
 				{
 					say("LEAVE by closing the window after %.1f s of play", now - stageAt);
 					SDL_Event quit{};
-					quit.type = SDL_QUIT;
+					quit.type = SDL_EVENT_QUIT;
 					events.push_back(quit);
 				}
 			}
@@ -506,11 +506,13 @@ int play()
 			{
 				lastKey = now;
 				SDL_Event key{};
-				key.type = SDL_KEYDOWN;
-				key.key.keysym.sym = SDLK_RETURN;
-				key.key.keysym.scancode = SDL_SCANCODE_RETURN;
+				key.type = SDL_EVENT_KEY_DOWN;
+				key.key.key = SDLK_RETURN;
+				key.key.scancode = SDL_SCANCODE_RETURN;
+				key.key.down = true;
 				events.push_back(key);
-				key.type = SDL_KEYUP;
+				key.type = SDL_EVENT_KEY_UP;
+				key.key.down = false;
 				events.push_back(key);
 			}
 			if (top<EndGameScreen>(screens))
