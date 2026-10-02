@@ -63,6 +63,7 @@ struct TeamStatsMeasurementFixture
 
 	GameGUI gui;
 	Game &game = gui.game;
+	glob2test::BoundGameRandom random{game};
 	TeamStatsMeasurementFixture()
 	{
         if (glob2test::currentTestSuite() == "JavaScriptLifecycle")
@@ -876,7 +877,8 @@ static void aiTelemetryContinuation(const char *path)
 	// Legacy controllers deliberately rebuild/reset some unsaved internal state.
     // Compare two continuations of the same saved state, not different AI states.
     auto reference = roundTrip(gui.game);
-    const auto random = syncRandEngine();
+    // Each game restores its own saved stream; the continuations start equal.
+    REQUIRE(loaded->game.syncRandom == reference->game.syncRandom);
 	std::vector<std::vector<Uint32>> expected;
 	std::vector<std::vector<AITelemetry::Sample>> samples;
 	for (int t = 0; t < 700; ++t)
@@ -889,7 +891,6 @@ static void aiTelemetryContinuation(const char *path)
 				row.push_back(reference->game.players[p]->ai->telemetrySeries->current);
 		samples.push_back(std::move(row));
 	}
-	syncRandEngine() = random;
 	for (int t = 0; t < 700; ++t)
 	{
 		step(loaded->game);

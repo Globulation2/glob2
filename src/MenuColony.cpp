@@ -15,20 +15,18 @@
 
 namespace
 {
-// Simulation uses a legacy global RNG and optional recording sinks. Swap them
-// only while the menu game is executing, including during construction/loading.
+// The colony game owns its synchronized random stream. Detach optional recording
+// sinks only while the menu game is executing, including during construction/loading.
 struct ColonyContext
 {
-	MersenneTwister& rng;
 	std::unique_ptr<ReplayWriter> replay;
 	std::unique_ptr<DatasetWriter> dataset;
-	explicit ColonyContext(MersenneTwister& state) : rng(state),
+	ColonyContext() :
 		replay(std::move(globalContainer->replayWriter)),
 		dataset(std::move(globalContainer->datasetWriter))
-	{ std::swap(syncRandEngine(), rng); }
+	{}
 	~ColonyContext()
 	{
-		std::swap(syncRandEngine(), rng);
 		globalContainer->replayWriter = std::move(replay);
 		globalContainer->datasetWriter = std::move(dataset);
 	}
@@ -37,7 +35,7 @@ struct ColonyContext
 
 bool MenuColony::load(const std::string& path)
 {
-	ColonyContext context(rng);
+	ColonyContext context;
 	pause();
 	game.reset();
 	try
@@ -51,7 +49,7 @@ bool MenuColony::load(const std::string& path)
 			!loaded->players[0]->ai || loaded->players[0]->ai->implementationID != AI::ECONO)
 			throw std::runtime_error("incompatible menu colony");
 		std::istringstream state(input.readText("rng") + " ");
-		if (!(state >> syncRandEngine())) throw std::runtime_error("invalid colony RNG");
+		if (!(state >> loaded->syncRandom)) throw std::runtime_error("invalid colony RNG");
 		loaded->setWaitingOnMask(0);
 		// The map round-robin updater expects at least one lazy gradient.
 		loaded->map.getResourceGradient(0, WHEAT, 0);
@@ -81,7 +79,7 @@ void MenuColony::update(Uint64 now, bool visible)
 	if (!clockStarted) { lastTime = now; clockStarted = true; return; }
 	pending += std::min<Uint64>(now - lastTime, 2 * GAME_TICK_MS);
 	lastTime = now;
-	ColonyContext context(rng);
+	ColonyContext context;
 	// At most two steps per menu frame; never accumulate hidden-time debt.
 	while (pending >= GAME_TICK_MS)
 	{
@@ -96,7 +94,7 @@ void MenuColony::update(Uint64 now, bool visible)
 void MenuColony::draw(int width, int height)
 {
 	if (!game) return;
-	ColonyContext context(rng);
+	ColonyContext context;
 	struct ViewContext
 	{
 		bool replaying=globalContainer->replaying, flags=globalContainer->replayShowFlags;
