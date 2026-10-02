@@ -4552,3 +4552,57 @@ Quán tính bản đồ
 
 [settings %0 is no longer linked.]
 
+[room map read failed]
+
+[room map upload failed]
+
+[room map upload failed %0]
+
+[room uploading map]
+
+[room premade map shared]
+
+[room take a seat to play]
+
+[room waiting for a seat]
+
+[room not seated]
+
+[room copied]
+
+[room copy failed]
+
+[room closed title]
+
+[room removed title]
+
+[room back to online]
+
+[leave match]
+
+[leave match title]
+
+[leave lan title]
+
+[leave rated body]
+
+[leave casual body]
+
+[leave room body]
+
+[leave lan body]
+
+[leave match confirm]
+
+[keep playing]
+
+[results team]
+
+[results quick unrated]
+
+[conn card cannot keep up]
+
+[conn card cannot keep up body]
+
+[conn card not gaining]
+

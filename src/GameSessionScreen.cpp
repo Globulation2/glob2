@@ -10,6 +10,12 @@
 #include <StringTable.h>
 #include <stdexcept>
 
+namespace
+{
+// Milliseconds of extra ticks a frame may run while a turn game catches up.
+constexpr Uint64 CATCH_UP_FRAME_BUDGET_MS = 30;
+} // namespace
+
 GameSessionScreen::GameSessionScreen(GAGGUI::ScreenStack &stack, std::unique_ptr<Engine> engine)
 	: stack(stack), engine(std::move(engine))
 {
@@ -73,8 +79,19 @@ void GameSessionScreen::updateExecutionImpl(Uint32 tick)
 		engine->pollTurnSession(clock);
 		return;
 	}
-	const bool running = engine->stepSession(clock, input);
+	bool running = engine->stepSession(clock, input);
 	input.clear();
+	// Catching up in a turn game: the host calls this once per frame, so one tick per
+	// call caps the replay at the frame rate (in the browser, below real time on slow
+	// devices: the client falls further behind). Run more ticks within a frame
+	// budget; none of them is drawn (the catch-up draw ratio) and the frame still
+	// returns to the host in time for input and the card.
+	if (running && engine->turnFastForwarding())
+	{
+		const Uint64 deadline = SDL_GetTicks64() + CATCH_UP_FRAME_BUDGET_MS;
+		while (running && engine->turnFastForwarding() && SDL_GetTicks64() < deadline)
+			running = engine->stepSession(clock, {});
+	}
 	nextTick = clock + engine->sessionDelay(clock);
 	if (!running)
 	{

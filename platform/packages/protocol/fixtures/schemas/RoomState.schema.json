@@ -289,6 +289,11 @@
       "type": "string",
       "maxLength": 2000
     },
+    "mapTitle": {
+      "type": "string",
+      "maxLength": 128,
+      "description": "Display name of a catalog or uploaded map (its catalog title, or the title read from the uploaded file). Absent for generated maps, which clients name from the generator."
+    },
     "teams": {
       "type": "array",
       "items": {

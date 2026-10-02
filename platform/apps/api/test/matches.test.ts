@@ -238,6 +238,8 @@ describe('uploads', () => {
       })
     )['room'] as { code: string; seats: unknown[]; mapStatus: string; teams: unknown[] };
     expect(created.mapStatus).toBe('ready');
+    // The room names an uploaded map by the title read from the file.
+    expect((created as Record<string, unknown>)['mapTitle']).toBe('Uploaded map');
     expect(created.seats).toHaveLength(4);
     expect(created.teams).toHaveLength(4);
     await other.client.ok('room.join', { code: created.code });

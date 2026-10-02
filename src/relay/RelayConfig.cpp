@@ -143,6 +143,7 @@ RelayConfig RelayConfig::fromMap(const std::map<std::string, std::string>& value
 	c.maxOutgoingBytes = r.number("GLOB2_RELAY_MAX_OUTGOING_BYTES", c.maxOutgoingBytes, 65536, 1ul << 32);
 
 	c.graceSeconds = static_cast<unsigned>(r.number("GLOB2_RELAY_GRACE_SECONDS", c.graceSeconds, 1, 86400));
+	c.loadWaitSeconds = static_cast<unsigned>(r.number("GLOB2_RELAY_LOAD_WAIT_SECONDS", c.loadWaitSeconds, 0, 3600));
 	c.drainTimeoutSeconds =
 		static_cast<unsigned>(r.number("GLOB2_RELAY_DRAIN_TIMEOUT_SECONDS", c.drainTimeoutSeconds, 0, 7 * 86400));
 	c.rttPingMillis = static_cast<unsigned>(r.number("GLOB2_RELAY_RTT_PING_MS", c.rttPingMillis, 0, 3600000));

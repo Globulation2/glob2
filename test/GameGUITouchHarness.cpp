@@ -2392,6 +2392,32 @@ class GameGUITouchHarness
 					"Save filename edits through the dialog");
 			pressDialog("cancel");
 			require(!gui.inGameMenu, "Save cancellation is always reachable");
+			{
+				// A networked (online) match: no Load or Save, and leaving asks first.
+				const auto saved = gui.networkMatch;
+				gui.networkMatch = {true, true, true, false};
+				gui.orderQueue.clear();
+				gui.openMainMenu();
+				gui.drawAll(0);
+				gfx->nextFrame();
+				require(!gui.gameMenuScreen->host().find("load") && !gui.gameMenuScreen->host().find("save"),
+						"An online match offers neither Load nor Save");
+				pressDialog("quit");
+				require(gui.inGameMenu == GameGUI::IGM_CONFIRM_LEAVE && gui.orderQueue.empty() && !gui.flushOutgoingAndExit,
+						"Leaving an online match asks first and sends nothing yet");
+				gfx->printScreen("leave-confirm-" + std::to_string(width) + ".bmp");
+				pressDialog("cancel");
+				require(gui.inGameMenu == GameGUI::IGM_MAIN && gui.orderQueue.empty(),
+						"Keep playing returns to the menu without leaving");
+				pressDialog("quit");
+				pressDialog("confirm");
+				require(!gui.inGameMenu && gui.flushOutgoingAndExit && gui.orderQueue.size() == 1 &&
+							gui.orderQueue.front()->getOrderType() == ORDER_PLAYER_QUIT_GAME,
+						"Confirming leaves with the player's quit order");
+				gui.flushOutgoingAndExit = false;
+				gui.orderQueue.clear();
+				gui.networkMatch = saved;
+			}
 			gui.touch->menuAction(1);
 			require(bool(gui.typingInputScreen), "Tactical chat action opens the composer");
 			gui.drawAll(0);

@@ -291,6 +291,13 @@ export const RoomState = Open(
       }),
     ),
     mapProblem: Type.Optional(Type.String({ maxLength: 2000 })),
+    mapTitle: Type.Optional(
+      Type.String({
+        maxLength: 128,
+        description:
+          'Display name of a catalog or uploaded map (its catalog title, or the title read from the uploaded file). Absent for generated maps, which clients name from the generator.',
+      }),
+    ),
     teams: Type.Array(SetupTeam),
     seats: Type.Array(RoomSeat),
     rules: MatchRules,
