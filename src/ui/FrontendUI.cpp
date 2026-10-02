@@ -23,7 +23,16 @@ IconRef uiIcon(UIIcon icon)
 										 "world",          "network",    "info-circle",
 										 "logout",         "arrow-left", "dots",
 										 "send",           "x",          "refresh",
-										 "info-circle",    "flask"};
+										 "info-circle",    "flask",      "link",
+										 "copy",           "share",      "trophy",
+										 "robot",          "wifi-off",   "antenna-bars-5",
+										 "shield-check",   "server",     "users",
+										 "map",            "message",    "check",
+										 "plus",           "login",      "crown",
+										 "lock",           "external-link", "download",
+										 "bolt",           "hash",       "door-exit",
+										 "player-play",    "adjustments-horizontal", "loader-2",
+										 "alert-triangle"};
 	static_assert(names.size() == static_cast<std::size_t>(UIIcon::Count));
 	const char *name = names.at(static_cast<std::size_t>(icon));
 	if (auto asset = assets[name].lock())
