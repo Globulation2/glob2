@@ -214,6 +214,7 @@ struct LadderSummary
 	double rating = 0;
 	bool provisional = false;
 	int games = 0;
+	std::optional<int> rank;
 	std::optional<double> lastChange;
 	std::vector<double> trend; // ratings after each game, oldest first
 };
@@ -228,6 +229,43 @@ struct ProfileSummary
 };
 ProfileSummary summarizeProfile(const std::string &accountId, const std::vector<MatchSummary> &matches,
 								std::size_t window = 50);
+
+// GET /api/v1/players/{id} (PlayerProfile in platform/packages/protocol/src/history.ts).
+struct PlayerProfile
+{
+	std::string accountId, displayName, kind;
+	std::optional<std::int64_t> createdAt;
+	bool full = false; // detail: full (registered) or minimal (guests: no ratings)
+	struct Rating
+	{
+		std::string ladder;
+		double rating = 0;
+		int games = 0, wins = 0;
+		bool provisional = false;
+		std::optional<int> rank;
+	};
+	std::vector<Rating> ratings;
+	struct Point
+	{
+		std::string ladder;
+		double after = 0;
+		std::optional<std::int64_t> at;
+	};
+	std::vector<Point> history; // oldest first
+	std::vector<MatchSummary> recentMatches;
+	struct WinRate
+	{
+		std::string dimension, key, label;
+		int games = 0, wins = 0;
+	};
+	std::optional<int> aggregateGames, aggregateWins, aggregateLosses, aggregateDays;
+	std::optional<double> medianTicks;
+	std::vector<WinRate> winRates;
+	static std::optional<PlayerProfile> fromJson(const Json &json);
+};
+// The profile figures from the server's aggregates; matches (the history
+// list) only fill what the profile leaves out.
+ProfileSummary summarizeProfile(const PlayerProfile &profile, const std::vector<MatchSummary> &matches);
 // Ticks per second of online matches (the relay clock).
 inline constexpr int MATCH_TICKS_PER_SECOND = 25;
 } // namespace Online

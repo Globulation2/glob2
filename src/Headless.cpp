@@ -443,12 +443,13 @@ int runHeadlessCommand(int argc,char **argv)
 	if(argc<2) return -1;
 	const std::string command=argv[1];
 	if(command!="--headless-catalog" && command!="--run-game" && command!="--generate-map"
-		&& command!="--verify-match" && command!="--sim-version") return -1;
+		&& command!="--verify-match" && command!="--sim-version" && command!="--turn-client") return -1;
 	fs::path output;
 	try
 	{
 		isolateEnvironment();
 		if(command=="--verify-match") return runVerifyMatch(argc,argv);
+		if(command=="--turn-client") return runTurnClient(argc,argv);
 		if(command=="--sim-version")
 		{
 			if(argc!=2) throw std::invalid_argument("--sim-version takes no arguments");

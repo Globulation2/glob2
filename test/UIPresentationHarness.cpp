@@ -20,6 +20,7 @@
 #include "EditorMainMenu.h"
 #include "Engine.h"
 #include "LANFindScreen.h"
+#include "LanRoom.h"
 #include "LANMenuScreen.h"
 #include "MainMenuScreen.h"
 #include "MessageScreen.h"
@@ -129,6 +130,32 @@ std::unique_ptr<GAGGUI::Screen> gameRoom(GAGGUI::ScreenStack &s)
 	return std::make_unique<SessionFixture<MultiplayerGameScreen>>(client, game, std::make_unique<MultiplayerGameScreen>(s, game, client), false);
 }
 
+// A LAN room as its host sees it, offline (no listener): the host, one AI and the
+// open seats, through the same MultiplayerGameScreen and LanRoom backend as a game.
+class LanRoomFixture final : public SessionTabsScreen
+{
+	std::shared_ptr<Lan::LanRoom> room;
+	MultiplayerGameScreen tab;
+
+  public:
+	LanRoomFixture(GAGGUI::ScreenStack &s, std::shared_ptr<Lan::LanRoom> room) : room(room), tab(s, room)
+	{
+		addTab(&tab, true);
+	}
+	~LanRoomFixture() override { removeTab(&tab); }
+};
+std::unique_ptr<GAGGUI::Screen> lanRoom(GAGGUI::ScreenStack &s)
+{
+	Lan::LanHost::Options options;
+	options.hostName = "Harness host";
+	options.map = Engine().loadMapHeader("maps/balanced.map");
+	options.network = false;
+	auto room = Lan::LanRoom::host(std::move(options));
+	room->addAI(AI::NICOWAR);
+	room->update();
+	return std::make_unique<LanRoomFixture>(s, room);
+}
+
 std::vector<Fixture> fixtures()
 {
 	auto &strings = *GAGCore::Toolkit::getStringTable();
@@ -213,6 +240,7 @@ std::vector<Fixture> fixtures()
 		{"online-register", [](GAGGUI::ScreenStack &) { return std::make_unique<YOGRegisterScreen>(std::make_shared<YOGClient>()); }},
 		{"map-upload", [](GAGGUI::ScreenStack &s) { return std::make_unique<MapUploadFixture>(s, std::make_shared<YOGClient>(), "maps/balanced.map"); }},
 		{"game-room", gameRoom},
+		{"lan-room", lanRoom},
 		{"online-lobby", [](GAGGUI::ScreenStack &s)
 		 {
 			 auto client = std::make_shared<YOGClient>();

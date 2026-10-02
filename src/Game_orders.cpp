@@ -32,9 +32,20 @@
 
 Building* Game::lookupBuilding(Uint16 gid) const
 {
+	// Ids come from the order stream: one beyond the teams this game has names no
+	// building rather than an unallocated team.
+	if (gid >= Building::MAX_COUNT * Team::MAX_COUNT)
+		return nullptr;
 	int team=Building::GIDtoTeam(gid);
 	int id=Building::GIDtoID(gid);
+	if (!teams[team])
+		return nullptr;
 	return teams[team]->myBuildings[id];
+}
+
+bool Game::isOrderTeam(Sint64 teamNumber) const
+{
+	return teamNumber >= 0 && teamNumber < mapHeader.getNumberOfTeams() && teams[teamNumber];
 }
 
 void Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
@@ -138,7 +149,12 @@ void Game::executeCreate(const OrderCreate& oc, int localPlayer)
 {
 	int posX=(oc.posX)&map.getMaskW();
 	int posY=(oc.posY)&map.getMaskH();
-	assert(oc.teamNumber==players[oc.sender]->team->teamNumber);
+	// Orders from the network: a team other than the sender's, or a building type
+	// that does not exist, used to stop the game on an assert. Valid orders pass.
+	if (oc.teamNumber!=players[oc.sender]->team->teamNumber)
+		return;
+	if (oc.typeNum<0 || size_t(oc.typeNum)>=globalContainer->buildingsTypes.size())
+		return;
 	BuildingType *bt=globalContainer->buildingsTypes.get(oc.typeNum);
 	if(!mapscript.buildingAllowed(IntBuildingType::typeFromShortNumber(bt->shortTypeNum),bt->isVirtual))return;
 	bool isVirtual=bt->isVirtual;
@@ -186,7 +202,8 @@ void Game::executeModifyBuilding(const OrderModifyBuilding& omb, int localPlayer
 	Building *b=lookupBuilding(omb.gid);
 	if ((b) && (b->buildingState==Building::ALIVE))
 	{
-		assert(omb.numberRequested <= MAX_BUILDING_WORKER_REQUEST);
+		if (omb.numberRequested > MAX_BUILDING_WORKER_REQUEST)
+			return; // was an assert; no client sends more
 		b->maxUnitWorking=omb.numberRequested;
 		b->maxUnitWorkingPreferred=b->maxUnitWorking;
 		b->update();
@@ -279,7 +296,8 @@ void Game::executeMoveFlag(const OrderMoveFlag& omf, int localPlayer)
 
 void Game::executeAlterForbidden(const OrderAlterForbidden& oaa, int localPlayer)
 {
-	assert(oaa.type == BrushTool::MODE_ADD || oaa.type == BrushTool::MODE_DEL);
+	if ((oaa.type != BrushTool::MODE_ADD && oaa.type != BrushTool::MODE_DEL) || !isOrderTeam(oaa.teamNumber))
+		return; // the mode was an assert; the team indexes teams[]
 	const bool adding = oaa.type == BrushTool::MODE_ADD;
 	const Uint32 oldGeneration = map.topologyGeneration;
 	const Uint32 teamMask = teams[oaa.teamNumber]->me;
@@ -334,6 +352,8 @@ void Game::executeAlterForbidden(const OrderAlterForbidden& oaa, int localPlayer
 
 void Game::executeAlterGuardArea(const OrderAlterGuardArea& oaa, int localPlayer)
 {
+	if (!isOrderTeam(oaa.teamNumber))
+		return;
 	if (oaa.type == BrushTool::MODE_ADD)
 	{
 		Uint32 teamMask = Team::teamNumberToMask(oaa.teamNumber);
@@ -373,12 +393,14 @@ void Game::executeAlterGuardArea(const OrderAlterGuardArea& oaa, int localPlayer
 			}
 	}
 	else
-		assert(false);
+		return; // an unknown brush mode (was an assert)
 	map.updateGuardAreasGradient(oaa.teamNumber);
 }
 
 void Game::executeAlterClearArea(const OrderAlterClearArea& oaa, int localPlayer)
 {
+	if (!isOrderTeam(oaa.teamNumber))
+		return;
 	if (oaa.type == BrushTool::MODE_ADD)
 	{
 		Uint32 teamMask = Team::teamNumberToMask(oaa.teamNumber);
@@ -418,7 +440,7 @@ void Game::executeAlterClearArea(const OrderAlterClearArea& oaa, int localPlayer
 			}
 	}
 	else
-		assert(false);
+		return; // an unknown brush mode (was an assert)
 	map.updateClearAreasGradient(oaa.teamNumber);
 }
 
@@ -487,6 +509,8 @@ void Game::executeCancelConstruction(const OrderConstruction& oc)
 void Game::executeSetAlliance(const SetAllianceOrder& sao)
 {
 	Uint32 team=sao.teamNumber;
+	if (!isOrderTeam(team))
+		return;
 	teams[team]->allies=sao.alliedMask;
 	teams[team]->enemies=sao.enemyMask;
 	teams[team]->sharedVisionExchange=sao.visionExchangeMask;
@@ -496,6 +520,8 @@ void Game::executeSetAlliance(const SetAllianceOrder& sao)
 
 void Game::executePlayerQuitGame(const PlayerQuitsGameOrder& pqgo)
 {
+	if (pqgo.player < 0 || pqgo.player >= gameHeader.getNumberOfPlayers() || !players[pqgo.player])
+		return;
 	bool found = false;
 	for(int i=0; i<Team::MAX_COUNT; ++i)
 	{

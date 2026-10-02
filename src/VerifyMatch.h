@@ -17,6 +17,7 @@
 
 #include "MatchRecord.h"
 #include "MatchSetup.h"
+#include "OrderValidation.h"
 
 /// A friend of Engine, like HeadlessRunner.
 struct MatchVerifier
@@ -29,6 +30,9 @@ struct MatchVerifier
 		std::size_t compared = 0;                     ///< reports compared
 		std::map<int, std::uint32_t> firstDivergence; ///< seat -> first differing tick
 		std::map<std::uint32_t, Uint32> checksums;    ///< tick -> verifier checksum, 0..endTick
+		/// Human orders the engine checked while replaying the record, per seat: the
+		/// counts every live client computed too (voice aside, which is not recorded).
+		OrderValidation::Audit orders;
 	};
 
 	/// The verdict rule: verified when every reporting seat matched at every tick it

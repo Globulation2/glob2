@@ -122,6 +122,12 @@ TEST_SUITE("OnlineResources")
 			CHECK(!queuesFromInstance(value).empty());
 			++count;
 		}
+		for (auto &[file, value] : fixtures("PlayerProfile"))
+		{
+			INFO(file);
+			CHECK(PlayerProfile::fromJson(value));
+			++count;
+		}
 		for (auto &[file, value] : fixtures("RelayRegionList"))
 		{
 			INFO(file);
@@ -187,7 +193,7 @@ TEST_SUITE("OnlineResources")
 		CHECK(detail->match.rated);
 		CHECK(detail->match.durationTicks == 45000);
 		REQUIRE(detail->artifact("replay"));
-		CHECK(detail->artifact("replay")->url.find("/api/v1/blobs/") != std::string::npos);
+		CHECK(detail->artifact("replay")->url.find("/artifacts/replay") != std::string::npos);
 		const auto *alice = detail->match.participant("0b8f6f2e-3c4d-4e5f-8a9b-0c1d2e3f4a5b");
 		REQUIRE(alice);
 		REQUIRE(alice->rating);
@@ -210,6 +216,31 @@ TEST_SUITE("OnlineResources")
 
 		CHECK_FALSE(MapInfo::fromJson(Json::object()));
 		CHECK(parseMapList(Json{{"items", Json::array({map->map.title})}}).items.empty());
+	}
+
+	TEST_CASE("player profiles give ratings with rank, the trend and the aggregates")
+	{
+		auto registered = PlayerProfile::fromJson(fixture("PlayerProfile", "registered"));
+		REQUIRE(registered);
+		CHECK(registered->full);
+		REQUIRE(registered->ratings.size() == 1);
+		CHECK(registered->ratings[0].rank == 3);
+		auto summary = summarizeProfile(*registered, {});
+		REQUIRE(summary.ladders.size() == 1);
+		CHECK(summary.ladders[0].rating == doctest::Approx(1532.4));
+		CHECK(summary.ladders[0].rank == 3);
+		CHECK(summary.ladders[0].trend == std::vector<double>{1532.4});
+		CHECK(summary.recent == 11);
+		CHECK(summary.wins == 7);
+		CHECK(summary.losses == 4);
+		CHECK(summary.medianMinutes == 24); // 36000 ticks
+		CHECK(summary.bestMap == "evenGround");
+		CHECK(summary.bestMapWins == 4);
+
+		auto guest = PlayerProfile::fromJson(fixture("PlayerProfile", "guest"));
+		REQUIRE(guest);
+		CHECK_FALSE(guest->full);
+		CHECK(summarizeProfile(*guest, {}).ladders.empty());
 	}
 
 	TEST_CASE("the profile summary follows the ladders and recent results")

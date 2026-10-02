@@ -22,3 +22,6 @@ void writeManifest(const std::string &directory);
 }
 /// --verify-match <record> --map <file> --out <dir> (src/VerifyMatch.cpp).
 int runVerifyMatch(int argc, char **argv);
+/// --turn-client <assignment.json> --map <file> --out <dir> (src/TurnClientCommand.cpp):
+/// a headless online player connected to a relay.
+int runTurnClient(int argc, char **argv);

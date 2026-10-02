@@ -3532,6 +3532,30 @@ Nảy của danh sách
 
 [Map momentum]
 Quán tính bản đồ
+[turn reconnecting]
+
+[turn waiting for players]
+
+[turn rejoining]
+
+[turn catching up %0]
+
+[turn player reconnecting %0]
+
+[turn player lagging %0]
+
+[turn player resyncing %0]
+
+[turn player not connected %0]
+
+[lan host left]
+
+[lan host lost]
+
+[lan version mismatch %0]
+
+[lan cannot host %0]
+
 [qm 2 vs 2]
 
 [qm 1 vs 1]
@@ -3661,6 +3685,8 @@ Quán tính bản đồ
 [qm starting in %0]
 
 [qm preparing match]
+
+[qm match assigned %0 %1]
 
 [online jan]
 
@@ -3951,6 +3977,4 @@ Quán tính bản đồ
 [online %0 years ago]
 
 [maps share online]
-
-[qm match assigned %0 %1]
 

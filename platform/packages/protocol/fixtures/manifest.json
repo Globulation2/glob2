@@ -10,6 +10,7 @@
     "AdminMuteRequest": "schemas/AdminMuteRequest.schema.json",
     "AdminRenameRequest": "schemas/AdminRenameRequest.schema.json",
     "AdminRoleRequest": "schemas/AdminRoleRequest.schema.json",
+    "AiLeaderboard": "schemas/AiLeaderboard.schema.json",
     "AuthTokens": "schemas/AuthTokens.schema.json",
     "CreateMapRequest": "schemas/CreateMapRequest.schema.json",
     "EngineJob": "schemas/EngineJob.schema.json",
@@ -46,6 +47,7 @@
     "MatchTicketClaims": "schemas/MatchTicketClaims.schema.json",
     "MatchTicketHeader": "schemas/MatchTicketHeader.schema.json",
     "PlatformJwks": "schemas/PlatformJwks.schema.json",
+    "PlayerProfile": "schemas/PlayerProfile.schema.json",
     "PublicAccount": "schemas/PublicAccount.schema.json",
     "RealtimeAuthHandoffBeginParams": "schemas/RealtimeAuthHandoffBeginParams.schema.json",
     "RealtimeAuthHandoffBeginResult": "schemas/RealtimeAuthHandoffBeginResult.schema.json",
@@ -658,6 +660,31 @@
       "schema": "MatchDetail",
       "valid": true,
       "note": "A verified rated match."
+    },
+    {
+      "file": "invalid/MatchDetail/array-timeline.json",
+      "schema": "MatchDetail",
+      "valid": false,
+      "stage": "schema",
+      "note": "Timelines are sample objects, not bare rows."
+    },
+    {
+      "file": "valid/PlayerProfile/registered.json",
+      "schema": "PlayerProfile",
+      "valid": true,
+      "note": "A registered player with a rating, its history and aggregates."
+    },
+    {
+      "file": "valid/PlayerProfile/guest.json",
+      "schema": "PlayerProfile",
+      "valid": true,
+      "note": "Guests get a minimal profile."
+    },
+    {
+      "file": "valid/AiLeaderboard/one-version.json",
+      "schema": "AiLeaderboard",
+      "valid": true,
+      "note": "AI entities of a ladder grouped by sim version."
     },
     {
       "file": "valid/LeaderboardPage/with-ai.json",

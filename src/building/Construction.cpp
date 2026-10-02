@@ -150,15 +150,17 @@ void Building::cancelConstruction(Sint32 unitWorking)
 
 	if (type->isBuildingSite)
 	{
-		assert(buildingState==ALIVE);
+		// A cancel order can name any site, e.g. a new building's: those have nothing
+		// to return to. These were asserts; an order from the network must not stop
+		// the game, and the sites the user interface cancels never reach them.
+		if (buildingState!=ALIVE)
+			return;
 		int targetLevelTypeNum=BUILDING_LEVEL_NONE;
 
 		if (constructionResultState==UPGRADE)
 			targetLevelTypeNum=type->prevLevel;
 		else if (constructionResultState==REPAIR)
 			targetLevelTypeNum=type->nextLevel;
-		else
-			assert(false);
 
 		if (targetLevelTypeNum!=BUILDING_LEVEL_NONE)
 		{
@@ -166,7 +168,7 @@ void Building::cancelConstruction(Sint32 unitWorking)
 			recoverType=globalContainer->buildingsTypes.get(targetLevelTypeNum);
 		}
 		else
-			assert(false);
+			return;
 	}
 	else if (buildingState==WAITING_FOR_CONSTRUCTION_ROOM)
 	{

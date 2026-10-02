@@ -189,6 +189,26 @@ inline std::unique_ptr<GAGGUI::Screen> profile(GAGGUI::ScreenStack &stack)
 	team.queueId = "ranked-2v2";
 	team.participants[0].rating = Online::RatingChange{"ranked-2v2", 1490, 1521, true};
 	data.matches.insert(data.matches.begin() + 5, team);
+	// The server's profile: ratings with rank, rating history and aggregates.
+	Online::PlayerProfile profile;
+	profile.accountId = "me";
+	profile.displayName = "Bradley";
+	profile.kind = "registered";
+	profile.full = true;
+	profile.ratings = {{"ranked-1v1", 1543, 31, 18, false, 198}, {"ranked-2v2", 1521, 5, 3, true, std::nullopt}};
+	const double ones[] = {1490, 1510, 1499, 1530, 1539, 1528, 1543, 1531, 1538, 1543};
+	for (double after : ones)
+		profile.history.push_back({"ranked-1v1", after, std::nullopt});
+	const double twos[] = {1490, 1502, 1497, 1515, 1521};
+	for (double after : twos)
+		profile.history.push_back({"ranked-2v2", after, std::nullopt});
+	profile.aggregateGames = 50;
+	profile.aggregateWins = 28;
+	profile.aggregateLosses = 21;
+	profile.aggregateDays = 90;
+	profile.medianTicks = 24 * 60 * Online::MATCH_TICKS_PER_SECOND;
+	profile.winRates = {{"queue", "ranked-1v1", "1 vs 1 ranked", 31, 18}, {"generator", "even-ground", "Even Ground", 12, 9}};
+	data.profile = profile;
 	return std::make_unique<OnlineProfileScreen>(stack, data);
 }
 

@@ -128,11 +128,12 @@ offers a rematch through `Online::requestRematch`, registered by the room
 screen: an unrated room with the same players. A hand-off made before its
 handler exists is kept for it.
 
-**Data.** The profile reads `GET /api/v1/accounts/{id}` and the account's
-history, `GET /api/v1/accounts/{id}/matches` (a `MatchList`), and computes the
-ladders and aggregates from it (`summarizeProfile`), so it needs no other
-endpoint. Replays come from the `replay` artifact of `GET /api/v1/matches/{id}`
-and open in the replay viewer; deep links go to `<origin>/players/<id>`,
+**Data.** The profile reads `GET /api/v1/players/{id}` (`PlayerProfile`: the
+ratings with rank, the rating history for the trend lines and the aggregates)
+and `GET /api/v1/players/{id}/matches` (a `MatchList`) for the list;
+`summarizeProfile` falls back to the match list for anything the profile
+leaves out. Replays come from `GET /api/v1/matches/{id}/artifacts/replay` and
+open in the replay viewer; deep links go to `<origin>/players/<id>`,
 `<origin>/matches/<id>` and `<origin>/maps/<id>`. Map previews are the server's
 PNGs (`MapVersionInfo.previewUrl`), fetched with `PlatformClient::restRaw` and
 decoded with SDL_image. Uploads send the map's uncompressed bytes to
@@ -187,7 +188,7 @@ file or following a link.
 ## Map cache
 
 `MapCache` stores platform maps by the SHA-256 of their decompressed bytes as
-`online/maps/<hash>.map.gz`, readable like any gzip map through
+`online/maps/<hash>.map.gz` (saved games: `<hash>.game.gz`), readable like any gzip map through
 `FileManager::openInflatingInputStreamBackend`. `fetch(origin, hash, headers)`
 returns a polled download of `<origin>/api/v1/blobs/maps/<hash>` (the endpoint
 arrives with rooms in M4; `MapCache::blobPath` is the only place naming it),
@@ -195,6 +196,7 @@ accepting gzip or raw bytes, refusing anything whose hash differs, and storing
 it. Maps are limited to 64 MiB decompressed; the cache keeps at most 256 MiB,
 evicting the least recently used. An index (`online/maps/index.json`) keeps
 sizes and use order across restarts; unindexed files are removed at startup.
+LAN guests store the maps they download from a host in the same cache.
 
 ## Invite links
 

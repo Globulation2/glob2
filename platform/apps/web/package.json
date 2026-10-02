@@ -3,12 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Platform web app: sign-in, invite landing pages, profiles, leaderboards and maps.",
+  "description": "Platform web app: home, leaderboards, player and match pages, the map catalog and moderation.",
   "license": "GPL-3.0-or-later",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "e2e": "playwright test -c e2e/playwright.config.ts",
+    "e2e:server": "node e2e/server.ts"
   },
   "dependencies": {
     "@glob2/protocol": "0.1.0",
@@ -16,9 +18,13 @@
     "react-dom": "^19.3.0"
   },
   "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/react": "^16.3.3",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.1",
+    "jsdom": "^29.1.1",
     "vite": "^8.3.2"
   }
 }

@@ -20,13 +20,6 @@ Order::Order(void)
 MiscOrder::MiscOrder() : Order() {}
 NullOrder::NullOrder() : MiscOrder() {}
 
-// NetMessage::operator!= is the only non-pure virtual in NetMessage, so it anchors
-// the vtable without pulling in NetMessage.cpp.
-bool NetMessage::operator!=(const NetMessage& rhs) const
-{
-	return !(*this == rhs);
-}
-
 Uint32 lastDecodeVersionMinor = 0;
 
 std::shared_ptr<Order> Order::getOrder(const Uint8 *netData, int netDataLength, Uint32 versionMinor)

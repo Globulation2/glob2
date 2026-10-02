@@ -504,10 +504,53 @@ export function parseGameResult(text: string): GameResult {
   return { finalTick: int(doc['ticks'], 'ticks'), teams };
 }
 
-export type VerifierVerdict =
+/**
+ * A seat whose sequenced orders the verifier refused (verdict.json
+ * `orderRejections`, see docs/multiplayer/turn-protocol.md): counts by reason.
+ */
+export interface VerifierOrderRejection {
+  seat: number;
+  rejected: number;
+  stale: number;
+  reasons: Record<string, number>;
+  firstRejectedTick?: number;
+}
+
+export type VerifierVerdict = (
   | { verdict: 'verified' }
   | { verdict: 'diverged'; seats: number[] }
-  | { verdict: 'unverifiable'; reason: string };
+  | { verdict: 'unverifiable'; reason: string }
+) & { orderRejections?: VerifierOrderRejection[] };
+
+/** Well-formed entries of verdict.json `orderRejections`; anything else is dropped. */
+function parseOrderRejections(value: unknown): VerifierOrderRejection[] | undefined {
+  if (!Array.isArray(value)) return undefined;
+  const count = (v: unknown) =>
+    typeof v === 'number' && Number.isFinite(v) && v >= 0 ? Math.trunc(v) : 0;
+  const rejections: VerifierOrderRejection[] = [];
+  for (const item of value) {
+    if (!item || typeof item !== 'object') continue;
+    const r = item as Record<string, unknown>;
+    const seat = r['seat'];
+    if (typeof seat !== 'number' || !Number.isInteger(seat) || seat < 0 || seat > 11) continue;
+    const reasons: Record<string, number> = {};
+    if (r['reasons'] && typeof r['reasons'] === 'object') {
+      for (const [key, n] of Object.entries(r['reasons'] as Record<string, unknown>)) {
+        if (typeof n === 'number') reasons[key.slice(0, 64)] = count(n);
+      }
+    }
+    rejections.push({
+      seat,
+      rejected: count(r['rejected']),
+      stale: count(r['stale']),
+      reasons,
+      ...(typeof r['firstRejectedTick'] === 'number'
+        ? { firstRejectedTick: count(r['firstRejectedTick']) }
+        : {}),
+    });
+  }
+  return rejections;
+}
 
 /**
  * Reads `<out>/verdict.json`. ASSUMED contract (the command is being built on
@@ -521,6 +564,12 @@ export type VerifierVerdict =
  */
 export function parseVerdict(text: string): VerifierVerdict {
   const doc = object(parseJson(text, 'verdict'), 'verdict');
+  const rejections = parseOrderRejections(doc['orderRejections']);
+  const extra = rejections && rejections.length > 0 ? { orderRejections: rejections } : {};
+  return { ...parseVerdictKind(doc), ...extra };
+}
+
+function parseVerdictKind(doc: Record<string, unknown>): VerifierVerdict {
   switch (doc['verdict']) {
     case 'verified':
       return { verdict: 'verified' };

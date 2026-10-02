@@ -71,8 +71,14 @@ OnlineProfileScreen::OnlineProfileScreen(GAGGUI::ScreenStack &screens, std::stri
 OnlineProfileScreen::OnlineProfileScreen(GAGGUI::ScreenStack &screens, Data fixed)
 	: screens(screens), flow(screens), live(false), data(std::move(fixed))
 {
-	summary = Online::summarizeProfile(data.accountId, data.matches);
+	summarize();
 	started = true;
+}
+
+void OnlineProfileScreen::summarize()
+{
+	summary = data.profile ? Online::summarizeProfile(*data.profile, data.matches)
+						   : Online::summarizeProfile(data.accountId, data.matches);
 }
 
 OnlineProfileScreen::~OnlineProfileScreen()
@@ -109,15 +115,19 @@ void OnlineProfileScreen::onTimer(Uint32)
 						data.ladderNames[queue.id] = queue.name;
 					invalidate();
 				});
-	client.rest(HttpFetch::Method::Get, "/api/v1/accounts/" + Online::urlEncode(data.accountId), Online::Json(),
+	client.rest(HttpFetch::Method::Get, "/api/v1/players/" + Online::urlEncode(data.accountId), Online::Json(),
 				[this, alive](const Online::PlatformClient::Response &response)
 				{
 					if (!*alive || !response.ok)
 						return;
-					data.displayName = response.result.value("displayName", data.displayName);
-					data.kind = response.result.value("kind", std::string());
-					if (auto created = Online::parseTimestamp(response.result.value("createdAt", std::string())))
-						data.since = monthYear(*created);
+					data.profile = Online::PlayerProfile::fromJson(response.result);
+					if (!data.profile)
+						return;
+					data.displayName = data.profile->displayName;
+					data.kind = data.profile->kind;
+					if (data.profile->createdAt)
+						data.since = monthYear(*data.profile->createdAt);
+					summarize();
 					invalidate();
 				});
 	load(false);
@@ -129,7 +139,7 @@ void OnlineProfileScreen::load(bool more)
 		return;
 	loading = true;
 	problem.clear();
-	std::string path = "/api/v1/accounts/" + Online::urlEncode(data.accountId) + "/matches?limit=50";
+	std::string path = "/api/v1/players/" + Online::urlEncode(data.accountId) + "/matches?limit=50";
 	if (more && !cursor.empty())
 		path += "&cursor=" + Online::urlEncode(cursor);
 	auto alive = this->alive;
@@ -155,7 +165,7 @@ void OnlineProfileScreen::load(bool more)
 										   data.matches.push_back(std::move(match));
 									   cursor = page.nextCursor;
 									   data.now = wallClockMs();
-									   summary = Online::summarizeProfile(data.accountId, data.matches);
+									   summarize();
 									   invalidate();
 								   });
 	invalidate();
@@ -197,50 +207,34 @@ void OnlineProfileScreen::replay(const std::string &matchId)
 	status = tr("[profile downloading replay]");
 	invalidate();
 	auto alive = this->alive;
-	auto &client = Online::services().client;
-	client.rest(
-		HttpFetch::Method::Get, "/api/v1/matches/" + Online::urlEncode(matchId), Online::Json(),
-		[this, alive, matchId](const Online::PlatformClient::Response &response)
+	// The verified replay the server keeps for the match.
+	Online::services().client.restRaw(
+		HttpFetch::Method::Get, "/api/v1/matches/" + Online::urlEncode(matchId) + "/artifacts/replay", {}, {},
+		[this, alive, matchId](const Online::PlatformClient::Response &file)
 		{
 			if (!*alive)
 				return;
-			auto detail = response.ok ? Online::MatchDetail::fromJson(response.result) : std::nullopt;
-			const auto *artifact = detail ? detail->artifact("replay") : nullptr;
-			if (!artifact)
+			if (!file.ok || file.body.empty())
 			{
 				status = tr("[profile no replay]");
 				invalidate();
 				return;
 			}
-			Online::services().client.restRaw(
-				HttpFetch::Method::Get, artifact->url, {}, {},
-				[this, alive, matchId](const Online::PlatformClient::Response &file)
-				{
-					if (!*alive)
-						return;
-					if (!file.ok || file.body.empty())
-					{
-						status = tr("[profile no replay]");
-						invalidate();
-						return;
-					}
-					const std::string path = "replays/online-" + matchId + ".replay";
-					std::unique_ptr<GAGCore::StreamBackend> out(
-						GAGCore::Toolkit::getFileManager()->openOutputStreamBackend(path));
-					if (!out || !out->isValid())
-					{
-						status = tr("[profile no replay]");
-						invalidate();
-						return;
-					}
-					out->write(file.body.data(), file.body.size());
-					out.reset();
-					status.clear();
-					invalidate();
-					flow.replay(path);
-				},
-				64 * 1024 * 1024);
-		});
+			const std::string path = "replays/online-" + matchId + ".replay";
+			std::unique_ptr<GAGCore::StreamBackend> out(GAGCore::Toolkit::getFileManager()->openOutputStreamBackend(path));
+			if (!out || !out->isValid())
+			{
+				status = tr("[profile no replay]");
+				invalidate();
+				return;
+			}
+			out->write(file.body.data(), file.body.size());
+			out.reset();
+			status.clear();
+			invalidate();
+			flow.replay(path);
+		},
+		64 * 1024 * 1024);
 }
 
 std::vector<int> OnlineProfileScreen::visible() const
@@ -305,11 +299,14 @@ std::string OnlineProfileScreen::matchKind(const Online::MatchSummary &match) co
 Element OnlineProfileScreen::ratingCard(const Online::LadderSummary &ladder, const Presentation &p, bool phone)
 {
 	std::vector<Element> top{label(std::to_string(long(std::lround(ladder.rating))), {FontRole::Title})};
+	if (ladder.rank && !ladder.provisional)
+		top.push_back(caption("#" + std::to_string(*ladder.rank)));
 	if (ladder.provisional)
 		top.push_back(badge(FormattableString(tr("[profile provisional %0 games]")).arg(ladder.games), frontendTheme().palette.focus));
 	std::vector<Element> parts{caption(ladderName(ladder.ladder)), row(std::move(top), {p.pt(8), CrossAlign::Center})};
 	if (ladder.lastChange && phone)
-		parts.push_back(caption(signedText(*ladder.lastChange)));
+		parts.push_back(caption((ladder.rank && !ladder.provisional ? "#" + std::to_string(*ladder.rank) + " \xC2\xB7 " : std::string()) +
+								signedText(*ladder.lastChange)));
 	if (!phone)
 		parts.push_back(sparkline(ladder.trend, ladder.provisional, {p.pt(200), p.pt(26)}));
 	CardOptions options;

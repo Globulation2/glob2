@@ -18,9 +18,10 @@ class ScreenStack;
 // Profile and match history (multiplayer mock-ups, screen group 7 A): the
 // rating of each queue with its trend and provisional flag, a few aggregates
 // over recent games, and the match list with Replay and the match page.
-// Everything is computed from the account's match history
-// (GET /api/v1/accounts/{id}/matches, a MatchList); deep analysis is one link
-// away on the web (<origin>/players/<id>, <origin>/matches/<id>).
+// The figures come from the player's profile (GET /api/v1/players/{id}:
+// ratings with rank, rating history, aggregates) and the list from their
+// history (GET /api/v1/players/{id}/matches); deep analysis is one link away
+// on the web (<origin>/players/<id>, <origin>/matches/<id>).
 class OnlineProfileScreen : public Glob2UI::Screen
 {
   public:
@@ -46,6 +47,8 @@ class OnlineProfileScreen : public Glob2UI::Screen
 		std::vector<Online::MatchSummary> matches;
 		std::map<std::string, std::string> ladderNames;
 		std::int64_t now = 0;
+		// GET /api/v1/players/{id}: ratings, rating history and aggregates.
+		std::optional<Online::PlayerProfile> profile;
 	};
 	OnlineProfileScreen(GAGGUI::ScreenStack &screens, Data data);
 	~OnlineProfileScreen() override;
@@ -65,6 +68,7 @@ class OnlineProfileScreen : public Glob2UI::Screen
 
   private:
 	void load(bool more);
+	void summarize();
 	std::vector<int> visible() const;
 	std::string ladderName(const std::string &ladder) const;
 	std::string matchTitle(const Online::MatchSummary &match) const;

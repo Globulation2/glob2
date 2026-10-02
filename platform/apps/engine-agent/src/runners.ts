@@ -247,8 +247,10 @@ export class HeadlessEngineRunner implements EngineRunner {
     );
     const verification = await this.options.engine.verifyMatch(record, map, signal);
     const verdict = verification.verdict;
+    // Seats whose orders the engine refused; the match page shows them.
+    const rejections = verdict.orderRejections ? { orderRejections: verdict.orderRejections } : {};
     if (verdict.verdict === 'unverifiable') {
-      return { verdict: 'unverifiable', reason: message(verdict.reason) };
+      return { verdict: 'unverifiable', reason: message(verdict.reason), ...rejections };
     }
     const { result, replay } = verification;
     if (!result || !replay) throw new EngineOutputError('verifier output incomplete');
@@ -270,8 +272,8 @@ export class HeadlessEngineRunner implements EngineRunner {
       replayHash,
     };
     return verdict.verdict === 'verified'
-      ? { verdict: 'verified', outcome }
-      : { verdict: 'diverged', clients: verdict.seats, outcome };
+      ? { verdict: 'verified', outcome, ...rejections }
+      : { verdict: 'diverged', clients: verdict.seats, outcome, ...rejections };
   }
 }
 

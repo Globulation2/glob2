@@ -487,4 +487,94 @@ ProfileSummary summarizeProfile(const std::string &accountId, const std::vector<
 	}
 	return summary;
 }
+std::optional<PlayerProfile> PlayerProfile::fromJson(const Json &json)
+{
+	if (!required(json, {"account"}) || !json.at("account").is_object())
+		return {};
+	const Json &account = json.at("account");
+	PlayerProfile profile;
+	profile.accountId = text(account, "id");
+	profile.displayName = text(account, "displayName");
+	profile.kind = text(account, "kind");
+	profile.createdAt = timestamp(account, "createdAt");
+	profile.full = text(json, "detail") == "full";
+	for (const auto &item : array(json, "ratings"))
+		if (item.is_object())
+			profile.ratings.push_back({text(item, "ladder"), number(item, "rating").value_or(0),
+									   integer(item, "games").value_or(0), integer(item, "wins").value_or(0),
+									   flag(item, "provisional"), integer(item, "rank")});
+	for (const auto &item : array(json, "ratingHistory"))
+		if (item.is_object())
+			profile.history.push_back({text(item, "ladder"), number(item, "after").value_or(0), timestamp(item, "at")});
+	for (const auto &item : array(json, "recentMatches"))
+		if (auto match = MatchSummary::fromJson(item))
+			profile.recentMatches.push_back(std::move(*match));
+	if (auto aggregates = json.find("aggregates"); aggregates != json.end() && aggregates->is_object())
+	{
+		profile.aggregateGames = integer(*aggregates, "games");
+		profile.aggregateWins = integer(*aggregates, "wins");
+		profile.aggregateLosses = integer(*aggregates, "losses");
+		profile.aggregateDays = integer(*aggregates, "windowDays");
+		profile.medianTicks = number(*aggregates, "medianTicks");
+		for (const auto &item : array(*aggregates, "winRates"))
+			if (item.is_object())
+				profile.winRates.push_back({text(item, "dimension"), text(item, "key"), text(item, "label"),
+											integer(item, "games").value_or(0), integer(item, "wins").value_or(0)});
+	}
+	if (profile.accountId.empty())
+		return {};
+	return profile;
+}
+
+ProfileSummary summarizeProfile(const PlayerProfile &profile, const std::vector<MatchSummary> &matches)
+{
+	const auto &history = matches.empty() ? profile.recentMatches : matches;
+	ProfileSummary summary = summarizeProfile(profile.accountId, history);
+	if (!profile.full)
+		return summary;
+	// Ladders: the server's ratings, with the rating history as the trend.
+	std::vector<LadderSummary> ladders;
+	for (const auto &rating : profile.ratings)
+	{
+		LadderSummary ladder;
+		ladder.ladder = rating.ladder;
+		ladder.rating = rating.rating;
+		ladder.provisional = rating.provisional;
+		ladder.games = rating.games;
+		ladder.rank = rating.rank;
+		for (const auto &point : profile.history)
+			if (point.ladder == rating.ladder)
+				ladder.trend.push_back(point.after);
+		if (ladder.trend.size() >= 2)
+			ladder.lastChange = ladder.trend.back() - ladder.trend[ladder.trend.size() - 2];
+		ladders.push_back(std::move(ladder));
+	}
+	summary.ladders = std::move(ladders);
+	if (profile.aggregateGames && *profile.aggregateGames > 0)
+	{
+		summary.recent = *profile.aggregateGames;
+		summary.wins = profile.aggregateWins.value_or(0);
+		summary.losses = profile.aggregateLosses.value_or(0);
+		summary.draws = std::max(0, summary.recent - summary.wins - summary.losses);
+	}
+	if (profile.medianTicks && *profile.medianTicks > 0)
+		summary.medianMinutes = static_cast<int>(std::lround(*profile.medianTicks / double(MATCH_TICKS_PER_SECOND * 60)));
+	// Best map: the catalog map (or else the generator) with the most wins.
+	for (const char *dimension : {"map", "generator"})
+	{
+		const PlayerProfile::WinRate *best = nullptr;
+		for (const auto &rate : profile.winRates)
+			if (rate.dimension == dimension && rate.wins > 0 &&
+				(!best || rate.wins > best->wins || (rate.wins == best->wins && rate.games < best->games)))
+				best = &rate;
+		if (best)
+		{
+			summary.bestMap = best->label.empty() ? best->key : best->label;
+			summary.bestMapWins = best->wins;
+			summary.bestMapLosses = best->games - best->wins;
+			break;
+		}
+	}
+	return summary;
+}
 } // namespace Online

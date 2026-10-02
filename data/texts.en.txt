@@ -3534,6 +3534,30 @@ Unable to verify or connect to the LAN host: %0
 The server refused to start this game. Check player readiness or reconnect after the server update.
 [lan lobby endpoint required]
 Use the host lobby endpoint
+[turn reconnecting]
+Connection to the host lost. Reconnecting...
+[turn waiting for players]
+Waiting for every player to load...
+[turn rejoining]
+Rejoining the game...
+[turn catching up %0]
+Catching up: %0 turns behind
+[turn player reconnecting %0]
+%0 is reconnecting...
+[turn player lagging %0]
+%0 is lagging
+[turn player resyncing %0]
+%0 is catching up
+[turn player not connected %0]
+%0 has not connected yet
+[lan host left]
+The host left the game.
+[lan host lost]
+The connection to the host was lost.
+[lan version mismatch %0]
+The host runs a different version of Globulation 2 (%0).
+[lan cannot host %0]
+Unable to host a LAN game: %0
 [qm 2 vs 2]
 2 vs 2
 [qm 1 vs 1]
@@ -3664,6 +3688,8 @@ Both players must accept. Declining or letting the timer run out puts you at the
 Starting in %0…
 [qm preparing match]
 Preparing the match…
+[qm match assigned %0 %1]
+Match %0 is ready on %1, but this build cannot connect to online matches yet.
 [online jan]
 Jan
 [online feb]
@@ -3954,5 +3980,3 @@ Sat
 %0 years ago
 [maps share online]
 Share online…
-[qm match assigned %0 %1]
-Match %0 is ready on %1, but this build cannot connect to online matches yet.

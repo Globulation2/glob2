@@ -47,6 +47,32 @@ function fitCanvas() {
 addEventListener('resize', fitCanvas);
 new MutationObserver(fitCanvas).observe(canvas, {attributes:true,attributeFilter:['width','height']});
 fitCanvas();
+// Watch in browser: ?replay=<url> downloads a replay (for example a verified
+// match replay linked from the platform's match page) while the game loads and
+// opens it in the replay viewer instead of the main menu. Only http(s) URLs are
+// fetched, without credentials unless same-origin; the server must allow CORS
+// for other origins. The file lives in memory (/tmp), never in saved storage.
+const WATCH_REPLAY_MAX_BYTES = 64 * 1024 * 1024;
+const watchReplay = (() => {
+  const raw = new URLSearchParams(location.search).get('replay');
+  if (!raw) return null;
+  let url;
+  try { url = new URL(raw, location.href); } catch (e) { return {status:'failed', error:'invalid replay URL'}; }
+  if (url.protocol !== 'https:' && url.protocol !== 'http:') return {status:'failed', error:'unsupported replay URL'};
+  const state = {status:'downloading', url:url.href};
+  state.bytes = fetch(url.href, {credentials:'same-origin'}).then(async response => {
+    if (!response.ok) throw Error('HTTP ' + response.status);
+    const length = Number(response.headers.get('content-length') || 0);
+    if (length > WATCH_REPLAY_MAX_BYTES) throw Error('replay too large');
+    // The replay viewer shows the file name: keep the server's, if it sends a safe one.
+    const named = /filename="?([A-Za-z0-9._-]{1,64})\.replay"?/.exec(response.headers.get('content-disposition') || '');
+    state.path = '/tmp/' + (named ? named[1] : 'watch') + '.replay';
+    const bytes = new Uint8Array(await response.arrayBuffer());
+    if (bytes.length === 0 || bytes.length > WATCH_REPLAY_MAX_BYTES) throw Error('replay empty or too large');
+    return bytes;
+  });
+  return state;
+})();
 var Module = {
   noInitialRun: true,
   canvas,
@@ -71,6 +97,19 @@ var Module = {
       if (err) Module.printErr('Save restore failed: ' + err);
       removeRunDependency('browser-saves');
     });
+    if (watchReplay && watchReplay.bytes) {
+      addRunDependency('watch-replay');
+      Module.setStatus('Downloading replay…');
+      watchReplay.bytes.then(bytes => {
+        FS.writeFile(watchReplay.path, bytes);
+        watchReplay.status = 'ready';
+        watchReplay.size = bytes.length;
+      }, error => {
+        watchReplay.status = 'failed';
+        watchReplay.error = String(error && error.message || error);
+        Module.printErr('Replay download failed: ' + watchReplay.error);
+      }).finally(() => removeRunDependency('watch-replay'));
+    }
   }],
   onRuntimeInitialized() {
     const width = Math.max(1, Math.floor(innerWidth));
@@ -108,7 +147,9 @@ var Module = {
     // instance serving this page is the one to join.
     const join = new URLSearchParams(location.search).get('join');
     const invite = join && /^[A-Za-z0-9]{6,16}$/.test(join) ? ['--join', join, '--instance', location.origin] : [];
-    Module.callMain(['-s', width + 'x' + height, '-F', '-C', gpu ? '-g' : '-G', ...invite]);
+    const args = ['-s', width + 'x' + height, '-F', '-C', gpu ? '-g' : '-G', ...invite];
+    if (watchReplay && watchReplay.status === 'ready') args.push('-replay', watchReplay.path);
+    Module.callMain(args);
     document.body.classList.add('ready');
     loading.setAttribute('aria-hidden','true');
   },
@@ -144,6 +185,7 @@ Object.defineProperty(window, 'glob2Diagnostics', {value: Object.freeze({
       screenClass:Module.glob2ScreenClass || '', roomCanStart:Boolean(Module.glob2RoomCanStart), customGameReady:Boolean(Module.glob2CustomGameReady), tick:Module.glob2Tick || 0, frames:Module.glob2Frames || 0, loop:Module.glob2Loop || 0,
       paused:Boolean(Module.glob2Paused), torus:Module.glob2Screen === 'match' && Boolean(Module.glob2Torus), width:canvas.width, height:canvas.height,
       restore:Module.storageRestore || 'restoring',
+      watchReplay:watchReplay ? watchReplay.status : 'none',
       import:Module.importState || 'idle',
       persisting:Module.storage?.state === 'writing',
       persistence:Module.storage?.state || 'restoring',
