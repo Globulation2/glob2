@@ -21,6 +21,8 @@
 #include "Unit.h"
 #include "Utilities.h"
 #include "SDLCompat.h"
+#include "sim/ClientCommandSink.h"
+#include "sim/ClientRequests.h"
 
 
 #include "Brush.h"
@@ -109,13 +111,50 @@ void Game::wonSyncStep(void)
 void Game::scriptSyncStep()
 {
 	PERF_SCOPE_TIME(Scripts);
-	// Decorative games have no GUI or mission script context. Normal and
-	// headless Engine sessions both supply a GameGUI, as before.
-	if (!gui) return;
+	// Decorative games have no client or mission script context. Normal and
+	// headless Engine sessions both supply a GameGUI (the client sink), as before.
+	if (!clientSink) return;
 	// do a script step
 	if (legacyScriptActive())
-		sgslScript.syncStep(gui);
-	mapscript.syncStep(gui);
+		sgslScript.syncStep(*this, *clientSink, *clientRequests);
+	mapscript.syncStep(clientSink);
+}
+
+void Game::applyClientRequests()
+{
+	if (!clientRequests)
+		return;
+	// Failing-unit markers are presentation-only (never saved or checksummed);
+	// only the building whose panel is open records which units failed.
+	const BuildingRef observed = clientRequests->latest().observedBuilding;
+	if (observed != recordingFailingUnits)
+	{
+		if (Building *previous = resolveBuilding(recordingFailingUnits))
+			previous->setRecordFailingUnits(false);
+		if (Building *next = resolveBuilding(observed))
+			next->setRecordFailingUnits(true);
+		recordingFailingUnits = observed;
+	}
+}
+
+void Game::publishTickEvents()
+{
+	if (!clientEvents)
+		return;
+	ClientEvents::TickPulse pulse;
+	pulse.tick = stepCounter;
+	pulse.valid = true;
+	for (int t = 0; t < mapHeader.getNumberOfTeams(); t++)
+	{
+		Team *team = teams[t];
+		if (!team)
+			continue;
+		while (std::optional<GameEvent> event = team->getEvent())
+			clientEvents->push(ClientEvent::TeamEvent{t, std::move(*event)});
+		for (int type = 0; type < GESize; type++)
+			pulse.recentEvents[t][type] = team->wasRecentEvent(static_cast<GameEventType>(type));
+	}
+	clientEvents->publishPulse(pulse);
 }
 
 
@@ -139,6 +178,7 @@ void Game::prestigeSyncStep()
 void Game::syncStep(Sint32 localTeam)
 {
 	const auto random = bindRandom();
+	applyClientRequests();
 	if (!anyPlayerWaited)
 	{
 		PERF_SCOPE_TIME(Tick);
@@ -193,6 +233,7 @@ void Game::syncStep(Sint32 localTeam)
 
 		Uint64 endTick=SDL_GetTicks64();
 		ticksGameSum[stepCounter&(TICK_PROFILE_BUF_LEN-1)]+=static_cast<Sint64>(endTick) - static_cast<Sint64>(startTick);
+		publishTickEvents();
 		stepCounter++;
 	}
 }

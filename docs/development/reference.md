@@ -449,6 +449,30 @@ For timing and scheduling, start with `src/Game_sync.cpp` and `src/EngineRun.cpp
   `syncRand()`. Use a presentation-owned generator such as `GameGUI::effectsRandom`,
   so visual effects can change, run at any frame rate or move to another thread
   without consuming simulation draws.
+- Simulation/client boundary (`src/sim/`). Simulation code must not call `GameGUI`;
+  it talks to the client through three channels, which `GameGUI` owns and `Game`
+  points to (all null without a GUI):
+  - `ClientEvents`: lossless queue of notices the simulation publishes (team
+    `GameEvent`s, chat, voice, marks, pause, ghost removal, building removal, unit
+    conversion, executed orders) plus a per-tick latest-value pulse
+    (`Team::wasRecentEvent` for every team). `Game::executeOrderAndNotify` publishes
+    the order effects; `GameGUI::consumeClientEvents` applies them after each order,
+    after each engine tick, and at the start of `step` and `drawAll`.
+  - `ClientCommandSink`: the presentation commands map scripts issue (building and
+    flag choices, GUI elements, highlights, Space swallowing, script text). SGSL,
+    USL and JavaScript map scripts call it instead of `GameGUI`. Its two read
+    methods are legacy USL queries; do not add more.
+  - `ClientRequests`: a latest-value `ClientView` (viewport, observed building,
+    overlay, debug layers) and a lossless command queue (the SGSL Space
+    acknowledgement). `Game::applyClientRequests` applies them at the start of
+    `Game::syncStep`; only the observed building records
+    `Building::unitsFailingByReason`.
+
+  Client code holds entities as `BuildingRef`/`UnitRef` (gid plus `scriptIdentity`)
+  and resolves them through `Game::resolveBuilding`/`resolveUnit` at each use; do not
+  keep `Building*`/`Unit*` across ticks in client code. The channels are
+  single-threaded for now. Making them thread-safe only changes `LosslessQueue` and
+  the latest-value accessors.
 - For behavior-preserving refactors and optimizations, compare base and changed
   builds using identical saves/maps, seeds, settings and orders. Compare per-tick
   state/checksums as well as replay bytes: matching orders alone do not prove that
@@ -681,8 +705,12 @@ content revision. Code that edits pixels through `getSDLSurface()` must call
 `markPixelsChanged()` afterward. This includes raw SDL copies and external rasterizers.
 
 `GameRenderFrame` groups the viewport, assets, visibility and draw options inside the
-existing game rendering entry point. `Game::softwareTerrainCache` is transient presentation
-state: 16×16 tile chunks, at most 32 MiB of pixel storage, least-recently-used eviction.
+existing game rendering entry point. Presentation state a view keeps between frames —
+animation phases, the cloud field, the overlay scratch buffer and the software terrain
+cache — lives in `MapRenderState`, owned by `Game::ViewState`, never on `Game` or `Map`;
+the simulation neither reads nor writes it and each view animates independently. The
+terrain cache is transient presentation state: 16×16 tile chunks, at most 32 MiB of pixel
+storage, least-recently-used eviction.
 The cache is used during transformed software passes. Ordinary native drawing keeps
 its per-tile opaque copies, avoiding full-chunk blending of mixed alpha. Within a
 transformed chunk, adjacent opaque tiles become borrowed surface views over the raw
@@ -690,7 +718,7 @@ chunk pixels. Coastlines retain individual source blits, avoiding repeated alpha
 over transparent chunk holes. Views are destroyed before their backing chunk.
 Each chunk validates exact terrain IDs, the existing discovery decisions and source
 content revisions. It stores raw color/alpha, so coastlines blend over animated water
-once. Map replacement clears the cache; editor terrain changes and visible-team changes
+once. Map replacement (a new `Map::identity()`) clears the cache; editor terrain changes and visible-team changes
 are detected during preparation. Resources, actors, fog and overlays keep their existing
 passes. Water coverage subtracts only verified opaque terrain rectangles, including discovery
 boundaries. A complete animated water tile is omitted only when all of it is covered;

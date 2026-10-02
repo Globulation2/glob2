@@ -163,7 +163,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	}
 
 	if ((px<view.mouseX)&&((px+32)>view.mouseX)&&(py<view.mouseY)&&((py+32)>view.mouseY)&&(((drawOptions & DRAW_WHOLE_MAP) != 0) ||(map.isFOWDiscovered(x+viewportX, y+viewportY, visibleTeams))||(Unit::GIDtoTeam(gid)==localTeam)))
-		view.mouseUnit=unit;
+		view.mouseUnit=refOf(unit);
 
 	if ((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0 )
 	{
@@ -202,7 +202,7 @@ void Game::drawMapGroundUnits(int left, int top, int right, int bot, int sw, int
     GAGCore::UnitDrawBatch unitBatch(globalContainer->gfx);
 	//Reset the mouse unit to NULL, as this time around there may not be a unit
 	//under the mouse pointer
-	view.mouseUnit=NULL;
+	view.mouseUnit=UnitRef();
 	for (int y=top-1; y<=bot; y++)
 		for (int x=left-1; x<=right; x++)
 		{

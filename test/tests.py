@@ -38,6 +38,7 @@ ENGINE_TESTS = [
     'BuildingGradientInvalidationHarness.cpp',
     'FetchApportionmentHarness.cpp',
     'GameGUISelectionHarness.cpp',
+    ('ClientChannelsTest.cpp', dict(cxxflags=['-fno-access-control'])),
     'HiringBucketHarness.cpp',
     'HungryDefeatHarness.cpp',
     'ImmobileUnitGradientHarness.cpp',
@@ -117,6 +118,7 @@ UNIT_TESTS = [
     # Former CppUnit suite (TestsRunner).
     'AllyTeamWidgetIndexTest.cpp',
     'BitArrayTest.cpp',
+    'SceneBufferTest.cpp',
     'BrushAccumulatorTest.cpp',
     'BrushCoverageTest.cpp',
     'BrushToolHitTest.cpp',

@@ -1741,7 +1741,7 @@ class GameGUITouchHarness
 			const auto savedFlags = gui.localTeam->virtualBuildings;
 			gui.localTeam->virtualBuildings = {rangeFlag};
 			rangeFlag->posX = rangeFlag->posY = 2;
-			gui.view.mouseUnit = nullptr;
+			gui.view.mouseUnit = UnitRef();
 			{
 				// The reach is 30 points in the middle of the screen and grows to 36
 				// at its edges and corners, where thumbs are least accurate.

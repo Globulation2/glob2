@@ -104,7 +104,10 @@ namespace glob2test
 	void HeadlessGame::step(int ticks)
 	{
 		for (int i = 0; i < ticks; ++i)
+		{
 			game.syncStep(0);  // advances stepCounter itself
+			gui.consumeClientEvents();  // as the engine does after every tick
+		}
 	}
 
 	Uint32 HeadlessGame::checksum()

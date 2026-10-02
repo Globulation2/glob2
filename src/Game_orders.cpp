@@ -24,6 +24,8 @@
 #include "Utilities.h"
 #include "GameGUI.h"
 #include "SDLCompat.h"
+#include "Player.h"
+#include "net/message/MessageRecipients.h"
 
 
 #include "Brush.h"
@@ -133,6 +135,66 @@ void Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 			executePlayerQuitGame(*std::static_pointer_cast<PlayerQuitsGameOrder>(order));
 			break;
 	}
+}
+
+void Game::executeOrderAndNotify(std::shared_ptr<Order> order, int localPlayer)
+{
+	// Each client-visible effect is published before executeOrder runs, from the
+	// state the order found, so names and alliances match what GameGUI used to
+	// read when it handled the order itself.
+	switch (order->getOrderType())
+	{
+		case ORDER_TEXT_MESSAGE:
+		{
+			auto mo = std::static_pointer_cast<MessageOrder>(order);
+			if (clientEvents)
+			{
+				ClientEvent::ChatMessage message;
+				message.messageOrderType = mo->messageOrderType;
+				message.sender = mo->sender;
+				message.senderName = players[mo->sender]->name;
+				message.text = mo->getText();
+				message.recipientsMask = mo->recipientsMask;
+				for (int k : messageRecipientPlayers(mo->recipientsMask, gameHeader.getNumberOfPlayers()))
+					message.recipientNames.push_back(players[k]->name);
+				publishClientEvent(std::move(message));
+			}
+			executeOrder(order, localPlayer);
+			break;
+		}
+		case ORDER_VOICE_DATA:
+			publishClientEvent(ClientEvent::VoiceData{std::static_pointer_cast<OrderVoiceData>(order)});
+			executeOrder(order, localPlayer);
+			break;
+		case ORDER_PLAYER_QUIT_GAME:
+			if (clientEvents)
+				publishClientEvent(ClientEvent::PlayerQuit{order->sender, players[order->sender]->name});
+			executeOrder(order, localPlayer);
+			break;
+		case ORDER_MAP_MARK:
+		{
+			// Client-only: never reaches executeOrder (or the replay/dataset writers).
+			auto mmo = std::static_pointer_cast<MapMarkOrder>(order);
+			assert(teams[mmo->teamNumber]->teamNumber < mapHeader.getNumberOfTeams());
+			publishClientEvent(ClientEvent::MapMark{mmo, teams[mmo->teamNumber]->allies});
+			break;
+		}
+		case ORDER_PAUSE_GAME:
+			// Client-only, like map marks.
+			publishClientEvent(ClientEvent::PauseChanged{std::static_pointer_cast<PauseGameOrder>(order)->pause});
+			break;
+		case ORDER_CREATE:
+		{
+			auto oc = std::static_pointer_cast<OrderCreate>(order);
+			publishClientEvent(ClientEvent::BuildingRequested{oc->teamNumber, oc->posX, oc->posY});
+			executeOrder(order, localPlayer);
+			break;
+		}
+		default:
+			executeOrder(order, localPlayer);
+			break;
+	}
+	publishClientEvent(ClientEvent::OrderExecuted{order});
 }
 
 void Game::executeCreate(const OrderCreate& oc, int localPlayer)

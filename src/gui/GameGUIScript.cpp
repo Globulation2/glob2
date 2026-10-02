@@ -77,6 +77,14 @@ void GameGUI::disableGUIElement(int id)
 		nextDisplayMode();
 }
 
+void GameGUI::setHighlight(int highlight, bool on)
+{
+	if (on)
+		highlights.insert(highlight);
+	else
+		highlights.erase(highlight);
+}
+
 void GameGUI::showScriptText(const std::string &text)
 {
 	scriptText = text;
