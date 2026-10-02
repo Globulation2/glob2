@@ -36,6 +36,9 @@ dated reports and pull-request artifacts do not belong here.
   [Android privacy policy](mobile/privacy-policy.md), and
   [Amazon Fire tablet privacy policy](mobile/amazon-privacy-policy.md).
 
+- **Online multiplayer:** [online client](multiplayer/client.md): platform
+  connection, sign-in, instances, map cache and invite links.
+
 - **Browser platform:** [build and play](../browser/README.md),
   [architecture](browser/implementation.md), [storage](browser/storage.md),
   [viewport](browser/viewport.md), and [YOG deployment](browser/gateway.md).
