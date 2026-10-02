@@ -42,8 +42,12 @@ class ChangedPathsTest(unittest.TestCase):
         root = SCRIPT.parents[2]
         workflow = (root / ".github/workflows/build.yml").read_text()
         selector = workflow.split("  changes:\n", 1)[1].split("\n  linux-build:", 1)[0]
-        for filename in ("test_run_tests.py", "test_ci_failure_aggregation.py", "test_ci_changed_paths.py"):
+        for filename in ("test_run_tests.py", "test_ci_failure_aggregation.py"):
             self.assertIn(filename, selector)
+        self.assertIn("-s tests/build_system -p 'test_ci*.py'", selector)
+        for path in ci_changed_paths.CI_TOOL_TESTS:
+            if path.startswith("tests/build_system/"):
+                self.assertTrue(Path(path).match("tests/build_system/test_ci*.py"))
         package = (root / ".github/workflows/steam-windows-package.yml").read_text()
         paths = package.split("    paths:\n", 1)[1].split("\npermissions:", 1)[0]
         self.assertNotIn("docs/development/reference.md", paths)

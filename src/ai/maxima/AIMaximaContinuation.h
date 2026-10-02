@@ -160,7 +160,7 @@ class Reader
     GAGCore::InputStream* stream;
     uint32_t count()
     {
-        const uint32_t size=stream->readUint32("size");
+        const uint32_t size=stream->readCount("size");
         if(size>16777216u) throw std::runtime_error("Invalid Maxima continuation container size");
         return size;
     }

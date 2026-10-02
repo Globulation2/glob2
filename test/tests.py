@@ -71,6 +71,7 @@ ENGINE_TESTS = [
     'TrappedUnitLifecycleTest.cpp',
     'UnitContinuationHarness.cpp',
     'SavegameSafetyHarness.cpp',
+    'UntrustedFilesTest.cpp',
     ('TournamentCompatibilityTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('maxima/MaximaRelocationIntegrationTest.cpp', dict(cxxflags=['-fno-access-control'])),
     'CombGeneratorTest.cpp',
@@ -274,6 +275,7 @@ UNIT_PRODUCTION_SOURCES = [
     '#src/ReplayWriter.cpp',
     # Without the client's Brush and Game surfaces: only the byte marshalers are wanted.
     ('#src/OrderModify.cpp', dict(defines=['YOG_SERVER_ONLY'])),
+    ('#src/OrderBuilding.cpp', dict(defines=['YOG_SERVER_ONLY'])),
     ('#src/net/message/OrderMessages.cpp', dict(defines=['YOG_SERVER_ONLY'])),
 ]
 

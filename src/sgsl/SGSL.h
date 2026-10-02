@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include <set>
+
 #include <optional>
 #include <string>
 #include <vector>
@@ -259,6 +261,7 @@ public:
 public:
 	std::vector<SGSLToken> line;
 	std::map<std::string, int> labels;
+	std::set<int> instructionStarts; //!< Reconstructed from source, never trusted from a save.
 	int lineSelector; //!< PC : Program Counter
 	int internTimer;
 

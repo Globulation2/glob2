@@ -154,6 +154,7 @@ bool Game::load(GAGCore::InputStream *stream)
 GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream)
 {
 	assert(stream);
+	GAGCore::BinaryInputStream::CheckedReads checkedInput(stream);
     co_await GAGCore::CooperativeTask::checkpoint("[Loading headers]");
 
 	ReadSectionGuard gameSection(stream, "Game");
@@ -213,6 +214,7 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream)
 		teams[i]=new Team(this);
         if (!(co_await teams[i]->loadTask(stream, &globalContainer->buildingsTypes, versionMinor)))
             co_return false;
+		if (teams[i]->teamNumber != i) co_return false;
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();

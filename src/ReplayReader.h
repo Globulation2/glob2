@@ -15,11 +15,7 @@ namespace GAGCore
 
 class Order;
 
-//! Minimum number of well-formed orders read from a replay before the
-//! reader will treat a corrupt order as recoverable (substituting a
-//! NullOrder). Below this threshold a malformed order aborts the replay.
-//! See ReplayReader.cpp.
-static constexpr Uint32 REPLAY_MIN_VALID_ORDERS = 5;
+//! Malformed or truncated replay bodies are rejected, including partial recordings.
 
 //! Oldest replay format (the VERSION_MINOR the replay was written with) that
 //! the reader still accepts. Version 127 expands team capacity and serialized
