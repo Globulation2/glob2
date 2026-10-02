@@ -96,3 +96,25 @@ described-but-unattached test is not evidence.
 
 Address review feedback when provided, and give a concise account of the intended
 result, verification and limits in the PR.
+
+## Validation and CI feedback
+
+Use focused checks while editing, then run the checks selected for the final PR
+revision. Keep every affected platform and compatibility boundary covered; changing
+shared headers, build inputs or test infrastructure can require broader checks than
+the apparent feature area. When an API changes, update its test doubles and build the
+affected harnesses. Fixtures that change process-wide SDL drivers or other global
+state must restore it or run in an isolated process through the engine test registry.
+
+Fetch current master before final validation and resolve actual conflicts. Do not
+merge or rebase merely because unrelated commits advanced master: PR CI tests the
+merge result against its recorded base. If newer base changes affect the same
+components, dependencies or CI configuration, refresh integration validation.
+Respect branch protection and address failures from the selected checks before
+merging; do not shorten feedback loops by hiding failures or dropping relevant tests.
+
+For CI speed changes, compare runner queue time with execution time, preserve the
+selected-case inventory, and record the before/after job count and validation limits.
+Prefer reusing built artifacts and avoiding irrelevant jobs over repeatedly raising
+concurrency or rebuilding the same inputs. Keep repair PRs focused so unrelated
+feature work does not hold up a validated fix.
