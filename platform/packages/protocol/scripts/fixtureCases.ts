@@ -120,6 +120,31 @@ export const SETUP_GENERATED_FFA: MatchSetup = {
   experiments: [],
 };
 
+/**
+ * A four-seat room where seats 1 and 3 stayed empty: the two players keep their
+ * map teams (0 and 2) as seats 0 and 1, and the empty teams follow as closed seats.
+ */
+export const SETUP_ROOM_CLOSED: MatchSetup = {
+  schemaVersion: 1,
+  simVersion: SIM_VERSION,
+  seed: 77,
+  map: { kind: 'catalog', hash: HASH_A },
+  teams: [
+    { team: 0, alliance: 0 },
+    { team: 1, alliance: 1 },
+    { team: 2, alliance: 2 },
+    { team: 3, alliance: 3 },
+  ],
+  seats: [
+    { seat: 0, kind: 'human', team: 0, name: 'Alice', accountId: ACCOUNT_1 },
+    { seat: 1, kind: 'human', team: 2, name: 'Bob', accountId: ACCOUNT_2 },
+    { seat: 2, kind: 'closed', team: 1 },
+    { seat: 3, kind: 'closed', team: 3 },
+  ],
+  rules: STANDARD_RULES,
+  experiments: [],
+};
+
 /** A save continued online, a human sharing control with an AI, every rule changed. */
 export const SETUP_SAVE_SHARED: MatchSetup = {
   schemaVersion: 1,
@@ -699,6 +724,58 @@ export const fixtureCases: FixtureCase[] = [
   },
   {
     schema: 'MatchSetup',
+    name: 'room-closed-seats',
+    valid: true,
+    note: 'A room with seats 1 and 3 empty: the players keep their map teams (0 and 2) and come first; the empty teams are closed.',
+    value: SETUP_ROOM_CLOSED,
+  },
+  {
+    schema: 'MatchSetup',
+    name: 'closed-seat-with-name',
+    valid: false,
+    stage: 'schema',
+    note: 'A closed seat is not a player: it has no name or AI.',
+    value: edit(SETUP_ROOM_CLOSED, (s) => {
+      (s.seats[2] as Mutable)['name'] = 'Nobody';
+    }),
+  },
+  {
+    schema: 'MatchSetup',
+    name: 'closed-seat-before-player',
+    valid: false,
+    stage: 'semantic',
+    note: 'Closed seats follow every human and AI seat, so players keep the numbers 0..p-1.',
+    value: edit(SETUP_ROOM_CLOSED, (s) => {
+      s.seats = [
+        s.seats[0]!,
+        { ...s.seats[2]!, seat: 1 },
+        { ...s.seats[1]!, seat: 2 },
+        s.seats[3]!,
+      ];
+    }),
+  },
+  {
+    schema: 'MatchSetup',
+    name: 'closed-team-played',
+    valid: false,
+    stage: 'semantic',
+    note: 'A closed seat cannot close a team that a player seat controls.',
+    value: edit(SETUP_ROOM_CLOSED, (s) => {
+      s.seats[2]!.team = 0;
+    }),
+  },
+  {
+    schema: 'MatchSetup',
+    name: 'only-closed-seats',
+    valid: false,
+    stage: 'semantic',
+    note: 'A match needs at least one human or AI seat.',
+    value: edit(SETUP_ROOM_CLOSED, (s) => {
+      s.seats = [{ seat: 0, kind: 'closed', team: 1 }];
+    }),
+  },
+  {
+    schema: 'MatchSetup',
     name: 'missing-rules',
     valid: false,
     stage: 'schema',
@@ -817,7 +894,7 @@ export const fixtureCases: FixtureCase[] = [
     stage: 'semantic',
     note: '20 characters but 40 UTF-8 bytes; BasePlayer names are limited to 32 bytes.',
     value: edit(SETUP_CATALOG_1V1, (s) => {
-      s.seats[0]!.name = 'é'.repeat(20);
+      (s.seats[0] as Mutable)['name'] = 'é'.repeat(20);
     }),
   },
   {

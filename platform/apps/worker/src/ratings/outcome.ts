@@ -13,16 +13,49 @@
 // - Both sides leaving within MUTUAL_LEAVE_TICKS of each other is a mutual
 //   leave, and an unresolved game nobody abandoned is unresolved: neither
 //   changes ratings.
+// - Empty seats are not participants. Rooms send an empty or locked seat as a
+//   `closed` seat: its colony is removed at the start and has lost, as a
+//   closed colony in a custom game. Matches started before that played it as
+//   AI `none` ("Nobody"), an idle colony that stays alive, so the engine can
+//   report it as won (a sudden-death tie at zero prestige). Neither kind ever
+//   wins, draws or takes a side here; see contestedTeams.
 
 /** Two sides leaving within this many ticks (10 s at 25 ticks/s) left together. */
 export const MUTUAL_LEAVE_TICKS = 250;
 
 export type TeamOutcome = 'won' | 'lost' | 'unresolved';
 
+/** A seat as far as outcomes care: MatchSetup seats[] or a match_participants row. */
+export interface OutcomeSeat {
+  team: number;
+  kind: 'human' | 'ai' | 'closed';
+  /** AI id; `none` is an older match's empty seat (an idle colony nobody plays). */
+  ai?: string | null | undefined;
+}
+
+/**
+ * True for an empty (or locked) seat: a closed seat, or AI `none`, which rooms
+ * sent for empty seats before closed seats existed and which nobody plays.
+ */
+export function isEmptySeat(seat: OutcomeSeat): boolean {
+  return seat.kind === 'closed' || (seat.kind === 'ai' && seat.ai === 'none');
+}
+
+/**
+ * Map teams someone plays: a human or a real AI. Teams held only by empty
+ * seats (closed, or AI `none`) are left out, so they never count as winners
+ * or sides.
+ */
+export function contestedTeams(seats: readonly OutcomeSeat[]): Set<number> {
+  return new Set(seats.filter((s) => !isEmptySeat(s)).map((s) => s.team));
+}
+
 export interface OutcomeParticipant {
   seat: number;
   team: number;
   kind: 'human' | 'ai';
+  /** AI id; an empty seat (`none`) is ignored. */
+  ai?: string | null | undefined;
   /** Tick the player quit (relay report); undefined when they stayed to the end. */
   quitTick?: number | undefined;
   /** Set when match intake already classified the player as having abandoned. */
@@ -64,23 +97,32 @@ export type RecordedOutcome = 'won' | 'lost' | 'draw' | 'unresolved';
  * makes each tied team a winner, allied or not. A win is only a win when one
  * side (alliance) holds it; when teams of two or more sides won, each of
  * those teams drew. Lost and unresolved teams keep their outcome.
+ *
+ * `contested` (contestedTeams of the setup's seats), when given, names the
+ * teams someone plays. Any other team is an empty seat's idle colony: it
+ * neither makes a win shared nor wins itself, so the engine's `won` for it is
+ * recorded as `unresolved`. One player beating everyone else is then a win
+ * however many empty colonies outlast them.
  */
 export function participantOutcomes(
   teamAlliance: ReadonlyMap<number, number>,
   teamOutcomes: ReadonlyMap<number, TeamOutcome>,
+  contested?: ReadonlySet<number>,
 ): Map<number, RecordedOutcome> {
+  const counts = (team: number) => contested === undefined || contested.has(team);
   const winningSides = new Set<number>();
   for (const [team, outcome] of teamOutcomes) {
-    if (outcome !== 'won') continue;
+    if (outcome !== 'won' || !counts(team)) continue;
     // A team missing from the setup is its own side.
     winningSides.add(teamAlliance.get(team) ?? -1 - team);
   }
   const shared = winningSides.size > 1;
   return new Map(
-    [...teamOutcomes].map(([team, outcome]) => [
-      team,
-      shared && outcome === 'won' ? 'draw' : outcome,
-    ]),
+    [...teamOutcomes].map(([team, outcome]): [number, RecordedOutcome] => {
+      if (outcome !== 'won') return [team, outcome];
+      if (!counts(team)) return [team, 'unresolved'];
+      return [team, shared ? 'draw' : 'won'];
+    }),
   );
 }
 
@@ -90,17 +132,22 @@ function sideOf(input: OutcomeInput, team: number): number {
   return alliance;
 }
 
-export function decideRating(input: OutcomeInput): RatingDecision {
+export function decideRating(raw: OutcomeInput): RatingDecision {
+  // Empty seats are not participants: they take no side and never leave.
+  const input = { ...raw, participants: raw.participants.filter((p) => !isEmptySeat(p)) };
+  const contested = contestedTeams(input.participants);
   const sides = [...new Set(input.participants.map((p) => sideOf(input, p.team)))].sort(
     (a, b) => a - b,
   );
   if (sides.length !== 2) return { kind: 'unchanged', reason: 'not_two_sides' };
 
-  // Verified result per side: won if any of its teams won (drew if any drew),
-  // lost if all lost.
+  // Verified result per side, over the teams someone plays: won if any of
+  // them won (drew if any drew), lost if all lost.
   const sideResult = new Map<number, RecordedOutcome>();
   for (const side of sides) {
-    const teams = [...input.teamAlliance].filter(([, a]) => a === side).map(([t]) => t);
+    const teams = [...input.teamAlliance]
+      .filter(([t, a]) => a === side && contested.has(t))
+      .map(([t]) => t);
     const outcomes = teams.map((t) => input.teamOutcomes.get(t) ?? 'unresolved');
     sideResult.set(
       side,
