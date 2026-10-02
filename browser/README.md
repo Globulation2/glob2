@@ -64,7 +64,10 @@ remain shared with native builds.
 Hosting must send `Cross-Origin-Opener-Policy: same-origin` and
 `Cross-Origin-Embedder-Policy: require-corp`. The local server above and the
 provided Caddy configuration set these headers. Hosting without isolation
-selects the serial runtime automatically. `glob2Diagnostics.snapshot()` reports
+selects the serial runtime automatically. Direct Google Cloud Storage release
+URLs use this fallback. Set `GLOB2_BROWSER_PUBLIC_URL` to a Caddy or equivalent
+HTTPS frontend for a threaded public release; the release workflow verifies its
+isolation headers before advertising it. `glob2Diagnostics.snapshot()` reports
 `executionMode`, `threadFallback`, `workerCount` (active engine background
 threads, excluding the application worker), and worker-owned `renderContext`
 metrics. Browser command-line hosts must await `Module.start(args)` for completion;

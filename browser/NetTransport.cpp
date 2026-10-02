@@ -126,7 +126,9 @@ public:
     void close() override {
         if (callbacks) callbacks->active = false;
         if (socket) {
-            // Deleting the Emscripten handle detaches all four JS callbacks.
+            // The pinned SDK deletes synchronously on the UI event loop. Earlier
+            // callbacks finish before it returns; later events see null handlers.
+            // Retain userdata until that barrier, then invalidate queued Events.
             emscripten_websocket_close(socket, 1000, nullptr);
             emscripten_websocket_delete(socket);
             socket = 0;

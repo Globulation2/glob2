@@ -81,6 +81,8 @@ extern "C" void __wrap_SDL_CloseAudio() {
 }
 extern "C" void __wrap_SDL_PauseAudio(int paused) {
     if (audio) audio->paused = paused != 0;
+    // Pinned SDL pause only updates the shared device's atomic paused flag;
+    // unlike open/close, it does not touch WebAudio or another JS realm.
     __real_SDL_PauseAudio(paused);
 }
 // Engine mutations and mixer callbacks are serialized on the application thread.

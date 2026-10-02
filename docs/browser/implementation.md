@@ -139,6 +139,14 @@ for uncompressed requests. The Google Cloud Storage publisher uploads gzip bytes
 at the logical asset URLs with their original MIME types and
 `Content-Encoding: gzip`, with immutable asset caching and the entry point last.
 It omits `no-transform` so Storage can decompress for clients without gzip.
+The direct Storage URL provides the serial fallback because it lacks browser
+isolation headers. For a threaded public release, serve the package through the
+provided Caddy configuration or an equivalent HTTPS frontend and set the repository
+variable `GLOB2_BROWSER_PUBLIC_URL` to its game entry point. The release workflow
+checks HTTPS (including redirects), COOP `same-origin` and COEP `require-corp`
+before advertising that URL. Without that variable, publication explicitly labels
+the direct Storage URL as serial. The frontend must also serve the versioned loader,
+shared assets and both runtime directories from the same origin.
 JavaScript, streaming WASM and Emscripten data loading consume the original
 uncompressed representation through the browser's HTTP decoder. Verify transfer
 headers, progress and actual compressed bytes on the release host; local static
