@@ -1,6 +1,6 @@
 // Server-rendered sign-in pages. They are deliberately plain: no scripts, no
-// external resources, a strict Content-Security-Policy, and no Referer, so the
-// attempt id in the URL never leaks to a provider or another site.
+// external resources, a strict Content-Security-Policy, and no cross-site Referer.
+// The attempt id in the URL never leaks to a provider or another site.
 import { randomBytes } from 'node:crypto';
 import type { FastifyReply } from 'fastify';
 
@@ -62,12 +62,14 @@ export function sendPage(
   status = 200,
   extras: PageExtras = {},
 ): FastifyReply {
+  // Chromium sends Origin: null on native form POSTs with no-referrer.
+  // Preserve same-origin Origin for CSRF checks; external referrers stay hidden.
   const nonce = extras.script ? randomBytes(16).toString('base64') : undefined;
   return reply
     .status(status)
     .header('content-type', 'text/html; charset=utf-8')
     .header('cache-control', 'no-store')
-    .header('referrer-policy', 'no-referrer')
+    .header('referrer-policy', 'same-origin')
     .header('x-frame-options', 'DENY')
     .header('x-content-type-options', 'nosniff')
     .header(
