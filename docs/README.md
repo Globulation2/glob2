@@ -8,9 +8,9 @@ dated reports and pull-request artifacts do not belong here.
 
 ## Topics
 
-- **Globulation 2 Online website:** [Astro website repository](https://github.com/Globulation2/glob2-online),
-  [content and legacy migration](https://github.com/Globulation2/glob2-online/blob/main/docs/content.md),
-  and [Firebase deployment, CI, and rollback](https://github.com/Globulation2/glob2-online/blob/main/docs/hosting.md).
+- **Globulation 2 Online website:** [Astro website repository](https://github.com/Globulation2/glob2-online-website),
+  [content and legacy migration](https://github.com/Globulation2/glob2-online-website/blob/main/docs/content.md),
+  and [Firebase deployment, CI, and rollback](https://github.com/Globulation2/glob2-online-website/blob/main/docs/hosting.md).
   The public site is [glob2online.com](https://glob2online.com/); the browser game
   and multiplayer app use [app.glob2online.com](https://app.glob2online.com/).
 - **AI:** [telemetry](ai/telemetry.md), [gameplay measurements](ai/gameplay-statistics.md),
