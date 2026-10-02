@@ -43,7 +43,7 @@
 #define BULLET_IMGID 0
 
 Game::Game(GameGUI *gui, MapEdit* edit):
-	mapscript(gui)
+	mapscript(this, gui)
 {
 	init(gui, edit);
 }
@@ -57,6 +57,10 @@ void Game::init(GameGUI *gui, MapEdit* edit)
 {
 	this->gui=gui;
 	this->edit=edit;
+	clientSink=gui;
+	clientEvents=gui ? &gui->clientEvents : nullptr;
+	clientRequests=gui ? &gui->clientRequests : nullptr;
+	recordingFailingUnits=BuildingRef();
 	buildProjects.clear();
 
 #ifndef YOG_SERVER_ONLY
@@ -90,6 +94,7 @@ void Game::init(GameGUI *gui, MapEdit* edit)
 void Game::clearGame()
 {
 	scriptGenerations.fill(0);
+	recordingFailingUnits=BuildingRef();
 	hasSavedRandomState = false;
 	// Delete existing teams and players
 	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
@@ -332,6 +337,60 @@ bool Game::isPrestigeWinCondition(void)
 			return true;
 	}
 	return false;
+}
+
+static_assert(ClientEvents::MaxTeams >= Team::MAX_COUNT, "ClientEvents pulse must cover every team");
+
+BuildingRef Game::refOf(const Building *b)
+{
+	BuildingRef ref;
+	if (b)
+	{
+		ref.gid = b->gid;
+		ref.generation = b->scriptIdentity;
+	}
+	return ref;
+}
+
+UnitRef Game::refOf(const Unit *u)
+{
+	UnitRef ref;
+	if (u)
+	{
+		ref.gid = u->gid;
+		ref.generation = u->scriptIdentity;
+	}
+	return ref;
+}
+
+Building *Game::resolveBuilding(BuildingRef ref) const
+{
+	if (ref.empty())
+		return nullptr;
+	const int team = Building::GIDtoTeam(ref.gid);
+	const int id = Building::GIDtoID(ref.gid);
+	if (team < 0 || team >= Team::MAX_COUNT || !teams[team] || id < 0 || id >= Building::MAX_COUNT)
+		return nullptr;
+	Building *b = teams[team]->myBuildings[id];
+	return (b && b->scriptIdentity == ref.generation) ? b : nullptr;
+}
+
+Unit *Game::resolveUnit(UnitRef ref) const
+{
+	if (ref.empty())
+		return nullptr;
+	const int team = Unit::GIDtoTeam(ref.gid);
+	const int id = Unit::GIDtoID(ref.gid);
+	if (team < 0 || team >= Team::MAX_COUNT || !teams[team] || id < 0 || id >= Unit::MAX_COUNT)
+		return nullptr;
+	Unit *u = teams[team]->myUnits[id];
+	return (u && u->scriptIdentity == ref.generation) ? u : nullptr;
+}
+
+void Game::publishClientEvent(ClientEventVariant event)
+{
+	if (clientEvents)
+		clientEvents->push(std::move(event));
 }
 
 Uint32 Game::allocateScriptIdentity(bool building, Uint16 gid)

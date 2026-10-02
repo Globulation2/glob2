@@ -36,6 +36,7 @@ ENGINE_TESTS = [
     'BuildingGradientInvalidationHarness.cpp',
     'FetchApportionmentHarness.cpp',
     'GameGUISelectionHarness.cpp',
+    ('ClientChannelsTest.cpp', dict(cxxflags=['-fno-access-control'])),
     'HiringBucketHarness.cpp',
     'HungryDefeatHarness.cpp',
     'ImmobileUnitGradientHarness.cpp',

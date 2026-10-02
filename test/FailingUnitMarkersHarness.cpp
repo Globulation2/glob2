@@ -155,7 +155,11 @@ public:
 		gui.localTeamNo = 0;
 		gui.localPlayer = 0;
 		gui.setSelection(GameGUI::BUILDING_SELECTION, static_cast<void*>(scene.inn));
-		require(scene.inn->recordFailingUnits, "selecting in the GUI switches recording on");
+		// The GUI publishes the observed building; the simulation switches
+		// recording on at the next tick boundary.
+		require(!scene.inn->recordFailingUnits, "selection alone does not touch the building");
+		gui.game.applyClientRequests();
+		require(scene.inn->recordFailingUnits, "the tick boundary switches recording on");
 		scene.team->updateAllBuildingTasks();
 		// Only the right-hand panel: drawAll also wants players, a minimap and
 		// a torus view this bare game does not have.
@@ -198,6 +202,7 @@ public:
 		gui.localTeam = gui.game.teams[0];
 		gui.teamStats = &gui.localTeam->stats;
 		gui.setSelection(GameGUI::BUILDING_SELECTION, static_cast<void*>(scene.inn));
+		gui.game.applyClientRequests(); // the tick boundary turns recording on
 		scene.team->updateAllBuildingTasks();
 		require(scene.inn->unitsFailingByReason[Building::UnitTooLowLevel].size() == LOW_COUNT,
 			"the scan with an open slot remembers every unschooled worker");

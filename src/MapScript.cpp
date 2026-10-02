@@ -2,7 +2,9 @@
 // Copyright (C) 2008 Bradley Arsenault
 
 #include "MapScript.h"
-#include "GameGUI.h"
+#include "Game.h"
+#include "sim/ClientCommandSink.h"
+#include "sim/ClientRequests.h"
 #include "FileFormatVersions.h"
 #include <assert.h>
 #include <iostream>
@@ -11,8 +13,8 @@
 
 #include "Stream.h"
 
-MapScript::MapScript(GameGUI* gui):
-	usl(gui), gui(gui)
+MapScript::MapScript(Game* game, ClientCommandSink* client):
+	usl(game, client), game(game), client(client)
 {
 	mode = USL;
 }
@@ -83,11 +85,12 @@ void MapScript::setMapScript(const std::string& newScript)
 void MapScript::setMapScriptMode(MapScript::MapScriptMode newMode) noexcept
 {
 	mode = newMode;
-	if (mode == JavaScript && gui)
+	if (mode == JavaScript && client)
 	{
 		// An SGSL space wait must not intercept input while that payload is dormant.
-		gui->setIsSpaceSet(false);
-		gui->setSwallowSpaceKey(false);
+		if (game && game->clientRequests)
+			game->clientRequests->discardScriptSpace();
+		client->setSwallowSpaceKey(false);
 	}
 }
 
@@ -123,7 +126,7 @@ bool MapScript::replaceSource(MapScriptMode newMode, const std::string& newScrip
 std::unique_ptr<MapScript> MapScript::prepareSource(MapScriptMode newMode,
 		const std::string& newScript, MapScriptError& error) const
 {
-	auto candidate = std::make_unique<MapScript>(gui);
+	auto candidate = std::make_unique<MapScript>(game, client);
 	// Preparing a draft must not clear the GUI's legacy space-wait flags.
 	// The public mode setter applies that presentation change only on commit.
 	candidate->mode = newMode;
@@ -138,7 +141,7 @@ std::unique_ptr<MapScript> MapScript::prepareSource(MapScriptMode newMode,
 
 void MapScript::commitPrepared(MapScript& candidate) noexcept
 {
-	assert(gui == candidate.gui);
+	assert(game == candidate.game && client == candidate.client);
 	static_assert(std::is_nothrow_swappable_v<Script::JavaScriptMap>);
 	static_assert(std::is_nothrow_swappable_v<MapScriptError>);
 	script.swap(candidate.script);
@@ -154,10 +157,10 @@ const MapScriptError& MapScript::getError() const
 	return mode==JavaScript?jsError:usl.getError();
 }
 
-void MapScript::syncStep(GameGUI *gui)
+void MapScript::syncStep(ClientCommandSink *target)
 {
-	if(mode==JavaScript) javascript.step(script,*gui);
-	else usl.syncStep(gui);
+	if(mode==JavaScript) javascript.step(script,*game,*target);
+	else usl.syncStep();
 }
 
 
@@ -165,14 +168,14 @@ void MapScript::syncStep(GameGUI *gui)
 Uint32 MapScript::checkSum() const
 {
  if(mode!=JavaScript)return 0;
- Uint32 h=javascript.checksum(gui);for(unsigned char c:script)h=(h^c)*16777619u;return h;
+ Uint32 h=javascript.checksum(client ? game : nullptr);for(unsigned char c:script)h=(h^c)*16777619u;return h;
 }
 bool MapScript::buildingAllowed(const std::string& name,bool flag) const
 {
  return mode!=JavaScript || javascript.buildingAllowed(name,flag);
 }
 
-void MapScript::restorePresentation(GameGUI& target) const
+void MapScript::restorePresentation(ClientCommandSink& target) const
 {
  if (mode == JavaScript) javascript.present(target, false);
 }

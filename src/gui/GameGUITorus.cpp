@@ -57,7 +57,7 @@ bool GameGUI::handleTorusPointer(const SDL_Event &event)
         if (torusPointerDown)
         {
             if (hit && selectionMode == BUILDING_SELECTION && selectionPushed &&
-                view.selectedBuilding && view.selectedBuilding->type->isVirtual)
+                selectedBuildingOrNull() && selectedBuildingOrNull()->type->isVirtual)
                 moveFlag(mx, my, true);
             else if (selectionMode == BRUSH_SELECTION || selectionMode == TOOL_SELECTION)
             {
@@ -90,9 +90,8 @@ void GameGUI::drawTorusMap(int originX, int originY, int team, unsigned options,
     }
     // The ring replaces the 2D map transform, so the selection markers the flat
     // view paints over the map belong on the surface itself, anchored to it.
-    if (selectionMode == BUILDING_SELECTION && view.selectedBuilding)
+    if (Building *b = selectedBuildingOrNull())
     {
-        Building *b = view.selectedBuilding;
         int x, y;
         game.map.buildingPosToCursor(displayedPosX(*b), displayedPosY(*b), b->type->width, b->type->height, &x, &y,
                                      originX, originY);

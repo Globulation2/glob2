@@ -99,7 +99,11 @@ void GameGUI::init()
 	putMark=false;
 	showUnitWorkingToBuilding=true;
 	chatMask=0xFFFFFFFF;
-	hasSpaceBeenClicked=false;
+	// A new game starts with empty client channels.
+	clientEvents.reset();
+	clientRequests.reset();
+	for (auto &queue : pendingTeamEvents)
+		queue.clear();
 	swallowSpaceKey=false;
 	scriptText.clear();
 	scriptTextUpdated = false;

@@ -20,6 +20,8 @@
 #include "GameHints.h"
 #include "MapScript.h"
 #include "BuildingGuiState.h"
+#include "sim/ClientEvents.h"
+#include "sim/EntityRef.h"
 #ifndef YOG_SERVER_ONLY
 #include "render/MapRenderState.h"
 #endif
@@ -35,6 +37,8 @@ class GameGUI;
 class SceneMap;
 struct Scene;
 class MapEdit;
+class ClientCommandSink;
+class ClientRequests;
 
 class OrderCreate;
 class OrderModifyBuilding;
@@ -253,6 +257,12 @@ public:
 	void removeUnallowedUnitsAndBuildings(int x, int y, int w, int h);
 	///A convenience function, returns a pointer to the unit with the guid, or NULL otherwise
 	Unit* getUnit(int guid);
+	///Client handles (see sim/EntityRef.h). resolve* returns null when the
+	///entity is gone or its slot now holds a different entity.
+	static BuildingRef refOf(const Building *b);
+	static UnitRef refOf(const Unit *u);
+	Building *resolveBuilding(BuildingRef ref) const;
+	Unit *resolveUnit(UnitRef ref) const;
 
 	bool checkRoomForBuilding(int mousePosX, int mousePosY, const BuildingType *bt, int *buildingPosX, int *buildingPosY, int teamNumber, bool checkFow=true);
 	bool checkRoomForBuilding(int x, int y, const BuildingType *bt, int teamNumber, bool checkFow=true);
@@ -402,8 +412,31 @@ public:
 	GameObjectives objectives;
 	GameHints gameHints;
 	std::string missionBriefing;
+	///The front-end that owns this game, or null. Simulation code must not use
+	///it; it remains for the torus renderer and GUI-side helpers (see
+	///docs/development/reference.md, "Simulation/client boundary").
 	GameGUI *gui;
 	MapEdit *edit;
+	///Client channels (all null without a GameGUI). Scripts send presentation
+	///commands to clientSink; the simulation publishes notices to
+	///clientEvents and reads presentation requests from clientRequests at
+	///tick boundaries.
+	ClientCommandSink *clientSink = nullptr;
+	ClientEvents *clientEvents = nullptr;
+	ClientRequests *clientRequests = nullptr;
+	///Queue a notice for the client; a no-op without one.
+	void publishClientEvent(ClientEventVariant event);
+	///Execute an order and publish the client-visible effects it has
+	///(messages, voice, marks, pause, ghost removal, reconciliation). Orders
+	///that only concern the client (map marks, pause) are not passed to
+	///executeOrder, exactly as before.
+	void executeOrderAndNotify(std::shared_ptr<Order> order, int localPlayer);
+	///Apply the client's latest presentation requests (tick boundary).
+	void applyClientRequests();
+	///Forward every team's new GameEvents and the tick pulse to clientEvents.
+	void publishTickEvents();
+	///Building currently recording failing units for the client.
+	BuildingRef recordingFailingUnits;
 #ifndef YOG_SERVER_ONLY
 	//! Render-side container for bullet explosions and unit death
 	//! animations. Always non-null in non-server builds; the runNoX
@@ -428,8 +461,11 @@ public:
 	{
 		int mouseX = 0, mouseY = 0;       //!< Mouse position, mirror of GameGUI's own.
 		Unit *mouseUnit = nullptr;        //!< Unit under the cursor; hit-tested during render.
-		Unit *selectedUnit = nullptr;     //!< Currently selected unit, or null.
-		Building *selectedBuilding = nullptr; //!< Currently selected building, or null.
+		//! Currently selected unit/building, or null. GameGUI keeps its selection
+		//! as a UnitRef/BuildingRef and re-resolves these before drawing
+		//! (GameGUI::syncSelectionView); they are only valid for that frame.
+		Unit *selectedUnit = nullptr;
+		Building *selectedBuilding = nullptr;
 #ifndef YOG_SERVER_ONLY
 		MapRenderState render;            //!< This view's animation phases and render caches.
 		//! Scene to draw, published by the simulation; null to extract one from the game.

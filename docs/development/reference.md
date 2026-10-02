@@ -449,6 +449,30 @@ For timing and scheduling, start with `src/Game_sync.cpp` and `src/EngineRun.cpp
   `syncRand()`. Use a presentation-owned generator such as `GameGUI::effectsRandom`,
   so visual effects can change, run at any frame rate or move to another thread
   without consuming simulation draws.
+- Simulation/client boundary (`src/sim/`). Simulation code must not call `GameGUI`;
+  it talks to the client through three channels, which `GameGUI` owns and `Game`
+  points to (all null without a GUI):
+  - `ClientEvents`: lossless queue of notices the simulation publishes (team
+    `GameEvent`s, chat, voice, marks, pause, ghost removal, building removal, unit
+    conversion, executed orders) plus a per-tick latest-value pulse
+    (`Team::wasRecentEvent` for every team). `Game::executeOrderAndNotify` publishes
+    the order effects; `GameGUI::consumeClientEvents` applies them after each order,
+    after each engine tick, and at the start of `step` and `drawAll`.
+  - `ClientCommandSink`: the presentation commands map scripts issue (building and
+    flag choices, GUI elements, highlights, Space swallowing, script text). SGSL,
+    USL and JavaScript map scripts call it instead of `GameGUI`. Its two read
+    methods are legacy USL queries; do not add more.
+  - `ClientRequests`: a latest-value `ClientView` (viewport, observed building,
+    overlay, debug layers) and a lossless command queue (the SGSL Space
+    acknowledgement). `Game::applyClientRequests` applies them at the start of
+    `Game::syncStep`; only the observed building records
+    `Building::unitsFailingByReason`.
+
+  Client code holds entities as `BuildingRef`/`UnitRef` (gid plus `scriptIdentity`)
+  and resolves them through `Game::resolveBuilding`/`resolveUnit` at each use; do not
+  keep `Building*`/`Unit*` across ticks in client code. The channels are
+  single-threaded for now. Making them thread-safe only changes `LosslessQueue` and
+  the latest-value accessors.
 - For behavior-preserving refactors and optimizations, compare base and changed
   builds using identical saves/maps, seeds, settings and orders. Compare per-tick
   state/checksums as well as replay bytes: matching orders alone do not prove that
