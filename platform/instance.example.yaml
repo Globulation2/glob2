@@ -79,7 +79,13 @@ queues:
     # for rated queues, 0 = start at once).
     acceptSeconds: 10
     declineCooldownSeconds: 60
-    maxRttMs: 250
+    # Soft relay preference: players sharing a relay within initialMs (+ perSecondMs
+    # per second waited) are paired first; after anyRegionAfterSeconds any relay
+    # will do. Round trips never make a player unmatchable: the group always plays
+    # on the best relay that exists, even a far one.
+    rttPreference: { initialMs: 100, perSecondMs: 5, anyRegionAfterSeconds: 30 }
+    # maxRttMs: 150   # opt-in hard cap, off by default; only for instances with
+    #                 # relays near every player (others then rely on AI backfill)
     ratingWindow: { initial: 100, perSecond: 5, max: 800 }
   - id: ranked-2v2
     name: Ranked 2v2

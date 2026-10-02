@@ -56,7 +56,23 @@ export const QueueConfig = Strict({
   acceptSeconds: Type.Optional(Type.Integer({ minimum: 0, maximum: 120 })),
   /** Queue ban after declining or ignoring an accept prompt (default 60). */
   declineCooldownSeconds: Type.Optional(Type.Integer({ minimum: 0, maximum: 3600 })),
-  /** Highest relay round trip any grouped player may have (default 250 ms). */
+  /**
+   * Soft region preference (default 100 ms + 5 ms/s, any region after 30 s):
+   * players sharing a good relay are paired first; the matchmaker always falls
+   * back to the best relay that exists.
+   */
+  rttPreference: Type.Optional(
+    Strict({
+      initialMs: Type.Optional(Type.Integer({ minimum: 0, maximum: 60000 })),
+      perSecondMs: Type.Optional(Type.Number({ minimum: 0 })),
+      anyRegionAfterSeconds: Type.Optional(Type.Integer({ minimum: 0, maximum: 3600 })),
+    }),
+  ),
+  /**
+   * Opt-in hard RTT cap for instances with relays near every player; off by
+   * default. When set, a player no relay serves within it can only be matched
+   * through AI backfill.
+   */
   maxRttMs: Type.Optional(Type.Integer({ minimum: 1, maximum: 60000 })),
   /** Accepted skill difference in display points, widening with wait time. */
   ratingWindow: Type.Optional(

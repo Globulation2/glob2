@@ -63,39 +63,64 @@ export function backfillAt(queue: ResolvedQueue, ticket: WaitingTicket): Date | 
 }
 
 /**
- * The relay region minimising the worst round trip among members that
- * reported probes, considering only regions every such member reported.
- * Members without probes fit anywhere; with no probes at all the region is
- * null (any). Groups of two or more must stay within `maxRttMs`; a lone
- * player (AI backfill) always gets their best region.
+ * The relay region for a group: never fails. Candidates are the regions any
+ * member probed (the relays that exist); the best one is reported by the most
+ * members, then has the lowest worst round trip, then the lowest name.
+ * `worst` is that worst round trip, or Infinity when some member with probes
+ * did not reach the region (no shared region). Members without probes fit
+ * anywhere; with no probes at all the region is null (any relay) and worst 0.
  */
-export function chooseRegion(
-  members: readonly { regions: readonly RegionRtt[] }[],
-  maxRttMs: number,
-): { region: string | null } | undefined {
+export function chooseRegion(members: readonly { regions: readonly RegionRtt[] }[]): {
+  region: string | null;
+  worst: number;
+} {
   const measured = members.filter((m) => m.regions.length > 0);
-  const [first] = measured;
-  if (!first) return { region: null };
-  let best: { region: string; worst: number } | undefined;
-  for (const { region } of first.regions) {
+  const regions = [...new Set(measured.flatMap((m) => m.regions.map((r) => r.region)))];
+  let best: { region: string; missing: number; worst: number } | undefined;
+  for (const region of regions) {
+    let missing = 0;
     let worst = 0;
-    let shared = true;
     for (const member of measured) {
       const probe = member.regions.find((r) => r.region === region);
-      if (!probe) {
-        shared = false;
-        break;
-      }
-      worst = Math.max(worst, probe.rttMs);
+      if (probe) worst = Math.max(worst, probe.rttMs);
+      else missing++;
     }
-    if (!shared) continue;
-    if (!best || worst < best.worst || (worst === best.worst && region < best.region)) {
-      best = { region, worst };
+    if (
+      !best ||
+      missing < best.missing ||
+      (missing === best.missing &&
+        (worst < best.worst || (worst === best.worst && region < best.region)))
+    ) {
+      best = { region, missing, worst };
     }
   }
-  if (!best) return undefined;
-  if (members.length > 1 && best.worst > maxRttMs) return undefined;
-  return { region: best.region };
+  if (!best) return { region: null, worst: 0 };
+  return { region: best.region, worst: best.missing > 0 ? Infinity : best.worst };
+}
+
+/** Worst relay round trip a ticket accepts for a pairing after waiting `seconds` (soft). */
+export function rttTolerance(queue: ResolvedQueue, seconds: number): number {
+  const p = queue.rttPreference;
+  if (seconds >= p.anyRegionAfterSeconds) return Infinity;
+  return p.initialMs + p.perSecondMs * seconds;
+}
+
+/**
+ * Whether a group of humans may play together as far as relays go: its best
+ * region must be within the widest tolerance of its members (the preference
+ * relaxes to any region with waiting) and, only when an operator opted in to
+ * `maxRttMs`, within that cap.
+ */
+export function regionAcceptable(
+  queue: ResolvedQueue,
+  group: readonly WaitingTicket[],
+  now: Date,
+): boolean {
+  if (group.length < 2) return true;
+  const { worst } = chooseRegion(group);
+  if (queue.maxRttMs !== undefined && worst > queue.maxRttMs) return false;
+  const tolerance = Math.max(...group.map((t) => rttTolerance(queue, waitedSeconds(t, now))));
+  return worst <= tolerance;
 }
 
 function skillOf(member: GroupMember): number {
@@ -175,8 +200,10 @@ function byQueuePosition(a: WaitingTicket, b: WaitingTicket): number {
 /**
  * Forms groups from one queue's waiting tickets of one sim version, oldest
  * ticket first. Each anchor takes the closest-rated compatible tickets (within
- * the wider of the two rating windows, pairwise, sharing a region under the
- * RTT cap). An anchor that cannot fill its group and whose backfill delay has
+ * the wider of the two rating windows, pairwise) whose best shared relay is
+ * within the group's widening RTT tolerance; after `anyRegionAfterSeconds`
+ * any relay will do, so round trips never make a player unmatchable. The
+ * group plays on the relay region minimising its worst round trip. An anchor that cannot fill its group and whose backfill delay has
  * passed gets AI seats: its compatible AI-allowing partners join it and the
  * rest are the distinct AIs closest to the humans' mean skill. AI-backfilled
  * groups need `aiCandidates`.
@@ -205,7 +232,7 @@ export function planGroups(
     for (const candidate of candidates) {
       if (group.length === size) break;
       if (!group.every((member) => compatible(queue, member, candidate, now))) continue;
-      if (!chooseRegion([...group, candidate], queue.maxRttMs)) continue;
+      if (!regionAcceptable(queue, [...group, candidate], now)) continue;
       group.push(candidate);
     }
 
@@ -216,8 +243,7 @@ export function planGroups(
       humans = group.filter((t) => t.allowAi);
       backfilled = true;
     }
-    const region = chooseRegion(humans, queue.maxRttMs);
-    if (!region) continue;
+    const region = chooseRegion(humans);
     const members: GroupMember[] = humans.map((ticket) => ({ kind: 'human', ticket }));
     if (backfilled) {
       const target = humans.reduce((sum, t) => sum + matchSkill(t), 0) / humans.length;
