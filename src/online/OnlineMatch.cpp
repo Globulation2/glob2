@@ -56,6 +56,39 @@ void rememberMatch(const Json &summary)
 		store.erase(store.end() - 1);
 }
 
+Json mergeRecentMatches(const Json &history, const Json &live, std::size_t limit)
+{
+	Json merged = Json::array();
+	auto idOf = [](const Json &m) { return m.is_object() ? m.value("id", "") : std::string(); };
+	auto liveFor = [&](const std::string &id) -> const Json * {
+		if (live.is_array())
+			for (const auto &m : live)
+				if (idOf(m) == id)
+					return &m;
+		return nullptr;
+	};
+	auto inHistory = [&](const std::string &id) {
+		if (history.is_array())
+			for (const auto &m : history)
+				if (idOf(m) == id)
+					return true;
+		return false;
+	};
+	if (live.is_array())
+		for (const auto &m : live)
+			if (!idOf(m).empty() && !inHistory(idOf(m)) && merged.size() < limit)
+				merged.push_back(m);
+	if (history.is_array())
+		for (const auto &m : history)
+		{
+			if (idOf(m).empty() || merged.size() >= limit)
+				continue;
+			const Json *fresh = liveFor(idOf(m));
+			merged.push_back(fresh ? *fresh : m);
+		}
+	return merged;
+}
+
 OnlineMatchResult::OnlineMatchResult(std::string origin, std::string matchId, std::string accountId)
 	: origin(std::move(origin)), matchId(std::move(matchId)), accountId(std::move(accountId))
 {
@@ -63,8 +96,53 @@ OnlineMatchResult::OnlineMatchResult(std::string origin, std::string matchId, st
 
 OnlineMatchResult::~OnlineMatchResult()
 {
+	*alive = false;
 	if (client && listener)
 		client->removeListener(listener);
+	if (client && rematchListener)
+		client->removeListener(rematchListener);
+}
+
+OnlineMatchResult::Phase OnlineMatchResult::phase() const
+{
+	if (verification != Verification::Pending || status == "cancelled")
+		return Phase::Done;
+	return status == "ended" ? Phase::Verifying : Phase::Waiting;
+}
+
+bool OnlineMatchResult::poll(std::uint64_t nowMs)
+{
+	bool changed = false;
+	const Phase current = phase();
+	if (phaseSince == 0 || current != lastPhase)
+	{
+		lastPhase = current;
+		phaseSince = nowMs;
+		changed = slow;
+		slow = false;
+	}
+	const std::uint64_t expected = current == Phase::Waiting ? WAITING_EXPECTED_MS : VERIFYING_EXPECTED_MS;
+	if (current != Phase::Done && !slow && nowMs - phaseSince > expected)
+	{
+		slow = true;
+		changed = true;
+	}
+	if (client && current != Phase::Done && !polling && (lastPoll == 0 || nowMs - lastPoll >= POLL_MS))
+	{
+		lastPoll = nowMs;
+		polling = true;
+		client->rest(HttpFetch::Method::Get, "/api/v1/matches/" + matchId, Json(),
+					 [this, alive = alive](const PlatformClient::Response &response) {
+						 if (!*alive)
+							 return;
+						 polling = false;
+						 if (response.ok && response.result.contains("match"))
+							 apply(response.result["match"]);
+					 });
+	}
+	if (changed)
+		++revision;
+	return changed;
 }
 
 void OnlineMatchResult::listen(PlatformClient &platform)
@@ -75,6 +153,12 @@ void OnlineMatchResult::listen(PlatformClient &platform)
 	listener = platform.addListener("match.updated", [this](const std::string &, const Json &data) {
 		if (data.contains("match") && data["match"].is_object() && data["match"].value("id", "") == matchId)
 			apply(data["match"]);
+	});
+	rematchListener = platform.addListener("match.rematchOffered", [this](const std::string &, const Json &data) {
+		if (data.value("matchId", "") != matchId)
+			return;
+		rematchOfferedBy = data.value("host", "?");
+		++revision;
 	});
 }
 
@@ -95,6 +179,8 @@ void OnlineMatchResult::apply(const Json &summary)
 	else
 		verification = Verification::Pending;
 	rated = summary.value("rated", rated);
+	if (summary.contains("status") && summary["status"].is_string())
+		status = summary["status"].get<std::string>();
 	fromRoom = summary.value("origin", fromRoom ? "room" : "queue") == "room";
 	if (summary.contains("mapTitle") && summary["mapTitle"].is_string())
 		mapTitle = summary["mapTitle"].get<std::string>();

@@ -62,10 +62,32 @@ class OnlineMatchResult
 	OnlineMatchResult(const OnlineMatchResult &) = delete;
 	OnlineMatchResult &operator=(const OnlineMatchResult &) = delete;
 
+	/// Where the result is: the match still runs on the relay (another player has
+	/// not left yet), it ended and the verifier is replaying it, or it is settled.
+	enum class Phase
+	{
+		Waiting,
+		Verifying,
+		Done,
+	};
+	/// Waiting expects every player to leave within about this long, Verifying the
+	/// verifier to finish; beyond it the card says so (`slow`).
+	static constexpr std::uint64_t WAITING_EXPECTED_MS = 45000;
+	static constexpr std::uint64_t VERIFYING_EXPECTED_MS = 60000;
+	/// How often poll() asks GET /api/v1/matches/{id} while the result is open.
+	static constexpr std::uint64_t POLL_MS = 10000;
+
 	/// Starts listening to match.updated on the client (no-op without one).
 	void listen(PlatformClient &client);
-	/// Applies a MatchSummary (match.updated data.match, or a fixture).
+	/// Applies a MatchSummary (match.updated data.match, GET /api/v1/matches/{id}
+	/// match, or a fixture).
 	void apply(const Json &summary);
+	/// Called every frame by the results screen: re-reads the match from the REST
+	/// API every POLL_MS while it is not Done (a missed event cannot leave the card
+	/// spinning), and sets `slow` once the phase outlasts its expected time.
+	/// Returns true when something shown changed.
+	bool poll(std::uint64_t nowMs);
+	Phase phase() const;
 
 	std::string origin, matchId, accountId;
 	/// "1 vs 1 · Ranked", "Room · Sunday 2v2"
@@ -81,8 +103,15 @@ class OnlineMatchResult
 	/// ratingPreview; see docs/multiplayer/client.md).
 	std::optional<double> ratingExpectedWin, ratingExpectedLoss;
 	bool provisional = false;
-	/// Platform outcome of this account: won | lost | unresolved | abandoned.
+	/// Platform outcome of this account: won | lost | draw | unresolved | abandoned.
 	std::string outcome;
+	/// MatchSummary status (starting | running | ended | cancelled); empty until the
+	/// platform has said anything about the match.
+	std::string status;
+	/// The phase has lasted longer than expected (see poll()).
+	bool slow = false;
+	/// Another player opened this quick match's rematch room (match.rematchOffered).
+	std::string rematchOfferedBy;
 	/// Bumped on every change, so screens can poll cheaply.
 	unsigned revision = 0;
 
@@ -91,7 +120,11 @@ class OnlineMatchResult
 
   private:
 	PlatformClient *client = nullptr;
-	std::uint64_t listener = 0;
+	std::uint64_t listener = 0, rematchListener = 0;
+	std::shared_ptr<bool> alive = std::make_shared<bool>(true);
+	std::uint64_t lastPoll = 0, phaseSince = 0;
+	Phase lastPhase = Phase::Waiting;
+	bool polling = false;
 };
 
 /// Optional context from the screen that started a match.
@@ -208,8 +241,11 @@ class OnlineMatch
 const char *stepName(OnlineMatch::Step step);
 
 /// Matches this client saw end or change (MatchSummary objects from match.updated,
-/// newest first, at most 20), for the hub's Recent matches until the platform has
-/// history endpoints.
+/// newest first, at most 20): fresher than the history API for a moment after a match.
 const Json &recentMatches();
 void rememberMatch(const Json &summary);
+/// The hub's Recent matches: the history API's page (newest first), each row
+/// replaced by a summary seen live since, and live summaries the page does not
+/// have yet in front; at most `limit`.
+Json mergeRecentMatches(const Json &history, const Json &live, std::size_t limit);
 } // namespace Online

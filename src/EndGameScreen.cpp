@@ -11,7 +11,9 @@
 #include "Utilities.h"
 #include "gui/InGameTouchTheme.h"
 #include "gui/LoadSaveDialog.h"
+#include "OnlineHandoff.h"
 #include "OnlineMatch.h"
+#include <SDL.h>
 #include <ApplicationHost.h>
 #include <FormatableString.h>
 #include <StringTable.h>
@@ -286,12 +288,26 @@ Element EndGameScreen::ratingCard(const Presentation &p)
 	std::vector<Element> lines;
 	std::string head = r.rated ? GAGCore::FormattableString(fe::tr("[results ladder rating %0]")).arg(r.ladder.empty() ? fe::tr("[results ranked]") : r.ladder)
 							   : fe::tr("[results room unrated]");
-	std::string status;
+	using Phase = Online::OnlineMatchResult::Phase;
+	const Phase phase = r.phase();
+	// While the match still runs on the relay (someone has not left yet) or the
+	// verifier replays it, say which, and say so when it takes longer than usual.
+	auto pending = [&](const char *key) {
+		lines.push_back(fe::row({fe::icon(fe::uiIcon(fe::UIIcon::Spinner), {16, palette.muted}),
+								 fe::label(fe::tr(key), {fe::FontRole::Body})},
+								{p.pt(4), fe::CrossAlign::Center}));
+		const char *detail = phase == Phase::Waiting ? (r.slow ? "[results waiting slow]" : "[results waiting detail]")
+												  : (r.slow ? "[results verifying slow]" : "[results verifying detail]");
+		if (!p.compact() || r.slow)
+			lines.push_back(fe::paragraph(fe::tr(detail), {fe::FontRole::Support, true}));
+	};
 	if (!r.rated)
 	{
 		lines.push_back(fe::label(head, big));
-		status = r.verification == V::Pending ? fe::tr("[results recording]") : fe::tr("[results saved to history]");
-		lines.push_back(fe::caption(status));
+		if (phase == Phase::Done)
+			lines.push_back(fe::caption(fe::tr("[results saved to history]")));
+		else
+			pending(phase == Phase::Waiting ? "[results waiting for players]" : "[results recording]");
 	}
 	else if (r.verification == V::Verified && r.ratingAfter)
 	{
@@ -320,11 +336,7 @@ Element EndGameScreen::ratingCard(const Presentation &p)
 		std::optional<double> expected = won ? r.ratingExpectedWin : r.ratingExpectedLoss;
 		if (r.ratingBefore && expected)
 			lines.push_back(fe::label(ratingText(*r.ratingBefore) + " → " + ratingText(*expected) + "?", greyed));
-		lines.push_back(fe::row({fe::icon(fe::uiIcon(fe::UIIcon::Spinner), {16, palette.muted}),
-								 fe::label(fe::tr("[results verifying]"), {fe::FontRole::Body})},
-								{p.pt(4), fe::CrossAlign::Center}));
-		if (!p.compact())
-			lines.push_back(fe::paragraph(fe::tr("[results verifying detail]"), {fe::FontRole::Support, true}));
+		pending(phase == Phase::Waiting ? "[results waiting for players]" : "[results verifying]");
 	}
 	fe::CardOptions options;
 	options.color = palette.field;
@@ -398,6 +410,14 @@ Element EndGameScreen::build(const Presentation &p)
 		actions.push_back({"save-replay", fe::tr("[save replay]"), [this] { saveReplay("replays", "replay"); }});
 	if (online && compact)
 		actions.push_back({"match-page", fe::tr("[results match page]"), [this] { GAGCore::ApplicationHost::openUrl(online->matchPageUrl()); }});
+	// Rematch after a quick match (Q9): an unrated room with the same players; the
+	// others are invited, and one who asks after them joins the same room.
+	if (online && !online->fromRoom)
+		actions.push_back({"rematch",
+						   online->rematchOfferedBy.empty()
+							   ? fe::tr("[results rematch]")
+							   : std::string(GAGCore::FormattableString(fe::tr("[results join rematch %0]")).arg(online->rematchOfferedBy)),
+						   [this] { rematch(); }});
 	const char *quitKey = !online ? "[quit]" : online->fromRoom ? "[results back to room]" : "[results back to online]";
 	actions.push_back({"quit", fe::tr(quitKey), [this] { endExecute(QUIT); }, true, SDLK_RETURN});
 	parts.push_back(fe::actions(std::move(actions), p));
@@ -454,9 +474,22 @@ void EndGameScreen::saveReplay(const char *dir, const char *ext)
 	GAGCore::ApplicationHost::screenChanged(typeid(*replaySave).name());
 }
 
+void EndGameScreen::rematch()
+{
+	if (!online)
+		return;
+	Online::RematchRequest request;
+	request.matchId = online->matchId;
+	if (!Online::requestRematch(request))
+		return;
+	endExecute(QUIT);
+}
+
 void EndGameScreen::updateExecution(Uint32 tick)
 {
 	// Verification results arrive through the shared client (Online::pump).
+	if (online)
+		online->poll(SDL_GetTicks64());
 	if (online && online->revision != onlineRevision)
 	{
 		onlineRevision = online->revision;

@@ -21,6 +21,8 @@ struct FakeLink
 	std::string opened;
 	NetTransport::State state = NetTransport::State::Connecting;
 	int opens = 0;
+	std::size_t pending = 0; ///< bytes the fake has not "written" yet
+	bool closed = false;
 };
 
 class FakeTransport : public NetTransport
@@ -33,8 +35,13 @@ public:
 		link.opened = endpoint;
 		++link.opens;
 	}
-	void close() override { link.state = State::Closed; }
+	void close() override
+	{
+		link.state = State::Closed;
+		link.closed = true;
+	}
 	State state() const override { return link.state; }
+	size_t pendingOutgoing() const override { return link.pending; }
 	bool send(std::vector<uint8_t> bytes) override
 	{
 		link.sent.insert(link.sent.end(), bytes.begin(), bytes.end());
@@ -113,6 +120,37 @@ TEST_SUITE("RelayTransport")
 		link.state = NetTransport::State::Connecting;
 		transport.connect();
 		CHECK(link.opens == 2);
+	}
+
+	TEST_CASE("a transport destroyed with frames still queued writes them before closing")
+	{
+		FakeLink link;
+		{
+			Online::RelayTransport transport("wss://play.example.org/relay/relay-1",
+			                                 [&] { return std::make_unique<FakeTransport>(link); });
+			transport.connect();
+			link.state = NetTransport::State::Connected;
+			CHECK(transport.send({1}));
+			link.pending = 3; // the Quit is still in the socket's queue
+		}
+		CHECK_FALSE(link.closed);
+		CHECK(Online::lingeringRelayConnections() == 1);
+		Online::pumpLingeringRelayConnections();
+		CHECK_FALSE(link.closed);
+		link.pending = 0;
+		CHECK(Online::lingeringRelayConnections() == 0);
+		CHECK(link.closed);
+
+		// Nothing queued: it closes at once.
+		FakeLink idle;
+		{
+			Online::RelayTransport transport("wss://play.example.org/relay/relay-1",
+			                                 [&] { return std::make_unique<FakeTransport>(idle); });
+			transport.connect();
+			idle.state = NetTransport::State::Connected;
+		}
+		CHECK(idle.closed);
+		CHECK(Online::lingeringRelayConnections() == 0);
 	}
 
 	TEST_CASE("relay URLs are accepted WebSocket endpoints")

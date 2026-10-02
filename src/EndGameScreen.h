@@ -58,6 +58,9 @@ class EndGameScreen : public GAGGUI::ui::UIScreen
 	// Legacy action codes: 100 opens the metric picker, 101 toggles the expanded
 	// chart, 102 the team filters, 200+ toggles a team row, else a ButtonId.
 	void activateResultControl(int action);
+	//! Quick matches: opens (or joins) the unrated rematch room (Online::requestRematch)
+	//! and leaves the results; the room opens over the online screens.
+	void rematch();
 	bool metricPickerOpen() { return host().popupOpen(); }
 	//! Online matches: the outcome banner and the rating card, updated live while
 	//! the server verifies the result (docs/multiplayer/client.md).
