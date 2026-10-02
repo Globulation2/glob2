@@ -10,6 +10,7 @@ import subprocess
 import sys
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scons'))
 from build_layout import build_identity, default_directory, BuildLock, PACKAGE_VERSION
+import official_instance
 from mobile_toolchain import ROOT, LOCK, discover
 from mobile_artifacts import verify_android_shared_library, verify_android_symbols, verify_android_archive_symbols
 import developer_apk
@@ -139,7 +140,8 @@ def main():
         if args.fdroid: native_command.append('--fdroid')
         (project/'glob2-build.json').write_text(json.dumps({'root':str(ROOT),'command':native_command,
             'release':args.release,'version_code':args.version_code,
-            'version_name':version_name,'arch':args.arch,'package_name':package_name},indent=2)+'\n')
+            'version_name':version_name,'arch':args.arch,'package_name':package_name,
+            'official_instance_host':official_instance.host(official_instance.origin())},indent=2)+'\n')
         generated=project/'app/generated'
         if generated.exists(): shutil.rmtree(generated)
         generated.mkdir(parents=True)

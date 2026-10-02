@@ -96,7 +96,7 @@ attempt fails locally as `expired` one minute after its expiry.
 ## Instances and stored credentials
 
 `InstanceConfig` keeps the selected instance (the official one,
-`OFFICIAL_INSTANCE_ORIGIN = https://yog.globulation2.org`, by default) and, per
+`OFFICIAL_INSTANCE_ORIGIN`, by default) and, per
 instance origin, the device credential, refresh token, automatic sign-in flag,
 last display name and trust. It is stored in `online/instances.json` in the user
 directory through `FileManager` (written atomically with mode 0600 for new files)
@@ -104,10 +104,16 @@ and, in the browser, in the site's IndexedDB-backed storage, synced after each
 write with `ApplicationHost::persistStorage()`. Credentials are not in
 `preferences.txt`, which players attach to bug reports.
 
+The official origin is one build-time setting: `DEFAULT_ORIGIN` in
+`scons/official_instance.py` (currently `https://glob2online.com`), overridable
+with `scons official_instance=https://example.org`. Every build path passes it to
+the client as `GLOB2_OFFICIAL_INSTANCE_ORIGIN`, and the Android and iOS packaging
+scripts derive the App Link host and associated domain from it.
+
 ```json
 {
   "version": 1,
-  "selected": "https://yog.globulation2.org",
+  "selected": "https://glob2online.com",
   "instances": {
     "https://games.example.org": {
       "trusted": true, "autoSignIn": true,
@@ -176,8 +182,8 @@ second launch joins directly. In-client "Join by code" covers the rest.
 | Windows installer | `windows/win32_installer.nsi`: `HKCR\glob2` URL protocol → `glob2.exe "%1"` |
 | macOS | `darwin/Info.plist` `CFBundleURLTypes` |
 | Linux (deb, rpm, Flatpak, Snap) | `data/glob2.desktop`: `Exec=glob2 %u`, `MimeType=x-scheme-handler/glob2` |
-| Android | intent filter for `glob2://join` and a verified App Link for `https://yog.globulation2.org/j/` |
-| iOS | `CFBundleURLTypes` and `applinks:yog.globulation2.org` |
+| Android | intent filter for `glob2://join` and a verified App Link for `https://<official host>/j/` (`officialInstanceHost` placeholder) |
+| iOS | `CFBundleURLTypes` and `applinks:<official host>` (written by `mobile/ios.py`) |
 
 App Links and universal links cover the official domain only; self-hosted
 instances use `glob2://`. They need the instance to serve
@@ -188,10 +194,10 @@ instances use `glob2://`. They need the instance to serve
 ## Sim version
 
 `session.hello` reports `SimVersion::local()`: `VERSION_MINOR`,
-`NET_PROTOCOL_VERSION` and a data hash. The engine does not compute the data
-hash yet, so the client sends 64 zeros and the platform answers
-`simSupported: false` until that lands; sign-in and account calls work
-regardless.
+`NET_PROTOCOL_VERSION` and the simulation data hash (`simDataHash()` in
+`src/online/SimVersion.cpp`, the same value `--sim-version` prints). Only a
+process that never initialized the Toolkit file system (some unit tests) reports
+64 zeros, which the platform answers with `simSupported: false`.
 
 ## Tests
 
