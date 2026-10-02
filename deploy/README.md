@@ -32,6 +32,11 @@ browser client. Browser assets default to `build/browser-static`, whose verified
 gzip sidecars Caddy negotiates for HTML, JavaScript, WebAssembly and data;
 `GLOB2_ASSETS` overrides the mounted directory.
 
+The proxy image pins Caddy 2.11.4. Caddy 2.10.2 incorrectly returned HTTP 206 for
+full precompressed responses; the [upstream fix](https://github.com/caddyserver/caddy/pull/7251)
+restores HTTP 200 when the request contains no byte range. Deployment tests check
+both identity and gzip responses against the packaged files.
+
 The provisioning command refuses to overwrite existing material. The directory
 is owner-only; file-backed Compose secrets must be readable by container UID
 10001. The private CA key is owner-readable only and is never mounted into a

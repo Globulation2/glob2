@@ -73,6 +73,11 @@ python3 test/run_tests.py      # run them; --list, --filter, --tag, --shard
 - Dependencies include pinned SDL3/SDL3_net/SDL3_ttf/SDL3_image (see `scons/sdl3-versions.json`) and WebP 1.6.0 for optimized packaged artwork, Vorbis/Ogg, Speex, OpenGL/GLU, libepoxy,
   zlib, fribidi and pcre; PortAudio is optional. All native multiplayer builds (client, server, and router) require OpenSSL and the header-only
   Boost.Beast and Boost.Asio; nothing else uses Boost.
+  The source helper and vcpkg overlay apply the same reviewed SDL3 X11 patches:
+  an [upstream reparenting fix](https://github.com/libsdl-org/SDL/commit/25f4af8fcf7d1a9a06be8d89694b1c612158f41f)
+  backported to 3.4.16, and a mapping wait that accepts confirmed window state
+  when its notification is missing. Patch hashes are recorded in the SDK manifest
+  and invalidate cached builds. Use this patched SDK for the pinned X11 build.
 - `CCACHE=1` opts into the shared compiler cache. Unset it when generating
   `compile_commands.json`; do not add `CCACHE_SLOPPINESS` settings that weaken
   content or time-macro validation (`include_file_mtime`, `include_file_ctime`,

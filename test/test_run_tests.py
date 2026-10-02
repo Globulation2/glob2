@@ -341,6 +341,31 @@ class EndToEndTest(unittest.TestCase):
 
 
 class TimeoutDiagnosticsTest(unittest.TestCase):
+    def test_display_diagnostics_cannot_inspect_an_unowned_display(self):
+        proc = mock.MagicMock()
+        proc.__truediv__.return_value = proc
+        proc.read_bytes.return_value = b'DISPLAY=:7\0XAUTHORITY=/tmp/auth\0'
+        with mock.patch.object(run_tests, 'Path', return_value=proc), \
+             mock.patch.object(run_tests.subprocess, 'run') as inspect:
+            self.assertEqual(run_tests.timeout_display_state(123, {':99'}), '')
+        inspect.assert_not_called()
+
+    def test_display_diagnostics_capture_real_mapping_on_owned_server(self):
+        proc = mock.MagicMock()
+        proc.__truediv__.return_value = proc
+        proc.read_bytes.return_value = b'DISPLAY=:99\0XAUTHORITY=/tmp/auth\0'
+        states = [subprocess.CompletedProcess([], 0, 'root state', ''),
+                  subprocess.CompletedProcess([], 0, '  0x400001 "test window"', ''),
+                  subprocess.CompletedProcess([], 0, 'Map State: IsViewable', '')]
+        with mock.patch.object(run_tests, 'Path', return_value=proc), \
+             mock.patch.object(run_tests.shutil, 'which', side_effect=lambda name: name), \
+             mock.patch.object(run_tests.subprocess, 'run', side_effect=states) as inspect:
+            output = run_tests.timeout_display_state(123, {':99'})
+        self.assertIn('Map State: IsViewable', output)
+        self.assertEqual(inspect.call_args_list[-1].args[0],
+                         ['xwininfo', '-id', '0x400001', '-all'])
+        self.assertTrue(all(call.kwargs['timeout'] <= 2 for call in inspect.call_args_list))
+
     def test_ignores_processes_outside_owned_group(self):
         snapshot = subprocess.CompletedProcess([], 0, '42 1 99 S unrelated-process\n')
         with mock.patch.object(run_tests.platform, 'system', return_value='Linux'), \

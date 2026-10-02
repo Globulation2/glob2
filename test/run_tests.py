@@ -391,6 +391,34 @@ def failure_details(junit_text):
 
 
 
+def timeout_display_state(pid, owned_displays):
+    """Capture only an Xvfb display owned by the timed-out test group."""
+    lines = ['[run_tests] owned Xvfb window state:']
+    try:
+        environment = dict(entry.split('=', 1) for entry in
+                           (Path('/proc') / str(pid) / 'environ').read_bytes().decode().split('\0')
+                           if '=' in entry)
+        if environment.get('DISPLAY') not in owned_displays:
+            return ''
+        deadline = time.monotonic() + 6
+        commands = [['xprop', '-root', '_NET_SUPPORTING_WM_CHECK', '_NET_CLIENT_LIST'],
+                    ['xwininfo', '-root', '-tree']]
+        while commands and time.monotonic() < deadline:
+            command = commands.pop(0)
+            if not shutil.which(command[0]):
+                continue
+            state = subprocess.run(command, env=environment, capture_output=True, text=True,
+                                   timeout=min(2, max(0.1, deadline - time.monotonic())))
+            lines.extend([' '.join(command), state.stdout, state.stderr])
+            if command == ['xwininfo', '-root', '-tree']:
+                windows = re.findall(r'^\s*(0x[0-9a-fA-F]+)\s+"', state.stdout, re.MULTILINE)
+                commands.extend(['xwininfo', '-id', window, '-all'] for window in windows[:8])
+        return '\n'.join(lines)
+    except (OSError, UnicodeError, subprocess.SubprocessError) as error:
+        lines.append(f'[run_tests] Xvfb diagnostics unavailable: {error}')
+        return '\n'.join(lines)
+
+
 def timeout_diagnostics(group, binary):
     """Inspect only this test's owned Linux process group before timeout cleanup."""
     if platform.system() != 'Linux':
@@ -400,11 +428,15 @@ def timeout_diagnostics(group, binary):
         snapshot = subprocess.run(['ps', '-eo', 'pid=,ppid=,pgid=,stat=,args='],
                                   capture_output=True, text=True, timeout=2, check=True)
         children = []
+        displays = set()
         for row in snapshot.stdout.splitlines():
             fields = row.split(None, 4)
             if len(fields) != 5 or fields[2] != str(group):
                 continue
             lines.append(row)
+            arguments = fields[4].split()
+            if len(arguments) > 1 and Path(arguments[0]).name == 'Xvfb':
+                displays.add(arguments[1])
             pid = int(fields[0])
             process_path = Path('/proc') / str(pid)
             try:
@@ -414,6 +446,8 @@ def timeout_diagnostics(group, binary):
                     children.append(pid)
             except OSError as error:
                 lines.append(f'  /proc/{pid}: {error}')
+        if children and displays:
+            lines.append(timeout_display_state(children[0], displays))
         # GitHub's ptrace policy needs sudo for sibling processes. Only attach to
         # the actual test executable in the owned group, never its X server/WM.
         debugger = shutil.which('gdb')

@@ -11,6 +11,8 @@ import tarfile
 import urllib.request
 
 LOCK = Path(__file__).with_name('sdl3-versions.json')
+SDL_PATCHES = tuple(LOCK.parent / 'vcpkg-ports' / 'sdl3' / name for name in
+                    ('x11-reparent-race.patch', 'x11-map-notify.patch'))
 
 
 def download(work, versions):
@@ -25,6 +27,27 @@ def download(work, versions):
             temporary.replace(archive)
         if hashlib.sha256(archive.read_bytes()).hexdigest() != spec['sha256']:
             raise ValueError(f'Dependency archive checksum mismatch: {archive}')
+
+
+def apply_source_patches(source, patches=SDL_PATCHES):
+    """Apply the same reviewed SDL fixes as vcpkg, rejecting unexpected sources."""
+    source = Path(source).resolve()
+    # Archives can live inside the application checkout. Prevent git apply from
+    # discovering that repository and silently skipping paths outside its prefix.
+    environment = dict(os.environ, GIT_CEILING_DIRECTORIES=str(source.parent))
+    for variable in ('GIT_DIR', 'GIT_WORK_TREE', 'GIT_INDEX_FILE', 'GIT_COMMON_DIR'):
+        environment.pop(variable, None)
+    for patch in patches:
+        command = ['git', 'apply', '--check', str(Path(patch).resolve())]
+        check = subprocess.run(command, cwd=source, env=environment, capture_output=True, text=True)
+        if check.returncode:
+            reverse = subprocess.run(command[:2] + ['--reverse'] + command[2:],
+                                     cwd=source, env=environment, capture_output=True, text=True)
+            if reverse.returncode:
+                raise RuntimeError(f'SDL source patch does not apply: {patch}\n{check.stderr}')
+        else:
+            subprocess.run(['git', 'apply', '--whitespace=nowarn', command[-1]],
+                           cwd=source, env=environment, check=True)
 
 
 def patch_image_exports(source):
@@ -62,8 +85,10 @@ def build(prefix, work, jobs=2, emscripten=None, environment=None, threaded=Fals
     versions = json.loads(LOCK.read_text())
     if emscripten:
         versions = json.loads(LOCK.with_name('sdl3-vendored.json').read_text()) | versions
-    identity = {'configuration': 8, 'threaded': threaded, 'versions': versions, 'emscripten': str(emscripten) if emscripten else None,
-                'platform': platform.platform(), 'machine': platform.machine()}
+    identity = {'configuration': 10, 'threaded': threaded, 'versions': versions, 'emscripten': str(emscripten) if emscripten else None,
+                'platform': platform.platform(), 'machine': platform.machine(),
+                'source_patches': {patch.name: hashlib.sha256(patch.read_bytes()).hexdigest()
+                                   for patch in SDL_PATCHES}}
     manifest = prefix / 'sdl3-manifest.json'
     libraries = ('SDL3', 'SDL3_image', 'SDL3_ttf', 'SDL3_net')
     installed = all(any((prefix / 'lib').glob('*' + name + '*')) for name in libraries)
@@ -80,6 +105,8 @@ def build(prefix, work, jobs=2, emscripten=None, environment=None, threaded=Fals
         if not source.exists():
             with tarfile.open(archive) as package:
                 package.extractall(work, filter='data')
+        if name == 'SDL':
+            apply_source_patches(source)
         if name == 'SDL_image':
             patch_image_exports(source)
         if name == 'SDL_net':

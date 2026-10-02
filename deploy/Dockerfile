@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1.7
 FROM ubuntu:24.04 AS build
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates g++ make python3 scons pkg-config cmake libfreetype-dev libvorbis-dev libogg-dev libspeex-dev \
+    ca-certificates git g++ make python3 scons pkg-config cmake libfreetype-dev libvorbis-dev libogg-dev libspeex-dev \
     libboost-dev libssl-dev zlib1g-dev \
     libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxfixes-dev libxss-dev libxtst-dev \
     libfribidi-dev libpcre3-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev \
@@ -20,7 +20,7 @@ RUN --mount=type=cache,id=glob2-server-build-${TARGETARCH},target=/source/build,
     cp -a build/sdl3/prefix/lib/libSDL3* /output/ && \
     cp -a build/sdl3/prefix/share/licenses /output/licenses
 
-FROM caddy:2.10.2-alpine AS proxy
+FROM caddy:2.11.4-alpine AS proxy
 RUN setcap -r /usr/bin/caddy && chown -R 10001:10001 /data /config
 USER 10001:10001
 

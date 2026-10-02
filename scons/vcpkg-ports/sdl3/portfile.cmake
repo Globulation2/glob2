@@ -6,6 +6,8 @@ vcpkg_from_github(
     HEAD_REF main
     PATCHES
         fix-freebsd.patch
+        x11-reparent-race.patch
+        x11-map-notify.patch
 )
 
 string(COMPARE EQUAL "${VCPKG_LIBRARY_LINKAGE}" "static" SDL_STATIC)
