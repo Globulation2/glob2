@@ -1,0 +1,41 @@
+{
+ "run4/game.replay.checksums": {
+  "sha256": "b57a29f010a18e99686cd3e9fc00f3c84a935620e856ab68e1ef2c7b9e31c7f8",
+  "bytes": 47277406,
+  "body_sha256": "0b882afc944d33d92c70a1d01fa81539123de64e6419b601b5c77719bbca5a72"
+ },
+ "run2/game.replay.checksums": {
+  "sha256": "afb1c9de16a4539fd879a981108aa70bfee304a4c43842cdba250b6f7eb80aed",
+  "bytes": 50632166,
+  "body_sha256": "b063e772858b052d76dde6f946817c3bf1a1510ff7ac1b18ac272eb2e76076e6"
+ },
+ "testgames.replay.checksums": {
+  "sha256": "471a2c20723ffb68d0f1c681271f2eb772216af6a8b1347090b84b01df0bd5ce",
+  "bytes": 35088842,
+  "body_sha256": "ad8f6414e13c6b5382ac0259a6c2bfc2c583220de5baeb8d96956e97e7ab32c2"
+ },
+ "run4/game.replay": {
+  "sha256": "93769afc56767194a3bba36e8c42d71eada791c9c3fc60ceca59d92d2f20e763",
+  "bytes": 2124704,
+  "body_sha256": "9d76058ffce40311d071457125724b4d559999b7de9b7f090079597c81d4e5de"
+ },
+ "run2/game.replay": {
+  "sha256": "382c8c5348b375a87391331ef95b1f71cdf6f9aac2f2dcc8fa1bdb1de5addacd",
+  "bytes": 1972479,
+  "body_sha256": "64ef7acd452cc3b014239434d7e9ad8a44d6a0d510603e2f04f680fd44b87480"
+ },
+ "testgames.replay": {
+  "sha256": "7ff67a3160680ee7684b98d09c795ffc13e03ca9a449076b57d1a9ccec4a01ea",
+  "bytes": 1841248,
+  "body_sha256": "ad7cb02a0eb4e73648b8f63fdfd0f29b51fbd801aea288a724d2b2d65d455de3"
+ },
+ "playback/r.replay.checksums": {
+  "sha256": "17ade93d347608cc46eded08d6c2e94a7cbfee52a3cfec9c9a5df14fa3f851ef",
+  "bytes": 47276032,
+  "body_sha256": "b1ef61c0c4f3e06fa28fc1c6942f32a483d385c22bed5592779a1b7812834d1d"
+ },
+ "run4/result.json (timing stripped)": "c5c9cfd64638b0222951e0a2a562d18e2f52b5f35d093dd9ede06f8f46e6c161",
+ "run2/result.json (timing stripped)": "aa161063d2c70d627327892ed2e72469cd430f6ff14d8249d408d021464c11af",
+ "run4.log tail": "references.txt\") : error, can't open file.\nnox::game started\nnox::gui.game.checkSum() = fdadcf88\nautomaticEndingGame ended: 6000 ticks, 4 minutes, 0 seconds\nGLOB2_GAME_END ticks=6000 winner_team=-1 seed=19 map=\"study-15-42-r0\" orders=578 players=team0:Nicowar,team1:Warrush,team2:Castor,team3:Cortex\n",
+ "run2.log tail": "ivisor=8,emergencies.proportional_population_trend_threshold=-20\nnox::game started\nnox::gui.game.checkSum() = 4553024e\nautomaticEndingGame ended: 6000 ticks, 4 minutes, 0 seconds\nGLOB2_GAME_END ticks=6000 winner_team=-1 seed=7 map=\"A big pond\" orders=203 players=team0:Econo,team1:Numbi,team2:Maxima\n"
+}
