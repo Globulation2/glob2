@@ -45,6 +45,8 @@ const CASUAL = resolveQueue({
 const muFor = (skill: number) => MU0 + (skill - 1500) / DISPLAY_PER_MU;
 
 let database: TestDatabase;
+// Registered display names are unique (identity migration 0003).
+let players = 0;
 beforeAll(async () => {
   database = await createTestDatabase();
 });
@@ -93,7 +95,7 @@ async function enqueue(
     name?: string;
   } = {},
 ): Promise<{ accountId: string; ticketId: string }> {
-  const accountId = await createAccount(database.db, options.name ?? 'Player');
+  const accountId = await createAccount(database.db, options.name ?? `Player${++players}`);
   const result = await joinQueue(database.db, {
     accountId,
     queue,
