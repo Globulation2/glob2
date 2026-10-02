@@ -390,6 +390,7 @@ jobs:
             mingw-w64-x86_64-python mingw-w64-x86_64-scons
             mingw-w64-x86_64-cmake
             mingw-w64-x86_64-freetype
+            mingw-w64-x86_64-libpng mingw-w64-x86_64-libjpeg-turbo
             mingw-w64-x86_64-libvorbis mingw-w64-x86_64-libogg
             mingw-w64-x86_64-speex mingw-w64-x86_64-zlib
             mingw-w64-x86_64-fribidi mingw-w64-x86_64-pcre
