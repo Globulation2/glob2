@@ -46,6 +46,7 @@ ENGINE_TESTS = [
     'TerrainResourcesHarness.cpp',
     'LockstepSessionTest.cpp',
     'MatchSetupTest.cpp',
+    ('TurnEngineHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     ('AISavePortabilityHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     'BuildingFootprintHarness.cpp',
     'ClearingFlagGradientTest.cpp',
