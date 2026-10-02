@@ -1,0 +1,27 @@
+{
+  "source_bytes": 50599937,
+  "export_bytes": 39281234,
+  "files": 6920,
+  "lossy": [
+    {
+      "lossy": true,
+      "output": "data/gfx/menu-colony.webp",
+      "output_bytes": 375010,
+      "output_sha256": "f0e81db035d560817ba6a8920b5f812ad853d41740f3525515dc7d436043c171",
+      "recipe": {
+        "lossless_quality": 75,
+        "lossy": true,
+        "method": 4,
+        "pillow": "12.2.0",
+        "policy": "runtime-assets-v1",
+        "webp": "1.6.0",
+        "zlib": "1.3.1.zlib-ng"
+      },
+      "source": "data/gfx/menu-colony.png",
+      "source_bytes": 1886177,
+      "source_sha256": "42af3e40fdb860aa3ca67cb212944a8768948786b4d5ce15cc1adf5dcad8bfe7"
+    }
+  ],
+  "zip_original": 42701760,
+  "zip_optimized": 31846672
+}

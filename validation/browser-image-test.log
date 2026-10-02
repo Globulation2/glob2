@@ -1,0 +1,6 @@
+
+Running 1 test using 1 worker
+
+  ✓  1 [chromium] › tests/image-assets.spec.js:3:1 › WebAssembly decodes exact WebP pixels and preserves image overrides (703ms)
+
+  1 passed (2.2s)

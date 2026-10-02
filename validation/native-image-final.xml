@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="2" failures="0" errors="0" skipped="0"><testsuite name="ImageAssets"><testcase classname="ImageAssets" name="WebP decoder preserves exact RGBA including transparent RGB" time="0.000241" status="run" />
+    <testcase classname="ImageAssets" name="Image alternatives preserve directory and original file precedence" time="0.006491" status="run" />
+  </testsuite></testsuites>

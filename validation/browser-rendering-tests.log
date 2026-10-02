@@ -1,0 +1,11 @@
+
+Running 6 tests using 1 worker
+
+  ✓  1 [chromium] › tests/menu-presentation.spec.js:16:1 › custom setup leaves the colony visible around its own panel (4.0s)
+  ✓  2 [chromium] › tests/menu-presentation.spec.js:22:1 › menu presentation survives a match and nested menus (11.2s)
+  ✓  3 [chromium] › tests/menu-presentation.spec.js:51:3 › cursor at pixel ratio 1 › browser keeps its system cursor through menus, gameplay and reload (10.1s)
+  ✓  4 [chromium] › tests/menu-presentation.spec.js:51:3 › cursor at pixel ratio 2 › browser keeps its system cursor through menus, gameplay and reload (11.0s)
+  ✓  5 [chromium] › tests/team-colors.spec.js:27:3 › software preserves the red tutorial team before and after resize (5.7s)
+  ✓  6 [chromium] › tests/team-colors.spec.js:27:3 › webgl2 preserves the red tutorial team before and after resize (1.2m)
+
+  6 passed (1.9m)

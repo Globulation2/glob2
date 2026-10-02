@@ -1,0 +1,24 @@
+{
+  "html": {
+    "original": 11792,
+    "gzip": 4898,
+    "saving_percent": 58.46336499321574
+  },
+  "js": {
+    "original": 922153,
+    "gzip": 165336,
+    "saving_percent": 82.07065421898535
+  },
+  "wasm": {
+    "original": 16249891,
+    "gzip": 4968758,
+    "saving_percent": 69.42282259000999
+  },
+  "data": {
+    "original": 40070849,
+    "gzip": 31553367,
+    "saving_percent": 21.25605574266719
+  },
+  "total_original": 57254685,
+  "total_gzip": 36692359
+}

@@ -1,0 +1,6 @@
+
+Running 1 test using 1 worker
+
+  ✓  1 [chromium] › tests/team-colors.spec.js:27:3 › webgl2 preserves the red tutorial team before and after resize (1.6m)
+
+  1 passed (1.6m)

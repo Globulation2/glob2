@@ -1,0 +1,58 @@
+[
+  {
+    "file": "index.html",
+    "encoding": "identity",
+    "mime": "text/html",
+    "bytes": 11792,
+    "sha256": "294bbb0a02faa4198a6ac0b170ea429dda46cd0e1037ee13c368946427484ba9"
+  },
+  {
+    "file": "index.html",
+    "encoding": "gzip",
+    "mime": "text/html",
+    "bytes": 4898,
+    "sha256": "294bbb0a02faa4198a6ac0b170ea429dda46cd0e1037ee13c368946427484ba9"
+  },
+  {
+    "file": "index-2607cad5edd77c9c.js",
+    "encoding": "identity",
+    "mime": "text/javascript",
+    "bytes": 922153,
+    "sha256": "7e17ea95e09923cfac8fd84bdd70b670033ee000d98e1d77a18c19fe4ec8c3c0"
+  },
+  {
+    "file": "index-2607cad5edd77c9c.js",
+    "encoding": "gzip",
+    "mime": "text/javascript",
+    "bytes": 165336,
+    "sha256": "7e17ea95e09923cfac8fd84bdd70b670033ee000d98e1d77a18c19fe4ec8c3c0"
+  },
+  {
+    "file": "index-2607cad5edd77c9c.wasm",
+    "encoding": "identity",
+    "mime": "application/wasm",
+    "bytes": 16249891,
+    "sha256": "5492a66eee1598fe283a622bacd27ab75034ab2bf6f161d87146fb5ce457bde4"
+  },
+  {
+    "file": "index-2607cad5edd77c9c.wasm",
+    "encoding": "gzip",
+    "mime": "application/wasm",
+    "bytes": 4968758,
+    "sha256": "5492a66eee1598fe283a622bacd27ab75034ab2bf6f161d87146fb5ce457bde4"
+  },
+  {
+    "file": "index-2607cad5edd77c9c.data",
+    "encoding": "identity",
+    "mime": "application/octet-stream",
+    "bytes": 40070849,
+    "sha256": "879b88a4490320c8640781652c9c85932310613287dd8543d6886717817c358d"
+  },
+  {
+    "file": "index-2607cad5edd77c9c.data",
+    "encoding": "gzip",
+    "mime": "application/octet-stream",
+    "bytes": 31553367,
+    "sha256": "879b88a4490320c8640781652c9c85932310613287dd8543d6886717817c358d"
+  }
+]

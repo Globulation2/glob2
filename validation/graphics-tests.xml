@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="artifacts/size-study/graphics-tests" errors="0" failures="0" tests="3734" time="16.0143" timestamp="2026-10-02T06:43:21Z" doctest_version="2.4.11">
+    <testcase classname="test/HighResolutionIntegrationHarness.cpp" name="HD artwork; cursor scaling and replay fixture in software rendering [display:1024x768][artifacts]" time="12.4424" status="run"/>
+    <testcase classname="test/RuntimePackCheck.cpp" name="HD runtime pack: logical sizes in software rendering" time="3.57191" status="run"/>
+  </testsuite>
+</testsuites>

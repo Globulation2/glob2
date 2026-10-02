@@ -1,0 +1,138 @@
+{
+  "uuids": {
+    "/Users/bradley/.codex/worktrees/image-compression-study/glob2/build/darwin/client/release/src/glob2": "UUID: 661E70DA-3BC2-3E0A-9B48-886B7830352B (arm64) /Users/bradley/.codex/worktrees/image-compression-study/glob2/build/darwin/client/release/src/glob2",
+    "/Users/bradley/.codex/worktrees/image-compression-study/glob2/build/darwin/client/release/Glob2.app/Contents/MacOS/glob2": "UUID: 661E70DA-3BC2-3E0A-9B48-886B7830352B (arm64) /Users/bradley/.codex/worktrees/image-compression-study/glob2/build/darwin/client/release/Glob2.app/Contents/MacOS/glob2",
+    "/Users/bradley/.codex/worktrees/image-compression-study/glob2/build/darwin/client/release/symbols/glob2.dSYM": "UUID: 661E70DA-3BC2-3E0A-9B48-886B7830352B (arm64) /Users/bradley/.codex/worktrees/image-compression-study/glob2/build/darwin/client/release/symbols/glob2.dSYM/Contents/Resources/DWARF/glob2"
+  },
+  "original_exe": 26822808,
+  "packaged_exe": 17420848,
+  "frameworks": [
+    {
+      "name": "libSDL2-2.0.0.dylib",
+      "bytes": 538688,
+      "sha256": "dda3396601bb04ba27c87ed718ba46c19648f1b49013d135bc7e79856c79e5f1"
+    },
+    {
+      "name": "libSDL2_image-2.0.0.800.12.dylib",
+      "bytes": 76784,
+      "sha256": "01008f7e986c72c690ec286454657111122350e2ee3bc179954b99d9cd33e248"
+    },
+    {
+      "name": "libSDL2_net-2.0.0.dylib",
+      "bytes": 55408,
+      "sha256": "540a4148ed82b9b4cb2cfe2d0d7d6fd0f878665bb6e883e6d269f576eeec75bb"
+    },
+    {
+      "name": "libSDL2_ttf-2.0.0.dylib",
+      "bytes": 109936,
+      "sha256": "09d92bbb38b90bb27071a79ee223e1ed411a01d831c6c974d95ae1a9209fbad2"
+    },
+    {
+      "name": "libSDL3.0.dylib",
+      "bytes": 2523120,
+      "sha256": "973a9456e3c9baab1ae67e11564d9589efef48bb2266cc3ecb01e6b9cdc47498"
+    },
+    {
+      "name": "libSDL3.dylib",
+      "alias": "libSDL3.0.dylib"
+    },
+    {
+      "name": "libcrypto.3.dylib",
+      "bytes": 4862416,
+      "sha256": "b1a324f99223bab3cef91b602602b77f61a8884bb68c8a511f65bac98983e796"
+    },
+    {
+      "name": "libepoxy.0.dylib",
+      "bytes": 1188496,
+      "sha256": "6c9a593e09f98ff42c4b36c106dcc0ed1077e4234d31f08ca042fb60cc21dc96"
+    },
+    {
+      "name": "libfreetype.6.dylib",
+      "bytes": 638240,
+      "sha256": "8b05e7f11e12d1125647fb96ad592308f4541e7fe876ce9c4f544bb44465ef83"
+    },
+    {
+      "name": "libfribidi.0.dylib",
+      "bytes": 171024,
+      "sha256": "2f953d8ff859754928a9a3413ef63b17fd99c4d8586b2590a1d3f06af4b5d1b3"
+    },
+    {
+      "name": "libglib-2.0.0.dylib",
+      "bytes": 1373616,
+      "sha256": "b7c004682732dcc0234d62e7e2adc6b42dd9ca7ccf4a3e1d8b550a271c289464"
+    },
+    {
+      "name": "libgraphite2.3.2.1.dylib",
+      "bytes": 138528,
+      "sha256": "cd6f3e6e4799e7cf2a27e53633346825dce24e3037263ea503c935bc0fc39710"
+    },
+    {
+      "name": "libharfbuzz.0.dylib",
+      "bytes": 1294864,
+      "sha256": "6eb48605b49ae0e2a9a507ad3cef8ce12961805e4ac31f435fd1d01ae6d36ac5"
+    },
+    {
+      "name": "libintl.8.dylib",
+      "bytes": 228800,
+      "sha256": "9c6cefee37649d75a01126fb3a46c8ecd593734d2dcdc97a0580a58e41d443df"
+    },
+    {
+      "name": "libjpeg.8.3.2.dylib",
+      "bytes": 472240,
+      "sha256": "c3d15f47cab05bf6858db0eaf80c1cda7ec48628c3d35e4a2c91687c49d96721"
+    },
+    {
+      "name": "libogg.0.8.6.dylib",
+      "bytes": 71712,
+      "sha256": "3532284212fe778d935935191847e6d13c3c50bc5166c832ff249160830f72d0"
+    },
+    {
+      "name": "libpcre2-8.0.dylib",
+      "bytes": 588832,
+      "sha256": "d19e1a33eec93507d217b99d6ed73f88d698f72e44b81c7077e261e653d220c6"
+    },
+    {
+      "name": "libpng16.16.dylib",
+      "bytes": 208272,
+      "sha256": "148ca415fddcdce4e49dc6ae72cf7aac12264b09b4254e82c9060a20d78f109e"
+    },
+    {
+      "name": "libsharpyuv.0.1.2.dylib",
+      "bytes": 69568,
+      "sha256": "7e2f2780a78733cb032e11213120d809598172133c05fdf5383473508d2d5177"
+    },
+    {
+      "name": "libspeex.1.dylib",
+      "bytes": 125536,
+      "sha256": "ff65345a088bef96e307668c458c6f71daac0fdae1c7825c092f01ecf7e57442"
+    },
+    {
+      "name": "libssl.3.dylib",
+      "bytes": 901744,
+      "sha256": "0b1d6d6355e9745a664c91580beb6b6ee785bff86998e0e50425008a74c17976"
+    },
+    {
+      "name": "libvorbis.0.dylib",
+      "bytes": 193072,
+      "sha256": "ba7802aea60ea25a8b7653abe31f7c16e7d884a699842215f6877f63e284ed23"
+    },
+    {
+      "name": "libvorbisfile.3.dylib",
+      "bytes": 73408,
+      "sha256": "e68bf1623c24caac0eed9c314fbf32dfbd57ef38f91a6db12ff1fbdabe707a67"
+    },
+    {
+      "name": "libwebp.7.2.0.dylib",
+      "bytes": 352320,
+      "sha256": "5d2dccb73cc4aa5376232e1ef2eb33c1f5572f4f24f7ab86fc18b6f9660679bb"
+    },
+    {
+      "name": "libwebpdemux.2.0.17.dylib",
+      "bytes": 53168,
+      "sha256": "4a71ee4bd9fb60adbd5b754c72c40209e44f960036d86ac7e0cba39946a2ca16"
+    }
+  ],
+  "bundle_bytes": 74912110,
+  "resources": 39281234,
+  "dmg_bytes": 57968678
+}
