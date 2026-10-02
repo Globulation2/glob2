@@ -134,6 +134,10 @@ The generated `package.json` marker records ownership and package identity.
 Packaging refuses to replace an unmarked directory, even if it contains HTML;
 remove an older generated `build/browser-static` once before repackaging it.
 
+Static exports use `0755` directories and `0644` files so the web container can
+read the public package as its separate user, including threaded assets and gzip
+sidecars, regardless of the packager's umask.
+
 Caddy serves gzip sidecars through content negotiation and retains original files
 for uncompressed requests. The Google Cloud Storage publisher uploads gzip bytes
 at the logical asset URLs with their original MIME types and
