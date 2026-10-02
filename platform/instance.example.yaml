@@ -54,6 +54,21 @@ auth:
 #   allowedOrigins: [https://web.example.org]
 #   browserClientUrl: https://play.example.org/play/
 
+# Verified mobile app links for invite URLs (/j/<code>), served at
+# /.well-known/assetlinks.json and /.well-known/apple-app-site-association.
+# Only the official instance's domain is built into the mobile apps; leave this
+# out on self-hosted instances (invites still open the app via glob2://).
+# Replace the placeholders with the release signing certificate fingerprint
+# (Play Console > App integrity, or `keytool -list -v -keystore <release.jks>`)
+# and the Apple Developer Team ID; see docs/hosting/README.md.
+# appLinks:
+#   android:
+#     packageName: org.globulation2.glob2
+#     sha256CertFingerprints:
+#       - 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
+#   ios:
+#     appIds: [TEAMID0000.org.globulation2.glob2]
+
 # Per-replica limits (defaults shown).
 # limits:
 #   authPerMinute: 30
