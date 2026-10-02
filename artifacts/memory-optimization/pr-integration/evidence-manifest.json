@@ -605,6 +605,101 @@
     "sha256": "06cd6a10490bebf7d482f79abe4346f20a13b552d3d2c5b2df893e1d4d0dfc96"
   },
   {
+    "path": "artifacts/memory-optimization/pr-integration/block-allocation-comparison.json",
+    "bytes": 226,
+    "sha256": "5b1c10b31044d83f86dbcf7b7d354ecdbaab1df1efd14842dabff51c419e54f4"
+  },
+  {
+    "path": "artifacts/memory-optimization/pr-integration/block-allocation-probe.cpp",
+    "bytes": 1397,
+    "sha256": "2542c62d35f4c144cd6138ebf80a8153458e759ce5096e4577eebff16e43b8b4"
+  },
+  {
+    "path": "artifacts/memory-optimization/pr-integration/block-allocation-probe.log",
+    "bytes": 70,
+    "sha256": "4054bab78f654eaf452884a4e6f8ff294301c5c9040145354afc83c72e1aeead"
+  },
+  {
+    "path": "artifacts/memory-optimization/pr-integration/client-final-build.log.gz",
+    "bytes": 183390,
+    "sha256": "c589cc2e72919968a695ecd5224ecf0ab59d28bef4235e94c852e23eff24cb4d"
+  },
+  {
+    "path": "artifacts/memory-optimization/pr-integration/compatibility-tests.log",
+    "bytes": 874,
+    "sha256": "aa065404edde9a1485d8b1d073136e5259bf54ca5f975f588bac07cc50fb7308"
+  },
+  {
+    "path": "artifacts/memory-optimization/pr-integration/compatibility-tests.xml",
+    "bytes": 1230,
+    "sha256": "52b735793eef1bdfb5d84b0e70eb540b67d84a2546035c1d4a5fbb53b430b884"
+  },
+  {
+    "path": "artifacts/memory-optimization/pr-integration/engine-tests.log",
+    "bytes": 4472,
+    "sha256": "3b2f9c341a580a7171eb26373328b8d71c4ee7a68c42bbcd4e6f58278d199fe8"
+  },
+  {
+    "path": "artifacts/memory-optimization/pr-integration/engine-tests.xml",
+    "bytes": 7067,
+    "sha256": "74d0ff7b9c6112533dd157185450291889012fcacbcd08472c385d953f0ccc3b"
+  },
+  {
+    "path": "artifacts/memory-optimization/pr-integration/independent-review.md",
+    "bytes": 16533,
+    "sha256": "0e828c3f4babc39dcafd126cf56f9cbac5fd9f9a947512f12e14b74859ed73b1"
+  },
+  {
+    "path": "artifacts/memory-optimization/pr-integration/integration-review.md",
+    "bytes": 1912,
+    "sha256": "6c9b199a85b6b991984cb18335fd4bcc10a8cd9ae089575bdd4fbb03542a4b47"
+  },
+  {
+    "path": "artifacts/memory-optimization/pr-integration/integration-validation.json",
+    "bytes": 985,
+    "sha256": "d1573bf14bb32822698790ad7f6c676053d2cd9ee112757d3cd475d4a3656614"
+  },
+  {
+    "path": "artifacts/memory-optimization/pr-integration/late-reload.log.gz",
+    "bytes": 6299,
+    "sha256": "2f4f349b94fd510c84b6e1f57deee2ab58a2cffbdf8117e57dd2c85f2cbef2a0"
+  },
+  {
+    "path": "artifacts/memory-optimization/pr-integration/late-reload/result.json",
+    "bytes": 112955,
+    "sha256": "7fd236369a75cfeb0c43a543603b4aedb07a7d5ef864f9fe4efc03573204700e"
+  },
+  {
+    "path": "artifacts/memory-optimization/pr-integration/late-save-comparison.json",
+    "bytes": 622317,
+    "sha256": "dbfba9bc31e5c96bc28ef5aa02225d980716f43816d35b6801950b066178e442"
+  },
+  {
+    "path": "artifacts/memory-optimization/pr-integration/late-save.log.gz",
+    "bytes": 6298,
+    "sha256": "113842681d1eadb3ab41bc609673e145f75702227224c08c8940cd62f17d2e26"
+  },
+  {
+    "path": "artifacts/memory-optimization/pr-integration/late-save/result.json",
+    "bytes": 112935,
+    "sha256": "ffdbcea52496828a43d8fc51bc075350b4f893eb0b22a3dec5c0caddb78144c0"
+  },
+  {
+    "path": "artifacts/memory-optimization/pr-integration/tests-build.log.gz",
+    "bytes": 74196,
+    "sha256": "288df9e6173d86e6a35282236a00faf2e7a895f20dac372042ca1c8e7b4c902b"
+  },
+  {
+    "path": "artifacts/memory-optimization/pr-integration/unit-tests.log",
+    "bytes": 1163,
+    "sha256": "f113ef28814e830b71cf9eadfe5ce36f14677d8456cd82ce80d54f2ba3acc6f6"
+  },
+  {
+    "path": "artifacts/memory-optimization/pr-integration/unit-tests.xml",
+    "bytes": 51296,
+    "sha256": "be0c2dc6f82fbafc45de0d6d8aebc3a4d2381734485cc9b237826e7718774bcb"
+  },
+  {
     "path": "artifacts/memory-optimization/profile_candidate.py",
     "bytes": 1980,
     "sha256": "d95b976689cf8641e50c565f704bca5530bb487757cdcdb23b7e61a8e1ac7d51"

@@ -1,0 +1,40 @@
+{
+  "commit": "944302711e2c5e5edc4f36acc7a0002669cbcb4a",
+  "binary_sha256": "67f0025f6f238ab4c536b745b30e740124ee794e6dd475b527a30884381dbc94",
+  "tests": {
+    "unit-tests": {
+      "tests": "420",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    "engine-tests": {
+      "tests": "46",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    "compatibility-tests": {
+      "tests": "7",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    }
+  },
+  "legacy_late_load_save": {
+    "status": "completed",
+    "ticks": 45001,
+    "peak_bytes": 2163834880,
+    "save_sha256": "315131472f24440dd11ccd6fb9115f517b7bfeaa782d3d8c111743cb7a76ca80"
+  },
+  "late_reload": {
+    "status": "completed",
+    "ticks": 45002,
+    "save_sha256": "7de56fdc4e88082725415ccf9d3e026ffe0f0f587d572ff6ca930f5d6345915b"
+  },
+  "limits": {
+    "compressed_bytes": 268435456,
+    "expanded_bytes": 2147483648,
+    "maxima_entries": 16777216
+  }
+}

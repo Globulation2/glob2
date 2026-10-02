@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="46" failures="0" errors="0" skipped="0"><testsuite name="AISavePortability"><testcase classname="AISavePortability" name="runtime initialisation; area order serialisation and Maxima reserved telemetry" time="0.010839" status="run" />
+  </testsuite><testsuite name="BuildingGradientInvalidation"><testcase classname="BuildingGradientInvalidation" name="a paused field keeps its original obstacles" time="0.001762" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="a ring cuts off a virtual flags field" time="0.001276" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="a rival teams ring cuts off a cached field" time="0.003587" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="centre placed inside an existing ring" time="0.002174" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="delayed fields" time="0.043093" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="idle field storage is reused without stale routes" time="0.001639" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="parallel fields" time="0.084709" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="public reads resolve their inputs" time="0.002244" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="ring placed around an existing field" time="0.00216" status="run" />
+  </testsuite><testsuite name="CastorContinuation"><testcase classname="CastorContinuation" name="Castor boot and active projects survive save-load" time="5.5414" status="run" />
+  <testcase classname="CastorContinuation" name="Castor seeded boot and active decisions repeat exactly" time="0.127282" status="run" />
+  <testcase classname="CastorContinuation" name="binary and text snapshots preserve project fields and cache history" time="0.058296" status="run" />
+  <testcase classname="CastorContinuation" name="historical timer-only AI saves remain readable" time="0.002568" status="run" />
+  </testsuite><testsuite name="CustomGameSetup"><testcase classname="CustomGameSetup" name="AI profile captures [display][artifacts][writes-preferences]" time="3.27025" status="run" />
+  <testcase classname="CustomGameSetup" name="AI strategy profiles in English [display][artifacts][writes-preferences]" time="5.02085" status="run" />
+  <testcase classname="CustomGameSetup" name="AI strategy profiles in English at the large layout [display:1024x768][artifacts][writes-preferences]" time="6.16322" status="run" />
+  <testcase classname="CustomGameSetup" name="controller help is localized with the current player capacity [display]" time="1.27092" status="run" />
+  <testcase classname="CustomGameSetup" name="custom game screens; captures and translated keys [slow][display:1024x768][artifacts][writes-preferences]" time="44.1417" status="run" />
+  <testcase classname="CustomGameSetup" name="experiments from settings are baked into a new game; a save keeps them; campaigns never take them" time="1.91708" status="run" />
+  <testcase classname="CustomGameSetup" name="generated map snapshot launches from memory" time="0.794358" status="run" />
+  <testcase classname="CustomGameSetup" name="landscape preview performance [display][artifacts]" time="2.13458" status="run" />
+  <testcase classname="CustomGameSetup" name="landscape preview stays responsive [display][artifacts]" time="2.08155" status="run" />
+  <testcase classname="CustomGameSetup" name="player control widgets [display][artifacts][writes-preferences]" time="15.4438" status="run" />
+  <testcase classname="CustomGameSetup" name="preferences screen writes then reads back [display][writes-preferences]" time="2.21172" status="run" />
+  <testcase classname="CustomGameSetup" name="preferences; landscapes; AI catalogue; snapshot round trip; engine; reload and session replay [slow][writes-preferences]" time="29.9595" status="run" />
+  <testcase classname="CustomGameSetup" name="preview queue priority and restart" time="0.296229" status="run" />
+  </testsuite><testsuite name="SavegameSafety"><testcase classname="SavegameSafety" name="autosave defaults; atomic and background writes; truncated and malformed loads; imports and campaign progress [save-format][writes-preferences]" time="17.6501" status="run" />
+  </testsuite><testsuite name="TeamStatsSave"><testcase classname="TeamStatsSave" name="32 sampling phases; ring wrap; repeated loads; text streams and corruption controls [save-format]" time="11.0782" status="run" />
+  <testcase classname="TeamStatsSave" name="AI telemetry continues across a save [save-format]" time="2.13666" status="run" />
+  <testcase classname="TeamStatsSave" name="legacy version 84 fixture replays the golden trace [save-format][golden]" time="0.073141" status="run" />
+  <testcase classname="TeamStatsSave" name="legacy version 88 fixture replays the golden trace [save-format][golden]" time="0.057783" status="run" />
+  <testcase classname="TeamStatsSave" name="measurement screenshots [display][artifacts]" time="1.94044" status="run" />
+  </testsuite><testsuite name="UntrustedFiles"><testcase classname="UntrustedFiles" name="AI tags collection counts and recursive predicates are bounded" time="0.001705" status="run" />
+  <testcase classname="UntrustedFiles" name="complete saved game rejects poisoned unit state and retains a reproducible fixture [save-format][artifacts]" time="0.229636" status="run" />
+  <testcase classname="UntrustedFiles" name="compressed file size is checked before allocation" time="0.000519" status="run" />
+  <testcase classname="UntrustedFiles" name="entity loaders reject malicious indices before using them [save-format]" time="0.002228" status="run" />
+  <testcase classname="UntrustedFiles" name="every native AI accepts its initial saved state" time="0.013752" status="run" />
+  <testcase classname="UntrustedFiles" name="invalid replay order references are ignored before indexing state" time="0.001806" status="run" />
+  <testcase classname="UntrustedFiles" name="legacy create order reads only its twenty byte payload" time="0" status="run" />
+  <testcase classname="UntrustedFiles" name="legacy saved instruction pointers must identify statement boundaries [save-format]" time="0.001568" status="run" />
+  <testcase classname="UntrustedFiles" name="map scripts cannot load local files" time="0.02795" status="run" />
+  <testcase classname="UntrustedFiles" name="network state rejects invalid slots and rates before queue indexing" time="0.000357" status="run" />
+  <testcase classname="UntrustedFiles" name="terrain loaders reject invalid resources occupants and sector dimensions [save-format]" time="0.002565" status="run" />
+  <testcase classname="UntrustedFiles" name="untrusted names cannot escape the map output directory" time="0" status="run" />
+  <testcase classname="UntrustedFiles" name="voice payload bounds preserve recorder overshoot and reject excessive work" time="0" status="run" />
+  </testsuite></testsuites>

@@ -1,0 +1,10 @@
+{
+  "block-allocation-probe-baseline": {
+    "exit_code": 1,
+    "stdout": ""
+  },
+  "block-allocation-probe": {
+    "exit_code": 0,
+    "stdout": "PASS: block/table allocation failure releases payload; reuse succeeds\n"
+  }
+}

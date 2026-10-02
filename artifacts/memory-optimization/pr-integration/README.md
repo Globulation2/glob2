@@ -7,3 +7,5 @@ Start with artifacts/memory-optimization/review.md and peak-followup/review.md. 
 This compact bundle includes the initial fixture, a full matched early-game continuation checksum stream, and its final save/replay. Larger mid/late saves and the multi-gigabyte full-game checksum stream remain in the local ignored artifacts directory; their hashes/comparison results are included here, not the large binaries themselves. Review limits: native macOS arm64 only; no Linux/Windows execution or interactive maintainer playtest.
 
 No generated evidence is part of the implementation branch. evidence-manifest.json lists payload hashes.
+
+Final current-master integration and review: integration-review.md and independent-review.md. Original validated source is preserved in this evidence branch history as commit0ad379bd3.

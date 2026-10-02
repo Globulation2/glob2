@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="7" failures="0" errors="0" skipped="0"><testsuite name="JavaScriptCompatibility"><testcase classname="JavaScriptCompatibility" name="Current clients enforce network protocol acceptance boundaries" time="0.000154" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript current saves reject truncated generation tables" time="0.196662" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript current text saves validate unused generation counters" time="1.48072" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript pass assigns valid identities to released saves" time="0.11187" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript test environment scopes restore SDL and CRT readers" time="0" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript upgrade retains genuine master124 experiments and continuation" time="0.107452" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="Team-capacity change rejects released replays and enforces acceptance boundaries" time="0.128428" status="run" />
+  </testsuite></testsuites>
