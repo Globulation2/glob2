@@ -1,3 +1,6 @@
+# Legacy YOG stack (lobby, router, proxy), kept unchanged until the M9 cutover.
+# The project name stays "glob2" so existing deployments keep their volumes.
+# The new platform stack is deploy/compose.yaml (project "glob2-platform").
 name: glob2
 x-server: &server
   image: ${GLOB2_SERVER_IMAGE:-glob2-server:development}
@@ -83,7 +86,7 @@ services:
       - '${GLOB2_BIND:-127.0.0.1}:${GLOB2_HTTPS_PORT:-8443}:443'
     secrets: [deployment-ca]
     volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./Caddyfile.legacy:/etc/caddy/Caddyfile:ro
       - ${GLOB2_ASSETS:-../build/emscripten/client/release}:/srv:ro
       - caddy-data:/data
       - caddy-config:/config
