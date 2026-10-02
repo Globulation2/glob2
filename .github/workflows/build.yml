@@ -43,8 +43,8 @@ jobs:
       android_arches: ${{ steps.select.outputs.android_arches }}
     steps:
       - uses: actions/checkout@v4
-      - name: Test changed-path selection
-        run: python3 -m unittest discover -s tests/build_system -p test_ci_changed_paths.py -v
+      - name: Test CI selection, coverage gates and measurements
+        run: python3 -m unittest discover -s tests/build_system -p 'test_ci*.py' -v
       - name: Test CI runners and failure reporting
         run: |
           python3 test/ci_run_commands.py \

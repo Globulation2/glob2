@@ -1,9 +1,12 @@
 import importlib.util
 import io
 import json
+import os
 from pathlib import Path
 import sys
+import tempfile
 import unittest
+from unittest.mock import patch
 import zipfile
 ROOT=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT/'.github/scripts'))
@@ -34,6 +37,35 @@ class TierTest(unittest.TestCase):
     def test_android_metadata_remains_relevant(self):
         for path in ['fdroid/metadata.yml','fastlane/metadata/title.txt','.github/workflows/mobile.yml']:
             self.assertTrue(self.profile([path])['android'])
+    def test_ci_contract_tests_do_not_select_mobile_or_compatibility(self):
+        for path in selector.CI_TOOL_TESTS:
+            with self.subTest(path=path):
+                profile=self.profile([path])
+                self.assertFalse(profile['android'])
+                self.assertFalse(profile['compatibility'])
+                self.assertEqual(profile['profile'],'lightweight')
+                self.assertTrue(self.profile([path,'SConstruct'])['compatibility'])
+                self.assertTrue(self.profile([path,'SConstruct'])['android'])
+    def test_contract_only_selection_is_lightweight_before_tiers_are_enabled(self):
+        # Exercise the effective outputs, including the legacy Android fallback,
+        # rather than just the desired profile. Master must remain full coverage.
+        for event in ['pull_request','push']:
+            with self.subTest(event=event),tempfile.TemporaryDirectory() as directory:
+                old_cwd=Path.cwd()
+                try:
+                    os.chdir(directory)
+                    with patch.object(selector,'changed_paths',return_value=sorted(selector.CI_TOOL_TESTS)), \
+                         patch.object(guard,'activated',return_value=False), \
+                         patch.object(sys,'argv',['ci_changed_paths.py','--base','base']), \
+                         patch.dict(os.environ,{'GITHUB_EVENT_NAME':event,'GITHUB_OUTPUT':str(Path(directory)/'outputs')},clear=True), \
+                         patch('sys.stdout',new_callable=io.StringIO):
+                        selector.main()
+                    observed=json.loads(Path('artifacts/ci-selection.json').read_text())
+                    self.assertEqual(set(observed['selection'].values()),{event=='push'})
+                    self.assertEqual(observed['full_matrix'],event=='push')
+                    self.assertFalse(observed['tiers_enabled'])
+                finally:
+                    os.chdir(old_cwd)
     def test_complete_browser_inventory_keeps_every_command(self):
         matrix=json.loads((ROOT/'.github/scripts/ci_browser_matrix.json').read_text())
         self.assertEqual({x['browsers'] for x in matrix},{'chromium','firefox','webkit'})

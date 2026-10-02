@@ -7,6 +7,10 @@
 namespace GAGCore
 {
 	class StreamBackend;
+	class ChunkedBuffer;
+	//! Compressed input stays bounded; large valid snapshots need a separate expanded limit.
+	inline constexpr size_t MAX_COMPRESSED_GAME_FILE_BYTES = 256u * 1024u * 1024u;
+	inline constexpr size_t MAX_EXPANDED_GAME_FILE_BYTES = size_t(2) * 1024u * 1024u * 1024u;
 
 	//! Gzip-compresses input at level with zero timestamp and OS=unknown.
 	//! Output is deterministic for the same zlib encoder and input.
@@ -24,10 +28,14 @@ namespace GAGCore
 	//! one resolved through FileManager's search directories.
 	bool writeGzipAtomicToPath(const std::string& path, const std::string& contents, int level = 6);
 
+	bool writeGzipAtomicToPath(const std::string& path, const ChunkedBuffer& contents, int level = 6);
+
 	//! Opens the literal filesystem path `path` for reading (no FileManager
 	//! directory search), transparently gzip-decompressing it into a seekable
-	//! in-memory backend when path ends in ".gz". Never returns nullptr; an
+	//! chunked in-memory backend when path ends in ".gz". Never returns nullptr; an
 	//! invalid backend means the file is missing, unreadable, or its gzip data
 	//! is corrupt or truncated.
-	StreamBackend *openInflatingFileStreamBackend(const std::string& path);
+	// Callers may impose a stricter expansion budget; the global cap still applies.
+	StreamBackend *openInflatingFileStreamBackend(const std::string& path,
+        size_t maxExpandedBytes = MAX_EXPANDED_GAME_FILE_BYTES);
 }

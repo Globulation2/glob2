@@ -1298,3 +1298,43 @@ It compares all 64 complete tick records, including aggregate and entity checksu
 The browser saved-match smoke checks resize, menu cancellation and resumed ticks;
 Android smoke also exercises Settings input and verifies application profile
 files survive background/resume and a fresh-process relaunch.
+
+## Untrusted file regression coverage
+
+`UntrustedFiles` mutates serialized entity types, levels and identities, terrain
+resources/occupants, sector dimensions and SGSL resume points. It also checks the
+compressed-input size limit, the legacy twenty-byte create-order boundary, USL
+file-loading denial, unsafe output filenames, AI tags/counts/nesting, network
+queue indices and invalid replay order references. Every native AI also loads
+its initial saved state under checked reads. `ReplayStepCounter`
+checks every truncated prefix of a replay body and step-total overflow;
+`USLCoverage` checks native argument type errors, invalid calls, arithmetic
+overflow, excessive syntax nesting and runtime recursion limits. Run these alongside
+`SavegameSafety`, `LegacyScriptCoverage` and `TeamLimit` for continuation and
+legacy compatibility. These targeted tests are not an exhaustive fuzz campaign.
+
+
+## Memory representation compatibility
+
+`MaximaContinuation` compares compact distance fields and food source masks against
+the legacy binary and text encodings, including infinity and maximum finite values.
+`Maxima.Farming` checks the box sums against wide reference arithmetic, including
+maximum-density maps. `TeamStatsSave` compares compact overlap counters against a
+wide oracle on minimum-size tori with 1024 overlapping anchors and replacement of
+an entire generation. `PathGradient` checks shared water snapshots, classification
+invalidation and frozen readers; `GradientPipeline` checks job lifetime and scheduling.
+`SavegameSafety` compares chunked streams against the contiguous backend across
+block boundaries, gaps, seeks, zero-length writes and overreads; verifies moved
+ownership and byte-capacity bounds; and compares deferred SHA1 and exact gzip bytes
+for incompressible input and compression levels zero, one, six and nine. It rejects
+truncated, bad-CRC, trailing and concatenated gzip inputs before game loading,
+injects allocation/finalization exceptions, checks atomic failure cleanup, and
+stalls an autosave writer to verify waiting before the next capture and exact
+saved ticks. The optional level-zero compatibility path retains whole buffers;
+normal save-memory measurements use the default compression level.
+
+Run these alongside the existing placement, continuation and engine lifecycle suites.
+For full-game checks, retain identical initial saves, seeds and orders, compare
+per-tick simulation state and replay/save bytes, and test continuation from populated
+checkpoints. The native paired CPU runner and profiling workflow are described in
+[the development reference](../docs/development/reference.md#native-simulation-memory-and-cpu-comparisons).

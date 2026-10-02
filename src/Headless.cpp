@@ -23,6 +23,13 @@
 #include <Toolkit.h>
 #include <algorithm>
 #include <chrono>
+#include <ctime>
+#ifdef WIN32
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#include <windows.h>
+#endif
 #include <filesystem>
 #include <fstream>
 #include <iomanip>
@@ -115,6 +122,23 @@ void setHeadlessEnvironment(const char* key, const char* value)
 	_putenv_s(key, value);
 #endif
 }
+uint64_t processCpuNs()
+{
+#ifdef WIN32
+	FILETIME created, exited, kernel, user;
+	if (!GetProcessTimes(GetCurrentProcess(),&created,&exited,&kernel,&user))
+		throw std::runtime_error("Cannot read process CPU time");
+	ULARGE_INTEGER k{},u{}; k.LowPart=kernel.dwLowDateTime;k.HighPart=kernel.dwHighDateTime;
+	u.LowPart=user.dwLowDateTime;u.HighPart=user.dwHighDateTime;
+	return (k.QuadPart+u.QuadPart)*100;
+#elif defined(CLOCK_PROCESS_CPUTIME_ID)
+	timespec time{};
+	if(clock_gettime(CLOCK_PROCESS_CPUTIME_ID,&time)!=0) throw std::runtime_error("Cannot read process CPU time");
+	return uint64_t(time.tv_sec)*1000000000+time.tv_nsec;
+#else
+	return uint64_t(std::clock())*1000000000/CLOCKS_PER_SEC;
+#endif
+}
 void jsonArray(std::ostream& out, int value) { out << value; }
 template<class T, size_t N> void jsonArray(std::ostream& out, const T (&values)[N])
 {
@@ -157,6 +181,9 @@ struct HeadlessRunner
 	static int game(const Options &options, const fs::path &output)
 	{
 		const auto setupStart = std::chrono::steady_clock::now();
+		const bool benchmark=options.count("--benchmark-warmup")!=0;
+		const auto setupCpuStart=benchmark?processCpuNs():0;
+		const unsigned benchmarkWarmup=integer(one(options,"--benchmark-warmup","0"),0,std::numeric_limits<int>::max());
 		const unsigned gradientWorkers = integer(one(options, "--gradient-workers", "1"), 0, 16);
 		const unsigned gradientDelay = integer(one(options, "--gradient-delay", "8"), 1, 16);
 		GlobalContainer globals(one(options, "--profile", "glob2-tournament").c_str());
@@ -201,7 +228,6 @@ struct HeadlessRunner
 		{
 			for(const auto &key : {"--player","--ai-param","--ai-script","--map-script","--alliance","--win-condition","--game-seed","--experiment"})
 				if(options.count(key)) throw std::invalid_argument(std::string(key)+" cannot override a saved game");
-			if(Engine::loadGameHeader(saved).getNumberOfPlayers()==0) throw std::invalid_argument("saved game has no players");
 			if(engine.initCustom(saved)!=Engine::EE_NO_ERROR) throw std::invalid_argument("cannot load saved game");
 			if(globals.automaticEndingSteps <= int(engine.gui.game.stepCounter)) throw std::invalid_argument("tick limit must exceed the saved tick");
 		}
@@ -319,10 +345,32 @@ struct HeadlessRunner
 		}
 		if(initial) engine.saveInitialGameStateOrExit((output/"initial.game").string(),"initial",engine.gui.game.mapHeader.getMapName());
 		const auto runStart = std::chrono::steady_clock::now();
-		engine.run();
-		engine.gui.game.map.finishGradientPipeline();
+		uint64_t setupCpu=0,runCpu=0,measureStart=0;
+		unsigned measuredTicks=0;
+		if(benchmark)
+		{
+			const uint64_t first=engine.gui.game.stepCounter;
+			const uint64_t start=first+benchmarkWarmup;
+			if(start>=uint64_t(globals.automaticEndingSteps)) throw std::invalid_argument("benchmark warmup must leave measured ticks");
+			setupCpu=processCpuNs()-setupCpuStart;
+			engine.prepareRun(); engine.beginSession(SDL_GetTicks());
+			if(benchmarkWarmup==0) measureStart=processCpuNs();
+			while(engine.gui.isRunning)
+			{
+				engine.stepSession(SDL_GetTicks()); engine.drawSession();
+				if(!measureStart && engine.gui.game.stepCounter>=start) measureStart=processCpuNs();
+			}
+			engine.finishSession();
+			engine.gui.game.map.finishGradientPipeline();
+			if(!measureStart || engine.gui.game.stepCounter<=start) throw std::runtime_error("game ended before benchmark measurement");
+			runCpu=processCpuNs()-measureStart;
+			measuredTicks=engine.gui.game.stepCounter-start;
+		}
+		else { engine.run(); engine.gui.game.map.finishGradientPipeline(); }
 		const auto runEnd = std::chrono::steady_clock::now();
+		const auto saveCpuStart=benchmark?processCpuNs():0;
 		if(final) engine.saveInitialGameStateOrExit((output/"final.game").string(),"final",engine.gui.game.mapHeader.getMapName());
+		const auto saveCpu=benchmark?processCpuNs()-saveCpuStart:0;
 		PerformanceTelemetry::collector().capture(engine.gui.game.stepCounter, true, true);
 		PerformanceTelemetry::collector().reset();
 		Game &game=engine.gui.game;
@@ -330,6 +378,10 @@ struct HeadlessRunner
 		engine.trackTeamEliminations();
 		std::ostringstream result;
 		result << "{\"schema_version\":1,\"job_type\":\"game\",\"status\":\"completed\",\"ticks\":" << game.stepCounter
+			<< ",\"benchmark_setup_cpu_ns\":" << setupCpu
+			<< ",\"benchmark_run_cpu_ns\":" << runCpu
+			<< ",\"benchmark_save_cpu_ns\":" << saveCpu
+			<< ",\"benchmark_measured_ticks\":" << measuredTicks
 			<< ",\"setup_ns\":" << std::chrono::duration_cast<std::chrono::nanoseconds>(runStart - setupStart).count()
 			<< ",\"run_ns\":" << std::chrono::duration_cast<std::chrono::nanoseconds>(runEnd - runStart).count()
 			<< ",\"gradient_pipeline\":" << "true"
@@ -456,7 +508,7 @@ int runHeadlessCommand(int argc,char **argv)
 			std::cout << "}" << std::endl;return 0;
 		}
 		const std::set<std::string> common={"--output-dir","--profile"};
-		const std::set<std::string> gameKeys={"--ai-script","--map-script","--map-file","--load-game","--game-seed","--player","--ai-param","--alliance","--win-condition","--experiment","--ticks","--compute-threads","--compute-experiments","--gradient-workers","--gradient-delay","--save","--telemetry","--replay","--generator","--map-seed","--param","--candidates"};
+		const std::set<std::string> gameKeys={"--benchmark-warmup","--ai-script","--map-script","--map-file","--load-game","--game-seed","--player","--ai-param","--alliance","--win-condition","--experiment","--ticks","--compute-threads","--compute-experiments","--gradient-workers","--gradient-delay","--save","--telemetry","--replay","--generator","--map-seed","--param","--candidates"};
 		const std::set<std::string> mapKeys={"--generator","--map-seed","--param","--candidates","--rotations","--write-map","--report","--perturb"};
 		Options options;
 		for(int i=2;i<argc;++i)

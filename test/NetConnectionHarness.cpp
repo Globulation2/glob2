@@ -17,6 +17,7 @@
 #include "GlobalContainer.h"
 #include "YOGServer.h"
 #include "Version.h"
+#include "Order.h"
 #include <deque>
 #include <iostream>
 #include <stdexcept>
@@ -129,6 +130,11 @@ int main(int argc, char** argv) {
         require(connection.getMessage() && connection.getMessage() && !connection.getMessage(), "Coalesced frames lost boundaries");
         for (const auto& invalid : std::vector<std::vector<uint8_t>>{
             {0, 0}, {0, 1, 255},
+            // NetSendOrder must fail through the real dispatcher and close the
+            // peer on oversized allocation claims and truncated envelopes.
+            {0, 5, MNetSendOrder, 0, 16, 0, 1},
+            {0, 5, MNetSendOrder, 0, 0, 0, 1},
+            {0, 6, MNetSendOrder, 0, 0, 0, 1, ORDER_NULL},
             {0, 13, MNetSendMapHeader, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 124},
             {0, 5, MNetSendGamePlayerInfo, 0, 0, 0, 33},
             {0, 5, MNetAttemptLogin, 255, 255, 255, 255},

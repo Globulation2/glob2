@@ -2,6 +2,7 @@
 #include "native.h"
 #include "position.h"
 #include <memory>
+#include <charconv>
 
 using std::string;
 using std::unique_ptr;
@@ -35,6 +36,7 @@ void Parser::statements(BlockNode* block)
 
 Node* Parser::statement()
 {
+	DepthGuard guard(*this);
 	Position position = token.position;
 	switch (tokenType())
 	{
@@ -74,6 +76,7 @@ DecNode* Parser::declaration(const Position& position, DecNode::Type type, const
 }
 
 ExpressionNode* Parser::declaration2(const Position& position) {
+	DepthGuard guard(*this);
 	switch (tokenType()) {
 	case COLON:
 		next();
@@ -94,6 +97,7 @@ ExpressionNode* Parser::declaration2(const Position& position) {
 
 PatternNode* Parser::pattern()
 {
+	DepthGuard guard(*this);
 	Position position = token.position;
 	switch (tokenType())
 	{
@@ -170,6 +174,7 @@ void Parser::expressions(BlockNode* block)
 
 ExpressionNode* Parser::expression()
 {
+	DepthGuard guard(*this);
 	return prefixedExpression();
 }
 
@@ -191,8 +196,10 @@ ExpressionNode* Parser::prefixedExpression()
 ExpressionNode* Parser::methodCompositionExpression(ExpressionNode* first)
 {
 	unique_ptr<ExpressionNode> node(pathExpression(first));
+	unsigned chainLength = 0;
 	while (true)
 	{
+		if (++chainLength > 256) throw Exception(token.position, "Script expression limit exceeded");
 		const Position position(token.position);
 		switch (tokenType())
 		{
@@ -213,8 +220,10 @@ ExpressionNode* Parser::methodCompositionExpression(ExpressionNode* first)
 ExpressionNode* Parser::pathExpression(ExpressionNode* first)
 {
 	unique_ptr<ExpressionNode> node(first);
+	unsigned chainLength = 0;
 	while (true)
 	{
+		if (++chainLength > 256) throw Exception(token.position, "Script expression limit exceeded");
 		const Position& position = token.position;
 		switch (tokenType())
 		{
@@ -243,6 +252,7 @@ ExpressionNode* Parser::pathExpression(ExpressionNode* first)
 
 ExpressionNode* Parser::simpleExpression()
 {
+	DepthGuard guard(*this);
 	const Position position(token.position);
 	switch (tokenType())
 	{
@@ -255,7 +265,9 @@ ExpressionNode* Parser::simpleExpression()
 		{
 			string str = token.string();
 			next();
-			int value = atoi(str.c_str());
+			int value;
+			auto result = std::from_chars(str.data(), str.data() + str.size(), value);
+			if (result.ec != std::errc() || result.ptr != str.data() + str.size()) throw Exception(position, "Invalid script integer");
 			return new ConstNode(position, new Integer(heap, value));
 		}
 	case STR:
