@@ -1,3 +1,4 @@
+#include "scene/SceneExtract.h"
 #include <RenderStateScope.h>
 #include <PerformanceTelemetry.h>
 #include "MapZoomControls.h"
@@ -600,6 +601,14 @@ void GameGUI::drawAll(int team)
 		: showDefenseMap ? OverlayArea::Defence
 		: showFertilityMap ? OverlayArea::Fertility
 		: OverlayArea::None));
+	// Extract everything this frame draws in one place; drawing reads only the scene.
+	SceneRequest sceneRequest;
+	sceneRequest.localTeam = localTeamNo;
+	sceneRequest.view = clientRequests.latest();
+	sceneRequest.selectedBuilding = Game::refOf(view.selectedBuilding);
+	sceneRequest.selectedUnit = Game::refOf(view.selectedUnit);
+	extractScene(game, sceneRequest, frameScene);
+	view.scene = &frameScene;
     globalContainer->gfx->beginFrame(GraphicContext::FrameMode::FullRedraw);
 	updateCamera();
 	globalContainer->gfx->setClipRect();

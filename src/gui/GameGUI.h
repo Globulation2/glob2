@@ -714,6 +714,8 @@ private:
 	///Per-client viewer state (selection + mouse). NOT simulation state — see
 	///Game::ViewState. Owned here (not on Game) and passed into game.drawMap.
 	Game::ViewState view;
+	///The scene drawn this frame, extracted from `game` at the start of drawAll.
+	Scene frameScene;
 
 	///Accessor: pending value if set, else authoritative from `b`.
 	Sint32 displayedPosX(const Building& b) const;
