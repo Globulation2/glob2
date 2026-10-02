@@ -143,10 +143,16 @@ namespace Turn
 			std::uint32_t executedTick = 0;
 			std::uint32_t lastClientSequence = 0;
 			std::uint32_t rejoins = 0;
+			/// R - executedTick when the seat's last Ping (or Hello) arrived, and R then.
+			std::uint32_t lagAtPing = 0;
+			std::uint32_t pingTick = 0;
+			/// Smoothed transport round trip (transportRoundTrip); 0 until measured.
+			std::uint64_t rttMicros = 0;
 		};
 		struct Peer
 		{
 			int seat = -1;
+			std::uint16_t version = PROTOCOL_VERSION; ///< negotiated in Hello
 		};
 		struct TickReports
 		{
@@ -179,6 +185,10 @@ namespace Turn
 		void event(std::uint8_t seat, MatchEventKind kind);
 		void broadcastPresence();
 		Presence presenceSnapshot() const;
+		SeatLatency latencySnapshot() const;
+		/// How far the seat's game is behind the relay clock: the lag its last Ping
+		/// reported, growing once Pings are overdue (a stalled or silent client).
+		std::uint32_t seatLag(const Seat& s, std::uint32_t tick) const;
 		void dropPeer(PeerId peer);
 
 		SequencerConfig config;

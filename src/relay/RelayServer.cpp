@@ -595,7 +595,7 @@ private:
 			co_return;
 		}
 		const auto& hello = static_cast<const Turn::Hello&>(*message);
-		if (hello.protocolVersion != Turn::PROTOCOL_VERSION)
+		if (!Turn::supportedProtocol(hello.protocolVersion))
 		{
 			reject(Turn::RejectReason::ProtocolVersion, "Turn protocol version mismatch");
 			co_return;

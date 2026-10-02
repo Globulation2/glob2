@@ -12,7 +12,18 @@
 namespace Turn
 {
 	/// Bumped whenever an encoding or relay behaviour clients rely on changes.
-	constexpr std::uint16_t PROTOCOL_VERSION = 1;
+	/// Version 2 adds SeatLatency (each seat's round trip to the relay, for the
+	/// connection panel). A relay speaks every version from MIN_PROTOCOL_VERSION up and
+	/// answers in the client's; a client offers PROTOCOL_VERSION and falls back to the
+	/// minimum once when an older relay refuses it.
+	constexpr std::uint16_t PROTOCOL_VERSION = 2;
+	constexpr std::uint16_t MIN_PROTOCOL_VERSION = 1;
+	/// The first version whose relays send SeatLatency.
+	constexpr std::uint16_t SEAT_LATENCY_VERSION = 2;
+	constexpr bool supportedProtocol(std::uint16_t version)
+	{
+		return version >= MIN_PROTOCOL_VERSION && version <= PROTOCOL_VERSION;
+	}
 
 	/// Message ids. The 0xA0-0xBF range is reserved for the turn protocol in
 	/// NetMessageType.h so YOG message churn never renumbers it.
@@ -30,8 +41,9 @@ namespace Turn
 		MSG_QUIT = 0xA9,
 		MSG_PING = 0xAA,
 		MSG_PONG = 0xAB,
+		MSG_SEAT_LATENCY = 0xAC, ///< version 2
 		MSG_FIRST = MSG_HELLO,
-		MSG_LAST = MSG_PONG,
+		MSG_LAST = MSG_SEAT_LATENCY,
 	};
 
 	enum class RejectReason : std::uint8_t

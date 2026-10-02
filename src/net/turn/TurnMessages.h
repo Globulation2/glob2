@@ -156,6 +156,29 @@ namespace Turn
 		const char* name() const override { return "TurnPresence"; }
 	};
 
+	struct SeatRoundTrip
+	{
+		std::uint8_t seat = 0;
+		/// The relay's smoothed round trip to the seat; 0 when not measured.
+		std::uint32_t rttMicros = 0;
+		bool operator==(const SeatRoundTrip& o) const { return seat == o.seat && rttMicros == o.rttMicros; }
+	};
+
+	/// Protocol version 2: each connected human seat's round trip to the relay, as the
+	/// relay measures it on its own transport (WebSocket ping). Presentation only (the
+	/// connection panel's Ping); sent with Presence to clients that speak version 2.
+	class SeatLatency : public TurnMessage
+	{
+	public:
+		std::vector<SeatRoundTrip> seats;
+
+		Uint8 getMessageType() const override { return MSG_SEAT_LATENCY; }
+		void encodeData(GAGCore::OutputStream* stream) const override;
+		void decodeData(GAGCore::InputStream* stream) override;
+	protected:
+		const char* name() const override { return "TurnSeatLatency"; }
+	};
+
 	class ResyncRequest : public TurnMessage
 	{
 	public:
