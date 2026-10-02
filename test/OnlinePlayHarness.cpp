@@ -31,6 +31,7 @@
 #include "CustomGameSetup.h"
 #include "EndGameScreen.h"
 #include "Engine.h"
+#include "Environment.h"
 #include "GameSessionScreen.h"
 #include "GlobalContainer.h"
 #include "InstanceConfig.h"
@@ -646,8 +647,10 @@ int main(int argc, char **argv)
 	role = argv[1];
 	dir = argv[3];
 	std::filesystem::create_directories(dir);
-	SDL_setenv("SDL_AUDIODRIVER", "dummy", 0);
-	SDL_setenv("GLOB2_USER_DIR", (std::filesystem::absolute(dir) / ("profile-" + role)).string().c_str(), 1);
+	GAGCore::setProcessEnvironment("SDL_AUDIODRIVER", "dummy", 0);
+	const std::string profileDir = (std::filesystem::absolute(dir) / ("profile-" + role)).string();
+	GAGCore::setProcessEnvironment("GLOB2_USER_DIR", profileDir.c_str(), 1);
+	GAGCore::setProcessEnvironment("GLOB2_USER_DATA_DIR", profileDir.c_str(), 1);
 	GlobalContainer globals;
 	globalContainer = &globals;
 	GAGCore::Toolkit::close();
