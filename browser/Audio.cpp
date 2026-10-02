@@ -64,7 +64,7 @@ void close(void*) { __real_SDL_CloseAudio(); }
 extern "C" int __wrap_SDL_OpenAudio(SDL_AudioSpec* desired, SDL_AudioSpec* obtained) {
     auto device = std::make_shared<Audio>();
     device->spec = *desired;
-    device->spec.silence = SDL_AUDIO_ISUNSIGNED(desired->format) ? 0x80 : 0;
+    device->spec.silence = desired->format == AUDIO_U8 ? 0x80 : 0;
     device->owner = pthread_self();
     Open request{*desired, obtained, -1};
     request.desired.callback = consume;
