@@ -95,7 +95,7 @@ void continuation(AI::ImplementationID id, bool depleted, int checkpoint)
         orders.push_back(tick(game)); traces.push_back(state(game));
         types.insert(static_cast<unsigned char>(orders.back()[0]));
     }
-    const auto random=syncRandEngine();
+    const auto random=game.syncRandom;
     GameGUI restored(false);
     GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
     input.seekFromStart(0);
@@ -108,7 +108,7 @@ void continuation(AI::ImplementationID id, bool depleted, int checkpoint)
         REQUIRE(tick(restored.game)==orders[i]);
         REQUIRE(state(restored.game)==traces[i]);
     }
-    CHECK(syncRandEngine()==random);
+    CHECK(restored.game.syncRandom==random);
     // A rich colony must exercise active decision making, not merely NullOrder.
     if (!depleted) CHECK(types.size()>1);
 }
