@@ -230,7 +230,9 @@ authenticate to `/internal` with keys from `RELAY_KEYS` or `RELAY_KEYS_FILE` (se
 match-record size limits are `UPLOAD_MAX_BYTES` and `RECORD_MAX_BYTES`. Services
 log structured JSON to stdout, expose health
 endpoints where they serve HTTP, and on SIGTERM stop taking work, finish what is
-running and close connections within `SHUTDOWN_GRACE_SECONDS`.
+running and close connections within `SHUTDOWN_GRACE_SECONDS`. The Compose stack
+that runs all of them, with Caddy and Postgres, is described in the
+[self-hosting guide](../hosting/README.md).
 
 ## Engine agents
 

@@ -306,8 +306,10 @@ CI runs both in the native-programs job.
 
 ## Limits and follow-ups
 
-- The relay is not in `deploy/compose.yaml` yet; the compose stack v2 (milestone M4)
-  adds it behind Caddy's `/relay` route.
+- In `deploy/compose.yaml` the relay runs behind Caddy without TLS of its own. Each
+  replica is reached at `/relay/<relay id>`, its id being its container's host name,
+  and Caddy rewrites the path to `/relay` (see the
+  [self-hosting guide](../hosting/README.md)).
 - The setup lookup endpoint and the idempotent upload behaviour are relay-side
   assumptions that the platform API must implement (see [platform calls](#platform-calls)).
 - A refused new match uses `Reject(5)` (match over) with an explanatory detail. A

@@ -5,7 +5,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 FLAGS = ('native', 'browser', 'map_generators', 'deployment', 'cross_platform',
-         'android', 'windows', 'compatibility', 'variants', 'coverage', 'tsan', 'macos', 'platform')
+         'android', 'windows', 'compatibility', 'variants', 'coverage', 'tsan', 'macos', 'platform',
+         'platform_stack')
 LABELS = {'ci:run', 'ci:full', 'ci:windows', 'ci:android', 'ci:browsers'}
 SIMULATION = ('src/ai/', 'src/unit/', 'src/building/', 'src/team/', 'src/map/',
               'src/sgsl/', 'src/sim/', 'src/Order')
@@ -14,6 +15,15 @@ SIMULATION_FILES = {'src/Game_sync.cpp', 'src/Game.cpp', 'src/EngineRun.cpp',
 THREAD_FILES = {'src/Engine.cpp', 'src/EngineRun.cpp', 'src/GameSessionScreen.cpp',
                 'src/gui/GameGUIDraw.cpp', 'src/gui/GameGUIStep.cpp', 'src/gui/GameGUIOrders.cpp',
                 'libgag/src/PerformanceTelemetry.cpp'}
+# Paths whose changes rebuild and smoke-test the whole self-hosted stack
+# (deploy/compose.yaml). Its images compile the engine, so engine changes that
+# do not otherwise select every check skip it rather than adding a second
+# client build to every PR.
+PLATFORM_STACK_PATHS = (
+    'deploy/', 'tests/deployment/', 'src/relay/', 'platform/package-lock.json',
+    'platform/packages/db/migrations/', 'platform/apps/api/src/main.ts',
+    'platform/apps/worker/src/main.ts', 'platform/apps/engine-agent/src/main.ts',
+)
 RENDER = {'libgag/src/RenderBackend.cpp', 'libgag/src/SoftwareRenderBackend.cpp',
           'libgag/src/SurfaceRaster.cpp'}
 
@@ -107,6 +117,11 @@ def select(paths, labels=(), known=False):
             add(path, *FLAGS)
         if path.startswith(('src/sim/', 'src/scene/')) or path in THREAD_FILES:
             add(path, 'tsan')
+    # The stack's own inputs run the stack smoke; shared and unknown paths
+    # above already select every check, the stack included.
+    for path in paths:
+        if path.startswith(PLATFORM_STACK_PATHS) and not path.endswith('.md'):
+            add(path, 'platform_stack')
     labels = set(labels) & LABELS
     if 'ci:full' in labels:
         result = full()
