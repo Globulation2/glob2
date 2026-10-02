@@ -39,6 +39,7 @@ import {
   type RegionRtt,
 } from '@glob2/worker';
 import { apiError } from '../errors.ts';
+import { catalogTitles, uploadTitle } from '../history/summaries.ts';
 
 type Db = Kysely<Database>;
 
@@ -54,6 +55,12 @@ export const ROOM_RULES = {
   hostImplicitlyReady: true,
   /** Seats (human or AI) that must be occupied to start. */
   minOccupiedSeats: 2,
+  /**
+   * A new member (invite link or code) takes the first open, unlocked seat, so
+   * "anyone with the invite can take it" holds without an extra click. Members who
+   * join a full room stay unseated until a seat opens.
+   */
+  joinTakesOpenSeat: true,
   /** Teams of a room without a map. */
   defaultTeams: 2,
   maxMembers: 24,
@@ -185,6 +192,7 @@ export class RoomService {
     const seatOf = new Map(seats.flatMap((s) => (s.account_id ? [[s.account_id, s.seat]] : [])));
     const simVersion = parseSimVersionKey(room.sim_version);
     if (!simVersion) throw new Error(`room ${roomId} has a bad sim version`);
+    const mapTitle = await this.mapTitle(settings.map, room.host_account_id, db);
     return {
       id: room.id,
       code: room.code,
@@ -197,6 +205,7 @@ export class RoomService {
       ...(settings.map ? { map: settings.map } : {}),
       ...(settings.mapStatus ? { mapStatus: settings.mapStatus } : {}),
       ...(settings.mapProblem ? { mapProblem: settings.mapProblem } : {}),
+      ...(mapTitle ? { mapTitle } : {}),
       teams: settings.teams,
       seats: seats.map((s): RoomSeat => ({
         seat: s.seat,
@@ -231,6 +240,31 @@ export class RoomService {
       revision: room.revision,
       createdAt: room.created_at.toISOString(),
     };
+  }
+
+  /**
+   * The display name of a catalog or uploaded room map (generated maps are named
+   * by the client from their generator and size).
+   */
+  private async mapTitle(
+    map: RoomMapSelection | undefined,
+    hostId: string,
+    db: Db,
+  ): Promise<string | undefined> {
+    if (!map?.hash || map.kind === 'generated') return undefined;
+    if (map.kind === 'catalog') {
+      const title = (await catalogTitles(db, [map.hash])).get(map.hash)?.title;
+      if (title) return title.slice(0, 128);
+      const own = await db
+        .selectFrom('map_versions as v')
+        .innerJoin('maps as m', 'm.id', 'v.map_id')
+        .select('m.title')
+        .where('v.hash', '=', map.hash)
+        .where('m.owner_account_id', '=', hostId)
+        .executeTakeFirst();
+      return own?.title.slice(0, 128);
+    }
+    return uploadTitle(db, map.hash, hostId);
   }
 
   private async mustState(roomId: string): Promise<RoomState> {
@@ -856,9 +890,38 @@ export class RoomService {
           }),
         )
         .execute();
+      if (!already && room.status === 'open' && ROOM_RULES.joinTakesOpenSeat) {
+        await this.takeFirstOpenSeat(trx, room.id, caller.id);
+      }
       await this.bump(trx, room.id);
     });
     return this.mustState(found.id);
+  }
+
+  /** Seats the account in the lowest open, unlocked seat, if it has none yet. */
+  private async takeFirstOpenSeat(trx: Db, roomId: string, accountId: string): Promise<void> {
+    const seated = await trx
+      .selectFrom('room_seats')
+      .select('seat')
+      .where('room_id', '=', roomId)
+      .where('account_id', '=', accountId)
+      .executeTakeFirst();
+    if (seated) return;
+    const open = await trx
+      .selectFrom('room_seats')
+      .select('seat')
+      .where('room_id', '=', roomId)
+      .where('occupant', '=', 'open')
+      .where('locked', '=', false)
+      .orderBy('seat')
+      .executeTakeFirst();
+    if (!open) return;
+    await trx
+      .updateTable('room_seats')
+      .set({ occupant: 'human', account_id: accountId, ready: false })
+      .where('room_id', '=', roomId)
+      .where('seat', '=', open.seat)
+      .execute();
   }
 
   async leave(accountId: string, roomId: string): Promise<void> {
