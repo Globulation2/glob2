@@ -1,7 +1,8 @@
-// Verified results → ratings. The verify-match verdict arrives through the
-// engine-job result task (applyEngineJobResult); handleEngineJobResult records
-// it and applies ratings in the same transaction, and applyMatchRatings is
-// idempotent on its own (matches.rating_status leaves 'pending' exactly once,
+// Verified results → ratings and history. The verify-match verdict arrives
+// through the engine-job result task (applyEngineJobResult);
+// handleEngineJobResult records it (outcomes, team statistics and timelines,
+// match artifacts) and applies ratings in the same transaction; it also
+// completes warm-map generation jobs. applyMatchRatings is idempotent on its own (matches.rating_status leaves 'pending' exactly once,
 // under a row lock), so a re-delivered verdict or a sweep never applies a
 // rating change twice.
 import { sql, type Kysely, type Transaction } from 'kysely';
@@ -11,6 +12,7 @@ import type { MatchSetup, VerifyVerdict } from '@glob2/protocol';
 import { decideRating, type TeamOutcome } from './outcome.ts';
 import { ensureAccountEntity, ensureAiEntity, ensureRating, type RatedAi } from './entities.ts';
 import { displayRating, rateSides } from './scale.ts';
+import { recordWarmMapResult } from '../warmMaps.ts';
 
 type Db = Kysely<Database>;
 
@@ -38,7 +40,11 @@ async function notifyMatch(db: Db, matchId: string): Promise<void> {
 export async function handleEngineJobResult(db: Db, payload: unknown): Promise<boolean> {
   return inTransaction(db, async (trx) => {
     const applied = await applyEngineJobResult(trx, payload);
-    if (applied) await recordVerification(trx, (payload as { jobId: string }).jobId);
+    if (applied) {
+      const jobId = (payload as { jobId: string }).jobId;
+      await recordVerification(trx, jobId);
+      await recordWarmMapResult(trx, jobId);
+    }
     return applied;
   });
 }
@@ -86,6 +92,12 @@ export async function recordVerification(db: Db, jobId: string): Promise<Verific
     } else {
       const outcome = verdict.outcome;
       for (const team of outcome.teams) {
+        // Final counters and the 512-tick timeline come from the verifier's
+        // result.json (engine-agent); older agents send neither.
+        const history = {
+          statistics: JSON.stringify(team.statistics ?? {}),
+          timeline: JSON.stringify(team.timeline ?? []),
+        };
         await trx
           .insertInto('match_team_stats')
           .values({
@@ -94,12 +106,14 @@ export async function recordVerification(db: Db, jobId: string): Promise<Verific
             outcome: team.outcome,
             prestige: team.prestige,
             eliminated_tick: team.eliminatedTick ?? null,
+            ...history,
           })
           .onConflict((oc) =>
             oc.columns(['match_id', 'team']).doUpdateSet({
               outcome: team.outcome,
               prestige: team.prestige,
               eliminated_tick: team.eliminatedTick ?? null,
+              ...history,
             }),
           )
           .execute();
@@ -112,6 +126,11 @@ export async function recordVerification(db: Db, jobId: string): Promise<Verific
           .where((eb) => eb.or([eb('outcome', 'is', null), eb('outcome', '!=', 'abandoned')]))
           .execute();
       }
+      await recordMatchArtifacts(trx, matchId, {
+        record: (job.payload as { recordHash?: string }).recordHash,
+        replay: outcome.replayHash,
+        result: outcome.resultHash,
+      });
       await trx
         .updateTable('matches')
         .set({
@@ -126,6 +145,28 @@ export async function recordVerification(db: Db, jobId: string): Promise<Verific
     if (rating.status !== 'applied') await notifyMatch(trx, matchId);
     return { recorded: true, matchId, verdict: verdict.verdict, rating };
   });
+}
+
+/**
+ * Links a match to its record, replay and verifier result blobs. A blob the
+ * `blobs` table does not know (not registered by whoever stored it) is
+ * skipped rather than failing the verdict.
+ */
+export async function recordMatchArtifacts(
+  db: Db,
+  matchId: string,
+  artifacts: Partial<Record<'record' | 'replay' | 'result', string | undefined>>,
+): Promise<void> {
+  for (const [kind, hash] of Object.entries(artifacts) as [
+    'record' | 'replay' | 'result',
+    string | undefined,
+  ][]) {
+    if (!hash) continue;
+    await sql`
+      INSERT INTO match_artifacts (match_id, kind, blob_sha256)
+      SELECT ${matchId}, ${kind}, sha256 FROM blobs WHERE sha256 = ${hash}
+      ON CONFLICT (match_id, kind) DO UPDATE SET blob_sha256 = EXCLUDED.blob_sha256`.execute(db);
+  }
 }
 
 export type RatingResult =
