@@ -3,6 +3,7 @@
 import type { FastifyInstance, FastifyRequest } from 'fastify';
 import type {
   AiLeaderboard,
+  InstanceStats,
   LeaderboardPage,
   MatchDetail,
   MatchList,
@@ -13,6 +14,7 @@ import { apiError } from '../errors.ts';
 import { authenticate, requireRole, type Identity } from '../identity.ts';
 import { HistoryService, type Viewer } from './service.ts';
 import { pageLimit } from './summaries.ts';
+import { cachedInstanceStats } from './stats.ts';
 
 interface PageQuery {
   cursor?: string;
@@ -79,6 +81,12 @@ export async function historyRoutes(app: FastifyInstance, identity: Identity): P
       });
     },
   );
+
+  const stats = cachedInstanceStats(services.db);
+  app.get('/api/v1/stats', async (_request, reply): Promise<InstanceStats> => {
+    reply.header('cache-control', 'public, max-age=30');
+    return stats();
+  });
 
   app.get<{ Querystring: PageQuery }>('/api/v1/matches', async (request): Promise<MatchList> => {
     const queue = queueFilter(request.query.queue);

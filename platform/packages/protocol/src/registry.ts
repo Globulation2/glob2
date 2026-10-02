@@ -80,7 +80,7 @@ import {
   UpdateMapRequest,
 } from './resources.ts';
 import { SimVersion } from './simVersion.ts';
-import { AiLeaderboard, MatchDetail, PlayerProfile } from './history.ts';
+import { AiLeaderboard, InstanceStats, MatchDetail, PlayerProfile } from './history.ts';
 import {
   AccessTokenClaims,
   AccessTokenHeader,
@@ -211,6 +211,7 @@ export const schemaRegistry: Record<string, RegisteredSchema> = {
   LeaderboardPage: { schema: LeaderboardPage },
   AiLeaderboard: { schema: AiLeaderboard },
   PlayerProfile: { schema: PlayerProfile },
+  InstanceStats: { schema: InstanceStats },
   // Engine-agent jobs
   EngineJob: {
     schema: EngineJob,

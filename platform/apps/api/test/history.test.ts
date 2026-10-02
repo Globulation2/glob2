@@ -3,7 +3,8 @@
 // sim version, profiles (full, guest-minimal, banned, aggregates from the 0004
 // views), match lists and cursors, match detail (teams, timelines, economy,
 // verification detail), artifact downloads and their access rules, the
-// moderators' match lookup, and the mobile app-link files.
+// moderators' match lookup, the home page's live stats, and the mobile
+// app-link files.
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { checkDocument } from '@glob2/protocol';
 import { SEEDED_QUEUES, seedHistory, type SeededHistory } from './historySeed.ts';
@@ -253,6 +254,20 @@ describe('matches', () => {
     );
     expect(byAccount['items'].map((m: { id: string }) => m.id)).toEqual([seed.publicRoomMatch]);
     expect((await get('/api/v1/admin/matches?status=lost', seed.adminSession)).status).toBe(400);
+  });
+});
+
+describe('stats', () => {
+  it('counts players online, live matches and matches of the last day', async () => {
+    const response = await get('/api/v1/stats');
+    expect(response.headers.get('cache-control')).toBe('public, max-age=30');
+    const stats = (await json(response)) as Doc;
+    expect(checkDocument('InstanceStats', stats).issues).toEqual([]);
+    // The seeded running match has players in it.
+    expect(stats.liveMatches).toBeGreaterThanOrEqual(1);
+    expect(stats.playersOnline).toBeGreaterThanOrEqual(1);
+    expect(stats.matchesToday).toBeGreaterThanOrEqual(1);
+    expect(stats.activeWindowMinutes).toBe(15);
   });
 });
 
