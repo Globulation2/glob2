@@ -65,6 +65,8 @@ export const ROOM_RULES = {
   idleSeconds: 12 * 3600,
   /** Invite code length; 32 symbols each, 50 bits for 10. */
   codeLength: 10,
+  /** A kicked player cannot rejoin the room for this long. */
+  kickBanSeconds: 600,
 } as const;
 
 /** Unambiguous code alphabet (no 0/O, 1/I). */
@@ -709,6 +711,18 @@ export class RoomService {
         simVersion: parseSimVersionKey(found.sim_version),
       });
     }
+    const kick = await this.db
+      .selectFrom('room_kicks')
+      .select('until')
+      .where('room_id', '=', found.id)
+      .where('account_id', '=', caller.id)
+      .where('until', '>', sql<Date>`now()`)
+      .executeTakeFirst();
+    if (kick) {
+      throw apiError('forbidden', 'The host removed you from this room; try again later.', {
+        until: kick.until.toISOString(),
+      });
+    }
     const already = await this.db
       .selectFrom('room_members')
       .select('account_id')
@@ -781,6 +795,52 @@ export class RoomService {
         .execute();
       await this.bump(trx, roomId);
     });
+  }
+
+  /**
+   * The host removes a member from an open room: their seat opens, they get
+   * room.closed {reason: 'kicked'}, and they cannot rejoin for
+   * ROOM_RULES.kickBanSeconds.
+   */
+  async kick(caller: Account, roomId: string, accountId: string): Promise<RoomState> {
+    await this.db.transaction().execute(async (trx) => {
+      const room = await this.lock(trx, roomId);
+      await this.requireMember(trx, roomId, caller.id);
+      if (room.host_account_id !== caller.id) {
+        throw apiError('forbidden', 'Only the host can remove players.');
+      }
+      if (accountId === caller.id) throw apiError('bad_request', 'Leave the room instead.');
+      if (room.status !== 'open') {
+        throw apiError('conflict', 'Players cannot be removed while a match is starting or running.');
+      }
+      const removed = await trx
+        .deleteFrom('room_members')
+        .where('room_id', '=', roomId)
+        .where('account_id', '=', accountId)
+        .executeTakeFirst();
+      if (removed.numDeletedRows === 0n) throw apiError('not_found', 'That player is not in this room.');
+      await trx
+        .updateTable('room_seats')
+        .set({ occupant: 'open', account_id: null, ready: false })
+        .where('room_id', '=', roomId)
+        .where('account_id', '=', accountId)
+        .execute();
+      const until = sql<Date>`now() + make_interval(secs => ${ROOM_RULES.kickBanSeconds})`;
+      await trx
+        .insertInto('room_kicks')
+        .values({ room_id: roomId, account_id: accountId, kicked_by_account_id: caller.id, until })
+        .onConflict((oc) =>
+          oc.columns(['room_id', 'account_id']).doUpdateSet({
+            until,
+            kicked_by_account_id: caller.id,
+            created_at: sql<Date>`now()`,
+          }),
+        )
+        .execute();
+      await this.bump(trx, roomId);
+      await publishPlay(trx, { t: 'roomClosed', roomId, reason: 'kicked', accountIds: [accountId] });
+    });
+    return this.mustState(roomId);
   }
 
   async update(
@@ -1294,6 +1354,7 @@ export class RoomService {
         });
       });
     }
+    await this.db.deleteFrom('room_kicks').where('until', '<=', sql<Date>`now()`).execute();
     return { closed, removed: gone.length };
   }
 }

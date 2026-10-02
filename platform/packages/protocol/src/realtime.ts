@@ -201,6 +201,12 @@ export const realtimeMethods = {
     }),
     result: Open({ room: RoomState }),
   },
+  'room.kick': {
+    description:
+      'Host removes a member from an open room. The member receives room.closed {reason: "kicked"} and cannot rejoin that room for 10 minutes (room.join answers forbidden with details.until).',
+    params: Strict({ roomId: Uuid, accountId: Uuid }),
+    result: Open({ room: RoomState }),
+  },
   'room.setReady': {
     description: 'Mark the caller ready or not ready.',
     params: Strict({ roomId: Uuid, ready: Type.Boolean() }),
