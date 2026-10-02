@@ -2,7 +2,9 @@
 // scheduler (maintenance, matchmaker, rating sweep) on the one replica
 // holding the leader lock.
 import {
+  JobQueue,
   Shutdown,
+  createAccessPolicy,
   createLogger,
   loadConfig,
   prepareJobQueue,
@@ -14,7 +16,8 @@ import { ENGINE_RESULT_TASK } from '@glob2/protocol';
 import { runMaintenance } from './maintenance.ts';
 import { Matchmaker } from './matchmaking/matchmaker.ts';
 import { PgQueueNotifier } from './matchmaking/notifier.ts';
-import type { MatchStarter } from './matchmaking/starter.ts';
+import { expireStartingMatches } from './play/intake.ts';
+import { PlatformMatchStarter } from './play/start.ts';
 import { applyPendingRatings, handleEngineJobResult } from './ratings/apply.ts';
 import { runScheduler, type ScheduledTask } from './scheduler.ts';
 
@@ -22,14 +25,6 @@ const config = loadConfig();
 const logger = createLogger('worker', config.logLevel);
 const shutdown = new Shutdown(logger, config.shutdownGraceSeconds);
 shutdown.installSignalHandlers();
-
-/**
- * Until rooms, relay allocation and match tickets land (M4), queue matches
- * cannot start: proposals fail after their retries and players wait again.
- */
-const unavailableStarter: MatchStarter = {
-  start: () => Promise.reject(new Error('match starting is not available on this instance yet')),
-};
 
 try {
   const database = createDatabase({
@@ -39,6 +34,8 @@ try {
   });
   shutdown.add('database', () => database.close());
   await prepareJobQueue(database.pool, logger);
+  const jobs = await JobQueue.create(database.pool, logger);
+  shutdown.add('job queue', () => jobs.close());
 
   const runner = await startJobRunner({
     pool: database.pool,
@@ -58,12 +55,24 @@ try {
   const matchmaker = new Matchmaker({
     db: database.db,
     queues,
-    starter: unavailableStarter,
+    // Places queue matches on relays; the warm map pool (engine-agent work)
+    // plugs in through `warmMaps` once it exists.
+    starter: new PlatformMatchStarter({
+      db: database.db,
+      jobs,
+      access: createAccessPolicy(config.instance.access.policy),
+      logger,
+    }),
     notifier: new PgQueueNotifier(),
     logger,
   });
   const scheduled: ScheduledTask[] = [
     { name: 'maintenance', intervalMs: 60_000, run: () => runMaintenance(database.db) },
+    {
+      name: 'starting matches',
+      intervalMs: 30_000,
+      run: () => expireStartingMatches(database.db),
+    },
     { name: 'rating sweep', intervalMs: 30_000, run: () => applyPendingRatings(database.db) },
   ];
   if (queues.length > 0) {

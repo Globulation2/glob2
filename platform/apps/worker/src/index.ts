@@ -1,5 +1,7 @@
 // Library surface of the worker: rating maths and application, the
-// matchmaker, and the queue ticket operations the API's realtime handlers call.
+// matchmaker, the queue ticket operations the API's realtime handlers call,
+// and the match start sequence, relay placement, map sources and match-end
+// intake that rooms (API) and queues (worker) share.
 export * from './clock.ts';
 export * from './ratings/scale.ts';
 export * from './ratings/outcome.ts';
@@ -10,3 +12,8 @@ export * from './matchmaking/notifier.ts';
 export * from './matchmaking/starter.ts';
 export * from './matchmaking/matchmaker.ts';
 export * from './matchmaking/tickets.ts';
+export * from './play/notify.ts';
+export * from './play/relays.ts';
+export * from './play/maps.ts';
+export * from './play/start.ts';
+export * from './play/intake.ts';

@@ -7,6 +7,7 @@
 import { sql, type Kysely, type Transaction } from 'kysely';
 import { applyEngineJobResult } from '@glob2/core';
 import type { Database } from '@glob2/db';
+import { applyMapJobResult } from '../play/maps.ts';
 import type { MatchSetup, VerifyVerdict } from '@glob2/protocol';
 import { decideRating, type TeamOutcome } from './outcome.ts';
 import { ensureAccountEntity, ensureAiEntity, ensureRating, type RatedAi } from './entities.ts';
@@ -31,14 +32,20 @@ async function notifyMatch(db: Db, matchId: string): Promise<void> {
 
 /**
  * Applies an engine agent's job result and, for a verify-match verdict,
- * records the verification and applies ratings, all in one transaction.
+ * records the verification and applies ratings, all in one transaction;
+ * generate-map and validate-map results update generated maps and uploads.
  * Returns false when the job was unknown or already completed (a duplicate
  * delivery), in which case nothing changes.
  */
 export async function handleEngineJobResult(db: Db, payload: unknown): Promise<boolean> {
   return inTransaction(db, async (trx) => {
     const applied = await applyEngineJobResult(trx, payload);
-    if (applied) await recordVerification(trx, (payload as { jobId: string }).jobId);
+    if (applied) {
+      const jobId = (payload as { jobId: string }).jobId;
+      await recordVerification(trx, jobId);
+      // Generated maps and uploads (no-op for verify-match jobs).
+      await applyMapJobResult(trx, jobId);
+    }
     return applied;
   });
 }

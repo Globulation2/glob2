@@ -120,6 +120,11 @@ export const InstanceConfig = Strict({
       allowedOrigins: Type.Optional(
         Type.Array(Type.String({ pattern: '^https?://[^/\\s]+$' }), { maxItems: 32 }),
       ),
+      /**
+       * Where the browser build of the game is served; invite pages link to it
+       * with `?join=<code>`. Default `<PUBLIC_ORIGIN>/play/`.
+       */
+      browserClientUrl: Type.Optional(Type.String({ pattern: '^https?://[^\\s]+$' })),
     }),
   ),
   limits: Type.Optional(

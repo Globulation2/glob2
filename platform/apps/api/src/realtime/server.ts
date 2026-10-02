@@ -1,6 +1,6 @@
 // The /realtime WebSocket: upgrade checks (Origin allow-list, connections per
 // address), heartbeat, and the session and sign-in methods. Room, queue and
-// match methods answer `unsupported` until their milestones land.
+// match methods come from play/realtime.ts (`extraHandlers`).
 import type { FastifyInstance } from 'fastify';
 import type { WebSocket } from 'ws';
 import {
@@ -27,6 +27,7 @@ export async function realtimeRoutes(
   app: FastifyInstance,
   identity: Identity,
   options: RealtimeOptions = {},
+  extraHandlers: Partial<Record<RealtimeMethod, MethodHandler>> = {},
 ): Promise<void> {
   const { services } = app;
   const { hub } = identity;
@@ -89,6 +90,7 @@ export async function realtimeRoutes(
   }
 
   const handlers: Partial<Record<RealtimeMethod, MethodHandler>> = {
+    ...extraHandlers,
     'session.hello': async (connection, raw) => {
       const params = raw as RealtimeParams<'session.hello'>;
       if (params.protocol !== REALTIME_PROTOCOL_VERSION) {
