@@ -31,4 +31,10 @@ Native study command, default controls, seed 1, square 512. This is one sample p
 
 ## Coverage limits
 
-Linux, Windows, mobile and threaded WebAssembly execution/checksums were not verified locally. Updated generator golden rows still need actual foreign-platform generation. A live lobby with sixteen separate remote clients was not exercised. Maintainer play review is still needed for pacing/density; Warrush’s capacity-derived opening window now lasts 32 rather than 24 ticks even in smaller matches. Extreme Portage Lakes controls can be slow. Existing unrelated browser/deployment/threading edits were preserved.
+Linux, Windows, mobile and threaded WebAssembly execution/checksums were not verified locally. Updated generator golden rows still need actual foreign-platform generation. A live lobby with sixteen separate remote clients was not exercised. Maintainer play review is still needed for pacing/density; Warrush probes sixteen slots within 32 ticks, but absent slots fall through without delaying smaller matches; an actual format-126/current twelve-team run verified identical 128-tick traces. Extreme Portage Lakes controls can be slow. Existing unrelated browser/deployment/threading edits were preserved.
+
+## Independent review follow-up
+
+See `team-limit-independent-review.md`, `team-limit-independent-review-followup.md` and `review-validation.md` for all findings, applied fixes and coverage limits. `post-review.tar.gz` contains final core/UI/unit reports, strict macOS golden output, map-image round-trip evidence, actual old/current twelve-team Warrush sidecars and the clean PR native sixteen-team trace.
+
+The initial `evidence.tar.gz` is an implementation snapshot; its embedded validation note's claim that Warrush delays smaller matches was incorrect and is superseded by the review and paired-run evidence here. Final core: 46 passed, one display case covered separately; final display: six passed. The full unit suite passed. The five code recommendations and three follow-up details were implemented. Linux golden rows are still historical pending actual platform regeneration; GitHub jobs were queued.

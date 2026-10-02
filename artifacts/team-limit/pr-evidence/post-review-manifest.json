@@ -1,0 +1,31 @@
+{
+  "source_commit": "883e92c8abfdde133a3b8ac85b9bc08957869923",
+  "files": [
+    "docs/.work/team-limit-independent-review.md",
+    "docs/.work/team-limit-independent-review-followup.md",
+    "docs/.work/review-validation.md",
+    "artifacts/team-limit/review-final-core/junit.xml",
+    "artifacts/team-limit/review-final-display/junit.xml",
+    "artifacts/team-limit/review-unit/junit.xml",
+    "artifacts/team-limit/review-golden.log",
+    "artifacts/team-limit/review-map-image2.log",
+    "artifacts/map-image/commands.json",
+    "artifacts/team-limit/warrush-comparison.log",
+    "artifacts/team-limit/warrush-baseline/game.replay.checksums",
+    "artifacts/team-limit/warrush-baseline/initial.game.gz",
+    "artifacts/team-limit/warrush-baseline/command.json",
+    "artifacts/team-limit/warrush-baseline/result.json",
+    "artifacts/team-limit/warrush-current-final/game.replay.checksums",
+    "artifacts/team-limit/warrush-current-final/command.json",
+    "artifacts/team-limit/warrush-current-final/result.json",
+    "artifacts/team-limit/review-current.replay.checksums",
+    "artifacts/team-limit/review-final-core/TeamLimit/sixteen_team_saves_continue_identically_and_preserve_entity_generations_save-format_artifacts/checksums.csv",
+    "artifacts/team-limit/review-final-core/TeamLimit/retained_format126_Maxima_save_preserves_identities_and_subsequent_AI_decisions_save-format_artifacts/migration-ai-checksums.csv",
+    "artifacts/map-image/sixteen.map.gz",
+    "artifacts/map-image/sixteen-restored.map.gz",
+    "artifacts/map-image/sixteen-export.png",
+    "artifacts/map-image/sixteen.json",
+    "artifacts/map-image/sixteen.png",
+    "artifacts/map-image/sixteen-restored.json"
+  ]
+}
