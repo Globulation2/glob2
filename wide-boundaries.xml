@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="12" failures="0" errors="0" skipped="0"><testsuite name="UntrustedFiles"><testcase classname="UntrustedFiles" name="AI tags collection counts and recursive predicates are bounded" time="0.004758" status="run" />
+  <testcase classname="UntrustedFiles" name="complete saved game rejects poisoned unit state and retains a reproducible fixture [save-format][artifacts]" time="0.533343" status="run" />
+  <testcase classname="UntrustedFiles" name="compressed file size is checked before allocation" time="0.000421" status="run" />
+  <testcase classname="UntrustedFiles" name="entity loaders reject malicious indices before using them [save-format]" time="0.00161" status="run" />
+  <testcase classname="UntrustedFiles" name="every native AI accepts its initial saved state" time="0.019118" status="run" />
+  <testcase classname="UntrustedFiles" name="invalid replay order references are ignored before indexing state" time="0.001138" status="run" />
+  <testcase classname="UntrustedFiles" name="legacy create order reads only its twenty byte payload" time="0" status="run" />
+  <testcase classname="UntrustedFiles" name="legacy saved instruction pointers must identify statement boundaries [save-format]" time="0.004342" status="run" />
+  <testcase classname="UntrustedFiles" name="map scripts cannot load local files" time="0.026324" status="run" />
+  <testcase classname="UntrustedFiles" name="network state rejects invalid slots and rates before queue indexing" time="0.007127" status="run" />
+  <testcase classname="UntrustedFiles" name="terrain loaders reject invalid resources occupants and sector dimensions [save-format]" time="0.002269" status="run" />
+  <testcase classname="UntrustedFiles" name="untrusted names cannot escape the map output directory" time="0" status="run" />
+  </testsuite></testsuites>

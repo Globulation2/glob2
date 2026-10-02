@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="23" failures="0" errors="0" skipped="0"><testsuite name="BulletSaveLoad"><testcase classname="BulletSaveLoad" name="RoundTripCurrentVersion" time="0.00017" status="run" />
+    <testcase classname="BulletSaveLoad" name="Pre85StreamDefaultsToTicksLeft" time="0" status="run" />
+  </testsuite><testsuite name="GameHeaderTextSaveLoad"><testcase classname="GameHeaderTextSaveLoad" name="FullRoundTrip" time="0.00981" status="run" />
+    <testcase classname="GameHeaderTextSaveLoad" name="PlayerInfoRoundTrip" time="0.057602" status="run" />
+    <testcase classname="GameHeaderTextSaveLoad" name="BinaryHeaderFormsAndLegacy" time="0.001587" status="run" />
+  </testsuite><testsuite name="ReplayStepCounter"><testcase classname="ReplayStepCounter" name="truncated replay bodies never become zero-filled orders" time="0.024831" status="run" />
+    <testcase classname="ReplayStepCounter" name="step totals cannot wrap" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="checksum mismatch closes playback safely" time="0.000101" status="run" />
+    <testcase classname="ReplayStepCounter" name="legacy create decoder respects both historical payload lengths" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="WideRoundTrip" time="0.000953" status="run" />
+    <testcase classname="ReplayStepCounter" name="VersionBounds" time="0.000131" status="run" />
+    <testcase classname="ReplayStepCounter" name="DecodeVersionPlumbing" time="0" status="run" />
+  </testsuite><testsuite name="RuntimeBuildingOrderSaveLoad"><testcase classname="RuntimeBuildingOrderSaveLoad" name="RoundTripCurrentVersion" time="0.000341" status="run" />
+    <testcase classname="RuntimeBuildingOrderSaveLoad" name="UnregisteredOrderRoundTrips" time="0" status="run" />
+    <testcase classname="RuntimeBuildingOrderSaveLoad" name="Pre96StreamLeavesSentinel" time="0" status="run" />
+  </testsuite><testsuite name="USLCoverage"><testcase classname="USLCoverage" name="hostile calls arithmetic and nesting fail without process termination" time="0.563395" status="run" />
+    <testcase classname="USLCoverage" name="native argument type mismatch raises a script error" time="0.020901" status="run" />
+    <testcase classname="USLCoverage" name="released expression and recursion fixtures yield exact values" time="0.100929" status="run" />
+    <testcase classname="USLCoverage" name="native arithmetic closures selection and strings survive garbage collection" time="0.033448" status="run" />
+    <testcase classname="USLCoverage" name="yielding threads respect execution budgets and resume independently" time="0.004868" status="run" />
+    <testcase classname="USLCoverage" name="malformed syntax and missing members produce source-located errors" time="0.00271" status="run" />
+    <testcase classname="USLCoverage" name="root replacement and collection after compiler errors preserve live object methods" time="0.039713" status="run" />
+    <testcase classname="USLCoverage" name="replacing included constants updates expression access and keeps live closures" time="0.001935" status="run" />
+  </testsuite></testsuites>
