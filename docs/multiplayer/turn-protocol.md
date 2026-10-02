@@ -377,6 +377,10 @@ the session (presence, latency, buffer) for a connection HUD.
 As in a legacy network game, executing the local seat's own `PlayerQuitsGameOrder`
 stops that client's loop.
 
+`TurnSession` and `TurnSequencer` also measure the connection (round trips, jitter,
+buffer depth, input delay, stalls, catch-up, reconnects, traffic, arbitration) without
+changing the protocol or the record: see [network telemetry](../development/network-telemetry.md).
+
 ## Match setup and simulation version
 
 ### MatchSetup to GameHeader

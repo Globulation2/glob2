@@ -555,6 +555,19 @@ TEST_SUITE("LanMatchHarness")
 		fs::create_directories(m.directory / "verify");
 		const auto verdict = MatchVerifier::verify(record, recorded, mapPath(), m.directory / "verify");
 		CHECK(verdict.verdict == "verified");
+		// Next to the record: the relay's per-seat network summary, which saw the drop.
+		const auto network = nlohmann::json::parse(glob2test::readFile(m.directory / "match.network.json"));
+		CHECK(network.at("schema") == "RelayNetworkSummary");
+		CHECK(network.at("end_tick") == record.endTick);
+		std::uint64_t disconnects = 0, sequenced = 0;
+		for (const auto& seat : network.at("seats"))
+		{
+			disconnects += seat.at("connection").at("disconnects").get<std::uint64_t>();
+			sequenced += seat.at("orders").at("sequenced").get<std::uint64_t>();
+		}
+		CHECK(network.at("seats").size() == 3);
+		CHECK(disconnects >= 1);
+		CHECK(sequenced == record.turns.size());
 
 		std::ostringstream out;
 		out << "ticks compared " << compared << ", record turns " << record.turns.size() << ", end tick "

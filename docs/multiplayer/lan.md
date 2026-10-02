@@ -92,7 +92,8 @@ with `version`.
   transport then delivers `Reject(MatchOver)`, which ends its session cleanly, and the
   room shows "The host left the game."
 - **Record.** The host writes the match record to `<user dir>/replays/lan-last.g2mr`;
-  `glob2 --verify-match` replays it.
+  `glob2 --verify-match` replays it. Next to it, `lan-last.network.json` holds the
+  relay's per-seat network summary ([network telemetry](../development/network-telemetry.md)).
 
 ## In-game connection notice
 

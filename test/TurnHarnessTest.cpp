@@ -24,6 +24,8 @@
 #include <memory>
 #include <random>
 
+#include <nlohmann/json.hpp>
+
 #include "MatchRecord.h"
 #include "TurnSequencer.h"
 #include "TurnSession.h"
@@ -510,5 +512,112 @@ TEST_SUITE("TurnHarness")
 		CHECK(m.net.relay->matchOver());
 		const auto record = m.net.relay->buildRecord("m", "v", "{}", {});
 		CHECK((record.flags & MatchRecord::FLAG_INCOMPLETE) == 0);
+	}
+
+	GLOB2_TEST_CASE("network telemetry follows injected latency, jitter, loss, an outage and a rejoin",
+	                "[network-sim][artifacts]")
+	{
+		Match m({{15 * MS}, {60 * MS, 80 * MS}, {120 * MS, 20 * MS, 0.03}}, {3});
+		m.clients[2]->corruptAtTick = 900; // a divergence: client 2 is told to rejoin and reloads
+		m.run(30 * SECOND);
+		m.net.outage(1, 4 * SECOND, *m.clients[1]->transport);
+		m.run(20 * SECOND);
+		m.settle();
+		m.requireIdenticalExecution();
+
+		const auto& t0 = m.clients[0]->session->telemetry().totals();
+		const auto& t1 = m.clients[1]->session->telemetry().totals();
+		const auto& t2 = m.clients[2]->session->telemetry().totals();
+		// Round trips follow each link (two one-way latencies plus up to one relay frame).
+		CHECK(t0.rttMicros.count() > 50);
+		CHECK(t0.rttMicros.quantile(0.5) >= 30 * MS);
+		CHECK(t0.rttMicros.quantile(0.5) <= 45 * MS);
+		CHECK(t2.rttMicros.quantile(0.5) >= 240 * MS);
+		CHECK(t1.rttMicros.quantile(0.95) > t0.rttMicros.quantile(0.95));
+		// Jitter and the buffer it calls for are each client's own.
+		CHECK(t1.jitterMicros.quantile(0.95) > t0.jitterMicros.quantile(0.95));
+		CHECK(t1.targetTicks.quantile(0.95) > t0.targetTicks.quantile(0.95));
+		CHECK(t0.targetTicks.quantile(0.5) == 2);
+		CHECK(t0.liveTicks > 1000);
+		// Input delay agrees with the harness's own measurement (which also counts voice,
+		// and cannot tell a replayed order from a new one, so the reloading client 2 is
+		// compared only by count).
+		for (auto& c : m.clients)
+		{
+			const auto& h = c->session->telemetry().totals().inputDelayMicros;
+			INFO("client " << c->index);
+			REQUIRE(h.count() > 20);
+			if (c->index == 2)
+				continue;
+			CHECK(h.count() <= c->inputDelays.size());
+			CHECK(h.mean() / 1000.0 == doctest::Approx(c->meanInputDelayMs()).epsilon(0.25));
+		}
+		CHECK(t0.inputDelayMicros.mean() < t2.inputDelayMicros.mean());
+		// The outage: a reconnect, its downtime, a long stall, then a catch-up.
+		const auto& tel1 = m.clients[1]->session->telemetry();
+		CHECK(t1.reconnects >= 1);
+		CHECK(t1.downtimeMicros >= 2 * SECOND);
+		CHECK(tel1.longestStallMicros() >= 3 * SECOND);
+		CHECK(t1.catchUps >= 1);
+		CHECK(t1.catchUpTicks >= 50);
+		CHECK(t0.reconnects == 0);
+		CHECK(m.clients[0]->session->telemetry().longestStallMicros() < SECOND);
+		// The rejoin: a desync notice, a reload and its fast-forward.
+		const auto& tel2 = m.clients[2]->session->telemetry();
+		CHECK(t2.desyncRejoins == 1);
+		CHECK(t2.reloads == 1);
+		CHECK(t2.resyncRequests >= 1);
+		CHECK(tel2.reloadFastForwardTicks() >= 800);
+		// Everyone saw seat 1 reconnect.
+		const auto& tel0 = m.clients[0]->session->telemetry();
+		CHECK(tel0.transitions(1, PresenceState::Reconnecting) >= 1);
+		CHECK(tel0.timeIn(1, PresenceState::Reconnecting, m.net.now) >= 2 * SECOND);
+		CHECK(tel0.transitions(2, PresenceState::Resyncing) == 1);
+		// Traffic and voice.
+		CHECK(t0.bundlesReceived > 500);
+		CHECK(t0.bytesReceived > t0.bundleBytes);
+		CHECK(t0.voiceSent > 0);
+		CHECK(t0.voiceReceived > 0);
+		// The time series: one point per 5 s.
+		CHECK(tel0.series().size() >= 13);
+
+		// Relay side.
+		const auto& relay = m.net.relay->telemetry();
+		CHECK(relay.seats[1].disconnects >= 1);
+		CHECK(relay.seats[1].graceMicrosTotal >= 2 * SECOND);
+		CHECK(relay.seats[1].lagTicks.max() > 50);
+		CHECK(relay.seats[2].toldToRejoin == 1);
+		CHECK(relay.seats[2].logBundlesSent >= 1);
+		std::uint64_t sequenced = 0;
+		for (const auto& seat : relay.seats)
+		{
+			sequenced += seat.ordersSequenced;
+			CHECK(seat.voiceSequenced > 0);
+			CHECK(seat.checksumReports > 20);
+		}
+		CHECK(sequenced == m.net.relay->turnLog().size());
+		CHECK(relay.majority >= 1);
+		CHECK(relay.unanimous + relay.majority + relay.flaggedTicks == relay.arbitrations);
+
+		std::ostringstream out;
+		out << "client one_way_ms jitter_ms loss rtt_p50_ms rtt_p95_ms jitter_p95_ms target_p95 input_delay_mean_ms "
+		       "input_delay_p95_ms stalls longest_stall_ms reconnects downtime_ms reloads catch_up_ticks\n";
+		for (std::size_t i = 0; i < m.clients.size(); ++i)
+		{
+			const auto& tel = m.clients[i]->session->telemetry();
+			const auto& c = tel.totals();
+			const auto& l = m.net.links[i];
+			out << i << ' ' << l.latency / MS << ' ' << l.jitter / MS << ' ' << l.loss << ' '
+			    << c.rttMicros.quantile(0.5) / MS << ' ' << c.rttMicros.quantile(0.95) / MS << ' '
+			    << c.jitterMicros.quantile(0.95) / MS << ' ' << c.targetTicks.quantile(0.95) << ' '
+			    << c.inputDelayMicros.mean() / 1000.0 << ' ' << c.inputDelayMicros.quantile(0.95) / MS << ' '
+			    << c.stallMicros.count() << ' ' << tel.longestStallMicros() / MS << ' ' << c.reconnects << ' '
+			    << c.downtimeMicros / MS << ' ' << c.reloads << ' ' << c.catchUpTicks << '\n';
+		}
+		m.writeSummary("network-telemetry", out.str());
+		std::ofstream(glob2test::artifactDir() / "network-telemetry-relay.json") << m.net.relay->networkSummary().dump(1);
+		std::ofstream(glob2test::artifactDir() / "network-telemetry-client1.json")
+		    << m.clients[1]->session->telemetry().toJson(m.net.now).dump(1);
+		MESSAGE(out.str());
 	}
 }
