@@ -7,6 +7,7 @@
 #include <atomic>
 #include <memory>
 #include <mutex>
+#include <string>
 #include <vector>
 
 extern "C" SDL_AudioStream* __real_SDL_OpenAudioDeviceStream(SDL_AudioDeviceID, const SDL_AudioSpec*, SDL_AudioStreamCallback, void*);
@@ -70,10 +71,11 @@ void SDLCALL consume(void* opaque, SDL_AudioStream* stream, int additional, int 
         }
     }
 }
-struct Open { Audio* audio; SDL_AudioDeviceID device; SDL_AudioStream* result = nullptr; };
+struct Open { Audio* audio; SDL_AudioDeviceID device; SDL_AudioStream* result = nullptr; std::string error; };
 void open(void* opaque) {
     auto& request = *static_cast<Open*>(opaque);
     request.result = __real_SDL_OpenAudioDeviceStream(request.device, &request.audio->spec, consume, request.audio);
+    if (!request.result) request.error = SDL_GetError();
 }
 void close(void* opaque) { __real_SDL_DestroyAudioStream(static_cast<SDL_AudioStream*>(opaque)); }
 }
@@ -88,7 +90,7 @@ extern "C" SDL_AudioStream* __wrap_SDL_OpenAudioDeviceStream(SDL_AudioDeviceID i
     device->callback = callback;
     device->userdata = userdata;
     device->owner = pthread_self();
-    Open request{device.get(), id};
+    Open request{device.get(), id, nullptr, {}};
     if (!emscripten_proxy_sync(queue, emscripten_main_runtime_thread_id(), open, &request)) {
         SDL_SetError("Unable to open browser audio on the UI thread");
         return nullptr;
@@ -97,13 +99,20 @@ extern "C" SDL_AudioStream* __wrap_SDL_OpenAudioDeviceStream(SDL_AudioDeviceID i
         device->stream = request.result;
         device->device = SDL_GetAudioStreamDevice(request.result);
         audio = std::move(device);
+    } else {
+        SDL_SetError("%s", request.error.c_str());
     }
     return request.result;
 }
 extern "C" void __wrap_SDL_DestroyAudioStream(SDL_AudioStream* stream) {
     if (!audio || audio->stream != stream) { __real_SDL_DestroyAudioStream(stream); return; }
     audio->enabled = false;
-    emscripten_proxy_sync(queue, emscripten_main_runtime_thread_id(), close, stream);
+    if (!emscripten_proxy_sync(queue, emscripten_main_runtime_thread_id(), close, stream)) {
+        // Retain disabled callback state if the UI cannot accept teardown.
+        // Releasing it while WebAudio still references it would be unsafe.
+        SDL_SetError("Unable to close browser audio on the UI thread");
+        return;
+    }
     audio.reset(); // queued mixes retain the disabled state, never callback-owned mixer data
 }
 extern "C" bool __wrap_SDL_PutAudioStreamData(SDL_AudioStream* stream, const void* data, int size) {
