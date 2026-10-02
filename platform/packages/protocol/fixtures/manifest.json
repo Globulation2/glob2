@@ -506,6 +506,19 @@
       "note": "match.start pushed to a seated client."
     },
     {
+      "file": "valid/RealtimeEventMatchStart/assignment-rated-preview.json",
+      "schema": "RealtimeEventMatchStart",
+      "valid": true,
+      "note": "A rated queue match: the map title and the rating preview the results screen greys out until verified."
+    },
+    {
+      "file": "invalid/RealtimeEventMatchStart/assignment-preview-missing-ifLost.json",
+      "schema": "RealtimeEventMatchStart",
+      "valid": false,
+      "stage": "schema",
+      "note": "A rating preview carries both outcomes."
+    },
+    {
       "file": "invalid/RealtimeEventMatchStart/assignment-with-bad-setup.json",
       "schema": "RealtimeEventMatchStart",
       "valid": false,

@@ -831,6 +831,34 @@ export const fixtureCases: FixtureCase[] = [
   },
   {
     schema: 'RealtimeEventMatchStart',
+    name: 'assignment-rated-preview',
+    valid: true,
+    note: 'A rated queue match: the map title and the rating preview the results screen greys out until verified.',
+    value: {
+      ...MATCH_ASSIGNMENT,
+      mapTitle: 'Even Ground',
+      ratingPreview: {
+        ladder: 'ranked-1v1',
+        before: 1528,
+        ifWon: 1543,
+        ifLost: 1511,
+        provisional: false,
+      },
+    },
+  },
+  {
+    schema: 'RealtimeEventMatchStart',
+    name: 'assignment-preview-missing-ifLost',
+    valid: false,
+    stage: 'schema',
+    note: 'A rating preview carries both outcomes.',
+    value: {
+      ...MATCH_ASSIGNMENT,
+      ratingPreview: { ladder: 'ranked-1v1', before: 1528, ifWon: 1543, provisional: true },
+    },
+  },
+  {
+    schema: 'RealtimeEventMatchStart',
     name: 'assignment-with-bad-setup',
     valid: false,
     stage: 'semantic',

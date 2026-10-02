@@ -478,6 +478,41 @@
       "type": "string",
       "pattern": "^(https|wss|http|ws)://[^\\s]+$",
       "maxLength": 2048
+    },
+    "mapTitle": {
+      "type": "string",
+      "maxLength": 128,
+      "description": "Display name of the map (catalog title, or the generator name)."
+    },
+    "ratingPreview": {
+      "type": "object",
+      "required": [
+        "ladder",
+        "before",
+        "ifWon",
+        "ifLost",
+        "provisional"
+      ],
+      "properties": {
+        "ladder": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "before": {
+          "type": "number"
+        },
+        "ifWon": {
+          "type": "number"
+        },
+        "ifLost": {
+          "type": "number"
+        },
+        "provisional": {
+          "type": "boolean",
+          "description": "The rating before the match is provisional."
+        }
+      },
+      "description": "Rating preview of a rated match (MatchAssignment.ratingPreview)."
     }
   },
   "description": "Everything a client needs to connect to the relay and load the match."

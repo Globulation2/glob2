@@ -52,6 +52,23 @@ const ExperimentKeys = Type.Array(Type.String({ pattern: '^[a-z0-9]+(-[a-z0-9]+)
   uniqueItems: true,
 });
 
+/**
+ * The player's displayed rating on the match's ladder and what it would become
+ * if their side won or lost, computed at the start with the same rating model
+ * as the verified update. Rated matches only; a preview, not a promise.
+ */
+export const MatchRatingPreview = Open(
+  {
+    ladder: Type.String({ maxLength: 64 }),
+    before: Type.Number(),
+    ifWon: Type.Number(),
+    ifLost: Type.Number(),
+    provisional: Type.Boolean({ description: 'The rating before the match is provisional.' }),
+  },
+  { description: 'Rating preview of a rated match (MatchAssignment.ratingPreview).' },
+);
+export type MatchRatingPreview = Static<typeof MatchRatingPreview>;
+
 /** The match a client has been placed in, with its ticket for the relay. */
 export const MatchAssignment = Open(
   {
@@ -62,6 +79,13 @@ export const MatchAssignment = Open(
     relayUrl: HttpsOrWssUrl,
     setup: MatchSetup,
     mapUrl: HttpsOrWssUrl,
+    mapTitle: Type.Optional(
+      Type.String({
+        maxLength: 128,
+        description: 'Display name of the map (catalog title, or the generator name).',
+      }),
+    ),
+    ratingPreview: Type.Optional(MatchRatingPreview),
   },
   { description: 'Everything a client needs to connect to the relay and load the match.' },
 );
