@@ -149,6 +149,29 @@ describe('validate-map', () => {
     ).toEqual({ valid: false, reason: 'file is a map, not a saved game' });
   });
 
+  it('lists the players of a save for reteaming', async () => {
+    const save = fakeMap({ name: 'evening', saved: true, teams: 3 });
+    const result = await run('validate-map', { blobHash: await store(save), format: 'save' });
+    expect(result['players']).toEqual([
+      { name: 'evening-p0', team: 0, kind: 'human' },
+      { name: 'evening-p1', team: 1, kind: 'human' },
+      { name: 'evening-p2', team: 2, kind: 'ai' },
+    ]);
+    // An engine that does not report names: slot-numbered names instead.
+    const older = fakeMap({ name: 'nameless', saved: true, teams: 2 });
+    expect(
+      (await run('validate-map', { blobHash: await store(older), format: 'save' }))['players'],
+    ).toEqual([
+      { name: 'Player 1', team: 0, kind: 'human' },
+      { name: 'AI 2', team: 1, kind: 'ai' },
+    ]);
+    // Maps never carry players.
+    const map = fakeMap({ name: 'plain' });
+    expect(
+      (await run('validate-map', { blobHash: await store(map), format: 'map' }))['players'],
+    ).toBeUndefined();
+  });
+
   it('rejects corrupt, future, oversized and oversided files', async () => {
     const reasons = async (bytes: Uint8Array) =>
       (

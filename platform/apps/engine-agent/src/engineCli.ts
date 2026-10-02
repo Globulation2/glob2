@@ -293,10 +293,34 @@ export function previewMapArgs(
 /** The engine's --preview-map size range (MapCommand.cpp). */
 export const PREVIEW_SIZE_RANGE = { min: 128, max: 4096 } as const;
 
+/** One `map.controllers[]` entry: a player slot of the file's game header. */
+export interface ReportController {
+  slot: number;
+  team: number;
+  /** BasePlayer::PlayerType: 0 none, 1 dropping, 2 lost, 3 network, 4 local, 5 + n AI n. */
+  type: number;
+  /** Stored player name; engines before the field was added report none. */
+  name?: string;
+}
+
 export interface ReportMap extends MapFacts {
   name: string | null;
   savedGame: boolean;
   tick: number;
+  controllers: ReportController[];
+}
+
+function parseControllers(value: unknown): ReportController[] {
+  if (!Array.isArray(value)) return [];
+  return value.map((entry, i) => {
+    const c = object(entry, `map controller ${i}`);
+    return {
+      slot: int(c['slot'], 'controller slot'),
+      team: int(c['team'], 'controller team'),
+      type: int(c['type'], 'controller type'),
+      ...(typeof c['name'] === 'string' ? { name: c['name'] } : {}),
+    };
+  });
 }
 
 function parseReportMap(report: Json): ReportMap {
@@ -308,7 +332,41 @@ function parseReportMap(report: Json): ReportMap {
     teamCount: int(map['player_slots'], 'map player_slots'),
     savedGame: map['saved_game'] === true,
     tick: typeof map['tick'] === 'number' ? map['tick'] : 0,
+    controllers: parseControllers(map['controllers']),
   };
+}
+
+/** BasePlayer::P_NONE and P_AI (the first AI type). */
+const PLAYER_NONE = 0;
+const PLAYER_AI = 5;
+
+export interface SavedPlayerFacts {
+  name: string;
+  team: number;
+  kind: 'human' | 'ai';
+}
+
+/**
+ * The players a saved game was saved with (ValidateMapResult.players), from
+ * its report's controllers. Names come from the file when the engine reports
+ * them (multiplayer/map-report-players), else "Player N" / "AI N" by slot.
+ */
+export function savedPlayers(
+  controllers: readonly ReportController[],
+  teamCount: number,
+): SavedPlayerFacts[] {
+  return controllers
+    .filter((c) => c.type !== PLAYER_NONE && c.team >= 0 && c.team < Math.min(teamCount, 12))
+    .slice(0, 12)
+    .map((c) => {
+      const kind = c.type >= PLAYER_AI ? 'ai' : 'human';
+      const stored = Array.from((c.name ?? '').trim()).slice(0, 64).join('');
+      return {
+        name: stored || `${kind === 'ai' ? 'AI' : 'Player'} ${c.slot + 1}`,
+        team: c.team,
+        kind,
+      };
+    });
 }
 
 /** Reads a map report (docs/map-generators/REPORT.md, schema_version 2). */
