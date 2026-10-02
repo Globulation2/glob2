@@ -24,7 +24,7 @@ struct World
         script.sourceCode=source;
         return script.compileScript(&world.game);
     }
-    void step(int count = 1) { while (count--) script.syncStep(&world.gui); }
+    void step(int count = 1) { while (count--) script.syncStep(world.game, world.gui, world.gui.clientRequests); }
 };
 int units(const Team* team)
 {
@@ -251,7 +251,7 @@ TEST_SUITE("LegacyScriptCoverage")
         REQUIRE(restored.load(&input,&w.world.game));
         for (int tick = 0; tick < 5; ++tick)
         {
-            w.step(); restored.syncStep(&w.world.gui);
+            w.step(); restored.syncStep(w.world.game, w.world.gui, w.world.gui.clientRequests);
             CHECK(save(w.script,w.world.game) == save(restored,w.world.game));
         }
         CHECK(w.script.hasTeamWon(0));

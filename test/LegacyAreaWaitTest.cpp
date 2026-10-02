@@ -16,10 +16,10 @@ TEST_SUITE("LegacyAreaWait")
             script.sourceCode=std::string("setArea(\"legacy\",6,6,2) wait(area(\"legacy\",")+selector+")) win(0)";
             REQUIRE(script.compileScript(&world.game).type==ErrorReport::ET_OK);
             world.addUnit(WORKER,20,20);
-            script.syncStep(&world.gui);
+            script.syncStep(world.game, world.gui, world.gui.clientRequests);
             CHECK_FALSE(script.hasTeamWon(0));
             world.addUnit(WORKER,4,4);
-            script.syncStep(&world.gui);
+            script.syncStep(world.game, world.gui, world.gui.clientRequests);
             CHECK(script.hasTeamWon(0));
         }
     }
@@ -33,10 +33,10 @@ TEST_SUITE("LegacyAreaWait")
         MapScriptSGSL script;
         script.sourceCode="setArea(\"edge\",0,0,2) wait(not(area(\"edge\",0))) win(0)";
         REQUIRE(script.compileScript(&world.game).type==ErrorReport::ET_OK);
-        script.syncStep(&world.gui);
+        script.syncStep(world.game, world.gui, world.gui.clientRequests);
         CHECK_FALSE(script.hasTeamWon(0));
         world.game.map.setGroundUnit(31,31,NOGUID);
-        script.syncStep(&world.gui);
+        script.syncStep(world.game, world.gui, world.gui.clientRequests);
         CHECK(script.hasTeamWon(0));
     }
 }
