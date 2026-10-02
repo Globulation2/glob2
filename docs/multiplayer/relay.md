@@ -176,6 +176,11 @@ The relay then checks the claims' shape, and reports a failure as `claims`:
 - `relayUrl` is an http(s) or ws(s) URL;
 - `iss` equals `GLOB2_RELAY_TICKET_ISSUER` when that is set.
 
+When `GLOB2_RELAY_PUBLIC_URL` is set, a ticket's `relayUrl` must equal it exactly
+(`Reject(2)`, `Ticket is for another relay`), so a ticket works only on the relay the
+platform allocated the match to. The platform must therefore put the registered
+`publicUrl` into tickets verbatim.
+
 `entitlements` is ignored.
 
 Base64url decoding is strict: padding, invalid characters and non-zero trailing
@@ -261,7 +266,7 @@ All metric names start with `glob2_relay_`.
 | Gauges | `connections`, `matches`, `draining`, `registered`, `pending_uploads`, `jwks_keys` |
 | Connection counters | `connections_accepted_total`, `connections_refused_total`, `frames_in_total`, `frames_out_total`, `bytes_in_total`, `bytes_out_total`, `slow_readers_dropped_total`, `flooding_dropped_total` |
 | Match counters | `matches_started_total`, `matches_ended_total{reason}`, `orders_sequenced_total`, `bundles_sent_total` (the last two are added when a match ends) |
-| Ticket counters | `tickets_rejected_total{reason}`, labelled with a ticket reason above or `sim_version_differs` / `human_seats_differ` |
+| Ticket counters | `tickets_rejected_total{reason}`, labelled with a ticket reason above, `wrong_relay`, `sim_version_differs` or `human_seats_differ` |
 | Platform counters | `jwks_refresh_ok_total`, `jwks_refresh_failed_total`, `registrations_ok_total`, `registrations_failed_total`, `heartbeats_ok_total`, `heartbeats_failed_total`, `uploads_ok_total`, `uploads_failed_total` |
 
 ## Tests

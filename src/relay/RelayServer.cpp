@@ -587,6 +587,14 @@ asio::awaitable<void> RelayServer::Impl::admit(std::shared_ptr<Connection> conne
 		co_return;
 	}
 	const TicketClaims& claims = result.claims;
+	// The platform names the relay a match is allocated to; a ticket is good only there.
+	if (!config.publicUrl.empty() && claims.relayUrl != config.publicUrl)
+	{
+		metrics.ticketRejected("wrong_relay");
+		logLine("info", "Refused a ticket for relay " + claims.relayUrl.substr(0, 200) + " from " + connection->address);
+		connection->reject(Turn::RejectReason::BadTicket, "Ticket is for another relay");
+		co_return;
+	}
 	directory.prune(unixNow());
 	const Admission admission = directory.check(claims, draining, config.maxMatches);
 	switch (admission)

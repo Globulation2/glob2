@@ -376,8 +376,13 @@ class RelayMatchTest(unittest.TestCase):
         fake.wait(lambda p: p.registrations and p.jwks_fetches, what='registration and JWKS over HTTPS')
         client_tls = ssl.create_default_context(cafile=secrets / 'ca.pem')
         self.assertEqual(relay.get('/healthz', tls=client_tls), (200, 'ok\n'))
-        client = relay.client(self.ticket(str(uuid.uuid4()), 0, [0]), tls=client_tls)
+        match_id = str(uuid.uuid4())
+        client = relay.client(self.ticket(match_id, 0, [0], relay_url='wss://localhost/relay'), tls=client_tls)
         client.wait_for(lambda c: c.of('welcome') and c.bundles(), what='Welcome and bundles over WSS')
+        # A ticket is good only on the relay it names.
+        elsewhere = relay.client(self.ticket(match_id, 0, [0], relay_url='wss://other.example/relay'), tls=client_tls)
+        elsewhere.wait_for(lambda c: c.of('reject'), what='Reject for another relay')
+        self.assertEqual(elsewhere.of('reject')[0]['detail'], 'Ticket is for another relay')
         # A plaintext client cannot speak to a TLS listener.
         with self.assertRaises((OSError, EOFError, ValueError, IndexError)):
             TurnClient(relay.port).sock.close()

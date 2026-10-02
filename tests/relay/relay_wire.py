@@ -113,7 +113,8 @@ SIM_VERSION = {'versionMinor': 125, 'netProtocol': 49,
                'dataHash': '3f9a6c1e8b2d47a05e6f1c2b3a4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f'}
 
 
-def ticket_claims(match_id, seat, human_seats, account=None, lifetime=600, sim_version=None):
+def ticket_claims(match_id, seat, human_seats, account=None, lifetime=600, sim_version=None,
+                  relay_url='ws://127.0.0.1/relay'):
     now = int(time.time())
     account = account or '0b8f6f2e-3c4d-4e5f-8a9b-%012x' % seat
     return {
@@ -121,7 +122,7 @@ def ticket_claims(match_id, seat, human_seats, account=None, lifetime=600, sim_v
         'jti': '00000000-0000-4000-8000-%012x' % (now * 16 + seat), 'iat': now, 'nbf': now,
         'exp': now + lifetime, 'matchId': match_id, 'seat': seat, 'accountId': account,
         'simVersion': sim_version or SIM_VERSION, 'humanSeats': list(human_seats),
-        'relayUrl': 'ws://127.0.0.1/relay', 'entitlements': [],
+        'relayUrl': relay_url, 'entitlements': [],
     }
 
 
