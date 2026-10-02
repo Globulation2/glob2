@@ -53,7 +53,7 @@ public:
 	bool is_in(int x, int y);
 	///This function handles a click with mouse positions relative to the widget. It can be overridden, but derived classes
 	///should be careful to call the base class version after there customized code
-	virtual void handleClick(float relMouseX, float relMouseY);
+	virtual void handleClick(int relMouseX, int relMouseY);
     /// Invoke this widget's named action without desktop hit-test coordinates.
     void activate();
 	///This function must be implemented by all derived classes. This is where the widget draws itself. It should use area.x
@@ -286,7 +286,7 @@ public:
 	ValueScrollBox(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, Sint32* value, Sint32 max);
 	~ValueScrollBox();
 	void draw();
-	void handleClick(float relMouseX, float relMouseY);
+	void handleClick(int relMouseX, int relMouseY);
 	void setValues(Sint32* value, Sint32* max);
     // Semantic value access shared by desktop and touch presentations.
     int currentValue() const { return *value; }
@@ -349,7 +349,7 @@ public:
 	NumberCycler(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, int maxNumber);
 	void draw();
 	int getIndex();
-	void handleClick(float relMouseX, float relMouseY);
+	void handleClick(int relMouseX, int relMouseY);
 private:
 	int maxNumber;
 	int currentNumber;
@@ -363,7 +363,7 @@ class Checkbox : public MapEditorWidget
 public:
 	Checkbox(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, const std::string& text, bool& isActivated);
 	void draw();
-	void handleClick(float relMouseX, float relMouseY);
+	void handleClick(int relMouseX, int relMouseY);
 private:
 	std::string text;
 	bool& isActivated;

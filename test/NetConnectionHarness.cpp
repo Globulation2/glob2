@@ -1,5 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "NetConnection.h"
+#include "NetBroadcastListener.h"
+#include "NetBroadcaster.h"
+#include "NetConsts.h"
 #include <vector>
 #include <string>
 #include <memory>
