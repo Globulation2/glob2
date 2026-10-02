@@ -34,23 +34,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY deploy/source-identity.sh /usr/local/bin/source-identity
 WORKDIR /source
 
-# The pinned SDL3 family (scons/sdl3-versions.json), built once into its own
-# prefix for the relay and the headless engine. Only the build script, its
-# lock files and patches are inputs, so source edits keep this layer cached.
-FROM cpp-deps AS sdl3
-ARG JOBS=4
-COPY scons/sdl3_dependencies.py scons/sdl3-versions.json scons/sdl3-vendored.json /sdl3-build/scons/
-COPY scons/vcpkg-ports/sdl3 /sdl3-build/scons/vcpkg-ports/sdl3
-RUN python3 /sdl3-build/scons/sdl3_dependencies.py --prefix /opt/glob2-sdl3 --work /tmp/sdl3-sources --jobs ${JOBS} && \
-    rm -rf /tmp/sdl3-sources
-
 FROM cpp-deps AS cpp-base
 COPY --from=source / /source
 RUN source-identity
-
-FROM cpp-base AS cpp-base-sdl3
-COPY --from=sdl3 /opt/glob2-sdl3 /opt/glob2-sdl3
-ENV GLOB2_SDL3_PREFIX=/opt/glob2-sdl3
 
 # Legacy YOG lobby and router (until M9).
 FROM cpp-base AS build
@@ -66,10 +52,14 @@ RUN --mount=type=cache,id=glob2-server-build-${TARGETARCH},target=/source/build,
     cp -a build/sdl3/prefix/lib/libSDL3* /output/ && \
     cp -a build/sdl3/prefix/share/licenses /output/licenses
 
-FROM cpp-base-sdl3 AS relay-build
+FROM cpp-base AS relay-build
 ARG JOBS=4
 ARG TARGETARCH
+# The relay links no SDL library but compiles against SDL3's headers (libgag
+# types), so it builds the same pinned SDL3 prefix as the other C++ targets.
+ENV GLOB2_SDL3_PREFIX=/source/build/sdl3/prefix
 RUN --mount=type=cache,id=glob2-relay-build-${TARGETARCH},target=/source/build,sharing=locked \
+    python3 scons/sdl3_dependencies.py --prefix "$GLOB2_SDL3_PREFIX" --work /source/build/sdl3/sources --jobs ${JOBS} && \
     scons role=relay release=1 -j${JOBS} build/linux/relay/release/src/glob2-relay && \
     mkdir -p /output && cp build/linux/relay/release/src/glob2-relay /output/ && \
     strip /output/glob2-relay
@@ -83,20 +73,22 @@ FROM source AS engine-source
 # drivers. Its data/ is what the sim version's data hash covers, computed with
 # this repository's deploy/sim_version.py.
 FROM cpp-deps AS engine-build
-COPY --from=sdl3 /opt/glob2-sdl3 /opt/glob2-sdl3
-ENV GLOB2_SDL3_PREFIX=/opt/glob2-sdl3
 ARG JOBS=4
 ARG TARGETARCH
 ARG GLOB2_SIM_VERSION=
 COPY --from=engine-source / /source
 COPY deploy/sim_version.py /usr/local/bin/glob2-sim-version
 RUN source-identity
+# Like the legacy server image: the pinned SDL3 family is built into a prefix
+# and shipped next to the binary, which finds it through $ORIGIN/../lib/glob2.
+ENV GLOB2_SDL3_PREFIX=/source/build/sdl3/prefix
 RUN --mount=type=cache,id=glob2-engine-build-${TARGETARCH},target=/source/build,sharing=locked \
+    python3 scons/sdl3_dependencies.py --prefix "$GLOB2_SDL3_PREFIX" --work /source/build/sdl3/sources --jobs ${JOBS} && \
     scons release=1 server=0 -j${JOBS} build/linux/client/release/src/glob2 && \
-    mkdir -p /output/bin /output/share && \
+    mkdir -p /output/bin /output/lib/glob2 /output/share && \
     cp build/linux/client/release/src/glob2 /output/bin/ && strip /output/bin/glob2 && \
-    mkdir -p /output/lib/glob2 && cp -a /opt/glob2-sdl3/lib/libSDL3*.so* /output/lib/glob2/ && \
-    cp -a /opt/glob2-sdl3/share/licenses /output/licenses && \
+    cp -a build/sdl3/prefix/lib/libSDL3* /output/lib/glob2/ && \
+    cp -a build/sdl3/prefix/share/licenses /output/licenses && \
     cp -r data maps campaigns scripts /output/share/ && \
     find /output/share -name SConscript -delete && \
     python3 /usr/local/bin/glob2-sim-version /source --expect "${GLOB2_SIM_VERSION}" > /output/sim-version && \
@@ -190,7 +182,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
 COPY --from=node-binary /usr/local/bin/node /usr/local/bin/node
 COPY --from=platform-runtime-deps /app/platform /app/platform
 COPY --from=engine-build /output/bin/glob2 /opt/glob2/bin/glob2
-# SDL3 family, found through the binary's $ORIGIN/../lib/glob2 run path.
 COPY --from=engine-build /output/lib/glob2 /opt/glob2/lib/glob2
 COPY --from=engine-build /output/licenses /usr/local/share/licenses
 COPY --from=engine-build /output/share /opt/glob2/share
