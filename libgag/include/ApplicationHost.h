@@ -55,6 +55,14 @@ bool canImportFiles();
 std::unique_ptr<FileSelection> selectFile(const std::string &extension);
 
 bool storageRestoreFailed();
+
+// Staged game data. The browser host installs some data packages (game sprites,
+// the CJK font, menu music) after the main menu is up; see scons/web_assets.py.
+// Hosts that ship all data with the application answer true for every package
+// and never report an installation.
+bool assetPackageReady(const char *name);
+// Packages installed since the previous call, oldest first.
+std::vector<std::string> takeInstalledAssetPackages();
 bool canExportFiles();
 bool exportLocalFile(const std::string &path);
 bool exportFile(const std::string &name, const std::vector<unsigned char> &bytes);

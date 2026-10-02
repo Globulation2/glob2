@@ -54,18 +54,40 @@ packages under `assets/` (`scons/web_assets.py`); build scripts, translation
 tooling, documentation, icons and store screenshots stay out.
 `python3 scons/web_assets.py --report` lists the size of each category and package.
 `browser/asset-loader.js` downloads the `core` package while the WebAssembly
-module streams in, and the game starts once both are ready. `core` holds the
-interface, sprites, font, translations, menu music, maps, campaigns, scripts and
-every simulation data file, so the sim version and checksum traces are unchanged.
+module streams in, and the game starts once both are ready. `core` holds what
+the menus, the online hub and rooms need: the interface and menu sprites, the
+font, translations, maps, campaigns, scripts and every simulation data file, so
+the sim version and checksum traces are unchanged. Three of its files are smaller
+browser copies checked in under `browser/assets/` (`browser/derive_assets.py`):
+the font without its Chinese, Japanese and Korean outlines, the menu's still
+backdrop as a JPEG and the wordmark without the area the menu never shows. The
+build uses a copy only while it matches its source; regenerate them after
+changing the font, those images or a language's own name.
 The loading page shows megabytes, a percentage and an estimate of the time left.
 
-Two optional packages follow in the background once the main menu is up: the
-in-game music and the high-resolution artwork (WebGL2 only, and only while that
-setting is on). They download in parts of about 4 MB, pause while a match is
-running, are skipped when the browser asks to save data, and become visible to
-the game only when complete. The game reads them when a match or the editor
-starts, so on a first visit a match started before the artwork arrives uses the
-original artwork; the next match uses the high-resolution set.
+The rest follows in the background once the main menu is up, most needed first:
+
+- `game`, the in-game sprites. Until they arrive the menu shows the colony still
+  instead of the live colony, and a match, the editor or a replay waits on its
+  loading screen ("Loading game graphics"; the online match checklist says the
+  same). The menu colony, the settings' building artwork and later matches pick
+  them up when they arrive. A `?replay=` link loads them before the game starts.
+- `menu-music`; the menu music starts when it arrives.
+- `font-cjk`, the full font. The game reopens its fonts when it arrives, so
+  Chinese, Japanese and Korean player names and chat get their glyphs (the core
+  copy already has the characters of every language's own name). With a Chinese,
+  Japanese or Korean interface it is a startup package instead; switching to one
+  before it arrives shows missing glyphs until it does.
+- `music` and `hd`: the in-game music and the high-resolution artwork (WebGL2
+  only, and only while that setting is on). The game reads them when a match or
+  the editor starts, so on a first visit a match started before the artwork
+  arrives uses the original artwork; the next match uses the high-resolution set.
+
+Later packages download in parts of about 4 MB. Optional ones (music and
+artwork) pause while a match is running and are skipped when the browser asks to
+save data; `game` and `font-cjk` are retried until they arrive. A package becomes
+visible to the game only when complete. Native builds load everything at startup
+as before (`ApplicationHost::assetPackageReady` is always true there).
 `glob2Diagnostics.snapshot().assets` reports each package's state.
 
 Package parts are kept in the browser's Cache Storage, so later visits read them

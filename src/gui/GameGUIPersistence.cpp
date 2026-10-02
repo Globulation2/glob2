@@ -38,6 +38,8 @@ bool GameGUI::load(GAGCore::InputStream *stream, bool ignoreGUIData)
 
 GAGCore::CooperativeTask GameGUI::loadFromHeadersTask(MapHeader mapHeader, GameHeader gameHeader, bool setGameHeader, bool ignoreGUIData, bool saveAI, std::string sourceFileName)
 {
+	// In the browser the game sprites may still be downloading.
+	co_await globalContainer->gameGraphicsTask();
 	init();
 	auto stream = std::make_unique<BinaryInputStream>(glob2OpenMapOrSaveInputStreamBackend(*Toolkit::getFileManager(), sourceFileName.empty()?mapHeader.getFileName():sourceFileName));
 	if (stream->isEndOfStream())
@@ -80,6 +82,7 @@ GAGCore::CooperativeTask GameGUI::loadFromStreamTask(MapHeader mapHeader, GameHe
 
 GAGCore::CooperativeTask GameGUI::loadTask(GAGCore::InputStream *stream, bool ignoreGUIData)
 {
+	co_await globalContainer->gameGraphicsTask();
 	init();
 
 	bool result = co_await game.loadTask(stream);

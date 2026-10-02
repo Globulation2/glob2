@@ -20,6 +20,10 @@ The appended Droid outlines use Apache License 2.0; copyright and full license
 are in `LICENSE-Droid.txt`. The combined font is renamed Glob2 Sans and records
 the modification in its embedded metadata.
 
+The browser client starts with `browser/assets/sans-core.ttf`, this font without
+the appended CJK outlines, and downloads the full font later
+(`browser/derive_assets.py`). Regenerate that copy whenever this font changes.
+
 ## Rebuild
 
 Normal game builds use the checked-in font and need no Python font packages.

@@ -74,7 +74,12 @@ def build_web(directory, identity, arguments):
     # progress, caches them across visits and fetches optional data later.
     asset_manifest = output / 'asset-manifest.js'
     asset_files = [str(p) for directory in web_assets.ROOTS for p in Path(directory).rglob('*') if p.is_file()]
-    assets = env.Command(str(asset_manifest), asset_files + ['scons/web_assets.py', 'deploy/sim_version.py'],
+    # The plan also reads the browser copies (browser/derive_assets.py) and the game
+    # sprite names in GlobalContainer::loadGameGraphics and the building tables.
+    asset_inputs = ['scons/web_assets.py', 'deploy/sim_version.py', 'browser/derive_assets.py', 'src/GlobalContainer.cpp']
+    asset_inputs += [str(p) for p in Path('browser/assets').glob('*') if p.is_file()]
+    asset_inputs += [str(p) for p in Path('src/game/entities').glob('BuildingTypes*.cpp')]
+    assets = env.Command(str(asset_manifest), asset_files + asset_inputs,
                          Action(lambda target, source, env: web_assets.build(root, output, target[0].abspath) and 0,
                                 'Packaging browser game data'))
     env.Append(LINKFLAGS=['--pre-js', str(asset_manifest), '--pre-js', 'browser/asset-loader.js'])

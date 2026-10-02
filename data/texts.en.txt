@@ -3762,6 +3762,8 @@ The match could not start.
 Leave
 [match loading]
 Loading the game
+[Loading game graphics]
+Loading game graphics
 [match map cached]
 already on this device
 [match map]

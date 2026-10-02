@@ -3764,6 +3764,8 @@ Kartan liike-energia
 
 [match loading]
 
+[Loading game graphics]
+
 [match map cached]
 
 [match map]

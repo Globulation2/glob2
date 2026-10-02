@@ -3760,6 +3760,8 @@ Quán tính bản đồ
 
 [match loading]
 
+[Loading game graphics]
+
 [match map cached]
 
 [match map]

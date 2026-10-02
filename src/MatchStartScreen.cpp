@@ -88,7 +88,9 @@ Element MatchStartScreen::steps(const Presentation &p)
 	std::string mapText = mapTitle.empty() ? tr("[match map]") : GAGCore::FormattableString(tr("[match downloading map %0]")).arg(mapTitle);
 	std::string mapDetail = int(now) > int(Step::Map) && flow->mapWasCached() ? tr("[match map cached]") : "";
 	lines.push_back(line(mapText, Step::Map, mapDetail));
-	lines.push_back(line(tr("[match loading]"), Step::Load, ""));
+	// In the browser a first match may wait for the game sprites to finish downloading.
+	const bool graphics = now == Step::Load && flow->loadStage() == "[Loading game graphics]";
+	lines.push_back(line(tr(graphics ? "[Loading game graphics]" : "[match loading]"), Step::Load, ""));
 	std::string relay = GAGCore::FormattableString(tr("[match relay %0]")).arg(flow->relayName());
 	if (flow->relayRttMs() >= 0)
 		relay += " · " + std::to_string(flow->relayRttMs()) + " ms";

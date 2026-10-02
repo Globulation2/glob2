@@ -25,6 +25,9 @@ namespace GAGCore
 		TrueTypeFont(const std::string filename, unsigned size);
 		virtual ~TrueTypeFont();
 		bool load(const std::string filename, unsigned size);
+		//! Reopen the font file at the same size, dropping cached text; the object
+		//! and its style stack stay. Returns false (and keeps the font) on failure.
+		bool reload(void);
 		
 		//! Get the width of string with shape. Update cache
 		int getStringWidth(const std::string string);

@@ -88,7 +88,9 @@ void FrontendTheme::onFrame()
 {
 	if (!painted)
 		return; // Present the still before doing any loading work.
-	if (!attempted)
+	// The colony draws with the game sprites, which the browser installs after
+	// the main menu; the still image stands in until then.
+	if (!attempted && globalContainer->ensureGameGraphics())
 	{
 		attempted = true;
 		colony->load();

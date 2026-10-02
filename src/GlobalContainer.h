@@ -4,6 +4,7 @@
 #pragma once
 
 #include <memory>
+#include <CooperativeTask.h>
 #include <vector>
 
 #include "BuildingType.h"
@@ -36,6 +37,9 @@ public:
 #ifndef YOG_SERVER_ONLY
 private:
 	void updateLoadProgressScreen(int value);
+	void loadGameGraphics(bool showProgress);
+	bool gameGraphics = false;
+	bool menuMusic = false;
 #endif  // !YOG_SERVER_ONLY
 
 public:
@@ -45,6 +49,19 @@ public:
 	void parseArgs(int argc, char *argv[]);
 #ifndef YOG_SERVER_ONLY
 	void loadClient(void);
+	//! Load the in-game sprites (terrain, units, buildings, game interface) if
+	//! they are not loaded yet. Native builds load them in loadClient; the
+	//! browser installs them after the main menu is up, so this returns false
+	//! until GAGCore::ApplicationHost::assetPackageReady("game"). Always true
+	//! without graphics (runNoX).
+	bool ensureGameGraphics(void);
+	bool gameGraphicsLoaded(void) const { return gameGraphics; }
+	//! Completes once ensureGameGraphics() succeeds; waits at the
+	//! "[Loading game graphics]" stage. Without waiting it never suspends.
+	GAGCore::CooperativeTask gameGraphicsTask(void);
+	//! Load the intro and menu tracks if the browser has installed them; see
+	//! ensureGameGraphics. Returns whether they are loaded.
+	bool loadMenuMusic(void);
 #endif  // !YOG_SERVER_ONLY
 	void load(void);
 
@@ -58,25 +75,25 @@ public:
 
 	std::unique_ptr<DrawableSurface> title; //!< Owned.
 	
-	Sprite *terrain;
-	Sprite *terrainWater;
-	Sprite *terrainCloud;
-	Sprite *terrainBlack;
-	Sprite *terrainShader;
-	Sprite *resources;
-	Sprite *resourceMini;
-	Sprite *areaClearing;
-	Sprite *areaForbidden;
-	Sprite *areaGuard;
-	Sprite *bullet;
-	Sprite *bulletExplosion;
-	Sprite *deathAnimation;
-	Sprite *units;
-	Sprite *unitmini;
-	Sprite *gamegui;
-	Sprite *brush;
-	Sprite *magiceffect;
-	Sprite *particles;
+	Sprite *terrain = nullptr;
+	Sprite *terrainWater = nullptr;
+	Sprite *terrainCloud = nullptr;
+	Sprite *terrainBlack = nullptr;
+	Sprite *terrainShader = nullptr;
+	Sprite *resources = nullptr;
+	Sprite *resourceMini = nullptr;
+	Sprite *areaClearing = nullptr;
+	Sprite *areaForbidden = nullptr;
+	Sprite *areaGuard = nullptr;
+	Sprite *bullet = nullptr;
+	Sprite *bulletExplosion = nullptr;
+	Sprite *deathAnimation = nullptr;
+	Sprite *units = nullptr;
+	Sprite *unitmini = nullptr;
+	Sprite *gamegui = nullptr;
+	Sprite *brush = nullptr;
+	Sprite *magiceffect = nullptr;
+	Sprite *particles = nullptr;
 
 	Font *menuFont;
 	Font *standardFont;

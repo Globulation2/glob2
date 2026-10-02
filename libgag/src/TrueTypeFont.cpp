@@ -109,6 +109,26 @@ bool TrueTypeFont::load(const std::string filename, unsigned size)
 	return false;
 }
 
+bool TrueTypeFont::reload(void)
+{
+	if (!font)
+		return false;
+	SDL_RWops *stream = Toolkit::getFileManager()->open(fontFilename, "rb");
+	TTF_Font *replacement = stream ? TTF_OpenFontRW(stream, 1, baseSize) : NULL;
+	if (!replacement)
+		return false;
+	clearCache();
+	for (const auto &[size, raster] : rasterFonts)
+		TTF_CloseFont(raster);
+	rasterFonts.clear();
+	TTF_CloseFont(font);
+	font = replacement;
+	renderFont = font;
+	renderScale = 1.0f;
+	applyStyle();
+	return true;
+}
+
 void TrueTypeFont::clearCache(void)
 {
 	for (std::map<CacheKey, CacheData>::iterator it = cache.begin(); it != cache.end(); ++it)
