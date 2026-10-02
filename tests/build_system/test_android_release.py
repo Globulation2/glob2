@@ -90,6 +90,23 @@ class AndroidReleaseTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "would not increase past v0.9.6.0"):
                 android_release.check_prior_tags(development=True)
 
+    def test_development_cli_preserves_identity_and_recipe_validation(self):
+        for validator in ("release_identity", "check_recipe"):
+            with self.subTest(validator=validator), \
+                    mock.patch.object(sys, "argv", ["android_release.py", "check", "--development"]), \
+                    mock.patch.object(android_release.subprocess, "check_output", return_value="v0.9.5.4\n"), \
+                    mock.patch.object(android_release, validator, side_effect=ValueError("invalid contract")):
+                with self.assertRaisesRegex(ValueError, "invalid contract"):
+                    android_release.main()
+
+    def test_workflows_keep_publication_preflight_strict(self):
+        mobile = (ROOT / ".github/workflows/mobile.yml").read_text()
+        self.assertIn("python3 mobile/android_release.py check --development\n", mobile)
+        for name in ("release.yml", "fdroid-release-validation.yml"):
+            workflow = (ROOT / ".github/workflows" / name).read_text()
+            self.assertIn("python3 mobile/android_release.py check\n", workflow)
+            self.assertNotIn("check --development", workflow)
+
     def test_apk_rejects_second_abi_and_wrong_version(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
