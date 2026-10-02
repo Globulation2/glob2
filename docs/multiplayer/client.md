@@ -140,7 +140,7 @@ file or following a link.
 ## Map cache
 
 `MapCache` stores platform maps by the SHA-256 of their decompressed bytes as
-`online/maps/<hash>.map.gz`, readable like any gzip map through
+`online/maps/<hash>.map.gz` (saved games: `<hash>.game.gz`), readable like any gzip map through
 `FileManager::openInflatingInputStreamBackend`. `fetch(origin, hash, headers)`
 returns a polled download of `<origin>/api/v1/blobs/maps/<hash>` (the endpoint
 arrives with rooms in M4; `MapCache::blobPath` is the only place naming it),
@@ -148,6 +148,7 @@ accepting gzip or raw bytes, refusing anything whose hash differs, and storing
 it. Maps are limited to 64 MiB decompressed; the cache keeps at most 256 MiB,
 evicting the least recently used. An index (`online/maps/index.json`) keeps
 sizes and use order across restarts; unindexed files are removed at startup.
+LAN guests store the maps they download from a host in the same cache.
 
 ## Invite links
 

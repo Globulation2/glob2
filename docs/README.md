@@ -34,8 +34,9 @@ dated reports and pull-request artifacts do not belong here.
   [identity and sign-in](multiplayer/identity.md),
   [rooms and matches](multiplayer/rooms-and-matches.md),
   [ratings and matchmaking](multiplayer/ratings-and-matchmaking.md), the
-  [relay-sequenced turn protocol](multiplayer/turn-protocol.md) and the
-  [match relay](multiplayer/relay.md) that hosts it.
+  [relay-sequenced turn protocol](multiplayer/turn-protocol.md), the
+  [match relay](multiplayer/relay.md) that hosts it, [LAN games](multiplayer/lan.md)
+  and the [LAN playtest guide](multiplayer/lan-playtest.md).
 - **Hosting:** [self-hosting an online instance](hosting/README.md) with the
   Compose stack in `deploy/`; the legacy YOG deployment is in
   [deploy/README.md](../deploy/README.md) until the cutover.

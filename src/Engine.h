@@ -115,6 +115,8 @@ public:
 	/// The running turn session, or null for every other kind of game.
 	Turn::TurnSession* turnSession();
 	Turn::TurnLockstepSession* turnLockstep() { return turn; }
+	/// The in-game connection lines for a turn game (GameGUI::connectionNotice).
+	std::vector<std::string> turnConnectionNotice();
 
 	//! This function creates a game with a random map and random AI for every team
 	void createRandomGame();

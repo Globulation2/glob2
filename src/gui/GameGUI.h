@@ -6,6 +6,7 @@
 #include <MapCamera.h>
 
 #include <InputState.h>
+#include <functional>
 #include <memory>
 #include <optional>
 #include <queue>
@@ -254,6 +255,11 @@ public:
 	/// "[waiting for X]" notice in GameGUIDraw — it is not part of simulation or
 	/// network state and is never checksummed, networked, or saved.
 	int anyPlayerWaitedTimeFor;
+	/// Turn-protocol games: the connection lines to show where the "[waiting for X]"
+	/// notice goes (players reconnecting or lagging, our own reconnect or catch-up).
+	/// Empty function for every other game; an empty result falls back to the
+	/// waiting notice. Presentation only, never simulated or saved.
+	std::function<std::vector<std::string>()> connectionNotice;
 private:
 	friend class GameGUISelectionHarness;
 	friend class TorusRenderIntegrationTest;

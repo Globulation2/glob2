@@ -447,7 +447,17 @@ void GameGUI::drawOverlayInfos(void)
 	// Suppress the "[waiting for X]" notice until the wait has lasted longer
 	// than this many GUI steps, so brief network hiccups don't flash the box.
 	constexpr int WAIT_NOTICE_DEBOUNCE_STEPS = 2;
-	if (game.anyPlayerWaited && game.maskAwayPlayer && anyPlayerWaitedTimeFor>WAIT_NOTICE_DEBOUNCE_STEPS)
+	const std::vector<std::string> connectionLines = connectionNotice ? connectionNotice() : std::vector<std::string>();
+	if (!connectionLines.empty())
+	{
+		// Same box as the waiting notice below, one line per connection state.
+		const int lines = static_cast<int>(connectionLines.size());
+		globalContainer->gfx->drawFilledRect(32, 32, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-64, 22+lines*20, 0, 0, 140, 127);
+		globalContainer->gfx->drawRect(32, 32, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-64, 22+lines*20, 255, 255, 255);
+		for (int i = 0; i < lines; ++i)
+			globalContainer->gfx->drawString(44, 44+i*20, globalContainer->standardFont, connectionLines[i].c_str());
+	}
+	else if (game.anyPlayerWaited && game.maskAwayPlayer && anyPlayerWaitedTimeFor>WAIT_NOTICE_DEBOUNCE_STEPS)
 	{
 		int nbap=0; // Number of away players
 		Uint32 pm=1;
