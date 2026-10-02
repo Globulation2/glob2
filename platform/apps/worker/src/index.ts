@@ -10,3 +10,4 @@ export * from './matchmaking/notifier.ts';
 export * from './matchmaking/starter.ts';
 export * from './matchmaking/matchmaker.ts';
 export * from './matchmaking/tickets.ts';
+export * from './warmMaps.ts';
