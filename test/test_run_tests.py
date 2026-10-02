@@ -7,12 +7,14 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest import mock
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import run_tests  # noqa: E402
+import xvfb_session  # noqa: E402
 
 LISTING = """<?xml version="1.0" encoding="UTF-8"?>
 <doctest binary="x" version="2.4.11">
@@ -336,6 +338,37 @@ class EndToEndTest(unittest.TestCase):
             text = junit.read_text()
             self.assertIn('<failure message="run_tests: the test changed the profile preferences', text)
             self.assertIn('<error message="timeout"', text)
+
+
+class XvfbSessionTest(unittest.TestCase):
+    def test_waits_for_window_manager_and_preserves_test_exit_status(self):
+        wm = mock.MagicMock()
+        wm.poll.return_value = None
+        state = subprocess.CompletedProcess([], 0, '_NET_SUPPORTING_WM_CHECK(WINDOW): window id # 0x400002')
+        with mock.patch.object(xvfb_session.shutil, 'which', side_effect=lambda name: name), \
+             mock.patch.object(xvfb_session.subprocess, 'Popen', return_value=wm), \
+             mock.patch.object(xvfb_session.subprocess, 'run', return_value=state), \
+             mock.patch.object(xvfb_session.subprocess, 'call', return_value=7) as test:
+            self.assertEqual(xvfb_session.run(['test-binary']), 7)
+            test.assert_called_once_with(['test-binary'])
+        wm.terminate.assert_called_once()
+        wm.wait.assert_called_once_with(timeout=5)
+        wm.stderr.close.assert_called_once()
+
+    def test_missing_window_manager_readiness_fails_and_cleans_up(self):
+        wm = mock.MagicMock()
+        wm.poll.return_value = None
+        state = subprocess.CompletedProcess([], 0, 'no such atom')
+        with mock.patch.object(xvfb_session.shutil, 'which', side_effect=lambda name: name), \
+             mock.patch.object(xvfb_session.subprocess, 'Popen', return_value=wm), \
+             mock.patch.object(xvfb_session.subprocess, 'run', return_value=state), \
+             mock.patch.object(xvfb_session.subprocess, 'call') as test, \
+             mock.patch.object(xvfb_session.time, 'monotonic', side_effect=[0, 10]):
+            with self.assertRaisesRegex(RuntimeError, 'did not establish'):
+                xvfb_session.run(['test-binary'])
+            test.assert_not_called()
+        wm.terminate.assert_called_once()
+        wm.wait.assert_called_once_with(timeout=5)
 
 
 if __name__ == '__main__':

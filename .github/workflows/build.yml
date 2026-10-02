@@ -103,7 +103,7 @@ jobs:
             libvorbis-dev libogg-dev libspeex-dev \
             libboost-dev libssl-dev \
             zlib1g-dev libfribidi-dev libpcre3-dev \
-            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth
+            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth openbox x11-utils
 
       - uses: actions/checkout@v4
         id: actions_checkout_v4_1
@@ -349,7 +349,7 @@ jobs:
             libvorbis-dev libogg-dev libspeex-dev \
             libboost-date-time-dev libboost-thread-dev libboost-system-dev libssl-dev \
             zlib1g-dev libfribidi-dev libpcre3-dev \
-            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth
+            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth openbox x11-utils
 
       - uses: actions/checkout@v4
         id: actions_checkout_v4_1
@@ -579,7 +579,7 @@ jobs:
             libvorbis-dev libogg-dev libspeex-dev \
             libboost-dev libssl-dev \
             zlib1g-dev libfribidi-dev libpcre3-dev \
-            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth
+            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth openbox x11-utils
 
       - uses: actions/checkout@v4
         id: actions_checkout_v4_1
@@ -722,7 +722,7 @@ jobs:
             libvorbis-dev libogg-dev libspeex-dev \
             libboost-dev libssl-dev \
             zlib1g-dev libfribidi-dev libpcre3-dev \
-            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth
+            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth openbox x11-utils
 
       - uses: actions/checkout@v4
         id: actions_checkout_v4_1
@@ -1552,7 +1552,7 @@ jobs:
             /etc/apt/sources.list.d/google-chrome.list \
             /etc/apt/sources.list.d/google-chrome.sources
           sudo apt-get update -qq
-          sudo apt-get install -y scons ccache g++-13 cmake libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev libvorbis-dev libogg-dev libspeex-dev libboost-dev libssl-dev zlib1g-dev libfribidi-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev xvfb xauth
+          sudo apt-get install -y scons ccache g++-13 cmake libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev libvorbis-dev libogg-dev libspeex-dev libboost-dev libssl-dev zlib1g-dev libfribidi-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev xvfb xauth openbox x11-utils
       - uses: actions/download-artifact@v4
         id: actions_download_artifact_v4_1
         with:

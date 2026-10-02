@@ -285,7 +285,8 @@ def xvfb_prefix(job):
         return []
     # SDL closes its last X connection between contexts. Keep Xvfb from
     # resetting while the next context reconnects.
-    return [xvfb, '-a', '-s', f'-screen 0 {job.screen}x24 -noreset']
+    return [xvfb, '-a', '-s', f'-screen 0 {job.screen}x24 -noreset',
+            sys.executable, str(ROOT / 'test' / 'xvfb_session.py')]
 
 
 def run_job(job, args, build_dir):
