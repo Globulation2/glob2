@@ -7,6 +7,8 @@
 namespace GAGCore
 {
 	class StreamBackend;
+	//! File loaders bound both compressed input and expanded data to 256 MiB.
+	inline constexpr size_t MAX_COMPRESSED_GAME_FILE_BYTES = 256u * 1024u * 1024u;
 
 	//! Gzip-compresses input at level with zero timestamp and OS=unknown.
 	//! Output is deterministic for the same zlib encoder and input.

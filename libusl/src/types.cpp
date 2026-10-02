@@ -17,10 +17,26 @@ Heap::~Heap()
 
 void Value::markForGC()
 {
+	// Traversal is iterative: a script can create a deep graph of closures.
+	static thread_local std::vector<Value*> pending;
+	static thread_local bool traversing = false;
 	if (marked) return;
 	marked = true;
-	if (prototype) prototype->markForGC();
-	propagateMarkForGC();
+	pending.push_back(this);
+	if (traversing) return;
+	traversing = true;
+	try
+	{
+		while (!pending.empty())
+		{
+			Value* value = pending.back();
+			pending.pop_back();
+			if (value->prototype) value->prototype->markForGC();
+			value->propagateMarkForGC();
+		}
+	}
+	catch (...) { pending.clear(); traversing = false; throw; }
+	traversing = false;
 }
 
 void ThunkPrototype::propagateMarkForGC()

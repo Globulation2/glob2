@@ -21,6 +21,7 @@ void ResourceTracker::tick()
 	if((timer%AI_SHARED_RUNTIME_TRACKER_SAMPLE_INTERVAL_TICKS)==0)
 	{
 		Building* b = runtime.get_building_register().get_building(building_id);
+		if (!b) return;
 		record[position]=b->resources[resource];
 		position++;
 		if(position>=record.size())
@@ -45,7 +46,7 @@ bool ResourceTracker::load(GAGCore::InputStream *stream, Player *player, Sint32 
 {
 	stream->readEnterSection("RessourceTracker");
 	stream->readEnterSection("record");
-	Uint32 recordsize=stream->readUint32("size");
+	Uint32 recordsize=stream->readCount("size");
 	record.resize(recordsize);
 	for(unsigned int record_index=0; record_index<recordsize; ++record_index)
 	{
@@ -59,6 +60,8 @@ bool ResourceTracker::load(GAGCore::InputStream *stream, Player *player, Sint32 
 	building_id=stream->readUint32("building_id");
 	length=stream->readUint32("length");
 	resource=stream->readUint32("ressource");
+	if (record.empty() || position >= record.size() || length != record.size() || resource < 0 || resource >= MAX_RESOURCES)
+		throw std::runtime_error("Invalid saved resource tracker");
 	stream->readLeaveSection();
 	return true;
 }
@@ -115,6 +118,8 @@ bool AddResourceTracker::load(GAGCore::InputStream *stream, Player *player, Sint
 	length=stream->readUint32("length");
 	building_id=stream->readUint32("building_id");
 	resource=stream->readUint32("ressource");
+	if (length <= 0 || length > 1048576 || resource < 0 || resource >= MAX_RESOURCES)
+		throw std::runtime_error("Invalid resource tracker order");
 	stream->readLeaveSection();
 	return true;
 }

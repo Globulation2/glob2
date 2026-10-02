@@ -18,32 +18,33 @@ bool Runtime::load(GAGCore::InputStream *stream, Player *player, Sint32 versionM
 	signature_check(stream, player, versionMinor);
 
 	stream->readEnterSection("orders");
-	Uint32 ordersSize = stream->readUint32("size");
+	Uint32 ordersSize = stream->readCount("size");
 	for (Uint32 ordersIndex = 0; ordersIndex < ordersSize; ordersIndex++)
 	{
 		stream->readEnterSection(ordersIndex);
-		size_t size=stream->readUint32("size");
-		Uint8* buffer = new Uint8[size+1];
-		stream->read(buffer, size+1, "data");
-		orders.push_back(Order::getOrder(buffer, size+1, versionMinor));
-		delete[] buffer;
+		size_t size=stream->readCount("size");
+		std::vector<Uint8> buffer(size+1);
+		stream->read(buffer.data(), buffer.size(), "data");
+		auto order = Order::getOrder(buffer.data(), buffer.size(), versionMinor);
+		if (!order) return false;
+		orders.push_back(order);
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
 
 	signature_check(stream, player, versionMinor);
 
-	br.load(stream, player, versionMinor);
+	if (!br.load(stream, player, versionMinor)) return false;
 
 	signature_check(stream, player, versionMinor);
 
-	fm.load(stream, player, versionMinor);
+	if (!fm.load(stream, player, versionMinor)) return false;
 
 	signature_check(stream, player, versionMinor);
 
 
 	stream->readEnterSection("management_orders");
-	Uint32 managementSize=stream->readUint32("size");
+	Uint32 managementSize=stream->readCount("size");
 	for(Uint32 managementIndex = 0; managementIndex < managementSize; ++managementIndex)
 	{
 		stream->readEnterSection(managementIndex);
@@ -60,7 +61,7 @@ bool Runtime::load(GAGCore::InputStream *stream, Player *player, Sint32 versionM
 	signature_check(stream, player, versionMinor);
 
 	stream->readEnterSection("building_orders");
-	Uint32 buildingSize=stream->readUint32("size");
+	Uint32 buildingSize=stream->readCount("size");
 	building_orders.resize(buildingSize);
 	for(Uint32 buildingIndex = 0; buildingIndex < buildingSize; ++buildingIndex)
 	{
@@ -81,7 +82,7 @@ bool Runtime::load(GAGCore::InputStream *stream, Player *player, Sint32 versionM
 	signature_check(stream, player, versionMinor);
 
 	stream->readEnterSection("ressource_trackers");
-	Uint32 resourceTrackerSize=stream->readUint32("size");
+	Uint32 resourceTrackerSize=stream->readCount("size");
 	for(Uint32 resourceTrackerIndex=0; resourceTrackerIndex<resourceTrackerSize; ++resourceTrackerIndex)
 	{
 		stream->readEnterSection(resourceTrackerIndex);
@@ -96,7 +97,7 @@ bool Runtime::load(GAGCore::InputStream *stream, Player *player, Sint32 versionM
 	signature_check(stream, player, versionMinor);
 
 	stream->readEnterSection("starting_buildings");
-	Uint32 startingBuildingSize=stream->readUint32("size");
+	Uint32 startingBuildingSize=stream->readCount("size");
 	for(Uint32 startingBuildingIndex=0; startingBuildingIndex<startingBuildingSize; ++startingBuildingIndex)
 	{
 		stream->readEnterSection(startingBuildingIndex);
@@ -120,7 +121,7 @@ bool Runtime::load(GAGCore::InputStream *stream, Player *player, Sint32 versionM
 
 	signature_check(stream, player, versionMinor);
 
-	runtimeai->load(stream, player, versionMinor);
+	if (!runtimeai->load(stream, player, versionMinor)) return false;
 
 
 	signature_check(stream, player, versionMinor);

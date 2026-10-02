@@ -31,7 +31,7 @@ namespace GAGCore
 	void MemoryStreamBackend::read(void *data, size_t size)
 	{
 		char *_data = static_cast<char *>(data);
-		if (index+size > buffer.size())
+		if (index > buffer.size() || size > buffer.size() - index)
 		{
 			// overread, read 0
 			std::fill(_data, _data+size, 0);
