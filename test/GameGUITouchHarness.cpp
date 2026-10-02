@@ -2479,6 +2479,7 @@ class GameGUITouchHarness
 		const int originalLanguage = strings->getLang();
 		gui.setSelection(GameGUI::BUILDING_SELECTION, building);
 		gui.touch->panelOpen = true;
+		gui.drawAll(0); // building actions describe the drawn scene
 		const auto originalActions = gui.touch->buildingActions();
 		const auto originalOrders = gui.orderQueue.size();
 		const auto originalChecksum = gui.game.checkSum();

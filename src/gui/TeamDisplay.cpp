@@ -12,7 +12,11 @@ using namespace GAGCore;
 
 std::string displayPlayerName(const Team& team)
 {
-	std::string name = team.getFirstPlayerName();
+	return displayPlayerName(team.getFirstPlayerName());
+}
+
+std::string displayPlayerName(const std::string& name)
+{
 	if (name.empty())
 		return Toolkit::getStringTable()->getString("[Uncontrolled]");
 	return name;

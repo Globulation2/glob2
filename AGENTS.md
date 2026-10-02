@@ -11,11 +11,11 @@ appear as plain text in a checkout, read `AGENTS.md` and `.agents/skills/` direc
 
 | Area | Start here |
 | --- | --- |
-| Simulation and orders | `src/Game_sync.cpp`, `src/EngineRun.cpp`, `src/Order*.cpp`; simulation/client channels in `src/sim/` |
+| Simulation and orders | `src/Game_sync.cpp`, `src/EngineRun.cpp`, `src/Order*.cpp`; simulation thread and client channels in `src/sim/` |
 | Units, buildings and teams | `src/unit/`, `src/building/`, `src/team/` |
 | Map state and pathfinding | `src/map/`, especially `gradient/` and `pathfind/` |
 | AI implementations | `src/ai/`, behind `AIImplementation` |
-| Rendering, menus and editor | `src/render/`, `src/gui/`, `src/*Screen*`, `src/map/edit/`; menu/dialog framework in `libgag/include/ui/` and `src/ui/`, see [UI framework](docs/development/ui-framework.md) |
+| Rendering, menus and editor | `src/render/`, `src/gui/`, `src/*Screen*`, `src/map/edit/`; drawing reads only the extracted Scene in `src/scene/`, see [Scene renderer](docs/development/reference.md#scene-renderer); menu/dialog framework in `libgag/include/ui/` and `src/ui/`, see [UI framework](docs/development/ui-framework.md) |
 | Network and multiplayer service | `src/net/`, `src/yog/` |
 | Graphics/UI and scripting libraries | `libgag/`, `libusl/`, `src/sgsl/` |
 | Builds and platform coverage | `SConstruct`, `src/SConscript`, `scons/`, `.github/workflows/build.yml`, `vcpkg.json` |
