@@ -620,7 +620,7 @@ export const fixtureCases: FixtureCase[] = [
     schema: 'RealtimeEventAuthHandoffCompleted',
     name: 'completed',
     valid: true,
-    note: 'Sign-in pushed to the waiting socket, switching to the identity\'s account.',
+    note: "Sign-in pushed to the waiting socket, switching to the identity's account.",
     value: {
       attemptId: '3b4c5d6e-7f80-4a9b-8c1d-2e3f4a5b6c7d',
       linked: false,

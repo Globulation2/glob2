@@ -5,6 +5,7 @@ name: Globulation 2
 guests:
   enabled: true
 
+# Sign-in. Every provider's redirect URI is <PUBLIC_ORIGIN>/auth/<id>/callback.
 auth:
   providers:
     - id: google
@@ -13,9 +14,51 @@ auth:
       displayName: Google
       clientId: your-client-id.apps.googleusercontent.com
       clientSecretEnv: GOOGLE_CLIENT_SECRET
+    # - id: microsoft
+    #   kind: oidc
+    #   preset: microsoft
+    #   tenant: common            # or consumers, organizations, a tenant id
+    #   displayName: Microsoft
+    #   clientId: 00000000-0000-0000-0000-000000000000
+    #   clientSecretEnv: MICROSOFT_CLIENT_SECRET
+    # - id: forgejo               # any OpenID Connect issuer
+    #   kind: oidc
+    #   issuer: https://code.example.org
+    #   displayName: Example Code
+    #   clientId: glob2
+    #   clientSecretEnv: FORGEJO_CLIENT_SECRET
+    # - id: apple
+    #   kind: apple
+    #   displayName: Apple
+    #   clientId: org.example.glob2.signin   # Services ID
+    #   teamId: ABCDE12345
+    #   keyId: KEY1234567
+    #   privateKeyEnv: APPLE_SIGNIN_KEY      # contents of the .p8 key
   # Username and password accounts (argon2id), for instances without SSO.
   local:
     enabled: false
+    # allowRegistration: true
+  # accessTokenMinutes: 10
+  # refreshTokenDays: 60
+  # handoffMinutes: 10
+  # webSessionDays: 30
+
+# accounts:
+#   renameIntervalDays: 30   # 0: no limit
+
+# Extra browser origins allowed to use /realtime and cookie sessions (the
+# PUBLIC_ORIGIN is always allowed; native clients send no Origin).
+# web:
+#   allowedOrigins: [https://web.example.org]
+
+# Per-replica limits (defaults shown).
+# limits:
+#   authPerMinute: 30
+#   guestsPerHour: 20
+#   apiPerMinute: 600
+#   realtimePerSecond: 10
+#   realtimeBurst: 40
+#   realtimeConnectionsPerIp: 20
 
 # AccessPolicy implementation gating hosting, joining and queueing.
 access:

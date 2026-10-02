@@ -293,7 +293,7 @@ describe('migrations', () => {
     const first = await migrateToLatest(database.db);
     expect(first.map((r) => [r.migrationName, r.status])).toEqual([
       ['0001_initial', 'Success'],
-      ['0002_identity', 'Success'],
+      ['0003_identity', 'Success'],
     ]);
     expect(await migrateToLatest(database.db)).toEqual([]);
     const status = await createMigrator(database.db).getMigrations();

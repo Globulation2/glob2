@@ -50,7 +50,8 @@ export interface PlatformConfig {
 /** Reads a secret named by an instance.yaml `...Env` setting. */
 export function readSecret(config: PlatformConfig, name: string): string {
   const value = (config.secrets ?? process.env)[name];
-  if (!value) throw new ConfigError(`environment variable ${name} (named in instance.yaml) is not set`);
+  if (!value)
+    throw new ConfigError(`environment variable ${name} (named in instance.yaml) is not set`);
   return value;
 }
 
