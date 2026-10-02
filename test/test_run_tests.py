@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Unit tests for test/run_tests.py: listing, selection, sharding and JUnit merging."""
 import argparse
+from types import SimpleNamespace
 import os
 import stat
 import subprocess
@@ -445,3 +446,42 @@ class XvfbSessionTest(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+class WeightedShardTest(unittest.TestCase):
+    def test_heavy_jobs_separate_and_all_jobs_execute_once(self):
+        jobs=[SimpleNamespace(label=label) for label in ['a','b','c','new']]
+        weights={'a':100.0,'b':90.0,'c':1.0}
+        parts=[run_tests.shard(jobs,f'{k}/2',weights,['aux:unit']) for k in [1,2]]
+        self.assertEqual(sorted(j.label for part in parts for j in part),['a','b','c','new'])
+        self.assertNotEqual(next(i for i,p in enumerate(parts) if jobs[0] in p),next(i for i,p in enumerate(parts) if jobs[1] in p))
+        self.assertEqual(parts,[run_tests.shard(list(reversed(jobs)),f'{k}/2',weights,['aux:unit']) for k in [1,2]])
+    def test_new_jobs_use_median_and_ties_use_shard_number(self):
+        self.assertEqual(run_tests.assignments(['new','known'],2,{'known':3}),{'known':1,'new':2})
+        self.assertEqual(run_tests.assignments(['b','a'],2,{'a':1,'b':1}),{'a':1,'b':2})
+    def test_profile_rejects_bad_weights_and_empty_preserves_original(self):
+        import tempfile,json
+        from pathlib import Path
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory)/'profile.json'
+            for value in [-1,float('nan'),True,'3']:
+                path.write_text(json.dumps({'schema':1,'seconds':{'a':value}}))
+                with self.assertRaises(SystemExit):run_tests.load_timings(path)
+            path.write_text(json.dumps({'schema':1,'seconds':{}}))
+            self.assertIsNone(run_tests.load_timings(path))
+
+class AuxiliaryShardTest(unittest.TestCase):
+    def test_auxiliary_assignment_agrees_with_native_partition(self):
+        import ci_native_shard_plan as planner
+        jobs=[SimpleNamespace(label=x) for x in ['native-a','native-b']]
+        aux={'aux:unit': {'id':'unit','default_shard':4}}
+        weights={'native-a':100,'native-b':80,'aux:unit':90}
+        mapped=planner.plan(jobs,aux,2,weights)
+        expected=run_tests.assignments(['native-a','native-b','aux:unit'],2,weights)
+        self.assertEqual(mapped['unit'],expected['aux:unit'])
+        self.assertEqual(planner.plan(jobs,aux,4,None),{'unit':4})
+    def test_profiles_need_ten_samples_and_same_platform(self):
+        import build_ci_timing_profile as builder
+        sample={'family':'ubuntu-24.04','seconds':{'native-a':3}}
+        self.assertEqual(builder.build([sample]*9,'ubuntu-24.04',{})['seconds'],{})
+        self.assertEqual(builder.build([sample]*10,'ubuntu-22.04',{})['seconds'],{})
+        self.assertEqual(builder.build([sample]*10,'ubuntu-24.04',{})['seconds'],{'native-a':3})

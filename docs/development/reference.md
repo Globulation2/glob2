@@ -118,7 +118,7 @@ python3 test/run_tests.py      # run them; --list, --filter, --tag, --shard
   test shards per toolchain. Linux compiler builds share
   `.github/workflows/ci-linux-build.yml`; the GCC artifact builds and Clang
   compatibility check run separately, so runtime shards do not wait for Clang.
-  Both supported GCC builds still form a shared artifact barrier. The original `linux (...)` checks require every
+  Each supported GCC build starts its own test shards and generator checks independently. The original `linux (...)` checks require every
   build and shard to pass, preserving their merge-blocking status. PRs compare
   with their base commit, and master pushes compare with the pre-push commit;
   unknown paths or unavailable diffs select full CI.
@@ -955,3 +955,72 @@ opt-in executable. Timing thresholds are review criteria, not CI assertions. Run
 `SoftwareRenderer`, `PortableRenderer`, `WindowResize`, `MapRenderResize` and
 `HighResolutionIntegration` suites on supported SDL/platform builds, retain before/after
 captures, and report unavailable platform and maintainer-playtesting coverage explicitly.
+
+### CI timing and retained revisions
+
+Pull requests select relevant checks and cancel superseded revisions. Master
+finishes its running verification and retains the newest pending revision; each
+retained revision runs full coverage, including after a documentation-only push.
+Nightly verification runs at 06:00 UTC without invoking publication workflows.
+The separate CI measurements workflow reads job timestamps and inert observation
+artifacts using trusted master code. It reports initial queue delay, active execution
+time, execution span, idle gaps, aggregate runner minutes, time to result, cancellations, and observed cache
+hits. Per-job queue estimates use job registration to first step; execution time is the union of executing job intervals, while execution span
+includes idle gaps and does not by itself identify runner saturation. Overlapping
+jobs count once in wall execution time and separately in aggregate runner minutes.
+Compare ten successful runs with matching event and selected coverage using
+`python3 .github/scripts/ci_run_metrics.py --before before.json --after after.json`.
+Missing observations and insufficient samples must not be reported as savings.
+
+### Linux execution dependencies
+
+Each GCC reusable-workflow invocation starts its own four test shards and three
+map-generator jobs after its build succeeds. Neither platform waits for the other
+GCC compiler or Clang. The final Linux result still requires all selected calls.
+Golden-only changes retain the standalone generator path.
+
+Build artifacts include runtime package owners resolved from actual ELF library
+dependencies. Unresolved or unowned system libraries fail collection rather than
+being silently omitted. The reduced shard environment retains software GL, Mesa,
+Xvfb and crash diagnostics. Enable `CI_RUNTIME_PACKAGES_ENABLED=true` only after
+`Validate clean Linux runtime images` passes both clean Ubuntu container images;
+until then ordinary shards keep their existing dependency installation. Dispatch
+that validation workflow manually; it runs the same unit, engine, image, CLI and
+continuation checks without publishing anything.
+
+### Reviewed native shard timing profiles
+
+Native runners optionally accept `--timing-profile` and `--auxiliary-jobs`.
+Nonempty profiles assign jobs longest first to the least-loaded shard, with label
+and shard-number tie breaks; unknown cases use the median recorded duration.
+Empty or omitted profiles preserve alphabetical slicing and existing auxiliary
+ownership. Unit tests and auxiliary groups participate in the same load plan,
+retaining their original commands, flags and timeouts. Every selected engine job
+runs exactly once. Auxiliary artifacts follow their assigned group.
+
+Successful job durations are retained alongside JUnit results. To propose updated
+weights, gather observations and run
+`python3 test/build_ci_timing_profile.py observations --family ubuntu-24.04 --output test/ci-timings/ubuntu-24.04.json`.
+Only platform-matched jobs with ten successful samples enter a profile. Review the
+resulting diff before shipping it; weights never change during a run. Profiles
+remain empty until measurements are available, rather than using invented data.
+
+### Tiered pull-request coverage rollout
+
+The selector records both proposed and effective coverage, including the reason
+for compatibility coverage. Primary PR checks retain GCC 13, Windows, Chromium
+and affected Android arm64 builds. Shared headers, simulation/save/network code,
+platform/build/dependency changes, mixed changes and unknown paths retain full
+compatibility coverage. Browser/UI/rendering changes retain Firefox and WebKit.
+The full browser command inventory lives in `.github/scripts/ci_browser_matrix.json`.
+Android is called by the main build workflow, avoiding duplicate PR APK builds
+and including its selected result in the stable aggregate gate. Master and nightly
+run the complete matrix, including Android.
+
+PR tier reductions start disabled. Set `CI_TIER_BASELINE_RUN_ID` to a successful
+full master build, then set `CI_TIERED_COVERAGE_ENABLED=true`. Before each reduced
+PR matrix, the selector verifies the baseline is a successful master build with
+a matching SHA and unexpired full-matrix selection evidence (including Android).
+Unavailable, expired or invalid evidence falls back to existing full compatibility
+coverage. Review comparison artifacts before enabling the flag. Set the flag
+false to roll back coverage reductions without reverting scheduling improvements.

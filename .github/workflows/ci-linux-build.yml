@@ -16,6 +16,19 @@ on:
         required: true
         type: string
 
+      run_tests:
+        type: boolean
+        default: false
+      runtime_packages:
+        type: boolean
+        default: false
+      map_generators:
+        type: boolean
+        default: false
+      validate_runtime:
+        type: boolean
+        default: false
+
 permissions:
   contents: read
 
@@ -67,7 +80,9 @@ jobs:
         id: actions_checkout_v4_1
 
       - name: Build pinned SDL3 dependencies
-        run: python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+        run: |
+          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+          echo "LD_LIBRARY_PATH=$PWD/build/sdl3-ci/prefix/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" >> "$GITHUB_ENV"
 
       - name: Validate translations
         id: validate_translations
@@ -192,6 +207,7 @@ jobs:
         run: |
           test -x build/linux/client/release/src/glob2
           mkdir -p artifacts/ci-native
+          python3 .github/scripts/linux_runtime_packages.py build/linux/client/release --output artifacts/ci-native/runtime-packages.txt
           find build/linux/client/release build/sdl3-ci/prefix/lib \( -type f -o -type l \) \( -perm /111 -o -name '*.so*' \) -print0 |
             tar --null -czf artifacts/ci-native/linux-test-programs.tar.gz -T -
       - uses: actions/upload-artifact@v4
@@ -200,7 +216,10 @@ jobs:
 
         with:
           name: linux-test-programs-${{ inputs.runner }}${{ inputs.compiler == 'clang-18' && '-clang-18' || '' }}
-          path: artifacts/ci-native/linux-test-programs.tar.gz
+          path: |
+            artifacts/ci-native/linux-test-programs.tar.gz
+            artifacts/ci-native/runtime-packages.txt
+            artifacts/ci-native/runtime-packages.json
           retention-days: 2
           if-no-files-found: error
 
@@ -252,3 +271,391 @@ jobs:
         env:
           CI_STEPS_JSON: ${{ toJSON(steps) }}
         run: python3 test/ci_step_summary.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ci-observation-linux-${{ inputs.compiler }}
+          path: artifacts/ci-observation/
+          if-no-files-found: ignore
+
+
+  tests:
+    name: Linux tests (${{ inputs.runner }}, shard ${{ matrix.shard }}/4)
+    needs: build
+    container: ${{ inputs.validate_runtime && inputs.image || '' }}
+    if: ${{ inputs.run_tests && needs.build.result == 'success' }}
+    env:
+      CI_RUNNER_FAMILY: ${{ inputs.runner }}
+    runs-on: ${{ inputs.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
+    steps:
+      - name: Bootstrap clean runtime image
+        if: ${{ inputs.validate_runtime }}
+        run: apt-get update -qq && apt-get install -y --no-install-recommends sudo ca-certificates git python3 libstdc++6
+      - name: Install dependencies
+        id: install_dependencies
+        timeout-minutes: 15
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          # Fetch immutable package indexes to avoid mirror-sync mismatches,
+          # and bound network stalls without weakening signature verification.
+          sudo tee /etc/apt/apt.conf.d/80-ci-network >/dev/null <<'EOF'
+          Acquire::By-Hash "force";
+          Acquire::Retries "3";
+          Acquire::http::Timeout "30";
+          Acquire::https::Timeout "30";
+          EOF
+          sudo apt-get update -qq
+
+
+      - uses: actions/checkout@v4
+        id: actions_checkout_v4_1
+
+      - uses: actions/download-artifact@v4
+        id: download_linux_test_programs
+        with:
+          name: linux-test-programs-${{ inputs.runner }}
+          path: artifacts/ci-native
+      - name: Unpack built Linux test programs
+        id: unpack_linux_test_programs
+        run: |
+          tar -xzf artifacts/ci-native/linux-test-programs.tar.gz
+          echo "LD_LIBRARY_PATH=$PWD/build/sdl3-ci/prefix/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" >> "$GITHUB_ENV"
+      - name: Install executable runtime dependencies
+        run: |
+          if [ "${{ inputs.runtime_packages }}" = true ]; then
+            xargs sudo apt-get install -y --no-install-recommends < artifacts/ci-native/runtime-packages.txt
+            sudo apt-get install -y --no-install-recommends python3 libgl1 libglu1-mesa libepoxy0 libgl1-mesa-dri xvfb xauth openbox x11-utils
+            python3 .github/scripts/linux_runtime_packages.py build/linux/client/release --verify
+          else
+          sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+            ca-certificates git ${{ inputs.compiler }} python3 python3-venv scons pkg-config ccache \
+            libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev \
+            libvorbis-dev libogg-dev libspeex-dev \
+            libboost-date-time-dev libboost-thread-dev libboost-system-dev libssl-dev \
+            zlib1g-dev libfribidi-dev libpcre3-dev \
+            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth openbox x11-utils
+          fi
+
+      - name: Plan native and auxiliary shard workloads
+        id: shard_plan
+        run: python3 test/ci_native_shard_plan.py --build-dir build/linux/client/release --timing-profile test/ci-timings/${{ inputs.runner }}.json --auxiliary-jobs test/ci-native-auxiliary.json --count 4
+      - name: Run the unit tests
+        if: ${{ steps.shard_plan.outputs.run_the_unit_tests == format('{0}', matrix.shard) }}
+        id: run_the_unit_tests
+        continue-on-error: true
+        run: python3 test/run_tests.py --binary unit --build-dir build/linux/client/release --display-jobs 1 --junit artifacts/tests/unit-junit.xml --write-timings artifacts/tests/unit.timings.json
+      - name: Run the engine tests
+        id: run_the_engine_tests
+        continue-on-error: true
+        env:
+          LIBGL_ALWAYS_SOFTWARE: 1
+        # The [map-generators] contract runs in the linux-map-generators telemetry job.
+        run: python3 test/run_tests.py --binary engine --build-dir build/linux/client/release --display-jobs 1 --fullscreen --shard ${{ matrix.shard }}/4 --exclude-tag map-generators --junit artifacts/tests/engine-junit.xml --timing-profile test/ci-timings/${{ inputs.runner }}.json --auxiliary-jobs test/ci-native-auxiliary.json --write-timings artifacts/tests/engine.timings.json
+      - name: Diagnose accelerated renderer crashes
+        if: ${{ always() && steps.run_the_engine_tests.outcome == 'failure' }}
+        continue-on-error: true
+        timeout-minutes: 5
+        env:
+          LIBGL_ALWAYS_SOFTWARE: 1
+          GLOB2_TEST_DISPLAY: 1
+          GLOB2_TEST_FULLSCREEN: 1
+          SDL_AUDIODRIVER: dummy
+        run: |
+          # Retain the original failure; this separate invocation only collects a trace.
+          if ! python3 - <<'PYTRACE'
+          import xml.etree.ElementTree as ET
+          report = ET.parse('artifacts/tests/engine-junit.xml')
+          crashes = [case for case in report.iter('testcase')
+                     if 'each accelerated backend uploads surface revisions independently' in case.get('name', '')
+                     and case.find('error') is not None]
+          raise SystemExit(0 if crashes else 1)
+          PYTRACE
+          then
+            exit 0
+          fi
+          sudo apt-get install -y --no-install-recommends gdb
+          xvfb-run -a -s '-screen 0 1600x1400x24 -noreset' \
+            gdb --batch -ex run -ex 'thread apply all bt' -ex 'info sharedlibrary' \
+            --args build/linux/client/release/test/glob2-engine-tests \
+            '-tc=each accelerated backend uploads surface revisions independently [display]' \
+            --no-breaks=true > artifacts/tests/accelerated-renderer-gdb.log 2>&1
+
+      - name: Upload native test results
+        if: always()
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-test-results-${{ inputs.runner }}-${{ matrix.shard }}
+          path: artifacts/tests/
+          if-no-files-found: ignore
+
+      - name: Test map JSON reports
+        if: ${{ steps.shard_plan.outputs.test_map_json_reports == format('{0}', matrix.shard) }}
+        id: test_map_json_reports
+        continue-on-error: true
+        run: |
+          python3 test/ci_run_commands.py \
+            --check 'map report' 'python3 test/test_map_report.py build/linux/client/release/src/glob2 build/linux/client/release/test/MapReportHarness' \
+            --check 'map telemetry' 'python3 test/test_map_telemetry.py'
+      - name: Upload map JSON reports and command log
+        id: upload_map_json_reports_and_command_log
+        continue-on-error: true
+        if: ${{ always() && steps.shard_plan.outputs.test_map_json_reports == format('{0}', matrix.shard) }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: map-report-${{ inputs.runner }}
+          path: artifacts/map-report/
+
+      - name: Test headless map CLI with the shared preview renderer
+        if: ${{ steps.shard_plan.outputs.test_headless_map_cli_with_the_shared_preview_renderer == format('{0}', matrix.shard) }}
+        id: test_headless_map_cli_with_the_shared_preview_renderer
+        continue-on-error: true
+        run: |
+          python3 test/ci_run_commands.py \
+            --check 'generation only' 'python3 test/test_map_cli.py build/linux/client/release/src/glob2 --generation-only' \
+            --check 'map CLI' 'python3 test/test_map_cli.py build/linux/client/release/src/glob2' \
+            --check 'map image conversion' 'python3 test/test_map_image.py build/linux/client/release/src/glob2'
+      - name: Upload map CLI previews and command log
+        id: upload_map_cli_previews_and_command_log
+        continue-on-error: true
+        if: ${{ always() && steps.shard_plan.outputs.test_headless_map_cli_with_the_shared_preview_renderer == format('{0}', matrix.shard) }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: map-cli-${{ inputs.runner }}
+          path: |
+            artifacts/map-cli/
+            artifacts/map-image/
+
+      - name: Test tournament protocol, AI configuration and main CLI
+        if: ${{ steps.shard_plan.outputs.test_tournament_protocol_ai_configuration_and_main_cli == format('{0}', matrix.shard) }}
+        id: test_tournament_protocol_ai_configuration_and_main_cli
+        continue-on-error: true
+        run: |
+          python3 test/ci_run_commands.py \
+            --check tournaments 'python3 test/test_tournaments.py' \
+            --check 'tournament pipeline' 'python3 test/test_tournament_pipeline.py' \
+            --check 'distributed map telemetry' 'python3 test/test_distributed_map_telemetry.py' \
+            --check 'distributed game telemetry' 'python3 test/test_distributed_game_telemetry.py' \
+            --check 'map fairness' 'python3 test/test_map_fairness_tournament.py' \
+            --check 'map generation study' 'python3 test/test_map_generation_study.py' \
+            --check 'fairness model' 'python3 test/test_fairness_model.py' \
+            --check 'tournament CLI' 'python3 test/tournament_cli_integration.py --binary build/linux/client/release/src/glob2 --output artifacts/tournament-cli'
+      - name: Retain tournament CLI compatibility evidence
+        id: retain_tournament_cli_compatibility_evidence
+        continue-on-error: true
+        if: ${{ always() && steps.shard_plan.outputs.test_tournament_protocol_ai_configuration_and_main_cli == format('{0}', matrix.shard) }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: tournament-cli-${{ inputs.runner }}
+          path: artifacts/tournament-cli/
+          if-no-files-found: ignore
+
+      - name: Verify save continuation traces
+        if: ${{ steps.shard_plan.outputs.verify_save_continuation_traces == format('{0}', matrix.shard) }}
+        id: verify_save_continuation_traces
+        continue-on-error: true
+        run: |
+          python3 test/ci_run_commands.py \
+            --check 'shared runtime save continuation' 'python3 test/check_shared_runtime_save_continuation.py build/linux/client/release/src/glob2' \
+            --check 'Maxima save continuation fixture' 'python3 test/maxima/check_save_continuation_fixture.py build/linux/client/release/src/glob2'
+
+      - name: Verify default gradient schedule against cross-platform checksums
+        if: ${{ steps.shard_plan.outputs.verify_default_gradient_schedule_against_cross_platform == format('{0}', matrix.shard) }}
+        id: verify_default_gradient_schedule_against_cross_platform
+        continue-on-error: true
+        run: python3 test/check_telemetry_simulation.py build/linux/client/release/src/glob2
+
+      - name: Verify parallel compute and save continuation
+        if: ${{ steps.shard_plan.outputs.verify_parallel_compute_and_save_continuation == format('{0}', matrix.shard) }}
+        id: verify_parallel_compute_and_save_continuation
+        continue-on-error: true
+        run: |
+          python3 test/ci_run_commands.py \
+            --check 'parallel compute' 'python3 test/check_parallel_compute.py build/linux/client/release/src/glob2' \
+            --check 'gradient pipeline' 'python3 test/check_gradient_pipeline.py build/linux/client/release/src/glob2'
+      - name: Build and run the LAN session regression
+        if: ${{ steps.shard_plan.outputs.build_and_run_the_lan_session_regression == format('{0}', matrix.shard) }}
+        id: build_and_run_the_lan_session_regression
+        continue-on-error: true
+        run: |
+          python3 test/run_lan_session_test.py build/linux/client/release/src/LANSessionHarness
+
+      - name: Test front-end colony isolation and menu navigation
+        if: ${{ steps.shard_plan.outputs.test_front_end_colony_isolation_and_menu_navigation == format('{0}', matrix.shard) }}
+        id: test_front_end_colony_isolation_and_menu_navigation
+        continue-on-error: true
+        env:
+          SDL_VIDEODRIVER: dummy
+          SDL_AUDIODRIVER: dummy
+        run: |
+          ./build/linux/client/release/test/MenuColonyHarness check data/menu/colony.bin
+          ./build/linux/client/release/test/MenuColonyHarness navigation unused
+
+      - name: Retain browser/native simulation trace
+        if: ${{ steps.shard_plan.outputs.retain_browser_native_simulation_trace == format('{0}', matrix.shard) }}
+        id: retain_browser_native_simulation_trace
+        continue-on-error: true
+        run: python3 test/run-browser-determinism.py build/linux/client/release/src/glob2 artifacts/browser-determinism/native
+      - uses: actions/upload-artifact@v4
+        if: ${{ steps.shard_plan.outputs.retain_browser_native_simulation_trace == format('{0}', matrix.shard) }}
+        id: upload_artifact_1
+        continue-on-error: true
+        with:
+          name: browser-determinism-${{ inputs.runner }}
+          path: artifacts/browser-determinism/native/
+
+      - name: Summarize CI failures
+        if: always()
+        env:
+          CI_STEPS_JSON: ${{ toJSON(steps) }}
+        run: python3 test/ci_step_summary.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ci-observation-tests-${{ inputs.compiler }}-${{ matrix.shard }}
+          path: artifacts/ci-observation/
+          if-no-files-found: ignore
+
+
+  generators:
+    name: Map generators (${{ inputs.runner }}, ${{ matrix.suite }})
+    needs: build
+    if: ${{ inputs.map_generators && needs.build.result == 'success' }}
+    runs-on: ${{ inputs.runner }}
+    env:
+      CCACHE: 1
+      CCACHE_DIR: /tmp/glob2-ccache
+      CCACHE_COMPILERCHECK: content
+      CCACHE_MAXSIZE: 1G
+    strategy:
+      fail-fast: false
+      matrix:
+        suite: [sweep-a, sweep-b, telemetry]
+    steps:
+      - name: Install dependencies
+        id: install_dependencies
+        timeout-minutes: 15
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          # Fetch immutable package indexes to avoid mirror-sync mismatches,
+          # and bound network stalls without weakening signature verification.
+          sudo tee /etc/apt/apt.conf.d/80-ci-network >/dev/null <<'EOF'
+          Acquire::By-Hash "force";
+          Acquire::Retries "3";
+          Acquire::http::Timeout "30";
+          Acquire::https::Timeout "30";
+          EOF
+          sudo apt-get update -qq
+          sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+            ca-certificates git ${{ inputs.compiler }} python3 python3-venv scons pkg-config ccache \
+            libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev \
+            libvorbis-dev libogg-dev libspeex-dev \
+            libboost-dev libssl-dev \
+            zlib1g-dev libfribidi-dev libpcre3-dev \
+            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth openbox x11-utils
+
+      - uses: actions/checkout@v4
+        id: actions_checkout_v4_1
+
+      # Main builds already include both programs. Reuse the exact binaries;
+      # map-only diffs skip that build and keep the standalone path below.
+      - uses: actions/download-artifact@v4
+        id: download_linux_test_programs
+        if: ${{ true }}
+        with:
+          name: linux-test-programs-${{ inputs.runner }}
+          path: artifacts/ci-native
+      - name: Unpack built Linux test programs
+        id: unpack_linux_test_programs
+        if: ${{ true }}
+        run: |
+          tar -xzf artifacts/ci-native/linux-test-programs.tar.gz
+          echo "LD_LIBRARY_PATH=$PWD/build/sdl3-ci/prefix/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" >> "$GITHUB_ENV"
+
+      # Reads the main job's cache and never saves on the standalone path.
+      - name: Restore the compiler cache
+        id: restore_the_compiler_cache
+        if: ${{ false }}
+        continue-on-error: true
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ccache-main-${{ inputs.runner }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: ccache-main-${{ inputs.runner }}-
+
+      - name: Build the map generator golden test
+        id: build_the_map_generator_golden_test
+        if: ${{ false }}
+        run: |
+          targets=(map-generator-golden-test)
+          if [ '${{ matrix.suite }}' = telemetry ]; then
+            targets+=(engine-tests)
+          fi
+          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+          export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons CXX=${{ inputs.compiler }} -j$(nproc) release=1 server=0 "${targets[@]}"
+
+      - name: Check golden maps and sweep colony counts
+        id: check_golden_maps_and_sweep_colony_counts
+        if: ${{ startsWith(matrix.suite, 'sweep-') }}
+        continue-on-error: true
+        run: |
+          # The two jobs divide the four independent sweep shards between runners.
+          # Run golden rows alongside the first pair of shards.
+          golden() { log=$1; shift; timeout 600s ./build/linux/client/release/src/MapGeneratorGoldenTest "$@" > "$log" 2>&1; }
+          if [ '${{ matrix.suite }}' = sweep-a ]; then
+            golden /tmp/golden-rows.log glob2-golden-rows --require-rows & rows=$!
+            shards=(0 1)
+          else
+            shards=(2 3)
+          fi
+          sweeps=()
+          for shard in "${shards[@]}"; do
+            golden /tmp/golden-sweep-$shard.log glob2-golden-sweep-$shard --sweep $shard/4 & sweeps+=($!)
+          done
+          status=0
+          if [ '${{ matrix.suite }}' = sweep-a ]; then
+            if ! wait $rows; then
+              status=1
+              golden /tmp/golden-print.log glob2-golden-print --print || true
+              cat /tmp/golden-print.log
+            fi
+            cat /tmp/golden-rows.log
+          fi
+          for i in "${!shards[@]}"; do
+            wait ${sweeps[$i]} || status=1
+            cat /tmp/golden-sweep-${shards[$i]}.log
+          done
+          [ $status = 0 ]
+
+      - name: Check generator telemetry equivalence and cost
+        id: check_generator_telemetry_equivalence_and_cost
+        if: ${{ matrix.suite == 'telemetry' }}
+        continue-on-error: true
+        run: |
+          # These checks use separate profiles and can share the runner's cores.
+          timeout 600s ./build/linux/client/release/src/MapGeneratorGoldenTest glob2-telemetry-ci --telemetry > /tmp/map-telemetry.log 2>&1 & telemetry=$!
+          python3 test/run_tests.py --binary engine --build-dir build/linux/client/release --tag map-generators --junit artifacts/tests/map-generators-junit.xml > /tmp/map-defaults.log 2>&1 & defaults=$!
+          status=0
+          wait "$telemetry" || status=1
+          wait "$defaults" || status=1
+          cat /tmp/map-telemetry.log /tmp/map-defaults.log
+          [ "$status" -eq 0 ]
+
+      - name: Summarize CI failures
+        if: always()
+        env:
+          CI_STEPS_JSON: ${{ toJSON(steps) }}
+        run: python3 test/ci_step_summary.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ci-observation-generators-${{ inputs.compiler }}-${{ matrix.suite }}
+          path: artifacts/ci-observation/
+          if-no-files-found: ignore
