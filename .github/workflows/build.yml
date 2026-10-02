@@ -35,6 +35,11 @@ jobs:
       - uses: actions/checkout@v4
       - name: Test changed-path selection
         run: python3 -m unittest discover -s tests/build_system -p test_ci_changed_paths.py -v
+      - name: Test CI runners and failure reporting
+        run: |
+          python3 test/ci_run_commands.py \
+            --check 'native runner contracts' 'python3 -m unittest discover -s test -p test_run_tests.py -v' \
+            --check 'failure aggregation contracts' 'python3 -m unittest discover -s test -p test_ci_failure_aggregation.py -v'
       - name: Select checks for changed paths
         id: select
         env:
@@ -42,25 +47,44 @@ jobs:
           BROWSER_ONLY: ${{ inputs.browser_only }}
         run: python3 .github/scripts/ci_changed_paths.py --base "$BASE_SHA"
 
+  native-coverage:
+    name: Native Clang coverage
+    needs: changes
+    if: ${{ needs.changes.outputs.native == 'true' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install matching compiler and coverage tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends \
+            clang-18 llvm-18 python3 scons pkg-config \
+            libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev \
+            libvorbis-dev libogg-dev libspeex-dev libboost-dev libssl-dev \
+            zlib1g-dev libfribidi-dev libpcre3-dev libgl1-mesa-dev \
+            libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth
+      - name: Verify coverage accounting
+        run: python3 -m unittest discover -s test -p test_run_coverage.py -v
+      - name: Run native coverage without the slow integration tier
+        run: |
+          python3 test/run_coverage.py --quick --timeout 900 -j4 \
+            --cc clang-18 --cxx clang++-18 \
+            --llvm-profdata llvm-profdata-18 --llvm-cov llvm-cov-18
+      - name: Retain coverage and failing test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-clang-coverage
+          path: artifacts/native-coverage
+          if-no-files-found: warn
+          retention-days: 14
+
   linux-build:
     name: linux build (${{ matrix.image }}, ${{ matrix.compiler }})
     needs: changes
     if: ${{ needs.changes.outputs.native == 'true' }}
 
-    runs-on: ${{ matrix.runner }}
-    env:
-      CCACHE: 1
-      CCACHE_DIR: /tmp/glob2-ccache
-      # Hash the compiler binary instead of trusting its mtime, so a g++ point
-      # release landing inside the base image cannot reuse the old one's
-      # entries. CCACHE_SLOPPINESS is deliberately left unset: include_file_mtime
-      # and include_file_ctime would make ccache trust timestamps over content,
-      # and time_macros would let it cache the __DATE__/__TIME__ build banner in
-      # GlobalContainerArgs.cpp.
-      CCACHE_COMPILERCHECK: content
-      # A ceiling, not a working size: each saved cache is pruned to the entries
-      # its run used, so no build evicts what another is about to read.
-      CCACHE_MAXSIZE: 5G
     strategy:
       fail-fast: false
       matrix:
@@ -77,206 +101,23 @@ jobs:
             runner: ubuntu-24.04
             compiler: g++-13
             c_compiler: gcc-13
-          - image: ubuntu:24.04
-            runner: ubuntu-24.04
-            compiler: clang-18
-            c_compiler: clang-18
-    steps:
-      - name: Install dependencies
-        id: install_dependencies
-        timeout-minutes: 15
-        env:
-          DEBIAN_FRONTEND: noninteractive
-        run: |
-          # Fetch immutable package indexes to avoid mirror-sync mismatches,
-          # and bound network stalls without weakening signature verification.
-          sudo tee /etc/apt/apt.conf.d/80-ci-network >/dev/null <<'EOF'
-          Acquire::By-Hash "force";
-          Acquire::Retries "3";
-          Acquire::http::Timeout "30";
-          Acquire::https::Timeout "30";
-          EOF
-          sudo apt-get update -qq
-          sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-            ca-certificates git ${{ matrix.compiler }} python3 python3-venv scons pkg-config ccache \
-            libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev \
-            libvorbis-dev libogg-dev libspeex-dev \
-            libboost-dev libssl-dev \
-            zlib1g-dev libfribidi-dev libpcre3-dev \
-            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth
+    uses: ./.github/workflows/ci-linux-build.yml
+    with:
+      image: ${{ matrix.image }}
+      runner: ${{ matrix.runner }}
+      compiler: ${{ matrix.compiler }}
+      c_compiler: ${{ matrix.c_compiler }}
 
-      - uses: actions/checkout@v4
-        id: actions_checkout_v4_1
-
-      - name: Validate translations
-        id: validate_translations
-        continue-on-error: true
-        run: |
-          python3 test/ci_run_commands.py \
-            --check 'translation catalog' 'python3 data/check_translations.py --strict' \
-            --check 'translation tests' 'python3 test/test_translations.py' \
-            --check 'font coverage' 'python3 test/test_font_coverage.py'
-      - name: Test compiler cache integration
-        id: test_compiler_cache_integration
-        continue-on-error: true
-        run: python3 test/test-ccache.py
-
-      - name: Test CI failure aggregation and the test runner
-        id: test_ci_failure_aggregation
-        continue-on-error: true
-        run: |
-          python3 test/ci_run_commands.py \
-            --check 'CI failure aggregation' 'python3 test/test_ci_failure_aggregation.py' \
-            --check 'native test runner' 'python3 test/test_run_tests.py' \
-            --check 'scripting evidence provenance and retrieval' 'python3 -m unittest discover -s test -p test_javascript_evidence.py -v'
-
-      - name: Restore the compiler cache
-        id: restore_the_compiler_cache
-        continue-on-error: true
-        uses: actions/cache/restore@v4
-        with:
-          path: ${{ env.CCACHE_DIR }}
-          key: ccache-main-${{ matrix.runner }}-${{ matrix.compiler }}-${{ github.run_id }}-${{ github.run_attempt }}
-          restore-keys: ccache-main-${{ matrix.runner }}-
-
-      - name: Identify Linux compiler
-        id: linux_compiler
-        run: |
-          digest=$(sha256sum "$(command -v ${{ matrix.compiler }})" | cut -d' ' -f1)
-          echo "digest=$digest" >> "$GITHUB_OUTPUT"
-
-      - name: Restore Linux object tree
-        id: restore_linux_object_tree
-        continue-on-error: true
-        uses: actions/cache/restore@v4
-        with:
-          path: |
-            build/linux/client/release/.sconsign.dblite
-            build/linux/client/release/identity.json
-            build/linux/client/release/configure
-            build/linux/client/release/include/glob2/BuildConfig.h
-            build/linux/client/release/**/*.o
-            build/linux/client/release/**/*.a
-          key: linux-objects-v1-${{ matrix.runner }}-${{ steps.linux_compiler.outputs.digest }}-${{ github.run_id }}-${{ github.run_attempt }}
-          restore-keys: linux-objects-v1-${{ matrix.runner }}-${{ steps.linux_compiler.outputs.digest }}-
-
-      - name: Reset the cache statistics
-        id: cache_ready
-        run: |
-          ccache -z
-          rm -f build/linux/client/release/src/GlobalContainerArgs.o
-          echo "CCACHE_RUN_START=$(date +%s)" >> "$GITHUB_ENV"
-
-      - name: Build glob2 and the regression harnesses
-        id: build_glob2_and_the_regression_harnesses
-        run: |
-          scons CC=${{ matrix.c_compiler }} CXX=${{ matrix.compiler == 'clang-18' && 'clang++-18' || matrix.compiler }} -j$(nproc) release=1 server=0 build/linux/client/release/src/glob2 \
-            unit-tests \
-            engine-tests \
-            maxima-strategy-dump \
-            map-report-test \
-            map-generator-golden-test \
-            lan-test \
-            menu-colony-harness
-
-      - name: Reconstruct scripting vendors
-        run: python3 tools/javascript/verify-vendor.py
-
-      - name: Execute shared JavaScript corpus
-        id: execute_shared_javascript_corpus
-        run: python3 test/check_javascript_corpus.py --build-dir build/linux/client/release --output artifacts/javascript-corpus
-
-      - name: Verify frozen JavaScript simulation profile
-        id: verify_frozen_javascript_simulation_profile
-        run: python3 test/check_javascript.py build/linux/client/release/src/glob2 --output artifacts/javascript-profile
-
-      - name: Retain released simulation compatibility evidence
-        run: python3 test/check_telemetry_simulation.py build/linux/client/release/src/glob2 --output artifacts/released-compatibility
-
-      - name: Upload JavaScript simulation evidence
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: javascript-profile-linux-${{ matrix.compiler }}
-          path: |
-            artifacts/javascript-profile
-            artifacts/javascript-corpus
-            artifacts/released-compatibility
-
-      - name: Test Maxima strategy configuration and policies
-        id: test_maxima_strategy_configuration_and_policies
-        continue-on-error: true
-        run: |
-          python3 test/ci_run_commands.py \
-            --check 'Maxima strategy config' 'MAXIMA_STRATEGY_DUMP=build/linux/client/release/test/MaximaStrategyDump GLOB2_BUILD_DIR=build/linux/client/release GLOB2_USER_DIR="$(mktemp -d)" python3 test/maxima/MaximaStrategyConfigTest.py' \
-            --check 'Maxima policy tests' 'python3 -m unittest discover -s test/maxima -p "*Test.py"'
-
-      - name: Package built Linux test programs
-        id: package_linux_test_programs
-        if: steps.build_glob2_and_the_regression_harnesses.outcome == 'success'
-        run: |
-          test -x build/linux/client/release/src/glob2
-          mkdir -p artifacts/ci-native
-          find build/linux/client/release -type f \( -perm /111 -o -name '*.so*' \) -print0 |
-            tar --null -czf artifacts/ci-native/linux-test-programs.tar.gz -T -
-      - uses: actions/upload-artifact@v4
-        id: upload_linux_test_programs
-        if: steps.package_linux_test_programs.outcome == 'success'
-
-        with:
-          name: linux-test-programs-${{ matrix.runner }}${{ matrix.compiler == 'clang-18' && '-clang-18' || '' }}
-          path: artifacts/ci-native/linux-test-programs.tar.gz
-          retention-days: 2
-          if-no-files-found: error
-
-      - name: Save Linux object tree
-        id: save_linux_object_tree
-        if: ${{ !cancelled() && steps.package_linux_test_programs.outcome == 'success' && ((github.event_name == 'push' && github.ref == 'refs/heads/master') || github.event_name == 'workflow_dispatch') }}
-        continue-on-error: true
-        uses: actions/cache/save@v4
-        with:
-          path: |
-            build/linux/client/release/.sconsign.dblite
-            build/linux/client/release/identity.json
-            build/linux/client/release/configure
-            build/linux/client/release/include/glob2/BuildConfig.h
-            build/linux/client/release/**/*.o
-            build/linux/client/release/**/*.a
-          key: linux-objects-v1-${{ matrix.runner }}-${{ steps.linux_compiler.outputs.digest }}-${{ github.run_id }}-${{ github.run_attempt }}
-
-      # A run that touched a widely included header and still shows near-total
-      # direct hits means the cache is not seeing the change.
-      - name: Report the cache statistics
-        id: report_the_cache_statistics
-        continue-on-error: true
-        if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' }}
-        run: ccache -s -v
-
-      # Keep only what this run compiled or reused (a hit refreshes an entry's
-      # timestamp), so a save never carries older commits' objects forward.
-      - name: Drop cache entries this run did not use
-        id: drop_cache_entries_this_run_did_not_use
-        if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/master' }}
-        run: ccache --evict-older-than "$(( $(date +%s) - CCACHE_RUN_START + 60 ))s"
-
-      # Only master writes. PR branches cannot read each other's caches anyway,
-      # and letting every PR save would churn the repository's cache quota and
-      # evict the entries PRs restore from. Saved even when a step failed: the
-      # entries are content-addressed, so objects compiled during a run whose
-      # tests failed are still the right objects.
-      - name: Save the compiler cache
-        id: save_the_compiler_cache
-        if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/master' }}
-        uses: actions/cache/save@v4
-        with:
-          path: ${{ env.CCACHE_DIR }}
-          key: ccache-main-${{ matrix.runner }}-${{ matrix.compiler }}-${{ github.run_id }}-${{ github.run_attempt }}
-
-      - name: Summarize CI failures
-        if: always()
-        env:
-          CI_STEPS_JSON: ${{ toJSON(steps) }}
-        run: python3 test/ci_step_summary.py
+  linux-clang:
+    name: Linux Clang compatibility
+    needs: changes
+    if: ${{ needs.changes.outputs.native == 'true' }}
+    uses: ./.github/workflows/ci-linux-build.yml
+    with:
+      image: ubuntu:24.04
+      runner: ubuntu-24.04
+      compiler: clang-18
+      c_compiler: clang-18
 
   linux-tests:
     name: linux tests (${{ matrix.platform }}, shard ${{ matrix.shard }}/4)
@@ -367,6 +208,35 @@ jobs:
           LIBGL_ALWAYS_SOFTWARE: 1
         # The [map-generators] contract runs in the linux-map-generators telemetry job.
         run: python3 test/run_tests.py --binary engine --build-dir build/linux/client/release --fullscreen --shard ${{ matrix.shard }}/4 --exclude-tag map-generators --junit artifacts/tests/engine-junit.xml
+      - name: Diagnose accelerated renderer crashes
+        if: ${{ always() && steps.run_the_engine_tests.outcome == 'failure' }}
+        continue-on-error: true
+        timeout-minutes: 5
+        env:
+          LIBGL_ALWAYS_SOFTWARE: 1
+          GLOB2_TEST_DISPLAY: 1
+          GLOB2_TEST_FULLSCREEN: 1
+          SDL_AUDIODRIVER: dummy
+        run: |
+          # Retain the original failure; this separate invocation only collects a trace.
+          if ! python3 - <<'PYTRACE'
+          import xml.etree.ElementTree as ET
+          report = ET.parse('artifacts/tests/engine-junit.xml')
+          crashes = [case for case in report.iter('testcase')
+                     if 'each accelerated backend uploads surface revisions independently' in case.get('name', '')
+                     and case.find('error') is not None]
+          raise SystemExit(0 if crashes else 1)
+          PYTRACE
+          then
+            exit 0
+          fi
+          sudo apt-get install -y --no-install-recommends gdb
+          xvfb-run -a -s '-screen 0 1600x1400x24 -noreset' \
+            gdb --batch -ex run -ex 'thread apply all bt' -ex 'info sharedlibrary' \
+            --args build/linux/client/release/test/glob2-engine-tests \
+            '-tc=each accelerated backend uploads surface revisions independently [display]' \
+            --no-breaks=true > artifacts/tests/accelerated-renderer-gdb.log 2>&1
+
       - name: Upload native test results
         if: always()
         continue-on-error: true
@@ -499,7 +369,7 @@ jobs:
 
   linux:
     name: linux (${{ matrix.image }})
-    needs: [changes, linux-build, linux-tests]
+    needs: [changes, linux-build, linux-clang, linux-tests]
     if: ${{ !cancelled() && needs.changes.outputs.native == 'true' }}
     runs-on: ubuntu-24.04
     strategy:
@@ -510,10 +380,11 @@ jobs:
       - name: Require every Linux build and test shard
         env:
           BUILD_RESULT: ${{ needs.linux-build.result }}
+          CLANG_RESULT: ${{ needs.linux-clang.result }}
           TEST_RESULT: ${{ needs.linux-tests.result }}
         run: |
-          echo "Linux builds: $BUILD_RESULT; Linux test shards: $TEST_RESULT"
-          test "$BUILD_RESULT" = success && test "$TEST_RESULT" = success
+          echo "Linux builds: $BUILD_RESULT; Clang: $CLANG_RESULT; Linux test shards: $TEST_RESULT"
+          test "$BUILD_RESULT" = success && test "$CLANG_RESULT" = success && test "$TEST_RESULT" = success
 
   linux-variants:
     name: linux variants (${{ matrix.image }})
@@ -1239,6 +1110,7 @@ jobs:
             build/emscripten/client/release/identity.json
             build/emscripten/client/release/index.html
             build/emscripten/client/release/loader.js
+            build/emscripten/client/release/threaded/identity.json
             build/emscripten/client/release/threaded/index.js
             build/emscripten/client/release/threaded/index.wasm
             build/emscripten/client/release/threaded/index.data

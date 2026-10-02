@@ -228,7 +228,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 				// we can select for view buildings that are in shared vision, or any building in replay mode
 				if ((buildingTeam==localTeamNo)
 					|| game.map.isFOWDiscovered(mapX, mapY, localTeam->me)
-					|| (game.map.isMapDiscovered(mapX, mapY, localTeam->me) && (game.teams[buildingTeam]->allies&(1<<localTeamNo)))
+					|| (game.map.isMapDiscovered(mapX, mapY, localTeam->me) && (game.teams[buildingTeam]->allies&(Team::teamNumberToMask(localTeamNo))))
 					|| globalContainer->isViewingGame() )
 				{
 					setSelection(BUILDING_SELECTION, gbid);

@@ -199,11 +199,16 @@ void enemy_team_iterator::set_to_next()
 	}
 	else
 		team_number++;
-	for(; runtime->player->team->game->teams[team_number]!=NULL && !(runtime->player->team->enemies & runtime->player->team->game->teams[team_number]->me); team_number++)
+	// A full-capacity match has no spare null slot after its teams. Bound
+	// enumeration by the live match count before touching the array.
+	const Game &game = *runtime->player->game;
+	const int count = game.teamsCount();
+	for (; team_number < count && game.teams[team_number] &&
+		!(runtime->player->team->enemies & game.teams[team_number]->me); ++team_number)
 	{
 	}
 
-	if(runtime->player->team->game->teams[team_number]==NULL)
+	if (team_number >= count || game.teams[team_number] == nullptr)
 	{
 		is_end=true;
 		return;

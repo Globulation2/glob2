@@ -15,7 +15,12 @@ on:
       - data/**
       - test/test_steam_windows_package.py
       - .github/workflows/steam-windows-upload.yml
-      - docs/development/reference.md
+
+# Superseded PR packages are not release artifacts. Keep release calls/manual
+# packaging intact, while newer PR revisions reclaim their runner slots.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
   contents: read

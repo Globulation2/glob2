@@ -156,12 +156,12 @@ void GameGUI::handleClientEvent(ClientEventVariant&& event)
 		{
 			if (e.messageOrderType==MessageOrder::NORMAL_MESSAGE_TYPE)
 			{
-				if (e.recipientsMask &(1<<localPlayer))
+				if (e.recipientsMask &(Team::teamNumberToMask(localPlayer)))
 					addMessage(Color(230, 230, 230), FormattableString("%0 : %1").arg(e.senderName).arg(e.text), true);
 			}
 			else if (e.messageOrderType==MessageOrder::PRIVATE_MESSAGE_TYPE)
 			{
-				if (e.recipientsMask &(1<<localPlayer))
+				if (e.recipientsMask &(Team::teamNumberToMask(localPlayer)))
 					addMessage(Color(99, 255, 242), FormattableString("<%0%1> %2").arg(Toolkit::getStringTable()->getString("[from:]")).arg(e.senderName).arg(e.text), true);
 				else if (e.sender==localPlayer)
 				{
@@ -177,7 +177,7 @@ void GameGUI::handleClientEvent(ClientEventVariant&& event)
 		}
 		else if constexpr (std::is_same_v<T, ClientEvent::VoiceData>)
 		{
-			if (e.order->recipientsMask & (1<<localPlayer))
+			if (e.order->recipientsMask & (Team::teamNumberToMask(localPlayer)))
 				globalContainer->mix->addVoiceData(e.order);
 		}
 		else if constexpr (std::is_same_v<T, ClientEvent::PlayerQuit>)

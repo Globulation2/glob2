@@ -1444,8 +1444,8 @@ Largeur de la rivière
 Poids du sable
 [Select a valid map.]
 Sélectionnez une carte valide.
-[Shared control needs a free controller slot (maximum 12).]
-Le contrôle partagé nécessite une place de joueur humain ou IA libre (maximum 12).
+[Shared control needs a free controller slot (maximum %0).]
+Le contrôle partagé nécessite une place de joueur humain ou IA libre (maximum %0).
 [Smoothing]
 Lissage
 [Standard]
