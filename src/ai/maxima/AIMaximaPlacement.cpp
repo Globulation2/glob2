@@ -10,12 +10,36 @@
 #include <deque>
 #include <queue>
 #include <sstream>
+#include <mutex>
 
 namespace AIMaximaPlacement
 {
 
 namespace
 {
+	// Dimensions determine this immutable geometry. Weak entries share it across
+	// teams without retaining former maps; wrapped order and duplicates matter.
+	std::shared_ptr<const std::vector<int>> neighborhoodTable(int width,int height)
+	{
+		static std::mutex mutex;
+		static std::map<std::pair<int,int>,std::weak_ptr<const std::vector<int>>> tables;
+		std::lock_guard<std::mutex> lock(mutex);
+		for(auto i=tables.begin();i!=tables.end();)
+			if(i->second.expired()) i=tables.erase(i); else ++i;
+		const auto key=std::make_pair(width,height);
+		if(auto existing=tables[key].lock()) return existing;
+		auto table=std::make_shared<std::vector<int>>(size_t(width)*height*9);
+		for(int index=0;index<width*height;++index)
+		{
+			const int x=index%width,y=index/width;
+			int offset=0;
+			for(int dy=-1;dy<=1;++dy) for(int dx=-1;dx<=1;++dx)
+				(*table)[index*9+offset++]=((y+dy+height)%height)*width+(x+dx+width)%width;
+		}
+		tables[key]=table;
+		return table;
+	}
+
 	/// The engine's corn resource index, as carried in WorldTile::resourceType.
 	const int CornResourceType=1;
 
@@ -62,7 +86,7 @@ namespace
 	{
 		values.clear();
 		stream->readEnterSection(name);
-		const uint32_t size=stream->readUint32("size");
+		const uint32_t size=stream->readCount("size");
 		for(uint32_t i=0; i<size; ++i)
 		{
 			stream->readEnterSection(i);
@@ -384,7 +408,7 @@ void Planner::reset()
 	completedBuildingDistanceCache.clear();criticalBuildingDistanceCache.clear();
 	towerBuildingDistanceCache.clear();completedBuildingCountCache.clear();
 	scoringReservedGeneration.clear();scoringAffectedGeneration.clear();
-	scoringBlockedNeighbors.clear();scoringNeighborhoodCache.clear();
+	scoringBlockedNeighbors.clear();scoringNeighborhoodCache.reset();
 	scoringNeighborhoodWidth=scoringNeighborhoodHeight=0;
 	scoringReservedScratch.clear();scoringAffectedScratch.clear();
 	scoringGeneration=0;
@@ -716,17 +740,8 @@ void Planner::prepareScoringCaches(const WorldState& world) const
 	{
 		scoringNeighborhoodWidth=world.width;
 		scoringNeighborhoodHeight=world.height;
-		scoringNeighborhoodCache.resize(size*9);
-		// Farm-loss scoring uses this same wrapped 3x3 stencil for every
-		// candidate.  Normalizing it once removes modulo operations from the hot
-		// loop without changing either traversal order or neighbour multiplicity.
-		for(int index=0;index<size;++index)
-		{
-			const int x=index%world.width,y=index/world.width;
-			int offset=0;
-			for(int dy=-1;dy<=1;++dy)for(int dx=-1;dx<=1;++dx)
-				scoringNeighborhoodCache[index*9+offset++]=world.index(x+dx,y+dy);
-		}
+		scoringNeighborhoodCache=neighborhoodTable(world.width,world.height);
+
 	}
 	// Compare complete building source data rather than a hash: an unchanged
 	// value is therefore an exact cache hit, not a probabilistic one.  Upgrading
@@ -770,7 +785,7 @@ void Planner::prepareScoringCaches(const WorldState& world) const
 			   &&towerBuildingDistanceCache[index]==INT_MAX)
 			{towerBuildingDistanceCache[index]=0;queues[2].push_back(index);}
 		}
-		std::vector<int>* fields[3]={&completedBuildingDistanceCache,
+		DistanceField* fields[3]={&completedBuildingDistanceCache,
 			&criticalBuildingDistanceCache,&towerBuildingDistanceCache};
 		// A four-neighbour multi-source BFS is exactly wrapped Manhattan distance,
 		// which replaces a full building scan at every candidate coordinate.
@@ -949,7 +964,7 @@ int Planner::resourceDistanceAt(const WorldState& world,int resourceType,
 	if(!resourceDistanceCacheValid[resourceType])
 	{
 		const int size=world.width*world.height;
-		std::vector<int>& distances=resourceDistanceCache[resourceType];
+		DistanceField& distances=resourceDistanceCache[resourceType];
 		distances.assign(size,INT_MAX);
 		std::vector<int> queue;queue.reserve(size);
 		for(int i=0;i<size;++i)if(resourceSourceCache[i]==resourceType)
@@ -2166,7 +2181,7 @@ UtilityComponents Planner::scoreCandidate(const WorldState& world,
 		int distance=INT_MAX;
 		for(size_t i=0;i<locationTiles->size();++i)
 			distance=std::min(distance,
-				footprintDistanceCache[(*locationTiles)[i]]);
+				int(footprintDistanceCache[(*locationTiles)[i]]));
 		const int gap=distance==INT_MAX ? placementPolicy.spacingTargetTiles
 			:std::max(0,distance-1);
 		u.friendlyDistance=gap;
@@ -2306,7 +2321,7 @@ UtilityComponents Planner::scoreCandidate(const WorldState& world,
 	affected.reserve(reserved.size()*9);
 	for(size_t i=0;i<reserved.size();++i)
 	{
-		const int* neighborhood=&scoringNeighborhoodCache[reserved[i]*9];
+		const int* neighborhood=&(*scoringNeighborhoodCache)[reserved[i]*9];
 		for(int offset=0;offset<9;++offset)
 		{
 			const int index=neighborhood[offset];
@@ -3439,7 +3454,11 @@ template<class Archive> void Planner::executionState(Archive& a)
 	a("resourceDistanceCacheValid",resourceDistanceCacheValid);
 	a("maximumFarmCapacityCache",maximumFarmCapacityCache);
 	a("maximumFoodOpportunityCache",maximumFoodOpportunityCache);
-	a("foodOpportunitySourceCache",foodOpportunitySourceCache);
+	a.template legacyVector<uint64_t>("foodOpportunitySourceCache",foodOpportunitySourceCache,
+		[](uint32_t x){return uint64_t(x);},[](uint64_t x){
+			if(x>UINT32_MAX) throw std::runtime_error("Invalid food opportunity source");
+			return uint32_t(x);
+		});
 	a("foodHaloMaximumCache",foodHaloMaximumCache);
 	a("foodHaloRadiusCache",foodHaloRadiusCache);
 	a("threatProtectionSourceCache",threatProtectionSourceCache);
@@ -3453,7 +3472,14 @@ template<class Archive> void Planner::executionState(Archive& a)
 	a("scoringReservedGeneration",scoringReservedGeneration);
 	a("scoringAffectedGeneration",scoringAffectedGeneration);
 	a("scoringBlockedNeighbors",scoringBlockedNeighbors);
-	a("scoringNeighborhoodCache",scoringNeighborhoodCache);
+	// Retain the legacy vector encoding, including empty/uninitialized state.
+	std::vector<int> emptyNeighborhood;
+	if constexpr(std::is_same_v<Archive,AIMaximaContinuation::Reader>)
+	{
+		a("scoringNeighborhoodCache",emptyNeighborhood);
+		scoringNeighborhoodCache=std::make_shared<const std::vector<int>>(std::move(emptyNeighborhood));
+	}
+	else a("scoringNeighborhoodCache",scoringNeighborhoodCache ? *scoringNeighborhoodCache : emptyNeighborhood);
 	a("scoringNeighborhoodWidth",scoringNeighborhoodWidth);
 	a("scoringNeighborhoodHeight",scoringNeighborhoodHeight);
 	a("scoringReservedScratch",scoringReservedScratch);
@@ -3492,6 +3518,15 @@ void Planner::loadExecutionState(GAGCore::InputStream* stream,int)
     stream->readEnterSection("PlacementExecution95");
     AIMaximaContinuation::Reader archive(stream);
     executionState(archive);
+    if(scoringNeighborhoodCache && !scoringNeighborhoodCache->empty()
+       && scoringNeighborhoodWidth>0 && scoringNeighborhoodHeight>0
+       && uint64_t(scoringNeighborhoodWidth)*scoringNeighborhoodHeight*9==scoringNeighborhoodCache->size())
+    {
+        auto shared=neighborhoodTable(scoringNeighborhoodWidth,scoringNeighborhoodHeight);
+        // Share only exact canonical content: unusual saved tables must retain
+        // their original bytes and continuation behavior.
+        if(*shared==*scoringNeighborhoodCache) scoringNeighborhoodCache=std::move(shared);
+    }
     stream->readLeaveSection();
 }
 
@@ -3511,6 +3546,11 @@ void Planner::save(GAGCore::OutputStream* stream) const
 
 bool Planner::load(GAGCore::InputStream* stream,int)
 {
+	auto readEnum = [stream](const char* name, int maximum) {
+		const int value=stream->readSint32(name);
+		if (value<0 || value>maximum) throw std::runtime_error("Invalid saved placement enum");
+		return value;
+	};
 	campusList.clear();standaloneList.clear();reservationMap.clear();actionMap.clear();blockedIntentSignatures.clear();coordinateQuarantines.clear();refusedRelocations.clear();footprintRefs.clear();circulationRefs.clear();
 	circulationReservedTileCount=0;
 	routeCacheSignature=0;routeDistanceCache[0].clear();routeDistanceCache[1].clear();
@@ -3525,13 +3565,32 @@ bool Planner::load(GAGCore::InputStream* stream,int)
 	scoringGeneration=0;
 	footprintReferenceRevision=1;
 	stream->readEnterSection("V3PlacementPlanner");nextCampusId=stream->readSint32("next_campus_id");nextReservationId=stream->readSint32("next_reservation_id");nextActionId=stream->readSint32("next_action_id");uint32_t size;
-	stream->readEnterSection("campuses");size=stream->readUint32("size");for(uint32_t i=0;i<size;++i){stream->readEnterSection(i);Campus c;c.id=stream->readSint32("id");c.templateId=static_cast<TemplateId>(stream->readSint32("template_id"));c.originX=stream->readSint32("origin_x");c.originY=stream->readSint32("origin_y");c.fallbackWaterTier=stream->readUint8("fallback");uint32_t slots=stream->readUint32("slot_size");c.slots.assign(slots,CampusSlotState());for(uint32_t s=0;s<slots;++s){stream->readEnterSection(s);c.slots[s].buildingId=stream->readSint32("building_id");c.slots[s].actionId=stream->readSint32("action_id");c.slots[s].currentLevel=stream->readSint32("level");c.slots[s].unusable=stream->readUint8("unusable");stream->readLeaveSection();}campusList.push_back(c);stream->readLeaveSection();}stream->readLeaveSection();
-	stream->readEnterSection("standalone");size=stream->readUint32("size");for(uint32_t i=0;i<size;++i){stream->readEnterSection(i);StandaloneContract c;c.buildingId=stream->readSint32("building_id");c.buildingType=stream->readSint32("building_type");c.centerX=stream->readSint32("x");c.centerY=stream->readSint32("y");c.maximumLevel=stream->readSint32("maximum_level");c.reservationId=stream->readSint32("reservation_id");c.preexisting=stream->readUint8("preexisting");standaloneList.push_back(c);stream->readLeaveSection();}stream->readLeaveSection();
-	stream->readEnterSection("reservations");size=stream->readUint32("size");for(uint32_t i=0;i<size;++i){stream->readEnterSection(i);Reservation r;r.id=stream->readSint32("id");r.campusId=stream->readSint32("campus_id");r.buildingId=stream->readSint32("building_id");r.actionId=stream->readSint32("action_id");r.permanent=stream->readUint8("permanent");readIntVector(stream,"footprint",r.footprintTiles);readIntVector(stream,"circulation",r.circulationTiles);reservationMap[r.id]=r;stream->readLeaveSection();}stream->readLeaveSection();
-	stream->readEnterSection("reference_masks");size=stream->readUint32("size");footprintRefs.resize(size);circulationRefs.resize(size);for(uint32_t i=0;i<size;++i){stream->readEnterSection(i);footprintRefs[i]=stream->readUint16("footprint");circulationRefs[i]=stream->readUint16("circulation");if(circulationRefs[i])++circulationReservedTileCount;stream->readLeaveSection();}stream->readLeaveSection();
-	stream->readEnterSection("blocked");size=stream->readUint32("size");for(uint32_t i=0;i<size;++i){stream->readEnterSection(i);int type=stream->readSint32("type");int purpose=stream->readSint32("purpose");blockedIntentSignatures[std::make_pair(type,purpose)]=stream->readUint32("signature");stream->readLeaveSection();}stream->readLeaveSection();
-	stream->readEnterSection("quarantines");size=stream->readUint32("size");for(uint32_t i=0;i<size;++i){stream->readEnterSection(i);int coordinate=stream->readSint32("coordinate");coordinateQuarantines[coordinate]=stream->readUint32("signature");stream->readLeaveSection();}stream->readLeaveSection();
-	stream->readEnterSection("actions");size=stream->readUint32("size");for(uint32_t i=0;i<size;++i){stream->readEnterSection(i);DevelopmentAction a;a.id=stream->readSint32("id");a.type=static_cast<DevelopmentActionType>(stream->readSint32("type"));a.purpose=static_cast<DevelopmentPurpose>(stream->readSint32("purpose"));a.state=static_cast<ActionLifecycleState>(stream->readSint32("state"));a.templateId=static_cast<TemplateId>(stream->readSint32("template_id"));a.campusId=stream->readSint32("campus_id");a.slotId=stream->readSint32("slot_id");a.buildingId=stream->readSint32("building_id");a.buildingType=stream->readSint32("building_type");a.fromLevel=stream->readSint32("from_level");a.targetLevel=stream->readSint32("target_level");a.centerX=stream->readSint32("x");a.centerY=stream->readSint32("y");a.workers=stream->readSint32("workers");a.fallbackWaterTier=stream->readUint8("fallback");a.requiresSwimmingBuilders=stream->readUint8("requires_swimming_builders");a.reservationId=stream->readSint32("reservation_id");a.issuedTick=stream->readSint32("issued_tick");a.worldSignature=stream->readUint32("signature");a.initialFootprint.left=stream->readSint32("initial_left");a.initialFootprint.top=stream->readSint32("initial_top");a.initialFootprint.width=stream->readSint32("initial_width");a.initialFootprint.height=stream->readSint32("initial_height");a.terminalFootprint.left=stream->readSint32("terminal_left");a.terminalFootprint.top=stream->readSint32("terminal_top");a.terminalFootprint.width=stream->readSint32("terminal_width");a.terminalFootprint.height=stream->readSint32("terminal_height");readIntVector(stream,"parcel",a.parcelTiles);readIntVector(stream,"access",a.accessTiles);readIntVector(stream,"artery",a.arteryTiles);stream->readEnterSection("utility");readUtility(stream,a.utility);stream->readLeaveSection();actionMap[a.id]=a;stream->readLeaveSection();}stream->readLeaveSection();stream->readLeaveSection();return true;
+	stream->readEnterSection("campuses");size=stream->readCount("size");for(uint32_t i=0;i<size;++i){stream->readEnterSection(i);Campus c;c.id=stream->readSint32("id");c.templateId=static_cast<TemplateId>(readEnum("template_id", TowerDefended));c.originX=stream->readSint32("origin_x");c.originY=stream->readSint32("origin_y");c.fallbackWaterTier=stream->readUint8("fallback");uint32_t slots=stream->readCount("slot_size");const auto* definition=findTemplate(c.templateId);if(!definition || slots!=definition->slots.size()) throw std::runtime_error("Invalid saved campus slots");c.slots.assign(slots,CampusSlotState());for(uint32_t s=0;s<slots;++s){stream->readEnterSection(s);c.slots[s].buildingId=stream->readSint32("building_id");c.slots[s].actionId=stream->readSint32("action_id");c.slots[s].currentLevel=stream->readSint32("level");c.slots[s].unusable=stream->readUint8("unusable");stream->readLeaveSection();}campusList.push_back(c);stream->readLeaveSection();}stream->readLeaveSection();
+	stream->readEnterSection("standalone");size=stream->readCount("size");for(uint32_t i=0;i<size;++i){stream->readEnterSection(i);StandaloneContract c;c.buildingId=stream->readSint32("building_id");c.buildingType=stream->readSint32("building_type");c.centerX=stream->readSint32("x");c.centerY=stream->readSint32("y");c.maximumLevel=stream->readSint32("maximum_level");c.reservationId=stream->readSint32("reservation_id");c.preexisting=stream->readUint8("preexisting");standaloneList.push_back(c);stream->readLeaveSection();}stream->readLeaveSection();
+	stream->readEnterSection("reservations");size=stream->readCount("size");for(uint32_t i=0;i<size;++i){stream->readEnterSection(i);Reservation r;r.id=stream->readSint32("id");r.campusId=stream->readSint32("campus_id");r.buildingId=stream->readSint32("building_id");r.actionId=stream->readSint32("action_id");r.permanent=stream->readUint8("permanent");readIntVector(stream,"footprint",r.footprintTiles);readIntVector(stream,"circulation",r.circulationTiles);reservationMap[r.id]=r;stream->readLeaveSection();}stream->readLeaveSection();
+	stream->readEnterSection("reference_masks");size=stream->readCount("size");footprintRefs.resize(size);circulationRefs.resize(size);for(uint32_t i=0;i<size;++i){stream->readEnterSection(i);footprintRefs[i]=stream->readUint16("footprint");circulationRefs[i]=stream->readUint16("circulation");if(circulationRefs[i])++circulationReservedTileCount;stream->readLeaveSection();}stream->readLeaveSection();
+	stream->readEnterSection("blocked");size=stream->readCount("size");for(uint32_t i=0;i<size;++i){stream->readEnterSection(i);int type=stream->readSint32("type");int purpose=stream->readSint32("purpose");blockedIntentSignatures[std::make_pair(type,purpose)]=stream->readUint32("signature");stream->readLeaveSection();}stream->readLeaveSection();
+	stream->readEnterSection("quarantines");size=stream->readCount("size");for(uint32_t i=0;i<size;++i){stream->readEnterSection(i);int coordinate=stream->readSint32("coordinate");coordinateQuarantines[coordinate]=stream->readUint32("signature");stream->readLeaveSection();}stream->readLeaveSection();
+	stream->readEnterSection("actions");size=stream->readCount("size");for(uint32_t i=0;i<size;++i){stream->readEnterSection(i);DevelopmentAction a;a.id=stream->readSint32("id");a.type=static_cast<DevelopmentActionType>(readEnum("type", RepairBuilding));a.purpose=static_cast<DevelopmentPurpose>(readEnum("purpose", Fortification));a.state=static_cast<ActionLifecycleState>(readEnum("state", EngineRejected));a.templateId=static_cast<TemplateId>(readEnum("template_id", TowerDefended));a.campusId=stream->readSint32("campus_id");a.slotId=stream->readSint32("slot_id");a.buildingId=stream->readSint32("building_id");a.buildingType=stream->readSint32("building_type");a.fromLevel=stream->readSint32("from_level");a.targetLevel=stream->readSint32("target_level");a.centerX=stream->readSint32("x");a.centerY=stream->readSint32("y");a.workers=stream->readSint32("workers");a.fallbackWaterTier=stream->readUint8("fallback");a.requiresSwimmingBuilders=stream->readUint8("requires_swimming_builders");a.reservationId=stream->readSint32("reservation_id");a.issuedTick=stream->readSint32("issued_tick");a.worldSignature=stream->readUint32("signature");a.initialFootprint.left=stream->readSint32("initial_left");a.initialFootprint.top=stream->readSint32("initial_top");a.initialFootprint.width=stream->readSint32("initial_width");a.initialFootprint.height=stream->readSint32("initial_height");a.terminalFootprint.left=stream->readSint32("terminal_left");a.terminalFootprint.top=stream->readSint32("terminal_top");a.terminalFootprint.width=stream->readSint32("terminal_width");a.terminalFootprint.height=stream->readSint32("terminal_height");readIntVector(stream,"parcel",a.parcelTiles);readIntVector(stream,"access",a.accessTiles);readIntVector(stream,"artery",a.arteryTiles);stream->readEnterSection("utility");readUtility(stream,a.utility);stream->readLeaveSection();actionMap[a.id]=a;stream->readLeaveSection();}stream->readLeaveSection();stream->readLeaveSection();
+	auto validTiles = [this](const std::vector<int>& tiles) {
+		for (int tile : tiles) if (tile<0 || size_t(tile)>=footprintRefs.size()) return false;
+		return true;
+	};
+	for (const auto& [id, reservation] : reservationMap)
+		if (!validTiles(reservation.footprintTiles) || !validTiles(reservation.circulationTiles))
+			throw std::runtime_error("Invalid saved reservation tile");
+	for (const auto& [id, action] : actionMap)
+	{
+		if (!validTiles(action.parcelTiles) || !validTiles(action.accessTiles) || !validTiles(action.arteryTiles))
+			throw std::runtime_error("Invalid saved action tile");
+		if (action.type==BuildCampusMember)
+		{
+			const auto* definition=findTemplate(action.templateId);
+			if (!definition || action.slotId<0 || size_t(action.slotId)>=definition->slots.size())
+				throw std::runtime_error("Invalid saved action slot");
+		}
+	}
+	return true;
 }
 
 const char* lifecycleName(ActionLifecycleState state)

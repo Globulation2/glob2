@@ -81,17 +81,17 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 		
 		
 		const int modState = modifiers;
-		if(!(modState & KMOD_CTRL || modState & KMOD_SHIFT) || !firstPlacement)
+		if(!(modState & SDL_KMOD_CTRL || modState & SDL_KMOD_SHIFT) || !firstPlacement)
 		{
 			drawBuildingAt(mapX, mapY, localteam, viewportX, viewportY);
 		}
 		///This allows the drag-placing of walls
-		else if(modState & KMOD_CTRL)
+		else if(modState & SDL_KMOD_CTRL)
 		{
 			computeBuildingLine(firstPlacement->x, firstPlacement->y, mapX, mapY, localteam, viewportX, viewportY, 1);
 		}
 		///This allows the placing of a square of buildings
-		else if(modState & KMOD_SHIFT)
+		else if(modState & SDL_KMOD_SHIFT)
 		{
 			computeBuildingBox(firstPlacement->x, firstPlacement->y, mapX, mapY, localteam, viewportX, viewportY, 1);
 		}
@@ -202,17 +202,17 @@ void GameGUIToolManager::handleMouseUp(int mouseX, int mouseY, int localteam, in
 		game.map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &mapX, &mapY, viewportX, viewportY);
 
 		const int modState = modifiers;
-		if(!(modState & KMOD_CTRL || modState & KMOD_SHIFT) || !firstPlacement)
+		if(!(modState & SDL_KMOD_CTRL || modState & SDL_KMOD_SHIFT) || !firstPlacement)
 		{
 			placeBuildingAt(mapX, mapY, localteam);
 		}
 		///This allows the placing of a line of buildings
-		else if(modState & KMOD_CTRL)
+		else if(modState & SDL_KMOD_CTRL)
 		{
 			computeBuildingLine(firstPlacement->x, firstPlacement->y, mapX, mapY, localteam, viewportX, viewportY, 2);
 		}
 		///This allows the placing of a square of buildings
-		else if(modState & KMOD_SHIFT)
+		else if(modState & SDL_KMOD_SHIFT)
 		{
 			computeBuildingBox(firstPlacement->x, firstPlacement->y, mapX, mapY, localteam, viewportX, viewportY, 2);
 		}

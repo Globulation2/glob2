@@ -84,7 +84,7 @@ bool ChangeFlagSize::load(GAGCore::InputStream *stream, Player *player, Sint32 v
 {
 	stream->readEnterSection("ChangeFlagSize");
 	ManagementOrder::load(stream, player, versionMinor);
-	size=stream->readUint32("size");
+	size=stream->readCount("size");
 	building_id=stream->readUint32("building_id");
 	stream->readLeaveSection();
 	return true;
@@ -284,9 +284,11 @@ bool AddArea::load(GAGCore::InputStream *stream, Player *player, Sint32 versionM
 {
 	stream->readEnterSection("AddArea");
 	ManagementOrder::load(stream, player, versionMinor);
-	areatype=static_cast<AreaType>(stream->readUint32("area_type"));
+	const Uint32 savedArea=stream->readUint32("area_type");
+	if (savedArea > GuardArea) return false;
+	areatype=static_cast<AreaType>(savedArea);
 	stream->readEnterSection("locations");
-	Uint32 size=stream->readUint32("size");
+	Uint32 size=stream->readCount("size");
 	locations.resize(size);
 	for(Uint32 location_index=0; location_index<size; ++location_index)
 	{
@@ -356,9 +358,11 @@ bool RemoveArea::load(GAGCore::InputStream *stream, Player *player, Sint32 versi
 {
 	stream->readEnterSection("RemoveArea");
 	ManagementOrder::load(stream, player, versionMinor);
-	areatype=static_cast<AreaType>(stream->readUint32("area_type"));
+	const Uint32 savedArea=stream->readUint32("area_type");
+	if (savedArea > GuardArea) return false;
+	areatype=static_cast<AreaType>(savedArea);
 	stream->readEnterSection("locations");
-	Uint32 size=stream->readUint32("size");
+	Uint32 size=stream->readCount("size");
 	locations.resize(size);
 	for(Uint32 location_index=0; location_index<size; ++location_index)
 	{

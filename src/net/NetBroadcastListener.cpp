@@ -2,8 +2,10 @@
 #include "NetBroadcastListener.h"
 #include "NetConsts.h"
 #include "NetTransport.h"
-#include "SDLCompat.h"
+#include <SDL3/SDL.h>
+#include <Environment.h>
 #include <algorithm>
+#include <memory>
 NetBroadcastListener::NetBroadcastListener()
 {
 	enableListening();
@@ -14,47 +16,45 @@ NetBroadcastListener::~NetBroadcastListener()
 }
 void NetBroadcastListener::update()
 {
-	const auto now = SDL_GetTicks64();
+	const auto now = SDL_GetTicks();
 	if (socket)
 	{
-		UDPpacket *packet = SDLNet_AllocPacket(549);
-		if (packet)
+		for (unsigned count = 0; count < 32; ++count)
 		{
-			// Limit packet processing so discovery cannot starve the UI/game loop.
-			for (unsigned count = 0; count < 32 && SDLNet_UDP_Recv(socket, packet) == 1; ++count)
+			NET_Datagram *raw = nullptr;
+			if (!NET_ReceiveDatagram(socket, &raw) || !raw)
+				break;
+			std::unique_ptr<NET_Datagram, decltype(&NET_DestroyDatagram)> packet(
+				raw, NET_DestroyDatagram);
+			if (packet->buflen <= 36 || packet->buflen > 548)
+				continue;
+			std::string bytes(reinterpret_cast<char *>(packet->buf), packet->buflen);
+			if (bytes.substr(0, 4) != "G2D1")
+				continue;
+			const auto id = bytes.substr(4, 32), url = bytes.substr(36);
+			if (id.find_first_not_of("0123456789abcdef") != std::string::npos ||
+				url.find('#') != std::string::npos)
+				continue;
+			try
 			{
-				if (packet->len <= 36 || packet->len > 548)
+				const auto endpoint = NetEndpoint::parse(url);
+				if (endpoint.route != "/yog")
 					continue;
-				std::string bytes(reinterpret_cast<char *>(packet->data), packet->len);
-				if (bytes.substr(0, 4) != "G2D1")
+				const char *text = NET_GetAddressString(packet->addr);
+				const std::string sender = text ? text : "";
+				if (endpoint.host != sender)
 					continue;
-				const auto id = bytes.substr(4, 32), url = bytes.substr(36);
-				if (id.find_first_not_of("0123456789abcdef") != std::string::npos ||
-					url.find('#') != std::string::npos)
-					continue;
-				try
-				{
-					const auto endpoint = NetEndpoint::parse(url);
-					if (endpoint.route != "/yog")
-						continue;
-					const auto *ip = reinterpret_cast<const unsigned char *>(&packet->address.host);
-					auto sender = std::to_string(ip[0]) + "." + std::to_string(ip[1]) + "." +
-								  std::to_string(ip[2]) + "." + std::to_string(ip[3]);
-					if (endpoint.host != sender)
-						continue;
-					auto found =
-						std::find_if(hosts.begin(), hosts.end(), [&](const auto &host)
-									 { return host.identifier == id && host.endpoint == url; });
-					if (found != hosts.end())
-						found->lastSeen = now;
-					else if (hosts.size() < 64)
-						hosts.push_back({id, url, now});
-				}
-				catch (...)
-				{
-				}
+				auto found =
+					std::find_if(hosts.begin(), hosts.end(), [&](const auto &host)
+								 { return host.identifier == id && host.endpoint == url; });
+				if (found != hosts.end())
+					found->lastSeen = now;
+				else if (hosts.size() < 64)
+					hosts.push_back({id, url, now});
 			}
-			SDLNet_FreePacket(packet);
+			catch (...)
+			{
+			}
 		}
 	}
 	hosts.erase(std::remove_if(hosts.begin(), hosts.end(),
@@ -64,11 +64,17 @@ void NetBroadcastListener::update()
 void NetBroadcastListener::enableListening()
 {
 	disableListening();
-	socket = SDLNet_UDP_Open(LAN_BROADCAST_PORT);
+#ifndef __EMSCRIPTEN__
+	NET_Address *ipv4 = NET_ResolveHostname("0.0.0.0");
+	if (ipv4 && NET_WaitUntilResolved(ipv4, 1000) == NET_SUCCESS)
+		socket = NET_CreateDatagramSocket(ipv4, LAN_BROADCAST_PORT, 0);
+	if (ipv4)
+		NET_UnrefAddress(ipv4);
+#endif
 }
 void NetBroadcastListener::disableListening()
 {
 	if (socket)
-		SDLNet_UDP_Close(socket);
+		NET_DestroyDatagramSocket(socket);
 	socket = nullptr;
 }

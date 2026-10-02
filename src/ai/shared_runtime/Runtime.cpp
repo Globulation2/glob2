@@ -35,8 +35,7 @@ void AISharedRuntime::signature_check(GAGCore::InputStream *stream, Player *play
 	if (memcmp(signature,"EchoSig", AI_SHARED_RUNTIME_SIGNATURE_LENGTH)!=0)
 	{
 
-		std::cerr<<"Signature match failed. Expected \"EchoSig\", received \""<<signature<<"\""<<std::endl;
-		assert(false);
+		throw std::runtime_error("Invalid saved AI signature");
 	}
 }
 

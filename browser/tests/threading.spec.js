@@ -99,10 +99,10 @@ test('threaded audio produces PCM, keeps settings responsive and shuts down clea
   expect(await page.evaluate(() => Module.executionMode)).toBe('threaded');
   await clickMainMenu(page, 'settings'); await screen(page, 'SettingsScreen');
   await clickControl(page, 'nav.1'); await clickControl(page, 'audio.mute');
-  await page.waitForFunction(() => Module.SDL2?.audio?.scriptProcessorNode);
+  await page.waitForFunction(() => Module.SDL3?.audio_playback?.scriptProcessorNode);
   await page.evaluate(() => {
     window.audioBlocks = 0;
-    const node = Module.SDL2.audio.scriptProcessorNode;
+    const node = Module.SDL3.audio_playback.scriptProcessorNode;
     const render = node.onaudioprocess;
     node.onaudioprocess = event => {
       render(event);

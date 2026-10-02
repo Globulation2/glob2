@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <ApplicationHost.h>
+#include <EventQueue.h>
 #include "Runtime.h"
 #include <emscripten/threading.h>
 #include <BrowserTextInput.h>
@@ -13,6 +14,16 @@
 
 namespace GAGCore::ApplicationHost
 {
+void initializeOpenGLContext()
+{
+    // SDL3 uses the HTML5 context API, bypassing Browser.createContext and the
+    // callbacks that initialize the pinned Emscripten legacy GL emulation.
+    EM_ASM({
+        Browser.useWebGL = true;
+        Module['ctx'] = GLctx;
+        Browser.moduleContextCreatedCallbacks.forEach(function(callback) { callback(); });
+    });
+}
 namespace
 {
 struct Diagnostics {
@@ -114,10 +125,10 @@ void scheduledFrame(void* opaque)
     }
     bool running;
     {
-        std::vector<SDL_Event> events;
+        GAGCore::EventQueue events;
         SDL_Event event;
         while (SDL_PollEvent(&event)) events.push_back(event);
-        running = state->loop->frame(SDL_GetTicks(), events);
+        running = state->loop->frame(SDL_GetTicks(), events.events());
     }
     publishDiagnostics();
     // Diagnostics: one increment per processed host frame, so tests can wait

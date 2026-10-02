@@ -30,7 +30,7 @@
 #include <cstdlib>
 #include <memory>
 #include <string>
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include "BinaryStream.h"
 #include "StreamBackend.h"
 #include "Order.h"
@@ -38,6 +38,7 @@
 #include "ReplayWriter.h"
 #include "ReplayReader.h"
 #include "Version.h"
+#include "FileFormatVersions.h"
 
 using namespace GAGCore;
 
@@ -122,7 +123,7 @@ void testWideRoundTrip()
 // copy of the written bytes (BinaryOutputStream deletes its backend on
 // destruction, so the copy is taken while it is still alive); the caller
 // passes ownership to ReplayReader::loadReplay.
-BinaryInputStream* writeReplayBody(Uint16 versionMinor, Uint32 firstCounter)
+BinaryInputStream* writeReplayBody(Uint16 versionMinor, Uint32 firstCounter, Uint32 finalCounter = 0, Uint32 checksum = 0)
 {
 	MemoryStreamBackend* writeBackend = new MemoryStreamBackend;
 	MemoryStreamBackend* readBackend = nullptr;
@@ -131,8 +132,10 @@ BinaryInputStream* writeReplayBody(Uint16 versionMinor, Uint32 firstCounter)
 		ostream.writeUint16(VERSION_MAJOR, "versionMajor");
 		ostream.writeUint16(versionMinor, "versionMinor");
 		ostream.writeUint32(firstCounter, "replayStepsSinceLastOrder");
-		writeOrderEnvelope(&ostream, std::shared_ptr<Order>(new StepTestOrder()));
-		ostream.writeUint32(0, "replayStepsSinceLastOrder");
+		auto order = std::make_shared<StepTestOrder>();
+		order->gameCheckSum = checksum;
+		writeOrderEnvelope(&ostream, order);
+		ostream.writeUint32(finalCounter, "replayStepsSinceLastOrder");
 		writeOrderEnvelope(&ostream, std::shared_ptr<Order>(new NullOrder()));
 		readBackend = new MemoryStreamBackend(*writeBackend);
 	}
@@ -194,6 +197,46 @@ void testDecodeVersionPlumbing()
 
 TEST_SUITE("ReplayStepCounter")
 {
+    TEST_CASE("truncated replay bodies never become zero-filled orders") {
+        std::unique_ptr<BinaryInputStream> original(writeReplayBody(VERSION_MINOR, 7));
+        original->seekFromEnd(0);
+        const size_t length = original->getPosition();
+        original->seekFromStart(0);
+        std::string bytes(length, '\0');
+        original->read(bytes.data(), length, "body");
+        for (size_t cut = 0; cut < length; ++cut) {
+            INFO(cut);
+            auto* memory = new MemoryStreamBackend(bytes.data(), cut);
+            memory->seekFromStart(0);
+            ReplayReader reader;
+            CHECK_FALSE(reader.loadReplay(new BinaryInputStream(memory), false));
+            CHECK_FALSE(reader.isValid());
+        }
+    }
+
+	TEST_CASE("step totals cannot wrap") {
+        ReplayReader reader;
+        CHECK_FALSE(reader.loadReplay(writeReplayBody(VERSION_MINOR, 0xffffffffu, 1), false));
+    }
+	TEST_CASE("checksum mismatch closes playback safely") {
+        ReplayReader reader;
+        REQUIRE(reader.loadReplay(writeReplayBody(VERSION_MINOR, 0, 0, 123), false));
+        reader.setCheckSum(456);
+        CHECK(reader.retrieveOrder()->getOrderType() == ORDER_NULL);
+        CHECK_FALSE(reader.isValid());
+    }
+    TEST_CASE("legacy create decoder respects both historical payload lengths") {
+        const Uint8 shortPayload[20] = {};
+        auto shortOrder = OrderCreate::deserialize(shortPayload, sizeof(shortPayload), FILE_FORMAT_VERSION_ORDER_CREATE_FLAG_RADIUS - 1);
+        REQUIRE(shortOrder);
+        CHECK(shortOrder->unitWorkingFuture == shortOrder->unitWorking);
+        Uint8 oldPayload[24] = {}; oldPayload[23] = 7;
+        auto oldOrder = OrderCreate::deserialize(oldPayload, sizeof(oldPayload), FILE_FORMAT_VERSION_ORDER_CREATE_FLAG_RADIUS - 1);
+        REQUIRE(oldOrder);
+        CHECK(oldOrder->unitWorkingFuture == 7);
+        CHECK_FALSE(OrderCreate::deserialize(shortPayload, sizeof(shortPayload), VERSION_MINOR));
+    }
+
 	TEST_CASE("WideRoundTrip") { testWideRoundTrip(); }
 	TEST_CASE("VersionBounds") { testVersionBounds(); }
 	TEST_CASE("DecodeVersionPlumbing") { testDecodeVersionPlumbing(); }

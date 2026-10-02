@@ -19,7 +19,7 @@ class Map;
 class BuildingGradientSearch
 {
 	std::array<GradientBucket, GradientBucket::COUNT> buckets;
-	std::vector<std::uint8_t> water;
+	std::shared_ptr<const std::vector<std::uint8_t>> water;
 	std::uint16_t *gradient = nullptr;
 	std::size_t cells = 0, pending = 0;
 	int currentCost = 0, swimClass = 0;

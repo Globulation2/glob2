@@ -5,7 +5,7 @@
 #include <iostream>
 #include <algorithm>
 
-#include <SDL_keycode.h>
+#include <SDL3/SDL_keycode.h>
 
 #include <FileManager.h>
 #include <Stream.h>
@@ -197,7 +197,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 			setSelection(UNIT_SELECTION, mouseUnit);
 			selectionPushed = true;
 			// handle dump of unit characteristics
-			if ((inputState.modifiers() & KMOD_SHIFT) != 0)
+			if ((inputState.modifiers() & SDL_KMOD_SHIFT) != 0)
 			{
 				OutputStream *stream = new TextOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("unit.dump.txt"));
 				if (stream->isEndOfStream())
@@ -235,7 +235,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 					selectionPushed=true;
 					// showUnitWorkingToBuilding=true;
 					// handle dump of building characteristics
-					if ((inputState.modifiers() & KMOD_SHIFT) != 0)
+					if ((inputState.modifiers() & SDL_KMOD_SHIFT) != 0)
 					{
 						OutputStream *stream = new TextOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("building.dump.txt"));
 						if (stream->isEndOfStream())

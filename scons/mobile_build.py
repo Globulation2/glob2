@@ -69,7 +69,7 @@ def build_mobile(directory, identity, arguments):
 #define GLOB2_NO_VOICE 1
 ''' + ('#define GLOB2_CHINA_RELEASE 1\n' if identity.get('china') else '')
         + ('#define GLOB2_AMAZON_RELEASE 1\n' if identity.get('amazon') else ''))
-    env.Append(CPPPATH=["#third_party/quickjs-ng", str(output / 'include'), str(prefix / 'include'), str(prefix / 'include/SDL2')] + list(INCLUDE_DIRECTORIES),
+    env.Append(CPPPATH=["#third_party/quickjs-ng", str(output / 'include'), str(prefix / 'include'), str(prefix / 'include/SDL3')] + list(INCLUDE_DIRECTORIES),
         CPPDEFINES=['HAVE_CONFIG_H'], CCFLAGS=toolchain['cflags'] + ['-g', '-O2' if identity['mode'] == 'release' else '-O0'],
         CXXFLAGS=['-std=gnu++20', '-fexceptions'], LINKFLAGS=toolchain['ldflags'], LIBS=[env.File(path) for path in libraries])
     if any(target in COMMAND_LINE_TARGETS for target in ('android-tests', 'ios-tests', 'web-tests')):
@@ -89,7 +89,7 @@ def build_mobile(directory, identity, arguments):
         files += ['mobile/android/Documents.cpp', 'mobile/android/CertificateTrust.cpp']
         env.Append(LIBS=['android', 'log', 'dl', 'm'])
         env['_LIBFLAGS'] = '-Wl,--start-group ' + env['_LIBFLAGS'] + ' -Wl,--end-group'
-        env.Append(CPPDEFINES=['main=SDL_main'])
+        # SDL3/SDL_main.h supplies Android entry-point routing.
         objects = [(strict if name.startswith('src/script/') or name == 'src/ai/AIJavaScript.cpp' else env).SharedObject(str(object_root / (name + '.o')), name) for name in files] + script_objects
         numeric_guard(strict, [obj for name, obj in zip(files, objects) if name.startswith('src/script/') or name == 'src/ai/AIJavaScript.cpp'])
         program = env.SharedLibrary(str(output / 'lib/main'), objects)

@@ -24,7 +24,7 @@
 #include "Unit.h"
 #include "Utilities.h"
 #include "GameGUI.h"
-#include "SDLCompat.h"
+#include <SDL3/SDL.h>
 
 
 #include "Brush.h"
@@ -216,7 +216,7 @@ void Game::drawMapGroundBuildings(int left, int top, int right, int bot, int sw,
 						const Sint32 dispY = buildingGuiState ? displayedPosY(*buildingGuiState, building->gid, building->posY) : building->posY;
 						px = originX * 32 + (dispX - building->posX) * 32;
 						py = originY * 32 + (dispY - building->posY) * 32;
-					 	drawMapBuilding(px, py, gid, viewportX, viewportY, localTeam, drawOptions, scene);
+						drawMapBuilding(px, py, gid, viewportX, viewportY, localTeam, drawOptions, scene);
 						drawnCopies.insert(copy);
 						drawnBuildings.insert(building->gid);
 					}

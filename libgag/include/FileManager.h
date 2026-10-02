@@ -19,6 +19,7 @@
 
 namespace GAGCore
 {
+	class ChunkedBuffer;
 	class StreamBackend;
 	class OutputStream;
 	
@@ -40,7 +41,7 @@ namespace GAGCore
 		//! internal function that does the real listing job
 		bool addListingForDir(const std::string realDir, const std::string extension="", const bool dirs=false);
 		//! open a file, if it is in writing, do a backup
-		SDL_RWops *openWithbackup(const std::string filename, const std::string mode);
+		SDL_IOStream *openWithbackup(const std::string filename, const std::string mode);
 		//! open a file, if it is in writing, do a backup, fopen version
 		FILE *openWithbackupFP(const std::string filename, const std::string mode);
 
@@ -84,7 +85,8 @@ namespace GAGCore
 		//! The gzip header carries no timestamp or OS byte, so the same contents and
 		//! level always produce identical bytes on every platform.
 		bool writeGzipAtomic(const std::string& filename, const std::string& contents, int level = 6);
-		//! Serializes through writer into memory first (so seek-based backpatching
+		bool writeGzipAtomic(const std::string& filename, const ChunkedBuffer& contents, int level = 6);
+		//! Serializes through writer into chunked memory first (so seek-based backpatching
 		//! works exactly as it does for uncompressed output), then gzip-compresses
 		//! and atomically replaces filename with the result.
 		bool writeGzipAtomically(const std::string& filename, const std::function<void(OutputStream&)>& writer, int level = 6);
@@ -92,16 +94,16 @@ namespace GAGCore
 		//! Open an input stream backend, use it to construct specific input streams
 		StreamBackend *openInputStreamBackend(const std::string filename);
 		//! Like openInputStreamBackend, but when filename ends in ".gz" the whole
-		//! file is inflated into a seekable in-memory backend first, so callers see
+		//! file is inflated into a seekable chunked in-memory backend first, so callers see
 		//! the original uncompressed bytes. Corrupt or truncated gzip data is
 		//! reported like a missing file (an invalid backend), never a crash.
 		StreamBackend *openInflatingInputStreamBackend(const std::string& filename);
 
-		//! Open a file in the SDL_RWops format, COMPAT for GraphicContext PNG loader, can be removed on others backends
-		SDL_RWops *open(const std::string filename, const std::string mode="rb");
+		//! Open a file in the SDL_IOStream format, COMPAT for GraphicContext PNG loader, can be removed on others backends
+		SDL_IOStream *open(const std::string filename, const std::string mode="rb");
 		//! Read a logical image name, preserving directory and PNG override precedence.
 		//! Packaged PNG images may be stored as WebP; ordinary file reads are unchanged.
-		SDL_RWops *openImage(const std::string &filename);
+		SDL_IOStream *openImage(const std::string &filename);
 		//! Open a file in the FILE* format
 		FILE *openFP(const std::string filename, const std::string mode="rb");
 		//! Open a file in the c++ stream format for reading

@@ -3,6 +3,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "BaseTeam.h"
+#include "Team.h"
 #include "Marshaling.h"
 #include "Race.h"
 #include "Stream.h"
@@ -30,6 +31,8 @@ bool BaseTeam::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	type = (TeamType)stream->readUint32("type");
 	teamNumber = stream->readSint32("teamNumber");
 	numberOfPlayer = stream->readSint32("numberOfPlayer");
+	if (teamNumber < 0 || teamNumber >= Team::MAX_COUNT || numberOfPlayer < 0 || numberOfPlayer > Team::MAX_COUNT)
+		return false;
 	stream->read(&color.r, 1, "colorR");
 	stream->read(&color.g, 1, "colorG");
 	stream->read(&color.b, 1, "colorB");

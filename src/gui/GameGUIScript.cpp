@@ -31,7 +31,7 @@ bool GameGUI::isBuildingEnabled(const std::string &name)
 		if (name == buildingsChoiceName[i])
 			return buildingsChoiceState[i];
 	}
-	assert(false);
+	return false;
 }
 
 void GameGUI::enableFlagsChoice(const std::string &name)
@@ -59,12 +59,13 @@ bool GameGUI::isFlagEnabled(const std::string &name)
 		if (name == flagsChoiceName[i])
 			return flagsChoiceState[i];
 	}
-	assert(false);
+	return false;
 }
 
 void GameGUI::enableGUIElement(int id)
 {
-	hiddenGUIElements &= ~(1 << id);
+	if (id < 0 || id >= 32) return;
+	hiddenGUIElements &= ~(Uint32(1) << id);
 }
 
 void GameGUI::disableGUIElement(int id)
@@ -72,7 +73,8 @@ void GameGUI::disableGUIElement(int id)
 	if (globalContainer->replaying)
 		return;
 
-	hiddenGUIElements |= (1 << id);
+	if (id < 0 || id >= 32) return;
+	hiddenGUIElements |= (Uint32(1) << id);
 	if (displayMode == id)
 		nextDisplayMode();
 }
