@@ -292,7 +292,7 @@ TEST_SUITE("MatchSetup")
 		CHECK_FALSE(setup.teamClosed(2));
 		CHECK(setup.teamClosed(3));
 		// The remaining players keep their map teams: seat 1 still plays team 2.
-		const GameHeader header = setup.toGameHeader(mapWithTeams(4));
+		GameHeader header = setup.toGameHeader(mapWithTeams(4));
 		CHECK(header.getNumberOfPlayers() == 2);
 		CHECK(header.getBasePlayer(1).teamNumber == 2);
 		CHECK(header.getAllyTeamNumber(3) == setup.teams[3].alliance + 1);
