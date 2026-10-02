@@ -42,6 +42,15 @@ TurnSession::TurnSession(int numberOfPlayers, TurnTransport& transport, TurnSess
 	seatPresence.fill(PresenceState::NotConnected);
 }
 
+TurnSession::SeatPresence TurnSession::seatPresenceInfo(int seatNumber) const
+{
+	if (seatNumber < 0 || seatNumber >= static_cast<int>(MAX_SEATS))
+		return SeatPresence{PresenceState::Left};
+	SeatPresence details = seatDetails[seatNumber];
+	details.state = seatPresence[seatNumber];
+	return details;
+}
+
 PresenceState TurnSession::presence(int seatNumber) const
 {
 	if (seatNumber < 0 || seatNumber >= static_cast<int>(MAX_SEATS))
@@ -76,6 +85,7 @@ void TurnSession::update(std::uint64_t nowMicros)
 		}
 		else if (now >= retryAt)
 		{
+			++attempts;
 			transport.connect();
 			retryAt = now + backoff;
 			backoff = std::min(backoff * 2, config.reconnectMaxMicros);
@@ -127,6 +137,8 @@ void TurnSession::update(std::uint64_t nowMicros)
 	}
 	buffer.update(jitter.jitterMicros(), tickPeriod, now);
 	delay.observe(bufferedTicks(), buffer.targetTicks());
+	if (desyncRejoin && currentState == State::Running && !catchingUp())
+		desyncRejoin = false;
 }
 
 void TurnSession::handle(const NetMessage& message)
@@ -147,7 +159,10 @@ void TurnSession::handle(const NetMessage& message)
 		break;
 	case MSG_PRESENCE:
 		for (const auto& p : static_cast<const Presence&>(message).seats)
+		{
 			seatPresence[p.seat] = p.state;
+			seatDetails[p.seat] = {p.state, p.graceRemainingTicks, p.lagTicks, now};
+		}
 		break;
 	case MSG_DESYNC_NOTICE:
 		onDesync(static_cast<const DesyncNotice&>(message));
@@ -181,6 +196,8 @@ void TurnSession::onWelcome(const Welcome& w)
 	}
 	seat = w.seat;
 	humanMask = w.humanSeatMask;
+	grace = w.graceTicks;
+	attempts = 0;
 	tickRate = w.tickRateMilliHz;
 	tickPeriod = ticksToMicros(1, tickRate);
 	checksumInterval = w.checksumInterval;
@@ -258,6 +275,7 @@ void TurnSession::onDesync(const DesyncNotice& d)
 	if (seat < 0 || !(d.divergedSeatMask & (1u << seat)))
 		return;
 	std::cerr << "Turn session: diverged at tick " << d.tick << "; reloading\n";
+	desyncRejoin = true;
 	resetTurns();
 	reloadPending = true;
 	reloadNeedsRequest = true;
