@@ -253,6 +253,10 @@ export interface MatchesTable {
   created_at: Timestamp;
   started_at: NullableTimestamp;
   ended_at: NullableTimestamp;
+  rating_status: Defaulted<'pending' | 'applied' | 'unchanged' | 'not_rated'>;
+  rating_note: Nullable<string>;
+  ratings_applied_at: NullableTimestamp;
+  proposal_id: Nullable<string>;
 }
 
 export interface RatingEntitiesTable {
@@ -274,6 +278,21 @@ export interface RatingsTable {
   wins: Defaulted<number>;
   last_match_id: Nullable<string>;
   updated_at: Timestamp;
+  seed_source: Nullable<string>;
+}
+
+export interface RatingHistoryTable {
+  match_id: string;
+  entity_id: string;
+  ladder: string;
+  result: 'won' | 'lost';
+  mu_before: number;
+  sigma_before: number;
+  mu_after: number;
+  sigma_after: number;
+  display_before: number;
+  display_after: number;
+  created_at: Timestamp;
 }
 
 export type Outcome = 'won' | 'lost' | 'unresolved' | 'abandoned';
@@ -319,10 +338,58 @@ export interface QueueTicketsTable {
   region_rtts: DefaultedJson<JsonValue>;
   rating_mu: Nullable<number>;
   rating_sigma: Nullable<number>;
-  status: Defaulted<'waiting' | 'matched' | 'cancelled' | 'expired'>;
+  status: Defaulted<QueueTicketStatus>;
   match_id: Nullable<string>;
   created_at: Timestamp;
   updated_at: Timestamp;
+  allow_ai_opponent: Defaulted<boolean>;
+  proposal_id: Nullable<string>;
+}
+
+export type QueueTicketStatus =
+  'waiting' | 'proposed' | 'matched' | 'cancelled' | 'declined' | 'expired';
+
+export type ProposalStatus = 'pending' | 'starting' | 'started' | 'cancelled' | 'failed';
+
+export interface MatchProposalsTable {
+  id: Generated<string>;
+  queue_id: string;
+  sim_version: string;
+  region: Nullable<string>;
+  rated: boolean;
+  backfilled: Defaulted<boolean>;
+  status: ProposalStatus;
+  map: Json<JsonValue>;
+  expires_at: NullableTimestamp;
+  match_id: Nullable<string>;
+  start_attempts: Defaulted<number>;
+  failure: Nullable<string>;
+  created_at: Timestamp;
+  resolved_at: NullableTimestamp;
+}
+
+export type ProposalResponse = 'pending' | 'accepted' | 'declined' | 'timeout' | 'not_required';
+
+export interface MatchProposalSeatsTable {
+  proposal_id: string;
+  slot: number;
+  side: number;
+  kind: 'human' | 'ai';
+  ticket_id: Nullable<string>;
+  account_id: Nullable<string>;
+  ai_id: Nullable<string>;
+  rating_entity_id: Nullable<string>;
+  mu: number;
+  sigma: number;
+  response: Defaulted<ProposalResponse>;
+  responded_at: NullableTimestamp;
+}
+
+export interface QueueCooldownsTable {
+  account_id: string;
+  until: RequiredTimestamp;
+  reason: 'declined' | 'timeout';
+  created_at: Timestamp;
 }
 
 export interface Database {
@@ -352,6 +419,10 @@ export interface Database {
   match_team_stats: MatchTeamStatsTable;
   match_artifacts: MatchArtifactsTable;
   queue_tickets: QueueTicketsTable;
+  rating_history: RatingHistoryTable;
+  match_proposals: MatchProposalsTable;
+  match_proposal_seats: MatchProposalSeatsTable;
+  queue_cooldowns: QueueCooldownsTable;
 }
 
 export type Account = Selectable<AccountsTable>;
