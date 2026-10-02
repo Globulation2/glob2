@@ -96,3 +96,11 @@ entity identities, that the format-125 round trip retains both, and that 64
 subsequent ticks preserve world, team and entity execution. Only the MapHeader
 format contribution is excluded when comparing the released and upgraded
 aggregate checksums; the experiment and simulation records must match.
+
+The format-127 sixteen-team implementation hashes a larger script-generation
+table. `profile1-256-teams16.checksums.gz` and
+`realistic-profile1-256-teams16.checksums.gz` pin that aggregate checksum layout.
+The original traces remain intact: the native simulation test also requires every
+team, building and unit record to match them at all 256 ticks. The expanded traces
+were captured from Linux execution; one/four workers, save/resume and replay
+continue to compare complete records against the capacity-specific baseline.

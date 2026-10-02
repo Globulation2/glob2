@@ -14,6 +14,7 @@ Uint64 renderPanel(GameGUI& gui)
     gfx->beginFrame(GAGCore::GraphicContext::FrameMode::FullRedraw);
     gfx->setClipRect();
     gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),GAGCore::Color(0,0,0));
+    gui.extractScene(gui.frameScene);
     gui.drawUnitInfos(); gfx->nextFrame();
     auto* frame=gfx->completedFrame(); REQUIRE(frame);
     Uint64 hash=1469598103934665603ull;
@@ -70,6 +71,7 @@ TEST_SUITE("GUIInteractionCoverage")
         auto& gui=world.gui; gui.localTeamNo=0; gui.localPlayer=0; gui.localTeam=world.team;
         auto* inn=world.addBuilding("inn",4,4);
         gui.setSelection(GameGUI::BUILDING_SELECTION,inn);
+        gui.drawAll(0); // The menu describes the scene currently drawn.
         const int original=inn->maxUnitWorking;
         const int content=(GAME_GUI_RIGHT_MENU_WIDTH-128)/2;
         // Real desktop sidebar coordinates: worker bar at y=292..308,
