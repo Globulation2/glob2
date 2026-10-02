@@ -87,6 +87,18 @@ statistics, and show as "D" in the web client. Allied teams that won together ar
 still one winning side. The verifier's raw per-team outcomes stay in the stored
 result artifact.
 
+### Empty seats are not participants
+
+A room sends each empty or locked seat to the engine as AI `none` ("Nobody"), so
+the setup lists every map team. That colony stays on the map, alive and idle, and
+the engine scores it like any other team: a sudden-death buzzer with everyone on
+zero prestige reports it as won. The platform ignores those teams
+(`contestedTeams` in `ratings/outcome.ts`): they never make a win shared, a `won`
+for them is recorded as `unresolved`, and they take no side and are never rated.
+One player who outlasts everyone else therefore wins however many empty colonies
+remain, and a tie among real participants across alliances is still a draw. The
+in-game end screen applies the same rule (`WinningConditions` `isGameDrawn`).
+
 ### Applying a verdict exactly once
 
 1. The engine agent enqueues its verify-match result. The worker's

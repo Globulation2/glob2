@@ -20,6 +20,7 @@ import {
 } from '../src/ratings/scale.ts';
 import {
   MUTUAL_LEAVE_TICKS,
+  contestedTeams,
   decideRating,
   participantOutcomes,
   type OutcomeInput,
@@ -370,6 +371,121 @@ describe('shared wins', () => {
   });
 });
 
+describe('empty seats', () => {
+  // A room on a four-team map: seats 2 and 3 empty, sent as AI `none`
+  // ("Nobody"). Their colonies sit alive and idle, so a sudden-death buzzer
+  // at zero prestige reports them as won.
+  const ffa = new Map([
+    [0, 0],
+    [1, 1],
+    [2, 2],
+    [3, 3],
+  ]);
+  const seats = [
+    { team: 0, kind: 'human' as const },
+    { team: 1, kind: 'human' as const },
+    { team: 2, kind: 'ai' as const, ai: 'none' },
+    { team: 3, kind: 'ai' as const, ai: 'none' },
+  ];
+  const contested = contestedTeams(seats);
+  const outcomes = (o: ('won' | 'lost' | 'unresolved')[]) =>
+    new Map(o.map((outcome, team) => [team, outcome]));
+
+  it('counts only teams someone plays', () => {
+    expect([...contested].sort()).toEqual([0, 1]);
+    expect([...contestedTeams([...seats, { team: 3, kind: 'ai', ai: 'nicowar' }])].sort()).toEqual([
+      0, 1, 3,
+    ]);
+  });
+
+  it('1v1 win: the last player standing wins, the idle colonies do not', () => {
+    // The staging room match: the guest left (team dead, lost), sudden death.
+    const recorded = participantOutcomes(ffa, outcomes(['won', 'lost', 'won', 'won']), contested);
+    expect([...recorded.values()]).toEqual(['won', 'lost', 'unresolved', 'unresolved']);
+  });
+
+  it('1v1 loss: the other player won', () => {
+    const recorded = participantOutcomes(ffa, outcomes(['lost', 'won', 'won', 'lost']), contested);
+    expect([...recorded.values()]).toEqual(['lost', 'won', 'unresolved', 'lost']);
+  });
+
+  it('two players tied at the top across alliances still draw', () => {
+    const recorded = participantOutcomes(ffa, outcomes(['won', 'won', 'won', 'won']), contested);
+    expect([...recorded.values()]).toEqual(['draw', 'draw', 'unresolved', 'unresolved']);
+  });
+
+  it('allies who won together win, even next to idle colonies', () => {
+    const twoVsTwo = new Map([
+      [0, 0],
+      [1, 0],
+      [2, 1],
+      [3, 1],
+      [4, 2],
+      [5, 3],
+    ]);
+    const sixSeats = [
+      ...[0, 1, 2, 3].map((team) => ({ team, kind: 'human' as const })),
+      { team: 4, kind: 'ai' as const, ai: 'none' },
+      { team: 5, kind: 'ai' as const, ai: 'none' },
+    ];
+    const recorded = participantOutcomes(
+      twoVsTwo,
+      new Map([
+        [0, 'won' as const],
+        [1, 'won' as const],
+        [2, 'lost' as const],
+        [3, 'lost' as const],
+        [4, 'won' as const],
+        [5, 'won' as const],
+      ]),
+      contestedTeams(sixSeats),
+    );
+    expect([...recorded.values()]).toEqual([
+      'won',
+      'won',
+      'lost',
+      'lost',
+      'unresolved',
+      'unresolved',
+    ]);
+  });
+
+  it('without a seat list every team counts (older callers)', () => {
+    const recorded = participantOutcomes(ffa, outcomes(['won', 'lost', 'won', 'won']));
+    expect([...recorded.values()]).toEqual(['draw', 'lost', 'draw', 'draw']);
+  });
+
+  it('rating decisions ignore empty seats', () => {
+    const participants = [
+      { seat: 0, team: 0, kind: 'human' as const },
+      { seat: 1, team: 1, kind: 'human' as const },
+      { seat: 2, team: 2, kind: 'ai' as const, ai: 'none' },
+      { seat: 3, team: 3, kind: 'ai' as const, ai: 'none' },
+    ];
+    const input = {
+      teamAlliance: ffa,
+      participants,
+      teamOutcomes: outcomes(['won', 'lost', 'won', 'won']),
+      finalTick: 1505,
+    };
+    expect(decideRating(input)).toEqual({
+      kind: 'rate',
+      sides: [0, 1],
+      ranks: [1, 2],
+      reason: 'verified',
+    });
+    // Abandonment: no verified winner, the guest left; an idle colony is
+    // not an AI that "never leaves".
+    expect(
+      decideRating({
+        ...input,
+        teamOutcomes: outcomes(['unresolved', 'unresolved', 'unresolved', 'unresolved']),
+        participants: participants.map((p) => (p.seat === 1 ? { ...p, quitTick: 1002 } : p)),
+      }),
+    ).toMatchObject({ kind: 'rate', ranks: [1, 2], reason: 'abandoned', abandonedSide: 1 });
+  });
+});
+
 describe('rating application', () => {
   let database: TestDatabase;
   beforeAll(async () => {
@@ -509,6 +625,93 @@ describe('rating application', () => {
       .executeTakeFirstOrThrow();
     expect(row).toEqual({ rating_status: 'unchanged', rating_note: 'draw' });
     expect(await ratingOf(db, d1)).toBeUndefined();
+  });
+
+  it('records a room 1v1 on a four-team map as a win, not a draw, despite empty seats', async () => {
+    const db = database.db;
+    const host = await createAccount(db, 'Host');
+    const guest = await createAccount(db, 'Guest');
+    const nobody = 'none' as never;
+    const room = (quitTick?: number) =>
+      createMatch(
+        db,
+        [
+          { side: 0, accountId: host },
+          { side: 1, accountId: guest, ...(quitTick ? { quitTick, abandoned: true } : {}) },
+          { side: 2, ai: nobody },
+          { side: 3, ai: nobody },
+        ],
+        { queueId: null, rated: false },
+      );
+    const outcomesOf = async (matchId: string) => {
+      const participants = await db
+        .selectFrom('match_participants')
+        .select('outcome')
+        .where('match_id', '=', matchId)
+        .orderBy('seat')
+        .execute();
+      const stats = await db
+        .selectFrom('match_team_stats')
+        .select('outcome')
+        .where('match_id', '=', matchId)
+        .orderBy('team')
+        .execute();
+      return {
+        participants: participants.map((p) => p.outcome),
+        teams: stats.map((s) => s.outcome),
+      };
+    };
+
+    // Win: the guest's colony died, sudden death left the host and both idle colonies on top.
+    const win = await room();
+    await handleEngineJobResult(
+      db,
+      resultPayload(await createVerifyJob(db, win), verified(['won', 'lost', 'won', 'won'])),
+    );
+    expect(await outcomesOf(win)).toEqual({
+      participants: ['won', 'lost', 'unresolved', 'unresolved'],
+      teams: ['won', 'lost', 'unresolved', 'unresolved'],
+    });
+
+    // Loss, from the host's side.
+    const loss = await room();
+    await handleEngineJobResult(
+      db,
+      resultPayload(await createVerifyJob(db, loss), verified(['lost', 'won', 'won', 'won'])),
+    );
+    expect((await outcomesOf(loss)).participants).toEqual([
+      'lost',
+      'won',
+      'unresolved',
+      'unresolved',
+    ]);
+
+    // Abandon: the guest left mid-game (the staging case); intake marked them abandoned.
+    const abandon = await room(1002);
+    await handleEngineJobResult(
+      db,
+      resultPayload(
+        await createVerifyJob(db, abandon),
+        verified(['won', 'lost', 'won', 'won'], 1505),
+      ),
+    );
+    expect(await outcomesOf(abandon)).toEqual({
+      participants: ['won', 'abandoned', 'unresolved', 'unresolved'],
+      teams: ['won', 'lost', 'unresolved', 'unresolved'],
+    });
+
+    // Two players tied at the buzzer across alliances: still a draw.
+    const tie = await room();
+    await handleEngineJobResult(
+      db,
+      resultPayload(await createVerifyJob(db, tie), verified(['won', 'won', 'won', 'won'])),
+    );
+    expect((await outcomesOf(tie)).participants).toEqual([
+      'draw',
+      'draw',
+      'unresolved',
+      'unresolved',
+    ]);
   });
 
   it('records a four-way shared win in a room as draws', async () => {
