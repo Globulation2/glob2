@@ -71,8 +71,10 @@ python3 test/run_tests.py      # run them; --list, --filter, --tag, --shard
 - `scons target=web release=1` builds the WebAssembly browser client; see
   `docs/browser/adr-001-build-isolation.md` for the toolchain isolation this relies on.
 - Dependencies include SDL2/net/ttf/image, Vorbis/Ogg, Speex, OpenGL/GLU, libepoxy,
-  zlib, fribidi and pcre; PortAudio is optional. All native multiplayer builds (client, server, and router) require OpenSSL and the header-only
-  Boost.Beast and Boost.Asio; nothing else uses Boost.
+  zlib, fribidi and pcre; PortAudio is optional. All native multiplayer builds (client, server, router and relay) require OpenSSL and the header-only
+  Boost.Beast and Boost.Asio; nothing else uses Boost. `role=relay` builds only
+  `glob2-relay` and its tests and links no SDL library (it still needs SDL's headers);
+  see [the relay guide](../multiplayer/relay.md).
 - `CCACHE=1` opts into the shared compiler cache. Unset it when generating
   `compile_commands.json`; do not add `CCACHE_SLOPPINESS` settings that weaken
   content or time-macro validation (`include_file_mtime`, `include_file_ctime`,
