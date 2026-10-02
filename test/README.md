@@ -1153,3 +1153,20 @@ for fixture capture, paired CPU measurements and diagnostic overrides. The
 `SoftwareRenderer` suite checks raster sampling, ordering, opacity revisions and
 terrain-cache correctness; `PortableRenderer`, `WindowResize`, `MapRenderResize` and
 `HighResolutionIntegration` cover the shared facade and window lifecycle.
+
+## Castor saved-game continuation
+
+`CastorContinuationTest.cpp` compares emitted order bytes, per-tick simulation
+checksums and RNG state across saves during boot, map computation and active
+colony management. It also checks binary/text snapshot round trips and the
+historical timer-only Castor AI formats (versions 1 and 2).
+
+```sh
+python3 test/run_tests.py --filter 'CastorContinuation/*'
+```
+
+Save format 126 writes Castor AI format 3, preserving project order, boot progress,
+strategy, control timers and map-cache history. Older saves remain readable with
+their historical restart behavior; omitted state cannot be recovered from them.
+New games retain the existing decision sequence. This save change does not raise
+the replay acceptance floor.

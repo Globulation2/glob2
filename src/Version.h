@@ -6,7 +6,8 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 125
+#define VERSION_MINOR 126
+// version 126 preserves Castor boot progress, projects and decision caches on save/load.
 // version 125 adds optional deterministic JavaScript scripts and entity identities.
 // version 124 adds the experiments list to GameHeader (Settings > Experiments), baked into
 //             every new game. The default simulation is unchanged, so replays from 123 still play.
