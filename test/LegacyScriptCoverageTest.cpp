@@ -314,4 +314,78 @@ TEST_SUITE("LegacyScriptCoverage")
         }
     }
 
+    TEST_CASE("objectives and hints resolve script numbers and persist in game snapshots")
+    {
+        glob2test::HeadlessGlobals globals;
+        World w;
+        auto& goals=w.world.game.objectives; auto& hints=w.world.game.gameHints;
+        goals.removeObjective(0); // Fresh games install the default victory objective.
+        goals.addNewObjective("other",false,false,false,GameObjectives::Primary,3);
+        goals.addNewObjective("target",true,false,false,GameObjectives::Secondary,7);
+        hints.addNewHint("other hint",false,3); hints.addNewHint("target hint",true,8);
+        REQUIRE(w.compile("objectiveVisible(7) hintVisible(8)").type==ErrorReport::ET_OK);
+        w.step(); CHECK(goals.isObjectiveVisible(1)); CHECK(hints.isHintVisible(1));
+        CHECK_FALSE(goals.isObjectiveComplete(1));
+        REQUIRE(w.compile("objectiveComplete(7)").type==ErrorReport::ET_OK);
+        w.step(); CHECK(goals.isObjectiveComplete(1)); CHECK_FALSE(goals.isObjectiveFailed(1));
+        REQUIRE(w.compile("objectiveFailed(7) objectiveHidden(7) hintHidden(8)").type==ErrorReport::ET_OK);
+        w.step(); CHECK_FALSE(goals.isObjectiveVisible(1)); CHECK_FALSE(hints.isHintVisible(1));
+        CHECK_FALSE(goals.isObjectiveComplete(1)); CHECK(goals.isObjectiveFailed(1));
+        CHECK(goals.isObjectiveVisible(0)); CHECK_FALSE(goals.isObjectiveComplete(0));
+        CHECK_FALSE(goals.isObjectiveFailed(0)); CHECK(hints.isHintVisible(0));
+        REQUIRE(w.compile("objectiveComplete(999) objectiveVisible(999) hintHidden(999)").type==ErrorReport::ET_OK);
+        w.step(); CHECK_FALSE(goals.isObjectiveComplete(0)); CHECK(hints.isHintVisible(0));
+        auto* backend=new GAGCore::MemoryStreamBackend; GAGCore::BinaryOutputStream out(backend);
+        w.world.game.save(&out,false,"script objectives"); out.flush();
+        const auto bytes=backend->takeContents(); GameGUI restored(false);
+        GAGCore::BinaryInputStream in(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+        in.seekFromStart(0); REQUIRE(restored.game.load(&in));
+        CHECK_FALSE(restored.game.objectives.isObjectiveComplete(1));
+        CHECK(restored.game.objectives.isObjectiveFailed(1));
+        CHECK_FALSE(restored.game.objectives.isObjectiveVisible(1));
+        CHECK(restored.game.objectives.getScriptNumber(1)==7);
+        CHECK_FALSE(restored.game.gameHints.isHintVisible(1));
+        CHECK(restored.game.gameHints.getGameHintText(1)=="target hint");
+    }
+
+    TEST_CASE("named highlights target distinct GUI elements and unhighlight restores state")
+    {
+        glob2test::HeadlessGlobals globals; World w;
+        for (const auto& entry : {
+            std::pair{"main menu icon",GameGUI::HighlightMainMenuIcon},
+            std::pair{"right side panel",GameGUI::HighlightRightSidePanel},
+            std::pair{"under minimap icons",GameGUI::HighlightUnderMinimapIcon},
+            std::pair{"units assigned bar",GameGUI::HighlightUnitsAssignedBar},
+            std::pair{"units ratio bar",GameGUI::HighlightRatioBar},
+            std::pair{"workers working free stat",GameGUI::HighlightWorkersWorkingFreeStat},
+            std::pair{"explorers working free stat",GameGUI::HighlightExplorersWorkingFreeStat},
+            std::pair{"warriors working free stat",GameGUI::HighlightWarriorsWorkingFreeStat},
+            std::pair{"forbidden zone on panel",GameGUI::HighlightForbiddenZoneOnPanel},
+            std::pair{"guard zone on panel",GameGUI::HighlightGuardZoneOnPanel},
+            std::pair{"clearing zone on panel",GameGUI::HighlightClearingZoneOnPanel},
+            std::pair{"brush selector",GameGUI::HighlightBrushSelector}})
+        {
+            INFO(entry.first);
+            const std::string argument=std::string("(\"")+entry.first+"\")";
+            REQUIRE(w.compile("hilightItem"+argument).type==ErrorReport::ET_OK);
+            w.step(); CHECK(w.world.gui.highlights==std::set<int>{entry.second});
+            REQUIRE(w.compile("unhilightItem"+argument).type==ErrorReport::ET_OK);
+            w.step(); CHECK(w.world.gui.highlights.empty());
+        }
+        REQUIRE(w.compile("hilightItem(\"unknown item\")").type==ErrorReport::ET_OK);
+        w.step(); CHECK(w.world.gui.highlights.empty());
+    }
+
+    TEST_CASE("unit and building highlights use map and panel channels independently")
+    {
+        glob2test::HeadlessGlobals globals; World w;
+        REQUIRE(w.compile("hilightUnits(Worker) hilightBuildings(Inn) hilightBuildingOnPanel(Inn)").type==ErrorReport::ET_OK);
+        w.step(); CHECK(w.world.gui.highlights.size()==3);
+        CHECK(w.world.gui.highlights.count(GameGUI::HighlightWorkers)==1);
+        CHECK(w.world.gui.highlights.count(GameGUI::HighlightBuildingOnMap+IntBuildingType::FOOD_BUILDING)==1);
+        CHECK(w.world.gui.highlights.count(GameGUI::HighlightBuildingOnPanel+IntBuildingType::FOOD_BUILDING)==1);
+        REQUIRE(w.compile("unhilightUnits(Worker) unhilightBuildings(Inn) unhilightBuildingOnPanel(Inn)").type==ErrorReport::ET_OK);
+        w.step(); CHECK(w.world.gui.highlights.empty());
+    }
+
 }
