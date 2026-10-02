@@ -162,11 +162,21 @@ void TeamStatChart::paintCurves(const Game &game, GAGCore::DrawableSurface &surf
 	// draw curve
 	if (maxValue)
 	{
+		// Teams with the same values would draw one line over the other: each line is
+		// two pixels wide and carries markers at staggered places, so every team's
+		// colour shows even where the curves coincide.
+		int shownCount = 0;
+		for (int t = 0; t < game.mapHeader.getNumberOfTeams(); t++)
+			shownCount += options.shown(t) ? 1 : 0;
+		const int markerSpacing = 36;
+		int shownIndex = 0;
 		for (team = 0; team < game.mapHeader.getNumberOfTeams(); team++)
 		{
 			if (!options.shown(team))
 				continue;
 			const Color &color = game.teams[team]->color;
+			const int markerPhase = 6 + (shownIndex * markerSpacing) / std::max(1, shownCount);
+			++shownIndex;
 
 			int previous_y = e_height - int(double(e_height) * getValue(game, 0, team, type) / double(maxValue));
 
@@ -175,6 +185,12 @@ void TeamStatChart::paintCurves(const Game &game, GAGCore::DrawableSurface &surf
 				double value = getValue(game, double(px) / double(e_width - 2), team, type);
 				int ny = e_height - int(double(e_height) * value / double(maxValue));
 				surface.drawLine(x + px, y + previous_y, x + px + 1, y + ny, color);
+				surface.drawLine(x + px, y + previous_y - 1, x + px + 1, y + ny - 1, color);
+				if (px % markerSpacing == markerPhase % markerSpacing)
+				{
+					surface.drawFilledRect(x + px - 3, y + ny - 4, 7, 7, color);
+					surface.drawRect(x + px - 3, y + ny - 4, 7, 7, InGameTouchTheme::ink);
+				}
 				previous_y = ny;
 				const int dist = std::abs(options.hoverX - px - 1) * 4096 + std::abs(options.hoverY - ny);
 				if (options.hoverX >= 0 && options.hoverX < e_width && options.hoverY >= 0 && options.hoverY < e_height && dist < closest_position)
