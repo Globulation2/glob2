@@ -100,7 +100,7 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 	// working bar
 	if (selBuild->type->maxUnitWorking)
 	{
-		if (((selBuild->owner->allies)&(1<<localTeamNo))
+		if (((selBuild->owner->allies)&(Team::teamNumberToMask(localTeamNo)))
 			&& my>ypos+YOFFSET_TEXT_BAR
 			&& my<ypos+YOFFSET_TEXT_BAR+16
 			&& selBuild->buildingState==Building::ALIVE
@@ -119,7 +119,7 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 	if(selBuild->type->maxUnitWorking)
 	{
 		ypos += YOFFSET_B_SEP;
-		if (((selBuild->owner->allies)&(1<<localTeamNo))
+		if (((selBuild->owner->allies)&(Team::teamNumberToMask(localTeamNo)))
 			&& my>ypos+16
 			&& my<ypos+16+12
 			&& selBuild->buildingState==Building::ALIVE)
@@ -145,7 +145,7 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 	// flag range bar
 	if (buildingType->defaultUnitStayRange)
 	{
-		if (((selBuild->owner->allies)&(1<<localTeamNo))
+		if (((selBuild->owner->allies)&(Team::teamNumberToMask(localTeamNo)))
 			&& (my>ypos+YOFFSET_TEXT_BAR)
 			&& (my<ypos+YOFFSET_TEXT_BAR+16)
 			&& (lmx < SCROLLBOX_BAR_WIDTH))
@@ -160,7 +160,7 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 	}
 
 	// flags specific options:
-	if (((selBuild->owner->allies)&(1<<localTeamNo))
+	if (((selBuild->owner->allies)&(Team::teamNumberToMask(localTeamNo)))
 		&& lmx>10
 		&& lmx<22)
 	{
@@ -241,7 +241,7 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 	// as pending state on BuildingGuiState (add pendingReceiveResourceMask /
 	// pendingSendResourceMask there), then emit the order. Same pattern as
 	// pendingMaxUnitWorking / pendingPriority / pendingRatio.
-	if (selBuild->type->canExchange && ((selBuild->owner->allies)&(1<<localTeamNo)))
+	if (selBuild->type->canExchange && ((selBuild->owner->allies)&(Team::teamNumberToMask(localTeamNo))))
 	{
 		int startY = ypos+YOFFSET_TEXT_PARA;
 		int endY = startY+HAPPINESS_COUNT*YOFFSET_TEXT_PARA;

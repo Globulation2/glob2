@@ -66,8 +66,28 @@ void teardown()
 }
 } // namespace
 
+#if defined(__APPLE__)
+#include <TargetConditionals.h>
+#if TARGET_OS_OSX
+extern "C" void* glob2BeginTestActivity();
+extern "C" void glob2EndTestActivity(void*);
+namespace
+{
+struct NativeTestActivity
+{
+    void* token = glob2BeginTestActivity();
+    ~NativeTestActivity() { if (token) glob2EndTestActivity(token); }
+};
+}
+#endif
+#endif
+
 int main(int argc, char **argv)
 {
+#if defined(__APPLE__) && TARGET_OS_OSX
+    NativeTestActivity activity;
+#endif
+
 	// Line-buffered output interleaves correctly with doctest's reporter when captured.
 	std::setvbuf(stdout, nullptr, _IOLBF, 0);
 	std::setvbuf(stderr, nullptr, _IOLBF, 0);

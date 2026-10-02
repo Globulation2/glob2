@@ -71,7 +71,7 @@ struct CustomGamePreferences
 		// stay unchanged regardless of which generator module is selected.
 		const auto legacy = toLegacyDescriptor(setup.generator);
 		std::ostringstream out;
-		out << "glob2-custom-game 3\n"
+		out << "glob2-custom-game 4\n"
 			<< "setup " << setup.random << ' ' << setup.capacity << ' '
 			<< setup.prestige << ' ' << setup.revealed << ' ' << setup.locked << ' '
 			<< setup.speed << ' ' << userMaps << '\n'
@@ -102,7 +102,7 @@ struct CustomGamePreferences
 		out << "\noptions " << options.size() << '\n';
 		for (const auto *c : options)
 			out << c->id << ' ' << c->get(setup.generator) << '\n';
-		out << "colonies\n";
+		out << "colonies " << setup.colonies.size() << '\n';
 		for (const auto &c : setup.colonies)
 			out << int(c.controller) << ' ' << int(c.ai) << ' ' << c.alliance << '\n';
 		out << "end\n";
@@ -128,7 +128,7 @@ struct CustomGamePreferences
 			return true;
 		};
 		int version, random, prestige, revealed, locked, user, method, repeat;
-		if (!word("glob2-custom-game") || !number(version, 1, 3) || !word("setup") ||
+		if (!word("glob2-custom-game") || !number(version, 1, 4) || !word("setup") ||
 			!number(random, 0, 1) || !number(s.capacity, 1, Team::MAX_COUNT) ||
 			!number(prestige, 0, 1) || !number(revealed, 0, 1) || !number(locked, 0, 1) ||
 			!number(s.speed, 0, Settings::GAME_SPEED_MAXIMUM) || !number(user, 0, 1)) return false;
@@ -189,8 +189,15 @@ struct CustomGamePreferences
 			}
 			if (!word("colonies")) return false;
 		} else if (section != "colonies") return false;
+		// Versions 1–3 wrote exactly twelve uncounted colony records. Keep
+		// that wire size independent of the live cap; version 4 stores a count.
+		constexpr int legacyColonyCount = 12;
+		int colonyCount = legacyColonyCount;
+		if (version >= 4 && !number(colonyCount, 1, Team::MAX_COUNT)) return false;
+		if (s.capacity > colonyCount) return false;
 		int humans = 0;
-		for (auto &c : s.colonies) {
+		for (int i = 0; i < colonyCount; ++i) {
+			auto &c = s.colonies[i];
 			int controller, ai;
 			if (!number(controller, 0, CustomGameSetup::Closed) || !number(ai, 0, AI::SIZE - 1) ||
 				!number(c.alliance, 0, Team::MAX_COUNT - 1)) return false;

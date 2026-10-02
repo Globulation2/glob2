@@ -42,6 +42,39 @@ jobs:
           BROWSER_ONLY: ${{ inputs.browser_only }}
         run: python3 .github/scripts/ci_changed_paths.py --base "$BASE_SHA"
 
+  native-coverage:
+    name: Native Clang coverage
+    needs: changes
+    if: ${{ needs.changes.outputs.native == 'true' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install matching compiler and coverage tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends \
+            clang-18 llvm-18 python3 scons pkg-config \
+            libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev \
+            libvorbis-dev libogg-dev libspeex-dev libboost-dev libssl-dev \
+            zlib1g-dev libfribidi-dev libpcre3-dev libgl1-mesa-dev \
+            libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth
+      - name: Verify coverage accounting
+        run: python3 -m unittest discover -s test -p test_run_coverage.py -v
+      - name: Run native coverage without the slow integration tier
+        run: |
+          python3 test/run_coverage.py --quick --timeout 900 -j4 \
+            --cc clang-18 --cxx clang++-18 \
+            --llvm-profdata llvm-profdata-18 --llvm-cov llvm-cov-18
+      - name: Retain coverage and failing test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-clang-coverage
+          path: artifacts/native-coverage
+          if-no-files-found: warn
+          retention-days: 14
+
   linux-build:
     name: linux build (${{ matrix.image }}, ${{ matrix.compiler }})
     needs: changes

@@ -122,7 +122,7 @@ void GameGUI::drawBuildingInsideStats(const SceneBuildingPanel* selBuild, Buildi
 {
 	if (!buildingType->maxUnitInside)
 		return;
-	if (!((selBuild->owner.allies) & (1<<localTeamNo)))
+	if (!((selBuild->owner.allies) & (Team::teamNumberToMask(localTeamNo))))
 		return;
 
 	globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 185, 195, 21));
@@ -150,7 +150,7 @@ void GameGUI::drawBuildingFlagInfo(const SceneBuildingPanel* selBuild, BuildingT
 {
 	if (!buildingType->defaultUnitStayRange)
 		return;
-	if (!((selBuild->owner.allies) & (1<<localTeamNo)))
+	if (!((selBuild->owner.allies) & (Team::teamNumberToMask(localTeamNo))))
 		return;
 
 	// get flag stat — feed the displayed (optimistic) position and range
@@ -189,7 +189,7 @@ void GameGUI::drawBuildingWorkingControls(const SceneBuildingPanel* selBuild, Bu
 	if (!buildingType->maxUnitWorking)
 		return;
 
-	if ((selBuild->owner.allies)&(1<<localTeamNo))
+	if ((selBuild->owner.allies)&(Team::teamNumberToMask(localTeamNo)))
 	{
 		if (selBuild->buildingState==Building::ALIVE)
 		{
@@ -228,7 +228,7 @@ void GameGUI::drawBuildingPriorityControls(const SceneBuildingPanel* selBuild, B
 {
 	if (!buildingType->maxUnitWorking)
 		return;
-	if (!((selBuild->owner.allies)&(1<<localTeamNo)))
+	if (!((selBuild->owner.allies)&(Team::teamNumberToMask(localTeamNo))))
 		return;
 	if (selBuild->buildingState != Building::ALIVE)
 		return;
@@ -263,7 +263,7 @@ void GameGUI::drawBuildingRangeControls(const SceneBuildingPanel* selBuild, Buil
 	if (!buildingType->defaultUnitStayRange)
 		return;
 
-	if ((selBuild->owner.allies)&(1<<localTeamNo))
+	if ((selBuild->owner.allies)&(Team::teamNumberToMask(localTeamNo)))
 	{
 		// If we're replaying, display the actual number, not the locally cached one (changeable by the gui user)
 		const int unitStayRange = (globalContainer->isViewingGame()?selBuild->unitStayRange:displayedUnitStayRange(*selBuild));
@@ -301,7 +301,7 @@ void GameGUI::drawBuildingExchange(const SceneBuildingPanel* selBuild, BuildingT
 {
 	if (!buildingType->canExchange)
 		return;
-	if (!((selBuild->owner.sharedVisionExchange)&(1<<localTeamNo)))
+	if (!((selBuild->owner.sharedVisionExchange)&(Team::teamNumberToMask(localTeamNo))))
 		return;
 
 	globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 185, 195, 21));
@@ -338,7 +338,7 @@ void GameGUI::drawBuildingExchange(const SceneBuildingPanel* selBuild, BuildingT
 
 void GameGUI::drawBuildingResources(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int& ypos)
 {
-	if (!((selBuild->owner.allies) & (1<<localTeamNo)))
+	if (!((selBuild->owner.allies) & (Team::teamNumberToMask(localTeamNo))))
 		return;
 	if (buildingType->canExchange)
 		return;
@@ -371,7 +371,7 @@ void GameGUI::drawBuildingResources(const SceneBuildingPanel* selBuild, Building
 // while OrderModifySwarm is in flight.
 void GameGUI::drawBuildingSwarmRatios(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int& ypos)
 {
-	if (!((selBuild->owner.allies) & (1<<localTeamNo)))
+	if (!((selBuild->owner.allies) & (Team::teamNumberToMask(localTeamNo))))
 		return;
 	if (!buildingType->unitProductionTime)
 		return;
@@ -432,7 +432,7 @@ static const char* failureReasonKey(Building::UnitCantWorkReason reason, bool is
 
 void GameGUI::drawBuildingFailureReasons(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int& ypos)
 {
-	if (!((selBuild->owner.allies) & (1<<localTeamNo)))
+	if (!((selBuild->owner.allies) & (Team::teamNumberToMask(localTeamNo))))
 		return;
 
 	// Only show the failure-reason rows when the building is still asking for
@@ -467,7 +467,7 @@ void GameGUI::drawBuildingFailureReasons(const SceneBuildingPanel* selBuild, Bui
 
 void GameGUI::drawBuildingActionButtons(const SceneBuildingPanel* selBuild, BuildingType* buildingType, unsigned unitInsideBarYDec)
 {
-	if (!((selBuild->owner.allies) & (1<<localTeamNo)))
+	if (!((selBuild->owner.allies) & (Team::teamNumberToMask(localTeamNo))))
 		return;
 	if (selBuild->owner.teamNumber != drawnScene().panels.local.teamNumber)
 		return;
@@ -538,7 +538,7 @@ void GameGUI::drawBuildingActionButtons(const SceneBuildingPanel* selBuild, Buil
 
 void GameGUI::drawBuildingTimeToLeaveBar(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int& ypos, unsigned& unitInsideBarYDec)
 {
-	if (!((selBuild->owner.allies) & (1<<localTeamNo)))
+	if (!((selBuild->owner.allies) & (Team::teamNumberToMask(localTeamNo))))
 		return;
 
 	// we select food buildings, heal buildings, and upgrade buildings:
@@ -593,7 +593,7 @@ void GameGUI::drawBuildingTimeToLeaveBar(const SceneBuildingPanel* selBuild, Bui
 
 void GameGUI::drawBuildingFlagControls(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int& ypos)
 {
-	if (!((selBuild->owner.allies) & (1<<localTeamNo)))
+	if (!((selBuild->owner.allies) & (Team::teamNumberToMask(localTeamNo))))
 		return;
 
 	// cleared resources for clearing flags: one checkbox row per clearable

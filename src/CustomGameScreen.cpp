@@ -34,7 +34,10 @@ namespace
 {
 std::string tr(const std::string &s)
 {
-	return Toolkit::getStringTable()->getString("[" + s + "]");
+	const std::string text = Toolkit::getStringTable()->getString("[" + s + "]");
+	if (s == "Shared control needs a free controller slot (maximum %0).")
+		return FormattableString(text).arg(Team::MAX_COUNT);
+	return text;
 }
 std::vector<std::string> localized(std::vector<std::string> v)
 {
@@ -1111,7 +1114,7 @@ Element CustomGameScreen::playersTab(const Presentation &p, bool narrow)
 	const int selectedFormat = setup.format == "FFA" ? 0 : setup.format == "2 vs 2" ? 1 : setup.format == "You vs all" ? 2 : -1;
 	parts.push_back(fe::segments("format", localized({"FFA", "2 vs 2", "You vs all"}), selectedFormat, [this](int i) { setup.presetTeams(i); },
 								 {true, setup.activeColonies() == 4, bool(setup.humanColony()) && setup.activeColonies() > 1}));
-	parts.push_back(fe::caption(std::to_string(setup.controllerCount()) + " / 12 " + tr("controllers")));
+	parts.push_back(fe::caption(std::to_string(setup.controllerCount()) + " / " + std::to_string(Team::MAX_COUNT) + " " + tr("controllers")));
 	for (int i = 0; i < setup.capacity; ++i)
 	{
 		auto &c = setup.colonies[i];
