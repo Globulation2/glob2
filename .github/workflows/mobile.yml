@@ -48,10 +48,10 @@ jobs:
           python3 mobile/android_release.py check-listing
       - name: Install build utilities
         id: install_build_utilities
-        run: sudo apt-get update -qq && sudo apt-get install -y scons pkg-config unzip zip autoconf automake libtool ccache
+        run: sudo apt-get update -qq && sudo apt-get install -y python3-venv scons pkg-config unzip zip autoconf automake libtool ccache
       - name: Check build isolation and artifact validation
         id: check_build_isolation
-        run: python3 -m unittest discover -s tests/build_system -v
+        run: '"$(python3 tools/package_assets.py --encoder-python)" -m unittest discover -s tests/build_system -v'
       - name: Install verified NDK
         id: install_verified_ndk
         run: python3 mobile/setup_ndk.py
