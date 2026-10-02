@@ -1434,8 +1434,8 @@ Szerokość rzeki
 Waga piasku
 [Select a valid map.]
 Wybierz prawidłową mapę.
-[Shared control needs a free controller slot (maximum 12).]
-Wspólne sterowanie wymaga wolnego miejsca dla gracza lub SI (maksymalnie 12).
+[Shared control needs a free controller slot (maximum %0).]
+Wspólne sterowanie wymaga wolnego miejsca dla gracza lub SI (maksymalnie %0).
 [Smoothing]
 Wygładzanie
 [Standard]
@@ -3072,8 +3072,6 @@ Minimapa
 Przewiń do przodu
 [Hide keyboard]
 Ukryj klawiaturę
-[Dialog text size]
-Rozmiar tekstu okien dialogowych
 [Player slot]
 Miejsce gracza
 [Team color]
@@ -3412,8 +3410,6 @@ Szansa na wygraną: %0 · Siła: %1
 Min. wymagany poziom: %0
 [Confirm %0]
 Ok: %0
-[Dialog text size %0]
-Rozmiar tekstu okien dialogowych: %0%
 [%0 %1]
 %0 %1
 [resume game]

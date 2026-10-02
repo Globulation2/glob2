@@ -49,6 +49,33 @@ class ChangedPathsTest(unittest.TestCase):
             deployment=False, cross_platform=False,
         )
 
+    def test_ci_tool_tests_only_run_selector_contracts(self):
+        for path in ci_changed_paths.CI_TOOL_TESTS:
+            with self.subTest(path=path):
+                self.assert_jobs([path], native=False, browser=False,
+                                 map_generators=False, deployment=False, cross_platform=False)
+        # Actual runner changes still exercise native execution, and mixed
+        # production changes must never inherit the test-only shortcut.
+        self.assert_jobs(["test/test_run_tests.py", "src/map/Map.cpp"],
+                         native=True, browser=True, map_generators=True,
+                         deployment=True, cross_platform=True)
+        self.assert_jobs(["test/run_tests.py"], native=True, browser=False,
+                         map_generators=False, deployment=False, cross_platform=False)
+
+    def test_lightweight_suites_are_executed_and_packaging_paths_remain(self):
+        root = SCRIPT.parents[2]
+        workflow = (root / ".github/workflows/build.yml").read_text()
+        selector = workflow.split("  changes:\n", 1)[1].split("\n  linux-build:", 1)[0]
+        for filename in ("test_run_tests.py", "test_ci_failure_aggregation.py", "test_ci_changed_paths.py"):
+            self.assertIn(filename, selector)
+        package = (root / ".github/workflows/steam-windows-package.yml").read_text()
+        paths = package.split("    paths:\n", 1)[1].split("\npermissions:", 1)[0]
+        self.assertNotIn("docs/development/reference.md", paths)
+        self.assertIn("cancel-in-progress: ${{ github.event_name == 'pull_request' }}", package)
+        for filename in ("tools/package_steam_windows.py", "test/test_steam_windows_package.py",
+                         ".github/workflows/steam-windows-package.yml"):
+            self.assertIn(filename, paths)
+
     def test_browser_shell_only(self):
         self.assert_jobs(
             ["browser/storage.js", "browser/tests/storage.spec.js"],
@@ -70,7 +97,7 @@ class ChangedPathsTest(unittest.TestCase):
                      "test/fixtures/javascript/profile1-initial.game.gz",
                      "test/check_javascript_corpus.py", "test/check_javascript.py",
                      "test/check_javascript_evidence.py", "test/build_provenance.py",
-                     "test/support/TestMain.cpp"):
+                     "test/support/TestMain.cpp", "test/ImageAssetTest.cpp"):
             with self.subTest(path=path):
                 self.assert_jobs(
                     [path], native=True, browser=True, map_generators=False,
@@ -124,6 +151,18 @@ class ChangedPathsTest(unittest.TestCase):
                     [path], native=True, browser=True, map_generators=False,
                     deployment=False, cross_platform=True,
                 )
+
+    def test_drawing_implementations_keep_all_platforms_without_map_sweeps(self):
+        for path in ci_changed_paths.RENDER_IMPLEMENTATIONS:
+            with self.subTest(path=path):
+                self.assert_jobs([path], native=True, browser=True, map_generators=False,
+                                 deployment=False, cross_platform=True)
+        for paths in (["libgag/include/RenderBackend.h"], ["libgag/src/FileManager.cpp"],
+                      ["libgag/src/SurfaceRaster.cpp", "src/map/generator/core/MapGenerator.cpp"],
+                      ["libgag/src/UnknownRenderer.cpp"]):
+            with self.subTest(paths=paths):
+                self.assert_jobs(paths, native=True, browser=True, map_generators=True,
+                                 deployment=True, cross_platform=True)
 
     def test_network_changes_keep_deployment(self):
         self.assert_jobs(
@@ -225,8 +264,27 @@ class ChangedPathsTest(unittest.TestCase):
                 self.assertLess(cache, compile)
                 self.assertEqual(block.count("git config --local core.autocrlf true"), 1)
 
+    def test_linux_platform_tests_depend_only_on_their_own_build(self):
+        root = SCRIPT.parents[2]
+        workflow = (root / '.github/workflows/build.yml').read_text()
+        helper = (root / '.github/workflows/ci-linux-build.yml').read_text()
+        for gcc in ('11', '13'):
+            block = workflow.split(f'  linux-gcc{gcc}:\n', 1)[1].split('\n  linux-', 1)[0]
+            self.assertIn('run_tests: true', block)
+            self.assertIn('needs: changes', block)
+        tests = helper.split('  tests:\n', 1)[1]
+        self.assertIn('needs: build', tests)
+        self.assertNotIn('linux-clang', tests)
+        gate = workflow.split('  linux:\n', 1)[1].split('  linux-variants:\n', 1)[0]
+        self.assertIn('needs: [changes, linux-build, linux-clang]', gate)
+        self.assertIn('if [ "$COMPATIBILITY" = true ]; then expected=success; fi', gate)
+        self.assertIn('test "$CLANG_RESULT" = "$expected"', gate)
+        self.assert_jobs(['.github/workflows/ci-linux-build.yml'], native=True,
+                         browser=True, map_generators=True, deployment=True, cross_platform=True)
+
     def test_javascript_evidence_steps_are_visible_to_ci_failure_summary(self):
         workflow = (SCRIPT.parents[2] / ".github/workflows/build.yml").read_text()
+        workflow += (SCRIPT.parents[2] / ".github/workflows/ci-linux-build.yml").read_text()
         for name, identifier in (
             ("Execute shared JavaScript corpus", "execute_shared_javascript_corpus"),
             ("Verify frozen JavaScript simulation profile", "verify_frozen_javascript_simulation_profile"),

@@ -84,7 +84,7 @@ services:
     secrets: [deployment-ca]
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
-      - ${GLOB2_ASSETS:-../build/emscripten/client/release}:/srv:ro
+      - ${GLOB2_ASSETS:-../build/browser-static}:/srv:ro
       - caddy-data:/data
       - caddy-config:/config
     networks:

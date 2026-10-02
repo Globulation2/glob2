@@ -9,3 +9,15 @@
 // Set to 1 to render AI gradient / coordinate debug overlays.
 #define DEBUG_RENDER_GRADIENTS 0
 
+
+// All values here are presentation data. Tile bounds include the extra boundary
+// row/column; viewport dimensions are logical pixels before backend transforms.
+struct GameRenderFrame
+{
+    GAGCore::GraphicContext& target;
+    GAGCore::Sprite& terrain;
+    GAGCore::Sprite& water;
+    int left, top, right, bottom, width, height, viewportX, viewportY, localTeam;
+    Uint32 options, visibleTeams;
+    bool software;
+};

@@ -117,7 +117,7 @@ void drawButton(const ViewRect &r, const std::string &text, bool selected, doubl
 						selected ? InGameTouchTheme::selected : InGameTouchTheme::field);
 	gfx->drawRect(int(r.x), int(r.y), int(r.w), int(r.h), InGameTouchTheme::border);
 	InGameTouchTheme::TextStyle style(font);
-	const double scale = std::min(0.8 * unit, (r.w - 4 * unit) / std::max(1, font->getStringWidth(text)));
+	const double scale = std::min(0.8 * gfx->textUnitsPerPoint(), (r.w - 4 * unit) / std::max(1, font->getStringWidth(text)));
 	SDL_Rect clip{int(r.x), int(r.y), int(r.w), int(r.h)};
 	gfx->setUITransform(scale, r.x + (r.w - font->getStringWidth(text) * scale) / 2,
 						r.y + (r.h - font->getStringHeight(text) * scale) / 2, &clip);
@@ -171,10 +171,11 @@ void draw(const Layout &layout, const State &state)
 								 std::to_string(BrushTool::getBrushHeight(figure));
 		auto *font = globalContainer->standardFont;
 		InGameTouchTheme::TextStyle style(font);
-		const double scale = 0.8 * unit;
+		const double scale = 0.8 * gfx->textUnitsPerPoint();
 		SDL_Rect clip{int(box.x), int(box.y), int(box.w), int(box.h)};
+		// Rises by however much larger text grew, so it stays inside the box.
 		gfx->setUITransform(scale, box.x + (box.w - font->getStringWidth(size) * scale) / 2,
-							box.y + box.h - 20 * unit, &clip);
+							box.y + box.h - 20 * unit - (scale - 0.8 * unit) * font->getStringHeight(size), &clip);
 		gfx->drawString(0, 0, font, size);
 		gfx->setUITransform();
 		gfx->setClipRect();

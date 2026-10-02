@@ -262,7 +262,7 @@ TEST_CASE("JavaScript to SGSL prepares both runtimes before committing" *
 	auto& legacy = world.game.sgslScript;
 	legacy.sourceCode = R"(show("Retained legacy") timer(9) space)";
 	REQUIRE(legacy.compileScript(&world.game).type == ErrorReport::ET_OK);
-	legacy.syncStep(&world.gui);
+	legacy.syncStep(world.game, world.gui, world.gui.clientRequests);
 	auto legacySnapshot = [&] {
 		auto* storage = new GAGCore::MemoryStreamBackend;
 		GAGCore::BinaryOutputStream output(storage);

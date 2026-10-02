@@ -81,7 +81,7 @@ void GameGUI::drawChoiceSprites(int panelTopY, const std::vector<std::string>& t
 
 		const SpriteCenterOffset off = centerSprite(width, CHOICE_ROW_HEIGHT_PX, buildingSprite, imgid);
 
-		buildingSprite->setBaseColor(localTeam->color);
+		buildingSprite->setBaseColor(drawnScene().panels.local.color);
 		globalContainer->gfx->drawSprite(x + off.dx, y + off.dy, buildingSprite, imgid);
 		globalContainer->gfx->finishDrawingSprite(buildingSprite, 255);
 

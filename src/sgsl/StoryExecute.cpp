@@ -12,7 +12,8 @@
 #include <string>
 
 #include "Building.h"
-#include "GameGUI.h"
+#include "Game.h"
+#include "sim/ClientCommandSink.h"
 #include "GlobalContainer.h"
 #include "SGSL.h"
 #include "Utilities.h"
@@ -48,29 +49,29 @@ void Story::setAlliance(Game *game)
 	Uint32 sharedVisionOther[4] = { 0, 0, 0, 1};
 
 	if (allies[level])
-		game->teams[team1]->allies |= 1<<team2;
+		game->teams[team1]->allies |= Team::teamNumberToMask(team2);
 	else
-		game->teams[team1]->allies &= ~(1<<team2);
+		game->teams[team1]->allies &= ~(Team::teamNumberToMask(team2));
 
 	if (enemies[level])
-		game->teams[team1]->enemies |= 1<<team2;
+		game->teams[team1]->enemies |= Team::teamNumberToMask(team2);
 	else
-		game->teams[team1]->enemies &= ~(1<<team2);
+		game->teams[team1]->enemies &= ~(Team::teamNumberToMask(team2));
 
 	if (sharedVisionExchange[level])
-		game->teams[team1]->sharedVisionExchange |= 1<<team2;
+		game->teams[team1]->sharedVisionExchange |= Team::teamNumberToMask(team2);
 	else
-		game->teams[team1]->sharedVisionExchange &= ~(1<<team2);
+		game->teams[team1]->sharedVisionExchange &= ~(Team::teamNumberToMask(team2));
 
 	if (sharedVisionFood[level])
-		game->teams[team1]->sharedVisionFood |= 1<<team2;
+		game->teams[team1]->sharedVisionFood |= Team::teamNumberToMask(team2);
 	else
-		game->teams[team1]->sharedVisionFood &= ~(1<<team2);
+		game->teams[team1]->sharedVisionFood &= ~(Team::teamNumberToMask(team2));
 
 	if (sharedVisionOther[level])
-		game->teams[team1]->sharedVisionOther |= 1<<team2;
+		game->teams[team1]->sharedVisionOther |= Team::teamNumberToMask(team2);
 	else
-		game->teams[team1]->sharedVisionOther &= ~(1<<team2);
+		game->teams[team1]->sharedVisionOther &= ~(Team::teamNumberToMask(team2));
 }
 
 void Story::summonUnits(Game *game)
@@ -180,9 +181,9 @@ void Story::destroyFlag()
 }
 
 //main step-by-step machine
-bool Story::testCondition(GameGUI *gui)
+bool Story::testCondition(StoryContext *gui)
 {
-	Game *game = &gui->game;
+	Game *game = gui->game;
 
 	if (line.size())
 		switch (line[lineSelector].type)
@@ -323,7 +324,7 @@ bool Story::testCondition(GameGUI *gui)
 				}
 				else
 				{
-					gui->setSwallowSpaceKey(true);
+					gui->client->setSwallowSpaceKey(true);
 					return false;
 				}
 			}
@@ -339,7 +340,7 @@ bool Story::testCondition(GameGUI *gui)
 	return false;
 }
 
-void Story::syncStep(GameGUI *gui)
+void Story::syncStep(StoryContext *gui)
 {
 	int cycleLeft = 256;
 

@@ -13,6 +13,7 @@
 #include <valarray>
 #include <memory>
 #include <optional>
+#include <cstdint>
 
 #include <set>
 #include <tuple>
@@ -24,7 +25,11 @@
 
 namespace GAGCore
 {
+    class RenderBatch;
+
     class RenderBackend;
+    class SoftwareFramePresenter;
+    struct RenderOperations;
 	//! Color is 4 bytes big but provides easy access to components
 	struct Color
 	{
@@ -170,8 +175,11 @@ namespace GAGCore
 		std::optional<TextureInfo> textureInfo;
 		//! The clipping rect, we do not draw outside it
 		SDL_Rect clipRect;
-		//! this surface has been modified since latest blit
-		bool dirty;
+		// Content revisions are never consumed by drawing. Each backend remembers
+		// its own uploaded revision; raw pixel writes must call markPixelsChanged().
+		std::uint64_t glUploadedRevision = 0; // Revision uploaded to this surface's legacy GL texture.
+        std::uint64_t pixelRevision = 1, opacityRevision = 0;
+        bool opaquePixels = false;
 		bool highResolutionSampling=false;
 		//! texture index if GPU (GL) is used
 		unsigned int texture=0;
@@ -223,6 +231,10 @@ namespace GAGCore
 		virtual int getH(void) { if (textureInfo) return textureInfo->h; return sdlsurface->h; }
 		//! The raw software surface, e.g. to hand off to an SDL API that wants one directly
 		SDL_Surface *getSDLSurface(void) { return sdlsurface; }
+        std::uint64_t contentRevision() const { return pixelRevision; }
+        virtual void prepareDraw() {}
+        void markPixelsChanged() { ++pixelRevision; }
+        bool hasOpaquePixels();
 		static size_t allocatedTextureBytes();
 
 		virtual int getTexX(void) { if (textureInfo) { return textureInfo->texX; } return 0; }
@@ -414,6 +426,8 @@ namespace GAGCore
 		void reportFrameCacheFailure(const char *reason);
 		void releaseFrameCache();
 		void cacheFrame();
+        std::unique_ptr<SoftwareFramePresenter> softwarePresenter;
+        void prepareDraw() override;
 		void presentLastFrame();
 		// GLSL 1.20 program that recolors a sprite's unrotated team layer on the
 		// GPU (same HSV hue shift as DrawableSurface::shiftHSV) and combines it
@@ -421,17 +435,19 @@ namespace GAGCore
 		// created while it is active. Created after the context above exists and
 		// destroyed before it is torn down. Plain unsigned/int fields, not GL
 		// types, to keep GL headers out of this public header (see Sprite::vbo).
+		std::unique_ptr<RenderBatch> renderBatch;
+        bool renderBatchEnabled=true;
 		unsigned unitShaderProgram = 0;
 		int unitShaderLocBase = -1, unitShaderLocTeam = -1;
 		int unitShaderLocHasBase = -1, unitShaderLocHasTeam = -1;
-		int unitShaderLocHueShift = -1, unitShaderLocAlpha = -1;
 		bool unitShaderFailureLogged = false;
 		void createUnitShader();
 		void destroyUnitShader();
 		// Central presentation boundary, also used by render-validation contexts.
 		virtual void swapBuffers();
 		static int SDLCALL watchWindow(void *userdata, SDL_Event *event);
-		std::unique_ptr<RenderBackend> renderer;
+		std::unique_ptr<RenderBackend> portableRenderer;
+        RenderBackend* renderer = nullptr; // Borrowed active backend; ownership stays in the two unique_ptrs.
         // Rasterizes transformed passes into the existing software framebuffer.
         std::unique_ptr<RenderBackend> softwareRasterizer;
         bool softwareTransform=false;
@@ -465,6 +481,9 @@ namespace GAGCore
         bool isResponsiveViewport() const { return responsiveViewport; }
         bool hasPortableRenderer() const { return bool(renderer) && !nativeSoftware; }
         double logicalUnitsPerPoint() const;
+        //! Logical pixels per authored font pixel for text a touch painter sizes in
+        //! points: logicalUnitsPerPoint() times the player's text-size preference.
+        double textUnitsPerPoint() const;
         void setUITransform(float scale=1, float x=0, float y=0, const SDL_Rect* bounds=nullptr);
         Uint32 windowID() const { return SDL_GetWindowID(window); }
 #ifdef GLOB2_WEBGL2
@@ -527,7 +546,11 @@ namespace GAGCore
 		static int pollEvent(SDL_Event *event);
 		virtual void setClipRect(int x, int y, int w, int h);
 		virtual void setClipRect(void);
-		virtual void nextFrame(void);
+		enum class FrameMode { FullRedraw, PreserveContent };
+        void beginFrame(FrameMode mode = FrameMode::PreserveContent);
+        RenderOperations backendOperations() const;
+        SDL_Surface* completedFrame() const;
+        virtual void nextFrame(void);
 		//! This function does not work for GraphicContext
 		virtual bool loadImage(const std::string name) { return false; }
 		//! This function does not work for GraphicContext
@@ -575,7 +598,11 @@ namespace GAGCore
 		//! shader is unavailable so the caller can fall back to two ordinary
 		//! drawSurface calls (base, then the CPU-recoloured team layer).
 		bool drawTeamColoredQuad(DrawableSurface *base, DrawableSurface *team, float x, float y, float w, float h, Uint8 alpha, float hueShift);
-		bool hasUnitShader() const { return unitShaderProgram != 0; }
+		RenderBatch* getRenderBatch() const { return renderBatchEnabled?renderBatch.get():nullptr; }
+        void countRenderBatchDraw() { ++drawCalls; }
+        // Diagnostic comparison switches use the same context and assets.
+        void setRenderBatchEnabled(bool enabled);
+        bool hasUnitShader() const { return unitShaderProgram != 0; }
 		
 		virtual void drawAlphaMap(const std::valarray<float> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
 		virtual void drawAlphaMap(const std::valarray<unsigned char> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
@@ -689,6 +716,15 @@ namespace GAGCore
 		//! Check if index is within bound and return true, assert false and return false otherwise
 		bool checkBound(int index);
 		//! Return a rotated drawable surface for actColor, create it if necessary
+    public:
+        // Immutable native image access for terrain cache preparation. Team layers
+        // need separate composition and therefore are not cacheable here.
+        DrawableSurface* nativeFrame(unsigned index) const
+        {
+            return index < images.size() && index < rotated.size() && !rotated[index] ? images[index] : nullptr;
+        }
+
+    protected:
 		virtual DrawableSurface *getRotatedSurface(int index);
 		void reloadHighResolution();
 		//! One bit per 32-phase block, recomputed whenever the HD layer arrays

@@ -1458,8 +1458,8 @@ Rivierbreedte
 Zandaandeel
 [Select a valid map.]
 Selecteer een geldige kaart.
-[Shared control needs a free controller slot (maximum 12).]
-Gedeelde besturing vereist een vrije plaats voor een mens of AI (maximaal 12).
+[Shared control needs a free controller slot (maximum %0).]
+Gedeelde besturing vereist een vrije plaats voor een mens of AI (maximaal %0).
 [Smoothing]
 Gladmaken
 [Standard]
@@ -3096,8 +3096,6 @@ Minikaart
 Vooruitspoelen
 [Hide keyboard]
 Toetsenbord verbergen
-[Dialog text size]
-Tekstgrootte dialoogvensters
 [Player slot]
 Spelersplaats
 [Team color]
@@ -3436,8 +3434,6 @@ Winkans: %0 · Sterkte: %1
 Minimaal vereist niveau: %0
 [Confirm %0]
 Ok: %0
-[Dialog text size %0]
-Tekstgrootte dialoogvensters: %0%
 [%0 %1]
 %0 %1
 [resume game]

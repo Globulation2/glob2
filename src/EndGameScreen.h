@@ -57,7 +57,6 @@ class EndGameScreen : public GAGGUI::ui::UIScreen
 	bool metricPickerOpen() { return host().popupOpen(); }
 
   protected:
-	double textScale(const Glob2UI::Presentation &presentation) const override;
 	void paintBackground(Glob2UI::Canvas &canvas) override;
 	Glob2UI::Rect available(const Glob2UI::Presentation &presentation, const Glob2UI::Metrics &metrics) override;
 	void onEscape() override;

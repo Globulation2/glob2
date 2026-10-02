@@ -2,6 +2,10 @@ import os
     
 Import("env")
 Import("PackTar")
+
+if env.get('OPTIMIZED_ASSET_INSTALL') and 'dist' not in COMMAND_LINE_TARGETS:
+    Return()
+
     
 if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
     for file in os.listdir("."):
