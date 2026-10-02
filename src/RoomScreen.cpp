@@ -614,8 +614,8 @@ Element RoomScreen::primaryActions(const Presentation &p, bool phone)
 		leaveOptions.accessibleLabel = tr("[room leave]");
 		leaveOptions.tooltip = leaveOptions.accessibleLabel;
 	}
-	auto leaveButton = phone ? width(p.pt(52), button("leave", "", [this] { leave(); }, leaveOptions))
-							 : button("leave", tr("[room leave]"), [this] { leave(); }, leaveOptions);
+	auto leaveButton = phone ? width(p.pt(52), button("cancel", "", [this] { leave(); }, leaveOptions))
+							 : button("cancel", tr("[room leave]"), [this] { leave(); }, leaveOptions);
 	ButtonOptions primary;
 	primary.primary = true;
 	primary.shortcut = SDLK_RETURN;
@@ -624,7 +624,7 @@ Element RoomScreen::primaryActions(const Presentation &p, bool phone)
 	{
 		primary.enabled = room->canStart();
 		primary.icon = uiIcon(UIIcon::Start);
-		main = button("start", tr("[Start]"), [this] { room->start(); invalidate(); }, primary);
+		main = button(primary.enabled ? "start" : "start/waiting", tr("[Start]"), [this] { room->start(); invalidate(); }, primary);
 		GAGCore::ApplicationHost::roomReady(primary.enabled);
 	}
 	else

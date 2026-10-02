@@ -2,27 +2,10 @@
 #include "LANSessionScreen.h"
 #include "LanRoom.h"
 #include "MessageScreen.h"
-#include "MultiplayerGameScreen.h"
-#include "SessionTabsScreen.h"
+#include "RoomScreen.h"
 #include <ScreenStack.h>
 
 using namespace GAGGUI;
-namespace
-{
-class LANGameScreen final : public SessionTabsScreen
-{
-	std::shared_ptr<Lan::LanRoom> lanRoom;
-	MultiplayerGameScreen room;
-
-  public:
-	LANGameScreen(ScreenStack &screens, std::shared_ptr<Lan::LanRoom> lanRoom)
-		: lanRoom(lanRoom), room(screens, lanRoom)
-	{
-		addTab(&room, true);
-	}
-	~LANGameScreen() override { removeTab(&room); }
-};
-} // namespace
 LANSessionScreen::LANSessionScreen(ScreenStack &screens, std::shared_ptr<Lan::LanRoom> room)
 	: screens(screens), lanRoom(std::move(room))
 {
@@ -70,17 +53,8 @@ void LANSessionScreen::onTimer(Uint32 tick)
 void LANSessionScreen::enterLobby()
 {
 	stage = Stage::Lobby;
-	screens.push(std::make_unique<LANGameScreen>(screens, lanRoom),
-				 [this](GAGGUI::Screen &, int result)
-				 {
-					 if (!lanRoom->endMessage().empty() && result != GAGGUI::Screen::QUIT_APPLICATION)
-					 {
-						 stage = Stage::Failed;
-						 screens.push(std::make_unique<MessageScreen>(lanRoom->endMessage(),
-																	  std::vector<std::string>{Glob2UI::tr("[ok]")}),
-									  [this, result](GAGGUI::Screen &, int) { endExecute(result); });
-						 return;
-					 }
-					 endExecute(result);
-				 });
+	// The shared Room screen (multiplayer mock-up 2, state C) on the LanRoom backend.
+	// It shows why the room ended (host left, refusal, lost connection) itself.
+	screens.push(std::make_unique<RoomScreen>(screens, lanRoom),
+				 [this](GAGGUI::Screen &, int result) { endExecute(result); });
 }
