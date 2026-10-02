@@ -108,7 +108,15 @@ describe('platform api', () => {
     expect(body.realtimeUrl).toBe('wss://play.example.org/realtime');
     expect(body.supportedSimVersions).toEqual([SIM]);
     expect(body.queues).toEqual([
-      { id: 'ranked-1v1', name: 'Ranked 1v1', mode: '1v1', rated: true, aiBackfillSeconds: 90 },
+      {
+        id: 'ranked-1v1',
+        name: 'Ranked 1v1',
+        mode: '1v1',
+        rated: true,
+        aiBackfillSeconds: 90,
+        acceptSeconds: 10,
+        maps: ['even-ground'],
+      },
     ]);
   });
 
