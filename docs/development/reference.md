@@ -827,6 +827,10 @@ also remains the headless default and the equivalence reference.
   LINKFLAGS="-fsanitize=thread"` and run a windowed `-test-games` session or a headless
   `--run-game` with `GLOB2_SIM_THREAD=1`. Build against the pinned SDL3 prefix
   with `GLOB2_SDL3_PREFIX`; sanitizer builds use the same native SDL3 dependency set.
+  `.github/workflows/thread-sanitizer.yml` runs both games under ThreadSanitizer nightly,
+  on demand and on pull requests that touch the code the threads share; add paths there
+  when new code becomes shared between them. It does not report thread leaks, because SDL3
+  leaves its own startup threads unjoined at exit.
 - `SceneBuffer<T>` (`src/scene/SceneBuffer.h`) hands Scenes between the threads without
   either waiting for the other.
 
