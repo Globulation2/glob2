@@ -52,6 +52,42 @@
         "title": {
           "type": "string",
           "maxLength": 128
+        },
+        "players": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "name",
+              "team",
+              "kind"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "maxLength": 64
+              },
+              "team": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 11
+              },
+              "kind": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "const": "human"
+                  },
+                  {
+                    "type": "string",
+                    "const": "ai"
+                  }
+                ]
+              }
+            }
+          },
+          "maxItems": 12,
+          "description": "Saves only: the players recorded in the file, for reteaming."
         }
       }
     },

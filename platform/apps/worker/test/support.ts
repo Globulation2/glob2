@@ -16,9 +16,12 @@ export async function createAccount(
   name: string,
   kind: 'guest' | 'registered' = 'registered',
 ): Promise<string> {
+  // Registered display names are unique per instance (migration 0003), and tests
+  // reuse names, so a random suffix keeps them distinct.
+  const displayName = kind === 'registered' ? `${name}-${randomUUID().slice(0, 8)}` : name;
   const row = await db
     .insertInto('accounts')
-    .values({ kind, display_name: name })
+    .values({ kind, display_name: displayName })
     .returning('id')
     .executeTakeFirstOrThrow();
   return row.id;

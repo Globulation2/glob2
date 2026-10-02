@@ -204,8 +204,18 @@ const typedColumns: ColumnLists = {
     'updated_at',
     'closed_at',
   ],
-  room_members: ['room_id', 'account_id', 'connected', 'joined_at', 'last_seen_at'],
-  room_seats: ['room_id', 'seat', 'team', 'occupant', 'account_id', 'ai_id', 'ai_name', 'ready'],
+  room_members: ['room_id', 'account_id', 'connected', 'joined_at', 'last_seen_at', 'region_rtts'],
+  room_seats: [
+    'room_id',
+    'seat',
+    'team',
+    'occupant',
+    'account_id',
+    'ai_id',
+    'ai_name',
+    'ready',
+    'locked',
+  ],
   room_chat_messages: ['id', 'room_id', 'account_id', 'text', 'sent_at'],
   matches: [
     'id',
@@ -230,6 +240,9 @@ const typedColumns: ColumnLists = {
     'rating_note',
     'ratings_applied_at',
     'proposal_id',
+    'relay_assigned_at',
+    'relay_attempts',
+    'end_report',
   ],
   rating_entities: ['id', 'kind', 'account_id', 'ai_id', 'ai_sim_version', 'created_at'],
   ratings: [
@@ -408,6 +421,39 @@ const typedColumns: ColumnLists = {
     'average_prestige',
     'games_at_tick',
   ],
+  map_uploads: [
+    'id',
+    'owner_account_id',
+    'blob_sha256',
+    'format',
+    'sim_version',
+    'file_name',
+    'status',
+    'job_id',
+    'width',
+    'height',
+    'team_count',
+    'version_minor',
+    'title',
+    'players',
+    'failure',
+    'created_at',
+    'completed_at',
+  ],
+  generated_maps: [
+    'descriptor_hash',
+    'sim_version',
+    'descriptor',
+    'status',
+    'job_id',
+    'map_hash',
+    'width',
+    'height',
+    'team_count',
+    'failure',
+    'created_at',
+    'completed_at',
+  ],
 };
 
 const SIM = `125-49-${'3f'.repeat(32)}`;
@@ -428,7 +474,11 @@ describe('migrations', () => {
   it('apply from an empty database and are idempotent', async () => {
     const first = await migrateToLatest(database.db);
     const files = Object.keys(await new SqlFileMigrationProvider().getMigrations());
-    expect(files.slice(0, 2)).toEqual(['0001_initial', '0002_ratings_matchmaking']);
+    expect(files.slice(0, 3)).toEqual([
+      '0001_initial',
+      '0002_ratings_matchmaking',
+      '0003_identity',
+    ]);
     expect(first.map((r) => [r.migrationName, r.status])).toEqual(
       files.map((name) => [name, 'Success']),
     );

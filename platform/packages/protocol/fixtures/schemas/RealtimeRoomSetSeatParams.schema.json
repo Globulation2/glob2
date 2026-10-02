@@ -108,6 +108,19 @@
             }
           },
           "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "locked"
+            }
+          },
+          "additionalProperties": false
         }
       ]
     }

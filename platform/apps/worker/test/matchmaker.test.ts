@@ -9,6 +9,7 @@ import {
   chooseRegion,
   planGroups,
   ratingWindow,
+  rttTolerance,
   type WaitingTicket,
 } from '../src/matchmaking/grouping.ts';
 import { Matchmaker } from '../src/matchmaking/matchmaker.ts';
@@ -144,42 +145,43 @@ describe('grouping (pure)', () => {
   });
   const now = new Date('2026-10-01T12:00:00Z');
 
-  it('chooses the region minimising the worst round trip', () => {
+  it('always chooses a region, minimising the worst round trip', () => {
+    const both = (a: { region: string; rttMs: number }[], b: { region: string; rttMs: number }[]) =>
+      chooseRegion([{ regions: a }, { regions: b }]);
     expect(
-      chooseRegion(
+      both(
         [
-          {
-            regions: [
-              { region: 'eu', rttMs: 20 },
-              { region: 'us', rttMs: 120 },
-            ],
-          },
-          {
-            regions: [
-              { region: 'eu', rttMs: 140 },
-              { region: 'us', rttMs: 60 },
-            ],
-          },
+          { region: 'eu', rttMs: 20 },
+          { region: 'us', rttMs: 120 },
         ],
-        250,
+        [
+          { region: 'eu', rttMs: 140 },
+          { region: 'us', rttMs: 60 },
+        ],
       ),
-    ).toEqual({ region: 'us' });
-    expect(
-      chooseRegion(
-        [{ regions: [{ region: 'eu', rttMs: 20 }] }, { regions: [{ region: 'us', rttMs: 20 }] }],
-        250,
-      ),
-    ).toBeUndefined();
-    expect(
-      chooseRegion(
-        [{ regions: [{ region: 'eu', rttMs: 300 }] }, { regions: [{ region: 'eu', rttMs: 20 }] }],
-        250,
-      ),
-    ).toBeUndefined();
-    expect(chooseRegion([{ regions: [] }, { regions: [] }], 250)).toEqual({ region: null });
-    expect(chooseRegion([{ regions: [{ region: 'ap', rttMs: 400 }] }], 250)).toEqual({
+    ).toEqual({ region: 'us', worst: 120 });
+    // A single far relay is still a region.
+    expect(both([{ region: 'ap', rttMs: 400 }], [{ region: 'ap', rttMs: 380 }])).toEqual({
       region: 'ap',
+      worst: 400,
     });
+    // No shared region: the best-covered, fastest one, with an unknown worst case.
+    expect(both([{ region: 'eu', rttMs: 20 }], [{ region: 'us', rttMs: 30 }])).toEqual({
+      region: 'eu',
+      worst: Infinity,
+    });
+    // Missing measurements mean "any region".
+    expect(chooseRegion([{ regions: [] }, { regions: [] }])).toEqual({ region: null, worst: 0 });
+    expect(chooseRegion([{ regions: [] }, { regions: [{ region: 'us', rttMs: 90 }] }])).toEqual({
+      region: 'us',
+      worst: 90,
+    });
+  });
+
+  it('relaxes the region preference with wait time', () => {
+    expect(rttTolerance(RANKED, 0)).toBe(100);
+    expect(rttTolerance(RANKED, 10)).toBe(150);
+    expect(rttTolerance(RANKED, 30)).toBe(Infinity);
   });
 
   it('widens the rating window with wait time', () => {
@@ -242,12 +244,12 @@ describe('matchmaker', () => {
     expect((await ticketStatus(third.ticketId)).status).toBe('matched');
   });
 
-  it('chooses the region with the lowest worst-case round trip and respects the cap', async () => {
+  it('plays on the region with the lowest worst-case round trip', async () => {
     const h = harness();
     await enqueue(h, CASUAL, {
       regions: [
         { region: 'eu-west', rttMs: 30 },
-        { region: 'us-east', rttMs: 110 },
+        { region: 'us-east', rttMs: 90 },
       ],
     });
     await enqueue(h, CASUAL, {
@@ -258,10 +260,79 @@ describe('matchmaker', () => {
     });
     await h.matchmaker.tick();
     expect(h.starter.calls[0]!.region).toBe('us-east');
+  });
 
-    await enqueue(h, CASUAL, { regions: [{ region: 'ap-south', rttMs: 40 }] });
-    await enqueue(h, CASUAL, { regions: [{ region: 'eu-west', rttMs: 40 }] });
+  it('still matches players whose only relay is far away', async () => {
+    const h = harness();
+    await enqueue(h, CASUAL, { regions: [{ region: 'ap-south', rttMs: 420 }] });
+    await enqueue(h, CASUAL, { regions: [{ region: 'ap-south', rttMs: 380 }] });
+    // A good shared relay is preferred at first ...
     expect(await h.matchmaker.tick()).toMatchObject({ proposed: 0 });
+    // ... but after anyRegionAfterSeconds the best relay that exists is used.
+    h.clock.advance(30);
+    expect(await h.matchmaker.tick()).toMatchObject({ proposed: 1, started: 1 });
+    expect(h.starter.calls[0]!.region).toBe('ap-south');
+  });
+
+  it('matches tickets without RTT measurements at once, on any region', async () => {
+    const h = harness();
+    await enqueue(h, CASUAL, { regions: [] });
+    await enqueue(h, CASUAL, { regions: [] });
+    expect(await h.matchmaker.tick()).toMatchObject({ proposed: 1 });
+    expect(h.starter.calls[0]!.region).toBeNull();
+    await enqueue(h, CASUAL, { regions: [] });
+    await enqueue(h, CASUAL, { regions: [{ region: 'us-east', rttMs: 300 }] });
+    expect(await h.matchmaker.tick()).toMatchObject({ proposed: 0 });
+    h.clock.advance(30);
+    expect(await h.matchmaker.tick()).toMatchObject({ proposed: 1 });
+    expect(h.starter.calls[1]!.region).toBe('us-east');
+  });
+
+  it('prefers a partner on a good shared relay early, and any partner later', async () => {
+    const h = harness();
+    const anchor = await enqueue(h, CASUAL, {
+      skill: 1500,
+      regions: [{ region: 'eu-west', rttMs: 30 }],
+    });
+    const farButEqual = await enqueue(h, CASUAL, {
+      skill: 1500,
+      regions: [{ region: 'us-east', rttMs: 40 }],
+    });
+    const nearby = await enqueue(h, CASUAL, {
+      skill: 1550,
+      regions: [{ region: 'eu-west', rttMs: 45 }],
+    });
+    await h.matchmaker.tick();
+    const tickets = h.starter.calls[0]!.seats.map((s) => s.ticketId).sort();
+    expect(tickets).toEqual([anchor.ticketId, nearby.ticketId].sort());
+    expect(h.starter.calls[0]!.region).toBe('eu-west');
+
+    // Alone with no shared relay, the remaining player is matched once the
+    // preference has widened to any region.
+    const late = await enqueue(h, CASUAL, { regions: [{ region: 'eu-west', rttMs: 20 }] });
+    expect(await h.matchmaker.tick()).toMatchObject({ proposed: 0 });
+    h.clock.advance(30);
+    await h.matchmaker.tick();
+    const second = h.starter.calls[1]!;
+    expect(second.seats.map((s) => s.ticketId).sort()).toEqual(
+      [farButEqual.ticketId, late.ticketId].sort(),
+    );
+  });
+
+  it('applies the opt-in hard RTT cap only when an operator sets it', async () => {
+    const capped = resolveQueue({
+      id: 'capped',
+      name: 'Capped',
+      mode: '1v1',
+      rated: false,
+      maxRttMs: 150,
+    });
+    const h = harness([capped]);
+    await enqueue(h, capped, { regions: [{ region: 'ap-south', rttMs: 400 }] });
+    await enqueue(h, capped, { regions: [{ region: 'ap-south', rttMs: 400 }] });
+    h.clock.advance(600);
+    expect(await h.matchmaker.tick()).toMatchObject({ proposed: 0 });
+    expect(CASUAL.maxRttMs).toBeUndefined();
   });
 
   it('widens the rating window as tickets wait', async () => {
