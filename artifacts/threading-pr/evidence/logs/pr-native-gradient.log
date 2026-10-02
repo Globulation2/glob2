@@ -1,0 +1,4 @@
+PASS glob2-unit-tests GradientPipeline (1 cases) (0.9s)
+
+1 passed, 0 failed, 0 skipped (0.9s of test time)
+[run_tests] JUnit report: artifacts/threading-pr/native-gradient.xml (1 cases)

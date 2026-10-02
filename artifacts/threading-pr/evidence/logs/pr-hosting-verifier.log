@@ -1,0 +1,4 @@
+isolated HTTPS frontend: PASS
+missing isolation: PASS
+insecure URL: PASS
+insecure redirect: PASS

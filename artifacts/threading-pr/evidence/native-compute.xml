@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="2" failures="0" errors="0" skipped="0"><testsuite name="ComputeExecutor"><testcase classname="ComputeExecutor" name="supported platforms execute jobs concurrently on distinct threads" time="0.000997" status="run" />
+    <testcase classname="ComputeExecutor" name="exclusive slots; nested batches; reuse; errors; barriers and reconfiguration" time="0.020122" status="run" />
+  </testsuite></testsuites>

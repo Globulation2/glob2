@@ -1,0 +1,17 @@
+
+Running 12 tests using 1 worker
+
+  ✓   1 [chromium] › browser/tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (serial/1) (1.4s)
+  ✓   2 [chromium] › browser/tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (threaded/1) (1.6s)
+  ✓   3 [chromium] › browser/tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (threaded/2) (1.6s)
+  ✓   4 [chromium] › browser/tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (threaded/4) (1.6s)
+  ✓   5 [firefox] › browser/tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (serial/1) (2.4s)
+  ✓   6 [firefox] › browser/tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (threaded/1) (2.2s)
+  ✓   7 [firefox] › browser/tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (threaded/2) (2.2s)
+  ✓   8 [firefox] › browser/tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (threaded/4) (2.3s)
+  ✓   9 [webkit] › browser/tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (serial/1) (1.1s)
+  ✓  10 [webkit] › browser/tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (threaded/1) (1.3s)
+  ✓  11 [webkit] › browser/tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (threaded/2) (1.5s)
+  ✓  12 [webkit] › browser/tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (threaded/4) (1.5s)
+
+  12 passed (22.4s)

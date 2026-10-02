@@ -1,0 +1,20 @@
+{
+  "native": "artifacts/threading-pr/native-trace/native.replay.checksums",
+  "native_sha256": "4838173acd91d4768a0cd7f3e681cb3ea630de093e27c117994030a8ad31de43",
+  "ticks": 1500,
+  "browser_traces": [
+    "artifacts/threading-pr/trace-results/determinism-WebAssembly-pr-96d45-imulation-trace-threaded-4--firefox/wasm.replay.checksums",
+    "artifacts/threading-pr/trace-results/determinism-WebAssembly-pr-165a4-imulation-trace-threaded-2--firefox/wasm.replay.checksums",
+    "artifacts/threading-pr/trace-results/determinism-WebAssembly-pr-34f1c-imulation-trace-threaded-1--firefox/wasm.replay.checksums",
+    "artifacts/threading-pr/trace-results/determinism-WebAssembly-pr-7b5ce--simulation-trace-serial-1--firefox/wasm.replay.checksums",
+    "artifacts/threading-pr/trace-results/determinism-WebAssembly-pr-165a4-imulation-trace-threaded-2--chromium/wasm.replay.checksums",
+    "artifacts/threading-pr/trace-results/determinism-WebAssembly-pr-7b5ce--simulation-trace-serial-1--chromium/wasm.replay.checksums",
+    "artifacts/threading-pr/trace-results/determinism-WebAssembly-pr-165a4-imulation-trace-threaded-2--webkit/wasm.replay.checksums",
+    "artifacts/threading-pr/trace-results/determinism-WebAssembly-pr-96d45-imulation-trace-threaded-4--chromium/wasm.replay.checksums",
+    "artifacts/threading-pr/trace-results/determinism-WebAssembly-pr-7b5ce--simulation-trace-serial-1--webkit/wasm.replay.checksums",
+    "artifacts/threading-pr/trace-results/determinism-WebAssembly-pr-34f1c-imulation-trace-threaded-1--webkit/wasm.replay.checksums",
+    "artifacts/threading-pr/trace-results/determinism-WebAssembly-pr-34f1c-imulation-trace-threaded-1--chromium/wasm.replay.checksums",
+    "artifacts/threading-pr/trace-results/determinism-WebAssembly-pr-96d45-imulation-trace-threaded-4--webkit/wasm.replay.checksums"
+  ],
+  "all_equal": true
+}

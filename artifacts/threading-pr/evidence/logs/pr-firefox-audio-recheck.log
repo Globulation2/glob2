@@ -1,0 +1,6 @@
+
+Running 1 test using 1 worker
+
+  ✓  1 [firefox] › browser/tests/threading.spec.js:74:1 › threaded audio produces PCM, keeps settings responsive and shuts down cleanly (9.2s)
+
+  1 passed (11.3s)

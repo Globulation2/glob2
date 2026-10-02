@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="33" failures="0" errors="0" skipped="0"><testsuite name="JavaScriptCompatibility"><testcase classname="JavaScriptCompatibility" name="JavaScript current saves reject truncated generation tables" time="0.405108" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript current text saves validate unused generation counters" time="2.3878" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript pass assigns valid identities to released saves" time="0.219176" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript pass retains network protocol acceptance boundaries" time="0.002234" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript pass retains released replay and acceptance boundaries" time="0.185447" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript test environment scopes restore SDL and CRT readers" time="0" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript upgrade retains genuine master124 experiments and continuation" time="0.218599" status="run" />
+  </testsuite><testsuite name="JavaScriptIntegration"><testcase classname="JavaScriptIntegration" name="JavaScript AI state RNG and disabled state survive continuation" time="0.195045" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript large world observations respect work limits" time="0.163898" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript observations visibility memory pagination and stale references" time="0.123578" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript orders execute and survive save load" time="0.230177" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript scenario effects commit atomically and resume" time="0.135115" status="run" />
+  </testsuite><testsuite name="JavaScriptLifecycle"><testcase classname="JavaScriptLifecycle" name="Scripting building completion upgrade and repair preserve identity" time="0.228272" status="run" />
+  <testcase classname="JavaScriptLifecycle" name="Scripting conversion allocates fresh identity in a reused destination slot" time="0.06965" status="run" />
+  <testcase classname="JavaScriptLifecycle" name="Scripting conversion back never resurrects the original reference" time="0.062963" status="run" />
+  <testcase classname="JavaScriptLifecycle" name="Scripting editor deletion and reuse never revive a reference" time="0.072667" status="run" />
+  <testcase classname="JavaScriptLifecycle" name="Scripting identity survives conversion and save load" time="0.079618" status="run" />
+  <testcase classname="JavaScriptLifecycle" name="Scripting level reset preserves generation counters" time="0.000922" status="run" />
+  <testcase classname="JavaScriptLifecycle" name="Scripting normal death invalidates lookup before cleanup and slot reuse" time="0.067278" status="run" />
+  </testsuite><testsuite name="JavaScriptPresentation"><testcase classname="JavaScriptPresentation" name="Failed prepared map replacements preserve active globals and language" time="0.059146" status="run" />
+  <testcase classname="JavaScriptPresentation" name="JavaScript does not advance or display a retained SGSL timer" time="0.167031" status="run" />
+  <testcase classname="JavaScriptPresentation" name="JavaScript leaves stored SGSL execution and victory conditions dormant" time="0.146571" status="run" />
+  <testcase classname="JavaScriptPresentation" name="JavaScript load restores presentation without a callback or history entry" time="0.132535" status="run" />
+  <testcase classname="JavaScriptPresentation" name="JavaScript presentation publishes only changed localized messages" time="0.123336" status="run" />
+  <testcase classname="JavaScriptPresentation" name="Leaving a JavaScript scenario resets choices before loading a legacy map" time="0.151253" status="run" />
+  <testcase classname="JavaScriptPresentation" name="Prepared SGSL exchanges rebind stories in both runtimes" time="0.001651" status="run" />
+  </testsuite><testsuite name="JavaScriptRealistic"><testcase classname="JavaScriptRealistic" name="JavaScript realistic economic planner and scenario survey" time="0.023426" status="run" />
+  </testsuite><testsuite name="JavaScriptSession"><testcase classname="JavaScriptSession" name="JavaScript deterministic scenario failure ends the engine session" time="0.175997" status="run" />
+  <testcase classname="JavaScriptSession" name="JavaScript fatal failure tears down a live engine session" time="0.212763" status="run" />
+  <testcase classname="JavaScriptSession" name="JavaScript initialization errors reach headless and UI load diagnostics" time="0.397978" status="run" />
+  </testsuite><testsuite name="JavaScriptSimulation"><testcase classname="JavaScriptSimulation" name="JavaScript conversion boundary resumes globals RNG references and complete tick records" time="1.43941" status="run" />
+  <testcase classname="JavaScriptSimulation" name="JavaScript economic planners and map survey execute, resume and replay 256 ticks" time="1.78618" status="run" />
+  <testcase classname="JavaScriptSimulation" name="JavaScript original fixture executes, resumes and replays 256 ticks" time="1.44601" status="run" />
+  </testsuite></testsuites>

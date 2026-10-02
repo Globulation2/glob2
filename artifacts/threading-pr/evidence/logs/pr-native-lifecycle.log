@@ -1,0 +1,5 @@
+PASS SharedWorkerLifecycle/background saves finish on a worker and remain readable after teardown (0.0s)
+PASS SharedWorkerLifecycle/pending gradient work survives a save and continues at the same deadlines (0.2s)
+
+2 passed, 0 failed, 0 skipped (0.2s of test time)
+[run_tests] JUnit report: artifacts/threading-pr/native-lifecycle.xml (2 cases)

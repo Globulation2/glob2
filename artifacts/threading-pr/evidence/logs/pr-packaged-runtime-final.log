@@ -1,0 +1,3 @@
+{"variant":"threaded","state":{"mode":"threaded","files":{"serial":"index-7ed2d358150701c1.js","threaded":"threaded/index-7ed2d358150701c1.js"}},"errors":[]}
+{"variant":"serial","state":{"mode":"serial","files":{"serial":"index-7ed2d358150701c1.js","threaded":"threaded/index-7ed2d358150701c1.js"}},"errors":[]}
+{"variant":"fallback","state":{"mode":"serial","files":{"serial":"index-7ed2d358150701c1.js","threaded":"threaded/index-7ed2d358150701c1.js"}},"errors":[]}

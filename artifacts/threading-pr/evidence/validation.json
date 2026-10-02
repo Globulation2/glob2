@@ -1,0 +1,57 @@
+{
+  "revision": "ac2d721858a06b442de9feba7e2d65819392107e",
+  "sourceTreeSha256": "1d607952e695a6553afabf29ab3f56604c60e5f981f3b087e7259022490783c9",
+  "review": "review.json",
+  "build_system_tests": 137,
+  "javascript_unit_tests": 20,
+  "native_script_cases": 33,
+  "shared_script_artifacts": 60,
+  "script_comparisons": [
+    "script-serial-comparison.json",
+    "script-threaded-comparison.json"
+  ],
+  "cross_browser_1500_tick_traces": 12,
+  "reviewed_revision_chromium_traces": 4,
+  "simulation_trace_sha256": "4838173acd91d4768a0cd7f3e681cb3ea630de093e27c117994030a8ad31de43",
+  "browser_threading_results": {
+    "baseline_revision": "3e8d00801b9234727ca4b0e5a5291928309a4441",
+    "baseline_checks": 24,
+    "baseline_all_passed": true,
+    "reviewed_revision_cases": 18,
+    "initial_passed": 17,
+    "initial_failures": 1,
+    "isolated_recheck_passed": 1,
+    "failure": "Firefox audio case timed out during startup while concurrent local browser checks ran; no runtime abort; isolated rerun passed",
+    "failure_trace": "firefox-startup-timeout.trace.zip"
+  },
+  "packaged_runtime": {
+    "threaded": "PASS",
+    "serial": "PASS",
+    "startup_fallback": "PASS",
+    "package_version": "7ed2d358150701c1"
+  },
+  "runtime_hashes": {
+    "index.js": "c2799f4e964ffc929ac83fe914790c6c193a29c58c26d84648e3e23c827412af",
+    "index.wasm": "b5cd8990228fa7f0742a6d6886bbab3299ef4abd387eccf77a2077d49bbdbfe9",
+    "index.data": "879b88a4490320c8640781652c9c85932310613287dd8543d6886717817c358d",
+    "threaded/index.js": "4d3399d6506a3451272d8d89a3279132ee24f3cf63140794ac0b89abb5f2ed74",
+    "threaded/index.wasm": "b6c5803bfa01f93452fa3196bedc4d1aacb560dc6f94fde4d0703457f2fa7cac",
+    "script-tests.js": "23f01235521e60b9e6c99bacee76ed792dfb0ac610a7474914083048a4f4fe0a",
+    "script-tests.wasm": "7180740b5b5e59e324938c65ac905f0804a3ba9369a37efdd7a75fcbd2abc5ab",
+    "threaded/script-tests.js": "7159ea28055a6a01577d0269350ed2a41283f8ba7c3f462c9f7c32ea97335b8d",
+    "threaded/script-tests.wasm": "3abec84de50f803bff07136423f2e054f656d7176969c524ce5e358deea0ba79"
+  },
+  "limitations": [
+    "Linux/Windows execution remains for GitHub CI",
+    "Actual public HTTPS frontend not configured or deployed in this task; verifier acceptance/rejection cases tested locally",
+    "Manual gameplay feel review still required",
+    "Audio adds one PCM buffer latency"
+  ],
+  "commands": [
+    "scons release=1 tests -j8",
+    "scons target=web release=1 web-tests web-package -j8",
+    "python3 test/check_javascript_corpus.py --build-dir build/darwin/client/release --output artifacts/threading-pr/native-corpus-final",
+    "GLOB2_TEST_URL=http://127.0.0.1:8776 browser/node_modules/.bin/playwright test --config browser/playwright.config.js threading.spec.js",
+    "python3 browser/package-static.py --verify build/browser-static"
+  ]
+}

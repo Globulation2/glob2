@@ -1,0 +1,60 @@
+
+Running 18 tests using 1 worker
+
+  ✓   1 [chromium] › browser/tests/threading.spec.js:8:1 › threaded runtime executes shared compute, gradients and save lifecycle tests (8.0s)
+  ✓   2 [chromium] › browser/tests/threading.spec.js:8:1 › serial runtime executes shared compute, gradients and save lifecycle tests (6.9s)
+  ✓   3 [chromium] › browser/tests/threading.spec.js:43:1 › serial selection preserves ordinary startup (2.4s)
+  ✓   4 [chromium] › browser/tests/threading.spec.js:50:1 › missing isolation headers automatically selects serial (2.4s)
+  ✓   5 [chromium] › browser/tests/threading.spec.js:62:1 › threaded startup failure reloads the serial runtime (2.4s)
+  ✓   6 [chromium] › browser/tests/threading.spec.js:74:1 › threaded audio produces PCM, keeps settings responsive and shuts down cleanly (6.5s)
+  ✓   7 [firefox] › browser/tests/threading.spec.js:8:1 › threaded runtime executes shared compute, gradients and save lifecycle tests (23.2s)
+  ✓   8 [firefox] › browser/tests/threading.spec.js:8:1 › serial runtime executes shared compute, gradients and save lifecycle tests (47.8s)
+  ✓   9 [firefox] › browser/tests/threading.spec.js:43:1 › serial selection preserves ordinary startup (6.4s)
+  ✓  10 [firefox] › browser/tests/threading.spec.js:50:1 › missing isolation headers automatically selects serial (7.3s)
+  ✓  11 [firefox] › browser/tests/threading.spec.js:62:1 › threaded startup failure reloads the serial runtime (7.3s)
+  ✘  12 [firefox] › browser/tests/threading.spec.js:74:1 › threaded audio produces PCM, keeps settings responsive and shuts down cleanly (33.3s)
+  ✓  13 [webkit] › browser/tests/threading.spec.js:8:1 › threaded runtime executes shared compute, gradients and save lifecycle tests (13.2s)
+  ✓  14 [webkit] › browser/tests/threading.spec.js:8:1 › serial runtime executes shared compute, gradients and save lifecycle tests (9.6s)
+  ✓  15 [webkit] › browser/tests/threading.spec.js:43:1 › serial selection preserves ordinary startup (2.8s)
+  ✓  16 [webkit] › browser/tests/threading.spec.js:50:1 › missing isolation headers automatically selects serial (2.8s)
+  ✓  17 [webkit] › browser/tests/threading.spec.js:62:1 › threaded startup failure reloads the serial runtime (1.9s)
+  ✓  18 [webkit] › browser/tests/threading.spec.js:74:1 › threaded audio produces PCM, keeps settings responsive and shuts down cleanly (7.8s)
+
+
+  1) [firefox] › browser/tests/threading.spec.js:74:1 › threaded audio produces PCM, keeps settings responsive and shuts down cleanly 
+
+    Error: expect(received).toContain(expected) // indexOf
+
+    Expected substring: "MainMenuScreen"
+    Received string:    "loading"
+
+    Call Log:
+    - Timeout 30000ms exceeded while waiting on the predicate
+
+      4 | const {gameURL,clickMainMenu,clickControl} = require('./main-menu');
+      5 | const {openRuntimeHost} = require('./runtime-host');
+    > 6 | const screen=(page,name)=>expect.poll(()=>page.evaluate(()=>glob2Diagnostics.snapshot().screen)).toContain(name);
+        |                                                                                                  ^
+      7 | for (const variant of ['threaded','serial']) {
+      8 | test(`${variant} runtime executes shared compute, gradients and save lifecycle tests`,async({page},info)=>{
+      9 |   const evidence=path.resolve(__dirname,'../../artifacts/browser-determinism/worker-lifecycle');
+        at screen (/Users/bradley/.codex/worktrees/browser-threading-pr/glob2/browser/tests/threading.spec.js:6:98)
+        at /Users/bradley/.codex/worktrees/browser-threading-pr/glob2/browser/tests/threading.spec.js:76:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    artifacts/threading-pr/reviewed-threading-results/threading-threaded-audio-p-05d30-sive-and-shuts-down-cleanly-firefox/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: artifacts/threading-pr/reviewed-threading-results/threading-threaded-audio-p-05d30-sive-and-shuts-down-cleanly-firefox/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    artifacts/threading-pr/reviewed-threading-results/threading-threaded-audio-p-05d30-sive-and-shuts-down-cleanly-firefox/trace.zip
+    Usage:
+
+        npx playwright show-trace artifacts/threading-pr/reviewed-threading-results/threading-threaded-audio-p-05d30-sive-and-shuts-down-cleanly-firefox/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [firefox] › browser/tests/threading.spec.js:74:1 › threaded audio produces PCM, keeps settings responsive and shuts down cleanly 
+  17 passed (3.4m)

@@ -1,0 +1,11 @@
+{
+  "reference": "artifacts/threading-pr/native-corpus-final",
+  "candidate": "artifacts/browser-determinism/script-corpus-threaded/chromium",
+  "comparedArtifacts": 60,
+  "referenceRevision": "ac2d721858a06b442de9feba7e2d65819392107e",
+  "candidateRevision": "ac2d721858a06b442de9feba7e2d65819392107e",
+  "provenanceIssues": [],
+  "acceptanceEligible": true,
+  "excludedSaveMetadata": "MapHeader SHA1 only",
+  "differences": {}
+}

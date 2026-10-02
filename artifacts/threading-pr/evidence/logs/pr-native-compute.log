@@ -1,0 +1,4 @@
+PASS glob2-unit-tests ComputeExecutor (2 cases) (0.1s)
+
+1 passed, 0 failed, 0 skipped (0.1s of test time)
+[run_tests] JUnit report: artifacts/threading-pr/native-compute.xml (2 cases)

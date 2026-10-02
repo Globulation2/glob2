@@ -1,0 +1,11 @@
+
+Running 6 tests using 1 worker
+
+  ✓  1 [chromium] › browser/tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (serial/1) (1.7s)
+  ✓  2 [chromium] › browser/tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (threaded/1) (1.8s)
+  ✓  3 [chromium] › browser/tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (threaded/2) (1.8s)
+  ✓  4 [chromium] › browser/tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (threaded/4) (1.8s)
+  ✓  5 [chromium] › browser/tests/determinism.spec.js:63:1 › WebAssembly executes the shared scripting corpus (serial) (36.1s)
+  ✓  6 [chromium] › browser/tests/determinism.spec.js:63:1 › WebAssembly executes the shared scripting corpus (threaded) (44.0s)
+
+  6 passed (1.5m)

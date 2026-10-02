@@ -1,0 +1,23 @@
+{
+  "reviewer": "runtime_audit",
+  "reviewed_revision": "ac2d721858a06b442de9feba7e2d65819392107e",
+  "verified_findings": [
+    {
+      "issue": "Direct GCS publication lacks isolation headers and selects serial",
+      "resolution": "Optional GLOB2_BROWSER_PUBLIC_URL verified for HTTPS and COOP/COEP; unconfigured direct URL explicitly labeled serial",
+      "status": "addressed"
+    }
+  ],
+  "withdrawn_findings": [
+    {
+      "issue": "WebSocket callback userdata lifetime",
+      "reason": "Pinned SDK delete synchronously drains earlier UI callbacks and detaches handlers before userdata is released"
+    },
+    {
+      "issue": "Audio pause called on application thread",
+      "reason": "Pinned SDL pause only changes shared atomic C device state; no WebAudio JS state access"
+    }
+  ],
+  "follow_up": "No remaining actionable issues found in the follow-up diff",
+  "limits": "Read-only code review; actual configured HTTPS frontend and Linux/Windows execution not validated locally"
+}
