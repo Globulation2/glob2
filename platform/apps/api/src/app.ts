@@ -2,7 +2,7 @@
 // against a test database without listening on a port.
 //
 // Route prefixes: /api/v1 (public REST), /realtime (WebSocket), /internal
-// (relays), /.well-known (JWKS), the browser sign-in pages /signin and
+// (relays), /.well-known (JWKS, mobile app-link files), the browser sign-in pages /signin and
 // /auth/<provider>/… (served here, so they share the API's origin and
 // cookies), and invite landing pages /j/<code>.
 import Fastify, { type FastifyBaseLogger, type FastifyError, type FastifyInstance } from 'fastify';
@@ -30,6 +30,8 @@ import { internalRoutes } from './routes/internal.ts';
 import { inviteRoutes } from './routes/invite.ts';
 import { playRoutes } from './routes/play.ts';
 import { mapCatalogRoutes } from './maps/routes.ts';
+import { historyRoutes } from './history/routes.ts';
+import { appLinkRoutes } from './web/appLinks.ts';
 import { Assignments } from './play/assignments.ts';
 import { PlayRealtime } from './play/realtime.ts';
 import { RoomService } from './play/rooms.ts';
@@ -208,6 +210,8 @@ export async function buildApp(
   await signinRoutes(app, identity);
   await playRoutes(app, identity, rooms);
   await mapCatalogRoutes(app, identity);
+  await historyRoutes(app, identity);
+  await appLinkRoutes(app);
   await inviteRoutes(app, rooms);
   await internalRoutes(app);
   await app.register(async (scope) =>

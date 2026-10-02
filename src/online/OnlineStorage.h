@@ -25,11 +25,21 @@ class OnlineStorage
 	// the IndexedDB-backed file system (ApplicationHost::persistStorage);
 	// natively writes are already durable.
 	virtual void persist() {}
+	// The path under which GAGCore::FileManager (and so the engine's map loader)
+	// opens a stored file: the user-directory-relative path itself, or an absolute
+	// path for storage rooted elsewhere.
+	virtual std::string location(const std::string &path)
+	{
+		return path;
+	}
 };
 
 // The user directory through GAGCore::FileManager, as preferences and saves
 // use it. Requires an initialised Toolkit.
 std::unique_ptr<OnlineStorage> makeUserDirectoryStorage();
+// Files under an absolute directory (created on the first write), for tools and
+// tests that need a cache of their own outside the user directory.
+std::unique_ptr<OnlineStorage> makeDirectoryStorage(const std::string &root);
 
 // In-memory files, for tests and as a fallback when the user directory is
 // unavailable.

@@ -277,7 +277,8 @@ class Match:
     def play(self):
         assignment = self.assignments['A']
         status, raw = self.instance.request('GET', assignment['mapUrl'], token=self.players['A']['token'], raw=True)
-        map_path = self.out / 'match.map.gz'
+        # The blob endpoint serves the stored bytes, gzip or raw.
+        map_path = self.out / ('match.map.gz' if raw[:2] == b'\x1f\x8b' else 'match.map')
         map_path.write_bytes(raw)
         processes = {}
         for index, name in enumerate(('A', 'B')):

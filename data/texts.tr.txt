@@ -3544,6 +3544,30 @@ Liste sekmesi
 
 [Map momentum]
 Harita ivmesi
+[turn reconnecting]
+
+[turn waiting for players]
+
+[turn rejoining]
+
+[turn catching up %0]
+
+[turn player reconnecting %0]
+
+[turn player lagging %0]
+
+[turn player resyncing %0]
+
+[turn player not connected %0]
+
+[lan host left]
+
+[lan host lost]
+
+[lan version mismatch %0]
+
+[lan cannot host %0]
+
 [play online]
 
 [Use in room]
@@ -4087,4 +4111,6 @@ Harita ivmesi
 [settings Open Play online to connect.]
 
 [hub code]
+
+[results draw]
 

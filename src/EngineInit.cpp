@@ -202,6 +202,7 @@ GAGCore::CooperativeTask Engine::initTurnMatchTask(TurnMatchStart start)
     gui.connectionOverlay->source = [this] { return turnConnectionSnapshot(); };
     gui.connectionOverlay->leave = [this] { gui.isRunning = false; };
     gui.connectionOverlay->notice = [this](const std::string& line) { gui.addNotice(line); };
+    gui.connectionNotice = [this] { return turnConnectionNotice(); };
     co_return true;
 }
 
@@ -310,6 +311,50 @@ ConnectionSnapshot Engine::turnConnectionSnapshot()
     catchupFrom = 0;
     catchupStartedMicros = 0;
     return snapshot;
+}
+
+// The text form of the connection state (LAN harness logs; the HUD uses the snapshot).
+std::vector<std::string> Engine::turnConnectionNotice()
+{
+    std::vector<std::string> lines;
+    if (!turn)
+        return lines;
+    const Turn::TurnSession& s = turn->turn();
+    auto& strings = *Toolkit::getStringTable();
+    using State = Turn::TurnSession::State;
+    // Before the first Welcome the relay is waiting for every player to load.
+    const bool welcomed = s.horizon() > 0 || s.executedTick() > 0;
+    if (s.state() == State::Reconnecting)
+        lines.push_back(strings.getString("[turn reconnecting]"));
+    else if (s.state() == State::Connecting || s.state() == State::AwaitingWelcome)
+        lines.push_back(strings.getString(welcomed ? "[turn reconnecting]" : "[turn waiting for players]"));
+    else if (s.state() == State::Running)
+    {
+        if (s.needsReload())
+            lines.push_back(strings.getString("[turn rejoining]"));
+        else if (s.catchingUp() && s.bufferedTicks() > 25)
+            lines.push_back(GAGCore::FormattableString(strings.getString("[turn catching up %0]")).arg(s.bufferedTicks()));
+    }
+    for (int p = 0; p < gui.game.gameHeader.getNumberOfPlayers() && p < Turn::MAX_SEATS; ++p)
+    {
+        if (p == s.localSeat() || !(s.humanSeatMask() & (1u << p)) || !gui.game.players[p])
+            continue;
+        const char* key = nullptr;
+        switch (s.presence(p))
+        {
+        case Turn::PresenceState::Reconnecting: key = "[turn player reconnecting %0]"; break;
+        case Turn::PresenceState::Lagging: key = "[turn player lagging %0]"; break;
+        case Turn::PresenceState::Resyncing: key = "[turn player resyncing %0]"; break;
+        case Turn::PresenceState::NotConnected:
+            if (welcomed)
+                key = "[turn player not connected %0]";
+            break;
+        default: break;
+        }
+        if (key)
+            lines.push_back(GAGCore::FormattableString(strings.getString(key)).arg(gui.game.players[p]->name));
+    }
+    return lines;
 }
 
 Turn::TurnSession* Engine::turnSession()

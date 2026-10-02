@@ -24,7 +24,7 @@ docker run --rm \
 	"$image" sh -euc '
 		export DEBIAN_FRONTEND=noninteractive
 		apt-get update -qq
-		apt-get install -y -qq --no-install-recommends ca-certificates git python3 scons xz-utils bzip2 >/dev/null
+		apt-get install -y -qq --no-install-recommends ca-certificates git python3 scons xz-utils bzip2 libatomic1 >/dev/null
 		git config --global --add safe.directory "*"
 		python3 browser/setup.py
 		scons target=web release=1 -j"$JOBS" "$@" build/emscripten/client/release/index.html

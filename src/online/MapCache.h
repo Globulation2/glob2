@@ -10,12 +10,14 @@
 #include <optional>
 #include <string>
 
-// Content-addressed cache of platform maps in the user directory.
+// Content-addressed cache of maps and saved games in the user directory, shared
+// by online matches and LAN games.
 //
 // Rooms and matches name maps by the SHA-256 of their decompressed bytes
-// (map_versions.sha256). The cache stores each as online/maps/<hash>.map.gz,
-// which FileManager::openInflatingInputStreamBackend reads like any gzip map,
-// and evicts the least recently used maps beyond a size cap.
+// (map_versions.sha256, MatchSetup map.hash). The cache stores each as
+// online/maps/<hash>.map.gz (saved games: <hash>.game.gz), which
+// FileManager::openInflatingInputStreamBackend reads like any gzip map, and
+// evicts the least recently used files beyond a size cap.
 namespace Online
 {
 class OnlineStorage;
@@ -44,8 +46,9 @@ class MapCache
 	std::optional<std::string> path(const std::string &hash);
 	// Stores a map given as raw or gzip bytes after checking that the SHA-256
 	// of its decompressed bytes is `hash`. Evicts older maps beyond capacity
-	// (never the one just stored).
-	bool insert(const std::string &hash, const std::string &bytes, std::string *error = nullptr);
+	// (never the one just stored). savedGame names the file <hash>.game.gz.
+	bool insert(const std::string &hash, const std::string &bytes, std::string *error = nullptr,
+				bool savedGame = false);
 	void remove(const std::string &hash);
 
 	// Bytes of the stored (compressed) files.
@@ -85,8 +88,9 @@ class MapCache
 	{
 		std::uint64_t size = 0;
 		std::uint64_t lastUse = 0;
+		bool save = false;
 	};
-	static std::string fileFor(const std::string &hash);
+	static std::string fileFor(const std::string &hash, bool save = false);
 	void loadIndex();
 	void saveIndex();
 	void evict(const std::string &keep);
@@ -97,4 +101,8 @@ class MapCache
 	std::map<std::string, Entry> entries;
 	std::uint64_t useCounter = 0;
 };
+
+// The decompressed bytes of a map or save file, read through the Toolkit
+// FileManager (".gz" is inflated). False if the file cannot be read.
+bool readMapBytes(const std::string &path, std::string &bytes);
 } // namespace Online

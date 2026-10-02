@@ -77,6 +77,12 @@
 	}
 }
 
+# Extra names (e.g. www.<domain>) that redirect to the instance's domain, with
+# their own certificates. Unset: a placeholder that is never served.
+{$GLOB2_REDIRECT_DOMAINS:http://redirect.invalid} {
+	redir https://{$GLOB2_DOMAIN:localhost}{uri} permanent
+}
+
 http://127.0.0.1:2015 {
 	respond /livez 200
 }

@@ -117,6 +117,8 @@ public:
 	/// The running turn session, or null for every other kind of game.
 	Turn::TurnSession* turnSession();
 	Turn::TurnLockstepSession* turnLockstep() { return turn; }
+	/// The in-game connection lines for a turn game (GameGUI::connectionNotice).
+	std::vector<std::string> turnConnectionNotice();
 	/// Online matches: what the results screen shows (outcome, verification, rating).
 	void setOnlineResult(std::shared_ptr<Online::OnlineMatchResult> result) { onlineResult = std::move(result); }
 	const std::shared_ptr<Online::OnlineMatchResult>& getOnlineResult() const { return onlineResult; }

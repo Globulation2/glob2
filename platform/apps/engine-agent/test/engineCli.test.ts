@@ -161,6 +161,20 @@ describe('verify-match outputs', () => {
       verdict: 'unverifiable',
       reason: 'unverifiable',
     });
+    expect(
+      parseVerdict(
+        '{"verdict":"verified","orderRejections":[{"seat":2,"rejected":3,"stale":1,' +
+          '"reasons":{"foreign_unit":3},"firstRejectedTick":40},{"seat":"x"}]}',
+      ),
+    ).toEqual({
+      verdict: 'verified',
+      orderRejections: [
+        { seat: 2, rejected: 3, stale: 1, reasons: { foreign_unit: 3 }, firstRejectedTick: 40 },
+      ],
+    });
+    expect(parseVerdict('{"verdict":"verified","orderRejections":[]}')).toEqual({
+      verdict: 'verified',
+    });
     expect(() => parseVerdict('{"verdict":"diverged"}')).toThrow(/without seats/);
     expect(() => parseVerdict('{"verdict":"maybe"}')).toThrow(/unknown verdict/);
     expect(() => parseVerdict('not json')).toThrow(EngineOutputError);

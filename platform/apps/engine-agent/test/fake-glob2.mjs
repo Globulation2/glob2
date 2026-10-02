@@ -213,6 +213,7 @@ switch (command) {
         verdict: record.verdict,
         ...(record.seats ? { seats: record.seats } : {}),
         ...(record.reason ? { reason: record.reason } : {}),
+        ...(record.orderRejections ? { orderRejections: record.orderRejections } : {}),
       });
       if (record.verdict !== 'unverifiable') {
         const result = JSON.parse(
