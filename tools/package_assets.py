@@ -59,18 +59,22 @@ def encoder_ready():
         return False
 
 
+def encoder_probe_command(python):
+    """Validate external interpreters against the same pins as encoder_ready."""
+    return [
+        str(python),
+        "-c",
+        "from PIL import Image, features; "
+        f"assert Image.__version__ == {PILLOW_VERSION!r} "
+        f"and features.version('webp') == {WEBP_VERSION!r}",
+    ]
+
+
 def encoder_python():
     """Use a private, pinned build-time environment, never modify system Python."""
     configured = os.environ.get("GLOB2_ASSET_ENCODER_PYTHON")
     if configured:
-        subprocess.run(
-            [
-                configured,
-                "-c",
-                'from PIL import Image,features; assert Image.__version__=="12.2.0" and features.version("webp")=="1.6.0"',
-            ],
-            check=True,
-        )
+        subprocess.run(encoder_probe_command(configured), check=True)
         return configured
     if encoder_ready():
         return sys.executable
@@ -89,11 +93,7 @@ def encoder_python():
     python = (
         location / "venv" / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
     )
-    probe_command = [
-        str(python),
-        "-c",
-        'from PIL import Image,features; assert Image.__version__=="12.2.0" and features.version("webp")=="1.6.0"',
-    ]
+    probe_command = encoder_probe_command(python)
     with Lease(location):
         ready = (
             python.exists()
@@ -132,6 +132,7 @@ def encoder_python():
 
 
 def encode_image(source, relative, cache, lossy):
+    """Cache the smallest allowed encoding after validating dimensions and pixels."""
     from PIL import Image, features
 
     raw = source.read_bytes()
@@ -402,6 +403,12 @@ def export_assets(
     cache=None,
     worker=False,
 ):
+    """Export a complete runtime tree and return its source/output audit.
+
+    Source artwork stays untouched. The adjacent JSON audit owns the generated
+    output directory and is excluded from shipped resources. An encoder worker
+    acquires the output lease itself, avoiding a recursive lock in its parent.
+    """
     if optimized and not encoder_ready() and not worker:
         return _export_assets(root, output, platform, optimized, lossy, cache, worker)
     sys.path.insert(0, str(ROOT / "scons"))
