@@ -45,7 +45,9 @@ two themes, translation and shared page builders. Screens contain a model and a
    is too short (keyboard up, short landscape phone). The Escape route is the
    last action and carries `SDLK_ESCAPE`; the primary action carries
    `SDLK_RETURN` where a form has one.
-8. **Screens never see coordinates.** Only the host converts SDL events. A
+8. **Screens never see coordinates.** Only the host converts SDL events. Gameplay
+   forwards already translated events to `UIDialog::eventLogical`; standalone
+   dialog callers use `event` for raw window coordinates. A
    screen that must react to a raw event overrides `interceptEvent()` (consume
    before the host) or `onEvent()` (after), and does so for keys, not
    positions. Custom painting goes through `canvas()`, which hands the painter

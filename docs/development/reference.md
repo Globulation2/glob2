@@ -752,9 +752,11 @@ also remains the headless default and the equivalence reference.
 `GraphicContext` remains the drawing facade and retains existing capability queries.
 It owns the accelerated backend and software backend independently; transformed passes
 borrow them through scoped transform/clip state (`RenderStateScope.h`). The CPU backend
-in `SoftwareRenderBackend.cpp` implements sprite blits and rectangle fills directly on
-its borrowed framebuffer. It creates SDL's software renderer only when general triangle
-geometry is needed, and flushes that queue before direct writes or target replacement.
+in `SoftwareRenderBackend.cpp` implements verified same-format opaque sprite blits and
+opaque rectangle fills directly on its borrowed framebuffer. Translucent draws and
+mixed pixel formats retain SDL geometry rasterization so platform-specific blending
+rounding and source modulation match the reference. General triangles use that same
+lazy SDL renderer; its queue flushes before direct writes or target replacement.
 Large existing images expanded past 512 pixels, including water, retain SDL geometry
 rasterization because its fixed-point overflow behavior is visible at some transformed
 sizes. Borrowed terrain run views use direct rasterization: they replace small tiles and must not acquire that
