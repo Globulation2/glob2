@@ -5,6 +5,7 @@
 #pragma once
 
 #include "Header.h"
+#include <EventQueue.h>
 #include "GameGUI.h"
 #include <atomic>
 #include <functional>
@@ -258,13 +259,13 @@ private:
 	void drawFrame(MainLoopState& st);
     std::optional<MainLoopState> session;
     std::unique_ptr<SimulationRunner> runner;
-    //! Host clock minus SDL_GetTicks64(), published by the main thread for sessionClock.
+    //! Host clock minus SDL_GetTicks(), published by the main thread for sessionClock.
     std::atomic<Sint64> sessionClockOffset{0};
     void publishSessionClock(Uint64 now);
     // Live while a session runs: synchronized draws must use the game's bound stream.
     std::optional<SyncRandRequirement> randomRequirement;
     int sessionEndingTarget = 0;
-    std::vector<SDL_Event> sessionInput;
+    GAGCore::EventQueue sessionInput;
 
 	/// If the GUI requested a clean exit, drain remaining local orders and
 	/// flush the net layer. Returns true if the engine loop should break.

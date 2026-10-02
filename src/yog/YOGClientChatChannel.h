@@ -7,7 +7,7 @@
 #include <vector>
 #include "LocalTime.h"
 #include <tuple>
-#include "SDL_net.h"
+#include <SDL3_net/SDL_net.h>
 #include "ListenerList.h"
 
 class YOGClient;

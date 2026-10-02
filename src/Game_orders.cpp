@@ -23,7 +23,7 @@
 #include "Unit.h"
 #include "Utilities.h"
 #include "GameGUI.h"
-#include "SDLCompat.h"
+#include <SDL3/SDL.h>
 #include "Player.h"
 #include "net/message/MessageRecipients.h"
 

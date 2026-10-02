@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <PerformanceTelemetry.h>
+#include <EventQueue.h>
 #include <stdio.h>
 #include <stdarg.h>
 #include <math.h>
@@ -13,7 +14,7 @@
 #include <BackgroundFileWriter.h>
 #include <ChunkedStreamBackend.h>
 #include <FileManager.h>
-#include <SDLCompat.h>
+#include <SDL3/SDL.h>
 #include <StringTable.h>
 #include <Toolkit.h>
 #include <Stream.h>
@@ -38,7 +39,7 @@
 #include <glob2/BuildConfig.h>
 #include "Order.h"
 
-#include <SDL_keycode.h>
+#include <SDL3/SDL_keycode.h>
 
 using std::shared_ptr;
 using std::static_pointer_cast;
@@ -96,7 +97,7 @@ void GameGUI::dragStep(int mx, int my, int button)
 		it was at the time in the middle of the event stream, not
 		as it is now.  So instead we make sure the correct data is
 		passed to us as a parameter. */
-	if ((button&SDL_BUTTON(1)) && (torusView.active() || mx<globalContainer->gfx->getW()-RIGHT_MENU_WIDTH))
+	if ((button&SDL_BUTTON_MASK(1)) && (torusView.active() || mx<globalContainer->gfx->getW()-RIGHT_MENU_WIDTH))
 	{
 		if (!torusView.active() && (!camera.contains(mx,my) || my<16)) return;
 		if (!torusView.active()) {mx=mapMouseX(mx);my=mapMouseY(my);}
@@ -122,10 +123,10 @@ void GameGUI::dragStep(int mx, int my, int button)
    have not yet processed.) */
 void GameGUI::step(void)
 {
-    std::vector<SDL_Event> events;
+    GAGCore::EventQueue events;
     SDL_Event event;
     while (GAGCore::GraphicContext::pollEvent(&event)) events.push_back(event);
-    step(events, SDL_GetTicks64());
+    step(events.events(), SDL_GetTicks());
 }
 
 void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
@@ -143,7 +144,7 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
     if (typingInputScreen && typingInputScreen->finished())
     {
         SDL_Event poll{};
-        poll.type = SDL_USEREVENT;
+        poll.type = SDL_EVENT_USER;
         processTypingInput(&poll);
     }
 	PERF_SCOPE_TIME(GUI);
@@ -155,7 +156,7 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 	for (auto event : events)
 	{
 		GAGCore::GraphicContext::translateMouseEvent(&event);
-		if (event.type==SDL_MOUSEMOTION)
+		if (event.type==SDL_EVENT_MOUSE_MOTION)
 		{
 			lastMouseX = event.motion.x;
 			lastMouseY = event.motion.y;
@@ -186,7 +187,7 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 				processing the old stored event rather than throwing
 				it away. */
 			if (wasMouseMotion
-				&& (lastMouseButtonState & SDL_BUTTON(1)) // are we dragging? (should not be hard-coding this condition but should be abstract somehow)
+				&& (lastMouseButtonState & SDL_BUTTON_MASK(1)) // are we dragging? (should not be hard-coding this condition but should be abstract somehow)
 				&& (mapPanPushed || (mouseMapX != oldMouseMapX)
 					|| (mouseMapY != oldMouseMapY))
 			)
@@ -199,32 +200,32 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 			wasMouseMotion=true;
 		}
 #		ifdef USE_OSX
-		else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_q && (event.key.keysym.mod & KMOD_GUI))
+		else if(event.type == SDL_EVENT_KEY_DOWN && event.key.key == SDLK_Q && (event.key.mod & SDL_KMOD_GUI))
 		{
 			isRunning=false;
 			exitGlobCompletely=true;
 		}
 #		endif
 #		ifdef USE_WIN32
-		else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F4 && (event.key.keysym.mod & KMOD_ALT))
+		else if(event.type == SDL_EVENT_KEY_DOWN && event.key.key == SDLK_F4 && (event.key.mod & SDL_KMOD_ALT))
 		{
 			isRunning=false;
 			exitGlobCompletely=true;
 		}
 #		endif
-		else if ((event.type == SDL_MOUSEBUTTONDOWN) || (event.type == SDL_MOUSEBUTTONUP))
+		else if ((event.type == SDL_EVENT_MOUSE_BUTTON_DOWN) || (event.type == SDL_EVENT_MOUSE_BUTTON_UP))
 		{
             if (wasMouseMotion) { processEvent(&mouseMotionEvent); wasMouseMotion = false; }
             if (event.button.button > 0 && event.button.button <= 32) {
-                const Uint32 mask = SDL_BUTTON(event.button.button);
-                if (event.type == SDL_MOUSEBUTTONDOWN) lastMouseButtonState |= mask;
+                const Uint32 mask = SDL_BUTTON_MASK(event.button.button);
+                if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN) lastMouseButtonState |= mask;
                 else lastMouseButtonState &= ~mask;
             }
 			lastMouseX = event.button.x;
 			lastMouseY = event.button.y;
 			processEvent (&event);
 		}
-		else if (event.type==SDL_WINDOWEVENT)
+		else if ((event.type >= SDL_EVENT_WINDOW_FIRST && event.type <= SDL_EVENT_WINDOW_LAST))
 		{
             if (wasMouseMotion) { processEvent(&mouseMotionEvent); wasMouseMotion = false; }
             processEvent(&event);

@@ -402,14 +402,14 @@ Element mapPreview(const std::string &key, ::MapPreview &preview, double points,
 		const Point at{widget->getLeft() + local.x, widget->getTop() + local.y};
 		if (phase == PointerPhase::Down || phase == PointerPhase::Up)
 		{
-			event.type = phase == PointerPhase::Down ? SDL_MOUSEBUTTONDOWN : SDL_MOUSEBUTTONUP;
+			event.type = phase == PointerPhase::Down ? SDL_EVENT_MOUSE_BUTTON_DOWN : SDL_EVENT_MOUSE_BUTTON_UP;
 			event.button.button = SDL_BUTTON_LEFT;
 			event.button.x = at.x;
 			event.button.y = at.y;
 		}
 		else if (phase == PointerPhase::Move)
 		{
-			event.type = SDL_MOUSEMOTION;
+			event.type = SDL_EVENT_MOUSE_MOTION;
 			event.motion.state = SDL_BUTTON_LMASK;
 			event.motion.x = at.x;
 			event.motion.y = at.y;
@@ -425,12 +425,12 @@ Element mapPreview(const std::string &key, ::MapPreview &preview, double points,
 	options.wheel = [widget](int direction, Point local)
 	{
 		SDL_Event motion{};
-		motion.type = SDL_MOUSEMOTION;
+		motion.type = SDL_EVENT_MOUSE_MOTION;
 		motion.motion.x = widget->getLeft() + local.x;
 		motion.motion.y = widget->getTop() + local.y;
 		widget->handlePreviewEvent(&motion);
 		SDL_Event wheel{};
-		wheel.type = SDL_MOUSEWHEEL;
+		wheel.type = SDL_EVENT_MOUSE_WHEEL;
 		wheel.wheel.y = direction;
 		widget->handlePreviewEvent(&wheel);
 	};

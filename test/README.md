@@ -38,8 +38,10 @@ python3 test/run_tests.py --update-fixtures --filter 'WinningConditions/*'
 a fresh `GLOB2_USER_DATA_DIR`, `HOME`, temp directory and SDL's dummy drivers, a
 timeout by tag, output captured and shown only on failure, and a check that the
 profile's preferences were not rewritten. `[display]` cases get a real video driver,
-under `xvfb-run` on Linux without `DISPLAY`, with server resets disabled so SDL
-can recreate contexts without racing X server reinitialization; they are skipped on Windows and with
+under `xvfb-run` on Linux without `DISPLAY`, with an isolated Openbox window
+manager to apply SDL3 fullscreen requests. Install `xvfb`, `xauth`, `openbox` and
+`x11-utils`. Server resets are disabled so SDL can recreate contexts without racing
+X server reinitialization; they are skipped on Windows and with
 `--no-display`. Results merge into one JUnit file (`--junit`) and, under GitHub
 Actions, into the step summary with a `::error file=,line=` annotation per failure.
 `test/test_run_tests.py` covers the runner itself.
@@ -50,7 +52,10 @@ Standard runs keep display tests windowed. The HD artwork integration test's
 fullscreen camera-continuity checks and the text raster test's fullscreen
 downscaling check run only with `--fullscreen`; all their windowed checks still
 run by default, including with `--in-process`. Linux CI enables `--fullscreen`
-under its virtual display. To opt in when invoking a test binary directly, set
+under its virtual display, with `--display-jobs 1` to avoid concurrent software
+renderer startup stalls. Headless cases remain parallel. Linux timeout reports
+include the owned process group, thread wait locations and Xvfb window mapping state; GitHub Actions also
+collects a bounded GDB backtrace before cleanup when available. To opt in when invoking a test binary directly, set
 `GLOB2_TEST_FULLSCREEN=1`; the Python runner overrides that variable according to
 its flag, so an inherited setting cannot enable fullscreen in a standard run.
 
@@ -187,8 +192,8 @@ scons -j8 release=0 server=0 --build=build/tests-asan engine-tests \
 python3 test/run_tests.py --build-dir build/tests-asan --filter 'GameGUISelection/*'
 ```
 
-If Homebrew sdl2-compat cannot locate SDL3 under the macOS sanitizer, prefix
-the harness command with `DYLD_LIBRARY_PATH=/opt/homebrew/lib`.
+Use `GLOB2_SDL3_PREFIX` when building against the pinned SDL3 dependency prefix.
+The native build records its library directory in the runtime search path.
 
 SCons caches compiler/linker flags; pass `CXXFLAGS=-g LINKFLAGS=-g` to return to a
 normal build. This is a direct method regression, not an interactive replay test.
@@ -1090,12 +1095,13 @@ one-local-player header and seed they need. Design and numbers:
 See the [scripting guide](../docs/development/javascript.md) and
 [API reference](../docs/development/javascript-api.md) for the public boundary.
 
-Current saves use format 126, preserving released format 124's experiment-header
-layout through version-gated loading. Formats 58–124 receive scripting identities
-on load; format 125 validates its stored identities and complete generation tables.
-The minimum save version remains 58, the network protocol is 49, and the replay
-minimum remains 123. Draft JavaScript fixtures use format 125; released historical
-fixtures remain unchanged.
+Current saves use format 127, with counted generation tables for sixteen teams.
+Version-gated loading preserves released format 124's experiment-header layout
+and remaps the twelve-team generation tables stored by formats 125 and 126.
+Formats 58–124 receive scripting identities on load; later formats validate their
+stored identities and generation tables. The minimum save version remains 58,
+the network protocol is 50, and the replay minimum is 127. Draft JavaScript
+fixtures use format 125; released historical fixtures remain unchanged.
 
 Build `unit-tests engine-tests` with SCons and run
 `python3 test/run_tests.py --build-dir build/darwin/client/release --filter 'JavaScript*/*'`

@@ -41,7 +41,7 @@ namespace GAGCore
 		//! internal function that does the real listing job
 		bool addListingForDir(const std::string realDir, const std::string extension="", const bool dirs=false);
 		//! open a file, if it is in writing, do a backup
-		SDL_RWops *openWithbackup(const std::string filename, const std::string mode);
+		SDL_IOStream *openWithbackup(const std::string filename, const std::string mode);
 		//! open a file, if it is in writing, do a backup, fopen version
 		FILE *openWithbackupFP(const std::string filename, const std::string mode);
 
@@ -99,11 +99,11 @@ namespace GAGCore
 		//! reported like a missing file (an invalid backend), never a crash.
 		StreamBackend *openInflatingInputStreamBackend(const std::string& filename);
 
-		//! Open a file in the SDL_RWops format, COMPAT for GraphicContext PNG loader, can be removed on others backends
-		SDL_RWops *open(const std::string filename, const std::string mode="rb");
+		//! Open a file in the SDL_IOStream format, COMPAT for GraphicContext PNG loader, can be removed on others backends
+		SDL_IOStream *open(const std::string filename, const std::string mode="rb");
 		//! Read a logical image name, preserving directory and PNG override precedence.
 		//! Packaged PNG images may be stored as WebP; ordinary file reads are unchanged.
-		SDL_RWops *openImage(const std::string &filename);
+		SDL_IOStream *openImage(const std::string &filename);
 		//! Open a file in the FILE* format
 		FILE *openFP(const std::string filename, const std::string mode="rb");
 		//! Open a file in the c++ stream format for reading

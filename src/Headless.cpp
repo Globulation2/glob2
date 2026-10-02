@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <Environment.h>
 #include "Headless.h"
 #include "script/ScriptCommand.h"
 #include "script/ScriptValue.h"
@@ -102,7 +103,7 @@ void isolateEnvironment()
 		"GLOB2_CORTEX_TRACE", "GLOB2_CORTEX_DECIDE_TRACE", "GLOB2_CORTEX_INN_TRACE",
 		"GLOB2_CHECKSUM_SIDECAR_MAX_TICKS", "CORTEX_DUMP_PERIODIC", "CORTEX_DUMP_OFFENSE",
 		"CORTEX_DUMP_ATTACK", "CORTEX_DUMP_GATES", "CORTEX_DUMP_POSTURE", "CORTEX_DUMP_AMPHIB"};
-	for (const char* key : keys) SDL_setenv(key, "", 1);
+	for (const char* key : keys) SDL_UnsetEnvironmentVariable(SDL_GetEnvironment(), key);
 	// getenv-based presence flags need removal, including on Windows.
 	for (const char* key : keys)
 #ifdef WIN32
@@ -113,7 +114,7 @@ void isolateEnvironment()
 }
 void setHeadlessEnvironment(const char* key, const char* value)
 {
-	SDL_setenv(key, value, 1);
+	GAGCore::setProcessEnvironment(key, value, 1);
 #ifdef WIN32
 	// The engine reads these flags with the C runtime's getenv. On Windows,
 	// SDL's environment update does not repopulate the runtime view after the
@@ -352,11 +353,11 @@ struct HeadlessRunner
 			const uint64_t start=first+benchmarkWarmup;
 			if(start>=uint64_t(globals.automaticEndingSteps)) throw std::invalid_argument("benchmark warmup must leave measured ticks");
 			setupCpu=processCpuNs()-setupCpuStart;
-			engine.prepareRun(); engine.beginSession(SDL_GetTicks64());
+			engine.prepareRun(); engine.beginSession(SDL_GetTicks());
 			if(benchmarkWarmup==0) measureStart=processCpuNs();
 			while(engine.gui.isRunning)
 			{
-				engine.stepSession(SDL_GetTicks64()); engine.drawSession();
+				engine.stepSession(SDL_GetTicks()); engine.drawSession();
 				if(!measureStart && engine.gui.game.stepCounter>=start) measureStart=processCpuNs();
 			}
 			engine.finishSession();

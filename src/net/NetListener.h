@@ -5,10 +5,15 @@ class NetListener
 {
   public:
 	NetListener() = default;
-	explicit NetListener(const NetListenConfig &config)
+	explicit NetListener(Uint16 port) { startListening(port); }
+	void startListening(Uint16 port)
 	{
+		NetListenConfig config;
+		config.protocol = NetListenConfig::Protocol::Tcp;
+		config.port = port;
 		startListening(config);
 	}
+	explicit NetListener(const NetListenConfig &config) { startListening(config); }
 	~NetListener() = default;
 	void startListening(const NetListenConfig &config);
 	void stopListening();

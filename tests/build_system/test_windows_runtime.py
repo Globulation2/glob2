@@ -18,14 +18,14 @@ class WindowsRuntimeTests(unittest.TestCase):
                 directory.mkdir()
             executable = output / "glob2.exe"
             executable.write_bytes(b"game")
-            (stock / "SDL2_image.dll").write_bytes(b"stock")
-            (lean / "SDL2_image.dll").write_bytes(b"lean")
+            (stock / "SDL3_image.dll").write_bytes(b"stock")
+            (lean / "SDL3_image.dll").write_bytes(b"lean")
             (stock / "libwebp.dll").write_bytes(b"webp")
             (stock / "unused.dll").write_bytes(b"unused")
             imports = {
-                "glob2.exe": {"SDL2_IMAGE.DLL", "kernel32.dll"},
-                "SDL2_image.dll": {"LIBWEBP.DLL"},
-                "libwebp.dll": {"sdl2_image.dll"},
+                "glob2.exe": {"SDL3_IMAGE.DLL", "kernel32.dll"},
+                "SDL3_image.dll": {"LIBWEBP.DLL"},
+                "libwebp.dll": {"sdl3_image.dll"},
             }
             stage_dlls(
                 executable,
@@ -33,9 +33,26 @@ class WindowsRuntimeTests(unittest.TestCase):
                 output,
                 inspect=lambda path: imports[path.name],
             )
-            self.assertEqual((output / "SDL2_image.dll").read_bytes(), b"lean")
+            self.assertEqual((output / "SDL3_image.dll").read_bytes(), b"lean")
             self.assertTrue((output / "libwebp.dll").is_file())
             self.assertFalse((output / "unused.dll").exists())
+
+    def test_private_sdl3_runtime_stages_notices_and_rejects_sdl2(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            runtime, output = root / "sdk/bin", root / "output"
+            runtime.mkdir(parents=True); output.mkdir()
+            (runtime / "SDL3.dll").write_bytes(b"sdl3")
+            notices = root / "sdk/share/licenses/SDL3"
+            notices.mkdir(parents=True)
+            (notices / "LICENSE.txt").write_text("SDL license")
+            executable = output / "glob2.exe"
+            executable.write_bytes(b"game")
+            stage_dlls(executable, [runtime], output,
+                       inspect=lambda path: {"SDL3.dll"} if path == executable else {"kernel32.dll"})
+            self.assertEqual((output / "licenses/SDL3/LICENSE.txt").read_text(), "SDL license")
+            with self.assertRaisesRegex(ValueError, "SDL2 runtime import"):
+                stage_dlls(executable, [runtime], output, inspect=lambda path: {"SDL2.dll"})
 
     def test_missing_import_fails_with_importer(self):
         with tempfile.TemporaryDirectory() as temporary:

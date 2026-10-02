@@ -78,9 +78,9 @@ ENGINE_TESTS = [
     'OrchardCommonsConversionTest.cpp',
     'PortableGameHarness.cpp',
     'TeamStatsSaveHarness.cpp',
-    'EngineSessionHarness.cpp',
+    ('EngineSessionHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     ('MapRenderResizeHarness.cpp', dict(cxxflags=['-fno-access-control'])),
-    'PointBarRenderTest.cpp',
+    ('PointBarRenderTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('maxima/MaximaCombatIntegrationTest.cpp', dict(cxxflags=['-fno-access-control'])),
     'maxima/MaximaDiagnosticsTest.cpp',
     ('maxima/MaximaDirectorRegressionTest.cpp', dict(cxxflags=['-fno-access-control'])),
@@ -122,6 +122,7 @@ ENGINE_TESTS = [
 
 # glob2-unit-tests: libgag, libusl, the production sources below and stubs.
 UNIT_TESTS = [
+    'EventQueueTest.cpp',
     'MapGeneratorGoldenCoverageTest.cpp',
     'USLCoverageTest.cpp',
     'SurfaceCoverageTest.cpp',

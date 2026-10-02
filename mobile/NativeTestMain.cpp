@@ -1,34 +1,72 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// adb-shell tests use SDL's dummy drivers without SDLActivity's Java entrypoint.
-#include <SDL.h>
-#include <SDL_system.h>
+#define SDL_MAIN_HANDLED
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_main.h>
+#include <SDL3/SDL_system.h>
 #include <cstdio>
 
-// Shell tests have no JVM or APK AssetManager. Assets are extracted to the
-// disposable test directory by the runner. Interpose only the platform bridges;
+// Shell tests have no JVM or APK AssetManager. Use the extracted test assets;
 // rendering, input routing, game logic and persistence remain production code.
-// The installed APK is tested separately with the actual Activity and keyboard.
-extern "C" SDL_RWops *SDL_RWFromFile(const char *path, const char *mode)
+extern "C" SDL_IOStream *SDL_IOFromFile(const char *path, const char *mode)
 {
     FILE *file = std::fopen(path, mode);
-    if (!file) {
-        SDL_SetError("Cannot open test file: %s", path);
-        return nullptr;
-    }
-    return SDL_RWFromFP(file, SDL_TRUE);
+    if (!file) { SDL_SetError("Cannot open test file: %s", path); return nullptr; }
+    SDL_IOStreamInterface io;
+    SDL_INIT_INTERFACE(&io);
+    io.size = [](void *data) -> Sint64 {
+        auto *file = static_cast<FILE *>(data);
+        const auto position = ftello(file);
+        if (position < 0 || fseeko(file, 0, SEEK_END)) return -1;
+        const auto size = ftello(file);
+        if (fseeko(file, position, SEEK_SET)) return -1;
+        return size;
+    };
+    io.seek = [](void *data, Sint64 offset, SDL_IOWhence whence) -> Sint64 {
+        auto *file = static_cast<FILE *>(data);
+        const int origin = whence == SDL_IO_SEEK_SET ? SEEK_SET : whence == SDL_IO_SEEK_CUR ? SEEK_CUR : SEEK_END;
+        return fseeko(file, offset, origin) ? -1 : ftello(file);
+    };
+    io.read = [](void *data, void *buffer, size_t size, SDL_IOStatus *status) -> size_t {
+        auto *file = static_cast<FILE *>(data);
+        const auto count = std::fread(buffer, 1, size, file);
+        if (count < size) *status = std::ferror(file) ? SDL_IO_STATUS_ERROR : SDL_IO_STATUS_EOF;
+        return count;
+    };
+    io.write = [](void *data, const void *buffer, size_t size, SDL_IOStatus *status) -> size_t {
+        const auto count = std::fwrite(buffer, 1, size, static_cast<FILE *>(data));
+        if (count < size) *status = SDL_IO_STATUS_ERROR;
+        return count;
+    };
+    io.flush = [](void *data, SDL_IOStatus *status) -> bool {
+        if (!std::fflush(static_cast<FILE *>(data))) return true;
+        *status = SDL_IO_STATUS_ERROR; return false;
+    };
+    io.close = [](void *data) -> bool { return std::fclose(static_cast<FILE *>(data)) == 0; };
+    SDL_IOStream *stream = SDL_OpenIO(&io, file);
+    if (!stream) std::fclose(file);
+    return stream;
 }
-// SDL's Android audio thread calls Java even with the dummy audio driver.
-// Shell suites have no audio device; exercise actual audio in the installed APK.
-extern "C" int SDL_OpenAudio(SDL_AudioSpec *, SDL_AudioSpec *)
-{
-    return SDL_SetError("Audio device unavailable in native shell tests");
-}
-extern "C" void *SDL_AndroidGetJNIEnv() { return nullptr; }
-extern "C" void *SDL_AndroidGetActivity() { return nullptr; }
 
-// Retain each harness's real main: renaming main would remove C++'s implicit
-// return-zero rule and make existing harnesses that fall through undefined.
+// The runner selects SDL's real dummy audio driver. Installed-APK tests cover
+// hardware playback; shell suites still exercise stream creation and locking.
+extern "C" void *SDL_GetAndroidJNIEnv() { return nullptr; }
+extern "C" void *SDL_GetAndroidActivity() { return nullptr; }
+
+// SDL3 pumps Android lifecycle events independently of the video driver. A
+// native shell has no JVM to initialize that queue; polling it spins on the
+// absent lifecycle semaphore. Drain the real SDL event queue without the OS
+// pump so synthetic input and application-loop tests still exercise routing.
+// Installed APKs do not link this file and retain normal lifecycle pumping.
+extern "C" bool SDL_PollEvent(SDL_Event *event)
+{
+    if (!event) return SDL_HasEvents(SDL_EVENT_FIRST, SDL_EVENT_LAST);
+    return SDL_PeepEvents(event, 1, SDL_GETEVENT, SDL_EVENT_FIRST, SDL_EVENT_LAST) > 0;
+}
+
 __attribute__((constructor)) static void prepareNativeTest()
 {
     SDL_SetMainReady();
+    // SDL3 otherwise asks the Android JVM for the executable/package identity.
+    // These shell binaries have no JVM, even when using dummy video.
+    SDL_SetAppMetadata("Glob2 native tests", "test", "org.globulation2.glob2.native-tests");
 }

@@ -9,7 +9,7 @@
 #include "ScriptEditorScreen.h"
 #include "Unit.h"
 #include "Utilities.h"
-#include "SDLCompat.h"
+#include <SDL3/SDL.h>
 
 void MapEdit::addWidget(MapEditorWidget* widget)
 {

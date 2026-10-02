@@ -156,10 +156,10 @@ void CustomGameScreen::selectTab(int tab)
 
 bool CustomGameScreen::interceptEvent(const SDL_Event &event)
 {
-	if (event.type == SDL_KEYDOWN && (event.key.keysym.mod & KMOD_CTRL) && event.key.keysym.sym >= SDLK_1 &&
-		event.key.keysym.sym <= SDLK_3)
+	if (event.type == SDL_EVENT_KEY_DOWN && (event.key.mod & SDL_KMOD_CTRL) && event.key.key >= SDLK_1 &&
+		event.key.key <= SDLK_3)
 	{
-		selectTab(event.key.keysym.sym - SDLK_1);
+		selectTab(event.key.key - SDLK_1);
 		return true;
 	}
 	return false;

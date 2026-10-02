@@ -5,7 +5,7 @@
 
 #include <string>
 #include <vector>
-#include "SDL_net.h"
+#include <SDL3_net/SDL_net.h>
 #include "ScriptNumber.h"
 
 namespace GAGCore

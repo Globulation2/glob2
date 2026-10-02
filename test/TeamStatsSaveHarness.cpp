@@ -9,7 +9,7 @@
 #include "MapEditKeyActions.h"
 #include "FileManager.h"
 #include "Version.h"
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <fstream>
 #include <string>
 #include <utility>
@@ -30,7 +30,7 @@
 #include <set>
 #include "Toolkit.h"
 #include "StringTable.h"
-#include <SDL_image.h>
+#include <SDL3_image/SDL_image.h>
 #include <filesystem>
 #include "BinaryStream.h"
 #include "StreamBackend.h"
@@ -1137,7 +1137,7 @@ static void measurementScreenshots(const std::string &directory)
 				screen.paintFrame(0);
 				require(IMG_SavePNG(globalContainer->gfx->getSDLSurface(),
 									(directory + "/graphs-" + std::to_string(page) + "-" + suffix)
-										.c_str()) == 0,
+										.c_str()),
 						"save graph screenshot");
 			}
 		}
@@ -1146,14 +1146,14 @@ static void measurementScreenshots(const std::string &directory)
 										 Toolkit::getStringTable()->getString("[Stats page two]"));
 		game.teams[0]->stats.drawMeasurements(size.first - 144, 211);
 		require(IMG_SavePNG(globalContainer->gfx->getSDLSurface(),
-							(directory + "/live-" + suffix).c_str()) == 0,
+							(directory + "/live-" + suffix).c_str()),
 			"save live panel screenshot");
 		globalContainer->gfx->drawFilledRect(0, 0, size.first, size.second, 0, 0, 32);
 		globalContainer->gfx->drawString(size.first - 140, 195, globalContainer->littleFont,
 									 Toolkit::getStringTable()->getString("[Stats page three]"));
 		game.teams[0]->stats.drawExpandedMeasurements(size.first - 144, 211);
 		require(IMG_SavePNG(globalContainer->gfx->getSDLSurface(),
-							(directory + "/live-expanded-" + suffix).c_str()) == 0,
+							(directory + "/live-expanded-" + suffix).c_str()),
 			"save expanded live panel screenshot");
 	}
 }

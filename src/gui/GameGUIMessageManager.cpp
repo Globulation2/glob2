@@ -3,7 +3,7 @@
 
 #include "GameGUIMessageManager.h"
 #include "GlobalContainer.h"
-#include "SDLCompat.h"
+#include <SDL3/SDL.h>
 
 InGameMessage::InGameMessage(const std::string& text, const GAGCore::Color& color, int time)
  : timeLeft(time), text(text), color(color)
@@ -22,7 +22,7 @@ std::string InGameMessage::getText() const
 
 void InGameMessage::draw(int x, int y)
 {
-	Uint64 newTime = SDL_GetTicks64();
+	Uint64 newTime = SDL_GetTicks();
 	if(lastTime != 0)
 	{
 		timeLeft -= std::max<Sint64>(static_cast<Sint64>(newTime) - static_cast<Sint64>(lastTime), 0);

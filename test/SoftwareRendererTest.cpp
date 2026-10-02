@@ -22,11 +22,10 @@ std::unique_ptr<RenderBackend> makeSDLSoftwareGeometryBackend(SDL_Surface *surfa
 using namespace GAGCore;
 namespace
 {
-using Surface = std::unique_ptr<SDL_Surface, decltype(&SDL_FreeSurface)>;
+using Surface = std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)>;
 Surface pixels(int width, int height)
 {
-	Surface result(SDL_CreateRGBSurfaceWithFormat(0, width, height, 32, SDL_PIXELFORMAT_ARGB8888),
-				   SDL_FreeSurface);
+	Surface result(SDL_CreateSurface(width, height, SDL_PIXELFORMAT_ARGB8888), SDL_DestroySurface);
 	REQUIRE(result);
 	return result;
 }
@@ -47,7 +46,8 @@ std::vector<Uint32> snapshot(SDL_Surface *surface)
 } // namespace
 TEST_SUITE("SoftwareRenderer")
 {
-	TEST_CASE("native display scaling preserves direct pixels through lazy geometry and target rotation")
+	TEST_CASE(
+		"native display scaling preserves direct pixels through lazy geometry and target rotation")
 	{
 		auto first = pixels(64, 72), second = pixels(32, 48);
 		auto backend = makeSoftwareRenderBackend(first.get());
@@ -55,16 +55,19 @@ TEST_SUITE("SoftwareRenderer")
 		for (auto *target : {first.get(), second.get()})
 		{
 			backend->bindTarget(target);
-			SDL_FillRect(target, nullptr, SDL_MapRGBA(target->format, 0, 0, 0, 255));
+			SDL_FillSurfaceRect(target, nullptr, SDL_MapSurfaceRGBA(target, 0, 0, 0, 255));
 			backend->fill(SDL_FRect{1, 1, 3, 3}, SDL_Color{255, 0, 0, 255});
-			const SDL_Color green{0, 255, 0, 255};
-			const SDL_Vertex triangle[] = {{{8, 8}, green, {}}, {{12, 8}, green, {}},
-				{{8, 12}, green, {}}};
+			const SDL_FColor green{0, 1, 0, 1};
+			const SDL_Vertex triangle[] = {
+				{{8, 8}, green, {}}, {{12, 8}, green, {}}, {{8, 12}, green, {}}};
 			backend->triangles(triangle);
 			backend->flush();
-			CHECK(pixel(target, target->w * 3 / 64, target->h * 4 / 72) == SDL_MapRGBA(target->format, 255, 0, 0, 255));
-			CHECK(pixel(target, target->w * 18 / 64, target->h * 27 / 72) == SDL_MapRGBA(target->format, 0, 255, 0, 255));
-			CHECK(pixel(target, target->w * 40 / 64, target->h * 40 / 72) == SDL_MapRGBA(target->format, 0, 0, 0, 255));
+			CHECK(pixel(target, target->w * 3 / 64, target->h * 4 / 72) ==
+				  SDL_MapSurfaceRGBA(target, 255, 0, 0, 255));
+			CHECK(pixel(target, target->w * 18 / 64, target->h * 27 / 72) ==
+				  SDL_MapSurfaceRGBA(target, 0, 255, 0, 255));
+			CHECK(pixel(target, target->w * 40 / 64, target->h * 40 / 72) ==
+				  SDL_MapSurfaceRGBA(target, 0, 0, 0, 255));
 		}
 	}
 	TEST_CASE("nearest blits retain sampling under destination clipping and restore source state")
@@ -74,7 +77,7 @@ TEST_SUITE("SoftwareRenderer")
 			for (int x = 0; x < 8; ++x)
 			{
 				Uint32 value =
-					SDL_MapRGBA(source->format, x * 31, y * 31, 17, (x + y) % 3 ? 255 : 0);
+					SDL_MapSurfaceRGBA(source.get(), x * 31, y * 31, 17, (x + y) % 3 ? 255 : 0);
 				std::memcpy(static_cast<char *>(source->pixels) + y * source->pitch + x * 4, &value,
 							4);
 			}
@@ -82,11 +85,11 @@ TEST_SUITE("SoftwareRenderer")
 		SDL_SetSurfaceAlphaMod(source.get(), 79);
 		for (Uint8 opacity : {0, 127, 255})
 		{
-			SDL_FillRect(full.get(), nullptr, 0xff123456);
-			SDL_SetClipRect(clipped.get(), nullptr);
-			SDL_FillRect(clipped.get(), nullptr, 0xff123456);
+			SDL_FillSurfaceRect(full.get(), nullptr, 0xff123456);
+			SDL_SetSurfaceClipRect(clipped.get(), nullptr);
+			SDL_FillSurfaceRect(clipped.get(), nullptr, 0xff123456);
 			SDL_Rect clip{3, 4, 13, 14};
-			SDL_SetClipRect(clipped.get(), &clip);
+			SDL_SetSurfaceClipRect(clipped.get(), &clip);
 			for (auto *target : {full.get(), clipped.get()})
 				SurfaceRaster::blit(target, source.get(), SDL_Rect{1, 1, 6, 6},
 									SDL_Rect{-5, -3, 27, 29}, opacity, false,
@@ -108,7 +111,7 @@ TEST_SUITE("SoftwareRenderer")
 		auto backend = makeSoftwareRenderBackend(target.get());
 		for (float zoom : {0.33f, 0.5f, 1.0f, 1.3f, 2.0f})
 		{
-			SDL_FillRect(target.get(), nullptr, 0xff000000);
+			SDL_FillSurfaceRect(target.get(), nullptr, 0xff000000);
 			backend->transform(zoom, -0.5f, 0.5f, nullptr);
 			backend->fill(SDL_FRect{0, 0, 16, 16}, SDL_Color{255, 0, 0, 255});
 			backend->fill(SDL_FRect{16, 0, 16, 16}, SDL_Color{0, 255, 0, 255});
@@ -117,7 +120,7 @@ TEST_SUITE("SoftwareRenderer")
 				CHECK(pixel(target.get(), x, 1) != 0xff000000);
 		}
 		backend->transform(1, 0, 0, nullptr);
-		const SDL_Color blue{0, 0, 255, 255};
+		const SDL_FColor blue{0, 0, 1, 1};
 		const SDL_Vertex triangle[] = {
 			{{0, 0}, blue, {}}, {{40, 0}, blue, {}}, {{0, 40}, blue, {}}};
 		backend->triangles(triangle);
@@ -144,8 +147,8 @@ TEST_SUITE("SoftwareRenderer")
 		CHECK_FALSE(source.hasOpaquePixels());
 		source.drawFilledRect(0, 0, 16, 16, Color(51, 92, 143));
 		auto copy = pixels(16, 16), blend = pixels(16, 16);
-		SDL_FillRect(copy.get(), nullptr, 0xff1b2c3d);
-		SDL_FillRect(blend.get(), nullptr, 0xff1b2c3d);
+		SDL_FillSurfaceRect(copy.get(), nullptr, 0xff1b2c3d);
+		SDL_FillSurfaceRect(blend.get(), nullptr, 0xff1b2c3d);
 		SurfaceRaster::blit(copy.get(), source.getSDLSurface(), SDL_Rect{0, 0, 16, 16},
 							SDL_Rect{0, 0, 16, 16}, 255, source.hasOpaquePixels(),
 							SurfaceRaster::BlitBlend::Surface);
@@ -159,7 +162,7 @@ TEST_SUITE("SoftwareRenderer")
 		for (int y = 0; y < 8; ++y)
 			for (int x = 0; x < 8; ++x)
 			{
-				const Uint32 value = SDL_MapRGBA(source->format, 31 * x, 29 * y, 137, 255);
+				const Uint32 value = SDL_MapSurfaceRGBA(source.get(), 31 * x, 29 * y, 137, 255);
 				std::memcpy(static_cast<char *>(source->pixels) + y * source->pitch + x * 4, &value,
 							4);
 			}
@@ -172,10 +175,10 @@ TEST_SUITE("SoftwareRenderer")
 					SDL_Rect src{sx, -1, 9, 8}, destination{dx, 3, 9, 8};
 					for (auto *target : {reference.get(), actual.get()})
 					{
-						SDL_SetClipRect(target, nullptr);
-						SDL_FillRect(target, nullptr, 0xff376b91);
+						SDL_SetSurfaceClipRect(target, nullptr);
+						SDL_FillSurfaceRect(target, nullptr, 0xff376b91);
 						SDL_Rect clip{2, 2, 12, 13};
-						SDL_SetClipRect(target, &clip);
+						SDL_SetSurfaceClipRect(target, &clip);
 					}
 					SurfaceRaster::blit(actual.get(), source.get(), src, destination, 255, true,
 										SurfaceRaster::BlitBlend::Native);
@@ -189,11 +192,11 @@ TEST_SUITE("SoftwareRenderer")
 		for (int y = 0; y < 8; ++y)
 			for (int x = 0; x < 8; ++x)
 			{
-				const Uint32 value = SDL_MapRGBA(source->format, 31 * x, 29 * y, 137,
-												 (x + y) % 4 == 0   ? 0
-												 : (x + y) % 4 == 1 ? 63
-												 : (x + y) % 4 == 2 ? 127
-																	: 255);
+				const Uint32 value = SDL_MapSurfaceRGBA(source.get(), 31 * x, 29 * y, 137,
+														(x + y) % 4 == 0   ? 0
+														: (x + y) % 4 == 1 ? 63
+														: (x + y) % 4 == 2 ? 127
+																		   : 255);
 				std::memcpy(static_cast<char *>(source->pixels) + y * source->pitch + x * 4, &value,
 							4);
 			}
@@ -206,7 +209,7 @@ TEST_SUITE("SoftwareRenderer")
 			for (Uint8 alpha : {0, 63, 127, 128, 255})
 			{
 				for (auto *target : {expected.get(), actual.get()})
-					SDL_FillRect(target, nullptr, 0xff376b91);
+					SDL_FillSurfaceRect(target, nullptr, 0xff376b91);
 				for (auto *backend : {reference.get(), optimized.get()})
 				{
 					backend->transform(scale, 3, 2, nullptr);
@@ -215,13 +218,24 @@ TEST_SUITE("SoftwareRenderer")
 					backend->fill(SDL_FRect{11, 3, 9, 11}, SDL_Color{151, 89, 43, alpha});
 					backend->flush();
 				}
+				const auto actualPixels = snapshot(actual.get()),
+						   expectedPixels = snapshot(expected.get());
+				const auto mismatch =
+					std::mismatch(actualPixels.begin(), actualPixels.end(), expectedPixels.begin());
+				INFO("first difference index=", mismatch.first - actualPixels.begin(),
+					 " actual=", mismatch.first != actualPixels.end() ? *mismatch.first : 0,
+					 " expected=", mismatch.first != actualPixels.end() ? *mismatch.second : 0);
+				INFO("scale=", scale, " alpha=", int(alpha),
+					 " blit actual=", pixel(actual.get(), 6, 5),
+					 " expected=", pixel(expected.get(), 6, 5),
+					 " fill actual=", pixel(actual.get(), 15, 8),
+					 " expected=", pixel(expected.get(), 15, 8));
 				CHECK(snapshot(actual.get()) == snapshot(expected.get()));
 			}
 	}
 	TEST_CASE("geometry-reference blits preserve mixed pixel formats and source modulation")
 	{
-		Surface source(SDL_CreateRGBSurfaceWithFormat(0, 8, 8, 32, SDL_PIXELFORMAT_RGBA32),
-					   SDL_FreeSurface);
+		Surface source(SDL_CreateSurface(8, 8, SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
 		REQUIRE(source);
 		auto expected = pixels(20, 20), actual = pixels(20, 20);
 		auto reference = makeSDLSoftwareGeometryBackend(expected.get());
@@ -231,16 +245,19 @@ TEST_SUITE("SoftwareRenderer")
 		for (Uint8 sourceAlpha : {127, 255})
 			for (Uint8 drawAlpha : {127, 255})
 			{
-				SDL_FillRect(source.get(), nullptr,
-							 SDL_MapRGBA(source->format, 151, 89, 43, sourceAlpha));
+				SDL_FillSurfaceRect(source.get(), nullptr,
+									SDL_MapSurfaceRGBA(source.get(), 151, 89, 43, sourceAlpha));
 				for (auto *target : {expected.get(), actual.get()})
-					SDL_FillRect(target, nullptr, 0xff376b91);
+					SDL_FillSurfaceRect(target, nullptr, 0xff376b91);
 				for (auto *backend : {reference.get(), optimized.get()})
 				{
 					backend->blit(source.get(), source.get(), sourceAlpha, sourceAlpha == 255,
 								  SDL_Rect{0, 0, 8, 8}, SDL_FRect{2, 2, 8, 8}, drawAlpha);
 					backend->flush();
 				}
+				INFO("source alpha=", int(sourceAlpha), " draw alpha=", int(drawAlpha),
+					 " actual=", pixel(actual.get(), 3, 3),
+					 " expected=", pixel(expected.get(), 3, 3));
 				CHECK(snapshot(actual.get()) == snapshot(expected.get()));
 			}
 	}
@@ -248,18 +265,18 @@ TEST_SUITE("SoftwareRenderer")
 	{
 		auto source = pixels(512, 512);
 		auto expected = pixels(1000, 700), actual = pixels(1000, 700);
-		SDL_FillRect(source.get(), nullptr, 0xff4939d5);
+		SDL_FillSurfaceRect(source.get(), nullptr, 0xff4939d5);
 		auto reference = makeSDLSoftwareGeometryBackend(expected.get());
 		auto optimized = makeSoftwareRenderBackend(actual.get());
 		for (float scale : {0.5f, 1.f, 2.f})
 		{
 			for (auto *target : {expected.get(), actual.get()})
-				SDL_FillRect(target, nullptr, 0xff123456);
+				SDL_FillSurfaceRect(target, nullptr, 0xff123456);
 			for (auto *backend : {reference.get(), optimized.get()})
 			{
 				backend->transform(scale, -44, -44, nullptr);
 				backend->blit(source.get(), source.get(), 1, true, SDL_Rect{0, 0, 512, 512},
-					SDL_FRect{-96, -288, 512, 512}, 255);
+							  SDL_FRect{-96, -288, 512, 512}, 255);
 				backend->flush();
 			}
 			CHECK(snapshot(actual.get()) == snapshot(expected.get()));
@@ -267,10 +284,8 @@ TEST_SUITE("SoftwareRenderer")
 	}
 	TEST_CASE("translucent fills preserve colors on 32-bit targets without alpha")
 	{
-		Surface expected(SDL_CreateRGBSurfaceWithFormat(0, 16, 16, 32, SDL_PIXELFORMAT_RGB888),
-						 SDL_FreeSurface);
-		Surface actual(SDL_CreateRGBSurfaceWithFormat(0, 16, 16, 32, SDL_PIXELFORMAT_RGB888),
-					   SDL_FreeSurface);
+		Surface expected(SDL_CreateSurface(16, 16, SDL_PIXELFORMAT_XRGB8888), SDL_DestroySurface);
+		Surface actual(SDL_CreateSurface(16, 16, SDL_PIXELFORMAT_XRGB8888), SDL_DestroySurface);
 		REQUIRE(expected);
 		REQUIRE(actual);
 		auto reference = makeSDLSoftwareGeometryBackend(expected.get());
@@ -278,15 +293,17 @@ TEST_SUITE("SoftwareRenderer")
 		for (Uint8 alpha : {0, 63, 127, 255})
 		{
 			for (auto *target : {expected.get(), actual.get()})
-				SDL_FillRect(target, nullptr, SDL_MapRGB(target->format, 71, 83, 29));
+				SDL_FillSurfaceRect(target, nullptr, SDL_MapSurfaceRGB(target, 71, 83, 29));
 			for (auto *backend : {reference.get(), optimized.get()})
 			{
 				backend->fill(SDL_FRect{2, 2, 8, 8}, SDL_Color{151, 89, 43, alpha});
 				backend->flush();
 			}
 			Uint8 er, eg, eb, ar, ag, ab;
-			SDL_GetRGB(pixel(expected.get(), 3, 3), expected->format, &er, &eg, &eb);
-			SDL_GetRGB(pixel(actual.get(), 3, 3), actual->format, &ar, &ag, &ab);
+			SDL_GetRGB(pixel(expected.get(), 3, 3), SDL_GetPixelFormatDetails(expected->format),
+					   nullptr, &er, &eg, &eb);
+			SDL_GetRGB(pixel(actual.get(), 3, 3), SDL_GetPixelFormatDetails(actual->format),
+					   nullptr, &ar, &ag, &ab);
 			CHECK(er == ar);
 			CHECK(eg == ag);
 			CHECK(eb == ab);
@@ -296,7 +313,7 @@ TEST_SUITE("SoftwareRenderer")
 	{
 		auto callerOwned = pixels(4, 4);
 
-		const auto failAllocation = [](Uint32, int, int, int, Uint32) -> SDL_Surface *
+		const auto failAllocation = [](int, int, SDL_PixelFormat) -> SDL_Surface *
 		{
 			SDL_SetError("Injected spare-buffer allocation failure");
 			return nullptr;
@@ -304,25 +321,25 @@ TEST_SUITE("SoftwareRenderer")
 		// Failure leaves the caller's framebuffer available for legacy retention.
 		CHECK_THROWS_AS((SoftwareFramePresenter{callerOwned.get(), failAllocation}),
 						std::runtime_error);
-		SDL_FillRect(callerOwned.get(), nullptr, 0xff112233);
+		SDL_FillSurfaceRect(callerOwned.get(), nullptr, 0xff112233);
 		CHECK(pixel(callerOwned.get(), 0, 0) == 0xff112233);
 
 		auto initial = pixels(32, 32);
-		SDL_FillRect(initial.get(), nullptr, 0xff123456);
+		SDL_FillSurfaceRect(initial.get(), nullptr, 0xff123456);
 		SoftwareFramePresenter presenter(initial.release());
 		auto *first = presenter.begin(false);
 		presenter.complete();
 		auto *second = presenter.begin(false);
 		CHECK(first != second);
 		CHECK(presenter.completed() == first);
-		SDL_FillRect(second, nullptr, 0xff654321);
+		SDL_FillSurfaceRect(second, nullptr, 0xff654321);
 		CHECK(pixel(presenter.completed(), 3, 3) == 0xff123456);
 		presenter.complete();
 		auto *partial = presenter.begin(true);
 		CHECK(partial == first);
 		CHECK(pixel(partial, 3, 3) == 0xff654321);
 		SDL_Rect area{0, 0, 4, 4};
-		SDL_FillRect(partial, &area, 0xffabcdef);
+		SDL_FillSurfaceRect(partial, &area, 0xffabcdef);
 		CHECK(pixel(presenter.completed(), 1, 1) == 0xff654321);
 		presenter.complete();
 		CHECK(pixel(presenter.completed(), 1, 1) == 0xffabcdef);
