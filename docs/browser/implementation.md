@@ -135,6 +135,8 @@ participates in the version identity so changing transfer representation does
 not overwrite an older immutable URL. `--verify DIRECTORY` checks file coverage,
 SHA-256 and each sidecar's decompressed bytes before publication.
 The generated `package.json` marker records ownership and package identity.
+Static export directories use mode 0755 and files 0644 so an unprivileged
+server can read the payload even when the build uses a private umask.
 Packaging refuses to replace an unmarked directory, even if it contains HTML;
 remove an older generated `build/browser-static` once before repackaging it.
 

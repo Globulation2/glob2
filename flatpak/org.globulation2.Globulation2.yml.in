@@ -70,8 +70,10 @@ modules:
 
   - name: pybind11-build-tool
     buildsystem: simple
+    # Pillow needs only this header-only project's Python build helpers/headers.
+    # Installing the source directly avoids scikit-build-core in the sandbox.
     build-commands:
-      - export PYTHONPATH="/app/lib/python$(python3 -c 'import sys; print(str(sys.version_info.major)+"."+str(sys.version_info.minor))')/site-packages${PYTHONPATH:+:$PYTHONPATH}"; python3 -m pip install --no-index --no-build-isolation --no-deps --prefix=/app .
+      - site="/app/lib/python$(python3 -c 'import sys; print(str(sys.version_info.major)+"."+str(sys.version_info.minor))')/site-packages"; mkdir -p "$site"; cp -a pybind11 "$site/"; cp -a include "$site/pybind11/"
     cleanup:
       - /lib/python*/site-packages/pybind11*
       - /lib/python*/site-packages/_distutils_hack
@@ -98,14 +100,37 @@ modules:
     buildsystem: cmake-ninja
     builddir: true
     config-opts:
-      - -DSDL2IMAGE_DEPS_SHARED=OFF
-      - -DSDL2IMAGE_WEBP=ON
       - -DSDL2IMAGE_AVIF=OFF
+      - -DSDL2IMAGE_BMP=OFF
+      - -DSDL2IMAGE_GIF=OFF
+      - -DSDL2IMAGE_JPG=ON
+      - -DSDL2IMAGE_JXL=OFF
+      - -DSDL2IMAGE_LBM=OFF
+      - -DSDL2IMAGE_PCX=OFF
+      - -DSDL2IMAGE_PNG=ON
+      - -DSDL2IMAGE_PNM=OFF
+      - -DSDL2IMAGE_QOI=OFF
+      - -DSDL2IMAGE_SVG=OFF
+      - -DSDL2IMAGE_TGA=OFF
       - -DSDL2IMAGE_TIF=OFF
+      - -DSDL2IMAGE_WEBP=ON
+      - -DSDL2IMAGE_XCF=OFF
+      - -DSDL2IMAGE_XPM=OFF
+      - -DSDL2IMAGE_XV=OFF
+      - -DBUILD_SHARED_LIBS=ON
+      - -DSDL2IMAGE_DEPS_SHARED=OFF
+      - -DSDL2IMAGE_STRICT=ON
+      - -DSDL2IMAGE_BACKEND_STB=OFF
+      - -DSDL2IMAGE_BACKEND_IMAGEIO=OFF
+      - -DSDL2IMAGE_SAMPLES=OFF
+      - -DSDL2IMAGE_TESTS=OFF
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DSDL2IMAGE_PNG_SAVE=ON
+      - -DSDL2IMAGE_JPG_SAVE=ON
     sources:
       - type: archive
-        url: https://github.com/libsdl-org/SDL_image/releases/download/release-2.8.8/SDL2_image-2.8.8.tar.gz
-        sha256: 2213b56fdaff2220d0e38c8e420cbe1a83c87374190cba8c70af2156097ce30a
+        url: https://github.com/libsdl-org/SDL_image/releases/download/release-2.8.12/SDL2_image-2.8.12.tar.gz
+        sha256: 393f5efb50536ec13ca4f4affb69cc9966d3c3f969e6c5e701faddf9f9785381
 
   - name: SDL2_ttf
     buildsystem: cmake-ninja
