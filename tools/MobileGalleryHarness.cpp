@@ -979,7 +979,7 @@ class MobileGalleryGameplay
 			view->inspectValue();
 			stackShot(stack, "game-results-value");
 			// Online results: the rating card while verifying, verified, and a room match.
-			auto online = std::make_shared<Online::OnlineMatchResult>("https://glob2online.com", "8f3k2q00-0000-4000-8000-000000000001", OnlineUIFixtures::HOST_ID);
+			auto online = std::make_shared<Online::OnlineMatchResult>("https://app.glob2online.com", "8f3k2q00-0000-4000-8000-000000000001", OnlineUIFixtures::HOST_ID);
 			online->label = "1 vs 1 · Ranked";
 			online->mapTitle = "Even Ground 128×128";
 			online->fromRoom = false;
@@ -997,7 +997,7 @@ class MobileGalleryGameplay
 			online->outcome = "won";
 			++online->revision;
 			stackShot(stack, "game-results-verified");
-			auto room = std::make_shared<Online::OnlineMatchResult>("https://glob2online.com", "8f3k2q00-0000-4000-8000-000000000002", OnlineUIFixtures::HOST_ID);
+			auto room = std::make_shared<Online::OnlineMatchResult>("https://app.glob2online.com", "8f3k2q00-0000-4000-8000-000000000002", OnlineUIFixtures::HOST_ID);
 			room->label = "Room · Sunday 2v2";
 			room->mapTitle = "Marchland";
 			room->verification = Online::OnlineMatchResult::Verification::NotApplicable;

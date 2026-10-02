@@ -87,7 +87,7 @@ inline std::unique_ptr<GAGGUI::Screen> quickMatch(GAGGUI::ScreenStack &stack, bo
 	const auto now = Glob2UI::wallClockMs();
 	if (searching)
 		m.presentSearching(queues()[0], status(now), now - 42000);
-	return std::make_unique<QuickMatchScreen>(stack, m, queues(), "https://glob2online.com", "Bradley");
+	return std::make_unique<QuickMatchScreen>(stack, m, queues(), "https://app.glob2online.com", "Bradley");
 }
 
 inline Online::Json proposalJson(bool ranked, std::int64_t now)
@@ -166,7 +166,7 @@ inline std::unique_ptr<GAGGUI::Screen> profile(GAGGUI::ScreenStack &stack)
 	const auto now = Glob2UI::wallClockMs();
 	const std::int64_t day = 86400000;
 	OnlineProfileScreen::Data data;
-	data.instance = "https://glob2online.com";
+	data.instance = "https://app.glob2online.com";
 	data.accountId = "me";
 	data.displayName = "Bradley";
 	data.kind = "registered";
@@ -247,7 +247,7 @@ inline OnlineMapsScreen::Data mapsData(const std::string &root)
 	const auto now = Glob2UI::wallClockMs();
 	const std::int64_t day = 86400000;
 	OnlineMapsScreen::Data data;
-	data.instance = "https://glob2online.com";
+	data.instance = "https://app.glob2online.com";
 	data.now = now;
 	data.previewFiles = {
 		{"fixture://drumlin-128", root + "docs/map-generators/drumlin-field/128-4-colonies.png"},

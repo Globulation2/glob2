@@ -323,7 +323,7 @@ def main():
     env['ENV'].update(TMPDIR=temporary, TMP=temporary, TEMP=temporary)
     env["VERSION"] = PACKAGE_VERSION
     establish_options(env)
-    env.Append(CPPDEFINES=[official_instance.cppdefine(official_instance.origin({'official_instance': env['official_instance']}))])
+    env.Append(CPPDEFINES=official_instance.cppdefines(official_instance.origin({'official_instance': env['official_instance']})))
     # SCons treats a command-line flag string as one shell argument unless it
     # is split into a list. Distro RPM macros provide multiple flags at once.
     for flags in ('CXXFLAGS', 'LINKFLAGS'):
