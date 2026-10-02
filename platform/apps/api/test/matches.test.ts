@@ -615,7 +615,8 @@ describe('match-end intake', () => {
       },
       {
         seat: 1,
-        quality: 'poor',
+        // Typical ping 150 ms and two disconnects: fair (connectionQuality.ts).
+        quality: 'fair',
         rttMs: { p50: 150, p95: 420 },
         lagMs: { p50: 280, p95: 360 },
         disconnects: 2,
