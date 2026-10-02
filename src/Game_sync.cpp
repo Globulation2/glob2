@@ -138,6 +138,7 @@ void Game::prestigeSyncStep()
 
 void Game::syncStep(Sint32 localTeam)
 {
+	const auto random = bindRandom();
 	if (!anyPlayerWaited)
 	{
 		PERF_SCOPE_TIME(Tick);

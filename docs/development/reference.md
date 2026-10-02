@@ -436,9 +436,19 @@ For timing and scheduling, start with `src/Game_sync.cpp` and `src/EngineRun.cpp
   order, but does not make their shared map and caches safe for concurrent access.
   A controller must still have at most one `getOrder()` in flight; its stream
   and decision state are mutable.
-- The non-AI `syncRand()` generator is `thread_local`: the simulation normally uses
-  one thread, while background map generation seeds its own stream. A new thread
-  starts from the default seed; seed it before relying on its sequence.
+- Each `Game` owns its synchronized stream (`Game::syncRandom`), saved and restored
+  with the game. `Game::syncStep`, `Game::executeOrder`, load and save bind it with
+  `SyncRandScope`, so the simulation draws from the game it advances on whichever
+  thread runs it. Other code that advances a game's simulation must bind it with
+  `Game::bindRandom()`. Outside a bound scope, `syncRand()` uses a `thread_local`
+  default stream that map generation and other tools seed for themselves; a new
+  thread starts from the default seed. During an engine session an unbound draw is
+  a determinism bug: it is counted (`unboundSyncRandDraws()`), and
+  `GLOB2_SYNC_RAND_STRICT=1` aborts on it.
+- Keep rendering, particles, animation and other presentation-only randomness off
+  `syncRand()`. Use a presentation-owned generator such as `GameGUI::effectsRandom`,
+  so visual effects can change, run at any frame rate or move to another thread
+  without consuming simulation draws.
 - For behavior-preserving refactors and optimizations, compare base and changed
   builds using identical saves/maps, seeds, settings and orders. Compare per-tick
   state/checksums as well as replay bytes: matching orders alone do not prove that

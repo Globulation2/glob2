@@ -50,6 +50,7 @@ namespace glob2test
 		: gui(false), game(gui.game)
 	{
 		REQUIRE_MESSAGE(globalContainer != nullptr, "HeadlessGame needs a live HeadlessGlobals");
+		random.emplace(game);
 		game.map.setSize(options.wDec, options.hDec, options.terrain);
 		game.map.setGame(&game);
 		if (options.clearImmobile)

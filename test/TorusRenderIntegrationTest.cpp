@@ -356,9 +356,10 @@ static void run(bool gpu, int width, int height)
                 view.amount = amount;
                 view.lastFrame = SDL_GetTicks();
                 const auto randomState=syncRandEngine();
+                const auto gameRandom=gui.game.syncRandom;
                 REQUIRE(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, x, y, 960, 720));
                 REQUIRE(glGetError() == GL_NO_ERROR);
-                REQUIRE(syncRandEngine()==randomState);
+                REQUIRE((syncRandEngine()==randomState && gui.game.syncRandom==gameRandom));
             };
             view.toggle();
             REQUIRE(view.active());
