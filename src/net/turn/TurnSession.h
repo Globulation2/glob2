@@ -21,6 +21,7 @@
 #include "JitterBuffer.h"
 #include "Order.h"
 #include "TurnMessages.h"
+#include "TurnTelemetry.h"
 
 namespace Turn
 {
@@ -130,6 +131,19 @@ namespace Turn
 		std::int64_t rttMicros() const { return rtt; }
 		PresenceState presence(int seatNumber) const;
 		std::uint64_t tickPeriodMicros() const { return tickPeriod; }
+		std::uint32_t tickRateMilliHz() const { return tickRate; }
+		/// True while the engine waits for the relay: the authorized horizon is used up
+		/// (not reloading, not ended). Pacing classifies such waits as network sleep.
+		bool waitingOnNetwork() const
+		{
+			return currentState != State::Ended && currentState != State::Rejected && !reloadPending &&
+			       executed >= horizonTick;
+		}
+		/// Network telemetry of this session (docs/development/network-telemetry.md).
+		const SessionTelemetry& telemetry() const { return stats; }
+		SessionTelemetry& telemetry() { return stats; }
+		/// The session clock (the last time passed to update()).
+		std::uint64_t nowMicros() const { return now; }
 
 	private:
 		struct Outstanding
@@ -192,5 +206,6 @@ namespace Turn
 		JitterEstimator jitter;
 		JitterBuffer buffer;
 		DelayController delay;
+		SessionTelemetry stats;
 	};
 }

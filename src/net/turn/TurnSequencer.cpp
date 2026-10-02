@@ -6,6 +6,8 @@
 #include <algorithm>
 #include <stdexcept>
 
+#include <nlohmann/json.hpp>
+
 namespace Turn
 {
 TurnSequencer::TurnSequencer(SequencerConfig config, std::uint32_t humanSeatMask, Admission admission,
@@ -20,6 +22,23 @@ TurnSequencer::TurnSequencer(SequencerConfig config, std::uint32_t humanSeatMask
 	tickPeriod = ticksToMicros(1, config.tickRateMilliHz);
 	for (unsigned s = 0; s < MAX_SEATS; ++s)
 		seats[s].graceStart = startMicros;
+	unsigned highest = 0;
+	for (unsigned s = 0; s < MAX_SEATS; ++s)
+		if (humanMask & (1u << s))
+			highest = s;
+	net.seats.resize(highest + 1);
+}
+
+nlohmann::json TurnSequencer::networkSummary() const
+{
+	return sequencerSummaryJson(net, humanMask, config.tickRateMilliHz, sentHorizon);
+}
+
+void TurnSequencer::notePending()
+{
+	net.peakPendingTicks = std::max<std::uint64_t>(net.peakPendingTicks, pending.size());
+	net.peakPendingEntries = std::max(net.peakPendingEntries, pendingEntries);
+	net.peakPendingBytes = std::max(net.peakPendingBytes, pendingTotalBytes);
 }
 
 std::uint32_t TurnSequencer::relayTick(std::uint64_t nowMicros) const
@@ -56,6 +75,7 @@ void TurnSequencer::reject(PeerId peer, RejectReason reason, const std::string& 
 	r.detail = detail.substr(0, MAX_REJECT_DETAIL_BYTES);
 	send(peer, r);
 	++counters.peersRejected;
+	++net.rejectedPeers;
 	dropPeer(peer);
 	output.close(peer);
 }
@@ -76,6 +96,12 @@ void TurnSequencer::dropPeer(PeerId peer)
 	s.streaming = false;
 	if (s.state != PresenceState::Left)
 	{
+		if (auto* t = net.seat(seat))
+		{
+			++t->disconnects;
+			t->absent = true;
+			t->graceSince = now;
+		}
 		s.graceStart = now;
 		setState(static_cast<std::uint8_t>(seat), PresenceState::Reconnecting);
 		event(static_cast<std::uint8_t>(seat), MatchEventKind::Disconnected);
@@ -128,6 +154,11 @@ void TurnSequencer::onReceive(PeerId peer, const std::uint8_t* data, std::size_t
 	}
 	const int seat = it->second.seat;
 	const auto type = message->getMessageType();
+	if (auto* t = net.seat(seat))
+	{
+		++t->framesReceived;
+		t->bytesReceived += size;
+	}
 	if (seat < 0)
 	{
 		if (type != MSG_HELLO)
@@ -154,6 +185,12 @@ void TurnSequencer::onReceive(PeerId peer, const std::uint8_t* data, std::size_t
 	{
 		const auto& ping = static_cast<const Ping&>(*message);
 		seats[seat].executedTick = ping.executedTick;
+		if (auto* t = net.seat(seat))
+		{
+			const std::uint32_t tickNow = relayTick(now);
+			++t->pings;
+			t->lagTicks.add(tickNow > ping.executedTick ? tickNow - ping.executedTick : 0);
+		}
 		Pong pong;
 		pong.nonce = ping.nonce;
 		pong.relayTick = relayTick(now);
@@ -193,6 +230,17 @@ void TurnSequencer::handleHello(PeerId peer, const Hello& hello, std::uint64_t)
 	s.peer = peer;
 	s.hasPeer = true;
 	s.streaming = true;
+	if (auto* t = net.seat(seat))
+	{
+		++t->connects;
+		if (t->absent)
+		{
+			const std::uint64_t d = now > t->graceSince ? now - t->graceSince : 0;
+			t->graceMicrosTotal += d;
+			t->graceMicrosMax = std::max(t->graceMicrosMax, d);
+			t->absent = false;
+		}
+	}
 
 	std::uint32_t resumeFrom = hello.haveHorizon <= sentHorizon ? hello.haveHorizon : 0;
 	if (s.awaitingResync && resumeFrom != 0)
@@ -229,10 +277,18 @@ void TurnSequencer::sendLog(PeerId peer, std::uint32_t fromTick)
 	auto first = std::lower_bound(log.begin(), log.end(), fromTick,
 	                              [](const TurnEntry& e, std::uint32_t tick) { return e.tick < tick; });
 	std::vector<TurnEntry> slice(first, log.end());
+	auto it = peers.find(peer);
+	auto* t = it != peers.end() ? net.seat(it->second.seat) : nullptr;
 	for (const auto& bundle : splitIntoBundles(slice, fromTick, sentHorizon))
 	{
-		send(peer, bundle);
+		const auto payload = TurnCodec::encode(bundle);
+		output.send(peer, payload);
 		++counters.bundlesSent;
+		if (t)
+		{
+			++t->logBundlesSent;
+			t->logBundleBytes += payload.size();
+		}
 	}
 }
 
@@ -245,6 +301,28 @@ bool TurnSequencer::assign(std::uint8_t seat, std::vector<std::uint8_t> order, s
 	if (floodLimit && tick > currentTick + config.maxAheadTicks)
 		return false;
 	pendingBytes[tick] += order.size();
+	if (auto* t = net.seat(seat))
+	{
+		if (!order.empty() && order[0] == ORDER_TYPE_VOICE)
+		{
+			++t->voiceSequenced;
+			t->voiceBytes += order.size();
+		}
+		else
+		{
+			++t->ordersSequenced;
+			t->orderBytes += order.size();
+		}
+		const std::uint32_t earliest = std::max(currentTick + 1, sentHorizon);
+		if (tick > earliest)
+		{
+			++t->ordersDeferred;
+			t->deferTicks.add(tick - earliest);
+		}
+		t->maxQueuedAhead = std::max<std::uint64_t>(t->maxQueuedAhead, tick - currentTick);
+	}
+	++pendingEntries;
+	pendingTotalBytes += order.size();
 	auto& slot = pending[tick];
 	TurnEntry entry;
 	entry.tick = tick;
@@ -255,6 +333,7 @@ bool TurnSequencer::assign(std::uint8_t seat, std::vector<std::uint8_t> order, s
 	slot.insert(pos, std::move(entry));
 	s.nextFreeTick = tick + 1;
 	++counters.ordersSequenced;
+	notePending();
 	return true;
 }
 
@@ -263,13 +342,20 @@ void TurnSequencer::handleOrder(int seat, const OrderSubmit& submit, std::uint64
 	Seat& s = seats[seat];
 	if (s.state == PresenceState::Left || over)
 		return;
+	auto* t = net.seat(seat);
 	if (submit.clientSequence <= s.lastClientSequence)
+	{
+		if (t)
+			++t->duplicatesIgnored;
 		return; // A resubmission after reconnect that we already sequenced.
+	}
 	s.lastClientSequence = submit.clientSequence;
 	const std::uint8_t type = submit.order[0];
 	if (type == ORDER_TYPE_NULL || type == ORDER_TYPE_ADJUST_LATENCY)
 	{
 		++counters.ordersDropped;
+		if (t)
+			++t->ordersDropped;
 		return;
 	}
 	if (type == ORDER_TYPE_PLAYER_QUIT)
@@ -279,6 +365,8 @@ void TurnSequencer::handleOrder(int seat, const OrderSubmit& submit, std::uint64
 		if (submit.order.size() != 5 || !std::equal(expected, expected + 5, submit.order.begin()))
 		{
 			++counters.ordersDropped;
+			if (t)
+				++t->ordersDropped;
 			return;
 		}
 		sequenceQuit(static_cast<std::uint8_t>(seat), MatchEventKind::LeftByQuit, now);
@@ -287,6 +375,11 @@ void TurnSequencer::handleOrder(int seat, const OrderSubmit& submit, std::uint64
 	if (!assign(static_cast<std::uint8_t>(seat), submit.order, relayTick(now)))
 	{
 		++counters.ordersDropped;
+		if (t)
+		{
+			++t->ordersDropped;
+			++t->floodRejections;
+		}
 		reject(s.peer, RejectReason::Flooding, "Too many orders queued");
 	}
 }
@@ -301,6 +394,19 @@ void TurnSequencer::sequenceQuit(std::uint8_t seat, MatchEventKind why, std::uin
 	// The flood limit never applies to the relay's own quit order.
 	assign(seat, std::move(order), relayTick(now), false);
 	s.awaitingResync = false;
+	if (auto* t = net.seat(seat))
+	{
+		t->leftTick = relayTick(now);
+		t->leftByGrace = why == MatchEventKind::LeftByGrace;
+		t->leftByQuit = why == MatchEventKind::LeftByQuit;
+		if (t->absent)
+		{
+			const std::uint64_t d = now > t->graceSince ? now - t->graceSince : 0;
+			t->graceMicrosTotal += d;
+			t->graceMicrosMax = std::max(t->graceMicrosMax, d);
+			t->absent = false;
+		}
+	}
 	setState(seat, PresenceState::Left);
 	event(seat, why);
 	if (s.hasPeer)
@@ -327,7 +433,12 @@ void TurnSequencer::emitUpTo(std::uint32_t newHorizon)
 	while (!pending.empty() && pending.begin()->first < newHorizon)
 	{
 		for (auto& e : pending.begin()->second)
+		{
+			pendingTotalBytes -= std::min<std::uint64_t>(pendingTotalBytes, e.order.size());
+			if (pendingEntries)
+				--pendingEntries;
 			entries.push_back(std::move(e));
+		}
 		pendingBytes.erase(pending.begin()->first);
 		pending.erase(pending.begin());
 	}
@@ -339,11 +450,18 @@ void TurnSequencer::emitUpTo(std::uint32_t newHorizon)
 	for (const auto& bundle : bundles)
 	{
 		const auto payload = TurnCodec::encode(bundle);
+		++net.bundlesBroadcast;
+		net.bundleBytesBroadcast += payload.size();
 		for (unsigned i = 0; i < MAX_SEATS; ++i)
 			if (seats[i].hasPeer && seats[i].streaming)
 			{
 				output.send(seats[i].peer, payload);
 				++counters.bundlesSent;
+				if (auto* t = net.seat(static_cast<int>(i)))
+				{
+					++t->bundlesSent;
+					t->bundleBytes += payload.size();
+				}
 			}
 	}
 }
@@ -355,6 +473,12 @@ void TurnSequencer::handleChecksum(int seat, const ChecksumReport& report)
 		return;
 	if (report.tick % config.checksumInterval != 0 || report.tick > sentHorizon)
 		return;
+	if (auto* t = net.seat(seat))
+	{
+		const std::uint32_t tickNow = relayTick(now);
+		++t->checksumReports;
+		t->reportLatenessTicks.add(tickNow > report.tick ? tickNow - report.tick : 0);
+	}
 	TickReports& tr = reports[report.tick];
 	const auto key = static_cast<std::uint8_t>(seat);
 	tr.first.emplace(key, report.checksum);
@@ -372,6 +496,8 @@ void TurnSequencer::handleChecksum(int seat, const ChecksumReport& report)
 	// A late report, typically replayed after a reconnect or rejoin.
 	if (tr.agreed && *tr.agreed != report.checksum)
 	{
+		if (auto* t = net.seat(seat))
+			++t->lateMismatches;
 		if (tr.support >= 2)
 			tellRejoin(key, report.tick);
 		else
@@ -385,7 +511,7 @@ bool TurnSequencer::expectedReporter(const Seat& s) const
 	       (s.state == PresenceState::Connected || s.state == PresenceState::Lagging);
 }
 
-void TurnSequencer::arbitrate(std::uint32_t tick)
+void TurnSequencer::arbitrate(std::uint32_t tick, bool timedOut)
 {
 	TickReports& tr = reports[tick];
 	if (tr.arbitrated)
@@ -394,6 +520,9 @@ void TurnSequencer::arbitrate(std::uint32_t tick)
 	const std::size_t n = tr.current.size();
 	if (n == 0)
 		return;
+	++net.arbitrations;
+	if (timedOut)
+		++net.timedOut;
 	std::map<std::uint32_t, std::uint32_t> counts;
 	for (const auto& r : tr.current)
 		++counts[r.second];
@@ -403,6 +532,7 @@ void TurnSequencer::arbitrate(std::uint32_t tick)
 	{
 		tr.agreed = best->first;
 		tr.support = static_cast<std::uint32_t>(n);
+		++net.unanimous;
 		return;
 	}
 	std::uint32_t reporters = 0;
@@ -412,11 +542,13 @@ void TurnSequencer::arbitrate(std::uint32_t tick)
 	{
 		tr.agreed = best->first;
 		tr.support = best->second;
+		++net.majority;
 		for (const auto& r : tr.current)
 			if (r.second != best->first)
 				tellRejoin(r.first, tick);
 		return;
 	}
+	++net.flaggedTicks;
 	flag(tick, reporters);
 }
 
@@ -431,6 +563,8 @@ void TurnSequencer::tellRejoin(std::uint8_t seat, std::uint32_t tick)
 		return;
 	}
 	++s.rejoins;
+	if (auto* t = net.seat(seat))
+		++t->toldToRejoin;
 	s.awaitingResync = true;
 	s.streaming = false;
 	for (auto& r : reports)
@@ -458,6 +592,8 @@ void TurnSequencer::flag(std::uint32_t tick, std::uint32_t seatMask)
 	for (unsigned i = 0; i < MAX_SEATS; ++i)
 		if (seatMask & (1u << i))
 		{
+			if (auto* t = net.seat(static_cast<int>(i)))
+				++t->flagged;
 			event(static_cast<std::uint8_t>(i), MatchEventKind::Flagged);
 			if (seats[i].hasPeer)
 				send(seats[i].peer, notice);
@@ -547,7 +683,7 @@ void TurnSequencer::update(std::uint64_t nowMicros)
 		if (r.first + config.arbitrationTimeoutTicks > tick)
 			break;
 		if (!r.second.arbitrated)
-			arbitrate(r.first);
+			arbitrate(r.first, true);
 	}
 
 	if (presenceDirty || tick >= lastPresenceTick + config.presenceRefreshTicks)

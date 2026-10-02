@@ -20,6 +20,7 @@
 
 #include "MatchRecord.h"
 #include "TurnMessages.h"
+#include "TurnTelemetry.h"
 
 namespace Turn
 {
@@ -94,6 +95,10 @@ namespace Turn
 		bool matchOver() const { return over; }
 		std::optional<std::uint32_t> agreedChecksum(std::uint32_t tick) const;
 		const Stats& stats() const { return counters; }
+		/// Network telemetry of this match (docs/development/network-telemetry.md).
+		const SequencerTelemetry& telemetry() const { return net; }
+		/// The per-seat network summary (RelayNetworkSummary v1) so far.
+		nlohmann::json networkSummary() const;
 		std::uint32_t humanSeats() const { return humanMask; }
 
 		/// Flushes pending turns into a final bundle and stops accepting play. Called
@@ -142,7 +147,8 @@ namespace Turn
 		void sequenceQuit(std::uint8_t seat, MatchEventKind why, std::uint64_t now);
 		void emitUpTo(std::uint32_t newHorizon);
 		void sendLog(PeerId peer, std::uint32_t fromTick);
-		void arbitrate(std::uint32_t tick);
+		void arbitrate(std::uint32_t tick, bool timedOut = false);
+		void notePending();
 		void tellRejoin(std::uint8_t seat, std::uint32_t tick);
 		void flag(std::uint32_t tick, std::uint32_t seatMask);
 		bool expectedReporter(const Seat& s) const;
@@ -174,5 +180,7 @@ namespace Turn
 		bool over = false;
 		bool incomplete = false;
 		Stats counters;
+		SequencerTelemetry net;
+		std::uint64_t pendingEntries = 0, pendingTotalBytes = 0;
 	};
 }
