@@ -28,6 +28,17 @@ class NativeImageTests(unittest.TestCase):
                 library.write_bytes(b'new codec')
                 self.assertNotEqual(baseline, lean.dependencies())
 
+    def test_cached_decoder_acquires_the_supported_shared_lease(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            location = Path(temporary)
+            with patch.object(lean, 'dependencies', return_value={}), \
+                 patch.object(lean.subprocess, 'check_output', return_value='tool version'), \
+                 patch.object(lean, 'cache', return_value=location), \
+                 patch.object(lean, 'verified', return_value=True), \
+                 patch.object(lean, 'hold', wraps=lean.hold) as hold:
+                self.assertEqual(lean.ensure(location), location / 'prefix')
+                hold.assert_called_once_with(location)
+
     def test_private_decoder_cannot_share_ordinary_build_outputs(self):
         baseline = build_identity({'release': '1'}, host='linux')
         candidate = build_identity({'release': '1', 'lean_images': '1'}, host='linux')

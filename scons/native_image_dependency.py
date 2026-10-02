@@ -144,5 +144,5 @@ def ensure(root, cc="gcc", cxx="g++", jobs=2):
                 if prefix.exists():
                     shutil.rmtree(prefix)
                 staged.rename(prefix)
-    hold(location, exclusive=False)
+    hold(location)
     return prefix
