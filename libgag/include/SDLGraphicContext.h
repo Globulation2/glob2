@@ -342,6 +342,8 @@ namespace GAGCore
 			RESIZABLE = 8,
 			CUSTOMCURSOR = 16,
 			PORTABLEGPU = 32,
+            //! Opt out of high-density backing pixels for fixed-pixel profiling.
+            LOWPIXELDENSITY = 64,
 		};
 		
 	protected:

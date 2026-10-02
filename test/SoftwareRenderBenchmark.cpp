@@ -69,18 +69,19 @@ class SoftwareRenderBenchmark
 		SDL_SetHint(SDL_HINT_MAC_BACKGROUND_APP, "1");
 		// Keep -s dimensions as measured pixels across display densities. Opt in
 		// to native Retina/HiDPI presentation explicitly for lifecycle profiling.
-		if (!getenv("PROFILE_NATIVE_DISPLAY"))
-			SDL_SetHint(SDL_HINT_VIDEO_HIGHDPI_DISABLED, "1");
+		const bool nativeDisplay = getenv("PROFILE_NATIVE_DISPLAY") != nullptr;
 		globalContainer = new GlobalContainer;
 		globalContainer->parseArgs(argc, argv);
 		globalContainer->settings.mute = 1;
 		globalContainer->settings.autosaveGames = false;
 		globalContainer->load();
 		auto *gfx = globalContainer->gfx;
-		SDL_version version;
-		SDL_GetVersion(&version);
-		printf("SDL version=%u.%u.%u revision=%s\n", version.major, version.minor, version.patch,
-			   SDL_GetRevision());
+        if (!nativeDisplay)
+            gfx->setRes(gfx->getRequestedW(), gfx->getRequestedH(),
+                gfx->getOptionFlags() | GraphicContext::LOWPIXELDENSITY);
+        const int version = SDL_GetVersion();
+        printf("SDL version=%u.%u.%u revision=%s\n", SDL_VERSIONNUM_MAJOR(version),
+            SDL_VERSIONNUM_MINOR(version), SDL_VERSIONNUM_MICRO(version), SDL_GetRevision());
 		if (!getenv("PROFILE_VISIBLE"))
 			SDL_HideWindow(SDL_GetWindowFromID(gfx->windowID()));
 		if (gfx->getOptionFlags() & (GraphicContext::USEGPU | GraphicContext::PORTABLEGPU))

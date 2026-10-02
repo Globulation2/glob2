@@ -227,9 +227,6 @@ namespace GAGCore
 		sdlsurface = NULL;
 		optionFlags = DEFAULT;
 
-#ifdef _WIN32
-		SDL_SetHint(SDL_HINT_WINDOWS_DPI_AWARENESS, "permonitorv2");
-#endif
 		// Load the SDL library
 		if ( !SDL_Init(SDL_INIT_VIDEO) )
 		{
@@ -738,7 +735,7 @@ namespace GAGCore
 #endif
 		optionFlags = flags;
         fixedLogicalW=logicalW; fixedLogicalH=logicalH; responsiveViewport=false;
-		SDL_WindowFlags sdlFlags = SDL_WINDOW_HIGH_PIXEL_DENSITY;
+		SDL_WindowFlags sdlFlags = (flags & LOWPIXELDENSITY) ? 0 : SDL_WINDOW_HIGH_PIXEL_DENSITY;
 		if (flags & FULLSCREEN)
 			// Desktop fullscreen, not exclusive: Wayland can't modeswitch to a non-native mode.
 			sdlFlags |= SDL_WINDOW_FULLSCREEN;
@@ -754,7 +751,7 @@ namespace GAGCore
 			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
 #endif
-			sdlFlags |= SDL_WINDOW_OPENGL | SDL_WINDOW_HIGH_PIXEL_DENSITY;
+			sdlFlags |= SDL_WINDOW_OPENGL;
 		}
 		#else
 		// remove GL from options

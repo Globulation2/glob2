@@ -184,6 +184,7 @@ jobs:
             map-report-test \
             map-generator-golden-test \
             lan-test \
+            software-render-benchmark \
             menu-colony-harness
 
       - name: Reconstruct scripting vendors
@@ -907,6 +908,7 @@ jobs:
           GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j$(nproc) release=1 mingw=1 server=0 build/mingw/client/release/src/glob2.exe \
             unit-tests \
             engine-tests \
+            software-render-benchmark \
             map-report-test
           # MSYS2 starts each step with its own PATH; colocate the pinned
           # SDL DLLs so Windows can load the client and every harness directly.
