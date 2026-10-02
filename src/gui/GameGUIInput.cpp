@@ -6,8 +6,8 @@
 #include <iostream>
 #include <optional>
 
-#include <SDL_keyboard.h>
-#include <SDL_keycode.h>
+#include <SDL3/SDL_keyboard.h>
+#include <SDL3/SDL_keycode.h>
 
 #include <FileManager.h>
 #include <Stream.h>
@@ -114,10 +114,10 @@ void GameGUI::processEvent(SDL_Event *event)
 {
     inputState.observe(*event);
     if (touch && !activeDialog() && touch->process(*event)) return;
-    if ((event->type == SDL_MOUSEBUTTONUP && event->button.button == SDL_BUTTON_MIDDLE) ||
-        (event->type == SDL_WINDOWEVENT && event->window.event == SDL_WINDOWEVENT_FOCUS_LOST))
+    if ((event->type == SDL_EVENT_MOUSE_BUTTON_UP && event->button.button == SDL_BUTTON_MIDDLE) ||
+        ((event->type >= SDL_EVENT_WINDOW_FIRST && event->type <= SDL_EVENT_WINDOW_LAST) && event->type == SDL_EVENT_WINDOW_FOCUS_LOST))
         panPushed = false;
-    if (event->type == SDL_WINDOWEVENT && event->window.event == SDL_WINDOWEVENT_FOCUS_LOST)
+    if ((event->type >= SDL_EVENT_WINDOW_FIRST && event->type <= SDL_EVENT_WINDOW_LAST) && event->type == SDL_EVENT_WINDOW_FOCUS_LOST)
     {
         lastMouseButtonState = 0;
         viewportSpeedX = viewportSpeedY = 0;
@@ -130,15 +130,15 @@ void GameGUI::processEvent(SDL_Event *event)
         torusPointerDown = false;
         torusView.setPointerHeld(false);
     }
-    if (event->type == SDL_MOUSEBUTTONUP && event->button.button == SDL_BUTTON_LEFT)
+    if (event->type == SDL_EVENT_MOUSE_BUTTON_UP && event->button.button == SDL_BUTTON_LEFT)
         torusView.setPointerHeld(false);
-    if (!inputState.hasFocus() && (event->type == SDL_KEYDOWN || event->type == SDL_KEYUP ||
-        event->type == SDL_MOUSEBUTTONDOWN || event->type == SDL_MOUSEBUTTONUP ||
-        event->type == SDL_MOUSEMOTION || event->type == SDL_MOUSEWHEEL)) return;
+    if (!inputState.hasFocus() && (event->type == SDL_EVENT_KEY_DOWN || event->type == SDL_EVENT_KEY_UP ||
+        event->type == SDL_EVENT_MOUSE_BUTTON_DOWN || event->type == SDL_EVENT_MOUSE_BUTTON_UP ||
+        event->type == SDL_EVENT_MOUSE_MOTION || event->type == SDL_EVENT_MOUSE_WHEEL)) return;
 
     if (!typingInputScreen && inGameMenu == IGM_NONE && !scrollableText) {
         int width = globalContainer->gfx->getW()-RIGHT_MENU_WIDTH;
-        if (event->type == SDL_MOUSEMOTION) { mouseX=event->motion.x; mouseY=event->motion.y; }
+        if (event->type == SDL_EVENT_MOUSE_MOTION) { mouseX=event->motion.x; mouseY=event->motion.y; }
         if (torusView.event(*event, width)) return;
         if (torusView.active() && handleTorusPointer(*event)) return;
     }
@@ -148,7 +148,7 @@ void GameGUI::processEvent(SDL_Event *event)
 		return;
 
 	// the dump (debug) keys are always handled
-	if (event->type == SDL_KEYDOWN)
+	if (event->type == SDL_EVENT_KEY_DOWN)
 		handleKeyDump(event->key);
 
 
@@ -156,56 +156,53 @@ void GameGUI::processEvent(SDL_Event *event)
 	if (inGameMenu)
 	{
 		notmenu=true;
-		if (!processGameMenu(event) && event->type == SDL_MOUSEBUTTONDOWN)
+		if (!processGameMenu(event) && event->type == SDL_EVENT_MOUSE_BUTTON_DOWN)
 			handleMenuIconClick(event->button);
 	}
 	else
 	{
 		notmenu=false;
-		if (event->type == SDL_MOUSEBUTTONDOWN)
+		if (event->type == SDL_EVENT_MOUSE_BUTTON_DOWN)
 			handleMenuIconClick(event->button);
 		if (inGameMenu)
 			return;
 		if (processScrollableWidget(event))
 			return;
-		if (event->type==SDL_KEYDOWN)
+		if (event->type==SDL_EVENT_KEY_DOWN)
 		{
-			handleKey(event->key.keysym, true, event->key.repeat != 0);
+			handleKey(event->key, true, event->key.repeat != 0);
 		}
-		else if (event->type==SDL_KEYUP)
+		else if (event->type==SDL_EVENT_KEY_UP)
 		{
-			handleKey(event->key.keysym, false);
+			handleKey(event->key, false);
 		}
-		else if (event->type==SDL_MOUSEBUTTONDOWN)
+		else if (event->type==SDL_EVENT_MOUSE_BUTTON_DOWN)
 		{
 			handleMouseButtonDown(event->button);
 		}
-		else if (event->type==SDL_MOUSEBUTTONUP)
+		else if (event->type==SDL_EVENT_MOUSE_BUTTON_UP)
 		{
 			handleMouseButtonUp(event->button);
 		}
-		else if (event->type==SDL_MOUSEWHEEL)
+		else if (event->type==SDL_EVENT_MOUSE_WHEEL)
 		{
 			int factor = event->wheel.direction == SDL_MOUSEWHEEL_FLIPPED ? -1 : 1;
-			double delta=event->wheel.y;
-#if SDL_VERSION_ATLEAST(2,0,18)
-			delta=event->wheel.preciseY;
-#endif
+			const double delta=event->wheel.y;
 			zoomMap(delta*factor,mouseX,mouseY);
 		}
 	}
 
 	if (inGameMenu != IGM_NONE || scrollableText)
 		mapPanPushed = false;
-	if (event->type==SDL_MOUSEMOTION)
+	if (event->type==SDL_EVENT_MOUSE_MOTION)
 	{
 		handleMouseMotion(event->motion.x, event->motion.y, event->motion.state);
 	}
-	else if (event->type==SDL_WINDOWEVENT)
+	else if (event->type == SDL_EVENT_WINDOW_FOCUS_LOST)
 	{
-		handleActivation(event->window.data1, event->window.data2);
+		handleActivation(0, 0);
 	}
-	else if (event->type==SDL_QUIT)
+	else if (event->type==SDL_EVENT_QUIT)
 	{
 		exitGlobCompletely=true;
 		orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
@@ -353,9 +350,9 @@ void GameGUI::handleMouseButtonUp(SDL_MouseButtonEvent mouseEvent)
 
 void GameGUI::handleKeyDump(SDL_KeyboardEvent key)
 {
-	if (key.keysym.sym == SDLK_PRINTSCREEN)
+	if (key.key == SDLK_PRINTSCREEN)
 	{
-		if ((key.keysym.mod & KMOD_SHIFT) != 0)
+		if ((key.mod & SDL_KMOD_SHIFT) != 0)
 		{
 			OutputStream *stream = new TextOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("glob2.dump.txt"));
 			if (stream->isEndOfStream())

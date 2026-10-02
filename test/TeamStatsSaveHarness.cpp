@@ -9,7 +9,7 @@
 #include "MapEditKeyActions.h"
 #include "FileManager.h"
 #include "Version.h"
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <fstream>
 #include <string>
 #include <utility>
@@ -30,7 +30,7 @@
 #include <set>
 #include "Toolkit.h"
 #include "StringTable.h"
-#include <SDL_image.h>
+#include <SDL3_image/SDL_image.h>
 #include <filesystem>
 #include "BinaryStream.h"
 #include "StreamBackend.h"
@@ -373,6 +373,34 @@ static void measurementScenarios()
 		w.game.map.rebuildGrowthCoverage();
 		require((w.game.map.growthCoverage[tile] & 1) == 0,
 			"removing the last anchor clears coverage");
+	}
+	for (int heightShift : {4,5})
+	{
+		TeamStatsMeasurementFixture w;
+		w.game.map.setSize(4,heightShift,GRASS); w.game.map.setGame(&w.game);
+		auto &stats=w.game.teams[0]->stats;
+		stats.coverageBuildings.assign(Building::MAX_COUNT,{8,8,32,32});
+		++stats.coverageBuildingGeneration; w.game.map.rebuildGrowthCoverage();
+		for (int replacement=0;replacement<3;++replacement)
+		{
+			stats.coverageBuildings.assign(Building::MAX_COUNT,{replacement,0,32,32});
+			++stats.coverageBuildingGeneration; w.game.map.rebuildGrowthCoverage();
+			// Independent wide-counter oracle, including repeated toroidal visits.
+			for (int band=0;band<3;++band)
+			{
+				const int radius=8<<band, width=16, height=1<<heightShift;
+				std::vector<uint32_t> expected(width*height,0);
+				for (int y=-32;y<64;++y) for (int x=replacement-32;x<replacement+64;++x)
+				{
+					const int dx=std::max({replacement-x,0,x-(replacement+31)});
+					const int dy=std::max({-y,0,y-31});
+					if(std::max(dx,dy)<=radius) expected[(y&(height-1))*width+(x&15)]+=Building::MAX_COUNT;
+				}
+				for(size_t i=0;i<expected.size();++i) require(w.game.map.growthCoverageCounts[band][i]==expected[i],"compact coverage matches wide wrapped oracle");
+			}
+		}
+		stats.coverageBuildings.clear(); ++stats.coverageBuildingGeneration; w.game.map.rebuildGrowthCoverage();
+		for(auto mask:w.game.map.growthCoverage) require(mask==0,"final coverage removal clears all wrapped cells");
 	}
 	{
 		TeamStatsMeasurementFixture w;
@@ -1109,7 +1137,7 @@ static void measurementScreenshots(const std::string &directory)
 				screen.paintFrame(0);
 				require(IMG_SavePNG(globalContainer->gfx->getSDLSurface(),
 									(directory + "/graphs-" + std::to_string(page) + "-" + suffix)
-										.c_str()) == 0,
+										.c_str()),
 						"save graph screenshot");
 			}
 		}
@@ -1118,14 +1146,14 @@ static void measurementScreenshots(const std::string &directory)
 										 Toolkit::getStringTable()->getString("[Stats page two]"));
 		game.teams[0]->stats.drawMeasurements(size.first - 144, 211);
 		require(IMG_SavePNG(globalContainer->gfx->getSDLSurface(),
-							(directory + "/live-" + suffix).c_str()) == 0,
+							(directory + "/live-" + suffix).c_str()),
 			"save live panel screenshot");
 		globalContainer->gfx->drawFilledRect(0, 0, size.first, size.second, 0, 0, 32);
 		globalContainer->gfx->drawString(size.first - 140, 195, globalContainer->littleFont,
 									 Toolkit::getStringTable()->getString("[Stats page three]"));
 		game.teams[0]->stats.drawExpandedMeasurements(size.first - 144, 211);
 		require(IMG_SavePNG(globalContainer->gfx->getSDLSurface(),
-							(directory + "/live-expanded-" + suffix).c_str()) == 0,
+							(directory + "/live-expanded-" + suffix).c_str()),
 			"save expanded live panel screenshot");
 	}
 }

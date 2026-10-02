@@ -78,7 +78,7 @@ bool WinningCondition::loadWinningConditions(GAGCore::InputStream* stream, Uint3
 {
 	stream->readEnterSection("winningConditions");
 	conditions.clear();
-	Uint32 size = stream->readUint32("size");
+	Uint32 size = stream->readCount("size");
 	for (Uint32 i = 0; i < size; ++i)
 	{
 		stream->readEnterSection(i);

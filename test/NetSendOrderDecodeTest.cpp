@@ -21,7 +21,7 @@
 #include <memory>
 #include <new>
 #include <string>
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include "BinaryStream.h"
 #include "StreamBackend.h"
 #include "NetMessage.h"

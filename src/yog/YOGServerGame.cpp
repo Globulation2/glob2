@@ -13,7 +13,7 @@
 #include "YOGServerFileDistributor.h"
 #include "YOGServerPlayer.h"
 #include "YOGAfterJoinGameInformation.h"
-#include "SDLCompat.h"
+#include <SDL3/SDL.h>
 
 YOGServerGame::YOGServerGame(Uint16 gameID, Uint32 chatChannel, const std::string& routerIP, YOGServer& server)
 	: playerManager(gameHeader), gameID(gameID), chatChannel(chatChannel), routerIP(routerIP), server(server)
@@ -24,7 +24,7 @@ YOGServerGame::YOGServerGame(Uint16 gameID, Uint32 chatChannel, const std::strin
 	receivedMapHeader=false;
 	hasAddedHost=false;
 	latencyMode = 0;
-	latencyUpdateTimer = SDL_GetTicks64();
+	latencyUpdateTimer = SDL_GetTicks();
 	aiNum = 0;
 	mapFile = server.getFileDistributionManager().allocateFileDistributor();
 }
@@ -32,7 +32,7 @@ YOGServerGame::YOGServerGame(Uint16 gameID, Uint32 chatChannel, const std::strin
 
 void YOGServerGame::update()
 {
-	if((static_cast<Sint64>(SDL_GetTicks64()) - static_cast<Sint64>(latencyUpdateTimer)) > 4000)
+	if((static_cast<Sint64>(SDL_GetTicks()) - static_cast<Sint64>(latencyUpdateTimer)) > 4000)
 	{
 		chooseLatencyMode();
 	}
@@ -352,7 +352,7 @@ YOGPlayerID YOGServerGame::getHostPlayerID() const
 
 void YOGServerGame::chooseLatencyMode()
 {
-	latencyUpdateTimer=SDL_GetTicks64();
+	latencyUpdateTimer=SDL_GetTicks();
 	
 	unsigned highest = 0;
 	unsigned second_highest = 0;

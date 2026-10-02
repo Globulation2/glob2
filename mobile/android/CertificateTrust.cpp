@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "../CertificateTrust.h"
-#include <SDL_system.h>
+#include <SDL3/SDL_system.h>
 #include <jni.h>
 
 bool MobileCertificateTrust::platformVerify(const Chain& chain, const std::string& host) {
-    auto* env = static_cast<JNIEnv*>(SDL_AndroidGetJNIEnv());
+    auto* env = static_cast<JNIEnv*>(SDL_GetAndroidJNIEnv());
     if (!env || env->PushLocalFrame(32) < 0) { if (env) env->ExceptionClear(); return false; }
     const auto evaluate = [&]() -> bool {
-        auto activity = static_cast<jobject>(SDL_AndroidGetActivity());
+        auto activity = static_cast<jobject>(SDL_GetAndroidActivity());
         if (!activity || env->ExceptionCheck()) return false;
         auto type = env->GetObjectClass(activity);
         if (!type) return false;

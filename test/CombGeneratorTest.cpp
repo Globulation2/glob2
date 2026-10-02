@@ -21,7 +21,7 @@
 #include "Planting.h"
 #include "Room.h"
 #include "Topology.h"
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <algorithm>
 #include <chrono>
 #include <ctime>

@@ -4,7 +4,7 @@
 #include "Game.h"
 #include "GlobalContainer.h"
 #include <GraphicContext.h>
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <cstring>
 #include <vector>
 #ifdef HAVE_OPENGL
@@ -51,12 +51,12 @@ public:
             else
 #endif
             {
-                SDL_Surface *surface = SDL_ConvertSurfaceFormat(gfx->getSDLSurface(), SDL_PIXELFORMAT_RGBA32, 0);
+                SDL_Surface *surface = SDL_ConvertSurface(gfx->getSDLSurface(), SDL_PIXELFORMAT_RGBA32);
                 REQUIRE(surface);
                 for (int row = 0; row < 128; ++row)
                     std::memcpy(result.data() + row * 128 * 4,
                                 static_cast<unsigned char *>(surface->pixels) + row * surface->pitch, 128 * 4);
-                SDL_FreeSurface(surface);
+                SDL_DestroySurface(surface);
             }
             return result;
         };

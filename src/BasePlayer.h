@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <SDL_net.h>
+#include <SDL3_net/SDL_net.h>
 #include "AI.h"
 #include "Team.h"
 #include <string>

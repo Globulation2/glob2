@@ -15,8 +15,8 @@ class PackageSizeTests(unittest.TestCase):
             stage = root / "stage"
             (stage / "usr/share/glob2/data/highres").mkdir(parents=True)
             (stage / "usr/share/glob2/data/highres/frame.webp").write_bytes(b"pixels")
-            (stage / "libSDL2_image.so.0").write_bytes(b"library")
-            (stage / "libSDL2_image.so").symlink_to("libSDL2_image.so.0")
+            (stage / "libSDL3_image.so.0").write_bytes(b"library")
+            (stage / "libSDL3_image.so").symlink_to("libSDL3_image.so.0")
             archive = root / "candidate.tar.gz"
             archive.write_bytes(b"packed")
             with patch(
@@ -32,7 +32,7 @@ class PackageSizeTests(unittest.TestCase):
             self.assertEqual(len(report["files"]), 3)
             alias = next(item for item in report["files"] if item["kind"] == "symlink")
             self.assertEqual(alias["bytes"], 0)
-            self.assertEqual(alias["target"], "libSDL2_image.so.0")
+            self.assertEqual(alias["target"], "libSDL3_image.so.0")
 
     def test_comparison_rejects_unrelated_source_toolchains_and_scopes(self):
         baseline = dict(

@@ -56,10 +56,9 @@ jobs:
             mingw-w64-x86_64-pkgconf
             mingw-w64-x86_64-python
             mingw-w64-x86_64-scons
-            mingw-w64-x86_64-SDL2
-            mingw-w64-x86_64-SDL2_image
-            mingw-w64-x86_64-SDL2_net
-            mingw-w64-x86_64-SDL2_ttf
+            mingw-w64-x86_64-cmake
+            mingw-w64-x86_64-freetype
+            mingw-w64-x86_64-libpng mingw-w64-x86_64-libjpeg-turbo
             mingw-w64-x86_64-libvorbis
             mingw-w64-x86_64-libogg
             mingw-w64-x86_64-speex
@@ -81,7 +80,11 @@ jobs:
           key: ccache-windows-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: ccache-windows-
       - name: Build release client
-        run: scons -j$(nproc) release=1 mingw=1 server=0 lean_images=1 build/mingw/client/release/lean-images/src/glob2.exe
+        run: |
+          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+          echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
+          export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j$(nproc) release=1 mingw=1 server=0 lean_images=1 build/mingw/client/release/lean-images/src/glob2.exe
       - uses: actions/cache/save@0400d5f644dc74513175e3cd8d07132dd4860809 # v4.2.4
         if: always()
         continue-on-error: true
@@ -91,6 +94,7 @@ jobs:
       - name: Stage Steam depot files
         run: |
           python tools/package_steam_windows.py \
+            --sdl-runtime build/sdl3-ci/prefix/bin \
             --source . \
             --exe build/mingw/client/release/lean-images/src/glob2.exe \
             --runtime "$(cygpath -w /mingw64/bin)" \

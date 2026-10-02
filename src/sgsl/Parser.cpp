@@ -51,6 +51,7 @@ ErrorReport MapScriptSGSL::parseScript(Acquisition *donnees, Game *game)
 			if (parseStatement(ctx) == SGSLParseStatus::Aborted)
 				return er;
 		}
+		thisone.instructionStarts.insert(thisone.line.size());
 		thisone.line.push_back(SGSLToken(SGSLToken::S_STORY));
 		stories.push_back(thisone);
 		ctx.nextToken();
@@ -61,6 +62,7 @@ ErrorReport MapScriptSGSL::parseScript(Acquisition *donnees, Game *game)
 // Grammar check of the statement starting at the current token
 SGSLParseStatus MapScriptSGSL::parseStatement(SGSLParseContext &ctx)
 {
+	ctx.story->instructionStarts.insert(ctx.story->line.size());
 	switch (ctx.token().type)
 	{
 		case (SGSLToken::FUNC_CALL):

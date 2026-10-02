@@ -6,7 +6,7 @@
 #include <cmath>
 #include <vector>
 #ifdef __ANDROID__
-#include <SDL_system.h>
+#include <SDL3/SDL_system.h>
 #include <jni.h>
 #endif
 #if defined(__IPHONEOS__)
@@ -22,14 +22,13 @@ inline std::optional<SafeInsets> mobileSafeInsetsForTesting;
 inline SafeInsets mobileSafeInsets(GraphicContext* gfx) {
     if (mobileSafeInsetsForTesting) return *mobileSafeInsetsForTesting;
     SafeInsets insets;
-    [[maybe_unused]] const double unit=gfx->logicalUnitsPerPoint();
 #if defined(__IPHONEOS__)
     insets=iosGameSafeInsets(SDL_GetWindowFromID(gfx->windowID()));
 #endif
 #ifdef __ANDROID__
-    auto* env=static_cast<JNIEnv*>(SDL_AndroidGetJNIEnv());
+    auto* env=static_cast<JNIEnv*>(SDL_GetAndroidJNIEnv());
     if (!env) return insets;
-    auto activity=static_cast<jobject>(SDL_AndroidGetActivity());
+    auto activity=static_cast<jobject>(SDL_GetAndroidActivity());
     if (!activity) return insets;
     auto cls=env->GetObjectClass(activity);
     auto method=env->GetStaticMethodID(cls,"getUiInsets","()[I");
@@ -37,8 +36,8 @@ inline SafeInsets mobileSafeInsets(GraphicContext* gfx) {
         auto array=static_cast<jintArray>(env->CallStaticObjectMethod(cls,method));
         if (array && env->GetArrayLength(array)==4) {
             jint values[4];env->GetIntArrayRegion(array,0,4,values);
-            int w,h;SDL_GetWindowSize(SDL_GetWindowFromID(gfx->windowID()),&w,&h);
-            const double factor=w>0 ? double(gfx->getW())/w/unit*gfx->getUiScale() : 1;
+            const float density = SDL_GetWindowPixelDensity(SDL_GetWindowFromID(gfx->windowID()));
+            const double factor = std::isfinite(density) && density > 0 ? 1.0 / density : 1;
             insets={values[0]*factor,values[1]*factor,values[2]*factor,values[3]*factor};
         }
         if (array) env->DeleteLocalRef(array);
@@ -55,17 +54,18 @@ inline double mobileKeyboardInset(GraphicContext* gfx) {
 #if defined(__IPHONEOS__)
     return iosGameKeyboardInset(SDL_GetWindowFromID(gfx->windowID()));
 #elif defined(__ANDROID__)
-    auto* env=static_cast<JNIEnv*>(SDL_AndroidGetJNIEnv());
+    auto* env=static_cast<JNIEnv*>(SDL_GetAndroidJNIEnv());
     if (!env) return 0;
-    auto activity=static_cast<jobject>(SDL_AndroidGetActivity());
+    auto activity=static_cast<jobject>(SDL_GetAndroidActivity());
     if (!activity) return 0;
     auto cls=env->GetObjectClass(activity);
     auto method=env->GetStaticMethodID(cls,"getKeyboardInset","()I");
     double inset=method ? env->CallStaticIntMethod(cls,method) : 0;
     if (env->ExceptionCheck()) {env->ExceptionClear();inset=0;}
     env->DeleteLocalRef(cls);env->DeleteLocalRef(activity);
-    float dpi=160;
-    if (SDL_GetDisplayDPI(SDL_GetWindowDisplayIndex(SDL_GetWindowFromID(gfx->windowID())),&dpi,nullptr,nullptr)==0 && dpi>0) inset*=160/dpi;
+    SDL_Window *window = SDL_GetWindowFromID(gfx->windowID());
+    const float density = SDL_GetWindowPixelDensity(window);
+    if (std::isfinite(density) && density > 0) inset /= density;
     return inset;
 #elif defined(__EMSCRIPTEN__)
     return presentationViewport.keyboardInset;
@@ -80,11 +80,11 @@ inline double mobileKeyboardInset(GraphicContext* gfx) {
 inline void hostGestureExclusion([[maybe_unused]] GraphicContext* gfx,
                                  [[maybe_unused]] const std::vector<ViewRect>& rects) {
 #ifdef __ANDROID__
-    auto* env=static_cast<JNIEnv*>(SDL_AndroidGetJNIEnv());
+    auto* env=static_cast<JNIEnv*>(SDL_GetAndroidJNIEnv());
     if (!env) return;
-    auto activity=static_cast<jobject>(SDL_AndroidGetActivity());
+    auto activity=static_cast<jobject>(SDL_GetAndroidActivity());
     if (!activity) return;
-    int w,h;SDL_GetWindowSize(SDL_GetWindowFromID(gfx->windowID()),&w,&h);
+    int w,h;SDL_GetWindowSizeInPixels(SDL_GetWindowFromID(gfx->windowID()),&w,&h);
     const double sx=gfx->getW()>0 ? double(w)/gfx->getW() : 1, sy=gfx->getH()>0 ? double(h)/gfx->getH() : 1;
     std::vector<jint> values;
     for (const auto& r : rects) {
@@ -107,9 +107,9 @@ inline bool mobilePointerAvailable() {
 #if defined(__IPHONEOS__)
     return iosGameHasPointer();
 #elif defined(__ANDROID__)
-    auto* env=static_cast<JNIEnv*>(SDL_AndroidGetJNIEnv());
+    auto* env=static_cast<JNIEnv*>(SDL_GetAndroidJNIEnv());
     if (!env) return false;
-    auto activity=static_cast<jobject>(SDL_AndroidGetActivity());
+    auto activity=static_cast<jobject>(SDL_GetAndroidActivity());
     if (!activity) return false;
     auto cls=env->GetObjectClass(activity);
     auto method=env->GetStaticMethodID(cls,"hasPointer","()Z");

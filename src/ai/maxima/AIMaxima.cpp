@@ -3710,7 +3710,7 @@ Maxima::Maxima(GAGCore::InputStream *stream, Player *player,
 	: Maxima(player)
 {
 	const bool loaded=load(stream, player, versionMinor);
-	assert(loaded);
+	if (!loaded) throw std::runtime_error("Invalid saved Maxima AI");
 }
 
 void Maxima::tick(Context& runtime)

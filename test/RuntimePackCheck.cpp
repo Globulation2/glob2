@@ -6,8 +6,8 @@
 #include <FileManager.h>
 #include <GraphicContext.h>
 #include <Toolkit.h>
-#include <SDL.h>
-#include <SDL_image.h>
+#include <SDL3/SDL.h>
+#include <SDL3_image/SDL_image.h>
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
 #else
@@ -29,8 +29,8 @@ static void capture(const std::string &name)
     glFinish();GLint v[4];glGetIntegerv(GL_VIEWPORT,v);int w=v[2],h=v[3];
     std::vector<unsigned char>a(w*h*4),b(a.size());glReadPixels(v[0],v[1],w,h,GL_RGBA,GL_UNSIGNED_BYTE,a.data());
     for(int y=0;y<h;++y)std::copy_n(a.data()+y*w*4,w*4,b.data()+(h-1-y)*w*4);
-    auto s=SDL_CreateRGBSurfaceWithFormatFrom(b.data(),w,h,32,w*4,SDL_PIXELFORMAT_RGBA32);
-    REQUIRE((s&&IMG_SavePNG(s,name.c_str())==0));SDL_FreeSurface(s);
+    auto s=SDL_CreateSurfaceFrom(w, h, SDL_PIXELFORMAT_RGBA32, b.data(), w*4);
+    REQUIRE((s&&IMG_SavePNG(s,name.c_str())));SDL_DestroySurface(s);
 }
 static void run(bool software,bool fallback,bool original)
 {

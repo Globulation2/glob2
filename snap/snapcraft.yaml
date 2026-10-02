@@ -45,13 +45,19 @@ parts:
       - scons
       - cmake
       - ninja-build
-      - libwebp-dev
-      - libjpeg-dev
       - libpng-dev
-      - libsdl2-dev
-      - libsdl2-image-dev
-      - libsdl2-net-dev
-      - libsdl2-ttf-dev
+      - libjpeg-dev
+      - libwebp-dev
+      - libfreetype-dev
+      - libx11-dev
+      - libxext-dev
+      - libxcursor-dev
+      - libxi-dev
+      - libxrandr-dev
+      - libasound2-dev
+      - libpulse-dev
+      - libwayland-dev
+      - libxkbcommon-dev
       - libvorbis-dev
       - libogg-dev
       - libspeex-dev
@@ -64,13 +70,20 @@ parts:
       - libglu1-mesa-dev
       - libepoxy-dev
     stage-packages:
-      - libsdl2-2.0-0
-      - libwebp7
-      - libwebpdemux2
-      - libjpeg-turbo8
+      - libx11-6
+      - libxext6
+      - libxcursor1
+      - libxi6
+      - libxrandr2
+      - libxss1
+      - libasound2t64
+      - libwayland-client0
+      - libwayland-cursor0
+      - libwayland-egl1
+      - libxkbcommon0
       - libpng16-16t64
-      - libsdl2-net-2.0-0
-      - libsdl2-ttf-2.0-0
+      - libjpeg-turbo8
+      - libfreetype6
       - libvorbisfile3
       - libogg0
       - libspeex1
@@ -83,6 +96,8 @@ parts:
       - libssl3t64
     override-build: |
       craftctl set version="$(python3 tools/release/release.py check)"
+      python3 scons/sdl3_dependencies.py --prefix "$CRAFT_PART_BUILD/build/sdl3/prefix" --work "$CRAFT_PART_BUILD/build/sdl3/sources"
+      export GLOB2_SDL3_PREFIX="$CRAFT_PART_BUILD/build/sdl3/prefix"
       scons -j2 release=1 server=0 lean_images=1 \
         BINDIR="$CRAFT_PART_INSTALL/usr/bin" \
         INSTALLDIR="$CRAFT_PART_INSTALL/usr/share" \

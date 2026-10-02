@@ -14,8 +14,9 @@ from pathlib import Path
 from dev_store import Lease, cache, hold
 from image_codecs import ARTIFACT, lean_options, verified
 from tool_archives import digest, download
+from sdl3_dependencies import patch_image_exports, static_webp_archive, static_webp_link_options
 
-PACKAGES = ("sdl2", "libpng", "libjpeg", "libwebp", "libwebpdemux")
+PACKAGES = ("sdl3", "libpng", "libjpeg", "libwebp", "libwebpdemux")
 
 
 def native_path(value):
@@ -24,14 +25,14 @@ def native_path(value):
     return Path(value)
 
 
-def dependencies():
+def dependencies(environment=None):
     """Hash selected import/shared libraries and their actual Windows DLLs."""
     result = {}
     for package in PACKAGES:
 
         def pkg(option, package=package):
             return subprocess.check_output(
-                ["pkg-config", option, package], text=True
+                ["pkg-config", option, package], text=True, env=environment
             ).strip()
 
         libdir = native_path(pkg("--variable=libdir"))
@@ -81,16 +82,23 @@ def compiler_options(cc, cxx):
     return result
 
 
-def ensure(root, cc="gcc", cxx="g++", jobs=2):
+def ensure(root, cc="gcc", cxx="g++", jobs=2, environment=None):
+    options = lean_options()
+    sdl_prefix = (environment or {}).get("GLOB2_SDL3_PREFIX")
+    webp_archive = static_webp_archive(Path(sdl_prefix).resolve(), required=False) if sdl_prefix else None
+    if webp_archive:
+        options += static_webp_link_options(Path(sdl_prefix).resolve(), required=False)
     identity = dict(
         archive=ARTIFACT,
-        options=lean_options(),
+        options=options,
+        exports_patch=1,
+        static_webp={str(webp_archive): digest(webp_archive)} if webp_archive else {},
         platform=platform.system(),
         architecture=platform.machine(),
-        dependencies=dependencies(),
-        cc=subprocess.check_output([*shlex.split(cc), "--version"], text=True),
-        cxx=subprocess.check_output([*shlex.split(cxx), "--version"], text=True),
-        cmake=subprocess.check_output(["cmake", "--version"], text=True),
+        dependencies=dependencies(environment),
+        cc=subprocess.check_output([*shlex.split(cc), "--version"], text=True, env=environment),
+        cxx=subprocess.check_output([*shlex.split(cxx), "--version"], text=True, env=environment),
+        cmake=subprocess.check_output(["cmake", "--version"], text=True, env=environment),
     )
     key = hashlib.sha256(json.dumps(identity, sort_keys=True).encode()).hexdigest()[:24]
     location = cache(root, "native-sdl-image-" + key, lease=False)
@@ -108,14 +116,15 @@ def ensure(root, cc="gcc", cxx="g++", jobs=2):
                 staged = task / "prefix"
                 dependency_prefix = native_path(
                     subprocess.check_output(
-                        ["pkg-config", "--variable=prefix", "sdl2"], text=True
+                        ["pkg-config", "--variable=prefix", "sdl3"], text=True, env=environment
                     ).strip()
                 )
+                patch_image_exports(task / "SDL3_image-3.4.6")
                 subprocess.run(
                     [
                         "cmake",
                         "-S",
-                        str(task / "SDL2_image-2.8.12"),
+                        str(task / "SDL3_image-3.4.6"),
                         "-B",
                         str(task / "build"),
                         "-G",
@@ -124,13 +133,13 @@ def ensure(root, cc="gcc", cxx="g++", jobs=2):
                         "-DCMAKE_INSTALL_PREFIX=" + str(prefix),
                         "-DCMAKE_INSTALL_LIBDIR=lib",
                         *compiler_options(cc, cxx),
-                        *lean_options(),
+                        *options,
                     ],
-                    check=True,
+                    check=True, env=environment,
                 )
                 subprocess.run(
                     ["cmake", "--build", str(task / "build"), "--parallel", str(jobs)],
-                    check=True,
+                    check=True, env=environment,
                 )
                 subprocess.run(
                     [
@@ -140,8 +149,11 @@ def ensure(root, cc="gcc", cxx="g++", jobs=2):
                         "--prefix",
                         str(staged),
                     ],
-                    check=True,
+                    check=True, env=environment,
                 )
+                notice = staged / "share/licenses/SDL3_image/LICENSE.txt"
+                notice.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(task / "SDL3_image-3.4.6/LICENSE.txt", notice)
                 record = dict(
                     identity=identity,
                     files={

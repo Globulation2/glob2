@@ -37,6 +37,7 @@ concurrency:
 
 env:
   GLOB2_DEV_MODE: isolated
+  GLOB2_SDL3_PREFIX: build/sdl3-ci/prefix
 
 jobs:
   preflight:
@@ -181,21 +182,24 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends \
-            g++ python3 python3-venv scons pkg-config cmake ninja-build libpng-dev libjpeg-dev libwebp-dev libsdl2-dev libsdl2-image-dev \
-            libsdl2-net-dev libsdl2-ttf-dev libvorbis-dev libogg-dev \
+            g++ python3 python3-venv scons pkg-config cmake ninja-build libpng-dev libjpeg-dev libwebp-dev libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev \
+            libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev libvorbis-dev libogg-dev \
             libspeex-dev libboost-dev libssl-dev zlib1g-dev libfribidi-dev \
             libpcre3-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
       - name: Build and stage Linux client
         run: |
           stage="$PWD/artifacts/release-stage"
-          scons -j2 release=1 server=0 lean_images=1 \
+          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+          echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
+          export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j2 release=1 server=0 lean_images=1 \
             BINDIR="$stage/usr/bin" INSTALLDIR="$stage/usr/share" \
             DATADIR=/usr/share install
           python3 tools/release/release.py verify-install --stage "$stage"
           scons -j2 release=1 server=0 lean_images=1 engine-tests
           LD_LIBRARY_PATH="$stage/usr/lib/glob2" build/linux/client/release/lean-images/test/glob2-engine-tests --test-suite=ImageAssets
           env -u LD_LIBRARY_PATH "$stage/usr/bin/glob2" --version
-          ldd "$stage/usr/bin/glob2" | grep -F "$stage/usr/bin/../lib/glob2/libSDL2_image"
+          ldd "$stage/usr/bin/glob2" | grep -F "$stage/usr/bin/../lib/glob2/libSDL3_image"
       - name: Measure original-assets Linux baseline
         run: |
           stage="$PWD/artifacts/size-baseline"
@@ -223,7 +227,7 @@ jobs:
         run: |
           python3 tools/release/benchmark_decoder.py --assets artifacts/release-stage/usr/share/glob2 \
             --baseline-runtime artifacts/size-baseline/usr/bin --candidate-runtime artifacts/release-stage/usr/bin \
-            --candidate-library "$PWD/artifacts/release-stage/usr/lib/glob2/libSDL2_image.so" \
+            --candidate-library "$PWD/artifacts/release-stage/usr/lib/glob2/libSDL3_image.so" \
             --output artifacts/package-sizes/linux-decoder.json
       - name: Measure isolated Linux compiler profiles
         if: inputs.benchmark_profiles
@@ -271,29 +275,30 @@ jobs:
             image: debian:trixie
             install: >-
               apt-get update -qq && apt-get install -y --no-install-recommends
-              git ca-certificates g++ python3 python3-venv scons pkg-config libsdl2-dev libsdl2-image-dev
-              libsdl2-net-dev libsdl2-ttf-dev libvorbis-dev libogg-dev
+              git ca-certificates g++ python3 python3-venv scons pkg-config cmake ninja-build libpng-dev libjpeg-dev libwebp-dev libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev
+              libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev libvorbis-dev libogg-dev
               libspeex-dev libboost-dev libssl-dev zlib1g-dev libfribidi-dev
               libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
           - name: Fedora 43
             image: fedora:43
             install: >-
-              dnf install -y git gcc-c++ python3 scons pkgconf-pkg-config
-              SDL2-devel SDL2_image-devel SDL2_net-devel SDL2_ttf-devel
+              dnf install -y git gcc-c++ python3 scons pkgconf-pkg-config cmake freetype-devel
+              libX11-devel libXext-devel libXcursor-devel libXi-devel libXrandr-devel alsa-lib-devel pulseaudio-libs-devel
               libvorbis-devel libogg-devel speex-devel boost-devel openssl-devel
               zlib-devel fribidi-devel pcre-devel mesa-libGL-devel mesa-libGLU-devel
               libepoxy-devel
           - name: Arch Linux
             image: archlinux:base-devel
             install: >-
-              pacman -Syu --noconfirm --needed git python scons pkgconf sdl2
-              sdl2_image sdl2_net sdl2_ttf libvorbis libogg speex boost openssl
+              pacman -Syu --noconfirm --needed git python scons pkgconf cmake freetype
+              libx11 libxext libxcursor libxi libxrandr alsa-lib libpulse
+                 libvorbis libogg speex boost openssl
               zlib fribidi pcre glu libepoxy
           - name: openSUSE Tumbleweed
             image: opensuse/tumbleweed
             install: >-
-              zypper --non-interactive install git gcc-c++ python3 scons pkg-config
-              SDL2-devel SDL2_image-devel SDL2_net-devel SDL2_ttf-devel
+              zypper --non-interactive install git gcc-c++ python3 scons pkg-config cmake freetype2-devel
+              libX11-devel libXext-devel libXcursor-devel libXi-devel libXrandr-devel alsa-devel libpulse-devel
               libvorbis-devel libogg-devel speex-devel boost-devel libopenssl-devel
               zlib-devel fribidi-devel Mesa-libGL-devel Mesa-libGLU-devel
               libepoxy-devel
@@ -306,7 +311,10 @@ jobs:
           ref: ${{ inputs.tag || github.sha }}
       - name: Build from source
         run: |
-          scons -j2 release=1 server=0
+          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+          echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
+          export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j2 release=1 server=0
           build/linux/client/release/src/glob2 --version
 
   rpm-package:
@@ -317,7 +325,7 @@ jobs:
       - name: Install RPM tools and build dependencies
         run: |
           dnf install -y git rpm-build gcc-c++ python3 scons pkgconf-pkg-config \
-            SDL2-devel SDL2_image-devel SDL2_net-devel SDL2_ttf-devel \
+            cmake freetype-devel libX11-devel libXext-devel libXcursor-devel libXi-devel libXrandr-devel alsa-lib-devel pulseaudio-libs-devel \
             libvorbis-devel libogg-devel speex-devel boost-devel openssl-devel \
             zlib-devel fribidi-devel pcre-devel mesa-libGL-devel mesa-libGLU-devel \
             libepoxy-devel cmake make python3-devel python3-pip python3-wheel libjpeg-turbo-devel
@@ -336,6 +344,7 @@ jobs:
           top="$GITHUB_WORKSPACE/artifacts/rpmbuild"
           mkdir -p "$top"/{BUILD,BUILDROOT,RPMS,SOURCES,SPECS,SRPMS}
           cp "artifacts/release-source/glob2-${VERSION}.tar.gz" "$top/SOURCES/"
+          python3 scons/sdl3_dependencies.py --download-only --work "$top/SOURCES"
           python3 tools/build_asset_encoder.py fetch --sources "$top/SOURCES"
           rpmbuild -ba fedora/glob2.spec --define "_topdir $top"
           stage="$GITHUB_WORKSPACE/artifacts/rpm-size-stage"
@@ -379,8 +388,9 @@ jobs:
           install: >-
             git mingw-w64-x86_64-toolchain mingw-w64-x86_64-pkgconf
             mingw-w64-x86_64-python mingw-w64-x86_64-scons
-            mingw-w64-x86_64-SDL2 mingw-w64-x86_64-SDL2_image
-            mingw-w64-x86_64-SDL2_net mingw-w64-x86_64-SDL2_ttf
+            mingw-w64-x86_64-cmake
+            mingw-w64-x86_64-freetype
+            mingw-w64-x86_64-libpng mingw-w64-x86_64-libjpeg-turbo
             mingw-w64-x86_64-libvorbis mingw-w64-x86_64-libogg
             mingw-w64-x86_64-speex mingw-w64-x86_64-zlib
             mingw-w64-x86_64-fribidi mingw-w64-x86_64-pcre
@@ -394,12 +404,15 @@ jobs:
         env:
           VERSION: ${{ needs.preflight.outputs.version }}
         run: |
+          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+          echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
+          export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
           scons -j2 release=1 mingw=1 server=0 build/mingw/client/release/src/glob2.exe
-          scons -j2 release=1 mingw=1 server=0 lean_images=1 build/mingw/client/release/lean-images/src/glob2.exe
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j2 release=1 mingw=1 server=0 lean_images=1 build/mingw/client/release/lean-images/src/glob2.exe
           scons -j2 release=1 mingw=1 server=0 lean_images=1 engine-tests
-          ./build/mingw/client/release/lean-images/src/glob2.exe --version
           image_prefix="$(python3 -c 'import json; print(json.load(open("build/mingw/client/release/lean-images/image-runtime.json"))["prefix"])')"
           PATH="$(cygpath -u "$image_prefix")/bin:$PATH" ./build/mingw/client/release/lean-images/test/glob2-engine-tests.exe --test-suite=ImageAssets
+          ./build/mingw/client/release/lean-images/src/glob2.exe --version
           python3 tools/release/package_windows.py \
             build/mingw/client/release/lean-images/src/glob2.exe \
             "artifacts/release-output/glob2-${VERSION}-windows-x86_64.zip" \
@@ -521,10 +534,14 @@ jobs:
           ref: ${{ inputs.tag || github.sha }}
       - name: Install dependencies
         run: |
-          brew install cmake scons sdl2 sdl2_image sdl2_net sdl2_ttf \
+          brew install cmake freetype libpng jpeg-turbo scons     \
             libvorbis libogg speex boost openssl@3 fribidi pcre libepoxy
       - name: Build application and DMG
-        run: scons -j2 release=1 server=0 package
+        run: |
+          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+          echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
+          export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j2 release=1 server=0 package
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: release-macos

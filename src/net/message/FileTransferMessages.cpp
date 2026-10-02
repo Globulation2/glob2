@@ -6,6 +6,7 @@
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
+#include <GzipUtil.h>
 
 using namespace GAGCore;
 
@@ -91,6 +92,8 @@ void NetSendFileInformation::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetSendFileInformation");
 	size = stream->readUint32("size");
+	if (size == 0 || size > GAGCore::MAX_COMPRESSED_GAME_FILE_BYTES)
+		throw std::runtime_error("Transferred game file exceeds the size limit");
 	fileID = stream->readUint16("fileID");
 	stream->readLeaveSection();
 }

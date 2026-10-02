@@ -324,7 +324,7 @@ void ScriptEditorScreen::confirm()
 bool ScriptEditorScreen::onEvent(const SDL_Event &event)
 {
 	// No unicode representation for F9 key, so putting it here.
-	if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_F9)
+	if (event.type == SDL_EVENT_KEY_UP && event.key.key == SDLK_F9)
 	{
 		testCompile();
 		return true;

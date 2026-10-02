@@ -41,6 +41,8 @@ async function skyShare(page, clip) {
   }, png.toString('base64'));
 }
 
+// The WebGL context lives on the application worker's OffscreenCanvas.
+// Read its published error state without accessing the transferred DOM canvas.
 const glError = async page => (await state(page)).renderContext.error;
 
 test('WebGL2 switches between the flat map and the torus overview', async ({page}, info) => {

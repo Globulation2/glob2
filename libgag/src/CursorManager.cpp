@@ -30,7 +30,7 @@ namespace GAGCore
 		for (auto& frames : nativeCursors)
 			for (SDL_Cursor *cursor : frames)
 				if (cursor)
-					SDL_FreeCursor(cursor);
+					SDL_DestroyCursor(cursor);
 		nativeCursors.clear();
 		activeValid = false;
 	}
@@ -139,7 +139,7 @@ namespace GAGCore
 		// use points. Scale the composited image so the cursor still matches
 		// the rest of a scaled-up window (nearest-neighbour, matching how the
 		// rest of the engine scales -- see DrawableSurface.cpp's GL upload
-		// and GraphicContext::nextFrame()'s software SDL_BlitScaled).
+		// and GraphicContext::nextFrame()'s software SDL_BlitSurfaceScaled).
 		SDL_Surface *cursorSurface = image.getSDLSurface();
 		std::unique_ptr<DrawableSurface> scaled;
 		int sw = w, sh = h;
@@ -150,7 +150,7 @@ namespace GAGCore
 			scaled = std::make_unique<DrawableSurface>(sw, sh);
 			SDL_SetSurfaceBlendMode(cursorSurface, SDL_BLENDMODE_NONE);
 			SDL_Rect dst = {0, 0, sw, sh};
-			SDL_BlitScaled(cursorSurface, NULL, scaled->getSDLSurface(), &dst);
+			SDL_BlitSurfaceScaled(cursorSurface, NULL, scaled->getSDLSurface(), &dst, SDL_SCALEMODE_NEAREST);
 			cursorSurface = scaled->getSDLSurface();
 		}
 		return SDL_CreateColorCursor(cursorSurface, sw>>1, sh>>1);

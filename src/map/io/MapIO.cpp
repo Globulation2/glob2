@@ -9,6 +9,7 @@
 #include "Game.h"
 #include "Utilities.h"
 #include "Unit.h"
+#include "RessourceType.h"
 
 #ifndef YOG_SERVER_ONLY
 #include "render/GameAnimations.h"
@@ -77,6 +78,8 @@ try
 
 	// We read what's inside the map:
 	stream->read(undermap, size, "undermap");
+	for (size_t i = 0; i < size; ++i)
+		if (undermap[i] > GRASS) co_return false;
 	stream->readEnterSection("cases");
 	for (size_t i=0; i<size; i++)
 	{
@@ -85,13 +88,26 @@ try
 		mapDiscovered[i] = stream->readUint32("mapDiscovered");
 
 		tiles[i].terrain = stream->readUint16("terrain");
+		if (tiles[i].terrain >= 272) co_return false;
 		tiles[i].building = stream->readUint16("building");
 		if (tiles[i].building != NOGBID && tiles[i].building >= Building::MAX_COUNT * header.getNumberOfTeams())
 			co_return false;
 
 		stream->read(&(tiles[i].resource), 4, "ressource");
+		if (tiles[i].resource.type != NO_RES_TYPE && tiles[i].resource.type >= MAX_RESOURCES)
+			co_return false;
+		if (tiles[i].resource.type != NO_RES_TYPE)
+		{
+			const auto* type = ResourcesTypes().get(tiles[i].resource.type);
+			const auto& resource = tiles[i].resource;
+			if (resource.variety >= type->varietiesCount || resource.amount > type->sizesCount || (!type->eternal && resource.amount == 0))
+				throw std::runtime_error("Invalid saved resource sprite state: " + std::to_string(resource.type) + "/" + std::to_string(resource.variety) + "/" + std::to_string(resource.amount));
+		}
 		tiles[i].groundUnit = stream->readUint16("groundUnit");
 		tiles[i].airUnit = stream->readUint16("airUnit");
+		if ((tiles[i].groundUnit != NOGUID && tiles[i].groundUnit >= Unit::MAX_COUNT * header.getNumberOfTeams()) ||
+			(tiles[i].airUnit != NOGUID && tiles[i].airUnit >= Unit::MAX_COUNT * header.getNumberOfTeams()))
+			co_return false;
 		tiles[i].forbidden = stream->readUint32("forbidden");
 		if(versionMinor < 62)
 			stream->readUint32("hiddenForbidden");
@@ -123,7 +139,7 @@ try
 	// We load sectors:
 	wSector = stream->readSint32("wSector");
 	hSector = stream->readSint32("hSector");
-	if (wSector < 0 || hSector < 0 || wSector > w || hSector > h)
+	if (wSector != (w >> Sector::SECTOR_SHIFT) || hSector != (h >> Sector::SECTOR_SHIFT))
 		co_return false;
 	sizeSector = wSector*hSector;
 	assert(sectors == NULL);
