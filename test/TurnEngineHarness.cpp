@@ -1014,11 +1014,12 @@ TEST_SUITE("TurnEngineHarness")
 			             << outcome.survivorWon);
 			return outcome;
 		};
-		const Outcome closed = play({"closed", "closed"}, "closed-seats", true);
-		CHECK(closed.survivorWon);
-		// The old representation of the same room: the survivor never wins.
+		// The old representation of the same room: the survivor never wins. (First:
+		// the verifier below leaves its replay writer installed.)
 		const Outcome idle = play({"none", "none"}, "idle-seats", false);
 		CHECK_FALSE(idle.survivorWon);
+		const Outcome closed = play({"closed", "closed"}, "closed-seats", true);
+		CHECK(closed.survivorWon);
 	}
 
 	// An uploaded save as the map, reteamed: the two returning players take saved
