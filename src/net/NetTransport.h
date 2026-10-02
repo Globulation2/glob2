@@ -23,7 +23,9 @@ enum class NetMessageMode
 };
 struct NetListenConfig
 {
-	std::string bindAddress = "0.0.0.0", route = "/yog";
+	enum class Protocol { Wss, Tcp };
+	Protocol protocol = Protocol::Wss;
+	std::string bindAddress = "::", route = "/yog";
 	uint16_t port = 7489;
 	NetTlsConfig tls;
 	std::vector<std::string> allowedOrigins, trustedProxyAddresses;
@@ -36,8 +38,8 @@ struct NetEndpoint
 	static NetEndpoint parse(const std::string &url);
 };
 
-// Binary WebSocket chunks form an ordered byte stream. NetConnection owns framing.
-// Text-mode connections exchange whole text messages instead.
+// TCP and binary WebSocket chunks form an ordered byte stream. NetConnection owns framing.
+// Text-mode (WebSocket only) connections exchange whole text messages instead.
 class NetTransport
 {
   public:

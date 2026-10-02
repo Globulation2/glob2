@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Shared production map study operations and legacy argument adapter.
 #define SDL_MAIN_HANDLED
+#include <SDL3/SDL_main.h>
 #include "MapReport.h"
 #include "Game.h"
 #include "GenerationService.h"

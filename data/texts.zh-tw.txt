@@ -1726,8 +1726,8 @@ AI策略與對抗
 完成
 [settings Edit shortcut]
 編輯快捷鍵
-[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
-在高解析度螢幕上放大選單、文字與側邊欄。
+[settings Multiply the operating system display scale for menus, text and the sidebar.]
+將作業系統的顯示縮放比例套用倍率至選單、文字和側邊欄。
 [settings Flags]
 旗幟
 [settings Full]

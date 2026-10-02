@@ -18,6 +18,13 @@ import fdroid_monitor
 
 
 class AndroidReleaseTests(unittest.TestCase):
+    def test_candidate_accepts_existing_version_but_publication_rejects_tag_collision(self):
+        with mock.patch.object(android_release.subprocess, "check_output", side_effect=[
+                "v0.9.5.4\n", "candidate\n", "published\n"]):
+            with self.assertRaisesRegex(ValueError, "already points"):
+                android_release.check_prior_tags()
+        with mock.patch.object(android_release.subprocess, "check_output", side_effect=AssertionError("Candidate must not inspect release tags")):
+            self.assertEqual(android_release.check_candidate()["versionName"], "0.9.5.4")
     def test_version_codes_and_desktop_version(self):
         self.assertEqual(android_release.release_identity()["versionName"], "0.9.5.4")
         self.assertEqual({arch: android_release.version_code(arch) for arch in android_release.ABI_CODES},
@@ -104,7 +111,7 @@ class AndroidReleaseTests(unittest.TestCase):
         self.assertIn("python3 mobile/android_release.py check --development\n", mobile)
         for name in ("release.yml", "fdroid-release-validation.yml"):
             workflow = (ROOT / ".github/workflows" / name).read_text()
-            self.assertIn("python3 mobile/android_release.py check\n", workflow)
+            self.assertIn("python3 mobile/android_release.py ${{ inputs.tag && 'check' || 'check-candidate' }}\n", workflow)
             self.assertNotIn("check --development", workflow)
 
     def test_apk_rejects_second_abi_and_wrong_version(self):
@@ -138,10 +145,10 @@ class AndroidReleaseTests(unittest.TestCase):
             manifest = (root / "build/android/device/arm64-v8a/24/client/release/vcpkg-installed"
                         / "glob2-arm64-android/manifest.json")
             manifest.parent.mkdir(parents=True)
-            manifest.write_text(json.dumps({"archives": {"lib/libSDL2.so": "digest"}}))
+            manifest.write_text(json.dumps({"archives": {"lib/libSDL3.so": "digest"}}))
             apk = root / "unexpected.apk"
             with zipfile.ZipFile(apk, "w") as package:
-                for name in ("libmain.so", "libc++_shared.so", "libSDL2.so", "libextra.so"):
+                for name in ("libmain.so", "libc++_shared.so", "libSDL3.so", "libextra.so"):
                     package.writestr("lib/arm64-v8a/" + name, b"native")
             with mock.patch.dict("os.environ", {"GLOB2_DEV_MODE":"isolated"}), self.assertRaisesRegex(ValueError, "pinned dependency manifest"):
                 android_release.verify_apk(apk, "arm64-v8a", root, root=root)

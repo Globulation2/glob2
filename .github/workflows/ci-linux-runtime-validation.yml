@@ -1,0 +1,28 @@
+name: Validate clean Linux runtime images
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  clean-runtime:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image: ubuntu:22.04
+            runner: ubuntu-22.04
+            compiler: g++-11
+            c_compiler: gcc-11
+          - image: ubuntu:24.04
+            runner: ubuntu-24.04
+            compiler: g++-13
+            c_compiler: gcc-13
+    uses: ./.github/workflows/ci-linux-build.yml
+    with:
+      image: ${{ matrix.image }}
+      runner: ${{ matrix.runner }}
+      compiler: ${{ matrix.compiler }}
+      c_compiler: ${{ matrix.c_compiler }}
+      run_tests: true
+      runtime_packages: true
+      validate_runtime: true

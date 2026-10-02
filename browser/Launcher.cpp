@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Runtime.h"
+#define SDL_MAIN_HANDLED
+#include <SDL3/SDL_main.h>
 #include <ThreadSupport.h>
 #include <emscripten.h>
 #include <emscripten/threading.h>
@@ -44,6 +46,7 @@ struct Arguments {
     }
 };
 void *application(void *opaque) {
+    SDL_SetMainReady();
     std::unique_ptr<Arguments> args(static_cast<Arguments*>(opaque));
 #ifdef __EMSCRIPTEN_PTHREADS__
     Glob2Browser::applicationThread = pthread_self();

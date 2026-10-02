@@ -20,7 +20,7 @@
 #include "Order.h"
 #include "Unit.h"
 #include "Utilities.h"
-#include "SDLCompat.h"
+#include <SDL3/SDL.h>
 #include "sim/ClientCommandSink.h"
 #include "sim/ClientRequests.h"
 
@@ -187,7 +187,7 @@ void Game::syncStep(Sint32 localTeam)
 			globalContainer->replayWriter->advanceStep();
 		}
 
-		Uint64 startTick=SDL_GetTicks64();
+		Uint64 startTick=SDL_GetTicks();
 
 		if (!map.gradientPipelineEnabled()) map.configureGradientPipeline(1, 8);
 		map.advanceGradientPipeline();
@@ -231,7 +231,7 @@ void Game::syncStep(Sint32 localTeam)
 			wonSyncStep();
 		}
 
-		Uint64 endTick=SDL_GetTicks64();
+		Uint64 endTick=SDL_GetTicks();
 		ticksGameSum[stepCounter&(TICK_PROFILE_BUF_LEN-1)]+=static_cast<Sint64>(endTick) - static_cast<Sint64>(startTick);
 		publishTickEvents();
 		stepCounter++;

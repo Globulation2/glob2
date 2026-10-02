@@ -83,7 +83,7 @@ bool MapHeader::loadFields(GAGCore::InputStream *stream)
 	for(int i=0; i<numberOfTeams; ++i)
 	{
 		stream->readEnterSection(i);
-		teams[i].load(stream, versionMinor);
+		if (!teams[i].load(stream, versionMinor) || teams[i].teamNumber != i) return false;
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
@@ -320,10 +320,19 @@ private:
 
 std::string glob2NameToFilename(const std::string& dir, const std::string& name, const std::string& extension)
 {
-	const char* pattern = " \t";
-	const char* endPattern = strchr(pattern, '\0');
+	// Names arrive in downloaded map headers as well as local save dialogs.
+	// Keep them a single portable filename component (including for C-string
+	// filesystem APIs, which would otherwise truncate at an embedded NUL).
 	std::string fileName = name;
-	std::replace_if(fileName.begin(), fileName.end(), contains<const char*, char>(pattern, endPattern), '_');
+	for (char& c : fileName)
+		if (static_cast<unsigned char>(c) <= 32 || c == '/' || c == '\\' ||
+			c == ':' || c == '*' || c == '?' || c == '"' || c == '<' || c == '>' || c == '|') c = '_';
+	if (fileName.empty()) fileName = "unnamed";
+	std::string stem = fileName.substr(0, fileName.find('.'));
+	for (char& c : stem) if (c >= 'a' && c <= 'z') c -= 'a' - 'A';
+	if (stem == "CON" || stem == "PRN" || stem == "AUX" || stem == "NUL" ||
+		(stem.size() == 4 && (stem.compare(0,3,"COM") == 0 || stem.compare(0,3,"LPT") == 0) && stem[3] >= '1' && stem[3] <= '9'))
+		fileName.insert(fileName.begin(), '_');
 	std::string fullFileName = dir;
 	fullFileName += DIR_SEPARATOR + fileName;
 	if (extension != "" && extension != "\0")

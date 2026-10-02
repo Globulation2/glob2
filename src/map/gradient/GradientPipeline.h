@@ -25,7 +25,7 @@ public:
 	struct Job {
 		std::uint16_t **slot = nullptr;
 		std::unique_ptr<std::uint16_t[]> data;
-		std::vector<std::uint8_t> water;
+		std::shared_ptr<const std::vector<std::uint8_t>> water;
 		int swim = 0;
 		std::uint64_t due = 0;
 		bool superseded = false, done = false;
@@ -69,7 +69,7 @@ private:
 	}
 	void execute(Job &job, GradientWorkspace &scratch) noexcept {
 		const auto start = Clock::now();
-		try { work(job, scratch); } catch (...) { job.error = std::current_exception(); }
+		try { work(job, scratch); job.water.reset(); } catch (...) { job.error = std::current_exception(); }
 		activeNs.fetch_add(ns(start), std::memory_order_relaxed);
 		{ std::lock_guard<std::mutex> lock(mutex); job.done = true; }
 		completed.notify_one();

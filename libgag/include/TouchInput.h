@@ -19,7 +19,7 @@ enum class TouchActionKind { Select, Pan, PanEnd, Zoom, Preview, BeginStroke, St
 struct TouchAction { TouchActionKind kind; ViewPoint point; double factor=1; std::uint64_t time=0; };
 class TouchInput
 {
-    using Key=std::pair<std::int64_t,std::int64_t>;
+    using Key=std::pair<std::uint64_t,std::uint64_t>;
     struct Finger { ViewPoint start, point; };
     std::map<Key,Finger> fingers;
     TouchMode mode=TouchMode::Navigate;
@@ -50,7 +50,7 @@ public:
         return {{TouchActionKind::Cancel,{}}};
     }
     std::vector<TouchAction> setMode(TouchMode selected) { auto actions=cancel();mode=selected;return actions; }
-    std::vector<TouchAction> down(std::int64_t device,std::int64_t finger,ViewPoint point,std::uint64_t time=0)
+    std::vector<TouchAction> down(std::uint64_t device,std::uint64_t finger,ViewPoint point,std::uint64_t time=0)
     {
         if(fingers.contains({device,finger})) return {};
         fingers[{device,finger}]={point,point};
@@ -66,7 +66,7 @@ public:
         if(mode==TouchMode::Paint) {painting=true;return {{TouchActionKind::BeginStroke,point,1,time}};}
         return {};
     }
-    std::vector<TouchAction> move(std::int64_t device,std::int64_t finger,ViewPoint point,std::uint64_t time=0)
+    std::vector<TouchAction> move(std::uint64_t device,std::uint64_t finger,ViewPoint point,std::uint64_t time=0)
     {
         auto it=fingers.find({device,finger});
         if(it==fingers.end() || suppress) return {};
@@ -101,7 +101,7 @@ public:
         }
         return {{TouchActionKind::Pan,{point.x-previous.x,point.y-previous.y},1,time}};
     }
-    std::vector<TouchAction> up(std::int64_t device,std::int64_t finger,ViewPoint point,std::uint64_t time=0)
+    std::vector<TouchAction> up(std::uint64_t device,std::uint64_t finger,ViewPoint point,std::uint64_t time=0)
     {
         auto it=fingers.find({device,finger});
         if(it==fingers.end()) return {};

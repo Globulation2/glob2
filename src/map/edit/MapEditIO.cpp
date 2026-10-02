@@ -16,7 +16,7 @@
 #include "Unit.h"
 #include "UnitType.h"
 #include "Utilities.h"
-#include "SDLCompat.h"
+#include <SDL3/SDL.h>
 
 bool MapEdit::load(const std::string filename)
 {
@@ -146,7 +146,7 @@ bool MapEdit::advanceEditing(const std::vector<SDL_Event>& events, Uint32 tick)
         if (dialog->finished())
         {
             SDL_Event poll{};
-            poll.type = SDL_USEREVENT;
+            poll.type = SDL_EVENT_USER;
             delegateMenu(poll);
         }
     }

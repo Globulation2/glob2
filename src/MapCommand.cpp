@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <Environment.h>
 #include "MapCommand.h"
 #include "MapReport.h"
 #include "MapImage.h"
 #include "GUIMapPreview.h"
 #include "Glob2Style.h"
-#include <SDL_image.h>
+#include <SDL3_image/SDL_image.h>
 #include <Toolkit.h>
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>
@@ -191,9 +192,9 @@ void exportPreview(const Game &game, const std::string &path, int size, int scal
 		size ? std::max(1, size * game.map.getH() / extent) : thumbnail.pixels()->height * scale;
 	// GAG surfaces need a context for their pixel format. SDL's dummy driver keeps
 	// this small software context independent of the desktop and export dimensions.
-	SDL_setenv("SDL_VIDEODRIVER", "dummy", 1);
-	SDL_setenv("SDL_AUDIODRIVER", "dummy", 1);
-	SDL_setenv("GLOB2_UI_SCALE", "1", 1);
+	GAGCore::setProcessEnvironment("SDL_VIDEODRIVER", "dummy", 1);
+	GAGCore::setProcessEnvironment("SDL_AUDIODRIVER", "dummy", 1);
+	GAGCore::setProcessEnvironment("GLOB2_UI_SCALE", "1", 1);
 	globalContainer->gfx = Toolkit::initGraphic(640, 480, 0, "Map preview", "glob2");
 	const std::string font = std::string("data/fonts/") + PRIMARY_FONT;
 	Toolkit::loadFont(font, 13, "standard");
@@ -211,7 +212,7 @@ void exportPreview(const Game &game, const std::string &path, int size, int scal
 		preview.starts.push_back(
 			{game.teams[i]->startPosX, game.teams[i]->startPosY, game.teams[i]->color});
 	preview.paint(&target);
-	if (IMG_SavePNG(target.getSDLSurface(), path.c_str()) != 0)
+	if (!IMG_SavePNG(target.getSDLSurface(), path.c_str()))
 		throw std::runtime_error("Cannot write PNG " + path + ": " + SDL_GetError());
 }
 

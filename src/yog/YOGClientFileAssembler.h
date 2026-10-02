@@ -5,7 +5,7 @@
 
 #include "LocalTime.h"
 #include <memory>
-#include "SDL_net.h"
+#include <SDL3_net/SDL_net.h>
 #include <string>
 
 class YOGClient;

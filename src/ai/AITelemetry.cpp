@@ -208,7 +208,7 @@ void load(GAGCore::InputStream *s, std::vector<std::shared_ptr<Series>> &records
 {
 	GAGCore::BinaryInputStream::CheckedReads checked(s);
 	s->readEnterSection("aiTelemetry");
-	const auto count = s->readUint32("count");
+	const auto count = s->readCount("count");
 	require(count <= 4096);
 	std::vector<std::shared_ptr<Series>> loaded;
 	for (unsigned i = 0; i < count; ++i)

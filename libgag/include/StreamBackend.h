@@ -77,6 +77,8 @@ namespace GAGCore
 	public:
 		//! Constructor. If NULL is passed to data, internal buffer is empty, otherwise size bytes are copied from data.
 		MemoryStreamBackend(const void *data = NULL, const size_t size = 0);
+		//! Takes ownership of an input buffer and starts at its beginning.
+		explicit MemoryStreamBackend(std::string&& contents);
 		virtual ~MemoryStreamBackend() { }
 		
 		virtual void write(const void *data, const size_t size);

@@ -78,7 +78,7 @@ void GameSessionScreen::updateExecutionImpl(Uint32 tick)
 		// the simulation thread paces itself.
 		frameStarted = tick;
 		engine->resumeSimulation(clock);
-		try { running = engine->threadedClientFrame(clock, input); }
+		try { running = engine->threadedClientFrame(clock, input.events()); }
 		catch (...) { engine->abortSession(); throw; }
 		input.clear();
 	}
@@ -86,7 +86,7 @@ void GameSessionScreen::updateExecutionImpl(Uint32 tick)
 	{
 		if (clock < nextTick)
 			return;
-		running = engine->stepSession(clock, input);
+		running = engine->stepSession(clock, input.events());
 		input.clear();
 		nextTick = clock + engine->sessionDelay(clock);
 	}

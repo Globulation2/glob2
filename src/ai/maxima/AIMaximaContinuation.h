@@ -3,6 +3,7 @@
 
 // Portable field-wise serialization for Maxima execution state.
 // Never serialize object layouts, pointers, padding, or host-sized containers.
+#include "AIMaximaDistanceField.h"
 #include <Stream.h>
 #include <BinaryStream.h>
 #include <cstring>
@@ -85,6 +86,17 @@ public:
         }
         else for(size_t i=0;i<value.size();++i)(*this)("value",value[i]);
     }
+    template<class Wire, class T, class Encode, class Decode>
+    void legacyVector(const char*, const std::vector<T>& value, Encode encode, Decode)
+    {
+        word(uint32_t(value.size()));
+        for(const auto& item:value) { const Wire wire=encode(item); (*this)("value",wire); }
+    }
+    void operator()(const char* name,const AIMaximaPlacement::DistanceField& value)
+    {
+        legacyVector<int32_t>(name,value.storage(),
+            [](uint16_t x){return x==UINT16_MAX?INT_MAX:int(x);},[](int32_t){return uint16_t{};});
+    }
     template<class T> void operator()(const char*,const std::set<T>& value)
     {word(uint32_t(value.size()));for(const auto& item:value)(*this)("value",item);}
     template<class K,class V> void operator()(const char*,const std::map<K,V>& value)
@@ -126,6 +138,21 @@ public:
         for(size_t i=0;i<N;++i) { stream->writeEnterSection(i); (*this)("value",value[i]); stream->writeLeaveSection(); }
         stream->writeLeaveSection();
     }
+    template<class Wire, class T, class Encode, class Decode>
+    void legacyVector(const char* name,const std::vector<T>& value,Encode encode,Decode decode)
+    {
+        if(auto* binary=dynamic_cast<GAGCore::BinaryOutputStream*>(stream))
+        { BufferedBinaryWriter packed(binary); packed.legacyVector<Wire>(name,value,encode,decode); packed.flush(); return; }
+        stream->writeEnterSection(name); stream->writeUint32(value.size(),"size");
+        for(size_t i=0;i<value.size();++i)
+        { stream->writeEnterSection(i); const Wire wire=encode(value[i]); (*this)("value",wire); stream->writeLeaveSection(); }
+        stream->writeLeaveSection();
+    }
+    void operator()(const char* name,const AIMaximaPlacement::DistanceField& value)
+    {
+        legacyVector<int32_t>(name,value.storage(),
+            [](uint16_t x){return x==UINT16_MAX?INT_MAX:int(x);},[](int32_t){return uint16_t{};});
+    }
     template<class T> void operator()(const char* name,const std::vector<T>& value)
     {
         if(auto* binary=dynamic_cast<GAGCore::BinaryOutputStream*>(stream))
@@ -160,7 +187,9 @@ class Reader
     GAGCore::InputStream* stream;
     uint32_t count()
     {
-        const uint32_t size=stream->readUint32("size");
+        // Canonical nine-neighbor tables exceed the generic one-million limit
+        // on 512x512 maps. Keep Maxima's explicit existing collection bound.
+        const uint32_t size=stream->readCount("size", 16777216u);
         if(size>16777216u) throw std::runtime_error("Invalid Maxima continuation container size");
         return size;
     }
@@ -193,6 +222,23 @@ public:
         stream->readEnterSection(name);
         for(size_t i=0;i<N;++i) { stream->readEnterSection(i); (*this)("value",value[i]); stream->readLeaveSection(); }
         stream->readLeaveSection();
+    }
+    template<class Wire, class T, class Encode, class Decode>
+    void legacyVector(const char* name,std::vector<T>& value,Encode,Decode decode)
+    {
+        stream->readEnterSection(name); value.clear(); value.resize(count());
+        for(size_t i=0;i<value.size();++i)
+        { stream->readEnterSection(i); Wire wire{}; (*this)("value",wire); value[i]=decode(wire); stream->readLeaveSection(); }
+        stream->readLeaveSection();
+    }
+    void operator()(const char* name,AIMaximaPlacement::DistanceField& value)
+    {
+        legacyVector<int32_t>(name,value.storage(),[](uint16_t){return int32_t{};},
+            [](int32_t x){
+                if(x==INT_MAX) return uint16_t(UINT16_MAX);
+                if(x<0 || x>=UINT16_MAX) throw std::runtime_error("Invalid compact distance");
+                return uint16_t(x);
+            });
     }
     template<class T> void operator()(const char* name,std::vector<T>& value)
     {

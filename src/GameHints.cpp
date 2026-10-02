@@ -4,6 +4,7 @@
 #include "GameHints.h"
 #include "ScriptNumber.h"
 #include "Stream.h"
+#include <stdexcept>
 #include <cassert>
 
 GameHints::GameHints()
@@ -122,6 +123,7 @@ void GameHints::decodeData(GAGCore::InputStream* stream, Uint32 versionMinor)
 	scriptNumbers.clear();
 	stream->readEnterSection("GameHints");
 	Uint32 size = stream->readUint32("size");
+	if (size > 65536) throw std::runtime_error("Too many scenario entries");
 	for(unsigned int i=0; i<size; ++i)
 	{
 		stream->readEnterSection(i);
