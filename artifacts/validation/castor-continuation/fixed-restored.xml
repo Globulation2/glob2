@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="4" failures="0" errors="0" skipped="0"><testsuite name="CastorContinuation"><testcase classname="CastorContinuation" name="Castor boot and active projects survive save-load" time="5.24413" status="run" />
+  <testcase classname="CastorContinuation" name="Castor seeded boot and active decisions repeat exactly" time="0.684472" status="run" />
+  <testcase classname="CastorContinuation" name="binary and text snapshots preserve project fields and cache history" time="0.137514" status="run" />
+  <testcase classname="CastorContinuation" name="historical timer-only AI saves remain readable" time="0.017048" status="run" />
+  </testsuite></testsuites>

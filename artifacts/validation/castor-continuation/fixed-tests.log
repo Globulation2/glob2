@@ -1,0 +1,4 @@
+PASS CastorContinuation/Castor seeded boot and active decisions repeat exactly (0.7s)
+
+1 passed, 0 failed, 0 skipped (0.7s of test time)
+[run_tests] JUnit report: /Users/bradley/glob2/artifacts/native-coverage-implementation/castor-before-after/fixed.xml (1 cases)

@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="1" failures="1" errors="0" skipped="0"><testsuite name="CastorContinuation"><testcase classname="CastorContinuation" name="Castor boot and active projects survive save-load" time="1.02283" status="run">
+      <failure message="3 == \x18" type="REQUIRE">
+test/CastorContinuationTest.cpp:111:
+REQUIRE( tick(restored.game)==orders[i] ) is NOT correct!
+  values: REQUIRE( 3 == \x18 )
+  logged: id := 2
+          depleted := false
+          checkpoint := 1
+          i := 48
+
+      </failure>
+    </testcase>
+  </testsuite></testsuites>

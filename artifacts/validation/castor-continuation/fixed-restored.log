@@ -1,0 +1,7 @@
+PASS CastorContinuation/historical timer-only AI saves remain readable (0.2s)
+PASS CastorContinuation/binary and text snapshots preserve project fields and cache history (0.4s)
+PASS CastorContinuation/Castor seeded boot and active decisions repeat exactly (0.9s)
+PASS CastorContinuation/Castor boot and active projects survive save-load (5.5s)
+
+4 passed, 0 failed, 0 skipped (7.1s of test time)
+[run_tests] JUnit report: /Users/bradley/glob2/artifacts/native-coverage-implementation/castor-before-after/fixed-restored.xml (4 cases)

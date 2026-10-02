@@ -1,0 +1,7 @@
+{
+  "ticks": 512,
+  "match": true,
+  "fixed_sha256": "33970d8d4ae1946b79c401a7032a62d1dd5480ed60f9b6d697c48f3fff8435de",
+  "master_sha256": "33970d8d4ae1946b79c401a7032a62d1dd5480ed60f9b6d697c48f3fff8435de",
+  "scope": "Identical current harness and headers; only Castor Lifecycle.cpp replaced by master 98301f7cb. Full per-tick order bytes, simulation/entity checksum fields and RNG; MapHeader format metadata excluded by the harness."
+}

@@ -1,0 +1,18 @@
+FAIL CastorContinuation/Castor boot and active projects survive save-load (1.4s)
+
+===== FAIL CastorContinuation/Castor boot and active projects survive save-load =====
+GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.3.34.2) platform=Mac OS X pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "clang++", "dirty": true, "flags": {"CCFLAGS": "", "CPPDEFINES": "HAVE_CONFIG_H GL_SILENCE_DEPRECATION _THREAD_SAFE SDL_MAIN_HANDLED", "CXXFLAGS": "-g -O0 -fprofile-instr-generate -fcoverage-mapping -std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-g -fprofile-instr-generate -Wall -Wl,-framework,Cocoa"}, "revision": "73833fbc5fd3b4c02f3e4ea7b06d34d3f1c95c9a", "sourceStatus": [" M src/ai/castor/Lifecycle.cpp", " M test/CastorContinuationTest.cpp", "?? default.profraw", "?? test/LegacyAreaWaitTest.cpp"], "sourceTreeSha256": "17c2dfcf6524780817643468a25f5e684da16ad89ff4ee89f6fa167906aebbec"}
+
+[failure] Castor boot and active projects survive save-load: 3 == \x18
+test/CastorContinuationTest.cpp:111:
+REQUIRE( tick(restored.game)==orders[i] ) is NOT correct!
+  values: REQUIRE( 3 == \x18 )
+  logged: id := 2
+          depleted := false
+          checkpoint := 1
+          i := 48
+
+
+0 passed, 1 failed, 0 skipped (1.4s of test time)
+[run_tests] JUnit report: /Users/bradley/glob2/artifacts/native-coverage-implementation/castor-before-after/original-continuation.xml (1 cases)
