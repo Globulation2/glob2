@@ -51,7 +51,10 @@ PresenceState TurnSession::presence(int seatNumber) const
 
 void TurnSession::send(const NetMessage& message)
 {
+	// Every message leaves at once: an order queued until the next frame's poll would
+	// add up to a frame to its input delay.
 	transport.send(TurnCodec::encode(message));
+	transport.flush();
 }
 
 void TurnSession::update(std::uint64_t nowMicros)
@@ -185,6 +188,7 @@ void TurnSession::onWelcome(const Welcome& w)
 	tickPeriod = ticksToMicros(1, tickRate);
 	checksumInterval = w.checksumInterval;
 	bundleInterval = w.bundleInterval;
+	delay.setBundleInterval(bundleInterval);
 	if (w.resumeFromTick != horizonTick)
 	{
 		// The relay serves the log from tick 0: drop what we hold. If we had already

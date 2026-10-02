@@ -84,6 +84,13 @@ namespace Turn
 
 		/// The tick in progress at the given time.
 		std::uint32_t relayTick(std::uint64_t nowMicros) const;
+		/// When the next live bundle is due. A host that calls update() at this time
+		/// (rather than on a coarse timer) sends every bundle on its tick boundary, so
+		/// its timer adds no jitter to the clients' buffers.
+		std::uint64_t nextBundleMicros() const
+		{
+			return start + ticksToMicros(sentHorizon + config.bundleInterval - 1, config.tickRateMilliHz);
+		}
 		/// Every tick below this has been broadcast.
 		std::uint32_t horizon() const { return sentHorizon; }
 		/// Broadcast turns without voice, sorted by (tick, seat).

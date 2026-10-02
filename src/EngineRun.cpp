@@ -126,6 +126,15 @@ void Engine::gatherAndAdvanceOrders(bool wasReadyLastTick)
 		// We get and push local orders
 		localOrder = gui.getOrder();
 	}
+	// A turn game hands every queued order to the relay as soon as the GUI makes it,
+	// even while waiting for a bundle: the relay gives each its own tick.
+	if (turn)
+	{
+		if (localOrder)
+			net->addLocalOrder(std::exchange(localOrder, std::make_shared<NullOrder>()));
+		for (auto order = gui.getOrder(); order->getOrderType() != ORDER_NULL; order = gui.getOrder())
+			net->addLocalOrder(order);
+	}
 
 	const bool localAI = wasReadyLastTick && globalContainer->liveSpectating &&
 		gui.game.players[orderPlayer]->ai;
@@ -304,7 +313,20 @@ void Engine::drawFrame(MainLoopState& st)
 void Engine::drawSession()
 {
     if (!session) throw std::logic_error("No active engine session");
+    if (turn && !std::exchange(turnDrawPending, false)) return;
     if (!globalContainer->runNoX) drawFrame(*session);
+}
+
+void Engine::pollTurnSession(Uint64 now)
+{
+	if (turn && session)
+		turn->turn().update(now * 1000);
+}
+
+Uint32 Engine::sessionPollDelay(Uint64 now)
+{
+	const Uint32 delay = sessionDelay(now);
+	return turn ? std::min<Uint32>(delay, TURN_POLL_MS) : delay;
 }
 
 Uint32 Engine::sessionDelay(Uint64 now)
@@ -809,6 +831,7 @@ bool Engine::stepSessionImpl(Uint64 now, const std::vector<SDL_Event>& events)
     if (!session) throw std::logic_error("No active engine session");
     if (!gui.isRunning) return false;
     auto& st = *session;
+    turnDrawPending = true;
     --st.nextGuiStep;
     updateTickSpeedAndDrawCadence(st, now);
     auto &perf = PerformanceTelemetry::collector();
@@ -862,6 +885,15 @@ bool Engine::stepSessionImpl(Uint64 now, const std::vector<SDL_Event>& events)
 					"checkpoint", gui.game.mapHeader.getMapName());
 		}
 
+    // A turn game that waited for a late bundle moves its schedule back by up to one
+    // tick instead of bursting through the ticks it owes: a bundle that is a little
+    // late becomes a little more buffer, which the delay controller drains at up to
+    // 5% speed. A longer wait still catches up the rest at once.
+    if (turn && readyNow && !st.wasReadyLastTick && !turn->turn().catchingUp())
+    {
+        const Sint64 late = static_cast<Sint64>(now - st.startTime) - st.needToBeTime;
+        if (late > 0) st.needToBeTime += std::min<Sint64>(late, st.speed);
+    }
     st.wasReadyLastTick = readyNow;
     // A turn game's budget advances only with executed ticks, so frames spent
     // waiting for the relay poll quickly instead of sleeping a whole tick.
@@ -914,7 +946,15 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
         if (!globalContainer->runNoX) {
             PerformanceTelemetry::Scope delayTime(session->wasReadyLastTick
                 ? PerformanceTelemetry::Id::Sleep : PerformanceTelemetry::Id::NetworkSleep);
-            GAGCore::ApplicationHost::wait(sessionDelay(SDL_GetTicks64()));
+            Uint32 delay = sessionDelay(SDL_GetTicks64());
+            // A turn game reads its relay connection while it waits.
+            while (turn && delay > TURN_POLL_MS && gui.isRunning)
+            {
+                GAGCore::ApplicationHost::wait(TURN_POLL_MS);
+                pollTurnSession(SDL_GetTicks64());
+                delay = sessionDelay(SDL_GetTicks64());
+            }
+            GAGCore::ApplicationHost::wait(delay);
         }
     }
     doRunOnceAgain = finishSession();

@@ -34,6 +34,7 @@
 
 #include "AINames.h"
 #include "Engine.h"
+#include "EngineTiming.h"
 #include "Game.h"
 #include "GameGUI.h"
 #include "GlobalContainer.h"
@@ -249,6 +250,12 @@ struct LanPlayer
 			return;
 		RngScope scope(rng);
 		const std::uint64_t now = wallMs();
+		// As GameSessionScreen: between steps, read the relay connection every few ms.
+		if (now < wakeAt && now >= lastPoll + TURN_POLL_MS)
+		{
+			engine->pollTurnSession(now);
+			lastPoll = now;
+		}
 		for (int budget = 4000; budget > 0 && now >= wakeAt; --budget)
 		{
 			const bool catching = session().catchingUp();
@@ -268,8 +275,10 @@ struct LanPlayer
 				break;
 			}
 			wakeAt = now + engine->sessionDelay(now);
+			lastPoll = now;
 		}
 	}
+	std::uint64_t lastPoll = 0;
 
 	void queueBotOrder()
 	{

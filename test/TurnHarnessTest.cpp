@@ -138,6 +138,10 @@ public:
 				state ^= 0x5A5A5A5A; // a simulated engine divergence
 				corruptAtTick = UINT32_MAX;
 			}
+			// As Engine::stepSessionImpl: after waiting for a late bundle, move the
+			// schedule back by up to one tick rather than bursting.
+			if (!wasReady && !catching && net.now > nextTickAt)
+				nextTickAt += std::min(net.now - nextTickAt, session->tickPeriodMicros());
 			wasReady = true;
 			const std::uint64_t interval = session->tickIntervalMicros();
 			nextTickAt = std::max(nextTickAt, net.now > 500 * MS ? net.now - 500 * MS : 0) + interval;
@@ -320,7 +324,9 @@ struct Match
 				firstPrefix = prefix;
 			else
 				CHECK(prefix == firstPrefix);
-			CHECK(net.relay->horizon() - c.session->executedTick() <= c.session->targetTicks() + 4);
+			// A client that waited for a late bundle keeps up to a tick of it as extra
+			// buffer each time, and drains it at up to 5% speed.
+			CHECK(net.relay->horizon() - c.session->executedTick() <= c.session->targetTicks() + 6);
 			if (c.session->executedTick() == common)
 			{
 				if (!referenceState)
@@ -350,8 +356,9 @@ TEST_SUITE("TurnHarness")
 		CHECK_FALSE(m.net.relay->desyncFlagged());
 		for (auto& c : m.clients)
 		{
-			CHECK(c->session->targetTicks() == 2);
+			CHECK(c->session->targetTicks() == 0);
 			CHECK(c->reloads == 0);
+			CHECK(c->session->stallStats().longStalls == 0);
 		}
 		// Checksums agreed at every reported tick.
 		for (std::uint32_t t = 0; t + 250 < m.net.relay->horizon(); t += 25)
@@ -367,12 +374,12 @@ TEST_SUITE("TurnHarness")
 		CHECK_FALSE(m.net.relay->desyncFlagged());
 		// Each client's buffer follows its own link, not the worst one.
 		CHECK(m.clients[0]->session->targetTicks() <= 3);
-		CHECK(m.clients[1]->session->targetTicks() >= 4);
+		CHECK(m.clients[1]->session->targetTicks() >= 3);
 		CHECK(m.clients[1]->session->targetTicks() > m.clients[0]->session->targetTicks());
 		// Input delay follows each player's own connection.
 		CHECK(m.clients[0]->meanInputDelayMs() < m.clients[3]->meanInputDelayMs());
 		CHECK(m.clients[3]->meanInputDelayMs() < m.clients[2]->meanInputDelayMs());
-		CHECK(m.clients[0]->meanInputDelayMs() < 160);
+		CHECK(m.clients[0]->meanInputDelayMs() < 100);
 		std::ostringstream summary;
 		summary << "client one_way_ms jitter_ms loss target_ticks measured_jitter_ms rtt_ms mean_input_delay_ms orders\n";
 		for (std::size_t i = 0; i < m.clients.size(); ++i)
@@ -496,21 +503,53 @@ TEST_SUITE("TurnHarness")
 		};
 		m.run(15 * SECOND, sample);
 		const std::uint32_t baseline = m.clients[1]->session->targetTicks();
-		CHECK(baseline == 2);
+		CHECK(baseline == 0);
 		m.net.links[1].jitter = 150 * MS;
 		std::uint32_t peak = 0;
 		m.run(20 * SECOND, [&] {
 			sample();
 			peak = std::max(peak, m.clients[1]->session->targetTicks());
 		});
-		CHECK(peak >= 5);
-		CHECK(m.clients[0]->session->targetTicks() == 2); // the other client is unaffected
+		CHECK(peak >= 4);
+		CHECK(m.clients[0]->session->targetTicks() == 0); // the other client is unaffected
 		m.net.links[1].jitter = 0;
 		m.run(60 * SECOND, sample);
 		CHECK(m.clients[1]->session->targetTicks() == baseline);
 		m.settle();
 		m.requireIdenticalExecution();
 		m.writeSummary("jitter-trace", trace.str());
+	}
+
+	GLOB2_TEST_CASE("input delay stays within bounds on loopback and at 50 ms", "[network-sim]")
+	{
+		// Submit to execution with the default relay (one-tick bundles). The bounds are
+		// the timing model's (docs/multiplayer/turn-protocol.md) with a little slack:
+		// round trip + half a tick of relay quantization + up to a tick of buffer.
+		struct Case
+		{
+			std::uint64_t oneWay;
+			double meanMs, p95Ms;
+		};
+		const std::vector<Case> cases = {{250, 60, 80}, {50 * MS, 150, 170}};
+		for (const Case& k : cases)
+		{
+			INFO("one way " << k.oneWay / 1000.0 << " ms");
+			Match m({{k.oneWay}, {250}}, {2});
+			for (auto& c : m.clients)
+				c->orderRate = 0.1;
+			m.run(5 * SECOND);
+			m.startMeasuring();
+			m.run(30 * SECOND);
+			auto& c = *m.clients[0];
+			const auto b = c.trace.breakdown();
+			REQUIRE(b.samples > 30);
+			CHECK(b.total.mean <= k.meanMs);
+			CHECK(b.total.p95 <= k.p95Ms);
+			CHECK(c.session->targetTicks() == 0);
+			CHECK(c.session->stallStats().longStalls == c.stallsBefore.longStalls);
+			m.settle();
+			m.requireIdenticalExecution();
+		}
 	}
 
 	GLOB2_TEST_CASE("input delay and stalls per link profile", "[network-sim][benchmark][artifacts]")
@@ -522,38 +561,59 @@ TEST_SUITE("TurnHarness")
 		};
 		const std::vector<Profile> profiles = {
 			{"loopback", {250}},
-			{"+25 ms", {25 * MS}},
-			{"+50 ms", {50 * MS}},
+			{"15 ms", {15 * MS}},
+			{"25 ms", {25 * MS}},
+			{"50 ms", {50 * MS}},
 			{"30 ms, 80 ms jitter", {30 * MS, 80 * MS}},
+			{"60 ms, 80 ms jitter", {60 * MS, 80 * MS}},
 			{"30 ms, 80 ms jitter, 3% loss", {30 * MS, 80 * MS, 0.03}},
+			{"120 ms, 3% loss", {120 * MS, 0, 0.03}},
 		};
 		std::ostringstream table, stages;
 		table << "Simulated network, two humans and an AI; the measured player's link varies, the other is loopback. "
-		         "Submit to execution, 10 s settle then 60 s measured, 5 ms frames.\n"
-		         "bundle | link | samples | mean ms | p95 ms | target ticks | measured jitter ms | stalls | long stalls | "
+		         "Submit to execution, 10 s settle then 60 s measured, 5 ms frames; five network seeds per row "
+		         "(delay: mean over seeds; target and jitter: largest at the end of a run; stalls: total).\n"
+		         "bundle | link | mean ms | p95 ms | target ticks | measured jitter ms | stalls | long stalls | "
 		         "stalled ms\n";
 		stages << "bundle | link | " << LatencyTrace::header() << "\n";
 		for (std::uint8_t bundle : {std::uint8_t(1), std::uint8_t(2)})
 			for (const auto& profile : profiles)
 			{
-				SequencerConfig config;
-				config.bundleInterval = bundle;
-				Match m({profile.link, {250}}, {2}, config);
-				for (auto& c : m.clients)
-					c->orderRate = 0.1;
-				m.run(10 * SECOND);
-				m.startMeasuring();
-				m.run(60 * SECOND);
-				auto& c = *m.clients[0];
-				const auto b = c.trace.breakdown();
-				const auto& st = c.session->stallStats();
-				table << int(bundle) << " | " << profile.name << " | " << b.samples << " | " << b.total.mean << " | "
-				      << b.total.p95 << " | " << c.session->targetTicks() << " | " << c.session->jitterMicros() / 1000
-				      << " | " << st.stalls - c.stallsBefore.stalls << " | " << st.longStalls - c.stallsBefore.longStalls
-				      << " | " << (st.stalledMicros - c.stallsBefore.stalledMicros) / 1000 << "\n";
-				stages << int(bundle) << " | " << profile.name << " | " << LatencyTrace::row(b) << "\n";
-				m.settle();
-				m.requireIdenticalExecution();
+				// Five network seeds per profile: delay is their mean, stalls their sum.
+				double meanSum = 0, p95Sum = 0;
+				std::uint64_t stalls = 0, longStalls = 0, stalledMicros = 0;
+				std::uint32_t target = 0;
+				std::int64_t jitter = 0;
+				constexpr int seeds = 5;
+				for (int seed = 1; seed <= seeds; ++seed)
+				{
+					SequencerConfig config;
+					config.bundleInterval = bundle;
+					Match m({profile.link, {250}}, {2}, config);
+					m.net.rng.seed(static_cast<std::uint32_t>(seed));
+					for (auto& c : m.clients)
+						c->orderRate = 0.1;
+					m.run(10 * SECOND);
+					m.startMeasuring();
+					m.run(60 * SECOND);
+					auto& c = *m.clients[0];
+					const auto b = c.trace.breakdown();
+					const auto& st = c.session->stallStats();
+					meanSum += b.total.mean;
+					p95Sum += b.total.p95;
+					stalls += st.stalls - c.stallsBefore.stalls;
+					longStalls += st.longStalls - c.stallsBefore.longStalls;
+					stalledMicros += st.stalledMicros - c.stallsBefore.stalledMicros;
+					target = std::max(target, c.session->targetTicks());
+					jitter = std::max(jitter, c.session->jitterMicros());
+					if (seed == 1)
+						stages << int(bundle) << " | " << profile.name << " | " << LatencyTrace::row(b) << "\n";
+					m.settle();
+					m.requireIdenticalExecution();
+				}
+				table << int(bundle) << " | " << profile.name << " | " << meanSum / seeds << " | " << p95Sum / seeds << " | "
+				      << target << " | " << jitter / 1000 << " | " << stalls << " | " << longStalls << " | "
+				      << stalledMicros / 1000 << "\n";
 			}
 		table << "\n" << stages.str();
 		std::ofstream(glob2test::artifactDir() / "turn-delay-profiles.txt") << table.str();
