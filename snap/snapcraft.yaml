@@ -81,6 +81,8 @@ parts:
       - libwayland-cursor0
       - libwayland-egl1
       - libxkbcommon0
+      - libpng16-16t64
+      - libjpeg-turbo8
       - libfreetype6
       - libvorbisfile3
       - libogg0
