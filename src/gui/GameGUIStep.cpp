@@ -292,7 +292,7 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 	std::shared_ptr<OrderVoiceData> orderVoiceData;
 	while ((orderVoiceData = globalContainer->voiceRecorder->getNextOrder()) != NULL)
 	{
-		orderVoiceData->recipientsMask = chatMask ^ (chatMask & (1<<localPlayer));
+		orderVoiceData->recipientsMask = chatMask ^ (chatMask & (Team::teamNumberToMask(localPlayer)));
 		orderQueue.push_back(orderVoiceData);
 	}
 

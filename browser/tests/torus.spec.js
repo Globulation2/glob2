@@ -41,7 +41,7 @@ async function skyShare(page, clip) {
   }, png.toString('base64'));
 }
 
-const glError = page => page.evaluate(() => document.querySelector('#canvas').getContext('webgl2').getError());
+const glError = async page => (await state(page)).renderContext.error;
 
 test('WebGL2 switches between the flat map and the torus overview', async ({page}, info) => {
   test.setTimeout(360000);
@@ -72,12 +72,9 @@ test('the torus overview recovers after WebGL context loss', async ({page}) => {
   await toggle(page);
   await expect.poll(() => skyShare(page, corner), transition).toBeGreaterThan(0.6);
 
-  await page.evaluate(() => {
-    window.contextLoss = document.querySelector('#canvas').getContext('webgl2').getExtension('WEBGL_lose_context');
-    contextLoss.loseContext();
-  });
+  await page.evaluate(() => Module._glob2_context_action(0));
   await expect.poll(async () => (await state(page)).contextLost).toBe(true);
-  await page.evaluate(() => contextLoss.restoreContext());
+  await page.evaluate(() => Module._glob2_context_action(1));
   await expect.poll(async () => (await state(page)).contextRestores).toBe(1);
   await expect.poll(async () => (await state(page)).torus, transition).toBe(true);
   await expect.poll(() => skyShare(page, corner), transition).toBeGreaterThan(0.6);

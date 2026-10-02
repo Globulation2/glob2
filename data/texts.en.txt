@@ -1426,8 +1426,8 @@ River width
 Sand weight
 [Select a valid map.]
 Select a valid map.
-[Shared control needs a free controller slot (maximum 12).]
-Shared control needs a free controller slot (maximum 12).
+[Shared control needs a free controller slot (maximum %0).]
+Shared control needs a free controller slot (maximum %0).
 [Smoothing]
 Smoothing
 [Standard]

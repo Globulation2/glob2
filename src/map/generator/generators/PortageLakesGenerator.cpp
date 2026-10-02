@@ -62,9 +62,13 @@ struct Layout
 };
 std::string validateRequest(const GenerationRequest &r)
 {
+	if (const auto error = denseColonySizeFailure(r); !error.empty())
+		return error;
 	if (r.wDec < 6 || r.hDec < 6 || r.wDec > 9 || r.hDec > 9)
 		return "Portage Lakes needs sides between 64 and 512 tiles.";
-	if (r.nbTeams > std::min(12, std::max(2, (1 << r.wDec) * (1 << r.hDec) / 4096)))
+	if (r.nbTeams > std::min(r.wDec == DENSE_COLONY_MAP_EXPONENT && r.hDec == DENSE_COLONY_MAP_EXPONENT
+		? Team::MAX_COUNT : DENSE_COLONY_BASE_LIMIT,
+		std::max(2, (1 << r.wDec) * (1 << r.hDec) / 4096)))
 		return "Too many colonies for this map; use a bigger map or fewer colonies.";
 	return "";
 }
@@ -1496,7 +1500,7 @@ GeneratorDefinition portageLakesDefinition()
 	return {"portage-lakes",
 			65,
 			"Portage Lakes",
-			3,
+			4,
 			false,
 			{{"lake-elongation", "Lake elongation", 125, 300, 25, 200, ControlGroup::Terrain},
 			 {"portage-depth", "Portage depth", 2, 8, 1, 4, ControlGroup::Layout},

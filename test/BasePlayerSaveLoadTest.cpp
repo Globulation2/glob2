@@ -131,6 +131,10 @@ void testTypeValidation()
 void testNumberAndTeamNumberValidation()
 {
 	BasePlayer loaded;
+	auto last = makeRawRecordStream((Uint32)BasePlayer::P_LOCAL, Team::MAX_COUNT - 1, Team::MAX_COUNT - 1);
+	check(loaded.load(last.get(), VERSION_MINOR), "last controller and team accepted");
+	check(loaded.numberMask == Team::teamNumberToMask(Team::MAX_COUNT - 1) &&
+		loaded.teamNumberMask == Team::teamNumberToMask(Team::MAX_COUNT - 1), "last slot masks preserved");
 
 	auto istream = makeRawRecordStream((Uint32)BasePlayer::P_LOCAL, Team::MAX_COUNT, 1);
 	check(!loaded.load(istream.get(), VERSION_MINOR),
