@@ -3,6 +3,7 @@
 #include "Version.h"
 #include "AI.h"
 #include "NetEngine.h"
+#include "FileTransferMessages.h"
 #include "shared_runtime/Runtime.h"
 #include "Order.h"
 #include "FileFormatVersions.h"
@@ -155,6 +156,17 @@ TEST_CASE("compressed file size is checked before allocation") {
     std::filesystem::resize_file(path, GAGCore::MAX_COMPRESSED_GAME_FILE_BYTES + 1);
     std::unique_ptr<GAGCore::StreamBackend> stream(GAGCore::openInflatingFileStreamBackend(path.string()));
     CHECK_FALSE(stream->isValid());
+}
+TEST_CASE("network file announcements reject empty and oversized payloads") {
+    for (Uint32 announced : {0u, static_cast<Uint32>(GAGCore::MAX_COMPRESSED_GAME_FILE_BYTES + 1)}) {
+        auto* backend = new GAGCore::MemoryStreamBackend;
+        GAGCore::BinaryOutputStream output(backend);
+        output.writeUint32(announced, "size");
+        output.writeUint16(7, "fileID");
+        auto stream = input(backend->takeContents());
+        NetSendFileInformation message;
+        CHECK_THROWS_AS(message.decodeData(stream.get()), std::runtime_error);
+    }
 }
 TEST_CASE("complete saved game rejects poisoned unit state and retains a reproducible fixture [save-format][artifacts]") {
     glob2test::HeadlessGlobals globals;
