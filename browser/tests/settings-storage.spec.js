@@ -3,11 +3,7 @@ const {clickMainMenu,gameURL,clickSettingsDone,clickSettingsCancel,clickControl,
 const {hasDarkText}=require('./pixels');
 const state=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
 const screen=(page,name)=>expect.poll(async()=>(await state(page)).screen).toContain(name);
-// Graphics detail now persists as individual settings, rather than bit 0.
-const preferences=page=>page.evaluate(()=>{
-  const text=FS.readFile('/home/web_user/.glob2/preferences.txt',{encoding:'utf8'});
-  return {...glob2Diagnostics.preferences(),clouds:Number(text.match(/^clouds=(\d+)$/m)[1])};
-});
+const {preferences,lowPreferences,cloudPreferences}=require('./settings-preferences');
 // Settings controls carry the setting ids; the Display & graphics category is
 // selected by default when Settings opens.
 const AUDIO_TAB=(page)=>clickControl(page,'nav.1'); // Sidebar "Audio" entry.
@@ -18,7 +14,7 @@ test('new browser profiles are muted and an explicit unmute survives reload',asy
   await page.goto(gameURL());await screen(page,'MainMenuScreen');
   await clickMainMenu(page,'settings');await screen(page,'SettingsScreen');
   await clickSettingsDone(page);await screen(page,'MainMenuScreen');
-  expect(await preferences(page)).toEqual({optionFlags:0,mute:1,clouds:0});
+  expect(await preferences(page)).toEqual(lowPreferences);
   await clickMainMenu(page,'settings');await screen(page,'SettingsScreen');
   await AUDIO_TAB(page);
   await MUTE_ROW(page); // Actual Mute toggle, in the Audio category.
@@ -34,7 +30,7 @@ for (const fault of ['quota','aborted transaction']) test(`settings survive ${fa
   await page.goto(gameURL()); await screen(page,'MainMenuScreen');
   await clickMainMenu(page,'settings'); await screen(page,'SettingsScreen');
   await clickSettingsDone(page); await screen(page,'MainMenuScreen');
-  expect(await preferences(page)).toEqual({optionFlags:0,mute:1,clouds:0});
+  expect(await preferences(page)).toEqual(lowPreferences);
   await clickMainMenu(page,'settings'); await screen(page,'SettingsScreen');
   // Inject the fault before the change: every edit auto-saves immediately
   // (that's the whole point of the redesigned screen), so injecting after
@@ -50,7 +46,7 @@ for (const fault of ['quota','aborted transaction']) test(`settings survive ${fa
       return put.apply(this,args);
     };
   },fault);
-  await toggleClouds(page); // Enable clouds through the current graphics control.
+  await toggleClouds(page); // Change one effect independently of the other seven.
   await expect.poll(async()=>(await state(page)).persistence,{timeout:10000}).toBe('failed');
   await clickSettingsDone(page); // Retries the write; still fails while the fault is active.
   await screen(page,'SettingsScreen');
@@ -59,12 +55,12 @@ for (const fault of ['quota','aborted transaction']) test(`settings survive ${fa
   await expect.poll(()=>hasDarkText(page,{x:panel.x,y:done.y,width:Math.max(24,done.x-panel.x-160),height:done.height})).toBe(true);
   await page.screenshot({path:info.outputPath('settings-save-failure.png')});
   const restored=await context.newPage(); await restored.goto(gameURL()); await screen(restored,'MainMenuScreen');
-  expect(await preferences(restored)).toEqual({optionFlags:0,mute:1,clouds:0}); await restored.close();
+  expect(await preferences(restored)).toEqual(lowPreferences); await restored.close();
   await page.evaluate(()=>window.settingsStorageFault=false);
   await clickSettingsDone(page); await screen(page,'MainMenuScreen');
-  expect(await preferences(page)).toEqual({optionFlags:0,mute:1,clouds:1});
+  expect(await preferences(page)).toEqual(cloudPreferences);
   await page.reload(); await screen(page,'MainMenuScreen');
-  expect(await preferences(page)).toEqual({optionFlags:0,mute:1,clouds:1});
+  expect(await preferences(page)).toEqual(cloudPreferences);
 });
 
 test('settings wait for durable storage before closing',async({page})=>{
@@ -99,7 +95,7 @@ test('settings can continue after failure without claiming a durable save',async
   await clickSettingsCancel(page);await screen(page,'MainMenuScreen');
   expect((await state(page)).persistence).toBe('failed');
   const restored=await context.newPage();await restored.goto(gameURL());await screen(restored,'MainMenuScreen');
-  expect(await preferences(restored)).toEqual({optionFlags:0,mute:1,clouds:0});
+  expect(await preferences(restored)).toEqual(lowPreferences);
 });
 
 for (const failLatest of [false,true]) test(`Done waits for the latest settings write (${failLatest?'failure':'success'})`,async({page})=>{

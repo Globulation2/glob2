@@ -363,6 +363,9 @@ struct MobileGallerySetup
 		} while (lobby->previewBusy() && SDL_GetTicks() - started < 30000);
 		if (lobby->previewBusy())
 			throw std::runtime_error("Generated preview timed out");
+		// The fade starts when the preview is painted; with large text on a short
+		// screen it can sit below the fold, so reveal it as a player would.
+		lobby->host().scrollIntoView("map/preview");
 		frame(stack);
 		const auto fadeStarted = SDL_GetTicks();
 		do

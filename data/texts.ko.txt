@@ -3068,8 +3068,6 @@ Emoji
 빨리 감기
 [Hide keyboard]
 키보드 숨기기
-[Dialog text size]
-대화 상자 글자 크기
 [Player slot]
 플레이어 슬롯
 [Team color]
@@ -3408,8 +3406,6 @@ CPU %0%
 최소 레벨: %0
 [Confirm %0]
 확인: %0
-[Dialog text size %0]
-대화 상자 글자 크기: %0%
 [%0 %1]
 %0 %1
 [resume game]

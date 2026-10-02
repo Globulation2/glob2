@@ -19,6 +19,7 @@
 #include "GameGUIInternal.h"
 #include "GameUtilities.h"
 #include <Toolkit.h>
+#include <InterfacePresentation.h>
 #include <TrueTypeFont.h>
 #include <StringTable.h>
 #include "GlobalContainer.h"
@@ -2371,11 +2372,11 @@ class GameGUITouchHarness
 			pressDialog("options");
 			require(gui.inGameMenu == GameGUI::IGM_OPTION, "Phone menu opens options");
 			pressDialog("text-size/2");
-			require(globalContainer->settings.mobileDialogTextPercent == 150,
-					"Dialog text size applies from the options dialog");
+			require(globalContainer->settings.textSizePercent == 150 && GAGCore::userTextScale == 1.5,
+					"Text size applies from the options dialog");
 			pressDialog("text-size/0");
-			require(globalContainer->settings.mobileDialogTextPercent == 100,
-					"Dialog text size restores");
+			require(globalContainer->settings.textSizePercent == 100 && GAGCore::userTextScale == 1,
+					"Text size restores");
 			const bool muted = globalContainer->settings.mute;
 			pressDialog("mute");
 			require(globalContainer->settings.mute != muted, "Mute toggles from the options dialog");

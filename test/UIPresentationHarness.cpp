@@ -4,6 +4,8 @@
 // captures for review. Run with SDL_VIDEODRIVER=dummy and a disposable profile.
 #include <Environment.h>
 #include "EngineFixtures.h"
+#include "UIRecordingCanvas.h"
+#include <InterfacePresentation.h>
 #include <vector>
 #include <string>
 #include <memory>
@@ -358,6 +360,13 @@ void verify(UIScreen &screen, const std::string &label)
 								interactive[j]->key + " overlap");
 		}
 	require(host.focusOrder().size() >= 1, label + ": nothing is focusable");
+	// Text never spills out of the control that measured it, at any text size.
+	ToolkitTextMeasurer measurer(screen.theme(), p.touch, p.textUnit);
+	glob2test::RecordingCanvas canvas(p.viewport.size(), measurer);
+	host.paint(canvas, 0);
+	const auto spill = glob2test::textSpill(canvas, interactive,
+											[&](Node &node) { return visibleRect(*host.root(), node); });
+	require(spill.empty(), label + ": " + spill);
 }
 void run(const Viewport &viewport)
 {
@@ -403,8 +412,11 @@ void run(const Viewport &viewport)
 				stack.frame(tick, events);
 				tick += 40;
 			};
+			// Every screen at the authored text size and at the largest text size.
+			for (const int percent : {100, 150})
 			for (const auto &insets : insetSets)
 			{
+				GAGCore::userTextScale = percent / 100.0;
 				GAGCore::mobileSafeInsetsForTesting = insets;
 				frame();
 				frame();
@@ -417,9 +429,10 @@ void run(const Viewport &viewport)
 					}
 				require(stack.running(), std::string(fixture.name) + " ended during warm-up");
 				const std::string label = std::string(fixture.name) + " " + viewport.name +
-										  " touch=" + presentation + " bottom=" +
-										  std::to_string(int(insets.bottom));
+										  " touch=" + presentation + " text=" + std::to_string(percent) +
+										  " bottom=" + std::to_string(int(insets.bottom));
 				if (const char *reveal = SDL_getenv_unsafe("GLOB2_UI_REVEAL"); reveal && *reveal)
+
 				{
 					screen->host().scrollIntoView(reveal);
 					frame();
@@ -428,8 +441,8 @@ void run(const Viewport &viewport)
 				std::string screenshot;
 				if (capture && insets.bottom == 0)
 				{
-					screenshot = "ui-" + std::string(fixture.name) + "-" +
-						viewport.name + "-touch" + presentation + ".bmp";
+					screenshot = "ui-" + std::string(fixture.name) + "-" + viewport.name + "-touch" +
+						presentation + (percent == 100 ? "" : "-text" + std::to_string(percent)) + ".bmp";
 					// Retain captures directly; profile fallback can write to the
 					// source tree, and copying captures doubles disk requirements.
 					std::filesystem::remove(captures / screenshot);
@@ -463,6 +476,7 @@ void run(const Viewport &viewport)
 		}
 	}
 	GAGCore::mobileSafeInsetsForTesting.reset();
+	GAGCore::userTextScale = 1;
 	theme.reset();
 	GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "0", 1);
 	std::printf("PASS ui presentation: %d screen/viewport combinations verified\n", checked);

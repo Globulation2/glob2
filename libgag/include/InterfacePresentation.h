@@ -103,6 +103,10 @@ inline PresentationPreference presentationPreference = PresentationPreference::A
 inline ViewportMetrics presentationViewport;
 inline InputCapabilities presentationInput;
 inline ResolvedPresentation presentationState;
+// The player's text-size preference (1 = the authored size). Touch hosts apply
+// it to all interface text: framework screens and dialogs through Presentation,
+// bespoke touch painters through GraphicContext::textUnitsPerPoint().
+inline double userTextScale = 1;
 inline void updatePresentation(const ViewportMetrics &viewport, const InputCapabilities &input)
 {
 	presentationViewport = viewport;

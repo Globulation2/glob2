@@ -3144,8 +3144,6 @@ Emoji
 快轉
 [Hide keyboard]
 隱藏鍵盤
-[Dialog text size]
-對話框文字大小
 [Player slot]
 玩家欄位
 [Team color]
@@ -3484,8 +3482,6 @@ CPU %0%
 最小等級需求: %0
 [Confirm %0]
 確定: %0
-[Dialog text size %0]
-對話框文字大小: %0%
 [%0 %1]
 %0 %1
 [resume game]

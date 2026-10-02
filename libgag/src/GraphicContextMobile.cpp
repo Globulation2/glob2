@@ -18,6 +18,11 @@ namespace GAGCore {
         return density*uiScale / std::min(double(windowW)/sdlsurface->w, double(windowH)/sdlsurface->h);
     }
 
+    double GraphicContext::textUnitsPerPoint() const
+    {
+        return logicalUnitsPerPoint() * (userTextScale > 0 ? userTextScale : 1);
+    }
+
     bool GraphicContext::refreshPresentation()
     {
         if (window) SDL_GetWindowSize(window,&windowW,&windowH);

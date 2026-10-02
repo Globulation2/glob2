@@ -274,6 +274,8 @@ Old Full/Reduced preferences initialize missing individual choices to their form
 values. Explicit individual choices take precedence. The command-line `-h` and
 `-l` shortcuts still select the former Full and Reduced effects together.
 
-Text size (100%, 125%, 150%) adjusts frontend interface text independently of
-interface/map scale in both desktop and touch layouts. It shares the saved
-`mobileDialogTextPercent` preference with the in-game dialog text-size control.
+Text size (100%, 125%, 150%) adjusts interface text independently of
+interface/map scale in both desktop and touch layouts: menus, dialogs and, on
+touch, the gameplay HUD. It is saved as `textSizePercent` and shared with the
+in-game options' text-size control; the former `mobileDialogTextPercent` is
+ignored. See [Text size](../development/ui-framework.md#text-size).

@@ -8,11 +8,13 @@
 #include <ui/Containers.h>
 #include <ui/Controls.h>
 #include <ui/Host.h>
+#include "UIRecordingCanvas.h"
 #include <BrowserTextInput.h>
 #include <cstdio>
 #include <vector>
 
 using namespace GAGGUI::ui;
+using glob2test::RecordingCanvas;
 
 namespace
 {
@@ -20,51 +22,6 @@ void require(bool condition, const char *message)
 {
 	GLOB2_REQUIRE(condition, message);
 }
-
-struct RecordingCanvas : Canvas
-{
-	Size extent;
-	const TextMeasurer &text_;
-	std::vector<Rect> clips;
-	std::vector<std::pair<Point, std::string>> texts;
-	struct IconDraw
-	{
-		Rect bounds;
-		std::string name;
-		GAGCore::Color color;
-	};
-	std::vector<IconDraw> icons;
-	int fills = 0;
-	RecordingCanvas(Size extent, const TextMeasurer &measurer) : extent(extent), text_(measurer)
-	{
-		clips.push_back({0, 0, extent.w, extent.h});
-	}
-	Size size() const override { return extent; }
-	const TextMeasurer &measurer() const override { return text_; }
-	void fillRect(Rect, GAGCore::Color) override { ++fills; }
-	void strokeRect(Rect, GAGCore::Color) override {}
-	void fillRounded(Rect, int, GAGCore::Color) override { ++fills; }
-	void line(Point, Point, GAGCore::Color) override {}
-	void text(Point at, FontRole, const std::string &value, GAGCore::Color) override
-	{
-		if (!value.empty())
-			texts.push_back({at, value});
-	}
-	void pushClip(Rect rect) override { clips.push_back(clips.back().intersect(rect)); }
-	void popClip() override
-	{
-		if (clips.size() > 1)
-			clips.pop_back();
-	}
-	Rect clip() const override { return clips.back(); }
-	void drawSurface(Rect, GAGCore::DrawableSurface *, unsigned char) override {}
-	void drawIcon(Rect r, const IconAsset &asset, GAGCore::Color color) override
-	{
-		icons.push_back({r, asset.name, color});
-	}
-	void drawSprite(Point, GAGCore::Sprite *, int) override {}
-	void transformed(double, Point, Rect, const std::function<void()> &paint) override { paint(); }
-};
 
 Theme theme;
 FixedTextMeasurer measurer(8, 16);
@@ -832,6 +789,68 @@ void checkListAndTextOverscroll()
 	require(t.host.find("log")->overscroll() == 0, "the log springs back");
 }
 
+// Whatever the width and text size, a control's measured size holds the text
+// it paints (see glob2test::textSpill), so larger text never spills into a neighbour.
+void checkTextStaysInControls()
+{
+	auto gear = std::make_shared<IconAsset>();
+	gear->name = "gear";
+	gear->rasters.push_back({24, {}});
+	const std::string longText = "Language & player preferences";
+	auto build = [&](const Presentation &p)
+	{
+		ButtonOptions nav;
+		nav.flat = true;
+		nav.alignLeft = true;
+		nav.minHeight = 42;
+		nav.icon = gear;
+		ButtonOptions iconOnly;
+		iconOnly.icon = gear;
+		iconOnly.accessibleLabel = "Gear";
+		SliderOptions slide;
+		slide.caption = longText;
+		slide.valueText = "50%";
+		StepperOptions step;
+		step.valueText = "Three colonies";
+		ListOptions list;
+		list.visibleRows = 3;
+		std::vector<Element> rows{
+			button("nav/0", "Display & graphics", {}, nav),
+			button("nav/1", "Gameplay", {}, nav),
+			button("nav/2", longText, {}, nav),
+			button("plain", longText, {}),
+			button("icon", "", {}, iconOnly),
+			row({expanded(button("pair/0", "Players & Teams", {})), expanded(button("pair/1", "Game Rules", {}))}, {p.pt(4)}),
+			toggle("toggle", longText, true, {}),
+			segments("segments", {"Text size 100%", "Text size 125%", "Text size 150%"}, 0, {}),
+			choice("choice", {longText, "Short"}, 0, {}),
+			chooser("chooser", longText, {}),
+			stepper("stepper", 3, 0, 10, {}, step),
+			slider("slider", 5, 0, 10, {}, slide),
+			textField("field", longText, {}),
+			listView("list", {longText, "Two", "Three"}, 0, {}, list),
+		};
+		return column(std::move(rows), {p.pt(4)});
+	};
+	for (bool touch : {false, true})
+		// Text sizes 100%, 150% and 175%, then a font whose lines run taller than the
+		// control height (platform rasterizers report different line heights).
+		for (auto [glyph, line] : {std::pair{8, 16}, {12, 24}, {14, 28}, {10, 40}})
+			for (int width : {140, 200, 280, 420})
+			{
+				FixedTextMeasurer sized(glyph, line);
+				Host host(theme, build);
+				host.setMeasurer(&sized);
+				host.setPresentation(Presentation::forSurface(width, 3000, 1, touch));
+				host.layoutIfNeeded();
+				RecordingCanvas canvas({width, 3000}, sized);
+				host.paint(canvas, 0);
+				const auto spill = glob2test::textSpill(canvas, host.interactiveNodes());
+				GLOB2_REQUIRE(spill.empty(), spill + " (touch=" + std::to_string(touch) + " glyph=" + std::to_string(glyph) +
+												 " line=" + std::to_string(line) + " width=" + std::to_string(width) + ")");
+			}
+}
+
 void checkInvariants()
 {
 	Fixture f(
@@ -877,4 +896,5 @@ TEST_SUITE("UILayout")
 	TEST_CASE("list view") { checkListView(); }
 	TEST_CASE("adaptive and field") { checkAdaptiveAndField(); }
 	TEST_CASE("invariants") { checkInvariants(); }
+	TEST_CASE("text stays inside its control at every size") { checkTextStaysInControls(); }
 }

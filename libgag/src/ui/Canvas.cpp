@@ -36,7 +36,7 @@ SurfaceCanvas::SurfaceCanvas(GAGCore::DrawableSurface &target, const Theme &them
 							 const Presentation &presentation)
 	: target(target), theme(theme), presentation(presentation),
 	  measure(std::make_unique<ToolkitTextMeasurer>(theme, presentation.touch,
-													presentation.textScale))
+													presentation.textUnit))
 {
 	int x, y, w, h;
 	target.getClipRect(&x, &y, &w, &h);
@@ -100,7 +100,7 @@ void SurfaceCanvas::text(Point at, FontRole role, const std::string &value, GAGC
 	if (!font)
 		return;
 	font->pushStyle(GAGCore::Font::Style(GAGCore::Font::STYLE_NORMAL, color));
-	const double scale = presentation.textScale;
+	const double scale = presentation.textUnit;
 	auto *context = dynamic_cast<GAGCore::GraphicContext *>(&target);
 	if (context && std::abs(scale - 1) > 1e-6)
 	{
