@@ -1,3 +1,10 @@
+#ifdef _WIN32
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#include <windows.h>
+#endif
+
 #include "Glob2Test.h"
 #include <cmath>
 #include <cstdlib>
@@ -13,6 +20,22 @@
 namespace
 {
 using namespace AIMaxima::Farming;
+
+static double processCpuMicroseconds()
+{
+#ifdef _WIN32
+	// The Windows CRT clock() reports elapsed time, not process CPU time.
+	FILETIME creation, exit, kernel, user;
+	if(!GetProcessTimes(GetCurrentProcess(), &creation, &exit, &kernel, &user))
+		return -1;
+	const uint64_t kernelTicks=(uint64_t(kernel.dwHighDateTime)<<32)|kernel.dwLowDateTime;
+	const uint64_t userTicks=(uint64_t(user.dwHighDateTime)<<32)|user.dwLowDateTime;
+	return double(kernelTicks+userTicks)/10.0;
+#else
+	const std::clock_t ticks=std::clock();
+	return ticks==std::clock_t(-1) ? -1 : 1000000.0*double(ticks)/CLOCKS_PER_SEC;
+#endif
+}
 
 static uint32_t direct(int w, int h, const std::vector<uint8_t>& water,
 	const std::vector<uint8_t>& sand, int x, int y)
@@ -214,14 +237,14 @@ TEST_SUITE("Maxima.Farming")
 		}
 		ExactFertilityCache benchmark;
 		const std::chrono::steady_clock::time_point begin=std::chrono::steady_clock::now();
-		const std::clock_t cpuBegin=std::clock();
-		REQUIRE(cpuBegin!=std::clock_t(-1));
+		const double cpuBegin=processCpuMicroseconds();
+		REQUIRE(cpuBegin>=0);
 		benchmark.rebuild(size,size,water,sand,AdaptiveFertilityPath);
-		const std::clock_t cpuEnd=std::clock();
-		REQUIRE(cpuEnd!=std::clock_t(-1));
+		const double cpuEnd=processCpuMicroseconds();
+		REQUIRE(cpuEnd>=cpuBegin);
 		const long long microseconds=std::chrono::duration_cast<std::chrono::microseconds>(
 			std::chrono::steady_clock::now()-begin).count();
-		const double cpuMicroseconds=1000000.0*double(cpuEnd-cpuBegin)/CLOCKS_PER_SEC;
+		const double cpuMicroseconds=cpuEnd-cpuBegin;
 		std::cout << "fertility_512_us=" << microseconds
 			<< " fertility_512_cpu_us=" << cpuMicroseconds << '\n';
 		// Keep the same work budget; elapsed time also counts unrelated builds
