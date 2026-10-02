@@ -174,6 +174,8 @@ public:
 	static void applyLocalExperiments(GameHeader &header, const MapHeader &map);
 	
 private:
+    static std::unique_ptr<GAGCore::InputStream> openGameInput(const std::string& filename, MapHeader& map, GameHeader& players);
+    GAGCore::CooperativeTask initGameFromStreamTask(MapHeader map, GameHeader players, std::unique_ptr<GAGCore::InputStream> stream, bool saveAI);
     bool stepSessionImpl(Uint64 now, const std::vector<SDL_Event>& events);
     // One step of the session: pacing, the client work (GUI step) when given, orders
     // and the simulation tick. Shared by serial and threaded execution.

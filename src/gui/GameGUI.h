@@ -286,6 +286,7 @@ public:
 	int anyPlayerWaitedTimeFor;
 private:
 	friend class GameGUISelectionHarness;
+	friend class SavegameSafetyHarness;
 	friend class TorusRenderIntegrationTest;
 	friend class TorusRenderBenchmark;
 	friend class SoftwareRenderBenchmark;
@@ -299,8 +300,6 @@ private:
 	void autosave();
 	//! Tick of this session's latest autosave, or -1 before the first.
 	Sint64 lastAutosaveStep;
-	//! Size of the previous autosave, reserved up front for the next one.
-	size_t lastAutosaveSize = 0;
 	//! Writes autosaves off the game thread; created by the first autosave.
 	std::unique_ptr<GAGCore::BackgroundFileWriter> autosaveWriter;
 

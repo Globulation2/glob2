@@ -3,7 +3,11 @@
 #include <GzipUtil.h>
 #include <BinaryStream.h>
 #include <StreamBackend.h>
+#include <ChunkedStreamBackend.h>
 #include <atomic>
+#include <array>
+#include <limits>
+#include <utility>
 #include <cerrno>
 #include <cstdio>
 #include <cstring>
@@ -108,59 +112,161 @@ namespace GAGCore
 		return ok;
 	}
 
-	bool writeGzipAtomicToPath(const std::string& path, const std::string& contents, int level)
+	namespace
 	{
-		std::string compressed;
-		if (!gzipCompress(contents, level, compressed))
+		template<class Encode> bool writeGzipAtomicImpl(const std::string& path, Encode encode)
 		{
-			std::cerr << "writeGzipAtomicToPath: compression failed for " << path << std::endl;
-			return false;
-		}
-
-		static std::atomic<unsigned long> sequence{0};
+			static std::atomic<unsigned long> sequence{0};
 #ifdef WIN32
-		const auto process = GetCurrentProcessId();
+			const auto process = GetCurrentProcessId();
 #else
-		const auto process = getpid();
+			const auto process = getpid();
 #endif
-		FILE *file = NULL;
-		std::string temporary;
-		for (int attempt = 0; attempt < 100; ++attempt)
-		{
-			temporary = path + ".tmp-" + std::to_string(process) + "-" + std::to_string(sequence++);
-			file = openExclusive(temporary);
-			if (file || errno != EEXIST) break;
-		}
-		if (!file)
-		{
-			std::cerr << "writeGzipAtomicToPath: cannot create temporary file for " << path << std::endl;
-			return false;
-		}
-
-		const bool wrote = fwrite(compressed.data(), 1, compressed.size(), file) == compressed.size();
-		const bool flushed = wrote && fflush(file) == 0;
-		const bool closed = fclose(file) == 0;
-		if (!(wrote && flushed && closed))
-		{
-			std::cerr << "writeGzipAtomicToPath: " << path << ": write failed" << std::endl;
+			FILE *file = nullptr;
+			std::string temporary;
+			for (int attempt = 0; attempt < 100; ++attempt)
+			{
+				temporary = path + ".tmp-" + std::to_string(process) + "-" + std::to_string(sequence++);
+				file = openExclusive(temporary);
+				if (file || errno != EEXIST) break;
+			}
+			if (!file) return false;
+			bool wrote = false;
+			try { wrote = encode(file) && fflush(file) == 0; }
+			catch (const std::exception& error)
+			{ std::cerr << "writeGzipAtomicToPath: " << path << ": " << error.what() << std::endl; }
+			const bool closed = fclose(file) == 0;
+			if (wrote && closed)
+			{
+#ifdef WIN32
+				if (MoveFileExA(temporary.c_str(), path.c_str(), MOVEFILE_REPLACE_EXISTING)) return true;
+#else
+				if (std::rename(temporary.c_str(), path.c_str()) == 0) return true;
+#endif
+			}
 			std::remove(temporary.c_str());
 			return false;
 		}
-#ifdef WIN32
-		const bool renamed = MoveFileExA(temporary.c_str(), path.c_str(), MOVEFILE_REPLACE_EXISTING) != 0;
-#else
-		const bool renamed = std::rename(temporary.c_str(), path.c_str()) == 0;
-#endif
-		if (!renamed)
+
+		// No flush between input ranges: block boundaries do not enter the wire format.
+		template<class Ranges> bool deflateRanges(FILE* file, size_t size, int level, Ranges ranges)
 		{
-			std::cerr << "writeGzipAtomicToPath: " << path << ": replacement failed" << std::endl;
-			std::remove(temporary.c_str());
-			return false;
+			z_stream stream{};
+			if (deflateInit2(&stream, level, Z_DEFLATED, 15 + 16, 8, Z_DEFAULT_STRATEGY) != Z_OK) return false;
+			auto end = [](z_stream* s) { deflateEnd(s); };
+			std::unique_ptr<z_stream, decltype(end)> cleanup(&stream, end);
+			gz_header header{}; header.os = 255;
+			if (deflateSetHeader(&stream, &header) != Z_OK) return false;
+			std::array<unsigned char, 256 * 1024> output;
+			size_t consumed = 0;
+            size_t written = 0;
+			bool ok = true;
+			int result = Z_OK;
+			auto feed = [&](const unsigned char* bytes, size_t count) {
+				if (!ok) return;
+				stream.next_in = const_cast<Bytef*>(bytes);
+				stream.avail_in = static_cast<uInt>(count);
+				consumed += count;
+				const int flush = consumed == size ? Z_FINISH : Z_NO_FLUSH;
+				do {
+					stream.next_out = output.data(); stream.avail_out = output.size();
+					result = deflate(&stream, flush);
+					const size_t n = output.size() - stream.avail_out;
+					ok = (result == Z_OK || result == Z_STREAM_END) &&
+                        n <= MAX_COMPRESSED_GAME_FILE_BYTES - written &&
+                        fwrite(output.data(), 1, n, file) == n;
+                    if (ok) written += n;
+				} while (ok && result != Z_STREAM_END && (stream.avail_in || flush == Z_FINISH));
+			};
+			if (size) ranges(feed); else feed(nullptr, 0);
+			return ok && result == Z_STREAM_END;
 		}
-		return true;
+
+		StreamBackend* inflateBackend(std::unique_ptr<StreamBackend> raw, size_t maxExpandedBytes = MAX_EXPANDED_GAME_FILE_BYTES)
+		{
+			if (!raw->isValid()) return raw.release();
+			try
+			{
+				raw->seekFromEnd(0);
+				size_t remaining = raw->getPosition();
+				raw->seekFromStart(0);
+				if (remaining > MAX_COMPRESSED_GAME_FILE_BYTES) return new FileStreamBackend(nullptr);
+				z_stream stream{};
+				if (inflateInit2(&stream, 15 + 16) != Z_OK) return new FileStreamBackend(nullptr);
+				auto end = [](z_stream* s) { inflateEnd(s); };
+				std::unique_ptr<z_stream, decltype(end)> cleanup(&stream, end);
+				std::array<unsigned char, 65536> input;
+				ChunkedBuffer inflated;
+				for (;;)
+				{
+					if (!stream.avail_in && remaining)
+					{
+						const size_t n = std::min(remaining, input.size());
+						if (!raw->readExact(input.data(), n)) break;
+						remaining -= n;
+						stream.next_in = input.data(); stream.avail_in = n;
+					}
+					// At the limit, consume the trailer without allocating another block.
+                    // Any further payload byte rejects the entire stream.
+                    unsigned char overflow;
+                    const auto space = inflated.size() == maxExpandedBytes
+                        ? std::make_pair(&overflow, size_t(1)) : inflated.prepareAppend();
+					stream.next_out = space.first; stream.avail_out = space.second;
+					const int result = inflate(&stream, Z_NO_FLUSH);
+					const size_t produced = space.second - stream.avail_out;
+                    // Cap expansion independently: valid late saves exceed the
+                    // compressed-input limit, but hostile streams stay bounded.
+                    if (produced > maxExpandedBytes - inflated.size()) break;
+                    if (produced) inflated.commitAppend(produced);
+					if (result == Z_STREAM_END)
+					{
+						// Expose bytes only after CRC/end validation and rejection of all
+						// trailing input, before headers or mutable game state can read them.
+						if (!remaining && !stream.avail_in && stream.total_out == inflated.size())
+							return new ChunkedStreamBackend(std::move(inflated));
+						break;
+					}
+					if (result != Z_OK) break;
+				}
+			}
+			catch (const std::exception& error)
+			{ std::cerr << "Cannot inflate save: " << error.what() << std::endl; }
+			return new FileStreamBackend(nullptr);
+		}
 	}
 
-	StreamBackend *openInflatingFileStreamBackend(const std::string& path)
+	bool writeGzipAtomicToPath(const std::string& path, const std::string& contents, int level)
+	{
+		if (contents.size() > MAX_EXPANDED_GAME_FILE_BYTES) return false;
+		return writeGzipAtomicImpl(path, [&](FILE* file) {
+			if (level == Z_NO_COMPRESSION)
+			{
+				// Stored-block boundaries depend on output capacity; keep this optional legacy path.
+				std::string compressed;
+				return gzipCompress(contents, level, compressed) &&
+                    compressed.size() <= MAX_COMPRESSED_GAME_FILE_BYTES && fwrite(compressed.data(), 1, compressed.size(), file) == compressed.size();
+			}
+			return deflateRanges(file, contents.size(), level, [&](auto feed) {
+				feed(reinterpret_cast<const unsigned char*>(contents.data()), contents.size());
+			});
+		});
+	}
+
+	bool writeGzipAtomicToPath(const std::string& path, const ChunkedBuffer& contents, int level)
+	{
+		if (contents.size() > MAX_EXPANDED_GAME_FILE_BYTES) return false;
+		if (level == Z_NO_COMPRESSION)
+		{
+			std::string legacy(contents.size(), '\0');
+			contents.readAt(0, legacy.data(), legacy.size());
+			return writeGzipAtomicToPath(path, legacy, level);
+		}
+		return writeGzipAtomicImpl(path, [&](FILE* file) {
+			return deflateRanges(file, contents.size(), level, [&](auto feed) { contents.forEachRange(0, contents.size(), feed); });
+		});
+	}
+
+	StreamBackend *openInflatingFileStreamBackend(const std::string& path, size_t maxExpandedBytes)
 	{
 		FILE *fp = fopen(path.c_str(), "rb");
 		if (!fp)
@@ -168,27 +274,22 @@ namespace GAGCore
 		if (!endsWith(path, ".gz"))
 			return new FileStreamBackend(fp);
 
-		FileStreamBackend raw(fp);
-		raw.seekFromEnd(0);
-		const size_t length = raw.getPosition();
-		if (length > MAX_COMPRESSED_GAME_FILE_BYTES) return new FileStreamBackend(NULL);
-		raw.seekFromStart(0);
-		std::string compressed(length, '\0');
-		if (length > 0)
-			raw.read(&compressed[0], length);
-
-		std::string inflated;
-		if (!gzipDecompress(compressed, inflated, MAX_COMPRESSED_GAME_FILE_BYTES))
-		{
-			std::cerr << "openInflatingFileStreamBackend: corrupt or truncated gzip data in " << path << std::endl;
-			return new FileStreamBackend(NULL);
-		}
-		auto *memory = new MemoryStreamBackend(inflated.data(), inflated.size());
-		memory->seekFromStart(0); // the constructor's copy-in leaves the position at the end
-		return memory;
+		return inflateBackend(std::make_unique<FileStreamBackend>(fp), std::min(maxExpandedBytes, MAX_EXPANDED_GAME_FILE_BYTES));
 	}
 
 	bool FileManager::writeGzipAtomic(const std::string& filename, const std::string& contents, int level)
+	{
+		std::vector<std::string> paths;
+		if (isAbsolutePath(filename)) paths.push_back(filename);
+		else for (const auto& directory : dirList) paths.push_back(directory + DIR_SEPARATOR + filename);
+
+		for (const auto& path : paths)
+			if (writeGzipAtomicToPath(path, contents, level))
+				return true;
+		return false;
+	}
+
+	bool FileManager::writeGzipAtomic(const std::string& filename, const ChunkedBuffer& contents, int level)
 	{
 		std::vector<std::string> paths;
 		if (isAbsolutePath(filename)) paths.push_back(filename);
@@ -204,7 +305,14 @@ namespace GAGCore
 	{
 		try
 		{
-			auto *memory = new MemoryStreamBackend();
+			if (level == Z_NO_COMPRESSION)
+			{
+				auto* memory = new MemoryStreamBackend();
+				BinaryOutputStream stream(memory);
+				writer(stream);
+				return writeGzipAtomic(filename, memory->takeContents(), level);
+			}
+			auto *memory = new ChunkedStreamBackend();
 			BinaryOutputStream stream(memory);
 			writer(stream);
 			return writeGzipAtomic(filename, memory->takeContents(), level);
@@ -221,26 +329,6 @@ namespace GAGCore
 		if (!endsWith(filename, ".gz"))
 			return openInputStreamBackend(filename);
 
-		StreamBackend *raw = openInputStreamBackend(filename);
-		if (!raw->isValid())
-			return raw;
-		raw->seekFromEnd(0);
-		const size_t length = raw->getPosition();
-		if (length > MAX_COMPRESSED_GAME_FILE_BYTES) { delete raw; return new FileStreamBackend(NULL); }
-		raw->seekFromStart(0);
-		std::string compressed(length, '\0');
-		if (length > 0)
-			raw->read(&compressed[0], length);
-		delete raw;
-
-		std::string inflated;
-		if (!gzipDecompress(compressed, inflated, MAX_COMPRESSED_GAME_FILE_BYTES))
-		{
-			std::cerr << "FileManager::openInflatingInputStreamBackend: corrupt or truncated gzip data in " << filename << std::endl;
-			return new FileStreamBackend(NULL);
-		}
-		auto *memory = new MemoryStreamBackend(inflated.data(), inflated.size());
-		memory->seekFromStart(0); // the constructor's copy-in leaves the position at the end
-		return memory;
+		return inflateBackend(std::unique_ptr<StreamBackend>(openInputStreamBackend(filename)));
 	}
 }

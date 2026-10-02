@@ -21,6 +21,7 @@
 #include <BinaryStream.h>
 #include <TextStream.h>
 #include <StreamBackend.h>
+#include <ChunkedStreamBackend.h>
 
 #include "BuildingType.h"
 #include "DatasetWriter.h"
@@ -520,6 +521,9 @@ bool Game::integrity(void)
 	return true;
 }
 
+// The legacy hash sees the header captured before backpatching. Hashing its
+// final serialized form instead would change save bytes, even with the same body.
+// Both storage adapters substitute initialHeader, then patch only the digest.
 void DeferredGameSHA1::apply(std::string& contents) const
 {
 	assert(start <= headerOffset && headerOffset + initialHeader.size() <= end && end <= contents.size());
@@ -534,6 +538,22 @@ void DeferredGameSHA1::apply(std::string& contents) const
 	unsigned char sha1[SHA1_BYTE_LEN];
 	SHA1Final(sha1, &context);
 	std::copy(sha1, sha1 + SHA1_BYTE_LEN, contents.begin() + sha1Offset);
+}
+
+void DeferredGameSHA1::apply(GAGCore::ChunkedBuffer& contents) const
+{
+    assert(start <= headerOffset && headerOffset + initialHeader.size() <= end && end <= contents.size());
+    assert(sha1Offset + SHA1_BYTE_LEN <= headerOffset + initialHeader.size());
+    SHA1_CTX context;
+    SHA1Init(&context);
+    const auto hash = [&context](const unsigned char* data, size_t size) { SHA1Update(&context, data, size); };
+    contents.forEachRange(start, headerOffset - start, hash);
+    SHA1Update(&context, reinterpret_cast<const unsigned char*>(initialHeader.data()), initialHeader.size());
+    const size_t afterHeader = headerOffset + initialHeader.size();
+    contents.forEachRange(afterHeader, end - afterHeader, hash);
+    unsigned char sha1[SHA1_BYTE_LEN];
+    SHA1Final(sha1, &context);
+    contents.writeAt(sha1Offset, sha1, SHA1_BYTE_LEN);
 }
 
 void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::string& name, DeferredGameSHA1* deferredSHA1)
