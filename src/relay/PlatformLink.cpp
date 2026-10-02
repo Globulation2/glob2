@@ -126,7 +126,7 @@ asio::awaitable<void> PlatformLink::run()
 	std::chrono::seconds backoff(1);
 	while (!stopped)
 	{
-		std::chrono::steady_clock::duration wait = heartbeatInterval;
+		std::chrono::steady_clock::duration wait{};
 		if (!registered)
 		{
 			registered = co_await registerRelay();
@@ -137,12 +137,16 @@ asio::awaitable<void> PlatformLink::run()
 				backoff = std::min(backoff * 2, std::chrono::seconds(30));
 			}
 			else
+			{
 				backoff = std::chrono::seconds(1);
+				wait = heartbeatInterval; // as the registration response set it
+			}
 		}
 		else
 		{
 			bool reregister = false;
 			co_await heartbeat(reregister);
+			wait = heartbeatInterval;
 			if (reregister)
 			{
 				registered = false;
