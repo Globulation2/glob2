@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Exercise real LAN clients, lobby widgets, sockets, readiness and departures.
+// Exercise real LAN rooms (LanRoom), lobby widgets, sockets, map transfer, readiness and departures.
 #include "GlobalContainer.h"
 #include <vector>
 #include "Engine.h"
@@ -7,7 +7,9 @@
 #include "LANSessionScreen.h"
 #include <optional>
 #include "MultiplayerGameScreen.h"
-#include "YOGServer.h"
+#include "LanRoom.h"
+#include "MapCache.h"
+#include "MatchSetup.h"
 #include "FileManager.h"
 #include "Toolkit.h"
 #include <ScreenStack.h>
@@ -117,10 +119,10 @@ bool press(ScreenStack& screens, int code, std::vector<SDL_Event>& events)
 class HostObserver
 {
 public:
-	HostObserver(std::shared_ptr<YOGClient> client, int cycles, std::string capture)
-        : client(client), cycles(cycles), capture(capture), start(SDL_GetTicks64()) {}
+	HostObserver(Lan::LanHost& host, int cycles, std::string capture)
+        : host(host), cycles(cycles), capture(capture), start(SDL_GetTicks64()) {}
     std::optional<int> result;
-	void onTimer(Uint32 tick)
+	void onTimer(Uint32)
 	{
 
 		if (!pendingCapture.empty())
@@ -134,36 +136,36 @@ public:
 			result = 1;
 			return;
 		}
-        auto game = client->getMultiplayerGame();
-        if (!game) return;
-		auto& header = game->getGameHeader();
-		int count = header.getNumberOfPlayers();
+		const auto& room = host.state();
+		const int count = static_cast<int>(room.members.size());
 		if (count != previousCount)
 		{
-			std::printf("HOST roster=%d state=%d\n", count, int(game->getGameJoinCreationState()));
-			for (int i = 0; i < count; ++i)
-			{
-				const BasePlayer& p = header.getBasePlayer(i);
-				std::printf("  slot=%d id=%u name=%s mask=%u\n", p.number, p.playerID, p.name.c_str(), p.numberMask);
-			}
+			std::printf("HOST roster=%d seats=%zu\n", count, room.setup.seats.size());
+			for (const auto& m : room.members)
+				std::printf("  member=%u seat=%d name=%s ready=%d map=%d\n", m.id, m.seat, m.name.c_str(), int(m.ready), int(m.hasMap));
 			previousCount = count;
 		}
-		std::set<Uint32> ids;
-		for (int i = 0; i < count; ++i)
-		{
-			const BasePlayer& p = header.getBasePlayer(i);
-			if (!ids.insert(p.playerID).second || p.number != i || p.numberMask != (Uint32(1) << i))
+		std::set<int> seats;
+		std::set<std::string> names;
+		for (const auto& m : room.members)
+			if (!seats.insert(m.seat).second || !names.insert(m.name).second || m.seat < 0 ||
+			    m.seat >= int(room.setup.seats.size()) || room.setup.seats[m.seat].name != m.name)
 			{
-				std::puts("HOST FAIL: duplicate identity or invalid slot mask");
+				std::puts("HOST FAIL: duplicate identity or invalid seat");
 				result = 1;
 			}
-		}
+		for (std::size_t i = 0; i < room.setup.seats.size(); ++i)
+			if (room.setup.seats[i].seat != int(i))
+			{
+				std::puts("HOST FAIL: seats are not numbered in order");
+				result = 1;
+			}
 		if (count > 2)
 		{
 			std::puts("HOST FAIL: expected exactly one host and one guest");
 			result = 1;
 		}
-		if (count == 2 && game->isGameReadyToStart() && !readySeen)
+		if (count == 2 && host.canStart() && !readySeen)
 		{
 			readySeen = true;
 			std::printf("HOST guest ready, cycle=%d\n", completed + 1);
@@ -177,35 +179,40 @@ public:
 			if (completed == cycles)
 			{
 				std::puts("HOST PASS: all ready/join/leave cycles completed");
-				game->leaveGame();
 				result = 0;
 			}
 		}
 	}
 private:
-	std::shared_ptr<YOGClient> client;
+	Lan::LanHost& host;
 	int cycles, completed = 0, previousCount = -1;
 	bool readySeen = false;
 	std::string capture, pendingCapture;
 	Uint64 start;
 };
 
+Lan::LanHost::Options hostOptions(std::uint16_t port)
+{
+	Lan::LanHost::Options options;
+	options.hostName = "LAN host";
+	options.map = Engine::loadMapHeader("maps/FourSquares1.map");
+	options.port = port;
+	options.broadcast = port == 0;
+	return options;
+}
+
 bool connectionFailureChecks()
 {
-    // Never pump the WSS listener: cancellation and the TLS/greeting deadline
-    // must remain responsive while connection establishment is pending.
-    YOGServer stalled(YOGAnonymousLogin, YOGSingleGame);
-    if (!stalled.isListening()) return false;
+    // A host that is never updated: its listener never completes a handshake, so
+    // cancellation and the connection deadline must stay responsive meanwhile.
+    auto stalled = Lan::LanRoom::host(hostOptions(17489));
     for (bool cancel : {true, false}) {
-        auto client = std::make_shared<YOGClient>();
-        client->connect(stalled.networkConfig().lobbyEndpoint);
-        const auto deadline = SDL_GetTicks64() + 2000;
-        while (!client->isConnected() && SDL_GetTicks64() < deadline) {
-            client->update(); SDL_Delay(1);
-        }
-        if (!client->isConnected() && !client->isConnecting()) return false;
+        Lan::LanClient::Options options;
+        options.endpoint = stalled->shareText();
+        options.name = "timeout probe";
+        auto room = Lan::LanRoom::join(options);
         ScreenStack screens(*globalContainer->gfx);
-        screens.push(std::make_unique<LANSessionScreen>(screens, client, "timeout probe"));
+        screens.push(std::make_unique<LANSessionScreen>(screens, room));
         screens.frame(0, {});
         SDL_Event escape{};
         escape.type = SDL_KEYDOWN;
@@ -217,31 +224,22 @@ bool connectionFailureChecks()
             screens.frame(10000, {}); screens.frame(10001, {});
             screens.frame(10002, {escape}); screens.frame(10003, {}); screens.frame(10004, {});
         }
-        if (screens.running() || screens.result() != (cancel ? 0 : 1) || client->isConnected()) return false;
+        if (screens.running() || screens.result() != (cancel ? 0 : 1) ||
+            room->guestSide()->phase() != Lan::LanClient::Phase::Closed) return false;
     }
-    std::puts("LAN progress PASS: cancellation and greeting timeout release the connection");
+    std::puts("LAN progress PASS: cancellation and connection timeout release the connection");
     return true;
 }
 
 int host(int cycles, const std::string& capture)
 {
-	auto client = std::make_shared<YOGClient>();
-	auto server = std::make_shared<YOGServer>(YOGAnonymousLogin, YOGSingleGame);
-	if (!server->isListening()) { std::puts("HOST FAIL: port in use"); return 1; }
-	server->enableLANBroadcasting();
-    std::cout << "PAIRING " << server->networkConfig().lobbyEndpoint << std::endl;
-	client->attachGameServer(server);
-	client->connect(server->networkConfig().lobbyEndpoint);
-	// A private map name forces a real transfer without touching user maps.
-	MapHeader map = Engine::loadMapHeader("maps/FourSquares1.map");
-	map.setMapName("LAN regression transfer");
-	const std::string sourcePath = glob2PreferGzipReadPath(*Toolkit::getFileManager(), "maps/FourSquares1.map");
-	std::filesystem::copy_file(sourcePath,
-		Toolkit::getFileManager()->getDir(0) + "/" + glob2GzipWritePath(map.getFileName()),
-		std::filesystem::copy_options::overwrite_existing);
+	std::shared_ptr<Lan::LanRoom> room;
+	try { room = Lan::LanRoom::host(hostOptions(0)); }
+	catch (const std::exception& error) { std::printf("HOST FAIL: %s\n", error.what()); return 1; }
+    std::cout << "PAIRING " << room->shareText() << std::endl;
     ScreenStack screens(*globalContainer->gfx);
-    screens.push(std::make_unique<LANSessionScreen>(screens, client, "LAN host", map));
-    HostObserver observer(client, cycles, capture);
+    screens.push(std::make_unique<LANSessionScreen>(screens, room));
+    HostObserver observer(*room->hostSide(), cycles, capture);
     while (screens.running() && !observer.result) {
         std::vector<SDL_Event> events;
         SDL_Event event;
@@ -284,13 +282,14 @@ int main(int argc, char** argv)
 	if (SDLNet_Init() < 0) return 1;
 	int rc = 0;
 	if (std::string(argv[1]) == "host") rc = connectionFailureChecks() ? host(std::stoi(argv[3]), argv[4]) : 1;
-	else for (int cycle = 0; cycle < std::stoi(argv[3]) && !rc; ++cycle)
+	else
 	{
-		// A new receiver stores the download as ".gz" without unzipping it (see
-		// YOGClientFileAssembler::handleMessage), so this is the file to expect.
-		const auto downloaded = std::filesystem::path(globals.fileManager->getDir(0)) / "maps/LAN_regression_transfer.map.gz";
-		// Force a second request too: rejoining must reuse the server's upload
-		// rather than append another copy of its chunks to the cached transfer.
+		const std::string source = glob2PreferGzipReadPath(*globals.fileManager, "maps/FourSquares1.map");
+		const std::string hash = Online::mapContentHash(source);
+		const auto downloaded = std::filesystem::path(Online::MapCache::defaultDirectory()) / (hash + ".map.gz");
+		for (int cycle = 0; cycle < std::stoi(argv[3]) && !rc; ++cycle)
+		{
+		// Force a download every cycle: the guest's map cache is keyed by content hash.
 		std::filesystem::remove(downloaded);
         ScreenStack screens(*globals.gfx);
         screens.push(std::make_unique<JoinScreen>(screens, argv[2], std::string(argv[4]) + "-" + std::to_string(cycle + 1) + ".bmp"));
@@ -309,17 +308,15 @@ int main(int argc, char** argv)
             SDL_Delay(20);
         }
         if (!rc) rc = screens.result();
-		std::ifstream original(glob2PreferGzipReadPath(*globals.fileManager, "maps/FourSquares1.map"), std::ios::binary);
-		std::ifstream received(downloaded, std::ios::binary);
-		std::string expected((std::istreambuf_iterator<char>(original)), {});
-		std::string actual((std::istreambuf_iterator<char>(received)), {});
-		if (!original || !received || actual != expected)
+		std::string expected, actual;
+		if (!Online::readMapBytes(source, expected) || !Online::readMapBytes(downloaded.string(), actual) || actual != expected)
 		{
 			std::puts("JOIN FAIL: downloaded map differs from source");
 			rc = 1;
 		}
 		else std::printf("JOIN map verified: %zu bytes, cycle=%d\n", actual.size(), cycle + 1);
 		SDL_Delay(1000);
+		}
 	}
 	SDLNet_Quit();
 	return rc;
