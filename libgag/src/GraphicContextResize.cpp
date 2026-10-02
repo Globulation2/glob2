@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "GraphicContextPrivate.h"
+#include <SoftwareFramePresenter.h>
+#include <RenderBackend.h>
 #include <algorithm>
 #include <cassert>
 #include <cmath>
@@ -59,10 +61,15 @@ namespace GAGCore
 				if (needsBackend) { backend = makeSoftwareRenderBackend(replacement.get()); backend->nativeLogicalSize(logicalW,logicalH); }
 			}
 			catch (const std::exception &error) { SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION,"Native software target: %s",error.what()); return false; }
-			if (nativeSoftware) renderer.reset();
+			if (nativeSoftware) renderer = nullptr;
 			freeOwnedSurface();
 			sdlsurface = replacement.release(); ownsSurface = true;
-			if (cpu) { renderer = std::move(backend); nativeSoftware = needsBackend; }
+			if (cpu)
+			{
+				softwareRasterizer = std::move(backend);
+				renderer = softwareRasterizer.get();
+				nativeSoftware = needsBackend;
+			}
 		}
 		windowW=pointsW; windowH=pointsH; drawableW=pixelsW; drawableH=pixelsH;
 		desktopLogicalW=logicalW; desktopLogicalH=logicalH;
@@ -198,6 +205,29 @@ namespace GAGCore
 			return;
 		}
 		#endif
+        // A software frame is retained by rotating buffers, avoiding a full-frame
+        // retention copy on every full redraw. Allocation failure keeps the old path.
+        if (!softwarePresenter && ownsSurface)
+        {
+            try
+            {
+                softwarePresenter = std::make_unique<SoftwareFramePresenter>(sdlsurface);
+                ownsSurface = false;
+            }
+            catch (const std::exception&)
+            {
+                // The constructor has not taken ownership when allocation fails.
+            }
+        }
+        if (softwarePresenter)
+        {
+            if (softwareRasterizer) softwareRasterizer->flush();
+            softwarePresenter->complete();
+            SDL_FreeSurface(frameCache.surface);
+            frameCache.surface = nullptr;
+            frameCache.valid = false;
+            return;
+        }
 		if (!frameCache.surface || frameCache.surface->w != sdlsurface->w || frameCache.surface->h != sdlsurface->h)
 		{
 			SDL_FreeSurface(frameCache.surface);
@@ -223,6 +253,39 @@ namespace GAGCore
 		frameCache.failureReported = false;
 	}
 
+    void GraphicContext::beginFrame(FrameMode mode)
+    {
+        if (!softwarePresenter || !softwarePresenter->needsBegin()) return;
+        if (softwareRasterizer) softwareRasterizer->flush();
+        SDL_Surface* target = softwarePresenter->begin(mode == FrameMode::PreserveContent);
+        sdlsurface = target;
+        // The facade now exposes another pixel buffer, even before its first draw.
+        markPixelsChanged();
+        if (softwareRasterizer) softwareRasterizer->bindTarget(target);
+        SDL_SetClipRect(target, &clipRect);
+    }
+
+    void GraphicContext::prepareDraw()
+    {
+        // Legacy menu/editor callers may update only part of a frame. Explicit
+        // full-redraw game callers begin before their first drawing operation.
+        beginFrame(FrameMode::PreserveContent);
+        // Native surface operations mark their own writes. Only direct backend
+        // writes need the facade to advance its content revision here.
+        if (renderer == softwareRasterizer.get() && renderer) markPixelsChanged();
+    }
+
+    SDL_Surface* GraphicContext::completedFrame() const
+    {
+        if (softwarePresenter && softwarePresenter->completed()) return softwarePresenter->completed();
+        return frameCache.valid && frameCache.surface ? frameCache.surface : sdlsurface;
+    }
+
+    RenderOperations GraphicContext::backendOperations() const
+    {
+        return portableRenderer ? portableRenderer->operations() : softwareRasterizer ? softwareRasterizer->operations() : RenderOperations{};
+    }
+
 	void GraphicContext::swapBuffers()
 	{
 		SDL_GL_SwapWindow(window);
@@ -230,7 +293,7 @@ namespace GAGCore
 
 	void GraphicContext::presentLastFrame()
 	{
-		if (!frameCache.valid || presenting || (SDL_GetWindowFlags(window) & SDL_WINDOW_MINIMIZED)) return;
+		if ((!frameCache.valid && !(softwarePresenter && softwarePresenter->completed())) || presenting || (SDL_GetWindowFlags(window) & SDL_WINDOW_MINIMIZED)) return;
 		FlagScope scope(presenting);
 		#if defined(HAVE_OPENGL) && !defined(GLOB2_WEBGL2)
 		if (optionFlags & USEGPU)
@@ -280,19 +343,21 @@ namespace GAGCore
 			return;
 		}
 		#endif
+		SDL_Surface* completed = softwarePresenter ? softwarePresenter->completed() : frameCache.surface;
+        if (!completed) return;
 		SDL_Surface *target = SDL_GetWindowSurface(window);
 		if (!target || target->w <= 0 || target->h <= 0) return;
-		const float scale = std::min(float(target->w) / frameCache.surface->w, float(target->h) / frameCache.surface->h);
-		SDL_Rect dst{0, 0, int(frameCache.surface->w * scale + 0.5f), int(frameCache.surface->h * scale + 0.5f)};
+		const float scale = std::min(float(target->w) / completed->w, float(target->h) / completed->h);
+		SDL_Rect dst{0, 0, int(completed->w * scale + 0.5f), int(completed->h * scale + 0.5f)};
 		dst.x = (target->w - dst.w) / 2;
 		dst.y = (target->h - dst.h) / 2;
 		// An opaque, full-window copy already overwrites every pixel.
 		if (dst.w != target->w || dst.h != target->h)
 			SDL_FillRect(target, nullptr, SDL_MapRGB(target->format, 0, 0, 0));
-		if (dst.w == frameCache.surface->w && dst.h == frameCache.surface->h)
-			SDL_BlitSurface(frameCache.surface, nullptr, target, &dst);
+		if (dst.w == completed->w && dst.h == completed->h)
+			SDL_BlitSurface(completed, nullptr, target, &dst);
 		else
-			SDL_BlitScaled(frameCache.surface, nullptr, target, &dst);
+			SDL_BlitScaled(completed, nullptr, target, &dst);
 		SDL_UpdateWindowSurface(window);
 	}
 }

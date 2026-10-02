@@ -20,6 +20,9 @@ NetGamePlayerManager::NetGamePlayerManager(GameHeader& gameHeader)
 
 void NetGamePlayerManager::addPerson(YOGPlayerID playerID, const std::string& name)
 {
+	// A full lobby must not increment its header when no array slot was filled.
+	if (gameHeader.getNumberOfPlayers() >= Team::MAX_COUNT)
+		return;
 	int team_number;
 	if(reteamInfo.doesPlayerHaveTeam(name))
 	{
@@ -51,8 +54,8 @@ void NetGamePlayerManager::addPerson(YOGPlayerID playerID, const std::string& na
 
 void NetGamePlayerManager::addAIPlayer(AI::ImplementationID type)
 {
-	//16 is current maximum
-	if(gameHeader.getNumberOfPlayers() < 16)
+	// Shared controller capacity, including AI and shared-control slots.
+	if(gameHeader.getNumberOfPlayers() < Team::MAX_COUNT)
 	{
 		int team_number = chooseTeamNumber();
 		for(int x=0; x<Team::MAX_COUNT; ++x)

@@ -27,9 +27,13 @@
 #include "Brush.h"
 #include "DynamicClouds.h"
 #include <OpaqueRectangleBatch.h>
+#include <RenderBatch.h>
 
 
 #include "GameRenderInternal.h"
+#include "SoftwareTerrainCache.h"
+#include "scene/SceneExtract.h"
+#include "PerformanceTelemetry.h"
 
 // Map rendering orchestrator and shared helpers. Split from Game_render.cpp.
 
@@ -46,11 +50,6 @@ void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength,
 
 	if ((orientation==LEFT_TO_RIGHT) || (orientation==RIGHT_TO_LEFT))
 	{
-		/*globalContainer->gfx->drawHorzLine(x, y, maxLength*3+1, 32, 32, 32);
-		globalContainer->gfx->drawHorzLine(x, y+barWidth+1, maxLength*3+1, 32, 32, 32);
-		for (int i=0; i<maxLength+1; i++)
-			globalContainer->gfx->drawVertLine(x+i*3, y+1, barWidth, 32, 32, 32);
-		*/
 		globalContainer->gfx->drawFilledRect(x, y, maxLength*3+1, barWidth+2, 0, 0, 0);
 
 		if (orientation==LEFT_TO_RIGHT)
@@ -76,11 +75,6 @@ void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength,
 	}
 	else if ((orientation==BOTTOM_TO_TOP) || (orientation==TOP_TO_BOTTOM))
 	{
-		/*globalContainer->gfx->drawVertLine(x, y, maxLength*3+1, 32, 32, 32);
-		globalContainer->gfx->drawVertLine(x+barWidth+1, y, maxLength*3+1, 32, 32, 32);
-		for (int i=0; i<maxLength+1; i++)
-			globalContainer->gfx->drawHorzLine(x+1, y+i*3, barWidth, 32, 32, 32);
-		*/
 		globalContainer->gfx->drawFilledRect(x, y, barWidth+2, maxLength*3+1, 0, 0, 0);
 
 		if (orientation==TOP_TO_BOTTOM)
@@ -142,7 +136,7 @@ bool Game::isOnScreen(int left, int top, int right, int bot, int viewportX, int 
 
 	if((x >= left-1 && x <= right) || (x+map.getW() >= left-1 && x+map.getW() <= right))
 	{
-		if((y >= top-1 && y <= bot) || (y+map.getH() >= top-1 && y+map.getH() <= bot))
+		if ((y >= top - 1 && y <= bot) || (y + map.getH() >= top - 1 && y + map.getH() <= bot))
 		{
 			return true;
 		}
@@ -150,66 +144,184 @@ bool Game::isOnScreen(int left, int top, int right, int bot, int viewportX, int 
 	return false;
 }
 
-
-
-void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargin, int viewportX, int viewportY, int localTeam, ViewState& view, Uint32 drawOptions, std::set<Building*> *visibleBuildings, const BuildingGuiStateMap* buildingGuiState, bool animationsPaused, int cloudGridLimit)
+namespace
 {
+bool drawPreparedWater(const GameRenderFrame &frame, const SoftwareTerrainCache &cache, int time)
+{
+	if (frame.left != 0 || frame.top != 0)
+		return false;
+
+	auto *water = frame.water.nativeFrame(0);
+	if (water)
+	{
+		PERF_SCOPE_TIME(Water);
+		const int startX = -(((frame.viewportX << 5) + time / 2) % 512);
+		const int startY = -((frame.viewportY << 5) % 512);
+        // Include the original pass's overshoot outside the logical viewport.
+        // Fractional transforms can bring those pixels back inside the target.
+        const SDL_Rect bounds{startX, startY,
+            ((frame.width - startX + 511) / 512) * 512,
+            ((frame.height - startY + 511) / 512) * 512};
+        const auto regions = cache.waterRegions(bounds);
+        for (int y = startY; y < frame.height; y += 512)
+            for (int x = startX; x < frame.width; x += 512)
+            {
+                const SDL_Rect tile{x, y, 512, 512};
+                // Keep the complete source mapping: cropping before scaling
+                // would restart nearest-neighbor sampling at coverage edges.
+                if (std::any_of(regions.begin(), regions.end(), [&](const SDL_Rect &region) {
+                    return SDL_HasIntersection(&tile, &region);
+                })) frame.target.drawSurface(x, y, water);
+            }
+		return true;
+	}
+
+	return false;
+}
+} // namespace
+
+void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargin, int viewportX,
+				   int viewportY, int localTeam, ViewState &view, Uint32 drawOptions,
+				   std::set<Uint16> *visibleBuildings,
+				   const BuildingGuiStateMap *buildingGuiState, bool animationsPaused,
+				   int cloudGridLimit)
+{
+    GAGCore::FrameDrawBatch frameBatch(globalContainer->gfx);
 	// Frozen while paused, so the water and the clouds hold still with the rest.
-	int &time = mapAnimationTime;
-	static DynamicClouds ds(&globalContainer->settings);
-	int left=(sx>>5);
-	int top=(sy>>5);
-	int right=((sx+sw+31)>>5);
-	int bot=((sy+sh+31)>>5);
+	int &time = view.render.animationTime;
+	// Draw the scene the simulation published, else extract one now (serial callers).
+	if (!view.scene)
+	{
+		SceneRequest request;
+		request.localTeam = localTeam;
+		request.selectedBuilding = refOf(view.selectedBuilding);
+		request.selectedUnit = refOf(view.selectedUnit);
+		extractScene(*this, request, view.render.ownScene);
+	}
+	const Scene &scene = view.scene ? *view.scene : view.render.ownScene;
+	int left = (sx >> 5);
+	int top = (sy >> 5);
+	int right = ((sx + sw + 31) >> 5);
+	int bot = ((sy + sh + 31) >> 5);
 
 	if (!animationsPaused)
 		time++;
-	drawMapWater(sw, sh, viewportX, viewportY, time);
-	drawMapTerrain(left, top, right, bot, viewportX, viewportY, localTeam, drawOptions);
-	drawMapResources(left, top, right, bot, viewportX, viewportY, localTeam, drawOptions);
-	drawMapGroundUnits(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, view);
-	drawMapDebugAreas(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, view);
-	drawMapGroundBuildings(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, visibleBuildings, buildingGuiState);
-	drawMapAirUnits(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, view);
-	if((drawOptions & DRAW_SCRIPT_AREAS) != 0)
+	GameRenderFrame frame{*globalContainer->gfx,
+						  *globalContainer->terrain,
+						  *globalContainer->terrainWater,
+						  left,
+						  top,
+						  right,
+						  bot,
+						  sw,
+						  sh,
+						  viewportX,
+						  viewportY,
+						  localTeam,
+						  drawOptions,
+						  globalContainer->isViewingGame() ? globalContainer->replayVisibleTeams
+														   : teams[localTeam]->me,
+						  !(globalContainer->gfx->getOptionFlags() &
+							(GraphicContext::USEGPU | GraphicContext::PORTABLEGPU))};
+	// Prepare coverage before water, keeping scene ordering independent of the
+	// cache's storage policy. Discovery uses exactly the uncached terrain rule.
+	// Native opaque tile copies beat blending mixed-alpha chunks. Cache only
+	// transformed CPU passes, where batching and per-pixel opaque copies help.
+	const bool cacheEligible = frame.software && frame.target.hasPortableRenderer();
+	SoftwareTerrainCache *softwareTerrainCache = nullptr;
+	if (cacheEligible)
+	{
+		try
+		{
+			softwareTerrainCache = &view.render.terrainCache(scene.map.identity());
+		}
+		catch (const std::bad_alloc &)
+		{ /* Keep the uncached renderer available under memory pressure. */
+		}
+	}
+	bool cached =
+		softwareTerrainCache &&
+		softwareTerrainCache->prepare(scene.map, frame.terrain, frame.left, frame.top, frame.right,
+									  frame.bottom, frame.viewportX, frame.viewportY,
+									  frame.visibleTeams, frame.options & DRAW_WHOLE_MAP);
+	bool coveredWater = false;
+	try
+	{
+		if (cached)
+			coveredWater = drawPreparedWater(frame, *softwareTerrainCache, time);
+	}
+	catch (const std::bad_alloc &)
+	{
+		cached = false;
+	}
+	if (!coveredWater)
+		drawMapWater(sw, sh, viewportX, viewportY, time);
+	if (cached)
+	{
+		PERF_SCOPE_TIME(Terrain);
+		softwareTerrainCache->draw(frame.target);
+	}
+	else
+		drawMapTerrain(left, top, right, bot, viewportX, viewportY, localTeam, drawOptions, scene.map);
+
+	// Pass adapters keep the two coordinate conventions in one place. Individual
+	// layers still own their visibility decisions and their original draw order.
+	const auto tilePass = [&](auto method, auto &&...state)
+	{
+		(this->*method)(frame.left, frame.top, frame.right, frame.bottom, frame.viewportX,
+						frame.viewportY, frame.localTeam, frame.options, state...);
+	};
+	const auto scenePass = [&](auto method, auto &&...state)
+	{
+		(this->*method)(frame.left, frame.top, frame.right, frame.bottom, frame.width, frame.height,
+						frame.viewportX, frame.viewportY, frame.localTeam, frame.options, state...);
+	};
+
+	tilePass(&Game::drawMapResources, scene.map);
+	scenePass(&Game::drawMapGroundUnits, view, scene);
+	scenePass(&Game::drawMapDebugAreas, view);
+	scenePass(&Game::drawMapGroundBuildings, visibleBuildings, buildingGuiState, scene);
+	scenePass(&Game::drawMapAirUnits, view, scene);
+	if ((drawOptions & DRAW_SCRIPT_AREAS) != 0)
 		drawMapScriptAreas(left, top, right, bot, viewportX, viewportY);
 
-	drawMapBulletsExplosionsDeathAnimations(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
-
+	scenePass(&Game::drawMapBulletsExplosionsDeathAnimations, scene);
 
 	// Compute once for the independently selected cloud layers.
 	if (globalContainer->settings.cloudShadows || (globalContainer->settings.clouds && !(drawOptions & DRAW_NO_CLOUD_LAYER)))
 	{
-		ds.compute(viewportX, viewportY, sw, sh, time, map.getW(), map.getH(),
+		view.render.clouds().compute(viewportX, viewportY, sw, sh, time, map.getW(), map.getH(),
 		           globalContainer->settings.clouds && !(drawOptions & DRAW_NO_CLOUD_LAYER), cloudGridLimit);
 		if (globalContainer->settings.cloudShadows)
-			ds.render(globalContainer->gfx, sw, sh, DynamicClouds::SHADOW);
+			view.render.clouds().render(globalContainer->gfx, sw, sh, DynamicClouds::SHADOW);
 	}
 
-	drawMapFogOfWar(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
-	drawMapAreas(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
-	drawMapOverlayMaps(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
+	scenePass(&Game::drawMapFogOfWar, scene.map);
+	scenePass(&Game::drawMapAreas, view, scene.map);
+	scenePass(&Game::drawMapOverlayMaps, view);
 
-	drawUnitPathLines(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, view);
+	scenePass(&Game::drawUnitPathLines, view, scene);
 
 
 	// Draw clouds above the world independently of shadows.
 	if (!(drawOptions & DRAW_NO_CLOUD_LAYER) && globalContainer->settings.clouds)
-		ds.render(globalContainer->gfx, sw, sh, DynamicClouds::CLOUD);
+		view.render.clouds().render(globalContainer->gfx, sw, sh, DynamicClouds::CLOUD);
 
 	// Draw units that are off the screen for the selected building
 
-	Uint32 visibleTeams = teams[localTeam]->me;
+	const SceneEntities &entities = scene.entities;
+	Uint32 visibleTeams = entities.teams[localTeam].me;
 	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 
-	if(view.selectedBuilding != NULL && (view.selectedBuilding->owner->sharedVisionOther & visibleTeams))
+	const SceneBuilding *selectedBuilding = entities.building(entities.selectedBuilding.ref.gid);
+	if(selectedBuilding && entities.isSelected(*selectedBuilding) && (entities.owner(*selectedBuilding).sharedVisionOther & visibleTeams))
 	{
-		for(std::list<Unit*>::iterator i = view.selectedBuilding->unitsWorking.begin(); i!=view.selectedBuilding->unitsWorking.end(); ++i)
+		for (Uint16 worker : entities.selectedBuilding.unitsWorking)
 		{
-			Unit* unit = *i;
-			if(!isOnScreen(left, top, right, bot, viewportX, viewportY, unit->posX, unit->posY))
+			const SceneUnit *unit = entities.unit(worker);
+			if(unit && !isOnScreen(left, top, right, bot, viewportX, viewportY, unit->posX, unit->posY))
 			{
-				drawUnitOffScreen(0, topMargin, sw - rightMargin, sh-topMargin, viewportX, viewportY, unit, drawOptions);
+				drawUnitOffScreen(0, topMargin, sw - rightMargin, sh-topMargin, viewportX, viewportY, *unit, drawOptions, scene);
 			}
 		}
 	}
@@ -220,38 +332,37 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 	if (!globalContainer->isViewingGame() || globalContainer->replayShowFlags)
 	{
 		// In replays we want to show the flags of all players, so we build a list of whose buildings to show
-		std::list<Team *> teamsToShow;
+		std::vector<int> teamsToShow;
 
 		if (!globalContainer->isViewingGame())
 		{
 			// Only add the local team
-			teamsToShow.push_back(teams[localTeam]);
+			teamsToShow.push_back(localTeam);
 		}
 		else
 		{
 			// Add all teams
-			for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
+			for (int i=0; i<entities.teamCount; i++)
 			{
-				teamsToShow.push_back(teams[i]);
+				teamsToShow.push_back(i);
 			}
 		}
 
 		// now cycle through all added teams
-		for (std::list<Team *>::iterator teamsIt=teamsToShow.begin(); teamsIt!=teamsToShow.end(); ++teamsIt)
+		for (int shownTeam : teamsToShow)
 		{
-			for (std::list<Building *>::iterator virtualIt=(*teamsIt)->virtualBuildings.begin();
-				virtualIt!=(*teamsIt)->virtualBuildings.end(); ++virtualIt)
+			for (Uint16 flagGid : entities.virtualBuildings[shownTeam])
 			{
-				Building *building=*virtualIt;
+				const SceneBuilding *building=entities.building(flagGid);
 				BuildingType *type=building->type;
 
-				int team = building->owner->teamNumber;
+				int team = building->team;
 
 				int imgid = type->gameSpriteImage;
 
 				int x, y;
-				const Sint32 dispX = buildingGuiState ? displayedPosX(*buildingGuiState, *building) : building->posX;
-				const Sint32 dispY = buildingGuiState ? displayedPosY(*buildingGuiState, *building) : building->posY;
+				const Sint32 dispX = buildingGuiState ? displayedPosX(*buildingGuiState, building->gid, building->posX) : building->posX;
+				const Sint32 dispY = buildingGuiState ? displayedPosY(*buildingGuiState, building->gid, building->posY) : building->posY;
 				x = ((dispX-viewportX)&map.getMaskW())*32;
 				y = ((dispY-viewportY)&map.getMaskH())*32;
 
@@ -264,11 +375,11 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 					const int y = ((dispY-viewportY)&map.getMaskH())*32 + dy;
 					// all flags are hued:
 					Sprite *buildingSprite = type->gameSpritePtr;
-					buildingSprite->setBaseColor(teams[team]->color);
+					buildingSprite->setBaseColor(entities.teams[team].color);
 					globalContainer->gfx->drawSprite(x, y, buildingSprite, imgid);
 
 					// flag circle:
-					if (((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0) || (building==view.selectedBuilding))
+					if (((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0) || entities.isSelected(*building))
 						globalContainer->gfx->drawCircle(x+16, y+16, 16+(32*building->unitStayRange), 0, 0, 255);
 
 					if ((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0)
@@ -279,14 +390,14 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 						// TODO : find better color for this
 						if (type->hpMax)
 						{
-							float hpRatio=(float)building->hp/(float)building->getEffectiveMaxHp();
+							float hpRatio=(float)building->hp/(float)building->effectiveMaxHp;
 							drawHealthBar(x+healDecx+6, y+decy-4, 16, 1+(int)(15.0f*hpRatio), hpRatio);
 						}
 
 						if (building->maxUnitInside>0)
-							drawPointBar(x+type->width*32-4, y+1, BOTTOM_TO_TOP, building->maxUnitInside, (signed)building->unitsInside.size(), 255, 255, 255);
+							drawPointBar(x+type->width*32-4, y+1, BOTTOM_TO_TOP, building->maxUnitInside, building->unitsInside, 255, 255, 255);
 						if (building->maxUnitWorking>0)
-							drawPointBar(x+type->width*16-((3*building->maxUnitWorking)>>1), y+1,LEFT_TO_RIGHT , building->maxUnitWorking, (signed)building->unitsWorking.size(), 255, 255, 255);
+							drawPointBar(x+type->width*16-((3*building->maxUnitWorking)>>1), y+1,LEFT_TO_RIGHT , building->maxUnitWorking, building->unitsWorking, 255, 255, 255);
 
 						if ((type->canFeedUnit) || (type->unitProductionTime))
 							drawBuildingResourceBar(x+1, y+1, type, type->maxResource[WHEAT], building->resources[WHEAT], 255, 255, 120);

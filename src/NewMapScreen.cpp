@@ -146,7 +146,9 @@ Element NewMapScreen::build(const Presentation &p)
 		{
 			if (available.w < ctx.presentation.pt(640))
 				return fe::scroll("newmap/scroll", fe::column({previewElement, form}, {ctx.presentation.pt(12)}));
-			return fe::row({fe::expanded(fe::scroll("newmap/scroll", form)), fe::width(ctx.presentation.pt(320), previewElement)},
+			// Both columns scroll, so a short page never pushes the preview's caption into the actions.
+			return fe::row({fe::expanded(fe::scroll("newmap/scroll", form)),
+							fe::width(ctx.presentation.pt(320), fe::scroll("newmap/preview", previewElement))},
 						   {ctx.presentation.pt(16), fe::CrossAlign::Start});
 		});
 	return fe::page(tr("create map"), body,

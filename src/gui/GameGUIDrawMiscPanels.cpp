@@ -20,7 +20,7 @@ void GameGUI::drawResourceInfos(void)
 	// Precondition (established by checkSelection() in drawPanel): when we
 	// reach here the resource selection still references a live resource tile.
 	// The early-return is defensive — should never trigger.
-	const Resource &r = game.map.getResource(selectionResource());
+	const Resource &r = drawnScene().map.getResource(size_t(selectionResource()));
 	if (r.type==NO_RES_TYPE)
 		return;
 
@@ -69,11 +69,11 @@ void GameGUI::drawReplayPanel(void)
 
 	globalContainer->gfx->drawString(x, y + REPLAY_PANEL_PLAYERLIST_YOFFSET, font, FormattableString("%0:").arg(Toolkit::getStringTable()->getString("[players]")));
 
-	for (int i = 0; i < game.teamsCount(); i++)
+	for (int i = 0; i < drawnScene().entities.teamCount; i++)
 	{
 		// I know this is a matter of taste, but I prefer checkboxes here. Radio buttons are a totally different style
 		drawRadioButton(x + 1, y + REPLAY_PANEL_PLAYERLIST_YOFFSET + (i+1)*inc + 1, localTeamNo == i);
-		globalContainer->gfx->drawString(x + 20, y + REPLAY_PANEL_PLAYERLIST_YOFFSET + (i+1)*inc, font, displayPlayerName(*game.teams[i]).c_str());
+		globalContainer->gfx->drawString(x + 20, y + REPLAY_PANEL_PLAYERLIST_YOFFSET + (i+1)*inc, font, displayPlayerName(drawnScene().entities.teams[i].firstPlayerName).c_str());
 	}
 }
 

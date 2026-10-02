@@ -362,6 +362,9 @@ struct MobileGallerySetup
 		} while (lobby->previewBusy() && SDL_GetTicks() - started < 30000);
 		if (lobby->previewBusy())
 			throw std::runtime_error("Generated preview timed out");
+		// The fade starts when the preview is painted; with large text on a short
+		// screen it can sit below the fold, so reveal it as a player would.
+		lobby->host().scrollIntoView("map/preview");
 		frame(stack);
 		const auto fadeStarted = SDL_GetTicks();
 		do
@@ -631,7 +634,6 @@ class MobileGalleryGameplay
 			gui.touch->lensOpen = false;
 			gui.touch->panelOpen = false;
 			gui.showStarvingMap = true;
-			gui.overlay.compute(gui.game, OverlayArea::Starving, gui.localTeamNo);
 			capture("game-lens-legend");
 			gui.showStarvingMap = false;
 			gui.touch->peekOpen = true;

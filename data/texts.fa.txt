@@ -1432,8 +1432,8 @@ Cortex
 سهم شن
 [Select a valid map.]
 یک نقشه معتبر انتخاب کنید.
-[Shared control needs a free controller slot (maximum 12).]
-کنترل مشترک به یک جایگاه خالی برای کنترل‌کننده نیاز دارد (حداکثر 12).
+[Shared control needs a free controller slot (maximum %0).]
+کنترل مشترک به یک جایگاه خالی برای کنترل‌کننده نیاز دارد (حداکثر %0).
 [Smoothing]
 صاف کردن
 [Standard]
@@ -3070,8 +3070,6 @@ Emoji
 جلو بردن سریع
 [Hide keyboard]
 پنهان کردن صفحه‌کلید
-[Dialog text size]
-اندازه متن گفتگو
 [Player slot]
 جایگاه بازیکن
 [Team color]
@@ -3410,8 +3408,6 @@ Emoji
 حداقل رتبه‌ی لازم: %0
 [Confirm %0]
 قبول!: %0
-[Dialog text size %0]
-اندازه متن گفتگو: %0%
 [%0 %1]
 %0 %1
 [resume game]

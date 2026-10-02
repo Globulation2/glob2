@@ -14,7 +14,7 @@ class Sprite;
 namespace GAGGUI::ui
 {
 // Drawing surface abstraction so controls paint without a window and tests can
-// record what was drawn. Text drawing honours the presentation text scale.
+// record what was drawn. Text is drawn at the presentation's text unit.
 class Canvas
 {
   public:
@@ -75,7 +75,7 @@ class SurfaceCanvas : public Canvas
 	void applyClip();
 };
 
-// Measures through Toolkit fonts, scaled by the presentation text scale.
+// Measures through Toolkit fonts at the presentation's text unit.
 class ToolkitTextMeasurer : public TextMeasurer
 {
   public:

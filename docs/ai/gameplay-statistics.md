@@ -133,7 +133,7 @@ The existing `team-stats-save-test` and `savegame-safety-test` targets cover the
 new fields; both already run in Linux and Windows CI. Run locally with disposable
 profiles as described in `test/README.md`. The statistics harness also accepts
 `--screenshots OUTPUT_DIRECTORY` to render graph pages and a live-panel fixture
-at 640×480 and 1024×768 with the supported maximum of 12 teams, large totals and partial legacy history.
+at 640×480 and 1024×768 with the supported maximum of 16 teams, large totals and partial legacy history.
 `python3 test/check_telemetry_simulation.py build/src/glob2` compares the complete
 1,024-tick four-AI and 2,048-tick 12-team checksum sidecars against compressed
 version-121 fixtures, plus a 2,048-tick Numbi/Castor scenario. It also reloads a
