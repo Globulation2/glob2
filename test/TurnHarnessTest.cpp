@@ -27,6 +27,7 @@
 #include "MatchRecord.h"
 #include "TurnSequencer.h"
 #include "TurnSession.h"
+#include "TurnLatencyTrace.h"
 #include "TurnTestSupport.h"
 
 using namespace Turn;
@@ -60,6 +61,8 @@ public:
 		TurnSessionConfig config;
 		config.ticket = "seat:" + std::to_string(seat);
 		session = std::make_unique<TurnSession>(players, *transport, config, bytesOrderCodec());
+		session->onSubmitted = [this](std::uint32_t sequence) { trace.submitted(sequence, net.now, session->executedTick()); };
+		session->onHorizon = [this](std::uint32_t horizon) { trace.received(horizon, net.now); };
 		resetState();
 		submittedAt.clear();
 		nextTickAt = net.now;
@@ -89,6 +92,7 @@ public:
 			{
 				if (orderRate > 0 && std::uniform_real_distribution<double>(0, 1)(rng) < orderRate)
 				{
+					trace.queued(net.now);
 					session->addLocalOrder(makeBytesOrder(randomOrder()));
 					submittedAt.push_back(net.now);
 				}
@@ -112,6 +116,8 @@ public:
 				auto order = session->retrieveOrder(p);
 				REQUIRE(order->sender == p);
 				const auto bytes = wireBytes(*order);
+				if (p == seat)
+					trace.executed(tick, net.now);
 				if (bytes[0] != ORDER_TYPE_NULL && p == seat && !submittedAt.empty() && bytes[0] != ORDER_TYPE_PLAYER_QUIT)
 				{
 					inputDelays.push_back(net.now - submittedAt.front());
@@ -161,9 +167,11 @@ public:
 	std::uint32_t maxBuffered = 0;
 	int reloads = 0;
 	int restarts = -1;
+	TurnSession::StallStats stallsBefore;
 	std::uint32_t catchUpTicks = 0;
 	std::deque<std::uint64_t> submittedAt;
 	std::vector<std::uint64_t> inputDelays; ///< submit to local execution, microseconds
+	LatencyTrace trace;
 
 	double meanInputDelayMs() const
 	{
@@ -230,6 +238,25 @@ struct Match
 			net, 0);
 		for (int i = 0; i < humans; ++i)
 			clients.push_back(std::make_unique<SimClient>(net, i, i, players, aiSeats, 1000 + i));
+		net.relay->onSequenced = [this](std::uint8_t seat, std::uint32_t sequence, std::uint32_t tick, std::uint32_t relayTick) {
+			if (seat < clients.size())
+				clients[seat]->trace.sequenced(sequence, tick, relayTick, net.now);
+		};
+		net.relay->onEmitted = [this](std::uint32_t, std::uint32_t horizon) {
+			for (auto& c : clients)
+				c->trace.emitted(horizon, net.now);
+		};
+	}
+
+	/// Starts counting input delay and stalls from now on.
+	void startMeasuring()
+	{
+		for (auto& c : clients)
+		{
+			c->trace.measuring = true;
+			c->inputDelays.clear();
+			c->stallsBefore = c->session->stallStats();
+		}
 	}
 
 	void run(std::uint64_t duration, const std::function<void()>& each = {})
@@ -484,6 +511,53 @@ TEST_SUITE("TurnHarness")
 		m.settle();
 		m.requireIdenticalExecution();
 		m.writeSummary("jitter-trace", trace.str());
+	}
+
+	GLOB2_TEST_CASE("input delay and stalls per link profile", "[network-sim][benchmark][artifacts]")
+	{
+		struct Profile
+		{
+			const char* name;
+			LinkProfile link;
+		};
+		const std::vector<Profile> profiles = {
+			{"loopback", {250}},
+			{"+25 ms", {25 * MS}},
+			{"+50 ms", {50 * MS}},
+			{"30 ms, 80 ms jitter", {30 * MS, 80 * MS}},
+			{"30 ms, 80 ms jitter, 3% loss", {30 * MS, 80 * MS, 0.03}},
+		};
+		std::ostringstream table, stages;
+		table << "Simulated network, two humans and an AI; the measured player's link varies, the other is loopback. "
+		         "Submit to execution, 10 s settle then 60 s measured, 5 ms frames.\n"
+		         "bundle | link | samples | mean ms | p95 ms | target ticks | measured jitter ms | stalls | long stalls | "
+		         "stalled ms\n";
+		stages << "bundle | link | " << LatencyTrace::header() << "\n";
+		for (std::uint8_t bundle : {std::uint8_t(1), std::uint8_t(2)})
+			for (const auto& profile : profiles)
+			{
+				SequencerConfig config;
+				config.bundleInterval = bundle;
+				Match m({profile.link, {250}}, {2}, config);
+				for (auto& c : m.clients)
+					c->orderRate = 0.1;
+				m.run(10 * SECOND);
+				m.startMeasuring();
+				m.run(60 * SECOND);
+				auto& c = *m.clients[0];
+				const auto b = c.trace.breakdown();
+				const auto& st = c.session->stallStats();
+				table << int(bundle) << " | " << profile.name << " | " << b.samples << " | " << b.total.mean << " | "
+				      << b.total.p95 << " | " << c.session->targetTicks() << " | " << c.session->jitterMicros() / 1000
+				      << " | " << st.stalls - c.stallsBefore.stalls << " | " << st.longStalls - c.stallsBefore.longStalls
+				      << " | " << (st.stalledMicros - c.stallsBefore.stalledMicros) / 1000 << "\n";
+				stages << int(bundle) << " | " << profile.name << " | " << LatencyTrace::row(b) << "\n";
+				m.settle();
+				m.requireIdenticalExecution();
+			}
+		table << "\n" << stages.str();
+		std::ofstream(glob2test::artifactDir() / "turn-delay-profiles.txt") << table.str();
+		MESSAGE(table.str());
 	}
 
 	GLOB2_TEST_CASE("players who quit or never return are sequenced out", "[network-sim]")

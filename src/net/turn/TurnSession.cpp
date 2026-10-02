@@ -243,6 +243,8 @@ void TurnSession::onBundle(const TurnBundle& b)
 	for (const auto& e : b.entries)
 		turns[e.tick].push_back(e);
 	horizonTick = b.horizonTick;
+	if (onHorizon && b.horizonTick > b.fromTick)
+		onHorizon(b.horizonTick);
 	if (b.horizonTick > threshold)
 		jitter.addSample(static_cast<std::int64_t>(now), b.horizonTick, tickPeriod);
 	delay.observe(bufferedTicks(), buffer.targetTicks());
@@ -298,6 +300,8 @@ void TurnSession::addLocalOrder(std::shared_ptr<Order> order)
 		return;
 	}
 	Outstanding o{nextSequence++, std::move(bytes)};
+	if (onSubmitted)
+		onSubmitted(o.sequence);
 	if (linkUp())
 	{
 		OrderSubmit submit;
@@ -341,8 +345,27 @@ bool TurnSession::orderReceived(int playerNumber)
 
 bool TurnSession::tickReady()
 {
-	if (reloadPending || executed >= horizonTick)
+	if (reloadPending)
 		return false;
+	if (executed >= horizonTick)
+	{
+		if (!stalled && currentState == State::Running && !delay.catchingUp())
+		{
+			stalled = true;
+			stallStart = now;
+		}
+		return false;
+	}
+	if (stalled)
+	{
+		stalled = false;
+		const std::uint64_t length = now - stallStart;
+		++stallCounters.stalls;
+		if (length * 2 > tickPeriod)
+			++stallCounters.longStalls;
+		stallCounters.stalledMicros += length;
+		stallCounters.longestMicros = std::max(stallCounters.longestMicros, length);
+	}
 	for (int p = 0; p < numberOfPlayers; ++p)
 		if (!isHuman(p) && aiOrders[p].empty())
 			return false;

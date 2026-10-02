@@ -289,6 +289,8 @@ void TurnSequencer::handleOrder(int seat, const OrderSubmit& submit, std::uint64
 		++counters.ordersDropped;
 		reject(s.peer, RejectReason::Flooding, "Too many orders queued");
 	}
+	else if (onSequenced)
+		onSequenced(static_cast<std::uint8_t>(seat), submit.clientSequence, s.nextFreeTick - 1, relayTick(now));
 }
 
 void TurnSequencer::sequenceQuit(std::uint8_t seat, MatchEventKind why, std::uint64_t)
@@ -335,7 +337,10 @@ void TurnSequencer::emitUpTo(std::uint32_t newHorizon)
 	for (auto& e : entries)
 		if (e.order[0] != ORDER_TYPE_VOICE)
 			log.push_back(e);
+	const std::uint32_t fromTick = sentHorizon;
 	sentHorizon = newHorizon;
+	if (onEmitted)
+		onEmitted(fromTick, newHorizon);
 	for (const auto& bundle : bundles)
 	{
 		const auto payload = TurnCodec::encode(bundle);

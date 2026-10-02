@@ -96,6 +96,13 @@ namespace Turn
 		const Stats& stats() const { return counters; }
 		std::uint32_t humanSeats() const { return humanMask; }
 
+		/// Optional latency probes for tests and diagnostics; unset by default. Called
+		/// when a client's order is given a tick (with the relay tick at arrival), and
+		/// when a live bundle raises the horizon.
+		std::function<void(std::uint8_t seat, std::uint32_t clientSequence, std::uint32_t tick, std::uint32_t relayTick)>
+			onSequenced;
+		std::function<void(std::uint32_t fromTick, std::uint32_t horizon)> onEmitted;
+
 		/// Flushes pending turns into a final bundle and stops accepting play. Called
 		/// automatically once every seat has left; a host shutting down early calls it
 		/// and gets FLAG_INCOMPLETE in the record.
