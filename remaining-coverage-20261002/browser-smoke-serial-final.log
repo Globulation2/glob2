@@ -1,0 +1,6 @@
+
+Running 1 test using 1 worker
+
+  ✓  1 [chromium] › browser/tests/single-player.spec.js:405:1 › saved match survives resize and menu cancellation before resuming (15.8s)
+
+  1 passed (16.4s)

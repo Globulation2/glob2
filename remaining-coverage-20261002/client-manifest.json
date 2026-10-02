@@ -1,0 +1,9 @@
+{
+  "revision": "e528b3f368934019f32de28c87e89f7775e51166",
+  "dirty": false,
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "binary_sha256": "3217157f7c86fc24d254ef7a0b80b15e97245c79626da7851a1e1caad4641551",
+  "tests": 7,
+  "failures": 0,
+  "native_suite_revision": "5c78b8fdc740d795f12c154b983cbcfbac46b7b7"
+}

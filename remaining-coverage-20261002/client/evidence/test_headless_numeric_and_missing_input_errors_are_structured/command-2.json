@@ -1,0 +1,12 @@
+{
+  "args": [
+    "--run-game",
+    "--output-dir",
+    "/Users/bradley/.codex/worktrees/remaining-test-coverage/glob2/artifacts/client-final/evidence/test_headless_numeric_and_missing_input_errors_are_structured/invalid-1",
+    "--compute-threads",
+    "-1"
+  ],
+  "status": 2,
+  "stdout": "",
+  "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nchoose exactly one of --map-file and --load-game\n"
+}

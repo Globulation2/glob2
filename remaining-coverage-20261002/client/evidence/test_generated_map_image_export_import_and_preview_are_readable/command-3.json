@@ -1,0 +1,19 @@
+{
+  "args": [
+    "--import-map-image",
+    "/Users/bradley/.codex/worktrees/remaining-test-coverage/glob2/artifacts/client-final/evidence/test_generated_map_image_export_import_and_preview_are_readable/map.png",
+    "--output",
+    "/Users/bradley/.codex/worktrees/remaining-test-coverage/glob2/artifacts/client-final/evidence/test_generated_map_image_export_import_and_preview_are_readable/imported.map",
+    "--teams",
+    "2",
+    "--width",
+    "128",
+    "--height",
+    "128",
+    "--preview",
+    "/Users/bradley/.codex/worktrees/remaining-test-coverage/glob2/artifacts/client-final/evidence/test_generated_map_image_export_import_and_preview_are_readable/preview.png"
+  ],
+  "status": 0,
+  "stdout": "Image import: {\"seam_width\":4,\"seam_terrain_changes\":4,\"seam_shore_changes\":0,\"seam_resource_changes\":2,\"resource_seam_fallback\":false,\"markers\":2,\"ignored_markers\":0,\"terrain_changes\":2,\"cleared_resources\":0,\"dropped_resources\":0}\nPreview: /Users/bradley/.codex/worktrees/remaining-test-coverage/glob2/artifacts/client-final/evidence/test_generated_map_image_export_import_and_preview_are_readable/preview.png (128x128 tiles)\nMap: /Users/bradley/.codex/worktrees/remaining-test-coverage/glob2/artifacts/client-final/evidence/test_generated_map_image_export_import_and_preview_are_readable/imported.map.gz\n",
+  "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\n"
+}

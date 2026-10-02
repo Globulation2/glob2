@@ -1,0 +1,10 @@
+{
+  "args": [
+    "--generate-map",
+    "river",
+    "--width"
+  ],
+  "status": 1,
+  "stdout": "",
+  "stderr": "Map command: Missing value for --width\n"
+}

@@ -1,0 +1,110 @@
+TAP version 13
+# Subtest: audio activation ignores missing, running and closed contexts
+ok 1 - audio activation ignores missing, running and closed contexts
+  ---
+  duration_ms: 0.6435
+  ...
+# Subtest: closing audio during a pending resume does not reject the gesture handler
+ok 2 - closing audio during a pending resume does not reject the gesture handler
+  ---
+  duration_ms: 0.093792
+  ...
+# Subtest: activation failures are reported and the next gesture can retry
+ok 3 - activation failures are reported and the next gesture can retry
+  ---
+  duration_ms: 0.855667
+  ...
+# Subtest: only Firefox closed-resume rejection is suppressed after game exit
+ok 4 - only Firefox closed-resume rejection is suppressed after game exit
+  ---
+  duration_ms: 0.159416
+  ...
+# Subtest: accepts selected bytes without treating the extension as format validation
+ok 5 - accepts selected bytes without treating the extension as format validation
+  ---
+  duration_ms: 0.754375
+  ...
+# Subtest: rejects paths, control characters, unsupported extensions and oversized inputs before reading
+ok 6 - rejects paths, control characters, unsupported extensions and oversized inputs before reading
+  ---
+  duration_ms: 0.58075
+  ...
+# Subtest: rejects changed sizes and read failures
+ok 7 - rejects changed sizes and read failures
+  ---
+  duration_ms: 0.560125
+  ...
+# Subtest: cancellation and disposal cannot publish late file contents
+ok 8 - cancellation and disposal cannot publish late file contents
+  ---
+  duration_ms: 0.364917
+  ...
+# Subtest: a second selection cannot replace an in-flight read
+ok 9 - a second selection cannot replace an in-flight read
+  ---
+  duration_ms: 0.243917
+  ...
+# Subtest: picker uses accepted extensions and releases its input on cancellation
+ok 10 - picker uses accepted extensions and releases its input on cancellation
+  ---
+  duration_ms: 0.18725
+  ...
+# Subtest: disposing an open picker ignores its late change event
+ok 11 - disposing an open picker ignores its late change event
+  ---
+  duration_ms: 0.149458
+  ...
+# Subtest: accepts gzip containers only for supported map and save types
+ok 12 - accepts gzip containers only for supported map and save types
+  ---
+  duration_ms: 1.0065
+  ...
+# Subtest: coalesces writes and acknowledges only the completed generation
+ok 13 - coalesces writes and acknowledges only the completed generation
+  ---
+  duration_ms: 1.138834
+  ...
+# Subtest: quota failure is retained, rejects completion, and allows an explicit retry
+ok 14 - quota failure is retained, rejects completion, and allows an explicit retry
+  ---
+  duration_ms: 0.543875
+  ...
+# Subtest: restore failure cannot overwrite existing storage
+ok 15 - restore failure cannot overwrite existing storage
+  ---
+  duration_ms: 0.386417
+  ...
+# Subtest: synchronous adapter errors reject the operation
+ok 16 - synchronous adapter errors reject the operation
+  ---
+  duration_ms: 0.184916
+  ...
+# Subtest: threaded software mode requires a successful shared-memory worker
+ok 17 - threaded software mode requires a successful shared-memory worker
+  ---
+  duration_ms: 1.65275
+  ...
+# Subtest: serial fallback explains missing isolation, memory and worker support
+ok 18 - serial fallback explains missing isolation, memory and worker support
+  ---
+  duration_ms: 0.286458
+  ...
+# Subtest: worker WebGL has an additional canvas-transfer requirement
+ok 19 - worker WebGL has an additional canvas-transfer requirement
+  ---
+  duration_ms: 0.187917
+  ...
+# Subtest: persistence snapshots survive worker rename and byte changes during the database scan
+ok 20 - persistence snapshots survive worker rename and byte changes during the database scan
+  ---
+  duration_ms: 1.766834
+  ...
+1..20
+# tests 20
+# suites 0
+# pass 20
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 55.609458
