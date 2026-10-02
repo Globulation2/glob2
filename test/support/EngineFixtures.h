@@ -15,9 +15,15 @@
 
 #include <functional>
 #include <string>
+#include <vector>
 
 namespace glob2test
 {
+	// Deterministic continuation scheduler: poll/apply each unpaused AI in
+	// player order, then advance one simulation tick. Returns type+wire payload
+	// per AI so paired continuations can compare decisions as well as state.
+	std::vector<std::string> stepAI(Game &game);
+
 	struct GlobalsOptions
 	{
 		bool display = false;        // create a real window and load graphics

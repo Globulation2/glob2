@@ -1,5 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
+#include "AI.h"
+#include "GameGUIDialog.h"
+#include "Utilities.h"
+#include "Player.h"
 #include "shared_runtime/Runtime.h"
 #include "CustomGameSetup.h"
 #include "GenerationService.h"
@@ -71,6 +75,29 @@ TEST_CASE("sixteen controller slots survive binary and text headers [save-format
             CHECK(restored.getAIConfig(i) == original.getAIConfig(i));
         }
     }
+}
+
+TEST_CASE("alliance and chat controls include the sixteenth controller")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::GameOptions options;
+    options.teams = Team::MAX_COUNT;
+    options.header = true;
+    glob2test::HeadlessGame world(options);
+    world.game.gameHeader.setAllyTeamsFixed(false);
+    world.gui.localTeamNo = world.gui.localPlayer = 0;
+    world.gui.adjustLocalTeam();
+    InGameAllianceScreen dialog(&world.gui);
+    REQUIRE(dialog.entries().size() == size_t(Team::MAX_COUNT - 1));
+    CHECK(dialog.entries().back().player == Team::MAX_COUNT - 1);
+    const auto last = Team::teamNumberToMask(Team::MAX_COUNT - 1);
+    dialog.set(Team::MAX_COUNT - 1, InGameAllianceScreen::Alliance, true);
+    CHECK((dialog.getAlliedMask() & last) == last);
+    CHECK((dialog.getEnemyMask() & last) == 0);
+    dialog.set(Team::MAX_COUNT - 1, InGameAllianceScreen::Chat, false);
+    CHECK((dialog.getChatMask() & last) == 0);
+    dialog.set(Team::MAX_COUNT - 1, InGameAllianceScreen::Chat, true);
+    CHECK((dialog.getChatMask() & last) == last);
 }
 
 TEST_CASE("enemy team searches terminate when every team slot is occupied")
@@ -165,6 +192,13 @@ TEST_CASE("sixteen team saves continue identically and preserve entity generatio
         world.addBuilding("swarm", x, y, 0, t);
         world.addUnit(WORKER, x + 6, y, t);
     }
+    // Exercise both ends of real Maxima controller storage, including enemy 15
+    // in controller zero's opponent assessment, before preserving its director.
+    auto header = game.gameHeader;
+    for (int player : {0, Team::MAX_COUNT - 1})
+        header.getBasePlayer(player).type = BasePlayer::playerTypeFromImplementationID(AI::MAXIMA);
+    game.setGameHeader(header, true);
+    for (int tick = 0; tick < 16; ++tick) glob2test::stepAI(game);
     auto *storage = new GAGCore::MemoryStreamBackend;
     GAGCore::BinaryOutputStream output(storage);
     game.save(&output, false, "sixteen teams");
@@ -174,7 +208,7 @@ TEST_CASE("sixteen team saves continue identically and preserve entity generatio
     std::vector<Uint32> expected;
     for (int tick = 0; tick < 64; ++tick)
     {
-        game.syncStep(0);
+        glob2test::stepAI(game);
         expected.push_back(game.checkSum());
     }
     GameGUI restored;
@@ -186,7 +220,7 @@ TEST_CASE("sixteen team saves continue identically and preserve entity generatio
     std::ostringstream trace;
     for (int tick = 0; tick < 64; ++tick)
     {
-        restored.game.syncStep(0);
+        glob2test::stepAI(restored.game);
         const auto checksum = restored.game.checkSum();
         CHECK(checksum == expected[tick]);
         trace << tick + 1 << ',' << checksum << '\n';
@@ -194,7 +228,7 @@ TEST_CASE("sixteen team saves continue identically and preserve entity generatio
     glob2test::writeFile(glob2test::artifactDir() / "checksums.csv", trace.str());
 }
 
-TEST_CASE("retained format126 Maxima save migrates both script identity planes [save-format]")
+TEST_CASE("retained format126 Maxima save preserves identities and subsequent AI decisions [save-format][artifacts]")
 {
     glob2test::HeadlessGlobals globals;
     GameGUI legacy;
@@ -230,13 +264,100 @@ TEST_CASE("retained format126 Maxima save migrates both script identity planes [
     std::vector<Uint32> before, after, beforeBuildings, afterBuildings, beforeUnits, afterUnits;
     legacy.game.checkSum(&before, &beforeBuildings, &beforeUnits);
     restored.game.checkSum(&after, &afterBuildings, &afterUnits);
-    // Saving upgrades the format field in MapHeader. Compare every simulation
-    // field, entity and counter while allowing that deliberate header change.
+    // Saving upgrades the MapHeader format field. These checks cover the
+    // simulation/entity checksums; AI director state is checked separately below.
     before.erase(before.begin());
     after.erase(after.begin());
     CHECK(after == before);
     CHECK(afterBuildings == beforeBuildings);
     CHECK(afterUnits == beforeUnits);
+    const auto directors = [](Game &game) {
+        std::vector<std::string> states;
+        for (int p = 0; p < game.gameHeader.getNumberOfPlayers(); ++p)
+        {
+            REQUIRE(game.players[p]->ai != nullptr);
+            auto *memory = new GAGCore::MemoryStreamBackend;
+            GAGCore::BinaryOutputStream out(memory);
+            game.players[p]->ai->save(&out);
+            states.push_back(memory->takeContents());
+        }
+        return states;
+    };
+    CHECK(directors(restored.game) == directors(legacy.game));
+    auto legacyRandom = syncRandEngine(), restoredRandom = legacyRandom;
+    std::ostringstream trace;
+    for (int tick = 0; tick < 128; ++tick)
+    {
+        CAPTURE(tick);
+        syncRandEngine() = legacyRandom;
+        const auto expectedOrders = glob2test::stepAI(legacy.game);
+        legacyRandom = syncRandEngine();
+        syncRandEngine() = restoredRandom;
+        CHECK(glob2test::stepAI(restored.game) == expectedOrders);
+        restoredRandom = syncRandEngine();
+        before.clear(); beforeBuildings.clear(); beforeUnits.clear();
+        after.clear(); afterBuildings.clear(); afterUnits.clear();
+        legacy.game.checkSum(&before, &beforeBuildings, &beforeUnits, true);
+        restored.game.checkSum(&after, &afterBuildings, &afterUnits, true);
+        before.erase(before.begin()); after.erase(after.begin());
+        CHECK(after == before);
+        CHECK(afterBuildings == beforeBuildings);
+        CHECK(afterUnits == beforeUnits);
+        // The header format intentionally differs; hash the compared vectors.
+        const auto digest = [](const auto &state, const auto &buildings, const auto &units) {
+            Uint32 hash = 2166136261u;
+            for (const auto *values : {&state, &buildings, &units})
+                for (Uint32 value : *values) hash = (hash ^ value) * 16777619u;
+            return hash;
+        };
+        trace << tick + 1 << ',' << digest(before, beforeBuildings, beforeUnits)
+              << ',' << digest(after, afterBuildings, afterUnits) << '\n';
+    }
+    CHECK(directors(restored.game) == directors(legacy.game));
+    glob2test::writeFile(glob2test::artifactDir() / "migration-ai-checksums.csv", trace.str());
+
+}
+
+TEST_CASE("script generation slot counts reject missing capacity and truncated planes [save-format]")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::GameOptions options;
+    options.wDec = options.hDec = 6;
+    options.teams = 2;
+    options.loadDefaultRace = options.header = true;
+    glob2test::HeadlessGame world(options);
+    REQUIRE(world.game.sgslScript.compileScript(&world.game, "").type == ErrorReport::ET_OK);
+    struct SlotWriter : GAGCore::BinaryOutputStream
+    {
+        using BinaryOutputStream::BinaryOutputStream;
+        size_t slotsOffset = 0;
+        void writeUint32(Uint32 value, const std::string name) override
+        {
+            if (name == "teamSlots") slotsOffset = getPosition();
+            BinaryOutputStream::writeUint32(value, name);
+        }
+    };
+    auto *memory = new GAGCore::MemoryStreamBackend;
+    SlotWriter out(memory);
+    world.game.save(&out, false, "slot count bounds");
+    const auto saved = memory->takeContents();
+    REQUIRE(out.slotsOffset > 0);
+    auto loads = [](const std::string &bytes) {
+        GameGUI candidate;
+        GAGCore::BinaryInputStream in(new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size()));
+        in.seekFromStart(0);
+        return candidate.game.load(&in);
+    };
+    REQUIRE(loads(saved));
+    for (Uint32 slots : {0u, 1u, Uint32(Team::MAX_COUNT + 1), Uint32(-1)})
+    {
+        CAPTURE(slots);
+        auto corrupt = saved;
+        for (int byte = 0; byte < 4; ++byte)
+            corrupt[out.slotsOffset + byte] = char(slots >> (8 * byte));
+        CHECK_THROWS_WITH_AS(loads(corrupt), "Invalid script generation team-slot count", std::runtime_error);
+    }
+    CHECK_THROWS(loads(saved.substr(0, out.slotsOffset + 8)));
 }
 
 TEST_CASE("dense designed maps accept thirteen through sixteen only on the largest square")

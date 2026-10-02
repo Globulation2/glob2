@@ -21,6 +21,7 @@
 // is reported and passes by default, so a new machine can run the check before its rows exist;
 // CI passes --require-rows so that the platforms it runs on cannot pass vacuously.
 #include "Game.h"
+#include "MapGeneratorGoldenCoverage.h"
 #include <stdexcept>
 #include <cstdlib>
 #include <cstdint>
@@ -185,10 +186,8 @@ int check(const std::string &path, bool requireRows)
 	const auto table = readTable(path);
 	const auto platform = platformTag();
 	std::map<std::string, Row> expected;
-	std::map<int, unsigned> revisions;
 	for (const auto &r : table)
 	{
-		revisions[r.id] = std::max(revisions[r.id], r.revision);
 		if (r.platform == platform)
 			expected[r.key()] = r;
 	}
@@ -196,17 +195,17 @@ int check(const std::string &path, bool requireRows)
 	for (int id : GeneratorRegistry::builtins().methods(true))
 	{
 		const auto &definition = GeneratorRegistry::builtins().at(id);
-		auto it = revisions.find(id);
-		if (it == revisions.end())
+		const auto coverage = mapGoldenCoverage(table, platform, id, definition.revision);
+		if (coverage == MapGoldenCoverage::Missing)
 		{
-			std::printf("MISSING generator %s (%d): no golden rows; run --update\n", definition.id,
-						id);
-			++failures;
+			std::printf("MISSING %s generator %s (%d): no local golden rows; run --update%s\n",
+				platform.c_str(), definition.id, id, requireRows ? " (--require-rows)" : "");
+			if (requireRows) ++failures;
 		}
-		else if (it->second != definition.revision)
+		else if (coverage == MapGoldenCoverage::Stale)
 		{
-			std::printf("STALE generator %s (%d): table revision %u, registered %u; run --update\n",
-						definition.id, id, it->second, definition.revision);
+			std::printf("STALE %s generator %s (%d): local rows are not all revision %u; run --update\n",
+				platform.c_str(), definition.id, id, definition.revision);
 			++failures;
 		}
 	}

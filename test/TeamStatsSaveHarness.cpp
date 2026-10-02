@@ -850,17 +850,7 @@ static void aiTelemetryContinuation(const char *path)
 	GAGCore::BinaryInputStream input(new GAGCore::FileStreamBackend(file));
 	GameGUI gui;
 	require(gui.game.load(&input), "all-AI initial state loads");
-	auto step = [](Game &g)
-	{
-		for (int p = 0; p < g.gameHeader.getNumberOfPlayers(); ++p)
-			if (g.players[p] && g.players[p]->ai)
-			{
-				auto order = g.players[p]->ai->getOrder(false);
-				order->sender = p;
-				g.executeOrder(order, p);
-			}
-		g.syncStep(0);
-	};
+	auto step = glob2test::stepAI;
 	auto checks = [](Game &g)
 	{
 		std::vector<Uint32> c, b, u;

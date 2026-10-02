@@ -327,9 +327,10 @@ For timing and scheduling, start with `src/Game_sync.cpp` and `src/EngineRun.cpp
   written by versions 1–3. The building-generation
   plane must be remapped when loading old saves. Never substitute a live capacity
   for a historical serialized length. Save floor 58 remains unchanged.
-  Warrush's opening exploration window is two ticks per capacity slot (32 ticks),
-  so changing the cap affects smaller matches too. Replay floor 127 and network/YOG
-  protocol 50 isolate that behavior; older saves load into the current simulation.
+  Warrush probes one capacity slot every two ticks (32 ticks for sixteen slots).
+  Empty slots fall through to normal decisions, preserving smaller-match timing.
+  Replay floor 127 and network/YOG protocol 50 gate the new capacity and counted
+  state; older saves load into the current simulation.
 - Versioning rule: when the save format changes, bump `VERSION_MINOR` and preserve
   older saves through version-gated loading, or explicitly document an approved
   compatibility break. When simulation changes invalidate old replays or mixed-client
