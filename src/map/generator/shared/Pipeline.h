@@ -11,6 +11,12 @@ class Game;
 class Map;
 namespace MapGeneration
 {
+// Designed maps above this density use the full 512-square envelope. This is
+// a layout budget, not an engine capacity or historical save-record count.
+inline constexpr int DENSE_COLONY_BASE_LIMIT = 12;
+inline constexpr int DENSE_COLONY_MAP_EXPONENT = 9;
+std::string denseColonySizeFailure(const GenerationRequest &);
+
 // The stages a designed generator runs, as functions a generate() body calls in the order that
 // suits its map. There is no superclass: a generator that needs a different order, or a
 // different step, calls what it needs and writes the rest itself.

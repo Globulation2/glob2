@@ -12,6 +12,7 @@
 #include <memory>
 #include <mutex>
 #include <thread>
+#include <ThreadSupport.h>
 #include <stdexcept>
 #include <vector>
 
@@ -94,26 +95,27 @@ public:
 		delay = 0; tick = 0; lastSubmission = 0; quit = false;
 	}
 	void configure(unsigned count, unsigned ticks, std::size_t size, Work callback,
-		Factory factory = [](std::function<void()> f) { return std::thread(std::move(f)); }) {
+		Factory factory = [](std::function<void()> f) { return GAGCore::ThreadSupport::launch(std::move(f)); }) {
 		reset(); metrics = {}; activeNs = 0; cells = size; work = std::move(callback);
-#ifndef __EMSCRIPTEN__
-		try {
-			workers.reserve(count);
-			for (unsigned n=0; n<count; ++n) workers.push_back(factory([this] {
-				GradientWorkspace scratch;
-				for (;;) {
-					Job *job;
-					{
-						std::unique_lock<std::mutex> lock(mutex);
-						wake.wait(lock, [&] { return quit || !ready.empty(); });
-						if (ready.empty()) return;
-						job = ready.front(); ready.pop_front();
+		if constexpr (GAGCore::ThreadSupport::available)
+		{
+			try {
+				workers.reserve(count);
+				for (unsigned n=0; n<count; ++n) workers.push_back(factory([this] {
+					GradientWorkspace scratch;
+					for (;;) {
+						Job *job;
+						{
+							std::unique_lock<std::mutex> lock(mutex);
+							wake.wait(lock, [&] { return quit || !ready.empty(); });
+							if (ready.empty()) return;
+							job = ready.front(); ready.pop_front();
+						}
+						execute(*job, scratch);
 					}
-					execute(*job, scratch);
-				}
-			}));
-		} catch (...) { reset(); } // Same publication schedule with serial execution.
-#endif
+				}));
+			} catch (...) { reset(); } // Same publication schedule with serial execution.
+		}
 		delay = ticks;
 	}
 	// Saving completes private work without changing publication deadlines.

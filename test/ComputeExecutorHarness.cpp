@@ -8,9 +8,32 @@
 #include "ComputeExecutor.h"
 #include <array>
 #include <stdexcept>
+#include <chrono>
 
 TEST_SUITE("ComputeExecutor")
 {
+TEST_CASE("supported platforms execute jobs concurrently on distinct threads")
+{
+    if constexpr (GAGCore::ThreadSupport::available)
+    {
+        ComputeExecutor executor;
+        executor.configure(2);
+        REQUIRE(executor.threadCount() == 2);
+        std::atomic<unsigned> entered{0};
+        std::atomic<bool> overlapped{true};
+        std::array<std::thread::id, 2> ids;
+        const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(5);
+        executor.run(2, [&](size_t i) {
+            ids[i] = std::this_thread::get_id();
+            ++entered;
+            while (entered.load() < 2 && std::chrono::steady_clock::now() < deadline)
+                std::this_thread::yield();
+            if (entered.load() < 2) overlapped = false;
+        });
+        REQUIRE(overlapped.load());
+        REQUIRE(ids[0] != ids[1]);
+    }
+}
 TEST_CASE("exclusive slots; nested batches; reuse; errors; barriers and reconfiguration")
 {
 	ComputeExecutor executor;

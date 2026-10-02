@@ -375,7 +375,7 @@ TEST_CASE("JavaScript scenario effects commit atomically and resume" *
 	inMemory->seekFromStart(0);
 	BinaryInputStream mapIn(inMemory);
 	auto checksum = script.checkSum();
-	MapScript loaded(&gui);
+	MapScript loaded(&gui.game, &gui);
 	GLOB2_REQUIRE(loaded.decodeData(&mapIn, VERSION_MINOR), "JavaScript contract");
 	GLOB2_REQUIRE(loaded.checkSum() == checksum, "JavaScript contract");
 	script.syncStep(&gui);

@@ -21,7 +21,7 @@ Human play is needed to judge whether its ponds actually attract conflict.
 
 Sides are existing power-of-two sizes **128, 256, 512**, square or rectangles up to
 **2:1**. At least **4,096 tiles per colony** and **48 tiles between home centres**
-are required. The engine currently supports at most 12 colonies. Requests failing either actual spacing or the essential-feature fit
+are required. The engine currently supports at most 16 colonies. Requests failing either actual spacing or the essential-feature fit
 are rejected with an actionable error. Homes never shrink to accept crowding.
 The generic controls retain their existing ranges for other generators.
 
