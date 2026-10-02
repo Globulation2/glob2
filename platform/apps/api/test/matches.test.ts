@@ -440,6 +440,9 @@ describe('relays', () => {
       activeMatchIds: [],
     });
     expect(await json(heartbeat)).toEqual({ ok: true });
+    // The first start's pushes may still be in flight: take them before clearing.
+    await host.client.event('match.start');
+    await guest.client.event('match.start');
     host.client.clear();
     guest.client.clear();
     const moved = await guest.client.ok('match.reconnect', { matchId, relayUnavailable: true });
