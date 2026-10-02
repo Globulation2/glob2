@@ -293,10 +293,14 @@ class Smoke:
         status_j, _, body_j = self.https('GET', '/j/ABCDEFGH')
         if b'Invite not found' not in body_j or b'<div id="root">' in body_j:
             raise Failure(f'/j/ is not served by the API: {status_j} {body_j[:200]!r}')
-        status_play, _, body_play = self.https('GET', '/play/')
+        status_play, play_headers, body_play = self.https('GET', '/play/')
         marker = b'<canvas' if self.arguments.attach else b'glob2 web client'
         if status_play != 200 or marker not in body_play:
             raise Failure(f'/play/: {status_play} {body_play[:200]!r}')
+        for name, expected in (('Cross-Origin-Opener-Policy', 'same-origin'),
+                               ('Cross-Origin-Embedder-Policy', 'require-corp')):
+            if play_headers.get(name) != expected:
+                raise Failure(f'/play/ missing isolation header {name}: {play_headers.get(name)!r}')
         denied = {}
         for path in ('/internal/v1/relays/register', '/internal', '/healthz', '/readyz', '/metrics'):
             for method in ('GET', 'POST'):
