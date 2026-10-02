@@ -10,7 +10,7 @@ Import("env")
 Import("PackTar")
     
 if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
-    PackTar(env["TARFILE"], ["package_assets.py", "asset-requirements.txt"])
+    PackTar(env["TARFILE"], ["package_assets.py", "asset-requirements.txt", "asset-encoder-sources.json", "build_asset_encoder.py"])
     PackTar(env["TARFILE"], "mksprite.cpp")
     PackTar(env["TARFILE"], "MenuColonyHarness.cpp")
     PackTar(env["TARFILE"], "README")
