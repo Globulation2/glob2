@@ -1,0 +1,37 @@
+SDL3 3.4.16 local X11 ShowWindow integration fix.
+
+Poll for the existing MapNotify event and verify actual map state rather than
+blocking solely on the notification. Preserve the wait when the window remains
+unmapped; no timeout or synthetic successful mapping is introduced. Stop polling
+on an X display connection error, as the original wait's guard intended.
+
+--- a/src/video/x11/SDL_x11window.c
++++ b/src/video/x11/SDL_x11window.c
+@@ -1561,13 +1561,21 @@
+ 
+     if (!X11_IsWindowMapped(_this, window)) {
+         X11_XMapRaised(display, data->xwindow);
+-        /* Blocking wait for "MapNotify" event.
+-         * We use X11_XIfEvent because pXWindowEvent takes a mask rather than a type,
+-         * and XCheckTypedWindowEvent doesn't block */
+-        if (!(window->flags & SDL_WINDOW_EXTERNAL) && X11_IsDisplayOk(display)) {
+-            X11_XIfEvent(display, &event, &isMapNotify, (XPointer)&data->xwindow);
+-        }
+         X11_XFlush(display);
++        /* Wait for MapNotify or confirmation that the window is mapped. A window
++         * manager can map the window without a matching notification remaining
++         * in our event queue, so an event-only blocking wait can stall forever.
++         * Do not continue while the window is still unmapped.
++         */
++        if (!(window->flags & SDL_WINDOW_EXTERNAL)) {
++            while (X11_IsDisplayOk(display)) {
++                if (X11_XCheckIfEvent(display, &event, &isMapNotify, (XPointer)&data->xwindow) ||
++                    X11_IsWindowMapped(_this, window)) {
++                    break;
++                }
++                SDL_Delay(1);
++            }
++        }
+         set_position = data->pending_position ||
+                        (!(window->flags & SDL_WINDOW_BORDERLESS) && !window->undefined_x && !window->undefined_y);
+     }

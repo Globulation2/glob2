@@ -15,7 +15,7 @@
 #include <cstdlib>
 #include <Toolkit.h>
 #include <GraphicContext.h>
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
 #else
@@ -95,7 +95,7 @@ namespace
 			for (int x = 0; x < w; ++x)
 			{
 				Uint8 r, g, b, a;
-				SDL_GetRGBA(reinterpret_cast<Uint32 *>(static_cast<Uint8 *>(raw->pixels) + y * raw->pitch)[x], raw->format, &r, &g, &b, &a);
+				SDL_GetRGBA(reinterpret_cast<Uint32 *>(static_cast<Uint8 *>(raw->pixels) + y * raw->pitch)[x], SDL_GetPixelFormatDetails(raw->format), SDL_GetSurfacePalette(raw), &r, &g, &b, &a);
 				Uint8 or_, og_, ob_;
 				referenceHueShift(r, g, b, a, hueShift, or_, og_, ob_);
 				refR[y * w + x] = or_; refG[y * w + x] = og_; refB[y * w + x] = ob_; refA[y * w + x] = a;
@@ -241,13 +241,13 @@ TEST_CASE("shader hue shifts match the CPU reference over every pose and hue [di
 					if (braw)
 					{
 						Uint8 r, g, b, a;
-						SDL_GetRGBA(reinterpret_cast<Uint32 *>(static_cast<Uint8 *>(braw->pixels) + py * braw->pitch)[px], braw->format, &r, &g, &b, &a);
+						SDL_GetRGBA(reinterpret_cast<Uint32 *>(static_cast<Uint8 *>(braw->pixels) + py * braw->pitch)[px], SDL_GetPixelFormatDetails(braw->format), SDL_GetSurfacePalette(braw), &r, &g, &b, &a);
 						br = r; bg = g; bb = b; ba = a / 255.0;
 					}
 					if (traw)
 					{
 						Uint8 r, g, b, a;
-						SDL_GetRGBA(reinterpret_cast<Uint32 *>(static_cast<Uint8 *>(traw->pixels) + py * traw->pitch)[px], traw->format, &r, &g, &b, &a);
+						SDL_GetRGBA(reinterpret_cast<Uint32 *>(static_cast<Uint8 *>(traw->pixels) + py * traw->pitch)[px], SDL_GetPixelFormatDetails(traw->format), SDL_GetSurfacePalette(traw), &r, &g, &b, &a);
 						Uint8 or_, og_, ob_;
 						referenceHueShift(r, g, b, a, hueShift, or_, og_, ob_);
 						tr = or_; tg = og_; tb = ob_; ta = a / 255.0;

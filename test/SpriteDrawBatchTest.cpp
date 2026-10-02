@@ -125,9 +125,9 @@ void batchPixels(bool highResolution, bool portable = false)
             return pixels;
         }
 #endif
-        std::unique_ptr<SDL_Surface, decltype(&SDL_FreeSurface)> captured(gfx->renderer->capture(), SDL_FreeSurface);
+        std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> captured(gfx->renderer->capture(), SDL_DestroySurface);
         REQUIRE(captured);
-        std::unique_ptr<SDL_Surface, decltype(&SDL_FreeSurface)> rgba(SDL_ConvertSurfaceFormat(captured.get(), SDL_PIXELFORMAT_RGBA32, 0), SDL_FreeSurface);
+        std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> rgba(SDL_ConvertSurface(captured.get(), SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
         REQUIRE(rgba);
         pixels.resize(rgba->w * rgba->h * 4);
         for (int row = 0; row < rgba->h; ++row)

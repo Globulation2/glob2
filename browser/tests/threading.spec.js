@@ -70,6 +70,28 @@ test('threaded startup failure reloads the serial runtime',async({page})=>{
   expect(state.threadFallback).toContain('test startup failure');
 });
 
+test('a real pthread worker error after the probe reloads the serial runtime', async ({page}) => {
+  await page.addInitScript(() => {
+    const NativeWorker = window.Worker;
+    window.Worker = class extends NativeWorker {
+      constructor(url, options) {
+        if (String(url).includes('/threaded/index')) {
+          url = URL.createObjectURL(new Blob([
+            'throw new Error("test pthread startup failure");'
+          ], {type:'text/javascript'}));
+        }
+        super(url, options);
+      }
+    };
+  });
+  await page.goto(gameURL());
+  await page.waitForURL(url => url.searchParams.get('threads') === 'serial');
+  await screen(page, 'MainMenuScreen');
+  const state = await page.evaluate(() => glob2Diagnostics.snapshot());
+  expect(state.executionMode).toBe('serial');
+  expect(state.threadFallback).toContain('test pthread startup failure');
+});
+
 
 test('threaded audio produces PCM, keeps settings responsive and shuts down cleanly', async ({page}) => {
   await page.goto('/?renderer=software');
@@ -77,10 +99,10 @@ test('threaded audio produces PCM, keeps settings responsive and shuts down clea
   expect(await page.evaluate(() => Module.executionMode)).toBe('threaded');
   await clickMainMenu(page, 'settings'); await screen(page, 'SettingsScreen');
   await clickControl(page, 'nav.1'); await clickControl(page, 'audio.mute');
-  await page.waitForFunction(() => Module.SDL2?.audio?.scriptProcessorNode);
+  await page.waitForFunction(() => Module.SDL3?.audio_playback?.scriptProcessorNode);
   await page.evaluate(() => {
     window.audioBlocks = 0;
-    const node = Module.SDL2.audio.scriptProcessorNode;
+    const node = Module.SDL3.audio_playback.scriptProcessorNode;
     const render = node.onaudioprocess;
     node.onaudioprocess = event => {
       render(event);

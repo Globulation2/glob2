@@ -1,58 +1,30 @@
 """Stage the existing MinGW build as a self-contained GDK PC game."""
 
 import argparse
-import os
 import re
 import shutil
-import subprocess
 import sys
-import tempfile
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
 from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-from tools.package_assets import export_assets
 
 
-ASSET_DIRS = ("data", "maps", "campaigns", "scripts")
-SYSTEM_DLLS = {
-    "advapi32.dll", "bcrypt.dll", "comdlg32.dll", "crypt32.dll",
-    "dwmapi.dll", "gdi32.dll", "imm32.dll", "iphlpapi.dll",
-    "kernel32.dll", "mpr.dll", "msvcrt.dll", "ntdll.dll",
-    "ole32.dll", "oleaut32.dll", "opengl32.dll", "psapi.dll",
-    "rpcrt4.dll", "secur32.dll", "setupapi.dll", "shell32.dll",
-    "shlwapi.dll", "user32.dll", "uxtheme.dll", "version.dll",
-    "winmm.dll", "ws2_32.dll", "wldap32.dll",
-}
-DLL_PATTERN = re.compile(r"^\s*DLL Name:\s*(\S+)\s*$", re.MULTILINE)
+from tools.release.windows_runtime import stage_assets, stage_dlls as stage_runtime_dlls
 
 
-def stage_dlls(executable: Path, dll_dir: Path, destination: Path) -> None:
-    pending = [executable]
-    visited = set()
-    available = {path.name.lower(): path for path in dll_dir.glob("*.dll")}
-    while pending:
-        binary = pending.pop()
-        imports = DLL_PATTERN.findall(
-            subprocess.check_output(["objdump", "-p", str(binary)], text=True)
-        )
-        for name in imports:
-            key = name.lower()
-            if key in visited:
-                continue
-            visited.add(key)
-            if key.startswith(("api-ms-win-", "ext-ms-win-")) or key in SYSTEM_DLLS:
-                continue
-            source = available.get(key)
-            if source is None:
-                system_root = Path(os.environ.get("SYSTEMROOT", "C:/Windows"))
-                if (system_root / "System32" / name).is_file():
-                    continue
-                raise RuntimeError(f"Unresolved non-system DLL: {name} (imported by {binary})")
-            shutil.copy2(source, destination / source.name)
-            pending.append(source)
+def stage_dlls(executable: Path, dll_dir: Path, destination: Path, sdl_runtime: Path | None = None) -> None:
+    """Keep the Store helper's public error contract around shared staging."""
+    runtimes = [executable.resolve().parent, dll_dir]
+    if sdl_runtime:
+        runtimes.insert(0, sdl_runtime)
+    try:
+        stage_runtime_dlls(executable, runtimes, destination)
+    except FileNotFoundError as error:
+        raise RuntimeError(str(error)) from error
+
 
 
 def write_game_config(destination: Path, args: argparse.Namespace) -> None:
@@ -100,6 +72,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, required=True)
     parser.add_argument("--exe", type=Path, required=True)
+    parser.add_argument("--sdl-runtime", type=Path)
     parser.add_argument("--dll-dir", type=Path, required=True)
     parser.add_argument("--dest", type=Path, required=True)
     parser.add_argument("--identity-name", required=True)
@@ -126,23 +99,14 @@ def main() -> None:
         shutil.rmtree(destination)
     destination.mkdir(parents=True)
     shutil.copy2(args.exe, destination / "glob2.exe")
-    for folder in ASSET_DIRS:
-        if not (args.root / folder).is_dir():
-            parser.error(f"missing game asset directory: {args.root / folder}")
-    with tempfile.TemporaryDirectory(prefix="glob2-store-assets-") as temporary:
-        assets = Path(temporary) / 'runtime'
-        export_assets(args.root, assets, platform='windows')
-        for folder in ASSET_DIRS:
-            if (assets / folder).is_dir():
-                shutil.copytree(assets / folder, destination / folder)
-    shutil.copy2(args.root / "COPYING", destination / "COPYING")
+    stage_assets(args.root, destination)
     (destination / "SOURCE.txt").write_text(
         "Globulation 2 is licensed under GPL version 3.\n"
         "Corresponding source for this build:\n"
         f"https://github.com/Globulation2/glob2/archive/{args.commit}.zip\n",
         encoding="utf-8",
     )
-    stage_dlls(args.exe, args.dll_dir, destination)
+    stage_dlls(args.exe, args.dll_dir, destination, args.sdl_runtime)
 
     icon = args.root / "data/icons/glob2-icon-128x128.png"
     write_shell_images(icon, destination)

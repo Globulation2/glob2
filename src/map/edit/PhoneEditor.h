@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <ScrollPhysics.h>
 #include <TouchInput.h>
 #include "gui/BrushHUD.h"
@@ -51,13 +51,14 @@ class PhoneEditor
 	GAGCore::ViewRect tray, modeBar;
 	struct Drag
 	{
-		Sint64 device, finger;
+		SDL_TouchID device;
+		SDL_FingerID finger;
 		MapEditorWidget *widget;
 		GAGCore::ViewPoint start;
 		bool moving = false, browsing = false;
 	};
 	std::optional<Drag> drag;
-	std::set<std::pair<Sint64, Sint64>> quarantined;
+	std::set<std::pair<SDL_TouchID, SDL_FingerID>> quarantined;
 	std::vector<GAGCore::ViewPoint> stroke;
 	// One-finger zoom: a completed map tap arms the next contact. A painted tap
 	// waits one double-tap window, since it may be the first half of a zoom.
@@ -70,7 +71,7 @@ class PhoneEditor
 	std::optional<DeferredStroke> deferred;
 	std::optional<Uint32> lastTapTicks;
 	Uint32 eventTicks = 0;
-	std::pair<Sint64, Sint64> touchKey{};
+	std::pair<SDL_TouchID, SDL_FingerID> touchKey{};
 	GAGCore::ViewPoint lastTapPoint{}, touchStart{}, touchPoint{};
 	bool touchTravelled = false;
 	bool zoomArmed(Uint32 ticks, GAGCore::ViewPoint point) const;

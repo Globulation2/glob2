@@ -3,6 +3,7 @@
 
 import json
 import os
+from pathlib import Path
 import sys
 
 
@@ -12,7 +13,13 @@ def failed_steps(steps):
 
 
 def main():
-    failures = failed_steps(json.loads(os.environ['CI_STEPS_JSON']))
+    steps = json.loads(os.environ['CI_STEPS_JSON'])
+    failures = failed_steps(steps)
+    caches = {name: state.get('outputs', {}).get('cache-hit') for name, state in steps.items()
+              if 'cache-hit' in state.get('outputs', {})}
+    evidence = Path('artifacts/ci-observation/cache.json')
+    evidence.parent.mkdir(parents=True, exist_ok=True)
+    evidence.write_text(json.dumps({'job': os.environ.get('GITHUB_JOB'), 'caches': caches}) + '\n')
     summary = os.environ.get('GITHUB_STEP_SUMMARY')
     lines = ['## CI check results', '']
     if failures:

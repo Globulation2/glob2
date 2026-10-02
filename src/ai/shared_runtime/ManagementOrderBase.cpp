@@ -14,7 +14,7 @@ bool ManagementOrder::load(GAGCore::InputStream *stream, Player *player, Sint32 
 {
 	stream->readEnterSection("ManagementOrder");
 	stream->readEnterSection("conditions");
-	Uint32 size = stream->readUint32("size");
+	Uint32 size = stream->readCount("size");
 	conditions.resize(size);
 	for(unsigned x=0; x<size; ++x)
 	{

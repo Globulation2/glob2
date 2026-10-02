@@ -96,6 +96,7 @@ def main():
     parser.add_argument('--llvm-profdata', default='llvm-profdata')
     parser.add_argument('--llvm-cov', default='llvm-cov')
     parser.add_argument('--timeout', type=int, help='explicit per-case timeout override for instrumented runs')
+    parser.add_argument('--with-cli', action='store_true', help='also measure the production executable in a separate client report')
     parser.add_argument('--quick', action='store_true')
     parser.add_argument('--no-display', action='store_true')
     parser.add_argument('--fullscreen', action='store_true')
@@ -123,6 +124,8 @@ def main():
     command = ['scons', f'-j{args.jobs}', 'release=0', 'server=0', f'--build={build}', 'tests',
                f'CC={args.cc}', f'CXX={args.cxx}', f'CFLAGS={flags}', f'CXXFLAGS={flags}',
                'LINKFLAGS=-g -fprofile-instr-generate']
+    if args.with_cli:
+        command.append(str(build / 'src/glob2'))
     failed = 0
     try:
         for name in (args.cxx,args.llvm_profdata,args.llvm_cov):
@@ -131,7 +134,7 @@ def main():
         failed = run(command, 'build.log')
         if failed:
             raise RuntimeError('coverage build failed; see build.log')
-        for kind in ('unit', 'engine'):
+        for kind in (('unit', 'engine', 'client') if args.with_cli else ('unit', 'engine')):
             directory = output / kind
             raw = directory / 'raw'
             raw.mkdir(parents=True)
@@ -150,6 +153,10 @@ def main():
             for option in ('quick', 'no_display', 'fullscreen'):
                 if getattr(args, option):
                     command.append('--' + option.replace('_', '-'))
+            if kind == 'client':
+                command = [sys.executable, str(ROOT / 'test/test_cli_smoke.py'),
+                           '--binary', str(build / 'src/glob2'), '--junit', str(directory / 'junit.xml'),
+                           '--artifacts', str(directory / 'evidence')]
             status = run(command, f'{kind}/tests.log', env)
             test_status = status
             failed |= status
@@ -160,7 +167,7 @@ def main():
             status = run(tool(args.llvm_profdata) + ['merge', '-sparse', *map(str, profiles), '-o', str(profile)], f'{kind}/merge.log')
             if status:
                 raise RuntimeError(f'{kind}: profile merge failed')
-            binary = build / 'test' / f'glob2-{kind}-tests'
+            binary = build / 'src/glob2' if kind == 'client' else build / 'test' / f'glob2-{kind}-tests'
             covargs = [str(binary), f'-instr-profile={profile}', f'-ignore-filename-regex={IGNORE}']
             warnings = directory / 'export.log'
             with (directory / 'coverage.json').open('w') as stream, warnings.open('w') as err:

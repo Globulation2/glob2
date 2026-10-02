@@ -27,6 +27,7 @@ ENGINE_SUPPORT = [
 ENGINE_TESTS = [
     # This fixture selects SDL's dummy driver; isolate its client context from display cases.
     'ScreenExecutionHarness.cpp',
+    ('AIRecoveryCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('GUIInteractionCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('GUIOrderCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('EditorActionCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
@@ -70,15 +71,16 @@ ENGINE_TESTS = [
     'TrappedUnitLifecycleTest.cpp',
     'UnitContinuationHarness.cpp',
     'SavegameSafetyHarness.cpp',
+    'UntrustedFilesTest.cpp',
     ('TournamentCompatibilityTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('maxima/MaximaRelocationIntegrationTest.cpp', dict(cxxflags=['-fno-access-control'])),
     'CombGeneratorTest.cpp',
     'OrchardCommonsConversionTest.cpp',
     'PortableGameHarness.cpp',
     'TeamStatsSaveHarness.cpp',
-    'EngineSessionHarness.cpp',
+    ('EngineSessionHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     ('MapRenderResizeHarness.cpp', dict(cxxflags=['-fno-access-control'])),
-    'PointBarRenderTest.cpp',
+    ('PointBarRenderTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('maxima/MaximaCombatIntegrationTest.cpp', dict(cxxflags=['-fno-access-control'])),
     'maxima/MaximaDiagnosticsTest.cpp',
     ('maxima/MaximaDirectorRegressionTest.cpp', dict(cxxflags=['-fno-access-control'])),
@@ -120,6 +122,7 @@ ENGINE_TESTS = [
 
 # glob2-unit-tests: libgag, libusl, the production sources below and stubs.
 UNIT_TESTS = [
+    'EventQueueTest.cpp',
     'MapGeneratorGoldenCoverageTest.cpp',
     'USLCoverageTest.cpp',
     'SurfaceCoverageTest.cpp',
@@ -273,6 +276,7 @@ UNIT_PRODUCTION_SOURCES = [
     '#src/ReplayWriter.cpp',
     # Without the client's Brush and Game surfaces: only the byte marshalers are wanted.
     ('#src/OrderModify.cpp', dict(defines=['YOG_SERVER_ONLY'])),
+    ('#src/OrderBuilding.cpp', dict(defines=['YOG_SERVER_ONLY'])),
     ('#src/net/message/OrderMessages.cpp', dict(defines=['YOG_SERVER_ONLY'])),
 ]
 

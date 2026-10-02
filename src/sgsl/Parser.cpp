@@ -11,6 +11,7 @@
 #include <iostream>
 
 #include "Game.h"
+#include "AI.h"
 #include "SGSL.h"
 #include "SGSLParseContext.h"
 
@@ -50,6 +51,7 @@ ErrorReport MapScriptSGSL::parseScript(Acquisition *donnees, Game *game)
 			if (parseStatement(ctx) == SGSLParseStatus::Aborted)
 				return er;
 		}
+		thisone.instructionStarts.insert(thisone.line.size());
 		thisone.line.push_back(SGSLToken(SGSLToken::S_STORY));
 		stories.push_back(thisone);
 		ctx.nextToken();
@@ -60,6 +62,7 @@ ErrorReport MapScriptSGSL::parseScript(Acquisition *donnees, Game *game)
 // Grammar check of the statement starting at the current token
 SGSLParseStatus MapScriptSGSL::parseStatement(SGSLParseContext &ctx)
 {
+	ctx.story->instructionStarts.insert(ctx.story->line.size());
 	switch (ctx.token().type)
 	{
 		case (SGSLToken::FUNC_CALL):
@@ -109,6 +112,7 @@ SGSLParseStatus MapScriptSGSL::parseFunctionCall(SGSLParseContext &ctx)
 	Functions::const_iterator fIt = functions.find(ctx.token().msg);
 	assert(fIt != functions.end());
 	const FunctionArgumentDescription *argument = fIt->second.first;
+	int argumentIndex = 0;
 
 	if (!ctx.openArguments())
 		return SGSLParseStatus::Aborted;
@@ -119,6 +123,17 @@ SGSLParseStatus MapScriptSGSL::parseFunctionCall(SGSLParseContext &ctx)
 		if ((argumentTokenType < argument->argRangeFirst) || (argumentTokenType > argument->argRangeLast))
 			return ctx.abort(ErrorReport::ET_WRONG_FUNCTION_ARGUMENT);
 
+        // resetAI's integers index a player slot and select an implementation.
+        // Token-type validation alone must not permit an out-of-bounds access.
+        if (fIt->first == "resetAI")
+        {
+            // Editor maps can compile before their player header is constructed.
+            const int players = ctx.game->gameHeader.getNumberOfPlayers();
+            const int limit = argumentIndex == 0 ? (players > 0 ? players : Team::MAX_COUNT) : AI::SIZE;
+            if (ctx.token().value < 0 || ctx.token().value >= limit)
+                return ctx.abort(ErrorReport::ET_INVALID_VALUE);
+        }
+        ++argumentIndex;
 		ctx.pushToken();
 
 		argument++;

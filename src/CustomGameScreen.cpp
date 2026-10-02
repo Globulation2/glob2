@@ -156,10 +156,10 @@ void CustomGameScreen::selectTab(int tab)
 
 bool CustomGameScreen::interceptEvent(const SDL_Event &event)
 {
-	if (event.type == SDL_KEYDOWN && (event.key.keysym.mod & KMOD_CTRL) && event.key.keysym.sym >= SDLK_1 &&
-		event.key.keysym.sym <= SDLK_3)
+	if (event.type == SDL_EVENT_KEY_DOWN && (event.key.mod & SDL_KMOD_CTRL) && event.key.key >= SDLK_1 &&
+		event.key.key <= SDLK_3)
 	{
-		selectTab(event.key.keysym.sym - SDLK_1);
+		selectTab(event.key.key - SDLK_1);
 		return true;
 	}
 	return false;
@@ -1069,7 +1069,7 @@ CustomGameScreen::ColonyFields CustomGameScreen::colonyFields(int i, const Prese
 	}
 	fe::ChoiceOptions controllerOptions;
 	controllerOptions.enabled = enabled;
-	controllerOptions.help = tr("Shared control needs a free controller slot (maximum 12).");
+	controllerOptions.help = tr("Shared control needs a free controller slot (maximum %0).");
 	auto controller = fe::choice(id + "/controller", controllerNames, c.controller,
 								 [this, i](int value) { setup.setController(i, (CustomGameSetup::Controller)value); }, controllerOptions);
 	std::vector<std::string> teams;

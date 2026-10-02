@@ -13,12 +13,10 @@ import tests as registry
 
 test_env = env.Clone()
 test_env.Append(CPPPATH=[Dir('.').srcnode(), Dir('support').srcnode(), Dir('#src/render'), Dir('#libgag/src'), Dir('#third_party/quickjs-ng')])
-# Console entry point for every test binary: no -mwindows, no SDL2main.
+# Console entry point for every test binary: no -mwindows, SDL3 headers supply no separate main library.
 test_env['LINKFLAGS'] = [flag for flag in test_env.Split(test_env['LINKFLAGS']) if flag != '-mwindows']
-test_env['LIBS'] = [lib for lib in test_env['LIBS'] if lib != 'SDL2main']
-# The mingw SDL configuration renames main to SDL_main so SDL2main's WinMain can call
-# it; these binaries carry their own console main, so drop the rename and tell SDL's
-# headers not to repeat it.
+# These binaries carry their own console main; discard a legacy main rename
+# if a toolchain supplied one, and keep SDL's entry-point wrapper disabled.
 
 
 def not_sdl_main(item):
@@ -94,6 +92,7 @@ def production_objects(entries):
 native_support = list(registry.SUPPORT)
 if env['PLATFORM'] == 'darwin':
     native_support.append('support/TestActivity_mac.mm')
+    test_env.AppendUnique(FRAMEWORKS=['Foundation'])
 
 engine = test_env.Program('glob2-engine-tests',
     objects(native_support + registry.ENGINE_SUPPORT + registry.ENGINE_TESTS, 'engine-')

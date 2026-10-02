@@ -4,7 +4,7 @@
 #pragma once
 
 #include <memory>
-#include "SDL_net.h"
+#include <SDL3_net/SDL_net.h>
 #include <vector>
 #include <map>
 #include "NetListener.h"

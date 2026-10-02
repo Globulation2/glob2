@@ -11,7 +11,8 @@ struct Scope;
 
 struct Usl
 {
-	Usl();
+	// Standalone interpreters may load files; embedded map scripts must opt out.
+	explicit Usl(bool allowFileLoading = true);
 	virtual ~Usl();
 	
 	void markGarbage() const;

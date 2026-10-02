@@ -34,7 +34,7 @@
 #endif
 // This is the only one which should be left... In theory :-)
 // Remove this comment once all other SDL deps have been removed.
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 // useful macros
 #ifndef MAX

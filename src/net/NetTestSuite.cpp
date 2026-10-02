@@ -653,8 +653,8 @@ int NetTestSuite::testListenerConnection()
 	
 	//Causes NetListener to accept the connection
 	bool accepted = false;
-    const auto deadline = SDL_GetTicks64() + 5000;
-    while (SDL_GetTicks64() < deadline && (!accepted || !nc_client.isConnected())) {
+    const auto deadline = SDL_GetTicks() + 5000;
+    while (SDL_GetTicks() < deadline && (!accepted || !nc_client.isConnected())) {
         if (!accepted) accepted = nl.attemptConnection(nc_server);
         nc_client.update(); SDL_Delay(1);
     }
