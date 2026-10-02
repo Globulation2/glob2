@@ -4,6 +4,8 @@ on:
   push:
     branches: [master]
   pull_request:
+  schedule:
+    - cron: '0 6 * * *'
   workflow_dispatch:
     inputs:
       browser_only:
@@ -13,7 +15,7 @@ on:
         default: false
 
 # A new push to a pull request supersedes its running checks. Master runs are
-# never cancelled: relevant builds save the compiler caches the next PRs restore.
+# finish once started; the newest pending revision replaces older pending work.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
@@ -45,7 +47,16 @@ jobs:
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
           BROWSER_ONLY: ${{ inputs.browser_only }}
-        run: python3 .github/scripts/ci_changed_paths.py --base "$BASE_SHA"
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = pull_request ]; then
+            python3 .github/scripts/ci_changed_paths.py --base "$BASE_SHA"
+          else
+            python3 .github/scripts/ci_changed_paths.py
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ci-observation-selection
+          path: artifacts/ci-selection.json
 
   native-coverage:
     name: Native Clang coverage
@@ -366,6 +377,12 @@ jobs:
         env:
           CI_STEPS_JSON: ${{ toJSON(steps) }}
         run: python3 test/ci_step_summary.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ci-observation-${{ github.job }}-${{ strategy.job-index }}
+          path: artifacts/ci-observation/
+          if-no-files-found: ignore
 
   linux:
     name: linux (${{ matrix.image }})
@@ -505,6 +522,12 @@ jobs:
         env:
           CI_STEPS_JSON: ${{ toJSON(steps) }}
         run: python3 test/ci_step_summary.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ci-observation-${{ github.job }}-${{ strategy.job-index }}
+          path: artifacts/ci-observation/
+          if-no-files-found: ignore
 
   linux-map-generators:
     name: linux map generators (${{ matrix.image }}, ${{ matrix.suite }})
@@ -667,6 +690,12 @@ jobs:
         env:
           CI_STEPS_JSON: ${{ toJSON(steps) }}
         run: python3 test/ci_step_summary.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ci-observation-${{ github.job }}-${{ strategy.job-index }}
+          path: artifacts/ci-observation/
+          if-no-files-found: ignore
 
   windows:
     name: windows (mingw-w64)
@@ -914,6 +943,12 @@ jobs:
         env:
           CI_STEPS_JSON: ${{ toJSON(steps) }}
         run: python3 test/ci_step_summary.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ci-observation-${{ github.job }}-${{ strategy.job-index }}
+          path: artifacts/ci-observation/
+          if-no-files-found: ignore
 
   windows-server:
     name: windows server (mingw-w64)
@@ -1017,6 +1052,12 @@ jobs:
         env:
           CI_STEPS_JSON: ${{ toJSON(steps) }}
         run: python3 test/ci_step_summary.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ci-observation-${{ github.job }}-${{ strategy.job-index }}
+          path: artifacts/ci-observation/
+          if-no-files-found: ignore
 
   web-build:
     name: browser build (WebAssembly)
@@ -1156,6 +1197,12 @@ jobs:
         env:
           CI_STEPS_JSON: ${{ toJSON(steps) }}
         run: python3 test/ci_step_summary.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ci-observation-${{ github.job }}-${{ strategy.job-index }}
+          path: artifacts/ci-observation/
+          if-no-files-found: ignore
 
   web-native:
     name: browser native WSS server, router and transport
@@ -1274,6 +1321,12 @@ jobs:
         env:
           CI_STEPS_JSON: ${{ toJSON(steps) }}
         run: python3 test/ci_step_summary.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ci-observation-${{ github.job }}-${{ strategy.job-index }}
+          path: artifacts/ci-observation/
+          if-no-files-found: ignore
 
   web-deploy:
     name: browser self-hosting deployment
@@ -1303,6 +1356,12 @@ jobs:
         env:
           CI_STEPS_JSON: ${{ toJSON(steps) }}
         run: python3 test/ci_step_summary.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ci-observation-${{ github.job }}-${{ strategy.job-index }}
+          path: artifacts/ci-observation/
+          if-no-files-found: ignore
 
   web-test:
     name: browser tests (${{ matrix.name }})
@@ -1473,6 +1532,12 @@ jobs:
         env:
           CI_STEPS_JSON: ${{ toJSON(steps) }}
         run: python3 test/ci_step_summary.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ci-observation-${{ github.job }}-${{ strategy.job-index }}
+          path: artifacts/ci-observation/
+          if-no-files-found: ignore
 
   browser-determinism:
     name: browser/native simulation equivalence
@@ -1543,6 +1608,12 @@ jobs:
         env:
           CI_STEPS_JSON: ${{ toJSON(steps) }}
         run: python3 test/ci_step_summary.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ci-observation-${{ github.job }}-${{ strategy.job-index }}
+          path: artifacts/ci-observation/
+          if-no-files-found: ignore
 
   ci-result:
     name: Relevant checks passed

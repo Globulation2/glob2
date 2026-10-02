@@ -2,6 +2,7 @@
 """Select CI jobs from a PR or master push diff, defaulting to full CI."""
 
 import argparse
+import json
 import os
 from pathlib import Path
 import subprocess
@@ -135,6 +136,9 @@ def main():
             "cross_platform": False,
         }
 
+    artifact = Path('artifacts/ci-selection.json')
+    artifact.parent.mkdir(parents=True, exist_ok=True)
+    artifact.write_text(json.dumps({'selection': selected, 'event': os.environ.get('GITHUB_EVENT_NAME')}, indent=2) + '\n')
     output = "".join(f"{job}={str(enabled).lower()}\n" for job, enabled in selected.items())
     print(output, end="")
     if os.environ.get("GITHUB_OUTPUT"):
