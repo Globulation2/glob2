@@ -1,0 +1,88 @@
+import importlib.util
+import io
+import json
+from pathlib import Path
+import sys
+import unittest
+import zipfile
+ROOT=Path(__file__).resolve().parents[2]
+sys.path.insert(0,str(ROOT/'.github/scripts'))
+import ci_changed_paths as selector
+import ci_coverage_baseline as guard
+
+class TierTest(unittest.TestCase):
+    def profile(self,paths,event='pull_request'):
+        return selector.coverage_profile(paths,event,selector.classify(paths))
+    def test_known_implementation_and_test_boundaries_are_primary(self):
+        self.assertFalse(self.profile(['test/PathGradientHarness.cpp'])['compatibility'])
+        gui=self.profile(['src/gui/GameGUIInput.cpp'])
+        self.assertFalse(gui['compatibility']);self.assertTrue(gui['browsers_all']);self.assertTrue(gui['android'])
+        self.assertEqual(gui['android_arches'],['arm64-v8a'])
+    def test_shared_simulation_platform_and_unknown_paths_are_full(self):
+        for path in ['src/gui/GameGUI.h','src/Game_sync.cpp','src/ai/AI.cpp','src/net/Net.cpp','SConstruct','mobile/android.py','new-unknown-directory/thing.cpp','test/fixtures/javascript/profile.game.gz']:
+            with self.subTest(path=path):self.assertTrue(self.profile([path])['compatibility'])
+        self.assertTrue(self.profile(['test/PathGradientHarness.cpp','SConstruct'])['compatibility'])
+        self.assertTrue(self.profile([])['android'])
+    def test_master_and_schedule_override_docs(self):
+        for event in ['push','schedule','workflow_dispatch']:
+            result=self.profile(['README.md'],event)
+            self.assertTrue(result['compatibility']);self.assertTrue(result['android']);self.assertTrue(result['browsers_all'])
+    def test_android_metadata_remains_relevant(self):
+        for path in ['fdroid/metadata.yml','fastlane/metadata/title.txt','.github/workflows/mobile.yml']:
+            self.assertTrue(self.profile([path])['android'])
+    def test_complete_browser_inventory_keeps_every_command(self):
+        matrix=json.loads((ROOT/'.github/scripts/ci_browser_matrix.json').read_text())
+        self.assertEqual({x['browsers'] for x in matrix},{'chromium','firefox','webkit'})
+        self.assertTrue(all(x['command'] for x in matrix))
+        self.assertGreater(len(matrix),10)
+    def test_reusable_android_does_not_share_caller_concurrency_group(self):
+        self.assertIn('group: mobile-${{ github.workflow }}-${{ github.ref }}',(ROOT/'.github/workflows/mobile.yml').read_text())
+
+class BaselineTest(unittest.TestCase):
+    def read(self,run=None,observed=None,expired=False):
+        run=run or dict(name='build',head_branch='master',event='push',conclusion='success',head_sha='abc')
+        observed=observed or dict(full_matrix=True,sha='abc',selection={k:True for k in ['native','browser','map_generators','deployment','cross_platform','android']})
+        archive=io.BytesIO()
+        with zipfile.ZipFile(archive,'w') as z:z.writestr('ci-selection.json',json.dumps(observed))
+        def read(path,token,binary=False):
+            if binary:return archive.getvalue()
+            if 'artifacts?' in path:return {'artifacts':[dict(name='ci-observation-selection',expired=expired,id=1)]}
+            return run
+        return read
+    def test_only_successful_proven_full_master_baseline_activates(self):
+        self.assertTrue(guard.validated_baseline('owner/repo','1','token',self.read()))
+        for conclusion in ['failure','cancelled',None]:
+            run=dict(name='build',head_branch='master',event='push',conclusion=conclusion,head_sha='abc')
+            self.assertFalse(guard.validated_baseline('owner/repo','1','token',self.read(run)))
+        self.assertFalse(guard.validated_baseline('owner/repo','1','token',self.read(expired=True)))
+        self.assertFalse(guard.validated_baseline('owner/repo','1','token',self.read(observed=dict(full_matrix=False,sha='abc',selection={}))))
+        self.assertFalse(guard.validated_baseline('owner/repo','1','token',self.read(observed=dict(full_matrix=True,sha='wrong',selection={}))))
+        self.assertFalse(guard.validated_baseline('owner/repo','not-a-run','token',self.read()))
+
+class AggregateGateTest(unittest.TestCase):
+    def test_selected_failures_and_cancellations_cannot_pass(self):
+        import re,os
+        from unittest.mock import patch
+        workflow=(ROOT/'.github/workflows/build.yml').read_text().split('  ci-result:\n',1)[1]
+        code=workflow.split("          python3 - <<'PY'\n",1)[1].split('\n          PY',1)[0]
+        import textwrap
+        code=textwrap.dedent(code)
+        jobs=['android','native-coverage','linux','linux-variants','linux-map-generators','windows','windows-server','web-build','web-native','web-deploy','web-test','browser-determinism']
+        selected={k:'true' for k in ['native','browser','map_generators','deployment','cross_platform','android','compatibility']}
+        needs={'changes':{'result':'success','outputs':selected},**{job:{'result':'success'} for job in jobs}}
+        with patch.dict(os.environ,NEEDS_JSON=json.dumps(needs),GITHUB_EVENT_NAME='push'):
+            exec(code,{})
+        for job in jobs:
+            for result in ['failure','cancelled','skipped']:
+                modified=json.loads(json.dumps(needs));modified[job]['result']=result
+                with self.subTest(job=job,result=result),patch.dict(os.environ,NEEDS_JSON=json.dumps(modified),GITHUB_EVENT_NAME='push'):
+                    with self.assertRaises(AssertionError):exec(code,{})
+    def test_primary_gcc_gate_rejects_unexpected_compatibility_results(self):
+        import subprocess,os
+        workflow=(ROOT/'.github/workflows/build.yml').read_text().split('  linux-build:\n',1)[1].split('  linux-clang:\n',1)[0]
+        script=workflow.split('        run: |\n',1)[1]
+        import textwrap
+        script=textwrap.dedent(script)
+        for compatibility,gcc11,gcc13,okay in [('false','skipped','success',True),('true','success','success',True),('true','skipped','success',False),('false','failure','success',False),('false','skipped','cancelled',False)]:
+            result=subprocess.run(['bash','-e','-c',script],env=dict(os.environ,COMPATIBILITY=compatibility,GCC11=gcc11,GCC13=gcc13),capture_output=True)
+            self.assertEqual(result.returncode==0,okay)

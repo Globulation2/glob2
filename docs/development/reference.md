@@ -998,3 +998,23 @@ weights, gather observations and run
 Only platform-matched jobs with ten successful samples enter a profile. Review the
 resulting diff before shipping it; weights never change during a run. Profiles
 remain empty until measurements are available, rather than using invented data.
+
+### Tiered pull-request coverage rollout
+
+The selector records both proposed and effective coverage, including the reason
+for compatibility coverage. Primary PR checks retain GCC 13, Windows, Chromium
+and affected Android arm64 builds. Shared headers, simulation/save/network code,
+platform/build/dependency changes, mixed changes and unknown paths retain full
+compatibility coverage. Browser/UI/rendering changes retain Firefox and WebKit.
+The full browser command inventory lives in `.github/scripts/ci_browser_matrix.json`.
+Android is called by the main build workflow, avoiding duplicate PR APK builds
+and including its selected result in the stable aggregate gate. Master and nightly
+run the complete matrix, including Android.
+
+PR tier reductions start disabled. Set `CI_TIER_BASELINE_RUN_ID` to a successful
+full master build, then set `CI_TIERED_COVERAGE_ENABLED=true`. Before each reduced
+PR matrix, the selector verifies the baseline is a successful master build with
+a matching SHA and unexpired full-matrix selection evidence (including Android).
+Unavailable, expired or invalid evidence falls back to existing full compatibility
+coverage. Review comparison artifacts before enabling the flag. Set the flag
+false to roll back coverage reductions without reverting scheduling improvements.

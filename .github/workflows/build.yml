@@ -26,6 +26,9 @@ env:
 jobs:
   changes:
     name: Select relevant checks
+    permissions:
+      contents: read
+      actions: read
     runs-on: ubuntu-24.04
     outputs:
       native: ${{ steps.select.outputs.native }}
@@ -33,6 +36,11 @@ jobs:
       map_generators: ${{ steps.select.outputs.map_generators }}
       deployment: ${{ steps.select.outputs.deployment }}
       cross_platform: ${{ steps.select.outputs.cross_platform }}
+      compatibility: ${{ steps.select.outputs.compatibility }}
+      browsers_all: ${{ steps.select.outputs.browsers_all }}
+      android: ${{ steps.select.outputs.android }}
+      browser_matrix: ${{ steps.select.outputs.browser_matrix }}
+      android_arches: ${{ steps.select.outputs.android_arches }}
     steps:
       - uses: actions/checkout@v4
       - name: Test changed-path selection
@@ -47,6 +55,9 @@ jobs:
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
           BROWSER_ONLY: ${{ inputs.browser_only }}
+          CI_TIERED_COVERAGE_ENABLED: ${{ vars.CI_TIERED_COVERAGE_ENABLED }}
+          CI_TIER_BASELINE_RUN_ID: ${{ vars.CI_TIER_BASELINE_RUN_ID }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           if [ "$GITHUB_EVENT_NAME" = pull_request ]; then
             python3 .github/scripts/ci_changed_paths.py --base "$BASE_SHA"
@@ -58,10 +69,17 @@ jobs:
           name: ci-observation-selection
           path: artifacts/ci-selection.json
 
+  android:
+    needs: changes
+    if: ${{ needs.changes.outputs.android == 'true' }}
+    uses: ./.github/workflows/mobile.yml
+    with:
+      architectures: ${{ needs.changes.outputs.android_arches }}
+
   native-coverage:
     name: Native Clang coverage
     needs: changes
-    if: ${{ needs.changes.outputs.native == 'true' }}
+    if: ${{ needs.changes.outputs.native == 'true' && needs.changes.outputs.compatibility == 'true' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     steps:
@@ -94,7 +112,7 @@ jobs:
   linux-gcc11:
     name: Linux GCC 11 build and tests
     needs: changes
-    if: ${{ needs.changes.outputs.native == 'true' }}
+    if: ${{ needs.changes.outputs.native == 'true' && needs.changes.outputs.compatibility == 'true' }}
     uses: ./.github/workflows/ci-linux-build.yml
     with:
       image: ubuntu:22.04
@@ -126,14 +144,18 @@ jobs:
     steps:
       - name: Require both GCC platforms
         env:
+          COMPATIBILITY: ${{ needs.changes.outputs.compatibility }}
           GCC11: ${{ needs.linux-gcc11.result }}
           GCC13: ${{ needs.linux-gcc13.result }}
-        run: test "$GCC11" = success && test "$GCC13" = success
+        run: |
+          expected=skipped
+          if [ "$COMPATIBILITY" = true ]; then expected=success; fi
+          test "$GCC11" = "$expected" && test "$GCC13" = success
 
   linux-clang:
     name: Linux Clang compatibility
     needs: changes
-    if: ${{ needs.changes.outputs.native == 'true' }}
+    if: ${{ needs.changes.outputs.native == 'true' && needs.changes.outputs.compatibility == 'true' }}
     uses: ./.github/workflows/ci-linux-build.yml
     with:
       image: ubuntu:24.04
@@ -154,15 +176,18 @@ jobs:
       - name: Require every Linux build and test shard
         env:
           BUILD_RESULT: ${{ needs.linux-build.result }}
+          COMPATIBILITY: ${{ needs.changes.outputs.compatibility }}
           CLANG_RESULT: ${{ needs.linux-clang.result }}
         run: |
           echo "Linux builds: $BUILD_RESULT; Clang: $CLANG_RESULT"
-          test "$BUILD_RESULT" = success && test "$CLANG_RESULT" = success
+          expected=skipped
+          if [ "$COMPATIBILITY" = true ]; then expected=success; fi
+          test "$BUILD_RESULT" = success && test "$CLANG_RESULT" = "$expected"
 
   linux-variants:
     name: linux variants (${{ matrix.image }})
     needs: changes
-    if: ${{ needs.changes.outputs.native == 'true' }}
+    if: ${{ needs.changes.outputs.native == 'true' && needs.changes.outputs.compatibility == 'true' }}
     runs-on: ${{ matrix.runner }}
     env:
       CCACHE: 1
@@ -461,12 +486,15 @@ jobs:
       - name: Require selected generator checks
         env:
           NATIVE: ${{ needs.changes.outputs.native }}
+          COMPATIBILITY: ${{ needs.changes.outputs.compatibility }}
           GCC11: ${{ needs.linux-gcc11.result }}
           GCC13: ${{ needs.linux-gcc13.result }}
           STANDALONE: ${{ needs.linux-map-generators-standalone.result }}
         run: |
           if [ "$NATIVE" = true ]; then
-            test "$GCC11" = success && test "$GCC13" = success
+            expected=skipped
+            if [ "$COMPATIBILITY" = true ]; then expected=success; fi
+            test "$GCC11" = "$expected" && test "$GCC13" = success
           else
             test "$STANDALONE" = success
           fi
@@ -727,7 +755,7 @@ jobs:
   windows-server:
     name: windows server (mingw-w64)
     needs: changes
-    if: ${{ needs.changes.outputs.native == 'true' }}
+    if: ${{ needs.changes.outputs.native == 'true' && needs.changes.outputs.compatibility == 'true' }}
     runs-on: windows-latest
     env:
       CCACHE: 1
@@ -1148,87 +1176,7 @@ jobs:
       # Leave runner capacity for Linux test shards once the browser build
       # finishes; all browser cases still run before the required check passes.
       max-parallel: 10
-      matrix:
-        include:
-          # The main suite keeps file order and includes build-artifact.spec.js
-          # once. Long renderer and storage specs run in dedicated jobs.
-          - name: chromium 1/5
-            browsers: chromium
-            command: xvfb-run -a npx playwright test --project=chromium --shard=1/5 --grep-invert='torus\.spec\.js|rendering\.spec\.js|settings-storage\.spec\.js'
-          - name: chromium 2/5
-            browsers: chromium
-            command: xvfb-run -a npx playwright test --project=chromium --shard=2/5 --grep-invert='torus\.spec\.js|rendering\.spec\.js|settings-storage\.spec\.js'
-          - name: chromium 3/5
-            browsers: chromium
-            command: xvfb-run -a npx playwright test --project=chromium --shard=3/5 --grep-invert='torus\.spec\.js|rendering\.spec\.js|settings-storage\.spec\.js'
-          - name: chromium 4/5
-            browsers: chromium
-            command: xvfb-run -a npx playwright test --project=chromium --shard=4/5 --grep-invert='torus\.spec\.js|rendering\.spec\.js|settings-storage\.spec\.js'
-          - name: chromium torus
-            browsers: chromium
-            command: xvfb-run -a npx playwright test torus.spec.js --project=chromium
-          - name: chromium 5/5
-            browsers: chromium
-            command: xvfb-run -a npx playwright test --project=chromium --shard=5/5 --grep-invert='torus\.spec\.js|rendering\.spec\.js|settings-storage\.spec\.js'
-          # Start the longest renderer checks in the first browser wave. The
-          # shorter lifecycle and storage checks take the slots they release.
-          - name: chromium webgl2 match reload
-            browsers: chromium
-            renderer: webgl2
-            command: xvfb-run -a npx playwright test session-reload.spec.js --project=chromium --grep-invert='@webgl2-reload-(b|c)'
-          - name: chromium webgl2 replay reload
-            browsers: chromium
-            renderer: webgl2
-            command: xvfb-run -a npx playwright test session-reload.spec.js --project=chromium --grep='@webgl2-reload-c'
-          - name: chromium webgl2 viewport
-            browsers: chromium
-            renderer: webgl2
-            command: xvfb-run -a npx playwright test viewport.spec.js --project=chromium
-          - name: chromium webgl2 damaged load
-            browsers: chromium
-            renderer: webgl2
-            command: xvfb-run -a npx playwright test session-reload.spec.js --project=chromium --grep='@webgl2-reload-b'
-          - name: lifecycle
-            browsers: chromium
-            command: |
-              python3 ../test/ci_run_commands.py \
-                --check 'browser unit tests' 'node --test unit/*.test.js' \
-                --check 'software visibility' 'GLOB2_TEST_RENDERER=software xvfb-run -a npx playwright test --config visibility.config.js' \
-                --check 'WebGL visibility' 'GLOB2_TEST_RENDERER=webgl2 xvfb-run -a npx playwright test --config visibility.config.js'
-          - name: chromium settings storage
-            browsers: chromium
-            command: xvfb-run -a npx playwright test settings-storage.spec.js --project=chromium
-          - name: chromium webgl2 responsive and startup
-            browsers: chromium
-            renderer: webgl2
-            command: xvfb-run -a npx playwright test responsive-presentation.spec.js runtime-build.spec.js --project=chromium
-          - name: webkit
-            browsers: webkit
-            command: xvfb-run -a npx playwright test runtime-build.spec.js threading.spec.js viewport.spec.js responsive-presentation.spec.js campaign-editor-storage.spec.js --project=webkit
-          - name: webkit scripting
-            browsers: webkit
-            command: xvfb-run -a npx playwright test determinism.spec.js --project=webkit --grep='shared scripting corpus'
-          - name: chromium rendering
-            browsers: chromium
-            command: xvfb-run -a npx playwright test rendering.spec.js --project=chromium
-          - name: firefox
-            browsers: firefox
-            command: GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test runtime-build.spec.js threading.spec.js viewport.spec.js responsive-presentation.spec.js campaign-editor-storage.spec.js --project=firefox
-          - name: firefox WSS and simulation
-            browsers: firefox
-            command: GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test multiplayer.spec.js determinism.spec.js --project=firefox --grep='YOG admission enforces|browser and native players|WebAssembly produces'
-          - name: webkit WSS and simulation
-            browsers: webkit
-            command: xvfb-run -a npx playwright test multiplayer.spec.js determinism.spec.js --project=webkit --grep='YOG admission enforces|browser and native players|WebAssembly produces'
-          - name: firefox scripting
-            browsers: firefox
-            command: GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test determinism.spec.js --project=firefox --grep='shared scripting corpus'
-          # Repeat the remaining renderer-sensitive tests on WebGL2. New
-          # untagged reload cases stay with the match reload group by default.
-          - name: chromium webgl2 input
-            browsers: chromium
-            renderer: webgl2
-            command: xvfb-run -a npx playwright test input.spec.js --project=chromium
+      matrix: ${{ fromJSON(needs.changes.outputs.browser_matrix) }}
     env:
       GLOB2_TEST_RENDERER: ${{ matrix.renderer || 'software' }}
     steps:
@@ -1315,6 +1263,8 @@ jobs:
 
   browser-determinism:
     name: browser/native simulation equivalence
+    env:
+      COMPATIBILITY: ${{ needs.changes.outputs.compatibility }}
     needs: [changes, linux, windows, web-test]
     if: ${{ needs.changes.outputs.cross_platform == 'true' }}
     runs-on: ubuntu-24.04
@@ -1341,7 +1291,9 @@ jobs:
           from pathlib import Path
           traces = sorted(path for path in Path('artifacts/ci-traces').rglob('*.checksums')
                           if path.name in {'native.replay.checksums', 'wasm.replay.checksums'})
-          assert len(traces) == 18, f'Expected three native and fifteen browser variant traces, got {traces}'
+          import os
+          expected = 18 if os.environ['COMPATIBILITY'] == 'true' else 17
+          assert len(traces) == expected, f'Expected {expected} selected native/browser traces, got {traces}'
           reference = traces[0].read_bytes()
           assert len(reference) > 1000
           for trace in traces[1:]:
@@ -1359,6 +1311,9 @@ jobs:
           from pathlib import Path
           import subprocess
           native = sorted(Path('artifacts/ci-scripting').glob('*/javascript-corpus'))
+          import os
+          expected_native = 4 if os.environ['COMPATIBILITY'] == 'true' else 2
+          assert len(native) == expected_native, f'Missing selected native scripting evidence: {native}'
           browsers = sorted(path.parent for path in Path('artifacts/ci-traces').glob('*/script-corpus*/*/manifest.json'))
           assert any('mingw' in path.parts[-2] for path in native), 'Missing Windows scripting evidence'
           assert any('linux' in path.parts[-2] for path in native), 'Missing Linux scripting evidence'
@@ -1391,7 +1346,7 @@ jobs:
 
   ci-result:
     name: Relevant checks passed
-    needs: [changes, linux, linux-variants, linux-map-generators, windows, windows-server, web-build, web-native, web-deploy, web-test, browser-determinism]
+    needs: [changes, android, native-coverage, linux, linux-variants, linux-map-generators, windows, windows-server, web-build, web-native, web-deploy, web-test, browser-determinism]
     if: ${{ !cancelled() }}
     runs-on: ubuntu-24.04
     env:
@@ -1407,11 +1362,13 @@ jobs:
           assert needs['changes']['result'] == 'success', 'Change detection failed'
           selected = needs['changes']['outputs']
           expected = {
+              'android': selected['android'] == 'true',
+              'native-coverage': selected['native'] == 'true' and selected['compatibility'] == 'true',
               'linux': selected['native'] == 'true',
-              'linux-variants': selected['native'] == 'true',
+              'linux-variants': selected['native'] == 'true' and selected['compatibility'] == 'true',
               'linux-map-generators': selected['map_generators'] == 'true',
               'windows': selected['native'] == 'true',
-              'windows-server': selected['native'] == 'true',
+              'windows-server': selected['native'] == 'true' and selected['compatibility'] == 'true',
               'web-build': selected['browser'] == 'true',
               'web-native': selected['browser'] == 'true',
               'web-deploy': selected['deployment'] == 'true',

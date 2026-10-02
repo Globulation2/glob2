@@ -253,7 +253,8 @@ class ChangedPathsTest(unittest.TestCase):
         self.assertNotIn('linux-clang', tests)
         gate = workflow.split('  linux:\n', 1)[1].split('  linux-variants:\n', 1)[0]
         self.assertIn('needs: [changes, linux-build, linux-clang]', gate)
-        self.assertIn('test "$CLANG_RESULT" = success', gate)
+        self.assertIn('if [ "$COMPATIBILITY" = true ]; then expected=success; fi', gate)
+        self.assertIn('test "$CLANG_RESULT" = "$expected"', gate)
         self.assert_jobs(['.github/workflows/ci-linux-build.yml'], native=True,
                          browser=True, map_generators=True, deployment=True, cross_platform=True)
 
