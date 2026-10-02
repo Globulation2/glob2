@@ -785,9 +785,9 @@ static void measurementAttributionFields()
 static void measurementReplayBoundaries()
 {
 	// Format 124 introduced experiments; format 125 adds JavaScript identities.
-	// Protocol 49 adds WSS; default replay floor stays 123.
-	require(REPLAY_MINIMUM_VERSION_MINOR == 123 && NET_PROTOCOL_VERSION == 49 &&
-				YOG_MIN_CLIENT_NET_PROTOCOL_VERSION == 49,
+	// Format 127 changes Warrush timing; protocol 50 prevents mixed clients.
+	require(REPLAY_MINIMUM_VERSION_MINOR == 127 && NET_PROTOCOL_VERSION == 50 &&
+				YOG_MIN_CLIENT_NET_PROTOCOL_VERSION == 50,
 			"integrated simulation uses current replay and network gates");
 	for (int version : {98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 115, 119, 120, 121, 122, 123, 124, VERSION_MINOR, VERSION_MINOR+1})
 	{
@@ -1298,7 +1298,7 @@ TEST_CASE("Scripting identity survives conversion and save load" * doctest::test
  u->needToRecheckMedical=true;
  TeamStatsMeasurementFixture::activity(u);
  REQUIRE(u->owner==w.game.teams[1]);
- REQUIRE(w.game.scriptGenerations[1024+Unit::GIDtoID(u->gid)]==u->scriptIdentity);
+ REQUIRE(w.game.scriptGenerations[Game::scriptGenerationIndex(false, 1, Unit::GIDtoID(u->gid))]==u->scriptIdentity);
  auto loaded=roundTrip(w.game);
  REQUIRE(loaded->game.teams[1]->myUnits[Unit::GIDtoID(u->gid)]->scriptIdentity==u->scriptIdentity);
  CHECK(loaded->game.scriptGenerations==w.game.scriptGenerations);

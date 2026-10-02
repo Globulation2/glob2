@@ -1504,8 +1504,8 @@ Cortex
 Στάθμιση άμμου
 [Select a valid map.]
 Επιλέξτε έναν έγκυρο χάρτη.
-[Shared control needs a free controller slot (maximum 12).]
-Ο κοινός έλεγχος απαιτεί διαθέσιμη θέση για παίκτη ή AI (έως 12).
+[Shared control needs a free controller slot (maximum %0).]
+Ο κοινός έλεγχος απαιτεί διαθέσιμη θέση για παίκτη ή AI (έως %0).
 [Smoothing]
 Εξομάλυνση
 [Standard]

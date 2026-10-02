@@ -407,7 +407,7 @@ void GameGUI::drawOverlayInfos(void)
 
 			// draw a white circle around units that are working at building
 			if ((showUnitWorkingToBuilding)
-				&& ((selBuild->owner->allies) &(1<<localTeamNo)))
+				&& ((selBuild->owner->allies) &(Team::teamNumberToMask(localTeamNo))))
 			{
 				for (std::list<Unit *>::iterator unitsWorkingIt=selBuild->unitsWorking.begin(); unitsWorkingIt!=selBuild->unitsWorking.end(); ++unitsWorkingIt)
 				{

@@ -15,6 +15,7 @@ void blank(MapEdit& editor)
         editor.game.map.clearImmobileUnit(x,y);
     editor.viewportX=0; editor.viewportY=0;
     editor.updateCamera();
+    editor.minimap.setGame(editor.game);
 }
 void cursor(MapEdit& editor,int x,int y)
 {
@@ -25,6 +26,41 @@ void cursor(MapEdit& editor,int x,int y)
 
 TEST_SUITE("EditorActionCoverage")
 {
+    TEST_CASE("editor selects and saves the sixteenth team [display][artifacts]")
+    {
+        glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{
+            .display=true,.width=1024,.height=768,.screenFlags=GAGCore::GraphicContext::PORTABLEGPU});
+        MapEdit editor; blank(editor);
+        for (int team=1; team<Team::MAX_COUNT; ++team)
+            editor.performAction("add team");
+        REQUIRE(editor.game.teamsCount()==16);
+        editor.performAction("add team");
+        CHECK(editor.game.teamsCount()==16);
+        REQUIRE(editor.team_view_tcs->area.width==TeamColorSelector::WIDTH);
+        REQUIRE(editor.team_view_tcs->area.height==TeamColorSelector::HEIGHT);
+        const int last=Team::MAX_COUNT-1;
+        editor.performAction("select active team",
+            (last%TeamColorSelector::COLUMNS)*TeamColorSelector::SWATCH_SIZE+1,
+            (last/TeamColorSelector::COLUMNS)*TeamColorSelector::SWATCH_SIZE+1);
+        REQUIRE(editor.team==last);
+        editor.performAction("switch to teams view");
+        editor.draw(SDL_GetTicks());
+        globals->gfx->printScreen(glob2test::artifactDirFromWorkingDirectory()+"/editor-sixteen.bmp");
+        globals->gfx->nextFrame();
+        cursor(editor,4,4);
+        editor.performAction("select worker");
+        editor.performAction("place unit");
+        REQUIRE(editor.game.map.getGroundUnit(4,4)!=NOGUID);
+        CHECK(Unit::GIDtoTeam(editor.game.map.getGroundUnit(4,4))==last);
+        glob2test::TempDir scratch;
+        const auto filename=(scratch.path/"sixteen.map").string();
+        REQUIRE(editor.save(filename,"sixteen editor teams"));
+        MapEdit restored;
+        REQUIRE(restored.load(filename));
+        CHECK(restored.game.teamsCount()==16);
+        CHECK(Unit::GIDtoTeam(restored.game.map.getGroundUnit(4,4))==last);
+    }
+
     TEST_CASE("unit placement selection and stat edits use the action dispatcher [display]")
     {
         glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{

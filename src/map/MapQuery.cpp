@@ -181,7 +181,7 @@ std::optional<Offset> Map::doesUnitTouchEnemy(Unit *unit) const
 			if (gbid!=NOGBID)
 			{
 				int otherTeam=Building::GIDtoTeam(gbid);
-				Uint32 otherTeamMask=1<<otherTeam;
+				Uint32 otherTeamMask=Team::teamNumberToMask(otherTeam);
 				if (enemies & otherTeamMask)
 				{
 					assert(game);
@@ -212,7 +212,7 @@ std::optional<Offset> Map::doesUnitTouchEnemy(Unit *unit) const
 			if (guid!=NOGUID)
 			{
 				int otherTeam=Unit::GIDtoTeam(guid);
-				Uint32 otherTeamMask=1<<otherTeam;
+				Uint32 otherTeamMask=Team::teamNumberToMask(otherTeam);
 				if (enemies & otherTeamMask)
 				{
 					assert(game);

@@ -1442,8 +1442,8 @@ Amplària del riu
 Pes de sorra
 [Select a valid map.]
 Seleccioneu un mapa vàlid.
-[Shared control needs a free controller slot (maximum 12).]
-El control compartit necessita una plaça lliure per a un jugador humà o IA (màxim 12).
+[Shared control needs a free controller slot (maximum %0).]
+El control compartit necessita una plaça lliure per a un jugador humà o IA (màxim %0).
 [Smoothing]
 Suavitzat
 [Standard]

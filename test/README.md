@@ -125,6 +125,25 @@ scripts compare full-game traces against retained fixtures and are documented wi
 the harness they accompany below. `tests/` at the repository root tests the build
 system and the browser services.
 
+## Team capacity and format 127
+
+`TeamLimit` checks all sixteen controller/header slots, entity identifiers, packed
+resource-growth attribution, full-array enemy iteration, indexed text alliances,
+dense-map request boundaries, and deterministic
+sixteen-team save/load continuation. `Maxima.Economy` covers counted opponents,
+legacy twelve-record loading and malformed counts. Replay and network boundaries
+remain covered by `JavaScriptCompatibility` and `TeamStatsSave`.
+
+`fixtures/team-limit/pre-v127-maxima.game.gz` is an actual format-126 tick-zero
+save: Even Ground (method 60), map/game seed 7, 256×256, four colonies, controllers
+four Maxima controllers, default generator controls. It checks both Maxima
+records and the unit/building generation-plane migration, then a new-format reload.
+
+The five expanded designed generators retain golden cases at 13–16 colonies on
+512×512. Refresh selected landscapes on the current platform with
+`MapGeneratorGoldenTest <profile> --update --only=gauntlet,encircled-kingdom,faulted-city,portage-lakes,hungry-marches`.
+Other platforms' rows remain historical until actually regenerated there.
+
 ## Maxima
 
 See [Maxima tests](maxima/README.md) for policy, configuration, integration and

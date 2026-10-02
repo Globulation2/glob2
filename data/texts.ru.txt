@@ -1432,8 +1432,8 @@ Cortex
 Вес песка
 [Select a valid map.]
 Выберите допустимую карту.
-[Shared control needs a free controller slot (maximum 12).]
-Совместное управление требует свободного места для игрока или ИИ (не более 12).
+[Shared control needs a free controller slot (maximum %0).]
+Совместное управление требует свободного места для игрока или ИИ (не более %0).
 [Smoothing]
 Сглаживание
 [Standard]

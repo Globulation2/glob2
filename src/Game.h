@@ -424,7 +424,15 @@ public:
 	};
 
 	Uint32 stepCounter;
-	std::array<Uint32, 2 * Team::MAX_COUNT * 1024> scriptGenerations{};
+	// Units and buildings have independent generation planes. Their stride tracks
+	// live capacity; old saves must remap the building plane when capacity changes.
+	static constexpr int SCRIPT_ENTITY_SLOTS_PER_TEAM = 1024;
+	static constexpr int SCRIPT_ENTITY_KINDS = 2;
+	static constexpr unsigned scriptGenerationIndex(bool building, int team, int slot)
+	{
+		return ((building ? Team::MAX_COUNT : 0) + team) * SCRIPT_ENTITY_SLOTS_PER_TEAM + slot;
+	}
+	std::array<Uint32, SCRIPT_ENTITY_KINDS * Team::MAX_COUNT * SCRIPT_ENTITY_SLOTS_PER_TEAM> scriptGenerations{};
 	Uint32 allocateScriptIdentity(bool building, Uint16 gid);
 	int totalPrestige;
 	int prestigeToReach;

@@ -1440,8 +1440,8 @@ Largura do rio
 Peso da areia
 [Select a valid map.]
 Selecione um mapa válido.
-[Shared control needs a free controller slot (maximum 12).]
-O controlo partilhado requer uma vaga para um jogador humano ou IA (máximo 12).
+[Shared control needs a free controller slot (maximum %0).]
+O controlo partilhado requer uma vaga para um jogador humano ou IA (máximo %0).
 [Smoothing]
 Suavização
 [Standard]

@@ -1442,8 +1442,8 @@ Nehir genişliği
 Kum ağırlığı
 [Select a valid map.]
 Geçerli bir harita seçin.
-[Shared control needs a free controller slot (maximum 12).]
-Ortak kontrol için boş bir kontrolcü yeri gerekir (en fazla 12).
+[Shared control needs a free controller slot (maximum %0).]
+Ortak kontrol için boş bir kontrolcü yeri gerekir (en fazla %0).
 [Smoothing]
 Pürüzsüzleştirme
 [Standard]

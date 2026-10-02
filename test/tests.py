@@ -108,6 +108,7 @@ ENGINE_TESTS = [
     'GameGUITouchHarness.cpp',
     # Command-line harnesses whose modes became cases.
     'CustomGameSetupHarness.cpp',
+    'TeamLimitTest.cpp',
     'MapPreviewHarness.cpp',
     ('MapGeneratorDefaultsTest.cpp', dict(cxxflags=['-fno-access-control'])),
 ]

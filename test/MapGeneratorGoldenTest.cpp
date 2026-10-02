@@ -43,6 +43,7 @@
 #include <fstream>
 #include <iostream>
 #include <map>
+#include <set>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -156,11 +157,12 @@ Row roll(int id, int wDec, int hDec, int teams, std::uint32_t seed)
 
 // The rows this platform keeps: every registered generator at its own defaults on the three
 // lobby sizes and on a 512x256 rectangle, and at 256 with two and with eight colonies.
-std::vector<Row> goldenRows()
+std::vector<Row> goldenRows(const std::set<int> &selected = {})
 {
 	std::vector<Row> rows;
 	for (int id : GeneratorRegistry::builtins().methods(true))
 	{
+		if (!selected.empty() && !selected.count(id)) continue;
 		GenerationRequest defaults;
 		defaults.setMethodDefaults(id);
 		for (std::uint32_t seed = 1; seed <= 3; ++seed)
@@ -170,6 +172,10 @@ std::vector<Row> goldenRows()
 		rows.push_back(roll(id, 9, 8, defaults.nbTeams, 1));
 		rows.push_back(roll(id, 8, 8, 2, 1));
 		rows.push_back(roll(id, 8, 8, 8, 1));
+		// These five designed maps extend their old twelve-colony envelope.
+		if (id == 59 || id == 63 || id == 64 || id == 65 || id == 69)
+			for (int teams = 13; teams <= Team::MAX_COUNT; ++teams)
+				rows.push_back(roll(id, 9, 9, teams, 1));
 	}
 	return rows;
 }
@@ -182,7 +188,7 @@ int check(const std::string &path, bool requireRows)
 	std::map<int, unsigned> revisions;
 	for (const auto &r : table)
 	{
-		revisions[r.id] = r.revision;
+		revisions[r.id] = std::max(revisions[r.id], r.revision);
 		if (r.platform == platform)
 			expected[r.key()] = r;
 	}
@@ -234,7 +240,7 @@ int check(const std::string &path, bool requireRows)
 	return failures ? 1 : 0;
 }
 
-int update(const std::string &path, bool toStdout, bool force)
+int update(const std::string &path, bool toStdout, bool force, const std::set<int> &selected = {})
 {
 	std::vector<Row> table;
 	try
@@ -251,7 +257,7 @@ int update(const std::string &path, bool toStdout, bool force)
 	for (const auto &r : table)
 		if (r.platform == platform)
 			previous[r.key()] = r;
-	const auto fresh = goldenRows();
+	const auto fresh = goldenRows(selected);
 	int silent = 0;
 	for (const auto &row : fresh)
 	{
@@ -275,7 +281,7 @@ int update(const std::string &path, bool toStdout, bool force)
 	}
 	std::vector<Row> merged;
 	for (const auto &r : table)
-		if (r.platform != platform)
+		if (r.platform != platform || (!selected.empty() && !selected.count(r.id)))
 			merged.push_back(r);
 	merged.insert(merged.end(), fresh.begin(), fresh.end());
 	std::stable_sort(merged.begin(), merged.end(),
@@ -300,7 +306,7 @@ int update(const std::string &path, bool toStdout, bool force)
 	return 0;
 }
 
-// The lobby offers 64 to 512 and 1 to 12 colonies and rolls five seeds, keeping the best. At
+// The lobby offers 64 to 512 and 1 to Team::MAX_COUNT colonies and rolls five seeds, keeping the best. At
 // its 256 default every playable landscape must seat every colony count it accepts on at
 // least one of five seeds; the small and large sizes are checked at the counts a player is
 // likely to ask for. The per-cell rates are printed so a landscape that only just scrapes by
@@ -315,7 +321,8 @@ int sweep(int shard, int shards)
 	const std::vector<std::uint32_t> five{1, 2, 3, 4, 5}, three{1, 2, 3};
 	const std::vector<Cell> cells = {
 		{7, 2, five}, {7, 4, five}, {8, 2, five},  {8, 3, five},  {8, 4, five},
-		{8, 6, five}, {8, 8, five}, {8, 12, five}, {9, 4, three}, {9, 12, three},
+		{8, 6, five}, {8, 8, five}, {8, 12, five}, {9, 4, three}, {9, 12, three}, {9, 13, three}, {9, 14, three},
+		{9, 15, three}, {9, 16, three},
 	};
 	int failures = 0;
 	const auto methods = GeneratorRegistry::builtins().methods(false);
@@ -538,7 +545,7 @@ int main(int argc, char **argv)
 	if (argc < 2)
 	{
 		std::fprintf(stderr,
-					 "usage: %s <profile-dir> [--require-rows|--update [--force]|--print|--sweep "
+					 "usage: %s <profile-dir> [--require-rows|--update [--force|--only=id,...]|--print [--only=id,...]|--sweep "
 					 "[K/N]|--telemetry]\n",
 					 argv[0]);
 		return 2;
@@ -566,9 +573,22 @@ int main(int argc, char **argv)
 		return performanceCheck();
 	if (mode == "--telemetry")
 		return telemetryCheck();
+	std::set<int> selected;
+	if ((mode == "--update" || mode == "--print") && argc > 3 && std::string(argv[3]).starts_with("--only="))
+	{
+		std::istringstream list(std::string(argv[3]).substr(7));
+		std::string id;
+		while (std::getline(list, id, ','))
+		{
+			const int method = GeneratorRegistry::builtins().idOf(id);
+			if (method < 0) { std::fprintf(stderr, "Unknown generator %s\n", id.c_str()); return 2; }
+			selected.insert(method);
+		}
+		if (selected.empty()) return 2;
+	}
 	if (mode == "--update")
-		return update(kTablePath, false, force);
+		return update(kTablePath, false, force, selected);
 	if (mode == "--print")
-		return update(kTablePath, true, false);
+		return update(kTablePath, true, false, selected);
 	return check(kTablePath, mode == "--require-rows");
 }

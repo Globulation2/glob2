@@ -4,10 +4,8 @@
 //
 // AIWarrushTuning.h
 //
-// Behavior-preserving tuning constants for AIWarrush, extracted from
-// AIWarrush.cpp during the magic-number cleanup pass that prepares the
-// codebase for the Rust port. Every value here is byte-for-byte identical
-// to the literal it replaces; nothing in the AI's decision logic changes.
+// Tuning constants for AIWarrush. Most retain the original literal values;
+// the bootstrap window deliberately follows the live team capacity below.
 //
 // Constants are file-scope `static constexpr int` per the slice convention.
 
@@ -38,6 +36,8 @@ static constexpr int AI_WARRUSH_AREAS_DELAY_TICKS = 50;
 // the end of game->teams[] (this was a latent OOB read when MAX_COUNT was 32
 // and the literal 64 happened to match; the derived form keeps them aligned).
 // ---------------------------------------------------------------------------
+// This is gameplay timing, not merely storage: raising the team cap lengthens
+// the opening even in smaller matches and requires replay/network version gates.
 static constexpr int AI_WARRUSH_BOOTSTRAP_EXPLORE_INTERVAL = 2;
 static constexpr int AI_WARRUSH_BOOTSTRAP_EXPLORE_WINDOW   = Team::MAX_COUNT * AI_WARRUSH_BOOTSTRAP_EXPLORE_INTERVAL;
 
