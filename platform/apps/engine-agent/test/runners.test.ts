@@ -142,11 +142,11 @@ describe('validate-map', () => {
     ).toBe(true);
     expect(await run('validate-map', { blobHash: await store(save), format: 'map' })).toEqual({
       valid: false,
-      reason: 'file is a saved game, not a map',
+      reason: 'This file is a saved game, not a map. Upload a map from the map editor instead.',
     });
     expect(
       await run('validate-map', { blobHash: await store(fakeMap({ name: 'm2' })), format: 'save' }),
-    ).toEqual({ valid: false, reason: 'file is a map, not a saved game' });
+    ).toEqual({ valid: false, reason: 'This file is a map, not a saved game.' });
   });
 
   it('lists the players of a save for reteaming', async () => {
@@ -179,15 +179,15 @@ describe('validate-map', () => {
           reason: string;
         }
       ).reason;
-    expect(await reasons(Buffer.from('definitely not a map'))).toMatch(/not a Globulation 2 map/);
-    expect(await reasons(Buffer.from([0x1f, 0x8b, 1, 2, 3, 4]))).toMatch(/corrupt gzip/);
-    expect(await reasons(fakeMap({ minor: 126 }))).toMatch(/newer engine \(format 126/);
+    expect(await reasons(Buffer.from('definitely not a map'))).toMatch(/isn't a Globulation 2 map/);
+    expect(await reasons(Buffer.from([0x1f, 0x8b, 1, 2, 3, 4]))).toMatch(/could not be unpacked/);
+    expect(await reasons(fakeMap({ minor: 126 }))).toMatch(/newer version of Globulation 2/);
     expect(await reasons(fakeMap({ width: 1024, height: 1024 }))).toMatch(
-      /largest accepted side is 512/,
+      /too large: it is 1024×1024, and the largest accepted side is 512/,
     );
-    expect(await reasons(fakeMap({ teams: 0, name: 'no teams' }))).toMatch(/0 teams/);
+    expect(await reasons(fakeMap({ teams: 0, name: 'no teams' }))).toMatch(/has 0 teams/);
     // A header the engine's loader refuses (here: a truncated body).
-    expect(await reasons(fakeMap({}).subarray(0, 30))).toMatch(/cannot load this map/);
+    expect(await reasons(fakeMap({}).subarray(0, 30))).toMatch(/couldn't load this map/);
 
     const small = await createRunner(database.db, { limits: { maxMapBytes: 200 } });
     try {
@@ -208,7 +208,7 @@ describe('validate-map', () => {
       )) as {
         reason: string;
       };
-      expect(bombResult.reason).toMatch(/exceeds 200 bytes/);
+      expect(bombResult.reason).toMatch(/too big: unpacked, it is over the 200 bytes limit/);
     } finally {
       await small.close();
     }

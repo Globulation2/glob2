@@ -11,27 +11,46 @@ import { aiName, rating } from '../format.ts';
 import { Link } from '../router.tsx';
 import { useLoad, useSession } from '../state.tsx';
 
-/** Where the downloadable game lives; a build-time setting (VITE_DOWNLOAD_URL). */
-export const DOWNLOAD_URL: string =
-  (import.meta.env['VITE_DOWNLOAD_URL'] as string | undefined) || 'https://globulation2.org/';
-
 /**
  * The instance's public website when it is hosted apart from this app (e.g.
  * glob2online.com beside app.glob2online.com); a build-time setting
- * (VITE_WEBSITE_URL). Unset: no website link.
+ * (VITE_WEBSITE_URL). Unset: no website links.
  */
 export const WEBSITE_URL: string | undefined =
-  (import.meta.env['VITE_WEBSITE_URL'] as string | undefined) || undefined;
+  ((import.meta.env['VITE_WEBSITE_URL'] as string | undefined) || '').replace(/\/+$/, '') ||
+  undefined;
+
+/** A page of the public website, e.g. websitePage('/news/'). */
+export function websitePage(path: string): string | undefined {
+  return WEBSITE_URL ? `${WEBSITE_URL}${path}` : undefined;
+}
+
+/**
+ * Where the downloadable game lives: VITE_DOWNLOAD_URL, else the website's
+ * downloads page, else the project's release page.
+ */
+export const DOWNLOAD_URL: string =
+  (import.meta.env['VITE_DOWNLOAD_URL'] as string | undefined) ||
+  websitePage('/downloads/') ||
+  'https://github.com/Globulation2/glob2/releases';
 
 const CODE = /^[A-Za-z0-9]{6,16}$/;
+
+/** An invite code from what was typed or pasted: a code, or an invite link (…/j/<code>). */
+export function inviteCodeFrom(text: string): string | undefined {
+  const value = text.trim();
+  if (CODE.test(value)) return value.toUpperCase();
+  const link = /\/j\/([A-Za-z0-9]{6,16})\/?(?:[?#].*)?$/.exec(value);
+  return link?.[1]?.toUpperCase();
+}
 
 function JoinWithCode() {
   const [code, setCode] = useState('');
   const [error, setError] = useState(false);
   const submit = (event: FormEvent) => {
     event.preventDefault();
-    const value = code.trim();
-    if (!CODE.test(value)) {
+    const value = inviteCodeFrom(code);
+    if (!value) {
       setError(true);
       return;
     }
@@ -49,11 +68,11 @@ function JoinWithCode() {
             setCode(e.target.value);
             setError(false);
           }}
-          placeholder="e.g. K7Q2XW"
+          placeholder="Code or invite link"
           autoComplete="off"
           autoCapitalize="characters"
           spellCheck={false}
-          maxLength={16}
+          maxLength={200}
           aria-invalid={error}
           aria-describedby="join-hint"
         />
@@ -61,7 +80,7 @@ function JoinWithCode() {
       <button type="submit">Join</button>
       <p id="join-hint" className={`hint${error ? ' error' : ' caption'}`} aria-live="polite">
         {error
-          ? 'Invite codes are 6 to 16 letters and digits.'
+          ? 'Paste the invite link, or type its code (6 to 16 letters and digits).'
           : 'Friends share a code or a link from their room.'}
       </p>
     </form>

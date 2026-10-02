@@ -11,7 +11,7 @@ import formbody from '@fastify/formbody';
 import rateLimit from '@fastify/rate-limit';
 import websocket from '@fastify/websocket';
 import { sql, type Kysely } from 'kysely';
-import { resolveQueue } from '@glob2/core';
+import { readableSize, resolveQueue } from '@glob2/core';
 import type { Database } from '@glob2/db';
 import {
   MATCH_RECORD_CONTENT_TYPE,
@@ -58,8 +58,22 @@ export interface BuildOptions {
 /** An engine agent counts as available if it was seen this recently. */
 const AGENT_FRESHNESS_SECONDS = 300;
 
-function errorBodyFor(error: FastifyError): { status: number; body: ErrorBody } {
+function errorBodyFor(
+  error: FastifyError,
+  uploadMaxBytes: number,
+): { status: number; body: ErrorBody } {
   if (error instanceof HttpError) return { status: error.statusCode, body: error.body };
+  if (error.statusCode === 413) {
+    // Shown to players by the web app and the game (map and save uploads).
+    return {
+      status: 413,
+      body: {
+        code: 'bad_request',
+        message: `This file is too big: uploads are limited to ${readableSize(uploadMaxBytes)}.`,
+        details: { problem: 'too_large' },
+      },
+    };
+  }
   if (error.validation) {
     return {
       status: 400,
@@ -106,7 +120,10 @@ export async function buildApp(
   app.decorate('identity', identity);
 
   app.setErrorHandler((error: FastifyError, request, reply) => {
-    const { status, body } = errorBodyFor(error);
+    const { status, body } = errorBodyFor(
+      error,
+      services.config.uploadMaxBytes ?? 16 * 1024 * 1024,
+    );
     if (status >= 500) request.log.error({ err: error }, 'request failed');
     void reply.status(status).send(body);
   });

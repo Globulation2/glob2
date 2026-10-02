@@ -12,6 +12,7 @@ import {
   type RelayRegionList,
   type RoomList,
   type SavedPlayer,
+  type SimVersion,
 } from '@glob2/protocol';
 import {
   MAP_CONTENT_TYPE,
@@ -27,6 +28,7 @@ import { authenticate, requireAccount, type Identity } from '../identity.ts';
 import { mapUrl } from '../play/assignments.ts';
 import type { RoomService } from '../play/rooms.ts';
 import { catalogAllowsMapBlob } from '../maps/catalog.ts';
+import { checkedUpload, newestSimVersion } from '../maps/upload.ts';
 
 const SHA256 = /^[0-9a-f]{64}$/;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
@@ -154,20 +156,24 @@ export async function playRoutes(
       if (format !== 'map' && format !== 'save') {
         throw apiError('bad_request', 'format must be map or save.');
       }
-      const simVersion = parseSimVersionKey(request.query.simVersion ?? '');
-      if (!simVersion) throw apiError('bad_request', 'simVersion (a sim version key) is required.');
       const served = await supportedSimVersions(db);
-      if (!served.some((v) => sameSimVersion(v, simVersion))) {
-        throw apiError('update_required', 'This instance cannot validate files of that version.');
+      let simVersion: SimVersion | undefined;
+      if (request.query.simVersion !== undefined) {
+        simVersion = parseSimVersionKey(request.query.simVersion);
+        if (!simVersion) throw apiError('bad_request', 'simVersion must be a sim version key.');
+        const asked = simVersion;
+        if (!served.some((v) => sameSimVersion(v, asked))) {
+          throw apiError('update_required', 'This instance cannot validate files of that version.');
+        }
+      } else {
+        // The web app checks a file before creating a catalog map with it: the newest engine.
+        simVersion = newestSimVersion(served);
+        if (!simVersion)
+          throw apiError('unavailable', 'No engine agent can check files right now.');
       }
       const fileName = request.query.fileName?.slice(0, 255);
-      const bytes = request.body;
-      if (!(bytes instanceof Buffer) || bytes.length === 0) {
-        throw apiError(
-          'bad_request',
-          'Send the file as the request body (Content-Type: application/octet-stream).',
-        );
-      }
+      // Unpacked when gzip (.map.gz): the stored bytes are the ones the game loads.
+      const bytes = checkedUpload(request.body, format, simVersion.versionMinor);
       if (!uploads.take(account.id))
         throw apiError('rate_limited', 'Too many uploads; wait a while.');
       const sim = simVersionKey(simVersion);

@@ -595,36 +595,5 @@ function parseVerdictKind(doc: Record<string, unknown>): VerifierVerdict {
 
 // ------------------------------------------------------------- map header
 
-export interface MapHeader {
-  name: string;
-  versionMajor: number;
-  versionMinor: number;
-  teamCount: number;
-  savedGame: boolean;
-}
-
-/**
- * Reads the first fields of a decompressed map or save (MapHeader::loadFields
- * in src/map/io/MapHeader.cpp): name (u32 length + bytes), versionMajor,
- * versionMinor, numberOfTeams (big-endian s32), mapOffset (u32), isSavedGame
- * (u8). Only used after the engine itself has loaded the file successfully,
- * to learn the format version the file was written with, which the map report
- * does not carry. Returns undefined when the bytes are not a header.
- */
-export function readMapHeader(bytes: Uint8Array): MapHeader | undefined {
-  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
-  if (bytes.byteLength < 4) return undefined;
-  const nameLength = view.getUint32(0);
-  const fixed = 4 + nameLength;
-  if (nameLength > 1024 || bytes.byteLength < fixed + 17) return undefined;
-  const name = new TextDecoder('utf-8', { fatal: false }).decode(bytes.subarray(4, fixed));
-  const saved = view.getUint8(fixed + 16);
-  if (saved > 1) return undefined;
-  return {
-    name,
-    versionMajor: view.getInt32(fixed),
-    versionMinor: view.getInt32(fixed + 4),
-    teamCount: view.getInt32(fixed + 8),
-    savedGame: saved === 1,
-  };
-}
+// The header reader lives in @glob2/core (shared with the API's upload checks).
+export { readMapHeader, type MapHeader } from '@glob2/core';

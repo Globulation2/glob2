@@ -1,10 +1,17 @@
 // Map catalog: browse public maps (filters, sorting), my maps, a map's page
 // (preview, versions, like, report, owner edits and new versions) and upload.
-import { useState, type FormEvent } from 'react';
+import { useRef, useState, type FormEvent } from 'react';
 import type { MapDetail as MapDetailDoc, MapInfo, MapVisibility } from '@glob2/protocol';
 import { ApiError, api } from '../api.ts';
 import { GameArt } from '../art.tsx';
-import { Empty, ErrorNotice, Loaded, MapImage, PlayerLink } from '../components/common.tsx';
+import {
+  Empty,
+  ErrorNotice,
+  Loaded,
+  MapImage,
+  PlayerLink,
+  TableWrap,
+} from '../components/common.tsx';
 import { date } from '../format.ts';
 import { Link, useRouter } from '../router.tsx';
 import { useLoad, useSession } from '../state.tsx';
@@ -475,7 +482,7 @@ export function MapPage({ id }: { id: string }) {
               </div>
             </div>
             <h2>Versions</h2>
-            <div className="table-wrap">
+            <TableWrap label={`Versions of ${map.title}`}>
               <table className="data">
                 <caption className="sr-only">Versions of {map.title}</caption>
                 <thead>
@@ -515,7 +522,7 @@ export function MapPage({ id }: { id: string }) {
                   ))}
                 </tbody>
               </table>
-            </div>
+            </TableWrap>
             {viewer.owner && <OwnerTools detail={detail} reload={load.reload} />}
           </>
         );
@@ -523,6 +530,19 @@ export function MapPage({ id }: { id: string }) {
     </Loaded>
   );
 }
+
+/** "SmallForTwo.map.gz" -> "SmallForTwo". */
+export function titleFromFileName(name: string): string {
+  return name
+    .replace(/(\.(map|gz))+$/i, '')
+    .replace(/[_]+/g, ' ')
+    .trim()
+    .slice(0, 128);
+}
+
+const CHECK_TIMEOUT_MS = 120_000;
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export function MapUpload() {
   const { account } = useSession();
@@ -532,24 +552,63 @@ export function MapUpload() {
   const [visibility, setVisibility] = useState<MapVisibility>('unlisted');
   const [madeWith, setMadeWith] = useState('hand');
   const [file, setFile] = useState<File>();
-  const [busy, setBusy] = useState(false);
+  const [phase, setPhase] = useState<'idle' | 'checking' | 'saving'>('idle');
+  const [fileError, setFileError] = useState<string>();
   const [error, setError] = useState<Error>();
+  const fileInput = useRef<HTMLInputElement>(null);
+  const head = (
+    <div className="page-head">
+      <GameArt name="explorationFlag" size={72} className="head-art" />
+      <div className="grow">
+        <h1>Upload a map</h1>
+        <p className="sub">Share a map you made in the editor or with a generator.</p>
+      </div>
+    </div>
+  );
   if (account === null) {
     return (
-      <div className="notice">
-        <a href="/signin">Sign in</a> to share maps.
-      </div>
+      <>
+        {head}
+        <div className="notice">
+          <a href="/signin">Sign in</a> to share maps.
+        </div>
+      </>
     );
   }
+  const busy = phase !== 'idle';
+  const fileProblem = (message: string) => {
+    setFileError(message);
+    fileInput.current?.focus();
+  };
   const submit = async (event: FormEvent) => {
     event.preventDefault();
-    if (!file) return;
-    setBusy(true);
+    if (!file) {
+      fileProblem('Choose a map file first: a .map or .map.gz file from the game.');
+      return;
+    }
     setError(undefined);
+    setFileError(undefined);
     try {
+      // 1. The game checks the file. Nothing is created unless it loads.
+      setPhase('checking');
+      let checked = await api.checkMapFile(file, file.name);
+      const started = Date.now();
+      while (checked.status === 'pending') {
+        if (Date.now() - started > CHECK_TIMEOUT_MS) {
+          throw new Error(
+            'Checking the map is taking longer than usual. Nothing was created; please try again in a few minutes.',
+          );
+        }
+        await sleep(1000);
+        checked = await api.checkedFile(checked.id);
+      }
+      if (checked.status !== 'valid') {
+        fileProblem(checked.reason ?? "The game couldn't load this map.");
+        return;
+      }
+      // 2. Only now: the map page and its first version (the same, already checked file).
+      setPhase('saving');
       const map = await api.createMap({ title, description, visibility, madeWith });
-      // A failed upload keeps the map: its page shows no version yet and lets
-      // the owner upload again.
       const uploaded = await api.uploadVersion(map.id, file).then(
         () => true,
         (e: unknown) => {
@@ -559,34 +618,37 @@ export function MapUpload() {
       );
       navigate(`/maps/${map.id}${uploaded ? '' : '?upload=failed'}`);
     } catch (e) {
-      setError(e as Error);
+      // Problems with the file itself (not a map, too big, newer version…) belong to the file field.
+      const details = e instanceof ApiError ? (e.body?.details as { problem?: string }) : undefined;
+      if (e instanceof ApiError && (details?.problem || e.status === 413)) fileProblem(e.message);
+      else setError(e as Error);
     } finally {
-      setBusy(false);
+      setPhase('idle');
     }
   };
   return (
     <>
-      <div className="page-head">
-        <GameArt name="explorationFlag" size={72} className="head-art" />
-        <div className="grow">
-          <h1>Upload a map</h1>
-          <p className="sub">Share a map you made in the editor or with a generator.</p>
-        </div>
-      </div>
-      <form className="card upload-form" onSubmit={(e) => void submit(e)}>
+      {head}
+      <form className="card upload-form" onSubmit={(e) => void submit(e)} noValidate>
         <label className="field">
-          Map file (.map, from the editor’s Save)
+          Map file (.map or .map.gz, from the game or its map editor)
           <input
+            ref={fileInput}
             type="file"
-            accept=".map,.gz"
-            required
+            accept=".map,.gz,.map.gz"
+            aria-invalid={fileError ? true : undefined}
+            aria-describedby="map-file-error"
             onChange={(e) => {
               const f = e.target.files?.[0];
               setFile(f);
-              if (f && !title) setTitle(f.name.replace(/\.(map|gz)+$/i, '').slice(0, 128));
+              setFileError(undefined);
+              if (f && !title) setTitle(titleFromFileName(f.name));
             }}
           />
         </label>
+        <p id="map-file-error" className="field-error" role="alert">
+          {fileError}
+        </p>
         <label className="field">
           Title
           <input
@@ -625,12 +687,19 @@ export function MapUpload() {
           </select>
         </label>
         {error && <ErrorNotice error={error} />}
-        <button className="primary" type="submit" disabled={busy || !file}>
-          {busy ? 'Uploading…' : 'Upload'}
+        <button className="primary" type="submit" disabled={busy}>
+          {phase === 'checking' ? 'Checking the map…' : phase === 'saving' ? 'Saving…' : 'Upload'}
         </button>
+        <p className="sr-only" role="status">
+          {phase === 'checking'
+            ? 'Checking the map with the game.'
+            : phase === 'saving'
+              ? 'The map is fine. Saving it.'
+              : ''}
+        </p>
         <p className="caption">
-          The server loads the file with the game to check it and draw a preview. Unlisted maps are
-          reachable by link only; you can make a map public later.
+          The server first loads the file with the game to check it; the map page is created only if
+          it loads. Unlisted maps are reachable by link only; you can make a map public later.
         </p>
       </form>
     </>

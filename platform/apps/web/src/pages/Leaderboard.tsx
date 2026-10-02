@@ -2,14 +2,14 @@ import { useState } from 'react';
 import type { LeaderboardEntry } from '@glob2/protocol';
 import { api } from '../api.ts';
 import { GameArt } from '../art.tsx';
-import { Avatar, Empty, Loaded, PlayerLink } from '../components/common.tsx';
+import { Avatar, Empty, Loaded, PlayerLink, TableWrap } from '../components/common.tsx';
 import { aiName, percent, rating, versionKey } from '../format.ts';
 import { Link } from '../router.tsx';
 import { useLoad, useSession } from '../state.tsx';
 
 function Rows({ entries, caption }: { entries: LeaderboardEntry[]; caption: string }) {
   return (
-    <div className="table-wrap">
+    <TableWrap label={caption}>
       <table className="data ladder">
         <caption className="sr-only">{caption}</caption>
         <thead>
@@ -60,7 +60,7 @@ function Rows({ entries, caption }: { entries: LeaderboardEntry[]; caption: stri
           ))}
         </tbody>
       </table>
-    </div>
+    </TableWrap>
   );
 }
 

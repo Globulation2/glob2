@@ -274,7 +274,7 @@ export async function applyMapJobResult(db: Db, jobId: string): Promise<boolean>
         failure ??
         (result?.valid === false
           ? result.reason
-          : 'the uploaded bytes are not the bytes the engine loads (upload the uncompressed file)');
+          : 'This file could not be checked. Upload it again; if that fails too, save it again in the game first.');
       await base
         .set({ status: 'invalid', failure: reason.slice(0, 2000), completed_at: sql<Date>`now()` })
         .execute();

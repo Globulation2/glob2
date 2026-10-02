@@ -67,7 +67,7 @@ describe.runIf(binary)('real glob2 binary', () => {
       // A generated map is not a save.
       expect(await run('validate-map', { blobHash: mapHash, format: 'save' })).toEqual({
         valid: false,
-        reason: 'file is a map, not a saved game',
+        reason: 'This file is a map, not a saved game.',
       });
 
       const preview = await run('render-preview', { mapHash, maxSizePx: 256 });
