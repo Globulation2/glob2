@@ -98,6 +98,17 @@ export async function adminRoutes(app: FastifyInstance, identity: Identity): Pro
     },
   );
 
+  // Administrators only; see AdminService.deleteAccount for what goes and what stays.
+  app.delete<{ Params: { id: string }; Querystring: { reason?: string } }>(
+    '/api/v1/admin/accounts/:id',
+    async (request, reply) => {
+      const { account: actor } = await requireRole(identity, request, 'admin');
+      const reason = request.query.reason?.trim().slice(0, 500);
+      await identity.admin.deleteAccount(actor, await target(request), reason || undefined);
+      return reply.status(204).send();
+    },
+  );
+
   app.post<{ Params: { id: string } }>(
     '/api/v1/admin/accounts/:id/role',
     async (request): Promise<AdminAccount> => {
