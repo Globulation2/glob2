@@ -10,6 +10,7 @@
 #include <memory>
 
 #include "Map.h"
+#include "Utilities.h"
 #include "SGSL.h"
 #include <string>
 #include <valarray>
@@ -131,6 +132,14 @@ class Game
 {
 	friend class PointBarRenderTest;
 	bool hasSavedRandomState = false;
+public:
+	//! This game's synchronized random stream. syncStep, executeOrder, load and save
+	//! bind it, so syncRand() draws from the game being simulated on whichever thread
+	//! simulates it. Saved and restored with the game; never shared between games.
+	MersenneTwister syncRandom;
+	//! Bind syncRandom for other code that advances this game's simulation.
+	SyncRandScope bindRandom() { return SyncRandScope(syncRandom); }
+private:
 	friend class HighResolutionIntegrationHarness;
 	friend class EnteringUnitDrawHarness;
 	friend class FailingUnitMarkersHarness;
