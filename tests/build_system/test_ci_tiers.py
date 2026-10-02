@@ -27,6 +27,10 @@ class TierTest(unittest.TestCase):
         for event in ['push','schedule','workflow_dispatch']:
             result=self.profile(['README.md'],event)
             self.assertTrue(result['compatibility']);self.assertTrue(result['android']);self.assertTrue(result['browsers_all'])
+    def test_runtime_and_shard_configuration_exercises_both_gcc_platforms(self):
+        for path in ['test/run_tests.py','test/ci_native_shard_plan.py','test/ci-native-auxiliary.json','test/build_ci_timing_profile.py','test/ci-timings/ubuntu-22.04.json']:
+            with self.subTest(path=path):self.assertTrue(self.profile([path])['compatibility'])
+
     def test_android_metadata_remains_relevant(self):
         for path in ['fdroid/metadata.yml','fastlane/metadata/title.txt','.github/workflows/mobile.yml']:
             self.assertTrue(self.profile([path])['android'])
