@@ -554,7 +554,7 @@ void GameGUITouch::drawMinimap()
 	hudMinimap->setMinimapMode(globalContainer->replaying && !globalContainer->replayShowFog
 								   ? Minimap::HideFOW
 								   : Minimap::ShowFOW);
-	hudMinimap->draw(gui.localTeamNo, gui.viewportX, gui.viewportY,
+	hudMinimap->draw(gui.view.drawnScene(), gui.localTeamNo, gui.viewportX, gui.viewportY,
 					 int(std::ceil(gui.camera.visibleW() / 32)),
 					 int(std::ceil(gui.camera.visibleH() / 32)));
 	gfx->setUITransform();

@@ -66,6 +66,9 @@ using BuildingGuiStateMap = std::unordered_map<Uint16, BuildingGuiState>;
 // is heavy and we want this header light enough to forward-declare through.
 Sint32 displayedPosX(const BuildingGuiStateMap& m, const Building& b);
 Sint32 displayedPosY(const BuildingGuiStateMap& m, const Building& b);
+//! Same, for drawing from a Scene: the building's gid and authoritative position.
+Sint32 displayedPosX(const BuildingGuiStateMap& m, Uint16 gid, Sint32 posX);
+Sint32 displayedPosY(const BuildingGuiStateMap& m, Uint16 gid, Sint32 posY);
 Sint32 displayedMaxUnitWorking(const BuildingGuiStateMap& m, const Building& b);
 Sint32 displayedUnitStayRange(const BuildingGuiStateMap& m, const Building& b);
 Sint32 displayedPriority(const BuildingGuiStateMap& m, const Building& b);

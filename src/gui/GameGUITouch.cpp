@@ -1481,9 +1481,7 @@ void GameGUITouch::menuAction(int action)
 		for (auto *state : states)
 			*state = false;
 		*states[action - 20] = enabled;
-		const OverlayArea::OverlayType types[] = {OverlayArea::Starving, OverlayArea::Damage,
-												  OverlayArea::Defence, OverlayArea::Fertility};
-		gui.overlay.compute(gui.game, types[action - 20], gui.localTeamNo);
+		// The next frame's scene extraction computes the newly chosen overlay.
 		return;
 	}
 	if (globalContainer->replaying && action >= 31 && action < 56)

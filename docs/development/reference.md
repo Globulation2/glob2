@@ -668,6 +668,31 @@ never infers that extracted tool directories are trustworthy from a version
 string alone. Windows inventory/seeding is supported; duplicate removal requires
 a supported open-file checker and is conservatively skipped there.
 
+## Scene renderer
+
+Map drawing reads an immutable `Scene` (`src/scene/`), never live simulation objects,
+so it can later run while the simulation advances on another thread.
+
+- `SceneExtractor::extract(game, request, scene)` (`src/scene/SceneExtract.cpp`) is the
+  only place presentation code reads the game. `GameGUI::drawAll` extracts
+  `frameScene` once per frame and publishes it in `Game::ViewState::scene`; `drawMap`
+  callers without a published scene (menu colony, editor, torus without a GUI, tests)
+  get one extracted into `ViewState::render.ownScene`. `ViewState::drawnScene()`
+  returns whichever was drawn.
+- `SceneMap` copies the per-tile layers whole (terrain, resources, occupancy, discovery
+  and fog, displayed areas); its queries match `Map`'s. `SceneEntities` holds
+  presentation copies of units, buildings and flags with lookup by gid (field names
+  follow `Unit`/`Building`; `team` indexes `SceneEntities::teams`), per-sector
+  bullets and animations, and the selected building's map-view data. Static
+  definitions (`BuildingType`, `Race`) are referenced, not copied.
+- The overlay map is computed during extraction and shared as an immutable snapshot;
+  it refreshes when the requested type or team changes and once per 25-tick window.
+- Adding something drawn on the map: extract what the drawing needs in
+  `SceneExtract.cpp` and read it from the `Scene` in the render pass. Never read
+  `Game`, `Map`, `Team`, `Unit` or `Building` state from drawing code.
+- `SceneBuffer<T>` (`src/scene/SceneBuffer.h`) is the lock-free triple buffer that will
+  hand Scenes from the simulation thread to the render thread.
+
 ## Software rendering architecture and profiling
 
 `GraphicContext` remains the drawing facade and retains existing capability queries.

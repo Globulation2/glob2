@@ -25,6 +25,7 @@
 #include "GameGUIDialog.h"
 #include "render/Minimap.h"
 #include "OverlayAreas.h"
+#include "scene/SceneExtract.h"
 #include "GameGUIToolManager.h"
 #include "GameGUIDefaultAssignManager.h"
 #include "GameGUIGhostBuildingManager.h"
@@ -584,7 +585,6 @@ private:
 	bool showDamagedMap;
 	bool showDefenseMap;
 	bool showFertilityMap;
-	OverlayArea overlay;
 
 	bool showUnitWorkingToBuilding;
 
@@ -716,6 +716,8 @@ private:
 	Game::ViewState view;
 	///The scene drawn this frame, extracted from `game` at the start of drawAll.
 	Scene frameScene;
+	///Extracts frameScene; keeps the state that spans frames (the overlay map).
+	SceneExtractor sceneExtractor;
 
 	///Accessor: pending value if set, else authoritative from `b`.
 	Sint32 displayedPosX(const Building& b) const;
@@ -763,7 +765,7 @@ private:
 	float effectsUnit() { return std::uniform_real_distribution<float>(0.f, 1.f)(effectsRandom); }
 	
 	//! Generate new particles if required
-	void generateNewParticles(std::set<Building*> *visibleBuildings);
+	void generateNewParticles(std::set<Uint16> *visibleBuildings);
 	//! Update overview navigation and particle offsets after viewport movement
 	void viewportChanged(int oldViewportX, int viewportX, int oldViewportY, int viewportY);
 };

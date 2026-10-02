@@ -193,7 +193,7 @@ static void run(bool gpu, int width, int height)
                 gui.view.mouseUnit = UnitRef();
                 gui.game.drawUnit(x, y, explorer->gid, (-x) & gui.game.map.getMaskW(),
                     (-y) & gui.game.map.getMaskH(), gui.game.map.getW(), gui.game.map.getH(),
-                    0, Game::DRAW_WHOLE_MAP, gui.view);
+                    0, Game::DRAW_WHOLE_MAP, gui.view, glob2test::sceneOf(gui.game, gui.view));
                 REQUIRE(gui.game.resolveUnit(gui.view.mouseUnit) == explorer);
             }
         gui.view.mouseX = gui.view.mouseY = -1;

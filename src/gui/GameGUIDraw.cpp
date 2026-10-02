@@ -607,7 +607,7 @@ void GameGUI::drawAll(int team)
 	sceneRequest.view = clientRequests.latest();
 	sceneRequest.selectedBuilding = Game::refOf(view.selectedBuilding);
 	sceneRequest.selectedUnit = Game::refOf(view.selectedUnit);
-	extractScene(game, sceneRequest, frameScene);
+	sceneExtractor.extract(game, sceneRequest, frameScene);
 	view.scene = &frameScene;
     globalContainer->gfx->beginFrame(GraphicContext::FrameMode::FullRedraw);
 	updateCamera();
@@ -639,7 +639,7 @@ void GameGUI::drawAll(int team)
 		const int cloudGridLimit = DynamicClouds::gridLimitForZoom(game.map.getW(), game.map.getH(),
 			globalContainer->settings.cloudPatchSize, camera.zoom);
 		GAGCore::MapTransformScope mapPass(*globalContainer->gfx, camera.zoom, camera.offsetX-camera.fractionX()*camera.zoom, camera.offsetY-camera.fractionY()*camera.zoom, SDL_Rect{int(camera.offsetX), std::max(16, int(camera.offsetY)), int(camera.visibleW()*camera.zoom), int(camera.visibleH()*camera.zoom)-std::max(0,16-int(camera.offsetY))});
-		std::set<Building*> visibleBuildings;
+		std::set<Uint16> visibleBuildings;
 		if (globalContainer->settings.translucentPanels)
 			globalContainer->gfx->setClipRect();
 		else
@@ -684,7 +684,7 @@ void GameGUI::drawAll(int team)
 
 	globalContainer->gfx->setClipRect();
     if (!touch->usesHUD())
-	minimap.draw(localTeamNo, viewportX, viewportY, int(std::ceil(camera.visibleW()/32)), int(std::ceil(camera.visibleH()/32)) );
+	minimap.draw(frameScene, localTeamNo, viewportX, viewportY, int(std::ceil(camera.visibleW()/32)), int(std::ceil(camera.visibleH()/32)) );
 
 	// draw the progress bar if this is a replay
 	if (globalContainer->replaying && !touch->usesHUD()) drawReplayProgressBar();

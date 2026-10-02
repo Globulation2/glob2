@@ -346,17 +346,8 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 		}
 	}
 
-	if(game.stepCounter % 25 == 1)
-	{
-		if(showStarvingMap)
-			overlay.compute(game, OverlayArea::Starving, localTeamNo);
-		else if(showDamagedMap)
-			overlay.compute(game, OverlayArea::Damage, localTeamNo);
-		else if(showDefenseMap)
-			overlay.compute(game, OverlayArea::Defence, localTeamNo);
-		else if(showFertilityMap)
-			overlay.compute(game, OverlayArea::Fertility, localTeamNo);
-	}
+	// Overlay maps are computed during scene extraction (SceneExtractor), from the
+	// overlay drawAll publishes in clientRequests.
 
 	// do we have won or lost conditions
 	checkWonConditions();
