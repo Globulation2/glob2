@@ -82,3 +82,29 @@ separate comparison job. The fixture uses seed 42. Run a native trace locally wi
 is `browser/tests/determinism.spec.js`. Artifacts include logs, fixture hashes,
 and trace hashes. This scenario complements the save-continuation harnesses;
 it does not establish equivalence for every game or generator.
+
+## Compressed release assets
+
+The release build preloads the shared verified runtime export, including WebP
+support. The pinned Emscripten SDK's standard SDL_image port lacks WebP, so
+`browser/ports/` supplies checksum-pinned libwebp 1.6.0 and SDL_image 2.8.12 ports
+with PNG/JPEG/WebP loading. Their recipes participate in the managed port cache
+identity; source/debug images remain PNG. Codec notices ship with runtime data.
+`browser/package-static.py` creates deterministic gzip sidecars for the
+versioned JS, WASM and data files and the HTML entry point. Its packaging policy
+participates in the version identity so changing transfer representation does
+not overwrite an older immutable URL. `--verify DIRECTORY` checks file coverage,
+SHA-256 and each sidecar's decompressed bytes before publication.
+The generated `package.json` marker records ownership and package identity.
+Packaging refuses to replace an unmarked directory, even if it contains HTML;
+remove an older generated `build/browser-static` once before repackaging it.
+
+Caddy serves gzip sidecars through content negotiation and retains original files
+for uncompressed requests. The Google Cloud Storage publisher uploads gzip bytes
+at the logical asset URLs with their original MIME types and
+`Content-Encoding: gzip`, with immutable asset caching and the entry point last.
+It omits `no-transform` so Storage can decompress for clients without gzip.
+JavaScript, streaming WASM and Emscripten data loading consume the original
+uncompressed representation through the browser's HTTP decoder. Verify transfer
+headers, progress and actual compressed bytes on the release host; local static
+files alone do not establish deployed behavior.

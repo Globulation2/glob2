@@ -83,7 +83,7 @@ test('WebAssembly executes the shared scripting corpus', async ({page}, info) =>
         ENV.GLOB2_TEST_ARTIFACTS_ROOT='/evidence/corpus';
       }],
       onRuntimeInitialized(){
-        try { const result=Module.callMain(['--test-suite=JavaScript*','--reporters=junit','--out=/evidence/tests.xml']);
+        try { const result=Module.callMain(['--test-suite=JavaScript*,ImageAssets','--reporters=junit','--out=/evidence/tests.xml']);
           if(window.corpusExit===null) window.corpusExit=result??0;
         } catch(error){window.corpusError=String(error);}
         const files={};

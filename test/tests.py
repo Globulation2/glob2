@@ -106,6 +106,7 @@ ENGINE_TESTS = [
 
 # glob2-unit-tests: libgag, libusl, the production sources below and stubs.
 UNIT_TESTS = [
+    'ImageAssetTest.cpp',
     'ScriptRuntimeTest.cpp',
     'ScriptNumericTest.cpp',
     ('UnitDrawBatchTest.cpp', dict(require={'opengl'})),
@@ -358,6 +359,6 @@ def scripting_entries():
     """
     selected = {'ScriptCompatibilityTest.cpp', 'ScriptIntegrationTest.cpp', 'ScriptPresentationTest.cpp',
                 'ScriptRealisticTest.cpp', 'ScriptSessionTest.cpp', 'ScriptSimulationTest.cpp',
-                'TeamStatsSaveHarness.cpp', 'ScriptRuntimeTest.cpp', 'ScriptNumericTest.cpp'}
+                'TeamStatsSaveHarness.cpp', 'ScriptRuntimeTest.cpp', 'ScriptNumericTest.cpp', 'ImageAssetTest.cpp'}
     return [entry for entry in ENGINE_TESTS + UNIT_TESTS
             if (entry if isinstance(entry, str) else entry[0]) in selected]
