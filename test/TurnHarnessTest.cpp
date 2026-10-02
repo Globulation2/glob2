@@ -220,7 +220,10 @@ struct Match
 	SimNetwork net;
 	std::vector<std::unique_ptr<SimClient>> clients;
 
+	std::uint8_t bundleInterval;
+
 	Match(const Links& links, std::vector<int> aiSeats = {}, SequencerConfig config = {})
+		: bundleInterval(config.bundleInterval)
 	{
 		const int humans = static_cast<int>(links.size());
 		const int players = humans + static_cast<int>(aiSeats.size());
@@ -298,7 +301,13 @@ struct Match
 				firstPrefix = prefix;
 			else
 				CHECK(prefix == firstPrefix);
-			CHECK(net.relay->horizon() - c.session->executedTick() <= c.session->targetTicks() + 4);
+			// Ticks the relay has issued but this client cannot have received yet: a
+			// bundle's worth, plus the link's worst one-way delivery (latency, jitter
+			// and one retransmission when the link loses frames).
+			const LinkProfile& link = net.links[i];
+			const std::uint64_t worstDelivery = link.latency + link.jitter + (link.loss > 0 ? link.retransmit : 0);
+			const std::uint64_t inFlight = bundleInterval + (worstDelivery + TICK - 1) / TICK;
+			CHECK(net.relay->horizon() - c.session->executedTick() <= c.session->targetTicks() + inFlight + 2);
 			if (c.session->executedTick() == common)
 			{
 				if (!referenceState)
