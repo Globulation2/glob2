@@ -66,6 +66,7 @@ ENGINE_TESTS = [
     'TeamStatsSaveHarness.cpp',
     'EngineSessionHarness.cpp',
     'TurnNetConnectionTest.cpp',
+    'RelayTransportTest.cpp',
     ('MapRenderResizeHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     'PointBarRenderTest.cpp',
     ('maxima/MaximaCombatIntegrationTest.cpp', dict(cxxflags=['-fno-access-control'])),

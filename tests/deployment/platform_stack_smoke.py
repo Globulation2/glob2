@@ -20,6 +20,12 @@ then tears the project down with its volumes. Python standard library only.
 
   python3 tests/deployment/platform_stack_smoke.py [--no-build] [--keep] [--log-dir DIR]
 
+With --attach PROJECT --env-file FILE it checks an already running deployment
+instead (run on its host, e.g. a live instance with a public certificate): the
+same checks against GLOB2_PUBLIC_ORIGIN, with the replica counts from the env
+file, publicly trusted TLS, and the deployed web client at /play/. Nothing is
+built, started or torn down.
+
 Not a unittest module on purpose: it needs the heavy images and runs in its own
 CI job (see .github/workflows/build.yml, platform-stack).
 """
@@ -119,6 +125,11 @@ class Failure(Exception):
 class Smoke:
     def __init__(self, arguments):
         self.arguments = arguments
+        self.results = {}
+        self.log_dir = Path(arguments.log_dir) if arguments.log_dir else None
+        if arguments.attach:
+            self.attach(arguments)
+            return
         self.project = 'glob2-smoke-' + uuid.uuid4().hex[:8]
         self.directory = Path(tempfile.mkdtemp(prefix='glob2-platform-smoke-'))
         self.https_port = free_port()
@@ -151,30 +162,47 @@ class Smoke:
             'GLOB2_CADDY_IMAGE': f'glob2-caddy:{tag}',
             'LOG_LEVEL': 'info',
         }
+        self.env_file = self.directory / '.env'
+        self.host, self.connect_host = 'localhost', '127.0.0.1'
+        self.expected_replicas = {'platform-api': 2, 'relay': 2}
         (self.directory / '.env').write_text(''.join(f'{k}={v}\n' for k, v in settings.items()))
         (self.directory / 'instance.yaml').write_text(INSTANCE_YAML)
         (self.directory / 'web-client').mkdir()
         (self.directory / 'web-client/index.html').write_text('<!doctype html><title>glob2 web client</title>')
         self.env = {k: v for k, v in os.environ.items() if not k.startswith(('GLOB2_', 'POSTGRES_'))}
-        self.log_dir = Path(arguments.log_dir) if arguments.log_dir else None
-        self.results = {}
+
+    def attach(self, arguments):
+        if not arguments.env_file:
+            raise SystemExit('--attach needs --env-file')
+        self.project = arguments.attach
+        self.env_file = Path(arguments.env_file).resolve()
+        self.directory = self.env_file.parent
+        self.origin = self.env_value('GLOB2_PUBLIC_ORIGIN').rstrip('/')
+        authority = self.origin.split('://', 1)[1]
+        self.host = authority.split(':')[0]
+        self.https_port = int(authority.split(':')[1]) if ':' in authority else 443
+        self.connect_host = self.host
+        self.sim_version = arguments.sim_version or sim_version_key(ROOT)
+        self.expected_replicas = {'platform-api': int(self.env_value('GLOB2_API_REPLICAS', '2')),
+                                  'relay': int(self.env_value('GLOB2_RELAY_REPLICAS', '1'))}
+        self.env = {k: v for k, v in os.environ.items() if not k.startswith(('GLOB2_', 'POSTGRES_'))}
 
     # ------------------------------------------------------------ helpers
 
     def compose(self, *args, timeout=600, check=True):
         command = ['docker', 'compose', '-p', self.project, '-f', str(COMPOSE_FILE),
-                   '--env-file', str(self.directory / '.env'), *args]
+                   '--env-file', str(self.env_file), *args]
         result = subprocess.run(command, env=self.env, text=True, capture_output=True, timeout=timeout)
         if check and result.returncode != 0:
             raise Failure(f'{" ".join(args[:2])} failed ({result.returncode}):\n{result.stdout}\n{result.stderr}')
         return result.stdout
 
     def https(self, method, path, body=None, headers=None):
-        connection = http.client.HTTPConnection('127.0.0.1', self.https_port, timeout=20)
-        # Verified TLS for the name "localhost" while connecting to 127.0.0.1.
-        connection.sock = self.tls.wrap_socket(socket.create_connection(('127.0.0.1', self.https_port), timeout=20),
-                                               server_hostname='localhost')
-        all_headers = {'Host': f'localhost:{self.https_port}', **(headers or {})}
+        connection = http.client.HTTPConnection(self.connect_host, self.https_port, timeout=20)
+        # Verified TLS for the public name (locally "localhost" while connecting to 127.0.0.1).
+        connection.sock = self.tls.wrap_socket(
+            socket.create_connection((self.connect_host, self.https_port), timeout=20), server_hostname=self.host)
+        all_headers = {'Host': self.authority(), **(headers or {})}
         data = None
         if body is not None:
             data = json.dumps(body).encode()
@@ -192,10 +220,10 @@ class Smoke:
         return json.loads(payload)
 
     def websocket(self, path, origin=None):
-        sock = self.tls.wrap_socket(socket.create_connection(('127.0.0.1', self.https_port), timeout=20),
-                                    server_hostname='localhost')
+        sock = self.tls.wrap_socket(socket.create_connection((self.connect_host, self.https_port), timeout=20),
+                                    server_hostname=self.host)
         key = base64.b64encode(os.urandom(16)).decode()
-        request = (f'GET {path} HTTP/1.1\r\nHost: localhost:{self.https_port}\r\nUpgrade: websocket\r\n'
+        request = (f'GET {path} HTTP/1.1\r\nHost: {self.authority()}\r\nUpgrade: websocket\r\n'
                    f'Connection: Upgrade\r\nSec-WebSocket-Version: 13\r\nSec-WebSocket-Key: {key}\r\n')
         if origin:
             request += f'Origin: {origin}\r\n'
@@ -205,6 +233,9 @@ class Smoke:
             headers += receive(sock, 1)
         status = int(headers.split(b' ')[1])
         return sock, status
+
+    def authority(self):
+        return self.host if self.https_port == 443 else f'{self.host}:{self.https_port}'
 
     def check(self, name, function):
         log(f'CHECK {name}')
@@ -222,6 +253,9 @@ class Smoke:
     # ------------------------------------------------------------ checks
 
     def up(self):
+        if self.arguments.attach:
+            self.tls = ssl.create_default_context()
+            return {'attached': self.project, 'origin': self.origin}
         if not self.arguments.no_build:
             log('building images (platform, engine-agent, relay, caddy)')
             started = time.monotonic()
@@ -246,7 +280,7 @@ class Smoke:
             elif row['State'] != 'running' or row.get('Health') not in ('healthy', ''):
                 raise Failure(f'{row["Name"]}: {row["State"]} {row.get("Health")}')
         counts = {s: sum(1 for r in rows if r['Service'] == s) for s in {r['Service'] for r in rows}}
-        if counts.get('platform-api') != 2 or counts.get('relay') != 2:
+        if any(counts.get(service) != n for service, n in self.expected_replicas.items()):
             raise Failure(f'unexpected replica counts {counts}')
         init_log = self.compose('logs', '--no-color', 'init')
         return {'services': summary, 'init': [l.split('|', 1)[-1].strip() for l in init_log.splitlines()][-6:]}
@@ -260,8 +294,9 @@ class Smoke:
         if b'Invite not found' not in body_j or b'<div id="root">' in body_j:
             raise Failure(f'/j/ is not served by the API: {status_j} {body_j[:200]!r}')
         status_play, _, body_play = self.https('GET', '/play/')
-        if status_play != 200 or b'glob2 web client' not in body_play:
-            raise Failure(f'/play/: {status_play}')
+        marker = b'<canvas' if self.arguments.attach else b'glob2 web client'
+        if status_play != 200 or marker not in body_play:
+            raise Failure(f'/play/: {status_play} {body_play[:200]!r}')
         denied = {}
         for path in ('/internal/v1/relays/register', '/internal', '/healthz', '/readyz', '/metrics'):
             for method in ('GET', 'POST'):
@@ -269,18 +304,28 @@ class Smoke:
                 denied[f'{method} {path}'] = code
                 if code != 404:
                     raise Failure(f'{method} {path} is reachable publicly: {code}')
-        connection = http.client.HTTPConnection('127.0.0.1', int(self.env_value('GLOB2_HTTP_PORT')), timeout=10)
-        connection.request('GET', '/api/v1/instance', headers={'Host': 'localhost'})
+        connection = http.client.HTTPConnection(self.connect_host, int(self.env_value('GLOB2_HTTP_PORT')), timeout=10)
+        connection.request('GET', '/api/v1/instance', headers={'Host': self.host})
         redirect = connection.getresponse()
         if redirect.status not in (301, 308) or not redirect.getheader('Location', '').startswith('https://'):
             raise Failure(f'HTTP is not redirected to HTTPS: {redirect.status}')
-        return {'web': status, 'invite': status_j, 'play': status_play, 'private': denied,
-                'http': redirect.status, 'hsts_or_server': headers.get('Server')}
+        detail = {'web': status, 'invite': status_j, 'play': status_play, 'private': denied,
+                  'http': redirect.status, 'hsts_or_server': headers.get('Server')}
+        if self.arguments.attach:
+            certificate = self.tls.wrap_socket(socket.create_connection((self.connect_host, self.https_port),
+                                                                        timeout=20), server_hostname=self.host)
+            peer = certificate.getpeercert()
+            certificate.close()
+            detail['certificate'] = {'issuer': dict(x[0] for x in peer['issuer']), 'notAfter': peer['notAfter'],
+                                     'subjectAltName': [v for _, v in peer.get('subjectAltName', [])]}
+        return detail
 
-    def env_value(self, name):
-        for line in (self.directory / '.env').read_text().splitlines():
+    def env_value(self, name, default=None):
+        for line in self.env_file.read_text().splitlines():
             if line.startswith(name + '='):
                 return line.split('=', 1)[1]
+        if default is not None:
+            return default
         raise KeyError(name)
 
     def instance(self):
@@ -360,7 +405,7 @@ class Smoke:
         while time.monotonic() < deadline:
             count = self.compose('exec', '-T', 'postgres', 'psql', '-U', 'glob2', '-d', 'glob2', '-At', '-c',
                                  'SELECT count(*) FROM relays').strip()
-            if count == '2':
+            if count == str(self.expected_replicas['relay']):
                 break
             time.sleep(2)
         ids = self.compose('ps', '-q', 'relay').split()
@@ -384,7 +429,7 @@ class Smoke:
                                   'SELECT id || \' \' || public_url FROM relays ORDER BY id').split('\n')
         registered = [r for r in registered if r.strip()]
         detail = {'relayIds': relay_ids, 'routed': routed, 'unknownRelay': unknown, 'dottedRelay': dotted,
-                  'publicUrls': [f'wss://localhost:{self.https_port}/relay/{r}' for r in relay_ids],
+                  'publicUrls': [f'wss://{self.authority()}/relay/{r}' for r in relay_ids],
                   'registered': registered}
         lines = [l.split('|', 1)[-1].strip() for l in logs.splitlines() if 'regist' in l.lower()]
         detail['registrationLog'] = lines[-4:]
@@ -434,7 +479,9 @@ class Smoke:
             return ok
         finally:
             self.collect_logs()
-            if self.arguments.keep:
+            if self.arguments.attach:
+                pass
+            elif self.arguments.keep:
                 log(f'keeping project {self.project}; remove with: docker compose -p {self.project} '
                     f'-f {COMPOSE_FILE} --env-file {self.directory / ".env"} down --volumes')
             else:
@@ -449,6 +496,9 @@ def main():
     parser.add_argument('--tag', default='smoke', help='image tag to build and run (default: smoke)')
     parser.add_argument('--jobs', type=int, default=3, help='C++ build jobs')
     parser.add_argument('--log-dir', help='write compose logs and results.json here')
+    parser.add_argument('--attach', metavar='PROJECT', help='check this running Compose project instead')
+    parser.add_argument('--env-file', help="with --attach: the deployment's env file")
+    parser.add_argument('--sim-version', help='with --attach: expected sim version key (default: this checkout)')
     smoke = Smoke(parser.parse_args())
     ok = smoke.run()
     passed = [k for k, v in smoke.results.items() if isinstance(v, dict) and v.get('ok')]

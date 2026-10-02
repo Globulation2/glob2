@@ -34,6 +34,7 @@ class Engine
 	friend struct CustomGameSetupHarness;
 	friend struct HeadlessRunner;
 	friend struct MatchVerifier;
+	friend struct TurnClient;
 	std::string headlessOutput;
 	std::string initializationDiagnostic;
 	int headlessSaveInterval = 0;

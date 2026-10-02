@@ -61,6 +61,7 @@ class GameGUITouch;
 class GameGUI
 {
 	friend struct CustomGameSetupHarness;
+	friend struct TurnClient;
 	friend struct ScriptPresentationFixture;
     friend class TorusRenderIntegrationTest;
     TorusView torusView;
