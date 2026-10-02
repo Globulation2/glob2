@@ -1,11 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "NetTransport.h"
-#ifdef HAVE_CONFIG_H
-#include <glob2/BuildConfig.h>
-#endif
-#if defined(GLOB2_MOBILE) || defined(__APPLE__) || defined(_WIN32)
-#include "mobile/CertificateTrust.h"
-#endif
+#include "TlsSetup.h"
 #include <boost/asio.hpp>
 #include <boost/asio/ssl.hpp>
 #include <boost/beast/core.hpp>
@@ -47,41 +42,6 @@ class WssTransport final : public NetTransport
 		bool writing = false;
 		NetMessageMode mode = NetMessageMode::Binary;
 
-		static void configure(ssl::context &context, const NetTlsConfig &config,
-							  bool loadTrust = true)
-		{
-			if (!SSL_CTX_set_min_proto_version(context.native_handle(), TLS1_2_VERSION))
-				throw std::runtime_error("TLS minimum version could not be configured");
-			if (!config.certificatePem.empty())
-			{
-				context.use_certificate_chain(asio::buffer(config.certificatePem));
-				context.use_private_key(asio::buffer(config.keyPem), ssl::context::pem);
-			}
-			else if (!config.certificateFile.empty())
-			{
-				context.use_certificate_chain_file(config.certificateFile);
-				context.use_private_key_file(config.keyFile, ssl::context::pem);
-			}
-			if ((!config.certificatePem.empty() || !config.certificateFile.empty()) &&
-				!SSL_CTX_check_private_key(context.native_handle()))
-				throw std::runtime_error("TLS key does not match certificate");
-			if (loadTrust)
-			{
-				if (!config.caPem.empty())
-					context.add_certificate_authority(asio::buffer(config.caPem));
-				else if (!config.caFile.empty())
-					context.load_verify_file(config.caFile);
-				else
-					context.set_default_verify_paths();
-			}
-		}
-		static std::shared_ptr<ssl::context>
-		contextFor(ssl::context::method method, const NetTlsConfig &config, bool loadTrust = true)
-		{
-			auto context = std::make_shared<ssl::context>(method);
-			configure(*context, config, loadTrust);
-			return context;
-		}
 		static int verifyPin(X509_STORE_CTX *store, void *data)
 		{
 			auto &self = *static_cast<Session *>(data);
@@ -106,7 +66,7 @@ class WssTransport final : public NetTransport
 			return identity && CRYPTO_memcmp(actual.data(), self.fingerprint.data(), 64) == 0;
 		}
 		Session(const std::string &address, const NetTlsConfig &config, NetMessageMode messageMode)
-			: tls(contextFor(ssl::context::tls_client, config,
+			: tls(NetTls::contextFor(ssl::context::tls_client, config,
 							 NetEndpoint::parse(address).fingerprint.empty())),
 			  mode(messageMode)
 		{
@@ -122,17 +82,8 @@ class WssTransport final : public NetTransport
 				SSL_CTX_set_cert_verify_callback(tls->native_handle(), verifyPin, this);
 			}
 			else
-			{
-#if defined(GLOB2_MOBILE) || defined(__APPLE__) || defined(_WIN32)
-				if (config.caFile.empty() && config.caPem.empty())
-					SSL_CTX_set_cert_verify_callback(tls->native_handle(),
-													 MobileCertificateTrust::verify, &host);
-				else
-#endif
-					socket.next_layer().set_verify_callback(ssl::host_name_verification(host));
-			}
-			if (!SSL_set_tlsext_host_name(socket.next_layer().native_handle(), host.c_str()))
-				throw std::runtime_error("Could not set TLS server name");
+				NetTls::verifyServer(socket.next_layer(), *tls, host, config);
+			NetTls::serverName(socket.next_layer(), host);
 			setup();
 			resolver.async_resolve(
 				host, service,
@@ -477,7 +428,7 @@ class WssTransport final : public NetTransport
 
 	  public:
 		explicit Listener(const NetListenConfig &c)
-			: config(c), tls(Session::contextFor(ssl::context::tls_server, c.tls))
+			: config(c), tls(NetTls::contextFor(ssl::context::tls_server, c.tls))
 		{
 			// Fail startup even when no clients have attempted a handshake yet.
 			if (c.tls.certificatePem.empty() && c.tls.certificateFile.empty())

@@ -109,6 +109,12 @@ python3 test/run-network-transport-tests.py
 python3 -m unittest discover -s tests/transport -v
 ```
 
+`tests/transport/test_http_fetch.py` drives the native `HttpFetch` client
+(`src/online/HttpFetch.h`, the platform's HTTPS requests; `emscripten_fetch` in the
+browser) against local HTTP and HTTPS servers: methods, headers and bodies, error
+statuses, certificate trust, response limits, timeouts and cancellation. It
+shares WssTransport's TLS trust through `src/net/TlsSetup.h`.
+
 These tests exercise verified native clients/listeners, explicit routes,
 certificate pinning, mutual TLS, Origin checks, binary framing, text mode, rejection,
 backpressure, and stalled TLS cancellation. Browser multiplayer tests use native
