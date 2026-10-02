@@ -19,11 +19,13 @@
 #include "TurnSession.h"
 #include "MultiplayerGame.h"
 #include "ChecksumSidecar.h"
+#include "ConnectionOverlay.h"
 
 
 class MultiplayersJoin;
 class NetGame;
 namespace Turn { class TurnLockstepSession; }
+namespace Online { class OnlineMatchResult; }
 
 using std::shared_ptr;
 
@@ -115,6 +117,11 @@ public:
 	/// The running turn session, or null for every other kind of game.
 	Turn::TurnSession* turnSession();
 	Turn::TurnLockstepSession* turnLockstep() { return turn; }
+	/// Online matches: what the results screen shows (outcome, verification, rating).
+	void setOnlineResult(std::shared_ptr<Online::OnlineMatchResult> result) { onlineResult = std::move(result); }
+	const std::shared_ptr<Online::OnlineMatchResult>& getOnlineResult() const { return onlineResult; }
+	/// A team of the loaded game, or null.
+	Team* gameTeam(int team);
 
 	//! This function creates a game with a random map and random AI for every team
 	void createRandomGame();
@@ -260,6 +267,13 @@ private:
 	/// Turn games: pumps the session each frame and handles its requests (reload,
 	/// desync flag). Called first in stepSessionImpl.
 	void pumpTurnSession(Uint64 now);
+	/// What the connection HUD shows (ConnectionOverlay), from the turn session.
+	ConnectionSnapshot turnConnectionSnapshot();
+	Uint64 turnNowMicros = 0;
+	std::uint32_t catchupFrom = 0;
+	bool catchupActive = false;
+	Uint64 connectionLostMicros = 0;
+	Uint64 catchupStartedMicros = 0;
 	/// Reloads the turn game's initial state in place, keeping the session, after
 	/// TurnSession::needsReload(); the session then replays the log from tick 0.
 	void reloadTurnInitialState();
@@ -325,6 +339,7 @@ private:
 		bool flagReported = false;
 	};
 	std::optional<TurnMatchState> turnMatch;
+	std::shared_ptr<Online::OnlineMatchResult> onlineResult;
 
 	Uint64 automaticGameStartTick, automaticGameEndTick;
 	//! Tick at which each team was eliminated, -1 while alive (see trackTeamEliminations).

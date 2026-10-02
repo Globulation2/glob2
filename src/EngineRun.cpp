@@ -605,6 +605,7 @@ void Engine::teardownSession()
 
 	if (multiplayer) multiplayer->setNetEngine(nullptr);
 	leaveTurnMatch();
+	gui.connectionOverlay.reset();
 	turn = nullptr;
 	turnMatch.reset();
 	net.reset();
@@ -629,6 +630,7 @@ void Engine::pumpTurnSession(Uint64 now)
 	if (!turn)
 		return;
 	Turn::TurnSession& session = turn->turn();
+	turnNowMicros = now * 1000;
 	session.update(now * 1000);
 	if (session.needsReload())
 		reloadTurnInitialState();

@@ -1,4 +1,5 @@
 #include "MapZoomControls.h"
+#include "ConnectionOverlay.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
@@ -113,6 +114,7 @@ bool GameGUI::processTypingInput(SDL_Event *event)
 void GameGUI::processEvent(SDL_Event *event)
 {
     inputState.observe(*event);
+    if (connectionOverlay && !activeDialog() && !inGameMenu && connectionOverlay->handle(*event)) return;
     if (touch && !activeDialog() && touch->process(*event)) return;
     if ((event->type == SDL_MOUSEBUTTONUP && event->button.button == SDL_BUTTON_MIDDLE) ||
         (event->type == SDL_WINDOWEVENT && event->window.event == SDL_WINDOWEVENT_FOCUS_LOST))

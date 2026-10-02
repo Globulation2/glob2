@@ -197,7 +197,119 @@ GAGCore::CooperativeTask Engine::initTurnMatchTask(TurnMatchStart start)
     const char* envReplayPath = getenv("GLOB2_REPLAY_PATH");
     state.replayPath = envReplayPath ? envReplayPath : "replays/last_game.replay";
     turnMatch = std::move(state);
+    // The connection HUD replaces the "waiting for players" notice.
+    gui.connectionOverlay = std::make_unique<ConnectionOverlay>();
+    gui.connectionOverlay->source = [this] { return turnConnectionSnapshot(); };
+    gui.connectionOverlay->leave = [this] { gui.isRunning = false; };
+    gui.connectionOverlay->notice = [this](const std::string& line) { gui.addNotice(line); };
     co_return true;
+}
+
+ConnectionSnapshot Engine::turnConnectionSnapshot()
+{
+    ConnectionSnapshot snapshot;
+    if (!turn)
+        return snapshot;
+    const Turn::TurnSession& s = turn->turn();
+    const Uint64 period = std::max<Uint64>(1, s.tickPeriodMicros());
+    const Uint64 now = turnNowMicros;
+    const int ownDelay = int((std::max<std::int64_t>(0, s.rttMicros()) / 2 + Uint64(s.targetTicks()) * period) / 1000);
+    snapshot.inputDelayMs = ownDelay;
+    snapshot.rttMs = s.rttMicros() > 0 ? int(s.rttMicros() / 1000) : -1;
+    snapshot.ownUnstable = s.jitterMicros() > 60000;
+    const GameHeader& header = gui.game.gameHeader;
+    for (int p = 0; p < header.getNumberOfPlayers() && p < int(Turn::MAX_SEATS); ++p)
+    {
+        const BasePlayer& player = header.getBasePlayer(p);
+        // Empty seats play as an inactive colony nobody controls; they are not players.
+        if (player.type == BasePlayer::P_AI || player.type == BasePlayer::P_NONE)
+            continue;
+        ConnectionRow row;
+        row.seat = p;
+        row.name = gui.game.players[p] ? gui.game.players[p]->name : player.name;
+        if (player.teamNumber >= 0 && player.teamNumber < gui.game.mapHeader.getNumberOfTeams() && gui.game.teams[player.teamNumber])
+            row.color = gui.game.teams[player.teamNumber]->color;
+        const bool human = s.humanSeatMask() & (1u << p);
+        if (!human)
+        {
+            row.state = ConnectionRow::State::AI;
+            snapshot.rows.push_back(row);
+            continue;
+        }
+        if (p == s.localSeat())
+        {
+            row.local = true;
+            row.latencyMs = ownDelay;
+            row.unstable = snapshot.ownUnstable;
+            row.state = s.state() == Turn::TurnSession::State::Running ? ConnectionRow::State::Connected
+                        : s.state() == Turn::TurnSession::State::Reconnecting ? ConnectionRow::State::Reconnecting
+                                                                              : ConnectionRow::State::Waiting;
+            snapshot.rows.push_back(row);
+            continue;
+        }
+        const auto info = s.seatPresenceInfo(p);
+        row.latencyMs = int(Uint64(info.lagTicks) * period / 1000);
+        switch (info.state)
+        {
+        case Turn::PresenceState::Connected: row.state = ConnectionRow::State::Connected; break;
+        case Turn::PresenceState::Lagging: row.state = ConnectionRow::State::Slow; break;
+        case Turn::PresenceState::Reconnecting: row.state = ConnectionRow::State::Reconnecting; break;
+        case Turn::PresenceState::Resyncing: row.state = ConnectionRow::State::Resyncing; break;
+        case Turn::PresenceState::Left: row.state = ConnectionRow::State::Left; break;
+        default: row.state = ConnectionRow::State::Waiting; break;
+        }
+        if (row.state == ConnectionRow::State::Reconnecting)
+        {
+            const Uint64 grace = Uint64(info.graceRemainingTicks) * period;
+            const Uint64 since = now > info.receivedMicros ? now - info.receivedMicros : 0;
+            row.graceSeconds = int((grace > since ? grace - since : 0) / 1000000);
+        }
+        snapshot.rows.push_back(row);
+    }
+    // Centre cards: this client waits on the network.
+    using State = Turn::TurnSession::State;
+    if (s.state() == State::Reconnecting)
+    {
+        snapshot.card = ConnectionSnapshot::Card::Reconnecting;
+        snapshot.attempt = std::max(1, s.reconnectAttempts());
+        if (!connectionLostMicros)
+            connectionLostMicros = now;
+        if (s.graceTicks())
+        {
+            const Uint64 grace = Uint64(s.graceTicks()) * period;
+            const Uint64 lost = now - connectionLostMicros;
+            snapshot.graceSeconds = int((grace > lost ? grace - lost : 0) / 1000000);
+        }
+        return snapshot;
+    }
+    connectionLostMicros = 0;
+    const bool desync = s.rejoiningAfterDesync();
+    const std::uint32_t behind = s.maxHorizon() > s.executedTick() ? s.maxHorizon() - s.executedTick() : 0;
+    // Small lag closes by itself; the card shows only a real fast-forward.
+    if (s.state() == State::Running && (s.needsReload() || desync || (s.catchingUp() && behind > 50)))
+    {
+        if (!catchupActive || s.needsReload())
+        {
+            catchupActive = true;
+            catchupFrom = s.needsReload() ? 0 : s.executedTick();
+            catchupStartedMicros = now;
+        }
+        snapshot.card = desync ? ConnectionSnapshot::Card::Desync : ConnectionSnapshot::Card::CatchingUp;
+        snapshot.catchupDone = s.executedTick() - std::min(s.executedTick(), catchupFrom);
+        snapshot.catchupTotal = std::max(snapshot.catchupDone, s.maxHorizon() - std::min(s.maxHorizon(), catchupFrom));
+        snapshot.missedSeconds = int(Uint64(snapshot.catchupTotal) * period / 1000000);
+        const Uint64 elapsed = now - catchupStartedMicros;
+        if (snapshot.catchupDone > 50 && elapsed > 0)
+        {
+            const double rate = double(snapshot.catchupDone) / double(elapsed);
+            snapshot.secondsLeft = int(double(snapshot.catchupTotal - snapshot.catchupDone) / rate / 1000000.0);
+        }
+        return snapshot;
+    }
+    catchupActive = false;
+    catchupFrom = 0;
+    catchupStartedMicros = 0;
+    return snapshot;
 }
 
 Turn::TurnSession* Engine::turnSession()

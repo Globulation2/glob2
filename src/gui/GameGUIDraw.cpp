@@ -1,6 +1,7 @@
 #include <RenderStateScope.h>
 #include <PerformanceTelemetry.h>
 #include "MapZoomControls.h"
+#include "ConnectionOverlay.h"
 #include "DynamicClouds.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
@@ -447,7 +448,8 @@ void GameGUI::drawOverlayInfos(void)
 	// Suppress the "[waiting for X]" notice until the wait has lasted longer
 	// than this many GUI steps, so brief network hiccups don't flash the box.
 	constexpr int WAIT_NOTICE_DEBOUNCE_STEPS = 2;
-	if (game.anyPlayerWaited && game.maskAwayPlayer && anyPlayerWaitedTimeFor>WAIT_NOTICE_DEBOUNCE_STEPS)
+	// Turn games show every player's connection in the panel instead (ConnectionOverlay).
+	if (!connectionOverlay && game.anyPlayerWaited && game.maskAwayPlayer && anyPlayerWaitedTimeFor>WAIT_NOTICE_DEBOUNCE_STEPS)
 	{
 		int nbap=0; // Number of away players
 		Uint32 pm=1;
@@ -675,6 +677,18 @@ void GameGUI::drawAll(int team)
 	globalContainer->gfx->setClipRect();
 	drawOverlayInfos();
     touch->drawHUD();
+	if (connectionOverlay)
+	{
+		const double unit = globalContainer->gfx->logicalUnitsPerPoint();
+		SDL_Rect area{0, 16, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-16};
+		if (touch->usesHUD())
+		{
+			// Under the status strip, away from the thumb corner.
+			const auto ui = touch->hudLayout();
+			area = {int(ui.world.x*unit), int((ui.status.y+ui.status.h)*unit), int(ui.world.w*unit), int((ui.world.y+ui.world.h-ui.status.y-ui.status.h)*unit)};
+		}
+		connectionOverlay->draw(touch->usesHUD(), area, unit);
+	}
 
 	if (!torusView.active() && !touch->usesHUD()) drawMapZoomControls(camera, true, true);
 	// draw menu if any

@@ -88,7 +88,17 @@ std::unique_ptr<GAGGUI::Screen> Engine::endRunScreen()
         return {};
     assert(globalContainer->mix);
     globalContainer->mix->setNextTrack(MusicTrack::Menu, true);
-    return std::make_unique<EndGameScreen>(&gui);
+    auto screen = std::make_unique<EndGameScreen>(&gui);
+    if (onlineResult)
+        screen->setOnlineResult(onlineResult);
+    return screen;
+}
+
+Team* Engine::gameTeam(int team)
+{
+    if (team < 0 || team >= gui.game.mapHeader.getNumberOfTeams())
+        return nullptr;
+    return gui.game.teams[team];
 }
 
 void Engine::restoreCursor()

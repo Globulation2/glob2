@@ -3544,3 +3544,547 @@ Rebot de les llistes
 
 [Map momentum]
 Inèrcia del mapa
+[play online]
+
+[Use in room]
+
+[Custom rules]
+
+[conn ai everywhere]
+
+[conn ai]
+
+[conn card catching up]
+
+[conn card colony works]
+
+[conn card desync detail]
+
+[conn card desync]
+
+[conn card grace %0]
+
+[conn card input paused]
+
+[conn card lost]
+
+[conn card progress %0 %1 %2]
+
+[conn card reconnecting %0]
+
+[conn card replaying %0]
+
+[conn card seconds left %0]
+
+[conn connected]
+
+[conn connections]
+
+[conn delay explanation]
+
+[conn latency]
+
+[conn leave match]
+
+[conn left]
+
+[conn lost]
+
+[conn notice back %0]
+
+[conn notice left %0]
+
+[conn notice lost %0 %1]
+
+[conn players]
+
+[conn reconnecting]
+
+[conn relay %0 %1]
+
+[conn resyncing]
+
+[conn slow]
+
+[conn unstable]
+
+[conn waiting]
+
+[conn you %0]
+
+[conn you]
+
+[hub account menu]
+
+[hub ai joins after %0]
+
+[hub all rooms]
+
+[hub browse maps]
+
+[hub cant reach %0]
+
+[hub change server]
+
+[hub check code]
+
+[hub code placeholder]
+
+[hub connecting to %0]
+
+[hub continue with %0]
+
+[hub create room]
+
+[hub find match]
+
+[hub finish in browser]
+
+[hub free seat]
+
+[hub get update]
+
+[hub guest kept on device]
+
+[hub invalid code]
+
+[hub join by code]
+
+[hub join code]
+
+[hub join]
+
+[hub leaderboard]
+
+[hub legacy server]
+
+[hub linked %0]
+
+[hub linked accounts]
+
+[hub maps]
+
+[hub no queues]
+
+[hub no rooms]
+
+[hub offline at %0]
+
+[hub offline detail %0]
+
+[hub online at %0]
+
+[hub online settings]
+
+[hub online]
+
+[hub open page again]
+
+[hub open rooms]
+
+[hub page opened at %0]
+
+[hub queues unavailable]
+
+[hub quick match unavailable]
+
+[hub quick match]
+
+[hub ranked]
+
+[hub recent matches]
+
+[hub refresh]
+
+[hub retry now]
+
+[hub room match]
+
+[hub room name %0]
+
+[hub room]
+
+[hub seats %0 %1]
+
+[hub server %0]
+
+[hub sign in browser]
+
+[hub sign in conflict]
+
+[hub sign in failed %0]
+
+[hub sign in intro]
+
+[hub sign in]
+
+[hub sign out]
+
+[hub signed in as %0]
+
+[hub signed in on %0]
+
+[hub signing in]
+
+[hub sim %0]
+
+[hub unrated]
+
+[hub update required at %0]
+
+[hub update required detail %0]
+
+[hub update required]
+
+[hub versus %0]
+
+[match ai]
+
+[match downloading map %0]
+
+[match failed]
+
+[match leave]
+
+[match loading]
+
+[match map cached]
+
+[match map]
+
+[match relay %0]
+
+[match seat confirmed]
+
+[match starting]
+
+[match tip flags]
+
+[match tip input]
+
+[match tip select]
+
+[match waiting for players]
+
+[match you %0]
+
+[match player map]
+
+[match player loading]
+
+[match player connecting]
+
+[match player ready]
+
+[match player left]
+
+[results back to online]
+
+[results back to room]
+
+[results defeat]
+
+[results ladder rating %0]
+
+[results left]
+
+[results match over]
+
+[results match page]
+
+[results minutes %0]
+
+[results no change]
+
+[results ranked]
+
+[results recording]
+
+[results room unrated]
+
+[results saved to history]
+
+[results seconds %0]
+
+[results unverifiable]
+
+[results verified provisional]
+
+[results verified]
+
+[results verifying detail]
+
+[results verifying]
+
+[results victory]
+
+[room address]
+
+[room ai %0]
+
+[room browser pairing]
+
+[room catalog map]
+
+[room change map]
+
+[room change rules]
+
+[room chat]
+
+[room closed seat detail]
+
+[room closed seat]
+
+[room colonies]
+
+[room connecting]
+
+[room copy]
+
+[room disconnected]
+
+[room downloading %0]
+
+[room downloading map]
+
+[room expired]
+
+[room generated on server]
+
+[room guest]
+
+[room host %0]
+
+[room host closed]
+
+[room host]
+
+[room humans vs ai]
+
+[room invite code %0]
+
+[room invite not found]
+
+[room invite only]
+
+[room invite]
+
+[room joining on network]
+
+[room lan badge]
+
+[room lan list hint %0]
+
+[room leave]
+
+[room map changed %0]
+
+[room map failed]
+
+[room match label]
+
+[room member joined %0]
+
+[room member left %0]
+
+[room member ready %0]
+
+[room needs two seats]
+
+[room no map]
+
+[room not ready]
+
+[room open for a person]
+
+[room open seat detail]
+
+[room open seat]
+
+[room person]
+
+[room preparing map]
+
+[room public]
+
+[room ready?]
+
+[room ready]
+
+[room remove from room]
+
+[room rule conquest]
+
+[room rule fixed]
+
+[room rule free]
+
+[room rule hidden]
+
+[room rule off]
+
+[room rule on]
+
+[room rule prestige]
+
+[room rule revealed]
+
+[room rules changed]
+
+[room rules]
+
+[room say something]
+
+[room seat hint]
+
+[room seat options]
+
+[room seats summary %0 %1 %2]
+
+[room seats]
+
+[room seed]
+
+[room send]
+
+[room set by host]
+
+[room share text %0]
+
+[room share]
+
+[room size]
+
+[room starting match]
+
+[room take seat]
+
+[room team %0]
+
+[room update required]
+
+[room uploaded map]
+
+[room waiting for %0]
+
+[room waiting for host]
+
+[room waiting for players %0]
+
+[room who can find it]
+
+[room you created]
+
+[room you joined %0]
+
+[room you were removed]
+
+[room you]
+
+[settings Online]
+
+[settings Another server]
+
+[settings Check]
+
+[settings Checking…]
+
+[settings Choose which server you play on and how you sign in to it.]
+
+[settings Connecting…]
+
+[settings Could not reach this server.]
+
+[settings Display name saved.]
+
+[settings Display name]
+
+[settings Download or delete my data]
+
+[settings Enter an https:// address.]
+
+[settings Finish in your browser. It shows the code %0.]
+
+[settings Forget]
+
+[settings Guests keep a generated name; sign in to choose one.]
+
+[settings Link]
+
+[settings Not a Globulation 2 server.]
+
+[settings Not linked]
+
+[settings Not signed in.]
+
+[settings Open]
+
+[settings Opens your account page on %0.]
+
+[settings Run by a community, a club or yourself. Paste its address.]
+
+[settings Save]
+
+[settings Server]
+
+[settings Shown in rooms, matches and the leaderboard. Change once every 30 days.]
+
+[settings Sign in with: %0 · queues: %1]
+
+[settings Sign out on this device]
+
+[settings Sign out]
+
+[settings Switch to this server]
+
+[settings The last sign-in method can't be unlinked.]
+
+[settings The official Globulation 2 server · ranked queues, leaderboards, map catalog]
+
+[settings Unlink]
+
+[settings Unlinking is done on the account page.]
+
+[settings You'll be a new guest until you sign in again. Your account and matches stay on the server.]
+
+[settings Your account on %0]
+
+[settings compatible with this version]
+
+[settings connected]
+
+[settings connecting…]
+
+[settings guest]
+
+[settings linked]
+
+[settings plays another version]
+
+[settings trusted]
+
+[settings used before]
+
+[settings you were %0 there]
+
+[trust invited to room %0]
+
+[trust join as guest]
+
+[trust not official]
+
+[trust remember]
+
+[trust separate identity %0]
+
+[trust title]
+
+[trust what it sees]
+
+[settings not connected]
+
+[settings Open Play online to connect.]
+
+[hub code]
+

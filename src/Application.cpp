@@ -12,8 +12,8 @@
 #include "CreditScreen.h"
 #include "EditorMainMenu.h"
 #include "LANMenuScreen.h"
-#include "YOGLoginScreen.h"
-#include "YOGClient.h"
+#include "OnlineHubScreen.h"
+#include "InviteLink.h"
 #include "ui/FrontendUI.h"
 #include "OnlineServices.h"
 #include <algorithm>
@@ -166,9 +166,9 @@ void Application::choose(int choice)
 	case MainMenuScreen::MULTIPLAYERS_LAN:
 		screens.push(std::make_unique<LANMenuScreen>(screens));
 		break;
-	case MainMenuScreen::MULTIPLAYERS_YOG:
+	case MainMenuScreen::PLAY_ONLINE:
 #if !defined(GLOB2_CHINA_RELEASE) && !defined(GLOB2_AMAZON_RELEASE)
-		screens.push(std::make_unique<YOGLoginScreen>(screens, std::make_shared<YOGClient>()));
+		screens.push(std::make_unique<OnlineHubScreen>(screens));
 #endif
 		break;
 	case MainMenuScreen::QUIT:
@@ -227,6 +227,16 @@ bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event> &incomi
 		return shutdownScreens.running();
 	}
 	screens.frame(tick, events);
+#if !defined(GLOB2_CHINA_RELEASE) && !defined(GLOB2_AMAZON_RELEASE)
+	// An invite link (at launch or while running) opens the online hub from the
+	// main menu; the hub consumes it.
+	static std::uint32_t hubOpenedAt = 0;
+	if (Online::pendingJoin() && dynamic_cast<MainMenuScreen *>(screens.top()) && tick - hubOpenedAt > 2000)
+	{
+		hubOpenedAt = tick;
+		screens.push(std::make_unique<OnlineHubScreen>(screens));
+	}
+#endif
 	if (!screens.running())
 	{
 		if (screens.result() == GAGGUI::Screen::QUIT_APPLICATION)

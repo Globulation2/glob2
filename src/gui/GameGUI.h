@@ -58,6 +58,7 @@ class MapMarkOrder;
 	Handle all user input during game, draw & handle menu.
 */
 class GameGUITouch;
+class ConnectionOverlay;
 class GameGUI
 {
 	friend struct CustomGameSetupHarness;
@@ -254,6 +255,12 @@ public:
 	/// "[waiting for X]" notice in GameGUIDraw — it is not part of simulation or
 	/// network state and is never checksummed, networked, or saved.
 	int anyPlayerWaitedTimeFor;
+	/// Turn-protocol games: the connection panel and cards (ConnectionOverlay.h) that
+	/// replace the "[waiting for X]" notice. Null for every other game. Presentation
+	/// only, never simulated, networked or saved.
+	std::unique_ptr<ConnectionOverlay> connectionOverlay;
+	/// A one-line notice in the message list (connection changes).
+	void addNotice(const std::string &text);
 private:
 	friend class GameGUISelectionHarness;
 	friend class TorusRenderIntegrationTest;

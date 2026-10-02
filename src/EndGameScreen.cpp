@@ -11,6 +11,7 @@
 #include "Utilities.h"
 #include "gui/InGameTouchTheme.h"
 #include "gui/LoadSaveDialog.h"
+#include "OnlineMatch.h"
 #include <ApplicationHost.h>
 #include <FormatableString.h>
 #include <StringTable.h>
@@ -88,6 +89,16 @@ EndGameScreen::EndGameScreen(GameGUI *gui) : UIScreen(fe::inGameTheme())
 
 	// Save the step and order count
 	game = &(gui->game);
+	durationSeconds = game->stepCounter / 25;
+	if (Team *local = gui->getLocalTeam())
+	{
+		if (local->hasWon)
+			outcome = Outcome::Victory;
+		else if (local->hasLost || !local->isAlive)
+			outcome = Outcome::Defeat;
+		else if (!game->isGameEnded && !game->totalPrestigeReached)
+			outcome = Outcome::Left;
+	}
 
 	sortAndSet(EndOfGameStat::TYPE_UNITS);
 }
@@ -213,10 +224,121 @@ Element EndGameScreen::teamRows(const Presentation &p)
 	return fe::wrap(std::move(rows), grid);
 }
 
+void EndGameScreen::setOnlineResult(std::shared_ptr<Online::OnlineMatchResult> result)
+{
+	online = std::move(result);
+	onlineRevision = ~0u;
+	invalidate();
+}
+
+namespace
+{
+std::string minutesText(Uint32 seconds)
+{
+	if (seconds < 60)
+		return GAGCore::FormattableString(fe::tr("[results seconds %0]")).arg(seconds);
+	return GAGCore::FormattableString(fe::tr("[results minutes %0]")).arg(seconds / 60);
+}
+std::string ratingText(double value)
+{
+	return std::to_string(int(std::lround(value)));
+}
+} // namespace
+
+Element EndGameScreen::onlineBanner(const Presentation &p)
+{
+	const char *titleKey = outcome == Outcome::Victory ? "[results victory]"
+						   : outcome == Outcome::Defeat ? "[results defeat]"
+						   : outcome == Outcome::Left	? "[results left]"
+														: "[results match over]";
+	std::string subtitle = online->label;
+	if (!online->mapTitle.empty())
+		subtitle += " · " + online->mapTitle;
+	subtitle += " · " + minutesText(durationSeconds);
+	fe::IconOptions trophy;
+	trophy.size = p.touch ? 28 : 32;
+	trophy.color = fe::inGameTheme().palette.accent;
+	auto words = fe::column({fe::title(fe::tr(titleKey)), fe::caption(subtitle)}, {p.pt(2)});
+	return fe::row({outcome == Outcome::Victory ? fe::icon(fe::uiIcon(fe::UIIcon::Trophy), trophy) : nullptr,
+					fe::expanded(words)},
+				   {p.pt(10), fe::CrossAlign::Center});
+}
+
+Element EndGameScreen::ratingCard(const Presentation &p)
+{
+	using V = Online::OnlineMatchResult::Verification;
+	const auto &r = *online;
+	const auto palette = fe::inGameTheme().palette;
+	fe::TextOptions big;
+	big.role = fe::FontRole::Heading;
+	fe::TextOptions greyed = big;
+	greyed.color = palette.muted;
+	std::vector<Element> lines;
+	std::string head = r.rated ? GAGCore::FormattableString(fe::tr("[results ladder rating %0]")).arg(r.ladder.empty() ? fe::tr("[results ranked]") : r.ladder)
+							   : fe::tr("[results room unrated]");
+	std::string status;
+	if (!r.rated)
+	{
+		lines.push_back(fe::label(head, big));
+		status = r.verification == V::Pending ? fe::tr("[results recording]") : fe::tr("[results saved to history]");
+		lines.push_back(fe::caption(status));
+	}
+	else if (r.verification == V::Verified && r.ratingAfter)
+	{
+		lines.push_back(fe::caption(head));
+		std::string value = ratingText(*r.ratingAfter);
+		if (r.ratingBefore)
+		{
+			const int delta = int(std::lround(*r.ratingAfter - *r.ratingBefore));
+			value += std::string("  ") + (delta >= 0 ? "+" : "−") + std::to_string(std::abs(delta));
+		}
+		lines.push_back(fe::label(value, big));
+		lines.push_back(fe::row({fe::icon(fe::uiIcon(fe::UIIcon::ShieldCheck), {16, palette.success}),
+								 fe::caption(fe::tr(r.provisional ? "[results verified provisional]" : "[results verified]"), false)},
+								{p.pt(4), fe::CrossAlign::Center}));
+	}
+	else if (r.verification == V::Unverifiable || r.verification == V::Diverged || r.verification == V::NotApplicable)
+	{
+		lines.push_back(fe::caption(head));
+		lines.push_back(fe::label((r.ratingBefore ? ratingText(*r.ratingBefore) + "  " : std::string()) + fe::tr("[results no change]"), big));
+		lines.push_back(fe::paragraph(fe::tr("[results unverifiable]"), {fe::FontRole::Support, true}));
+	}
+	else
+	{
+		lines.push_back(fe::caption(head));
+		const bool won = outcome == Outcome::Victory;
+		std::optional<double> expected = won ? r.ratingExpectedWin : r.ratingExpectedLoss;
+		if (r.ratingBefore && expected)
+			lines.push_back(fe::label(ratingText(*r.ratingBefore) + " → " + ratingText(*expected) + "?", greyed));
+		lines.push_back(fe::row({fe::icon(fe::uiIcon(fe::UIIcon::Spinner), {16, palette.muted}),
+								 fe::label(fe::tr("[results verifying]"), {fe::FontRole::Body})},
+								{p.pt(4), fe::CrossAlign::Center}));
+		if (!p.compact())
+			lines.push_back(fe::paragraph(fe::tr("[results verifying detail]"), {fe::FontRole::Support, true}));
+	}
+	fe::CardOptions options;
+	options.color = palette.field;
+	options.border = palette.line;
+	options.padding = p.pt(10);
+	options.shadow = false;
+	return fe::card(fe::column(std::move(lines), {p.pt(2)}), options);
+}
+
 Element EndGameScreen::build(const Presentation &p)
 {
 	const bool compact = p.compact() || p.shortLandscape();
 	std::vector<Element> parts;
+	if (online && (!expandedChart || !compact))
+	{
+		if (compact)
+		{
+			parts.push_back(onlineBanner(p));
+			parts.push_back(ratingCard(p));
+		}
+		else
+			parts.push_back(fe::row({fe::expanded(onlineBanner(p)), fe::maxWidth(p.pt(420), ratingCard(p))},
+									{p.pt(12), fe::CrossAlign::Center}));
+	}
 	if (!expandedChart || !compact)
 	{
 		std::vector<std::string> options;
@@ -232,6 +354,9 @@ Element EndGameScreen::build(const Presentation &p)
 			header.push_back(fe::button("teams", GAGCore::FormattableString(fe::tr("[Teams %0/%1]")).arg(enabled).arg(teams.size()),
 										[this] { showTeamFilters(!teamFiltersOpen); }, teamOptions));
 		}
+		if (online && !compact)
+			header.push_back(fe::button("match-page", fe::tr("[results match page]"), [this] { GAGCore::ApplicationHost::openUrl(online->matchPageUrl()); },
+										{.flat = true, .icon = fe::uiIcon(fe::UIIcon::ExternalLink), .iconSize = 16}));
 		parts.push_back(fe::row(std::move(header), {p.pt(8), fe::CrossAlign::Center}));
 	}
 	if (!expandedChart && (!compact || teamFiltersOpen))
@@ -261,7 +386,10 @@ Element EndGameScreen::build(const Presentation &p)
 	actions.push_back({"expand", fe::tr(expandedChart ? "[Back to chart]" : "[Expand chart]"), [this] { expandChart(!expandedChart); }});
 	if (save)
 		actions.push_back({"save-replay", fe::tr("[save replay]"), [this] { saveReplay("replays", "replay"); }});
-	actions.push_back({"quit", fe::tr("[quit]"), [this] { endExecute(QUIT); }, true, SDLK_RETURN});
+	if (online && compact)
+		actions.push_back({"match-page", fe::tr("[results match page]"), [this] { GAGCore::ApplicationHost::openUrl(online->matchPageUrl()); }});
+	const char *quitKey = !online ? "[quit]" : online->fromRoom ? "[results back to room]" : "[results back to online]";
+	actions.push_back({"quit", fe::tr(quitKey), [this] { endExecute(QUIT); }, true, SDLK_RETURN});
 	parts.push_back(fe::actions(std::move(actions), p));
 	return fe::column(std::move(parts), {p.pt(8)});
 }
@@ -318,6 +446,12 @@ void EndGameScreen::saveReplay(const char *dir, const char *ext)
 
 void EndGameScreen::updateExecution(Uint32 tick)
 {
+	// Verification results arrive through the shared client (Online::pump).
+	if (online && online->revision != onlineRevision)
+	{
+		onlineRevision = online->revision;
+		invalidate();
+	}
 	UIScreen::updateExecution(tick);
 	if (!replaySave)
 		return;
