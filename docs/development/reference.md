@@ -935,7 +935,11 @@ so the workload does not change with monitor density. `PROFILE_NATIVE_DISPLAY=1`
 offsets; `PROFILE_FRACTION=1` adds a half-pixel horizontal offset. `PROFILE_VISIBLE=1`
 shows the window; omit `PROFILE_NO_PRESENT` to include presentation. `PROFILE_CAPTURE`
 names an output BMP. `PROFILE_TERRAIN_CACHE=0` isolates primitive performance without
-adding a user graphics setting. The harness reports population, wall-time mean/median/p95,
+adding a user graphics setting. `PROFILE_SELECT=building|flag|unit` selects the local
+team's first such entity, so frames include its selection panel and map markers;
+`PROFILE_TOOL=<building type>` (for example `inn`) activates the building tool with the
+cursor over the middle of the map view, so frames include the placement preview. Use them
+with `PROFILE_MODE=gui` for Scene parity captures against another revision. The harness reports population, wall-time mean/median/p95,
 process CPU time, optional thread CPU stage costs, backend operation counts, cache memory
 and cache hit/rebuild counts. It also checks that drawing preserves the simulation checksum.
 Run captured fixtures from early, mid and late games; keep generated saves and profiles
