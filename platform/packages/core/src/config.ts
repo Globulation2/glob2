@@ -32,6 +32,38 @@ export interface SigningKeysConfig {
   activeKid: string | undefined;
 }
 
+/**
+ * A secret relays present as `Authorization: Bearer <key>` on /internal calls.
+ * A key with a relay id may only act as that relay.
+ */
+export interface RelayKey {
+  key: string;
+  relayId?: string;
+}
+
+/**
+ * RELAY_KEYS (comma-separated) or RELAY_KEYS_FILE (one per line, # comments):
+ * entries are `<key>` (any relay) or `<relayId>:<key>` (that relay only).
+ * Keys must be at least 32 characters.
+ */
+export function parseRelayKeys(text: string, where = 'RELAY_KEYS'): RelayKey[] {
+  const keys: RelayKey[] = [];
+  for (const raw of text.split(/[,\n]/)) {
+    const entry = raw.replace(/#.*$/, '').trim();
+    if (!entry) continue;
+    const colon = entry.indexOf(':');
+    const relayId = colon >= 0 ? entry.slice(0, colon) : undefined;
+    const key = colon >= 0 ? entry.slice(colon + 1) : entry;
+    if (relayId !== undefined && !/^[A-Za-z0-9._-]{1,64}$/.test(relayId)) {
+      throw new ConfigError(`${where}: invalid relay id ${JSON.stringify(relayId)}`);
+    }
+    if (key.length < 32)
+      throw new ConfigError(`${where}: relay keys must be at least 32 characters`);
+    keys.push(relayId ? { key, relayId } : { key });
+  }
+  return keys;
+}
+
 export interface PlatformConfig {
   /** Public origin clients use, e.g. https://play.example.org (no trailing slash). */
   publicOrigin: string;
@@ -44,6 +76,12 @@ export interface PlatformConfig {
   instance: InstanceConfig;
   instanceConfigPath: string | undefined;
   keys?: SigningKeysConfig;
+  /** Keys relays authenticate with on /internal (none: relays are refused). */
+  relayKeys?: RelayKey[];
+  /** Largest uploaded map or save, in bytes (UPLOAD_MAX_BYTES, default 16 MiB). */
+  uploadMaxBytes?: number;
+  /** Largest match record a relay may upload, in bytes (RECORD_MAX_BYTES, default 64 MiB). */
+  recordMaxBytes?: number;
   /** Environment that secrets named in instance.yaml (`...Env` settings) are read from. */
   secrets?: Record<string, string | undefined>;
 }
@@ -158,6 +196,19 @@ export function loadConfig(options: LoadConfigOptions = {}): PlatformConfig {
     throw new ConfigError(`INSTANCE_CONFIG ${instancePath} does not exist`);
   }
 
+  let relayKeys: RelayKey[] = [];
+  if (env['RELAY_KEYS']) relayKeys = parseRelayKeys(env['RELAY_KEYS']);
+  if (env['RELAY_KEYS_FILE']) {
+    const path = resolve(cwd, env['RELAY_KEYS_FILE']);
+    let text: string;
+    try {
+      text = readFileSync(path, 'utf8');
+    } catch (error) {
+      throw new ConfigError(`cannot read RELAY_KEYS_FILE ${path}: ${(error as Error).message}`);
+    }
+    relayKeys = [...relayKeys, ...parseRelayKeys(text, 'RELAY_KEYS_FILE')];
+  }
+
   return {
     publicOrigin,
     databaseUrl: required(env, 'DATABASE_URL'),
@@ -180,6 +231,9 @@ export function loadConfig(options: LoadConfigOptions = {}): PlatformConfig {
         : undefined,
       activeKid: env['JWT_ACTIVE_KID'] || undefined,
     },
+    relayKeys,
+    uploadMaxBytes: integer(env, 'UPLOAD_MAX_BYTES', 16 * 1024 * 1024, 1024, 1024 * 1024 * 1024),
+    recordMaxBytes: integer(env, 'RECORD_MAX_BYTES', 64 * 1024 * 1024, 1024, 1024 * 1024 * 1024),
     secrets: env,
   };
 }

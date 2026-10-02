@@ -8,9 +8,10 @@ import { sql, type Kysely } from 'kysely';
 import type { Database, PgPubSub } from '@glob2/db';
 import type { Logger } from '@glob2/core';
 import type { RealtimeEventName } from '@glob2/protocol';
+import { REALTIME_CHANNEL, type PlayFanout } from '@glob2/worker';
 import type { RealtimeConnection } from './connection.ts';
 
-export const REALTIME_CHANNEL = 'realtime';
+export { REALTIME_CHANNEL };
 
 export type FanoutTarget = { account: string } | { family: string } | { connection: string };
 
@@ -25,9 +26,16 @@ export type FanoutMessage =
       /** Drop the matching sockets' authentication instead of closing them. */
       signOut?: boolean;
     }
-  | { t: 'handoff'; attemptId: string };
+  | { t: 'handoff'; attemptId: string }
+  /** Rooms and matches (published by the API and the worker; see @glob2/worker notify.ts). */
+  | PlayFanout;
 
 export type HandoffListener = (connection: RealtimeConnection, attemptId: string) => void;
+export type PlayListener = (message: PlayFanout) => void;
+/** An account's last socket on this replica went away (closed or signed out). */
+export type AccountGoneListener = (accountId: string) => void;
+/** An account gained a socket on this replica. */
+export type AccountHereListener = (accountId: string) => void;
 
 export class RealtimeHub {
   private readonly db: Kysely<Database>;
@@ -38,6 +46,9 @@ export class RealtimeHub {
   private readonly attempts = new Map<string, RealtimeConnection>();
   private unsubscribe: (() => Promise<void>) | undefined;
   onHandoff: HandoffListener | undefined;
+  onPlay: PlayListener | undefined;
+  onAccountGone: AccountGoneListener | undefined;
+  onAccountHere: AccountHereListener | undefined;
 
   constructor(db: Kysely<Database>, pubsub: PgPubSub, logger: Logger) {
     this.db = db;
@@ -77,13 +88,25 @@ export class RealtimeHub {
   /** Re-indexes a socket after it authenticated as `accountId` (or signed out). */
   setAccount(connection: RealtimeConnection, accountId: string | undefined): void {
     for (const [id, set] of this.byAccount) {
-      if (set.delete(connection) && set.size === 0) this.byAccount.delete(id);
+      if (id === accountId) continue;
+      if (set.delete(connection) && set.size === 0) {
+        this.byAccount.delete(id);
+        this.onAccountGone?.(id);
+      }
     }
     if (accountId) {
       let set = this.byAccount.get(accountId);
       if (!set) this.byAccount.set(accountId, (set = new Set()));
-      set.add(connection);
+      if (!set.has(connection)) {
+        set.add(connection);
+        this.onAccountHere?.(accountId);
+      }
     }
+  }
+
+  /** This replica's open sockets signed in as the account. */
+  connectionsOf(accountId: string): RealtimeConnection[] {
+    return [...(this.byAccount.get(accountId) ?? [])].filter((c) => c.open);
   }
 
   watchAttempt(attemptId: string, connection: RealtimeConnection): void {
@@ -127,6 +150,15 @@ export class RealtimeHub {
     if (message.t === 'handoff') {
       const holder = this.attempts.get(message.attemptId);
       if (holder) this.onHandoff?.(holder, message.attemptId);
+      return;
+    }
+    if (
+      message.t === 'room' ||
+      message.t === 'roomChat' ||
+      message.t === 'roomClosed' ||
+      message.t === 'matchStart'
+    ) {
+      this.onPlay?.(message);
       return;
     }
     if (message.t === 'event') {

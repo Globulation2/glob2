@@ -204,14 +204,7 @@ const typedColumns: ColumnLists = {
     'updated_at',
     'closed_at',
   ],
-  room_members: [
-    'room_id',
-    'account_id',
-    'connected',
-    'joined_at',
-    'last_seen_at',
-    'region_rtts',
-  ],
+  room_members: ['room_id', 'account_id', 'connected', 'joined_at', 'last_seen_at', 'region_rtts'],
   room_seats: [
     'room_id',
     'seat',

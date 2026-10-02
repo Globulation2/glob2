@@ -854,10 +854,7 @@ export const fixtureCases: FixtureCase[] = [
         { team: 1, alliance: 1 },
         { team: 2, alliance: 2 },
       ],
-      seats: [
-        ...ROOM_STATE.seats,
-        { seat: 2, team: 2, occupant: { kind: 'open' }, locked: true },
-      ],
+      seats: [...ROOM_STATE.seats, { seat: 2, team: 2, occupant: { kind: 'open' }, locked: true }],
     },
   },
   {

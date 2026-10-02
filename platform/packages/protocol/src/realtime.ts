@@ -160,7 +160,7 @@ export const realtimeMethods = {
   },
   'room.join': {
     description:
-      'Join a room by invite code (AccessPolicy.canJoin). The room must be for the caller\'s sim version (update_required otherwise). Joining a room the caller is already in returns its state.',
+      "Join a room by invite code (AccessPolicy.canJoin). The room must be for the caller's sim version (update_required otherwise). Joining a room the caller is already in returns its state.",
     params: Strict({ code: InviteCode, regions: Type.Optional(RegionRtts) }),
     result: Open({ room: RoomState }),
   },
