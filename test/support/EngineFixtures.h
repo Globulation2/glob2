@@ -19,8 +19,8 @@
 
 namespace glob2test
 {
-	// Deterministic continuation scheduler: poll/apply each unpaused AI in
-	// player order, then advance one simulation tick. Returns type+wire payload
+	// Deterministic continuation scheduler: collect each unpaused AI decision,
+	// then apply in player order and advance one tick. Returns type+wire payload
 	// per AI so paired continuations can compare decisions as well as state.
 	std::vector<std::string> stepAI(Game &game);
 

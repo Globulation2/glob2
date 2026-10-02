@@ -17,6 +17,7 @@ namespace glob2test
 	std::vector<std::string> stepAI(Game &game)
 	{
 		std::vector<std::string> orders;
+		std::vector<std::shared_ptr<Order>> pending;
 		for (int p = 0; p < game.gameHeader.getNumberOfPlayers(); ++p)
 			if (game.players[p] && game.players[p]->ai)
 			{
@@ -26,8 +27,10 @@ namespace glob2test
 					wire.append(reinterpret_cast<const char *>(order->getData()), order->getDataLength());
 				orders.push_back(std::move(wire));
 				order->sender = p;
-				game.executeOrder(order, p);
+				pending.push_back(std::move(order));
 			}
+		// Production decisions all observe the same completed simulation tick.
+		for (const auto &order : pending) game.executeOrder(order, order->sender);
 		game.syncStep(0);
 		return orders;
 	}

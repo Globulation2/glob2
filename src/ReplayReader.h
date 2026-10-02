@@ -22,8 +22,8 @@ class Order;
 static constexpr Uint32 REPLAY_MIN_VALID_ORDERS = 5;
 
 //! Oldest replay format (the VERSION_MINOR the replay was written with) that
-//! the reader still accepts. Version 127 expands team capacity and changes the
-//! Warrush opening schedule; older replay orders can produce different simulation.
+//! the reader still accepts. Version 127 expands team capacity and serialized
+//! state/checksum layouts; older replay headers describe the previous capacity.
 //! Save compatibility has a separate floor in Version.h.
 static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 127;
 

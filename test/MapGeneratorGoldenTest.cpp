@@ -3,7 +3,7 @@
 //
 //   MapGeneratorGoldenTest <profile-dir>                check this platform's rows of the table
 //   MapGeneratorGoldenTest <profile-dir> --require-rows the same, failing when this platform
-//                                                      has no rows at all (what CI runs)
+//                                                      lacks current rows for any generator (CI)
 //   MapGeneratorGoldenTest <profile-dir> --update       regenerate this platform's rows
 //   MapGeneratorGoldenTest <profile-dir> --print        print this platform's rows to stdout
 //   MapGeneratorGoldenTest <profile-dir> --sweep        every playable landscape at the colony

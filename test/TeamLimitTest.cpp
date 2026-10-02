@@ -353,8 +353,12 @@ TEST_CASE("script generation slot counts reject missing capacity and truncated p
     {
         CAPTURE(slots);
         auto corrupt = saved;
-        for (int byte = 0; byte < 4; ++byte)
-            corrupt[out.slotsOffset + byte] = char(slots >> (8 * byte));
+        // Use the actual binary serializer's network byte order, so count one
+        // exercises undersized capacity rather than accidentally becoming huge.
+        auto *patchMemory = new GAGCore::MemoryStreamBackend;
+        GAGCore::BinaryOutputStream patch(patchMemory);
+        patch.writeUint32(slots, "teamSlots");
+        corrupt.replace(out.slotsOffset, sizeof(Uint32), patchMemory->takeContents());
         CHECK_THROWS_WITH_AS(loads(corrupt), "Invalid script generation team-slot count", std::runtime_error);
     }
     CHECK_THROWS(loads(saved.substr(0, out.slotsOffset + 8)));
