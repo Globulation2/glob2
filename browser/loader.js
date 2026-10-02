@@ -48,7 +48,7 @@
     const prefix = reason ? '' : 'threaded/';
     module.locateFile = name => name.endsWith('.data') ? name : prefix + name;
     const script = document.createElement('script');
-    script.src = prefix + 'index.js';
+    script.src = module.glob2RuntimeFiles?.[module.executionMode] || prefix + 'index.js';
     script.onerror = () => module.onAbort?.('Unable to load game runtime');
     document.body.append(script);
   }
