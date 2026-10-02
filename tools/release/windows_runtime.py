@@ -71,7 +71,13 @@ def stage_dlls(executable, runtime_dirs, destination, inspect=imports):
         runtime_dirs = [prefix / "bin", *runtime_dirs]
         notices = Path(destination) / 'licenses'
         notices.mkdir(exist_ok=True)
-        shutil.copy2(prefix / 'share/licenses/SDL2_image/LICENSE.txt', notices / 'SDL2_image.txt')
+        shutil.copy2(prefix / 'share/licenses/SDL3_image/LICENSE.txt', notices / 'SDL3_image.txt')
+    # Include notices for private pinned SDL and codec runtimes, just as the
+    # distribution wrappers did before sharing their DLL traversal.
+    for runtime in runtime_dirs:
+        licenses = Path(runtime).parent / "share/licenses"
+        if licenses.is_dir():
+            shutil.copytree(licenses, Path(destination) / "licenses", dirs_exist_ok=True)
     available = {}
     for runtime in runtime_dirs:
         runtime = Path(runtime)
@@ -96,6 +102,8 @@ def stage_dlls(executable, runtime_dirs, destination, inspect=imports):
         scanned.add(key)
         for name in sorted(inspect(binary)):
             name = name.lower()
+            if name.startswith("sdl2"):
+                raise ValueError("SDL2 runtime import in SDL3 package: " + name)
             if (
                 name in scanned
                 or name in SYSTEM_DLLS

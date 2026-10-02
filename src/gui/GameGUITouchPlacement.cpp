@@ -30,23 +30,23 @@ bool GameGUITouch::commitPlacement()
 }
 bool GameGUITouch::processPalettePointer(const SDL_Event &event, ViewPoint point)
 {
-	const TouchPlacementSession::Pointer pointer{event.tfinger.touchId, event.tfinger.fingerId};
+	const TouchPlacementSession::Pointer pointer{event.tfinger.touchID, event.tfinger.fingerID};
 	if (!placement)
 	{
-		if (event.type != SDL_FINGERDOWN || !fingers.empty() || activeDialog())
+		if (event.type != SDL_EVENT_FINGER_DOWN || !fingers.empty() || activeDialog())
 			return false;
 		const auto item = paletteItemAt(point);
 		if (!item || !item->enabled || item->name.starts_with("zone:"))
 			return false;
 		placement = TouchPlacementSession{pointer,        point, item->name,       false,
-										  layout().panel, point, SDL_GetTicks64(), gui.localTeamNo};
+										  layout().panel, point, SDL_GetTicks(), gui.localTeamNo};
 		return true;
 	}
 	if (pointer != placement->pointer)
 	{
 		// Only a new contact can interrupt the owner. Stray motion/release
 		// events must not create a contact that can never be released.
-		if (event.type != SDL_FINGERDOWN)
+		if (event.type != SDL_EVENT_FINGER_DOWN)
 			return true;
 		// Quarantine both releases: neither may become a map tap after cancel.
 		fingers = {placement->pointer, pointer};
@@ -70,7 +70,7 @@ bool GameGUITouch::processPalettePointer(const SDL_Event &event, ViewPoint point
 	advancePlacement();
 	if (!placement)
 		return true;
-	if (event.type == SDL_FINGERUP)
+	if (event.type == SDL_EVENT_FINGER_UP)
 	{
 		if (placement->dragging)
 		{
@@ -99,7 +99,7 @@ bool GameGUITouch::edgePan(ViewPoint point, std::uint64_t &lastUpdate)
 {
 	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
 	const auto bounds = world();
-	const auto now = SDL_GetTicks64();
+	const auto now = SDL_GetTicks();
 	const double delta = std::min<std::uint64_t>(100, now - lastUpdate) / 1000.0;
 	lastUpdate = now;
 	const double margin = InGameTouchTheme::edgePanMargin * unit;
@@ -201,7 +201,7 @@ void GameGUITouch::beginFlagDrag(Building &flag, TouchPlacementSession::Pointer 
 	const double fingerY = gui.mapMouseY(int(point.y)) + gui.viewportY * 32.;
 	session.offsetX = wrapped(session.originX * 32. + 16 - fingerX, map.getW() * 32.);
 	session.offsetY = wrapped(session.originY * 32. + 16 - fingerY, map.getH() * 32.);
-	session.lastUpdate = SDL_GetTicks64();
+	session.lastUpdate = SDL_GetTicks();
 	flagDrag = session;
 }
 

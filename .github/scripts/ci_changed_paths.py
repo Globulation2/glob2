@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Select CI jobs from a PR or master push diff, defaulting to full CI."""
+"""Select CI jobs from a PR diff; retained master revisions always run full CI."""
 
 import argparse
 import json
@@ -21,6 +21,8 @@ CI_TOOL_TESTS = {
     "test/test_run_tests.py",
     "test/test_ci_failure_aggregation.py",
     "tests/build_system/test_ci_changed_paths.py",
+    "tests/build_system/test_ci_tiers.py",
+    "tests/build_system/test_ci_run_metrics.py",
 }
 TRANSPORT_TESTS = {
     "test/NetConnectionHarness.cpp",

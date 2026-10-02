@@ -3,7 +3,7 @@
 
 #include "scene/Scene.h"
 
-#include <SDL_stdinc.h>
+#include <SDL3/SDL_stdinc.h>
 
 #include <memory>
 #include <valarray>

@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <Environment.h>
 #include "Glob2Test.h"
 #include <vector>
 #include <string>
@@ -100,10 +101,10 @@ TEST_CASE("screen phases; completion; reuse; quit and compatibility host")
 
     {
         GAGCore::InputState held;
-        SDL_Event key{}; key.type = SDL_KEYDOWN; key.key.keysym.scancode = SDL_SCANCODE_LEFT;
-        key.key.keysym.mod = KMOD_CTRL;
+        SDL_Event key{}; key.type = SDL_EVENT_KEY_DOWN; key.key.scancode = SDL_SCANCODE_LEFT;
+        key.key.mod = SDL_KMOD_CTRL;
         held.observe(key); held.clearHeld();
-        require(!held.keyboard()[SDL_SCANCODE_LEFT] && held.modifiers() == KMOD_NONE && held.hasFocus(),
+        require(!held.keyboard()[SDL_SCANCODE_LEFT] && held.modifiers() == SDL_KMOD_NONE && held.hasFocus(),
                 "Suspending input clears controls without losing window focus");
     }
 
@@ -128,8 +129,8 @@ TEST_CASE("screen phases; completion; reuse; quit and compatibility host")
         try { task.result(); } catch (const std::runtime_error&) { rejected = true; }
         require(rejected && live == 0, "Child exceptions propagate and release resources");
     }
-    SDL_setenv("SDL_VIDEODRIVER", "dummy", 1);
-    SDL_setenv("SDL_AUDIODRIVER", "dummy", 1);
+    GAGCore::setProcessEnvironment("SDL_VIDEODRIVER", "dummy", 1);
+    GAGCore::setProcessEnvironment("SDL_AUDIODRIVER", "dummy", 1);
     GAGCore::GraphicContext context(800, 600, 0, "Screen lifecycle regression");
     GAGCore::DrawableSurface surface(800, 600);
     Probe screen;
@@ -146,7 +147,7 @@ TEST_CASE("screen phases; completion; reuse; quit and compatibility host")
     try { screen.finishExecution(); } catch (const std::logic_error&) { rejected = true; }
     require(rejected, "A running screen cannot finish");
     SDL_Event event{};
-    event.type = SDL_USEREVENT;
+    event.type = SDL_EVENT_USER;
     screen.handleExecutionEvent(event);
     screen.handleExecutionEvent(event);
     screen.updateExecution(5678);
@@ -158,7 +159,7 @@ TEST_CASE("screen phases; completion; reuse; quit and compatibility host")
     require(screen.destroyed == 1, "Destroy callback must run exactly once");
 
     screen.beginExecution(&surface);
-    event.type = SDL_QUIT;
+    event.type = SDL_EVENT_QUIT;
     screen.handleExecutionEvent(event);
     require(screen.finishExecution() == Screen::QUIT_APPLICATION, "Quit must propagate");
     require(screen.created == 2 && screen.destroyed == 2 && screen.inputs == 1,
@@ -167,13 +168,13 @@ TEST_CASE("screen phases; completion; reuse; quit and compatibility host")
 #if defined(USE_OSX) || defined(USE_WIN32)
     screen.beginExecution(&surface);
     event = {};
-    event.type = SDL_KEYDOWN;
+    event.type = SDL_EVENT_KEY_DOWN;
 #ifdef USE_OSX
-    event.key.keysym.sym = SDLK_q;
-    event.key.keysym.mod = KMOD_GUI;
+    event.key.key = SDLK_Q;
+    event.key.mod = SDL_KMOD_GUI;
 #else
-    event.key.keysym.sym = SDLK_F4;
-    event.key.keysym.mod = KMOD_ALT;
+    event.key.key = SDLK_F4;
+    event.key.mod = SDL_KMOD_ALT;
 #endif
     screen.handleExecutionEvent(event);
     require(screen.finishExecution() == Screen::QUIT_APPLICATION,
@@ -217,7 +218,7 @@ TEST_CASE("screen phases; completion; reuse; quit and compatibility host")
         });
     };
     stack.push(std::move(root));
-    event = {}; event.type = SDL_USEREVENT;
+    event = {}; event.type = SDL_EVENT_USER;
     stack.frame(0, {event, event});
     require(rootPtr->paints == 0, "A parent must not draw after queuing a child with a different presentation");
     require(rootInputs == 1 && callbacks == 0, "Opening input must not leak into a child");
@@ -256,26 +257,26 @@ TEST_CASE("screen phases; completion; reuse; quit and compatibility host")
         throw std::runtime_error("Quit must not run admission/continuation callbacks");
     });
     quitting.frame(0, {});
-    event.type = SDL_QUIT;
+    event.type = SDL_EVENT_QUIT;
     quitting.frame(40, {event});
     require(!quitting.running() && quitting.result() == Screen::QUIT_APPLICATION && cancelled == 1,
             "Quit releases owned screens without starting another flow");
     GAGCore::InputState held;
-    event = {}; event.type = SDL_KEYDOWN;
-    event.key.keysym.scancode = SDL_SCANCODE_LEFT;
-    event.key.keysym.mod = KMOD_CTRL;
+    event = {}; event.type = SDL_EVENT_KEY_DOWN;
+    event.key.scancode = SDL_SCANCODE_LEFT;
+    event.key.mod = SDL_KMOD_CTRL;
     held.observe(event);
-    require(held.keyboard()[SDL_SCANCODE_LEFT] && held.modifiers() == KMOD_CTRL,
+    require(held.keyboard()[SDL_SCANCODE_LEFT] && held.modifiers() == SDL_KMOD_CTRL,
             "Held keys and modifiers come from supplied events");
-    event.type = SDL_WINDOWEVENT;
-    event.window.event = SDL_WINDOWEVENT_FOCUS_LOST;
+    event.type = SDL_EVENT_WINDOW_RESIZED;
+    event.type = SDL_EVENT_WINDOW_FOCUS_LOST;
     held.observe(event);
-    require(!held.hasFocus() && !held.keyboard()[SDL_SCANCODE_LEFT] && held.modifiers() == KMOD_NONE,
+    require(!held.hasFocus() && !held.keyboard()[SDL_SCANCODE_LEFT] && held.modifiers() == SDL_KMOD_NONE,
             "Focus loss clears held input even without key-up delivery");
-    event = {}; event.type = SDL_KEYDOWN; event.key.keysym.scancode = SDL_SCANCODE_LEFT;
+    event = {}; event.type = SDL_EVENT_KEY_DOWN; event.key.scancode = SDL_SCANCODE_LEFT;
     held.observe(event);
     require(!held.keyboard()[SDL_SCANCODE_LEFT], "Unfocused input cannot become held");
-    event.type = SDL_WINDOWEVENT; event.window.event = SDL_WINDOWEVENT_FOCUS_GAINED;
+    event.type = SDL_EVENT_WINDOW_RESIZED; event.type = SDL_EVENT_WINDOW_FOCUS_GAINED;
     held.observe(event);
     require(held.hasFocus() && !held.keyboard()[SDL_SCANCODE_LEFT], "Focus return starts with released keys");
     struct BorrowingScreen : Screen {

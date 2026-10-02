@@ -7,7 +7,7 @@
 
 
 #include <BackgroundFileWriter.h>
-#include <SDLCompat.h>
+#include <SDL3/SDL.h>
 #include <Toolkit.h>
 
 #include "Game.h"
@@ -111,7 +111,7 @@ void GameGUI::init()
 
 	viewportSpeedX=0;
 	viewportSpeedY=0;
-	lastViewportStep=SDL_GetTicks64();
+	lastViewportStep=SDL_GetTicks();
 
 	showStarvingMap=false;
 	showDamagedMap=false;

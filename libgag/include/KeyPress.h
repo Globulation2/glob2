@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "SDL.h"
+#include <SDL3/SDL.h>
 #include <string>
 
 
@@ -12,7 +12,7 @@ class KeyPress
 {
 public:
 	///Construct a KeyPress
-	KeyPress(SDL_Keysym key, bool pressed);
+	KeyPress(SDL_KeyboardEvent key, bool pressed);
 	
 	///Clone a KeyPress except changing the pressed value
 	KeyPress(KeyPress key, bool pressed);

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 
-#include <SDL_stdinc.h>
+#include <SDL3/SDL_stdinc.h>
 
 /// Client-side handle to a simulation entity. A gid alone is not stable: the
 /// simulation recycles slots (lowest free id), so a selection that outlives

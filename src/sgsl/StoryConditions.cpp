@@ -156,18 +156,18 @@ bool Story::areaContainsUnit(const Game *game, int &execLine) const
 	if(!areaN)
 	{
 		AreaMap::const_iterator fi;
-		if ((fi = mapscript->areas.find(line[execLine].msg)) == mapscript->areas.end())
-			assert(false);
+		if ((fi = mapscript->areas.find(areaName)) == mapscript->areas.end())
+			return false;
 
 		int x = fi->second.x;
 		int y = fi->second.y;
 		int r = fi->second.r;
 		int dx, dy;
-		for (dy=y-r; dy<y+r && !foundUnit; dy++)
+		for (dy=0; dy<std::min<int64_t>(int64_t(r)*2, game->map.getH()) && !foundUnit; dy++)
 		{
-			for (dx=x-r; dx<x+r && !foundUnit; dx++)
+			for (dx=0; dx<std::min<int64_t>(int64_t(r)*2, game->map.getW()) && !foundUnit; dx++)
 			{
-				Uint16 gid=game->map.getGroundUnit(dx, dy);
+				Uint16 gid=game->map.getGroundUnit((int64_t(x)-r+dx)&game->map.wMask, (int64_t(y)-r+dy)&game->map.hMask);
 				if (gid!=NOGUID)
 				{
 					int team=Unit::GIDtoTeam(gid);

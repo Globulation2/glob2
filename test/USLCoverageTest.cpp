@@ -19,6 +19,26 @@ int evaluate(Usl& usl,const std::string& source)
 }
 TEST_SUITE("USLCoverage")
 {
+    TEST_CASE("hostile calls arithmetic and nesting fail without process termination") {
+        for (const std::string source : {std::string("1(2)"), std::string("2147483647 + 1"),
+                std::string("50000 * 50000"), std::string("9999999999999999999999999"),
+                std::string(512, '(') + "1" + std::string(512, ')')}) {
+            Usl usl(false);
+            CHECK_THROWS_AS(evaluate(usl, source), Exception);
+            usl.collectGarbage();
+        }
+        Usl usl(false);
+        std::string chain = "1";
+        for (int i=0; i<1024; ++i) chain += " + 1";
+        CHECK_THROWS_AS(evaluate(usl, chain), Exception);
+        CHECK_THROWS_AS(evaluate(usl, "def f(x) := 1 + f(x)\nf(0)"), Exception);
+    }
+
+    TEST_CASE("native argument type mismatch raises a script error") {
+        Usl usl;
+        CHECK_THROWS_AS(evaluate(usl, "1 + \"text\""), Exception);
+    }
+
     TEST_CASE("released expression and recursion fixtures yield exact values")
     {
         struct Fixture { const char* name; int expected; };

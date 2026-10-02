@@ -13,7 +13,7 @@
 #include <ScrollPhysics.h>
 #include <Toolkit.h>
 #include <StringTable.h>
-#include <SDL_net.h>
+#include <SDL3_net/SDL_net.h>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -33,7 +33,7 @@ struct NativeSettings : SettingsScreen {
     }
     Row row(const std::string& id){for(auto r:rows())if(r.id==id)return r;REQUIRE_MESSAGE(false, "no settings row "<<id);return {};}
     void event(SDL_Event e){handleExecutionEvent(e);}
-    void key(SDL_Keycode k,Uint16 modifiers=0){SDL_Event e{};e.type=SDL_KEYDOWN;e.key.keysym.sym=k;e.key.keysym.mod=modifiers;handleExecutionEvent(e);}
+    void key(SDL_Keycode k,Uint16 modifiers=0){SDL_Event e{};e.type=SDL_EVENT_KEY_DOWN;e.key.key=k;e.key.mod=modifiers;handleExecutionEvent(e);}
     void click(const std::string& id){auto r=row(id);host().tapAt({r.control.x+10,r.control.y+10});}
     void capture(const std::string& path){paintFrame(SDL_GetTicks());const auto name=std::filesystem::path(path).filename().string();
         globalContainer->gfx->printScreen(name);paintFrame(SDL_GetTicks());globalContainer->gfx->nextFrame();
@@ -66,12 +66,12 @@ static void run(int width,int height,bool gl,bool expanded)
     options.beforeLoad=[](GlobalContainer& globals){globals.settings.language="en";globals.settings.defaultFlagRadius[0]=0;};
     glob2test::HeadlessGlobals globals(options);
     auto& s=globalContainer->settings;
-    REQUIRE(SDLNet_Init()==0);
+    REQUIRE(NET_Init());
     const std::string output=glob2test::artifactDir().string();
     const auto profile=Toolkit::getFileManager()->getDir(0);
     const auto originalArtwork=s.highResolutionArtwork;
     if(auto* window=SDL_GL_GetCurrentWindow()){
-        int ww,wh,dw,dh;SDL_GetWindowSize(window,&ww,&wh);SDL_GL_GetDrawableSize(window,&dw,&dh);
+        int ww,wh,dw,dh;SDL_GetWindowSize(window,&ww,&wh);SDL_GetWindowSizeInPixels(window,&dw,&dh);
         std::cout<<"Window "<<ww<<"x"<<wh<<", drawable "<<dw<<"x"<<dh<<"\n";
     }
     {
@@ -215,8 +215,8 @@ static void run(int width,int height,bool gl,bool expanded)
         screen.finishInteraction();REQUIRE(!screen.saveFailed());loaded.load();REQUIRE(loaded.gameSpeed==5);
         REQUIRE(std::filesystem::status(profile+"/preferences.txt").permissions()==permissions);
         screen.selectCategory(SettingsScreen::Category::Player);
-        screen.activateSetting("player.name");screen.key(SDLK_a,KMOD_CTRL);
-        SDL_Event input{};input.type=SDL_TEXTINPUT;strcpy(input.text.text,"New player");screen.event(input);screen.key(SDLK_RETURN);
+        screen.activateSetting("player.name");screen.key(SDLK_A,SDL_KMOD_CTRL);
+        SDL_Event input{};input.type=SDL_EVENT_TEXT_INPUT;input.text.text = "New player";screen.event(input);screen.key(SDLK_RETURN);
         loaded.load();REQUIRE(loaded.getUsername()=="New player");
         screen.activateSetting("player.name");screen.key(SDLK_BACKSPACE);screen.key(SDLK_ESCAPE);REQUIRE(s.getUsername()=="New player");
         screen.changeSetting("player.language",Toolkit::getStringTable()->getLangCode("fr"));
@@ -272,7 +272,7 @@ static void run(int width,int height,bool gl,bool expanded)
         screen.done();
     }
     std::cout<<"PASS: layout, persistence, automatic saving, display confirmation, building defaults, bindings, localization\n";
-    SDLNet_Quit();
+    NET_Quit();
 }
 }
 

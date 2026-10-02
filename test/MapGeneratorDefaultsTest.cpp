@@ -29,7 +29,7 @@
 #include "StartingPositions.h"
 #include "Unit.h"
 #include "Utilities.h"
-#include <SDL_image.h>
+#include <SDL3_image/SDL_image.h>
 #include <Toolkit.h>
 #include <algorithm>
 #include <chrono>
@@ -576,7 +576,7 @@ class MapGeneratorDefaultsTest
 			{
 				s.paintFrame(0);
 				std::string path = std::string(output) + "/editor-" + std::to_string(m) + ".png";
-				REQUIRE(IMG_SavePNG(s.gfx->getSDLSurface(), path.c_str()) == 0);
+				REQUIRE(IMG_SavePNG(s.gfx->getSDLSurface(), path.c_str()));
 			}
 		}
 		// Every switch is a check button in the editor, and clicking one flips the request's value.

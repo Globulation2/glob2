@@ -265,14 +265,14 @@ void GameGUITouch::drawBuildingActions()
 
 bool GameGUITouch::processAllocationPointer(const SDL_Event &event, ViewPoint point)
 {
-	const TouchPlacementSession::Pointer pointer{event.tfinger.touchId, event.tfinger.fingerId};
+	const TouchPlacementSession::Pointer pointer{event.tfinger.touchID, event.tfinger.fingerID};
 	gui.checkSelection();
 	// Input issues orders against the live building (see allocationBuilding for drawing).
 	Building *building = allocationBuilding() ? gui.selectionBuilding() : nullptr;
 	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
 	if (!allocation)
 	{
-		if (event.type != SDL_FINGERDOWN || !fingers.empty() || placement || activeDialog() ||
+		if (event.type != SDL_EVENT_FINGER_DOWN || !fingers.empty() || placement || activeDialog() ||
 			!building)
 			return false;
 		if (usesDial())
@@ -317,7 +317,7 @@ bool GameGUITouch::processAllocationPointer(const SDL_Event &event, ViewPoint po
 	}
 	if (pointer != allocation->pointer)
 	{
-		if (event.type == SDL_FINGERDOWN)
+		if (event.type == SDL_EVENT_FINGER_DOWN)
 		{
 			fingers = {allocation->pointer, pointer};
 			allocation.reset();
@@ -339,7 +339,7 @@ bool GameGUITouch::processAllocationPointer(const SDL_Event &event, ViewPoint po
 		if (polar)
 			allocation->requested =
 				TouchDial::value(polar->angle, allocation->sweepFrom, allocation->sweepTo, allocation->maximum);
-		if (event.type == SDL_FINGERUP)
+		if (event.type == SDL_EVENT_FINGER_UP)
 		{
 			// Commit once, if the thumb is still near its ring; a release
 			// elsewhere abandons the preview.
@@ -361,7 +361,7 @@ bool GameGUITouch::processAllocationPointer(const SDL_Event &event, ViewPoint po
 	allocation->requested = int(std::lround(
 		std::clamp((point.x - allocation->track.x) / std::max(1.0, allocation->track.w), 0.0, 1.0) *
 		MAX_UNIT_WORKING));
-	if (event.type == SDL_FINGERUP)
+	if (event.type == SDL_EVENT_FINGER_UP)
 	{
 		const auto row = actionAt(point);
 		if (row && row->kind == 6)

@@ -142,8 +142,8 @@ class Host
 	LayoutContext context() const;
 	void saveStates();
 	void restoreStates();
-	void pointer(PointerPhase phase, Point point, std::int64_t device, std::int64_t finger, GAGCore::Ticks time);
-	void apply(const std::vector<GAGCore::TouchAction> &actions, Point point, std::int64_t device);
+	void pointer(PointerPhase phase, Point point, std::uint64_t device, std::uint64_t finger, GAGCore::Ticks time);
+	void apply(const std::vector<GAGCore::TouchAction> &actions, Point point, std::uint64_t device);
 	Node *interactiveAt(Point point) const;
 	Node *scrollableAt(Point point) const;
 	bool keyDown(const KeyEvent &key);
