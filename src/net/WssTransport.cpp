@@ -371,6 +371,13 @@ class WssTransport final : public NetTransport
 		session->poll();
 		return session->status;
 	}
+	size_t pendingOutgoing() const override
+	{
+		if (!session)
+			return 0;
+		session->poll();
+		return session->status == State::Connected ? session->outgoingBytes : 0;
+	}
 	bool send(std::vector<uint8_t> bytes) override
 	{
 		if (mode != NetMessageMode::Binary || state() != State::Connected)

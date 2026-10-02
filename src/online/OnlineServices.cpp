@@ -5,6 +5,7 @@
 #include "MapCache.h"
 #include "OnlineStorage.h"
 #include "PlatformClient.h"
+#include "RelayTransport.h"
 
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>
@@ -116,6 +117,7 @@ bool servicesCreated()
 void pump()
 {
 	pollPlatformLinks();
+	pumpLingeringRelayConnections();
 	if (owned)
 		owned->client->update();
 }

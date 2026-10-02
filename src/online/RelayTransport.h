@@ -36,6 +36,14 @@ namespace Online
 	/// Length prefix plus payload; empty if the payload exceeds 65535 bytes.
 	std::vector<std::uint8_t> relayFrame(const std::vector<std::uint8_t>& payload);
 
+	/// Connections of destroyed RelayTransports that still had frames to write (a
+	/// Quit sent just before leaving the game) stay open until those frames are out,
+	/// at most `LINGER_MS`: Online::pump() drives them, and the shutdown screen waits
+	/// for them (lingeringRelayConnections() == 0) before the process exits.
+	constexpr std::uint32_t LINGER_MS = 3000;
+	void pumpLingeringRelayConnections();
+	std::size_t lingeringRelayConnections();
+
 	class RelayTransport : public Turn::TurnTransport
 	{
 	public:

@@ -3,6 +3,7 @@
 
 #include "RelayTransport.h"
 
+#include <SDL.h>
 #include <iostream>
 #include <stdexcept>
 
@@ -52,8 +53,53 @@ RelayTransport::RelayTransport(std::string relayUrl, Factory factory)
 		this->factory = [] { return makeNetTransport(); };
 }
 
+namespace
+{
+struct Lingering
+{
+	std::unique_ptr<NetTransport> link;
+	std::uint32_t since = 0;
+};
+std::vector<Lingering> &lingering()
+{
+	static std::vector<Lingering> links;
+	return links;
+}
+} // namespace
+
+void pumpLingeringRelayConnections()
+{
+	auto &links = lingering();
+	const std::uint32_t now = SDL_GetTicks();
+	for (auto it = links.begin(); it != links.end();)
+	{
+		if (it->link->pendingOutgoing() == 0 || it->link->state() != NetTransport::State::Connected ||
+			now - it->since > LINGER_MS)
+		{
+			it->link->close();
+			it = links.erase(it);
+		}
+		else
+			++it;
+	}
+}
+
+std::size_t lingeringRelayConnections()
+{
+	pumpLingeringRelayConnections();
+	return lingering().size();
+}
+
 RelayTransport::~RelayTransport()
 {
+	// The last frames (Quit, a PlayerQuitsGameOrder) are usually still queued when the
+	// game tears the session down; closing now would drop them and the relay would
+	// hold the seat for its reconnect grace instead of sequencing the quit.
+	if (link && link->state() == NetTransport::State::Connected && link->pendingOutgoing() > 0)
+	{
+		lingering().push_back({std::move(link), SDL_GetTicks()});
+		return;
+	}
 	close();
 }
 

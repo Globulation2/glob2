@@ -16,6 +16,7 @@
 #include "InviteLink.h"
 #include "ui/FrontendUI.h"
 #include "OnlineServices.h"
+#include "RelayTransport.h"
 #include <algorithm>
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>
@@ -85,9 +86,13 @@ class ShutdownScreen : public Glob2UI::Screen
 	}
 	void onTimer(Uint32) override
 	{
-		// Present the final message for one frame before releasing graphics.
+		// Present the final message for one frame before releasing graphics. A relay
+		// connection still writing a Quit gets its few hundred milliseconds first
+		// (bounded by Online::LINGER_MS).
 		if (closing)
 		{
+			if (Online::lingeringRelayConnections() > 0)
+				return;
 			endExecute(0);
 			return;
 		}
