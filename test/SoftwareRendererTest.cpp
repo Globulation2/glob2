@@ -24,8 +24,7 @@ namespace
 using Surface = std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)>;
 Surface pixels(int width, int height)
 {
-	Surface result(SDL_CreateSurface(width, height, SDL_PIXELFORMAT_ARGB8888),
-				   SDL_DestroySurface);
+	Surface result(SDL_CreateSurface(width, height, SDL_PIXELFORMAT_ARGB8888), SDL_DestroySurface);
 	REQUIRE(result);
 	return result;
 }
@@ -46,7 +45,8 @@ std::vector<Uint32> snapshot(SDL_Surface *surface)
 } // namespace
 TEST_SUITE("SoftwareRenderer")
 {
-	TEST_CASE("native display scaling preserves direct pixels through lazy geometry and target rotation")
+	TEST_CASE(
+		"native display scaling preserves direct pixels through lazy geometry and target rotation")
 	{
 		auto first = pixels(64, 72), second = pixels(32, 48);
 		auto backend = makeSoftwareRenderBackend(first.get());
@@ -57,13 +57,16 @@ TEST_SUITE("SoftwareRenderer")
 			SDL_FillSurfaceRect(target, nullptr, SDL_MapSurfaceRGBA(target, 0, 0, 0, 255));
 			backend->fill(SDL_FRect{1, 1, 3, 3}, SDL_Color{255, 0, 0, 255});
 			const SDL_FColor green{0, 1, 0, 1};
-			const SDL_Vertex triangle[] = {{{8, 8}, green, {}}, {{12, 8}, green, {}},
-				{{8, 12}, green, {}}};
+			const SDL_Vertex triangle[] = {
+				{{8, 8}, green, {}}, {{12, 8}, green, {}}, {{8, 12}, green, {}}};
 			backend->triangles(triangle);
 			backend->flush();
-			CHECK(pixel(target, target->w * 3 / 64, target->h * 4 / 72) == SDL_MapSurfaceRGBA(target, 255, 0, 0, 255));
-			CHECK(pixel(target, target->w * 18 / 64, target->h * 27 / 72) == SDL_MapSurfaceRGBA(target, 0, 255, 0, 255));
-			CHECK(pixel(target, target->w * 40 / 64, target->h * 40 / 72) == SDL_MapSurfaceRGBA(target, 0, 0, 0, 255));
+			CHECK(pixel(target, target->w * 3 / 64, target->h * 4 / 72) ==
+				  SDL_MapSurfaceRGBA(target, 255, 0, 0, 255));
+			CHECK(pixel(target, target->w * 18 / 64, target->h * 27 / 72) ==
+				  SDL_MapSurfaceRGBA(target, 0, 255, 0, 255));
+			CHECK(pixel(target, target->w * 40 / 64, target->h * 40 / 72) ==
+				  SDL_MapSurfaceRGBA(target, 0, 0, 0, 255));
 		}
 	}
 	TEST_CASE("nearest blits retain sampling under destination clipping and restore source state")
@@ -189,10 +192,10 @@ TEST_SUITE("SoftwareRenderer")
 			for (int x = 0; x < 8; ++x)
 			{
 				const Uint32 value = SDL_MapSurfaceRGBA(source.get(), 31 * x, 29 * y, 137,
-												 (x + y) % 4 == 0   ? 0
-												 : (x + y) % 4 == 1 ? 63
-												 : (x + y) % 4 == 2 ? 127
-																	: 255);
+														(x + y) % 4 == 0   ? 0
+														: (x + y) % 4 == 1 ? 63
+														: (x + y) % 4 == 2 ? 127
+																		   : 255);
 				std::memcpy(static_cast<char *>(source->pixels) + y * source->pitch + x * 4, &value,
 							4);
 			}
@@ -214,13 +217,24 @@ TEST_SUITE("SoftwareRenderer")
 					backend->fill(SDL_FRect{11, 3, 9, 11}, SDL_Color{151, 89, 43, alpha});
 					backend->flush();
 				}
+				const auto actualPixels = snapshot(actual.get()),
+						   expectedPixels = snapshot(expected.get());
+				const auto mismatch =
+					std::mismatch(actualPixels.begin(), actualPixels.end(), expectedPixels.begin());
+				INFO("first difference index=", mismatch.first - actualPixels.begin(),
+					 " actual=", mismatch.first != actualPixels.end() ? *mismatch.first : 0,
+					 " expected=", mismatch.first != actualPixels.end() ? *mismatch.second : 0);
+				INFO("scale=", scale, " alpha=", int(alpha),
+					 " blit actual=", pixel(actual.get(), 6, 5),
+					 " expected=", pixel(expected.get(), 6, 5),
+					 " fill actual=", pixel(actual.get(), 15, 8),
+					 " expected=", pixel(expected.get(), 15, 8));
 				CHECK(snapshot(actual.get()) == snapshot(expected.get()));
 			}
 	}
 	TEST_CASE("geometry-reference blits preserve mixed pixel formats and source modulation")
 	{
-		Surface source(SDL_CreateSurface(8, 8, SDL_PIXELFORMAT_RGBA32),
-					   SDL_DestroySurface);
+		Surface source(SDL_CreateSurface(8, 8, SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
 		REQUIRE(source);
 		auto expected = pixels(20, 20), actual = pixels(20, 20);
 		auto reference = makeSDLSoftwareGeometryBackend(expected.get());
@@ -231,7 +245,7 @@ TEST_SUITE("SoftwareRenderer")
 			for (Uint8 drawAlpha : {127, 255})
 			{
 				SDL_FillSurfaceRect(source.get(), nullptr,
-							 SDL_MapSurfaceRGBA(source.get(), 151, 89, 43, sourceAlpha));
+									SDL_MapSurfaceRGBA(source.get(), 151, 89, 43, sourceAlpha));
 				for (auto *target : {expected.get(), actual.get()})
 					SDL_FillSurfaceRect(target, nullptr, 0xff376b91);
 				for (auto *backend : {reference.get(), optimized.get()})
@@ -240,6 +254,9 @@ TEST_SUITE("SoftwareRenderer")
 								  SDL_Rect{0, 0, 8, 8}, SDL_FRect{2, 2, 8, 8}, drawAlpha);
 					backend->flush();
 				}
+				INFO("source alpha=", int(sourceAlpha), " draw alpha=", int(drawAlpha),
+					 " actual=", pixel(actual.get(), 3, 3),
+					 " expected=", pixel(expected.get(), 3, 3));
 				CHECK(snapshot(actual.get()) == snapshot(expected.get()));
 			}
 	}
@@ -258,7 +275,7 @@ TEST_SUITE("SoftwareRenderer")
 			{
 				backend->transform(scale, -44, -44, nullptr);
 				backend->blit(source.get(), source.get(), 1, true, SDL_Rect{0, 0, 512, 512},
-					SDL_FRect{-96, -288, 512, 512}, 255);
+							  SDL_FRect{-96, -288, 512, 512}, 255);
 				backend->flush();
 			}
 			CHECK(snapshot(actual.get()) == snapshot(expected.get()));
@@ -266,10 +283,8 @@ TEST_SUITE("SoftwareRenderer")
 	}
 	TEST_CASE("translucent fills preserve colors on 32-bit targets without alpha")
 	{
-		Surface expected(SDL_CreateSurface(16, 16, SDL_PIXELFORMAT_XRGB8888),
-						 SDL_DestroySurface);
-		Surface actual(SDL_CreateSurface(16, 16, SDL_PIXELFORMAT_XRGB8888),
-					   SDL_DestroySurface);
+		Surface expected(SDL_CreateSurface(16, 16, SDL_PIXELFORMAT_XRGB8888), SDL_DestroySurface);
+		Surface actual(SDL_CreateSurface(16, 16, SDL_PIXELFORMAT_XRGB8888), SDL_DestroySurface);
 		REQUIRE(expected);
 		REQUIRE(actual);
 		auto reference = makeSDLSoftwareGeometryBackend(expected.get());
@@ -284,8 +299,10 @@ TEST_SUITE("SoftwareRenderer")
 				backend->flush();
 			}
 			Uint8 er, eg, eb, ar, ag, ab;
-			SDL_GetRGB(pixel(expected.get(), 3, 3), SDL_GetPixelFormatDetails(expected->format), nullptr, &er, &eg, &eb);
-			SDL_GetRGB(pixel(actual.get(), 3, 3), SDL_GetPixelFormatDetails(actual->format), nullptr, &ar, &ag, &ab);
+			SDL_GetRGB(pixel(expected.get(), 3, 3), SDL_GetPixelFormatDetails(expected->format),
+					   nullptr, &er, &eg, &eb);
+			SDL_GetRGB(pixel(actual.get(), 3, 3), SDL_GetPixelFormatDetails(actual->format),
+					   nullptr, &ar, &ag, &ab);
 			CHECK(er == ar);
 			CHECK(eg == ag);
 			CHECK(eb == ab);

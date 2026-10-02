@@ -120,7 +120,9 @@ void nearest(SDL_Surface *target, SDL_Surface *source, const SDL_Rect &src, cons
 		return;
 	if (SDL_GetPixelFormatDetails(target->format)->bytes_per_pixel != 4)
 		throw std::invalid_argument("Nearest target must be 32-bit");
-	std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> converted(nullptr, SDL_DestroySurface);
+	const bool sameFormat = source->format == target->format;
+	std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> converted(nullptr,
+																		  SDL_DestroySurface);
 	if (source == target || source->format != target->format)
 	{
 		converted.reset(SDL_ConvertSurface(source, target->format));
@@ -135,10 +137,12 @@ void nearest(SDL_Surface *target, SDL_Surface *source, const SDL_Rect &src, cons
 	Uint32 key = 0;
 	const bool keyed = SDL_GetSurfaceColorKey(source, &key);
 	const bool separateTerms =
-		triangleBlend || opacity < 255 || red != 255 || green != 255 || blue != 255;
+		(triangleBlend && sameFormat) || opacity < 255 || red != 255 || green != 255 || blue != 255;
 	const bool copy = isOpaque && opacity == 255 && red == 255 && green == 255 && blue == 255;
 	const auto *format = SDL_GetPixelFormatDetails(source->format);
 	const Uint32 alphaMask = format->Amask;
+	const bool rleBlend = triangleBlend && sameFormat && opacity == 255 && src.w == dst.w &&
+						  src.h == dst.h && alphaMask == 0xff000000;
 	const auto divide255 = [](Uint32 value) { return (value + 1 + (value >> 8)) >> 8; };
 	std::vector<int> columns(visible.w);
 	for (int x = 0; x < visible.w; ++x)
@@ -194,6 +198,17 @@ void nearest(SDL_Surface *target, SDL_Surface *source, const SDL_Rect &src, cons
 				continue;
 			}
 			const Uint32 destination = output[x], inverse = 255 - alpha;
+			if (rleBlend)
+			{
+				// SDL3 static software textures use RLE for same-format,
+				// unscaled ARGB blits, interpolating RGB with /256 arithmetic.
+				const Uint32 rb = value & 0x00ff00ff, destinationRB = destination & 0x00ff00ff;
+				const Uint32 g = value & 0x0000ff00, destinationG = destination & 0x0000ff00;
+				output[x] = ((destinationRB + (((rb - destinationRB) * alpha) >> 8)) & 0x00ff00ff) |
+							((destinationG + (((g - destinationG) * alpha) >> 8)) & 0x0000ff00) |
+							alphaMask;
+				continue;
+			}
 			// Two independent 16-bit lanes, with exact /255 rounding. Mask the
 			// correction per lane to avoid carries leaking between components.
 			const auto lane = [](Uint32 value)
@@ -201,8 +216,8 @@ void nearest(SDL_Surface *target, SDL_Surface *source, const SDL_Rect &src, cons
 			Uint32 rb, ga;
 			if (separateTerms)
 			{
-				// SDL's triangle blitter and modulated surface blitter truncate
-				// the source and destination terms independently.
+				// SDL3 recognizes rectangular geometry as texture blits. Modulated
+				// blits truncate source and destination terms independently.
 				rb =
 					lane((value & 0x00ff00ff) * alpha) + lane((destination & 0x00ff00ff) * inverse);
 				ga = lane(((value >> 8) & 0x00ff00ff) * alpha) +
@@ -334,8 +349,8 @@ void blit(SDL_Surface *target, SDL_Surface *source, const SDL_Rect &sourceRect,
 	else if (blend == BlitBlend::Surface && SDL_HasRectIntersection(&destination, &targetClip) &&
 			 destination.x >= targetClip.x && destination.y >= targetClip.y &&
 			 destination.x + destination.w <= targetClip.x + targetClip.w &&
-			 destination.y + destination.h <= targetClip.y + targetClip.h &&
-			 sourceRect.x >= 0 && sourceRect.y >= 0 && sourceRect.x + sourceRect.w <= source->w &&
+			 destination.y + destination.h <= targetClip.y + targetClip.h && sourceRect.x >= 0 &&
+			 sourceRect.y >= 0 && sourceRect.x + sourceRect.w <= source->w &&
 			 sourceRect.y + sourceRect.h <= source->h)
 	{
 		// SDL's optimized nearest scaler is safe when neither rectangle is cut.
@@ -344,7 +359,8 @@ void blit(SDL_Surface *target, SDL_Surface *source, const SDL_Rect &sourceRect,
 		saved.setAlpha(alpha);
 		saved.setBlend(opaqueCopy ? SDL_BLENDMODE_NONE : SDL_BLENDMODE_BLEND);
 		SDL_Rect destinationCopy = destination;
-		check(SDL_BlitSurfaceScaled(source, &sourceRect, target, &destinationCopy, SDL_SCALEMODE_NEAREST));
+		check(SDL_BlitSurfaceScaled(source, &sourceRect, target, &destinationCopy,
+									SDL_SCALEMODE_NEAREST));
 	}
 	else
 		nearest(target, source, sourceRect, destination, alpha, isOpaque,
@@ -373,7 +389,8 @@ void fill(SDL_Surface *target, SDL_Rect rect, Uint32 color, Uint8 alpha, FillBle
 	// The presenter owns plain CPU buffers. SDL only requires a lock for
 	// RLE targets; avoid compatibility-layer calls for every small fog cell.
 	const bool needsLock = SDL_MUSTLOCK(target);
-	if (needsLock) check(SDL_LockSurface(target));
+	if (needsLock)
+		check(SDL_LockSurface(target));
 	// Copy the SDL-written rectangle to scalar bounds before pixel writes.
 	// Keeping an escaped SDL_Rect in the inner loop creates possible aliases
 	// with the destination and prevents the native blend loop from vectorizing.
@@ -387,8 +404,9 @@ void fill(SDL_Surface *target, SDL_Rect rect, Uint32 color, Uint8 alpha, FillBle
 		// vectorizable stores instead of entering SDL for every individual cell.
 		for (int y = top; y < bottom; ++y)
 		{
-			auto *pixel = reinterpret_cast<Uint32 *>(
-				static_cast<Uint8 *>(target->pixels) + y * target->pitch) + left;
+			auto *pixel = reinterpret_cast<Uint32 *>(static_cast<Uint8 *>(target->pixels) +
+													 y * target->pitch) +
+						  left;
 			std::fill_n(pixel, width, color);
 		}
 	}
@@ -396,8 +414,9 @@ void fill(SDL_Surface *target, SDL_Rect rect, Uint32 color, Uint8 alpha, FillBle
 	{
 		for (int y = top; y < bottom; ++y)
 		{
-			auto *pixel = reinterpret_cast<Uint32 *>(
-				static_cast<Uint8 *>(target->pixels) + y * target->pitch) + left;
+			auto *pixel = reinterpret_cast<Uint32 *>(static_cast<Uint8 *>(target->pixels) +
+													 y * target->pitch) +
+						  left;
 			for (int x = 0; x < width; ++x)
 			{
 				const Uint32 a = (pixel[x] & 0x00ff00ff) * inverse + redBlue;
@@ -408,26 +427,31 @@ void fill(SDL_Surface *target, SDL_Rect rect, Uint32 color, Uint8 alpha, FillBle
 	}
 	else
 	{
-		const Uint32 mask = SDL_GetPixelFormatDetails(target->format)->Amask, shift = SDL_GetPixelFormatDetails(target->format)->Ashift;
+		const Uint32 mask = SDL_GetPixelFormatDetails(target->format)->Amask,
+					 shift = SDL_GetPixelFormatDetails(target->format)->Ashift;
 		for (int y = top; y < bottom; ++y)
 		{
-			auto *pixel = reinterpret_cast<Uint32 *>(
-				static_cast<Uint8 *>(target->pixels) + y * target->pitch) + left;
+			auto *pixel = reinterpret_cast<Uint32 *>(static_cast<Uint8 *>(target->pixels) +
+													 y * target->pitch) +
+						  left;
 			for (int x = 0; x < width; ++x)
 			{
-				const Uint32 a = (pixel[x] & 0x00ff00ff) * inverse + redBlue;
-				const Uint32 b = ((pixel[x] >> 8) & 0x00ff00ff) * inverse + greenAlpha;
-				const Uint32 rb = a + 0x00010001 + ((a >> 8) & 0x00ff00ff);
-				const Uint32 ga = b + 0x00010001 + ((b >> 8) & 0x00ff00ff);
+				const auto lane = [](Uint32 value)
+				{ return ((value + 0x00010001 + ((value >> 8) & 0x00ff00ff)) >> 8) & 0x00ff00ff; };
+				// SDL3 recognizes uniform rectangular geometry as fill commands;
+				// its source-over path truncates each blend term separately.
+				const Uint32 rb = lane(redBlue) + lane((pixel[x] & 0x00ff00ff) * inverse);
+				const Uint32 ga = lane(greenAlpha) + lane(((pixel[x] >> 8) & 0x00ff00ff) * inverse);
 				const Uint32 product = ((pixel[x] & mask) >> shift) * inverse;
 				const Uint32 outAlpha = alpha + ((product + 1 + (product >> 8)) >> 8);
-				pixel[x] = (((rb >> 8) & 0x00ff00ff) | (ga & 0xff00ff00)) & ~mask;
+				pixel[x] = (rb | (ga << 8)) & ~mask;
 				if (mask)
 					pixel[x] |= outAlpha << shift;
 			}
 		}
 	}
-	if (needsLock) SDL_UnlockSurface(target);
+	if (needsLock)
+		SDL_UnlockSurface(target);
 }
 
 bool opaque(SDL_Surface *surface)
