@@ -16,6 +16,9 @@
 #include "Order.h"
 #include "Player.h"
 #include <BackgroundFileWriter.h>
+#include <ChunkedStreamBackend.h>
+#include <future>
+#include <atomic>
 #include "Version.h"
 #include "FileImport.h"
 #include "Campaign.h"
@@ -42,6 +45,16 @@
 #include <csignal>
 #endif
 
+class SavegameSafetyHarness
+{
+public:
+    static GAGCore::BackgroundFileWriter& writer(GameGUI& gui, GAGCore::FileManager& files)
+    {
+        if (!gui.autosaveWriter) gui.autosaveWriter = std::make_unique<GAGCore::BackgroundFileWriter>(&files);
+        return *gui.autosaveWriter;
+    }
+};
+
 namespace
 {
 
@@ -53,6 +66,55 @@ static std::string contents(const fs::path& path)
 	std::ifstream file(path, std::ios::binary);
 	REQUIRE(file);
 	return std::string(std::istreambuf_iterator<char>(file), {});
+}
+
+static void checkChunkedStreams()
+{
+    MemoryStreamBackend legacy;
+    ChunkedStreamBackend chunks;
+    std::string data(3 * ChunkedBuffer::blockSize + 17, 'x');
+    uint32_t rng = 19;
+    for (char& c : data) { rng ^= rng << 13; rng ^= rng >> 17; rng ^= rng << 5; c = char(rng); }
+    for (StreamBackend* stream : {static_cast<StreamBackend*>(&legacy), static_cast<StreamBackend*>(&chunks)})
+    {
+        stream->write(data.data(), data.size());
+        stream->seekFromStart(ChunkedBuffer::blockSize - 4);
+        stream->write("header backpatch", 16);
+        stream->seekFromEnd(-9);
+        REQUIRE(stream->readExact(nullptr, 0));
+        stream->write("", 0);
+        stream->write("gap", 3);
+        stream->seekFromStart(-1);
+        stream->seekRelative(-27);
+    }
+    REQUIRE(chunks.getPosition() == legacy.getPosition());
+    std::string expected(legacy.getPosition(), '\0'), actual(expected.size(), '\0');
+    legacy.read(expected.data(), expected.size()); // overread: zeros, no movement
+    chunks.read(actual.data(), actual.size());
+    REQUIRE(actual == expected);
+    REQUIRE(chunks.getPosition() == legacy.getPosition());
+    chunks.seekFromStart(0); legacy.seekFromStart(0);
+    auto snapshot = chunks.takeContents();
+    REQUIRE(chunks.contents().size() == 0);
+    REQUIRE(snapshot.allocatedCapacity() >= snapshot.size());
+    REQUIRE(snapshot.allocatedCapacity() < snapshot.size() + ChunkedBuffer::blockSize);
+    const unsigned char* address = nullptr;
+    snapshot.forEachRange(0, 1, [&](const unsigned char* p, size_t) { address = p; });
+    ChunkedStreamBackend moved(std::move(snapshot));
+    REQUIRE(snapshot.size() == 0);
+    moved.contents().forEachRange(0, 1, [&](const unsigned char* p, size_t) { REQUIRE(p == address); });
+    const size_t size = moved.contents().size();
+    expected.resize(size); actual.resize(size);
+    legacy.read(expected.data(), size); moved.read(actual.data(), size);
+    REQUIRE(actual == expected);
+    REQUIRE(moved.isEndOfStream());
+    REQUIRE(!moved.readExact(actual.data(), 1));
+    REQUIRE(moved.getPosition() == size);
+    unsigned char byte = 99; moved.read(&byte, 1);
+    REQUIRE(byte == 0);
+    REQUIRE(moved.getPosition() == size);
+    chunks.write("reuse", 5); REQUIRE(chunks.contents().size() == 5);
+    std::cout << "PASS chunked boundary reads/writes, seeks, gaps, overreads, capacity bound and ownership transfer" << std::endl;
 }
 
 static void checkGzipWrites(FileManager& files, const fs::path& directory)
@@ -81,6 +143,68 @@ static void checkGzipWrites(FileManager& files, const fs::path& directory)
 	REQUIRE(!files.writeGzipAtomic(blocked.string(), original));
 	for (const auto& entry : fs::directory_iterator(directory))
 		REQUIRE(entry.path().filename().string().find(".tmp-") == std::string::npos);
+	// Exercise several full output buffers with incompressible input too.
+	for (size_t size : {size_t(0),size_t(262143),size_t(262144),size_t(262145),size_t(1048576),size_t(1048577),size_t(3*1048576+17)})
+	{
+		std::string input(size,'\0'); uint32_t rng=19;
+		for (char &c : input) { rng ^= rng<<13; rng ^= rng>>17; rng ^= rng<<5; c=char(rng); }
+		for (int level : {0,1,6,9})
+		{
+			REQUIRE(gzipCompress(input,level,compressed));
+			REQUIRE(files.writeGzipAtomic(path,input,level));
+			REQUIRE(contents(path)==compressed);
+            ChunkedBuffer chunks;
+            // Deliberately split writes independently of storage/output boundaries.
+            const size_t split = input.size() / 3;
+            chunks.writeAt(0, input.data(), split);
+            chunks.writeAt(split, input.data() + split, input.size() - split);
+            REQUIRE(writeGzipAtomicToPath(path, chunks, level));
+            REQUIRE(contents(path) == compressed);
+			std::unique_ptr<StreamBackend> stream(openInflatingFileStreamBackend(path));
+			REQUIRE(stream->getPosition()==0);
+			std::string loaded(size,'\0'); stream->read(loaded.data(),loaded.size());
+			REQUIRE(loaded==input);
+            auto* chunked = dynamic_cast<ChunkedStreamBackend*>(stream.get());
+            REQUIRE(chunked != nullptr);
+            REQUIRE(chunked->contents().allocatedCapacity() <= input.size() + ChunkedBuffer::blockSize);
+			stream->seekFromStart(0); REQUIRE(stream->getPosition()==0);
+		}
+	}
+    // Invalid gzip must fail before any decoded bytes reach the game loader.
+    const std::string valid = contents(path);
+    for (const std::string& corrupt : {valid.substr(0, valid.size()-1), valid + "trailing", valid + valid})
+    {
+        std::ofstream(path, std::ios::binary).write(corrupt.data(), corrupt.size());
+        std::unique_ptr<StreamBackend> rejected(files.openInflatingInputStreamBackend(path));
+        REQUIRE(!rejected->isValid());
+    }
+    // Expansion budgets include the exact payload but must still validate its
+    // trailer. A full final block needs no spare block just to consume the CRC.
+    std::string bounded(ChunkedBuffer::blockSize, 'z'), boundedGzip;
+    REQUIRE(gzipCompress(bounded, 6, boundedGzip));
+    std::ofstream(path, std::ios::binary).write(boundedGzip.data(), boundedGzip.size());
+    std::unique_ptr<StreamBackend> exact(openInflatingFileStreamBackend(path, bounded.size()));
+    REQUIRE(exact->isValid());
+    auto* exactChunks = dynamic_cast<ChunkedStreamBackend*>(exact.get());
+    REQUIRE(exactChunks != nullptr);
+    REQUIRE(exactChunks->contents().size() == bounded.size());
+    REQUIRE(exactChunks->contents().allocatedCapacity() == bounded.size());
+    std::unique_ptr<StreamBackend> tooLarge(openInflatingFileStreamBackend(path, bounded.size() - 1));
+    REQUIRE(!tooLarge->isValid());
+    std::unique_ptr<StreamBackend> emptyBudget(openInflatingFileStreamBackend(path, 0));
+    REQUIRE(!emptyBudget->isValid());
+    std::string corrupt = valid; corrupt[corrupt.size()-8] ^= 1;
+    std::ofstream(path, std::ios::binary).write(corrupt.data(), corrupt.size());
+    std::unique_ptr<StreamBackend> rejected(openInflatingFileStreamBackend(path));
+    REQUIRE(!rejected->isValid());
+    std::ofstream(path, std::ios::binary).write(valid.data(), valid.size());
+    REQUIRE(!files.writeGzipAtomically(path, [](OutputStream&) { throw std::bad_alloc(); }));
+    REQUIRE(contents(path) == valid);
+	std::string owned(1048576,'m'); const char *allocation=owned.data();
+	MemoryStreamBackend moved(std::move(owned));
+	REQUIRE(moved.getBuffer()==allocation);
+	REQUIRE(moved.getPosition()==0);
+	REQUIRE(moved.getChar()=='m');
 	std::cout << "PASS gzip deterministic encoding, round trip, size limit, corruption rejection and failed atomic replacement" << std::endl;
 }
 
@@ -172,9 +296,63 @@ static void checkBackgroundWriter(FileManager& files, const fs::path& directory)
 		   perf.saved + perf.failed);
 	REQUIRE(perf.window[unsigned(PerformanceTelemetry::Id::SaveQueue)].time.count ==
 		   perf.saved + perf.failed);
+    {
+        BackgroundFileWriter writer(&files);
+        writer.write(path, "never published", [](std::string&) { throw std::bad_alloc(); });
+        writer.waitUntilIdle();
+        REQUIRE(contents(path) == "written after a failure");
+        ChunkedBuffer bytes; bytes.writeAt(0, "chunked after failure", 21);
+        writer.write(path, std::move(bytes));
+        writer.waitUntilIdle();
+        std::string decoded;
+        REQUIRE(gzipDecompress(contents(path), decoded));
+        REQUIRE(decoded == "chunked after failure");
+        const auto previous = contents(path);
+        ChunkedBuffer failed; failed.writeAt(0, "partial", 7);
+        writer.write(path, std::move(failed), [](ChunkedBuffer&) { throw std::runtime_error("injected chunk finalization failure"); });
+        writer.waitUntilIdle();
+        REQUIRE(contents(path) == previous);
+    }
+
 	for (const auto& entry : fs::directory_iterator(directory))
 		REQUIRE(entry.path().filename().string().find(".tmp-") == std::string::npos);
 	std::cout << "PASS background writes keep the newest snapshot with its finish step, finish on destruction and continue after a failure" << std::endl;
+}
+
+static void checkSlowAutosave(FileManager& files, const fs::path& directory)
+{
+#ifndef __EMSCRIPTEN__
+    GameGUI gui;
+    auto map = Engine::loadMapHeader("maps/balanced.map");
+    GameHeader header; header.setNumberOfPlayers(1); header.setRandomSeed(123456);
+    header.getBasePlayer(0) = BasePlayer(0, "Test", 0, BasePlayer::P_LOCAL);
+    REQUIRE(gui.loadFromHeaders(map, header, true, true));
+    gui.localPlayer = gui.localTeamNo = 0; gui.adjustLocalTeam();
+    const fs::path save = directory / "games" / "Auto_save.game.gz";
+    std::promise<void> started, release;
+    auto ready = started.get_future(); auto released = release.get_future();
+    std::atomic<bool> finalized{false};
+    ChunkedBuffer previous; previous.writeAt(0, "previous", 8);
+    SavegameSafetyHarness::writer(gui, files).write(save.string(), std::move(previous), [&](ChunkedBuffer&) {
+        started.set_value(); released.wait(); finalized = true;
+    });
+    ready.wait();
+    std::thread unblock([&] { std::this_thread::sleep_for(std::chrono::milliseconds(100)); release.set_value(); });
+    globalContainer->settings.autosaveGames = true;
+    gui.game.stepCounter = AUTOSAVE_PHASE_TICKS;
+    gui.syncStep();
+    const bool waited = finalized.load();
+    unblock.join();
+    REQUIRE(waited);
+    gui.waitForAutosave();
+    BinaryInputStream stream(files.openInflatingInputStreamBackend(save.string()));
+    GameGUI restored;
+    REQUIRE(restored.load(&stream));
+    REQUIRE(restored.game.stepCounter == AUTOSAVE_PHASE_TICKS);
+    globalContainer->settings.autosaveGames = false;
+    fs::remove(save);
+    std::cout << "PASS slow prior autosave blocks the next capture and retains its exact tick" << std::endl;
+#endif
 }
 
 static std::unique_ptr<BinaryInputStream> input(const std::string& bytes, bool file)
@@ -665,8 +843,10 @@ TEST_SUITE("SavegameSafety")
 			for (bool ai : {false,true}) checkRandomContinuation(text,ai);
 		const fs::path directory = fs::absolute(globals->fileManager->getDir(0));
 		checkAtomicWrites(*globals->fileManager, directory);
+		checkChunkedStreams();
 		checkGzipWrites(*globals->fileManager, directory);
 		checkBackgroundWriter(*globals->fileManager, directory);
+		checkSlowAutosave(*globals->fileManager, directory);
 	    checkPreferences(directory);
 		checkMapHeaders();
 	    checkCampaignProgress(directory);
@@ -706,6 +886,7 @@ TEST_SUITE("SavegameSafety")
 			globals->settings.autosaveGames = true;
 			gui.syncStep();
 			gui.waitForAutosave();
+
 			const auto compressedBytes = contents(save);
 			std::string bytes;
 			REQUIRE(gzipDecompress(compressedBytes, bytes));
@@ -736,17 +917,20 @@ TEST_SUITE("SavegameSafety")
 				// A stale map offset makes the header backpatch rewrite hashed bytes; the deferred hash must still match.
 				const auto serialize = [&](DeferredGameSHA1* deferred) {
 					gui.game.mapHeader.setMapOffset(0);
-					auto *backend = new MemoryStreamBackend();
+					auto *backend = new ChunkedStreamBackend();
 					BinaryOutputStream stream(backend);
 					gui.save(&stream, "Stale offset", deferred);
 					return backend->takeContents();
 				};
-				const std::string inlineHashed = serialize(nullptr);
+				auto inlineHashed = serialize(nullptr);
 				DeferredGameSHA1 deferred;
-				std::string deferredHashed = serialize(&deferred);
-				REQUIRE(deferredHashed != inlineHashed);
+				auto deferredHashed = serialize(&deferred);
+
 				deferred.apply(deferredHashed);
-				REQUIRE(deferredHashed == inlineHashed);
+				REQUIRE(deferredHashed.size() == inlineHashed.size());
+                std::string first(inlineHashed.size(), '\0'), second(deferredHashed.size(), '\0');
+                inlineHashed.readAt(0, first.data(), first.size()); deferredHashed.readAt(0, second.data(), second.size());
+                REQUIRE(first == second);
 			}
 
 			{

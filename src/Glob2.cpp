@@ -1,3 +1,4 @@
+#include <SDL3/SDL_main.h>
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
@@ -15,7 +16,7 @@
 #ifdef GLOB2_MOBILE
 #include "mobile/MobilePaths.h"
 #include <exception>
-#include <SDL_log.h>
+#include <SDL3/SDL_log.h>
 #endif
 #include "Glob2.h"
 #include "GlobalContainer.h"
@@ -440,12 +441,14 @@ int Glob2::run(int argc, char *argv[])
 		}
 #endif  // !YOG_SERVER_ONLY
 
-	if ( SDLNet_Init() < 0 )
+#ifndef __EMSCRIPTEN__
+	if ( !NET_Init() )
 	{
-		fprintf(stderr, "Couldn't initialize net: %s\n", SDLNet_GetError());
+		fprintf(stderr, "Couldn't initialize net: %s\n", SDL_GetError());
 		exit(1);
 	}
-	atexit(SDLNet_Quit);
+	atexit(NET_Quit);
+#endif
 
 
 #ifdef GLOB2_ROUTER_ONLY

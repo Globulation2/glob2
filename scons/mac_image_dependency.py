@@ -10,96 +10,35 @@ import subprocess
 import tempfile
 from dev_store import cache, Lease, hold
 from tool_archives import download, digest
+from sdl3_dependencies import patch_image_exports, static_webp_link_options, static_webp_archive
 
-ARTIFACT = {
-    "url": "https://github.com/libsdl-org/SDL_image/releases/download/release-2.8.12/SDL2_image-2.8.12.tar.gz",
-    "sha256": "393f5efb50536ec13ca4f4affb69cc9966d3c3f969e6c5e701faddf9f9785381",
-}
-CODECS = (
-    "AVIF",
-    "BMP",
-    "GIF",
-    "JPG",
-    "JXL",
-    "LBM",
-    "PCX",
-    "PNG",
-    "PNM",
-    "QOI",
-    "SVG",
-    "TGA",
-    "TIF",
-    "WEBP",
-    "XCF",
-    "XPM",
-    "XV",
-)
-DEPENDENCIES = ("SDL2", "libpng", "libjpeg", "libwebp", "libwebpdemux")
+from image_codecs import ARTIFACT, CODECS, DEPENDENCIES, lean_options, verified
 
 
-def lean_options():
-    return [
-        "-DSDL2IMAGE_"
-        + name
-        + "="
-        + ("ON" if name in ("PNG", "JPG", "WEBP") else "OFF")
-        for name in CODECS
-    ] + [
-        "-DBUILD_SHARED_LIBS=ON",
-        "-DSDL2IMAGE_DEPS_SHARED=OFF",
-        "-DSDL2IMAGE_STRICT=ON",
-        "-DSDL2IMAGE_BACKEND_STB=OFF",
-        "-DSDL2IMAGE_BACKEND_IMAGEIO=OFF",
-        "-DSDL2IMAGE_SAMPLES=OFF",
-        "-DSDL2IMAGE_TESTS=OFF",
-        "-DCMAKE_BUILD_TYPE=Release",
-        "-DSDL2IMAGE_PNG_SAVE=ON",
-        "-DSDL2IMAGE_JPG_SAVE=ON",
-    ]
-
-
-def verified(prefix, identity):
-    marker = prefix / "manifest.json"
-    if not marker.is_file():
-        return False
-    try:
-        record = json.loads(marker.read_text())
-        return (
-            record["identity"] == identity
-            and bool(record["files"])
-            and all(
-                (prefix / name).is_file() and digest(prefix / name) == value
-                for name, value in record["files"].items()
-            )
-        )
-    except (ValueError, KeyError, OSError):
-        return False
-
-
-def dependency_identity():
+def dependency_identity(environment=None):
     """Fingerprint linked libraries, not every unrelated dylib in Homebrew/lib."""
     dependencies = {}
     hashes = {}
     for package in DEPENDENCIES:
         version = subprocess.check_output(
-            ["pkg-config", "--modversion", package], text=True
+            ["pkg-config", "--modversion", package], text=True, env=environment
         ).strip()
         libdir = Path(
             subprocess.check_output(
-                ["pkg-config", "--variable=libdir", package], text=True
+                ["pkg-config", "--variable=libdir", package], text=True, env=environment
             ).strip()
         )
         flags = shlex.split(
             subprocess.check_output(
                 ["pkg-config", "--libs-only-l", package],
-                text=True,
+                text=True, env=environment,
             )
         )
         directories = [libdir] + [
             Path(flag[2:])
             for flag in shlex.split(
                 subprocess.check_output(
-                    ["pkg-config", "--libs-only-L", package], text=True
+                    ["pkg-config", "--libs-only-L", package], text=True, env=environment
                 )
             )
             if flag.startswith("-L")
@@ -109,7 +48,6 @@ def dependency_identity():
             if not flag.startswith("-l"):
                 continue
             name = "lib" + flag[2:]
-            # SDL2's pkg-config file also lists the static SDL2main shim.
             library = next(
                 (
                     directory / (name + suffix)
@@ -134,16 +72,23 @@ def dependency_identity():
     return dependencies
 
 
-def ensure(root, jobs=2):
+def ensure(root, jobs=2, environment=None):
     """Return a leased, verified private build of the required image codecs."""
-    brew = Path(subprocess.check_output(["brew", "--prefix"], text=True).strip())
+    brew = Path(subprocess.check_output(["brew", "--prefix"], text=True, env=environment).strip())
+    options = lean_options()
+    sdl_prefix = (environment or {}).get("GLOB2_SDL3_PREFIX")
+    webp_archive = static_webp_archive(Path(sdl_prefix).resolve(), required=False) if sdl_prefix else None
+    if webp_archive:
+        options += static_webp_link_options(Path(sdl_prefix).resolve(), required=False)
     identity = dict(
         archive=ARTIFACT,
-        options=lean_options(),
+        exports_patch=1,
+        options=options,
+        static_webp={str(webp_archive): digest(webp_archive)} if webp_archive else {},
         arch=platform.machine(),
-        compiler=subprocess.check_output(["clang", "--version"], text=True),
-        sdk=subprocess.check_output(["xcrun", "--show-sdk-version"], text=True),
-        dependencies=dependency_identity(),
+        compiler=subprocess.check_output(["clang", "--version"], text=True, env=environment),
+        sdk=subprocess.check_output(["xcrun", "--show-sdk-version"], text=True, env=environment),
+        dependencies=dependency_identity(environment),
     )
     key = hashlib.sha256(json.dumps(identity, sort_keys=True).encode()).hexdigest()[:24]
     location = cache(root, "mac-sdl-image-" + key, lease=False)
@@ -160,7 +105,8 @@ def ensure(root, jobs=2):
 
                 with tarfile.open(archive) as source:
                     source.extractall(task, filter="data")
-                source = task / "SDL2_image-2.8.12"
+                source = task / "SDL3_image-3.4.6"
+                patch_image_exports(source)
                 build = task / "build"
                 staged = task / "prefix"
                 subprocess.run(
@@ -170,20 +116,20 @@ def ensure(root, jobs=2):
                         str(source),
                         "-B",
                         str(build),
-                        "-DCMAKE_PREFIX_PATH=" + str(brew),
+                        "-DCMAKE_PREFIX_PATH=" + str(Path((environment or {}).get("GLOB2_SDL3_PREFIX", str(brew))).resolve()) + ";" + str(brew),
                         "-DCMAKE_INSTALL_PREFIX=" + str(prefix),
                         "-DCMAKE_INSTALL_NAME_DIR=" + str(prefix / "lib"),
-                        *lean_options(),
+                        *options,
                     ],
-                    check=True,
+                    check=True, env=environment,
                 )
                 subprocess.run(
                     ["cmake", "--build", str(build), "--parallel", str(jobs)],
-                    check=True,
+                    check=True, env=environment,
                 )
                 subprocess.run(
                     ["cmake", "--install", str(build), "--prefix", str(staged)],
-                    check=True,
+                    check=True, env=environment,
                 )
                 record = dict(
                     identity=identity,

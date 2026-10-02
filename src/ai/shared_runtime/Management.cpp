@@ -2,6 +2,7 @@
 // Copyright (C) 2006 Bradley Arsenault
 
 #include "shared_runtime/Runtime.h"
+#include <memory>
 
 using namespace AISharedRuntime;
 using namespace AISharedRuntime::Management;
@@ -9,74 +10,76 @@ using namespace AISharedRuntime::Management;
 
 ManagementOrder* ManagementOrder::load_order(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
+	GAGCore::InputStream::NestedRead nesting(*stream);
 	stream->readEnterSection("ManagementOrder");
-	ManagementOrderType mot=static_cast<ManagementOrderType>(stream->readUint32("type"));
-	ManagementOrder* mo=NULL;
+	const Uint32 mot=stream->readUint32("type");
+	std::unique_ptr<ManagementOrder> mo;
 	switch(mot)
 	{
 		case MAssignWorkers:
-			mo=new AssignWorkers;
-			mo->load(stream, player, versionMinor);
+			mo.reset(new AssignWorkers);
+			if (!mo->load(stream, player, versionMinor)) throw std::runtime_error("Invalid saved AI object");
 			break;
 		case MChangeSwarm:
-			mo=new ChangeSwarm;
-			mo->load(stream, player, versionMinor);
+			mo.reset(new ChangeSwarm);
+			if (!mo->load(stream, player, versionMinor)) throw std::runtime_error("Invalid saved AI object");
 			break;
 		case MDestroyBuilding:
-			mo=new DestroyBuilding;
-			mo->load(stream, player, versionMinor);
+			mo.reset(new DestroyBuilding);
+			if (!mo->load(stream, player, versionMinor)) throw std::runtime_error("Invalid saved AI object");
 			break;
 		case MAddResourceTracker:
-			mo=new AddResourceTracker;
-			mo->load(stream, player, versionMinor);
+			mo.reset(new AddResourceTracker);
+			if (!mo->load(stream, player, versionMinor)) throw std::runtime_error("Invalid saved AI object");
 			break;
 		case MPauseResourceTracker:
-			mo=new PauseResourceTracker;
-			mo->load(stream, player, versionMinor);
+			mo.reset(new PauseResourceTracker);
+			if (!mo->load(stream, player, versionMinor)) throw std::runtime_error("Invalid saved AI object");
 			break;
 		case MUnPauseResourceTracker:
-			mo=new UnPauseResourceTracker;
-			mo->load(stream, player, versionMinor);
+			mo.reset(new UnPauseResourceTracker);
+			if (!mo->load(stream, player, versionMinor)) throw std::runtime_error("Invalid saved AI object");
 			break;
 		case MChangeFlagSize:
-			mo=new ChangeFlagSize;
-			mo->load(stream, player, versionMinor);
+			mo.reset(new ChangeFlagSize);
+			if (!mo->load(stream, player, versionMinor)) throw std::runtime_error("Invalid saved AI object");
 			break;
 		case MChangeFlagMinimumLevel:
-			mo=new ChangeFlagMinimumLevel;
-			mo->load(stream, player, versionMinor);
+			mo.reset(new ChangeFlagMinimumLevel);
+			if (!mo->load(stream, player, versionMinor)) throw std::runtime_error("Invalid saved AI object");
 			break;
 		case MAddArea:
-			mo=new AddArea;
-			mo->load(stream, player, versionMinor);
+			mo.reset(new AddArea);
+			if (!mo->load(stream, player, versionMinor)) throw std::runtime_error("Invalid saved AI object");
 			break;
 		case MRemoveArea:
-			mo=new RemoveArea;
-			mo->load(stream, player, versionMinor);
+			mo.reset(new RemoveArea);
+			if (!mo->load(stream, player, versionMinor)) throw std::runtime_error("Invalid saved AI object");
 			break;
 		case MChangeAlliances:
-			mo=new ChangeAlliances;
-			mo->load(stream, player, versionMinor);
+			mo.reset(new ChangeAlliances);
+			if (!mo->load(stream, player, versionMinor)) throw std::runtime_error("Invalid saved AI object");
 			break;
 		case MUpgradeRepair:
-			mo=new UpgradeRepair;
-			mo->load(stream, player, versionMinor);
+			mo.reset(new UpgradeRepair);
+			if (!mo->load(stream, player, versionMinor)) throw std::runtime_error("Invalid saved AI object");
 			break;
 		case MSendMessage:
-			mo=new SendMessage;
-			mo->load(stream, player, versionMinor);
+			mo.reset(new SendMessage);
+			if (!mo->load(stream, player, versionMinor)) throw std::runtime_error("Invalid saved AI object");
 			break;
 		case MChangeFlagPosition:
-			mo=new ChangeFlagPosition;
-			mo->load(stream, player, versionMinor);
+			mo.reset(new ChangeFlagPosition);
+			if (!mo->load(stream, player, versionMinor)) throw std::runtime_error("Invalid saved AI object");
 			break;
 		case MAdjustPriority:
-			mo=new AdjustPriority;
-			mo->load(stream, player, versionMinor);
+			mo.reset(new AdjustPriority);
+			if (!mo->load(stream, player, versionMinor)) throw std::runtime_error("Invalid saved AI object");
 			break;
 	}
 	stream->readLeaveSection();
-	return mo;
+	if (!mo) throw std::runtime_error("Unknown saved AI object type");
+	return mo.release();
 }
 
 

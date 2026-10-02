@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <PerformanceTelemetry.h>
+#include <EventQueue.h>
 #include <stdio.h>
 #include <stdarg.h>
 #include <math.h>
@@ -11,8 +12,9 @@
 #include <optional>
 
 #include <BackgroundFileWriter.h>
+#include <ChunkedStreamBackend.h>
 #include <FileManager.h>
-#include <SDLCompat.h>
+#include <SDL3/SDL.h>
 #include <StringTable.h>
 #include <Toolkit.h>
 #include <Stream.h>
@@ -38,7 +40,7 @@
 #include <glob2/BuildConfig.h>
 #include "Order.h"
 
-#include <SDL_keycode.h>
+#include <SDL3/SDL_keycode.h>
 
 using std::shared_ptr;
 using std::static_pointer_cast;
@@ -96,7 +98,7 @@ void GameGUI::dragStep(int mx, int my, int button)
 		it was at the time in the middle of the event stream, not
 		as it is now.  So instead we make sure the correct data is
 		passed to us as a parameter. */
-	if ((button&SDL_BUTTON(1)) && (torusView.active() || mx<globalContainer->gfx->getW()-RIGHT_MENU_WIDTH))
+	if ((button&SDL_BUTTON_MASK(1)) && (torusView.active() || mx<globalContainer->gfx->getW()-RIGHT_MENU_WIDTH))
 	{
 		if (!torusView.active() && (!camera.contains(mx,my) || my<16)) return;
 		if (!torusView.active()) {mx=mapMouseX(mx);my=mapMouseY(my);}
@@ -122,10 +124,10 @@ void GameGUI::dragStep(int mx, int my, int button)
    have not yet processed.) */
 void GameGUI::step(void)
 {
-    std::vector<SDL_Event> events;
+    GAGCore::EventQueue events;
     SDL_Event event;
     while (GAGCore::GraphicContext::pollEvent(&event)) events.push_back(event);
-    step(events, SDL_GetTicks64());
+    step(events.events(), SDL_GetTicks());
 }
 
 void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
@@ -143,7 +145,7 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
     if (typingInputScreen && typingInputScreen->finished())
     {
         SDL_Event poll{};
-        poll.type = SDL_USEREVENT;
+        poll.type = SDL_EVENT_USER;
         processTypingInput(&poll);
     }
 	PERF_SCOPE_TIME(GUI);
@@ -155,7 +157,7 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 	for (auto event : events)
 	{
 		GAGCore::GraphicContext::translateMouseEvent(&event);
-		if (event.type==SDL_MOUSEMOTION)
+		if (event.type==SDL_EVENT_MOUSE_MOTION)
 		{
 			lastMouseX = event.motion.x;
 			lastMouseY = event.motion.y;
@@ -186,7 +188,7 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 				processing the old stored event rather than throwing
 				it away. */
 			if (wasMouseMotion
-				&& (lastMouseButtonState & SDL_BUTTON(1)) // are we dragging? (should not be hard-coding this condition but should be abstract somehow)
+				&& (lastMouseButtonState & SDL_BUTTON_MASK(1)) // are we dragging? (should not be hard-coding this condition but should be abstract somehow)
 				&& (mapPanPushed || (mouseMapX != oldMouseMapX)
 					|| (mouseMapY != oldMouseMapY))
 			)
@@ -199,32 +201,32 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 			wasMouseMotion=true;
 		}
 #		ifdef USE_OSX
-		else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_q && (event.key.keysym.mod & KMOD_GUI))
+		else if(event.type == SDL_EVENT_KEY_DOWN && event.key.key == SDLK_Q && (event.key.mod & SDL_KMOD_GUI))
 		{
 			isRunning=false;
 			exitGlobCompletely=true;
 		}
 #		endif
 #		ifdef USE_WIN32
-		else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F4 && (event.key.keysym.mod & KMOD_ALT))
+		else if(event.type == SDL_EVENT_KEY_DOWN && event.key.key == SDLK_F4 && (event.key.mod & SDL_KMOD_ALT))
 		{
 			isRunning=false;
 			exitGlobCompletely=true;
 		}
 #		endif
-		else if ((event.type == SDL_MOUSEBUTTONDOWN) || (event.type == SDL_MOUSEBUTTONUP))
+		else if ((event.type == SDL_EVENT_MOUSE_BUTTON_DOWN) || (event.type == SDL_EVENT_MOUSE_BUTTON_UP))
 		{
             if (wasMouseMotion) { processEvent(&mouseMotionEvent); wasMouseMotion = false; }
             if (event.button.button > 0 && event.button.button <= 32) {
-                const Uint32 mask = SDL_BUTTON(event.button.button);
-                if (event.type == SDL_MOUSEBUTTONDOWN) lastMouseButtonState |= mask;
+                const Uint32 mask = SDL_BUTTON_MASK(event.button.button);
+                if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN) lastMouseButtonState |= mask;
                 else lastMouseButtonState &= ~mask;
             }
 			lastMouseX = event.button.x;
 			lastMouseY = event.button.y;
 			processEvent (&event);
 		}
-		else if (event.type==SDL_WINDOWEVENT)
+		else if ((event.type >= SDL_EVENT_WINDOW_FIRST && event.type <= SDL_EVENT_WINDOW_LAST))
 		{
             if (wasMouseMotion) { processEvent(&mouseMotionEvent); wasMouseMotion = false; }
             processEvent(&event);
@@ -382,20 +384,23 @@ void GameGUI::syncStep(void)
 
 void GameGUI::autosave()
 {
-	const std::string name = Toolkit::getStringTable()->getString("[auto save]");
-	// Serialize between ticks into memory sized from the previous autosave;
-	// autosaveWriter's thread hashes the snapshot and does the disk write.
-	auto *memory = new MemoryStreamBackend();
-	memory->reserve(lastAutosaveSize + lastAutosaveSize / 8);
-	BinaryOutputStream stream(memory);
-	DeferredGameSHA1 sha1;
-	save(&stream, name, &sha1);
-	std::string contents = memory->takeContents();
-	lastAutosaveSize = contents.size();
-	if (!autosaveWriter)
-		autosaveWriter = std::make_unique<BackgroundFileWriter>(Toolkit::getFileManager());
-	autosaveWriter->write(glob2GzipWritePath(glob2NameToFilename("games", name, "game")), std::move(contents),
-		[sha1 = std::move(sha1)](std::string& bytes) { sha1.apply(bytes); }, true);
+    // Wait before allocating. Capturing first can retain an active, queued and
+    // newly captured snapshot together; worker hashing/compression stays asynchronous.
+    waitForAutosave();
+    try
+    {
+        const std::string name = Toolkit::getStringTable()->getString("[auto save]");
+        auto* memory = new ChunkedStreamBackend();
+        BinaryOutputStream stream(memory);
+        DeferredGameSHA1 sha1;
+        save(&stream, name, &sha1);
+        if (!autosaveWriter)
+            autosaveWriter = std::make_unique<BackgroundFileWriter>(Toolkit::getFileManager());
+        autosaveWriter->write(glob2GzipWritePath(glob2NameToFilename("games", name, "game")), memory->takeContents(),
+            [sha1 = std::move(sha1)](ChunkedBuffer& bytes) { sha1.apply(bytes); });
+    }
+    catch (const std::exception& error)
+    { std::cerr << "Autosave failed; previous file retained: " << error.what() << std::endl; }
 }
 
 void GameGUI::waitForAutosave()

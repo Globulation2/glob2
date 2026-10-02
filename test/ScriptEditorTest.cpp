@@ -1,3 +1,4 @@
+#include <Environment.h>
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
 #include "ScriptEditorScreen.h"
@@ -100,8 +101,8 @@ TEST_CASE("Cancelling script drafts preserves the source, globals and scenario t
 	editor.setScriptText("");
 	REQUIRE(editor.compile());
 	SDL_Event cancel{};
-	cancel.type = SDL_KEYDOWN;
-	cancel.key.keysym.sym = SDLK_ESCAPE;
+	cancel.type = SDL_EVENT_KEY_DOWN;
+	cancel.key.key = SDLK_ESCAPE;
 	editor.event(cancel);
 	CHECK(editor.finished());
 	CHECK(editor.result() == ScriptEditorScreen::CANCEL);
@@ -341,11 +342,10 @@ TEST_CASE("Script language dropdown selects JavaScript on desktop and phone [dis
 	for (const auto &[width, height, touch] :
 		 {std::tuple{800, 600, false}, {390, 844, true}, {844, 390, true}})
 	{
-		SDL_setenv("GLOB2_MOBILE_UI", touch ? "1" : "0", 1);
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", touch ? "1" : "0", 1);
 		SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()), width, height);
 		SDL_Event resize{};
-		resize.type = SDL_WINDOWEVENT;
-		resize.window.event = SDL_WINDOWEVENT_SIZE_CHANGED;
+		resize.type = SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED;
 		GAGCore::GraphicContext::translateMouseEvent(&resize);
 		ScriptEditorScreen editor(&world.game);
 		editor.attach(*gfx);
@@ -368,5 +368,5 @@ TEST_CASE("Script language dropdown selects JavaScript on desktop and phone [dis
 						 std::to_string(width) + "x" + std::to_string(height) + ".bmp");
 		gfx->nextFrame();
 	}
-	SDL_setenv("GLOB2_MOBILE_UI", "0", 1);
+	GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "0", 1);
 }

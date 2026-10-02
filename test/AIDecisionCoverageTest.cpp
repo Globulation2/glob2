@@ -70,7 +70,7 @@ std::vector<Uint32> state(Game& game)
     result.insert(result.end(),units.begin(),units.end());
     return result;
 }
-void continuation(AI::ImplementationID id, bool depleted, int checkpoint)
+void continuation(AI::ImplementationID id, bool depleted, int checkpoint, int followup=256)
 {
     CAPTURE(id); CAPTURE(depleted); CAPTURE(checkpoint);
     World initial(id,depleted,713);
@@ -88,7 +88,7 @@ void continuation(AI::ImplementationID id, bool depleted, int checkpoint)
     const auto before=state(game);
     std::vector<std::string> orders;
     std::vector<std::vector<Uint32>> traces;
-    for (int i=0; i<128; ++i)
+    for (int i=0; i<followup; ++i)
     {
         orders.push_back(tick(game)); traces.push_back(state(game));
         types.insert(static_cast<unsigned char>(orders.back()[0]));
@@ -100,7 +100,7 @@ void continuation(AI::ImplementationID id, bool depleted, int checkpoint)
     REQUIRE(restored.game.load(&input));
     restored.game.setWaitingOnMask(0);
     REQUIRE(state(restored.game)==before);
-    for (int i=0; i<128; ++i)
+    for (int i=0; i<followup; ++i)
     {
         CAPTURE(i);
         REQUIRE(tick(restored.game)==orders[i]);
@@ -117,31 +117,44 @@ TEST_SUITE("AIDecisionCoverage")
     TEST_CASE("Cortex economy and food shortage survive save-load")
     {
         glob2test::HeadlessGlobals globals;
-        for (bool depleted : {false,true}) continuation(AI::CORTEX,depleted,256);
+        for (int checkpoint : {64,256}) for (bool depleted : {false,true}) continuation(AI::CORTEX,depleted,checkpoint);
     }
     TEST_CASE("Cabino specialist modules survive save-load")
     {
         glob2test::HeadlessGlobals globals;
-        for (bool depleted : {false,true}) continuation(AI::CABINO,depleted,256);
+        for (int checkpoint : {64,256}) for (bool depleted : {false,true}) continuation(AI::CABINO,depleted,checkpoint);
     }
     TEST_CASE("Warrush growth and attack preparation survive save-load")
     {
         glob2test::HeadlessGlobals globals;
-        for (bool depleted : {false,true}) continuation(AI::WARRUSH,depleted,256);
+        for (int checkpoint : {64,256}) for (bool depleted : {false,true}) continuation(AI::WARRUSH,depleted,checkpoint);
     }
     TEST_CASE("Numbi growth and attack preparation survive save-load")
     {
         glob2test::HeadlessGlobals globals;
-        for (bool depleted : {false,true}) continuation(AI::NUMBI,depleted,256);
+        for (int checkpoint : {64,256}) for (bool depleted : {false,true}) continuation(AI::NUMBI,depleted,checkpoint);
     }
     TEST_CASE("Nicowar shared runtime survives save-load")
     {
         glob2test::HeadlessGlobals globals;
-        for (bool depleted : {false,true}) continuation(AI::NICOWAR,depleted,256);
+        for (int checkpoint : {64,256}) for (bool depleted : {false,true}) continuation(AI::NICOWAR,depleted,checkpoint);
     }
     TEST_CASE("Econo shared runtime survives save-load")
     {
         glob2test::HeadlessGlobals globals;
-        for (bool depleted : {false,true}) continuation(AI::ECONO,depleted,256);
+        for (int checkpoint : {64,256}) for (bool depleted : {false,true}) continuation(AI::ECONO,depleted,checkpoint);
+    }
+    TEST_CASE("Castor and Maxima growth and shortage resume at early and active checkpoints")
+    {
+        glob2test::HeadlessGlobals globals;
+        for (auto id : {AI::CASTOR,AI::MAXIMA})
+            for (int checkpoint : {64,256})
+                for (bool depleted : {false,true}) continuation(id,depleted,checkpoint);
+    }
+    TEST_CASE("long AI campaigns resume with identical orders state and game RNG [slow][artifacts]")
+    {
+        glob2test::HeadlessGlobals globals;
+        for (auto id : {AI::CASTOR,AI::CORTEX,AI::CABINO,AI::NICOWAR,AI::MAXIMA})
+            continuation(id,false,1024,4096);
     }
 }

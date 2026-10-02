@@ -81,11 +81,11 @@ if not env['server']:
     local.Alias('transport-test', discovery_test)
     if env.get('wss', True):
         wss_test = local.Program('wss-transport-test', [
-            'net/NetTransport.cpp', 'net/WssTransport.cpp', 'net/NetworkConfig.cpp', 'net/LanIdentity.cpp',
+            'net/NetTransport.cpp', 'net/TcpTransport.cpp', 'net/WssTransport.cpp', 'net/NetworkConfig.cpp', 'net/LanIdentity.cpp',
             local.Object('WssTransportHarness.o', '#test/WssTransportHarness.cpp')] + platform_trust_sources)
         local.Alias('transport-test', wss_test)
         listener_test = local.Program('wss-listener-test', [
-            'net/NetTransport.cpp', 'net/WssTransport.cpp', 'net/NetworkConfig.cpp', 'net/LanIdentity.cpp',
+            'net/NetTransport.cpp', 'net/TcpTransport.cpp', 'net/WssTransport.cpp', 'net/NetworkConfig.cpp', 'net/LanIdentity.cpp',
             local.Object('WssListenerHarness.o', '#test/WssListenerHarness.cpp')] + platform_trust_sources)
         local.Alias('transport-test', listener_test)
 

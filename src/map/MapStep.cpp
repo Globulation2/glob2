@@ -157,7 +157,7 @@ void Map::rebuildGrowthCoverage()
 					if (d <= radius[band])
 				{
 					const Uint64 bit = Uint64(1) << (band * Team::MAX_COUNT + t);
-					Uint32 &count = growthCoverageCounts[band][plane + index];
+					Uint16 &count = growthCoverageCounts[band][plane + index];
 					if (delta > 0)
 					{
 						if (count++ == 0) growthCoverage[index] |= bit;
@@ -178,12 +178,20 @@ void Map::rebuildGrowthCoverage()
 		if (growthCoverageGeneration[t] == stats.coverageBuildingGeneration) continue;
 		auto &old = growthCoverageBuildings[t];
 		const auto &now = stats.coverageBuildings;
-		size_t i = 0, j = 0;
-		while (i < old.size() || j < now.size())
+		// Remove first: on a 16x16 torus a footprint can paint a tile 36
+		// times. At most 1024 anchors => 36864, fitting Uint16. Interleaved
+		// additions could temporarily combine both complete anchor sets.
+		for (int pass = 0; pass < 2; ++pass)
 		{
-			if (j == now.size() || (i < old.size() && less(old[i],now[j]))) paint(t,old[i++],-1);
-			else if (i == old.size() || less(now[j],old[i])) paint(t,now[j++],1);
-			else { ++i; ++j; }
+			size_t i = 0, j = 0;
+			while (i < old.size() || j < now.size())
+			{
+				if (j == now.size() || (i < old.size() && less(old[i],now[j])))
+				{ if (pass == 0) paint(t,old[i],-1); ++i; }
+				else if (i == old.size() || less(now[j],old[i]))
+				{ if (pass == 1) paint(t,now[j],1); ++j; }
+				else { ++i; ++j; }
+			}
 		}
 		old = now;
 		growthCoverageGeneration[t] = stats.coverageBuildingGeneration;
@@ -245,12 +253,12 @@ void Map::configureGradientPipeline(unsigned workers, unsigned delay)
 	gradientRuntime->pipeline.configure(workers, delay, size, [this](GradientPipeline::Job &job, GradientWorkspace &scratch) {
 #ifndef YOG_SERVER_ONLY
 		const gradient_kernel::GradientGeometry geometry{size, wMask, hMask, wDec};
-		if (job.water.empty())
+		if (!job.water)
 			gradient_kernel::propagateField(job.data.get(), job.swim, GRADIENT_COST_LIMIT,
 				geometry, scratch, [this](size_t i) { return isWater(static_cast<unsigned>(i)); });
 		else
 		{
-			const auto *water = job.water.data();
+			const auto *water = job.water->data();
 			gradient_kernel::propagateField(job.data.get(), job.swim, GRADIENT_COST_LIMIT,
 				geometry, scratch, [water](size_t i) { return water[i] != 0; });
 		}
@@ -328,9 +336,8 @@ void Map::syncStep(Uint32 stepCounter)
 		gradientRuntime->pipeline.submit(slot, swim, [&](GradientPipeline::Job &job) {
 			seed(job.data.get());
 			if (swim != 0 && swim != SWIM_CLASS_EVEN) {
-				job.water.resize(size);
-				for (size_t i=0; i<size; ++i) job.water[i] = isWater(static_cast<unsigned>(i));
-			} else job.water.clear();
+				job.water = frozenWaterSnapshot();
+			} else job.water.reset();
 		});
 	};
 	// We only update one gradient per step, round robin over the gradients in use.

@@ -5,7 +5,7 @@
 
 #include "MapHeader.h"
 #include <string>
-#include "SDL_net.h"
+#include <SDL3_net/SDL_net.h>
 
 namespace GAGCore
 {

@@ -21,7 +21,7 @@
 #include "Order.h"
 #include "Unit.h"
 #include "Utilities.h"
-#include "SDLCompat.h"
+#include <SDL3/SDL.h>
 
 
 #include "Brush.h"
@@ -170,7 +170,7 @@ bool drawPreparedWater(const GameRenderFrame &frame, const SoftwareTerrainCache 
                 // Keep the complete source mapping: cropping before scaling
                 // would restart nearest-neighbor sampling at coverage edges.
                 if (std::any_of(regions.begin(), regions.end(), [&](const SDL_Rect &region) {
-                    return SDL_HasIntersection(&tile, &region);
+                    return SDL_HasRectIntersection(&tile, &region);
                 })) frame.target.drawSurface(x, y, water);
             }
 		return true;

@@ -571,6 +571,11 @@ public:
 class OrderVoiceData:public MiscOrder
 {
 public:
+	// Recorders flush AFTER crossing 2048 bytes or 120 frames. Keep headroom
+	// for the final encoded frame so old recordings remain readable. These
+	// are decoder work/allocation limits, not proof that Speex data is valid.
+	static constexpr size_t MAX_ENCODED_BYTES = 4096;
+	static constexpr unsigned MAX_FRAMES = 121;
 	OrderVoiceData() = default;
 	OrderVoiceData(Uint32 recipientsMask, size_t framesDataLength, Uint8 frameCount, const Uint8 *framesData);
 	virtual ~OrderVoiceData(void);

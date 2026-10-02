@@ -115,6 +115,7 @@ def main():
         # Fixture-driven cases resolve everything through glob2test::sourceRoot().
         shutil.copytree(ROOT / 'games', payload / 'games')
         shutil.copytree(ROOT / 'test/fixtures', payload / 'test/fixtures')
+        shutil.copytree(ROOT / 'test/maxima/fixtures', payload / 'test/maxima/fixtures')
         command('push', str(payload), remote, stdout=subprocess.DEVNULL)
     for name in names:
         profile = remote + '/profiles/' + name
@@ -128,7 +129,7 @@ def main():
                       'GLOB2_USER_DATA_DIR=' + profile, 'GLOB2_ASSET_DIR=' + remote,
                       'GLOB2_TEST_SOURCE_ROOT=' + remote,
                       'GLOB2_TEST_ARTIFACTS_ROOT=' + remote + '/artifacts',
-                      'timeout', str(timeout), './' + name] + extra
+                      'timeout', '-k', '5', str(timeout), './' + name] + extra
         shell = ('cd ' + shlex.quote(remote) + ' && mkdir -p ' + shlex.quote(profile) +
                  ' && ' + shlex.join(invocation))
         # Stream to disk so long-running suites remain diagnosable mid-run.

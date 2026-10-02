@@ -43,9 +43,10 @@ AICabino::AICabino(Player *player)
 
 
 AICabino::AICabino(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+    : AICabino(player)
 {
 	bool goodLoad=load(stream, player, versionMinor);
-	assert(goodLoad);
+	if (!goodLoad) throw std::runtime_error("Invalid saved AI");
 }
 
 
@@ -85,6 +86,7 @@ void AICabino::init(Player *player)
 	new BuildingClearer(*this);
 	new HappinessHandler(*this);
 	new Farmer(*this);
+	active_module=modules.end();
 
 	assert(this->team);
 	assert(this->game);
@@ -108,6 +110,9 @@ AICabino::~AICabino()
 
 bool AICabino::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
+	for (auto* module : modules) delete module;
+	modules.clear();
+	while (!orders.empty()) orders.pop();
 	init(player);
 
 	stream->readEnterSection("AICabino");
@@ -116,17 +121,21 @@ bool AICabino::load(GAGCore::InputStream *stream, Player *player, Sint32 version
 	center_x=stream->readUint32("center_x");
 	center_y=stream->readUint32("center_y");
 	module_timer=stream->readUint32("module_timer");
-	active_module=modules.begin()+stream->readUint32("active_module");
+	const Uint32 moduleIndex = stream->readUint32("active_module");
+	if (moduleIndex > modules.size()) return false;
+	active_module=modules.begin()+moduleIndex;
 
 	stream->readEnterSection("orders");
-	Uint32 ordersSize = stream->readUint32("size");
+	Uint32 ordersSize = stream->readCount("size");
 	for (Uint32 ordersIndex = 0; ordersIndex < ordersSize; ordersIndex++)
 	{
 		stream->readEnterSection(ordersIndex);
-		size_t size=stream->readUint32("size");
-		Uint8* buffer = new Uint8[size];
-		stream->read(buffer, size, "data");
-		orders.push(Order::getOrder(buffer, size, versionMinor));
+		size_t size=stream->readCount("size");
+		std::vector<Uint8> buffer(size);
+		stream->read(buffer.data(), size, "data");
+		auto order = Order::getOrder(buffer.data(), size, versionMinor);
+		if (!order) return false;
+		orders.push(order);
 		// FIXME : clear the container before load
 		stream->readLeaveSection();
 	}
@@ -135,24 +144,25 @@ bool AICabino::load(GAGCore::InputStream *stream, Player *player, Sint32 version
 	char signature[4];
 
 	stream->readEnterSection("modules");
-	Uint32 modulesSize = stream->readUint32("size");
+	Uint32 modulesSize = stream->readCount("size");
+	if (modulesSize != modules.size()) return false;
 	for (Uint32 modulesIndex = 0; modulesIndex < modulesSize; modulesIndex++)
 	{
 		stream->readEnterSection(modulesIndex);
 		stream->read(signature, 4, "signatureStart");
 		if (memcmp(signature,"MoSt", 4)!=0)
 		{
-			std::cout<<"Signature missmatch at begin of module #"<<modulesIndex<<", "<<modules[modulesIndex]->getName()<<". Expected \"MoSt\", recieved \""<<signature<<"\"."<<std::endl;
+			std::cout<<"Signature missmatch at begin of module #"<<modulesIndex<<", "<<modules[modulesIndex]->getName()<<". Expected \"MoSt\", recieved \""<<std::string(signature, 4)<<"\"."<<std::endl;
 			stream->readLeaveSection();
 			return false;
 		}
 
-		modules[modulesIndex]->load(stream, player, versionMinor);
+		if (!modules[modulesIndex]->load(stream, player, versionMinor)) return false;
 
 		stream->read(signature, 4, "signatureEnd");
 		if (memcmp(signature,"MoEn", 4)!=0)
 		{
-			std::cout<<"Signature missmatch at end of module #"<<modulesIndex<<", "<<modules[modulesIndex]->getName()<<". Expected \"MoEn\", recieved \""<<signature<<"\"."<<std::endl;
+			std::cout<<"Signature missmatch at end of module #"<<modulesIndex<<", "<<modules[modulesIndex]->getName()<<". Expected \"MoEn\", recieved \""<<std::string(signature, 4)<<"\"."<<std::endl;
 			stream->readLeaveSection();
 			return false;
 		}
@@ -178,14 +188,18 @@ void AICabino::save(GAGCore::OutputStream *stream)
 	stream->writeUint32(active_module-modules.begin(), "active_module");
 
 	stream->writeEnterSection("orders");
-	stream->writeUint32((Uint32)orders.size(), "size");
-	for (Uint32 ordersIndex = 0; ordersIndex < orders.size(); ordersIndex++)
+	stream->writeUint32(static_cast<Uint32>(orders.size()), "size");
+	auto remainingOrders = orders;
+	for (Uint32 ordersIndex = 0; !remainingOrders.empty(); ++ordersIndex)
 	{
 		stream->writeEnterSection(ordersIndex);
-		std::shared_ptr<Order> order = orders.front();
-		orders.pop();
-		stream->writeUint32(order->getDataLength()+1, "size");
-		stream->write(order->getData(), order->getDataLength(), "data");
+		const auto order = remainingOrders.front();
+		remainingOrders.pop();
+		std::vector<Uint8> packet(order->getDataLength()+1);
+		packet[0] = order->getOrderType();
+		if (order->getDataLength()) std::memcpy(packet.data()+1, order->getData(), order->getDataLength());
+		stream->writeUint32(packet.size(), "size");
+		stream->write(packet.data(), packet.size(), "data");
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
@@ -1219,7 +1233,7 @@ bool SimpleBuildingDefense::load(GAGCore::InputStream *stream, Player *player, S
 
 	stream->readEnterSection("SimpleBuildingDefense");
 	stream->readEnterSection("defending_zones");
-	Uint32 defenseRecordSize = stream->readUint32("size");
+	Uint32 defenseRecordSize = stream->readCount("size");
 	for (Uint32 defenseRecordIndex = 0; defenseRecordIndex < defenseRecordSize; defenseRecordIndex++)
 	{
 		stream->readEnterSection(defenseRecordIndex);
@@ -1478,7 +1492,7 @@ bool GeneralsDefense::load(GAGCore::InputStream *stream, Player *player, Sint32 
 {
 	stream->readEnterSection("GeneralsDefense");
 	stream->readEnterSection("defending_flags");
-	Uint32 defenseRecordSize = stream->readUint32("size");
+	Uint32 defenseRecordSize = stream->readCount("size");
 	for (Uint32 defenseRecordIndex = 0; defenseRecordIndex < defenseRecordSize ; defenseRecordIndex++)
 	{
 		stream->readEnterSection(defenseRecordIndex);
@@ -1670,8 +1684,9 @@ bool PrioritizedBuildingAttack::load(GAGCore::InputStream *stream, Player *playe
 	// 255 is the "no enemy chosen yet" sentinel written below: it's outside
 	// Team::MAX_COUNT_ON_DISK (32), so it can never collide with a real team.
 	Uint8 enemyTeamNumber = stream->readUint8("teamNumber");
+	if (enemyTeamNumber != 255 && (enemyTeamNumber >= ai.game->mapHeader.getNumberOfTeams() || !ai.game->teams[enemyTeamNumber])) return false;
 	enemy = (enemyTeamNumber == 255) ? NULL : ai.game->teams[enemyTeamNumber];
-	Uint32 attackRecordSize = stream->readUint32("size");
+	Uint32 attackRecordSize = stream->readCount("size");
 	for (Uint32 attackRecordIndex = 0; attackRecordIndex < attackRecordSize; attackRecordIndex++)
 	{
 		stream->readEnterSection(attackRecordIndex);
@@ -2167,7 +2182,7 @@ bool DistributedNewConstructionManager::load(GAGCore::InputStream *stream, Playe
 {
 	stream->readEnterSection("DistributedNewConstructionManager");
 	stream->readEnterSection("new_buildings");
-	Uint32 newConstructionRecordSize = stream->readUint32("newConstructionRecordSize");
+	Uint32 newConstructionRecordSize = stream->readCount("newConstructionRecordSize");
 	for (Uint32 newConstructionRecordIndex = 0; newConstructionRecordIndex < newConstructionRecordSize; newConstructionRecordIndex++)
 	{
 		stream->readEnterSection(newConstructionRecordIndex);
@@ -2187,7 +2202,7 @@ bool DistributedNewConstructionManager::load(GAGCore::InputStream *stream, Playe
 
 
 	stream->readEnterSection("num_buildings_wanted");
-	Uint32 numBuildingWantedSize = stream->readUint32("numBuildingWantedSize");
+	Uint32 numBuildingWantedSize = stream->readCount("numBuildingWantedSize");
 	for (Uint32 numBuildingWantedIndex = 0; numBuildingWantedIndex < numBuildingWantedSize; numBuildingWantedIndex++)
 	{
 		stream->readEnterSection(numBuildingWantedIndex);
@@ -2886,7 +2901,7 @@ bool RandomUpgradeRepairModule::load(GAGCore::InputStream *stream, Player *playe
 {
 	stream->readEnterSection("RandomUpgradeRepairModule");
 	stream->readEnterSection("active_construction");
-	Uint32 constructionRecordSize = stream->readUint32("size");
+	Uint32 constructionRecordSize = stream->readCount("size");
 	for (Uint32 constructionRecordIndex = 0; constructionRecordIndex < constructionRecordSize; constructionRecordIndex++)
 	{
 		stream->readEnterSection(constructionRecordIndex);
@@ -2902,7 +2917,7 @@ bool RandomUpgradeRepairModule::load(GAGCore::InputStream *stream, Player *playe
 	stream->readLeaveSection();
 
 	stream->readEnterSection("pending_construction");
-	constructionRecordSize = stream->readUint32("size");
+	constructionRecordSize = stream->readCount("size");
 	for (Uint32 constructionRecordIndex = 0; constructionRecordIndex < constructionRecordSize; constructionRecordIndex++)
 	{
 		stream->readEnterSection(constructionRecordIndex);
@@ -3343,7 +3358,7 @@ bool DistributedUnitManager::load(GAGCore::InputStream *stream, Player *player, 
 {
 	stream->readEnterSection("DistributedUnitManager");
 	stream->readEnterSection("module_records");
-	Uint32 unitRecordSize = stream->readUint32("size");
+	Uint32 unitRecordSize = stream->readCount("size");
 	for (Uint32 unitRecordIndex = 0; unitRecordIndex < unitRecordSize; unitRecordIndex++)
 	{
 		stream->readEnterSection(unitRecordIndex);
@@ -3374,7 +3389,7 @@ bool DistributedUnitManager::load(GAGCore::InputStream *stream, Player *player, 
 	stream->readLeaveSection();
 
 	stream->readEnterSection("buildings");
-	unitRecordSize = stream->readUint32("size");
+	unitRecordSize = stream->readCount("size");
 	for (Uint32 unitRecordIndex = 0; unitRecordIndex < unitRecordSize; unitRecordIndex++)
 	{
 		stream->readEnterSection(unitRecordIndex);
@@ -3389,6 +3404,7 @@ bool DistributedUnitManager::load(GAGCore::InputStream *stream, Player *player, 
 		ur.unit_type=stream->readUint32("unit_type");
 		ur.minimum_level=stream->readUint32("minimum_level");
 		ur.number=stream->readUint32("number");
+		if (ur.unit_type >= NB_UNIT_TYPE || ur.ability >= NB_ABILITY || ur.minimum_level >= NB_UNIT_LEVELS || ur.level >= NB_UNIT_LEVELS || ur.type >= IntBuildingType::NB_BUILDING) return false;
 		buildings[gid]=ur;
 		// FIXME : clear the container before load
 		stream->readLeaveSection();
@@ -3922,14 +3938,15 @@ bool InnManager::load(GAGCore::InputStream *stream, Player *player, Sint32 versi
 {
 	stream->readEnterSection("InnManager");
 	stream->readEnterSection("inns");
-	Uint32 innRecordSize = stream->readUint32("size");
+	Uint32 innRecordSize = stream->readCount("size");
 	for (Uint32 innRecordIndex = 0; innRecordIndex < innRecordSize; innRecordIndex++)
 	{
 		stream->readEnterSection(innRecordIndex);
 		innRecord ir;
 		unsigned int gid=stream->readUint32("gid");
 		ir.pos=stream->readUint32("pos");
-		unsigned int size=stream->readUint32("size");
+		unsigned int size=stream->readCount("size");
+		if (!size || ir.pos >= size) return false;
 		for(unsigned int i=0; i<size; ++i)
 		{
 			stream->readEnterSection(i);
@@ -4181,7 +4198,7 @@ std::string BuildingClearer::getName() const
 bool BuildingClearer::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	stream->readEnterSection("BuildingClearer");
-	Uint32 clearingRecordSize = stream->readUint32("size");
+	Uint32 clearingRecordSize = stream->readCount("size");
 	for (Uint32 clearingRecordIndex = 0; clearingRecordIndex < clearingRecordSize; clearingRecordIndex++)
 	{
 		stream->readEnterSection(clearingRecordIndex);
@@ -4683,7 +4700,7 @@ std::string Farmer::getName() const
 bool Farmer::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	stream->readEnterSection("Farmer");
-	Uint32 pointsSize = stream->readUint32("size");
+	Uint32 pointsSize = stream->readCount("size");
 	for (Uint32 pointsIndex = 0; pointsIndex < pointsSize; pointsIndex++)
 	{
 		stream->readEnterSection(pointsIndex);

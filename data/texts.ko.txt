@@ -1650,8 +1650,8 @@ Globulation 2 커서를 표시합니다.
 완료
 [settings Edit shortcut]
 키보드 단축키 수정
-[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
-고해상도 화면에서 메뉴, 텍스트, 사이드바를 크게 표시합니다.
+[settings Multiply the operating system display scale for menus, text and the sidebar.]
+메뉴, 텍스트, 사이드바에 적용할 운영 체제의 화면 배율을 곱합니다.
 [settings Flags]
 깃발
 [settings Full]

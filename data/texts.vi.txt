@@ -1650,8 +1650,8 @@ Hiển thị con trỏ Globulation 2.
 Xong
 [settings Edit shortcut]
 Chỉnh sửa phím tắt
-[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
-Phóng to menu, văn bản và thanh bên trên màn hình độ phân giải cao.
+[settings Multiply the operating system display scale for menus, text and the sidebar.]
+Nhân tỷ lệ hiển thị của hệ điều hành cho menu, văn bản và thanh bên.
 [settings Flags]
 Cờ
 [settings Full]

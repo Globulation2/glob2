@@ -5,6 +5,7 @@
 #include "FileFormatVersions.h"
 #include "ScriptNumber.h"
 #include "Stream.h"
+#include <stdexcept>
 #include <cassert>
 
 
@@ -234,6 +235,7 @@ void GameObjectives::decodeData(GAGCore::InputStream* stream, Uint32 versionMino
 	scriptNumbers.clear();
 	stream->readEnterSection("GameObjectives");
 	Uint32 size = stream->readUint32("size");
+	if (size > 65536) throw std::runtime_error("Too many scenario entries");
 	for(unsigned int i=0; i<size; ++i)
 	{
 		stream->readEnterSection(i);

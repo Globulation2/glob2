@@ -1664,8 +1664,8 @@ Bistaratu Globulation 2 jokoaren kurtsorea.
 Eginda
 [settings Edit shortcut]
 Editatu teklatuko lasterbidea
-[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
-Handitu menuak, testua eta alboko barra bereizmen handiko pantailan.
+[settings Multiply the operating system display scale for menus, text and the sidebar.]
+Biderkatu sistema eragilearen pantaila-eskala menuetarako, testurako eta alboko barrarako.
 [settings Flags]
 Banderak
 [settings Full]

@@ -1664,8 +1664,8 @@ Affichez le curseur Globulation 2.
 Terminé
 [settings Edit shortcut]
 Modifier le raccourci clavier
-[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
-Agrandit les menus, le texte et la barre latérale sur un écran haute résolution.
+[settings Multiply the operating system display scale for menus, text and the sidebar.]
+Multiplie l’échelle d’affichage du système pour les menus, le texte et la barre latérale.
 [settings Flags]
 Drapeaux
 [settings Full]

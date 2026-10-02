@@ -20,6 +20,8 @@ class WebSocketTransport final : public NetTransport {
         std::atomic<size_t> queuedBytes{0}, queuedEvents{0};
 #ifdef __EMSCRIPTEN_PTHREADS__
         pthread_t owner = pthread_self();
+        em_proxying_queue* queue = em_proxying_queue_create();
+        ~CallbackTarget() { em_proxying_queue_destroy(queue); }
 #endif
         explicit CallbackTarget(WebSocketTransport* transport) : transport(transport) {}
     };
@@ -46,8 +48,7 @@ class WebSocketTransport final : public NetTransport {
         }
         auto* event = new Event{target, bytes, std::move(function)};
 #ifdef __EMSCRIPTEN_PTHREADS__
-        static auto* queue = em_proxying_queue_create();
-        if (!emscripten_proxy_async(queue, target->owner, apply, event)) {
+        if (!emscripten_proxy_async(target->queue, target->owner, apply, event)) {
             target->overflow = true;
             delete event;
         }
@@ -133,6 +134,11 @@ public:
             emscripten_websocket_delete(socket);
             socket = 0;
         }
+#ifdef __EMSCRIPTEN_PTHREADS__
+        // Delete is a UI barrier. Drain this connection's disabled Events on
+        // their owner before it exits, so canceled async tasks cannot leak.
+        if (callbacks) emscripten_proxy_execute_queue(callbacks->queue);
+#endif
         callbacks.reset();
         status = State::Closed;
         incoming.clear(); incomingBytes = 0;

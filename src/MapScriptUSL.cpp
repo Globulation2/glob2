@@ -100,7 +100,7 @@ void MapScriptUSL::addGlob2Values()
 
 
 MapScriptUSL::MapScriptUSL(Game* game, ClientCommandSink* client)
-	: usl(std::make_unique<Usl>()), game(game), client(client)
+	: usl(std::make_unique<Usl>(false)), game(game), client(client)
 {
 	addGlob2Values();
 }
@@ -138,7 +138,7 @@ bool MapScriptUSL::compileCode(const std::string& code)
 	// Replace the interpreter wholesale; the old instance's destructor frees its
 	// GC heap, scopes and threads. Nothing outside this class holds pointers into
 	// the old heap, so this cannot dangle.
-	usl = std::make_unique<Usl>();
+	usl = std::make_unique<Usl>(false);
 	addGlob2Values();
 	
 	const char* dirsToLoad[] = { "data/usl/Language/Runtime" , "data/usl/Glob2/Runtime", 0 };
@@ -209,10 +209,14 @@ void MapScriptUSL::syncStep()
 {
 	const size_t stepsMax = 10000;
 	
-	#ifdef DEBUG_USL
-		size_t stepsCount = usl->run(stepsMax);
-		std::cout << "* USL executed " << stepsCount << " steps" << std::endl;
-	#else
+	try
+	{
 		usl->run(stepsMax);
-	#endif
+	}
+	catch (const Exception& e)
+	{
+		error = MapScriptError(e.position.line, e.position.column, e.what());
+		usl->threads.clear();
+		std::cerr << "MapScriptUSL::syncStep(): " << e.what() << std::endl;
+	}
 }

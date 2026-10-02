@@ -9,7 +9,7 @@
 #include "ScriptEditorScreen.h"
 #include "Unit.h"
 #include "Utilities.h"
-#include "SDLCompat.h"
+#include <SDL3/SDL.h>
 
 MapEditorWidget::MapEditorWidget(MapEdit& me, const widgetRectangle& rectangle, const std::string& group, const std::string& name, const std::string& action)
 	: me(me), area(rectangle, globalContainer->gfx->getW()), group(group), name(name), action(action), enabled(false)

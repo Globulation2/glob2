@@ -1652,8 +1652,8 @@ Cortex
 انجام شد
 [settings Edit shortcut]
 ویرایش میانبر صفحه کلید
-[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
-بزرگ‌کردن منوها، متن و نوار کناری در نمایشگر با وضوح بالا.
+[settings Multiply the operating system display scale for menus, text and the sidebar.]
+مقیاس نمایش سیستم‌عامل را برای منوها، متن و نوار کناری ضرب کنید.
 [settings Flags]
 پرچم ها
 [settings Full]

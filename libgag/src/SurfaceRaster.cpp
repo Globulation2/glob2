@@ -11,9 +11,9 @@ namespace GAGCore::SurfaceRaster
 {
 namespace
 {
-void check(int result)
+void check(bool result)
 {
-	if (result < 0)
+	if (!result)
 		throw std::runtime_error(SDL_GetError());
 }
 class SourceState
@@ -62,8 +62,10 @@ class SourceState
 bool copyRows(SDL_Surface *target, SDL_Surface *source, SDL_Rect src, SDL_Rect dst,
 			  bool ignoreColorMod)
 {
-	if (source == target || source->format->format != target->format->format ||
-		source->format->BytesPerPixel != 4)
+	SDL_Rect targetClip;
+	check(SDL_GetSurfaceClipRect(target, &targetClip));
+	if (source == target || source->format != target->format ||
+		SDL_GetPixelFormatDetails(source->format)->bytes_per_pixel != 4)
 		return false;
 	Uint8 red, green, blue;
 	check(SDL_GetSurfaceColorMod(source, &red, &green, &blue));
@@ -71,18 +73,18 @@ bool copyRows(SDL_Surface *target, SDL_Surface *source, SDL_Rect src, SDL_Rect d
 		return false;
 	const SDL_Rect sourceBounds{0, 0, source->w, source->h};
 	SDL_Rect sourceVisible, visible;
-	if (!SDL_IntersectRect(&src, &sourceBounds, &sourceVisible))
+	if (!SDL_GetRectIntersection(&src, &sourceBounds, &sourceVisible))
 		return true;
 	dst.x += sourceVisible.x - src.x;
 	dst.y += sourceVisible.y - src.y;
 	dst.w = sourceVisible.w;
 	dst.h = sourceVisible.h;
-	if (!SDL_IntersectRect(&dst, &target->clip_rect, &visible))
+	if (!SDL_GetRectIntersection(&dst, &targetClip, &visible))
 		return true;
 	sourceVisible.x += visible.x - dst.x;
 	sourceVisible.y += visible.y - dst.y;
 	check(SDL_LockSurface(source));
-	if (SDL_LockSurface(target) < 0)
+	if (!SDL_LockSurface(target))
 	{
 		SDL_UnlockSurface(source);
 		throw std::runtime_error(SDL_GetError());
@@ -105,21 +107,25 @@ bool copyRows(SDL_Surface *target, SDL_Surface *source, SDL_Rect src, SDL_Rect d
 	SDL_UnlockSurface(source);
 	return true;
 }
-// SDL_BlitScaled clips and then rescales the remaining source rectangle. At
+// SDL_BlitSurfaceScaled clips and then rescales the remaining source rectangle. At
 // fractional sizes this changes sampling along a clipped edge. Map destination
 // pixel centers into the ORIGINAL rectangle instead, and clip only the writes.
 void nearest(SDL_Surface *target, SDL_Surface *source, const SDL_Rect &src, const SDL_Rect &dst,
 			 Uint8 opacity, bool isOpaque, bool triangleBlend)
 {
+	SDL_Rect targetClip;
+	check(SDL_GetSurfaceClipRect(target, &targetClip));
 	SDL_Rect visible;
-	if (!SDL_IntersectRect(&dst, &target->clip_rect, &visible))
+	if (!SDL_GetRectIntersection(&dst, &targetClip, &visible))
 		return;
-	if (target->format->BytesPerPixel != 4)
+	if (SDL_GetPixelFormatDetails(target->format)->bytes_per_pixel != 4)
 		throw std::invalid_argument("Nearest target must be 32-bit");
-	std::unique_ptr<SDL_Surface, decltype(&SDL_FreeSurface)> converted(nullptr, SDL_FreeSurface);
-	if (source == target || source->format->format != target->format->format)
+	const bool sameFormat = source->format == target->format;
+	std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> converted(nullptr,
+																		  SDL_DestroySurface);
+	if (source == target || source->format != target->format)
 	{
-		converted.reset(SDL_ConvertSurface(source, target->format, 0));
+		converted.reset(SDL_ConvertSurface(source, target->format));
 		if (!converted)
 			throw std::runtime_error(SDL_GetError());
 		source = converted.get();
@@ -129,19 +135,21 @@ void nearest(SDL_Surface *target, SDL_Surface *source, const SDL_Rect &src, cons
 	if (!triangleBlend)
 		check(SDL_GetSurfaceColorMod(source, &red, &green, &blue));
 	Uint32 key = 0;
-	const bool keyed = SDL_GetColorKey(source, &key) == 0;
+	const bool keyed = SDL_GetSurfaceColorKey(source, &key);
 	const bool separateTerms =
-		triangleBlend || opacity < 255 || red != 255 || green != 255 || blue != 255;
+		(triangleBlend && sameFormat) || opacity < 255 || red != 255 || green != 255 || blue != 255;
 	const bool copy = isOpaque && opacity == 255 && red == 255 && green == 255 && blue == 255;
-	const auto *format = source->format;
+	const auto *format = SDL_GetPixelFormatDetails(source->format);
 	const Uint32 alphaMask = format->Amask;
+	const bool rleBlend = triangleBlend && sameFormat && opacity == 255 && src.w == dst.w &&
+						  src.h == dst.h && alphaMask == 0xff000000;
 	const auto divide255 = [](Uint32 value) { return (value + 1 + (value >> 8)) >> 8; };
 	std::vector<int> columns(visible.w);
 	for (int x = 0; x < visible.w; ++x)
 		columns[x] = src.x + int(((std::int64_t(visible.x + x) - dst.x) * 2 + 1) * src.w /
 								 (std::int64_t(dst.w) * 2));
 	check(SDL_LockSurface(source));
-	if (SDL_LockSurface(target) < 0)
+	if (!SDL_LockSurface(target))
 	{
 		SDL_UnlockSurface(source);
 		throw std::runtime_error(SDL_GetError());
@@ -190,6 +198,17 @@ void nearest(SDL_Surface *target, SDL_Surface *source, const SDL_Rect &src, cons
 				continue;
 			}
 			const Uint32 destination = output[x], inverse = 255 - alpha;
+			if (rleBlend)
+			{
+				// SDL3 static software textures use RLE for same-format,
+				// unscaled ARGB blits, interpolating RGB with /256 arithmetic.
+				const Uint32 rb = value & 0x00ff00ff, destinationRB = destination & 0x00ff00ff;
+				const Uint32 g = value & 0x0000ff00, destinationG = destination & 0x0000ff00;
+				output[x] = ((destinationRB + (((rb - destinationRB) * alpha) >> 8)) & 0x00ff00ff) |
+							((destinationG + (((g - destinationG) * alpha) >> 8)) & 0x0000ff00) |
+							alphaMask;
+				continue;
+			}
 			// Two independent 16-bit lanes, with exact /255 rounding. Mask the
 			// correction per lane to avoid carries leaking between components.
 			const auto lane = [](Uint32 value)
@@ -197,8 +216,8 @@ void nearest(SDL_Surface *target, SDL_Surface *source, const SDL_Rect &src, cons
 			Uint32 rb, ga;
 			if (separateTerms)
 			{
-				// SDL's triangle blitter and modulated surface blitter truncate
-				// the source and destination terms independently.
+				// SDL3 recognizes rectangular geometry as texture blits. Modulated
+				// blits truncate source and destination terms independently.
 				rb =
 					lane((value & 0x00ff00ff) * alpha) + lane((destination & 0x00ff00ff) * inverse);
 				ga = lane(((value >> 8) & 0x00ff00ff) * alpha) +
@@ -228,7 +247,9 @@ void nearest(SDL_Surface *target, SDL_Surface *source, const SDL_Rect &src, cons
 // changing it would alter retained surfaces and native-scale output.
 void nativeAlpha(SDL_Surface *target, SDL_Surface *source, SDL_Rect src, SDL_Rect dst, Uint8 alpha)
 {
-	const SDL_Rect clip = target->clip_rect;
+	SDL_Rect targetClip;
+	check(SDL_GetSurfaceClipRect(target, &targetClip));
+	const SDL_Rect clip = targetClip;
 	if (dst.x < clip.x)
 	{
 		const int difference = clip.x - dst.x;
@@ -255,7 +276,7 @@ void nativeAlpha(SDL_Surface *target, SDL_Surface *source, SDL_Rect src, SDL_Rec
 	constexpr Uint32 alphaShift = 24;
 #endif
 	check(SDL_LockSurface(source));
-	if (SDL_LockSurface(target) < 0)
+	if (!SDL_LockSurface(target))
 	{
 		SDL_UnlockSurface(source);
 		throw std::runtime_error(SDL_GetError());
@@ -293,6 +314,8 @@ void nativeAlpha(SDL_Surface *target, SDL_Surface *source, SDL_Rect src, SDL_Rec
 void blit(SDL_Surface *target, SDL_Surface *source, const SDL_Rect &sourceRect,
 		  SDL_Rect destination, Uint8 alpha, bool isOpaque, BlitBlend blend)
 {
+	SDL_Rect targetClip;
+	check(SDL_GetSurfaceClipRect(target, &targetClip));
 	if (destination.w <= 0 || destination.h <= 0 || sourceRect.w <= 0 || sourceRect.h <= 0)
 		return;
 	if (blend == BlitBlend::Native && alpha < 255 && destination.w == sourceRect.w &&
@@ -323,11 +346,11 @@ void blit(SDL_Surface *target, SDL_Surface *source, const SDL_Rect &sourceRect,
 			saved.setBlend(SDL_BLENDMODE_NONE);
 		check(SDL_BlitSurface(source, &sourceRect, target, &destination));
 	}
-	else if (blend == BlitBlend::Surface && SDL_HasIntersection(&destination, &target->clip_rect) &&
-			 destination.x >= target->clip_rect.x && destination.y >= target->clip_rect.y &&
-			 destination.x + destination.w <= target->clip_rect.x + target->clip_rect.w &&
-			 destination.y + destination.h <= target->clip_rect.y + target->clip_rect.h &&
-			 sourceRect.x >= 0 && sourceRect.y >= 0 && sourceRect.x + sourceRect.w <= source->w &&
+	else if (blend == BlitBlend::Surface && SDL_HasRectIntersection(&destination, &targetClip) &&
+			 destination.x >= targetClip.x && destination.y >= targetClip.y &&
+			 destination.x + destination.w <= targetClip.x + targetClip.w &&
+			 destination.y + destination.h <= targetClip.y + targetClip.h && sourceRect.x >= 0 &&
+			 sourceRect.y >= 0 && sourceRect.x + sourceRect.w <= source->w &&
 			 sourceRect.y + sourceRect.h <= source->h)
 	{
 		// SDL's optimized nearest scaler is safe when neither rectangle is cut.
@@ -336,7 +359,8 @@ void blit(SDL_Surface *target, SDL_Surface *source, const SDL_Rect &sourceRect,
 		saved.setAlpha(alpha);
 		saved.setBlend(opaqueCopy ? SDL_BLENDMODE_NONE : SDL_BLENDMODE_BLEND);
 		SDL_Rect destinationCopy = destination;
-		check(SDL_BlitScaled(source, &sourceRect, target, &destinationCopy));
+		check(SDL_BlitSurfaceScaled(source, &sourceRect, target, &destinationCopy,
+									SDL_SCALEMODE_NEAREST));
 	}
 	else
 		nearest(target, source, sourceRect, destination, alpha, isOpaque,
@@ -345,12 +369,14 @@ void blit(SDL_Surface *target, SDL_Surface *source, const SDL_Rect &sourceRect,
 
 void fill(SDL_Surface *target, SDL_Rect rect, Uint32 color, Uint8 alpha, FillBlend blend)
 {
+	SDL_Rect targetClip;
+	check(SDL_GetSurfaceClipRect(target, &targetClip));
 	SDL_Rect clipped;
-	if (!SDL_IntersectRect(&rect, &target->clip_rect, &clipped))
+	if (!SDL_GetRectIntersection(&rect, &targetClip, &clipped))
 		return;
 	if (alpha == 255 && blend != FillBlend::Native)
 	{
-		check(SDL_FillRect(target, &clipped, color));
+		check(SDL_FillSurfaceRect(target, &clipped, color));
 		return;
 	}
 	if (blend == FillBlend::SourceOver && alpha == 0)
@@ -363,7 +389,8 @@ void fill(SDL_Surface *target, SDL_Rect rect, Uint32 color, Uint8 alpha, FillBle
 	// The presenter owns plain CPU buffers. SDL only requires a lock for
 	// RLE targets; avoid compatibility-layer calls for every small fog cell.
 	const bool needsLock = SDL_MUSTLOCK(target);
-	if (needsLock) check(SDL_LockSurface(target));
+	if (needsLock)
+		check(SDL_LockSurface(target));
 	// Copy the SDL-written rectangle to scalar bounds before pixel writes.
 	// Keeping an escaped SDL_Rect in the inner loop creates possible aliases
 	// with the destination and prevents the native blend loop from vectorizing.
@@ -377,8 +404,9 @@ void fill(SDL_Surface *target, SDL_Rect rect, Uint32 color, Uint8 alpha, FillBle
 		// vectorizable stores instead of entering SDL for every individual cell.
 		for (int y = top; y < bottom; ++y)
 		{
-			auto *pixel = reinterpret_cast<Uint32 *>(
-				static_cast<Uint8 *>(target->pixels) + y * target->pitch) + left;
+			auto *pixel = reinterpret_cast<Uint32 *>(static_cast<Uint8 *>(target->pixels) +
+													 y * target->pitch) +
+						  left;
 			std::fill_n(pixel, width, color);
 		}
 	}
@@ -386,8 +414,9 @@ void fill(SDL_Surface *target, SDL_Rect rect, Uint32 color, Uint8 alpha, FillBle
 	{
 		for (int y = top; y < bottom; ++y)
 		{
-			auto *pixel = reinterpret_cast<Uint32 *>(
-				static_cast<Uint8 *>(target->pixels) + y * target->pitch) + left;
+			auto *pixel = reinterpret_cast<Uint32 *>(static_cast<Uint8 *>(target->pixels) +
+													 y * target->pitch) +
+						  left;
 			for (int x = 0; x < width; ++x)
 			{
 				const Uint32 a = (pixel[x] & 0x00ff00ff) * inverse + redBlue;
@@ -398,26 +427,31 @@ void fill(SDL_Surface *target, SDL_Rect rect, Uint32 color, Uint8 alpha, FillBle
 	}
 	else
 	{
-		const Uint32 mask = target->format->Amask, shift = target->format->Ashift;
+		const Uint32 mask = SDL_GetPixelFormatDetails(target->format)->Amask,
+					 shift = SDL_GetPixelFormatDetails(target->format)->Ashift;
 		for (int y = top; y < bottom; ++y)
 		{
-			auto *pixel = reinterpret_cast<Uint32 *>(
-				static_cast<Uint8 *>(target->pixels) + y * target->pitch) + left;
+			auto *pixel = reinterpret_cast<Uint32 *>(static_cast<Uint8 *>(target->pixels) +
+													 y * target->pitch) +
+						  left;
 			for (int x = 0; x < width; ++x)
 			{
-				const Uint32 a = (pixel[x] & 0x00ff00ff) * inverse + redBlue;
-				const Uint32 b = ((pixel[x] >> 8) & 0x00ff00ff) * inverse + greenAlpha;
-				const Uint32 rb = a + 0x00010001 + ((a >> 8) & 0x00ff00ff);
-				const Uint32 ga = b + 0x00010001 + ((b >> 8) & 0x00ff00ff);
+				const auto lane = [](Uint32 value)
+				{ return ((value + 0x00010001 + ((value >> 8) & 0x00ff00ff)) >> 8) & 0x00ff00ff; };
+				// SDL3 recognizes uniform rectangular geometry as fill commands;
+				// its source-over path truncates each blend term separately.
+				const Uint32 rb = lane(redBlue) + lane((pixel[x] & 0x00ff00ff) * inverse);
+				const Uint32 ga = lane(greenAlpha) + lane(((pixel[x] >> 8) & 0x00ff00ff) * inverse);
 				const Uint32 product = ((pixel[x] & mask) >> shift) * inverse;
 				const Uint32 outAlpha = alpha + ((product + 1 + (product >> 8)) >> 8);
-				pixel[x] = (((rb >> 8) & 0x00ff00ff) | (ga & 0xff00ff00)) & ~mask;
+				pixel[x] = (rb | (ga << 8)) & ~mask;
 				if (mask)
 					pixel[x] |= outAlpha << shift;
 			}
 		}
 	}
-	if (needsLock) SDL_UnlockSurface(target);
+	if (needsLock)
+		SDL_UnlockSurface(target);
 }
 
 bool opaque(SDL_Surface *surface)
@@ -425,11 +459,12 @@ bool opaque(SDL_Surface *surface)
 	if (!surface)
 		return false;
 	Uint32 key;
-	if (SDL_GetColorKey(surface, &key) == 0)
+	if (SDL_GetSurfaceColorKey(surface, &key))
 		return false;
-	if (!surface->format->Amask)
+	const auto *details = SDL_GetPixelFormatDetails(surface->format);
+	if (!details->Amask)
 		return true;
-	if (surface->format->BytesPerPixel != 4)
+	if (details->bytes_per_pixel != 4)
 		return false;
 	check(SDL_LockSurface(surface));
 	bool result = true;
@@ -440,7 +475,7 @@ bool opaque(SDL_Surface *surface)
 		{
 			Uint32 pixel;
 			std::memcpy(&pixel, row + x * 4, 4);
-			if ((pixel & surface->format->Amask) != surface->format->Amask)
+			if ((pixel & details->Amask) != details->Amask)
 			{
 				result = false;
 				break;

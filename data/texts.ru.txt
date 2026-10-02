@@ -1652,8 +1652,8 @@ Cortex
 Готово
 [settings Edit shortcut]
 Изменить сочетание клавиш
-[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
-Увеличивает меню, текст и боковую панель на экране с высоким разрешением.
+[settings Multiply the operating system display scale for menus, text and the sidebar.]
+Умножает масштаб экрана операционной системы для меню, текста и боковой панели.
 [settings Flags]
 Флаги
 [settings Full]
