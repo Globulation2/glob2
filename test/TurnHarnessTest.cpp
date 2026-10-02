@@ -210,12 +210,17 @@ private:
 	}
 };
 
+// Named so call sites spell the link list's type: with a bare braced list such as
+// Match({{a}, {b}}), GCC also reads {a} as the links and {b} as aiSeats of a
+// temporary Match and reports the call as ambiguous with the move constructor.
+using Links = std::vector<LinkProfile>;
+
 struct Match
 {
 	SimNetwork net;
 	std::vector<std::unique_ptr<SimClient>> clients;
 
-	Match(const std::vector<LinkProfile>& links, std::vector<int> aiSeats = {}, SequencerConfig config = {})
+	Match(const Links& links, std::vector<int> aiSeats = {}, SequencerConfig config = {})
 	{
 		const int humans = static_cast<int>(links.size());
 		const int players = humans + static_cast<int>(aiSeats.size());
@@ -315,7 +320,7 @@ TEST_SUITE("TurnHarness")
 {
 	GLOB2_TEST_CASE("two clients on clean links execute identical turns", "[network-sim]")
 	{
-		Match m({{20 * MS}, {30 * MS}});
+		Match m(Links{{20 * MS}, {30 * MS}});
 		m.run(30 * SECOND);
 		m.settle();
 		m.requireIdenticalExecution();
@@ -333,7 +338,7 @@ TEST_SUITE("TurnHarness")
 
 	GLOB2_TEST_CASE("four clients with latency, jitter, loss and AI seats", "[network-sim]")
 	{
-		Match m({{15 * MS}, {60 * MS, 80 * MS}, {120 * MS, 20 * MS, 0.03}, {40 * MS, 10 * MS, 0.01}}, {4, 5});
+		Match m(Links{{15 * MS}, {60 * MS, 80 * MS}, {120 * MS, 20 * MS, 0.03}, {40 * MS, 10 * MS, 0.01}}, {4, 5});
 		m.run(60 * SECOND);
 		m.settle();
 		m.requireIdenticalExecution();
@@ -374,7 +379,7 @@ TEST_SUITE("TurnHarness")
 
 	GLOB2_TEST_CASE("a stalled client stalls only itself and resumes from its horizon", "[network-sim]")
 	{
-		Match m({{20 * MS}, {25 * MS}, {30 * MS}});
+		Match m(Links{{20 * MS}, {25 * MS}, {30 * MS}});
 		m.run(10 * SECOND);
 		auto& victim = *m.clients[2];
 		const std::uint32_t before0 = m.clients[0]->session->executedTick();
@@ -402,7 +407,7 @@ TEST_SUITE("TurnHarness")
 
 	GLOB2_TEST_CASE("a restarted client reloads, replays the full log and rejoins", "[network-sim]")
 	{
-		Match m({{20 * MS}, {50 * MS, 30 * MS}}, {2});
+		Match m(Links{{20 * MS}, {50 * MS, 30 * MS}}, {2});
 		m.run(20 * SECOND);
 		const std::uint32_t horizonAtRestart = m.net.relay->horizon();
 		m.clients[1]->transport->close();
@@ -417,7 +422,7 @@ TEST_SUITE("TurnHarness")
 
 	GLOB2_TEST_CASE("a diverged client in a three-player match is repaired by rejoin", "[network-sim]")
 	{
-		Match m({{20 * MS}, {30 * MS, 10 * MS}, {40 * MS}});
+		Match m(Links{{20 * MS}, {30 * MS, 10 * MS}, {40 * MS}});
 		m.clients[1]->corruptAtTick = 300;
 		m.run(40 * SECOND);
 		CHECK(m.clients[1]->reloads == 1);
@@ -443,7 +448,7 @@ TEST_SUITE("TurnHarness")
 
 	GLOB2_TEST_CASE("two diverged clients are flagged and keep playing", "[network-sim]")
 	{
-		Match m({{20 * MS}, {30 * MS}});
+		Match m(Links{{20 * MS}, {30 * MS}});
 		m.clients[1]->corruptAtTick = 100;
 		m.run(15 * SECOND);
 		CHECK(m.net.relay->desyncFlagged());
@@ -455,7 +460,7 @@ TEST_SUITE("TurnHarness")
 
 	GLOB2_TEST_CASE("the input delay rises with jitter and returns when it subsides", "[network-sim][artifacts]")
 	{
-		Match m({{20 * MS}, {30 * MS}});
+		Match m(Links{{20 * MS}, {30 * MS}});
 		std::ostringstream trace;
 		trace << "seconds target_ticks jitter_ms buffered_ticks\n";
 		std::uint64_t lastTrace = 0;
@@ -490,7 +495,7 @@ TEST_SUITE("TurnHarness")
 	{
 		SequencerConfig config;
 		config.graceMicros = 5 * SECOND;
-		Match m({{20 * MS}, {30 * MS}, {25 * MS}}, {}, config);
+		Match m(Links{{20 * MS}, {30 * MS}, {25 * MS}}, {}, config);
 		m.run(5 * SECOND);
 		m.clients[2]->session->quit();
 		m.clients[2]->stopped = true;
