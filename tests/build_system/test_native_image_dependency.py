@@ -57,6 +57,9 @@ class LinuxRuntimeInstallTests(unittest.TestCase):
             root = Path(temporary)
             prefix = root / 'prefix'
             (prefix / 'lib').mkdir(parents=True)
+            notice = prefix / 'share/licenses/SDL2_image/LICENSE.txt'
+            notice.parent.mkdir(parents=True)
+            notice.write_text('decoder license')
             canonical = prefix / 'lib/libSDL2_image.so.0.800.12'
             canonical.write_bytes(b'decoder')
             (prefix / 'lib/libSDL2_image.so.0').symlink_to(canonical.name)
@@ -64,7 +67,7 @@ class LinuxRuntimeInstallTests(unittest.TestCase):
             (root / 'SConstruct').write_text(
                 'import sys\nsys.path.insert(0, '+repr(str(Path(__file__).resolve().parents[2] / 'scons'))+')\n'
                 'from install_image_runtime import install_runtime\n'
-                'env=Environment(tools=[], BINDIR='+repr(str(root / 'stage/usr/bin'))+')\n'
+                'env=Environment(tools=[], BINDIR='+repr(str(root / 'stage/usr/bin'))+', INSTALLDIR='+repr(str(root / 'stage/usr/share'))+')\n'
                 'install_runtime(env, '+repr(str(prefix))+')\n')
             subprocess.run(['scons', '-Q', 'install'], cwd=root, check=True, capture_output=True)
             installed = root / 'stage/usr/lib/glob2'

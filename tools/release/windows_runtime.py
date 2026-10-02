@@ -69,6 +69,9 @@ def stage_dlls(executable, runtime_dirs, destination, inspect=imports):
     if marker.is_file():
         prefix = Path(json.loads(marker.read_text())["prefix"])
         runtime_dirs = [prefix / "bin", *runtime_dirs]
+        notices = Path(destination) / 'licenses'
+        notices.mkdir(exist_ok=True)
+        shutil.copy2(prefix / 'share/licenses/SDL2_image/LICENSE.txt', notices / 'SDL2_image.txt')
     available = {}
     for runtime in runtime_dirs:
         runtime = Path(runtime)

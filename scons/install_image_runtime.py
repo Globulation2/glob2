@@ -14,6 +14,10 @@ def install_runtime(env, prefix):
         raise ValueError("Lean image prefix contains ambiguous runtime versions")
     canonical = next(iter(real))
     installed = env.Install(str(directory), str(canonical))
+    notice = Path(prefix) / 'share/licenses/SDL2_image/LICENSE.txt'
+    if not notice.is_file():
+        raise ValueError('Lean image prefix is missing its license notice')
+    notices = env.InstallAs(str(Path(env['INSTALLDIR']) / 'doc/glob2/SDL2_image-LICENSE.txt'), str(notice))
 
     def alias(target, source, env):
         path = Path(target[0].abspath)
@@ -26,4 +30,4 @@ def install_runtime(env, prefix):
         for path in sources
         if path.name != canonical.name
     ]
-    env.Alias("install", [installed, *aliases])
+    env.Alias("install", [installed, notices, *aliases])
