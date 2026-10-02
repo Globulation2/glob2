@@ -166,7 +166,9 @@ void CustomGameScreen::useForRoom(const CustomGameSetup &draft, int tab)
 {
 	forRoom = true;
 	setup = draft;
-	// Online rooms play generated maps: the platform generates them for everyone.
+	// The editor opens on the room's generated map. A premade or own map chosen here
+	// is uploaded by the room (PlatformRoom::usePremadeMap); a random one is generated
+	// by the platform for everyone.
 	setup.random = true;
 	invalidatePreview();
 	selectTab(tab);
@@ -178,6 +180,8 @@ void CustomGameScreen::launch()
 		return;
 	if (forRoom)
 	{
+		if (!setup.random && !validMap)
+			return;
 		endExecute(OK);
 		return;
 	}
@@ -813,7 +817,7 @@ Element CustomGameScreen::build(const Presentation &p)
 	const std::string note = error.empty() ? message : tr(error);
 	bool ready = error.empty() && (!narrow || (validMap && !previewBusy() && (!setup.random || previewRevision == setup.mapRevision)));
 	if (forRoom)
-		ready = setup.validation().empty();
+		ready = setup.validation().empty() && (setup.random || validMap);
 	std::string startLabel = !setup.humanColony() ? tr(setup.random && !validMap ? "Generate & watch" : "Watch game")
 												: tr(setup.random ? (validMap ? "Play this map" : "Generate & play") : "Start game");
 	if (forRoom)
