@@ -284,17 +284,14 @@ TEST_CASE("retained format126 Maxima save preserves identities and subsequent AI
         return states;
     };
     CHECK(directors(restored.game) == directors(legacy.game));
-    auto legacyRandom = syncRandEngine(), restoredRandom = legacyRandom;
+    CHECK(restored.game.syncRandom == legacy.game.syncRandom);
     std::ostringstream trace;
     for (int tick = 0; tick < 128; ++tick)
     {
         CAPTURE(tick);
-        syncRandEngine() = legacyRandom;
         const auto expectedOrders = glob2test::stepAI(legacy.game);
-        legacyRandom = syncRandEngine();
-        syncRandEngine() = restoredRandom;
         CHECK(glob2test::stepAI(restored.game) == expectedOrders);
-        restoredRandom = syncRandEngine();
+        CHECK(restored.game.syncRandom == legacy.game.syncRandom);
         before.clear(); beforeBuildings.clear(); beforeUnits.clear();
         after.clear(); afterBuildings.clear(); afterUnits.clear();
         legacy.game.checkSum(&before, &beforeBuildings, &beforeUnits, true);
