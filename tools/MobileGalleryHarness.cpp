@@ -909,23 +909,27 @@ class MobileGalleryGameplay
 			gui.touch->panelOpen = false;
 		}
 		{
-			// Online play: the connection panel and cards from fixed snapshots.
+			// Online play: the connection panel and cards from fixed snapshots. Values sit
+			// on both sides of the shared thresholds (ConnectionQuality.h): Ping good
+			// under 150 ms, Behind good under 1 s, Delay good under 200 ms.
 			ConnectionSnapshot snapshot;
-			auto add = [&](int seat, const std::string &name, int team, ConnectionRow::State state, int ms, bool local = false) {
+			auto add = [&](int seat, const std::string &name, int team, ConnectionRow::State state, int pingMs,
+						   int behindMs, bool local = false) {
 				ConnectionRow row;
 				row.seat = seat;
 				row.name = name;
-				row.color = gui.game.teams[team]->color;
+				row.color = gui.game.teams[team % gui.game.mapHeader.getNumberOfTeams()]->color;
 				row.state = state;
-				row.latencyMs = ms;
+				row.pingMs = pingMs;
+				row.behindMs = behindMs;
 				row.local = local;
 				snapshot.rows.push_back(row);
 			};
-			add(0, "Amber colony", 0, ConnectionRow::State::Connected, 80, true);
-			add(1, "Violet colony", 1, ConnectionRow::State::Connected, 64);
-			add(2, "Jade colony", 2, ConnectionRow::State::AI, -1);
-			snapshot.inputDelayMs = 80;
-			snapshot.rttMs = 28;
+			add(0, "Amber colony", 0, ConnectionRow::State::Connected, 42, -1, true);
+			add(1, "Violet colony", 1, ConnectionRow::State::Connected, 64, 420);
+			add(2, "Jade colony", 2, ConnectionRow::State::AI, -1, -1);
+			snapshot.inputDelayMs = 171;
+			snapshot.jitterMs = 9;
 			snapshot.relay = "eu-west-2";
 			gui.connectionOverlay = std::make_unique<ConnectionOverlay>();
 			gui.connectionOverlay->source = [&] { return snapshot; };
@@ -936,11 +940,30 @@ class MobileGalleryGameplay
 			gui.connectionOverlay->openDetails(true);
 			capture("game-connection-details");
 			gui.connectionOverlay->openDetails(false);
-			snapshot.rows[1].state = ConnectionRow::State::Slow;
-			snapshot.rows[1].latencyMs = 310;
-			snapshot.rows[0].unstable = true;
-			snapshot.rows[0].latencyMs = 240;
+			// Fair Ping on our side, a player falling behind, and a slow one.
+			snapshot.rows[0].pingMs = 240;
+			snapshot.inputDelayMs = 420;
+			snapshot.jitterMs = 85;
+			snapshot.ownUnstable = true;
+			snapshot.rows[1].state = ConnectionRow::State::Connected;
+			snapshot.rows[1].pingMs = 90;
+			snapshot.rows[1].behindMs = 1320;
+			add(3, "Crimson colony", 3, ConnectionRow::State::Slow, 310, 2600);
 			capture("game-connection-own");
+			gui.connectionOverlay->openDetails(true);
+			capture("game-connection-own-details");
+			gui.connectionOverlay->openDetails(false);
+			// Beyond four people phones show markers and numbers.
+			const auto four = snapshot.rows;
+			add(4, "Azure colony", 4, ConnectionRow::State::Connected, 120, 380);
+			add(5, "Ochre colony", 5, ConnectionRow::State::Left, -1, -1);
+			add(6, "Rose colony", 6, ConnectionRow::State::Connected, 35, 250);
+			capture("game-connection-grid");
+			gui.connectionOverlay->openDetails(true);
+			capture("game-connection-grid-details");
+			gui.connectionOverlay->openDetails(false);
+			snapshot.rows = four;
+			snapshot.rows.pop_back();
 			snapshot.card = ConnectionSnapshot::Card::Reconnecting;
 			snapshot.attempt = 2;
 			snapshot.graceSeconds = 161;
