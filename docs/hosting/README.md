@@ -592,7 +592,8 @@ the VM only.
 4. **Configuration.** Keep the env file and `instance.yaml` outside the checkout,
    e.g. in a `0700` directory. Beyond [Setup from zero](#setup-from-zero), set
    `GLOB2_BIND=0.0.0.0`, `GLOB2_HTTP_PORT=80`, `GLOB2_HTTPS_PORT=443`,
-   `GLOB2_DOMAIN`, `GLOB2_PUBLIC_ORIGIN`, and point `GLOB2_INSTANCE_CONFIG`,
+   `GLOB2_DOMAIN`, `GLOB2_PUBLIC_ORIGIN` (and `GLOB2_REDIRECT_DOMAINS=www.<domain>`
+   to redirect the `www` name), and point `GLOB2_INSTANCE_CONFIG`,
    `GLOB2_ENV_FILE` and `GLOB2_WEB_CLIENT_DIR` at absolute paths. With no sign-in
    providers yet, enable guests and `auth.local` in `instance.yaml`; a provider is
    added later by registering it ([Sign-in providers](#sign-in-providers)), adding
