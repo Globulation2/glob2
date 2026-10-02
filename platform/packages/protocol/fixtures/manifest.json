@@ -524,6 +524,12 @@
       "note": "Every client agreed with the verifier."
     },
     {
+      "file": "valid/VerifyVerdict/verified-with-history.json",
+      "schema": "VerifyVerdict",
+      "valid": true,
+      "note": "Teams may carry final counters and the 512-tick timeline from the verifier result."
+    },
+    {
       "file": "valid/VerifyVerdict/diverged.json",
       "schema": "VerifyVerdict",
       "valid": true,
