@@ -31,6 +31,7 @@ def establish_options(env):
     opts.Add("BINDIR", "Binary Installation Directory", "/usr/local/bin")
     opts.Add("DATADIR", "Directory where data will be put, set to the same as INSTALLDIR", "/usr/local/share")
     opts.Add(BoolVariable("release", "Build for release", 0))
+    opts.Add("size_optimization", "Opt-in GCC release experiment: none, gc, lto, size", "none")
     opts.Add(BoolVariable("lean_images", "Use private PNG/JPEG/WebP SDL_image for native release packages", 0))
     opts.Add("optimized_assets", "Optimize installed client assets: auto, 0, or 1", "auto")
     opts.Add(BoolVariable("china", "Build the mainland China local-play client", 0))
@@ -435,6 +436,8 @@ def main():
         if not isDarwinPlatform:
             env.Append(CXXFLAGS=["-s"])
             env.Append(LINKFLAGS=["-s", "-fwhole-program"])
+    from size_optimization import apply as apply_size_optimization
+    apply_size_optimization(env, env['size_optimization'])
     if env['profile']:
         env.Append(CXXFLAGS=["-pg"])
         env.Append(LINKFLAGS=["-pg"])
