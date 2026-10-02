@@ -16,7 +16,7 @@ class OverlayArea;
 struct Scene
 {
 	Uint32 tick = 0;
-	//! When that tick finished (SDL_GetTicks64) and the interval to the next one in
+	//! When that tick finished (SDL_GetTicks) and the interval to the next one in
 	//! milliseconds (0 when the simulation runs uncapped), for drawing units between ticks.
 	Uint64 tickTime = 0;
 	Uint32 tickInterval = 0;
