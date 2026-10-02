@@ -5,7 +5,7 @@ import { randomUUID } from 'node:crypto';
 import type { Kysely } from 'kysely';
 import type { MapPoolEntry } from '@glob2/core';
 import type { Database } from '@glob2/db';
-import { STANDARD_RULES, type MatchSetup, parseSimVersionKey } from '@glob2/protocol';
+import { STANDARD_RULES, type MatchSetup, parseSimVersionKey, playerSeats } from '@glob2/protocol';
 import type { RatedAi } from '../ratings/entities.ts';
 
 export interface ProposalSeat {
@@ -154,7 +154,7 @@ async function insertQueueMatch(
     await trx
       .insertInto('match_participants')
       .values(
-        setup.seats.map((seat) => ({
+        playerSeats(setup).map((seat) => ({
           match_id: matchId,
           seat: seat.seat,
           team: seat.team,

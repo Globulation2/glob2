@@ -10,7 +10,13 @@ import { applyEngineJobResult } from '@glob2/core';
 import type { Database } from '@glob2/db';
 import { applyMapJobResult } from '../play/maps.ts';
 import type { MatchSetup, VerifyVerdict } from '@glob2/protocol';
-import { decideRating, participantOutcomes, type RecordedOutcome } from './outcome.ts';
+import {
+  contestedTeams,
+  decideRating,
+  isEmptySeat,
+  participantOutcomes,
+  type RecordedOutcome,
+} from './outcome.ts';
 import { ensureAccountEntity, ensureAiEntity, ensureRating, type RatedAi } from './entities.ts';
 import { displayRating, rateSides } from './scale.ts';
 import { recordWarmMapResult } from '../warmMaps.ts';
@@ -97,12 +103,20 @@ export async function recordVerification(db: Db, jobId: string): Promise<Verific
       const outcome = verdict.outcome;
       // A shared win (teams of more than one alliance won, e.g. a sudden-death
       // tie) is recorded as a draw for those teams and their participants.
+      // Empty seats never win or share a win: closed teams have lost from the
+      // start, and older matches' idle colonies (AI `none`) are left out.
       const setup = match.setup as unknown as MatchSetup | null;
       const recorded = participantOutcomes(
         new Map((setup?.teams ?? []).map((t) => [t.team, t.alliance])),
         new Map(outcome.teams.map((t) => [t.team, t.outcome])),
+        setup ? contestedTeams(setup.seats) : undefined,
+      );
+      // A closed team has no colony and nobody to show it for: no stats row.
+      const closed = new Set(
+        (setup?.seats ?? []).flatMap((s) => (s.kind === 'closed' ? [s.team] : [])),
       );
       for (const team of outcome.teams) {
+        if (closed.has(team.team)) continue;
         const teamOutcome = recorded.get(team.team) ?? team.outcome;
         // Final counters and the 512-tick timeline come from the verifier's
         // result.json (engine-agent); older agents send neither.
@@ -246,12 +260,15 @@ export async function applyMatchRatings(
     const ladder = match.queue_id;
     const setup = match.setup as unknown as MatchSetup;
 
-    const participants = await trx
-      .selectFrom('match_participants')
-      .selectAll()
-      .where('match_id', '=', matchId)
-      .orderBy('seat')
-      .execute();
+    // Empty seats (AI `none`) are not rated and take no side.
+    const participants = (
+      await trx
+        .selectFrom('match_participants')
+        .selectAll()
+        .where('match_id', '=', matchId)
+        .orderBy('seat')
+        .execute()
+    ).filter((p) => !isEmptySeat({ team: p.team, kind: p.kind, ai: p.ai_id }));
     const teamStats = await trx
       .selectFrom('match_team_stats')
       .select(['team', 'outcome'])

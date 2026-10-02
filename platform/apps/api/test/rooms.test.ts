@@ -312,14 +312,15 @@ describe('rooms', () => {
       expect(assignment['matchId']).toBe(matchId);
       expect(assignment['relayUrl']).toBe('wss://relay-eu-1.relays.test/relay');
       const setup = assignment['setup'] as {
-        seats: { seat: number; kind: string; ai?: string; accountId?: string }[];
+        seats: { seat: number; kind: string; team: number; ai?: string; accountId?: string }[];
         map: { kind: string; hash: string };
         teams: { alliance: number }[];
         seed: number;
       };
       expect(setup.map).toMatchObject({ kind: 'generated', hash: room.map!.hash });
-      expect(setup.seats.map((s) => s.kind)).toEqual(['human', 'human', 'ai']);
-      expect(setup.seats[2]!.ai).toBe('none'); // the locked, empty seat
+      // The locked, empty seat's team is closed: no player, no colony.
+      expect(setup.seats.map((s) => s.kind)).toEqual(['human', 'human', 'closed']);
+      expect(setup.seats[2]).toEqual({ seat: 2, kind: 'closed', team: 2 });
       expect(setup.teams.map((t) => t.alliance)).toEqual([0, 1, 1]);
       expect(assignment['mapUrl']).toBe(`${ORIGIN}/api/v1/blobs/maps/${room.map!.hash}`);
 
@@ -352,6 +353,17 @@ describe('rooms', () => {
       relay_id: 'relay-eu-1',
     });
     expect(match.seed).toBe((match.setup as { seed: number }).seed);
+    // Participants are the players; the closed seat is none.
+    const participants = await harness.database.db
+      .selectFrom('match_participants')
+      .select(['seat', 'team', 'kind'])
+      .where('match_id', '=', matchId)
+      .orderBy('seat')
+      .execute();
+    expect(participants).toEqual([
+      { seat: 0, team: 0, kind: 'human' },
+      { seat: 1, team: 1, kind: 'human' },
+    ]);
 
     // match.reconnect re-issues a ticket for the running match.
     const again = await guest.client.ok('match.reconnect', { matchId });
