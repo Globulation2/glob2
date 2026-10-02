@@ -47,6 +47,7 @@ class ChangedPathsTest(unittest.TestCase):
         package = (root / ".github/workflows/steam-windows-package.yml").read_text()
         paths = package.split("    paths:\n", 1)[1].split("\npermissions:", 1)[0]
         self.assertNotIn("docs/development/reference.md", paths)
+        self.assertIn("cancel-in-progress: ${{ github.event_name == 'pull_request' }}", package)
         for filename in ("tools/package_steam_windows.py", "test/test_steam_windows_package.py",
                          ".github/workflows/steam-windows-package.yml"):
             self.assertIn(filename, paths)
