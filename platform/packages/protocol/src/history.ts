@@ -11,6 +11,7 @@
 //   GET /api/v1/matches/{id}                                                       MatchDetail
 //   GET /api/v1/matches/{id}/artifacts/{record|replay|result}                      the file
 //   GET /api/v1/admin/matches?q=&status=&cursor=                                   MatchList (moderators)
+//   GET /api/v1/stats                                                              InstanceStats
 import { Type, type Static } from 'typebox';
 import { Open, SeatIndex, Timestamp, Uuid } from './common.ts';
 import { MatchSetup } from './matchSetup.ts';
@@ -248,3 +249,25 @@ export const MatchDetail = Open(
   { description: 'GET /api/v1/matches/{id}.' },
 );
 export type MatchDetail = Static<typeof MatchDetail>;
+
+// ------------------------------------------------------------- live stats
+
+/** Activity numbers for the web app's home page; cached by the API for a short while. */
+export const InstanceStats = Open(
+  {
+    playersOnline: Type.Integer({
+      minimum: 0,
+      description:
+        'Accounts connected in the last activeWindowMinutes, in a room, or playing a match that has not ended.',
+    }),
+    activeWindowMinutes: Type.Integer({ minimum: 1 }),
+    liveMatches: Type.Integer({ minimum: 0, description: 'Matches starting or running now.' }),
+    matchesToday: Type.Integer({
+      minimum: 0,
+      description: 'Matches created in the last 24 hours, cancelled ones excluded.',
+    }),
+    generatedAt: Timestamp,
+  },
+  { description: 'GET /api/v1/stats.' },
+);
+export type InstanceStats = Static<typeof InstanceStats>;

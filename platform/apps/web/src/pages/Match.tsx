@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type CSSProperties } from 'react';
 import type {
   MatchDetail,
   MatchParticipant,
@@ -6,6 +6,8 @@ import type {
   TeamTimelinePoint,
 } from '@glob2/protocol';
 import { api } from '../api.ts';
+import { GameArt } from '../art.tsx';
+import { seriesInk, teamInk } from '../colors.ts';
 import { LineChart } from '../components/LineChart.tsx';
 import { Loaded, StatusBadge, VerificationBadge } from '../components/common.tsx';
 import {
@@ -21,6 +23,7 @@ import {
 } from '../format.ts';
 import { Link } from '../router.tsx';
 import { useLoad, useSession } from '../state.tsx';
+import { useTheme } from '../theme.tsx';
 
 /** The browser build of the game; `?replay=<url>` opens a replay (browser/shell.html). */
 export function watchUrl(replayUrl: string): string {
@@ -36,12 +39,54 @@ const VERDICT_TEXT: Record<string, string> = {
   not_applicable: 'This match is not checked.',
 };
 
+/** Teams on the match's map: the engine colours teams by this count. */
+function teamCount(detail: MatchDetail): number {
+  return Math.max(
+    detail.setup?.teams?.length ?? 0,
+    ...detail.match.participants.map((p) => p.team + 1),
+    ...detail.teams.map((t) => t.team + 1),
+  );
+}
+
 function teamName(detail: MatchDetail, team: number): string {
   const members = detail.match.participants.filter((p) => p.team === team);
   return members.length ? members.map(participantName).join(' + ') : `Team ${team + 1}`;
 }
 
+function TeamCards({ detail }: { detail: MatchDetail }) {
+  const count = teamCount(detail);
+  const teams = [...new Set(detail.match.participants.map((p) => p.team))].sort((a, b) => a - b);
+  if (teams.length < 2) return null;
+  return (
+    <div className="teams">
+      {teams.map((team) => {
+        const stats = detail.teams.find((t) => t.team === team);
+        const members = detail.match.participants.filter((p) => p.team === team);
+        const outcome = members[0]?.outcome ?? stats?.outcome;
+        const won = outcome === 'won';
+        return (
+          <div
+            key={team}
+            className={`team-card${won ? ' won' : ''}`}
+            style={{ '--team': teamColor(team, count) } as CSSProperties}
+          >
+            {won && <GameArt name="clearingFlag" size={44} className="crown" />}
+            <div className="outcome">
+              {outcome ? (won ? 'Winner' : outcome === 'draw' ? 'Draw' : outcome) : 'Team'}
+            </div>
+            <div style={{ fontWeight: 750, fontSize: 'var(--text-lg)' }}>
+              {teamName(detail, team)}
+            </div>
+            {stats && <div className="caption">Prestige {stats.prestige}</div>}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 function Participants({ detail }: { detail: MatchDetail }) {
+  const count = teamCount(detail);
   const rows = [...detail.match.participants].sort((a, b) => a.team - b.team || a.seat - b.seat);
   const rejections = new Map(
     (detail.verificationDetail?.orderRejections ?? []).map((r) => [r.seat, r]),
@@ -64,7 +109,7 @@ function Participants({ detail }: { detail: MatchDetail }) {
             return (
               <tr key={p.seat} data-testid="participant">
                 <td>
-                  <span className="sw" style={{ background: teamColor(p.team) }} />{' '}
+                  <span className="sw" style={{ background: teamColor(p.team, count) }} />{' '}
                   {p.kind === 'human' && p.accountId ? (
                     <Link to={`/players/${p.accountId}`}>{p.displayName}</Link>
                   ) : p.kind === 'ai' ? (
@@ -118,6 +163,12 @@ const QUALITY_BADGE: Record<ParticipantNetwork['quality'], string> = {
   poor: 'badge bad',
 };
 
+const QUALITY_LABEL: Record<ParticipantNetwork['quality'], string> = {
+  good: 'Good',
+  fair: 'Fair',
+  poor: 'Poor',
+};
+
 function seconds(ms: number): string {
   if (ms === 0) return '–';
   return ms < 10_000 ? `${(ms / 1000).toFixed(1)} s` : `${Math.round(ms / 1000)} s`;
@@ -131,6 +182,7 @@ function Connection({ detail }: { detail: MatchDetail }) {
     const p = detail.match.participants.find((x) => x.seat === seat);
     return p ? participantName(p) : `Seat ${seat + 1}`;
   };
+  const count = teamCount(detail);
   const team = (seat: number) => detail.match.participants.find((x) => x.seat === seat)?.team;
   return (
     <section className="net-quality" data-testid="network">
@@ -156,15 +208,25 @@ function Connection({ detail }: { detail: MatchDetail }) {
                   <td>
                     {t !== undefined && (
                       <>
-                        <span className="sw" style={{ background: teamColor(t) }} />{' '}
+                        <span className="sw" style={{ background: teamColor(t, count) }} />{' '}
                       </>
                     )}
                     {player(n.seat)}
-                    {n.rejoins > 0 && <span className="badge warn"> resynced</span>}
-                    {n.leftBy === 'grace' && <span className="badge bad"> dropped</span>}
+                    {n.rejoins > 0 && (
+                      <>
+                        {' '}
+                        <span className="badge warn">resynced</span>
+                      </>
+                    )}
+                    {n.leftBy === 'grace' && (
+                      <>
+                        {' '}
+                        <span className="badge bad">dropped</span>
+                      </>
+                    )}
                   </td>
                   <td>
-                    <span className={QUALITY_BADGE[n.quality]}>{n.quality}</span>
+                    <span className={QUALITY_BADGE[n.quality]}>{QUALITY_LABEL[n.quality]}</span>
                   </td>
                   <td className="num">
                     {n.rttMs ? (
@@ -199,6 +261,8 @@ function Connection({ detail }: { detail: MatchDetail }) {
 }
 
 function Timelines({ detail }: { detail: MatchDetail }) {
+  const { theme } = useTheme();
+  const count = teamCount(detail);
   const teams = detail.teams.filter((t) => t.timeline.length > 0);
   if (teams.length === 0) {
     return (
@@ -216,13 +280,13 @@ function Timelines({ detail }: { detail: MatchDetail }) {
       xFormat={tickTime}
       series={teams.map((t) => ({
         name: teamName(detail, t.team),
-        color: teamColor(t.team),
+        color: teamInk(t.team, count, theme),
         points: t.timeline.map((p) => ({ x: p.tick, y: pick(p) })),
       }))}
     />
   );
   return (
-    <div className="grid3" data-testid="timelines">
+    <div className="charts" data-testid="timelines">
       {chart('Units', (p) => p.units)}
       {chart('Buildings', (p) => p.buildings)}
       {chart('Prestige', (p) => p.prestige)}
@@ -231,6 +295,7 @@ function Timelines({ detail }: { detail: MatchDetail }) {
 }
 
 function Economy({ detail }: { detail: MatchDetail }) {
+  const { theme } = useTheme();
   const curves = detail.economy ?? [];
   const [pick, setPick] = useState(0);
   const curve = curves[pick];
@@ -239,7 +304,7 @@ function Economy({ detail }: { detail: MatchDetail }) {
     detail.match.participants.find((p) => p.accountId === curve.accountId)?.displayName ?? 'Player';
   return (
     <>
-      <div className="toolbar">
+      <div className="toolbar" style={{ marginTop: 'var(--sp-6)' }}>
         <h2 className="grow" style={{ margin: 0 }}>
           Economy against each player’s average
         </h2>
@@ -265,12 +330,12 @@ function Economy({ detail }: { detail: MatchDetail }) {
         series={[
           {
             name: 'This match',
-            color: 'var(--s1)',
+            color: seriesInk(0, theme),
             points: curve.points.map((p) => ({ x: p.tick, y: p.units })),
           },
           {
             name: `${name}’s average`,
-            color: 'var(--s2)',
+            color: seriesInk(1, theme),
             dashed: true,
             points: curve.points.map((p) => ({ x: p.tick, y: p.averageUnits })),
           },
@@ -288,9 +353,9 @@ function Verification({ detail }: { detail: MatchDetail }) {
   };
   return (
     <div className="card">
-      <h3>
+      <h2 className="card-title">
         Verification <VerificationBadge match={detail.match} />
-      </h3>
+      </h2>
       <p style={{ margin: '0 0 6px' }}>{VERDICT_TEXT[detail.match.verification]}</p>
       {v?.reason && <p className="caption">Reason: {v.reason}</p>}
       {v?.ratingNote && <p className="caption">Ratings: {v.ratingNote}</p>}
@@ -336,7 +401,7 @@ function Replay({ detail }: { detail: MatchDetail }) {
   const record = detail.artifacts.find((a) => a.kind === 'record');
   return (
     <div className="card">
-      <h3>Replay</h3>
+      <h2 className="card-title">Replay</h2>
       {replay ? (
         <>
           <p className="caption" style={{ margin: '0 0 8px' }}>
@@ -369,6 +434,7 @@ function Replay({ detail }: { detail: MatchDetail }) {
 }
 
 function Statistics({ detail }: { detail: MatchDetail }) {
+  const count = teamCount(detail);
   const keys = [...new Set(detail.teams.flatMap((t) => Object.keys(t.statistics)))].sort();
   if (keys.length === 0) return null;
   const label = (key: string) => key.replace(/([A-Z])/g, ' $1').toLowerCase();
@@ -379,10 +445,12 @@ function Statistics({ detail }: { detail: MatchDetail }) {
         <table className="data">
           <thead>
             <tr>
-              <th />
+              <th>
+                <span className="sr-only">Statistic</span>
+              </th>
               {detail.teams.map((t) => (
                 <th key={t.team} className="num">
-                  <span className="sw" style={{ background: teamColor(t.team) }} />{' '}
+                  <span className="sw" style={{ background: teamColor(t.team, count) }} />{' '}
                   {teamName(detail, t.team)}
                 </th>
               ))}
@@ -425,12 +493,13 @@ export function Match({ id }: { id: string }) {
         const map = detail.map;
         return (
           <>
-            <div className="page-head">
+            <div className="page-head match-head">
+              <GameArt name="swarm" size={72} className="head-art" />
               <div className="grow">
                 <h1 data-testid="match-title">
                   {kind} · {map?.title ?? m.mapTitle ?? 'Custom map'}
                 </h1>
-                <div className="caption">
+                <div className="sub">
                   {dateTime(m.endedAt ?? m.startedAt)} · {duration(m.durationTicks)}
                   {m.rated ? ' · rated' : ' · unrated'}
                   {map?.width && map.height ? ` · ${map.width}×${map.height}` : ''}{' '}
@@ -443,8 +512,9 @@ export function Match({ id }: { id: string }) {
                 </Link>
               )}
             </div>
+            <TeamCards detail={detail} />
             <Participants detail={detail} />
-            <div className="grid2" style={{ marginTop: 12 }}>
+            <div className="grid2" style={{ marginTop: 'var(--sp-4)' }}>
               <Replay detail={detail} />
               <Verification detail={detail} />
             </div>

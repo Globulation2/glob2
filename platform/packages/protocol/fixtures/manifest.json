@@ -23,6 +23,7 @@
     "GuestSignInRequest": "schemas/GuestSignInRequest.schema.json",
     "IdentityConflict": "schemas/IdentityConflict.schema.json",
     "InstanceInfo": "schemas/InstanceInfo.schema.json",
+    "InstanceStats": "schemas/InstanceStats.schema.json",
     "InviteInfo": "schemas/InviteInfo.schema.json",
     "LeaderboardPage": "schemas/LeaderboardPage.schema.json",
     "LocalRegisterRequest": "schemas/LocalRegisterRequest.schema.json",
@@ -739,6 +740,19 @@
       "valid": false,
       "stage": "schema",
       "note": "Timelines are sample objects, not bare rows."
+    },
+    {
+      "file": "valid/InstanceStats/home.json",
+      "schema": "InstanceStats",
+      "valid": true,
+      "note": "The home page numbers."
+    },
+    {
+      "file": "invalid/InstanceStats/negative-count.json",
+      "schema": "InstanceStats",
+      "valid": false,
+      "stage": "schema",
+      "note": "Counts are never negative."
     },
     {
       "file": "valid/PlayerProfile/registered.json",

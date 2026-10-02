@@ -1844,6 +1844,33 @@ export const fixtureCases: FixtureCase[] = [
     },
   },
   {
+    schema: 'InstanceStats',
+    name: 'home',
+    valid: true,
+    note: 'The home page numbers.',
+    value: {
+      playersOnline: 12,
+      activeWindowMinutes: 15,
+      liveMatches: 3,
+      matchesToday: 41,
+      generatedAt: NOW,
+    },
+  },
+  {
+    schema: 'InstanceStats',
+    name: 'negative-count',
+    valid: false,
+    stage: 'schema',
+    note: 'Counts are never negative.',
+    value: {
+      playersOnline: -1,
+      activeWindowMinutes: 15,
+      liveMatches: 0,
+      matchesToday: 0,
+      generatedAt: NOW,
+    },
+  },
+  {
     schema: 'PlayerProfile',
     name: 'registered',
     valid: true,
