@@ -40,7 +40,8 @@ dated reports and pull-request artifacts do not belong here.
   [identity and sign-in](multiplayer/identity.md),
   [rooms and matches](multiplayer/rooms-and-matches.md),
   [ratings and matchmaking](multiplayer/ratings-and-matchmaking.md),
-  [match history and the web app](multiplayer/history-and-web.md), the
+  [match history and the web app](multiplayer/history-and-web.md),
+  [connection quality](multiplayer/connection-quality.md) (Ping, Delay, Behind), the
   [relay-sequenced turn protocol](multiplayer/turn-protocol.md), the
   [match relay](multiplayer/relay.md) that hosts it, [LAN games](multiplayer/lan.md)
   and the [LAN playtest guide](multiplayer/lan-playtest.md).

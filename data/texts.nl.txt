@@ -3586,9 +3586,13 @@ Vaart van de kaart
 
 [Custom rules]
 
-[conn ai everywhere]
-
 [conn ai]
+
+[conn behind %0]
+
+[conn behind explanation %0 %1]
+
+[conn behind]
 
 [conn card catching up]
 
@@ -3612,19 +3616,21 @@ Vaart van de kaart
 
 [conn card seconds left %0]
 
-[conn connected]
-
 [conn connections]
 
-[conn delay explanation]
+[conn delay explanation %0 %1]
 
-[conn latency]
+[conn fair]
+
+[conn good]
+
+[conn grid legend]
+
+[conn jitter %0]
 
 [conn leave match]
 
 [conn left]
-
-[conn lost]
 
 [conn notice back %0]
 
@@ -3632,11 +3638,17 @@ Vaart van de kaart
 
 [conn notice lost %0 %1]
 
+[conn ping explanation %0 %1]
+
+[conn ping]
+
 [conn players]
+
+[conn poor]
 
 [conn reconnecting]
 
-[conn relay %0 %1]
+[conn relay %0]
 
 [conn resyncing]
 
@@ -3649,6 +3661,8 @@ Vaart van de kaart
 [conn you %0]
 
 [conn you]
+
+[conn your delay %0]
 
 [hub account menu]
 
@@ -4130,6 +4144,8 @@ Vaart van de kaart
 
 [qm 1 vs 1]
 
+[qm ping about]
+
 [qm ranked]
 
 [qm casual %0]
@@ -4157,8 +4173,6 @@ Vaart van de kaart
 [qm find match]
 
 [qm opponents rated %0 to %1]
-
-[qm region %0 relay %1 ms]
 
 [qm region %0]
 

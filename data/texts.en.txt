@@ -3560,10 +3560,14 @@ Play online
 Use in room
 [Custom rules]
 Custom rules
-[conn ai everywhere]
-AI, runs on every computer
 [conn ai]
 AI
+[conn behind %0]
+Behind %0
+[conn behind explanation %0 %1]
+Behind: how far a player's game runs behind the match clock; it includes their delay. Under %0 is normal; from %1 the player is marked slow.
+[conn behind]
+Behind
 [conn card catching up]
 Catching up
 [conn card colony works]
@@ -3586,44 +3590,54 @@ Reconnecting to the match… attempt %0
 Replaying the %0 you missed. The screen updates when you're back to the present.
 [conn card seconds left %0]
 about %0 s left
-[conn connected]
-connected
 [conn connections]
 Connections
-[conn delay explanation]
-Your input delay is the time your orders take to reach everyone. It adjusts to your own connection and isn't affected by other players.
-[conn latency]
-latency
+[conn delay explanation %0 %1]
+Delay: the time from your click until it happens, for everyone. It follows your own connection, not the other players'. Good under %0, poor from %1.
+[conn fair]
+Fair
+[conn good]
+Good
+[conn grid legend]
+With more than four players the panel shows each player's ping in milliseconds, or how many seconds behind they are.
+[conn jitter %0]
+jitter %0
 [conn leave match]
 Leave match
 [conn left]
-left
-[conn lost]
-lost
+Left
 [conn notice back %0]
 %0 is back.
 [conn notice left %0]
 %0 left the match.
 [conn notice lost %0 %1]
 %0 lost connection. The game continues; their colony keeps working while they reconnect (%1 left).
+[conn ping explanation %0 %1]
+Ping: the round trip between a player and the relay. Good under %0, poor from %1.
+[conn ping]
+Ping
 [conn players]
 Players
+[conn poor]
+Poor
 [conn reconnecting]
-reconnecting
-[conn relay %0 %1]
-Relay %0 · round trip %1 ms.
+Reconnecting
+[conn relay %0]
+Relay: %0
 [conn resyncing]
-rejoining
+Rejoining
 [conn slow]
-slow
+Slow
 [conn unstable]
 unstable
 [conn waiting]
-connecting
+Connecting…
 [conn you %0]
 %0 (you)
 [conn you]
 You
+[conn your delay %0]
+Your delay %0
 [hub account menu]
 Account
 [hub ai joins after %0]
@@ -4104,6 +4118,8 @@ Draw
 2 vs 2
 [qm 1 vs 1]
 1 vs 1
+[qm ping about]
+Ping about
 [qm ranked]
 Ranked
 [qm casual %0]
@@ -4132,8 +4148,6 @@ The server could not be reached.
 Find match
 [qm opponents rated %0 to %1]
 Opponents rated %0 to %1
-[qm region %0 relay %1 ms]
-Region %0 · relay %1 ms
 [qm region %0]
 Region %0
 [qm searching]

@@ -1,9 +1,14 @@
 import { useState, type CSSProperties } from 'react';
-import type {
-  MatchDetail,
-  MatchParticipant,
-  ParticipantNetwork,
-  TeamTimelinePoint,
+import {
+  CONNECTION_METRICS,
+  CONNECTION_RATING_LABELS,
+  formatConnectionValue,
+  rateConnection,
+  type ConnectionMetric,
+  type MatchDetail,
+  type MatchParticipant,
+  type ParticipantNetwork,
+  type TeamTimelinePoint,
 } from '@glob2/protocol';
 import { api } from '../api.ts';
 import { GameArt } from '../art.tsx';
@@ -163,11 +168,37 @@ const QUALITY_BADGE: Record<ParticipantNetwork['quality'], string> = {
   poor: 'badge bad',
 };
 
-const QUALITY_LABEL: Record<ParticipantNetwork['quality'], string> = {
-  good: 'Good',
-  fair: 'Fair',
-  poor: 'Poor',
-};
+const QUALITY_LABEL = CONNECTION_RATING_LABELS;
+
+/**
+ * One measured quantity with its unit and its word from the shared table
+ * ("84 ms · Good"), the 95th percentile underneath. The same words and limits
+ * as the in-game connection panel (docs/multiplayer/connection-quality.md).
+ */
+function Measured({
+  metric,
+  spread,
+}: {
+  metric: ConnectionMetric;
+  spread?: { p50: number; p95: number };
+}) {
+  if (!spread) return <>–</>;
+  return (
+    <>
+      {formatConnectionValue(metric, spread.p50)}
+      <span className="caption"> · {QUALITY_LABEL[rateConnection(metric, spread.p50)]}</span>
+      <br />
+      <span className="caption">95%: {formatConnectionValue(metric, spread.p95)}</span>
+    </>
+  );
+}
+
+/** "Good under 150 ms, Fair under 300 ms, Poor from 300 ms." */
+function limits(metric: ConnectionMetric): string {
+  const t = CONNECTION_METRICS[metric];
+  const v = (ms: number) => formatConnectionValue(metric, ms).replace(/\.0 s$/, ' s');
+  return `${QUALITY_LABEL.good} under ${v(t.fairMs)}, ${QUALITY_LABEL.fair.toLowerCase()} under ${v(t.poorMs)}, ${QUALITY_LABEL.poor.toLowerCase()} from ${v(t.poorMs)}.`;
+}
 
 function seconds(ms: number): string {
   if (ms === 0) return '–';
@@ -229,15 +260,11 @@ function Connection({ detail }: { detail: MatchDetail }) {
                     <span className={QUALITY_BADGE[n.quality]}>{QUALITY_LABEL[n.quality]}</span>
                   </td>
                   <td className="num">
-                    {n.rttMs ? (
-                      <>
-                        {n.rttMs.p50} ms<span className="caption"> · {n.rttMs.p95}</span>
-                      </>
-                    ) : (
-                      '–'
-                    )}
+                    <Measured metric="ping" spread={n.rttMs} />
                   </td>
-                  <td className="num hide-phone">{n.lagMs ? `${n.lagMs.p95} ms` : '–'}</td>
+                  <td className="num hide-phone">
+                    <Measured metric="behind" spread={n.lagMs} />
+                  </td>
                   <td className="num">{n.disconnects}</td>
                   <td className="num hide-phone">{seconds(n.offlineMs)}</td>
                   <td className="num hide-phone">
@@ -250,11 +277,12 @@ function Connection({ detail }: { detail: MatchDetail }) {
           </tbody>
         </table>
       </div>
-      <p className="caption">
-        Measured by the relay. Ping: round trip to the relay, typical · 95th percentile. Behind: how
-        far the player’s game ran behind the match clock (95th percentile, input delay included).
-        Offline: time disconnected before reconnecting. Delayed orders: orders that ran a tick later
-        than asked.
+      <p className="caption" data-testid="network-legend">
+        Measured by the relay; typical value first, then the 95th percentile. Ping: round trip
+        between the player and the relay. {limits('ping')} Behind: how far the player’s game ran
+        behind the match clock, their input delay included. {limits('behind')} Quality is the worst
+        of these and of reconnects, time offline and delayed orders. Offline: time disconnected
+        before reconnecting. Delayed orders: orders that ran a tick later than asked.
       </p>
     </section>
   );

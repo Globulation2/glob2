@@ -225,9 +225,14 @@ ConnectionSnapshot Engine::turnConnectionSnapshot()
     const Turn::TurnSession& s = turn->turn();
     const Uint64 period = std::max<Uint64>(1, s.tickPeriodMicros());
     const Uint64 now = turnNowMicros;
+    // The quantities of docs/multiplayer/connection-quality.md: Delay (own), and Ping
+    // and Behind for every human. Ping is the relay's measurement of each seat
+    // (SeatLatency, protocol 2) so every row compares like with like; the own row falls
+    // back to this client's Ping/Pong round trip (LAN hosts and protocol-1 relays
+    // measure none).
     const int ownDelay = int((std::max<std::int64_t>(0, s.rttMicros()) / 2 + Uint64(s.targetTicks()) * period) / 1000);
     snapshot.inputDelayMs = ownDelay;
-    snapshot.rttMs = s.rttMicros() > 0 ? int(s.rttMicros() / 1000) : -1;
+    snapshot.jitterMs = int(std::max<std::int64_t>(0, s.jitterMicros()) / 1000);
     snapshot.ownUnstable = s.jitterMicros() > 60000;
     const GameHeader& header = gui.game.gameHeader;
     for (int p = 0; p < header.getNumberOfPlayers() && p < int(Turn::MAX_SEATS); ++p)
@@ -252,8 +257,10 @@ ConnectionSnapshot Engine::turnConnectionSnapshot()
         if (p == s.localSeat())
         {
             row.local = true;
-            row.latencyMs = ownDelay;
-            row.unstable = snapshot.ownUnstable;
+            const auto own = s.seatPresenceInfo(p);
+            row.pingMs = own.relayRttMicros ? int(own.relayRttMicros / 1000)
+                         : s.rttMicros() > 0 ? int(s.rttMicros() / 1000)
+                                             : -1;
             row.state = s.state() == Turn::TurnSession::State::Running ? ConnectionRow::State::Connected
                         : s.state() == Turn::TurnSession::State::Reconnecting ? ConnectionRow::State::Reconnecting
                                                                               : ConnectionRow::State::Waiting;
@@ -261,7 +268,8 @@ ConnectionSnapshot Engine::turnConnectionSnapshot()
             continue;
         }
         const auto info = s.seatPresenceInfo(p);
-        row.latencyMs = int(Uint64(info.lagTicks) * period / 1000);
+        row.pingMs = info.relayRttMicros ? int(info.relayRttMicros / 1000) : -1;
+        row.behindMs = int(Uint64(info.lagTicks) * period / 1000);
         switch (info.state)
         {
         case Turn::PresenceState::Connected: row.state = ConnectionRow::State::Connected; break;

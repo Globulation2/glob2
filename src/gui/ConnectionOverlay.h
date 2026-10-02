@@ -5,10 +5,14 @@
 // The in-game connection HUD of turn-protocol games (multiplayer mock-ups 4 and 5).
 //
 // - A permanent compact panel in the top-left of the map, where the "waiting for X"
-//   box was: every player's colour, name, connection state and latency, own row
-//   highlighted with this client's input delay. Classic navy on pointer hosts, the
-//   touch HUD's aubergine under the status strip on phones, shrinking to a grid of
-//   dots and milliseconds beyond four people. Clicking (tapping) it opens details.
+//   box was: every player's colour, name, connection state and Ping, with a word and a
+//   marker shape from the shared quality table (ConnectionQuality.h), and a footer
+//   with this client's input Delay. A player whose game runs a second or more behind
+//   shows Behind instead of Ping. Classic navy on pointer hosts, the touch HUD's
+//   aubergine under the status strip on phones, shrinking to a grid of markers and
+//   numbers beyond four people (legend in the details). Clicking (tapping) it opens
+//   details: Ping, Behind and state of every player, your Delay and what they mean.
+//   The quantities are described in docs/multiplayer/connection-quality.md.
 // - Centre cards when this client waits on the network: connection lost
 //   (reconnecting, with the grace time and Leave match), catching up (progress of
 //   the fast-forward) and out of sync (rejoining after the relay's verdict).
@@ -42,10 +46,10 @@ struct ConnectionRow
 	std::string name;
 	GAGCore::Color color;
 	State state = State::Connected;
-	int latencyMs = -1;   ///< humans: delay to the relay; own row: input delay
+	int pingMs = -1;       ///< round trip between the player and the relay; -1 unknown
+	int behindMs = -1;     ///< how far the player's game runs behind the match clock; -1 unknown
 	int graceSeconds = -1; ///< reconnecting: time left before the seat is removed
 	bool local = false;
-	bool unstable = false; ///< own row: delay well above its usual level
 };
 
 struct ConnectionSnapshot
@@ -63,9 +67,10 @@ struct ConnectionSnapshot
 	std::uint32_t catchupDone = 0, catchupTotal = 0;
 	int missedSeconds = 0;
 	int secondsLeft = -1;
-	int inputDelayMs = -1, rttMs = -1;
+	int inputDelayMs = -1; ///< this client's Delay: click to effect for everyone
+	int jitterMs = -1;     ///< this client's measured jitter (details only)
 	std::string relay;
-	bool ownUnstable = false;
+	bool ownUnstable = false; ///< jitter well above normal: the Delay will vary
 };
 
 class ConnectionOverlay
@@ -87,12 +92,18 @@ class ConnectionOverlay
 	void openDetails(bool open) { details = open; }
 	/// The last snapshot drawn (harness).
 	const ConnectionSnapshot &last() const { return snapshot; }
+	/// The panel's text for a row ("42 ms · Good", "Behind 2.4 s · Poor",
+	/// "Reconnecting 2:31") and its footer ("Your delay 171 ms · Good"); tests.
+	static std::string rowText(const ConnectionRow &row);
+	static std::string delayLine(const ConnectionSnapshot &snapshot);
 
   private:
 	void observe(const ConnectionSnapshot &next);
 	void drawPanel(bool touch, SDL_Rect area, double unit);
 	void drawDetails(bool touch, SDL_Rect area, double unit);
 	void drawCard(bool touch, SDL_Rect area, double unit);
+	/// Phones beyond four humans: markers and numbers instead of rows.
+	bool compactGrid(bool touch) const;
 	bool inside(const SDL_Rect &r, int x, int y) const;
 
 	ConnectionSnapshot snapshot;

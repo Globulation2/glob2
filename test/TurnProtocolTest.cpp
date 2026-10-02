@@ -199,6 +199,13 @@ TEST_SUITE("TurnMessages")
 		p.seats.push_back({5, PresenceState::Reconnecting, 4000, 80});
 		roundTrip(p);
 
+		SeatLatency l;
+		l.seats.push_back({0, 41000});
+		l.seats.push_back({4, 0});
+		l.seats.push_back({31, UINT32_MAX});
+		CHECK(roundTrip(l)->seats == l.seats);
+		roundTrip(SeatLatency());
+
 		ResyncRequest rr;
 		rr.fromTick = 88;
 		roundTrip(rr);
@@ -255,6 +262,13 @@ TEST_SUITE("TurnMessages")
 		CHECK_FALSE(TurnCodec::decode(legacy));
 		const std::vector<std::uint8_t> reserved = {0xBF};
 		CHECK_FALSE(TurnCodec::decode(reserved));
+		// SeatLatency: seats below 32, unique and ascending.
+		const std::vector<std::uint8_t> latencyOk = {MSG_SEAT_LATENCY, 2, 1, 0, 0, 0, 9, 3, 0, 0, 0, 9};
+		CHECK(TurnCodec::decode(latencyOk));
+		const std::vector<std::uint8_t> latencyDisorder = {MSG_SEAT_LATENCY, 2, 3, 0, 0, 0, 9, 1, 0, 0, 0, 9};
+		CHECK_FALSE(TurnCodec::decode(latencyDisorder));
+		const std::vector<std::uint8_t> latencySeat = {MSG_SEAT_LATENCY, 1, 32, 0, 0, 0, 9};
+		CHECK_FALSE(TurnCodec::decode(latencySeat));
 		std::vector<std::uint8_t> huge(MAX_FRAME_BYTES + 1, 0);
 		huge[0] = MSG_PING;
 		CHECK_FALSE(TurnCodec::decode(huge));
@@ -808,11 +822,62 @@ TEST_SUITE("TurnSequencer")
 		const auto& seats = presence.back()->seats;
 		REQUIRE(seats.size() == 2);
 		CHECK(seats[0].state == PresenceState::Connected);
-		CHECK(seats[0].lagTicks == 3);
+		// The lag when the Ping arrived, not grown by the time since (Pings come every
+		// 500 ms; staleness counts only after a second without one).
+		CHECK(seats[0].lagTicks == 2);
 		CHECK(seats[1].state == PresenceState::Reconnecting);
 		CHECK(seats[1].graceRemainingTicks == 4500 - 1);
-		f.atTick(200);
+		f.atTick(120);
+		CHECK(f.relay.presence(0) == PresenceState::Connected);
+		f.atTick(200); // no Ping for 100 ticks: 2 + 100 - 25 behind
 		CHECK(f.relay.presence(0) == PresenceState::Lagging);
+		f.out.inbox[1].clear();
+		f.atTick(230);
+		auto later = f.out.take<Presence>(1, MSG_PRESENCE);
+		REQUIRE(!later.empty());
+		CHECK(later.back()->seats[0].lagTicks == 2 + 130 - 25);
+	}
+
+	TEST_CASE("versions 1 and 2 are both served; only version 2 receives seat round trips")
+	{
+		RelayFixture f(0b111);
+		f.relay.onConnect(1, f.now);
+		Hello v1;
+		v1.protocolVersion = 1;
+		v1.ticket = "seat:0";
+		f.raw(1, v1);
+		auto w1 = f.out.take<Welcome>(1, MSG_WELCOME);
+		REQUIRE(w1.size() == 1);
+		CHECK(w1[0]->protocolVersion == 1);
+		f.join(2, 1); // PROTOCOL_VERSION
+		auto w2 = f.out.take<Welcome>(2, MSG_WELCOME);
+		REQUIRE(w2.size() == 1);
+		CHECK(w2[0]->protocolVersion == PROTOCOL_VERSION);
+		CHECK(f.out.take<SeatLatency>(2, MSG_SEAT_LATENCY).size() == 1); // with the first Presence
+
+		// Round trips the relay measured: smoothed, per seat; seat 2 never connected.
+		f.relay.transportRoundTrip(1, 40000);
+		f.relay.transportRoundTrip(2, 100000);
+		f.relay.transportRoundTrip(2, 200000);
+		f.out.inbox.clear();
+		f.atTick(30); // presence refresh every 25 ticks
+		CHECK(f.out.take<SeatLatency>(1, MSG_SEAT_LATENCY).empty());
+		CHECK_FALSE(f.out.take<Presence>(1, MSG_PRESENCE).empty());
+		auto latency = f.out.take<SeatLatency>(2, MSG_SEAT_LATENCY);
+		REQUIRE(!latency.empty());
+		const auto& seats = latency.back()->seats;
+		REQUIRE(seats.size() == 2);
+		CHECK(seats[0].seat == 0);
+		CHECK(seats[0].rttMicros == 40000);
+		CHECK(seats[1].seat == 1);
+		CHECK(seats[1].rttMicros == (3 * 100000 + 200000) / 4);
+
+		f.relay.onConnect(3, f.now);
+		Hello future;
+		future.protocolVersion = PROTOCOL_VERSION + 1;
+		future.ticket = "seat:2";
+		f.raw(3, future);
+		CHECK(f.out.take<Reject>(3, MSG_REJECT).at(0)->reason == RejectReason::ProtocolVersion);
 	}
 }
 
@@ -1102,6 +1167,81 @@ TEST_SUITE("TurnSession")
 		session.update(4);
 		CHECK(session.desyncFlagged());
 		CHECK_FALSE(session.needsReload());
+	}
+
+	TEST_CASE("seat round trips from the relay reach the connection panel")
+	{
+		ScriptedTransport link;
+		TurnSessionConfig config;
+		config.ticket = "seat:0";
+		TurnSession session(2, link, config, bytesOrderCodec());
+		link.linkState = TurnTransport::State::Connected;
+		session.update(0);
+		Welcome w;
+		w.seat = 0;
+		w.humanSeatMask = 0b11;
+		link.deliver(w);
+		SeatLatency l;
+		l.seats.push_back({0, 30000});
+		l.seats.push_back({1, 120000});
+		link.deliver(l);
+		session.update(1);
+		CHECK(session.protocolVersion() == PROTOCOL_VERSION);
+		CHECK(session.seatPresenceInfo(0).relayRttMicros == 30000);
+		CHECK(session.seatPresenceInfo(1).relayRttMicros == 120000);
+		SeatLatency onlyUs;
+		onlyUs.seats.push_back({0, 31000});
+		link.deliver(onlyUs);
+		session.update(2);
+		CHECK(session.seatPresenceInfo(1).relayRttMicros == 0); // gone: not measured
+	}
+
+	TEST_CASE("an older relay that refuses version 2 is offered version 1 once")
+	{
+		ScriptedTransport link;
+		TurnSession session(1, link, TurnSessionConfig(), bytesOrderCodec());
+		link.linkState = TurnTransport::State::Connected;
+		session.update(0);
+		auto first = link.sentOf<Hello>(MSG_HELLO);
+		REQUIRE(first.size() == 1);
+		CHECK(first[0]->protocolVersion == PROTOCOL_VERSION);
+		Reject r;
+		r.reason = RejectReason::ProtocolVersion;
+		link.deliver(r);
+		session.update(1);
+		CHECK(session.state() == TurnSession::State::Reconnecting);
+		CHECK(link.closeCalls == 1);
+		link.linkState = TurnTransport::State::Disconnected;
+		session.update(2);
+		link.linkState = TurnTransport::State::Connected;
+		session.update(3);
+		auto second = link.sentOf<Hello>(MSG_HELLO);
+		REQUIRE(second.size() == 1);
+		CHECK(second[0]->protocolVersion == MIN_PROTOCOL_VERSION);
+		Welcome w;
+		w.protocolVersion = MIN_PROTOCOL_VERSION;
+		w.seat = 0;
+		w.humanSeatMask = 1;
+		link.deliver(w);
+		session.update(4);
+		CHECK(session.state() == TurnSession::State::Running);
+		CHECK(session.protocolVersion() == MIN_PROTOCOL_VERSION);
+
+		// A second refusal is final.
+		ScriptedTransport link2;
+		TurnSession again(1, link2, TurnSessionConfig(), bytesOrderCodec());
+		link2.linkState = TurnTransport::State::Connected;
+		again.update(0);
+		link2.deliver(r);
+		again.update(1);
+		link2.linkState = TurnTransport::State::Disconnected;
+		again.update(2);
+		link2.linkState = TurnTransport::State::Connected;
+		again.update(3);
+		link2.deliver(r);
+		again.update(4);
+		CHECK(again.state() == TurnSession::State::Rejected);
+		CHECK(again.rejectReason() == RejectReason::ProtocolVersion);
 	}
 
 	TEST_CASE("a reject ends the session")

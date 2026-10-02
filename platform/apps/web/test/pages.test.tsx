@@ -322,9 +322,18 @@ describe('pages', () => {
     expect(network).toHaveLength(1);
     expect(network[0]!.textContent).toContain('Alice');
     expect(within(network[0]!).getByText('Fair').className).toBe('badge warn');
-    expect(network[0]!.textContent).toContain('84 ms');
-    expect(network[0]!.textContent).toContain('231');
+    // Every value has its unit and its word from the shared table.
+    expect(network[0]!.textContent).toContain('84 ms · Good');
+    expect(network[0]!.textContent).toContain('95%: 231 ms');
+    expect(network[0]!.textContent).toContain('0.3 s · Good');
+    expect(network[0]!.textContent).toContain('95%: 0.4 s');
     expect(network[0]!.textContent).toContain('4.2 s');
+    expect(screen.getByTestId('network-legend').textContent).toContain(
+      'Good under 150 ms, fair under 300 ms, poor from 300 ms.',
+    );
+    expect(screen.getByTestId('network-legend').textContent).toContain(
+      'Good under 1 s, fair under 2 s, poor from 2 s.',
+    );
     expect(network[0]!.textContent).toContain('6 / 412');
     expect(screen.getByTestId('watch').getAttribute('href')).toBe(
       watchUrl(`http://localhost/api/v1/matches/${MATCH}/artifacts/replay`),

@@ -39,11 +39,13 @@ summary (`match_participants.network`; `apps/api/src/history/network.ts`): round
 trip to the relay and how far the player's game ran behind the match clock (median
 and 95th percentile, in ms), disconnects, time offline inside the grace period,
 orders sequenced and deferred, rejoins after a checksum disagreement, and how the
-player left. `quality` is a rough label for the page only: `poor` when the round-trip
-p95 is at least 400 ms, the lag p95 at least 2 s, there were 3 or more disconnects,
-30 s or more offline, or a rejoin; otherwise `fair` when the round-trip p95 is at least
-200 ms, the lag p95 at least 1 s, there was a disconnect, or more than 5% of orders
-were deferred; otherwise `good`. It is public with the match, and absent for matches
+player left. `quality` is a rough label for the page only: the worst of the median
+round trip rated as Ping and the median lag rated as Behind on the shared
+[connection-quality](connection-quality.md) table (fair from 150 ms and 1 s, poor from
+300 ms and 2 s), `poor` for 3 or more disconnects, 30 s or more offline or a rejoin,
+and `fair` for a disconnect or more than 5% of orders deferred. The page writes each
+Ping and Behind with its unit and word ("84 ms · Good", 95th percentile underneath)
+and states the limits in its legend. It is public with the match, and absent for matches
 whose relay sent no summary.
 
 ### Visibility

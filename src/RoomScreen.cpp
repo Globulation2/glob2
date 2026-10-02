@@ -15,6 +15,7 @@
 #include "PlatformRoom.h"
 #include "MessageScreen.h"
 #include "Order.h"
+#include "gui/ConnectionQuality.h"
 #include "gui/ThumbSide.h"
 #include <ApplicationHost.h>
 #include <FormatableString.h>
@@ -444,7 +445,8 @@ Element RoomScreen::seats(const Presentation &p, bool phone)
 			if (phone)
 				add(GAGCore::FormattableString(tr("[room team %0]")).arg(slot.team + 1));
 			if (slot.latencyMs >= 0)
-				add(std::to_string(slot.latencyMs) + " ms");
+				add(ConnectionQuality::labelled(tr("[conn ping]"), ConnectionQuality::Metric::Ping, slot.latencyMs,
+				                                [](const char *key) { return tr(key); }));
 			if (slot.host)
 				add(tr("[room host]"));
 		}

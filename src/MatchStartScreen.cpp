@@ -2,6 +2,7 @@
 // Copyright (C) 2026 glob2 contributors
 #include "MatchStartScreen.h"
 #include "Engine.h"
+#include "gui/ConnectionQuality.h"
 #include "GUIMapPreview.h"
 #include "GameSessionScreen.h"
 #include "OnlineMatch.h"
@@ -90,8 +91,11 @@ Element MatchStartScreen::steps(const Presentation &p)
 	lines.push_back(line(mapText, Step::Map, mapDetail));
 	lines.push_back(line(tr("[match loading]"), Step::Load, ""));
 	std::string relay = GAGCore::FormattableString(tr("[match relay %0]")).arg(flow->relayName());
+	// Ping before the first turn: the session's own round trip to the relay, rated
+	// on the same scale as the in-game panel (docs/multiplayer/connection-quality.md).
 	if (flow->relayRttMs() >= 0)
-		relay += " · " + std::to_string(flow->relayRttMs()) + " ms";
+		relay += " · " + ConnectionQuality::labelled(tr("[conn ping]"), ConnectionQuality::Metric::Ping, flow->relayRttMs(),
+		                                             [](const char *key) { return tr(key); });
 	lines.push_back(line(relay, Step::Relay, ""));
 	lines.push_back(line(tr("[match waiting for players]"), Step::Players, ""));
 	return column(std::move(lines), {p.pt(p.touch ? 10 : 8)});
