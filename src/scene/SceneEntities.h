@@ -8,6 +8,7 @@
 #include <SDLGraphicContext.h>
 
 #include <array>
+#include <string>
 #include <vector>
 
 class BuildingType;
@@ -20,6 +21,7 @@ struct SceneTeam
 	int teamNumber = 0;
 	Uint32 me = 0, allies = 0, sharedVisionOther = 0;
 	int startPosX = 0, startPosY = 0;
+	std::string firstPlayerName; //!< empty when uncontrolled
 };
 
 //! Presentation copy of a unit. Field names follow Unit so drawing code reads the

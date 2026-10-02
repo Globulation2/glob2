@@ -256,7 +256,7 @@ void GameGUI::drawTopScreenBar(void)
 	int dec = (globalContainer->gfx->getW()-640)>>2;
 	dec += 10;
 
-	globalContainer->unitmini->setBaseColor(localTeam->color);
+	globalContainer->unitmini->setBaseColor(frameScene.panels.local.color);
 	for (int i=0; i<3; i++)
 	{
 		free = teamStats->getFreeUnits(i);
@@ -297,12 +297,12 @@ void GameGUI::drawTopScreenBar(void)
 	}
 
 	// draw prestige stats
-	globalContainer->gfx->drawString(dec+0, 0, globalContainer->littleFont, FormattableString("%0 / %1 / %2").arg(localTeam->prestige).arg(game.totalPrestige).arg(game.prestigeToReach).c_str());
+	globalContainer->gfx->drawString(dec+0, 0, globalContainer->littleFont, FormattableString("%0 / %1 / %2").arg(frameScene.panels.local.prestige).arg(frameScene.panels.hud.totalPrestige).arg(frameScene.panels.hud.prestigeToReach).c_str());
 
 	dec += 90;
 
 	// draw unit conversion stats
-	globalContainer->gfx->drawString(dec, 0, globalContainer->littleFont, FormattableString("+%0 / -%1").arg(localTeam->unitConversionGained).arg(localTeam->unitConversionLost).c_str());
+	globalContainer->gfx->drawString(dec, 0, globalContainer->littleFont, FormattableString("+%0 / -%1").arg(frameScene.panels.local.unitConversionGained).arg(frameScene.panels.local.unitConversionLost).c_str());
 
 	// draw CPU load
 	dec += 70;
@@ -388,9 +388,10 @@ void GameGUI::drawOverlayInfos(void)
 			globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
 			globalContainer->gfx->drawMapCopies(game.map.getW()*32,game.map.getH()*32,game.map.displayViewportW,game.map.displayViewportH,[&](){ toolManager.drawTool(int(MapCamera::wrap(mapMouseX(mouseX),game.map.getW()*32)), int(MapCamera::wrap(mapMouseY(mouseY),game.map.getH()*32)), localTeamNo, viewportX, viewportY, inputState.modifiers()); });
 		}
-		else if (selectionMode==BUILDING_SELECTION)
+		else if (selectionMode==BUILDING_SELECTION && frameScene.panels.building.valid)
 		{
-			Building* selBuild=selectionBuilding();
+			const SceneBuildingPanel* selBuild=&frameScene.panels.building;
+			const SceneMap &sceneMap = frameScene.map;
 			globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
 			int centerX, centerY;
 			game.map.buildingPosToCursor(displayedPosX(*selBuild), displayedPosY(*selBuild),  selBuild->type->width, selBuild->type->height, &centerX, &centerY, viewportX, viewportY);
@@ -398,9 +399,9 @@ void GameGUI::drawOverlayInfos(void)
 			forEachMapCopy(centerX-radius, centerY-radius, centerX+radius, centerY+radius,
 				game.map.getW()*32, game.map.getH()*32, game.map.displayViewportW,
 				game.map.displayViewportH, [&](int dx, int dy) {
-				if (selBuild->owner->teamNumber==localTeamNo)
+				if (selBuild->owner.teamNumber==localTeamNo)
 					globalContainer->gfx->drawCircle(centerX+dx, centerY+dy, selBuild->type->width*16, 0, 0, 190);
-				else if ((localTeam->allies) & (selBuild->owner->me))
+				else if ((frameScene.panels.local.allies) & (selBuild->owner.me))
 					globalContainer->gfx->drawCircle(centerX+dx, centerY+dy, selBuild->type->width*16, 255, 196, 0);
 				else if (!selBuild->type->isVirtual)
 					globalContainer->gfx->drawCircle(centerX+dx, centerY+dy, selBuild->type->width*16, 190, 0, 0);
@@ -408,13 +409,15 @@ void GameGUI::drawOverlayInfos(void)
 
 			// draw a white circle around units that are working at building
 			if ((showUnitWorkingToBuilding)
-				&& ((selBuild->owner->allies) &(1<<localTeamNo)))
+				&& ((selBuild->owner.allies) &(1<<localTeamNo)))
 			{
-				for (std::list<Unit *>::iterator unitsWorkingIt=selBuild->unitsWorking.begin(); unitsWorkingIt!=selBuild->unitsWorking.end(); ++unitsWorkingIt)
+				for (Uint16 worker : frameScene.entities.selectedBuilding.unitsWorking)
 				{
-					Unit *unit=*unitsWorkingIt;
+					const SceneUnit *unit = frameScene.entities.unit(worker);
+					if (!unit)
+						continue;
 					int px, py;
-					game.map.mapCaseToDisplayable(unit->posX, unit->posY, &px, &py, viewportX, viewportY);
+					sceneMap.mapCaseToDisplayable(unit->posX, unit->posY, &px, &py, viewportX, viewportY);
 					int deltaLeft=255-unit->delta;
 					if (unit->action<BUILD)
 					{
@@ -448,12 +451,13 @@ void GameGUI::drawOverlayInfos(void)
 	// Suppress the "[waiting for X]" notice until the wait has lasted longer
 	// than this many GUI steps, so brief network hiccups don't flash the box.
 	constexpr int WAIT_NOTICE_DEBOUNCE_STEPS = 2;
-	if (game.anyPlayerWaited && game.maskAwayPlayer && anyPlayerWaitedTimeFor>WAIT_NOTICE_DEBOUNCE_STEPS)
+	const SceneHud &hud = frameScene.panels.hud;
+	if (hud.anyPlayerWaited && hud.maskAwayPlayer && anyPlayerWaitedTimeFor>WAIT_NOTICE_DEBOUNCE_STEPS)
 	{
 		int nbap=0; // Number of away players
 		Uint32 pm=1;
-		Uint32 apm=game.maskAwayPlayer;
-		for(int pi=0; pi<game.gameHeader.getNumberOfPlayers(); pi++)
+		Uint32 apm=hud.maskAwayPlayer;
+		for(int pi=0; pi<int(hud.players.size()); pi++)
 		{
 			if (pm&apm)
 				nbap++;
@@ -464,11 +468,11 @@ void GameGUI::drawOverlayInfos(void)
 		globalContainer->gfx->drawRect(32, 32, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-64, 22+nbap*20, 255, 255, 255);
 		pm=1;
 		int pnb=0;
-		for(int pi2=0; pi2<game.gameHeader.getNumberOfPlayers(); pi2++)
+		for(int pi2=0; pi2<int(hud.players.size()); pi2++)
 		{
 			if (pm&apm)
 			{
-				globalContainer->gfx->drawString(44, 44+pnb*20, globalContainer->standardFont, FormattableString(Toolkit::getStringTable()->getString("[waiting for %0]")).arg(game.players[pi2]->name).c_str());
+				globalContainer->gfx->drawString(44, 44+pnb*20, globalContainer->standardFont, FormattableString(Toolkit::getStringTable()->getString("[waiting for %0]")).arg(hud.players[pi2].name).c_str());
 				pnb++;
 			}
 			pm=pm<<1;
@@ -481,10 +485,10 @@ void GameGUI::drawOverlayInfos(void)
 
 		// TODO: die with SGSL
 		// show script text
-		if (game.legacyScriptActive() && game.sgslScript.isTextShown && !touch->usesHUD())
+		if (hud.legacyScriptTextShown && !touch->usesHUD())
 		{
 			std::vector<std::string> lines;
-			setMultiLine(game.sgslScript.textShown, &lines);
+			setMultiLine(hud.legacyScriptText, &lines);
 			globalContainer->gfx->drawFilledRect(24, ymesg-8, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-64+16, lines.size()*20+16, 0,0,0,128);
 			for (unsigned i=0; i<lines.size(); i++)
 			{
@@ -515,9 +519,9 @@ void GameGUI::drawOverlayInfos(void)
 		}
 
 		// show script counter
-		if (game.legacyScriptTimer())
+		if (hud.legacyScriptTimer)
 		{
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-165, ymesg, globalContainer->standardFont, FormattableString("%0").arg(game.legacyScriptTimer()).c_str());
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-165, ymesg, globalContainer->standardFont, FormattableString("%0").arg(hud.legacyScriptTimer).c_str());
 			yinc = std::max(yinc, 32);
 		}
 
@@ -547,19 +551,21 @@ void GameGUI::drawOverlayInfos(void)
 	int xinc = 42;
 	for(int p=0; p<Team::MAX_COUNT; ++p)
 	{
-		if(globalContainer->mix->isPlayerTransmittingVoice(p))
+		if(globalContainer->mix->isPlayerTransmittingVoice(p) && p < int(hud.players.size()))
 		{
+			const SceneHud::Player &player = hud.players[p];
+			const GAGCore::Color playerColor = frameScene.entities.teams[player.teamNumber].color;
 			if(xinc==42)
 			{
-				globalContainer->gamegui->setBaseColor(game.teams[game.players[p]->teamNumber]->color);
+				globalContainer->gamegui->setBaseColor(playerColor);
 				globalContainer->gfx->drawSprite(42, globalContainer->gfx->getH()-55, globalContainer->gamegui, 30);
 				xinc += 47;
 			}
-			int height = globalContainer->standardFont->getStringHeight(game.players[p]->name.c_str());
+			int height = globalContainer->standardFont->getStringHeight(player.name.c_str());
 
-			globalContainer->standardFont->pushStyle(Font::Style(Font::STYLE_NORMAL, game.teams[game.players[p]->teamNumber]->color));
-			globalContainer->gfx->drawString(xinc, globalContainer->gfx->getH()-35-height/2, globalContainer->standardFont, game.players[p]->name);
-			xinc += globalContainer->standardFont->getStringWidth(game.players[p]->name.c_str()) + 5;
+			globalContainer->standardFont->pushStyle(Font::Style(Font::STYLE_NORMAL, playerColor));
+			globalContainer->gfx->drawString(xinc, globalContainer->gfx->getH()-35-height/2, globalContainer->standardFont, player.name);
+			xinc += globalContainer->standardFont->getStringWidth(player.name.c_str()) + 5;
 			globalContainer->standardFont->popStyle();
 		}
 	}
@@ -609,6 +615,8 @@ void GameGUI::drawAll(int team)
 	sceneRequest.selectedUnit = Game::refOf(view.selectedUnit);
 	sceneExtractor.extract(game, sceneRequest, frameScene);
 	view.scene = &frameScene;
+	// Panels, the top bar and the statistics pages draw the frame's copy of the stats.
+	teamStats = frameScene.panels.localStats.get();
     globalContainer->gfx->beginFrame(GraphicContext::FrameMode::FullRedraw);
 	updateCamera();
 	globalContainer->gfx->setClipRect();

@@ -9,8 +9,9 @@
 
 void GameGUI::drawBuildingInfos(void)
 {
-	Building* selBuild = selectionBuilding();
-	assert(selBuild);
+	const SceneBuildingPanel* selBuild = &frameScene.panels.building;
+	if (!selBuild->valid)
+		return;
 	BuildingType *buildingType = selBuild->type;
 	int ypos = YPOS_BASE_BUILDING;
 	unsigned unitInsideBarYDec = 0;

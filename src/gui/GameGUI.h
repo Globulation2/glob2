@@ -381,59 +381,59 @@ private:
 	//! Draw the centered title row ("<building> (<player>)") and the
 	//! subtitle ("level N — (building site) — Prestige"). Advances ypos past
 	//! the title block.
-	void drawBuildingHeader(Building* selBuild, BuildingType* buildingType, int& ypos);
+	void drawBuildingHeader(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int& ypos);
 	//! Draw the building's mini-sprite icon framed by the panel icon backing,
 	//! at the current ypos. Does not advance ypos.
-	void drawBuildingIcon(Building* selBuild, BuildingType* buildingType, int ypos);
+	void drawBuildingIcon(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int ypos);
 	//! Draw the HP label and current/max value (red below 1/5th max). No
 	//! ypos advance — sits in the icon row next to the icon.
-	void drawBuildingHP(Building* selBuild, BuildingType* buildingType, int ypos);
+	void drawBuildingHP(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int ypos);
 	//! Draw the units-inside count ("N/maxUnitInside" when ALIVE, otherwise
 	//! the "still N units" message). Ally-gated. No ypos advance.
-	void drawBuildingInsideStats(Building* selBuild, BuildingType* buildingType, int ypos);
+	void drawBuildingInsideStats(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int ypos);
 	//! Draw a flag building's "in way" / "on the spot" unit counts using the
 	//! displayed (optimistic) flag position/range so the numbers track flag
 	//! movement or range edits. Ally-gated. No ypos advance.
-	void drawBuildingFlagInfo(Building* selBuild, BuildingType* buildingType, int ypos);
+	void drawBuildingFlagInfo(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int ypos);
 	//! Draw the "working" label, count, and the maxUnitWorking scrollbox.
 	//! Queues the tutorial highlight arrow when active. Ally-gated. Advances
 	//! ypos past the working bar when present.
-	void drawBuildingWorkingControls(Building* selBuild, BuildingType* buildingType, int& ypos);
+	void drawBuildingWorkingControls(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int& ypos);
 	//! Draw the three priority radio buttons (low / medium / high) for
 	//! buildings with maxUnitWorking>0. Ally-gated. Advances ypos.
-	void drawBuildingPriorityControls(Building* selBuild, BuildingType* buildingType, int& ypos);
+	void drawBuildingPriorityControls(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int& ypos);
 	//! Draw the flag's stay-range scrollbox. Ally-gated. Advances ypos.
-	void drawBuildingRangeControls(Building* selBuild, BuildingType* buildingType, int& ypos);
+	void drawBuildingRangeControls(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int& ypos);
 	//! Draw the time-to-leave progress bar showing units' insideTimeout (extracted from drawBuildingInfos)
-	void drawBuildingTimeToLeaveBar(Building* selBuild, BuildingType* buildingType, int& ypos, unsigned& unitInsideBarYDec);
+	void drawBuildingTimeToLeaveBar(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int& ypos, unsigned& unitInsideBarYDec);
 	//! Draw the flag-type-specific controls for clearing/war/exploration flags (extracted from drawBuildingInfos)
-	void drawBuildingFlagControls(Building* selBuild, BuildingType* buildingType, int& ypos);
+	void drawBuildingFlagControls(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int& ypos);
 	//! Draw armor / shoot damage / shoot range text rows for combat buildings.
 	//! Advances ypos.
-	void drawBuildingCombatStats(Building* selBuild, BuildingType* buildingType, int& ypos);
+	void drawBuildingCombatStats(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int& ypos);
 	//! Draw the market exchange panel (per-happyness resource readouts) for
 	//! buildings that can exchange and that the local team has shared-vision
 	//! exchange visibility on. Advances ypos.
-	void drawBuildingExchange(Building* selBuild, BuildingType* buildingType, int& ypos);
+	void drawBuildingExchange(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int& ypos);
 	//! Draw non-exchange resource readouts ("name: cur/max") and the bullets
 	//! row for shooters. Ally-gated; skipped for exchange buildings. Advances
 	//! ypos.
-	void drawBuildingResources(Building* selBuild, BuildingType* buildingType, int& ypos);
+	void drawBuildingResources(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int& ypos);
 	//! Draw the swarm production progress bar plus the per-unit-type ratio
 	//! scrollboxes (worker / explorer / warrior). Queues the ratio-bar
 	//! tutorial highlight arrow when active. Ally-gated. Advances ypos.
-	void drawBuildingSwarmRatios(Building* selBuild, BuildingType* buildingType, int& ypos);
+	void drawBuildingSwarmRatios(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int& ypos);
 	//! Draw any "X units can't access resource"-style explanations of why the
 	//! building isn't filling its assigned worker slots. Ally-gated. Advances
 	//! ypos.
-	void drawBuildingFailureReasons(Building* selBuild, BuildingType* buildingType, int& ypos);
+	void drawBuildingFailureReasons(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int& ypos);
 	//! Draw the repair / upgrade / destroy / cancel action buttons at the
 	//! bottom of the panel, plus the upgrade-preview tooltip on hover. Only
 	//! shown when the local team owns the building. Uses absolute
 	//! bottom-of-screen Y; does not consume ypos.
-	void drawBuildingActionButtons(Building* selBuild, BuildingType* buildingType, unsigned unitInsideBarYDec);
+	void drawBuildingActionButtons(const SceneBuildingPanel* selBuild, BuildingType* buildingType, unsigned unitInsideBarYDec);
 	//! Draw the upgrade preview tooltip (cost + new abilities) shown on hover over the upgrade button (extracted from drawBuildingInfos)
-	void drawBuildingUpgradePreview(Building* selBuild, BuildingType* buildingType, unsigned unitInsideBarYDec);
+	void drawBuildingUpgradePreview(const SceneBuildingPanel* selBuild, BuildingType* buildingType, unsigned unitInsideBarYDec);
 	//! Draw the infos about a resource on map (type and number left)
 	void drawResourceInfos(void);
 	//! Draw the replay panel
@@ -733,6 +733,15 @@ private:
 	bool displayedClearingResource(const Building& b, int i) const;
 	Sint32 displayedMinLevelToFlag(const Building& b) const;
 	std::array<Sint32, NB_UNIT_TYPE> displayedRatio(const Building& b) const;
+	// The same for the selected building's panel model.
+	Sint32 displayedPosX(const SceneBuildingPanel& b) const { return ::displayedPosX(buildingGuiState, b); }
+	Sint32 displayedPosY(const SceneBuildingPanel& b) const { return ::displayedPosY(buildingGuiState, b); }
+	Sint32 displayedMaxUnitWorking(const SceneBuildingPanel& b) const { return ::displayedMaxUnitWorking(buildingGuiState, b); }
+	Sint32 displayedUnitStayRange(const SceneBuildingPanel& b) const { return ::displayedUnitStayRange(buildingGuiState, b); }
+	Sint32 displayedPriority(const SceneBuildingPanel& b) const { return ::displayedPriority(buildingGuiState, b); }
+	bool displayedClearingResource(const SceneBuildingPanel& b, int i) const { return ::displayedClearingResource(buildingGuiState, b, i); }
+	Sint32 displayedMinLevelToFlag(const SceneBuildingPanel& b) const { return ::displayedMinLevelToFlag(buildingGuiState, b); }
+	std::array<Sint32, NB_UNIT_TYPE> displayedRatio(const SceneBuildingPanel& b) const { return ::displayedRatio(buildingGuiState, b); }
 
 	///Get-or-create the pending state for a building (used by GUI mutators).
 	BuildingGuiState& pendingFor(Uint16 gid) { return buildingGuiState[gid]; }

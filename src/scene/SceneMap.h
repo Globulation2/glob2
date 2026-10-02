@@ -34,6 +34,7 @@ public:
 	size_t coordToIndex(int x, int y) const { return (size_t(y & hMask) << wDec) + (x & wMask); }
 	Uint16 getTerrain(int x, int y) const { return terrain[coordToIndex(x, y)]; }
 	const Resource &getResource(int x, int y) const { return resources[coordToIndex(x, y)]; }
+	const Resource &getResource(size_t pos) const { return resources[pos]; }
 	bool isMapDiscovered(int x, int y, Uint32 visionMask) const
 	{
 		return (discovered[coordToIndex(x, y)] & visionMask) != 0;
@@ -52,6 +53,19 @@ public:
 	Uint16 getBuilding(int x, int y) const { return buildings[coordToIndex(x, y)]; }
 	//! Undermap terrain type (Map::getUMTerrain), as an int.
 	int getUMTerrain(int x, int y) const { return undermap[coordToIndex(x, y)]; }
+	//! Map::isHardSpaceForBuilding: every tile of the rectangle is grass, without a
+	//! resource or a building.
+	bool isHardSpaceForBuilding(int x, int y, int w, int h) const
+	{
+		for (int yi = y; yi < y + h; yi++)
+			for (int xi = x; xi < x + w; xi++)
+			{
+				const size_t i = coordToIndex(xi, yi);
+				if (resources[i].type != NO_RES_TYPE || buildings[i] != 0xFFFF || terrain[i] >= 16)
+					return false;
+			}
+		return true;
+	}
 	void mapCaseToDisplayable(int mx, int my, int *px, int *py, int viewportX, int viewportY) const;
 	void mapCaseToDisplayableVector(int mx, int my, int *px, int *py, int viewportX, int viewportY, int screenW, int screenH) const;
 

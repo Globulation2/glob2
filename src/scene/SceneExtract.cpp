@@ -2,11 +2,14 @@
 #include "scene/SceneExtract.h"
 
 #include "Building.h"
+#include "BuildingType.h"
 #include "Bullet.h"
 #include "Game.h"
 #include "Sector.h"
 #include "Team.h"
 #include "OverlayAreas.h"
+#include "Player.h"
+#include "TeamStat.h"
 #include "Unit.h"
 #include "render/GameAnimations.h"
 
@@ -18,6 +21,16 @@ static_assert(Building::UnitCantWorkReasonSize == SceneSelectedBuilding::FailRea
 
 namespace
 {
+	//! Team::getFirstPlayerName, tolerating empty player slots: extraction runs for
+	//! every team on every frame, including in games that leave slots unset.
+	std::string firstPlayerName(const Game &game, const Team &team)
+	{
+		for (int i = 0; i < game.gameHeader.getNumberOfPlayers(); i++)
+			if (game.players[i] && game.players[i]->team == &team)
+				return game.players[i]->name;
+		return {};
+	}
+
 	SceneUnit unitOf(const Unit &u)
 	{
 		SceneUnit s;
@@ -89,7 +102,7 @@ namespace
 		{
 			const Team *team = game.teams[t];
 			e.teams[t] = SceneTeam{team->color, team->teamNumber, team->me, team->allies, team->sharedVisionOther,
-				team->startPosX, team->startPosY};
+				team->startPosX, team->startPosY, firstPlayerName(game, *team)};
 			for (int i = 0; i < Unit::MAX_COUNT; ++i)
 				if (const Unit *u = team->myUnits[i])
 				{
@@ -149,11 +162,136 @@ namespace
 	}
 }
 
+namespace
+{
+	ScenePanelOwner ownerOf(const Game &game, const Team &team)
+	{
+		return ScenePanelOwner{team.teamNumber, team.me, team.allies, team.sharedVisionExchange, team.color,
+			firstPlayerName(game, team)};
+	}
+
+	// The panels' legacy queries (repair cost, hard space, hunger, max build
+	// level) only read the game but are not const-qualified; they are called here
+	// through const_cast, on the simulation side, as drawing did before.
+	void extractPanels(const Game &game, const SceneRequest &request, ScenePanels &panels)
+	{
+		Team &local = *game.teams[request.localTeam];
+		panels.local = ScenePanelLocal{local.teamNumber, local.allies, local.maxBuildLevel(), local.color,
+			local.prestige, local.unitConversionGained, local.unitConversionLost, local.noMoreBuildingSitesCountdown};
+
+		SceneHud &hud = panels.hud;
+		hud.totalPrestige = game.totalPrestige;
+		hud.prestigeToReach = game.prestigeToReach;
+		hud.anyPlayerWaited = game.anyPlayerWaited;
+		hud.maskAwayPlayer = game.maskAwayPlayer;
+		hud.players.clear();
+		for (int p = 0; p < game.gameHeader.getNumberOfPlayers(); ++p)
+			if (const Player *player = game.players[p])
+				hud.players.push_back({player->name, player->teamNumber});
+			else
+				hud.players.push_back({});
+		hud.legacyScriptTextShown = game.legacyScriptActive() && game.sgslScript.isTextShown;
+		hud.legacyScriptText = hud.legacyScriptTextShown ? game.sgslScript.textShown : std::string();
+		hud.legacyScriptTimer = game.legacyScriptTimer();
+
+		// Copy into the scene's own TeamStats, reusing its storage when unshared.
+		if (!panels.localStats || panels.localStats.use_count() > 1)
+			panels.localStats = std::make_shared<TeamStats>(local.stats);
+		else
+			*panels.localStats = local.stats;
+
+		SceneBuildingPanel &bp = panels.building;
+		bp = SceneBuildingPanel();
+		if (Building *b = game.resolveBuilding(request.selectedBuilding))
+		{
+			bp.valid = true;
+			bp.gid = b->gid;
+			bp.generation = b->scriptIdentity;
+			bp.owner = ownerOf(game, *b->owner);
+			bp.type = b->type;
+			bp.typeNum = b->typeNum;
+			bp.posX = b->posX;
+			bp.posY = b->posY;
+			bp.hp = b->hp;
+			bp.effectiveMaxHp = b->getEffectiveMaxHp();
+			bp.buildingState = b->buildingState;
+			bp.constructionResultState = b->constructionResultState;
+			bp.maxUnitWorking = b->maxUnitWorking;
+			bp.desiredMaxUnitWorking = b->desiredMaxUnitWorking;
+			bp.priority = b->priority;
+			bp.unitStayRange = b->unitStayRange;
+			bp.minLevelToFlag = b->minLevelToFlag;
+			for (int r = 0; r < BASIC_COUNT; ++r)
+				bp.clearingResources[r] = b->clearingResources[r];
+			for (int r = 0; r < MAX_RESOURCES; ++r)
+				bp.resources[r] = b->resources[r];
+			bp.bullets = b->bullets;
+			bp.productionTimeout = b->productionTimeout;
+			for (int t = 0; t < NB_UNIT_TYPE; ++t)
+				bp.ratio[t] = b->ratio[t];
+			for (int r = 0; r < SceneSelectedBuilding::FailReasons; ++r)
+				bp.unitsFailingRequirements[r] = b->unitsFailingRequirements[r];
+			bp.unitsInside = Sint32(b->unitsInside.size());
+			bp.unitsWorking = Sint32(b->unitsWorking.size());
+			for (const Unit *u : b->unitsInside)
+				bp.insideUnits.push_back({u->displacement == Unit::DIS_INSIDE, u->insideTimeout, u->delta});
+			for (const Unit *u : b->unitsWorking)
+				bp.workerPositions.push_back({u->posX, u->posY});
+			// Ask only where the panels offer repair or upgrade, as drawing did: these
+			// queries assume a real building and an existing next level.
+			const bool constructible = b->constructionResultState == Building::NO_CONSTRUCTION &&
+				b->buildingState == Building::ALIVE && !b->type->isBuildingSite && !b->type->isVirtual;
+			if (constructible && b->type->regenerationSpeed == 0 &&
+				(b->hp < bp.effectiveMaxHp || b->hp < b->type->hpMax))
+			{
+				bp.hardSpaceForRepair = b->isHardSpaceForBuildingSite(Building::REPAIR);
+				b->getResourceCountToRepair(bp.repairCost);
+			}
+			if (constructible && b->type->nextLevel != -1)
+				bp.hardSpaceForUpgrade = b->isHardSpaceForBuildingSite(Building::UPGRADE);
+			bp.buildingHpMultiplier = game.gameHeader.getBuildingHpMultiplier();
+		}
+
+		SceneUnitPanel &up = panels.unit;
+		up = SceneUnitPanel();
+		if (Unit *u = game.resolveUnit(request.selectedUnit))
+		{
+			up.valid = true;
+			up.gid = u->gid;
+			up.generation = u->scriptIdentity;
+			up.owner = ownerOf(game, *u->owner);
+			up.race = u->race;
+			up.typeNum = u->typeNum;
+			up.action = u->action;
+			up.direction = u->direction;
+			up.delta = u->delta;
+			up.hp = u->hp;
+			up.trigHP = u->trigHP;
+			up.hungry = u->hungry;
+			up.speed = u->speed;
+			up.carriedResource = u->carriedResource;
+			up.fruitCount = u->fruitCount;
+			up.experience = u->experience;
+			up.experienceLevel = u->experienceLevel;
+			for (int a = 0; a < NB_ABILITY; ++a)
+			{
+				up.performance[a] = u->performance[a];
+				up.level[a] = u->level[a];
+			}
+			up.unitHungry = u->isUnitHungry();
+			up.realArmor = u->getRealArmor(false);
+			up.nextLevelThreshold = u->getNextLevelThreshold();
+			up.glassCannonScale = game.gameHeader.getGlassCannonScale();
+		}
+	}
+}
+
 void SceneExtractor::extract(const Game &game, const SceneRequest &request, Scene &scene)
 {
 	scene.tick = game.stepCounter;
 	scene.map.extract(game.map);
 	extractEntities(game, request, scene.entities);
+	extractPanels(game, request, scene.panels);
 
 	// Overlay maps refresh every 25 ticks (windows start at ticks 25k+1), and at once
 	// when the client switches overlay or team.

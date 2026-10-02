@@ -122,7 +122,7 @@ void GameGUITouch::drawBuildPalette()
 			auto *sprite = type->miniSpriteImage >= 0 ? type->miniSpritePtr : type->gameSpritePtr;
 			const int frame =
 				type->miniSpriteImage >= 0 ? type->miniSpriteImage : type->gameSpriteImage;
-			sprite->setBaseColor(gui.localTeam->color);
+			sprite->setBaseColor(gui.frameScene.panels.local.color);
 			const double factor = std::min({unit, (rect.w - 8 * unit) / sprite->getW(frame),
 											(rect.h - 8 * unit) / sprite->getH(frame)});
 			gfx->setUITransform(factor, rect.x + (rect.w - sprite->getW(frame) * factor) / 2,

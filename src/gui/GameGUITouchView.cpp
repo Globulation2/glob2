@@ -106,7 +106,7 @@ void GameGUITouch::drawPanel()
 		return;
 	auto *gfx = globalContainer->gfx;
 	gfx->setClipRect();
-	if (inspectedBuilding() && usesDial())
+	if (inspecting() && usesDial())
 	{
 		drawDial();
 		drawAllocation();
@@ -124,7 +124,7 @@ void GameGUITouch::drawPanel()
 		drawBuildPalette();
 		return;
 	}
-	if (inspectedBuilding())
+	if (inspecting())
 	{
 		drawBuildingActions();
 		drawAllocation();
@@ -215,11 +215,11 @@ void GameGUITouch::drawHUD()
 	}
 	stats.push_back(
 		{GAGCore::FormattableString(GAGCore::Toolkit::getStringTable()->getString("[P %0/%1/%2]"))
-			 .arg(gui.localTeam->prestige)
-			 .arg(gui.game.totalPrestige)
-			 .arg(gui.game.prestigeToReach)});
-	stats.push_back({"+" + std::to_string(gui.localTeam->unitConversionGained) + " / −" +
-					 std::to_string(gui.localTeam->unitConversionLost)});
+			 .arg(gui.frameScene.panels.local.prestige)
+			 .arg(gui.frameScene.panels.hud.totalPrestige)
+			 .arg(gui.frameScene.panels.hud.prestigeToReach)});
+	stats.push_back({"+" + std::to_string(gui.frameScene.panels.local.unitConversionGained) + " / −" +
+					 std::to_string(gui.frameScene.panels.local.unitConversionLost)});
 	int cpu = 0;
 	for (auto value : gui.smoothedCPULoad)
 		cpu += value;
@@ -245,7 +245,7 @@ void GameGUITouch::drawHUD()
 		{
 			SDL_Rect clip{int(r.x), int(r.y), int(r.w), int(r.h)};
 			gfx->setUITransform(unit, r.x + 2 * unit, r.y + 3 * unit, &clip);
-			globalContainer->unitmini->setBaseColor(gui.localTeam->color);
+			globalContainer->unitmini->setBaseColor(gui.frameScene.panels.local.color);
 			gfx->drawSprite(0, 0, globalContainer->unitmini, stat.icon);
 			gfx->setUITransform();
 			gfx->setClipRect();
@@ -323,7 +323,7 @@ ViewRect GameGUITouch::tutorialRect() const
 }
 void GameGUITouch::prepareTutorial()
 {
-	std::string text = gui.game.legacyScriptActive() && gui.game.sgslScript.isTextShown ? gui.game.sgslScript.textShown : "";
+	std::string text = gui.frameScene.panels.hud.legacyScriptText;
 	if (!gui.scriptText.empty())
 	{
 		if (!text.empty())
@@ -432,12 +432,12 @@ void GameGUITouch::drawTutorial()
 	}
 }
 
-Building *GameGUITouch::allocationBuilding() const
+const SceneBuildingPanel *GameGUITouch::allocationBuilding() const
 {
 	if (gui.selectionMode != GameGUI::BUILDING_SELECTION || globalContainer->isViewingGame())
 		return nullptr;
-	auto *building = gui.selectionBuilding();
-	return building && building->owner->teamNumber == gui.localTeamNo &&
+	auto *building = inspectedBuilding();
+	return building && building->owner.teamNumber == gui.localTeamNo &&
 				   building->type->maxUnitWorking && building->buildingState == Building::ALIVE
 			   ? building
 			   : nullptr;
@@ -445,7 +445,7 @@ Building *GameGUITouch::allocationBuilding() const
 ViewRect GameGUITouch::allocationRect() const
 {
 	auto rect = layout().panel;
-	if (!inspectedBuilding() || rect.h <= 0)
+	if (!inspecting() || rect.h <= 0)
 		return {};
 	if (usesDial())
 		return dialLayout(layout()).header;
@@ -512,7 +512,7 @@ void GameGUITouch::drawAllocation()
 	auto *sprite = type->miniSpriteImage >= 0 ? type->miniSpritePtr : type->gameSpritePtr;
 	const int frame = type->miniSpriteImage >= 0 ? type->miniSpriteImage : type->gameSpriteImage;
 	SDL_Rect clip{int(rect.x), int(rect.y), int(rect.w), int(rect.h)};
-	sprite->setBaseColor(building->owner->color);
+	sprite->setBaseColor(building->owner.color);
 	gfx->setUITransform(unit, rect.x + 4 * unit, rect.y + 4 * unit, &clip);
 	gfx->drawSprite(0, 0, sprite, frame);
 	gfx->setUITransform();
@@ -528,12 +528,12 @@ void GameGUITouch::drawAllocation()
 				GAGCore::Toolkit::getStringTable()->getString("[%0 / %1 HP · %2]"))
 				.arg(building->hp)
 				.arg(type->hpMax)
-				.arg(building->owner == gui.localTeam
+				.arg(building->owner.teamNumber == gui.frameScene.panels.local.teamNumber
 						 ? std::string(
 							   GAGCore::Toolkit::getStringTable()->getString("[Your colony]"))
 						 : GAGCore::FormattableString(
 							   GAGCore::Toolkit::getStringTable()->getString("[Team %0]"))
-							   .arg(building->owner->teamNumber + 1)),
+							   .arg(building->owner.teamNumber + 1)),
 		.85);
 	drawPointLabel({rect.x + rect.w - 48 * unit, rect.y, 48 * unit, rect.h}, "×", 1.2);
 }
@@ -642,7 +642,7 @@ std::vector<std::pair<std::string, int>> GameGUITouch::tacticalActions() const
 			{toggle(GAGCore::Toolkit::getStringTable()->getString("[show flags]"),
 					globalContainer->replayShowFlags),
 			 34}};
-		for (int i = 0; i < gui.game.teamsCount(); ++i)
+		for (int i = 0; i < gui.frameScene.entities.teamCount; ++i)
 			playback.push_back(
 				{toggle((GAGCore::FormattableString(
 							 GAGCore::Toolkit::getStringTable()->getString("[View team %0]"))
