@@ -3,8 +3,9 @@ from pathlib import Path
 import json
 import os
 import subprocess
-from SCons.Script import Environment, Default, Value, GetOption, Action
+from SCons.Script import Environment, Default, Value, GetOption, Action, COMMAND_LINE_TARGETS
 from build_layout import write_if_changed, PACKAGE_VERSION
+from javascript import javascript_objects, numeric_guard
 from sources import CLIENT_SOURCES, GAG_SOURCES, USL_SOURCES, INCLUDE_DIRECTORIES
 
 PORTS = ['--use-port=vorbis', '--use-port=zlib']
@@ -13,7 +14,8 @@ PORTS = ['--use-port=vorbis', '--use-port=zlib']
 def build_web(directory, identity, arguments):
     root = Path.cwd()
     output = Path(directory).resolve()
-    sdk = Path(arguments.get('emsdk', os.environ.get('EMSDK', root / 'tools/browser-emsdk'))).resolve()
+    from dev_store import browser_sdk, cache, isolated, key, command_path
+    sdk = browser_sdk(root, arguments.get('emsdk', os.environ.get('EMSDK')))
     compiler = sdk / 'upstream/emscripten/em++'
     lock = json.loads((root / 'browser/toolchain.json').read_text())
     if not compiler.exists():
@@ -27,15 +29,24 @@ def build_web(directory, identity, arguments):
     sdl_prefix = output / 'sdl3/prefix'
     build_environment = dict(os.environ)
     # Cache is target/config-specific, including port downloads and compiled system libraries.
-    build_environment['EM_CACHE'] = str(output / 'cache')
-    build_environment['EM_PORTS'] = str(output / 'ports')
+    shared_cache = cache(root, 'emscripten-' + key(root, ['browser/toolchain.json'], PORTS)) if not isolated() else output
+    build_environment['EM_CACHE'] = str(shared_cache / 'cache')
+    build_environment['EM_PORTS'] = str(shared_cache / 'ports')
+    # emsdk's template derives paths from EM_CONFIG; anchor it to the selected
+    # immutable SDK while keeping the generated build configuration local.
+    if not os.environ.get('EM_CONFIG') and (sdk / '.emscripten').is_file():
+        configuration = (sdk / '.emscripten').read_text()
+        configuration = '\n'.join('emsdk_path = ' + repr(str(sdk))
+            if line.startswith('emsdk_path =') else line for line in configuration.splitlines()) + '\n'
+        write_if_changed(output / '.emscripten', configuration)
+        build_environment['EM_CONFIG'] = str(output / '.emscripten')
     build_environment.update(TMPDIR=str(output / 'tmp'), TMP=str(output / 'tmp'), TEMP=str(output / 'tmp'))
     (output / 'tmp').mkdir(parents=True, exist_ok=True)
     if not GetOption('clean'):
         build_sdl3(sdl_prefix, output / 'sdl3/sources', 2, emscripten, build_environment)
     env = Environment(platform='posix', tools=['gcc', 'g++', 'ar', 'gnulink', 'compilation_db'],
-                      ENV=build_environment, CC=str(emscripten / 'emcc'), CXX=str(compiler),
-                      LINK=str(compiler), AR=str(emscripten / 'emar'), RANLIB=str(emscripten / 'emranlib'))
+                      ENV=build_environment, CC=command_path(emscripten / 'emcc'), CXX=command_path(compiler),
+                      LINK=command_path(compiler), AR=command_path(emscripten / 'emar'), RANLIB=command_path(emscripten / 'emranlib'))
     env['PROGSUFFIX'] = '.html'
     config = output / 'include/glob2/BuildConfig.h'
     write_if_changed(config, f'''#pragma once
@@ -49,7 +60,7 @@ def build_web(directory, identity, arguments):
 #define PRIMARY_FONT "sans.ttf"
 ''')
     include_paths = [str(output / 'include'), str(sdl_prefix / 'include')] + list(INCLUDE_DIRECTORIES)
-    env.Append(CPPPATH=include_paths, CPPDEFINES=['HAVE_CONFIG_H'],
+    env.Append(CPPPATH=include_paths + ["#third_party/quickjs-ng"], CPPDEFINES=['HAVE_CONFIG_H'],
                CXXFLAGS=['-std=gnu++20', '-fexceptions', '-g2', '-O2' if identity['mode']=='release' else '-O0'] + PORTS)
     env.Append(LINKFLAGS=['-fexceptions', '-O2' if identity['mode']=='release' else '-O0',
         '-sLEGACY_GL_EMULATION=1', '-sMIN_WEBGL_VERSION=2', '-sMAX_WEBGL_VERSION=2',
@@ -68,14 +79,49 @@ def build_web(directory, identity, arguments):
             input='', text=True, env=env['ENV']).returncode
     ports = env.Command(str(output / 'ports-ready.o'), [Value(lock), Value(PORTS)],
                         Action(prepare_ports, 'Preparing pinned Emscripten ports'))
-    files = ['src/' + s for s in CLIENT_SOURCES if s not in ('VoiceRecorder.cpp', 'net/NetTransport.cpp', 'net/WssTransport.cpp', 'net/irc/IRCTextMessageHandler.cpp')]
+    files = ['src/' + s for s in CLIENT_SOURCES if s not in ('VoiceRecorder.cpp', 'net/NetTransport.cpp', 'net/TcpTransport.cpp', 'net/WssTransport.cpp', 'net/LanIdentity.cpp', 'net/ServerControl.cpp', 'net/irc/IRCTextMessageHandler.cpp')]
     files += ['libgag/src/' + s for s in GAG_SOURCES if s != 'ApplicationHost.cpp']
     files += ['libusl/src/' + s for s in USL_SOURCES]
     files += ['browser/VoiceRecorder.cpp', 'browser/ApplicationHost.cpp', 'browser/NetTransport.cpp', 'browser/IRCTextMessageHandler.cpp']
-    objects = [env.Object(str(output / 'obj' / (f + '.o')), f) for f in files]
+    if any(target in COMMAND_LINE_TARGETS for target in ('android-tests', 'ios-tests', 'web-tests')):
+        from test_provenance import register_test_provenance
+        provenance_header = register_test_provenance(env, output)
+    strict = env.Clone()
+    strict.Append(CXXFLAGS=['-fno-fast-math', '-ffp-contract=off'])
+    objects = [(strict if f.startswith('src/script/') or f == 'src/ai/AIJavaScript.cpp' else env)
+               .Object(str(output / 'obj' / (f + '.o')), f) for f in files]
+    numeric_guard(strict, [obj for name, obj in zip(files, objects) if name.startswith('src/script/') or name == 'src/ai/AIJavaScript.cpp'])
+    objects += javascript_objects(env, output / "obj/third_party", identity["mode"] == "release")
     env.Requires(objects, ports)
     env.Depends(objects, str(config))
     program = env.Program(str(output / 'index.html'), objects)
+    if 'web-tests' in COMMAND_LINE_TARGETS:
+        import sys
+        sys.path.insert(0, str(root / 'test'))
+        import tests as registry
+        tests = env.Clone()
+        tests.Append(CPPPATH=['test', 'test/support', 'src/render', 'libgag/src'])
+        tests.Append(LINKFLAGS=['--preload-file', 'test/fixtures@/test/fixtures',
+                               '--preload-file', 'games@/games', '-sEXIT_RUNTIME=0'])
+        test_objects = []
+        for entry in registry.SUPPORT + registry.ENGINE_SUPPORT + registry.scripting_entries():
+            source, options = (entry, {}) if isinstance(entry, str) else entry
+            local = tests.Clone()
+            local.Append(CXXFLAGS=options.get('cxxflags', []))
+            local.Append(CPPDEFINES=options.get('defines', []))
+            path = 'test/' + source
+            targets = local.Object(str(output / 'obj/tests' / (path + '.o')), path)
+            if source.endswith('TestMain.cpp'):
+                local.Depends(targets, provenance_header)
+            test_objects += targets
+        production = [obj for name, obj in zip(files, objects) if name != 'src/Glob2.cpp']
+        production += objects[len(files):]
+        harness = tests.Program(str(output / 'script-tests.html'), production + test_objects)
+        tests.Depends(harness, [str(p) for directory in ('data', 'maps', 'campaigns', 'scripts', 'test/fixtures', 'games')
+                               for p in Path(directory).rglob('*') if p.is_file()])
+        tests.SideEffect([str(output / ('script-tests.' + extension)) for extension in ('js', 'wasm', 'data')], harness)
+        env.Alias('web-tests', harness)
+
     env.Depends(program, ['browser/shell.html', 'browser/storage.js', 'browser/file-selection.js', 'browser/audio.js', 'browser/toolchain.json'])
     env.Depends(program, [str(p) for directory in ('data','maps','campaigns','scripts')
                          for p in Path(directory).rglob('*') if p.is_file()])

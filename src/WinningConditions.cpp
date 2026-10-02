@@ -308,7 +308,7 @@ bool WinningConditionScript::hasTeamWon(int team, const Game* game) const
 	(void)game;
 	return false;
 #else
-	return game->sgslScript.hasTeamWon(team);
+	return game->legacyScriptActive() && game->sgslScript.hasTeamWon(team);
 #endif
 }
 
@@ -321,7 +321,7 @@ bool WinningConditionScript::hasTeamLost(int team, const Game* game) const
 	(void)game;
 	return false;
 #else
-	return game->sgslScript.hasTeamLost(team);
+	return game->legacyScriptActive() && game->sgslScript.hasTeamLost(team);
 #endif
 }
 
@@ -434,6 +434,5 @@ void WinningConditionSuddenDeath::decodeData(GAGCore::InputStream* stream, Uint3
 	endStepTick = stream->readUint32("endStepTick");
 	stream->readLeaveSection();
 }
-
 
 

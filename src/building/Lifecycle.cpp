@@ -37,6 +37,7 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	// identity
 	this->gid=gid;
 	owner=team;
+	scriptIdentity=owner->game->allocateScriptIdentity(true,gid);
 
 	// type
 	this->typeNum=typeNum;
@@ -242,6 +243,7 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 
 	// identity
 	gid = stream->readUint16("gid");
+	scriptIdentity = versionMinor >= FILE_FORMAT_VERSION_JAVASCRIPT ? stream->readUint32("scriptIdentity") : owner->game->allocateScriptIdentity(true,gid);
 	this->owner = owner;
 
 	// position
@@ -375,6 +377,7 @@ void Building::save(GAGCore::OutputStream *stream)
 
 	// identity
 	stream->writeUint16(gid, "gid");
+	stream->writeUint32(scriptIdentity, "scriptIdentity");
 	// we drop team
 
 	// position

@@ -5,13 +5,14 @@ import os
 from pathlib import Path
 import subprocess
 import time
+import re
 import tempfile
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("binary", type=Path)
-    parser.add_argument("--output", type=Path, default=Path("output/lan-session-test"))
+    parser.add_argument("--output", type=Path, default=Path("artifacts/lan-session-test"))
     args = parser.parse_args()
     binary = args.binary.resolve()
     output = args.output.resolve()
@@ -22,7 +23,7 @@ def main():
     host_log = output / "host.log"
     join_log = output / "join.log"
     with tempfile.TemporaryDirectory(prefix="glob2-lan-test-") as profiles, host_log.open("w") as host_out, join_log.open("w") as join_out:
-        host_env = dict(env, GLOB2_USER_DIR=str(Path(profiles) / "host"))
+        host_env = dict(env, GLOB2_LAN_ADDRESS="127.0.0.1", GLOB2_USER_DIR=str(Path(profiles) / "host"))
         join_env = dict(env, GLOB2_USER_DIR=str(Path(profiles) / "join"))
         host = subprocess.Popen(
             [str(binary), "host", "127.0.0.1", "2", str(output / "host")],
@@ -34,8 +35,9 @@ def main():
                 if host.poll() is not None or time.monotonic() >= deadline:
                     raise RuntimeError("Host did not publish a lobby")
                 time.sleep(0.1)
+            pairing = re.search(r"^PAIRING (.+)$", host_log.read_text(), re.MULTILINE).group(1)
             joined = subprocess.run(
-                [str(binary), "join", "127.0.0.1", "2", str(output / "join")],
+                [str(binary), "join", pairing, "2", str(output / "join")],
                 stdout=join_out, stderr=subprocess.STDOUT, env=join_env, timeout=100,
             )
             if joined.returncode != 0:

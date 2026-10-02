@@ -298,6 +298,9 @@ void YOGServerGame::setNotReadyToStart(YOGPlayerID playerID)
 
 void YOGServerGame::receiveGameStartRequest()
 {
+    if (!server.canStartNewGame()) {
+        host->sendMessage(std::make_shared<NetRefuseGameStart>(YOGServerNotAcceptingGames)); return;
+    }
 	if(playerManager.isEveryoneReadyToGo())
 	{
 		if(!gameStarted)
@@ -314,6 +317,9 @@ void YOGServerGame::receiveGameStartRequest()
 
 void YOGServerGame::startGame()
 {
+    if (!gameStarted && !server.canStartNewGame()) {
+        host->sendMessage(std::make_shared<NetRefuseGameStart>(YOGServerNotAcceptingGames)); return;
+    }
 	chooseLatencyMode();
 	gameStarted=true;
 	std::shared_ptr<NetStartGame> message(new NetStartGame);

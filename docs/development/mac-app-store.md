@@ -124,7 +124,7 @@ internal testing group. Add the intended App Store Connect user as an internal
 tester in that group, then accept the TestFlight invitation and install the
 Mac build. This does not submit an App Store version for review or release it.
 
-The optional secure WebSocket client uses OpenSSL for standard TLS outside
+The required secure WebSocket transport uses OpenSSL for standard TLS outside
 Apple's operating-system encryption. Declare that use accurately in App Store
 Connect. If the app will be distributed in France, Apple requires a French
 encryption declaration; see [Apple's export compliance table](https://developer.apple.com/help/app-store-connect/reference/app-information/export-compliance-documentation-for-encryption).

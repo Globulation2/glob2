@@ -139,6 +139,7 @@ GAGCore::CooperativeTask GameGUI::loadTask(GAGCore::InputStream *stream, bool ig
 		stream->readLeaveSection();
 	}
 
+	game.mapscript.restorePresentation(*this);
 	minimap.setGame(game);
 
 	co_return true;

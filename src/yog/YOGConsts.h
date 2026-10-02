@@ -128,6 +128,7 @@ enum YOGServerGameStartRefusalReason
 	YOGUnknownStartRefusalReason,
 	///This means the host has disconnected and all players must quit
 	YOGNotAllPlayersReady,
+    YOGServerNotAcceptingGames,
 };
 
 

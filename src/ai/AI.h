@@ -49,6 +49,7 @@ public:
 		///binding, no AISharedRuntime involved.
 		CABINO=8,
 
+		JAVASCRIPT=9,
 		SIZE
 	};
 	static const ImplementationID toggleAI=CASTOR;

@@ -74,6 +74,29 @@ void YOGServerPlayer::update()
         (login && connectionState == WaitingForLoginAttempt) ||
         (!hello && !login && connectionState == ClientOnStandby);
     if (!allowed) { closeConnection(); return; }
+    // Room operations require current membership as well as authentication.
+    // Stale or fabricated room messages must not dereference an absent game.
+    switch (type)
+    {
+    case MNetSendMapHeader:
+    case MNetSendReteamingInformation:
+    case MNetRequestGameStart:
+    case MNetSendGameHeader:
+    case MNetSendGamePlayerInfo:
+    case MNetStartGame:
+    case MNetLeaveGame:
+    case MNetReadyToLaunch:
+    case MNetNotReadyToLaunch:
+    case MNetKickPlayer:
+    case MNetAddAI:
+    case MNetRemoveAI:
+    case MNetChangePlayersTeam:
+    case MNetSendGameResult:
+        if (!ngame) { closeConnection(); return; }
+        break;
+    default:
+        break;
+    }
 	//This receives the client information
 	if(type==MNetSendClientInformation)
 	{

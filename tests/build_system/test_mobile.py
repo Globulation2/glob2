@@ -29,9 +29,9 @@ class EmulatorSmokeTests(unittest.TestCase):
                 (home/'bin').mkdir(parents=True, exist_ok=True)
                 (home/'bin/java').touch()
                 with self.subTest(system=system), patch('developer_apk.platform.system', return_value=system), patch('developer_apk.platform.machine', return_value=machine):
-                    with patch.dict('developer_apk.os.environ', {}, clear=True):
+                    with patch.dict('developer_apk.os.environ', {'GLOB2_DEV_MODE':'isolated'}, clear=True):
                         self.assertEqual(developer_apk.java_environment(task)['JAVA_HOME'], str(home))
-                    with patch.dict('developer_apk.os.environ', {'JAVA_HOME': '/explicit/jdk'}, clear=True):
+                    with patch.dict('developer_apk.os.environ', {'JAVA_HOME': '/explicit/jdk', 'GLOB2_DEV_MODE':'isolated'}, clear=True):
                         self.assertEqual(developer_apk.java_environment(task)['JAVA_HOME'], '/explicit/jdk')
 
     def test_smoke_rejects_physical_devices_and_shared_servers(self):
@@ -116,7 +116,7 @@ class PlayBundleAssetTests(unittest.TestCase):
             bundle.write_bytes(b'changed')
             bundle.with_suffix('.json').write_text(json.dumps({'sha256':'0'*64}))
             argv=['android.py','sign-bundle','--release','--keystore',str(root/'key.jks'),'--key-alias','upload']
-            passwords={'GLOB2_PLAY_STORE_PASSWORD':'test','GLOB2_PLAY_KEY_PASSWORD':'test'}
+            passwords={'GLOB2_PLAY_STORE_PASSWORD':'test','GLOB2_PLAY_KEY_PASSWORD':'test','GLOB2_DEV_MODE':'isolated'}
             with patch.object(android,'ROOT',root), patch.object(sys,'argv',argv), patch.dict('os.environ',passwords), patch('android.subprocess.run') as run:
                 with self.assertRaisesRegex(ValueError,'changed since verification'):
                     android.main()
@@ -335,7 +335,7 @@ class EmulatorEnvironmentTests(unittest.TestCase):
                 self.assertEqual(kwargs['env']['ANDROID_SDK_ROOT'], str(sdk))
                 config.parent.mkdir(parents=True)
                 config.write_text('image.sysdir.1=system-images/android-35/default/x86_64/\n')
-            with patch.object(emulator, 'ROOT', task), patch.dict(os.environ, {'ANDROID_HOME': '/runner/shared/sdk'}), patch.object(sys, 'argv', ['emulator.py','configure','--arch','x86_64']), patch.object(emulator.subprocess, 'run', side_effect=create):
+            with patch.object(emulator, 'ROOT', task), patch.dict(os.environ, {'ANDROID_HOME': '/runner/shared/sdk', 'GLOB2_DEV_MODE':'isolated'}), patch.object(sys, 'argv', ['emulator.py','configure','--arch','x86_64']), patch.object(emulator.subprocess, 'run', side_effect=create):
                 emulator.main()
             self.assertIn('hw.lcd.width=320', config.read_text())
 

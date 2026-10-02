@@ -19,7 +19,7 @@ YOGClientRouterAdministrator::YOGClientRouterAdministrator()
 
 int YOGClientRouterAdministrator::execute()
 {
-	std::cout<<"IP Address of YOG router? "<<std::flush;
+	std::cout<<"Secure WebSocket URL of YOG router (wss://host/router)? "<<std::flush;
 	std::string ip;
 	std::cin>>ip;
 	if(std::cin.eof())

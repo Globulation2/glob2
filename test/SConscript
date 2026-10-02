@@ -12,13 +12,11 @@ sys.path.insert(0, Dir('.').srcnode().abspath)
 import tests as registry
 
 test_env = env.Clone()
-test_env.Append(CPPPATH=[Dir('.').srcnode(), Dir('support').srcnode(), Dir('#src/render'), Dir('#libgag/src')])
-# Console entry point for every test binary: no -mwindows, no SDL3main.
+test_env.Append(CPPPATH=[Dir('.').srcnode(), Dir('support').srcnode(), Dir('#src/render'), Dir('#libgag/src'), Dir('#third_party/quickjs-ng')])
+# Console entry point for every test binary: no -mwindows, SDL3 headers supply no separate main library.
 test_env['LINKFLAGS'] = [flag for flag in test_env.Split(test_env['LINKFLAGS']) if flag != '-mwindows']
-test_env['LIBS'] = [lib for lib in test_env['LIBS'] if lib != 'SDL3main']
-# The mingw SDL configuration renames main to SDL_main so SDL3main's WinMain can call
-# it; these binaries carry their own console main, so drop the rename and tell SDL's
-# headers not to repeat it.
+# These binaries carry their own console main; discard a legacy main rename
+# if a toolchain supplied one, and keep SDL's entry-point wrapper disabled.
 
 
 def not_sdl_main(item):
@@ -35,6 +33,8 @@ test_env['CPPDEFINES'] = [d for d in ([defines] if isinstance(defines, str) else
 for var in ('CCFLAGS', 'CXXFLAGS', 'CPPFLAGS'):
     test_env[var] = [flag for flag in test_env.Split(test_env.get(var, [])) if flag != '-Dmain=SDL_main']
 test_env.Append(CPPDEFINES=['SDL_MAIN_HANDLED'])
+from test_provenance import register_test_provenance
+provenance_header = register_test_provenance(test_env, env['BUILDDIR'])
 
 
 def available(options):
@@ -65,7 +65,10 @@ def objects(entries, prefix):
             compile_env.Append(CXXFLAGS=options.get('cxxflags', []))
             compile_env.Append(CPPDEFINES=options.get('defines', []))
         name = source.lstrip('#').replace('/', '_').rsplit('.', 1)[0]
-        out += compile_env.Object(prefix + name + '.o', source_node(source))
+        targets = compile_env.Object(prefix + name + '.o', source_node(source))
+        if source.endswith('TestMain.cpp'):
+            compile_env.Depends(targets, provenance_header)
+        out += targets
     return out
 
 

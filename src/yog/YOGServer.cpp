@@ -1,9 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2007 Bradley Arsenault
 
-#include <algorithm>
 #include <sstream>
 #include "Version.h"
+#include "Toolkit.h"
+#include "FileManager.h"
+#include <chrono>
+#include <algorithm>
 #include "NetBroadcaster.h"
 #include "NetConnection.h"
 #include "LobbyMessages.h"
@@ -15,10 +18,11 @@
 #include <SDL3/SDL.h>
 
 YOGServer::YOGServer(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolicy, bool embeddedRouter)
-	: loginPolicy(loginPolicy), gamePolicy(gamePolicy), administrator(this), playerInfos(this), routerManager(*this), router(embeddedRouter ? std::make_unique<YOGServerRouter>("localhost") : nullptr), maps(this), scoreCalculator(this)
+	: configuration(makeNetworkConfig(loginPolicy == YOGAnonymousLogin)),
+      dataLock(configuration.lan ? nullptr : std::make_unique<ServerDataLock>(GAGCore::Toolkit::getFileManager()->getDir(0))), loginPolicy(loginPolicy), gamePolicy(gamePolicy), administrator(this), playerInfos(this), routerManager(*this, configuration), router(embeddedRouter ? std::make_unique<YOGServerRouter>(configuration) : nullptr), maps(this), scoreCalculator(this)
 {
 	isBroadcasting = false;
-	nl.startListening(YOG_SERVER_PORT);
+	nl.startListening(configuration.lobby);
 	new_connection.reset(new NetConnection);
 	organizedGameBroadcastTime=0;
 	maps.load();
@@ -36,7 +40,7 @@ bool YOGServer::isListening()
 void YOGServer::update()
 {
 	//First attempt connections with new players
-	while(nl.attemptConnection(*new_connection))
+	while(!draining && nl.attemptConnection(*new_connection))
 	{
 		YOGPlayerID id = chooseNewPlayerID();
 		players[id]=shared_ptr<YOGServerPlayer>(new YOGServerPlayer(new_connection, id, *this));
@@ -91,9 +95,7 @@ void YOGServer::update()
 		broadcaster->update();
 	if(!broadcaster && isBroadcasting && gameList.size())
 	{
-		LANGameInformation info;
-		info.getGameInformation() = *gameList.begin();
-		broadcaster.reset(new NetBroadcaster(info));
+		broadcaster.reset(new NetBroadcaster(configuration.discoveryId, configuration.lobbyEndpoint));
 	}
 	
 	playerInfos.update();
@@ -128,23 +130,35 @@ void YOGServer::update()
 
 int YOGServer::run()
 {
-	NetTestSuite tests;
-	bool cont = tests.runAllTests();
-	if(!cont)
-		return 1;
-	
+    ServerControl::installSignals();
+    ServerControl control(configuration.controlBind, configuration.controlPort);
+    std::chrono::steady_clock::time_point drainStarted{};
 	std::cout<<"Server started successfully."<<std::endl;
-	while(nl.isListening())
+	while(nl.isListening() || draining)
 	{
 		const int speed = 20;
 		Uint64 startTick, endTick;
 		startTick = SDL_GetTicks();
-		update();
+        if (ServerControl::shutdownRequested() && !draining) {
+            draining = true; drainStarted = std::chrono::steady_clock::now();
+            nl.stopListening(); disableLANBroadcasting();
+            if (router) router->enterShutdownMode();
+            std::cout << "Lobby draining existing games" << std::endl;
+        }
+        update();
+        control.update({!draining && routerManager.hasRouter(), draining, players.size(), games.size()});
+        const auto running = std::count_if(games.begin(), games.end(), [](const auto& entry) { return entry.second->hasGameStarted(); });
+        if (draining && (running == 0 || std::chrono::steady_clock::now() - drainStarted >=
+            std::chrono::seconds(configuration.drainSeconds))) {
+            if (running != 0) std::cerr << "Drain deadline expired; active games will be interrupted" << std::endl;
+            break;
+        }
 		endTick=SDL_GetTicks();
 		int remaining = std::max<Sint64>(speed - static_cast<Sint64>(endTick) + static_cast<Sint64>(startTick), 0);
 		SDL_Delay(remaining);
 	}
 	std::cout<<nl.isListening()<<std::endl;
+	registry.flush(); playerInfos.savePlayerInfos(); maps.save(); gameLog.flush();
 	return 0;
 }
 
@@ -276,7 +290,7 @@ YOGServerChatChannelManager& YOGServer::getChatChannelManager()
 
 YOGServerGameCreateRefusalReason YOGServer::canCreateNewGame(const std::string& game)
 {
-	return routerManager.hasRouter() ? YOGCreateRefusalUnknown : YOGCreateRefusalNoRouter;
+	return !draining && routerManager.hasRouter() ? YOGCreateRefusalUnknown : YOGCreateRefusalNoRouter;
 }
 
 
@@ -305,9 +319,7 @@ Uint16 YOGServer::createNewGame(const std::string& name)
 			break;
 	}
 	Uint32 chatChannel = chatChannelManager.createNewChatChannel();
-	std::string routerip = selectedRouter->getIPAddress();
-	if(routerip == "127.0.0.1")
-		routerip = "YOGIP";
+	const std::string routerip = configuration.routerEndpoint;
 	
 	gameList.push_back(YOGGameInfo(name, newID));
 	games[newID] = shared_ptr<YOGServerGame>(new YOGServerGame(newID, chatChannel, routerip, *this));
@@ -317,7 +329,7 @@ Uint16 YOGServer::createNewGame(const std::string& name)
 
 YOGServerGameJoinRefusalReason YOGServer::canJoinGame(Uint16 gameID)
 {
-	if(games.find(gameID) == games.end())
+	if(draining || games.find(gameID) == games.end())
 		return YOGServerGameDoesntExist;
 	if(games[gameID]->hasGameStarted())
 		return YOGServerGameHasAlreadyStarted;
@@ -362,9 +374,7 @@ void YOGServer::enableLANBroadcasting()
 {
 	if(gameList.size())
 	{
-		LANGameInformation info;
-		info.getGameInformation() = *gameList.begin();
-		broadcaster.reset(new NetBroadcaster(info));
+		broadcaster.reset(new NetBroadcaster(configuration.discoveryId, configuration.lobbyEndpoint));
 	}
 	isBroadcasting = true;
 }

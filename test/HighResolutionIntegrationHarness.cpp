@@ -5,6 +5,7 @@
 #include <cmath>
 #include <cstdlib>
 #include "Engine.h"
+#include "Utilities.h"
 #include "ReplayWriter.h"
 #include "GlobalContainer.h"
 #include "MapEdit.h"
@@ -13,10 +14,12 @@
 #include "Unit.h"
 #include <SDL3_image/SDL_image.h>
 #include <FileManager.h>
+#ifdef HAVE_OPENGL
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
 #else
 #include <epoxy/gl.h>
+#endif
 #endif
 #include <algorithm>
 #include <iostream>
@@ -30,6 +33,7 @@ public:
 };
 class HighResolutionIntegrationHarness
 {
+#ifdef HAVE_OPENGL
     static void capture(const std::string &name)
     {
         glFinish();GLint v[4];glGetIntegerv(GL_VIEWPORT,v);int w=v[2],h=v[3];
@@ -138,6 +142,7 @@ class HighResolutionIntegrationHarness
         REQUIRE((white(left+64,8)&&white(left+64,135)&&white(left,72)&&white(left+127,72)));
         std::cout<<"PASS full-period seam sprite coverage, single building identity, minimap outline and native cursor scale\n";
     }
+#endif
 public:
     static void runSoftware()
     {
@@ -149,6 +154,16 @@ public:
             Engine engine;REQUIRE(engine.initCustom("games/gd-small-2ai.game")==Engine::EE_NO_ERROR);
             REQUIRE(Sprite::highResolutionStats().cpuBytes==0);
             auto &gui=engine.gui;gui.updateCamera();gui.zoomMap(10,300,300);gui.drawAll(0);
+            const auto checksum = gui.game.checkSum(nullptr, nullptr, nullptr, true);
+            for (double zoom : {.5, 1., 2.})
+            {
+                gui.camera.setZoom(zoom, 300, 300);
+                gui.viewportX = gui.camera.tileX(); gui.viewportY = gui.camera.tileY();
+                gui.drawAll(0); globalContainer->gfx->nextFrame();
+                gui.drawAll(0); globalContainer->gfx->nextFrame();
+                REQUIRE(gui.game.checkSum(nullptr, nullptr, nullptr, true) == checksum);
+                REQUIRE(Sprite::highResolutionStats().cpuBytes == 0);
+            }
             // The game zooms its software map; the editor only with a stretching renderer.
             REQUIRE(gui.camera.zoom>1);
         }
@@ -163,6 +178,7 @@ public:
         }
         std::cout<<"PASS software game/editor rendering, original artwork, software map zoom, editor zoom only with a stretching renderer\n";
     }
+#ifdef HAVE_OPENGL
     static void run()
     {
         auto gfx=globalContainer->gfx;
@@ -189,12 +205,26 @@ public:
 #endif
 				gui.processEvent(&wheel);REQUIRE(gui.orderQueue.size()==orders);
                 gui.camera.setZoom(zoom,300,300);gui.viewportX=gui.camera.tileX();gui.viewportY=gui.camera.tileY();
+                const auto randomState=syncRandEngine();
                 gfx->resetDrawCallCount();auto start=std::chrono::steady_clock::now();
                 for(int i=0;i<10;++i){gui.drawAll(0);glFinish();}
                 auto ms=std::chrono::duration<double,std::milli>(std::chrono::steady_clock::now()-start).count()/10;
                 std::cout<<(hd?"HD":"original")<<" gameplay "<<zoom*100<<"%: "<<ms<<" ms, "<<gfx->getDrawCallCount()/10<<" calls, "<<DrawableSurface::allocatedTextureBytes()<<" GPU bytes\n";
                 capture(std::string(hd?"game-hd-":"game-original-")+std::to_string(int(zoom*100)));
                 REQUIRE(gui.game.checkSum(nullptr,nullptr,nullptr,true)==checksum);
+                REQUIRE(syncRandEngine()==randomState);
+                if(hd && zoom==1.)
+                {
+                    const Settings previous=globalContainer->settings;
+                    auto &settings=globalContainer->settings;
+                    settings.clouds=false; settings.cloudShadows=true;
+                    settings.buildingParticles=true; settings.translucentPanels=false;
+                    settings.fullMagicEffects=false; settings.smoothProgressIndicators=false;
+                    gui.drawAll(0); capture("game-hd-independent-effects");
+                    REQUIRE(gui.game.checkSum(nullptr,nullptr,nullptr,true)==checksum);
+                    REQUIRE(syncRandEngine()==randomState);
+                    settings=previous;
+                }
                 gui.selectionMode=GameGUI::TOOL_SELECTION;gui.toolManager.activateBuildingTool("explorationflag");
                 gui.handleMapClick(300,300,SDL_BUTTON_LEFT);
                 SDL_MouseButtonEvent placement{};placement.button=SDL_BUTTON_LEFT;placement.x=300;placement.y=300;
@@ -209,10 +239,19 @@ public:
             REQUIRE((after==1&&gui.camera.zoom==after&&gui.orderQueue.size()==orders));
             if (glob2test::fullscreenEnabled())
             {
-                auto center=gui.camera.screenToWorld(gui.camera.width/2,gui.camera.height/2);
+                auto center=gui.camera.screenToWorld(gui.camera.width/2.0,gui.camera.height/2.0);
                 REQUIRE(gfx->toggleFullscreen());gui.updateCamera();gui.drawAll(0);capture(hd?"fullscreen-hd":"fullscreen-original");
-                auto fullscreenCenter=gui.camera.screenToWorld(gui.camera.width/2,gui.camera.height/2);
-                REQUIRE(center==fullscreenCenter);REQUIRE(gfx->toggleFullscreen());
+                auto fullscreenCenter=gui.camera.screenToWorld(gui.camera.width/2.0,gui.camera.height/2.0);
+                // Camera origins normalize on the torus when the larger native view
+                // crosses a map seam; compare the same world location modulo its period.
+                const auto centerDelta = [](double before,double after,double period) {
+                    return std::abs(MapCamera::wrap(after-before+period/2,period)-period/2);
+                };
+                REQUIRE_MESSAGE((centerDelta(center.first,fullscreenCenter.first,gui.camera.mapWidth)<1e-6 &&
+                                 centerDelta(center.second,fullscreenCenter.second,gui.camera.mapHeight)<1e-6),
+                                "Fullscreen moved map center from "<<center.first<<","<<center.second
+                                <<" to "<<fullscreenCenter.first<<","<<fullscreenCenter.second);
+                REQUIRE(gfx->toggleFullscreen());
             }
             else std::cout<<"SKIP fullscreen camera continuity: enable with --fullscreen\n";
             for(int tick=0;tick<50;++tick)
@@ -334,6 +373,7 @@ public:
         REQUIRE(Sprite::highResolutionStats().cpuBytes==0);
         std::cout<<"PASS gameplay/editor conversions, wheel zoom, zoom controls, replay drawing, stable simulation checksums and resource release\n";
     }
+#endif
 };
 namespace
 {
@@ -345,12 +385,17 @@ void highResolution(bool software)
 	                                  .screenFlags = software ? 0u : Uint32(GraphicContext::USEGPU | GraphicContext::CUSTOMCURSOR)};
 	options.beforeLoad = [](GlobalContainer& globals) { globals.fileManager->addDir((glob2test::artifactDir() / "replay-fixture").string()); };
 	glob2test::HeadlessGlobals globals(options);
-	if (software) HighResolutionIntegrationHarness::runSoftware(); else HighResolutionIntegrationHarness::run();
+	if (software) HighResolutionIntegrationHarness::runSoftware();
+#ifdef HAVE_OPENGL
+    else HighResolutionIntegrationHarness::run();
+#endif
 }
 }
 
 TEST_SUITE("HighResolutionIntegration")
 {
 	TEST_CASE("HD artwork; cursor scaling and replay fixture in software rendering [display:1024x768][artifacts]") { highResolution(true); }
-	TEST_CASE("HD artwork; cursor scaling and replay fixture in OpenGL [display:1024x768][artifacts]") { highResolution(false); }
+#ifdef HAVE_OPENGL
+	TEST_CASE("HD artwork; cursor scaling and replay fixture in OpenGL [display:1024x768][artifacts][writes-preferences]") { highResolution(false); }
+#endif
 }

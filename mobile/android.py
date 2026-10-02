@@ -10,9 +10,10 @@ import subprocess
 import sys
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scons'))
 from build_layout import build_identity, default_directory, BuildLock, PACKAGE_VERSION
-from mobile_toolchain import ROOT, LOCK
+from mobile_toolchain import ROOT, LOCK, discover
 from mobile_artifacts import verify_android_shared_library, verify_android_symbols, verify_android_archive_symbols
 import developer_apk
+from dev_paths import android_sdk, mobile_tools, gradle_home, dependency_prefix
 from asset_bundle import include_asset, restore_gzip_assets, verify_apk_assets
 
 
@@ -23,7 +24,7 @@ def main():
     parser.add_argument('--release',action='store_true')
     parser.add_argument('--china',action='store_true',help='Package the China local-play client')
     parser.add_argument('--fdroid',action='store_true',help='Apply F-Droid release codes and unsigned APK checks')
-    parser.add_argument('--android-sdk',default=str(ROOT/'build/mobile-tools/android-sdk'))
+    parser.add_argument('--android-sdk',default=None)
     parser.add_argument('--gradle')
     parser.add_argument('--jobs',type=int,default=8,help='SCons native compiler jobs')
     parser.add_argument('--version-code',type=int,help='Android version code; fixed by the F-Droid release manifest in --fdroid mode')
@@ -66,7 +67,7 @@ def main():
                              'china':int(args.china),'amazon':int(args.amazon_apk)})
     output=ROOT/default_directory(identity)
     project=output/'android-project'
-    sdk=Path(args.android_sdk).resolve()
+    sdk=android_sdk(ROOT,args.android_sdk)
     if args.command=='sign':
         if not args.release: raise ValueError('Debug builds are signed by Gradle; use --release for developer signing')
         developer_apk.sign(ROOT,sdk,project)
@@ -117,7 +118,7 @@ def main():
     outputs={abi:ROOT/default_directory(build_identity(dict(base_options,arch=abi,
              amazon=int(args.amazon_apk)))) for abi in arches}
     dependency_outputs={abi:ROOT/default_directory(build_identity(dict(base_options,arch=abi))) for abi in arches}
-    prefixes={abi:dependency_outputs[abi]/'vcpkg-installed'/('glob2-'+{'arm64-v8a':'arm64','armeabi-v7a':'arm','x86_64':'x64'}[abi]+'-android') for abi in arches}
+    prefixes={abi:dependency_prefix(ROOT, build_identity(dict(base_options,arch=abi)), discover(build_identity(dict(base_options,arch=abi)), {'android_sdk':str(sdk)})['fingerprint']) for abi in arches}
     for abi in arches:
         subprocess.run(['scons','target=android','arch='+abi,'release='+str(int(args.release)),
             'china='+str(int(args.china)),'amazon='+str(int(args.amazon_apk)),
@@ -158,9 +159,11 @@ def main():
             library_sets.append({p.name for p in jni.glob('*.so')})
         if len(library_sets)>1 and library_sets[0]!=library_sets[1]:
             raise ValueError('Amazon APK needs matching native libraries in both ARM ABIs')
-        java=list((dependency_outputs[args.arch]/'vcpkg-buildtrees/sdl3/src').glob('*/android-project/app/src/main/java'))
-        if len(java)!=1: raise ValueError('Expected one pinned SDL Java source tree; clean the SDL dependency buildtree and rebuild dependencies')
-        shutil.copytree(java[0],generated/'java')
+        java=prefixes[args.arch]/'share/glob2/sdl-java'
+        from dependencies import validate_bundle
+        validate_bundle(prefixes[args.arch], build_identity(dict(base_options,arch=args.arch)), discover(build_identity(dict(base_options,arch=args.arch)), {'android_sdk':str(sdk)})['fingerprint'])
+        if not java.is_dir(): raise ValueError('Dependency bundle lacks pinned SDL Java sources; rebuild dependencies')
+        shutil.copytree(java,generated/'java')
         assets=generated/'assets/glob2-bundle';assets.mkdir(parents=True)
         digest=hashlib.sha256();names=[]
         for directory in ('data','maps','campaigns','scripts'):
@@ -176,9 +179,9 @@ def main():
         android_user=ROOT/'build/mobile-tools/android-user'
         android_user.mkdir(parents=True,exist_ok=True)
         env=developer_apk.java_environment(ROOT)
-        env.update(GRADLE_USER_HOME=str(ROOT/'build/mobile-tools/gradle-home'),
+        env.update(GRADLE_USER_HOME=str(gradle_home(ROOT)),
                    ANDROID_USER_HOME=str(android_user),TMPDIR=str(output/'tmp'))
-        gradle=args.gradle or str(ROOT/'build/mobile-tools/gradle-8.13/bin/gradle')
+        gradle=args.gradle or str(mobile_tools(ROOT)/'gradle-8.13/bin/gradle')
         task='bundleRelease' if args.command=='bundle' else ('assembleRelease' if args.release else 'assembleDebug')
         bundle=project/'app/build/outputs/bundle/release/app-release.aab'
         if args.command=='bundle': bundle.with_suffix('.json').unlink(missing_ok=True)

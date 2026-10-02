@@ -160,10 +160,8 @@ std::string tr(const std::string &key)
 
 double frontendTextScale(const Presentation &presentation)
 {
-	if (!presentation.touch)
-		return 1;
 	const int percent = globalContainer ? globalContainer->settings.mobileDialogTextPercent : 100;
-	return 1.15 * (percent > 0 ? percent : 100) / 100.0;
+	return (presentation.touch ? 1.15 : 1.0) * (percent > 0 ? percent : 100) / 100.0;
 }
 
 Screen::Screen() : UIScreen(frontendTheme()) {}

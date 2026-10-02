@@ -8,6 +8,7 @@ import subprocess
 import sys
 from developer_apk import build_tools, java_environment, verify_alignment
 from smoke import validate_target
+from dev_paths import android_sdk, mobile_tools, gradle_home
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -21,16 +22,16 @@ def main():
     args = parser.parse_args()
     validate_target(args.serial, args.adb_port, args.avd)
     tools = ROOT/'build/mobile-tools'
-    sdk = tools/'android-sdk'
+    sdk = android_sdk(ROOT)
     adb = [str(sdk/'platform-tools/adb'), '-P', str(args.adb_port), '-s', args.serial]
     actual = subprocess.check_output(adb+['emu', 'avd', 'name'], text=True).splitlines()[0]
     if actual != args.avd: raise ValueError('Selected emulator belongs to another AVD')
     output = ROOT/f'build/android/device/{args.arch}/24/client/release'
     project = output/'android-project'
     env = java_environment(ROOT)
-    env.update(GRADLE_USER_HOME=str(tools/'gradle-home'), ANDROID_USER_HOME=str(tools/'android-user'), TMPDIR=str(output/'tmp'))
+    env.update(GRADLE_USER_HOME=str(gradle_home(ROOT)), ANDROID_USER_HOME=str(tools/'android-user'), TMPDIR=str(output/'tmp'))
     subprocess.run([sys.executable, str(ROOT/'mobile/android.py'), 'configure', '--release', '--arch', args.arch], env=env, check=True)
-    subprocess.run([str(tools/'gradle-8.13/bin/gradle'), '--no-daemon', '--project-dir', str(project), 'assembleReleaseAndroidTest'], env=env, check=True)
+    subprocess.run([str(mobile_tools(ROOT)/'gradle-8.13/bin/gradle'), '--no-daemon', '--project-dir', str(project), 'assembleReleaseAndroidTest'], env=env, check=True)
     original = project/'app/build/outputs/apk/androidTest/release/app-release-androidTest.apk'
     signed = original.with_name('app-release-androidTest-development.apk')
     key = tools/'android-user/debug.keystore'

@@ -30,6 +30,8 @@
 
 
 #include "GameRenderInternal.h"
+#include "SoftwareTerrainCache.h"
+#include "PerformanceTelemetry.h"
 
 // Map rendering orchestrator and shared helpers. Split from Game_render.cpp.
 
@@ -46,11 +48,6 @@ void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength,
 
 	if ((orientation==LEFT_TO_RIGHT) || (orientation==RIGHT_TO_LEFT))
 	{
-		/*globalContainer->gfx->drawHorzLine(x, y, maxLength*3+1, 32, 32, 32);
-		globalContainer->gfx->drawHorzLine(x, y+barWidth+1, maxLength*3+1, 32, 32, 32);
-		for (int i=0; i<maxLength+1; i++)
-			globalContainer->gfx->drawVertLine(x+i*3, y+1, barWidth, 32, 32, 32);
-		*/
 		globalContainer->gfx->drawFilledRect(x, y, maxLength*3+1, barWidth+2, 0, 0, 0);
 
 		if (orientation==LEFT_TO_RIGHT)
@@ -76,11 +73,6 @@ void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength,
 	}
 	else if ((orientation==BOTTOM_TO_TOP) || (orientation==TOP_TO_BOTTOM))
 	{
-		/*globalContainer->gfx->drawVertLine(x, y, maxLength*3+1, 32, 32, 32);
-		globalContainer->gfx->drawVertLine(x+barWidth+1, y, maxLength*3+1, 32, 32, 32);
-		for (int i=0; i<maxLength+1; i++)
-			globalContainer->gfx->drawHorzLine(x+1, y+i*3, barWidth, 32, 32, 32);
-		*/
 		globalContainer->gfx->drawFilledRect(x, y, barWidth+2, maxLength*3+1, 0, 0, 0);
 
 		if (orientation==TOP_TO_BOTTOM)
@@ -142,7 +134,7 @@ bool Game::isOnScreen(int left, int top, int right, int bot, int viewportX, int 
 
 	if((x >= left-1 && x <= right) || (x+map.getW() >= left-1 && x+map.getW() <= right))
 	{
-		if((y >= top-1 && y <= bot) || (y+map.getH() >= top-1 && y+map.getH() <= bot))
+		if ((y >= top - 1 && y <= bot) || (y + map.getH() >= top - 1 && y + map.getH() <= bot))
 		{
 			return true;
 		}
@@ -150,50 +142,156 @@ bool Game::isOnScreen(int left, int top, int right, int bot, int viewportX, int 
 	return false;
 }
 
+namespace
+{
+bool drawPreparedWater(const GameRenderFrame &frame, const SoftwareTerrainCache &cache, int time)
+{
+	if (frame.left != 0 || frame.top != 0)
+		return false;
 
+	auto *water = frame.water.nativeFrame(0);
+	if (water)
+	{
+		PERF_SCOPE_TIME(Water);
+		const int startX = -(((frame.viewportX << 5) + time / 2) % 512);
+		const int startY = -((frame.viewportY << 5) % 512);
+        // Include the original pass's overshoot outside the logical viewport.
+        // Fractional transforms can bring those pixels back inside the target.
+        const SDL_Rect bounds{startX, startY,
+            ((frame.width - startX + 511) / 512) * 512,
+            ((frame.height - startY + 511) / 512) * 512};
+        const auto regions = cache.waterRegions(bounds);
+        for (int y = startY; y < frame.height; y += 512)
+            for (int x = startX; x < frame.width; x += 512)
+            {
+                const SDL_Rect tile{x, y, 512, 512};
+                // Keep the complete source mapping: cropping before scaling
+                // would restart nearest-neighbor sampling at coverage edges.
+                if (std::any_of(regions.begin(), regions.end(), [&](const SDL_Rect &region) {
+                    return SDL_HasRectIntersection(&tile, &region);
+                })) frame.target.drawSurface(x, y, water);
+            }
+		return true;
+	}
 
-void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargin, int viewportX, int viewportY, int localTeam, ViewState& view, Uint32 drawOptions, std::set<Building*> *visibleBuildings, const BuildingGuiStateMap* buildingGuiState, bool animationsPaused, int cloudGridLimit)
+	return false;
+}
+} // namespace
+
+void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargin, int viewportX,
+				   int viewportY, int localTeam, ViewState &view, Uint32 drawOptions,
+				   std::set<Building *> *visibleBuildings,
+				   const BuildingGuiStateMap *buildingGuiState, bool animationsPaused,
+				   int cloudGridLimit)
 {
 	// Frozen while paused, so the water and the clouds hold still with the rest.
 	int &time = mapAnimationTime;
 	static DynamicClouds ds(&globalContainer->settings);
-	int left=(sx>>5);
-	int top=(sy>>5);
-	int right=((sx+sw+31)>>5);
-	int bot=((sy+sh+31)>>5);
+	int left = (sx >> 5);
+	int top = (sy >> 5);
+	int right = ((sx + sw + 31) >> 5);
+	int bot = ((sy + sh + 31) >> 5);
 
 	if (!animationsPaused)
 		time++;
-	drawMapWater(sw, sh, viewportX, viewportY, time);
-	drawMapTerrain(left, top, right, bot, viewportX, viewportY, localTeam, drawOptions);
-	drawMapResources(left, top, right, bot, viewportX, viewportY, localTeam, drawOptions);
-	drawMapGroundUnits(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, view);
-	drawMapDebugAreas(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, view);
-	drawMapGroundBuildings(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, visibleBuildings, buildingGuiState);
-	drawMapAirUnits(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, view);
-	if((drawOptions & DRAW_SCRIPT_AREAS) != 0)
+	GameRenderFrame frame{*globalContainer->gfx,
+						  *globalContainer->terrain,
+						  *globalContainer->terrainWater,
+						  left,
+						  top,
+						  right,
+						  bot,
+						  sw,
+						  sh,
+						  viewportX,
+						  viewportY,
+						  localTeam,
+						  drawOptions,
+						  globalContainer->isViewingGame() ? globalContainer->replayVisibleTeams
+														   : teams[localTeam]->me,
+						  !(globalContainer->gfx->getOptionFlags() &
+							(GraphicContext::USEGPU | GraphicContext::PORTABLEGPU))};
+	// Prepare coverage before water, keeping scene ordering independent of the
+	// cache's storage policy. Discovery uses exactly the uncached terrain rule.
+	// Native opaque tile copies beat blending mixed-alpha chunks. Cache only
+	// transformed CPU passes, where batching and per-pixel opaque copies help.
+	const bool cacheEligible = frame.software && frame.target.hasPortableRenderer();
+	if (cacheEligible && !softwareTerrainCache)
+	{
+		try
+		{
+			softwareTerrainCache = std::make_unique<SoftwareTerrainCache>();
+		}
+		catch (const std::bad_alloc &)
+		{ /* Keep the uncached renderer available under memory pressure. */
+		}
+	}
+	bool cached =
+		cacheEligible && softwareTerrainCache &&
+		softwareTerrainCache->prepare(map, frame.terrain, frame.left, frame.top, frame.right,
+									  frame.bottom, frame.viewportX, frame.viewportY,
+									  frame.visibleTeams, frame.options & DRAW_WHOLE_MAP);
+	bool coveredWater = false;
+	try
+	{
+		if (cached)
+			coveredWater = drawPreparedWater(frame, *softwareTerrainCache, time);
+	}
+	catch (const std::bad_alloc &)
+	{
+		cached = false;
+	}
+	if (!coveredWater)
+		drawMapWater(sw, sh, viewportX, viewportY, time);
+	if (cached)
+	{
+		PERF_SCOPE_TIME(Terrain);
+		softwareTerrainCache->draw(frame.target);
+	}
+	else
+		drawMapTerrain(left, top, right, bot, viewportX, viewportY, localTeam, drawOptions);
+
+	// Pass adapters keep the two coordinate conventions in one place. Individual
+	// layers still own their visibility decisions and their original draw order.
+	const auto tilePass = [&](auto method)
+	{
+		(this->*method)(frame.left, frame.top, frame.right, frame.bottom, frame.viewportX,
+						frame.viewportY, frame.localTeam, frame.options);
+	};
+	const auto scenePass = [&](auto method, auto &&...state)
+	{
+		(this->*method)(frame.left, frame.top, frame.right, frame.bottom, frame.width, frame.height,
+						frame.viewportX, frame.viewportY, frame.localTeam, frame.options, state...);
+	};
+
+	tilePass(&Game::drawMapResources);
+	scenePass(&Game::drawMapGroundUnits, view);
+	scenePass(&Game::drawMapDebugAreas, view);
+	scenePass(&Game::drawMapGroundBuildings, visibleBuildings, buildingGuiState);
+	scenePass(&Game::drawMapAirUnits, view);
+	if ((drawOptions & DRAW_SCRIPT_AREAS) != 0)
 		drawMapScriptAreas(left, top, right, bot, viewportX, viewportY);
 
-	drawMapBulletsExplosionsDeathAnimations(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
+	scenePass(&Game::drawMapBulletsExplosionsDeathAnimations);
 
-
-	// compute and draw cloud shadow if we are in high quality
-	if ((globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0)
+	// Compute once for the independently selected cloud layers.
+	if (globalContainer->settings.cloudShadows || (globalContainer->settings.clouds && !(drawOptions & DRAW_NO_CLOUD_LAYER)))
 	{
 		ds.compute(viewportX, viewportY, sw, sh, time, map.getW(), map.getH(),
-		           !(drawOptions & DRAW_NO_CLOUD_LAYER), cloudGridLimit);
-		ds.render(globalContainer->gfx, sw, sh, DynamicClouds::SHADOW);
+		           globalContainer->settings.clouds && !(drawOptions & DRAW_NO_CLOUD_LAYER), cloudGridLimit);
+		if (globalContainer->settings.cloudShadows)
+			ds.render(globalContainer->gfx, sw, sh, DynamicClouds::SHADOW);
 	}
 
-	drawMapFogOfWar(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
-	drawMapAreas(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
-	drawMapOverlayMaps(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
+	scenePass(&Game::drawMapFogOfWar);
+	scenePass(&Game::drawMapAreas);
+	scenePass(&Game::drawMapOverlayMaps);
 
-	drawUnitPathLines(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, view);
+	scenePass(&Game::drawUnitPathLines, view);
 
 
-	// draw cloud overlay if we are in high quality
-	if (!(drawOptions & DRAW_NO_CLOUD_LAYER) && (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0)
+	// Draw clouds above the world independently of shadows.
+	if (!(drawOptions & DRAW_NO_CLOUD_LAYER) && globalContainer->settings.clouds)
 		ds.render(globalContainer->gfx, sw, sh, DynamicClouds::CLOUD);
 
 	// Draw units that are off the screen for the selected building

@@ -18,6 +18,7 @@
 
 #include "DatasetWriter.h"
 #include "Game.h"
+#include <stdexcept>
 #include "GameUtilities.h"
 #include "GlobalContainer.h"
 #include "Order.h"
@@ -36,6 +37,7 @@
 
 #ifndef YOG_SERVER_ONLY
 #include "render/GameAnimations.h"
+#include "render/SoftwareTerrainCache.h"
 #endif  // !YOG_SERVER_ONLY
 
 #define BULLET_IMGID 0
@@ -87,6 +89,10 @@ void Game::init(GameGUI *gui, MapEdit* edit)
 /** Reset player and team lists, game end stuff and selection stuff. */
 void Game::clearGame()
 {
+	scriptGenerations.fill(0);
+#ifndef YOG_SERVER_ONLY
+    softwareTerrainCache.reset();
+#endif
 	hasSavedRandomState = false;
 	// Delete existing teams and players
 	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
@@ -329,4 +335,14 @@ bool Game::isPrestigeWinCondition(void)
 			return true;
 	}
 	return false;
+}
+
+Uint32 Game::allocateScriptIdentity(bool building, Uint16 gid)
+{
+ const int team=building?Building::GIDtoTeam(gid):Unit::GIDtoTeam(gid);
+ const int slot=building?Building::GIDtoID(gid):Unit::GIDtoID(gid);
+ if(team<0 || team>=Team::MAX_COUNT)throw std::runtime_error("Invalid scripting entity slot");
+ auto& generation=scriptGenerations[(building?Team::MAX_COUNT*1024:0)+team*1024+slot];
+ if(generation==0xffffffffu)throw std::runtime_error("JavaScript entity generation exhausted");
+ return ++generation;
 }

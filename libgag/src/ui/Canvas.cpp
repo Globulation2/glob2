@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <RenderStateScope.h>
 #include <ui/Canvas.h>
 #include <GraphicContext.h>
 #include <Toolkit.h>
@@ -105,9 +106,10 @@ void SurfaceCanvas::text(Point at, FontRole role, const std::string &value, GAGC
 	{
 		const auto current = clips.back();
 		SDL_Rect bounds{current.x, current.y, current.w, current.h};
-		context->setUITransform(float(scale), float(at.x), float(at.y), &bounds);
-		target.drawString(0, 0, font, value);
-		context->setUITransform();
+		{
+            GAGCore::UITransformScope pass(*context, float(scale), float(at.x), float(at.y), &bounds);
+            target.drawString(0, 0, font, value);
+        }
 		applyClip();
 	}
 	else
@@ -216,9 +218,10 @@ void SurfaceCanvas::transformed(double scale, Point origin, Rect bounds,
 	if (context)
 	{
 		SDL_Rect limit{area.x, area.y, area.w, area.h};
-		context->setUITransform(float(scale), float(origin.x), float(origin.y), &limit);
-		paint();
-		context->setUITransform();
+		{
+            GAGCore::UITransformScope pass(*context, float(scale), float(origin.x), float(origin.y), &limit);
+            paint();
+        }
 		applyClip();
 	}
 	else

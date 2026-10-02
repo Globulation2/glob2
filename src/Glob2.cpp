@@ -33,6 +33,7 @@
 #include "EditorMainMenu.h"
 #include "Engine.h"
 #include "Headless.h"
+#include "script/ScriptCommand.h"
 #include "Application.h"
 #include "SinglePlayerFlow.h"
 #include "Game.h"
@@ -399,6 +400,8 @@ int Glob2::run(int argc, char *argv[])
 		if (std::string(argv[i]) == "--output-dir") structuredMap = true;
 	if (argc > 1 && isMapCommand(argv[1]) && !structuredMap)
 		return runMapCommand(argc, argv);
+	const int scriptCommand=runScriptCommand(argc,argv);
+	if(scriptCommand>=0)return scriptCommand;
 	const int headless = runHeadlessCommand(argc, argv);
 	if (headless >= 0) return headless;
 #endif
@@ -449,8 +452,7 @@ int Glob2::run(int argc, char *argv[])
 
 
 #ifdef GLOB2_ROUTER_ONLY
-	const char* lobbyHost = std::getenv("GLOB2_YOG_HOST");
-	YOGServerRouter router(lobbyHost ? lobbyHost : "127.0.0.1");
+	YOGServerRouter router;
 	int routerResult = router.run();
 	delete globalContainer;
 	return routerResult;
@@ -533,7 +535,7 @@ int main(int argc, char *argv[])
 
 #if defined(__APPLE__) && !defined(YOG_SERVER_ONLY) && !defined(GLOB2_MOBILE)
 	// Map tools resolve input and output paths relative to the caller.
-	if (!(argc > 1 && isMapCommand(argv[1])))
+	if (!(argc > 1 && (isMapCommand(argv[1]) || std::string(argv[1])=="--check-script" || std::string(argv[1])=="--attach-map-script")))
 	{
 		/* SDL has this annoying "feature" of setting working directory to parent
 		   of bundle during static initialization.  We want to set it back to the
@@ -555,7 +557,12 @@ int main(int argc, char *argv[])
 #endif
 
 	Glob2 glob2;
-	int result = glob2.run(argc, argv);
+	int result;
+    try { result = glob2.run(argc, argv); }
+    catch (const std::exception& error) {
+        fprintf(stderr, "Glob2 startup failed: %s\n", error.what());
+        return 1;
+    }
 	if (result != Glob2::HOSTED_RUN) GAGCore::ApplicationHost::exited(result);
 	return result == Glob2::HOSTED_RUN ? 0 : result;
 }

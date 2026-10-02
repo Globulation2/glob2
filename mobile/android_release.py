@@ -3,6 +3,7 @@
 import argparse
 import hashlib
 import json
+from dev_paths import android_sdk, dependency_prefix, isolated
 from pathlib import Path
 import re
 import subprocess
@@ -131,8 +132,14 @@ def verify_apk(apk, arch, sdk, root=ROOT, require_dependency_manifest=True):
     toolchain = json.loads((root / "mobile/toolchain.json").read_text())["android"]
     expected_libraries = None
     if require_dependency_manifest:
-        prefix = (root / "build/android/device" / arch / str(toolchain["min_api"]) / "client/release/vcpkg-installed" /
-                  ("glob2-" + {"armeabi-v7a": "arm", "arm64-v8a": "arm64", "x86_64": "x64"}[arch] + "-android"))
+        if isolated():
+            prefix = (root / "build/android/device" / arch / str(toolchain["min_api"]) / "client/release/vcpkg-installed" /
+                      ("glob2-" + {"arm64-v8a": "arm64", "armeabi-v7a": "arm", "x86_64": "x64"}[arch] + "-android"))
+        else:
+            from build_layout import build_identity
+            from mobile_toolchain import discover
+            build_configuration = build_identity({'target':'android','arch':arch,'release':1})
+            prefix=dependency_prefix(root,build_configuration,discover(build_configuration,{'android_sdk':str(sdk)})['fingerprint'])
         manifest = prefix / "manifest.json"
         if not manifest.is_file():
             raise ValueError("Missing Android dependency manifest: " + str(manifest))
@@ -167,7 +174,7 @@ def main():
     parser.add_argument("command", choices=("check", "check-listing", "verify-apk", "code"))
     parser.add_argument("--arch", choices=tuple(ABI_CODES))
     parser.add_argument("--apk", type=Path)
-    parser.add_argument("--android-sdk", type=Path, default=ROOT / "build/mobile-tools/android-sdk")
+    parser.add_argument("--android-sdk", type=Path, default=None)
     args = parser.parse_args()
     if args.command == "check":
         check_prior_tags()
@@ -184,7 +191,7 @@ def main():
         else:
             if not args.apk:
                 parser.error("--apk is required")
-            print(verify_apk(args.apk, args.arch, args.android_sdk))
+            print(verify_apk(args.apk, args.arch, android_sdk(ROOT,args.android_sdk)))
 
 
 if __name__ == "__main__":

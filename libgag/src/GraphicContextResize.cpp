@@ -1,8 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "GraphicContextPrivate.h"
+#include <SoftwareFramePresenter.h>
+#include <RenderBackend.h>
 #include <algorithm>
 #include <cassert>
+#include <cmath>
 
 namespace GAGCore
 {
@@ -15,6 +18,84 @@ namespace GAGCore
 			explicit FlagScope(bool &flag) : flag(flag), previous(flag) { flag = true; }
 			~FlagScope() { flag = previous; }
 		};
+	}
+
+	bool GraphicContext::refreshNativeWindow()
+	{
+		int pointsW, pointsH, pixelsW, pixelsH;
+		SDL_GetWindowSize(window, &pointsW, &pointsH);
+		if (pointsW <= 0 || pointsH <= 0 || (SDL_GetWindowFlags(window) & SDL_WINDOW_MINIMIZED)) return true;
+		pixelsW = pointsW; pixelsH = pointsH;
+#ifdef HAVE_OPENGL
+		if (optionFlags & USEGPU) SDL_GetWindowSizeInPixels(window, &pixelsW, &pixelsH);
+		else
+#endif
+		if (renderer && !nativeSoftware) renderer->outputSize(pixelsW, pixelsH);
+		else
+		{
+			auto *target = SDL_GetWindowSurface(window);
+			if (!target) return false;
+			pixelsW = target->w; pixelsH = target->h;
+		}
+		if (pixelsW <= 0 || pixelsH <= 0) return true;
+		refreshDesktopScale();
+		float scale = effectiveUiScale(preferredUiScale);
+		const float wanted = scale;
+		if (!compactWindowAllowed)
+			scale = std::max(std::min(1.0f, scale), std::min({scale, float(pointsW) / std::max(640,minW), float(pointsH) / std::max(480,minH)}));
+		const int logicalW = std::max(1, int(std::lround(pointsW / scale)));
+		const int logicalH = std::max(1, int(std::lround(pointsH / scale)));
+		const bool cpu = !(optionFlags & (USEGPU | PORTABLEGPU));
+		const bool needsBackend = cpu && (pixelsW != logicalW || pixelsH != logicalH);
+		const int surfaceW = cpu ? pixelsW : logicalW, surfaceH = cpu ? pixelsH : logicalH;
+		const bool changed = getW() != logicalW || getH() != logicalH ||
+			sdlsurface->w != surfaceW || sdlsurface->h != surfaceH || needsBackend != nativeSoftware;
+		if (changed)
+		{
+			std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> replacement(
+				SDL_CreateSurface(surfaceW, surfaceH, sdlsurface->format), SDL_DestroySurface);
+			if (!replacement) return false;
+			std::unique_ptr<RenderBackend> backend;
+			try
+			{
+				if (needsBackend) { backend = makeSoftwareRenderBackend(replacement.get()); backend->nativeLogicalSize(logicalW,logicalH); }
+			}
+			catch (const std::exception &error) { SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION,"Native software target: %s",error.what()); return false; }
+			if (nativeSoftware) renderer = nullptr;
+			freeOwnedSurface();
+			sdlsurface = replacement.release(); ownsSurface = true;
+			if (cpu)
+			{
+				softwareRasterizer = std::move(backend);
+				renderer = softwareRasterizer.get();
+				nativeSoftware = needsBackend;
+			}
+		}
+		windowW=pointsW; windowH=pointsH; drawableW=pixelsW; drawableH=pixelsH;
+		desktopLogicalW=logicalW; desktopLogicalH=logicalH;
+		uiScale=scale; wantedUiScale=wanted;
+		// Cocoa's native window button can also change fullscreen state.
+		const bool fullscreen=bool(SDL_GetWindowFlags(window) & SDL_WINDOW_FULLSCREEN);
+		if (fullscreen) optionFlags |= FULLSCREEN; else optionFlags &= ~FULLSCREEN;
+		if (!fullscreen) { requestedW=pointsW; requestedH=pointsH; }
+		if (changed)
+		{
+#ifdef HAVE_OPENGL
+			if (optionFlags & USEGPU)
+			{
+				glMatrixMode(GL_PROJECTION); glLoadIdentity(); glOrtho(0,logicalW,logicalH,0,-1,1);
+				glMatrixMode(GL_MODELVIEW); glLoadIdentity();
+			}
+#endif
+			if (renderer && !nativeSoftware) renderer->logicalSize(logicalW,logicalH);
+		}
+#ifdef HAVE_OPENGL
+		if (optionFlags & USEGPU) applyGLViewport();
+#endif
+		applyWindowMinimumSize();
+		setClipRect();
+		if (displayPreferenceCallback) displayPreferenceCallback(requestedW,requestedH,bool(optionFlags & FULLSCREEN));
+		return true;
 	}
 
 	int GraphicContext::pollEvent(SDL_Event *event)
@@ -124,10 +205,33 @@ namespace GAGCore
 			return;
 		}
 		#endif
-		if (!frameCache.surface || frameCache.surface->w != getW() || frameCache.surface->h != getH())
+        // A software frame is retained by rotating buffers, avoiding a full-frame
+        // retention copy on every full redraw. Allocation failure keeps the old path.
+        if (!softwarePresenter && ownsSurface)
+        {
+            try
+            {
+                softwarePresenter = std::make_unique<SoftwareFramePresenter>(sdlsurface);
+                ownsSurface = false;
+            }
+            catch (const std::exception&)
+            {
+                // The constructor has not taken ownership when allocation fails.
+            }
+        }
+        if (softwarePresenter)
+        {
+            if (softwareRasterizer) softwareRasterizer->flush();
+            softwarePresenter->complete();
+            SDL_DestroySurface(frameCache.surface);
+            frameCache.surface = nullptr;
+            frameCache.valid = false;
+            return;
+        }
+		if (!frameCache.surface || frameCache.surface->w != sdlsurface->w || frameCache.surface->h != sdlsurface->h)
 		{
 			SDL_DestroySurface(frameCache.surface);
-			frameCache.surface = SDL_CreateSurface(getW(), getH(), sdlsurface->format);
+			frameCache.surface = SDL_CreateSurface(sdlsurface->w, sdlsurface->h, sdlsurface->format);
 			if (!frameCache.surface)
 			{
 				reportFrameCacheFailure(SDL_GetError());
@@ -136,7 +240,11 @@ namespace GAGCore
 			SDL_SetSurfaceBlendMode(frameCache.surface, SDL_BLENDMODE_NONE);
 		}
 		SDL_SetSurfaceBlendMode(sdlsurface, SDL_BLENDMODE_NONE);
-		if (!SDL_BlitSurface(sdlsurface, nullptr, frameCache.surface, nullptr))
+		SDL_Rect previousClip; SDL_GetSurfaceClipRect(sdlsurface,&previousClip);
+		SDL_SetSurfaceClipRect(sdlsurface,nullptr);
+		const bool copied=SDL_BlitSurface(sdlsurface,nullptr,frameCache.surface,nullptr);
+		SDL_SetSurfaceClipRect(sdlsurface,&previousClip);
+		if (!copied)
 		{
 			reportFrameCacheFailure(SDL_GetError());
 			return;
@@ -145,6 +253,39 @@ namespace GAGCore
 		frameCache.failureReported = false;
 	}
 
+    void GraphicContext::beginFrame(FrameMode mode)
+    {
+        if (!softwarePresenter || !softwarePresenter->needsBegin()) return;
+        if (softwareRasterizer) softwareRasterizer->flush();
+        SDL_Surface* target = softwarePresenter->begin(mode == FrameMode::PreserveContent);
+        sdlsurface = target;
+        // The facade now exposes another pixel buffer, even before its first draw.
+        markPixelsChanged();
+        if (softwareRasterizer) softwareRasterizer->bindTarget(target);
+        SDL_SetSurfaceClipRect(target, &clipRect);
+    }
+
+    void GraphicContext::prepareDraw()
+    {
+        // Legacy menu/editor callers may update only part of a frame. Explicit
+        // full-redraw game callers begin before their first drawing operation.
+        beginFrame(FrameMode::PreserveContent);
+        // Native surface operations mark their own writes. Only direct backend
+        // writes need the facade to advance its content revision here.
+        if (renderer == softwareRasterizer.get() && renderer) markPixelsChanged();
+    }
+
+    SDL_Surface* GraphicContext::completedFrame() const
+    {
+        if (softwarePresenter && softwarePresenter->completed()) return softwarePresenter->completed();
+        return frameCache.valid && frameCache.surface ? frameCache.surface : sdlsurface;
+    }
+
+    RenderOperations GraphicContext::backendOperations() const
+    {
+        return portableRenderer ? portableRenderer->operations() : softwareRasterizer ? softwareRasterizer->operations() : RenderOperations{};
+    }
+
 	void GraphicContext::swapBuffers()
 	{
 		SDL_GL_SwapWindow(window);
@@ -152,7 +293,7 @@ namespace GAGCore
 
 	void GraphicContext::presentLastFrame()
 	{
-		if (!frameCache.valid || presenting || (SDL_GetWindowFlags(window) & SDL_WINDOW_MINIMIZED)) return;
+		if ((!frameCache.valid && !(softwarePresenter && softwarePresenter->completed())) || presenting || (SDL_GetWindowFlags(window) & SDL_WINDOW_MINIMIZED)) return;
 		FlagScope scope(presenting);
 		#if defined(HAVE_OPENGL) && !defined(GLOB2_WEBGL2)
 		if (optionFlags & USEGPU)
@@ -202,19 +343,21 @@ namespace GAGCore
 			return;
 		}
 		#endif
+		SDL_Surface* completed = softwarePresenter ? softwarePresenter->completed() : frameCache.surface;
+        if (!completed) return;
 		SDL_Surface *target = SDL_GetWindowSurface(window);
 		if (!target || target->w <= 0 || target->h <= 0) return;
-		const float scale = std::min(float(target->w) / frameCache.surface->w, float(target->h) / frameCache.surface->h);
-		SDL_Rect dst{0, 0, int(frameCache.surface->w * scale + 0.5f), int(frameCache.surface->h * scale + 0.5f)};
+		const float scale = std::min(float(target->w) / completed->w, float(target->h) / completed->h);
+		SDL_Rect dst{0, 0, int(completed->w * scale + 0.5f), int(completed->h * scale + 0.5f)};
 		dst.x = (target->w - dst.w) / 2;
 		dst.y = (target->h - dst.h) / 2;
 		// An opaque, full-window copy already overwrites every pixel.
 		if (dst.w != target->w || dst.h != target->h)
 			SDL_FillSurfaceRect(target, nullptr, SDL_MapSurfaceRGB(target, 0, 0, 0));
-		if (dst.w == frameCache.surface->w && dst.h == frameCache.surface->h)
-			SDL_BlitSurface(frameCache.surface, nullptr, target, &dst);
+		if (dst.w == completed->w && dst.h == completed->h)
+			SDL_BlitSurface(completed, nullptr, target, &dst);
 		else
-			SDL_BlitSurfaceScaled(frameCache.surface, nullptr, target, &dst, SDL_SCALEMODE_NEAREST);
+			SDL_BlitSurfaceScaled(completed, nullptr, target, &dst, SDL_SCALEMODE_NEAREST);
 		SDL_UpdateWindowSurface(window);
 	}
 }

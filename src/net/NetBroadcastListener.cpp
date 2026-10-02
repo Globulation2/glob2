@@ -1,119 +1,80 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Copyright (C) 2007 Bradley Arsenault
-
 #include "NetBroadcastListener.h"
 #include "NetConsts.h"
-#include "Order.h"
-#include "BinaryStream.h"
-#include "PacketInput.h"
+#include "NetTransport.h"
 #include <SDL3/SDL.h>
-#include <iostream>
-#include <sstream>
+#include <Environment.h>
 #include <algorithm>
-#include <exception>
-
-using namespace GAGCore;
-
+#include <memory>
 NetBroadcastListener::NetBroadcastListener()
 {
 	enableListening();
-	lastTime = SDL_GetTicks();
 }
-
-
-
 NetBroadcastListener::~NetBroadcastListener()
 {
 	disableListening();
 }
-
-
-
 void NetBroadcastListener::update()
 {
-	if(socket)
+	const auto now = SDL_GetTicks();
+	if (socket)
 	{
-
-        NET_Datagram *packet = nullptr;
-        while (NET_ReceiveDatagram(socket, &packet) && packet) {
-            if (packet->buflen < NET_FRAME_LENGTH_PREFIX_BYTES) {
-                NET_DestroyDatagram(packet); packet = nullptr; continue;
-            }
-            const unsigned length = (unsigned(packet->buf[0]) << 8) | packet->buf[1];
-            if (!length || length != unsigned(packet->buflen - NET_FRAME_LENGTH_PREFIX_BYTES)) {
-                NET_DestroyDatagram(packet); packet = nullptr; continue;
-            }
-            const char *text = NET_GetAddressString(packet->addr);
-            const std::string address = text ? text : "";
-            if (address.empty() || address.find(':') != std::string::npos) {
-                NET_DestroyDatagram(packet); packet = nullptr; continue;
-            }
-            try {
-                auto *msb = new PacketInput(packet->buf + NET_FRAME_LENGTH_PREFIX_BYTES, length);
-                BinaryInputStream bis(msb);
-                LANGameInformation info;
-                info.decodeData(&bis);
-                if (msb->getPosition() != length) throw std::runtime_error("Invalid LAN advertisement length");
-                auto found = std::find(addresses.begin(), addresses.end(), address);
-                if (found == addresses.end()) {
-                    addresses.push_back(address); games.push_back(info); timeouts.push_back(1500);
-                } else {
-                    const auto index = found - addresses.begin();
-                    games[index] = info; timeouts[index] = 1500;
-                }
-            } catch (const std::exception &) {
-                // Ignore malformed advertisements without disrupting discovery.
-            }
-            NET_DestroyDatagram(packet); packet = nullptr;
-        }
-
-		Uint64 time = std::max<Sint64>(0, static_cast<Sint64>(SDL_GetTicks()) - static_cast<Sint64>(lastTime));
-		for(unsigned int i=0; i<timeouts.size();)
+		for (unsigned count = 0; count < 32; ++count)
 		{
-			timeouts[i] -= time;
-			if(timeouts[i] <= 0)
+			NET_Datagram *raw = nullptr;
+			if (!NET_ReceiveDatagram(socket, &raw) || !raw)
+				break;
+			std::unique_ptr<NET_Datagram, decltype(&NET_DestroyDatagram)> packet(
+				raw, NET_DestroyDatagram);
+			if (packet->buflen <= 36 || packet->buflen > 548)
+				continue;
+			std::string bytes(reinterpret_cast<char *>(packet->buf), packet->buflen);
+			if (bytes.substr(0, 4) != "G2D1")
+				continue;
+			const auto id = bytes.substr(4, 32), url = bytes.substr(36);
+			if (id.find_first_not_of("0123456789abcdef") != std::string::npos ||
+				url.find('#') != std::string::npos)
+				continue;
+			try
 			{
-				timeouts.erase(timeouts.begin() + i);
-				games.erase(games.begin() + i);
-				addresses.erase(addresses.begin() + i);
+				const auto endpoint = NetEndpoint::parse(url);
+				if (endpoint.route != "/yog")
+					continue;
+				const char *text = NET_GetAddressString(packet->addr);
+				const std::string sender = text ? text : "";
+				if (endpoint.host != sender)
+					continue;
+				auto found =
+					std::find_if(hosts.begin(), hosts.end(), [&](const auto &host)
+								 { return host.identifier == id && host.endpoint == url; });
+				if (found != hosts.end())
+					found->lastSeen = now;
+				else if (hosts.size() < 64)
+					hosts.push_back({id, url, now});
 			}
-			else
+			catch (...)
 			{
-				++i;
 			}
 		}
-		lastTime = SDL_GetTicks();
 	}
+	hosts.erase(std::remove_if(hosts.begin(), hosts.end(),
+							   [&](const auto &host) { return now - host.lastSeen > 2000; }),
+				hosts.end());
 }
-
-
-const std::vector<LANGameInformation>& NetBroadcastListener::getLANGames()
-{
-	return games;
-}
-
-
-
-std::string NetBroadcastListener::getIPAddress(size_t num)
-{
-    return addresses.at(num);
-}
-
 void NetBroadcastListener::enableListening()
 {
-#ifdef __EMSCRIPTEN__
-    // Browser transport is WebSocket-only; no native LAN datagram support.
-    return;
+	disableListening();
+#ifndef __EMSCRIPTEN__
+	NET_Address *ipv4 = NET_ResolveHostname("0.0.0.0");
+	if (ipv4 && NET_WaitUntilResolved(ipv4, 1000) == NET_SUCCESS)
+		socket = NET_CreateDatagramSocket(ipv4, LAN_BROADCAST_PORT, 0);
+	if (ipv4)
+		NET_UnrefAddress(ipv4);
 #endif
-    disableListening();
-    NET_Address *ipv4 = NET_ResolveHostname("0.0.0.0");
-    if (ipv4 && NET_WaitUntilResolved(ipv4, 1000) == NET_SUCCESS)
-        socket = NET_CreateDatagramSocket(ipv4, LAN_BROADCAST_PORT, 0);
-    if (ipv4) NET_UnrefAddress(ipv4);
 }
-
 void NetBroadcastListener::disableListening()
 {
-    if (socket) NET_DestroyDatagramSocket(socket);
-    socket = nullptr;
+	if (socket)
+		NET_DestroyDatagramSocket(socket);
+	socket = nullptr;
 }

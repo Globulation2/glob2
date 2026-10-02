@@ -32,16 +32,9 @@ IRCTextMessageHandler::~IRCTextMessageHandler()
 
 void IRCTextMessageHandler::startIRC(const std::string& username)
 {
-	std::string nusername = username;
-	while(nusername.find(" ") != std::string::npos)
-	{
-		nusername.replace(nusername.find(" "), 1, "_");
-	}
-	std::shared_ptr<ITConnect> message1(new ITConnect(IRC_SERVER, nusername, 6667));
-	std::shared_ptr<ITJoinChannel> message2(new ITJoinChannel(IRC_CHAN));
-
-	irc.sendMessage(message1);
-	irc.sendMessage(message2);
+    // All multiplayer chat uses authenticated YOG WSS. This also covers room
+    // exit callbacks that previously restarted the optional plaintext bridge.
+    (void)username;
 }
 
 
@@ -128,4 +121,3 @@ void IRCTextMessageHandler::sendToAllListeners(const std::string& message)
 {
 	listeners.notify(&IRCTextMessageListener::handleIRCTextMessage, message);
 }
-

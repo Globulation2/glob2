@@ -96,7 +96,9 @@ namespace glob2test
 
 	std::filesystem::path profileDir()
 	{
-		const char* dir = std::getenv("GLOB2_USER_DATA_DIR");
+		// SDL owns this variable in TestMain and FileManager. On Windows its
+		// environment can differ from the executable's CRT getenv cache.
+		const char* dir = SDL_getenv_unsafe("GLOB2_USER_DATA_DIR");
 		GLOB2_REQUIRE(dir && *dir, "GLOB2_USER_DATA_DIR must name the disposable profile (TestMain sets it)");
 		return std::filesystem::path(dir);
 	}

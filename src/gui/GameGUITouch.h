@@ -20,6 +20,7 @@ class DrawableSurface;
 }
 class GameGUI;
 class Building;
+class Unit;
 class Minimap;
 class Order;
 class GameGUITouch
@@ -103,6 +104,14 @@ class GameGUITouch
 	bool strokeMatchesTool(const TouchStrokeSession &candidate) const;
 	void commitDeferredStroke();
 	bool processPalettePointer(const SDL_Event &event, GAGCore::ViewPoint point);
+	// Flags move by dragging them; a drag anywhere else still pans the map.
+	std::optional<TouchFlagSession> flagDrag;
+	Building *grabbableFlag(GAGCore::ViewPoint point);
+	Building *draggedFlag() const;
+	void beginFlagDrag(Building &flag, TouchPlacementSession::Pointer pointer, GAGCore::ViewPoint point);
+	void advanceFlagDrag();
+	void releaseFlagDrag(bool restore);
+	Unit *unitAt(GAGCore::ViewPoint point) const;
 	void advancePlacement();
 	void updatePlacementPreview(GAGCore::ViewPoint point);
 	bool commitPlacement();

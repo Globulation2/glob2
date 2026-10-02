@@ -1,3 +1,4 @@
+#include <RenderStateScope.h>
 #include <PerformanceTelemetry.h>
 #include "MapZoomControls.h"
 #include "DynamicClouds.h"
@@ -144,8 +145,8 @@ void GameGUI::drawPanel(void)
 	// set the clipping rectangle
 	globalContainer->gfx->setClipRect(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, 128, RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-128);
 
-	// draw menu background, black if low speed graphics, transparent otherwise
-	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
+	// Draw the selected panel background.
+	if (!globalContainer->settings.translucentPanels)
 		globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, 133, RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-128, 0, 0, 0);
 	else
 		globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, 133, RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-128, 0, 0, 40, 180);
@@ -238,7 +239,7 @@ void GameGUI::drawTopScreenBar(void)
 {
     if (touch->usesHUD()) return;
 	// bar background
-	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
+	if (!globalContainer->settings.translucentPanels)
 		globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, 16, 0, 0, 0);
 	else
 		globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, 16, 0, 0, 40, 180);
@@ -372,7 +373,7 @@ void GameGUI::drawOverlayInfos(void)
 	if (!torusView.active())
 	{
 		updateCamera();
-		globalContainer->gfx->beginMapTransform(camera.zoom, camera.offsetX-camera.fractionX()*camera.zoom, camera.offsetY-camera.fractionY()*camera.zoom, camera.offsetX, std::max(16, int(camera.offsetY)), camera.visibleW()*camera.zoom, camera.visibleH()*camera.zoom-std::max(0,16-int(camera.offsetY)));
+		GAGCore::MapTransformScope mapPass(*globalContainer->gfx, camera.zoom, camera.offsetX-camera.fractionX()*camera.zoom, camera.offsetY-camera.fractionY()*camera.zoom, SDL_Rect{int(camera.offsetX), std::max(16, int(camera.offsetY)), int(camera.visibleW()*camera.zoom), int(camera.visibleH()*camera.zoom)-std::max(0,16-int(camera.offsetY))});
 
 		if (selectionMode==TOOL_SELECTION)
 		{
@@ -441,7 +442,6 @@ void GameGUI::drawOverlayInfos(void)
 		}
 
 
-		globalContainer->gfx->endMapTransform();
 	}
 	// draw message List
 	// Suppress the "[waiting for X]" notice until the wait has lasted longer
@@ -480,7 +480,7 @@ void GameGUI::drawOverlayInfos(void)
 
 		// TODO: die with SGSL
 		// show script text
-		if (game.sgslScript.isTextShown && !touch->usesHUD())
+		if (game.legacyScriptActive() && game.sgslScript.isTextShown && !touch->usesHUD())
 		{
 			std::vector<std::string> lines;
 			setMultiLine(game.sgslScript.textShown, &lines);
@@ -514,9 +514,9 @@ void GameGUI::drawOverlayInfos(void)
 		}
 
 		// show script counter
-		if (game.sgslScript.getMainTimer())
+		if (game.legacyScriptTimer())
 		{
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-165, ymesg, globalContainer->standardFont, FormattableString("%0").arg(game.sgslScript.getMainTimer()).c_str());
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-165, ymesg, globalContainer->standardFont, FormattableString("%0").arg(game.legacyScriptTimer()).c_str());
 			yinc = std::max(yinc, 32);
 		}
 
@@ -591,6 +591,7 @@ void GameGUI::drawInGameScrollableText(void)
 void GameGUI::drawAll(int team)
 {
 	PERF_SCOPE_TIME(Render);
+    globalContainer->gfx->beginFrame(GraphicContext::FrameMode::FullRedraw);
 	updateCamera();
 	globalContainer->gfx->setClipRect();
 	globalContainer->gfx->drawFilledRect(0,0,globalContainer->gfx->getW(),globalContainer->gfx->getH(),0,0,32);
@@ -617,23 +618,18 @@ void GameGUI::drawAll(int team)
 	GAGCore::ApplicationHost::overviewDrawn(drewTorus);
 	if (!drewTorus)
 	{
-        const int cloudGridLimit = DynamicClouds::gridLimitForZoom(game.map.getW(), game.map.getH(),
-            globalContainer->settings.cloudPatchSize, camera.zoom);
-		globalContainer->gfx->beginMapTransform(camera.zoom, camera.offsetX-camera.fractionX()*camera.zoom, camera.offsetY-camera.fractionY()*camera.zoom, camera.offsetX, std::max(16, int(camera.offsetY)), camera.visibleW()*camera.zoom, camera.visibleH()*camera.zoom-std::max(0,16-int(camera.offsetY)));
-		if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
-		{
-			globalContainer->gfx->setClipRect(0, 16, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-16);
-			game.drawMap(0, 0, int(std::ceil(camera.visibleW()+camera.fractionX())), int(std::ceil(camera.visibleH()+camera.fractionY())), 0, 0, viewportX, viewportY, localTeamNo, view, drawOptions, nullptr, &buildingGuiState, gamePaused, cloudGridLimit);
-		}
-		else
-		{
-			std::set<Building*> visibleBuildings;
-
+		const int cloudGridLimit = DynamicClouds::gridLimitForZoom(game.map.getW(), game.map.getH(),
+			globalContainer->settings.cloudPatchSize, camera.zoom);
+		GAGCore::MapTransformScope mapPass(*globalContainer->gfx, camera.zoom, camera.offsetX-camera.fractionX()*camera.zoom, camera.offsetY-camera.fractionY()*camera.zoom, SDL_Rect{int(camera.offsetX), std::max(16, int(camera.offsetY)), int(camera.visibleW()*camera.zoom), int(camera.visibleH()*camera.zoom)-std::max(0,16-int(camera.offsetY))});
+		std::set<Building*> visibleBuildings;
+		if (globalContainer->settings.translucentPanels)
 			globalContainer->gfx->setClipRect();
-
-			game.drawMap(0, 0, int(std::ceil(camera.visibleW()+camera.fractionX())), int(std::ceil(camera.visibleH()+camera.fractionY())), 0, 0, viewportX, viewportY, localTeamNo, view, drawOptions, &visibleBuildings, &buildingGuiState, gamePaused, cloudGridLimit);
-
-			// generate and draw particles
+		else
+			globalContainer->gfx->setClipRect(0, 16, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-16);
+		game.drawMap(0, 0, int(std::ceil(camera.visibleW()+camera.fractionX())), int(std::ceil(camera.visibleH()+camera.fractionY())), 0, 0, viewportX, viewportY, localTeamNo, view, drawOptions,
+			globalContainer->settings.buildingParticles ? &visibleBuildings : nullptr, &buildingGuiState, gamePaused, cloudGridLimit);
+		if (globalContainer->settings.buildingParticles)
+		{
 			generateNewParticles(&visibleBuildings);
 			drawParticles(!gamePaused);
 		}
@@ -641,7 +637,6 @@ void GameGUI::drawAll(int team)
 		///Draw ghost buildings
 		if (!globalContainer->isViewingGame()) ghostManager.drawAll(viewportX, viewportY, localTeamNo);
 
-		globalContainer->gfx->endMapTransform();
 	}
 	// if paused, tint the game area
 	if (gamePaused)

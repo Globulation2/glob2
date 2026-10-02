@@ -16,6 +16,7 @@
 #include "BuildingType.h"
 #include "DatasetWriter.h"
 #include "Game.h"
+#include "IntBuildingType.h"
 #include "GameUtilities.h"
 #include "GlobalContainer.h"
 #include "Order.h"
@@ -139,6 +140,7 @@ void Game::executeCreate(const OrderCreate& oc, int localPlayer)
 	int posY=(oc.posY)&map.getMaskH();
 	assert(oc.teamNumber==players[oc.sender]->team->teamNumber);
 	BuildingType *bt=globalContainer->buildingsTypes.get(oc.typeNum);
+	if(!mapscript.buildingAllowed(IntBuildingType::typeFromShortNumber(bt->shortTypeNum),bt->isVirtual))return;
 	bool isVirtual=bt->isVirtual;
 	int w=bt->width;
 	int h=bt->height;

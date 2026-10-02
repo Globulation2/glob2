@@ -127,12 +127,7 @@ void SettingsScreen::closeModal()
 }
 void SettingsScreen::buildModal()
 {
-    if(modal==Modal::Display){
-        info(tr("Keep this display mode?"));
-        info(tr("Reverting in")+" "+std::to_string(std::max(0,int(Sint32(displayDeadline-SDL_GetTicks())+999)/1000))+" "+tr("seconds"));
-        button("display.keep",tr("Keep"),[this]{confirmDisplay(true);});
-        button("display.revert",tr("Revert"),[this]{confirmDisplay(false);});return;
-    }
+
     if(modal==Modal::Restore){
         info(tr("Replace shortcuts in this context with the defaults? This saves immediately."));
         button("restore.confirm",tr("Restore default shortcuts"),[this]{keyboard().loadDefaultShortcuts();keyboardDirty[int(shortcutMode)]=true;persist();closeModal();});

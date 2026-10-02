@@ -124,13 +124,15 @@ void Unit::handleActivity(void)
 					// If free slot, do the conversion, change owner and ID
 					if (targetID!=UNIT_TARGETID_NONE)
 					{
+						const Uint16 targetGID = GIDfrom(targetID, targetTeam->teamNumber);
+						const Uint32 identity = owner->game->allocateScriptIdentity(false, targetGID);
 						++currentTeam->stats.measurements.conversionsOut[typeNum];
 						++targetTeam->stats.measurements.conversionsIn[typeNum];
 						Sint32 currentID=Unit::GIDtoID(gid);
 						assert(currentTeam->myUnits[currentID]);
 						currentTeam->myUnits[currentID]=NULL;
 						targetTeam->myUnits[targetID]=this;
-						Uint16 targetGID=(GIDfrom(targetID, targetTeam->teamNumber));
+
 						if (verbose)
 							printf("Unit guid=%d (%d) switched to guid=%d (%d)\n", gid, Unit::GIDtoTeam(gid), targetGID, Unit::GIDtoTeam(targetGID));
 						if (performance[FLY])
@@ -143,6 +145,7 @@ void Unit::handleActivity(void)
 							assert(owner->map->getGroundUnit(posX, posY)==gid);
 							owner->map->setGroundUnit(posX, posY, targetGID);
 						}
+						scriptIdentity = identity;
 						gid=targetGID;
 						owner=targetTeam;
 					}

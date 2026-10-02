@@ -14,3 +14,7 @@ KDE crystal SVG
 Rotating Earth :
 http://www.kde-look.org/content/show.php?content=2140
 http://www.kde-look.org/usermanager/search.php?username=Amibug&PHPSESSID=3782d930be9c13d06e22580720b3ff86
+
+Embedded JavaScript runtime:
+QuickJS-NG v0.17.0 (MIT) and OpenLibm v0.8.8 (MIT/BSD/ISC/Sun notices).
+See data/javascript-licenses.txt and third_party/README.md.

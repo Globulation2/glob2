@@ -92,6 +92,10 @@ Warrush
 Pembangun kuat yang menurunkan pasukan penyerang terlatih.
 [AICabino]
 Cabino
+[AIJavaScript]
+JavaScript
+[AIJavaScript-Description]
+Pengendali yang menggunakan modul kode sumber JavaScript tertanam.
 [Alga]
 Ganggang
 [algae]
@@ -3450,5 +3454,81 @@ Rasa gulir sentuh. 0 mematikan efek; 50 adalah bawaan.
 Momentum daftar
 [List bounce]
 Pantulan daftar
+[lan pairing field]
+
+[lan pairing connect]
+
+[lan discovery instructions]
+
+[lan discovery unavailable]
+
+[lan discovered host %0]
+
+[lan share pairing]
+
+[lan copy pairing]
+
+[lan connection unavailable]
+
+[lan connection verification failed %0]
+
+[network start refused]
+
+[lan lobby endpoint required]
+
+[settings Artwork]
+
+[settings Original]
+
+[settings High resolution]
+
+[settings Clouds]
+
+[settings Show cloud cover above the map.]
+
+[settings Cloud shadows]
+
+[settings Show cloud shadows on the ground independently of cloud cover.]
+
+[settings Building particles]
+
+[settings Show smoke and other building particles.]
+
+[settings Magic effects]
+
+[settings Choose animated magic effects or a simple visible effect.]
+
+[settings Simple]
+
+[settings Requires the OpenGL renderer. Your saved choice is retained.]
+
+[settings Interface appearance]
+
+[settings Panels]
+
+[settings Choose translucent or opaque interface panels.]
+
+[settings Opaque]
+
+[settings Translucent]
+
+[settings Advanced graphics]
+
+[settings Path lines]
+
+[settings Choose translucent or opaque unit path lines.]
+
+[settings Smooth progress indicators]
+
+[settings Smooth the moving edges of progress indicators.]
+
+[settings Decorative interface animation]
+
+[settings Animate victory artwork. Reduced motion also disables this animation.]
+
+[settings Text size]
+
+[settings Enlarge interface text without changing the map scale.]
+
 [Map momentum]
 Momentum peta

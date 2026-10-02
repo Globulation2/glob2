@@ -106,6 +106,8 @@ Game options:
 | `--load-game PATH` | Saved initial state or continuation, mutually exclusive with map/generator input |
 | `--generator`, `--map-seed`, `--param`, `--candidates` | Inline generation alternative; embeds generation results and saves the generated map |
 | `--game-seed N` | Required uint32 for a new game; forbidden when loading a save |
+| `--ai-script player:source.js` | Embedded source for a `javascript` player (zero-based index); new games only |
+| `--map-script source.js` | Replace the new game's map script with JavaScript |
 | `--player AI` | Repeat once per map team, in team order; required for new games |
 | `--ai-param P:key=value` | Repeatable, zero-based player overrides; duplicate keys and invalid values rejected |
 | `--alliance N` | Repeat once per team, one-based group labels; default separate alliances |

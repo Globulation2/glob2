@@ -223,12 +223,14 @@ void checkOverlayText(Context &context, GAGCore::Font *font, float scale)
 
 void run(const std::string &outputDir)
 {
-	const int windowW = 1280, windowH = 960;
+	const int windowW = 1280, windowH = 640;
 	// Open the window already scaled, the way a HiDPI desktop hands it over. The sharpness
 	// check must not depend on a mode switch, so that the saved frames compare one build
 	// against another rather than one context against its successor.
 	GraphicContext::setRequestedUiScale(2.0f);
 	Context context(windowW, windowH);
+	context.setCompactWindowAllowed(true);
+	require(context.setUiScale(2.0f),"Could not apply live scale");
 	require(context.surfaceW() == windowW / 2, "The interface surface did not halve");
 
 	Toolkit::loadFont("data/fonts/sans.ttf", 20, "harness");
@@ -265,9 +267,9 @@ void run(const std::string &outputDir)
 	// does. Neither has a pixel grid to check blocks on, so check the raster itself.
 	for (auto attempt : {std::pair<float, const char *>{1.7f, "a fractional interface scale"},
 						 {1.701f, "a nearby fractional scale reusing the raster cache"},
-						 {1.0f, "a resolution the screen cannot deliver"}})
+						 {1.0f, "legacy oversized fullscreen dimensions"}})
 	{
-		// Fullscreen keeps the desktop's size, so asking for more than it has is what reduces.
+		// Old oversized fullscreen preferences must still produce the desktop's native target.
 		const bool oversized = attempt.first == 1.0f;
 		if (oversized && !glob2test::fullscreenEnabled())
 		{
@@ -279,6 +281,7 @@ void run(const std::string &outputDir)
 		GraphicContext::setRequestedUiScale(attempt.first);
 		require(context.setRes(w, h, flags),
 				std::string("Could not reopen the window for ") + attempt.second);
+		if (oversized) require(bool(context.getOptionFlags() & GraphicContext::FULLSCREEN), "Legacy fullscreen preference did not enter fullscreen");
 		// The geometry decides whether glyphs are resampled, not what the font code makes of it.
 		float other;
 		int offX, offY;
@@ -332,6 +335,32 @@ void run(const std::string &outputDir)
 
 TEST_SUITE("TextRaster")
 {
+	TEST_CASE("native software glyphs at fractional scale [display][artifacts]")
+	{
+		glob2test::ToolkitScope toolkit;
+		Toolkit::getFileManager()->addDir(glob2test::sourceRoot().string());
+		GraphicContext::setRequestedUiScale(1);
+		GraphicContext context(1280,640,GraphicContext::RESIZABLE,"Native software text");
+		Toolkit::loadFont("data/fonts/sans.ttf",20,"native-text");
+		auto *font=Toolkit::getFont("native-text");
+		font->setStyle(GAGCore::Font::Style(GAGCore::Font::STYLE_NORMAL,255,255,255));
+		const Metrics before=measure(font);
+		require(context.setUiScale(1.25f),"Could not apply fractional scale");
+		require(context.textRenderScale()>1.05f,"Software test did not exercise native scaling");
+		const Metrics after=measure(font);
+		require(before.widths==after.widths && before.heights==after.heights,"Native raster changed logical text metrics");
+		context.setClipRect(); context.drawFilledRect(0,0,context.getW(),context.getH(),Color(0,0,0));
+		context.drawString(0,0,font,SAMPLES[2]); context.nextFrame();
+		auto *pixels=SDL_ConvertSurface(context.getSDLSurface(),SDL_PIXELFORMAT_RGBA32);
+		require(pixels!=nullptr,"Native text readback failed");
+		std::vector<unsigned char> frame(size_t(pixels->w)*pixels->h*4);
+		for(int y=0;y<pixels->h;++y) std::memcpy(frame.data()+size_t(y)*pixels->w*4,static_cast<unsigned char*>(pixels->pixels)+y*pixels->pitch,pixels->w*4);
+		checkRasterIsPixelExact(frame,pixels->w,context.textRenderScale(),0,0,SAMPLES[2],0,0);
+		saveFrame(frame,pixels->w,pixels->h,(glob2test::artifactDir()/"software-text-native.bmp").string());
+		SDL_DestroySurface(pixels); Toolkit::releaseFont("native-text");
+		GraphicContext::setRequestedUiScale(0);
+	}
+
 	TEST_CASE("scaled and unscaled text rasterisation [display:1600x1400][artifacts]")
 	{
 		glob2test::ToolkitScope toolkit;

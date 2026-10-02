@@ -3,6 +3,7 @@
 
 #pragma once
 #include "NetTransport.h"
+#include <SDL3/SDL_stdinc.h>
 #include <queue>
 
 using std::shared_ptr;
@@ -37,10 +38,10 @@ public:
     void sendMessage(std::shared_ptr<NetMessage> message);
     /// Returns the configured peer address.
     const std::string& getIPAddress() const;
+    std::string getError() const { return transport->error(); }
 protected:
     friend class NetListener;
-    /// Accepts one connection from the native SDL listener when available.
-    bool attemptConnection(NET_Server * serverSocket);
+
 private:
     std::unique_ptr<NetTransport> transport;
     std::queue<std::shared_ptr<NetMessage>> received;

@@ -45,6 +45,8 @@ public:
 	///runtime library scripts, then the given code as a new "<mapscript>" thread.
 	///A recompile is a full reset, never an incremental update.
 	bool compileCode(const std::string& code);
+	///Exchange prepared interpreters without allocating or executing script code.
+	void swap(MapScriptUSL& other) noexcept;
 	
 	///This returns the error of the most recent compile
 	const MapScriptError& getError() const;
@@ -60,6 +62,5 @@ private:
 	std::unique_ptr<Usl> usl;
 	MapScriptError error;
 };
-
 
 

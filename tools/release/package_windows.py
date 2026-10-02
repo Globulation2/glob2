@@ -25,14 +25,15 @@ def stage(binary, root):
                        result.stdout, flags=re.IGNORECASE)
     prefix = os.environ.get("GLOB2_SDL3_PREFIX")
     prefix_bin = (str(Path(prefix).resolve() / "bin").replace("\\", "/").lower() + "/") if prefix else None
-    dependencies = {path for path in paths if (prefix_bin and path.replace("\\", "/").lower().startswith(prefix_bin))
-                    or "/mingw64/bin/" in path.lower()
-                    or "\\mingw64\\bin\\" in path.lower()
-                    or "/sdl3-ci/prefix/bin/" in path.lower()
-                    or "\\sdl3-ci\\prefix\\bin\\" in path.lower()}
-    for path in sorted(dependencies):
+    for path in sorted(set(paths)):
         native = (subprocess.check_output(["cygpath", "-w", path], text=True).strip()
                   if path.startswith("/") else path)
+        normalized = path.replace("\\", "/").lower()
+        if not (Path(native).resolve().parent == binary.resolve().parent
+                or (prefix_bin and normalized.startswith(prefix_bin))
+                or "/mingw64/bin/" in normalized
+                or "/sdl3-ci/prefix/bin/" in normalized):
+            continue
         shutil.copy2(native, root / Path(native).name)
         licenses = Path(native).parent.parent / "share/licenses"
         if licenses.is_dir():

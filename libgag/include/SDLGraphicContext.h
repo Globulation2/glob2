@@ -13,6 +13,7 @@
 #include <valarray>
 #include <memory>
 #include <optional>
+#include <cstdint>
 
 #include <set>
 #include <tuple>
@@ -25,6 +26,8 @@
 namespace GAGCore
 {
     class RenderBackend;
+    class SoftwareFramePresenter;
+    struct RenderOperations;
 	//! Color is 4 bytes big but provides easy access to components
 	struct Color
 	{
@@ -170,8 +173,11 @@ namespace GAGCore
 		std::optional<TextureInfo> textureInfo;
 		//! The clipping rect, we do not draw outside it
 		SDL_Rect clipRect;
-		//! this surface has been modified since latest blit
-		bool dirty;
+		// Content revisions are never consumed by drawing. Each backend remembers
+		// its own uploaded revision; raw pixel writes must call markPixelsChanged().
+		std::uint64_t glUploadedRevision = 0; // Revision uploaded to this surface's legacy GL texture.
+        std::uint64_t pixelRevision = 1, opacityRevision = 0;
+        bool opaquePixels = false;
 		bool highResolutionSampling=false;
 		//! texture index if GPU (GL) is used
 		unsigned int texture=0;
@@ -223,6 +229,10 @@ namespace GAGCore
 		virtual int getH(void) { if (textureInfo) return textureInfo->h; return sdlsurface->h; }
 		//! The raw software surface, e.g. to hand off to an SDL API that wants one directly
 		SDL_Surface *getSDLSurface(void) { return sdlsurface; }
+        std::uint64_t contentRevision() const { return pixelRevision; }
+        virtual void prepareDraw() {}
+        void markPixelsChanged() { ++pixelRevision; }
+        bool hasOpaquePixels();
 		static size_t allocatedTextureBytes();
 
 		virtual int getTexX(void) { if (textureInfo) { return textureInfo->texX; } return 0; }
@@ -339,17 +349,29 @@ namespace GAGCore
 		int minW, minH;
 		//! window size in window points, as SDL reports mouse coordinates; differs from the logical resolution when fullscreen scaling is active
 		int windowW = 0, windowH = 0;
+#if !defined(GLOB2_MOBILE) && !defined(__EMSCRIPTEN__)
+		bool nativeDesktop = true;
+#else
+		bool nativeDesktop = false;
+#endif
+		bool nativeSoftware = false;
+		int desktopLogicalW = 0, desktopLogicalH = 0;
+		float preferredUiScale = 0, desktopSystemScale = 1;
+		int desktopDisplay = -1;
+		void refreshDesktopScale();
+		bool refreshNativeWindow();
+		std::function<void(int, int, bool)> displayPreferenceCallback;
         int fixedLogicalW=0, fixedLogicalH=0;
         bool responsiveViewport=false, compactWindowAllowed=false;
         bool uiTransformActive=false;
         SDL_Rect uiSavedClip{}, uiBounds{};
         float uiTransformScale=1, uiTransformX=0, uiTransformY=0;
         int responsiveMinW=0, responsiveMinH=0;
-		//! GL drawable size in pixels; exceeds the window size on HiDPI displays
+		//! Output drawable size in pixels; exceeds window points on HiDPI displays
 		int drawableW = 0, drawableH = 0;
 		//! resolution asked of setRes(), before the interface scale divides it
 		int requestedW = 0, requestedH = 0;
-		//! window pixels per logical pixel; widgets keep their pixel sizes and the frame is scaled up
+		//! Window points per logical layout unit; native rasterization applies backing density separately
 		float uiScale = 1.0f;
 		//! the scale setRes() was asked for, before the window floor reduced it
 		float wantedUiScale = 1.0f;
@@ -402,6 +424,8 @@ namespace GAGCore
 		void reportFrameCacheFailure(const char *reason);
 		void releaseFrameCache();
 		void cacheFrame();
+        std::unique_ptr<SoftwareFramePresenter> softwarePresenter;
+        void prepareDraw() override;
 		void presentLastFrame();
 		// GLSL 1.20 program that recolors a sprite's unrotated team layer on the
 		// GPU (same HSV hue shift as DrawableSurface::shiftHSV) and combines it
@@ -419,7 +443,8 @@ namespace GAGCore
 		// Central presentation boundary, also used by render-validation contexts.
 		virtual void swapBuffers();
 		static bool SDLCALL watchWindow(void *userdata, SDL_Event *event);
-		std::unique_ptr<RenderBackend> renderer;
+		std::unique_ptr<RenderBackend> portableRenderer;
+        RenderBackend* renderer = nullptr; // Borrowed active backend; ownership stays in the two unique_ptrs.
         // Rasterizes transformed passes into the existing software framebuffer.
         std::unique_ptr<RenderBackend> softwareRasterizer;
         bool softwareTransform=false;
@@ -451,7 +476,7 @@ namespace GAGCore
             compactWindowAllowed=allowed;applyWindowMinimumSize();
         }
         bool isResponsiveViewport() const { return responsiveViewport; }
-        bool hasPortableRenderer() const { return bool(renderer); }
+        bool hasPortableRenderer() const { return bool(renderer) && !nativeSoftware; }
         double logicalUnitsPerPoint() const;
         void setUITransform(float scale=1, float x=0, float y=0, const SDL_Rect* bounds=nullptr);
         Uint32 windowID() const { return SDL_GetWindowID(window); }
@@ -476,6 +501,15 @@ namespace GAGCore
 		static float effectiveUiScale(float preferred);
 		//! true when the window pixel size differs from the logical resolution, so output is scaled
 		bool isScalingActive(void);
+		int getW() override { return nativeDesktop && desktopLogicalW ? desktopLogicalW : DrawableSurface::getW(); }
+		int getH() override { return nativeDesktop && desktopLogicalH ? desktopLogicalH : DrawableSurface::getH(); }
+		bool isNativeDesktop() const { return nativeDesktop; }
+		int getDrawableW() const { return drawableW; }
+		int getDrawableH() const { return drawableH; }
+		bool setFullscreen(bool fullscreen);
+		bool setUiScale(float scale);
+		void setDisplayPreferenceCallback(std::function<void(int, int, bool)> callback)
+		{ displayPreferenceCallback = std::move(callback); }
 		bool toggleFullscreen();
 		void beginMapTransform(float zoom,float x,float y,int clipX,int clipY,int clipW,int clipH);
 		void endMapTransform();
@@ -507,7 +541,11 @@ namespace GAGCore
 		static int pollEvent(SDL_Event *event);
 		virtual void setClipRect(int x, int y, int w, int h);
 		virtual void setClipRect(void);
-		virtual void nextFrame(void);
+		enum class FrameMode { FullRedraw, PreserveContent };
+        void beginFrame(FrameMode mode = FrameMode::PreserveContent);
+        RenderOperations backendOperations() const;
+        SDL_Surface* completedFrame() const;
+        virtual void nextFrame(void);
 		//! This function does not work for GraphicContext
 		virtual bool loadImage(const std::string name) { return false; }
 		//! This function does not work for GraphicContext
@@ -516,7 +554,7 @@ namespace GAGCore
 		virtual void shiftHSV(float hue, float sat, float lum) { }
 		
 		// reimplemented drawing commands for HW (GPU / GL) accelerated version
-		virtual bool canDrawStretchedSprite(void) { return renderer || (optionFlags & USEGPU) != 0; }
+		virtual bool canDrawStretchedSprite(void) { return hasPortableRenderer() || (optionFlags & USEGPU) != 0; }
 		
 		virtual void drawPixel(int x, int y, const Color& color);
 		virtual void drawPixel(float x, float y, const Color& color);
@@ -669,6 +707,15 @@ namespace GAGCore
 		//! Check if index is within bound and return true, assert false and return false otherwise
 		bool checkBound(int index);
 		//! Return a rotated drawable surface for actColor, create it if necessary
+    public:
+        // Immutable native image access for terrain cache preparation. Team layers
+        // need separate composition and therefore are not cacheable here.
+        DrawableSurface* nativeFrame(unsigned index) const
+        {
+            return index < images.size() && index < rotated.size() && !rotated[index] ? images[index] : nullptr;
+        }
+
+    protected:
 		virtual DrawableSurface *getRotatedSurface(int index);
 		void reloadHighResolution();
 		//! One bit per 32-phase block, recomputed whenever the HD layer arrays

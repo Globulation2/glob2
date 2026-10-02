@@ -13,6 +13,7 @@ class NetRegisterRouter : public NetMessage
 {
 public:
 	NetRegisterRouter();
+    unsigned version;
 
 	Uint8 getMessageType() const;
 	void encodeData(GAGCore::OutputStream* stream) const;

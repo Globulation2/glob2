@@ -13,34 +13,29 @@
 #include "YOGServerRouterPlayer.h"
 #include <SDL3/SDL.h>
 #include <sstream>
+#include "ServerControl.h"
+#include <chrono>
 
 using namespace GAGCore;
 using std::static_pointer_cast;
 
-YOGServerRouter::YOGServerRouter()
-	: nl(YOG_ROUTER_PORT), admin(this)
+YOGServerRouter::YOGServerRouter() : YOGServerRouter(makeNetworkConfig(false, true)) {}
+YOGServerRouter::YOGServerRouter(const std::string& endpoint) : YOGServerRouter([&] {
+    auto config = makeNetworkConfig(false, true); config.registrationEndpoint = endpoint; return config;
+}()) {}
+YOGServerRouter::YOGServerRouter(const NetworkConfig& config)
+    : configuration(config), nl(config.router), admin(this)
 {
-	new_connection.reset(new NetConnection);
-	yog_connection.reset(new NetConnection(YOG_SERVER_IP, YOG_SERVER_ROUTER_PORT));
-	shutdownMode=false;
+    new_connection = std::make_shared<NetConnection>();
+    yog_connection = std::make_shared<NetConnection>(makeNetTransport(config.registration.tls));
+    yog_connection->openConnection(config.registrationEndpoint, 0);
+    shutdownMode = false;
 }
-
-
-
-YOGServerRouter::YOGServerRouter(const std::string& yogip)
-	: nl(YOG_ROUTER_PORT), admin(this)
-{
-	new_connection.reset(new NetConnection);
-	yog_connection.reset(new NetConnection(yogip, YOG_SERVER_ROUTER_PORT));
-	shutdownMode=false;
-}
-
-
 
 void YOGServerRouter::update()
 {
 	//First attempt connections with new players
-	while(nl.attemptConnection(*new_connection))
+	while(!shutdownMode && nl.attemptConnection(*new_connection))
 	{
 		players.push_back(shared_ptr<YOGServerRouterPlayer>(new YOGServerRouterPlayer(new_connection, this)));
 		players[players.size()-1]->setPointer(players[players.size()-1]);
@@ -90,7 +85,10 @@ void YOGServerRouter::update()
 	}
 	
 	
-	//Parse incoming messages.
+	if (yog_connection->isConnected() && !registrationSent && !shutdownMode) {
+        yog_connection->sendMessage(std::make_shared<NetRegisterRouter>()); registrationSent = true;
+    }
+    //Parse incoming messages.
 	shared_ptr<NetMessage> message = yog_connection->getMessage();
 	if(message)
 	{
@@ -98,15 +96,13 @@ void YOGServerRouter::update()
 		//This receives the client information
 		if(type==MNetAcknowledgeRouter)
 		{
-			shared_ptr<NetAcknowledgeRouter> info = static_pointer_cast<NetAcknowledgeRouter>(message);
-			shared_ptr<NetRegisterRouter> reg = shared_ptr<NetRegisterRouter>(new NetRegisterRouter);
-			yog_connection->sendMessage(reg);
+            registrationConfirmed = true;
 		}
 	}
 	if(!yog_connection->isConnected() && !yog_connection->isConnecting() && !shutdownMode)
 	{
 		std::cout<<"Router lost connection."<<std::endl;
-		shutdownMode=true;
+		enterShutdownMode();
 	}
 }
 
@@ -114,13 +110,23 @@ void YOGServerRouter::update()
 
 int YOGServerRouter::run()
 {
+    ServerControl::installSignals();
+    ServerControl control(configuration.controlBind, configuration.controlPort);
+    std::chrono::steady_clock::time_point drainStarted{};
 	std::cout<<"Router started successfully."<<std::endl;
-	while(nl.isListening())
+	while(nl.isListening() || shutdownMode)
 	{
 		const int speed = 25;
 		Uint64 startTick, endTick;
 		startTick = SDL_GetTicks();
-		update();
+        if (ServerControl::shutdownRequested() && !shutdownMode) enterShutdownMode();
+        update();
+        if (shutdownMode && drainStarted == std::chrono::steady_clock::time_point{})
+            drainStarted = std::chrono::steady_clock::now();
+        control.update({!shutdownMode && registrationConfirmed && yog_connection->isConnected(), shutdownMode, players.size(), games.size()});
+        if (shutdownMode && std::chrono::steady_clock::now() - drainStarted >= std::chrono::seconds(configuration.drainSeconds)) {
+            std::cerr << "Router drain deadline expired; active games will be interrupted" << std::endl; break;
+        }
 		endTick=SDL_GetTicks();
 		int remaining = std::max<Sint64>(speed - static_cast<Sint64>(endTick) + static_cast<Sint64>(startTick), 0);
 		SDL_Delay(remaining);
@@ -170,6 +176,7 @@ YOGServerRouterAdministrator& YOGServerRouter::getAdministrator()
 void YOGServerRouter::enterShutdownMode()
 {
 	shutdownMode=true;
+    nl.stopListening();
 	yog_connection->closeConnection();
 }
 

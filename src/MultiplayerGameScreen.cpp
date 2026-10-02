@@ -2,6 +2,7 @@
 // Copyright (C) 2007 Bradley Arsenault
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 #include "MultiplayerGameScreen.h"
+#include "YOGServer.h"
 #include "AINames.h"
 #include "CustomGameOtherOptions.h"
 #include "Engine.h"
@@ -114,13 +115,21 @@ Element MultiplayerGameScreen::build(const Presentation &p)
 			players.push_back(fe::caption(fe::tr("[open]")));
 	}
 	std::vector<Element> side;
+    if (auto server = client->getGameServer(); server && server->networkConfig().lan) {
+        const auto pairing = server->networkConfig().lobbyEndpoint;
+        side.push_back(fe::paragraph(fe::tr("[lan share pairing]")));
+        side.push_back(fe::paragraph(pairing, {fe::FontRole::Support}));
+        side.push_back(fe::button("lan/copy-pairing", fe::tr("[lan copy pairing]"), [pairing] {
+            SDL_SetClipboardText(pairing.c_str());
+        }));
+    }
 	if (!gh.getExperiments().empty())
 		side.push_back(fe::paragraph(fe::tr("[Experiments set by the host]") + ": " + experimentLabelList(gh.getExperiments()),
 									 {fe::FontRole::Support}));
 	if (readyToGo && hosting())
 	{
 		std::vector<Element> ais;
-		for (std::size_t i = 1; i < AI::SIZE; ++i)
+		for (std::size_t i = 1; i < AI::JAVASCRIPT; ++i)
 			ais.push_back(fe::button("ai/" + std::to_string(i), AINames::getAIText(int(i)), [this, i] { game->addAIPlayer((AI::ImplementationID)i); }));
 		side.push_back(fe::label(fe::tr("[Add AI]")));
 		side.push_back(fe::wrap(std::move(ais), {-1, p.pt(140)}));
@@ -202,6 +211,10 @@ void MultiplayerGameScreen::handleMultiplayerGameEvent(std::shared_ptr<Multiplay
 		finish(StartedGame);
 		game->leaveGame();
 	}
+    else if (type == MGEGameStartRefused)
+        screens.push(std::make_unique<MessageScreen>(
+            fe::tr("[network start refused]"),
+            std::vector<std::string>{fe::tr("[ok]")}));
 	else if (type == MGEGameRefused)
 		finish(GameRefused);
 	else if (type == MGEKickedByHost)
@@ -225,7 +238,7 @@ void MultiplayerGameScreen::launchScheduledGame()
 					 {
 						 game->sessionEnded(false);
 						 if (result == 2)
-							 screens.push(std::make_unique<MessageScreen>(fe::tr("[ERROR_CANT_LOAD_MAP]"), std::vector<std::string>{fe::tr("[ok]")}));
+							 screens.push(std::make_unique<MessageScreen>(static_cast<GameLoadScreen &>(load).failureMessage(), std::vector<std::string>{fe::tr("[ok]")}));
 						 return;
 					 }
 					 auto engine = static_cast<GameLoadScreen &>(load).takeEngine();

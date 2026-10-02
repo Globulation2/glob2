@@ -15,8 +15,8 @@ import time
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / 'tests/gateway'))
-from test_gateway import receive
+sys.path.insert(0, str(ROOT / 'tests/transport'))
+from websocket_wire import receive
 
 
 class Peer(socketserver.BaseRequestHandler):
@@ -68,22 +68,24 @@ class WssTests(unittest.TestCase):
         cls.addClassCleanup(cls.directory.cleanup)
         cls.cert = Path(cls.directory.name) / 'cert.pem'
         key = Path(cls.directory.name) / 'key.pem'
+        cls.key = key
         subprocess.run(['openssl', 'req', '-x509', '-newkey', 'rsa:2048', '-nodes',
             '-keyout', str(key), '-out', str(cls.cert), '-days', '1', '-subj', '/CN=localhost',
             '-addext', 'subjectAltName=DNS:localhost'], check=True, capture_output=True)
         cls.tls = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
         cls.tls.load_cert_chain(cls.cert, key)
-        cls.binary = ROOT / f'build/{platform.system().lower()}/client/release/src/wss-transport-test'
+        cls.binary = Path(os.environ.get('GLOB2_WSS_PROBE', ROOT / f'build/{platform.system().lower()}/client/release/src/wss-transport-test'))
 
-    def run_peer(self, mode='echo', probe='echo', trusted=True, hostname='localhost'):
+    def run_peer(self, mode='echo', probe='echo', trusted=True, hostname='localhost', pin='', tls=None, ca=None, platform_trust=False):
         with Server(('127.0.0.1', 0), Peer) as server:
-            server.mode = mode; server.tls = self.tls; server.path = None
+            server.mode = mode; server.tls = tls or self.tls; server.path = None
             server.stopped = threading.Event()
             worker = threading.Thread(target=server.serve_forever, daemon=True); worker.start()
             try:
                 env = dict(os.environ)
-                env['SSL_CERT_FILE'] = str(self.cert) if trusted else str(Path(self.directory.name) / 'absent.pem')
-                result = subprocess.run([str(self.binary), f'wss://{hostname}:{server.server_address[1]}', probe],
+                env['SSL_CERT_FILE'] = str(ca or self.cert) if trusted else str(Path(self.directory.name) / 'absent.pem')
+                if platform_trust: env.pop('SSL_CERT_FILE', None)
+                result = subprocess.run([str(self.binary), f'wss://{hostname}:{server.server_address[1]}/' + ('router' if probe == 'router' else 'yog') + pin, probe],
                     env=env, capture_output=True, text=True, timeout=16)
                 self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
                 if probe in ('echo', 'router'):
@@ -91,11 +93,40 @@ class WssTests(unittest.TestCase):
             finally:
                 server.stopped.set(); server.shutdown(); worker.join()
 
-    def test_verified_echo_and_fixed_routes(self):
+    def test_verified_echo_and_explicit_routes(self):
         self.run_peer(); self.run_peer(probe='router')
 
     def test_untrusted_certificate(self):
         self.run_peer(probe='refuse', trusted=False)
+
+    def test_platform_trust_rejects_untrusted_certificate(self):
+        self.run_peer(probe='refuse', platform_trust=True)
+
+    def test_expired_certificate(self):
+        expired = Path(self.directory.name)/'expired.pem'
+        work = Path(self.directory.name)
+        (work/'index').write_text(''); (work/'serial').write_text('01\n')
+        config = work/'expired.cnf'
+        config.write_text(f'[ca]\ndefault_ca=local\n[local]\ndatabase={work}/index\n'
+            f'new_certs_dir={work}\nserial={work}/serial\ndefault_md=sha256\n'
+            'policy=policy\n[policy]\ncommonName=supplied\n[extensions]\nsubjectAltName=DNS:localhost\n')
+        csr = work/'expired.csr'
+        subprocess.run(['openssl', 'req', '-new', '-key', str(self.key), '-subj', '/CN=localhost',
+                        '-out', str(csr)], check=True, capture_output=True)
+        subprocess.run(['openssl', 'ca', '-selfsign', '-batch', '-config', str(config),
+                        '-keyfile', str(self.key), '-cert', str(self.cert), '-in', str(csr),
+                        '-startdate', '20200101000000Z', '-enddate', '20200102000000Z',
+                        '-extensions', 'extensions', '-out', str(expired), '-notext'], check=True, capture_output=True)
+        tls = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER); tls.load_cert_chain(expired, self.key)
+        self.run_peer(probe='refuse', tls=tls, ca=expired)
+        pin = '#sha256=' + hashlib.sha256(ssl.PEM_cert_to_DER_cert(expired.read_text())).hexdigest()
+        self.run_peer(probe='refuse', tls=tls, pin=pin, trusted=False)
+
+    def test_pinned_certificate_still_checks_hostname(self):
+        der = ssl.PEM_cert_to_DER_cert(self.cert.read_text())
+        pin = '#sha256=' + hashlib.sha256(der).hexdigest()
+        self.run_peer(probe='echo', trusted=False, pin=pin)
+        self.run_peer(probe='refuse', hostname='127.0.0.1', pin=pin)
 
     def test_wrong_hostname(self):
         self.run_peer(probe='refuse', hostname='127.0.0.1')
@@ -111,7 +142,7 @@ class WssTests(unittest.TestCase):
         self.run_peer(mode='stall', probe='timeout')
 
     def test_credential_and_path_urls_are_rejected(self):
-        for url in ('wss://user:password@localhost', 'wss://localhost/router', 'wss://localhost?token=secret'):
+        for url in ('wss://user:password@localhost', 'wss://localhost/unknown', 'wss://localhost?token=secret'):
             result = subprocess.run([str(self.binary), url, 'refuse'], capture_output=True, text=True, timeout=3)
             self.assertEqual(result.returncode, 0, result.stderr)
 

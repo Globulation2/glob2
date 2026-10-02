@@ -18,6 +18,12 @@ SPEC.loader.exec_module(MODULE)
 
 class WindowsPackageTests(unittest.TestCase):
     def test_epic_stage_and_zip_share_files(self):
+        self.check_package("SDL3.dll => /mingw64/bin/SDL3.dll (0x0)")
+
+    def test_adjacent_runtime_is_packaged(self):
+        self.check_package("adjacent")
+
+    def check_package(self, dependencies):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             binary = root / "glob2-build.exe"
@@ -31,11 +37,13 @@ class WindowsPackageTests(unittest.TestCase):
             (root / "COPYING").write_text("GPL")
             stage = root / "epic"
             archive = root / "windows.zip"
+            if dependencies == "adjacent":
+                dependencies = f"SDL3.dll => {dll} (0x0)"
             old = Path.cwd()
             try:
                 os.chdir(root)
                 with patch.object(MODULE.subprocess, "run", return_value=subprocess.CompletedProcess(
-                        [], 0, stdout="SDL3.dll => /mingw64/bin/SDL3.dll (0x0)")), \
+                        [], 0, stdout=dependencies)), \
                      patch.object(MODULE.subprocess, "check_output", return_value=str(dll)):
                     MODULE.stage(binary, stage)
                     MODULE.package(binary, archive)

@@ -8,6 +8,7 @@ import re
 import subprocess
 import struct
 import time
+from dev_paths import android_sdk
 
 ROOT = Path(__file__).resolve().parents[1]
 PACKAGE = 'org.globulation2.glob2'
@@ -39,7 +40,7 @@ def main():
     env = dict(os.environ)
     env.pop('ADB_SERVER_SOCKET', None)
     env.pop('ANDROID_SERIAL', None)
-    adb = [str(ROOT/'build/mobile-tools/android-sdk/platform-tools/adb'), '-P', str(args.adb_port), '-s', args.serial]
+    adb = [str(android_sdk(ROOT)/'platform-tools/adb'), '-P', str(args.adb_port), '-s', args.serial]
 
     def run(*command, binary=False, timeout=30):
         result = subprocess.run(adb + list(command), capture_output=True, text=not binary, env=env, timeout=timeout)

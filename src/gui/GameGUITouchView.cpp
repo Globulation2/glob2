@@ -322,7 +322,7 @@ ViewRect GameGUITouch::tutorialRect() const
 }
 void GameGUITouch::prepareTutorial()
 {
-	std::string text = gui.game.sgslScript.isTextShown ? gui.game.sgslScript.textShown : "";
+	std::string text = gui.game.legacyScriptActive() && gui.game.sgslScript.isTextShown ? gui.game.sgslScript.textShown : "";
 	if (!gui.scriptText.empty())
 	{
 		if (!text.empty())

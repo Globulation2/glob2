@@ -2,15 +2,13 @@
 // Copyright (C) 2007 Bradley Arsenault
 
 #include "RouterMessages.h"
+#include "Version.h"
 #include <iostream>
 #include <sstream>
 
 using namespace GAGCore;
 
-NetRegisterRouter::NetRegisterRouter()
-{
-
-}
+NetRegisterRouter::NetRegisterRouter() : version(NET_PROTOCOL_VERSION) {}
 
 Uint8 NetRegisterRouter::getMessageType() const
 {
@@ -20,12 +18,14 @@ Uint8 NetRegisterRouter::getMessageType() const
 void NetRegisterRouter::encodeData(GAGCore::OutputStream* stream) const
 {
 	stream->writeEnterSection("NetRegisterRouter");
+    stream->writeUint32(version, "protocolVersion");
 	stream->writeLeaveSection();
 }
 
 void NetRegisterRouter::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetRegisterRouter");
+    version = stream->readUint32("protocolVersion");
 	stream->readLeaveSection();
 }
 
@@ -40,7 +40,7 @@ bool NetRegisterRouter::operator==(const NetMessage& rhs) const
 {
 	if(typeid(rhs)==typeid(NetRegisterRouter))
 	{
-		return true;
+		return version == static_cast<const NetRegisterRouter&>(rhs).version;
 	}
 	return false;
 }

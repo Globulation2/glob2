@@ -2,6 +2,7 @@
 // Copyright (C) 2007 Bradley Arsenault
 
 #include "NetTestSuite.h"
+#include "NetworkConfig.h"
 #include <iostream>
 
 #include "StreamBackend.h"
@@ -639,17 +640,25 @@ int NetTestSuite::testListenerConnection()
 {
 	//Creates the NetListener at port 7480
 	NetListener nl;
-	nl.startListening(7480);
+	auto config = makeNetworkConfig(true);
+    config.lobby.port = 7480; config.lobby.bindAddress = "127.0.0.1";
+    nl.startListening(config.lobby);
 	//Creates a NetConnection representing the client
 	NetConnection nc_client;
-	nc_client.openConnection("127.0.0.1", 7480);
+	nc_client.openConnection("wss://localhost:7480/yog" + config.lobbyEndpoint.substr(config.lobbyEndpoint.find('#')), 0);
 	//Give it time to proccess the request
 	SDL_Delay(40);
 	//The server connection
 	NetConnection nc_server;
 	
 	//Causes NetListener to accept the connection
-	if(!nl.attemptConnection(nc_server))
+	bool accepted = false;
+    const auto deadline = SDL_GetTicks() + 5000;
+    while (SDL_GetTicks() < deadline && (!accepted || !nc_client.isConnected())) {
+        if (!accepted) accepted = nl.attemptConnection(nc_server);
+        nc_client.update(); SDL_Delay(1);
+    }
+	if(!accepted)
 	{
 		return 1;
 	}
@@ -668,7 +677,7 @@ int NetTestSuite::testListenerConnection()
 	shared_ptr<NetLoginSuccessful> netSendLogin1(new NetLoginSuccessful);
 	nc_client.sendMessage(netSendLogin1);
 	//Allow time for the request to be processed
-	SDL_Delay(100);
+    for (unsigned i = 0; i < 100; ++i) { nc_client.update(); nc_server.update(); SDL_Delay(1); }
 	
 	nc_client.update();
 	nc_server.update();

@@ -29,6 +29,7 @@ class GameSessionScreen : public GAGGUI::Screen
     void cancelExecutionInput() override { suspendExecution(); }
 
   private:
+    void updateExecutionImpl(Uint32 tick);
 	FrontendScope theme{false};
 	GAGGUI::ScreenStack &stack;
 	std::unique_ptr<Engine> engine;

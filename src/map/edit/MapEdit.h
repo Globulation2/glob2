@@ -53,7 +53,7 @@ public:
 	bool is_in(int x, int y);
 	///This function handles a click with mouse positions relative to the widget. It can be overridden, but derived classes
 	///should be careful to call the base class version after there customized code
-	virtual void handleClick(int relMouseX, int relMouseY);
+	virtual void handleClick(float relMouseX, float relMouseY);
     /// Invoke this widget's named action without desktop hit-test coordinates.
     void activate();
 	///This function must be implemented by all derived classes. This is where the widget draws itself. It should use area.x
@@ -286,7 +286,7 @@ public:
 	ValueScrollBox(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, Sint32* value, Sint32 max);
 	~ValueScrollBox();
 	void draw();
-	void handleClick(int relMouseX, int relMouseY);
+	void handleClick(float relMouseX, float relMouseY);
 	void setValues(Sint32* value, Sint32* max);
     // Semantic value access shared by desktop and touch presentations.
     int currentValue() const { return *value; }
@@ -349,7 +349,7 @@ public:
 	NumberCycler(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, int maxNumber);
 	void draw();
 	int getIndex();
-	void handleClick(int relMouseX, int relMouseY);
+	void handleClick(float relMouseX, float relMouseY);
 private:
 	int maxNumber;
 	int currentNumber;
@@ -363,7 +363,7 @@ class Checkbox : public MapEditorWidget
 public:
 	Checkbox(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, const std::string& text, bool& isActivated);
 	void draw();
-	void handleClick(int relMouseX, int relMouseY);
+	void handleClick(float relMouseX, float relMouseY);
 private:
 	std::string text;
 	bool& isActivated;
@@ -496,16 +496,16 @@ private:
 	///This performs an action in the form of the string. This is where a lot of code goes. As opposed to using separate functions for such a large
 	///number of possible actions, or just inlining them, this system locates them all here, and every small bit has a name as well. It makes debugging
 	///easy in some ways, and it also greatly improves readability. All of the widget "actions" come to here.
-	void performAction(const std::string& action, int relMouseX=0, int relMouseY=0);
+	void performAction(const std::string& action, float relMouseX=0, float relMouseY=0);
     void selectActiveTeam(int selected);
 	///Handles view, scrolling, minimap and screen/dialog actions. Returns true if the action was handled.
-	bool performViewAction(const std::string& action, int relMouseX, int relMouseY);
+	bool performViewAction(const std::string& action, float relMouseX, float relMouseY);
 	///Handles building placement, terrain, zone, area and team-selection actions. Returns true if the action was handled.
-	bool performTerrainAction(const std::string& action, int relMouseX, int relMouseY);
+	bool performTerrainAction(const std::string& action, float relMouseX, float relMouseY);
 	///Handles unit placement and unit-editor actions. Returns true if the action was handled.
-	bool performUnitAction(const std::string& action, int relMouseX, int relMouseY);
+	bool performUnitAction(const std::string& action, float relMouseX, float relMouseY);
 	///Handles the building-editor actions. Returns true if the action was handled.
-	bool performBuildingAction(const std::string& action, int relMouseX, int relMouseY);
+	bool performBuildingAction(const std::string& action, float relMouseX, float relMouseY);
 	///This delegates a sdl event to one of the menus, if they are open, and handle end codes of the menus appropriately
 	void delegateMenu(SDL_Event& event);
 	///Handles the scrolling of the map, by arrow keys and by putting the mouse near the edge of the screen
@@ -534,9 +534,9 @@ private:
 	///This is the mouse y position, updated whenever the mouse moves
 	int mouseY;
 	///This is the mouse x position relative to its last position
-	int relMouseX;
+	float relMouseX;
 	///This is the mouse y position relative to its last position
-	int relMouseY;
+	float relMouseY;
 	///True while either mouse button is dragging the map camera
 	bool isScrollDragging;
 	bool isLeftScrollDragging;

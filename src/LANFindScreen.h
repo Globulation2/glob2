@@ -33,7 +33,7 @@ class LANFindScreen : public Glob2UI::Screen
 
   private:
 	GAGGUI::ScreenStack &screens;
-	std::string serverName = "localhost";
+	std::string serverName;
 	std::string playerName;
 	std::vector<std::string> games;
 	int selectedGame = -1;
