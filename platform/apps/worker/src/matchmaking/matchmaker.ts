@@ -10,12 +10,12 @@
 // stopped; every step re-checks state under row locks, and the API's ticket
 // operations (tickets.ts) may run concurrently.
 import { randomInt, randomUUID } from 'node:crypto';
-import type { Kysely, Transaction } from 'kysely';
+import { sql, type Kysely, type Transaction } from 'kysely';
 import type { Logger, MapPoolEntry, ResolvedQueue } from '@glob2/core';
 import type { Database } from '@glob2/db';
 import { systemClock, type Clock } from '../clock.ts';
 import { aiLadderRatings, ensureAccountEntity, type RatedAi } from '../ratings/entities.ts';
-import { DEFAULT_RATING } from '../ratings/scale.ts';
+import { DEFAULT_RATING, displayRating, isProvisional, matchSkill } from '../ratings/scale.ts';
 import {
   backfillAt,
   backfillDue,
@@ -27,6 +27,7 @@ import {
   type WaitingTicket,
 } from './grouping.ts';
 import type { QueueNotifier } from './notifier.ts';
+import { sendProposal } from './proposalView.ts';
 import type { MatchProposal, MatchStarter, ProposalSeat } from './starter.ts';
 
 type Db = Kysely<Database>;
@@ -335,17 +336,7 @@ export class Matchmaker {
             })
             .execute();
         }
-        for (const ticket of humans) {
-          await this.notifier.send(trx, ticket.accountId, 'queue.proposal', {
-            proposalId: id,
-            ticketId: ticket.id,
-            queueId: queue.id,
-            requiresAccept,
-            ...(expiresAt ? { expiresAt: expiresAt.toISOString() } : {}),
-            humans: humans.length,
-            ais: members.length - humans.length,
-          });
-        }
+        await sendProposal(trx, this.notifier, id);
       });
     } catch (error) {
       if (error instanceof Skip) return false;
@@ -473,6 +464,9 @@ export class Matchmaker {
       .where('status', '=', 'waiting')
       .execute();
     const live = new Set<string>();
+    // Per call: the AI ladder of each queue and sim version, and each queue's typical wait.
+    const aiLadders = new Map<string, Promise<{ ai: RatedAi; mu: number; sigma: number }[]>>();
+    const typicalWaits = new Map<string, Promise<number | undefined>>();
     for (const row of rows) {
       live.add(row.id);
       const queue = this.queues.get(row.queue_id);
@@ -482,16 +476,69 @@ export class Matchmaker {
       this.lastStatus.set(row.id, now.getTime());
       const ticket = toTicket(row);
       const waited = waitedSeconds(ticket, now);
+      const window = ratingWindow(queue, waited);
       const at = backfillAt(queue, ticket);
+      const skill = matchSkill(ticket);
+      const best = [...ticket.regions].sort((a, b) => a.rttMs - b.rttMs)[0];
+      let backfillAi: { ai: RatedAi; rating: number } | undefined;
+      if (at && queue.aiPool.length > 0) {
+        const key = `${queue.id}\n${row.sim_version}`;
+        let pending = aiLadders.get(key);
+        if (!pending) {
+          pending = aiLadderRatings(this.db, queue.aiPool, row.sim_version, queue.id);
+          aiLadders.set(key, pending);
+        }
+        const ladder = await pending;
+        const closest = [...ladder].sort(
+          (a, b) =>
+            Math.abs(matchSkill(a) - skill) - Math.abs(matchSkill(b) - skill) ||
+            a.ai.localeCompare(b.ai),
+        )[0];
+        if (closest) backfillAi = { ai: closest.ai, rating: Math.round(displayRating(closest)) };
+      }
+      let wait = typicalWaits.get(queue.id);
+      if (!wait) {
+        wait = this.typicalWait(queue.id, now);
+        typicalWaits.set(queue.id, wait);
+      }
+      const typical = await wait;
+      const rating = { mu: ticket.mu, sigma: ticket.sigma };
       await this.notifier.send(this.db, row.account_id, 'queue.status', {
         ticketId: row.id,
         queueId: row.queue_id,
         waitedSeconds: Math.floor(waited),
-        ratingWindow: Math.round(ratingWindow(queue, waited)),
+        ratingWindow: Math.round(window),
         ...(at ? { aiBackfillAt: at.toISOString() } : {}),
+        ratingRange: { min: Math.round(skill - window), max: Math.round(skill + window) },
+        rating: Math.round(displayRating(rating)),
+        provisional: isProvisional(rating),
+        ...(best ? { region: best.region, rttMs: best.rttMs } : {}),
+        allowAiOpponent: ticket.allowAi,
+        ...(backfillAi ? { backfillAi } : {}),
+        ...(typical !== undefined ? { typicalWaitSeconds: typical } : {}),
       });
     }
     for (const id of this.lastStatus.keys()) if (!live.has(id)) this.lastStatus.delete(id);
+  }
+
+  /** Median wait (seconds) of the queue's tickets matched in the last day; undefined with none. */
+  private async typicalWait(queueId: string, now: Date): Promise<number | undefined> {
+    const since = new Date(now.getTime() - 24 * 3600 * 1000);
+    const row = await this.db
+      .selectFrom('queue_tickets')
+      .select(
+        sql<
+          number | null
+        >`percentile_cont(0.5) WITHIN GROUP (ORDER BY extract(epoch FROM updated_at - created_at))`.as(
+          'median',
+        ),
+      )
+      .where('queue_id', '=', queueId)
+      .where('status', '=', 'matched')
+      .where('updated_at', '>=', since)
+      .executeTakeFirst();
+    const median = row?.median;
+    return median === null || median === undefined ? undefined : Math.max(0, Math.round(median));
   }
 }
 

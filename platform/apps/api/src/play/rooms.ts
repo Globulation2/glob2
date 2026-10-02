@@ -93,6 +93,8 @@ export interface RoomSettings {
   teams: SetupTeam[];
   rules: MatchRules;
   experiments: string[];
+  /** The quick match this room is the rematch of (match.rematch). */
+  rematchOf?: string;
 }
 
 export interface MapResolution {
@@ -697,6 +699,85 @@ export class RoomService {
     });
     if (settings.mapStatus === 'pending') await this.refreshPendingMaps({ roomId });
     return this.mustState(roomId);
+  }
+
+  /**
+   * Rematch after a quick match (match.rematch): an unrated link room with the
+   * match's map, rules and experiments. The first participant to ask hosts it;
+   * later ones join it. Returns the room and whether it was created now (the
+   * caller then tells the other players).
+   */
+  async rematch(
+    caller: Account,
+    simVersion: SimVersion,
+    matchId: string,
+    regions: RegionRtt[] | undefined,
+  ): Promise<{ room: RoomState; created: boolean; others: string[] }> {
+    const match = await this.db
+      .selectFrom('matches')
+      .select(['origin', 'status', 'setup', 'sim_version'])
+      .where('id', '=', matchId)
+      .executeTakeFirst();
+    const humans = await this.db
+      .selectFrom('match_participants')
+      .select('account_id')
+      .where('match_id', '=', matchId)
+      .where('kind', '=', 'human')
+      .execute();
+    const accounts = humans.flatMap((h) => (h.account_id ? [h.account_id] : []));
+    if (!match || !accounts.includes(caller.id)) {
+      throw apiError('not_found', 'You did not play in that match.');
+    }
+    if (match.origin !== 'queue') {
+      throw apiError('conflict', 'Room matches go back to their room instead.');
+    }
+    if (match.status !== 'ended' && match.status !== 'cancelled') {
+      throw apiError('conflict', 'The match has not ended yet.');
+    }
+    if (match.sim_version !== simVersionKey(simVersion)) {
+      throw apiError('update_required', 'The match was played with another game version.');
+    }
+    const others = accounts.filter((id) => id !== caller.id);
+    const existing = await this.db
+      .selectFrom('rooms')
+      .select('code')
+      .where(sql<string>`settings->>'rematchOf'`, '=', matchId)
+      .where('status', '!=', 'closed')
+      .orderBy('created_at')
+      .executeTakeFirst();
+    if (existing) {
+      return {
+        room: await this.join(caller, simVersion, existing.code, regions),
+        created: false,
+        others,
+      };
+    }
+    const setup = match.setup as unknown as MatchSetup;
+    const source = setup.map;
+    const map: RoomMapSelection =
+      source.kind === 'generated'
+        ? { kind: 'generated', generator: source.generator, hash: source.hash }
+        : source.kind === 'upload'
+          ? { kind: 'upload', format: source.format, hash: source.hash }
+          : {
+              kind: 'catalog',
+              hash: source.hash,
+              ...(source.mapId ? { mapId: source.mapId } : {}),
+            };
+    const room = await this.create(caller, simVersion, {
+      name: 'Rematch',
+      visibility: 'link',
+      map,
+      rules: setup.rules,
+      experiments: setup.experiments,
+      ...(regions ? { regions } : {}),
+    });
+    await this.db.transaction().execute(async (trx) => {
+      const locked = await this.lock(trx, room.id);
+      const settings = locked.settings as unknown as RoomSettings;
+      await this.writeSettings(trx, room.id, { ...settings, rematchOf: matchId });
+    });
+    return { room, created: true, others };
   }
 
   async join(

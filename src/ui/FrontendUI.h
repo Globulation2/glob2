@@ -65,6 +65,9 @@ enum class UIIcon
 	Rules,
 	Spinner,
 	Warning,
+	Search,
+	Upload,
+	Heart,
 	Count
 };
 IconRef uiIcon(UIIcon icon);

@@ -32,7 +32,7 @@ IconRef uiIcon(UIIcon icon)
 										 "lock",           "external-link", "download",
 										 "bolt",           "hash",       "door-exit",
 										 "player-play",    "adjustments-horizontal", "loader-2",
-										 "alert-triangle"};
+										 "alert-triangle", "search",   "upload",     "heart"};
 	static_assert(names.size() == static_cast<std::size_t>(UIIcon::Count));
 	const char *name = names.at(static_cast<std::size_t>(icon));
 	if (auto asset = assets[name].lock())

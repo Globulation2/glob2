@@ -25,4 +25,5 @@ class Application : public GAGCore::ApplicationHost::Loop
 	bool quitting = false;
 	void mainMenu();
 	void choose(int choice);
+	void openOnlineScreenForDevelopment();
 };

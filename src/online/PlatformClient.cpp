@@ -75,6 +75,8 @@ struct PlatformClient::RestCall
 	std::function<void(const Response &, int)> done;
 	bool bearer = false;
 	bool retried = false;
+	// Keep the response bytes (restRaw).
+	bool raw = false;
 	std::uint64_t epoch = 0;
 };
 
@@ -661,8 +663,15 @@ void PlatformClient::pumpRest()
 		{
 			const auto &http = call->fetch->response();
 			status = http.status;
-			Json body = http.body.empty() ? Json::object()
-										  : Json::parse(http.body, nullptr, false);
+			const std::string type = http.header("Content-Type");
+			const bool json = !call->raw || type.empty() || type.find("json") != std::string::npos;
+			Json body = http.body.empty() || !json ? Json::object()
+												   : Json::parse(http.body, nullptr, false);
+			if (call->raw)
+			{
+				response.body = http.body;
+				response.contentType = type;
+			}
 			if (status >= 200 && status < 300)
 			{
 				response.ok = true;
@@ -700,6 +709,49 @@ void PlatformClient::rest(HttpFetch::Method method, const std::string &path, Jso
 {
 	auto call = makeRest(method, path, body);
 	call->bearer = true;
+	call->done = [handler = std::move(handler)](const Response &response, int)
+	{
+		if (handler)
+			handler(response);
+	};
+	if (!running)
+	{
+		call->done(localError("cancelled", "The online client is not running."), 0);
+		return;
+	}
+	if (tokens.accessToken.empty())
+	{
+		if (signingIn || refreshing)
+		{
+			awaitingToken.push_back(std::move(call));
+			return;
+		}
+		call->done(localError("unauthenticated", "Not signed in."), 0);
+		return;
+	}
+	startRest(std::move(call));
+}
+
+void PlatformClient::restRaw(HttpFetch::Method method, const std::string &path, std::string body,
+							 const std::string &contentType, ResponseHandler handler,
+							 std::size_t responseLimit)
+{
+	std::string relative = path;
+	if (!instance.empty() && relative.rfind(instance + "/", 0) == 0)
+		relative = relative.substr(instance.size());
+	auto call = makeRest(method, relative, Json());
+	call->raw = true;
+	call->bearer = true;
+	call->request.responseLimit = responseLimit;
+	auto &headers = call->request.headers;
+	headers.erase(std::remove_if(headers.begin(), headers.end(),
+								 [](const auto &header)
+								 { return header.first == "Content-Type" || header.first == "Accept"; }),
+				  headers.end());
+	headers.emplace_back("Accept", "*/*");
+	call->request.body = std::move(body);
+	if (!call->request.body.empty() && !contentType.empty())
+		headers.emplace_back("Content-Type", contentType);
 	call->done = [handler = std::move(handler)](const Response &response, int)
 	{
 		if (handler)

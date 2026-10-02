@@ -42,6 +42,156 @@
       "type": "integer",
       "minimum": 0,
       "maximum": 12
+    },
+    "rated": {
+      "type": "boolean"
+    },
+    "backfilled": {
+      "type": "boolean"
+    },
+    "region": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{0,31}$",
+      "description": "Operator-chosen region id, e.g. \"eu-west\"."
+    },
+    "map": {
+      "type": "object",
+      "required": [
+        "generatorId"
+      ],
+      "properties": {
+        "generatorId": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "width": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "seats": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "slot",
+          "side",
+          "kind",
+          "displayName",
+          "response"
+        ],
+        "properties": {
+          "slot": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 11
+          },
+          "side": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "kind": {
+            "anyOf": [
+              {
+                "type": "string",
+                "const": "human"
+              },
+              {
+                "type": "string",
+                "const": "ai"
+              }
+            ]
+          },
+          "displayName": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "ai": {
+            "anyOf": [
+              {
+                "type": "string",
+                "const": "none"
+              },
+              {
+                "type": "string",
+                "const": "numbi"
+              },
+              {
+                "type": "string",
+                "const": "castor"
+              },
+              {
+                "type": "string",
+                "const": "warrush"
+              },
+              {
+                "type": "string",
+                "const": "econo"
+              },
+              {
+                "type": "string",
+                "const": "nicowar"
+              },
+              {
+                "type": "string",
+                "const": "cortex"
+              },
+              {
+                "type": "string",
+                "const": "maxima"
+              },
+              {
+                "type": "string",
+                "const": "cabino"
+              }
+            ],
+            "description": "AI implementation, by its stable CLI name (src/ai/AINames.cpp)."
+          },
+          "rating": {
+            "type": "number",
+            "description": "Displayed rating on the queue ladder."
+          },
+          "provisional": {
+            "type": "boolean"
+          },
+          "response": {
+            "anyOf": [
+              {
+                "type": "string",
+                "const": "pending"
+              },
+              {
+                "type": "string",
+                "const": "accepted"
+              },
+              {
+                "type": "string",
+                "const": "declined"
+              },
+              {
+                "type": "string",
+                "const": "timeout"
+              },
+              {
+                "type": "string",
+                "const": "not_required"
+              }
+            ]
+          },
+          "you": {
+            "type": "boolean",
+            "description": "The seat of the receiving client."
+          }
+        }
+      },
+      "maxItems": 12,
+      "description": "Who is in the proposal. With requiresAccept the event is sent again whenever someone answers."
     }
   }
 }

@@ -9,10 +9,17 @@ import {
   simVersionKey,
   type InviteInfo,
   type MapUpload,
+  type RelayRegionList,
   type RoomList,
   type SavedPlayer,
 } from '@glob2/protocol';
-import { MAP_CONTENT_TYPE, SAVE_CONTENT_TYPE, insertBlob, storedSimVersion } from '@glob2/worker';
+import {
+  MAP_CONTENT_TYPE,
+  SAVE_CONTENT_TYPE,
+  insertBlob,
+  relayRegions,
+  storedSimVersion,
+} from '@glob2/worker';
 import { supportedSimVersions } from '../app.ts';
 import { apiError } from '../errors.ts';
 import { WindowCounter } from '../http/validate.ts';
@@ -92,6 +99,14 @@ export async function playRoutes(
       createdAt: row.created_at.toISOString(),
     };
   }
+
+  // ------------------------------------------------------------------ relays
+
+  // Public: clients time these before queue.join and room.create (no account needed).
+  app.get('/api/v1/relays/regions', async (_request, reply): Promise<RelayRegionList> => {
+    reply.header('Cache-Control', 'no-store');
+    return { items: await relayRegions(db) };
+  });
 
   // ------------------------------------------------------------------ rooms
 

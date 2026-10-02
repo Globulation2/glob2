@@ -233,6 +233,21 @@
       "name": "alert-triangle",
       "upstream": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.48.0/icons/outline/alert-triangle.svg",
       "sha256": "fc82f02dc9702293cb8609a8aed3242c0fe5f5b3337d79d341aa9343b4526ad4"
+    },
+    {
+      "name": "search",
+      "upstream": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.48.0/icons/outline/search.svg",
+      "sha256": "e579b69a4b978f702908a48b1bef74d9ac73df4679cb1a6074c567bec2748c41"
+    },
+    {
+      "name": "upload",
+      "upstream": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.48.0/icons/outline/upload.svg",
+      "sha256": "b6d9fe0e24b1c889d1edba29268ba8e3759792a381b43fb9268f603caaea98f1"
+    },
+    {
+      "name": "heart",
+      "upstream": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.48.0/icons/outline/heart.svg",
+      "sha256": "f9f42a4d4ae0aca8f01dde4a7a255eff7af26ed0ee133b1458e9d3ff257464d6"
     }
   ]
 }

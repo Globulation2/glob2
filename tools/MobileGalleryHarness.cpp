@@ -51,6 +51,7 @@
 #include "PhoneEditor.h"
 #include "MapEditDialog.h"
 #include "ScriptEditorScreen.h"
+#include "OnlineScreenFixtures.h"
 #include <ScreenStack.h>
 #include <Toolkit.h>
 #include "gui/ConnectionOverlay.h"
@@ -319,6 +320,17 @@ struct MobileGallerySetup
 		screenShot(stack, "online-register", std::make_unique<YOGRegisterScreen>(client));
 		screenShot(stack, "map-upload",
 				   std::make_unique<YOGClientMapUploadScreen>(stack, client, "maps/balanced.map"));
+		// Online screens on canned data (tools/OnlineScreenFixtures.h).
+		screenShot(stack, "quick-match", OnlineScreenFixtures::quickMatch(stack, false));
+		screenShot(stack, "quick-match-searching", OnlineScreenFixtures::quickMatch(stack, true));
+		screenShot(stack, "match-found", OnlineScreenFixtures::matchFound(true));
+		screenShot(stack, "match-found-ai", OnlineScreenFixtures::matchFound(false));
+		screenShot(stack, "online-profile", OnlineScreenFixtures::profile(stack));
+		screenShot(stack, "online-maps", OnlineScreenFixtures::maps(stack, OnlineMapsScreen::Tab::Browse, ""));
+		screenShot(stack, "online-my-maps", OnlineScreenFixtures::maps(stack, OnlineMapsScreen::Tab::Mine, ""));
+		screenShot(stack, "map-share", OnlineScreenFixtures::share(0));
+		screenShot(stack, "map-share-checking", OnlineScreenFixtures::share(1));
+		screenShot(stack, "map-share-rejected", OnlineScreenFixtures::share(2));
 		screenShot(
 			stack, "confirmation",
 			std::make_unique<MessageScreen>("Save changes before leaving?",

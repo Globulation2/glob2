@@ -22,8 +22,13 @@ import {
   respondToProposal,
   type PlayFanout,
   type QueueNotification,
+  sendProposal,
+  updateTicket,
+  PgQueueNotifier,
 } from '@glob2/worker';
 import { apiError } from '../errors.ts';
+
+const queueNotifier = new PgQueueNotifier();
 import { WindowCounter } from '../http/validate.ts';
 import type { RealtimeConnection, MethodHandler } from '../realtime/connection.ts';
 import type { RealtimeHub } from '../realtime/hub.ts';
@@ -347,7 +352,50 @@ export class PlayRealtime {
         );
         if (outcome === 'not_found') throw apiError('not_found', 'No such proposal.');
         if (outcome === 'not_pending') throw apiError('conflict', 'The proposal is over.');
+        // Everyone in the prompt sees who has answered.
+        if (outcome === 'recorded') await sendProposal(this.db, queueNotifier, params.proposalId);
         return {};
+      },
+
+      'queue.update': async (connection, raw) => {
+        const params = raw as RealtimeParams<'queue.update'>;
+        const outcome = await updateTicket(
+          this.db,
+          connection.requireAccount().id,
+          params.ticketId,
+          params.allowAiOpponent,
+        );
+        if (outcome === 'not_found') throw apiError('not_found', 'No such queue ticket.');
+        if (outcome === 'not_waiting')
+          throw apiError('conflict', 'The ticket is no longer waiting.');
+        return {};
+      },
+
+      'match.rematch': async (connection, raw) => {
+        const params = raw as RealtimeParams<'match.rematch'>;
+        const account = connection.requireAccount();
+        const result = await rooms.rematch(
+          account,
+          this.requireSim(connection),
+          params.matchId,
+          params.regions,
+        );
+        if (result.created) {
+          for (const accountId of result.others) {
+            await this.options.hub.publish({
+              t: 'event',
+              to: { account: accountId },
+              event: 'match.rematchOffered',
+              data: {
+                matchId: params.matchId,
+                roomId: result.room.id,
+                code: result.room.code,
+                host: account.display_name,
+              },
+            });
+          }
+        }
+        return { room: result.room };
       },
 
       'match.reconnect': async (connection, raw) => {

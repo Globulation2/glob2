@@ -13,6 +13,7 @@
 
 #include <SDL.h>
 #include <memory>
+#include <vector>
 
 #ifdef __ANDROID__
 #include <jni.h>
@@ -37,6 +38,11 @@ struct Owned
 	std::unique_ptr<Services> view;
 };
 Owned *owned = nullptr;
+std::vector<std::function<void()>> &hooks()
+{
+	static std::vector<std::function<void()>> value;
+	return value;
+}
 Uint32 lastPlatformPoll = 0;
 
 #ifdef __ANDROID__
@@ -118,8 +124,16 @@ void pump()
 {
 	pollPlatformLinks();
 	pumpLingeringRelayConnections();
-	if (owned)
-		owned->client->update();
+	if (!owned)
+		return;
+	owned->client->update();
+	for (auto &hook : hooks())
+		hook();
+}
+
+void addPumpHook(std::function<void()> hook)
+{
+	hooks().push_back(std::move(hook));
 }
 
 bool acceptDroppedText(const std::string &text)
