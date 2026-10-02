@@ -330,8 +330,12 @@ function OwnerTools({ detail, reload }: { detail: MapDetailDoc; reload: () => vo
       >
         <h3>New version</h3>
         <label className="field">
-          Map file (.map)
-          <input type="file" accept=".map,.gz" onChange={(e) => setFile(e.target.files?.[0])} />
+          Map file (.map or .map.gz)
+          <input
+            type="file"
+            accept=".map,.gz,.map.gz"
+            onChange={(e) => setFile(e.target.files?.[0])}
+          />
         </label>
         <label className="field">
           What changed
