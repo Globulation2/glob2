@@ -828,6 +828,24 @@ also remains the headless default and the equivalence reference.
 - `SceneBuffer<T>` (`src/scene/SceneBuffer.h`) hands Scenes between the threads without
   either waiting for the other.
 
+### Smooth unit motion
+
+The experimental **Smooth unit motion** graphics setting (`Settings::unitInterpolation`,
+off by default) draws units between ticks, so threaded play at display rate uses all
+32 animation frames per direction instead of repeating one pose per tick.
+
+- A unit's drawn position and animation frame follow `delta`, which the simulation
+  advances by `SceneUnit::stepSpeed` each tick. Each frame, `GameGUI::drawAll` sets
+  `MapRenderState::unitMotion` to the elapsed fraction of the tick interval since the
+  Scene's tick (`Scene::tickTime`, `Scene::tickInterval`; `src/render/UnitMotion.h`).
+  Unit drawing, path lines, off-screen markers and worker circles add that fraction of
+  `stepSpeed` to `delta`, stopping at the end of the current action.
+- Motion is 0 when the setting is off, when the game is paused, and when the simulation
+  runs uncapped. At 0, drawing is identical to drawing the ticked state; keep it that way
+  so captures with the setting off stay comparable.
+- A unit that turns or stops at the next tick can jump back by at most one tick of motion.
+  Serial execution draws right after each tick, so the setting has almost no effect there.
+
 ## Software rendering architecture and profiling
 
 `GraphicContext` remains the drawing facade and retains existing capability queries.

@@ -876,7 +876,10 @@ bool Engine::advanceSession(Uint64 now, const std::function<void()>& clientWork,
             gui.isRunning = false;
         gatherAndAdvanceOrders(st.wasReadyLastTick);
         readyNow = net->allOrdersReceived();
+        const Uint32 tickBefore = gui.game.stepCounter;
         executeOrdersAndStep(readyNow);
+        if (gui.game.stepCounter != tickBefore)
+            gui.recordTick(SDL_GetTicks64(), Uint32(st.speed));
     }
     if (globalContainer->automaticEndingGame && (int)gui.game.stepCounter == sessionEndingTarget) {
         gui.isRunning = false;
