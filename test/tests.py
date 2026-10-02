@@ -27,6 +27,7 @@ ENGINE_SUPPORT = [
 ENGINE_TESTS = [
     # This fixture selects SDL's dummy driver; isolate its client context from display cases.
     'ScreenExecutionHarness.cpp',
+    'CastorContinuationTest.cpp',
     ('ScriptCompatibilityTest.cpp', dict(cxxflags=['-fno-access-control'])),
     'ScriptIntegrationTest.cpp',
     'ScriptPresentationTest.cpp',
@@ -38,6 +39,7 @@ ENGINE_TESTS = [
     'BuildingGradientInvalidationHarness.cpp',
     'FetchApportionmentHarness.cpp',
     'GameGUISelectionHarness.cpp',
+    'SceneExtractTest.cpp',
     ('ClientChannelsTest.cpp', dict(cxxflags=['-fno-access-control'])),
     'HiringBucketHarness.cpp',
     'HungryDefeatHarness.cpp',

@@ -1066,10 +1066,10 @@ one-local-player header and seed they need. Design and numbers:
 See the [scripting guide](../docs/development/javascript.md) and
 [API reference](../docs/development/javascript-api.md) for the public boundary.
 
-Current saves use format 125, preserving released format 124's experiment-header
+Current saves use format 126, preserving released format 124's experiment-header
 layout through version-gated loading. Formats 58–124 receive scripting identities
 on load; format 125 validates its stored identities and complete generation tables.
-The minimum save version remains 58, the network protocol is 48, and the replay
+The minimum save version remains 58, the network protocol is 49, and the replay
 minimum remains 123. Draft JavaScript fixtures use format 125; released historical
 fixtures remain unchanged.
 
@@ -1175,3 +1175,20 @@ for fixture capture, paired CPU measurements and diagnostic overrides. The
 `SoftwareRenderer` suite checks raster sampling, ordering, opacity revisions and
 terrain-cache correctness; `PortableRenderer`, `WindowResize`, `MapRenderResize` and
 `HighResolutionIntegration` cover the shared facade and window lifecycle.
+
+## Castor saved-game continuation
+
+`CastorContinuationTest.cpp` compares emitted order bytes, per-tick simulation
+checksums and RNG state across saves during boot, map computation and active
+colony management. It also checks binary/text snapshot round trips and the
+historical timer-only Castor AI formats (versions 1 and 2).
+
+```sh
+python3 test/run_tests.py --filter 'CastorContinuation/*'
+```
+
+Save format 126 writes Castor AI format 3, preserving project order, boot progress,
+strategy, control timers and map-cache history. Older saves remain readable with
+their historical restart behavior; omitted state cannot be recovered from them.
+New games retain the existing decision sequence. This save change does not raise
+the replay acceptance floor.

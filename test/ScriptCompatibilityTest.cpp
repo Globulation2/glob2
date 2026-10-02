@@ -164,7 +164,7 @@ TEST_CASE("JavaScript pass retains released replay and acceptance boundaries" *
 	options.loadStrings = true;
 	glob2test::HeadlessGlobals globals(options);
 	CHECK(REPLAY_MINIMUM_VERSION_MINOR == 123);
-	CHECK(VERSION_MINOR == 125);
+	CHECK(VERSION_MINOR == 126);
 	CHECK(FILE_FORMAT_VERSION_JAVASCRIPT == 125);
 	CHECK(FILE_FORMAT_VERSION_EXPERIMENTS == 124);
 	ReplayReader released;
@@ -185,7 +185,7 @@ TEST_CASE("JavaScript pass retains released replay and acceptance boundaries" *
 			new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size()));
 		input->seekFromStart(0);
 		ReplayReader reader;
-		CHECK(reader.loadReplay(input, false) == (version >= 123 && version <= 125));
+		CHECK(reader.loadReplay(input, false) == (version >= REPLAY_MINIMUM_VERSION_MINOR && version <= VERSION_MINOR));
 	}
 }
 
@@ -284,7 +284,7 @@ TEST_CASE("JavaScript upgrade retains genuine master124 experiments and continua
 			game.checkSum(&world, &buildings, &units);
 			REQUIRE(!world.empty());
 			// MapHeader includes the on-disk format in its checksum. Its sole
-			// field here is excluded for the 124 -> 125 comparison; retain all
+			// field here is excluded for the 124 -> current comparison; retain all
 			// remaining world, team, player, map and entity checksum fields.
 			world.erase(world.begin());
 			records << game.stepCounter;
@@ -309,11 +309,11 @@ TEST_CASE("JavaScript upgrade retains genuine master124 experiments and continua
 	upgradedInput.seekFromStart(0);
 	GameGUI upgraded;
 	REQUIRE(upgraded.game.load(&upgradedInput));
-	CHECK(upgraded.game.mapHeader.getVersionMinor() == FILE_FORMAT_VERSION_JAVASCRIPT);
+	CHECK(upgraded.game.mapHeader.getVersionMinor() == VERSION_MINOR);
 	CHECK(upgraded.game.gameHeader.getExperiments() == legacy.game.gameHeader.getExperiments());
 	CHECK(upgraded.game.scriptGenerations == identities);
 	checkIdentities(upgraded.game);
-	const auto upgradedTrace = continueGame(upgraded.game, "master125-world-fields.value");
+	const auto upgradedTrace = continueGame(upgraded.game, "upgraded-world-fields.value");
 	CHECK(upgradedTrace == legacyTrace);
 	CHECK(upgraded.game.scriptGenerations == legacy.game.scriptGenerations);
 }

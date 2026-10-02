@@ -33,13 +33,13 @@ public:
 	void compute(Game& game, OverlayType type, int localteam);
 
 	///Gets the value of the overlay for a given position
-	Uint32 getValue(int x, int y);
+	Uint32 getValue(int x, int y) const;
 
 	///Gets the maximum value of overlay
-	Uint32 getMaximum();
+	Uint32 getMaximum() const;
 	
 	///Returns the last computed overlay type
-	OverlayType getOverlayType();
+	OverlayType getOverlayType() const;
 
 	///The colour an overlay is drawn in (its alpha scales with the value)
 	static GAGCore::Color colorOf(OverlayType type)
