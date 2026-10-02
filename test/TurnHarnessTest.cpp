@@ -233,6 +233,7 @@ struct Match
 {
 	SimNetwork net;
 	std::vector<std::unique_ptr<SimClient>> clients;
+
 	std::uint8_t bundleInterval;
 
 	Match(const Links& links, std::vector<int> aiSeats = {}, SequencerConfig config = {})
