@@ -8,6 +8,7 @@ maps, save continuation (RNG restore) and a legacy save fixture.
     python3 test/check_sim_thread.py CANDIDATE --baseline BASELINE [--output DIR]
 """
 import argparse
+import os
 import tempfile
 from pathlib import Path
 
@@ -74,6 +75,8 @@ def main():
     parser.add_argument('binary', type=Path)
     parser.add_argument('--baseline', type=Path, required=True)
     parser.add_argument('--candidate-args', default='', help='extra engine arguments for the candidate')
+    parser.add_argument('--candidate-env', action='append', default=[],
+                        help='KEY=VALUE environment for the candidate only (e.g. GLOB2_SIM_THREAD=1)')
     parser.add_argument('--output', type=Path)
     args = parser.parse_args()
     binary, baseline = args.binary.resolve(), args.baseline.resolve()
@@ -81,11 +84,21 @@ def main():
     work = Path(temporary.name) if temporary else args.output.resolve()
     work.mkdir(parents=True, exist_ok=True)
     extra = args.candidate_args.split()
+    candidate_env = dict(item.split('=', 1) for item in args.candidate_env)
     failures = []
     def check(label, scenario):
         reference = run(baseline, scenario, [], work / f'{label}-baseline')
         repeat = run(baseline, scenario, [], work / f'{label}-baseline-repeat')
-        candidate = run(binary, scenario, extra, work / f'{label}-candidate')
+        saved = {k: os.environ.get(k) for k in candidate_env}
+        os.environ.update(candidate_env)
+        try:
+            candidate = run(binary, scenario, extra, work / f'{label}-candidate')
+        finally:
+            for k, v in saved.items():
+                if v is None:
+                    os.environ.pop(k, None)
+                else:
+                    os.environ[k] = v
         problems, noise = compare(reference, repeat, candidate)
         if problems:
             a = detailed_ticks(read(reference, 'game.replay.checksums'))
