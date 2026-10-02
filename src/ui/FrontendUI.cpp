@@ -59,6 +59,10 @@ Element compactButton(const std::string &key, const std::string &label, UIIcon i
 	return width(p.pt(48), button(key, "", std::move(action), options));
 }
 
+// Every touch theme shares one text size, so menus, dialogs over gameplay and
+// the end-of-game sheet read alike; the player's preference multiplies it.
+constexpr double touchTextBase = 1.15;
+
 const Theme &frontendTheme()
 {
 	static const Theme theme = []
@@ -66,6 +70,7 @@ const Theme &frontendTheme()
 		Theme t;
 		t.fonts = {"front-title", "menu", "standard", "little", "front-caption"};
 		t.touchFonts = {"front-title", "menu", "frontend-body", "frontend-support", "front-caption"};
+		t.touchTextScale = touchTextBase;
 		return t;
 	}();
 	return theme;
@@ -78,6 +83,7 @@ const Theme &inGameTheme()
 		Theme t;
 		t.fonts = {"menu", "menu", "standard", "little", "little"};
 		t.touchFonts = {"menu", "menu", "frontend-body", "frontend-support", "frontend-support"};
+		t.touchTextScale = touchTextBase;
 		// The dark in-match look of the touch HUD, so dialogs sit on the map without
 		// borrowing the frontend's paper.
 		auto &c = t.palette;
@@ -158,19 +164,8 @@ std::string tr(const std::string &key)
 	return GAGCore::Toolkit::getStringTable()->getString(key);
 }
 
-double frontendTextScale(const Presentation &presentation)
-{
-	const int percent = globalContainer ? globalContainer->settings.mobileDialogTextPercent : 100;
-	return (presentation.touch ? 1.15 : 1.0) * (percent > 0 ? percent : 100) / 100.0;
-}
-
 Screen::Screen() : UIScreen(frontendTheme()) {}
 Screen::~Screen() = default;
-
-double Screen::textScale(const Presentation &presentation) const
-{
-	return frontendTextScale(presentation);
-}
 
 void Screen::paintBackground(Canvas &canvas)
 {
@@ -189,19 +184,9 @@ void Screen::beforePaint()
 
 Dialog::Dialog() : UIDialog(frontendTheme()) {}
 
-double Dialog::textScale(const Presentation &presentation) const
-{
-	return frontendTextScale(presentation);
-}
-
 InGameDialog::InGameDialog()
 	: UIDialog(touchPresentation() ? inGameTheme() : classicInGameTheme()), classicLook(!touchPresentation())
 {
-}
-
-double InGameDialog::textScale(const Presentation &presentation) const
-{
-	return frontendTextScale(presentation);
 }
 
 void InGameDialog::paintPanel(Canvas &canvas, Rect panel)
@@ -296,8 +281,8 @@ Element menu(const std::string &titleText, std::vector<MenuAction> items, const 
 		std::vector<Element> body;
 		if (!titleText.empty())
 			body.push_back(paragraph(titleText, {FontRole::Heading, false, TextAlign::Center}));
-		body.push_back(column(std::move(parts), {p.pt(20)}));
-		body.push_back(expandedSpacer());
+		// Scrolls when larger text makes the buttons outgrow the fixed panel.
+		body.push_back(expanded(scroll("menu/items", column(std::move(parts), {p.pt(20)}))));
 		if (escape)
 			body.push_back(escape);
 		CardOptions cardOptions;
@@ -453,7 +438,8 @@ Element mapPreview(const std::string &key, ::MapPreview &preview, double points,
 						  [widget](Canvas &c, Rect r, const Frame &)
 						  {
 							  widget->setScreenRectangle(r.x, r.y, r.w, r.h);
-							  widget->paint(c.surface());
+							  if (auto *surface = c.surface()) // null on a recording canvas
+								  widget->paint(surface);
 						  },
 						  options);
 	if (flexible)

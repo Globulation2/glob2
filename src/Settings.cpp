@@ -47,7 +47,7 @@ Settings::Settings()
 	mute = 0;
 	rememberUnit = 1;
 	gameSpeed = GAME_SPEED_NORMAL;
-    mobileDialogTextPercent = 100;
+    textSizePercent = 100;
 	oneFingerZoomDirection = ONE_FINGER_ZOOM_PLATFORM;
 	thumbSide = THUMB_RIGHT;
 	tempUnit = 1;
@@ -100,6 +100,12 @@ void Settings::setGraphicsDetail(bool full)
 
 std::string Settings::getUsername() { return username; }
 void Settings::setUsername(std::string s) { username.assign(s, 0, BasePlayer::MAX_NAME_LENGTH); }
+
+void Settings::setTextSizePercent(int percent)
+{
+	textSizePercent = std::clamp(percent, 100, 150);
+	GAGCore::userTextScale = textSizePercent / 100.0;
+}
 std::string Settings::getPasswd() { return password; }
 void Settings::setPasswd(std::string s) { password = s; }
 
@@ -171,8 +177,8 @@ void Settings::load(std::string filename)
 		if (parsed.find("experiments") != parsed.end())
 			experiments = ExperimentSet::fromText(parsed["experiments"]);
 		READ_PARSED_INT(gameSpeed);
-        READ_PARSED_INT(mobileDialogTextPercent);
-        mobileDialogTextPercent=std::clamp(mobileDialogTextPercent,100,150);
+        READ_PARSED_INT(textSizePercent);
+        setTextSizePercent(textSizePercent);
         READ_PARSED_INT(touchScrollMomentum);
         READ_PARSED_INT(touchScrollBounce);
         READ_PARSED_INT(mapScrollMomentum);
@@ -262,7 +268,7 @@ bool Settings::save(std::string filename)
 		Utilities::streamprintf(stream, "autosaveGames=%d\n", autosaveGames);
 		Utilities::streamprintf(stream, "experiments=%s\n", experiments.toText().c_str());
 		Utilities::streamprintf(stream, "gameSpeed=%d\n", gameSpeed);
-        Utilities::streamprintf(stream,"mobileDialogTextPercent=%d\n",mobileDialogTextPercent);
+        Utilities::streamprintf(stream,"textSizePercent=%d\n",textSizePercent);
         Utilities::streamprintf(stream,"touchScrollMomentum=%d\n",touchScrollMomentum);
         Utilities::streamprintf(stream,"touchScrollBounce=%d\n",touchScrollBounce);
         Utilities::streamprintf(stream,"mapScrollMomentum=%d\n",mapScrollMomentum);

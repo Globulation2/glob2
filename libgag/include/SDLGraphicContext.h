@@ -478,6 +478,9 @@ namespace GAGCore
         bool isResponsiveViewport() const { return responsiveViewport; }
         bool hasPortableRenderer() const { return bool(renderer) && !nativeSoftware; }
         double logicalUnitsPerPoint() const;
+        //! Logical pixels per authored font pixel for text a touch painter sizes in
+        //! points: logicalUnitsPerPoint() times the player's text-size preference.
+        double textUnitsPerPoint() const;
         void setUITransform(float scale=1, float x=0, float y=0, const SDL_Rect* bounds=nullptr);
         Uint32 windowID() const { return SDL_GetWindowID(window); }
 #ifdef GLOB2_WEBGL2
