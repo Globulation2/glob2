@@ -262,7 +262,10 @@ the report replaces the abort, and verification and ratings proceed as usual.
 
 - It sets the match's status (`ended`), end reason, final tick, desync flag and end
   time, and keeps the report as `end_report`.
-- For each seat it sets the disconnect count and quit tick.
+- For each seat it sets the disconnect count and quit tick, and stores the seat's
+  entry of `network` (the relay's `RelayNetworkSummary`) in
+  `match_participants.network` (migration 0009). A `network` that does not
+  validate is dropped with a warning; it never makes the report fail.
 - When the reason is `abandoned`, every seat with a quit tick gets the outcome
   `abandoned`.
 - It reopens the room and NOTIFYs `match_updates`, so participants get

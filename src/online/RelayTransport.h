@@ -58,6 +58,9 @@ namespace Online
 		void close() override;
 		bool send(const std::vector<std::uint8_t>& payload) override;
 		bool receive(std::vector<std::uint8_t>& payload) override;
+		/// Runs the connection's pending I/O now, so a frame queued by send() is written
+		/// without waiting for the next receive() or state() poll.
+		void flush() override;
 
 		/// The last transport error, for diagnostics.
 		std::string error() const;

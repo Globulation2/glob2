@@ -12,6 +12,8 @@
 #include <string>
 #include <vector>
 
+#include <nlohmann/json.hpp>
+
 #include "MatchRecord.h"
 #include "TicketVerifier.h"
 
@@ -53,6 +55,9 @@ namespace Relay
 		std::int64_t startedAt = 0; ///< Unix seconds
 		std::int64_t endedAt = 0;
 		EndReason reason = EndReason::Abandoned;
+		/// RelayNetworkSummary v1 (TurnSequencer::networkSummary()), sent as the optional
+		/// `network` member; null leaves it out.
+		nlohmann::json network;
 	};
 
 	/// Builds RelayMatchEnded from the finished record and its serialized bytes.

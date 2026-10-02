@@ -20,6 +20,7 @@
 
 #include "MatchRecord.h"
 #include "TurnMessages.h"
+#include "TurnTelemetry.h"
 
 namespace Turn
 {
@@ -79,11 +80,21 @@ namespace Turn
 		}
 		/// The peer's transport closed.
 		void onDisconnect(PeerId peer, std::uint64_t nowMicros);
+		/// A transport round trip the host measured on the peer's connection (the online
+		/// relay's WebSocket ping). Telemetry only: it changes nothing the sequencer does.
+		void transportRoundTrip(PeerId peer, std::uint64_t micros);
 		/// Advances the clock: grace expiry, bundles, arbitration timeouts, presence.
 		void update(std::uint64_t nowMicros);
 
 		/// The tick in progress at the given time.
 		std::uint32_t relayTick(std::uint64_t nowMicros) const;
+		/// When the next live bundle is due. A host that calls update() at this time
+		/// (rather than on a coarse timer) sends every bundle on its tick boundary, so
+		/// its timer adds no jitter to the clients' buffers.
+		std::uint64_t nextBundleMicros() const
+		{
+			return start + ticksToMicros(sentHorizon + config.bundleInterval - 1, config.tickRateMilliHz);
+		}
 		/// Every tick below this has been broadcast.
 		std::uint32_t horizon() const { return sentHorizon; }
 		/// Broadcast turns without voice, sorted by (tick, seat).
@@ -97,7 +108,18 @@ namespace Turn
 		bool gameDecided() const { return decided; }
 		std::optional<std::uint32_t> agreedChecksum(std::uint32_t tick) const;
 		const Stats& stats() const { return counters; }
+		/// Network telemetry of this match (docs/development/network-telemetry.md).
+		const SequencerTelemetry& telemetry() const { return net; }
+		/// The per-seat network summary (RelayNetworkSummary v1) so far.
+		nlohmann::json networkSummary() const;
 		std::uint32_t humanSeats() const { return humanMask; }
+
+		/// Optional latency probes for tests and diagnostics; unset by default. Called
+		/// when a client's order is given a tick (with the relay tick at arrival), and
+		/// when a live bundle raises the horizon.
+		std::function<void(std::uint8_t seat, std::uint32_t clientSequence, std::uint32_t tick, std::uint32_t relayTick)>
+			onSequenced;
+		std::function<void(std::uint32_t fromTick, std::uint32_t horizon)> onEmitted;
 
 		/// Flushes pending turns into a final bundle and stops accepting play. Called
 		/// automatically once every seat has left; a host shutting down early calls it
@@ -148,7 +170,8 @@ namespace Turn
 		void endIfDecided(std::uint64_t now);
 		void emitUpTo(std::uint32_t newHorizon);
 		void sendLog(PeerId peer, std::uint32_t fromTick);
-		void arbitrate(std::uint32_t tick);
+		void arbitrate(std::uint32_t tick, bool timedOut = false);
+		void notePending();
 		void tellRejoin(std::uint8_t seat, std::uint32_t tick);
 		void flag(std::uint32_t tick, std::uint32_t seatMask);
 		bool expectedReporter(const Seat& s) const;
@@ -181,5 +204,7 @@ namespace Turn
 		bool incomplete = false;
 		bool decided = false; ///< a client sent Quit(GameFinished)
 		Stats counters;
+		SequencerTelemetry net;
+		std::uint64_t pendingEntries = 0, pendingTotalBytes = 0;
 	};
 }

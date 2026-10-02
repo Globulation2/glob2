@@ -182,5 +182,43 @@
         }
       ]
     }
+  ],
+  "network": [
+    {
+      "seat": 0,
+      "quality": "good",
+      "rttMs": {
+        "p50": 41,
+        "p95": 52
+      },
+      "lagMs": {
+        "p50": 280,
+        "p95": 360
+      },
+      "disconnects": 0,
+      "offlineMs": 0,
+      "ordersSequenced": 812,
+      "ordersDeferred": 9,
+      "rejoins": 0,
+      "leftBy": "quit"
+    },
+    {
+      "seat": 1,
+      "quality": "poor",
+      "rttMs": {
+        "p50": 115,
+        "p95": 242
+      },
+      "lagMs": {
+        "p50": 400,
+        "p95": 760
+      },
+      "disconnects": 1,
+      "offlineMs": 6230,
+      "ordersSequenced": 640,
+      "ordersDeferred": 31,
+      "rejoins": 1,
+      "leftBy": "quit"
+    }
   ]
 }

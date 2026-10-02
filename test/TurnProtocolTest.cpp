@@ -351,9 +351,27 @@ TEST_SUITE("TurnMessages")
 
 TEST_SUITE("TurnSequencer")
 {
-	TEST_CASE("bundles every two ticks from match start, empty or not")
+	TEST_CASE("bundles every tick by default, empty or not")
 	{
 		RelayFixture f(0b1);
+		f.join(1, 0);
+		f.out.inbox.clear();
+		for (std::uint32_t tick = 0; tick < 4; ++tick)
+		{
+			f.atTick(tick);
+			auto bundles = f.out.take<TurnBundle>(1, MSG_TURN_BUNDLE);
+			REQUIRE(bundles.size() == 1);
+			CHECK(bundles[0]->fromTick == tick);
+			CHECK(bundles[0]->horizonTick == tick + 1);
+			CHECK(f.relay.nextBundleMicros() == 1000000 + (tick + 1) * TICK);
+		}
+	}
+
+	TEST_CASE("bundles every two ticks from match start, empty or not")
+	{
+		SequencerConfig config;
+		config.bundleInterval = 2;
+		RelayFixture f(0b1, config);
 		f.join(1, 0);
 		f.out.inbox.clear();
 		f.atTick(0);
@@ -378,6 +396,27 @@ TEST_SUITE("TurnSequencer")
 		CHECK(gap[0]->fromTick == 4);
 		CHECK(gap[0]->horizonTick == 21);
 		CHECK(f.relay.horizon() == 21);
+	}
+
+	TEST_CASE("an order takes the earliest tick not yet broadcast, whatever the relay clock")
+	{
+		SequencerConfig config;
+		config.bundleInterval = 2;
+		RelayFixture f(0b1, config);
+		f.join(1, 0);
+		f.atTick(9);
+		REQUIRE(f.relay.horizon() == 10);
+		f.atTick(10);
+		REQUIRE(f.relay.horizon() == 10); // the next bundle is due at relay tick 11
+		CHECK(f.relay.nextBundleMicros() == 1000000 + 11 * TICK);
+		f.submit(1, 1, order(20, 4)); // arrives during relay tick 10
+		f.submit(1, 2, order(20, 5));
+		f.out.inbox[1].clear();
+		f.atTick(11);
+		const auto entries = f.out.bundleEntries(1);
+		REQUIRE(entries.size() == 2);
+		CHECK(entries[0].tick == 10); // not 11: no client may run tick 10 yet
+		CHECK(entries[1].tick == 11);
 	}
 
 	TEST_CASE("orders execute the tick after arrival, one per seat per tick")
@@ -533,6 +572,7 @@ TEST_SUITE("TurnSequencer")
 		// Seat 2 never connects: it is quit when the grace period from match start ends.
 		f.at(9 * 1000 * MS);
 		CHECK(f.relay.presence(2) == PresenceState::NotConnected);
+		const std::uint32_t firstUnsent = f.relay.horizon();
 		f.at(10 * 1000 * MS);
 		CHECK(f.relay.presence(2) == PresenceState::Left);
 		// Seat 1 drops, returns within grace, drops again and stays away.
@@ -555,7 +595,7 @@ TEST_SUITE("TurnSequencer")
 				quits.push_back(e);
 		REQUIRE(quits.size() == 2);
 		CHECK(quits[0].seat == 2);
-		CHECK(quits[0].tick == 251); // the tick after expiry at relay tick 250
+		CHECK(quits[0].tick == firstUnsent); // the first tick not yet broadcast at expiry
 		CHECK(quits[1].seat == 1);
 		std::uint8_t expected[5];
 		encodePlayerQuitOrder(1, expected);
@@ -798,26 +838,52 @@ TEST_SUITE("TurnJitterBuffer")
 	TEST_CASE("the target rises at once and falls one tick per hold period")
 	{
 		JitterBuffer b;
-		CHECK(b.requiredTicks(0, TICK) == 2);
-		CHECK(b.requiredTicks(1, TICK) == 3);
-		CHECK(b.requiredTicks(130 * MS, TICK) == 6);
+		// Jitter within the 10 ms tolerance needs no buffer; above it, the jitter in
+		// whole ticks plus one safety tick.
+		CHECK(b.requiredTicks(0, TICK) == 0);
+		CHECK(b.requiredTicks(10 * MS, TICK) == 0);
+		CHECK(b.requiredTicks(10 * MS + 1, TICK) == 2);
+		CHECK(b.requiredTicks(40 * MS, TICK) == 2);
+		CHECK(b.requiredTicks(41 * MS, TICK) == 3);
+		CHECK(b.requiredTicks(130 * MS, TICK) == 5);
 		CHECK(b.requiredTicks(100000 * MS, TICK) == 50);
 		std::uint64_t t = 0;
-		CHECK(b.update(0, TICK, t) == 2);
-		CHECK(b.update(130 * MS, TICK, t += 100 * MS) == 6);
+		CHECK(b.update(0, TICK, t) == 0);
+		CHECK(b.update(130 * MS, TICK, t += 100 * MS) == 5);
 		// Jitter vanishes: hold, then one tick per 5 s.
-		CHECK(b.update(0, TICK, t += 100 * MS) == 6);
-		CHECK(b.update(0, TICK, t += 4900 * MS) == 6);
 		CHECK(b.update(0, TICK, t += 100 * MS) == 5);
-		CHECK(b.update(0, TICK, t += 4999 * MS) == 5);
-		CHECK(b.update(0, TICK, t += 1 * MS) == 4);
+		CHECK(b.update(0, TICK, t += 4900 * MS) == 5);
+		CHECK(b.update(0, TICK, t += 100 * MS) == 4);
+		CHECK(b.update(0, TICK, t += 4999 * MS) == 4);
+		CHECK(b.update(0, TICK, t += 1 * MS) == 3);
 		// A burst during the hold restarts it.
-		CHECK(b.update(50 * MS, TICK, t += 4 * 1000 * MS) == 4);
-		CHECK(b.update(0, TICK, t += 4 * 1000 * MS) == 4);
-		CHECK(b.update(0, TICK, t += 1000 * MS) == 4);
-		CHECK(b.update(0, TICK, t += 4000 * MS) == 3);
-		CHECK(b.update(0, TICK, t += 5000 * MS) == 2);
-		CHECK(b.update(0, TICK, t += 50000 * MS) == 2);
+		CHECK(b.update(70 * MS, TICK, t += 4 * 1000 * MS) == 3);
+		CHECK(b.update(0, TICK, t += 4 * 1000 * MS) == 3);
+		CHECK(b.update(0, TICK, t += 1000 * MS) == 3);
+		CHECK(b.update(0, TICK, t += 4000 * MS) == 2);
+		CHECK(b.update(0, TICK, t += 5000 * MS) == 1);
+		CHECK(b.update(0, TICK, t += 5000 * MS) == 0);
+		CHECK(b.update(0, TICK, t += 50000 * MS) == 0);
+	}
+
+	TEST_CASE("with bundles every few ticks the controller holds the sawtooth's mean")
+	{
+		// Two-tick bundles: sampled after each tick the level alternates L+1, L.
+		DelayController d;
+		d.setBundleInterval(2);
+		for (int i = 0; i < 400; ++i)
+			d.onTick(i % 2, 0);
+		CHECK(d.rateMultiplier(0) == 1.0);
+		for (int i = 0; i < 400; ++i)
+			d.onTick(2 + i % 2, 0);
+		CHECK(d.rateMultiplier(0) == doctest::Approx(1.04));
+		DelayController one; // one-tick bundles: the level itself
+		for (int i = 0; i < 400; ++i)
+			one.onTick(0, 0);
+		CHECK(one.rateMultiplier(0) == 1.0);
+		for (int i = 0; i < 400; ++i)
+			one.onTick(1, 0);
+		CHECK(one.rateMultiplier(0) == doctest::Approx(1.02));
 	}
 
 	TEST_CASE("the delay controller nudges by at most five percent and catches up")

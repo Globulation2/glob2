@@ -2,7 +2,7 @@
 // Component tests of the web app's key pages with a stubbed API: routing of
 // the deep links the game uses, leaderboard, profile, match page (charts and
 // Watch in browser), sign-in state and the moderation guard.
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
 import { App } from '../src/App.tsx';
 import { LineChart } from '../src/components/LineChart.tsx';
@@ -204,11 +204,36 @@ const routes: Record<string, unknown> = {
     verificationDetail: {
       orderRejections: [{ seat: 0, rejected: 2, stale: 0, reasons: { foreign_unit: 2 } }],
     },
+    network: [
+      {
+        seat: 0,
+        quality: 'fair',
+        rttMs: { p50: 84, p95: 231 },
+        lagMs: { p50: 280, p95: 440 },
+        disconnects: 1,
+        offlineMs: 4200,
+        ordersSequenced: 412,
+        ordersDeferred: 6,
+        rejoins: 0,
+      },
+    ],
   },
   '/api/v1/matches': { items: [summary] },
 };
 
 let me: unknown;
+
+// The app loads the schema library and the less visited pages on demand;
+// load them once up front so each test sees the app as a warm browser would.
+beforeAll(async () => {
+  await Promise.all([
+    import('@glob2/protocol'),
+    import('../src/admin/Admin.tsx'),
+    import('../src/pages/Maps.tsx'),
+    import('../src/pages/Match.tsx'),
+    import('../src/pages/Player.tsx'),
+  ]);
+});
 
 beforeEach(() => {
   me = undefined;
@@ -292,6 +317,15 @@ describe('pages', () => {
     expect(screen.getAllByTestId('participant')).toHaveLength(2);
     expect(within(screen.getByTestId('timelines')).getAllByRole('img')).toHaveLength(3);
     expect(screen.getByText('refused orders')).toBeTruthy();
+    // Connection quality per human player, from the relay's report.
+    const network = screen.getAllByTestId('network-row');
+    expect(network).toHaveLength(1);
+    expect(network[0]!.textContent).toContain('Alice');
+    expect(within(network[0]!).getByText('Fair').className).toBe('badge warn');
+    expect(network[0]!.textContent).toContain('84 ms');
+    expect(network[0]!.textContent).toContain('231');
+    expect(network[0]!.textContent).toContain('4.2 s');
+    expect(network[0]!.textContent).toContain('6 / 412');
     expect(screen.getByTestId('watch').getAttribute('href')).toBe(
       watchUrl(`http://localhost/api/v1/matches/${MATCH}/artifacts/replay`),
     );

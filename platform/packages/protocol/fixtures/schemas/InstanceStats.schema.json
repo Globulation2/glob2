@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:InstanceStats",
+  "title": "InstanceStats",
+  "type": "object",
+  "required": [
+    "playersOnline",
+    "activeWindowMinutes",
+    "liveMatches",
+    "matchesToday",
+    "generatedAt"
+  ],
+  "properties": {
+    "playersOnline": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Accounts connected in the last activeWindowMinutes, in a room, or playing a match that has not ended."
+    },
+    "activeWindowMinutes": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "liveMatches": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Matches starting or running now."
+    },
+    "matchesToday": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Matches created in the last 24 hours, cancelled ones excluded."
+    },
+    "generatedAt": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+      "description": "RFC 3339 date-time."
+    }
+  },
+  "description": "GET /api/v1/stats."
+}

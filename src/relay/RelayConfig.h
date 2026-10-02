@@ -37,6 +37,8 @@ namespace Relay
 		// Matches
 		unsigned graceSeconds = 180;
 		unsigned drainTimeoutSeconds = 4 * 3600;
+		/// WebSocket ping interval for the per-seat round-trip telemetry; 0 disables.
+		unsigned rttPingMillis = 2000;
 
 		// Tickets
 		std::string jwksFile;  ///< static JWKS; disables fetching

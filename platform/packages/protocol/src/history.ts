@@ -11,6 +11,7 @@
 //   GET /api/v1/matches/{id}                                                       MatchDetail
 //   GET /api/v1/matches/{id}/artifacts/{record|replay|result}                      the file
 //   GET /api/v1/admin/matches?q=&status=&cursor=                                   MatchList (moderators)
+//   GET /api/v1/stats                                                              InstanceStats
 import { Type, type Static } from 'typebox';
 import { Open, SeatIndex, Timestamp, Uuid } from './common.ts';
 import { MatchSetup } from './matchSetup.ts';
@@ -180,6 +181,52 @@ export const MatchMapInfo = Open({
 });
 export type MatchMapInfo = Static<typeof MatchMapInfo>;
 
+const Millis = Type.Integer({ minimum: 0 });
+const Spread = Open({ p50: Millis, p95: Millis });
+
+/**
+ * One human player's connection in a match, condensed from the relay's network
+ * summary (RelayNetworkSummary v1, stored per participant). Times in milliseconds.
+ */
+export const ParticipantNetwork = Open(
+  {
+    seat: SeatIndex,
+    quality: Type.Union([Type.Literal('good'), Type.Literal('fair'), Type.Literal('poor')], {
+      description:
+        'A rough label from the numbers below (docs/development/network-telemetry.md, match page).',
+    }),
+    rttMs: Type.Optional(
+      Type.Union([Spread], {
+        description:
+          'Round trip to the relay (median and 95th percentile). Absent if not measured.',
+      }),
+    ),
+    lagMs: Type.Optional(
+      Type.Union([Spread], {
+        description:
+          'How far the player’s game ran behind the relay clock: input delay plus any stall.',
+      }),
+    ),
+    disconnects: Count,
+    offlineMs: Type.Integer({
+      minimum: 0,
+      description: 'Time disconnected and inside the reconnect grace period.',
+    }),
+    ordersSequenced: Count,
+    ordersDeferred: Type.Integer({
+      minimum: 0,
+      description: 'Orders placed later than requested (one order per player per tick).',
+    }),
+    rejoins: Type.Integer({
+      minimum: 0,
+      description: 'Times the relay told the game to reload after its state disagreed.',
+    }),
+    leftBy: Type.Optional(Type.Union([Type.Literal('quit'), Type.Literal('grace')])),
+  },
+  { description: 'Connection quality of one player in a match.' },
+);
+export type ParticipantNetwork = Static<typeof ParticipantNetwork>;
+
 export const MatchDetail = Open(
   {
     match: MatchSummary,
@@ -193,7 +240,34 @@ export const MatchDetail = Open(
         description: "Each human player's curve in this match next to their own recent average.",
       }),
     ),
+    network: Type.Optional(
+      Type.Array(ParticipantNetwork, {
+        description: 'Per human player, from the relay’s report; absent when the relay sent none.',
+      }),
+    ),
   },
   { description: 'GET /api/v1/matches/{id}.' },
 );
 export type MatchDetail = Static<typeof MatchDetail>;
+
+// ------------------------------------------------------------- live stats
+
+/** Activity numbers for the web app's home page; cached by the API for a short while. */
+export const InstanceStats = Open(
+  {
+    playersOnline: Type.Integer({
+      minimum: 0,
+      description:
+        'Accounts connected in the last activeWindowMinutes, in a room, or playing a match that has not ended.',
+    }),
+    activeWindowMinutes: Type.Integer({ minimum: 1 }),
+    liveMatches: Type.Integer({ minimum: 0, description: 'Matches starting or running now.' }),
+    matchesToday: Type.Integer({
+      minimum: 0,
+      description: 'Matches created in the last 24 hours, cancelled ones excluded.',
+    }),
+    generatedAt: Timestamp,
+  },
+  { description: 'GET /api/v1/stats.' },
+);
+export type InstanceStats = Static<typeof InstanceStats>;

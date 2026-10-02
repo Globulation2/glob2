@@ -37,6 +37,15 @@
       "pattern": "^(https|wss|http|ws)://[^\\s]+$",
       "maxLength": 2048
     },
+    "relayId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._-]{1,64}$",
+      "description": "The relay the match runs on, for network telemetry (ClientNetworkSummary)."
+    },
+    "relayRegion": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{0,31}$"
+    },
     "setup": {
       "type": "object",
       "required": [

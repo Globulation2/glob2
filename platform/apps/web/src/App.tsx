@@ -2,17 +2,27 @@
 // catalog and moderation. Client routes the game links to must stay stable:
 // /players/<id>, /matches/<id>, /maps/<id>, /leaderboard/<queueId>. Invite
 // links (/j/<code>) and sign-in (/signin) are server-rendered by the API.
-import { useEffect, type ReactNode } from 'react';
-import { Admin } from './admin/Admin.tsx';
-import { initial } from './format.ts';
-import { Home } from './pages/Home.tsx';
+import { Suspense, lazy, useEffect, useRef, type ReactNode } from 'react';
+import { ART, GLOB_ICON, GameArt, Wordmark, type ArtName } from './art.tsx';
+import { Avatar, Loading } from './components/common.tsx';
+import { DOWNLOAD_URL, Home } from './pages/Home.tsx';
 import { Leaderboard } from './pages/Leaderboard.tsx';
-import { MapPage, MapUpload, Maps } from './pages/Maps.tsx';
-import { Match } from './pages/Match.tsx';
 import { Matches } from './pages/Matches.tsx';
-import { Player } from './pages/Player.tsx';
 import { Link, RouterProvider, matchPath, useRouter } from './router.tsx';
 import { SessionProvider, isModerator, useSession } from './state.tsx';
+import { ThemeProvider, ThemeToggle } from './theme.tsx';
+
+// Pages most visitors never open load on demand.
+const Admin = lazy(() => import('./admin/Admin.tsx').then((m) => ({ default: m.Admin })));
+const Maps = lazy(() => import('./pages/Maps.tsx').then((m) => ({ default: m.Maps })));
+const MapPage = lazy(() => import('./pages/Maps.tsx').then((m) => ({ default: m.MapPage })));
+const MapUpload = lazy(() => import('./pages/Maps.tsx').then((m) => ({ default: m.MapUpload })));
+const Match = lazy(() => import('./pages/Match.tsx').then((m) => ({ default: m.Match })));
+const Player = lazy(() => import('./pages/Player.tsx').then((m) => ({ default: m.Player })));
+
+/** Where the game's source and artwork credits live. */
+const SOURCE_URL = 'https://github.com/Globulation2/glob2';
+const CREDITS_URL = `${SOURCE_URL}/blob/master/docs/assets/source-attribution.md`;
 
 interface Route {
   pattern: string;
@@ -90,17 +100,81 @@ function AccountChip() {
     );
   }
   return (
-    <span style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}>
+    <>
       <Link className="chip" to={`/players/${account.id}`} data-testid="account-chip">
-        <span className="avatar small" aria-hidden="true">
-          {initial(account.displayName)}
-        </span>
-        {account.displayName}
+        <Avatar account={account} size="small" />
+        <span>{account.displayName}</span>
       </Link>
       <button className="small" onClick={() => void signOut()}>
         Sign out
       </button>
-    </span>
+    </>
+  );
+}
+
+interface NavItem {
+  to: string;
+  id: string;
+  name: string;
+  art?: ArtName;
+}
+
+function Footer() {
+  return (
+    <footer className="site-footer">
+      <div className="decor" aria-hidden="true">
+        <GameArt name="wood" size={56} />
+        <GameArt name="fruit" size={40} />
+        <GameArt name="wood" size={44} />
+      </div>
+      <div className="wrap">
+        <div>
+          <Wordmark label={null} />
+          <p>
+            Globulation 2 is free software (GPL 3): a real-time strategy game where you lead a
+            colony of globs by setting goals, not by clicking every unit.
+          </p>
+        </div>
+        <nav aria-label="Play">
+          <h2>Play</h2>
+          <ul>
+            <li>
+              <a href="/play/">Play in browser</a>
+            </li>
+            <li>
+              <a href={DOWNLOAD_URL} rel="noopener">
+                Download the game
+              </a>
+            </li>
+            <li>
+              <Link to="/leaderboard">Leaderboards</Link>
+            </li>
+            <li>
+              <Link to="/maps">Maps</Link>
+            </li>
+          </ul>
+        </nav>
+        <nav aria-label="About">
+          <h2>About</h2>
+          <ul>
+            <li>
+              <a href={SOURCE_URL} rel="noopener">
+                Source code
+              </a>
+            </li>
+            <li>
+              <a href={CREDITS_URL} rel="noopener">
+                Artwork and font credits
+              </a>
+            </li>
+          </ul>
+        </nav>
+        <p className="fine">
+          Pictures on this site are the game&rsquo;s own artwork by the Globulation 2 artists (GPL
+          3). Fonts: Glob2 Sans (DejaVu) and Nunito (SIL Open Font License).
+        </p>
+      </div>
+    </footer>
   );
 }
 
@@ -110,58 +184,97 @@ function Layout() {
   const found = resolve(location.path);
   const section = found?.route.section;
   const name = instance?.name ?? 'Globulation 2';
+  const home = section === 'home';
+  const main = useRef<HTMLElement>(null);
+  const first = useRef(true);
   useEffect(() => {
     document.title = found?.route.title ? `${found.route.title} · ${name}` : name;
   }, [found?.route.title, name]);
-  const nav = [
+  // After in-app navigation, move focus to the new page for keyboard and screen reader users.
+  useEffect(() => {
+    if (first.current) {
+      first.current = false;
+      return;
+    }
+    main.current?.focus({ preventScroll: true });
+  }, [location.path]);
+  const nav: NavItem[] = [
     { to: '/', id: 'home', name: 'Home' },
-    { to: '/leaderboard', id: 'leaderboard', name: 'Leaderboard' },
-    { to: '/matches', id: 'matches', name: 'Matches' },
-    { to: '/maps', id: 'maps', name: 'Maps' },
-    ...(isModerator(account) ? [{ to: '/admin', id: 'admin', name: 'Moderation' }] : []),
+    { to: '/leaderboard', id: 'leaderboard', name: 'Leaderboard', art: 'warFlag' },
+    { to: '/matches', id: 'matches', name: 'Matches', art: 'swarm' },
+    { to: '/maps', id: 'maps', name: 'Maps', art: 'explorationFlag' },
+    ...(isModerator(account)
+      ? [{ to: '/admin', id: 'admin', name: 'Moderation', art: 'hospital' as ArtName }]
+      : []),
   ];
+  const page = found ? (
+    found.route.render(found.params)
+  ) : (
+    <div className="notice">
+      Nothing here. <Link to="/">Go to the home page</Link>.
+    </div>
+  );
   return (
-    <div className="shell">
-      <header className="topbar">
-        <Link className="brand" to="/">
-          {name}
-        </Link>
-        <AccountChip />
-        <nav aria-label="Main">
-          {nav.map((item) => (
-            <Link
-              key={item.id}
-              to={item.to}
-              className={section === item.id ? 'on' : ''}
-              aria-current={section === item.id ? 'page' : undefined}
-            >
-              {item.name}
-            </Link>
-          ))}
-        </nav>
-      </header>
-      <main className="page">
-        {found ? (
-          found.route.render(found.params)
-        ) : (
-          <div className="notice">
-            Nothing here. <Link to="/">Go to the home page</Link>.
+    <div className={`site${home ? ' home' : ''}`}>
+      <a className="skip-link" href="#main">
+        Skip to content
+      </a>
+      <div className="world-band" aria-hidden="true" />
+      <header className="site-header">
+        <div className="wrap">
+          <Link className="brand" to="/" aria-label={`${name}, home`}>
+            <img src={GLOB_ICON} width={34} height={34} alt="" />
+            <Wordmark label={null} />
+          </Link>
+          <nav className="nav" aria-label="Main">
+            {nav.map((item) => (
+              <Link
+                key={item.id}
+                to={item.to}
+                className={section === item.id ? 'on' : ''}
+                aria-current={section === item.id ? 'page' : undefined}
+              >
+                {item.art && <img src={ART[item.art]} width={26} height={26} alt="" />}
+                {item.name}
+              </Link>
+            ))}
+          </nav>
+          <div className="header-end">
+            <ThemeToggle />
+            <AccountChip />
           </div>
-        )}
+        </div>
+      </header>
+      <main id="main" ref={main} tabIndex={-1}>
+        <Suspense
+          fallback={
+            <div className="wrap">
+              <Loading />
+            </div>
+          }
+        >
+          {home ? (
+            page
+          ) : (
+            <div className="wrap">
+              <div className="page">{page}</div>
+            </div>
+          )}
+        </Suspense>
       </main>
-      <footer className="site">
-        Globulation 2 is free software (GPL 3). <a href="/play/">Play in browser</a>
-      </footer>
+      <Footer />
     </div>
   );
 }
 
 export function App() {
   return (
-    <RouterProvider>
-      <SessionProvider>
-        <Layout />
-      </SessionProvider>
-    </RouterProvider>
+    <ThemeProvider>
+      <RouterProvider>
+        <SessionProvider>
+          <Layout />
+        </SessionProvider>
+      </RouterProvider>
+    </ThemeProvider>
   );
 }

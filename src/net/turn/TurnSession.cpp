@@ -60,12 +60,18 @@ PresenceState TurnSession::presence(int seatNumber) const
 
 void TurnSession::send(const NetMessage& message)
 {
-	transport.send(TurnCodec::encode(message));
+	// Every message leaves at once: an order queued until the next frame's poll would
+	// add up to a frame to its input delay.
+	const auto payload = TurnCodec::encode(message);
+	stats.frameSent(payload.size());
+	transport.send(payload);
+	transport.flush();
 }
 
 void TurnSession::update(std::uint64_t nowMicros)
 {
 	now = std::max(now, nowMicros);
+	stats.update(executed, now);
 	if (currentState == State::Rejected || currentState == State::Ended)
 		return;
 
@@ -80,6 +86,7 @@ void TurnSession::update(std::uint64_t nowMicros)
 	{
 		if (currentState == State::Running || currentState == State::AwaitingWelcome)
 		{
+			stats.linkLost(now);
 			currentState = State::Reconnecting;
 			retryAt = now + backoff;
 		}
@@ -109,10 +116,14 @@ void TurnSession::update(std::uint64_t nowMicros)
 	std::vector<std::uint8_t> payload;
 	while (transport.receive(payload))
 	{
+		stats.frameReceived(payload.size());
 		auto message = TurnCodec::decode(payload);
+		if (message && message->getMessageType() == MSG_TURN_BUNDLE)
+			stats.bundle(payload.size(), static_cast<const TurnBundle&>(*message).entries.size());
 		if (!message)
 		{
 			std::cerr << "Turn session: malformed message from relay; reconnecting\n";
+			stats.linkLost(now);
 			transport.close();
 			currentState = State::Reconnecting;
 			helloSent = false;
@@ -139,6 +150,7 @@ void TurnSession::update(std::uint64_t nowMicros)
 	delay.observe(bufferedTicks(), buffer.targetTicks());
 	if (desyncRejoin && currentState == State::Running && !catchingUp())
 		desyncRejoin = false;
+	stats.catchUpState(catchingUp(), executed, now);
 }
 
 void TurnSession::handle(const NetMessage& message)
@@ -162,6 +174,7 @@ void TurnSession::handle(const NetMessage& message)
 		{
 			seatPresence[p.seat] = p.state;
 			seatDetails[p.seat] = {p.state, p.graceRemainingTicks, p.lagTicks, now};
+			stats.presence(p.seat, p.state, now);
 		}
 		break;
 	case MSG_DESYNC_NOTICE:
@@ -175,6 +188,7 @@ void TurnSession::handle(const NetMessage& message)
 		{
 			rtt = static_cast<std::int64_t>(now - it->second);
 			pingsInFlight.erase(pingsInFlight.begin(), std::next(it));
+			stats.pong(static_cast<std::uint64_t>(rtt), jitter.jitterMicros());
 		}
 		while (!outstanding.empty() && outstanding.front().sequence <= pong.lastClientSequence)
 			outstanding.pop_front();
@@ -202,6 +216,7 @@ void TurnSession::onWelcome(const Welcome& w)
 	tickPeriod = ticksToMicros(1, tickRate);
 	checksumInterval = w.checksumInterval;
 	bundleInterval = w.bundleInterval;
+	delay.setBundleInterval(bundleInterval);
 	if (w.resumeFromTick != horizonTick)
 	{
 		// The relay serves the log from tick 0: drop what we hold. If we had already
@@ -211,6 +226,7 @@ void TurnSession::onWelcome(const Welcome& w)
 		{
 			reloadPending = true;
 			reloadNeedsRequest = false;
+			stats.reloadRequested();
 		}
 	}
 	resyncOutstanding = false;
@@ -220,6 +236,7 @@ void TurnSession::onWelcome(const Welcome& w)
 	while (!outstanding.empty() && outstanding.front().sequence <= w.lastClientSequence)
 		outstanding.pop_front();
 	currentState = State::Running;
+	stats.welcomed(now);
 	backoff = config.reconnectInitialMicros;
 	for (const auto& o : outstanding)
 	{
@@ -227,6 +244,7 @@ void TurnSession::onWelcome(const Welcome& w)
 		submit.clientSequence = o.sequence;
 		submit.order = o.bytes;
 		send(submit);
+		stats.orderFrameSent(true);
 	}
 	while (!unsentReports.empty())
 	{
@@ -252,14 +270,21 @@ void TurnSession::onBundle(const TurnBundle& b)
 			ResyncRequest request;
 			request.fromTick = horizonTick;
 			send(request);
+			stats.resyncRequested();
 			resyncOutstanding = true;
 		}
 		return;
 	}
 	resyncOutstanding = false;
 	for (const auto& e : b.entries)
+	{
+		if (e.seat != seat && !e.order.empty() && e.order[0] == ORDER_TYPE_VOICE)
+			stats.voiceReceived(e.order.size());
 		turns[e.tick].push_back(e);
+	}
 	horizonTick = b.horizonTick;
+	if (onHorizon && b.horizonTick > b.fromTick)
+		onHorizon(b.horizonTick);
 	if (b.horizonTick > threshold)
 		jitter.addSample(static_cast<std::int64_t>(now), b.horizonTick, tickPeriod);
 	delay.observe(bufferedTicks(), buffer.targetTicks());
@@ -270,12 +295,15 @@ void TurnSession::onDesync(const DesyncNotice& d)
 	if (d.verdict == DesyncVerdict::Flagged)
 	{
 		flagged = true;
+		stats.desync(true);
 		return;
 	}
 	if (seat < 0 || !(d.divergedSeatMask & (1u << seat)))
 		return;
 	std::cerr << "Turn session: diverged at tick " << d.tick << "; reloading\n";
 	desyncRejoin = true;
+	stats.desync(false);
+	stats.reloadRequested();
 	resetTurns();
 	reloadPending = true;
 	reloadNeedsRequest = true;
@@ -297,9 +325,11 @@ void TurnSession::reloadDone()
 		ResyncRequest request;
 		request.fromTick = 0;
 		send(request);
+		stats.resyncRequested();
 		resyncOutstanding = true;
 	}
 	reloadNeedsRequest = false;
+	stats.catchUpState(catchingUp(), executed, now);
 }
 
 void TurnSession::addLocalOrder(std::shared_ptr<Order> order)
@@ -308,22 +338,32 @@ void TurnSession::addLocalOrder(std::shared_ptr<Order> order)
 		return;
 	const Uint8 type = order->getOrderType();
 	if (type == ORDER_TYPE_NULL || type == ORDER_TYPE_ADJUST_LATENCY)
+	{
+		stats.orderDropped();
 		return;
+	}
 	auto bytes = codec.encode(*order);
 	if (bytes.empty() || bytes.size() > MAX_ORDER_BYTES)
 	{
 		std::cerr << "Turn session: dropping an order of " << bytes.size() << " bytes\n";
+		stats.orderDropped();
 		return;
 	}
+	stats.orderSubmitted(bytes[0], bytes.size(), linkUp());
+	stats.pendingInput(bytes.data(), bytes.size(), executed, now);
 	Outstanding o{nextSequence++, std::move(bytes)};
+	if (onSubmitted)
+		onSubmitted(o.sequence);
 	if (linkUp())
 	{
 		OrderSubmit submit;
 		submit.clientSequence = o.sequence;
 		submit.order = o.bytes;
 		send(submit);
+		stats.orderFrameSent(false);
 	}
 	outstanding.push_back(std::move(o));
+	stats.outstandingDepth(outstanding.size());
 }
 
 void TurnSession::pushOrder(std::shared_ptr<Order> order, int playerNumber, bool)
@@ -359,12 +399,31 @@ bool TurnSession::orderReceived(int playerNumber)
 
 bool TurnSession::tickReady()
 {
-	if (reloadPending || executed >= horizonTick)
-		return false;
-	for (int p = 0; p < numberOfPlayers; ++p)
+	const bool starved = !reloadPending && executed >= horizonTick;
+	if (starved)
+	{
+		if (!stalled && currentState == State::Running && !delay.catchingUp())
+		{
+			stalled = true;
+			stallStart = now;
+		}
+	}
+	else if (!reloadPending && stalled)
+	{
+		stalled = false;
+		const std::uint64_t length = now - stallStart;
+		++stallCounters.stalls;
+		if (length * 2 > tickPeriod)
+			++stallCounters.longStalls;
+		stallCounters.stalledMicros += length;
+		stallCounters.longestMicros = std::max(stallCounters.longestMicros, length);
+	}
+	bool ready = !reloadPending && !starved;
+	for (int p = 0; ready && p < numberOfPlayers; ++p)
 		if (!isHuman(p) && aiOrders[p].empty())
-			return false;
-	return true;
+			ready = false;
+	stats.readiness(starved && currentState != State::Ended, ready, now);
+	return ready;
 }
 
 std::shared_ptr<Order> TurnSession::retrieveOrder(int playerNumber)
@@ -391,6 +450,8 @@ std::shared_ptr<Order> TurnSession::retrieveOrder(int playerNumber, int& undecod
 				for (const auto& e : it->second)
 					if (e.seat == playerNumber)
 					{
+						if (playerNumber == seat)
+							stats.ownOrderExecuted(e.order.data(), e.order.size(), executed, now);
 						order = codec.decode(e.order.data(), e.order.size());
 						if (!order) // reported (rate-limited) by TurnLockstepSession
 							undecodableType = e.order.empty() ? 0 : e.order[0];
@@ -412,6 +473,9 @@ void TurnSession::clearTopOrders()
 	turns.erase(executed);
 	++executed;
 	delay.onTick(bufferedTicks(), buffer.targetTicks());
+	stats.tickExecuted(bufferedTicks(), buffer.targetTicks(), delay.rateMultiplier(buffer.targetTicks()), catchingUp(),
+	                   executed, now);
+	stats.catchUpState(catchingUp(), executed, now);
 }
 
 Uint32 TurnSession::getWaitingOnMask()

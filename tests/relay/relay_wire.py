@@ -203,6 +203,7 @@ class TurnClient:
             response += receive(self.sock, 1)
         self.status = int(response.split(b' ', 2)[1])
         self.messages = []
+        self.bundle_arrivals = []  # (time.monotonic(), horizon) per bundle
         self.closed = False
         self.cond = threading.Condition()
         self.send_lock = threading.Lock()
@@ -239,6 +240,8 @@ class TurnClient:
                     stream = stream[2 + length:]
                     with self.cond:
                         self.messages.append(message)
+                        if message[0] == 'bundle':
+                            self.bundle_arrivals.append((time.monotonic(), message[1]['horizon']))
                         self.cond.notify_all()
         except (OSError, EOFError, AssertionError):
             pass

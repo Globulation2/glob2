@@ -64,6 +64,7 @@ secrets.
 | `GLOB2_RELAY_MAX_OUTGOING_BYTES` | `8388608` | Send backlog after which a connection that does not read is dropped |
 | `GLOB2_RELAY_GRACE_SECONDS` | `180` | Reconnect grace before the relay sequences a seat's quit (not waited out once a client has left with `Quit(GameFinished)` and nobody is connected; see turn-protocol.md) |
 | `GLOB2_RELAY_DRAIN_TIMEOUT_SECONDS` | `14400` | Longest drain before the remaining matches are aborted; `0` waits forever |
+| `GLOB2_RELAY_RTT_PING_MS` | `2000` | WebSocket ping interval on match connections for the per-seat round trip in network telemetry; `0` disables |
 | `GLOB2_RELAY_JWKS_FILE` | unset | Static JWKS file, for tests and set-ups without a platform |
 | `GLOB2_RELAY_JWKS_URL` | see below | JWKS location |
 | `GLOB2_RELAY_JWKS_REFRESH_SECONDS` | `600` | Periodic JWKS refresh |
@@ -149,7 +150,10 @@ any other transport loss, and the client resumes from its horizon when it reconn
 WebSocket keep-alive pings detect dead peers after 30 s of silence. Clients ping every
 500 ms anyway.
 
-A timer drives each match's `update` every 10 ms, a quarter of a tick.
+A timer drives each match's `update`. It wakes at `TurnSequencer::nextBundleMicros()`,
+so each bundle leaves on its tick boundary, and at least every 10 ms for grace expiry,
+arbitration timeouts and presence. At the default bundle interval of 1 the relay sends
+each client 25 bundles per second; client-to-relay frame limits are unaffected.
 
 ## Tickets
 
@@ -235,6 +239,16 @@ platform's own copy.
   - `abandoned` when every human left otherwise;
   - `aborted` when the relay ended the match (drain timeout or a second signal).
     An aborted record also carries the incomplete flag.
+- `network` is the sequencer's `RelayNetworkSummary` v1 (per seat: orders and their
+  deferral, lag behind the relay clock, checksum timing, disconnects and grace time,
+  and the round trip; [network telemetry](../development/network-telemetry.md)).
+
+**Round trip.** On every connection that has joined a match, the relay sends a
+WebSocket ping every `GLOB2_RELAY_RTT_PING_MS` (2 s) carrying its send time, and
+records the matching pong's round trip for the seat (`rtt_us` in the summary). Pings
+are transport control frames: the turn protocol, the record and the simulation never
+see them, and every client transport (Beast, browsers) answers them itself. Finished
+matches also add their counters to the `glob2_relay_net_*` metrics at `/metrics`.
 
 **Retries and the spool.** Uploads retry with backoff up to
 `GLOB2_RELAY_UPLOAD_ATTEMPTS` times. With `GLOB2_RELAY_SPOOL_DIR` set, the relay

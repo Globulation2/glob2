@@ -333,8 +333,11 @@ python3 test/run_lan_session_test.py build/native-tests/src/LANSessionHarness --
 `LanMatchHarness` in the engine binary covers the match itself in one process: a host
 and two guests over loopback WSS with real engines, a dropped connection, a guest that
 restarts and rejoins by name, the host leaving, identical per-tick checksums and a
-verified match record. Its `[benchmark]` case measures input delay
-(`docs/multiplayer/lan-playtest.md`).
+verified match record. Its `[benchmark]` case measures input delay, per stage and with
+stall counts (`docs/multiplayer/lan-playtest.md`; `GLOB2_LAN_DELAY_BUNDLE=1` runs only
+the one-tick-bundle rows). `TurnHarness` (unit binary) and `TurnEngineHarness` (engine
+binary) have `[benchmark]` cases that measure the same on the simulated network, per
+link profile (`docs/multiplayer/turn-protocol.md#measured-delay`).
 
 `OnlinePlayHarness` (`scons release=1 server=0 online-play-test`) plays an online
 room through the real hub, Room, starting and results screens against a live

@@ -119,6 +119,7 @@ CLIENT_SOURCES = (
     'EngineInit.cpp',
     'EngineLoaders.cpp',
     'EngineRun.cpp',
+    'EngineTurnTelemetry.cpp',
     'Headless.cpp',
     'VerifyMatch.cpp',
     'TurnClientCommand.cpp',
@@ -424,6 +425,7 @@ CLIENT_SOURCES = (
     'net/turn/TurnSequencer.cpp',
     'net/turn/TurnLockstep.cpp',
     'net/turn/TurnSession.cpp',
+    'net/turn/TurnTelemetry.cpp',
     'net/NetTestSuite.cpp',
     'NewMapScreen.cpp',
     'Order.cpp',
@@ -713,6 +715,7 @@ RELAY_SOURCES = (
     'net/turn/MatchRecord.cpp',
     'net/turn/TurnMessages.cpp',
     'net/turn/TurnSequencer.cpp',
+    'net/turn/TurnTelemetry.cpp',
 )
 
 RELAY_GAG_SOURCES = (

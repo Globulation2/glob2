@@ -3,7 +3,8 @@
 import { useState, type FormEvent } from 'react';
 import type { MapDetail as MapDetailDoc, MapInfo, MapVisibility } from '@glob2/protocol';
 import { ApiError, api } from '../api.ts';
-import { ErrorNotice, Loaded, MapImage, PlayerLink } from '../components/common.tsx';
+import { GameArt } from '../art.tsx';
+import { Empty, ErrorNotice, Loaded, MapImage, PlayerLink } from '../components/common.tsx';
 import { date } from '../format.ts';
 import { Link, useRouter } from '../router.tsx';
 import { useLoad, useSession } from '../state.tsx';
@@ -18,16 +19,15 @@ function MapCard({ map }: { map: MapInfo }) {
   const v = map.latestVersion;
   return (
     <Link className="map-card" to={`/maps/${map.id}`} data-testid="map-card">
-      <MapImage src={v?.previewUrl} alt={map.title} />
-      <div className="ell" style={{ marginTop: 4 }}>
-        {map.title}
-      </div>
-      <div className="caption ell">
+      <MapImage src={v?.previewUrl} alt="" />
+      <span className="name ell">{map.title}</span>
+      <span className="caption ell">
         {v?.width && v.height ? `${v.width}×${v.height}` : 'size unknown'}
         {v?.teamCount ? ` · ${v.teamCount} teams` : ''} · ♥ {map.stats.likes}
-      </div>
+        <span className="sr-only"> likes</span>
+      </span>
       {(map.hidden || map.visibility !== 'public') && (
-        <div>
+        <div style={{ padding: '0 var(--sp-1)' }}>
           {map.hidden && <span className="badge bad">hidden</span>}{' '}
           {map.visibility !== 'public' && <span className="badge">{map.visibility}</span>}
         </div>
@@ -87,22 +87,27 @@ export function Maps({ mine }: { mine: boolean }) {
   return (
     <>
       <div className="page-head">
+        <GameArt name="explorationFlag" size={72} className="head-art" />
         <div className="grow">
           <h1>{mine ? 'My maps' : 'Maps'}</h1>
-          <div className="caption">
+          <p className="sub">
             {mine
               ? 'Maps you shared, whatever their visibility.'
               : 'Maps players shared. Rooms play them by version, so everyone loads the same file.'}
-          </div>
+          </p>
         </div>
-        <div className="seg">
-          <Link to="/maps" className={mine ? '' : 'on'}>
+        <nav className="seg" aria-label="Map lists">
+          <Link to="/maps" className={mine ? '' : 'on'} aria-current={mine ? undefined : 'page'}>
             Catalog
           </Link>
-          <Link to="/maps/mine" className={mine ? 'on' : ''}>
+          <Link
+            to="/maps/mine"
+            className={mine ? 'on' : ''}
+            aria-current={mine ? 'page' : undefined}
+          >
             My maps
           </Link>
-        </div>
+        </nav>
         {account && (
           <Link className="btn primary" to="/maps/new">
             Upload a map
@@ -115,8 +120,9 @@ export function Maps({ mine }: { mine: boolean }) {
         </div>
       ) : (
         <>
-          <form className="toolbar" onSubmit={submit} role="search">
+          <form className="filters" onSubmit={submit} role="search">
             <input
+              type="search"
               aria-label="Search maps"
               placeholder="Search titles"
               value={q}
@@ -159,9 +165,9 @@ export function Maps({ mine }: { mine: boolean }) {
           <Loaded load={load}>
             {(data) =>
               data.items.length === 0 ? (
-                <div className="list empty">
+                <Empty art="explorationFlag">
                   {mine ? 'You have not shared any maps yet.' : 'No maps match.'}
-                </div>
+                </Empty>
               ) : (
                 <>
                   <div className="map-grid">
@@ -172,7 +178,7 @@ export function Maps({ mine }: { mine: boolean }) {
                   {data.cursor && (
                     <button
                       className="small"
-                      style={{ marginTop: 10 }}
+                      style={{ marginTop: 'var(--sp-3)' }}
                       onClick={() => setMore(more + 1)}
                     >
                       Show more
@@ -203,7 +209,7 @@ function ReportForm({ mapId, onDone }: { mapId: string; onDone: () => void }) {
   };
   return (
     <form className="card" onSubmit={submit} style={{ marginTop: 10 }}>
-      <h3>Report this map</h3>
+      <h2 className="card-title">Report this map</h2>
       <label className="field">
         Reason
         <select value={reason} onChange={(e) => setReason(e.target.value)}>
@@ -377,7 +383,7 @@ export function MapPage({ id }: { id: string }) {
             <div className="page-head">
               <div className="grow">
                 <h1 data-testid="map-title">{map.title}</h1>
-                <div className="caption">
+                <div className="sub">
                   by <PlayerLink account={map.owner} /> · updated {date(map.updatedAt)} ·{' '}
                   {map.madeWith === 'generator' ? 'generated' : 'hand-made'}{' '}
                   {map.visibility !== 'public' && <span className="badge">{map.visibility}</span>}{' '}
@@ -395,8 +401,8 @@ export function MapPage({ id }: { id: string }) {
                 Hidden: {map.hiddenReason}
               </div>
             )}
-            <div className="grid2">
-              <div>
+            <div className="map-hero">
+              <div className="preview">
                 <MapImage src={v?.previewUrl} alt={`Preview of ${map.title}`} />
               </div>
               <div>
@@ -420,8 +426,12 @@ export function MapPage({ id }: { id: string }) {
                     </div>
                   </div>
                 </div>
-                {map.description && <p style={{ whiteSpace: 'pre-wrap' }}>{map.description}</p>}
-                <div className="toolbar" style={{ marginTop: 10 }}>
+                {map.description && (
+                  <p style={{ whiteSpace: 'pre-wrap', margin: 'var(--sp-4) 0 0' }}>
+                    {map.description}
+                  </p>
+                )}
+                <div className="toolbar" style={{ marginTop: 'var(--sp-4)' }}>
                   {v && v.validation === 'valid' && (
                     <a className="btn primary" href={v.downloadUrl} download>
                       Download
@@ -467,12 +477,13 @@ export function MapPage({ id }: { id: string }) {
             <h2>Versions</h2>
             <div className="table-wrap">
               <table className="data">
+                <caption className="sr-only">Versions of {map.title}</caption>
                 <thead>
                   <tr>
                     <th>Uploaded</th>
                     <th>Status</th>
                     <th className="hide-phone">Notes</th>
-                    <th />
+                    <th className="num">File</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -496,7 +507,7 @@ export function MapPage({ id }: { id: string }) {
                       <td className="num">
                         {version.validation === 'valid' && (
                           <a href={version.downloadUrl} download>
-                            file
+                            Download<span className="sr-only"> this version</span>
                           </a>
                         )}
                       </td>
@@ -556,9 +567,13 @@ export function MapUpload() {
   return (
     <>
       <div className="page-head">
-        <h1 className="grow">Upload a map</h1>
+        <GameArt name="explorationFlag" size={72} className="head-art" />
+        <div className="grow">
+          <h1>Upload a map</h1>
+          <p className="sub">Share a map you made in the editor or with a generator.</p>
+        </div>
       </div>
-      <form className="card" onSubmit={(e) => void submit(e)} style={{ maxWidth: 560 }}>
+      <form className="card upload-form" onSubmit={(e) => void submit(e)}>
         <label className="field">
           Map file (.map, from the editor’s Save)
           <input

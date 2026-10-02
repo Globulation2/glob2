@@ -1,5 +1,6 @@
 // Display helpers shared by pages.
 import type { MatchParticipant, MatchSummary, QueueInfo } from '@glob2/protocol';
+import { gameTeamColor } from './colors.ts';
 
 /** Engine ticks per second (the relay clock). */
 export const TICKS_PER_SECOND = 25;
@@ -95,14 +96,28 @@ export function seatOf(match: MatchSummary, accountId: string | undefined) {
 export function outcomeLetter(outcome: string | undefined): { letter: string; className: string } {
   if (outcome === 'won') return { letter: 'W', className: 'res w' };
   if (outcome === 'lost' || outcome === 'abandoned') return { letter: 'L', className: 'res l' };
+  if (outcome === 'draw') return { letter: 'D', className: 'res d' };
   return { letter: '–', className: 'res' };
 }
 
-/** The series colour of team `index` (CSS variables --s0..--s5). */
-export function teamColor(index: number): string {
-  return `var(--s${index % 6})`;
+/**
+ * The in-game colour of team `index` on a map of `teamCount` teams (the
+ * engine spreads team hues evenly around the colour wheel).
+ */
+export function teamColor(index: number, teamCount: number): string {
+  return gameTeamColor(index, teamCount);
+}
+
+/** Number of teams a match summary shows: its highest team index plus one. */
+export function teamCountOf(participants: readonly { team: number }[]): number {
+  return participants.reduce((n, p) => Math.max(n, p.team + 1), 1);
 }
 
 export function initial(name: string): string {
   return (name.trim().charAt(0) || '?').toUpperCase();
+}
+
+/** A sim version's key (same as simVersionKey in @glob2/protocol, without loading the schemas). */
+export function versionKey(v: { versionMinor: number; netProtocol: number; dataHash: string }) {
+  return `${v.versionMinor}-${v.netProtocol}-${v.dataHash}`;
 }

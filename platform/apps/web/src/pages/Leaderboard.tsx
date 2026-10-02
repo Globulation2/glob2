@@ -1,39 +1,59 @@
 import { useState } from 'react';
-import { simVersionKey, type LeaderboardEntry } from '@glob2/protocol';
+import type { LeaderboardEntry } from '@glob2/protocol';
 import { api } from '../api.ts';
-import { Loaded, PlayerLink } from '../components/common.tsx';
-import { aiName, percent, rating } from '../format.ts';
+import { GameArt } from '../art.tsx';
+import { Avatar, Empty, Loaded, PlayerLink } from '../components/common.tsx';
+import { aiName, percent, rating, versionKey } from '../format.ts';
 import { Link } from '../router.tsx';
 import { useLoad, useSession } from '../state.tsx';
 
-function Rows({ entries }: { entries: LeaderboardEntry[] }) {
+function Rows({ entries, caption }: { entries: LeaderboardEntry[]; caption: string }) {
   return (
     <div className="table-wrap">
-      <table className="data">
+      <table className="data ladder">
+        <caption className="sr-only">{caption}</caption>
         <thead>
           <tr>
-            <th className="num" style={{ width: 50 }}>
-              #
+            <th className="num" scope="col">
+              Rank
             </th>
-            <th>Player</th>
-            <th className="num">Rating</th>
-            <th className="num">Games</th>
-            <th className="num hide-phone">Win rate</th>
+            <th scope="col">Player</th>
+            <th className="num" scope="col">
+              Rating
+            </th>
+            <th className="num" scope="col">
+              Games
+            </th>
+            <th className="num hide-phone" scope="col">
+              Win rate
+            </th>
           </tr>
         </thead>
         <tbody>
           {entries.map((e) => (
-            <tr key={`${e.rank}-${e.entity.kind}`} data-testid="leaderboard-row">
-              <td className="num">{e.rank}</td>
-              <td>
+            <tr
+              key={`${e.rank}-${e.entity.kind}`}
+              data-testid="leaderboard-row"
+              className={e.rank <= 3 ? `top-${e.rank}` : undefined}
+            >
+              <td className="num rank">
+                <span className="rank-pebble">{e.rank}</span>
+              </td>
+              <td className="who">
                 {e.entity.kind === 'account' ? (
-                  <PlayerLink account={e.entity.account} />
+                  <>
+                    <Avatar account={e.entity.account} size="small" />
+                    <PlayerLink account={e.entity.account} />
+                  </>
                 ) : (
-                  <>{aiName(e.entity.ai)}</>
-                )}{' '}
+                  <>
+                    <GameArt name="school" size={30} className="ai-mark" />
+                    {aiName(e.entity.ai)}
+                  </>
+                )}
                 {e.provisional && <span className="badge warn">provisional</span>}
               </td>
-              <td className="num">{rating(e.rating)}</td>
+              <td className="num rating">{rating(e.rating)}</td>
               <td className="num">{e.games}</td>
               <td className="num hide-phone">{e.games ? percent(e.wins / e.games) : '–'}</td>
             </tr>
@@ -54,8 +74,8 @@ function AiLadder({ ladder }: { ladder: string }) {
         ) : (
           <>
             {board.groups.map((group) => (
-              <div key={simVersionKey(group.simVersion)} style={{ marginBottom: 12 }}>
-                <div className="caption" style={{ marginBottom: 4 }}>
+              <div key={versionKey(group.simVersion)} style={{ marginBottom: 'var(--sp-4)' }}>
+                <div className="caption" style={{ marginBottom: 'var(--sp-2)' }}>
                   Game version {group.simVersion.versionMinor} · data{' '}
                   {group.simVersion.dataHash.slice(0, 8)}{' '}
                   {group.current ? (
@@ -64,7 +84,10 @@ function AiLadder({ ladder }: { ladder: string }) {
                     <span className="badge">older version</span>
                   )}
                 </div>
-                <Rows entries={group.entries} />
+                <Rows
+                  entries={group.entries}
+                  caption={`AI opponents, game version ${group.simVersion.versionMinor}`}
+                />
               </div>
             ))}
             <p className="caption">
@@ -103,29 +126,29 @@ export function Leaderboard({ queueId }: { queueId: string | undefined }) {
   return (
     <>
       <div className="page-head">
+        <GameArt name="warFlag" size={72} className="head-art" />
         <div className="grow">
           <h1>Leaderboard</h1>
-          <div className="caption">
-            Registered players, ranked by their conservative rating (it rises as the game becomes
-            sure of your skill). Guests are not ranked.
-          </div>
+          <p className="sub">
+            Registered players, ranked by their conservative rating: it rises as the game becomes
+            sure of your skill. Guests are not ranked.
+          </p>
         </div>
       </div>
       {rated.length > 1 && (
-        <div className="seg" role="tablist" style={{ marginBottom: 10 }}>
+        <nav className="seg" aria-label="Ladders" style={{ marginBottom: 'var(--sp-4)' }}>
           {rated.map((q) => (
             <Link
               key={q.id}
               to={`/leaderboard/${q.id}`}
-              role="tab"
-              aria-selected={q.id === ladder}
+              aria-current={q.id === ladder ? 'page' : undefined}
               className={q.id === ladder ? 'on' : ''}
               onClick={() => setCursor([])}
             >
               {q.name}
             </Link>
           ))}
-        </div>
+        </nav>
       )}
       {!ladder ? (
         <p className="muted">This instance has no rated queues.</p>
@@ -135,7 +158,7 @@ export function Leaderboard({ queueId }: { queueId: string | undefined }) {
             <h2 className="grow" style={{ margin: 0 }}>
               {name}
             </h2>
-            <label className="caption" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <label className="check">
               <input
                 type="checkbox"
                 checked={hideProvisional}
@@ -143,7 +166,6 @@ export function Leaderboard({ queueId }: { queueId: string | undefined }) {
                   setHideProvisional(e.target.checked);
                   setCursor([]);
                 }}
-                style={{ minHeight: 0 }}
               />
               Hide provisional ratings
             </label>
@@ -151,11 +173,11 @@ export function Leaderboard({ queueId }: { queueId: string | undefined }) {
           <Loaded load={load}>
             {(page) =>
               !page || page.entries.length === 0 ? (
-                <div className="list empty">No rated players yet.</div>
+                <Empty art="warFlag">No rated players yet.</Empty>
               ) : (
                 <>
-                  <Rows entries={page.entries} />
-                  <div className="toolbar" style={{ marginTop: 8 }}>
+                  <Rows entries={page.entries} caption={`${name ?? 'Leaderboard'} players`} />
+                  <div className="pager">
                     {cursor.length > 0 && (
                       <button className="small" onClick={() => setCursor(cursor.slice(0, -1))}>
                         Previous

@@ -13,6 +13,8 @@
     "e2e:server": "node e2e/server.ts"
   },
   "dependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@fontsource-variable/nunito": "^5.3.0",
     "@glob2/protocol": "0.1.0",
     "react": "^19.3.0",
     "react-dom": "^19.3.0"

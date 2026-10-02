@@ -49,6 +49,12 @@ namespace
 	constexpr std::size_t MAX_PENDING_BYTES = 2 * (Turn::MAX_FRAME_BYTES + 2);
 	/// Read limit for one WebSocket message; WssTransport sends 16 KiB chunks.
 	constexpr std::size_t MAX_WS_MESSAGE_BYTES = 64 * 1024;
+	// Round-trip probe: a WebSocket ping (a transport control frame, outside the turn
+	// protocol) every GLOB2_RELAY_RTT_PING_MS on a connection that has joined a match.
+	// Every client transport answers pings itself (Beast, browsers). Telemetry only.
+	/// Payload marker that tells our probes from Beast's own keep-alive pings.
+	constexpr char RTT_PING_MARKER = 'g';
+	constexpr std::size_t RTT_PING_BYTES = 9;
 
 	std::vector<std::uint8_t> rejectPayload(Turn::RejectReason reason, const std::string& detail)
 	{
@@ -110,6 +116,12 @@ public:
 	void receive(Connection& connection, const std::vector<std::uint8_t>& payload);
 	void connectionClosed(Connection& connection);
 	void abortNow();
+	/// A WebSocket round trip measured on the connection (telemetry only).
+	void roundTrip(const Connection& connection, std::uint64_t micros)
+	{
+		if (!ended && peers.count(connection.id))
+			sequencer.transportRoundTrip(connection.id, micros);
+	}
 
 	void send(PeerId peer, const std::vector<std::uint8_t>& payload) override
 	{
@@ -241,10 +253,20 @@ void Match::start(asio::any_io_executor executor)
 
 asio::awaitable<void> Match::tickLoop()
 {
-	// A quarter of a tick keeps bundle timing within 10 ms of the relay clock.
+	// Wake when the next live bundle is due (TurnSequencer::nextBundleMicros), so
+	// bundles leave on their tick boundary instead of up to a timer period late, which
+	// clients would see as jitter. Grace expiry, arbitration timeouts and presence
+	// need no more than the 10 ms fallback, also used while no bundle is due (before
+	// the first tick, or once the sequencer stops sending).
+	constexpr std::uint64_t FALLBACK_MICROS = 10000;
 	while (!ended)
 	{
-		timer->expires_after(std::chrono::milliseconds(10));
+		const std::uint64_t now = monotonicMicros();
+		std::uint64_t wake = now + FALLBACK_MICROS;
+		const std::uint64_t next = sequencer.nextBundleMicros();
+		if (next > now && next < wake)
+			wake = next;
+		timer->expires_at(std::chrono::steady_clock::time_point(std::chrono::microseconds(wake)));
 		boost::system::error_code ignored;
 		co_await timer->async_wait(asio::redirect_error(asio::use_awaitable, ignored));
 		if (ended)
@@ -321,7 +343,7 @@ class WsConnection final : public Connection
 public:
 	WsConnection(RelayServer::Impl& server, PeerId id, std::string address, Next stream)
 		: Connection(server, id, std::move(address)), ws(std::move(stream)),
-		  helloDeadline(ws.get_executor()), closeDeadline(ws.get_executor())
+		  helloDeadline(ws.get_executor()), closeDeadline(ws.get_executor()), pingTimer(ws.get_executor())
 	{
 	}
 
@@ -333,6 +355,10 @@ public:
 		ws.set_option(websocket::stream_base::timeout{std::chrono::seconds(10), std::chrono::seconds(30), true});
 		ws.set_option(websocket::stream_base::decorator(
 			[](websocket::response_type& res) { res.set(http::field::server, "glob2-relay"); }));
+		ws.control_callback([this](websocket::frame_type kind, beast::string_view payload) {
+			if (kind == websocket::frame_type::pong)
+				pongReceived(payload);
+		});
 		try
 		{
 			co_await ws.async_accept(request, asio::use_awaitable);
@@ -351,6 +377,8 @@ public:
 		});
 		tokens = static_cast<double>(server.config.frameBurst);
 		lastRefill = std::chrono::steady_clock::now();
+		if (server.config.rttPingMillis > 0)
+			asio::co_spawn(ws.get_executor(), pingLoop(), asio::detached);
 		try
 		{
 			co_await readLoop();
@@ -362,6 +390,7 @@ public:
 		detached = true;
 		helloDeadline.cancel();
 		closeDeadline.cancel();
+		pingTimer.cancel();
 		server.connectionClosed(*this);
 	}
 
@@ -444,6 +473,46 @@ private:
 			c.server.metrics.bytesOut += frame->size() - 2;
 			c.pump();
 		});
+	}
+
+	/// Pings the client every rttPingMillis once it has joined a match; the pong
+	/// echoes the send time, so a lost or late pong never mismatches.
+	asio::awaitable<void> pingLoop()
+	{
+		auto self = shared_from_this();
+		for (;;)
+		{
+			pingTimer.expires_after(std::chrono::milliseconds(server.config.rttPingMillis));
+			boost::system::error_code ec;
+			co_await pingTimer.async_wait(asio::redirect_error(asio::use_awaitable, ec));
+			if (ec || closed || closing || detached)
+				co_return;
+			if (!match || pinging)
+				continue;
+			char payload[RTT_PING_BYTES];
+			payload[0] = RTT_PING_MARKER;
+			const std::uint64_t sent = monotonicMicros();
+			for (std::size_t i = 0; i < 8; ++i)
+				payload[1 + i] = static_cast<char>((sent >> (56 - 8 * i)) & 0xff);
+			pinging = true;
+			ws.async_ping(websocket::ping_data(payload, RTT_PING_BYTES), [self](boost::system::error_code) {
+				static_cast<WsConnection&>(*self).pinging = false;
+			});
+		}
+	}
+
+	void pongReceived(beast::string_view payload)
+	{
+		if (payload.size() != RTT_PING_BYTES || payload[0] != RTT_PING_MARKER || detached || !match)
+			return;
+		std::uint64_t sent = 0;
+		for (std::size_t i = 0; i < 8; ++i)
+			sent = (sent << 8) | static_cast<std::uint8_t>(payload[1 + i]);
+		const std::uint64_t now = monotonicMicros();
+		if (sent > now || now - sent > 60000000ull)
+			return;
+		auto m = match;
+		m->roundTrip(*this, now - sent);
 	}
 
 	bool takeToken()
@@ -539,6 +608,8 @@ private:
 	websocket::stream<Next> ws;
 	asio::steady_timer helloDeadline;
 	asio::steady_timer closeDeadline;
+	asio::steady_timer pingTimer;
+	bool pinging = false;
 	std::deque<std::shared_ptr<std::vector<std::uint8_t>>> outgoing;
 	std::size_t outBytes = 0;
 	bool writing = false;
@@ -686,9 +757,11 @@ asio::awaitable<void> RelayServer::Impl::finalize(std::shared_ptr<Match> match)
 	info.startedAt = match->startedAt;
 	info.endedAt = unixNow();
 	info.reason = match->aborted ? EndReason::Aborted : match->gameFinished ? EndReason::Completed : EndReason::Abandoned;
+	info.network = match->sequencer.networkSummary();
 	const auto& stats = match->sequencer.stats();
 	metrics.ordersSequenced += stats.ordersSequenced;
 	metrics.bundlesSent += stats.bundlesSent;
+	metrics.matchNetwork(match->sequencer.telemetry());
 	metrics.matchEnded(endReasonName(info.reason));
 	logLine("info", "Match " + match->id + " ended (" + endReasonName(info.reason) + ") at tick " +
 	                    std::to_string(record.endTick) + "; record " + std::to_string(bytes.size()) + " bytes");

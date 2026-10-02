@@ -103,6 +103,11 @@ public:
 		int localSeat = -1;
 		std::shared_ptr<Turn::TurnTransport> transport;
 		Turn::TurnSessionConfig config;
+		/// Classifies the connection in the ClientNetworkSummary: "online" or "lan",
+		/// and for online games the relay's id and region when known.
+		std::string networkKind = "online";
+		std::string relayId;
+		std::string relayRegion;
 	};
 
 	/// Starts a turn-protocol game: builds the GameHeader from the setup (every human
@@ -124,6 +129,13 @@ public:
 	const std::shared_ptr<Online::OnlineMatchResult>& getOnlineResult() const { return onlineResult; }
 	/// A team of the loaded game, or null.
 	Team* gameTeam(int team);
+	/// True while the game loop waits for the network rather than pacing: a turn
+	/// game with its horizon used up, or a legacy game waiting on a peer's orders.
+	/// Hosts time the following wait as pacing.network_sleep instead of pacing.sleep.
+	bool waitingOnNetwork() const;
+	/// The ClientNetworkSummary (docs/development/network-telemetry.md) of the running
+	/// turn game; null when this is not a turn game with a local seat.
+	nlohmann::json turnNetworkSummary(bool includeSeries = true) const;
 
 	//! This function creates a game with a random map and random AI for every team
 	void createRandomGame();
@@ -153,6 +165,11 @@ public:
     void abortSession() noexcept;
     void drawSession();
     Uint32 sessionDelay(Uint64 now);
+    /// Turn games: reads the relay connection between steps (see TURN_POLL_MS), so
+    /// bundles are timed when they arrive rather than at the next frame. Nothing runs.
+    void pollTurnSession(Uint64 now);
+    /// The host's sleep before the next stepSession or pollTurnSession.
+    Uint32 sessionPollDelay(Uint64 now);
     struct PendingLoad { std::string filename; bool replay; };
     // Finalize without loading another game or entering a UI loop. The host
     // schedules a returned request, or presents the end screen when absent.
@@ -281,7 +298,14 @@ private:
 	void reloadTurnInitialState();
 	/// Tells the relay this client is leaving, once.
 	void leaveTurnMatch();
+	/// Network telemetry output (EngineTurnTelemetry.cpp): GLOB2_NET_* records with
+	/// GLOB2_TEAM_TIMELINE, and the ClientNetworkSummary next to the replay.
+	void printTurnTelemetrySession();
+	void printTurnTelemetrySamples();
+	void exportTurnTelemetry();
     std::optional<MainLoopState> session;
+    /// A turn game draws only after a step: polls between steps change nothing visible.
+    bool turnDrawPending = true;
     int sessionEndingTarget = 0;
     std::vector<SDL_Event> sessionInput;
 
@@ -339,6 +363,14 @@ private:
 		int localTeam = 0;
 		std::string replayPath;
 		bool flagReported = false;
+		// Network telemetry context and output progress.
+		int localSeat = -1;
+		std::string simVersion;
+		std::string networkKind;
+		std::string relayId;
+		std::string relayRegion;
+		std::size_t printedNetPoints = 0;
+		bool netExported = false;
 	};
 	std::optional<TurnMatchState> turnMatch;
 	std::shared_ptr<Online::OnlineMatchResult> onlineResult;

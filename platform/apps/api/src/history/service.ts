@@ -11,6 +11,8 @@
 //   recent-matches list shows queue matches and matches of public rooms.
 // - Replays and verifier results are public with their match; the raw match
 //   record only to its players and moderators.
+// - Each human player's connection quality (round trip to the relay,
+//   disconnects, delayed orders; history/network.ts) is public with its match.
 import { sql, type Kysely } from 'kysely';
 import type { Account, Database } from '@glob2/db';
 import {
@@ -37,6 +39,7 @@ import {
 import { PROVISIONAL_SIGMA, displayRating } from '@glob2/worker';
 import { hasRole } from '../auth/admin.ts';
 import { apiError } from '../errors.ts';
+import { participantNetwork, reportTickRate } from './network.ts';
 import {
   MATCH_TIME,
   UUID,
@@ -665,7 +668,7 @@ export class HistoryService {
     const match = await this.match(id);
     const [summary] = await summarize(this.db, [match]);
     if (!summary) throw apiError('not_found', 'No such match.');
-    const [teams, artifacts, job, economy, titles] = await Promise.all([
+    const [teams, artifacts, job, economy, titles, networkRows] = await Promise.all([
       this.db
         .selectFrom('match_team_stats')
         .selectAll()
@@ -690,7 +693,20 @@ export class HistoryService {
         .executeTakeFirst(),
       this.economyOf(id),
       catalogTitles(this.db, [match.map_hash]),
+      this.db
+        .selectFrom('match_participants')
+        .select(['seat', 'network'])
+        .where('match_id', '=', id)
+        .where('kind', '=', 'human')
+        .where('network', 'is not', null)
+        .orderBy('seat')
+        .execute(),
     ]);
+    const tickRate = reportTickRate(match.end_report);
+    const network = networkRows.flatMap((row) => {
+      const condensed = participantNetwork(row.seat, row.network, tickRate);
+      return condensed ? [condensed] : [];
+    });
     const visibleArtifacts: MatchArtifactInfo[] = [];
     for (const artifact of artifacts) {
       if (!(await this.mayDownload(match, artifact.kind, viewer))) continue;
@@ -751,6 +767,7 @@ export class HistoryService {
       map,
       verificationDetail,
       economy,
+      ...(network.length > 0 ? { network } : {}),
     };
   }
 
