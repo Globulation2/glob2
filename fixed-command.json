@@ -1,0 +1,28 @@
+{
+  "command": [
+    "/Users/bradley/.codex/worktrees/a8b6/glob2/artifacts/render-production/build/test/torus-render-benchmark",
+    "-g",
+    "-F",
+    "-m",
+    "-s",
+    "1024x600"
+  ],
+  "environment": {
+    "GLOB2_BENCH_FRAMES": "40",
+    "GLOB2_USER_DATA_DIR": "/Users/bradley/.codex/worktrees/a8b6/glob2/artifacts/hd-resource-batching/benchmark-profile",
+    "GLOB2_UI_SCALE": "1",
+    "SDL_AUDIODRIVER": "dummy",
+    "GLOB2_BENCH_FLAT": "1",
+    "GLOB2_BENCH_FULL_MAP": "1",
+    "GLOB2_BENCH_GAME": "/Users/bradley/.codex/worktrees/a8b6/glob2/artifacts/render-profile/ai-match-eight/checkpoint-20000.game.gz",
+    "GLOB2_BENCH_MIN_UNITS": "3000",
+    "GLOB2_BENCH_AI_TICKS": "100",
+    "GLOB2_BENCH_BARS": "1",
+    "GLOB2_BENCH_MODE": "2D no clouds",
+    "GLOB2_BENCH_CAPTURE": "/Users/bradley/.codex/worktrees/a8b6/glob2/artifacts/render-production/fixed.ppm",
+    "GLOB2_BENCH_COMPARE_RENDERER": "1",
+    "GLOB2_BENCH_COMPARE_CAPTURE_PREFIX": "/Users/bradley/.codex/worktrees/a8b6/glob2/artifacts/render-production/fixed"
+  },
+  "revision": "fc7bff22834faeda383a27b11de864c2c9a0075e",
+  "executable_sha256": "14ffd2344fa8cc553021b02143c2d6af7d81cae9b681743b8f0e92894b03b73c"
+}

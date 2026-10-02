@@ -1,0 +1,8 @@
+GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.3.34.2) platform=Mac OS X pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "", "CPPDEFINES": "HAVE_CONFIG_H GL_SILENCE_DEPRECATION _THREAD_SAFE SDL_MAIN_HANDLED", "CXXFLAGS": "-g -std=gnu++20 -Wall -fPIC -O3", "LINKFLAGS": "-g -Wall -O3 -Wl,-framework,Cocoa"}, "revision": "fc7bff22834faeda383a27b11de864c2c9a0075e", "sourceStatus": [], "sourceTreeSha256": "705bc2810d7c2b6367738263648c336348a52308c53277553dfb172b60256cf0"}
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases:  14 |  14 passed | 0 failed | 383 skipped
+[doctest] assertions: 429 | 429 passed | 0 failed |
+[doctest] Status: SUCCESS!
