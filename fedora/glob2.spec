@@ -25,7 +25,6 @@ BuildRequires:  libjpeg-turbo-devel
 BuildRequires:  gcc-c++
 BuildRequires:  python3
 BuildRequires:  scons
-BuildRequires:  cmake
 BuildRequires:  freetype-devel
 BuildRequires:  libX11-devel
 BuildRequires:  libXext-devel
@@ -61,6 +60,7 @@ cp %{SOURCE1} build/sdl3/sources/SDL3-3.4.16.tar.gz
 cp %{SOURCE2} build/sdl3/sources/SDL3_image-3.4.6.tar.gz
 cp %{SOURCE3} build/sdl3/sources/SDL3_ttf-3.2.2.tar.gz
 cp %{SOURCE4} build/sdl3/sources/SDL3_net-3.2.0.tar.gz
+cp %{SOURCE5} build/sdl3/sources/libwebp-1.6.0.tar.gz
 export GLOB2_SDL3_PREFIX="$PWD/build/sdl3/prefix"
 python3 scons/sdl3_dependencies.py --prefix "$GLOB2_SDL3_PREFIX" --work build/sdl3/sources --jobs 2
 export RPM_PACKAGE_NAME=%{name} RPM_PACKAGE_VERSION=%{version} \
