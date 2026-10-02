@@ -3367,9 +3367,43 @@ class GameGUITouchHarness
 		require(!touch.animating() && touch.offset == trayEnd, "A mouse drag has no momentum");
 		require(checksum() == before, "Tray scrolling never touches the map data");
 	}
+	static void scaledDialogInput()
+	{
+		glob2test::GlobalsOptions options{.display = true, .loadStrings = true, .width = 1600, .height = 1200,
+		                                  .screenFlags = 0};
+		glob2test::HeadlessGlobals globals(options);
+		auto *gfx = globalContainer->gfx;
+		REQUIRE(gfx->setUiScale(2));
+		GameGUI gui;
+		gui.openDialog(GameGUI::IGM_SAVE, std::make_unique<LoadSaveDialog>(
+			"games", "game", false, "Save game", "Scaled", glob2FilenameToName, glob2NameToFilename));
+		auto *dialog = gui.gameMenuScreen.get();
+		dialog->draw(0);
+		const auto bounds = dialog->host().bounds("name");
+		SDL_Event event{};
+		event.type = SDL_MOUSEBUTTONDOWN;
+		event.button.button = SDL_BUTTON_LEFT;
+		// GameGUI::step has already converted these to logical coordinates.
+		event.button.x = bounds.x + bounds.w / 2;
+		event.button.y = bounds.y + bounds.h / 2;
+		gui.processEvent(&event);
+		event.type = SDL_MOUSEBUTTONUP;
+		gui.processEvent(&event);
+		REQUIRE(dialog->host().editing() == "name");
+		event = {};
+		event.type = SDL_TEXTINPUT;
+		std::strcpy(event.text.text, "2");
+		gui.processEvent(&event);
+		REQUIRE(std::string(static_cast<LoadSaveDialog *>(dialog)->getName()) == "Scaled2");
+	}
 };
 TEST_SUITE("GameGUITouch")
 {
+	GLOB2_TEST_CASE("scaled gameplay dialog input is translated once", "[display]")
+	{
+		GameGUITouchHarness::scaledDialogInput();
+	}
+
 	GLOB2_TEST_CASE("a touch on or near a flag drags the flag; not the map", "[display]")
 	{
 		SDL_setenv("GLOB2_MOBILE_UI", "0", 1);
