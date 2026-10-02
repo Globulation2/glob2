@@ -81,33 +81,6 @@ class AndroidReleaseTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "already points to another commit"):
                 android_release.check_prior_tags()
 
-    def test_build_preflight_accepts_existing_release_tag(self):
-        # Publishing this HEAD under an existing tag fails, but building it is valid.
-        tags = ["v0.9.5.4\n", "new-commit\n", "old-commit\n"]
-        with mock.patch.object(sys, "argv", ["android_release.py", "check"]), \
-                mock.patch.object(android_release.subprocess, "check_output", side_effect=tags):
-            with self.assertRaisesRegex(ValueError, "already points to another commit"):
-                android_release.main()
-        with mock.patch.object(sys, "argv", ["android_release.py", "check-build"]), \
-                mock.patch.object(android_release.subprocess, "check_output") as git:
-            android_release.main()
-            git.assert_not_called()
-
-    def test_build_preflight_preserves_identity_and_recipe_validation(self):
-        for validator in ("release_identity", "check_recipe"):
-            with self.subTest(validator=validator), \
-                    mock.patch.object(sys, "argv", ["android_release.py", "check-build"]), \
-                    mock.patch.object(android_release, validator, side_effect=ValueError("invalid contract")):
-                with self.assertRaisesRegex(ValueError, "invalid contract"):
-                    android_release.main()
-
-    def test_workflows_keep_publication_preflight_strict(self):
-        mobile = (ROOT / ".github/workflows/mobile.yml").read_text()
-        self.assertIn("python3 mobile/android_release.py check-build\n", mobile)
-        for name in ("release.yml", "fdroid-release-validation.yml"):
-            self.assertIn("python3 mobile/android_release.py check\n",
-                          (ROOT / ".github/workflows" / name).read_text())
-
     def test_apk_rejects_second_abi_and_wrong_version(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

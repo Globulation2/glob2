@@ -42,9 +42,9 @@ jobs:
         id: actions_checkout_v4_1
         with:
           fetch-depth: 0
-      - name: Validate Android build contract and F-Droid listing
+      - name: Validate Android release contract and F-Droid listing
         run: |
-          python3 mobile/android_release.py check-build
+          python3 mobile/android_release.py check
           python3 mobile/android_release.py check-listing
       - name: Install build utilities
         id: install_build_utilities
