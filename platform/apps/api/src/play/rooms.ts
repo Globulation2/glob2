@@ -986,9 +986,17 @@ export class RoomService {
   }
 
   async chat(caller: Account, roomId: string, text: string): Promise<RoomChatMessage> {
-    if (caller.muted_until && caller.muted_until > new Date()) {
+    // Read the mute fresh: a moderator may have muted the account after the
+    // socket signed in.
+    const current = await this.db
+      .selectFrom('accounts')
+      .select(['muted_until', 'status'])
+      .where('id', '=', caller.id)
+      .executeTakeFirst();
+    if (!current || current.status !== 'active') throw apiError('forbidden', 'Account inactive.');
+    if (current.muted_until && current.muted_until > new Date()) {
       throw apiError('forbidden', 'You are muted.', {
-        mutedUntil: caller.muted_until.toISOString(),
+        mutedUntil: current.muted_until.toISOString(),
       });
     }
     const messageId = await this.db.transaction().execute(async (trx) => {
