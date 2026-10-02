@@ -73,8 +73,9 @@ it automatically could punish the wrong player.
    `platform:engine-job-result` handler (`handleEngineJobResult`) runs one
    transaction that:
    - completes the `engine_jobs` row with m0's `applyEngineJobResult`;
-   - records the verdict on the match (`verification`, `match_team_stats`,
-     participant outcomes);
+   - records the verdict on the match (`verification`, `match_team_stats` with
+     the verifier's final team statistics and 512-tick timelines,
+     `match_artifacts` for the record, replay and result, participant outcomes);
    - applies ratings.
 2. A re-delivered result finds the job already completed and changes nothing.
 3. `applyMatchRatings` is idempotent on its own. It locks the match row and only
@@ -259,8 +260,11 @@ and seats with slot, side, account or AI, rating entity and μ/σ. The starter m
   `proposal_id = proposal.id`) and one `match_participants` row per seat;
 - place seat = slot on map team = slot, with `teams[slot].alliance = side`, and
   copy `rating_entity_id` from the seat;
-- pick the seed and map (warm pool), allocate a relay in the region and push
-  `match.start`;
+- pick the seed and map: `takeWarmMap(db, queueId, simVersionKey, { entry })`
+  from `@glob2/worker` returns a pre-generated map of the proposal's pool entry
+  (descriptor with seed, map hash, map facts) or undefined, in which case the
+  starter submits its own generate-map job; then allocate a relay in the region
+  and push `match.start`;
 - be idempotent per proposal id, by looking the match up by `matches.proposal_id`;
 - throw when the match cannot start.
 
