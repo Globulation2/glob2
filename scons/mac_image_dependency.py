@@ -10,7 +10,7 @@ import subprocess
 import tempfile
 from dev_store import cache, Lease, hold
 from tool_archives import download, digest
-from sdl3_dependencies import patch_image_exports
+from sdl3_dependencies import patch_image_exports, static_webp_link_options, static_webp_archive
 
 SDL_IMAGE = json.loads(Path(__file__).with_name("sdl3-versions.json").read_text())["SDL_image"]
 ARTIFACT = {key: SDL_IMAGE[key] for key in ("url", "sha256")}
@@ -137,10 +137,16 @@ def dependency_identity(environment=None):
 def ensure(root, jobs=2, environment=None):
     """Return a leased, verified private build of the required image codecs."""
     brew = Path(subprocess.check_output(["brew", "--prefix"], text=True, env=environment).strip())
+    options = lean_options()
+    sdl_prefix = (environment or {}).get("GLOB2_SDL3_PREFIX")
+    webp_archive = static_webp_archive(Path(sdl_prefix).resolve(), required=False) if sdl_prefix else None
+    if webp_archive:
+        options += static_webp_link_options(Path(sdl_prefix).resolve(), required=False)
     identity = dict(
         archive=ARTIFACT,
         exports_patch=1,
-        options=lean_options(),
+        options=options,
+        static_webp={str(webp_archive): digest(webp_archive)} if webp_archive else {},
         arch=platform.machine(),
         compiler=subprocess.check_output(["clang", "--version"], text=True, env=environment),
         sdk=subprocess.check_output(["xcrun", "--show-sdk-version"], text=True, env=environment),
@@ -175,7 +181,7 @@ def ensure(root, jobs=2, environment=None):
                         "-DCMAKE_PREFIX_PATH=" + str(Path((environment or {}).get("GLOB2_SDL3_PREFIX", str(brew))).resolve()) + ";" + str(brew),
                         "-DCMAKE_INSTALL_PREFIX=" + str(prefix),
                         "-DCMAKE_INSTALL_NAME_DIR=" + str(prefix / "lib"),
-                        *lean_options(),
+                        *options,
                     ],
                     check=True, env=environment,
                 )

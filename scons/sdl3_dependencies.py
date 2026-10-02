@@ -35,12 +35,34 @@ def patch_image_exports(source):
     script.write_text(contents.replace('SHELL:-Wl,-exported_symbols_list,', 'LINKER:-exported_symbols_list,'))
 
 
+def static_webp_archive(prefix, required=True):
+    prefix = Path(prefix)
+    sharpyuv = next((prefix / 'lib' / filename for filename in
+                     ('libsharpyuv.a', 'sharpyuv.lib')
+                     if (prefix / 'lib' / filename).is_file()), None)
+    if sharpyuv is None:
+        if required:
+            raise RuntimeError('Pinned static SharpYUV library was not installed')
+        return None
+    return sharpyuv
+
+
+def static_webp_link_options(prefix, required=True):
+    sharpyuv = static_webp_archive(prefix, required)
+    if sharpyuv is None:
+        return []
+    libraries = [str(sharpyuv)]
+    if platform.system() == 'Linux':
+        libraries.append('m')
+    return ['-Dwebp_LINK_LIBRARIES=' + ';'.join(libraries)]
+
+
 def build(prefix, work, jobs=2, emscripten=None, environment=None, threaded=False):
     prefix, work = Path(prefix).resolve(), Path(work).resolve()
     versions = json.loads(LOCK.read_text())
     if emscripten:
         versions = json.loads(LOCK.with_name('sdl3-vendored.json').read_text()) | versions
-    identity = {'configuration': 7, 'threaded': threaded, 'versions': versions, 'emscripten': str(emscripten) if emscripten else None,
+    identity = {'configuration': 8, 'threaded': threaded, 'versions': versions, 'emscripten': str(emscripten) if emscripten else None,
                 'platform': platform.platform(), 'machine': platform.machine()}
     manifest = prefix / 'sdl3-manifest.json'
     libraries = ('SDL3', 'SDL3_image', 'SDL3_ttf', 'SDL3_net')
@@ -78,6 +100,10 @@ def build(prefix, work, jobs=2, emscripten=None, environment=None, threaded=Fals
                    '-DSDLIMAGE_WEBP=ON', '-DSDLIMAGE_WEBP_SAVE=OFF', '-DSDLIMAGE_SAMPLES=OFF', '-DSDLIMAGE_TESTS=OFF', '-DSDLIMAGE_DEPS_SHARED=OFF',
                    '-DSDLTTF_SAMPLES=OFF', '-DSDLTTF_TESTS=OFF', '-DSDLTTF_HARFBUZZ=OFF',
                    '-DSDLNET_SAMPLES=OFF', '-DSDLNET_TESTS=OFF']
+        if name == 'SDL_image':
+            # SDL_image's Findwebp omits static libwebp's private dependencies.
+            # Its function table references encoders even when saving is off.
+            command += static_webp_link_options(prefix)
         if name == 'webp':
             command += ['-DBUILD_SHARED_LIBS=OFF', '-DCMAKE_POSITION_INDEPENDENT_CODE=ON',
                         '-DWEBP_BUILD_CWEBP=OFF', '-DWEBP_BUILD_DWEBP=OFF', '-DWEBP_BUILD_VWEBP=OFF',
