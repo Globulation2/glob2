@@ -49,6 +49,15 @@ class PolicyTest(unittest.TestCase):
         self.assertTrue(self.select(['src/sim/SimulationRunner.cpp'])['tsan'])
         self.assertTrue(self.select(['src/scene/Scene.cpp'])['tsan'])
 
+    def test_platform_stack_smoke_follows_the_stack_inputs(self):
+        for path in ['deploy/compose.yaml', 'deploy/Dockerfile', 'tests/deployment/platform_stack_smoke.py',
+                     'src/relay/RelayServer.cpp', 'platform/packages/db/migrations/0006_room_kicks_lost_relays.sql',
+                     'platform/apps/worker/src/main.ts', 'platform/package-lock.json']:
+            self.assertTrue(self.select([path])['platform_stack'], path)
+        for path in ['deploy/README.md', 'platform/apps/api/src/play/rooms.ts', 'src/ai/Maxima.cpp',
+                     'src/gui/GameGUIInput.cpp', 'browser/shell.html']:
+            self.assertFalse(self.select([path])['platform_stack'], path)
+
     def test_shared_unknown_and_unavailable_inputs_fail_closed(self):
         for path in ['src/Version.h','libgag/include/Surface.h','SConstruct','unmapped/new.cpp','test/ci_native_shard_plan.py']:
             self.assertEqual(self.select([path]), policy.full(), path)
