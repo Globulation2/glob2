@@ -38,7 +38,7 @@ env:
 jobs:
   build:
     name: linux build (${{ inputs.image }}, ${{ inputs.compiler }})
-    runs-on: ${{ inputs.runner }}
+    runs-on: ${{ vars.CI_LOCAL_LINUX_RUNNERS == 'true' && format('glob2-{0}', inputs.runner) || inputs.runner }}
     env:
       CCACHE: 1
       CCACHE_DIR: /tmp/glob2-ccache
@@ -279,7 +279,7 @@ jobs:
     if: ${{ inputs.run_tests && needs.build.result == 'success' }}
     env:
       CI_RUNNER_FAMILY: ${{ inputs.runner }}
-    runs-on: ${{ inputs.runner }}
+    runs-on: ${{ vars.CI_LOCAL_LINUX_RUNNERS == 'true' && format('glob2-{0}', inputs.runner) || inputs.runner }}
     strategy:
       fail-fast: false
       matrix:
@@ -517,7 +517,7 @@ jobs:
     name: Map generators (${{ inputs.runner }}, ${{ matrix.suite }})
     needs: build
     if: ${{ inputs.map_generators && needs.build.result == 'success' }}
-    runs-on: ${{ inputs.runner }}
+    runs-on: ${{ vars.CI_LOCAL_LINUX_RUNNERS == 'true' && format('glob2-{0}', inputs.runner) || inputs.runner }}
     env:
       CCACHE: 1
       CCACHE_DIR: /tmp/glob2-ccache

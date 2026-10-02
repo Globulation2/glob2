@@ -80,7 +80,7 @@ jobs:
     name: Native Clang coverage
     needs: changes
     if: ${{ needs.changes.outputs.native == 'true' && needs.changes.outputs.compatibility == 'true' }}
-    runs-on: ubuntu-24.04
+    runs-on: ${{ vars.CI_LOCAL_LINUX_RUNNERS == 'true' && 'glob2-ubuntu-24.04' || 'ubuntu-24.04' }}
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
@@ -188,7 +188,7 @@ jobs:
     name: linux variants (${{ matrix.image }})
     needs: changes
     if: ${{ needs.changes.outputs.native == 'true' && needs.changes.outputs.compatibility == 'true' }}
-    runs-on: ${{ matrix.runner }}
+    runs-on: ${{ vars.CI_LOCAL_LINUX_RUNNERS == 'true' && format('glob2-{0}', matrix.runner) || matrix.runner }}
     env:
       CCACHE: 1
       CCACHE_DIR: /tmp/glob2-ccache
@@ -314,7 +314,7 @@ jobs:
     name: linux map generators (${{ matrix.image }}, ${{ matrix.suite }})
     needs: changes
     if: ${{ !cancelled() && needs.changes.outputs.map_generators == 'true' && needs.changes.outputs.native != 'true' }}
-    runs-on: ${{ matrix.runner }}
+    runs-on: ${{ vars.CI_LOCAL_LINUX_RUNNERS == 'true' && format('glob2-{0}', matrix.runner) || matrix.runner }}
     env:
       CCACHE: 1
       CCACHE_DIR: /tmp/glob2-ccache

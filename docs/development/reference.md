@@ -8,6 +8,26 @@ notes when the referenced behavior changes.
 Tournament CLI, persistent workers, and per-player AI save compatibility are
 documented in [Distributed tournaments](../tools/tournaments.md).
 
+## Optional local Linux CI runners
+
+Set the repository Actions variable `CI_LOCAL_LINUX_RUNNERS` to `true` to route
+native Linux compiler builds, test shards, map generators, variants and Clang
+coverage to runners labelled `glob2-ubuntu-22.04` or `glob2-ubuntu-24.04`.
+These labels require matching Ubuntu guests and working guest Docker for runtime
+validation. Runner software, Git, Python, curl, unzip, build tools and writable
+`/opt/hostedtoolcache` must be present; jobs install their compiler dependencies.
+Cache keys, artifact names and timing profiles retain the original Ubuntu names.
+Other jobs keep their existing GitHub-hosted routing.
+
+Unset the variable or set it to `false` before retiring the local pool. Routing
+is selected when jobs are evaluated; already queued local jobs need cancellation
+and a fresh workflow run. There is no automatic hosted fallback when a selected
+local runner is offline. Public pull-request jobs execute repository code: use
+fresh disposable VMs per job, with no host filesystem or Docker socket mounts,
+and block guest access to the host and private networks. Keep registration
+credentials on the controller and supply only short-lived registration material
+to guests. Preserve runner logs outside disposable disks.
+
 ## Build and test entry points
 
 Choose build concurrency for available memory and other running builds; CPU count
