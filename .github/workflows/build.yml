@@ -91,33 +91,44 @@ jobs:
           if-no-files-found: warn
           retention-days: 14
 
-  linux-build:
-    name: linux build (${{ matrix.image }}, ${{ matrix.compiler }})
+  linux-gcc11:
+    name: Linux GCC 11 build and tests
     needs: changes
     if: ${{ needs.changes.outputs.native == 'true' }}
-
-    strategy:
-      fail-fast: false
-      matrix:
-        # Both ends of the supported toolchain range: 22.04 is g++ 11 / Boost
-        # 1.74 (catches C++20 features the oldest supported compiler lacks),
-        # 24.04 is g++ 13 / Boost 1.83 (catches new diagnostics and headers
-        # that no longer come in transitively).
-        include:
-          - image: ubuntu:22.04
-            runner: ubuntu-22.04
-            compiler: g++-11
-            c_compiler: gcc-11
-          - image: ubuntu:24.04
-            runner: ubuntu-24.04
-            compiler: g++-13
-            c_compiler: gcc-13
     uses: ./.github/workflows/ci-linux-build.yml
     with:
-      image: ${{ matrix.image }}
-      runner: ${{ matrix.runner }}
-      compiler: ${{ matrix.compiler }}
-      c_compiler: ${{ matrix.c_compiler }}
+      image: ubuntu:22.04
+      runner: ubuntu-22.04
+      compiler: g++-11
+      c_compiler: gcc-11
+      run_tests: true
+      map_generators: ${{ needs.changes.outputs.map_generators == 'true' }}
+      runtime_packages: ${{ vars.CI_RUNTIME_PACKAGES_ENABLED == 'true' }}
+
+  linux-gcc13:
+    name: Linux GCC 13 build and tests
+    needs: changes
+    if: ${{ needs.changes.outputs.native == 'true' }}
+    uses: ./.github/workflows/ci-linux-build.yml
+    with:
+      image: ubuntu:24.04
+      runner: ubuntu-24.04
+      compiler: g++-13
+      c_compiler: gcc-13
+      run_tests: true
+      map_generators: ${{ needs.changes.outputs.map_generators == 'true' }}
+      runtime_packages: ${{ vars.CI_RUNTIME_PACKAGES_ENABLED == 'true' }}
+
+  linux-build:
+    needs: [changes, linux-gcc11, linux-gcc13]
+    if: ${{ !cancelled() && needs.changes.outputs.native == 'true' }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Require both GCC platforms
+        env:
+          GCC11: ${{ needs.linux-gcc11.result }}
+          GCC13: ${{ needs.linux-gcc13.result }}
+        run: test "$GCC11" = success && test "$GCC13" = success
 
   linux-clang:
     name: Linux Clang compatibility
@@ -130,263 +141,9 @@ jobs:
       compiler: clang-18
       c_compiler: clang-18
 
-  linux-tests:
-    name: linux tests (${{ matrix.platform }}, shard ${{ matrix.shard }}/4)
-    needs: [changes, linux-build]
-    if: ${{ needs.changes.outputs.native == 'true' && needs.linux-build.result == 'success' }}
-    runs-on: ${{ matrix.runner }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - platform: ubuntu-22.04
-            runner: ubuntu-22.04
-            compiler: g++-11
-            shard: 1
-          - platform: ubuntu-22.04
-            runner: ubuntu-22.04
-            compiler: g++-11
-            shard: 2
-          - platform: ubuntu-22.04
-            runner: ubuntu-22.04
-            compiler: g++-11
-            shard: 3
-          - platform: ubuntu-22.04
-            runner: ubuntu-22.04
-            compiler: g++-11
-            shard: 4
-          - platform: ubuntu-24.04
-            runner: ubuntu-24.04
-            compiler: g++-13
-            shard: 1
-          - platform: ubuntu-24.04
-            runner: ubuntu-24.04
-            compiler: g++-13
-            shard: 2
-          - platform: ubuntu-24.04
-            runner: ubuntu-24.04
-            compiler: g++-13
-            shard: 3
-          - platform: ubuntu-24.04
-            runner: ubuntu-24.04
-            compiler: g++-13
-            shard: 4
-    steps:
-      - name: Install dependencies
-        id: install_dependencies
-        timeout-minutes: 15
-        env:
-          DEBIAN_FRONTEND: noninteractive
-        run: |
-          # Fetch immutable package indexes to avoid mirror-sync mismatches,
-          # and bound network stalls without weakening signature verification.
-          sudo tee /etc/apt/apt.conf.d/80-ci-network >/dev/null <<'EOF'
-          Acquire::By-Hash "force";
-          Acquire::Retries "3";
-          Acquire::http::Timeout "30";
-          Acquire::https::Timeout "30";
-          EOF
-          sudo apt-get update -qq
-          sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-            ca-certificates git ${{ matrix.compiler }} python3 python3-venv scons pkg-config ccache \
-            libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev \
-            libvorbis-dev libogg-dev libspeex-dev \
-            libboost-date-time-dev libboost-thread-dev libboost-system-dev libssl-dev \
-            zlib1g-dev libfribidi-dev libpcre3-dev \
-            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth
-
-      - uses: actions/checkout@v4
-        id: actions_checkout_v4_1
-
-      - uses: actions/download-artifact@v4
-        id: download_linux_test_programs
-        with:
-          name: linux-test-programs-${{ matrix.runner }}
-          path: artifacts/ci-native
-      - name: Unpack built Linux test programs
-        id: unpack_linux_test_programs
-        run: tar -xzf artifacts/ci-native/linux-test-programs.tar.gz
-
-      - name: Run the unit tests
-        if: ${{ matrix.shard == 4 }}
-        id: run_the_unit_tests
-        continue-on-error: true
-        run: python3 test/run_tests.py --binary unit --build-dir build/linux/client/release --junit artifacts/tests/unit-junit.xml
-      - name: Run the engine tests
-        id: run_the_engine_tests
-        continue-on-error: true
-        env:
-          LIBGL_ALWAYS_SOFTWARE: 1
-        # The [map-generators] contract runs in the linux-map-generators telemetry job.
-        run: python3 test/run_tests.py --binary engine --build-dir build/linux/client/release --fullscreen --shard ${{ matrix.shard }}/4 --exclude-tag map-generators --junit artifacts/tests/engine-junit.xml
-      - name: Diagnose accelerated renderer crashes
-        if: ${{ always() && steps.run_the_engine_tests.outcome == 'failure' }}
-        continue-on-error: true
-        timeout-minutes: 5
-        env:
-          LIBGL_ALWAYS_SOFTWARE: 1
-          GLOB2_TEST_DISPLAY: 1
-          GLOB2_TEST_FULLSCREEN: 1
-          SDL_AUDIODRIVER: dummy
-        run: |
-          # Retain the original failure; this separate invocation only collects a trace.
-          if ! python3 - <<'PYTRACE'
-          import xml.etree.ElementTree as ET
-          report = ET.parse('artifacts/tests/engine-junit.xml')
-          crashes = [case for case in report.iter('testcase')
-                     if 'each accelerated backend uploads surface revisions independently' in case.get('name', '')
-                     and case.find('error') is not None]
-          raise SystemExit(0 if crashes else 1)
-          PYTRACE
-          then
-            exit 0
-          fi
-          sudo apt-get install -y --no-install-recommends gdb
-          xvfb-run -a -s '-screen 0 1600x1400x24 -noreset' \
-            gdb --batch -ex run -ex 'thread apply all bt' -ex 'info sharedlibrary' \
-            --args build/linux/client/release/test/glob2-engine-tests \
-            '-tc=each accelerated backend uploads surface revisions independently [display]' \
-            --no-breaks=true > artifacts/tests/accelerated-renderer-gdb.log 2>&1
-
-      - name: Upload native test results
-        if: always()
-        continue-on-error: true
-        uses: actions/upload-artifact@v4
-        with:
-          name: native-test-results-${{ matrix.runner }}-${{ matrix.shard }}
-          path: artifacts/tests/
-          if-no-files-found: ignore
-
-      - name: Test map JSON reports
-        if: ${{ matrix.shard == 2 }}
-        id: test_map_json_reports
-        continue-on-error: true
-        run: |
-          python3 test/ci_run_commands.py \
-            --check 'map report' 'python3 test/test_map_report.py build/linux/client/release/src/glob2 build/linux/client/release/test/MapReportHarness' \
-            --check 'map telemetry' 'python3 test/test_map_telemetry.py'
-      - name: Upload map JSON reports and command log
-        id: upload_map_json_reports_and_command_log
-        continue-on-error: true
-        if: ${{ always() && matrix.shard == 2 }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: map-report-${{ matrix.runner }}
-          path: artifacts/map-report/
-
-      - name: Test headless map CLI with the shared preview renderer
-        if: ${{ matrix.shard == 3 }}
-        id: test_headless_map_cli_with_the_shared_preview_renderer
-        continue-on-error: true
-        run: |
-          python3 test/ci_run_commands.py \
-            --check 'generation only' 'python3 test/test_map_cli.py build/linux/client/release/src/glob2 --generation-only' \
-            --check 'map CLI' 'python3 test/test_map_cli.py build/linux/client/release/src/glob2' \
-            --check 'map image conversion' 'python3 test/test_map_image.py build/linux/client/release/src/glob2'
-      - name: Upload map CLI previews and command log
-        id: upload_map_cli_previews_and_command_log
-        continue-on-error: true
-        if: ${{ always() && matrix.shard == 3 }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: map-cli-${{ matrix.runner }}
-          path: |
-            artifacts/map-cli/
-            artifacts/map-image/
-
-      - name: Test tournament protocol, AI configuration and main CLI
-        if: ${{ matrix.shard == 1 }}
-        id: test_tournament_protocol_ai_configuration_and_main_cli
-        continue-on-error: true
-        run: |
-          python3 test/ci_run_commands.py \
-            --check tournaments 'python3 test/test_tournaments.py' \
-            --check 'tournament pipeline' 'python3 test/test_tournament_pipeline.py' \
-            --check 'distributed map telemetry' 'python3 test/test_distributed_map_telemetry.py' \
-            --check 'distributed game telemetry' 'python3 test/test_distributed_game_telemetry.py' \
-            --check 'map fairness' 'python3 test/test_map_fairness_tournament.py' \
-            --check 'map generation study' 'python3 test/test_map_generation_study.py' \
-            --check 'fairness model' 'python3 test/test_fairness_model.py' \
-            --check 'tournament CLI' 'python3 test/tournament_cli_integration.py --binary build/linux/client/release/src/glob2 --output artifacts/tournament-cli'
-      - name: Retain tournament CLI compatibility evidence
-        id: retain_tournament_cli_compatibility_evidence
-        continue-on-error: true
-        if: ${{ always() && matrix.shard == 1 }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: tournament-cli-${{ matrix.runner }}
-          path: artifacts/tournament-cli/
-          if-no-files-found: ignore
-
-      - name: Verify save continuation traces
-        if: ${{ matrix.shard == 3 }}
-        id: verify_save_continuation_traces
-        continue-on-error: true
-        run: |
-          python3 test/ci_run_commands.py \
-            --check 'shared runtime save continuation' 'python3 test/check_shared_runtime_save_continuation.py build/linux/client/release/src/glob2' \
-            --check 'Maxima save continuation fixture' 'python3 test/maxima/check_save_continuation_fixture.py build/linux/client/release/src/glob2'
-
-      - name: Verify default gradient schedule against cross-platform checksums
-        if: ${{ matrix.shard == 4 }}
-        id: verify_default_gradient_schedule_against_cross_platform
-        continue-on-error: true
-        run: python3 test/check_telemetry_simulation.py build/linux/client/release/src/glob2
-
-      - name: Verify parallel compute and save continuation
-        if: ${{ matrix.shard == 1 }}
-        id: verify_parallel_compute_and_save_continuation
-        continue-on-error: true
-        run: |
-          python3 test/ci_run_commands.py \
-            --check 'parallel compute' 'python3 test/check_parallel_compute.py build/linux/client/release/src/glob2' \
-            --check 'gradient pipeline' 'python3 test/check_gradient_pipeline.py build/linux/client/release/src/glob2'
-      - name: Build and run the LAN session regression
-        if: ${{ matrix.shard == 3 }}
-        id: build_and_run_the_lan_session_regression
-        continue-on-error: true
-        run: |
-          python3 test/run_lan_session_test.py build/linux/client/release/src/LANSessionHarness
-
-      - name: Test front-end colony isolation and menu navigation
-        if: ${{ matrix.shard == 2 }}
-        id: test_front_end_colony_isolation_and_menu_navigation
-        continue-on-error: true
-        env:
-          SDL_VIDEODRIVER: dummy
-          SDL_AUDIODRIVER: dummy
-        run: |
-          ./build/linux/client/release/test/MenuColonyHarness check data/menu/colony.bin
-          ./build/linux/client/release/test/MenuColonyHarness navigation unused
-
-      - name: Retain browser/native simulation trace
-        if: ${{ matrix.shard == 4 }}
-        id: retain_browser_native_simulation_trace
-        continue-on-error: true
-        run: python3 test/run-browser-determinism.py build/linux/client/release/src/glob2 artifacts/browser-determinism/native
-      - uses: actions/upload-artifact@v4
-        if: ${{ matrix.shard == 4 }}
-        id: upload_artifact_1
-        continue-on-error: true
-        with:
-          name: browser-determinism-${{ matrix.runner }}
-          path: artifacts/browser-determinism/native/
-
-      - name: Summarize CI failures
-        if: always()
-        env:
-          CI_STEPS_JSON: ${{ toJSON(steps) }}
-        run: python3 test/ci_step_summary.py
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: ci-observation-${{ github.job }}-${{ strategy.job-index }}
-          path: artifacts/ci-observation/
-          if-no-files-found: ignore
-
   linux:
     name: linux (${{ matrix.image }})
-    needs: [changes, linux-build, linux-clang, linux-tests]
+    needs: [changes, linux-build, linux-clang]
     if: ${{ !cancelled() && needs.changes.outputs.native == 'true' }}
     runs-on: ubuntu-24.04
     strategy:
@@ -398,10 +155,9 @@ jobs:
         env:
           BUILD_RESULT: ${{ needs.linux-build.result }}
           CLANG_RESULT: ${{ needs.linux-clang.result }}
-          TEST_RESULT: ${{ needs.linux-tests.result }}
         run: |
-          echo "Linux builds: $BUILD_RESULT; Clang: $CLANG_RESULT; Linux test shards: $TEST_RESULT"
-          test "$BUILD_RESULT" = success && test "$CLANG_RESULT" = success && test "$TEST_RESULT" = success
+          echo "Linux builds: $BUILD_RESULT; Clang: $CLANG_RESULT"
+          test "$BUILD_RESULT" = success && test "$CLANG_RESULT" = success
 
   linux-variants:
     name: linux variants (${{ matrix.image }})
@@ -529,10 +285,10 @@ jobs:
           path: artifacts/ci-observation/
           if-no-files-found: ignore
 
-  linux-map-generators:
+  linux-map-generators-standalone:
     name: linux map generators (${{ matrix.image }}, ${{ matrix.suite }})
-    needs: [changes, linux-build]
-    if: ${{ !cancelled() && needs.changes.outputs.map_generators == 'true' && (needs.linux-build.result == 'success' || needs.linux-build.result == 'skipped') }}
+    needs: changes
+    if: ${{ !cancelled() && needs.changes.outputs.map_generators == 'true' && needs.changes.outputs.native != 'true' }}
     runs-on: ${{ matrix.runner }}
     env:
       CCACHE: 1
@@ -608,19 +364,19 @@ jobs:
       # map-only diffs skip that build and keep the standalone path below.
       - uses: actions/download-artifact@v4
         id: download_linux_test_programs
-        if: ${{ needs.linux-build.result == 'success' }}
+        if: ${{ false }}
         with:
           name: linux-test-programs-${{ matrix.runner }}
           path: artifacts/ci-native
       - name: Unpack built Linux test programs
         id: unpack_linux_test_programs
-        if: ${{ needs.linux-build.result == 'success' }}
+        if: ${{ false }}
         run: tar -xzf artifacts/ci-native/linux-test-programs.tar.gz
 
       # Reads the main job's cache and never saves on the standalone path.
       - name: Restore the compiler cache
         id: restore_the_compiler_cache
-        if: ${{ needs.linux-build.result == 'skipped' }}
+        if: ${{ true }}
         continue-on-error: true
         uses: actions/cache/restore@v4
         with:
@@ -630,7 +386,7 @@ jobs:
 
       - name: Build the map generator golden test
         id: build_the_map_generator_golden_test
-        if: ${{ needs.linux-build.result == 'skipped' }}
+        if: ${{ true }}
         run: |
           targets=(map-generator-golden-test)
           if [ '${{ matrix.suite }}' = telemetry ]; then
@@ -696,6 +452,24 @@ jobs:
           name: ci-observation-${{ github.job }}-${{ strategy.job-index }}
           path: artifacts/ci-observation/
           if-no-files-found: ignore
+
+  linux-map-generators:
+    needs: [changes, linux-gcc11, linux-gcc13, linux-map-generators-standalone]
+    if: ${{ !cancelled() && needs.changes.outputs.map_generators == 'true' }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Require selected generator checks
+        env:
+          NATIVE: ${{ needs.changes.outputs.native }}
+          GCC11: ${{ needs.linux-gcc11.result }}
+          GCC13: ${{ needs.linux-gcc13.result }}
+          STANDALONE: ${{ needs.linux-map-generators-standalone.result }}
+        run: |
+          if [ "$NATIVE" = true ]; then
+            test "$GCC11" = success && test "$GCC13" = success
+          else
+            test "$STANDALONE" = success
+          fi
 
   windows:
     name: windows (mingw-w64)
