@@ -345,6 +345,26 @@ describe('verify-match', () => {
     ]);
   });
 
+  it("passes the verifier's order rejections through to the job result", async () => {
+    const rejections = [{ seat: 1, rejected: 2, stale: 0, reasons: { foreign_team: 2 } }];
+    expect(
+      await run(
+        'verify-match',
+        await verify({
+          verdict: 'verified',
+          outcomes: ['won', 'lost'],
+          orderRejections: rejections,
+        }),
+      ),
+    ).toMatchObject({ verdict: 'verified', orderRejections: rejections });
+    expect(
+      await run(
+        'verify-match',
+        await verify({ verdict: 'unverifiable', reason: 'forged', orderRejections: rejections }),
+      ),
+    ).toEqual({ verdict: 'unverifiable', reason: 'forged', orderRejections: rejections });
+  });
+
   it('maps diverged and unverifiable verdicts', async () => {
     expect(
       await run('verify-match', await verify({ verdict: 'diverged', seats: [1, 1], exit: 1 })),
