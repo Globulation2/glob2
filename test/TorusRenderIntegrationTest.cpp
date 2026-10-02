@@ -412,9 +412,14 @@ static void run(bool gpu, int width, int height)
                         ((worldY % worldH) + worldH) % worldH * view.atlasH / worldH;
                     return &atlas[(size_t(row) * view.atlasW + col) * 4];
                 };
+                // Drawing reads the GUI's Scene; drawAll would extract it first.
+                Scene scene;
                 auto capture = [&]()
                 {
+                    gui.extractScene(scene);
+                    gui.setPublishedScene(&scene);
                     draw(1);
+                    gui.setPublishedScene(nullptr);
                     // Software GL renders on worker threads, and the readback below has been
                     // seen to return the previous frame's atlas: wait for the frame first.
                     glFinish();
