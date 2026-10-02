@@ -245,6 +245,9 @@ export const RoomSeat = Open({
     }),
     Open({ kind: Type.Literal('ai'), ai: AiId, name: DisplayName }),
   ]),
+  locked: Type.Optional(
+    Type.Boolean({ description: 'Closed by the host; plays as an inactive player if empty.' }),
+  ),
 });
 export type RoomSeat = Static<typeof RoomSeat>;
 
@@ -274,6 +277,13 @@ export const RoomState = Open(
     hostAccountId: Uuid,
     simVersion: SimVersion,
     map: Type.Optional(RoomMapSelection),
+    mapStatus: Type.Optional(
+      Type.Union([Type.Literal('ready'), Type.Literal('pending'), Type.Literal('failed')], {
+        description:
+          'pending: a generated map is being generated (or an upload validated); failed: the map cannot be used (see mapProblem). A match can start only when ready.',
+      }),
+    ),
+    mapProblem: Type.Optional(Type.String({ maxLength: 2000 })),
     teams: Type.Array(SetupTeam),
     seats: Type.Array(RoomSeat),
     rules: MatchRules,
@@ -312,8 +322,77 @@ export const RoomChatMessage = Open({
 });
 export type RoomChatMessage = Static<typeof RoomChatMessage>;
 
-/** GET /api/v1/rooms — public open rooms for a sim version. */
+/** GET /api/v1/rooms?simVersion=<key> — public open rooms for a sim version. */
 export const RoomList = Page(RoomSummary, 'Public rooms that can be joined.');
+
+/**
+ * GET /api/v1/invites/{code} — what an invite link points at, for landing
+ * pages and "Join by code" previews. Lookups are rate limited per address.
+ */
+export const InviteInfo = Open(
+  {
+    code: InviteCode,
+    status: Type.Union([Type.Literal('open'), Type.Literal('in_match'), Type.Literal('closed')]),
+    roomName: Type.String({ maxLength: 64 }),
+    hostDisplayName: DisplayName,
+    simVersion: SimVersion,
+    seatsTotal: Type.Integer({ minimum: 0 }),
+    seatsTaken: Type.Integer({ minimum: 0 }),
+    inviteUrl: HttpsOrWssUrl,
+  },
+  { description: 'Public summary of the room behind an invite code.' },
+);
+export type InviteInfo = Static<typeof InviteInfo>;
+
+// ----------------------------------------------------------------- uploads
+
+export const UploadFormat = Type.Union([Type.Literal('map'), Type.Literal('save')]);
+
+export const SavedPlayer = Open({
+  name: Type.String({ maxLength: 64 }),
+  team: TeamIndex,
+  kind: Type.Union([Type.Literal('human'), Type.Literal('ai')]),
+});
+export type SavedPlayer = Static<typeof SavedPlayer>;
+
+/**
+ * POST /api/v1/uploads?format=map|save&simVersion=<key> (body: the raw bytes
+ * clients load, application/octet-stream) and GET /api/v1/uploads/{id}. The
+ * file is private to its owner and validated by an engine agent of that sim
+ * version; a valid upload can be chosen as a room map with
+ * {kind: "upload", format, hash: sha256}.
+ */
+export const MapUpload = Open(
+  {
+    id: Uuid,
+    format: UploadFormat,
+    sha256: Sha256Hex,
+    size: Type.Integer({ minimum: 0 }),
+    simVersion: SimVersion,
+    status: Type.Union([Type.Literal('pending'), Type.Literal('valid'), Type.Literal('invalid')]),
+    fileName: Type.Optional(Type.String({ maxLength: 255 })),
+    map: Type.Optional(
+      Open({
+        width: Type.Integer({ minimum: 1 }),
+        height: Type.Integer({ minimum: 1 }),
+        teamCount: Type.Integer({ minimum: 1, maximum: 12 }),
+      }),
+    ),
+    versionMinor: Type.Optional(Type.Integer({ minimum: 0 })),
+    title: Type.Optional(Type.String({ maxLength: 128 })),
+    players: Type.Optional(
+      Type.Array(SavedPlayer, {
+        maxItems: 12,
+        description: 'Saves: the players in the file, for reteaming returning players.',
+      }),
+    ),
+    reason: Type.Optional(Type.String({ maxLength: 2000, description: 'Why it is invalid.' })),
+    downloadUrl: HttpsOrWssUrl,
+    createdAt: Timestamp,
+  },
+  { description: 'An uploaded private map or save.' },
+);
+export type MapUpload = Static<typeof MapUpload>;
 
 // ----------------------------------------------------------------- matches
 
@@ -514,6 +593,7 @@ export type RoomMember = Static<typeof RoomMember>;
 export type RoomStatus = Static<typeof RoomStatus>;
 export type RoomSummary = Static<typeof RoomSummary>;
 export type RoomList = Static<typeof RoomList>;
+export type UploadFormat = Static<typeof UploadFormat>;
 export type MatchOutcome = Static<typeof MatchOutcome>;
 export type VerificationStatus = Static<typeof VerificationStatus>;
 export type RatingChange = Static<typeof RatingChange>;

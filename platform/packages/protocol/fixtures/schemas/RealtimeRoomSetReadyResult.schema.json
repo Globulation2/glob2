@@ -274,6 +274,27 @@
           ],
           "description": "Map chosen in a room. A generated map has a hash once its generation job finishes; a match cannot start before."
         },
+        "mapStatus": {
+          "anyOf": [
+            {
+              "type": "string",
+              "const": "ready"
+            },
+            {
+              "type": "string",
+              "const": "pending"
+            },
+            {
+              "type": "string",
+              "const": "failed"
+            }
+          ],
+          "description": "pending: a generated map is being generated (or an upload validated); failed: the map cannot be used (see mapProblem). A match can start only when ready."
+        },
+        "mapProblem": {
+          "type": "string",
+          "maxLength": 2000
+        },
         "teams": {
           "type": "array",
           "items": {
@@ -426,6 +447,10 @@
                     }
                   }
                 ]
+              },
+              "locked": {
+                "type": "boolean",
+                "description": "Closed by the host; plays as an inactive player if empty."
               }
             }
           }
