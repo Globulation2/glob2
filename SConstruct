@@ -69,7 +69,7 @@ class Configuration:
         self.f.write("#define %s %s\n" % (variable, value))
         self.f.write("\n")
     
-def configure(env, server_only):
+def configure(env, server_only, relay=False):
     """Configures glob2"""
     conf = Configure(env.Clone(), conf_dir=str(Path(env["BUILDDIR"]) / "configure"), log_file=str(Path(env["BUILDDIR"]) / "configure.log"))
     configfile = Configuration(env)
@@ -114,7 +114,8 @@ def configure(env, server_only):
     if not server_only and not conf.CheckLib("SDL2_image"):
         print("Could not find libSDL2_image")
         missing.append("SDL2_image")
-    if not conf.CheckLib("SDL2_net"):
+    # The relay links no SDL library; it only needs SDL's headers for libgag's types.
+    if not relay and not conf.CheckLib("SDL2_net"):
         print("Could not find libSDL2_net")
         missing.append("SDL2_net")
     if not server_only and (not conf.CheckLib("speex") or not conf.CheckCXXHeader("speex/speex.h")):
@@ -330,8 +331,9 @@ def main():
     if env['release'] and not isDarwinPlatform:
         for flags in ('CXXFLAGS', 'LINKFLAGS'):
             env[flags] = [flag for flag in env.Split(env[flags]) if flag != '-g']
-    env["server"] = identity["role"] in ("server", "router")
+    env["server"] = identity["role"] in ("server", "router", "relay")
     env["role"] = identity["role"]
+    relay = identity["role"] == "relay"
     if identity["role"] == "router":
         env.Append(CPPDEFINES=["GLOB2_ROUTER_ONLY"])
 
@@ -395,7 +397,7 @@ def main():
     # guards rely on it (including disabling the Unix OSS audio backend).
     if env['mingw'] or isWindowsPlatform or env['mingwcross']:
         env.Append(CPPDEFINES=["WIN32"])
-    configure(env, server_only)
+    configure(env, server_only, relay)
 
     env.Append(CPPPATH=['#'+path for path in INCLUDE_DIRECTORIES])
     env.Append(CXXFLAGS=["-Wall", "-fPIC"])
@@ -406,7 +408,8 @@ def main():
         env.Append(CXXFLAGS=['-ftrivial-auto-var-init=' + _detinit])
         env.Append(CCFLAGS=' -ftrivial-auto-var-init=' + _detinit)
     env.Append(LINKFLAGS=["-Wall"])
-    env.Append(LIBS=['SDL2_net'])
+    if not relay:
+        env.Append(LIBS=['SDL2_net'])
     if not server_only:
         env.Append(LIBS=['vorbisfile', 'SDL2_ttf', 'SDL2_image', 'speex'])
 
@@ -426,6 +429,8 @@ def main():
         env.Append(LIBS=['vorbis', 'ogg', 'wsock32', 'winmm'])
         env.Append(LINKFLAGS=['-mwindows'])
         env.ParseConfig("pkg-config sdl2 --cflags --libs")
+    elif relay:
+        env.ParseConfig("pkg-config sdl2 --cflags")
     else:
         env.ParseConfig("pkg-config sdl2 --cflags --libs")
     
