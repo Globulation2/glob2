@@ -443,6 +443,12 @@ export const MatchSummary = Open(
       Type.Literal('ended'),
       Type.Literal('cancelled'),
     ]),
+    endReason: Type.Optional(
+      Type.Union([Type.Literal('completed'), Type.Literal('abandoned'), Type.Literal('aborted')], {
+        description:
+          'Why an ended match ended. aborted: the match was lost (for example with its relay) and changes no rating.',
+      }),
+    ),
     verification: VerificationStatus,
     mapHash: Sha256Hex,
     mapTitle: Type.Optional(Type.String({ maxLength: 128 })),

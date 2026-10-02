@@ -327,6 +327,7 @@ export interface MatchesTable {
   relay_assigned_at: NullableTimestamp;
   relay_attempts: Defaulted<number>;
   end_report: NullableJson<JsonValue>;
+  relay_seen_at: NullableTimestamp;
 }
 
 export interface MapUploadsTable {
