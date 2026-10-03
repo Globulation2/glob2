@@ -291,6 +291,14 @@ struct MobileGallerySetup
 					   m.accountKind = "registered";
 					   m.rooms = Online::Json::array();
 				   }));
+		screenShot(stack, "online-hub-update", OnlineUIFixtures::hubFixture(stack, [](OnlineHubScreen::Model &m) {
+					   m.link = OnlineHubScreen::Model::Link::UpdateRequired;
+					   m.outdated = OnlineHubScreen::Model::Outdated::Client;
+				   }));
+		screenShot(stack, "online-hub-server-behind", OnlineUIFixtures::hubFixture(stack, [](OnlineHubScreen::Model &m) {
+					   m.link = OnlineHubScreen::Model::Link::UpdateRequired;
+					   m.outdated = OnlineHubScreen::Model::Outdated::Server;
+				   }));
 		{
 			auto hub = OnlineUIFixtures::hubFixture(stack);
 			static_cast<OnlineHubScreen &>(*hub).acceptInvite("https://play.lanparty.net", "7HD21QABCD");

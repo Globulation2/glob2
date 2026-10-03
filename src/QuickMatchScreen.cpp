@@ -81,7 +81,15 @@ std::string errorText(const Online::ApiError &error, std::optional<std::int64_t>
 	if (error.code == "forbidden")
 		return error.message.empty() ? tr("[qm sign in to play ranked]") : error.message;
 	if (error.code == "update_required")
-		return tr("[online update required]");
+		switch (Online::services().client.simMismatch())
+		{
+		case Online::PlatformClient::SimMismatch::ServerBehind:
+			return tr("[online server behind]");
+		case Online::PlatformClient::SimMismatch::ClientBehind:
+			return tr("[online update required]");
+		default:
+			return tr("[online version mismatch]");
+		}
 	if (error.code == "conflict")
 		return tr("[qm already searching]");
 	return error.message.empty() ? tr("[online connection problem]") : error.message;

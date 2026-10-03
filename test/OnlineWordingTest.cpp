@@ -157,6 +157,28 @@ TEST_SUITE("OnlineWording")
 		CHECK(anyContains(lan, "Link for browser players"));
 	}
 
+	TEST_CASE("an unserved version blames the side that is out of date [display]")
+	{
+		Display display;
+		auto paintedHub = [](OnlineHubScreen::Model::Outdated outdated) {
+			GAGGUI::ScreenStack stack(*globalContainer->gfx);
+			return paintedTexts(OnlineUIFixtures::hubFixture(stack, [&](OnlineHubScreen::Model &m) {
+				m.link = OnlineHubScreen::Model::Link::UpdateRequired;
+				m.outdated = outdated;
+			}));
+		};
+		const auto server = paintedHub(OnlineHubScreen::Model::Outdated::Server);
+		CHECK_MESSAGE(anyContains(server, "Server update pending"), joined(server));
+		CHECK_MESSAGE(!anyContains(server, "Get the update"), joined(server));
+		CHECK_MESSAGE(!anyContains(server, "newer version"), joined(server));
+		const auto client = paintedHub(OnlineHubScreen::Model::Outdated::Client);
+		CHECK_MESSAGE(anyContains(client, "Update required"), joined(client));
+		CHECK_MESSAGE(anyContains(client, "Get the update"), joined(client));
+		const auto unknown = paintedHub(OnlineHubScreen::Model::Outdated::Unknown);
+		CHECK_MESSAGE(anyContains(unknown, "Different version"), joined(unknown));
+		CHECK_MESSAGE(!anyContains(unknown, "newer version"), joined(unknown));
+	}
+
 	TEST_CASE("menus read larger on big desktop windows that follow the desktop scale")
 	{
 		const auto at = [](int w, int h, bool touch = false) { return Presentation::forSurface(w, h, 1, touch); };
