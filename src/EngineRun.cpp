@@ -192,7 +192,7 @@ void Engine::gatherAndAdvanceOrders(bool wasReadyLastTick)
 	gui.game.setWaitingOnMask(net->getWaitingOnMask());
 }
 
-// Once allOrdersReceived() is true for this tick, commit the tick: validate
+// Once tickReady() is true for this tick, commit the tick: validate
 // checksums (assert on desync), execute the matched orders, pump the replay
 // reader if we're in playback, and run game.syncStep. Called only from inside
 // the !hardPause branch, so the original !gui.hardPause guard on syncStep is
@@ -705,7 +705,7 @@ void Engine::teardownSession()
 //   2. pollAutomaticEndingConditions - headless end-condition tripwire
 //   3. gui.step                   - GUI input (skipped under --nox / off-cadence)
 //   4. gatherAndAdvanceOrders     - push local+AI orders, advance net (if prev tick committed)
-//   5. (gate flip) readyNow = net->allOrdersReceived()
+//   5. (gate flip) readyNow = net->tickReady()
 //   6. executeOrdersAndStep       - run matched orders, replay reader, sim syncStep
 //   7. automatic-ending step-count check
 //   8. drawSession / sessionDelay  - draw, videoshot, host pacing
@@ -898,7 +898,7 @@ bool Engine::advanceSession(Uint64 now, const std::function<void()>& clientWork,
         if (multiplayer && multiplayer->getMultiplayerMode() == MultiplayerGame::NoMode)
             gui.isRunning = false;
         gatherAndAdvanceOrders(st.wasReadyLastTick);
-        readyNow = net->allOrdersReceived();
+        readyNow = net->tickReady();
         const Uint32 tickBefore = gui.game.stepCounter;
         executeOrdersAndStep(readyNow);
         if (gui.game.stepCounter != tickBefore)

@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "LockstepSession.h"
 #include "Order.h"
 #include <memory>
 #include <vector>
@@ -13,8 +14,9 @@
 ///the correct time slot. It serves partially to hide latency, Orders
 ///are set to execute a fixed number of ticks ahead, and this class
 ///handles that discrepancy. It is used always, local or net games,
-///as the central message pump for Orders.
-class NetEngine
+///as the central message pump for Orders. The engine drives it through the
+///LockstepSession interface.
+class NetEngine : public LockstepSession
 {
 public:
 	///Constructs the NetEngine
@@ -24,30 +26,33 @@ public:
 	void setNetworkInfo(int networkOrderRate, std::shared_ptr<NetConnection> client);
 
 	///Advances the step
-	void advanceStep(Uint32 checksum);
+	void advanceStep(Uint32 checksum) override;
 
 	///Clears all the orders at the top of the queues
-	void clearTopOrders();
+	void clearTopOrders() override;
 
 	//Pushes an order to the NetEngine. AI's are special because they don't have padding around orders
-	void pushOrder(std::shared_ptr<Order> order, int playerNumber, bool isAI);
+	void pushOrder(std::shared_ptr<Order> order, int playerNumber, bool isAI) override;
 	
 	///Retrieves the order for the given player for this turn
-	std::shared_ptr<Order> retrieveOrder(int playerNumber);
+	std::shared_ptr<Order> retrieveOrder(int playerNumber) override;
 
 	///Adds a order from the local player, which will be queued and sent across the network when needed
-	void addLocalOrder(std::shared_ptr<Order> order);
+	void addLocalOrder(std::shared_ptr<Order> order) override;
 	
 	///Tells whether the network is ready at the current tick. For
 	///the network to be ready, all Orders from all players must be
 	///present, otherwise it will have to hold for received Orders.
 	bool allOrdersReceived();
+
+	///LockstepSession: the tick is ready once all orders are received
+	bool tickReady() override { return allOrdersReceived(); }
 	
 	///Returns the current step number
 	int getStep();
 
 	///Sends all pending orders across the network without a checksum. This is used if the game has to end immediately
-	void flushAllOrders();
+	void flushAllOrders() override;
 	
 	///Adds padding for the player for the given latency,
 	///this is used because with latency, there aren't any
@@ -55,21 +60,21 @@ public:
 	void prepareForLatency(int playerNumber, int latency);
 	
 	///Returns true if the given player has provided an order and is ready to go
-	bool orderReceived(int playerNumber);
+	bool orderReceived(int playerNumber) override;
 	
 	///Returns the mask representing each player that the NetEngine is waiting
 	///on for this step
-	Uint32 getWaitingOnMask();
+	Uint32 getWaitingOnMask() override;
 
 	///Checks the checksums of all players for this step.
 	///returns false if they don't match
-	bool matchCheckSums();
+	bool matchCheckSums() override;
 
 	///This sends an order through the network that causes the latency adjustment to be increased
 	void increaseLatencyAdjustment();
 	
 	///Set the localPlayer, only necessary in replays
-	void setLocalPlayer(int player);
+	void setLocalPlayer(int player) override;
 	
 private:
 

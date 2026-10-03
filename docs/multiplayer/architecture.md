@@ -4,7 +4,8 @@ Globulation 2's online play is being rebuilt on a new foundation: a TypeScript
 platform service for accounts, rooms, matches, ratings and maps, and a C++ relay
 that sequences turns. This guide describes the design, the contracts between the
 parts, and how to work on the platform. Identity is covered in
-[identity](identity.md). The binary turn protocol between clients and relays is
+[identity](identity.md), and quick-match queues and ratings in
+[ratings and matchmaking](ratings-and-matchmaking.md). The binary turn protocol between clients and relays is
 owned by the turn-netcode work and documented in `docs/multiplayer/turn-protocol.md`.
 
 The legacy YOG lobby, router and LAN code keep working unchanged until the
@@ -29,7 +30,7 @@ cutover milestone (M9), when they are deleted. There is no data import from YOG.
 | Part | Code | Role |
 | --- | --- | --- |
 | `platform-api` | `platform/apps/api` | Public REST (`/api/v1`), realtime WebSocket (`/realtime`), internal endpoints for relays and agents (`/internal`), health (`/healthz`, `/readyz`). Stateless; run any number of replicas. |
-| `platform-worker` | `platform/apps/worker` | Applies engine-job results; runs the scheduler (maintenance now, matchmaker and rating sweeps later) on the one replica holding the leader lock. |
+| `platform-worker` | `platform/apps/worker` | Applies engine-job results (recording verify-match verdicts and applying ratings); runs the scheduler (maintenance, matchmaker, rating sweep) on the one replica holding the leader lock. |
 | `engine-agent` | `platform/apps/engine-agent` | Runs engine jobs for exactly one sim version. |
 | web app | `platform/apps/web` | Sign-in pages, invite landing, profiles, leaderboards, maps (React + Vite). |
 | relay | `src/relay/` (M2) | Clock and turn sequencing for matches; trusts only signed tickets. |
@@ -175,8 +176,8 @@ database in tests.
 | Infrastructure | `blobs`, `relays`, `engine_agents`, `engine_jobs` |
 | Rooms | `rooms` (settings JSON, revision), `room_members`, `room_seats`, `room_chat_messages` |
 | Matches | `matches` (the exact `MatchSetup`, seed, map hash, relay, verification), `match_participants`, `match_team_stats`, `match_artifacts` |
-| Ratings | `rating_entities` (an account, or an AI at one sim version), `ratings` (OpenSkill μ/σ per ladder, ordinal generated) |
-| Quick match | `queue_tickets` (one waiting ticket per account) |
+| Ratings | `rating_entities` (an account, or an AI at one sim version), `ratings` (OpenSkill μ/σ per ladder, ordinal generated), `rating_history` (per-match change) |
+| Quick match | `queue_tickets` (one active ticket per account), `match_proposals` and `match_proposal_seats` (groups and accept prompts), `queue_cooldowns` |
 | Maps | `maps`, `map_versions` (content hash, size, dimensions, team count, preview), `map_likes`, `map_reports` |
 
 Hashes are lowercase hex (`sha256_hex` domain), ids are UUIDs, and enumerations

@@ -36,6 +36,10 @@
       },
       "maxItems": 32,
       "description": "Measured round trip to each relay region."
+    },
+    "allowAiOpponent": {
+      "type": "boolean",
+      "description": "\"Allow an AI opponent\": the queue may fill empty seats with AIs after its backfill delay. Default true."
     }
   },
   "additionalProperties": false

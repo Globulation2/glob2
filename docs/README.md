@@ -36,7 +36,8 @@ dated reports and pull-request artifacts do not belong here.
   [toroidal view](features/torus-experiment.md).
 - **Map generators:** [design and implementation index](map-generators/README.md).
 - **Online multiplayer:** [platform architecture](multiplayer/architecture.md),
-  [identity and sign-in](multiplayer/identity.md), the
+  [identity and sign-in](multiplayer/identity.md),
+  [ratings and matchmaking](multiplayer/ratings-and-matchmaking.md), the
   [relay-sequenced turn protocol](multiplayer/turn-protocol.md) and the
   [match relay](multiplayer/relay.md) that hosts it.
 - **Tools:** [distributed tournaments](tools/tournaments.md).

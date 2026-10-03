@@ -115,8 +115,8 @@ public:
 	///Call this to send the the player-changes to the server
 	void updatePlayerChanges();
 	
-	///Sets the associated net engine to push received orders into
-	void setNetEngine(NetEngine* engine);
+	///Sets the associated lockstep session to push received orders into
+	void setNetEngine(LockstepSession* engine);
 	
 	///Causes the game to be started on all clients.
 	void startGame();
@@ -227,7 +227,7 @@ private:
 	Uint8 numberOfConnectionAttempts;
 
 	//API/engine stuff
-	NetEngine* netEngine;
+	LockstepSession* netEngine;
 	NetGamePlayerManager playerManager;
 	ListenerList<MultiplayerGameEventListener> listeners;
 };
