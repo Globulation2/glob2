@@ -38,6 +38,13 @@ namespace Turn
 		std::uint32_t presenceRefreshTicks = 25;
 		std::uint32_t maxRejoins = 3;
 		std::size_t tickByteBudget = MAX_TICK_ORDER_BYTES;
+		/// Load barrier: the match clock (tick 0) starts once every human seat has
+		/// said Hello (clients connect after loading the game), or this long after
+		/// the sequencer was created, whichever is first. Until then no bundle is sent
+		/// and no grace runs; a seat still missing then joins late under the usual
+		/// grace, counted from the start. 0 starts the clock at creation (the LAN host
+		/// waits for every Hello before it creates its sequencer).
+		std::uint64_t startBarrierMicros = 0;
 	};
 
 	/// Where the sequencer's frames go. Implemented by the relay's socket layer, the LAN
@@ -86,8 +93,13 @@ namespace Turn
 		/// Advances the clock: grace expiry, bundles, arbitration timeouts, presence.
 		void update(std::uint64_t nowMicros);
 
-		/// The tick in progress at the given time.
+		/// The tick in progress at the given time (0 while the load barrier holds).
 		std::uint32_t relayTick(std::uint64_t nowMicros) const;
+		/// The match clock runs (the load barrier has lifted).
+		bool clockStarted() const { return clockRunning; }
+		/// When the clock started, in the host's microseconds (creation time without a
+		/// barrier).
+		std::uint64_t clockStartMicros() const { return start; }
 		/// When the next live bundle is due. A host that calls update() at this time
 		/// (rather than on a coarse timer) sends every bundle on its tick boundary, so
 		/// its timer adds no jitter to the clients' buffers.
@@ -143,10 +155,16 @@ namespace Turn
 			std::uint32_t executedTick = 0;
 			std::uint32_t lastClientSequence = 0;
 			std::uint32_t rejoins = 0;
+			/// R - executedTick when the seat's last Ping (or Hello) arrived, and R then.
+			std::uint32_t lagAtPing = 0;
+			std::uint32_t pingTick = 0;
+			/// Smoothed transport round trip (transportRoundTrip); 0 until measured.
+			std::uint64_t rttMicros = 0;
 		};
 		struct Peer
 		{
 			int seat = -1;
+			std::uint16_t version = PROTOCOL_VERSION; ///< negotiated in Hello
 		};
 		struct TickReports
 		{
@@ -179,13 +197,21 @@ namespace Turn
 		void event(std::uint8_t seat, MatchEventKind kind);
 		void broadcastPresence();
 		Presence presenceSnapshot() const;
+		SeatLatency latencySnapshot() const;
+		/// How far the seat's game is behind the relay clock: the lag its last Ping
+		/// reported, growing once Pings are overdue (a stalled or silent client).
+		std::uint32_t seatLag(const Seat& s, std::uint32_t tick) const;
 		void dropPeer(PeerId peer);
+		/// Lifts the load barrier when every human seat has connected or its time is up.
+		void checkBarrier();
 
 		SequencerConfig config;
 		std::uint32_t humanMask;
 		Admission admission;
 		SequencerOutput& output;
 		std::uint64_t start;
+		std::uint64_t created;
+		bool clockRunning = true;
 		std::uint64_t now = 0;
 		std::uint64_t tickPeriod;
 

@@ -16,7 +16,8 @@ from pathlib import Path
 import shutil
 import sys
 
-ENTRY_FILES = ('index.wasm', 'index.js')
+# Runtimes before the loader that picks one, and the page last.
+ENTRY_FILES = ('threaded/index.wasm', 'threaded/index.js', 'index.wasm', 'index.js', 'loader.js')
 ENCODINGS = ('', '.br', '.gz')
 RECORD = '.installed-assets.json'
 
@@ -38,7 +39,10 @@ def main():
         target = served / 'assets' / name
         if not target.is_file() or target.stat().st_size != (release / 'assets' / name).stat().st_size:
             copy(release / 'assets' / name, target)
+    (served / 'threaded').mkdir(exist_ok=True)
     for name in ENTRY_FILES + ('index.html',):
+        if not (release / name).is_file():
+            sys.exit(f'install-web-client: {release / name} is missing')
         for suffix in ENCODINGS[1:]:
             if not (release / (name + suffix)).is_file():
                 (served / (name + suffix)).unlink(missing_ok=True)
@@ -49,6 +53,7 @@ def main():
     # Earlier builds shipped one data file without compression.
     for suffix in ENCODINGS:
         (served / ('index.data' + suffix)).unlink(missing_ok=True)
+        (served / ('threaded/index.data' + suffix)).unlink(missing_ok=True)
     record = served / RECORD
     try:
         previous = set(json.loads(record.read_text()))

@@ -345,7 +345,7 @@ void PhoneEditor::paintStroke()
 	}
 	if (changed)
 	{
-		snapshot.expires = SDL_GetTicks64() + InGameTouchTheme::brushUndoMs;
+		snapshot.expires = SDL_GetTicks() + InGameTouchTheme::brushUndoMs;
 		undo = std::move(snapshot);
 	}
 }
@@ -429,7 +429,7 @@ void PhoneEditor::act(const TouchAction &action)
 			{
 				deferred = DeferredStroke{std::move(stroke), int(editor.selectionMode), int(editor.terrainType),
 										  int(editor.brush.getFigure()), int(editor.brush.getType()),
-										  SDL_GetTicks64()};
+										  SDL_GetTicks()};
 				stroke.clear();
 				lastTapTicks = eventTicks;
 				lastTapPoint = p;
@@ -656,11 +656,12 @@ bool PhoneEditor::event(SDL_Event event)
 {
 	if (editor.hasDialog())
 	{
+		GAGCore::GraphicContext::translateMouseEvent(&event);
 		editor.delegateMenu(event);
 		return true;
 	}
-	if (event.type == SDL_WINDOWEVENT && (event.window.event == SDL_WINDOWEVENT_FOCUS_LOST ||
-										  event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED))
+	if ((event.type >= SDL_EVENT_WINDOW_FIRST && event.type <= SDL_EVENT_WINDOW_LAST) && (event.type == SDL_EVENT_WINDOW_FOCUS_LOST ||
+										  event.type == SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED))
 	{
 		cancel();
 		return false;
@@ -668,32 +669,33 @@ bool PhoneEditor::event(SDL_Event event)
 	prepare();
 	ViewPoint p;
 	int phase = -1;
-	Sint64 device = -1, id = 0;
+	SDL_TouchID device = SDL_MOUSE_TOUCHID;
+	SDL_FingerID id = 0;
 	switch (event.type)
 	{
-	case SDL_FINGERDOWN:
-	case SDL_FINGERMOTION:
-	case SDL_FINGERUP:
+	case SDL_EVENT_FINGER_DOWN:
+	case SDL_EVENT_FINGER_MOTION:
+	case SDL_EVENT_FINGER_UP:
 		p = {event.tfinger.x * globalContainer->gfx->getW(),
 			 event.tfinger.y * globalContainer->gfx->getH()};
-		device = event.tfinger.touchId;
-		id = event.tfinger.fingerId;
-		phase = event.type == SDL_FINGERDOWN ? 0 : event.type == SDL_FINGERUP ? 2 : 1;
+		device = event.tfinger.touchID;
+		id = event.tfinger.fingerID;
+		phase = event.type == SDL_EVENT_FINGER_DOWN ? 0 : event.type == SDL_EVENT_FINGER_UP ? 2 : 1;
 		break;
-	case SDL_MOUSEBUTTONDOWN:
-	case SDL_MOUSEBUTTONUP:
+	case SDL_EVENT_MOUSE_BUTTON_DOWN:
+	case SDL_EVENT_MOUSE_BUTTON_UP:
 		if (event.button.which == SDL_TOUCH_MOUSEID || event.button.button != SDL_BUTTON_LEFT)
 			return true;
 		p = {double(event.button.x), double(event.button.y)};
-		phase = event.type == SDL_MOUSEBUTTONDOWN ? 0 : 2;
+		phase = event.type == SDL_EVENT_MOUSE_BUTTON_DOWN ? 0 : 2;
 		break;
-	case SDL_MOUSEMOTION:
+	case SDL_EVENT_MOUSE_MOTION:
 		if (event.motion.which == SDL_TOUCH_MOUSEID)
 			return true;
 		p = {double(event.motion.x), double(event.motion.y)};
 		phase = 1;
 		break;
-	case SDL_MOUSEWHEEL:
+	case SDL_EVENT_MOUSE_WHEEL:
 		if (inspecting())
 		{
 			inspectorScroll = std::clamp(
@@ -706,8 +708,8 @@ bool PhoneEditor::event(SDL_Event event)
 											 globalContainer->gfx->logicalUnitsPerPoint(),
 								0., maximum);
 		return true;
-	case SDL_KEYDOWN:
-		if (event.key.keysym.sym == SDLK_ESCAPE)
+	case SDL_EVENT_KEY_DOWN:
+		if (event.key.key == SDLK_ESCAPE)
 		{
 			cancel();
 			tools = !tools;
@@ -719,13 +721,13 @@ bool PhoneEditor::event(SDL_Event event)
 	}
 	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
 	const auto key = std::make_pair(device, id);
-	const Uint64 time = widenTicks(event.common.timestamp, lastTick);
+	const Uint64 time = (event.common.timestamp / SDL_NS_PER_MS);
 	if (phase == 0 && !touch.hasPointers() && !drag)
 	{
 		// A touch catches coasting content where it is; presets are re-read so
 		// the settings sliders apply to the next gesture.
 		stopScrolling();
-		fingerIsTouch = device != -1;
+		fingerIsTouch = device != SDL_MOUSE_TOUCHID;
 		ScrollPhysicsConfig mapConfig = ScrollPresets::mapViewport();
 		mapConfig.momentum = mapConfig.momentum && fingerIsTouch;
 		mapMotion.setConfig(mapConfig);
@@ -809,7 +811,7 @@ bool PhoneEditor::event(SDL_Event event)
 			onMap = held == -1 && content.contains(p);
 			const bool placing = editor.selectionMode == MapEdit::PlaceBuilding ||
 								 editor.selectionMode == MapEdit::PlaceUnit;
-			const bool zoomDrag = onMap && !placing && zoomArmed(event.common.timestamp, p);
+			const bool zoomDrag = onMap && !placing && zoomArmed(event.common.timestamp / SDL_NS_PER_MS, p);
 			if (zoomDrag)
 				deferred.reset(); // That tap was the first half of the zoom.
 			else
@@ -861,7 +863,7 @@ bool PhoneEditor::event(SDL_Event event)
 	}
 	else
 	{
-		eventTicks = event.common.timestamp;
+		eventTicks = event.common.timestamp / SDL_NS_PER_MS;
 		actions = touch.up(device, id, {p.x / unit, p.y / unit}, time);
 		if (key == touchKey)
 			railTouched = -1;
@@ -882,18 +884,18 @@ void PhoneEditor::label(ViewRect r, const std::string &text)
 {
 	auto *gfx = globalContainer->gfx;
 	auto *font = globalContainer->standardFont;
-	const double scale = gfx->logicalUnitsPerPoint();
+	const double unit = gfx->logicalUnitsPerPoint(), scale = gfx->textUnitsPerPoint();
 	font->pushStyle(Font::Style(Font::STYLE_NORMAL, Color(255, 249, 229)));
 	SDL_Rect clip{int(r.x), int(r.y), int(r.w), int(r.h)};
-	gfx->setUITransform(scale, r.x + 4 * scale, r.y + (r.h - 16 * scale) / 2, &clip);
-	gfx->drawString(0, 0, font, text, std::max(1, int(r.w / scale - 8)));
+	gfx->setUITransform(scale, r.x + 4 * unit, r.y + (r.h - 16 * scale) / 2, &clip);
+	gfx->drawString(0, 0, font, text, std::max(1, int((r.w - 8 * unit) / scale)));
 	gfx->setUITransform();
 	gfx->setClipRect();
 	font->popStyle();
 }
 void PhoneEditor::draw()
 {
-	if (deferred && SDL_GetTicks64() - deferred->ticks >= InGameTouchTheme::doubleTapWindowMs)
+	if (deferred && SDL_GetTicks() - deferred->ticks >= InGameTouchTheme::doubleTapWindowMs)
 		commitDeferred();
 	if (editor.hasDialog())
 	{
@@ -960,7 +962,7 @@ void PhoneEditor::draw()
 								int(3 * unit), editor.game.teams[editor.team]->color);
 	}
 	drawInteractionPreview();
-	if (undo && (!paintMode() || SDL_GetTicks64() >= undo->expires))
+	if (undo && (!paintMode() || SDL_GetTicks() >= undo->expires))
 		undo.reset();
 	if (paintMode())
 	{

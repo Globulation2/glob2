@@ -92,8 +92,13 @@ phones and the web client, and needs no loopback server in the game.
 2. The client opens the system browser at `signInUrl` and shows the code.
 3. `/signin` (server-rendered by the API, no scripts, strict CSP, no cross-site Referer)
    shows the same code with a warning to continue only if the player started
-   the sign-in, the provider buttons and, if enabled, the local password form.
-   The first browser to open the link is bound to the attempt (a random cookie
+   the sign-in, the provider buttons and, if enabled, the local password forms
+   (separate Sign in and Create account forms, `current-password` and
+   `new-password`). A problem with a local form (short password, invalid or taken
+   username, unknown username, wrong password) re-renders this page, code
+   included, with the message on the field and the username kept, never the
+   password; the status is still `400`, `401`, `403` or `409`. Other sign-in
+   problems get a page that links back to `/signin`. The first browser to open the link is bound to the attempt (a random cookie
    whose hash is stored on the attempt); other browsers are refused.
 4. The player signs in at the provider; the callback resolves the identity:
    - on an authenticated socket (mode `link`, the default there) a new identity
@@ -193,6 +198,8 @@ cd platform
 npm run platform -- admin grant <account id or exact display name>   # admin
 npm run platform -- admin grant <account> --role moderator
 npm run platform -- admin revoke <account>                           # back to user
+npm run platform -- admin ban <account> [--reason <text>]
+npm run platform -- admin delete <account> [--reason <text>]
 ```
 
 Only registered accounts can hold a role. Minimal REST endpoints cover what the
@@ -206,10 +213,27 @@ YOG chat commands did; the web admin pages come in M8.
 | `POST …/{id}/mute` | moderator | `AdminMuteRequest`; `minutes: 0` lifts it |
 | `POST …/{id}/ban` | admin | `AdminBanRequest`; ends every session of the account at once |
 | `POST …/{id}/role` | admin | `AdminRoleRequest` |
+| `DELETE …/{id}?reason=` | admin | deletes the account (`204`), see below |
 
 Nobody can change their own role or ban themselves, and mutes and bans apply
 only to accounts of a lower role. Every action is recorded in
 `admin_audit_log` (a null actor is the command line).
+
+**Deleting an account** (guest or registered; `AdminService.deleteAccount`) keeps
+the row, marked `deleted`, because matches, ratings and the audit log refer to it.
+In one transaction it:
+
+- renames it "Deleted player", also on its past match participations;
+- removes its sign-in identities (so a username can be registered again) and device
+  credentials, and revokes its refresh tokens and web sessions (open sockets get
+  `session.revoked` when the API runs the deletion);
+- deletes its catalog maps, like a map deletion (versions, likes, reports and
+  download counts go; the bytes stay for matches played on them), its likes of
+  other maps, and its queue tickets.
+
+Matches, rating rows (deleted accounts are already left out of leaderboards and
+player pages), uploaded blobs and rooms it is in stay; the presence sweep drops it
+from rooms once its sockets close. There is no undo.
 
 ## Hardening
 

@@ -2,7 +2,7 @@
 #pragma once
 #include <cstdint>
 #include <string>
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <functional>
 #include <memory>
 #include <vector>
@@ -24,6 +24,9 @@ void run(std::unique_ptr<Loop> loop, std::function<void()> complete);
 // Compatibility wait for native-only modal loops. Browser-reachable code must
 // use scheduled screens or cooperative tasks; the browser implementation rejects it.
 void wait(std::uint32_t milliseconds);
+
+// Initialize host compatibility state after a new OpenGL context is current.
+void initializeOpenGLContext();
 
 // Consume the newest host viewport request at an application frame boundary.
 bool takeViewportSize(int &width, int &height);
@@ -86,6 +89,11 @@ std::unique_ptr<Persistence> persistStorage();
 // false when the host cannot, or a popup blocker refused it; browsers allow it
 // reliably only while handling a click.
 bool openUrl(const std::string &url);
+// Puts text on the system clipboard. In the browser this is the asynchronous
+// Clipboard API (with a fallback for browsers without it), which needs the
+// transient activation of a recent click; SDL's own clipboard does not reach
+// the page there. Returns false when the host certainly could not copy.
+bool copyText(const std::string &text);
 
 // Read-only diagnostics; hosts decide whether and how to publish them.
 void screenChanged(const char *name);

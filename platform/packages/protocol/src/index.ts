@@ -4,6 +4,7 @@ export * from './matchSetup.ts';
 export * from './ticket.ts';
 export * from './relay.ts';
 export * from './network.ts';
+export * from './connectionQuality.ts';
 export * from './resources.ts';
 export * from './history.ts';
 export * from './realtime.ts';

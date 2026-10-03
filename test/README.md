@@ -5,7 +5,7 @@ the same objects as the game:
 
 | Binary | Links | How it runs |
 | --- | --- | --- |
-| `glob2-unit-tests` | libgag, libusl, a few production sources and the stubs in `test/unit/stubs/` | one process, in-process |
+| `glob2-unit-tests` | libgag, libusl, a few production sources and the stubs in `test/unit/stubs/` | headless cases share a process; display cases run in separate processes |
 | `glob2-engine-tests` | every client object except the entry point | one process per test case, each in a disposable profile |
 
 Both are listed in `test/tests.py`, built by `test/SConscript` and land in
@@ -38,8 +38,10 @@ python3 test/run_tests.py --update-fixtures --filter 'WinningConditions/*'
 a fresh `GLOB2_USER_DATA_DIR`, `HOME`, temp directory and SDL's dummy drivers, a
 timeout by tag, output captured and shown only on failure, and a check that the
 profile's preferences were not rewritten. `[display]` cases get a real video driver,
-under `xvfb-run` on Linux without `DISPLAY`, with server resets disabled so SDL
-can recreate contexts without racing X server reinitialization; they are skipped on Windows and with
+under `xvfb-run` on Linux without `DISPLAY`, with an isolated Openbox window
+manager to apply SDL3 fullscreen requests. Install `xvfb`, `xauth`, `openbox` and
+`x11-utils`. Server resets are disabled so SDL can recreate contexts without racing
+X server reinitialization; they are skipped on Windows and with
 `--no-display`. Results merge into one JUnit file (`--junit`) and, under GitHub
 Actions, into the step summary with a `::error file=,line=` annotation per failure.
 `test/test_run_tests.py` covers the runner itself.
@@ -50,7 +52,10 @@ Standard runs keep display tests windowed. The HD artwork integration test's
 fullscreen camera-continuity checks and the text raster test's fullscreen
 downscaling check run only with `--fullscreen`; all their windowed checks still
 run by default, including with `--in-process`. Linux CI enables `--fullscreen`
-under its virtual display. To opt in when invoking a test binary directly, set
+under its virtual display, with `--display-jobs 1` to avoid concurrent software
+renderer startup stalls. Headless cases remain parallel. Linux timeout reports
+include the owned process group, thread wait locations and Xvfb window mapping state; GitHub Actions also
+collects a bounded GDB backtrace before cleanup when available. To opt in when invoking a test binary directly, set
 `GLOB2_TEST_FULLSCREEN=1`; the Python runner overrides that variable according to
 its flag, so an inherited setting cannot enable fullscreen in a standard run.
 
@@ -132,6 +137,29 @@ doctest binary of its own (the relay role builds no engine or SDL code). Run it
 directly, then `python3 -m unittest discover -s tests/relay -v` for the end-to-end
 tests against the real binary. `test/fixtures/relay-tickets/` copies the protocol
 package's ticket fixtures. See [docs/multiplayer/relay.md](../docs/multiplayer/relay.md#tests).
+## Team capacity and format 127
+
+`TeamLimit` checks all sixteen controller/header slots, entity identifiers, packed
+resource-growth attribution, full-array enemy iteration, indexed text alliances,
+dense-map request boundaries, malformed script-generation counts, and
+deterministic sixteen-team save/load continuation. `Maxima.Economy` covers counted opponents,
+legacy twelve-record loading and malformed counts. Replay and network boundaries
+remain covered by `JavaScriptCompatibility` and `TeamStatsSave`.
+
+`fixtures/team-limit/pre-v127-maxima.game.gz` is an actual format-126 tick-zero
+save: Even Ground (method 60), map/game seed 7, 256×256, four colonies with
+Maxima controllers and default generator controls. It checks both Maxima records
+and the unit/building generation-plane migration, compares serialized AI state,
+and advances paired continuations through 128 actual AI decisions and simulation
+ticks after a new-format reload. Each continuation owns its RNG snapshot.
+
+The five expanded designed generators retain golden cases at 13–16 colonies on
+512×512. Refresh selected landscapes on the current platform with
+`MapGeneratorGoldenTest <profile> --update --only=gauntlet,encircled-kingdom,faulted-city,portage-lakes,hungry-marches`.
+`--require-rows` requires the current revision of every registered generator on
+the executing platform; fresh foreign rows cannot substitute for local coverage.
+`MapGeneratorGoldenCoverageTest` covers stale, missing and mixed-revision tables.
+Regenerate each affected platform's rows using its actual binary.
 
 ## Maxima
 
@@ -142,14 +170,23 @@ saved-game continuation coverage.
 
 `GameGUISelectionHarness.cpp` links the real client objects with a test entry
 point. It exercises selected building/unit deletion before the next GUI draw,
-null selections, and a live unit with no peer. It runs headlessly, using the real
-`GameGUI`, entity classes, selection setters, and destruction hooks. A friend
-fixture accesses the private selection API without exposing it to game callers.
+null selections, a live unit with no peer, gid reuse (the selection and the
+failing-unit recording must not move to the newcomer), a building destroyed by
+a tick (selection and pending shadow cleared through `ClientEvents`) and unit
+conversion (the selection follows the unit). It runs headlessly, using the real
+`GameGUI`, entity classes and selection setters. A friend fixture accesses the
+private selection API without exposing it to game callers.
 
-Runs as the `GameGUISelection` suite of `glob2-engine-tests`:
+`ClientChannelsTest.cpp` covers the `src/sim/` channels: team events reaching the
+GUI once, in order and aged like `Team::updateEvents`; script presentation going
+through `ClientCommandSink`; the SGSL Space acknowledgement in `ClientRequests`;
+and order effects such as pause arriving as events.
+
+Run as the `GameGUISelection` and `ClientChannels` suites of `glob2-engine-tests`:
 
 ```sh
 python3 test/run_tests.py --filter 'GameGUISelection/*'
+python3 test/run_tests.py --filter 'ClientChannels/*'
 ```
 
 For AddressSanitizer and UndefinedBehaviorSanitizer on macOS or Linux, build the
@@ -162,8 +199,8 @@ scons -j8 release=0 server=0 --build=build/tests-asan engine-tests \
 python3 test/run_tests.py --build-dir build/tests-asan --filter 'GameGUISelection/*'
 ```
 
-If Homebrew sdl2-compat cannot locate SDL3 under the macOS sanitizer, prefix
-the harness command with `DYLD_LIBRARY_PATH=/opt/homebrew/lib`.
+Use `GLOB2_SDL3_PREFIX` when building against the pinned SDL3 dependency prefix.
+The native build records its library directory in the runtime search path.
 
 SCons caches compiler/linker flags; pass `CXXFLAGS=-g LINKFLAGS=-g` to return to a
 normal build. This is a direct method regression, not an interactive replay test.
@@ -1031,6 +1068,19 @@ uses the C++ harnesses. See the existing performance guide for corpus preparatio
 and paired CPU/wall-time benchmarking.
 
 
+### Simulation-thread equivalence
+
+`python3 test/check_sim_thread.py CANDIDATE --baseline BASELINE` runs new games
+(RNG seeding), a generated map, a version 121 save and save continuation (RNG
+restore) with both executables, and requires identical checksum sidecars, final
+saves and replay bytes. `--candidate-args` passes extra engine arguments to the
+candidate only; `--output DIR` retains the evidence. Each scenario also runs the
+baseline twice: replay bytes that differ between those two runs (known
+run-varying header fields) are reported and excluded. Run it with
+`GLOB2_SYNC_RAND_STRICT=1` to abort on any synchronized draw that is not bound to
+the simulated game's stream. Unix only (`wait4`), like `check_parallel_compute.py`.
+
+
 ### Delayed gradient pipeline
 
 The `GradientPipeline` unit suite (`python3 test/run_tests.py --binary unit --filter
@@ -1078,12 +1128,13 @@ one-local-player header and seed they need. Design and numbers:
 See the [scripting guide](../docs/development/javascript.md) and
 [API reference](../docs/development/javascript-api.md) for the public boundary.
 
-Current saves use format 125, preserving released format 124's experiment-header
-layout through version-gated loading. Formats 58–124 receive scripting identities
-on load; format 125 validates its stored identities and complete generation tables.
-The minimum save version remains 58, the network protocol is 48, and the replay
-minimum remains 123. Draft JavaScript fixtures use format 125; released historical
-fixtures remain unchanged.
+Current saves use format 127, with counted generation tables for sixteen teams.
+Version-gated loading preserves released format 124's experiment-header layout
+and remaps the twelve-team generation tables stored by formats 125 and 126.
+Formats 58–124 receive scripting identities on load; later formats validate their
+stored identities and generation tables. The minimum save version remains 58,
+the network protocol is 50, and the replay minimum is 127. Draft JavaScript
+fixtures use format 125; released historical fixtures remain unchanged.
 
 Build `unit-tests engine-tests` with SCons and run
 `python3 test/run_tests.py --build-dir build/darwin/client/release --filter 'JavaScript*/*'`
@@ -1187,3 +1238,136 @@ for fixture capture, paired CPU measurements and diagnostic overrides. The
 `SoftwareRenderer` suite checks raster sampling, ordering, opacity revisions and
 terrain-cache correctness; `PortableRenderer`, `WindowResize`, `MapRenderResize` and
 `HighResolutionIntegration` cover the shared facade and window lifecycle.
+
+## Castor saved-game continuation
+
+`CastorContinuationTest.cpp` compares emitted order bytes, per-tick simulation
+checksums and RNG state across saves during boot, map computation and active
+colony management. It also checks binary/text snapshot round trips and the
+historical timer-only Castor AI formats (versions 1 and 2).
+
+```sh
+python3 test/run_tests.py --filter 'CastorContinuation/*'
+```
+
+Save format 126 writes Castor AI format 3, preserving project order, boot progress,
+strategy, control timers and map-cache history. Older saves remain readable with
+their historical restart behavior; omitted state cannot be recovered from them.
+New games retain the existing decision sequence. This save change does not raise
+the replay acceptance floor.
+
+## Native coverage workflow
+
+Build and measure the regular native tier with a matching Clang/LLVM toolchain:
+
+```sh
+python3 test/run_coverage.py --quick --timeout 900 -j4
+python3 -m unittest discover -s test -p test_run_coverage.py -v
+```
+
+Use an optimized coverage build for the full tier, including expensive generator
+registry contracts and custom-game previews:
+
+```sh
+python3 test/run_coverage.py --optimization 1 --timeout 1800 -j4
+```
+
+Native macOS binaries hold a scoped user-initiated activity while tests run,
+preventing App Nap from throttling long background cases. The activity ends
+when the test binary exits.
+
+Each optimization level uses a separate default build directory. Keep reports
+from different optimization levels separate. The manifest records the flags and
+selection; the explicit timeout accommodates instrumented integration runs. Add `--fullscreen` only on a display that supports mode
+switches. `--no-display` selects a headless subset and is recorded in the report.
+Versioned Linux tools can be selected with `--cc clang-18 --cxx clang++-18
+--llvm-profdata llvm-profdata-18 --llvm-cov llvm-cov-18`.
+
+Each run gets a fresh directory under ignored `artifacts/native-coverage/`, with
+build/test logs, JUnit, compiler/tool versions, source revision, selection,
+profiles, full coverage JSON, weighted implementation summaries and HTML.
+Engine and unit profiles are merged and exported separately: the engine report
+is the implementation baseline, and the unit report supplements it. Never
+average their percentages or merge independently linked copies of the same
+source. Multiplayer (`src/net`, `src/yog` and network-tagged cases), external
+libraries and test implementations are excluded from implementation totals.
+Unlinked/platform-specific sources are listed as unmeasured, rather than assigned
+zero coverage. Header coverage remains in the file inventory, apart from the
+implementation area totals. Coverage-tool diagnostics fail the run so a damaged
+export cannot appear successful.
+
+The added behavior coverage focuses on the following native boundaries:
+
+| Cases | Behaviors protected |
+| --- | --- |
+| `AIDecisionCoverage`, `CastorContinuation` | Seeded AI orders, pause neutrality, saved continuation, simulation checksums and RNG state |
+| `CortexNetCoverage`, `CortexPolicyCoverage`, `CortexActionCoverage` | Integer model arithmetic, malformed models, eligibility and thresholds, worker budgets, and orders applied by the engine |
+| `LegacyScriptCoverage`, `USLCoverage` | Parsing failures, legacy and painted area waits, counts, flags and suspension, summons and alliances, recursion, thread yields, garbage collection and runtime errors |
+| `GUIOrderCoverage`, `GUIInteractionCoverage` | Queued requests, clamps, deduplication, field reconciliation, replay input, desktop menu interactions and unit information |
+| `EditorActionCoverage` | Action dispatch, unit/building editing, matching controls and save/load persistence |
+| `SurfaceCoverage` | Alpha grids, cropped/scaled blits, clip boundaries and progress-bar pixels |
+
+Use uncovered functions and branch annotations to choose the next scenario by
+consequence: saves and deterministic decisions first, then authoritative orders,
+script execution and editable state, followed by rendering and diagnostics.
+Line coverage alone does not establish save continuity, equivalent execution on
+another platform, or playable game behavior. The Linux CI coverage artifact
+uses the regular tier; slow integration and cross-platform checks remain separate.
+
+The slow `[map-generators]` tier reports default repeatability, rectangular-map
+and rejection checks separately for each registered generator. Registry stress,
+landscape, framework and editor-default checks also have independent timeouts
+and logs; a timeout must identify its case rather than hide the whole catalog.
+
+Use `python3 test/test_cli_smoke.py --binary <client> --artifacts artifacts/cli --junit artifacts/cli.xml`
+for real executable contracts: argument validation, map image/report workflows,
+headless worker parity and saved continuation. `test/run_coverage.py --with-cli`
+builds the instrumented client and exports these profiles separately under `client/`;
+never merge its counts with independently linked engine or unit reports.
+
+Native CLI platform evidence can be compared with
+`python3 test/check_cli_evidence.py <artifact-root> --require-platform linux --require-platform windows`.
+It compares all 64 complete tick records, including aggregate and entity checksums.
+The browser saved-match smoke checks resize, menu cancellation and resumed ticks;
+Android smoke also exercises Settings input and verifies application profile
+files survive background/resume and a fresh-process relaunch.
+
+## Untrusted file regression coverage
+
+`UntrustedFiles` mutates serialized entity types, levels and identities, terrain
+resources/occupants, sector dimensions and SGSL resume points. It also checks the
+compressed-input size limit, the legacy twenty-byte create-order boundary, USL
+file-loading denial, unsafe output filenames, AI tags/counts/nesting, network
+queue indices and invalid replay order references. Every native AI also loads
+its initial saved state under checked reads. `ReplayStepCounter`
+checks every truncated prefix of a replay body and step-total overflow;
+`USLCoverage` checks native argument type errors, invalid calls, arithmetic
+overflow, excessive syntax nesting and runtime recursion limits. Run these alongside
+`SavegameSafety`, `LegacyScriptCoverage` and `TeamLimit` for continuation and
+legacy compatibility. These targeted tests are not an exhaustive fuzz campaign.
+
+
+## Memory representation compatibility
+
+`MaximaContinuation` compares compact distance fields and food source masks against
+the legacy binary and text encodings, including infinity and maximum finite values.
+`Maxima.Farming` checks the box sums against wide reference arithmetic, including
+maximum-density maps. `TeamStatsSave` compares compact overlap counters against a
+wide oracle on minimum-size tori with 1024 overlapping anchors and replacement of
+an entire generation. `PathGradient` checks shared water snapshots, classification
+invalidation and frozen readers; `GradientPipeline` checks job lifetime and scheduling.
+`SavegameSafety` compares chunked streams against the contiguous backend across
+block boundaries, gaps, seeks, zero-length writes and overreads; verifies moved
+ownership and byte-capacity bounds; and compares deferred SHA1 and exact gzip bytes
+for incompressible input and compression levels zero, one, six and nine. It rejects
+truncated, bad-CRC, trailing and concatenated gzip inputs before game loading,
+injects allocation/finalization exceptions, checks atomic failure cleanup, and
+stalls an autosave writer to verify waiting before the next capture and exact
+saved ticks. The optional level-zero compatibility path retains whole buffers;
+normal save-memory measurements use the default compression level.
+
+Run these alongside the existing placement, continuation and engine lifecycle suites.
+For full-game checks, retain identical initial saves, seeds and orders, compare
+per-tick simulation state and replay/save bytes, and test continuation from populated
+checkpoints. The native paired CPU runner and profiling workflow are described in
+[the development reference](../docs/development/reference.md#native-simulation-memory-and-cpu-comparisons).

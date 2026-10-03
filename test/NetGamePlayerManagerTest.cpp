@@ -150,6 +150,26 @@ void testAllAITypes()
 
 TEST_SUITE("NetGamePlayerManager")
 {
+    TEST_CASE("full sixteen-slot lobby refuses extra human and AI controllers")
+    {
+        GameHeader header;
+        NetGamePlayerManager manager(header);
+        manager.setNumberOfTeams(Team::MAX_COUNT);
+        for (int i = 0; i < Team::MAX_COUNT; ++i)
+            manager.addPerson(i + 1, "Player " + std::to_string(i));
+        REQUIRE(header.getNumberOfPlayers() == int(Team::MAX_COUNT));
+        const auto last = header.getBasePlayer(Team::MAX_COUNT - 1);
+        manager.addPerson(100, "Overflow");
+        manager.addAIPlayer(AI::WARRUSH);
+        CHECK(header.getNumberOfPlayers() == int(Team::MAX_COUNT));
+        CHECK(samePlayer(last, header.getBasePlayer(Team::MAX_COUNT - 1)));
+        checkRoundTrip(header);
+        manager.removePlayer(Team::MAX_COUNT - 1);
+        manager.addAIPlayer(AI::WARRUSH);
+        CHECK(header.getNumberOfPlayers() == int(Team::MAX_COUNT));
+        CHECK(header.getBasePlayer(Team::MAX_COUNT - 1).teamNumber == Team::MAX_COUNT - 1);
+    }
+
 	TEST_CASE("Removal")
 	{
 		// Every valid removal position, including slot zero, the last player,

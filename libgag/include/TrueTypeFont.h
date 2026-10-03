@@ -5,7 +5,7 @@
 
 #include <GAGSys.h>
 #include "GraphicContext.h"
-#include "SDL_ttf.h"
+#include <SDL3_ttf/SDL_ttf.h>
 #include <stack>
 #include <map>
 #include <string>

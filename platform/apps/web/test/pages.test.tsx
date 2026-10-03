@@ -276,8 +276,8 @@ describe('routing', () => {
   });
 
   it('builds Watch in browser links for the browser client', () => {
-    expect(watchUrl('https://glob2online.com/api/v1/matches/x/artifacts/replay')).toBe(
-      '/play/?replay=https%3A%2F%2Fglob2online.com%2Fapi%2Fv1%2Fmatches%2Fx%2Fartifacts%2Freplay',
+    expect(watchUrl('https://app.glob2online.com/api/v1/matches/x/artifacts/replay')).toBe(
+      '/play/?replay=https%3A%2F%2Fapp.glob2online.com%2Fapi%2Fv1%2Fmatches%2Fx%2Fartifacts%2Freplay',
     );
   });
 
@@ -322,10 +322,30 @@ describe('pages', () => {
     expect(network).toHaveLength(1);
     expect(network[0]!.textContent).toContain('Alice');
     expect(within(network[0]!).getByText('Fair').className).toBe('badge warn');
-    expect(network[0]!.textContent).toContain('84 ms');
-    expect(network[0]!.textContent).toContain('231');
+    // Every value has its unit and its word from the shared table.
+    expect(network[0]!.textContent).toContain('84 ms · Good');
+    expect(network[0]!.textContent).toContain('95%: 231 ms');
+    expect(network[0]!.textContent).toContain('0.3 s · Good');
+    expect(network[0]!.textContent).toContain('95%: 0.4 s');
     expect(network[0]!.textContent).toContain('4.2 s');
+    expect(screen.getByTestId('network-legend').textContent).toContain(
+      'Good under 150 ms, fair under 300 ms, poor from 300 ms.',
+    );
+    expect(screen.getByTestId('network-legend').textContent).toContain(
+      'Good under 1 s, fair under 2 s, poor from 2 s.',
+    );
     expect(network[0]!.textContent).toContain('6 / 412');
+    // Tables that may scroll sideways are named, focusable regions; on phones the
+    // connection table stacks its rows into labelled cards instead.
+    const connection = screen.getByRole('region', { name: 'Connection quality per player' });
+    expect(connection.tabIndex).toBe(0);
+    expect(connection.className).toContain('stack');
+    expect(
+      within(network[0]!)
+        .getAllByRole('cell')
+        .map((cell) => cell.getAttribute('data-label')),
+    ).toEqual(['Player', 'Quality', 'Ping', 'Behind', 'Disconnects', 'Offline', 'Delayed orders']);
+    expect(screen.getByRole('region', { name: 'Players and results' }).tabIndex).toBe(0);
     expect(screen.getByTestId('watch').getAttribute('href')).toBe(
       watchUrl(`http://localhost/api/v1/matches/${MATCH}/artifacts/replay`),
     );

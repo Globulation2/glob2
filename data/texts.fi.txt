@@ -1434,8 +1434,8 @@ Joen leveys
 Hiekan painotus
 [Select a valid map.]
 Valitse kelvollinen kartta.
-[Shared control needs a free controller slot (maximum 12).]
-Jaettu hallinta vaatii vapaan paikan pelaajalle tai tekoälylle (enintään 12).
+[Shared control needs a free controller slot (maximum %0).]
+Jaettu hallinta vaatii vapaan paikan pelaajalle tai tekoälylle (enintään %0).
 [Smoothing]
 Tasoitus
 [Standard]
@@ -1654,8 +1654,8 @@ Näytä Globulation 2 -kursori.
 Valmis
 [settings Edit shortcut]
 Muokkaa pikanäppäintä
-[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
-Suurentaa valikot, tekstin ja sivupalkin tarkkaresoluutioisella näytöllä.
+[settings Multiply the operating system display scale for menus, text and the sidebar.]
+Kerro käyttöjärjestelmän näytön skaalaus valikoille, tekstille ja sivupalkille.
 [settings Flags]
 Liput
 [settings Full]
@@ -3072,8 +3072,6 @@ Pienoiskartta
 Pikakelaus
 [Hide keyboard]
 Piilota näppäimistö
-[Dialog text size]
-Valintaikkunoiden tekstikoko
 [Player slot]
 Pelaajapaikka
 [Team color]
@@ -3412,8 +3410,6 @@ Voittomahdollisuus: %0 · Vahvuus: %1
 Alin vaadittu taso: %0
 [Confirm %0]
 Ok: %0
-[Dialog text size %0]
-Valintaikkunoiden tekstikoko: %0%
 [%0 %1]
 %0 %1
 [resume game]
@@ -3566,9 +3562,13 @@ Kartan liike-energia
 
 [Custom rules]
 
-[conn ai everywhere]
-
 [conn ai]
+
+[conn behind %0]
+
+[conn behind explanation %0 %1]
+
+[conn behind]
 
 [conn card catching up]
 
@@ -3592,19 +3592,21 @@ Kartan liike-energia
 
 [conn card seconds left %0]
 
-[conn connected]
-
 [conn connections]
 
-[conn delay explanation]
+[conn delay explanation %0 %1]
 
-[conn latency]
+[conn fair]
+
+[conn good]
+
+[conn grid legend]
+
+[conn jitter %0]
 
 [conn leave match]
 
 [conn left]
-
-[conn lost]
 
 [conn notice back %0]
 
@@ -3612,11 +3614,17 @@ Kartan liike-energia
 
 [conn notice lost %0 %1]
 
+[conn ping explanation %0 %1]
+
+[conn ping]
+
 [conn players]
+
+[conn poor]
 
 [conn reconnecting]
 
-[conn relay %0 %1]
+[conn relay %0]
 
 [conn resyncing]
 
@@ -3629,6 +3637,8 @@ Kartan liike-energia
 [conn you %0]
 
 [conn you]
+
+[conn your delay %0]
 
 [hub account menu]
 
@@ -4112,6 +4122,8 @@ Kartan liike-energia
 
 [qm 1 vs 1]
 
+[qm ping about]
+
 [qm ranked]
 
 [qm casual %0]
@@ -4139,8 +4151,6 @@ Kartan liike-energia
 [qm find match]
 
 [qm opponents rated %0 to %1]
-
-[qm region %0 relay %1 ms]
 
 [qm region %0]
 
@@ -4557,4 +4567,58 @@ Kartan liike-energia
 [hub full leaderboard]
 
 [settings %0 is no longer linked.]
+
+[room map read failed]
+
+[room map upload failed]
+
+[room map upload failed %0]
+
+[room uploading map]
+
+[room premade map shared]
+
+[room take a seat to play]
+
+[room waiting for a seat]
+
+[room not seated]
+
+[room copied]
+
+[room copy failed]
+
+[room closed title]
+
+[room removed title]
+
+[room back to online]
+
+[leave match]
+
+[leave match title]
+
+[leave lan title]
+
+[leave rated body]
+
+[leave casual body]
+
+[leave room body]
+
+[leave lan body]
+
+[leave match confirm]
+
+[keep playing]
+
+[results team]
+
+[results quick unrated]
+
+[conn card cannot keep up]
+
+[conn card cannot keep up body]
+
+[conn card not gaining]
 

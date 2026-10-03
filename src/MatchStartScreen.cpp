@@ -2,11 +2,12 @@
 // Copyright (C) 2026 glob2 contributors
 #include "MatchStartScreen.h"
 #include "Engine.h"
+#include "gui/ConnectionQuality.h"
 #include "GUIMapPreview.h"
 #include "GameSessionScreen.h"
 #include "OnlineMatch.h"
 #include <FormatableString.h>
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <random>
 
 using namespace Glob2UI;
@@ -32,7 +33,7 @@ void MatchStartScreen::onTimer(Uint32 tick)
 {
 	if (playing)
 		return;
-	flow->update(SDL_GetTicks64());
+	flow->update(SDL_GetTicks());
 	const int step = int(flow->step());
 	if (step != lastStep || tick - lastRefresh > 250)
 	{
@@ -92,8 +93,11 @@ Element MatchStartScreen::steps(const Presentation &p)
 	const bool graphics = now == Step::Load && flow->loadStage() == "[Loading game graphics]";
 	lines.push_back(line(tr(graphics ? "[Loading game graphics]" : "[match loading]"), Step::Load, ""));
 	std::string relay = GAGCore::FormattableString(tr("[match relay %0]")).arg(flow->relayName());
+	// Ping before the first turn: the session's own round trip to the relay, rated
+	// on the same scale as the in-game panel (docs/multiplayer/connection-quality.md).
 	if (flow->relayRttMs() >= 0)
-		relay += " · " + std::to_string(flow->relayRttMs()) + " ms";
+		relay += " · " + ConnectionQuality::labelled(tr("[conn ping]"), ConnectionQuality::Metric::Ping, flow->relayRttMs(),
+		                                             [](const char *key) { return tr(key); });
 	lines.push_back(line(relay, Step::Relay, ""));
 	lines.push_back(line(tr("[match waiting for players]"), Step::Players, ""));
 	return column(std::move(lines), {p.pt(p.touch ? 10 : 8)});

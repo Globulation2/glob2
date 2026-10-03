@@ -3,6 +3,7 @@
 // the units it could not hire under each reason, and the map view draws the
 // reason's shape over exactly those units. Needs a display; writes the scene to
 // scene.png in the case's artifact directory for reviewers.
+#include "scene/SceneMap.h"
 #include "EngineFixtures.h"
 #include "GlobalContainer.h"
 #include "Game.h"
@@ -15,7 +16,7 @@
 #include "Ressource.h"
 #include "GraphicContext.h"
 #include "MapInternal.h"
-#include <SDL_image.h>
+#include <SDL3_image/SDL_image.h>
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
 #else
@@ -71,11 +72,10 @@ namespace
 		for (int y = 0; y < frame.h; ++y)
 			std::copy_n(frame.data.data() + y * frame.w * 4, frame.w * 4,
 				flipped.data() + (frame.h - 1 - y) * frame.w * 4);
-		auto* surface = SDL_CreateRGBSurfaceWithFormatFrom(flipped.data(), frame.w, frame.h, 32,
-			frame.w * 4, SDL_PIXELFORMAT_RGBA32);
+		auto* surface = SDL_CreateSurfaceFrom(frame.w, frame.h, SDL_PIXELFORMAT_RGBA32, flipped.data(), frame.w * 4);
 		require(surface != nullptr, "wrap the framebuffer for PNG output");
-		require(IMG_SavePNG(surface, (std::string(outputDir) + "/" + name + ".png").c_str()) == 0, "write the PNG");
-		SDL_FreeSurface(surface);
+		require(IMG_SavePNG(surface, (std::string(outputDir) + "/" + name + ".png").c_str()), "write the PNG");
+		SDL_DestroySurface(surface);
 	}
 
 	// Red marker pixels inside the 32x32 screen tile of map tile (tx, ty).
@@ -154,7 +154,11 @@ public:
 		gui.localTeamNo = 0;
 		gui.localPlayer = 0;
 		gui.setSelection(GameGUI::BUILDING_SELECTION, static_cast<void*>(scene.inn));
-		require(scene.inn->recordFailingUnits, "selecting in the GUI switches recording on");
+		// The GUI publishes the observed building; the simulation switches
+		// recording on at the next tick boundary.
+		require(!scene.inn->recordFailingUnits, "selection alone does not touch the building");
+		gui.game.applyClientRequests();
+		require(scene.inn->recordFailingUnits, "the tick boundary switches recording on");
 		scene.team->updateAllBuildingTasks();
 		// Only the right-hand panel: drawAll also wants players, a minimap and
 		// a torus view this bare game does not have.
@@ -197,6 +201,7 @@ public:
 		gui.localTeam = gui.game.teams[0];
 		gui.teamStats = &gui.localTeam->stats;
 		gui.setSelection(GameGUI::BUILDING_SELECTION, static_cast<void*>(scene.inn));
+		gui.game.applyClientRequests(); // the tick boundary turns recording on
 		scene.team->updateAllBuildingTasks();
 		require(scene.inn->unitsFailingByReason[Building::UnitTooLowLevel].size() == LOW_COUNT,
 			"the scan with an open slot remembers every unschooled worker");
@@ -212,19 +217,19 @@ public:
 
 		gui.updateCamera();
 		auto* gfx = globalContainer->gfx;
-		std::set<Building*> visible;
+		std::set<Uint16> visible;
 		Game::ViewState view;
 		view.selectedBuilding = scene.inn;
 		gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), 0, 0, 0);
-		gui.game.drawMapTerrain(0, 0, DRAW_W >> 5, DRAW_H >> 5, 0, 0, 0, Game::DRAW_WHOLE_MAP);
-		gui.game.drawMapGroundBuildings(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, &visible, nullptr);
-		gui.game.drawMapGroundUnits(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, view);
+		{ SceneMap layers; layers.extract(gui.game.map); gui.game.drawMapTerrain(0, 0, DRAW_W >> 5, DRAW_H >> 5, 0, 0, 0, Game::DRAW_WHOLE_MAP, layers); }
+		gui.game.drawMapGroundBuildings(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, &visible, nullptr, glob2test::sceneOf(gui.game));
+		gui.game.drawMapGroundUnits(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, view, glob2test::sceneOf(gui.game, view));
 		Frame stopped = grab();
 		gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), 0, 0, 0);
-		gui.game.drawMapTerrain(0, 0, DRAW_W >> 5, DRAW_H >> 5, 0, 0, 0, Game::DRAW_WHOLE_MAP);
-		gui.game.drawMapGroundBuildings(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, &visible, nullptr);
+		{ SceneMap layers; layers.extract(gui.game.map); gui.game.drawMapTerrain(0, 0, DRAW_W >> 5, DRAW_H >> 5, 0, 0, 0, Game::DRAW_WHOLE_MAP, layers); }
+		gui.game.drawMapGroundBuildings(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, &visible, nullptr, glob2test::sceneOf(gui.game));
 		Game::ViewState none;
-		gui.game.drawMapGroundUnits(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, none);
+		gui.game.drawMapGroundUnits(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, none, glob2test::sceneOf(gui.game, none));
 		Frame baseline = grab();
 		for (int i = 0; i < LOW_COUNT; ++i)
 		{
@@ -265,11 +270,11 @@ public:
 	// are the red pixels the selection adds.
 	auto* gfx = globalContainer->gfx;
 	auto render = [&](Game::ViewState& view) {
-		std::set<Building*> visible;
+		std::set<Uint16> visible;
 		gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), 0, 0, 0);
-		game.drawMapTerrain(0, 0, DRAW_W >> 5, DRAW_H >> 5, 0, 0, 0, Game::DRAW_WHOLE_MAP);
-		game.drawMapGroundBuildings(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, &visible, nullptr);
-		game.drawMapGroundUnits(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, view);
+		{ SceneMap layers; layers.extract(game.map); game.drawMapTerrain(0, 0, DRAW_W >> 5, DRAW_H >> 5, 0, 0, 0, Game::DRAW_WHOLE_MAP, layers); }
+		game.drawMapGroundBuildings(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, &visible, nullptr, glob2test::sceneOf(game));
+		game.drawMapGroundUnits(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, view, glob2test::sceneOf(game, view));
 		return grab();
 	};
 	Game::ViewState none;

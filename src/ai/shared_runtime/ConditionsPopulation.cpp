@@ -107,7 +107,9 @@ bool Population::load(GAGCore::InputStream *stream, Player *player, Sint32 versi
 	explorers=stream->readUint8("explorers");
 	warriors=stream->readUint8("warriors");
 	num=stream->readSint32("num");
-	method=static_cast<PopulationMethod>(stream->readUint32("method"));
+	const Uint32 savedMethod=stream->readUint32("method");
+	if (savedMethod > Lesser) return false;
+	method=static_cast<PopulationMethod>(savedMethod);
 	stream->readLeaveSection();
 	return true;
 }

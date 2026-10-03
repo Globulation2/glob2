@@ -40,7 +40,15 @@ def version_code(arch, root=ROOT):
     return release_identity(root)["versionCodeBase"] * 10 + ABI_CODES[arch]
 
 
-def check_prior_tags(root=ROOT):
+def check_prior_tags(root=ROOT, development=False):
+    """Reject a release whose version codes would not increase past every earlier tag.
+
+    A release build must also be the exact commit carrying its version's tag. A
+    development build (pull-request CI) runs between releases: the documented
+    release process bumps the version only just before tagging, so the current
+    version may already be tagged at an earlier commit. That case is allowed
+    with ``development``; a version code at or below any other tag is not.
+    """
     identity = release_identity(root)
     current = identity["versionCodeBase"]
     tags = subprocess.check_output(["git", "tag", "--list", "v*"], cwd=root, text=True).splitlines()
@@ -50,12 +58,21 @@ def check_prior_tags(root=ROOT):
             continue
         previous = sum(int(part) * factor for part, factor in zip(parts, (1000000, 10000, 100, 1)))
         if tag == "v" + identity["versionName"]:
+            if development:
+                continue
             head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip()
             tagged = subprocess.check_output(["git", "rev-parse", tag + "^{commit}"], cwd=root, text=True).strip()
             if head != tagged:
                 raise ValueError(f"Android release tag {tag} already points to another commit")
         elif previous >= current:
             raise ValueError(f"Android version codes would not increase past {tag}")
+
+
+def check_candidate(root=ROOT):
+    """Validate build inputs without applying publication-only tag constraints."""
+    identity = release_identity(root)
+    check_recipe(root)
+    return identity
 
 
 def check_listing(root=ROOT):
@@ -171,15 +188,17 @@ def verify_apk(apk, arch, sdk, root=ROOT, require_dependency_manifest=True):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=("check", "check-listing", "verify-apk", "code"))
+    parser.add_argument("command", choices=("check", "check-candidate", "check-listing", "verify-apk", "code"))
     parser.add_argument("--arch", choices=tuple(ABI_CODES))
     parser.add_argument("--apk", type=Path)
     parser.add_argument("--android-sdk", type=Path, default=None)
+    parser.add_argument("--development", action="store_true",
+                        help="check: allow the current version to be tagged at an earlier commit")
     args = parser.parse_args()
-    if args.command == "check":
-        check_prior_tags()
-        check_recipe()
-        print(release_identity()["versionName"])
+    if args.command in ("check", "check-candidate"):
+        if args.command == "check":
+            check_prior_tags(development=args.development)
+        print(check_candidate()["versionName"])
     elif args.command == "check-listing":
         check_listing()
         print("F-Droid listing ready")

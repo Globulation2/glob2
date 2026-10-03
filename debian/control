@@ -2,13 +2,13 @@ Source: glob2
 Section: games
 Priority: optional
 Maintainer: Stephane Magnenat <stephane at magnenat dot net>
-Build-Depends: debhelper (>> 6.0.0), quilt (>= 0.40), scons, libsdl2-dev (>=2.0.0), libsdl2-image-dev (>=2.0.0), libsdl2-net-dev (>=2.0.0), libsdl2-ttf-dev, libglu1-mesa-dev | libglu-dev, libvorbis-dev, libspeex-dev, libfreetype6-dev, libboost-dev, libfribidi-dev, portaudio19-dev, libepoxy-dev, libssl-dev
+Build-Depends: debhelper (>> 6.0.0), quilt (>= 0.40), scons, cmake, libx11-dev, libxext-dev, libxcursor-dev, libxi-dev, libxrandr-dev, libasound2-dev, libpulse-dev, libglu1-mesa-dev | libglu-dev, libvorbis-dev, libspeex-dev, libfreetype6-dev, libboost-dev, libfribidi-dev, portaudio19-dev, libepoxy-dev, libssl-dev
 Standards-Version: 3.8.1
 Homepage: http://globulation2.org
 
 Package: glob2
 Architecture: any
-Depends: ${shlibs:Depends}, glob2-data (= ${source:Version})
+Depends: ${shlibs:Depends}, glob2-sdl3-runtime (= ${source:Version}), glob2-data (= ${source:Version})
 Replaces: glob2-data (<< 0.9.2)
 Description: innovative state-of-the-art Real Time Strategy (RTS) game
  Globulation 2, in a whole, is an on-going project to create an innovative high 
@@ -24,7 +24,7 @@ Description: innovative state-of-the-art Real Time Strategy (RTS) game
 
 Package: glob2-server
 Architecture: any
-Depends: ${shlibs:Depends}, glob2-data (= ${source:Version})
+Depends: ${shlibs:Depends}, glob2-sdl3-runtime (= ${source:Version}), glob2-data (= ${source:Version})
 Replaces: glob2-data (<< 0.9.2)
 Description: YOG server for Globulation2 (glob2)
  Globulation 2, in a whole, is an on-going project to create an innovative high 
@@ -49,3 +49,10 @@ Description: dataset for Globulation2 (glob2)
  .
  These are the images, maps and the rest of architecture-independent dataset
  for Globulation 2.
+
+Package: glob2-sdl3-runtime
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: pinned SDL3 runtime for Globulation 2
+ Native SDL3, SDL3_image, SDL3_ttf and SDL3_net libraries used by the client
+ and dedicated server, installed in the game's private library directory.

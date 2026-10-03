@@ -58,7 +58,7 @@ export async function applyCatalogValidation(
       failure ??
       (result?.valid === false
         ? result.reason
-        : 'the uploaded bytes are not the bytes the engine loads (upload the uncompressed file)');
+        : 'This file could not be checked. Upload it again; if that fails too, save it again in the game first.');
     rows = await base
       .set({ validation: 'invalid', validation_error: reason.slice(0, 2000) })
       .returning('map_id')

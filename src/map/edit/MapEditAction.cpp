@@ -5,7 +5,7 @@
 #include <string>
 #include "MapEdit.h"
 
-void MapEdit::performAction(const std::string& action, int relMouseX, int relMouseY)
+void MapEdit::performAction(const std::string& action, float relMouseX, float relMouseY)
 {
 	if(action.find("&")!=std::string::npos)
 	{

@@ -16,8 +16,10 @@ simulation and selection. Editor controls anchored to the right or bottom move
 with their respective edges. The session resets its timing baseline across
 viewport changes so resizing does not become simulation catch-up work.
 
-Rendering uses one pixel per CSS pixel, including displays with a device scale
-factor of two. The browser does not impose a minimum viewport: the renderer and
+SDL3 high-density windows size the backing canvas using browser pixel density
+for both software and WebGL2 rendering. Layout and input use window/CSS
+coordinates; display scale and the user's UI multiplier apply once at the shared
+presentation boundary. The browser does not impose a minimum viewport: the renderer and
 active screen receive every positive CSS viewport size. Very small windows may
 show less of a fixed-size dialog, but gameplay continues and enlarging the window
 reveals the full layout again. The page has no permanent wrapper controls.
@@ -49,9 +51,9 @@ single-player without producing overdue ticks on resume.
 
 ## Button coordinates in the pinned SDL browser backend
 
-SDL 2.32.8's Emscripten mouse-button callback uses SDL's last motion position,
-rather than the button event's coordinates. A missing/coalesced motion can
-therefore make a valid click hit the old position. The browser shell synchronizes
+The shell retains the motion synchronization introduced for the SDL2 browser
+backend: missing/coalesced motion previously made a click use the old position.
+The browser shell synchronizes
 absolute motion from each button event before SDL's button listener runs. It
 handles releases outside the canvas for a canvas-started press and skips relative
 pointer-lock input. This SDK adaptation stays in the browser platform layer.

@@ -3,19 +3,19 @@
 
 #pragma once
 
-#include <SDL_stdinc.h>
+#include <SDL3/SDL_stdinc.h>
 
 // AICortex tunable constants and enums shared across the observation -> policy
 // -> action layers. Split out of CortexTypes.h (the umbrella public header) so
 // each header stays under 500 lines; CortexTypes.h includes this near the top,
 // before the POD struct definitions that use these size constants for their
-// fixed-shape arrays. Self-contained: depends on nothing but <SDL_stdinc.h>.
+// fixed-shape arrays. Self-contained: depends on nothing but <SDL3/SDL_stdinc.h>.
 
 namespace Cortex
 {
 	/// Fixed upper bound on enemy team slots in an Observation. 32 ==
 	/// Team::MAX_COUNT_ON_DISK; it is a safe over-bound on the live team ceiling
-	/// (Team::MAX_COUNT == 12), so every possible enemy team always has a slot.
+	/// (Team::MAX_COUNT <= MAX_ENEMY_SLOTS), so every possible enemy team always has a slot.
 	/// CortexObservation.cpp static_asserts MAX_ENEMY_SLOTS >= Team::MAX_COUNT.
 	/// Unused slots are flagged inactive rather than omitted (fixed shape).
 	static const int MAX_ENEMY_SLOTS = 32;

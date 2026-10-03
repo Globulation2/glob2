@@ -1430,8 +1430,8 @@ Chiều rộng sông
 Trọng số cát
 [Select a valid map.]
 Chọn bản đồ hợp lệ.
-[Shared control needs a free controller slot (maximum 12).]
-Điều khiển chung cần một chỗ điều khiển còn trống (tối đa 12).
+[Shared control needs a free controller slot (maximum %0).]
+Điều khiển chung cần một chỗ điều khiển còn trống (tối đa %0).
 [Smoothing]
 Làm mịn
 [Standard]
@@ -1650,8 +1650,8 @@ Hiển thị con trỏ Globulation 2.
 Xong
 [settings Edit shortcut]
 Chỉnh sửa phím tắt
-[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
-Phóng to menu, văn bản và thanh bên trên màn hình độ phân giải cao.
+[settings Multiply the operating system display scale for menus, text and the sidebar.]
+Nhân tỷ lệ hiển thị của hệ điều hành cho menu, văn bản và thanh bên.
 [settings Flags]
 Cờ
 [settings Full]
@@ -3068,8 +3068,6 @@ Bản đồ nhỏ
 Tua nhanh
 [Hide keyboard]
 Ẩn bàn phím
-[Dialog text size]
-Cỡ chữ hộp thoại
 [Player slot]
 Vị trí người chơi
 [Team color]
@@ -3408,8 +3406,6 @@ Khả năng thắng: %0 · Sức mạnh: %1
 Cấp tối thiểu: %0
 [Confirm %0]
 Đồng ý: %0
-[Dialog text size %0]
-Cỡ chữ hộp thoại: %0%
 [%0 %1]
 %0 %1
 [resume game]
@@ -3562,9 +3558,13 @@ Quán tính bản đồ
 
 [Custom rules]
 
-[conn ai everywhere]
-
 [conn ai]
+
+[conn behind %0]
+
+[conn behind explanation %0 %1]
+
+[conn behind]
 
 [conn card catching up]
 
@@ -3588,19 +3588,21 @@ Quán tính bản đồ
 
 [conn card seconds left %0]
 
-[conn connected]
-
 [conn connections]
 
-[conn delay explanation]
+[conn delay explanation %0 %1]
 
-[conn latency]
+[conn fair]
+
+[conn good]
+
+[conn grid legend]
+
+[conn jitter %0]
 
 [conn leave match]
 
 [conn left]
-
-[conn lost]
 
 [conn notice back %0]
 
@@ -3608,11 +3610,17 @@ Quán tính bản đồ
 
 [conn notice lost %0 %1]
 
+[conn ping explanation %0 %1]
+
+[conn ping]
+
 [conn players]
+
+[conn poor]
 
 [conn reconnecting]
 
-[conn relay %0 %1]
+[conn relay %0]
 
 [conn resyncing]
 
@@ -3625,6 +3633,8 @@ Quán tính bản đồ
 [conn you %0]
 
 [conn you]
+
+[conn your delay %0]
 
 [hub account menu]
 
@@ -4108,6 +4118,8 @@ Quán tính bản đồ
 
 [qm 1 vs 1]
 
+[qm ping about]
+
 [qm ranked]
 
 [qm casual %0]
@@ -4135,8 +4147,6 @@ Quán tính bản đồ
 [qm find match]
 
 [qm opponents rated %0 to %1]
-
-[qm region %0 relay %1 ms]
 
 [qm region %0]
 
@@ -4553,4 +4563,58 @@ Quán tính bản đồ
 [hub full leaderboard]
 
 [settings %0 is no longer linked.]
+
+[room map read failed]
+
+[room map upload failed]
+
+[room map upload failed %0]
+
+[room uploading map]
+
+[room premade map shared]
+
+[room take a seat to play]
+
+[room waiting for a seat]
+
+[room not seated]
+
+[room copied]
+
+[room copy failed]
+
+[room closed title]
+
+[room removed title]
+
+[room back to online]
+
+[leave match]
+
+[leave match title]
+
+[leave lan title]
+
+[leave rated body]
+
+[leave casual body]
+
+[leave room body]
+
+[leave lan body]
+
+[leave match confirm]
+
+[keep playing]
+
+[results team]
+
+[results quick unrated]
+
+[conn card cannot keep up]
+
+[conn card cannot keep up body]
+
+[conn card not gaining]
 

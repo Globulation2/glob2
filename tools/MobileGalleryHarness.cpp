@@ -3,6 +3,7 @@
 // Build: scons release=1 mobile-gallery
 // Run via tools/mobile_gallery/capture.py; see docs/mobile/development.md.
 // Stable capture names must also be documented in mobile_gallery/catalog.json.
+#include <Environment.h>
 #include "GlobalContainer.h"
 #include <cmath>
 #include <algorithm>
@@ -57,7 +58,7 @@
 #include "gui/ConnectionOverlay.h"
 #include "test/OnlineUIFixtures.h"
 #include "SettingsScreen.h"
-#include <SDL_net.h>
+#include <SDL3_net/SDL_net.h>
 #include <charconv>
 #include <stdexcept>
 #include <iostream>
@@ -115,12 +116,12 @@ static void press(GAGGUI::ScreenStack &stack, GAGGUI::ui::UIScreen &screen, cons
 	frame(stack);
 	const auto r = screen.host().bounds(key);
 	SDL_Event down{};
-	down.type = SDL_MOUSEBUTTONDOWN;
+	down.type = SDL_EVENT_MOUSE_BUTTON_DOWN;
 	down.button.button = SDL_BUTTON_LEFT;
 	down.button.x = r.x + r.w / 2;
 	down.button.y = r.y + r.h / 2;
 	auto up = down;
-	up.type = SDL_MOUSEBUTTONUP;
+	up.type = SDL_EVENT_MOUSE_BUTTON_UP;
 	stack.frame(tick += frameMilliseconds, {down, up});
 	frame(stack);
 }
@@ -133,7 +134,7 @@ struct MobileGallerySetup
 	static void run()
 	{
 		GAGGUI::ScreenStack stack(*globalContainer->gfx);
-		if (SDL_getenv("GLOB2_GALLERY_EDITOR_ONLY"))
+		if (SDL_getenv_unsafe("GLOB2_GALLERY_EDITOR_ONLY"))
 		{
 			stack.push(std::make_unique<MainMenuScreen>());
 			frame(stack);
@@ -188,18 +189,18 @@ struct MobileGallerySetup
 			const auto bounds = view->host().bounds("description");
 			const int x = bounds.x, y = bounds.y;
 			SDL_Event down{};
-			down.type = SDL_FINGERDOWN;
-			down.tfinger.fingerId = 1;
+			down.type = SDL_EVENT_FINGER_DOWN;
+			down.tfinger.fingerID = 1;
 			down.tfinger.x = float(x + 12) / globalContainer->gfx->getW();
 			down.tfinger.y = float(y + 12) / globalContainer->gfx->getH();
 			auto up = down;
-			up.type = SDL_FINGERUP;
+			up.type = SDL_EVENT_FINGER_UP;
 			stack.frame(tick += frameMilliseconds, {down, up});
 		}
 		else
 			press(stack, *view, "description");
 		stackShot(stack, "campaign-description-editing");
-		SDL_StopTextInput();
+		SDL_StopTextInput(SDL_GetKeyboardFocus());
 		view->endExecute(CampaignMapEntryEditor::CANCEL);
 		frame(stack);
 	}
@@ -360,8 +361,8 @@ struct MobileGallerySetup
 			frame(stack);
 			stackShot(stack, std::string("settings-") + categories[i]);
 			SDL_Event pageDown{};
-			pageDown.type = SDL_KEYDOWN;
-			pageDown.key.keysym.sym = SDLK_PAGEDOWN;
+			pageDown.type = SDL_EVENT_KEY_DOWN;
+			pageDown.key.key = SDLK_PAGEDOWN;
 			for (int page = 0; page < 10; ++page)
 				stack.frame(tick += frameMilliseconds, {pageDown});
 			stackShot(stack, std::string("settings-") + categories[i] + "-bottom");
@@ -413,6 +414,9 @@ struct MobileGallerySetup
 		} while (lobby->previewBusy() && SDL_GetTicks() - started < 30000);
 		if (lobby->previewBusy())
 			throw std::runtime_error("Generated preview timed out");
+		// The fade starts when the preview is painted; with large text on a short
+		// screen it can sit below the fold, so reveal it as a player would.
+		lobby->host().scrollIntoView("map/preview");
 		frame(stack);
 		const auto fadeStarted = SDL_GetTicks();
 		do
@@ -460,8 +464,8 @@ struct MobileGallerySetup
 			throw std::runtime_error("Landscape previews did not settle within 45 seconds");
 		stackShot(stack, "landscape-picker");
 		SDL_Event escape{};
-		escape.type = SDL_KEYDOWN;
-		escape.key.keysym.sym = SDLK_ESCAPE;
+		escape.type = SDL_EVENT_KEY_DOWN;
+		escape.key.key = SDLK_ESCAPE;
 		stack.frame(tick += frameMilliseconds, {escape});
 		frame(stack);
 		lobby->selectTab(1);
@@ -513,13 +517,13 @@ class MobileGalleryGameplay
   public:
 	static void run()
 	{
-		if (SDL_getenv("GLOB2_GALLERY_EDITOR_ONLY"))
+		if (SDL_getenv_unsafe("GLOB2_GALLERY_EDITOR_ONLY"))
 		{
 			captureEditor();
 			return;
 		}
 		captureGame();
-		if (!SDL_getenv("GLOB2_GALLERY_GAME_ONLY"))
+		if (!SDL_getenv_unsafe("GLOB2_GALLERY_GAME_ONLY"))
 			captureEditor();
 	}
 
@@ -614,9 +618,9 @@ class MobileGalleryGameplay
 			for (int step = 0; step <= 8; ++step)
 			{
 				SDL_Event event{};
-				event.type = step ? SDL_FINGERMOTION : SDL_FINGERDOWN;
-				event.tfinger.touchId = 8;
-				event.tfinger.fingerId = 1;
+				event.type = step ? SDL_EVENT_FINGER_MOTION : SDL_EVENT_FINGER_DOWN;
+				event.tfinger.touchID = 8;
+				event.tfinger.fingerID = 1;
 				event.tfinger.x = .20f + step * .035f;
 				event.tfinger.y = .50f + std::sin(step * .4f) * .08f;
 				gui.processEvent(&event);
@@ -632,7 +636,7 @@ class MobileGalleryGameplay
 			capture("game-brush-rail");
 			gui.touch->railTouched = -1;
 			gui.touch->zoneUndo = GameGUITouch::ZoneUndo{};
-			gui.touch->zoneUndo->expires = SDL_GetTicks64() + 600000;
+			gui.touch->zoneUndo->expires = SDL_GetTicks() + 600000;
 			capture("game-brush-undo");
 			gui.touch->zoneUndo.reset();
 		}
@@ -654,18 +658,18 @@ class MobileGalleryGameplay
 				SDL_Event event{};
 				event.type = type;
 				event.tfinger.timestamp = ticks += 60;
-				event.tfinger.touchId = 8;
-				event.tfinger.fingerId = 1;
+				event.tfinger.touchID = 8;
+				event.tfinger.fingerID = 1;
 				event.tfinger.x = float(pressX / globalContainer->gfx->getW());
 				event.tfinger.y = float(y / globalContainer->gfx->getH());
 				gui.processEvent(&event);
 			};
-			send(SDL_FINGERDOWN, pressY);
-			send(SDL_FINGERUP, pressY);
+			send(SDL_EVENT_FINGER_DOWN, pressY);
+			send(SDL_EVENT_FINGER_UP, pressY);
 			gui.clearSelection();
 			gui.touch->panelOpen = false;
-			send(SDL_FINGERDOWN, pressY);
-			send(SDL_FINGERMOTION, pressY - area.h * .18);
+			send(SDL_EVENT_FINGER_DOWN, pressY);
+			send(SDL_EVENT_FINGER_MOTION, pressY - area.h * .18);
 			capture("game-zoom-drag");
 			gui.touch->cancel();
 			globalContainer->settings.oneFingerZoomDirection = direction;
@@ -682,7 +686,6 @@ class MobileGalleryGameplay
 			gui.touch->lensOpen = false;
 			gui.touch->panelOpen = false;
 			gui.showStarvingMap = true;
-			gui.overlay.compute(gui.game, OverlayArea::Starving, gui.localTeamNo);
 			capture("game-lens-legend");
 			gui.showStarvingMap = false;
 			gui.touch->peekOpen = true;
@@ -768,15 +771,15 @@ class MobileGalleryGameplay
 						SDL_Event event{};
 						event.type = type;
 						event.tfinger.timestamp = ticks += 60;
-						event.tfinger.touchId = 8;
-						event.tfinger.fingerId = 1;
+						event.tfinger.touchID = 8;
+						event.tfinger.fingerID = 1;
 						event.tfinger.x = float(p.x / globalContainer->gfx->getW());
 						event.tfinger.y = float(p.y / globalContainer->gfx->getH());
 						gui.processEvent(&event);
 					};
 					const double radius = g.rings[arc->ring].middle();
-					send(SDL_FINGERDOWN, TouchDial::point(g, radius, arc->from + 1));
-					send(SDL_FINGERMOTION, TouchDial::point(g, radius, arc->from + (arc->to - arc->from) * .6));
+					send(SDL_EVENT_FINGER_DOWN, TouchDial::point(g, radius, arc->from + 1));
+					send(SDL_EVENT_FINGER_MOTION, TouchDial::point(g, radius, arc->from + (arc->to - arc->from) * .6));
 				}
 			}
 			capture("game-inspector-dial-drag");
@@ -877,20 +880,20 @@ class MobileGalleryGameplay
 			{
 				SDL_Event event{};
 				event.type = eventType;
-				event.tfinger.touchId = 19;
-				event.tfinger.fingerId = 1;
+				event.tfinger.touchID = 19;
+				event.tfinger.fingerID = 1;
 				event.tfinger.x = p.x / gfx->getW();
 				event.tfinger.y = p.y / gfx->getH();
 				gui.processEvent(&event);
 			};
-			pointer(SDL_FINGERDOWN, start);
+			pointer(SDL_EVENT_FINGER_DOWN, start);
 			for (int frame = 0; frame < 12; ++frame)
 			{
 				const double progress = frame / 11.0;
 				const GAGCore::ViewPoint p{start.x + (drop->x - start.x) * progress,
 										   start.y + (drop->y - start.y) * progress};
 				if (frame)
-					pointer(SDL_FINGERMOTION, p);
+					pointer(SDL_EVENT_FINGER_MOTION, p);
 				const auto name =
 					std::string("gesture-build-") + (frame < 10 ? "0" : "") + std::to_string(frame);
 				queueShot(name);
@@ -898,7 +901,7 @@ class MobileGalleryGameplay
 				gfx->drawCircle(int(p.x), int(p.y), int(10 * unit), GAGCore::Color(255, 220, 100));
 				gfx->nextFrame();
 			}
-			pointer(SDL_FINGERUP, *drop);
+			pointer(SDL_EVENT_FINGER_UP, *drop);
 			auto order = std::dynamic_pointer_cast<OrderCreate>(gui.toolManager.getOrder());
 			if (!order || gui.toolManager.getOrder())
 				throw std::runtime_error(
@@ -909,23 +912,27 @@ class MobileGalleryGameplay
 			gui.touch->panelOpen = false;
 		}
 		{
-			// Online play: the connection panel and cards from fixed snapshots.
+			// Online play: the connection panel and cards from fixed snapshots. Values sit
+			// on both sides of the shared thresholds (ConnectionQuality.h): Ping good
+			// under 150 ms, Behind good under 1 s, Delay good under 200 ms.
 			ConnectionSnapshot snapshot;
-			auto add = [&](int seat, const std::string &name, int team, ConnectionRow::State state, int ms, bool local = false) {
+			auto add = [&](int seat, const std::string &name, int team, ConnectionRow::State state, int pingMs,
+						   int behindMs, bool local = false) {
 				ConnectionRow row;
 				row.seat = seat;
 				row.name = name;
-				row.color = gui.game.teams[team]->color;
+				row.color = gui.game.teams[team % gui.game.mapHeader.getNumberOfTeams()]->color;
 				row.state = state;
-				row.latencyMs = ms;
+				row.pingMs = pingMs;
+				row.behindMs = behindMs;
 				row.local = local;
 				snapshot.rows.push_back(row);
 			};
-			add(0, "Amber colony", 0, ConnectionRow::State::Connected, 80, true);
-			add(1, "Violet colony", 1, ConnectionRow::State::Connected, 64);
-			add(2, "Jade colony", 2, ConnectionRow::State::AI, -1);
-			snapshot.inputDelayMs = 80;
-			snapshot.rttMs = 28;
+			add(0, "Amber colony", 0, ConnectionRow::State::Connected, 42, -1, true);
+			add(1, "Violet colony", 1, ConnectionRow::State::Connected, 64, 420);
+			add(2, "Jade colony", 2, ConnectionRow::State::AI, -1, -1);
+			snapshot.inputDelayMs = 171;
+			snapshot.jitterMs = 9;
 			snapshot.relay = "eu-west-2";
 			gui.connectionOverlay = std::make_unique<ConnectionOverlay>();
 			gui.connectionOverlay->source = [&] { return snapshot; };
@@ -936,11 +943,30 @@ class MobileGalleryGameplay
 			gui.connectionOverlay->openDetails(true);
 			capture("game-connection-details");
 			gui.connectionOverlay->openDetails(false);
-			snapshot.rows[1].state = ConnectionRow::State::Slow;
-			snapshot.rows[1].latencyMs = 310;
-			snapshot.rows[0].unstable = true;
-			snapshot.rows[0].latencyMs = 240;
+			// Fair Ping on our side, a player falling behind, and a slow one.
+			snapshot.rows[0].pingMs = 240;
+			snapshot.inputDelayMs = 420;
+			snapshot.jitterMs = 85;
+			snapshot.ownUnstable = true;
+			snapshot.rows[1].state = ConnectionRow::State::Connected;
+			snapshot.rows[1].pingMs = 90;
+			snapshot.rows[1].behindMs = 1320;
+			add(3, "Crimson colony", 3, ConnectionRow::State::Slow, 310, 2600);
 			capture("game-connection-own");
+			gui.connectionOverlay->openDetails(true);
+			capture("game-connection-own-details");
+			gui.connectionOverlay->openDetails(false);
+			// Beyond four people phones show markers and numbers.
+			const auto four = snapshot.rows;
+			add(4, "Azure colony", 4, ConnectionRow::State::Connected, 120, 380);
+			add(5, "Ochre colony", 5, ConnectionRow::State::Left, -1, -1);
+			add(6, "Rose colony", 6, ConnectionRow::State::Connected, 35, 250);
+			capture("game-connection-grid");
+			gui.connectionOverlay->openDetails(true);
+			capture("game-connection-grid-details");
+			gui.connectionOverlay->openDetails(false);
+			snapshot.rows = four;
+			snapshot.rows.pop_back();
 			snapshot.card = ConnectionSnapshot::Card::Reconnecting;
 			snapshot.attempt = 2;
 			snapshot.graceSeconds = 161;
@@ -979,7 +1005,7 @@ class MobileGalleryGameplay
 			view->inspectValue();
 			stackShot(stack, "game-results-value");
 			// Online results: the rating card while verifying, verified, and a room match.
-			auto online = std::make_shared<Online::OnlineMatchResult>("https://glob2online.com", "8f3k2q00-0000-4000-8000-000000000001", OnlineUIFixtures::HOST_ID);
+			auto online = std::make_shared<Online::OnlineMatchResult>("https://app.glob2online.com", "8f3k2q00-0000-4000-8000-000000000001", OnlineUIFixtures::HOST_ID);
 			online->label = "1 vs 1 · Ranked";
 			online->mapTitle = "Even Ground 128×128";
 			online->fromRoom = false;
@@ -997,7 +1023,7 @@ class MobileGalleryGameplay
 			online->outcome = "won";
 			++online->revision;
 			stackShot(stack, "game-results-verified");
-			auto room = std::make_shared<Online::OnlineMatchResult>("https://glob2online.com", "8f3k2q00-0000-4000-8000-000000000002", OnlineUIFixtures::HOST_ID);
+			auto room = std::make_shared<Online::OnlineMatchResult>("https://app.glob2online.com", "8f3k2q00-0000-4000-8000-000000000002", OnlineUIFixtures::HOST_ID);
 			room->label = "Room · Sunday 2v2";
 			room->mapTitle = "Marchland";
 			room->verification = Online::OnlineMatchResult::Verification::NotApplicable;
@@ -1060,8 +1086,8 @@ class MobileGalleryGameplay
 			{
 				SDL_Event event{};
 				event.type = kind;
-				event.tfinger.touchId = 27;
-				event.tfinger.fingerId = 1;
+				event.tfinger.touchID = 27;
+				event.tfinger.fingerID = 1;
 				event.tfinger.x = p.x / gfx->getW();
 				event.tfinger.y = p.y / gfx->getH();
 				editor.advanceEditing({event}, 0);
@@ -1129,15 +1155,15 @@ class MobileGalleryGameplay
 				return count;
 			};
 			const int beforeDrop = buildingCount();
-			pointer(SDL_FINGERDOWN, from);
+			pointer(SDL_EVENT_FINGER_DOWN, from);
 			for (int frame = 0; frame < 12; ++frame)
 			{
 				const double t = frame / 11.;
-				pointer(SDL_FINGERMOTION,
+				pointer(SDL_EVENT_FINGER_MOTION,
 						{from.x + (drop->x - from.x) * t, from.y + (drop->y - from.y) * t});
 				editCapture("gesture-editor-build-" + std::to_string(10 + frame));
 			}
-			pointer(SDL_FINGERUP, *drop);
+			pointer(SDL_EVENT_FINGER_UP, *drop);
 			if (buildingCount() != beforeDrop + 1)
 				throw std::runtime_error(
 					"Editor gesture recording did not place exactly one building");
@@ -1148,15 +1174,15 @@ class MobileGalleryGameplay
 			const GAGCore::ViewPoint a{phone.content.x + phone.content.w * .3,
 									   phone.content.y + phone.content.h * .55};
 			const auto beforePaint = editor.game.checkSum(nullptr, nullptr, nullptr, true);
-			pointer(SDL_FINGERDOWN, a);
+			pointer(SDL_EVENT_FINGER_DOWN, a);
 			GAGCore::ViewPoint b = a;
 			for (int frame = 0; frame < 12; ++frame)
 			{
 				b = {a.x + phone.content.w * .3 * frame / 11., a.y};
-				pointer(SDL_FINGERMOTION, b);
+				pointer(SDL_EVENT_FINGER_MOTION, b);
 				editCapture("gesture-editor-paint-" + std::to_string(10 + frame));
 			}
-			pointer(SDL_FINGERUP, b);
+			pointer(SDL_EVENT_FINGER_UP, b);
 			if (editor.game.checkSum(nullptr, nullptr, nullptr, true) == beforePaint)
 				throw std::runtime_error("Editor paint recording did not change terrain");
 			editCapture("gesture-editor-paint-22");
@@ -1221,7 +1247,7 @@ class MobileGalleryGameplay
 			// The Undo chip a zone stroke leaves, without changing the fixture map.
 			editor.performAction("select forbidden zone");
 			editor.phone->undo = PhoneEditor::EditorUndo{};
-			editor.phone->undo->expires = SDL_GetTicks64() + 600000;
+			editor.phone->undo->expires = SDL_GetTicks() + 600000;
 		}
 		editCapture("editor-brush-undo");
 		if (editor.phone)
@@ -1268,7 +1294,7 @@ class MobileGalleryGameplay
 						   editCapture(name);
 						   child->cancelPresentedFile();
 						   SDL_Event idle{};
-						   idle.type = SDL_USEREVENT;
+						   idle.type = SDL_EVENT_USER;
 						   editor.delegateMenu(idle);
 					   }
 					   for (auto [tab, name] : {std::pair{ScriptEditorScreen::TAB_OBJECTIVES, "objectives"},
@@ -1304,7 +1330,7 @@ int dimension(const char *value)
 
 int main(int argc, char **argv)
 {
-	if ((argc != 3 && argc != 4) || !SDL_getenv("GLOB2_USER_DATA_DIR"))
+	if ((argc != 3 && argc != 4) || !SDL_getenv_unsafe("GLOB2_USER_DATA_DIR"))
 	{
 		std::cerr
 			<< "Set GLOB2_USER_DATA_DIR; usage: mobile-gallery WIDTH HEIGHT [compact|desktop]\n";
@@ -1317,12 +1343,12 @@ int main(int argc, char **argv)
 		std::cerr << "Presentation must be compact or desktop\n";
 		return 2;
 	}
-	SDL_setenv("GLOB2_MOBILE_UI",
+	GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI",
 			   desktopPresentation                                            ? "0"
 			   : argc == 4 && std::string_view(argv[3]).starts_with("touch-") ? argv[3]
 																			  : "1",
 			   1);
-	SDL_setenv("SDL_AUDIODRIVER", "dummy", 1);
+	GAGCore::setProcessEnvironment("SDL_AUDIODRIVER", "dummy", 1);
 	try
 	{
 		const int width = dimension(argv[1]), height = dimension(argv[2]);
@@ -1338,22 +1364,22 @@ int main(int argc, char **argv)
 		settings.mute = true;
 		globalContainer->load();
 		settings.setUsername("Review player");
-		if (SDLNet_Init() != 0)
-			throw std::runtime_error(SDLNet_GetError());
+		if (!NET_Init())
+			throw std::runtime_error(SDL_GetError());
 		SDL_SetWindowSize(SDL_GetWindowFromID(globalContainer->gfx->windowID()), width, height);
 		SDL_Event resize{};
-		resize.type = SDL_WINDOWEVENT;
-		resize.window.event = SDL_WINDOWEVENT_SIZE_CHANGED;
+		resize.type = SDL_EVENT_WINDOW_RESIZED;
+		resize.type = SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED;
 		GAGCore::GraphicContext::translateMouseEvent(&resize);
 		{
 			FrontendTheme theme;
-			if (!SDL_getenv("GLOB2_GALLERY_GAME_ONLY"))
+			if (!SDL_getenv_unsafe("GLOB2_GALLERY_GAME_ONLY"))
 				MobileGallerySetup::run();
 			MobileGalleryGameplay::run();
 		}
 		globals.reset();
 		globalContainer = nullptr;
-		SDLNet_Quit();
+		NET_Quit();
 		return 0;
 	}
 	catch (const std::exception &e)

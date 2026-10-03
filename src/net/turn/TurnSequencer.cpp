@@ -13,7 +13,7 @@ namespace Turn
 TurnSequencer::TurnSequencer(SequencerConfig config, std::uint32_t humanSeatMask, Admission admission,
                              SequencerOutput& output, std::uint64_t startMicros)
 	: config(config), humanMask(humanSeatMask), admission(std::move(admission)), output(output), start(startMicros),
-	  now(startMicros)
+	  created(startMicros), clockRunning(config.startBarrierMicros == 0), now(startMicros)
 {
 	if (!humanMask)
 		throw std::invalid_argument("A turn match needs at least one human seat");
@@ -41,6 +41,21 @@ void TurnSequencer::transportRoundTrip(PeerId peer, std::uint64_t micros)
 		return;
 	if (auto* t = net.seat(it->second.seat))
 		t->rttMicros.add(micros);
+	// The connection panel's Ping: an exponential average (weight 1/4) so one slow
+	// sample does not flip a player to poor.
+	if (it->second.seat >= 0 && it->second.seat < static_cast<int>(MAX_SEATS))
+	{
+		Seat& s = seats[it->second.seat];
+		s.rttMicros = s.rttMicros ? (3 * s.rttMicros + micros) / 4 : std::max<std::uint64_t>(1, micros);
+	}
+}
+
+std::uint32_t TurnSequencer::seatLag(const Seat& s, std::uint32_t tick) const
+{
+	// Clients ping every 500 ms; allow a second before staleness counts as lag.
+	const std::uint32_t allowance = static_cast<std::uint32_t>(microsToTicks(1000000, config.tickRateMilliHz));
+	const std::uint32_t since = tick > s.pingTick ? tick - s.pingTick : 0;
+	return s.lagAtPing + (since > allowance ? since - allowance : 0);
 }
 
 void TurnSequencer::notePending()
@@ -52,7 +67,7 @@ void TurnSequencer::notePending()
 
 std::uint32_t TurnSequencer::relayTick(std::uint64_t nowMicros) const
 {
-	if (nowMicros <= start)
+	if (!clockRunning || nowMicros <= start)
 		return 0;
 	return static_cast<std::uint32_t>(microsToTicks(nowMicros - start, config.tickRateMilliHz));
 }
@@ -218,6 +233,11 @@ void TurnSequencer::onReceive(PeerId peer, const std::uint8_t* data, std::size_t
 	{
 		const auto& ping = static_cast<const Ping&>(*message);
 		seats[seat].executedTick = ping.executedTick;
+		{
+			const std::uint32_t tickNow = relayTick(now);
+			seats[seat].pingTick = tickNow;
+			seats[seat].lagAtPing = tickNow > ping.executedTick ? tickNow - ping.executedTick : 0;
+		}
 		if (auto* t = net.seat(seat))
 		{
 			const std::uint32_t tickNow = relayTick(now);
@@ -240,7 +260,7 @@ void TurnSequencer::onReceive(PeerId peer, const std::uint8_t* data, std::size_t
 
 void TurnSequencer::handleHello(PeerId peer, const Hello& hello, std::uint64_t)
 {
-	if (hello.protocolVersion != PROTOCOL_VERSION)
+	if (!supportedProtocol(hello.protocolVersion))
 		return reject(peer, RejectReason::ProtocolVersion, "Turn protocol version mismatch");
 	if (over)
 		return reject(peer, RejectReason::MatchOver, "The match is over");
@@ -260,6 +280,7 @@ void TurnSequencer::handleHello(PeerId peer, const Hello& hello, std::uint64_t)
 		output.close(old);
 	}
 	peers[peer].seat = seat;
+	peers[peer].version = hello.protocolVersion;
 	s.peer = peer;
 	s.hasPeer = true;
 	s.streaming = true;
@@ -285,10 +306,13 @@ void TurnSequencer::handleHello(PeerId peer, const Hello& hello, std::uint64_t)
 	}
 	const std::uint32_t tickNow = relayTick(now);
 	s.executedTick = resumeFrom;
+	s.pingTick = tickNow;
+	s.lagAtPing = tickNow > resumeFrom ? tickNow - resumeFrom : 0;
 	setState(static_cast<std::uint8_t>(seat), PresenceState::Connected);
 	event(static_cast<std::uint8_t>(seat), MatchEventKind::Connected);
 
 	Welcome w;
+	w.protocolVersion = hello.protocolVersion; // the client's own, which this relay speaks
 	w.seat = static_cast<std::uint8_t>(seat);
 	w.humanSeatMask = humanMask;
 	w.tickRateMilliHz = config.tickRateMilliHz;
@@ -300,6 +324,8 @@ void TurnSequencer::handleHello(PeerId peer, const Hello& hello, std::uint64_t)
 	w.lastClientSequence = s.lastClientSequence;
 	send(peer, w);
 	send(peer, presenceSnapshot());
+	if (hello.protocolVersion >= SEAT_LATENCY_VERSION)
+		send(peer, latencySnapshot());
 	sendLog(peer, resumeFrom);
 }
 
@@ -676,21 +702,61 @@ Presence TurnSequencer::presenceSnapshot() const
 			const std::uint64_t left = elapsed < config.graceMicros ? config.graceMicros - elapsed : 0;
 			sp.graceRemainingTicks = static_cast<std::uint32_t>(left / tickPeriod);
 		}
-		const std::uint32_t tick = relayTick(now);
-		sp.lagTicks = tick > s.executedTick ? tick - s.executedTick : 0;
+		sp.lagTicks = seatLag(s, relayTick(now));
 		p.seats.push_back(sp);
 	}
 	return p;
 }
 
+SeatLatency TurnSequencer::latencySnapshot() const
+{
+	SeatLatency l;
+	for (unsigned i = 0; i < MAX_SEATS; ++i)
+		if ((humanMask & (1u << i)) && seats[i].hasPeer)
+			l.seats.push_back({static_cast<std::uint8_t>(i),
+			                   static_cast<std::uint32_t>(std::min<std::uint64_t>(seats[i].rttMicros, UINT32_MAX))});
+	return l;
+}
+
 void TurnSequencer::broadcastPresence()
 {
 	const auto payload = TurnCodec::encode(presenceSnapshot());
+	std::vector<std::uint8_t> latency;
 	for (unsigned i = 0; i < MAX_SEATS; ++i)
 		if (seats[i].hasPeer)
+		{
 			output.send(seats[i].peer, payload);
+			// Version 1 clients refuse unknown messages; only newer ones get round trips.
+			const auto peer = peers.find(seats[i].peer);
+			if (peer != peers.end() && peer->second.version >= SEAT_LATENCY_VERSION)
+			{
+				if (latency.empty())
+					latency = TurnCodec::encode(latencySnapshot());
+				output.send(seats[i].peer, latency);
+			}
+		}
 	presenceDirty = false;
 	lastPresenceTick = relayTick(now);
+}
+
+void TurnSequencer::checkBarrier()
+{
+	if (clockRunning || over)
+		return;
+	bool everyone = true;
+	for (unsigned i = 0; i < MAX_SEATS; ++i)
+		if ((humanMask & (1u << i)) && seats[i].state == PresenceState::NotConnected)
+			everyone = false;
+	if (!everyone && now - created < config.startBarrierMicros)
+		return;
+	clockRunning = true;
+	start = now;
+	// A seat that has not loaded yet joins late: its grace runs from the start.
+	for (unsigned i = 0; i < MAX_SEATS; ++i)
+		if ((humanMask & (1u << i)) && seats[i].state == PresenceState::NotConnected)
+			seats[i].graceStart = now;
+	lastPresenceTick = 0;
+	presenceDirty = true;
 }
 
 void TurnSequencer::update(std::uint64_t nowMicros)
@@ -698,6 +764,14 @@ void TurnSequencer::update(std::uint64_t nowMicros)
 	now = std::max(now, nowMicros);
 	if (over)
 		return;
+	checkBarrier();
+	if (!clockRunning)
+	{
+		// Loading: only presence moves (who has connected), for the waiting screens.
+		if (presenceDirty)
+			broadcastPresence();
+		return;
+	}
 	const std::uint32_t tick = relayTick(now);
 
 	for (unsigned i = 0; i < MAX_SEATS && !over; ++i)
@@ -710,7 +784,7 @@ void TurnSequencer::update(std::uint64_t nowMicros)
 			sequenceQuit(static_cast<std::uint8_t>(i), MatchEventKind::LeftByGrace, now);
 		else if (s.state == PresenceState::Connected || s.state == PresenceState::Lagging)
 		{
-			const bool lagging = tick > s.executedTick && tick - s.executedTick > config.lagThresholdTicks;
+			const bool lagging = seatLag(s, tick) > config.lagThresholdTicks;
 			setState(static_cast<std::uint8_t>(i), lagging ? PresenceState::Lagging : PresenceState::Connected);
 		}
 	}

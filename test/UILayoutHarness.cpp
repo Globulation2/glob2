@@ -8,11 +8,13 @@
 #include <ui/Containers.h>
 #include <ui/Controls.h>
 #include <ui/Host.h>
+#include "UIRecordingCanvas.h"
 #include <BrowserTextInput.h>
 #include <cstdio>
 #include <vector>
 
 using namespace GAGGUI::ui;
+using glob2test::RecordingCanvas;
 
 namespace
 {
@@ -20,51 +22,6 @@ void require(bool condition, const char *message)
 {
 	GLOB2_REQUIRE(condition, message);
 }
-
-struct RecordingCanvas : Canvas
-{
-	Size extent;
-	const TextMeasurer &text_;
-	std::vector<Rect> clips;
-	std::vector<std::pair<Point, std::string>> texts;
-	struct IconDraw
-	{
-		Rect bounds;
-		std::string name;
-		GAGCore::Color color;
-	};
-	std::vector<IconDraw> icons;
-	int fills = 0;
-	RecordingCanvas(Size extent, const TextMeasurer &measurer) : extent(extent), text_(measurer)
-	{
-		clips.push_back({0, 0, extent.w, extent.h});
-	}
-	Size size() const override { return extent; }
-	const TextMeasurer &measurer() const override { return text_; }
-	void fillRect(Rect, GAGCore::Color) override { ++fills; }
-	void strokeRect(Rect, GAGCore::Color) override {}
-	void fillRounded(Rect, int, GAGCore::Color) override { ++fills; }
-	void line(Point, Point, GAGCore::Color) override {}
-	void text(Point at, FontRole, const std::string &value, GAGCore::Color) override
-	{
-		if (!value.empty())
-			texts.push_back({at, value});
-	}
-	void pushClip(Rect rect) override { clips.push_back(clips.back().intersect(rect)); }
-	void popClip() override
-	{
-		if (clips.size() > 1)
-			clips.pop_back();
-	}
-	Rect clip() const override { return clips.back(); }
-	void drawSurface(Rect, GAGCore::DrawableSurface *, unsigned char) override {}
-	void drawIcon(Rect r, const IconAsset &asset, GAGCore::Color color) override
-	{
-		icons.push_back({r, asset.name, color});
-	}
-	void drawSprite(Point, GAGCore::Sprite *, int) override {}
-	void transformed(double, Point, Rect, const std::function<void()> &paint) override { paint(); }
-};
 
 Theme theme;
 FixedTextMeasurer measurer(8, 16);
@@ -97,9 +54,9 @@ struct Fixture
 	SDL_Event key(SDL_Keycode sym, Uint16 mod = 0)
 	{
 		SDL_Event e{};
-		e.type = SDL_KEYDOWN;
-		e.key.keysym.sym = sym;
-		e.key.keysym.mod = mod;
+		e.type = SDL_EVENT_KEY_DOWN;
+		e.key.key = sym;
+		e.key.mod = mod;
 		host.event(e);
 		return e;
 	}
@@ -107,8 +64,8 @@ struct Fixture
 	{
 		SDL_Event e{};
 		e.type = type;
-		e.common.timestamp = clock;
-		if (type == SDL_MOUSEMOTION)
+		e.common.timestamp = SDL_MS_TO_NS(clock);
+		if (type == SDL_EVENT_MOUSE_MOTION)
 		{
 			e.motion.x = p.x;
 			e.motion.y = p.y;
@@ -123,16 +80,16 @@ struct Fixture
 	}
 	void click(Point p)
 	{
-		mouse(SDL_MOUSEBUTTONDOWN, p);
-		mouse(SDL_MOUSEBUTTONUP, p);
+		mouse(SDL_EVENT_MOUSE_BUTTON_DOWN, p);
+		mouse(SDL_EVENT_MOUSE_BUTTON_UP, p);
 	}
 	void finger(Uint32 type, Point p)
 	{
 		SDL_Event e{};
 		e.type = type;
-		e.tfinger.timestamp = clock;
-		e.tfinger.touchId = 1;
-		e.tfinger.fingerId = 1;
+		e.tfinger.timestamp = SDL_MS_TO_NS(clock);
+		e.tfinger.touchID = 1;
+		e.tfinger.fingerID = 1;
 		e.tfinger.x = float(p.x) / presentation.viewport.w;
 		e.tfinger.y = float(p.y) / presentation.viewport.h;
 		host.event(e);
@@ -157,23 +114,23 @@ struct Fixture
 	// A finger flick upward: four 20 px moves 16 ms apart, then release.
 	void flick(Point from)
 	{
-		finger(SDL_FINGERDOWN, from);
+		finger(SDL_EVENT_FINGER_DOWN, from);
 		for (int i = 1; i <= 4; ++i)
 		{
 			advance(16);
-			finger(SDL_FINGERMOTION, {from.x, from.y - 20 * i});
+			finger(SDL_EVENT_FINGER_MOTION, {from.x, from.y - 20 * i});
 		}
-		finger(SDL_FINGERUP, {from.x, from.y - 80});
+		finger(SDL_EVENT_FINGER_UP, {from.x, from.y - 80});
 	}
 	void wheel(int y, Point at)
 	{
 		SDL_Event motion{};
-		motion.type = SDL_MOUSEMOTION;
+		motion.type = SDL_EVENT_MOUSE_MOTION;
 		motion.motion.x = at.x;
 		motion.motion.y = at.y;
 		host.event(motion);
 		SDL_Event e{};
-		e.type = SDL_MOUSEWHEEL;
+		e.type = SDL_EVENT_MOUSE_WHEEL;
 		e.wheel.y = y;
 		host.event(e);
 	}
@@ -286,20 +243,20 @@ void checkIconsAndTooltips()
 	tip.host.focus("", false);
 	draw(1401);
 	SDL_Event motion{};
-	motion.type = SDL_MOUSEMOTION;
+	motion.type = SDL_EVENT_MOUSE_MOTION;
 	motion.motion.x = 15;
 	motion.motion.y = 15;
 	tip.host.event(motion);
 	require(draw(1500).texts.empty(), "hover starts a new timer");
 	require(draw(2100).texts.size() == 1, "pointer hover shows tooltip");
 	SDL_Event press{};
-	press.type = SDL_MOUSEBUTTONDOWN;
+	press.type = SDL_EVENT_MOUSE_BUTTON_DOWN;
 	press.button.button = SDL_BUTTON_LEFT;
 	press.button.x = 15;
 	press.button.y = 15;
 	tip.host.event(press);
 	draw(2101);
-	press.type = SDL_MOUSEBUTTONUP;
+	press.type = SDL_EVENT_MOUSE_BUTTON_UP;
 	tip.host.event(press);
 	require(draw(2800).texts.empty(), "pointer activation hides tooltip even after pressed frame");
 	motion.motion.x = 99;
@@ -468,23 +425,23 @@ void checkTapVersusPan()
 		return scroll("list", column(rows, {0}));
 	};
 	Fixture f(build, 200, 100, true);
-	f.finger(SDL_FINGERDOWN, {50, 20});
-	f.finger(SDL_FINGERUP, {50, 20});
+	f.finger(SDL_EVENT_FINGER_DOWN, {50, 20});
+	f.finger(SDL_EVENT_FINGER_UP, {50, 20});
 	require(taps == 1, "a tap activates the button under the finger");
-	f.finger(SDL_FINGERDOWN, {50, 80});
+	f.finger(SDL_EVENT_FINGER_DOWN, {50, 80});
 	f.advance(16);
-	f.finger(SDL_FINGERMOTION, {50, 40});
+	f.finger(SDL_EVENT_FINGER_MOTION, {50, 40});
 	f.advance(60); // the finger rests before lifting: no momentum
-	f.finger(SDL_FINGERUP, {50, 40});
+	f.finger(SDL_EVENT_FINGER_UP, {50, 40});
 	require(taps == 1, "a drag scrolls instead of tapping");
 	require(f.host.find("list")->scrollOffset() == 40, "drag distance becomes scroll offset");
 	require(!f.host.animating(), "a rested finger leaves no momentum");
-	f.finger(SDL_FINGERDOWN, {50, 20});
+	f.finger(SDL_EVENT_FINGER_DOWN, {50, 20});
 	SDL_Event lost{};
-	lost.type = SDL_WINDOWEVENT;
-	lost.window.event = SDL_WINDOWEVENT_FOCUS_LOST;
+	lost.type = SDL_EVENT_WINDOW_RESIZED;
+	lost.type = SDL_EVENT_WINDOW_FOCUS_LOST;
 	f.host.event(lost);
-	f.finger(SDL_FINGERUP, {50, 20});
+	f.finger(SDL_EVENT_FINGER_UP, {50, 20});
 	require(taps == 1, "focus loss cancels a held press");
 }
 
@@ -495,13 +452,13 @@ void checkPressSurvivesResize()
 	int clicks = 0;
 	Fixture f([&](const Presentation &) { return column({button("go", "Go", [&] { ++clicks; })}); }, 300, 100);
 	SDL_Event e{};
-	e.type = SDL_MOUSEBUTTONDOWN;
+	e.type = SDL_EVENT_MOUSE_BUTTON_DOWN;
 	e.button.button = SDL_BUTTON_LEFT;
 	e.button.x = 20;
 	e.button.y = 10;
 	f.host.event(e);
 	f.resize(320, 120);
-	e.type = SDL_MOUSEBUTTONUP;
+	e.type = SDL_EVENT_MOUSE_BUTTON_UP;
 	f.host.event(e);
 	require(clicks == 1, "a press survives a resize before its release");
 }
@@ -525,7 +482,7 @@ void checkFocusAndKeyboard()
 	f.key(SDLK_TAB);
 	f.key(SDLK_TAB);
 	require(f.host.focused() == "one", "tab wraps around");
-	f.key(SDLK_TAB, KMOD_LSHIFT);
+	f.key(SDLK_TAB, SDL_KMOD_LSHIFT);
 	require(f.host.focused() == "cancel", "shift-tab moves backwards");
 	f.key(SDLK_RETURN);
 	require(activated == std::vector<std::string>{"cancel"}, "enter activates the focused button");
@@ -568,8 +525,8 @@ void checkTextField()
 	f.click({20, 20});
 	require(f.host.editing() == "name", "tapping a field starts editing");
 	SDL_Event text{};
-	text.type = SDL_TEXTINPUT;
-	std::snprintf(text.text.text, sizeof text.text.text, "%s", "c");
+	text.type = SDL_EVENT_TEXT_INPUT;
+	text.text.text = "c";
 	f.host.event(text);
 	require(model == "abc", "text input appends at the cursor");
 	f.key(SDLK_LEFT);
@@ -619,8 +576,8 @@ void checkAdaptiveAndField()
 	b.click({20, 20});
 	require(b.host.editing() == "name", "tapping a field inside adaptive starts editing");
 	SDL_Event text{};
-	text.type = SDL_TEXTINPUT;
-	std::snprintf(text.text.text, sizeof text.text.text, "%s", "y");
+	text.type = SDL_EVENT_TEXT_INPUT;
+	text.text.text = "y";
 	b.host.event(text);
 	require(model == "xy", "text input reaches a field inside adaptive");
 	b.host.layoutIfNeeded();
@@ -673,9 +630,9 @@ void checkOverscrollSpringsBack()
 	const int end = f.host.find("list")->scrollMaximum();
 	require(end > 0 && f.host.find("list")->scrollOffset() == end, "starts at the end");
 	const int listTop = f.host.find("list")->bounds.y;
-	f.finger(SDL_FINGERDOWN, {50, 90});
+	f.finger(SDL_EVENT_FINGER_DOWN, {50, 90});
 	f.advance(16);
-	f.finger(SDL_FINGERMOTION, {50, 40});
+	f.finger(SDL_EVENT_FINGER_MOTION, {50, 40});
 	auto *list = f.host.find("list");
 	require(list->scrollOffset() == end, "the clamped offset stays at the maximum");
 	const int stretch = list->overscroll();
@@ -683,11 +640,11 @@ void checkOverscrollSpringsBack()
 	f.host.layoutIfNeeded();
 	require(f.host.find("b0")->bounds.y == listTop - end - stretch, "children shift by the stretch");
 	f.advance(16);
-	f.finger(SDL_FINGERMOTION, {50, 10});
+	f.finger(SDL_EVENT_FINGER_MOTION, {50, 10});
 	require(f.host.find("list")->overscroll() > stretch, "pulling further stretches further");
 	require(f.host.find("list")->overscroll() < 100, "the stretch stays inside the viewport");
 	f.advance(60);
-	f.finger(SDL_FINGERUP, {50, 10});
+	f.finger(SDL_EVENT_FINGER_UP, {50, 10});
 	require(f.host.animating(), "released stretched content springs back");
 	// A rebuild mid-bounce persists only the clamped offset.
 	f.host.invalidate();
@@ -713,16 +670,16 @@ void checkTouchStopsFling()
 	f.flick({50, 90});
 	f.advance(16);
 	require(f.host.animating(), "coasting");
-	f.finger(SDL_FINGERDOWN, {50, 50});
+	f.finger(SDL_EVENT_FINGER_DOWN, {50, 50});
 	require(!f.host.animating(), "a touch stops the coasting content");
 	const int held = f.host.find("list")->scrollOffset();
 	f.advance(100);
 	require(f.host.find("list")->scrollOffset() == held, "stopped content stays where the finger caught it");
-	f.finger(SDL_FINGERUP, {50, 50});
+	f.finger(SDL_EVENT_FINGER_UP, {50, 50});
 	require(taps == 0, "the stopping touch is not a tap");
 	require(!f.host.animating(), "nothing moves after the stopping touch lifts");
-	f.finger(SDL_FINGERDOWN, {50, 50});
-	f.finger(SDL_FINGERUP, {50, 50});
+	f.finger(SDL_EVENT_FINGER_DOWN, {50, 50});
+	f.finger(SDL_EVENT_FINGER_UP, {50, 50});
 	require(taps == 1, "the next touch taps as usual");
 	// Wheel input also stops a fling and scrolls by control heights from there.
 	f.flick({50, 90});
@@ -751,9 +708,9 @@ void checkScrollbarPressStopsFling()
 	auto *list = f.host.find("list");
 	const Point track{list->bounds.right() - 2, list->bounds.y + 50};
 	require(list->capturesPointer(track), "the scrollbar track captures the pointer");
-	f.finger(SDL_FINGERDOWN, track);
+	f.finger(SDL_EVENT_FINGER_DOWN, track);
 	require(!f.host.animating(), "grabbing the scrollbar stops coasting");
-	f.finger(SDL_FINGERUP, track);
+	f.finger(SDL_EVENT_FINGER_UP, track);
 	require(!f.host.animating(), "the thumb release leaves the content still");
 }
 
@@ -761,24 +718,24 @@ void checkMouseDragDoesNotFling()
 {
 	int taps = 0;
 	Fixture f(buttonList(taps), 200, 100, false);
-	f.mouse(SDL_MOUSEBUTTONDOWN, {50, 90});
+	f.mouse(SDL_EVENT_MOUSE_BUTTON_DOWN, {50, 90});
 	for (int i = 1; i <= 4; ++i)
 	{
 		f.advance(16);
-		f.mouse(SDL_MOUSEMOTION, {50, 90 - 20 * i});
+		f.mouse(SDL_EVENT_MOUSE_MOTION, {50, 90 - 20 * i});
 	}
-	f.mouse(SDL_MOUSEBUTTONUP, {50, 10});
+	f.mouse(SDL_EVENT_MOUSE_BUTTON_UP, {50, 10});
 	require(f.host.find("list")->scrollOffset() == 80, "a mouse drag scrolls by the pointer distance");
 	require(!f.host.animating(), "a mouse drag has no momentum");
 	f.advance(100);
 	require(f.host.find("list")->scrollOffset() == 80, "the content stays where the mouse left it");
 	f.host.find("list")->scrollBy(100000, f.host);
 	f.host.layoutIfNeeded();
-	f.mouse(SDL_MOUSEBUTTONDOWN, {50, 90});
+	f.mouse(SDL_EVENT_MOUSE_BUTTON_DOWN, {50, 90});
 	f.advance(16);
-	f.mouse(SDL_MOUSEMOTION, {50, 40});
+	f.mouse(SDL_EVENT_MOUSE_MOTION, {50, 40});
 	require(f.host.find("list")->overscroll() == 0, "a mouse drag past the end does not stretch");
-	f.mouse(SDL_MOUSEBUTTONUP, {50, 40});
+	f.mouse(SDL_EVENT_MOUSE_BUTTON_UP, {50, 40});
 	require(taps == 0, "mouse drags never tap");
 }
 
@@ -796,14 +753,14 @@ void checkListAndTextOverscroll()
 	const int maximum = list->scrollMaximum();
 	require(maximum > 0, "the list overflows");
 	const int lastRowTop = list->subTargets().back().bounds.y;
-	f.finger(SDL_FINGERDOWN, {50, list->bounds.y + 90});
+	f.finger(SDL_EVENT_FINGER_DOWN, {50, list->bounds.y + 90});
 	f.advance(16);
-	f.finger(SDL_FINGERMOTION, {50, list->bounds.y + 40});
+	f.finger(SDL_EVENT_FINGER_MOTION, {50, list->bounds.y + 40});
 	list = f.host.find("files");
 	require(list->scrollOffset() == maximum && list->overscroll() > 0, "a list stretches past its last row");
 	require(list->subTargets().back().bounds.y == lastRowTop - list->overscroll(), "list rows shift by the stretch");
 	f.advance(60);
-	f.finger(SDL_FINGERUP, {50, list->bounds.y + 40});
+	f.finger(SDL_EVENT_FINGER_UP, {50, list->bounds.y + 40});
 	f.settle("files");
 	require(f.host.find("files")->overscroll() == 0 && f.host.find("files")->scrollOffset() == maximum, "the list springs back");
 	require(selected == 0, "stretching a list selects nothing");
@@ -818,18 +775,80 @@ void checkListAndTextOverscroll()
 	editor = t.host.find("log");
 	require(editor->scrollMaximum() > 0, "the log overflows");
 	auto before = t.paint();
-	t.finger(SDL_FINGERDOWN, {50, editor->bounds.y + 60});
+	t.finger(SDL_EVENT_FINGER_DOWN, {50, editor->bounds.y + 60});
 	t.advance(16);
-	t.finger(SDL_FINGERMOTION, {50, editor->bounds.y + 20});
+	t.finger(SDL_EVENT_FINGER_MOTION, {50, editor->bounds.y + 20});
 	editor = t.host.find("log");
 	require(editor->overscroll() > 0, "a text log stretches past its last line");
 	auto during = t.paint();
 	require(!before.texts.empty() && !during.texts.empty(), "lines are painted");
 	require(during.texts.back().first.y == before.texts.back().first.y - editor->overscroll(), "painted lines shift by the stretch");
 	t.advance(60);
-	t.finger(SDL_FINGERUP, {50, editor->bounds.y + 20});
+	t.finger(SDL_EVENT_FINGER_UP, {50, editor->bounds.y + 20});
 	t.settle("log");
 	require(t.host.find("log")->overscroll() == 0, "the log springs back");
+}
+
+// Whatever the width and text size, a control's measured size holds the text
+// it paints (see glob2test::textSpill), so larger text never spills into a neighbour.
+void checkTextStaysInControls()
+{
+	auto gear = std::make_shared<IconAsset>();
+	gear->name = "gear";
+	gear->rasters.push_back({24, {}});
+	const std::string longText = "Language & player preferences";
+	auto build = [&](const Presentation &p)
+	{
+		ButtonOptions nav;
+		nav.flat = true;
+		nav.alignLeft = true;
+		nav.minHeight = 42;
+		nav.icon = gear;
+		ButtonOptions iconOnly;
+		iconOnly.icon = gear;
+		iconOnly.accessibleLabel = "Gear";
+		SliderOptions slide;
+		slide.caption = longText;
+		slide.valueText = "50%";
+		StepperOptions step;
+		step.valueText = "Three colonies";
+		ListOptions list;
+		list.visibleRows = 3;
+		std::vector<Element> rows{
+			button("nav/0", "Display & graphics", {}, nav),
+			button("nav/1", "Gameplay", {}, nav),
+			button("nav/2", longText, {}, nav),
+			button("plain", longText, {}),
+			button("icon", "", {}, iconOnly),
+			row({expanded(button("pair/0", "Players & Teams", {})), expanded(button("pair/1", "Game Rules", {}))}, {p.pt(4)}),
+			toggle("toggle", longText, true, {}),
+			segments("segments", {"Text size 100%", "Text size 125%", "Text size 150%"}, 0, {}),
+			choice("choice", {longText, "Short"}, 0, {}),
+			chooser("chooser", longText, {}),
+			stepper("stepper", 3, 0, 10, {}, step),
+			slider("slider", 5, 0, 10, {}, slide),
+			textField("field", longText, {}),
+			listView("list", {longText, "Two", "Three"}, 0, {}, list),
+		};
+		return column(std::move(rows), {p.pt(4)});
+	};
+	for (bool touch : {false, true})
+		// Text sizes 100%, 150% and 175%, then a font whose lines run taller than the
+		// control height (platform rasterizers report different line heights).
+		for (auto [glyph, line] : {std::pair{8, 16}, {12, 24}, {14, 28}, {10, 40}})
+			for (int width : {140, 200, 280, 420})
+			{
+				FixedTextMeasurer sized(glyph, line);
+				Host host(theme, build);
+				host.setMeasurer(&sized);
+				host.setPresentation(Presentation::forSurface(width, 3000, 1, touch));
+				host.layoutIfNeeded();
+				RecordingCanvas canvas({width, 3000}, sized);
+				host.paint(canvas, 0);
+				const auto spill = glob2test::textSpill(canvas, host.interactiveNodes());
+				GLOB2_REQUIRE(spill.empty(), spill + " (touch=" + std::to_string(touch) + " glyph=" + std::to_string(glyph) +
+												 " line=" + std::to_string(line) + " width=" + std::to_string(width) + ")");
+			}
 }
 
 void checkInvariants()
@@ -877,4 +896,5 @@ TEST_SUITE("UILayout")
 	TEST_CASE("list view") { checkListView(); }
 	TEST_CASE("adaptive and field") { checkAdaptiveAndField(); }
 	TEST_CASE("invariants") { checkInvariants(); }
+	TEST_CASE("text stays inside its control at every size") { checkTextStaysInControls(); }
 }

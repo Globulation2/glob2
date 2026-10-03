@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 #pragma once
 #include "ui/FrontendUI.h"
+#include "Team.h"
 #include <GraphicContext.h>
 #include <array>
 #include <optional>
@@ -29,6 +30,9 @@ class InGameMainScreen : public Glob2UI::InGameDialog
 	};
 	explicit InGameMainScreen(bool isReplay = false, bool canSave = true, bool paused = false);
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
+	/// A networked (turn-protocol) game: no Load or Save, and "Leave match" instead
+	/// of "Quit the game".
+	void setNetworked(bool value) { networked = value; }
 
   protected:
 	void onEscape() override { finish(RETURN_GAME); }
@@ -36,6 +40,27 @@ class InGameMainScreen : public Glob2UI::InGameDialog
 
   private:
 	bool replay, canSave, paused;
+	bool networked = false;
+};
+
+/// A yes/no question over the game ("Leave match?"), Cancel on Escape.
+class InGameConfirmScreen : public Glob2UI::InGameDialog
+{
+  public:
+	enum
+	{
+		CANCEL = 0,
+		CONFIRM = 1
+	};
+	InGameConfirmScreen(std::string title, std::string body, std::string confirmLabel, std::string cancelLabel);
+	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
+
+  protected:
+	void onEscape() override { finish(CANCEL); }
+	double maxWidth() const override { return classic() ? 420 : -1; }
+
+  private:
+	std::string title, body, confirmLabel, cancelLabel;
 };
 
 class InGameEndOfGameScreen : public Glob2UI::InGameDialog
@@ -110,8 +135,8 @@ class InGameAllianceScreen : public Glob2UI::InGameDialog
 	bool editable = true;
 	int players = 0;
 	// Settings of every player of the local team, kept for the masks.
-	std::array<bool, 16> ownAlliance{}, ownNormal{}, ownFood{}, ownMarket{}, ownChat{};
-	std::array<int, 16> teamOf{};
+	std::array<bool, Team::MAX_COUNT> ownAlliance{}, ownNormal{}, ownFood{}, ownMarket{}, ownChat{};
+	std::array<int, Team::MAX_COUNT> teamOf{};
 	bool &field(Entry &entry, Setting setting) const;
 	// Players of one team share alliance and vision.
 	void mirror(int player, Setting setting);

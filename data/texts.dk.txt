@@ -1510,8 +1510,8 @@ Flodbredde
 Sandvægt
 [Select a valid map.]
 Vælg et gyldigt kort.
-[Shared control needs a free controller slot (maximum 12).]
-Delt styring kræver en ledig plads til en spiller eller AI (højst 12).
+[Shared control needs a free controller slot (maximum %0).]
+Delt styring kræver en ledig plads til en spiller eller AI (højst %0).
 [Smoothing]
 Udglatning
 [Standard]
@@ -1730,8 +1730,8 @@ Vis Globulation 2-markøren.
 Færdig
 [settings Edit shortcut]
 Rediger tastaturgenvej
-[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
-Forstør menuer, tekst og sidepanelet på en skærm med høj opløsning.
+[settings Multiply the operating system display scale for menus, text and the sidebar.]
+Gang operativsystemets skærmskalering for menuer, tekst og sidepanelet.
 [settings Flags]
 Flag
 [settings Full]
@@ -3148,8 +3148,6 @@ Minikort
 Spol frem
 [Hide keyboard]
 Skjul tastatur
-[Dialog text size]
-Dialogtekststørrelse
 [Player slot]
 Spillerplads
 [Team color]
@@ -3488,8 +3486,6 @@ Vinderchance: %0 · Styrke: %1
 Minimum krævede niveau: %0
 [Confirm %0]
 Ok: %0
-[Dialog text size %0]
-Dialogtekststørrelse: %0%
 [%0 %1]
 %0 %1
 [resume game]
@@ -3642,9 +3638,13 @@ Kortets fart
 
 [Custom rules]
 
-[conn ai everywhere]
-
 [conn ai]
+
+[conn behind %0]
+
+[conn behind explanation %0 %1]
+
+[conn behind]
 
 [conn card catching up]
 
@@ -3668,19 +3668,21 @@ Kortets fart
 
 [conn card seconds left %0]
 
-[conn connected]
-
 [conn connections]
 
-[conn delay explanation]
+[conn delay explanation %0 %1]
 
-[conn latency]
+[conn fair]
+
+[conn good]
+
+[conn grid legend]
+
+[conn jitter %0]
 
 [conn leave match]
 
 [conn left]
-
-[conn lost]
 
 [conn notice back %0]
 
@@ -3688,11 +3690,17 @@ Kortets fart
 
 [conn notice lost %0 %1]
 
+[conn ping explanation %0 %1]
+
+[conn ping]
+
 [conn players]
+
+[conn poor]
 
 [conn reconnecting]
 
-[conn relay %0 %1]
+[conn relay %0]
 
 [conn resyncing]
 
@@ -3705,6 +3713,8 @@ Kortets fart
 [conn you %0]
 
 [conn you]
+
+[conn your delay %0]
 
 [hub account menu]
 
@@ -4188,6 +4198,8 @@ Kortets fart
 
 [qm 1 vs 1]
 
+[qm ping about]
+
 [qm ranked]
 
 [qm casual %0]
@@ -4215,8 +4227,6 @@ Kortets fart
 [qm find match]
 
 [qm opponents rated %0 to %1]
-
-[qm region %0 relay %1 ms]
 
 [qm region %0]
 
@@ -4633,4 +4643,58 @@ Kortets fart
 [hub full leaderboard]
 
 [settings %0 is no longer linked.]
+
+[room map read failed]
+
+[room map upload failed]
+
+[room map upload failed %0]
+
+[room uploading map]
+
+[room premade map shared]
+
+[room take a seat to play]
+
+[room waiting for a seat]
+
+[room not seated]
+
+[room copied]
+
+[room copy failed]
+
+[room closed title]
+
+[room removed title]
+
+[room back to online]
+
+[leave match]
+
+[leave match title]
+
+[leave lan title]
+
+[leave rated body]
+
+[leave casual body]
+
+[leave room body]
+
+[leave lan body]
+
+[leave match confirm]
+
+[keep playing]
+
+[results team]
+
+[results quick unrated]
+
+[conn card cannot keep up]
+
+[conn card cannot keep up body]
+
+[conn card not gaining]
 

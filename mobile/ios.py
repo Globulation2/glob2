@@ -88,7 +88,7 @@ def main():
     info['CFBundleVersion']=args.build_number
     write_if_changed(project/'Info.plist',plistlib.dumps(info).decode())
     manifest=json.loads((prefix/'manifest.json').read_text())
-    include=[output/'include',prefix/'include',prefix/'include/SDL2']+[ROOT/p for p in INCLUDE_DIRECTORIES]
+    include=[output/'include',prefix/'include',prefix/'include/SDL3']+[ROOT/p for p in INCLUDE_DIRECTORIES]
     libraries=[output/('lib/libglob2-script-tests.a' if args.script_tests else 'lib/libglob2.a')]+[prefix/p for p in manifest['archives']]
     lines=['cmake_minimum_required(VERSION 3.24)','project(Glob2 LANGUAGES C CXX OBJC OBJCXX)',
         'set(CMAKE_CXX_STANDARD 20)', 'set(CMAKE_CXX_STANDARD_REQUIRED ON)',
@@ -124,16 +124,23 @@ def main():
         'target_sources(Glob2 PRIVATE '+cmake_quote(icons)+')',
         'set_source_files_properties('+cmake_quote(icons)+' PROPERTIES MACOSX_PACKAGE_LOCATION Resources)',
         'set_target_properties(Glob2 PROPERTIES XCODE_ATTRIBUTE_ASSETCATALOG_COMPILER_APPICON_NAME AppIcon)']
-    for framework in ('UniformTypeIdentifiers','UIKit','Foundation','AudioToolbox','CoreAudio','AVFoundation','CoreGraphics','CoreHaptics','CoreMotion','CoreBluetooth','GameController','Metal','QuartzCore','OpenGLES','Security','SystemConfiguration'):
+    for framework in ('UniformTypeIdentifiers','UIKit','Foundation','AudioToolbox','CoreAudio','AVFoundation','CoreGraphics','CoreHaptics','CoreMotion','CoreBluetooth','CoreMedia','CoreVideo','GameController','Metal','QuartzCore','OpenGLES','Security','SystemConfiguration'):
         lines.append('target_link_libraries(Glob2 PRIVATE "-framework '+framework+'")')
     if args.script_tests:
         lines += ['set_target_properties(Glob2 PROPERTIES XCODE_ATTRIBUTE_CLANG_ENABLE_OBJC_ARC YES)']
         lines += ['target_link_options(Glob2 PRIVATE '+cmake_quote('-Wl,-force_load,'+str(output/'lib/libglob2-script-tests.a'))+')']
-    for folder in (('data','maps','campaigns','scripts','games','test/fixtures') if args.script_tests else ('data','maps','campaigns','scripts')):
-        for resource in sorted((ROOT/folder).rglob('*')):
+    sys.path.insert(0, str(ROOT))
+    from tools.package_assets import export_assets
+    asset_root = output/'runtime-assets'
+    export_assets(ROOT, asset_root, platform='ios', optimized=args.release)
+    resource_roots = [(asset_root, folder) for folder in ('data','maps','campaigns','scripts')]
+    if args.script_tests:
+        resource_roots += [(ROOT, folder) for folder in ('games','test/fixtures')]
+    for resource_root, folder in resource_roots:
+        for resource in sorted((resource_root/folder).rglob('*')):
             if resource.is_file():
                 lines.append('target_sources(Glob2 PRIVATE '+cmake_quote(resource)+')')
-                lines.append('set_source_files_properties('+cmake_quote(resource)+' PROPERTIES MACOSX_PACKAGE_LOCATION '+cmake_quote(resource.relative_to(ROOT).parent)+')')
+                lines.append('set_source_files_properties('+cmake_quote(resource)+' PROPERTIES MACOSX_PACKAGE_LOCATION '+cmake_quote(resource.relative_to(resource_root).parent)+')')
     if args.script_tests:
         # Rename CMake target tokens only; resource paths such as data/usl/Glob2
         # are source assets and must keep their names.
@@ -160,6 +167,11 @@ def main():
         if args.environment=='device' and args.team:
             build += ['--','-allowProvisioningUpdates']
         subprocess.run(build,env=env,check=True)
+        if args.environment=='simulator':
+            # Signing is disabled in Xcode to avoid requiring credentials. Seal
+            # the completed bundle: the linker-only signature omits resources.
+            subprocess.run(['codesign','--force','--sign','-',str(app)],env=env,check=True)
+            subprocess.run(['codesign','--verify','--deep','--strict',str(app)],env=env,check=True)
 
 if __name__=='__main__':
     try: main()

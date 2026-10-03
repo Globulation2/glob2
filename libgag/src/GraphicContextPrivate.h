@@ -8,7 +8,8 @@
 #include <RenderBackend.h>
 
 #include <GraphicContext.h>
-#include <SDL.h>
+#include <RenderBatch.h>
+#include <SDL3/SDL.h>
 
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>
@@ -56,7 +57,7 @@ namespace GAGCore
 	// The active graphic context. Set by GraphicContext::setRes.
 	extern GraphicContext *_gc;
 	// SDL pixel format used for GL uploads. Configured by GraphicContext::setRes.
-	extern SDL_PixelFormat _glFormat;
+	extern SDL_PixelFormatDetails _glFormat;
 	// EXPERIMENTAL is a bit buggy and "not EXPERIMENTAL" is bugfree but slow
 	// when rendering clouds or other density layers (GraphicContext::drawAlphaMap).
 	extern const bool EXPERIMENTAL;

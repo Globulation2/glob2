@@ -8,7 +8,7 @@
 
 
 #include <BackgroundFileWriter.h>
-#include <SDLCompat.h>
+#include <SDL3/SDL.h>
 #include <Toolkit.h>
 
 #include "Game.h"
@@ -97,22 +97,27 @@ void GameGUI::init()
 	selectionMode=NO_SELECTION;
 	selectionPushed=false;
 	selection = std::monostate{};
-	// Reset the per-client view scratch (selection + mouse) the render path
-	// reads. Formerly cleared by Game::clearGame when these fields lived on
+	// Reset the per-client view scratch (selection, mouse and map render state)
+	// the render path reads. Formerly cleared by Game::clearGame when these fields lived on
 	// Game; now front-end-owned, so reset it here. See CS-661.
 	view = Game::ViewState{};
 	miniMapPushed=false;
 	putMark=false;
 	showUnitWorkingToBuilding=true;
 	chatMask=0xFFFFFFFF;
-	hasSpaceBeenClicked=false;
+	// A new game starts with empty client channels.
+	clientEvents.reset();
+	clientRequests.reset();
+	clientRequests.publishDisplaySize(game.map.displayViewportW, game.map.displayViewportH);
+	for (auto &queue : pendingTeamEvents)
+		queue.clear();
 	swallowSpaceKey=false;
 	scriptText.clear();
 	scriptTextUpdated = false;
 
 	viewportSpeedX=0;
 	viewportSpeedY=0;
-	lastViewportStep=SDL_GetTicks64();
+	lastViewportStep=SDL_GetTicks();
 
 	showStarvingMap=false;
 	showDamagedMap=false;
@@ -313,6 +318,7 @@ void GameGUI::updateCamera()
     viewportX=camera.tileX();viewportY=camera.tileY();
     game.map.displayViewportW=std::ceil(camera.visibleW()+camera.fractionX());
     game.map.displayViewportH=std::ceil(camera.visibleH()+camera.fractionY());
+    clientRequests.publishDisplaySize(game.map.displayViewportW,game.map.displayViewportH);
     view.mouseX=mapMouseX(mouseX);view.mouseY=mapMouseY(mouseY);
 }
 bool GameGUI::zoomMap(double steps,int x,int y)
@@ -323,6 +329,7 @@ bool GameGUI::zoomMap(double steps,int x,int y)
     viewportX=camera.tileX();viewportY=camera.tileY();
     game.map.displayViewportW=std::ceil(camera.visibleW()+camera.fractionX());
     game.map.displayViewportH=std::ceil(camera.visibleH()+camera.fractionY());
+    clientRequests.publishDisplaySize(game.map.displayViewportW,game.map.displayViewportH);
     view.mouseX=mapMouseX(mouseX);view.mouseY=mapMouseY(mouseY);
     return true;
 }

@@ -4,7 +4,7 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import type { AccessPolicy } from '@glob2/core';
 import { resolveQueue } from '@glob2/core';
-import { checkDocument as check, simVersionKey } from '@glob2/protocol';
+import { checkDocument as check, playerSeats, simVersionKey } from '@glob2/protocol';
 import {
   PgQueueNotifier,
   PlatformMatchStarter,
@@ -22,6 +22,7 @@ import {
   PINNED_KEY,
   RELAY_KEY,
   fakeMapBytes,
+  unloadableMapBytes,
   fakeSaveBytes,
   guestPlayer,
   registerRelay,
@@ -237,6 +238,8 @@ describe('uploads', () => {
       })
     )['room'] as { code: string; seats: unknown[]; mapStatus: string; teams: unknown[] };
     expect(created.mapStatus).toBe('ready');
+    // The room names an uploaded map by the title read from the file.
+    expect((created as Record<string, unknown>)['mapTitle']).toBe('Uploaded map');
     expect(created.seats).toHaveLength(4);
     expect(created.teams).toHaveLength(4);
     await other.client.ok('room.join', { code: created.code });
@@ -267,7 +270,10 @@ describe('uploads', () => {
         'save',
       ),
     );
-    const junk = await json(await upload(owner, Buffer.from('not a map'), 'map'));
+    const notAMap = await upload(owner, Buffer.from('not a map'), 'map');
+    expect(notAMap.status).toBe(400);
+    expect(await json(notAMap)).toMatchObject({ details: { problem: 'not_a_map' } });
+    const junk = await json(await upload(owner, unloadableMapBytes(), 'map'));
     await engine.runPending();
     const readSave = await json(
       await fetch(`${a.url}/api/v1/uploads/${save['id']}`, {
@@ -434,6 +440,9 @@ describe('relays', () => {
       activeMatchIds: [],
     });
     expect(await json(heartbeat)).toEqual({ ok: true });
+    // The first start's pushes may still be in flight: take them before clearing.
+    await host.client.event('match.start');
+    await guest.client.event('match.start');
     host.client.clear();
     guest.client.clear();
     const moved = await guest.client.ok('match.reconnect', { matchId, relayUnavailable: true });
@@ -615,7 +624,8 @@ describe('match-end intake', () => {
       },
       {
         seat: 1,
-        quality: 'poor',
+        // Typical ping 150 ms and two disconnects: fair (connectionQuality.ts).
+        quality: 'fair',
         rttMs: { p50: 150, p95: 420 },
         lagMs: { p50: 280, p95: 360 },
         disconnects: 2,
@@ -1006,7 +1016,7 @@ describe('PlatformMatchStarter', () => {
     expect(matches).toHaveLength(1);
     const setup = matches[0]!.setup as ReturnType<typeof queueMatchSetup>;
     expect(check('MatchSetup', setup).stage).toBe('ok');
-    expect(setup.seats.map((s) => s.name)).toEqual([p1.displayName, p2.displayName]);
+    expect(playerSeats(setup).map((s) => s.name)).toEqual([p1.displayName, p2.displayName]);
     expect(matches[0]).toMatchObject({
       origin: 'queue',
       queue_id: 'casual-1v1',

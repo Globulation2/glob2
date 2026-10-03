@@ -30,6 +30,7 @@ secrets before starting services:
 
 ```sh
 scons target=web release=1 -j4
+python3 browser/package-static.py
 python3 deploy/provision_tls.py deploy/secrets
 docker compose -f deploy/compose.legacy.yaml build lobby web
 docker compose -f deploy/compose.legacy.yaml up -d --wait
@@ -38,8 +39,15 @@ docker compose -f deploy/compose.legacy.yaml up -d --wait
 Open https://localhost:8443. Caddy creates a local CA for localhost; install that
 CA in the testing browser/device trust store. Do not bypass verification in a
 production client. Its public CA is separate from the private deployment CA in
-`deploy/secrets`. Browser assets default to `build/emscripten/client/release`;
+`deploy/secrets`. Run `python3 browser/package-static.py` after building the
+browser client. Browser assets default to `build/browser-static`, whose verified
+gzip sidecars Caddy negotiates for HTML, JavaScript, WebAssembly and data;
 `GLOB2_ASSETS` overrides the mounted directory.
+
+The proxy image pins Caddy 2.11.4. Caddy 2.10.2 incorrectly returned HTTP 206 for
+full precompressed responses; the [upstream fix](https://github.com/caddyserver/caddy/pull/7251)
+restores HTTP 200 when the request contains no byte range. Deployment tests check
+both identity and gzip responses against the packaged files.
 
 The provisioning command refuses to overwrite existing material. The directory
 is owner-only; file-backed Compose secrets must be readable by container UID
@@ -92,7 +100,7 @@ access and successful deployment/cross-platform checks.
 | Setting | Purpose/default |
 | --- | --- |
 | `GLOB2_TLS_CERT`, `GLOB2_TLS_KEY`, `GLOB2_TLS_CA` | Required PEM server identity and private deployment CA files |
-| `GLOB2_BIND_ADDRESS` | Game-listener address; `0.0.0.0` |
+| `GLOB2_BIND_ADDRESS` | Game-listener address; `::` (IPv4/IPv6 dual-stack) |
 | `GLOB2_LOBBY_PORT`, `GLOB2_REGISTRATION_PORT`, `GLOB2_ROUTER_PORT` | Listener ports; 7489, 7490, 7491 |
 | `GLOB2_PUBLIC_LOBBY_ENDPOINT`, `GLOB2_PUBLIC_ROUTER_ENDPOINT` | Complete advertised WSS URLs |
 | `GLOB2_REGISTRATION_ENDPOINT` | Private WSS lobby registration URL |

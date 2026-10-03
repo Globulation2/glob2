@@ -5,9 +5,10 @@
 
 #pragma once
 
+#include <atomic>
 #include <queue>
-#include <SDL.h>
-#include <SDL_thread.h>
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_thread.h>
 #include <memory>
 #include <glob2/BuildConfig.h>
 
@@ -37,11 +38,11 @@ public:
 	//! thread used for recording
 	SDL_Thread *recordingThread;
 	//! Mutex for orders
-	SDL_mutex *ordersMutex;
+	SDL_Mutex *ordersMutex;
 	//! Queue of orders to be sent through the network
 	std::queue<std::shared_ptr<OrderVoiceData> > orders;
 	//! True when recording
-	bool recordingNow;
+	std::atomic<bool> recordingNow{false};
 	
 	#ifdef HAVE_PORTAUDIO
 	PaStream *stream;
@@ -49,7 +50,7 @@ public:
 	short* buffer;
 	#else
 	//! True when record thread is running
-	bool recordThreadRun;
+	std::atomic<bool> recordThreadRun{false};
 	//! When recordingNow is set to false, get decrement
 	int stopRecordingTimeout;
 	#endif

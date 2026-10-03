@@ -43,14 +43,16 @@ GAGCore::CooperativeTask Engine::initCampaignTask(std::string filename, Campaign
 {
     initializationDiagnostic.clear();
     co_await GAGCore::CooperativeTask::checkpoint("[Loading headers]");
-    auto map = loadMapHeader(filename);
-    auto players = loadGameHeader(filename);
+    MapHeader map;
+    GameHeader players;
+    auto stream = openGameInput(filename, map, players);
+    if (!stream) co_return false;
     if (players.getNumberOfPlayers() == 0) players = prepareCampaign(map, gui.localPlayer, gui.localTeamNo);
     else { gui.localPlayer = 0; gui.localTeamNo = players.getBasePlayer(0).teamNumber; }
     if (campaign) players.getBasePlayer(0).name = campaign->getPlayerName();
     // Missions and the tutorial play as authored: never with experiments.
     if (!map.getIsSavedGame()) players.getExperiments().clear();
-    const bool loaded = co_await initGameTask(map, players);
+    const bool loaded = co_await initGameFromStreamTask(map, players, std::move(stream), false);
     if (loaded && campaign) gui.setCampaignGame(*campaign, mission);
     co_return loaded;
 }
@@ -93,12 +95,15 @@ GAGCore::CooperativeTask Engine::initCustomTask(std::string filename)
 {
     initializationDiagnostic.clear();
     co_await GAGCore::CooperativeTask::checkpoint("[Loading headers]");
-    auto map = loadMapHeader(filename);
-    auto players = loadGameHeader(filename);
+    MapHeader map;
+    GameHeader players;
+    auto stream = openGameInput(filename, map, players);
+    if (!stream) co_return false;
     for (int p = 0; p < players.getNumberOfPlayers(); ++p)
         if (players.getBasePlayer(p).type == BasePlayer::P_IP) players.getBasePlayer(p).makeItAI(AI::toggleAI);
     applyLocalExperiments(players, map);
-    co_return co_await initGameTask(map, players, true, false, true, filename);
+    if (players.getNumberOfPlayers() == 0) co_return false;
+    co_return co_await initGameFromStreamTask(map, players, std::move(stream), true);
 }
 
 
@@ -204,6 +209,7 @@ GAGCore::CooperativeTask Engine::initTurnMatchTask(TurnMatchStart start)
     state.replayPath = envReplayPath ? envReplayPath : "replays/last_game.replay";
     turnMatch = std::move(state);
     // The connection HUD replaces the "waiting for players" notice.
+    gui.networkMatch.active = true;
     gui.connectionOverlay = std::make_unique<ConnectionOverlay>();
     gui.connectionOverlay->source = [this] { return turnConnectionSnapshot(); };
     gui.connectionOverlay->leave = [this] { gui.isRunning = false; };
@@ -220,15 +226,21 @@ ConnectionSnapshot Engine::turnConnectionSnapshot()
     const Turn::TurnSession& s = turn->turn();
     const Uint64 period = std::max<Uint64>(1, s.tickPeriodMicros());
     const Uint64 now = turnNowMicros;
+    // The quantities of docs/multiplayer/connection-quality.md: Delay (own), and Ping
+    // and Behind for every human. Ping is the relay's measurement of each seat
+    // (SeatLatency, protocol 2) so every row compares like with like; the own row falls
+    // back to this client's Ping/Pong round trip (LAN hosts and protocol-1 relays
+    // measure none).
     const int ownDelay = int((std::max<std::int64_t>(0, s.rttMicros()) / 2 + Uint64(s.targetTicks()) * period) / 1000);
     snapshot.inputDelayMs = ownDelay;
-    snapshot.rttMs = s.rttMicros() > 0 ? int(s.rttMicros() / 1000) : -1;
+    snapshot.jitterMs = int(std::max<std::int64_t>(0, s.jitterMicros()) / 1000);
     snapshot.ownUnstable = s.jitterMicros() > 60000;
     const GameHeader& header = gui.game.gameHeader;
     for (int p = 0; p < header.getNumberOfPlayers() && p < int(Turn::MAX_SEATS); ++p)
     {
         const BasePlayer& player = header.getBasePlayer(p);
-        // Empty seats play as an inactive colony nobody controls; they are not players.
+        // Closed seats are no players at all. AI `none` (the empty seat of a match
+        // from before closed seats, or a seat whose player quit) controls nothing.
         if (player.type == BasePlayer::P_AI || player.type == BasePlayer::P_NONE)
             continue;
         ConnectionRow row;
@@ -246,8 +258,10 @@ ConnectionSnapshot Engine::turnConnectionSnapshot()
         if (p == s.localSeat())
         {
             row.local = true;
-            row.latencyMs = ownDelay;
-            row.unstable = snapshot.ownUnstable;
+            const auto own = s.seatPresenceInfo(p);
+            row.pingMs = own.relayRttMicros ? int(own.relayRttMicros / 1000)
+                         : s.rttMicros() > 0 ? int(s.rttMicros() / 1000)
+                                             : -1;
             row.state = s.state() == Turn::TurnSession::State::Running ? ConnectionRow::State::Connected
                         : s.state() == Turn::TurnSession::State::Reconnecting ? ConnectionRow::State::Reconnecting
                                                                               : ConnectionRow::State::Waiting;
@@ -255,7 +269,8 @@ ConnectionSnapshot Engine::turnConnectionSnapshot()
             continue;
         }
         const auto info = s.seatPresenceInfo(p);
-        row.latencyMs = int(Uint64(info.lagTicks) * period / 1000);
+        row.pingMs = info.relayRttMicros ? int(info.relayRttMicros / 1000) : -1;
+        row.behindMs = int(Uint64(info.lagTicks) * period / 1000);
         switch (info.state)
         {
         case Turn::PresenceState::Connected: row.state = ConnectionRow::State::Connected; break;
@@ -305,14 +320,14 @@ ConnectionSnapshot Engine::turnConnectionSnapshot()
         snapshot.catchupDone = s.executedTick() - std::min(s.executedTick(), catchupFrom);
         snapshot.catchupTotal = std::max(snapshot.catchupDone, s.maxHorizon() - std::min(s.maxHorizon(), catchupFrom));
         snapshot.missedSeconds = int(Uint64(snapshot.catchupTotal) * period / 1000000);
-        const Uint64 elapsed = now - catchupStartedMicros;
-        if (snapshot.catchupDone > 50 && elapsed > 0)
-        {
-            const double rate = double(snapshot.catchupDone) / double(elapsed);
-            snapshot.secondsLeft = int(double(snapshot.catchupTotal - snapshot.catchupDone) / rate / 1000000.0);
-        }
+        // The gap closes at (replay rate - match rate): estimate from that, and say
+        // when it does not close at all.
+        catchupPace.sample(now, s.executedTick(), s.maxHorizon());
+        snapshot.secondsLeft = catchupPace.secondsLeft(behind, 1e6 / double(period));
+        snapshot.cannotKeepUp = !desync && catchupPace.stuck(now);
         return snapshot;
     }
+    catchupPace.reset();
     catchupActive = false;
     catchupFrom = 0;
     catchupStartedMicros = 0;
@@ -366,6 +381,14 @@ std::vector<std::string> Engine::turnConnectionNotice()
 Turn::TurnSession* Engine::turnSession()
 {
     return turn ? &turn->turn() : nullptr;
+}
+
+bool Engine::turnFastForwarding()
+{
+    if (!turn || !session || !gui.isRunning)
+        return false;
+    const Turn::TurnSession& s = turn->turn();
+    return s.state() == Turn::TurnSession::State::Running && s.catchingUp() && !s.needsReload() && s.bufferedTicks() > 0;
 }
 
 
@@ -608,6 +631,23 @@ GAGCore::CooperativeTask Engine::initGameTask(MapHeader mapHeader, GameHeader ga
 	}
 	finishGameInit();
 	co_return true;
+}
+
+GAGCore::CooperativeTask Engine::initGameFromStreamTask(MapHeader map, GameHeader players, std::unique_ptr<InputStream> stream, bool saveAI)
+{
+    bool loaded = false;
+    try
+    {
+        loaded = co_await gui.loadFromStreamTask(map, players, true, false, saveAI, stream.get());
+    }
+    catch (const std::exception& error)
+    {
+        initializationDiagnostic = error.what();
+        std::cerr << "Failed to load the map: " << initializationDiagnostic << std::endl;
+    }
+    stream.reset(); // release the snapshot before replay/network setup
+    if (loaded) finishGameInit();
+    co_return loaded;
 }
 
 void Engine::finishGameInit()

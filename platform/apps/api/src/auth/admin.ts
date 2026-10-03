@@ -11,6 +11,9 @@ export type Role = Account['role'];
 
 const RANK: Record<Role, number> = { user: 0, moderator: 1, admin: 2 };
 
+/** What a deleted account is called everywhere it still appears. */
+export const DELETED_NAME = 'Deleted player';
+
 export function hasRole(account: Account, role: Role): boolean {
   return RANK[account.role] >= RANK[role];
 }
@@ -138,6 +141,96 @@ export class AdminService {
       ...(reason ? { reason } : {}),
     });
     return updated;
+  }
+
+  /**
+   * Deletes an account (guest or registered). The row stays, marked deleted,
+   * because match history, ratings and audit entries refer to it; everything
+   * that identifies the person or lets anyone sign in goes:
+   *
+   * - display name: "Deleted player", also on its past match participations;
+   * - sign-in identities (passwords, providers: the username is free again),
+   *   device credentials, refresh tokens and web sessions (all revoked now);
+   * - its catalog maps (versions, likes, reports, download counts, like other
+   *   map deletions; the bytes stay for matches played on them) and its likes
+   *   of other maps; queue tickets.
+   *
+   * Kept: matches (as "Deleted player"), rating rows (hidden: deleted
+   * accounts are left out of leaderboards and player pages), uploaded blobs,
+   * rooms it is in (left by the presence sweep once its sockets are closed)
+   * and the audit log. There is no undo.
+   */
+  async deleteAccount(
+    actor: Account | undefined,
+    target: Account,
+    reason?: string,
+  ): Promise<{ account: Account; removedMaps: number }> {
+    if (actor && actor.id === target.id)
+      throw apiError('forbidden', 'You cannot delete your own account here.');
+    if (actor && !(RANK[actor.role] > RANK[target.role])) {
+      throw apiError('forbidden', 'You can only delete accounts with a lower role.');
+    }
+    if (target.status === 'deleted') throw apiError('not_found', 'No such account.');
+    const result = await this.db.transaction().execute(async (tx) => {
+      const id = target.id;
+      const maps = await tx.deleteFrom('maps').where('owner_account_id', '=', id).execute();
+      const liked = await tx
+        .deleteFrom('map_likes')
+        .where('account_id', '=', id)
+        .returning('map_id')
+        .execute();
+      if (liked.length > 0) {
+        await tx
+          .updateTable('maps')
+          .set({ like_count: sql<number>`greatest(like_count - 1, 0)` })
+          .where(
+            'id',
+            'in',
+            liked.map((l) => l.map_id),
+          )
+          .execute();
+      }
+      await tx.deleteFrom('identities').where('account_id', '=', id).execute();
+      await tx.deleteFrom('device_credentials').where('account_id', '=', id).execute();
+      await tx.deleteFrom('queue_tickets').where('account_id', '=', id).execute();
+      await tx
+        .updateTable('refresh_tokens')
+        .set({ revoked_at: sql<Date>`now()` })
+        .where('account_id', '=', id)
+        .where('revoked_at', 'is', null)
+        .execute();
+      await tx
+        .updateTable('web_sessions')
+        .set({ revoked_at: sql<Date>`now()` })
+        .where('account_id', '=', id)
+        .where('revoked_at', 'is', null)
+        .execute();
+      await tx
+        .updateTable('match_participants')
+        .set({ display_name: DELETED_NAME })
+        .where('account_id', '=', id)
+        .execute();
+      const account = await tx
+        .updateTable('accounts')
+        .set({
+          status: 'deleted',
+          role: 'user',
+          display_name: DELETED_NAME,
+          updated_at: sql<Date>`now()`,
+        })
+        .where('id', '=', id)
+        .returningAll()
+        .executeTakeFirstOrThrow();
+      return { account, removedMaps: Number(maps[0]?.numDeletedRows ?? 0) };
+    });
+    await this.audit(actor, 'account.delete', target, {
+      displayName: target.display_name,
+      kind: target.kind,
+      removedMaps: result.removedMaps,
+      ...(reason ? { reason } : {}),
+    });
+    await this.effects.endSessions(target.id, 'deleted');
+    return result;
   }
 
   async rename(actor: Account | undefined, target: Account, name: string, reason?: string) {

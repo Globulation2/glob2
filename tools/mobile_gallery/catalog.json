@@ -868,7 +868,7 @@
     {
       "id": "game-connection",
       "title": "Connection panel",
-      "description": "Every player's state and latency over the map.",
+      "description": "Every player's Ping with a word and marker, and your Delay underneath (docs/multiplayer/connection-quality.md).",
       "group": "Online play"
     },
     {
@@ -885,8 +885,26 @@
     },
     {
       "id": "game-connection-own",
-      "title": "Connection panel: own connection unstable",
-      "description": "Own row amber; another player slow.",
+      "title": "Connection panel: fair, poor and behind",
+      "description": "Own Ping fair and Delay poor and unstable; one player a second behind, another slow.",
+      "group": "Online play"
+    },
+    {
+      "id": "game-connection-own-details",
+      "title": "Connection details: fair, poor and behind",
+      "description": "Ping, Behind and state of every player, the legend and what each number means.",
+      "group": "Online play"
+    },
+    {
+      "id": "game-connection-grid",
+      "title": "Connection panel: more than four players",
+      "description": "Phones show a grid of markers and numbers beyond four people.",
+      "group": "Online play"
+    },
+    {
+      "id": "game-connection-grid-details",
+      "title": "Connection details: more than four players",
+      "description": "The details sheet explains the grid's numbers.",
       "group": "Online play"
     },
     {

@@ -5,7 +5,7 @@
 import { Suspense, lazy, useEffect, useRef, type ReactNode } from 'react';
 import { ART, GLOB_ICON, GameArt, Wordmark, type ArtName } from './art.tsx';
 import { Avatar, Loading } from './components/common.tsx';
-import { DOWNLOAD_URL, Home } from './pages/Home.tsx';
+import { DOWNLOAD_URL, Home, WEBSITE_URL, websitePage } from './pages/Home.tsx';
 import { Leaderboard } from './pages/Leaderboard.tsx';
 import { Matches } from './pages/Matches.tsx';
 import { Link, RouterProvider, matchPath, useRouter } from './router.tsx';
@@ -119,6 +119,28 @@ interface NavItem {
   art?: ArtName;
 }
 
+/**
+ * The strip above the header that joins this app to the public website
+ * (Globulation 2 Online): the website shows the same strip pointing here.
+ * Only when the website is hosted apart from the app (VITE_WEBSITE_URL).
+ */
+function SiteBar() {
+  if (!WEBSITE_URL) return null;
+  return (
+    <nav className="site-bar" aria-label="Globulation 2 Online website">
+      <div className="wrap">
+        <a href={WEBSITE_URL}>
+          <span aria-hidden="true">←</span> Website
+        </a>
+        <a href={websitePage('/game/')}>The game</a>
+        <a href={websitePage('/learn/')}>Learn</a>
+        <a href={websitePage('/news/')}>News</a>
+        <a href={DOWNLOAD_URL}>Downloads</a>
+      </div>
+    </nav>
+  );
+}
+
 function Footer() {
   return (
     <footer className="site-footer">
@@ -157,6 +179,22 @@ function Footer() {
         <nav aria-label="About">
           <h2>About</h2>
           <ul>
+            {WEBSITE_URL && (
+              <>
+                <li>
+                  <a href={WEBSITE_URL}>Globulation 2 Online website</a>
+                </li>
+                <li>
+                  <a href={websitePage('/learn/')}>Player guides</a>
+                </li>
+                <li>
+                  <a href={websitePage('/news/')}>News</a>
+                </li>
+                <li>
+                  <a href={websitePage('/community/')}>Community</a>
+                </li>
+              </>
+            )}
             <li>
               <a href={SOURCE_URL} rel="noopener">
                 Source code
@@ -210,9 +248,12 @@ function Layout() {
   const page = found ? (
     found.route.render(found.params)
   ) : (
-    <div className="notice">
-      Nothing here. <Link to="/">Go to the home page</Link>.
-    </div>
+    <>
+      <h1>Page not found</h1>
+      <div className="notice">
+        Nothing here. <Link to="/">Go to the home page</Link>.
+      </div>
+    </>
   );
   return (
     <div className={`site${home ? ' home' : ''}`}>
@@ -220,6 +261,7 @@ function Layout() {
         Skip to content
       </a>
       <div className="world-band" aria-hidden="true" />
+      <SiteBar />
       <header className="site-header">
         <div className="wrap">
           <Link className="brand" to="/" aria-label={`${name}, home`}>

@@ -3,7 +3,7 @@
 
 #include "RelayTransport.h"
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <iostream>
 #include <stdexcept>
 
@@ -58,7 +58,7 @@ namespace
 struct Lingering
 {
 	std::unique_ptr<NetTransport> link;
-	std::uint32_t since = 0;
+	Uint64 since = 0;
 	bool awaitClose = false; ///< a Quit was sent: wait for the relay to close
 };
 std::vector<Lingering> &lingering()
@@ -71,7 +71,7 @@ std::vector<Lingering> &lingering()
 void pumpLingeringRelayConnections()
 {
 	auto &links = lingering();
-	const std::uint32_t now = SDL_GetTicks();
+	const Uint64 now = SDL_GetTicks();
 	for (auto it = links.begin(); it != links.end();)
 	{
 		// Read and drop whatever still arrives: closing a socket with unread input

@@ -2,12 +2,12 @@
 // origin, so requests carry the web session cookie (set by /signin); writes are
 // same-origin fetches, which the API's CSRF check accepts.
 import type {
-  InstanceInfo,
-  InstanceStats,
   AdminAccount,
   AdminAccountList,
   AiLeaderboard,
   ErrorBody,
+  InstanceInfo,
+  InstanceStats,
   LeaderboardPage,
   MapDetail,
   MapInfo,
@@ -15,6 +15,7 @@ import type {
   MapList,
   MapReportList,
   MapReportReceipt,
+  MapUpload,
   MapVersionInfo,
   MatchDetail,
   MatchList,
@@ -116,6 +117,14 @@ export const api = {
   updateMap: (id: string, body: { title?: string; description?: string; visibility?: string }) =>
     request<MapInfo>('PATCH', `/api/v1/maps/${encodeURIComponent(id)}`, { body }),
   deleteMap: (id: string) => request<undefined>('DELETE', `/api/v1/maps/${encodeURIComponent(id)}`),
+  /** Checks a map file with the game before a catalog map is created for it. */
+  checkMapFile: (file: Blob, fileName?: string) =>
+    request<MapUpload>('POST', '/api/v1/uploads', {
+      body: file,
+      query: { format: 'map', fileName },
+    }),
+  checkedFile: (id: string, signal?: AbortSignal) =>
+    get<MapUpload>(`/api/v1/uploads/${encodeURIComponent(id)}`, undefined, signal),
   uploadVersion: (id: string, file: Blob, notes?: string) =>
     request<MapVersionInfo>('POST', `/api/v1/maps/${encodeURIComponent(id)}/versions`, {
       body: file,

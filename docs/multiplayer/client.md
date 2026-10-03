@@ -158,6 +158,16 @@ with `scons official_instance=https://example.org`. Every build path passes it t
 the client as `GLOB2_OFFICIAL_INSTANCE_ORIGIN`, and the Android and iOS packaging
 scripts derive the App Link host and associated domain from it.
 
+When the official instance moves, the origin it leaves goes into `FORMER_ORIGINS`
+there (`https://glob2online.com` became the public website when the app moved to
+`app.glob2online.com`). The client then reads a stored selection of a former
+origin as the official one (`Online::currentOrigin`), treats it as trusted, maps
+its invite links (`https://glob2online.com/j/<code>`, which the website also
+redirects) and `glob2://join?instance=` links to the official origin, and hides
+its record from the server list. The record itself, with its device credential
+and refresh token, stays keyed by the origin that issued it and is never copied.
+Builds with another `official_instance` carry no former origins.
+
 The browser shell selects its serving origin for a fresh profile, so hosted
 `/play/` clients connect to their own platform even when the compiled default
 predates a hostname cutover. On the official app host it also changes a saved
@@ -203,9 +213,9 @@ mock-ups:
 | Screen | Code | What it does |
 | --- | --- | --- |
 | Online hub | `src/OnlineHubScreen.*` | "Play online" on the main menu. Starts the client (a guest is created on first contact), account chip with browser sign-in and the confirmation code, quick-match cards from `InstanceInfo.queues`, Create room, Join by code, public rooms (`GET /api/v1/rooms`), recent matches (`GET /api/v1/players/{id}/matches`, with `match.updated` summaries seen since merged over them; hidden when empty), Profile & history and Maps (the profile and map-catalog screens), a leaderboard teaser (top five of the first rated queue, `GET /api/v1/leaderboards/{queue}`), offline and update-required banners, and invite links (`takePendingJoin`) with the trust prompt for other instances. The legacy YOG lobby is reachable only through its "Legacy server" footer link until the cutover. |
-| Room | `src/RoomScreen.*` over `RoomBackend` | One screen for online rooms (`Online::PlatformRoom`) and LAN rooms (`Lan::LanRoom`): Map / Players & Teams / Game Rules tabs, seats with controller, team and remove, invite (or how to join on the network), chat and ready. Phones get a Seats / Map / Rules / Chat bar and Start or Ready in the thumb corner, mirrored by the thumb-side setting. The host edits map and rules with the custom-game screen in room mode (`CustomGameScreen::useForRoom`); the server generates the map from the generator descriptor (`src/online/RoomSetup.*`). |
+| Room | `src/RoomScreen.*` over `RoomBackend` | One screen for online rooms (`Online::PlatformRoom`) and LAN rooms (`Lan::LanRoom`): Map / Players & Teams / Game Rules tabs, seats with controller, team and remove, invite (or how to join on the network), chat and ready. Phones get a Seats / Map / Rules / Chat bar and Start or Ready in the thumb corner, mirrored by the thumb-side setting. The host edits map and rules with the custom-game screen in room mode (`CustomGameScreen::useForRoom`); the server generates a random map from the generator descriptor (`src/online/RoomSetup.*`), and a premade or own map is uploaded and played as `{kind: "upload"}`. Members without a seat are listed under the seats, and Ready says why it is unavailable. |
 | Starting match | `src/MatchStartScreen.*`, `src/online/OnlineMatch.*` | From `match.start` to the first tick: seat confirmed, map download by hash, engine load, relay connection (`Online::RelayTransport`), waiting for the other players' presence. A relay that refuses the match as new (Reject 5) is reported with `match.reconnect {relayUnavailable: true}` and the new assignment restarts the flow. |
-| In-game connection HUD | `src/gui/ConnectionOverlay.*` | Every turn game (online and LAN) shows a permanent panel with each player's state and latency where the "waiting for players" notice was, details on click or tap, one-line notices when a player drops or returns, and centre cards for this client's reconnect (with the grace time and Leave match), catch-up progress and desync rejoin. Presentation only: it reads `Engine::turnConnectionSnapshot()`. Other players' latency is their lag behind the relay from `Presence.lagTicks`; the relay does not report their round trip. |
+| In-game connection HUD | `src/gui/ConnectionOverlay.*` | Every turn game (online and LAN) shows a permanent panel with each player's state and latency where the "waiting for players" notice was, details on click or tap, one-line notices when a player drops or returns, and centre cards for this client's reconnect (with the grace time and Leave match), catch-up progress (with Leave match, and "can't keep up" once the gap has not shrunk for 15 s) and desync rejoin. In every turn game the in-game menu has no Load or Save, and Leave match asks for confirmation, saying what leaving costs. Presentation only: it reads `Engine::turnConnectionSnapshot()`. Rows show each player's Ping (the relay's round trip to them, `SeatLatency`) or, once they fall a second behind, how far Behind they are (`Presence.lagTicks`); the footer shows your own Delay. Names, units, words and thresholds are in [connection quality](connection-quality.md). |
 | Results | `src/EndGameScreen.*` | Online matches add the outcome banner and the rating card, which `match.updated` updates live and `GET /api/v1/matches/{id}` re-reads every 10 s while it is open. The card says where the result is: waiting for the other players to leave (the match still runs on the relay), recording or verifying (it ended; the verifier replays it), then verified, unverifiable, unrated room match or draw; after 45 s of waiting or 60 s of verifying it says that it is taking longer and that the result will appear in the history. A link opens `<origin>/matches/<id>`. Room matches return to the room; quick matches offer **Rematch** (`Online::requestRematch` → `match.rematch`, an unrated room with the same players; it reads "Join X's rematch" after `match.rematchOffered`). |
 | Settings › Online | `src/SettingsScreenOnline.cpp` | See above. |
 
@@ -305,7 +315,9 @@ App Links and universal links cover the official domain only; self-hosted
 instances use `glob2://`. They need the instance to serve
 `/.well-known/assetlinks.json` (the release signing certificate's SHA-256) and
 `/.well-known/apple-app-site-association` (team id plus
-`org.globulation2.glob2`, path `/j/*`).
+`org.globulation2.glob2`, path `/j/*`). For the official instance that is
+`app.glob2online.com`; the public website at the apex serves neither file and
+redirects `/j/*` to the app, so an apex invite opens in the browser first.
 
 ## Sim version
 

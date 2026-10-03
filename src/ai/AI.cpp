@@ -65,8 +65,7 @@ AI::AI(ImplementationID implementationID, Player *player)
 			aiImplementation=new AIJavaScript(player);
 		break;
 		default:
-			assert(false);
-		break;
+			throw std::runtime_error("Unknown AI implementation");
 	}
 
 	this->implementationID=implementationID;
@@ -80,8 +79,9 @@ AI::AI(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 	aiImplementation=NULL;
 	implementationID=NONE;
 	this->player=player;
-	bool goodLoad=load(stream, versionMinor);
-	assert(goodLoad);
+	try {
+		if (!load(stream, versionMinor)) throw std::runtime_error("Invalid saved AI");
+	} catch (...) { delete aiImplementation; aiImplementation=nullptr; throw; }
 }
 
 AI::~AI()
@@ -156,7 +156,9 @@ bool AI::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		return false;
 	}
 
-	implementationID=(ImplementationID)stream->readUint32("implementitionID");
+	const Uint32 savedImplementation = stream->readUint32("implementitionID");
+	if (savedImplementation > JAVASCRIPT) return false;
+	implementationID=static_cast<ImplementationID>(savedImplementation);
 
 	switch (implementationID)
 	{
@@ -177,11 +179,11 @@ bool AI::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		break;
 		case NICOWAR:
 			aiImplementation=new AISharedRuntime::Runtime(new NewNicowar, player);
-			aiImplementation->load(stream, player, versionMinor);
+			if (!aiImplementation->load(stream, player, versionMinor)) return false;
 		break;
 		case ECONO:
 			aiImplementation=new AISharedRuntime::Runtime(new AISharedRuntime::Econo, player);
-			aiImplementation->load(stream, player, versionMinor);
+			if (!aiImplementation->load(stream, player, versionMinor)) return false;
 		break;
 		case WARRUSH:
 			aiImplementation=new AIWarrush(stream, player, versionMinor);
@@ -203,8 +205,7 @@ bool AI::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		break;
 		default:
 			fprintf(stderr, "AI id %d does not exist, you probably try to load a map from a more recent version of glob2.\n", implementationID);
-			assert(false);
-		break;
+			return false;
 	}
 	assert(aiImplementation);
 	aiImplementation->setRandomEngine(randomEngine);

@@ -77,7 +77,6 @@ class EndGameScreen : public GAGGUI::ui::UIScreen
 	void setOutcome(Outcome value) { outcome = value; invalidate(); }
 
   protected:
-	double textScale(const Glob2UI::Presentation &presentation) const override;
 	void paintBackground(Glob2UI::Canvas &canvas) override;
 	Glob2UI::Rect available(const Glob2UI::Presentation &presentation, const Glob2UI::Metrics &metrics) override;
 	void onEscape() override;

@@ -7,7 +7,7 @@
 #include "OnlineServices.h"
 #include "RelayProbe.h"
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 #include <chrono>
 

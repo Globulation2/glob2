@@ -89,6 +89,13 @@ private:
 class TeamColorSelector : public MapEditorWidget
 {
 public:
+	// Share geometry between drawing, hit testing and widget bounds. Eight
+	// columns fit the desktop sidebar and keep all sixteen teams in two rows.
+	static constexpr int SWATCH_SIZE = 16;
+	static constexpr int COLUMNS = (RIGHT_MENU_WIDTH - 2 * RIGHT_MENU_OFFSET) / SWATCH_SIZE;
+	static constexpr int ROWS = (Team::MAX_COUNT + COLUMNS - 1) / COLUMNS;
+	static constexpr int WIDTH = COLUMNS * SWATCH_SIZE;
+	static constexpr int HEIGHT = ROWS * SWATCH_SIZE;
 	TeamColorSelector(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action);
 	void draw();
 };
@@ -494,20 +501,20 @@ private:
 	///resynced mouseX/mouseY to the event's own position when this runs.
 	void handleMouseButtonEvent(SDL_Event& event);
 	///Handles a key pressed. For most keys, this means going to the keyboard shortcuts. For the arrow keys, it starts or stops scrolling the map
-	void handleKeyPressed(SDL_Keysym key, bool pressed);
+	void handleKeyPressed(SDL_KeyboardEvent key, bool pressed);
 	///This performs an action in the form of the string. This is where a lot of code goes. As opposed to using separate functions for such a large
 	///number of possible actions, or just inlining them, this system locates them all here, and every small bit has a name as well. It makes debugging
 	///easy in some ways, and it also greatly improves readability. All of the widget "actions" come to here.
-	void performAction(const std::string& action, int relMouseX=0, int relMouseY=0);
+	void performAction(const std::string& action, float relMouseX=0, float relMouseY=0);
     void selectActiveTeam(int selected);
 	///Handles view, scrolling, minimap and screen/dialog actions. Returns true if the action was handled.
-	bool performViewAction(const std::string& action, int relMouseX, int relMouseY);
+	bool performViewAction(const std::string& action, float relMouseX, float relMouseY);
 	///Handles building placement, terrain, zone, area and team-selection actions. Returns true if the action was handled.
-	bool performTerrainAction(const std::string& action, int relMouseX, int relMouseY);
+	bool performTerrainAction(const std::string& action, float relMouseX, float relMouseY);
 	///Handles unit placement and unit-editor actions. Returns true if the action was handled.
-	bool performUnitAction(const std::string& action, int relMouseX, int relMouseY);
+	bool performUnitAction(const std::string& action, float relMouseX, float relMouseY);
 	///Handles the building-editor actions. Returns true if the action was handled.
-	bool performBuildingAction(const std::string& action, int relMouseX, int relMouseY);
+	bool performBuildingAction(const std::string& action, float relMouseX, float relMouseY);
 	///This delegates a sdl event to one of the menus, if they are open, and handle end codes of the menus appropriately
 	void delegateMenu(SDL_Event& event);
 	///Handles the scrolling of the map, by arrow keys and by putting the mouse near the edge of the screen
@@ -536,9 +543,9 @@ private:
 	///This is the mouse y position, updated whenever the mouse moves
 	int mouseY;
 	///This is the mouse x position relative to its last position
-	int relMouseX;
+	float relMouseX;
 	///This is the mouse y position relative to its last position
-	int relMouseY;
+	float relMouseY;
 	///True while either mouse button is dragging the map camera
 	bool isScrollDragging;
 	bool isLeftScrollDragging;

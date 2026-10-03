@@ -334,12 +334,37 @@
               }
             },
             "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "required": [
+              "seat",
+              "kind",
+              "team"
+            ],
+            "properties": {
+              "seat": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 11
+              },
+              "kind": {
+                "type": "string",
+                "const": "closed"
+              },
+              "team": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 11
+              }
+            },
+            "additionalProperties": false
           }
         ]
       },
       "minItems": 1,
       "maxItems": 12,
-      "description": "Player records in BasePlayer number order 0..k-1."
+      "description": "Player records (human and AI seats) in BasePlayer number order 0..p-1, then any closed seats."
     },
     "rules": {
       "type": "object",

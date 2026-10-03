@@ -1430,8 +1430,8 @@ AI 명령 없음
 모래 비중
 [Select a valid map.]
 유효한 지도를 선택하세요.
-[Shared control needs a free controller slot (maximum 12).]
-공동 조종에는 조종자 자리가 하나 더 필요합니다(최대 12명).
+[Shared control needs a free controller slot (maximum %0).]
+공동 조종에는 조종자 자리가 하나 더 필요합니다(최대 %0명).
 [Smoothing]
 스무딩
 [Standard]
@@ -1650,8 +1650,8 @@ Globulation 2 커서를 표시합니다.
 완료
 [settings Edit shortcut]
 키보드 단축키 수정
-[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
-고해상도 화면에서 메뉴, 텍스트, 사이드바를 크게 표시합니다.
+[settings Multiply the operating system display scale for menus, text and the sidebar.]
+메뉴, 텍스트, 사이드바에 적용할 운영 체제의 화면 배율을 곱합니다.
 [settings Flags]
 깃발
 [settings Full]
@@ -3068,8 +3068,6 @@ Emoji
 빨리 감기
 [Hide keyboard]
 키보드 숨기기
-[Dialog text size]
-대화 상자 글자 크기
 [Player slot]
 플레이어 슬롯
 [Team color]
@@ -3408,8 +3406,6 @@ CPU %0%
 최소 레벨: %0
 [Confirm %0]
 확인: %0
-[Dialog text size %0]
-대화 상자 글자 크기: %0%
 [%0 %1]
 %0 %1
 [resume game]
@@ -3562,9 +3558,13 @@ AI 추가
 
 [Custom rules]
 
-[conn ai everywhere]
-
 [conn ai]
+
+[conn behind %0]
+
+[conn behind explanation %0 %1]
+
+[conn behind]
 
 [conn card catching up]
 
@@ -3588,19 +3588,21 @@ AI 추가
 
 [conn card seconds left %0]
 
-[conn connected]
-
 [conn connections]
 
-[conn delay explanation]
+[conn delay explanation %0 %1]
 
-[conn latency]
+[conn fair]
+
+[conn good]
+
+[conn grid legend]
+
+[conn jitter %0]
 
 [conn leave match]
 
 [conn left]
-
-[conn lost]
 
 [conn notice back %0]
 
@@ -3608,11 +3610,17 @@ AI 추가
 
 [conn notice lost %0 %1]
 
+[conn ping explanation %0 %1]
+
+[conn ping]
+
 [conn players]
+
+[conn poor]
 
 [conn reconnecting]
 
-[conn relay %0 %1]
+[conn relay %0]
 
 [conn resyncing]
 
@@ -3625,6 +3633,8 @@ AI 추가
 [conn you %0]
 
 [conn you]
+
+[conn your delay %0]
 
 [hub account menu]
 
@@ -4108,6 +4118,8 @@ AI 추가
 
 [qm 1 vs 1]
 
+[qm ping about]
+
 [qm ranked]
 
 [qm casual %0]
@@ -4135,8 +4147,6 @@ AI 추가
 [qm find match]
 
 [qm opponents rated %0 to %1]
-
-[qm region %0 relay %1 ms]
 
 [qm region %0]
 
@@ -4553,4 +4563,58 @@ AI 추가
 [hub full leaderboard]
 
 [settings %0 is no longer linked.]
+
+[room map read failed]
+
+[room map upload failed]
+
+[room map upload failed %0]
+
+[room uploading map]
+
+[room premade map shared]
+
+[room take a seat to play]
+
+[room waiting for a seat]
+
+[room not seated]
+
+[room copied]
+
+[room copy failed]
+
+[room closed title]
+
+[room removed title]
+
+[room back to online]
+
+[leave match]
+
+[leave match title]
+
+[leave lan title]
+
+[leave rated body]
+
+[leave casual body]
+
+[leave room body]
+
+[leave lan body]
+
+[leave match confirm]
+
+[keep playing]
+
+[results team]
+
+[results quick unrated]
+
+[conn card cannot keep up]
+
+[conn card cannot keep up body]
+
+[conn card not gaining]
 

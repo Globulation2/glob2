@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Exercise real LAN rooms (LanRoom), lobby widgets, sockets, map transfer, readiness and departures.
+#include <Environment.h>
 #include "GlobalContainer.h"
 #include <vector>
 #include "Engine.h"
@@ -42,16 +43,16 @@ enum PressRequest
 void request(int code)
 {
 	SDL_Event event{};
-	event.type = SDL_USEREVENT;
+	event.type = SDL_EVENT_USER;
 	event.user.code = code;
 	SDL_PushEvent(&event);
 }
-Uint32 readyTimer(Uint32, void*) { request(PressReady); return 0; }
-Uint32 leaveTimer(Uint32, void*) { request(PressLeave); return 0; }
-Uint32 timeoutTimer(Uint32, void*)
+Uint32 SDLCALL readyTimer(void*, SDL_TimerID, Uint32) { request(PressReady); return 0; }
+Uint32 SDLCALL leaveTimer(void*, SDL_TimerID, Uint32) { request(PressLeave); return 0; }
+Uint32 SDLCALL timeoutTimer(void*, SDL_TimerID, Uint32)
 {
 	SDL_Event event{};
-	event.type = SDL_QUIT;
+	event.type = SDL_EVENT_QUIT;
 	SDL_PushEvent(&event);
 	return 0;
 }
@@ -72,7 +73,7 @@ public:
         LANFindScreen::onTimer(tick);
         if (!started) {
             started = true;
-            start = SDL_GetTicks64();
+            start = SDL_GetTicks();
             timers[0] = SDL_AddTimer(5000, readyTimer, nullptr);
             // Playing, the guest stays until the host leaves (the runner stops it).
             if (!play) {
@@ -84,7 +85,7 @@ public:
         }
         // Parent updates resume only after the scheduled LAN session returns.
         SDL_SaveBMP(globalContainer->gfx->getSDLSurface(), capture.c_str());
-        const bool ok = SDL_GetTicks64() - start < 39000;
+        const bool ok = SDL_GetTicks() - start < 39000;
         std::puts(ok ? "JOIN PASS: lobby returned through Leave Game" : "JOIN FAIL: lobby timed out");
         endExecute(ok ? 0 : 1);
     }
@@ -111,14 +112,14 @@ bool press(ScreenStack& screens, int code, std::vector<SDL_Event>& events)
 	}
 	const auto r = node->bounds;
 	SDL_Event event{};
-	event.type = SDL_MOUSEBUTTONDOWN;
+	event.type = SDL_EVENT_MOUSE_BUTTON_DOWN;
 	event.button.button = SDL_BUTTON_LEFT;
-	event.button.state = SDL_PRESSED;
+	event.button.down = true;
 	event.button.x = r.x + r.w / 2;
 	event.button.y = r.y + r.h / 2;
 	events.push_back(event);
-	event.type = SDL_MOUSEBUTTONUP;
-	event.button.state = SDL_RELEASED;
+	event.type = SDL_EVENT_MOUSE_BUTTON_UP;
+	event.button.down = false;
 	events.push_back(event);
 	return true;
 }
@@ -127,7 +128,7 @@ class HostObserver
 {
 public:
 	HostObserver(Lan::LanHost& host, int cycles, std::string capture)
-        : host(host), cycles(cycles), capture(capture), start(SDL_GetTicks64()) {}
+        : host(host), cycles(cycles), capture(capture), start(SDL_GetTicks()) {}
     std::optional<int> result;
 	void onTimer(Uint32)
 	{
@@ -137,7 +138,7 @@ public:
 			SDL_SaveBMP(globalContainer->gfx->getSDLSurface(), pendingCapture.c_str());
 			pendingCapture.clear();
 		}
-		if (SDL_GetTicks64() - start > 180000)
+		if (SDL_GetTicks() - start > 180000)
 		{
 			std::puts("HOST FAIL: timed out waiting for ready/join/leave cycles");
 			result = 1;
@@ -222,8 +223,8 @@ bool connectionFailureChecks()
         screens.push(std::make_unique<LANSessionScreen>(screens, room));
         screens.frame(0, {});
         SDL_Event escape{};
-        escape.type = SDL_KEYDOWN;
-        escape.key.keysym.sym = SDLK_ESCAPE;
+        escape.type = SDL_EVENT_KEY_DOWN;
+        escape.key.key = SDLK_ESCAPE;
         if (cancel) {
             screens.frame(1, {escape}); screens.frame(2, {});
         } else {
@@ -255,7 +256,7 @@ int hostPlay(int seconds, const std::string& capture)
 	screens.push(std::make_unique<LANSessionScreen>(screens, room));
 	auto& host = *room->hostSide();
 	bool pressed = false, quit = false;
-	const Uint64 start = SDL_GetTicks64();
+	const Uint64 start = SDL_GetTicks();
 	while (screens.running()) {
 		std::vector<SDL_Event> events;
 		SDL_Event event;
@@ -272,18 +273,18 @@ int hostPlay(int seconds, const std::string& capture)
 		if (pressed && !quit && host.horizon() >= Uint32(seconds * 25)) {
 			std::printf("HOST PLAY horizon=%u, leaving\n", host.horizon());
 			SDL_Event exit{};
-			exit.type = SDL_QUIT;
+			exit.type = SDL_EVENT_QUIT;
 			events.push_back(exit);
 			quit = true;
 		}
 		screens.frame(SDL_GetTicks(), events);
 		// Captures of the first seconds of play show the in-game connection notice
 		// (waiting for every player to load).
-		if (pressed && captures < 10 && SDL_GetTicks64() >= nextCapture) {
+		if (pressed && captures < 10 && SDL_GetTicks() >= nextCapture) {
 			SDL_SaveBMP(globalContainer->gfx->getSDLSurface(), (capture + "-" + std::to_string(captures++) + ".bmp").c_str());
-			nextCapture = SDL_GetTicks64() + 300;
+			nextCapture = SDL_GetTicks() + 300;
 		}
-		if (SDL_GetTicks64() - start > Uint64(seconds + 120) * 1000) {
+		if (SDL_GetTicks() - start > Uint64(seconds + 120) * 1000) {
 			std::puts("HOST PLAY FAIL: timed out");
 			return 1;
 		}
@@ -322,7 +323,7 @@ int main(int argc, char** argv)
 		return 2;
 	}
 	std::setvbuf(stdout, nullptr, _IONBF, 0);
-	SDL_setenv("SDL_AUDIODRIVER", "dummy", 0);
+	GAGCore::setProcessEnvironment("SDL_AUDIODRIVER", "dummy", 0);
 	GlobalContainer globals;
 	globalContainer = &globals;
 	// Keep the harness's map downloads and anonymous server data separate
@@ -340,7 +341,7 @@ int main(int argc, char** argv)
 	globals.settings.language = "en";
 	globals.settings.setUsername(std::string(argv[1]).rfind("host", 0) == 0 ? "LAN host" : "LAN guest");
 	globals.load();
-	if (SDLNet_Init() < 0) return 1;
+	if (!NET_Init()) return 1;
 	int rc = 0;
 	if (std::string(argv[1]) == "host") rc = connectionFailureChecks() ? host(std::stoi(argv[3]), argv[4]) : 1;
 	else if (std::string(argv[1]) == "host-play") rc = hostPlay(std::stoi(argv[3]), argv[4]);
@@ -354,7 +355,7 @@ int main(int argc, char** argv)
 			SDL_Event event;
 			while (SDL_PollEvent(&event))
 			{
-				if (event.type == SDL_USEREVENT) { if (!press(screens, event.user.code, events)) rc = 1; }
+				if (event.type == SDL_EVENT_USER) { if (!press(screens, event.user.code, events)) rc = 1; }
 				else events.push_back(event);
 			}
 			screens.frame(SDL_GetTicks(), events);
@@ -377,7 +378,7 @@ int main(int argc, char** argv)
             bool failed = false;
             while (SDL_PollEvent(&event))
             {
-                if (event.type == SDL_USEREVENT) failed = !press(screens, event.user.code, events) || failed;
+                if (event.type == SDL_EVENT_USER) failed = !press(screens, event.user.code, events) || failed;
                 else events.push_back(event);
             }
             if (failed) { rc = 1; break; }
@@ -395,6 +396,6 @@ int main(int argc, char** argv)
 		SDL_Delay(1000);
 		}
 	}
-	SDLNet_Quit();
+	NET_Quit();
 	return rc;
 }

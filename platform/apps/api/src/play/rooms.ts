@@ -39,6 +39,7 @@ import {
   type RegionRtt,
 } from '@glob2/worker';
 import { apiError } from '../errors.ts';
+import { catalogTitles, uploadTitle } from '../history/summaries.ts';
 
 type Db = Kysely<Database>;
 
@@ -54,6 +55,12 @@ export const ROOM_RULES = {
   hostImplicitlyReady: true,
   /** Seats (human or AI) that must be occupied to start. */
   minOccupiedSeats: 2,
+  /**
+   * A new member (invite link or code) takes the first open, unlocked seat, so
+   * "anyone with the invite can take it" holds without an extra click. Members who
+   * join a full room stay unseated until a seat opens.
+   */
+  joinTakesOpenSeat: true,
   /** Teams of a room without a map. */
   defaultTeams: 2,
   maxMembers: 24,
@@ -125,6 +132,50 @@ type SeatRow = {
   locked: boolean;
 };
 
+/**
+ * The MatchSetup seats of a room's seats (in room seat order). Taken seats
+ * become the players, numbered 0..p-1 in room seat order, each keeping its
+ * room seat's map team. Every empty or locked seat becomes a `closed` seat
+ * after them: its team starts without a colony, exactly like a "Closed"
+ * colony in a custom game. So a match seat is a room seat only while no empty
+ * seat comes before it; the map team never changes (match_participants.team,
+ * match_team_stats.team and result.json all use it).
+ */
+export function roomMatchSeats(
+  rows: readonly Pick<SeatRow, 'seat' | 'team' | 'occupant' | 'account_id' | 'ai_id' | 'ai_name'>[],
+  names: ReadonlyMap<string, string>,
+): Seat[] {
+  const players: Seat[] = [];
+  const empty: number[] = [];
+  for (const s of rows) {
+    if (s.occupant === 'human' && s.account_id) {
+      players.push({
+        seat: players.length,
+        kind: 'human',
+        team: s.team,
+        name: truncateUtf8(names.get(s.account_id) ?? `Player ${s.seat + 1}`),
+        accountId: s.account_id,
+      });
+    } else if (s.occupant === 'ai' && s.ai_id) {
+      players.push({
+        seat: players.length,
+        kind: 'ai',
+        team: s.team,
+        name: truncateUtf8(s.ai_name ?? aiDisplayName(s.ai_id as AiId)),
+        ai: s.ai_id as AiId,
+      });
+    } else {
+      empty.push(s.team);
+    }
+  }
+  const played = new Set(players.map((p) => p.team));
+  const closed = [...new Set(empty)].filter((team) => !played.has(team));
+  return [
+    ...players,
+    ...closed.map((team, i): Seat => ({ seat: players.length + i, kind: 'closed', team })),
+  ];
+}
+
 export class RoomService {
   private readonly db: Db;
   private readonly jobs: JobQueue;
@@ -185,6 +236,7 @@ export class RoomService {
     const seatOf = new Map(seats.flatMap((s) => (s.account_id ? [[s.account_id, s.seat]] : [])));
     const simVersion = parseSimVersionKey(room.sim_version);
     if (!simVersion) throw new Error(`room ${roomId} has a bad sim version`);
+    const mapTitle = await this.mapTitle(settings.map, room.host_account_id, db);
     return {
       id: room.id,
       code: room.code,
@@ -197,6 +249,7 @@ export class RoomService {
       ...(settings.map ? { map: settings.map } : {}),
       ...(settings.mapStatus ? { mapStatus: settings.mapStatus } : {}),
       ...(settings.mapProblem ? { mapProblem: settings.mapProblem } : {}),
+      ...(mapTitle ? { mapTitle } : {}),
       teams: settings.teams,
       seats: seats.map((s): RoomSeat => ({
         seat: s.seat,
@@ -231,6 +284,31 @@ export class RoomService {
       revision: room.revision,
       createdAt: room.created_at.toISOString(),
     };
+  }
+
+  /**
+   * The display name of a catalog or uploaded room map (generated maps are named
+   * by the client from their generator and size).
+   */
+  private async mapTitle(
+    map: RoomMapSelection | undefined,
+    hostId: string,
+    db: Db,
+  ): Promise<string | undefined> {
+    if (!map?.hash || map.kind === 'generated') return undefined;
+    if (map.kind === 'catalog') {
+      const title = (await catalogTitles(db, [map.hash])).get(map.hash)?.title;
+      if (title) return title.slice(0, 128);
+      const own = await db
+        .selectFrom('map_versions as v')
+        .innerJoin('maps as m', 'm.id', 'v.map_id')
+        .select('m.title')
+        .where('v.hash', '=', map.hash)
+        .where('m.owner_account_id', '=', hostId)
+        .executeTakeFirst();
+      return own?.title.slice(0, 128);
+    }
+    return uploadTitle(db, map.hash, hostId);
   }
 
   private async mustState(roomId: string): Promise<RoomState> {
@@ -856,9 +934,38 @@ export class RoomService {
           }),
         )
         .execute();
+      if (!already && room.status === 'open' && ROOM_RULES.joinTakesOpenSeat) {
+        await this.takeFirstOpenSeat(trx, room.id, caller.id);
+      }
       await this.bump(trx, room.id);
     });
     return this.mustState(found.id);
+  }
+
+  /** Seats the account in the lowest open, unlocked seat, if it has none yet. */
+  private async takeFirstOpenSeat(trx: Db, roomId: string, accountId: string): Promise<void> {
+    const seated = await trx
+      .selectFrom('room_seats')
+      .select('seat')
+      .where('room_id', '=', roomId)
+      .where('account_id', '=', accountId)
+      .executeTakeFirst();
+    if (seated) return;
+    const open = await trx
+      .selectFrom('room_seats')
+      .select('seat')
+      .where('room_id', '=', roomId)
+      .where('occupant', '=', 'open')
+      .where('locked', '=', false)
+      .orderBy('seat')
+      .executeTakeFirst();
+    if (!open) return;
+    await trx
+      .updateTable('room_seats')
+      .set({ occupant: 'human', account_id: accountId, ready: false })
+      .where('room_id', '=', roomId)
+      .where('seat', '=', open.seat)
+      .execute();
   }
 
   async leave(accountId: string, roomId: string): Promise<void> {
@@ -1272,28 +1379,7 @@ export class RoomService {
         seed: randomInt(0, 2 ** 32),
         map: mapSource(must(settings.map, 'room map')),
         teams: settings.teams,
-        seats: seats.map((s): Seat => {
-          if (s.occupant === 'human' && s.account_id) {
-            return {
-              seat: s.seat,
-              kind: 'human',
-              team: s.team,
-              name: truncateUtf8(names.get(s.account_id) ?? `Player ${s.seat + 1}`),
-              accountId: s.account_id,
-            };
-          }
-          if (s.occupant === 'ai' && s.ai_id) {
-            return {
-              seat: s.seat,
-              kind: 'ai',
-              team: s.team,
-              name: truncateUtf8(s.ai_name ?? aiDisplayName(s.ai_id as AiId)),
-              ai: s.ai_id as AiId,
-            };
-          }
-          // An empty (or locked) seat's colony stays on the map without a player.
-          return { seat: s.seat, kind: 'ai', team: s.team, name: 'Nobody', ai: 'none' };
-        }),
+        seats: roomMatchSeats(seats, names),
         rules: settings.rules,
         experiments: settings.experiments,
       };

@@ -15,6 +15,7 @@ import {
   type SimVersion,
   type VerifiedOutcome,
 } from '@glob2/protocol';
+import { checkMapFile } from '@glob2/core';
 import { EngineJobError, type EngineRunner } from './agent.ts';
 import { CONTENT_TYPES, decompressIfGzip, type AgentBlobs } from './blobs.ts';
 import { EngineCrashError, type GlobEngine } from './engine.ts';
@@ -22,7 +23,6 @@ import {
   EngineInputError,
   EngineOutputError,
   PREVIEW_SIZE_RANGE,
-  readMapHeader,
   savedPlayers,
   type EngineCatalog,
 } from './engineCli.ts';
@@ -123,10 +123,11 @@ export class HeadlessEngineRunner implements EngineRunner {
     teamCount: number;
   }): string | undefined {
     if (facts.width > this.limits.maxMapSide || facts.height > this.limits.maxMapSide) {
-      return `map is ${facts.width}×${facts.height}; the largest accepted side is ${this.limits.maxMapSide}`;
+      return `This map is too large: it is ${facts.width}×${facts.height}, and the largest accepted side is ${this.limits.maxMapSide}.`;
     }
-    if (facts.width < 1 || facts.height < 1) return 'map has no tiles';
-    if (facts.teamCount < 1 || facts.teamCount > 12) return `map has ${facts.teamCount} teams`;
+    if (facts.width < 1 || facts.height < 1) return 'This map has no tiles.';
+    if (facts.teamCount < 1 || facts.teamCount > 12)
+      return `This map has ${facts.teamCount} teams; maps need 1 to 12.`;
     return undefined;
   }
 
@@ -160,37 +161,42 @@ export class HeadlessEngineRunner implements EngineRunner {
     payload: EngineJobPayload<'validate-map'>,
     signal: AbortSignal,
   ): Promise<EngineJobOutput<'validate-map'>> {
+    // Reasons are shown to players (map pages, the room's upload): plain words first.
     const kind = payload.format === 'save' ? 'save' : 'map';
+    const what = payload.format === 'save' ? 'saved game' : 'map';
     const invalid = (reason: string) => ({ valid: false as const, reason: message(reason) });
-    let bytes: Uint8Array;
+    let stored: Uint8Array;
     try {
-      const stored = await this.options.blobs.read(payload.blobHash, this.limits.maxMapBytes);
-      bytes = decompressIfGzip(stored, this.limits.maxMapBytes);
+      stored = await this.options.blobs.read(payload.blobHash, this.limits.maxMapBytes);
     } catch (error) {
       if (error instanceof EngineInputError && !/not found/.test(error.message)) {
-        return invalid(error.message);
+        return invalid(`This ${what} is too big to check. (${error.message})`);
       }
       throw error;
     }
-    const header = readMapHeader(bytes);
-    if (!header) return invalid(`not a Globulation 2 ${kind} file`);
-    if (header.versionMinor > this.options.catalog.versionMinor) {
-      return invalid(
-        `${kind} was written by a newer engine (format ${header.versionMinor}; this engine reads up to ${this.options.catalog.versionMinor})`,
-      );
-    }
+    const check = checkMapFile(stored, {
+      format: payload.format === 'save' ? 'save' : 'map',
+      newestVersionMinor: this.options.catalog.versionMinor,
+      maxBytes: this.limits.maxMapBytes,
+    });
+    if (!check.ok) return invalid(check.message);
+    const { bytes, header } = check;
     let report;
     try {
       ({ report } = await this.options.engine.inspect(bytes, { signal }));
     } catch (error) {
       if (error instanceof EngineInputError)
-        return invalid(`the game cannot load this ${kind}: ${error.message}`);
+        return invalid(
+          `The game couldn't load this ${what}; the file may be damaged or incomplete. (Details: ${error.message})`,
+        );
       throw error;
     }
     if (payload.format === 'map' && report.savedGame)
-      return invalid('file is a saved game, not a map');
+      return invalid(
+        'This file is a saved game, not a map. Upload a map from the map editor instead.',
+      );
     if (payload.format === 'save' && !report.savedGame)
-      return invalid('file is a map, not a saved game');
+      return invalid('This file is a map, not a saved game.');
     const problem = this.checkFacts(report);
     if (problem) return invalid(problem);
     const mapHash = await this.options.blobs.write(bytes, CONTENT_TYPES[kind]);

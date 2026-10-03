@@ -8,7 +8,7 @@
 
 #include <string>
 
-#include <SDL_net.h>
+#include <SDL3_net/SDL_net.h>
 
 #include "MersenneTwister.h"
 
@@ -41,6 +41,21 @@ private:
 	MersenneTwister *previous;
 };
 
+// While a requirement is alive (an engine session), every synchronized draw must come
+// from a bound game stream. An unbound draw is a determinism bug: it would read the
+// calling thread's default stream instead of the simulated game's. Such draws are
+// counted, and abort when GLOB2_SYNC_RAND_STRICT is set.
+class SyncRandRequirement
+{
+public:
+	SyncRandRequirement();
+	~SyncRandRequirement();
+	SyncRandRequirement(const SyncRandRequirement &) = delete;
+	SyncRandRequirement &operator=(const SyncRandRequirement &) = delete;
+};
+//! Number of synchronized draws made without a bound stream while required.
+unsigned unboundSyncRandDraws();
+
 inline Uint32 syncRand(void)
 {
 	return syncRandEngine()();
@@ -62,7 +77,8 @@ inline Uint32 rotr1(Uint32 x) { return (x << 31) | (x >> 1); }
 // `u32::rotate_left(1)`.
 inline Uint32 rotl1(Uint32 x) { return (x << 1) | (x >> 31); }
 
-///The actual random seeds are stored in GameHeader, which automatically randomizes them
+///The actual random seeds are stored in GameHeader, which automatically randomizes them.
+///Seeding and state access apply to the bound stream (see SyncRandScope), else the default.
 void setSyncRandSeed();
 void setSyncRandSeed(Uint32 seed);
 void setRandomSyncRandSeed();

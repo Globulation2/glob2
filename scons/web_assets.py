@@ -23,9 +23,11 @@ the game reads at run time into content-addressed packages under `assets/`, and
   tolerates them being absent and loads them when they arrive or when a match
   starts.
 
-Build scripts, translation tooling, packaging metadata and documentation are left
-out. `python3 scons/web_assets.py --report` prints the sizes per category and
-package.
+The build packages the verified runtime export (tools/package_assets.py, which
+re-encodes artwork and drops build scripts) when it has one, or the repository's
+own data directories. Translation tooling, packaging metadata and documentation
+are left out. `python3 scons/web_assets.py --report` prints the sizes per category
+and package of the repository's data.
 """
 import hashlib
 import importlib.util
@@ -45,8 +47,12 @@ EXCLUDED_FILES = {
     'data/glob2.desktop',
     'data/org.globulation2.Globulation2.metainfo.xml',
     'data/texts.pending.txt',     # read by data/check_translations.py only
-    'data/gfx/IntroMN.png',       # unreferenced legacy intro art
 }
+# Images the runtime export may re-encode (PNG to WebP), matched without suffix.
+EXCLUDED_IMAGES = {
+    'data/gfx/IntroMN',           # unreferenced legacy intro art
+}
+IMAGE_SUFFIXES = ('.png', '.webp')
 EXCLUDED_DIRECTORIES = ('data/icons/', 'data/screenshots/')
 # (package, path prefixes) in download order after `game`, which game_files()
 # selects. Files in no other package go to `core`.
@@ -88,8 +94,10 @@ def stub(data):
 
 
 def excluded(path):
+    stem, suffix = os.path.splitext(path)
     return (Path(path).name in EXCLUDED_NAMES or path.endswith(EXCLUDED_SUFFIXES) or
-            path in EXCLUDED_FILES or path.startswith(EXCLUDED_DIRECTORIES))
+            path in EXCLUDED_FILES or path.startswith(EXCLUDED_DIRECTORIES) or
+            (suffix in IMAGE_SUFFIXES and stem in EXCLUDED_IMAGES))
 
 
 def load_module(root, name, path):
@@ -138,14 +146,15 @@ def game_sprites(root):
 
 
 def game_files(paths, sprites):
-    """Frames of these sprites: data/gfx/<name><index>[r].png, as Sprite::load reads them."""
+    """Frames of these sprites: data/gfx/<name><index>[r].png (or .webp in the runtime
+    export), as Sprite::load reads them."""
     files = set()
     for path in paths:
         if not path.startswith('data/gfx/') or '/' in path[len('data/gfx/'):]:
             continue
         # Names may end in digits themselves: inn0b's frames are inn0b0.png, inn0b1.png.
         if any(path.startswith('data/gfx/' + name) and
-               re.fullmatch(r'\d+r?\.png', path[len('data/gfx/' + name):]) for name in sprites):
+               re.fullmatch(r'\d+r?\.(?:png|webp)', path[len('data/gfx/' + name):]) for name in sprites):
             files.add(path)
     return files
 
@@ -157,11 +166,13 @@ def source_files(root):
                   for p in (root / directory).rglob('*') if p.is_file())
 
 
-def plan(root):
-    """({package: [paths]} with core first, excluded paths, {core path: browser copy})."""
+def plan(root, source=None):
+    """({package: [paths]} with core first, excluded paths, {core path: browser copy}).
+
+    `source` is the tree to package (the runtime export), `root` the repository."""
     packages = {name: [] for name in PACKAGES}
     files, skipped = [], []
-    for path in source_files(root):
+    for path in source_files(source or root):
         (skipped if excluded(path) else files).append(path)
     game = game_files(files, game_sprites(root))
     substitutes = derived_assets(root)
@@ -204,22 +215,25 @@ def split(paths, sizes, limit):
     return parts
 
 
-def contents(root, name, path, substitutes):
-    """The bytes package `name` ships as `path`."""
+def contents(root, name, path, substitutes, source=None):
+    """The bytes package `name` ships as `path`; browser copies come from the repository."""
+    tree = Path(source or root)
     if name == 'core' and translation(path):
-        return stub((Path(root) / path).read_bytes())
-    return (Path(root) / (substitutes.get(path, path) if name == 'core' else path)).read_bytes()
+        return stub((tree / path).read_bytes())
+    if name == 'core' and path in substitutes:
+        return (Path(root) / substitutes[path]).read_bytes()
+    return (tree / path).read_bytes()
 
 
-def write_packages(root, output):
+def write_packages(root, output, source=None):
     """Write assets/<package>[-<part>].<hash>.data under output; return the manifest."""
     root, output = Path(root), Path(output)
     directory = output / 'assets'
     directory.mkdir(parents=True, exist_ok=True)
-    packages, _, substitutes = plan(root)
+    packages, _, substitutes = plan(root, source)
     manifest, written = {'version': MANIFEST_VERSION, 'packages': []}, set()
     for name, paths in packages.items():
-        data = {path: contents(root, name, path, substitutes) for path in paths}
+        data = {path: contents(root, name, path, substitutes, source) for path in paths}
         sizes = {path: len(value) for path, value in data.items()}
         groups = [paths] if name == 'core' else split(paths, sizes, PART_BYTES)
         entry = {'name': name, 'optional': name != 'core', 'size': sum(sizes.values()), 'parts': []}
@@ -254,8 +268,8 @@ def manifest_script(manifest):
             'Module["glob2AssetManifest"] ??= ' + json.dumps(manifest, separators=(',', ':')) + ';\n')
 
 
-def build(root, output, script):
-    manifest = write_packages(root, output)
+def build(root, output, script, source=None):
+    manifest = write_packages(root, output, source)
     text = manifest_script(manifest)
     script = Path(script)
     if not script.is_file() or script.read_text() != text:

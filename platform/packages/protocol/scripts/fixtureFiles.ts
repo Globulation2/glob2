@@ -6,6 +6,9 @@ import {
   ACCESS_TOKEN_TYPE,
   MATCH_TICKET_TYPE,
   PLATFORM_JWT_ALGORITHM,
+  CONNECTION_METRICS,
+  CONNECTION_QUALITY_CASES,
+  CONNECTION_RATING_LABELS,
   checkDocument,
   schemaRegistry,
 } from '../src/index.ts';
@@ -154,6 +157,20 @@ export function buildFixtureFiles(): Map<string, string> {
 
   const tickets = ticketFiles();
   for (const [path, content] of tickets.files) files.set(path, content);
+
+  // The connection-quality table, for the C++ copy in src/gui/ConnectionQuality.h
+  // (test/ConnectionQualityTest.cpp compares the two).
+  files.set(
+    'connection-quality.json',
+    json({
+      description:
+        'Connection-quality thresholds shared by the game and the platform (src/connectionQuality.ts). Generated; do not edit by hand.',
+      formatVersion: 1,
+      metrics: CONNECTION_METRICS,
+      ratings: CONNECTION_RATING_LABELS,
+      cases: CONNECTION_QUALITY_CASES,
+    }),
+  );
 
   files.set(
     'manifest.json',

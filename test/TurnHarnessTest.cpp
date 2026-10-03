@@ -234,7 +234,10 @@ struct Match
 	SimNetwork net;
 	std::vector<std::unique_ptr<SimClient>> clients;
 
+	std::uint8_t bundleInterval;
+
 	Match(const Links& links, std::vector<int> aiSeats = {}, SequencerConfig config = {})
+		: bundleInterval(config.bundleInterval)
 	{
 		const int humans = static_cast<int>(links.size());
 		const int players = humans + static_cast<int>(aiSeats.size());
@@ -331,9 +334,16 @@ struct Match
 				firstPrefix = prefix;
 			else
 				CHECK(prefix == firstPrefix);
-			// A client that waited for a late bundle keeps up to a tick of it as extra
-			// buffer each time, and drains it at up to 5% speed.
-			CHECK(net.relay->horizon() - c.session->executedTick() <= c.session->targetTicks() + 6);
+			// Ticks the relay has issued but this client cannot have received yet: a
+			// bundle's worth, plus the link's worst one-way delivery (latency, jitter
+			// and one retransmission when the link loses frames). A client that waited
+			// for a late bundle also keeps up to a tick of it as extra buffer each
+			// time, and drains it at up to 5% speed.
+			const LinkProfile& link = net.links[i];
+			const std::uint64_t tick = c.session->tickPeriodMicros();
+			const std::uint64_t worstDelivery = link.latency + link.jitter + (link.loss > 0 ? link.retransmit : 0);
+			const std::uint64_t inFlight = bundleInterval + (worstDelivery + tick - 1) / tick;
+			CHECK(net.relay->horizon() - c.session->executedTick() <= c.session->targetTicks() + inFlight + 4);
 			if (c.session->executedTick() == common)
 			{
 				if (!referenceState)
@@ -596,7 +606,7 @@ TEST_SUITE("TurnHarness")
 				{
 					SequencerConfig config;
 					config.bundleInterval = bundle;
-					Match m({profile.link, {250}}, {2}, config);
+					Match m(Links{profile.link, {250}}, {2}, config);
 					m.net.rng.seed(static_cast<std::uint32_t>(seed));
 					for (auto& c : m.clients)
 						c->orderRate = 0.1;

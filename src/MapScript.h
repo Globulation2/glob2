@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "SDL.h"
+#include <SDL3/SDL.h>
 #include <memory>
 #include <string>
 #include "MapScriptUSL.h"
@@ -17,7 +17,9 @@ namespace GAGCore
 	class InputStream;
 }
 
-class GameGUI;
+class Game;
+class ClientCommandSink;
+class ClientRequests;
 
 ///This class represents the script of the map
 class MapScript
@@ -30,8 +32,9 @@ public:
 		JavaScript=2
 	};
 
-	///Constructs the MapScript
-	MapScript(GameGUI* gui);
+	///Constructs the MapScript for `game`. `client` receives presentation
+	///commands and is null when no client watches the game.
+	MapScript(Game* game, ClientCommandSink* client);
 	///Clear all script state before loading another map, including pre-USL maps.
 	void reset();
 
@@ -73,9 +76,9 @@ public:
 	const MapScriptError& getError() const;
 	
 	///Execute a step of script corresponding to a step of the game engine
-	void syncStep(GameGUI *gui);
+	void syncStep(ClientCommandSink *client);
 
-	void restorePresentation(GameGUI& gui) const;
+	void restorePresentation(ClientCommandSink& client) const;
 	Uint32 checkSum() const;
 	bool buildingAllowed(const std::string& name,bool flag) const;
 
@@ -84,6 +87,7 @@ private:
 	MapScriptMode mode;
 	MapScriptUSL usl;
 	Script::JavaScriptMap javascript;
-	GameGUI* gui;
+	Game* game;
+	ClientCommandSink* client;
 	MapScriptError jsError;
 };

@@ -12,7 +12,7 @@
 #include "SettingsScreen.h"
 #include "Order.h"
 #include "Unit.h"
-#include <SDL_image.h>
+#include <SDL3_image/SDL_image.h>
 #include <FileManager.h>
 #ifdef HAVE_OPENGL
 #ifdef __APPLE__
@@ -39,8 +39,8 @@ class HighResolutionIntegrationHarness
         glFinish();GLint v[4];glGetIntegerv(GL_VIEWPORT,v);int w=v[2],h=v[3];
         std::vector<unsigned char>a(w*h*4),b(a.size());glReadPixels(v[0],v[1],w,h,GL_RGBA,GL_UNSIGNED_BYTE,a.data());
         for(int y=0;y<h;++y)std::copy_n(a.data()+y*w*4,w*4,b.data()+(h-1-y)*w*4);
-        auto s=SDL_CreateRGBSurfaceWithFormatFrom(b.data(),w,h,32,w*4,SDL_PIXELFORMAT_RGBA32);
-        REQUIRE((s&&IMG_SavePNG(s,((glob2test::artifactDir() / "runtime-check" / (name+".png")).string()).c_str())==0));SDL_FreeSurface(s);
+        auto s=SDL_CreateSurfaceFrom(w, h, SDL_PIXELFORMAT_RGBA32, b.data(), w*4);
+        REQUIRE((s&&IMG_SavePNG(s,((glob2test::artifactDir() / "runtime-check" / (name+".png")).string()).c_str())));SDL_DestroySurface(s);
         REQUIRE(glGetError()==GL_NO_ERROR);
     }
     static std::vector<unsigned char> pixels()
@@ -67,7 +67,7 @@ class HighResolutionIntegrationHarness
         auto gfx=globalContainer->gfx;gfx->nextFrame();
         int w,h;auto window=SDL_GL_GetCurrentWindow();
         if(std::string(SDL_GetCurrentVideoDriver())=="cocoa")SDL_GetWindowSize(window,&w,&h);
-        else SDL_GL_GetDrawableSize(window,&w,&h);
+        else SDL_GetWindowSizeInPixels(window,&w,&h);
         REQUIRE(std::abs(gfx->cursorManager.cacheScale-std::min(float(w)/gfx->getW(),float(h)/gfx->getH()))<.001);
     }
     static void checkWrappedSprites()
@@ -91,27 +91,27 @@ class HighResolutionIntegrationHarness
             REQUIRE(colored);
         }
 
-        std::set<Building*> visible;
+        std::set<Uint16> visible;
         for(double zoom:{.5,1.})
         {
             auto begin=[&](){gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),0,0,0);gfx->beginMapTransform(zoom,100,100,100,100,512*zoom,512*zoom);};
             begin();
-            editor.game.drawMapGroundBuildings(0,0,16,16,512,512,0,0,0,Game::DRAW_WHOLE_MAP,&visible,nullptr);
+            editor.game.drawMapGroundBuildings(0,0,16,16,512,512,0,0,0,Game::DRAW_WHOLE_MAP,&visible,nullptr, glob2test::sceneOf(editor.game));
             gfx->endMapTransform();auto actual=pixels();REQUIRE(visible.size()==1);
             for(int y:{100,int(100+448*zoom)})for(int x:{100,int(100+448*zoom)})REQUIRE(coloredRegion(x,y,64*zoom,64*zoom));
             begin();
-            for(int y:{-32,480})for(int x:{-32,480})editor.game.drawMapBuilding(x,y,building->gid,0,0,0,Game::DRAW_WHOLE_MAP);
+            {const Scene &buildingScene=glob2test::sceneOf(editor.game);for(int y:{-32,480})for(int x:{-32,480})editor.game.drawMapBuilding(x,y,building->gid,0,0,0,Game::DRAW_WHOLE_MAP,buildingScene);}
             gfx->endMapTransform();REQUIRE(actual==pixels());
         }
         // More than one complete period must repeat geometry without duplicating
         // the visible-building identity used to emit particles.
         gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),0,0,0);
         gfx->beginMapTransform(.5,100,100,100,100,512,512);
-        editor.game.drawMapGroundBuildings(0,0,32,32,1024,1024,0,0,0,Game::DRAW_WHOLE_MAP,&visible,nullptr);
+        editor.game.drawMapGroundBuildings(0,0,32,32,1024,1024,0,0,0,Game::DRAW_WHOLE_MAP,&visible,nullptr, glob2test::sceneOf(editor.game));
         gfx->endMapTransform();auto repeated=pixels();REQUIRE(visible.size()==1);
         gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),0,0,0);
         gfx->beginMapTransform(.5,100,100,100,100,512,512);
-        for(int y:{-32,480,992})for(int x:{-32,480,992})editor.game.drawMapBuilding(x,y,building->gid,0,0,0,Game::DRAW_WHOLE_MAP);
+        {const Scene &buildingScene=glob2test::sceneOf(editor.game);for(int y:{-32,480,992})for(int x:{-32,480,992})editor.game.drawMapBuilding(x,y,building->gid,0,0,0,Game::DRAW_WHOLE_MAP,buildingScene);}
         gfx->endMapTransform();REQUIRE(repeated==pixels());
         int advances=0;
         gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),0,0,0);
@@ -128,14 +128,14 @@ class HighResolutionIntegrationHarness
         unit->action=WALK;unit->dx=unit->dy=1;unit->delta=128;
         gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),0,0,0);
         gfx->beginMapTransform(.5,100,100,100,100,256,256);
-        units.drawMapGroundUnits(0,0,16,16,512,512,0,0,0,Game::DRAW_WHOLE_MAP,editor.view);
+        units.drawMapGroundUnits(0,0,16,16,512,512,0,0,0,Game::DRAW_WHOLE_MAP,editor.view, glob2test::sceneOf(units, editor.view));
         gfx->endMapTransform();
         for(int y:{100,340})for(int x:{100,340})REQUIRE(coloredRegion(x,y,16,16));
         editor.camera.setZoom(.5,200,200);editor.viewportX=editor.camera.tileX();editor.viewportY=editor.camera.tileY();
         editor.drawMap(0,0,gfx->getW(),gfx->getH());editor.drawMenu();editor.drawMiniMap();editor.drawWidgets();capture("seam-corners-50");
         // A full-period minimap viewport must have four edges, not a collapsed line.
         gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),0,0,0);
-        Minimap mini(false,160,gfx->getW(),8,8,128,128,Minimap::ShowFOW);mini.setGame(editor.game);mini.draw(0,0,0,16,16);
+        Minimap mini(false,160,gfx->getW(),8,8,128,128,Minimap::ShowFOW);mini.setGame(editor.game);mini.draw(editor.view.drawnScene(),0,0,0,16,16);
         auto data=pixels();GLint v[4];glGetIntegerv(GL_VIEWPORT,v);
         auto white=[&](int x,int y){int px=(x+.5)*v[2]/gfx->getW(),py=(gfx->getH()-y-.5)*v[3]/gfx->getH();auto p=&data[(py*v[2]+px)*4];return p[0]==255&&p[1]==255&&p[2]==255;};
         const int left=gfx->getW()-160+8;
@@ -199,20 +199,20 @@ public:
                 gui.game.map.displayToMapCaseAligned(gui.mapMouseX(300),gui.mapMouseY(300),&x,&y,gui.viewportX,gui.viewportY);
                 REQUIRE(x==int(MapCamera::wrap(w.first,gui.camera.mapWidth)/32));REQUIRE(y==int(MapCamera::wrap(w.second,gui.camera.mapHeight)/32));
 				const auto orders=gui.orderQueue.size();
-                SDL_Event wheel{};wheel.type=SDL_MOUSEWHEEL;wheel.wheel.y=1;
+                SDL_Event wheel{};wheel.type=SDL_EVENT_MOUSE_WHEEL;wheel.wheel.y=1;
 #if SDL_VERSION_ATLEAST(2,0,18)
-                wheel.wheel.preciseY=.25f;
+                wheel.wheel.y=.25f;
 #endif
 				gui.processEvent(&wheel);REQUIRE(gui.orderQueue.size()==orders);
                 gui.camera.setZoom(zoom,300,300);gui.viewportX=gui.camera.tileX();gui.viewportY=gui.camera.tileY();
-                const auto randomState=syncRandEngine();
+                const auto randomState=syncRandEngine();const auto gameRandom=gui.game.syncRandom;
                 gfx->resetDrawCallCount();auto start=std::chrono::steady_clock::now();
                 for(int i=0;i<10;++i){gui.drawAll(0);glFinish();}
                 auto ms=std::chrono::duration<double,std::milli>(std::chrono::steady_clock::now()-start).count()/10;
                 std::cout<<(hd?"HD":"original")<<" gameplay "<<zoom*100<<"%: "<<ms<<" ms, "<<gfx->getDrawCallCount()/10<<" calls, "<<DrawableSurface::allocatedTextureBytes()<<" GPU bytes\n";
                 capture(std::string(hd?"game-hd-":"game-original-")+std::to_string(int(zoom*100)));
                 REQUIRE(gui.game.checkSum(nullptr,nullptr,nullptr,true)==checksum);
-                REQUIRE(syncRandEngine()==randomState);
+                REQUIRE((syncRandEngine()==randomState && gui.game.syncRandom==gameRandom));
                 if(hd && zoom==1.)
                 {
                     const Settings previous=globalContainer->settings;
@@ -222,7 +222,7 @@ public:
                     settings.fullMagicEffects=false; settings.smoothProgressIndicators=false;
                     gui.drawAll(0); capture("game-hd-independent-effects");
                     REQUIRE(gui.game.checkSum(nullptr,nullptr,nullptr,true)==checksum);
-                    REQUIRE(syncRandEngine()==randomState);
+                    REQUIRE((syncRandEngine()==randomState && gui.game.syncRandom==gameRandom));
                     settings=previous;
                 }
                 gui.selectionMode=GameGUI::TOOL_SELECTION;gui.toolManager.activateBuildingTool("explorationflag");
@@ -298,25 +298,25 @@ public:
             editor.camera.setZoom(1,300,300);
             editor.viewportX=editor.camera.tileX();editor.viewportY=editor.camera.tileY();
             editor.mouseX=300;editor.mouseY=300;
-            SDL_Event wheel{};wheel.type=SDL_MOUSEWHEEL;wheel.wheel.y=1;
+            SDL_Event wheel{};wheel.type=SDL_EVENT_MOUSE_WHEEL;wheel.wheel.y=1;
 #if SDL_VERSION_ATLEAST(2,0,18)
-            wheel.wheel.preciseY=1;
+            wheel.wheel.y=1;
 #endif
             editor.processEvent(wheel);
             REQUIRE(editor.camera.zoom>1);
-            SDL_Event down{};down.type=SDL_MOUSEBUTTONDOWN;down.button.button=SDL_BUTTON_LEFT;
+            SDL_Event down{};down.type=SDL_EVENT_MOUSE_BUTTON_DOWN;down.button.button=SDL_BUTTON_LEFT;
             down.button.x=300;down.button.y=300;
             editor.processEvent(down);
             REQUIRE((editor.isLeftScrollDragging && editor.isScrollDragging));
             editor.mouseX=1;editor.handleMapScroll();REQUIRE(editor.xSpeed==0);
             editor.mouseX=300;
             const double beforePan=editor.camera.originX;
-            SDL_Event motion{};motion.type=SDL_MOUSEMOTION;motion.motion.x=312;motion.motion.y=308;
-            motion.motion.xrel=12;motion.motion.yrel=8;motion.motion.state=SDL_BUTTON(SDL_BUTTON_LEFT);
+            SDL_Event motion{};motion.type=SDL_EVENT_MOUSE_MOTION;motion.motion.x=312;motion.motion.y=308;
+            motion.motion.xrel=12;motion.motion.yrel=8;motion.motion.state=SDL_BUTTON_MASK(SDL_BUTTON_LEFT);
             editor.processEvent(motion);
             REQUIRE(std::abs(editor.camera.originX-
                 MapCamera::wrap(beforePan-12/editor.camera.zoom,editor.camera.mapWidth))<0.01);
-            SDL_Event up=down;up.type=SDL_MOUSEBUTTONUP;up.button.x=312;up.button.y=308;
+            SDL_Event up=down;up.type=SDL_EVENT_MOUSE_BUTTON_UP;up.button.x=312;up.button.y=308;
             editor.processEvent(up);
             REQUIRE((!editor.isLeftScrollDragging && !editor.isScrollDragging));
             editor.performAction("select forbidden zone");

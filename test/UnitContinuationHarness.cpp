@@ -69,6 +69,7 @@ static void checkContinuation(int checkpoint)
     setSyncRandSeed(731);
     GameGUI original;
     Game& game = original.game;
+    glob2test::BoundGameRandom bound(game);
     game.map.setSize(5, 5, GRASS);
     game.map.setGame(&game);
     game.addTeam();
@@ -116,7 +117,7 @@ static void checkContinuation(int checkpoint)
         game.syncStep(0);
         expected.push_back(state(game));
     }
-    const auto expectedRandom = syncRandEngine();
+    const auto expectedRandom = game.syncRandom;
     GameGUI restored;
     GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size()));
     input.seekFromStart(0);
@@ -131,7 +132,7 @@ static void checkContinuation(int checkpoint)
             FAIL("continuation mismatch checkpoint=" << checkpoint << " offset=" << i);
         }
     }
-    REQUIRE(syncRandEngine() == expectedRandom);
+    REQUIRE(restored.game.syncRandom == expectedRandom);
 }
 }
 

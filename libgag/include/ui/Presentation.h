@@ -30,12 +30,22 @@ struct Presentation
 	Rect dialog;
 	// Logical pixels per host point; theme metrics are specified in points.
 	double unit = 1;
-	// User text enlargement (1 = unchanged).
+	// Text enlargement over the fonts' authored size: the player's text-size
+	// preference, times the theme's touch base on touch hosts.
 	double textScale = 1;
+	// Logical pixels per authored font pixel; the measurer and canvas draw text
+	// at this factor. Touch hosts size text in points like every other metric
+	// (unit x textScale); pointer hosts keep authored pixels (textScale).
+	double textUnit = 1;
+	// The player's text-size preference alone (1 at 100%).
+	double textGrowth = 1;
 	bool touch = false;
 	bool hover = true;
 
 	int pt(double points) const { return int(std::lround(points * unit)); }
+	// A length that holds text, such as a label column's width: grows with the
+	// player's text size and equals pt() at 100%.
+	int textPt(double points) const { return pt(points * textGrowth); }
 	double points(int pixels) const { return unit > 0 ? pixels / unit : pixels; }
 
 	SizeClass widthClass() const { return classify(points(safe.w), 600, 960); }
@@ -73,8 +83,13 @@ struct Presentation
 };
 
 // Resolve from the live graphic context: safe insets, keyboard occlusion,
-// density and input capabilities (see HostViewport.h / InterfacePresentation.h).
-Presentation resolvePresentation(GAGCore::GraphicContext &context, double textScale = 1);
-// Offscreen or non-window surfaces have no platform metrics.
-Presentation resolvePresentation(GAGCore::DrawableSurface &surface, double textScale = 1);
+// density, input capabilities (see HostViewport.h / InterfacePresentation.h)
+// and text size from the theme's touch base and the player's preference.
+Presentation resolvePresentation(GAGCore::GraphicContext &context, double touchTextScale = 1);
+// Offscreen or non-window surfaces have no platform metrics and cannot scale
+// text, so their text stays at the authored size.
+Presentation resolvePresentation(GAGCore::DrawableSurface &surface, double touchTextScale = 1);
+// Fill textGrowth, textScale and textUnit from `unit`, `touch` and the player's
+// preference (GAGCore::userTextScale); resolvePresentation() calls it.
+void applyTextSize(Presentation &presentation, double touchTextScale = 1);
 } // namespace GAGGUI::ui

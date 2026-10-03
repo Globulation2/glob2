@@ -99,6 +99,6 @@ void CreditScreen::onTimer(Uint32 tick)
 
 void CreditScreen::onEvent(const SDL_Event &event)
 {
-	if (event.type == SDL_MOUSEWHEEL || event.type == SDL_FINGERMOTION || event.type == SDL_MOUSEBUTTONDOWN)
+	if (event.type == SDL_EVENT_MOUSE_WHEEL || event.type == SDL_EVENT_FINGER_MOTION || event.type == SDL_EVENT_MOUSE_BUTTON_DOWN)
 		autoScroll = false;
 }

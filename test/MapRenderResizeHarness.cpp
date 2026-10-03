@@ -10,7 +10,7 @@
 #include <cstdlib>
 #include "GlobalContainer.h"
 #ifdef HAVE_OPENGL
-#include <SDL_opengl.h>
+#include <SDL3/SDL_opengl.h>
 #endif
 #include "Engine.h"
 #include "Unit.h"
@@ -37,7 +37,7 @@ static int colored(SDL_Surface *surface, int x, int y, int w, int h)
 			Uint32 pixel;
 			memcpy(&pixel, static_cast<char*>(surface->pixels)+yy*surface->pitch+xx*4, 4);
 			Uint8 r,g,b;
-			SDL_GetRGB(pixel,surface->format,&r,&g,&b);
+			SDL_GetRGB(pixel, SDL_GetPixelFormatDetails(surface->format), SDL_GetSurfacePalette(surface),&r,&g,&b);
 			count += r || g || b;
 		}
 	return count;
@@ -56,7 +56,7 @@ static void capturePixels(GraphicContext *gfx)
 		for(int y=0;y<surface->h;++y) for(int x=0;x<surface->w;++x)
 		{
 			const auto *p=&pixels[((surface->h-1-y)*surface->w+x)*4];
-			const Uint32 value=SDL_MapRGBA(surface->format,p[0],p[1],p[2],p[3]);
+			const Uint32 value=SDL_MapSurfaceRGBA(surface,p[0],p[1],p[2],p[3]);
 			memcpy(static_cast<char*>(surface->pixels)+y*surface->pitch+x*4,&value,4);
 		}
 	}
@@ -89,8 +89,8 @@ void run(bool gpu)
 	// backends: only the GPU path additionally needs the drawable unscaled.
 	{
 		SDL_Rect usable{};
-		const int displayIndex = SDL_GetWindowDisplayIndex(gfx->window);
-		if (SDL_GetDisplayUsableBounds(displayIndex, &usable) == 0 && (usable.w < 1800 || usable.h < 1100))
+		const int displayIndex = SDL_GetDisplayForWindow(gfx->window);
+		if (SDL_GetDisplayUsableBounds(displayIndex, &usable) && (usable.w < 1800 || usable.h < 1100))
 		{
 			std::cerr << "Rendering fixture requires an 1800x1100 desktop; usable area is "
 				<< usable.w << "x" << usable.h << ". Use a sufficiently large desktop or Xvfb.\n";
@@ -100,7 +100,7 @@ void run(bool gpu)
 	if (gpu)
 	{
 		int drawableW,drawableH;
-		SDL_GL_GetDrawableSize(gfx->window,&drawableW,&drawableH);
+		SDL_GetWindowSizeInPixels(gfx->window,&drawableW,&drawableH);
 		if (drawableW!=gfx->getW() || drawableH!=gfx->getH())
 		{
 			std::cerr << "Rendering fixture requires an unscaled 1800x1100 drawable; got "
@@ -110,6 +110,7 @@ void run(bool gpu)
 	}
 	const auto resize = [&](int width, GAGGUI::Screen *screen = nullptr) {
 		SDL_SetWindowSize(gfx->window,width,1100);
+		GLOB2_REQUIRE(SDL_SyncWindow(gfx->window), "Window resize must settle before layout assertions");
 		SDL_Delay(60);
 		SDL_Event event;
 		while (GraphicContext::pollEvent(&event))
@@ -139,8 +140,8 @@ void run(bool gpu)
 				memcpy(&first,static_cast<char*>(surface->pixels)+(y+yy)*surface->pitch+(x+xx)*4,4);
 				memcpy(&copy,static_cast<char*>(surface->pixels)+(y+yy+row*512)*surface->pitch+(x+xx+col*512)*4,4);
 				Uint8 r,g,b,cr,cg,cb;
-				SDL_GetRGB(first,surface->format,&r,&g,&b);
-				SDL_GetRGB(copy,surface->format,&cr,&cg,&cb);
+				SDL_GetRGB(first, SDL_GetPixelFormatDetails(surface->format), SDL_GetSurfacePalette(surface),&r,&g,&b);
+				SDL_GetRGB(copy, SDL_GetPixelFormatDetails(surface->format), SDL_GetSurfacePalette(surface),&cr,&cg,&cb);
 				REQUIRE((r || g || b) == (cr || cg || cb));
 				totalDifference += std::abs(r-cr)+std::abs(g-cg)+std::abs(b-cb);
 			}
@@ -152,10 +153,10 @@ void run(bool gpu)
 	};
 	Game::ViewState view;
 	clear();
-	game.drawMapGroundUnits(0,0,52,34,1600,1100,0,0,0,Game::DRAW_WHOLE_MAP,view);
+	game.drawMapGroundUnits(0,0,52,34,1600,1100,0,0,0,Game::DRAW_WHOLE_MAP,view, glob2test::sceneOf(game, view));
 	copies(96,96,32,32);
 	clear();
-	game.drawMapGroundBuildings(0,0,52,34,1600,1100,0,0,0,Game::DRAW_WHOLE_MAP,nullptr,nullptr);
+	game.drawMapGroundBuildings(0,0,52,34,1600,1100,0,0,0,Game::DRAW_WHOLE_MAP,nullptr,nullptr, glob2test::sceneOf(game));
 	copies(224,224,96,96);
 	std::cout << "PASS repeated unit/building sprites\n";
 
@@ -176,12 +177,12 @@ void run(bool gpu)
 	unit->validTarget=true;
 	unit->targetX=5; unit->targetY=3;
 	clear();
-	game.drawUnitPathLine(0,0,52,34,1600,1100,0,0,0,0,unit);
+	{ const Scene &pathScene = glob2test::sceneOf(game); game.drawUnitPathLine(0,0,52,34,1600,1100,0,0,0,0, *pathScene.entities.unit(unit->gid), pathScene); }
 	copies(110,110,70,5);
 	// A line crossing the map seam follows the short route in every copy.
 	unit->posX=15; unit->targetX=1;
 	clear();
-	game.drawUnitPathLine(0,0,52,34,1600,1100,0,0,0,0,unit);
+	{ const Scene &pathScene = glob2test::sceneOf(game); game.drawUnitPathLine(0,0,52,34,1600,1100,0,0,0,0, *pathScene.entities.unit(unit->gid), pathScene); }
 	capturePixels(gfx);
 	REQUIRE(colored(gfx->getSDLSurface(),0,110,48,5)>0);
 	REQUIRE(colored(gfx->getSDLSurface(),100,110,350,5)==0);
@@ -194,16 +195,16 @@ void run(bool gpu)
 	game.map.fogOfWar[game.map.coordToIndex(3,3)] = game.teams[0]->me;
 	game.animations->onBulletImpact(game.map,3,3);
 	game.animations->step();
-	clear(); game.drawMapBulletsExplosionsDeathAnimations(0,0,52,34,1600,1100,0,0,0,0);
+	clear(); game.drawMapBulletsExplosionsDeathAnimations(0,0,52,34,1600,1100,0,0,0,0, glob2test::sceneOf(game));
 	copies(80,80,64,64);
 	game.animations->clear();
 	game.animations->onUnitDeath(game.map,3,3,game.teams[0]);
-	clear(); game.drawMapBulletsExplosionsDeathAnimations(0,0,52,34,1600,1100,0,0,0,0);
+	clear(); game.drawMapBulletsExplosionsDeathAnimations(0,0,52,34,1600,1100,0,0,0,0, glob2test::sceneOf(game));
 	copies(70,40,90,120);
 	game.animations->clear();
 	auto *bullet=new Bullet(96,96,0,0,10,1,3,3,3,3,1,1);
 	game.map.getSector(0)->bullets.push_back(bullet);
-	clear(); game.drawMapBulletsExplosionsDeathAnimations(0,0,52,34,1600,1100,0,0,0,0);
+	clear(); game.drawMapBulletsExplosionsDeathAnimations(0,0,52,34,1600,1100,0,0,0,0, glob2test::sceneOf(game));
 	copies(90,90,48,48);
 	game.map.getSector(0)->bullets.clear(); delete bullet;
 	std::cout << "PASS repeated bullets, explosions and deaths\n";
@@ -235,14 +236,16 @@ void run(bool gpu)
 	REQUIRE((particle->age==1 && particle->x==112 && particle->y==112));
 	gui.drawParticles(true);
 	REQUIRE((particle->age==2 && particle->x==113 && particle->y==110));
-	std::set<Building*> smokeBuildings{building};
+	std::set<Uint16> smokeBuildings{building->gid};
 	building->hp=1;
 	game.stepCounter=4; // An emission tick remains fixed during pause.
 	gui.gamePaused=true;
+	glob2test::sceneOf(game, gui.view, 0, &gui.frameScene); // particles read the frame's scene
 	for (int frame=0; frame<100; ++frame)
 		gui.generateNewParticles(&smokeBuildings);
 	REQUIRE(gui.particles.size()==1);
 	gui.gamePaused=false;
+	glob2test::sceneOf(game, gui.view, 0, &gui.frameScene);
 	gui.generateNewParticles(&smokeBuildings);
 	REQUIRE(gui.particles.size()==2);
 	for (auto *p : gui.particles) delete p;
@@ -279,7 +282,7 @@ void run(bool gpu)
 	clear();
 	game.drawMap(0,0,1800,1100,160,0,0,0,0,view,Game::DRAW_WHOLE_MAP);
 	capturePixels(gfx);
-	SDL_Surface *baseline=SDL_ConvertSurface(gfx->getSDLSurface(),gfx->getSDLSurface()->format,0);
+	SDL_Surface *baseline=SDL_ConvertSurface(gfx->getSDLSurface(),gfx->getSDLSurface()->format);
 	REQUIRE(baseline);
 	if (gpu)
 	{
@@ -315,7 +318,7 @@ void run(bool gpu)
 				static_cast<char*>(gfx->getSDLSurface()->pixels)+y*gfx->getSDLSurface()->pitch+x*4,4)!=0;
 		REQUIRE(different>100);
 	}
-	SDL_FreeSurface(baseline);
+	SDL_DestroySurface(baseline);
 	std::cout << "PASS virtual flags and ranges in complete map frames\n";
 
 	// Exercise selected overlays after a seam-crossing pan and shrink/grow cycle.
@@ -344,7 +347,7 @@ void run(bool gpu)
 		REQUIRE(selected);
 		editor.selectionMode=MapEdit::PlaceNothing;
 		clear(); editor.drawMap(0,0,1800,1100); capturePixels(gfx);
-		SDL_Surface *before=SDL_ConvertSurface(gfx->getSDLSurface(),gfx->getSDLSurface()->format,0);
+		SDL_Surface *before=SDL_ConvertSurface(gfx->getSDLSurface(),gfx->getSDLSurface()->format);
 		REQUIRE(before);
 		editor.selectionMode=MapEdit::EditingBuilding;
 		editor.selectedBuildingGID=selected->gid;
@@ -357,7 +360,7 @@ void run(bool gpu)
 					static_cast<char*>(gfx->getSDLSurface()->pixels)+y*gfx->getSDLSurface()->pitch+x*4,4)!=0;
 			REQUIRE(different>10);
 		}
-		SDL_FreeSurface(before);
+		SDL_DestroySurface(before);
 	}
 	std::cout << "PASS editor building selection in complete map frames\n";
 
@@ -385,7 +388,7 @@ void run(bool gpu)
 			walker->targetY=reverse ? mapH-1 : 1;
 			clear();
 			gfx->setClipRect(0,0,width-GAME_GUI_RIGHT_MENU_WIDTH,1100);
-			world.drawUnitPathLine(0,0,width/32,34,width-GAME_GUI_RIGHT_MENU_WIDTH,1100,0,0,0,0,walker);
+			{ const Scene &pathScene = glob2test::sceneOf(world); world.drawUnitPathLine(0,0,width/32,34,width-GAME_GUI_RIGHT_MENU_WIDTH,1100,0,0,0,0, *pathScene.entities.unit(walker->gid), pathScene); }
 			capturePixels(gfx);
 			REQUIRE(colored(gfx->getSDLSurface(),0,0,50,50)>0);
 			REQUIRE(colored(gfx->getSDLSurface(),100,100,250,250)==0);

@@ -182,8 +182,13 @@ namespace Turn
 			std::uint32_t lagTicks = 0;
 			/// When the entry arrived (session clock), to count the grace down locally.
 			std::uint64_t receivedMicros = 0;
+			/// The relay's round trip to the seat (SeatLatency, protocol 2); 0 when the
+			/// relay has not measured it or speaks protocol 1.
+			std::uint32_t relayRttMicros = 0;
 		};
 		SeatPresence seatPresenceInfo(int seatNumber) const;
+		/// The turn protocol version agreed with the relay (0 before Welcome).
+		std::uint16_t protocolVersion() const { return negotiated; }
 		/// Connection attempts since the link was last up (0 while connected).
 		int reconnectAttempts() const { return attempts; }
 		/// The relay's grace period for a lost seat (from Welcome; 0 before it).
@@ -218,6 +223,8 @@ namespace Turn
 		RejectReason rejection = RejectReason::Malformed;
 		bool connectStarted = false;
 		bool helloSent = false;
+		std::uint16_t helloVersion = PROTOCOL_VERSION; ///< drops to the minimum once if refused
+		std::uint16_t negotiated = 0;
 		std::uint64_t now = 0;
 		std::uint64_t retryAt = 0;
 		std::uint64_t backoff;
@@ -246,6 +253,7 @@ namespace Turn
 		std::deque<ChecksumReport> unsentReports;
 		std::array<PresenceState, MAX_SEATS> seatPresence{};
 		std::array<SeatPresence, MAX_SEATS> seatDetails{};
+		std::array<std::uint32_t, MAX_SEATS> seatRtt{};
 		int attempts = 0;
 		std::uint32_t grace = 0;
 		bool desyncRejoin = false;

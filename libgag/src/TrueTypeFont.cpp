@@ -75,7 +75,7 @@ TrueTypeFont::~TrueTypeFont()
 				std::cout << "TrueTypeFont : font" <<
 					/*TTF_FontFaceFamilyName(font) << ", " <<
 						  TTF_FontFaceStyleName(font) << ", " <<
-						  TTF_FontHeight(font) <<*/
+						  TTF_GetFontHeight(font) <<*/
 					" had " << cacheHit + cacheMiss << " requests, " << cacheHit << " hits ("
 						  << static_cast<float>(cacheHit) / cacheTotal << "), " << cacheMiss
 						  << " misses (" << static_cast<float>(cacheMiss) / cacheTotal << ")"
@@ -92,10 +92,10 @@ TrueTypeFont::~TrueTypeFont()
 
 bool TrueTypeFont::load(const std::string filename, unsigned size)
 {
-	SDL_RWops *fontStream = Toolkit::getFileManager()->open(filename, "rb");
+	SDL_IOStream *fontStream = Toolkit::getFileManager()->open(filename, "rb");
 	if (fontStream)
 	{
-		font = TTF_OpenFontRW(fontStream, 1, size);
+		font = TTF_OpenFontIO(fontStream, 1, size);
 		if (font)
 		{
 			fontFilename = filename;
@@ -165,8 +165,8 @@ void TrueTypeFont::updateRenderScale(void)
 		if (found == rasterFonts.end())
 		{
 			TTF_Font *replacement = nullptr;
-			if (SDL_RWops *stream = Toolkit::getFileManager()->open(fontFilename, "rb"))
-				replacement = TTF_OpenFontRW(stream, 1, wantedSize);
+			if (SDL_IOStream *stream = Toolkit::getFileManager()->open(fontFilename, "rb"))
+				replacement = TTF_OpenFontIO(stream, 1, wantedSize);
 			if (replacement)
 				found = rasterFonts.emplace(wantedSize, replacement).first;
 		}
@@ -238,7 +238,7 @@ int TrueTypeFont::getStringHeight(const std::string string)
 	}
 	else
 	{
-		h = TTF_FontHeight(font);
+		h = TTF_GetFontHeight(font);
 	}
 	return h;
 }
@@ -279,7 +279,7 @@ bool TrueTypeFont::hasGlyphsFor(const std::string &utf8Text)
 		for (int i = 1; i < len && s[i]; i++)
 			codepoint = (codepoint << 6) | (s[i] & 0x3F);
 
-		if (!TTF_GlyphIsProvided32(font, codepoint))
+		if (!TTF_FontHasGlyph(font, codepoint))
 			return false;
 
 		s += len;
@@ -346,7 +346,7 @@ const TrueTypeFont::CacheData *TrueTypeFont::getStringCached(const std::string t
 		c.b = styleStack.top().color.b;
 		c.a = styleStack.top().color.a;
 		const std::string shaped = shapeText(text);
-		SDL_Surface *temp = TTF_RenderUTF8_Blended(scaled ? renderFont : font, shaped.c_str(), c);
+		SDL_Surface *temp = TTF_RenderText_Blended(scaled ? renderFont : font, shaped.c_str(), 0, c);
 		if (temp == NULL)
 			return NULL;
 
@@ -355,12 +355,12 @@ const TrueTypeFont::CacheData *TrueTypeFont::getStringCached(const std::string t
 		data.lastAccessed = now;
 		data.s = new DrawableSurface(temp);
 		assert(data.s);
-		SDL_FreeSurface(temp);
+		SDL_DestroySurface(temp);
 		// The raster may be finer than the layout; callers only ever see the authored size
 		const float rasterScale = (scaled && renderScale > 0.0f) ? renderScale : 1.0f;
 		data.drawW = data.s->getW() / rasterScale;
 		data.drawH = data.s->getH() / rasterScale;
-		if (!scaled || TTF_SizeUTF8(font, shaped.c_str(), &data.w, &data.h) != 0)
+		if (!scaled || !TTF_GetStringSize(font, shaped.c_str(), 0, &data.w, &data.h))
 		{
 			data.w = static_cast<int>(std::lround(data.drawW));
 			data.h = static_cast<int>(std::lround(data.drawH));

@@ -12,6 +12,7 @@
 #include <memory>
 #include <mutex>
 #include <thread>
+#include <ThreadSupport.h>
 #include <stdexcept>
 #include <vector>
 
@@ -24,7 +25,7 @@ public:
 	struct Job {
 		std::uint16_t **slot = nullptr;
 		std::unique_ptr<std::uint16_t[]> data;
-		std::vector<std::uint8_t> water;
+		std::shared_ptr<const std::vector<std::uint8_t>> water;
 		int swim = 0;
 		std::uint64_t due = 0;
 		bool superseded = false, done = false;
@@ -68,7 +69,7 @@ private:
 	}
 	void execute(Job &job, GradientWorkspace &scratch) noexcept {
 		const auto start = Clock::now();
-		try { work(job, scratch); } catch (...) { job.error = std::current_exception(); }
+		try { work(job, scratch); job.water.reset(); } catch (...) { job.error = std::current_exception(); }
 		activeNs.fetch_add(ns(start), std::memory_order_relaxed);
 		{ std::lock_guard<std::mutex> lock(mutex); job.done = true; }
 		completed.notify_one();
@@ -94,26 +95,27 @@ public:
 		delay = 0; tick = 0; lastSubmission = 0; quit = false;
 	}
 	void configure(unsigned count, unsigned ticks, std::size_t size, Work callback,
-		Factory factory = [](std::function<void()> f) { return std::thread(std::move(f)); }) {
+		Factory factory = [](std::function<void()> f) { return GAGCore::ThreadSupport::launch(std::move(f)); }) {
 		reset(); metrics = {}; activeNs = 0; cells = size; work = std::move(callback);
-#ifndef __EMSCRIPTEN__
-		try {
-			workers.reserve(count);
-			for (unsigned n=0; n<count; ++n) workers.push_back(factory([this] {
-				GradientWorkspace scratch;
-				for (;;) {
-					Job *job;
-					{
-						std::unique_lock<std::mutex> lock(mutex);
-						wake.wait(lock, [&] { return quit || !ready.empty(); });
-						if (ready.empty()) return;
-						job = ready.front(); ready.pop_front();
+		if constexpr (GAGCore::ThreadSupport::available)
+		{
+			try {
+				workers.reserve(count);
+				for (unsigned n=0; n<count; ++n) workers.push_back(factory([this] {
+					GradientWorkspace scratch;
+					for (;;) {
+						Job *job;
+						{
+							std::unique_lock<std::mutex> lock(mutex);
+							wake.wait(lock, [&] { return quit || !ready.empty(); });
+							if (ready.empty()) return;
+							job = ready.front(); ready.pop_front();
+						}
+						execute(*job, scratch);
 					}
-					execute(*job, scratch);
-				}
-			}));
-		} catch (...) { reset(); } // Same publication schedule with serial execution.
-#endif
+				}));
+			} catch (...) { reset(); } // Same publication schedule with serial execution.
+		}
 		delay = ticks;
 	}
 	// Saving completes private work without changing publication deadlines.

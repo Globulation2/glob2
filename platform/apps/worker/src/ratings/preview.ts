@@ -50,7 +50,7 @@ async function seatRatings(
   for (const seat of setup.seats) {
     if (seat.kind === 'human') {
       ratings.set(seat.seat, (seat.accountId && byAccount.get(seat.accountId)) || DEFAULT_RATING);
-    } else if (seat.ai !== 'none') {
+    } else if (seat.kind === 'ai' && seat.ai !== 'none') {
       const seed = aiSeedRating(seat.ai as RatedAi);
       ratings.set(seat.seat, byAi.get(seat.ai) ?? { mu: seed.mu, sigma: seed.sigma });
     }

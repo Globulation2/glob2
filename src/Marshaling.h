@@ -3,8 +3,8 @@
 
 #pragma once
 
-#include <SDL.h>
-#include <SDL_endian.h>
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_endian.h>
 #include <string.h>
 
 // Useful function for marshalling
@@ -14,7 +14,7 @@
 
 inline void addSint32(const Uint8 *data, Sint32 val, int pos)
 {
-	const Uint32 wire=SDL_SwapBE32(static_cast<Uint32>(val));
+	const Uint32 wire=SDL_Swap32BE(static_cast<Uint32>(val));
 	memcpy(const_cast<Uint8 *>(data)+pos, &wire, sizeof(wire));
 }
 
@@ -22,12 +22,12 @@ inline Sint32 getSint32(const Uint8 *data, int pos)
 {
 	Uint32 wire;
 	memcpy(&wire, data+pos, sizeof(wire));
-	return static_cast<Sint32>(SDL_SwapBE32(wire));
+	return static_cast<Sint32>(SDL_Swap32BE(wire));
 }
 
 inline void addUint32(const Uint8 *data, Uint32 val, int pos)
 {
-	const Uint32 wire=SDL_SwapBE32(static_cast<Uint32>(val));
+	const Uint32 wire=SDL_Swap32BE(static_cast<Uint32>(val));
 	memcpy(const_cast<Uint8 *>(data)+pos, &wire, sizeof(wire));
 }
 
@@ -35,7 +35,7 @@ inline Uint32 getUint32(const Uint8 *data, int pos)
 {
 	Uint32 wire;
 	memcpy(&wire, data+pos, sizeof(wire));
-	return static_cast<Uint32>(SDL_SwapBE32(wire));
+	return static_cast<Uint32>(SDL_Swap32BE(wire));
 }
 
 inline Uint32 getUint32RAW(const Uint8 *data, int pos)
@@ -49,13 +49,13 @@ inline Uint32 getUint32RAW(const Uint8 *data, int pos)
 
 inline void addSint16(const Uint8 *data, Sint16 val, int pos)
 {
-	const Uint16 wire=SDL_SwapBE16(static_cast<Uint16>(val));
+	const Uint16 wire=SDL_Swap16BE(static_cast<Uint16>(val));
 	memcpy(const_cast<Uint8 *>(data)+pos, &wire, sizeof(wire));
 }
 
 inline void addUint16(const Uint8 *data, Uint16 val, int pos)
 {
-	const Uint16 wire=SDL_SwapBE16(static_cast<Uint16>(val));
+	const Uint16 wire=SDL_Swap16BE(static_cast<Uint16>(val));
 	memcpy(const_cast<Uint8 *>(data)+pos, &wire, sizeof(wire));
 }
 
@@ -63,14 +63,14 @@ inline Sint16 getSint16(const Uint8 *data, int pos)
 {
 	Uint16 wire;
 	memcpy(&wire, data+pos, sizeof(wire));
-	return static_cast<Sint16>(SDL_SwapBE16(wire));
+	return static_cast<Sint16>(SDL_Swap16BE(wire));
 }
 
 inline Uint16 getUint16(const Uint8 *data, int pos)
 {
 	Uint16 wire;
 	memcpy(&wire, data+pos, sizeof(wire));
-	return static_cast<Uint16>(SDL_SwapBE16(wire));
+	return static_cast<Uint16>(SDL_Swap16BE(wire));
 }
 
 // 8 bit:

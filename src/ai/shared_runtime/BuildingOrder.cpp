@@ -31,7 +31,7 @@ bool BuildingOrder::load(GAGCore::InputStream *stream, Player *player, Sint32 ve
 		id=static_cast<int>(stream->readUint32("id"));
 
 	stream->readEnterSection("constraints");
-	Uint32 size = stream->readUint32("size");
+	Uint32 size = stream->readCount("size");
 	constraints.resize(size);
 	for(unsigned x=0; x<size; ++x)
 	{
@@ -43,7 +43,7 @@ bool BuildingOrder::load(GAGCore::InputStream *stream, Player *player, Sint32 ve
 
 
 	stream->readEnterSection("conditions");
-	size = stream->readUint32("size");
+	size = stream->readCount("size");
 	conditions.resize(size);
 	for(unsigned x=0; x<size; ++x)
 	{

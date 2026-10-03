@@ -36,7 +36,7 @@ SurfaceCanvas::SurfaceCanvas(GAGCore::DrawableSurface &target, const Theme &them
 							 const Presentation &presentation)
 	: target(target), theme(theme), presentation(presentation),
 	  measure(std::make_unique<ToolkitTextMeasurer>(theme, presentation.touch,
-													presentation.textScale))
+													presentation.textUnit))
 {
 	int x, y, w, h;
 	target.getClipRect(&x, &y, &w, &h);
@@ -100,7 +100,7 @@ void SurfaceCanvas::text(Point at, FontRole role, const std::string &value, GAGC
 	if (!font)
 		return;
 	font->pushStyle(GAGCore::Font::Style(GAGCore::Font::STYLE_NORMAL, color));
-	const double scale = presentation.textScale;
+	const double scale = presentation.textUnit;
 	auto *context = dynamic_cast<GAGCore::GraphicContext *>(&target);
 	if (context && std::abs(scale - 1) > 1e-6)
 	{
@@ -172,12 +172,12 @@ void SurfaceCanvas::drawIcon(Rect destination, const IconAsset &asset, GAGCore::
 	if (found == asset.colours.end())
 	{
 		SDL_Surface *mask =
-			SDL_ConvertSurfaceFormat(chosen->surface->getSDLSurface(), SDL_PIXELFORMAT_RGBA32, 0);
+			SDL_ConvertSurface(chosen->surface->getSDLSurface(), SDL_PIXELFORMAT_RGBA32);
 		if (!mask)
 			return;
-		if (SDL_LockSurface(mask) != 0)
+		if (!SDL_LockSurface(mask))
 		{
-			SDL_FreeSurface(mask);
+			SDL_DestroySurface(mask);
 			return;
 		}
 		for (int y = 0; y < mask->h; ++y)
@@ -187,15 +187,15 @@ void SurfaceCanvas::drawIcon(Rect destination, const IconAsset &asset, GAGCore::
 			for (int x = 0; x < mask->w; ++x)
 			{
 				Uint8 r, g, b, a;
-				SDL_GetRGBA(row[x], mask->format, &r, &g, &b, &a);
-				row[x] = SDL_MapRGBA(mask->format, color.r, color.g, color.b,
+				SDL_GetRGBA(row[x], SDL_GetPixelFormatDetails(mask->format), SDL_GetSurfacePalette(mask), &r, &g, &b, &a);
+				row[x] = SDL_MapSurfaceRGBA(mask, color.r, color.g, color.b,
 									 Uint8(unsigned(a) * color.a / 255));
 			}
 		}
 		SDL_UnlockSurface(mask);
 		SDL_SetSurfaceBlendMode(mask, SDL_BLENDMODE_BLEND);
 		auto tinted = std::make_shared<GAGCore::DrawableSurface>(mask);
-		SDL_FreeSurface(mask);
+		SDL_DestroySurface(mask);
 		if (asset.colours.size() >= 64)
 			asset.colours.clear();
 		found = asset.colours.emplace(key, std::move(tinted)).first;

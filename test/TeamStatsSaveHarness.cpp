@@ -9,7 +9,7 @@
 #include "MapEditKeyActions.h"
 #include "FileManager.h"
 #include "Version.h"
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <fstream>
 #include <string>
 #include <utility>
@@ -30,7 +30,7 @@
 #include <set>
 #include "Toolkit.h"
 #include "StringTable.h"
-#include <SDL_image.h>
+#include <SDL3_image/SDL_image.h>
 #include <filesystem>
 #include "BinaryStream.h"
 #include "StreamBackend.h"
@@ -63,6 +63,7 @@ struct TeamStatsMeasurementFixture
 
 	GameGUI gui;
 	Game &game = gui.game;
+	glob2test::BoundGameRandom random{game};
 	TeamStatsMeasurementFixture()
 	{
         if (glob2test::currentTestSuite() == "JavaScriptLifecycle")
@@ -372,6 +373,34 @@ static void measurementScenarios()
 		w.game.map.rebuildGrowthCoverage();
 		require((w.game.map.growthCoverage[tile] & 1) == 0,
 			"removing the last anchor clears coverage");
+	}
+	for (int heightShift : {4,5})
+	{
+		TeamStatsMeasurementFixture w;
+		w.game.map.setSize(4,heightShift,GRASS); w.game.map.setGame(&w.game);
+		auto &stats=w.game.teams[0]->stats;
+		stats.coverageBuildings.assign(Building::MAX_COUNT,{8,8,32,32});
+		++stats.coverageBuildingGeneration; w.game.map.rebuildGrowthCoverage();
+		for (int replacement=0;replacement<3;++replacement)
+		{
+			stats.coverageBuildings.assign(Building::MAX_COUNT,{replacement,0,32,32});
+			++stats.coverageBuildingGeneration; w.game.map.rebuildGrowthCoverage();
+			// Independent wide-counter oracle, including repeated toroidal visits.
+			for (int band=0;band<3;++band)
+			{
+				const int radius=8<<band, width=16, height=1<<heightShift;
+				std::vector<uint32_t> expected(width*height,0);
+				for (int y=-32;y<64;++y) for (int x=replacement-32;x<replacement+64;++x)
+				{
+					const int dx=std::max({replacement-x,0,x-(replacement+31)});
+					const int dy=std::max({-y,0,y-31});
+					if(std::max(dx,dy)<=radius) expected[(y&(height-1))*width+(x&15)]+=Building::MAX_COUNT;
+				}
+				for(size_t i=0;i<expected.size();++i) require(w.game.map.growthCoverageCounts[band][i]==expected[i],"compact coverage matches wide wrapped oracle");
+			}
+		}
+		stats.coverageBuildings.clear(); ++stats.coverageBuildingGeneration; w.game.map.rebuildGrowthCoverage();
+		for(auto mask:w.game.map.growthCoverage) require(mask==0,"final coverage removal clears all wrapped cells");
 	}
 	{
 		TeamStatsMeasurementFixture w;
@@ -785,9 +814,9 @@ static void measurementAttributionFields()
 static void measurementReplayBoundaries()
 {
 	// Format 124 introduced experiments; format 125 adds JavaScript identities.
-	// Protocol 49 adds WSS; default replay floor stays 123.
-	require(REPLAY_MINIMUM_VERSION_MINOR == 123 && NET_PROTOCOL_VERSION == 49 &&
-				YOG_MIN_CLIENT_NET_PROTOCOL_VERSION == 49,
+	// Format 127 changes Warrush timing; protocol 50 prevents mixed clients.
+	require(REPLAY_MINIMUM_VERSION_MINOR == 127 && NET_PROTOCOL_VERSION == 50 &&
+				YOG_MIN_CLIENT_NET_PROTOCOL_VERSION == 50,
 			"integrated simulation uses current replay and network gates");
 	for (int version : {98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 115, 119, 120, 121, 122, 123, 124, VERSION_MINOR, VERSION_MINOR+1})
 	{
@@ -850,17 +879,7 @@ static void aiTelemetryContinuation(const char *path)
 	GAGCore::BinaryInputStream input(new GAGCore::FileStreamBackend(file));
 	GameGUI gui;
 	require(gui.game.load(&input), "all-AI initial state loads");
-	auto step = [](Game &g)
-	{
-		for (int p = 0; p < g.gameHeader.getNumberOfPlayers(); ++p)
-			if (g.players[p] && g.players[p]->ai)
-			{
-				auto order = g.players[p]->ai->getOrder(false);
-				order->sender = p;
-				g.executeOrder(order, p);
-			}
-		g.syncStep(0);
-	};
+	auto step = glob2test::stepAI;
 	auto checks = [](Game &g)
 	{
 		std::vector<Uint32> c, b, u;
@@ -876,7 +895,8 @@ static void aiTelemetryContinuation(const char *path)
 	// Legacy controllers deliberately rebuild/reset some unsaved internal state.
     // Compare two continuations of the same saved state, not different AI states.
     auto reference = roundTrip(gui.game);
-    const auto random = syncRandEngine();
+    // Each game restores its own saved stream; the continuations start equal.
+    REQUIRE(loaded->game.syncRandom == reference->game.syncRandom);
 	std::vector<std::vector<Uint32>> expected;
 	std::vector<std::vector<AITelemetry::Sample>> samples;
 	for (int t = 0; t < 700; ++t)
@@ -889,7 +909,6 @@ static void aiTelemetryContinuation(const char *path)
 				row.push_back(reference->game.players[p]->ai->telemetrySeries->current);
 		samples.push_back(std::move(row));
 	}
-	syncRandEngine() = random;
 	for (int t = 0; t < 700; ++t)
 	{
 		step(loaded->game);
@@ -1118,7 +1137,7 @@ static void measurementScreenshots(const std::string &directory)
 				screen.paintFrame(0);
 				require(IMG_SavePNG(globalContainer->gfx->getSDLSurface(),
 									(directory + "/graphs-" + std::to_string(page) + "-" + suffix)
-										.c_str()) == 0,
+										.c_str()),
 						"save graph screenshot");
 			}
 		}
@@ -1127,14 +1146,14 @@ static void measurementScreenshots(const std::string &directory)
 										 Toolkit::getStringTable()->getString("[Stats page two]"));
 		game.teams[0]->stats.drawMeasurements(size.first - 144, 211);
 		require(IMG_SavePNG(globalContainer->gfx->getSDLSurface(),
-							(directory + "/live-" + suffix).c_str()) == 0,
+							(directory + "/live-" + suffix).c_str()),
 			"save live panel screenshot");
 		globalContainer->gfx->drawFilledRect(0, 0, size.first, size.second, 0, 0, 32);
 		globalContainer->gfx->drawString(size.first - 140, 195, globalContainer->littleFont,
 									 Toolkit::getStringTable()->getString("[Stats page three]"));
 		game.teams[0]->stats.drawExpandedMeasurements(size.first - 144, 211);
 		require(IMG_SavePNG(globalContainer->gfx->getSDLSurface(),
-							(directory + "/live-expanded-" + suffix).c_str()) == 0,
+							(directory + "/live-expanded-" + suffix).c_str()),
 			"save expanded live panel screenshot");
 	}
 }
@@ -1298,7 +1317,7 @@ TEST_CASE("Scripting identity survives conversion and save load" * doctest::test
  u->needToRecheckMedical=true;
  TeamStatsMeasurementFixture::activity(u);
  REQUIRE(u->owner==w.game.teams[1]);
- REQUIRE(w.game.scriptGenerations[1024+Unit::GIDtoID(u->gid)]==u->scriptIdentity);
+ REQUIRE(w.game.scriptGenerations[Game::scriptGenerationIndex(false, 1, Unit::GIDtoID(u->gid))]==u->scriptIdentity);
  auto loaded=roundTrip(w.game);
  REQUIRE(loaded->game.teams[1]->myUnits[Unit::GIDtoID(u->gid)]->scriptIdentity==u->scriptIdentity);
  CHECK(loaded->game.scriptGenerations==w.game.scriptGenerations);

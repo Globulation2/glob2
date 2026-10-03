@@ -153,7 +153,7 @@ void SettingsScreen::buildModal()
             button("binding.remove."+std::to_string(i),tr("Remove key"),[this,i]{bindingKeys.erase(bindingKeys.begin()+i);captureKey=-1;});
         }
     }
-    if(captureKey>=0)button("binding.escape",tr("Bind Escape"),[this]{SDL_Keysym k{};k.sym=SDLK_ESCAPE;bindingKeys[captureKey]=KeyPress(k,bindingKeys[captureKey].getPressed());captureKey=-1;});
+    if(captureKey>=0)button("binding.escape",tr("Bind Escape"),[this]{SDL_KeyboardEvent k{};k.key=SDLK_ESCAPE;bindingKeys[captureKey]=KeyPress(k,bindingKeys[captureKey].getPressed());captureKey=-1;});
     button("binding.advanced",tr("Advanced binding")+(bindingAdvanced?" −":" +"),[this]{bindingAdvanced=!bindingAdvanced;},bindingAdvanced);
     if(bindingAdvanced){
         info(tr("Keys form a sequence in order. Each key can trigger on press or release."));

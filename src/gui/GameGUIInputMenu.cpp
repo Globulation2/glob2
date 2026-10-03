@@ -51,7 +51,21 @@ void GameGUI::closeDialog()
 
 void GameGUI::openMainMenu()
 {
-	openDialog(IGM_MAIN, std::make_unique<InGameMainScreen>(globalContainer->replaying, !globalContainer->isViewingGame(), gamePaused));
+	auto menu = std::make_unique<InGameMainScreen>(globalContainer->replaying, !globalContainer->isViewingGame(), gamePaused);
+	menu->setNetworked(networkMatch.active);
+	openDialog(IGM_MAIN, std::move(menu));
+}
+
+std::unique_ptr<Glob2UI::InGameDialog> GameGUI::makeLeaveConfirmation() const
+{
+	auto &strings = *Toolkit::getStringTable();
+	const char *body = !networkMatch.online   ? "[leave lan body]"
+					   : networkMatch.rated   ? "[leave rated body]"
+					   : networkMatch.fromRoom ? "[leave room body]"
+											   : "[leave casual body]";
+	return std::make_unique<InGameConfirmScreen>(strings.getString(networkMatch.online ? "[leave match title]" : "[leave lan title]"),
+												 strings.getString(body), strings.getString("[leave match confirm]"),
+												 strings.getString("[keep playing]"));
 }
 
 void GameGUI::openChat()
@@ -106,8 +120,8 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 	if (!gameMenuScreen)
 		return false;
 	bool consumed = false;
-	if (event && event->type != SDL_USEREVENT)
-		consumed = gameMenuScreen->event(*event);
+	if (event && event->type != SDL_EVENT_USER)
+		consumed = gameMenuScreen->eventLogical(*event);
 	if (!gameMenuScreen->finished())
 		return consumed;
 	const int result = gameMenuScreen->result();
@@ -151,6 +165,12 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				}
 				case InGameMainScreen::QUIT_GAME:
 				{
+					// Leaving a networked match costs the match: say so first.
+					if (networkMatch.active)
+					{
+						openDialog(IGM_CONFIRM_LEAVE, makeLeaveConfirmation());
+						return true;
+					}
 					closeDialog();
 					orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
 					flushOutgoingAndExit=true;
@@ -159,6 +179,19 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				default:
 				return false;
 			}
+		}
+
+		case IGM_CONFIRM_LEAVE:
+		{
+			closeDialog();
+			if (result == InGameConfirmScreen::CONFIRM)
+			{
+				orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
+				flushOutgoingAndExit = true;
+			}
+			else
+				openMainMenu();
+			return true;
 		}
 
 		case IGM_ALLIANCE:
@@ -184,7 +217,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					if (playerMask[mi]&(1<<pi))
 					{
 						// player is set, set team
-						teamMask[mi]|=(1<<otherTeam);
+						teamMask[mi]|=(Team::teamNumberToMask(otherTeam));
 					}
 				}
 			}

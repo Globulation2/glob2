@@ -25,6 +25,15 @@ opaque bytes. The only exceptions are the few order type ids in the
 
 - The relay owns the clock. Tick `t` starts `t × 40 ms` after the match starts
   (25 ticks/s, or `tickRateMilliHz / 1000` ticks per second).
+- **Load barrier.** Clients connect once they have loaded the game, so the match
+  starts when every human seat has said `Hello`: until then the relay sends no bundle,
+  answers `Welcome` with `relayTick` 0 and runs no grace. After
+  `SequencerConfig::startBarrierMicros` (the online relay's
+  `GLOB2_RELAY_LOAD_WAIT_SECONDS`, 60 s by default) the clock starts anyway; a seat
+  still loading then shows as not connected and joins late under the reconnect grace,
+  counted from the start. The LAN host gets the same barrier by creating its sequencer
+  only after every `Hello` (`LanHost::Options::loadWaitMicros`). The barrier changes
+  no message and nothing a client simulates.
 - Each human order gets an explicit **execution tick** from the relay when it arrives:
   the earliest tick it has not yet broadcast. Each seat gets at most one order per tick,
   and later orders from that seat queue onto later ticks.
@@ -70,8 +79,11 @@ disconnected. The limits come from `TurnProtocol.h`:
 | Order bytes per tick | 30,000 | A bundle of two ticks always fits one frame |
 | Seats | 0–31 | The engine's waiting mask is 32 bits |
 
-`TURN_PROTOCOL_VERSION` (currently 1) is carried in `Hello` and `Welcome`. The relay
-rejects a client whose protocol version differs. The relay does not compare simulation
+`TURN_PROTOCOL_VERSION` (currently 2) is carried in `Hello` and `Welcome`. A relay
+accepts every version from `MIN_PROTOCOL_VERSION` (1) to its own and answers `Welcome`
+in the client's version. It rejects anything outside that range. Version 2 adds
+`SeatLatency`, which the relay sends only to version-2 clients. A version-2 client
+that an older relay refuses with `Reject(1)` offers version 1 once before giving up. The relay does not compare simulation
 versions: that comparison happens on the platform, which issues tickets only for one
 sim version per match. A protocol change that alters any encoding bumps
 `TURN_PROTOCOL_VERSION`. A change that keeps the encodings but alters relay behaviour
@@ -101,6 +113,7 @@ C→R is client to relay, R→C is relay to client.
 | `0xA9` | `Quit` | C→R | `u8 reason` |
 | `0xAA` | `Ping` | C→R | `u32 nonce`, `u32 executedTick` |
 | `0xAB` | `Pong` | R→C | `u32 nonce`, `u32 relayTick`, `u32 lastClientSequence` |
+| `0xAC` | `SeatLatency` (v2) | R→C | `u8 count`, `count × (u8 seat, u32 rttMicros)` |
 
 Field rules that the decoder enforces:
 
@@ -109,6 +122,7 @@ Field rules that the decoder enforces:
   satisfies `fromTick ≤ tick < horizonTick` and `seat < 32`, and every order is 1–4,096
   bytes.
 - `Presence`: seats are below 32, unique and ascending; the state is a known value.
+- `SeatLatency`: seats are below 32, unique and ascending.
 - `Welcome`: `seat < 32`, the seat is in `humanSeatMask`, `bundleInterval ≥ 1`,
   `checksumInterval ≥ 1` and `tickRateMilliHz > 0`.
 - `Reject.reason`, `DesyncNotice.verdict` and `Quit.reason` must be known values.
@@ -402,8 +416,13 @@ about 25), the host held no buffer and measured 59 / 76 ms on loopback, and the 
 
 The relay keeps a presence state per human seat and broadcasts a full `Presence`
 snapshot when any state changes, and at least every 25 ticks. `lagTicks` is
-`R − executedTick` from the seat's last `Ping`. A connected seat whose lag exceeds 50
-ticks (2 s) is shown as lagging.
+`R − executedTick` when the seat's last `Ping` arrived. Once no `Ping` has come for a
+second (clients ping every 500 ms), the extra time counts as lag. A connected seat whose
+lag exceeds 50 ticks (2 s) is shown as lagging. Version-2 clients also receive
+`SeatLatency` with every `Presence`: each connected human seat's round trip as the
+relay measures it on its transport (the online relay's WebSocket ping, smoothed with
+weight ¼; 0 when not measured, as on a LAN host). The connection panel shows it as
+Ping ([connection quality](connection-quality.md)).
 
 - A seat starts as not yet connected. When its transport closes, it becomes
   reconnecting.
@@ -520,7 +539,13 @@ the session (presence, latency, buffer) for a connection HUD.
   the rest at once.
 - **Catch-up.** While `tickIntervalMicros()` is 0, the loop uses the replay fast-forward
   preset (`REPLAY_FAST_FORWARD_MS`, drawing one frame in
-  `REPLAY_FAST_FORWARD_DRAW_RATIO`) and lifts the `MAX_CATCHUP_MS` cap.
+  `REPLAY_FAST_FORWARD_DRAW_RATIO`) and lifts the `MAX_CATCHUP_MS` cap. The screen host
+  (`GameSessionScreen`, which the browser and every online match use) runs as many
+  ticks per frame as fit in 30 ms while `Engine::turnFastForwarding()`, so the replay
+  is not capped at the frame rate. The catching-up card estimates the time left from
+  the rate at which the gap to the relay closes (replay rate minus match rate,
+  `CatchUpPace`); when the gap has not shrunk for 15 s it says the device cannot keep
+  up instead of showing a growing estimate. The card always offers Leave match.
 - **Reload.** When `needsReload()` is set (told to rejoin, or a resume the relay could
   serve only from tick 0), the engine reloads the initial state in place from the same
   map and `GameHeader`, restarts its replay and checksum sidecar, and calls
@@ -559,14 +584,16 @@ changing the protocol or the record: see [network telemetry](../development/netw
 1. `MatchSetup::parse` checks the JSON Schema rules (every field required, no unknown
    properties, ranges, patterns, the closed AI list without `javascript`), then the
    cross-field rules: teams listed `0..n-1` in order, seats numbered `0..k-1`, each seat
-   on a listed team, names at most 32 UTF-8 bytes, one seat per account, a generator's
-   `teams` equal to the number of teams, and only known experiment keys. Errors carry
-   the stage (`Schema`, `Semantic` or `Map`) and a JSON pointer.
+   on a listed team, names at most 32 UTF-8 bytes, one seat per account, at least one
+   human or AI seat, closed seats after every human and AI seat and each on a different
+   team that no human or AI seat plays, a generator's `teams` equal to the number of
+   teams, and only known experiment keys. Errors carry the stage (`Schema`, `Semantic`
+   or `Map`) and a JSON pointer.
 2. `resolveMatchMap` finds the map: a given file, or `<cache>/<hash>.map[.gz]` or
    `.game[.gz]`. The file's decompressed bytes must hash (SHA-256) to `map.hash`, and it
    must be a saved game exactly when the source is an uploaded save.
 3. `toGameHeader(mapHeader)` requires the map's team count to equal `teams.length`.
-   Seat `s` becomes player record `s` on its team. **Every human seat is `P_IP` on every
+   Human or AI seat `s` becomes player record `s` on its team. **Every human seat is `P_IP` on every
    client and in the verifier**, so the heavy checksum the engine enables when a
    network player exists is the same everywhere; the local seat is chosen by
    `localPlayer`, never by the player type. AI seats use the `AINames` CLI ids (`none`
@@ -575,6 +602,30 @@ changing the protocol or the record: see [network telemetry](../development/netw
    from the default winning conditions with prestige and the sudden-death timer
    (`minutes × 60 × 25` ticks) toggled.
 
+**Seats, players and teams.** A human or AI seat is a player: seat `s` is
+`BasePlayer` `s`, and that number is what tickets (`seat`, `humanSeats`), the relay,
+`TurnSession`'s local seat, the match record, `--verify-match`, the order audit and
+`match_participants.seat` use. A seat's `team` is the map team it controls. Team
+indices are never renumbered: `result.json`, `match_team_stats` and
+`match_participants.team` use the map's own numbering.
+
+**Closed teams.** A team that no human or AI seat controls is closed, exactly like a
+"Closed" colony in a custom game (`CustomGameSetup::writeHeader` gives it no player):
+the engine removes its colony at the start (`Game::clearingUncontrolledTeams`), and a
+team without players dies on its first step (`TeamStep`: `playersMask == 0`), so it has
+lost and never stands in the way of the opponents-defeated victory. A `closed` seat
+(`{seat, kind: "closed", team}`) says so explicitly. Closed seats are not players and
+create no `BasePlayer`; they are numbered after every human and AI seat so players
+keep the numbers `0..p-1`. Rooms send each empty or locked room seat this way
+(`roomMatchSeats` in `platform/apps/api/src/play/rooms.ts`): the taken room seats become
+match seats `0..p-1` in room seat order on their own map teams, and the empty ones
+follow as closed seats. A match seat therefore equals its room seat only while no empty
+room seat comes before it. LAN rooms list no seat at all for a team nobody took, which
+means the same. AI `none` is different: an idle player whose colony stays on the map,
+alive. Rooms used to send empty seats that way, which kept a player who had beaten
+every real opponent from ever winning; records of those matches still verify as they
+were played.
+
 `MatchSetup::fromGameHeader` is the inverse where it is meaningful, for a LAN host or
 an uploaded save: it rejects JavaScript AIs and winning-condition lists other than the
 standard one.
@@ -582,7 +633,8 @@ standard one.
 **Saves.** For an uploaded save, the seats replace every saved player record
 (`Game::setGameHeader` with `saveAI = false`). A seat takes control of its team as
 saved; naming any saved team is how reteaming works. AI seats start fresh AIs of the
-given kind, and teams no seat controls are cleared as on a new map. The rules, seed and
+given kind, and teams no human or AI seat controls (closed teams) are cleared as on a
+new map. The rules, seed and
 experiments come from the setup like any other match, so a platform that wants to
 continue a save unchanged builds the setup with `fromGameHeader` from the save's
 header. If the seed equals the saved one, the saved random state is kept; otherwise

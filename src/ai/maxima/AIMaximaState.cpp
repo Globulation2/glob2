@@ -9,8 +9,16 @@
 #include "Map.h"
 #include "Unit.h"
 #include "FormatableString.h"
+#include "FileFormatVersions.h"
 
 #include <stdexcept>
+
+namespace
+{
+constexpr Uint32 MAXIMA_LEGACY_OPPONENT_COUNT = 12; // Historical wire layout, never raise with the live cap.
+static_assert(MAXIMA_LEGACY_OPPONENT_COUNT <= Team::MAX_COUNT);
+}
+
 
 using namespace AIMaximaRuntime;
 
@@ -314,7 +322,30 @@ void Maxima::saveDirector(GAGCore::OutputStream* stream) const
 #undef WRITE_ENV
 	stream->writeLeaveSection();
 	stream->writeEnterSection("demands");stream->writeSint32(demands.survival,"survival");stream->writeSint32(demands.food,"food");stream->writeSint32(demands.growth,"growth");stream->writeSint32(demands.expansion,"expansion");stream->writeSint32(demands.access,"access");stream->writeSint32(demands.technology,"technology");stream->writeSint32(demands.mobility,"mobility");stream->writeSint32(demands.military,"military");stream->writeSint32(demands.aggression,"aggression");stream->writeLeaveSection();
-	stream->writeEnterSection("opponents");for(int i=0;i<Team::MAX_COUNT;++i){stream->writeEnterSection(i);const OpponentAssessment& o=opponents[i];stream->writeUint8(o.alive,"alive");stream->writeSint32(o.visible_warriors,"visible_warriors");stream->writeSint32(o.estimated_warriors,"estimated_warriors");stream->writeSint32(o.last_observed_warriors,"last_observed_warriors");stream->writeSint32(o.visible_explorers,"visible_explorers");stream->writeSint32(o.visible_buildings,"visible_buildings");stream->writeSint32(o.known_buildings,"known_buildings");stream->writeSint32(o.reachable_buildings,"reachable_buildings");stream->writeSint32(o.strategic_value,"strategic_value");stream->writeSint32(o.nearest_building,"nearest_building");stream->writeSint32(o.score,"score");stream->writeSint32(o.last_seen_tick,"last_seen_tick");stream->writeSint32(o.last_force_seen_tick,"last_force_seen_tick");stream->writeSint32(o.last_building_seen_tick,"last_building_seen_tick");stream->writeSint32(o.intel_confidence,"intel_confidence");stream->writeLeaveSection();}stream->writeLeaveSection();
+	stream->writeEnterSection("opponents");
+	stream->writeUint32(Team::MAX_COUNT, "count");
+	for (int i = 0; i < Team::MAX_COUNT; ++i)
+	{
+		stream->writeEnterSection(i);
+		const OpponentAssessment &o = opponents[i];
+		stream->writeUint8(o.alive, "alive");
+		stream->writeSint32(o.visible_warriors, "visible_warriors");
+		stream->writeSint32(o.estimated_warriors, "estimated_warriors");
+		stream->writeSint32(o.last_observed_warriors, "last_observed_warriors");
+		stream->writeSint32(o.visible_explorers, "visible_explorers");
+		stream->writeSint32(o.visible_buildings, "visible_buildings");
+		stream->writeSint32(o.known_buildings, "known_buildings");
+		stream->writeSint32(o.reachable_buildings, "reachable_buildings");
+		stream->writeSint32(o.strategic_value, "strategic_value");
+		stream->writeSint32(o.nearest_building, "nearest_building");
+		stream->writeSint32(o.score, "score");
+		stream->writeSint32(o.last_seen_tick, "last_seen_tick");
+		stream->writeSint32(o.last_force_seen_tick, "last_force_seen_tick");
+		stream->writeSint32(o.last_building_seen_tick, "last_building_seen_tick");
+		stream->writeSint32(o.intel_confidence, "intel_confidence");
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
 	stream->writeEnterSection("campaign");stream->writeSint32(campaign.state,"state");stream->writeSint32(campaign.target_team,"target_team");stream->writeSint32(campaign.started_tick,"started_tick");stream->writeSint32(campaign.last_progress_tick,"last_progress_tick");stream->writeSint32(campaign.last_target_buildings,"last_target_buildings");stream->writeSint32(campaign.buildings_destroyed,"buildings_destroyed");stream->writeSint32(campaign.cooldown_until,"cooldown_until");stream->writeLeaveSection();
 	stream->writeEnterSection("Tactics");stream->writeSint32(tactical_mission.kind,"kind");stream->writeSint32(tactical_mission.phase,"phase");stream->writeSint32(tactical_mission.flagId,"flag_id");stream->writeSint32(tactical_mission.targetTeam,"target_team");stream->writeSint32(tactical_mission.targetGid,"target_gid");stream->writeSint32(tactical_mission.targetX,"target_x");stream->writeSint32(tactical_mission.targetY,"target_y");stream->writeSint32(tactical_mission.requestedForce,"requested_force");stream->writeSint32(tactical_mission.startedTick,"started_tick");stream->writeSint32(tactical_mission.phaseSinceTick,"phase_since_tick");stream->writeSint32(tactical_mission.lastProgressTick,"last_progress_tick");stream->writeSint32(tactical_mission.candidateScore,"candidate_score");stream->writeSint32(tactical_mission.lastTargetHp,"last_target_hp");stream->writeLeaveSection();
 	stream->writeSint32(posture,"posture");stream->writeSint32(posture_since,"posture_since");for(int i=0;i<PostureCount;++i)stream->writeSint32(posture_utilities[i],FormattableString("posture_utility_%0").arg(i).c_str());
@@ -377,7 +408,35 @@ bool Maxima::loadDirector(GAGCore::InputStream* stream,
 #undef READ_ENV
 	stream->readLeaveSection();
 	stream->readEnterSection("demands");demands.survival=stream->readSint32("survival");demands.food=stream->readSint32("food");demands.growth=stream->readSint32("growth");demands.expansion=stream->readSint32("expansion");demands.access=stream->readSint32("access");demands.technology=stream->readSint32("technology");demands.mobility=stream->readSint32("mobility");demands.military=stream->readSint32("military");demands.aggression=stream->readSint32("aggression");stream->readLeaveSection();
-	stream->readEnterSection("opponents");for(int i=0;i<Team::MAX_COUNT;++i){stream->readEnterSection(i);OpponentAssessment& o=opponents[i];o.alive=stream->readUint8("alive");o.visible_warriors=stream->readSint32("visible_warriors");o.estimated_warriors=stream->readSint32("estimated_warriors");o.last_observed_warriors=stream->readSint32("last_observed_warriors");o.visible_explorers=stream->readSint32("visible_explorers");o.visible_buildings=stream->readSint32("visible_buildings");o.known_buildings=stream->readSint32("known_buildings");o.reachable_buildings=stream->readSint32("reachable_buildings");o.strategic_value=stream->readSint32("strategic_value");o.nearest_building=stream->readSint32("nearest_building");o.score=stream->readSint32("score");o.last_seen_tick=stream->readSint32("last_seen_tick");o.last_force_seen_tick=stream->readSint32("last_force_seen_tick");{o.last_building_seen_tick=stream->readSint32("last_building_seen_tick");o.intel_confidence=stream->readSint32("intel_confidence");}stream->readLeaveSection();}stream->readLeaveSection();
+	stream->readEnterSection("opponents");
+	const Uint32 count = versionMinor >= FILE_FORMAT_VERSION_COUNTED_TEAM_STATE
+		? stream->readCount("count") : MAXIMA_LEGACY_OPPONENT_COUNT;
+	if (count == 0 || count > Team::MAX_COUNT ||
+		(context.player && count < unsigned(context.player->game->teamsCount())))
+		throw std::runtime_error("Invalid Maxima opponent record count");
+	std::fill(std::begin(opponents), std::end(opponents), OpponentAssessment{});
+	for (Uint32 i = 0; i < count; ++i)
+	{
+		stream->readEnterSection(i);
+		OpponentAssessment &o = opponents[i];
+		o.alive = stream->readUint8("alive");
+		o.visible_warriors = stream->readSint32("visible_warriors");
+		o.estimated_warriors = stream->readSint32("estimated_warriors");
+		o.last_observed_warriors = stream->readSint32("last_observed_warriors");
+		o.visible_explorers = stream->readSint32("visible_explorers");
+		o.visible_buildings = stream->readSint32("visible_buildings");
+		o.known_buildings = stream->readSint32("known_buildings");
+		o.reachable_buildings = stream->readSint32("reachable_buildings");
+		o.strategic_value = stream->readSint32("strategic_value");
+		o.nearest_building = stream->readSint32("nearest_building");
+		o.score = stream->readSint32("score");
+		o.last_seen_tick = stream->readSint32("last_seen_tick");
+		o.last_force_seen_tick = stream->readSint32("last_force_seen_tick");
+		o.last_building_seen_tick = stream->readSint32("last_building_seen_tick");
+		o.intel_confidence = stream->readSint32("intel_confidence");
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
 	stream->readEnterSection("campaign");campaign.state=static_cast<CampaignState>(stream->readSint32("state"));campaign.target_team=stream->readSint32("target_team");campaign.started_tick=stream->readSint32("started_tick");campaign.last_progress_tick=stream->readSint32("last_progress_tick");campaign.last_target_buildings=stream->readSint32("last_target_buildings");campaign.buildings_destroyed=stream->readSint32("buildings_destroyed");campaign.cooldown_until=stream->readSint32("cooldown_until");stream->readLeaveSection();
 	{
 		stream->readEnterSection("Tactics");
@@ -390,9 +449,9 @@ bool Maxima::loadDirector(GAGCore::InputStream* stream,
 #undef READ_SCALAR
 
 	large_economy_committed=stream->readUint8("large_economy_committed");topology_initialized=stream->readUint8("topology_initialized");opening_space_constrained=stream->readUint8("opening_space_constrained");preemptive_building_signature=stream->readUint32("preemptive_building_signature");
-	auto readIntMap=[stream](const char* name,std::map<int,int>& values){values.clear();stream->readEnterSection(name);const Uint32 size=stream->readUint32("size");for(Uint32 n=0;n<size;++n){stream->readEnterSection(n);const int key=stream->readSint32("key");values[key]=stream->readSint32("value");stream->readLeaveSection();}stream->readLeaveSection();};
+	auto readIntMap=[stream](const char* name,std::map<int,int>& values){values.clear();stream->readEnterSection(name);const Uint32 size=stream->readCount("size");for(Uint32 n=0;n<size;++n){stream->readEnterSection(n);const int key=stream->readSint32("key");values[key]=stream->readSint32("value");stream->readLeaveSection();}stream->readLeaveSection();};
 	readIntMap("attack_flag_targets",attack_flag_targets);readIntMap("attack_flag_started_ticks",attack_flag_started_ticks);readIntMap("attack_target_quarantine_until",attack_target_quarantine_until);
-	attack_flag_end_reasons.clear();stream->readEnterSection("attack_flag_end_reasons");Uint32 size=stream->readUint32("size");for(Uint32 n=0;n<size;++n){stream->readEnterSection(n);const int key=stream->readSint32("key");attack_flag_end_reasons[key]=stream->readText("value");stream->readLeaveSection();}stream->readLeaveSection();
+	attack_flag_end_reasons.clear();stream->readEnterSection("attack_flag_end_reasons");Uint32 size=stream->readCount("size");for(Uint32 n=0;n<size;++n){stream->readEnterSection(n);const int key=stream->readSint32("key");attack_flag_end_reasons[key]=stream->readText("value");stream->readLeaveSection();}stream->readLeaveSection();
 	{
 		stream->readEnterSection("ColonizationState");
 
@@ -400,7 +459,7 @@ bool Maxima::loadDirector(GAGCore::InputStream* stream,
 			stream->readSint32("last_accounted_action_id");
 
 		cleared_enemy_sites.clear();
-		const Uint32 hotspotCount=stream->readUint32("hotspot_count");
+		const Uint32 hotspotCount=stream->readCount("hotspot_count");
 		for(Uint32 site=0; site<hotspotCount; ++site)
 		{
 			stream->readEnterSection(site);
@@ -418,8 +477,8 @@ bool Maxima::loadDirector(GAGCore::InputStream* stream,
 	force_beliefs.clear();
 	Recon::ReconReport& recon=reconnaissance.mutableReport();
 		stream->readEnterSection("Recon");recon.tick=stream->readSint32("tick");recon.visibleWarriors=stream->readSint32("visible_warriors");recon.visibleExplorers=stream->readSint32("visible_explorers");recon.visibleAttackExplorers=stream->readSint32("visible_attack_explorers");recon.visibleColonyThreat=stream->readSint32("visible_colony_threat");recon.visibleColonyExplorerThreat=stream->readSint32("visible_colony_explorer_threat");recon.aliveEnemies=stream->readSint32("alive_enemies");recon.exploredPercent=stream->readSint32("explored_percent");recon.desiredMissions=stream->readSint32("desired_missions");last_recon_mission_tick=stream->readSint32("last_mission_tick");reconnaissance_suspended=stream->readUint8("suspended");
-		stream->readEnterSection("opponents");size=stream->readUint32("size");for(Uint32 n=0;n<size;++n){stream->readEnterSection(n);const int team=stream->readSint32("team");Recon::OpponentIntel& intel=recon.opponents[team];intel.alive=stream->readUint8("alive");intel.visibleWarriors=stream->readSint32("visible_warriors");intel.visibleExplorers=stream->readSint32("visible_explorers");intel.visibleAttackExplorers=stream->readSint32("visible_attack_explorers");intel.visibleBuildings=stream->readSint32("visible_buildings");intel.lastObservedWarriors=stream->readSint32("last_observed_warriors");intel.lastObservedExplorers=stream->readSint32("last_observed_explorers");intel.estimatedWarriors=stream->readSint32("estimated_warriors");intel.estimatedExplorers=stream->readSint32("estimated_explorers");intel.knownBuildings=stream->readSint32("known_buildings");intel.strategicValue=stream->readSint32("strategic_value");intel.reachableBuildings=stream->readSint32("reachable_buildings");intel.nearestBuilding=stream->readSint32("nearest_building");intel.lastSeenTick=stream->readSint32("last_seen_tick");intel.lastForceSeenTick=stream->readSint32("last_force_seen_tick");intel.lastWarriorSeenTick=stream->readSint32("last_warrior_seen_tick");intel.lastExplorerSeenTick=stream->readSint32("last_explorer_seen_tick");intel.lastBuildingSeenTick=stream->readSint32("last_building_seen_tick");{intel.lastEconomicSeenTick=stream->readSint32("last_economic_seen_tick");intel.lastEconomicX=stream->readSint32("last_economic_x");intel.lastEconomicY=stream->readSint32("last_economic_y");}intel.confidence=stream->readSint32("confidence");stream->readEnterSection("buildings");const Uint32 building_count=stream->readUint32("size");for(Uint32 b=0;b<building_count;++b){stream->readEnterSection(b);Recon::BuildingSighting sighting;sighting.gid=stream->readSint32("gid");sighting.team=stream->readSint32("team");sighting.type=stream->readSint32("type");sighting.x=stream->readSint32("x");sighting.y=stream->readSint32("y");sighting.width=stream->readSint32("width");sighting.height=stream->readSint32("height");sighting.construction=stream->readUint8("construction");sighting.lastSeenTick=stream->readSint32("last_seen_tick");sighting.currentlyVisible=stream->readUint8("currently_visible");intel.buildings[sighting.gid]=sighting;stream->readLeaveSection();}stream->readLeaveSection();stream->readLeaveSection();}stream->readLeaveSection();
-		stream->readEnterSection("missions");size=stream->readUint32("size");for(Uint32 n=0;n<size;++n){stream->readEnterSection(n);Recon::ReconMission mission;mission.flagId=stream->readSint32("flag_id");mission.targetTeam=stream->readSint32("target_team");mission.frontier=stream->readUint8("frontier");mission.economicWatch=stream->readUint8("economic_watch");mission.x=stream->readSint32("x");mission.y=stream->readSint32("y");mission.createdTick=stream->readSint32("created_tick");mission.lastRetaskTick=stream->readSint32("last_retask_tick");recon.missions.push_back(mission);stream->readLeaveSection();}stream->readLeaveSection();stream->readLeaveSection();
+		stream->readEnterSection("opponents");size=stream->readCount("size");for(Uint32 n=0;n<size;++n){stream->readEnterSection(n);const int team=stream->readSint32("team");Recon::OpponentIntel& intel=recon.opponents[team];intel.alive=stream->readUint8("alive");intel.visibleWarriors=stream->readSint32("visible_warriors");intel.visibleExplorers=stream->readSint32("visible_explorers");intel.visibleAttackExplorers=stream->readSint32("visible_attack_explorers");intel.visibleBuildings=stream->readSint32("visible_buildings");intel.lastObservedWarriors=stream->readSint32("last_observed_warriors");intel.lastObservedExplorers=stream->readSint32("last_observed_explorers");intel.estimatedWarriors=stream->readSint32("estimated_warriors");intel.estimatedExplorers=stream->readSint32("estimated_explorers");intel.knownBuildings=stream->readSint32("known_buildings");intel.strategicValue=stream->readSint32("strategic_value");intel.reachableBuildings=stream->readSint32("reachable_buildings");intel.nearestBuilding=stream->readSint32("nearest_building");intel.lastSeenTick=stream->readSint32("last_seen_tick");intel.lastForceSeenTick=stream->readSint32("last_force_seen_tick");intel.lastWarriorSeenTick=stream->readSint32("last_warrior_seen_tick");intel.lastExplorerSeenTick=stream->readSint32("last_explorer_seen_tick");intel.lastBuildingSeenTick=stream->readSint32("last_building_seen_tick");{intel.lastEconomicSeenTick=stream->readSint32("last_economic_seen_tick");intel.lastEconomicX=stream->readSint32("last_economic_x");intel.lastEconomicY=stream->readSint32("last_economic_y");}intel.confidence=stream->readSint32("confidence");stream->readEnterSection("buildings");const Uint32 building_count=stream->readCount("size");for(Uint32 b=0;b<building_count;++b){stream->readEnterSection(b);Recon::BuildingSighting sighting;sighting.gid=stream->readSint32("gid");sighting.team=stream->readSint32("team");sighting.type=stream->readSint32("type");sighting.x=stream->readSint32("x");sighting.y=stream->readSint32("y");sighting.width=stream->readSint32("width");sighting.height=stream->readSint32("height");sighting.construction=stream->readUint8("construction");sighting.lastSeenTick=stream->readSint32("last_seen_tick");sighting.currentlyVisible=stream->readUint8("currently_visible");intel.buildings[sighting.gid]=sighting;stream->readLeaveSection();}stream->readLeaveSection();stream->readLeaveSection();}stream->readLeaveSection();
+		stream->readEnterSection("missions");size=stream->readCount("size");for(Uint32 n=0;n<size;++n){stream->readEnterSection(n);Recon::ReconMission mission;mission.flagId=stream->readSint32("flag_id");mission.targetTeam=stream->readSint32("target_team");mission.frontier=stream->readUint8("frontier");mission.economicWatch=stream->readUint8("economic_watch");mission.x=stream->readSint32("x");mission.y=stream->readSint32("y");mission.createdTick=stream->readSint32("created_tick");mission.lastRetaskTick=stream->readSint32("last_retask_tick");recon.missions.push_back(mission);stream->readLeaveSection();}stream->readLeaveSection();stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
 #undef MAXIMA_ENV_FIELDS
@@ -559,7 +618,7 @@ bool Maxima::loadState(GAGCore::InputStream *stream, Player *player,
 				stream->readLeaveSection();
 
 				stream->readEnterSection("preemptive_guard_tiles");
-				size=stream->readUint32("size");
+				size=stream->readCount("size");
 				const int map_size=player->map->getW()*player->map->getH();
 				for(size_t n=0; n<size; ++n)
 				{

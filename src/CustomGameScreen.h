@@ -123,6 +123,13 @@ class CustomGameScreen : public Glob2UI::Screen
 	bool expanded[3] = {false, false, false};
 	Glob2UI::Element mapTab(const Glob2UI::Presentation &p, bool narrow);
 	Glob2UI::Element playersTab(const Glob2UI::Presentation &p, bool narrow);
+	// One colony's identity, controller, AI and team controls, built fresh for
+	// whichever arrangement the offered width allows.
+	struct ColonyFields
+	{
+		Glob2UI::Element identity, controller, ai, team;
+	};
+	ColonyFields colonyFields(int colony, const Glob2UI::Presentation &p);
 	Glob2UI::Element rulesTab(const Glob2UI::Presentation &p, bool narrow);
 	Glob2UI::Element ruleControl(int index, const Glob2UI::Presentation &p, std::string &help);
 	void setMapMode(bool random);

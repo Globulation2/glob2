@@ -8,6 +8,7 @@
 */
 
 #include <cassert>
+#include <charconv>
 #include <cstddef>
 #include <iostream>
 #include <string>
@@ -273,7 +274,8 @@ void Acquisition::nextToken()
 		if ((word[0]>='0') && (word[0]<='9'))
 		{
 			token.type = SGSLToken::INT;
-			token.value = atoi(word.c_str());
+			const auto parsed = std::from_chars(word.data(), word.data()+word.size(), token.value);
+			if (parsed.ec != std::errc() || parsed.ptr != word.data()+word.size()) token.type = SGSLToken::NIL;
 		}
 		else if (word[0]=='"')
 		{

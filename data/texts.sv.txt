@@ -1444,8 +1444,8 @@ Flodens bredd
 Sandvikt
 [Select a valid map.]
 Välj en giltig karta.
-[Shared control needs a free controller slot (maximum 12).]
-Delad styrning kräver en ledig plats för en spelare eller AI (högst 12).
+[Shared control needs a free controller slot (maximum %0).]
+Delad styrning kräver en ledig plats för en spelare eller AI (högst %0).
 [Smoothing]
 Utjämning
 [Standard]
@@ -1664,8 +1664,8 @@ Visa Globulation 2-markören.
 Klart
 [settings Edit shortcut]
 Redigera kortkommando
-[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
-Förstorar menyer, text och sidopanelen på en högupplöst skärm.
+[settings Multiply the operating system display scale for menus, text and the sidebar.]
+Multiplicera operativsystemets skärmskala för menyer, text och sidopanelen.
 [settings Flags]
 Flaggor
 [settings Full]
@@ -3082,8 +3082,6 @@ Minikarta
 Spola framåt
 [Hide keyboard]
 Dölj tangentbordet
-[Dialog text size]
-Dialogtextstorlek
 [Player slot]
 Spelarplats
 [Team color]
@@ -3422,8 +3420,6 @@ Vinstchans: %0 · Styrka: %1
 Lägsta tillåtna nivå: %0
 [Confirm %0]
 Ok: %0
-[Dialog text size %0]
-Dialogtextstorlek: %0%
 [%0 %1]
 %0 %1
 [resume game]
@@ -3576,9 +3572,13 @@ Kartans fart
 
 [Custom rules]
 
-[conn ai everywhere]
-
 [conn ai]
+
+[conn behind %0]
+
+[conn behind explanation %0 %1]
+
+[conn behind]
 
 [conn card catching up]
 
@@ -3602,19 +3602,21 @@ Kartans fart
 
 [conn card seconds left %0]
 
-[conn connected]
-
 [conn connections]
 
-[conn delay explanation]
+[conn delay explanation %0 %1]
 
-[conn latency]
+[conn fair]
+
+[conn good]
+
+[conn grid legend]
+
+[conn jitter %0]
 
 [conn leave match]
 
 [conn left]
-
-[conn lost]
 
 [conn notice back %0]
 
@@ -3622,11 +3624,17 @@ Kartans fart
 
 [conn notice lost %0 %1]
 
+[conn ping explanation %0 %1]
+
+[conn ping]
+
 [conn players]
+
+[conn poor]
 
 [conn reconnecting]
 
-[conn relay %0 %1]
+[conn relay %0]
 
 [conn resyncing]
 
@@ -3639,6 +3647,8 @@ Kartans fart
 [conn you %0]
 
 [conn you]
+
+[conn your delay %0]
 
 [hub account menu]
 
@@ -4122,6 +4132,8 @@ Kartans fart
 
 [qm 1 vs 1]
 
+[qm ping about]
+
 [qm ranked]
 
 [qm casual %0]
@@ -4149,8 +4161,6 @@ Kartans fart
 [qm find match]
 
 [qm opponents rated %0 to %1]
-
-[qm region %0 relay %1 ms]
 
 [qm region %0]
 
@@ -4567,4 +4577,58 @@ Kartans fart
 [hub full leaderboard]
 
 [settings %0 is no longer linked.]
+
+[room map read failed]
+
+[room map upload failed]
+
+[room map upload failed %0]
+
+[room uploading map]
+
+[room premade map shared]
+
+[room take a seat to play]
+
+[room waiting for a seat]
+
+[room not seated]
+
+[room copied]
+
+[room copy failed]
+
+[room closed title]
+
+[room removed title]
+
+[room back to online]
+
+[leave match]
+
+[leave match title]
+
+[leave lan title]
+
+[leave rated body]
+
+[leave casual body]
+
+[leave room body]
+
+[leave lan body]
+
+[leave match confirm]
+
+[keep playing]
+
+[results team]
+
+[results quick unrated]
+
+[conn card cannot keep up]
+
+[conn card cannot keep up body]
+
+[conn card not gaining]
 

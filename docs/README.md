@@ -8,6 +8,11 @@ dated reports and pull-request artifacts do not belong here.
 
 ## Topics
 
+- **Globulation 2 Online website:** [Astro website repository](https://github.com/Globulation2/glob2-online-website),
+  [content and legacy migration](https://github.com/Globulation2/glob2-online-website/blob/main/docs/content.md),
+  and [Firebase deployment, CI, and rollback](https://github.com/Globulation2/glob2-online-website/blob/main/docs/hosting.md).
+  The public site is [glob2online.com](https://glob2online.com/); the browser game
+  and multiplayer app use [app.glob2online.com](https://app.glob2online.com/).
 - **AI:** [telemetry](ai/telemetry.md), [gameplay measurements](ai/gameplay-statistics.md),
   [Cortex mechanics](ai/cortex-upgrade-expand-mechanics.md), and [Maxima](ai/maxima/README.md).
 - **Assets:** [third-party attribution](assets/source-attribution.md) and
@@ -35,7 +40,8 @@ dated reports and pull-request artifacts do not belong here.
   [identity and sign-in](multiplayer/identity.md),
   [rooms and matches](multiplayer/rooms-and-matches.md),
   [ratings and matchmaking](multiplayer/ratings-and-matchmaking.md),
-  [match history and the web app](multiplayer/history-and-web.md), the
+  [match history and the web app](multiplayer/history-and-web.md),
+  [connection quality](multiplayer/connection-quality.md) (Ping, Delay, Behind), the
   [relay-sequenced turn protocol](multiplayer/turn-protocol.md), the
   [match relay](multiplayer/relay.md) that hosts it, [LAN games](multiplayer/lan.md)
   and the [LAN playtest guide](multiplayer/lan-playtest.md).

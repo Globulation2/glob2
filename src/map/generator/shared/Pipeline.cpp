@@ -8,6 +8,14 @@
 #include "Resources.h"
 namespace MapGeneration
 {
+std::string denseColonySizeFailure(const GenerationRequest &request)
+{
+	if (request.nbTeams > DENSE_COLONY_BASE_LIMIT &&
+		(request.wDec != DENSE_COLONY_MAP_EXPONENT || request.hDec != DENSE_COLONY_MAP_EXPONENT))
+		return "Too many colonies for this map; use a bigger map or fewer colonies.";
+	return {};
+}
+
 std::string startingAccessFailure(const Map &map, int teams,
 								  const std::vector<ResourceAccessRule> &rules, int minimumSites,
 								  int buildingRange)

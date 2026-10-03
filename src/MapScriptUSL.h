@@ -4,7 +4,7 @@
 #pragma once
 
 #include "MapScriptError.h"
-#include "SDL.h"
+#include <SDL3/SDL.h>
 
 #include <memory>
 
@@ -14,15 +14,17 @@ namespace GAGCore
 	class InputStream;
 }
 
-class GameGUI;
+class Game;
+class ClientCommandSink;
 struct Usl;
 
 ///This represents a USL based map script
 class MapScriptUSL
 {
 public:
-	///Construct a map script
-	MapScriptUSL(GameGUI* gui);
+	///Construct a map script. `client` receives the script's presentation
+	///commands (the "gui" constant) and may be null without a client.
+	MapScriptUSL(Game* game, ClientCommandSink* client);
 	
 	///Destruct a map script
 	~MapScriptUSL();
@@ -31,7 +33,7 @@ public:
 	///into the current interpreter's heap. These constants are the script's only
 	///access to game state; they must be re-installed whenever the interpreter is
 	///replaced (see compileCode).
-	void addGlob2Values(GameGUI* gui);
+	void addGlob2Values();
 
 	///Encodes this MapScript into a bit stream
 	void encodeData(GAGCore::OutputStream* stream) const;
@@ -52,7 +54,7 @@ public:
 	const MapScriptError& getError() const;
 	
 	///Execute a step of script corresponding to a step of the game engine
-	void syncStep(GameGUI *gui);
+	void syncStep();
 	
 private:
 	
@@ -61,6 +63,8 @@ private:
 	///Never null after construction.
 	std::unique_ptr<Usl> usl;
 	MapScriptError error;
+	Game* game;
+	ClientCommandSink* client;
 };
 
 

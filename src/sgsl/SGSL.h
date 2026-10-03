@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include <set>
+
 #include <optional>
 #include <string>
 #include <vector>
@@ -131,13 +133,22 @@ struct SGSLToken
 
 class Story;
 class MapScriptSGSL;
-class GameGUI;
 class Game;
+class ClientCommandSink;
+class ClientRequests;
 struct SGSLParseContext;
+
+//! What a running story may touch: the simulation, and the client's
+//! presentation through the command sink (never the GUI object directly).
+struct StoryContext
+{
+	Game *game;
+	ClientCommandSink *client;
+};
 enum class SGSLParseStatus;
 
 //! The implementation of a generic function
-typedef void (Story::*FunctionImplementation)(GameGUI*);
+typedef void (Story::*FunctionImplementation)(StoryContext*);
 
 //! The description of one function argument
 struct FunctionArgumentDescription
@@ -250,10 +261,11 @@ public:
 public:
 	std::vector<SGSLToken> line;
 	std::map<std::string, int> labels;
+	std::set<int> instructionStarts; //!< Reconstructed from source, never trusted from a save.
 	int lineSelector; //!< PC : Program Counter
 	int internTimer;
 
-	void syncStep(GameGUI *gui);
+	void syncStep(StoryContext *gui);
 	Sint32 checkSum() { return lineSelector; }
 
 	void sendSpace() { receivedSpace=true; }
@@ -262,27 +274,27 @@ public:
 private:
 	friend class MapScriptSGSL;
 	bool conditionTester(const Game *game, int pc, bool readLevel, bool only);
-	void toto(GameGUI* gui);
-	void objectiveHidden(GameGUI* gui);
-	void objectiveVisible(GameGUI* gui);
-	void objectiveComplete(GameGUI* gui);
-	void objectiveFailed(GameGUI* gui);
-	void hintHidden(GameGUI* gui);
-	void hintVisible(GameGUI* gui);
-	void setHighlightItem(GameGUI* gui, bool doSet);
-	void setGUIChoice(GameGUI* gui, SGSLToken::TokenType object, bool enable);
-	void highlightItem(GameGUI* gui);
-	void unhighlightItem(GameGUI* gui);
-	void highlightUnits(GameGUI* gui);
-	void unhighlightUnits(GameGUI* gui);
-	void highlightBuildings(GameGUI* gui);
-	void unhighlightBuildings(GameGUI* gui);
-	void highlightBuildingOnPanel(GameGUI* gui);
-	void unhighlightBuildingOnPanel(GameGUI* gui);
-	void resetAI(GameGUI* gui);
+	void toto(StoryContext* gui);
+	void objectiveHidden(StoryContext* gui);
+	void objectiveVisible(StoryContext* gui);
+	void objectiveComplete(StoryContext* gui);
+	void objectiveFailed(StoryContext* gui);
+	void hintHidden(StoryContext* gui);
+	void hintVisible(StoryContext* gui);
+	void setHighlightItem(StoryContext* gui, bool doSet);
+	void setGUIChoice(StoryContext* gui, SGSLToken::TokenType object, bool enable);
+	void highlightItem(StoryContext* gui);
+	void unhighlightItem(StoryContext* gui);
+	void highlightUnits(StoryContext* gui);
+	void unhighlightUnits(StoryContext* gui);
+	void highlightBuildings(StoryContext* gui);
+	void unhighlightBuildings(StoryContext* gui);
+	void highlightBuildingOnPanel(StoryContext* gui);
+	void unhighlightBuildingOnPanel(StoryContext* gui);
+	void resetAI(StoryContext* gui);
 	
 	
-	bool testCondition(GameGUI *gui);
+	bool testCondition(StoryContext *gui);
 	void setAlliance(Game *game);
 	void summonUnits(Game *game);
 	void summonFlag(Game *game);
@@ -325,7 +337,9 @@ public:
 	//! Save a script, write source code
 	void save(GAGCore::OutputStream *stream, const Game *game);
 
-	void syncStep(GameGUI *gui);
+	//! One script step. Reads (and consumes) the client's Space acknowledgement
+	//! from `requests`; presentation commands go to `client`.
+	void syncStep(Game &game, ClientCommandSink &client, ClientRequests &requests);
 	Sint32 checkSum();
 	bool hasTeamWon(unsigned teamNumber) const;
 	bool hasTeamLost(unsigned teamNumber) const;

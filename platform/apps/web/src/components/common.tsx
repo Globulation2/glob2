@@ -19,6 +19,33 @@ import {
 import { Link } from '../router.tsx';
 import { useSession, type Load } from '../state.tsx';
 
+/**
+ * A table that may scroll sideways on narrow screens. It is a named, focusable
+ * region so keyboard users can scroll it too (WCAG 2.1.1; axe
+ * scrollable-region-focusable). `stack` turns rows into cards on phones
+ * instead (cells need data-label).
+ */
+export function TableWrap({
+  label,
+  stack = false,
+  children,
+}: {
+  label: string;
+  stack?: boolean;
+  children: ReactNode;
+}) {
+  return (
+    <div
+      className={`table-wrap${stack ? ' stack' : ''}`}
+      role="region"
+      aria-label={label}
+      tabIndex={0}
+    >
+      {children}
+    </div>
+  );
+}
+
 export function Loading() {
   return (
     <p className="loading" role="status">

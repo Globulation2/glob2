@@ -89,6 +89,26 @@ std::optional<std::string> normalizeOrigin(const std::string &input)
 	return scheme + "://" + (ipv6 ? "[" + host + "]" : host) + (port.empty() ? "" : ":" + port);
 }
 
+bool isFormerOfficialOrigin(const std::string &origin)
+{
+	const std::string former = OFFICIAL_INSTANCE_FORMER_ORIGINS;
+	for (std::size_t at = 0; at < former.size();)
+	{
+		auto end = former.find(' ', at);
+		if (end == std::string::npos)
+			end = former.size();
+		if (end > at && former.compare(at, end - at, origin) == 0 && origin != OFFICIAL_INSTANCE_ORIGIN)
+			return true;
+		at = end + 1;
+	}
+	return false;
+}
+
+std::string currentOrigin(const std::string &origin)
+{
+	return isFormerOfficialOrigin(origin) ? std::string(OFFICIAL_INSTANCE_ORIGIN) : origin;
+}
+
 std::string realtimeUrl(const std::string &origin)
 {
 	if (origin.rfind("https://", 0) == 0)
@@ -127,7 +147,7 @@ bool InstanceConfig::selectInstance(const std::string &origin)
 	auto normalized = normalizeOrigin(origin);
 	if (!normalized)
 		return false;
-	selected = *normalized;
+	selected = currentOrigin(*normalized);
 	return true;
 }
 
@@ -150,7 +170,8 @@ void InstanceConfig::forget(const std::string &origin)
 
 bool InstanceConfig::isTrusted(const std::string &origin) const
 {
-	if (origin == OFFICIAL_INSTANCE_ORIGIN || origin == selected || sessionTrust.count(origin))
+	if (origin == OFFICIAL_INSTANCE_ORIGIN || isFormerOfficialOrigin(origin) || origin == selected ||
+		sessionTrust.count(origin))
 		return true;
 	const auto *found = find(origin);
 	return found && found->trusted;
@@ -206,8 +227,10 @@ bool InstanceConfig::fromJson(const std::string &text)
 		return found != object.end() && found->is_boolean() ? found->get<bool>() : fallback;
 	};
 	std::string newSelected = OFFICIAL_INSTANCE_ORIGIN;
+	// A former official origin (e.g. the apex before the app subdomain) moves
+	// to the official one; its record, credentials included, stays where it is.
 	if (auto origin = normalizeOrigin(string(document, "selected")))
-		newSelected = *origin;
+		newSelected = currentOrigin(*origin);
 	std::map<std::string, InstanceRecord> newRecords;
 	if (auto instances = document.find("instances");
 		instances != document.end() && instances->is_object())

@@ -48,6 +48,7 @@ TurnSession::SeatPresence TurnSession::seatPresenceInfo(int seatNumber) const
 		return SeatPresence{PresenceState::Left};
 	SeatPresence details = seatDetails[seatNumber];
 	details.state = seatPresence[seatNumber];
+	details.relayRttMicros = seatRtt[seatNumber];
 	return details;
 }
 
@@ -106,6 +107,7 @@ void TurnSession::update(std::uint64_t nowMicros)
 	if (!helloSent)
 	{
 		Hello hello;
+		hello.protocolVersion = helloVersion;
 		hello.ticket = config.ticket;
 		hello.haveHorizon = reloadPending ? 0 : horizonTick;
 		send(hello);
@@ -161,6 +163,19 @@ void TurnSession::handle(const NetMessage& message)
 		onWelcome(static_cast<const Welcome&>(message));
 		break;
 	case MSG_REJECT:
+		if (static_cast<const Reject&>(message).reason == RejectReason::ProtocolVersion &&
+		    currentState == State::AwaitingWelcome && helloVersion > MIN_PROTOCOL_VERSION)
+		{
+			// An older relay: offer the oldest version this client speaks, once.
+			std::cerr << "Turn session: relay refused protocol " << helloVersion << "; retrying with "
+			          << MIN_PROTOCOL_VERSION << "\n";
+			helloVersion = MIN_PROTOCOL_VERSION;
+			transport.close();
+			currentState = State::Reconnecting;
+			helloSent = false;
+			retryAt = now;
+			break;
+		}
 		rejection = static_cast<const Reject&>(message).reason;
 		std::cerr << "Turn session: relay refused us: " << static_cast<const Reject&>(message).detail << "\n";
 		currentState = State::Rejected;
@@ -176,6 +191,11 @@ void TurnSession::handle(const NetMessage& message)
 			seatDetails[p.seat] = {p.state, p.graceRemainingTicks, p.lagTicks, now};
 			stats.presence(p.seat, p.state, now);
 		}
+		break;
+	case MSG_SEAT_LATENCY:
+		seatRtt.fill(0);
+		for (const auto& p : static_cast<const SeatLatency&>(message).seats)
+			seatRtt[p.seat] = p.rttMicros;
 		break;
 	case MSG_DESYNC_NOTICE:
 		onDesync(static_cast<const DesyncNotice&>(message));
@@ -201,13 +221,14 @@ void TurnSession::handle(const NetMessage& message)
 
 void TurnSession::onWelcome(const Welcome& w)
 {
-	if (w.protocolVersion != PROTOCOL_VERSION || (seat >= 0 && w.seat != seat))
+	if (!supportedProtocol(w.protocolVersion) || w.protocolVersion > helloVersion || (seat >= 0 && w.seat != seat))
 	{
 		currentState = State::Rejected;
 		rejection = RejectReason::ProtocolVersion;
 		transport.close();
 		return;
 	}
+	negotiated = w.protocolVersion;
 	seat = w.seat;
 	humanMask = w.humanSeatMask;
 	grace = w.graceTicks;

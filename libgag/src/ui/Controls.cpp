@@ -131,9 +131,10 @@ class Button : public Node
 		const int extra = iconWidth + (iconWidth && !text.empty() ? ctx.presentation.pt(6) : 0);
 		const int natural = ctx.text.width(options.role, text) + extra + 2 * pad;
 		const int width = c.boundedW() ? std::min(natural, c.maxW) : natural;
-		const auto block =
-			layoutText(ctx.text, options.role, text,
-					   std::max(1, width - 2 * ctx.metrics.halfGap - extra), ctx.metrics.lineGap);
+		// Wrap to the width paint() leaves the text, or larger text paints more
+		// lines than the height reserves and spills into its neighbours.
+		const auto block = layoutText(ctx.text, options.role, text,
+									  std::max(1, width - 2 * textInset(ctx.metrics) - extra), ctx.metrics.lineGap);
 		const int height =
 			std::max(minHeight(ctx), std::max(block.height, iconWidth) + 2 * ctx.metrics.halfGap);
 		return c.clamp({width, height});
@@ -163,7 +164,7 @@ class Button : public Node
 				frame.canvas.strokeRect(bounds, options.primary ? p.accentInk.applyAlpha(60) : p.line);
 		}
 		const auto &m = frame.canvas.measurer();
-		const int inset = frame.layout.metrics.halfGap * (text.empty() && options.icon ? 1 : 2);
+		const int inset = textInset(frame.layout.metrics);
 		Rect textRect = bounds.inset(Insets::symmetric(inset, frame.layout.metrics.halfGap));
 		const bool hasIcon = options.icon && options.icon->available();
 		const int side = hasIcon ? std::min({frame.layout.presentation.pt(options.iconSize),
@@ -199,6 +200,8 @@ class Button : public Node
 	std::string text;
 	std::function<void()> action;
 	ButtonOptions options;
+	// Horizontal inset of the label on each side.
+	int textInset(const Metrics &m) const { return m.halfGap * (text.empty() && options.icon ? 1 : 2); }
 };
 
 class Toggle : public Node
@@ -399,7 +402,7 @@ class Stepper : public Node
 	}
 	void tap(Point point, Host &host) override
 	{
-		const int side = sideWidth;
+		const int side = std::min(sideWidth, bounds.w / 2);
 		if (point.x < bounds.x + side)
 			step(host, -1);
 		else if (point.x >= bounds.right() - side)
@@ -424,7 +427,9 @@ class Stepper : public Node
 	{
 		sideWidth = ctx.metrics.stepperSide;
 		const int natural = 2 * sideWidth + ctx.text.width(FontRole::Body, valueText()) + 2 * ctx.metrics.padding;
-		return c.clamp({c.boundedW() ? std::min(std::max(natural, c.minW), c.maxW) : natural, ctx.metrics.control});
+		// Taller than the control height when larger text needs it.
+		const int height = std::max(ctx.metrics.control, ctx.text.lineHeight(FontRole::Body) + ctx.metrics.gap);
+		return c.clamp({c.boundedW() ? std::min(std::max(natural, c.minW), c.maxW) : natural, height});
 	}
 	void paint(Frame &frame) override
 	{
@@ -432,8 +437,10 @@ class Stepper : public Node
 		const auto &mt = frame.layout.metrics;
 		frame.canvas.fillRounded(bounds, mt.radius, options.enabled ? p.field : p.disabled);
 		frame.canvas.strokeRect(bounds, p.line);
-		const Rect left{bounds.x, bounds.y, sideWidth, bounds.h};
-		const Rect right{bounds.right() - sideWidth, bounds.y, sideWidth, bounds.h};
+		// Squeezed below its natural width, the sides share what is left.
+		const int sideW = std::min(sideWidth, bounds.w / 2);
+		const Rect left{bounds.x, bounds.y, sideW, bounds.h};
+		const Rect right{bounds.right() - sideW, bounds.y, sideW, bounds.h};
 		auto side = [&](Rect r, const char *glyph, bool ok)
 		{
 			if (ok && frame.hovered(r))
@@ -725,7 +732,7 @@ class TextField : public Node
 				submit(current);
 			return true;
 		}
-		case SDLK_a:
+		case SDLK_A:
 			if (event.ctrl())
 			{
 				selectAll = !value.empty();
@@ -733,17 +740,17 @@ class TextField : public Node
 				return true;
 			}
 			return false;
-		case SDLK_c:
-		case SDLK_x:
+		case SDLK_C:
+		case SDLK_X:
 			if (event.ctrl() && selectAll)
 			{
 				SDL_SetClipboardText(value.c_str());
-				if (event.sym == SDLK_x)
+				if (event.sym == SDLK_X)
 					commit(host, "", 0);
 				return true;
 			}
 			return false;
-		case SDLK_v:
+		case SDLK_V:
 			if (event.ctrl() && SDL_HasClipboardText())
 			{
 				char *clip = SDL_GetClipboardText();
@@ -1070,7 +1077,7 @@ class TextEditor : public Node
 			return textInput("\n", host);
 		case SDLK_TAB:
 			return false;
-		case SDLK_v:
+		case SDLK_V:
 			if (event.ctrl() && SDL_HasClipboardText())
 			{
 				char *clip = SDL_GetClipboardText();

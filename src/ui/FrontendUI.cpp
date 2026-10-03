@@ -68,6 +68,10 @@ Element compactButton(const std::string &key, const std::string &label, UIIcon i
 	return width(p.pt(48), button(key, "", std::move(action), options));
 }
 
+// Every touch theme shares one text size, so menus, dialogs over gameplay and
+// the end-of-game sheet read alike; the player's preference multiplies it.
+constexpr double touchTextBase = 1.15;
+
 const Theme &frontendTheme()
 {
 	static const Theme theme = []
@@ -75,6 +79,7 @@ const Theme &frontendTheme()
 		Theme t;
 		t.fonts = {"front-title", "menu", "standard", "little", "front-caption"};
 		t.touchFonts = {"front-title", "menu", "frontend-body", "frontend-support", "front-caption"};
+		t.touchTextScale = touchTextBase;
 		return t;
 	}();
 	return theme;
@@ -87,6 +92,7 @@ const Theme &inGameTheme()
 		Theme t;
 		t.fonts = {"menu", "menu", "standard", "little", "little"};
 		t.touchFonts = {"menu", "menu", "frontend-body", "frontend-support", "frontend-support"};
+		t.touchTextScale = touchTextBase;
 		// The dark in-match look of the touch HUD, so dialogs sit on the map without
 		// borrowing the frontend's paper.
 		auto &c = t.palette;
@@ -102,6 +108,7 @@ const Theme &inGameTheme()
 		c.selected = GAGCore::Color(114, 78, 111);
 		c.hover = GAGCore::Color(92, 62, 116);
 		c.focus = GAGCore::Color(255, 214, 120);
+		c.warning = GAGCore::Color(255, 214, 120);
 		c.scrim = GAGCore::Color(10, 6, 20, 140);
 		c.disabled = GAGCore::Color(52, 38, 70);
 		c.shadow = GAGCore::Color(10, 6, 20, 60);
@@ -134,6 +141,7 @@ const Theme &classicInGameTheme()
 		c.selected = GAGCore::Color(60, 60, 120);
 		c.hover = GAGCore::Color(120, 120, 200);
 		c.focus = GAGCore::Color(255, 214, 120);
+		c.warning = GAGCore::Color(255, 214, 120);
 		c.disabled = GAGCore::Color(40, 40, 70);
 		c.success = GAGCore::Color(100, 255, 100);
 		c.danger = GAGCore::Color(255, 80, 80);
@@ -167,19 +175,8 @@ std::string tr(const std::string &key)
 	return GAGCore::Toolkit::getStringTable()->getString(key);
 }
 
-double frontendTextScale(const Presentation &presentation)
-{
-	const int percent = globalContainer ? globalContainer->settings.mobileDialogTextPercent : 100;
-	return (presentation.touch ? 1.15 : 1.0) * (percent > 0 ? percent : 100) / 100.0;
-}
-
 Screen::Screen() : UIScreen(frontendTheme()) {}
 Screen::~Screen() = default;
-
-double Screen::textScale(const Presentation &presentation) const
-{
-	return frontendTextScale(presentation);
-}
 
 void Screen::paintBackground(Canvas &canvas)
 {
@@ -198,19 +195,9 @@ void Screen::beforePaint()
 
 Dialog::Dialog() : UIDialog(frontendTheme()) {}
 
-double Dialog::textScale(const Presentation &presentation) const
-{
-	return frontendTextScale(presentation);
-}
-
 InGameDialog::InGameDialog()
 	: UIDialog(touchPresentation() ? inGameTheme() : classicInGameTheme()), classicLook(!touchPresentation())
 {
-}
-
-double InGameDialog::textScale(const Presentation &presentation) const
-{
-	return frontendTextScale(presentation);
 }
 
 void InGameDialog::paintPanel(Canvas &canvas, Rect panel)
@@ -305,8 +292,8 @@ Element menu(const std::string &titleText, std::vector<MenuAction> items, const 
 		std::vector<Element> body;
 		if (!titleText.empty())
 			body.push_back(paragraph(titleText, {FontRole::Heading, false, TextAlign::Center}));
-		body.push_back(column(std::move(parts), {p.pt(20)}));
-		body.push_back(expandedSpacer());
+		// Scrolls when larger text makes the buttons outgrow the fixed panel.
+		body.push_back(expanded(scroll("menu/items", column(std::move(parts), {p.pt(20)}))));
 		if (escape)
 			body.push_back(escape);
 		CardOptions cardOptions;
@@ -426,14 +413,14 @@ Element mapPreview(const std::string &key, ::MapPreview &preview, double points,
 		const Point at{widget->getLeft() + local.x, widget->getTop() + local.y};
 		if (phase == PointerPhase::Down || phase == PointerPhase::Up)
 		{
-			event.type = phase == PointerPhase::Down ? SDL_MOUSEBUTTONDOWN : SDL_MOUSEBUTTONUP;
+			event.type = phase == PointerPhase::Down ? SDL_EVENT_MOUSE_BUTTON_DOWN : SDL_EVENT_MOUSE_BUTTON_UP;
 			event.button.button = SDL_BUTTON_LEFT;
 			event.button.x = at.x;
 			event.button.y = at.y;
 		}
 		else if (phase == PointerPhase::Move)
 		{
-			event.type = SDL_MOUSEMOTION;
+			event.type = SDL_EVENT_MOUSE_MOTION;
 			event.motion.state = SDL_BUTTON_LMASK;
 			event.motion.x = at.x;
 			event.motion.y = at.y;
@@ -449,12 +436,12 @@ Element mapPreview(const std::string &key, ::MapPreview &preview, double points,
 	options.wheel = [widget](int direction, Point local)
 	{
 		SDL_Event motion{};
-		motion.type = SDL_MOUSEMOTION;
+		motion.type = SDL_EVENT_MOUSE_MOTION;
 		motion.motion.x = widget->getLeft() + local.x;
 		motion.motion.y = widget->getTop() + local.y;
 		widget->handlePreviewEvent(&motion);
 		SDL_Event wheel{};
-		wheel.type = SDL_MOUSEWHEEL;
+		wheel.type = SDL_EVENT_MOUSE_WHEEL;
 		wheel.wheel.y = direction;
 		widget->handlePreviewEvent(&wheel);
 	};
@@ -462,7 +449,8 @@ Element mapPreview(const std::string &key, ::MapPreview &preview, double points,
 						  [widget](Canvas &c, Rect r, const Frame &)
 						  {
 							  widget->setScreenRectangle(r.x, r.y, r.w, r.h);
-							  widget->paint(c.surface());
+							  if (auto *surface = c.surface()) // null on a recording canvas
+								  widget->paint(surface);
 						  },
 						  options);
 	if (flexible)

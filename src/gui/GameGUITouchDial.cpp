@@ -312,8 +312,9 @@ void GameGUITouch::drawDial()
 	const auto safe = layout().safe;
 	auto captionRect = [&](ViewPoint centre, const std::string &text, double textScale)
 	{
-		const double w = std::min(safe.w, (globalContainer->standardFont->getStringWidth(text) + 16) * textScale * unit),
-					 h = 22 * unit;
+		const double w = std::min(safe.w, (globalContainer->standardFont->getStringWidth(text) *
+												   gfx->textUnitsPerPoint() + 16 * unit) * textScale),
+					 h = 22 * unit * InGameTouchTheme::textGrowth();
 		const double x = std::clamp(centre.x - w / 2, safe.x, std::max(safe.x, safe.x + safe.w - w));
 		return ViewRect{x, centre.y - h / 2, w, h};
 	};
@@ -361,7 +362,7 @@ void GameGUITouch::drawDial()
 						InGameTouchTheme::dialFill);
 		if (row.kind == 6)
 			TouchDial::fill(g, ring.outer - 5, ring.outer, region.from,
-							TouchDial::angleOf(int(b->unitsWorking.size()), region.sliderFrom, region.sliderTo,
+							TouchDial::angleOf(int(b->unitsWorking), region.sliderFrom, region.sliderTo,
 											   region.maximum),
 							InGameTouchTheme::ink);
 		sliderCaptions.push_back({captionRect(centre, row.label, .72), row.label});

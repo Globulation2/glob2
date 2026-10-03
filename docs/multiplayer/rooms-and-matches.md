@@ -26,8 +26,13 @@ sockets it holds. Clients ignore states older than the last revision they saw.
 **Seats.** Seat *i* always plays map team *i*. `teams[i].alliance` groups teams into
 sides. The number of seats equals the map's team count, and changing the map
 resizes both. A seat is open, human, AI, or locked. A locked seat is empty, and
-nobody may take it. An empty or locked seat plays as an inactive player (AI `none`)
-when the match starts, so its colony stays on the map without anyone controlling it.
+nobody may take it. An empty or locked seat's team is closed when the match starts,
+exactly like a "Closed" colony in a custom game: the MatchSetup lists it as a `closed`
+seat, the engine removes its colony, and it has lost from the start. The taken seats
+become the match's players, numbered `0..p-1` in room seat order on their own map
+teams, so a player's match seat (ticket `seat`, `match_participants.seat`) differs from
+its room seat when an empty seat comes before it. See
+[MatchSetup to GameHeader](turn-protocol.md#matchsetup-to-gameheader).
 
 **Sim versions.** A room carries its host's sim version. A client whose sim version
 differs gets `update_required` from `room.join`, and a client whose version the
@@ -41,6 +46,7 @@ are easy to change:
 | Rule | Default |
 | --- | --- |
 | Members move themselves into open, unlocked seats (`setSeat` `self`), and leave their own seat (`open`) | yes |
+| A new member (`room.join` by code or invite) takes the first open, unlocked seat; in a full room they stay an unseated member (`joinTakesOpenSeat`) | yes |
 | Adding AIs, locking seats, emptying other seats, changing settings and starting | host only |
 | Changing the map, teams, rules or experiments clears every Ready | yes |
 | The host is ready by starting; there is no force start past unready players | yes |
@@ -93,8 +99,12 @@ load. Every participant downloads those bytes from
 | Source | How the room gets its hash and team count |
 | --- | --- |
 | Catalog `{kind: "catalog", hash, mapId?}` | A valid `map_versions` row of a map that is not hidden and is public, unlisted or the host's own, saved by an engine no newer than the room's (`minVersionMinor`). See [Map catalog](architecture.md#map-catalog) |
-| Upload `{kind: "upload", format, hash}` | The host's own upload for the room's sim version, once validated |
+| Upload `{kind: "upload", format, hash}` | The host's own upload for the room's sim version, once validated. The client uploads a premade or own map chosen in the room's map editor this way (`PlatformRoom::usePremadeMap`) |
 | Generator `{kind: "generated", generator}` | A `generate-map` job. `params.teams` is required and sets the team count. The hash is filled in when the job finishes |
+
+`RoomState.mapTitle` names a catalog or uploaded map: the catalog title, or the
+title the engine read from the uploaded file, else its file name without the
+extension. Generated maps have none; clients name them from the generator.
 
 **Generated maps.** Generation is deterministic for a sim version, so
 `generated_maps` keeps one row per descriptor (SHA-256 of the canonical descriptor
@@ -107,13 +117,24 @@ generation may be requested again after a minute.
 
 **Uploads.** `POST /api/v1/uploads?format=map|save&simVersion=<key>&fileName=…`
 takes the raw file as `application/octet-stream`, up to `UPLOAD_MAX_BYTES` (16 MiB by
-default). Each replica allows 30 uploads per account per hour. The bytes become a
-private blob, and an engine agent of that sim version validates them with a
-`validate-map` job. `GET /api/v1/uploads/{id}` (owner only) returns the `MapUpload`
-resource with its status, map facts, and, for a save, the players recorded in it.
+default). Without `simVersion` (the web app's upload form), the newest version the
+instance serves is used. Each replica allows 30 uploads per account per hour. The
+bytes become a private blob, and an engine agent of that sim version validates them
+with a `validate-map` job. `GET /api/v1/uploads/{id}` (owner only) returns the
+`MapUpload` resource with its status, map facts, and, for a save, the players
+recorded in it.
 
-- The upload must be the **uncompressed** bytes that the engine loads. An upload
-  whose `validate-map` result reports a different map hash is marked invalid.
+- Plain and gzip-compressed files (the game's `.map.gz`) are both accepted. The API
+  unpacks gzip (up to 64 MiB unpacked) before storing, so the blob, its hash and the
+  map hash are those of the bytes the engine loads.
+- Before anything is stored, the API reads the map header
+  (`checkMapFile` in `@glob2/core`). A file that is empty, not a map, from a newer or
+  a no longer loadable format, a save sent as a map (or the reverse), or too large is
+  answered at once with `400` (`413` for an oversized body), a message meant for
+  players, and `details.problem` (`empty`, `not_a_map`, `newer_version`,
+  `older_version`, `save_not_map`, `map_not_save`, `too_large`, `corrupt_gzip`).
+- Reasons from the engine agent (`MapUpload.reason`, `MapVersionInfo.reason`) are
+  also written for players ("The game couldn't load this map; …").
 - Uploading the same bytes again returns the existing upload.
 - Bytes that someone has already validated for that sim version reuse the
   result, without a new job.
@@ -309,12 +330,23 @@ answering the offer with `match.rematch` or `room.join {code}`, joins that room.
 so link previews get OpenGraph tags (`og:title`, `og:description`, `og:url`,
 `og:site_name`) without running scripts.
 
-- **Open in Globulation 2** links to `glob2://join?instance=<origin>&code=<code>`.
-  A nonce-allowed inline script tries this link once on load.
-- **Play in browser** opens the web client with `?join=<code>`. The client's URL is
-  `web.browserClientUrl` in `instance.yaml`, `<origin>/play/` by default.
-- An unknown or expired code gets a `404` page that says so. It offers the app and
-  the browser client without a code, and runs no script.
+- **Play in browser** (the primary action) opens the web client with
+  `?join=<code>`. The client's URL is `web.browserClientUrl` in `instance.yaml`,
+  `<origin>/play/` by default.
+- **Open in the Globulation 2 app** links to
+  `glob2://join?instance=<origin>&code=<code>`, with a note that it needs the
+  installed game. The page never opens it by itself. After a click, a
+  nonce-allowed inline script waits about 1.5 s; if the page did not lose focus or
+  get hidden (the app did not take over), it shows "The app didn't open" with
+  links to the browser client and the instance home.
+- On an instance with verified app links (`appLinks` in `instance.yaml`, the
+  official domain), phones normally open `/j/` links in the app directly. A phone
+  that still shows the page (by user agent: Android, iPhone, iPad, iPod) gets the
+  app button first. On Android it is
+  `intent://join?…#Intent;scheme=glob2;package=<package>;S.browser_fallback_url=<browser client link>;end`,
+  so a missing app lands in the browser client instead of failing silently.
+- An unknown or expired code gets a `404` page that says so. It offers the browser
+  client without a code and the instance home, and runs no script.
 
 Caddy routes `/j/*` to the API, as it routes `/api` and `/realtime`; `/internal`
 is never served publicly, and relays reach it on the backend network (see the

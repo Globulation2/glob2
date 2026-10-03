@@ -8,7 +8,7 @@
 #include "Settlements.h"
 #include "StartQuality.h"
 #include "Utilities.h"
-#include <SDL_image.h>
+#include <SDL3_image/SDL_image.h>
 #include <algorithm>
 #include <array>
 #include <cmath>
@@ -42,12 +42,12 @@ constexpr std::array<Category, 12> palette{{{0, 128, 0, GRASS, NO_RES},
 											{128, 0, 255, GRASS, PRUNE},
 											{255, 255, 255, GRASS, NO_RES}}};
 constexpr int marker = 11;
-using Surface = std::unique_ptr<SDL_Surface, decltype(&SDL_FreeSurface)>;
+using Surface = std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)>;
 Surface surface(SDL_Surface *p)
 {
 	if (!p)
 		throw std::runtime_error(std::string("Map image: ") + SDL_GetError());
-	return Surface(p, SDL_FreeSurface);
+	return Surface(p, SDL_DestroySurface);
 }
 int nearest(Uint8 r, Uint8 g, Uint8 b)
 {
@@ -347,7 +347,7 @@ DecodedMapImage decodeMapImage(const std::string &path, int mapW, int mapH)
 	// Check before allocating the converted surface and classification grid.
 	if (source->w > 8192 || source->h > 8192)
 		throw std::runtime_error("Map image dimensions must not exceed 8192 pixels");
-	auto pixels = surface(SDL_ConvertSurfaceFormat(source.get(), SDL_PIXELFORMAT_RGBA32, 0));
+	auto pixels = surface(SDL_ConvertSurface(source.get(), SDL_PIXELFORMAT_RGBA32));
 	if (std::int64_t(pixels->w) * mapH != std::int64_t(pixels->h) * mapW)
 		throw std::runtime_error("Map image and requested map must have matching aspect ratios");
 	std::vector<int> sourceCells(size_t(pixels->w) * pixels->h);
@@ -358,7 +358,7 @@ DecodedMapImage decodeMapImage(const std::string &path, int mapW, int mapH)
 			Uint8 r, g, b, a;
 			std::memcpy(&pixel, static_cast<Uint8 *>(pixels->pixels) + y * pixels->pitch + x * 4,
 						4);
-			SDL_GetRGBA(pixel, pixels->format, &r, &g, &b, &a);
+			SDL_GetRGBA(pixel, SDL_GetPixelFormatDetails(pixels->format), SDL_GetSurfacePalette(pixels.get()), &r, &g, &b, &a);
 			if (a != 255)
 				throw std::runtime_error("Map images must be fully opaque");
 			sourceCells[y * pixels->w + x] = nearest(r, g, b);
@@ -606,7 +606,7 @@ void exportMapImage(const Game &game, const std::string &path)
 {
 	const auto &map = game.map;
 	const int w = map.getW(), h = map.getH();
-	auto out = surface(SDL_CreateRGBSurfaceWithFormat(0, w, h, 32, SDL_PIXELFORMAT_RGBA32));
+	auto out = surface(SDL_CreateSurface(w, h, SDL_PIXELFORMAT_RGBA32));
 	std::vector<int> cells(w * h);
 	for (int y = 0; y < h; ++y)
 		for (int x = 0; x < w; ++x)
@@ -631,11 +631,11 @@ void exportMapImage(const Game &game, const std::string &path)
 		for (int x = 0; x < w; ++x)
 		{
 			const auto &c = palette[cells[y * w + x]];
-			const Uint32 pixel = SDL_MapRGBA(out->format, c.r, c.g, c.b, 255);
+			const Uint32 pixel = SDL_MapRGBA(SDL_GetPixelFormatDetails(out->format), SDL_GetSurfacePalette(out.get()), c.r, c.g, c.b, 255);
 			std::memcpy(static_cast<Uint8 *>(out->pixels) + y * out->pitch + x * 4, &pixel, 4);
 		}
-	if (IMG_SavePNG(out.get(), path.c_str()) != 0)
-		throw std::runtime_error(std::string("Cannot write map image: ") + IMG_GetError());
+	if (!IMG_SavePNG(out.get(), path.c_str()))
+		throw std::runtime_error(std::string("Cannot write map image: ") + SDL_GetError());
 }
 
 void importMapImage(Game &game, const std::string &path, GenerationRequest &request,
@@ -649,8 +649,8 @@ void importMapImage(Game &game, const std::string &path, GenerationRequest &requ
 	const int h = 1 << request.hDec;
 	const auto decoded = decodeMapImage(path, w, h);
 	const auto anchors = findImageMarkers(decoded.cells, w, h, report);
-	if (anchors.empty() || anchors.size() > 12)
-		throw std::runtime_error("Map image requires 1..12 colony markers (observed " +
+	if (anchors.empty() || anchors.size() > Team::MAX_COUNT)
+		throw std::runtime_error("Map image requires 1.." + std::to_string(Team::MAX_COUNT) + " colony markers (observed " +
 								 std::to_string(anchors.size()) + ")");
 	if (expectedTeams && expectedTeams != report.markers)
 		throw std::runtime_error("Expected " + std::to_string(expectedTeams) +

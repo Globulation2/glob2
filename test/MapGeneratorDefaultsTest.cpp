@@ -29,7 +29,7 @@
 #include "StartingPositions.h"
 #include "Unit.h"
 #include "Utilities.h"
-#include <SDL_image.h>
+#include <SDL3_image/SDL_image.h>
 #include <Toolkit.h>
 #include <algorithm>
 #include <chrono>
@@ -79,101 +79,97 @@ class MapGeneratorDefaultsTest
 		}
 		REQUIRE(false);
 	}
+	static void defaultGenerationContract(int method)
+	{
+		globalsInit();
+		GenerationService service;
+		D request;
+		request.setMethodDefaults(method);
+		request.seed = 22001;
+		setSyncRandSeed(177);
+		auto surrounding = syncRandEngine();
+		Game first(nullptr);
+		auto a = service.generate(first, request);
+		REQUIRE(syncRandEngine() == surrounding);
+		auto hash = mapFingerprint(first);
+		auto checksum = first.checkSum(nullptr, nullptr, nullptr, true);
+		D intervening;
+		intervening.setMethodDefaults(D::eISLANDS);
+		intervening.seed = 9017;
+		Game other(nullptr);
+		service.generate(other, intervening);
+		Game repeat(nullptr);
+		auto b = service.generate(repeat, request);
+		if (bool(a) != bool(b) || a.stage != b.stage || hash != mapFingerprint(repeat))
+			std::fprintf(stderr,
+						 "Not repeatable after an intervening map: generator %d (%s, %s)\n",
+						 method, a.diagnostic().c_str(), b.diagnostic().c_str());
+		REQUIRE((bool(a) == bool(b) && a.stage == b.stage && hash == mapFingerprint(repeat)));
+		REQUIRE(checksum == repeat.checkSum(nullptr, nullptr, nullptr, true));
+		REQUIRE((request.seed == 22001 && request.options == DWithDefaults(method).options));
+		if (method == GeneratorRegistry::builtins().idOf("lava-shield"))
+		{
+			if (!a)
+				std::cerr << a.diagnostic() << std::endl;
+			REQUIRE(a); // A repeatable failure is not a valid default map.
+			GenerationContext probe(request);
+			const auto &definition = GeneratorRegistry::builtins().at(method);
+			REQUIRE(definition.validateWorld(first, probe).empty());
+			// Removing all rock must be caught by the generator's actual final-world
+			// validator, not merely by a golden hash. Corrupt the unused repeated copy.
+			for (int y = 0; y < repeat.map.getH(); ++y)
+				for (int x = 0; x < repeat.map.getW(); ++x)
+					if (repeat.map.getResource(x, y).type == STONE)
+						repeat.map.setNoResource(x, y, 1);
+			REQUIRE(!definition.validateWorld(repeat, probe).empty());
+		}
+		if (a)
+		{
+			auto rejected = service.generate(first, request);
+			REQUIRE(rejected.error == GenerationError::NonEmptyTarget);
+			REQUIRE(mapFingerprint(first) == hash);
+		}
+		if (method != D::eUNIFORM)
+			for (auto dimensions : {std::pair{9, 7}, std::pair{7, 9}})
+			{
+				D rectangular = request;
+				rectangular.seed = 31001;
+				rectangular.wDec = dimensions.first;
+				rectangular.hDec = dimensions.second;
+				Game world(nullptr);
+				// A landscape may refuse a shape its concept cannot hold (Emoji needs a
+				// square); it must then say so up front, through its request check.
+				if (const auto &d = GeneratorRegistry::builtins().at(method);
+					d.validateRequest && !d.validateRequest(rectangular).empty())
+				{
+					REQUIRE(service.generate(world, rectangular).error ==
+						   GenerationError::InvalidRequest);
+					continue;
+				}
+				REQUIRE(service.generate(world, rectangular));
+				REQUIRE(world.map.getW() == (1 << dimensions.first));
+				REQUIRE(world.map.getH() == (1 << dimensions.second));
+				for (int team = 0; team < rectangular.nbTeams; ++team)
+				{
+					REQUIRE((world.teams[team]->startPosX >= 0 &&
+						   world.teams[team]->startPosX < world.map.getW()));
+					REQUIRE((world.teams[team]->startPosY >= 0 &&
+						   world.teams[team]->startPosY < world.map.getH()));
+				}
+			}
+		for (const auto &c : D::controls(method))
+		{
+			D invalid = request;
+			invalid.options[c.id] = c.maximum + c.step;
+			Game fresh(nullptr);
+			auto failure = service.generate(fresh, invalid);
+			REQUIRE((failure.error == GenerationError::InvalidRequest && fresh.teamsCount() == 0));
+		}
+	}
 	static void generationContracts()
 	{
 		globalsInit();
-		GeneratorContracts::generatorContracts();
-		GeneratorContracts::hungryMarchesContracts();
-		frameworkChecks();
-		ToolkitChecks::toolkitChecks();
-		LandscapeChecks::landscapeChecks();
-		gauntletContracts();
 		GenerationService service;
-		for (int method : GeneratorRegistry::builtins().methods())
-		{
-			D request;
-			request.setMethodDefaults(method);
-			request.seed = 22001;
-			setSyncRandSeed(177);
-			auto surrounding = syncRandEngine();
-			Game first(nullptr);
-			auto a = service.generate(first, request);
-			REQUIRE(syncRandEngine() == surrounding);
-			auto hash = mapFingerprint(first);
-			auto checksum = first.checkSum(nullptr, nullptr, nullptr, true);
-			D intervening;
-			intervening.setMethodDefaults(D::eISLANDS);
-			intervening.seed = 9017;
-			Game other(nullptr);
-			service.generate(other, intervening);
-			Game repeat(nullptr);
-			auto b = service.generate(repeat, request);
-			if (bool(a) != bool(b) || a.stage != b.stage || hash != mapFingerprint(repeat))
-				std::fprintf(stderr,
-							 "Not repeatable after an intervening map: generator %d (%s, %s)\n",
-							 method, a.diagnostic().c_str(), b.diagnostic().c_str());
-			REQUIRE((bool(a) == bool(b) && a.stage == b.stage && hash == mapFingerprint(repeat)));
-			REQUIRE(checksum == repeat.checkSum(nullptr, nullptr, nullptr, true));
-			REQUIRE((request.seed == 22001 && request.options == DWithDefaults(method).options));
-			if (method == GeneratorRegistry::builtins().idOf("lava-shield"))
-			{
-				if (!a)
-					std::cerr << a.diagnostic() << std::endl;
-				REQUIRE(a); // A repeatable failure is not a valid default map.
-				GenerationContext probe(request);
-				const auto &definition = GeneratorRegistry::builtins().at(method);
-				REQUIRE(definition.validateWorld(first, probe).empty());
-				// Removing all rock must be caught by the generator's actual final-world
-				// validator, not merely by a golden hash. Corrupt the unused repeated copy.
-				for (int y = 0; y < repeat.map.getH(); ++y)
-					for (int x = 0; x < repeat.map.getW(); ++x)
-						if (repeat.map.getResource(x, y).type == STONE)
-							repeat.map.setNoResource(x, y, 1);
-				REQUIRE(!definition.validateWorld(repeat, probe).empty());
-			}
-			if (a)
-			{
-				auto rejected = service.generate(first, request);
-				REQUIRE(rejected.error == GenerationError::NonEmptyTarget);
-				REQUIRE(mapFingerprint(first) == hash);
-			}
-			if (method != D::eUNIFORM)
-				for (auto dimensions : {std::pair{9, 7}, std::pair{7, 9}})
-				{
-					D rectangular = request;
-					rectangular.seed = 31001;
-					rectangular.wDec = dimensions.first;
-					rectangular.hDec = dimensions.second;
-					Game world(nullptr);
-					// A landscape may refuse a shape its concept cannot hold (Emoji needs a
-					// square); it must then say so up front, through its request check.
-					if (const auto &d = GeneratorRegistry::builtins().at(method);
-						d.validateRequest && !d.validateRequest(rectangular).empty())
-					{
-						REQUIRE(service.generate(world, rectangular).error ==
-							   GenerationError::InvalidRequest);
-						continue;
-					}
-					REQUIRE(service.generate(world, rectangular));
-					REQUIRE(world.map.getW() == (1 << dimensions.first));
-					REQUIRE(world.map.getH() == (1 << dimensions.second));
-					for (int team = 0; team < rectangular.nbTeams; ++team)
-					{
-						REQUIRE((world.teams[team]->startPosX >= 0 &&
-							   world.teams[team]->startPosX < world.map.getW()));
-						REQUIRE((world.teams[team]->startPosY >= 0 &&
-							   world.teams[team]->startPosY < world.map.getH()));
-					}
-				}
-			for (const auto &c : D::controls(method))
-			{
-				D invalid = request;
-				invalid.options[c.id] = c.maximum + c.step;
-				Game fresh(nullptr);
-				auto failure = service.generate(fresh, invalid);
-				REQUIRE((failure.error == GenerationError::InvalidRequest && fresh.teamsCount() == 0));
-			}
-		}
 		// Contested commons spreads its colonies with the whole-region search, which used to run
 		// out of a fixed evaluation budget past four colonies at 256 and at any count at 512.
 		for (auto [dims, teams] : {std::pair{8, 8}, std::pair{9, 4}, std::pair{9, 12}})
@@ -404,7 +400,7 @@ class MapGeneratorDefaultsTest
 		// Exercise both opponents sharing two fronts, the usual four-colony arena,
 		// and the denser circuit at both supported sizes.
 		for (auto [dims, teams] : {std::pair{8, 2}, std::pair{8, 4}, std::pair{8, 8},
-								  std::pair{9, 8}})
+								  std::pair{9, 8}, std::pair{9, 13}, std::pair{9, 16}})
 		{
 			D sized = request;
 			sized.wDec = sized.hDec = dims;
@@ -419,7 +415,7 @@ class MapGeneratorDefaultsTest
 			REQUIRE(definition.validateWorld(world, probe).empty());
 		}
 		for (auto [width, height, teams] : {std::tuple{7, 7, 4}, std::tuple{9, 7, 4},
-										   std::tuple{8, 8, 1}, std::tuple{9, 9, 13}})
+										   std::tuple{8, 8, 1}, std::tuple{9, 9, 17}})
 		{
 			D invalid = request;
 			invalid.wDec = width;
@@ -527,8 +523,6 @@ class MapGeneratorDefaultsTest
 	}
 	static void run(const char *output)
 	{
-		generationContracts();
-		scatterAlgaeOnWater();
 		NewMapScreen s;
 		s.beginExecution(globalContainer->gfx);
 		CustomGameSetup lobby;
@@ -582,7 +576,7 @@ class MapGeneratorDefaultsTest
 			{
 				s.paintFrame(0);
 				std::string path = std::string(output) + "/editor-" + std::to_string(m) + ".png";
-				REQUIRE(IMG_SavePNG(s.gfx->getSDLSurface(), path.c_str()) == 0);
+				REQUIRE(IMG_SavePNG(s.gfx->getSDLSurface(), path.c_str()));
 			}
 		}
 		// Every switch is a check button in the editor, and clicking one flips the request's value.
@@ -642,8 +636,8 @@ struct DefaultsFixture
 };
 }
 
-// The --*-only flags of the old program are the fast cases; the last case is the
-// complete registry/editor/defaults contract the map-generators CI job runs.
+// Keep expensive registry checks separate: each case gets its own timeout,
+// diagnostic log, and coverage profile. No generator contract is dropped.
 TEST_SUITE("MapGeneratorDefaults")
 {
 	TEST_CASE("toolkit geometry; raster; resource and home contracts")
@@ -704,9 +698,189 @@ TEST_SUITE("MapGeneratorDefaults")
 		DefaultsFixture fixture;
 		LastTreelineChecks::profile();
 	}
-	TEST_CASE("full registry; editor and defaults contract [slow][map-generators]")
+	TEST_CASE("editor and lobby defaults contract [slow][map-generators]")
 	{
 		DefaultsFixture fixture;
 		MapGeneratorDefaultsTest::run(nullptr);
 	}
+}
+
+template<int Index> struct RegistryEntry { static constexpr int index = Index; };
+DOCTEST_TYPE_TO_STRING_AS("fingerprint", RegistryEntry<0>);
+DOCTEST_TYPE_TO_STRING_AS("oldTown", RegistryEntry<1>);
+DOCTEST_TYPE_TO_STRING_AS("symmetricArena", RegistryEntry<2>);
+DOCTEST_TYPE_TO_STRING_AS("swamp", RegistryEntry<3>);
+DOCTEST_TYPE_TO_STRING_AS("tidalFlats", RegistryEntry<4>);
+DOCTEST_TYPE_TO_STRING_AS("river", RegistryEntry<5>);
+DOCTEST_TYPE_TO_STRING_AS("isles", RegistryEntry<6>);
+DOCTEST_TYPE_TO_STRING_AS("ringWorld", RegistryEntry<7>);
+DOCTEST_TYPE_TO_STRING_AS("amphitheatre", RegistryEntry<8>);
+DOCTEST_TYPE_TO_STRING_AS("shatteredCoast", RegistryEntry<9>);
+DOCTEST_TYPE_TO_STRING_AS("craterLakes", RegistryEntry<10>);
+DOCTEST_TYPE_TO_STRING_AS("fjordContinent", RegistryEntry<11>);
+DOCTEST_TYPE_TO_STRING_AS("spiderWeb", RegistryEntry<12>);
+DOCTEST_TYPE_TO_STRING_AS("concreteIslands", RegistryEntry<13>);
+DOCTEST_TYPE_TO_STRING_AS("watershed", RegistryEntry<14>);
+DOCTEST_TYPE_TO_STRING_AS("maze", RegistryEntry<15>);
+DOCTEST_TYPE_TO_STRING_AS("islands", RegistryEntry<16>);
+DOCTEST_TYPE_TO_STRING_AS("stoneHighlands", RegistryEntry<17>);
+DOCTEST_TYPE_TO_STRING_AS("switchbacks", RegistryEntry<18>);
+DOCTEST_TYPE_TO_STRING_AS("cityStates", RegistryEntry<19>);
+DOCTEST_TYPE_TO_STRING_AS("canals", RegistryEntry<20>);
+DOCTEST_TYPE_TO_STRING_AS("sierpinskiGardens", RegistryEntry<21>);
+DOCTEST_TYPE_TO_STRING_AS("hilbertRiver", RegistryEntry<22>);
+DOCTEST_TYPE_TO_STRING_AS("lavaShield", RegistryEntry<23>);
+DOCTEST_TYPE_TO_STRING_AS("honeycombIsle", RegistryEntry<24>);
+DOCTEST_TYPE_TO_STRING_AS("karstTowers", RegistryEntry<25>);
+DOCTEST_TYPE_TO_STRING_AS("bajada", RegistryEntry<26>);
+DOCTEST_TYPE_TO_STRING_AS("centralQuarry", RegistryEntry<27>);
+DOCTEST_TYPE_TO_STRING_AS("hiddenOasis", RegistryEntry<28>);
+DOCTEST_TYPE_TO_STRING_AS("drownedForest", RegistryEntry<29>);
+DOCTEST_TYPE_TO_STRING_AS("portageLakes", RegistryEntry<30>);
+DOCTEST_TYPE_TO_STRING_AS("orchardCommons", RegistryEntry<31>);
+DOCTEST_TYPE_TO_STRING_AS("lastTreeline", RegistryEntry<32>);
+DOCTEST_TYPE_TO_STRING_AS("gauntlet", RegistryEntry<33>);
+DOCTEST_TYPE_TO_STRING_AS("faultedCity", RegistryEntry<34>);
+DOCTEST_TYPE_TO_STRING_AS("comb", RegistryEntry<35>);
+DOCTEST_TYPE_TO_STRING_AS("encircledKingdom", RegistryEntry<36>);
+DOCTEST_TYPE_TO_STRING_AS("bastionKeys", RegistryEntry<37>);
+DOCTEST_TYPE_TO_STRING_AS("evenGround", RegistryEntry<38>);
+DOCTEST_TYPE_TO_STRING_AS("marchland", RegistryEntry<39>);
+DOCTEST_TYPE_TO_STRING_AS("whoAteTheMap", RegistryEntry<40>);
+DOCTEST_TYPE_TO_STRING_AS("ruggedArchipelago", RegistryEntry<41>);
+DOCTEST_TYPE_TO_STRING_AS("hungryMarches", RegistryEntry<42>);
+DOCTEST_TYPE_TO_STRING_AS("contestedCommons", RegistryEntry<43>);
+DOCTEST_TYPE_TO_STRING_AS("rainShadow", RegistryEntry<44>);
+DOCTEST_TYPE_TO_STRING_AS("everglades", RegistryEntry<45>);
+DOCTEST_TYPE_TO_STRING_AS("polder", RegistryEntry<46>);
+DOCTEST_TYPE_TO_STRING_AS("carousel", RegistryEntry<47>);
+DOCTEST_TYPE_TO_STRING_AS("oldGrowth", RegistryEntry<48>);
+DOCTEST_TYPE_TO_STRING_AS("anthill", RegistryEntry<49>);
+DOCTEST_TYPE_TO_STRING_AS("coral", RegistryEntry<50>);
+DOCTEST_TYPE_TO_STRING_AS("emoji", RegistryEntry<51>);
+DOCTEST_TYPE_TO_STRING_AS("forts", RegistryEntry<52>);
+DOCTEST_TYPE_TO_STRING_AS("braidedDelta", RegistryEntry<53>);
+DOCTEST_TYPE_TO_STRING_AS("breachableHighlands", RegistryEntry<54>);
+DOCTEST_TYPE_TO_STRING_AS("hedgerowCountry", RegistryEntry<55>);
+DOCTEST_TYPE_TO_STRING_AS("glacis", RegistryEntry<56>);
+DOCTEST_TYPE_TO_STRING_AS("allotments", RegistryEntry<57>);
+DOCTEST_TYPE_TO_STRING_AS("caravanserai", RegistryEntry<58>);
+DOCTEST_TYPE_TO_STRING_AS("braidedRiver", RegistryEntry<59>);
+DOCTEST_TYPE_TO_STRING_AS("drumlinField", RegistryEntry<60>);
+DOCTEST_TYPE_TO_STRING_AS("continents", RegistryEntry<61>);
+DOCTEST_TYPE_TO_STRING_AS("savannah", RegistryEntry<62>);
+DOCTEST_TYPE_TO_STRING_AS("hills", RegistryEntry<63>);
+DOCTEST_TYPE_TO_STRING_AS("riceTerraces", RegistryEntry<64>);
+DOCTEST_TYPE_TO_STRING_AS("locust", RegistryEntry<65>);
+DOCTEST_TYPE_TO_STRING_AS("plantations", RegistryEntry<66>);
+DOCTEST_TYPE_TO_STRING_AS("uniform", RegistryEntry<67>);
+
+TEST_CASE_TEMPLATE("default generation repeatability rectangles and rejection [slow][map-generators]", Entry,
+    RegistryEntry<0>,
+    RegistryEntry<1>,
+    RegistryEntry<2>,
+    RegistryEntry<3>,
+    RegistryEntry<4>,
+    RegistryEntry<5>,
+    RegistryEntry<6>,
+    RegistryEntry<7>,
+    RegistryEntry<8>,
+    RegistryEntry<9>,
+    RegistryEntry<10>,
+    RegistryEntry<11>,
+    RegistryEntry<12>,
+    RegistryEntry<13>,
+    RegistryEntry<14>,
+    RegistryEntry<15>,
+    RegistryEntry<16>,
+    RegistryEntry<17>,
+    RegistryEntry<18>,
+    RegistryEntry<19>,
+    RegistryEntry<20>,
+    RegistryEntry<21>,
+    RegistryEntry<22>,
+    RegistryEntry<23>,
+    RegistryEntry<24>,
+    RegistryEntry<25>,
+    RegistryEntry<26>,
+    RegistryEntry<27>,
+    RegistryEntry<28>,
+    RegistryEntry<29>,
+    RegistryEntry<30>,
+    RegistryEntry<31>,
+    RegistryEntry<32>,
+    RegistryEntry<33>,
+    RegistryEntry<34>,
+    RegistryEntry<35>,
+    RegistryEntry<36>,
+    RegistryEntry<37>,
+    RegistryEntry<38>,
+    RegistryEntry<39>,
+    RegistryEntry<40>,
+    RegistryEntry<41>,
+    RegistryEntry<42>,
+    RegistryEntry<43>,
+    RegistryEntry<44>,
+    RegistryEntry<45>,
+    RegistryEntry<46>,
+    RegistryEntry<47>,
+    RegistryEntry<48>,
+    RegistryEntry<49>,
+    RegistryEntry<50>,
+    RegistryEntry<51>,
+    RegistryEntry<52>,
+    RegistryEntry<53>,
+    RegistryEntry<54>,
+    RegistryEntry<55>,
+    RegistryEntry<56>,
+    RegistryEntry<57>,
+    RegistryEntry<58>,
+    RegistryEntry<59>,
+    RegistryEntry<60>,
+    RegistryEntry<61>,
+    RegistryEntry<62>,
+    RegistryEntry<63>,
+    RegistryEntry<64>,
+    RegistryEntry<65>,
+    RegistryEntry<66>,
+    RegistryEntry<67>)
+{
+    DefaultsFixture fixture;
+    const auto methods = GeneratorRegistry::builtins().methods();
+    REQUIRE(methods.size() == 68);
+    MapGeneratorDefaultsTest::defaultGenerationContract(methods[Entry::index]);
+}
+
+TEST_SUITE("MapGeneratorRegistry")
+{
+    TEST_CASE("catalog generation contracts [slow][map-generators]")
+    {
+        DefaultsFixture fixture;
+        MapGeneratorDefaultsTest::globalsInit();
+        GeneratorContracts::generatorContracts();
+    }
+    TEST_CASE("framework contracts [slow][map-generators]")
+    {
+        DefaultsFixture fixture;
+        MapGeneratorDefaultsTest::globalsInit();
+        frameworkChecks();
+    }
+    TEST_CASE("landscape contracts [slow][map-generators]")
+    {
+        DefaultsFixture fixture;
+        MapGeneratorDefaultsTest::globalsInit();
+        LandscapeChecks::landscapeChecks();
+    }
+    TEST_CASE("stress rejection and registration contracts [slow][map-generators]")
+    {
+        DefaultsFixture fixture;
+        MapGeneratorDefaultsTest::globalsInit();
+        MapGeneratorDefaultsTest::generationContracts();
+    }
+    TEST_CASE("water algae distribution [slow][map-generators]")
+    {
+        DefaultsFixture fixture;
+        MapGeneratorDefaultsTest::globalsInit();
+        MapGeneratorDefaultsTest::scatterAlgaeOnWater();
+    }
 }

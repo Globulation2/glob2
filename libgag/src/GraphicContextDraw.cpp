@@ -48,7 +48,7 @@ namespace GAGCore
                     vertices.reserve(quads.size() * 6);
                     for (const auto &quad : quads)
                     {
-                        const SDL_Color color{quad.color.r, quad.color.g, quad.color.b, 255};
+                        const SDL_FColor color{quad.color.r / 255.0f, quad.color.g / 255.0f, quad.color.b / 255.0f, 1.0f};
                         const SDL_Vertex a{{quad.x, quad.y}, color, {}},
                                          b{{quad.x + quad.w, quad.y}, color, {}},
                                          c{{quad.x + quad.w, quad.y + quad.h}, color, {}},
@@ -133,6 +133,8 @@ namespace GAGCore
 
 	void GraphicContext::beginMapTransform(float zoom,float x,float y,int cx,int cy,int cw,int ch)
 	{
+		if (renderBatch)
+			renderBatch->stateChange();
         if (zoom!=1 || x!=0 || y!=0) beginSoftwareTransform();
         if (renderer) {
             assert(!mapTransformActive);
@@ -150,6 +152,8 @@ namespace GAGCore
 	}
 	void GraphicContext::endMapTransform()
 	{
+		if (renderBatch)
+			renderBatch->stateChange();
         if (renderer) { renderer->transform(1,0,0,nullptr); mapTransformActive=false; mapScale=1; endSoftwareTransform(); setClipRect(); return; }
 #ifdef HAVE_OPENGL
 		if(!mapTransformActive)return;
@@ -160,6 +164,8 @@ namespace GAGCore
 
     void GraphicContext::drawMapCopies(int pw,int ph,int vw,int vh,const std::function<void()> &draw)
     {
+		if (renderBatch)
+			renderBatch->stateChange();
 		if (renderer) prepareDraw();
         draw();
         if (renderer && pw>0 && ph>0) {
@@ -213,7 +219,7 @@ namespace GAGCore
         {
             const float x=left/raster, y=top/raster;
             const float rightEdge=(right+stroke)/raster, bottomEdge=(bottom+stroke)/raster;
-            const SDL_Color ink{color.r,color.g,color.b,color.a};
+            const SDL_FColor ink{(color.r) / 255.0f, (color.g) / 255.0f, (color.b) / 255.0f, (color.a) / 255.0f};
             const SDL_Vertex a{{x,y},ink,{}}, b{{rightEdge,y},ink,{}},
                              c{{rightEdge,bottomEdge},ink,{}}, d{{x,bottomEdge},ink,{}};
             const SDL_Vertex vertices[]{a,b,c,a,c,d};
@@ -228,6 +234,8 @@ namespace GAGCore
 
     void GraphicContext::beginScreenOverlay(int &x,int &y,int &sx,int &sy,int &sw,int &sh)
     {
+		if (renderBatch)
+			renderBatch->stateChange();
         if (renderer && mapTransformActive) {
             x=x*mapScale+mapTranslateX; y=y*mapScale+mapTranslateY;
             sx=mapClipX; sy=mapClipY; sw=mapClipW; sh=mapClipH;
@@ -245,6 +253,8 @@ namespace GAGCore
     }
     void GraphicContext::endScreenOverlay()
     {
+		if (renderBatch)
+			renderBatch->stateChange();
         if (renderer && mapTransformActive) {
             mapScale=overlayScale; SDL_Rect bounds{mapClipX,mapClipY,mapClipW,mapClipH};
             renderer->transform(mapScale,mapTranslateX,mapTranslateY,&bounds); return;
@@ -259,6 +269,8 @@ namespace GAGCore
 	// transform does not scale the way it scales filled geometry.
 	void GraphicContext::setScaledLineWidth(float width)
 	{
+		if (renderBatch)
+			renderBatch->barrier();
 		#ifdef HAVE_OPENGL
 		glLineWidth(width * rasterScale() * mapScale);
 		#endif
@@ -266,17 +278,19 @@ namespace GAGCore
 
 	void GraphicContext::setClipRect(int x, int y, int w, int h)
 	{
+		if (renderBatch)
+			renderBatch->stateChange();
 #ifdef HAVE_OPENGL
         if (uiTransformActive && !renderer && (optionFlags & USEGPU)) {
             SDL_Rect transformed{int(std::floor(x*uiTransformScale+uiTransformX)),int(std::floor(y*uiTransformScale+uiTransformY)),
                 int(std::ceil(w*uiTransformScale)),int(std::ceil(h*uiTransformScale))};
-            SDL_Rect clipped{}; SDL_IntersectRect(&transformed,&uiBounds,&clipped);
+            SDL_Rect clipped{}; SDL_GetRectIntersection(&transformed,&uiBounds,&clipped);
             x=clipped.x;y=clipped.y;w=clipped.w;h=clipped.h;
         }
 #endif
 		if(mapTransformActive){x=mapClipX;y=mapClipY;w=mapClipW;h=mapClipH;}
 		DrawableSurface::setClipRect(x, y, w, h);
-		if (nativeSoftware) SDL_SetClipRect(sdlsurface, nullptr);
+		if (nativeSoftware) SDL_SetSurfaceClipRect(sdlsurface, nullptr);
         if (renderer) renderer->clip(mapTransformActive ? nullptr : &clipRect);
 		#ifdef HAVE_OPENGL
 		if (_gc->optionFlags & GraphicContext::USEGPU)
@@ -309,6 +323,8 @@ namespace GAGCore
 
 	void GraphicContext::setClipRect(void)
 	{
+		if (renderBatch)
+			renderBatch->stateChange();
 #ifdef HAVE_OPENGL
         if (uiTransformActive && !renderer && (optionFlags & USEGPU)) {
             uiTransformActive=false;
@@ -364,6 +380,22 @@ namespace GAGCore
 
 	void GraphicContext::drawRect(float x, float y, float w, float h, const Color& color)
 	{
+		if (renderBatch && renderBatch->active())
+		{
+			std::array<QueueVertex, 8> v{};
+			float xx[8] = {x, x + w, x + w, x + w, x + w, x, x, x},
+				  yy[8] = {y, y, y, y + h, y + h, y + h, y + h, y};
+			for (int i = 0; i < 8; ++i)
+			{
+				v[i].x = xx[i];
+				v[i].y = yy[i];
+				v[i].color = color;
+			}
+			renderBatch->append(
+				{QueueKey::Outline, 0, 0, false, false, true, rasterScale() * mapScale}, v, 8);
+			return;
+		}
+
 		if (renderer) prepareDraw();
         if (renderer) {
             if (w <= 0 || h <= 0) return;
@@ -414,6 +446,23 @@ namespace GAGCore
 
 	void GraphicContext::drawFilledRect(float x, float y, float w, float h, const Color& color)
 	{
+		if (renderBatch && renderBatch->active())
+		{
+			std::array<QueueVertex, 8> v{};
+			float xx[8] = {x, x + w, x + w, x, x + w, x + w, x, x},
+				  yy[8] = {y, y, y + h, y + h, y, y + h, y + h, y};
+			for (int i = 0; i < 4; ++i)
+			{
+				v[i].x = xx[i];
+				v[i].y = yy[i];
+				v[i].color = color;
+			}
+			renderBatch->append(
+				{QueueKey::FilledQuad, 0, 0, false, false, color.a < 255, rasterScale() * mapScale},
+				v, 4);
+			return;
+		}
+
         if (rectangleBatch.owns(this))
         {
             if (renderer && (w <= 0 || h <= 0)) return;
@@ -461,6 +510,8 @@ namespace GAGCore
 
 	void GraphicContext::drawLine(int x1, int y1, int x2, int y2, const Color& color)
 	{
+		if (renderBatch)
+			renderBatch->barrier();
 		if (renderer) prepareDraw();
         if (renderer) { drawLine(float(x1), float(y1), float(x2), float(y2), color); return; }
 		#ifdef HAVE_OPENGL
@@ -473,12 +524,14 @@ namespace GAGCore
 
 	void GraphicContext::drawLine(float x1, float y1, float x2, float y2, const Color& color)
 	{
+		if (renderBatch)
+			renderBatch->barrier();
 		if (renderer) prepareDraw();
         if (renderer) {
             float dx=x2-x1, dy=y2-y1, length=std::hypot(dx,dy);
             if (length == 0) { drawPixel(x1,y1,color); return; }
             float nx=-dy/(2*length), ny=dx/(2*length);
-            SDL_Color c{color.r,color.g,color.b,color.a};
+            SDL_FColor c{(color.r) / 255.0f, (color.g) / 255.0f, (color.b) / 255.0f, (color.a) / 255.0f};
             SDL_Vertex a{{x1+nx,y1+ny},c,{0,0}}, b{{x2+nx,y2+ny},c,{0,0}}, d{{x1-nx,y1-ny},c,{0,0}}, e{{x2-nx,y2-ny},c,{0,0}};
             const SDL_Vertex vertices[] = {a,b,e,a,e,d};
             renderer->triangles(vertices); return;
@@ -536,6 +589,8 @@ namespace GAGCore
 
 	void GraphicContext::drawCircle(int x, int y, int radius, const Color& color)
 	{
+		if (renderBatch)
+			renderBatch->barrier();
 		if (renderer) prepareDraw();
         if (renderer) { drawCircle(float(x), float(y), float(radius), color); return; }
 		#ifdef HAVE_OPENGL
@@ -548,6 +603,8 @@ namespace GAGCore
 
 	void GraphicContext::drawCircle(float x, float y, float radius, const Color& color)
 	{
+		if (renderBatch)
+			renderBatch->barrier();
 		if (renderer) prepareDraw();
         if (renderer) {
             if (radius <= 0) return;
@@ -609,6 +666,8 @@ namespace GAGCore
 
 	void GraphicContext::drawLine(int x1, int y1, int x2, int y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 	{
+		if (renderBatch)
+			renderBatch->barrier();
 		drawLine(x1, y1, x2, y2, Color(r, g, b, a));
 	}
 
@@ -661,6 +720,8 @@ namespace GAGCore
 
 	void GraphicContext::drawCircle(int x, int y, int radius, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 	{
+		if (renderBatch)
+			renderBatch->barrier();
 		drawCircle(x, y, radius, Color(r, g, b, a));
 	}
 }

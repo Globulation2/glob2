@@ -439,6 +439,89 @@ describe('administration', () => {
     expect(audit[3]!.actor_account_id).toBe(id(boss));
   });
 
+  it('deletes accounts from the CLI and the admin API, freeing the username', async () => {
+    const register = async (username: string) =>
+      json(
+        await postJson(`${api.url}/api/v1/auth/local/register`, {
+          username,
+          password: 'a long password',
+          displayName: username,
+          platform: 'desktop',
+        }),
+      );
+    const id = (session: Record<string, unknown>) => (session['account'] as { id: string }).id;
+    const token = (session: Record<string, unknown>) =>
+      (session['tokens'] as { accessToken: string }).accessToken;
+    const io = {
+      lines: [] as string[],
+      out: (l: string) => io.lines.push(l),
+      err: (l: string) => io.lines.push(l),
+    };
+    const env = { DATABASE_URL: harness.database.url };
+    const chief = await register('chief');
+    expect(await runCli(['admin', 'grant', id(chief)], io, env)).toBe(0);
+
+    // A test account with a catalog map, deleted from the server's command line.
+    const tester = await register('UxReviewTester');
+    const map = await json(
+      await postJson(
+        `${api.url}/api/v1/maps`,
+        { title: 'Test map (please ignore)', visibility: 'unlisted' },
+        bearer(token(tester)),
+      ),
+    );
+    expect(
+      await runCli(['admin', 'delete', 'UxReviewTester', '--reason', 'test data'], io, env),
+    ).toBe(0);
+    expect(io.lines.at(-1)).toMatch(
+      /^deleted UxReviewTester \(.*registered\); removed 1 catalog map/,
+    );
+    expect(await runCli(['admin', 'delete', id(tester)], io, env)).toBe(1);
+    const row = await harness.database.db
+      .selectFrom('accounts')
+      .selectAll()
+      .where('id', '=', id(tester))
+      .executeTakeFirstOrThrow();
+    expect(row).toMatchObject({ status: 'deleted', display_name: 'Deleted player' });
+    expect((await fetch(`${api.url}/api/v1/maps/${map['id'] as string}`)).status).toBe(404);
+    expect(
+      (await fetch(`${api.url}/api/v1/accounts/me`, { headers: bearer(token(tester)) })).status,
+    ).toBe(401);
+    expect(
+      (
+        await postJson(`${api.url}/api/v1/auth/local/sign-in`, {
+          username: 'UxReviewTester',
+          password: 'a long password',
+          platform: 'desktop',
+        })
+      ).status,
+    ).toBe(401);
+    // The username can be registered again.
+    expect(id(await register('UxReviewTester'))).not.toBe(id(tester));
+
+    // A guest, deleted by an administrator over the API.
+    const guest = await json(
+      await postJson(`${api.url}/api/v1/auth/guest`, { platform: 'desktop' }),
+    );
+    const remove = (who: Record<string, unknown>, target: string) =>
+      fetch(`${api.url}/api/v1/admin/accounts/${target}?reason=test`, {
+        method: 'DELETE',
+        headers: bearer(token(who)),
+      });
+    expect((await remove(guest, id(chief))).status).toBe(403);
+    expect((await remove(chief, id(chief))).status).toBe(403);
+    expect((await remove(chief, id(guest))).status).toBe(204);
+    expect((await remove(chief, id(guest))).status).toBe(404);
+    const audit = await harness.database.db
+      .selectFrom('admin_audit_log')
+      .select(['action', 'details'])
+      .where('target_id', 'in', [id(tester), id(guest)])
+      .orderBy('id')
+      .execute();
+    expect(audit.map((a) => a.action)).toEqual(['account.delete', 'account.delete']);
+    expect(audit[0]!.details).toMatchObject({ displayName: 'UxReviewTester', removedMaps: 1 });
+  });
+
   it('generates signing keys from the CLI', async () => {
     const io = {
       lines: [] as string[],

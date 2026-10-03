@@ -11,13 +11,18 @@
 //   OnlinePlayHarness quick <origin> <dir>   casual quick match (AI backfill)
 //
 // Environment (all optional):
-//   GLOB2_E2E_SUDDEN_DEATH   room sudden-death timer in minutes (default 1)
+//   GLOB2_E2E_SUDDEN_DEATH   room sudden-death timer in minutes (default 1; 0 = off)
+//   GLOB2_E2E_TEAMS          colonies of the room's generated map (default: the
+//                            room's own); seats nobody takes are closed at the start
+//   GLOB2_E2E_GUEST_SEAT     room seat the guest takes (default: the first open one)
 //   GLOB2_E2E_GUEST_LEAVE    when the guest leaves, in seconds of play (default 40;
 //                            0 = it stays until the game ends)
 //   GLOB2_E2E_LEAVE_BY       window (default: close the window) | menu (the in-game
 //                            Quit: a sequenced PlayerQuitsGameOrder, then results)
 //   GLOB2_E2E_QUICK_QUEUE    quick-match queue id (default: the first unrated queue)
 //   GLOB2_E2E_QUICK_LEAVE    seconds of quick-match play before leaving (default 45)
+//   GLOB2_E2E_PREMADE        host: a premade map file to play (e.g. maps/balanced_for_2.map.gz)
+//                            instead of the generated one; logs ROOM MAP and MATCH MAP
 //
 // Every stage is captured as <dir>/<role>-<stage>.bmp, and every line of the log is
 // prefixed with the role and the seconds since start. Controls are pressed by their
@@ -26,9 +31,11 @@
 #include "CustomGameSetup.h"
 #include "EndGameScreen.h"
 #include "Engine.h"
+#include "Environment.h"
 #include "GameSessionScreen.h"
 #include "GlobalContainer.h"
 #include "InstanceConfig.h"
+#include "MapHeader.h"
 #include "MatchStartScreen.h"
 #include "OnlineHubScreen.h"
 #include "OnlineMatch.h"
@@ -107,14 +114,14 @@ bool press(ScreenStack &screens, const std::string &key, std::vector<SDL_Event> 
 		return false;
 	const auto r = node->bounds;
 	SDL_Event event{};
-	event.type = SDL_MOUSEBUTTONDOWN;
+	event.type = SDL_EVENT_MOUSE_BUTTON_DOWN;
 	event.button.button = SDL_BUTTON_LEFT;
-	event.button.state = SDL_PRESSED;
+	event.button.down = true;
 	event.button.x = r.x + r.w / 2;
 	event.button.y = r.y + r.h / 2;
 	events.push_back(event);
-	event.type = SDL_MOUSEBUTTONUP;
-	event.button.state = SDL_RELEASED;
+	event.type = SDL_EVENT_MOUSE_BUTTON_UP;
+	event.button.down = false;
 	events.push_back(event);
 	say("PRESS %s", key.c_str());
 	return true;
@@ -232,11 +239,14 @@ int play()
 		Done
 	} stage = Stage::SigningIn;
 	const int suddenDeath = envInt("GLOB2_E2E_SUDDEN_DEATH", 1);
+	const int teams = envInt("GLOB2_E2E_TEAMS", 0);
 	const int guestLeave = envInt("GLOB2_E2E_GUEST_LEAVE", 40);
 	const bool leaveByMenu = envText("GLOB2_E2E_LEAVE_BY", "window") == "menu";
 	const int quickLeave = envInt("GLOB2_E2E_QUICK_LEAVE", 45);
 	double stageAt = 0, lastShot = 0, lastKey = 0, lastLine = 0, endedAt = -1;
-	bool rulesSet = false, pressed = false, left = false;
+	bool rulesSet = false, pressed = false, left = false, seatsShown = false, seatLogged = false;
+	const std::string premade = envText("GLOB2_E2E_PREMADE", "");
+	std::string premadeTitle;
 	std::string code, lastPresence, lastPhase, matchId;
 	int rc = 0;
 	while (screens.running() && stage != Stage::Done)
@@ -312,18 +322,46 @@ int play()
 					CustomGameSetup setup;
 					backend.setupDraft(setup);
 					setup.suddenDeathMinutes = suddenDeath;
-					backend.applySetup(setup);
+					if (!premade.empty())
+					{
+						// A premade map, as "Change map… → Premade maps → Use in room" picks it.
+						const MapHeader header = Engine::loadMapHeader(premade);
+						premadeTitle = header.getMapName();
+						setup.random = false;
+						setup.premadeMap = premade;
+						setup.setCapacity(header.getNumberOfTeams());
+						auto *online = dynamic_cast<Online::PlatformRoom *>(&backend);
+						if (!online)
+						{
+							say("FAIL: not an online room");
+							rc = 1;
+							stage = Stage::Done;
+							break;
+						}
+						online->usePremadeMap(premade, premadeTitle, setup);
+						say("PREMADE %s (%s)", premade.c_str(), premadeTitle.c_str());
+					}
+					else
+					{
+						if (teams > 0)
+							setup.setCapacity(teams);
+						backend.applySetup(setup);
+					}
 					rulesSet = true;
 					std::ofstream(dir + "/code") << backend.inviteCode() << "\n";
-					say("ROOM %s %s sudden death %d min", backend.inviteCode().c_str(), backend.inviteLink().c_str(), suddenDeath);
+					say("ROOM %s %s sudden death %d min, %d colonies", backend.inviteCode().c_str(), backend.inviteLink().c_str(),
+					    suddenDeath, setup.capacity);
 				}
 				if (!backend.mapStatus().empty() && now - lastShot > 5)
 				{
 					say("map: %s", backend.mapStatus().c_str());
 					lastShot = now;
 				}
+				if (!premade.empty() && backend.mapName() != premadeTitle)
+					break; // the upload and its validation are still running
 				if (backend.canStart() && now - stageAt > 3)
 				{
+					say("ROOM MAP %s", backend.mapName().c_str());
 					capture("room");
 					room->selectTab(RoomScreen::MapTab);
 					stage = Stage::Ready;
@@ -332,13 +370,21 @@ int play()
 			}
 			else if (now - stageAt > 3)
 			{
-				// Take the first open seat, then Ready.
+				// Joining by invite seats this client in the first open seat; take one
+				// only if not (an older server), or move to the seat asked for. Then Ready.
+				const int wantedSeat = envInt("GLOB2_E2E_GUEST_SEAT", -1);
 				for (const auto &slot : backend.slots())
-					if (slot.local)
+					if (slot.local && (wantedSeat < 0 || slot.index == wantedSeat))
 						pressed = true;
+				if (!seatLogged)
+				{
+					say("SEAT %s", pressed ? "auto-seated on join" : "not seated on join");
+					capture("room-joined");
+					seatLogged = true;
+				}
 				if (!pressed)
 					for (const auto &slot : backend.slots())
-						if (backend.canTakeSeat(slot))
+						if (backend.canTakeSeat(slot) && (wantedSeat < 0 || slot.index == wantedSeat))
 						{
 							backend.takeSeat(slot.index);
 							pressed = true;
@@ -417,6 +463,8 @@ int play()
 					rc = 1;
 					stage = Stage::Done;
 				}
+				if (matchId.empty())
+					say("MATCH MAP %s", start->match().mapTitle().c_str());
 				matchId = start->match().matchId();
 			}
 			else if (top<GameSessionScreen>(screens))
@@ -433,6 +481,21 @@ int play()
 			Engine *engine = session ? session->runningEngine() : nullptr;
 			if (engine)
 			{
+				if (!seatsShown && engine->gui.game.stepCounter > 50)
+				{
+					// Who plays which colony, and which colonies are closed (no player).
+					seatsShown = true;
+					auto &game = engine->gui.game;
+					std::string teams;
+					for (int t = 0; t < game.mapHeader.getNumberOfTeams(); ++t)
+						teams += " team" + std::to_string(t) + "=" +
+								 (game.teams[t]->playersMask == 0 ? "closed" : game.teams[t]->isAlive ? "alive" : "dead") +
+								 (game.teams[t]->hasLost ? "/lost" : "");
+					say("SEATS local seat %d team %d, %d players;%s", engine->turnSession() ? engine->turnSession()->localSeat() : -1,
+						engine->gui.localTeamNo, game.gameHeader.getNumberOfPlayers(), teams.c_str());
+				}
+				if (lastLine == 0)
+					say("GAME MAP %s (%d teams)", engine->gui.game.mapHeader.getMapName().c_str(), engine->gui.game.mapHeader.getNumberOfTeams());
 				const std::string line = gameLine(*engine);
 				// The other seats' states without the grace countdown.
 				std::string presence;
@@ -475,7 +538,7 @@ int play()
 				{
 					say("LEAVE by closing the window after %.1f s of play", now - stageAt);
 					SDL_Event quit{};
-					quit.type = SDL_QUIT;
+					quit.type = SDL_EVENT_QUIT;
 					events.push_back(quit);
 				}
 			}
@@ -485,11 +548,13 @@ int play()
 			{
 				lastKey = now;
 				SDL_Event key{};
-				key.type = SDL_KEYDOWN;
-				key.key.keysym.sym = SDLK_RETURN;
-				key.key.keysym.scancode = SDL_SCANCODE_RETURN;
+				key.type = SDL_EVENT_KEY_DOWN;
+				key.key.key = SDLK_RETURN;
+				key.key.scancode = SDL_SCANCODE_RETURN;
+				key.key.down = true;
 				events.push_back(key);
-				key.type = SDL_KEYUP;
+				key.type = SDL_EVENT_KEY_UP;
+				key.key.down = false;
 				events.push_back(key);
 			}
 			if (top<EndGameScreen>(screens))
@@ -582,8 +647,10 @@ int main(int argc, char **argv)
 	role = argv[1];
 	dir = argv[3];
 	std::filesystem::create_directories(dir);
-	SDL_setenv("SDL_AUDIODRIVER", "dummy", 0);
-	SDL_setenv("GLOB2_USER_DIR", (std::filesystem::absolute(dir) / ("profile-" + role)).string().c_str(), 1);
+	GAGCore::setProcessEnvironment("SDL_AUDIODRIVER", "dummy", 0);
+	const std::string profileDir = (std::filesystem::absolute(dir) / ("profile-" + role)).string();
+	GAGCore::setProcessEnvironment("GLOB2_USER_DIR", profileDir.c_str(), 1);
+	GAGCore::setProcessEnvironment("GLOB2_USER_DATA_DIR", profileDir.c_str(), 1);
 	GlobalContainer globals;
 	globalContainer = &globals;
 	GAGCore::Toolkit::close();

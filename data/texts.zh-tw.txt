@@ -1506,8 +1506,8 @@ AI策略與對抗
 沙地權重
 [Select a valid map.]
 選擇有效的地圖。
-[Shared control needs a free controller slot (maximum 12).]
-共同操控需要一個空餘的操控者名額（最多12個）。
+[Shared control needs a free controller slot (maximum %0).]
+共同操控需要一個空餘的操控者名額（最多%0個）。
 [Smoothing]
 平滑
 [Standard]
@@ -1726,8 +1726,8 @@ AI策略與對抗
 完成
 [settings Edit shortcut]
 編輯快捷鍵
-[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
-在高解析度螢幕上放大選單、文字與側邊欄。
+[settings Multiply the operating system display scale for menus, text and the sidebar.]
+將作業系統的顯示縮放比例套用倍率至選單、文字和側邊欄。
 [settings Flags]
 旗幟
 [settings Full]
@@ -3144,8 +3144,6 @@ Emoji
 快轉
 [Hide keyboard]
 隱藏鍵盤
-[Dialog text size]
-對話框文字大小
 [Player slot]
 玩家欄位
 [Team color]
@@ -3484,8 +3482,6 @@ CPU %0%
 最小等級需求: %0
 [Confirm %0]
 確定: %0
-[Dialog text size %0]
-對話框文字大小: %0%
 [%0 %1]
 %0 %1
 [resume game]
@@ -3638,9 +3634,13 @@ CPU %0%
 
 [Custom rules]
 
-[conn ai everywhere]
-
 [conn ai]
+
+[conn behind %0]
+
+[conn behind explanation %0 %1]
+
+[conn behind]
 
 [conn card catching up]
 
@@ -3664,19 +3664,21 @@ CPU %0%
 
 [conn card seconds left %0]
 
-[conn connected]
-
 [conn connections]
 
-[conn delay explanation]
+[conn delay explanation %0 %1]
 
-[conn latency]
+[conn fair]
+
+[conn good]
+
+[conn grid legend]
+
+[conn jitter %0]
 
 [conn leave match]
 
 [conn left]
-
-[conn lost]
 
 [conn notice back %0]
 
@@ -3684,11 +3686,17 @@ CPU %0%
 
 [conn notice lost %0 %1]
 
+[conn ping explanation %0 %1]
+
+[conn ping]
+
 [conn players]
+
+[conn poor]
 
 [conn reconnecting]
 
-[conn relay %0 %1]
+[conn relay %0]
 
 [conn resyncing]
 
@@ -3701,6 +3709,8 @@ CPU %0%
 [conn you %0]
 
 [conn you]
+
+[conn your delay %0]
 
 [hub account menu]
 
@@ -4184,6 +4194,8 @@ CPU %0%
 
 [qm 1 vs 1]
 
+[qm ping about]
+
 [qm ranked]
 
 [qm casual %0]
@@ -4211,8 +4223,6 @@ CPU %0%
 [qm find match]
 
 [qm opponents rated %0 to %1]
-
-[qm region %0 relay %1 ms]
 
 [qm region %0]
 
@@ -4629,4 +4639,58 @@ CPU %0%
 [hub full leaderboard]
 
 [settings %0 is no longer linked.]
+
+[room map read failed]
+
+[room map upload failed]
+
+[room map upload failed %0]
+
+[room uploading map]
+
+[room premade map shared]
+
+[room take a seat to play]
+
+[room waiting for a seat]
+
+[room not seated]
+
+[room copied]
+
+[room copy failed]
+
+[room closed title]
+
+[room removed title]
+
+[room back to online]
+
+[leave match]
+
+[leave match title]
+
+[leave lan title]
+
+[leave rated body]
+
+[leave casual body]
+
+[leave room body]
+
+[leave lan body]
+
+[leave match confirm]
+
+[keep playing]
+
+[results team]
+
+[results quick unrated]
+
+[conn card cannot keep up]
+
+[conn card cannot keep up body]
+
+[conn card not gaining]
 

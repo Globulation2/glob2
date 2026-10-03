@@ -59,7 +59,11 @@ if (!existsSync(join(dist, 'index.html'))) {
 const harness = await createHarness();
 const api = await harness.start({
   origin,
-  instance: { name: 'Glob2 Online (test)', queues: SEEDED_QUEUES },
+  instance: {
+    name: 'Glob2 Online (test)',
+    queues: SEEDED_QUEUES,
+    auth: { providers: [], local: { enabled: true } },
+  },
 });
 const replayFixture = join(repo, 'browser/tests/fixtures/cross-replay.replay');
 const seed = await seedHistory(harness.database.db, harness.blobs, {

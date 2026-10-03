@@ -164,7 +164,13 @@ host schedules frames itself and records neither.
 - **Platform:** the match-end intake stores each seat's entry in
   `match_participants.network` (migration 0009); `MatchDetail.network` condenses it
   for the match page's connection panel
-  ([history and web](../multiplayer/history-and-web.md)).
+  ([history and web](../multiplayer/history-and-web.md)). Its words and thresholds
+  (Ping, Behind, Good/Fair/Poor) are the shared table that the in-game panel uses too
+  ([connection quality](../multiplayer/connection-quality.md)).
+- **Live, in game:** the relay also sends each seat's smoothed round trip to version-2
+  clients (`SeatLatency`) for the connection panel. That is a live display, not
+  telemetry. The quick-match card's region probe round trip is an estimate made before
+  the relay is chosen.
 - **Client context:** online clients take `networkKind = "online"`, `relayId` and
   `relayRegion` from `MatchAssignment` (`relayId`/`relayRegion` are optional there;
   `glob2 --turn-client` reads them).

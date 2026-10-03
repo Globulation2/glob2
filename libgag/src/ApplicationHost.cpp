@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <ApplicationHost.h>
+#include <EventQueue.h>
 #include <BrowserTextInput.h>
 #ifndef YOG_SERVER_ONLY
 #include <GraphicContext.h>
 #endif
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>
 #endif
@@ -20,7 +21,7 @@ void run(std::unique_ptr<Loop> loop, std::function<void()> complete)
 {
 	for (;;)
 	{
-		std::vector<SDL_Event> events;
+		GAGCore::EventQueue events;
 		SDL_Event event;
 #ifdef YOG_SERVER_ONLY
 		while (SDL_PollEvent(&event))
@@ -28,7 +29,7 @@ void run(std::unique_ptr<Loop> loop, std::function<void()> complete)
 		while (GraphicContext::pollEvent(&event))
 #endif
 			events.push_back(event);
-		if (!loop->frame(SDL_GetTicks(), events))
+		if (!loop->frame(SDL_GetTicks(), events.events()))
 			break;
 		wait(loop->delay(SDL_GetTicks()));
 	}
@@ -41,6 +42,7 @@ void wait(std::uint32_t milliseconds)
 	if (milliseconds)
 		SDL_Delay(milliseconds);
 }
+void initializeOpenGLContext() {}
 bool takeVisibilityChange(bool &)
 {
 	return false;
@@ -95,11 +97,11 @@ bool openUrl(const std::string &url)
 {
 	if (url.rfind("https://", 0) != 0 && url.rfind("http://", 0) != 0)
 		return false;
-#if SDL_VERSION_ATLEAST(2, 0, 14)
-	return SDL_OpenURL(url.c_str()) == 0;
-#else
-	return false;
-#endif
+	return SDL_OpenURL(url.c_str());
+}
+bool copyText(const std::string &text)
+{
+	return SDL_SetClipboardText(text.c_str()) == 0;
 }
 void importChanged(const char *) {}
 void screenChanged(const char *name) {

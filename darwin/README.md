@@ -9,3 +9,10 @@ client without OpenSSL or Boost.Beast.
 The release bundle includes campaigns, maps, data, scripts, the project license
 and third-party asset attribution. Its Info.plist version is set from the SCons
 package version before the bundle is signed.
+
+Release `bundle` and `package` builds require CMake and Homebrew codec dependencies
+for the pinned PNG/JPEG/WebP SDL_image build. Assets are exported to smaller verified
+encodings, dylib aliases retain one canonical copy, and the release executable is
+stripped after its matching dSYM is retained under the build's `symbols/` directory.
+Keep that directory with release evidence; it is not included in the app or DMG.
+See [release asset and bundle sizes](../docs/development/reference.md#release-asset-and-bundle-sizes).

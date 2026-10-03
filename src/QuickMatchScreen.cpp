@@ -10,6 +10,7 @@
 #include "OnlineServices.h"
 #include "PlatformClient.h"
 #include "QuickMatch.h"
+#include "gui/ConnectionQuality.h"
 #include "ui/OnlineUI.h"
 
 #include <ScreenStack.h>
@@ -229,15 +230,20 @@ Element QuickMatchScreen::searchPanel(const Presentation &p, bool phone)
 								{p.pt(6), CrossAlign::Center}));
 	};
 	std::string range, region;
+	// The region probe's round trip is an estimate of the match's Ping (the relay is
+	// picked later), so it reads "ping about 42 ms · Good".
+	auto estimate = [](int ms) {
+		return ConnectionQuality::labelled(tr("[qm ping about]"),
+		                                   ConnectionQuality::Metric::Ping, ms, [](const char *key) { return tr(key); });
+	};
 	if (status && status->ratingMin && status->ratingMax)
 		range = FormattableString(tr("[qm opponents rated %0 to %1]")).arg(*status->ratingMin).arg(*status->ratingMax);
 	if (status && !status->region.empty())
-		region = status->rttMs ? FormattableString(tr("[qm region %0 relay %1 ms]")).arg(status->region).arg(*status->rttMs)
-							   : FormattableString(tr("[qm region %0]")).arg(status->region);
+		region = FormattableString(tr("[qm region %0]")).arg(status->region) +
+				 (status->rttMs ? " \xC2\xB7 " + estimate(*status->rttMs) : std::string());
 	else if (!model.regions().empty())
-		region = FormattableString(tr("[qm region %0 relay %1 ms]"))
-					 .arg(model.regions().front().region)
-					 .arg(model.regions().front().rttMs);
+		region = FormattableString(tr("[qm region %0]")).arg(model.regions().front().region) + " \xC2\xB7 " +
+				 estimate(model.regions().front().rttMs);
 
 	std::string phaseText = tr("[qm searching]");
 	if (model.phase() == QuickMatch::Phase::Probing)
@@ -289,7 +295,7 @@ Element QuickMatchScreen::searchPanel(const Presentation &p, bool phone)
 			right.push_back(caption(std::to_string(*status->ratingMin) + "\xE2\x80\x93" + std::to_string(*status->ratingMax), false));
 		if (!region.empty())
 			right.push_back(caption(status && !status->region.empty()
-										? status->region + (status->rttMs ? " \xC2\xB7 " + std::to_string(*status->rttMs) + " ms" : "")
+										? status->region + (status->rttMs ? " \xC2\xB7 " + estimate(*status->rttMs) : "")
 										: region));
 		std::vector<Element> parts{
 			caption(phaseText + " \xC2\xB7 " + queueTitle(queue), false),
@@ -568,7 +574,10 @@ Element MatchFoundScreen::build(const Presentation &p)
 		regionText = FormattableString(tr("[qm region %0]")).arg(proposal->region);
 		for (const auto &r : model.regions())
 			if (r.region == proposal->region)
-				regionText = FormattableString(tr("[qm region %0 relay %1 ms]")).arg(r.region).arg(r.rttMs);
+				regionText = FormattableString(tr("[qm region %0]")).arg(r.region) + " \xC2\xB7 " +
+							 ConnectionQuality::labelled(tr("[qm ping about]"),
+														 ConnectionQuality::Metric::Ping, r.rttMs,
+														 [](const char *key) { return tr(key); });
 	}
 
 	// Sides: own side first.

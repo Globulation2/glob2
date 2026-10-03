@@ -83,6 +83,7 @@ GAGCore::CooperativeTask GameGUI::loadFromStreamTask(MapHeader mapHeader, GameHe
 GAGCore::CooperativeTask GameGUI::loadTask(GAGCore::InputStream *stream, bool ignoreGUIData)
 {
 	co_await globalContainer->gameGraphicsTask();
+	GAGCore::BinaryInputStream::CheckedReads checked(stream);
 	init();
 
 	bool result = co_await game.loadTask(stream);
@@ -116,6 +117,12 @@ GAGCore::CooperativeTask GameGUI::loadTask(GAGCore::InputStream *stream, bool ig
 
 			localPlayer = stream->readSint32("localPlayer");
 			localTeamNo = stream->readSint32("localTeamNo");
+			if (localPlayer < 0 || localPlayer >= game.gameHeader.getNumberOfPlayers() ||
+				localTeamNo < 0 || localTeamNo >= game.mapHeader.getNumberOfTeams())
+			{
+				std::cerr << "Invalid saved GUI player/team: " << localPlayer << "/" << localTeamNo << std::endl;
+				co_return false;
+			}
 
 			viewportX = stream->readSint32("viewportX");
 			viewportY = stream->readSint32("viewportY");

@@ -8,7 +8,7 @@
 // bot that queues ordinary orders, or by nobody; AI seats run locally as on every
 // client. Used for end-to-end tests of a deployed instance (docs/hosting/README.md).
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 #include <chrono>
 #include <filesystem>
@@ -24,6 +24,7 @@
 #include "Building.h"
 #include "BuildingType.h"
 #include "Engine.h"
+#include "Environment.h"
 #include "Game.h"
 #include "GameGUI.h"
 #include "GlobalContainer.h"
@@ -177,14 +178,14 @@ static int play(const Options& options, const fs::path& output)
 	auto elapsed = [&] { return std::chrono::duration<double>(std::chrono::steady_clock::now() - began).count(); };
 	std::cout << "turn-client: match " << matchId << " seat " << seat << " via " << relayUrl << std::endl;
 
-	engine.beginSession(SDL_GetTicks64());
+	engine.beginSession(SDL_GetTicks());
 	std::uint32_t ordersQueued = 0;
 	double lastReport = 0, firstTickAt = -1;
 	bool quitQueued = false, timedOut = false;
 	std::string endedBy = "engine";
 	for (;;)
 	{
-		const Uint64 now = SDL_GetTicks64();
+		const Uint64 now = SDL_GetTicks();
 		Turn::TurnSession& session = lockstep.turn();
 		const std::uint32_t before = session.executedTick();
 		const bool running = engine.stepSession(now);
@@ -316,7 +317,10 @@ int runTurnClient(int argc, char** argv)
 			throw Usage("--map and --out are required");
 		output = fs::absolute(options.out);
 		fs::create_directories(output / "profile");
-		SDL_setenv("GLOB2_USER_DIR", (output / "profile").string().c_str(), 1);
+		// Both profile variables, as the other headless commands set them (#554).
+		const std::string profileDir = (output / "profile").string();
+		GAGCore::setProcessEnvironment("GLOB2_USER_DIR", profileDir.c_str(), 1);
+		GAGCore::setProcessEnvironment("GLOB2_USER_DATA_DIR", profileDir.c_str(), 1);
 		if (fs::exists(output / "result.json"))
 			throw Usage("output directory already contains a result");
 		options.assignment = fs::absolute(options.assignment).string();

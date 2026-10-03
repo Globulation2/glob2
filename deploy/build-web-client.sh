@@ -26,10 +26,13 @@ docker run --rm \
 	"$image" sh -euc '
 		export DEBIAN_FRONTEND=noninteractive
 		apt-get update -qq
-		apt-get install -y -qq --no-install-recommends ca-certificates git python3 scons xz-utils bzip2 libatomic1 brotli >/dev/null
+		apt-get install -y -qq --no-install-recommends ca-certificates git python3 scons xz-utils bzip2 libatomic1 brotli python3-venv cmake make >/dev/null
 		git config --global --add safe.directory "*"
 		python3 browser/setup.py
-		scons target=web release=1 -j"$JOBS" "$@" build/emscripten/client/release/index.html
+		# Both runtimes (serial and threaded), the loader and the page. The
+		# runtime asset export installs its pinned image encoder (Pillow) into a
+		# private environment under GLOB2_DEV_HOME, hence python3-venv.
+		scons target=web release=1 -j"$JOBS" "$@" web-package
 		python3 browser/precompress.py --require-brotli build/emscripten/client/release
 		chown -R "$OWNER" build/emscripten
 	' sh "$@"

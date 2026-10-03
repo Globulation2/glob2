@@ -1426,8 +1426,8 @@ River width
 Sand weight
 [Select a valid map.]
 Select a valid map.
-[Shared control needs a free controller slot (maximum 12).]
-Shared control needs a free controller slot (maximum 12).
+[Shared control needs a free controller slot (maximum %0).]
+Shared control needs a free controller slot (maximum %0).
 [Smoothing]
 Smoothing
 [Standard]
@@ -1646,8 +1646,8 @@ Display the Globulation 2 cursor.
 Done
 [settings Edit shortcut]
 Edit shortcut
-[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
-Enlarge menus, text and the sidebar on a high-resolution screen.
+[settings Multiply the operating system display scale for menus, text and the sidebar.]
+Multiply the operating system display scale for menus, text and the sidebar.
 [settings Flags]
 Flags
 [settings Full]
@@ -3070,8 +3070,6 @@ Minimap
 Fast forward
 [Hide keyboard]
 Hide keyboard
-[Dialog text size]
-Dialog text size
 [Player slot]
 Player slot
 [Team color]
@@ -3410,8 +3408,6 @@ Win chance: %0 · Fitness: %1
 Minimum required level: %0
 [Confirm %0]
 Ok: %0
-[Dialog text size %0]
-Dialog text size: %0%
 [%0 %1]
 %0 %1
 [resume game]
@@ -3564,10 +3560,14 @@ Play online
 Use in room
 [Custom rules]
 Custom rules
-[conn ai everywhere]
-AI, runs on every computer
 [conn ai]
 AI
+[conn behind %0]
+Behind %0
+[conn behind explanation %0 %1]
+Behind: how far a player's game runs behind the match clock; it includes their delay. Under %0 is normal; from %1 the player is marked slow.
+[conn behind]
+Behind
 [conn card catching up]
 Catching up
 [conn card colony works]
@@ -3590,44 +3590,54 @@ Reconnecting to the match… attempt %0
 Replaying the %0 you missed. The screen updates when you're back to the present.
 [conn card seconds left %0]
 about %0 s left
-[conn connected]
-connected
 [conn connections]
 Connections
-[conn delay explanation]
-Your input delay is the time your orders take to reach everyone. It adjusts to your own connection and isn't affected by other players.
-[conn latency]
-latency
+[conn delay explanation %0 %1]
+Delay: the time from your click until it happens, for everyone. It follows your own connection, not the other players'. Good under %0, poor from %1.
+[conn fair]
+Fair
+[conn good]
+Good
+[conn grid legend]
+With more than four players the panel shows each player's ping in milliseconds, or how many seconds behind they are.
+[conn jitter %0]
+jitter %0
 [conn leave match]
 Leave match
 [conn left]
-left
-[conn lost]
-lost
+Left
 [conn notice back %0]
 %0 is back.
 [conn notice left %0]
 %0 left the match.
 [conn notice lost %0 %1]
 %0 lost connection. The game continues; their colony keeps working while they reconnect (%1 left).
+[conn ping explanation %0 %1]
+Ping: the round trip between a player and the relay. Good under %0, poor from %1.
+[conn ping]
+Ping
 [conn players]
 Players
+[conn poor]
+Poor
 [conn reconnecting]
-reconnecting
-[conn relay %0 %1]
-Relay %0 · round trip %1 ms.
+Reconnecting
+[conn relay %0]
+Relay: %0
 [conn resyncing]
-rejoining
+Rejoining
 [conn slow]
-slow
+Slow
 [conn unstable]
 unstable
 [conn waiting]
-connecting
+Connecting…
 [conn you %0]
 %0 (you)
 [conn you]
 You
+[conn your delay %0]
+Your delay %0
 [hub account menu]
 Account
 [hub ai joins after %0]
@@ -4110,6 +4120,8 @@ Draw
 2 vs 2
 [qm 1 vs 1]
 1 vs 1
+[qm ping about]
+Ping about
 [qm ranked]
 Ranked
 [qm casual %0]
@@ -4138,8 +4150,6 @@ The server could not be reached.
 Find match
 [qm opponents rated %0 to %1]
 Opponents rated %0 to %1
-[qm region %0 relay %1 ms]
-Region %0 · relay %1 ms
 [qm region %0]
 Region %0
 [qm searching]
@@ -4556,3 +4566,57 @@ Guests aren't ranked. Sign in to appear here.
 Full leaderboard
 [settings %0 is no longer linked.]
 %0 is no longer linked.
+[room map read failed]
+This map file could not be read.
+[room map upload failed]
+The map could not be shared with the room.
+[room map upload failed %0]
+The map could not be shared with the room: %0
+[room uploading map]
+Sharing the map with the room…
+[room premade map shared]
+Everyone in the room plays this map file; it downloads before the match.
+[room take a seat to play]
+Take an open seat to play
+[room waiting for a seat]
+Every seat is taken. You can take one when it opens.
+[room not seated]
+Not seated
+[room copied]
+Copied
+[room copy failed]
+Could not copy
+[room closed title]
+Room closed
+[room removed title]
+Removed from the room
+[room back to online]
+Back to Online
+[leave match]
+Leave match
+[leave match title]
+Leave this match?
+[leave lan title]
+Leave this LAN game?
+[leave rated body]
+You lose this ranked match and your rating drops. The others play on, and you cannot come back to it.
+[leave casual body]
+This quick match counts as a loss for you. The others play on, and you cannot come back to it.
+[leave room body]
+You leave the room's match and it counts as a loss in your history. The others play on, and you cannot come back to it.
+[leave lan body]
+The others play on without you, and you cannot come back to this game.
+[leave match confirm]
+Leave match
+[keep playing]
+Keep playing
+[results team]
+Team
+[results quick unrated]
+Quick match · unrated
+[conn card cannot keep up]
+Your device can't keep up with this match
+[conn card cannot keep up body]
+It replays the match more slowly than the match runs, so it will not catch up. You can leave the match, or lower the graphics settings and keep waiting.
+[conn card not gaining]
+not gaining

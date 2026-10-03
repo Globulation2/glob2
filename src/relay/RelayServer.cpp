@@ -167,6 +167,7 @@ struct RelayServer::Impl : std::enable_shared_from_this<RelayServer::Impl>
 		  drainTimer(io)
 	{
 		sequencerConfig.graceMicros = static_cast<std::uint64_t>(config.graceSeconds) * 1000000ull;
+		sequencerConfig.startBarrierMicros = static_cast<std::uint64_t>(config.loadWaitSeconds) * 1000000ull;
 		if (config.tlsEnabled())
 		{
 			tls = std::make_unique<ssl::context>(ssl::context::tls_server);
@@ -595,7 +596,7 @@ private:
 			co_return;
 		}
 		const auto& hello = static_cast<const Turn::Hello&>(*message);
-		if (hello.protocolVersion != Turn::PROTOCOL_VERSION)
+		if (!Turn::supportedProtocol(hello.protocolVersion))
 		{
 			reject(Turn::RejectReason::ProtocolVersion, "Turn protocol version mismatch");
 			co_return;

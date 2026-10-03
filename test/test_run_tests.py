@@ -1,18 +1,21 @@
 #!/usr/bin/env python3
 """Unit tests for test/run_tests.py: listing, selection, sharding and JUnit merging."""
 import argparse
+from types import SimpleNamespace
 import os
 import stat
 import subprocess
 import sys
 import tempfile
 import unittest
+from unittest import mock
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import run_tests  # noqa: E402
+import xvfb_session  # noqa: E402
 
 LISTING = """<?xml version="1.0" encoding="UTF-8"?>
 <doctest binary="x" version="2.4.11">
@@ -93,23 +96,52 @@ class ShardTest(unittest.TestCase):
         with self.assertRaises(SystemExit):
             run_tests.shard(jobs, '4/3')
 
-    def test_unit_binary_is_one_job(self):
+    def test_unit_display_cases_are_isolated_from_headless_driver_changes(self):
+        cases = run_tests.parse_listing(LISTING, 'unit')
+        for in_process in (False, True):
+            jobs = run_tests.make_jobs(cases, args(in_process=in_process), cases)
+            self.assertEqual(len(jobs), 2)
+            self.assertEqual(jobs[0].cases, [cases[1]])
+            self.assertTrue(jobs[0].display)
+            self.assertFalse(jobs[0].whole)
+            self.assertTrue(jobs[1].whole)
+            self.assertFalse(jobs[1].display)
+            self.assertEqual(run_tests.doctest_filter(jobs[1]), ['-tce=*[display*'])
+        subset = run_tests.make_jobs(cases[:2], args(), cases)
+        self.assertEqual([job.subset for job in subset], [False, True])
+        self.assertEqual(run_tests.doctest_filter(subset[1]),
+                         ['-tce=*[display*', '-tc=feeds the last worker', '-ts=HungryDefeat'])
+        benchmark = run_tests.Case('unit', '', 'timing [benchmark]', tags=['benchmark'])
+        jobs = run_tests.make_jobs(cases, args(), cases + [benchmark])
+        self.assertEqual(run_tests.doctest_filter(jobs[1]),
+                         ['-tce=*[display*,*[benchmark]*'])
+        headless = [case for case in cases if not case.display]
+        jobs = run_tests.make_jobs(headless, args(no_display=True), cases)
+        self.assertEqual(len(jobs), 1)
+        self.assertEqual(run_tests.doctest_filter(jobs[0]), ['-tce=*[display*'])
+
+    def test_unit_display_cases_are_isolated_from_headless_batch(self):
         cases = run_tests.parse_listing(LISTING, 'unit')
         jobs = run_tests.make_jobs(cases, args())
-        self.assertEqual(len(jobs), 1)
-        self.assertTrue(jobs[0].whole)
-        self.assertEqual(run_tests.doctest_filter(jobs[0]), [])
+        self.assertEqual(len(jobs), 2)
+        display, headless = jobs
+        self.assertEqual(display.cases, [cases[1]])
+        self.assertFalse(display.whole)
+        self.assertTrue(headless.whole)
+        self.assertFalse(headless.display)
+        self.assertEqual(headless.cases, [cases[0], cases[2], cases[3]])
+        self.assertEqual(run_tests.doctest_filter(headless), ['-tce=*[display*'])
         subset = run_tests.make_jobs(cases[:2], args(), cases)
-        self.assertEqual([job.subset for job in subset], [True, True])
-        self.assertEqual(run_tests.doctest_filter(subset[0]), ['-tc=feeds the last worker', '-ts=HungryDefeat'])
-        self.assertEqual(run_tests.doctest_filter(subset[1]),
+        self.assertEqual(run_tests.doctest_filter(subset[0]),
                          ['-tc=renders the bar [display:1024x768][artifacts]', '-ts=PointBar'])
-        self.assertFalse(run_tests.make_jobs(cases, args(), cases)[0].subset)
+        self.assertEqual(run_tests.doctest_filter(subset[1]),
+                         ['-tce=*[display*', '-tc=feeds the last worker', '-ts=HungryDefeat'])
+        self.assertEqual(run_tests.make_jobs([cases[1]], args(), cases)[0].cases, [cases[1]])
         benchmark = run_tests.parse_listing(LISTING.replace('sweeps every landscape [slow]', 'sweeps every landscape [benchmark]'), 'unit')
         kept, _ = run_tests.select(benchmark, args())
         self.assertEqual(len(kept), len(benchmark) - 1)
-        job, = run_tests.make_jobs(kept, args(), benchmark)
-        self.assertEqual(run_tests.doctest_filter(job), ['-tce=*[benchmark]*'])
+        display, headless = run_tests.make_jobs(kept, args(), benchmark)
+        self.assertEqual(run_tests.doctest_filter(headless), ['-tce=*[display*,*[benchmark]*'])
 
     def test_same_name_in_two_suites_stays_in_its_suite(self):
         listing = LISTING.replace('<OverallResultsTestCases', '<TestCase name="feeds the last worker" testsuite="InnSwap" '
@@ -118,7 +150,7 @@ class ShardTest(unittest.TestCase):
         kept, _ = run_tests.select(cases, args(filter=['InnSwap/*']))
         jobs = run_tests.make_jobs(kept, args(), cases)
         self.assertEqual(len(jobs), 1)
-        self.assertEqual(run_tests.doctest_filter(jobs[0]), ['-tc=feeds the last worker', '-ts=InnSwap'])
+        self.assertEqual(run_tests.doctest_filter(jobs[0]), ['-tce=*[display*', '-tc=feeds the last worker', '-ts=InnSwap'])
         foreign = run_tests.Result(jobs[0], 'pass', 0.1, junit=(
             '<testsuites><testsuite name="x"><testcase classname="test/HungryDefeatHarness.cpp" name="feeds the last worker"/>'
             '<testcase classname="test/InnSwapHarness.cpp" name="feeds the last worker"/></testsuite></testsuites>'))
@@ -332,5 +364,124 @@ class EndToEndTest(unittest.TestCase):
             self.assertIn('<error message="timeout"', text)
 
 
+class TimeoutDiagnosticsTest(unittest.TestCase):
+    def test_display_diagnostics_cannot_inspect_an_unowned_display(self):
+        proc = mock.MagicMock()
+        proc.__truediv__.return_value = proc
+        proc.read_bytes.return_value = b'DISPLAY=:7\0XAUTHORITY=/tmp/auth\0'
+        with mock.patch.object(run_tests, 'Path', return_value=proc), \
+             mock.patch.object(run_tests.subprocess, 'run') as inspect:
+            self.assertEqual(run_tests.timeout_display_state(123, {':99'}), '')
+        inspect.assert_not_called()
+
+    def test_display_diagnostics_capture_real_mapping_on_owned_server(self):
+        proc = mock.MagicMock()
+        proc.__truediv__.return_value = proc
+        proc.read_bytes.return_value = b'DISPLAY=:99\0XAUTHORITY=/tmp/auth\0'
+        states = [subprocess.CompletedProcess([], 0, 'root state', ''),
+                  subprocess.CompletedProcess([], 0, '  0x400001 "test window"', ''),
+                  subprocess.CompletedProcess([], 0, 'Map State: IsViewable', '')]
+        with mock.patch.object(run_tests, 'Path', return_value=proc), \
+             mock.patch.object(run_tests.shutil, 'which', side_effect=lambda name: name), \
+             mock.patch.object(run_tests.subprocess, 'run', side_effect=states) as inspect:
+            output = run_tests.timeout_display_state(123, {':99'})
+        self.assertIn('Map State: IsViewable', output)
+        self.assertEqual(inspect.call_args_list[-1].args[0],
+                         ['xwininfo', '-id', '0x400001', '-all'])
+        self.assertTrue(all(call.kwargs['timeout'] <= 2 for call in inspect.call_args_list))
+
+    def test_ignores_processes_outside_owned_group(self):
+        snapshot = subprocess.CompletedProcess([], 0, '42 1 99 S unrelated-process\n')
+        with mock.patch.object(run_tests.platform, 'system', return_value='Linux'), \
+             mock.patch.object(run_tests.subprocess, 'run', return_value=snapshot) as inspect, \
+             mock.patch.object(run_tests.shutil, 'which', return_value=None):
+            output = run_tests.timeout_diagnostics(123, Path('/test-binary'))
+        self.assertNotIn('unrelated-process', output)
+        inspect.assert_called_once()
+        self.assertEqual(inspect.call_args.kwargs['timeout'], 2)
+
+    def test_diagnostic_timeout_does_not_interrupt_cleanup(self):
+        with mock.patch.object(run_tests.platform, 'system', return_value='Linux'), \
+             mock.patch.object(run_tests.subprocess, 'run', side_effect=subprocess.TimeoutExpired('ps', 2)):
+            output = run_tests.timeout_diagnostics(123, Path('/test-binary'))
+        self.assertIn('timeout diagnostics unavailable', output)
+
+    def test_skips_linux_diagnostics_on_other_platforms(self):
+        with mock.patch.object(run_tests.platform, 'system', return_value='Darwin'), \
+             mock.patch.object(run_tests.subprocess, 'run') as inspect:
+            self.assertEqual(run_tests.timeout_diagnostics(123, Path('/test-binary')), '')
+        inspect.assert_not_called()
+
+
+class XvfbSessionTest(unittest.TestCase):
+    def test_waits_for_window_manager_and_preserves_test_exit_status(self):
+        wm = mock.MagicMock()
+        wm.poll.return_value = None
+        state = subprocess.CompletedProcess([], 0, '_NET_SUPPORTING_WM_CHECK(WINDOW): window id # 0x400002')
+        with mock.patch.object(xvfb_session.shutil, 'which', side_effect=lambda name: name), \
+             mock.patch.object(xvfb_session.subprocess, 'Popen', return_value=wm) as launch, \
+             mock.patch.object(xvfb_session.subprocess, 'run', return_value=state), \
+             mock.patch.object(xvfb_session.subprocess, 'call', return_value=7) as test:
+            self.assertEqual(xvfb_session.run(['test-binary']), 7)
+            test.assert_called_once_with(['test-binary'])
+        wm.terminate.assert_called_once()
+        wm.wait.assert_called_once_with(timeout=5)
+        self.assertIsNone(launch.call_args.kwargs['stderr'])
+
+    def test_missing_window_manager_readiness_fails_and_cleans_up(self):
+        wm = mock.MagicMock()
+        wm.poll.return_value = None
+        state = subprocess.CompletedProcess([], 0, 'no such atom')
+        with mock.patch.object(xvfb_session.shutil, 'which', side_effect=lambda name: name), \
+             mock.patch.object(xvfb_session.subprocess, 'Popen', return_value=wm) as launch, \
+             mock.patch.object(xvfb_session.subprocess, 'run', return_value=state), \
+             mock.patch.object(xvfb_session.subprocess, 'call') as test, \
+             mock.patch.object(xvfb_session.time, 'monotonic', side_effect=[0, 10]):
+            with self.assertRaisesRegex(RuntimeError, 'did not establish'):
+                xvfb_session.run(['test-binary'])
+            test.assert_not_called()
+        wm.terminate.assert_called_once()
+        wm.wait.assert_called_once_with(timeout=5)
+
+
 if __name__ == '__main__':
     unittest.main()
+
+class WeightedShardTest(unittest.TestCase):
+    def test_heavy_jobs_separate_and_all_jobs_execute_once(self):
+        jobs=[SimpleNamespace(label=label) for label in ['a','b','c','new']]
+        weights={'a':100.0,'b':90.0,'c':1.0}
+        parts=[run_tests.shard(jobs,f'{k}/2',weights,['aux:unit']) for k in [1,2]]
+        self.assertEqual(sorted(j.label for part in parts for j in part),['a','b','c','new'])
+        self.assertNotEqual(next(i for i,p in enumerate(parts) if jobs[0] in p),next(i for i,p in enumerate(parts) if jobs[1] in p))
+        self.assertEqual(parts,[run_tests.shard(list(reversed(jobs)),f'{k}/2',weights,['aux:unit']) for k in [1,2]])
+    def test_new_jobs_use_median_and_ties_use_shard_number(self):
+        self.assertEqual(run_tests.assignments(['new','known'],2,{'known':3}),{'known':1,'new':2})
+        self.assertEqual(run_tests.assignments(['b','a'],2,{'a':1,'b':1}),{'a':1,'b':2})
+    def test_profile_rejects_bad_weights_and_empty_preserves_original(self):
+        import tempfile,json
+        from pathlib import Path
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory)/'profile.json'
+            for value in [-1,float('nan'),True,'3']:
+                path.write_text(json.dumps({'schema':1,'seconds':{'a':value}}))
+                with self.assertRaises(SystemExit):run_tests.load_timings(path)
+            path.write_text(json.dumps({'schema':1,'seconds':{}}))
+            self.assertIsNone(run_tests.load_timings(path))
+
+class AuxiliaryShardTest(unittest.TestCase):
+    def test_auxiliary_assignment_agrees_with_native_partition(self):
+        import ci_native_shard_plan as planner
+        jobs=[SimpleNamespace(label=x) for x in ['native-a','native-b']]
+        aux={'aux:unit': {'id':'unit','default_shard':4}}
+        weights={'native-a':100,'native-b':80,'aux:unit':90}
+        mapped=planner.plan(jobs,aux,2,weights)
+        expected=run_tests.assignments(['native-a','native-b','aux:unit'],2,weights)
+        self.assertEqual(mapped['unit'],expected['aux:unit'])
+        self.assertEqual(planner.plan(jobs,aux,4,None),{'unit':4})
+    def test_profiles_need_ten_samples_and_same_platform(self):
+        import build_ci_timing_profile as builder
+        sample={'family':'ubuntu-24.04','seconds':{'native-a':3}}
+        self.assertEqual(builder.build([sample]*9,'ubuntu-24.04',{})['seconds'],{})
+        self.assertEqual(builder.build([sample]*10,'ubuntu-22.04',{})['seconds'],{})
+        self.assertEqual(builder.build([sample]*10,'ubuntu-24.04',{})['seconds'],{'native-a':3})

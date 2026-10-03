@@ -68,15 +68,14 @@ jobs:
         run: |
           sudo rm -f /etc/apt/sources.list.d/google-chrome.list /etc/apt/sources.list.d/google-chrome.sources
           sudo apt-get update -qq
-          sudo apt-get install -y scons g++-13 libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev libvorbis-dev libogg-dev libspeex-dev libboost-dev libssl-dev zlib1g-dev libfribidi-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
+          sudo apt-get install -y python3-venv scons g++-13 cmake libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev libvorbis-dev libogg-dev libspeex-dev libboost-dev libssl-dev zlib1g-dev libfribidi-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
       - name: Build and package browser client
         run: |
           set -euo pipefail
           python3 browser/setup.py
           scons target=web release=1 -j$(nproc)
           python3 browser/package-static.py
-          cd build/browser-static
-          sha256sum index* assets/*.data > SHA256SUMS
+          python3 browser/package-static.py --verify build/browser-static
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: browser-release
@@ -93,6 +92,7 @@ jobs:
       id-token: write
     env:
       BUCKET: gs://glob2-browser-pharaoh-418820-20260909
+      PUBLIC_URL: ${{ vars.GLOB2_BROWSER_PUBLIC_URL }}
     steps:
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
@@ -103,6 +103,13 @@ jobs:
         run: |
           set -euo pipefail
           sha256sum --check SHA256SUMS
+          python3 - <<'PYTHON'
+          import gzip
+          from pathlib import Path
+          for original in [Path("index.html"), *Path(".").rglob("index-*.*"), *Path(".").glob("loader-*.js")]:
+              if original.suffix == ".gz": continue
+              assert gzip.decompress(Path(str(original)+".gz").read_bytes()) == original.read_bytes()
+          PYTHON
           test -s index.html
           for ext in js wasm; do
             mapfile -t files < <(find . -maxdepth 1 -type f -name "index-*.$ext")
@@ -120,13 +127,42 @@ jobs:
       - name: Upload assets then publish entry point
         run: |
           set -euo pipefail
-          gcloud storage cp candidate/index-*.js "$BUCKET/" --content-type=text/javascript --cache-control='public,max-age=31536000,immutable'
-          gcloud storage cp candidate/index-*.wasm "$BUCKET/" --content-type=application/wasm --cache-control='public,max-age=31536000,immutable'
-          gcloud storage cp candidate/assets/*.data "$BUCKET/assets/" --content-type=application/octet-stream --cache-control='public,max-age=31536000,immutable'
-          gcloud storage cp candidate/index.html "$BUCKET/index.html" --content-type=text/html --cache-control='no-cache,max-age=0,must-revalidate'
+          while IFS= read -r -d '' asset; do
+            gcloud storage cp "$asset.gz" "$BUCKET/${asset#candidate/}" --content-type=text/javascript --content-encoding=gzip --cache-control='public,max-age=31536000,immutable'
+          done < <(find candidate -type f -name '*.js' -print0)
+          while IFS= read -r -d '' asset; do
+            gcloud storage cp "$asset.gz" "$BUCKET/${asset#candidate/}" --content-type=application/wasm --content-encoding=gzip --cache-control='public,max-age=31536000,immutable'
+          done < <(find candidate -type f -name '*.wasm' -print0)
+          while IFS= read -r -d '' asset; do
+            gcloud storage cp "$asset.gz" "$BUCKET/${asset#candidate/}" --content-type=application/octet-stream --content-encoding=gzip --cache-control='public,max-age=31536000,immutable'
+          done < <(find candidate -type f -name '*.data' -print0)
+          gcloud storage cp candidate/index.html.gz "$BUCKET/index.html" --content-encoding=gzip --content-type=text/html --cache-control='no-cache,max-age=0,must-revalidate'
+      - name: Verify threaded public frontend
+        if: env.PUBLIC_URL != ''
+        run: |
+          python3 - <<'PYTHON'
+          import os
+          from urllib.parse import urlsplit
+          from urllib.request import Request, urlopen
+          url = os.environ['PUBLIC_URL']
+          if urlsplit(url).scheme != 'https':
+              raise RuntimeError('GLOB2_BROWSER_PUBLIC_URL must use HTTPS')
+          with urlopen(Request(url, method='HEAD'), timeout=30) as response:
+              if urlsplit(response.url).scheme != 'https':
+                  raise RuntimeError('Public frontend redirected away from HTTPS')
+              for name, value in [('Cross-Origin-Opener-Policy', 'same-origin'),
+                                  ('Cross-Origin-Embedder-Policy', 'require-corp')]:
+                  if response.headers.get(name) != value:
+                      raise RuntimeError('Public frontend requires ' + name + ': ' + value)
+          PYTHON
       - name: Summarize publication
         env:
           TAG: ${{ inputs.tag }}
         run: |
           echo "Published browser release $TAG to $BUCKET" >> "$GITHUB_STEP_SUMMARY"
-          echo 'https://storage.googleapis.com/glob2-browser-pharaoh-418820-20260909/index.html' >> "$GITHUB_STEP_SUMMARY"
+          if [ -n "$PUBLIC_URL" ]; then
+            echo "Threaded public frontend: $PUBLIC_URL (HTTPS and isolation headers verified)" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo 'Serial fallback: https://storage.googleapis.com/glob2-browser-pharaoh-418820-20260909/index.html' >> "$GITHUB_STEP_SUMMARY"
+            echo 'Set GLOB2_BROWSER_PUBLIC_URL to a Caddy or equivalent HTTPS frontend with COOP/COEP headers to publish a threaded public URL.' >> "$GITHUB_STEP_SUMMARY"
+          fi

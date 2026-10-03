@@ -13,7 +13,7 @@
 #include "ReplayReader.h"
 #include "GameGUIKeyActions.h"
 #include <StringTable.h>
-#include <SDL_net.h>
+#include <SDL3_net/SDL_net.h>
 #include <fstream>
 #include <iostream>
 #include <regex>
@@ -30,10 +30,10 @@ struct TestSettingsScreen : SettingsScreen {
     int speedRow(int value) const { return value-Settings::GAME_SPEED_MINIMUM; }
 };
 
-static Uint32 resumeGame(Uint32, void* data) {
+static Uint32 SDLCALL resumeGame(void* data, SDL_TimerID, Uint32) {
     SDL_Event event={};
-    event.type=SDL_KEYDOWN;
-    event.key.keysym.sym=*static_cast<SDL_Keycode*>(data);
+    event.type=SDL_EVENT_KEY_DOWN;
+    event.key.key=*static_cast<SDL_Keycode*>(data);
     SDL_PushEvent(&event);
     return 0;
 }
@@ -95,7 +95,7 @@ TEST_CASE("settings screen; in-game slider; shortcuts and camera cadence [displa
 {
     glob2test::HeadlessGlobals globals(displayOptions());
     auto& settings=globalContainer->settings;
-    REQUIRE(SDLNet_Init()==0);
+    REQUIRE(NET_Init());
     {
         TestSettingsScreen screen;
         REQUIRE(screen.speed().number==screen.speedRow(Settings::GAME_SPEED_NORMAL));
@@ -154,8 +154,8 @@ TEST_CASE("settings screen; in-game slider; shortcuts and camera cadence [displa
         gui.adjustLocalTeam();
         gui.adjustInitialViewport();
         REQUIRE(gui.canChangeGameSpeed());
-        SDL_Event key={}; key.type=SDL_KEYDOWN;
-        key.key.keysym.sym=SDLK_MINUS; key.key.keysym.mod=KMOD_CTRL;
+        SDL_Event key={}; key.type=SDL_EVENT_KEY_DOWN;
+        key.key.key=SDLK_MINUS; key.key.mod=SDL_KMOD_CTRL;
         gui.processEvent(&key); REQUIRE(settings.gameSpeed==9);
         gui.game.gameHeader.getBasePlayer(0).type=BasePlayer::P_IP;
         REQUIRE(!gui.canChangeGameSpeed());
@@ -175,13 +175,13 @@ TEST_CASE("settings screen; in-game slider; shortcuts and camera cadence [displa
         // The same elapsed time with different GUI call rates should scroll equally.
         int distance[2];
         for(int pass=0;pass<2;++pass) {
-            SDL_Event mouse={}; mouse.type=SDL_MOUSEMOTION;
+            SDL_Event mouse={}; mouse.type=SDL_EVENT_MOUSE_MOTION;
             mouse.motion.x=0; mouse.motion.y=200;
             const int before=gui.viewportX;
-            const Uint64 start=SDL_GetTicks64();
+            const Uint64 start=SDL_GetTicks();
             // The scroll timer starts when the GUI is built; catch it up with the pointer
             // centred so a slow machine does not scroll the backlog on the first edge step.
-            SDL_Event resting={}; resting.type=SDL_MOUSEMOTION;
+            SDL_Event resting={}; resting.type=SDL_EVENT_MOUSE_MOTION;
             resting.motion.x=200; resting.motion.y=200;
             gui.step({resting}, start);
             gui.step({mouse}, start);
@@ -194,24 +194,24 @@ TEST_CASE("settings screen; in-game slider; shortcuts and camera cadence [displa
         REQUIRE((distance[0]>=10 && distance[0]<=14));
         REQUIRE(std::abs(distance[0]-distance[1])<=2);
         SDL_Event centered{};
-        centered.type = SDL_MOUSEMOTION;
+        centered.type = SDL_EVENT_MOUSE_MOTION;
         centered.motion.x = 200; centered.motion.y = 200;
         SDL_Event held{};
-        held.type = SDL_KEYDOWN;
-        held.key.keysym.sym = SDLK_LEFT;
-        held.key.keysym.scancode = SDL_SCANCODE_LEFT;
-        const Uint64 inputStart = SDL_GetTicks64() + 40;
+        held.type = SDL_EVENT_KEY_DOWN;
+        held.key.key = SDLK_LEFT;
+        held.key.scancode = SDL_SCANCODE_LEFT;
+        const Uint64 inputStart = SDL_GetTicks() + 40;
         gui.step({centered, held}, inputStart);
         const int heldX = gui.viewportX;
         gui.step({}, inputStart + 40);
         REQUIRE(gui.viewportX == ((heldX - 1) & gui.game.map.getMaskW()));
         SDL_Event focus{};
-        focus.type = SDL_WINDOWEVENT;
-        focus.window.event = SDL_WINDOWEVENT_FOCUS_LOST;
+        focus.type = SDL_EVENT_WINDOW_RESIZED;
+        focus.type = SDL_EVENT_WINDOW_FOCUS_LOST;
         gui.step({focus}, inputStart + 80);
         const int releasedX = gui.viewportX;
         gui.step({}, inputStart + 120);
-        focus.window.event = SDL_WINDOWEVENT_FOCUS_GAINED;
+        focus.type = SDL_EVENT_WINDOW_FOCUS_GAINED;
         gui.step({focus}, inputStart + 160);
         REQUIRE(gui.viewportX == releasedX);
         std::cout << "PASS: supplied input, held-key scrolling and focus cleanup\n";
@@ -219,19 +219,19 @@ TEST_CASE("settings screen; in-game slider; shortcuts and camera cadence [displa
                  <<distance[0]<<"/"<<distance[1]<<" cells\n";
     }
     KeyboardManager keyboard(GameGUIShortcuts); keyboard.loadDefaultShortcuts();
-    SDL_Keysym key={}; key.sym=SDLK_EQUALS; key.mod=KMOD_CTRL;
+    SDL_KeyboardEvent key={}; key.key=SDLK_EQUALS; key.mod=SDL_KMOD_CTRL;
     REQUIRE(keyboard.getAction(KeyPress(key,true))==GameGUIKeyActions::IncreaseGameSpeed);
-    key.sym=SDLK_MINUS;
+    key.key=SDLK_MINUS;
     REQUIRE(keyboard.getAction(KeyPress(key,true))==GameGUIKeyActions::DecreaseGameSpeed);
     std::cout<<"PASS: main menu presets, language refresh, categories, automatic saving, reopening, in-game slider, shortcuts\n";
-    SDLNet_Quit();
+    NET_Quit();
 }
 
 TEST_CASE("live engine speed; pause; hard pause and replay playback [display][writes-preferences]")
 {
     glob2test::HeadlessGlobals globals(displayOptions());
     auto& settings=globalContainer->settings;
-    REQUIRE(SDLNet_Init()==0);
+    REQUIRE(NET_Init());
     KeyboardManager keyboard(GameGUIShortcuts); keyboard.loadDefaultShortcuts();
     std::string output;
     {
@@ -245,9 +245,9 @@ TEST_CASE("live engine speed; pause; hard pause and replay playback [display][wr
             globalContainer->automaticEndingGame=true;
             globalContainer->automaticEndingSteps=50;
             globalContainer->automaticGameGlobalEndConditions=true;
-            Uint64 start=SDL_GetTicks64();
+            Uint64 start=SDL_GetTicks();
             engine.run();
-            const Uint64 elapsed=SDL_GetTicks64()-start;
+            const Uint64 elapsed=SDL_GetTicks()-start;
             if(speed==0) normal=elapsed; else maximum=elapsed;
             std::cout<<"Engine speed="<<speed<<" elapsed="<<elapsed<<"ms\n";
         }
@@ -258,17 +258,17 @@ TEST_CASE("live engine speed; pause; hard pause and replay playback [display][wr
         hardPause.interpret("<f12>=hard pause",GameGUIShortcuts);
         keyboard.getKeyboardShortcuts().push_back(hardPause);
         keyboard.saveKeyboardLayout();
-        for(SDL_Keycode key:{SDLK_p,SDLK_F12}) {
+        for(SDL_Keycode key:{SDLK_P,SDLK_F12}) {
             settings.gameSpeed=10;
             Engine engine;
             REQUIRE(engine.initCampaign("maps/balanced.map")==Engine::EE_NO_ERROR);
-            resumeGame(0,&key);
+            resumeGame(&key,0,0);
             const SDL_TimerID timer=SDL_AddTimer(240,resumeGame,&key);
             REQUIRE(timer);
-            const Uint64 start=SDL_GetTicks64();
+            const Uint64 start=SDL_GetTicks();
             engine.run();
             SDL_RemoveTimer(timer);
-            const Uint64 elapsed=SDL_GetTicks64()-start;
+            const Uint64 elapsed=SDL_GetTicks()-start;
             std::cout<<"Pause key="<<key<<" elapsed="<<elapsed<<"ms"<<std::endl;
             REQUIRE((elapsed>=200 && elapsed<3000));
         }
@@ -281,9 +281,9 @@ TEST_CASE("live engine speed; pause; hard pause and replay playback [display][wr
             std::cerr<<"Replay length: "<<globalContainer->replayReader->getNumStepsTotal()<<std::endl;
             globalContainer->replayFastForward=mode==2;
             globalContainer->automaticEndingSteps=25;
-            const Uint64 start=SDL_GetTicks64();
+            const Uint64 start=SDL_GetTicks();
             engine.run();
-            const Uint64 elapsed=SDL_GetTicks64()-start;
+            const Uint64 elapsed=SDL_GetTicks()-start;
             if(mode==0) REQUIRE(elapsed>=800);
             else REQUIRE(elapsed<800);
         }
@@ -297,6 +297,6 @@ TEST_CASE("live engine speed; pause; hard pause and replay playback [display][wr
     REQUIRE_MESSAGE(checksums.size()==7, "missing engine checksums");
     REQUIRE_MESSAGE(std::set<std::string>(checksums.begin(),checksums.begin()+4).size()==1, "speed or pause changed the game state");
     REQUIRE_MESSAGE(std::set<std::string>(checksums.begin()+4,checksums.end()).size()==1, "playback speed changed the replay state");
-    SDLNet_Quit();
+    NET_Quit();
 }
 }

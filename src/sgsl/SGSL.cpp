@@ -16,8 +16,11 @@
 #include <Stream.h>
 
 #include "Building.h"
-#include "GameGUI.h"
+#include "Game.h"
+#include "sim/ClientCommandSink.h"
+#include "sim/ClientRequests.h"
 #include "SGSL.h"
+#include <limits>
 
 std::optional<int> mapAreaNumber(const Game *game, const std::string &name)
 {
@@ -93,8 +96,12 @@ bool MapScriptSGSL::load(GAGCore::InputStream *stream, Game *game)
 	for (unsigned i = 0; i < stories.size(); i++)
 	{
 		stream->readEnterSection(i);
+		// Saved PCs are untrusted. Only parser-reconstructed statement starts
+		// and the explicit wait(N) suspension operand may resume execution.
 		stories[i].lineSelector = stream->readSint32("ProgramCounter");
+		if (!stories[i].instructionStarts.count(stories[i].lineSelector)) return false;
 		stories[i].internTimer = stream->readSint32("internTimer");
+		if (stories[i].internTimer < 0 || (stories[i].line[stories[i].lineSelector].type == SGSLToken::INT && stories[i].internTimer == 0)) throw std::runtime_error("Invalid SGSL internal timer: " + std::to_string(stories[i].internTimer));
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
@@ -102,6 +109,7 @@ bool MapScriptSGSL::load(GAGCore::InputStream *stream, Game *game)
 	// load areas
 	stream->readEnterSection("areas");
 	unsigned areasCount = stream->readUint32("areasCount");
+	if (areasCount > 65536) return false;
 	for (unsigned i = 0; i < areasCount; i++)
 	{
 		stream->readEnterSection(i);
@@ -109,6 +117,7 @@ bool MapScriptSGSL::load(GAGCore::InputStream *stream, Game *game)
 		areas[name].x = stream->readSint32("x");
 		areas[name].y = stream->readSint32("y");
 		areas[name].r = stream->readSint32("r");
+		if (areas[name].r <= 0 || areas[name].r > 32767 || areas[name].x < -32767 || areas[name].x > 32767 || areas[name].y < -32767 || areas[name].y > 32767) return false;
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
@@ -116,13 +125,16 @@ bool MapScriptSGSL::load(GAGCore::InputStream *stream, Game *game)
 	// load flags
 	stream->readEnterSection("flags");
 	unsigned flagsCount = stream->readUint32("flagsCount");
+	if (flagsCount > Building::MAX_COUNT * Team::MAX_COUNT) return false;
 	for (unsigned i = 0; i < flagsCount; i++)
 	{
 		stream->readEnterSection(i);
 		std::string name = stream->readText("name");
 		Uint16 gbid = stream->readUint16("gbid");
+		if (gbid >= Building::MAX_COUNT * game->mapHeader.getNumberOfTeams() ||
+			!game->teams[Building::GIDtoTeam(gbid)]) return false;
 		Building *b = game->teams[Building::GIDtoTeam(gbid)]->myBuildings[Building::GIDtoID(gbid)];
-		assert(b);
+		if (!b) return false;
 		flags[name] = b;
 		stream->readLeaveSection();
 	}
@@ -211,20 +223,25 @@ bool MapScriptSGSL::testMainTimer() const
 	return (mainTimer <= 0);
 }
 
-void MapScriptSGSL::syncStep(GameGUI *gui)
+void MapScriptSGSL::syncStep(Game &game, ClientCommandSink &client, ClientRequests &requests)
 {
-	if (mainTimer)
+	StoryContext context{&game, &client};
+	// Released saves can contain negative timers. Preserve their state while
+	// avoiding signed underflow at the representable boundary.
+	if (mainTimer && mainTimer != std::numeric_limits<int>::min())
 		mainTimer--;
+	// Stories never post a Space acknowledgement, so one read serves them all.
+	const bool space = requests.scriptSpacePending();
 	for (std::vector<Story>::iterator it=stories.begin(); it!=stories.end(); ++it)
 	{
-		if (gui->isSpaceSet())
+		if (space)
 			it->sendSpace();
-		it->syncStep(gui);
+		it->syncStep(&context);
 	}
-	if(gui->isSpaceSet())
+	if(space)
 	{
-		gui->setIsSpaceSet(false);
-		gui->setSwallowSpaceKey(false);
+		requests.takeScriptSpace();
+		client.setSwallowSpaceKey(false);
 	}
 }
 

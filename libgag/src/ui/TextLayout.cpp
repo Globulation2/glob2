@@ -123,6 +123,9 @@ std::string ellipsize(const TextMeasurer &measurer, FontRole role, const std::st
 	if (measurer.width(role, text) <= width)
 		return text;
 	static const std::string ellipsis = "…";
+	// A slot too narrow for even the ellipsis shows nothing rather than overflow.
+	if (measurer.width(role, ellipsis) > width)
+		return {};
 	std::string value = text;
 	while (!value.empty() && measurer.width(role, value + ellipsis) > width)
 		value.resize(previousGlyph(value, value.size()));

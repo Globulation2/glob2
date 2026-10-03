@@ -14,7 +14,13 @@ import {
 } from '@glob2/protocol';
 import { activeEntitlements, matchRatingPreview } from '@glob2/worker';
 import type { SigningKeys } from '../auth/keys.ts';
-import { catalogTitles, generatorLabel, generatorOf, summarize } from '../history/summaries.ts';
+import {
+  catalogTitles,
+  generatorLabel,
+  generatorOf,
+  summarize,
+  uploadTitle,
+} from '../history/summaries.ts';
 
 type Db = Kysely<Database>;
 
@@ -119,6 +125,8 @@ export class Assignments {
     const title = (await catalogTitles(this.db, [setup.map.hash])).get(setup.map.hash)?.title;
     if (title) return title.slice(0, 128);
     const generator = generatorOf(setup);
-    return generator ? generatorLabel(generator).slice(0, 128) : undefined;
+    if (generator) return generatorLabel(generator).slice(0, 128);
+    // A premade map the host uploaded for the room.
+    return uploadTitle(this.db, setup.map.hash);
   }
 }

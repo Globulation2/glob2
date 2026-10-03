@@ -24,8 +24,13 @@ except ImportError:
     brotli = None
 
 
+RUNTIME_FILES = ('index.js', 'index.wasm', 'threaded/index.js', 'threaded/index.wasm', 'loader.js')
+
+
 def targets(directory):
-    files = [directory / name for name in ('index.js', 'index.wasm') if (directory / name).is_file()]
+    # Both runtimes (serial fallback and threaded/), the loader that picks one, and
+    # the data packages they share.
+    files = [directory / name for name in RUNTIME_FILES if (directory / name).is_file()]
     return files + sorted((directory / 'assets').glob('*.data'))
 
 

@@ -619,8 +619,10 @@ bool generate(Game &game, GenerationContext &c)
 
 std::string validateRequest(const GenerationRequest &r)
 {
-	if (r.wDec < 8 || r.hDec < 8 || r.wDec > 9 || r.hDec > 9 || r.nbTeams < 1 || r.nbTeams > 12)
-		return "The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.";
+	if (const auto error = denseColonySizeFailure(r); !error.empty())
+		return error;
+	if (r.wDec < 8 || r.hDec < 8 || r.wDec > 9 || r.hDec > 9 || r.nbTeams < 1 || r.nbTeams > Team::MAX_COUNT)
+		return "Too many colonies for this map; use a bigger map or fewer colonies.";
 	return {};
 }
 
@@ -669,7 +671,7 @@ FaultedCityOptions::FaultedCityOptions(const GenerationRequest &r)
 	  algae(r.option("algae-amount")), fruit(r.option("fruit-amount")) {}
 GeneratorDefinition faultedCityDefinition()
 {
-	return {"faulted-city", 64, "The Faulted City", 2, false,
+	return {"faulted-city", 64, "The Faulted City", 3, false,
 		{{"fault-displacement", "Fault displacement", 4, 14, 1, 10, ControlGroup::Terrain},
 		 {"fault-width", "Fault width", 8, 16, 2, 12, ControlGroup::Terrain},
 		 {"ruin-density", "Ruin density", 20, 60, 5, 35, ControlGroup::Layout},

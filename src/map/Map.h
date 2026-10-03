@@ -85,6 +85,8 @@ class Map
 	mutable ComputeExecutor compute;
 	mutable std::unique_ptr<GradientRuntime> gradientRuntime;
 	unsigned computeExperiments = 0;
+	mutable std::mutex waterSnapshotMutex;
+	mutable std::shared_ptr<const std::vector<Uint8>> waterSnapshot;
 	// Storage only: an idle building still drops its field and saved null state.
 	// A fixed slot count avoids allocations in the pool itself.
 	static constexpr std::size_t GRADIENT_BUFFER_POOL_SLOTS = 64;
@@ -94,6 +96,8 @@ class Map
 	std::mutex gradientBufferPoolMutex;
 	void clearGradientBufferPool();
 public:
+	// Immutable terrain costs shared by independent resumed searches.
+	std::shared_ptr<const std::vector<Uint8>> frozenWaterSnapshot() const;
 	Uint16 *acquireBuildingGradientBuffer();
 	void recycleBuildingGradientBuffer(Uint16 *buffer);
 	std::uint64_t hiringPrepasses = 0, hiringPoppedEntries = 0;
@@ -411,7 +415,13 @@ public:
 	
 	void setTerrain(int x, int y, Uint16 terrain)
 	{
-		tiles[coordToIndex(x, y)].terrain = terrain;
+		Tile &tile = tiles[coordToIndex(x, y)];
+		if ((tile.terrain >= 256 && tile.terrain < 272) != (terrain >= 256 && terrain < 272))
+		{
+			std::lock_guard<std::mutex> lock(waterSnapshotMutex);
+			waterSnapshot.reset();
+		}
+		tile.terrain = terrain;
 	}
 	
 	//! A bump throws away every cached route field in the game, so only paint
@@ -653,6 +663,9 @@ public:
 	//! Transform coordinate from map (mx,my) to screen (px,py). Use this one to display a building or an unit to the screen.
 	// Presentation bounds only; never serialized or included in simulation checksums.
 	int displayViewportW=0, displayViewportH=0;
+	//! Process-unique identity, renewed whenever the map is cleared or resized.
+	//! Presentation caches key on it to notice a replaced map; never saved.
+	Uint64 identity() const { return identityValue; }
 	void mapCaseToDisplayable(int mx, int my, int *px, int *py, int viewportX, int viewportY) const;
 	//! Transform coordinate from map (mx,my) to screen (px,py). Use this one to display a path line to the screen.
 	void mapCaseToDisplayableVector(int mx, int my, int *px, int *py, int viewportX, int viewportY, int screenW, int screenH) const;
@@ -806,15 +819,16 @@ public:
 	Game *game;
 	// Diagnostic tile masks and per-team overlap counts. Building changes update
 	// only their footprints, keeping growth-event lookups contiguous and O(1).
-	// Three 12-team masks fit one 64-bit tile entry, so an event fetches one
+	// The distance-band team masks fit one 64-bit tile entry, so an event fetches one
 	// cache line rather than three separately allocated band planes.
 	std::vector<Uint64> growthCoverage;
-	std::vector<Uint32> growthCoverageCounts[3];
+	std::vector<Uint16> growthCoverageCounts[GROWTH_COVERAGE_BANDS];
 	std::vector<TeamStats::CoverageBuilding> growthCoverageBuildings[Team::MAX_COUNT];
 	Uint32 growthCoverageGeneration[Team::MAX_COUNT]{};
 	bool growthCoverageValid = false;
 public:
 	std::vector<Tile> tiles;
+	Uint64 identityValue = 0;
 	Sint32 w, h;
 	Sint32 wMask, hMask;
 	Sint32 wDec, hDec;

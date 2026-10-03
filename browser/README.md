@@ -27,7 +27,7 @@ From the repository root:
 ```sh
 python3 browser/setup.py
 scons target=web release=1 -j8
-python3 -m http.server 8765 --bind 127.0.0.1 --directory build/emscripten/client/release
+python3 browser/serve.py 8765 --bind 127.0.0.1 --directory build/emscripten/client/release
 ```
 
 Open http://127.0.0.1:8765. The game starts automatically and fills the page.
@@ -47,6 +47,34 @@ for configuration and cleanup. Omit `release=1` for a debug build.
 See [delivery contracts](../docs/browser/implementation.md) for output paths and
 platform boundaries.
 
+The default build packages two runtimes: the root `index.js`/`index.wasm` serial
+fallback and `threaded/index.js`/`threaded/index.wasm`. Both load the same game
+data packages from `assets/` (see below). Keep `index.html`, `loader.js`, both
+runtime directories and `assets/` together when publishing. `python3 browser/package-static.py` produces
+the versioned release package with verified gzip sidecars for both runtimes. `web-tests` additionally builds serial and
+threaded `script-tests.js` harnesses.
+
+The loader prefers real shared-memory threads when isolation and worker startup
+checks succeed. Use `?threads=serial` to exercise the fallback. The loader
+also observes actual pthread startup errors and falls back after a
+two-minute startup timeout. It removes the startup watcher when the application
+is ready; errors in an already running game do not restart it.
+The threaded application owns simulation and worker pools on an application worker; the DOM
+thread stays available for input, filesystem proxying and software presentation.
+WebGL transfers its canvas to the application worker. Engine thread policies
+remain shared with native builds.
+
+Hosting must send `Cross-Origin-Opener-Policy: same-origin` and
+`Cross-Origin-Embedder-Policy: require-corp`. The local server above and the
+provided Caddy configuration set these headers. Hosting without isolation
+selects the serial runtime automatically. Direct Google Cloud Storage release
+URLs use this fallback. Set `GLOB2_BROWSER_PUBLIC_URL` to a Caddy or equivalent
+HTTPS frontend for a threaded public release; the release workflow verifies its
+isolation headers before advertising it. `glob2Diagnostics.snapshot()` reports
+`executionMode`, `threadFallback`, `workerCount` (active engine background
+threads, excluding the application worker), and worker-owned `renderContext`
+metrics. Browser command-line hosts must await `Module.start(args)` for completion;
+`Module.callMain()` alone does not wait for a threaded command to finish.
 ### Game data and loading
 
 The build packs the files the game reads at run time into content-addressed
@@ -96,8 +124,8 @@ as before (`ApplicationHost::assetPackageReady` is always true there).
 Package parts are kept in the browser's Cache Storage, so later visits read them
 from the device. A new build changes only the names of the packages whose
 content changed. `python3 browser/precompress.py` writes Brotli and gzip copies
-of the module, script and packages for servers that serve precompressed files
-(`deploy/Caddyfile` does).
+of both runtimes' modules and scripts, the loader and the packages for servers that
+serve precompressed files (`deploy/Caddyfile` does).
 
 ## Playing and saving
 
@@ -138,7 +166,8 @@ The YOG entry uses native WSS lobby/router listeners. LAN joining requires a cer
 The lobby uses YOG chat; the separate native IRC bridge is unavailable.
 See `docs/browser/gateway.md` for routing. Refreshing or disconnecting during a match ends that player's participation. Voice chat is a no-op; music uses the
 existing Vorbis mixer. Map fertility is staged privately before publication. Landscape previews run
-one candidate per UI timer; an individual generator roll remains synchronous. WebGL2 reuses the existing GPU renderer through Emscripten compatibility glue;
+on the shared native worker path in threaded builds and one candidate per UI
+timer in the serial fallback; an individual fallback roll remains synchronous. WebGL2 reuses the existing GPU renderer through Emscripten compatibility glue;
 there is no mobile UI adaptation.
 
 Browser and desktop multiplayer clients and YOG must use the same protocol
@@ -149,8 +178,9 @@ Guests, invitations and coordinated refresh/reconnect recovery remain unfinished
 
 Map generation follows the current native `GenerationService`, including its
 landscape picker and start-quality scoring. The browser services preview
-candidates on its UI thread instead of starting native worker threads. An
-individual roll can pause the UI; see [ADR 005](../docs/browser/adr-005-generation-randomness.md).
+candidates cooperatively in the serial fallback. Threaded browser builds use the
+same preview workers as native builds. In the serial fallback an individual
+roll can pause the UI; see [ADR 005](../docs/browser/adr-005-generation-randomness.md).
 
 Saved-game compatibility remains durable. Replays must meet the current
 `REPLAY_MINIMUM_VERSION_MINOR`; browser import tests use a separately recorded
