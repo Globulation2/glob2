@@ -3946,7 +3946,9 @@ bool InnManager::load(GAGCore::InputStream *stream, Player *player, Sint32 versi
 		unsigned int gid=stream->readUint32("gid");
 		ir.pos=stream->readUint32("pos");
 		unsigned int size=stream->readCount("size");
-		if (!size || ir.pos >= size) return false;
+		// While the history fills up, pos is the next free slot, so it may equal
+		// size; once full (INN_RECORD_MAX) it wraps within the records.
+		if (!size || size > INN_RECORD_MAX || ir.pos > size || ir.pos >= INN_RECORD_MAX) return false;
 		for(unsigned int i=0; i<size; ++i)
 		{
 			stream->readEnterSection(i);
