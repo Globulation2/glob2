@@ -53,6 +53,9 @@
 #include "MapEditDialog.h"
 #include "ScriptEditorScreen.h"
 #include "OnlineScreenFixtures.h"
+#include "RoomMapPickerScreen.h"
+#include "RoomSetup.h"
+#include <StringTable.h>
 #include <ScreenStack.h>
 #include <Toolkit.h>
 #include "gui/ConnectionOverlay.h"
@@ -310,6 +313,36 @@ struct MobileGallerySetup
 			screenShot(stack, "room-chat", std::move(room));
 		}
 		screenShot(stack, "room-lan", std::make_unique<RoomScreen>(stack, std::make_shared<OnlineUIFixtures::LanRoomFixture>()));
+		{
+			// The room's "Change map…": the simple picker, its previews generated.
+			for (int tab : {RoomMapPickerScreen::GeneratedTab, RoomMapPickerScreen::PremadeTab, RoomMapPickerScreen::CatalogTab})
+			{
+				auto picker = std::make_unique<RoomMapPickerScreen>(2, Online::defaultRoomSetup(2, 0));
+				auto *view = picker.get();
+				view->selectTab(tab);
+				if (tab == RoomMapPickerScreen::PremadeTab)
+					view->selectPremade(2);
+				stack.push(std::move(picker));
+				const Uint32 started = SDL_GetTicks();
+				do
+					frame(stack);
+				while ((view->previewsBusy() || (tab == RoomMapPickerScreen::PremadeTab && !view->premadesLoaded())) &&
+					   SDL_GetTicks() - started < 45000);
+				frame(stack);
+				stackShot(stack, tab == RoomMapPickerScreen::GeneratedTab ? "room-map-picker"
+								 : tab == RoomMapPickerScreen::PremadeTab ? "room-map-picker-premade"
+																		  : "room-map-picker-catalog");
+				view->endExecute(0);
+				frame(stack);
+			}
+			auto close = std::make_unique<MessageScreen>(
+				GAGCore::Toolkit::getStringTable()->getString("[room close title]"),
+				GAGCore::Toolkit::getStringTable()->getString("[room close body one]"),
+				std::vector<std::string>{GAGCore::Toolkit::getStringTable()->getString("[room close confirm]"),
+										 GAGCore::Toolkit::getStringTable()->getString("[room stay]")});
+			close->setPrimary(1);
+			screenShot(stack, "room-host-leave", std::move(close));
+		}
 		screenShot(stack, "match-starting", std::make_unique<MatchStartScreen>(stack, OnlineUIFixtures::startingMatch()));
 		{
 			auto settings = std::make_unique<SettingsScreen>();
@@ -324,6 +357,16 @@ struct MobileGallerySetup
 		// Online screens on canned data (tools/OnlineScreenFixtures.h).
 		screenShot(stack, "quick-match", OnlineScreenFixtures::quickMatch(stack, false));
 		screenShot(stack, "quick-match-searching", OnlineScreenFixtures::quickMatch(stack, true));
+		{
+			// An unrated search shows no ratings.
+			auto &casual = OnlineScreenFixtures::model(9);
+			const auto now = Glob2UI::wallClockMs();
+			auto status = OnlineScreenFixtures::status(now);
+			status.queueId = OnlineScreenFixtures::queues()[2].id;
+			casual.presentSearching(OnlineScreenFixtures::queues()[2], status, now - 65000);
+			screenShot(stack, "quick-match-searching-casual",
+					   std::make_unique<QuickMatchScreen>(stack, casual, OnlineScreenFixtures::queues(), "https://app.glob2online.com", "Bradley"));
+		}
 		screenShot(stack, "match-found", OnlineScreenFixtures::matchFound(true));
 		screenShot(stack, "match-found-ai", OnlineScreenFixtures::matchFound(false));
 		screenShot(stack, "online-profile", OnlineScreenFixtures::profile(stack));

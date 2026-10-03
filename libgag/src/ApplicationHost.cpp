@@ -101,7 +101,7 @@ bool openUrl(const std::string &url)
 }
 bool copyText(const std::string &text)
 {
-	return SDL_SetClipboardText(text.c_str()) == 0;
+	return SDL_SetClipboardText(text.c_str());
 }
 void importChanged(const char *) {}
 void screenChanged(const char *name) {
@@ -125,5 +125,5 @@ void focusBrowserTextInput(const void*) {}
 bool hasBrowserTextInput(const void*) { return false; }
 void beginBrowserTextFrame() {}
 void endBrowserTextFrame() {}
-void browserTextInput(const void*,SDL_Rect,int,int,const std::string&,bool,size_t,BrowserTextChange,const SDL_Rect*) {}
+void browserTextInput(const void*,SDL_Rect,int,int,const std::string&,bool,size_t,BrowserTextChange,const SDL_Rect*,bool) {}
 }

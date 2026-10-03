@@ -41,6 +41,43 @@ bool flag(const Json& value, const char* key, bool fallback)
 }
 } // namespace
 
+const std::vector<std::string>& defaultRoomGenerators()
+{
+	// Fair by construction (exact symmetry, solved fairness or repeated wedges), and
+	// verified at 128×128 with both 2 and 4 colonies (platform/packages/core/src/
+	// queueConfig.ts FAIR_GENERATORS, fourColonies: true).
+	static const std::vector<std::string> ids = {"even-ground", "symmetric-arena", "marchland", "carousel", "amphitheatre"};
+	return ids;
+}
+
+CustomGameSetup defaultRoomSetup(int colonies, std::uint32_t pick)
+{
+	CustomGameSetup setup;
+	const auto& registry = GeneratorRegistry::builtins();
+	const auto& ids = defaultRoomGenerators();
+	for (std::size_t attempt = 0; attempt < ids.size(); ++attempt)
+	{
+		try
+		{
+			const int method = registry.idOf(ids[(pick + attempt) % ids.size()]);
+			setup.generator.setMethodDefaults(method);
+			break;
+		}
+		catch (const std::exception&)
+		{
+			// Not in this build: try the next one; the constructor's default stays otherwise.
+		}
+	}
+	setup.random = true;
+	setup.generator.wDec = 7;
+	setup.generator.hDec = 7;
+	setup.generator.seed = 0;
+	setup.generator.nbTeams = colonies;
+	setup.setCapacity(colonies);
+	setup.capacity = colonies;
+	return setup;
+}
+
 Json generatorDescriptor(const CustomGameSetup& setup, std::uint32_t fallbackSeed)
 {
 	const auto* definition = GeneratorRegistry::builtins().find(setup.generator.method);

@@ -14,12 +14,16 @@
 #include "OnlineHandoff.h"
 #include "PlatformRoom.h"
 #include "MessageScreen.h"
+#include "OnlineMapsScreen.h"
+#include "RoomMapPickerScreen.h"
 #include "Order.h"
 #include "gui/ConnectionQuality.h"
 #include "gui/ThumbSide.h"
+#include "ui/OnlineUI.h"
 #include <ApplicationHost.h>
 #include <FormatableString.h>
 #include <SDL3/SDL.h>
+#include <cctype>
 
 using namespace Glob2UI;
 
@@ -43,32 +47,48 @@ GAGCore::Color colorOf(const std::optional<std::array<std::uint8_t, 3>> &color)
 	return GAGCore::Color((*color)[0], (*color)[1], (*color)[2]);
 }
 
-// The rules a room plays with, as "label: value" lines, in the custom-game order.
-std::vector<std::pair<std::string, std::string>> ruleLines(const CustomGameSetup &s)
+// The rules a room plays with, as "label: value" lines. Every label reads positively
+// ("Food: Units get hungry", not "No hunger: Off"): the four rules that shape every
+// match first, then only the ones changed from Standard (allRules lists the rest too).
+std::vector<std::pair<std::string, std::string>> ruleLines(const CustomGameSetup &s, bool allRules = false)
 {
-	auto onOff = [](bool on) { return tr(on ? "[room rule on]" : "[room rule off]"); };
-	auto level = [](int value) { return value == 0 ? tr("[room rule off]") : std::to_string(value); };
-	std::vector<std::pair<std::string, std::string>> lines;
-	auto add = [&](int index, std::string value) {
-		lines.push_back({tr(std::string("[") + CustomGameSetup::ruleDefinitions[std::size_t(index)].label + "]"), std::move(value)});
+	auto pick = [](bool second, const char *first, const char *other) { return tr(second ? other : first); };
+	auto level = [](int value, std::initializer_list<const char *> options) {
+		const auto *begin = options.begin();
+		return value <= 0 || value >= int(options.size()) ? tr("[room rule off]") : tr(begin[value]);
 	};
-	add(0, s.prestige ? tr("[room rule prestige]") : tr("[room rule conquest]"));
-	add(17, s.suddenDeathMinutes ? GAGCore::FormattableString(tr("[results minutes %0]")).arg(s.suddenDeathMinutes) : tr("[room rule off]"));
-	add(1, s.revealed ? tr("[room rule revealed]") : tr("[room rule hidden]"));
-	add(2, s.locked ? tr("[room rule fixed]") : tr("[room rule free]"));
-	add(5, onOff(s.noResourceGrowth));
-	add(6, level(s.resourceScarcity));
-	add(7, onOff(s.instantConstruction));
-	add(8, level(s.stockpileStart));
-	add(9, onOff(s.noHunger));
-	add(10, onOff(s.unitUpgradesDisabled));
-	add(11, level(s.glassCannonLevel));
-	add(12, onOff(s.unitsFearless));
-	add(13, onOff(s.permadeathDisabled));
-	add(14, onOff(s.peacefulMode));
-	add(15, level(s.buildingHpLevel));
+	std::vector<std::pair<std::string, std::string>> lines;
+	auto label = [](int index) { return tr(std::string("[") + CustomGameSetup::ruleDefinitions[std::size_t(index)].label + "]"); };
+	lines.push_back({label(0), s.prestige ? tr("[room rule prestige]") : tr("[room rule conquest]")});
+	lines.push_back({label(17), s.suddenDeathMinutes ? GAGCore::FormattableString(tr("[results minutes %0]")).arg(s.suddenDeathMinutes) : tr("[room rule off]")});
+	lines.push_back({label(1), s.revealed ? tr("[room rule revealed]") : tr("[room rule hidden]")});
+	lines.push_back({label(2), s.locked ? tr("[room rule fixed]") : tr("[room rule free]")});
+	auto add = [&](int index, std::string name, std::string value) {
+		if (allRules || s.ruleChanged(index))
+			lines.push_back({std::move(name), std::move(value)});
+	};
+	add(5, tr("[room rule resources]"), pick(s.noResourceGrowth, "[Grow normally]", "[No growth]"));
+	add(6, label(6), level(s.resourceScarcity, {"", "[Scarce (2x slower)]", "[Very scarce (4x slower)]", "[Extremely scarce (8x slower)]"}));
+	add(7, tr("[room rule construction]"), pick(s.instantConstruction, "[Normal construction]", "[Instant]"));
+	add(8, label(8), level(s.stockpileStart, {"", "[Small (+50 each)]", "[Medium (+150 each)]", "[Large (+300 each)]"}));
+	add(9, tr("[room rule food]"), pick(s.noHunger, "[Units get hungry]", "[No hunger]"));
+	add(10, tr("[room rule training]"), pick(s.unitUpgradesDisabled, "[Trains normally]", "[No upgrades]"));
+	add(11, label(11), level(s.glassCannonLevel, {"", "[Glass cannon x2]", "[Glass cannon x3]"}));
+	add(12, tr("[room rule retreat]"), pick(s.unitsFearless, "[Retreats when damaged]", "[Fearless]"));
+	add(13, tr("[room rule unit deaths]"), pick(s.permadeathDisabled, "[Can die permanently]", "[No permadeath]"));
+	add(14, tr("[room rule combat]"), pick(s.peacefulMode, "[Normal combat]", "[Peaceful mode]"));
+	add(15, label(15), level(s.buildingHpLevel, {"", "[Fortress x5]", "[Fortress x10]"}));
 	return lines;
 }
+
+// "1 player · 0 AI · 3 open", "2 players · 1 AI · 1 open".
+std::string seatsSummary(int people, int ais, int open)
+{
+	if (people == 1)
+		return GAGCore::FormattableString(tr("[room seats one person %0 %1]")).arg(ais).arg(open);
+	return GAGCore::FormattableString(tr("[room seats summary %0 %1 %2]")).arg(people).arg(ais).arg(open);
+}
+
 } // namespace
 
 RoomScreen::RoomScreen(GAGGUI::ScreenStack &screens, std::shared_ptr<RoomBackend> room)
@@ -125,10 +145,75 @@ void RoomScreen::onEscape()
 	leave();
 }
 
+int RoomScreen::othersInRoom() const
+{
+	int others = int(room->unseatedMembers().size());
+	for (const auto &slot : room->slots())
+		others += !slot.local && !slot.ai && !slot.open && !slot.locked;
+	return others;
+}
+
 void RoomScreen::leave()
+{
+	// The host's Leave closes the room for everyone (online and LAN), so say so first.
+	if (room->isHost() && othersInRoom() > 0 && !confirmingLeave)
+	{
+		confirmingLeave = true;
+		const int others = othersInRoom();
+		auto message = std::make_unique<MessageScreen>(
+			tr("[room close title]"),
+			others == 1 ? tr("[room close body one]") : std::string(GAGCore::FormattableString(tr("[room close body %0]")).arg(others)),
+			std::vector<std::string>{tr("[room close confirm]"), tr("[room stay]")});
+		message->setPrimary(1);
+		screens.push(std::move(message), [this](GAGGUI::Screen &, int choice) {
+			confirmingLeave = false;
+			if (choice == 0)
+				leaveNow();
+		});
+		return;
+	}
+	leaveNow();
+}
+
+void RoomScreen::leaveNow()
 {
 	room->leave();
 	finish(RoomBackend::Cancelled, {});
+}
+
+void RoomScreen::noticeSeatColours()
+{
+	// A new map gives the colonies new colours, and players know themselves by colour:
+	// say so in the chat instead of changing it silently.
+	std::vector<std::optional<std::array<std::uint8_t, 3>>> colours;
+	bool anyone = false;
+	for (const auto &slot : room->slots())
+	{
+		const bool occupied = !slot.open && !slot.locked;
+		colours.push_back(occupied ? room->seatColor(slot) : std::nullopt);
+		anyone = anyone || (occupied && !slot.ai);
+	}
+	const std::string map = room->mapName();
+	if (!seatColoursMap.empty() && map != seatColoursMap && anyone)
+	{
+		bool changed = false;
+		for (std::size_t i = 0; i < colours.size() && i < seatColours.size(); ++i)
+			changed = changed || (colours[i] && seatColours[i] && *colours[i] != *seatColours[i]);
+		if (changed)
+		{
+			chat.push_back({"", tr("[room colours changed]"), true});
+			while (chat.size() > CHAT_HISTORY)
+				chat.pop_front();
+			if (currentTab != ChatTab)
+				++unread;
+			lastChatAt = now;
+		}
+	}
+	if (!map.empty() && room->lobbyReady())
+	{
+		seatColoursMap = map;
+		seatColours = std::move(colours);
+	}
 }
 
 void RoomScreen::finish(int code, const std::string &message)
@@ -153,6 +238,8 @@ void RoomScreen::copy(const std::string &key, const std::string &text)
 	if (text.empty())
 		return;
 	copyFailed = !GAGCore::ApplicationHost::copyText(text);
+	// When the clipboard refuses, the text stays on screen, selected, to copy by hand.
+	manualCopy = copyFailed ? text : std::string();
 	copiedKey = key;
 	copiedAt = now ? now : 1;
 	invalidate();
@@ -171,6 +258,7 @@ void RoomScreen::handle(const RoomBackend::Event &event)
 	switch (event.kind)
 	{
 	case RoomBackend::Event::Changed:
+		noticeSeatColours();
 		break;
 	case RoomBackend::Event::Chat:
 	{
@@ -214,6 +302,12 @@ void RoomScreen::onTimer(Uint32 tick)
 	room->update();
 	while (auto event = room->takeEvent())
 		handle(*event);
+	// A map kept for the next room ("Play this map" on the web app, or "Use in a room"
+	// with no room open) goes to the first online room this player hosts.
+	if (!pendingCatalogMap && room->kind() == RoomBackend::Kind::Online && room->lobbyReady() && room->canEditSetup() &&
+		Online::pendingRoomMap())
+		if (auto kept = Online::takePendingRoomMap())
+			pendingCatalogMap = std::make_pair(kept->hash, kept->mapId);
 	if (pendingCatalogMap && room->lobbyReady())
 	{
 		if (auto *online = dynamic_cast<Online::PlatformRoom *>(room.get()); online && online->canEditSetup())
@@ -276,6 +370,43 @@ void RoomScreen::launch()
 }
 
 void RoomScreen::editSetup(int customGameTab)
+{
+	CustomGameSetup draft;
+	if (!room->canEditSetup() || !room->setupDraft(draft))
+		return;
+	// Online rooms change their map in the simple picker first; the full custom-game
+	// screen is behind its "More options…".
+	auto *online = dynamic_cast<Online::PlatformRoom *>(room.get());
+	if (customGameTab == 0 && online)
+	{
+		const int people = othersInRoom() + 1;
+		screens.push(std::make_unique<RoomMapPickerScreen>(people, draft), [this](GAGGUI::Screen &screen, int result) {
+			auto &picker = static_cast<RoomMapPickerScreen &>(screen);
+			auto *online = dynamic_cast<Online::PlatformRoom *>(room.get());
+			if (!online)
+				return;
+			if (result == RoomMapPickerScreen::MoreOptions)
+				openCustomGame(0);
+			else if (result == RoomMapPickerScreen::Catalog)
+				screens.push(std::make_unique<OnlineMapsScreen>(screens));
+			else if (result == RoomMapPickerScreen::Chosen && picker.choseGenerated())
+				online->useGeneratedMap(picker.generatedSetup());
+			else if (result == RoomMapPickerScreen::Chosen)
+			{
+				CustomGameSetup current;
+				room->setupDraft(current);
+				current.random = false;
+				current.premadeMap = picker.premadePath();
+				online->usePremadeMap(picker.premadePath(), picker.premadeTitle(), current);
+			}
+			invalidate();
+		});
+		return;
+	}
+	openCustomGame(customGameTab);
+}
+
+void RoomScreen::openCustomGame(int customGameTab)
 {
 	CustomGameSetup draft;
 	if (!room->canEditSetup() || !room->setupDraft(draft))
@@ -356,7 +487,7 @@ Element RoomScreen::tabs(const Presentation &p)
 	people += int(room->unseatedMembers().size());
 	const std::vector<std::string> titles = {tr("[Map]"), tr("[Players & Teams]"), tr("[Game Rules]")};
 	const std::vector<std::string> details = {room->mapName(),
-											  GAGCore::FormattableString(tr("[room seats summary %0 %1 %2]")).arg(people).arg(ais).arg(open),
+											  seatsSummary(people, ais, open),
 											  haveDraft ? tr("[" + draft.ruleset + "]") : room->experimentsLabel()};
 	std::vector<Element> row;
 	for (int i = 0; i < 3; ++i)
@@ -417,14 +548,18 @@ Element RoomScreen::seatControls(const RoomBackend::Slot &slot, const Presentati
 															: slot.open ? tr("[room open for a person]")
 															: slot.locked ? tr("[room closed seat]")
 																		  : tr("[room person]"))));
-	const int teams = std::max(1, room->teamChoices());
-	std::vector<std::string> teamNames;
-	for (int t = 0; t < teams; ++t)
-		teamNames.push_back(GAGCore::FormattableString(tr("[room team %0]")).arg(t + 1));
-	ChoiceOptions teamOptions;
-	teamOptions.controlEnabled = room->canChangeTeam(slot);
-	controls.push_back(width(p.pt(phone ? 140 : 110), choice(id + "/team", teamNames, std::clamp(slot.team, 0, teams - 1),
-															 [this, index](int team) { room->changeTeam(index, team); invalidate(); }, teamOptions)));
+	// An open seat nobody may assign a team to has no team to show.
+	if (!(slot.open && !room->canChangeTeam(slot)))
+	{
+		const int teams = std::max(1, room->teamChoices());
+		std::vector<std::string> teamNames;
+		for (int t = 0; t < teams; ++t)
+			teamNames.push_back(GAGCore::FormattableString(tr("[room team %0]")).arg(t + 1));
+		ChoiceOptions teamOptions;
+		teamOptions.controlEnabled = room->canChangeTeam(slot);
+		controls.push_back(width(p.pt(phone ? 140 : 110), choice(id + "/team", teamNames, std::clamp(slot.team, 0, teams - 1),
+																 [this, index](int team) { room->changeTeam(index, team); invalidate(); }, teamOptions)));
+	}
 	if (room->canTakeSeat(slot) && !room->isHost())
 		controls.push_back(button(id + "/take", tr("[room take seat]"), [this, index] { room->takeSeat(index); }));
 	if (room->canKick(slot))
@@ -581,8 +716,6 @@ Element RoomScreen::mapPanel(const Presentation &p, bool phone)
 		facts.push_back(field(tr("[room colonies]"), label(std::to_string(draft.capacity))));
 		const auto &request = draft.generator;
 		facts.push_back(field(tr("[room size]"), label(std::to_string(1 << request.wDec) + " × " + std::to_string(1 << request.hDec))));
-		if (request.seed)
-			facts.push_back(field(tr("[room seed]"), label(std::to_string(request.seed))));
 	}
 	else if (room->teamCount() > 0)
 		facts.push_back(field(tr("[room colonies]"), label(std::to_string(room->teamCount()))));
@@ -608,8 +741,11 @@ Element RoomScreen::rulesPanel(const Presentation &p)
 	if (room->setupDraft(draft))
 	{
 		lines.push_back(heading(tr("[" + draft.ruleset + "]")));
-		for (const auto &[name, value] : ruleLines(draft))
+		const auto rules = ruleLines(draft);
+		for (const auto &[name, value] : rules)
 			lines.push_back(row({expanded(label(name)), label(value)}, {p.pt(8), CrossAlign::Center}));
+		if (rules.size() < ruleLines(draft, true).size())
+			lines.push_back(caption(tr("[room rules otherwise standard]")));
 	}
 	if (const auto experiments = room->experimentsLabel(); !experiments.empty())
 		lines.push_back(paragraph(tr("[Experiments set by the host]") + ": " + experiments, {FontRole::Support}));
@@ -652,15 +788,51 @@ Element RoomScreen::invite(const Presentation &p, bool phone)
 			parts.push_back(row({expanded(label(tr("[room address]") + "  " + address)),
 								 button("invite/address", copyLabel("invite/address", tr("[room copy]")), [this, address] { copy("invite/address", address); })},
 								{p.pt(6), CrossAlign::Center}));
+		// Browser players paste the pairing link; the raw wss://…#sha256= string is not
+		// for reading, so it shows as a short code they can compare instead.
 		if (const auto pairing = room->shareText(); !pairing.empty())
-			parts.push_back(row({expanded(paragraph(tr("[room browser pairing]") + "  " + pairing, {FontRole::Support})),
-								 button("invite/pairing", copyLabel("invite/pairing", tr("[room copy]")), [this, pairing] { copy("invite/pairing", pairing); })},
+		{
+			const std::string code = pairingCode(pairing);
+			parts.push_back(row({expanded(column({label(tr("[room browser link]")),
+												  caption(code.empty() ? tr("[room browser link hint]")
+																	   : formatted("[room browser link code %0]", code))},
+												 {p.pt(2)})),
+								 button("invite/pairing", copyLabel("invite/pairing", tr("[room copy link]")), [this, pairing] { copy("invite/pairing", pairing); }, {.icon = uiIcon(UIIcon::Copy), .iconSize = 16})},
 								{p.pt(6), CrossAlign::Center}));
+		}
 	}
 	CardOptions options;
 	options.color = theme().palette.field;
 	options.shadow = false;
 	options.border = theme().palette.line;
+	options.padding = p.pt(10);
+	return card(column(std::move(parts), {p.pt(6)}), options);
+}
+
+Element RoomScreen::manualCopyCard(const Presentation &p)
+{
+	if (manualCopy.empty())
+		return nullptr;
+	TextFieldOptions field;
+	field.selectForCopy = true;
+	field.autoFocus = true;
+	ButtonOptions close;
+	close.icon = uiIcon(UIIcon::Close);
+	close.accessibleLabel = tr("[room copy by hand close]");
+	close.tooltip = close.accessibleLabel;
+	std::vector<Element> parts{
+		row({expanded(label(tr("[room copy by hand]"), {FontRole::Body})),
+			 width(p.pt(p.touch ? 48 : 34), button("invite/manual/close", "", [this] { manualCopy.clear(); invalidate(); }, close))},
+			{p.pt(6), CrossAlign::Center}),
+		textField("invite/manual", manualCopy, [](const std::string &) {}, field),
+		caption(tr(p.touch ? "[room copy by hand touch]" : "[room copy by hand keys]"))};
+	// Someone can also read the code aloud: show it large.
+	if (const std::string code = room->inviteCode(); !code.empty() && room->kind() == RoomBackend::Kind::Online)
+		parts.push_back(row({caption(tr("[room code]")), label(code, {FontRole::Title})}, {p.pt(8), CrossAlign::Center}));
+	CardOptions options;
+	options.color = theme().palette.field;
+	options.shadow = false;
+	options.border = theme().palette.accent;
 	options.padding = p.pt(10);
 	return card(column(std::move(parts), {p.pt(6)}), options);
 }
@@ -766,6 +938,8 @@ Element RoomScreen::build(const Presentation &p)
 		else
 			body = chatPanel(p, true);
 		std::vector<Element> bottom;
+		if (auto manual = manualCopyCard(p))
+			bottom.push_back(manual);
 		if (tab != ChatTab && !chat.empty() && lastChatAt && now - lastChatAt < CHAT_TOAST_MS && !chat.back().system)
 			bottom.push_back(label(chat.back().author + ": " + chat.back().text, {FontRole::Support}));
 		if (!waiting.empty())
@@ -804,7 +978,7 @@ Element RoomScreen::build(const Presentation &p)
 	// Desktop and tablets: tabs and seats at the left, invite and chat at the right.
 	Element content = currentTab == MapTab ? mapPanel(p, false) : currentTab == RulesTab ? rulesPanel(p) : seats(p, false);
 	auto left = column({tabs(p), expanded(scroll("room/tab/" + std::to_string(currentTab), content))}, {p.pt(10)});
-	auto right = column({invite(p, false), expanded(chatPanel(p, false))}, {p.pt(10)});
+	auto right = column({invite(p, false), manualCopyCard(p), expanded(chatPanel(p, false))}, {p.pt(10)});
 	auto body = adaptive([left, right](const LayoutContext &ctx, Size available) -> Element {
 		if (available.w < ctx.presentation.pt(820))
 			return column({expanded(left, 3), expanded(right, 2)}, {ctx.presentation.pt(10)});

@@ -26,6 +26,7 @@
 #ifndef YOG_SERVER_ONLY
 #include "MapCommand.h"
 #include "OnlineServices.h"
+#include "OnlineHandoff.h"
 #endif
 
 namespace
@@ -368,6 +369,11 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 		{
 			// Invite links (glob2://join?..., https://<instance>/j/<code>) and
 			// --join/--instance become the pending join for the online hub.
+			i += consumed - 1;
+		}
+		else if (const int consumed = Online::acceptRoomMapArguments(argc, argv, i))
+		{
+			// "Play this map" on the web app: the next room the player hosts uses it.
 			i += consumed - 1;
 		}
 		else

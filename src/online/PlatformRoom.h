@@ -29,8 +29,10 @@ class PlatformRoom final : public RoomBackend
 {
   public:
 	/// Creates a room hosted by the signed-in account.
+	/// `automaticMap`: the setup is the default room map (defaultRoomSetup), which grows
+	/// from two to four colonies when more people join, until the host picks a map.
 	static std::shared_ptr<PlatformRoom> create(PlatformClient &client, const std::string &name, bool listed,
-												const CustomGameSetup &setup);
+												const CustomGameSetup &setup, bool automaticMap = false);
 	/// Joins the room behind an invite code.
 	static std::shared_ptr<PlatformRoom> join(PlatformClient &client, const std::string &code);
 	/// Opens (or joins) the unrated rematch room of a finished quick match
@@ -148,6 +150,9 @@ class PlatformRoom final : public RoomBackend
 	struct MapFetch;
 	std::shared_ptr<MapFetch> mapFetch;
 	std::string mapHash, mapPath;
+	// The host has not chosen a map yet: the default grows with the room.
+	bool automaticMap = false, automaticMapGrown = false;
+	void fitAutomaticMap();
 	// Premade map upload (host).
 	bool uploading = false;
 	std::string uploadedTitle, uploadedHash;

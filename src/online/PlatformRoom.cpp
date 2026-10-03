@@ -72,9 +72,10 @@ PlatformRoom::~PlatformRoom()
 }
 
 std::shared_ptr<PlatformRoom> PlatformRoom::create(PlatformClient &client, const std::string &name, bool listed,
-												   const CustomGameSetup &setup)
+												   const CustomGameSetup &setup, bool automaticMap)
 {
 	std::shared_ptr<PlatformRoom> room(new PlatformRoom(&client));
+	room->automaticMap = automaticMap;
 	room->listen();
 	Json params{{"name", name.substr(0, 64)}, {"visibility", listed ? "public" : "link"}};
 	try
@@ -278,9 +279,30 @@ void PlatformRoom::adopt(const Json &room)
 	if (state.value("status", "") == "starting" && state.contains("matchId") && state["matchId"].is_string())
 		pendingMatchId = state["matchId"].get<std::string>();
 	fetchMap();
+	fitAutomaticMap();
 	Event event;
 	event.kind = Event::Changed;
 	push(std::move(event));
+}
+
+void PlatformRoom::fitAutomaticMap()
+{
+	// Two friends play a two-colony map; a third or fourth person in the room gets a
+	// four-colony map of the same kind, as long as the host has not picked one.
+	if (!automaticMap || automaticMapGrown || !canEditSetup() || state.value("status", "") != "open" || !generatedMap())
+		return;
+	const int people = state.contains("members") ? int(state["members"].size()) : 0;
+	const int colonies = teamCount();
+	if (people <= colonies || colonies >= 4)
+		return;
+	CustomGameSetup draft;
+	if (!setupDraft(draft))
+		return;
+	draft.setCapacity(4);
+	draft.generator.nbTeams = 4;
+	draft.generator.seed = 0;
+	automaticMapGrown = true;
+	applyDraft(draft, true);
 }
 
 void PlatformRoom::systemLinesFor(const Json &previous, const Json &next)
@@ -853,11 +875,13 @@ bool PlatformRoom::setupDraft(CustomGameSetup &draft) const
 
 void PlatformRoom::applySetup(const CustomGameSetup &setup)
 {
+	automaticMap = false;
 	applyDraft(setup, false);
 }
 
 void PlatformRoom::useGeneratedMap(const CustomGameSetup &setup)
 {
+	automaticMap = false;
 	applyDraft(setup, true);
 }
 
@@ -945,6 +969,7 @@ void PlatformRoom::usePremadeMap(const std::string &path, const std::string &tit
 
 void PlatformRoom::useMapBytes(std::string bytes, const std::string &title, const CustomGameSetup &setup)
 {
+	automaticMap = false;
 	if (!canEditSetup() || !client || uploading)
 		return;
 	uploading = true;
@@ -995,6 +1020,7 @@ void PlatformRoom::useCatalogMap(const std::string &hash, const std::string &map
 {
 	if (!canEditSetup() || hash.empty())
 		return;
+	automaticMap = false;
 	Json map{{"kind", "catalog"}, {"hash", hash}};
 	if (!mapId.empty())
 		map["mapId"] = mapId;

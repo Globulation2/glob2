@@ -224,10 +224,13 @@ void GameGUITouch::drawHUD()
 	for (const auto &value : gui.smoothedCPULoad)
 		cpu += value;
 	cpu /= GameGUI::SMOOTHED_CPU_SIZE;
-	stats.push_back(
-		{GAGCore::FormattableString(GAGCore::Toolkit::getStringTable()->getString("[CPU load %0]"))
-			 .arg(cpu),
-		 -1, cpu >= 75});
+	// The load reads as jargon ("CPU 100%") and alarms on a phone; it shows only when
+	// the device is struggling, in words.
+	if (cpu >= 75)
+		stats.push_back(
+			{GAGCore::FormattableString(GAGCore::Toolkit::getStringTable()->getString("[device busy %0]"))
+				 .arg(cpu),
+			 -1, true});
 	const int columns = available / unit >= 600 ? 6 : 3;
 	const double cell = std::min(120 * unit, available / columns);
 	const double start = ui.world.x + (available - columns * cell) / 2;

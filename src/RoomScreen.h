@@ -4,10 +4,12 @@
 #include "RoomBackend.h"
 #include "ui/FrontendUI.h"
 #include <ScreenStack.h>
+#include <array>
 #include <deque>
 #include <memory>
 #include <optional>
 #include <string>
+#include <vector>
 
 class MapPreview;
 
@@ -43,10 +45,17 @@ class RoomScreen : public Glob2UI::Screen
 	void openSeat(int seat);
 	void sendChat(const std::string &text);
 	void editSetup(int customGameTab);
+	//! The full custom-game screen in room mode ("More options…", rules).
+	void openCustomGame(int customGameTab);
 	RoomBackend &backend() { return *room; }
 
   protected:
 	void onEscape() override;
+	//! People in the room besides this player (seated or not); AIs do not count.
+	int othersInRoom() const;
+	void leaveNow();
+	//! Adds a chat note when a map change gave the occupied seats new colours.
+	void noticeSeatColours();
 
   private:
 	struct ChatLine
@@ -72,6 +81,12 @@ class RoomScreen : public Glob2UI::Screen
 	std::string copiedKey;
 	Uint32 copiedAt = 0;
 	bool copyFailed = false;
+	// The text a failed copy left on screen, selected for copying by hand.
+	std::string manualCopy;
+	bool confirmingLeave = false;
+	// Occupied seats' colours on the map they were last seen with (noticeSeatColours).
+	std::string seatColoursMap;
+	std::vector<std::optional<std::array<std::uint8_t, 3>>> seatColours;
 
 	void handle(const RoomBackend::Event &event);
 	void launch();
@@ -87,6 +102,8 @@ class RoomScreen : public Glob2UI::Screen
 	Glob2UI::Element rulesPanel(const Glob2UI::Presentation &p);
 	Glob2UI::Element invite(const Glob2UI::Presentation &p, bool phone);
 	Glob2UI::Element chatPanel(const Glob2UI::Presentation &p, bool phone);
+	//! The text a failed copy left behind, selected for copying by hand.
+	Glob2UI::Element manualCopyCard(const Glob2UI::Presentation &p);
 	Glob2UI::Element primaryActions(const Glob2UI::Presentation &p, bool phone);
 	std::string chatText() const;
 };

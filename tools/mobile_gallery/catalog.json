@@ -574,6 +574,12 @@
       "group": "Online screens"
     },
     {
+      "id": "quick-match-searching-casual",
+      "title": "Quick match: casual search",
+      "description": "An unrated search shows no ratings, only the wait and the AI opponent.",
+      "group": "Online screens"
+    },
+    {
       "id": "match-found",
       "title": "Match found",
       "description": "Ranked accept prompt with the 10-second ring, before either player answers.",
@@ -851,6 +857,30 @@
       "id": "room-lan",
       "title": "Room: LAN",
       "description": "The same Room screen on a LAN backend: joining on this network.",
+      "group": "Online play"
+    },
+    {
+      "id": "room-map-picker",
+      "title": "Room: choose a map",
+      "description": "Change map in an online room: fair generated landscapes with previews, size and colonies.",
+      "group": "Online play"
+    },
+    {
+      "id": "room-map-picker-premade",
+      "title": "Room: choose a premade map",
+      "description": "Premade maps with players and size, the selected one previewed.",
+      "group": "Online play"
+    },
+    {
+      "id": "room-map-picker-catalog",
+      "title": "Room: choose a shared map",
+      "description": "The Catalog tab leads to the map browser.",
+      "group": "Online play"
+    },
+    {
+      "id": "room-host-leave",
+      "title": "Room: host leaves",
+      "description": "Leaving closes the room for everyone; Stay is the safe default.",
       "group": "Online play"
     },
     {

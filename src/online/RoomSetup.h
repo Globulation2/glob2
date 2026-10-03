@@ -16,6 +16,7 @@
 
 #include <cstdint>
 #include <string>
+#include <vector>
 
 struct CustomGameSetup;
 
@@ -38,6 +39,13 @@ Json setupTeams(const CustomGameSetup& setup);
 /// room does not carry (game speed, controllers) as they were. Returns false when the
 /// room's map is not a generator this build knows.
 bool applyRoomToSetup(const Json& room, CustomGameSetup& setup);
+/// A new room's map: a 128×128 map for `colonies` from a generator whose homes are fair
+/// by construction (the platform's fair queue pool), at Standard rules. `pick` chooses
+/// the generator, so rooms vary. Two friends get a two-colony map, not the custom
+/// game's last setup (often 256×256 with four colonies).
+CustomGameSetup defaultRoomSetup(int colonies, std::uint32_t pick);
+/// The generators defaultRoomSetup() picks from; each fits 2 and 4 colonies at 128×128.
+const std::vector<std::string>& defaultRoomGenerators();
 /// Rules only (MatchRules JSON), for read-only summaries.
 void applyRulesToSetup(const Json& rules, CustomGameSetup& setup);
 

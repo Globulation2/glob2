@@ -14,6 +14,7 @@
 #include <SDL3_image/SDL_image.h>
 
 #include <algorithm>
+#include <cctype>
 #include <chrono>
 #include <cmath>
 #include <ctime>
@@ -253,6 +254,46 @@ std::string clockText(std::int64_t seconds)
 	else
 		std::snprintf(buffer, sizeof buffer, "%lld:%02lld", (long long)(seconds / 60), (long long)(seconds % 60));
 	return buffer;
+}
+
+std::string aboutText(std::int64_t seconds)
+{
+	if (seconds < 45)
+		return tr("[online under a minute]");
+	return GAGCore::FormattableString(tr("[online about %0 min]")).arg(int(std::max<std::int64_t>(1, (seconds + 30) / 60)));
+}
+
+std::string durationText(std::int64_t seconds)
+{
+	seconds = std::max<std::int64_t>(0, seconds);
+	if (seconds < 60)
+		return GAGCore::FormattableString(tr("[online %0 s]")).arg(int(seconds));
+	return GAGCore::FormattableString(tr("[results minutes %0]")).arg(int((seconds + 30) / 60));
+}
+
+std::string queueDisplayName(const std::string &id, const std::string &name)
+{
+	if (!name.empty())
+		return name;
+	std::string readable = id;
+	for (char &c : readable)
+		if (c == '-')
+			c = ' ';
+	if (!readable.empty())
+		readable[0] = static_cast<char>(std::toupper(static_cast<unsigned char>(readable[0])));
+	return readable;
+}
+
+std::string pairingCode(const std::string &pairing)
+{
+	const auto at = pairing.find("sha256=");
+	if (at == std::string::npos)
+		return {};
+	std::string hex;
+	for (std::size_t i = at + 7; i < pairing.size() && hex.size() < 8; ++i)
+		if (std::isxdigit(static_cast<unsigned char>(pairing[i])))
+			hex += char(std::toupper(static_cast<unsigned char>(pairing[i])));
+	return hex.size() == 8 ? hex.substr(0, 4) + " " + hex.substr(4) : std::string();
 }
 
 std::string generatorTitle(const std::string &generatorId)

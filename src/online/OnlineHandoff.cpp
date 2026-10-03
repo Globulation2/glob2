@@ -1,6 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "OnlineHandoff.h"
 
+#include <algorithm>
+#include <cctype>
+#include <cstdio>
+#include <string>
+
 namespace Online
 {
 namespace
@@ -84,6 +89,30 @@ std::optional<RoomMapChoice> takePendingRoomMap()
 	auto pending = std::move(h.pendingRoomMap);
 	h.pendingRoomMap.reset();
 	return pending;
+}
+
+const std::optional<RoomMapChoice> &pendingRoomMap()
+{
+	return handoffs().pendingRoomMap;
+}
+
+int acceptRoomMapArguments(int argc, char **argv, int index)
+{
+	if (std::string(argv[index]) != "--room-map")
+		return 0;
+	if (index + 3 >= argc)
+		return argc - index;
+	RoomMapChoice choice;
+	choice.mapId = argv[index + 1];
+	choice.hash = argv[index + 2];
+	choice.title = std::string(argv[index + 3]).substr(0, 128);
+	const bool hex = choice.hash.size() == 64 &&
+					 std::all_of(choice.hash.begin(), choice.hash.end(), [](char c) { return std::isxdigit(static_cast<unsigned char>(c)); });
+	if (hex && !choice.mapId.empty() && choice.mapId.size() <= 64)
+		useMapInRoom(choice);
+	else
+		std::fprintf(stderr, "Ignoring invalid --room-map\n");
+	return 4;
 }
 
 void setRematchHandler(RematchHandler handler)
