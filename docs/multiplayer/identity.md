@@ -217,7 +217,7 @@ npm run platform -- admin delete <account> [--reason <text>]
 ```
 
 Only registered accounts can hold a role. Minimal REST endpoints cover what the
-YOG chat commands did; the web admin pages come in M8.
+old YOG lobby's admin chat commands did; the web admin pages come in M8.
 
 | Endpoint | Role | |
 | --- | --- | --- |
