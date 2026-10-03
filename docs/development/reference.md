@@ -40,7 +40,8 @@ python3 test/run_tests.py      # run them; --list, --filter, --tag, --shard
   are in `vcpkg.json` and CI. Check the affected platform jobs rather than assuming
   a successful local build covers another compiler or operating system.
 - The **Steam Windows package** workflow runs manually, as a reusable workflow, or
-  when its packaging files change in a pull request. It builds the MinGW release
+  when the packaging scripts or workflows themselves change in a pull request (game
+  data and build-system changes are covered by the regular Windows CI jobs). It builds the MinGW release
   client and stages `glob2.exe`, its runtime DLL dependency closure, game assets,
   license, and attribution in one depot folder. A separate Windows job downloads
   that artifact and runs a short headless game without the build toolchain. Download

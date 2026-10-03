@@ -51,6 +51,10 @@ class ChangedPathsTest(unittest.TestCase):
         package = (root / ".github/workflows/steam-windows-package.yml").read_text()
         paths = package.split("    paths:\n", 1)[1].split("\npermissions:", 1)[0]
         self.assertNotIn("docs/development/reference.md", paths)
+        # Game data and build-system edits are covered by the Windows CI jobs;
+        # only packaging changes justify the long Steam depot build on a PR.
+        for broad in ("data/**", "scons/**", "SConstruct"):
+            self.assertNotIn(f"- {broad}\n", paths)
         self.assertIn("cancel-in-progress: ${{ github.event_name == 'pull_request' }}", package)
         for filename in ("tools/package_steam_windows.py", "test/test_steam_windows_package.py",
                          ".github/workflows/steam-windows-package.yml"):

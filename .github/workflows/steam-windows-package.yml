@@ -6,13 +6,10 @@ on:
   pull_request:
     paths:
       - .github/workflows/steam-windows-package.yml
-      - SConstruct
-      - scons/**
       - tools/release/windows_runtime.py
       - tools/package_steam_windows.py
       - tools/package_assets.py
       - tools/asset-requirements.txt
-      - data/**
       - test/test_steam_windows_package.py
       - .github/workflows/steam-windows-upload.yml
 
