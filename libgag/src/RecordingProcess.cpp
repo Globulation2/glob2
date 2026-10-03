@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <glob2/BuildConfig.h>
 #include <RecordingProcess.h>
 #include <chrono>
 #include <atomic>

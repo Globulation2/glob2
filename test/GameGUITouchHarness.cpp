@@ -2282,13 +2282,13 @@ class GameGUITouchHarness
 			const auto ui = gui.touch->layout();
 			const auto hud = gui.touch->hudLayout(ui);
 			const auto header = gui.touch->allocationRect();
-			auto near = [](double a, double b) { return std::abs(a - b) < .5; };
-			require(near(header.x, hud.stats.x) && near(header.w, hud.stats.w) &&
-				near(header.y + header.h, hud.minimap.y + hud.minimap.h) &&
+			auto approximatelyEqual = [](double a, double b) { return std::abs(a - b) < .5; };
+			require(approximatelyEqual(header.x, hud.stats.x) && approximatelyEqual(header.w, hud.stats.w) &&
+				approximatelyEqual(header.y + header.h, hud.minimap.y + hud.minimap.h) &&
 				header.y >= hud.stats.y + hud.stats.h,
 				"Row fallback keeps the compact identity below stats beside the minimap");
 			const auto content = gui.touch->panelContent();
-			require(near(content.y, ui.panel.y) && near(content.h, ui.panel.h),
+			require(approximatelyEqual(content.y, ui.panel.y) && approximatelyEqual(content.h, ui.panel.h),
 				"Fallback rows use their full panel; identity consumes no row space");
 			const GAGCore::ViewPoint close{header.x + header.w - 24 * gfx->logicalUnitsPerPoint(),
 				header.y + header.h / 2};
@@ -2360,10 +2360,10 @@ class GameGUITouchHarness
 				require(dialGeometry.center.y - dialGeometry.rings[0].outer * dialGeometry.unit >=
 						hud.minimap.y + hud.minimap.h,
 						"Allocation rings clear the actual inspector minimap bounds");
-				auto near = [](double a, double b) { return std::abs(a - b) < .5; };
-				require(near(identity.x, hud.stats.x) && near(identity.w, hud.stats.w),
+				auto approximatelyEqual = [](double a, double b) { return std::abs(a - b) < .5; };
+				require(approximatelyEqual(identity.x, hud.stats.x) && approximatelyEqual(identity.w, hud.stats.w),
 						"Building identity aligns with the rendered stats width");
-				require(near(identity.y + identity.h, hud.minimap.y + hud.minimap.h) &&
+				require(approximatelyEqual(identity.y + identity.h, hud.minimap.y + hud.minimap.h) &&
 						identity.y >= hud.stats.y + hud.stats.h && identity.x + identity.w < hud.minimap.x,
 						"Building identity sits below stats and beside the minimap, bottom aligned");
 				const double pointUnit = gfx->logicalUnitsPerPoint();
@@ -2400,8 +2400,8 @@ class GameGUITouchHarness
 				globalContainer->settings.thumbSide = Settings::THUMB_LEFT;
 				gui.drawAll(0);
 				const auto mirrored = gui.touch->dialLayout(gui.touch->layout());
-				require(near(mirrored.header.x, identity.x) && near(mirrored.header.y, identity.y) &&
-						near(mirrored.header.w, identity.w), "Header stays aligned with stats for either thumb side");
+				require(approximatelyEqual(mirrored.header.x, identity.x) && approximatelyEqual(mirrored.header.y, identity.y) &&
+						approximatelyEqual(mirrored.header.w, identity.w), "Header stays aligned with stats for either thumb side");
 				gfx->printScreen(width < height ? "building-header-left-portrait.bmp" : width > 600 ? "building-header-left-wide.bmp" : "building-header-left-landscape.bmp");
 				gfx->nextFrame();
 				require(mirrored.geometry.mirrored && std::abs(mirrored.geometry.center.x - ui.safe.x) < 0.5,

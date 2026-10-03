@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <glob2/BuildConfig.h>
 #include <GameplayRecording.h>
 #include "RecordingMetadata.h"
 #include <RecordingProcess.h>

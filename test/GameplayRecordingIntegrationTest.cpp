@@ -3,6 +3,8 @@
 #include "ScopedEnvironment.h"
 #include "Engine.h"
 #include "Application.h"
+#include "FrontendTheme.h"
+#include "MenuColony.h"
 #include "MainMenuScreen.h"
 #include "EndGameScreen.h"
 #include <GameplayRecording.h>
@@ -52,6 +54,9 @@ TEST_SUITE("GameplayRecording.Integration")
 			 .screenFlags = gpu ? GAGCore::GraphicContext::USEGPU : 0u});
 		globals->settings.autosaveGames = false;
 		globals->settings.decorativeAnimations = false;
+		// Application owns this theme throughout menus and gameplay. Keep that
+		// lifetime here so capture includes the real animated colony backdrop.
+		FrontendTheme frontend;
 		const auto root = glob2test::artifactDir();
 		const auto initial = root / "recording-initial.game";
 		const auto video =
@@ -84,7 +89,10 @@ TEST_SUITE("GameplayRecording.Integration")
 					   std::chrono::steady_clock::now() < deadline)
 					show(menu, 20);
 				REQUIRE(recorder.status().state == GAGCore::Recording::State::Recording);
+				REQUIRE(frontend.colony->ready());
+				const auto colonyTick = frontend.colony->tick();
 				show(menu, 200);
+				CHECK(frontend.colony->tick() > colonyTick);
 				REQUIRE(menu.host().find("recording/toggle") != nullptr);
 				globals->gfx->printScreen(glob2test::artifactDirFromWorkingDirectory() +
 										  "/recording-menu.bmp");
