@@ -319,7 +319,8 @@ TEST_SUITE("MatchSetup")
 		CHECK(resolveMatchMap(setup, path) == path);
 		glob2test::TempDir cache("map-cache");
 		fs::copy_file(path, cache.path / (hash + ".map.gz"));
-		CHECK(resolveMatchMap(setup, "", cache.path.string()) == (cache.path / (hash + ".map.gz")).string());
+		// Compared as paths: Windows accepts either separator in the returned name.
+		CHECK(fs::path(resolveMatchMap(setup, "", cache.path.string())) == cache.path / (hash + ".map.gz"));
 		setup.map.hash = std::string(64, '0');
 		CHECK_THROWS_AS(resolveMatchMap(setup, path), MatchSetupError);
 		CHECK_THROWS_AS(resolveMatchMap(setup, "", cache.path.string()), MatchSetupError);
