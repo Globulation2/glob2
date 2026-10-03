@@ -17,6 +17,8 @@
 #include "online/OnlineStorage.h"
 #include <nlohmann/json.hpp>
 #include <fstream>
+#include <algorithm>
+#include <vector>
 #include <SDL3/SDL.h>
 
 GlobalContainer *globalContainer = nullptr;
@@ -77,6 +79,70 @@ int main(int argc, char **argv)
                 skinStorage=Online::makeDirectoryStorage(cache);
                 gui.setColonySkins(std::make_unique<Online::SkinDownloads>(*skinStorage,assignment.at("origin"),assignment.at("matchId"),std::move(tickets)));
                 for(int frame=0;frame<180;++frame){gui.drawAll(0);globalContainer->gfx->nextFrame();SDL_Delay(16);}
+            }
+            if (const char *benchmark = std::getenv("SKIN_PREVIEW_BENCHMARK"))
+            {
+                const char *assets = std::getenv("GLOB2_SKIN_PREVIEW_DIR");
+                if (!assets || !*assets) throw std::runtime_error("Benchmark requires preview assets");
+                auto &appearance = gui.view.render.skinPreview();
+                if (!appearance.ready) throw std::runtime_error("Benchmark meshes unavailable");
+                appearance.textures[1] = std::make_unique<GAGCore::DrawableSurface>(std::string(assets)+"/paint.png");
+                appearance.textures[1]->drawFilledRect(0,0,128,256,GAGCore::Color(100,190,80));
+                globalContainer->settings.clouds = false;
+                globalContainer->settings.cloudShadows = false;
+                globalContainer->settings.unitInterpolation = false;
+                std::vector<Unit *> crowd;
+                for (int y=-8; y<8; ++y)
+                    for (int x=-8; x<8; ++x)
+                    {
+                        const int mx=(team->startPosX+x)&(gui.game.map.getW()-1);
+                        const int my=(team->startPosY+y)&(gui.game.map.getH()-1);
+                        gui.game.map.setMapDiscovered(mx,my,Team::teamNumberToMask(0));
+                        const int index=(y+8)*16+x+8;
+                        for (int type : {index%3 ? WORKER : WARRIOR, EXPLORER})
+                            if (auto *unit=gui.game.addUnit(mx,my,index%2,type,0,0,0,0))
+                            {
+                                unit->direction=index%8;
+                                crowd.push_back(unit);
+                            }
+                    }
+                if (crowd.size()<400) throw std::runtime_error("Crowded scene did not fit the fixture");
+                std::vector<Uint32> classicChecksums;
+                for (bool skinned : {false,true})
+                {
+                    globalContainer->settings.showColonySkins=skinned;
+                    std::vector<double> times;
+                    unsigned long draws=0;
+                    for (unsigned frame=0; frame<45; ++frame)
+                    {
+                        for (unsigned i=0; i<crowd.size(); ++i) crowd[i]->delta=(i*13+frame*8)%256;
+                        const auto checksum=gui.game.checkSum();
+                        if (!skinned) classicChecksums.push_back(checksum);
+                        else if (classicChecksums.at(frame)!=checksum)
+                            throw std::runtime_error("Classic and skinned frame states diverged");
+                        globalContainer->gfx->resetDrawCallCount();
+                        const auto start=SDL_GetPerformanceCounter();
+                        gui.drawAll(0);
+                        const auto count=globalContainer->gfx->getDrawCallCount();
+                        globalContainer->gfx->nextFrame();
+                        if (frame>=5)
+                        {
+                            times.push_back(1000.0*(SDL_GetPerformanceCounter()-start)/SDL_GetPerformanceFrequency());
+                            draws+=count;
+                        }
+                        if (gui.game.checkSum()!=checksum)
+                            throw std::runtime_error("Drawing changed simulation state");
+                    }
+                    double sum=0;for(double elapsed:times)sum+=elapsed;
+                    std::sort(times.begin(),times.end());
+                    std::cout << nlohmann::json{{"mode",skinned?"skinned":"classic"},{"addedUnits",crowd.size()},
+                        {"width",globalContainer->gfx->getW()},{"height",globalContainer->gfx->getH()},
+                        {"frames",times.size()},{"checksumFrames",classicChecksums.size()},{"meanMs",sum/times.size()},{"p95Ms",times[37]},
+                        {"drawsPerFrame",double(draws)/times.size()}}.dump() << std::endl;
+                    gui.drawAll(0);
+                    globalContainer->gfx->printScreen(std::string(benchmark)+(skinned?"-skinned.bmp":"-classic.bmp"));
+                    globalContainer->gfx->nextFrame();
+                }
             }
             if (moderationCapture)
             {

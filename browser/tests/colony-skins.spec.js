@@ -74,10 +74,10 @@ test('live colony meshes render through WebGL2 and survive context restoration',
     });
   }
   const png = [...fs.readFileSync(path.resolve(__dirname, '../../platform/apps/api/assets/skins/stripes.png'))];
-  const packagedShell = path.resolve(__dirname, '../../build/emscripten/client/release/index.html');
-  // Also support `scons target=web web-serial` while the threaded build runs.
-  let shell = fs.existsSync(packagedShell) ? fs.readFileSync(packagedShell, 'utf8')
-    : fs.readFileSync(path.resolve(__dirname, '../shell.html'), 'utf8').replace('{{{ SCRIPT }}}', '<script src="loader.js"></script>');
+  // Use the current production shell even after a serial-only runtime build;
+  // packaging index.html otherwise waits for the threaded runtime too.
+  let shell = fs.readFileSync(path.resolve(__dirname, '../shell.html'), 'utf8')
+    .replace('{{{ SCRIPT }}}', '<script src="loader.js"></script>');
   shell = shell.replace('<head>', `<head><script>history.replaceState(null,'',location.pathname+'?renderer=webgl2&threads=${executionMode}');</script>`);
   shell = shell.replace('preRun: [function() {', `preRun: [function() {
     ENV.GLOB2_SKIN_PREVIEW_DIR='/data/skins/colony-v1';
@@ -100,6 +100,7 @@ test('live colony meshes render through WebGL2 and survive context restoration',
   const manifest = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../data/skins/colony-v1/manifest.json'), 'utf8'));
   for (const name of ['worker-walk.gsk', 'swarm.gsk'])
     await expect.poll(() => page.evaluate(() => globalThis.skinMeshCounts), {timeout:60000}).toContain(manifest.meshes[name].triangles * 3);
+  expect((await state()).assets.skins).toBe('ready');
   expect((await state()).renderContext.error).toBe(0);
   await page.screenshot({path:info.outputPath('colony-skins-webgl2.png')});
   const batching = await page.evaluate(() => ({draws:globalThis.skinDraws,passes:globalThis.skinPasses}));

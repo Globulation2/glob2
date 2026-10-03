@@ -1,11 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ColonySkinPreview.h"
+#include "GlobalContainer.h"
 #include "UnitConsts.h"
 #include "UnitAnimation.h"
 #include "scene/Scene.h"
 #include "BuildingType.h"
 #include "IntBuildingType.h"
 #include <GraphicContext.h>
+#include <ApplicationHost.h>
+#include <algorithm>
 #include <cstdlib>
 #include <iostream>
 #include <Toolkit.h>
@@ -19,7 +22,8 @@ ColonySkinPreview::ColonySkinPreview()
     const char *directory = std::getenv("GLOB2_SKIN_PREVIEW_DIR");
     if (!directory || !*directory) return;
     const std::string root(directory);
-    ready = loadMeshes(root);
+    if (globalContainer && globalContainer->gfx && (globalContainer->gfx->getOptionFlags() & GAGCore::GraphicContext::USEGPU)
+        && GAGCore::ApplicationHost::assetPackageReady("skins")) ready = loadMeshes(root);
     textures[0] = std::make_unique<GAGCore::DrawableSurface>(root + "/paint.png");
     if (textures[0]->getW()!=256 || textures[0]->getH()!=256) textures[0].reset();
 }
@@ -61,16 +65,28 @@ void ColonySkinPreview::setDownloads(std::unique_ptr<Online::SkinDownloads> valu
 }
 void ColonySkinPreview::poll()
 {
-    if(!downloads)return;
-    downloads->poll(static_cast<std::int64_t>(std::time(nullptr)));
-    for(int team:downloads->takeRemoved()) { textures[team].reset(); colors[team].reset(); }
-    for(auto &entry:downloads->takeReady())
+    if (downloads)
     {
-        if(!ready&&!attemptedMeshes){attemptedMeshes=true;ready=loadInstalledMeshes();}
-        auto texture=std::make_unique<GAGCore::DrawableSurface>(entry.path);
-        if(texture->getW()!=256||texture->getH()!=256)continue;
-        textures[entry.skin.team]=std::move(texture);
-        colors[entry.skin.team]=entry.skin.buildingColor;
+        downloads->poll(static_cast<std::int64_t>(std::time(nullptr)));
+        for (int team : downloads->takeRemoved()) { textures[team].reset(); colors[team].reset(); }
+        for (auto &entry : downloads->takeReady())
+        {
+            auto texture = std::make_unique<GAGCore::DrawableSurface>(entry.path);
+            if (texture->getW()!=256 || texture->getH()!=256) continue;
+            textures[entry.skin.team]=std::move(texture);
+            colors[entry.skin.team]=entry.skin.buildingColor;
+        }
+    }
+    if (visible && !ready && !attemptedMeshes && globalContainer && globalContainer->gfx &&
+        (globalContainer->gfx->getOptionFlags() & GAGCore::GraphicContext::USEGPU) &&
+        std::any_of(textures.begin(), textures.end(), [](const auto &texture) { return bool(texture); }))
+    {
+        GAGCore::ApplicationHost::requestAssetPackage("skins");
+        if (GAGCore::ApplicationHost::assetPackageReady("skins"))
+        {
+            attemptedMeshes=true;
+            ready=loadInstalledMeshes();
+        }
     }
 }
 std::optional<std::uint32_t> ColonySkinPreview::buildingColor(int team) const

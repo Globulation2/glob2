@@ -787,7 +787,11 @@ available in Settings > Display and the in-game Options dialog. Turning it off
 immediately restores classic units, swarms and building colors locally; verified
 appearance refreshes continue, so turning it back on uses current authorization.
 Original-derived meshes are installed under
-`data/skins/colony-v1`; they share the web designer's UV layout.
+`data/skins/colony-v1`; they share the web designer's UV layout. The browser
+ships them in an on-demand `skins` package requested when visible paint is
+available. Classic rendering continues during the download; hidden or unskinned
+colonies do not initiate it. Failed package requests retry at most every ten
+seconds without stopping the match.
 
 Online replay recordings and native profile downloads have an optional
 `<recording>.appearance.json` companion containing format version 1, instance

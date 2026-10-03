@@ -139,6 +139,12 @@ Use Tutorial, Campaign, Custom Game or Editor. Clicking the canvas focuses
 keyboard input and enables music. Live resize updates the internal resolution
 at frame boundaries in scheduled browser flows.
 Add `?renderer=software` or `?renderer=webgl2` to the URL to force a renderer.
+Colony skin meshes are a separate `skins` package. It is requested only when
+visible colony paint is available, so unskinned games and the initial menu do
+not download the models. The game continues with classic units while the package
+loads. Repeated frames share the request, and failed downloads retry no more than
+once every ten seconds. Native installations already contain these assets.
+
 `?replay=<url>` downloads a replay while the game loads and opens it in the replay
 viewer (the platform's "Watch in browser"; see
 [match history and the web app](../docs/multiplayer/history-and-web.md#watch-in-browser)).
