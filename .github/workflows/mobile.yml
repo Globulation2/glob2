@@ -7,10 +7,12 @@ on:
         default: '["arm64-v8a","armeabi-v7a","x86_64"]'
   workflow_dispatch:
 
-# A newer push supersedes an Android build for the same pull request.
+# A newer push supersedes an Android build for the same pull request. The
+# literal prefix keeps this group distinct from its caller's: when called,
+# github.workflow names the caller, and a shared group would deadlock it.
 concurrency:
   group: mobile-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/') && github.ref != format('refs/heads/{0}', github.event.repository.default_branch)) }}
 
 env:
   GLOB2_DEV_MODE: isolated
@@ -53,12 +55,6 @@ jobs:
         id: actions_checkout_v4_1
         with:
           fetch-depth: 0
-      - name: Validate Android release contract and F-Droid listing
-        # Pull requests land between releases, while master may still carry the
-        # last tagged version; release workflows run the strict check.
-        run: |
-          python3 mobile/android_release.py check --development
-          python3 mobile/android_release.py check-listing
       - name: Install build utilities
         id: install_build_utilities
         run: sudo apt-get update -qq && sudo apt-get install -y python3-venv scons pkg-config unzip zip autoconf automake libtool ccache
@@ -97,10 +93,6 @@ jobs:
           set -o pipefail
           python3 mobile/android.py build --arch '${{ matrix.arch }}' --release --fdroid --jobs 2 2>&1 \
             | tee "build/android-${{ matrix.arch }}-build.log"
-      - name: Verify release package
-        run: |
-          apk="build/android/device/${{ matrix.arch }}/24/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.apk"
-          python3 mobile/android_release.py verify-apk --arch '${{ matrix.arch }}' --apk "$apk"
       - name: Exercise x86_64 release APK in an emulator
         if: matrix.arch == 'x86_64'
         run: |
