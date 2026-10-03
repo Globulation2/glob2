@@ -55,6 +55,10 @@ and the other files with revalidation. The
 [browser README](../../browser/README.md#game-data-and-loading) describes the core
 and optional packages and how the page loads them.
 
+C++ exceptions use native WebAssembly exception handling (`-fwasm-exceptions`),
+which needs Chrome 95, Firefox 100 or Safari 15.2 or later; it makes the module
+smaller and faster than Emscripten's JavaScript-based handling.
+
 Browser and native multiplayer clients must use the same protocol version.
 Update the client and YOG services together. See the
 [protocol contract](protocol.md) and [secure transport guide](gateway.md).
