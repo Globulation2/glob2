@@ -604,3 +604,59 @@ TEST_SUITE("FarmAreas")
 		CHECK(restored.game.map.checkSum(true) == map.checkSum(true));
 	}
 }
+
+#include "GraphicContext.h"
+// Not a property check: renders the four zones side by side over wheat at the
+// zoom tiers ZoomDetail switches between (pattern, cross-fade, tint), with the
+// classic and the high-resolution artwork, so a reviewer can see the farm overlay
+// reads like the others. Images land in the case's artifact directory.
+TEST_SUITE("FarmAreas")
+{
+TEST_CASE("farm overlay beside the other zones at every zoom tier [display:1024x768][artifacts]")
+{
+	glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{
+		.display = true, .width = 1024, .height = 768, .screenFlags = GAGCore::GraphicContext::PORTABLEGPU});
+	glob2test::HeadlessGame world(options(true, GRASS, 6));
+	Map& map = world.game.map;
+	addWater(map, 6);
+	map.setMapDiscovered();
+	// Four 8x10 bands, left to right: forbidden, guard, clearing, farm, over wheat.
+	for (int y = 22; y < 32; y++)
+		for (int x = 12; x < 44; x++)
+		{
+			setWheat(map, x, y, 1 + (x + y) % 5);
+			const int band = (x - 12) / 8;
+			if (band == 0) map.addForbidden(x, y, 0);
+			if (band == 1) map.addGuardArea(x, y, 0);
+			if (band == 2) map.addClearArea(x, y, 0);
+			if (band == 3) map.addFarmArea(x, y, 0);
+		}
+	map.setDisplayedTeam(0);
+	map.computeDisplayedForbidden(0);
+	map.computeDisplayedGuardArea(0);
+	map.computeDisplayedClearArea(0);
+	map.computeDisplayedFarmArea(0);
+	auto& gui = world.gui;
+	auto* gfx = globalContainer->gfx;
+	gui.viewportResized(gfx->getW(), gfx->getH(), gfx->getW(), gfx->getH());
+	for (bool hd : {false, true})
+	{
+		globalContainer->settings.highResolutionArtwork = hd;
+		gui.updateCamera();
+		for (double zoom : {1.0, 0.5, 0.25, gui.camera.minimumZoom()})
+		{
+			gui.camera.setZoom(zoom, 300, 300);
+			gui.camera.originX = 28 * 32 - gfx->getW() / 2.0 / gui.camera.zoom;
+			gui.camera.originY = 27 * 32 - gfx->getH() / 2.0 / gui.camera.zoom;
+			gui.viewportX = gui.camera.tileX();
+			gui.viewportY = gui.camera.tileY();
+			gui.updateCamera();
+			gui.drawAll(0);
+			gfx->printScreen(glob2test::artifactDirFromWorkingDirectory() + "/zones-" + (hd ? "hd" : "classic") +
+							 "-" + std::to_string(int(zoom * 100)) + ".bmp");
+			gfx->nextFrame();
+		}
+	}
+	CHECK(map.isFarmAreaInDisplayedView(40, 27));
+}
+}

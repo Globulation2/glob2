@@ -24,6 +24,8 @@ def sha(path):
 def category(recipe):
     if recipe.startswith('recovered original'):
         return 'original-derived'
+    if recipe.startswith('hand-authored SVG'):
+        return 'authored'
     if recipe in AI:
         return 'ai-upscaled'
     if recipe in MATERIALS:

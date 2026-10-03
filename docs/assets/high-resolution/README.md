@@ -7,7 +7,8 @@ Other frames retain classic artwork. Partial resource coverage uses standalone
 HD textures; full resource/terrain atlases are supplied by the next pack.
 
 World artwork includes both hives, 3 flags, 5 construction frames, 10 trees, 8 wheat, 5 papyrus,
-completed middle school, first two racetracks and 24 area markers.
+completed middle school, first two racetracks and 24 area markers, plus the
+hand-authored farm-area marker (8 frames drawn as SVG in `datasrc/gfx/authored`).
 
 Build: `python3 tools/artwork/package_runtime.py`.
 Validate: `python3 tools/artwork/validate_runtime.py` and the original family

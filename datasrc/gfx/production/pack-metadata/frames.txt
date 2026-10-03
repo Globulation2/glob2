@@ -43,6 +43,14 @@ area-clearing4 32 32 4 area-clearing4.png -
 area-clearing5 32 32 4 area-clearing5.png -
 area-clearing6 32 32 4 area-clearing6.png -
 area-clearing7 32 32 4 area-clearing7.png -
+area-farm0 32 32 4 area-farm0.png -
+area-farm1 32 32 4 area-farm1.png -
+area-farm2 32 32 4 area-farm2.png -
+area-farm3 32 32 4 area-farm3.png -
+area-farm4 32 32 4 area-farm4.png -
+area-farm5 32 32 4 area-farm5.png -
+area-farm6 32 32 4 area-farm6.png -
+area-farm7 32 32 4 area-farm7.png -
 area-forbidden0 32 32 4 area-forbidden0.png -
 area-forbidden1 32 32 4 area-forbidden1.png -
 area-forbidden2 32 32 4 area-forbidden2.png -
