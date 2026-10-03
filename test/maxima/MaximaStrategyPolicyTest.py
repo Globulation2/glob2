@@ -204,11 +204,12 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
         )
         # Maxima keeps its own copy so it needs no engine change. The engine's
         # GUI limit and the ceiling it enforces when executing the order are
-        # also 20; keep all three pinned to each other.
+        # also 20; keep all three pinned to each other. The executor rejects a
+        # larger request (an untrusted order) instead of asserting on it.
         self.assertIn("#define MAX_UNIT_WORKING 20", gui_header)
         self.assertIn(
             "static constexpr int MAX_BUILDING_WORKER_REQUEST = 20;", game_header
         )
         self.assertIn(
-            "omb.numberRequested <= MAX_BUILDING_WORKER_REQUEST", orders
+            "omb.numberRequested > MAX_BUILDING_WORKER_REQUEST) return;", orders
         )
