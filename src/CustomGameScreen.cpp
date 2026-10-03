@@ -1140,7 +1140,7 @@ Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 		std::snprintf(summary, sizeof summary, "%s %.2f", tr("Fairness").c_str(), quality.fairness);
 		infoRow.push_back(fe::caption(summary));
 		infoRow.push_back(p.touch ? fe::compactButton(
-										"quality/info", tr("[Start quality]"), fe::UIIcon::Info,
+										"quality/info", tr("Start quality"), fe::UIIcon::Info,
 										[this] { showStartQuality(); }, p)
 								  : fe::button("quality/info", "i", [this] { showStartQuality(); },
 											   {false, false, true, false, false, false,
