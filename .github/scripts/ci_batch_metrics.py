@@ -39,14 +39,21 @@ def main():
     state = previous_batch(repo, token)
     measured = set(state['measured'])
     results = {str(row['run_id']): row for row in state['runs']}
+    attempted = 0
     for run in runs:
         identity = f'{run["id"]}:{run.get("run_attempt", 1)}'
         if not requested and identity in measured:
             continue
         if run.get('conclusion') not in ('success', 'failure'):
             continue
+        if attempted >= 10:
+            break
+        attempted += 1
         path = Path(f'artifacts/ci-metrics/{run["id"]}.json')
-        subprocess.run(['python3', '.github/scripts/ci_run_metrics.py', '--run-id', str(run['id']), '--output', str(path)], check=True)
+        outcome = subprocess.run(['python3', '.github/scripts/ci_run_metrics.py', '--run-id', str(run['id']), '--output', str(path)], check=False)
+        if outcome.returncode:
+            print(f'Measurement unavailable for {run["id"]}; retry in a later batch')
+            continue
         observed = json.loads(path.read_text())
         measured.add(identity)
         results.pop(str(run['id']), None)
