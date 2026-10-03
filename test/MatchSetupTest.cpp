@@ -265,6 +265,8 @@ TEST_SUITE("MatchSetup")
 			                     expected.seats.end());
 			for (auto& seat : expected.seats)
 				seat.accountId.reset();
+			// Nor the pause limit: the turn session enforces it, not the game.
+			expected.pauseLimit.reset();
 			CHECK(back.playerCount() == setup.playerCount());
 			for (const auto& team : setup.teams)
 				CHECK(back.teamClosed(team.team) == setup.teamClosed(team.team));
