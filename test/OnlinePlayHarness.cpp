@@ -11,6 +11,8 @@
 //   OnlinePlayHarness quick <origin> <dir>   casual quick match (AI backfill)
 //
 // Environment (all optional):
+//   GLOB2_E2E_OPENGL       1 renders through desktop OpenGL (default software)
+//   GLOB2_E2E_EXPECT_SKINS required authorized colony appearances within 30s of play
 //   GLOB2_E2E_SUDDEN_DEATH   room sudden-death timer in minutes (default 1; 0 = off)
 //   GLOB2_E2E_TEAMS          colonies of the room's generated map (default: the
 //                            room's own); seats nobody takes are closed at the start
@@ -29,6 +31,8 @@
 // keys, as a player would click them. The host's results stage waits until the
 // platform has settled the result (Phase::Done) and reports how long that took.
 #include "CustomGameSetup.h"
+#include "render/ColonySkinPreview.h"
+#include <GraphicContext.h>
 #include "EndGameScreen.h"
 #include "Engine.h"
 #include "Environment.h"
@@ -70,6 +74,7 @@ using namespace GAGGUI;
 namespace
 {
 std::string role, dir;
+ScreenStack *activeScreens = nullptr;
 std::chrono::steady_clock::time_point began;
 
 double seconds()
@@ -102,7 +107,18 @@ std::string envText(const char *name, const std::string &fallback)
 void capture(const std::string &stage)
 {
 	const std::string path = dir + "/" + role + "-" + stage + ".bmp";
-	SDL_SaveBMP(globalContainer->gfx->getSDLSurface(), path.c_str());
+	if (globalContainer->gfx->getOptionFlags() & GAGCore::GraphicContext::USEGPU)
+	{
+		// The CPU surface has no GPU pixels. UI screens repaint here; the
+		// game screen owns its presentation. Capture through GPU readback.
+		if (activeScreens && activeScreens->top()) activeScreens->top()->drawExecution();
+		const std::string filename = role + "-" + stage + ".bmp";
+		globalContainer->gfx->printScreen(filename);
+		std::filesystem::copy_file(GAGCore::Toolkit::getFileManager()->getDir(0) + "/" + filename,
+			path, std::filesystem::copy_options::overwrite_existing);
+	}
+	else
+		SDL_SaveBMP(globalContainer->gfx->getSDLSurface(), path.c_str());
 	say("CAPTURE %s", path.c_str());
 }
 
@@ -223,6 +239,7 @@ void drainRelayConnections()
 int play()
 {
 	ScreenStack screens(*globalContainer->gfx);
+	activeScreens = &screens;
 	auto hubScreen = std::make_unique<OnlineHubScreen>(screens);
 	OnlineHubScreen *hub = hubScreen.get();
 	screens.push(std::move(hubScreen));
@@ -238,6 +255,8 @@ int play()
 		Results,
 		Done
 	} stage = Stage::SigningIn;
+	const int expectedSkins = envInt("GLOB2_E2E_EXPECT_SKINS", 0);
+	bool skinsChecked = expectedSkins == 0;
 	const int suddenDeath = envInt("GLOB2_E2E_SUDDEN_DEATH", 1);
 	const int teams = envInt("GLOB2_E2E_TEAMS", 0);
 	const int guestLeave = envInt("GLOB2_E2E_GUEST_LEAVE", 40);
@@ -266,6 +285,12 @@ int play()
 		switch (stage)
 		{
 		case Stage::SigningIn:
+			if (now - lastShot > 10)
+			{
+				say("SIGNING IN connection=%d link=%d: %s", int(client.connection()), int(hub->model().link), client.lastError().c_str());
+				capture("signing-in");
+				lastShot = now;
+			}
 			if (client.connection() == Online::PlatformClient::Connection::Online && client.account() && hub->model().link == OnlineHubScreen::Model::Link::Online && now - stageAt > 3)
 			{
 				say("signed in as %s (%s) on %s", client.account()->displayName.c_str(), client.account()->kind.c_str(), client.origin().c_str());
@@ -481,6 +506,25 @@ int play()
 			Engine *engine = session ? session->runningEngine() : nullptr;
 			if (engine)
 			{
+				if (!skinsChecked)
+				{
+					int loaded = 0;
+					for (int team = 0; team < 32; ++team)
+						if (engine->gui.view.render.skinPreview().buildingColor(team)) ++loaded;
+					if (loaded == expectedSkins)
+					{
+						skinsChecked = true;
+						say("SKINS verified %d authorized colony textures", loaded);
+						capture("authorized-skins");
+					}
+					else if (now - stageAt > 30)
+					{
+						say("FAIL: expected %d colony textures, received %d", expectedSkins, loaded);
+						rc = 1;
+						stage = Stage::Done;
+						break;
+					}
+				}
 				if (!seatsShown && engine->gui.game.stepCounter > 50)
 				{
 					// Who plays which colony, and which colonies are closed (no player).
@@ -629,7 +673,9 @@ int play()
 		screens.frame(SDL_GetTicks(), events);
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 	}
+	if (!skinsChecked) rc = 1;
 	drainRelayConnections();
+	activeScreens = nullptr;
 	say("%s", rc ? "FAIL" : "PASS");
 	return rc;
 }
@@ -660,7 +706,7 @@ int main(int argc, char **argv)
 		globals.fileManager->addWriteSubdir(sub);
 	globals.settings.screenWidth = 1280;
 	globals.settings.screenHeight = 800;
-	globals.settings.screenFlags = 0;
+	globals.settings.screenFlags = envInt("GLOB2_E2E_OPENGL", 0) ? GAGCore::GraphicContext::USEGPU : 0;
 	globals.settings.mute = true;
 	globals.settings.language = "en";
 	globals.load();
