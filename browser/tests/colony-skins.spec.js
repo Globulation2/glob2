@@ -18,7 +18,7 @@ test('live colony meshes render through WebGL2 and survive context restoration',
   const installTracking = () => {
     if (globalThis.__skinTrackingInstalled || typeof WebGL2RenderingContext === 'undefined') return;
     globalThis.__skinTrackingInstalled = true;
-    globalThis.skinDraws = 0; globalThis.skinPasses = 0; globalThis.skinMeshCounts = [];
+    globalThis.skinComposites = 0; globalThis.skinDraws = 0; globalThis.skinPasses = 0; globalThis.skinMeshCounts = [];
     let framebufferEpoch = 0, lastSkinEpoch = -1;
     const record = (count, epoch) => {
       globalThis.skinDraws++;
@@ -31,6 +31,7 @@ test('live colony meshes render through WebGL2 and survive context restoration',
         constructor(...args) {
           super(...args);
           this.addEventListener('message', event => {
+            if (event.data?.glob2SkinTestComposite) { event.stopImmediatePropagation(); globalThis.skinComposites++; }
             if (event.data?.glob2SkinTestDraw) {
               event.stopImmediatePropagation();
               record(event.data.count, event.data.epoch);
@@ -39,6 +40,7 @@ test('live colony meshes render through WebGL2 and survive context restoration',
         }
       };
     }
+    const atlases = new WeakSet();
     const shaders = new WeakSet(), programs = new WeakSet(), inspected = new WeakSet();
     const proto = WebGL2RenderingContext.prototype;
     const source = proto.shaderSource, attach = proto.attachShader, draw = proto.drawElements, bind = proto.bindFramebuffer;
@@ -51,6 +53,11 @@ test('live colony meshes render through WebGL2 and survive context restoration',
       if (shaders.has(shader)) programs.add(program);
       return attach.call(this, program, shader);
     };
+    const recordComposite = gl => {
+      if (!atlases.has(gl.getParameter(gl.TEXTURE_BINDING_2D))) return;
+      if (typeof window === 'undefined') globalThis.postMessage({glob2SkinTestComposite:true});
+      else globalThis.skinComposites++;
+    };
     proto.drawElements = function(...args) {
       const program = this.getParameter(this.CURRENT_PROGRAM);
       if (program && !inspected.has(program)) {
@@ -58,10 +65,17 @@ test('live colony meshes render through WebGL2 and survive context restoration',
         if (this.getAttachedShaders(program)?.some(shader => this.getShaderSource(shader)?.includes('surfaceNormal'))) programs.add(program);
       }
       if (programs.has(program)) {
+        const atlas = this.getFramebufferAttachmentParameter(this.FRAMEBUFFER, this.COLOR_ATTACHMENT0, this.FRAMEBUFFER_ATTACHMENT_OBJECT_NAME);
+        if (atlas) atlases.add(atlas);
         if (typeof window === 'undefined') globalThis.postMessage({glob2SkinTestDraw:true,count:args[1],epoch:framebufferEpoch});
         else record(args[1],framebufferEpoch);
-      }
+      } else recordComposite(this);
       return draw.apply(this,args);
+    };
+    const arrays = proto.drawArrays;
+    proto.drawArrays = function(...args) {
+      recordComposite(this);
+      return arrays.apply(this,args);
     };
   };
   await page.addInitScript(installTracking);
@@ -95,7 +109,6 @@ test('live colony meshes render through WebGL2 and survive context restoration',
   await expect.poll(async () => (await state()).screen).toContain('CustomGameScreen');
   await clickCustomGameStart(page);
   await expect.poll(async () => (await state()).screen, {timeout:120000}).toContain('match');
-  await page.evaluate(() => {globalThis.skinDraws=0;globalThis.skinPasses=0;globalThis.skinMeshCounts=[];});
   await expect.poll(() => page.evaluate(() => globalThis.skinDraws), {timeout:60000}).toBeGreaterThan(5);
   const manifest = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../data/skins/colony-v1/manifest.json'), 'utf8'));
   for (const name of ['worker-walk.gsk', 'swarm.gsk'])
@@ -105,13 +118,13 @@ test('live colony meshes render through WebGL2 and survive context restoration',
   await page.screenshot({path:info.outputPath('colony-skins-webgl2.png')});
   const batching = await page.evaluate(() => ({draws:globalThis.skinDraws,passes:globalThis.skinPasses}));
   expect(batching.draws).toBeGreaterThan(batching.passes);
-  const before = await page.evaluate(() => globalThis.skinDraws);
+  const before = await page.evaluate(() => globalThis.skinComposites);
   await page.evaluate(() => Module._glob2_context_action(0));
   await expect.poll(async () => (await state()).contextLost).toBe(true);
   await page.waitForTimeout(300);
   await page.evaluate(() => Module._glob2_context_action(1));
   await expect.poll(async () => (await state()).contextRestores, {timeout:30000}).toBeGreaterThan(0);
-  await expect.poll(() => page.evaluate(() => globalThis.skinDraws), {timeout:30000}).toBeGreaterThan(before + 5);
+  await expect.poll(() => page.evaluate(() => globalThis.skinComposites), {timeout:30000}).toBeGreaterThan(before + 5);
   expect((await state()).renderContext.error).toBe(0);
   await page.screenshot({path:info.outputPath('colony-skins-restored.png')});
   await page.locator('#canvas').press('Escape', {delay:80});
@@ -123,15 +136,15 @@ test('live colony meshes render through WebGL2 and survive context restoration',
   // Let any already-posted threaded draw evidence drain before checking that
   // classic sprites have completely replaced the mesh pass.
   await page.waitForTimeout(500);
-  const hiddenDraws = await page.evaluate(() => globalThis.skinDraws);
+  const hiddenDraws = await page.evaluate(() => globalThis.skinComposites);
   await page.waitForTimeout(500);
-  expect(await page.evaluate(() => globalThis.skinDraws)).toBe(hiddenDraws);
+  expect(await page.evaluate(() => globalThis.skinComposites)).toBe(hiddenDraws);
   await page.screenshot({path:info.outputPath('colony-skins-hidden.png')});
   await page.locator('#canvas').press('Escape', {delay:80});
   await clickControl(page, 'options');
   await clickControl(page, 'colony-skins');
   await clickControl(page, 'ok');
-  await expect.poll(() => page.evaluate(() => globalThis.skinDraws)).toBeGreaterThan(hiddenDraws + 5);
+  await expect.poll(() => page.evaluate(() => globalThis.skinComposites)).toBeGreaterThan(hiddenDraws + 5);
   await page.screenshot({path:info.outputPath('colony-skins-shown-again.png')});
   expect(errors).toEqual([]);
 });

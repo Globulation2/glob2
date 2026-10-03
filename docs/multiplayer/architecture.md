@@ -806,17 +806,19 @@ recording. Browser watch links create the same temporary companion only for the
 hosting instance's exact match-replay route, without cross-origin redirects.
 
 The live mesh renderer supports desktop OpenGL and WebGL2. A visible-scene
-prepass rasterizes distinct mesh/pose/paint combinations into frame atlases before
-map drawing. Identical units and wrapped copies reuse those tiles, while their
+prepass rasterizes missing mesh/pose/paint combinations into persistent atlases
+before map drawing. A least-recently-used cache holds at most 1,024 tiles across
+four 2,048-square RGBA pages and a shared depth attachment (80 MiB maximum).
+Paint revisions, mesh reloads and fresh texture lifetimes get distinct keys;
+context teardown discards the cache. The prepass protects visible hits before
+evicting old tiles, and overflow draws regenerate evicted poses on demand.
+Identical units, wrapped copies and subsequent frames reuse those tiles, while their
 composites retain the original ground-unit/building/air-unit order and visibility
 rules. Unit meshes retain the original action/direction shadow layer beneath
 the live geometry, using the same logical canvas (including HD shadow art when
 available). The layer is emitted only after a mesh tile is ready, so fallback
 cannot draw it twice. Requests are sorted by mesh and pose to share geometry uploads between
-team textures. Up to four 2048×2048 color pages use 128×128 tiles and one shared
-depth attachment (at most about 80 MiB of attachment storage). Standalone draws
-and overflow rebuild live tiles with invalidated lookups rather than sample
-replaced content. WebGL2 uses explicit GLSL ES shaders and an interleaved vertex
+team textures. WebGL2 uses explicit GLSL ES shaders and an interleaved vertex
 buffer; both backends restore the map renderer's state after the prepass. Context restoration recreates these resources
 from retained meshes and paint. Native mobile rendering, live spectator
 attachment and full performance validation remain required

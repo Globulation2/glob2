@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GraphicContextPrivate.h"
 #include <SkinMesh.h>
+#include <PerformanceTelemetry.h>
 #include <algorithm>
 #include <cstring>
 
@@ -34,7 +35,7 @@ namespace
 {
 constexpr unsigned TileSize = 128, AtlasSize = 2048;
 constexpr unsigned Columns = AtlasSize / TileSize, SlotsPerPage = Columns * Columns;
-constexpr unsigned MaxPages = 4, MaxSlots = SlotsPerPage * MaxPages;
+constexpr unsigned MaxPages = 4, MaxSlots = SkinAtlasCache::Capacity;
 constexpr float Padding = 1.25f;
 GLuint compileShader(GLenum type, const char *source)
 {
@@ -114,7 +115,7 @@ struct SkinGLState
 auto keyFor(const SkinMeshRequest &request)
 {
     return std::make_tuple(request.mesh->identity, request.frame,
-        reinterpret_cast<std::uintptr_t>(request.texture), request.texture->contentRevision());
+        request.texture->lifetimeIdentity(), request.texture->contentRevision());
 }
 bool valid(const SkinMeshRequest &request)
 {
@@ -137,8 +138,8 @@ void GraphicContext::destroySkinRenderer()
 }
 void GraphicContext::prepareSkinMeshes(const std::vector<SkinMeshRequest> &requests)
 {
+    PERF_SCOPE_TIME(SkinPrepare);
     auto &r = skinResources;
-    r.slots.clear();
     if (!context || renderer || requests.empty() || (r.attempted && !r.program)) return;
 #ifndef GLOB2_WEBGL2
     if (glState.isTextureSRectangle) return;
@@ -150,6 +151,12 @@ void GraphicContext::prepareSkinMeshes(const std::vector<SkinMeshRequest> &reque
     std::map<SkinResources::Key, SkinMeshRequest> unique;
     for (const auto &request : requests)
         if (valid(request) && request.texture->sdlsurface) unique.emplace(keyFor(request), request);
+    if (unique.empty()) return;
+    // Keep the working set bounded; protect all visible hits before replacing
+    // old tiles. Overflow draws take the same eviction path on demand.
+    while (unique.size() > MaxSlots) unique.erase(std::prev(unique.end()));
+    for (auto it = unique.begin(); it != unique.end(); )
+        if (r.slots.touch(it->first)) it = unique.erase(it); else ++it;
     if (unique.empty()) return;
     Sprite::flushBatches(this);
     for (const auto &[key, request] : unique)
@@ -199,8 +206,7 @@ void GraphicContext::prepareSkinMeshes(const std::vector<SkinMeshRequest> &reque
         glGenBuffers(1, &r.uv);
 #endif
     }
-    const unsigned pages = std::min(MaxPages, static_cast<unsigned>((unique.size()+SlotsPerPage-1)/SlotsPerPage));
-    const auto existingPages = r.colors.size();
+    const unsigned pages = std::min(MaxPages, static_cast<unsigned>((r.slots.size()+unique.size()+SlotsPerPage-1)/SlotsPerPage));
     while (r.colors.size() < pages)
     {
         GLuint color = 0; glGenTextures(1, &color); glBindTexture(GL_TEXTURE_2D, color);
@@ -222,29 +228,26 @@ void GraphicContext::prepareSkinMeshes(const std::vector<SkinMeshRequest> &reque
     glClearDepth(1);
 #endif
     glUseProgram(r.program); glUniform1i(glGetUniformLocation(r.program, "paint"), 0);
-    unsigned slot = 0;
+    unsigned boundPage = ~0u;
     for (const auto &[key, request] : unique)
     {
-        if (slot == MaxSlots) break;
         if (!request.texture->texture) continue;
-        if (slot % SlotsPerPage == 0)
+        const unsigned slot = r.slots.reserve(key);
+        const unsigned page = slot / SlotsPerPage;
+        if (page != boundPage)
         {
-            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, r.colors[slot/SlotsPerPage], 0);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, r.colors[page], 0);
             if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
             { destroySkinRenderer(); skinResources.attempted = true; return; }
-            // New pages start fully transparent. Later passes only clear their
-            // occupied rows, including when standalone draws need one tile.
-            if (slot/SlotsPerPage < existingPages)
-            {
-                const auto used = std::min<std::size_t>(SlotsPerPage,unique.size()-slot);
-                glEnable(GL_SCISSOR_TEST);
-                glScissor(0,0,std::min<std::size_t>(Columns,used)*TileSize,
-                    ((used+Columns-1)/Columns)*TileSize);
-            }
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            glDisable(GL_SCISSOR_TEST);
+            boundPage = page;
         }
+        // Preserve other cached poses, including the transparent tile border.
+        const unsigned tile = slot % SlotsPerPage;
+        glEnable(GL_SCISSOR_TEST);
+        glScissor((tile%Columns)*TileSize, (tile/Columns)*TileSize, TileSize, TileSize);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         const auto &mesh = *request.mesh;
+        PerformanceTelemetry::Scope geometryTime(PerformanceTelemetry::Id::SkinGeometry);
         if (r.meshIdentity != mesh.identity)
         {
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, r.indices);
@@ -284,35 +287,36 @@ void GraphicContext::prepareSkinMeshes(const std::vector<SkinMeshRequest> &reque
         glBindBuffer(GL_ARRAY_BUFFER,r.uv); glEnableClientState(GL_TEXTURE_COORD_ARRAY);
         glTexCoordPointer(2,GL_FLOAT,0,nullptr);
 #endif
-        const unsigned tile = slot % SlotsPerPage;
+        geometryTime.stop();
+        PERF_SCOPE_TIME(SkinRaster);
         glViewport((tile%Columns)*TileSize, (tile/Columns)*TileSize, TileSize, TileSize);
         glBindTexture(GL_TEXTURE_2D, request.texture->texture);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, r.indices);
         glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, nullptr);
-        r.slots.emplace(key, slot++); ++drawCalls;
+        ++drawCalls;
     }
 }
 bool GraphicContext::drawSkinMesh(const SkinMesh &mesh, unsigned frame, DrawableSurface &texture,
                                   float x, float y, float w, float h, DrawableSurface *underlay)
 {
+    PERF_SCOPE_TIME(SkinComposite);
     const SkinMeshRequest request{&mesh, frame, &texture};
     if (!valid(request) || !texture.sdlsurface) return false;
     const auto key = keyFor(request);
     auto &r = skinResources;
     auto found = r.slots.find(key);
-    if (found == r.slots.end())
+    if (!found)
     {
-        // Standalone previews and extremely crowded overflow remain live. Rebuilding
-        // invalidates all lookups, so a later draw can never sample replaced paint.
+        // Standalone and overflow draws evict one least-recently-used tile.
         prepareSkinMeshes({request});
         found = r.slots.find(key);
-        if (found == r.slots.end()) return false;
+        if (!found) return false;
     }
     // Draw the original ground shadow only after confirming the mesh can
     // render. A failed mesh draw must leave the classic fallback untouched.
     if (underlay) drawSurface(x, y, w, h, underlay);
     Sprite::flushBatches(this);
-    const unsigned slot = found->second, tile = slot % SlotsPerPage;
+    const unsigned slot = *found, tile = slot % SlotsPerPage;
     const float u = float(tile%Columns)/Columns, v = float(tile/Columns)/Columns;
     const float extent = 1.f/Columns;
     glUseProgram(0); glState.doTexture(true); glState.setTexture(r.colors[slot/SlotsPerPage]);

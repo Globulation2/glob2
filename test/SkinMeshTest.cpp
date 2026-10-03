@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
 #include <SkinMesh.h>
+#include <SkinAtlasCache.h>
 #include <StreamBackend.h>
 #include <bit>
 #include <cstdint>
@@ -95,5 +96,37 @@ TEST_SUITE("SkinMesh")
         REQUIRE(mesh.load(path.string(),error));
         CHECK(mesh.identity!=identity);
         CHECK(error.empty());
+    }
+}
+
+TEST_SUITE("SkinAtlasCache")
+{
+    TEST_CASE("visible hits survive a full atlas eviction batch")
+    {
+        GAGCore::SkinAtlasCache cache;
+        using Key = GAGCore::SkinAtlasCache::Key;
+        for (unsigned i=0; i<cache.Capacity; ++i)
+            CHECK(cache.reserve(Key{1,i,1,1}) == i);
+        // Protect the oldest half before admitting an equally large new set.
+        for (unsigned i=0; i<cache.Capacity/2; ++i) REQUIRE(cache.touch(Key{1,i,1,1}));
+        for (unsigned i=0; i<cache.Capacity/2; ++i) cache.reserve(Key{2,i,1,1});
+        CHECK(cache.size() == cache.Capacity);
+        for (unsigned i=0; i<cache.Capacity; ++i)
+            CHECK(cache.find(Key{1,i,1,1}).has_value() == (i<cache.Capacity/2));
+        for (unsigned i=0; i<cache.Capacity/2; ++i) REQUIRE(cache.find(Key{2,i,1,1}));
+    }
+    TEST_CASE("paint revision lifetime mesh and pose are independent cache keys")
+    {
+        GAGCore::SkinAtlasCache cache;
+        cache.reserve({1,0,1,1});
+        CHECK_FALSE(cache.find({1,0,1,2}));
+        CHECK_FALSE(cache.find({1,0,2,1}));
+        CHECK_FALSE(cache.find({2,0,1,1}));
+        CHECK_FALSE(cache.find({1,1,1,1}));
+        CHECK(cache.reserve({1,0,1,1}) == 0);
+        CHECK(cache.size() == 1);
+        cache = {};
+        CHECK_FALSE(cache.find({1,0,1,1}));
+        CHECK(cache.reserve({1,0,1,1}) == 0);
     }
 }

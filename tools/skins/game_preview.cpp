@@ -20,6 +20,7 @@
 #include <algorithm>
 #include <vector>
 #include <SDL3/SDL.h>
+#include <PerformanceTelemetry.h>
 
 GlobalContainer *globalContainer = nullptr;
 
@@ -107,27 +108,35 @@ int main(int argc, char **argv)
                             }
                     }
                 if (crowd.size()<400) throw std::runtime_error("Crowded scene did not fit the fixture");
+                const unsigned frames = std::getenv("SKIN_BENCH_FRAMES") ? std::stoul(std::getenv("SKIN_BENCH_FRAMES")) : 45;
+                const unsigned warmup = std::getenv("SKIN_BENCH_WARMUP") ? std::stoul(std::getenv("SKIN_BENCH_WARMUP")) : 5;
+                if (frames > 10000 || warmup >= frames) throw std::runtime_error("Invalid benchmark frame counts");
                 std::vector<Uint32> classicChecksums;
                 for (bool skinned : {false,true})
                 {
                     globalContainer->settings.showColonySkins=skinned;
                     std::vector<double> times;
                     unsigned long draws=0;
-                    for (unsigned frame=0; frame<45; ++frame)
+                    double coldMs=0;
+                    auto &profile = PerformanceTelemetry::collector();
+                    for (unsigned frame=0; frame<frames; ++frame)
                     {
                         for (unsigned i=0; i<crowd.size(); ++i) crowd[i]->delta=(i*13+frame*8)%256;
                         const auto checksum=gui.game.checkSum();
                         if (!skinned) classicChecksums.push_back(checksum);
                         else if (classicChecksums.at(frame)!=checksum)
                             throw std::runtime_error("Classic and skinned frame states diverged");
+                        if (frame == warmup) profile.reset();
                         globalContainer->gfx->resetDrawCallCount();
                         const auto start=SDL_GetPerformanceCounter();
                         gui.drawAll(0);
                         const auto count=globalContainer->gfx->getDrawCallCount();
                         globalContainer->gfx->nextFrame();
-                        if (frame>=5)
+                        const double elapsedMs=1000.0*(SDL_GetPerformanceCounter()-start)/SDL_GetPerformanceFrequency();
+                        if (frame==0) coldMs=elapsedMs;
+                        if (frame>=warmup)
                         {
-                            times.push_back(1000.0*(SDL_GetPerformanceCounter()-start)/SDL_GetPerformanceFrequency());
+                            times.push_back(elapsedMs);
                             draws+=count;
                         }
                         if (gui.game.checkSum()!=checksum)
@@ -135,9 +144,18 @@ int main(int argc, char **argv)
                     }
                     double sum=0;for(double elapsed:times)sum+=elapsed;
                     std::sort(times.begin(),times.end());
-                    std::cout << nlohmann::json{{"mode",skinned?"skinned":"classic"},{"addedUnits",crowd.size()},
+                    nlohmann::json scopes=nlohmann::json::object();
+                    using PerformanceTelemetry::Id;
+                    for (auto [id,name] : {std::pair{Id::Render,"render"}, {Id::SkinPrepare,"prepare"}, {Id::SkinGeometry,"geometry"}, {Id::SkinRaster,"raster"}, {Id::SkinComposite,"composite"}, {Id::Present,"present"}})
+                    {
+                        auto metric=profile.total[static_cast<unsigned>(id)];
+                        metric.merge(profile.window[static_cast<unsigned>(id)]);
+                        scopes[name]={{"calls",metric.calls},
+                            {"totalMs",metric.time.total/1e6},{"selfMs",metric.self/1e6}};
+                    }
+                    std::cout << nlohmann::json{{"profile",scopes},{"coldMs",coldMs},{"warmup",warmup},{"mode",skinned?"skinned":"classic"},{"addedUnits",crowd.size()},
                         {"width",globalContainer->gfx->getW()},{"height",globalContainer->gfx->getH()},
-                        {"frames",times.size()},{"checksumFrames",classicChecksums.size()},{"meanMs",sum/times.size()},{"p95Ms",times[37]},
+                        {"frames",times.size()},{"checksumFrames",classicChecksums.size()},{"meanMs",sum/times.size()},{"p95Ms",times[std::min(times.size()-1,std::size_t(times.size()*0.95))]},
                         {"drawsPerFrame",double(draws)/times.size()}}.dump() << std::endl;
                     gui.drawAll(0);
                     globalContainer->gfx->printScreen(std::string(benchmark)+(skinned?"-skinned.bmp":"-classic.bmp"));
