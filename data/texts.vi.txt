@@ -4758,3 +4758,7 @@ Quán tính bản đồ
 
 [game draw]
 
+[settings Show colony skins]
+Hiển thị diện mạo thuộc địa
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Tắt để sử dụng đơn vị, bầy đàn và màu công trình cổ điển trên thiết bị này.

@@ -164,12 +164,13 @@ remains applicable.
 ## Experimental live colony skins
 
 The separate developer preview draws team zero's workers, warriors and explorers as textured meshes in
-an otherwise normal map. It is an asset-feasibility experiment: desktop OpenGL
-only, opt-in through `GLOB2_SKIN_PREVIEW_DIR`, with classic rendering on unsupported
+an otherwise normal map. The developer override is opt-in through
+`GLOB2_SKIN_PREVIEW_DIR`, with desktop OpenGL and WebGL2 rendering and classic art on unsupported
 backends or asset failure. It does not change simulation state or save formats.
 Completed swarms also use the preview mesh when available; construction sites
-retain their existing art. Online ownership,
-the web editor and checkout are not implemented by this preview.
+retain their existing art. The override exercises assets without online ownership;
+production assignments, the web designer and checkout are described in
+[the platform architecture](../../docs/multiplayer/architecture.md).
 
 From the repository root, using Blender **3.6.23**:
 
@@ -207,9 +208,29 @@ one static pose or 256 unit poses, logical canvas size), shared UV float pairs, 
 then camera-space position/normal float sextuples for each vertex of each pose.
 UVs use a top-left image origin. Directions and phases follow `unitAnimationFrame`.
 The renderer performs depth-tested mesh rasterization into a transparent GPU
-target, then composites into the existing sprite order. It currently switches
-targets per unit; batching, browser/mobile support, geometry review, shadow
-matching and late-game performance remain release requirements.
+atlas, then composites into the existing sprite order. A visible-scene prepass
+shares identical pose/paint tiles and groups geometry uploads. The atlas uses
+128-pixel cells in up to four 2048-pixel pages, with a shared depth attachment.
+Units retain the source sprite's separate shadow layer under the live mesh; the
+source action, direction and phase select both together. This preserves ground
+contact without tinting the shadow with the purchased paint. The browser
+recreates these resources after context loss. Native mobile support,
+geometry review, shadow matching and late-game performance remain release requirements.
+
+The native comparison tool also provides synthetic GPU benchmarks:
+
+```sh
+build/linux/client/release/src/skin-preview artifacts/skins/units artifacts/skins/repeated --benchmark
+build/linux/client/release/src/skin-preview artifacts/skins/units artifacts/skins/pages --benchmark-pages
+```
+
+Both modes draw 512 units across four paint surfaces. The first uses 128 distinct
+pose/paint combinations; the second uses 512 combinations across two atlas pages.
+Each compares forced immediate rendering against the frame atlas using the same
+128-pixel raster resolution, warms up five frames, and measures forty frames.
+Draw-count assertions catch missing work, and final BMP captures permit pixel
+comparison. Report renderer/hardware and inspect captures alongside timings;
+these isolated measurements do not establish crowded-game performance.
 
 For a full-map comparison, `scons release=1 skin-game-preview` builds a diagnostic
 harness. Set `SKIN_PREVIEW_SAVE` to a saved game with at least two colonies and
@@ -217,6 +238,21 @@ harness. Set `SKIN_PREVIEW_SAVE` to a saved game with at least two colonies and
 It inserts a visible row of four team-zero workers and four team-one workers
 near the first colony, then captures the normal Scene renderer. Toggle
 `GLOB2_SKIN_PREVIEW_DIR` between runs to compare only the replaced workers.
+Set `SKIN_PREVIEW_HIDDEN_CAPTURE` to another relative BMP path to capture the
+same scene with the local **Show colony skins** preference disabled, then enabled
+again (the latter appends `.restored.bmp`). Screenshot paths are relative to the
+game's writable profile. Clouds may animate between frames; use the captures to
+review appearance transitions rather than assert whole-frame pixel equality.
+For live authorization checks, set `SKIN_PREVIEW_ASSIGNMENT` to a JSON file
+containing `origin`, `matchId` and `colonySkins` from a test instance, and set
+`SKIN_PREVIEW_CACHE` to a disposable cache directory. Use fresh assertions.
+`SKIN_PREVIEW_MODERATION_CAPTURE` enables a three-stage capture prefix and adds
+an inn to expose the building color. Also set `SKIN_PREVIEW_PROGRESS` to a local
+JSON progress file. The harness waits up to three minutes for authorized,
+removed and restored appearances, emitting each stage on stdout. Disable the
+skin through the test API after the first stage and restore it after the second;
+it uses the normal one-minute refresh interval. Clouds are disabled in this
+mode to permit a pixel comparison of the original and restored scenes.
 The diagnostic placements are never written back to the supplied save.
 
 The comparison harness also expects `swarm.gsk`. Generate it with Blender

@@ -50,6 +50,7 @@ TEST_SUITE("SettingsGraphics")
 			Settings s; s.load(file);
 			for (auto field : effects) CHECK(s.*field == !reduced);
 			CHECK(s.optionFlags == 128);
+			CHECK(s.showColonySkins);
 			CHECK(s.save(file));
 			Settings reloaded; reloaded.load(file);
 			for (auto field : effects) CHECK(reloaded.*field == !reduced);
@@ -76,6 +77,12 @@ TEST_SUITE("SettingsGraphics")
 #ifndef __EMSCRIPTEN__
 		CHECK(defaults.cloudShadows); CHECK(defaults.fullMagicEffects);
 #endif
+		defaults.showColonySkins = false;
+        defaults.setGraphicsDetail(true);
+        CHECK_FALSE(defaults.showColonySkins);
+        REQUIRE(defaults.save(file));
+        Settings hidden; hidden.load(file);
+        CHECK_FALSE(hidden.showColonySkins);
 		std::filesystem::remove(path);
 	}
 }

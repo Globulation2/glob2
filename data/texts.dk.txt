@@ -4838,3 +4838,7 @@ Kortets fart
 
 [game draw]
 
+[settings Show colony skins]
+Vis koloniernes udseender
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Slå fra for at bruge klassiske enheder, sværme og bygningsfarver på denne enhed.

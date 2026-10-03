@@ -38,6 +38,8 @@ struct MapRenderState
 	//! The cloud field for this view, created on first use.
 	DynamicClouds &clouds();
 	ColonySkinPreview &skinPreview();
+	// Keep match appearance while rebuilding the rest of a reconnect view.
+	void swapSkinPreview(MapRenderState &other);
 	//! The software terrain cache for map, rebuilt when the map was replaced.
 	//! May throw std::bad_alloc; callers fall back to uncached terrain.
 	SoftwareTerrainCache &terrainCache(Uint64 mapIdentity);

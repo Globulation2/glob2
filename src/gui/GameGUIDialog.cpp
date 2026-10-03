@@ -474,6 +474,8 @@ Element InGameOptionScreen::build(const Presentation &p)
 	std::vector<Element> parts;
 	if (!classic())
 		parts.push_back(fe::paragraph(fe::tr("[Options]"), {fe::FontRole::Heading, false, fe::TextAlign::Center}));
+	parts.push_back(fe::toggle("colony-skins", fe::tr("[settings Show colony skins]"), settings.showColonySkins,
+        [this](bool value) { globalContainer->settings.showColonySkins = value; invalidate(); }));
 	parts.push_back(fe::toggle("mute", fe::tr("[Mute]"), settings.mute, [this](bool value) { setMute(value); }));
 	if (!settings.mute)
 	{

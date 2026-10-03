@@ -4762,3 +4762,7 @@ Inerția hărții
 
 [game draw]
 
+[settings Show colony skins]
+Arată aspectele coloniilor
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Dezactivează pentru a folosi unități, roiuri și culori ale clădirilor clasice pe acest dispozitiv.

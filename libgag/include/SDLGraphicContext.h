@@ -27,6 +27,7 @@ namespace GAGCore
 {
     class RenderBatch;
     struct SkinMesh;
+    struct SkinMeshRequest;
 
     class RenderBackend;
     class SoftwareFramePresenter;
@@ -443,8 +444,11 @@ namespace GAGCore
 		// Experimental live mesh renderer, owned by the GL context.
         struct SkinResources
         {
-            unsigned program = 0, framebuffer = 0, color = 0, depth = 0;
-            unsigned poses = 0, uv = 0, indices = 0;
+            unsigned program = 0, framebuffer = 0, depth = 0;
+            std::vector<unsigned> colors;
+            using Key = std::tuple<std::uint64_t, unsigned, std::uintptr_t, std::uint64_t>;
+            std::map<Key, unsigned> slots;
+            unsigned poses = 0, uv = 0, indices = 0, vao = 0;
             std::uint64_t meshIdentity = 0;
             unsigned frame = ~0u;
             bool attempted = false;
@@ -619,9 +623,11 @@ namespace GAGCore
         // Diagnostic comparison switches use the same context and assets.
         void setRenderBatchEnabled(bool enabled);
         bool hasUnitShader() const { return unitShaderProgram != 0; }
+        // Render distinct visible poses before painting the map; composites retain painter order.
+        void prepareSkinMeshes(const std::vector<SkinMeshRequest> &requests);
         // Returns false without drawing when the backend or assets are unavailable.
         bool drawSkinMesh(const SkinMesh &mesh, unsigned frame, DrawableSurface &texture,
-                          float x, float y, float w, float h);
+                          float x, float y, float w, float h, DrawableSurface *underlay = nullptr);
 		
 		virtual void drawAlphaMap(const std::valarray<float> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
 		virtual void drawAlphaMap(const std::valarray<unsigned char> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
@@ -736,6 +742,14 @@ namespace GAGCore
 		bool checkBound(int index);
 		//! Return a rotated drawable surface for actColor, create it if necessary
     public:
+        // The uncolored layer may be retained beneath replacement geometry
+        // (unit sheets store their ground shadows here). The caller sizes it
+        // to the native logical canvas, even when an HD surface is returned.
+        DrawableSurface *baseFrame(unsigned index)
+        {
+            return checkBound(index) ? prepareDrawSurface(index, false, true) : nullptr;
+        }
+
         // Immutable native image access for terrain cache preparation. Team layers
         // need separate composition and therefore are not cacheable here.
         DrawableSurface* nativeFrame(unsigned index) const

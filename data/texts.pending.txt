@@ -651,3 +651,5 @@
 [room map ready body]
 [device busy %0]
 [game draw]
+[settings Show colony skins]
+[settings Turn off to use classic units, swarms and building colors on this device.]

@@ -432,6 +432,12 @@ describe('relays', () => {
       .where('id', '=', matchId)
       .executeTakeFirstOrThrow();
     expect(placed.relay_id).toBe('relay-1');
+    // room.start replies before asynchronous match.start delivery. Consume and
+    // verify that initial delivery before testing the subsequent failover.
+    for (const client of [host.client, guest.client]) {
+      const initial = await client.event('match.start');
+      expect(initial['relayUrl']).toBe('wss://relay-1.relays.test/relay');
+    }
 
     // relay-1 refuses the new match (Reject 5); relay-2 stopped draining.
     const heartbeat = await relayCall(a, 'POST', '/relays/heartbeat', {

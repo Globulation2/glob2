@@ -1,6 +1,20 @@
 // Every schema exported as a JSON Schema file for non-TypeScript consumers,
 // by its stable name. Names are part of the contract: C++ tests and other
 // workstreams refer to fixtures/schemas/<Name>.schema.json.
+import {
+  SkinReportInfo,
+  SkinReportList,
+  SkinReportRequest,
+  ResolveSkinReportRequest,
+  ModerateSkinRequest,
+  SaveSkinDraftRequest,
+  SkinDraft,
+  PublishSkinRequest,
+  EquipSkinRequest,
+  ColonySkinVersion,
+  MatchColonySkin,
+  ColonySkinClaims,
+} from './skins.ts';
 import type { TSchema } from 'typebox';
 import { ErrorBody } from './common.ts';
 import {
@@ -137,6 +151,18 @@ realtimeEntries[realtimeSchemaName('match.start', 'Event')] = {
 };
 
 export const schemaRegistry: Record<string, RegisteredSchema> = {
+  SkinReportInfo: { schema: SkinReportInfo },
+  SkinReportList: { schema: SkinReportList },
+  SkinReportRequest: { schema: SkinReportRequest },
+  ResolveSkinReportRequest: { schema: ResolveSkinReportRequest },
+  ModerateSkinRequest: { schema: ModerateSkinRequest },
+  SaveSkinDraftRequest: { schema: SaveSkinDraftRequest },
+  SkinDraft: { schema: SkinDraft },
+  PublishSkinRequest: { schema: PublishSkinRequest },
+  EquipSkinRequest: { schema: EquipSkinRequest },
+  ColonySkinVersion: { schema: ColonySkinVersion },
+  MatchColonySkin: { schema: MatchColonySkin },
+  ColonySkinClaims: { schema: ColonySkinClaims },
   // Simulation and match description
   SimVersion: { schema: SimVersion },
   GeneratorDescriptor: { schema: GeneratorDescriptor },

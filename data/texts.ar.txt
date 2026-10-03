@@ -4760,3 +4760,7 @@ Emoji
 
 [game draw]
 
+[settings Show colony skins]
+إظهار مظاهر المستعمرات
+[settings Turn off to use classic units, swarms and building colors on this device.]
+عطّل هذا الخيار لاستخدام الوحدات والأسراب وألوان المباني الكلاسيكية على هذا الجهاز.

@@ -14,6 +14,8 @@
 
 #include "Game.h"
 #include "GameGUI.h"
+#include "online/SkinDownloads.h"
+#include "render/ColonySkinPreview.h"
 #include "GameGUITouch.h"
 #include "GameGUIDialog.h"
 #include "GameGUIInternal.h"
@@ -356,4 +358,14 @@ bool GameGUI::zoomMap(double steps,int x,int y)
 void GameGUI::configureLiveSpectatorView()
 {
 	minimap.setMinimapMode(Minimap::HideFOW);
+}
+
+void GameGUI::setColonySkins(std::unique_ptr<Online::SkinDownloads> downloads)
+{
+    view.render.skinPreview().setDownloads(std::move(downloads));
+}
+
+void GameGUI::swapColonyAppearance(MapRenderState &state)
+{
+    view.render.swapSkinPreview(state);
 }

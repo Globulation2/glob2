@@ -1,0 +1,64 @@
+{
+  "format": "GSK1",
+  "layout": "colony-v1",
+  "blender": "3.6.23",
+  "experimental": true,
+  "meshes": {
+    "worker-walk.gsk": {
+      "sha256": "017350e42784ed4a7c11f46e458bf0bd0f2ce4535b475e3877367995295cdfce",
+      "source": "datasrc/gfx/originals/units/glob-worker-walk.blend",
+      "sourceSha256": "c63b1a4ae627147f20911f7c7abe2b61ff8a2b0d6719ade4ee6c3434b3e6d344",
+      "vertices": 1086,
+      "triangles": 1472
+    },
+    "worker-swim.gsk": {
+      "sha256": "63d9fde119d6f7416ceff626dc69dad47ad7c5269d0ae6853af3dfa899f4c2a5",
+      "source": "datasrc/gfx/originals/units/glob-worker-swim.blend",
+      "sourceSha256": "47d23824ec18dce121a39e60a2d584ddfffb2ce63e375fe22cfdaddaaf40b92a",
+      "vertices": 1086,
+      "triangles": 1472
+    },
+    "worker-harvest.gsk": {
+      "sha256": "2dc4067cb77d3e2a03ba9e685d12d750e25f2bcca68a0e67ffe597dedf53734e",
+      "source": "datasrc/gfx/originals/units/glob-worker-harvest.blend",
+      "sourceSha256": "d518ff2528f2043a24548342a1632c510059deab1e7d237177666e0023ee8233",
+      "vertices": 1086,
+      "triangles": 1472
+    },
+    "warrior-walk.gsk": {
+      "sha256": "b7f545acf1234344ad6fa1e63840894a9596df1ea83166fa2c0fab172193f2a9",
+      "source": "datasrc/gfx/originals/units/glob-warrior-walk.blend",
+      "sourceSha256": "f7c9d2f9d2693c4f73c5e5ccea2063fd256509740fe6f755e658511fff744943",
+      "vertices": 816,
+      "triangles": 984
+    },
+    "warrior-swim.gsk": {
+      "sha256": "8181b80fa19022e8a0fcebadaa5805b6b0f70ff33d9846b5b4438630f9821eb5",
+      "source": "datasrc/gfx/originals/units/glob-warrior-swim.blend",
+      "sourceSha256": "f83fab5f221099a35cb12385d3235356d2c43f292cc7a7943ba6f7eb4b29a727",
+      "vertices": 816,
+      "triangles": 984
+    },
+    "warrior-fight.gsk": {
+      "sha256": "0678ac356273aef6aaef5782cdeefe269acbf48f49eeb024154d3131ac66ecd4",
+      "source": "datasrc/gfx/originals/units/glob-warrior-fight.blend",
+      "sourceSha256": "f7997e783103c989539d71b2e94f1f5eb99c124692b2c7f3d63ec1798d1c02ca",
+      "vertices": 816,
+      "triangles": 984
+    },
+    "explorer-fly.gsk": {
+      "sha256": "621792ed5586edfcf249771061160c965e4f6466836a6cea996d888936db2751",
+      "source": "datasrc/gfx/originals/units/explorer.blend",
+      "sourceSha256": "4d6913061c1e25861a12d45cea72f14d5c8bd8ab603158a2e1077cff70cd959d",
+      "vertices": 1330,
+      "triangles": 2076
+    },
+    "swarm.gsk": {
+      "sha256": "d80b808a1625a5970bbdffd12f9658dc6b6eb15937eafcc2170ade67c5f4fb88",
+      "source": "datasrc/gfx/buildings/swarm-trellis.glb",
+      "sourceSha256": "c33fd3b6b54f977ac7a74be391a8ba719b5d340de9aee1517a73ade7cbaa7301",
+      "vertices": 2253,
+      "triangles": 1998
+    }
+  }
+}

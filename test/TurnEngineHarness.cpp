@@ -35,6 +35,7 @@
 #include "ConnectionOverlay.h"
 #include "EndGameScreen.h"
 #include "Engine.h"
+#include "render/ColonySkinPreview.h"
 #include "Game.h"
 #include "GameGUI.h"
 #include "GlobalContainer.h"
@@ -956,11 +957,14 @@ TEST_SUITE("TurnEngineHarness")
 	{
 		glob2test::HeadlessGlobals globals(harnessGlobals());
 		EngineMatch m("FourSquares1", {{20 * MS}, {40 * MS, 20 * MS}, {30 * MS, 10 * MS, 0.01}}, {"castor"});
+        // Model a verified view-owned color already installed before rejoin.
+        m.clients[1]->engine->gui.view.render.skinPreview().colors[1] = 0x123456;
 		m.clients[1]->tamperAtTick = 400;
 		m.run(45 * SECOND);
 		const std::uint32_t end = m.finish();
 		CHECK(m.clients[1]->tampered);
 		CHECK(m.clients[1]->reloads == 1);
+        CHECK(m.clients[1]->engine->gui.view.render.skinPreview().buildingColor(1)==0x123456);
 		REQUIRE(m.clients[1]->lives.size() == 2);
 		// The first run diverged right after the tampered tick and was replaced.
 		const auto& first = m.clients[1]->lives.front();

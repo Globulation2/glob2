@@ -48,6 +48,10 @@
 #include "GlobalContainer.h"
 #include "CampaignEditor.h"
 #include "ReplayWriter.h"
+#include "online/ReplayAppearance.h"
+#include "online/SkinDownloads.h"
+#include "online/OnlineStorage.h"
+#include "online/InstanceConfig.h"
 #include "ReplayReader.h"
 #include "Order.h"
 #include "native.h"
@@ -489,8 +493,13 @@ TEST_SUITE("EngineSession")
 		        require(failed.result() == 2 && getSyncRandState() == rng, "Invalid generation must fail without changing RNG");
 		    }
 		    {
-		        Engine engine;
+		        Online::MemoryStorage skinStorage;
+            Engine engine;
 		        require(engine.initCampaign("maps/balanced.map") == Engine::EE_NO_ERROR, "Replay save fixture failed");
+            engine.setColonySkins(std::make_unique<Online::SkinDownloads>(skinStorage,
+                Online::OFFICIAL_INSTANCE_ORIGIN,"44444444-4444-4444-8444-444444444444",
+                std::vector<Online::SkinDownloads::Ticket>{}));
+            Online::InstanceConfig skinConfig(skinStorage);
 		        auto& writer = *globalContainer->replayWriter;
 		        const auto directory = std::filesystem::path(globalContainer->fileManager->getDir(0)) / "replays";
 		        const auto destination = directory / "Atomic.replay";
@@ -502,11 +511,20 @@ TEST_SUITE("EngineSession")
 		            return std::string(std::istreambuf_iterator<char>(input), {});
 		        };
 		        const auto bytes = read(destination);
+            const auto appearance=Online::readReplayAppearance(*globalContainer->fileManager,destination.string(),skinConfig);
+            require(appearance && appearance->matchId=="44444444-4444-4444-8444-444444444444", "Online replay lost appearance companion");
 		        std::filesystem::create_directory(blocked);
 		        require(!writer.write(blocked.string()), "Replay save accepted a directory");
 		        require(writer.getBuffer()->getPosition() == position, "Failed replay save moved the recording cursor");
 		        require(writer.write(destination.string()) && read(destination) == bytes && !bytes.empty(),
 		            "Replay retry did not preserve the complete recording");
+            const auto observer = writer.getSaveObserver();
+            writer.setSaveObserver({});
+            require(writer.write(destination.string()) && read(destination) == bytes,
+                "Classic overwrite changed recording bytes");
+            require(!std::filesystem::exists(destination.string()+".appearance.json"),
+                "Classic overwrite retained another match's appearance");
+            writer.setSaveObserver(observer);
 		        GameGUI replayGui;
 		        {
 		            // Closed before the rewrites below: Windows cannot replace a file

@@ -4,7 +4,7 @@
 #include <atomic>
 #include <bit>
 #include <cmath>
-#include <fstream>
+#include <StreamBackend.h>
 #include <limits>
 #include <utility>
 
@@ -12,19 +12,24 @@ namespace GAGCore
 {
 bool SkinMesh::load(const std::string &path, std::string &error)
 {
+    FileStreamBackend input(std::fopen(path.c_str(), "rb"));
+    return load(input, error);
+}
+bool SkinMesh::load(StreamBackend &input, std::string &error)
+{
     error.clear();
     auto fail = [&](const char *why) { error = why; return false; };
-    std::ifstream input(path, std::ios::binary | std::ios::ate);
-    if (!input) return fail("cannot open skin mesh");
-    const auto length = input.tellg();
+    if (!input.isValid()) return fail("cannot open skin mesh");
+    input.seekFromEnd(0);
+    const auto length = input.getPosition();
     if (length < 20 || length > 64 * 1024 * 1024) return fail("invalid skin mesh size");
-    input.seekg(0);
+    input.seekFromStart(0);
     std::array<char, 4> magic{};
-    input.read(magic.data(), 4);
+    bool complete = input.readExact(magic.data(), 4);
     if (magic != std::array<char, 4>{'G','S','K','1'}) return fail("unsupported skin mesh format");
     auto word = [&]() {
         std::array<unsigned char, 4> b{};
-        input.read(reinterpret_cast<char*>(b.data()), 4);
+        complete = input.readExact(b.data(), 4) && complete;
         return std::uint32_t(b[0]) | std::uint32_t(b[1]) << 8 |
                std::uint32_t(b[2]) << 16 | std::uint32_t(b[3]) << 24;
     };
@@ -61,7 +66,7 @@ bool SkinMesh::load(const std::string &path, std::string &error)
         if (!std::isfinite(v) || std::abs(v) > (i % 6 < 2 ? 4.f : 1.001f))
             return fail("invalid skin vertex");
     }
-    if (!input) return fail("truncated skin mesh");
+    if (!complete) return fail("truncated skin mesh");
     static std::atomic<std::uint64_t> nextIdentity{1};
     candidate.identity = nextIdentity.fetch_add(1, std::memory_order_relaxed);
     *this = std::move(candidate);

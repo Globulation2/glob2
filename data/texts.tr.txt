@@ -4770,3 +4770,7 @@ Harita ivmesi
 
 [game draw]
 
+[settings Show colony skins]
+Koloni görünümlerini göster
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Bu cihazda klasik birimleri, sürüleri ve bina renklerini kullanmak için kapatın.

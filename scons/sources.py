@@ -594,6 +594,9 @@ CLIENT_SOURCES = (
     'online/RelayProbe.cpp',
     'online/RoomSetup.cpp',
     'online/Sha256.cpp',
+    'online/SkinAuthorization.cpp',
+    'online/SkinDownloads.cpp',
+    'online/ReplayAppearance.cpp',
     'online/SimVersion.cpp',
     'online/UserDirectoryStorage.cpp',
 )

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
 #include <SkinMesh.h>
+#include <StreamBackend.h>
 #include <bit>
 #include <cstdint>
 #include <limits>
@@ -30,6 +31,22 @@ std::string fixture(unsigned frames = 256)
 }
 TEST_SUITE("SkinMesh")
 {
+    TEST_CASE("virtual asset streams use the same bounded decoder")
+    {
+        auto bytes=fixture();
+        GAGCore::MemoryStreamBackend input(bytes.data(),bytes.size());
+        GAGCore::SkinMesh mesh;
+        std::string error;
+        REQUIRE(mesh.load(input,error));
+        CHECK(mesh.frames==256);
+        const auto identity=mesh.identity;
+        bytes.pop_back();
+        GAGCore::MemoryStreamBackend truncated(bytes.data(),bytes.size());
+        CHECK_FALSE(mesh.load(truncated,error));
+        CHECK(mesh.identity==identity);
+        GAGCore::FileStreamBackend missing(nullptr);
+        CHECK_FALSE(mesh.load(missing,error));
+    }
     TEST_CASE("static swarm pose")
     {
         glob2test::TempDir directory("skin-static");

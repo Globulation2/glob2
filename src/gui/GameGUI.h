@@ -3,6 +3,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #pragma once
+namespace Online { class SkinDownloads; }
 #include <MapCamera.h>
 
 #include <InputState.h>
@@ -244,6 +245,8 @@ public:
 	Game game;
 	/// Live network games always use normal speed; replays remain adjustable.
 	bool canChangeGameSpeed() const;
+	void setColonySkins(std::unique_ptr<Online::SkinDownloads> downloads);
+    void swapColonyAppearance(MapRenderState &state);
 	/// The scene this frame draws: the simulation's published scene when the
 	/// simulation runs on its own thread, else the one drawAll extracted.
 	const Scene& drawnScene() const { return publishedScene ? *publishedScene : frameScene; }

@@ -4758,3 +4758,7 @@ Inércia do mapa
 
 [game draw]
 
+[settings Show colony skins]
+Diskouez neuzioù ar cʼholoniennoù
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Diweredekait evit implijout an unanennoù, an hedadoù ha livioù ar savadurioù klasel war an trevnad-mañ.

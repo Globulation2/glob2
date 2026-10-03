@@ -234,6 +234,14 @@ test runner and its browser revisions. Failures retain traces and screenshots
 under `build/browser-test-results`. WebKit automation does not substitute for
 release testing in actual Safari, nor Chromium for Edge.
 
+The colony-skin replay integration test needs the seeded platform e2e server
+(`platform/apps/web/e2e/server.ts`) serving the current browser build. Set
+`GLOB2_TEST_URL` to that server's origin and `GLOB2_SKIN_REPLAY_API=1`, then run
+`replay-skins.spec.js`. It opens the match's actual replay route and requires
+fresh appearance, JWKS and texture requests plus live mesh draws. It does not
+use the developer paint override. The ordinary browser server has no platform
+API, so this case is explicitly skipped there.
+
 Use `GLOB2_TEST_RENDERER=webgl2` or `software` for renderer-sensitive tests.
 Dedicated renderer-contract tests select their own renderer explicitly.
 CI selects software for the full Chromium behavior suite

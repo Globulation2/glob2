@@ -4768,3 +4768,7 @@ Inércia do mapa
 
 [game draw]
 
+[settings Show colony skins]
+Mostrar visuais das colónias
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Desative para usar unidades, enxames e cores de edifícios clássicos neste dispositivo.

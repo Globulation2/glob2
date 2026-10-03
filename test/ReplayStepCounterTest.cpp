@@ -78,7 +78,16 @@ void testWideRoundTrip()
 		for (Uint32 i = 0; i < QUIET_STEPS; i++)
 			writer.advanceStep();
 		writer.pushOrder(std::shared_ptr<Order>(new StepTestOrder()));
+        unsigned observed=0;
+        writer.setSaveObserver([&](const std::string &saved) {
+            CHECK(saved==path);
+            CHECK(std::filesystem::file_size(saved)>0);
+            ++observed;
+            throw std::runtime_error("optional metadata cannot stop recording");
+        });
 		writer.finish();
+        CHECK(observed==1);
+        writer.setSaveObserver({});
 		// ~ReplayWriter appends a second terminator; the reader stops at the
 		// first NullOrder, so it is harmless.
 	}

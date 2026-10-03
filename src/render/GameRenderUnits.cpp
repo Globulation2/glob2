@@ -103,7 +103,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	int decX = (unitSprite->getW(imgid)-32)>>1;
 	int decY = (unitSprite->getH(imgid)-32)>>1;
 	if (!view.render.skinPreview().draw(*globalContainer->gfx, unit->typeNum, unit->team,
-		unit->action, dir, delta, px, py))
+		unit->action, dir, delta, px, py, unitSprite->baseFrame(imgid)))
 		globalContainer->gfx->drawSprite(px-decX, py-decY, unitSprite, imgid);
 
 	// Units the selected building could not hire wear the badge, the same one

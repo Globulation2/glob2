@@ -98,7 +98,10 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 	Sprite *buildingSprite = type->gameSpritePtr;
 	dx = (type->width<<5)-buildingSprite->getW(imgid);
 	dy = (type->height<<5)-buildingSprite->getH(imgid);
-	buildingSprite->setBaseColor(team->color);
+	auto color=team->color;
+    if(view)if(const auto chosen=view->render.skinPreview().buildingColor(team->teamNumber))
+        color=GAGCore::Color((*chosen>>16)&255,(*chosen>>8)&255,*chosen&255);
+    buildingSprite->setBaseColor(color);
 
 	// draw building
 	const bool skinned = view && type->shortTypeNum == IntBuildingType::SWARM_BUILDING

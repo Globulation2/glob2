@@ -4758,3 +4758,7 @@ CPU %0%
 
 [game draw]
 
+[settings Show colony skins]
+显示殖民地外观
+[settings Turn off to use classic units, swarms and building colors on this device.]
+关闭后，此设备将使用经典单位、虫群和建筑颜色。
