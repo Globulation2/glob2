@@ -206,6 +206,22 @@ std::vector<Fixture> fixtures()
 													 m.rooms = Online::Json::array();
 												 });
 		 }},
+		{"online-hub-update", [](GAGGUI::ScreenStack &s)
+		 {
+			 return OnlineUIFixtures::hubFixture(s, [](OnlineHubScreen::Model &m)
+												 {
+													 m.link = OnlineHubScreen::Model::Link::UpdateRequired;
+													 m.outdated = OnlineHubScreen::Model::Outdated::Client;
+												 });
+		 }},
+		{"online-hub-server-behind", [](GAGGUI::ScreenStack &s)
+		 {
+			 return OnlineUIFixtures::hubFixture(s, [](OnlineHubScreen::Model &m)
+												 {
+													 m.link = OnlineHubScreen::Model::Link::UpdateRequired;
+													 m.outdated = OnlineHubScreen::Model::Outdated::Server;
+												 });
+		 }},
 		{"online-hub-trust", [](GAGGUI::ScreenStack &s)
 		 {
 			 auto hub = OnlineUIFixtures::hubFixture(s);

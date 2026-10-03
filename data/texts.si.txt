@@ -3546,6 +3546,18 @@ Zagon zemljevida
 
 [hub update required]
 
+[hub server behind]
+
+[hub server behind at %0]
+
+[hub server behind detail %0]
+
+[hub version mismatch]
+
+[hub version mismatch at %0]
+
+[hub version mismatch detail %0]
+
 [hub versus %0]
 
 [match ai]
@@ -3919,6 +3931,10 @@ Zagon zemljevida
 [qm sign in to play ranked]
 
 [online update required]
+
+[online server behind]
+
+[online version mismatch]
 
 [qm already searching]
 

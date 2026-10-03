@@ -12,6 +12,7 @@
 #endif
 
 #include <algorithm>
+#include <utility>
 
 namespace Online
 {
@@ -380,6 +381,16 @@ void PlatformClient::helloDone(const Response &response, bool withToken)
 	problem.clear();
 	session = response.result.value("sessionId", std::string());
 	simIsSupported = response.result.value("simSupported", false);
+	servedSims.clear();
+	if (auto found = response.result.find("supportedSimVersions"); found != response.result.end() && found->is_array())
+		for (const auto &item : *found)
+			try
+			{
+				servedSims.push_back(SimVersion::fromJson(item));
+			}
+			catch (const std::exception &)
+			{
+			}
 	if (auto found = response.result.find("account"); found != response.result.end())
 		if (auto parsed = Account::fromJson(*found))
 		{
@@ -390,6 +401,24 @@ void PlatformClient::helloDone(const Response &response, bool withToken)
 	resumeHandoff();
 	flushOutbox();
 	changed();
+}
+
+PlatformClient::SimMismatch PlatformClient::simMismatch() const
+{
+	if (simIsSupported)
+		return SimMismatch::None;
+	const auto &mine = options.simVersion;
+	bool anyNewer = false, allOlder = !servedSims.empty();
+	for (const auto &served : servedSims)
+	{
+		const auto theirs = std::make_pair(served.versionMinor, served.netProtocol);
+		const auto ours = std::make_pair(mine.versionMinor, mine.netProtocol);
+		anyNewer = anyNewer || theirs > ours;
+		allOlder = allOlder && theirs < ours;
+	}
+	if (anyNewer)
+		return SimMismatch::ClientBehind;
+	return allOlder ? SimMismatch::ServerBehind : SimMismatch::Unknown;
 }
 
 void PlatformClient::handleText(const std::string &text)

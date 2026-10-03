@@ -25,6 +25,8 @@ ENGINE_SUPPORT = [
 
 # glob2-engine-tests: every client object except the entry point, plus these.
 ENGINE_TESTS = [
+    ('LegacyAIStateTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    'AIStateContinuationTest.cpp',
     # This fixture selects SDL's dummy driver; isolate its client context from display cases.
     'ScreenExecutionHarness.cpp',
     ('AIRecoveryCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),

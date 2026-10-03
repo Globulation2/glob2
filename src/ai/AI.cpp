@@ -166,7 +166,12 @@ bool AI::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 			aiImplementation=new AINull();
 		break;
 		case NUMBI:
-			aiImplementation=new AINumbi(stream, player, versionMinor);
+			aiImplementation=new AINumbi(player);
+			if (!aiImplementation->load(stream, player, versionMinor))
+			{
+				stream->readLeaveSection();
+				return false;
+			}
 		break;
 		case CASTOR:
 			aiImplementation=new AICastor(player);
@@ -186,7 +191,8 @@ bool AI::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 			if (!aiImplementation->load(stream, player, versionMinor)) return false;
 		break;
 		case WARRUSH:
-			aiImplementation=new AIWarrush(stream, player, versionMinor);
+			aiImplementation=new AIWarrush(player);
+			if (!aiImplementation->load(stream, player, versionMinor)) return false;
 		break;
 		case MAXIMA:
 			if(versionMinor<115)

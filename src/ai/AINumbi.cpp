@@ -12,6 +12,7 @@
 #include <sstream>
 
 #include "AINumbi.h"
+#include "AIStateSerialization.h"
 #include "Game.h"
 #include "Order.h"
 #include "Player.h"
@@ -62,6 +63,7 @@ AINumbi::~AINumbi()
 bool AINumbi::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	init(player);
+	GAGCore::BinaryInputStream::CheckedReads checked(stream);
 
 	stream->readEnterSection("AINumbi");
 
@@ -79,9 +81,13 @@ bool AINumbi::load(GAGCore::InputStream *stream, Player *player, Sint32 versionM
 		mainBuilding[bi] = stream->readSint32(oss.str().c_str());
 	}
 
+	if (versionMinor >= AI_NUMBI_SAVE_FORMAT_CONTINUATION)
+		timer = AIStateSerialization::readSint32(stream, "timer");
 	stream->readLeaveSection();
 
-	return true;
+	if (versionMinor >= AI_NUMBI_SAVE_FORMAT_CONTINUATION &&
+		(phaseTime < 0 || timer < 0 || timer > phaseTime)) return false;
+	return stream->isValid();
 }
 
 void AINumbi::save(GAGCore::OutputStream *stream)
@@ -102,6 +108,7 @@ void AINumbi::save(GAGCore::OutputStream *stream)
 		stream->writeSint32(mainBuilding[bi], oss.str().c_str());
 	}
 
+	stream->writeSint32(timer, "timer");
 	stream->writeLeaveSection();
 }
 

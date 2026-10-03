@@ -17,6 +17,9 @@
 
 #pragma once
 
+// First format preserving all controller decision clocks/phase latches.
+static constexpr int AI_NICOWAR_SAVE_FORMAT_CONTINUATION = 132;
+
 // ---------------------------------------------------------------------------
 // Save-format minor-version gates (NewNicowar::load).
 // versionMinor >= 59 enables the bulk of the Nicowar-specific section; >= 60

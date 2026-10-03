@@ -3,6 +3,9 @@
 
 #pragma once
 
+// Persist policy selection and its immutable inference blob.
+static constexpr int AI_CORTEX_SAVE_FORMAT_POLICY_STATE = 132;
+
 #include "CortexConstants.h"
 #include <string>
 

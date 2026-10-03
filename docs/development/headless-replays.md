@@ -390,3 +390,10 @@ This appends the optional rule after existing winning conditions; omit it to pla
 the game out. Evaluation begins at tick 5120 and repeats every 512 ticks. Results
 called by the model report `termination: "win_probability"`. See the
 [model guide](../win-probability-model.md) for calibration and its limits.
+
+Format 132 preserves legacy AI clocks, Nicowar explorer phase latches, Cabino
+specialist/cache state and queued order envelopes, and Cortex learned policy
+selection and weights. The save floor stays 58 and replay floor stays 127;
+fresh-game decision behavior is unchanged. Older saves use historical defaults
+for omitted state, whose original values cannot be recovered. Protocol 54 carries
+the additional continuation fields.

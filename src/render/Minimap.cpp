@@ -30,7 +30,7 @@ Minimap::Minimap(bool nox, int menuWidth, int gameWidth, int xOffset, int yOffse
 {
 	if (nox) return;
 
-  // since the update loop goes by row store that row so we gan draw the gray "radar" line 
+  // Track the next row in the incremental refresh.
 	update_row = -1;
 	// The actual minimap picture to be drawn to.
 	surface=new DrawableSurface(width, height);
@@ -103,9 +103,6 @@ void Minimap::draw(const Scene &drawn, int localteam, int viewportX, int viewpor
 	offset_x = scene->entities.teams[localteam].startPosX - mapW / 2;
 	offset_y = scene->entities.teams[localteam].startPosY - mapH / 2;
 
-	///What row the scan-line ("radar") is to be drawn at
-	int line_row = 0;
-
 	//Render the colorMap and blit the surface
 	if(update_row == -1)
 	{
@@ -122,7 +119,6 @@ void Minimap::draw(const Scene &drawn, int localteam, int viewportX, int viewpor
 		refreshPixelRows(update_row, (update_row + rows_to_render) % (mini_h), localteam);
 		update_row += rows_to_render;
 		update_row %= (mini_h);
-		line_row = update_row;
 	}
 	//Draw the surface
 	globalContainer->gfx->drawSurface(gameWidth-menuWidth+xOffset, yOffset, surface);
@@ -156,10 +152,6 @@ void Minimap::draw(const Scene &drawn, int localteam, int viewportX, int viewpor
 	///is never drawn
 	globalContainer->gfx->drawPixel(endx, endy, 255, 255, 255);
 
-	///Draw the line that shows where the minimap is currently updating
-	if(minimapMode == HideFOW)
-		globalContainer->gfx->drawHorzLine(mini_x, mini_y + line_row , mini_w, 100, 100, 100);
-	
 	///Draw a 1 pixel border around the minimap
 	globalContainer->gfx->drawRect(gameWidth-menuWidth+xOffset-1,
 	                               yOffset-1, 

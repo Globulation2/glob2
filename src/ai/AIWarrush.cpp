@@ -6,6 +6,7 @@
 #include "AITelemetryFields.h"
 #include "AIWarrush.h"
 #include "AIWarrushTuning.h"
+#include "AIStateSerialization.h"
 #include "Building.h"
 #include "Unit.h"
 #include "Game.h"
@@ -88,7 +89,8 @@ AIWarrush::AIWarrush(Player *player)
 
 AIWarrush::AIWarrush(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
-	init(player);
+	if (!load(stream, player, versionMinor))
+		throw std::runtime_error("Invalid Warrush continuation state");
 }
 
 AIWarrush::~AIWarrush()
@@ -98,11 +100,25 @@ AIWarrush::~AIWarrush()
 bool AIWarrush::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	init(player);
-	return true;
+	if (versionMinor >= AI_WARRUSH_SAVE_FORMAT_CONTINUATION)
+	{
+		stream->readEnterSection("AIWarrush");
+		buildingDelay = AIStateSerialization::readSint32(stream, "buildingDelay");
+		areaUpdatingDelay = AIStateSerialization::readSint32(stream, "areaUpdatingDelay");
+		stream->readLeaveSection();
+		if (buildingDelay < 0 || buildingDelay > AI_WARRUSH_BUILDING_DELAY_TICKS ||
+			areaUpdatingDelay < 0 || areaUpdatingDelay > AI_WARRUSH_AREAS_DELAY_TICKS)
+			return false;
+	}
+	return stream->isValid();
 }
 
 void AIWarrush::save(GAGCore::OutputStream *stream)
 {
+	stream->writeEnterSection("AIWarrush");
+	stream->writeSint32(buildingDelay, "buildingDelay");
+	stream->writeSint32(areaUpdatingDelay, "areaUpdatingDelay");
+	stream->writeLeaveSection();
 }
 
 int AIWarrush::numberOfUnitsWithSkillGreaterThanValue(const int skill, const int value)const

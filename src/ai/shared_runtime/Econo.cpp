@@ -25,6 +25,7 @@ Econo::Econo()
 
 bool Econo::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
+	flags_on_enemy.clear();
 	// Binary saves ignore section names; the numeric AI ID remains unchanged.
 	stream->readEnterSection("Econo");
 	timer=stream->readUint32("timer");

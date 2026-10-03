@@ -35,7 +35,7 @@
 namespace Cortex
 {
 	/// Loaded I16F16 net. Holds the architecture plus quantized weights/biases.
-	/// Weights are static after load (no lockstep save/load state). The forward
+	/// Weights are static after load and are saved by the owning controller. The forward
 	/// pass and inference rules are pure functions of their inputs.
 	class CortexNet
 	{
@@ -59,6 +59,10 @@ namespace Cortex
 		/// pinned per net so a wrong-net blob is rejected at load).
 		bool loadFromMemory(const Uint8* data, size_t size,
 		                    int expectIn, int expectOut);
+
+		// Export the loaded immutable model so a resumed AI does not depend on
+		// environment variables or a model file that may have changed.
+		std::vector<Uint8> snapshotBlob() const;
 
 		// --- worker-cap net (ML_CONTRACT.md) -------------------------------------
 		/// The 16 input features in ML_CONTRACT.md order.

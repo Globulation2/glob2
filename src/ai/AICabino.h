@@ -3,6 +3,9 @@
 
 #pragma once
 
+// First format preserving specialist latches, cached fields and complete order envelopes.
+static constexpr int AI_CABINO_SAVE_FORMAT_CONTINUATION = 132;
+
 #include "field/Frontier.h"
 #include <memory>
 
@@ -83,7 +86,10 @@ namespace Cabino
 
 			///Outputs the gradient to the console, warning, very large.
 			void output();
+			void save(GAGCore::OutputStream *stream) const;
+			bool load(GAGCore::InputStream *stream, AICabino& owner);
 		private:
+			friend class GradientManager;
 			bool isSource(unsigned x, unsigned y);
 			bool isObstacle(unsigned x, unsigned y);
 			unsigned width;
@@ -109,6 +115,9 @@ namespace Cabino
 			}
 			Gradient& getGradient(unsigned sources, unsigned obstacles);
 			void updateGradients();
+			void save(GAGCore::OutputStream *stream) const;
+			bool load(GAGCore::InputStream *stream);
+			void clear();
 		private:
 			struct gradientSignature
 			{

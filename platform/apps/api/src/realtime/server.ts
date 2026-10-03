@@ -111,6 +111,7 @@ export async function realtimeRoutes(
         sessionId: connection.id,
         serverTime: new Date().toISOString(),
         simSupported: connection.simSupported,
+        supportedSimVersions: supported.slice(0, 16),
         ...(connection.account
           ? { account: await identity.accounts.selfView(connection.account) }
           : {}),
