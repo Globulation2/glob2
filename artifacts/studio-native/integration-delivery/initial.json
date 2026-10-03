@@ -1,7 +1,7 @@
 {
-  "id": "24b8a1da-6988-4c4c-af57-d0efcd0b5f9f",
-  "thread_id": "dd2d6665-1ab1-4ce2-bccc-4f3d176e6fa2",
-  "account_id": "c6426ca0-1f31-48f7-a44a-67763db4d84e",
+  "id": "94007849-d2f7-42cd-b00c-2b42a22339a1",
+  "thread_id": "51d011bb-66e2-4cca-a5a1-98d114970120",
+  "account_id": "772d8e7a-3fa2-492b-a133-c35498925999",
   "kind": "generate",
   "status": "ready",
   "input": {
@@ -239,7 +239,7 @@
         "74de290fbbbf4a6243c78d97d6adf863fcdbb4398d3456c820e26b97203e7359"
       ]
     },
-    "importJob": "ad08ab9d-6ab4-4c75-b6cc-91eb0702a2d2",
+    "importJob": "d5d53a17-2f3f-4609-8410-4f1db268d2e3",
     "selection": {
       "style": "landscape",
       "examples": [
@@ -308,7 +308,7 @@
         "ponds"
       ]
     },
-    "binaryHash": "185081e226c601610a1d73806fbe17513c5ef63669efd863ccb25d9da6fb03f3",
+    "binaryHash": "e53bbd37ca9e486cde774cc488acad2840f4ee992a53362f9c1d8f790c06cf0e",
     "reportHash": "a0b66df1ccb38e15eb3b84771fcf781dddb09e6d78a552378018b430719e5ca3",
     "simVersion": "128-51-446492266f9626345c402729944b80382878290aaad6d649b9d46e56644ac5f4",
     "submission": {
@@ -328,11 +328,11 @@
     "categoricalHash": "99a2caa07b2fc76ae7cb0d35a5b6e2902e7863e43b2a513a38ec943c98d03158"
   },
   "lease_until": null,
-  "lease": "0d2b01d4-d018-4a65-9ff0-79fbb7ad081e",
-  "map_id": "ded97f0d-1e30-4652-b7be-64382fc8a168",
+  "lease": "dede80a5-629b-4e59-ab30-0fa488135c7d",
+  "map_id": "bdd853a6-dc02-4b5f-9f77-51d50db36c9b",
   "map_hash": "3ddb3bd4ddc2ef792e0add1d8a90b8a3f9c092425f7901e804e5f57d51863385",
   "error": null,
   "charged": true,
-  "created_at": "2026-10-03T12:21:56.940Z",
-  "completed_at": "2026-10-03T12:22:03.395Z"
+  "created_at": "2026-10-03T12:57:58.759Z",
+  "completed_at": "2026-10-03T12:58:12.092Z"
 }

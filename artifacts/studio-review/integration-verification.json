@@ -1,6 +1,6 @@
 {
-  "featureCommit": "e875e6798de258f0790395fa65286be5f04bfd8e",
-  "foundationCommit": "bc8543f273228fe9dabcfac28a423e02453bb848",
+  "featureCommit": "d950f38498dba8c2accf079b4a46e869017b65aa",
+  "foundationCommit": "fdec2e7910d49744ee86dfb5b5f2adfbbe2b3feb",
   "platform": {
     "passed": 412,
     "skipped": 0,
@@ -34,13 +34,20 @@
     "Container startup",
     "Human multiplayer play and competitive balance"
   ],
-  "nativeBuildSource": "70a644e4dd5f1e6ee40cdeb5143b4fbf8c709756",
-  "nativeBuildInputs": "Subsequent foundation changes affect web fixtures, runtime packaging and standalone probes; engine/map/library sources and simulation versions are unchanged.",
+  "nativeBuildSource": "d950f38498dba8c2accf079b4a46e869017b65aa",
+  "nativeBuildInputs": "Rebuilt after moving SDL_net resolver-thread shutdown ahead of graphics teardown; no simulation-source changes.",
   "nativeGeometry": {
     "cases": 63,
     "import": "passed",
     "reload": "passed",
-    "log": "artifacts/merge-native-shapes.log"
+    "log": "artifacts/merge-shutdown-native-shapes.log"
   },
-  "navigationRegression": "Mocked profile fetches finish before querying and clicking the current match row; full native-enabled platform suite passes."
+  "navigationRegression": "Mocked profile fetches finish before querying and clicking the current match row; full native-enabled platform suite passes.",
+  "nativeShutdown": {
+    "windowed": "passed",
+    "goldenTicks": 701,
+    "goldenChecksums": "byte-identical",
+    "tsanSuppression": "removed",
+    "hostedTsan": "pending"
+  }
 }

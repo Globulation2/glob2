@@ -1,0 +1,30 @@
+
+> check
+> npm run lint && npm run typecheck && npm test
+
+
+> lint
+> eslint . && prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!
+
+> typecheck
+> tsc -p tsconfig.json && tsc -p apps/web/tsconfig.json
+
+
+> test
+> vitest run
+
+
+ RUN  v5.0.3 /Users/bradley/.codex/worktrees/ai-map-studio/glob2/platform
+
+
+ Test Files  57 passed (57)
+      Tests  412 passed (412)
+   Start at  08:57:49
+   Duration  46.88s (tests 68%, import 23%, transform 7%, environment 2%)
+
+    Isolate  57 workers spawned · ~366ms startup each (spawn + environment, per file)
+             at least ~2.61s faster with isolate: false — reuses workers across files instead of one per file
+

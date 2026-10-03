@@ -1,12 +1,12 @@
 {
-  "id": "897789d6-18c4-49a0-b303-6de349dd83a5",
-  "thread_id": "dd2d6665-1ab1-4ce2-bccc-4f3d176e6fa2",
-  "account_id": "c6426ca0-1f31-48f7-a44a-67763db4d84e",
+  "id": "fcd08869-e8d3-4919-b4ac-e519ca8af523",
+  "thread_id": "51d011bb-66e2-4cca-a5a1-98d114970120",
+  "account_id": "772d8e7a-3fa2-492b-a133-c35498925999",
   "kind": "generate",
   "status": "ready",
   "input": {
     "brief": "Four homes beside ponds with open routes.",
-    "parent": "24b8a1da-6988-4c4c-af57-d0efcd0b5f9f",
+    "parent": "94007849-d2f7-42cd-b00c-2b42a22339a1",
     "messages": [
       {
         "role": "user",
@@ -240,7 +240,7 @@
         "74de290fbbbf4a6243c78d97d6adf863fcdbb4398d3456c820e26b97203e7359"
       ]
     },
-    "importJob": "bcf4a0e8-f7f9-4c4f-88e7-9493ac97a76b",
+    "importJob": "479c1c25-0bfb-401a-a233-67cffe4fb1f7",
     "selection": {
       "style": "landscape",
       "examples": [
@@ -309,11 +309,11 @@
         "ponds"
       ]
     },
-    "binaryHash": "185081e226c601610a1d73806fbe17513c5ef63669efd863ccb25d9da6fb03f3",
+    "binaryHash": "e53bbd37ca9e486cde774cc488acad2840f4ee992a53362f9c1d8f790c06cf0e",
     "reportHash": "b178afc5c28df53fcf81a42cec0529dbf8a87495660d8bcddabb24bfe2293ed1",
     "simVersion": "128-51-446492266f9626345c402729944b80382878290aaad6d649b9d46e56644ac5f4",
     "submission": {
-      "parent": "24b8a1da-6988-4c4c-af57-d0efcd0b5f9f",
+      "parent": "94007849-d2f7-42cd-b00c-2b42a22339a1",
       "settings": {
         "width": 256,
         "height": 256,
@@ -329,11 +329,11 @@
     "categoricalHash": "99a2caa07b2fc76ae7cb0d35a5b6e2902e7863e43b2a513a38ec943c98d03158"
   },
   "lease_until": null,
-  "lease": "3af138c8-6a70-4c20-b919-a74b564ca482",
-  "map_id": "c2f79752-3648-4516-bdcc-6c215a7d168b",
+  "lease": "4c65a8f9-3d5d-43dc-a1a4-0836cad16dbb",
+  "map_id": "54a2bcd7-c0be-4d81-a10b-7be0764019d7",
   "map_hash": "3ddb3bd4ddc2ef792e0add1d8a90b8a3f9c092425f7901e804e5f57d51863385",
   "error": null,
   "charged": true,
-  "created_at": "2026-10-03T12:22:03.459Z",
-  "completed_at": "2026-10-03T12:22:10.167Z"
+  "created_at": "2026-10-03T12:58:12.213Z",
+  "completed_at": "2026-10-03T12:58:26.188Z"
 }
