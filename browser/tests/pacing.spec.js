@@ -3,7 +3,7 @@ const {test, expect} = require('@playwright/test');
 const fs = require('node:fs');
 const path = require('node:path');
 const {openRuntimeHost} = require('./runtime-host');
-const {clickMainMenu, clickControl, clickListRow} = require('./main-menu');
+const {gameURL, clickMainMenu, clickControl, clickListRow} = require('./main-menu');
 const state = (page) => page.evaluate(() => glob2Diagnostics.snapshot());
 const root = path.resolve(__dirname, '../..');
 const fixture = path.join(root, 'games/cross-replay.game.gz');
@@ -44,7 +44,9 @@ for (const variant of ['serial', 'threaded']) {
         ENV.GLOB2_REPLAY_PATH='/tmp/hosted.replay';ENV.GLOB2_CHECKSUM_SIDECAR='1';
         ENV.GLOB2_CHECKSUM_SIDECAR_MAX_TICKS='1500';`,
       );
-    await openRuntimeHost(page, shell, '?renderer=webgl2&threads=' + variant);
+    const url = new URL(gameURL(), 'http://localhost');
+    url.searchParams.set('threads', variant);
+    await openRuntimeHost(page, shell, url.search);
     await expect.poll(async () => (await state(page)).screen).toContain('MainMenuScreen');
     expect((await state(page)).executionMode).toBe(variant);
     await clickMainMenu(page, 'load');
