@@ -185,6 +185,7 @@ UNIT_TESTS = [
     'MapQueryTest.cpp',
     'MessageRecipientsTest.cpp',
     'OverlayFillTest.cpp',
+    'ZoomDetailTest.cpp',
     'PanelButtonHitTest.cpp',
     'ParticleCrossfadeTest.cpp',
     'PerlinNoiseTest.cpp',
@@ -325,6 +326,7 @@ UNIT_PRODUCTION_SOURCES = [
     '#src/net/turn/TurnTelemetry.cpp',
     '#src/ReplayReader.cpp',
     '#src/ReplayWriter.cpp',
+    '#src/ReplayTelemetry.cpp',
     # Without the client's Brush and Game surfaces: only the byte marshalers are wanted.
     ('#src/OrderModify.cpp', dict(defines=['GLOB2_ORDER_CODEC_ONLY'])),
     ('#src/OrderBuilding.cpp', dict(defines=['GLOB2_ORDER_CODEC_ONLY'])),

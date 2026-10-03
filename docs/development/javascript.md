@@ -13,8 +13,9 @@ and reliability; they do not protect the process against malicious scripts.
 
 Map/save/replay readers also apply [untrusted-file validation](reference.md#untrusted-maps-saved-games-and-replays). Embedded USL cannot load arbitrary local files; these reader checks do not turn either legacy interpreter into a hostile-code sandbox.
 
-The map scenario editor and developer commands can select JavaScript scripts.
-JavaScript AI source is currently configured through the developer commands.
+Use **Settings → Custom AIs** to import a bundled JavaScript AI, then select its
+library entry in local game setup. Desktop authors can link a development file.
+The map scenario editor and developer commands also select JavaScript scripts.
 
 ## Documentation and examples
 
@@ -22,6 +23,9 @@ JavaScript AI source is currently configured through the developer commands.
   numeric values, sentinels, argument ranges, orders and scenario effects.
 - [TypeScript declarations](../../examples/javascript/glob2.d.ts): editor/type
   information for the same boundary. Scripts themselves must be JavaScript.
+- [Profile 2 declarations](../../examples/javascript/glob2-v2.d.ts) and the
+  [complete starter project](https://github.com/Globulation2/glob2-javascript-ai-starter-exampler)
+  cover managed actions, spatial analysis, placement, and telemetry.
 - [AI example](../../examples/javascript/ai.js) and
   [scenario example](../../examples/javascript/scenario.js): standalone modules.
   The [map-reading example](../../examples/javascript/map-read.js) records visible
@@ -31,11 +35,13 @@ JavaScript AI source is currently configured through the developer commands.
 
 ## Write a script
 
-Declare a synchronous `step(ctx)` or `main(ctx)` function. An AI returns one
+Declare a synchronous `step(ctx)` or `main(ctx)` function. A profile 1 AI returns one
 order or nothing; a map script returns an array of effects or nothing. Both use
 the same runtime and read API, with different host-enforced visibility. Ordinary
 top-level variables persist automatically; there is no required state object or
-initialization callback. `export` is optional. Imports are unavailable.
+initialization callback. `export` is optional. Runtime imports are unavailable;
+bundle authoring-time imports into one file. Profile 2 uses managed properties
+and explicit actions, as described below.
 
 ```javascript
 let decisions = 0;
@@ -102,7 +108,7 @@ changes the working directory to the app resource directory. Source options are
 unavailable when resuming with `--load-game`: the save supplies its embedded code.
 
 AI source lives in each player's existing GameHeader AI configuration, prefixed
-by `glob2-js/1\n`. Map source and runtime state live in the existing MapScript
+by `glob2-js/1\n` for profile 1 and `glob2-js/2\n` for profile 2. Map source and runtime state live in the existing MapScript
 payload in JavaScript mode. Saves/replays carry source, not external filenames
 or machine-specific bytecode.
 
@@ -238,8 +244,8 @@ for released format-124 saves and assigns entity identities when loading formats
 58–124. Format-125 saves preserve and validate stored identities and generation
 counters; truncated counter tables are rejected, including missing entries for
 unused entity slots. The minimum save version remains 58.
-Network/YOG protocol 49 combines the scripting wire format with mandatory WSS;
-older protocols are rejected. The replay minimum remains 123. Scripting profile 1 is a
+Network/YOG protocol 51 is checked independently; older protocols are rejected.
+The replay minimum is 127 (the expanded team-capacity format). Scripting profile 1 is a
 separate unpublished contract; its number does not negotiate either engine gate.
 Profile versioning and API-maintenance obligations are in the reference.
 
@@ -300,3 +306,32 @@ Profile 1 remains unpublished while these defects are corrected. The former
 platform-dependent `hypot` result is intentionally replaced by the pinned result;
 its ARM64/x86-64 reproducer is retained as a regression. Released save, replay and
 network acceptance gates remain independent of this draft profile.
+
+## Installing custom AI controllers (profile 2)
+
+Start with the public [JavaScript AI template](https://github.com/Globulation2/glob2-javascript-ai-starter-exampler).
+It contains modular source, pinned build/watch tools, editor declarations, installation
+screenshots, and a compatible engine revision in `engine.json`.
+
+Open **Settings → Custom AIs** and import a bundled `.js` file. Imports are copied
+under `ais/` in the existing user-data directory. Entries have stable identities;
+duplicate display names are allowed. **Update** replaces an entry after validation.
+Failed validation or durable-storage failure retains its prior version. **Validate**
+checks the source again; **Remove** removes the library entry.
+
+Desktop developers can **Link development file** instead. **Relink** changes its
+absolute path, and removal never deletes the external source. Browser and Android
+use byte-based imports; external links are desktop-only. A bundler should publish
+completed builds atomically, as the external example's wrapper does.
+
+Select the library entry for each computer-controlled seat in a local game. Glob2
+reads each selected source once at launch and embeds those bytes. A missing or
+invalid linked file blocks launch with a diagnostic. Rebuilding or updating the
+library affects future games only. Saves and replays carry their original code;
+no source path or installed library is required to resume them. Online distribution
+of custom controllers is outside this feature.
+
+The [profile 2 API](javascript-api.md#custom-ai-profile-2) adds metadata, editable
+properties, queued actions, synchronous native spatial queries, placement, and
+telemetry while preserving profile 1 saves and execution. Save format 129 stores
+profile 2 queues and replay diagnostics; the minimum supported save format remains 58.

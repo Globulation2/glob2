@@ -26,6 +26,7 @@ RELEASE = {
     'flathub-update.yml', 'github-release.yml', 'ios-testflight.yml', 'publish-desktop.yml',
     'release.yml', 'server-image.yml', 'snap-release.yml', 'steam-windows-upload.yml',
     'windows-store-release.yml', 'steam-windows-package.yml', 'mac-app-store.yml',
+    'deploy-online.yml',
 }
 # Not superseded by newer runs, each with its own reason.
 EXEMPT = {

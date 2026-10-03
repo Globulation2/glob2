@@ -9,3 +9,8 @@ GameGUI::GameGUI(bool) {}
 GameGUI::~GameGUI() {}
 bool GameGUI::load(GAGCore::InputStream*, bool) { return false; }
 void GameGUI::save(GAGCore::OutputStream*, const std::string, DeferredGameSHA1*) {}
+
+Game *GameGUI::replayTelemetryGame()
+{
+	return nullptr;
+}

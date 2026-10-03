@@ -1,0 +1,298 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:AccountExport",
+  "title": "AccountExport",
+  "type": "object",
+  "required": [
+    "format",
+    "exportedAt",
+    "instance",
+    "account",
+    "signIn",
+    "entitlements",
+    "moderation",
+    "ratings",
+    "ratingHistory",
+    "matches",
+    "rooms",
+    "matchmaking",
+    "maps"
+  ],
+  "properties": {
+    "format": {
+      "type": "string",
+      "const": "glob2-account-export/1"
+    },
+    "exportedAt": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+      "description": "RFC 3339 date-time."
+    },
+    "instance": {
+      "type": "string",
+      "description": "Public origin of the instance."
+    },
+    "account": {
+      "type": "object",
+      "patternProperties": {
+        "^.*$": {}
+      }
+    },
+    "signIn": {
+      "type": "object",
+      "required": [
+        "identities",
+        "devices",
+        "refreshTokens",
+        "webSessions",
+        "signInAttempts"
+      ],
+      "properties": {
+        "identities": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "patternProperties": {
+              "^.*$": {}
+            }
+          }
+        },
+        "devices": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "patternProperties": {
+              "^.*$": {}
+            }
+          }
+        },
+        "refreshTokens": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "patternProperties": {
+              "^.*$": {}
+            }
+          }
+        },
+        "webSessions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "patternProperties": {
+              "^.*$": {}
+            }
+          }
+        },
+        "signInAttempts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "patternProperties": {
+              "^.*$": {}
+            }
+          }
+        }
+      }
+    },
+    "entitlements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "patternProperties": {
+          "^.*$": {}
+        }
+      }
+    },
+    "moderation": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "patternProperties": {
+          "^.*$": {}
+        }
+      },
+      "description": "Moderation actions about the account (not who took them)."
+    },
+    "ratings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "patternProperties": {
+          "^.*$": {}
+        }
+      }
+    },
+    "ratingHistory": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "patternProperties": {
+          "^.*$": {}
+        }
+      }
+    },
+    "matches": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "patternProperties": {
+          "^.*$": {}
+        }
+      },
+      "description": "Every match the account played, with its seat, result and rating change."
+    },
+    "rooms": {
+      "type": "object",
+      "required": [
+        "hosted",
+        "memberships",
+        "seats",
+        "chat",
+        "kicks"
+      ],
+      "properties": {
+        "hosted": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "patternProperties": {
+              "^.*$": {}
+            }
+          }
+        },
+        "memberships": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "patternProperties": {
+              "^.*$": {}
+            }
+          }
+        },
+        "seats": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "patternProperties": {
+              "^.*$": {}
+            }
+          }
+        },
+        "chat": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "patternProperties": {
+              "^.*$": {}
+            }
+          }
+        },
+        "kicks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "patternProperties": {
+              "^.*$": {}
+            }
+          }
+        }
+      }
+    },
+    "matchmaking": {
+      "type": "object",
+      "required": [
+        "tickets",
+        "cooldowns",
+        "proposals"
+      ],
+      "properties": {
+        "tickets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "patternProperties": {
+              "^.*$": {}
+            }
+          }
+        },
+        "cooldowns": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "patternProperties": {
+              "^.*$": {}
+            }
+          }
+        },
+        "proposals": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "patternProperties": {
+              "^.*$": {}
+            }
+          }
+        }
+      }
+    },
+    "maps": {
+      "type": "object",
+      "required": [
+        "published",
+        "likes",
+        "reports",
+        "uploads",
+        "downloads"
+      ],
+      "properties": {
+        "published": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "patternProperties": {
+              "^.*$": {}
+            }
+          }
+        },
+        "likes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "patternProperties": {
+              "^.*$": {}
+            }
+          }
+        },
+        "reports": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "patternProperties": {
+              "^.*$": {}
+            }
+          }
+        },
+        "uploads": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "patternProperties": {
+              "^.*$": {}
+            }
+          }
+        },
+        "downloads": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "patternProperties": {
+              "^.*$": {}
+            }
+          }
+        }
+      }
+    }
+  },
+  "description": "Everything the instance stores about the signed-in account."
+}

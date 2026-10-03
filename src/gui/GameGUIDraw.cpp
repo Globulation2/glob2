@@ -647,6 +647,8 @@ void GameGUI::drawAll(int team)
 		sceneExtractor.extract(game, sceneRequest(), frameScene);
 	const Scene &scene = drawnScene();
 	view.scene = &scene;
+	view.render.zonesEmphasised = selectionMode==BRUSH_SELECTION;
+	view.render.minimumZoom = camera.minimumZoom();
 	view.render.unitMotion = globalContainer->settings.unitInterpolation && !gamePaused && !hardPause
 		? unitMotionFraction(scene, SDL_GetTicks()) : 0.f;
 	const Uint64 clock = tickClock;
@@ -912,6 +914,7 @@ SceneRequest GameGUI::sceneRequest()
 {
 	SceneRequest request;
 	request.localTeam = localTeamNo;
+	request.spectating = globalContainer->isViewingGame();
 	request.view = clientRequests.latest();
 	if (selectionMode == BUILDING_SELECTION)
 		if (const BuildingRef *b = std::get_if<BuildingRef>(&selection))
@@ -932,4 +935,9 @@ void GameGUI::threadedClientStep(const std::vector<SDL_Event>& events, Uint64 no
 	checkSelection();
 	updateHighlightInGame();
 	step(events, now);
+}
+
+Game *GameGUI::replayTelemetryGame()
+{
+	return &game;
 }

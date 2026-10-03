@@ -77,6 +77,7 @@ public:
 	Sprite *terrainShader = nullptr;
 	Sprite *resources = nullptr;
 	Sprite *resourceMini = nullptr;
+	Sprite *mapIcons = nullptr; //!< strategic-view building and flag icons; see MapOverlayQueue
 	Sprite *areaClearing = nullptr;
 	Sprite *areaForbidden = nullptr;
 	Sprite *areaGuard = nullptr;

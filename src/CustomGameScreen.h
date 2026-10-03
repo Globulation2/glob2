@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "CustomGameSetup.h"
+#include "ai/ScriptLibrary.h"
 #include "MapHeader.h"
 #include "StartQuality.h"
 #include "ui/FrontendUI.h"
@@ -85,6 +86,14 @@ class CustomGameScreen : public Glob2UI::Screen
 	MapHeader mapHeader;
 	GameHeader gameHeader;
 	std::string username, source, message;
+	std::unique_ptr<Online::OnlineStorage> aiStorage;
+	std::unique_ptr<Script::Library> aiLibrary;
+	std::map<std::string, std::string> frozenAIs;
+	std::vector<std::string> aiChoices() const;
+	int aiSelection(int colony) const;
+	void selectAI(int colony, int selection);
+	std::string aiLabel(int colony) const;
+	void freezeAIs();
 	// Serialized bytes of the last successfully generated map (see generateMap()), read
 	// directly by the loader instead of round-tripping through a temporary file.
 	std::shared_ptr<std::string> generatedSnapshot;

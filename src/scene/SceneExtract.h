@@ -13,6 +13,7 @@ class Game;
 struct SceneRequest
 {
 	int localTeam = 0;
+	bool spectating = false;
 	ClientRequests::ClientView view;
 	BuildingRef selectedBuilding;
 	UnitRef selectedUnit;

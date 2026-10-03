@@ -50,6 +50,12 @@ void ReplayWriter::init(const std::string &backend, GameGUI &gui)
 {
 	// Avoid trouble
 	checksum = 0;
+	game = gui.replayTelemetryGame();
+	telemetry = {};
+	telemetryStep = 0;
+	finished = false;
+	if (game)
+		telemetry.capture(*game, 0);
 
 	// Initialise the buffer backend.
 	// Absolute paths (leading '/') bypass FileManager — its dirList prepend
@@ -91,7 +97,16 @@ bool ReplayWriter::isValid() const
 
 void ReplayWriter::advanceStep()
 {
+	if (finished)
+		return;
+	++telemetryStep;
 	stepsSinceLastOrder++;
+}
+
+void ReplayWriter::captureTelemetry()
+{
+	if (game && !finished)
+		telemetry.capture(*game, telemetryStep);
 }
 
 void ReplayWriter::setCheckSum(Uint32 checksum)
@@ -101,7 +116,8 @@ void ReplayWriter::setCheckSum(Uint32 checksum)
 
 void ReplayWriter::pushOrder(std::shared_ptr<Order> order)
 {
-	if (!isValid()) return;
+	if (!isValid() || finished)
+		return;
 	if (order->getOrderType() == ORDER_VOICE_DATA || order->getOrderType() == ORDER_NULL) return;
 
 	// Write the number of steps since last order to this order (can be 0)
@@ -118,13 +134,17 @@ void ReplayWriter::pushOrder(std::shared_ptr<Order> order)
 
 void ReplayWriter::finish()
 {
-	if (!isValid()) return;
+	if (!isValid() || finished)
+		return;
 
 	// Write the number of steps since last order to the end of the replay
 	buffer->writeUint32(stepsSinceLastOrder, "replayStepsSinceLastOrder");
 
 	// We write a NullOrder to mark the end of the replay (like terminating a string with \0)
 	writeOrder(buffer, std::shared_ptr<Order>(new NullOrder()), 0);
+
+	telemetry.write(buffer);
+	finished = true;
 
 	// Flush the buffer now
 	buffer->flush();
@@ -153,8 +173,12 @@ bool ReplayWriter::write(const std::string &filename) const
             file.write(bytes.data(), count, "replayBytes");
             remaining -= count;
         }
-        file.writeUint32(stepsSinceLastOrder, "replayStepsSinceLastOrder");
-        writeOrder(&file, std::shared_ptr<Order>(new NullOrder()), 0);
+		if (!finished)
+		{
+			file.writeUint32(stepsSinceLastOrder, "replayStepsSinceLastOrder");
+			writeOrder(&file, std::shared_ptr<Order>(new NullOrder()), 0);
+			telemetry.write(&file);
+		}
     });
     // Atomic writer failures must not leave the live recording's cursor moved.
     bufferBackend->seekFromStart(pos);

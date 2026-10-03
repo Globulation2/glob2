@@ -256,6 +256,7 @@ public:
 	int topBarSpeedX() const;
 	/// The scene this frame draws: the simulation's published scene when the
 	/// simulation runs on its own thread, else the one drawAll extracted.
+	Game *replayTelemetryGame();
 	const Scene& drawnScene() const { return publishedScene ? *publishedScene : frameScene; }
 	/// Draw scenes published by the simulation thread (null: extract in drawAll).
 	void setPublishedScene(const Scene* scene) { publishedScene = scene; }
@@ -689,7 +690,7 @@ private:
 	// menu related functions
 	enum InGameMenu
 	{
-		IGM_NONE=0,
+		IGM_NONE = 0,
 		IGM_MAIN,
 		IGM_LOAD,
 		IGM_SAVE,
@@ -697,7 +698,8 @@ private:
 		IGM_ALLIANCE,
 		IGM_OBJECTIVES,
 		IGM_END_OF_GAME,
-		IGM_CONFIRM_LEAVE
+		IGM_CONFIRM_LEAVE,
+		IGM_TELEMETRY
 	} inGameMenu;
 	// The dialog receiving input, if any: the menu, the chat composer or the history.
 	Glob2UI::InGameDialog *activeDialog() const;

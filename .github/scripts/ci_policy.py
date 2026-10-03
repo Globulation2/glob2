@@ -28,9 +28,16 @@ RENDER = {'libgag/src/RenderBackend.cpp', 'libgag/src/SoftwareRenderBackend.cpp'
           'libgag/src/SurfaceRaster.cpp'}
 
 
+# The mirror-only deployment of app.glob2online.com (deploy-online.yml runs
+# nothing in this repository) and its scripts, which no image build or CI job runs.
+# Their tests run with the rest of tests/deployment whenever those are selected.
+MIRROR_DEPLOY_FILES = {'.github/workflows/deploy-online.yml', 'deploy/online-deploy.sh',
+                       'deploy/online_remote.py', 'tests/deployment/test_online_deploy.py'}
+
+
 def cheap_path(path):
     return (path.startswith(('docs/', 'tests/build_system/test_ci', 'fdroid/', 'fastlane/'))
-            or path.endswith('.md') or path in {
+            or path.endswith('.md') or path in MIRROR_DEPLOY_FILES or path in {
                 'test/test_run_tests.py', 'test/test_ci_failure_aggregation.py',
                 'tools/package_steam_windows.py', 'test/test_steam_windows_package.py',
                 'mobile/android_release.py', '.github/workflows/steam-windows-package.yml',
@@ -120,7 +127,7 @@ def select(paths, labels=(), known=False):
     # The stack's own inputs run the stack smoke; shared and unknown paths
     # above already select every check, the stack included.
     for path in paths:
-        if path.startswith(PLATFORM_STACK_PATHS) and not path.endswith('.md'):
+        if path.startswith(PLATFORM_STACK_PATHS) and not cheap_path(path):
             add(path, 'platform_stack')
     labels = set(labels) & LABELS
     if 'ci:full' in labels:

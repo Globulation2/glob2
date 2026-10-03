@@ -233,10 +233,39 @@ Nobody can change their own role or ban themselves, and mutes and bans apply
 only to accounts of a lower role. Every action is recorded in
 `admin_audit_log` (a null actor is the command line).
 
+### Downloading your data
+
+The web account page (`/account`; the game's Settings row "Download or delete my
+data" opens it) has a **Download my data** link to `GET /api/v1/accounts/me/export`.
+It answers, for the signed-in account (session cookie or bearer token), a JSON file
+(`AccountExport`, `format: "glob2-account-export/1"`, sent as an attachment with
+`Cache-Control: no-store`) holding every stored row about the account, read in one
+snapshot (`apps/api/src/auth/accountExport.ts`):
+
+| Section | Contents |
+| --- | --- |
+| `account` | id, kind, display name, role, status, creation, last seen, last rename, mute |
+| `signIn` | linked identities (provider, subject, e-mail; for local accounts the username), device credentials, refresh tokens and web sessions (platform and times), browser sign-in attempts |
+| `entitlements`, `moderation` | entitlements; moderation actions about the account (action, details, time; not who took them) |
+| `ratings`, `ratingHistory` | ratings per ladder, and every rating change |
+| `matches` | every match played: the match's origin, status, result, times, map hash, and the account's seat, team, name, outcome, disconnects, rating change and connection-quality summary, with the match page URL |
+| `rooms` | rooms hosted (with their settings), memberships (with server-region round trips), seats, own chat messages, kicks |
+| `matchmaking` | queue tickets (with region round trips), cooldowns, quick-match proposals and responses |
+| `maps` | catalog maps with their versions, likes, reports filed, uploads, and download days |
+
+Rows keep the database's columns in camelCase and leave out nulls. Left out on
+purpose: password, credential and token hashes, token families, sign-in
+confirmation codes, other players' ids (who moderated, kicked or resolved), other
+players' chat, and file bytes (replays and maps download from their own pages).
+Rate-limit counters (keyed by address or account, kept a day) are not exported, and
+server logs are outside the database. Each account may export 10 times an hour
+(`429` beyond). `apps/api/test/accountExport.test.ts` fails if a column referring to
+`accounts` is added without being exported or listed as deliberately left out.
+
 ### Deleting an account
 
 Players delete their own account on the web account page (`/account`; the game's
-Settings link "Delete my account" opens it), which calls `DELETE
+Settings row "Download or delete my data" opens it), which calls `DELETE
 /api/v1/accounts/me` with `{"confirmDisplayName": "<current display name>"}`
 (`DeleteAccountRequest`; a mismatch is `400` with `reason: confirmation_mismatch`).
 Moderators use `DELETE /api/v1/admin/accounts/{id}` or `platform admin delete`.
@@ -278,13 +307,19 @@ There is no undo. What stays, and why:
 
 | Data | Kept |
 | --- | --- |
-| Refresh tokens | Until 30 days after they expire (reuse detection), then deleted. |
-| Web sessions | Until 30 days after they expire or are revoked. |
+| Refresh tokens | Rotated or revoked: 7 days (reuse detection); expired: 30 days after expiry. |
+| Web sessions | 30 days after they expire or are revoked. |
 | Provider sign-in flows | 24 hours after they expire. |
-| Browser sign-in attempts | A week after they expire. |
+| Browser sign-in attempts | 7 days once finished. |
 | Rate-limit counters | A day after their last use. |
-| Queue tickets | Expired after an hour of waiting. |
-| Guest accounts, chat, matches, maps | Until the player deletes the account (or a moderator does); no automatic expiry yet. |
+| Queue tickets | Expired after an hour of waiting; deleted 30 days after they finish. |
+| Guest accounts | Deleted when unused for 90 days if they never played a match, host no open room and own no catalog map. |
+| Room chat | 30 days. |
+| Registered accounts, matches, ratings, catalog maps | Until the player deletes the account (or a moderator does). |
+
+The worker deletes these (`apps/worker/src/maintenance.ts`); the full table, with jobs
+and blobs, is in [hosting: retention](../hosting/README.md#retention). The
+[privacy policy](../mobile/privacy-policy.md) states the same periods for players.
 
 ## Hardening
 

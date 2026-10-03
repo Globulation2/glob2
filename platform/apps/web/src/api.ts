@@ -87,6 +87,9 @@ export async function fetchInstance(signal?: AbortSignal): Promise<InstanceInfo>
   return body as InstanceInfo;
 }
 
+/** "Download my data": a JSON file download, so a plain link (with the session cookie). */
+export const ACCOUNT_EXPORT_PATH = '/api/v1/accounts/me/export';
+
 export const api = {
   stats: (signal?: AbortSignal) => get<InstanceStats>('/api/v1/stats', undefined, signal),
   me: (signal?: AbortSignal) => get<SelfAccount>('/api/v1/accounts/me', undefined, signal),
