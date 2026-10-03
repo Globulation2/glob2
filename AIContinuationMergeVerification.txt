@@ -1,0 +1,37 @@
+AI continuation merge verification
+Commit: 929dafeb7bf0dff65f73332885e6daccdbb62bf8
+Base: dcc4d266a78def3e9414ddbfaad671aec2675816
+
+Ported the audited AI continuation fixes onto current master, preserving its newer
+AI/farming behavior and already-landed queue safety changes. Save format 128 was
+already used by intervening compact-state work. New fields use format 132 and
+protocol 54. The separate minimum YOG client protocol no longer exists on master.
+Save floor 58 and replay floor 127 are unchanged; simulation revision is 9.
+
+The optimized native macOS/Apple LLVM build uses the pinned SDL3 dependency prefix.
+112 test cases pass; two display-only cases are skipped (107 passed runner groups).
+Coverage includes binary/text timer boundaries, genuine old layouts through 131,
+constructors/wrappers, malformed/truncated fields, repeated reloads, 110 native-AI
+checkpoints followed for 256 ticks each, mixed AIs/shared-team controllers, current
+JavaScript profile-two services and Maxima fixtures, save/replay/network boundaries,
+and the committed multiplayer record. Seven version-contract Python tests pass.
+
+The multiplayer record retains the identical setup, seed, human orders, reports
+and events from master; only simulation-version metadata and the file CRC changed.
+The 702-tick committed verification trace is unchanged. A freshly generated bot
+match had different human orders and was retained separately for diagnosis rather
+than replacing the original verification input.
+
+The compiled test provenance names the pre-commit dirty source tree; the commit
+contains that same compiled source. The record CRC was repaired after compilation
+and then verified successfully. Metadata-only commits do not change executable
+behavior. The archive includes committed-run logs, JUnit results, full checkpoint
+saves and per-tick traces, and a SHA-256 manifest of all evidence files.
+
+Linux execution and resumed/uninterrupted cross-platform comparison remain
+unavailable locally; neither is claimed. Identical recorded orders reproducing
+the committed checksum trace establish local regression preservation.
+
+See AIContinuationAudit.txt for the per-AI field classifications and original
+defect audit. Its format-128/protocol-51 notes describe the initial implementation;
+this integration update supersedes those version numbers.

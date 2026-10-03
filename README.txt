@@ -1,0 +1,1 @@
+Verification evidence for AI continuation commit 929dafeb7bf0dff65f73332885e6daccdbb62bf8. Generated artifacts are kept on this evidence branch, outside master. The verification report describes coverage, provenance and platform limits. The ZIP contains logs, JUnit, saves, traces and SHA-256 manifest.
