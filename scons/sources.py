@@ -133,6 +133,7 @@ CLIENT_SOURCES = (
     'render/GameRenderBuildings.cpp',
     'render/GameRenderTerrain.cpp',
     'render/SoftwareTerrainCache.cpp',
+    'render/MapOverlayQueue.cpp',
     'render/MapRenderState.cpp',
     'scene/SceneMap.cpp',
     'scene/SceneExtract.cpp',

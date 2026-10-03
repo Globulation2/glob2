@@ -65,6 +65,7 @@ public:
 	Sprite *terrainShader;
 	Sprite *resources;
 	Sprite *resourceMini;
+	Sprite *mapIcons; //!< strategic-view building and flag icons; see MapOverlayQueue
 	Sprite *areaClearing;
 	Sprite *areaForbidden;
 	Sprite *areaGuard;

@@ -195,10 +195,20 @@ namespace GAGCore
 #endif
     }
 
-    void GraphicContext::drawMapBoundary(int x1, int y1, int x2, int y2, const Color& color)
+    void GraphicContext::drawMapBoundary(int x1, int y1, int x2, int y2, const Color& color, float maxStrokePoints)
+    {
+        assert(x1 == x2 || y1 == y2);
+        drawMapSnappedRect(x1, y1, x2, y2, color, true, maxStrokePoints);
+    }
+
+    void GraphicContext::drawMapFill(int x1, int y1, int x2, int y2, const Color& color)
+    {
+        drawMapSnappedRect(x1, y1, x2, y2, color, false, 0);
+    }
+
+    void GraphicContext::drawMapSnappedRect(int x1, int y1, int x2, int y2, const Color& color, bool stroked, float maxStrokePoints)
     {
 		if (renderer) prepareDraw();
-        assert(x1 == x2 || y1 == y2);
         // Snap in the actual raster target, then return to world coordinates.
         // Include periodic-copy translation: wrapped maps need the same pixel
         // alignment as the primary pass, even at fractional zoom and DPI.
@@ -211,7 +221,12 @@ namespace GAGCore
         const float top = std::round(std::min(y1, y2) * pixelsPerWorld + offsetY);
         const float right = std::round(std::max(x1, x2) * pixelsPerWorld + offsetX);
         const float bottom = std::round(std::max(y1, y2) * pixelsPerWorld + offsetY);
-        const float stroke = std::max(1.f, std::round(pixelsPerWorld));
+        // A boundary's stroke follows the map but never vanishes, and stops
+        // thickening at its cap. A fill has none: its far edges are exclusive,
+        // so neighbouring fills meet on the same snapped pixel without overlap.
+        float stroke = stroked ? std::max(1.f, std::round(pixelsPerWorld)) : 0.f;
+        if (stroked && maxStrokePoints > 0)
+            stroke = std::min(stroke, std::max(1.f, std::round(maxStrokePoints * raster * float(logicalUnitsPerPoint()))));
         // SDL's software geometry rasterizer truncates transformed coordinates.
         // Avoid a world->screen->world round trip there: tiny float errors can
         // otherwise move a snapped edge back across a pixel boundary.
@@ -230,6 +245,14 @@ namespace GAGCore
         drawFilledRect((left-offsetX)/pixelsPerWorld, (top-offsetY)/pixelsPerWorld,
                        (right-left+stroke)/pixelsPerWorld,
                        (bottom-top+stroke)/pixelsPerWorld, color);
+    }
+
+    void GraphicContext::mapToScreen(int x, int y, float &screenX, float &screenY) const
+    {
+        screenX = float(x); screenY = float(y);
+        if (!mapTransformActive) return;
+        screenX = x*mapScale + mapTranslateX + mapCopyTranslateX;
+        screenY = y*mapScale + mapTranslateY + mapCopyTranslateY;
     }
 
     void GraphicContext::beginScreenOverlay(int &x,int &y,int &sx,int &sy,int &sw,int &sh)

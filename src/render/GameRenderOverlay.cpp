@@ -149,8 +149,10 @@ void Game::drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh
 				i2=!sceneMap.isMapDiscovered(x+viewportX+1, y+viewportY, visibleTeams) ? 1 : 0;
 				i3=!sceneMap.isMapDiscovered(x+viewportX, y+viewportY, visibleTeams) ? 1 : 0;
 				unsigned blackValue = i0 + (i1<<1) + (i2<<2) + (i3<<3);
+				// Whole squares snap to target pixels: at a fractional zoom, plain
+				// rectangles leave gaps and overlaps that show as a grid in the shade.
 				if (blackValue==15)
-					globalContainer->gfx->drawFilledRect((x<<5)+16, (y<<5)+16, 32, 32, 0, 0, 0);
+					globalContainer->gfx->drawMapFill((x<<5)+16, (y<<5)+16, (x<<5)+48, (y<<5)+48, GAGCore::Color(0, 0, 0));
 				else if (blackValue)
 					globalContainer->gfx->drawSprite((x<<5)+16, (y<<5)+16, globalContainer->terrainBlack, blackValue);
 
@@ -164,7 +166,7 @@ void Game::drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh
 					unsigned shadeValue = i0 + (i1<<1) + (i2<<2) + (i3<<3);
 
 					if (shadeValue==15)
-						globalContainer->gfx->drawFilledRect((x<<5)+16, (y<<5)+16, 32, 32, 0, 0, 0, 127);
+						globalContainer->gfx->drawMapFill((x<<5)+16, (y<<5)+16, (x<<5)+48, (y<<5)+48, GAGCore::Color(0, 0, 0, 127));
 					else if (shadeValue)
 						globalContainer->gfx->drawSprite((x<<5)+16, (y<<5)+16, globalContainer->terrainShader, shadeValue);
 				}

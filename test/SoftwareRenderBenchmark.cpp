@@ -179,6 +179,10 @@ class SoftwareRenderBenchmark
 			const bool clouds = !(getenv("PROFILE_CLOUDS") && atoi(getenv("PROFILE_CLOUDS")) == 0);
 			globalContainer->settings.clouds = clouds;
 			globalContainer->settings.cloudShadows = clouds;
+			// PROFILE_ADAPTIVE_ZOOM=0 draws overlays scaled with the map, as before
+			// adaptive zoom detail, for before/after captures from one build.
+			if (const char *adaptive = getenv("PROFILE_ADAPTIVE_ZOOM"))
+				globalContainer->settings.adaptiveZoomDetail = atoi(adaptive) != 0;
 			printf("READY save=%s tick=%u map=%dx%d teams=%d units=%d buildings=%d surface=%dx%d "
 				   "camera=%d,%d mode=%s clouds=%d frames=%d driver=%s\n",
 				   path, gui.game.stepCounter, gui.game.map.getW(), gui.game.map.getH(),

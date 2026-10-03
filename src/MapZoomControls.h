@@ -15,7 +15,8 @@ inline void drawMapZoomControls(const MapCamera &camera, bool sidebar = false, b
     gfx->drawRect(x + 24, y, 44, 22, 120, 130, 150);
     gfx->drawRect(x + 68, y, 24, 22, 120, 130, 150);
     gfx->drawString(x + 8, y + 3, globalContainer->littleFont, "-");
-    gfx->drawString(x + 30, y + 3, globalContainer->littleFont, "100%");
+    // At 100% the middle button offers the other fixed stop: the whole map.
+    gfx->drawString(x + 30, y + 3, globalContainer->littleFont, camera.zoom == 1.0 ? "Fit" : "100%");
     gfx->drawString(x + 76, y + 3, globalContainer->littleFont, "+");
     gfx->drawString(x + 100, y + 3, globalContainer->littleFont,
         (softwareMap || gfx->canDrawStretchedSprite())
@@ -32,7 +33,8 @@ inline bool clickMapZoomControls(MapCamera &camera, int x, int y, bool sidebar =
     if (x < 92 && (softwareMap || globalContainer->gfx->canDrawStretchedSprite()))
     {
         const double zoom = x < 24 ? camera.zoom / 1.1
-                          : x >= 68 ? camera.zoom * 1.1 : 1.0;
+                          : x >= 68 ? camera.zoom * 1.1
+                          : camera.zoom == 1.0 ? camera.minimumZoom() : 1.0;
         camera.setZoom(zoom, camera.width / 2, camera.height / 2);
     }
     return true;

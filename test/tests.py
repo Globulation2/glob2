@@ -156,6 +156,7 @@ UNIT_TESTS = [
     'MapQueryTest.cpp',
     'MessageRecipientsTest.cpp',
     'OverlayFillTest.cpp',
+    'ZoomDetailTest.cpp',
     'PanelButtonHitTest.cpp',
     'ParticleCrossfadeTest.cpp',
     'PerlinNoiseTest.cpp',

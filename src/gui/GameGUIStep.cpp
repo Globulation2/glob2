@@ -289,6 +289,11 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 			eventGoPosX = gevent.getX();
 			eventGoPosY = gevent.getY();
 			eventGoType = gevent.getEventType();
+			// In the strategic view an attack is too small to notice on the map
+			// itself, so it raises the same pulsing mark a player's ping does.
+			if (view.render.detail.strategic > 0 &&
+				(eventGoType == GEUnitUnderAttack || eventGoType == GEBuildingUnderAttack))
+				markManager.addMark(Mark(gevent.getX(), gevent.getY(), GAGCore::Color(255, 48, 32)));
 		}
 	}
 
