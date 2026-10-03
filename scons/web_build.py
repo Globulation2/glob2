@@ -241,7 +241,7 @@ def build_web(directory, identity, arguments):
         '-sEXPORTED_FUNCTIONS=["_glob2_hive_invoke","_malloc","_free"]', '-sEXPORTED_RUNTIME_METHODS=["ccall","stringToUTF8","lengthBytesUTF8"]']
     hive.Append(CXXFLAGS=['-fno-fast-math', '-ffp-contract=off'])
     hive_objects = [hive.Object(str(Path(directory) / 'hive-obj' / (source + '.o')), source)
-        for source in ('src/hive/HiveWorker.cpp', 'src/script/ScriptRuntime.cpp', 'src/script/ScriptValue.cpp')]
+        for source in ('browser/HiveWorker.cpp', 'src/hive/HiveWorker.cpp', 'src/script/ScriptRuntime.cpp', 'src/script/ScriptValue.cpp')]
     hive_objects += javascript_objects(hive, Path(directory) / 'hive-obj/third_party', True)
     hive_program = hive.Program(str(Path(directory) / 'hive-runtime.js'), hive_objects)
     hive.SideEffect(str(Path(directory) / 'hive-runtime.wasm'), hive_program)
