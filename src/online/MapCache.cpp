@@ -1,9 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "MapCache.h"
 #include "OnlineStorage.h"
+#include "PlatformApi.h"
 #include "Sha256.h"
 
+#include <FileManager.h>
 #include <GzipUtil.h>
+#include <StreamBackend.h>
+#include <Toolkit.h>
+#include <memory>
 #include <nlohmann/json.hpp>
 
 namespace Online
@@ -19,12 +24,12 @@ bool isGzip(const std::string &bytes)
 
 std::string MapCache::blobPath(const std::string &hash)
 {
-	return "/api/v1/blobs/maps/" + hash;
+	return Api::mapBlob(hash);
 }
 
-std::string MapCache::fileFor(const std::string &hash)
+std::string MapCache::fileFor(const std::string &hash, bool save)
 {
-	return std::string(DIRECTORY) + "/" + hash + ".map.gz";
+	return std::string(DIRECTORY) + "/" + hash + (save ? ".game.gz" : ".map.gz");
 }
 
 MapCache::MapCache(OnlineStorage &storage, FetchStarter startFetch, std::uint64_t capacity)
@@ -49,6 +54,7 @@ void MapCache::loadIndex()
 				Entry value;
 				value.size = entry.value("size", std::uint64_t(0));
 				value.lastUse = entry.value("lastUse", std::uint64_t(0));
+				value.save = entry.value("save", false);
 				entries[hash] = value;
 				useCounter = std::max(useCounter, value.lastUse);
 			}
@@ -57,10 +63,12 @@ void MapCache::loadIndex()
 	// unaccounted for and would never be evicted: remove them.
 	for (const auto &name : storage.list(DIRECTORY))
 	{
-		const auto suffix = std::string(".map.gz");
-		if (name.size() == 64 + suffix.size() && name.compare(64, suffix.size(), suffix) == 0 &&
-			entries.count(name.substr(0, 64)))
-			continue;
+		if (name.size() > 64)
+		{
+			const auto entry = entries.find(name.substr(0, 64));
+			if (entry != entries.end() && name.substr(64) == (entry->second.save ? ".game.gz" : ".map.gz"))
+				continue;
+		}
 		if (name != "index.json")
 			storage.remove(std::string(DIRECTORY) + "/" + name);
 	}
@@ -70,7 +78,11 @@ void MapCache::saveIndex()
 {
 	nlohmann::json maps = nlohmann::json::object();
 	for (const auto &[hash, entry] : entries)
+	{
 		maps[hash] = {{"size", entry.size}, {"lastUse", entry.lastUse}};
+		if (entry.save)
+			maps[hash]["save"] = true;
+	}
 	storage.write(INDEX, nlohmann::json{{"version", 1}, {"maps", std::move(maps)}}.dump());
 	storage.persist();
 }
@@ -85,20 +97,21 @@ std::optional<std::string> MapCache::path(const std::string &hash)
 	auto found = entries.find(hash);
 	if (found == entries.end())
 		return std::nullopt;
+	const std::string file = fileFor(hash, found->second.save);
 	std::string probe;
-	if (!storage.read(fileFor(hash), probe) || probe.size() != found->second.size)
+	if (!storage.read(file, probe) || probe.size() != found->second.size)
 	{
 		entries.erase(found);
-		storage.remove(fileFor(hash));
+		storage.remove(file);
 		saveIndex();
 		return std::nullopt;
 	}
 	found->second.lastUse = ++useCounter;
 	saveIndex();
-	return fileFor(hash);
+	return storage.location(file);
 }
 
-bool MapCache::insert(const std::string &hash, const std::string &bytes, std::string *error)
+bool MapCache::insert(const std::string &hash, const std::string &bytes, std::string *error, bool savedGame)
 {
 	auto fail = [&](const char *reason)
 	{
@@ -127,9 +140,12 @@ bool MapCache::insert(const std::string &hash, const std::string &bytes, std::st
 		return fail("map does not match its hash");
 	if (compressed.size() > limit)
 		return fail("map is larger than the cache");
-	if (!storage.write(fileFor(hash), compressed))
+	const auto previous = entries.find(hash);
+	if (previous != entries.end() && previous->second.save != savedGame)
+		storage.remove(fileFor(hash, previous->second.save));
+	if (!storage.write(fileFor(hash, savedGame), compressed))
 		return fail("map could not be written");
-	entries[hash] = Entry{compressed.size(), ++useCounter};
+	entries[hash] = Entry{compressed.size(), ++useCounter, savedGame};
 	evict(hash);
 	saveIndex();
 	return true;
@@ -137,9 +153,11 @@ bool MapCache::insert(const std::string &hash, const std::string &bytes, std::st
 
 void MapCache::remove(const std::string &hash)
 {
-	if (!entries.erase(hash))
+	const auto found = entries.find(hash);
+	if (found == entries.end())
 		return;
-	storage.remove(fileFor(hash));
+	storage.remove(fileFor(hash, found->second.save));
+	entries.erase(found);
 	saveIndex();
 }
 
@@ -163,7 +181,7 @@ void MapCache::evict(const std::string &keep)
 		if (oldest == entries.end())
 			break;
 		total -= oldest->second.size;
-		storage.remove(fileFor(oldest->first));
+		storage.remove(fileFor(oldest->first, oldest->second.save));
 		entries.erase(oldest);
 	}
 }
@@ -272,5 +290,17 @@ std::unique_ptr<MapCache::Download> MapCache::fetch(const std::string &origin,
 		return std::make_unique<CacheDownload>(*this, Download::State::Failed, std::string(),
 											   "maps cannot be downloaded here");
 	return std::make_unique<CacheDownload>(*this, hash, std::move(started));
+}
+bool readMapBytes(const std::string &path, std::string &bytes)
+{
+	std::unique_ptr<GAGCore::StreamBackend> backend(
+		GAGCore::Toolkit::getFileManager()->openInflatingInputStreamBackend(path));
+	if (!backend || !backend->isValid())
+		return false;
+	backend->seekFromEnd(0);
+	const std::size_t size = backend->getPosition();
+	backend->seekFromStart(0);
+	bytes.assign(size, '\0');
+	return !size || backend->readExact(bytes.data(), size);
 }
 } // namespace Online

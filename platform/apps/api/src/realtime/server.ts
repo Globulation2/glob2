@@ -11,6 +11,7 @@ import {
 } from '@glob2/protocol';
 import { supportedSimVersions } from '../app.ts';
 import { apiError } from '../errors.ts';
+import { enforce } from '../http/rateLimits.ts';
 import type { Identity } from '../identity.ts';
 import { RealtimeConnection, type MethodHandler } from './connection.ts';
 
@@ -137,6 +138,20 @@ export async function realtimeRoutes(
       if (connection.pendingAttempts.size >= MAX_PENDING_ATTEMPTS) {
         throw apiError('rate_limited', 'Too many sign-ins in progress on this connection.');
       }
+      // Anyone may start one without an account, so bound them per address
+      // and in total, on every replica (each is a signin_attempts row).
+      await enforce(
+        identity.shared.handoffPerAddress,
+        connection.ip,
+        undefined,
+        'Too many sign-ins started from this address. Wait a while and try again.',
+      );
+      await enforce(
+        identity.shared.handoffTotal,
+        'all',
+        undefined,
+        'Signing in is busy right now. Try again in a minute.',
+      );
       const mode = params.mode ?? (connection.account ? 'link' : 'signin');
       const attempt = await identity.handoff.begin({
         provider: params.provider,

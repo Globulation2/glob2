@@ -54,6 +54,10 @@ class RoutedTransport final : public NetTransport
 	{
 		return selected ? selected->peerAddress() : std::string();
 	}
+	size_t pendingOutgoing() const override
+	{
+		return selected ? selected->pendingOutgoing() : 0;
+	}
 	std::string error() const override { return selected ? selected->error() : std::string(); }
 };
 } // namespace

@@ -49,6 +49,12 @@ namespace
 	constexpr std::size_t MAX_PENDING_BYTES = 2 * (Turn::MAX_FRAME_BYTES + 2);
 	/// Read limit for one WebSocket message; WssTransport sends 16 KiB chunks.
 	constexpr std::size_t MAX_WS_MESSAGE_BYTES = 64 * 1024;
+	// Round-trip probe: a WebSocket ping (a transport control frame, outside the turn
+	// protocol) every GLOB2_RELAY_RTT_PING_MS on a connection that has joined a match.
+	// Every client transport answers pings itself (Beast, browsers). Telemetry only.
+	/// Payload marker that tells our probes from Beast's own keep-alive pings.
+	constexpr char RTT_PING_MARKER = 'g';
+	constexpr std::size_t RTT_PING_BYTES = 9;
 
 	std::vector<std::uint8_t> rejectPayload(Turn::RejectReason reason, const std::string& detail)
 	{
@@ -110,6 +116,12 @@ public:
 	void receive(Connection& connection, const std::vector<std::uint8_t>& payload);
 	void connectionClosed(Connection& connection);
 	void abortNow();
+	/// A WebSocket round trip measured on the connection (telemetry only).
+	void roundTrip(const Connection& connection, std::uint64_t micros)
+	{
+		if (!ended && peers.count(connection.id))
+			sequencer.transportRoundTrip(connection.id, micros);
+	}
 
 	void send(PeerId peer, const std::vector<std::uint8_t>& payload) override
 	{
@@ -133,7 +145,6 @@ public:
 	const std::int64_t startedAt;
 	Turn::TurnSequencer sequencer;
 	std::optional<std::string> setupJson;
-	bool gameFinished = false;
 	bool aborted = false;
 	bool ended = false;
 	std::size_t connectionCount() const { return peers.size(); }
@@ -141,10 +152,13 @@ public:
 private:
 	asio::awaitable<void> tickLoop();
 	void afterEvent();
+	/// Wakes the tick loop early when an event made work due sooner than it sleeps.
+	void reschedule();
 
 	std::map<PeerId, std::shared_ptr<Connection>> peers;
 	int pendingSeat = -1;
 	std::unique_ptr<asio::steady_timer> timer;
+	std::uint64_t scheduledWake = 0;
 };
 
 struct RelayServer::Impl : std::enable_shared_from_this<RelayServer::Impl>
@@ -155,6 +169,7 @@ struct RelayServer::Impl : std::enable_shared_from_this<RelayServer::Impl>
 		  drainTimer(io)
 	{
 		sequencerConfig.graceMicros = static_cast<std::uint64_t>(config.graceSeconds) * 1000000ull;
+		sequencerConfig.startBarrierMicros = static_cast<std::uint64_t>(config.loadWaitSeconds) * 1000000ull;
 		if (config.tlsEnabled())
 		{
 			tls = std::make_unique<ssl::context>(ssl::context::tls_server);
@@ -241,16 +256,35 @@ void Match::start(asio::any_io_executor executor)
 
 asio::awaitable<void> Match::tickLoop()
 {
-	// A quarter of a tick keeps bundle timing within 10 ms of the relay clock.
+	// Sleep until the sequencer next has work (TurnSequencer::nextWakeMicros): the
+	// next live bundle while anyone is connected, so bundles leave on their tick
+	// boundary instead of up to a timer period late (which clients would see as
+	// jitter); a grace expiry or the load-barrier deadline otherwise. Events that make
+	// work due sooner (a connection, a presence change) cut the sleep short through
+	// reschedule(). A running match therefore wakes once per tick, an empty one about
+	// once a second; the cap only bounds a clock surprise.
+	constexpr std::uint64_t MAX_SLEEP_MICROS = 1000000;
 	while (!ended)
 	{
-		timer->expires_after(std::chrono::milliseconds(10));
+		const std::uint64_t now = monotonicMicros();
+		const std::uint64_t wake = std::min(std::max(sequencer.nextWakeMicros(), now), now + MAX_SLEEP_MICROS);
+		scheduledWake = wake;
+		timer->expires_at(std::chrono::steady_clock::time_point(std::chrono::microseconds(wake)));
 		boost::system::error_code ignored;
 		co_await timer->async_wait(asio::redirect_error(asio::use_awaitable, ignored));
 		if (ended)
 			break;
 		sequencer.update(monotonicMicros());
 		afterEvent();
+	}
+}
+
+void Match::reschedule()
+{
+	if (timer && !ended && sequencer.nextWakeMicros() < scheduledWake)
+	{
+		scheduledWake = 0;
+		timer->cancel();
 	}
 }
 
@@ -270,14 +304,6 @@ void Match::receive(Connection& connection, const std::vector<std::uint8_t>& pay
 {
 	if (!peers.count(connection.id))
 		return;
-	// The sequencer treats both quit reasons alike; the relay remembers a finished game
-	// so the platform can tell a completed match from an abandoned one.
-	if (!payload.empty() && payload[0] == Turn::MSG_QUIT)
-	{
-		auto message = Turn::TurnCodec::decode(payload);
-		if (message && static_cast<const Turn::Quit&>(*message).reason == Turn::QuitReason::GameFinished)
-			gameFinished = true;
-	}
 	sequencer.onReceive(connection.id, payload, monotonicMicros());
 	afterEvent();
 }
@@ -300,6 +326,8 @@ void Match::abortNow()
 
 void Match::afterEvent()
 {
+	if (!ended && !sequencer.matchOver())
+		reschedule();
 	if (ended || !sequencer.matchOver())
 		return;
 	ended = true;
@@ -321,7 +349,7 @@ class WsConnection final : public Connection
 public:
 	WsConnection(RelayServer::Impl& server, PeerId id, std::string address, Next stream)
 		: Connection(server, id, std::move(address)), ws(std::move(stream)),
-		  helloDeadline(ws.get_executor()), closeDeadline(ws.get_executor())
+		  helloDeadline(ws.get_executor()), closeDeadline(ws.get_executor()), pingTimer(ws.get_executor())
 	{
 	}
 
@@ -333,6 +361,10 @@ public:
 		ws.set_option(websocket::stream_base::timeout{std::chrono::seconds(10), std::chrono::seconds(30), true});
 		ws.set_option(websocket::stream_base::decorator(
 			[](websocket::response_type& res) { res.set(http::field::server, "glob2-relay"); }));
+		ws.control_callback([this](websocket::frame_type kind, beast::string_view payload) {
+			if (kind == websocket::frame_type::pong)
+				pongReceived(payload);
+		});
 		try
 		{
 			co_await ws.async_accept(request, asio::use_awaitable);
@@ -351,6 +383,8 @@ public:
 		});
 		tokens = static_cast<double>(server.config.frameBurst);
 		lastRefill = std::chrono::steady_clock::now();
+		if (server.config.rttPingMillis > 0)
+			asio::co_spawn(ws.get_executor(), pingLoop(), asio::detached);
 		try
 		{
 			co_await readLoop();
@@ -362,6 +396,7 @@ public:
 		detached = true;
 		helloDeadline.cancel();
 		closeDeadline.cancel();
+		pingTimer.cancel();
 		server.connectionClosed(*this);
 	}
 
@@ -446,6 +481,46 @@ private:
 		});
 	}
 
+	/// Pings the client every rttPingMillis once it has joined a match; the pong
+	/// echoes the send time, so a lost or late pong never mismatches.
+	asio::awaitable<void> pingLoop()
+	{
+		auto self = shared_from_this();
+		for (;;)
+		{
+			pingTimer.expires_after(std::chrono::milliseconds(server.config.rttPingMillis));
+			boost::system::error_code ec;
+			co_await pingTimer.async_wait(asio::redirect_error(asio::use_awaitable, ec));
+			if (ec || closed || closing || detached)
+				co_return;
+			if (!match || pinging)
+				continue;
+			char payload[RTT_PING_BYTES];
+			payload[0] = RTT_PING_MARKER;
+			const std::uint64_t sent = monotonicMicros();
+			for (std::size_t i = 0; i < 8; ++i)
+				payload[1 + i] = static_cast<char>((sent >> (56 - 8 * i)) & 0xff);
+			pinging = true;
+			ws.async_ping(websocket::ping_data(payload, RTT_PING_BYTES), [self](boost::system::error_code) {
+				static_cast<WsConnection&>(*self).pinging = false;
+			});
+		}
+	}
+
+	void pongReceived(beast::string_view payload)
+	{
+		if (payload.size() != RTT_PING_BYTES || payload[0] != RTT_PING_MARKER || detached || !match)
+			return;
+		std::uint64_t sent = 0;
+		for (std::size_t i = 0; i < 8; ++i)
+			sent = (sent << 8) | static_cast<std::uint8_t>(payload[1 + i]);
+		const std::uint64_t now = monotonicMicros();
+		if (sent > now || now - sent > 60000000ull)
+			return;
+		auto m = match;
+		m->roundTrip(*this, now - sent);
+	}
+
 	bool takeToken()
 	{
 		const auto now = std::chrono::steady_clock::now();
@@ -526,7 +601,7 @@ private:
 			co_return;
 		}
 		const auto& hello = static_cast<const Turn::Hello&>(*message);
-		if (hello.protocolVersion != Turn::PROTOCOL_VERSION)
+		if (!Turn::supportedProtocol(hello.protocolVersion))
 		{
 			reject(Turn::RejectReason::ProtocolVersion, "Turn protocol version mismatch");
 			co_return;
@@ -539,6 +614,8 @@ private:
 	websocket::stream<Next> ws;
 	asio::steady_timer helloDeadline;
 	asio::steady_timer closeDeadline;
+	asio::steady_timer pingTimer;
+	bool pinging = false;
 	std::deque<std::shared_ptr<std::vector<std::uint8_t>>> outgoing;
 	std::size_t outBytes = 0;
 	bool writing = false;
@@ -625,10 +702,14 @@ asio::awaitable<void> RelayServer::Impl::admit(std::shared_ptr<Connection> conne
 		++metrics.matchesStarted;
 		metrics.matches = static_cast<std::int64_t>(matches.size());
 		logLine("info", "Match " + claims.matchId + " started (sim " + claims.simVersion.key() + ")");
+		// The record needs the setup to be verifiable. Keep asking through a platform
+		// outage while the match runs; finalize asks again if it ends first.
 		if (platform.enabled())
 			asio::co_spawn(io,
-			               [this, match]() -> asio::awaitable<void> {
-				               auto setup = co_await platform.fetchSetup(match->id);
+			               [self = shared_from_this(), match]() -> asio::awaitable<void> {
+				               auto setup = co_await self->platform.fetchSetup(
+					               match->id, std::chrono::steady_clock::now() + std::chrono::seconds(self->config.setupRetrySeconds),
+					               [match] { return !match->setupJson && !match->ended; });
 				               if (setup && !match->setupJson)
 					               match->setupJson = std::move(setup);
 			               },
@@ -660,7 +741,16 @@ void RelayServer::Impl::matchEnded(const std::shared_ptr<Match>& match)
 asio::awaitable<void> RelayServer::Impl::finalize(std::shared_ptr<Match> match)
 {
 	if (!match->setupJson && platform.enabled())
-		match->setupJson = co_await platform.fetchSetup(match->id);
+	{
+		// The record waits here (its upload is queued behind the setup) rather than
+		// going out unverifiable at the first failure.
+		logLine("warning", "Match " + match->id + " ended before its setup arrived; holding the record for up to " +
+		                       std::to_string(config.setupRetrySeconds) + " s");
+		match->setupJson = co_await platform.fetchSetup(
+			match->id, std::chrono::steady_clock::now() + std::chrono::seconds(config.setupRetrySeconds));
+		if (!match->setupJson)
+			logLine("error", "No setup for match " + match->id + "; its record cannot be verified");
+	}
 	std::array<std::uint8_t, 32> mapHash{};
 	std::string setup = match->setupJson.value_or("");
 	if (!setup.empty() && !setupMapHash(setup, mapHash))
@@ -685,10 +775,12 @@ asio::awaitable<void> RelayServer::Impl::finalize(std::shared_ptr<Match> match)
 	info.simVersion = match->simVersion;
 	info.startedAt = match->startedAt;
 	info.endedAt = unixNow();
-	info.reason = match->aborted ? EndReason::Aborted : match->gameFinished ? EndReason::Completed : EndReason::Abandoned;
+	info.reason = match->aborted ? EndReason::Aborted : match->sequencer.gameDecided() ? EndReason::Completed : EndReason::Abandoned;
+	info.network = match->sequencer.networkSummary();
 	const auto& stats = match->sequencer.stats();
 	metrics.ordersSequenced += stats.ordersSequenced;
 	metrics.bundlesSent += stats.bundlesSent;
+	metrics.matchNetwork(match->sequencer.telemetry());
 	metrics.matchEnded(endReasonName(info.reason));
 	logLine("info", "Match " + match->id + " ended (" + endReasonName(info.reason) + ") at tick " +
 	                    std::to_string(record.endTick) + "; record " + std::to_string(bytes.size()) + " bytes");

@@ -452,7 +452,7 @@ void Game::executeAlterGuardArea(const OrderAlterGuardArea& oaa, int localPlayer
 			}
 	}
 	else
-		return; // an unknown brush mode (was an assert)
+		assert(false);
 	map.updateGuardAreasGradient(oaa.teamNumber);
 }
 
@@ -499,7 +499,7 @@ void Game::executeAlterClearArea(const OrderAlterClearArea& oaa, int localPlayer
 			}
 	}
 	else
-		return; // an unknown brush mode (was an assert)
+		assert(false);
 	map.updateClearAreasGradient(oaa.teamNumber);
 }
 

@@ -392,7 +392,7 @@ class MapEdit
     int editingResult = 0;
     GAGCore::InputState inputState;
     bool fertilityRequested = false;
-    std::string pendingSaveFilename, pendingSaveName, pendingLoadFilename;
+    std::string pendingSaveFilename, pendingSaveName, pendingLoadFilename, pendingShareFilename;
     std::unique_ptr<GAGCore::BackgroundFileWriter> saveWriter;
     // Keep retry/export available if a save fails after a window-close request.
     bool quitAfterSave = false;
@@ -415,6 +415,8 @@ public:
     void viewportResized(int oldWidth, int oldHeight, int width, int height);
     void requestLoad(std::string filename) { pendingLoadFilename = std::move(filename); }
     std::string takeLoadRequest() { return std::exchange(pendingLoadFilename, {}); }
+    // "Share online…" from the menu: the saved map file to upload to the catalog.
+    std::string takeShareRequest() { return std::exchange(pendingShareFilename, {}); }
     void suspendInput();
     bool advanceEditing(const std::vector<SDL_Event>& events, Uint32 tick);
     void drawEditing();

@@ -33,8 +33,19 @@ NetEndpoint NetEndpoint::parse(const std::string &url)
 		throw std::invalid_argument("WebSocket URL requires an explicit route");
 	e.authority = rest.substr(0, slash);
 	e.route = rest.substr(slash);
+	// A relay's public URL is /relay/<relay id> behind the instance's proxy, or
+	// /relay when a client connects to the relay directly.
+	const auto relayRoute = [](const std::string &route) {
+		if (route == "/relay")
+			return true;
+		if (route.rfind("/relay/", 0) != 0)
+			return false;
+		const auto id = route.substr(7);
+		return !id.empty() && id.size() <= 63 && id.front() != '-' &&
+			   id.find_first_not_of("abcdefghijklmnopqrstuvwxyz0123456789-") == std::string::npos;
+	};
 	if (e.route != "/yog" && e.route != "/router" && e.route != "/register" &&
-		e.route != "/realtime")
+		e.route != "/realtime" && !relayRoute(e.route))
 		throw std::invalid_argument("Unknown WebSocket route");
 	e.service = "443";
 	if (!e.authority.empty() && e.authority.front() == '[')

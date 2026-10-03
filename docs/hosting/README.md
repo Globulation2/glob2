@@ -17,17 +17,18 @@ their own stack, `deploy/compose.legacy.yaml`, described in
                                            ├─ /relay/<relay id> (WebSocket) ──────────────► relay ×N ──────────┤ /internal (backend only)
                                            ├─ /play/  WebAssembly client (static)                              │
                                            └─ /       web app (static)                                         ▼
-  platform-worker ×1..N ── postgres 16 ◄── engine-agent ×N (one image per sim version) ◄── blob volume ──► platform-api
+  platform-worker ×1..N ──► postgres 16 ◄── platform-api ◄── /internal/v1/engine ── engine-agent ×N (one image per sim version)
+         └──────────────── blob volume ────────────┘          (no database, no blob volume)
 ```
 
 | Service | Image (Dockerfile target) | Replicas | Role |
 | --- | --- | --- | --- |
 | `caddy` | `caddy` | 1 | TLS (ACME or local CA), static web app and web client, routing. The only service with published ports. |
 | `postgres` | `postgres:16-alpine` | 1 | All state, the job queue, pub/sub and the matchmaker's leader lock. |
-| `init` | `platform` | one-shot | Creates the first signing key and the relay key, then applies database migrations. Runs before the platform starts on every `up`. |
+| `init` | `platform` | one-shot | Creates the first signing key, the relay and engine-agent keys and the database role passwords, creates or updates the [database roles](#database-roles) as the Postgres superuser, then applies migrations as `glob2_migrator`. Runs before the platform starts on every `up`; the only process that uses the superuser. |
 | `platform-api` | `platform` | `GLOB2_API_REPLICAS` (2) | REST, realtime WebSocket, sign-in pages, JWKS, and `/internal` for relays. Stateless. |
 | `platform-worker` | `platform` | `GLOB2_WORKER_REPLICAS` (1) | Engine-job results, ratings, matchmaker and schedules (the scheduler runs on one replica at a time). |
-| `engine-agent` | `engine-agent` | `GLOB2_ENGINE_AGENT_REPLICAS` (1) | Map generation, validation, previews and match verification with the headless `glob2` binary of one sim version. |
+| `engine-agent` | `engine-agent` | `GLOB2_ENGINE_AGENT_REPLICAS` (1) | Map generation, validation, previews and match verification with the headless `glob2` binary of one sim version. It runs the engine on uploaded files, so it has no database access and no blob volume: it leases jobs and moves blobs through `platform-api`'s `/internal/v1/engine` with a bearer agent key. |
 | `relay` | `relay` | `GLOB2_RELAY_REPLICAS` (1) | Match WebSockets ([relay](../multiplayer/relay.md)). |
 
 Networks:
@@ -47,14 +48,42 @@ Volumes (Compose project `glob2-platform`, so named `glob2-platform_<volume>`):
 | `blobs` | Maps, saves, previews, match records, replays (content-addressed) | Yes |
 | `signing-keys` | Ed25519 private keys (`<kid>.pem`) for access tokens and match tickets | Yes, encrypted |
 | `relay-secret` | `relay.key`, the bearer key relays use on `/internal` | Yes, encrypted (or regenerate) |
-| `relay-spool` | Match records a relay has not uploaded yet, one directory per relay id | Optional |
+| `engine-agent-secret` | `agent.key`, the bearer key engine agents use on `/internal/v1/engine` | Optional (regenerate: delete it and `up`) |
+| `db-migrator-secret`, `db-api-secret`, `db-worker-secret` | `password` of `glob2_migrator`, `glob2_api` and `glob2_worker`, each mounted only by the service that uses it | Optional (regenerate: delete it and `up`) |
+| `relay-spool` | Match records a relay has not uploaded yet, one directory per relay id (`relay-1`, `relay-2`, …), and the relays' slot locks | Optional |
 | `caddy-data`, `caddy-config` | Certificates, ACME account, local CA | Optional (Caddy re-issues) |
+
+### Database roles
+
+No long-running service connects as a Postgres superuser. `POSTGRES_PASSWORD` is the
+superuser's password (the `postgres` image's `glob2`); only `postgres` itself and
+`init` see it, and it is blanked in the other services' environment.
+
+| Role | Used by | Privileges |
+| --- | --- | --- |
+| `glob2` (superuser) | `init` only | Creates the roles below, sets their passwords, hands a database created before roles existed to `glob2_migrator`. |
+| `glob2_migrator` | `init` | Owns every table, view, function and type in `public` and `graphile_worker`; runs the platform's and graphile-worker's migrations, then re-applies the grants. Not a superuser. |
+| `glob2_api` | `platform-api`, the `platform` CLI | `SELECT`/`INSERT`/`UPDATE`/`DELETE` on the platform tables and the job queue; no DDL, no `TRUNCATE`. The admin audit log is append-only (`scrub_audit_log_account()`, owned by the migrator, is the one change allowed: account deletion). |
+| `glob2_worker` | `platform-worker` | As `glob2_api`, minus `identities`, `device_credentials` and `admin_audit_log`; on `refresh_tokens`, `web_sessions` and `auth_flows` only the retention deletes. |
+| none | `engine-agent` | Uses `platform-api`'s internal engine API instead. |
+
+`init` writes a random password per role into its own volume (`db-<role>-secret`);
+each service mounts only its own and reads it through `DATABASE_PASSWORD_FILE`. To
+rotate a role's password, delete its `password` file
+(`docker compose run --rm --no-deps init rm /var/lib/glob2/db/api/password`) and run
+`docker compose up -d`: `init` writes a new one and updates the role. `glob2-migrate
+roles` and `latest` (`packages/db/src/cli.ts`) do the same by hand.
+
+The engine agent's key (`engine-agent-secret`, `agent.key`) lets it announce
+itself, lease jobs of its sim version, read only the blobs a job it holds names,
+store results and report them. A key written `<agentId>:<key>` in
+`ENGINE_AGENT_KEYS` acts only as that agent.
 
 All services except Postgres run as UID/GID 10001 with a read-only root
 filesystem, all capabilities dropped and `no-new-privileges`; Postgres runs as its
 own UID 70 under the same restrictions. Health checks: `platform-api` `/readyz`
-(database reachable), `relay` `/readyz` (ticket keys loaded, not draining), Caddy
-`/livez`, Postgres `pg_isready`.
+(database reachable and the realtime LISTEN connection up), `relay` `/readyz`
+(ticket keys loaded, not draining), Caddy `/livez`, Postgres `pg_isready`.
 
 ## Requirements
 
@@ -83,12 +112,13 @@ cp ../platform/instance.example.yaml instance.yaml
    [Sign-in providers](#sign-in-providers)), whether guests may play, and the
    quick-match queues.
 3. Optionally build the WebAssembly client to serve "Play in browser" at `/play/`:
-   `scons target=web release=1` then `python3 browser/package-static.py` from the
-   repository root (see [browser/README.md](../../browser/README.md)), and set
-   `GLOB2_WEB_CLIENT_DIR=../build/browser-static` in `.env`. Caddy serves it with
-   the cross-origin isolation headers the threaded client needs and negotiates
-   the packaged gzip sidecars. Without it `/play/` answers 404 and everything
-   else works.
+   `deploy/build-web-client.sh <served-dir>` builds it with the pinned Emscripten
+   SDK in a container (`scons target=web release=1 web-package`, see
+   [browser/README.md](../../browser/README.md)), writes the Brotli and gzip copies
+   (`browser/precompress.py`) and installs the result into `<served-dir>`; set
+   `GLOB2_WEB_CLIENT_DIR` in `.env` to that directory. Caddy serves it with the
+   cross-origin isolation headers the threaded client needs. Without it `/play/`
+   answers 404 and everything else works.
 4. Build and start:
 
    ```sh
@@ -153,25 +183,120 @@ Caddy's certificate, and list its source ranges in `GLOB2_EDGE_TRUSTED_PROXIES` 
 client addresses survive (rate limits and relay per-address limits use them). The
 balancer must allow WebSocket upgrades and idle connections of at least 60 seconds.
 
+### Separate public website and app
+
+The simple default is one host: the stack serves its own web app at `/`, and
+`GLOB2_PUBLIC_ORIGIN` is the only address players need. Keep it that way unless
+you also run a separate public website.
+
+To put a website at your apex domain, run this stack on a subdomain, say
+`app.example.org`, and treat that subdomain as the instance: `GLOB2_DOMAIN`,
+`GLOB2_PUBLIC_ORIGIN`, provider redirect URIs, invite links (`/j/<code>`), relay
+URLs (`wss://app.example.org/relay/<id>`), the token issuer, the JWKS, the
+`/.well-known` app-link files and the game's instance setting all use it. The
+website stays static and links into the app:
+
+| Website link | Goes to |
+| --- | --- |
+| Play in browser | `https://app.example.org/play/` |
+| Sign in, online hub | `https://app.example.org/signin`, `https://app.example.org/` |
+| Leaderboards, matches, players, maps | the app's pages (`/leaderboard`, `/matches/<id>`, `/players/<id>`, `/maps`) |
+
+The app links back with `GLOB2_WEBSITE_URL` and `GLOB2_DOWNLOAD_URL` (build-time,
+so rebuild the `caddy` image). With a website URL, a strip above the app's header
+links to the website's home, game, learn, news and downloads pages, and Download
+defaults to `<website>/downloads/`; without one, Download goes to the project's
+release page.
+
+The website needs no CORS or origin allow-list entry: it calls no app API from
+browsers. If it shows live numbers, fetch them server-side or at build time from
+the public read APIs (`/api/v1/leaderboards/<queue>`, `/api/v1/stats`). Do not
+add the website to `web.allowedOrigins` in `instance.yaml`: that list grants
+cookie-authenticated requests and `/realtime` from browsers.
+
+When the apex used to be the instance, have the website redirect the old app
+paths there with `301` (path and query kept): `/j/*`, `/play/*`, `/signin`,
+`/auth/*`, `/api/*`, `/matches*`, `/players/*`, `/leaderboard*`, `/maps*` and
+`/admin*`. Clients built for the old origin keep working: a former official
+origin listed in `scons/official_instance.py` maps to the new one for stored
+selections and invite links, while saved credentials stay with the origin that
+issued them. `platform_stack_smoke.py --attach ... --website https://example.org`
+checks the redirects.
+
+#### The official instance
+
+`glob2online.com` is the public website, **Globulation 2 Online**: an Astro site
+in the separate
+[Globulation2/glob2-online-website](https://github.com/Globulation2/glob2-online-website)
+repository on Firebase Hosting (project `pharaoh-418820`), with the redirects
+above in its `firebase.json`.
+`app.glob2online.com` runs this stack and is the official instance origin
+(`scons/official_instance.py`; its former origin is `https://glob2online.com`).
+Website releases never restart platform services or matches. Public rating
+snapshots are published to a bucket by the website repository's scheduled
+publisher from `/api/v1/leaderboards/<queue>`.
+
+#### Moving an instance to a new hostname
+
+1. Point the new name at the host and add `GLOB2_ADDITIONAL_DOMAIN=<new name>`,
+   keeping `GLOB2_DOMAIN` and `GLOB2_PUBLIC_ORIGIN`. Caddy certifies and serves
+   both names, but relays and the realtime origin check still use the old origin.
+   Check TLS and routes on the new name.
+2. When no matches are running, set `GLOB2_DOMAIN` and `GLOB2_PUBLIC_ORIGIN` to the
+   new name, update provider redirect URIs, and recreate `platform-api` and the
+   relays. `/api/v1/instance` then advertises `wss://<new name>/realtime`, and the
+   relay origin allow-list follows `GLOB2_PUBLIC_ORIGIN`. Do not mix old-origin
+   sessions with new-origin relay URLs.
+3. After sign-in and a real match pass on the new name, move the old name's DNS
+   (for example to the website) and clear `GLOB2_ADDITIONAL_DOMAIN`, so Caddy
+   stops renewing a certificate for a name it no longer serves.
+
+Reload Caddy rather than replacing it while connections are active; its
+`stream_close_delay` gives a short reconnection grace period, but replacing the
+container closes sockets. `/play/*` sends COOP `same-origin` and COEP
+`require-corp` for WebAssembly isolation; keep the game's workers and assets on
+the app origin. The headers are limited to `/play/*` so sign-in pages keep normal
+opener behaviour.
+
 ### Routes
 
 | Path | Goes to |
 | --- | --- |
 | `/api/*`, `/realtime`, `/signin`, `/signin/*`, `/auth/*`, `/.well-known/*`, `/j/*` (invite pages) | `platform-api`, round robin over healthy replicas |
 | `/relay/<relay id>` | that relay's WebSocket (path rewritten to `/relay`) |
-| `/play/*` | the WebAssembly client, `GLOB2_WEB_CLIENT_DIR` |
+| `/play/*` | the WebAssembly client, `GLOB2_WEB_CLIENT_DIR`: precompressed `.br`/`.gz` copies when present; `assets/*.data` (content-addressed) cached as immutable, everything else revalidated |
 | everything else | the web app (single-page app with `index.html` fallback) |
 | `/internal/*`, `/healthz`, `/readyz`, `/metrics` | `404` at the edge |
 
 `/internal` is the relays' API (registration, heartbeats, match setup, record
-upload, match end; see [rooms and matches](../multiplayer/rooms-and-matches.md#internal-api-for-relays)).
-It is served by `platform-api` on the backend network only; relays reach it at
-`http://platform-api:8080` with their bearer key, and fetch the JWKS from there
-too. Caddy never forwards it.
+upload, match end; see [rooms and matches](../multiplayer/rooms-and-matches.md#internal-api-for-relays))
+and the engine agents' (`/internal/v1/engine`: job leases, results, blobs; see
+[architecture](../multiplayer/architecture.md#engine-agents)). It is served by
+`platform-api` on the backend network only; relays and agents reach it at
+`http://platform-api:8080` with their bearer keys, and relays fetch the JWKS from
+there too. Caddy never forwards it.
+
+Caddy adds security headers to everything it serves: `Strict-Transport-Security`
+(`max-age` from `GLOB2_HSTS_MAX_AGE`, default one year; `0` turns it off),
+`X-Content-Type-Options: nosniff`, a `Referrer-Policy` and `X-Frame-Options: DENY`,
+and a `Content-Security-Policy` with `frame-ancestors 'none'`:
+
+- the web app: scripts, styles, fonts and data from the instance origin only;
+- `/play/`: also inline scripts (the client's loader page), `'wasm-unsafe-eval'`,
+  `blob:` workers, and `https:`/`wss:` connections (players choose instances and
+  relays); `Cross-Origin-Opener-Policy`/`-Embedder-Policy` stay as before;
+- API responses that set no policy of their own (`default-src 'none'`); the
+  sign-in and invite pages keep their own stricter one.
+
+The web app's schema library probes for `eval` once and falls back to checking
+without it; browsers report that probe as a blocked `script-src` attempt, which is
+expected.
 
 Invite links `https://<origin>/j/<code>` are small pages rendered by the API; their
-"Play in browser" button opens `web.browserClientUrl` from `instance.yaml`, which
-defaults to `<origin>/play/`.
+primary "Play in browser" button opens `web.browserClientUrl` from `instance.yaml`,
+which defaults to `<origin>/play/`, and "Open in the Globulation 2 app" comes second
+(phones on an instance with `appLinks` get the app first; see
+[rooms and matches](../multiplayer/rooms-and-matches.md#invite-links)).
 
 ### Mobile app links
 
@@ -202,14 +327,19 @@ its default.
 | Variable | Default | Meaning |
 | --- | --- | --- |
 | `GLOB2_DOMAIN` | `localhost` | Site name Caddy serves and certifies |
+| `GLOB2_ADDITIONAL_DOMAIN` | unset | Optional second served hostname during cutover; does not change the canonical origin |
+| `GLOB2_WEBSITE_URL`, `GLOB2_DOWNLOAD_URL` | unset | Web app links to a separately hosted public website and its download page (build-time) |
 | `GLOB2_PUBLIC_ORIGIN` | `https://localhost:8443` | Origin clients use; also the relays' URL base |
 | `GLOB2_BIND`, `GLOB2_HTTP_PORT`, `GLOB2_HTTPS_PORT` | `127.0.0.1`, `8080`, `8443` | Published address and ports |
 | `GLOB2_TLS_MODE` | `auto` | `auto` or `internal` |
 | `GLOB2_EDGE_TRUSTED_PROXIES` | `127.0.0.1/32` | Load balancer ranges Caddy trusts for client addresses |
-| `POSTGRES_PASSWORD` | required | Database password (letters and digits) |
+| `POSTGRES_PASSWORD` | required | Password of the Postgres superuser (letters and digits); only `postgres` and `init` use it, the services have their own [roles](#database-roles) |
+| `GLOB2_HSTS_MAX_AGE` | `31536000` | `Strict-Transport-Security` max-age Caddy sends (`0`: off) |
 | `GLOB2_API_REPLICAS`, `GLOB2_WORKER_REPLICAS`, `GLOB2_ENGINE_AGENT_REPLICAS`, `GLOB2_RELAY_REPLICAS` | `2`, `1`, `1`, `1` | Replica counts |
 | `ENGINE_CONCURRENCY`, `GLOB2_ENGINE_SCRATCH_SIZE` | `1`, `1g` | Jobs per agent, and its scratch tmpfs |
-| `WARM_MAPS_PER_ENTRY` | `1` | Pre-generated quick-match maps per map pool entry (0: off) |
+| `WARM_MAPS_PER_ENTRY`, `WARM_MAPS_MAX_PER_ENTRY` | `2`, `8` | Pre-generated quick-match maps per map pool entry (0: off), and the ceiling the pool rises to while an entry is busy |
+| `GLOB2_BACKUP_DIR`, `GLOB2_BACKUP_KEEP` | `backups/` beside the env file's directory, `5` | Where `deploy/update-host.sh` keeps its pre-upgrade backups, and how many |
+| `GLOB2_DEPLOYED_REVISION_FILE` | `deployed-revision` beside the env file's directory | Where `deploy/update-host.sh` records the revision of each successful deployment, its rollback target |
 | `GLOB2_RELAY_REGION` | `default` | Region these relays report |
 | `GLOB2_RELAY_MAX_MATCHES` | `200` | Matches per relay |
 | `GLOB2_RELAY_DRAIN_SECONDS`, `GLOB2_RELAY_STOP_GRACE` | `1800`, `31m` | Longest relay drain, and Compose's stop timeout (keep it longer) |
@@ -347,13 +477,22 @@ Change the replica counts in `.env` and run `docker compose up -d`.
   Realtime sockets on a removed replica reconnect to another.
 - **platform-worker** can run several replicas: every replica applies job results,
   one at a time holds the scheduler (matchmaker, ratings, warm maps).
-- **engine-agent** replicas share the job queue; each runs `ENGINE_CONCURRENCY` jobs.
+- **engine-agent** replicas lease jobs from the same queue (`engine_jobs`, through
+  `platform-api`); each runs `ENGINE_CONCURRENCY` jobs and polls every
+  `ENGINE_POLL_MS` (1000) when idle.
   Each engine process may use up to 4-8 GB of address space
   (`ENGINE_MEMORY_MB`), so size concurrency by memory.
 - **relay**: each replica registers its own URL, `wss://<host>/relay/<container id>`,
-  derived from `GLOB2_PUBLIC_ORIGIN` and its container's host name. Adding replicas
-  is immediate. Removing one ends its matches unless it is drained first; use the
-  [relay drain procedure](#draining-relays) rather than lowering the count.
+  derived from `GLOB2_PUBLIC_ORIGIN` and its container's host name, under a stable
+  relay id: the first free slot `relay-1`, `relay-2`, … it claims (with `flock`) on
+  the `relay-spool` volume for as long as it runs (`deploy/relay-entrypoint.sh`).
+  A recreated relay therefore gets an id from the same set and re-submits what it
+  had spooled, and pinned keys (`relay-1:<key>`) keep matching. At start-up a
+  relay also adopts spooled matches of directories no running relay holds (after
+  a scale-down, or from before stable ids); the platform accepts repeated uploads.
+  Adding replicas is immediate. Removing one ends its matches unless it is drained
+  first; use the [relay drain procedure](#draining-relays) rather than lowering the
+  count.
 
 Relays on other hosts (to be closer to players) are not part of this file. Such a
 relay needs its own TLS or proxy and public URL (`GLOB2_RELAY_PUBLIC_URL`), the relay
@@ -368,7 +507,7 @@ Back up the database and the blob volume together, plus the keys:
 cd deploy
 docker compose exec -T postgres pg_dump -U glob2 -Fc glob2 > glob2-$(date +%F).dump
 docker compose run --rm --no-deps -T platform-worker tar czf - -C /var/lib/glob2 blobs > blobs-$(date +%F).tar.gz
-docker compose run --rm --no-deps -T init tar czf - -C /var/lib/glob2 keys relay > keys-$(date +%F).tar.gz
+docker compose run --rm --no-deps -T init tar czf - -C /var/lib/glob2 keys relay engine-agent db > keys-$(date +%F).tar.gz
 ```
 
 `pg_dump` is consistent while the stack runs. Blobs are content-addressed and never
@@ -379,20 +518,23 @@ To restore into a fresh stack (same `.env` and `instance.yaml`):
 
 ```sh
 docker compose up -d --wait postgres
-docker compose run --rm --no-deps -T init sh -c 'rm -f /var/lib/glob2/keys/*.pem /var/lib/glob2/relay/relay.key; tar xzf - -C /var/lib/glob2' < keys-2026-10-01.tar.gz
+docker compose run --rm --no-deps -T init sh -c 'rm -f /var/lib/glob2/keys/*.pem /var/lib/glob2/relay/relay.key /var/lib/glob2/engine-agent/agent.key /var/lib/glob2/db/*/password; tar xzf - -C /var/lib/glob2' < keys-2026-10-01.tar.gz
 docker compose run --rm --no-deps -T platform-worker tar xzf - -C /var/lib/glob2 < blobs-2026-10-01.tar.gz
 docker compose exec -T postgres pg_restore -U glob2 -d glob2 --clean --if-exists --no-owner < glob2-2026-10-01.dump
 docker compose up -d --wait
 ```
 
-`init` then applies any migrations newer than the dump. Check the restore on a
+`pg_restore --no-owner` leaves the restored objects owned by the superuser; `init`
+hands them to `glob2_migrator` again, re-applies the grants, then applies any
+migrations newer than the dump. Check the restore on a
 separate host or project (`docker compose -p glob2-restore …` with other ports)
 before relying on it.
 
 ## Upgrades
 
 Before every upgrade, take a [backup](#backups-and-restore) and read the release
-notes for migrations and sim-version changes.
+notes for migrations and sim-version changes. `deploy/update-host.sh` (below)
+takes the database dump and a copy of the served web client itself.
 
 ```sh
 git pull                       # or set new GLOB2_*_IMAGE digests in .env
@@ -400,10 +542,71 @@ docker compose build           # skip with prebuilt images: docker compose pull
 docker compose up -d --wait
 ```
 
-`up` runs `init` first, which applies new migrations (forward only, each in a
-transaction) before the new API and worker start. `platform-api` and
+On a single host, `deploy/update-host.sh <env-file> [git-ref]` does all of this in
+one command, in an order that never leaves a half-upgraded instance:
+
+1. **Backup.** A `pg_dump` and an archive of `GLOB2_WEB_CLIENT_DIR` go to
+   `GLOB2_BACKUP_DIR/<UTC time>/` with the running revision; the newest
+   `GLOB2_BACKUP_KEEP` are kept.
+2. **Build**, while the old stack keeps serving: the WebAssembly client (with
+   `deploy/build-web-client.sh`; Emscripten runs in a container, so the host needs
+   only Docker) into the build tree, and every image with the checkout's sim
+   version. The running images are first tagged `:previous`. A failed build
+   changes nothing that runs.
+3. **Swap:** `up --wait` (migrations run first, in `init`).
+4. **Web client last:** only once the new stack is healthy is the new client
+   installed at `/play/`, so browsers never load a client newer than the platform
+   and engine agents behind it.
+
+If the new stack does not become healthy, the script starts the `:previous`
+images of the previous revision again and leaves the web client as it was. The
+previous revision is the one the last successful run recorded in
+`GLOB2_DEPLOYED_REVISION_FILE`, not the checkout's `HEAD`, so checking out the new
+ref before running the script (to run its newest version) is safe. Before the first
+recorded deployment the script assumes `HEAD` runs; on an instance deployed by
+hand, write the running commit to that file first. It
+does not restore the database: migrations are forward-only and must keep the
+previous release working (expand, then contract in a later release), so the
+previous release normally runs on the new schema. When it does not, restore the
+dump the script took; it prints the `pg_restore` command.
+
+Migration numbers: parallel branches reserve ranges (a branch adds its files after
+the highest number on the integration branch and leaves a gap for the others), so
+files are applied in number order on a fresh database. Kysely's migrator refuses a
+database that has a later migration applied but not an earlier one, so deploy
+branches that add migrations in number order.
+
+`up` runs `init` first, which updates the database roles and applies new migrations
+(forward only, each in a transaction) before the new API and worker start. `platform-api` and
 `platform-worker` replicas are replaced together: realtime clients reconnect after
 a few seconds. Caddy keeps WebSockets open across its own configuration reloads.
+
+### Upgrading to database roles
+
+Instances deployed before the [database roles](#database-roles) have every object
+owned by the superuser and every service connected as it. The upgrade is the usual
+`up` (or `deploy/update-host.sh`) with the new `compose.yaml`; nothing in `.env`
+changes:
+
+1. Take a [backup](#backups-and-restore).
+2. `docker compose up -d --wait` (or `update-host.sh`). `init` generates the role
+   passwords and the agent key, creates the roles, hands every table, view,
+   sequence, function, type and the `graphile_worker` schema to `glob2_migrator`
+   (idempotent, a few seconds), applies migrations 0010-0013 as `glob2_migrator`,
+   then starts the services with their own roles. Migration 0010 moves queued
+   engine jobs from graphile-worker to the `engine_jobs` lease queue: queued
+   verify-match jobs run again (recovering matches whose verdict was lost), and
+   queued map jobs older than an hour are closed as failed.
+3. Check: `docker compose exec -T postgres psql -U glob2 -d glob2 -c "SELECT usename, application_name FROM pg_stat_activity WHERE datname = 'glob2'"`
+   shows `glob2_api` and `glob2_worker` and no `glob2` sessions apart from your own,
+   and `platform_stack_smoke.py --attach` passes.
+
+Rolling back to a release without roles needs the superuser connection back:
+restore the previous `compose.yaml` and its images; the services connect as `glob2`
+again (a superuser can use objects `glob2_migrator` owns), and the extra columns
+and tables of 0010-0013 are ignored by older code except that engine agents of the
+older release take jobs from graphile-worker, where newer releases no longer put
+them, so roll back the API and worker together with the agents.
 
 ### Draining relays
 
@@ -421,14 +624,15 @@ docker compose up -d relay     # back to GLOB2_RELAY_REPLICAS, all on the new im
 
 While draining, a relay reports `draining` in its heartbeat so the platform stops
 allocating matches to it, and still accepts reconnects to its running matches.
-Records not yet uploaded stay in `relay-spool` under the relay's id; to re-send
-them later, start a relay with `GLOB2_RELAY_ID=<that id>`.
+Records not yet uploaded stay in `relay-spool` under the relay's id; the next relay
+that starts with that id, or that finds the directory unclaimed, re-sends them.
 
 ### Sim versions and engine agents
 
-A sim version is `VERSION_MINOR`, `NET_PROTOCOL_VERSION` and a hash of the data files
-that affect the simulation (`python3 deploy/sim_version.py` prints it for a source
-tree). Players are only matched with the same version, and only an engine agent of
+A sim version is `VERSION_MINOR`, `NET_PROTOCOL_VERSION` and a hash of `SIM_REVISION`
+(`src/SimRevision.h`, bumped with every simulation change) and the data files that
+affect the simulation (`python3 deploy/sim_version.py` prints it for a source tree; a
+tree from before `SIM_REVISION` keeps its earlier key). Players are only matched with the same version, and only an engine agent of
 that version can generate maps for or verify their games.
 
 An upgrade that changes the sim version therefore needs care:
@@ -486,12 +690,7 @@ The Dockerfile targets are `platform` (API, worker and CLI), `engine-agent`,
 `server` and `proxy`) for linux/amd64 and linux/arm64 to
 `ghcr.io/<owner>/<repository>-<target>`, tagged with the Git tag and commit; engine
 agents are also tagged `simver-<sim version>` and labelled
-`org.glob2.sim-version`. The workflow first builds this stack from the tagged
-commit and runs `tests/deployment/platform_stack_smoke.py` against it. Then it
-pushes every image under a `candidate-<commit>` tag only, and adds the release
-tags once all of them have built for both architectures. A failed smoke test or
-build therefore publishes no release tag. The smoke test runs on amd64 only.
-Pin digests in production:
+`org.glob2.sim-version`. Pin digests in production:
 
 ```dotenv
 GLOB2_PLATFORM_IMAGE=ghcr.io/<owner>/<repository>-platform@sha256:…
@@ -506,7 +705,35 @@ GLOB2_CADDY_IMAGE=ghcr.io/<owner>/<repository>-caddy@sha256:…
   container (local driver, five 20 MB files).
 - Relay metrics are Prometheus text at `http://<relay>:7495/metrics` on the backend
   network (not public).
-- Admin CLI: `docker compose run --rm --no-deps platform-api platform admin grant|revoke …`.
+- Admin CLI: `docker compose run --rm --no-deps platform-api platform admin grant|revoke|ban|delete …`
+  ([what deleting keeps and removes](../multiplayer/identity.md#administration)).
+- Failed verifications: a match whose verify job failed or was lost is marked
+  `failed` and not rated, and the worker logs `match verification failed` at error
+  level (alert on it). List them with `platform matches failed` and re-run one with
+  `platform matches reverify <match id>` (`--force` replaces a queued job), or
+  `POST /api/v1/admin/matches/<id>/reverify` as an administrator
+  ([details](../multiplayer/ratings-and-matchmaking.md#applying-a-verdict-exactly-once)).
+
+### Retention
+
+The worker leader deletes old rows every minute (`apps/worker/src/maintenance.ts`,
+at most 1000 rows per table and run) and collects blobs every six hours:
+
+| Data | Kept |
+| --- | --- |
+| Refresh tokens | rotated or revoked: 7 days (reuse detection); expired: 30 days after expiry |
+| Web sessions, provider sign-in flows | 30 days after expiry or revocation; 24 hours after expiry |
+| Browser sign-in attempts | 7 days once finished |
+| Guest accounts | deleted when unused for 90 days (no sign-in or realtime session, no device use) and they never played a match, host no open room and own no catalog map |
+| Room chat | 30 days |
+| Engine jobs | 30 days after completion; each match's latest succeeded verify job stays |
+| Match proposals, finished queue tickets | 30 days |
+| Engine agents not seen | 7 days |
+| Spilled NOTIFY payloads | 1 hour |
+| Blobs | unreferenced ones (no map version, preview, match artifact, upload, generated or warm map, or match played on the map) 7 days after creation; stored files no `blobs` row names, 7 days after they were written |
+
+Matches, participants, ratings, rating history, catalog maps and the audit log
+are kept.
 - Migrations: `docker compose run --rm --no-deps init node packages/db/src/cli.ts status`.
 - Stopping: `docker compose stop` drains relays (up to `GLOB2_RELAY_STOP_GRACE`);
   `docker compose down` keeps volumes; `down --volumes` deletes all data.
@@ -545,13 +772,140 @@ with the real binary, applied by the worker and stored as a blob. It then remove
 the project and its volumes. `--no-build --tag <tag>` reuses built images; `--keep`
 leaves the stack running. CI runs it when `deploy/`, `tests/deployment/`,
 `src/relay/`, migrations or platform dependencies change, and on full runs.
+`--match-e2e` also plays a rated quick match through the stack; see
+[End-to-end test of the stack](#end-to-end-test-of-the-stack).
+
+On a running deployment, the same checks run against the public origin with a
+publicly trusted certificate, the deployed web client and the replica counts in
+the env file (run on the host; nothing is started or removed):
+
+```sh
+python3 tests/deployment/platform_stack_smoke.py --attach glob2-platform \
+    --env-file /path/to/deployment.env --log-dir artifacts/live-smoke
+```
+
+`tests/deployment/live_match_e2e.py` then plays a real match on the instance: two
+guests create and join a room by invite code, start it with AI seats on a generated
+map, and two headless native clients (`glob2 --turn-client`, built from the same
+sim version) play it through the relay until a sudden-death rule ends it. It checks
+that both clients' per-tick checksums agree, and, with `--psql`, that the relay
+reported the match, uploaded its record and the verify-match job judged it
+`verified`:
+
+```sh
+python3 tests/deployment/live_match_e2e.py --origin https://play.example.org \
+    --glob2 build/linux/client/release/src/glob2 --out artifacts/live-e2e \
+    --psql "docker compose -p glob2-platform exec -T postgres psql -U glob2 -d glob2 -At"
+```
+
+`--mode queue --queue <id>` plays a rated quick match instead: two new local
+accounts (the instance needs local sign-in) join a rated 1v1 queue, accept the
+ranked prompt and play. Player A quits first, which leaves B the winner (B
+would quit 30 s later otherwise), so the verified match is rated; with `--psql` the script also checks
+that both players' ratings on the queue's ladder changed. `--engine-command`
+replaces `--glob2` with a command prefix, for example a `docker run` of the
+engine-agent image, and `--ca-file` trusts a private CA.
+
+### End-to-end test of the stack
+
+One command builds the stack from this checkout, starts it, plays a rated quick
+match through it and tears it down again. It needs a Linux machine with Docker
+(Compose v2) and Python 3; the clients use host networking, so Docker Desktop on
+macOS does not work.
+
+```sh
+python3 tests/deployment/platform_stack_smoke.py --jobs 8 --log-dir artifacts/stack-e2e --match-e2e
+```
+
+After the smoke checks above, it runs `live_match_e2e.py --mode queue` against the
+fresh stack:
+
+1. The instance has local sign-in and a small rated queue (`e2e-ranked`, one
+   128×128 generated map).
+2. Two new local accounts join the queue, get the ranked accept prompt and accept.
+3. Two headless clients (`glob2 --turn-client`) play the match through a relay. They
+   run from the engine-agent image, so client, relay and verifier share one build
+   and sim version. Their per-tick checksums must agree.
+4. Player A quits after 40 s, so B wins and the game ends (B would quit 30 s later
+   otherwise). The relay uploads the match record and reports the end.
+5. The verify-match job must judge the match `verified`. The worker must then apply
+   ratings: `rating_status = applied`, and one won and one lost `rating_history` row
+   on the `e2e-ranked` ladder, both with changed μ.
+
+The first run builds every image (about 15 minutes on 4 cores); later runs on the
+same Docker host reuse the BuildKit caches. The match adds about three minutes.
+Everything ends up in the log directory: the compose logs, `results.json` of the
+smoke checks, and under `match-e2e/` the clients' logs, results and checksum
+traces, plus the end-to-end `results.json`. The exit status is 0 only if every
+check passed. Add `--keep` to leave the stack running for inspection.
+
+The web app's browser suites (`platform/apps/web/e2e`: page smoke tests and axe
+accessibility checks on desktop and phone) run separately, against a seeded API:
+`npm run build -w @glob2/web && npm run e2e -w @glob2/web` in `platform/`, with the
+test Postgres running.
+
+## Example: one virtual machine on Google Cloud
+
+A small instance fits on one Compute Engine VM. Building the images and the
+WebAssembly client on the VM itself avoids a registry. The commands below use
+placeholders (`glob2-host`, `REGION`, `ZONE`, `play.example.org`); keep secrets on
+the VM only.
+
+1. **Machine.** `e2-standard-4` (4 vCPUs, 16 GB) with a 100 GB balanced disk and
+   Debian 12 is enough for the stack, one engine agent and image builds:
+
+   ```sh
+   gcloud compute addresses create glob2-host-ip --region REGION
+   gcloud compute firewall-rules create glob2-host-web --network default \
+       --allow tcp:80,tcp:443,udp:443 --target-tags glob2-host
+   gcloud compute instances create glob2-host --zone ZONE --machine-type e2-standard-4 \
+       --image-family debian-12 --image-project debian-cloud \
+       --boot-disk-size 100GB --boot-disk-type pd-balanced \
+       --address <reserved IP> --tags glob2-host --labels app=glob2
+   ```
+
+2. **DNS.** An `A` record for the domain (and `www` if wanted) pointing at the
+   reserved address, with a short TTL while setting up. Caddy obtains the
+   certificate from Let's Encrypt on first start, so the record must resolve before
+   that.
+3. **Docker.** Install Docker Engine and the Compose plugin from Docker's Debian
+   repository, add your user to the `docker` group, and clone the repository.
+4. **Configuration.** Keep the env file and `instance.yaml` outside the checkout,
+   e.g. in a `0700` directory. Beyond [Setup from zero](#setup-from-zero), set
+   `GLOB2_BIND=0.0.0.0`, `GLOB2_HTTP_PORT=80`, `GLOB2_HTTPS_PORT=443`,
+   `GLOB2_DOMAIN`, `GLOB2_PUBLIC_ORIGIN` (and `GLOB2_REDIRECT_DOMAINS=www.<domain>`
+   to redirect the `www` name), and point `GLOB2_INSTANCE_CONFIG`,
+   `GLOB2_ENV_FILE` and `GLOB2_WEB_CLIENT_DIR` at absolute paths. With no sign-in
+   providers yet, enable guests and `auth.local` in `instance.yaml`; a provider is
+   added later by registering it ([Sign-in providers](#sign-in-providers)), adding
+   it to `instance.yaml` and its secret to the env file, and redeploying.
+5. **Deploy and redeploy.** `deploy/update-host.sh /path/to/deployment.env
+   origin/<branch>` builds and starts everything; run it again for each new
+   revision. The first build takes about half an hour on four vCPUs; later builds
+   reuse the BuildKit caches.
+6. **Check.** Run the attached smoke test and the live match above.
+
+Approximate cost (2026 on-demand list prices, a Canadian region): the VM about
+US$110 a month, the disk about US$10, the static address in use about US$3, a
+Cloud DNS zone about US$0.20, plus egress. Stopping the VM stops the machine
+charge; the disk and a reserved but unattached address still cost. To remove
+everything: delete the VM, the address, the firewall rule and the DNS records.
 
 ## Limits
 
 - One host. Postgres, the blob volume and Caddy are single instances; S3-compatible
-  blob storage is not implemented yet (`BLOB_STORE=s3`).
+  blob storage is not implemented yet (`BLOB_STORE=s3`; the `BlobStore` interface
+  includes the optional `list()` the blob collector uses for stored files no row
+  names).
 - Relays on other hosts need manual setup (above).
 - Until the engine reports its own data hash (`glob2 --sim-version`), the
   engine-agent image passes the hash computed by `deploy/sim_version.py` at build
   time; the agent refuses to start if the two ever disagree.
-- The relay key is one shared secret for all relays.
+- The relay key is one shared secret for all relays; the engine-agent key likewise
+  for all agents. A compromised agent (the engine runs untrusted files) can still
+  report forged results for jobs it leases, such as match verdicts.
+- Abuse limits that guard sign-in, password guessing, guests, browser sign-in
+  attempts, uploads, catalog writes and chat are shared by all API replicas
+  (Postgres counters). The general per-address request cap
+  (`limits.apiPerMinute`) and the realtime connection and message limits are per
+  replica.

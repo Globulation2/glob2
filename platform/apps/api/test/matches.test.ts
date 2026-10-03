@@ -4,7 +4,7 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import type { AccessPolicy } from '@glob2/core';
 import { resolveQueue } from '@glob2/core';
-import { checkDocument as check, simVersionKey } from '@glob2/protocol';
+import { checkDocument as check, playerSeats, simVersionKey } from '@glob2/protocol';
 import {
   PgQueueNotifier,
   PlatformMatchStarter,
@@ -13,15 +13,17 @@ import {
   chooseRelay,
   createMatch,
   expireStartingMatches,
+  handleEngineJobResult,
   queueMatchSetup,
   type MatchProposal,
   type RelayCandidate,
-} from '@glob2/worker';
+} from '@glob2/play';
 import {
   FakeEngine,
   PINNED_KEY,
   RELAY_KEY,
   fakeMapBytes,
+  unloadableMapBytes,
   fakeSaveBytes,
   guestPlayer,
   registerRelay,
@@ -237,6 +239,8 @@ describe('uploads', () => {
       })
     )['room'] as { code: string; seats: unknown[]; mapStatus: string; teams: unknown[] };
     expect(created.mapStatus).toBe('ready');
+    // The room names an uploaded map by the title read from the file.
+    expect((created as Record<string, unknown>)['mapTitle']).toBe('Uploaded map');
     expect(created.seats).toHaveLength(4);
     expect(created.teams).toHaveLength(4);
     await other.client.ok('room.join', { code: created.code });
@@ -267,7 +271,10 @@ describe('uploads', () => {
         'save',
       ),
     );
-    const junk = await json(await upload(owner, Buffer.from('not a map'), 'map'));
+    const notAMap = await upload(owner, Buffer.from('not a map'), 'map');
+    expect(notAMap.status).toBe(400);
+    expect(await json(notAMap)).toMatchObject({ details: { problem: 'not_a_map' } });
+    const junk = await json(await upload(owner, unloadableMapBytes(), 'map'));
     await engine.runPending();
     const readSave = await json(
       await fetch(`${a.url}/api/v1/uploads/${save['id']}`, {
@@ -434,10 +441,15 @@ describe('relays', () => {
       activeMatchIds: [],
     });
     expect(await json(heartbeat)).toEqual({ ok: true });
+    // The first start's pushes may still be in flight: take them before clearing.
+    await host.client.event('match.start');
+    await guest.client.event('match.start');
     host.client.clear();
     guest.client.clear();
     const moved = await guest.client.ok('match.reconnect', { matchId, relayUnavailable: true });
     expect(moved['relayUrl']).toBe('wss://relay-2.relays.test/relay');
+    // The client's network telemetry names the relay and its region.
+    expect([moved['relayId'], moved['relayRegion']]).toEqual(['relay-2', 'us-east']);
     // Everyone gets the new relay.
     const pushed = await host.client.event('match.start');
     expect((await verifyTicket(a, pushed['ticket'] as string)).relayUrl).toBe(
@@ -556,6 +568,10 @@ describe('match-end intake', () => {
       ],
       desync: { flagged: false, minoritySeats: [] },
       record: { sha256: receipt['sha256'], size: record.length, formatVersion: 1 },
+      network: relayNetwork([
+        { seat: 0, rttP50Us: 38_000, rttP95Us: 61_000, disconnects: 0, graceMs: 0 },
+        { seat: 1, rttP50Us: 150_000, rttP95Us: 420_000, disconnects: 2, graceMs: 9_400 },
+      ]),
     };
     host.client.clear();
     const ended = await relayCall(a, 'POST', `/matches/${matchId}/end`, report);
@@ -580,6 +596,46 @@ describe('match-end intake', () => {
     expect(participants).toEqual([
       { seat: 0, disconnects: 0, quit_tick: null, outcome: null },
       { seat: 1, disconnects: 2, quit_tick: 29000, outcome: null },
+    ]);
+    // Each seat's entry of the relay's network summary is kept with its participant.
+    const stored = await db
+      .selectFrom('match_participants')
+      .select(['seat', 'network'])
+      .where('match_id', '=', matchId)
+      .orderBy('seat')
+      .execute();
+    expect(stored.map((s) => s.network)).toEqual(report.network.seats);
+    // …and condensed on the match page.
+    const detailResponse = await fetch(`${a.url}/api/v1/matches/${matchId}`);
+    const detail = await json(detailResponse);
+    expect(detailResponse.status).toBe(200);
+    expect(check('MatchDetail', detail).stage).toBe('ok');
+    expect(detail['network']).toEqual([
+      {
+        seat: 0,
+        quality: 'good',
+        rttMs: { p50: 38, p95: 61 },
+        lagMs: { p50: 280, p95: 360 },
+        disconnects: 0,
+        offlineMs: 0,
+        ordersSequenced: 400,
+        ordersDeferred: 4,
+        rejoins: 0,
+        leftBy: 'quit',
+      },
+      {
+        seat: 1,
+        // Typical ping 150 ms and two disconnects: fair (connectionQuality.ts).
+        quality: 'fair',
+        rttMs: { p50: 150, p95: 420 },
+        lagMs: { p50: 280, p95: 360 },
+        disconnects: 2,
+        offlineMs: 9400,
+        ordersSequenced: 400,
+        ordersDeferred: 4,
+        rejoins: 0,
+        leftBy: 'quit',
+      },
     ]);
     const artifact = await db
       .selectFrom('match_artifacts')
@@ -771,11 +827,19 @@ describe('match-end intake', () => {
     );
     const mismatch = await relayCall(a, 'POST', `/matches/${matchId}/end`, report);
     expect(mismatch.status).toBe(409);
+    // Telemetry never blocks a match end: an unreadable network summary is dropped.
     const ok = await relayCall(a, 'POST', `/matches/${matchId}/end`, {
       ...report,
       record: { ...report.record, sha256: put['sha256'] },
+      network: { ...relayNetwork([]), schema_version: 2 },
     });
     expect(ok.status).toBe(200);
+    const network = await harness.database.db
+      .selectFrom('match_participants')
+      .select('network')
+      .where('match_id', '=', matchId)
+      .execute();
+    expect(network.every((n) => n.network === null)).toBe(true);
     const outcomes = await harness.database.db
       .selectFrom('match_participants')
       .select('outcome')
@@ -793,7 +857,177 @@ describe('match-end intake', () => {
     expect(pinned.status).toBe(403);
     await resetRelays();
   });
+
+  it('keeps a verified winner who left at the end won; only early leavers abandoned', async () => {
+    // With turn protocol 2, a game whose loser dropped at the very end is
+    // reported abandoned once the loser's reconnect grace runs out, after the
+    // winner already left the finished game.
+    await registerRelay(a, 'relay-late-quit');
+    const [host, guest] = [await player(b), await player(b)];
+    const { matchId } = await startRoomMatch(host, guest);
+    const put = await json(
+      await relayCall(a, 'PUT', `/matches/${matchId}/record`, new Uint8Array(Buffer.from('end'))),
+    );
+    const ended = await relayCall(a, 'POST', `/matches/${matchId}/end`, {
+      matchId,
+      relayId: 'relay-late-quit',
+      simVersion: SIM,
+      startedAt: '2026-10-01T12:00:05Z',
+      endedAt: '2026-10-01T12:20:05Z',
+      finalTick: 30_000,
+      reason: 'abandoned',
+      seats: [
+        // The loser dropped near the end and never came back.
+        { seat: 0, disconnects: 1, quitTick: 28_500, droppedForDesync: false },
+        // The winner left the finished game; the record ends with the grace.
+        { seat: 1, disconnects: 0, quitTick: 29_000, droppedForDesync: false },
+      ],
+      desync: { flagged: false, minoritySeats: [] },
+      record: { sha256: put['sha256'], size: 3, formatVersion: 1 },
+    });
+    expect(ended.status).toBe(200);
+    const outcomes = () =>
+      harness.database.db
+        .selectFrom('match_participants')
+        .select('outcome')
+        .where('match_id', '=', matchId)
+        .orderBy('seat')
+        .execute()
+        .then((rows) => rows.map((r) => r.outcome));
+    // Before the verdict both left before the end of the record.
+    expect(await outcomes()).toEqual(['abandoned', 'abandoned']);
+    const job = await harness.database.db
+      .selectFrom('engine_jobs')
+      .select('id')
+      .where('match_id', '=', matchId)
+      .where('kind', '=', 'verify-match')
+      .executeTakeFirstOrThrow();
+    await handleEngineJobResult(harness.database.db, {
+      jobId: job.id,
+      kind: 'verify-match',
+      ok: true,
+      agent: 'agent-test',
+      result: {
+        verdict: 'verified',
+        outcome: {
+          finalTick: 30_000,
+          teams: [
+            { team: 0, outcome: 'lost', prestige: 0, eliminatedTick: 27_900 },
+            { team: 1, outcome: 'won', prestige: 40 },
+          ],
+          resultHash: 'cd'.repeat(32),
+          replayHash: 'cd'.repeat(32),
+        },
+      },
+    });
+    expect(await outcomes()).toEqual(['abandoned', 'won']);
+    host.client.close();
+    guest.client.close();
+    await resetRelays();
+  });
+
+  it('does not mark a seat that left at the final tick as abandoned', async () => {
+    await registerRelay(a, 'relay-final-tick');
+    const [host, guest] = [await player(b), await player(b)];
+    const { matchId } = await startRoomMatch(host, guest);
+    const put = await json(
+      await relayCall(a, 'PUT', `/matches/${matchId}/record`, new Uint8Array(Buffer.from('fin'))),
+    );
+    const ended = await relayCall(a, 'POST', `/matches/${matchId}/end`, {
+      matchId,
+      relayId: 'relay-final-tick',
+      simVersion: SIM,
+      startedAt: '2026-10-01T12:00:05Z',
+      endedAt: '2026-10-01T12:02:05Z',
+      finalTick: 3000,
+      reason: 'abandoned',
+      seats: [
+        { seat: 0, disconnects: 0, quitTick: 1200, droppedForDesync: false },
+        { seat: 1, disconnects: 0, quitTick: 3000, droppedForDesync: false },
+      ],
+      desync: { flagged: false, minoritySeats: [] },
+      record: { sha256: put['sha256'], size: 3, formatVersion: 1 },
+    });
+    expect(ended.status).toBe(200);
+    const rows = await harness.database.db
+      .selectFrom('match_participants')
+      .select(['outcome', 'quit_tick'])
+      .where('match_id', '=', matchId)
+      .orderBy('seat')
+      .execute();
+    expect(rows).toEqual([
+      { outcome: 'abandoned', quit_tick: 1200 },
+      { outcome: null, quit_tick: 3000 },
+    ]);
+    host.client.close();
+    guest.client.close();
+    await resetRelays();
+  });
 });
+
+/** A RelayNetworkSummary v1 (glob2-relay's shape) with the given per-seat numbers. */
+function relayNetwork(
+  seats: {
+    seat: number;
+    rttP50Us: number;
+    rttP95Us: number;
+    disconnects: number;
+    graceMs: number;
+  }[],
+) {
+  const dist = (p50: number, p95: number) => ({ count: 100, mean: p50, p50, p95, max: p95 });
+  return {
+    schema: 'RelayNetworkSummary',
+    schema_version: 1,
+    tick_rate_millihz: 25000,
+    end_tick: 30000,
+    duration_ms: 1_200_000,
+    bundles: { broadcast: 30000, bytes: 800_000 },
+    arbitration: { ticks: 1200, unanimous: 1200, majority: 0, flagged: 0, timed_out: 0 },
+    peak_backlog: { pending_ticks: 2, pending_entries: 2, pending_bytes: 40 },
+    rejected_peers: 0,
+    seats: seats.map((s) => ({
+      seat: s.seat,
+      orders: {
+        sequenced: 400,
+        bytes: 7000,
+        deferred: 4,
+        defer_ticks: dist(1, 2),
+        duplicates_ignored: 0,
+        dropped: 0,
+        flood_rejections: 0,
+        max_queued_ahead_ticks: 2,
+      },
+      voice: { sequenced: 0, bytes: 0 },
+      traffic: {
+        frames_received: 3000,
+        bytes_received: 40000,
+        bundles_sent: 30000,
+        bundle_bytes_sent: 800_000,
+        log_bundles_sent: 0,
+        log_bundle_bytes_sent: 0,
+      },
+      lag_ticks: dist(7, 9),
+      checksums: {
+        reports: 1200,
+        lateness_ticks: dist(7, 9),
+        told_to_rejoin: 0,
+        flagged: 0,
+        late_mismatches: 0,
+      },
+      connection: {
+        connects: 1 + s.disconnects,
+        disconnects: s.disconnects,
+        grace_used_ms: s.graceMs,
+        longest_absence_ms: s.graceMs,
+        left_by_grace: false,
+        left_by_quit: true,
+        left_tick: 29000,
+      },
+      rtt_us: dist(s.rttP50Us, s.rttP95Us),
+    })),
+  };
+}
 
 // --------------------------------------------------------- queue starter
 
@@ -819,7 +1053,7 @@ async function proposal(
   return value;
 }
 
-function proposalValue(humans: string[], overrides: Partial<MatchProposal>): MatchProposal {
+function proposalValue(humans: string[], overrides: Partial<MatchProposal> = {}): MatchProposal {
   return {
     id: crypto.randomUUID(),
     queueId: 'casual-1v1',
@@ -889,7 +1123,7 @@ describe('PlatformMatchStarter', () => {
     expect(matches).toHaveLength(1);
     const setup = matches[0]!.setup as ReturnType<typeof queueMatchSetup>;
     expect(check('MatchSetup', setup).stage).toBe('ok');
-    expect(setup.seats.map((s) => s.name)).toEqual([p1.displayName, p2.displayName]);
+    expect(playerSeats(setup).map((s) => s.name)).toEqual([p1.displayName, p2.displayName]);
     expect(matches[0]).toMatchObject({
       origin: 'queue',
       queue_id: 'casual-1v1',
@@ -991,6 +1225,191 @@ describe('queue methods and NOTIFY forwarding', () => {
       .executeTakeFirstOrThrow();
     expect(ticket).toEqual({ sim_version: SIM_KEY, status: 'waiting', queue_id: 'ranked-1v1' });
     expect(resolveQueue(queues[1]!).rated).toBe(true);
+  });
+
+  it('describes queues and lists relay regions with probe URLs', async () => {
+    const info = await json(await fetch(`${a.url}/api/v1/instance`));
+    const listed = info['queues'] as Record<string, unknown>[];
+    expect(listed.find((q) => q['id'] === 'ranked-1v1')).toMatchObject({ acceptSeconds: 10 });
+    expect(listed.find((q) => q['id'] === 'casual-1v1')).toMatchObject({ acceptSeconds: 0 });
+    expect(listed[0]!['maps']).toContain('even-ground');
+    expect(check('InstanceInfo', info).stage).toBe('ok');
+
+    await resetRelays();
+    expect(await json(await fetch(`${b.url}/api/v1/relays/regions`))).toEqual({ items: [] });
+    await registerRelay(a, 'relay-r1', { region: 'eu-west' });
+    await registerRelay(a, 'relay-r2', { region: 'eu-west' });
+    await registerRelay(a, 'relay-r3', { region: 'us-east', draining: true });
+    await registerRelay(a, 'relay-r4', { region: 'ap-south' });
+    const regions = await json(await fetch(`${b.url}/api/v1/relays/regions`));
+    expect(check('RelayRegionList', regions).stage).toBe('ok');
+    expect(regions).toEqual({
+      items: [
+        { region: 'ap-south', probeUrl: 'https://relay-r4.relays.test/relay', relays: 1 },
+        { region: 'eu-west', probeUrl: 'https://relay-r1.relays.test/relay', relays: 2 },
+      ],
+    });
+    await resetRelays();
+  });
+
+  it('toggles AI backfill on a waiting ticket and shows everyone who accepted', async () => {
+    const p1 = await player(a);
+    const p2 = await player(b);
+    const t1 = await p1.client.ok('queue.join', { queueId: 'casual-1v1', regions: [] });
+    const t2 = await p2.client.ok('queue.join', { queueId: 'casual-1v1', regions: [] });
+    await p1.client.ok('queue.update', { ticketId: t1['ticketId'], allowAiOpponent: false });
+    const stored = await harness.database.db
+      .selectFrom('queue_tickets')
+      .select(['allow_ai_opponent', 'status'])
+      .where('id', '=', t1['ticketId'] as string)
+      .executeTakeFirstOrThrow();
+    expect(stored).toEqual({ allow_ai_opponent: false, status: 'waiting' });
+    const stranger = await p2.client.call('queue.update', {
+      ticketId: t1['ticketId'],
+      allowAiOpponent: true,
+    });
+    expect(stranger.error?.code).toBe('not_found');
+
+    // A pending ranked-style prompt for both tickets.
+    const db = harness.database.db;
+    const proposalId = crypto.randomUUID();
+    await db
+      .insertInto('match_proposals')
+      .values({
+        id: proposalId,
+        queue_id: 'casual-1v1',
+        sim_version: SIM_KEY,
+        region: 'eu-west',
+        rated: false,
+        backfilled: false,
+        status: 'pending',
+        map: JSON.stringify(proposalValue([]).map),
+        expires_at: new Date(Date.now() + 60_000),
+        created_at: new Date(),
+      })
+      .execute();
+    for (const [slot, p, t] of [
+      [0, p1, t1],
+      [1, p2, t2],
+    ] as const) {
+      await db
+        .updateTable('queue_tickets')
+        .set({ status: 'proposed', proposal_id: proposalId })
+        .where('id', '=', t['ticketId'] as string)
+        .execute();
+      await db
+        .insertInto('match_proposal_seats')
+        .values({
+          proposal_id: proposalId,
+          slot,
+          side: slot,
+          kind: 'human',
+          ticket_id: t['ticketId'] as string,
+          account_id: p.accountId,
+          ai_id: null,
+          rating_entity_id: null,
+          mu: 25,
+          sigma: 25 / 3,
+          response: 'pending',
+        })
+        .execute();
+    }
+    p1.client.clear();
+    p2.client.clear();
+    await p1.client.ok('queue.respond', { proposalId, accept: true });
+    for (const p of [p1, p2]) {
+      const shown = await p.client.event('queue.proposal');
+      expect(check('RealtimeEventQueueProposal', shown).stage).toBe('ok');
+      const seats = shown['seats'] as { response: string; you?: boolean; slot: number }[];
+      expect(seats.map((seat) => seat.response)).toEqual(['accepted', 'pending']);
+      expect(seats.find((seat) => seat.you)?.slot).toBe(p === p1 ? 0 : 1);
+      expect(shown['map']).toEqual({ generatorId: 'even-ground', width: 128, height: 128 });
+    }
+    const late = await p1.client.call('queue.update', {
+      ticketId: t1['ticketId'],
+      allowAiOpponent: true,
+    });
+    expect(late.error).toBeUndefined();
+    await db
+      .updateTable('match_proposals')
+      .set({ status: 'cancelled' })
+      .where('id', '=', proposalId)
+      .execute();
+    await db
+      .updateTable('queue_tickets')
+      .set({ status: 'cancelled' })
+      .where('proposal_id', '=', proposalId)
+      .execute();
+    const gone = await p1.client.call('queue.update', {
+      ticketId: t1['ticketId'],
+      allowAiOpponent: true,
+    });
+    expect(gone.error?.code).toBe('conflict');
+  });
+
+  it('opens one unrated rematch room for the players of a quick match', async () => {
+    await registerRelay(a, 'relay-rm');
+    const p1 = await player(a);
+    const p2 = await player(b);
+    const outsider = await player(a);
+    const prop = await proposal([p1.accountId, p2.accountId]);
+    const setup = queueMatchSetup(prop, {
+      seed: 9,
+      generator: generator(2, 9),
+      mapHash: 'ab'.repeat(32),
+    });
+    const created = await createMatch(harness.database.db, {
+      setup,
+      origin: 'queue',
+      queueId: prop.queueId,
+      proposalId: prop.id,
+      rated: true,
+      placement: { players: [] },
+    });
+    const early = await p1.client.call('match.rematch', { matchId: created.matchId });
+    expect(early.error?.code).toBe('conflict');
+    await harness.database.db
+      .updateTable('matches')
+      .set({ status: 'ended', end_reason: 'completed', ended_at: new Date() })
+      .where('id', '=', created.matchId)
+      .execute();
+    const stranger = await outsider.client.call('match.rematch', { matchId: created.matchId });
+    expect(stranger.error?.code).toBe('not_found');
+
+    p2.client.clear();
+    const opened = (await p1.client.ok('match.rematch', { matchId: created.matchId }))['room'] as {
+      id: string;
+      code: string;
+      visibility: string;
+      host: string;
+      members: { accountId: string }[];
+      map?: { kind: string };
+    };
+    expect(opened.visibility).toBe('link');
+    expect(opened.members.map((m) => m.accountId)).toEqual([p1.accountId]);
+    expect(opened.map?.kind).toBe('generated');
+    const offered = await p2.client.event('match.rematchOffered');
+    expect(check('RealtimeEventMatchRematchOffered', offered).stage).toBe('ok');
+    expect(offered).toMatchObject({
+      matchId: created.matchId,
+      roomId: opened.id,
+      code: opened.code,
+    });
+
+    const joined = (await p2.client.ok('match.rematch', { matchId: created.matchId }))['room'] as {
+      id: string;
+      members: { accountId: string }[];
+    };
+    expect(joined.id).toBe(opened.id);
+    expect(joined.members.map((m) => m.accountId).sort()).toEqual(
+      [p1.accountId, p2.accountId].sort(),
+    );
+    // Asking again keeps the same room.
+    const again = (await p1.client.ok('match.rematch', { matchId: created.matchId }))['room'] as {
+      id: string;
+    };
+    expect(again.id).toBe(opened.id);
+    await resetRelays();
   });
 
   it('forwards worker queue events to sockets on any replica and follows matchFound with match.start', async () => {

@@ -143,8 +143,10 @@ RelayConfig RelayConfig::fromMap(const std::map<std::string, std::string>& value
 	c.maxOutgoingBytes = r.number("GLOB2_RELAY_MAX_OUTGOING_BYTES", c.maxOutgoingBytes, 65536, 1ul << 32);
 
 	c.graceSeconds = static_cast<unsigned>(r.number("GLOB2_RELAY_GRACE_SECONDS", c.graceSeconds, 1, 86400));
+	c.loadWaitSeconds = static_cast<unsigned>(r.number("GLOB2_RELAY_LOAD_WAIT_SECONDS", c.loadWaitSeconds, 0, 3600));
 	c.drainTimeoutSeconds =
 		static_cast<unsigned>(r.number("GLOB2_RELAY_DRAIN_TIMEOUT_SECONDS", c.drainTimeoutSeconds, 0, 7 * 86400));
+	c.rttPingMillis = static_cast<unsigned>(r.number("GLOB2_RELAY_RTT_PING_MS", c.rttPingMillis, 0, 3600000));
 
 	c.jwksFile = r.text("GLOB2_RELAY_JWKS_FILE", "");
 	c.jwksUrl = r.text("GLOB2_RELAY_JWKS_URL", "");
@@ -168,6 +170,8 @@ RelayConfig RelayConfig::fromMap(const std::map<std::string, std::string>& value
 		throw std::invalid_argument("GLOB2_RELAY_REGION must match ^[a-z0-9][a-z0-9-]{0,31}$");
 	c.spoolDirectory = r.text("GLOB2_RELAY_SPOOL_DIR", "");
 	c.uploadAttempts = static_cast<unsigned>(r.number("GLOB2_RELAY_UPLOAD_ATTEMPTS", c.uploadAttempts, 1, 100));
+	c.setupRetrySeconds =
+		static_cast<unsigned>(r.number("GLOB2_RELAY_SETUP_RETRY_SECONDS", c.setupRetrySeconds, 0, 86400));
 
 	if (c.jwksFile.empty() && c.jwksUrl.empty() && c.platformUrl.empty())
 		throw std::invalid_argument("Set GLOB2_RELAY_JWKS_FILE, GLOB2_RELAY_JWKS_URL or GLOB2_RELAY_PLATFORM_URL");

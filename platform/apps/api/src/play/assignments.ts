@@ -11,10 +11,21 @@ import {
   type MatchSetup,
   type MatchSummary,
   type MatchTicketClaims,
-  type AiId,
 } from '@glob2/protocol';
-import { activeEntitlements } from '@glob2/worker';
+import {
+  STORED_MATCH_SETUP,
+  activeEntitlements,
+  matchRatingPreview,
+  readStored,
+} from '@glob2/play';
 import type { SigningKeys } from '../auth/keys.ts';
+import {
+  catalogTitles,
+  generatorLabel,
+  generatorOf,
+  summarize,
+  uploadTitle,
+} from '../history/summaries.ts';
 
 type Db = Kysely<Database>;
 
@@ -29,30 +40,43 @@ export class Assignments {
   private readonly db: Db;
   private readonly keys: SigningKeys;
   private readonly origin: string;
+  private readonly queueNames: ReadonlyMap<string, string>;
 
-  constructor(db: Db, keys: SigningKeys, origin: string) {
+  constructor(
+    db: Db,
+    keys: SigningKeys,
+    origin: string,
+    queueNames: ReadonlyMap<string, string> = new Map(),
+  ) {
     this.db = db;
     this.keys = keys;
     this.origin = origin;
+    this.queueNames = queueNames;
   }
 
   /**
    * The assignment of a human player in a starting or running match, with a
    * freshly signed ticket; undefined if the account has no seat there or the
-   * match is over or has no relay.
+   * match is over or has no relay. Carries the map title, and for rated
+   * matches the player's rating preview.
    */
   async forAccount(matchId: string, accountId: string): Promise<MatchAssignment | undefined> {
     const match = await this.db
       .selectFrom('matches as m')
       .innerJoin('relays as r', 'r.id', 'm.relay_id')
-      .select(['m.id', 'm.status', 'm.setup', 'r.public_url'])
+      .select(['m.id', 'm.status', 'm.setup', 'r.id as relay_id', 'r.region', 'r.public_url'])
       .where('m.id', '=', matchId)
       .executeTakeFirst();
     if (!match || (match.status !== 'starting' && match.status !== 'running')) return undefined;
-    const setup = match.setup as unknown as MatchSetup;
+    const setup = readStored(STORED_MATCH_SETUP, match.setup);
     const seat = setup.seats.find((s) => s.kind === 'human' && s.accountId === accountId);
     if (!seat) return undefined;
     const humanSeats = setup.seats.filter((s) => s.kind === 'human').map((s) => s.seat);
+    const [title, preview, entitlements] = await Promise.all([
+      this.mapTitle(setup),
+      matchRatingPreview(this.db, match.id, accountId),
+      activeEntitlements(this.db, accountId),
+    ]);
     const iat = Math.floor(Date.now() / 1000);
     const claims: MatchTicketClaims = {
       iss: this.origin,
@@ -68,7 +92,7 @@ export class Assignments {
       humanSeats,
       // Verbatim: the relay accepts only tickets naming its registered publicUrl.
       relayUrl: match.public_url,
-      entitlements: await activeEntitlements(this.db, accountId),
+      entitlements,
     };
     return {
       matchId: match.id,
@@ -76,8 +100,12 @@ export class Assignments {
       ticket: this.keys.sign(MATCH_TICKET_TYPE, claims),
       ticketExpiresAt: new Date(claims.exp * 1000).toISOString(),
       relayUrl: match.public_url,
+      relayId: match.relay_id,
+      ...(match.region ? { relayRegion: match.region } : {}),
       setup,
       mapUrl: mapUrl(this.origin, setup.map.hash),
+      ...(title ? { mapTitle: title } : {}),
+      ...(preview ? { ratingPreview: preview } : {}),
     };
   }
 
@@ -93,6 +121,7 @@ export class Assignments {
     return rows.flatMap((r) => (r.account_id ? [r.account_id] : []));
   }
 
+  /** The match's summary as history lists show it (match.updated), map title included. */
   async summary(matchId: string): Promise<MatchSummary | undefined> {
     const match = await this.db
       .selectFrom('matches')
@@ -100,58 +129,16 @@ export class Assignments {
       .where('id', '=', matchId)
       .executeTakeFirst();
     if (!match) return undefined;
-    const setup = match.setup as unknown as MatchSetup;
-    const participants = await this.db
-      .selectFrom('match_participants')
-      .selectAll()
-      .where('match_id', '=', matchId)
-      .orderBy('seat')
-      .execute();
-    const history = await this.db
-      .selectFrom('rating_history as h')
-      .innerJoin('match_participants as p', (join) =>
-        join.onRef('p.rating_entity_id', '=', 'h.entity_id').onRef('p.match_id', '=', 'h.match_id'),
-      )
-      .select(['p.seat', 'h.ladder', 'h.display_before', 'h.display_after', 'h.sigma_after'])
-      .where('h.match_id', '=', matchId)
-      .execute();
-    const ratingOf = new Map(history.map((h) => [h.seat, h]));
-    return {
-      id: match.id,
-      simVersion: setup.simVersion,
-      origin: match.origin,
-      ...(match.queue_id ? { queueId: match.queue_id } : {}),
-      rated: match.rated,
-      status: match.status,
-      verification: match.verification,
-      ...(match.end_reason ? { endReason: match.end_reason } : {}),
-      mapHash: match.map_hash,
-      ...(match.started_at ? { startedAt: match.started_at.toISOString() } : {}),
-      ...(match.ended_at ? { endedAt: match.ended_at.toISOString() } : {}),
-      ...(match.final_tick !== null ? { durationTicks: match.final_tick } : {}),
-      participants: participants.map((p) => {
-        const rating = ratingOf.get(p.seat);
-        return {
-          seat: p.seat,
-          team: p.team,
-          kind: p.kind,
-          displayName: p.display_name,
-          ...(p.account_id ? { accountId: p.account_id } : {}),
-          ...(p.ai_id ? { ai: p.ai_id as AiId } : {}),
-          ...(p.outcome ? { outcome: p.outcome } : {}),
-          disconnects: p.disconnects,
-          ...(rating
-            ? {
-                rating: {
-                  ladder: rating.ladder,
-                  before: rating.display_before,
-                  after: rating.display_after,
-                  provisional: rating.sigma_after > 5,
-                },
-              }
-            : {}),
-        };
-      }),
-    };
+    return (await summarize(this.db, [match], this.queueNames))[0];
+  }
+
+  /** The catalog title of the map, else the name of the generator that made it. */
+  private async mapTitle(setup: MatchSetup): Promise<string | undefined> {
+    const title = (await catalogTitles(this.db, [setup.map.hash])).get(setup.map.hash)?.title;
+    if (title) return title.slice(0, 128);
+    const generator = generatorOf(setup);
+    if (generator) return generatorLabel(generator).slice(0, 128);
+    // A premade map the host uploaded for the room.
+    return uploadTitle(this.db, setup.map.hash);
   }
 }

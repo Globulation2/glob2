@@ -14,12 +14,14 @@
 #include <functional>
 #include <map>
 #include <optional>
+#include <set>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
 #include "MatchRecord.h"
 #include "TurnMessages.h"
+#include "TurnTelemetry.h"
 
 namespace Turn
 {
@@ -31,12 +33,21 @@ namespace Turn
 		std::uint8_t bundleInterval = DEFAULT_BUNDLE_INTERVAL;
 		std::uint16_t checksumInterval = DEFAULT_CHECKSUM_INTERVAL;
 		std::uint64_t graceMicros = DEFAULT_GRACE_MICROS;
-		std::uint32_t maxAheadTicks = 250;            ///< flood limit on a seat's order queue
+		/// Flood limit on a seat's order queue: an order that would land further ahead of
+		/// the relay clock is dropped (the connection stays open).
+		std::uint32_t maxAheadTicks = 250;
 		std::uint32_t arbitrationTimeoutTicks = 250;  ///< arbitrate with partial reports after this
 		std::uint32_t lagThresholdTicks = 50;         ///< connected seat shown as lagging beyond this
 		std::uint32_t presenceRefreshTicks = 25;
 		std::uint32_t maxRejoins = 3;
 		std::size_t tickByteBudget = MAX_TICK_ORDER_BYTES;
+		/// Load barrier: the match clock (tick 0) starts once every human seat has
+		/// said Hello (clients connect after loading the game), or this long after
+		/// the sequencer was created, whichever is first. Until then no bundle is sent
+		/// and no grace runs; a seat still missing then joins late under the usual
+		/// grace, counted from the start. 0 starts the clock at creation (the LAN host
+		/// waits for every Hello before it creates its sequencer).
+		std::uint64_t startBarrierMicros = 0;
 	};
 
 	/// Where the sequencer's frames go. Implemented by the relay's socket layer, the LAN
@@ -62,6 +73,7 @@ namespace Turn
 		{
 			std::uint64_t ordersSequenced = 0;
 			std::uint64_t ordersDropped = 0;
+			std::uint64_t ordersFlooded = 0; ///< dropped by the flood limit (also in ordersDropped)
 			std::uint64_t bundlesSent = 0;
 			std::uint64_t peersRejected = 0;
 		};
@@ -79,11 +91,33 @@ namespace Turn
 		}
 		/// The peer's transport closed.
 		void onDisconnect(PeerId peer, std::uint64_t nowMicros);
+		/// A transport round trip the host measured on the peer's connection (the online
+		/// relay's WebSocket ping). Telemetry only: it changes nothing the sequencer does.
+		void transportRoundTrip(PeerId peer, std::uint64_t micros);
 		/// Advances the clock: grace expiry, bundles, arbitration timeouts, presence.
 		void update(std::uint64_t nowMicros);
 
-		/// The tick in progress at the given time.
+		/// The tick in progress at the given time (0 while the load barrier holds).
 		std::uint32_t relayTick(std::uint64_t nowMicros) const;
+		/// The match clock runs (the load barrier has lifted).
+		bool clockStarted() const { return clockRunning; }
+		/// When the clock started, in the host's microseconds (creation time without a
+		/// barrier).
+		std::uint64_t clockStartMicros() const { return start; }
+		/// When update() next has work to do, in the host's microseconds: now while a
+		/// presence change waits to be broadcast; the load-barrier deadline while it
+		/// holds; the next bundle while any seat is connected; otherwise the earliest
+		/// grace expiry (at most a second away). Nothing is due between these, so a host
+		/// that sleeps until then, and calls update() after every event, wakes once per
+		/// tick for a running match and rarely for an empty one. UINT64_MAX once over.
+		std::uint64_t nextWakeMicros() const;
+		/// When the next live bundle is due. A host that calls update() at this time
+		/// (rather than on a coarse timer) sends every bundle on its tick boundary, so
+		/// its timer adds no jitter to the clients' buffers.
+		std::uint64_t nextBundleMicros() const
+		{
+			return start + ticksToMicros(sentHorizon + config.bundleInterval - 1, config.tickRateMilliHz);
+		}
 		/// Every tick below this has been broadcast.
 		std::uint32_t horizon() const { return sentHorizon; }
 		/// Broadcast turns without voice, sorted by (tick, seat).
@@ -92,9 +126,27 @@ namespace Turn
 		bool desyncFlagged() const { return flagged; }
 		/// True once every human seat has left.
 		bool matchOver() const { return over; }
+		/// True when the players agree the game is over: some client left with
+		/// Quit(GameFinished), and so did every other human seat still in the match at
+		/// that moment. One client's claim alone decides nothing (a seat that lost its
+		/// connection keeps its full grace). The relay reports such a match as completed.
+		bool gameDecided() const { return finishedClaims && !(inMatchAtFirstClaim & ~finishedClaims); }
+		/// Seats that left with Quit(GameFinished).
+		std::uint32_t finishedSeats() const { return finishedClaims; }
 		std::optional<std::uint32_t> agreedChecksum(std::uint32_t tick) const;
 		const Stats& stats() const { return counters; }
+		/// Network telemetry of this match (docs/development/network-telemetry.md).
+		const SequencerTelemetry& telemetry() const { return net; }
+		/// The per-seat network summary (RelayNetworkSummary v1) so far.
+		nlohmann::json networkSummary() const;
 		std::uint32_t humanSeats() const { return humanMask; }
+
+		/// Optional latency probes for tests and diagnostics; unset by default. Called
+		/// when a client's order is given a tick (with the relay tick at arrival), and
+		/// when a live bundle raises the horizon.
+		std::function<void(std::uint8_t seat, std::uint32_t clientSequence, std::uint32_t tick, std::uint32_t relayTick)>
+			onSequenced;
+		std::function<void(std::uint32_t fromTick, std::uint32_t horizon)> onEmitted;
 
 		/// Flushes pending turns into a final bundle and stops accepting play. Called
 		/// automatically once every seat has left; a host shutting down early calls it
@@ -118,10 +170,16 @@ namespace Turn
 			std::uint32_t executedTick = 0;
 			std::uint32_t lastClientSequence = 0;
 			std::uint32_t rejoins = 0;
+			/// R - executedTick when the seat's last Ping (or Hello) arrived, and R then.
+			std::uint32_t lagAtPing = 0;
+			std::uint32_t pingTick = 0;
+			/// Smoothed transport round trip (transportRoundTrip); 0 until measured.
+			std::uint64_t rttMicros = 0;
 		};
 		struct Peer
 		{
 			int seat = -1;
+			std::uint16_t version = PROTOCOL_VERSION; ///< negotiated in Hello
 		};
 		struct TickReports
 		{
@@ -142,7 +200,8 @@ namespace Turn
 		void sequenceQuit(std::uint8_t seat, MatchEventKind why, std::uint64_t now);
 		void emitUpTo(std::uint32_t newHorizon);
 		void sendLog(PeerId peer, std::uint32_t fromTick);
-		void arbitrate(std::uint32_t tick);
+		void arbitrate(std::uint32_t tick, bool timedOut = false);
+		void notePending();
 		void tellRejoin(std::uint8_t seat, std::uint32_t tick);
 		void flag(std::uint32_t tick, std::uint32_t seatMask);
 		bool expectedReporter(const Seat& s) const;
@@ -150,13 +209,21 @@ namespace Turn
 		void event(std::uint8_t seat, MatchEventKind kind);
 		void broadcastPresence();
 		Presence presenceSnapshot() const;
+		SeatLatency latencySnapshot() const;
+		/// How far the seat's game is behind the relay clock: the lag its last Ping
+		/// reported, growing once Pings are overdue (a stalled or silent client).
+		std::uint32_t seatLag(const Seat& s, std::uint32_t tick) const;
 		void dropPeer(PeerId peer);
+		/// Lifts the load barrier when every human seat has connected or its time is up.
+		void checkBarrier();
 
 		SequencerConfig config;
 		std::uint32_t humanMask;
 		Admission admission;
 		SequencerOutput& output;
 		std::uint64_t start;
+		std::uint64_t created;
+		bool clockRunning = true;
 		std::uint64_t now = 0;
 		std::uint64_t tickPeriod;
 
@@ -166,6 +233,9 @@ namespace Turn
 		std::map<std::uint32_t, std::size_t> pendingBytes;
 		std::vector<TurnEntry> log;
 		std::map<std::uint32_t, TickReports> reports;
+		/// Ticks of `reports` not yet arbitrated (few: those within the timeout), so no
+		/// update walks the whole match's reports.
+		std::set<std::uint32_t> openReports;
 		std::vector<MatchEvent> events;
 		std::uint32_t sentHorizon = 0;
 		std::uint32_t lastPresenceTick = 0;
@@ -173,6 +243,10 @@ namespace Turn
 		bool flagged = false;
 		bool over = false;
 		bool incomplete = false;
+		std::uint32_t finishedClaims = 0;     ///< seats that sent Quit(GameFinished)
+		std::uint32_t inMatchAtFirstClaim = 0; ///< human seats not yet left at the first claim
 		Stats counters;
+		SequencerTelemetry net;
+		std::uint64_t pendingEntries = 0, pendingTotalBytes = 0;
 	};
 }

@@ -71,6 +71,11 @@
           "queueId": {
             "type": "string"
           },
+          "queueName": {
+            "type": "string",
+            "maxLength": 64,
+            "description": "The queue as players know it (\"Casual 1v1\"), from the instance config."
+          },
           "rated": {
             "type": "boolean"
           },
@@ -132,8 +137,13 @@
               {
                 "type": "string",
                 "const": "not_applicable"
+              },
+              {
+                "type": "string",
+                "const": "failed"
               }
-            ]
+            ],
+            "description": "failed: the server could not run its check (the verify job failed or was lost); the match is not rated unless an operator re-runs verification. Clients that do not know a value treat it as pending."
           },
           "mapHash": {
             "type": "string",
@@ -257,13 +267,18 @@
                     },
                     {
                       "type": "string",
+                      "const": "draw"
+                    },
+                    {
+                      "type": "string",
                       "const": "unresolved"
                     },
                     {
                       "type": "string",
                       "const": "abandoned"
                     }
-                  ]
+                  ],
+                  "description": "draw: a win shared by teams of more than one alliance (a prestige or sudden-death tie at the top). Draws are not rated."
                 },
                 "disconnects": {
                   "type": "integer",

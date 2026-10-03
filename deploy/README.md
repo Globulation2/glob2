@@ -84,9 +84,6 @@ proxy. Do not expose lobby 7489, registration 7490, router 7491, or control
 
 A `server-v*` Git tag triggers `.github/workflows/server-image.yml`, publishing
 Linux amd64/arm64 server and proxy images with version and full-commit tags, provenance, and SBOM.
-The workflow adds those tags only after the platform stack smoke test has passed
-and every image of the release has built; until then images exist only under a
-`candidate-<commit>` tag, which deployments should not use.
 Use the resulting immutable digest for production and record it with the client
 revision. The default `glob2-server:development` and `glob2-proxy:development` images are
 intended for local builds. All three services run as UID 10001 with a read-only

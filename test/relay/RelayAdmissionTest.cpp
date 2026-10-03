@@ -10,7 +10,9 @@
 #include "MatchReport.h"
 #include "RelayConfig.h"
 #include "RelayLog.h"
+#include "RelayMetrics.h"
 #include "RelayTestSupport.h"
+#include "TurnTelemetry.h"
 
 #include <nlohmann/json.hpp>
 
@@ -137,6 +139,63 @@ TEST_SUITE("RelayAdmission")
 			keys.push_back(it.key());
 		CHECK(keys == std::vector<std::string>{"desync", "endedAt", "finalTick", "matchId", "reason", "record", "relayId",
 		                                       "seats", "simVersion", "startedAt"});
+	}
+
+	TEST_CASE("RelayMatchEnded carries the relay's network summary, and /metrics its totals")
+	{
+		Turn::MatchRecord record;
+		record.matchId = A;
+		record.humanSeatMask = 0b11;
+		record.endTick = 900;
+		Turn::SequencerTelemetry t;
+		t.seats.resize(2);
+		t.seats[0].ordersSequenced = 40;
+		t.seats[0].lagTicks.add(3);
+		t.seats[0].rttMicros.add(42000);
+		t.seats[0].rttMicros.add(48000);
+		t.seats[1].ordersSequenced = 2;
+		t.seats[1].ordersDeferred = 1;
+		t.seats[1].deferTicks.add(2);
+		t.seats[1].disconnects = 1;
+		t.seats[1].graceMicrosTotal = 4500000;
+		t.arbitrations = 7;
+		MatchEndInfo info;
+		info.matchId = A;
+		info.relayId = "relay-eu1-a";
+		info.simVersion = claims(A, 0).simVersion;
+		info.startedAt = 1790000005;
+		info.endedAt = 1790000041;
+		info.network = Turn::sequencerSummaryJson(t, record.humanSeatMask, Turn::DEFAULT_TICK_RATE_MILLIHZ, 900);
+		const json j = json::parse(matchEndedJson(info, record, {1}));
+		REQUIRE(j.contains("network"));
+		const json& n = j["network"];
+		CHECK(n["schema"] == "RelayNetworkSummary");
+		CHECK(n["schema_version"] == 1);
+		CHECK(n["end_tick"] == 900);
+		CHECK(n["duration_ms"] == 36000);
+		REQUIRE(n["seats"].size() == 2);
+		CHECK(n["seats"][0]["orders"]["sequenced"] == 40);
+		CHECK(n["seats"][0]["rtt_us"]["count"] == 2);
+		CHECK(n["seats"][0]["rtt_us"]["max"] == 48000);
+		CHECK_FALSE(n["seats"][1].contains("rtt_us")); // nothing measured: left out
+		CHECK(n["seats"][1]["orders"]["deferred"] == 1);
+		CHECK(n["seats"][1]["connection"]["grace_used_ms"] == 4500);
+		CHECK(n["arbitration"]["ticks"] == 7);
+
+		RelayMetrics metrics;
+		metrics.matchNetwork(t);
+		metrics.matchNetwork(t);
+		const std::string text = metrics.render();
+		CHECK(text.find("glob2_relay_matches_started_total 0\n") != std::string::npos);
+		CHECK(text.find("# TYPE glob2_relay_net_orders_sequenced_total counter\n") != std::string::npos);
+		CHECK(text.find("glob2_relay_net_orders_sequenced_total 84\n") != std::string::npos);
+		CHECK(text.find("glob2_relay_net_orders_deferred_total 2\n") != std::string::npos);
+		CHECK(text.find("glob2_relay_net_disconnects_total 2\n") != std::string::npos);
+		CHECK(text.find("glob2_relay_net_grace_used_seconds_total 9\n") != std::string::npos);
+		CHECK(text.find("glob2_relay_net_arbitrations_total 14\n") != std::string::npos);
+		CHECK(text.find("glob2_relay_net_rtt_us_count 4\n") != std::string::npos);
+		CHECK(text.find("glob2_relay_net_rtt_us_sum 180000\n") != std::string::npos);
+		CHECK(text.find("glob2_relay_net_lag_ticks{quantile=\"0.5\"} 3\n") != std::string::npos);
 	}
 
 	TEST_CASE("registration and heartbeat bodies carry the protocol's fields")

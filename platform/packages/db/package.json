@@ -16,6 +16,7 @@
     "migrate": "node src/cli.ts"
   },
   "dependencies": {
+    "graphile-worker": "^0.18.0",
     "kysely": "^0.29.6",
     "pg": "^8.23.1"
   },

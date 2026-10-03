@@ -295,6 +295,37 @@ void Presence::decodeData(InputStream* s)
 	}
 }
 
+// SeatLatency
+
+void SeatLatency::encodeData(OutputStream* s) const
+{
+	if (seats.size() > MAX_SEATS)
+		throw std::length_error("Too many latency seats");
+	s->writeUint8(static_cast<Uint8>(seats.size()), "count");
+	for (const auto& p : seats)
+	{
+		s->writeUint8(p.seat, "seat");
+		s->writeUint32(p.rttMicros, "rttMicros");
+	}
+}
+
+void SeatLatency::decodeData(InputStream* s)
+{
+	const std::size_t count = s->readUint8("count");
+	if (count > MAX_SEATS)
+		fail("latency count");
+	seats.clear();
+	for (std::size_t i = 0; i < count; ++i)
+	{
+		SeatRoundTrip p;
+		p.seat = s->readUint8("seat");
+		if (p.seat >= MAX_SEATS || (i && seats.back().seat >= p.seat))
+			fail("latency entry");
+		p.rttMicros = s->readUint32("rttMicros");
+		seats.push_back(p);
+	}
+}
+
 // ResyncRequest
 
 void ResyncRequest::encodeData(OutputStream* s) const { s->writeUint32(fromTick, "fromTick"); }
@@ -376,6 +407,7 @@ namespace TurnCodec
 		case MSG_QUIT: return std::make_shared<Quit>();
 		case MSG_PING: return std::make_shared<Ping>();
 		case MSG_PONG: return std::make_shared<Pong>();
+		case MSG_SEAT_LATENCY: return std::make_shared<SeatLatency>();
 		default: return nullptr;
 		}
 	}

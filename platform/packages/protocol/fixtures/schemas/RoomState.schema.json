@@ -289,6 +289,11 @@
       "type": "string",
       "maxLength": 2000
     },
+    "mapTitle": {
+      "type": "string",
+      "maxLength": 128,
+      "description": "Display name of a catalog or uploaded map (its catalog title, or the title read from the uploaded file). Absent for generated maps, which clients name from the generator."
+    },
     "teams": {
       "type": "array",
       "items": {
@@ -587,6 +592,11 @@
       "type": "string",
       "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
       "description": "Lowercase UUID."
+    },
+    "notice": {
+      "type": "string",
+      "maxLength": 500,
+      "description": "Shown to every member of an open room: why the last start did not happen (e.g. the server was interrupted while starting). Cleared by the next start."
     },
     "revision": {
       "type": "integer",

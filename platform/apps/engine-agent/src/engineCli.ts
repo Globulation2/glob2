@@ -504,10 +504,53 @@ export function parseGameResult(text: string): GameResult {
   return { finalTick: int(doc['ticks'], 'ticks'), teams };
 }
 
-export type VerifierVerdict =
+/**
+ * A seat whose sequenced orders the verifier refused (verdict.json
+ * `orderRejections`, see docs/multiplayer/turn-protocol.md): counts by reason.
+ */
+export interface VerifierOrderRejection {
+  seat: number;
+  rejected: number;
+  stale: number;
+  reasons: Record<string, number>;
+  firstRejectedTick?: number;
+}
+
+export type VerifierVerdict = (
   | { verdict: 'verified' }
   | { verdict: 'diverged'; seats: number[] }
-  | { verdict: 'unverifiable'; reason: string };
+  | { verdict: 'unverifiable'; reason: string }
+) & { orderRejections?: VerifierOrderRejection[] };
+
+/** Well-formed entries of verdict.json `orderRejections`; anything else is dropped. */
+function parseOrderRejections(value: unknown): VerifierOrderRejection[] | undefined {
+  if (!Array.isArray(value)) return undefined;
+  const count = (v: unknown) =>
+    typeof v === 'number' && Number.isFinite(v) && v >= 0 ? Math.trunc(v) : 0;
+  const rejections: VerifierOrderRejection[] = [];
+  for (const item of value) {
+    if (!item || typeof item !== 'object') continue;
+    const r = item as Record<string, unknown>;
+    const seat = r['seat'];
+    if (typeof seat !== 'number' || !Number.isInteger(seat) || seat < 0 || seat > 11) continue;
+    const reasons: Record<string, number> = {};
+    if (r['reasons'] && typeof r['reasons'] === 'object') {
+      for (const [key, n] of Object.entries(r['reasons'] as Record<string, unknown>)) {
+        if (typeof n === 'number') reasons[key.slice(0, 64)] = count(n);
+      }
+    }
+    rejections.push({
+      seat,
+      rejected: count(r['rejected']),
+      stale: count(r['stale']),
+      reasons,
+      ...(typeof r['firstRejectedTick'] === 'number'
+        ? { firstRejectedTick: count(r['firstRejectedTick']) }
+        : {}),
+    });
+  }
+  return rejections;
+}
 
 /**
  * Reads `<out>/verdict.json`. ASSUMED contract (the command is being built on
@@ -521,6 +564,12 @@ export type VerifierVerdict =
  */
 export function parseVerdict(text: string): VerifierVerdict {
   const doc = object(parseJson(text, 'verdict'), 'verdict');
+  const rejections = parseOrderRejections(doc['orderRejections']);
+  const extra = rejections && rejections.length > 0 ? { orderRejections: rejections } : {};
+  return { ...parseVerdictKind(doc), ...extra };
+}
+
+function parseVerdictKind(doc: Record<string, unknown>): VerifierVerdict {
   switch (doc['verdict']) {
     case 'verified':
       return { verdict: 'verified' };
@@ -546,36 +595,5 @@ export function parseVerdict(text: string): VerifierVerdict {
 
 // ------------------------------------------------------------- map header
 
-export interface MapHeader {
-  name: string;
-  versionMajor: number;
-  versionMinor: number;
-  teamCount: number;
-  savedGame: boolean;
-}
-
-/**
- * Reads the first fields of a decompressed map or save (MapHeader::loadFields
- * in src/map/io/MapHeader.cpp): name (u32 length + bytes), versionMajor,
- * versionMinor, numberOfTeams (big-endian s32), mapOffset (u32), isSavedGame
- * (u8). Only used after the engine itself has loaded the file successfully,
- * to learn the format version the file was written with, which the map report
- * does not carry. Returns undefined when the bytes are not a header.
- */
-export function readMapHeader(bytes: Uint8Array): MapHeader | undefined {
-  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
-  if (bytes.byteLength < 4) return undefined;
-  const nameLength = view.getUint32(0);
-  const fixed = 4 + nameLength;
-  if (nameLength > 1024 || bytes.byteLength < fixed + 17) return undefined;
-  const name = new TextDecoder('utf-8', { fatal: false }).decode(bytes.subarray(4, fixed));
-  const saved = view.getUint8(fixed + 16);
-  if (saved > 1) return undefined;
-  return {
-    name,
-    versionMajor: view.getInt32(fixed),
-    versionMinor: view.getInt32(fixed + 4),
-    teamCount: view.getInt32(fixed + 8),
-    savedGame: saved === 1,
-  };
-}
+// The header reader lives in @glob2/core (shared with the API's upload checks).
+export { readMapHeader, type MapHeader } from '@glob2/core';

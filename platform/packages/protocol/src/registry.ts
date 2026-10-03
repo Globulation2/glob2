@@ -40,6 +40,7 @@ import {
   RelayMatchEnded,
   RelayMatchEndedResponse,
   RelayRecordReceipt,
+  RelayRegionList,
   RelayRegistration,
   RelayRegistrationResponse,
 } from './relay.ts';
@@ -80,7 +81,8 @@ import {
   UpdateMapRequest,
 } from './resources.ts';
 import { SimVersion } from './simVersion.ts';
-import { AiLeaderboard, MatchDetail, PlayerProfile } from './history.ts';
+import { ClientNetworkSummary, RelayNetworkSummary } from './network.ts';
+import { AiLeaderboard, InstanceStats, MatchDetail, PlayerProfile } from './history.ts';
 import {
   AccessTokenClaims,
   AccessTokenHeader,
@@ -159,6 +161,10 @@ export const schemaRegistry: Record<string, RegisteredSchema> = {
   RelayMatchEnded: { schema: RelayMatchEnded },
   RelayMatchEndedResponse: { schema: RelayMatchEndedResponse },
   RelayRecordReceipt: { schema: RelayRecordReceipt },
+  RelayRegionList: { schema: RelayRegionList },
+  // Network telemetry (docs/development/network-telemetry.md)
+  RelayNetworkSummary: { schema: RelayNetworkSummary },
+  ClientNetworkSummary: { schema: ClientNetworkSummary },
   // Realtime envelopes and messages
   RealtimeRequest: { schema: RealtimeRequest },
   RealtimeResponse: { schema: RealtimeResponse },
@@ -211,6 +217,7 @@ export const schemaRegistry: Record<string, RegisteredSchema> = {
   LeaderboardPage: { schema: LeaderboardPage },
   AiLeaderboard: { schema: AiLeaderboard },
   PlayerProfile: { schema: PlayerProfile },
+  InstanceStats: { schema: InstanceStats },
   // Engine-agent jobs
   EngineJob: {
     schema: EngineJob,

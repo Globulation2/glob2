@@ -163,6 +163,456 @@
         }
       },
       "additionalProperties": false
+    },
+    "network": {
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "schema",
+            "schema_version",
+            "tick_rate_millihz",
+            "end_tick",
+            "duration_ms",
+            "bundles",
+            "arbitration",
+            "peak_backlog",
+            "rejected_peers",
+            "seats"
+          ],
+          "properties": {
+            "schema": {
+              "type": "string",
+              "const": "RelayNetworkSummary"
+            },
+            "schema_version": {
+              "type": "number",
+              "const": 1
+            },
+            "tick_rate_millihz": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "end_tick": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "duration_ms": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "bundles": {
+              "type": "object",
+              "required": [
+                "broadcast",
+                "bytes"
+              ],
+              "properties": {
+                "broadcast": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "bytes": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              }
+            },
+            "arbitration": {
+              "type": "object",
+              "required": [
+                "ticks",
+                "unanimous",
+                "majority",
+                "flagged",
+                "timed_out"
+              ],
+              "properties": {
+                "ticks": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "unanimous": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "majority": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "flagged": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "timed_out": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              }
+            },
+            "peak_backlog": {
+              "type": "object",
+              "required": [
+                "pending_ticks",
+                "pending_entries",
+                "pending_bytes"
+              ],
+              "properties": {
+                "pending_ticks": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "pending_entries": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "pending_bytes": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              }
+            },
+            "rejected_peers": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "seats": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "seat",
+                  "orders",
+                  "voice",
+                  "traffic",
+                  "lag_ticks",
+                  "checksums",
+                  "connection"
+                ],
+                "properties": {
+                  "seat": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 31
+                  },
+                  "orders": {
+                    "type": "object",
+                    "required": [
+                      "sequenced",
+                      "bytes",
+                      "deferred",
+                      "defer_ticks",
+                      "duplicates_ignored",
+                      "dropped",
+                      "flood_rejections",
+                      "max_queued_ahead_ticks"
+                    ],
+                    "properties": {
+                      "sequenced": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "bytes": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "deferred": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "Orders (and voice) placed later than the earliest tick by the one-order-per-seat-per-tick rule or the tick byte budget."
+                      },
+                      "defer_ticks": {
+                        "type": "object",
+                        "required": [
+                          "count",
+                          "mean",
+                          "p50",
+                          "p95",
+                          "max"
+                        ],
+                        "properties": {
+                          "count": {
+                            "type": "integer",
+                            "minimum": 0
+                          },
+                          "mean": {
+                            "type": "number",
+                            "minimum": 0
+                          },
+                          "p50": {
+                            "type": "integer",
+                            "minimum": 0
+                          },
+                          "p95": {
+                            "type": "integer",
+                            "minimum": 0
+                          },
+                          "max": {
+                            "type": "integer",
+                            "minimum": 0
+                          }
+                        },
+                        "description": "Turn::Histogram summary. Quantiles are within about 3% of a recorded value."
+                      },
+                      "duplicates_ignored": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "dropped": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "flood_rejections": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "max_queued_ahead_ticks": {
+                        "type": "integer",
+                        "minimum": 0
+                      }
+                    }
+                  },
+                  "voice": {
+                    "type": "object",
+                    "required": [
+                      "sequenced",
+                      "bytes"
+                    ],
+                    "properties": {
+                      "sequenced": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "bytes": {
+                        "type": "integer",
+                        "minimum": 0
+                      }
+                    }
+                  },
+                  "traffic": {
+                    "type": "object",
+                    "required": [
+                      "frames_received",
+                      "bytes_received",
+                      "bundles_sent",
+                      "bundle_bytes_sent",
+                      "log_bundles_sent",
+                      "log_bundle_bytes_sent"
+                    ],
+                    "properties": {
+                      "frames_received": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "bytes_received": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "bundles_sent": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "bundle_bytes_sent": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "log_bundles_sent": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "log_bundle_bytes_sent": {
+                        "type": "integer",
+                        "minimum": 0
+                      }
+                    }
+                  },
+                  "lag_ticks": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "required": [
+                          "count",
+                          "mean",
+                          "p50",
+                          "p95",
+                          "max"
+                        ],
+                        "properties": {
+                          "count": {
+                            "type": "integer",
+                            "minimum": 0
+                          },
+                          "mean": {
+                            "type": "number",
+                            "minimum": 0
+                          },
+                          "p50": {
+                            "type": "integer",
+                            "minimum": 0
+                          },
+                          "p95": {
+                            "type": "integer",
+                            "minimum": 0
+                          },
+                          "max": {
+                            "type": "integer",
+                            "minimum": 0
+                          }
+                        },
+                        "description": "Turn::Histogram summary. Quantiles are within about 3% of a recorded value."
+                      }
+                    ],
+                    "description": "Relay tick minus the client's executed tick at each ping: how far behind the relay clock the client runs."
+                  },
+                  "checksums": {
+                    "type": "object",
+                    "required": [
+                      "reports",
+                      "lateness_ticks",
+                      "told_to_rejoin",
+                      "flagged",
+                      "late_mismatches"
+                    ],
+                    "properties": {
+                      "reports": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "lateness_ticks": {
+                        "type": "object",
+                        "required": [
+                          "count",
+                          "mean",
+                          "p50",
+                          "p95",
+                          "max"
+                        ],
+                        "properties": {
+                          "count": {
+                            "type": "integer",
+                            "minimum": 0
+                          },
+                          "mean": {
+                            "type": "number",
+                            "minimum": 0
+                          },
+                          "p50": {
+                            "type": "integer",
+                            "minimum": 0
+                          },
+                          "p95": {
+                            "type": "integer",
+                            "minimum": 0
+                          },
+                          "max": {
+                            "type": "integer",
+                            "minimum": 0
+                          }
+                        },
+                        "description": "Turn::Histogram summary. Quantiles are within about 3% of a recorded value."
+                      },
+                      "told_to_rejoin": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "flagged": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "late_mismatches": {
+                        "type": "integer",
+                        "minimum": 0
+                      }
+                    }
+                  },
+                  "connection": {
+                    "type": "object",
+                    "required": [
+                      "connects",
+                      "disconnects",
+                      "grace_used_ms",
+                      "longest_absence_ms",
+                      "left_by_grace",
+                      "left_by_quit"
+                    ],
+                    "properties": {
+                      "connects": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "disconnects": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "grace_used_ms": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "Time disconnected inside the reconnect grace period."
+                      },
+                      "longest_absence_ms": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "left_by_grace": {
+                        "type": "boolean"
+                      },
+                      "left_by_quit": {
+                        "type": "boolean"
+                      },
+                      "left_tick": {
+                        "type": "integer",
+                        "minimum": 0
+                      }
+                    }
+                  },
+                  "rtt_us": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "required": [
+                          "count",
+                          "mean",
+                          "p50",
+                          "p95",
+                          "max"
+                        ],
+                        "properties": {
+                          "count": {
+                            "type": "integer",
+                            "minimum": 0
+                          },
+                          "mean": {
+                            "type": "number",
+                            "minimum": 0
+                          },
+                          "p50": {
+                            "type": "integer",
+                            "minimum": 0
+                          },
+                          "p95": {
+                            "type": "integer",
+                            "minimum": 0
+                          },
+                          "max": {
+                            "type": "integer",
+                            "minimum": 0
+                          }
+                        },
+                        "description": "Turn::Histogram summary. Quantiles are within about 3% of a recorded value."
+                      }
+                    ],
+                    "description": "Round trip the relay measured itself (WebSocket ping every 2 s by default). Absent where the host measures none (LAN)."
+                  }
+                },
+                "description": "One human seat as the relay saw it."
+              },
+              "maxItems": 32
+            }
+          },
+          "description": "The relay's per-seat network summary of one match (TurnSequencer::networkSummary), version 1."
+        }
+      ],
+      "description": "The relay's per-seat network measurements (RelayNetworkSummary v1). Optional: older relays omit it, and the platform drops an unreadable one rather than refuse the report."
     }
   },
   "additionalProperties": false,

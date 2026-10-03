@@ -11,6 +11,7 @@
 
 #include "EngineFixtures.h"
 
+#include <algorithm>
 #include <filesystem>
 #include <nlohmann/json.hpp>
 #include <set>
@@ -206,10 +207,19 @@ TEST_SUITE("MatchSetup")
 			const bool save = setup.map.kind == MapSource::Kind::Upload && setup.map.format == MapSource::Format::Save;
 			const MapHeader map = mapWithTeams(static_cast<int>(setup.teams.size()), save);
 			GameHeader header = setup.toGameHeader(map);
-			REQUIRE(header.getNumberOfPlayers() == static_cast<int>(setup.seats.size()));
+			// Closed seats are not players: the players are the human and AI seats.
+			REQUIRE(header.getNumberOfPlayers() == setup.playerCount());
 			CHECK(header.getRandomSeed() == setup.seed);
 			for (const auto& seat : setup.seats)
 			{
+				if (seat.closed)
+				{
+					// As a closed colony in a custom game: no player controls the team.
+					CHECK(seat.seat >= setup.playerCount());
+					for (int p = 0; p < header.getNumberOfPlayers(); ++p)
+						CHECK(header.getBasePlayer(p).teamNumber != seat.team);
+					continue;
+				}
 				const BasePlayer& bp = header.getBasePlayer(seat.seat);
 				CHECK(bp.number == seat.seat);
 				CHECK(bp.teamNumber == seat.team);
@@ -249,11 +259,20 @@ TEST_SUITE("MatchSetup")
 			CHECK(header.getExperiments().keys() == setup.experiments);
 
 			// GameHeader -> MatchSetup recreates the setup, apart from account ids,
-			// which a GameHeader does not carry.
+			// which a GameHeader does not carry, and closed seats: a team without a
+			// player stays implicit, which means the same.
 			MatchSetup back = MatchSetup::fromGameHeader(header, map, setup.map, setup.simVersion);
 			MatchSetup expected = setup;
+			expected.seats.erase(std::remove_if(expected.seats.begin(), expected.seats.end(),
+			                                    [](const SetupSeat& s) { return s.closed; }),
+			                     expected.seats.end());
 			for (auto& seat : expected.seats)
 				seat.accountId.reset();
+			// Nor the pause limit: the turn session enforces it, not the game.
+			expected.pauseLimit.reset();
+			CHECK(back.playerCount() == setup.playerCount());
+			for (const auto& team : setup.teams)
+				CHECK(back.teamClosed(team.team) == setup.teamClosed(team.team));
 			CHECK(back.toJson() == expected.toJson());
 
 			// The map must have exactly the listed teams, and be a save exactly when
@@ -263,6 +282,58 @@ TEST_SUITE("MatchSetup")
 			CHECK_THROWS_AS(setup.toGameHeader(mapWithTeams(static_cast<int>(setup.teams.size()), !save)),
 			                MatchSetupError);
 		}
+	}
+
+	TEST_CASE("closed seats close their team and follow every player seat")
+	{
+		glob2test::HeadlessGlobals globals;
+		json document = json::parse(glob2test::readFile(fixtureRoot() / "valid/MatchSetup/room-closed-seats.json"));
+		const MatchSetup setup = MatchSetup::parse(document.dump());
+		REQUIRE(setup.seats.size() == 4);
+		CHECK(setup.playerCount() == 2);
+		CHECK(setup.humanSeatMask() == 0b11u);
+		CHECK_FALSE(setup.teamClosed(0));
+		CHECK(setup.teamClosed(1));
+		CHECK_FALSE(setup.teamClosed(2));
+		CHECK(setup.teamClosed(3));
+		// The remaining players keep their map teams: seat 1 still plays team 2.
+		GameHeader header = setup.toGameHeader(mapWithTeams(4));
+		CHECK(header.getNumberOfPlayers() == 2);
+		CHECK(header.getBasePlayer(1).teamNumber == 2);
+		CHECK(header.getAllyTeamNumber(3) == setup.teams[3].alliance + 1);
+
+		auto stageOf = [](const json& value) {
+			try
+			{
+				MatchSetup::parse(value.dump());
+			}
+			catch (const MatchSetupError& error)
+			{
+				return error.stage == MatchSetupError::Stage::Schema ? std::string("schema") : error.path;
+			}
+			return std::string("accepted");
+		};
+		// A closed seat has no name or AI.
+		json named = document;
+		named["seats"][2]["name"] = "Nobody";
+		CHECK(stageOf(named) == "schema");
+		// Every player seat comes before the closed ones.
+		json early = document;
+		std::swap(early["seats"][1], early["seats"][2]);
+		early["seats"][1]["seat"] = 1;
+		early["seats"][2]["seat"] = 2;
+		CHECK(stageOf(early) == "/seats/2");
+		// A team a player controls cannot be closed, nor a team closed twice.
+		json played = document;
+		played["seats"][2]["team"] = 0;
+		CHECK(stageOf(played) == "/seats/2/team");
+		json twice = document;
+		twice["seats"][3]["team"] = 1;
+		CHECK(stageOf(twice) == "/seats/3/team");
+		// A match needs a player.
+		json nobody = document;
+		nobody["seats"] = json::array({{{"seat", 0}, {"kind", "closed"}, {"team", 0}}});
+		CHECK(stageOf(nobody) == "/seats");
 	}
 
 	TEST_CASE("unknown experiments, JavaScript AIs and unexpressible headers are refused")
@@ -364,7 +435,13 @@ TEST_SUITE("MatchSetup")
 		CHECK(simDataHashOf({{"a", "x"}}) == expected);
 
 		// This build's version: the real files, and the same value every time.
-		std::vector<SimDataFile> files;
+		// SIM_REVISION is hashed first, as a pseudo-file, so a bump changes the key.
+		CHECK(simRevisionEntry(1).path == "#sim-revision");
+		CHECK(simRevisionEntry(12).content == "12");
+		CHECK(simRevisionEntry().content == std::to_string(SIM_REVISION));
+		CHECK(simRevisionEntry().path < listed.front());
+		CHECK(simDataHashOf({simRevisionEntry(1), {"a", "x"}}) != simDataHashOf({simRevisionEntry(2), {"a", "x"}}));
+		std::vector<SimDataFile> files{simRevisionEntry()};
 		for (const auto& path : listed)
 			files.push_back({path, glob2test::readFile(root / path)});
 		const SimVersion version = currentSimVersion();

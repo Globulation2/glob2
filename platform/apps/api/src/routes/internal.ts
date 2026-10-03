@@ -9,7 +9,9 @@ import type { RelayKey } from '@glob2/core';
 import {
   RelayHeartbeat,
   RelayMatchEnded,
+  RelayNetworkSummary,
   RelayRegistration,
+  schemaIssues,
   type RelayHeartbeatResponse,
   type RelayMatchEndedResponse,
   type RelayRecordReceipt,
@@ -17,11 +19,13 @@ import {
 } from '@glob2/protocol';
 import {
   RELAY_HEARTBEAT_SECONDS,
+  STORED_MATCH_SETUP,
+  readStored,
   recordMatchEnded,
   registerRelay,
   relayHeartbeat,
   storeMatchRecord,
-} from '@glob2/worker';
+} from '@glob2/play';
 import { apiError } from '../errors.ts';
 import { body } from '../http/validate.ts';
 
@@ -43,7 +47,7 @@ export function matchRelayKey(keys: readonly RelayKey[], presented: string): Rel
 
 export async function internalRoutes(app: FastifyInstance): Promise<void> {
   const { services } = app;
-  const { db, blobs, jobs, config } = services;
+  const { db, blobs, config } = services;
   const keys = config.relayKeys ?? [];
   const origin = config.publicOrigin;
 
@@ -132,7 +136,10 @@ export async function internalRoutes(app: FastifyInstance): Promise<void> {
         .select('setup')
         .where('id', '=', id)
         .executeTakeFirstOrThrow();
-      return reply.header('content-type', 'application/json; charset=utf-8').send(match.setup);
+      // Relays get the current MatchSetup version: older rows are upgraded on
+      // the way out, and a row that cannot be read fails here, not in the relay.
+      const setup = readStored(STORED_MATCH_SETUP, match.setup);
+      return reply.header('content-type', 'application/json; charset=utf-8').send(setup);
     },
   );
 
@@ -163,11 +170,26 @@ export async function internalRoutes(app: FastifyInstance): Promise<void> {
     async (request): Promise<RelayMatchEndedResponse> => {
       const key = relayKey(request);
       const id = matchId(request);
-      const report = body(RelayMatchEnded, request.body);
+      // Network telemetry never blocks a match end: an unreadable summary (a
+      // relay newer or older than this platform) is dropped, the rest applies.
+      let raw = request.body;
+      if (raw && typeof raw === 'object' && 'network' in raw) {
+        const issues = schemaIssues(RelayNetworkSummary, (raw as { network: unknown }).network);
+        if (issues.length > 0) {
+          request.log.warn(
+            { match: id, issues: issues.slice(0, 5) },
+            'dropping an unreadable network summary from an end report',
+          );
+          const rest: Record<string, unknown> = { ...(raw as Record<string, unknown>) };
+          delete rest['network'];
+          raw = rest;
+        }
+      }
+      const report = body(RelayMatchEnded, raw);
       if (report.matchId !== id) throw apiError('bad_request', 'matchId differs from the path.');
       actAs(key, report.relayId);
       await checkMatchRelay(key, id);
-      const outcome = await recordMatchEnded(db, jobs, report);
+      const outcome = await recordMatchEnded(db, report);
       if (!outcome.ok) {
         switch (outcome.reason) {
           case 'not_found':

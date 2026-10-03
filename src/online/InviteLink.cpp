@@ -147,7 +147,7 @@ std::optional<InviteLink> parseInviteLink(const std::string &input)
 		auto origin = normalizeOrigin(instance);
 		if (!origin)
 			return std::nullopt;
-		return InviteLink{*origin, code};
+		return InviteLink{currentOrigin(*origin), code};
 	}
 
 	const auto scheme = lowerPrefix(link, 8);
@@ -170,7 +170,8 @@ std::optional<InviteLink> parseInviteLink(const std::string &input)
 			code.pop_back();
 		if (!isInviteCode(code))
 			return std::nullopt;
-		return InviteLink{*origin, code};
+		// A former official origin's /j/ link redirects to the official one.
+		return InviteLink{currentOrigin(*origin), code};
 	}
 	return std::nullopt;
 }
@@ -182,7 +183,7 @@ std::optional<InviteLink> parseInvite(const std::string &linkOrCode, const std::
 		auto origin = normalizeOrigin(defaultOrigin);
 		if (!origin)
 			return std::nullopt;
-		return InviteLink{*origin, linkOrCode};
+		return InviteLink{currentOrigin(*origin), linkOrCode};
 	}
 	return parseInviteLink(linkOrCode);
 }

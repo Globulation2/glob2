@@ -10,20 +10,21 @@ import { randomInt } from 'node:crypto';
 import { sql, type Kysely } from 'kysely';
 import type { AccessPolicy, JobQueue, Logger } from '@glob2/core';
 import type { Account, Database } from '@glob2/db';
+import { Type, type Static } from 'typebox';
 import {
+  MatchRules,
+  RoomMapSelection,
   STANDARD_RULES,
+  SetupTeam,
   parseSimVersionKey,
   simVersionKey,
   type AiId,
-  type MatchRules,
-  type MatchSetup,
   type RoomChatMessage,
-  type RoomMapSelection,
+  type MatchSetup,
   type RoomSeat,
   type RoomState,
   type RoomSummary,
   type Seat,
-  type SetupTeam,
   type SimVersion,
 } from '@glob2/protocol';
 import {
@@ -36,9 +37,15 @@ import {
   requestGeneratedMap,
   storedSimVersion,
   truncateUtf8,
+  STORED_MATCH_SETUP,
+  readRegionRtts,
+  readStored,
+  tryReadStored,
   type RegionRtt,
-} from '@glob2/worker';
+  type StoredFormat,
+} from '@glob2/play';
 import { apiError } from '../errors.ts';
+import { catalogTitles, generatorLabel, uploadTitle } from '../history/summaries.ts';
 
 type Db = Kysely<Database>;
 
@@ -54,6 +61,12 @@ export const ROOM_RULES = {
   hostImplicitlyReady: true,
   /** Seats (human or AI) that must be occupied to start. */
   minOccupiedSeats: 2,
+  /**
+   * A new member (invite link or code) takes the first open, unlocked seat, so
+   * "anyone with the invite can take it" holds without an extra click. Members who
+   * join a full room stay unseated until a seat opens.
+   */
+  joinTakesOpenSeat: true,
   /** Teams of a room without a map. */
   defaultTeams: 2,
   maxMembers: 24,
@@ -67,7 +80,17 @@ export const ROOM_RULES = {
   codeLength: 10,
   /** A kicked player cannot rejoin the room for this long. */
   kickBanSeconds: 600,
+  /**
+   * A room still 'starting' after this long was left there by a crash between
+   * the start steps: the sweep resumes it (its match exists) or reopens it.
+   * Longer than any start: createMatch waits up to a minute for a relay.
+   */
+  startingTimeoutSeconds: 120,
 } as const;
+
+/** RoomState.notice after the sweep reopened a room whose start was interrupted. */
+export const START_INTERRUPTED_NOTICE =
+  'The match could not be started because the server was interrupted. Start it again.';
 
 /** Unambiguous code alphabet (no 0/O, 1/I). */
 const CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -83,16 +106,37 @@ export function normalizeCode(code: string): string {
   return code.toUpperCase();
 }
 
-/** Room settings as stored in rooms.settings. */
-export interface RoomSettings {
-  map?: RoomMapSelection;
-  mapStatus?: 'ready' | 'pending' | 'failed';
-  mapProblem?: string;
+/**
+ * Room settings as stored in rooms.settings, built from the protocol's room
+ * and MatchSetup schemas. Unknown properties are tolerated so that a replica
+ * still on the previous release can read rows a newer one wrote during a
+ * rolling upgrade; an incompatible change needs a `schemaVersion` and an
+ * upgrade step in STORED_ROOM_SETTINGS (see @glob2/play stored.ts).
+ */
+export const RoomSettings = Type.Object({
+  map: Type.Optional(RoomMapSelection),
+  mapStatus: Type.Optional(
+    Type.Union([Type.Literal('ready'), Type.Literal('pending'), Type.Literal('failed')]),
+  ),
+  mapProblem: Type.Optional(Type.String()),
   /** Engine job the map waits for (generated map or upload validation). */
-  mapJobId?: string;
-  teams: SetupTeam[];
-  rules: MatchRules;
-  experiments: string[];
+  mapJobId: Type.Optional(Type.String()),
+  teams: Type.Array(SetupTeam),
+  rules: MatchRules,
+  experiments: Type.Array(Type.String()),
+  /** The quick match this room is the rematch of (match.rematch). */
+  rematchOf: Type.Optional(Type.String()),
+});
+export type RoomSettings = Static<typeof RoomSettings>;
+
+export const STORED_ROOM_SETTINGS: StoredFormat<typeof RoomSettings> = {
+  what: 'rooms.settings',
+  schema: RoomSettings,
+  current: 1,
+};
+
+function readRoomSettings(stored: unknown): RoomSettings {
+  return readStored(STORED_ROOM_SETTINGS, stored);
 }
 
 export interface MapResolution {
@@ -122,6 +166,50 @@ type SeatRow = {
   ready: boolean;
   locked: boolean;
 };
+
+/**
+ * The MatchSetup seats of a room's seats (in room seat order). Taken seats
+ * become the players, numbered 0..p-1 in room seat order, each keeping its
+ * room seat's map team. Every empty or locked seat becomes a `closed` seat
+ * after them: its team starts without a colony, exactly like a "Closed"
+ * colony in a custom game. So a match seat is a room seat only while no empty
+ * seat comes before it; the map team never changes (match_participants.team,
+ * match_team_stats.team and result.json all use it).
+ */
+export function roomMatchSeats(
+  rows: readonly Pick<SeatRow, 'seat' | 'team' | 'occupant' | 'account_id' | 'ai_id' | 'ai_name'>[],
+  names: ReadonlyMap<string, string>,
+): Seat[] {
+  const players: Seat[] = [];
+  const empty: number[] = [];
+  for (const s of rows) {
+    if (s.occupant === 'human' && s.account_id) {
+      players.push({
+        seat: players.length,
+        kind: 'human',
+        team: s.team,
+        name: truncateUtf8(names.get(s.account_id) ?? `Player ${s.seat + 1}`),
+        accountId: s.account_id,
+      });
+    } else if (s.occupant === 'ai' && s.ai_id) {
+      players.push({
+        seat: players.length,
+        kind: 'ai',
+        team: s.team,
+        name: truncateUtf8(s.ai_name ?? aiDisplayName(s.ai_id as AiId)),
+        ai: s.ai_id as AiId,
+      });
+    } else {
+      empty.push(s.team);
+    }
+  }
+  const played = new Set(players.map((p) => p.team));
+  const closed = [...new Set(empty)].filter((team) => !played.has(team));
+  return [
+    ...players,
+    ...closed.map((team, i): Seat => ({ seat: players.length + i, kind: 'closed', team })),
+  ];
+}
 
 export class RoomService {
   private readonly db: Db;
@@ -155,7 +243,7 @@ export class RoomService {
       .where('id', '=', roomId)
       .executeTakeFirst();
     if (!room) return undefined;
-    const settings = room.settings as unknown as RoomSettings;
+    const settings = readRoomSettings(room.settings);
     const seats = await db
       .selectFrom('room_seats as s')
       .leftJoin('accounts as a', 'a.id', 's.account_id')
@@ -183,6 +271,7 @@ export class RoomService {
     const seatOf = new Map(seats.flatMap((s) => (s.account_id ? [[s.account_id, s.seat]] : [])));
     const simVersion = parseSimVersionKey(room.sim_version);
     if (!simVersion) throw new Error(`room ${roomId} has a bad sim version`);
+    const mapTitle = await this.mapTitle(settings.map, room.host_account_id, db);
     return {
       id: room.id,
       code: room.code,
@@ -195,6 +284,7 @@ export class RoomService {
       ...(settings.map ? { map: settings.map } : {}),
       ...(settings.mapStatus ? { mapStatus: settings.mapStatus } : {}),
       ...(settings.mapProblem ? { mapProblem: settings.mapProblem } : {}),
+      ...(mapTitle ? { mapTitle } : {}),
       teams: settings.teams,
       seats: seats.map((s): RoomSeat => ({
         seat: s.seat,
@@ -226,9 +316,35 @@ export class RoomService {
         ...(seatOf.has(m.account_id) ? { seat: must(seatOf.get(m.account_id), 'seat') } : {}),
       })),
       ...(room.match_id ? { matchId: room.match_id } : {}),
+      ...(room.notice && room.status === 'open' ? { notice: room.notice } : {}),
       revision: room.revision,
       createdAt: room.created_at.toISOString(),
     };
+  }
+
+  /**
+   * The display name of a catalog or uploaded room map (generated maps are named
+   * by the client from their generator and size).
+   */
+  private async mapTitle(
+    map: RoomMapSelection | undefined,
+    hostId: string,
+    db: Db,
+  ): Promise<string | undefined> {
+    if (!map?.hash || map.kind === 'generated') return undefined;
+    if (map.kind === 'catalog') {
+      const title = (await catalogTitles(db, [map.hash])).get(map.hash)?.title;
+      if (title) return title.slice(0, 128);
+      const own = await db
+        .selectFrom('map_versions as v')
+        .innerJoin('maps as m', 'm.id', 'v.map_id')
+        .select('m.title')
+        .where('v.hash', '=', map.hash)
+        .where('m.owner_account_id', '=', hostId)
+        .executeTakeFirst();
+      return own?.title.slice(0, 128);
+    }
+    return uploadTitle(db, map.hash, hostId);
   }
 
   private async mustState(roomId: string): Promise<RoomState> {
@@ -311,21 +427,30 @@ export class RoomService {
     const page = rows.slice(0, limit);
     const last = page[page.length - 1];
     return {
-      items: page.map((row) => {
-        const settings = row.settings as unknown as RoomSettings;
-        return {
-          id: row.id,
-          code: row.code,
-          name: row.name,
-          hostDisplayName: row.display_name,
-          simVersion: storedSimVersion(row.sim_version),
-          status: row.status,
-          seatsTotal: row.seats_total ?? 0,
-          seatsTaken: row.seats_taken ?? 0,
-          ...(settings.map?.kind === 'generated'
-            ? { mapTitle: settings.map.generator.generatorId }
-            : {}),
-        };
+      // A room whose stored settings no longer decode is left out of the
+      // public list rather than failing it for everyone.
+      items: page.flatMap((row) => {
+        const decoded = tryReadStored(STORED_ROOM_SETTINGS, row.settings);
+        if (!decoded.ok) {
+          this.logger.error({ err: decoded.error, room: row.id }, 'unreadable room settings');
+          return [];
+        }
+        const settings = decoded.value;
+        return [
+          {
+            id: row.id,
+            code: row.code,
+            name: row.name,
+            hostDisplayName: row.display_name,
+            simVersion: storedSimVersion(row.sim_version),
+            status: row.status,
+            seatsTotal: row.seats_total ?? 0,
+            seatsTaken: row.seats_taken ?? 0,
+            ...(settings.map?.kind === 'generated'
+              ? { mapTitle: generatorLabel(settings.map.generator.generatorId) }
+              : {}),
+          },
+        ];
       }),
       ...(rows.length > limit && last ? { next: { updatedAt: last.updated_at, id: last.id } } : {}),
     };
@@ -469,7 +594,7 @@ export class RoomService {
     for (const { id } of rooms) {
       await this.db.transaction().execute(async (trx) => {
         const room = await this.lock(trx, id);
-        const settings = room.settings as unknown as RoomSettings;
+        const settings = readRoomSettings(room.settings);
         if (room.status === 'closed' || settings.mapStatus !== 'pending' || !settings.map) return;
         let resolution: MapResolution;
         try {
@@ -699,6 +824,85 @@ export class RoomService {
     return this.mustState(roomId);
   }
 
+  /**
+   * Rematch after a quick match (match.rematch): an unrated link room with the
+   * match's map, rules and experiments. The first participant to ask hosts it;
+   * later ones join it. Returns the room and whether it was created now (the
+   * caller then tells the other players).
+   */
+  async rematch(
+    caller: Account,
+    simVersion: SimVersion,
+    matchId: string,
+    regions: RegionRtt[] | undefined,
+  ): Promise<{ room: RoomState; created: boolean; others: string[] }> {
+    const match = await this.db
+      .selectFrom('matches')
+      .select(['origin', 'status', 'setup', 'sim_version'])
+      .where('id', '=', matchId)
+      .executeTakeFirst();
+    const humans = await this.db
+      .selectFrom('match_participants')
+      .select('account_id')
+      .where('match_id', '=', matchId)
+      .where('kind', '=', 'human')
+      .execute();
+    const accounts = humans.flatMap((h) => (h.account_id ? [h.account_id] : []));
+    if (!match || !accounts.includes(caller.id)) {
+      throw apiError('not_found', 'You did not play in that match.');
+    }
+    if (match.origin !== 'queue') {
+      throw apiError('conflict', 'Room matches go back to their room instead.');
+    }
+    if (match.status !== 'ended' && match.status !== 'cancelled') {
+      throw apiError('conflict', 'The match has not ended yet.');
+    }
+    if (match.sim_version !== simVersionKey(simVersion)) {
+      throw apiError('update_required', 'The match was played with another game version.');
+    }
+    const others = accounts.filter((id) => id !== caller.id);
+    const existing = await this.db
+      .selectFrom('rooms')
+      .select('code')
+      .where(sql<string>`settings->>'rematchOf'`, '=', matchId)
+      .where('status', '!=', 'closed')
+      .orderBy('created_at')
+      .executeTakeFirst();
+    if (existing) {
+      return {
+        room: await this.join(caller, simVersion, existing.code, regions),
+        created: false,
+        others,
+      };
+    }
+    const setup = readStored(STORED_MATCH_SETUP, match.setup);
+    const source = setup.map;
+    const map: RoomMapSelection =
+      source.kind === 'generated'
+        ? { kind: 'generated', generator: source.generator, hash: source.hash }
+        : source.kind === 'upload'
+          ? { kind: 'upload', format: source.format, hash: source.hash }
+          : {
+              kind: 'catalog',
+              hash: source.hash,
+              ...(source.mapId ? { mapId: source.mapId } : {}),
+            };
+    const room = await this.create(caller, simVersion, {
+      name: 'Rematch',
+      visibility: 'link',
+      map,
+      rules: setup.rules,
+      experiments: setup.experiments,
+      ...(regions ? { regions } : {}),
+    });
+    await this.db.transaction().execute(async (trx) => {
+      const locked = await this.lock(trx, room.id);
+      const settings = readRoomSettings(locked.settings);
+      await this.writeSettings(trx, room.id, { ...settings, rematchOf: matchId });
+    });
+    return { room, created: true, others };
+  }
+
   async join(
     caller: Account,
     simVersion: SimVersion,
@@ -710,8 +914,9 @@ export class RoomService {
       .select(['id', 'status', 'sim_version', 'host_account_id'])
       .where('code', '=', normalizeCode(code))
       .executeTakeFirst();
-    if (!found || found.status === 'closed') {
-      throw apiError('not_found', 'This invite has expired or does not exist.');
+    if (!found) throw apiError('not_found', 'This invite has expired or does not exist.');
+    if (found.status === 'closed') {
+      throw apiError('not_found', 'This room has closed. Ask the host for a new invite.');
     }
     if (found.sim_version !== simVersionKey(simVersion)) {
       throw apiError('update_required', 'This room is for another game version.', {
@@ -750,7 +955,7 @@ export class RoomService {
     await this.db.transaction().execute(async (trx) => {
       const room = await this.lock(trx, found.id);
       if (room.status === 'closed') {
-        throw apiError('not_found', 'This invite has expired or does not exist.');
+        throw apiError('not_found', 'This room has closed. Ask the host for a new invite.');
       }
       if (!already) {
         const count = await trx
@@ -775,9 +980,38 @@ export class RoomService {
           }),
         )
         .execute();
+      if (!already && room.status === 'open' && ROOM_RULES.joinTakesOpenSeat) {
+        await this.takeFirstOpenSeat(trx, room.id, caller.id);
+      }
       await this.bump(trx, room.id);
     });
     return this.mustState(found.id);
+  }
+
+  /** Seats the account in the lowest open, unlocked seat, if it has none yet. */
+  private async takeFirstOpenSeat(trx: Db, roomId: string, accountId: string): Promise<void> {
+    const seated = await trx
+      .selectFrom('room_seats')
+      .select('seat')
+      .where('room_id', '=', roomId)
+      .where('account_id', '=', accountId)
+      .executeTakeFirst();
+    if (seated) return;
+    const open = await trx
+      .selectFrom('room_seats')
+      .select('seat')
+      .where('room_id', '=', roomId)
+      .where('occupant', '=', 'open')
+      .where('locked', '=', false)
+      .orderBy('seat')
+      .executeTakeFirst();
+    if (!open) return;
+    await trx
+      .updateTable('room_seats')
+      .set({ occupant: 'human', account_id: accountId, ready: false })
+      .where('room_id', '=', roomId)
+      .where('seat', '=', open.seat)
+      .execute();
   }
 
   async leave(accountId: string, roomId: string): Promise<void> {
@@ -896,7 +1130,7 @@ export class RoomService {
           revision: room.revision,
         });
       }
-      let settings = room.settings as unknown as RoomSettings;
+      let settings = readRoomSettings(room.settings);
       let clearReady = false;
       const updates: { name?: string; visibility?: 'public' | 'link' } = {};
       if (changes.name !== undefined) updates.name = changes.name;
@@ -906,7 +1140,7 @@ export class RoomService {
       }
       if (resolution) {
         await this.applyMap(trx, roomId, settings, resolution);
-        settings = (await this.lock(trx, roomId)).settings as unknown as RoomSettings;
+        settings = readRoomSettings((await this.lock(trx, roomId)).settings);
         clearReady = true;
       }
       if (changes.teams) {
@@ -1108,7 +1342,7 @@ export class RoomService {
         throw apiError('forbidden', 'Only the host can start the match.');
       }
       if (room.status !== 'open') throw apiError('conflict', 'The room is already starting.');
-      const settings = room.settings as unknown as RoomSettings;
+      const settings = readRoomSettings(room.settings);
       if (!settings.map) throw apiError('conflict', 'Choose a map first.');
       if (settings.mapStatus !== 'ready' || !settings.map.hash) {
         throw apiError(
@@ -1139,7 +1373,11 @@ export class RoomService {
           seats: unready.map((s) => s.seat),
         });
       }
-      await trx.updateTable('rooms').set({ status: 'starting' }).where('id', '=', roomId).execute();
+      await trx
+        .updateTable('rooms')
+        .set({ status: 'starting', starting_since: sql<Date>`now()`, notice: null })
+        .where('id', '=', roomId)
+        .execute();
       await this.bump(trx, roomId);
       return { room, settings, seats };
     });
@@ -1191,28 +1429,7 @@ export class RoomService {
         seed: randomInt(0, 2 ** 32),
         map: mapSource(must(settings.map, 'room map')),
         teams: settings.teams,
-        seats: seats.map((s): Seat => {
-          if (s.occupant === 'human' && s.account_id) {
-            return {
-              seat: s.seat,
-              kind: 'human',
-              team: s.team,
-              name: truncateUtf8(names.get(s.account_id) ?? `Player ${s.seat + 1}`),
-              accountId: s.account_id,
-            };
-          }
-          if (s.occupant === 'ai' && s.ai_id) {
-            return {
-              seat: s.seat,
-              kind: 'ai',
-              team: s.team,
-              name: truncateUtf8(s.ai_name ?? aiDisplayName(s.ai_id as AiId)),
-              ai: s.ai_id as AiId,
-            };
-          }
-          // An empty (or locked) seat's colony stays on the map without a player.
-          return { seat: s.seat, kind: 'ai', team: s.team, name: 'Nobody', ai: 'none' };
-        }),
+        seats: roomMatchSeats(seats, names),
         rules: settings.rules,
         experiments: settings.experiments,
       };
@@ -1231,12 +1448,12 @@ export class RoomService {
         origin: 'room',
         roomId,
         rated: false,
-        placement: { players: probes.map((p) => p.region_rtts as unknown as RegionRtt[]) },
+        placement: { players: probes.map((p) => readRegionRtts(p.region_rtts)) },
       });
       await this.db.transaction().execute(async (trx) => {
         await trx
           .updateTable('rooms')
-          .set({ status: 'in_match', match_id: created.matchId })
+          .set({ status: 'in_match', match_id: created.matchId, starting_since: null })
           .where('id', '=', roomId)
           .where('status', '=', 'starting')
           .execute();
@@ -1252,7 +1469,15 @@ export class RoomService {
       await this.db.transaction().execute(async (trx) => {
         const reverted = await trx
           .updateTable('rooms')
-          .set({ status: 'open' })
+          .set({
+            status: 'open',
+            starting_since: null,
+            // Players see why; access and readiness problems go to the host.
+            notice:
+              error instanceof StartError
+                ? null
+                : 'The match could not be started. Try again in a moment.',
+          })
           .where('id', '=', roomId)
           .where('status', '=', 'starting')
           .executeTakeFirst();
@@ -1297,7 +1522,8 @@ export class RoomService {
    * and removes long-disconnected members. Guarded updates make it safe on
    * every replica at once.
    */
-  async sweep(): Promise<{ closed: number; removed: number }> {
+  async sweep(): Promise<{ closed: number; removed: number; recovered: number }> {
+    const recovered = await this.recoverStarting();
     const stale = await this.db
       .selectFrom('rooms as r')
       .leftJoin('room_members as h', (join) =>
@@ -1374,7 +1600,65 @@ export class RoomService {
       .deleteFrom('room_kicks')
       .where('until', '<=', sql<Date>`now()`)
       .execute();
-    return { closed, removed: gone.length };
+    return { closed, removed: gone.length, recovered };
+  }
+
+  /**
+   * Rooms stuck in 'starting' (the process running the start died between
+   * its steps): a room whose match was created since it started is resumed
+   * (in_match, players get match.start again, idempotently); any other is
+   * reopened with a notice. Guarded by the room lock, safe on every replica.
+   */
+  async recoverStarting(
+    timeoutSeconds: number = ROOM_RULES.startingTimeoutSeconds,
+  ): Promise<number> {
+    const stuck = await this.db
+      .selectFrom('rooms')
+      .select('id')
+      .where('status', '=', 'starting')
+      .where(
+        sql<Date>`COALESCE(starting_since, updated_at)`,
+        '<',
+        sql<Date>`now() - make_interval(secs => ${timeoutSeconds})`,
+      )
+      .execute();
+    let recovered = 0;
+    for (const { id } of stuck) {
+      const outcome = await this.db.transaction().execute(async (trx) => {
+        const room = await this.lock(trx, id);
+        if (room.status !== 'starting') return undefined;
+        const since = room.starting_since ?? room.updated_at;
+        const match = await trx
+          .selectFrom('matches')
+          .select('id')
+          .where('room_id', '=', id)
+          .where('status', 'in', ['starting', 'running'])
+          .where('created_at', '>=', since)
+          .orderBy('created_at', 'desc')
+          .executeTakeFirst();
+        if (match) {
+          await trx
+            .updateTable('rooms')
+            .set({ status: 'in_match', match_id: match.id, starting_since: null })
+            .where('id', '=', id)
+            .execute();
+          await this.bump(trx, id);
+          await publishPlay(trx, { t: 'matchStart', matchId: match.id });
+          return { resumed: match.id };
+        }
+        await trx
+          .updateTable('rooms')
+          .set({ status: 'open', starting_since: null, notice: START_INTERRUPTED_NOTICE })
+          .where('id', '=', id)
+          .execute();
+        await this.bump(trx, id);
+        return { reopened: true };
+      });
+      if (!outcome) continue;
+      recovered++;
+      this.logger.warn({ room: id, ...outcome }, 'recovered a room stuck starting');
+    }
+    return recovered;
   }
 }
 

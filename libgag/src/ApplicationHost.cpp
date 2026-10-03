@@ -78,6 +78,9 @@ bool exportFile(const std::string &, const std::vector<unsigned char> &)
 }
 #endif
 bool storageRestoreFailed() { return false; }
+// Native and mobile builds ship every data file with the application.
+bool assetPackageReady(const char *) { return true; }
+std::vector<std::string> takeInstalledAssetPackages() { return {}; }
 
 namespace
 {
@@ -95,6 +98,10 @@ bool openUrl(const std::string &url)
 	if (url.rfind("https://", 0) != 0 && url.rfind("http://", 0) != 0)
 		return false;
 	return SDL_OpenURL(url.c_str());
+}
+bool copyText(const std::string &text)
+{
+	return SDL_SetClipboardText(text.c_str());
 }
 void importChanged(const char *) {}
 void screenChanged(const char *name) {
@@ -118,5 +125,5 @@ void focusBrowserTextInput(const void*) {}
 bool hasBrowserTextInput(const void*) { return false; }
 void beginBrowserTextFrame() {}
 void endBrowserTextFrame() {}
-void browserTextInput(const void*,SDL_Rect,int,int,const std::string&,bool,size_t,BrowserTextChange,const SDL_Rect*) {}
+void browserTextInput(const void*,SDL_Rect,int,int,const std::string&,bool,size_t,BrowserTextChange,const SDL_Rect*,bool) {}
 }

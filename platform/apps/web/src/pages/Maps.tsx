@@ -1,9 +1,17 @@
 // Map catalog: browse public maps (filters, sorting), my maps, a map's page
 // (preview, versions, like, report, owner edits and new versions) and upload.
-import { useState, type FormEvent } from 'react';
+import { useRef, useState, type FormEvent } from 'react';
 import type { MapDetail as MapDetailDoc, MapInfo, MapVisibility } from '@glob2/protocol';
 import { ApiError, api } from '../api.ts';
-import { ErrorNotice, Loaded, MapImage, PlayerLink } from '../components/common.tsx';
+import { GameArt } from '../art.tsx';
+import {
+  Empty,
+  ErrorNotice,
+  Loaded,
+  MapImage,
+  PlayerLink,
+  TableWrap,
+} from '../components/common.tsx';
 import { date } from '../format.ts';
 import { Link, useRouter } from '../router.tsx';
 import { useLoad, useSession } from '../state.tsx';
@@ -18,22 +26,30 @@ function MapCard({ map }: { map: MapInfo }) {
   const v = map.latestVersion;
   return (
     <Link className="map-card" to={`/maps/${map.id}`} data-testid="map-card">
-      <MapImage src={v?.previewUrl} alt={map.title} />
-      <div className="ell" style={{ marginTop: 4 }}>
-        {map.title}
-      </div>
-      <div className="caption ell">
+      <MapImage src={v?.previewUrl} alt="" />
+      <span className="name ell">{map.title}</span>
+      <span className="caption ell">
         {v?.width && v.height ? `${v.width}×${v.height}` : 'size unknown'}
         {v?.teamCount ? ` · ${v.teamCount} teams` : ''} · ♥ {map.stats.likes}
-      </div>
+        <span className="sr-only"> likes</span>
+      </span>
       {(map.hidden || map.visibility !== 'public') && (
-        <div>
+        <div style={{ padding: '0 var(--sp-1)' }}>
           {map.hidden && <span className="badge bad">hidden</span>}{' '}
           {map.visibility !== 'public' && <span className="badge">{map.visibility}</span>}
         </div>
       )}
     </Link>
   );
+}
+
+/**
+ * The browser game with this catalog version kept for the next room the player
+ * creates (browser/shell.html turns the query into --room-map).
+ */
+export function playMapUrl(mapId: string, hash: string, title: string): string {
+  const query = new URLSearchParams({ map: mapId, version: hash, title: title.slice(0, 128) });
+  return `/play/?${query.toString()}`;
 }
 
 const SORTS = [
@@ -84,25 +100,31 @@ export function Maps({ mine }: { mine: boolean }) {
     setQuery(q.trim());
     setMore(0);
   };
+  const filtered = Boolean(query || teams || size || madeWith);
   return (
     <>
       <div className="page-head">
+        <GameArt name="explorationFlag" size={72} className="head-art" />
         <div className="grow">
           <h1>{mine ? 'My maps' : 'Maps'}</h1>
-          <div className="caption">
+          <p className="sub">
             {mine
               ? 'Maps you shared, whatever their visibility.'
               : 'Maps players shared. Rooms play them by version, so everyone loads the same file.'}
-          </div>
+          </p>
         </div>
-        <div className="seg">
-          <Link to="/maps" className={mine ? '' : 'on'}>
+        <nav className="seg" aria-label="Map lists">
+          <Link to="/maps" className={mine ? '' : 'on'} aria-current={mine ? undefined : 'page'}>
             Catalog
           </Link>
-          <Link to="/maps/mine" className={mine ? 'on' : ''}>
+          <Link
+            to="/maps/mine"
+            className={mine ? 'on' : ''}
+            aria-current={mine ? 'page' : undefined}
+          >
             My maps
           </Link>
-        </div>
+        </nav>
         {account && (
           <Link className="btn primary" to="/maps/new">
             Upload a map
@@ -115,8 +137,9 @@ export function Maps({ mine }: { mine: boolean }) {
         </div>
       ) : (
         <>
-          <form className="toolbar" onSubmit={submit} role="search">
+          <form className="filters" onSubmit={submit} role="search">
             <input
+              type="search"
               aria-label="Search maps"
               placeholder="Search titles"
               value={q}
@@ -159,9 +182,26 @@ export function Maps({ mine }: { mine: boolean }) {
           <Loaded load={load}>
             {(data) =>
               data.items.length === 0 ? (
-                <div className="list empty">
-                  {mine ? 'You have not shared any maps yet.' : 'No maps match.'}
-                </div>
+                <Empty art="explorationFlag">
+                  {filtered
+                    ? 'No maps match these filters.'
+                    : mine
+                      ? 'You have not shared any maps yet.'
+                      : 'No shared maps yet. Be the first to share one.'}
+                  {!filtered && (
+                    <p>
+                      {account ? (
+                        <Link className="btn primary" to="/maps/new">
+                          Upload a map
+                        </Link>
+                      ) : (
+                        <a className="btn" href="/signin">
+                          Sign in to upload a map
+                        </a>
+                      )}
+                    </p>
+                  )}
+                </Empty>
               ) : (
                 <>
                   <div className="map-grid">
@@ -172,7 +212,7 @@ export function Maps({ mine }: { mine: boolean }) {
                   {data.cursor && (
                     <button
                       className="small"
-                      style={{ marginTop: 10 }}
+                      style={{ marginTop: 'var(--sp-3)' }}
                       onClick={() => setMore(more + 1)}
                     >
                       Show more
@@ -203,7 +243,7 @@ function ReportForm({ mapId, onDone }: { mapId: string; onDone: () => void }) {
   };
   return (
     <form className="card" onSubmit={submit} style={{ marginTop: 10 }}>
-      <h3>Report this map</h3>
+      <h2 className="card-title">Report this map</h2>
       <label className="field">
         Reason
         <select value={reason} onChange={(e) => setReason(e.target.value)}>
@@ -317,8 +357,12 @@ function OwnerTools({ detail, reload }: { detail: MapDetailDoc; reload: () => vo
       >
         <h3>New version</h3>
         <label className="field">
-          Map file (.map)
-          <input type="file" accept=".map,.gz" onChange={(e) => setFile(e.target.files?.[0])} />
+          Map file (.map or .map.gz)
+          <input
+            type="file"
+            accept=".map,.gz,.map.gz"
+            onChange={(e) => setFile(e.target.files?.[0])}
+          />
         </label>
         <label className="field">
           What changed
@@ -377,7 +421,7 @@ export function MapPage({ id }: { id: string }) {
             <div className="page-head">
               <div className="grow">
                 <h1 data-testid="map-title">{map.title}</h1>
-                <div className="caption">
+                <div className="sub">
                   by <PlayerLink account={map.owner} /> · updated {date(map.updatedAt)} ·{' '}
                   {map.madeWith === 'generator' ? 'generated' : 'hand-made'}{' '}
                   {map.visibility !== 'public' && <span className="badge">{map.visibility}</span>}{' '}
@@ -395,8 +439,8 @@ export function MapPage({ id }: { id: string }) {
                 Hidden: {map.hiddenReason}
               </div>
             )}
-            <div className="grid2">
-              <div>
+            <div className="map-hero">
+              <div className="preview">
                 <MapImage src={v?.previewUrl} alt={`Preview of ${map.title}`} />
               </div>
               <div>
@@ -420,12 +464,25 @@ export function MapPage({ id }: { id: string }) {
                     </div>
                   </div>
                 </div>
-                {map.description && <p style={{ whiteSpace: 'pre-wrap' }}>{map.description}</p>}
-                <div className="toolbar" style={{ marginTop: 10 }}>
+                {map.description && (
+                  <p style={{ whiteSpace: 'pre-wrap', margin: 'var(--sp-4) 0 0' }}>
+                    {map.description}
+                  </p>
+                )}
+                <div className="toolbar" style={{ marginTop: 'var(--sp-4)' }}>
                   {v && v.validation === 'valid' && (
-                    <a className="btn primary" href={v.downloadUrl} download>
-                      Download
-                    </a>
+                    <>
+                      <a
+                        className="btn primary"
+                        href={playMapUrl(map.id, v.hash, map.title)}
+                        aria-describedby="play-map-note"
+                      >
+                        Play this map
+                      </a>
+                      <a className="btn" href={v.downloadUrl} download>
+                        Download
+                      </a>
+                    </>
                   )}
                   {account ? (
                     <>
@@ -452,6 +509,11 @@ export function MapPage({ id }: { id: string }) {
                     </button>
                   )}
                 </div>
+                {v && v.validation === 'valid' && (
+                  <p className="caption" id="play-map-note">
+                    Opens the game in your browser; the next room you create plays this map.
+                  </p>
+                )}
                 {error && <ErrorNotice error={error} />}
                 {reporting && !reported && (
                   <ReportForm
@@ -465,14 +527,15 @@ export function MapPage({ id }: { id: string }) {
               </div>
             </div>
             <h2>Versions</h2>
-            <div className="table-wrap">
+            <TableWrap label={`Versions of ${map.title}`}>
               <table className="data">
+                <caption className="sr-only">Versions of {map.title}</caption>
                 <thead>
                   <tr>
                     <th>Uploaded</th>
                     <th>Status</th>
                     <th className="hide-phone">Notes</th>
-                    <th />
+                    <th className="num">File</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -496,7 +559,7 @@ export function MapPage({ id }: { id: string }) {
                       <td className="num">
                         {version.validation === 'valid' && (
                           <a href={version.downloadUrl} download>
-                            file
+                            Download<span className="sr-only"> this version</span>
                           </a>
                         )}
                       </td>
@@ -504,7 +567,7 @@ export function MapPage({ id }: { id: string }) {
                   ))}
                 </tbody>
               </table>
-            </div>
+            </TableWrap>
             {viewer.owner && <OwnerTools detail={detail} reload={load.reload} />}
           </>
         );
@@ -512,6 +575,19 @@ export function MapPage({ id }: { id: string }) {
     </Loaded>
   );
 }
+
+/** "SmallForTwo.map.gz" -> "SmallForTwo". */
+export function titleFromFileName(name: string): string {
+  return name
+    .replace(/(\.(map|gz))+$/i, '')
+    .replace(/[_]+/g, ' ')
+    .trim()
+    .slice(0, 128);
+}
+
+const CHECK_TIMEOUT_MS = 120_000;
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export function MapUpload() {
   const { account } = useSession();
@@ -521,24 +597,63 @@ export function MapUpload() {
   const [visibility, setVisibility] = useState<MapVisibility>('unlisted');
   const [madeWith, setMadeWith] = useState('hand');
   const [file, setFile] = useState<File>();
-  const [busy, setBusy] = useState(false);
+  const [phase, setPhase] = useState<'idle' | 'checking' | 'saving'>('idle');
+  const [fileError, setFileError] = useState<string>();
   const [error, setError] = useState<Error>();
+  const fileInput = useRef<HTMLInputElement>(null);
+  const head = (
+    <div className="page-head">
+      <GameArt name="explorationFlag" size={72} className="head-art" />
+      <div className="grow">
+        <h1>Upload a map</h1>
+        <p className="sub">Share a map you made in the editor or with a generator.</p>
+      </div>
+    </div>
+  );
   if (account === null) {
     return (
-      <div className="notice">
-        <a href="/signin">Sign in</a> to share maps.
-      </div>
+      <>
+        {head}
+        <div className="notice">
+          <a href="/signin">Sign in</a> to share maps.
+        </div>
+      </>
     );
   }
+  const busy = phase !== 'idle';
+  const fileProblem = (message: string) => {
+    setFileError(message);
+    fileInput.current?.focus();
+  };
   const submit = async (event: FormEvent) => {
     event.preventDefault();
-    if (!file) return;
-    setBusy(true);
+    if (!file) {
+      fileProblem('Choose a map file first: a .map or .map.gz file from the game.');
+      return;
+    }
     setError(undefined);
+    setFileError(undefined);
     try {
+      // 1. The game checks the file. Nothing is created unless it loads.
+      setPhase('checking');
+      let checked = await api.checkMapFile(file, file.name);
+      const started = Date.now();
+      while (checked.status === 'pending') {
+        if (Date.now() - started > CHECK_TIMEOUT_MS) {
+          throw new Error(
+            'Checking the map is taking longer than usual. Nothing was created; please try again in a few minutes.',
+          );
+        }
+        await sleep(1000);
+        checked = await api.checkedFile(checked.id);
+      }
+      if (checked.status !== 'valid') {
+        fileProblem(checked.reason ?? "The game couldn't load this map.");
+        return;
+      }
+      // 2. Only now: the map page and its first version (the same, already checked file).
+      setPhase('saving');
       const map = await api.createMap({ title, description, visibility, madeWith });
-      // A failed upload keeps the map: its page shows no version yet and lets
-      // the owner upload again.
       const uploaded = await api.uploadVersion(map.id, file).then(
         () => true,
         (e: unknown) => {
@@ -548,30 +663,37 @@ export function MapUpload() {
       );
       navigate(`/maps/${map.id}${uploaded ? '' : '?upload=failed'}`);
     } catch (e) {
-      setError(e as Error);
+      // Problems with the file itself (not a map, too big, newer version…) belong to the file field.
+      const details = e instanceof ApiError ? (e.body?.details as { problem?: string }) : undefined;
+      if (e instanceof ApiError && (details?.problem || e.status === 413)) fileProblem(e.message);
+      else setError(e as Error);
     } finally {
-      setBusy(false);
+      setPhase('idle');
     }
   };
   return (
     <>
-      <div className="page-head">
-        <h1 className="grow">Upload a map</h1>
-      </div>
-      <form className="card" onSubmit={(e) => void submit(e)} style={{ maxWidth: 560 }}>
+      {head}
+      <form className="card upload-form" onSubmit={(e) => void submit(e)} noValidate>
         <label className="field">
-          Map file (.map, from the editor’s Save)
+          Map file (.map or .map.gz, from the game or its map editor)
           <input
+            ref={fileInput}
             type="file"
-            accept=".map,.gz"
-            required
+            accept=".map,.gz,.map.gz"
+            aria-invalid={fileError ? true : undefined}
+            aria-describedby="map-file-error"
             onChange={(e) => {
               const f = e.target.files?.[0];
               setFile(f);
-              if (f && !title) setTitle(f.name.replace(/\.(map|gz)+$/i, '').slice(0, 128));
+              setFileError(undefined);
+              if (f && !title) setTitle(titleFromFileName(f.name));
             }}
           />
         </label>
+        <p id="map-file-error" className="field-error" role="alert">
+          {fileError}
+        </p>
         <label className="field">
           Title
           <input
@@ -610,12 +732,19 @@ export function MapUpload() {
           </select>
         </label>
         {error && <ErrorNotice error={error} />}
-        <button className="primary" type="submit" disabled={busy || !file}>
-          {busy ? 'Uploading…' : 'Upload'}
+        <button className="primary" type="submit" disabled={busy}>
+          {phase === 'checking' ? 'Checking the map…' : phase === 'saving' ? 'Saving…' : 'Upload'}
         </button>
+        <p className="sr-only" role="status">
+          {phase === 'checking'
+            ? 'Checking the map with the game.'
+            : phase === 'saving'
+              ? 'The map is fine. Saving it.'
+              : ''}
+        </p>
         <p className="caption">
-          The server loads the file with the game to check it and draw a preview. Unlisted maps are
-          reachable by link only; you can make a map public later.
+          The server first loads the file with the game to check it; the map page is created only if
+          it loads. Unlisted maps are reachable by link only; you can make a map public later.
         </p>
       </form>
     </>

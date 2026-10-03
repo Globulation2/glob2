@@ -90,23 +90,90 @@ TrueTypeFont::~TrueTypeFont()
 	}
 }
 
+bool TrueTypeFont::kerningMovesPen(TTF_Font *kerned, TTF_Font *unkerned)
+{
+	// T and o kern strongly in the game's font (DejaVu Sans) and in most Latin fonts.
+	int kerning = 0;
+	if (!TTF_GetGlyphKerning(kerned, 'T', 'o', &kerning) || kerning == 0)
+		return true;
+	// The measured width ends at the pen. A correct layout moves the pen by the kerning;
+	// the broken one moves only the glyph, so both widths come out the same.
+	const char *const sample = "ToTo";
+	int withKerning = 0, withoutKerning = 0;
+	size_t length = 0;
+	if (!TTF_MeasureString(kerned, sample, 0, 0, &withKerning, &length) ||
+		!TTF_MeasureString(unkerned, sample, 0, 0, &withoutKerning, &length))
+		return true;
+	return withKerning != withoutKerning;
+}
+
+TTF_Font *TrueTypeFont::openFont(const std::string &filename, unsigned size)
+{
+	// -1 unknown, 0 kerning misplaces glyphs, 1 kerning works
+	static int kerningWorks = -1;
+	auto open = [&](unsigned openSize) -> TTF_Font *
+	{
+		SDL_IOStream *stream = Toolkit::getFileManager()->open(filename, "rb");
+		return stream ? TTF_OpenFontIO(stream, 1, openSize) : NULL;
+	};
+	TTF_Font *opened = open(size);
+	if (!opened)
+		return NULL;
+	if (kerningWorks < 0)
+	{
+		// Probe at a size where one kerning unit is several pixels.
+		TTF_Font *kerned = open(32), *unkerned = open(32);
+		if (kerned && unkerned)
+		{
+			TTF_SetFontKerning(unkerned, false);
+			int kerning = 0;
+			if (TTF_GetGlyphKerning(kerned, 'T', 'o', &kerning) && kerning != 0)
+			{
+				kerningWorks = kerningMovesPen(kerned, unkerned) ? 1 : 0;
+				if (!kerningWorks)
+					std::cerr << "TrueTypeFont: this SDL3_ttf misplaces kerned glyphs; drawing text without kerning" << std::endl;
+			}
+		}
+		if (kerned)
+			TTF_CloseFont(kerned);
+		if (unkerned)
+			TTF_CloseFont(unkerned);
+	}
+	if (kerningWorks == 0)
+		TTF_SetFontKerning(opened, false);
+	return opened;
+}
+
 bool TrueTypeFont::load(const std::string filename, unsigned size)
 {
-	SDL_IOStream *fontStream = Toolkit::getFileManager()->open(filename, "rb");
-	if (fontStream)
-	{
-		font = TTF_OpenFontIO(fontStream, 1, size);
-		if (font)
-		{
-			fontFilename = filename;
-			baseSize = size;
-			renderFont = font;
-			renderScale = 1.0f;
-			setStyle(Style(STYLE_NORMAL, 255, 255, 255));
-			return true;
-		}
-	}
-	return false;
+	font = openFont(filename, size);
+	if (!font)
+		return false;
+	fontFilename = filename;
+	baseSize = size;
+	renderFont = font;
+	renderScale = 1.0f;
+	setStyle(Style(STYLE_NORMAL, 255, 255, 255));
+	return true;
+}
+
+bool TrueTypeFont::reload(void)
+{
+	if (!font)
+		return false;
+	TTF_Font *replacement = openFont(fontFilename, baseSize);
+	if (!replacement)
+		return false;
+	clearCache();
+	for (const auto &[size, raster] : rasterFonts)
+		TTF_CloseFont(raster);
+	rasterFonts.clear();
+	TTF_CloseFont(font);
+	font = replacement;
+	renderFont = font;
+	renderScale = 1.0f;
+	applyStyle();
+	return true;
 }
 
 void TrueTypeFont::clearCache(void)
@@ -144,9 +211,7 @@ void TrueTypeFont::updateRenderScale(void)
 		auto found = rasterFonts.find(wantedSize);
 		if (found == rasterFonts.end())
 		{
-			TTF_Font *replacement = nullptr;
-			if (SDL_IOStream *stream = Toolkit::getFileManager()->open(fontFilename, "rb"))
-				replacement = TTF_OpenFontIO(stream, 1, wantedSize);
+			TTF_Font *replacement = openFont(fontFilename, wantedSize);
 			if (replacement)
 				found = rasterFonts.emplace(wantedSize, replacement).first;
 		}

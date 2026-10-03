@@ -5,6 +5,7 @@
 #include <stdio.h>
 
 #include <BinaryStream.h>
+#include <FormatableString.h>
 #include <FileManager.h>
 #include <Stream.h>
 #include <StringTable.h>
@@ -57,7 +58,36 @@ void GameGUI::closeDialog()
 
 void GameGUI::openMainMenu()
 {
-	openDialog(IGM_MAIN, std::make_unique<InGameMainScreen>(globalContainer->replaying, !globalContainer->isViewingGame(), gamePaused));
+	auto menu = std::make_unique<InGameMainScreen>(globalContainer->replaying, !globalContainer->isViewingGame(), gamePaused);
+	menu->setNetworked(networkMatch.active);
+	if (networkMatch.active)
+	{
+		auto &strings = *Toolkit::getStringTable();
+		const PauseState state = pauseState ? pauseState() : PauseState();
+		std::string label;
+		if (gamePaused)
+			label = strings.getString("[resume game]");
+		else if (!state.limited)
+			label = strings.getString("[pause game]");
+		else if (pauseAvailable())
+			label = GAGCore::FormattableString(strings.getString("[pause game left %0]")).arg(state.pausesLeft);
+		else
+			label = strings.getString("[pause none left]");
+		menu->setPauseOffer(label, pauseAvailable());
+	}
+	openDialog(IGM_MAIN, std::move(menu));
+}
+
+std::unique_ptr<Glob2UI::InGameDialog> GameGUI::makeLeaveConfirmation() const
+{
+	auto &strings = *Toolkit::getStringTable();
+	const char *body = !networkMatch.online   ? "[leave lan body]"
+					   : networkMatch.rated   ? "[leave rated body]"
+					   : networkMatch.fromRoom ? "[leave room body]"
+											   : "[leave casual body]";
+	return std::make_unique<InGameConfirmScreen>(strings.getString(networkMatch.online ? "[leave match title]" : "[leave lan title]"),
+												 strings.getString(body), strings.getString("[leave match confirm]"),
+												 strings.getString("[keep playing]"));
 }
 
 void GameGUI::openChat()
@@ -142,7 +172,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					if (globalContainer->replaying)
 						gamePaused = !gamePaused;
 					else if (!globalContainer->isViewingGame())
-						orderQueue.push_back(std::make_shared<PauseGameOrder>(!gamePaused));
+						requestPause(!gamePaused);
 					return true;
 				}
 				case InGameMainScreen::RETURN_GAME:
@@ -152,6 +182,12 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				}
 				case InGameMainScreen::QUIT_GAME:
 				{
+					// Leaving a networked match costs the match: say so first.
+					if (networkMatch.active)
+					{
+						openDialog(IGM_CONFIRM_LEAVE, makeLeaveConfirmation());
+						return true;
+					}
 					closeDialog();
 					orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
 					flushOutgoingAndExit=true;
@@ -160,6 +196,19 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				default:
 				return false;
 			}
+		}
+
+		case IGM_CONFIRM_LEAVE:
+		{
+			closeDialog();
+			if (result == InGameConfirmScreen::CONFIRM)
+			{
+				orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
+				flushOutgoingAndExit = true;
+			}
+			else
+				openMainMenu();
+			return true;
 		}
 
 		case IGM_ALLIANCE:

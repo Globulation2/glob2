@@ -48,6 +48,9 @@ void Team::clearLists(void)
 	swarms.clear();
 	turrets.clear();
 	virtualBuildings.clear();
+	// clearMem deletes every building next; a clearing flag left listed here would
+	// dangle (and be stepped and saved) for the rest of the game.
+	clearingFlags.clear();
 }
 
 

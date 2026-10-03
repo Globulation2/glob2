@@ -136,6 +136,8 @@ std::string matchEndedJson(const MatchEndInfo& info, const Turn::MatchRecord& re
 	j["record"] = json{{"sha256", sha256Hex(recordBytes)},
 	                   {"size", recordBytes.size()},
 	                   {"formatVersion", Turn::MatchRecord::FORMAT_VERSION}};
+	if (info.network.is_object())
+		j["network"] = info.network;
 	return j.dump();
 }
 

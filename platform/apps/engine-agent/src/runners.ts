@@ -15,14 +15,14 @@ import {
   type SimVersion,
   type VerifiedOutcome,
 } from '@glob2/protocol';
+import { checkMapFile } from '@glob2/core';
 import { EngineJobError, type EngineRunner } from './agent.ts';
-import { CONTENT_TYPES, decompressIfGzip, type AgentBlobs } from './blobs.ts';
+import { CONTENT_TYPES, decompressIfGzip, type JobBlobs } from './blobs.ts';
 import { EngineCrashError, type GlobEngine } from './engine.ts';
 import {
   EngineInputError,
   EngineOutputError,
   PREVIEW_SIZE_RANGE,
-  readMapHeader,
   savedPlayers,
   type EngineCatalog,
 } from './engineCli.ts';
@@ -46,7 +46,8 @@ export interface HeadlessRunnerOptions {
   engine: GlobEngine;
   catalog: EngineCatalog;
   simVersion: SimVersion;
-  blobs: AgentBlobs;
+  /** Blob access for run() calls that pass none (tests); the agent passes each lease's own. */
+  blobs?: JobBlobs;
   limits?: Partial<RunnerLimits>;
 }
 
@@ -81,21 +82,23 @@ export class HeadlessEngineRunner implements EngineRunner {
     this.limits = { ...DEFAULT_RUNNER_LIMITS, ...options.limits };
   }
 
-  async run(job: EngineJob, signal: AbortSignal): Promise<unknown> {
+  async run(job: EngineJob, signal: AbortSignal, jobBlobs?: JobBlobs): Promise<unknown> {
+    const blobs = jobBlobs ?? this.options.blobs;
+    if (!blobs) throw new Error('no blob access for this job');
     let result: unknown;
     try {
       switch (job.kind) {
         case 'generate-map':
-          result = await this.generateMap(job.payload, signal);
+          result = await this.generateMap(job.payload, signal, blobs);
           break;
         case 'validate-map':
-          result = await this.validateMap(job.payload, signal);
+          result = await this.validateMap(job.payload, signal, blobs);
           break;
         case 'render-preview':
-          result = await this.renderPreview(job.payload, signal);
+          result = await this.renderPreview(job.payload, signal, blobs);
           break;
         case 'verify-match':
-          result = await this.verifyMatch(job.payload, signal);
+          result = await this.verifyMatch(job.payload, signal, blobs);
           break;
       }
     } catch (error) {
@@ -123,16 +126,18 @@ export class HeadlessEngineRunner implements EngineRunner {
     teamCount: number;
   }): string | undefined {
     if (facts.width > this.limits.maxMapSide || facts.height > this.limits.maxMapSide) {
-      return `map is ${facts.width}×${facts.height}; the largest accepted side is ${this.limits.maxMapSide}`;
+      return `This map is too large: it is ${facts.width}×${facts.height}, and the largest accepted side is ${this.limits.maxMapSide}.`;
     }
-    if (facts.width < 1 || facts.height < 1) return 'map has no tiles';
-    if (facts.teamCount < 1 || facts.teamCount > 12) return `map has ${facts.teamCount} teams`;
+    if (facts.width < 1 || facts.height < 1) return 'This map has no tiles.';
+    if (facts.teamCount < 1 || facts.teamCount > 12)
+      return `This map has ${facts.teamCount} teams; maps need 1 to 12.`;
     return undefined;
   }
 
   async generateMap(
     payload: EngineJobPayload<'generate-map'>,
     signal: AbortSignal,
+    blobs: JobBlobs,
   ): Promise<EngineJobOutput<'generate-map'>> {
     const generated = await this.options.engine.generateMap(
       payload.generator,
@@ -146,7 +151,7 @@ export class HeadlessEngineRunner implements EngineRunner {
         `generated map is ${generated.bytes.byteLength} bytes; limit ${this.limits.maxMapBytes}`,
       );
     }
-    const mapHash = await this.options.blobs.write(generated.bytes, CONTENT_TYPES.map, 'public');
+    const mapHash = await blobs.write(generated.bytes, CONTENT_TYPES.map, 'public');
     return {
       mapHash,
       size: generated.bytes.byteLength,
@@ -159,41 +164,47 @@ export class HeadlessEngineRunner implements EngineRunner {
   async validateMap(
     payload: EngineJobPayload<'validate-map'>,
     signal: AbortSignal,
+    blobs: JobBlobs,
   ): Promise<EngineJobOutput<'validate-map'>> {
+    // Reasons are shown to players (map pages, the room's upload): plain words first.
     const kind = payload.format === 'save' ? 'save' : 'map';
+    const what = payload.format === 'save' ? 'saved game' : 'map';
     const invalid = (reason: string) => ({ valid: false as const, reason: message(reason) });
-    let bytes: Uint8Array;
+    let stored: Uint8Array;
     try {
-      const stored = await this.options.blobs.read(payload.blobHash, this.limits.maxMapBytes);
-      bytes = decompressIfGzip(stored, this.limits.maxMapBytes);
+      stored = await blobs.read(payload.blobHash, this.limits.maxMapBytes);
     } catch (error) {
       if (error instanceof EngineInputError && !/not found/.test(error.message)) {
-        return invalid(error.message);
+        return invalid(`This ${what} is too big to check. (${error.message})`);
       }
       throw error;
     }
-    const header = readMapHeader(bytes);
-    if (!header) return invalid(`not a Globulation 2 ${kind} file`);
-    if (header.versionMinor > this.options.catalog.versionMinor) {
-      return invalid(
-        `${kind} was written by a newer engine (format ${header.versionMinor}; this engine reads up to ${this.options.catalog.versionMinor})`,
-      );
-    }
+    const check = checkMapFile(stored, {
+      format: payload.format === 'save' ? 'save' : 'map',
+      newestVersionMinor: this.options.catalog.versionMinor,
+      maxBytes: this.limits.maxMapBytes,
+    });
+    if (!check.ok) return invalid(check.message);
+    const { bytes, header } = check;
     let report;
     try {
       ({ report } = await this.options.engine.inspect(bytes, { signal }));
     } catch (error) {
       if (error instanceof EngineInputError)
-        return invalid(`the game cannot load this ${kind}: ${error.message}`);
+        return invalid(
+          `The game couldn't load this ${what}; the file may be damaged or incomplete. (Details: ${error.message})`,
+        );
       throw error;
     }
     if (payload.format === 'map' && report.savedGame)
-      return invalid('file is a saved game, not a map');
+      return invalid(
+        'This file is a saved game, not a map. Upload a map from the map editor instead.',
+      );
     if (payload.format === 'save' && !report.savedGame)
-      return invalid('file is a map, not a saved game');
+      return invalid('This file is a map, not a saved game.');
     const problem = this.checkFacts(report);
     if (problem) return invalid(problem);
-    const mapHash = await this.options.blobs.write(bytes, CONTENT_TYPES[kind]);
+    const mapHash = await blobs.write(bytes, CONTENT_TYPES[kind]);
     const title = (report.name ?? header.name).trim().slice(0, 128);
     // Saves: who played, so a host can map returning players onto seats.
     const players =
@@ -211,6 +222,7 @@ export class HeadlessEngineRunner implements EngineRunner {
   async renderPreview(
     payload: EngineJobPayload<'render-preview'>,
     signal: AbortSignal,
+    blobs: JobBlobs,
   ): Promise<EngineJobOutput<'render-preview'>> {
     if (payload.maxSizePx < PREVIEW_SIZE_RANGE.min) {
       throw new EngineInputError(
@@ -218,7 +230,7 @@ export class HeadlessEngineRunner implements EngineRunner {
       );
     }
     const bytes = decompressIfGzip(
-      await this.options.blobs.read(payload.mapHash, this.limits.maxMapBytes),
+      await blobs.read(payload.mapHash, this.limits.maxMapBytes),
       this.limits.maxMapBytes,
     );
     const { png } = await this.options.engine.inspect(bytes, {
@@ -227,34 +239,37 @@ export class HeadlessEngineRunner implements EngineRunner {
     });
     if (!png) throw new EngineOutputError('no preview written');
     const size = pngSize(png);
-    const previewHash = await this.options.blobs.write(png, CONTENT_TYPES.png, 'public');
+    const previewHash = await blobs.write(png, CONTENT_TYPES.png, 'public');
     return { previewHash, contentType: 'image/png', width: size.width, height: size.height };
   }
 
   async verifyMatch(
     payload: EngineJobPayload<'verify-match'>,
     signal: AbortSignal,
+    blobs: JobBlobs,
   ): Promise<EngineJobOutput<'verify-match'>> {
     if (!sameSimVersion(payload.setup.simVersion, this.options.simVersion)) {
       throw new EngineInputError(
         `match setup is for ${simVersionKey(payload.setup.simVersion)}, this verifier runs ${simVersionKey(this.options.simVersion)}`,
       );
     }
-    const record = await this.options.blobs.read(payload.recordHash, this.limits.maxRecordBytes);
+    const record = await blobs.read(payload.recordHash, this.limits.maxRecordBytes);
     const map = decompressIfGzip(
-      await this.options.blobs.read(payload.setup.map.hash, this.limits.maxMapBytes),
+      await blobs.read(payload.setup.map.hash, this.limits.maxMapBytes),
       this.limits.maxMapBytes,
     );
     const verification = await this.options.engine.verifyMatch(record, map, signal);
     const verdict = verification.verdict;
+    // Seats whose orders the engine refused; the match page shows them.
+    const rejections = verdict.orderRejections ? { orderRejections: verdict.orderRejections } : {};
     if (verdict.verdict === 'unverifiable') {
-      return { verdict: 'unverifiable', reason: message(verdict.reason) };
+      return { verdict: 'unverifiable', reason: message(verdict.reason), ...rejections };
     }
     const { result, replay } = verification;
     if (!result || !replay) throw new EngineOutputError('verifier output incomplete');
     const [resultHash, replayHash] = [
-      await this.options.blobs.write(result.json, CONTENT_TYPES.result, 'public'),
-      await this.options.blobs.write(replay, CONTENT_TYPES.replay, 'public'),
+      await blobs.write(result.json, CONTENT_TYPES.result, 'public'),
+      await blobs.write(replay, CONTENT_TYPES.replay, 'public'),
     ];
     const outcome: VerifiedOutcome = {
       finalTick: result.game.finalTick,
@@ -270,8 +285,8 @@ export class HeadlessEngineRunner implements EngineRunner {
       replayHash,
     };
     return verdict.verdict === 'verified'
-      ? { verdict: 'verified', outcome }
-      : { verdict: 'diverged', clients: verdict.seats, outcome };
+      ? { verdict: 'verified', outcome, ...rejections }
+      : { verdict: 'diverged', clients: verdict.seats, outcome, ...rejections };
   }
 }
 

@@ -2,7 +2,7 @@
 // Component tests of the web app's key pages with a stubbed API: routing of
 // the deep links the game uses, leaderboard, profile, match page (charts and
 // Watch in browser), sign-in state and the moderation guard.
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
 import { App } from '../src/App.tsx';
 import { LineChart } from '../src/components/LineChart.tsx';
@@ -204,11 +204,37 @@ const routes: Record<string, unknown> = {
     verificationDetail: {
       orderRejections: [{ seat: 0, rejected: 2, stale: 0, reasons: { foreign_unit: 2 } }],
     },
+    network: [
+      {
+        seat: 0,
+        quality: 'fair',
+        rttMs: { p50: 84, p95: 231 },
+        lagMs: { p50: 280, p95: 440 },
+        disconnects: 1,
+        offlineMs: 4200,
+        ordersSequenced: 412,
+        ordersDeferred: 6,
+        rejoins: 0,
+      },
+    ],
   },
   '/api/v1/matches': { items: [summary] },
 };
 
 let me: unknown;
+
+// The app loads the schema library and the less visited pages on demand;
+// load them once up front so each test sees the app as a warm browser would.
+beforeAll(async () => {
+  await Promise.all([
+    import('@glob2/protocol'),
+    import('../src/admin/Admin.tsx'),
+    import('../src/pages/Maps.tsx'),
+    import('../src/pages/Match.tsx'),
+    import('../src/pages/Player.tsx'),
+    import('../src/pages/Account.tsx'),
+  ]);
+});
 
 beforeEach(() => {
   me = undefined;
@@ -251,8 +277,8 @@ describe('routing', () => {
   });
 
   it('builds Watch in browser links for the browser client', () => {
-    expect(watchUrl('https://glob2online.com/api/v1/matches/x/artifacts/replay')).toBe(
-      '/play/?replay=https%3A%2F%2Fglob2online.com%2Fapi%2Fv1%2Fmatches%2Fx%2Fartifacts%2Freplay',
+    expect(watchUrl('https://app.glob2online.com/api/v1/matches/x/artifacts/replay')).toBe(
+      '/play/?replay=https%3A%2F%2Fapp.glob2online.com%2Fapi%2Fv1%2Fmatches%2Fx%2Fartifacts%2Freplay',
     );
   });
 
@@ -292,6 +318,35 @@ describe('pages', () => {
     expect(screen.getAllByTestId('participant')).toHaveLength(2);
     expect(within(screen.getByTestId('timelines')).getAllByRole('img')).toHaveLength(3);
     expect(screen.getByText('refused orders')).toBeTruthy();
+    // Connection quality per human player, from the relay's report.
+    const network = screen.getAllByTestId('network-row');
+    expect(network).toHaveLength(1);
+    expect(network[0]!.textContent).toContain('Alice');
+    expect(within(network[0]!).getByText('Fair').className).toBe('badge warn');
+    // Every value has its unit and its word from the shared table.
+    expect(network[0]!.textContent).toContain('84 ms · Good');
+    expect(network[0]!.textContent).toContain('95%: 231 ms');
+    expect(network[0]!.textContent).toContain('0.3 s · Good');
+    expect(network[0]!.textContent).toContain('95%: 0.4 s');
+    expect(network[0]!.textContent).toContain('4.2 s');
+    expect(screen.getByTestId('network-legend').textContent).toContain(
+      'Good under 150 ms, fair under 300 ms, poor from 300 ms.',
+    );
+    expect(screen.getByTestId('network-legend').textContent).toContain(
+      'Good under 1 s, fair under 2 s, poor from 2 s.',
+    );
+    expect(network[0]!.textContent).toContain('6 / 412');
+    // Tables that may scroll sideways are named, focusable regions; on phones the
+    // connection table stacks its rows into labelled cards instead.
+    const connection = screen.getByRole('region', { name: 'Connection quality per player' });
+    expect(connection.tabIndex).toBe(0);
+    expect(connection.className).toContain('stack');
+    expect(
+      within(network[0]!)
+        .getAllByRole('cell')
+        .map((cell) => cell.getAttribute('data-label')),
+    ).toEqual(['Player', 'Quality', 'Ping', 'Behind', 'Disconnects', 'Offline', 'Delayed orders']);
+    expect(screen.getByRole('region', { name: 'Players and results' }).tabIndex).toBe(0);
     expect(screen.getByTestId('watch').getAttribute('href')).toBe(
       watchUrl(`http://localhost/api/v1/matches/${MATCH}/artifacts/replay`),
     );
@@ -322,6 +377,39 @@ describe('pages', () => {
     expect(await screen.findByText('This page is for moderators.')).toBeTruthy();
     expect(screen.getByTestId('account-chip').textContent).toContain('Bob');
     expect(screen.queryByRole('link', { name: 'Moderation' })).toBeNull();
+  });
+
+  it('deletes the account only after the name is typed', async () => {
+    me = {
+      ...account(BOB, 'Bob'),
+      role: 'user',
+      status: 'active',
+      identities: [{ provider: 'local', linkedAt: NOW }],
+      entitlements: [],
+    };
+    const deletes: unknown[] = [];
+    type Fetch = (input: string, init?: RequestInit) => Promise<Response>;
+    const stub = vi.mocked(globalThis.fetch as unknown as Fetch);
+    const original = stub.getMockImplementation()!;
+    stub.mockImplementation(async (input: string, init?: RequestInit) => {
+      if (init?.method === 'DELETE' && input === '/api/v1/accounts/me') {
+        deletes.push(JSON.parse(String(init.body)));
+        me = undefined;
+        return new Response(null, { status: 204 });
+      }
+      return original(input, init);
+    });
+    open('/account');
+    expect(await screen.findByText('Delete my account')).toBeTruthy();
+    const button = screen.getByRole('button', { name: 'Delete my account for good' });
+    expect((button as HTMLButtonElement).disabled).toBe(true);
+    const input = screen.getByLabelText(/Type your name, Bob, to confirm/);
+    fireEvent.change(input, { target: { value: 'bob' } });
+    expect((button as HTMLButtonElement).disabled).toBe(true);
+    fireEvent.change(input, { target: { value: 'Bob' } });
+    fireEvent.click(button);
+    expect(await screen.findByText('Your account was deleted')).toBeTruthy();
+    expect(deletes).toEqual([{ confirmDisplayName: 'Bob' }]);
   });
 });
 

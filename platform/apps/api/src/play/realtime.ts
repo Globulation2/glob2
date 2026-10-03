@@ -4,7 +4,8 @@
 // matchmaker, match updates from ratings and intake, finished map jobs).
 import type { Logger } from '@glob2/core';
 import { resolveQueue, type AccessPolicy, type PlatformConfig } from '@glob2/core';
-import type { PgPubSub } from '@glob2/db';
+import { sql, type Kysely } from 'kysely';
+import type { Database, PgPubSub } from '@glob2/db';
 import {
   simVersionKey,
   type RealtimeMethod,
@@ -22,15 +23,21 @@ import {
   respondToProposal,
   type PlayFanout,
   type QueueNotification,
-} from '@glob2/worker';
+  sendProposal,
+  updateTicket,
+  PgQueueNotifier,
+} from '@glob2/play';
 import { apiError } from '../errors.ts';
-import { WindowCounter } from '../http/validate.ts';
+
+const queueNotifier = new PgQueueNotifier();
+import { SharedLimit } from '../http/rateLimits.ts';
 import type { RealtimeConnection, MethodHandler } from '../realtime/connection.ts';
 import type { RealtimeHub } from '../realtime/hub.ts';
 import type { Assignments } from './assignments.ts';
 import type { RoomService } from './rooms.ts';
 
 export interface PlayRealtimeOptions {
+  db: Kysely<Database>;
   config: PlatformConfig;
   access: AccessPolicy;
   pubsub: PgPubSub;
@@ -47,16 +54,27 @@ export const CODE_FAILURES_PER_WINDOW = 10;
 const CODE_WINDOW_MS = 10 * 60_000;
 /** Chat messages per account per 10 seconds. */
 const CHAT_PER_WINDOW = 8;
+/** Accounts re-synced per query batch after a pub/sub reconnect. */
+const RESYNC_BATCH = 500;
+/** Ended matches this recent get match.updated again after a reconnect. */
+const RESYNC_ENDED_SECONDS = 1800;
 
 export class PlayRealtime {
   readonly handlers: Partial<Record<RealtimeMethod, MethodHandler>>;
   private readonly options: PlayRealtimeOptions;
-  private readonly codeFailures = new WindowCounter(CODE_FAILURES_PER_WINDOW, CODE_WINDOW_MS);
-  private readonly chatLimit = new WindowCounter(CHAT_PER_WINDOW, 10_000);
+  private readonly codeFailures: SharedLimit;
+  private readonly chatLimit: SharedLimit;
   private readonly unsubscribe: (() => Promise<void>)[] = [];
   private sweepTimer: NodeJS.Timeout | undefined;
 
   constructor(options: PlayRealtimeOptions) {
+    this.codeFailures = new SharedLimit(
+      options.db,
+      'invite-code-failure',
+      CODE_FAILURES_PER_WINDOW,
+      CODE_WINDOW_MS,
+    );
+    this.chatLimit = new SharedLimit(options.db, 'chat', CHAT_PER_WINDOW, 10_000);
     this.options = options;
     this.handlers = this.buildHandlers();
   }
@@ -64,6 +82,7 @@ export class PlayRealtime {
   async start(): Promise<void> {
     const { hub, pubsub, rooms, logger } = this.options;
     hub.onPlay = (message) => this.background(this.deliver(message), 'play delivery');
+    hub.onResync = (accountIds) => this.resync(accountIds);
     hub.onAccountHere = (accountId) =>
       this.background(rooms.markConnected(accountId), 'room presence');
     hub.onAccountGone = (accountId) =>
@@ -161,6 +180,72 @@ export class PlayRealtime {
     }
   }
 
+  /**
+   * After the pub/sub listener reconnected (hub.resync): re-sends what may
+   * have been missed to these accounts' sockets on this replica: room.state of
+   * their rooms, match.start for their matches still starting or running
+   * (clients ignore a repeat), queue.proposal for accept prompts they are in,
+   * and match.updated for their recently ended matches.
+   */
+  async resync(accountIds: readonly string[]): Promise<void> {
+    const { assignments } = this.options;
+    for (let i = 0; i < accountIds.length; i += RESYNC_BATCH) {
+      const batch = accountIds.slice(i, i + RESYNC_BATCH);
+      const local = new Set(this.local(batch));
+      if (local.size === 0) continue;
+      const ids = [...local];
+      const memberships = await this.db
+        .selectFrom('room_members as m')
+        .innerJoin('rooms as r', 'r.id', 'm.room_id')
+        .select('m.room_id')
+        .distinct()
+        .where('m.account_id', 'in', ids)
+        .where('r.status', '!=', 'closed')
+        .execute();
+      for (const { room_id: roomId } of memberships) await this.deliver({ t: 'room', roomId });
+      const seats = await this.db
+        .selectFrom('match_participants as p')
+        .innerJoin('matches as mt', 'mt.id', 'p.match_id')
+        .select(['p.match_id', 'p.account_id', 'mt.status'])
+        .where('p.account_id', 'in', ids)
+        .where('p.kind', '=', 'human')
+        .where((eb) =>
+          eb.or([
+            eb('mt.status', 'in', ['starting', 'running']),
+            eb.and([
+              eb('mt.status', '=', 'ended'),
+              eb(
+                'mt.ended_at',
+                '>',
+                sql<Date>`now() - make_interval(secs => ${RESYNC_ENDED_SECONDS})`,
+              ),
+            ]),
+          ]),
+        )
+        .execute();
+      for (const seat of seats) {
+        if (!seat.account_id) continue;
+        if (seat.status === 'ended') {
+          const match = await assignments.summary(seat.match_id);
+          if (match) this.send(seat.account_id, 'match.updated', { match });
+        } else {
+          await this.sendMatchStart(seat.match_id, seat.account_id);
+        }
+      }
+      const prompts = await this.db
+        .selectFrom('match_proposal_seats as s')
+        .innerJoin('match_proposals as p', 'p.id', 's.proposal_id')
+        .select('s.proposal_id')
+        .distinct()
+        .where('s.account_id', 'in', ids)
+        .where('p.status', '=', 'pending')
+        .execute();
+      for (const { proposal_id: proposalId } of prompts) {
+        await sendProposal(this.db, queueNotifier, proposalId);
+      }
+    }
+  }
+
   private async sendMatchStart(matchId: string, accountId: string): Promise<void> {
     const assignment = await this.options.assignments.forAccount(matchId, accountId);
     if (assignment) this.send(accountId, 'match.start', assignment);
@@ -213,14 +298,16 @@ export class PlayRealtime {
         const account = connection.requireAccount();
         const sim = this.requireSim(connection);
         const keys = [`a:${account.id}`, `ip:${connection.ip}`];
-        if (keys.some((key) => this.codeFailures.exhausted(key))) {
-          throw apiError('rate_limited', 'Too many unknown invite codes; try again later.');
+        for (const key of keys) {
+          if (await this.codeFailures.exhausted(key)) {
+            throw apiError('rate_limited', 'Too many unknown invite codes; try again later.');
+          }
         }
         try {
           return { room: await rooms.join(account, sim, params.code, params.regions) };
         } catch (error) {
           if ((error as { body?: { code?: string } }).body?.code === 'not_found') {
-            for (const key of keys) this.codeFailures.take(key);
+            for (const key of keys) await this.codeFailures.take(key);
           }
           throw error;
         }
@@ -271,7 +358,7 @@ export class PlayRealtime {
       'room.chat': async (connection, raw) => {
         const params = raw as RealtimeParams<'room.chat'>;
         const account = connection.requireAccount();
-        if (!this.chatLimit.take(account.id)) {
+        if (!(await this.chatLimit.take(account.id)).allowed) {
           throw apiError('rate_limited', 'You are sending messages too quickly.');
         }
         return { message: await rooms.chat(account, params.roomId, params.text) };
@@ -347,7 +434,50 @@ export class PlayRealtime {
         );
         if (outcome === 'not_found') throw apiError('not_found', 'No such proposal.');
         if (outcome === 'not_pending') throw apiError('conflict', 'The proposal is over.');
+        // Everyone in the prompt sees who has answered.
+        if (outcome === 'recorded') await sendProposal(this.db, queueNotifier, params.proposalId);
         return {};
+      },
+
+      'queue.update': async (connection, raw) => {
+        const params = raw as RealtimeParams<'queue.update'>;
+        const outcome = await updateTicket(
+          this.db,
+          connection.requireAccount().id,
+          params.ticketId,
+          params.allowAiOpponent,
+        );
+        if (outcome === 'not_found') throw apiError('not_found', 'No such queue ticket.');
+        if (outcome === 'not_waiting')
+          throw apiError('conflict', 'The ticket is no longer waiting.');
+        return {};
+      },
+
+      'match.rematch': async (connection, raw) => {
+        const params = raw as RealtimeParams<'match.rematch'>;
+        const account = connection.requireAccount();
+        const result = await rooms.rematch(
+          account,
+          this.requireSim(connection),
+          params.matchId,
+          params.regions,
+        );
+        if (result.created) {
+          for (const accountId of result.others) {
+            await this.options.hub.publish({
+              t: 'event',
+              to: { account: accountId },
+              event: 'match.rematchOffered',
+              data: {
+                matchId: params.matchId,
+                roomId: result.room.id,
+                code: result.room.code,
+                host: account.display_name,
+              },
+            });
+          }
+        }
+        return { room: result.room };
       },
 
       'match.reconnect': async (connection, raw) => {

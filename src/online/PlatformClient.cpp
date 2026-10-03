@@ -2,6 +2,7 @@
 #include "PlatformClient.h"
 #include "InstanceConfig.h"
 #include "NetTransport.h"
+#include "PlatformApi.h"
 
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>
@@ -75,7 +76,11 @@ struct PlatformClient::RestCall
 	std::function<void(const Response &, int)> done;
 	bool bearer = false;
 	bool retried = false;
+	// Keep the response bytes (restRaw).
+	bool raw = false;
 	std::uint64_t epoch = 0;
+	// For cancelRequest; 0 for the client's own calls.
+	RequestId id = 0;
 };
 
 PlatformClient::PlatformClient(InstanceConfig &config, ClientOptions options,
@@ -98,6 +103,7 @@ PlatformClient::~PlatformClient()
 	outbox.clear();
 	restCalls.clear();
 	awaitingToken.clear();
+	instanceWaiters.clear();
 	if (transport)
 		transport->close();
 }
@@ -108,6 +114,7 @@ void PlatformClient::start(const std::string &origin)
 {
 	if (running)
 		stop();
+	resetInstanceInfo();
 	instance = origin;
 	running = true;
 	++epoch;
@@ -152,7 +159,14 @@ void PlatformClient::stop()
 	signIn = {};
 	handoffResumeToken.clear();
 	handoffRequest.reset();
+	resetInstanceInfo();
 	changed();
+}
+
+void PlatformClient::replaceEnvironment(ClientEnvironment environment)
+{
+	stop();
+	env = std::move(environment);
 }
 
 std::int64_t PlatformClient::retryInMs() const
@@ -189,6 +203,7 @@ void PlatformClient::saveConfig()
 void PlatformClient::update()
 {
 	pumpRest();
+	deliverInstanceInfo();
 	if (!running)
 		return;
 	const auto now = env.now();
@@ -543,6 +558,53 @@ void PlatformClient::cancelRequest(RequestId id)
 				 outbox.end());
 	if (handoffRequest == id)
 		handoffRequest.reset();
+	if (id == 0)
+		return;
+	for (auto *list : {&restCalls, &awaitingToken})
+		for (auto i = list->begin(); i != list->end(); ++i)
+			if ((*i)->id == id)
+			{
+				if ((*i)->fetch)
+					(*i)->fetch->cancel();
+				list->erase(i);
+				break;
+			}
+	instanceWaiters.erase(std::remove_if(instanceWaiters.begin(), instanceWaiters.end(),
+										 [id](const auto &waiter) { return waiter.first == id; }),
+						  instanceWaiters.end());
+}
+
+std::size_t PlatformClient::pendingCalls() const
+{
+	std::size_t count = instanceWaiters.size();
+	for (const auto &[wire, request] : inFlight)
+		count += !request.internal;
+	for (const auto &request : outbox)
+		count += !request.internal;
+	for (const auto *list : {&restCalls, &awaitingToken})
+		for (const auto &call : *list)
+			count += call->id != 0 && call->id != instanceFetch;
+	return count;
+}
+
+bool PlatformClient::pending(RequestId id) const
+{
+	if (id == 0)
+		return false;
+	for (const auto &[wire, request] : inFlight)
+		if (request.id == id)
+			return true;
+	for (const auto &request : outbox)
+		if (request.id == id)
+			return true;
+	for (const auto *list : {&restCalls, &awaitingToken})
+		for (const auto &call : *list)
+			if (call->id == id)
+				return true;
+	for (const auto &waiter : instanceWaiters)
+		if (waiter.first == id)
+			return true;
+	return false;
 }
 
 void PlatformClient::failAll(const std::string &code, const std::string &message)
@@ -661,8 +723,15 @@ void PlatformClient::pumpRest()
 		{
 			const auto &http = call->fetch->response();
 			status = http.status;
-			Json body = http.body.empty() ? Json::object()
-										  : Json::parse(http.body, nullptr, false);
+			const std::string type = http.header("Content-Type");
+			const bool json = !call->raw || type.empty() || type.find("json") != std::string::npos;
+			Json body = http.body.empty() || !json ? Json::object()
+												   : Json::parse(http.body, nullptr, false);
+			if (call->raw)
+			{
+				response.body = http.body;
+				response.contentType = type;
+			}
 			if (status >= 200 && status < 300)
 			{
 				response.ok = true;
@@ -695,8 +764,8 @@ void PlatformClient::pumpRest()
 	}
 }
 
-void PlatformClient::rest(HttpFetch::Method method, const std::string &path, Json body,
-						  ResponseHandler handler)
+PlatformClient::RequestId PlatformClient::rest(HttpFetch::Method method, const std::string &path,
+											   Json body, ResponseHandler handler)
 {
 	auto call = makeRest(method, path, body);
 	call->bearer = true;
@@ -705,27 +774,114 @@ void PlatformClient::rest(HttpFetch::Method method, const std::string &path, Jso
 		if (handler)
 			handler(response);
 	};
+	return submitRest(std::move(call));
+}
+
+PlatformClient::RequestId PlatformClient::restRaw(HttpFetch::Method method, const std::string &path,
+												  std::string body, const std::string &contentType,
+												  ResponseHandler handler,
+												  std::size_t responseLimit)
+{
+	std::string relative = path;
+	if (!instance.empty() && relative.rfind(instance + "/", 0) == 0)
+		relative = relative.substr(instance.size());
+	auto call = makeRest(method, relative, Json());
+	call->raw = true;
+	call->bearer = true;
+	call->request.responseLimit = responseLimit;
+	auto &headers = call->request.headers;
+	headers.erase(std::remove_if(headers.begin(), headers.end(),
+								 [](const auto &header)
+								 { return header.first == "Content-Type" || header.first == "Accept"; }),
+				  headers.end());
+	headers.emplace_back("Accept", "*/*");
+	call->request.body = std::move(body);
+	if (!call->request.body.empty() && !contentType.empty())
+		headers.emplace_back("Content-Type", contentType);
+	call->done = [handler = std::move(handler)](const Response &response, int)
+	{
+		if (handler)
+			handler(response);
+	};
+	return submitRest(std::move(call));
+}
+
+PlatformClient::RequestId PlatformClient::submitRest(std::unique_ptr<RestCall> call)
+{
 	if (!running)
 	{
 		call->done(localError("cancelled", "The online client is not running."), 0);
-		return;
+		return 0;
 	}
-	if (tokens.accessToken.empty())
+	call->id = nextRequest++;
+	const auto id = call->id;
+	if (call->bearer && tokens.accessToken.empty())
 	{
-		if (signingIn || refreshing)
+		if (!signingIn && !refreshing)
 		{
-			awaitingToken.push_back(std::move(call));
-			return;
+			call->done(localError("unauthenticated", "Not signed in."), 0);
+			return 0;
 		}
-		call->done(localError("unauthenticated", "Not signed in."), 0);
-		return;
+		awaitingToken.push_back(std::move(call));
+		return id;
 	}
 	startRest(std::move(call));
+	return id;
+}
+
+PlatformClient::RequestId PlatformClient::instanceInfo(ResponseHandler handler)
+{
+	const RequestId id = nextRequest++;
+	instanceWaiters.emplace_back(id, std::move(handler));
+	if (instanceAnswer || instanceFetch)
+		return id;
+	// Public: no token needed, so it does not wait for sign-in.
+	auto call = makeRest(HttpFetch::Method::Get, Api::instance(), Json());
+	const auto generation = instanceGeneration;
+	call->done = [this, generation](const Response &response, int)
+	{
+		if (generation != instanceGeneration)
+			return;
+		instanceFetch = 0;
+		if (response.ok && response.result.is_object())
+			instanceCache = response.result;
+		instanceAnswer = response;
+	};
+	instanceFetch = submitRest(std::move(call));
+	return id;
+}
+
+void PlatformClient::deliverInstanceInfo()
+{
+	if (!instanceAnswer || instanceWaiters.empty())
+		return;
+	const Response answer = *instanceAnswer;
+	// Failures are not cached: the next caller fetches again.
+	if (!answer.ok)
+		instanceAnswer.reset();
+	auto waiters = std::move(instanceWaiters);
+	instanceWaiters.clear();
+	for (auto &waiter : waiters)
+		if (waiter.second)
+			waiter.second(answer);
+}
+
+void PlatformClient::resetInstanceInfo()
+{
+	++instanceGeneration;
+	instanceFetch = 0;
+	instanceAnswer.reset();
+	instanceCache = Json();
+	auto waiters = std::move(instanceWaiters);
+	instanceWaiters.clear();
+	for (auto &waiter : waiters)
+		if (waiter.second)
+			waiter.second(localError("cancelled", "The online client stopped."));
 }
 
 void PlatformClient::refreshAccount(ResponseHandler handler)
 {
-	rest(HttpFetch::Method::Get, "/api/v1/accounts/me", Json(),
+	rest(HttpFetch::Method::Get, Api::accountMe(), Json(),
 		 [this, handler = std::move(handler)](const Response &response)
 		 {
 			 if (response.ok)
@@ -743,7 +899,7 @@ void PlatformClient::refreshAccount(ResponseHandler handler)
 
 void PlatformClient::rename(const std::string &displayName, ResponseHandler handler)
 {
-	rest(HttpFetch::Method::Patch, "/api/v1/accounts/me", Json{{"displayName", displayName}},
+	rest(HttpFetch::Method::Patch, Api::accountMe(), Json{{"displayName", displayName}},
 		 [this, handler = std::move(handler)](const Response &response)
 		 {
 			 if (response.ok)
@@ -819,7 +975,7 @@ void PlatformClient::guestSignIn(bool allowCreate)
 		body["deviceCredential"] = record.deviceCredential;
 	signingIn = true;
 	authState = Auth::SigningIn;
-	auto call = makeRest(HttpFetch::Method::Post, "/api/v1/auth/guest", body);
+	auto call = makeRest(HttpFetch::Method::Post, Api::authGuest(), body);
 	const auto started = epoch;
 	call->done = [this, withCredential, allowCreate, started](const Response &response, int status)
 	{
@@ -869,7 +1025,7 @@ void PlatformClient::refreshTokens()
 		signingIn = true;
 		authState = Auth::SigningIn;
 	}
-	auto call = makeRest(HttpFetch::Method::Post, "/api/v1/auth/refresh",
+	auto call = makeRest(HttpFetch::Method::Post, Api::authRefresh(),
 						 Json{{"refreshToken", record.refreshToken}});
 	const auto started = epoch;
 	call->done = [this, started](const Response &response, int status)
@@ -882,7 +1038,7 @@ void PlatformClient::refreshTokens()
 			if (response.ok)
 				if (auto issued = AuthTokens::fromJson(response.result))
 				{
-					auto revoke = makeRest(HttpFetch::Method::Post, "/api/v1/auth/sign-out",
+					auto revoke = makeRest(HttpFetch::Method::Post, Api::authSignOut(),
 										   Json{{"refreshToken", issued->refreshToken}});
 					startRest(std::move(revoke));
 				}
@@ -1005,7 +1161,7 @@ void PlatformClient::signInAsGuest()
 	record.autoSignIn = true;
 	if (!record.refreshToken.empty())
 	{
-		auto revoke = makeRest(HttpFetch::Method::Post, "/api/v1/auth/sign-out",
+		auto revoke = makeRest(HttpFetch::Method::Post, Api::authSignOut(),
 							   Json{{"refreshToken", record.refreshToken}});
 		startRest(std::move(revoke));
 	}
@@ -1022,7 +1178,7 @@ void PlatformClient::signOut()
 	auto &record = config.record(instance);
 	if (!record.refreshToken.empty())
 	{
-		auto revoke = makeRest(HttpFetch::Method::Post, "/api/v1/auth/sign-out",
+		auto revoke = makeRest(HttpFetch::Method::Post, Api::authSignOut(),
 							   Json{{"refreshToken", record.refreshToken}});
 		startRest(std::move(revoke));
 	}
@@ -1138,5 +1294,107 @@ void PlatformClient::resumeHandoff()
 					 changed();
 				 },
 				 0);
+}
+} // namespace Online
+
+namespace Online
+{
+// ------------------------------------------------------------------ scope
+
+PlatformScope::PlatformScope(PlatformClient &client)
+	: owner(&client), alive(std::make_shared<bool>(true))
+{
+}
+
+PlatformScope::~PlatformScope()
+{
+	cancelAll();
+}
+
+PlatformScope::RequestId PlatformScope::track(RequestId id)
+{
+	if (id == 0)
+		return id;
+	// Forget finished calls now and then so a long-lived owner stays small.
+	if (calls.size() >= 32)
+		calls.erase(std::remove_if(calls.begin(), calls.end(),
+								   [this](RequestId call) { return !owner->pending(call); }),
+					calls.end());
+	calls.push_back(id);
+	return id;
+}
+
+PlatformScope::RequestId PlatformScope::request(const std::string &method, Json params,
+												ResponseHandler handler, std::int64_t timeoutMs)
+{
+	return track(owner->request(method, std::move(params), guard(std::move(handler)), timeoutMs));
+}
+
+PlatformScope::RequestId PlatformScope::rest(HttpFetch::Method method, const std::string &path,
+											 Json body, ResponseHandler handler)
+{
+	return track(owner->rest(method, path, std::move(body), guard(std::move(handler))));
+}
+
+PlatformScope::RequestId PlatformScope::restRaw(HttpFetch::Method method, const std::string &path,
+												std::string body, const std::string &contentType,
+												ResponseHandler handler, std::size_t responseLimit)
+{
+	return track(owner->restRaw(method, path, std::move(body), contentType,
+								guard(std::move(handler)), responseLimit));
+}
+
+PlatformScope::RequestId PlatformScope::instanceInfo(ResponseHandler handler)
+{
+	return track(owner->instanceInfo(guard(std::move(handler))));
+}
+
+void PlatformScope::refreshAccount(ResponseHandler handler)
+{
+	owner->refreshAccount(guard(std::move(handler)));
+}
+
+void PlatformScope::rename(const std::string &displayName, ResponseHandler handler)
+{
+	owner->rename(displayName, guard(std::move(handler)));
+}
+
+PlatformScope::ListenerId PlatformScope::listen(const std::string &event, EventHandler handler)
+{
+	const auto id = owner->addListener(event, guard(std::move(handler)));
+	listeners.push_back(id);
+	return id;
+}
+
+PlatformScope::ListenerId PlatformScope::onStateChange(std::function<void()> handler)
+{
+	const auto id = owner->addStateListener(guard(std::move(handler)));
+	listeners.push_back(id);
+	return id;
+}
+
+void PlatformScope::cancel(RequestId id)
+{
+	owner->cancelRequest(id);
+	calls.erase(std::remove(calls.begin(), calls.end(), id), calls.end());
+}
+
+void PlatformScope::removeListener(ListenerId id)
+{
+	owner->removeListener(id);
+	listeners.erase(std::remove(listeners.begin(), listeners.end(), id), listeners.end());
+}
+
+void PlatformScope::cancelAll()
+{
+	// A fresh token: handlers already handed out stay dead, later ones live.
+	*alive = false;
+	alive = std::make_shared<bool>(true);
+	for (auto id : calls)
+		owner->cancelRequest(id);
+	for (auto id : listeners)
+		owner->removeListener(id);
+	calls.clear();
+	listeners.clear();
 }
 } // namespace Online

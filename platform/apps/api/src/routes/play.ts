@@ -9,17 +9,26 @@ import {
   simVersionKey,
   type InviteInfo,
   type MapUpload,
+  type RelayRegionList,
   type RoomList,
   type SavedPlayer,
+  type SimVersion,
 } from '@glob2/protocol';
-import { MAP_CONTENT_TYPE, SAVE_CONTENT_TYPE, insertBlob, storedSimVersion } from '@glob2/worker';
+import {
+  MAP_CONTENT_TYPE,
+  SAVE_CONTENT_TYPE,
+  insertBlob,
+  relayRegions,
+  storedSimVersion,
+} from '@glob2/play';
 import { supportedSimVersions } from '../app.ts';
 import { apiError } from '../errors.ts';
-import { WindowCounter } from '../http/validate.ts';
+import { SharedLimit, enforce } from '../http/rateLimits.ts';
 import { authenticate, requireAccount, type Identity } from '../identity.ts';
 import { mapUrl } from '../play/assignments.ts';
 import type { RoomService } from '../play/rooms.ts';
 import { catalogAllowsMapBlob } from '../maps/catalog.ts';
+import { checkedUpload, newestSimVersion } from '../maps/upload.ts';
 
 const SHA256 = /^[0-9a-f]{64}$/;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
@@ -67,9 +76,9 @@ export async function playRoutes(
   rooms: RoomService,
 ): Promise<void> {
   const { services } = app;
-  const { db, blobs, jobs } = services;
+  const { db, blobs } = services;
   const origin = services.config.publicOrigin;
-  const uploads = new WindowCounter(UPLOADS_PER_HOUR, 3_600_000);
+  const uploads = new SharedLimit(db, 'upload', UPLOADS_PER_HOUR, 3_600_000);
 
   function uploadView(row: UploadRow, size: number): MapUpload {
     const simVersion = storedSimVersion(row.sim_version);
@@ -92,6 +101,14 @@ export async function playRoutes(
       createdAt: row.created_at.toISOString(),
     };
   }
+
+  // ------------------------------------------------------------------ relays
+
+  // Public: clients time these before queue.join and room.create (no account needed).
+  app.get('/api/v1/relays/regions', async (_request, reply): Promise<RelayRegionList> => {
+    reply.header('Cache-Control', 'no-store');
+    return { items: await relayRegions(db) };
+  });
 
   // ------------------------------------------------------------------ rooms
 
@@ -139,22 +156,27 @@ export async function playRoutes(
       if (format !== 'map' && format !== 'save') {
         throw apiError('bad_request', 'format must be map or save.');
       }
-      const simVersion = parseSimVersionKey(request.query.simVersion ?? '');
-      if (!simVersion) throw apiError('bad_request', 'simVersion (a sim version key) is required.');
       const served = await supportedSimVersions(db);
-      if (!served.some((v) => sameSimVersion(v, simVersion))) {
-        throw apiError('update_required', 'This instance cannot validate files of that version.');
+      let simVersion: SimVersion | undefined;
+      if (request.query.simVersion !== undefined) {
+        simVersion = parseSimVersionKey(request.query.simVersion);
+        if (!simVersion) throw apiError('bad_request', 'simVersion must be a sim version key.');
+        const asked = simVersion;
+        if (!served.some((v) => sameSimVersion(v, asked))) {
+          throw apiError('update_required', 'This instance cannot validate files of that version.');
+        }
+      } else {
+        // The web app checks a file before creating a catalog map with it: the newest engine.
+        simVersion = newestSimVersion(served);
+        if (!simVersion)
+          throw apiError('unavailable', 'No engine agent can check files right now.');
       }
       const fileName = request.query.fileName?.slice(0, 255);
-      const bytes = request.body;
-      if (!(bytes instanceof Buffer) || bytes.length === 0) {
-        throw apiError(
-          'bad_request',
-          'Send the file as the request body (Content-Type: application/octet-stream).',
-        );
-      }
-      if (!uploads.take(account.id))
-        throw apiError('rate_limited', 'Too many uploads; wait a while.');
+      // The quota is taken before the file is unpacked, so a flood of
+      // compressed files costs the sender, not the server.
+      await enforce(uploads, account.id, reply, 'Too many uploads; wait a while.');
+      // Unpacked when gzip (.map.gz): the stored bytes are the ones the game loads.
+      const bytes = await checkedUpload(request.body, format, simVersion.versionMinor);
       const sim = simVersionKey(simVersion);
       const stored = await putContent(blobs, bytes);
       await insertBlob(
@@ -225,7 +247,7 @@ export async function playRoutes(
       }
       let row: UploadRow = inserted;
       if (!known) {
-        const jobId = await submitEngineJob(db, jobs, {
+        const jobId = await submitEngineJob(db, {
           kind: 'validate-map',
           simVersion,
           payload: { blobHash: key.blob, format },

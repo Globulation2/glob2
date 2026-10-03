@@ -12,6 +12,8 @@
 #include <string>
 #include <vector>
 
+#include <nlohmann/json.hpp>
+
 #include "MatchRecord.h"
 #include "TicketVerifier.h"
 
@@ -39,7 +41,10 @@ namespace Relay
 	/// RelayMatchEnded.reason.
 	enum class EndReason
 	{
-		Completed, ///< a client reported the game finished (Quit reason GameFinished)
+		/// The players agree the game is over: every human seat still in the match when
+		/// the first left with Quit(GameFinished) left that way too
+		/// (TurnSequencer::gameDecided). Advisory: the verifier decides the result.
+		Completed,
 		Abandoned, ///< every human left without a finished game
 		Aborted,   ///< the relay ended the match: drain timeout, shutdown or error
 	};
@@ -53,6 +58,9 @@ namespace Relay
 		std::int64_t startedAt = 0; ///< Unix seconds
 		std::int64_t endedAt = 0;
 		EndReason reason = EndReason::Abandoned;
+		/// RelayNetworkSummary v1 (TurnSequencer::networkSummary()), sent as the optional
+		/// `network` member; null leaves it out.
+		nlohmann::json network;
 	};
 
 	/// Builds RelayMatchEnded from the finished record and its serialized bytes.

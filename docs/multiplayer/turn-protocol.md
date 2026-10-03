@@ -25,10 +25,19 @@ opaque bytes. The only exceptions are the few order type ids in the
 
 - The relay owns the clock. Tick `t` starts `t × 40 ms` after the match starts
   (25 ticks/s, or `tickRateMilliHz / 1000` ticks per second).
-- Each human order gets an explicit **execution tick** from the relay when it arrives.
-  That tick is normally the one after the current relay tick. Each seat gets at most one
-  order per tick, and later orders from that seat queue onto later ticks.
-- Every `bundleInterval` ticks (2), the relay broadcasts a `TurnBundle` covering
+- **Load barrier.** Clients connect once they have loaded the game, so the match
+  starts when every human seat has said `Hello`: until then the relay sends no bundle,
+  answers `Welcome` with `relayTick` 0 and runs no grace. After
+  `SequencerConfig::startBarrierMicros` (the online relay's
+  `GLOB2_RELAY_LOAD_WAIT_SECONDS`, 60 s by default) the clock starts anyway; a seat
+  still loading then shows as not connected and joins late under the reconnect grace,
+  counted from the start. The LAN host gets the same barrier by creating its sequencer
+  only after every `Hello` (`LanHost::Options::loadWaitMicros`). The barrier changes
+  no message and nothing a client simulates.
+- Each human order gets an explicit **execution tick** from the relay when it arrives:
+  the earliest tick it has not yet broadcast. Each seat gets at most one order per tick,
+  and later orders from that seat queue onto later ticks.
+- Every `bundleInterval` ticks (1 by default), the relay broadcasts a `TurnBundle` covering
   `[fromTick, horizonTick)`, even when it is empty. The bundle authorizes clients to
   execute every tick below `horizonTick`. A seat with no entry at a tick executes a
   `NullOrder` there.
@@ -70,12 +79,29 @@ disconnected. The limits come from `TurnProtocol.h`:
 | Order bytes per tick | 30,000 | A bundle of two ticks always fits one frame |
 | Seats | 0–31 | The engine's waiting mask is 32 bits |
 
-`TURN_PROTOCOL_VERSION` (currently 1) is carried in `Hello` and `Welcome`. The relay
-rejects a client whose protocol version differs. The relay does not compare simulation
+`TURN_PROTOCOL_VERSION` (currently 2) is carried in `Hello` and `Welcome`. A relay
+accepts every version from `MIN_PROTOCOL_VERSION` (1) to its own and answers `Welcome`
+in the client's version. It rejects anything outside that range. Version 2 adds
+`SeatLatency`, which the relay sends only to version-2 clients. A version-2 client
+that an older relay refuses with `Reject(1)` offers version 1 once before giving up. The relay does not compare simulation
 versions: that comparison happens on the platform, which issues tickets only for one
 sim version per match. A protocol change that alters any encoding bumps
 `TURN_PROTOCOL_VERSION`. A change that keeps the encodings but alters relay behaviour
 that clients depend on also bumps it.
+
+Clients do not depend on which tick the relay picks for an order (only that it is at
+or above the horizon), on the bundle interval (it comes in `Welcome`), or on how they
+size their own buffer. The latency changes described under
+[timing](#timing-model-and-per-client-delay) therefore kept version 1: a client and a
+relay from either side of them play together, with the older side's delay.
+
+[Order pacing](#order-pacing), the relay dropping a flood instead of refusing the
+client, the stricter rule for a [decided game](#presence-reconnect-and-grace) and the
+relay's wake scheduling also kept version 2: no encoding changed, and no client relied
+on the old behaviour. An older client against a newer relay keeps its seat when it
+floods (it loses the orders beyond the limit); a newer client against an older relay
+paces its orders, so it never floods, and treats a `Reject(7)` that still arrives (the
+relay's frame-rate limit) as a lost connection and reconnects.
 
 ## Messages
 
@@ -95,6 +121,7 @@ C→R is client to relay, R→C is relay to client.
 | `0xA9` | `Quit` | C→R | `u8 reason` |
 | `0xAA` | `Ping` | C→R | `u32 nonce`, `u32 executedTick` |
 | `0xAB` | `Pong` | R→C | `u32 nonce`, `u32 relayTick`, `u32 lastClientSequence` |
+| `0xAC` | `SeatLatency` (v2) | R→C | `u8 count`, `count × (u8 seat, u32 rttMicros)` |
 
 Field rules that the decoder enforces:
 
@@ -103,6 +130,7 @@ Field rules that the decoder enforces:
   satisfies `fromTick ≤ tick < horizonTick` and `seat < 32`, and every order is 1–4,096
   bytes.
 - `Presence`: seats are below 32, unique and ascending; the state is a known value.
+- `SeatLatency`: seats are below 32, unique and ascending.
 - `Welcome`: `seat < 32`, the seat is in `humanSeatMask`, `bundleInterval ≥ 1`,
   `checksumInterval ≥ 1` and `tickRateMilliHz > 0`.
 - `Reject.reason`, `DesyncNotice.verdict` and `Quit.reason` must be known values.
@@ -188,8 +216,37 @@ checked.
 | rejected | no unmodified client sends it | another team's buildings or alliances, another player's quit, a worker count above 20, an unplaceable building type, an off-map flag position, an unknown brush mode or message type, an `AdjustLatency`, undecodable bytes |
 
 The rules per order type are in `OrderValidation.cpp`. Pause orders stay allowed for
-every player, as in legacy games. Voice packets are checked (at most 128 frames) and
-the mixer drops packets beyond about ten seconds of backlog per player.
+every player, as in legacy games, unless the match has a [pause limit](#pause-limit).
+Voice packets are checked (at most 128 frames) and the mixer drops packets beyond about
+ten seconds of backlog per player.
+
+### Pause limit
+
+A MatchSetup may carry `pauseLimit: {pauses, seconds}`. The platform sets
+`{pauses: 3, seconds: 60}` for every queue match (quick and rated); rooms and LAN
+games have none, and pausing there is unlimited, as before. With a limit, each human
+seat may start at most `pauses` pauses and keep the game paused for at most `seconds`
+in total (counted in executed ticks, which keep running while paused: 60 s is 1,500
+ticks). Any player may resume at any time, and a pause another seat started costs the
+resuming player nothing.
+
+`TurnLockstepSession` keeps the bookkeeping from the orders it executes, so every
+client and `--verify-match` agree on it:
+
+- A seat's `PauseGameOrder(true)` while the game runs starts a pause and counts one of
+  that seat's pauses. With none left, or no time left, it executes as a `NullOrder`
+  (verdict `stale`, reason `pause_limit`) and the player sees "You have no pauses left
+  in this match". A pause while already paused changes nothing and costs nothing.
+- Every tick executed while paused counts against the seat whose pause is running.
+- When that seat's time is used up, the engine executes `PauseGameOrder(false)` for it
+  right after that tick's orders (`takeForcedResume`), and every player sees "%0 has
+  used all their pause time: the game resumes". The resume is in the replay like any
+  pause order.
+- The bookkeeping restarts with the order audit when the engine reloads the initial
+  state, and is rebuilt from the replayed orders.
+
+Clients from before this rule refuse a setup with `pauseLimit` (MatchSetup allows no
+unknown properties), so they can never play a limited match without it and diverge.
 
 The session counts verdicts per seat (`TurnLockstepSession::orderAudit()`: accepted,
 stale, rejected, per-reason counts and the first rejected tick). The counts restart when
@@ -203,57 +260,140 @@ Executors that a hostile order could stop with an assert or an out-of-range inde
 order instead. This only changes what invalid orders do, so legacy games and replays
 of valid orders run as before.
 
+### Order pacing
+
+The relay gives each seat at most one order per tick (below), 25 a second. The
+engine hands `TurnSession` every order the GUI queues, every frame. A flag drag adds
+a move for every cell the pointer crosses, about 100 a second, and a held key repeats
+about 30 times a second. Sent as they come, those orders queued up at the relay
+behind each other, a 10 s drag built about 10 s of input delay, and from 250 ticks of
+backlog the relay refused the client and threw the player out of the match. The
+session therefore paces and coalesces its own orders:
+
+- **Credit.** It sends at most what the relay sequences: a credit of `orderBurst` (4)
+  orders, refilled at one per tick. A click that makes a few orders at once still sends
+  them all at once. Orders resent after a reconnect use the credit too.
+- **Latest wins.** Orders beyond the credit wait in a local queue. A queued order whose
+  effect is an absolute setting replaces a waiting one with the same target, and takes
+  its place at the back: a flag move (keeping the drop of the replaced one, since a
+  drop also refreshes the flag's gradients), a worker count, a flag range, a clearing
+  flag's resources, a minimum unit level, swarm ratios, market exchanges, a priority,
+  and the pause state. The intermediate values never reach the relay, so a drag sends
+  the flag's latest position once per tick, and the player sees the flag follow the
+  pointer with the usual delay. Orders that must all execute (creating, deleting and
+  upgrading buildings, brush strokes, which are already one order per stroke, chat,
+  alliances, map marks) wait their turn unmerged.
+- **Bounded queue.** The queue holds at most `maxQueuedOrders` (250, ten seconds) of
+  them; beyond it a new order is dropped. While more than a second of orders waits, or
+  for two seconds after a drop, the HUD shows "Too many actions: some are still
+  waiting to be sent" (`TurnSession::tooManyActions()`).
+- **Voice.** Voice packets have their own queue of at most 8 (the oldest is dropped).
+  A packet goes out only when no gameplay order waits, and at most one every
+  `voiceGapTicks` (3) ticks, so talking delays a command by at most the packet already
+  on its way.
+
+Coalescing happens only for orders that have not been sent, so it never changes what
+the relay has sequenced, and every client still executes exactly the relay's log. The
+GUI's own `queueFlagMove` coalescing works the same way inside the GUI queue, which a
+turn game drains every frame.
+
 ## Tick assignment
 
-When an order arrives at relay tick `R`, the relay assigns it to tick `t`, the smallest
-value that satisfies all of these:
+When an order arrives, the relay assigns it to tick `t`, the smallest value that
+satisfies all of these:
 
-- `t ≥ R + 1`, so the order lands after the tick in progress;
 - `t ≥ sentHorizon`, so it never lands in a tick already authorized;
 - `t ≥ nextFreeTick[seat]`, so a seat gets at most one order per tick;
 - `bytes[t] + size ≤ 30,000`.
 
-Then `nextFreeTick[seat] = t + 1`. A seat whose queue reaches more than 250 ticks
-(10 s) ahead of `R` is flooding: its order is dropped and the connection closed with
-`Reject(7)`. A client that keeps to the engine's rate of one order per tick never gets
-near this limit.
+Then `nextFreeTick[seat] = t + 1`. The relay's own clock plays no part: no client can
+run a tick before the relay broadcasts a horizon above it, so the first unbroadcast
+tick is the earliest safe one, and it rides in the very next bundle. (The first
+version also required `t ≥ R + 1`, where `R` is the relay tick in progress. With
+bundles every tick that is the same tick; with longer intervals or a coarse relay
+timer it cost up to `bundleInterval` ticks.) A seat whose queue reaches more than 250
+ticks (10 s) ahead of `R` is flooding: the order is dropped and counted
+(`flood_rejections` in the relay's network summary), and the connection stays open. A
+dropped order never enters a bundle, so every client still executes the same log. A
+paced client never gets near this limit; before pacing, a long drag reached it, and
+the relay then closed the connection with `Reject(7)`, which ended the match for that
+player.
 
 ### Bundles
 
-`update(now)` computes `R = floor(elapsed × tickRate)`. Every tick up to `R` is closed,
-because new orders always land at `R + 1` or later. When `R + 1 − sentHorizon ≥
+`update(now)` computes `R = floor(elapsed × tickRate)`. When `R + 1 − sentHorizon ≥
 bundleInterval`, the relay emits a bundle `[sentHorizon, R + 1)` with every pending
 entry below `R + 1`, and sets `sentHorizon = R + 1`. A bundle is split at tick
 boundaries when it would exceed 60,000 bytes. The per-tick byte budget means a single
 tick always fits.
 
+The default `bundleInterval` is 1: a bundle every tick, 25 per second. An empty bundle
+is 11 bytes before framing, so this costs well under 2 KB/s per client, and it removes
+up to a tick of waiting for every order and a tick of buffer (see below). Longer
+intervals still work. Flushing a bundle early when an order arrives would not help:
+the client's buffer has to cover the longest gap between bundles anyway, so an early
+bundle only arrives early, not executes early.
+
+`nextBundleMicros()` is when the next bundle is due. A host should call `update()` at
+that moment rather than on a coarse timer: a timer of `T` ms delays each bundle by up
+to `T`, which the clients see as jitter. The LAN host updates every millisecond; the
+online relay sets its match timer to `nextBundleMicros()` ([relay](relay.md)).
+
 ## Timing model and per-client delay
 
-Let `P` be the tick period (40 ms) and `B` the bundle interval (2). The relay emits
-horizon `H` at roughly time `(H − 1) × P`, measured from match start.
+Let `P` be the tick period (40 ms) and `B` the bundle interval. The relay emits horizon
+`H` at time `(H − 1) × P` after match start, on a tick boundary.
+
+### Input delay
+
+An order clicked on a client goes through these stages before that client executes it
+(`test/TurnLatencyTrace.h` measures each one):
+
+| Stage | Typical | What sets it |
+| --- | --- | --- |
+| Pickup | ½ frame (≈ 20 ms) | The GUI queues the order; the next engine step hands every queued order to the session |
+| Uplink | one-way latency | `addLocalOrder` sends and flushes at once |
+| Relay wait | ½ tick, plus up to `B − 1` ticks | The order waits for the next bundle boundary |
+| Downlink | one-way latency | Bundles are read every `TURN_POLL_MS` (5 ms) between engine steps |
+| Buffer wait | the client's margin | The client's schedule runs behind the horizon by its buffer |
+
+With `B = 1` and a steady link the total is about one round trip plus 1–1.5 ticks plus
+pickup. The buffer is the term the client controls.
+
+### Jitter estimate
 
 On each live bundle arrival at local time `a`, the client records the offset
 `o = a − H × P`. Bundles that replay the log after a `Welcome` or a resync are not
 live: a bundle counts only if its horizon is above both `Welcome.relayTick + 1` and
 every horizon seen before it. The offset equals a constant (one-way latency plus the
-unknown clock offset) plus the jitter on that path. `JitterEstimator` keeps the last 128 offsets
-(about 10 s) and reports:
+unknown clock offset) plus the jitter on that path. `JitterEstimator` keeps the last 128
+offsets (about 5 s at one bundle per tick) and reports:
 
 - `jitter = p95(o) − min(o)`, the 95th-percentile delay above the fastest delivery in
   the window. Using a minimum within the window, rather than over all time, absorbs
   clock drift over a long match.
 
+The arrival time is when the session reads the frame, so the engine reads the
+connection between its steps (`Engine::pollTurnSession`, at most `TURN_POLL_MS` = 5 ms
+apart). Reading it only once per frame would round every arrival up to the next
+frame, and a client's own speed changes would then look like jitter.
+
+### Buffer target
+
 `JitterBuffer` turns jitter into a target buffer level, measured in ticks of
-authorized-but-unexecuted work (`horizon − executedTick`):
+authorized-but-unexecuted work (`horizon − executedTick`, sampled after each tick):
 
 ```
-required = ceil(jitter / P) + ceil(B / 2) + safetyTicks      (safetyTicks = 1)
-required = clamp(required, minTarget = 2, maxTarget = 50)
+required = 0                                   if jitter ≤ tolerance (10 ms)
+required = ceil(jitter / P) + safetyTicks      otherwise (safetyTicks = 1)
+required = clamp(required, minTarget = 0, maxTarget = 50)
 ```
 
-The `B / 2` term is the mean of the sawtooth the bundle interval creates: the buffer
-level jumps by `B` on every arrival and drains by one each tick. Hysteresis keeps the
-target from oscillating:
+A target of 0 means the client runs one tick behind the horizon it has received: the
+bundle for tick `t` arrives during tick `t − 1`'s frame. Jitter within the tolerance
+needs no buffer, because the engine absorbs it as a stall of the same size and then
+moves its schedule (see [pacing](#the-engine-loop)). Hysteresis keeps the target from
+oscillating:
 
 - **Up:** when `required > target`, the target rises to `required` at once. Stalls are
   worse than a little extra delay.
@@ -262,12 +402,17 @@ target from oscillating:
   baseline at no more than one tick (40 ms) per 5 s once jitter subsides. Any update
   in which `required ≥ target` cancels the hold.
 
+### Rate control
+
 `DelayController` holds the buffer at the target by nudging the client's tick rate. It
-keeps an exponential moving average of the buffer level, sampled once per executed
-tick with α = 0.05 (a time constant of about 20 ticks, or 0.8 s):
+keeps an exponential moving average of the buffer level with a time constant of about
+20 ticks (0.8 s). With `B > 1` the level saws between `L` and `L + B − 1` as bundles
+arrive, so the controller first averages each bundle period (the mean of a whole period
+does not depend on where it starts), feeds those means to the average with the same
+per-tick time constant, and aims at `target + (B − 1) / 2`:
 
 ```
-error      = ema − target
+error      = ema − target − (B − 1) / 2
 error      = 0                                 if |error| ≤ 0.5   (deadband)
 multiplier = 1 + clamp(0.02 × error, −0.05, +0.05)
 interval   = P / multiplier
@@ -284,16 +429,77 @@ the `MAX_CATCHUP_MS` cap lifted. Catch-up ends when the buffer drops to `target 
 the moving average is reset to the current level. A reconnect or resync from tick 0
 always starts in catch-up.
 
-The input delay a player feels is therefore their own round trip, plus about one tick
-of assignment, plus up to `B` ticks of bundle wait, plus their own buffer. It no longer
-depends on the worst connection in the match.
+**Stalls.** `TurnSession::stallStats()` counts the times the engine wanted to run a tick
+the relay had not yet authorized (outside catch-up and reloads), their total length, and
+the long ones (over half a tick), which are visible hitches.
+
+### Measured delay
+
+Click (or submission) to execution, before and after the latency work (relay assigns
+the first unbroadcast tick, one-tick bundles by default, orders flushed at once, the
+buffer target and schedule changes above, connection polling between frames).
+
+Simulated network (`TurnHarness`, "input delay and stalls per link profile"): two
+humans and an AI, submission to execution, 60 s per run, five network seeds per row.
+
+Before, LAN used one-tick bundles and online relays two-tick bundles; after, both use
+one. Delay is mean / p95 in ms; stalls are counted over the five 60 s runs (long: over
+half a tick).
+
+| Measured link (one way) | Before, 1-tick bundles | Before, 2-tick bundles | After | Stalls before (1 / 2-tick) | Stalls after |
+| --- | --- | --- | --- | --- | --- |
+| loopback | 120 / 120 | 160 / 160 | 40 / 40 | 0 / 0 | 0 |
+| 15 ms | 160 / 160 | 160 / 160 | 80 / 80 | 0 / 0 | 0 |
+| 25 ms | 160 / 160 | 200 / 200 | 80 / 80 | 0 / 0 | 0 |
+| 50 ms | 200 / 200 | 240 / 240 | 120 / 120 | 0 / 0 | 0 |
+| 30 ms, 80 ms jitter | 346 / 376 | 367 / 400 | 299 / 320 | 0 / 0 | 0 |
+| 60 ms, 80 ms jitter | 407 / 440 | 425 / 472 | 358 / 400 | 0 / 0 | 0 |
+| 30 ms, 80 ms jitter, 3% loss | 515 / 607 | 499 / 599 | 476 / 559 | 0 / 7 (3 long, 170 ms) | 1 (10 ms) |
+| 120 ms, 3% loss | 561 / 617 | 554 / 651 | 509 / 590 | 0 / 17 (12 long, 495 ms) | 4 (35 ms) |
+
+Add about half a frame (20 ms) of pickup for a click. Real engines on the same
+simulated network (`TurnEngineHarness`, "input delay and stalls of real engines per
+link profile"; click to execution, where the bot's click waits a whole tick for
+pickup; before is the then-default two-tick bundles):
+
+| Measured link (one way) | Before | After | Stalls before | Stalls after |
+| --- | --- | --- | --- | --- |
+| 15 ms | 240 / 240 | 120 / 120 | 0 | 0 |
+| 50 ms | 320 / 320 | 200 / 200 | 0 | 0 |
+| 60 ms, 80 ms jitter | 466 / 480 | 409 / 440 | 0 | 0 |
+| 120 ms, 3% loss | 621 / 680 | 537 / 600 | 0 | 1 (5 ms) |
+| 120 ms, 20 ms jitter, 3% loss | 675 / 795 | 606 / 640 | 0 | 0 |
+
+LAN, real engines over loopback WSS (`LanMatchHarness`, "LAN input delay ..."): host
+and one guest, FourSquares1 with a Nicowar AI, clicks at random moments, 25 s per run,
+macOS arm64 on a shared, loaded machine (real-time numbers vary by a tick or so from
+run to run).
+
+| Guest link (one way) | Bundles | Host before | Host after | Guest before | Guest after |
+| --- | --- | --- | --- | --- | --- |
+| loopback | 1 tick (LAN) | 197 / 238 | 140 / 162 | 279 / 383 | 193 / 241 |
+| +25 ms | 1 tick (LAN) | 237 / 289 | 149 / 201 | 274 / 318 | 221 / 262 |
+| +50 ms | 1 tick (LAN) | 281 / 347 | 140 / 160 | 455 / 505 | 261 / 292 |
+| loopback | 2 ticks | 369 / 568 | 163 / 197 | 365 / 620 | 194 / 257 |
+| +50 ms | 2 ticks | 248 / 298 | 159 / 197 | 378 / 434 | 250 / 309 |
+
+No run stalled more than once. On that machine (load average around 60 on 8 cores)
+the engines' threads were descheduled often enough that every client measured over
+10 ms of jitter and held a two-tick buffer. In a quieter run of the same code (load
+about 25), the host held no buffer and measured 59 / 76 ms on loopback, and the guest
+87 / 144 ms on loopback and 164 / 262 ms at +50 ms.
 
 ## Presence, reconnect and grace
 
 The relay keeps a presence state per human seat and broadcasts a full `Presence`
 snapshot when any state changes, and at least every 25 ticks. `lagTicks` is
-`R − executedTick` from the seat's last `Ping`. A connected seat whose lag exceeds 50
-ticks (2 s) is shown as lagging.
+`R − executedTick` when the seat's last `Ping` arrived. Once no `Ping` has come for a
+second (clients ping every 500 ms), the extra time counts as lag. A connected seat whose
+lag exceeds 50 ticks (2 s) is shown as lagging. Version-2 clients also receive
+`SeatLatency` with every `Presence`: each connected human seat's round trip as the
+relay measures it on its transport (the online relay's WebSocket ping, smoothed with
+weight ¼; 0 when not measured, as on a LAN host). The connection panel shows it as
+Ping ([connection quality](connection-quality.md)).
 
 - A seat starts as not yet connected. When its transport closes, it becomes
   reconnecting.
@@ -304,6 +510,18 @@ ticks (2 s) is shown as lagging.
 - A left seat cannot reconnect: its `Hello` is refused with `Reject(4)`.
 - The match is over when every human seat has left. The relay then closes the match and
   produces the match record.
+- A client's `Quit(GameFinished)` is a claim, not a verdict: one client cannot end the
+  match for the others or shorten their grace. The relay counts the match as decided
+  (`gameDecided()`, and the report says `completed`) only when every human seat still
+  in the match at the first such claim has also left with `GameFinished`. Seats that
+  left before the first claim (resigned, or out of grace) do not need to agree. A seat
+  that lost its connection when another claimed the end keeps its full grace: it can
+  come back, see the end itself and leave with `GameFinished`, or come back and play
+  on if the claim was false. If it never returns, the match ends when its grace runs
+  out and is reported `abandoned`. The verifier, not the claim, decides the result.
+  (Before this rule, a single claim ended the match as soon as nobody was connected,
+  quitting the seats in grace at once, so one player could cut an opponent's reconnect
+  short and have the match reported as completed.)
 
 Other clients keep running throughout. The absent seat simply sends no orders, so its
 colony keeps acting on its own.
@@ -349,7 +567,7 @@ single player and the legacy games:
 
 | Engine call | `TurnSession` behaviour |
 | --- | --- |
-| `addLocalOrder` | Encodes and submits a human order; null and latency orders are ignored |
+| `addLocalOrder` | Encodes, submits and flushes a human order; null and latency orders are ignored |
 | `pushOrder(order, p, isAI)` | Queues a locally computed AI order, as today |
 | `advanceStep(checksum)` | Sends `ChecksumReport` when the executed tick is a multiple of `checksumInterval` |
 | `tickReady` (`allOrdersReceived`) | The next tick is below the horizon and every AI seat has its order |
@@ -385,15 +603,34 @@ the session (presence, latency, buffer) for a connection HUD.
 
 `Engine::stepSession` calls `pumpTurnSession` before gathering orders:
 
-- `TurnSession::update(now)` pumps the transport and timers every frame.
+- `TurnSession::update(now)` pumps the transport and timers every frame. Between
+  steps, the host loop calls `Engine::pollTurnSession` at least every `TURN_POLL_MS`
+  (5 ms; `sessionPollDelay()` caps the host's sleep), which only reads the connection.
+  A turn game draws only after a step, so these polls draw nothing.
+- **Orders.** Each step hands every order the GUI has queued to the session, even while
+  waiting for a bundle, rather than one order per executed tick. The session sends them
+  at the rate the relay sequences them and merges waiting ones with the same target
+  ([order pacing](#order-pacing)). After the tick's orders the engine executes the
+  forced resume of a [pause limit](#pause-limit), if one is due.
 - **Pacing.** A turn game's tick duration is `tickIntervalMicros()`, rounded to
   milliseconds (38–42 ms around 40), even while paused, because the relay's clock keeps
   going. The pacing budget advances only when a tick ran, so frames spent waiting for a
   bundle poll every millisecond instead of sleeping a whole tick. Headless turn clients
   are paced too; only `sessionDelay()`'s caller decides whether to wait.
+- **After a stall.** When a tick runs after waiting for a bundle, the schedule moves
+  back by the wait, up to one tick, instead of running the owed ticks back to back. A
+  bundle a few milliseconds late then costs a hitch of that length once and becomes a
+  little more buffer, which the rate control drains; a longer wait still catches up
+  the rest at once.
 - **Catch-up.** While `tickIntervalMicros()` is 0, the loop uses the replay fast-forward
   preset (`REPLAY_FAST_FORWARD_MS`, drawing one frame in
-  `REPLAY_FAST_FORWARD_DRAW_RATIO`) and lifts the `MAX_CATCHUP_MS` cap.
+  `REPLAY_FAST_FORWARD_DRAW_RATIO`) and lifts the `MAX_CATCHUP_MS` cap. The screen host
+  (`GameSessionScreen`, which the browser and every online match use) runs as many
+  ticks per frame as fit in 30 ms while `Engine::turnFastForwarding()`, so the replay
+  is not capped at the frame rate. The catching-up card estimates the time left from
+  the rate at which the gap to the relay closes (replay rate minus match rate,
+  `CatchUpPace`); when the gap has not shrunk for 15 s it says the device cannot keep
+  up instead of showing a growing estimate. The card always offers Leave match.
 - **Reload.** When `needsReload()` is set (told to rejoin, or a resume the relay could
   serve only from tick 0), the engine reloads the initial state in place from the same
   map and `GameHeader`, restarts its replay and checksum sidecar, and calls
@@ -403,12 +640,23 @@ the session (presence, latency, buffer) for a connection HUD.
   request, and a flagged match (`desyncFlagged()`) is logged once; the verifier then
   decides the result. A refused client (`Rejected`) leaves the game.
 - **Leaving.** Tearing the session down (`finishSessionForHost`, `abortSession`) calls
-  `quit()`, with `GameFinished` once the game has ended for the local team and
-  `PlayerQuit` otherwise. The in-game Quit menu also submits the usual
-  `PlayerQuitsGameOrder`; the relay sequences it and marks the seat left.
+  `quit()`, with `GameFinished` once the game is decided (the end condition fired, or
+  the local colony won) and `PlayerQuit` otherwise, including for a colony that lost
+  while others play on. The relay connection stays open after the session is gone until
+  the `Quit` is written (at most 3 s; the shutdown screen waits for it), so closing the
+  window still tells the relay the seat left. The in-game Quit menu and the end-of-game
+  dialog's Quit queue the usual `PlayerQuitsGameOrder`; in a turn match the engine
+  sends `Quit` in its place (with the reason above), and the relay sequences the
+  same quit order and marks the seat left. Submitting the order itself would leave
+  the seat before the `Quit` could say the game was decided, and every finished
+  match would be reported as abandoned.
 
 As in a legacy network game, executing the local seat's own `PlayerQuitsGameOrder`
 stops that client's loop.
+
+`TurnSession` and `TurnSequencer` also measure the connection (round trips, jitter,
+buffer depth, input delay, stalls, catch-up, reconnects, traffic, arbitration) without
+changing the protocol or the record: see [network telemetry](../development/network-telemetry.md).
 
 ## Match setup and simulation version
 
@@ -421,14 +669,16 @@ stops that client's loop.
 1. `MatchSetup::parse` checks the JSON Schema rules (every field required, no unknown
    properties, ranges, patterns, the closed AI list without `javascript`), then the
    cross-field rules: teams listed `0..n-1` in order, seats numbered `0..k-1`, each seat
-   on a listed team, names at most 32 UTF-8 bytes, one seat per account, a generator's
-   `teams` equal to the number of teams, and only known experiment keys. Errors carry
-   the stage (`Schema`, `Semantic` or `Map`) and a JSON pointer.
+   on a listed team, names at most 32 UTF-8 bytes, one seat per account, at least one
+   human or AI seat, closed seats after every human and AI seat and each on a different
+   team that no human or AI seat plays, a generator's `teams` equal to the number of
+   teams, and only known experiment keys. Errors carry the stage (`Schema`, `Semantic`
+   or `Map`) and a JSON pointer.
 2. `resolveMatchMap` finds the map: a given file, or `<cache>/<hash>.map[.gz]` or
    `.game[.gz]`. The file's decompressed bytes must hash (SHA-256) to `map.hash`, and it
    must be a saved game exactly when the source is an uploaded save.
 3. `toGameHeader(mapHeader)` requires the map's team count to equal `teams.length`.
-   Seat `s` becomes player record `s` on its team. **Every human seat is `P_IP` on every
+   Human or AI seat `s` becomes player record `s` on its team. **Every human seat is `P_IP` on every
    client and in the verifier**, so the heavy checksum the engine enables when a
    network player exists is the same everywhere; the local seat is chosen by
    `localPlayer`, never by the player type. AI seats use the `AINames` CLI ids (`none`
@@ -437,6 +687,30 @@ stops that client's loop.
    from the default winning conditions with prestige and the sudden-death timer
    (`minutes × 60 × 25` ticks) toggled.
 
+**Seats, players and teams.** A human or AI seat is a player: seat `s` is
+`BasePlayer` `s`, and that number is what tickets (`seat`, `humanSeats`), the relay,
+`TurnSession`'s local seat, the match record, `--verify-match`, the order audit and
+`match_participants.seat` use. A seat's `team` is the map team it controls. Team
+indices are never renumbered: `result.json`, `match_team_stats` and
+`match_participants.team` use the map's own numbering.
+
+**Closed teams.** A team that no human or AI seat controls is closed, exactly like a
+"Closed" colony in a custom game (`CustomGameSetup::writeHeader` gives it no player):
+the engine removes its colony at the start (`Game::clearingUncontrolledTeams`), and a
+team without players dies on its first step (`TeamStep`: `playersMask == 0`), so it has
+lost and never stands in the way of the opponents-defeated victory. A `closed` seat
+(`{seat, kind: "closed", team}`) says so explicitly. Closed seats are not players and
+create no `BasePlayer`; they are numbered after every human and AI seat so players
+keep the numbers `0..p-1`. Rooms send each empty or locked room seat this way
+(`roomMatchSeats` in `platform/apps/api/src/play/rooms.ts`): the taken room seats become
+match seats `0..p-1` in room seat order on their own map teams, and the empty ones
+follow as closed seats. A match seat therefore equals its room seat only while no empty
+room seat comes before it. LAN rooms list no seat at all for a team nobody took, which
+means the same. AI `none` is different: an idle player whose colony stays on the map,
+alive. Rooms used to send empty seats that way, which kept a player who had beaten
+every real opponent from ever winning; records of those matches still verify as they
+were played.
+
 `MatchSetup::fromGameHeader` is the inverse where it is meaningful, for a LAN host or
 an uploaded save: it rejects JavaScript AIs and winning-condition lists other than the
 standard one.
@@ -444,7 +718,8 @@ standard one.
 **Saves.** For an uploaded save, the seats replace every saved player record
 (`Game::setGameHeader` with `saveAI = false`). A seat takes control of its team as
 saved; naming any saved team is how reteaming works. AI seats start fresh AIs of the
-given kind, and teams no seat controls are cleared as on a new map. The rules, seed and
+given kind, and teams no human or AI seat controls (closed teams) are cleared as on a
+new map. The rules, seed and
 experiments come from the setup like any other match, so a platform that wants to
 continue a save unchanged builds the setup with `fromGameHeader` from the save's
 header. If the seed equals the saved one, the saved random state is kept; otherwise
@@ -459,8 +734,10 @@ record. `glob2 --sim-version` prints the JSON.
 
 - `versionMinor` is `VERSION_MINOR` and `netProtocol` is `NET_PROTOCOL_VERSION` in
   `src/Version.h`.
-- `dataHash` is the lowercase hex SHA-256 of the simulation data files listed in
-  `Online::simDataFiles()`: the Maxima strategies (`data/maxima/*.strategy`), the
+- `dataHash` is the lowercase hex SHA-256 of `SIM_REVISION` (`src/SimRevision.h`)
+  followed by the simulation data files. The revision is hashed first as a pseudo-file
+  with path `#sim-revision` and the revision in decimal ASCII as its content. The data
+  files are those listed in `Online::simDataFiles()`: the Maxima strategies (`data/maxima/*.strategy`), the
   Nicowar tables (`data/nicowar.default.txt`, `data/nicowar.txt`) and the USL runtime
   (`data/usl/*/Runtime/*.usl`), in byte-wise sorted path order. For each file the hash
   takes the path bytes, one zero byte, the content length as a big-endian 64-bit number
@@ -469,9 +746,32 @@ record. `glob2 --sim-version` prints the JSON.
   a zero byte and the length `0xFFFFFFFFFFFFFFFF`. Files are read through the engine's
   file manager, so the browser's packaged file system gives the same value.
 
-A unit test checks that the list covers every file in those directories. Everything
-else the simulation depends on is compiled in: a change to simulation code must bump
-`VERSION_MINOR` or `NET_PROTOCOL_VERSION` to change the sim version.
+A unit test checks that the list covers every file in those directories.
+`deploy/sim_version.py` computes the same key from a source tree (engine-agent images
+are labelled with it).
+
+**Bump `SIM_REVISION` with every simulation change.** Everything else the simulation
+depends on is compiled in, and `VERSION_MINOR` tracks the save format, so nothing else
+moves the sim version when simulation code changes: rules, units, buildings,
+pathfinding, AI code and parameters, order validation, map loading, random number use,
+scripting. Without a bump, builds that simulate differently share rooms, queues, AI
+ratings and verifiers, and their matches desync or fail verification. The revision
+only ever increases. A bump also needs a fresh golden record
+(`test/fixtures/multiplayer/FourSquares1.g2mr`, which carries the sim version) and
+its trace: `python3 test/run_tests.py --update-fixtures --filter 'TurnEngineHarness/the committed*'`.
+
+CI enforces what it can detect:
+
+- `test/check_sim_revision.py` (the change-selection job) fails when the committed
+  record names another sim version than the tree, and when the record or its
+  verification trace changed relative to the base revision while the sim version
+  did not.
+- The browser/native equivalence job fails when Linux, Windows and the browsers agree
+  on a `--verify-match` trace that differs from the committed one: the simulation
+  changed.
+
+The golden match covers only what one short Nicowar/Warrush game reaches, so a passing
+check does not prove the simulation is unchanged; bump whenever a change can matter.
 
 ## Match record
 
@@ -531,11 +831,18 @@ one relay would. Its contract is in
   bad ticket with `Reject(2)`.
 - **New matches refused.** A draining or full relay refuses a new match with
   `Reject(5)`, and still admits reconnects to its running matches.
-- **Timing and threads.** The relay calls `update` every 10 ms, and runs every
-  sequencer on one event-loop thread.
-- **End of a match.** The relay uploads the `MatchRecord` to the platform. A client
-  that sends `Quit` with reason 1 (game finished) marks the match as completed rather
-  than abandoned in the relay's report. The sequencer treats both reasons alike.
+- **Timing and threads.** Each match sleeps until `TurnSequencer::nextWakeMicros()`:
+  the next bundle while anyone is connected (25 wakes a second), the earliest grace
+  expiry (at most a second away) while nobody is, and at once when an event left a
+  presence change to broadcast. An update after a long sleep broadcasts the whole gap
+  in one bundle. Every sequencer runs on one event-loop thread. The sequencer's own
+  work per update no longer grows with the match: arbitration keeps the set of ticks
+  still waiting for reports instead of walking every report since tick 0
+  ([relay](relay.md#timing)).
+- **End of a match.** The relay uploads the `MatchRecord` to the platform. The match
+  is reported completed when the sequencer counts the game as decided (every seat
+  still playing at the first `Quit(GameFinished)` left that way), and abandoned when
+  every human left otherwise.
 
 ## Testing
 
@@ -543,9 +850,16 @@ The unit tests in `test/TurnProtocolTest.cpp` (in `glob2-unit-tests`) use a fake
 and drive the components directly:
 
 - codec round trips, and rejection of malformed or oversized input;
-- sequencer ordering, one order per seat per tick, the byte budget, flooding, grace and
-  quit, majority arbitration and the two-client flag;
-- jitter estimation and a target that rises and then falls back;
+- sequencer ordering, one order per seat per tick, assignment to the first unbroadcast
+  tick, the byte budget, a flood dropped without losing the seat, grace and quit, a
+  lone `GameFinished` that decides nothing while every seat's claim does, the wake
+  schedule, arbitration over a 60-minute four-player match, majority arbitration and
+  the two-client flag;
+- session pacing: the burst and one order per tick, latest-wins for flag moves (with
+  the drop kept), unmerged orders in order, voice behind gameplay orders, the bounded
+  queue and its notice, and a flood `Reject` that reconnects;
+- jitter estimation, a target that rises and then falls back, and the controller's
+  handling of multi-tick bundles;
 - match record round trip and corruption detection.
 
 `test/TurnHarnessTest.cpp` connects 2–4 `TurnSession` clients to a `TurnSequencer` over
@@ -555,7 +869,10 @@ delay) and disconnects. It checks that every client executes the same
 with incremental resume, a client restart with a full reload, and a desync that the
 majority repairs. It also checks that a stalled client never stalls the others, that
 each client's buffer follows its own link's jitter, and that each player's input delay
-follows their own connection. Summaries are written under `artifacts/tests/`.
+follows their own connection. A regression case requires the mean and p95 input delay
+to stay within bounds on loopback (60 / 80 ms) and at 50 ms one way (150 / 170 ms),
+with no long stalls. A `[benchmark]` case writes the delay and stall table above
+(`turn-delay-profiles.txt`). Summaries are written under `artifacts/tests/`.
 
 The relay's own tests (`glob2-relay-tests` and `tests/relay/`) run this protocol over
 real WebSockets against `glob2-relay`; see [relay.md](relay.md#tests).
@@ -601,5 +918,6 @@ Nicowar and Warrush) with its expected verification trace. The browser/native
 simulation equivalence job verifies it on Linux, Windows and in three browsers and
 requires identical traces (see
 [headless replays](../development/headless-replays.md#verifying-a-match-record)). A
-simulation change makes it stale; `python3 test/run_tests.py --update-fixtures --filter
-'TurnEngineHarness/the committed*'` records a fresh match and trace.
+simulation change makes it stale and must bump `SIM_REVISION`; `python3
+test/run_tests.py --update-fixtures --filter 'TurnEngineHarness/the committed*'`
+records a fresh match and trace.

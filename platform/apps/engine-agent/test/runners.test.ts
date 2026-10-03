@@ -4,7 +4,6 @@ import { readFileSync } from 'node:fs';
 import { randomUUID } from 'node:crypto';
 import { gzipSync } from 'node:zlib';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { createTestDatabase, type TestDatabase } from '@glob2/db/testing';
 import { contentKey, defaultMapPool, putContent, sha256Hex } from '@glob2/core';
 import {
   engineJobs,
@@ -18,18 +17,15 @@ import { EngineJobError } from '../src/agent.ts';
 import { EngineCrashError } from '../src/engine.ts';
 import { createRunner, fakeMap, SIM, type RunnerHarness } from './support.ts';
 
-let database: TestDatabase;
 let h: RunnerHarness;
 const signal = new AbortController().signal;
 
 beforeAll(async () => {
-  database = await createTestDatabase();
-  h = await createRunner(database.db);
+  h = await createRunner();
 });
 
 afterAll(async () => {
   await h?.close();
-  await database?.drop();
 });
 
 function job<K extends EngineJobKind>(kind: K, payload: unknown): EngineJob {
@@ -77,12 +73,10 @@ describe('generate-map', () => {
     expect(sha256Hex(bytes)).toBe(result['mapHash']);
     expect(bytes.byteLength).toBe(result['size']);
     expect(bytes.subarray(4, 4 + 'study-15-42-r0'.length).toString()).toBe('study-15-42-r0');
-    const row = await database.db
-      .selectFrom('blobs')
-      .selectAll()
-      .where('sha256', '=', result['mapHash'] as string)
-      .executeTakeFirstOrThrow();
-    expect(row).toMatchObject({ content_type: 'application/x-glob2-map', visibility: 'public' });
+    expect(h.blobs.registered.get(result['mapHash'] as string)).toEqual({
+      contentType: 'application/x-glob2-map',
+      visibility: 'public',
+    });
   });
 
   it('refuses descriptors the binary cannot honour, without running it', async () => {
@@ -142,11 +136,11 @@ describe('validate-map', () => {
     ).toBe(true);
     expect(await run('validate-map', { blobHash: await store(save), format: 'map' })).toEqual({
       valid: false,
-      reason: 'file is a saved game, not a map',
+      reason: 'This file is a saved game, not a map. Upload a map from the map editor instead.',
     });
     expect(
       await run('validate-map', { blobHash: await store(fakeMap({ name: 'm2' })), format: 'save' }),
-    ).toEqual({ valid: false, reason: 'file is a map, not a saved game' });
+    ).toEqual({ valid: false, reason: 'This file is a map, not a saved game.' });
   });
 
   it('lists the players of a save for reteaming', async () => {
@@ -179,17 +173,17 @@ describe('validate-map', () => {
           reason: string;
         }
       ).reason;
-    expect(await reasons(Buffer.from('definitely not a map'))).toMatch(/not a Globulation 2 map/);
-    expect(await reasons(Buffer.from([0x1f, 0x8b, 1, 2, 3, 4]))).toMatch(/corrupt gzip/);
-    expect(await reasons(fakeMap({ minor: 126 }))).toMatch(/newer engine \(format 126/);
+    expect(await reasons(Buffer.from('definitely not a map'))).toMatch(/isn't a Globulation 2 map/);
+    expect(await reasons(Buffer.from([0x1f, 0x8b, 1, 2, 3, 4]))).toMatch(/could not be unpacked/);
+    expect(await reasons(fakeMap({ minor: 126 }))).toMatch(/newer version of Globulation 2/);
     expect(await reasons(fakeMap({ width: 1024, height: 1024 }))).toMatch(
-      /largest accepted side is 512/,
+      /too large: it is 1024×1024, and the largest accepted side is 512/,
     );
-    expect(await reasons(fakeMap({ teams: 0, name: 'no teams' }))).toMatch(/0 teams/);
+    expect(await reasons(fakeMap({ teams: 0, name: 'no teams' }))).toMatch(/has 0 teams/);
     // A header the engine's loader refuses (here: a truncated body).
-    expect(await reasons(fakeMap({}).subarray(0, 30))).toMatch(/cannot load this map/);
+    expect(await reasons(fakeMap({}).subarray(0, 30))).toMatch(/couldn't load this map/);
 
-    const small = await createRunner(database.db, { limits: { maxMapBytes: 200 } });
+    const small = await createRunner({ limits: { maxMapBytes: 200 } });
     try {
       const big = fakeMap({ name: 'x'.repeat(300) });
       const blobHash = (await putContent(small.store, big)).sha256;
@@ -208,7 +202,7 @@ describe('validate-map', () => {
       )) as {
         reason: string;
       };
-      expect(bombResult.reason).toMatch(/exceeds 200 bytes/);
+      expect(bombResult.reason).toMatch(/too big: unpacked, it is over the 200 bytes limit/);
     } finally {
       await small.close();
     }
@@ -236,7 +230,7 @@ describe('render-preview', () => {
   });
 
   it('kills a hung engine at the timeout and lets the queue retry', async () => {
-    const fast = await createRunner(database.db, {
+    const fast = await createRunner({
       engine: {
         limits: {
           catalog: { timeoutMs: 10_000 },
@@ -334,15 +328,30 @@ describe('verify-match', () => {
     expect(
       JSON.parse((await readStored(result.outcome.resultHash)).toString()).teams[1].outcome,
     ).toBe('lost');
-    const kinds = await database.db
-      .selectFrom('blobs')
-      .select('content_type')
-      .where('sha256', 'in', [result.outcome.replayHash, result.outcome.resultHash])
-      .execute();
-    expect(kinds.map((k) => k.content_type).sort()).toEqual([
-      'application/json',
-      'application/x-glob2-replay',
-    ]);
+    const kinds = [result.outcome.replayHash, result.outcome.resultHash].map(
+      (hash) => h.blobs.registered.get(hash)?.contentType,
+    );
+    expect(kinds.sort()).toEqual(['application/json', 'application/x-glob2-replay']);
+  });
+
+  it("passes the verifier's order rejections through to the job result", async () => {
+    const rejections = [{ seat: 1, rejected: 2, stale: 0, reasons: { foreign_team: 2 } }];
+    expect(
+      await run(
+        'verify-match',
+        await verify({
+          verdict: 'verified',
+          outcomes: ['won', 'lost'],
+          orderRejections: rejections,
+        }),
+      ),
+    ).toMatchObject({ verdict: 'verified', orderRejections: rejections });
+    expect(
+      await run(
+        'verify-match',
+        await verify({ verdict: 'unverifiable', reason: 'forged', orderRejections: rejections }),
+      ),
+    ).toEqual({ verdict: 'unverifiable', reason: 'forged', orderRejections: rejections });
   });
 
   it('maps diverged and unverifiable verdicts', async () => {

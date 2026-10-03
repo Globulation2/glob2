@@ -497,6 +497,8 @@ namespace GAGCore
 		int getRequestedH(void) const { return requestedH; }
 		//! interface scale to apply on the next setRes(); 0 follows the desktop
 		static void setRequestedUiScale(float scale) { requestedUiScale = scale; }
+		//! the interface scale the player chose; 0 follows the desktop
+		static float getRequestedUiScale(void) { return requestedUiScale; }
 		//! the interface scale in use
 		float getUiScale(void) const { return uiScale; }
 		//! the scale the last setRes() was asked for, before the window floor reduced it

@@ -77,6 +77,13 @@ class NetTransport
 	{
 		return {};
 	}
+	// Bytes queued by send() that have not been written yet. Transports that hand
+	// every message to the platform at once (the browser's WebSocket) report 0.
+	// Polls the connection, so asking repeatedly also makes the writes progress.
+	virtual size_t pendingOutgoing() const
+	{
+		return 0;
+	}
 	virtual std::string error() const
 	{
 		return {};

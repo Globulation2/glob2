@@ -612,7 +612,7 @@ int main(int argc, char **argv)
 			const int actions[] = {
 				MainMenuScreen::CUSTOM,           MainMenuScreen::CAMPAIGN,
 				MainMenuScreen::LOAD_GAME,        MainMenuScreen::TUTORIAL,
-				MainMenuScreen::MULTIPLAYERS_YOG, MainMenuScreen::MULTIPLAYERS_LAN,
+				MainMenuScreen::PLAY_ONLINE, MainMenuScreen::MULTIPLAYERS_LAN,
 				MainMenuScreen::GAME_SETUP,       MainMenuScreen::EDITOR,
 				MainMenuScreen::CREDITS,          MainMenuScreen::QUIT};
 			for (int action : actions)

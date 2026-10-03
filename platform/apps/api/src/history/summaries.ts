@@ -4,7 +4,12 @@
 import { sql, type Kysely, type Selectable } from 'kysely';
 import type { Database } from '@glob2/db';
 import type { AiId, MatchSetup, MatchSummary } from '@glob2/protocol';
-import { PROVISIONAL_SIGMA } from '@glob2/worker';
+import {
+  PROVISIONAL_SIGMA,
+  STORED_MATCH_SETUP,
+  storedSimVersion,
+  tryReadStored,
+} from '@glob2/play';
 import { apiError } from '../errors.ts';
 
 type Db = Kysely<Database>;
@@ -75,6 +80,67 @@ export async function catalogTitles(
   return titles;
 }
 
+/**
+ * The name of an uploaded map (a premade map a room host sent with POST
+ * /api/v1/uploads): the title the engine read from the file, else the file name
+ * without its extension. `ownerId` limits it to one account's uploads.
+ */
+export async function uploadTitle(
+  db: Db,
+  hash: string,
+  ownerId?: string,
+): Promise<string | undefined> {
+  let query = db
+    .selectFrom('map_uploads')
+    .select(['title', 'file_name'])
+    .where('blob_sha256', '=', hash)
+    .orderBy('created_at', 'desc');
+  if (ownerId) query = query.where('owner_account_id', '=', ownerId);
+  const row = await query.executeTakeFirst();
+  return row ? uploadName(row.title, row.file_name) : undefined;
+}
+
+/** The name an upload gives a map: its embedded title, else the file name without extension. */
+function uploadName(title: string | null, fileName: string | null): string | undefined {
+  const name = title?.trim() || fileName?.replace(/\.(map|game)(\.gz)?$/i, '').trim();
+  return name ? name.slice(0, 128) : undefined;
+}
+
+/**
+ * Names of uploaded maps by hash and uploader, for many matches in one query. A
+ * match only shows the name an account that played in it gave the map (the room
+ * host's premade map), never another account's private upload.
+ */
+export async function uploadTitles(
+  db: Db,
+  hashes: readonly string[],
+): Promise<Map<string, Map<string, { title: string; width?: number; height?: number }>>> {
+  const unique = [...new Set(hashes)];
+  const titles = new Map<string, Map<string, { title: string; width?: number; height?: number }>>();
+  if (unique.length === 0) return titles;
+  const rows = await db
+    .selectFrom('map_uploads')
+    .select(['blob_sha256', 'owner_account_id', 'title', 'file_name', 'width', 'height'])
+    .where('blob_sha256', 'in', unique)
+    .where('format', '=', 'map')
+    .orderBy('created_at', 'desc')
+    .execute();
+  for (const row of rows) {
+    const title = uploadName(row.title, row.file_name);
+    if (!title) continue;
+    const byOwner = titles.get(row.blob_sha256) ?? new Map();
+    if (!byOwner.has(row.owner_account_id)) {
+      byOwner.set(row.owner_account_id, {
+        title,
+        ...(row.width !== null ? { width: row.width } : {}),
+        ...(row.height !== null ? { height: row.height } : {}),
+      });
+    }
+    titles.set(row.blob_sha256, byOwner);
+  }
+  return titles;
+}
+
 /** A readable name for a generator id ("even-ground" → "Even Ground"). */
 export function generatorLabel(id: string): string {
   return id
@@ -84,16 +150,23 @@ export function generatorLabel(id: string): string {
     .join(' ');
 }
 
-export function generatorOf(setup: unknown): string | undefined {
-  const map = (setup as MatchSetup | undefined)?.map;
+export function generatorOf(setup: MatchSetup | undefined): string | undefined {
+  const map = setup?.map;
   return map && map.kind === 'generated' ? map.generator.generatorId : undefined;
 }
 
-/** Builds summaries for matches, keeping the order of `rows`. */
-export async function summarize(db: Db, rows: readonly MatchRow[]): Promise<MatchSummary[]> {
+/**
+ * Builds summaries for matches, keeping the order of `rows`. `queueNames` maps
+ * queue ids to the names the instance config gives them ("Casual 1v1").
+ */
+export async function summarize(
+  db: Db,
+  rows: readonly MatchRow[],
+  queueNames: ReadonlyMap<string, string> = new Map(),
+): Promise<MatchSummary[]> {
   if (rows.length === 0) return [];
   const ids = rows.map((row) => row.id);
-  const [participants, history, titles] = await Promise.all([
+  const [participants, history, titles, uploads] = await Promise.all([
     db
       .selectFrom('match_participants')
       .selectAll()
@@ -120,6 +193,10 @@ export async function summarize(db: Db, rows: readonly MatchRow[]): Promise<Matc
       db,
       rows.map((row) => row.map_hash),
     ),
+    uploadTitles(
+      db,
+      rows.map((row) => row.map_hash),
+    ),
   ]);
   const seatsOf = new Map<string, typeof participants>();
   for (const p of participants) {
@@ -129,15 +206,25 @@ export async function summarize(db: Db, rows: readonly MatchRow[]): Promise<Matc
   }
   const ratingOf = new Map(history.map((h) => [`${h.match_id}:${h.seat}`, h]));
   return rows.map((match) => {
-    const setup = match.setup as unknown as MatchSetup;
+    // A list page degrades for a row whose setup no longer decodes: the sim
+    // version comes from its column and the map title from the catalog only.
+    const decoded = tryReadStored(STORED_MATCH_SETUP, match.setup);
+    const setup = decoded.ok ? decoded.value : undefined;
     const generator = generatorOf(setup);
+    const players = (seatsOf.get(match.id) ?? []).flatMap((p) =>
+      p.account_id ? [p.account_id] : [],
+    );
     const title =
-      titles.get(match.map_hash)?.title ?? (generator ? generatorLabel(generator) : undefined);
+      titles.get(match.map_hash)?.title ??
+      (generator ? generatorLabel(generator) : undefined) ??
+      players.map((id) => uploads.get(match.map_hash)?.get(id)?.title).find(Boolean);
+    const queueName = match.queue_id ? queueNames.get(match.queue_id) : undefined;
     return {
       id: match.id,
-      simVersion: setup.simVersion,
+      simVersion: setup?.simVersion ?? storedSimVersion(match.sim_version),
       origin: match.origin,
       ...(match.queue_id ? { queueId: match.queue_id } : {}),
+      ...(queueName ? { queueName: queueName.slice(0, 64) } : {}),
       rated: match.rated,
       status: match.status,
       ...(match.end_reason ? { endReason: match.end_reason } : {}),

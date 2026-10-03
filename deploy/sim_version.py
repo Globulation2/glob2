@@ -3,10 +3,11 @@
 
 The engine-agent image is labelled with this key and its agent serves exactly
 this sim version. The data hash follows the engine's simDataHash() in
-src/online/SimVersion.cpp: SHA-256 over, for each simulation data file in
-byte-wise path order, the path, a 0x00 byte, the content length as a 64-bit
-big-endian integer (0xFFFFFFFFFFFFFFFF for a missing file) and the content with
-CR LF replaced by LF.
+src/online/SimVersion.cpp: SHA-256 over the pseudo-file "#sim-revision" (content
+SIM_REVISION from src/SimRevision.h in decimal), then each simulation data file
+in byte-wise path order; each entry is the path, a 0x00 byte, the content length
+as a 64-bit big-endian integer (0xFFFFFFFFFFFFFFFF for a missing file) and the
+content with CR LF replaced by LF.
 
 Until every deployed binary reports its own hash (`glob2 --sim-version`), the
 engine-agent image passes this value as ENGINE_DATA_HASH; an agent whose binary
@@ -35,18 +36,39 @@ SIM_DATA_FILES = (
 )
 
 
-def data_hash(root, files=SIM_DATA_FILES):
+def entry(digest, name, content):
+    digest.update(name.encode())
+    digest.update(b'\0')
+    if content is None:
+        digest.update(b'\xff' * 8)
+        return
+    content = content.replace(b'\r\n', b'\n')
+    digest.update(len(content).to_bytes(8, 'big'))
+    digest.update(content)
+
+
+def sim_revision(source):
+    """SIM_REVISION, or None for a tree from before it existed (its key hashes no revision)."""
+    path = Path(source) / 'src/SimRevision.h'
+    if not path.is_file():
+        return None
+    text = path.read_text()
+    found = re.search(r'^#define SIM_REVISION (\d+)', text, re.M)
+    if not found:
+        raise ValueError('src/SimRevision.h lacks SIM_REVISION')
+    return int(found.group(1))
+
+
+def data_hash(root, files=SIM_DATA_FILES, revision='read'):
+    """revision: SIM_REVISION ('read': from root's src/SimRevision.h; None: none)."""
     digest = hashlib.sha256()
+    if revision == 'read':
+        revision = sim_revision(root)
+    if revision is not None:
+        entry(digest, '#sim-revision', str(revision).encode())
     for name in files:
         path = Path(root) / name
-        digest.update(name.encode())
-        digest.update(b'\0')
-        if path.is_file():
-            content = path.read_bytes().replace(b'\r\n', b'\n')
-            digest.update(len(content).to_bytes(8, 'big'))
-            digest.update(content)
-        else:
-            digest.update(b'\xff' * 8)
+        entry(digest, name, path.read_bytes() if path.is_file() else None)
     return digest.hexdigest()
 
 
@@ -61,7 +83,7 @@ def version_numbers(root):
 
 def sim_version_key(source, data=None):
     minor, net = version_numbers(source)
-    return f'{minor}-{net}-{data_hash(data or source)}'
+    return f'{minor}-{net}-{data_hash(data or source, revision=sim_revision(source))}'
 
 
 def main():

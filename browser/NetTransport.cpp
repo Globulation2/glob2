@@ -14,6 +14,11 @@
 
 namespace {
 class WebSocketTransport final : public NetTransport {
+    // The browser cannot pause a WebSocket, so a tab whose game loop is throttled
+    // (backgrounded) keeps queueing: allow about eleven minutes of relay bundles
+    // (25 per second) within a few megabytes before giving up on the connection.
+    static constexpr size_t incomingMessageLimit = 16384;
+    static constexpr size_t incomingByteLimit = 4 * queueLimit;
     struct CallbackTarget : std::enable_shared_from_this<CallbackTarget> {
         WebSocketTransport* transport;
         // Copy of the transport's mode, fixed at construction and read on the callback thread.
@@ -43,7 +48,7 @@ class WebSocketTransport final : public NetTransport {
         if (!target->active) return;
         const auto count = target->queuedEvents.fetch_add(1);
         const auto size = target->queuedBytes.fetch_add(bytes);
-        if (count >= 256 || size + bytes > queueLimit) {
+        if (count >= incomingMessageLimit || size + bytes > incomingByteLimit) {
             --target->queuedEvents; target->queuedBytes -= bytes;
             target->overflow = true;
             return;
@@ -128,7 +133,7 @@ public:
             if (size) bytes.assign(e->data, e->data + size);
             post(data, size, [socket=e->socket, text, bytes=std::move(bytes)](auto& self) mutable {
                 if (self.socket != socket) return;
-                if (bytes.size() > queueLimit - self.incomingBytes || self.incoming.size() >= 256) {
+                if (bytes.size() > incomingByteLimit - self.incomingBytes || self.incoming.size() >= incomingMessageLimit) {
                     self.failure = "Invalid WebSocket message or input queue overflow"; self.close(); return;
                 }
                 // An empty text message is still a message; an empty binary one carries nothing.

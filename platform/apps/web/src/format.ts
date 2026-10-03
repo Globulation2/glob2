@@ -1,12 +1,15 @@
 // Display helpers shared by pages.
 import type { MatchParticipant, MatchSummary, QueueInfo } from '@glob2/protocol';
+import { gameTeamColor } from './colors.ts';
 
 /** Engine ticks per second (the relay clock). */
 export const TICKS_PER_SECOND = 25;
 
 export function duration(ticks: number | undefined): string {
   if (ticks === undefined) return '–';
-  const minutes = Math.round(ticks / TICKS_PER_SECOND / 60);
+  const seconds = Math.round(ticks / TICKS_PER_SECOND);
+  if (seconds < 60) return `${seconds} s`;
+  const minutes = Math.round(seconds / 60);
   if (minutes < 60) return `${minutes} min`;
   return `${Math.floor(minutes / 60)} h ${minutes % 60} min`;
 }
@@ -58,10 +61,24 @@ export function percent(value: number): string {
   return `${Math.round(value * 100)} %`;
 }
 
-export function queueName(queues: readonly QueueInfo[] | undefined, id: string | undefined) {
+/**
+ * A queue as players know it: the name the server sent with the match, else the
+ * instance's queue list, else a readable form of the id ("casual-1v1" → "Casual 1v1").
+ */
+export function queueName(
+  queues: readonly QueueInfo[] | undefined,
+  id: string | undefined,
+  known?: string,
+) {
+  if (known) return known;
   if (!id) return 'Room';
   if (id === 'room') return 'Rooms';
-  return queues?.find((q) => q.id === id)?.name ?? id;
+  return queues?.find((q) => q.id === id)?.name ?? readableId(id);
+}
+
+function readableId(id: string): string {
+  const words = id.split('-').filter(Boolean);
+  return words.map((w, i) => (i === 0 ? w.charAt(0).toUpperCase() + w.slice(1) : w)).join(' ');
 }
 
 const AI_NAMES: Record<string, string> = {
@@ -95,14 +112,28 @@ export function seatOf(match: MatchSummary, accountId: string | undefined) {
 export function outcomeLetter(outcome: string | undefined): { letter: string; className: string } {
   if (outcome === 'won') return { letter: 'W', className: 'res w' };
   if (outcome === 'lost' || outcome === 'abandoned') return { letter: 'L', className: 'res l' };
+  if (outcome === 'draw') return { letter: 'D', className: 'res d' };
   return { letter: '–', className: 'res' };
 }
 
-/** The series colour of team `index` (CSS variables --s0..--s5). */
-export function teamColor(index: number): string {
-  return `var(--s${index % 6})`;
+/**
+ * The in-game colour of team `index` on a map of `teamCount` teams (the
+ * engine spreads team hues evenly around the colour wheel).
+ */
+export function teamColor(index: number, teamCount: number): string {
+  return gameTeamColor(index, teamCount);
+}
+
+/** Number of teams a match summary shows: its highest team index plus one. */
+export function teamCountOf(participants: readonly { team: number }[]): number {
+  return participants.reduce((n, p) => Math.max(n, p.team + 1), 1);
 }
 
 export function initial(name: string): string {
   return (name.trim().charAt(0) || '?').toUpperCase();
+}
+
+/** A sim version's key (same as simVersionKey in @glob2/protocol, without loading the schemas). */
+export function versionKey(v: { versionMinor: number; netProtocol: number; dataHash: string }) {
+  return `${v.versionMinor}-${v.netProtocol}-${v.dataHash}`;
 }

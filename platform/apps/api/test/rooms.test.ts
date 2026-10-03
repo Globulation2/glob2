@@ -111,10 +111,52 @@ describe('rooms', () => {
       regions: [{ region: 'eu-west', rttMs: 45 }],
     });
     expect((joined['room'] as Room).members).toHaveLength(2);
+    // A new member takes the first open seat ("anyone with the invite can take it").
+    expect((joined['room'] as Room).seats[1]!.occupant).toMatchObject({
+      kind: 'human',
+      accountId: guest.accountId,
+      ready: false,
+    });
+    expect(
+      (joined['room'] as Room).members.find((m) => m.accountId === guest.accountId)?.seat,
+    ).toBe(1);
     // The host (replica A) learns about the join that happened on replica B.
     room = (await roomState(host.client, (r) => (r['members'] as unknown[]).length === 2)) as Room;
     // Joining again is idempotent.
     await guest.client.ok('room.join', { code: room.code });
+  });
+
+  it('leaves a joiner unseated when every seat is taken or locked, and lists them as a member', async () => {
+    const other = await player(a);
+    const full = (
+      await other.client.ok('room.create', {
+        name: 'Full',
+        visibility: 'link',
+        map: {
+          kind: 'generated',
+          generator: { ...GENERATOR, params: { ...GENERATOR.params, teams: 2 } },
+        },
+      })
+    )['room'] as Room;
+    await other.client.ok('room.setSeat', {
+      roomId: full.id,
+      seat: 1,
+      occupant: { kind: 'locked' },
+    });
+    const late = await player(b);
+    const joined = (await late.client.ok('room.join', { code: full.code }))['room'] as Room;
+    expect(joined.seats.some((s) => s.occupant.accountId === late.accountId)).toBe(false);
+    const member = joined.members.find((m) => m.accountId === late.accountId);
+    expect(member).toBeDefined();
+    expect(member?.seat).toBeUndefined();
+    // Ready needs a seat.
+    const ready = await late.client.call('room.setReady', { roomId: full.id, ready: true });
+    expect(ready.error?.code).toBe('conflict');
+    // Rejoining (idempotent) does not move anyone.
+    const again = (await late.client.ok('room.join', { code: full.code }))['room'] as Room;
+    expect(again.seats.some((s) => s.occupant.accountId === late.accountId)).toBe(false);
+    await late.client.ok('room.leave', { roomId: full.id });
+    await other.client.ok('room.leave', { roomId: full.id });
   });
 
   it('enforces seat permissions and locks', async () => {
@@ -270,14 +312,15 @@ describe('rooms', () => {
       expect(assignment['matchId']).toBe(matchId);
       expect(assignment['relayUrl']).toBe('wss://relay-eu-1.relays.test/relay');
       const setup = assignment['setup'] as {
-        seats: { seat: number; kind: string; ai?: string; accountId?: string }[];
+        seats: { seat: number; kind: string; team: number; ai?: string; accountId?: string }[];
         map: { kind: string; hash: string };
         teams: { alliance: number }[];
         seed: number;
       };
       expect(setup.map).toMatchObject({ kind: 'generated', hash: room.map!.hash });
-      expect(setup.seats.map((s) => s.kind)).toEqual(['human', 'human', 'ai']);
-      expect(setup.seats[2]!.ai).toBe('none'); // the locked, empty seat
+      // The locked, empty seat's team is closed: no player, no colony.
+      expect(setup.seats.map((s) => s.kind)).toEqual(['human', 'human', 'closed']);
+      expect(setup.seats[2]).toEqual({ seat: 2, kind: 'closed', team: 2 });
       expect(setup.teams.map((t) => t.alliance)).toEqual([0, 1, 1]);
       expect(assignment['mapUrl']).toBe(`${ORIGIN}/api/v1/blobs/maps/${room.map!.hash}`);
 
@@ -310,6 +353,17 @@ describe('rooms', () => {
       relay_id: 'relay-eu-1',
     });
     expect(match.seed).toBe((match.setup as { seed: number }).seed);
+    // Participants are the players; the closed seat is none.
+    const participants = await harness.database.db
+      .selectFrom('match_participants')
+      .select(['seat', 'team', 'kind'])
+      .where('match_id', '=', matchId)
+      .orderBy('seat')
+      .execute();
+    expect(participants).toEqual([
+      { seat: 0, team: 0, kind: 'human' },
+      { seat: 1, team: 1, kind: 'human' },
+    ]);
 
     // match.reconnect re-issues a ticket for the running match.
     const again = await guest.client.ok('match.reconnect', { matchId });
@@ -429,6 +483,7 @@ describe('sim versions and invite codes', () => {
   });
 
   it('rate-limits failed invite-code lookups', async () => {
+    await harness.database.db.deleteFrom('rate_limits').execute();
     const prober = await player(a);
     for (let i = 0; i < 10; i++) {
       const miss = await prober.client.call('room.join', {
@@ -436,8 +491,15 @@ describe('sim versions and invite codes', () => {
       });
       expect(miss.error?.code).toBe('not_found');
     }
+    // The budget is shared: the other replica refuses the same address too.
+    const elsewhere = await player(b);
     const limited = await prober.client.call('room.join', { code: 'NOPE9999' });
     expect(limited.error?.code).toBe('rate_limited');
+    expect((await elsewhere.client.call('room.join', { code: 'NOPE9998' })).error?.code).toBe(
+      'rate_limited',
+    );
+    // Leave the shared counters clean for the other tests on this address.
+    await harness.database.db.deleteFrom('rate_limits').execute();
   });
 });
 
@@ -491,6 +553,26 @@ describe('room REST and the invite page', () => {
     const nonce = /script-src 'nonce-([^']+)'/.exec(csp)?.[1];
     expect(nonce).toBeTruthy();
     expect(html).toContain(`<script nonce="${nonce}">`);
+    // Most people who get a link have no app: the browser comes first, the app
+    // second with a note, and the page never jumps to glob2:// by itself.
+    const play = html.indexOf('id="play-browser"');
+    const open = html.indexOf('id="open-app"');
+    expect(play).toBeGreaterThan(0);
+    expect(open).toBeGreaterThan(play);
+    expect(html.slice(html.lastIndexOf('<a', play), play)).toContain('class="button primary"');
+    expect(html).toContain('Open in the Globulation 2 app');
+    expect(html).toContain('id="app-fallback"');
+    expect(html).not.toMatch(/location\.href\s*=/);
+    expect(html).toContain(`${host.displayName} invited you to their Globulation 2 room`);
+    expect(html).toContain('<title>You’re invited · Globulation 2</title>');
+    // A phone on an instance without verified app links: still the browser first.
+    const android = await fetch(`${a.url}/j/${room.code}`, {
+      headers: { 'user-agent': 'Mozilla/5.0 (Linux; Android 14; Pixel 8) Mobile' },
+    });
+    const androidHtml = await android.text();
+    expect(androidHtml.indexOf('id="play-browser"')).toBeLessThan(
+      androidHtml.indexOf('id="open-app"'),
+    );
 
     const unknown = await fetch(`${a.url}/j/NOSUCHCODE`);
     expect(unknown.status).toBe(404);
@@ -500,9 +582,48 @@ describe('room REST and the invite page', () => {
     expect(unknownHtml).toContain(`href="${ORIGIN}/play/"`);
     expect(unknownHtml).not.toContain('<script');
 
-    // A closed room's code is expired.
+    // With verified app links (the official domain), a phone that still shows
+    // the page gets the app first; on Android as an intent that falls back to
+    // the browser client when the app is missing.
+    const official = await harness.start({
+      origin: ORIGIN,
+      instance: {
+        appLinks: {
+          android: { sha256CertFingerprints: [Array(32).fill('AB').join(':')] },
+          ios: { appIds: ['ABCDE12345.org.globulation2.glob2'] },
+        },
+      },
+    });
+    try {
+      const phone = async (userAgent: string) =>
+        (await fetch(`${official.url}/j/${room.code}`, { headers: { 'user-agent': userAgent } }))
+          .text()
+          .then((text) => ({
+            text,
+            appFirst: text.indexOf('id="open-app"') < text.indexOf('id="play-browser"'),
+          }));
+      const droid = await phone('Mozilla/5.0 (Linux; Android 14; Pixel 8) Mobile');
+      expect(droid.appFirst).toBe(true);
+      expect(droid.text).toContain(
+        `href="intent://join?instance=${encodeURIComponent(ORIGIN)}&#38;code=${room.code}#Intent;scheme=glob2;package=org.globulation2.glob2;S.browser_fallback_url=${encodeURIComponent(`${ORIGIN}/play/?join=${room.code}`)};end"`,
+      );
+      expect((await phone('Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X)')).appFirst).toBe(
+        true,
+      );
+      expect((await phone('Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0)')).appFirst).toBe(false);
+    } finally {
+      await official.close();
+    }
+
+    // A closed room's code no longer works, and the page says the room closed
+    // (not "expired or does not exist") with a way to start a game.
     await host.client.ok('room.leave', { roomId: room.id });
     await waitUntil(async () => (await fetch(`${a.url}/j/${room.code}`)).status === 404);
+    const closedHtml = await (await fetch(`${a.url}/j/${room.code}`)).text();
+    expect(closedHtml).toContain('<meta property="og:title" content="This room has closed"');
+    expect(closedHtml).toContain('room has closed, so this invite no longer works');
+    expect(closedHtml).not.toContain('expired or does not exist');
+    expect(closedHtml).toContain('Create your own room');
   });
 });
 

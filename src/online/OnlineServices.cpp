@@ -5,6 +5,7 @@
 #include "MapCache.h"
 #include "OnlineStorage.h"
 #include "PlatformClient.h"
+#include "RelayTransport.h"
 
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>
@@ -12,6 +13,7 @@
 
 #include <SDL3/SDL.h>
 #include <memory>
+#include <vector>
 
 #ifdef __ANDROID__
 #include <jni.h>
@@ -27,15 +29,37 @@ namespace Online
 {
 namespace
 {
-struct Owned
+// The user directory's online storage and map cache, shared by the platform
+// client's services and by LAN games (which must not start the platform client).
+struct Local
 {
 	std::unique_ptr<OnlineStorage> storage;
+	std::unique_ptr<MapCache> maps;
+};
+Local *local = nullptr;
+Local &localFiles()
+{
+	if (!local)
+	{
+		auto created = std::make_unique<Local>();
+		created->storage = makeUserDirectoryStorage();
+		created->maps = std::make_unique<MapCache>(*created->storage, HttpFetch::start);
+		local = created.release();
+	}
+	return *local;
+}
+struct Owned
+{
 	std::unique_ptr<InstanceConfig> config;
 	std::unique_ptr<PlatformClient> client;
-	std::unique_ptr<MapCache> maps;
 	std::unique_ptr<Services> view;
 };
 Owned *owned = nullptr;
+std::vector<std::function<void()>> &hooks()
+{
+	static std::vector<std::function<void()>> value;
+	return value;
+}
 Uint64 lastPlatformPoll = 0;
 
 #ifdef __ANDROID__
@@ -95,17 +119,21 @@ Services &services()
 {
 	if (!owned)
 	{
+		auto &files = localFiles();
 		auto created = std::make_unique<Owned>();
-		created->storage = makeUserDirectoryStorage();
-		created->config = std::make_unique<InstanceConfig>(*created->storage);
+		created->config = std::make_unique<InstanceConfig>(*files.storage);
 		created->config->load();
 		created->client = std::make_unique<PlatformClient>(*created->config);
-		created->maps = std::make_unique<MapCache>(*created->storage, HttpFetch::start);
 		created->view = std::make_unique<Services>(
-			Services{*created->storage, *created->config, *created->client, *created->maps});
+			Services{*files.storage, *created->config, *created->client, *files.maps});
 		owned = created.release();
 	}
 	return *owned->view;
+}
+
+MapCache &sharedMapCache()
+{
+	return *localFiles().maps;
 }
 
 bool servicesCreated()
@@ -116,8 +144,17 @@ bool servicesCreated()
 void pump()
 {
 	pollPlatformLinks();
-	if (owned)
-		owned->client->update();
+	pumpLingeringRelayConnections();
+	if (!owned)
+		return;
+	owned->client->update();
+	for (auto &hook : hooks())
+		hook();
+}
+
+void addPumpHook(std::function<void()> hook)
+{
+	hooks().push_back(std::move(hook));
 }
 
 bool acceptDroppedText(const std::string &text)

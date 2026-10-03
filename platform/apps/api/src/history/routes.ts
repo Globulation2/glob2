@@ -1,8 +1,10 @@
 // History, leaderboard and profile REST (read only; see service.ts for the
-// visibility rules) and the moderators' match lookup.
+// visibility rules), the moderators' match lookup and the administrators'
+// verification re-run.
 import type { FastifyInstance, FastifyRequest } from 'fastify';
 import type {
   AiLeaderboard,
+  InstanceStats,
   LeaderboardPage,
   MatchDetail,
   MatchList,
@@ -11,8 +13,10 @@ import type {
 import { supportedSimVersions } from '../app.ts';
 import { apiError } from '../errors.ts';
 import { authenticate, requireRole, type Identity } from '../identity.ts';
+import { reverify } from './reverify.ts';
 import { HistoryService, type Viewer } from './service.ts';
 import { pageLimit } from './summaries.ts';
+import { cachedInstanceStats } from './stats.ts';
 
 interface PageQuery {
   cursor?: string;
@@ -80,6 +84,12 @@ export async function historyRoutes(app: FastifyInstance, identity: Identity): P
     },
   );
 
+  const stats = cachedInstanceStats(services.db);
+  app.get('/api/v1/stats', async (_request, reply): Promise<InstanceStats> => {
+    reply.header('cache-control', 'public, max-age=30');
+    return stats();
+  });
+
   app.get<{ Querystring: PageQuery }>('/api/v1/matches', async (request): Promise<MatchList> => {
     const queue = queueFilter(request.query.queue);
     return history.recentMatches({
@@ -131,16 +141,29 @@ export async function historyRoutes(app: FastifyInstance, identity: Identity): P
     },
   );
 
-  app.get<{ Querystring: PageQuery & { q?: string; status?: string } }>(
+  app.get<{ Querystring: PageQuery & { q?: string; status?: string; verification?: string } }>(
     '/api/v1/admin/matches',
     async (request): Promise<MatchList> => {
       await requireRole(identity, request, 'moderator');
       return history.adminMatches({
         ...(request.query.q ? { q: String(request.query.q) } : {}),
         ...(request.query.status ? { status: request.query.status } : {}),
+        ...(request.query.verification ? { verification: request.query.verification } : {}),
         ...(request.query.cursor ? { cursor: request.query.cursor } : {}),
         limit: pageLimit(request.query.limit, 50, 100),
       });
+    },
+  );
+
+  // Re-runs verification of a match whose check failed or was lost (see
+  // history/reverify.ts). Body: { "force": true } replaces a queued verify job.
+  app.post<{ Params: { id: string }; Body: { force?: unknown } | undefined }>(
+    '/api/v1/admin/matches/:id/reverify',
+    async (request, reply) => {
+      const { account } = await requireRole(identity, request, 'admin');
+      const force = request.body?.force === true;
+      const result = await reverify(services.db, account, request.params.id, { force });
+      return reply.status(202).send(result);
     },
   );
 }

@@ -1,13 +1,13 @@
 // Cross-replica pub/sub on Postgres LISTEN/NOTIFY. One dedicated connection
 // per process listens on every subscribed channel and reconnects with backoff
-// (re-issuing LISTEN). NOTIFY payloads are limited to ~8000 bytes, so publish
-// identifiers and small deltas, then read the full state from the database.
+// (re-issuing LISTEN). Publish identifiers and small deltas, then read the full
+// state from the database; payloads over NOTIFY's limit are spilled to a table
+// by notify() and read back here before dispatch (notify.ts).
 // Delivery is at-most-once: notifications sent while a listener reconnects
-// are lost, so subscribers should re-read state after `onReconnect`.
+// are lost, so subscribers re-read state from reconnect listeners
+// (addReconnectListener / `onReconnect`).
 import pg from 'pg';
-
-export const MAX_NOTIFY_PAYLOAD_BYTES = 7999;
-const CHANNEL_PATTERN = /^[a-z][a-z0-9_.:-]{0,62}$/;
+import { assertChannel, notifyPg, spilledId } from './notify.ts';
 
 export type NotificationHandler = (payload: unknown, channel: string) => void;
 
@@ -25,7 +25,7 @@ export interface PubSubOptions {
 }
 
 function quoteChannel(channel: string): string {
-  if (!CHANNEL_PATTERN.test(channel)) throw new Error(`invalid channel name ${channel}`);
+  assertChannel(channel);
   return `"${channel}"`;
 }
 
@@ -37,10 +37,35 @@ export class PgPubSub {
   private closed = false;
   private reconnectTimer: NodeJS.Timeout | undefined;
   private delay: number;
+  private readonly reconnectListeners = new Set<() => void>();
+  /** Dispatches wait here while a spilled payload is read, so order is kept. */
+  private dispatchQueue: Promise<void> = Promise.resolve();
+  private pendingDispatches = 0;
+  private reconnects = 0;
 
   constructor(options: PubSubOptions) {
     this.options = options;
     this.delay = options.reconnectDelayMs ?? 250;
+    if (options.onReconnect) this.reconnectListeners.add(options.onReconnect);
+  }
+
+  /** True while the listening connection is up (for readiness checks). */
+  get connected(): boolean {
+    return this.client !== undefined;
+  }
+
+  /** How many times the listener reconnected after losing its connection. */
+  get reconnectCount(): number {
+    return this.reconnects;
+  }
+
+  /**
+   * Calls `listener` after every reconnect, when notifications may have been
+   * missed. Returns a function that removes it.
+   */
+  addReconnectListener(listener: () => void): () => void {
+    this.reconnectListeners.add(listener);
+    return () => this.reconnectListeners.delete(listener);
   }
 
   /** Subscribes to a channel; resolves once LISTEN is active. Returns an unsubscribe function. */
@@ -66,18 +91,16 @@ export class PgPubSub {
     };
   }
 
-  /** Publishes a JSON payload. `queryable` may be a pool or a transaction client (NOTIFY is sent on commit). */
+  /**
+   * Publishes a JSON payload. `queryable` may be a pool or a transaction client
+   * (NOTIFY is sent on commit). Large payloads are spilled (notify.ts).
+   */
   async publish(
     queryable: pg.Pool | pg.PoolClient,
     channel: string,
     payload: unknown,
   ): Promise<void> {
-    quoteChannel(channel);
-    const text = JSON.stringify(payload);
-    if (Buffer.byteLength(text) > MAX_NOTIFY_PAYLOAD_BYTES) {
-      throw new Error(`notification on ${channel} exceeds ${MAX_NOTIFY_PAYLOAD_BYTES} bytes`);
-    }
-    await queryable.query('SELECT pg_notify($1, $2)', [channel, text]);
+    await notifyPg(queryable, channel, payload);
   }
 
   async close(): Promise<void> {
@@ -114,14 +137,48 @@ export class PgPubSub {
   }
 
   private dispatch(channel: string, raw: string | undefined): void {
-    const set = this.handlers.get(channel);
-    if (!set) return;
+    if (!this.handlers.has(channel)) return;
     let payload: unknown = raw;
     try {
       payload = raw === undefined ? undefined : JSON.parse(raw);
     } catch {
       // Non-JSON payloads (e.g. from psql) are delivered as the raw string.
     }
+    const spilled = spilledId(payload);
+    if (spilled === undefined && this.pendingDispatches === 0) {
+      this.deliver(channel, payload);
+      return;
+    }
+    // A spilled payload is read back first; later notifications wait for it.
+    const client = this.client;
+    this.pendingDispatches++;
+    this.dispatchQueue = this.dispatchQueue
+      .then(async () => {
+        if (spilled === undefined) return this.deliver(channel, payload);
+        const row = await client?.query<{ payload: unknown }>(
+          'SELECT payload FROM notification_payloads WHERE id = $1',
+          [spilled],
+        );
+        if (!row?.rows[0]) {
+          this.options.logger?.warn(
+            { channel, id: spilled },
+            'spilled notification payload missing',
+          );
+          return;
+        }
+        this.deliver(channel, row.rows[0].payload);
+      })
+      .catch((error: unknown) =>
+        this.options.logger?.warn({ err: error, channel }, 'spilled notification unreadable'),
+      )
+      .finally(() => {
+        this.pendingDispatches--;
+      });
+  }
+
+  private deliver(channel: string, payload: unknown): void {
+    const set = this.handlers.get(channel);
+    if (!set) return;
     for (const handler of set) {
       try {
         handler(payload, channel);
@@ -145,7 +202,16 @@ export class PgPubSub {
     clearTimeout(this.reconnectTimer);
     this.reconnectTimer = setTimeout(() => {
       this.ensureConnected().then(
-        () => this.options.onReconnect?.(),
+        () => {
+          this.reconnects++;
+          for (const listener of this.reconnectListeners) {
+            try {
+              listener();
+            } catch (error) {
+              this.options.logger?.warn({ err: error }, 'pub/sub reconnect listener failed');
+            }
+          }
+        },
         (error: unknown) => {
           this.options.logger?.warn({ err: error }, 'pub/sub reconnect failed');
           this.delay = Math.min(this.delay * 2, 30_000);

@@ -199,8 +199,10 @@ partition verification jobs by it; the definition of the data hash is in the
 CI verifies `test/fixtures/multiplayer/FourSquares1.g2mr` on Linux, Windows and in
 three browsers (`test/run-browser-determinism.py` and `browser/tests/determinism.spec.js`)
 and requires the six `checksums.txt` traces to be identical. The committed
-`FourSquares1.verify-trace.txt` is the expected trace; the engine test that checks it
-also regenerates both files under `--update-fixtures`.
+`FourSquares1.verify-trace.txt` is the expected trace, and CI fails when the platforms
+agree on a different one; the engine test that checks it also regenerates both files
+under `--update-fixtures`. A change that moves the trace changed the simulation and
+must bump `SIM_REVISION` ([simulation version](../multiplayer/turn-protocol.md#simulation-version)).
 
 ## AI-Trainer Dataset Output
 

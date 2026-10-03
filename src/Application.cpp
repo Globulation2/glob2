@@ -4,6 +4,9 @@
 #include <Toolkit.h>
 #include <StringTable.h>
 #include "GlobalContainer.h"
+#include "GameSessionScreen.h"
+#include "MusicTrack.h"
+#include "SoundMixer.h"
 #include "MainMenuScreen.h"
 #include "MessageScreen.h"
 #include "CampaignMainMenu.h"
@@ -12,10 +15,13 @@
 #include "CreditScreen.h"
 #include "EditorMainMenu.h"
 #include "LANMenuScreen.h"
-#include "YOGLoginScreen.h"
-#include "YOGClient.h"
+#include "OnlineHubScreen.h"
+#include "InviteLink.h"
+#include "OnlineHandoff.h"
+#include <FormatableString.h>
 #include "ui/FrontendUI.h"
 #include "OnlineServices.h"
+#include "RelayTransport.h"
 #include <algorithm>
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>
@@ -85,9 +91,13 @@ class ShutdownScreen : public Glob2UI::Screen
 	}
 	void onTimer(Uint32) override
 	{
-		// Present the final message for one frame before releasing graphics.
+		// Present the final message for one frame before releasing graphics. A relay
+		// connection still writing a Quit gets its few hundred milliseconds first
+		// (bounded by Online::LINGER_MS).
 		if (closing)
 		{
+			if (Online::lingeringRelayConnections() > 0)
+				return;
 			endExecute(0);
 			return;
 		}
@@ -166,14 +176,59 @@ void Application::choose(int choice)
 	case MainMenuScreen::MULTIPLAYERS_LAN:
 		screens.push(std::make_unique<LANMenuScreen>(screens));
 		break;
-	case MainMenuScreen::MULTIPLAYERS_YOG:
+	case MainMenuScreen::PLAY_ONLINE:
 #if !defined(GLOB2_CHINA_RELEASE) && !defined(GLOB2_AMAZON_RELEASE)
-		screens.push(std::make_unique<YOGLoginScreen>(screens, std::make_shared<YOGClient>()));
+		screens.push(std::make_unique<OnlineHubScreen>(screens));
 #endif
 		break;
 	case MainMenuScreen::QUIT:
 		screens.stop();
 		break;
+	}
+}
+
+// The browser installs some data after the main menu is up (scons/web_assets.py);
+// native hosts never report an installation.
+void Application::installStagedAssets()
+{
+	const bool inMatch = dynamic_cast<GameSessionScreen *>(screens.top()) != nullptr;
+	for (const auto &package : GAGCore::ApplicationHost::takeInstalledAssetPackages())
+	{
+		if (package == "game")
+		{
+			// The menu colony and the settings' building artwork use them at once.
+			globalContainer->ensureGameGraphics();
+		}
+		else if (package == "menu-music")
+		{
+			if (globalContainer->loadMenuMusic() && !inMatch)
+			{
+				globalContainer->mix->setNextTrack(MusicTrack::Intro);
+				globalContainer->mix->setNextTrack(MusicTrack::Menu);
+			}
+		}
+		else if (package == "translations")
+		{
+			// Core had only each language's name and code; English stood in.
+			auto *strings = GAGCore::Toolkit::getStringTable();
+			if (strings->load("data/texts.list.txt"))
+				strings->setLang(strings->getLangCode(globalContainer->settings.language));
+			if (!inMatch)
+			{
+				const int width = globalContainer->gfx->getW(), height = globalContainer->gfx->getH();
+				screens.viewportResized(width, height, width, height);
+			}
+		}
+		else if (package == "font-cjk")
+		{
+			// Same Latin glyphs; Chinese, Japanese and Korean text now has glyphs.
+			GAGCore::Toolkit::reloadFonts();
+			if (!inMatch)
+			{
+				const int width = globalContainer->gfx->getW(), height = globalContainer->gfx->getH();
+				screens.viewportResized(width, height, width, height);
+			}
+		}
 	}
 }
 
@@ -224,7 +279,30 @@ bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event> &incomi
 		shutdownScreens.frame(tick, input);
 		return shutdownScreens.running();
 	}
+	installStagedAssets();
 	screens.frame(tick, events);
+#if !defined(GLOB2_CHINA_RELEASE) && !defined(GLOB2_AMAZON_RELEASE)
+	// An invite link (at launch or while running) opens the online hub from the
+	// main menu; the hub consumes it.
+	static std::uint32_t hubOpenedAt = 0;
+	if (Online::pendingJoin() && dynamic_cast<MainMenuScreen *>(screens.top()) && tick - hubOpenedAt > 2000)
+	{
+		hubOpenedAt = tick;
+		screens.push(std::make_unique<OnlineHubScreen>(screens));
+	}
+	// "Play this map" on the web app: open Online and say how the map is used, once.
+	static bool roomMapAnnounced = false;
+	if (!roomMapAnnounced && Online::pendingRoomMap() && dynamic_cast<MainMenuScreen *>(screens.top()))
+	{
+		roomMapAnnounced = true;
+		hubOpenedAt = tick;
+		screens.push(std::make_unique<OnlineHubScreen>(screens));
+		const auto &map = *Online::pendingRoomMap();
+		screens.push(std::make_unique<MessageScreen>(
+			GAGCore::FormattableString(Glob2UI::tr("[room map ready title %0]")).arg(map.title.empty() ? Glob2UI::tr("[room map ready unnamed]") : map.title),
+			Glob2UI::tr("[room map ready body]"), std::vector<std::string>{Glob2UI::tr("[ok]")}));
+	}
+#endif
 	if (!screens.running())
 	{
 		if (screens.result() == GAGGUI::Screen::QUIT_APPLICATION)

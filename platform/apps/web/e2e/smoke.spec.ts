@@ -83,6 +83,7 @@ test('match page shows players, charts, verification and the replay', async ({ p
   expect(replay.status()).toBe(200);
   // Hovering a chart shows its values.
   const chart = page.getByTestId('timelines').getByRole('img').first();
+  await chart.scrollIntoViewIfNeeded();
   const box = await chart.boundingBox();
   if (box) await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
   await expect(page.locator('.tip').first()).toBeVisible();

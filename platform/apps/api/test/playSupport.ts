@@ -3,7 +3,7 @@
 import { createPublicKey, randomBytes } from 'node:crypto';
 import { sql, type Kysely } from 'kysely';
 import { expect } from 'vitest';
-import { putContent, type BlobStore } from '@glob2/core';
+import { putContent, readMapHeader, type BlobStore } from '@glob2/core';
 import type { Database } from '@glob2/db';
 import {
   MATCH_TICKET_AUDIENCE,
@@ -15,7 +15,7 @@ import {
   type SimVersion,
 } from '@glob2/protocol';
 import { verifyJwt } from '@glob2/protocol/node';
-import { handleEngineJobResult } from '@glob2/worker';
+import { handleEngineJobResult } from '@glob2/play';
 import { RealtimeClient, SIM, json, postJson, type Instance } from './support.ts';
 
 export const RELAY_KEY = `relay-key-${'k'.repeat(32)}`;
@@ -36,13 +36,44 @@ export async function serveSim(db: Kysely<Database>, sim: SimVersion = SIM): Pro
     .execute();
 }
 
-/** Bytes of a fake map: clients would load these. */
+/**
+ * A real map header (MapHeader::loadFields) around a fake body: the API checks
+ * uploads' headers before storing them; the fake engine reads the name.
+ */
+function withHeader(name: string, teams: number, savedGame: boolean): Buffer {
+  const text = Buffer.from(name);
+  const bytes = Buffer.alloc(4 + text.length + 17 + 8);
+  bytes.writeUInt32BE(text.length, 0);
+  text.copy(bytes, 4);
+  const at = 4 + text.length;
+  bytes.writeInt32BE(0, at);
+  bytes.writeInt32BE(SIM.versionMinor, at + 4);
+  bytes.writeInt32BE(teams, at + 8);
+  bytes.writeUInt32BE(0, at + 12);
+  bytes.writeUInt8(savedGame ? 1 : 0, at + 16);
+  return bytes;
+}
+
+/** Bytes of a fake map upload: clients would load these. */
 export function fakeMapBytes(teams: number, seed: number): Buffer {
-  return Buffer.from(`GLOB2MAP:${teams}:${seed}`);
+  return withHeader(`GLOB2MAP:${teams}:${seed}`, teams, false);
+}
+
+/** A file with a map header that the (fake) engine cannot load. */
+export function unloadableMapBytes(): Buffer {
+  return withHeader('damaged map', 2, false);
 }
 
 export function fakeSaveBytes(players: { name: string; team: number; kind: 'human' | 'ai' }[]) {
-  return Buffer.from(`GLOB2SAVE:${players.length}:${JSON.stringify(players)}`);
+  return withHeader(`GLOB2SAVE:${players.length}:${JSON.stringify(players)}`, players.length, true);
+}
+
+/** What the fake engine "loads": a header's name, or the raw text of a generated map. */
+async function fakeContent(stream: AsyncIterable<unknown> | undefined): Promise<string> {
+  const chunks: Buffer[] = [];
+  for await (const chunk of stream ?? []) chunks.push(Buffer.from(chunk as Uint8Array));
+  const bytes = Buffer.concat(chunks);
+  return readMapHeader(bytes)?.name ?? bytes.toString();
 }
 
 /**
@@ -105,7 +136,10 @@ export class FakeEngine {
         return { ok: false, error: { code: 'internal', message: 'generator refused' } };
       }
       const teams = generator.params['teams'] ?? 2;
-      const stored = await putContent(this.blobs, fakeMapBytes(teams, generator.seed));
+      const stored = await putContent(
+        this.blobs,
+        Buffer.from(`GLOB2MAP:${teams}:${generator.seed}`),
+      );
       return {
         ok: true,
         result: {
@@ -118,9 +152,9 @@ export class FakeEngine {
     }
     if (kind === 'render-preview') {
       const { mapHash, maxSizePx } = payload as { mapHash: string; maxSizePx: number };
-      const map = await this.blobs.get(`sha256/${mapHash.slice(0, 2)}/${mapHash}`);
-      let text = '';
-      for await (const chunk of map ?? []) text += String(chunk);
+      const text = await fakeContent(
+        await this.blobs.get(`sha256/${mapHash.slice(0, 2)}/${mapHash}`),
+      );
       if (!text.startsWith('GLOB2MAP:')) {
         return { ok: false, error: { code: 'bad_request', message: 'cannot load the map' } };
       }
@@ -136,9 +170,9 @@ export class FakeEngine {
       };
     }
     const { blobHash, format } = payload as { blobHash: string; format: 'map' | 'save' };
-    const stream = await this.blobs.get(`sha256/${blobHash.slice(0, 2)}/${blobHash}`);
-    let text = '';
-    for await (const chunk of stream ?? []) text += String(chunk);
+    const text = await fakeContent(
+      await this.blobs.get(`sha256/${blobHash.slice(0, 2)}/${blobHash}`),
+    );
     const map = /^GLOB2MAP:(\d+):/.exec(text);
     const save = /^GLOB2SAVE:(\d+):(.*)$/s.exec(text);
     if (format === 'map' && map) {

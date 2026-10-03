@@ -6,11 +6,11 @@
 // Rows are written directly: this is the state the worker leaves behind.
 import { createHash, randomBytes } from 'node:crypto';
 import { deflateSync } from 'node:zlib';
-import type { Kysely } from 'kysely';
+import { sql, type Kysely } from 'kysely';
 import { putContent, type BlobStore } from '@glob2/core';
 import type { Database } from '@glob2/db';
 import { STANDARD_RULES, simVersionKey, type MatchSetup, type SimVersion } from '@glob2/protocol';
-import { displayRating } from '@glob2/worker';
+import { displayRating } from '@glob2/play';
 import { SIM } from './support.ts';
 
 // Not imported from playSupport.ts, which needs the Vitest runtime: the
@@ -504,9 +504,20 @@ export async function seedHistory(
         kind: 'verify-match',
         sim_version: simVersionKey(sim),
         payload: JSON.stringify({ matchId: match.id }),
+        match_id: match.id,
         status: 'succeeded',
+        // A complete verdict: the match page decodes it against VerifyVerdict.
         result: JSON.stringify({
           verdict: 'verified',
+          outcome: {
+            finalTick: 30_000,
+            teams: [
+              { team: 0, outcome: 'won', prestige: 0 },
+              { team: 1, outcome: 'lost', prestige: 0 },
+            ],
+            resultHash: replay.sha256,
+            replayHash: replay.sha256,
+          },
           ...(i === 7
             ? {
                 orderRejections: [
@@ -674,12 +685,55 @@ export async function seedHistory(
     daysAgo: 1,
     ticks: 30_000,
   });
+  // The host's premade map, sent with POST /api/v1/uploads: the match is named
+  // after the title the engine read from it, never "Custom map".
+  const premadeBytes = Buffer.from(`premade map ${randomBytes(8).toString('hex')}`);
+  const premade = await putContent(blobs, premadeBytes);
+  await db
+    .insertInto('blobs')
+    .values({
+      sha256: premade.sha256,
+      size: premade.size,
+      content_type: 'application/x-glob2-map',
+      storage_key: premade.key,
+      visibility: 'private',
+      owner_account_id: accounts.ana,
+    })
+    .execute();
+  await db
+    .insertInto('map_uploads')
+    .values({
+      owner_account_id: accounts.ana,
+      blob_sha256: premade.sha256,
+      format: 'map',
+      sim_version: simVersionKey(sim),
+      file_name: 'balanced for 2.map',
+      status: 'valid',
+      width: 64,
+      height: 64,
+      team_count: 2,
+      title: 'balanced for 2',
+    })
+    .execute();
+  // Someone else's private upload of the same bytes under another name stays private.
+  await db
+    .insertInto('map_uploads')
+    .values({
+      owner_account_id: accounts.kestrel,
+      blob_sha256: premade.sha256,
+      format: 'map',
+      sim_version: simVersionKey(sim),
+      file_name: 'kestrel secret.map',
+      status: 'valid',
+      title: 'Kestrel secret',
+    })
+    .execute();
   const linkRoomMatch = await simpleMatch({
     origin: 'room',
     roomId: await room('link', 'LINKONLY1'),
     status: 'ended',
     verification: 'verified',
-    map: generated('marchland', 10),
+    map: { kind: 'upload', format: 'map', hash: premade.sha256 },
     seats: [
       { kind: 'human', account: accounts.ana, name: 'Ana_M', outcome: 'lost' },
       { kind: 'human', account: accounts.mirelle, name: 'Mirelle', outcome: 'won' },
@@ -710,6 +764,21 @@ export async function seedHistory(
     ],
     daysAgo: 0,
   });
+
+  // The relay's connection report for the featured match's human seats (the
+  // match page's Connection table; RelayNetworkSummary v1 seat entries).
+  await db
+    .updateTable('match_participants')
+    .set((eb) => ({
+      network: sql`jsonb_build_object(
+        'rtt_us', jsonb_build_object('count', 120, 'p50', 38000 + 40000 * ${eb.ref('seat')}, 'p95', 91000 + 160000 * ${eb.ref('seat')}),
+        'lag_ticks', jsonb_build_object('count', 120, 'p50', 4, 'p95', 9),
+        'connection', jsonb_build_object('disconnects', ${eb.ref('seat')}, 'grace_used_ms', 4200 * ${eb.ref('seat')}),
+        'orders', jsonb_build_object('sequenced', 412, 'deferred', 3))`,
+    }))
+    .where('match_id', '=', rankedMatches[0]!)
+    .where('kind', '=', 'human')
+    .execute();
 
   return {
     sim,

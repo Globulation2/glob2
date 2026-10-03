@@ -4,7 +4,15 @@
 import { useState, type FormEvent } from 'react';
 import type { AdminAccount, MapReportInfo } from '@glob2/protocol';
 import { api } from '../api.ts';
-import { ErrorNotice, Loaded, MapImage, MatchListView, PlayerLink } from '../components/common.tsx';
+import { GameArt } from '../art.tsx';
+import {
+  Empty,
+  ErrorNotice,
+  Loaded,
+  MapImage,
+  MatchListView,
+  PlayerLink,
+} from '../components/common.tsx';
 import { date, dateTime } from '../format.ts';
 import { Link, useRouter } from '../router.tsx';
 import { isModerator, useLoad, useSession } from '../state.tsx';
@@ -154,7 +162,7 @@ function Accounts({ isAdmin }: { isAdmin: boolean }) {
       <Loaded load={load}>
         {(page) =>
           page.items.length === 0 ? (
-            <div className="list empty">No accounts match.</div>
+            <Empty>No accounts match.</Empty>
           ) : (
             <div className="list">
               {page.items.map((a) => (
@@ -191,7 +199,7 @@ function Matches() {
           placeholder="Match id, account id, player name or relay"
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          style={{ minWidth: 260 }}
+          style={{ flex: '1 1 260px' }}
         />
         <select aria-label="Status" value={status} onChange={(e) => setStatus(e.target.value)}>
           <option value="">Any status</option>
@@ -299,7 +307,12 @@ function Reports() {
   const load = useLoad((signal) => api.adminReports({ status }, signal), [status]);
   return (
     <>
-      <div className="seg" style={{ marginBottom: 10 }}>
+      <div
+        className="seg"
+        role="group"
+        aria-label="Report status"
+        style={{ marginBottom: 'var(--sp-4)' }}
+      >
         {['open', 'resolved', 'dismissed', 'all'].map((s) => (
           <button
             key={s}
@@ -314,7 +327,7 @@ function Reports() {
       <Loaded load={load}>
         {(page) =>
           page.items.length === 0 ? (
-            <div className="list empty">No reports.</div>
+            <Empty art="clearingFlag">No reports.</Empty>
           ) : (
             <div className="list">
               {page.items.map((r) => (
@@ -345,26 +358,26 @@ export function Admin({ tab }: { tab: string | undefined }) {
   return (
     <>
       <div className="page-head">
+        <GameArt name="hospital" size={72} className="head-art" />
         <div className="grow">
           <h1>Moderation</h1>
-          <div className="caption">
+          <p className="sub">
             Signed in as {account.displayName} ({account.role}). Every action is recorded.
-          </div>
+          </p>
         </div>
       </div>
-      <div className="seg" role="tablist" style={{ marginBottom: 12 }}>
+      <nav className="seg" aria-label="Moderation sections" style={{ marginBottom: 'var(--sp-4)' }}>
         {TABS.map((t) => (
           <Link
             key={t.id}
             to={`/admin/${t.id}`}
-            role="tab"
-            aria-selected={current === t.id}
+            aria-current={current === t.id ? 'page' : undefined}
             className={current === t.id ? 'on' : ''}
           >
             {t.name}
           </Link>
         ))}
-      </div>
+      </nav>
       {current === 'accounts' && <Accounts isAdmin={account.role === 'admin'} />}
       {current === 'matches' && <Matches />}
       {current === 'reports' && <Reports />}

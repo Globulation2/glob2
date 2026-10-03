@@ -15,10 +15,23 @@ ephemeral ports with its own .env and instance.yaml, and checks:
   7. a generate-map engine job end to end: submitted to the queue, run by the
      engine agent with the real glob2 binary, applied by the worker, and the
      map stored in the blob volume;
+  8. with --match-e2e: a rated quick match end to end (live_match_e2e.py --mode
+     queue). Two local accounts queue, accept and play through a relay with
+     headless clients run from the engine-agent image (so client and verifier
+     share one sim version); the relay uploads the record and reports the end,
+     the verify-match job judges it, and both ratings change;
 
 then tears the project down with its volumes. Python standard library only.
 
   python3 tests/deployment/platform_stack_smoke.py [--no-build] [--keep] [--log-dir DIR]
+
+With --attach PROJECT --env-file FILE it checks an already running deployment
+instead (run on its host, e.g. a live instance with a public certificate): the
+same checks against GLOB2_PUBLIC_ORIGIN, with the replica counts from the env
+file, publicly trusted TLS, and the deployed web client at /play/. Nothing is
+built, started or torn down. With --website ORIGIN it also checks a separately
+hosted public website (docs/hosting/README.md, "Separate public website and app"):
+its home page loads and old app paths there redirect to the instance origin.
 
 Not a unittest module on purpose: it needs the heavy images and runs in its own
 CI job (see .github/workflows/build.yml, platform-stack).
@@ -26,9 +39,12 @@ CI job (see .github/workflows/build.yml, platform-stack).
 import argparse
 import base64
 import http.client
+import urllib.error
+import urllib.request
 import ipaddress
 import json
 import os
+import shlex
 from pathlib import Path
 import socket
 import ssl
@@ -59,20 +75,46 @@ access:
 queues: []
 """
 
+# --match-e2e: local accounts (rated queues refuse guests) and one small rated
+# queue; its accept prompt is longer than the default so a slow runner can answer.
+E2E_QUEUE = 'e2e-ranked'
+INSTANCE_YAML_E2E = f"""\
+name: Smoke Test Instance
+guests:
+  enabled: true
+auth:
+  providers: []
+  local:
+    enabled: true
+access:
+  policy: allow-all
+queues:
+  - id: {E2E_QUEUE}
+    name: End-to-end ranked
+    mode: 1v1
+    rated: true
+    acceptSeconds: 60
+    mapPool:
+      - generatorId: even-ground
+        revision: 2
+        params: {{width: 7, height: 7, teams: 2}}
+        candidates: 1
+        startingUnitLevel: 0
+"""
+
 # Runs inside a platform-api container: submits a generate-map job and waits
 # for the worker to apply the agent's result.
 SUBMIT_JOB = r"""
-import { contentKey, createBlobStore, createLogger, defaultMapPool, JobQueue, loadConfig, submitEngineJob } from '@glob2/core';
+import { contentKey, createBlobStore, defaultMapPool, loadConfig, submitEngineJob } from '@glob2/core';
 import { createDatabase } from '@glob2/db';
 import { parseSimVersionKey } from '@glob2/protocol';
 const config = loadConfig();
 const database = createDatabase({ connectionString: config.databaseUrl, maxConnections: 2 });
-const queue = await JobQueue.create(database.pool, createLogger('smoke', 'warn'));
 const simVersion = parseSimVersionKey(process.env.SMOKE_SIM_VERSION);
 const entry = defaultMapPool('1v1').find((e) => e.generatorId === 'even-ground') ?? defaultMapPool('1v1')[0];
 const generator = { ...entry, seed: 20261001 };
 const started = Date.now();
-const jobId = await submitEngineJob(database.db, queue, { kind: 'generate-map', simVersion, payload: { generator }, maxAttempts: 1 });
+const jobId = await submitEngineJob(database.db, { kind: 'generate-map', simVersion, payload: { generator }, maxAttempts: 1 });
 let row;
 for (;;) {
   row = await database.db.selectFrom('engine_jobs').selectAll().where('id', '=', jobId).executeTakeFirstOrThrow();
@@ -85,7 +127,6 @@ if (row.status === 'succeeded') {
   out.blobRow = await database.db.selectFrom('blobs').selectAll().where('sha256', '=', row.result.mapHash).executeTakeFirst() ?? null;
 }
 console.log(JSON.stringify(out));
-await queue.close();
 await database.close();
 """
 
@@ -112,6 +153,9 @@ def free_subnet():
     raise RuntimeError('no free private /24 for the backend network')
 
 
+SMOKE_PACKAGE = 'assets/core.0123456789abcdef.data'
+
+
 class Failure(Exception):
     pass
 
@@ -119,6 +163,11 @@ class Failure(Exception):
 class Smoke:
     def __init__(self, arguments):
         self.arguments = arguments
+        self.results = {}
+        self.log_dir = Path(arguments.log_dir) if arguments.log_dir else None
+        if arguments.attach:
+            self.attach(arguments)
+            return
         self.project = 'glob2-smoke-' + uuid.uuid4().hex[:8]
         self.directory = Path(tempfile.mkdtemp(prefix='glob2-platform-smoke-'))
         self.https_port = free_port()
@@ -151,30 +200,52 @@ class Smoke:
             'GLOB2_CADDY_IMAGE': f'glob2-caddy:{tag}',
             'LOG_LEVEL': 'info',
         }
+        self.env_file = self.directory / '.env'
+        self.host, self.connect_host = 'localhost', '127.0.0.1'
+        self.expected_replicas = {'platform-api': 2, 'relay': 2}
         (self.directory / '.env').write_text(''.join(f'{k}={v}\n' for k, v in settings.items()))
-        (self.directory / 'instance.yaml').write_text(INSTANCE_YAML)
+        (self.directory / 'instance.yaml').write_text(INSTANCE_YAML_E2E if arguments.match_e2e else INSTANCE_YAML)
         (self.directory / 'web-client').mkdir()
         (self.directory / 'web-client/index.html').write_text('<!doctype html><title>glob2 web client</title>')
+        # A content-addressed data package with a precompressed copy, as
+        # browser/precompress.py and deploy/install-web-client.py lay them out.
+        (self.directory / 'web-client/assets').mkdir()
+        (self.directory / f'web-client/{SMOKE_PACKAGE}').write_bytes(b'package')
+        (self.directory / f'web-client/{SMOKE_PACKAGE}.br').write_bytes(b'brotli')
         self.env = {k: v for k, v in os.environ.items() if not k.startswith(('GLOB2_', 'POSTGRES_'))}
-        self.log_dir = Path(arguments.log_dir) if arguments.log_dir else None
-        self.results = {}
+
+    def attach(self, arguments):
+        if not arguments.env_file:
+            raise SystemExit('--attach needs --env-file')
+        self.project = arguments.attach
+        self.env_file = Path(arguments.env_file).resolve()
+        self.directory = self.env_file.parent
+        self.origin = self.env_value('GLOB2_PUBLIC_ORIGIN').rstrip('/')
+        authority = self.origin.split('://', 1)[1]
+        self.host = authority.split(':')[0]
+        self.https_port = int(authority.split(':')[1]) if ':' in authority else 443
+        self.connect_host = self.host
+        self.sim_version = arguments.sim_version or sim_version_key(ROOT)
+        self.expected_replicas = {'platform-api': int(self.env_value('GLOB2_API_REPLICAS', '2')),
+                                  'relay': int(self.env_value('GLOB2_RELAY_REPLICAS', '1'))}
+        self.env = {k: v for k, v in os.environ.items() if not k.startswith(('GLOB2_', 'POSTGRES_'))}
 
     # ------------------------------------------------------------ helpers
 
     def compose(self, *args, timeout=600, check=True):
         command = ['docker', 'compose', '-p', self.project, '-f', str(COMPOSE_FILE),
-                   '--env-file', str(self.directory / '.env'), *args]
+                   '--env-file', str(self.env_file), *args]
         result = subprocess.run(command, env=self.env, text=True, capture_output=True, timeout=timeout)
         if check and result.returncode != 0:
             raise Failure(f'{" ".join(args[:2])} failed ({result.returncode}):\n{result.stdout}\n{result.stderr}')
         return result.stdout
 
     def https(self, method, path, body=None, headers=None):
-        connection = http.client.HTTPConnection('127.0.0.1', self.https_port, timeout=20)
-        # Verified TLS for the name "localhost" while connecting to 127.0.0.1.
-        connection.sock = self.tls.wrap_socket(socket.create_connection(('127.0.0.1', self.https_port), timeout=20),
-                                               server_hostname='localhost')
-        all_headers = {'Host': f'localhost:{self.https_port}', **(headers or {})}
+        connection = http.client.HTTPConnection(self.connect_host, self.https_port, timeout=20)
+        # Verified TLS for the public name (locally "localhost" while connecting to 127.0.0.1).
+        connection.sock = self.tls.wrap_socket(
+            socket.create_connection((self.connect_host, self.https_port), timeout=20), server_hostname=self.host)
+        all_headers = {'Host': self.authority(), **(headers or {})}
         data = None
         if body is not None:
             data = json.dumps(body).encode()
@@ -192,10 +263,10 @@ class Smoke:
         return json.loads(payload)
 
     def websocket(self, path, origin=None):
-        sock = self.tls.wrap_socket(socket.create_connection(('127.0.0.1', self.https_port), timeout=20),
-                                    server_hostname='localhost')
+        sock = self.tls.wrap_socket(socket.create_connection((self.connect_host, self.https_port), timeout=20),
+                                    server_hostname=self.host)
         key = base64.b64encode(os.urandom(16)).decode()
-        request = (f'GET {path} HTTP/1.1\r\nHost: localhost:{self.https_port}\r\nUpgrade: websocket\r\n'
+        request = (f'GET {path} HTTP/1.1\r\nHost: {self.authority()}\r\nUpgrade: websocket\r\n'
                    f'Connection: Upgrade\r\nSec-WebSocket-Version: 13\r\nSec-WebSocket-Key: {key}\r\n')
         if origin:
             request += f'Origin: {origin}\r\n'
@@ -205,6 +276,9 @@ class Smoke:
             headers += receive(sock, 1)
         status = int(headers.split(b' ')[1])
         return sock, status
+
+    def authority(self):
+        return self.host if self.https_port == 443 else f'{self.host}:{self.https_port}'
 
     def check(self, name, function):
         log(f'CHECK {name}')
@@ -222,6 +296,9 @@ class Smoke:
     # ------------------------------------------------------------ checks
 
     def up(self):
+        if self.arguments.attach:
+            self.tls = ssl.create_default_context()
+            return {'attached': self.project, 'origin': self.origin}
         if not self.arguments.no_build:
             log('building images (platform, engine-agent, relay, caddy)')
             started = time.monotonic()
@@ -232,6 +309,7 @@ class Smoke:
         self.compose('up', '-d', '--wait', '--wait-timeout', '240', '--no-build', timeout=600)
         self.results['up_seconds'] = round(time.monotonic() - started)
         ca = self.compose('exec', '-T', 'caddy', 'cat', '/data/caddy/pki/authorities/local/root.crt')
+        self.ca_pem = ca
         self.tls = ssl.create_default_context(cadata=ca)
         return {'seconds': self.results['up_seconds']}
 
@@ -246,7 +324,7 @@ class Smoke:
             elif row['State'] != 'running' or row.get('Health') not in ('healthy', ''):
                 raise Failure(f'{row["Name"]}: {row["State"]} {row.get("Health")}')
         counts = {s: sum(1 for r in rows if r['Service'] == s) for s in {r['Service'] for r in rows}}
-        if counts.get('platform-api') != 2 or counts.get('relay') != 2:
+        if any(counts.get(service) != n for service, n in self.expected_replicas.items()):
             raise Failure(f'unexpected replica counts {counts}')
         init_log = self.compose('logs', '--no-color', 'init')
         return {'services': summary, 'init': [l.split('|', 1)[-1].strip() for l in init_log.splitlines()][-6:]}
@@ -259,9 +337,33 @@ class Smoke:
         status_j, _, body_j = self.https('GET', '/j/ABCDEFGH')
         if b'Invite not found' not in body_j or b'<div id="root">' in body_j:
             raise Failure(f'/j/ is not served by the API: {status_j} {body_j[:200]!r}')
-        status_play, _, body_play = self.https('GET', '/play/')
-        if status_play != 200 or b'glob2 web client' not in body_play:
-            raise Failure(f'/play/: {status_play}')
+        status_play, play_headers, body_play = self.https('GET', '/play/')
+        marker = b'<canvas' if self.arguments.attach else b'glob2 web client'
+        if status_play != 200 or marker not in body_play:
+            raise Failure(f'/play/: {status_play} {body_play[:200]!r}')
+        for name, expected in (('Cross-Origin-Opener-Policy', 'same-origin'),
+                               ('Cross-Origin-Embedder-Policy', 'require-corp')):
+            if play_headers.get(name) != expected:
+                raise Failure(f'/play/ missing isolation header {name}: {play_headers.get(name)!r}')
+        # Phones fetch the app-link files from the instance origin; they must reach
+        # the API (JSON, or its JSON 404 when appLinks is unset), not the web app.
+        well_known = {}
+        for path in ('/.well-known/assetlinks.json', '/.well-known/apple-app-site-association'):
+            code, link_headers, body_link = self.https('GET', path)
+            well_known[path] = code
+            if code not in (200, 404) or 'application/json' not in link_headers.get('Content-Type', '') \
+                    or b'<div id="root">' in body_link:
+                raise Failure(f'{path} is not served by the API: {code} {body_link[:200]!r}')
+        if 'no-cache' not in play_headers.get('Cache-Control', ''):
+            raise Failure(f'/play/ must revalidate: {play_headers.get("Cache-Control")!r}')
+        if not self.arguments.attach:
+            # Data packages: served from their Brotli copy, cached for good, isolated.
+            status_package, package_headers, body_package = self.https(
+                'GET', '/play/' + SMOKE_PACKAGE, headers={'Accept-Encoding': 'br, gzip'})
+            if (status_package != 200 or body_package != b'brotli' or package_headers.get('Content-Encoding') != 'br'
+                    or 'immutable' not in package_headers.get('Cache-Control', '')
+                    or package_headers.get('Cross-Origin-Embedder-Policy') != 'require-corp'):
+                raise Failure(f'/play/{SMOKE_PACKAGE}: {status_package} {package_headers} {body_package[:40]!r}')
         denied = {}
         for path in ('/internal/v1/relays/register', '/internal', '/healthz', '/readyz', '/metrics'):
             for method in ('GET', 'POST'):
@@ -269,18 +371,60 @@ class Smoke:
                 denied[f'{method} {path}'] = code
                 if code != 404:
                     raise Failure(f'{method} {path} is reachable publicly: {code}')
-        connection = http.client.HTTPConnection('127.0.0.1', int(self.env_value('GLOB2_HTTP_PORT')), timeout=10)
-        connection.request('GET', '/api/v1/instance', headers={'Host': 'localhost'})
+        connection = http.client.HTTPConnection(self.connect_host, int(self.env_value('GLOB2_HTTP_PORT')), timeout=10)
+        connection.request('GET', '/api/v1/instance', headers={'Host': self.host})
         redirect = connection.getresponse()
         if redirect.status not in (301, 308) or not redirect.getheader('Location', '').startswith('https://'):
             raise Failure(f'HTTP is not redirected to HTTPS: {redirect.status}')
-        return {'web': status, 'invite': status_j, 'play': status_play, 'private': denied,
-                'http': redirect.status, 'hsts_or_server': headers.get('Server')}
+        detail = {'web': status, 'invite': status_j, 'play': status_play, 'wellKnown': well_known,
+                  'private': denied,
+                  'http': redirect.status, 'hsts_or_server': headers.get('Server')}
+        if self.arguments.attach:
+            certificate = self.tls.wrap_socket(socket.create_connection((self.connect_host, self.https_port),
+                                                                        timeout=20), server_hostname=self.host)
+            peer = certificate.getpeercert()
+            certificate.close()
+            detail['certificate'] = {'issuer': dict(x[0] for x in peer['issuer']), 'notAfter': peer['notAfter'],
+                                     'subjectAltName': [v for _, v in peer.get('subjectAltName', [])]}
+        return detail
 
-    def env_value(self, name):
-        for line in (self.directory / '.env').read_text().splitlines():
+    def website(self):
+        website = self.arguments.website.rstrip('/')
+
+        class NoRedirect(urllib.request.HTTPRedirectHandler):
+            def redirect_request(self, *args):
+                return None
+
+        opener = urllib.request.build_opener(NoRedirect)
+
+        def get(path):
+            try:
+                response = opener.open(urllib.request.Request(website + path, method='GET'), timeout=20)
+            except urllib.error.HTTPError as error:
+                return error.code, error.headers.get('Location', ''), b''
+            with response:
+                return response.status, response.headers.get('Location', ''), response.read(65536)
+
+        status, _, body = get('/')
+        if status != 200 or b'<div id="root">' in body:
+            raise Failure(f'website {website}/: {status} {body[:200]!r}')
+        redirects = {}
+        for path, permanent in (('/j/ABCDEFGH', True), ('/matches/00000000-0000-4000-8000-000000000000', True),
+                                ('/players/00000000-0000-4000-8000-000000000000', True), ('/leaderboard', True),
+                                ('/maps', True), ('/api/v1/instance', True), ('/play/?join=ABCDEFGH', False)):
+            code, location, _ = get(path)
+            redirects[path] = [code, location]
+            expected = self.origin + path
+            if code not in ((301, 308) if permanent else (301, 302, 307, 308)) or location != expected:
+                raise Failure(f'website {path}: {code} -> {location!r}, expected a redirect to {expected}')
+        return {'website': website, 'home': status, 'redirects': redirects}
+
+    def env_value(self, name, default=None):
+        for line in self.env_file.read_text().splitlines():
             if line.startswith(name + '='):
                 return line.split('=', 1)[1]
+        if default is not None:
+            return default
         raise KeyError(name)
 
     def instance(self):
@@ -355,12 +499,16 @@ class Smoke:
         return {'kids': kids, 'alg': header.get('alg'), 'typ': header.get('typ')}
 
     def relays(self):
-        # Registration happens at start-up; allow a few heartbeats for retries.
-        deadline = time.monotonic() + 60
+        # Registration happens at start-up; allow a few heartbeats for retries. Only
+        # live relays count: an attached, long-running deployment keeps the rows of
+        # replaced relay containers, which the platform ignores once their heartbeat is
+        # older than RELAY_STALE_SECONDS (45 s, packages/play/src/play/relays.ts).
+        live = "last_heartbeat_at > now() - interval '45 seconds'"
+        deadline = time.monotonic() + 90
         while time.monotonic() < deadline:
             count = self.compose('exec', '-T', 'postgres', 'psql', '-U', 'glob2', '-d', 'glob2', '-At', '-c',
-                                 'SELECT count(*) FROM relays').strip()
-            if count == '2':
+                                 f'SELECT count(*) FROM relays WHERE {live}').strip()
+            if count == str(self.expected_replicas['relay']):
                 break
             time.sleep(2)
         ids = self.compose('ps', '-q', 'relay').split()
@@ -381,16 +529,20 @@ class Smoke:
             raise Failure(f'unknown relay ids are routed: {unknown}, {dotted}')
         logs = self.compose('logs', '--no-color', 'relay')
         registered = self.compose('exec', '-T', 'postgres', 'psql', '-U', 'glob2', '-d', 'glob2', '-At', '-c',
-                                  'SELECT id || \' \' || public_url FROM relays ORDER BY id').split('\n')
+                                  f"SELECT id || ' ' || public_url FROM relays WHERE {live} ORDER BY id").split('\n')
         registered = [r for r in registered if r.strip()]
         detail = {'relayIds': relay_ids, 'routed': routed, 'unknownRelay': unknown, 'dottedRelay': dotted,
-                  'publicUrls': [f'wss://localhost:{self.https_port}/relay/{r}' for r in relay_ids],
+                  'publicUrls': [f'wss://{self.authority()}/relay/{r}' for r in relay_ids],
                   'registered': registered}
         lines = [l.split('|', 1)[-1].strip() for l in logs.splitlines() if 'regist' in l.lower()]
         detail['registrationLog'] = lines[-4:]
-        expected = sorted(f'{r} {u}' for r, u in zip(relay_ids, detail['publicUrls']))
-        if sorted(registered) != expected:
-            raise Failure(f'relays registered as {registered}, expected {expected}; log: {lines[-4:]}')
+        # Stable ids (relay-1..N, slots on the spool volume) with URLs routed by host name.
+        expected_ids = sorted(f'relay-{n}' for n in range(1, len(relay_ids) + 1))
+        got_ids = sorted(r.split(' ', 1)[0] for r in registered)
+        got_urls = sorted(r.split(' ', 1)[-1] for r in registered)
+        if got_ids != expected_ids or got_urls != sorted(detail['publicUrls']):
+            raise Failure(f'relays registered as {registered}, expected ids {expected_ids} '
+                          f'with URLs {sorted(detail["publicUrls"])}; log: {lines[-4:]}')
         return detail
 
     def engine_job(self):
@@ -407,6 +559,40 @@ class Smoke:
         return {'generator': result['generator']['generatorId'], 'seconds': result['seconds'],
                 'agent': result['agent'], 'mapHash': facts['mapHash'], 'size': facts['size'], 'map': facts['map'],
                 'chosenSeed': facts.get('chosenSeed')}
+
+    def match_e2e(self):
+        """A rated quick match through relay, record upload, verification and ratings."""
+        out = (self.log_dir.resolve() if self.log_dir else self.directory) / 'match-e2e'
+        out.mkdir(parents=True, exist_ok=True)
+        ca = out / 'caddy-root.crt'
+        ca.write_text(self.ca_pem)
+        # The clients run from the engine-agent image: the same binary and data
+        # as the verifier. Host networking reaches Caddy on 127.0.0.1, the
+        # assignment's relay URL names localhost, and paths stay host paths.
+        engine = ['docker', 'run', '--rm', '--network', 'host', '--user', f'{os.getuid()}:{os.getgid()}',
+                  '-e', 'HOME=/tmp', '-e', f'SSL_CERT_FILE={ca}', '-v', f'{out}:{out}',
+                  '-w', '/opt/glob2/share', '--entrypoint', '/opt/glob2/bin/glob2',
+                  self.env_value('GLOB2_ENGINE_AGENT_IMAGE')]
+        psql = ['docker', 'compose', '-p', self.project, '-f', str(COMPOSE_FILE), '--env-file', str(self.env_file),
+                'exec', '-T', 'postgres', 'psql', '-U', 'glob2', '-d', 'glob2', '-At']
+        command = [sys.executable, str(ROOT / 'tests/deployment/live_match_e2e.py'), '--mode', 'queue',
+                   '--queue', E2E_QUEUE, '--origin', self.origin, '--ca-file', str(ca),
+                   '--engine-command', shlex.join(engine), '--psql', shlex.join(psql),
+                   '--out', str(out / 'run'), '--verify-timeout', '600']
+        log_path = out / 'live_match_e2e.log'
+        with open(log_path, 'w') as log_file:
+            code = subprocess.run(command, env=self.env, stdout=log_file, stderr=subprocess.STDOUT,
+                                  timeout=1800).returncode
+        results = json.loads((out / 'run/results.json').read_text()) if (out / 'run/results.json').exists() else {}
+        if code != 0:
+            failed = {k: v.get('error') for k, v in results.items() if not v.get('ok')}
+            tail = log_path.read_text().splitlines()[-15:]
+            raise Failure(f'live_match_e2e exited {code}: {failed or tail}')
+        record = results['record, verification and history']['detail']
+        return {'matchId': results['rated quick match']['detail']['matchId'],
+                'seconds': {k: v.get('seconds') for k, v in results.items()},
+                'verification': record['match'].get('verification'), 'endReason': record['match'].get('end_reason'),
+                'ratings': record['ratings']['history']}
 
     # ------------------------------------------------------------ run
 
@@ -426,7 +612,10 @@ class Smoke:
             for name, function in (('services healthy', self.services_healthy), ('edge routing', self.edge),
                                    ('instance and engine agent', self.instance),
                                    ('guest sign-in and realtime', self.guest_and_realtime), ('jwks', self.jwks),
-                                   ('relays', self.relays), ('generate-map job', self.engine_job)):
+                                   ('relays', self.relays), ('generate-map job', self.engine_job),
+                                   *((('public website', self.website),) if self.arguments.website else ()),
+                                   *((('rated quick match end to end', self.match_e2e),)
+                                     if self.arguments.match_e2e else ())):
                 ok = self.check(name, function) and ok
                 if name == 'guest sign-in and realtime' and not self.results[name]['ok']:
                     self.results['jwks'] = {'ok': False, 'error': 'skipped: no access token'}
@@ -434,7 +623,9 @@ class Smoke:
             return ok
         finally:
             self.collect_logs()
-            if self.arguments.keep:
+            if self.arguments.attach:
+                pass
+            elif self.arguments.keep:
                 log(f'keeping project {self.project}; remove with: docker compose -p {self.project} '
                     f'-f {COMPOSE_FILE} --env-file {self.directory / ".env"} down --volumes')
             else:
@@ -449,7 +640,17 @@ def main():
     parser.add_argument('--tag', default='smoke', help='image tag to build and run (default: smoke)')
     parser.add_argument('--jobs', type=int, default=3, help='C++ build jobs')
     parser.add_argument('--log-dir', help='write compose logs and results.json here')
-    smoke = Smoke(parser.parse_args())
+    parser.add_argument('--attach', metavar='PROJECT', help='check this running Compose project instead')
+    parser.add_argument('--env-file', help="with --attach: the deployment's env file")
+    parser.add_argument('--sim-version', help='with --attach: expected sim version key (default: this checkout)')
+    parser.add_argument('--website', metavar='ORIGIN',
+                        help='with --attach: separately hosted public website whose old app paths redirect here')
+    parser.add_argument('--match-e2e', action='store_true',
+                        help='also play a rated quick match through relay, verification and ratings')
+    arguments = parser.parse_args()
+    if arguments.match_e2e and arguments.attach:
+        parser.error('--match-e2e needs a stack this script starts (see live_match_e2e.py for live instances)')
+    smoke = Smoke(arguments)
     ok = smoke.run()
     passed = [k for k, v in smoke.results.items() if isinstance(v, dict) and v.get('ok')]
     failed = [k for k, v in smoke.results.items() if isinstance(v, dict) and not v.get('ok') and not v.get('expected')]

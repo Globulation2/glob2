@@ -76,6 +76,10 @@ namespace GAGGUI
 		virtual void cancelExecutionInput() {}
 		virtual void drawExecution();
 		virtual Uint32 executionDelay(Uint32 now, Uint32 fallback) { return fallback; }
+		//! How the host's wait after this frame counts in performance telemetry:
+		//! untimed (menus), pacing sleep, or waiting for the network.
+		enum class ExecutionWait { Untimed, Pacing, Network };
+		virtual ExecutionWait executionWait() const { return ExecutionWait::Untimed; }
 		bool isExecutionRunning() const { return run; }
 		//! Complete once stopped; repeated calls do not repeat destruction callbacks.
 		int finishExecution();

@@ -1,0 +1,421 @@
+/* Home page: the colony hero and the sections under it. */
+
+.site.home .site-header {
+  position: absolute;
+  inset: 0 0 auto;
+}
+.site.home .world-band {
+  display: none;
+}
+
+.hero {
+  position: relative;
+  isolation: isolate;
+  min-height: min(760px, 100svh);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background: var(--grass);
+}
+.hero-art {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+.hero-art > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 62% 55%;
+}
+.hero-art::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(10, 20, 12, 0.35), transparent 22%, transparent 78%, var(--bg)),
+    var(--hero-fade), linear-gradient(0deg, var(--hero-tint), var(--hero-tint));
+}
+.hero-inner {
+  width: 100%;
+  padding-top: 112px;
+  padding-bottom: 88px;
+}
+
+/* The menu panel the game shows over its own colony. */
+.hero-card {
+  max-width: 580px;
+  background: color-mix(in srgb, var(--surface) 95%, transparent);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  padding: var(--sp-5) var(--sp-5) var(--sp-4);
+  box-shadow: var(--shadow-lg);
+  backdrop-filter: blur(8px);
+}
+.hero-card h1 {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-3);
+}
+.hero-card h1 .wordmark {
+  height: auto;
+  width: min(100%, 440px);
+}
+.hero-card .instance {
+  font-size: var(--text-lg);
+  color: var(--gold-ink);
+  font-family: var(--font-body);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+.hero-card .lede {
+  font-size: var(--text-lg);
+  color: var(--ink);
+  max-width: 46ch;
+  margin-bottom: var(--sp-4);
+}
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2) var(--sp-3);
+  margin-bottom: var(--sp-4);
+}
+.hero-actions .btn.big {
+  flex: 1 1 auto;
+}
+
+.join {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+  padding: var(--sp-3);
+  background: var(--surface-2);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--r-md);
+  margin-bottom: var(--sp-3);
+}
+.join label {
+  flex: 1 1 180px;
+  display: grid;
+  gap: 2px;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--ink-2);
+}
+.join input {
+  font-family: var(--font-display);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.join input::placeholder {
+  letter-spacing: 0.04em;
+  text-transform: none;
+  font-family: var(--font-body);
+}
+.join .hint {
+  flex-basis: 100%;
+  margin: 0;
+  font-size: var(--text-sm);
+}
+.join .hint.error {
+  color: var(--danger);
+  font-weight: 700;
+}
+
+/* Live numbers. */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--sp-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.stat {
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  grid-template-rows: auto auto;
+  column-gap: var(--sp-2);
+  align-items: center;
+  padding: var(--sp-2) var(--sp-3) var(--sp-2) var(--sp-2);
+  background: var(--surface-2);
+  border-radius: var(--r-md);
+  min-width: 0;
+}
+.stat img,
+.stat .glob-icon {
+  grid-row: 1 / 3;
+  width: 34px;
+  height: 34px;
+}
+.stat .k {
+  grid-row: 2;
+  grid-column: 2;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--ink-2);
+  line-height: 1.2;
+}
+.stat .v {
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  grid-row: 1;
+  grid-column: 2;
+}
+.glob-icon {
+  display: block;
+  background: url('../art/worker-east.webp') -136px 0 / 544px 34px no-repeat;
+}
+
+/* ----------------------------------------------------- the living colony */
+
+.colony-life {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.walker,
+.flyer {
+  --s: 40px;
+  position: absolute;
+  left: 0;
+  top: var(--y);
+  width: var(--s);
+  height: var(--s);
+  animation: cross var(--t, 40s) linear var(--d, 0s) infinite;
+  filter: hue-rotate(var(--hue, 0deg)) drop-shadow(0 0 0 transparent);
+  will-change: transform;
+}
+.walker.west,
+.flyer.west {
+  animation-direction: reverse;
+}
+.walker > span,
+.flyer > span > span {
+  display: block;
+  width: var(--s);
+  height: var(--s);
+  background: var(--strip) 0 0 / calc(var(--s) * 16) var(--s) no-repeat;
+  animation: frames var(--f, 0.72s) steps(16) infinite;
+}
+.flyer > span {
+  display: block;
+  animation: bob 2.6s ease-in-out infinite alternate;
+}
+@keyframes cross {
+  from {
+    transform: translateX(-80px);
+  }
+  to {
+    transform: translateX(calc(100vw + 80px));
+  }
+}
+@keyframes frames {
+  to {
+    background-position-x: calc(var(--s) * -16);
+  }
+}
+@keyframes bob {
+  to {
+    transform: translateY(14px);
+  }
+}
+.colony-life.paused *,
+.colony-life.paused {
+  animation-play-state: paused !important;
+}
+/* Without motion the globs stand still where they are parked. */
+@media (prefers-reduced-motion: reduce) {
+  .walker,
+  .flyer,
+  .walker > span,
+  .flyer > span,
+  .flyer > span > span {
+    animation: none !important;
+  }
+  .walker,
+  .flyer {
+    transform: translateX(var(--park, 50vw));
+  }
+  .motion-toggle {
+    display: none !important;
+  }
+}
+
+.motion-toggle {
+  position: absolute;
+  right: var(--gutter);
+  bottom: 40px;
+  z-index: 3;
+  min-height: var(--target);
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  box-shadow: var(--shadow-md);
+  font-size: var(--text-sm);
+}
+
+/* ----------------------------------------------------------- the sections */
+
+.home-body {
+  position: relative;
+  z-index: 1;
+  margin-top: calc(-1 * var(--sp-6));
+}
+
+.features {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--sp-4);
+}
+.feature {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  padding: var(--sp-4) var(--sp-4) var(--sp-4) 104px;
+  min-height: 132px;
+  box-shadow: var(--shadow-md);
+}
+.feature img {
+  position: absolute;
+  left: 12px;
+  top: 16px;
+  width: 84px;
+  height: 84px;
+}
+.feature h3 {
+  font-size: var(--text-lg);
+  margin-bottom: var(--sp-1);
+}
+.feature p {
+  margin: 0;
+  color: var(--ink-2);
+  font-size: var(--text-sm);
+}
+
+.podium {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 2px;
+}
+.podium li {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-height: 48px;
+  padding: 4px var(--sp-2);
+  border-radius: var(--r-sm);
+}
+.podium li:nth-child(odd) {
+  background: var(--surface-2);
+}
+.podium .rank {
+  width: 30px;
+  height: 30px;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-blob);
+  font-weight: 800;
+  font-size: var(--text-sm);
+  background: var(--surface-3);
+  color: var(--ink);
+}
+.podium li:nth-child(1) .rank {
+  background: var(--rank-1);
+  color: #1e1228;
+}
+.podium li:nth-child(2) .rank {
+  background: var(--rank-2);
+  color: #1e1228;
+}
+.podium li:nth-child(3) .rank {
+  background: var(--rank-3);
+  color: #1e1228;
+}
+.podium .num {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+}
+
+.instance-card dl {
+  margin: 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2px var(--sp-3);
+  font-size: var(--text-sm);
+}
+.instance-card dt {
+  color: var(--ink-2);
+  font-weight: 700;
+}
+.instance-card dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 960px) {
+  .features {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 760px) {
+  .hero {
+    min-height: 0;
+    align-items: flex-start;
+  }
+  .hero-inner {
+    padding-top: 136px;
+    padding-bottom: 72px;
+  }
+  .hero-art > img {
+    object-position: 70% 40%;
+  }
+  .hero-card {
+    padding: var(--sp-4);
+  }
+  .hero-card .lede {
+    font-size: var(--text-md);
+  }
+  .hero-actions .btn {
+    flex: 1 1 100%;
+  }
+  /* Three compact pebbles: icon and number on top, label below. */
+  .stat {
+    grid-template-columns: 26px 1fr;
+    padding: var(--sp-2);
+    column-gap: 6px;
+  }
+  .stat img,
+  .stat .glob-icon {
+    grid-row: 1;
+    width: 26px;
+    height: 26px;
+  }
+  .stat .glob-icon {
+    background-position: -104px 0;
+    background-size: 416px 26px;
+  }
+  .stat .k {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+  .stat .v {
+    font-size: 1.2rem;
+  }
+  .motion-toggle {
+    bottom: 20px;
+  }
+  .walker,
+  .flyer {
+    --s: 32px;
+  }
+}

@@ -13,12 +13,31 @@
 //                                              repeatable (only the first report counts)
 import { Type, type Static } from 'typebox';
 import { HttpsOrWssUrl, Open, SeatIndex, Sha256Hex, Strict, Timestamp, Uuid } from './common.ts';
+import { RelayNetworkSummary } from './network.ts';
 import { SimVersion } from './simVersion.ts';
 
 export const RelayRegion = Type.String({
   pattern: '^[a-z0-9][a-z0-9-]{0,31}$',
   description: 'Operator-chosen region id, e.g. "eu-west".',
 });
+
+/**
+ * GET /api/v1/relays/regions (public): the regions that have an available relay,
+ * with a URL a client can time to estimate its round trip before queue.join or
+ * room.create. Any HTTP response from probeUrl counts; its body is irrelevant.
+ */
+export const RelayRegionInfo = Open({
+  region: RelayRegion,
+  probeUrl: HttpsOrWssUrl,
+  relays: Type.Integer({ minimum: 1, description: 'Available relays in the region.' }),
+});
+export type RelayRegionInfo = Static<typeof RelayRegionInfo>;
+
+export const RelayRegionList = Open(
+  { items: Type.Array(RelayRegionInfo, { maxItems: 32 }) },
+  { description: 'Regions with an available relay, by region id.' },
+);
+export type RelayRegionList = Static<typeof RelayRegionList>;
 
 const RelayLoad = Strict({
   matches: Type.Integer({ minimum: 0 }),
@@ -111,6 +130,12 @@ export const RelayMatchEnded = Strict(
       size: Type.Integer({ minimum: 0 }),
       formatVersion: Type.Integer({ minimum: 1 }),
     }),
+    network: Type.Optional(
+      Type.Union([RelayNetworkSummary], {
+        description:
+          "The relay's per-seat network measurements (RelayNetworkSummary v1). Optional: older relays omit it, and the platform drops an unreadable one rather than refuse the report.",
+      }),
+    ),
   },
   { description: 'Relay report of a finished match.' },
 );

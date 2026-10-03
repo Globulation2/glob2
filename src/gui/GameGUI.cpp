@@ -2,12 +2,14 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <stdio.h>
+#include "ConnectionOverlay.h"
 #include <stdarg.h>
 #include <math.h>
 
 
 #include <BackgroundFileWriter.h>
 #include <SDL3/SDL.h>
+#include <StringTable.h>
 #include <Toolkit.h>
 
 #include "Game.h"
@@ -44,6 +46,29 @@ GameGUI::GameGUI(bool persistPreferences)
 	  ghostManager(game)
 {
 	this->persistPreferences = persistPreferences;
+}
+
+void GameGUI::addNotice(const std::string &text)
+{
+	addMessage(GAGCore::Color(200, 200, 200), text, false);
+}
+
+bool GameGUI::pauseAvailable() const
+{
+	if (gamePaused || !networkMatch.active || !pauseState)
+		return true; // anyone may resume; elsewhere pausing is unlimited
+	const PauseState state = pauseState();
+	return !state.limited || (state.pausesLeft > 0 && state.secondsLeft > 0);
+}
+
+void GameGUI::requestPause(bool pause)
+{
+	if (pause && !pauseAvailable())
+	{
+		addNotice(Toolkit::getStringTable()->getString("[turn no pauses left]"));
+		return;
+	}
+	orderQueue.push_back(std::make_shared<PauseGameOrder>(pause));
 }
 
 GameGUI::~GameGUI()

@@ -24,6 +24,7 @@ const typedColumns: ColumnLists = {
     'updated_at',
     'last_seen_at',
     'display_name_changed_at',
+    'deleted_at',
   ],
   identities: [
     'id',
@@ -54,6 +55,8 @@ const typedColumns: ColumnLists = {
     'expires_at',
     'rotated_at',
     'revoked_at',
+    'replaced_by',
+    'grace_uses',
   ],
   signin_attempts: [
     'id',
@@ -73,6 +76,8 @@ const typedColumns: ColumnLists = {
     'failure_reason',
     'linked',
     'delivered_at',
+    'code_confirmed_at',
+    'code_failures',
   ],
   web_sessions: [
     'id',
@@ -149,6 +154,13 @@ const typedColumns: ColumnLists = {
     'agent_id',
     'created_at',
     'completed_at',
+    'attempts',
+    'max_attempts',
+    'leased_by',
+    'lease_token_hash',
+    'lease_expires_at',
+    'reported_at',
+    'match_id',
   ],
   maps: [
     'id',
@@ -219,6 +231,8 @@ const typedColumns: ColumnLists = {
     'created_at',
     'updated_at',
     'closed_at',
+    'starting_since',
+    'notice',
   ],
   room_kicks: ['room_id', 'account_id', 'kicked_by_account_id', 'until', 'created_at'],
   map_downloads: ['map_id', 'downloader', 'day'],
@@ -288,6 +302,7 @@ const typedColumns: ColumnLists = {
     'outcome',
     'disconnects',
     'quit_tick',
+    'network',
     'rating_before',
     'rating_after',
   ],
@@ -360,6 +375,39 @@ const typedColumns: ColumnLists = {
     'responded_at',
   ],
   queue_cooldowns: ['account_id', 'until', 'reason', 'created_at'],
+  map_uploads: [
+    'id',
+    'owner_account_id',
+    'blob_sha256',
+    'format',
+    'sim_version',
+    'file_name',
+    'status',
+    'job_id',
+    'width',
+    'height',
+    'team_count',
+    'version_minor',
+    'title',
+    'players',
+    'failure',
+    'created_at',
+    'completed_at',
+  ],
+  generated_maps: [
+    'descriptor_hash',
+    'sim_version',
+    'descriptor',
+    'status',
+    'job_id',
+    'map_hash',
+    'width',
+    'height',
+    'team_count',
+    'failure',
+    'created_at',
+    'completed_at',
+  ],
   warm_maps: [
     'id',
     'queue_id',
@@ -376,6 +424,10 @@ const typedColumns: ColumnLists = {
     'ready_at',
     'taken_at',
   ],
+  rate_limits: ['bucket', 'key', 'window_start', 'count', 'previous_count'],
+  account_name_scrubs: ['account_id', 'match_id', 'created_at'],
+  leader_leases: ['name', 'epoch', 'holder', 'acquired_at', 'renewed_at'],
+  notification_payloads: ['id', 'channel', 'payload', 'created_at'],
   match_results_view: [
     'match_id',
     'origin',
@@ -440,39 +492,6 @@ const typedColumns: ColumnLists = {
     'average_prestige',
     'games_at_tick',
   ],
-  map_uploads: [
-    'id',
-    'owner_account_id',
-    'blob_sha256',
-    'format',
-    'sim_version',
-    'file_name',
-    'status',
-    'job_id',
-    'width',
-    'height',
-    'team_count',
-    'version_minor',
-    'title',
-    'players',
-    'failure',
-    'created_at',
-    'completed_at',
-  ],
-  generated_maps: [
-    'descriptor_hash',
-    'sim_version',
-    'descriptor',
-    'status',
-    'job_id',
-    'map_hash',
-    'width',
-    'height',
-    'team_count',
-    'failure',
-    'created_at',
-    'completed_at',
-  ],
 };
 
 const SIM = `125-49-${'3f'.repeat(32)}`;
@@ -482,7 +501,7 @@ const HASH2 = 'cd'.repeat(32);
 let database: TestDatabase;
 
 beforeAll(async () => {
-  database = await createTestDatabase({ migrate: false });
+  database = await createTestDatabase({ migrate: false, role: 'migrator' });
 });
 
 afterAll(async () => {

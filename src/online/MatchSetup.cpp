@@ -28,6 +28,8 @@ using nlohmann::json;
 
 namespace Online
 {
+// MatchSetupError's constructor is in SimVersion.cpp.
+
 bool MatchRules::operator==(const MatchRules& o) const
 {
 	return prestigeVictory == o.prestigeVictory && suddenDeathMinutes == o.suddenDeathMinutes &&
@@ -243,7 +245,7 @@ MatchRules parseRules(const json& value, const std::string& path)
 SetupSeat parseSeat(const json& value, const std::string& path)
 {
 	if (!value.is_object() || !value.contains("kind") || !value["kind"].is_string())
-		schemaError(path + "/kind", "must be human or ai");
+		schemaError(path + "/kind", "must be human, ai or closed");
 	const std::string kind = value["kind"].get<std::string>();
 	SetupSeat seat;
 	if (kind == "human")
@@ -268,11 +270,18 @@ SetupSeat parseSeat(const json& value, const std::string& path)
 				schemaError(path + "/aiConfig", "is longer than 4096 characters");
 		}
 	}
+	else if (kind == "closed")
+	{
+		strictObject(value, path, {"seat", "kind", "team"});
+		seat.human = false;
+		seat.closed = true;
+	}
 	else
-		schemaError(path + "/kind", "must be human or ai");
+		schemaError(path + "/kind", "must be human, ai or closed");
 	seat.seat = static_cast<int>(integer(value["seat"], path + "/seat", 0, MAX_TEAMS - 1));
 	seat.team = static_cast<int>(integer(value["team"], path + "/team", 0, MAX_TEAMS - 1));
-	seat.name = displayName(value["name"], path + "/name");
+	if (!seat.closed)
+		seat.name = displayName(value["name"], path + "/name");
 	return seat;
 }
 
@@ -296,7 +305,8 @@ const std::vector<std::string>& MatchSetup::aiIds()
 
 MatchSetup MatchSetup::fromJsonSchemaOnly(const json& value)
 {
-	strictObject(value, "", {"schemaVersion", "simVersion", "seed", "map", "teams", "seats", "rules", "experiments"});
+	strictObject(value, "", {"schemaVersion", "simVersion", "seed", "map", "teams", "seats", "rules", "experiments"},
+	             {"pauseLimit"});
 	if (!value["schemaVersion"].is_number_integer() || value["schemaVersion"].get<std::int64_t>() != SCHEMA_VERSION)
 		schemaError("/schemaVersion", "must be " + std::to_string(SCHEMA_VERSION));
 	MatchSetup setup;
@@ -339,6 +349,15 @@ MatchSetup MatchSetup::fromJsonSchemaOnly(const json& value)
 			schemaError(path, "is listed twice");
 		setup.experiments.push_back(key);
 	}
+	if (value.contains("pauseLimit"))
+	{
+		const json& limit = value["pauseLimit"];
+		strictObject(limit, "/pauseLimit", {"pauses", "seconds"});
+		PauseLimit p;
+		p.pauses = static_cast<int>(integer(limit["pauses"], "/pauseLimit/pauses", 0, 100));
+		p.seconds = static_cast<int>(integer(limit["seconds"], "/pauseLimit/seconds", 0, 3600));
+		setup.pauseLimit = p;
+	}
 	return setup;
 }
 
@@ -363,8 +382,29 @@ void MatchSetup::validateSemantics() const
 			semanticError(path + "/name", "name exceeds 32 UTF-8 bytes");
 		if (seat.human && seat.accountId && !accounts.insert(*seat.accountId).second)
 			semanticError(path + "/accountId", "an account may hold only one seat");
-		if (!seat.human)
+		if (!seat.human && !seat.closed)
 			implementationOf(seat.ai);
+	}
+	// Closed seats follow every player seat, so players keep the numbers 0..p-1, and
+	// each closes a different team that no player seat controls.
+	const int players = playerCount();
+	if (players == 0)
+		semanticError("/seats", "a match needs at least one human or AI seat");
+	std::set<int> closedTeams;
+	for (std::size_t i = 0; i < seats.size(); ++i)
+	{
+		const SetupSeat& seat = seats[i];
+		const std::string path = "/seats/" + std::to_string(i);
+		if (!seat.closed)
+		{
+			if (static_cast<int>(i) >= players)
+				semanticError(path, "closed seats must come after every human and AI seat");
+			continue;
+		}
+		if (!teamClosed(seat.team))
+			semanticError(path + "/team", "team " + std::to_string(seat.team) + " is played by another seat");
+		if (!closedTeams.insert(seat.team).second)
+			semanticError(path + "/team", "team " + std::to_string(seat.team) + " is closed twice");
 	}
 	if (map.kind == MapSource::Kind::Generated && map.generator)
 	{
@@ -440,6 +480,11 @@ json MatchSetup::toJson() const
 	out["seats"] = json::array();
 	for (const auto& s : seats)
 	{
+		if (s.closed)
+		{
+			out["seats"].push_back({{"seat", s.seat}, {"kind", "closed"}, {"team", s.team}});
+			continue;
+		}
 		json seat = {{"seat", s.seat}, {"kind", s.human ? "human" : "ai"}, {"team", s.team}, {"name", s.name}};
 		if (s.human && s.accountId)
 			seat["accountId"] = *s.accountId;
@@ -468,12 +513,25 @@ json MatchSetup::toJson() const
 	                {"peacefulMode", r.peacefulMode},
 	                {"buildingHpLevel", r.buildingHpLevel}};
 	out["experiments"] = experiments;
+	if (pauseLimit)
+		out["pauseLimit"] = {{"pauses", pauseLimit->pauses}, {"seconds", pauseLimit->seconds}};
 	return out;
 }
 
 std::string MatchSetup::dump() const
 {
 	return toJson().dump();
+}
+
+int MatchSetup::playerCount() const
+{
+	return static_cast<int>(std::count_if(seats.begin(), seats.end(), [](const SetupSeat& s) { return !s.closed; }));
+}
+
+bool MatchSetup::teamClosed(int team) const
+{
+	return std::none_of(seats.begin(), seats.end(),
+	                    [team](const SetupSeat& s) { return !s.closed && s.team == team; });
 }
 
 std::uint32_t MatchSetup::humanSeatMask() const
@@ -499,13 +557,17 @@ GameHeader MatchSetup::toGameHeader(const MapHeader& mapHeader) const
 	GameHeader header;
 	for (int i = 0; i < Team::MAX_COUNT; ++i)
 		header.getBasePlayer(i) = BasePlayer();
+	// Closed seats come last and add no player: their teams have none, as a closed
+	// colony in a custom game, and the engine clears them at the start.
 	for (const SetupSeat& s : seats)
 	{
+		if (s.closed)
+			continue;
 		const auto type = s.human ? BasePlayer::P_IP : BasePlayer::playerTypeFromImplementationID(implementationOf(s.ai));
 		header.getBasePlayer(s.seat) = BasePlayer(s.seat, s.name, s.team, type);
 		header.setAIConfig(s.seat, (!s.human && s.aiConfig) ? *s.aiConfig : std::string());
 	}
-	header.setNumberOfPlayers(static_cast<Sint32>(seats.size()));
+	header.setNumberOfPlayers(static_cast<Sint32>(playerCount()));
 	for (int t = 0; t < Team::MAX_COUNT; ++t)
 		header.setAllyTeamNumber(t, t < static_cast<int>(teams.size()) ? teams[t].alliance + 1 : t + 1);
 	header.setRandomSeed(seed);

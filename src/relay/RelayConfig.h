@@ -36,7 +36,13 @@ namespace Relay
 
 		// Matches
 		unsigned graceSeconds = 180;
+		/// Load barrier: a match's clock starts when every human seat has connected
+		/// (clients connect once loaded), or this long after the first one; 0 starts
+		/// it at the first connection.
+		unsigned loadWaitSeconds = 60;
 		unsigned drainTimeoutSeconds = 4 * 3600;
+		/// WebSocket ping interval for the per-seat round-trip telemetry; 0 disables.
+		unsigned rttPingMillis = 2000;
 
 		// Tickets
 		std::string jwksFile;  ///< static JWKS; disables fetching
@@ -55,6 +61,9 @@ namespace Relay
 		std::string region = "default";
 		std::string spoolDirectory; ///< records are written here before upload
 		unsigned uploadAttempts = 8;
+		/// How long the setup lookup keeps retrying (a platform outage), at match
+		/// start and again when a match ends without its setup.
+		unsigned setupRetrySeconds = 600;
 
 		/// Reads the environment. Throws std::invalid_argument on a bad value.
 		static RelayConfig fromEnvironment();

@@ -11,6 +11,8 @@
 //   recent-matches list shows queue matches and matches of public rooms.
 // - Replays and verifier results are public with their match; the raw match
 //   record only to its players and moderators.
+// - Each human player's connection quality (round trip to the relay,
+//   disconnects, delayed orders; history/network.ts) is public with its match.
 import { sql, type Kysely } from 'kysely';
 import type { Account, Database } from '@glob2/db';
 import {
@@ -24,7 +26,6 @@ import {
   type MatchArtifactInfo,
   type MatchDetail,
   type MatchList,
-  type MatchSetup,
   type MatchTeamStats,
   type OrderRejection,
   type PlayerProfile,
@@ -34,9 +35,18 @@ import {
   type VerificationDetail,
   type WinRate,
 } from '@glob2/protocol';
-import { PROVISIONAL_SIGMA, displayRating } from '@glob2/worker';
+import {
+  PROVISIONAL_SIGMA,
+  STORED_MATCH_SETUP,
+  STORED_VERIFY_VERDICT,
+  displayRating,
+  readStored,
+  tryReadStored,
+} from '@glob2/play';
 import { hasRole } from '../auth/admin.ts';
 import { apiError } from '../errors.ts';
+import { participantNetwork, reportTickRate } from './network.ts';
+import { ratingNoteText } from './ratingNotes.ts';
 import {
   MATCH_TIME,
   UUID,
@@ -46,6 +56,7 @@ import {
   generatorLabel,
   generatorOf,
   summarize,
+  uploadTitles,
   type MatchRow,
 } from './summaries.ts';
 
@@ -74,10 +85,15 @@ export interface Viewer {
 const isModerator = (viewer: Viewer | undefined) =>
   viewer !== undefined && hasRole(viewer.account, 'moderator');
 
+/** Deepest leaderboard offset served (each page numbers the ladder up to it). */
+export const MAX_LEADERBOARD_OFFSET = 50_000;
+
 function rankCursor(value: string | undefined): number {
   if (!value) return 0;
   const n = Number(Buffer.from(value, 'base64url').toString('utf8'));
-  if (!Number.isInteger(n) || n < 0) throw apiError('bad_request', 'Invalid cursor.');
+  if (!Number.isInteger(n) || n < 0 || n > MAX_LEADERBOARD_OFFSET) {
+    throw apiError('bad_request', 'Invalid cursor.');
+  }
   return n;
 }
 
@@ -413,12 +429,15 @@ export class HistoryService {
     ]);
     const t = totals.rows[0] ?? { games: 0, wins: 0, losses: 0 };
     const l = lengths.rows[0];
-    const titles = await catalogTitles(
-      this.db,
-      rates.filter((r) => r.dimension === 'map').map((r) => r.key),
-    );
+    const mapHashes = rates.filter((r) => r.dimension === 'map').map((r) => r.key);
+    const [titles, uploads] = await Promise.all([
+      catalogTitles(this.db, mapHashes),
+      uploadTitles(this.db, mapHashes),
+    ]);
     const winRates: WinRate[] = rates.map((row) => {
       const title = row.dimension === 'map' ? titles.get(row.key) : undefined;
+      // The player's own premade maps keep the name they uploaded them with.
+      const uploaded = row.dimension === 'map' ? uploads.get(row.key)?.get(accountId) : undefined;
       const label =
         row.dimension === 'queue'
           ? row.key === 'room'
@@ -426,7 +445,7 @@ export class HistoryService {
             : this.queueNames.get(row.key)
           : row.dimension === 'generator'
             ? generatorLabel(row.key)
-            : title?.title;
+            : (title?.title ?? uploaded?.title);
       return {
         dimension: row.dimension as WinRate['dimension'],
         key: row.key,
@@ -450,38 +469,54 @@ export class HistoryService {
   }
 
   private async latestEconomy(accountId: string): Promise<EconomyCurve | undefined> {
+    // The player's latest recent verified match with a timeline.
     const latest = await this.db
-      .selectFrom('account_economy_curves_view')
-      .select('match_id')
-      .where('account_id', '=', accountId)
-      .orderBy('ended_at', 'desc')
+      .selectFrom('match_results_view as r')
+      .select('r.match_id')
+      .where('r.account_id', '=', accountId)
+      .where('r.kind', '=', 'human')
+      .where('r.ended_at', '>', sql<Date>`now() - make_interval(days => ${RECENT_DAYS})`)
+      .where((eb) =>
+        eb.exists(
+          eb
+            .selectFrom('match_team_stats as s')
+            .select('s.match_id')
+            .whereRef('s.match_id', '=', 'r.match_id')
+            .whereRef('s.team', '=', 'r.team')
+            .where(
+              sql<boolean>`jsonb_typeof(s.timeline) = 'array' AND jsonb_array_length(s.timeline) > 0`,
+            ),
+        ),
+      )
+      .orderBy('r.ended_at', 'desc')
       .limit(1)
       .executeTakeFirst();
     if (!latest) return undefined;
     return (await this.economyOf(latest.match_id, accountId))[0];
   }
 
+  /**
+   * Economy curves of a match's human players (or one of them), each next to
+   * the player's own recent average. match_economy_curves (migration 0015)
+   * reads only these players' recent matches, so a public match page costs
+   * the same however much history the instance holds.
+   */
   private async economyOf(matchId: string, accountId?: string): Promise<EconomyCurve[]> {
-    let query = this.db
-      .selectFrom('account_economy_curves_view as c')
-      .innerJoin('match_participants as p', (join) =>
-        join.onRef('p.match_id', '=', 'c.match_id').onRef('p.account_id', '=', 'c.account_id'),
-      )
-      .select([
-        'c.account_id',
-        'p.seat',
-        'c.tick',
-        'c.units',
-        'c.buildings',
-        'c.prestige',
-        'c.average_units',
-        'c.average_buildings',
-        'c.average_prestige',
-        'c.games_at_tick',
-      ])
-      .where('c.match_id', '=', matchId);
-    if (accountId) query = query.where('c.account_id', '=', accountId);
-    const rows = await query.orderBy('p.seat').orderBy('c.tick').execute();
+    const result = await sql<{
+      account_id: string | null;
+      seat: number;
+      tick: number | null;
+      units: number | null;
+      buildings: number | null;
+      prestige: number | null;
+      average_units: number | null;
+      average_buildings: number | null;
+      average_prestige: number | null;
+      games_at_tick: number | null;
+    }>`SELECT * FROM match_economy_curves(${matchId}::uuid, ${accountId ?? null}::uuid)`.execute(
+      this.db,
+    );
+    const rows = result.rows;
     const curves = new Map<string, EconomyCurve>();
     for (const row of rows) {
       if (row.account_id === null || row.tick === null) continue;
@@ -526,7 +561,7 @@ export class HistoryService {
     const page = rows.slice(0, limit);
     const last = page.at(-1);
     return {
-      items: await summarize(this.db, page),
+      items: await summarize(this.db, page, this.queueNames),
       ...(rows.length > limit && last
         ? {
             nextCursor: encodeCursor({
@@ -583,6 +618,7 @@ export class HistoryService {
   async adminMatches(options: {
     q?: string;
     status?: string;
+    verification?: string;
     cursor?: string;
     limit: number;
   }): Promise<MatchList> {
@@ -626,6 +662,19 @@ export class HistoryService {
       if (!status) throw apiError('bad_request', 'Unknown status.');
       query = query.where('m.status', '=', status);
     }
+    if (options.verification) {
+      const states = [
+        'pending',
+        'verified',
+        'diverged',
+        'unverifiable',
+        'not_applicable',
+        'failed',
+      ] as const;
+      const state = states.find((s) => s === options.verification);
+      if (!state) throw apiError('bad_request', 'Unknown verification state.');
+      query = query.where('m.verification', '=', state);
+    }
     return this.page(query, options.cursor, options.limit);
   }
 
@@ -663,9 +712,9 @@ export class HistoryService {
 
   async matchDetail(id: string, viewer: Viewer | undefined): Promise<MatchDetail> {
     const match = await this.match(id);
-    const [summary] = await summarize(this.db, [match]);
+    const [summary] = await summarize(this.db, [match], this.queueNames);
     if (!summary) throw apiError('not_found', 'No such match.');
-    const [teams, artifacts, job, economy, titles] = await Promise.all([
+    const [teams, artifacts, job, economy, titles, uploads, networkRows] = await Promise.all([
       this.db
         .selectFrom('match_team_stats')
         .selectAll()
@@ -682,15 +731,29 @@ export class HistoryService {
       this.db
         .selectFrom('engine_jobs')
         .select(['result'])
+        .where('match_id', '=', id)
         .where('kind', '=', 'verify-match')
         .where('status', '=', 'succeeded')
-        .where(sql<string>`payload->>'matchId'`, '=', id)
         .orderBy('completed_at', 'desc')
         .limit(1)
         .executeTakeFirst(),
       this.economyOf(id),
       catalogTitles(this.db, [match.map_hash]),
+      uploadTitles(this.db, [match.map_hash]),
+      this.db
+        .selectFrom('match_participants')
+        .select(['seat', 'network'])
+        .where('match_id', '=', id)
+        .where('kind', '=', 'human')
+        .where('network', 'is not', null)
+        .orderBy('seat')
+        .execute(),
     ]);
+    const tickRate = reportTickRate(match.end_report);
+    const network = networkRows.flatMap((row) => {
+      const condensed = participantNetwork(row.seat, row.network, tickRate);
+      return condensed ? [condensed] : [];
+    });
     const visibleArtifacts: MatchArtifactInfo[] = [];
     for (const artifact of artifacts) {
       if (!(await this.mayDownload(match, artifact.kind, viewer))) continue;
@@ -701,22 +764,23 @@ export class HistoryService {
         sha256: artifact.sha256,
       });
     }
-    const verdict = (job?.result ?? undefined) as Record<string, unknown> | undefined;
-    const diverged = Array.isArray(verdict?.['clients'])
-      ? (verdict['clients'] as unknown[]).filter(
-          (s): s is number => typeof s === 'number' && s >= 0 && s <= 11,
-        )
-      : undefined;
-    const rejections = orderRejections(verdict?.['orderRejections']);
+    // The verification detail is optional on the page: a verdict that no
+    // longer decodes shows none rather than failing the match page.
+    const decodedVerdict = job ? tryReadStored(STORED_VERIFY_VERDICT, job.result) : undefined;
+    const verdict = decodedVerdict?.ok ? decodedVerdict.value : undefined;
+    const diverged = verdict?.verdict === 'diverged' ? verdict.clients : undefined;
+    // orderRejections is an engine extension the open verdict schema carries
+    // through; orderRejections() checks it field by field.
+    const rejections = orderRejections(
+      verdict && 'orderRejections' in verdict ? verdict['orderRejections'] : undefined,
+    );
     const verificationDetail: VerificationDetail = {
       ...(diverged && diverged.length > 0 ? { divergedSeats: diverged } : {}),
-      ...(typeof verdict?.['reason'] === 'string'
-        ? { reason: (verdict['reason'] as string).slice(0, 2000) }
-        : {}),
+      ...(verdict?.verdict === 'unverifiable' ? { reason: verdict.reason.slice(0, 2000) } : {}),
       ...(rejections ? { orderRejections: rejections } : {}),
-      ...(match.rating_note ? { ratingNote: match.rating_note.slice(0, 500) } : {}),
+      ...(match.rating_note ? { ratingNote: ratingNoteText(match.rating_note).slice(0, 500) } : {}),
     };
-    const setup = match.setup as unknown as MatchSetup;
+    const setup = readStored(STORED_MATCH_SETUP, match.setup);
     const generator = generatorOf(setup);
     const catalog = titles.get(match.map_hash);
     const generated = generator
@@ -727,8 +791,14 @@ export class HistoryService {
           .limit(1)
           .executeTakeFirst()
       : undefined;
-    const width = catalog?.width ?? generated?.width ?? undefined;
-    const height = catalog?.height ?? generated?.height ?? undefined;
+    // A room host's premade map: the size the engine read from their upload.
+    const players = summary.participants.flatMap((p) => (p.accountId ? [p.accountId] : []));
+    const uploaded =
+      catalog || generator
+        ? undefined
+        : players.map((p) => uploads.get(match.map_hash)?.get(p)).find(Boolean);
+    const width = catalog?.width ?? generated?.width ?? uploaded?.width ?? undefined;
+    const height = catalog?.height ?? generated?.height ?? uploaded?.height ?? undefined;
     const map = {
       ...(summary?.mapTitle ? { title: summary.mapTitle } : {}),
       ...(catalog ? { mapId: catalog.mapId } : {}),
@@ -751,6 +821,7 @@ export class HistoryService {
       map,
       verificationDetail,
       economy,
+      ...(network.length > 0 ? { network } : {}),
     };
   }
 

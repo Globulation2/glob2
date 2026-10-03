@@ -116,8 +116,11 @@ Element LANFindScreen::build(const Presentation &p)
 
 `Glob2UI::Screen` paints the live colony background and keeps the frontend theme
 active for its lifetime. `Glob2UI::Dialog`
-is the same for frontend modals; `Glob2UI::InGameDialog` uses the dark in-match
-theme for gameplay and editor dialogs. `endExecute(code)` and the
+is the same for frontend modals; `Glob2UI::InGameDialog` uses `inGameTheme()`,
+the frontend's paper look, for gameplay and editor dialogs on every host. On big
+desktop windows whose interface scale follows a 100 % desktop, `Glob2UI::Screen`
+enlarges points and text up to 1.5x (`ui::comfortScale`, via
+`UIScreen::adjustPresentation`); gameplay and dialogs keep their sizes. `endExecute(code)` and the
 `ScreenStack` completion callback remain the navigation contract; push child
 screens onto the stack rather than running them inline.
 
@@ -199,14 +202,12 @@ framework:
 accent, selected, hover, focus, scrim, disabled, danger, success, shadow,
 pressed, backdrop, neutral, placeholder), font roles (Title, Heading, Body, Support,
 Caption mapped to toolkit font names) and metrics in points. `frontendTheme()`
-is the paper look for menus. In-game dialogs pick their theme from the host:
-`classicInGameTheme()` on pointer hosts is the navy box with the sprite frame
-and gold 40-point buttons (the theme's `buttonPainter` hook hands button
-backgrounds to the classic `Style` sprites), `inGameTheme()` on touch hosts is
-the dark purple sheet of the touch HUD. `InGameDialog::classic()` tells a
-dialog which one it got, so classic builds omit titles, use `classicButton()`
-and `dialogActions()`, and keep their former fixed widths through
-`maxWidth()`. Controls take colors and sizes from the theme only; a screen
+is the paper look for menus, and `inGameTheme()` the same look for in-game
+dialogs and the results screen, so a match's menus read like the Online hub and
+the room. `classicInGameTheme()` (the former navy box with the sprite frame and
+gold 40-point buttons) is no longer used by `InGameDialog`; `classic()` is
+always false, and the `classicButton()` branches in dialogs are kept only until
+they are removed. Controls take colors and sizes from the theme only; a screen
 that needs a color for data (a team swatch) passes it to `swatch()` or
 `TextOptions::color`. Every colour outside gameplay's own HUD palette comes
 from one of the three themes: the old `FrontendTheme` style that paints the

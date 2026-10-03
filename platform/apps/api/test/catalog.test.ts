@@ -3,12 +3,15 @@
 // details, files, previews and blobs by hash, filters and paging, likes,
 // reports and moderation roles, download and play counts, and rooms that use
 // catalog versions by hash.
+import { createHash } from 'node:crypto';
+import { gzipSync } from 'node:zlib';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { checkDocument as check, simVersionKey } from '@glob2/protocol';
 import {
   FakeEngine,
   RELAY_KEY,
   fakeMapBytes,
+  unloadableMapBytes,
   guestPlayer,
   registerRelay,
   registeredPlayer,
@@ -19,6 +22,7 @@ import {
 import { SIM, createHarness, json, type Harness, type Instance } from './support.ts';
 
 const ORIGIN = 'http://play.test';
+const sha256 = (bytes: Uint8Array) => createHash('sha256').update(bytes).digest('hex');
 
 let harness: Harness;
 let a: Instance;
@@ -209,7 +213,7 @@ describe('creating maps and uploading versions', () => {
   it('marks files the engine cannot load invalid and hides them from everyone but the owner', async () => {
     const owner = await registered();
     const map = await createMap(owner, { visibility: 'public' });
-    const response = await upload(owner, map.id, new Uint8Array(Buffer.from('not a map at all')));
+    const response = await upload(owner, map.id, unloadableMapBytes());
     const version = await json(response);
     await engine.runPending();
     const mine = await json(
@@ -225,6 +229,69 @@ describe('creating maps and uploading versions', () => {
     // A map without a valid version is not listed, even when public.
     const listed = await json(await api('GET', '/api/v1/maps?limit=100'));
     expect((listed['items'] as { id: string }[]).some((m) => m.id === map.id)).toBe(false);
+  });
+
+  it('answers files that are not maps at once, in plain words, and stores nothing', async () => {
+    const owner = await registered();
+    const map = await createMap(owner);
+    const junk = await upload(owner, map.id, new Uint8Array(Buffer.from('a holiday photo')));
+    expect(junk.status).toBe(400);
+    expect(await json(junk)).toMatchObject({
+      code: 'bad_request',
+      message: expect.stringMatching(/^This file isn't a Globulation 2 map\./),
+      details: { problem: 'not_a_map' },
+    });
+    const newer = Buffer.from(fakeMapBytes(2, 31));
+    newer.writeInt32BE(SIM.versionMinor + 1, newer.readUInt32BE(0) + 8);
+    expect(await json(await upload(owner, map.id, newer))).toMatchObject({
+      details: { problem: 'newer_version' },
+      message: expect.stringMatching(/newer version of Globulation 2/),
+    });
+    const detail = await json(await api('GET', `/api/v1/maps/${map.id}`, owner));
+    expect(detail['versions']).toEqual([]);
+  });
+
+  it('accepts the game’s own .map.gz files and stores the bytes the game loads', async () => {
+    const owner = await registered();
+    const map = await createMap(owner, { title: 'Compressed' });
+    const raw = fakeMapBytes(2, 4242);
+    const response = await upload(owner, map.id, gzipSync(raw));
+    expect(response.status).toBe(201);
+    const version = await json(response);
+    expect(version).toMatchObject({ hash: sha256(raw), size: raw.length });
+    await engine.runPending();
+    const checked = await json(
+      await api('GET', `/api/v1/maps/${map.id}/versions/${version['hash']}`, owner),
+    );
+    expect(checked).toMatchObject({ validation: 'valid' });
+    const file = await api('GET', `/api/v1/maps/${map.id}/versions/${version['hash']}/file`);
+    expect(Buffer.from(await file.arrayBuffer()).equals(raw)).toBe(true);
+  });
+
+  it('reuses the verdict of a file checked before its map was created', async () => {
+    const owner = await registered();
+    const raw = fakeMapBytes(3, 8080);
+    // The web app's upload form: check the file first (no simVersion: the newest)…
+    const checked = await api(
+      'POST',
+      '/api/v1/uploads?format=map&fileName=x.map.gz',
+      owner,
+      gzipSync(raw),
+    );
+    expect(checked.status).toBe(201);
+    const upload1 = await json(checked);
+    expect(upload1).toMatchObject({ status: 'pending', sha256: sha256(raw) });
+    await engine.runPending();
+    expect(
+      await json(await api('GET', `/api/v1/uploads/${upload1['id'] as string}`, owner)),
+    ).toMatchObject({ status: 'valid', map: { teamCount: 3 } });
+    // …then create the map and its first version: valid at once, no second check.
+    const jobsBefore = engine.ran.filter((j) => j.kind === 'validate-map').length;
+    const map = await createMap(owner);
+    const version = await json(await upload(owner, map.id, raw));
+    expect(version).toMatchObject({ validation: 'valid', teamCount: 3 });
+    await engine.runPending();
+    expect(engine.ran.filter((j) => j.kind === 'validate-map').length).toBe(jobsBefore);
   });
 
   it('reuses a validation of the same bytes and refuses other owners, bad versions and empty bodies', async () => {

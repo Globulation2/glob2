@@ -76,7 +76,7 @@ python3 test/run_tests.py      # run them; --list, --filter, --tag, --shard
 - Dependencies include pinned SDL3/SDL3_net/SDL3_ttf/SDL3_image (see `scons/sdl3-versions.json`) and WebP 1.6.0 for optimized packaged artwork, Vorbis/Ogg, Speex, OpenGL/GLU, libepoxy,
   zlib, fribidi and pcre; PortAudio is optional. All native multiplayer builds (client, server, router and relay) require OpenSSL and the header-only
   Boost.Beast and Boost.Asio; nothing else uses Boost. `role=relay` builds only
-  `glob2-relay` and its tests and links no SDL library (it still needs SDL's headers);
+  `glob2-relay` and its tests and links no SDL library (it still needs SDL3's headers);
   see [the relay guide](../multiplayer/relay.md).
   The source helper and vcpkg overlay apply the same reviewed SDL3 X11 patches:
   an [upstream reparenting fix](https://github.com/libsdl-org/SDL/commit/25f4af8fcf7d1a9a06be8d89694b1c612158f41f)
