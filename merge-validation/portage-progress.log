@@ -1,0 +1,119 @@
+Settings::load("preferences.txt") : error, can't open file.
+BEGIN portage-lakes 128 2 1
+END portage-lakes 128 2 1 ok
+BEGIN portage-lakes 128 2 2
+END portage-lakes 128 2 2 ok
+BEGIN portage-lakes 128 2 3
+END portage-lakes 128 2 3 ok
+BEGIN portage-lakes 128 2 4
+END portage-lakes 128 2 4 ok
+BEGIN portage-lakes 128 2 5
+END portage-lakes 128 2 5 ok
+BEGIN portage-lakes 128 4 1
+END portage-lakes 128 4 1 ok
+BEGIN portage-lakes 128 4 2
+END portage-lakes 128 4 2 ok
+BEGIN portage-lakes 128 4 3
+END portage-lakes 128 4 3 ok
+BEGIN portage-lakes 128 4 4
+END portage-lakes 128 4 4 ok
+BEGIN portage-lakes 128 4 5
+END portage-lakes 128 4 5 ok
+BEGIN portage-lakes 256 2 1
+END portage-lakes 256 2 1 ok
+BEGIN portage-lakes 256 2 2
+END portage-lakes 256 2 2 ok
+BEGIN portage-lakes 256 2 3
+END portage-lakes 256 2 3 ok
+BEGIN portage-lakes 256 2 4
+END portage-lakes 256 2 4 ok
+BEGIN portage-lakes 256 2 5
+END portage-lakes 256 2 5 ok
+BEGIN portage-lakes 256 3 1
+END portage-lakes 256 3 1 ok
+BEGIN portage-lakes 256 3 2
+END portage-lakes 256 3 2 ok
+BEGIN portage-lakes 256 3 3
+END portage-lakes 256 3 3 ok
+BEGIN portage-lakes 256 3 4
+END portage-lakes 256 3 4 ok
+BEGIN portage-lakes 256 3 5
+END portage-lakes 256 3 5 ok
+BEGIN portage-lakes 256 4 1
+END portage-lakes 256 4 1 ok
+BEGIN portage-lakes 256 4 2
+END portage-lakes 256 4 2 ok
+BEGIN portage-lakes 256 4 3
+END portage-lakes 256 4 3 ok
+BEGIN portage-lakes 256 4 4
+END portage-lakes 256 4 4 ok
+BEGIN portage-lakes 256 4 5
+END portage-lakes 256 4 5 ok
+BEGIN portage-lakes 256 6 1
+END portage-lakes 256 6 1 ok
+BEGIN portage-lakes 256 6 2
+END portage-lakes 256 6 2 ok
+BEGIN portage-lakes 256 6 3
+END portage-lakes 256 6 3 ok
+BEGIN portage-lakes 256 6 4
+END portage-lakes 256 6 4 ok
+BEGIN portage-lakes 256 6 5
+END portage-lakes 256 6 5 ok
+BEGIN portage-lakes 256 8 1
+END portage-lakes 256 8 1 ok
+BEGIN portage-lakes 256 8 2
+END portage-lakes 256 8 2 ok
+BEGIN portage-lakes 256 8 3
+END portage-lakes 256 8 3 ok
+BEGIN portage-lakes 256 8 4
+END portage-lakes 256 8 4 ok
+BEGIN portage-lakes 256 8 5
+END portage-lakes 256 8 5 ok
+BEGIN portage-lakes 256 12 1
+END portage-lakes 256 12 1 ok
+BEGIN portage-lakes 256 12 2
+END portage-lakes 256 12 2 ok
+BEGIN portage-lakes 256 12 3
+END portage-lakes 256 12 3 ok
+BEGIN portage-lakes 256 12 4
+END portage-lakes 256 12 4 ok
+BEGIN portage-lakes 256 12 5
+END portage-lakes 256 12 5 ok
+BEGIN portage-lakes 512 4 1
+END portage-lakes 512 4 1 ok
+BEGIN portage-lakes 512 4 2
+END portage-lakes 512 4 2 ok
+BEGIN portage-lakes 512 4 3
+END portage-lakes 512 4 3 ok
+BEGIN portage-lakes 512 12 1
+END portage-lakes 512 12 1 ok
+BEGIN portage-lakes 512 12 2
+END portage-lakes 512 12 2 ok
+BEGIN portage-lakes 512 12 3
+END portage-lakes 512 12 3 ok
+BEGIN portage-lakes 512 13 1
+END portage-lakes 512 13 1 ok
+BEGIN portage-lakes 512 13 2
+END portage-lakes 512 13 2 ok
+BEGIN portage-lakes 512 13 3
+END portage-lakes 512 13 3 ok
+BEGIN portage-lakes 512 14 1
+END portage-lakes 512 14 1 ok
+BEGIN portage-lakes 512 14 2
+END portage-lakes 512 14 2 ok
+BEGIN portage-lakes 512 14 3
+END portage-lakes 512 14 3 ok
+BEGIN portage-lakes 512 15 1
+END portage-lakes 512 15 1 ok
+BEGIN portage-lakes 512 15 2
+END portage-lakes 512 15 2 ok
+BEGIN portage-lakes 512 15 3
+END portage-lakes 512 15 3 ok
+BEGIN portage-lakes 512 16 1
+END portage-lakes 512 16 1 ok
+BEGIN portage-lakes 512 16 2
+END portage-lakes 512 16 2 ok
+BEGIN portage-lakes 512 16 3
+END portage-lakes 512 16 3 ok
+portage-lakes        128/2:5/5 128/4:5/5 256/2:5/5 256/3:5/5 256/4:5/5 256/6:5/5 256/8:5/5 256/12:5/5 512/4:3/3 512/12:3/3 512/13:3/3 512/14:3/3 512/15:3/3 512/16:3/3
+sweep: 0 failing combinations
