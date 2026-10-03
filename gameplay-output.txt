@@ -1,0 +1,23 @@
+GLOB2_TEST_BUILD compiler=15.2.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "", "CPPDEFINES": "HAVE_CONFIG_H SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC -O3 -s", "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -O3 -s -fwhole-program -Wl,-rpath,/home/bradley/.codex/worktrees/colony-skins/glob2/artifacts/skins/sdk/lib -Wl,--enable-new-dtags"}, "revision": "9e82bbc7b040957a04b52a17001887c153f21397", "sourceStatus": [], "sourceTreeSha256": "82d67a0d3d2856190212cf070c288da44d72f59eb158bad2a7d9dce6571f5334"}
+libdecor-gtk-WARNING: Failed to initialize GTK
+Failed to load plugin 'libdecor-gtk.so': failed to init
+No plugins found, falling back on no decorations
+FileManager::writeAtomically: /tmp/glob2-test-3_dtokp5/profile/replays/blocked.replay: File replacement failed: iostream error
+PASS: editor buffered paint, focus/second-finger cancellation, one-building drag and invalid/UI drops
+PASS: file dialog UTF-8/IME, shared filename commands, busy/error retry and scrolling
+PASS: editor area name IME, touch confirmation and cancellation
+PASS: editor buffered paint, focus/second-finger cancellation, one-building drag and invalid/UI drops
+PASS: file dialog UTF-8/IME, shared filename commands, busy/error retry and scrolling
+PASS: editor area name IME, touch confirmation and cancellation
+PASS: editor buffered paint, focus/second-finger cancellation, one-building drag and invalid/UI drops
+PASS: file dialog UTF-8/IME, shared filename commands, busy/error retry and scrolling
+PASS: editor area name IME, touch confirmation and cancellation
+PASS: editor buffered paint, focus/second-finger cancellation, one-building drag and invalid/UI drops
+PASS: file dialog UTF-8/IME, shared filename commands, busy/error retry and scrolling
+PASS: editor area name IME, touch confirmation and cancellation
+PASS localized German/Japanese inspectors and editor interactions in both phone orientations
+PASS: editor buffered paint, focus/second-finger cancellation, one-building drag and invalid/UI drops
+PASS: file dialog UTF-8/IME, shared filename commands, busy/error retry and scrolling
+PASS: editor area name IME, touch confirmation and cancellation
+PASS: actual gameplay touch, toroidal pan, preview, confirmation, validation, cancellation and duplicate suppression
