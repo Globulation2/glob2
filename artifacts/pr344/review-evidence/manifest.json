@@ -1,0 +1,14 @@
+{
+  "feature_revision": "42494d5fb43624fd373a3afa1e09247c4ab5cd5d",
+  "base_revision": "3092bdedab398157c7549c034637b97fa2d6daca",
+  "full_native_revision": "1488d8703f05d6c4ebe0671ce1e13076e4d61c34",
+  "compiler": "GCC 15.2.0",
+  "SDL": "3.4.16",
+  "platform": "Linux x86_64",
+  "flags": "release=1 -O3 -std=gnu++20",
+  "binary_sha256": {
+    "glob2": "bc5aa7b2ef509d7a2fbf19db2196d36bdd4effe710cf38a41359279211aee557",
+    "glob2-engine-tests": "68416580afa5e9d64637cd23821c5f7381fb64ea10c25eee51b1b44d035907d4",
+    "glob2-unit-tests": "1774a49db2281339af9a63ae28b3270febede08f2a6ca468b91e7d3b6bb07eac"
+  }
+}

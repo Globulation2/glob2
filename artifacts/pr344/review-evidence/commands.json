@@ -1,0 +1,421 @@
+[
+  {
+    "name": "initial",
+    "command": [
+      "/home/bradley/.codex/worktrees/e64e/glob2/build/linux/client/release/src/glob2",
+      "--run-game",
+      "--generator",
+      "15",
+      "--map-seed",
+      "42",
+      "--param",
+      "width=6",
+      "--param",
+      "height=6",
+      "--param",
+      "teams=2",
+      "--game-seed",
+      "731",
+      "--player",
+      "maxima",
+      "--player",
+      "maxima",
+      "--ticks",
+      "1",
+      "--save",
+      "initial",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/e64e/glob2/artifacts/map-cli/diagnostics/initial-1791051609428991427"
+    ],
+    "environment": {},
+    "exit_code": 0,
+    "elapsed_seconds": 0.513874463737011
+  },
+  {
+    "name": "off-4",
+    "command": [
+      "/home/bradley/.codex/worktrees/e64e/glob2/build/linux/client/release/src/glob2",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/e64e/glob2/artifacts/map-cli/diagnostics/initial-1791051609428991427/initial.game.gz",
+      "--ticks",
+      "1200",
+      "--telemetry",
+      "checksums",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/e64e/glob2/artifacts/map-cli/diagnostics/off-4"
+    ],
+    "environment": {},
+    "exit_code": 0,
+    "elapsed_seconds": 2.3362962640821934
+  },
+  {
+    "name": "fields-4",
+    "command": [
+      "/home/bradley/.codex/worktrees/e64e/glob2/build/linux/client/release/src/glob2",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/e64e/glob2/artifacts/map-cli/diagnostics/initial-1791051609428991427/initial.game.gz",
+      "--ticks",
+      "1200",
+      "--telemetry",
+      "checksums",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/e64e/glob2/artifacts/map-cli/diagnostics/fields-4",
+      "--diagnostic-fields",
+      "maxima",
+      "--diagnostic-interval",
+      "500"
+    ],
+    "environment": {},
+    "exit_code": 0,
+    "elapsed_seconds": 0.8182196910493076
+  },
+  {
+    "name": "png-4",
+    "command": [
+      "/home/bradley/.codex/worktrees/e64e/glob2/build/linux/client/release/src/glob2",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/e64e/glob2/artifacts/map-cli/diagnostics/initial-1791051609428991427/initial.game.gz",
+      "--ticks",
+      "1200",
+      "--telemetry",
+      "checksums",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/e64e/glob2/artifacts/map-cli/diagnostics/png-4",
+      "--diagnostic-fields",
+      "maxima",
+      "--diagnostic-interval",
+      "500",
+      "--diagnostic-png",
+      "true"
+    ],
+    "environment": {},
+    "exit_code": 0,
+    "elapsed_seconds": 86.05013787932694
+  },
+  {
+    "name": "threaded-3",
+    "command": [
+      "/home/bradley/.codex/worktrees/e64e/glob2/build/linux/client/release/src/glob2",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/e64e/glob2/artifacts/map-cli/diagnostics/initial-1791051609428991427/initial.game.gz",
+      "--ticks",
+      "1200",
+      "--telemetry",
+      "checksums",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/e64e/glob2/artifacts/map-cli/diagnostics/threaded-3",
+      "--diagnostic-fields",
+      "maxima",
+      "--diagnostic-interval",
+      "500",
+      "--diagnostic-png",
+      "true"
+    ],
+    "environment": {
+      "GLOB2_SIM_THREAD": "1"
+    },
+    "exit_code": 0,
+    "elapsed_seconds": 133.2042903979309
+  },
+  {
+    "name": "continued-off-2",
+    "command": [
+      "/home/bradley/.codex/worktrees/e64e/glob2/build/linux/client/release/src/glob2",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/e64e/glob2/artifacts/map-cli/diagnostics/off-4/final.game.gz",
+      "--ticks",
+      "1500",
+      "--telemetry",
+      "checksums",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/e64e/glob2/artifacts/map-cli/diagnostics/continued-off-2"
+    ],
+    "environment": {},
+    "exit_code": 0,
+    "elapsed_seconds": 1.7136237709783018
+  },
+  {
+    "name": "continued-png-2",
+    "command": [
+      "/home/bradley/.codex/worktrees/e64e/glob2/build/linux/client/release/src/glob2",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/e64e/glob2/artifacts/map-cli/diagnostics/png-4/final.game.gz",
+      "--ticks",
+      "1500",
+      "--telemetry",
+      "checksums",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/e64e/glob2/artifacts/map-cli/diagnostics/continued-png-2",
+      "--diagnostic-fields",
+      "maxima",
+      "--diagnostic-interval",
+      "500"
+    ],
+    "environment": {},
+    "exit_code": 0,
+    "elapsed_seconds": 1.070901267696172
+  },
+  {
+    "name": "render",
+    "command": [
+      "/home/bradley/.codex/worktrees/e64e/glob2/build/linux/client/release/src/glob2",
+      "--render-game",
+      "/home/bradley/.codex/worktrees/e64e/glob2/artifacts/map-cli/diagnostics/initial-1791051609428991427/initial.game.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/e64e/glob2/artifacts/map-cli/diagnostics/standalone.png",
+      "--render-max-pixels",
+      "128"
+    ],
+    "environment": {},
+    "exit_code": 0,
+    "elapsed_seconds": 1.2114150668494403
+  },
+  {
+    "name": "large-map",
+    "command": [
+      "/home/bradley/.codex/worktrees/e64e/glob2/build/linux/client/release/src/glob2",
+      "--generate-map",
+      "maze",
+      "--seed",
+      "7",
+      "--width",
+      "512",
+      "--height",
+      "512",
+      "--teams",
+      "2",
+      "--output",
+      "/home/bradley/.codex/worktrees/e64e/glob2/artifacts/map-cli/diagnostics/large.map.gz"
+    ],
+    "environment": {},
+    "exit_code": 0,
+    "elapsed_seconds": 0.7728408216498792
+  },
+  {
+    "name": "large-render",
+    "command": [
+      "/home/bradley/.codex/worktrees/e64e/glob2/build/linux/client/release/src/glob2",
+      "--render-game",
+      "/home/bradley/.codex/worktrees/e64e/glob2/artifacts/map-cli/diagnostics/large.map.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/e64e/glob2/artifacts/map-cli/diagnostics/large.png",
+      "--render-max-pixels",
+      "128"
+    ],
+    "environment": {},
+    "exit_code": 0,
+    "elapsed_seconds": 1.746984951198101
+  },
+  {
+    "name": "overlay",
+    "command": [
+      "/home/bradley/.codex/worktrees/e64e/glob2/build/linux/client/release/src/glob2",
+      "--render-game",
+      "/home/bradley/.codex/worktrees/e64e/glob2/artifacts/map-cli/diagnostics/initial-1791051609428991427/initial.game.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/e64e/glob2/artifacts/map-cli/diagnostics/overlay.png",
+      "--render-max-pixels",
+      "128",
+      "--render-field",
+      "/home/bradley/.codex/worktrees/e64e/glob2/artifacts/map-cli/diagnostics/fields-4/diagnostics/tick-0000004.player0.team0/threat.field",
+      "--field-color",
+      "255,40,40"
+    ],
+    "environment": {},
+    "exit_code": 0,
+    "elapsed_seconds": 2.33848474919796
+  },
+  {
+    "name": "invalid-render-0",
+    "command": [
+      "/home/bradley/.codex/worktrees/e64e/glob2/build/linux/client/release/src/glob2",
+      "--render-game",
+      "/home/bradley/.codex/worktrees/e64e/glob2/artifacts/map-cli/diagnostics/initial-1791051609428991427/initial.game.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/e64e/glob2/artifacts/map-cli/diagnostics/standalone.png",
+      "--render-max-pixels",
+      "0"
+    ],
+    "environment": {},
+    "exit_code": 1,
+    "elapsed_seconds": 0.03579739620909095
+  },
+  {
+    "name": "invalid-render-1",
+    "command": [
+      "/home/bradley/.codex/worktrees/e64e/glob2/build/linux/client/release/src/glob2",
+      "--render-game",
+      "/home/bradley/.codex/worktrees/e64e/glob2/artifacts/map-cli/diagnostics/initial-1791051609428991427/initial.game.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/e64e/glob2/artifacts/map-cli/diagnostics/standalone.png",
+      "--render-max-pixels",
+      "8193"
+    ],
+    "environment": {},
+    "exit_code": 1,
+    "elapsed_seconds": 0.08073861710727215
+  },
+  {
+    "name": "invalid-render-2",
+    "command": [
+      "/home/bradley/.codex/worktrees/e64e/glob2/build/linux/client/release/src/glob2",
+      "--render-game",
+      "/home/bradley/.codex/worktrees/e64e/glob2/artifacts/map-cli/diagnostics/initial-1791051609428991427/initial.game.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/e64e/glob2/artifacts/map-cli/diagnostics/standalone.png",
+      "--field-color",
+      "1,2,3"
+    ],
+    "environment": {},
+    "exit_code": 1,
+    "elapsed_seconds": 0.03560324711725116
+  },
+  {
+    "name": "invalid-render-3",
+    "command": [
+      "/home/bradley/.codex/worktrees/e64e/glob2/build/linux/client/release/src/glob2",
+      "--render-game",
+      "/home/bradley/.codex/worktrees/e64e/glob2/artifacts/map-cli/diagnostics/initial-1791051609428991427/initial.game.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/e64e/glob2/artifacts/map-cli/diagnostics/standalone.png",
+      "--render-field",
+      "/home/bradley/.codex/worktrees/e64e/glob2/artifacts/map-cli/diagnostics/fields-4/diagnostics/tick-0000004.player0.team0/threat.field",
+      "--field-color",
+      "256,0,0"
+    ],
+    "environment": {},
+    "exit_code": 1,
+    "elapsed_seconds": 0.14394309790804982
+  },
+  {
+    "name": "invalid-render-4",
+    "command": [
+      "/home/bradley/.codex/worktrees/e64e/glob2/build/linux/client/release/src/glob2",
+      "--render-game",
+      "/home/bradley/.codex/worktrees/e64e/glob2/artifacts/map-cli/diagnostics/initial-1791051609428991427/initial.game.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/e64e/glob2/artifacts/map-cli/diagnostics/standalone.png",
+      "--preview-size",
+      "128"
+    ],
+    "environment": {},
+    "exit_code": 1,
+    "elapsed_seconds": 0.09009139006957412
+  },
+  {
+    "name": "invalid-run-0",
+    "command": [
+      "/home/bradley/.codex/worktrees/e64e/glob2/build/linux/client/release/src/glob2",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/e64e/glob2/artifacts/map-cli/diagnostics/initial-1791051609428991427/initial.game.gz",
+      "--ticks",
+      "1",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/e64e/glob2/artifacts/map-cli/diagnostics/invalid-0",
+      "--diagnostic-interval",
+      "1"
+    ],
+    "environment": {},
+    "exit_code": 2,
+    "elapsed_seconds": 0.08003919990733266
+  },
+  {
+    "name": "invalid-run-1",
+    "command": [
+      "/home/bradley/.codex/worktrees/e64e/glob2/build/linux/client/release/src/glob2",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/e64e/glob2/artifacts/map-cli/diagnostics/initial-1791051609428991427/initial.game.gz",
+      "--ticks",
+      "1",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/e64e/glob2/artifacts/map-cli/diagnostics/invalid-1",
+      "--diagnostic-fields",
+      "unknown"
+    ],
+    "environment": {},
+    "exit_code": 2,
+    "elapsed_seconds": 0.08084486611187458
+  },
+  {
+    "name": "invalid-run-2",
+    "command": [
+      "/home/bradley/.codex/worktrees/e64e/glob2/build/linux/client/release/src/glob2",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/e64e/glob2/artifacts/map-cli/diagnostics/initial-1791051609428991427/initial.game.gz",
+      "--ticks",
+      "1",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/e64e/glob2/artifacts/map-cli/diagnostics/invalid-2",
+      "--diagnostic-fields",
+      "maxima",
+      "--diagnostic-interval",
+      "0"
+    ],
+    "environment": {},
+    "exit_code": 2,
+    "elapsed_seconds": 0.038899627048522234
+  },
+  {
+    "name": "invalid-run-3",
+    "command": [
+      "/home/bradley/.codex/worktrees/e64e/glob2/build/linux/client/release/src/glob2",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/e64e/glob2/artifacts/map-cli/diagnostics/initial-1791051609428991427/initial.game.gz",
+      "--ticks",
+      "1",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/e64e/glob2/artifacts/map-cli/diagnostics/invalid-3",
+      "--diagnostic-fields",
+      "maxima",
+      "--diagnostic-png",
+      "maybe"
+    ],
+    "environment": {},
+    "exit_code": 2,
+    "elapsed_seconds": 0.03872677916660905
+  },
+  {
+    "name": "write-failure",
+    "command": [
+      "/home/bradley/.codex/worktrees/e64e/glob2/build/linux/client/release/src/glob2",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/e64e/glob2/artifacts/map-cli/diagnostics/initial-1791051609428991427/initial.game.gz",
+      "--ticks",
+      "1200",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/e64e/glob2/artifacts/map-cli/diagnostics/write-failure-1791051973109932483",
+      "--telemetry",
+      "checksums",
+      "--diagnostic-fields",
+      "maxima",
+      "--diagnostic-interval",
+      "500"
+    ],
+    "environment": {},
+    "exit_code": 0,
+    "elapsed_seconds": 0.9434205912984908
+  }
+]
