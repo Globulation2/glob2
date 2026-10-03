@@ -1440,7 +1440,8 @@ void GameGUITouch::select(ViewPoint point)
 		hitUnit = unitAt(screenPoint, InGameTouchTheme::flagReach);
 	gui.view.mouseUnit = Game::refOf(hitUnit);
 	const bool wasInspecting = inspecting();
-	const bool wasOpen = panelOpen;
+	// A read-only card is not a palette to restore after a building inspector.
+	const bool wasOpen = panelOpen && !inspectingReadOnly();
 	const int oldDisplay = gui.displayMode;
 	// Desktop selection deliberately sticks on empty terrain. A completed map
 	// tap on touch dismisses the inspector; the shared picker can immediately
