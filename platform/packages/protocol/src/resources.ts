@@ -137,6 +137,12 @@ export const QueueInfo = Open({
   mode: Type.Union([Type.Literal('1v1'), Type.Literal('2v2')]),
   rated: Type.Boolean(),
   aiBackfillSeconds: Type.Optional(Type.Integer({ minimum: 0 })),
+  acceptSeconds: Type.Optional(
+    Type.Integer({
+      minimum: 0,
+      description: 'Accept prompt length for all-human groups; 0 = none.',
+    }),
+  ),
 });
 export type QueueInfo = Static<typeof QueueInfo>;
 

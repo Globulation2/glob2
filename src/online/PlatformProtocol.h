@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 
+#include "SimVersion.h"
+
 #include <nlohmann/json.hpp>
 
 #include <cstdint>
@@ -63,19 +65,8 @@ std::string encodeRequest(const std::string &id, const std::string &method, cons
 ServerMessage decodeServerMessage(std::string_view text);
 ApiError errorFromJson(const Json &body, const std::string &fallbackCode);
 
-// SimVersion: the build's deterministic simulation identity.
-struct SimVersion
-{
-	int versionMinor = 0;
-	int netProtocol = 0;
-	std::string dataHash; // 64 lowercase hex digits
-	Json toJson() const;
-	// VERSION_MINOR and NET_PROTOCOL_VERSION of this build. The data hash is
-	// not computed by the engine yet (see docs/multiplayer/client.md); until it
-	// is, this build reports 64 zeros and the platform answers
-	// simSupported=false, which still allows sign-in.
-	static SimVersion local();
-};
+// SimVersion (SimVersion.h): the build's deterministic simulation identity;
+// SimVersion::local() is what the client reports in session.hello.
 
 // ClientPlatform: desktop, android, ios or browser, from the build target.
 const char *clientPlatform();

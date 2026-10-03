@@ -96,8 +96,11 @@ if not env['server']:
         platform_probe = local.Program('platform-client-probe', [
             'online/HttpFetch.cpp', 'online/HttpFetchCommon.cpp', 'online/InstanceConfig.cpp',
             'online/MemoryStorage.cpp', 'online/PlatformClient.cpp', 'online/PlatformProtocol.cpp',
-            'net/NetTransport.cpp', 'net/WssTransport.cpp', 'net/NetworkConfig.cpp', 'net/LanIdentity.cpp',
-            local.Object('PlatformClientProbe.o', '#test/PlatformClientProbe.cpp')] + platform_trust_sources)
+            'online/SimVersion.cpp', 'online/Sha256.cpp',
+            'net/NetTransport.cpp', 'net/TcpTransport.cpp', 'net/WssTransport.cpp', 'net/NetworkConfig.cpp', 'net/LanIdentity.cpp',
+            local.Object('PlatformClientProbe.o', '#test/PlatformClientProbe.cpp')] + platform_trust_sources
+            # SimVersion::local() hashes the simulation data through libgag's file manager.
+            + ['../libgag/src/libgag.a'])
         local.Alias('transport-test', platform_probe)
 
 #Add libgag, not as a library, but as an object

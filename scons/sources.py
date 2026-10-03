@@ -120,6 +120,7 @@ CLIENT_SOURCES = (
     'EngineLoaders.cpp',
     'EngineRun.cpp',
     'Headless.cpp',
+    'VerifyMatch.cpp',
     'MapStudy.cpp',
     'FertilityCalculator.cpp',
     'map/FertilityField.cpp',
@@ -414,6 +415,12 @@ CLIENT_SOURCES = (
     'net/message/RouterAdminMessages.cpp',
     'net/message/RouterMessages.cpp',
     'net/NetReteamingInformation.cpp',
+    'net/turn/JitterBuffer.cpp',
+    'net/turn/MatchRecord.cpp',
+    'net/turn/TurnMessages.cpp',
+    'net/turn/TurnSequencer.cpp',
+    'net/turn/TurnLockstep.cpp',
+    'net/turn/TurnSession.cpp',
     'net/NetTestSuite.cpp',
     'NewMapScreen.cpp',
     'Order.cpp',
@@ -557,6 +564,8 @@ CLIENT_SOURCES = (
     'online/PlatformProtocol.cpp',
     'online/Sha256.cpp',
     'online/UserDirectoryStorage.cpp',
+    'online/MatchSetup.cpp',
+    'online/SimVersion.cpp',
 )
 
 SERVER_SOURCES = (
@@ -590,6 +599,7 @@ SERVER_SOURCES = (
     'net/message/RouterAdminMessages.cpp',
     'net/message/RouterMessages.cpp',
     'net/NetReteamingInformation.cpp',
+    'net/turn/TurnMessages.cpp',
     'net/NetTestSuite.cpp',
     'Order.cpp',
     'OrderBuilding.cpp',
@@ -751,6 +761,6 @@ INCLUDE_DIRECTORIES = (
     'src/map/generator/shared',
     'src/map/generator/shared/legacy',
     'src/map/generator/compatibility', 'src/map/gradient', 'src/map/io', 'src/map/pathfind',
-    'src/net', 'src/net/irc', 'src/net/message', 'src/sgsl', 'src/team', 'src/unit',
+    'src/net', 'src/net/irc', 'src/net/message', 'src/net/turn', 'src/sgsl', 'src/team', 'src/unit',
     'src/online', 'third_party/nlohmann-json/include',
 )

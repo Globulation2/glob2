@@ -192,20 +192,6 @@ ServerMessage decodeServerMessage(std::string_view text)
 	return message;
 }
 
-Json SimVersion::toJson() const
-{
-	return {{"versionMinor", versionMinor}, {"netProtocol", netProtocol}, {"dataHash", dataHash}};
-}
-
-SimVersion SimVersion::local()
-{
-	SimVersion version;
-	version.versionMinor = VERSION_MINOR;
-	version.netProtocol = NET_PROTOCOL_VERSION;
-	version.dataHash = std::string(64, '0');
-	return version;
-}
-
 const char *clientPlatform()
 {
 #if defined(__EMSCRIPTEN__)

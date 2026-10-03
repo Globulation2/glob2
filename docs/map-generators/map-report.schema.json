@@ -67,6 +67,10 @@
           "type": "boolean",
           "description": ""
         },
+        "format_version_minor": {
+          "type": "integer",
+          "description": "Save-format version (VERSION_MINOR) the input file was written with."
+        },
         "tick": {
           "type": "integer",
           "description": "Current simulation tick; no ticks are run by analysis."
