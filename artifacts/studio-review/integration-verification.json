@@ -1,5 +1,5 @@
 {
-  "featureCommit": "544bceb2b565f5010d1aef7c6459e7592cecd325",
+  "featureCommit": "e875e6798de258f0790395fa65286be5f04bfd8e",
   "foundationCommit": "bc8543f273228fe9dabcfac28a423e02453bb848",
   "platform": {
     "passed": 412,
@@ -41,5 +41,6 @@
     "import": "passed",
     "reload": "passed",
     "log": "artifacts/merge-native-shapes.log"
-  }
+  },
+  "navigationRegression": "Mocked profile fetches finish before querying and clicking the current match row; full native-enabled platform suite passes."
 }
