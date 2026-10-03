@@ -1,6 +1,8 @@
 // Real native integration; provider calls are replaced with deterministic reference-image delivery.
 // GLOB2_BINARY and MAP_PYTHON enable the suite. No provider credentials or payment calls.
 import { randomUUID } from 'node:crypto';
+import { mkdir, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
@@ -146,6 +148,22 @@ describe.runIf(binary)('native AI map delivery', () => {
         .where('sha256', '=', ready.map_hash!)
         .executeTakeFirstOrThrow();
       expect(blobs.visibility).toBe('private');
+      const evidence = process.env['GLOB2_EVIDENCE_DIR'];
+      if (evidence) {
+        await mkdir(evidence, { recursive: true });
+        const prefix = join(evidence, parent ? 'revision' : 'initial');
+        await writeFile(prefix + '.map', await h.blobs.read(ready.map_hash!, 64 * 1024 * 1024));
+        const delivered = await database.db
+          .selectFrom('map_versions')
+          .select('preview_hash')
+          .where('map_id', '=', ready.map_id!)
+          .executeTakeFirstOrThrow();
+        await writeFile(
+          prefix + '.png',
+          await h.blobs.read(delivered.preview_hash!, 16 * 1024 * 1024),
+        );
+        await writeFile(prefix + '.json', JSON.stringify(ready, null, 2));
+      }
       return id;
     }
     const first = await generate();
