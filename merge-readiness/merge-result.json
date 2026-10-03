@@ -1,0 +1,49 @@
+{
+  "source": "efe60cc6ad9569e8368f85f61ab20b069e646c86",
+  "staging": "3c85b26797216ac64a9c953d02c4433bbcc4a1aa",
+  "treesIdentical": true,
+  "pullRequests": [
+    {
+      "pr": 599,
+      "state": "MERGED",
+      "mergeCommit": {
+        "oid": "1c2578be4b43a66f05de80f5fecedcee050e09e3"
+      }
+    },
+    {
+      "pr": 591,
+      "mergeCommit": {
+        "oid": "6c55e0abb9676bd1255f6b752a8e1066ba7ac86a"
+      },
+      "state": "MERGED"
+    },
+    {
+      "pr": 590,
+      "mergeCommit": {
+        "oid": "93499c94e1495d8f9f04f3b0ed337f4c9717bc43"
+      },
+      "state": "MERGED"
+    },
+    {
+      "pr": 589,
+      "mergeCommit": {
+        "oid": "1494becbf2ce1b646c0780a845c8772642e95628"
+      },
+      "state": "MERGED"
+    },
+    {
+      "pr": 588,
+      "mergeCommit": {
+        "oid": "5198b2f041764b7408a8e588086286da23dfc0a4"
+      },
+      "state": "MERGED"
+    },
+    {
+      "pr": 587,
+      "mergeCommit": {
+        "oid": "3c85b26797216ac64a9c953d02c4433bbcc4a1aa"
+      },
+      "state": "MERGED"
+    }
+  ]
+}

@@ -47,7 +47,8 @@ not be described as completed Windows/macOS CI coverage.
 
 ## Scope of merging
 
-The six Hive Mind PRs are being merged down into multiplayer/staging. This is not
+All six Hive Mind PRs are merged into multiplayer/staging; its file tree matches
+the validated source exactly. See merge-result.json for the merge commits. This is not
 a merge of the separate online foundation stack into master or production
 activation. Feature and sales flags remain off. Broad release still requires a
 real multiplayer playtest, Windows/macOS containment and compatibility coverage,

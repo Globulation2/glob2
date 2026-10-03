@@ -80,7 +80,11 @@
     "sha256": "d11bda510d2972a2c5ff9d66599bceab63c581488643a768857b79f1fd66bde1"
   },
   "merge-readiness/README.md": {
-    "bytes": 3331,
-    "sha256": "f0b3a86f9521d662ed245655f336f009813c1d993e13eb4a5642e5e370f70528"
+    "bytes": 3417,
+    "sha256": "3da24667df8eb40c9cc9c697286e5a5a684760ee64110caacd6267d9a362219a"
+  },
+  "merge-readiness/merge-result.json": {
+    "bytes": 1030,
+    "sha256": "95bef199692d63e7d228319386129afc3f92360a8cd125d27c27dbdff73ae4ec"
   }
 }
