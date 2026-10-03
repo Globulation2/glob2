@@ -89,7 +89,9 @@ Element MatchStartScreen::steps(const Presentation &p)
 	std::string mapText = mapTitle.empty() ? tr("[match map]") : GAGCore::FormattableString(tr("[match downloading map %0]")).arg(mapTitle);
 	std::string mapDetail = int(now) > int(Step::Map) && flow->mapWasCached() ? tr("[match map cached]") : "";
 	lines.push_back(line(mapText, Step::Map, mapDetail));
-	lines.push_back(line(tr("[match loading]"), Step::Load, ""));
+	// In the browser a first match may wait for the game sprites to finish downloading.
+	const bool graphics = now == Step::Load && flow->loadStage() == "[Loading game graphics]";
+	lines.push_back(line(tr(graphics ? "[Loading game graphics]" : "[match loading]"), Step::Load, ""));
 	std::string relay = GAGCore::FormattableString(tr("[match relay %0]")).arg(flow->relayName());
 	// Ping before the first turn: the session's own round trip to the relay, rated
 	// on the same scale as the in-game panel (docs/multiplayer/connection-quality.md).

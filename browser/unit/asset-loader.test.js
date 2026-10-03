@@ -45,9 +45,12 @@ function host(cache = new MemoryCache()) {
       return bodies[name] ? response(bodies[name]) : response([], 404);
     },
     fs:{
+      analyzePath:path => ({exists:files.has(path)}),
+      unlink:path => { assert.ok(files.delete(path), 'unlink of a missing file ' + path); },
       createPath:(parent, directory) => directories.push(directory),
       createDataFile:(directory, name, data, read, write, own) => {
         assert.equal(own, true);
+        assert.ok(!files.has(directory + '/' + name), 'the file system refuses to overwrite ' + name);
         files.set(directory + '/' + name, new TextDecoder().decode(data));
       },
     },
@@ -63,6 +66,23 @@ test('installs a package into the file system with byte progress', async () => {
   assert.deepEqual(Object.fromEntries(environment.files), {'/data/a.txt':'abcd', '/maps/b.map':'efghi'});
   assert.deepEqual(environment.progress, [['core', 0, 9], ['core', 4, 9], ['core', 9, 9]]);
   assert.equal(loader.state().core, 'ready');
+});
+
+test('a later package replaces a core file and is reported once to the game', async () => {
+  const replacing = manifest();
+  replacing.packages.push({name:'font-cjk', optional:true, size:3, parts:[
+    {url:'assets/font-cjk.eeeeeeeeeeeeeeee.data', size:3, files:[['/data/a.txt', 0, 3]]}]});
+  bodies['assets/font-cjk.eeeeeeeeeeeeeeee.data'] = ['xyz'];
+  const environment = host();
+  const loader = new Loader(replacing, environment);
+  await loader.load('core');
+  assert.deepEqual(loader.takeInstalled(), ['core']);
+  await loader.load('font-cjk');
+  assert.equal(environment.files.get('/data/a.txt'), 'xyz');
+  assert.deepEqual(loader.takeInstalled(), ['font-cjk']);
+  assert.deepEqual(loader.takeInstalled(), []);
+  await loader.load('font-cjk');
+  assert.deepEqual(loader.takeInstalled(), [], 'a ready package is not installed twice');
 });
 
 test('a later visit installs cached parts without the network', async () => {

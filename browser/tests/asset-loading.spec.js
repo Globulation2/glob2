@@ -52,7 +52,9 @@ test('a second visit starts from the packages cached on the device', async ({pag
   test.skip(browserName === 'webkit', 'automation WebKit does not keep Cache Storage across reloads');
   await page.goto(gameURL());
   await expect.poll(async () => (await snapshot(page)).screen).toContain('MainMenuScreen');
-  await expect.poll(async () => (await snapshot(page)).assets.music, {timeout: 60000}).toBe('ready');
+  // Every background package, including the artwork where it is wanted.
+  await expect.poll(async () => Object.values((await snapshot(page)).assets).every(state => state === 'ready' || state === 'skipped'),
+    {timeout: 180000}).toBe(true);
   const downloads = [];
   page.on('request', request => { if (/\/assets\/.*\.data$/.test(request.url())) downloads.push(request.url()); });
   await page.reload();

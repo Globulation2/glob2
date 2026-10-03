@@ -3782,6 +3782,8 @@ Zotrvačnosť mapy
 
 [match loading]
 
+[Loading game graphics]
+
 [match map cached]
 
 [match map]

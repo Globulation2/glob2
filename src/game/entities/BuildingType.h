@@ -117,10 +117,13 @@ struct BuildingType
 class BuildingsTypes
 {
 public:
-	// Resolve sprite pointers and prev/next-level cross-references, and run
-	// the same integrity checks the old loader did. Replaces the old
+	// Resolve prev/next-level cross-references and run the same integrity
+	// checks the old loader did. Replaces the old
 	// load("data/buildings.default.txt") + load("data/buildings.txt") chain.
 	void init();
+	// Resolve sprite pointers (no-op without graphics). Part of
+	// GlobalContainer's game graphics, which the browser loads after the menu.
+	void loadSprites();
 
 	BuildingType *get(std::size_t id);
 	std::size_t size() const;
