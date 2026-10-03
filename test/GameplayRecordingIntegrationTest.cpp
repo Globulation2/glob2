@@ -173,7 +173,7 @@ TEST_SUITE("GameplayRecording.Integration")
 		reference = run(false);
 		CHECK(run(true) == reference);
 	}
-	TEST_CASE("global recording shortcut toggles and shutdown awaits finalization [artifacts]")
+	TEST_CASE("global recording shortcut toggles and shutdown awaits finalization [artifacts][writes-preferences]")
 	{
 		const char *encoder = SDL_getenv("GLOB2_TEST_FFMPEG");
 		if (!encoder || !GAGCore::Recording::supported())

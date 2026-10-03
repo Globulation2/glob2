@@ -144,7 +144,7 @@ jobs:
             libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev \
             libvorbis-dev libogg-dev libspeex-dev libboost-dev libssl-dev \
             zlib1g-dev libfribidi-dev libpcre3-dev libgl1-mesa-dev \
-            libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth openbox x11-utils
+            libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth openbox x11-utils gdb
       - uses: ./.github/actions/sdl3
         with:
           cc: clang-18
@@ -315,7 +315,7 @@ jobs:
             libvorbis-dev libogg-dev libspeex-dev \
             libboost-dev libssl-dev \
             zlib1g-dev libfribidi-dev libpcre3-dev \
-            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth openbox x11-utils
+            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth openbox x11-utils gdb
 
       - uses: actions/checkout@v4
         id: actions_checkout_v4_1
@@ -1130,7 +1130,7 @@ jobs:
         run: |
           sudo apt-get update -qq
           xargs sudo apt-get install -y --no-install-recommends < artifacts/ci-native/runtime-packages.txt
-          sudo apt-get install -y --no-install-recommends python3 libgl1 libglu1-mesa libepoxy0 libgl1-mesa-dri xvfb xauth openbox x11-utils
+          sudo apt-get install -y --no-install-recommends python3 libgl1 libglu1-mesa libepoxy0 libgl1-mesa-dri xvfb xauth openbox x11-utils gdb
           python3 .github/scripts/linux_runtime_packages.py build/linux/client/release --verify
       - uses: actions/setup-node@v4
         id: actions_setup_node_v4_1

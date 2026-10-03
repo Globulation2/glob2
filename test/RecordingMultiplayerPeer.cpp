@@ -40,6 +40,7 @@ int main(int argc, char **argv)
 		globals.load();
 		if (!NET_Init())
 			throw std::runtime_error(SDL_GetError());
+		globals.networkInitialized = true;
 		auto &recorder = GAGCore::Recording::recorder();
 		const char *encoder = SDL_getenv("GLOB2_TEST_FFMPEG");
 		if (encoder)
@@ -56,7 +57,7 @@ int main(int argc, char **argv)
 			{
 				Lan::LanHost::Options options;
 				options.hostName = "recording-host";
-				options.mapFile = "maps/FourSquares1.map";
+				options.mapFile = "maps/FourSquares1.map.gz";
 				options.map = Engine::loadMapHeader(options.mapFile);
 				options.broadcast = false;
 				options.advertisedAddress = "127.0.0.1";
@@ -102,12 +103,21 @@ int main(int argc, char **argv)
 			// Render the production room once both clients have their match setup.
 			screens.push(std::make_unique<RoomScreen>(screens, game));
 			screens.frame(SDL_GetTicks(), {});
+			// The callback may run until Engine joins its simulation thread, even
+			// when the fixture exits with an exception. Its stream must outlive it.
+			std::ofstream checksums;
 			Engine engine;
+			// Engine closes its turn session in its destructor. Join the runner
+			// first on every exit path, including timeout or drawing exceptions.
+			struct JoinSimulation
+			{
+				Engine &engine;
+				~JoinSimulation() { engine.stopSimulationThread(); }
+			} joinSimulation{engine};
 			if (!game->initGame(engine).run())
 				throw std::runtime_error("Multiplayer initialization failed");
 			// Turn multiplayer has its own match record; capture every executed
 			// checksum directly rather than depending on the legacy replay writer.
-			std::ofstream checksums;
 			if (const char *path = SDL_getenv("GLOB2_REPLAY_PATH"))
 				checksums.open(std::string(path) + ".checksums");
 			engine.turnLockstep()->onChecksum = [&checksums](std::uint32_t tick, Uint32 sum) {
@@ -119,14 +129,24 @@ int main(int argc, char **argv)
 			engine.prepareRun();
 			game->gameStarted(true);
 			engine.beginSession(SDL_GetTicks());
-			if (!engine.startSimulationThread(SDL_GetTicks()))
-				throw std::runtime_error("Simulation thread did not start");
+			// Use the production session mode: turn networking is polled on
+			// the main thread; other sessions may use the simulation runner.
+			const bool threaded = engine.startSimulationThread(SDL_GetTicks());
+			auto nextStep = SDL_GetTicks();
 			deadline = SDL_GetTicks() + 30000;
 			bool running = true;
 			while (running && SDL_GetTicks() < deadline)
 			{
-				// The simulation owns network updates once the engine starts.
-				running = engine.threadedClientFrame(SDL_GetTicks(), {});
+				const auto now = SDL_GetTicks();
+				if (threaded)
+					running = engine.threadedClientFrame(now, {});
+				else if (now >= nextStep)
+				{
+					running = engine.stepSession(now, {});
+					nextStep = now + engine.sessionDelay(now);
+				}
+				else
+					engine.pollTurnSession(now);
 				engine.drawSession();
 				SDL_Delay(10);
 			}
@@ -156,7 +176,6 @@ int main(int argc, char **argv)
 		recorder.shutdown();
 		if (encoder && recorder.status().state != GAGCore::Recording::State::Complete)
 			throw std::runtime_error(recorder.status().error);
-		NET_Quit();
 		globalContainer = nullptr;
 		std::cout << "MULTIPLAYER RECORDING PASS" << std::endl;
 	}

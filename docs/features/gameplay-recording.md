@@ -156,7 +156,7 @@ decoded first frames of extracted clips; use the generated `recording-sections-*
 fixture for its documented palette.
 
 The multiplayer fixture runs two real LAN clients on the turn protocol through a
-threaded match and results. It retains both videos and compares every executed
+match and results using the production session mode. It retains both videos and compares every executed
 tick’s checksum, written directly from each client’s lockstep callback.
 Use `--ffmpeg /path/to/ffmpeg` when the encoder is outside `PATH`.
 
