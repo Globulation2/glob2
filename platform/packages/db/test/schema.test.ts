@@ -23,6 +23,7 @@ const typedColumns: ColumnLists = {
     'created_at',
     'updated_at',
     'last_seen_at',
+    'display_name_changed_at',
   ],
   identities: [
     'id',
@@ -64,6 +65,36 @@ const typedColumns: ColumnLists = {
     'created_at',
     'expires_at',
     'completed_at',
+    'resume_hash',
+    'mode',
+    'client_platform',
+    'browser_binding_hash',
+    'conflict_account_id',
+    'failure_reason',
+    'linked',
+    'delivered_at',
+  ],
+  web_sessions: [
+    'id',
+    'account_id',
+    'token_hash',
+    'created_at',
+    'expires_at',
+    'last_used_at',
+    'revoked_at',
+  ],
+  auth_flows: [
+    'id',
+    'state_hash',
+    'provider',
+    'code_verifier',
+    'nonce',
+    'purpose',
+    'attempt_id',
+    'browser_binding_hash',
+    'created_at',
+    'expires_at',
+    'consumed_at',
   ],
   entitlements: [
     'id',
@@ -317,7 +348,11 @@ describe('migrations', () => {
   it('apply from an empty database and are idempotent', async () => {
     const first = await migrateToLatest(database.db);
     const files = Object.keys(await new SqlFileMigrationProvider().getMigrations());
-    expect(files.slice(0, 2)).toEqual(['0001_initial', '0002_ratings_matchmaking']);
+    expect(files.slice(0, 3)).toEqual([
+      '0001_initial',
+      '0002_ratings_matchmaking',
+      '0003_identity',
+    ]);
     expect(first.map((r) => [r.migrationName, r.status])).toEqual(
       files.map((name) => [name, 'Success']),
     );

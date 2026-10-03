@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:AccessTokenHeader",
+  "title": "AccessTokenHeader",
+  "type": "object",
+  "required": [
+    "alg",
+    "typ",
+    "kid"
+  ],
+  "properties": {
+    "alg": {
+      "type": "string",
+      "const": "EdDSA"
+    },
+    "typ": {
+      "type": "string",
+      "const": "at+jwt"
+    },
+    "kid": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    }
+  },
+  "description": "JOSE header of an access token (RFC 9068 `at+jwt`)."
+}
