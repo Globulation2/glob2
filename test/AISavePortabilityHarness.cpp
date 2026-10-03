@@ -137,7 +137,7 @@ TEST_SUITE("AISavePortability")
 			GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(saved.data(), saved.size()));
 			input.seekFromStart(0);
 			std::vector<std::shared_ptr<AITelemetry::Series>> loaded;
-			AITelemetry::load(&input, loaded);
+			AITelemetry::load(&input, loaded, VERSION_MINOR);
 			require(loaded.size() == 1 && loaded[0]->current == series.current,
 				"legacy telemetry remains readable without changing stored samples");
 			series = *loaded[0];

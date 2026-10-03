@@ -209,6 +209,16 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
         self.assertIn(
             "static constexpr int MAX_BUILDING_WORKER_REQUEST = 20;", game_header
         )
-        self.assertIn(
-            "omb.numberRequested <= MAX_BUILDING_WORKER_REQUEST", orders
+        modify_building = function(orders, "void Game::executeModifyBuilding")
+        # Orders reject oversized requests before assignment; pin the guard to
+        # this executor so another order handler cannot satisfy the contract.
+        rejection = re.search(
+            r"if\s*\(\s*omb\.numberRequested\s*>\s*MAX_BUILDING_WORKER_REQUEST\s*\)"
+            r"\s*(?:\{\s*)?return\s*;",
+            modify_building,
+        )
+        self.assertIsNotNone(rejection)
+        self.assertLess(
+            rejection.end(),
+            modify_building.index("b->maxUnitWorking=omb.numberRequested"),
         )

@@ -125,6 +125,7 @@ public:
 	void syncStep(void);
 	//! Returns once a pending autosave has reached the disk.
 	void waitForAutosave();
+    bool savePending();
 	//! return the local team of the player who is running glob2
 	Team *getLocalTeam(void) { return localTeam; }
 
@@ -303,6 +304,7 @@ private:
 	void autosave();
 	//! Tick of this session's latest autosave, or -1 before the first.
 	Sint64 lastAutosaveStep;
+    bool autosavePending=false;
 	//! Writes autosaves off the game thread; created by the first autosave.
 	std::unique_ptr<GAGCore::BackgroundFileWriter> autosaveWriter;
 
