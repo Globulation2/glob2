@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="6" failures="0" errors="0" skipped="0"><testsuite name="FontKerning"><testcase classname="FontKerning" name="kerned words have no gap wider than the same words unkerned" time="0.005965" status="run" />
+  <testcase classname="FontKerning" name="pair advances equal the glyph advances plus kerning" time="0.001517" status="run" />
+  <testcase classname="FontKerning" name="the bundled SDL3_ttf moves the pen for kerned pairs" time="0.001439" status="run" />
+  </testsuite><testsuite name="SpriteSheets"><testcase classname="SpriteSheets" name="sheet tiles load as the frames they were packed from" time="0.038954" status="run" />
+    <testcase classname="SpriteSheets" name="sprites without an index still load one file per frame" time="0.001657" status="run" />
+    <testcase classname="SpriteSheets" name="an index the sheets cannot satisfy falls back to the frames" time="0.00379" status="run" />
+  </testsuite></testsuites>

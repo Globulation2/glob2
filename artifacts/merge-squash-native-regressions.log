@@ -1,0 +1,7 @@
+PASS FontKerning/the bundled SDL3_ttf moves the pen for kerned pairs (0.1s)
+PASS FontKerning/pair advances equal the glyph advances plus kerning (0.1s)
+PASS FontKerning/kerned words have no gap wider than the same words unkerned (0.1s)
+PASS glob2-unit-tests SpriteSheets (3 cases) (0.1s)
+
+4 passed, 0 failed, 0 skipped (0.3s of test time)
+[run_tests] JUnit report: artifacts/merge-squash-native-regressions.xml (6 cases)

@@ -1,0 +1,24 @@
+{
+  "initial": {
+    "id": "0412709b-9845-4a25-9c51-449e7e1674d2",
+    "status": "ready",
+    "map_id": "42d22d75-0116-48a6-a5aa-b535b467b1a0",
+    "map_hash": "f42c27818cf18065c9258051872b243a767dad5efdef33e36d673d597fc6a49f",
+    "charged": true
+  },
+  "revision": {
+    "id": "749e9a19-9a93-4ec2-bfdc-e29a44a0fcb9",
+    "status": "ready",
+    "map_id": "f33882fa-1f4b-4344-807d-c1a36a3273d6",
+    "map_hash": "f42c27818cf18065c9258051872b243a767dad5efdef33e36d673d597fc6a49f",
+    "charged": true
+  },
+  "provider": "deterministic reference-image fixture; no paid requests",
+  "creditsCharged": 2,
+  "private": true,
+  "simVersion": {
+    "dataHash": "1c5ff4d4d8dad57b25169dcd1ac04e16799dcaeea07247dc0cd5dea90fdff3c9",
+    "netProtocol": 52,
+    "versionMinor": 130
+  }
+}

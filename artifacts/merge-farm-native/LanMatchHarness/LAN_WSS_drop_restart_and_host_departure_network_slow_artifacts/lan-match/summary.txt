@@ -1,0 +1,5 @@
+ticks compared 659, record turns 95, end tick 671, verdict verified
+Host: seat 0, lives 1, orders 29
+Guest A: seat 1, lives 1, orders 17
+Guest B: seat 2, lives 1, orders 37
+Guest A (rejoined): seat 1, lives 1, orders 11

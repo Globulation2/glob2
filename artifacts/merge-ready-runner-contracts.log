@@ -1,0 +1,39 @@
+test_auxiliary_assignment_agrees_with_native_partition (test_run_tests.AuxiliaryShardTest.test_auxiliary_assignment_agrees_with_native_partition) ... ok
+test_profiles_need_ten_samples_and_same_platform (test_run_tests.AuxiliaryShardTest.test_profiles_need_ten_samples_and_same_platform) ... ok
+test_fullscreen_requires_explicit_opt_in_even_in_process (test_run_tests.EndToEndTest.test_fullscreen_requires_explicit_opt_in_even_in_process) ... ok
+test_reports_preference_writes_and_timeouts (test_run_tests.EndToEndTest.test_reports_preference_writes_and_timeouts) ... ok
+test_runs_a_fake_binary_per_case (test_run_tests.EndToEndTest.test_runs_a_fake_binary_per_case) ... ok
+test_separator_names_run_instead_of_silently_selecting_nothing (test_run_tests.EndToEndTest.test_separator_names_run_instead_of_silently_selecting_nothing) ... ok
+test_successful_process_with_empty_or_partial_junit_is_an_error (test_run_tests.EndToEndTest.test_successful_process_with_empty_or_partial_junit_is_an_error) ... ok
+test_complete_actual_cases_pass_regardless_of_reported_test_count (test_run_tests.JunitExecutionTest.test_complete_actual_cases_pass_regardless_of_reported_test_count) ... ok
+test_empty_missing_malformed_and_only_skipped_reports_fail (test_run_tests.JunitExecutionTest.test_empty_missing_malformed_and_only_skipped_reports_fail) ... ok
+test_failure_in_successful_exit_report_is_rejected (test_run_tests.JunitExecutionTest.test_failure_in_successful_exit_report_is_rejected) ... ok
+test_incomplete_duplicate_and_foreign_cases_fail (test_run_tests.JunitExecutionTest.test_incomplete_duplicate_and_foreign_cases_fail) ... ok
+test_same_name_from_wrong_file_does_not_satisfy_selection (test_run_tests.JunitExecutionTest.test_same_name_from_wrong_file_does_not_satisfy_selection) ... ok
+test_merges_doctest_reports_and_synthesises_errors (test_run_tests.JunitTest.test_merges_doctest_reports_and_synthesises_errors) ... ok
+test_parses_names_suites_and_tags (test_run_tests.ListingTest.test_parses_names_suites_and_tags) ... ok
+test_filter_and_tags (test_run_tests.SelectionTest.test_filter_and_tags) ... ok
+test_quick_and_no_display (test_run_tests.SelectionTest.test_quick_and_no_display) ... ok
+test_filter_quotes_comma_and_backslash_in_names_and_suites (test_run_tests.ShardTest.test_filter_quotes_comma_and_backslash_in_names_and_suites) ... ok
+test_same_name_in_two_suites_stays_in_its_suite (test_run_tests.ShardTest.test_same_name_in_two_suites_stays_in_its_suite) ... ok
+test_shards_are_deterministic_and_complete (test_run_tests.ShardTest.test_shards_are_deterministic_and_complete) ... ok
+test_unit_display_cases_are_isolated_from_headless_batch (test_run_tests.ShardTest.test_unit_display_cases_are_isolated_from_headless_batch) ... ok
+test_unit_display_cases_are_isolated_from_headless_driver_changes (test_run_tests.ShardTest.test_unit_display_cases_are_isolated_from_headless_driver_changes) ... ok
+test_diagnostic_timeout_does_not_interrupt_cleanup (test_run_tests.TimeoutDiagnosticsTest.test_diagnostic_timeout_does_not_interrupt_cleanup) ... ok
+test_display_diagnostics_cannot_inspect_an_unowned_display (test_run_tests.TimeoutDiagnosticsTest.test_display_diagnostics_cannot_inspect_an_unowned_display) ... ok
+test_display_diagnostics_capture_real_mapping_on_owned_server (test_run_tests.TimeoutDiagnosticsTest.test_display_diagnostics_capture_real_mapping_on_owned_server) ... ok
+test_ignores_processes_outside_owned_group (test_run_tests.TimeoutDiagnosticsTest.test_ignores_processes_outside_owned_group) ... ok
+test_skips_linux_diagnostics_on_other_platforms (test_run_tests.TimeoutDiagnosticsTest.test_skips_linux_diagnostics_on_other_platforms) ... ok
+test_heavy_jobs_separate_and_all_jobs_execute_once (test_run_tests.WeightedShardTest.test_heavy_jobs_separate_and_all_jobs_execute_once) ... ok
+test_new_jobs_use_median_and_ties_use_shard_number (test_run_tests.WeightedShardTest.test_new_jobs_use_median_and_ties_use_shard_number) ... ok
+test_profile_rejects_bad_weights_and_empty_preserves_original (test_run_tests.WeightedShardTest.test_profile_rejects_bad_weights_and_empty_preserves_original) ... ok
+test_debugger_uses_the_runner_filter_and_no_shell (test_run_tests.WindowsCrashDiagnosticsTests.test_debugger_uses_the_runner_filter_and_no_shell) ... ok
+test_only_native_crashes_are_replayed (test_run_tests.WindowsCrashDiagnosticsTests.test_only_native_crashes_are_replayed) ... ok
+test_signed_windows_status_is_also_a_crash (test_run_tests.WindowsCrashDiagnosticsTests.test_signed_windows_status_is_also_a_crash) ... ok
+test_missing_window_manager_readiness_fails_and_cleans_up (test_run_tests.XvfbSessionTest.test_missing_window_manager_readiness_fails_and_cleans_up) ... ok
+test_waits_for_window_manager_and_preserves_test_exit_status (test_run_tests.XvfbSessionTest.test_waits_for_window_manager_and_preserves_test_exit_status) ... ok
+
+----------------------------------------------------------------------
+Ran 34 tests in 5.397s
+
+OK

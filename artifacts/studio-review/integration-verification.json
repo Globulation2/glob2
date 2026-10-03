@@ -1,77 +1,83 @@
 {
-  "featureCommit": "82da7c2912fb1c384a464d70effa329eb2ed7ca2",
-  "foundationCommit": "9ff6ef5bc4d1e1380835c59a3e2ce44946e133f0",
+  "featureCommit": "4ef4a6ab463800d5b18462f8f9455fa54033b0bb",
+  "featureMergeCommit": "3092bdedab398157c7549c034637b97fa2d6daca",
+  "foundationMergeCommit": "a23089cb38ae48a259b8ca97852e483d5324eea3",
+  "fullSuiteBuildSource": "104623b33029c53c6835b308af513bf51bf49987",
+  "finalTreeDifference": "After squash integration, only master\u2019s Sprite.cpp CRLF handling and its SpriteSheetTest fixture differ from the full-suite tree; rebuilt and all six sprite/font regressions pass.",
+  "simVersion": {
+    "dataHash": "1c5ff4d4d8dad57b25169dcd1ac04e16799dcaeea07247dc0cd5dea90fdff3c9",
+    "netProtocol": 52,
+    "versionMinor": 130
+  },
   "platform": {
-    "passed": 417,
+    "passed": 426,
     "skipped": 0,
-    "files": 58,
+    "files": 60,
     "lint": "passed",
     "typecheck": "passed",
-    "log": "artifacts/online-services-native-platform-check.log"
+    "log": "artifacts/merge-farm-platform-check.log"
   },
-  "nativeDelivery": {
-    "initial": "passed",
-    "revision": "passed",
-    "transport": "Real leased HTTP API and worker result callback",
-    "workerRole": "glob2_worker",
-    "provider": "Deterministic identity reference-image fixture; no paid requests",
-    "credits": 2,
-    "private": true,
-    "artifacts": "artifacts/studio-native/online-services-delivery/"
+  "native": {
+    "unitPassed": 617,
+    "enginePassed": 439,
+    "skipped": 88,
+    "excluded": "display cases and unrelated procedural-generator matrix",
+    "log": "artifacts/merge-farm-native.log",
+    "junit": "artifacts/merge-farm-native.xml"
   },
-  "simVersion": {
-    "dataHash": "446492266f9626345c402729944b80382878290aaad6d649b9d46e56644ac5f4",
-    "netProtocol": 51,
-    "versionMinor": 128
-  },
-  "browser": {
-    "desktop": "passed",
-    "phone": "passed",
-    "axe": "passed"
-  },
-  "compose": "AI worker uses mounted worker-role credentials; no agent/relay key files",
-  "limitations": [
-    "Real provider quality and costs",
-    "Signed live Stripe payment flows",
-    "Container startup",
-    "Human multiplayer play and competitive balance"
-  ],
-  "nativeBuildSource": "82da7c2912fb1c384a464d70effa329eb2ed7ca2",
-  "nativeBuildInputs": "Client and both online probes rebuilt after online-service, LAN wake-up and map-pool master changes.",
   "nativeGeometry": {
     "cases": 63,
     "import": "passed",
     "reload": "passed",
-    "log": "artifacts/online-services-native-shapes.log",
-    "artifacts": "artifacts/studio-native/online-services-shapes/"
+    "log": "artifacts/merge-farm-native-shapes.log",
+    "artifacts": "artifacts/studio-native/merge-farm-shapes/"
   },
-  "navigationRegression": "Mocked profile fetches finish before querying and clicking the current match row; full native-enabled platform suite passes.",
-  "nativeShutdown": {
-    "windowed": "passed",
-    "goldenTicks": 701,
-    "goldenChecksums": "byte-identical",
-    "tsanSuppression": "removed",
-    "hostedTsan": "passed",
-    "hostedRun": 37129352469,
-    "goldenLog": "artifacts/online-services-verify.log",
-    "hostedTsanSource": "31d1535b1 (preceding repair revision); current hosted run pending"
+  "nativeDelivery": {
+    "initial": "passed",
+    "revision": "passed",
+    "transport": "real HTTP leases, scoped blobs and worker-role callbacks",
+    "provider": "deterministic fixture; no paid calls",
+    "credits": 2,
+    "private": true,
+    "receipt": "artifacts/studio-review/native-delivery-receipt.json"
   },
-  "hostedCurrent": {
-    "foundationRun": 37134388485,
-    "featureRun": 37134467647,
-    "status": "pending"
+  "goldenReplay": {
+    "verdict": "verified",
+    "finalTick": 701,
+    "checksumComparison": "byte-identical to current committed trace",
+    "artifacts": "artifacts/merge-farm-verify/"
   },
-  "nativeClientLifecycle": {
-    "result": "passed",
-    "log": "artifacts/online-services-platform-client.log"
+  "browser": {
+    "desktop": "passed",
+    "phone": "passed",
+    "axeViolations": 0,
+    "overflow": 0,
+    "screenshots": "artifacts/studio-web/merge-final/",
+    "log": "artifacts/merge-final-browser.log"
   },
-  "lanScenario": {
-    "platform": "macOS",
-    "passed": true,
-    "assertions": 90,
-    "ticksCompared": 665,
-    "recordVerdict": "verified",
-    "log": "artifacts/lan-fixture-run.log",
-    "windows": "pending"
-  }
+  "buildSystem": {
+    "passed": 285,
+    "unavailableToolSkips": 1,
+    "total": 286,
+    "log": "artifacts/merge-ready-build-system.log"
+  },
+  "runnerContracts": {
+    "passed": 34,
+    "log": "artifacts/merge-ready-runner-contracts.log"
+  },
+  "finalSpriteFontRegressions": {
+    "passed": 6,
+    "log": "artifacts/merge-squash-native-regressions.log"
+  },
+  "compose": "validated; AI worker uses worker credentials and no agent/relay key files",
+  "mergeGate": "User authorized passing relevant local checks because hosted CI is backlogged.",
+  "limitations": [
+    "Current cross-platform CI pending; preceding Windows LAN run still crashed after writing its match record",
+    "Display cases not run",
+    "Live provider quality and costs",
+    "Signed live Stripe purchase/refund/dispute flows",
+    "Container startup unavailable locally",
+    "Human multiplayer quality and competitive balance"
+  ],
+  "production": "Generation and sales disabled; prices unset."
 }

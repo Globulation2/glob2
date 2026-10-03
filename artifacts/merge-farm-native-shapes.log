@@ -1,0 +1,6 @@
+test_all_63_native_import_and_reload_combinations (__main__.NativeImportTests.test_all_63_native_import_and_reload_combinations) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 37.050s
+
+OK
