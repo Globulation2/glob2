@@ -147,6 +147,7 @@ UNIT_TESTS = [
     ('UnitDrawBatchTest.cpp', dict(require={'opengl'})),
     ('MapGeometryCacheTest.cpp', dict(require={'opengl'})),
     ('SpriteDrawBatchTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('SpriteSheetTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('OpaqueRectangleBatchTest.cpp', dict(cxxflags=['-fno-access-control'])),
     # Former CppUnit suite (TestsRunner).
     'AllyTeamWidgetIndexTest.cpp',

@@ -274,6 +274,18 @@ originals. Image lookup searches directories in their existing order, checking a
 logical PNG first and its WebP alternative second within each directory; an
 original PNG override therefore retains precedence.
 
+Optimized exports also pack the frames of the sprites in `SPRITE_SHEETS`
+(currently `data/gfx/unit`, 2,816 files) into sprite sheets: runs of up to 256
+consecutive frames of one layer and size, sixteen tiles to a row, each encoded like
+any other image. `<name>.sheet` beside them lists each sheet's file, layer
+(`image` or `rotated`), first frame, frame count and tile size. When that index
+exists, `GAGCore::Sprite::load` cuts the tiles out of the sheets and ignores the
+per-frame files; without one, or if any sheet does not match it, the sprite loads
+one file per frame as in the source tree. The exporter checks that every tile is
+byte-identical to its frame, and the audit lists each sheet's frames under
+`packed_from` so release installs can remove per-frame copies left by older
+installs. Opening thousands of small files dominated unit-sprite loading.
+
 Packaging bootstraps a private Pillow 12.2.0/libwebp 1.6.0 encoder environment
 when the current Python lacks the pinned encoder. This is a build dependency,
 never application content. It requires network access on first setup; subsequent
