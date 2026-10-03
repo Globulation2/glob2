@@ -302,6 +302,7 @@ export interface RoomChatMessagesTable {
 }
 
 export interface MatchesTable {
+  skins_frozen_at: NullableTimestamp;
   id: Generated<string>;
   sim_version: string;
   origin: 'room' | 'queue';
@@ -591,7 +592,95 @@ export interface AccountEconomyCurvesView {
   games_at_tick: View<number>;
 }
 
+export interface ColonySkinsTable {
+  id: Generated<string>;
+  owner_account_id: Nullable<string>;
+  kind: 'preset' | 'custom';
+  name: string;
+  entitlement: string;
+  disabled_at: NullableTimestamp;
+  created_at: Timestamp;
+}
+
+export interface ColonySkinVersionsTable {
+  id: Generated<string>;
+  skin_id: string;
+  texture_sha256: string;
+  layout: 'colony-v1';
+  building_color: number;
+  manifest_sha256: string;
+  created_at: Timestamp;
+}
+
+export interface ColonySkinEquipmentTable {
+  building_color: Nullable<number>;
+  account_id: string;
+  version_id: string;
+  updated_at: Timestamp;
+}
+
+export interface MatchColonySkinsTable {
+  building_color: number;
+  match_id: string;
+  team_index: number;
+  account_id: string;
+  version_id: string;
+  assertion: string;
+  created_at: Timestamp;
+}
+
+export interface SkinPurchasesTable {
+  id: Generated<string>;
+  account_id: string;
+  request_id: string;
+  sku: 'designer' | 'stripes' | 'spots';
+  entitlement: string;
+  price_id: string;
+  checkout_id: Nullable<string>;
+  payment_intent_id: Nullable<string>;
+  status: Defaulted<'pending' | 'paid' | 'refunded' | 'disputed' | 'failed'>;
+  entitlement_id: Nullable<string>;
+  created_at: Timestamp;
+  updated_at: Timestamp;
+  reconcile_after: Timestamp;
+  recovery_cursor: Nullable<string>;
+}
+export interface SkinPaymentEventsTable {
+  id: string;
+  event_type: string;
+  purchase_id: Nullable<string>;
+  processed_at: Timestamp;
+}
+export interface ColonySkinDraftsTable {
+  skin_id: Nullable<string>;
+  account_id: string;
+  revision: string;
+  name: string;
+  building_color: number;
+  image: Buffer;
+  updated_at: Timestamp;
+}
+
+export interface ColonySkinReportsTable {
+  id: Generated<string>;
+  version_id: string;
+  reporter_account_id: string;
+  reason: string;
+  created_at: Timestamp;
+  resolution: Nullable<'dismissed' | 'disabled'>;
+  resolved_at: NullableTimestamp;
+  resolved_by_account_id: Nullable<string>;
+  resolution_reason: Nullable<string>;
+}
 export interface Database {
+  colony_skin_reports: ColonySkinReportsTable;
+  colony_skin_drafts: ColonySkinDraftsTable;
+  skin_purchases: SkinPurchasesTable;
+  skin_payment_events: SkinPaymentEventsTable;
+  colony_skins: ColonySkinsTable;
+  colony_skin_versions: ColonySkinVersionsTable;
+  colony_skin_equipment: ColonySkinEquipmentTable;
+  match_colony_skins: MatchColonySkinsTable;
   accounts: AccountsTable;
   identities: IdentitiesTable;
   device_credentials: DeviceCredentialsTable;

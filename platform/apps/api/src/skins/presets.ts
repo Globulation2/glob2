@@ -1,0 +1,66 @@
+import { readFile } from 'node:fs/promises';
+import { putContent, sha256Hex } from '@glob2/core';
+import type { ApiServices } from '../services.ts';
+
+/** Stable IDs and immutable PNG bytes: never overwrite a published preset. */
+export const PRESETS = [
+  {
+    sku: 'stripes',
+    name: 'Colony stripes',
+    skinId: '97b6e116-918a-490c-a59d-c9a7a3e97201',
+    versionId: '97b6e116-918a-490c-a59d-c9a7a3e97301',
+  },
+  {
+    sku: 'spots',
+    name: 'Colony spots',
+    skinId: '97b6e116-918a-490c-a59d-c9a7a3e97202',
+    versionId: '97b6e116-918a-490c-a59d-c9a7a3e97302',
+  },
+] as const;
+export async function seedSkinPresets({ db, blobs }: Pick<ApiServices, 'db' | 'blobs'>) {
+  for (const preset of PRESETS) {
+    const image = await readFile(new URL(`../../assets/skins/${preset.sku}.png`, import.meta.url));
+    const stored = await putContent(blobs, image);
+    const content = {
+      skinId: preset.skinId,
+      textureSha256: stored.sha256,
+      layout: 'colony-v1',
+      buildingColor: 0x2d73b4,
+    };
+    await db.transaction().execute(async (trx) => {
+      await trx
+        .insertInto('blobs')
+        .values({
+          sha256: stored.sha256,
+          size: stored.size,
+          storage_key: stored.key,
+          content_type: 'image/png',
+          visibility: 'public',
+        })
+        .onConflict((oc) => oc.column('sha256').doNothing())
+        .execute();
+      await trx
+        .insertInto('colony_skins')
+        .values({
+          id: preset.skinId,
+          name: preset.name,
+          kind: 'preset',
+          entitlement: `skins:${preset.sku}`,
+        })
+        .onConflict((oc) => oc.column('id').doNothing())
+        .execute();
+      await trx
+        .insertInto('colony_skin_versions')
+        .values({
+          id: preset.versionId,
+          skin_id: preset.skinId,
+          texture_sha256: stored.sha256,
+          layout: 'colony-v1',
+          building_color: content.buildingColor,
+          manifest_sha256: sha256Hex(Buffer.from(JSON.stringify(content))),
+        })
+        .onConflict((oc) => oc.column('id').doNothing())
+        .execute();
+    });
+  }
+}

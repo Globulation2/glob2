@@ -4620,3 +4620,7 @@ Kartan liike-energia
 
 [conn card not gaining]
 
+[settings Show colony skins]
+Näytä siirtokuntien ulkoasut
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Poista käytöstä, jos haluat tällä laitteella klassiset yksiköt, parvet ja rakennusten värit.

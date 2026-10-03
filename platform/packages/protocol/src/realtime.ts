@@ -1,3 +1,4 @@
+import { MatchColonySkin } from './skins.ts';
 // The realtime WebSocket (/realtime): JSON text frames carrying requests with
 // correlation ids, their responses, and server-pushed events.
 //
@@ -112,6 +113,7 @@ export const MatchAssignment = Open(
       }),
     ),
     ratingPreview: Type.Optional(MatchRatingPreview),
+    colonySkins: Type.Optional(Type.Array(MatchColonySkin, { maxItems: 32 })),
   },
   { description: 'Everything a client needs to connect to the relay and load the match.' },
 );

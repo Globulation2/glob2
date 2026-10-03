@@ -4682,3 +4682,7 @@ Inerzia della mappa
 
 [conn card not gaining]
 
+[settings Show colony skins]
+Mostra gli aspetti delle colonie
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Disattiva per usare unità, sciami e colori degli edifici classici su questo dispositivo.

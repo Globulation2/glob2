@@ -4,6 +4,7 @@
 #pragma once
 
 #include <memory>
+#include <functional>
 #include <assert.h>
 #include "Types.h"
 
@@ -60,7 +61,14 @@ public:
 	/// Used by the AI-trainer pipeline for sidecar metadata.
 	Uint32 getOrderCount() const { return ordersWritten; }
 
+    // Optional companion metadata. Observer failures never fail a recording.
+    using SaveObserver = std::function<void(const std::string &)>;
+    void setSaveObserver(SaveObserver observer) { saveObserver = std::move(observer); }
+    const SaveObserver &getSaveObserver() const { return saveObserver; }
 private:
+    void notifySaved(const std::string &filename) const;
+    SaveObserver saveObserver;
+    std::string recordingPath;
 	/// You shouldn't copy-construct this class
 	ReplayWriter(const ReplayWriter &copy) { assert(false); };
 

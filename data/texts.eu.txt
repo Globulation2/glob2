@@ -4630,3 +4630,7 @@ Maparen inertzia
 
 [conn card not gaining]
 
+[settings Show colony skins]
+Erakutsi kolonien itxurak
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Desaktibatu gailu honetan unitate, erle-saldo eta eraikinen kolore klasikoak erabiltzeko.

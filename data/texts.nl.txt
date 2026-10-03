@@ -4644,3 +4644,7 @@ Vaart van de kaart
 
 [conn card not gaining]
 
+[settings Show colony skins]
+Kolonie-uiterlijk tonen
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Schakel uit om op dit apparaat klassieke eenheden, zwermen en gebouwkleuren te gebruiken.

@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include "online/ReplayAppearance.h"
+#include "online/OnlineServices.h"
+#include "online/SkinDownloads.h"
 #include <FileManager.h>
 #include <FormatableString.h>
 #include <StringTable.h>
@@ -875,6 +878,13 @@ GAGCore::CooperativeTask Engine::loadReplayTask(std::string fileName)
 		co_return false;
 	}
 
+    if (!globalContainer->runNoX)
+    {
+        auto &online = Online::services();
+        if (const auto appearance = Online::readReplayAppearance(*Toolkit::getFileManager(),fileName,online.config))
+            setColonySkins(std::make_unique<Online::SkinDownloads>(online.storage,appearance->origin,
+                appearance->matchId,std::vector<Online::SkinDownloads::Ticket>{}));
+    }
 	co_return true;
 }
 

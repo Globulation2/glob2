@@ -4616,3 +4616,7 @@ Momentum peta
 
 [conn card not gaining]
 
+[settings Show colony skins]
+Tampilkan tampilan koloni
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Nonaktifkan untuk menggunakan unit, kawanan, dan warna bangunan klasik di perangkat ini.

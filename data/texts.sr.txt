@@ -4620,3 +4620,7 @@ Emoji
 
 [conn card not gaining]
 
+[settings Show colony skins]
+Прикажи изгледе колонија
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Искључите да бисте на овом уређају користили класичне јединице, ројеве и боје зграда.

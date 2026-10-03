@@ -547,6 +547,84 @@
         }
       },
       "description": "Rating preview of a rated match (MatchAssignment.ratingPreview)."
+    },
+    "colonySkins": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "team",
+          "accountId",
+          "version",
+          "buildingColor",
+          "assertion"
+        ],
+        "properties": {
+          "team": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 11
+          },
+          "accountId": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "description": "Lowercase UUID."
+          },
+          "version": {
+            "type": "object",
+            "required": [
+              "id",
+              "skinId",
+              "textureSha256",
+              "manifestSha256",
+              "layout",
+              "buildingColor"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+                "description": "Lowercase UUID."
+              },
+              "skinId": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+                "description": "Lowercase UUID."
+              },
+              "textureSha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$",
+                "description": "Lowercase hexadecimal SHA-256 digest."
+              },
+              "manifestSha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$",
+                "description": "Lowercase hexadecimal SHA-256 digest."
+              },
+              "layout": {
+                "type": "string",
+                "const": "colony-v1"
+              },
+              "buildingColor": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 16777215
+              }
+            }
+          },
+          "buildingColor": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 16777215
+          },
+          "assertion": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 8192
+          }
+        }
+      },
+      "maxItems": 32
     }
   },
   "description": "Everything a client needs to connect to the relay and load the match."

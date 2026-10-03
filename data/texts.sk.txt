@@ -4628,3 +4628,7 @@ Zotrvačnosť mapy
 
 [conn card not gaining]
 
+[settings Show colony skins]
+Zobrazovať vzhľady kolónií
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Vypnutím obnovíte na tomto zariadení klasické jednotky, roje a farby budov.

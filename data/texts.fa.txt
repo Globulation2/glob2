@@ -4618,3 +4618,7 @@ Emoji
 
 [conn card not gaining]
 
+[settings Show colony skins]
+نمایش ظاهر کلونی‌ها
+[settings Turn off to use classic units, swarms and building colors on this device.]
+برای استفاده از واحدها، ازدحام‌ها و رنگ ساختمان‌های کلاسیک در این دستگاه، این گزینه را خاموش کنید.

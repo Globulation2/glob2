@@ -780,12 +780,15 @@ void Engine::reloadTurnInitialState()
 	assert(turn && turnMatch);
 	TurnMatchState& state = *turnMatch;
 	const auto started = std::chrono::steady_clock::now();
+    MapRenderState appearance;
+    gui.swapColonyAppearance(appearance);
 	if (!gui.loadFromHeaders(state.map, state.header, true, true, false, state.mapFile))
 	{
 		std::cerr << "Turn session: cannot reload the initial game state" << std::endl;
 		gui.isRunning = false;
 		return;
 	}
+	gui.swapColonyAppearance(appearance);
 	globalContainer->liveSpectating = false;
 	gui.localPlayer = state.localPlayer;
 	gui.localTeamNo = state.localTeam;
@@ -796,7 +799,9 @@ void Engine::reloadTurnInitialState()
 	if (globalContainer->replayWriter)
 	{
 		// The replay restarts with the state it now describes.
-		globalContainer->replayWriter = std::make_unique<ReplayWriter>();
+        auto writer = std::make_unique<ReplayWriter>();
+        writer->setSaveObserver(globalContainer->replayWriter->getSaveObserver());
+        globalContainer->replayWriter = std::move(writer);
 		globalContainer->replayWriter->init(state.replayPath, gui);
 	}
 	if (checksumSidecar)

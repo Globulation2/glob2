@@ -175,10 +175,73 @@ response with the schema issues in `details`.
 `AccessPolicy` (`platform/packages/core/src/accessPolicy.ts`) has three checks,
 `canHost`, `canJoin` and `canQueue`, each returning allowed or a denial with a
 reason (mapped to the `access_denied` error code). The only implementation is
-`allow-all`, selected in `instance.yaml`. An `entitlements` table exists and stays
-empty; match tickets carry an `entitlements` claim that relays ignore. Product
+`allow-all`, selected in `instance.yaml`. The `entitlements` table records product
+grants; match tickets carry an `entitlements` claim that relays ignore. Product
 rules that are not about access, such as keeping guests out of rated queues,
 belong to the feature that owns them, not to the policy.
+
+## Colony skin ownership
+
+Skin identity (`colony_skins`) is separate from immutable published paint
+(`colony_skin_versions`). Versions reference texture blobs, a model/UV layout,
+building color and manifest digest. Database triggers reject edits and deletion
+of published versions; moderation disables the parent skin.
+
+`colony_skin_equipment` records a selected version. The equipment service checks
+active registered accounts, unexpired and unrevoked entitlements, and ownership
+of custom designs. Match creation must revalidate selection. `match_colony_skins`
+reserves frozen per-team appearances and public signed assertions, separate from
+private join tickets. The first assignment delivery freezes all team choices in
+one transaction, including default appearances. Shared colonies use the lowest
+numbered human seat's selection. Reconnects refresh assertion lifetime without
+changing content. The distinct `glob2-colony-skin+jwt` type and
+`glob2-colony-renderer` audience bind account, match, team and version; they
+cannot be used as relay join tickets. `GET /api/v1/matches/:id/skins` exposes
+already frozen appearances for spectators/history without freezing new choices.
+Native consumption and payments remain under development.
+
+Authenticated `GET /api/v1/skins` lists presets and the caller's versions;
+`PUT /api/v1/skins/equipped` accepts a version ID or null to restore default art,
+plus an optional RGB building color. The chosen color is independent of the
+immutable preset paint and is frozen/signed alongside the version for a match.
+`POST /api/v1/skins/publish` requires the designer entitlement. It accepts a name,
+optional owned skin ID for another version, RGB building color, and base64 PNG
+or WebP. Images must be still 256×256 pixels and at most 256 KiB. The server
+re-encodes them as opaque sRGB PNGs without metadata before hashing/storage.
+`GET /api/v1/skins/versions/:id/texture` serves published paint for other clients;
+disabled skins return 404. Raw uploads and arbitrary blob keys are never served
+by these endpoints. The designer can open any owned version or copy a preset
+into a new design. Publishing an edit updates the design's display name and
+creates an immutable content version; previously equipped versions and frozen
+match appearances retain their paint. Equipping the new version is a separate
+choice. “Make a separate design” publishes the current canvas under a new identity.
+
+Registered active accounts can save one private working canvas with
+`PUT /api/v1/skins/draft` and restore it with `GET /api/v1/skins/draft`, without
+buying the designer unlock. Drafts use the same image validation as publishing;
+one bounded PNG is stored per account and is never served by public texture
+routes. A save supplies the last observed revision (null for the first save).
+Drafts may also retain an owned skin ID so edits resume as new versions of that
+design. Concurrent or stale saves return 409 rather than overwrite another device's
+work. The designer also offers a separate account-scoped device draft for offline
+backup before resolving conflicts. Publishing and equipping remain explicit.
+
+Match pages show their frozen colony looks and let signed-in players submit a
+reason to `POST /api/v1/skins/versions/:id/reports`. Each account reports a version
+at most once. Moderators review the paginated open/closed queue at
+`GET /api/v1/admin/skin-reports`, then resolve a report with
+`POST /api/v1/admin/skin-reports/:id/resolve` (`dismissed` or `disabled`, with a
+reason). Resolution, optional skin disable, and audit records commit together;
+concurrent retries do not duplicate the resolution audit. Moderators can restore
+or disable a skin using `POST /api/v1/admin/skins/:id/moderation`.
+
+Disabling affects the entire design, including every published version. Public
+texture requests return 404, equip/publish checks refuse it, and refreshed match
+assertions omit it. Frozen snapshot rows and immutable images remain intact, so
+restoration uses the original content. The private moderator texture endpoint
+`GET /api/v1/admin/skins/versions/:id/texture` permits review of disabled paint
+with `private, no-store` caching. Existing clients still require moderation refresh
+and a local hide control before this provides complete in-match moderation.
 
 ## Data model
 
@@ -541,3 +604,121 @@ The original plan referred to `src/net/gateway/` for server patterns; that
 directory was removed when transport moved to native WSS, and its equivalents now
 live in `src/net/NetTransport.cpp`, `src/net/WssTransport.cpp`,
 `src/net/ServerControl.cpp` and `deploy/`.
+
+
+## Colony skin payments
+
+Stripe-hosted checkout uses three server-defined products: `designer`, `stripes`,
+and `spots`. The API seeds two immutable preset textures with stable IDs;
+existing versions and moderation decisions are never overwritten at startup.
+The web designer includes the store, account purchase history, and explicit
+payment reconciliation after returning from Checkout. Configure `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, and the
+corresponding `STRIPE_PRICE_DESIGNER`, `STRIPE_PRICE_STRIPES`, `STRIPE_PRICE_SPOTS`.
+Prices must be active fixed one-time Stripe prices. Test keys are the default;
+live keys require explicit `STRIPE_LIVE_ENABLED=true`. Missing configuration
+leaves painting available and purchases unavailable.
+
+`POST /api/v1/skins/checkout` accepts a product and UUID request ID. Registered
+active accounts are required. The server records the purchase before creating
+Checkout, uses its ID as Stripe's idempotency key, and reuses pending purchases.
+`GET /api/v1/skins/products` returns configured price/currency and availability;
+`GET /api/v1/skins/purchases` lists the caller's recent purchases. A redirect
+never grants access. `POST /api/v1/skins/purchases/reconcile` takes an owned
+purchase ID and reads current Stripe state before changing its entitlement.
+
+Configure the signed `/api/v1/skins/stripe-webhook` endpoint for
+`checkout.session.completed`, `checkout.session.async_payment_succeeded`,
+`checkout.session.async_payment_failed`, `checkout.session.expired`,
+`charge.refunded`, `charge.dispute.created`, `charge.dispute.updated`, and
+`charge.dispute.closed`. The scoped parser retains exact request bytes for SDK
+signature validation. Event IDs are recorded after successful processing, and
+purchase row locks serialize reconciliation. Every reconciliation re-reads the
+session and verifies mode, owner, product price and quantity. It grants one
+entitlement per purchase only after payment. Any refund revokes that grant;
+unresolved/lost disputes suspend it and won/closed-warning disputes restore it
+when the payment remains paid. Other grants for the same product are unaffected.
+
+The implementation follows Stripe's [fulfillment guidance](https://docs.stripe.com/checkout/fulfillment)
+and [webhook signature requirements](https://docs.stripe.com/webhooks).
+When configured, each API process runs a reconciliation sweep every minute.
+A sweep claims up to five due purchases with `FOR UPDATE SKIP LOCKED` and a
+10-minute database lease before contacting Stripe. Successful pending/disputed
+checks repeat after 15 minutes; settled payments repeat daily. Provider failures
+keep the lease delay, and process crashes become retryable when it expires.
+Shutdown stops taking further work and waits for the current check. This recovers
+missed webhooks without overlapping checks across API replicas. Webhooks and the
+account's check-payment action still reconcile immediately.
+
+A repeated checkout reuses the recorded Stripe session instead of relying on
+Stripe's [finite idempotency-key retention](https://docs.stripe.com/api/idempotent_requests).
+Each purchase fixes the session expiry at 23 hours after its creation; fresh
+creation requests stop after 22 hours. Retries keep the same expiry and key, so
+an old creation request cannot produce another payable session after key expiry.
+Creation and recording its ID are serialized under the purchase row lock.
+
+If a crash loses the checkout ID, recovery starts after 24 hours, when its
+creation window is closed. It reads [Checkout session pages](https://docs.stripe.com/api/checkout/sessions/list)
+within that fixed window, validates purchase/account metadata, and persists the
+pagination cursor. Each sweep reads at most one page per purchase. A recovered
+session then undergoes the normal payment and price checks. Only a complete
+scan with no match marks the purchase failed, allowing a new request; a scan
+error leaves the purchase pending for retry. Expired recorded sessions also
+become failed purchases. Production provider checkout verification is still
+required before enabling a store.
+
+### Game client appearance loading
+
+Match assignments carry signed `glob2-colony-skin+jwt` assertions, bound to the
+instance, match, team, account, immutable texture manifest and chosen building
+color. `SkinAuthorization` verifies Ed25519 with OpenSSL natively and asynchronous
+WebCrypto in the browser. Assertions have a maximum 24-hour lifetime, with
+30 seconds of clock tolerance. The client derives download URLs from its trusted
+instance origin and verified version ID; an assignment cannot supply a texture
+or key-server URL.
+
+`SkinDownloads` fetches JWKS with a 64 KiB limit and PNG textures with a 256 KiB
+limit, four at a time. It verifies the signed SHA-256 and 256×256 PNG dimensions
+before image decoding. The loader stays attached to the view and refreshes the
+trusted match appearance endpoint every minute, with a 512 KiB response limit.
+A complete valid snapshot removes omitted teams immediately; additions require
+fresh signature and texture verification. Failed or malformed refreshes retain
+currently authorized paint until its signed expiry, then restore classic art.
+The endpoint is not cacheable. Cached bytes are rechecked before reuse, and the cache
+retains at most 64 managed textures. Failure leaves the classic appearance in
+place. Downloads are polled from the view and never gate simulation startup.
+Verified textures and building colors live in `MapRenderState`, not team state
+or saved simulation data. The saved device preference **Show colony skins** is
+available in Settings > Display and the in-game Options dialog. Turning it off
+immediately restores classic units, swarms and building colors locally; verified
+appearance refreshes continue, so turning it back on uses current authorization.
+Original-derived meshes are installed under
+`data/skins/colony-v1`; they share the web designer's UV layout.
+
+Online replay recordings and native profile downloads have an optional
+`<recording>.appearance.json` companion containing format version 1, instance
+origin, match ID and SHA-256 of the recording. Replay bytes and version gates are
+unchanged. Keep this companion with a copied or renamed replay (renaming both).
+The client accepts at most 1 KiB of metadata, hashes recordings up to 64 MiB in
+small chunks, and uses it only for an already trusted instance and matching
+recording. Missing, stale, malformed or untrusted metadata leaves classic art.
+Playback fetches fresh signed match appearance immediately and retains the usual
+moderation refresh and local hiding. Companion write failures do not fail a
+recording. Browser watch links create the same temporary companion only for the
+hosting instance's exact match-replay route, without cross-origin redirects.
+
+The live mesh renderer supports desktop OpenGL and WebGL2. A visible-scene
+prepass rasterizes distinct mesh/pose/paint combinations into frame atlases before
+map drawing. Identical units and wrapped copies reuse those tiles, while their
+composites retain the original ground-unit/building/air-unit order and visibility
+rules. Unit meshes retain the original action/direction shadow layer beneath
+the live geometry, using the same logical canvas (including HD shadow art when
+available). The layer is emitted only after a mesh tile is ready, so fallback
+cannot draw it twice. Requests are sorted by mesh and pose to share geometry uploads between
+team textures. Up to four 2048×2048 color pages use 128×128 tiles and one shared
+depth attachment (at most about 80 MiB of attachment storage). Standalone draws
+and overflow rebuild live tiles with invalidated lookups rather than sample
+replaced content. WebGL2 uses explicit GLSL ES shaders and an interleaved vertex
+buffer; both backends restore the map renderer's state after the prepass. Context restoration recreates these resources
+from retained meshes and paint. Native mobile rendering, live spectator
+attachment and full performance validation remain required
+before release.

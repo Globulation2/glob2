@@ -69,6 +69,44 @@ const replayFixture = join(repo, 'browser/tests/fixtures/cross-replay.replay');
 const seed = await seedHistory(harness.database.db, harness.blobs, {
   ...(existsSync(replayFixture) ? { replayBytes: readFileSync(replayFixture) } : {}),
 });
+// The test painter owns a designer unlock without contacting a payment provider.
+await harness.database.db
+  .insertInto('entitlements')
+  .values({
+    account_id: seed.accounts.kestrel,
+    entitlement: 'skins:designer',
+    source: 'browser-test',
+  })
+  .execute();
+// A frozen appearance lets browser tests report the exact paint used in a match.
+const paint = await harness.database.db
+  .selectFrom('colony_skin_versions')
+  .select(['id', 'building_color'])
+  .executeTakeFirstOrThrow();
+const seat = await harness.database.db
+  .selectFrom('match_participants')
+  .select(['account_id', 'team'])
+  .where('match_id', '=', seed.featuredMatch)
+  .where('account_id', 'is not', null)
+  .orderBy('seat')
+  .executeTakeFirstOrThrow();
+if (!seat.account_id) throw new Error('Expected a human fixture participant');
+await harness.database.db
+  .insertInto('match_colony_skins')
+  .values({
+    match_id: seed.featuredMatch,
+    team_index: seat.team,
+    account_id: seat.account_id,
+    version_id: paint.id,
+    building_color: paint.building_color,
+    assertion: 'refreshed-by-api',
+  })
+  .execute();
+await harness.database.db
+  .updateTable('matches')
+  .set({ skins_frozen_at: new Date() })
+  .where('id', '=', seed.featuredMatch)
+  .execute();
 if (process.env['SEED_OUT']) writeFileSync(process.env['SEED_OUT'], JSON.stringify(seed, null, 2));
 const apiUrl = new URL(api.url);
 

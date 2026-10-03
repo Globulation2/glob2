@@ -4620,3 +4620,7 @@ Zagon zemljevida
 
 [conn card not gaining]
 
+[settings Show colony skins]
+Prikaži preobleke kolonij
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Izklopite za uporabo klasičnih enot, rojev in barv stavb v tej napravi.

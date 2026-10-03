@@ -1,3 +1,4 @@
+import { Skins } from './pages/Skins.tsx';
 // The platform web app: home, leaderboards, player and match pages, the map
 // catalog and moderation. Client routes the game links to must stay stable:
 // /players/<id>, /matches/<id>, /maps/<id>, /leaderboard/<queueId>. Invite
@@ -32,6 +33,7 @@ interface Route {
 }
 
 export const ROUTES: Route[] = [
+  { pattern: '/skins', section: 'skins', title: 'Colony skins', render: () => <Skins /> },
   { pattern: '/', section: 'home', title: '', render: () => <Home /> },
   {
     pattern: '/leaderboard',
@@ -241,6 +243,7 @@ function Layout() {
     { to: '/leaderboard', id: 'leaderboard', name: 'Leaderboard', art: 'warFlag' },
     { to: '/matches', id: 'matches', name: 'Matches', art: 'swarm' },
     { to: '/maps', id: 'maps', name: 'Maps', art: 'explorationFlag' },
+    { to: '/skins', id: 'skins', name: 'Skins', art: 'swarm' },
     ...(isModerator(account)
       ? [{ to: '/admin', id: 'admin', name: 'Moderation', art: 'hospital' as ArtName }]
       : []),

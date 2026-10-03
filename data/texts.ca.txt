@@ -4628,3 +4628,7 @@ Inèrcia del mapa
 
 [conn card not gaining]
 
+[settings Show colony skins]
+Mostra els aspectes de les colònies
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Desactiva-ho per utilitzar les unitats, els eixams i els colors dels edificis clàssics en aquest dispositiu.

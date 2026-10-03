@@ -4630,3 +4630,7 @@ Rebond des listes
 
 [conn card not gaining]
 
+[settings Show colony skins]
+Afficher les apparences des colonies
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Désactivez pour utiliser les unités, les essaims et les couleurs de bâtiments classiques sur cet appareil.

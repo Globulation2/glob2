@@ -2307,3 +2307,5 @@
 [conn card cannot keep up]
 [conn card cannot keep up body]
 [conn card not gaining]
+[settings Show colony skins]
+[settings Turn off to use classic units, swarms and building colors on this device.]

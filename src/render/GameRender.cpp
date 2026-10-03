@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "MapCopies.h"
+#include "ColonySkinPreview.h"
 
 #include "AICastor.h"
 #include "AINicowar.h"
@@ -186,6 +187,8 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 				   const BuildingGuiStateMap *buildingGuiState, bool animationsPaused,
 				   int cloudGridLimit)
 {
+    view.render.skinPreview().setVisible(globalContainer->settings.showColonySkins);
+    view.render.skinPreview().poll();
     GAGCore::FrameDrawBatch frameBatch(globalContainer->gfx);
 	// Frozen while paused, so the water and the clouds hold still with the rest.
 	int &time = view.render.animationTime;
@@ -223,6 +226,8 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 														   : teams[localTeam]->me,
 						  !(globalContainer->gfx->getOptionFlags() &
 							(GraphicContext::USEGPU | GraphicContext::PORTABLEGPU))};
+    view.render.skinPreview().prepare(frame.target, scene, left, top, right, bot,
+        viewportX, viewportY, localTeam, frame.visibleTeams, drawOptions & DRAW_WHOLE_MAP);
 	// Prepare coverage before water, keeping scene ordering independent of the
 	// cache's storage policy. Discovery uses exactly the uncached terrain rule.
 	// Native opaque tile copies beat blending mixed-alpha chunks. Cache only

@@ -2,6 +2,7 @@
 // Copyright (C) 2026 glob2 contributors
 
 #include "OnlineMatch.h"
+#include "SkinDownloads.h"
 
 #include "Engine.h"
 #include "MapCache.h"
@@ -462,6 +463,13 @@ std::unique_ptr<Engine> OnlineMatch::takeEngine()
 		return {};
 	run->accepted = true;
 	run->engine->setOnlineResult(outcome);
+    std::vector<SkinDownloads::Ticket> skins;
+    try {
+        if(assignment.contains("colonySkins") && assignment["colonySkins"].is_array() && assignment["colonySkins"].size()<=32)
+            for(const auto &skin:assignment["colonySkins"])
+                skins.push_back({skin.at("team").get<int>(),skin.at("assertion").get<std::string>()});
+    } catch(const std::exception &) { skins.clear(); }
+    run->engine->setColonySkins(std::make_unique<SkinDownloads>(services().storage,client.origin(),id,std::move(skins)));
 	auto engine = std::move(run->engine);
 	// The engine's session keeps its own reference to the transport.
 	run.reset();

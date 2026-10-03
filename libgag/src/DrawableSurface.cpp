@@ -399,6 +399,8 @@ void GraphicContext::restoreBrowserContext()
     // GL objects owned outside libgag, such as the torus overview's, belong to
     // the lost context; a new generation tells them to recreate, not reuse.
     ++_gc->glContextGeneration;
+    // Names from the lost context cannot be reused or deleted in the new one.
+    _gc->skinResources = {};
     glState.resetCache();
     glDisable(GL_BLEND);
     glDisable(GL_SCISSOR_TEST);

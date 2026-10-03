@@ -4690,3 +4690,7 @@ CPU %0%
 
 [conn card not gaining]
 
+[settings Show colony skins]
+Εμφάνιση εμφανίσεων αποικιών
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Απενεργοποιήστε για να χρησιμοποιείτε κλασικές μονάδες, σμήνη και χρώματα κτιρίων σε αυτή τη συσκευή.

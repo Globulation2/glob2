@@ -1,3 +1,4 @@
+import { skinBillingRoutes } from './skins/billing/routes.ts';
 // The HTTP application, built from injected services so tests can run it
 // against a test database without listening on a port.
 //
@@ -23,6 +24,7 @@ import {
 import { HttpError, apiError } from './errors.ts';
 import { createIdentity, type Identity } from './identity.ts';
 import type { ApiServices } from './services.ts';
+import { skinRoutes } from './skins/routes.ts';
 import { accountRoutes } from './routes/accounts.ts';
 import { adminRoutes } from './routes/admin.ts';
 import { authRoutes } from './routes/auth.ts';
@@ -234,6 +236,8 @@ export async function buildApp(
   await signinRoutes(app, identity);
   await playRoutes(app, identity, rooms);
   await mapCatalogRoutes(app, identity);
+  await skinRoutes(app, identity);
+  await skinBillingRoutes(app, identity);
   await historyRoutes(app, identity);
   await appLinkRoutes(app);
   await inviteRoutes(app, rooms);

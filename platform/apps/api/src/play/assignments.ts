@@ -1,3 +1,4 @@
+import { matchColonySkins } from '../skins/matches.ts';
 // Match tickets and match.start payloads. Tickets are signed by the replica
 // that delivers them, with the same Ed25519 key (and JWKS) as access tokens,
 // at the moment of delivery, so each player gets a full lifetime.
@@ -60,11 +61,21 @@ export class Assignments {
     const seat = setup.seats.find((s) => s.kind === 'human' && s.accountId === accountId);
     if (!seat) return undefined;
     const humanSeats = setup.seats.filter((s) => s.kind === 'human').map((s) => s.seat);
-    const [title, preview, entitlements] = await Promise.all([
+    const [title, preview, entitlements, colonySkins] = await Promise.all([
       this.mapTitle(setup),
       matchRatingPreview(this.db, match.id, accountId),
       activeEntitlements(this.db, accountId),
+      matchColonySkins(this.db, this.keys, this.origin, matchId),
     ]);
+    // Appearance freezing can wait for another replica. Do not deliver a relay
+    // assignment read before a concurrent failover completed.
+    const current = await this.db
+      .selectFrom('matches')
+      .select(['relay_id', 'status'])
+      .where('id', '=', matchId)
+      .executeTakeFirst();
+    if (!current || !['starting', 'running'].includes(current.status)) return undefined;
+    if (current.relay_id !== match.relay_id) return this.forAccount(matchId, accountId);
     const iat = Math.floor(Date.now() / 1000);
     const claims: MatchTicketClaims = {
       iss: this.origin,
@@ -91,6 +102,7 @@ export class Assignments {
       relayId: match.relay_id,
       ...(match.region ? { relayRegion: match.region } : {}),
       setup,
+      colonySkins,
       mapUrl: mapUrl(this.origin, setup.map.hash),
       ...(title ? { mapTitle: title } : {}),
       ...(preview ? { ratingPreview: preview } : {}),

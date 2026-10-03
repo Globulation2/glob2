@@ -4620,3 +4620,7 @@ Setrvačnost mapy
 
 [conn card not gaining]
 
+[settings Show colony skins]
+Zobrazovat vzhledy kolonií
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Vypnutím obnovíte na tomto zařízení klasické jednotky, roje a barvy budov.
