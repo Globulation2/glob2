@@ -3015,6 +3015,54 @@ class GameGUITouchHarness
 		};
 		const auto checksum = gui.game.checkSum();
 		require(!gui.touch->scrollAnimating(), "Nothing moves before a gesture");
+		// Tap jitter must not become a fling, even when it crosses the pan slop.
+		for (const auto delta : {ViewPoint{0, 0}, ViewPoint{1, 0}, ViewPoint{3, 0}, ViewPoint{2, 2}})
+		{
+			placeCamera(gui.localTeam->startPosX * 32.0 - 200, gui.localTeam->startPosY * 32.0 - 200);
+			frame(500); // separate taps from the double-tap gesture
+			flick(400, 300, delta.x, delta.y);
+			const auto released = gui.camera;
+			if (delta.x == 3)
+			{
+				gui.drawAll(0);
+				gfx->printScreen("momentum-jitter-released.bmp");
+				gfx->nextFrame();
+			}
+			frame(100);
+			if (delta.x == 3)
+			{
+				gui.drawAll(0);
+				gfx->printScreen("momentum-jitter-later.bmp");
+				gfx->nextFrame();
+			}
+			std::cout << "Jitter travel=" << std::hypot(delta.x, delta.y) * 4
+				<< " coast=" << gui.camera.originX - released.originX << ","
+				<< gui.camera.originY - released.originY << "\n";
+			require(!gui.touch->scrollAnimating(), "Small touch jitter must not launch momentum");
+			require(std::abs(gui.camera.originX - released.originX) < 1e-6 &&
+				std::abs(gui.camera.originY - released.originY) < 1e-6,
+				"A short touch stays at its release position");
+		}
+		// Total path length is not intent: repeated jitter can travel far while
+		// remaining within a small radius of the original contact.
+		frame(500);
+		finger(SDL_EVENT_FINGER_DOWN, 400, 300);
+		for (int i = 0; i < 8; ++i)
+		{
+			frame(16);
+			finger(SDL_EVENT_FINGER_MOTION, i % 2 ? 390 : 410, 300);
+		}
+		finger(SDL_EVENT_FINGER_UP, 390, 300);
+		require(!gui.touch->scrollAnimating(), "Oscillating jitter does not accumulate fling eligibility");
+		for (const auto delta : {ViewPoint{4, 0}, ViewPoint{3, 3}})
+		{
+			flick(400, 300, delta.x, delta.y);
+			require(gui.touch->scrollAnimating(), "A deliberate swipe at the threshold still coasts");
+			// Catching that coast and making a short movement must not inherit
+			// the previous gesture's eligibility.
+			flick(400, 300, 3, 0);
+			require(!gui.touch->scrollAnimating(), "Each touch must independently cross the dead zone");
+		}
 		// A rightward flick moves the origin left; from 300 px it coasts past zero.
 		placeCamera(300, 300);
 		flick(400, 300, 40, 0);

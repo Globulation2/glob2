@@ -31,6 +31,11 @@ Mobile settings omit desktop window sizes, renderer selection and OpenGL-only
 options because the operating system manages the viewport and the mobile build
 uses the portable renderer.
 
+Gameplay map drags start after 8 screen points of travel. Release momentum requires
+reaching 16 points from the gesture start, so small touch jitter and short
+positioning drags stop on release. This distance is independent of map zoom and
+display density; deliberate swipes retain the configured momentum.
+
 The gameplay toolbar opens build choices, flags/zones, tactical tools, objectives,
 alliances and the session menu. The minimap is a separate top-right HUD component.
 Tapping it centres the camera there; dragging keeps steering the camera and clamps
