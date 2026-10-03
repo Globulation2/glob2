@@ -2316,7 +2316,6 @@
 [settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
 [open commander]
 [stop commander]
-
 [File selection is unavailable.]
 [Saving custom AI…]
 [Could not read the selected JavaScript file.]
