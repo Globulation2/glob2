@@ -3641,7 +3641,7 @@ Your delay %0
 [hub account menu]
 Account
 [hub ai joins after %0]
-AI joins after %0 s
+AI joins after %0
 [hub all rooms]
 All
 [hub browse maps]
@@ -3681,7 +3681,7 @@ Join
 [hub leaderboard]
 Leaderboard
 [hub legacy server]
-Legacy server
+Classic lobby
 [hub linked %0]
 Linked accounts · %0
 [hub linked accounts]
@@ -3967,7 +3967,7 @@ Players can move to an open seat themselves. Change Team to rebalance.
 [room seat options]
 Seat options
 [room seats summary %0 %1 %2]
-%0 people · %1 AI · %2 open
+%0 players · %1 AI · %2 open
 [room seats]
 Seats
 [room seed]
@@ -4135,7 +4135,7 @@ solo queue
 [qm ai joins after %0]
 AI joins after %0
 [qm fair maps %0]
-Fair 128×128 maps: %0
+Maps: %0
 [qm cooldown %0]
 You declined a match. You can search again in %0.
 [qm sign in to play ranked]
@@ -4175,7 +4175,7 @@ Cancel
 [qm cancel search]
 Cancel search
 [qm usual wait %0]
-usual wait ~%0
+usual wait %0
 [qm widening]
 widening as you wait
 [qm ais are rated]
@@ -4201,13 +4201,13 @@ This server has no quick-match queues.
 [qm quick match]
 Quick match
 [qm phone searching note]
-Searching keeps running if you open Profile or Maps.
+The search keeps running if you leave this screen.
 [qm phone intro]
 Pick a queue below; the search runs while you browse.
 [qm online]
 Online
 [qm keeps running note]
-Searching keeps running if you open Profile or Maps.
+The search keeps running if you leave this screen.
 [qm ai]
 AI
 [qm provisional]
@@ -4644,3 +4644,113 @@ Too many actions: some are still waiting to be sent
 You have no pauses left in this match
 [turn pause time used %0]
 %0 has used all their pause time: the game resumes
+[room seats one person %0 %1]
+1 player · %0 AI · %1 open
+[room rule resources]
+Resources
+[room rule construction]
+Construction
+[room rule food]
+Food
+[room rule training]
+Training
+[room rule retreat]
+Retreat
+[room rule unit deaths]
+Unit deaths
+[room rule combat]
+Combat
+[room rules otherwise standard]
+Every other rule is as in Standard.
+[room browser link]
+Link for browser players
+[room browser link hint]
+Players in a browser paste this link to join.
+[room browser link code %0]
+Players in a browser paste this link to join. Their game shows code %0.
+[room copy link]
+Copy link
+[room lan open seat detail]
+Anyone on this network can take it
+[room close title]
+Close the room?
+[room close body one]
+Leaving closes the room for everyone, including the other player in it.
+[room close body %0]
+Leaving closes the room for everyone, including the %0 other players in it.
+[room close confirm]
+Close room
+[room stay]
+Stay
+[room colours changed]
+The new map gave the seats new colours. Check yours before you start.
+[room copy by hand]
+Copying didn't work. Copy the invite yourself:
+[room copy by hand close]
+Close
+[room copy by hand touch]
+Touch and hold the link, then choose Copy.
+[room copy by hand keys]
+The link is selected: press Ctrl+C (⌘C on a Mac).
+[room code]
+Code
+[online under a minute]
+under a minute
+[online about %0 min]
+about %0 min
+[online %0 s]
+%0 s
+[qm ai opponent %0]
+AI opponent: %0
+[match relay connected]
+Connected to the game server
+[room picker title]
+Choose a map
+[room picker for one]
+For the 1 player in the room
+[room picker for %0]
+For the %0 players in the room
+[room picker generated]
+Generated
+[room picker premade]
+Premade
+[room picker catalog]
+Catalog
+[room picker size]
+Size
+[room picker colonies]
+Colonies
+[room picker fair]
+Fair start for every colony
+[room picker does not fit]
+Does not fit this size; try another
+[room picker preparing]
+Preparing the preview…
+[room picker generated note]
+Each landscape gives every colony an equally good start, and the server makes the same map for everyone.
+[room picker players %0]
+%0 players
+[room picker unreadable]
+can't be read
+[room picker no premade]
+No premade maps were found.
+[room picker too small %0]
+This map has fewer colonies than the %0 players in the room.
+[room picker pick premade]
+Pick a map to see it here.
+[room picker catalog intro]
+Maps other players shared. Open one and choose Use in a room.
+[room picker browse catalog]
+Browse shared maps
+[room picker more options]
+More options…
+[room picker use]
+Use this map
+[room map ready title %0]
+Play %0
+[room map ready unnamed]
+this map
+[room map ready body]
+Create a room and invite your friends: the room plays this map.
+[device busy %0]
+Device busy %0%

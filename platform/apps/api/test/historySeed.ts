@@ -685,12 +685,55 @@ export async function seedHistory(
     daysAgo: 1,
     ticks: 30_000,
   });
+  // The host's premade map, sent with POST /api/v1/uploads: the match is named
+  // after the title the engine read from it, never "Custom map".
+  const premadeBytes = Buffer.from(`premade map ${randomBytes(8).toString('hex')}`);
+  const premade = await putContent(blobs, premadeBytes);
+  await db
+    .insertInto('blobs')
+    .values({
+      sha256: premade.sha256,
+      size: premade.size,
+      content_type: 'application/x-glob2-map',
+      storage_key: premade.key,
+      visibility: 'private',
+      owner_account_id: accounts.ana,
+    })
+    .execute();
+  await db
+    .insertInto('map_uploads')
+    .values({
+      owner_account_id: accounts.ana,
+      blob_sha256: premade.sha256,
+      format: 'map',
+      sim_version: simVersionKey(sim),
+      file_name: 'balanced for 2.map',
+      status: 'valid',
+      width: 64,
+      height: 64,
+      team_count: 2,
+      title: 'balanced for 2',
+    })
+    .execute();
+  // Someone else's private upload of the same bytes under another name stays private.
+  await db
+    .insertInto('map_uploads')
+    .values({
+      owner_account_id: accounts.kestrel,
+      blob_sha256: premade.sha256,
+      format: 'map',
+      sim_version: simVersionKey(sim),
+      file_name: 'kestrel secret.map',
+      status: 'valid',
+      title: 'Kestrel secret',
+    })
+    .execute();
   const linkRoomMatch = await simpleMatch({
     origin: 'room',
     roomId: await room('link', 'LINKONLY1'),
     status: 'ended',
     verification: 'verified',
-    map: generated('marchland', 10),
+    map: { kind: 'upload', format: 'map', hash: premade.sha256 },
     seats: [
       { kind: 'human', account: accounts.ana, name: 'Ana_M', outcome: 'lost' },
       { kind: 'human', account: accounts.mirelle, name: 'Mirelle', outcome: 'won' },

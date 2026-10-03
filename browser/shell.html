@@ -304,7 +304,13 @@ var Module = {
     // instance serving this page is the one to join.
     const join = new URLSearchParams(location.search).get('join');
     const invite = join && /^[A-Za-z0-9]{6,16}$/.test(join) ? ['--join', join, '--instance', location.origin] : [];
-    const args = ['-s', width + 'x' + height, '-F', '-C', gpu ? '-g' : '-G', ...invite];
+    // "Play this map" on a map page: ?map=<id>&version=<sha256>&title=<title> keeps the
+    // catalog map for the next room the player creates.
+    const query = new URLSearchParams(location.search);
+    const mapId = query.get('map'), mapVersion = query.get('version');
+    const roomMap = mapId && /^[0-9a-f-]{36}$/.test(mapId) && mapVersion && /^[0-9a-f]{64}$/.test(mapVersion)
+      ? ['--room-map', mapId, mapVersion, (query.get('title') || '').slice(0, 128)] : [];
+    const args = ['-s', width + 'x' + height, '-F', '-C', gpu ? '-g' : '-G', ...invite, ...roomMap];
     if (watchReplay && watchReplay.status === 'ready') args.push('-replay', watchReplay.path);
     if (Module.storageRestore === 'ready') {
       const path = '/home/web_user/.glob2/online/instances.json';
@@ -465,7 +471,7 @@ Module.textBridge = (() => {
       const action=field.action || 0;field.action=0;
       return {value:field.element.value,cursor:field.element.selectionEnd ?? 0,action};
     },
-    field(id,rect,width,height,value,password,maximum,clip) {
+    field(id,rect,width,height,value,password,maximum,clip,selectAll) {
       let field=fields.get(id);
       if (!field) {
         const element=document.createElement('input');
@@ -495,6 +501,9 @@ Module.textBridge = (() => {
             }
           });
         document.body.appendChild(element);element.value=value;
+        // A field shown for copying by hand (a failed Copy) opens with its text
+        // selected, ready for Ctrl+C or the phone's Copy menu.
+        if (selectAll) { element.readOnly=true; element.focus({preventScroll:true}); element.select(); }
       }
       field.seen=true;field.maximum=maximum;
       const element=field.element;

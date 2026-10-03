@@ -17,6 +17,8 @@
 #include "LANMenuScreen.h"
 #include "OnlineHubScreen.h"
 #include "InviteLink.h"
+#include "OnlineHandoff.h"
+#include <FormatableString.h>
 #include "ui/FrontendUI.h"
 #include "OnlineServices.h"
 #include "RelayTransport.h"
@@ -287,6 +289,18 @@ bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event> &incomi
 	{
 		hubOpenedAt = tick;
 		screens.push(std::make_unique<OnlineHubScreen>(screens));
+	}
+	// "Play this map" on the web app: open Online and say how the map is used, once.
+	static bool roomMapAnnounced = false;
+	if (!roomMapAnnounced && Online::pendingRoomMap() && dynamic_cast<MainMenuScreen *>(screens.top()))
+	{
+		roomMapAnnounced = true;
+		hubOpenedAt = tick;
+		screens.push(std::make_unique<OnlineHubScreen>(screens));
+		const auto &map = *Online::pendingRoomMap();
+		screens.push(std::make_unique<MessageScreen>(
+			GAGCore::FormattableString(Glob2UI::tr("[room map ready title %0]")).arg(map.title.empty() ? Glob2UI::tr("[room map ready unnamed]") : map.title),
+			Glob2UI::tr("[room map ready body]"), std::vector<std::string>{Glob2UI::tr("[ok]")}));
 	}
 #endif
 	if (!screens.running())

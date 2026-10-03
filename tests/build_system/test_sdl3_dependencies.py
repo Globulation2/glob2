@@ -1,5 +1,6 @@
 """The pinned source SDK must apply reviewed fixes or fail explicitly."""
 import importlib.util
+import json
 import os
 from pathlib import Path
 import tempfile
@@ -43,6 +44,35 @@ class SourcePatchTests(unittest.TestCase):
                             with self.assertRaisesRegex(RuntimeError, 'does not apply'):
                                 module.apply_source_patches(source, [patch])
                             self.assertEqual(implementation.read_bytes(), b'unexpected\n')
+
+
+class TtfKerningPatchTests(unittest.TestCase):
+    ARCHIVE_NAME = 'SDL3_ttf-3.2.2.tar.gz'
+
+    def test_the_kerning_patch_is_part_of_every_pinned_build(self):
+        names = [patch.name for patch in module.TTF_PATCHES]
+        self.assertEqual(names, ['kerning-moves-pen.patch'])
+        portfile = (Path(module.LOCK).parent / 'vcpkg-ports/sdl3-ttf/portfile.cmake').read_text()
+        self.assertIn('kerning-moves-pen.patch', portfile)
+        self.assertEqual(module.json.loads(module.LOCK.read_text())['SDL_ttf']['archive'], self.ARCHIVE_NAME)
+
+    def test_the_kerning_patch_applies_to_the_pinned_archive(self):
+        # The archive is in any work directory sdl3_dependencies.py downloaded into.
+        candidates = [Path(__file__).resolve().parents[2] / 'build' / name / 'sources' / self.ARCHIVE_NAME
+                      for name in ('sdl3', 'sdl3-ci')]
+        candidates.append(Path.home() / '.cache/glob2-sdl3/sources' / self.ARCHIVE_NAME)
+        archive = next((path for path in candidates if path.is_file()), None)
+        if archive is None:
+            self.skipTest('the pinned SDL3_ttf archive has not been downloaded')
+        import tarfile
+        with tempfile.TemporaryDirectory() as temporary:
+            with tarfile.open(archive) as package:
+                package.extractall(temporary, filter='data')
+            source = Path(temporary) / 'SDL3_ttf-3.2.2'
+            module.apply_source_patches(source, module.TTF_PATCHES)
+            text = (source / 'src/SDL_ttf.c').read_text()
+            self.assertIn('positions->pos[positions->len - 2].x_advance += (int)pen_adjust;', text)
+            self.assertNotIn('pos->x_offset += delta.x;', text)
 
 
 if __name__ == '__main__':

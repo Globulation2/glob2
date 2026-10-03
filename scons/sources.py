@@ -564,6 +564,7 @@ CLIENT_SOURCES = (
     'yog/YogRoom.cpp',
     'MatchStartScreen.cpp',
     'OnlineHubScreen.cpp',
+    'RoomMapPickerScreen.cpp',
     'RoomScreen.cpp',
     'net/NetTransport.cpp', 'net/TcpTransport.cpp',
     'net/NetworkConfig.cpp',

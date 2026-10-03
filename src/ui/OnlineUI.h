@@ -82,8 +82,18 @@ class PreviewImages
 	Online::PlatformScope &scopeFor(Online::PlatformClient &client);
 };
 
-// "0:42", "12:05", "1:02:03".
+// "0:42", "12:05", "1:02:03": running timers and countdowns.
 std::string clockText(std::int64_t seconds);
+// An estimate in words: "under a minute", "about 2 min".
+std::string aboutText(std::int64_t seconds);
+// How long a match lasted: "45 s", "12 min".
+std::string durationText(std::int64_t seconds);
+// A queue as players know it: its configured name, else a readable form of the id
+// ("casual-1v1" -> "Casual 1v1"); never the raw id.
+std::string queueDisplayName(const std::string &id, const std::string &name);
+// The certificate fingerprint in a LAN pairing link ("wss://…#sha256=ab12cd34…") as a
+// short code people can compare ("AB12 CD34"); empty when the link has none.
+std::string pairingCode(const std::string &pairing);
 // A translated title for a generator id ("even-ground" -> "Even Ground").
 std::string generatorTitle(const std::string &generatorId);
 // The display name of an AI id ("cortex" -> "Cortex").

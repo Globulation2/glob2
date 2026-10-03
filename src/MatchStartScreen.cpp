@@ -92,7 +92,8 @@ Element MatchStartScreen::steps(const Presentation &p)
 	// In the browser a first match may wait for the game sprites to finish downloading.
 	const bool graphics = now == Step::Load && flow->loadStage() == "[Loading game graphics]";
 	lines.push_back(line(tr(graphics ? "[Loading game graphics]" : "[match loading]"), Step::Load, ""));
-	std::string relay = GAGCore::FormattableString(tr("[match relay %0]")).arg(flow->relayName());
+	// Which relay serves the match is for the connection panel, not for players.
+	std::string relay = tr("[match relay connected]");
 	// Ping before the first turn: the session's own round trip to the relay, rated
 	// on the same scale as the in-game panel (docs/multiplayer/connection-quality.md).
 	if (flow->relayRttMs() >= 0)

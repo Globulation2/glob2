@@ -479,6 +479,12 @@ export const MatchSummary = Open(
     simVersion: SimVersion,
     origin: Type.Union([Type.Literal('room'), Type.Literal('queue')]),
     queueId: Type.Optional(Type.String()),
+    queueName: Type.Optional(
+      Type.String({
+        maxLength: 64,
+        description: 'The queue as players know it ("Casual 1v1"), from the instance config.',
+      }),
+    ),
     rated: Type.Boolean(),
     status: Type.Union([
       Type.Literal('starting'),

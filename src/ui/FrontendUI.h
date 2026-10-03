@@ -77,7 +77,7 @@ Element compactButton(const std::string &key, const std::string &label, UIIcon i
 					  ButtonOptions options = {});
 
 const Theme &frontendTheme();
-// The dark purple in-match look of the touch HUD.
+// Dialogs over a match and the results: the frontend's paper look on every host.
 const Theme &inGameTheme();
 // The classic navy in-match look with the sprite frame and gold buttons.
 const Theme &classicInGameTheme();
@@ -110,6 +110,9 @@ class Screen : public UIScreen
 	void beforePaint() override;
 	// Whether the content sits on a paper panel; menus and forms do, full-window views do not.
 	virtual bool panel() const { return true; }
+	// Menus read larger on big desktop windows while the interface scale follows the
+	// desktop (ui::comfortScale); gameplay and its dialogs keep their sizes.
+	void adjustPresentation(Presentation &presentation) override;
 
   private:
 	FrontendScope scope{true};
@@ -124,8 +127,8 @@ class Dialog : public UIDialog
 	bool scrim() const override { return false; }
 };
 
-// A modal over gameplay or the editor: the classic navy box with the sprite
-// frame on pointer hosts, the touch HUD's purple sheet on touch hosts.
+// A modal over gameplay or the editor, in the frontend's paper look on every host
+// (the same as the Online hub and the room).
 class InGameDialog : public UIDialog
 {
   public:

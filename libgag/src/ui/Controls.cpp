@@ -616,6 +616,11 @@ class TextField : public Node
 			state.committed = value;
 		state.editing = true;
 		state.text = value;
+		if (options.selectForCopy && !value.empty())
+		{
+			selectAll = true;
+			state.highlight = 1;
+		}
 		host.beginEditing(key);
 	}
 	void blur(Host &host, bool cancelled) override
@@ -670,6 +675,8 @@ class TextField : public Node
 	}
 	bool textInput(const std::string &text, Host &host) override
 	{
+		if (options.selectForCopy)
+			return true;
 		std::string next = selectAll ? std::string() : value;
 		if (selectAll)
 			cursor = 0;
@@ -699,6 +706,8 @@ class TextField : public Node
 			host.state(key).cursor = cursor;
 			return true;
 		case SDLK_BACKSPACE:
+			if (options.selectForCopy)
+				return true;
 			if (selectAll)
 				commit(host, "", 0);
 			else if (cursor > 0)
@@ -710,6 +719,8 @@ class TextField : public Node
 			}
 			return true;
 		case SDLK_DELETE:
+			if (options.selectForCopy)
+				return true;
 			if (selectAll)
 				commit(host, "", 0);
 			else if (cursor < value.size())
@@ -745,12 +756,14 @@ class TextField : public Node
 			if (event.ctrl() && selectAll)
 			{
 				SDL_SetClipboardText(value.c_str());
-				if (event.sym == SDLK_X)
+				if (event.sym == SDLK_X && !options.selectForCopy)
 					commit(host, "", 0);
 				return true;
 			}
 			return false;
 		case SDLK_V:
+			if (options.selectForCopy)
+				return event.ctrl();
 			if (event.ctrl() && SDL_HasClipboardText())
 			{
 				char *clip = SDL_GetClipboardText();
@@ -801,7 +814,7 @@ class TextField : public Node
 			SDL_Rect area{bounds.x, bounds.y, bounds.w, bounds.h};
 			SDL_Rect limit{clip.x, clip.y, clip.w, clip.h};
 			// Browser hosts edit natively; native hosts ignore this.
-			GAGCore::browserTextInput(this->browserOwner, area, surface->getW(), surface->getH(), value, options.password, options.maxLength, browserChange, &limit);
+			GAGCore::browserTextInput(this->browserOwner, area, surface->getW(), surface->getH(), value, options.password, options.maxLength, browserChange, &limit, options.selectForCopy);
 		}
 		if (shown.empty() && !active)
 		{

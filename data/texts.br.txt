@@ -4641,4 +4641,113 @@ Inércia do mapa
 [turn no pauses left]
 
 [turn pause time used %0]
+[room seats one person %0 %1]
+
+[room rule resources]
+
+[room rule construction]
+
+[room rule food]
+
+[room rule training]
+
+[room rule retreat]
+
+[room rule unit deaths]
+
+[room rule combat]
+
+[room rules otherwise standard]
+
+[room browser link]
+
+[room browser link hint]
+
+[room browser link code %0]
+
+[room copy link]
+
+[room lan open seat detail]
+
+[room close title]
+
+[room close body one]
+
+[room close body %0]
+
+[room close confirm]
+
+[room stay]
+
+[room colours changed]
+
+[room copy by hand]
+
+[room copy by hand close]
+
+[room copy by hand touch]
+
+[room copy by hand keys]
+
+[room code]
+
+[online under a minute]
+
+[online about %0 min]
+
+[online %0 s]
+
+[qm ai opponent %0]
+
+[match relay connected]
+
+[room picker title]
+
+[room picker for one]
+
+[room picker for %0]
+
+[room picker generated]
+
+[room picker premade]
+
+[room picker catalog]
+
+[room picker size]
+
+[room picker colonies]
+
+[room picker fair]
+
+[room picker does not fit]
+
+[room picker preparing]
+
+[room picker generated note]
+
+[room picker players %0]
+
+[room picker unreadable]
+
+[room picker no premade]
+
+[room picker too small %0]
+
+[room picker pick premade]
+
+[room picker catalog intro]
+
+[room picker browse catalog]
+
+[room picker more options]
+
+[room picker use]
+
+[room map ready title %0]
+
+[room map ready unnamed]
+
+[room map ready body]
+
+[device busy %0]
 

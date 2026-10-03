@@ -216,9 +216,14 @@ std::vector<RoomBackend::Slot> LanRoom::slots() const
 	}
 	for (int open = static_cast<int>(r->setup.seats.size()); open < teamCount(); ++open)
 	{
+		// Labelled like the online room's open seats, in the colour of the colony the
+		// next player gets (not every open seat in team 1's red).
 		Slot slot;
 		slot.index = open;
+		slot.team = open;
 		slot.open = true;
+		slot.name = text("[room open seat]");
+		slot.detail = text("[room lan open seat detail]");
 		result.push_back(slot);
 	}
 	return result;

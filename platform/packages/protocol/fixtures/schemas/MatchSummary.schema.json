@@ -63,6 +63,11 @@
     "queueId": {
       "type": "string"
     },
+    "queueName": {
+      "type": "string",
+      "maxLength": 64,
+      "description": "The queue as players know it (\"Casual 1v1\"), from the instance config."
+    },
     "rated": {
       "type": "boolean"
     },

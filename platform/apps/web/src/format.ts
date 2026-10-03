@@ -7,7 +7,9 @@ export const TICKS_PER_SECOND = 25;
 
 export function duration(ticks: number | undefined): string {
   if (ticks === undefined) return '–';
-  const minutes = Math.round(ticks / TICKS_PER_SECOND / 60);
+  const seconds = Math.round(ticks / TICKS_PER_SECOND);
+  if (seconds < 60) return `${seconds} s`;
+  const minutes = Math.round(seconds / 60);
   if (minutes < 60) return `${minutes} min`;
   return `${Math.floor(minutes / 60)} h ${minutes % 60} min`;
 }
@@ -59,10 +61,24 @@ export function percent(value: number): string {
   return `${Math.round(value * 100)} %`;
 }
 
-export function queueName(queues: readonly QueueInfo[] | undefined, id: string | undefined) {
+/**
+ * A queue as players know it: the name the server sent with the match, else the
+ * instance's queue list, else a readable form of the id ("casual-1v1" → "Casual 1v1").
+ */
+export function queueName(
+  queues: readonly QueueInfo[] | undefined,
+  id: string | undefined,
+  known?: string,
+) {
+  if (known) return known;
   if (!id) return 'Room';
   if (id === 'room') return 'Rooms';
-  return queues?.find((q) => q.id === id)?.name ?? id;
+  return queues?.find((q) => q.id === id)?.name ?? readableId(id);
+}
+
+function readableId(id: string): string {
+  const words = id.split('-').filter(Boolean);
+  return words.map((w, i) => (i === 0 ? w.charAt(0).toUpperCase() + w.slice(1) : w)).join(' ');
 }
 
 const AI_NAMES: Record<string, string> = {

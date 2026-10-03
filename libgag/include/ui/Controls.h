@@ -116,6 +116,9 @@ struct TextFieldOptions
 	// With commitOnSubmit, also receives the draft as it changes, and the
 	// committed value again when Escape discards the draft.
 	std::function<void(const std::string &)> preview;
+	// Text to copy by hand: editing starts with all of it selected and edits are
+	// ignored (the browser shows a read-only, selected DOM field).
+	bool selectForCopy = false;
 };
 // Single-line editor. `change` receives the draft on every edit.
 Element textField(const std::string &key, const std::string &value,

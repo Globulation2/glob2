@@ -125,7 +125,8 @@ void UIScreen::refreshPresentation()
 {
 	if (!gfx)
 		return;
-	const auto p = resolvePresentation(*gfx, themeValue.touchTextScale);
+	auto p = resolvePresentation(*gfx, themeValue.touchTextScale);
+	adjustPresentation(p);
 	ensureMeasurer(measurer, measurerTouch, measurerUnit, themeValue, p, hostValue);
 	hostValue.setPresentation(p);
 }

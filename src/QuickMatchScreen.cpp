@@ -39,8 +39,11 @@ std::string modeText(const Online::QueueInfo &queue)
 	return queue.mode == "2v2" ? tr("[qm 2 vs 2]") : tr("[qm 1 vs 1]");
 }
 
+// The queue's own name ("Ranked 1v1", "Casual 1v1"), the same on every screen.
 std::string queueTitle(const Online::QueueInfo &queue)
 {
+	if (!queue.name.empty())
+		return queue.name;
 	if (queue.rated)
 		return modeText(queue) + " \xC2\xB7 " + tr("[qm ranked]");
 	return FormattableString(tr("[qm casual %0]")).arg(modeText(queue));
@@ -297,7 +300,8 @@ Element QuickMatchScreen::searchPanel(const Presentation &p, bool phone)
 		return ConnectionQuality::labelled(tr("[qm ping about]"),
 		                                   ConnectionQuality::Metric::Ping, ms, [](const char *key) { return tr(key); });
 	};
-	if (status && status->ratingMin && status->ratingMax)
+	// Casual queues are unrated, so they show no ratings at all.
+	if (queue.rated && status && status->ratingMin && status->ratingMax)
 		range = FormattableString(tr("[qm opponents rated %0 to %1]")).arg(*status->ratingMin).arg(*status->ratingMax);
 	if (status && !status->region.empty())
 		region = FormattableString(tr("[qm region %0]")).arg(status->region) +
@@ -328,8 +332,8 @@ Element QuickMatchScreen::searchPanel(const Presentation &p, bool phone)
 		std::vector<Element> lineParts{icon(uiIcon(UIIcon::Robot), {16}),
 									   expanded(paragraph(line, {FontRole::Support}))};
 		if (status && !status->backfillAi.empty() && model.allowAiOpponent() && !phone)
-			lineParts.push_back(caption(aiTitle(status->backfillAi) +
-										(status->backfillAiRating ? " \xC2\xB7 " + std::to_string(*status->backfillAiRating) : "")));
+			lineParts.push_back(caption(FormattableString(tr("[qm ai opponent %0]")).arg(aiTitle(status->backfillAi)) +
+										(queue.rated && status->backfillAiRating ? " \xC2\xB7 " + std::to_string(*status->backfillAiRating) : "")));
 		backfill.push_back(row(std::move(lineParts), {p.pt(6), CrossAlign::Center}));
 		const int total = std::max(1, *queue.aiBackfillSeconds);
 		const int elapsed = model.allowAiOpponent()
@@ -347,20 +351,21 @@ Element QuickMatchScreen::searchPanel(const Presentation &p, bool phone)
 	const std::string clock = clockText(model.waitedSeconds());
 	std::string usual;
 	if (status && status->typicalWaitSeconds)
-		usual = FormattableString(tr("[qm usual wait %0]")).arg(clockText(*status->typicalWaitSeconds));
+		usual = FormattableString(tr("[qm usual wait %0]")).arg(aboutText(*status->typicalWaitSeconds));
 
 	if (phone)
 	{
+		// The clock takes the width it needs ("0…" never), the details the rest.
 		std::vector<Element> right;
-		if (!range.empty() && status)
-			right.push_back(caption(std::to_string(*status->ratingMin) + "\xE2\x80\x93" + std::to_string(*status->ratingMax), false));
+		if (!range.empty())
+			right.push_back(caption(range, false));
 		if (!region.empty())
-			right.push_back(caption(status && !status->region.empty()
-										? status->region + (status->rttMs ? " \xC2\xB7 " + estimate(*status->rttMs) : "")
-										: region));
+			right.push_back(caption(region, false));
+		if (!usual.empty())
+			right.push_back(caption(usual, false));
 		std::vector<Element> parts{
 			caption(phaseText + " \xC2\xB7 " + queueTitle(queue), false),
-			row({expanded(label(clock, {FontRole::Title})), column(std::move(right), {p.pt(2), CrossAlign::End})},
+			row({label(clock, {FontRole::Title}), expanded(column(std::move(right), {p.pt(2), CrossAlign::End}))},
 				{p.pt(8), CrossAlign::Center})};
 		for (auto &part : backfill)
 			parts.push_back(part);

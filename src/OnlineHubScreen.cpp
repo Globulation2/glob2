@@ -17,15 +17,18 @@
 #include "OnlineServices.h"
 #include "PlatformClient.h"
 #include "PlatformRoom.h"
+#include "RoomSetup.h"
 #include "RoomScreen.h"
 #include "SettingsScreen.h"
 #include "SimVersion.h"
 #include "YOGClient.h"
 #include "YOGLoginScreen.h"
 #include "gui/ThumbSide.h"
+#include "ui/OnlineUI.h"
 #include <ApplicationHost.h>
 #include <FormatableString.h>
 #include <Toolkit.h>
+#include <random>
 
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>
@@ -99,13 +102,15 @@ RecentLine recentLine(const Json &match, const std::string &me)
 	std::string versus;
 	for (std::size_t i = 0; i < others.size() && i < 3; ++i)
 		versus += (i ? ", " : "") + others[i];
-	line.title = match.value("origin", "room") == "room" ? tr("[hub room match]") : match.value("queueId", "");
+	// The queue's configured name (the server sends it; older servers only the id).
+	line.title = match.value("origin", "room") == "room"
+					 ? tr("[hub room match]")
+					 : queueDisplayName(match.value("queueId", ""), match.value("queueName", ""));
 	if (!versus.empty())
 		line.title += " · " + formatted("[hub versus %0]", versus);
 	line.detail = match.value("mapTitle", "");
 	if (match.contains("durationTicks") && match["durationTicks"].is_number_integer())
-		line.detail += (line.detail.empty() ? "" : " · ") +
-					   GAGCore::FormattableString(tr("[results minutes %0]")).arg(match["durationTicks"].get<int>() / 25 / 60);
+		line.detail += (line.detail.empty() ? "" : " · ") + durationText(match["durationTicks"].get<int>() / 25);
 	if (!match.value("rated", false))
 		line.rating = tr("[hub unrated]");
 	line.verified = match.value("verification", "") == "verified";
@@ -387,14 +392,11 @@ void OnlineHubScreen::createRoom()
 {
 	if (!canPlay())
 		return;
-	CustomGamePreferences preferences;
-	if (!preferences.load(*GAGCore::Toolkit::getFileManager()))
-	{
-		preferences.setup.random = true;
-		preferences.setup.setCapacity(4);
-	}
+	// A fair 128×128 two-colony map: most rooms are two friends. It grows to four
+	// colonies when more people join, until the host chooses a map.
+	const auto setup = Online::defaultRoomSetup(2, std::random_device{}());
 	const std::string name = formatted("[hub room name %0]", data.displayName);
-	enterRoom(Online::PlatformRoom::create(client(), name, false, preferences.setup));
+	enterRoom(Online::PlatformRoom::create(client(), name, false, setup, true));
 }
 
 void OnlineHubScreen::joinByCode(const std::string &codeOrLink)
@@ -634,12 +636,12 @@ Element OnlineHubScreen::quickMatch(const Presentation &p, bool phone)
 		const Json &queue = data.queues[i];
 		std::string detail = queue.value("rated", false) ? tr("[hub ranked]") : tr("[hub unrated]");
 		if (queue.contains("aiBackfillSeconds") && queue["aiBackfillSeconds"].is_number_integer())
-			detail += " · " + formatted("[hub ai joins after %0]", std::to_string(queue["aiBackfillSeconds"].get<int>()));
+			detail += " · " + formatted("[hub ai joins after %0]", clockText(queue["aiBackfillSeconds"].get<int>()));
 		ButtonOptions find;
 		find.primary = i == 0;
 		find.enabled = enabled;
 		const int index = int(i);
-		cards.push_back(card(column({row({icon(uiIcon(queue.value("rated", false) ? UIIcon::Bolt : UIIcon::Robot), {18}), label(queue.value("name", queue.value("mode", "")), {FontRole::Body})}, {p.pt(6), CrossAlign::Center}),
+		cards.push_back(card(column({row({icon(uiIcon(queue.value("rated", false) ? UIIcon::Bolt : UIIcon::Robot), {18}), label(queueDisplayName(queue.value("id", ""), queue.value("name", "")), {FontRole::Body})}, {p.pt(6), CrossAlign::Center}),
 									 caption(detail),
 									 button("queue/" + std::to_string(i), tr("[hub find match]"), [this, index] { findMatch(index); }, find)},
 									{p.pt(6)}),
@@ -930,7 +932,8 @@ Element OnlineHubScreen::build(const Presentation &p)
 	std::vector<MenuAction> buttons{{"settings", tr("[hub online settings]"), [this] { openSettings(); }},
 									{"legacy", tr("[hub legacy server]"), [this] { openLegacyServer(); }},
 									{"back", tr("[Back]"), [this] { onEscape(); }, false, SDLK_ESCAPE}};
-	auto footerRow = row({expanded(caption(instance + " · " + PACKAGE_VERSION + " · " + formatted("[hub sim %0]", std::to_string(Online::SimVersion::local().versionMinor)))),
+	// The game version identifies the build; the simulation version is for Settings.
+	auto footerRow = row({expanded(caption(instance + " · " + PACKAGE_VERSION)),
 						  actions(std::move(buttons), p, ActionStyle::Compact)},
 						 {p.pt(8), CrossAlign::Center});
 	std::vector<Element> page{headline};

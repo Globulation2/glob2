@@ -3,6 +3,7 @@
 // Copyright (C) 2006 Bradley Arsenault
 
 #include "EndGameScreen.h"
+#include "FrontendTheme.h"
 #include "TeamStatChart.h"
 #include "GlobalContainer.h"
 #include "ReplayWriter.h"
@@ -32,7 +33,9 @@ using GAGCore::Color;
 
 namespace
 {
-const Color background(34, 24, 49);
+// The statistics chart keeps its dark plot (its curves and labels are drawn for it);
+// the page around it is the frontend's paper, like the Online hub and the room.
+const Color chartBackground(34, 24, 49);
 
 //! This function is used to sort the player array
 struct MoreScore
@@ -150,7 +153,11 @@ EndGameScreen::Description EndGameScreen::describe(const Game &game, const Team 
 
 void EndGameScreen::paintBackground(fe::Canvas &canvas)
 {
-	canvas.fillRect({0, 0, canvas.size().w, canvas.size().h}, background);
+	auto *surface = canvas.surface();
+	if (FrontendTheme::current && surface)
+		FrontendTheme::current->background(surface, false);
+	else
+		canvas.fillRect({0, 0, canvas.size().w, canvas.size().h}, theme().palette.paper);
 }
 
 fe::Rect EndGameScreen::available(const Presentation &p, const fe::Metrics &m)
@@ -487,7 +494,10 @@ Element EndGameScreen::build(const Presentation &p)
 	const char *quitKey = !online ? "[quit]" : online->fromRoom ? "[results back to room]" : "[results back to online]";
 	actions.push_back({"quit", fe::tr(quitKey), [this] { endExecute(QUIT); }, true, SDLK_RETURN});
 	parts.push_back(fe::actions(std::move(actions), p));
-	return fe::column(std::move(parts), {p.pt(8)});
+	// A paper card over the colony background, as the Online hub and the room have.
+	fe::CardOptions page;
+	page.padding = p.pt(compact ? 10 : 16);
+	return fe::card(fe::column(std::move(parts), {p.pt(8)}), page);
 }
 
 void EndGameScreen::paintChart(fe::Canvas &canvas, fe::Rect r)
@@ -496,6 +506,7 @@ void EndGameScreen::paintChart(fe::Canvas &canvas, fe::Rect r)
 	auto *surface = canvas.surface();
 	if (!surface)
 		return;
+	canvas.fillRounded(r, 6, chartBackground);
 	if (std::none_of(teams.begin(), teams.end(), [](const auto &team) { return team.enabled; }))
 	{
 		canvas.text({r.x + 8, r.y + 8}, fe::FontRole::Body, fe::tr("[Select a team to show its history.]"), InGameTouchTheme::ink);

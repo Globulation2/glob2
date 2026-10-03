@@ -40,11 +40,18 @@ export class Assignments {
   private readonly db: Db;
   private readonly keys: SigningKeys;
   private readonly origin: string;
+  private readonly queueNames: ReadonlyMap<string, string>;
 
-  constructor(db: Db, keys: SigningKeys, origin: string) {
+  constructor(
+    db: Db,
+    keys: SigningKeys,
+    origin: string,
+    queueNames: ReadonlyMap<string, string> = new Map(),
+  ) {
     this.db = db;
     this.keys = keys;
     this.origin = origin;
+    this.queueNames = queueNames;
   }
 
   /**
@@ -122,7 +129,7 @@ export class Assignments {
       .where('id', '=', matchId)
       .executeTakeFirst();
     if (!match) return undefined;
-    return (await summarize(this.db, [match]))[0];
+    return (await summarize(this.db, [match], this.queueNames))[0];
   }
 
   /** The catalog title of the map, else the name of the generator that made it. */

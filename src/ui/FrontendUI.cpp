@@ -8,6 +8,7 @@
 #include <StringTable.h>
 #include <Toolkit.h>
 #include <cstdio>
+#include <cstdlib>
 #include <array>
 #include <map>
 
@@ -87,34 +88,14 @@ const Theme &frontendTheme()
 
 const Theme &inGameTheme()
 {
+	// Dialogs over a match (the in-game menu, confirmations, the end of the match) and
+	// the results use the frontend's paper, ink and gold, the same as the Online hub
+	// and the room, on every host: one design language instead of a navy desktop box
+	// and a purple phone sheet.
 	static const Theme theme = []
 	{
-		Theme t;
-		t.fonts = {"menu", "menu", "standard", "little", "little"};
-		t.touchFonts = {"menu", "menu", "frontend-body", "frontend-support", "frontend-support"};
-		t.touchTextScale = touchTextBase;
-		// The dark in-match look of the touch HUD, so dialogs sit on the map without
-		// borrowing the frontend's paper.
-		auto &c = t.palette;
-		c.ink = InGameTouchTheme::ink;
-		c.muted = GAGCore::Color(204, 188, 152);
-		c.paper = GAGCore::Color(43, 28, 66);
-		c.panel = GAGCore::Color(43, 28, 66, 244);
-		c.field = GAGCore::Color(65, 43, 88);
-		c.rail = GAGCore::Color(55, 36, 78);
-		c.line = InGameTouchTheme::border;
-		c.accent = InGameTouchTheme::border;
-		c.accentInk = GAGCore::Color(30, 18, 40);
-		c.selected = GAGCore::Color(114, 78, 111);
-		c.hover = GAGCore::Color(92, 62, 116);
-		c.focus = GAGCore::Color(255, 214, 120);
-		c.warning = GAGCore::Color(255, 214, 120);
-		c.scrim = GAGCore::Color(10, 6, 20, 140);
-		c.disabled = GAGCore::Color(52, 38, 70);
-		c.shadow = GAGCore::Color(10, 6, 20, 60);
-		c.pressed = GAGCore::Color(255, 214, 120, 50);
-		c.success = GAGCore::Color(120, 220, 120);
-		c.danger = GAGCore::Color(255, 110, 100);
+		Theme t = frontendTheme();
+		t.palette.scrim = GAGCore::Color(10, 6, 20, 120);
 		return t;
 	}();
 	return theme;
@@ -187,6 +168,13 @@ void Screen::paintBackground(Canvas &canvas)
 		UIScreen::paintBackground(canvas);
 }
 
+void Screen::adjustPresentation(Presentation &p)
+{
+	const char *forced = std::getenv("GLOB2_UI_SCALE");
+	const bool followsDesktop = GAGCore::GraphicContext::getRequestedUiScale() <= 0 && !(forced && *forced);
+	applyComfortScale(p, comfortScale(p, followsDesktop));
+}
+
 void Screen::beforePaint()
 {
 	if (GAGGUI::Style::style)
@@ -196,7 +184,7 @@ void Screen::beforePaint()
 Dialog::Dialog() : UIDialog(frontendTheme()) {}
 
 InGameDialog::InGameDialog()
-	: UIDialog(touchPresentation() ? inGameTheme() : classicInGameTheme()), classicLook(!touchPresentation())
+	: UIDialog(inGameTheme()), classicLook(false)
 {
 }
 
