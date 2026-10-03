@@ -1,0 +1,22 @@
+{
+  "valid": true,
+  "mapHash": "c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4",
+  "map": {
+    "width": 128,
+    "height": 128,
+    "teamCount": 2
+  },
+  "versionMinor": 125,
+  "players": [
+    {
+      "name": "Alice",
+      "team": 0,
+      "kind": "human"
+    },
+    {
+      "name": "Cortex",
+      "team": 1,
+      "kind": "ai"
+    }
+  ]
+}

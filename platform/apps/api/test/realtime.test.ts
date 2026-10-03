@@ -164,8 +164,9 @@ describe('realtime envelope', () => {
     expect(unknown.error?.code).toBe('bad_request');
     const badParams = await client.call('auth.handoff.cancel', { attemptId: 'nope' });
     expect(badParams.error?.code).toBe('bad_request');
+    // Rooms need a signed-in socket (tests/rooms.test.ts covers the rest).
     const later = await client.call('room.create', { name: 'x', visibility: 'public' });
-    expect(later.error?.code).toBe('unsupported');
+    expect(later.error?.code).toBe('unauthenticated');
     for (const frame of [early, unknown, later])
       expect(check('RealtimeServerMessage', frame).stage).toBe('ok');
 

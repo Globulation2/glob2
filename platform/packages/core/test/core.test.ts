@@ -15,6 +15,7 @@ import {
   createLogger,
   loadConfig,
   loadInstanceConfig,
+  parseRelayKeys,
   putContent,
 } from '../src/index.ts';
 
@@ -65,6 +66,22 @@ describe('loadConfig', () => {
     expect(config.publicOrigin).toBe('https://play.example.org');
     expect(config.instance.name).toBe('Test Instance');
     expect(config.instance.queues[0]?.mapPool?.[0]?.generatorId).toBe('even-ground');
+  });
+
+  it('reads relay keys from RELAY_KEYS and RELAY_KEYS_FILE', () => {
+    const cwd = tempDir();
+    const shared = 's'.repeat(40);
+    const pinned = 'p'.repeat(40);
+    writeFileSync(join(cwd, 'relay-keys'), `# relays\nrelay-eu1:${pinned}\n\n`);
+    const config = loadConfig({
+      cwd,
+      env: { DATABASE_URL: 'postgres://x/y', RELAY_KEYS: shared, RELAY_KEYS_FILE: 'relay-keys' },
+    });
+    expect(config.relayKeys).toEqual([{ key: shared }, { key: pinned, relayId: 'relay-eu1' }]);
+    expect(config.uploadMaxBytes).toBe(16 * 1024 * 1024);
+    expect(() => parseRelayKeys('short')).toThrow(ConfigError);
+    expect(() => parseRelayKeys(`bad id!:${shared}`)).toThrow(ConfigError);
+    expect(loadConfig({ cwd, env: { DATABASE_URL: 'postgres://x/y' } }).relayKeys).toEqual([]);
   });
 
   it('accepts the shipped instance.example.yaml', () => {

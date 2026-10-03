@@ -68,6 +68,19 @@ export const ValidateMapResult = Type.Union([
       description: 'Format version the file was saved with.',
     }),
     title: Type.Optional(Type.String({ maxLength: 128 })),
+    players: Type.Optional(
+      Type.Array(
+        Open({
+          name: Type.String({ maxLength: 64 }),
+          team: TeamIndex,
+          kind: Type.Union([Type.Literal('human'), Type.Literal('ai')]),
+        }),
+        {
+          maxItems: 12,
+          description: 'Saves only: the players recorded in the file, for reteaming.',
+        },
+      ),
+    ),
   }),
   Open({ valid: Type.Literal(false), reason: Type.String({ maxLength: 2000 }) }),
 ]);
