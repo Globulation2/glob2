@@ -157,6 +157,7 @@
 [match failed]
 [match leave]
 [match loading]
+[Loading game graphics]
 [match map cached]
 [match map]
 [match relay %0]
