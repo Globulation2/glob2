@@ -41,6 +41,12 @@ export const EXPORTED_ACCOUNT_COLUMNS: Record<string, string[]> = {
   hive_calls: ['account_id'],
   hive_sessions: ['account_id'],
   hive_purchases: ['account_id'],
+  map_wallets: ['account_id'],
+  map_ledger: ['account_id'],
+  map_calls: ['account_id'],
+  map_purchases: ['account_id'],
+  studio_threads: ['account_id'],
+  studio_requests: ['account_id'],
 };
 
 /**
@@ -314,6 +320,7 @@ export async function exportAccount(
           'description',
           'visibility',
           'made_with',
+          'authoring',
           'generator',
           'hidden',
           'hidden_reason',
@@ -458,6 +465,74 @@ export async function exportAccount(
         .orderBy('p.id')
         .execute();
 
+      const studioWallets = await tx
+        .selectFrom('map_wallets')
+        .select(['balance', 'reserved'])
+        .where('account_id', '=', id)
+        .execute();
+      const studioLedger = await tx
+        .selectFrom('map_ledger')
+        .select(['id', 'amount', 'kind', 'details', 'created_at'])
+        .where('account_id', '=', id)
+        .execute();
+      const studioCalls = await tx
+        .selectFrom('map_calls')
+        .select(['id', 'reserved', 'status', 'charged', 'rate', 'usage', 'created_at'])
+        .where('account_id', '=', id)
+        .execute();
+      const studioPurchases = await tx
+        .selectFrom('map_purchases')
+        .select(['id', 'checkout_id', 'payment_id', 'pack', 'paid', 'reversed', 'created_at'])
+        .where('account_id', '=', id)
+        .execute();
+      const studioThreads = await tx
+        .selectFrom('studio_threads')
+        .select(['id', 'brief', 'title', 'created_at', 'updated_at'])
+        .where('account_id', '=', id)
+        .execute();
+      const studioRequests = await tx
+        .selectFrom('studio_requests')
+        .select([
+          'id',
+          'thread_id',
+          'kind',
+          'status',
+          'input',
+          'checkpoints',
+          'map_id',
+          'map_hash',
+          'error',
+          'charged',
+          'created_at',
+          'completed_at',
+        ])
+        .where('account_id', '=', id)
+        .execute();
+      const studioMessages = await tx
+        .selectFrom('studio_messages as m')
+        .innerJoin('studio_threads as t', 't.id', 'm.thread_id')
+        .select(['m.id', 'm.thread_id', 'm.role', 'm.text', 'm.created_at'])
+        .where('t.account_id', '=', id)
+        .orderBy('m.created_at')
+        .orderBy('m.id')
+        .execute();
+      const studioAttempts = await tx
+        .selectFrom('studio_attempts as a')
+        .innerJoin('studio_requests as r', 'r.id', 'a.request_id')
+        .select([
+          'a.id',
+          'a.request_id',
+          'a.stage',
+          'a.model',
+          'a.status',
+          'a.input',
+          'a.output',
+          'a.created_at',
+        ])
+        .where('r.account_id', '=', id)
+        .orderBy('a.created_at')
+        .execute();
+
       return {
         format: ACCOUNT_EXPORT_FORMAT,
         exportedAt: new Date().toISOString(),
@@ -509,6 +584,16 @@ export async function exportAccount(
           events: rows(hiveEvents),
           operations: rows(hiveOperations),
           programs: rows(hivePrograms),
+        },
+        mapStudio: {
+          wallets: rows(studioWallets),
+          ledger: rows(studioLedger),
+          calls: rows(studioCalls),
+          purchases: rows(studioPurchases),
+          threads: rows(studioThreads),
+          messages: rows(studioMessages),
+          requests: rows(studioRequests),
+          attempts: rows(studioAttempts),
         },
         maps: {
           published: maps.map((m) => ({

@@ -13,6 +13,6 @@
     "@glob2/protocol": "0.1.0",
     "ai": "7.0.127",
     "kysely": "^0.29.6",
-    "stripe": "23.0.0"
+    "@glob2/billing": "0.1.0"
   }
 }

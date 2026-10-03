@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "@glob2/core": "0.1.0",
-    "@glob2/protocol": "0.1.0"
+    "@glob2/protocol": "0.1.0",
+    "@glob2/engine": "0.1.0"
   },
   "devDependencies": {
     "@glob2/api": "0.1.0",

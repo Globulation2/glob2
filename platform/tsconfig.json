@@ -7,6 +7,7 @@
     "apps/api",
     "apps/worker",
     "apps/engine-agent",
+    "apps/ai-map-worker",
     "apps/web/e2e",
     "*.ts"
   ],

@@ -197,6 +197,18 @@ export const AccountExport = Open(
         programs: ExportRows,
       }),
     ),
+    mapStudio: Type.Optional(
+      Open({
+        wallets: ExportRows,
+        ledger: ExportRows,
+        calls: ExportRows,
+        purchases: ExportRows,
+        threads: ExportRows,
+        messages: ExportRows,
+        requests: ExportRows,
+        attempts: ExportRows,
+      }),
+    ),
     maps: Open({
       published: ExportRows,
       likes: ExportRows,
@@ -671,6 +683,7 @@ export const MapInfo = Open(
       Type.String({ maxLength: 2000, description: 'Shown to the owner and moderators only.' }),
     ),
     madeWith: MapMadeWith,
+    authoring: Type.Optional(Open({ kind: Type.Literal('ai'), pipelineVersion: Type.String() })),
     generator: Type.Optional(GeneratorDescriptor),
     latestVersion: Type.Optional(MapVersionInfo),
     stats: Open({

@@ -300,3 +300,20 @@ No display or network access is needed for image conversion.
 
 Run `python3 test/test_map_image.py` to verify the conversion contract. Fixtures,
 exported images, maps and command logs are retained under `artifacts/map-image/`.
+
+### Online AI authoring
+
+The optional online AI Map Studio uses this same categorical importer and normal
+map serialization. Its maintained offline Python modules live under
+`platform/packages/map-studio/python`; provider calls belong to the durable online
+worker. Legacy `map_image_examples.py` and `map_image_crop.py` entry points retain
+the original square four-colony workflow. `studio_pipeline.py` generalizes
+reference preparation, carrier geometry and crop selection for the studio's
+128/256/512-cell sides and 2–8 colonies. Every rectangular tile repeats 2×2 in a
+specified region of a square carrier; padding is excluded before decoding.
+
+Revisions edit an exact repetition of the selected imported categorical map.
+Crop selection keeps complete colony markers and scores resource/terrain seams;
+it is not a playability certificate. Online delivery additionally validates the
+native post-import report. All delivered files remain ordinary maps requiring no
+model or service connection to play.

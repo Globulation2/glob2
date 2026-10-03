@@ -141,3 +141,15 @@ hiveMind:
     output: 5000
   salesEnabled: false
   packs: []
+
+# Optional AI Map Studio. Qualify all size/player combinations and real checkout
+# before enabling generation or sales. Prices follow the cost study.
+mapStudio:
+  enabled: false
+  salesEnabled: false
+  pipelineVersion: ai-map-v1
+  chatPerHour: 60
+  providerCallsPerDay: 100
+  packs: []
+  # textModel: <qualified text model>
+  # imageModel: <qualified image-editing model>

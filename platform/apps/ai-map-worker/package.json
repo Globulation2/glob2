@@ -1,0 +1,18 @@
+{
+  "name": "@glob2/ai-map-worker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "GPL-3.0-or-later",
+  "scripts": {
+    "start": "node src/main.ts"
+  },
+  "dependencies": {
+    "@glob2/core": "0.1.0",
+    "@glob2/db": "0.1.0",
+    "@glob2/map-studio": "0.1.0",
+    "@glob2/protocol": "0.1.0",
+    "kysely": "^0.29.6",
+    "@glob2/engine": "0.1.0"
+  }
+}
