@@ -107,8 +107,8 @@ A refused tile is never part of a field, so it cannot connect two patches.
 - **Growth.** `Map::growResources` does not read the farm mask.
 - **Clearing the touched tile.** Clearing paths call `Map::decResource` on the
   tile they touch and never go through `takeHarvest`.
-- **The AIs** and **scripts**. No AI paints farm areas, and the JavaScript order
-  API has no farm area type. These are follow-ups if the experiment graduates.
+- **The AIs**. No AI paints farm areas yet; that is a follow-up if the
+  experiment graduates.
 
 ## Artwork
 
@@ -119,6 +119,13 @@ sway over eight frames, in the same family as the guard dots and clearing sickle
 128px high-resolution frames from the same source; `--check` verifies both are
 current and follow the marker rules. Zoomed out, the farm fades to the same flat
 tint as the other zones, a light green chosen to stand out from grass.
+
+## Scripts
+
+JavaScript AIs and map scripts see the experiment through
+`ctx.game.experiments()`, paint and erase farms with the `farmArea` order (same
+fields as the other area orders), and read `farmArea: true` on own-team farm
+tiles. See the [JavaScript API](../development/javascript-api.md).
 
 ## Compatibility
 

@@ -122,6 +122,8 @@ export interface Tile {
   groundUnit?: number; airUnit?: number; building?: number;
   /** AI-only, explored tiles: current own-team forbidden flag. */
   forbidden?: boolean;
+  /** AI-only, explored tiles, farm-areas experiment: present and true on own-team farm areas. */
+  farmArea?: boolean;
 }
 export interface BuildingType {
   /** Resolve by name/level/site; do not hardcode variant registry indices. */
@@ -168,6 +170,8 @@ export interface GameRead {
   unit(reference: EntityRef): Unit | null;
   building(reference: EntityRef): Building | null;
   buildingTypes(): BuildingType[];
+  /** Keys of the experimental features this game carries, e.g. ["farm-areas"]. */
+  experiments(): string[];
   map: MapRead;
   // These methods exist on both contexts but throw in AI scripts.
   objectives(): Objective[];
@@ -208,7 +212,7 @@ export type Order = null |
   // Clearing flag only; stone must be false.
   {type: 'clearingResources'; building: EntityRef; resources: [boolean, boolean, boolean, false, boolean]} |
   // Dimensions 1..256. Row-major mask anchored at x/y; 1 add, 2 remove.
-  {type: 'forbidden' | 'guardArea' | 'clearArea'; x: number; y: number;
+  {type: 'forbidden' | 'guardArea' | 'clearArea' | 'farmArea'; x: number; y: number;
     width: number; height: number; mode: 1 | 2; mask: boolean[]};
 
 /** Map step returns up to 256 effects; full batch validated before applying. */
