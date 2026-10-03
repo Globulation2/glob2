@@ -109,7 +109,7 @@ function DeleteAccount({ account, onDeleted }: { account: SelfAccount; onDeleted
       </ul>
       <p className="muted">
         Matches you played stay in other players’ history, and their replay files still contain the
-        name you had in the game. See the privacy policy for what is kept and for how long.
+        name you had in the game.
       </p>
       <label className="field">
         Type your name, {account.displayName}, to confirm

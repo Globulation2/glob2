@@ -17,17 +17,18 @@ their own stack, `deploy/compose.legacy.yaml`, described in
                                            ├─ /relay/<relay id> (WebSocket) ──────────────► relay ×N ──────────┤ /internal (backend only)
                                            ├─ /play/  WebAssembly client (static)                              │
                                            └─ /       web app (static)                                         ▼
-  platform-worker ×1..N ── postgres 16 ◄── engine-agent ×N (one image per sim version) ◄── blob volume ──► platform-api
+  platform-worker ×1..N ──► postgres 16 ◄── platform-api ◄── /internal/v1/engine ── engine-agent ×N (one image per sim version)
+         └──────────────── blob volume ────────────┘          (no database, no blob volume)
 ```
 
 | Service | Image (Dockerfile target) | Replicas | Role |
 | --- | --- | --- | --- |
 | `caddy` | `caddy` | 1 | TLS (ACME or local CA), static web app and web client, routing. The only service with published ports. |
 | `postgres` | `postgres:16-alpine` | 1 | All state, the job queue, pub/sub and the matchmaker's leader lock. |
-| `init` | `platform` | one-shot | Creates the first signing key and the relay key, then applies database migrations. Runs before the platform starts on every `up`. |
+| `init` | `platform` | one-shot | Creates the first signing key, the relay and engine-agent keys and the database role passwords, creates or updates the [database roles](#database-roles) as the Postgres superuser, then applies migrations as `glob2_migrator`. Runs before the platform starts on every `up`; the only process that uses the superuser. |
 | `platform-api` | `platform` | `GLOB2_API_REPLICAS` (2) | REST, realtime WebSocket, sign-in pages, JWKS, and `/internal` for relays. Stateless. |
 | `platform-worker` | `platform` | `GLOB2_WORKER_REPLICAS` (1) | Engine-job results, ratings, matchmaker and schedules (the scheduler runs on one replica at a time). |
-| `engine-agent` | `engine-agent` | `GLOB2_ENGINE_AGENT_REPLICAS` (1) | Map generation, validation, previews and match verification with the headless `glob2` binary of one sim version. |
+| `engine-agent` | `engine-agent` | `GLOB2_ENGINE_AGENT_REPLICAS` (1) | Map generation, validation, previews and match verification with the headless `glob2` binary of one sim version. It runs the engine on uploaded files, so it has no database access and no blob volume: it leases jobs and moves blobs through `platform-api`'s `/internal/v1/engine` with a bearer agent key. |
 | `relay` | `relay` | `GLOB2_RELAY_REPLICAS` (1) | Match WebSockets ([relay](../multiplayer/relay.md)). |
 
 Networks:
@@ -47,8 +48,36 @@ Volumes (Compose project `glob2-platform`, so named `glob2-platform_<volume>`):
 | `blobs` | Maps, saves, previews, match records, replays (content-addressed) | Yes |
 | `signing-keys` | Ed25519 private keys (`<kid>.pem`) for access tokens and match tickets | Yes, encrypted |
 | `relay-secret` | `relay.key`, the bearer key relays use on `/internal` | Yes, encrypted (or regenerate) |
+| `engine-agent-secret` | `agent.key`, the bearer key engine agents use on `/internal/v1/engine` | Optional (regenerate: delete it and `up`) |
+| `db-migrator-secret`, `db-api-secret`, `db-worker-secret` | `password` of `glob2_migrator`, `glob2_api` and `glob2_worker`, each mounted only by the service that uses it | Optional (regenerate: delete it and `up`) |
 | `relay-spool` | Match records a relay has not uploaded yet, one directory per relay id | Optional |
 | `caddy-data`, `caddy-config` | Certificates, ACME account, local CA | Optional (Caddy re-issues) |
+
+### Database roles
+
+No long-running service connects as a Postgres superuser. `POSTGRES_PASSWORD` is the
+superuser's password (the `postgres` image's `glob2`); only `postgres` itself and
+`init` see it, and it is blanked in the other services' environment.
+
+| Role | Used by | Privileges |
+| --- | --- | --- |
+| `glob2` (superuser) | `init` only | Creates the roles below, sets their passwords, hands a database created before roles existed to `glob2_migrator`. |
+| `glob2_migrator` | `init` | Owns every table, view, function and type in `public` and `graphile_worker`; runs the platform's and graphile-worker's migrations, then re-applies the grants. Not a superuser. |
+| `glob2_api` | `platform-api`, the `platform` CLI | `SELECT`/`INSERT`/`UPDATE`/`DELETE` on the platform tables and the job queue; no DDL, no `TRUNCATE`. The admin audit log is append-only (`scrub_audit_log_account()`, owned by the migrator, is the one change allowed: account deletion). |
+| `glob2_worker` | `platform-worker` | As `glob2_api`, minus `identities`, `device_credentials` and `admin_audit_log`; on `refresh_tokens`, `web_sessions` and `auth_flows` only the retention deletes. |
+| none | `engine-agent` | Uses `platform-api`'s internal engine API instead. |
+
+`init` writes a random password per role into its own volume (`db-<role>-secret`);
+each service mounts only its own and reads it through `DATABASE_PASSWORD_FILE`. To
+rotate a role's password, delete its `password` file
+(`docker compose run --rm --no-deps init rm /var/lib/glob2/db/api/password`) and run
+`docker compose up -d`: `init` writes a new one and updates the role. `glob2-migrate
+roles` and `latest` (`packages/db/src/cli.ts`) do the same by hand.
+
+The engine agent's key (`engine-agent-secret`, `agent.key`) lets it announce
+itself, lease jobs of its sim version, read only the blobs a job it holds names,
+store results and report them. A key written `<agentId>:<key>` in
+`ENGINE_AGENT_KEYS` acts only as that agent.
 
 All services except Postgres run as UID/GID 10001 with a read-only root
 filesystem, all capabilities dropped and `no-new-privileges`; Postgres runs as its
@@ -240,10 +269,28 @@ opener behaviour.
 | `/internal/*`, `/healthz`, `/readyz`, `/metrics` | `404` at the edge |
 
 `/internal` is the relays' API (registration, heartbeats, match setup, record
-upload, match end; see [rooms and matches](../multiplayer/rooms-and-matches.md#internal-api-for-relays)).
-It is served by `platform-api` on the backend network only; relays reach it at
-`http://platform-api:8080` with their bearer key, and fetch the JWKS from there
-too. Caddy never forwards it.
+upload, match end; see [rooms and matches](../multiplayer/rooms-and-matches.md#internal-api-for-relays))
+and the engine agents' (`/internal/v1/engine`: job leases, results, blobs; see
+[architecture](../multiplayer/architecture.md#engine-agents)). It is served by
+`platform-api` on the backend network only; relays and agents reach it at
+`http://platform-api:8080` with their bearer keys, and relays fetch the JWKS from
+there too. Caddy never forwards it.
+
+Caddy adds security headers to everything it serves: `Strict-Transport-Security`
+(`max-age` from `GLOB2_HSTS_MAX_AGE`, default one year; `0` turns it off),
+`X-Content-Type-Options: nosniff`, a `Referrer-Policy` and `X-Frame-Options: DENY`,
+and a `Content-Security-Policy` with `frame-ancestors 'none'`:
+
+- the web app: scripts, styles, fonts and data from the instance origin only;
+- `/play/`: also inline scripts (the client's loader page), `'wasm-unsafe-eval'`,
+  `blob:` workers, and `https:`/`wss:` connections (players choose instances and
+  relays); `Cross-Origin-Opener-Policy`/`-Embedder-Policy` stay as before;
+- API responses that set no policy of their own (`default-src 'none'`); the
+  sign-in and invite pages keep their own stricter one.
+
+The web app's schema library probes for `eval` once and falls back to checking
+without it; browsers report that probe as a blocked `script-src` attempt, which is
+expected.
 
 Invite links `https://<origin>/j/<code>` are small pages rendered by the API; their
 primary "Play in browser" button opens `web.browserClientUrl` from `instance.yaml`,
@@ -286,7 +333,8 @@ its default.
 | `GLOB2_BIND`, `GLOB2_HTTP_PORT`, `GLOB2_HTTPS_PORT` | `127.0.0.1`, `8080`, `8443` | Published address and ports |
 | `GLOB2_TLS_MODE` | `auto` | `auto` or `internal` |
 | `GLOB2_EDGE_TRUSTED_PROXIES` | `127.0.0.1/32` | Load balancer ranges Caddy trusts for client addresses |
-| `POSTGRES_PASSWORD` | required | Database password (letters and digits) |
+| `POSTGRES_PASSWORD` | required | Password of the Postgres superuser (letters and digits); only `postgres` and `init` use it, the services have their own [roles](#database-roles) |
+| `GLOB2_HSTS_MAX_AGE` | `31536000` | `Strict-Transport-Security` max-age Caddy sends (`0`: off) |
 | `GLOB2_API_REPLICAS`, `GLOB2_WORKER_REPLICAS`, `GLOB2_ENGINE_AGENT_REPLICAS`, `GLOB2_RELAY_REPLICAS` | `2`, `1`, `1`, `1` | Replica counts |
 | `ENGINE_CONCURRENCY`, `GLOB2_ENGINE_SCRATCH_SIZE` | `1`, `1g` | Jobs per agent, and its scratch tmpfs |
 | `WARM_MAPS_PER_ENTRY` | `1` | Pre-generated quick-match maps per map pool entry (0: off) |
@@ -427,7 +475,9 @@ Change the replica counts in `.env` and run `docker compose up -d`.
   Realtime sockets on a removed replica reconnect to another.
 - **platform-worker** can run several replicas: every replica applies job results,
   one at a time holds the scheduler (matchmaker, ratings, warm maps).
-- **engine-agent** replicas share the job queue; each runs `ENGINE_CONCURRENCY` jobs.
+- **engine-agent** replicas lease jobs from the same queue (`engine_jobs`, through
+  `platform-api`); each runs `ENGINE_CONCURRENCY` jobs and polls every
+  `ENGINE_POLL_MS` (1000) when idle.
   Each engine process may use up to 4-8 GB of address space
   (`ENGINE_MEMORY_MB`), so size concurrency by memory.
 - **relay**: each replica registers its own URL, `wss://<host>/relay/<container id>`,
@@ -448,7 +498,7 @@ Back up the database and the blob volume together, plus the keys:
 cd deploy
 docker compose exec -T postgres pg_dump -U glob2 -Fc glob2 > glob2-$(date +%F).dump
 docker compose run --rm --no-deps -T platform-worker tar czf - -C /var/lib/glob2 blobs > blobs-$(date +%F).tar.gz
-docker compose run --rm --no-deps -T init tar czf - -C /var/lib/glob2 keys relay > keys-$(date +%F).tar.gz
+docker compose run --rm --no-deps -T init tar czf - -C /var/lib/glob2 keys relay engine-agent db > keys-$(date +%F).tar.gz
 ```
 
 `pg_dump` is consistent while the stack runs. Blobs are content-addressed and never
@@ -459,13 +509,15 @@ To restore into a fresh stack (same `.env` and `instance.yaml`):
 
 ```sh
 docker compose up -d --wait postgres
-docker compose run --rm --no-deps -T init sh -c 'rm -f /var/lib/glob2/keys/*.pem /var/lib/glob2/relay/relay.key; tar xzf - -C /var/lib/glob2' < keys-2026-10-01.tar.gz
+docker compose run --rm --no-deps -T init sh -c 'rm -f /var/lib/glob2/keys/*.pem /var/lib/glob2/relay/relay.key /var/lib/glob2/engine-agent/agent.key /var/lib/glob2/db/*/password; tar xzf - -C /var/lib/glob2' < keys-2026-10-01.tar.gz
 docker compose run --rm --no-deps -T platform-worker tar xzf - -C /var/lib/glob2 < blobs-2026-10-01.tar.gz
 docker compose exec -T postgres pg_restore -U glob2 -d glob2 --clean --if-exists --no-owner < glob2-2026-10-01.dump
 docker compose up -d --wait
 ```
 
-`init` then applies any migrations newer than the dump. Check the restore on a
+`pg_restore --no-owner` leaves the restored objects owned by the superuser; `init`
+hands them to `glob2_migrator` again, re-applies the grants, then applies any
+migrations newer than the dump. Check the restore on a
 separate host or project (`docker compose -p glob2-restore …` with other ports)
 before relying on it.
 
@@ -486,10 +538,37 @@ into `GLOB2_WEB_CLIENT_DIR` with `deploy/build-web-client.sh` (Emscripten runs i
 container, so the host needs only Docker), builds the images with the checkout's
 sim version, and starts the stack, waiting until every service is healthy.
 
-`up` runs `init` first, which applies new migrations (forward only, each in a
-transaction) before the new API and worker start. `platform-api` and
+`up` runs `init` first, which updates the database roles and applies new migrations
+(forward only, each in a transaction) before the new API and worker start. `platform-api` and
 `platform-worker` replicas are replaced together: realtime clients reconnect after
 a few seconds. Caddy keeps WebSockets open across its own configuration reloads.
+
+### Upgrading to database roles
+
+Instances deployed before the [database roles](#database-roles) have every object
+owned by the superuser and every service connected as it. The upgrade is the usual
+`up` (or `deploy/update-host.sh`) with the new `compose.yaml`; nothing in `.env`
+changes:
+
+1. Take a [backup](#backups-and-restore).
+2. `docker compose up -d --wait` (or `update-host.sh`). `init` generates the role
+   passwords and the agent key, creates the roles, hands every table, view,
+   sequence, function, type and the `graphile_worker` schema to `glob2_migrator`
+   (idempotent, a few seconds), applies migrations 0010-0013 as `glob2_migrator`,
+   then starts the services with their own roles. Migration 0010 moves queued
+   engine jobs from graphile-worker to the `engine_jobs` lease queue: queued
+   verify-match jobs run again (recovering matches whose verdict was lost), and
+   queued map jobs older than an hour are closed as failed.
+3. Check: `docker compose exec -T postgres psql -U glob2 -d glob2 -c "SELECT usename, application_name FROM pg_stat_activity WHERE datname = 'glob2'"`
+   shows `glob2_api` and `glob2_worker` and no `glob2` sessions apart from your own,
+   and `platform_stack_smoke.py --attach` passes.
+
+Rolling back to a release without roles needs the superuser connection back:
+restore the previous `compose.yaml` and its images; the services connect as `glob2`
+again (a superuser can use objects `glob2_migrator` owns), and the extra columns
+and tables of 0010-0013 are ignored by older code except that engine agents of the
+older release take jobs from graphile-worker, where newer releases no longer put
+them, so roll back the API and worker together with the agents.
 
 ### Draining relays
 
@@ -706,4 +785,11 @@ everything: delete the VM, the address, the firewall rule and the DNS records.
 - Until the engine reports its own data hash (`glob2 --sim-version`), the
   engine-agent image passes the hash computed by `deploy/sim_version.py` at build
   time; the agent refuses to start if the two ever disagree.
-- The relay key is one shared secret for all relays.
+- The relay key is one shared secret for all relays; the engine-agent key likewise
+  for all agents. A compromised agent (the engine runs untrusted files) can still
+  report forged results for jobs it leases, such as match verdicts.
+- Abuse limits that guard sign-in, password guessing, guests, browser sign-in
+  attempts, uploads, catalog writes and chat are shared by all API replicas
+  (Postgres counters). The general per-address request cap
+  (`limits.apiPerMinute`) and the realtime connection and message limits are per
+  replica.

@@ -69,10 +69,15 @@ auth:
 #   ios:
 #     appIds: [TEAMID0000.org.globulation2.glob2]
 
-# Per-replica limits (defaults shown).
+# Limits (defaults shown). apiPerMinute and the realtime limits are per API
+# replica; the others are shared by all replicas.
 # limits:
 #   authPerMinute: 30
 #   guestsPerHour: 20
+#   signinAttemptsPerHour: 30
+#   signinAttemptsPerMinuteTotal: 300
+#   passwordFailuresPerAccount: 10
+#   passwordFailuresPerIp: 50
 #   apiPerMinute: 600
 #   realtimePerSecond: 10
 #   realtimeBurst: 40
