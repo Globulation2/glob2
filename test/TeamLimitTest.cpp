@@ -358,7 +358,8 @@ TEST_CASE("script generation slot counts reject missing capacity and truncated p
         corrupt.replace(out.slotsOffset, sizeof(Uint32), patchMemory->takeContents());
         CHECK_THROWS_WITH_AS(loads(corrupt), "Invalid script generation team-slot count", std::runtime_error);
     }
-    CHECK_THROWS(loads(saved.substr(0, out.slotsOffset + 8)));
+    // An empty sparse table is exactly eight bytes: capacity and zero count.
+    CHECK_THROWS(loads(saved.substr(0, out.slotsOffset + 7)));
 }
 
 TEST_CASE("dense designed maps accept thirteen through sixteen only on the largest square")
