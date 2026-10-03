@@ -854,9 +854,12 @@ live agent. Remove the service when the version is retired.
 ### Images
 
 The Dockerfile targets are `platform` (API, worker and CLI), `engine-agent`,
-`relay` and `caddy` (Caddy with the built web app). A `server-v*` tag runs
-`.github/workflows/server-image.yml`, which publishes all of them for linux/amd64 and linux/arm64 to
-`ghcr.io/<owner>/<repository>-<target>`, tagged with the Git tag and commit; engine
+`relay` and `caddy` (Caddy with the built web app). A `server-v*` tag pushed by
+the owner to the release mirror `genixpro/glob2-release` runs
+`.github/workflows/server-image.yml` (it skips every job in any other repository; a
+fork or self-hoster builds images with `deploy/compose.yaml` instead), which
+publishes all of them for linux/amd64 and linux/arm64 to
+`ghcr.io/genixpro/glob2-release-<target>`, tagged with the Git tag and commit; engine
 agents are also tagged `simver-<sim version>` and labelled
 `org.glob2.sim-version`. Pin digests in production:
 

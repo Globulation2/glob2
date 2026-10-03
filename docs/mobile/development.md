@@ -675,13 +675,14 @@ To sync from a local clone of the release mirror, configure `upstream` once as
 ```sh
 git fetch upstream master
 git checkout master
-git merge upstream/master
+git merge --ff-only upstream/master
 git push origin master
 ```
 
-The release mirror has release-specific commits, so merging may require
-conflict resolution. Inspect the commits and resulting tree before pushing.
-Do not force-push a release branch.
+The release mirror's `master` tracks upstream `master` exactly, so the sync is
+a fast-forward. Make any release-specific change upstream first; see
+[the release mirror](../development/releasing.md#the-release-mirror). Inspect
+the new commits before pushing. Do not force-push a release branch.
 
 After syncing, run **Actions → Android Play internal release → Run workflow**
 in the mirror. The optional release notes are shown to internal testers. The

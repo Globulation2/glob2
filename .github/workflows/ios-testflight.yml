@@ -22,8 +22,10 @@ concurrency:
 jobs:
   upload:
     if: >-
+      github.repository == 'genixpro/glob2-release' &&
       github.repository_id == 1397722696 &&
       github.actor_id == 6193625 &&
+      github.triggering_actor == 'genixpro' &&
       github.event_name == 'workflow_dispatch' &&
       github.ref == 'refs/heads/master'
     name: Build, sign, and upload iPhone app
