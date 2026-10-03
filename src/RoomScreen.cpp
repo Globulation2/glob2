@@ -1013,8 +1013,9 @@ Element RoomScreen::build(const Presentation &p)
 	auto left = column({tabs(p), expanded(scroll("room/tab/" + std::to_string(currentTab), content))}, {p.pt(10)});
 	auto right = column({invite(p, false), manualCopyCard(p), expanded(chatPanel(p, false))}, {p.pt(10)});
 	// Stacked under the seats the side has little height: it scrolls, with the chat
-	// at a fixed height, rather than squeezing the chat's input.
-	auto stackedRight = scroll("room/side", column({invite(p, false), manualCopyCard(p), constrained({0, p.pt(240), Constraints::Unbounded, p.pt(240)}, chatPanel(p, false))}, {p.pt(10)}));
+	// at a fixed height (growing with the text size), rather than squeezing the
+	// chat's input.
+	auto stackedRight = scroll("room/side", column({invite(p, false), manualCopyCard(p), constrained({0, p.textPt(240), Constraints::Unbounded, p.textPt(240)}, chatPanel(p, false))}, {p.pt(10)}));
 	auto body = adaptive([left, right, stackedRight](const LayoutContext &ctx, Size available) -> Element {
 		if (available.w < ctx.presentation.pt(820))
 			return column({expanded(left, 3), expanded(stackedRight, 2)}, {ctx.presentation.pt(10)});

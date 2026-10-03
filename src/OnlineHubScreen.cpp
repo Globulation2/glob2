@@ -964,9 +964,14 @@ Element OnlineHubScreen::build(const Presentation &p)
 									{"legacy", tr("[hub legacy server]"), [this] { openLegacyServer(); }},
 									{"back", tr("[Back]"), [this] { onEscape(); }, false, SDLK_ESCAPE}};
 	// The game version identifies the build; the simulation version is for Settings.
-	auto footerRow = row({expanded(caption(instance + " · " + PACKAGE_VERSION)),
-						  actions(std::move(buttons), p, ActionStyle::Compact)},
-						 {p.pt(8), CrossAlign::Center});
+	// Where the three buttons and the version do not share a line (a portrait tablet
+	// with large text), the version goes above the buttons.
+	auto footerRow = adaptive([version = caption(instance + " · " + PACKAGE_VERSION),
+							   footerActions = actions(std::move(buttons), p, ActionStyle::Compact)](const LayoutContext &ctx, Size available) -> Element {
+		if (available.w < ctx.presentation.textPt(760))
+			return column({version, footerActions}, {ctx.presentation.pt(6)});
+		return row({expanded(version), footerActions}, {ctx.presentation.pt(8), CrossAlign::Center});
+	});
 	std::vector<Element> page{headline};
 	for (auto &t : toast)
 		page.push_back(t);
