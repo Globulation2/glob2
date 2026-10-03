@@ -77,8 +77,8 @@ panning, cancelled gestures and taps inside the inspector do not dismiss it.
 Painting and placement keep their tool-specific map gestures. Choosing Build,
 Flags or Tools explicitly replaces the current inspector; deferred restoration or
 selection invalidation cannot override that toolbox choice on the next frame.
-The game is playable with one thumb. A completed map tap arms one-finger zoom for
-the next contact that lands within 300 ms of the release and 24 points of the tap.
+The game is playable with one thumb. A completed map tap that does not dismiss
+a panel arms one-finger zoom for the next contact that lands within 300 ms of the release and 24 points of the tap.
 Dragging that contact vertically zooms about the point where it landed, doubling
 per 180 points of travel, with the factor shown above the finger; releasing it
 without travel doubles the current zoom there, capped at 3×. The tapped world

@@ -1305,7 +1305,9 @@ void GameGUITouch::interfaceTap(ViewPoint point)
 		}
 		if (button == 4 && globalContainer->isViewingGame())
 		{
-			gui.clearSelection();
+			// Replay statistics are explicit navigation too: consume any
+			// inspector restoration or pending invalidation before opening.
+			dismissMapPanels();
 			gui.displayMode = GameGUI::STAT_TEXT_VIEW;
 			panelOpen = true;
 			panelScroll = 0;
