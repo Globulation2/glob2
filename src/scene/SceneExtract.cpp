@@ -12,6 +12,7 @@
 #include "UnitTiming.h"
 #include "TeamStat.h"
 #include "Unit.h"
+#include "ai/AITelemetry.h"
 #include "render/GameAnimations.h"
 
 static_assert(Team::MAX_COUNT <= SceneEntities::Teams, "SceneEntities::Teams too small");

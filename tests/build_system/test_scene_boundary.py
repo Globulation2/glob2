@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parents[2]
 SCENE_INCLUDES = {
     'scene/Scene.h', 'scene/SceneEntities.h', 'scene/SceneMap.h', 'scene/ScenePanels.h',
     'sim/ClientRequests.h', 'sim/EntityRef.h', 'BitArray.h', 'Ressource.h', 'UnitConsts.h',
-    'SDLGraphicContext.h', 'SDL_stdinc.h', 'SDL3/SDL_stdinc.h',
+    'ai/AITelemetryValue.h', 'SDLGraphicContext.h', 'SDL_stdinc.h', 'SDL3/SDL_stdinc.h',
 }
 
 DRAWING = ('src/render/GameRender*.cpp', 'src/render/Minimap.cpp', 'src/gui/GameGUIDraw*.cpp')

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "AITelemetryValue.h"
 #include <SDL3/SDL_stdinc.h>
 #include <cstring>
 #include <memory>
@@ -53,12 +54,6 @@ struct Sample
 	bool available = false;
 	std::vector<Value> values;
 	bool operator==(const Sample &) const = default;
-};
-struct NamedValue
-{
-	std::string name, value, unit, meaning;
-	Uint32 updated = 0;
-	bool operator==(const NamedValue &) const = default;
 };
 struct Series
 {

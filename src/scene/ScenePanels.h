@@ -3,7 +3,7 @@
 
 #include "Ressource.h"
 #include "UnitConsts.h"
-#include "ai/AITelemetry.h"
+#include "ai/AITelemetryValue.h"
 #include "scene/SceneEntities.h"
 
 #include <array>
