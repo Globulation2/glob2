@@ -38,7 +38,7 @@
 // Map rendering orchestrator and shared helpers. Split from Game_render.cpp.
 
 
-void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength, int actLength, int secondActLength, Uint8 r, Uint8 g, Uint8 b, Uint8 r2, Uint8 g2, Uint8 b2, int barWidth)
+void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength, int actLength, int secondActLength, Uint8 r, Uint8 g, Uint8 b, Uint8 r2, Uint8 g2, Uint8 b2, int barWidth, MapRenderState* drawnRender)
 {
 	assert(maxLength>=0);
 	assert(maxLength<65536);
@@ -110,7 +110,7 @@ void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength,
 }
 
 
-void Game::anchorBars(int x, int y, bool exception)
+void Game::anchorBars(int x, int y, bool exception, MapRenderState* drawnRender)
 {
 	if (drawnRender)
 		drawnRender->overlays.anchor(*globalContainer->gfx, x, y,
@@ -118,25 +118,25 @@ void Game::anchorBars(int x, int y, bool exception)
 }
 
 
-void Game::drawStatusPip(int x, int y, Uint8 r, Uint8 g, Uint8 b)
+void Game::drawStatusPip(int x, int y, Uint8 r, Uint8 g, Uint8 b, MapRenderState* drawnRender)
 {
 	if (drawnRender)
 		drawnRender->overlays.pip(*globalContainer->gfx, x, y, r, g, b, drawnRender->detail.statusPip);
 }
 
 
-void Game::drawHealthBar(int x, int y, int maxLength, int actLength, float hpRatio)
+void Game::drawHealthBar(int x, int y, int maxLength, int actLength, float hpRatio, MapRenderState* drawnRender)
 {
 	if (hpRatio > 0.6f)
-		drawPointBar(x, y, LEFT_TO_RIGHT, maxLength, actLength, 78, 187, 78);
+		drawPointBar(x, y, LEFT_TO_RIGHT, maxLength, actLength, 78, 187, 78, 2, drawnRender);
 	else if (hpRatio > 0.3f)
-		drawPointBar(x, y, LEFT_TO_RIGHT, maxLength, actLength, 255, 255, 0);
+		drawPointBar(x, y, LEFT_TO_RIGHT, maxLength, actLength, 255, 255, 0, 2, drawnRender);
 	else
-		drawPointBar(x, y, LEFT_TO_RIGHT, maxLength, actLength, 255, 0, 0);
+		drawPointBar(x, y, LEFT_TO_RIGHT, maxLength, actLength, 255, 0, 0, 2, drawnRender);
 }
 
 
-void Game::drawBuildingResourceBar(int x, int y, BuildingType* type, int maxValue, int currentValue, Uint8 r, Uint8 g, Uint8 b)
+void Game::drawBuildingResourceBar(int x, int y, BuildingType* type, int maxValue, int currentValue, Uint8 r, Uint8 g, Uint8 b, MapRenderState* drawnRender)
 {
 	// Shrink the bar (3px per unit + 1) until it fits within the building's height minus 10px of padding.
 	int bDiv = 1;
@@ -146,12 +146,12 @@ void Game::drawBuildingResourceBar(int x, int y, BuildingType* type, int maxValu
 		? std::min(1.0, globalContainer->gfx->mapTransformScale() / drawnRender->detail.overlayScale) : 1.0;
 	while (((maxValue * 3 + 1) / bDiv) > int(((type->height * 32) - 10) * fit) && bDiv < maxValue)
 		bDiv++;
-	drawPointBar(x, y, BOTTOM_TO_TOP, maxValue / bDiv, currentValue / bDiv, r, g, b, 1 + bDiv);
+	drawPointBar(x, y, BOTTOM_TO_TOP, maxValue / bDiv, currentValue / bDiv, r, g, b, 1 + bDiv, drawnRender);
 }
 
 
 
-bool Game::isOnScreen(int left, int top, int right, int bot, int viewportX, int viewportY, int x, int y)
+bool Game::isOnScreen(int left, int top, int right, int bot, int viewportX, int viewportY, int x, int y, const SceneMap& map)
 {
 
 	left += viewportX;
@@ -211,19 +211,32 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 				   const BuildingGuiStateMap *buildingGuiState, bool animationsPaused,
 				   int cloudGridLimit)
 {
-    GAGCore::FrameDrawBatch frameBatch(globalContainer->gfx);
-	// Frozen while paused, so the water and the clouds hold still with the rest.
-	int &time = view.render.animationTime;
 	// Draw the scene the simulation published, else extract one now (serial callers).
 	if (!view.scene)
 	{
 		SceneRequest request;
 		request.localTeam = localTeam;
+		request.includeScriptAreas = drawOptions & DRAW_SCRIPT_AREAS;
 		request.selectedBuilding = refOf(view.selectedBuilding);
 		request.selectedUnit = refOf(view.selectedUnit);
 		extractScene(*this, request, view.render.ownScene);
 	}
-	const Scene &scene = view.scene ? *view.scene : view.render.ownScene;
+	drawSceneMap(view.scene ? *view.scene : view.render.ownScene, sx, sy, sw, sh,
+		rightMargin, topMargin, viewportX, viewportY, localTeam, view, drawOptions,
+		visibleBuildings, buildingGuiState, animationsPaused, cloudGridLimit);
+}
+
+void Game::drawSceneMap(const Scene& scene, int sx, int sy, int sw, int sh,
+	int rightMargin, int topMargin, int viewportX, int viewportY, int localTeam,
+	ViewState& view, Uint32 drawOptions, std::set<Uint16>* visibleBuildings,
+	const BuildingGuiStateMap* buildingGuiState, bool animationsPaused, int cloudGridLimit)
+{
+	const Scene* previous = view.scene;
+	view.scene = &scene;
+	struct RestoreScene { ViewState& view; const Scene* previous; ~RestoreScene() { view.scene = previous; } } restore{view, previous};
+	GAGCore::FrameDrawBatch frameBatch(globalContainer->gfx);
+	const SceneMap& map = scene.map;
+	int& time = view.render.animationTime;
 	int left = (sx >> 5);
 	int top = (sy >> 5);
 	int right = ((sx + sw + 31) >> 5);
@@ -236,21 +249,19 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 		view.render.minimumZoom);
 	// Queue constant-size overlays for this frame, and draw whatever the later
 	// passes queued however drawMap returns.
+	MapRenderState* drawnRender = globalContainer->settings.adaptiveZoomDetail ? &view.render : nullptr;
 	struct OverlayPass
 	{
-		Game &game;
 		MapRenderState &render;
-		OverlayPass(Game &game, MapRenderState &render, bool queue) : game(game), render(render)
-		{
-			game.drawnRender = queue ? &render : nullptr;
-		}
 		void flush() { render.overlays.flush(*globalContainer->gfx, globalContainer->mapIcons, render.detail.overlayScale, globalContainer->gfx->logicalUnitsPerPoint()); }
 		~OverlayPass()
 		{
-			flush();
-			game.drawnRender = nullptr;
+			// Drawing may throw (for example on allocation failure). Discard
+			// unfinished overlays instead of drawing during stack unwinding.
+			render.overlays.bars.clear(); render.overlays.pips.clear();
+			render.overlays.markers.clear(); render.overlays.glyphs.clear();
 		}
-	} overlayPass(*this, view.render, globalContainer->settings.adaptiveZoomDetail);
+	} overlayPass{view.render};
 	GameRenderFrame frame{*globalContainer->gfx,
 						  *globalContainer->terrain,
 						  *globalContainer->terrainWater,
@@ -320,12 +331,12 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 	// layers still own their visibility decisions and their original draw order.
 	const auto tilePass = [&](auto method, auto &&...state)
 	{
-		(this->*method)(frame.left, frame.top, frame.right, frame.bottom, frame.viewportX,
+		method(frame.left, frame.top, frame.right, frame.bottom, frame.viewportX,
 						frame.viewportY, frame.localTeam, frame.options, state...);
 	};
 	const auto scenePass = [&](auto method, auto &&...state)
 	{
-		(this->*method)(frame.left, frame.top, frame.right, frame.bottom, frame.width, frame.height,
+		method(frame.left, frame.top, frame.right, frame.bottom, frame.width, frame.height,
 						frame.viewportX, frame.viewportY, frame.localTeam, frame.options, state...);
 	};
 
@@ -335,12 +346,12 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 	tilePass(&Game::drawMapTerritory, scene, view.render.detail.strategic);
 	scenePass(&Game::drawMapGroundUnits, view, scene);
 	scenePass(&Game::drawMapDebugAreas, view);
-	scenePass(&Game::drawMapGroundBuildings, visibleBuildings, buildingGuiState, scene);
+	scenePass(&Game::drawMapGroundBuildings, visibleBuildings, buildingGuiState, scene, drawnRender);
 	scenePass(&Game::drawMapAirUnits, view, scene);
 	// Bars sit above every unit and building, and under the fog like them.
 	overlayPass.flush();
 	if ((drawOptions & DRAW_SCRIPT_AREAS) != 0)
-		drawMapScriptAreas(left, top, right, bot, viewportX, viewportY);
+		drawMapScriptAreas(left, top, right, bot, viewportX, viewportY, scene.map);
 
 	// Bullets, explosions and death animations are unit-sized effects, and go
 	// with the unit sprites once units are only markers.
@@ -379,7 +390,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 		for (Uint16 worker : entities.selectedBuilding.unitsWorking)
 		{
 			const SceneUnit *unit = entities.unit(worker);
-			if(unit && !isOnScreen(left, top, right, bot, viewportX, viewportY, unit->posX, unit->posY))
+			if(unit && !isOnScreen(left, top, right, bot, viewportX, viewportY, unit->posX, unit->posY, map))
 			{
 				drawUnitOffScreen(0, topMargin, sw - rightMargin, sh-topMargin, viewportX, viewportY, *unit, drawOptions, scene, view.render.unitMotion);
 			}
@@ -459,20 +470,20 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 						if (type->hpMax)
 						{
 							float hpRatio=(float)building->hp/(float)building->effectiveMaxHp;
-							anchorBars(x+type->width*16, y+decy, building->hp!=building->effectiveMaxHp);
-							drawHealthBar(x+healDecx+6, y+decy-4, 16, 1+(int)(15.0f*hpRatio), hpRatio);
+							anchorBars(x+type->width*16, y+decy, building->hp!=building->effectiveMaxHp, drawnRender);
+							drawHealthBar(x+healDecx+6, y+decy-4, 16, 1+(int)(15.0f*hpRatio), hpRatio, drawnRender);
 						}
 
-						anchorBars(x+type->width*32, y);
+						anchorBars(x+type->width*32, y, false, drawnRender);
 						if (building->maxUnitInside>0)
-							drawPointBar(x+type->width*32-4, y+1, BOTTOM_TO_TOP, building->maxUnitInside, building->unitsInside, 255, 255, 255);
-						anchorBars(x+type->width*16, y);
+							drawPointBar(x+type->width*32-4, y+1, BOTTOM_TO_TOP, building->maxUnitInside, building->unitsInside, 255, 255, 255, 2, drawnRender);
+						anchorBars(x+type->width*16, y, false, drawnRender);
 						if (building->maxUnitWorking>0)
-							drawPointBar(x+type->width*16-((3*building->maxUnitWorking)>>1), y+1,LEFT_TO_RIGHT , building->maxUnitWorking, building->unitsWorking, 255, 255, 255);
+							drawPointBar(x+type->width*16-((3*building->maxUnitWorking)>>1), y+1,LEFT_TO_RIGHT , building->maxUnitWorking, building->unitsWorking, 255, 255, 255, 2, drawnRender);
 
-						anchorBars(x, y);
+						anchorBars(x, y, false, drawnRender);
 						if ((type->canFeedUnit) || (type->unitProductionTime))
-							drawBuildingResourceBar(x+1, y+1, type, type->maxResource[WHEAT], building->resources[WHEAT], 255, 255, 120);
+							drawBuildingResourceBar(x+1, y+1, type, type->maxResource[WHEAT], building->resources[WHEAT], 255, 255, 120, drawnRender);
 					}
 				});
 			}
@@ -481,30 +492,6 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 
 
 
-	if (DEBUG_RENDER_GRADIENTS)
-		for (int y=top-1; y<=bot; y++)
-			for (int x=left-1; x<=right; x++)
-				for (int pi=0; pi<gameHeader.getNumberOfPlayers(); pi++)
-					if (players[pi] && players[pi]->ai && players[pi]->ai->implementationID==AI::CASTOR)
-					{
-						AICastor *ai=(AICastor *)players[pi]->ai->aiImplementation;
-						//Uint8 *gradient=ai->wheatCareMap[1];
-						Uint8 *gradient=ai->hydratationMap;
-						//Uint8 *gradient=ai->enemyWarriorsMap;
-						//Uint8 *gradient=map.forbiddenGradient[1][0];
-						//Uint8 *gradient=map.resourcesGradient[0][WHEAT][0];
+	overlayPass.flush();
 
-						assert(gradient);
-						size_t addr=((x+viewportX)&map.wMask)+map.w*((y+viewportY)&map.hMask);
-						Uint8 value=gradient[addr];
-						if (value)
-							globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, value);
-
-						/*Uint8 *gradient2=ai->wheatCareMap[1];
-						assert(gradient2);
-						Uint8 value2=gradient2[addr];
-						if (value2)
-							globalContainer->gfx->drawString((x<<5), (y<<5)+10, globalContainer->littleFont, value2);*/
-						break;
-					}
 }

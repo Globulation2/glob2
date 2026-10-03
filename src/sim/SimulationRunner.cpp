@@ -63,6 +63,13 @@ void SimulationRunner::run()
 				park(lock);
 				continue;
 			}
+			// Offline diagnostics retain one tick's owned batch. Wait for the graphics
+			// owner to drain it; park requests still take precedence above.
+			if (engine.diagnosticsPending())
+			{
+				wake.wait_for(lock, std::chrono::milliseconds(1));
+				continue;
+			}
 			lock.unlock();
 			const Uint64 now = engine.sessionClock();
 			const Uint32 delay = engine.sessionDelay(now);

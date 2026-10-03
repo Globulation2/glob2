@@ -15,6 +15,7 @@ class OverlayArea;
 //! tick boundary and read-only afterwards. Grows as render passes are ported to it.
 struct Scene
 {
+	bool editor = false;
 	Uint32 tick = 0;
 	//! When that tick finished (SDL_GetTicks) and the interval to the next one in
 	//! milliseconds (0 when the simulation runs uncapped), for drawing units between ticks.

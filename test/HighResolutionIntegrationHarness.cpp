@@ -96,22 +96,22 @@ class HighResolutionIntegrationHarness
         {
             auto begin=[&](){gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),0,0,0);gfx->beginMapTransform(zoom,100,100,100,100,512*zoom,512*zoom);};
             begin();
-            editor.game.drawMapGroundBuildings(0,0,16,16,512,512,0,0,0,Game::DRAW_WHOLE_MAP,&visible,nullptr, glob2test::sceneOf(editor.game));
+            editor.game.drawMapGroundBuildings(0,0,16,16,512,512,0,0,0,Game::DRAW_WHOLE_MAP,&visible,nullptr, glob2test::sceneOf(editor.game), nullptr);
             gfx->endMapTransform();auto actual=pixels();REQUIRE(visible.size()==1);
             for(int y:{100,int(100+448*zoom)})for(int x:{100,int(100+448*zoom)})REQUIRE(coloredRegion(x,y,64*zoom,64*zoom));
             begin();
-            {const Scene &buildingScene=glob2test::sceneOf(editor.game);for(int y:{-32,480})for(int x:{-32,480})editor.game.drawMapBuilding(x,y,building->gid,0,0,0,Game::DRAW_WHOLE_MAP,buildingScene);}
+            {const Scene &buildingScene=glob2test::sceneOf(editor.game);for(int y:{-32,480})for(int x:{-32,480})editor.game.drawMapBuilding(x,y,building->gid,0,0,0,Game::DRAW_WHOLE_MAP,buildingScene, nullptr);}
             gfx->endMapTransform();REQUIRE(actual==pixels());
         }
         // More than one complete period must repeat geometry without duplicating
         // the visible-building identity used to emit particles.
         gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),0,0,0);
         gfx->beginMapTransform(.5,100,100,100,100,512,512);
-        editor.game.drawMapGroundBuildings(0,0,32,32,1024,1024,0,0,0,Game::DRAW_WHOLE_MAP,&visible,nullptr, glob2test::sceneOf(editor.game));
+        editor.game.drawMapGroundBuildings(0,0,32,32,1024,1024,0,0,0,Game::DRAW_WHOLE_MAP,&visible,nullptr, glob2test::sceneOf(editor.game), nullptr);
         gfx->endMapTransform();auto repeated=pixels();REQUIRE(visible.size()==1);
         gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),0,0,0);
         gfx->beginMapTransform(.5,100,100,100,100,512,512);
-        {const Scene &buildingScene=glob2test::sceneOf(editor.game);for(int y:{-32,480,992})for(int x:{-32,480,992})editor.game.drawMapBuilding(x,y,building->gid,0,0,0,Game::DRAW_WHOLE_MAP,buildingScene);}
+        {const Scene &buildingScene=glob2test::sceneOf(editor.game);for(int y:{-32,480,992})for(int x:{-32,480,992})editor.game.drawMapBuilding(x,y,building->gid,0,0,0,Game::DRAW_WHOLE_MAP,buildingScene, nullptr);}
         gfx->endMapTransform();REQUIRE(repeated==pixels());
         int advances=0;
         gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),0,0,0);
