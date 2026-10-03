@@ -153,6 +153,29 @@ describe('engine jobs', () => {
     });
   });
 
+  it('fails a stored job that no longer reads as a job instead of handing it out', async () => {
+    const db = database.as('migrator').db;
+    const broken = '00000000-0000-4000-8000-0000000000aa';
+    await db
+      .insertInto('engine_jobs')
+      .values({
+        id: broken,
+        kind: 'generate-map',
+        sim_version: `125-49-${'ee'.repeat(32)}`,
+        payload: '{"generator":{}}',
+      })
+      .execute();
+    const lease = await leaseEngineJob(database.db, {
+      agentId: 'agent-e',
+      simVersion: { versionMinor: 125, netProtocol: 49, dataHash: 'ee'.repeat(32) },
+      kinds: ['generate-map'],
+      leaseSeconds: 60,
+    });
+    expect(lease).toBeUndefined();
+    await until(async () => (await row(broken)).status !== 'queued');
+    expect(await row(broken)).toMatchObject({ status: 'failed', error: { code: 'internal' } });
+  });
+
   it('rejects invalid jobs and records contract-breaking results as failures', async () => {
     await expect(
       submitEngineJob(database.db, {

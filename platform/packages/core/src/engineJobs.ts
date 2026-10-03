@@ -84,12 +84,25 @@ export interface LeaseRequest {
 /**
  * Hands the oldest leasable job of the agent's sim version and kinds to the
  * agent: queued, not reported, retries left, and not leased (or its lease ran
- * out). Concurrent callers never get the same job (SKIP LOCKED).
+ * out). Concurrent callers never get the same job (SKIP LOCKED). A stored job
+ * that no longer reads as an EngineJob (written by an older release, or
+ * damaged) is failed on the spot instead of blocking the queue.
  */
 export async function leaseEngineJob(
   db: Kysely<Database>,
   request: LeaseRequest,
 ): Promise<EngineLease | undefined> {
+  for (let skipped = 0; skipped < 20; skipped++) {
+    const lease = await leaseOne(db, request);
+    if (lease !== 'unreadable') return lease;
+  }
+  return undefined;
+}
+
+async function leaseOne(
+  db: Kysely<Database>,
+  request: LeaseRequest,
+): Promise<EngineLease | undefined | 'unreadable'> {
   const token = randomBytes(32).toString('base64url');
   const row = await sql<{
     id: string;
@@ -122,9 +135,16 @@ export async function leaseEngineJob(
     .then((r) => r.rows[0]);
   if (!row) return undefined;
   const simVersion = parseSimVersionKey(row.sim_version);
-  if (!simVersion) throw new Error(`engine job ${row.id} has an invalid sim version`);
+  const job = { jobId: row.id, kind: row.kind, simVersion, payload: row.payload };
+  if (!simVersion || checkDocument('EngineJob', job).stage !== 'ok') {
+    await reportEngineJob(db, row.id, token, {
+      ok: false,
+      error: { code: 'internal', message: 'the stored job does not match the job contract' },
+    });
+    return 'unreadable';
+  }
   return {
-    job: parseEngineJob({ jobId: row.id, kind: row.kind, simVersion, payload: row.payload }),
+    job: parseEngineJob(job),
     leaseToken: token,
     attempt: row.attempts,
     maxAttempts: row.max_attempts,
