@@ -1,0 +1,52 @@
+SDL3_ttf 3.2.2 kerning fix for builds without HarfBuzz.
+
+Without HarfBuzz, SDL3_ttf adds the FreeType kerning delta (and the 1-pixel
+lsb/rsb hinting correction) to the current glyph's x_offset. That moves one
+glyph without moving the pen, so a negative pair such as "Tu" pulls the "u"
+under the "T" and leaves a gap before the next letter: "Tu torial", "Yo u",
+"Wa rrush". SDL2_ttf moved the pen. Add the correction to the previous glyph's
+advance instead, so it applies to this glyph and every glyph after it.
+Still present upstream (main, 2026-04); harmless where HarfBuzz is enabled,
+which does not use this code path.
+
+--- a/src/SDL_ttf.c
++++ b/src/SDL_ttf.c
+@@ -3428,11 +3428,16 @@
+         pos->y_advance = 0;
+         pos->x_offset = 0;
+         pos->y_offset = 0;
++        // Kerning and the hinting corrections below move the pen, so they shift this
++        // glyph and every glyph after it (as SDL2_ttf did). Applying them to this
++        // glyph's x_offset alone pulls it towards its neighbour and leaves a gap after
++        // it ("Tu torial"). They are added to the previous glyph's advance instead.
++        FT_Pos pen_adjust = 0;
+         if (font->use_kerning) {
+             if (prev_index && glyph->index) {
+                 FT_Vector delta;
+                 FT_Get_Kerning(font->face, prev_index, glyph->index, FT_KERNING_UNFITTED, &delta);
+-                pos->x_offset += delta.x;
++                pen_adjust += delta.x;
+             }
+             prev_index = glyph->index;
+         }
+@@ -3446,14 +3451,17 @@
+                 skip_first = false;
+             } else {
+                 if (prev_delta - glyph->kerning_smart.lsb_delta >  32 ) {
+-                    pos->x_offset -= 64;
++                    pen_adjust -= 64;
+                 } else if (prev_delta - glyph->kerning_smart.lsb_delta < -31 ) {
+-                    pos->x_offset += 64;
++                    pen_adjust += 64;
+                 }
+             }
+             prev_delta = glyph->kerning_smart.rsb_delta;
+-            pos->x_offset = ((pos->x_offset + 32) & -64); // ROUND()
++            pen_adjust = ((pen_adjust + 32) & -64); // ROUND()
+         }
++        if (pen_adjust != 0 && positions->len > 1) {
++            positions->pos[positions->len - 2].x_advance += (int)pen_adjust;
++        }
+     }
+ #endif
+ 

@@ -14,6 +14,7 @@ import urllib.request
 LOCK = Path(__file__).with_name('sdl3-versions.json')
 SDL_PATCHES = tuple(LOCK.parent / 'vcpkg-ports' / 'sdl3' / name for name in
                     ('x11-reparent-race.patch', 'x11-map-notify.patch'))
+TTF_PATCHES = (LOCK.parent / 'vcpkg-ports' / 'sdl3-ttf' / 'kerning-moves-pen.patch',)
 
 
 def download(work, versions):
@@ -100,7 +101,7 @@ def build(prefix, work, jobs=2, emscripten=None, environment=None, threaded=Fals
     identity = {'configuration': 11, 'threaded': threaded, 'versions': versions, 'emscripten': str(emscripten) if emscripten else None,
                 'platform': platform.platform(), 'machine': platform.machine(),
                 'source_patches': {patch.name: hashlib.sha256(patch.read_bytes()).hexdigest()
-                                   for patch in SDL_PATCHES}}
+                                   for patch in SDL_PATCHES + TTF_PATCHES}}
     if emscripten:
         # The browser runtimes use native WebAssembly exceptions; setjmp/longjmp in
         # these libraries (FreeType) must use the matching WebAssembly mechanism.
@@ -123,6 +124,8 @@ def build(prefix, work, jobs=2, emscripten=None, environment=None, threaded=Fals
                 package.extractall(work, filter='data')
         if name == 'SDL':
             apply_source_patches(source)
+        if name == 'SDL_ttf':
+            apply_source_patches(source, TTF_PATCHES)
         if name == 'SDL_image':
             patch_image_exports(source)
         if name == 'SDL_net':

@@ -102,6 +102,7 @@ ENGINE_TESTS = [
     # Rendering and window harnesses: most cases need a display ([display]); entries that
     # call OpenGL outside HAVE_OPENGL guards are left out of opengl=0 builds.
     'DrawableSurfaceBlendTest.cpp',
+    'FontKerningTest.cpp',
     ('EnteringUnitDrawHarness.cpp', dict(require={'opengl'})),
     ('FailingUnitMarkersHarness.cpp', dict(require={'opengl'})),
     'FullscreenAspectHarness.cpp',
