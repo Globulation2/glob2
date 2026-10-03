@@ -187,9 +187,16 @@ def main():
     if event == 'workflow_dispatch' and os.environ.get('BROWSER_ONLY') == 'true':
         selected['android'] = False
     effective['android'] = selected['android']
+    # Draft pull requests run only this selector and its contract suites; marking
+    # the pull request ready for review starts the selected checks for the same commit.
+    draft = event == 'pull_request' and os.environ.get('DRAFT') == 'true'
+    if draft:
+        print('Draft pull request: checks are deferred until it is ready for review', file=sys.stderr)
+        selected = {job: False for job in selected}
+        effective.update(compatibility=False, browsers_all=False, android=False, android_arches=[])
     artifact = Path('artifacts/ci-selection.json')
     artifact.parent.mkdir(parents=True, exist_ok=True)
-    artifact.write_text(json.dumps({'selection': selected, 'event': event, 'sha': os.environ.get('GITHUB_SHA'), 'full_matrix': event != 'pull_request' and all(selected.values()), 'desired': desired, 'effective': effective, 'tiers_enabled': enabled}, indent=2) + '\n')
+    artifact.write_text(json.dumps({'selection': selected, 'event': event, 'sha': os.environ.get('GITHUB_SHA'), 'full_matrix': event != 'pull_request' and all(selected.values()), 'desired': desired, 'effective': effective, 'tiers_enabled': enabled, 'draft': draft}, indent=2) + '\n')
     output = "".join(f"{job}={str(enabled).lower()}\n" for job, enabled in selected.items())
     output += 'compatibility=' + str(effective['compatibility']).lower() + '\n'
     output += 'browsers_all=' + str(effective['browsers_all']).lower() + '\n'
