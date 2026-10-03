@@ -116,6 +116,9 @@ services:
       <<: *platform-environment
       DATABASE_URL: postgres://glob2_api@postgres:5432/glob2
       DATABASE_PASSWORD_FILE: /var/lib/glob2/db/api/password
+      HIVE_OPENAI_API_KEY: ${HIVE_OPENAI_API_KEY:-}
+      HIVE_STRIPE_SECRET_KEY: ${HIVE_STRIPE_SECRET_KEY:-}
+      HIVE_STRIPE_WEBHOOK_SECRET: ${HIVE_STRIPE_WEBHOOK_SECRET:-}
     # Provider secrets named in instance.yaml (`clientSecretEnv: …`) come from .env.
     env_file:
       - path: ${GLOB2_ENV_FILE:-.env}

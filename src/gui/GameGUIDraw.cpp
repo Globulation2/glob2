@@ -1,3 +1,4 @@
+#include "hive/HiveDialog.h"
 #include "scene/SceneExtract.h"
 #include "render/UnitMotion.h"
 #include <RenderStateScope.h>
@@ -791,6 +792,8 @@ void GameGUI::drawAll(int team)
 		globalContainer->gfx->setClipRect();
 		drawInGameMenu();
 	}
+
+	if(hiveCards && !inGameMenu && !scrollableText && globalContainer->settings.hiveMindEnabled){hiveCards->setComposerOpen(bool(typingInputScreen));hiveCards->draw(SDL_GetTicks());}
 
 	// draw input box if any
 	if (typingInputScreen)

@@ -4760,3 +4760,23 @@ Create a room and invite your friends: the room plays this map.
 Device busy %0%
 [game draw]
 Draw
+[settings Hive Mind]
+Hive Mind
+[settings Enable commander shortcuts]
+Enable commander shortcuts
+[settings Command your colony without opening a menu.]
+Command your colony without opening a menu.
+[settings Allow supervision for new commands]
+Allow supervision for new commands
+[settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
+The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.
+[settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
+Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.
+[settings Commander account and credits]
+Commander account and credits
+[settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
+Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.
+[open commander]
+Open commander
+[stop commander]
+Stop commander

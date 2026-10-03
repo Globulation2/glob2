@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:HiveProgram",
+  "title": "HiveProgram",
+  "type": "object",
+  "required": [
+    "id",
+    "revision",
+    "name",
+    "description",
+    "source",
+    "intervalTicks"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "description": "Lowercase UUID."
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 2147483647
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 512
+    },
+    "source": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 131072,
+      "pattern": "^[^\\u0000]*$"
+    },
+    "intervalTicks": {
+      "type": "integer",
+      "minimum": 25,
+      "maximum": 2147483647
+    }
+  },
+  "additionalProperties": false
+}

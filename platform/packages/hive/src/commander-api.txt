@@ -1,0 +1,299 @@
+Hive Mind API version 1. Every source is standalone synchronous JavaScript source declaring step(ctx). No imports, async callbacks, filesystem, network, console, or external libraries. Top-level plain data persists between invocations. Use structured return data; do not retain ctx or entity snapshots globally. Source limit 128 KiB; globals limit 1 MiB; output limit 64 KiB; 8 standing orders; 32 gameplay orders per invocation; schedule intervals >=25 simulation ticks.
+The tool accepts execute, install, replace, list, pause, resume and remove operations. Install requires a new UUID and revision 1. Replacement requires expectedRevision and new revision=expectedRevision+1; replacement resets globals unless migration source is supplied. A step returns {output: JSON-compatible value, orders: array of order descriptors}. Omit either field when unused. ctx.wakeAgent({key,reason,data}) requests an optional paid follow-up for an ongoing task; it is not a direct model call. Triggers should be edge-triggered, meaningful, and deduplicated using persistent state. Do not wake on every invocation.
+Example: let alerted=false; function step(ctx) { const own=ctx.game.units({team:ctx.myTeam,limit:50}); if(!alerted && own.some(u=>u.medical===1)){ alerted=true; ctx.wakeAgent({key:'food',reason:'Workers are hungry',data:{tick:ctx.tick}}); } return {output:{workers:own.length},orders:[]}; }
+All reads are fixed to the authenticated team and one observation tick. Other-team observations follow fog of war. Omniscient and scenario APIs do not exist. Own-team rules below apply. The following engine order descriptor contract is reused as the entries of the orders array (the old single-order callback restriction does not apply to Hive Mind).
+
+## Conventions
+
+- Coordinates and dimensions are in map tiles. X increases rightward, Y downward.
+  Arrays and IDs are zero-based. Times are simulation ticks unless stated otherwise;
+  performance and resource counters retain engine units, not seconds or percentages.
+- Integer arguments require finite integer **numbers** in the specified range;
+  strings and booleans are not coerced. Boolean and string fields require their
+  actual JavaScript types. Required fields have no implicit defaults.
+- Read records have a null prototype and are detached copies. Use
+  `Object.keys(record)` or `Object.prototype.hasOwnProperty.call(record, key)`;
+  `record.hasOwnProperty()` is unavailable. Mutating a record does not change the
+  game. Nested arrays are ordinary arrays.
+- An absent optional field reads as `undefined`. It is different from a present
+  field containing `null`, `false`, zero or an empty array. Do not save an absent
+  field as `undefined` in returned data: omit it or use `null` explicitly. Global variables can contain undefined.
+- A hidden, dead, missing or stale entity lookup returns `null`. Malformed query
+  queries throw. Invocation failures discard all state and orders.
+- Extra descriptor fields are ignored by order/effect validators, but still must
+  be serializable script data and consume the conversion budget. Use the signatures
+  below; unused arguments are not a versioning or extension mechanism.
+
+## Context
+
+| Member | Meaning |
+| --- | --- |
+| `ctx.tick` | Current simulation step counter; not the callback count |
+| `ctx.myTeam` | Authenticated player team ID |
+| `ctx.random()` | Next private deterministic random number in `[0, 1)` |
+| `ctx.game` | Read API described below |
+
+`Math.random()` consumes the same stream as `ctx.random()`. Other scripts and the
+simulation RNG have separate streams. Changing `ctx.myTeam` or another context
+property does not change the host's visibility or order permissions.
+
+## Teams and entity queries
+
+```javascript
+ctx.game.teams()
+ctx.game.units({team, offset, limit})
+ctx.game.buildings({team, offset, limit})
+ctx.game.unit({id, generation})
+ctx.game.building({id, generation})
+ctx.game.buildingTypes()
+```
+
+The filter record and all its fields are optional. `team` is a current team ID;
+`offset` and `limit` are integers in `0..32768`, defaulting to `0` and `32768`.
+Omitting `team` includes all permitted teams; use `ctx.myTeam` to select your own.
+Passing `null` for a filter field also uses its default. Omit the field instead
+of passing `undefined`, which is not supported boundary data.
+
+Lists have stable ascending team/slot order. Offset skips **visible results**,
+not hidden slots; a zero limit returns an empty array. Each list call has a
+fixed work charge as well as charges for its returned records. Read small pages
+and distribute large scans across callbacks using persistent top-level variables.
+
+```javascript
+const page = ctx.game.buildings({team: ctx.myTeam, offset: 0, limit: 50});
+const candidate = page.find(b => !b.virtual);
+if (candidate) {
+  const ref = {id: candidate.id, generation: candidate.generation};
+  const current = ctx.game.building(ref); // Building or null
+}
+```
+
+IDs identify native engine slots, with separate unit and building namespaces.
+An `EntityRef` is `{id: number, generation: number}`; list records already contain
+both fields and can be passed directly as references. IDs are accepted in
+`0..65535`; IDs outside the entity slot domain return `null`. Generations change
+for each new entity, slot reuse and conversion into the destination team/slot.
+Converting back cannot restore an earlier reference. Level resets, upgrades,
+repairs and ordinary state changes preserve identity. Deletion invalidates lookup.
+Save format 125 and later preserve and validate live identities and generation
+counters; released formats 58–124 receive identities during version-gated loading.
+Format 124's experiment header remains compatible. Preserve the returned pair;
+never invent a generation or
+assume an ID still identifies the same entity after loading or a later callback.
+A missing or nonnumeric generation returns `null`; a missing/invalid ID throws.
+
+### Visibility
+
+| Data | Visibility |
+| --- | --- |
+| Team ID and alive status | Every team |
+| Team resources/allies | Own team only |
+| Owned units/buildings | Full exposed record |
+| Other units | Visible outside buildings; basic fields only |
+| Other buildings | Visible at their anchor tile and not cloaked; basic fields only |
+
+Allied teams also use the other-team restrictions; alliance does not grant full
+records. A moving enemy unit is visible when its current or previous tile is
+visible. Unit/building lists omit dead entities. These are ordinary information
+hiding rules, not protection against statistical inference from gameplay.
+
+### Team record
+
+| Field | Meaning |
+| --- | --- |
+| `id`, `alive` | Team ID and boolean alive status |
+| `allies?` | Bitmask of allied teams; bit `t` corresponds to team `t` |
+| `resources?` | 15-entry team stock array, indexed by resource ID |
+
+### Unit record
+
+Basic fields appear for every returned unit. The remaining fields appear only
+for owned units.
+
+| Basic field | Meaning |
+| --- | --- |
+| `id`, `generation`, `team` | Reference and owner team |
+| `type` | Worker `0`, explorer `1`, warrior `2` |
+| `x`, `y` | Current map tile; an owned/map-visible unit inside a building still has coordinates |
+| `hp`, `maxHp` | Current health and `performance[16]` maximum health |
+| `levels`, `performance` | 17-entry arrays indexed by ability (see numeric values below) |
+
+| Owned/map field | Meaning |
+| --- | --- |
+| `experience`, `experienceLevel` | Engine experience counter and derived experience level |
+| `hunger` | Remaining food counter; decreases as hunger advances, not a percentage |
+| `fruitCount`, `fruitMask` | Fruit count and resource-ID bitmask of fruit kinds |
+| `activity`, `movement`, `medical` | Numeric engine states, listed below |
+| `action` | Ability ID for the current action |
+| `carriedResource` | Resource ID, or `-1` when carrying nothing |
+| `speed` | Engine advancement units per tick; tile advancement wraps at 256 |
+| `direction` | Compass code `0..7`, or `8` for no direction |
+| `insideTimeout` | Negative inside a building; nonnegative outside |
+| `destinationPurpose` | Engine purpose: resource ID when fetching, ability ID when training/healing/feeding; `-1` for none. Interpret with activity, not as one unified enum |
+| `targetX`, `targetY` | Stored target-line coordinates; validity is not exposed, so these alone do not establish an active target |
+| `attachedBuilding`, `targetBuilding` | Visible building reference or `null` |
+
+### Building record
+
+| Basic field | Meaning |
+| --- | --- |
+| `id`, `generation`, `team` | Reference and owner team |
+| `type` | Building variant ID; matches `buildingTypes().id` |
+| `shortType` | Building family ID, listed below |
+| `x`, `y` | Anchor tile, not center; width/height come from its type |
+| `hp`, `maxHp` | Current health and effective maximum health |
+| `level`, `virtual` | Variant level and whether this is a flag |
+| `construction` | Result state: none `0`, new building `1`, upgrade `2`, repair `3` |
+
+The following appear only for owned buildings. Fields are present
+for all such buildings even where their meaning applies only to a particular
+family; their presence does not imply that an order is supported.
+
+| Owned/map field | Meaning |
+| --- | --- |
+| `workers` | Current requested worker limit, **not** number of workers actually present |
+| `futureWorkers` | Requested worker limit after construction completes |
+| `priority` | Low `-1`, normal `0`, high `1` |
+| `range`, `minimumLevel` | Flag radius in tiles and minimum unit level |
+| `resources` | 15-entry stock array; some types use shared team stock |
+| `wishedResources` | 15-entry engine resource demand array |
+| `production` | Three swarm ratios, indexed worker/explorer/warrior; relative weights, not percentages |
+| `productionTimeout` | Swarm production countdown in ticks |
+| `receiveMask`, `sendMask` | Market resource-ID bitmasks |
+| `bullets` | Stored tower ammunition |
+| `clearingResources` | Five booleans indexed wood/wheat/papyrus/stone/alga |
+
+### Building type record
+
+`buildingTypes()` returns every registered variant in registry order. It is
+static configuration available to both script capabilities.
+
+| Field | Meaning |
+| --- | --- |
+| `id`, `name`, `shortType` | Variant ID, family name, numeric family ID |
+| `level`, `site`, `virtual` | Variant level, construction-site boolean, flag boolean |
+| `width`, `height` | Footprint in tiles |
+| `maxHp`, `maxWorkers` | Configured maximum health and worker capacity |
+| `resourceCapacity` | 15-entry configured resource capacity/cost array |
+
+Discover variant IDs by name/level/site instead of hardcoding registry indices:
+
+```javascript
+const site = ctx.game.buildingTypes().find(
+  t => t.name === 'inn' && t.level === 0 && t.site && !t.virtual
+);
+```
+
+## Map queries
+
+```javascript
+ctx.game.map.width
+ctx.game.map.height
+ctx.game.map.tile(x, y)
+ctx.game.map.region(x, y, width, height)
+```
+
+Query X/Y must be integers in `-32768..32767` and wrap around the toroidal map;
+returned coordinates are canonical `0..map.width-1` / `0..map.height-1`.
+Region dimensions are integers in `0..256`; either zero returns an empty array.
+Region requires exactly four arguments and returns a flat row-major array:
+`tiles[dy * width + dx]` corresponds to wrapped `(x + dx, y + dy)`.
+Maximum dimensions are validation limits, not promises that a region fits the
+callback budget. For example, a 256×256 request exceeds the work budget.
+
+| Tile field | Presence and meaning |
+| --- | --- |
+| `x`, `y`, `visible`, `explored` | Always present; `visible` means current permission to see the tile |
+| `observedTick`, `terrain`, `resource` | Present only when explored; current data if visible, last observation otherwise |
+| `resource.type`, `.variety`, `.amount` | Numeric resource ID, visual variety and engine amount (byte counters); no resource is `{type: 255, variety: 0, amount: 0}` |
+| `groundUnit`, `airUnit`, `building` | Present only when currently visible; permitted occupant ID or `65535` for empty/hidden occupant |
+| `forbidden` | AI scripts only, on explored tiles; current own-team forbidden-area boolean, even if terrain is remembered |
+
+An unexplored AI tile is exactly `{x, y, visible: false, explored: false}`.
+A remembered tile has no occupant fields. Exploration is the controller's recorded observation history,
+not a request to reveal the engine's hidden current map. The history survives
+save/load and is updated during simulation independently of which tiles the
+script asks for.
+
+**`terrain` is the raw terrain graphic index, not `TerrainType`.** Pure grass
+indices are `0..15`, pure sand `128..143`, pure water `256..271`; other indices
+represent transition tiles. There is currently no normalized terrain-class or
+passability query. Do not compare `tile.terrain` to the C++ `GRASS=2` / `WATER=0`
+enum or treat a transition tile as proven traversable.
+
+Tile occupants are bare IDs, not complete references. To read an occupant,
+match its ID against the appropriate visible entity list and use that record's
+reference. `game.unit({id: tile.groundUnit})` returns `null` because it lacks a
+generation. Empty occupants use `65535`, **not** `null` or zero.
+
+```javascript
+let wheatTiles = [];
+function step(ctx) {
+  const tiles = ctx.game.map.region(10, 20, 8, 6);
+  const wheat = tiles.filter(t => t.visible && t.resource.type === 1);
+  // A resource may be eternal with amount zero: test type !== 255 for presence.
+  wheatTiles = wheat.map(t => ({x: t.x, y: t.y, amount: t.resource.amount}));
+  return {output:wheatTiles};
+}
+```
+
+## Numeric values
+
+These values describe profile 1's engine encodings. They are not injected
+JavaScript globals. Define local constants in your single module when useful:
+
+```javascript
+const RESOURCE = Object.freeze({WOOD: 0, WHEAT: 1, STONE: 3, NONE: 255});
+const UNIT = Object.freeze({WORKER: 0, EXPLORER: 1, WARRIOR: 2});
+const NO_ENTITY = 65535;
+```
+
+| Domain | Values |
+| --- | --- |
+| Resource IDs / array indices | Wood `0`, wheat `1`, papyrus `2`, stone `3`, alga `4`, cherry `5`, orange `6`, prune `7`; array positions `8..14` are reserved |
+| Resource sentinels | Tile no-resource `255`; unit not-carrying `-1` |
+| Building families (`shortType`) | Swarm `0`, inn `1`, hospital `2`, racetrack `3`, swimmingpool `4`, barracks `5`, school `6`, defencetower `7`, explorationflag `8`, warflag `9`, clearingflag `10`, stonewall `11`, market `12` |
+| Ability array indices / actions | Stop walk `0`, stop swim `1`, stop fly `2`, walk `3`, swim `4`, fly `5`, build `6`, harvest `7`, attack speed `8`, attack strength `9`, magic attack air `10`, magic attack ground `11`, magic create wood `12`, magic create wheat `13`, magic create alga `14`, armor `15`, health `16` |
+| Additional destination purposes | Heal `17`, feed `18`; these are not indices in the 17-entry ability arrays |
+| Activity | Random `0`, filling `1`, flag `2`, upgrading `3` |
+| Medical | Free `0`, hungry `1`, damaged `2` |
+| Movement | Random ground `0`, random fly `1`, going target `2`, flying target `3`, going dx/dy `4`, harvesting `5`, filling `6`, entering building `7`, inside `8`, exiting building `9`, attacking target `11`; `10` is unused |
+| Direction | NW `0`, N `1`, NE `2`, E `3`, SE `4`, S `5`, SW `6`, W `7`, none `8` |
+
+Unit levels normally use `0..3`. Performance values have ability-specific engine
+units: movement/build/harvest/attack speed are advancement rates, attack strength
+and armor are combat values, health is the HP limit. They are not normalized.
+For resource/team masks use `(mask & (1 << id)) !== 0`.
+
+## Colony order descriptors
+
+Return descriptors in the orders array (at most 32). There are no imperative mutation methods. All
+building-targeted orders require an owned building reference with a current
+generation. A returned entity record is acceptable as that reference.
+
+| `type` | Required fields / validation |
+| --- | --- |
+| `create` | `buildingType`: registered variant ID; `x`, `y`: canonical in-map coordinates; `workers`, `futureWorkers`: `0..20`; virtual flags also require `range`: `0..255` |
+| `workers` | `building`, `workers`: `0..20` |
+| `delete`, `cancelDelete` | `building` |
+| `construction` | `building`, `workers`, `futureWorkers`: `0..20` |
+| `cancelConstruction` | `building`, `workers`: `0..20`; cannot cancel an initial site construction this way (use `delete`) |
+| `priority` | `building`, `priority`: `-1..1` |
+| `production` | Swarm `building`, `ratios`: exactly three integers `0..16`, in worker/explorer/warrior order |
+| `exchange` | Market `building`, `receiveMask`, `sendMask`: integers `0..32767` |
+| `range` | Virtual `building`, `range`: `0..255` |
+| `minimumLevel` | Virtual `building`, `level`: `0..3` |
+| `moveFlag` | Virtual `building`, canonical `x`, `y` |
+| `clearingResources` | Clearing-flag `building`, `resources`: exactly five booleans; index `3` (stone) must be false |
+| `forbidden`, `guardArea`, `clearArea` | Canonical `x`, `y`; `width`, `height`: `1..256`; `mode`: add `1` or remove `2`; `mask`: exactly `width * height` booleans in row-major order |
+
+Creation accepts level-zero construction sites or virtual flags. The engine
+still decides whether an accepted order can execute: placement, occupancy,
+construction conditions and scenario restrictions remain gameplay checks. An
+accepted descriptor is not a promise that the requested building will appear.
+Order coordinates **do not** use the read API's signed/wrapped input convention.
+Area-mask `(0,0)` is anchored at `(x,y)` and the engine wraps affected tiles.
+`false` mask entries leave tiles unchanged; mode adds/removes the selected area
+on true entries. Guard/clear zones are not exposed by the tile read API yet.
+
+Replacement migration: declare step(ctx, state). state.previous contains the opaque saved globals checkpoint. Return {output: checkpoint, orders: []}. Null output resets state. An unchanged checkpoint requires compatible source bindings. Prefer reset over manipulating opaque checkpoints.

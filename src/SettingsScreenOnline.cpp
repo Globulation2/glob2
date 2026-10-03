@@ -8,6 +8,7 @@
 #include "OnlineServices.h"
 #include "PlatformClient.h"
 #include "SettingsScreen.h"
+#include "GlobalContainer.h"
 #include "SimVersion.h"
 #include <ApplicationHost.h>
 #include <FormatableString.h>
@@ -134,6 +135,14 @@ void SettingsScreen::buildOnline()
 	const bool stopped = client.connection() == Online::PlatformClient::Connection::Stopped;
 
 	info(tr("Choose which server you play on and how you sign in to it."));
+	section("Hive Mind");
+	toggle("hive.enabled", "Enable commander shortcuts", "Command your colony without opening a menu.", globalContainer->settings.hiveMindEnabled,
+		[this](int v){globalContainer->settings.hiveMindEnabled=v;commit();});
+	toggle("hive.supervision", "Allow supervision for new commands", "The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.", globalContainer->settings.hiveMindSupervision,
+		[this](int v){globalContainer->settings.hiveMindSupervision=v;commit();});
+	info(tr("Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls."));
+	button("hive.account", tr("Commander account and credits"), [origin]{GAGCore::ApplicationHost::openUrl(origin + "/commander");});
+	info(tr("Manage credits and purchases in your browser. Commander assistance is permitted in ranked play."));
 	section("Server");
 	auto serverRow = [this, origin, connected, stopped](const std::string &server, const std::string &title, const std::string &detail, bool forgettable) {
 		const bool current = server == origin;

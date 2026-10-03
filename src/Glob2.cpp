@@ -34,6 +34,8 @@
 #include "Engine.h"
 #include "Headless.h"
 #include "script/ScriptCommand.h"
+#include "hive/HiveWorker.h"
+#include "hive/HiveClient.h"
 #include "Application.h"
 #include "SinglePlayerFlow.h"
 #include "Game.h"
@@ -516,6 +518,10 @@ int Glob2::run(int argc, char *argv[])
 
 int main(int argc, char *argv[])
 {
+#ifndef YOG_SERVER_ONLY
+	if (argc == 2 && std::string(argv[1]) == "--hive-worker") return Hive::workerMain();
+	Hive::setExecutable(argv[0]);
+#endif
 #ifdef GLOB2_MOBILE
     try { initializeMobilePaths(); }
     catch(const std::exception& error) {

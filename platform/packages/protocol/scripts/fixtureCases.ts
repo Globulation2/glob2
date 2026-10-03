@@ -684,6 +684,69 @@ const VERIFIED_OUTCOME = {
 };
 
 export const fixtureCases: FixtureCase[] = [
+  {
+    schema: 'HiveTool',
+    name: 'investigate',
+    valid: true,
+    note: 'A one-shot player observation.',
+    value: { kind: 'execute', source: 'function step(ctx){return {output:ctx.tick}}' },
+  },
+  {
+    schema: 'HiveProgram',
+    name: 'standing-order',
+    valid: true,
+    note: 'Minimum cadence is 25 simulation ticks.',
+    value: {
+      id: '12345678-1234-4234-8234-123456789abc',
+      revision: 1,
+      name: 'Guard food',
+      description: 'Report hunger',
+      source: 'function step(){return {}}',
+      intervalTicks: 25,
+    },
+  },
+  {
+    schema: 'HiveProgram',
+    name: 'too-frequent',
+    valid: false,
+    stage: 'schema',
+    note: 'Intervals below 25 are rejected.',
+    value: {
+      id: '12345678-1234-4234-8234-123456789abc',
+      revision: 1,
+      name: 'Guard food',
+      description: 'Report hunger',
+      source: 'function step(){return {}}',
+      intervalTicks: 24,
+    },
+  },
+  {
+    schema: 'HiveTool',
+    name: 'team-override',
+    valid: false,
+    stage: 'schema',
+    note: 'The assigned team is never an agent tool argument.',
+    value: { kind: 'execute', source: 'function step(){return {}}', team: 1 },
+  },
+  {
+    schema: 'HiveTool',
+    name: 'replace-revision-required',
+    valid: false,
+    stage: 'schema',
+    note: 'Replacement requires optimistic concurrency.',
+    value: {
+      kind: 'replace',
+      program: {
+        id: '12345678-1234-4234-8234-123456789abc',
+        revision: 2,
+        name: 'Guard food',
+        description: 'Report hunger',
+        source: 'function step(){return {}}',
+        intervalTicks: 25,
+      },
+    },
+  },
+
   // ------------------------------------------------------------ SimVersion
   {
     schema: 'SimVersion',

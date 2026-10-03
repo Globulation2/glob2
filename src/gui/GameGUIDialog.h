@@ -26,7 +26,8 @@ class InGameMainScreen : public Glob2UI::InGameDialog
 		OPTIONS = 2,
 		RETURN_GAME = 5,
 		QUIT_GAME = 6,
-		PAUSE_GAME = 7
+		PAUSE_GAME = 7,
+		HIVE_MIND = 8
 	};
 	explicit InGameMainScreen(bool isReplay = false, bool canSave = true, bool paused = false);
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
@@ -40,6 +41,7 @@ class InGameMainScreen : public Glob2UI::InGameDialog
 		pauseLabel = std::move(label);
 		pauseEnabled = enabled;
 	}
+	void setHiveMind(bool value) { hiveMind = value; }
 
   protected:
 	void onEscape() override { finish(RETURN_GAME); }
@@ -47,7 +49,7 @@ class InGameMainScreen : public Glob2UI::InGameDialog
 
   private:
 	bool replay, canSave, paused;
-	bool networked = false;
+	bool networked = false, hiveMind = false;
 	std::string pauseLabel;
 	bool pauseEnabled = true;
 };
@@ -184,7 +186,7 @@ class InGameOptionScreen : public Glob2UI::InGameDialog
 class InGameTextInput : public Glob2UI::InGameDialog
 {
   public:
-	InGameTextInput();
+	explicit InGameTextInput(bool commander = false);
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
 	std::string getText() const { return text; }
 	void setText(const std::string &value)
@@ -202,6 +204,7 @@ class InGameTextInput : public Glob2UI::InGameDialog
 
   private:
 	std::string text;
+	bool commander = false;
 };
 
 ///This screen shows the current objectives of the mission, a mission briefing, and
