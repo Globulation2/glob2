@@ -1,9 +1,10 @@
 // Browser sign-in: /signin pages (the handoff target and plain web sign-in),
 // provider redirects and callbacks, and local password forms.
 //
-// Handoff attempts are bound to the first browser that opens them (a cookie
-// whose hash is stored on the attempt); every later step checks the binding,
-// and state-changing forms also check Origin.
+// A handoff attempt first asks the player to type the code their game shows
+// (so a sign-in link someone sent them leads nowhere), then binds the attempt
+// to that browser (a cookie whose hash is stored on the attempt); every later
+// step checks the binding, and state-changing forms also check Origin.
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { sql } from 'kysely';
 import type { Database } from '@glob2/db';
@@ -89,8 +90,38 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
     const attempt = await identity.handoff.pending(attemptId);
     const hash = bindingHash(request);
     if (!attempt || !hash || attempt.browser_binding_hash !== hash) return null;
+    if (!attempt.code_confirmed_at) return null;
     return attempt;
   };
+
+  /** Asks for the code the game shows; nothing else is offered before it. */
+  const codePage = (reply: FastifyReply, attempt: Attempt, problem?: string, status = 200) =>
+    sendPage(
+      reply,
+      'Enter the code from your game',
+      html`<div class="card">
+        <p>
+          Globulation 2 shows a code on its sign-in screen. Type it here to continue signing in.
+        </p>
+        <form method="post" action="/signin/confirm" novalidate>
+          <input type="hidden" name="attempt" value="${attempt.id}" />
+          ${field({
+            id: 'code',
+            label: 'Code from the game',
+            name: 'code',
+            error: problem,
+            attrs: html`autocomplete="one-time-code" autocapitalize="characters" spellcheck="false"
+            required maxlength="16"`,
+          })}
+          <button class="primary" type="submit">Continue</button>
+        </form>
+        <p class="muted warn">
+          Only type a code that your own game is showing you right now. If someone sent you this
+          link or told you a code, close this page: they are trying to get into your account.
+        </p>
+      </div>`,
+      status,
+    );
 
   const providerButtons = (attempt: Attempt | undefined) => {
     const query = attempt ? `?attempt=${encodeURIComponent(attempt.id)}` : '';
@@ -231,12 +262,7 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
         reply,
         'Sign in to Globulation 2',
         html`<div class="card">
-            <p>Check that the game shows this code:</p>
-            <div class="code">${attempt.confirmation_code}</div>
-            <p class="muted warn">
-              Only continue if you started signing in from Globulation 2 yourself just now. Anyone
-              who sent you this link could otherwise use your account.
-            </p>
+            <p>Code accepted. Choose how to sign in to the game:</p>
             ${providerButtons(attempt)}
           </div>
           ${localForms(attempt, form)}
@@ -286,13 +312,57 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
         410,
       );
     }
-    let cookie = request.cookies[bindingCookieName(identity)];
-    if (!cookie || !/^[A-Za-z0-9_-]{43}$/.test(cookie)) cookie = randomSecret();
-    if (!(await identity.handoff.bindBrowser(attempt.id, sha256Hex(cookie)))) {
+    const hash = bindingHash(request);
+    if (attempt.browser_binding_hash && attempt.browser_binding_hash !== hash) {
       return errorPage(reply, 'This sign-in was already opened in another browser.', 409);
     }
-    setBindingCookie(identity, reply, cookie);
+    if (!attempt.code_confirmed_at) return codePage(reply, attempt);
     return signinPage(reply, { attempt });
+  });
+
+  app.post<{ Body: Form }>('/signin/confirm', authLimit('confirm'), async (request, reply) => {
+    if (!sameOriginRequest(identity, request))
+      return errorPage(reply, 'Cross-site request refused.', 403);
+    const attemptId = request.body?.attempt;
+    const attempt = attemptId ? await identity.handoff.pending(attemptId) : undefined;
+    if (!attempt) {
+      return errorPage(
+        reply,
+        'This sign-in link has expired or was already used. Start signing in again from the game.',
+        410,
+      );
+    }
+    const typed = (request.body?.code ?? '').slice(0, 64);
+    if (!typed.trim()) return codePage(reply, attempt, 'Type the code your game shows.', 400);
+    let cookie = request.cookies[bindingCookieName(identity)];
+    if (!cookie || !/^[A-Za-z0-9_-]{43}$/.test(cookie)) cookie = randomSecret();
+    const outcome = await identity.handoff.confirmCode(attempt.id, typed, sha256Hex(cookie));
+    switch (outcome) {
+      case 'confirmed':
+        setBindingCookie(identity, reply, cookie);
+        return reply.redirect(`/signin?attempt=${encodeURIComponent(attempt.id)}`, 303);
+      case 'wrong':
+        return codePage(
+          reply,
+          attempt,
+          'That is not the code your game shows. Check it and try again.',
+          400,
+        );
+      case 'locked':
+        return errorPage(
+          reply,
+          'Too many wrong codes, so this sign-in was stopped. Start signing in again from the game.',
+          410,
+        );
+      case 'other_browser':
+        return errorPage(reply, 'This sign-in was already opened in another browser.', 409);
+      case 'gone':
+        return errorPage(
+          reply,
+          'This sign-in has expired. Start signing in again from the game.',
+          410,
+        );
+    }
   });
 
   app.post<{ Body: Form }>('/signin/cancel', async (request, reply) => {

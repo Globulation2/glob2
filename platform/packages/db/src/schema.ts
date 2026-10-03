@@ -84,6 +84,8 @@ export interface SigninAttemptsTable {
   failure_reason: Nullable<'expired' | 'denied' | 'cancelled' | 'conflict' | 'error'>;
   linked: Nullable<boolean>;
   delivered_at: NullableTimestamp;
+  code_confirmed_at: NullableTimestamp;
+  code_failures: Defaulted<number>;
 }
 
 export interface WebSessionsTable {

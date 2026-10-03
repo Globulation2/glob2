@@ -3651,7 +3651,7 @@ Can't reach %0.
 [hub change server]
 Change server…
 [hub check code]
-Check that the browser shows this code:
+Your browser asks for this code. Type it there:
 [hub code placeholder]
 Code or invite link
 [hub connecting to %0]
@@ -4031,7 +4031,7 @@ Download or delete my data
 [settings Enter an https:// address.]
 Enter an https:// address.
 [settings Finish in your browser. It shows the code %0.]
-Finish in your browser. It shows the code %0.
+Finish in your browser: type the code %0 when it asks.
 [settings Forget]
 Forget
 [settings Guests keep a generated name; sign in to choose one.]

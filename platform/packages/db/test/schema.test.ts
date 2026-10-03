@@ -73,6 +73,8 @@ const typedColumns: ColumnLists = {
     'failure_reason',
     'linked',
     'delivered_at',
+    'code_confirmed_at',
+    'code_failures',
   ],
   web_sessions: [
     'id',
