@@ -1,0 +1,144 @@
+{
+ "arbitration": {
+  "flagged": 0,
+  "majority": 0,
+  "ticks": 39,
+  "timed_out": 0,
+  "unanimous": 39
+ },
+ "bundles": {
+  "broadcast": 951,
+  "bytes": 12479
+ },
+ "duration_ms": 38040,
+ "end_tick": 951,
+ "peak_backlog": {
+  "pending_bytes": 58,
+  "pending_entries": 2,
+  "pending_ticks": 2
+ },
+ "rejected_peers": 0,
+ "schema": "RelayNetworkSummary",
+ "schema_version": 1,
+ "seats": [
+  {
+   "checksums": {
+    "flagged": 0,
+    "late_mismatches": 0,
+    "lateness_ticks": {
+     "count": 39,
+     "max": 2,
+     "mean": 1.026,
+     "p50": 1,
+     "p95": 1
+    },
+    "reports": 39,
+    "told_to_rejoin": 0
+   },
+   "connection": {
+    "connects": 1,
+    "disconnects": 0,
+    "grace_used_ms": 0,
+    "left_by_grace": false,
+    "left_by_quit": false,
+    "longest_absence_ms": 0
+   },
+   "lag_ticks": {
+    "count": 77,
+    "max": 12,
+    "mean": 1.143,
+    "p50": 1,
+    "p95": 1
+   },
+   "orders": {
+    "bytes": 809,
+    "defer_ticks": {
+     "count": 0,
+     "max": 0,
+     "mean": 0.0,
+     "p50": 0,
+     "p95": 0
+    },
+    "deferred": 0,
+    "dropped": 0,
+    "duplicates_ignored": 0,
+    "flood_rejections": 0,
+    "max_queued_ahead_ticks": 2,
+    "sequenced": 39
+   },
+   "seat": 0,
+   "traffic": {
+    "bundle_bytes_sent": 12457,
+    "bundles_sent": 949,
+    "bytes_received": 2126,
+    "frames_received": 155,
+    "log_bundle_bytes_sent": 11,
+    "log_bundles_sent": 1
+   },
+   "voice": {
+    "bytes": 0,
+    "sequenced": 0
+   }
+  },
+  {
+   "checksums": {
+    "flagged": 0,
+    "late_mismatches": 0,
+    "lateness_ticks": {
+     "count": 39,
+     "max": 91,
+     "mean": 15.179,
+     "p50": 11,
+     "p95": 66
+    },
+    "reports": 39,
+    "told_to_rejoin": 0
+   },
+   "connection": {
+    "connects": 2,
+    "disconnects": 1,
+    "grace_used_ms": 2470,
+    "left_by_grace": false,
+    "left_by_quit": false,
+    "longest_absence_ms": 2470
+   },
+   "lag_ticks": {
+    "count": 69,
+    "max": 93,
+    "mean": 11.623,
+    "p50": 11,
+    "p95": 13
+   },
+   "orders": {
+    "bytes": 719,
+    "defer_ticks": {
+     "count": 1,
+     "max": 1,
+     "mean": 1.0,
+     "p50": 1,
+     "p95": 1
+    },
+    "deferred": 1,
+    "dropped": 0,
+    "duplicates_ignored": 0,
+    "flood_rejections": 0,
+    "max_queued_ahead_ticks": 3,
+    "sequenced": 31
+   },
+   "seat": 1,
+   "traffic": {
+    "bundle_bytes_sent": 11625,
+    "bundles_sent": 882,
+    "bytes_received": 1908,
+    "frames_received": 139,
+    "log_bundle_bytes_sent": 165,
+    "log_bundles_sent": 2
+   },
+   "voice": {
+    "bytes": 0,
+    "sequenced": 0
+   }
+  }
+ ],
+ "tick_rate_millihz": 25000
+}

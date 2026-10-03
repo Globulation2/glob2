@@ -1,0 +1,4 @@
+PASS ordered portable resource sprite batch retains pixels [display] (3.1s)
+
+1 passed, 0 failed, 0 skipped (3.1s of test time)
+[run_tests] JUnit report: artifacts/skins/merge-validation/scene-gate/portable-retry.xml (1 cases)
