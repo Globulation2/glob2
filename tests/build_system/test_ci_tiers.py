@@ -66,6 +66,31 @@ class TierTest(unittest.TestCase):
                     self.assertFalse(observed['tiers_enabled'])
                 finally:
                     os.chdir(old_cwd)
+    def test_draft_pull_requests_defer_every_selected_check(self):
+        paths=['src/Game_sync.cpp','src/gui/GameGUI.h','mobile/android.py']
+        for draft in ['true','false']:
+            with self.subTest(draft=draft),tempfile.TemporaryDirectory() as directory:
+                old_cwd=Path.cwd()
+                try:
+                    os.chdir(directory)
+                    with patch.object(selector,'changed_paths',return_value=paths), \
+                         patch.object(guard,'activated',return_value=False), \
+                         patch.object(sys,'argv',['ci_changed_paths.py','--base','base']), \
+                         patch.dict(os.environ,{'GITHUB_EVENT_NAME':'pull_request','DRAFT':draft,'GITHUB_OUTPUT':str(Path(directory)/'outputs')},clear=True), \
+                         patch('sys.stdout',new_callable=io.StringIO), patch('sys.stderr',new_callable=io.StringIO):
+                        selector.main()
+                    observed=json.loads(Path('artifacts/ci-selection.json').read_text())
+                    outputs=dict(line.split('=',1) for line in Path('outputs').read_text().splitlines())
+                    self.assertEqual(observed['draft'],draft=='true')
+                    self.assertEqual(set(observed['selection'].values()),{draft=='false'})
+                    for key in ['native','browser','map_generators','deployment','cross_platform','android','compatibility']:
+                        self.assertEqual(outputs[key],'false' if draft=='true' else 'true',key)
+                finally:
+                    os.chdir(old_cwd)
+        # A draft push is still deferred only for pull requests; master is always full.
+        workflow=(ROOT/'.github/workflows/build.yml').read_text()
+        self.assertIn('types: [opened, synchronize, reopened, ready_for_review]',workflow)
+        self.assertIn('DRAFT: ${{ github.event.pull_request.draft }}',workflow)
     def test_complete_browser_inventory_keeps_every_command(self):
         matrix=json.loads((ROOT/'.github/scripts/ci_browser_matrix.json').read_text())
         self.assertEqual({x['browsers'] for x in matrix},{'chromium','firefox','webkit'})

@@ -122,6 +122,10 @@ python3 test/run_tests.py      # run them; --list, --filter, --tag, --shard
   build and shard to pass, preserving their merge-blocking status. PRs compare
   with their base commit; retained master pushes and scheduled runs always select
   full CI. Unknown paths or unavailable PR diffs also select full CI.
+  Draft PRs run only the selector and its contract suites; the aggregate gate
+  passes with every check deferred. Marking a PR ready for review
+  (`ready_for_review`) runs the selected checks for that commit, so mark a PR ready
+  once it should be tested, and push to drafts as often as needed.
   Changes confined to the render-backend and pixel-raster implementation files
   retain native, browser and cross-platform checks without repeating independent
   map-generator sweeps or container deployment tests. Shared headers, file I/O and
