@@ -1,0 +1,26 @@
+GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.3.34.2) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION SDL_MAIN_HANDLED", "CXXFLAGS": "-g -std=gnu++20 -Wall -fPIC -O3", "LINKFLAGS": "-g -Wall -O3 -Wl,-rpath,/Users/bradley/.cache/glob2-sdl3/prefix/lib"}, "revision": "82da7c2912fb1c384a464d70effa329eb2ed7ca2", "sourceStatus": [], "sourceTreeSha256": "52a96572c30df9669522ee80b9f43d9d681757dfea67a6b0f508c6723cdd1471"}
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+Settings::load("preferences.txt") : error, can't open file.
+Turn session: relay refused us: host-left
+Turn session: relay refused us: host-left
+Turn session: the relay refused this client (reason 5); leaving the game
+Turn session: the relay refused this client (reason 5); leaving the game
+verify-match: verified; 667 checksums in 100 ms
+===============================================================================
+test/LanMatchHarness.cpp:538:
+TEST SUITE: LanMatchHarness
+TEST CASE:  LAN WSS drop, restart and host departure [network][slow][artifacts]
+
+test/LanMatchHarness.cpp:692: MESSAGE: ticks compared 665, record turns 96, end tick 666, verdict verified
+Host: seat 0, lives 1, orders 29
+Guest A: seat 1, lives 1, orders 18
+Guest B: seat 2, lives 1, orders 38
+Guest A (rejoined): seat 1, lives 1, orders 11
+
+
+===============================================================================
+[doctest] test cases:  1 |  1 passed | 0 failed | 2 skipped
+[doctest] assertions: 90 | 90 passed | 0 failed |
+[doctest] Status: SUCCESS!

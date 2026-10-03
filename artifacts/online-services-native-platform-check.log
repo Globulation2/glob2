@@ -1,0 +1,27 @@
+
+> check
+> npm run lint && npm run typecheck && npm test
+
+
+> lint
+> eslint . && prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!
+
+> typecheck
+> tsc -p tsconfig.json && tsc -p apps/web/tsconfig.json
+
+
+> test
+> vitest run
+
+
+ RUN  v5.0.3 /Users/bradley/.codex/worktrees/ai-map-studio/glob2/platform
+
+
+ Test Files  58 passed (58)
+      Tests  417 passed (417)
+   Start at  11:52:59
+   Duration  27.02s (tests 66%, import 27%, transform 5%, environment 2%)
+

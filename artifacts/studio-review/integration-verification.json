@@ -1,13 +1,13 @@
 {
-  "featureCommit": "db2000ebe8dd53569a0ff540d918cdac6e2868f7",
-  "foundationCommit": "6d5be41ede70cc1a183631ee5b8621d0edc798f7",
+  "featureCommit": "82da7c2912fb1c384a464d70effa329eb2ed7ca2",
+  "foundationCommit": "9ff6ef5bc4d1e1380835c59a3e2ce44946e133f0",
   "platform": {
-    "passed": 412,
+    "passed": 417,
     "skipped": 0,
-    "files": 57,
+    "files": 58,
     "lint": "passed",
     "typecheck": "passed",
-    "log": "artifacts/cutover-platform-check.log"
+    "log": "artifacts/online-services-native-platform-check.log"
   },
   "nativeDelivery": {
     "initial": "passed",
@@ -17,7 +17,7 @@
     "provider": "Deterministic identity reference-image fixture; no paid requests",
     "credits": 2,
     "private": true,
-    "artifacts": "artifacts/studio-native/cutover-delivery/"
+    "artifacts": "artifacts/studio-native/online-services-delivery/"
   },
   "simVersion": {
     "dataHash": "446492266f9626345c402729944b80382878290aaad6d649b9d46e56644ac5f4",
@@ -36,14 +36,14 @@
     "Container startup",
     "Human multiplayer play and competitive balance"
   ],
-  "nativeBuildSource": "db2000ebe8dd53569a0ff540d918cdac6e2868f7",
-  "nativeBuildInputs": "Client and both online probes rebuilt after master M9 cutover; same production sources as the final HEAD.",
+  "nativeBuildSource": "82da7c2912fb1c384a464d70effa329eb2ed7ca2",
+  "nativeBuildInputs": "Client and both online probes rebuilt after online-service, LAN wake-up and map-pool master changes.",
   "nativeGeometry": {
     "cases": 63,
     "import": "passed",
     "reload": "passed",
-    "log": "artifacts/cutover-native-shapes.log",
-    "artifacts": "artifacts/studio-native/cutover-shapes/"
+    "log": "artifacts/online-services-native-shapes.log",
+    "artifacts": "artifacts/studio-native/online-services-shapes/"
   },
   "navigationRegression": "Mocked profile fetches finish before querying and clicking the current match row; full native-enabled platform suite passes.",
   "nativeShutdown": {
@@ -53,16 +53,25 @@
     "tsanSuppression": "removed",
     "hostedTsan": "passed",
     "hostedRun": 37129352469,
-    "goldenLog": "artifacts/cutover-verify.log",
+    "goldenLog": "artifacts/online-services-verify.log",
     "hostedTsanSource": "31d1535b1 (preceding repair revision); current hosted run pending"
   },
   "hostedCurrent": {
-    "foundationRun": 37131402335,
-    "featureRun": 37131887565,
+    "foundationRun": 37134388485,
+    "featureRun": 37134467647,
     "status": "pending"
   },
   "nativeClientLifecycle": {
     "result": "passed",
-    "log": "artifacts/cutover-platform-client.log"
+    "log": "artifacts/online-services-platform-client.log"
+  },
+  "lanScenario": {
+    "platform": "macOS",
+    "passed": true,
+    "assertions": 90,
+    "ticksCompared": 665,
+    "recordVerdict": "verified",
+    "log": "artifacts/lan-fixture-run.log",
+    "windows": "pending"
   }
 }
