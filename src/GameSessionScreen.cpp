@@ -214,7 +214,8 @@ void GameSessionScreen::drawExecution()
         // Keep input responsive while paused, without continuously redrawing
         // a stationary map at display rate. Timed UI changes still repaint.
         const auto now = SDL_GetTicks();
-        if (engine->presentationPaused() && !presentationDirty && now - lastDraw < PAUSED_REDRAW_INTERVAL_MS)
+        if (!engine->turnLockstep() && engine->presentationPaused() && !presentationDirty &&
+            now - lastDraw < PAUSED_REDRAW_INTERVAL_MS)
             return;
         lastDraw = now;
 #endif

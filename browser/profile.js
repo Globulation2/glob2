@@ -153,7 +153,7 @@ async function workerSession(cdp, targetId) {
       );
       const processCPU = cpuAfter.map((p) => ({
         ...p,
-        seconds: p.cpuTime - (cpuBefore.find((b) => b.id === p.id)?.cpuTime || p.cpuTime),
+        seconds: p.cpuTime - (cpuBefore.find((b) => b.id === p.id)?.cpuTime ?? p.cpuTime),
       }));
       const hotByThread = [];
       const rendering = [];
