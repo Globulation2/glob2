@@ -16,6 +16,30 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import run_tests  # noqa: E402
 import xvfb_session  # noqa: E402
+import windows_crash_diagnostics  # noqa: E402
+
+
+class WindowsCrashDiagnosticsTests(unittest.TestCase):
+    def test_only_native_crashes_are_replayed(self):
+        report = ET.fromstring('''<testsuites><testcase classname="LAN" name="crashed">
+            <error>[run_tests] exit status 3221225477</error></testcase>
+            <testcase classname="LAN" name="assertion"><failure>failed</failure></testcase>
+            <testcase classname="LAN" name="ordinary"><error>exit status 2</error></testcase>
+            <testcase classname="LAN" name="timeout"><error>killed after 600s</error></testcase>
+            </testsuites>''')
+        self.assertEqual(list(windows_crash_diagnostics.crashed_cases(report)), [('LAN', 'crashed')])
+
+    def test_signed_windows_status_is_also_a_crash(self):
+        report = ET.fromstring('''<testcase classname="LAN" name="crashed">
+            <error>exit status -1073741819</error></testcase>''')
+        self.assertEqual(list(windows_crash_diagnostics.crashed_cases(report)), [('LAN', 'crashed')])
+
+    def test_debugger_uses_the_runner_filter_and_no_shell(self):
+        name = 'LAN WSS drop, restart [network]'
+        command = windows_crash_diagnostics.debugger_command('gdb', Path('engine.exe'), 'LAN', name)
+        self.assertIn('-tc=' + run_tests.doctest_pattern(name), command)
+        self.assertEqual(command[command.index('--args') + 1], 'engine.exe')
+        self.assertIn('--nx', command)
 
 LISTING = """<?xml version="1.0" encoding="UTF-8"?>
 <doctest binary="x" version="2.4.11">
