@@ -24,7 +24,9 @@ inline void drawMapZoomControls(const MapCamera &camera, bool sidebar = false, b
             : "GL only");
 }
 
-inline bool clickMapZoomControls(MapCamera &camera, int x, int y, bool sidebar = false, bool softwareMap = false)
+// The zoom holds the view's centre still, or the screen point (anchorX, anchorY) when given.
+inline bool clickMapZoomControls(MapCamera &camera, int x, int y, bool sidebar = false, bool softwareMap = false,
+                                 double anchorX = -1, double anchorY = -1)
 {
     x -= sidebar ? int(camera.width) + 8 : 8;
     if (x < 0 || x >= 144 || y < globalContainer->gfx->getH() - 26 ||
@@ -35,7 +37,9 @@ inline bool clickMapZoomControls(MapCamera &camera, int x, int y, bool sidebar =
         const double zoom = x < 24 ? camera.zoom / 1.1
                           : x >= 68 ? camera.zoom * 1.1
                           : camera.zoom == 1.0 ? camera.minimumZoom() : 1.0;
-        camera.setZoom(zoom, camera.width / 2, camera.height / 2);
+        if (anchorX < 0 || anchorY < 0)
+            anchorX = camera.width / 2, anchorY = camera.height / 2;
+        camera.setZoom(zoom, anchorX, anchorY);
     }
     return true;
 }
