@@ -87,7 +87,7 @@ void FieldSink::capture(const AIMaximaPlacement::WorldState& world) noexcept
 	catch (...) { failed = true; }
 }
 Session::Session(Game& game, std::string path, unsigned interval, bool paint, size_t budget)
-	: directory(std::move(path)), png(paint), byteBudget(budget)
+	: directory(fs::absolute(path).string()), png(paint), byteBudget(budget)
 {
 	if (!budget || budget > CaptureBudget) throw std::invalid_argument("Invalid diagnostic capture budget");
 	if (!interval) throw std::invalid_argument("Diagnostic interval must be positive");
