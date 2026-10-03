@@ -32,8 +32,8 @@ GameGUITouch::DialLayout GameGUITouch::dialLayout(const MobileLayout &ui) const
 	const double minimapBottom = safe.y + (safe.h < 400 ? 80 : 104);
 	DialLayout out;
 	out.portrait = safe.w <= safe.h;
-	// Portrait puts the read-only header under the minimap and a full-height chip
-	// column on the far side of the dial; landscape puts both beside the dial.
+	// Portrait keeps a full-height chip column on the far side of the dial;
+	// landscape puts the chips beside the dial.
 	double radius = out.portrait ? std::min({InGameTouchTheme::dialRadius, safe.w - chip - 3 * margin,
 											 bottom - minimapBottom - header - 2 * margin})
 								 : std::min({InGameTouchTheme::dialRadius, bottom - minimapBottom - margin,
@@ -53,21 +53,25 @@ GameGUITouch::DialLayout GameGUITouch::dialLayout(const MobileLayout &ui) const
 	}
 	g.sweepStart = InGameTouchTheme::dialSweepStart;
 	g.sweepEnd = InGameTouchTheme::dialSweepEnd;
-	ViewRect head, chips;
+	ViewRect chips;
 	if (out.portrait)
 	{
-		head = {safe.x, minimapBottom + margin, safe.w, header};
-		chips = {left ? safe.x + safe.w - margin - chip : safe.x + margin, head.y + header + margin, chip,
-				 bottom - margin - (head.y + header + margin)};
+		const double top = minimapBottom + header + 2 * margin;
+		chips = {left ? safe.x + safe.w - margin - chip : safe.x + margin, top, chip,
+				 bottom - margin - top};
 	}
 	else
 	{
 		const double farWidth = std::max(0.0, safe.w - radius - 3 * margin);
 		const double farX = left ? safe.x + radius + 2 * margin : safe.x + margin;
-		const double headWidth = std::min(farWidth, 360.0);
-		head = {left ? farX : farX + farWidth - headWidth, bottom - radius, headWidth, header};
-		chips = {farX, head.y + header + margin, farWidth, bottom - margin - (head.y + header + margin)};
+		const double top = bottom - radius + header + margin;
+		chips = {farX, top, farWidth, bottom - margin - top};
 	}
+	// The identity bar shares the stats column and the minimap's bottom edge.
+	// Keep the allocation controls where they were; this is a HUD placement change.
+	const auto hud = hudLayout(ui);
+	const ViewRect head{hud.stats.x / unit, (hud.minimap.y + hud.minimap.h) / unit - header,
+			hud.stats.w / unit, header};
 	const ViewRect quadrant{left ? safe.x : safe.x + safe.w - radius, bottom - radius, radius, radius};
 	auto scaled = [unit](ViewRect r) { return ViewRect{r.x * unit, r.y * unit, r.w * unit, r.h * unit}; };
 	const double x0 = std::min({quadrant.x, head.x, chips.x}), y0 = std::min({quadrant.y, head.y, chips.y});

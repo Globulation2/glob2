@@ -104,8 +104,9 @@ their ends; a drag previews the value above the thumb and sends one order on
 release, and a thin ink arc on the worker ring shows who is assigned. Unit-type
 choices (which ratio the slider edits), clearing resources, flag requirements,
 repair/upgrade and Destroy (with its confirmation) are chips on the far side of
-the dial, Destroy lowest. The read-only identity header sits under the minimap in
-portrait and beside the dial in landscape. Rings shrink to fit small screens; the
+the dial, Destroy lowest. The read-only identity header sits below the stats, matching their width and
+aligning its bottom with the minimap in both orientations. While inspecting a building on short screens with two stat rows, the minimap
+uses its larger size so the header fits without overlap. Rings shrink to fit small screens; the
 map stays visible and tappable between rings. `dialRegions()` is the single
 source for drawing, hit testing, keyboard focus and the harness, and every change
 uses the same requests and orders as the Spacious row inspector, whose rows group

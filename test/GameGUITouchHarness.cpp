@@ -2114,7 +2114,7 @@ class GameGUITouchHarness
 			gui.touch->actionScroll = 0;
 			gui.orderQueue.clear();
 		};
-		for (auto [width, height] : {std::pair{320, 568}, {568, 320}})
+		for (auto [width, height] : {std::pair{320, 568}, {568, 320}, {844, 390}})
 		{
 			const int oldW = gfx->getW(), oldH = gfx->getH();
 			SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()), width, height);
@@ -2128,6 +2128,22 @@ class GameGUITouchHarness
 			if (gui.touch->usesDial())
 			{
 				const auto ui = gui.touch->layout();
+				const auto hud = gui.touch->hudLayout(ui);
+				const auto identity = gui.touch->allocationRect();
+				auto near = [](double a, double b) { return std::abs(a - b) < .5; };
+				require(near(identity.x, hud.stats.x) && near(identity.w, hud.stats.w),
+						"Building identity aligns with the rendered stats width");
+				require(near(identity.y + identity.h, hud.minimap.y + hud.minimap.h) &&
+						identity.y >= hud.stats.y + hud.stats.h && identity.x + identity.w < hud.minimap.x,
+						"Building identity sits below stats and beside the minimap, bottom aligned");
+				const double pointUnit = gfx->logicalUnitsPerPoint();
+				const GAGCore::ViewPoint close{identity.x + identity.w - 24 * pointUnit, identity.y + identity.h / 2};
+				require(gui.touch->interfaceRegion(close) == 38, "Moved identity close target follows its drawing");
+				gfx->printScreen(width < height ? "building-header-portrait.bmp" : width > 600 ? "building-header-wide.bmp" : "building-header-landscape.bmp");
+				gfx->nextFrame();
+				tap(close.x, close.y);
+				require(gui.selectionMode == GameGUI::NO_SELECTION && gui.orderQueue.empty(), "Moved close dismisses without an order");
+				openActions(swarm);
 				const auto regions = gui.touch->dialRegions();
 				require(regions.size() >= 3 + 3 + 3 + NB_UNIT_TYPE,
 						"Swarm dial offers workers, a ratio slider, priority and unit choices");
@@ -2154,6 +2170,10 @@ class GameGUITouchHarness
 				globalContainer->settings.thumbSide = Settings::THUMB_LEFT;
 				gui.drawAll(0);
 				const auto mirrored = gui.touch->dialLayout(gui.touch->layout());
+				require(near(mirrored.header.x, identity.x) && near(mirrored.header.y, identity.y) &&
+						near(mirrored.header.w, identity.w), "Header stays aligned with stats for either thumb side");
+				gfx->printScreen(width < height ? "building-header-left-portrait.bmp" : width > 600 ? "building-header-left-wide.bmp" : "building-header-left-landscape.bmp");
+				gfx->nextFrame();
 				require(mirrored.geometry.mirrored && std::abs(mirrored.geometry.center.x - ui.safe.x) < 0.5,
 						"A left thumb mirrors the dial into the bottom-left corner");
 				for (const auto &region : gui.touch->dialRegions())

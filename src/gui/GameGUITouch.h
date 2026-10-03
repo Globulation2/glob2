@@ -118,6 +118,12 @@ class GameGUITouch
 	void updatePlacementPreview(GAGCore::ViewPoint point);
 	bool commitPlacement();
 	std::unique_ptr<Minimap> hudMinimap;
+	struct HudLayout
+	{
+		GAGCore::ViewRect minimap, stats;
+		int columns;
+	};
+	HudLayout hudLayout(const GAGCore::MobileLayout &ui) const;
 	GAGCore::ViewRect minimapRect() const;
 	void drawMinimap();
 	void navigateMinimap(GAGCore::ViewPoint point);
