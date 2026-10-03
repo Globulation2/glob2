@@ -88,3 +88,51 @@ describe('credit ledger', () => {
     await expect(credits.reserve(a, randomUUID(), 1, rate)).rejects.toThrow();
   });
 });
+
+it('leaves the wallet untouched when reported usage exceeds its reservation', async () => {
+  const a = await account(),
+    call = randomUUID();
+  await credits.adjust(a, randomUUID(), 100, 'grant');
+  await credits.reserve(a, call, 50, rate);
+  await credits.dispatch(call);
+  await expect(credits.settle(a, call, { input: 51, cachedInput: 0, output: 0 })).rejects.toThrow(
+    'exceeded',
+  );
+  expect(await credits.balance(a)).toEqual({ balance: 100, reserved: 50, available: 50 });
+  await credits.uncertain(call);
+  await credits.settle(a, call, { input: 40, cachedInput: 0, output: 0 });
+  expect(await credits.balance(a)).toEqual({ balance: 60, reserved: 0, available: 60 });
+});
+
+it('rejects account, amount and rate changes on reservation retries without holding more funds', async () => {
+  const a = await account(),
+    other = await account(),
+    call = randomUUID();
+  await credits.adjust(a, randomUUID(), 100, 'grant');
+  await credits.adjust(other, randomUUID(), 100, 'grant');
+  await credits.reserve(a, call, 50, rate);
+  await expect(credits.reserve(other, call, 50, rate)).rejects.toThrow('changed');
+  await expect(credits.reserve(a, call, 51, rate)).rejects.toThrow('changed');
+  await expect(credits.reserve(a, call, 50, { ...rate, output: rate.output + 1 })).rejects.toThrow(
+    'changed',
+  );
+  await expect(
+    credits.settle(other, call, { input: 0, cachedInput: 0, output: 0 }),
+  ).rejects.toThrow('Unknown');
+  expect(await credits.balance(a)).toEqual({ balance: 100, reserved: 50, available: 50 });
+  expect(await credits.balance(other)).toEqual({ balance: 100, reserved: 0, available: 100 });
+});
+
+it('uses the reserved rate card and rejects redispatch after settlement', async () => {
+  const a = await account(),
+    call = randomUUID();
+  const original = { ...rate };
+  await credits.adjust(a, randomUUID(), 100, 'grant');
+  await credits.reserve(a, call, 100, original);
+  original.input *= 2;
+  await credits.dispatch(call);
+  expect(await credits.settle(a, call, { input: 20, cachedInput: 0, output: 0 })).toBe(20);
+  expect(await credits.dispatch(call)).toBe(false);
+  expect(await credits.reserve(a, call, 100, rate)).toBe(false);
+  expect(await credits.balance(a)).toEqual({ balance: 80, reserved: 0, available: 80 });
+});

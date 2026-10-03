@@ -398,6 +398,7 @@ TEST_CASE("Hive Mind cadence replacement cancellation and lost acknowledgements"
 
 #include "hive/HiveDialog.h"
 #include "Engine.h"
+#include "GameGUIKeyActions.h"
 #include <ScreenStack.h>
 TEST_CASE("Hive Mind commander panel [display]" * doctest::test_suite("HiveMindPresentation"))
 {
@@ -422,10 +423,15 @@ TEST_CASE("Hive Mind commander panel [display]" * doctest::test_suite("HiveMindP
 	Online::PlatformClient platform(config);
 	Hive::ClientEnvironment environment;
 	environment.storage = &storage;
-	environment.request = [](auto, const auto &, const auto &, auto callback)
+	unsigned commandPosts = 0, stopPosts = 0;
+	environment.request = [&](auto, const std::string &path, const auto &, auto callback)
 	{
 		Online::PlatformClient::Response r;
 		r.ok = true;
+		if (path.ends_with("/command"))
+			++commandPosts;
+		if (path.ends_with("/stop"))
+			++stopPosts;
 		r.result = {{"enabled", true}, {"available", 12500}};
 		callback(r);
 	};
@@ -470,6 +476,27 @@ TEST_CASE("Hive Mind commander panel [display]" * doctest::test_suite("HiveMindP
 	world.gui.drawAll(0);
 	globalContainer->gfx->printScreen(glob2test::artifactDirFromWorkingDirectory() +
 									  "/hive-command-input.bmp");
+	// Stop wins over Return submission while preserving the editable draft.
+	SDL_Event stop{};
+	stop.type = SDL_EVENT_KEY_DOWN;
+	stop.key.key = SDLK_RETURN;
+	stop.key.mod = SDL_KMOD_CTRL | SDL_KMOD_SHIFT;
+	world.gui.processEvent(&stop);
+	CHECK(stopPosts == 1);
+	CHECK(commandPosts == 0);
+	CHECK(world.gui.typingCommander);
+	// A customized release-triggered Stop binding is honored too.
+	stop.type = SDL_EVENT_KEY_UP;
+	stop.key.key = SDLK_F8;
+	stop.key.mod = 0;
+	KeyboardShortcut releaseStop;
+	releaseStop.addKeyPress(KeyPress(stop.key, false));
+	releaseStop.setAction(GameGUIKeyActions::StopCommander);
+	world.gui.keyboardManager.getKeyboardShortcuts().push_back(releaseStop);
+	world.gui.processEvent(&stop);
+	CHECK(stopPosts == 2);
+	CHECK(commandPosts == 0);
+	CHECK(world.gui.typingCommander);
 	SDL_Event escape{};
 	escape.type = SDL_EVENT_KEY_DOWN;
 	escape.key.key = SDLK_ESCAPE;
@@ -481,4 +508,103 @@ TEST_CASE("Hive Mind commander panel [display]" * doctest::test_suite("HiveMindP
 	outside.button.x = 900;
 	outside.button.y = 300;
 	CHECK_FALSE(screen->handle(outside));
+	auto tap = [&](const std::string &id)
+	{
+		auto *node = screen->host().find(id);
+		REQUIRE(node);
+		screen->host().tapAt(
+			{node->bounds.x + node->bounds.w / 2, node->bounds.y + node->bounds.h / 2});
+		world.gui.drawAll(0);
+	};
+	tap("hive/stop");
+	CHECK(stopPosts == 3);
+	CHECK(client->standingOrders().size() == 1); // Stop does not cancel automation.
+	client->reports = {"Earlier attack report", "Latest colony report"};
+	screen->invalidate();
+	world.gui.drawAll(0);
+	auto text = [&]
+	{
+		std::string all;
+		std::function<void(const GAGGUI::ui::Node &)> visit = [&](const auto &n)
+		{
+			all += n.accessibleText() + "\n";
+			for (const auto &c : n.children)
+				visit(*c);
+		};
+		visit(*screen->host().root());
+		return all;
+	};
+	CHECK(text().find("Earlier attack report") == std::string::npos);
+	tap("hive/details");
+	CHECK(text().find("Earlier attack report") != std::string::npos);
+	CHECK(text().find("Latest colony report") != std::string::npos);
+	// Long multibyte reports remain valid at the compact preview boundary.
+	tap("hive/details");
+	client->reports = {std::string(179, 'x') + "防衛"};
+	screen->invalidate();
+	world.gui.drawAll(0);
+	CHECK(text().find(std::string(179, 'x') + "…") != std::string::npos);
+}
+
+TEST_CASE("Hive Mind pending requests preserve drafts and stop feedback" *
+		  doctest::test_suite("HiveMindReliability"))
+{
+	glob2test::HeadlessGlobals globals;
+	glob2test::HeadlessGame world({.teams = 1, .loadDefaultRace = true, .header = true});
+	Online::MemoryStorage storage;
+	Online::InstanceConfig config(storage);
+	Online::PlatformClient platform(config);
+	Hive::ClientEnvironment environment;
+	environment.storage = &storage;
+	Online::PlatformClient::ResponseHandler commandReply, stopReply;
+	unsigned commands = 0, stops = 0;
+	environment.request = [&](auto, const std::string &path, const Json &, auto callback)
+	{
+		if (path.ends_with("/command"))
+		{
+			++commands;
+			commandReply = callback;
+		}
+		else if (path.ends_with("/stop"))
+		{
+			++stops;
+			stopReply = callback;
+		}
+	};
+	auto client = std::make_unique<Hive::Client>(
+		world.gui, platform, "12345678-1234-4234-8234-123456789abc", 0, environment);
+	client->command("Build an inn", false);
+	client->command("Defend our colony", true);
+	CHECK(commands == 1);
+	CHECK(client->commandDraft == "Defend our colony");
+	REQUIRE_FALSE(client->reports.empty());
+	CHECK(client->reports.back().find("still sending") != std::string::npos);
+	Online::PlatformClient::Response ok;
+	ok.ok = true;
+	commandReply(ok);
+	CHECK(client->commandDraft == "Defend our colony");
+	client->command(client->commandDraft, true);
+	CHECK(commands == 2);
+	commandReply(ok);
+	CHECK(client->commandDraft.empty());
+	client->progress = "Assessing our defences";
+	client->stop();
+	client->stop();
+	CHECK(stops == 1);
+	CHECK(client->controlStatus["commander"] == "Stopping…");
+	Online::PlatformClient::Response failure;
+	failure.ok = false;
+	stopReply(failure);
+	CHECK(client->controlStatus["commander"].find("failed") != std::string::npos);
+	CHECK_FALSE(client->progress.empty());
+	client->stop();
+	CHECK(stops == 2);
+	stopReply(ok);
+	CHECK(client->progress.empty());
+	client->command("Count workers", false);
+	client->stop();
+	client.reset();
+	// Late network completions must be harmless after leaving the match.
+	commandReply(ok);
+	stopReply(ok);
 }

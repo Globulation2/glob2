@@ -71,14 +71,42 @@ Element Dialog::build(const Presentation &p)
 							 },
 							 small)},
 						{p.pt(6)}));
+	auto stop = small;
+	const auto stopping = client->controlStatus.find("commander");
+	stop.enabled = stopping == client->controlStatus.end() || stopping->second != "Stopping…";
+	cards.push_back(button(
+		"hive/stop", "Stop commander",
+		[this]
+		{
+			client->stop();
+			invalidate();
+		},
+		stop));
+	if (stopping != client->controlStatus.end())
+		cards.push_back(caption(stopping->second));
+	// Trim at a UTF-8 boundary so a compact report never splits a character.
+	auto preview = [](const std::string &text, std::size_t limit)
+	{
+		if (text.size() <= limit)
+			return text;
+		while (limit > 0 && (static_cast<unsigned char>(text[limit]) & 0xc0) == 0x80)
+			--limit;
+		return text.substr(0, limit) + "…";
+	};
 	if (!client->progress.empty())
 		cards.push_back(
-			card(paragraph(client->progress.substr(0, 240), {FontRole::Caption}), compact));
-	else if (!client->reports.empty())
-		cards.push_back(card(
-			paragraph(expanded ? client->reports.back() : client->reports.back().substr(0, 180),
-					  {FontRole::Caption}),
-			compact));
+			card(paragraph(preview(client->progress, 240), {FontRole::Caption}), compact));
+	if (expanded)
+	{
+		const auto count = std::min<std::size_t>(10, client->reports.size());
+		for (std::size_t i = 0; i < count; ++i)
+			cards.push_back(card(
+				paragraph(client->reports[client->reports.size() - 1 - i], {FontRole::Caption}),
+				compact));
+	}
+	else if (client->progress.empty() && !client->reports.empty())
+		cards.push_back(
+			card(paragraph(preview(client->reports.back(), 180), {FontRole::Caption}), compact));
 	for (auto &order : client->standingOrders())
 	{
 		const std::string id = order.at("id"), name = order.at("name"),

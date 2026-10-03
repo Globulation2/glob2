@@ -337,6 +337,10 @@ export class Sessions {
       ).rows[0];
       if (!p || wake.tick > Number(s.tick) || wake.tick < Number(s.last_wake_tick ?? 0))
         return false;
+      // A delivery retry must not create another report or consume the wake budget,
+      // even if it arrives with a later tick or a different coalescing key.
+      if (!(await this.event(id, `wake-receipt:${wake.eventId}`, 'wake_receipt', {}, db)))
+        return false;
       if (
         !(await this.event(
           id,

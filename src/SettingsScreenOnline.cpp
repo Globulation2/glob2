@@ -147,7 +147,7 @@ void SettingsScreen::buildOnline()
 		[this](int v){globalContainer->settings.hiveMindEnabled=v;commit();});
 	toggle("hive.supervision", "Allow supervision for new commands", "The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.", globalContainer->settings.hiveMindSupervision,
 		[this](int v){globalContainer->settings.hiveMindSupervision=v;commit();});
-	info(tr("Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Keyboard shortcuts. Standing-order cards have separate pause and cancel controls."));
+	info(tr("Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls."));
 	button("hive.account", tr("Commander account and credits"), [origin]{GAGCore::ApplicationHost::openUrl(origin + "/commander");});
 	info(tr("Manage credits and purchases in your browser. Commander assistance is permitted in ranked play."));
 	section("Server");

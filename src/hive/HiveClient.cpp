@@ -638,8 +638,15 @@ void Client::deliverResult()
 }
 void Client::command(const std::string &text, bool ongoing)
 {
-	if (text.empty() || commandSending)
+	if (text.empty())
 		return;
+	if (commandSending)
+	{
+		commandDraft = text;
+		reports.push_back("Your previous order is still sending. This message has been kept; open "
+						  "the commander to send it again.");
+		return;
+	}
 	commandDraft = text;
 	if (retryCommandText != text || retryCommandOngoing != ongoing || retryCommandId.empty())
 	{
@@ -648,6 +655,7 @@ void Client::command(const std::string &text, bool ongoing)
 		retryCommandId = uuid();
 	}
 	commandSending = true;
+	controlStatus.erase("commander");
 	auto live = alive;
 	rest(HttpFetch::Method::Post, base + "/command",
 		 {{"id", retryCommandId}, {"text", text}, {"ongoing", ongoing}},
@@ -670,6 +678,8 @@ void Client::command(const std::string &text, bool ongoing)
 }
 void Client::stop()
 {
+	if (controlStatus["commander"] == "Stopping…")
+		return;
 	if (current.is_object() && current.contains("id"))
 		cancelledOperation = current.at("id");
 	auto live = alive;
@@ -679,6 +689,8 @@ void Client::stop()
 		 {
 			 if (!*live)
 				 return;
+			 if (r.ok)
+				 progress.clear();
 			 controlStatus["commander"] = r.ok ? "Stopped" : "Stop failed; retry the stop shortcut";
 			 reports.push_back(controlStatus["commander"]);
 		 });

@@ -21,6 +21,7 @@
 #include "GameGUITouch.h"
 #include "GameGUIDialog.h"
 #include "GameGUIInternal.h"
+#include "GameGUIKeyActions.h"
 #include "GameUtilities.h"
 #include "GlobalContainer.h"
 #include "Order.h"
@@ -155,6 +156,15 @@ void GameGUI::processEvent(SDL_Event *event)
         if (event->type == SDL_EVENT_MOUSE_MOTION) { mouseX=event->motion.x; mouseY=event->motion.y; }
         if (torusView.event(*event, width)) return;
         if (torusView.active() && handleTorusPointer(*event)) return;
+    }
+
+    // Commander cancellation must win over the composer's Return submission,
+    // including customized stop bindings. Leave the draft open for editing.
+    if (typingCommander && (event->type == SDL_EVENT_KEY_DOWN || event->type == SDL_EVENT_KEY_UP) &&
+        keyboardManager.getAction(KeyPress(event->key, event->type == SDL_EVENT_KEY_DOWN)) == GameGUIKeyActions::StopCommander)
+    {
+        if (hive) hive->stop();
+        return;
     }
 
 	// handle typing

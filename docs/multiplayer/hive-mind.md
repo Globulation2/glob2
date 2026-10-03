@@ -5,7 +5,9 @@ matches, alongside ordinary manual controls. Players give commands, receive repo
 and manage named standing orders. Configure Hive Mind under Settings → Online. Ctrl+Enter opens the chat-style
 commander input; Enter sends and closes it, and Escape keeps the draft for later.
 Ctrl+Shift+Enter stops paid supervision. Both shortcuts are configurable under
-Keyboard shortcuts. Named standing-order cards stack at the bottom-left of the
+Settings → Controls. A separate Stop commander button provides the same action
+for mouse and touch users. Reports / details shows the ten most recent reports.
+Named standing-order cards stack at the bottom-left of the
 map and expose Pause, Resume and Cancel separately. The cards do not block manual
 map controls outside their bounds. Settings links to the browser account and
 credits page; no credit configuration appears in the gameplay HUD. Installed standing orders continue without credits. Assistance
