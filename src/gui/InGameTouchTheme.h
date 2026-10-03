@@ -92,6 +92,7 @@ inline constexpr double edgePanPixelsPerSecond = 240;
 // and this close; the second contact then drags to zoom or taps to reset 1:1.
 inline constexpr unsigned doubleTapWindowMs = 300;
 inline constexpr double doubleTapRadius = 24;
+inline constexpr double doubleTapZoomFactor = 2;
 // Readouts sit above the finger that is changing their value.
 inline constexpr double readoutLift = 60;
 inline constexpr double readoutHeight = 40;

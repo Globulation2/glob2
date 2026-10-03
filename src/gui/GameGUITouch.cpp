@@ -870,7 +870,7 @@ void GameGUITouch::actions(const std::vector<TouchAction> &changes)
 		else if (action.kind == TouchActionKind::ZoomReset)
 		{
 			// Without a zoomable renderer the second tap still selects, as before.
-			if (!resetZoom(point) && world().contains(point))
+			if (!zoomIn(point) && world().contains(point))
 				select(point);
 		}
 		else if (action.kind == TouchActionKind::Preview && world().contains(point) &&
@@ -925,10 +925,9 @@ bool GameGUITouch::zoomTapArmed(Uint32 ticks, ViewPoint point) const
 		   world().contains(point) && !controls().contains(point);
 }
 
-bool GameGUITouch::resetZoom(ViewPoint point)
+bool GameGUITouch::zoomIn(ViewPoint point)
 {
-	gui.updateCamera();
-	return gui.zoomMap(std::log(1.0 / gui.camera.zoom) / std::log(1.1), int(point.x), int(point.y));
+	return gui.zoomMap(std::log(InGameTouchTheme::doubleTapZoomFactor) / std::log(1.1), int(point.x), int(point.y));
 }
 
 std::string GameGUITouch::zoomReadout() const
