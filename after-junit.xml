@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="10" failures="1" errors="0" skipped="0"><testsuite name="EngineSession"><testcase classname="EngineSession" name="incremental sessions; editor decisions; fertility equivalence and cancellation [writes-preferences]" time="2.15164" status="run" />
+  <testcase classname="EngineSession" name="momentum uses the SDL clock after session suspension [display][artifacts]" time="1.6043" status="run" />
+  <testcase classname="EngineSession" name="serial sessions retain chat text across skipped GUI frames" time="0.549277" status="run" />
+  </testsuite><testsuite name="GameGUITouch"><testcase classname="GameGUITouch" name="a touch on or near a flag drags the flag; not the map [display]" time="0.987562" status="run" />
+  <testcase classname="GameGUITouch" name="actual gameplay touch; toroidal pan; preview; confirmation; validation; cancellation and duplicate suppression [display][artifacts][writes-preferences]" time="12.8868" status="run" />
+  <testcase classname="GameGUITouch" name="scaled gameplay dialog input is translated once [display]" time="1.13731" status="run" />
+  <testcase classname="GameGUITouch" name="touch scroll momentum on the map; the HUD palette and the editor [display]" time="0.970875" status="run" />
+  </testsuite><testsuite name="GameSpeed"><testcase classname="GameSpeed" name="live engine speed; pause; hard pause and replay playback [display][writes-preferences]" time="24.4359" status="run" />
+  <testcase classname="GameSpeed" name="presets; bounds; legacy settings and persistence" time="0.006392" status="run" />
+  <testcase classname="GameSpeed" name="settings screen; in-game slider; shortcuts and camera cadence [display][writes-preferences]" time="1.02669" status="run">
+      <failure message="gameplay.speed != gameplay.speed" type="REQUIRE">
+test/GameSpeedTest.cpp:113:
+REQUIRE( r.id!="gameplay.speed" ) is NOT correct!
+  values: REQUIRE( gameplay.speed != gameplay.speed )
+
+      </failure>
+    </testcase>
+  </testsuite></testsuites>

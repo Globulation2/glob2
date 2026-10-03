@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="2" failures="2" errors="0" skipped="0"><testsuite name="EngineSession"><testcase classname="EngineSession" name="momentum uses the SDL clock after session suspension [display][artifacts]" time="1.09413" status="run">
+      <failure message="0 &gt;  1" type="REQUIRE">
+test/EngineSessionHarness.cpp:134:
+REQUIRE( coast &gt; 1 ) is NOT correct!
+  values: REQUIRE( 0 &gt;  1 )
+  logged: threaded client path=false
+
+      </failure>
+    </testcase>
+  </testsuite><testsuite name="GameSpeed"><testcase classname="GameSpeed" name="settings screen; in-game slider; shortcuts and camera cadence [display][writes-preferences]" time="0.950518" status="run">
+      <failure message="gameplay.speed != gameplay.speed" type="REQUIRE">
+test/GameSpeedTest.cpp:113:
+REQUIRE( r.id!="gameplay.speed" ) is NOT correct!
+  values: REQUIRE( gameplay.speed != gameplay.speed )
+
+      </failure>
+    </testcase>
+  </testsuite></testsuites>
