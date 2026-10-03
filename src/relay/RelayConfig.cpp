@@ -170,6 +170,8 @@ RelayConfig RelayConfig::fromMap(const std::map<std::string, std::string>& value
 		throw std::invalid_argument("GLOB2_RELAY_REGION must match ^[a-z0-9][a-z0-9-]{0,31}$");
 	c.spoolDirectory = r.text("GLOB2_RELAY_SPOOL_DIR", "");
 	c.uploadAttempts = static_cast<unsigned>(r.number("GLOB2_RELAY_UPLOAD_ATTEMPTS", c.uploadAttempts, 1, 100));
+	c.setupRetrySeconds =
+		static_cast<unsigned>(r.number("GLOB2_RELAY_SETUP_RETRY_SECONDS", c.setupRetrySeconds, 0, 86400));
 
 	if (c.jwksFile.empty() && c.jwksUrl.empty() && c.platformUrl.empty())
 		throw std::invalid_argument("Set GLOB2_RELAY_JWKS_FILE, GLOB2_RELAY_JWKS_URL or GLOB2_RELAY_PLATFORM_URL");

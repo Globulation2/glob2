@@ -88,6 +88,8 @@ struct PresenterState
 {
 	GAGGUI::ScreenStack *screens = nullptr;
 	bool open = false;
+	// The pump hook and handoff are installed once per process.
+	bool hooked = false;
 	std::optional<Online::MatchAssignment> deferred;
 };
 PresenterState &presenter()
@@ -105,6 +107,7 @@ QuickMatchScreen::QuickMatchScreen(GAGGUI::ScreenStack &screens)
 	QuickMatchPresenter::attach(screens);
 	auto &client = onlineClient();
 	instance = client.origin();
+	calls = std::make_unique<Online::PlatformScope>(client);
 	loadQueues();
 }
 
@@ -121,8 +124,9 @@ QuickMatchScreen::~QuickMatchScreen() = default;
 void QuickMatchScreen::loadQueues()
 {
 	lastLoad = SDL_GetTicks();
-	onlineClient().rest(HttpFetch::Method::Get, "/api/v1/instance", Online::Json(),
-						[this](const Online::PlatformClient::Response &response)
+	if (!calls)
+		return;
+	calls->instanceInfo([this](const Online::PlatformClient::Response &response)
 						{
 							if (response.ok)
 							{
@@ -748,13 +752,23 @@ void handOff(const Online::MatchAssignment &match)
 }
 } // namespace
 
+void detach(GAGGUI::ScreenStack &screens)
+{
+	auto &state = presenter();
+	if (state.screens == &screens)
+	{
+		state.screens = nullptr;
+		state.open = false;
+	}
+}
+
 void attach(GAGGUI::ScreenStack &screens)
 {
 	auto &state = presenter();
-	const bool first = state.screens == nullptr;
 	state.screens = &screens;
-	if (!first)
+	if (state.hooked)
 		return;
+	state.hooked = true;
 	auto &model = Online::quickMatch();
 	model.setHandoff([](const Online::MatchAssignment &assignment) { presenter().deferred = assignment; });
 	Online::addPumpHook(

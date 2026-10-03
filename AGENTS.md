@@ -75,6 +75,13 @@ permanent docs.
   without changing a single saved byte. Check `src/ReplayReader.h`, `src/Version.h`
   and `src/yog/` for replay acceptance and network/YOG version gates, and test the
   affected acceptance boundaries directly.
+- Online play groups players, AI ratings and match verifiers by sim version, and only
+  `SIM_REVISION` in `src/SimRevision.h` ties that version to simulation code. Bump it
+  in every change that can alter what the simulation computes from the same setup and
+  orders (rules, units, AI, order validation, map loading, random number use), even
+  when saves and replays stay compatible, and regenerate the golden match record in the
+  same change. CI fails when the committed `--verify-match` trace moves without a new
+  sim version; see [Simulation version](docs/multiplayer/turn-protocol.md#simulation-version).
 
 ## Preserving feel
 

@@ -16,6 +16,10 @@ namespace GAGGUI
 {
 class ScreenStack;
 }
+namespace Online
+{
+class PlatformScope;
+}
 namespace Glob2UI
 {
 class PreviewImages;
@@ -108,7 +112,10 @@ class OnlineMapsScreen : public Glob2UI::Screen
 	std::unique_ptr<Online::MapCache::Download> download;
 	std::optional<Online::MapInfo> downloading;
 	std::map<std::string, bool> detailRequested;
-	std::shared_ptr<bool> alive = std::make_shared<bool>(true);
+	// This screen's platform calls, cancelled when it closes (made on first use:
+	// fixture screens never touch the platform).
+	std::unique_ptr<Online::PlatformScope> scope;
+	Online::PlatformScope &calls();
 	bool started = false;
 };
 

@@ -26,5 +26,4 @@ class Application : public GAGCore::ApplicationHost::Loop
 	void mainMenu();
 	void installStagedAssets();
 	void choose(int choice);
-	void openOnlineScreenForDevelopment();
 };

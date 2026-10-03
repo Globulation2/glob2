@@ -618,4 +618,152 @@ TEST_SUITE("PlatformClient")
 		CHECK_EQ(f.client.account()->displayName, "Alice");
 		CHECK_EQ(f.config.find(ORIGIN)->lastDisplayName, "Alice");
 	}
+
+	TEST_CASE("REST calls return an id that cancels them; a cancelled call never calls back")
+	{
+		Fixture f;
+		f.startOnline();
+		int answered = 0;
+		const auto kept = f.client.rest(HttpFetch::Method::Get, "/api/v1/rooms", Json(),
+										[&](const PlatformClient::Response &) { ++answered; });
+		const auto dropped = f.client.restRaw(HttpFetch::Method::Get, "/api/v1/blobs/maps/x", {}, {},
+											  [&](const PlatformClient::Response &) { answered += 100; });
+		CHECK_NE(kept, 0);
+		CHECK_NE(dropped, kept);
+		CHECK(f.client.pending(kept));
+		f.client.cancelRequest(dropped);
+		CHECK_FALSE(f.client.pending(dropped));
+		auto blob = f.world.http.exchanges.back();
+		CHECK(blob->cancelled);
+		f.world.http.pending("/api/v1/rooms")->reply(200, Json{{"items", Json::array()}});
+		f.client.update();
+		CHECK_EQ(answered, 1);
+		CHECK_FALSE(f.client.pending(kept));
+		// A call waiting for a token is cancelled before it is ever sent.
+		Fixture g;
+		g.client.start(ORIGIN);
+		const auto waiting = g.client.rest(HttpFetch::Method::Get, "/api/v1/accounts/me/x", Json(),
+										   [&](const PlatformClient::Response &) { answered += 1000; });
+		CHECK(g.client.pending(waiting));
+		g.client.cancelRequest(waiting);
+		g.answerGuest();
+		g.advance(100);
+		CHECK_EQ(g.world.http.count("/api/v1/accounts/me/x"), 0);
+		CHECK_EQ(answered, 1);
+		// Not running: the handler runs at once and there is nothing to cancel.
+		Fixture h;
+		bool refused = false;
+		CHECK_EQ(h.client.rest(HttpFetch::Method::Get, "/api/v1/rooms", Json(),
+							   [&](const PlatformClient::Response &r) { refused = !r.ok; }),
+				 0);
+		CHECK(refused);
+	}
+
+	TEST_CASE("the instance description is fetched once per start and shared")
+	{
+		Fixture f;
+		f.client.start(ORIGIN);
+		// Public: asked before sign-in finishes.
+		std::vector<std::string> names;
+		auto record = [&](const PlatformClient::Response &r) { names.push_back(r.ok ? r.result.value("name", "") : r.error.code); };
+		f.client.instanceInfo(record);
+		const auto second = f.client.instanceInfo(record);
+		CHECK_EQ(f.world.http.count("/api/v1/instance"), 1);
+		CHECK(f.client.pending(second));
+		CHECK(f.client.cachedInstanceInfo() == nullptr);
+		auto exchange = f.world.http.pending("/api/v1/instance");
+		REQUIRE(exchange);
+		CHECK(exchange->header("Authorization").empty());
+		exchange->reply(200, Json{{"name", "Example"}});
+		f.client.update();
+		CHECK_EQ(names, std::vector<std::string>{"Example", "Example"});
+		REQUIRE(f.client.cachedInstanceInfo());
+		CHECK_EQ(f.client.cachedInstanceInfo()->value("name", ""), "Example");
+		// Later callers get the cached answer from update(), never inside the call.
+		f.client.instanceInfo(record);
+		CHECK_EQ(names.size(), 2);
+		f.client.update();
+		CHECK_EQ(names.size(), 3);
+		CHECK_EQ(f.world.http.count("/api/v1/instance"), 1);
+		// A restart fetches again; a failure is not cached.
+		f.client.start(ORIGIN);
+		CHECK(f.client.cachedInstanceInfo() == nullptr);
+		f.client.instanceInfo(record);
+		f.world.http.pending("/api/v1/instance")->reply(503, Json::object());
+		f.client.update();
+		CHECK_EQ(names.back(), "http_503");
+		f.client.instanceInfo(record);
+		CHECK_EQ(f.world.http.count("/api/v1/instance"), 3);
+		// stop answers the waiters with cancelled.
+		f.client.stop();
+		CHECK_EQ(names.back(), "cancelled");
+	}
+
+	TEST_CASE("a scope cancels its owner's calls and listeners when the owner goes away")
+	{
+		Fixture f;
+		f.startOnline();
+		// Handlers bump this counter instead of touching the destroyed owner, so the
+		// check works without a sanitizer (with one, a stray call is a use-after-free).
+		static int reached = 0;
+		reached = 0;
+		struct Owner
+		{
+			PlatformScope calls;
+			explicit Owner(PlatformClient &client) : calls(client) {}
+		};
+		auto owner = std::make_unique<Owner>(f.client);
+		auto bump = [](const PlatformClient::Response &) { ++reached; };
+		owner->calls.rest(HttpFetch::Method::Get, "/api/v1/rooms", Json(), bump);
+		owner->calls.restRaw(HttpFetch::Method::Get, "/api/v1/blobs/maps/y", {}, {}, bump);
+		owner->calls.instanceInfo(bump);
+		owner->calls.request("room.join", Json{{"code", "ABCDEF"}}, bump);
+		owner->calls.refreshAccount(bump);
+		owner->calls.listen("room.state", [](const std::string &, const Json &) { ++reached; });
+		owner->calls.onStateChange([] { ++reached; });
+		CHECK_EQ(owner->calls.tracked(), 4);
+		const auto before = f.world.http.exchanges.size();
+		owner.reset();
+		// Everything the owner asked for is cancelled on the wire side too.
+		int cancelled = 0;
+		for (std::size_t i = before - 4; i < before; ++i)
+			cancelled += f.world.http.exchanges[i]->cancelled;
+		CHECK_EQ(cancelled, 2); // rooms and the blob; the shared instance fetch and the account refresh continue
+		for (const auto &exchange : f.world.http.exchanges)
+			if (exchange->state == HttpFetch::State::Pending)
+				exchange->reply(200, OnlineFakes::account());
+		f.world.socket().respond(f.world.socket().find("room.join"), Json::object());
+		f.world.socket().event("room.state", Json{{"room", {{"id", "r"}}}});
+		f.client.update();
+		f.client.stop();
+		CHECK_EQ(reached, 0);
+		// The account refresh still updated the client itself.
+		CHECK(f.config.find(ORIGIN));
+	}
+
+	TEST_CASE("a handler that destroys another owner in the same update does not reach it")
+	{
+		Fixture f;
+		f.startOnline();
+		static int second = 0;
+		second = 0;
+		auto victim = std::make_unique<PlatformScope>(f.client);
+		PlatformScope killer(f.client);
+		killer.rest(HttpFetch::Method::Get, "/api/v1/a", Json(), [&](const PlatformClient::Response &) { victim.reset(); });
+		victim->rest(HttpFetch::Method::Get, "/api/v1/b", Json(), [](const PlatformClient::Response &) { ++second; });
+		// Both answers arrive in the same update: the client has already taken b's
+		// call off its list when a's handler destroys the victim.
+		f.world.http.pending("/api/v1/a")->reply(200, Json::object());
+		f.world.http.pending("/api/v1/b")->reply(200, Json::object());
+		f.client.update();
+		CHECK_FALSE(victim);
+		CHECK_EQ(second, 0);
+		// cancelAll keeps the scope usable with a fresh token.
+		bool later = false;
+		killer.cancelAll();
+		killer.rest(HttpFetch::Method::Get, "/api/v1/c", Json(), [&](const PlatformClient::Response &) { later = true; });
+		f.world.http.pending("/api/v1/c")->reply(200, Json::object());
+		f.client.update();
+		CHECK(later);
+	}
 }

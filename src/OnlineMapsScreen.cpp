@@ -119,9 +119,14 @@ OnlineMapsScreen::OnlineMapsScreen(GAGGUI::ScreenStack &screens, Tab tab, Data f
 		selected = 0;
 }
 
-OnlineMapsScreen::~OnlineMapsScreen()
+// scope (a member) cancels this screen's platform calls.
+OnlineMapsScreen::~OnlineMapsScreen() = default;
+
+Online::PlatformScope &OnlineMapsScreen::calls()
 {
-	*alive = false;
+	if (!scope)
+		scope = std::make_unique<Online::PlatformScope>(Online::services().client);
+	return *scope;
 }
 
 const std::vector<Online::MapInfo> &OnlineMapsScreen::list() const
@@ -196,13 +201,10 @@ void OnlineMapsScreen::reload()
 	loading = true;
 	problem.clear();
 	const Tab asked = tab;
-	auto alive = this->alive;
-	Online::services().client.rest(
+	calls().rest(
 		HttpFetch::Method::Get, query.path(), Online::Json(),
-		[this, alive, asked](const Online::PlatformClient::Response &response)
+		[this, asked](const Online::PlatformClient::Response &response)
 		{
-			if (!*alive)
-				return;
 			loading = false;
 			if (!response.ok)
 			{
@@ -237,23 +239,20 @@ void OnlineMapsScreen::loadMore()
 	more.cursor = next;
 	loading = true;
 	const Tab asked = tab;
-	auto alive = this->alive;
-	Online::services().client.rest(HttpFetch::Method::Get, more.path(), Online::Json(),
-								   [this, alive, asked](const Online::PlatformClient::Response &response)
-								   {
-									   if (!*alive)
-										   return;
-									   loading = false;
-									   if (response.ok)
-									   {
-										   auto page = Online::parseMapList(response.result);
-										   auto &target = asked == Tab::Browse ? data.browse : data.mine;
-										   for (auto &map : page.items)
-											   target.push_back(std::move(map));
-										   cursor[int(asked)] = page.nextCursor;
-									   }
-									   invalidate();
-								   });
+	calls().rest(HttpFetch::Method::Get, more.path(), Online::Json(),
+				 [this, asked](const Online::PlatformClient::Response &response)
+				 {
+					 loading = false;
+					 if (response.ok)
+					 {
+						 auto page = Online::parseMapList(response.result);
+						 auto &target = asked == Tab::Browse ? data.browse : data.mine;
+						 for (auto &map : page.items)
+							 target.push_back(std::move(map));
+						 cursor[int(asked)] = page.nextCursor;
+					 }
+					 invalidate();
+				 });
 }
 
 void OnlineMapsScreen::fetchDetail(const std::string &mapId)
@@ -261,17 +260,14 @@ void OnlineMapsScreen::fetchDetail(const std::string &mapId)
 	if (!live || detailRequested[mapId])
 		return;
 	detailRequested[mapId] = true;
-	auto alive = this->alive;
-	Online::services().client.rest(HttpFetch::Method::Get, "/api/v1/maps/" + Online::urlEncode(mapId), Online::Json(),
-								   [this, alive, mapId](const Online::PlatformClient::Response &response)
-								   {
-									   if (!*alive)
-										   return;
-									   if (response.ok)
-										   if (auto detail = Online::MapDetail::fromJson(response.result))
-											   data.details[mapId] = std::move(*detail);
-									   invalidate();
-								   });
+	calls().rest(HttpFetch::Method::Get, Online::Api::map(mapId), Online::Json(),
+				 [this, mapId](const Online::PlatformClient::Response &response)
+				 {
+					 if (response.ok)
+						 if (auto detail = Online::MapDetail::fromJson(response.result))
+							 data.details[mapId] = std::move(*detail);
+					 invalidate();
+				 });
 }
 
 GAGCore::DrawableSurface *OnlineMapsScreen::previewOf(const Online::MapInfo &map)
@@ -398,28 +394,26 @@ void OnlineMapsScreen::toggleLike()
 	auto &detail = data.details[map->id];
 	const bool like = !detail.liked;
 	const std::string id = map->id;
-	auto alive = this->alive;
-	Online::services().client.rest(like ? HttpFetch::Method::Put : HttpFetch::Method::Delete,
-								   "/api/v1/maps/" + Online::urlEncode(id) + "/like", Online::Json(),
-								   [this, alive, id](const Online::PlatformClient::Response &response)
-								   {
-									   if (!*alive)
-										   return;
-									   if (!response.ok)
-									   {
-										   status = response.error.code == "forbidden" ? tr("[maps like needs account]")
-																					   : response.error.message;
-										   invalidate();
-										   return;
-									   }
-									   data.details[id].liked = response.result.value("liked", false);
-									   const auto likes = response.result.value("likes", std::int64_t(0));
-									   for (auto *maps : {&data.browse, &data.mine})
-										   for (auto &m : *maps)
-											   if (m.id == id)
-												   m.likes = likes;
-									   invalidate();
-								   });
+	calls().rest(like ? HttpFetch::Method::Put : HttpFetch::Method::Delete,
+				 Online::Api::mapLike(id), Online::Json(),
+				 [this, id](const Online::PlatformClient::Response &response)
+				 {
+					 if (!response.ok)
+					 {
+						 status = response.error.code == "forbidden"
+									  ? tr("[maps like needs account]")
+									  : response.error.message;
+						 invalidate();
+						 return;
+					 }
+					 data.details[id].liked = response.result.value("liked", false);
+					 const auto likes = response.result.value("likes", std::int64_t(0));
+					 for (auto *maps : {&data.browse, &data.mine})
+						 for (auto &m : *maps)
+							 if (m.id == id)
+								 m.likes = likes;
+					 invalidate();
+				 });
 }
 
 void OnlineMapsScreen::openMapPage()
@@ -443,16 +437,14 @@ void OnlineMapsScreen::sendReport(int reason)
 		invalidate();
 		return;
 	}
-	auto alive = this->alive;
-	Online::services().client.rest(HttpFetch::Method::Post, "/api/v1/maps/" + Online::urlEncode(map->id) + "/reports",
-								   Online::Json{{"reason", REPORT_REASONS[std::clamp(reason, 0, 3)]}, {"details", ""}},
-								   [this, alive](const Online::PlatformClient::Response &response)
-								   {
-									   if (!*alive)
-										   return;
-									   status = response.ok ? tr("[maps report sent]") : response.error.message;
-									   invalidate();
-								   });
+	calls().rest(
+		HttpFetch::Method::Post, Online::Api::mapReports(map->id),
+		Online::Json{{"reason", REPORT_REASONS[std::clamp(reason, 0, 3)]}, {"details", ""}},
+		[this](const Online::PlatformClient::Response &response)
+		{
+			status = response.ok ? tr("[maps report sent]") : response.error.message;
+			invalidate();
+		});
 	invalidate();
 }
 
@@ -502,20 +494,17 @@ void OnlineMapsScreen::setVisibility(const std::string &mapId, const std::string
 	invalidate();
 	if (!live)
 		return;
-	auto alive = this->alive;
-	Online::services().client.rest(HttpFetch::Method::Patch, "/api/v1/maps/" + Online::urlEncode(mapId),
-								   Online::Json{{"visibility", visibility}},
-								   [this, alive](const Online::PlatformClient::Response &response)
-								   {
-									   if (!*alive)
-										   return;
-									   if (!response.ok)
-									   {
-										   status = response.error.message;
-										   reload();
-									   }
-									   invalidate();
-								   });
+	calls().rest(HttpFetch::Method::Patch, Online::Api::map(mapId),
+				 Online::Json{{"visibility", visibility}},
+				 [this](const Online::PlatformClient::Response &response)
+				 {
+					 if (!response.ok)
+					 {
+						 status = response.error.message;
+						 reload();
+					 }
+					 invalidate();
+				 });
 }
 
 void OnlineMapsScreen::remove(const std::string &mapId)
@@ -526,19 +515,16 @@ void OnlineMapsScreen::remove(const std::string &mapId)
 	invalidate();
 	if (!live)
 		return;
-	auto alive = this->alive;
-	Online::services().client.rest(HttpFetch::Method::Delete, "/api/v1/maps/" + Online::urlEncode(mapId), Online::Json(),
-								   [this, alive](const Online::PlatformClient::Response &response)
-								   {
-									   if (!*alive)
-										   return;
-									   if (!response.ok)
-									   {
-										   status = response.error.message;
-										   reload();
-									   }
-									   invalidate();
-								   });
+	calls().rest(HttpFetch::Method::Delete, Online::Api::map(mapId), Online::Json(),
+				 [this](const Online::PlatformClient::Response &response)
+				 {
+					 if (!response.ok)
+					 {
+						 status = response.error.message;
+						 reload();
+					 }
+					 invalidate();
+				 });
 }
 
 Element OnlineMapsScreen::mapCard(int index, const Presentation &p, bool phone)

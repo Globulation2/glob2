@@ -429,7 +429,13 @@ TEST_SUITE("MatchSetup")
 		CHECK(simDataHashOf({{"a", "x"}}) == expected);
 
 		// This build's version: the real files, and the same value every time.
-		std::vector<SimDataFile> files;
+		// SIM_REVISION is hashed first, as a pseudo-file, so a bump changes the key.
+		CHECK(simRevisionEntry(1).path == "#sim-revision");
+		CHECK(simRevisionEntry(12).content == "12");
+		CHECK(simRevisionEntry().content == std::to_string(SIM_REVISION));
+		CHECK(simRevisionEntry().path < listed.front());
+		CHECK(simDataHashOf({simRevisionEntry(1), {"a", "x"}}) != simDataHashOf({simRevisionEntry(2), {"a", "x"}}));
+		std::vector<SimDataFile> files{simRevisionEntry()};
 		for (const auto& path : listed)
 			files.push_back({path, glob2test::readFile(root / path)});
 		const SimVersion version = currentSimVersion();

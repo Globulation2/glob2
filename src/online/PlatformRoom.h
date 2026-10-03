@@ -13,6 +13,7 @@
 // match.start for this room turns into a Launch event; the screen then takes the
 // OnlineMatch (takeMatch) and shows the starting steps.
 
+#include "PlatformClient.h"
 #include "PlatformProtocol.h"
 #include "RoomBackend.h"
 
@@ -138,8 +139,8 @@ class PlatformRoom final : public RoomBackend
 	Json state;
 	std::string accountId;
 	std::deque<Event> events;
-	std::vector<std::uint64_t> listeners;
-	std::set<std::uint64_t> requests;
+	// Every request, upload and listener of the room, cancelled with it.
+	std::unique_ptr<PlatformScope> calls;
 	std::string problem;
 	bool left = false, finished = false;
 	std::shared_ptr<OnlineMatch> match;
@@ -151,6 +152,5 @@ class PlatformRoom final : public RoomBackend
 	// Premade map upload (host).
 	bool uploading = false;
 	std::string uploadedTitle, uploadedHash;
-	std::shared_ptr<bool> alive = std::make_shared<bool>(true);
 };
 } // namespace Online

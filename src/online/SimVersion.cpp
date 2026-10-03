@@ -14,6 +14,7 @@
 
 #include "MatchSetup.h"
 #include "Sha256.h"
+#include "SimRevision.h"
 #include "Version.h"
 
 namespace Online
@@ -165,12 +166,17 @@ std::string simDataHashOf(const std::vector<SimDataFile>& files)
 	return toHex(hash.finish());
 }
 
+SimDataFile simRevisionEntry(int revision)
+{
+	return {"#sim-revision", std::to_string(revision)};
+}
+
 const std::string& simDataHash()
 {
 	static std::once_flag once;
 	static std::string value;
 	std::call_once(once, [] {
-		std::vector<SimDataFile> files;
+		std::vector<SimDataFile> files{simRevisionEntry()};
 		for (const auto& path : simDataFiles())
 		{
 			SimDataFile file;

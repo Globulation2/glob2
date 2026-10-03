@@ -16,6 +16,7 @@ class ScreenStack;
 namespace Online
 {
 class QuickMatch;
+class PlatformScope;
 }
 class MapPreview;
 
@@ -85,6 +86,8 @@ class QuickMatchScreen : public Glob2UI::Screen
 	Uint32 lastLoad = 0;
 	// A live search has run on this screen; once it ends the screen closes.
 	bool searched = false;
+	// This screen's platform calls, cancelled when it closes.
+	std::unique_ptr<Online::PlatformScope> calls;
 };
 
 // The prompt when the queue found a match: ranked queues ask both players
@@ -129,4 +132,7 @@ class MatchFoundScreen : public Glob2UI::Screen
 namespace QuickMatchPresenter
 {
 void attach(GAGGUI::ScreenStack &screens);
+// Stops presenting on this stack (a test's stack about to go away). The
+// application's stack lives as long as the process and is never detached.
+void detach(GAGGUI::ScreenStack &screens);
 }

@@ -14,6 +14,10 @@ namespace GAGGUI
 {
 class ScreenStack;
 }
+namespace Online
+{
+class PlatformScope;
+}
 
 // Profile and match history (multiplayer mock-ups, screen group 7 A): the
 // rating of each queue with its trend and provisional flag, a few aggregates
@@ -88,5 +92,8 @@ class OnlineProfileScreen : public Glob2UI::Screen
 	Filter filter = Filter::All;
 	int selected = -1;
 	bool started = false;
-	std::shared_ptr<bool> alive = std::make_shared<bool>(true);
+	// This screen's platform calls, cancelled when it closes (made on first use:
+	// fixture screens never touch the platform).
+	std::unique_ptr<Online::PlatformScope> scope;
+	Online::PlatformScope &calls();
 };

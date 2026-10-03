@@ -47,25 +47,24 @@ const char *phaseName(QuickMatch::Phase phase)
 }
 
 QuickMatch::QuickMatch(PlatformClient &client, Environment environment)
-	: client(client), env(std::move(environment))
+	: client(client), calls(client), env(std::move(environment))
 {
 	if (!env.wallClock)
 		env.wallClock = systemWallClock;
 	for (const char *event : QUEUE_EVENTS)
-		listeners.push_back(client.addListener(
-			event, [this](const std::string &name, const Json &data) { handleEvent(name, data); }));
+		calls.listen(event, [this](const std::string &name, const Json &data)
+					 { handleEvent(name, data); });
 }
 
-QuickMatch::~QuickMatch()
-{
-	for (auto id : listeners)
-		client.removeListener(id);
-}
+// calls (a member) cancels the requests and removes the listeners. Leaving a
+// ticket goes through the client directly: it has no handler and must still
+// reach the server.
+QuickMatch::~QuickMatch() = default;
 
 void QuickMatch::reset(Phase next)
 {
 	if (joinRequest)
-		client.cancelRequest(*joinRequest);
+		calls.cancel(*joinRequest);
 	joinRequest.reset();
 	probe.reset();
 	cancelAfterJoin = false;
@@ -113,7 +112,7 @@ void QuickMatch::join()
 	probe.reset();
 	state = Phase::Joining;
 	Json params = {{"queueId", chosen->id}, {"regions", regionsJson(probed)}, {"allowAiOpponent", allowAi}};
-	joinRequest = client.request(
+	joinRequest = calls.request(
 		"queue.join", std::move(params),
 		[this](const PlatformClient::Response &response)
 		{
@@ -177,15 +176,15 @@ void QuickMatch::setAllowAiOpponent(bool allow)
 		return;
 	allowAi = allow;
 	if (!ticketId.empty() && (state == Phase::Searching || state == Phase::Proposed))
-		client.request("queue.update", Json{{"ticketId", ticketId}, {"allowAiOpponent", allow}},
-					   [this, allow](const PlatformClient::Response &response)
-					   {
-						   if (!response.ok && allowAi == allow && state == Phase::Searching)
-						   {
-							   allowAi = !allow;
-							   changed();
-						   }
-					   });
+		calls.request("queue.update", Json{{"ticketId", ticketId}, {"allowAiOpponent", allow}},
+					  [this, allow](const PlatformClient::Response &response)
+					  {
+						  if (!response.ok && allowAi == allow && state == Phase::Searching)
+						  {
+							  allowAi = !allow;
+							  changed();
+						  }
+					  });
 	changed();
 }
 
@@ -195,24 +194,24 @@ void QuickMatch::respond(bool accept)
 		return;
 	myAnswer = accept;
 	const std::string proposalId = current->proposalId;
-	client.request("queue.respond", Json{{"proposalId", proposalId}, {"accept", accept}},
-				   [this, accept, proposalId](const PlatformClient::Response &response)
-				   {
-					   if (!current || current->proposalId != proposalId)
-						   return;
-					   if (!response.ok)
-					   {
-						   // The prompt ended meanwhile; proposalEnded says how.
-						   myAnswer.reset();
-						   changed();
-						   return;
-					   }
-					   if (!accept)
-					   {
-						   lastNotice = Notice::Declined;
-						   reset(Phase::Idle);
-					   }
-				   });
+	calls.request("queue.respond", Json{{"proposalId", proposalId}, {"accept", accept}},
+				  [this, accept, proposalId](const PlatformClient::Response &response)
+				  {
+					  if (!current || current->proposalId != proposalId)
+						  return;
+					  if (!response.ok)
+					  {
+						  // The prompt ended meanwhile; proposalEnded says how.
+						  myAnswer.reset();
+						  changed();
+						  return;
+					  }
+					  if (!accept)
+					  {
+						  lastNotice = Notice::Declined;
+						  reset(Phase::Idle);
+					  }
+				  });
 	changed();
 }
 

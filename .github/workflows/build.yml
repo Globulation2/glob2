@@ -52,6 +52,12 @@ jobs:
           python3 test/ci_run_commands.py \
             --check 'native runner contracts' 'python3 -m unittest discover -s test -p test_run_tests.py -v' \
             --check 'failure aggregation contracts' 'python3 -m unittest discover -s test -p test_ci_failure_aggregation.py -v'
+      - name: Check that the sim version follows the simulation
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          python3 -m unittest discover -s test -p test_check_sim_revision.py -v
+          python3 test/check_sim_revision.py --base "$BASE_SHA"
       - name: Select checks for changed paths
         id: select
         env:
@@ -1360,10 +1366,13 @@ jobs:
           for trace in traces[1:]:
               assert trace.read_bytes().replace(b'\r\n', b'\n') == reference, f'Verification differs: {trace}'
           committed = Path('test/fixtures/multiplayer/FourSquares1.verify-trace.txt').read_bytes()
-          if committed.replace(b'\r\n', b'\n') != reference:
-              print('::warning::Every platform agrees, but not with the committed trace; '
-                    'regenerate test/fixtures/multiplayer with run_tests.py --update-fixtures')
-          print(f'All {len(traces)} --verify-match traces match')
+          # Every platform agreeing on a different trace means the simulation changed:
+          # that needs a new sim version (test/check_sim_revision.py checks the bump).
+          assert committed.replace(b'\r\n', b'\n') == reference, (
+              'Every platform agrees, but not with the committed trace: the simulation changed. '
+              'Bump SIM_REVISION in src/SimRevision.h and regenerate test/fixtures/multiplayer with '
+              "python3 test/run_tests.py --update-fixtures --filter 'TurnEngineHarness/the committed*'")
+          print(f'All {len(traces)} --verify-match traces match the committed trace')
           PY
 
       - uses: actions/download-artifact@v4

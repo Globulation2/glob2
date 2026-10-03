@@ -169,10 +169,8 @@ Element badge(const std::string &text, GAGCore::Color color)
 // ------------------------------------------------------------- previews
 
 PreviewImages::PreviewImages() = default;
-PreviewImages::~PreviewImages()
-{
-	*alive = false;
-}
+// scope (a member) cancels the downloads still in flight.
+PreviewImages::~PreviewImages() = default;
 
 bool PreviewImages::insert(const std::string &url, const std::string &png)
 {
@@ -206,6 +204,13 @@ bool PreviewImages::insertFile(const std::string &url, const std::string &path)
 	return true;
 }
 
+Online::PlatformScope &PreviewImages::scopeFor(Online::PlatformClient &client)
+{
+	if (!scope || &scope->client() != &client)
+		scope = std::make_unique<Online::PlatformScope>(client);
+	return *scope;
+}
+
 GAGCore::DrawableSurface *PreviewImages::get(Online::PlatformClient *client, const std::string &url,
 											 std::function<void()> changed)
 {
@@ -221,23 +226,21 @@ GAGCore::DrawableSurface *PreviewImages::get(Online::PlatformClient *client, con
 		return nullptr;
 	}
 	entry.pending = true;
-	auto alive = this->alive;
-	client->restRaw(HttpFetch::Method::Get, url, {}, {},
-					[this, alive, url, changed](const Online::PlatformClient::Response &response)
-					{
-						if (!*alive)
-							return;
-						if (response.ok)
-							insert(url, response.body);
-						else
-						{
-							entries[url].pending = false;
-							entries[url].failed = true;
-						}
-						if (changed)
-							changed();
-					},
-					4 * 1024 * 1024);
+	scopeFor(*client).restRaw(
+		HttpFetch::Method::Get, url, {}, {},
+		[this, url, changed](const Online::PlatformClient::Response &response)
+		{
+			if (response.ok)
+				insert(url, response.body);
+			else
+			{
+				entries[url].pending = false;
+				entries[url].failed = true;
+			}
+			if (changed)
+				changed();
+		},
+		4 * 1024 * 1024);
 	return nullptr;
 }
 

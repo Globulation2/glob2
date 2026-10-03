@@ -368,7 +368,7 @@ int main(int argc, char** argv)
 		for (int cycle = 0; cycle < std::stoi(argv[3]) && !rc; ++cycle)
 		{
 		// Force a download every cycle: the guest's map cache is keyed by content hash.
-		Online::services().maps.remove(hash);
+		Online::sharedMapCache().remove(hash);
         ScreenStack screens(*globals.gfx);
         screens.push(std::make_unique<JoinScreen>(screens, argv[2], std::string(argv[4]) + "-" + std::to_string(cycle + 1) + ".bmp"));
         while (screens.running())
@@ -387,7 +387,7 @@ int main(int argc, char** argv)
         }
         if (!rc) rc = screens.result();
 		std::string expected, actual;
-		if (!Online::readMapBytes(source, expected) || !Online::readMapBytes(Online::services().maps.path(hash).value_or(std::string()), actual) || actual != expected)
+		if (!Online::readMapBytes(source, expected) || !Online::readMapBytes(Online::sharedMapCache().path(hash).value_or(std::string()), actual) || actual != expected)
 		{
 			std::puts("JOIN FAIL: downloaded map differs from source");
 			rc = 1;
