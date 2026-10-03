@@ -3164,6 +3164,37 @@ class GameGUITouchHarness
 				require(gui.orderQueue.empty(), "Inspection never issues simulation orders");
 			}
 		}
+		// The presented snapshot can differ from the live unit between ticks.
+		// Smooth motion must shift both the exact rectangle and forgiving halo.
+		gui.camera.zoom = 1;
+		gui.camera.originX = 40 * 32 + 16 - gfx->getW() / 2.;
+		gui.camera.originY = 40 * 32 + 16 - gfx->getH() / 2.;
+		gui.viewportX = gui.camera.tileX(); gui.viewportY = gui.camera.tileY(); gui.updateCamera();
+		gui.drawAll(0);
+		{
+			Scene displayed = gui.drawnScene();
+			auto shown = std::find_if(displayed.entities.units.begin(), displayed.entities.units.end(),
+				[&](const auto &u) { return u.gid == worker->gid; });
+			require(shown != displayed.entities.units.end(), "Motion fixture has a drawn worker");
+			shown->action = WALK; shown->dx = 1; shown->dy = 0;
+			shown->delta = 0; shown->stepSpeed = 128;
+			const auto *previousScene = gui.view.scene;
+			const float previousMotion = gui.view.render.unitMotion;
+			gui.view.scene = &displayed;
+			gui.view.render.unitMotion = 1;
+			const GAGCore::ViewPoint visibleCenter{gfx->getW() / 2. - 15, gfx->getH() / 2.};
+			require(gui.touch->unitAt({visibleCenter.x - 14, visibleCenter.y}) == worker,
+				"Exact touch follows the last rendered smooth-motion rectangle");
+			require(gui.touch->unitAt({visibleCenter.x - 28, visibleCenter.y}, 30) == worker,
+				"Unit halo follows the last rendered smooth-motion centre");
+			require(!gui.touch->unitAt({visibleCenter.x - 32, visibleCenter.y}, 30),
+				"Smooth motion does not enlarge the 30-point halo");
+			++shown->generation;
+			require(!gui.touch->unitAt(visibleCenter, 30),
+				"A stale displayed identity cannot select a replacement live unit");
+			gui.view.scene = previousScene;
+			gui.view.render.unitMotion = previousMotion;
+		}
 		// A crowded tile uses visual draw order, and a nearby exact hit beats a halo.
 		auto *flyer = gui.game.addUnit(40,40,0,EXPLORER,0,255,0,0);
 		require(flyer, "Flying unit overlaps the worker");
@@ -3172,9 +3203,11 @@ class GameGUITouchHarness
 		gui.camera.originY = 40*32+16-gfx->getH()/2.;
 		gui.viewportX = gui.camera.tileX(); gui.viewportY = gui.camera.tileY(); gui.updateCamera();
 		const GAGCore::ViewPoint center{gfx->getW()/2.,gfx->getH()/2.};
+		gui.drawAll(0); // Newly created units must be presented before they can be picked.
 		require(gui.touch->unitAt(center,30) == flyer, "Direct airborne sprite wins draw order over ground unit");
 		auto *nearby = gui.game.addUnit(42,40,0,WORKER,0,255,0,0);
 		require(nearby, "Nearby worker exists");
+		gui.drawAll(0);
 		require(gui.touch->unitAt({center.x+64,center.y},30) == nearby, "Exact unit beats neighbouring halo");
 		// A neighbouring resource is a direct target, not empty halo ground.
 		map.setResource(41, 40, WHEAT, 0);
