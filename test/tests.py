@@ -165,6 +165,7 @@ UNIT_TESTS = [
     'GradientBFSTest.cpp',
     'GradientTest.cpp',
     'HelloWorldTest.cpp',
+    'Sha1Test.cpp',
     'VendoredJsonTest.cpp',
     'HttpFetchUrlTest.cpp',
     'online/PlatformProtocolTest.cpp',
@@ -330,7 +331,6 @@ UNIT_PRODUCTION_SOURCES = [
 
 # Replacement definitions for production symbols the unit binary does not link.
 UNIT_STUBS = [
-    'unit/stubs/Sha1.cpp',
     'unit/stubs/MapSectorStubs.cpp',
     'unit/stubs/MapHeaderStubs.cpp',
     'unit/stubs/OrderStubs.cpp',
