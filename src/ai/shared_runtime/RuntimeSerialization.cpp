@@ -5,6 +5,7 @@
 #include "Order.h"
 #include "Game.h"
 #include "FileFormatVersions.h"
+#include "AIStateSerialization.h"
 #include <tuple>
 
 using namespace AISharedRuntime;
@@ -13,7 +14,17 @@ using namespace AISharedRuntime::Management;
 
 bool Runtime::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
+	GAGCore::BinaryInputStream::CheckedReads checked(stream);
+	this->player=player;
 	gm.reset();
+	orders.clear();
+	management_orders.clear();
+	building_orders.clear();
+	resource_trackers.clear();
+	starting_buildings.clear();
+	previous_building_id=-1;
+	from_load_timer=0;
+	is_fruit=false;
 	stream->readEnterSection("EchoAI");
 	signature_check(stream, player, versionMinor);
 
@@ -24,7 +35,10 @@ bool Runtime::load(GAGCore::InputStream *stream, Player *player, Sint32 versionM
 		stream->readEnterSection(ordersIndex);
 		size_t size=stream->readCount("size");
 		std::vector<Uint8> buffer(size+1);
-		stream->read(buffer.data(), buffer.size(), "data");
+		if (dynamic_cast<GAGCore::TextInputStream *>(stream)) {
+			buffer[0]=stream->readUint8("type");
+			stream->read(buffer.data()+1,size,"data");
+		} else stream->read(buffer.data(),buffer.size(),"data");
 		auto order = Order::getOrder(buffer.data(), buffer.size(), versionMinor);
 		if (!order) return false;
 		orders.push_back(order);

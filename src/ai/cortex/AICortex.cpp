@@ -2,6 +2,7 @@
 // Copyright (C) 2026 The Globulation 2 Authors
 
 #include "AITelemetryFields.h"
+#include "AIStateSerialization.h"
 #include "AICortex.h"
 #include "CortexObservation.h"
 #include "CortexWheat.h"
@@ -193,6 +194,24 @@ bool AICortex::load(GAGCore::InputStream* stream, Player* player, Sint32 version
 		}
 		stream->readLeaveSection();
 	}
+	if (versionMinor >= AI_CORTEX_SAVE_FORMAT_POLICY_STATE)
+	{
+		const int mode=AIStateSerialization::readSint32(stream,"policyMode");
+		if (mode < 0 || mode > 2) return false;
+		policy.mlSwarmCaps_ = mode == 1;
+		policy.mlDecide_ = mode == 2;
+		if (mode) {
+			GAGCore::BinaryInputStream::CheckedReads checked(stream);
+			const auto size=stream->readUint32("policyBlobSize");
+			if (size == 0 || size > 1024*1024) return false;
+			std::vector<Uint8> blob(size);
+			stream->read(blob.data(),size,"policyBlob");
+			auto& net=mode == 1 ? policy.swarmNet_ : policy.decisionNet_;
+			if (!net.loadFromMemory(blob.data(),blob.size(),
+				mode == 1 ? Cortex::CortexNet::NUM_FEATURES : Cortex::CortexNet::NUM_DECIDE_FEATURES,
+				mode == 1 ? Cortex::CortexNet::NUM_LOGITS : Cortex::CortexNet::NUM_DECIDE_LOGITS)) return false;
+		}
+	}
 	stream->readLeaveSection();
 	return true;
 }
@@ -279,6 +298,13 @@ void AICortex::save(GAGCore::OutputStream* stream)
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
+	const int mode=policy.mlSwarmCaps_ ? 1 : policy.mlDecide_ ? 2 : 0;
+	stream->writeSint32(mode,"policyMode");
+	if (mode) {
+		const auto blob=(mode == 1 ? policy.swarmNet_ : policy.decisionNet_).snapshotBlob();
+		stream->writeUint32(blob.size(),"policyBlobSize");
+		stream->write(blob.data(),blob.size(),"policyBlob");
+	}
 	stream->writeLeaveSection();
 }
 

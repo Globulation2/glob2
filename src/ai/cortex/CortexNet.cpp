@@ -118,6 +118,22 @@ namespace Cortex
 		return loaded_;
 	}
 
+	std::vector<Uint8> CortexNet::snapshotBlob() const
+	{
+		std::vector<Uint8> bytes;
+		if (!loaded_) return bytes;
+		auto word=[&](Uint32 value) { for (int shift=0;shift<32;shift+=8) bytes.push_back(Uint8(value>>shift)); };
+		word(BLOB_MAGIC); word(BLOB_VERSION); word(FRAC_BITS);
+		word(layers_.size()); word(arch_.size());
+		for (int dimension : arch_) word(dimension);
+		for (const auto& layer : layers_) {
+			word(layer.inDim); word(layer.outDim);
+			for (auto value : layer.W) word(Uint32(value));
+			for (auto value : layer.b) word(Uint32(value));
+		}
+		return bytes;
+	}
+
 	bool CortexNet::parse(const Uint8* data, size_t size,
 	                      int expectIn, int expectOut)
 	{
@@ -148,7 +164,7 @@ namespace Cortex
 			std::cerr << "CortexNet: unexpected frac bits " << frac << "\n";
 			return false;
 		}
-		if (archLen < 2 || numLayers != archLen - 1)
+		if (archLen < 2 || archLen > (size-off)/4 || numLayers != archLen - 1)
 		{
 			std::cerr << "CortexNet: arch/layer mismatch\n";
 			return false;
@@ -197,6 +213,7 @@ namespace Cortex
 			layer.inDim = static_cast<int>(inDim);
 			layer.outDim = static_cast<int>(outDim);
 			const size_t nw = static_cast<size_t>(inDim) * outDim;
+			if (inDim == 0 || outDim == 0 || nw > (size-off)/4 || outDim > (size-off)/4-nw) return false;
 			layer.W.resize(nw);
 			for (size_t k = 0; k < nw; k++)
 			{
