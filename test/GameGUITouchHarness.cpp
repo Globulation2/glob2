@@ -1769,6 +1769,7 @@ class GameGUITouchHarness
 			for (double zoom : {.33, .5, 1.})
 			{
 				gui.camera.zoom = zoom;
+				gui.updateCamera();
 				gui.camera.originX = gui.camera.originY = 0;
 				gui.viewportX = gui.viewportY = 0;
 				gui.updateCamera();
@@ -2666,6 +2667,105 @@ class GameGUITouchHarness
 	// Flags move by dragging them on touch. A contact on a flag, or within the
 	// 30-point reach that selects flags, carries the flag and never pans the map;
 	// a tap still selects; a second finger or an interruption puts the flag back.
+	static void unitSelection()
+	{
+		GameGUI gui;
+		auto header = Engine::loadMapHeader("maps/balanced.map");
+		GameHeader players;
+		players.setNumberOfPlayers(1);
+		players.getBasePlayer(0) = BasePlayer(0, "Touch", 0, BasePlayer::P_LOCAL);
+		require(gui.loadFromHeaders(header, players, true, true), "Unit fixture loads");
+		gui.localTeamNo = gui.localPlayer = 0;
+		gui.adjustLocalTeam();
+		auto *gfx = globalContainer->gfx;
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "1", 1);
+		gfx->setResponsiveViewport(true, 800, 600);
+		auto &map = gui.game.map;
+		for (int y = 30; y < 50; ++y)
+			for (int x = 30; x < 50; ++x) {
+				map.setUMTerrain(x,y,GRASS);
+				map.setNoResource(x,y,1);
+			}
+		auto *worker = gui.game.addUnit(40,40,0,WORKER,0,255,0,0);
+		require(worker, "Isolated worker exists");
+		globalContainer->replaying = true;
+		globalContainer->replayShowFog = false;
+		Uint32 now = 40000;
+		auto finger = [&](Uint32 type, double x, double y) {
+			SDL_Event e{}; e.type = type; e.tfinger.timestamp = SDL_MS_TO_NS(now += 400);
+			e.tfinger.touchID = 7; e.tfinger.fingerID = 1;
+			e.tfinger.x = x/gfx->getW(); e.tfinger.y = y/gfx->getH(); gui.processEvent(&e);
+		};
+		auto tap = [&](double x,double y) {finger(SDL_EVENT_FINGER_DOWN,x,y); finger(SDL_EVENT_FINGER_UP,x,y);};
+		for (auto [width,height] : {std::pair{390,844},std::pair{844,390}}) {
+			SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()),width,height);
+			require(SDL_SyncWindow(SDL_GetWindowFromID(gfx->windowID())), "Unit fixture resize settles");
+			SDL_Event resize{}; resize.type = SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED;
+			GAGCore::GraphicContext::translateMouseEvent(&resize);
+			gui.viewportResized(800,600,gfx->getW(),gfx->getH());
+			for (double zoom : {.33,.5,1.}) {
+				gui.clearSelection(); gui.touch->cancel(); gui.touch->panelOpen = false;
+				gui.camera.zoom = zoom;
+				gui.updateCamera();
+				gui.camera.originX = 40*32+16-gfx->getW()/2./gui.camera.zoom;
+				gui.camera.originY = 40*32+16-(gfx->getH()/2.)/gui.camera.zoom;
+				gui.viewportX = gui.camera.tileX(); gui.viewportY = gui.camera.tileY(); gui.updateCamera();
+				const auto c = std::pair{gfx->getW()/2.,gfx->getH()/2.};
+				const double scale = gfx->logicalUnitsPerPoint();
+				require(gui.touch->unitAt({c.first+28*scale,c.second}) == nullptr, "Near tap misses exact sprite");
+				require(gui.touch->unitAt({c.first+28*scale,c.second},30) == worker, "30 point halo works at every zoom");
+				require(gui.touch->unitAt({c.first+32*scale,c.second},30) == nullptr, "Outside unit halo stays empty");
+				globalContainer->replayShowFog = true; globalContainer->replayVisibleTeams = 0;
+				require(!gui.touch->unitAt({c.first,c.second},30), "Fog-hidden unit cannot be picked");
+				globalContainer->replayShowFog = false;
+				tap(c.first+28*scale,c.second);
+				require(gui.selectionMode == GameGUI::UNIT_SELECTION && gui.selectionUnit() == worker, "Real near-unit touch selects unit");
+				gui.drawAll(0);
+				require(gui.drawnScene().panels.unit.valid && gui.touch->unitInfoRows().size() >= 7, "Selected unit has scene-backed stats");
+				if (zoom == .5) { gfx->printScreen(width<height ? "unit-portrait.bmp" : "unit-landscape.bmp"); gfx->nextFrame(); }
+				const auto panel = gui.touch->layout().panel;
+				tap(panel.x+panel.w/2,panel.y+70*scale);
+				require(gui.selectionMode == GameGUI::UNIT_SELECTION && !gui.touch->showStatistics, "Stats body does not dispatch tactical menu actions");
+				finger(SDL_EVENT_FINGER_DOWN,panel.x+panel.w/2,panel.y+panel.h-10*scale);
+				finger(SDL_EVENT_FINGER_MOTION,panel.x+panel.w/2,panel.y+55*scale);
+				finger(SDL_EVENT_FINGER_UP,panel.x+panel.w/2,panel.y+55*scale);
+				gui.drawAll(0);
+				if (zoom == .5) { gfx->printScreen(width<height ? "unit-portrait-scrolled.bmp" : "unit-landscape-scrolled.bmp"); gfx->nextFrame(); }
+				tap(panel.x+panel.w-24*scale,panel.y+24*scale);
+				require(gui.selectionMode == GameGUI::NO_SELECTION && !gui.touch->panelOpen, "Close dismisses unit stats");
+				const auto origin = gui.camera.originX;
+				finger(SDL_EVENT_FINGER_DOWN,c.first+28*scale,c.second);
+				finger(SDL_EVENT_FINGER_MOTION,c.first+70*scale,c.second);
+				finger(SDL_EVENT_FINGER_UP,c.first+70*scale,c.second);
+				require(gui.selectionMode == GameGUI::NO_SELECTION && gui.camera.originX != origin, "Near-unit drag pans instead of selecting");
+				gui.touch->stopScrolling();
+				require(gui.orderQueue.empty(), "Inspection never issues simulation orders");
+			}
+		}
+		// A crowded tile uses visual draw order, and a nearby exact hit beats a halo.
+		auto *flyer = gui.game.addUnit(40,40,0,EXPLORER,0,255,0,0);
+		require(flyer, "Flying unit overlaps the worker");
+		gui.camera.zoom = 1;
+		gui.camera.originX = 40*32+16-gfx->getW()/2.;
+		gui.camera.originY = 40*32+16-gfx->getH()/2.;
+		gui.viewportX = gui.camera.tileX(); gui.viewportY = gui.camera.tileY(); gui.updateCamera();
+		const GAGCore::ViewPoint center{gfx->getW()/2.,gfx->getH()/2.};
+		require(gui.touch->unitAt(center,30) == flyer, "Direct airborne sprite wins draw order over ground unit");
+		auto *nearby = gui.game.addUnit(42,40,0,WORKER,0,255,0,0);
+		require(nearby, "Nearby worker exists");
+		require(gui.touch->unitAt({center.x+64,center.y},30) == nearby, "Exact unit beats neighbouring halo");
+		gui.setSelection(GameGUI::UNIT_SELECTION,worker);
+		gui.touch->panelOpen = true;
+		gui.drawAll(0);
+		const int id = Unit::GIDtoID(worker->gid);
+		gui.localTeam->myUnits[id] = nullptr;
+		gui.touch->prepareDraw();
+		require(gui.selectionMode == GameGUI::NO_SELECTION && !gui.touch->panelOpen, "Removed unit dismisses its inspector");
+		gui.localTeam->myUnits[id] = worker;
+		globalContainer->replaying = false;
+		globalContainer->replayShowFog = true;
+	}
+
 	static void flagDragging()
 	{
 		GameGUI gui;
@@ -3415,6 +3515,17 @@ TEST_SUITE("GameGUITouch")
 		GameGUITouchHarness::scaledDialogInput();
 	}
 
+	GLOB2_TEST_CASE("unit taps have a zoom independent halo and show unit stats", "[display][artifacts]")
+	{
+		glob2test::GlobalsOptions options{.display = true, .loadStrings = true, .width = 800, .height = 600,
+		                                  .screenFlags = GAGCore::GraphicContext::PORTABLEGPU};
+		glob2test::HeadlessGlobals globals(options);
+		REQUIRE(NET_Init());
+		GameGUITouchHarness::unitSelection();
+		NET_Quit();
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "0", 1);
+		glob2test::retainFromProfile(".bmp");
+	}
 	GLOB2_TEST_CASE("a touch on or near a flag drags the flag; not the map", "[display]")
 	{
 		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "0", 1);

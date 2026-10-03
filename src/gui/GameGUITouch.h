@@ -113,7 +113,7 @@ class GameGUITouch
 	void beginFlagDrag(Building &flag, TouchPlacementSession::Pointer pointer, GAGCore::ViewPoint point);
 	void advanceFlagDrag();
 	void releaseFlagDrag(bool restore);
-	Unit *unitAt(GAGCore::ViewPoint point) const;
+	Unit *unitAt(GAGCore::ViewPoint point, double reachPoints = 0) const;
 	void advancePlacement();
 	void updatePlacementPreview(GAGCore::ViewPoint point);
 	bool commitPlacement();
@@ -159,6 +159,8 @@ class GameGUITouch
 	void drawBuildPalette();
 	std::vector<std::pair<std::string, int>> tacticalActions() const;
 	void drawTacticalPanel();
+	std::vector<std::string> unitInfoRows() const;
+	void drawUnitPanel();
 	void tapBuildPalette(GAGCore::ViewPoint point);
 	struct BuildingAction
 	{

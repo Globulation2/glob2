@@ -13,6 +13,9 @@
 #include "GlobalContainer.h"
 #include "BuildingType.h"
 #include "TeamStat.h"
+#include "Unit.h"
+#include "UnitDisplayNames.h"
+#include "TeamDisplay.h"
 #include "render/Minimap.h"
 #include <TouchText.h>
 #include <Toolkit.h>
@@ -138,7 +141,10 @@ void GameGUITouch::drawPanel()
 			.75);
 		return;
 	}
-	drawTacticalPanel();
+	if (gui.selectionMode == GameGUI::UNIT_SELECTION)
+		drawUnitPanel();
+	else
+		drawTacticalPanel();
 }
 
 void GameGUITouch::drawKeyboardFocus()
@@ -672,4 +678,53 @@ void GameGUITouch::drawTacticalPanel()
 	}
 	labelClip.reset();
 	gfx->setClipRect();
+}
+
+std::vector<std::string> GameGUITouch::unitInfoRows() const
+{
+	const auto &u = gui.drawnScene().panels.unit;
+	if (!u.valid) return {};
+	auto *strings = Toolkit::getStringTable();
+	std::vector<std::string> rows{displayPlayerName(u.owner.firstPlayerName)};
+	auto value = [&](const char *key, std::string text) {
+		rows.push_back(std::string(strings->getString(key)) + ": " + text);
+	};
+	value("[hp]", std::to_string(u.hp) + " / " + std::to_string(u.performance[HP]));
+	value("[food]", std::to_string(u.hungry * 100 / Unit::HUNGRY_MAX) + "% (" + std::to_string(u.fruitCount) + ")");
+	value("[current speed]", std::to_string(u.speed));
+	if (u.performance[ARMOR]) value("[armor]", std::to_string(u.realArmor));
+	if (u.performance[HARVEST]) {
+		if (u.carriedResource < 0) rows.push_back(strings->getString("[don't carry anything]"));
+		else value("[carry]", getResourceName(u.carriedResource));
+	}
+	const std::pair<int, const char *> abilities[] = {{WALK,"[Walk]"}, {SWIM,"[Swim]"}, {BUILD,"[Build]"},
+		{HARVEST,"[Harvest]"}, {ATTACK_SPEED,"[At. speed]"}, {ATTACK_STRENGTH,"[At. strength]"},
+		{MAGIC_ATTACK_AIR,"[Magic At. Air]"}, {MAGIC_ATTACK_GROUND,"[Magic At. Ground]"}};
+	for (const auto &[ability,key] : abilities)
+		if (u.performance[ability]) {
+			const bool attack = ability == ATTACK_STRENGTH || ability == MAGIC_ATTACK_AIR || ability == MAGIC_ATTACK_GROUND;
+			const int strength = (u.performance[ability] + (attack ? u.experienceLevel : 0)) *
+				(ability == ATTACK_STRENGTH ? u.glassCannonScale : 1);
+			value(key, "(" + std::to_string(u.level[ability] + (ability == SWIM ? 0 : 1)) + ") " + std::to_string(strength));
+		}
+	if (u.performance[ATTACK_STRENGTH] || u.performance[MAGIC_ATTACK_AIR] || u.performance[MAGIC_ATTACK_GROUND])
+		rows.push_back("XP: " + std::to_string(u.experience) + " / " + std::to_string(u.nextLevelThreshold));
+	return rows;
+}
+
+void GameGUITouch::drawUnitPanel()
+{
+	const auto panel = layout().panel;
+	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
+	const double row = 48 * unit * InGameTouchTheme::textGrowth();
+	const auto rows = unitInfoRows();
+	labelClip = ViewRect{panel.x, panel.y + 48 * unit, panel.w, std::max(0., panel.h - 48 * unit)};
+	globalContainer->gfx->setClipRect(int(labelClip->x), int(labelClip->y), int(labelClip->w), int(labelClip->h));
+	for (size_t i = 0; i < rows.size(); ++i)
+		drawPointLabel({panel.x, panel.y + 48 * unit + i * row - panelScroll * unit, panel.w, row}, rows[i], .9, true);
+	labelClip.reset();
+	globalContainer->gfx->setClipRect();
+	if (gui.drawnScene().panels.unit.valid)
+		drawPointLabel({panel.x, panel.y, panel.w - 48 * unit, 48 * unit}, getUnitName(gui.drawnScene().panels.unit.typeNum), 1.0, true);
+	drawPointLabel({panel.x + panel.w - 48 * unit, panel.y, 48 * unit, 48 * unit}, "×", 1.2);
 }

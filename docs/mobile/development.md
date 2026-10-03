@@ -77,6 +77,12 @@ near edges and corners (Hoober), hence the larger reach there. The constants
 live in `InGameTouchTheme.h`. Exact flag hits retain priority; the extra halo
 does not override direct unit/building hits and chooses the nearest flag.
 Desktop mouse selection retains its original exact-tile hit area.
+Unit taps also accept a 30-point radius around the interpolated unit centre,
+independent of zoom. Exact unit hits win over nearby units; otherwise the nearest
+visible unit wins (ties use its ID). Building hits and existing flag targets keep
+their priority. Hidden units cannot be selected through fog. Unit selection opens
+a scrollable stats card with a close button, identity, health, food, speed and
+abilities, using the published Scene. Dragging near a unit still pans the map.
 On touch, a contact that lands on one of the player's flags, or within that
 same reach, carries the flag instead of panning the map, including straight
 after a tap. Below the tap threshold it is still a tap and selects the flag.
