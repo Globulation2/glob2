@@ -126,6 +126,18 @@ namespace Online
 		std::optional<std::string> aiConfig;  ///< AI only: GameHeader::setAIConfig
 	};
 
+	/// A limit on pausing (queue matches; rooms and LAN play without one): each human
+	/// seat may start at most `pauses` pauses and keep the game paused for at most
+	/// `seconds` in total; the game resumes by itself when the seat that paused runs
+	/// out. Any player may resume at any time. Enforced identically by every client and
+	/// the verifier (TurnLockstepSession), so it is part of the match's simulation.
+	struct PauseLimit
+	{
+		int pauses = 3;   ///< 0..100
+		int seconds = 60; ///< 0..3600
+		bool operator==(const PauseLimit& o) const { return pauses == o.pauses && seconds == o.seconds; }
+	};
+
 	struct MatchSetup
 	{
 		static constexpr int SCHEMA_VERSION = 1;
@@ -140,6 +152,8 @@ namespace Online
 		std::vector<SetupSeat> seats;
 		MatchRules rules;
 		std::vector<std::string> experiments;
+		/// Absent: pausing is unlimited (and the setup's JSON has no pauseLimit).
+		std::optional<PauseLimit> pauseLimit;
 
 		/// Parses and fully validates (schema, then semantic); throws MatchSetupError.
 		static MatchSetup parse(const std::string& json);
@@ -176,7 +190,8 @@ namespace Online
 
 		/// The setup that recreates `header` on `map` (teams, alliances, seats, rules,
 		/// seed, experiments). Human players (P_LOCAL or P_IP) become human seats;
-		/// teams without a player stay implicit (no closed seats are added).
+		/// teams without a player stay implicit (no closed seats are added). A
+		/// GameHeader has no pause limit, so neither has the result.
 		/// Throws MatchSetupError(Semantic) for what MatchSetup cannot express: a
 		/// JavaScript AI, a winning-condition list other than the default one with
 		/// prestige and sudden death toggled, or a sudden-death tick that is not a

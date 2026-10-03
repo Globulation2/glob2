@@ -41,7 +41,10 @@ namespace Relay
 	/// RelayMatchEnded.reason.
 	enum class EndReason
 	{
-		Completed, ///< a client reported the game finished (Quit reason GameFinished)
+		/// The players agree the game is over: every human seat still in the match when
+		/// the first left with Quit(GameFinished) left that way too
+		/// (TurnSequencer::gameDecided). Advisory: the verifier decides the result.
+		Completed,
 		Abandoned, ///< every human left without a finished game
 		Aborted,   ///< the relay ended the match: drain timeout, shutdown or error
 	};

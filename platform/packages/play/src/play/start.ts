@@ -9,6 +9,7 @@ import type { AccessDecision, AccessPolicy, AccessSubject, JobQueue, Logger } fr
 import type { Database } from '@glob2/db';
 import {
   MAX_PLAYER_NAME_BYTES,
+  QUEUE_PAUSE_LIMIT,
   STANDARD_RULES,
   matchSetupProblems,
   parseSimVersionKey,
@@ -471,5 +472,7 @@ export function queueMatchSetup(
     ),
     rules: STANDARD_RULES,
     experiments: [],
+    // Quick and rated matches limit pausing; rooms do not.
+    pauseLimit: QUEUE_PAUSE_LIMIT,
   };
 }

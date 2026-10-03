@@ -87,7 +87,7 @@ removing or changing the meaning of a field requires version 2.
 | `reconnects` | link losses after the first Welcome: `count`, `downtime_us` (loss to the next Welcome), `longest_downtime_us`, `down_now` |
 | `reloads` | in-place reloads of the initial state (relay resumed from tick 0, or told to rejoin): `count`, `load_us` (engine load time), `fast_forward_ticks`, `fast_forward_us` |
 | `traffic` | turn-protocol payloads (frame bodies without the 2-byte length or WebSocket/TCP framing): `frames_sent`, `bytes_sent`, `frames_received`, `bytes_received`, `bundles_received`, `bundle_bytes`, `bundle_entries` |
-| `orders` | `submitted` (accepted by `addLocalOrder`), `frames_sent` (OrderSubmit frames, resends included), `resent` (after a reconnect), `queued_offline` (submitted while the link was down), `dropped_local` (null, latency-adjust or oversized), `outstanding_max` (not yet acknowledged). The session has no order coalescing |
+| `orders` | `submitted` (accepted by `addLocalOrder`), `frames_sent` (OrderSubmit frames, resends included), `resent` (after a reconnect), `queued_offline` (submitted while the link was down), `dropped_local` (null, latency-adjust or oversized), `outstanding_max` (not yet acknowledged), `coalesced` (replaced by a later order with the same target before being sent), `queue_dropped` (dropped because the local queue was full), `queued_max` (deepest local queue). Orders are paced and coalesced before sending ([order pacing](../multiplayer/turn-protocol.md#order-pacing)) |
 | `voice` | `sent`/`sent_bytes` (own voice packets), `received`/`received_bytes` (other seats') |
 | `desync` | `rejoins` (this client told to rejoin), `flagged` (match flagged for the verifier), `resync_requests` |
 | `presence` | other seats as the relay reports them: `transitions` total; per seat `final_state`, `transitions` and `time_us` per state (`not_connected`, `connected`, `lagging`, `reconnecting`, `resyncing`, `left`) |
@@ -110,7 +110,7 @@ sequenced but not yet broadcast); `rejected_peers`. Per human seat:
 | --- | --- |
 | `orders.sequenced`, `orders.bytes` | orders given an execution tick (voice excluded; the relay's own quit order included) |
 | `orders.deferred`, `orders.defer_ticks` | orders (and voice) placed later than the earliest tick by the one-order-per-seat-per-tick rule or the tick byte budget, and the ticks that added |
-| `orders.duplicates_ignored`, `orders.dropped`, `orders.flood_rejections` | resubmissions already sequenced; null/latency/forged-quit orders refused; floods |
+| `orders.duplicates_ignored`, `orders.dropped`, `orders.flood_rejections` | resubmissions already sequenced; null/latency/forged-quit orders refused; orders dropped by the flood limit (the seat keeps its connection) |
 | `orders.max_queued_ahead_ticks` | furthest a seat's next free tick ran ahead of the relay clock |
 | `voice.sequenced`, `voice.bytes` | voice packets passed through (not in the record) |
 | `traffic` | `frames_received`/`bytes_received` after admission; `bundles_sent`/`bundle_bytes_sent` live; `log_bundles_sent`/`log_bundle_bytes_sent` log replays (resume, rejoin) |

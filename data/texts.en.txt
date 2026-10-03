@@ -4620,3 +4620,9 @@ Your device can't keep up with this match
 It replays the match more slowly than the match runs, so it will not catch up. You can leave the match, or lower the graphics settings and keep waiting.
 [conn card not gaining]
 not gaining
+[turn too many actions]
+Too many actions: some are still waiting to be sent
+[turn no pauses left]
+You have no pauses left in this match
+[turn pause time used %0]
+%0 has used all their pause time: the game resumes

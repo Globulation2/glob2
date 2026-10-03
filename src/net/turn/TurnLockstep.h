@@ -8,10 +8,12 @@
 // to a TurnSession as if a relay had sent it, so the verifier executes recorded
 // matches through exactly the code live clients run.
 
+#include <array>
 #include <cstdint>
 #include <deque>
 #include <functional>
 #include <memory>
+#include <optional>
 #include <vector>
 
 #include "LockstepSession.h"
@@ -23,6 +25,21 @@
 
 namespace Turn
 {
+	/// A match's limit on pausing (Online::PauseLimit): per human seat, at most
+	/// `pauses` pauses and `seconds` paused in total, counted in executed ticks.
+	struct PauseLimit
+	{
+		std::uint32_t pauses = 3;
+		std::uint32_t seconds = 60;
+	};
+
+	/// What the pause bookkeeping tells the player (presentation only).
+	enum class PauseNotice
+	{
+		Refused, ///< the seat has no pauses or pause time left; its pause did nothing
+		Expired, ///< the pausing seat's pause time ran out; the game resumes
+	};
+
 	class TurnLockstepSession : public LockstepSession
 	{
 	public:
@@ -44,8 +61,29 @@ namespace Turn
 		std::function<OrderValidation::Result(int player, Order& order)> validator;
 		/// Per-seat counts of checked orders since the game (re)started from tick 0.
 		const OrderValidation::Audit& orderAudit() const { return audit; }
-		/// Called when the engine reloads the initial state: the orders are checked again.
-		void resetOrderAudit() { audit = {}; }
+		/// Called when the engine reloads the initial state: the orders are checked again,
+		/// and the pause bookkeeping starts over with them.
+		void resetOrderAudit()
+		{
+			audit = {};
+			pauses = {};
+		}
+
+		/// Limits pausing as the match setup says; without a call pausing is unlimited.
+		/// Pause orders of human seats are then checked when they are retrieved: a pause
+		/// beyond the seat's limit executes as a NullOrder everywhere (stale,
+		/// pause_limit), and the game resumes by itself once the seat that paused has
+		/// used its time (takeForcedResume). Ticks count while paused, as the relay's
+		/// clock runs on, so every client and the verifier agree on when that is.
+		void setPauseLimit(PauseLimit limit) { pauseLimit = limit; }
+		/// After the engine executed a tick's orders: a PauseGameOrder(false) it must
+		/// execute too, when the pausing seat's pause time has run out; else null.
+		std::shared_ptr<Order> takeForcedResume();
+		/// Pauses started and ticks paused by a seat so far (diagnostics, tests).
+		std::uint32_t pausesUsed(int seat) const { return seat >= 0 && seat < 32 ? pauses.count[seat] : 0; }
+		std::uint32_t pauseTicksUsed(int seat) const { return seat >= 0 && seat < 32 ? pauses.ticks[seat] : 0; }
+		/// Presentation hook for the pause limit, with the seat concerned.
+		std::function<void(PauseNotice, int seat)> onPauseNotice;
 		/// Test hook: may replace the order retrieveOrder returns, after the check (a
 		/// cheating or diverging client). Never set in the game.
 		std::function<std::shared_ptr<Order>(std::uint32_t tick, int player, std::shared_ptr<Order>)> orderFilter;
@@ -78,7 +116,7 @@ namespace Turn
 		/// engine as TurnSession::needsReload() or desyncFlagged() instead.
 		bool matchCheckSums() override { return session.matchCheckSums(); }
 		std::shared_ptr<Order> retrieveOrder(int playerNumber) override;
-		void clearTopOrders() override { session.clearTopOrders(); }
+		void clearTopOrders() override;
 		void flushAllOrders() override { session.flushAllOrders(); }
 
 	private:
@@ -86,6 +124,19 @@ namespace Turn
 		TurnSession session;
 		OrderValidation::Audit audit;
 		std::uint32_t loggedRejections = 0;
+
+		/// The pause state as the executed orders left it, and what each seat used.
+		struct PauseBook
+		{
+			bool paused = false;
+			int by = -1; ///< the seat whose pause is running, -1 when none counts
+			std::array<std::uint32_t, 32> count{};
+			std::array<std::uint32_t, 32> ticks{};
+		};
+		std::optional<PauseLimit> pauseLimit;
+		PauseBook pauses;
+		std::uint32_t pauseBudgetTicks() const;
+		OrderValidation::Result checkPause(int seat, bool pause);
 	};
 
 	/// A TurnTransport that plays a recorded match: Welcome (as `seat`) followed by

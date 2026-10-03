@@ -146,16 +146,34 @@ so frames that follow the `Hello` wait in the socket and reach the match in orde
 
 A connection that sends no valid `Hello` within `GLOB2_RELAY_HELLO_TIMEOUT_SECONDS`
 is closed. Each connection has a frame-rate token bucket; a client that exceeds it
-gets `Reject(7)`. A client that stops reading until its send backlog exceeds
+gets `Reject(7)`; clients reconnect after it. An order beyond the sequencer's flood
+limit (a seat's queue 250 ticks ahead of the clock) is only dropped: the connection
+stays. A client that stops reading until its send backlog exceeds
 `GLOB2_RELAY_MAX_OUTGOING_BYTES` is disconnected. The sequencer then treats it like
 any other transport loss, and the client resumes from its horizon when it reconnects.
 WebSocket keep-alive pings detect dead peers after 30 s of silence. Clients ping every
 500 ms anyway.
 
-A timer drives each match's `update`. It wakes at `TurnSequencer::nextBundleMicros()`,
-so each bundle leaves on its tick boundary, and at least every 10 ms for grace expiry,
-arbitration timeouts and presence. At the default bundle interval of 1 the relay sends
-each client 25 bundles per second; client-to-relay frame limits are unaffected.
+### Timing
+
+A timer drives each match's `update`. It sleeps until
+`TurnSequencer::nextWakeMicros()`: the next bundle while any seat is connected, so
+each bundle leaves on its tick boundary; the earliest grace expiry, at most a second
+away, while nobody is connected; the load-barrier deadline before the first tick; and
+at once when an event (a connection, a disconnect, a quit) left a presence change to
+broadcast, which cuts the current sleep short. Grace expiry, arbitration timeouts and
+the presence refresh all fall on those wakes. A running match therefore wakes 25 times
+a second (it used to wake every 10 ms, 100 times a second), and an empty one about once
+a second. At the default bundle interval of 1 the relay sends each client 25 bundles
+per second; client-to-relay frame limits are unaffected.
+
+The sequencer's cost per update no longer grows with the length of the match: it
+keeps the ticks still waiting for checksum reports in their own set, and a rejoin
+clears a seat's reports only from those, instead of walking every report since tick 0.
+A benchmark of one 60-minute four-player match (reports every 25 ticks, an order
+every 0.3 s on average) on an M-series Mac spent 13.9 s of CPU in `update` before
+(630 ms in the last minute alone, on a thread every match shares) and 36 ms after, with
+90,000 wakes instead of 360,000.
 
 ## Tickets
 
@@ -237,8 +255,11 @@ platform's own copy.
 - `droppedForDesync` and `desync.minoritySeats` list seats told to rejoin.
 - `desync.flagged` is the record's flag.
 - `reason` is:
-  - `completed` when a client sent `Quit` with reason "game finished";
-  - `abandoned` when every human left otherwise;
+  - `completed` when the players agree the game is over: every human seat still in
+    the match when the first one sent `Quit` with reason "game finished" left that way
+    too (`TurnSequencer::gameDecided`). One client's claim alone is not enough;
+  - `abandoned` when every human left otherwise, including a match where one client
+    claimed the end and another left by grace;
   - `aborted` when the relay ended the match (drain timeout or a second signal).
     An aborted record also carries the incomplete flag.
 - `network` is the sequencer's `RelayNetworkSummary` v1 (per seat: orders and their

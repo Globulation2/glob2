@@ -267,6 +267,21 @@ Online::MatchSetup makeSetup(const std::string& map, int humans, const std::vect
 	return setup;
 }
 
+/// The session configuration every EngineClient starts with (a case may change it
+/// for its matches through SessionConfigScope).
+Turn::TurnSessionConfig& sessionConfig()
+{
+	static Turn::TurnSessionConfig config;
+	return config;
+}
+
+struct SessionConfigScope
+{
+	Turn::TurnSessionConfig saved = sessionConfig();
+	explicit SessionConfigScope(const Turn::TurnSessionConfig& config) { sessionConfig() = config; }
+	~SessionConfigScope() { sessionConfig() = saved; }
+};
+
 class EngineClient
 {
 public:
@@ -300,6 +315,7 @@ public:
 		start.mapFile = map;
 		start.localSeat = seat;
 		start.transport = transport;
+		start.config = sessionConfig();
 		start.config.ticket = "seat:" + std::to_string(seat);
 		REQUIRE(engine->initTurnMatch(start) == Engine::EE_NO_ERROR);
 		auto* lockstep = engine->turnLockstep();
@@ -315,7 +331,11 @@ public:
 		lockstep->turn().onHorizon = [this](std::uint32_t horizon) { trace.received(horizon, net.now); };
 		lockstep->orderFilter = [this](std::uint32_t tick, int player, std::shared_ptr<Order> order) {
 			if (player == seat)
+			{
 				trace.executed(tick, net.now);
+				if (onOwnOrder)
+					onOwnOrder(tick, *order);
+			}
 			if (tick == tamperAtTick && player == seat && !tampered)
 			{
 				// A cheating client: executes an order the relay never sequenced.
@@ -453,6 +473,8 @@ public:
 	Uint64 wakeAt = 0;
 	bool stopped = false;
 	std::uint32_t finalTick = 0; ///< executed ticks when the engine stopped
+	/// Sees every order of this client's own seat as it executes (after validation).
+	std::function<void(std::uint32_t tick, Order& order)> onOwnOrder;
 	double orderRate = 0.04;
 	double hostileRate = 0;
 	int hostileSent = 0;
@@ -683,6 +705,134 @@ glob2test::GlobalsOptions harnessGlobals()
 	};
 	return options;
 }
+struct DragResult
+{
+	std::size_t queuedMoves = 0, executedMoves = 0;
+	turntest::LatencyTrace::Stage move;
+	double maxMove = 0;
+	double dropMs = -1; ///< drop queued -> executed locally; -1 if it never executed
+	double keyMs = -1;  ///< last key press -> executed locally
+	std::uint64_t flooded = 0, coalesced = 0, queuedMax = 0, maxAhead = 0;
+	bool rejected = false, identical = false, verified = false;
+};
+
+/// Seat 0 drags one of its flags for 10 s through GameGUI::queueFlagMove, as the mouse
+/// does (a new cell every other 5 ms frame), while holding a key that sets a building's
+/// worker count about 29 times a second; then drops the flag and releases the key.
+/// Measures, on seat 0's own client, how long each queued flag position took to
+/// execute (positions are unique, so a coalesced one simply never executes).
+DragResult dragAndHold(const Turn::TurnSessionConfig& config, const fs::path& verifyDirectory)
+{
+	SessionConfigScope configScope(config);
+	EngineMatch m("FourSquares1", {{15 * MS}, {15 * MS}}, {"nicowar"});
+	auto& c = *m.clients[0];
+	c.orderRate = 0;
+	m.clients[1]->orderRate = 0.05;
+	m.run(2 * SECOND);
+	Game& game = c.engine->gui.game;
+	Team* team = game.teams[c.engine->gui.localTeamNo];
+	{
+		RngScope scope(c.rng);
+		const int flagType = globalContainer->buildingsTypes.getTypeNum("explorationflag", 0, false);
+		c.engine->gui.orderQueue.push_back(std::make_shared<OrderCreate>(team->teamNumber, team->startPosX + 2,
+		                                                                 team->startPosY + 2, flagType, 3, 3));
+	}
+	m.run(2 * SECOND);
+	Uint16 flagGid = 0, hallGid = 0;
+	bool haveFlag = false, haveHall = false;
+	for (int i = 0; i < Building::MAX_COUNT; ++i)
+		if (const Building* b = team->myBuildings[i])
+		{
+			if (b->type->isVirtual && !haveFlag)
+				flagGid = b->gid, haveFlag = true;
+			else if (!b->type->isVirtual && b->type->maxUnitWorking > 0 && !haveHall)
+				hallGid = b->gid, haveHall = true;
+		}
+	REQUIRE(haveFlag);
+	REQUIRE(haveHall);
+
+	std::map<std::pair<int, int>, std::uint64_t> queuedAt;
+	std::set<std::pair<int, int>> executed;
+	std::vector<double> delays;
+	std::pair<int, int> dropAt{-1, -1};
+	std::uint64_t dropQueued = 0, keyQueued = 0;
+	constexpr Uint16 LAST_KEY_VALUE = 10;
+	DragResult r;
+	c.onOwnOrder = [&](std::uint32_t, Order& order) {
+		if (order.getOrderType() == ORDER_MOVE_FLAG)
+		{
+			auto& move = static_cast<OrderMoveFlag&>(order);
+			const std::pair<int, int> at{move.x, move.y};
+			if (move.gid != flagGid || !executed.insert(at).second)
+				return;
+			auto it = queuedAt.find(at);
+			if (it == queuedAt.end())
+				return;
+			const double ms = double(m.net.now - it->second) / 1000.0;
+			if (at == dropAt && move.drop)
+				r.dropMs = double(m.net.now - dropQueued) / 1000.0;
+			else
+				delays.push_back(ms);
+		}
+		else if (order.getOrderType() == ORDER_MODIFY_BUILDING)
+		{
+			auto& modify = static_cast<OrderModifyBuilding&>(order);
+			if (modify.gid == hallGid && modify.numberRequested == LAST_KEY_VALUE && r.keyMs < 0)
+				r.keyMs = double(m.net.now - keyQueued) / 1000.0;
+		}
+	};
+	auto queueMove = [&](int i, bool drop) {
+		RngScope scope(c.rng);
+		Building* flag = game.lookupBuilding(flagGid);
+		REQUIRE(flag);
+		const int x = (team->startPosX + (i % 30) - 15) & game.map.getMaskW();
+		const int y = (team->startPosY + (i / 30) - 20) & game.map.getMaskH();
+		queuedAt.emplace(std::make_pair(x, y), m.net.now);
+		c.engine->gui.queueFlagMove(*flag, x, y, drop);
+		if (drop)
+		{
+			dropAt = {x, y};
+			dropQueued = m.net.now;
+		}
+	};
+	auto press = [&](Uint16 value) {
+		RngScope scope(c.rng);
+		c.engine->gui.orderQueue.push_back(std::make_shared<OrderModifyBuilding>(hallGid, value));
+		keyQueued = m.net.now;
+	};
+	int frame = 0, cell = 0;
+	m.run(10 * SECOND, [&] {
+		if (frame % 2 == 0)
+			queueMove(cell++, false);
+		if (frame % 7 == 0)
+			press(static_cast<Uint16>(1 + (frame / 7) % 8));
+		++frame;
+	});
+	queueMove(cell++, true);
+	press(LAST_KEY_VALUE);
+	m.run(3 * SECOND);
+
+	r.queuedMoves = queuedAt.size() - 1;
+	r.executedMoves = delays.size();
+	r.move = turntest::LatencyTrace::summarize(delays);
+	for (double d : delays)
+		r.maxMove = std::max(r.maxMove, d);
+	r.flooded = m.net.relay->stats().ordersFlooded;
+	r.maxAhead = m.net.relay->telemetry().seats[0].maxQueuedAhead;
+	r.coalesced = c.session().telemetry().totals().ordersCoalesced;
+	r.queuedMax = c.session().telemetry().queuedMax();
+	r.rejected = c.session().state() == Turn::TurnSession::State::Rejected;
+	c.onOwnOrder = nullptr;
+	const std::uint32_t end = m.finish();
+	r.identical = m.requireIdenticalChecksums() == end + 1;
+	if (!verifyDirectory.empty())
+	{
+		const Verified v = verifyRecord(m.record("drag"), m, verifyDirectory);
+		r.verified = v.verdict.verdict == "verified";
+	}
+	return r;
+}
+
 }
 
 TEST_SUITE("TurnEngineHarness")
@@ -1259,6 +1409,251 @@ TEST_SUITE("TurnEngineHarness")
 	// in three browsers and requires identical traces. A simulation change makes the
 	// record stale (its clients' checksums and sim version no longer match); rerun
 	// with --update-fixtures to record a fresh match and its trace.
+	GLOB2_TEST_CASE("a 10 s flag drag and a held key keep the input delay bounded, without a flood",
+	                "[network-sim][artifacts]")
+	{
+		glob2test::HeadlessGlobals globals(harnessGlobals());
+		Turn::TurnSessionConfig paced;
+		// Before this change every order left at once: as many as the GUI made.
+		Turn::TurnSessionConfig unpaced;
+		unpaced.orderBurst = 1u << 30;
+		// The unpaced match first: verifying a record leaves the process's replay
+		// writer set, which a later match in the same process would trip over.
+		const DragResult before = dragAndHold(unpaced, {});
+		const DragResult now = dragAndHold(paced, glob2test::artifactDir() / "drag-paced");
+
+		std::ostringstream table;
+		table << "A 10 s drag of one flag (a new cell every 10 ms) while a key changes a building's worker count "
+		         "~29 times a second, then the drop; two engines on clean 15 ms links (FourSquares1, Nicowar AI).\n"
+		         "client | queued moves | executed moves | move delay mean / p95 / max ms | drop delay ms | "
+		         "last key press ms | orders flooded at the relay | coalesced | local queue max | relay queue ahead max ticks\n";
+		for (const auto* r : {&before, &now})
+			table << (r == &now ? "paced (this change)" : "unpaced (before)") << " | " << r->queuedMoves << " | "
+			      << r->executedMoves << " | " << r->move.mean << " / " << r->move.p95 << " / " << r->maxMove << " | "
+			      << r->dropMs << " | " << r->keyMs << " | " << r->flooded << " | " << r->coalesced << " | "
+			      << r->queuedMax << " | " << r->maxAhead << "\n";
+		std::ofstream(glob2test::artifactDir() / "turn-engine-drag.txt") << table.str();
+		MESSAGE(table.str());
+
+		CHECK(now.identical);
+		CHECK(now.verified);
+		CHECK_FALSE(now.rejected);
+		CHECK(now.flooded == 0);
+		CHECK(now.executedMoves > 100);
+		CHECK(now.maxMove < 300);
+		CHECK(now.dropMs >= 0);
+		CHECK(now.dropMs < 300);
+		// The last key press shares its tick with the drop queued in the same frame, and
+		// the relay sequences one order per seat per tick, so it leaves a tick later.
+		CHECK(now.keyMs >= 0);
+		CHECK(now.keyMs < 350);
+		CHECK(now.maxAhead <= 6);
+		// The old behaviour, for the record: seconds of delay and a flood.
+		CHECK(before.identical);
+		CHECK(before.maxMove > 2000);
+		CHECK(before.flooded > 0);
+	}
+
+	GLOB2_TEST_CASE("voice packets do not hold up a player's orders", "[network-sim][artifacts]")
+	{
+		glob2test::HeadlessGlobals globals(harnessGlobals());
+		auto play = [](bool talk, std::size_t& voiceSent, std::uint64_t& voiceHeard) {
+			EngineMatch m("FourSquares1", {{15 * MS}, {15 * MS}}, {"nicowar"});
+			for (auto& c : m.clients)
+				c->orderRate = 0.1;
+			m.run(5 * SECOND);
+			auto& c = *m.clients[0];
+			c.trace.measuring = true;
+			std::uint64_t nextVoice = m.net.now;
+			voiceSent = 0;
+			m.run(30 * SECOND, [&] {
+				// A heavy talker: four packets a second (the recorder sends one about
+				// every 1-2 s), each 600 bytes.
+				if (!talk || m.net.now < nextVoice)
+					return;
+				nextVoice = m.net.now + 250 * MS;
+				std::vector<Uint8> frames(600, 0x5a);
+				RngScope scope(c.rng);
+				c.engine->gui.orderQueue.push_back(std::make_shared<OrderVoiceData>(~0u, frames.size(), 30, frames.data()));
+				++voiceSent;
+			});
+			c.trace.measuring = false;
+			m.run(2 * SECOND);
+			voiceHeard = m.clients[1]->session().telemetry().totals().voiceReceived;
+			const auto b = c.trace.breakdown();
+			const std::uint32_t end = m.finish();
+			CHECK(m.requireIdenticalChecksums() == end + 1);
+			return b;
+		};
+		std::size_t sent = 0, quietSent = 0;
+		std::uint64_t heard = 0, quietHeard = 0;
+		const auto quiet = play(false, quietSent, quietHeard);
+		const auto talking = play(true, sent, heard);
+		std::ostringstream table;
+		table << "Bot orders (10% of ticks) on clean 15 ms links, 30 s, with and without four 600-byte voice packets a "
+		         "second from the same player.\nrun | orders | mean ms | p95 ms | voice sent | voice received\n"
+		      << "quiet | " << quiet.samples << " | " << quiet.total.mean << " | " << quiet.total.p95 << " | 0 | "
+		      << quietHeard << "\n"
+		      << "talking | " << talking.samples << " | " << talking.total.mean << " | " << talking.total.p95 << " | "
+		      << sent << " | " << heard << "\n";
+		std::ofstream(glob2test::artifactDir() / "turn-engine-voice.txt") << table.str();
+		MESSAGE(table.str());
+		CHECK(talking.samples > 50);
+		CHECK(heard == sent);
+		CHECK(talking.total.mean < quiet.total.mean + 20);
+		CHECK(talking.total.p95 < 300);
+	}
+
+	GLOB2_TEST_CASE("a pause limit is enforced identically everywhere and the record verifies", "[network-sim][artifacts]")
+	{
+		glob2test::HeadlessGlobals globals(harnessGlobals());
+		auto setup = makeSetup(mapPath("FourSquares1"), 2, {"nicowar"}, 4242);
+		setup.pauseLimit = Online::PauseLimit{2, 4}; // per seat: two pauses, four seconds (100 ticks) in all
+		EngineMatch m(setup, mapPath("FourSquares1"), {{15 * MS}, {40 * MS, 10 * MS}});
+		for (auto& c : m.clients)
+			c->orderRate = 0.04;
+		std::vector<std::string> notices;
+		for (auto& c : m.clients)
+			c->engine->turnLockstep()->onPauseNotice = [&notices, seat = c->seat](Turn::PauseNotice n, int who) {
+				notices.push_back(std::to_string(seat) + (n == Turn::PauseNotice::Refused ? " refused " : " expired ") +
+				                  std::to_string(who));
+			};
+		auto pause = [&](int client, bool on) {
+			auto& c = *m.clients[client];
+			RngScope scope(c.rng);
+			c.engine->gui.orderQueue.push_back(std::make_shared<PauseGameOrder>(on));
+		};
+		auto paused = [&](int client) -> bool { return m.clients[client]->engine->gui.gamePaused; };
+		auto& lock0 = *m.clients[0]->engine->turnLockstep();
+
+		m.run(4 * SECOND);
+		// 1. Seat 0 pauses; seat 1 resumes it after about half a second. That costs seat
+		// 0 one pause and the ticks it lasted, and seat 1 nothing.
+		pause(0, true);
+		m.run(500 * MS);
+		CHECK(paused(0));
+		CHECK(paused(1));
+		pause(1, false);
+		m.run(700 * MS);
+		CHECK_FALSE(paused(0));
+		CHECK_FALSE(paused(1));
+		CHECK(lock0.pausesUsed(0) == 1);
+		const std::uint32_t usedByFirst = lock0.pauseTicksUsed(0);
+		CHECK(usedByFirst > 5);
+		CHECK(usedByFirst < 40);
+		CHECK(lock0.pauseTicksUsed(1) == 0);
+		// 2. Seat 0 pauses again and never resumes: the game resumes by itself when its
+		// 100 ticks are used up.
+		pause(0, true);
+		m.run(500 * MS);
+		CHECK(paused(0));
+		CHECK(paused(1));
+		m.run(4 * SECOND);
+		CHECK_FALSE(paused(0));
+		CHECK_FALSE(paused(1));
+		CHECK(lock0.pausesUsed(0) == 2);
+		CHECK(lock0.pauseTicksUsed(0) == 100);
+		// 3. A third pause of seat 0 is refused everywhere.
+		pause(0, true);
+		m.run(1 * SECOND);
+		CHECK_FALSE(paused(0));
+		CHECK_FALSE(paused(1));
+		CHECK(lock0.orderAudit().seats[0].reasons[static_cast<std::size_t>(OrderValidation::Reason::PauseLimit)] == 1);
+		// 4. Seat 1's own budget is untouched by seat 0's pauses.
+		pause(1, true);
+		m.run(1 * SECOND);
+		CHECK(paused(0));
+		m.run(3500 * MS);
+		CHECK_FALSE(paused(0));
+		CHECK(lock0.pauseTicksUsed(1) == 100);
+		m.run(2 * SECOND);
+		const std::uint32_t end = m.finish();
+		CHECK(m.requireIdenticalChecksums() == end + 1);
+		// The game skipped exactly the paused ticks, the same on both clients.
+		const std::uint32_t pausedTicks = lock0.pauseTicksUsed(0) + lock0.pauseTicksUsed(1);
+		for (auto& c : m.clients)
+		{
+			INFO("client " << c->index);
+			CHECK(c->engine->turnLockstep()->pauseTicksUsed(0) == lock0.pauseTicksUsed(0));
+			CHECK(c->engine->gui.game.stepCounter + pausedTicks == end);
+			requireSameAudit(c->engine->turnLockstep()->orderAudit(), lock0.orderAudit());
+		}
+		std::sort(notices.begin(), notices.end());
+		const std::vector<std::string> expected = {"0 expired 0", "0 expired 1", "0 refused 0",
+		                                           "1 expired 0", "1 expired 1", "1 refused 0"};
+		CHECK(notices == expected);
+
+		const auto record = m.record("pause-limit");
+		const auto directory = glob2test::artifactDir() / "pause-limit";
+		const Verified v = verifyRecord(record, m, directory);
+		CHECK(v.verdict.verdict == "verified");
+		requireSameAudit(v.verdict.orders, lock0.orderAudit());
+		CHECK(v.verdictJson.dump().find("pause_limit") != std::string::npos);
+		for (auto& c : m.clients)
+			requireSameOutcomes(v.result, liveTeams(*c));
+		glob2test::writeFile(directory / "summary.txt", summary(m, end) + "paused ticks: seat 0 " +
+		                                                    std::to_string(lock0.pauseTicksUsed(0)) + ", seat 1 " +
+		                                                    std::to_string(lock0.pauseTicksUsed(1)) + "\n");
+	}
+
+	GLOB2_TEST_CASE("without a pause limit a pause lasts until someone resumes it", "[network-sim]")
+	{
+		glob2test::HeadlessGlobals globals(harnessGlobals());
+		EngineMatch m("FourSquares1", {{15 * MS}, {15 * MS}}, {"nicowar"});
+		m.run(3 * SECOND);
+		{
+			auto& c = *m.clients[0];
+			RngScope scope(c.rng);
+			c.engine->gui.orderQueue.push_back(std::make_shared<PauseGameOrder>(true));
+		}
+		m.run(6 * SECOND);
+		CHECK(m.clients[0]->engine->gui.gamePaused);
+		CHECK(m.clients[1]->engine->gui.gamePaused);
+		{
+			auto& c = *m.clients[1];
+			RngScope scope(c.rng);
+			c.engine->gui.orderQueue.push_back(std::make_shared<PauseGameOrder>(false));
+		}
+		m.run(1 * SECOND);
+		CHECK_FALSE(m.clients[0]->engine->gui.gamePaused);
+		const std::uint32_t end = m.finish();
+		CHECK(m.requireIdenticalChecksums() == end + 1);
+	}
+
+	GLOB2_TEST_CASE("one client claiming the game finished does not end it for a player who is reconnecting",
+	                "[network-sim]")
+	{
+		glob2test::HeadlessGlobals globals(harnessGlobals());
+		EngineMatch m("FourSquares1", {{15 * MS}, {30 * MS}}, {"nicowar"});
+		m.run(5 * SECOND);
+		auto& liar = *m.clients[0];
+		auto& other = *m.clients[1];
+		m.net.outage(1, 8 * SECOND, *other.transport);
+		m.run(1 * SECOND);
+		CHECK(m.net.relay->presence(1) == Turn::PresenceState::Reconnecting);
+		// A modified client leaves saying the game is decided while it is not.
+		CHECK_FALSE(liar.engine->gui.game.isGameEnded);
+		liar.session().quit(Turn::QuitReason::GameFinished);
+		liar.stopped = true;
+		m.run(500 * MS);
+		CHECK(m.net.relay->presence(0) == Turn::PresenceState::Left);
+		CHECK_FALSE(m.net.relay->matchOver());
+		CHECK_FALSE(m.net.relay->gameDecided());
+		// The other player comes back within its grace and plays on.
+		m.run(10 * SECOND);
+		CHECK(other.session().state() == Turn::TurnSession::State::Running);
+		const std::uint32_t resumed = other.session().executedTick();
+		m.run(5 * SECOND);
+		CHECK(other.session().executedTick() > resumed + 100);
+		CHECK_FALSE(m.net.relay->matchOver());
+		const std::uint32_t end = m.finish();
+		m.clients.erase(m.clients.begin());
+		CHECK(m.requireIdenticalChecksums() == end + 1);
+		CHECK_FALSE(m.net.relay->gameDecided());
+		const Verified v = verifyRecord(m.record("lying-finish"), m, glob2test::artifactDir() / "lying-finish");
+		CHECK(v.verdict.verdict == "verified");
+	}
+
 	GLOB2_TEST_CASE("the committed match record verifies to the committed checksum trace", "[network-sim][golden]")
 	{
 		glob2test::HeadlessGlobals globals(harnessGlobals());

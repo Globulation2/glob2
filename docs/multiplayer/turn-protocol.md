@@ -95,6 +95,14 @@ size their own buffer. The latency changes described under
 [timing](#timing-model-and-per-client-delay) therefore kept version 1: a client and a
 relay from either side of them play together, with the older side's delay.
 
+[Order pacing](#order-pacing), the relay dropping a flood instead of refusing the
+client, the stricter rule for a [decided game](#presence-reconnect-and-grace) and the
+relay's wake scheduling also kept version 2: no encoding changed, and no client relied
+on the old behaviour. An older client against a newer relay keeps its seat when it
+floods (it loses the orders beyond the limit); a newer client against an older relay
+paces its orders, so it never floods, and treats a `Reject(7)` that still arrives (the
+relay's frame-rate limit) as a lost connection and reconnects.
+
 ## Messages
 
 C→R is client to relay, R→C is relay to client.
@@ -208,8 +216,37 @@ checked.
 | rejected | no unmodified client sends it | another team's buildings or alliances, another player's quit, a worker count above 20, an unplaceable building type, an off-map flag position, an unknown brush mode or message type, an `AdjustLatency`, undecodable bytes |
 
 The rules per order type are in `OrderValidation.cpp`. Pause orders stay allowed for
-every player, as in legacy games. Voice packets are checked (at most 128 frames) and
-the mixer drops packets beyond about ten seconds of backlog per player.
+every player, as in legacy games, unless the match has a [pause limit](#pause-limit).
+Voice packets are checked (at most 128 frames) and the mixer drops packets beyond about
+ten seconds of backlog per player.
+
+### Pause limit
+
+A MatchSetup may carry `pauseLimit: {pauses, seconds}`. The platform sets
+`{pauses: 3, seconds: 60}` for every queue match (quick and rated); rooms and LAN
+games have none, and pausing there is unlimited, as before. With a limit, each human
+seat may start at most `pauses` pauses and keep the game paused for at most `seconds`
+in total (counted in executed ticks, which keep running while paused: 60 s is 1,500
+ticks). Any player may resume at any time, and a pause another seat started costs the
+resuming player nothing.
+
+`TurnLockstepSession` keeps the bookkeeping from the orders it executes, so every
+client and `--verify-match` agree on it:
+
+- A seat's `PauseGameOrder(true)` while the game runs starts a pause and counts one of
+  that seat's pauses. With none left, or no time left, it executes as a `NullOrder`
+  (verdict `stale`, reason `pause_limit`) and the player sees "You have no pauses left
+  in this match". A pause while already paused changes nothing and costs nothing.
+- Every tick executed while paused counts against the seat whose pause is running.
+- When that seat's time is used up, the engine executes `PauseGameOrder(false)` for it
+  right after that tick's orders (`takeForcedResume`), and every player sees "%0 has
+  used all their pause time: the game resumes". The resume is in the replay like any
+  pause order.
+- The bookkeeping restarts with the order audit when the engine reloads the initial
+  state, and is rebuilt from the replayed orders.
+
+Clients from before this rule refuse a setup with `pauseLimit` (MatchSetup allows no
+unknown properties), so they can never play a limited match without it and diverge.
 
 The session counts verdicts per seat (`TurnLockstepSession::orderAudit()`: accepted,
 stale, rejected, per-reason counts and the first rejected tick). The counts restart when
@@ -222,6 +259,43 @@ Executors that a hostile order could stop with an assert or an out-of-range inde
 `Building::cancelConstruction`, chat and map marks in `GameGUI`) now ignore such an
 order instead. This only changes what invalid orders do, so legacy games and replays
 of valid orders run as before.
+
+### Order pacing
+
+The relay gives each seat at most one order per tick (below), 25 a second. The
+engine hands `TurnSession` every order the GUI queues, every frame. A flag drag adds
+a move for every cell the pointer crosses, about 100 a second, and a held key repeats
+about 30 times a second. Sent as they come, those orders queued up at the relay
+behind each other, a 10 s drag built about 10 s of input delay, and from 250 ticks of
+backlog the relay refused the client and threw the player out of the match. The
+session therefore paces and coalesces its own orders:
+
+- **Credit.** It sends at most what the relay sequences: a credit of `orderBurst` (4)
+  orders, refilled at one per tick. A click that makes a few orders at once still sends
+  them all at once. Orders resent after a reconnect use the credit too.
+- **Latest wins.** Orders beyond the credit wait in a local queue. A queued order whose
+  effect is an absolute setting replaces a waiting one with the same target, and takes
+  its place at the back: a flag move (keeping the drop of the replaced one, since a
+  drop also refreshes the flag's gradients), a worker count, a flag range, a clearing
+  flag's resources, a minimum unit level, swarm ratios, market exchanges, a priority,
+  and the pause state. The intermediate values never reach the relay, so a drag sends
+  the flag's latest position once per tick, and the player sees the flag follow the
+  pointer with the usual delay. Orders that must all execute (creating, deleting and
+  upgrading buildings, brush strokes, which are already one order per stroke, chat,
+  alliances, map marks) wait their turn unmerged.
+- **Bounded queue.** The queue holds at most `maxQueuedOrders` (250, ten seconds) of
+  them; beyond it a new order is dropped. While more than a second of orders waits, or
+  for two seconds after a drop, the HUD shows "Too many actions: some are still
+  waiting to be sent" (`TurnSession::tooManyActions()`).
+- **Voice.** Voice packets have their own queue of at most 8 (the oldest is dropped).
+  A packet goes out only when no gameplay order waits, and at most one every
+  `voiceGapTicks` (3) ticks, so talking delays a command by at most the packet already
+  on its way.
+
+Coalescing happens only for orders that have not been sent, so it never changes what
+the relay has sequenced, and every client still executes exactly the relay's log. The
+GUI's own `queueFlagMove` coalescing works the same way inside the GUI queue, which a
+turn game drains every frame.
 
 ## Tick assignment
 
@@ -238,9 +312,12 @@ tick is the earliest safe one, and it rides in the very next bundle. (The first
 version also required `t ≥ R + 1`, where `R` is the relay tick in progress. With
 bundles every tick that is the same tick; with longer intervals or a coarse relay
 timer it cost up to `bundleInterval` ticks.) A seat whose queue reaches more than 250
-ticks (10 s) ahead of `R` is flooding: its order is dropped and the connection closed
-with `Reject(7)`. A client that keeps to the engine's rate of one order per tick never
-gets near this limit.
+ticks (10 s) ahead of `R` is flooding: the order is dropped and counted
+(`flood_rejections` in the relay's network summary), and the connection stays open. A
+dropped order never enters a bundle, so every client still executes the same log. A
+paced client never gets near this limit; before pacing, a long drag reached it, and
+the relay then closed the connection with `Reject(7)`, which ended the match for that
+player.
 
 ### Bundles
 
@@ -433,12 +510,18 @@ Ping ([connection quality](connection-quality.md)).
 - A left seat cannot reconnect: its `Hello` is refused with `Reject(4)`.
 - The match is over when every human seat has left. The relay then closes the match and
   produces the match record.
-- A decided game does not wait out grace. Once any client has left with
-  `Quit(GameFinished)` (its engine declared the game over), the relay ends the match as
-  soon as no human seat is connected, lagging or resyncing: seats still in grace are
-  marked left by grace at that moment (their quit orders land after the decisive tick,
-  so they change nothing). A player who closes the window after the end therefore does
-  not hold the result back for three minutes.
+- A client's `Quit(GameFinished)` is a claim, not a verdict: one client cannot end the
+  match for the others or shorten their grace. The relay counts the match as decided
+  (`gameDecided()`, and the report says `completed`) only when every human seat still
+  in the match at the first such claim has also left with `GameFinished`. Seats that
+  left before the first claim (resigned, or out of grace) do not need to agree. A seat
+  that lost its connection when another claimed the end keeps its full grace: it can
+  come back, see the end itself and leave with `GameFinished`, or come back and play
+  on if the claim was false. If it never returns, the match ends when its grace runs
+  out and is reported `abandoned`. The verifier, not the claim, decides the result.
+  (Before this rule, a single claim ended the match as soon as nobody was connected,
+  quitting the seats in grace at once, so one player could cut an opponent's reconnect
+  short and have the match reported as completed.)
 
 Other clients keep running throughout. The absent seat simply sends no orders, so its
 colony keeps acting on its own.
@@ -525,8 +608,10 @@ the session (presence, latency, buffer) for a connection HUD.
   (5 ms; `sessionPollDelay()` caps the host's sleep), which only reads the connection.
   A turn game draws only after a step, so these polls draw nothing.
 - **Orders.** Each step hands every order the GUI has queued to the session, even while
-  waiting for a bundle, rather than one order per executed tick. The relay still gives
-  each its own tick.
+  waiting for a bundle, rather than one order per executed tick. The session sends them
+  at the rate the relay sequences them and merges waiting ones with the same target
+  ([order pacing](#order-pacing)). After the tick's orders the engine executes the
+  forced resume of a [pause limit](#pause-limit), if one is due.
 - **Pacing.** A turn game's tick duration is `tickIntervalMicros()`, rounded to
   milliseconds (38–42 ms around 40), even while paused, because the relay's clock keeps
   going. The pacing budget advances only when a tick ran, so frames spent waiting for a
@@ -746,11 +831,18 @@ one relay would. Its contract is in
   bad ticket with `Reject(2)`.
 - **New matches refused.** A draining or full relay refuses a new match with
   `Reject(5)`, and still admits reconnects to its running matches.
-- **Timing and threads.** The relay calls `update` every 10 ms, and runs every
-  sequencer on one event-loop thread.
-- **End of a match.** The relay uploads the `MatchRecord` to the platform. A client
-  that sends `Quit` with reason 1 (game finished) marks the match as completed rather
-  than abandoned in the relay's report. The sequencer treats both reasons alike.
+- **Timing and threads.** Each match sleeps until `TurnSequencer::nextWakeMicros()`:
+  the next bundle while anyone is connected (25 wakes a second), the earliest grace
+  expiry (at most a second away) while nobody is, and at once when an event left a
+  presence change to broadcast. An update after a long sleep broadcasts the whole gap
+  in one bundle. Every sequencer runs on one event-loop thread. The sequencer's own
+  work per update no longer grows with the match: arbitration keeps the set of ticks
+  still waiting for reports instead of walking every report since tick 0
+  ([relay](relay.md#timing)).
+- **End of a match.** The relay uploads the `MatchRecord` to the platform. The match
+  is reported completed when the sequencer counts the game as decided (every seat
+  still playing at the first `Quit(GameFinished)` left that way), and abandoned when
+  every human left otherwise.
 
 ## Testing
 
@@ -759,8 +851,13 @@ and drive the components directly:
 
 - codec round trips, and rejection of malformed or oversized input;
 - sequencer ordering, one order per seat per tick, assignment to the first unbroadcast
-  tick, the byte budget, flooding, grace and quit, majority arbitration and the
-  two-client flag;
+  tick, the byte budget, a flood dropped without losing the seat, grace and quit, a
+  lone `GameFinished` that decides nothing while every seat's claim does, the wake
+  schedule, arbitration over a 60-minute four-player match, majority arbitration and
+  the two-client flag;
+- session pacing: the burst and one order per tick, latest-wins for flag moves (with
+  the drop kept), unmerged orders in order, voice behind gameplay orders, the bounded
+  queue and its notice, and a flood `Reject` that reconnects;
 - jitter estimation, a target that rises and then falls back, and the controller's
   handling of multi-tick bundles;
 - match record round trip and corruption detection.

@@ -4622,3 +4622,9 @@ Karten-Schwung
 
 [conn card not gaining]
 
+[turn too many actions]
+
+[turn no pauses left]
+
+[turn pause time used %0]
+

@@ -777,6 +777,29 @@
                   "maxItems": 64,
                   "uniqueItems": true,
                   "description": "Experimental-feature keys (ExperimentalFeatures.cpp); unknown keys are an error."
+                },
+                "pauseLimit": {
+                  "type": "object",
+                  "required": [
+                    "pauses",
+                    "seconds"
+                  ],
+                  "properties": {
+                    "pauses": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Pauses each human seat may start."
+                    },
+                    "seconds": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 3600,
+                      "description": "Total time each human seat may keep the game paused; the game resumes by itself when the seat that paused runs out."
+                    }
+                  },
+                  "additionalProperties": false,
+                  "description": "Limit on pausing, enforced identically by every client and the verifier. Absent: unlimited (rooms, LAN). Older clients refuse a setup that has it."
                 }
               },
               "additionalProperties": false,

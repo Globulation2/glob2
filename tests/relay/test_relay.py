@@ -204,10 +204,11 @@ class RelayMatchTest(unittest.TestCase):
                          [e for e in reference if e[0] >= resume_at])
         self.assertNotIn((1, bytes([11, 99])), {(e[1], e[2]) for e in reference})
 
-        # The game finishes: seat 0 reports it, the others quit.
+        # The game finishes: every client reports it (one client's claim alone would
+        # make the match abandoned, not completed).
         clients[0].send(quit_message(1))
-        clients[2].send(quit_message(0))
-        rejoined.send(quit_message(0))
+        clients[2].send(quit_message(1))
+        rejoined.send(quit_message(1))
         for c in (clients[0], clients[2], rejoined):
             c.wait_closed()
         fake.wait(lambda p: match_id in p.ends, what='match end report')
@@ -290,6 +291,51 @@ class RelayMatchTest(unittest.TestCase):
         if evidence:
             (Path(evidence) / 'relay-metrics.txt').write_text(metrics)
         self.assertFalse(list((relay.directory / 'spool').glob('*')), 'spool emptied after upload')
+
+    def test_a_lone_finished_claim_and_a_flood_end_nothing(self):
+        """One client's GameFinished keeps the other's grace; a flood drops orders, not the seat."""
+        match_id = str(uuid.uuid4())
+        seats = [0, 1]
+        fake = FakePlatform(RELAY_KEY, {'keys': []}, {match_id: setup_document(match_id, seats)})
+        self.addCleanup(fake.close)
+        relay = RelayProcess(self, {
+            'GLOB2_RELAY_JWKS_FILE': str(FIXTURES / 'jwks.json'),
+            'GLOB2_RELAY_PLATFORM_URL': fake.url,
+            'GLOB2_RELAY_PUBLIC_URL': 'ws://127.0.0.1/relay',
+            'GLOB2_RELAY_KEY': RELAY_KEY,
+            'GLOB2_RELAY_ID': 'relay-test-2',
+        })
+        tickets = {s: self.ticket(match_id, s, seats) for s in seats}
+        clients = {s: relay.client(tickets[s]) for s in seats}
+        for c in clients.values():
+            c.wait_for(lambda c: c.of('welcome'), what='Welcome')
+        # Seat 1's link drops; seat 0 leaves claiming the game is over.
+        resume_at = clients[1].horizon()
+        clients[1].kill()
+        clients[0].wait_for(lambda c: c.of('presence')[-1].get(1) == RECONNECTING, what='seat 1 reconnecting')
+        clients[0].send(quit_message(1))
+        clients[0].wait_closed()
+        time.sleep(1.0)
+        self.assertNotIn(match_id, fake.ends)
+        # Seat 1 comes back and plays on.
+        back = relay.client(tickets[1], have_horizon=resume_at)
+        back.wait_for(lambda c: c.of('welcome'), what='Welcome after reconnect')
+        # 400 orders at once: about 250 ticks' worth are sequenced, the rest dropped,
+        # and the connection stays.
+        for k in range(1, 401):
+            back.send(order_submit(k, bytes([20, k % 256])))
+        back.send(ping(5, 0))
+        back.wait_for(lambda c: c.of('pong'), what='Pong after the flood')
+        back.wait_for(lambda c: len([e for e in c.entries() if e[1] == 1]) >= 20, what='flooded orders sequenced')
+        self.assertEqual(back.of('reject'), [])
+        back.send(quit_message(0))
+        back.wait_closed()
+        fake.wait(lambda p: match_id in p.ends, what='match end report')
+        ended = fake.ends[match_id]
+        self.assertEqual(ended['reason'], 'abandoned')
+        network = {s['seat']: s for s in ended['network']['seats']}
+        self.assertGreater(network[1]['orders']['flood_rejections'], 100)
+        self.assertLess(network[1]['orders']['flood_rejections'], 200)
 
     def test_bundles_leave_on_the_tick_clock(self):
         """The match timer wakes when a bundle is due, not on a coarse period."""

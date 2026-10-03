@@ -204,6 +204,20 @@ GAGCore::CooperativeTask Engine::initTurnMatchTask(TurnMatchStart start)
     // client and in the verifier alike (OrderValidation.h).
     session->validator = [this](int player, Order& order) { return OrderValidation::validate(gui.game, player, order); };
     session->onLocalQuit = [this] { leaveTurnMatch(); };
+    if (start.setup.pauseLimit)
+        session->setPauseLimit({static_cast<std::uint32_t>(start.setup.pauseLimit->pauses),
+                                static_cast<std::uint32_t>(start.setup.pauseLimit->seconds)});
+    session->onPauseNotice = [this](Turn::PauseNotice notice, int seat) {
+        auto& strings = *Toolkit::getStringTable();
+        if (notice == Turn::PauseNotice::Refused)
+        {
+            if (seat == gui.localPlayer)
+                gui.addNotice(strings.getString("[turn no pauses left]"));
+        }
+        else if (seat >= 0 && seat < gui.game.gameHeader.getNumberOfPlayers() && gui.game.players[seat])
+            gui.addNotice(GAGCore::FormattableString(strings.getString("[turn pause time used %0]"))
+                              .arg(gui.game.players[seat]->name));
+    };
     turn = session.get();
     net = std::move(session);
     const char* envReplayPath = getenv("GLOB2_REPLAY_PATH");
@@ -358,6 +372,8 @@ std::vector<std::string> Engine::turnConnectionNotice()
         else if (s.catchingUp() &&
                  Uint64(s.bufferedTicks()) * std::max<Uint64>(1, s.tickPeriodMicros()) > Uint64(ConnectionQuality::catchUpLineMs()) * 1000)
             lines.push_back(GAGCore::FormattableString(strings.getString("[turn catching up %0]")).arg(s.bufferedTicks()));
+        if (s.tooManyActions())
+            lines.push_back(strings.getString("[turn too many actions]"));
     }
     for (int p = 0; p < gui.game.gameHeader.getNumberOfPlayers() && p < Turn::MAX_SEATS; ++p)
     {

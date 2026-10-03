@@ -186,6 +186,30 @@ export const MatchRules = Strict(
 );
 export type MatchRules = Static<typeof MatchRules>;
 
+export const PauseLimit = Strict(
+  {
+    pauses: Type.Integer({
+      minimum: 0,
+      maximum: 100,
+      description: 'Pauses each human seat may start.',
+    }),
+    seconds: Type.Integer({
+      minimum: 0,
+      maximum: 3600,
+      description:
+        'Total time each human seat may keep the game paused; the game resumes by itself when the seat that paused runs out.',
+    }),
+  },
+  {
+    description:
+      'Limit on pausing, enforced identically by every client and the verifier. Absent: unlimited (rooms, LAN). Older clients refuse a setup that has it.',
+  },
+);
+export type PauseLimit = Static<typeof PauseLimit>;
+
+/** The pause limit of queue (quick and rated) matches. */
+export const QUEUE_PAUSE_LIMIT: PauseLimit = { pauses: 3, seconds: 60 };
+
 export const MatchSetup = Strict(
   {
     schemaVersion: Type.Literal(MATCH_SETUP_SCHEMA_VERSION),
@@ -214,6 +238,7 @@ export const MatchSetup = Strict(
       description:
         'Experimental-feature keys (ExperimentalFeatures.cpp); unknown keys are an error.',
     }),
+    pauseLimit: Type.Optional(PauseLimit),
   },
   { description: 'Complete engine-independent description of a match.' },
 );

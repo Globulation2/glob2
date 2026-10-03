@@ -305,7 +305,8 @@ const std::vector<std::string>& MatchSetup::aiIds()
 
 MatchSetup MatchSetup::fromJsonSchemaOnly(const json& value)
 {
-	strictObject(value, "", {"schemaVersion", "simVersion", "seed", "map", "teams", "seats", "rules", "experiments"});
+	strictObject(value, "", {"schemaVersion", "simVersion", "seed", "map", "teams", "seats", "rules", "experiments"},
+	             {"pauseLimit"});
 	if (!value["schemaVersion"].is_number_integer() || value["schemaVersion"].get<std::int64_t>() != SCHEMA_VERSION)
 		schemaError("/schemaVersion", "must be " + std::to_string(SCHEMA_VERSION));
 	MatchSetup setup;
@@ -347,6 +348,15 @@ MatchSetup MatchSetup::fromJsonSchemaOnly(const json& value)
 		if (!seen.insert(key).second)
 			schemaError(path, "is listed twice");
 		setup.experiments.push_back(key);
+	}
+	if (value.contains("pauseLimit"))
+	{
+		const json& limit = value["pauseLimit"];
+		strictObject(limit, "/pauseLimit", {"pauses", "seconds"});
+		PauseLimit p;
+		p.pauses = static_cast<int>(integer(limit["pauses"], "/pauseLimit/pauses", 0, 100));
+		p.seconds = static_cast<int>(integer(limit["seconds"], "/pauseLimit/seconds", 0, 3600));
+		setup.pauseLimit = p;
 	}
 	return setup;
 }
@@ -503,6 +513,8 @@ json MatchSetup::toJson() const
 	                {"peacefulMode", r.peacefulMode},
 	                {"buildingHpLevel", r.buildingHpLevel}};
 	out["experiments"] = experiments;
+	if (pauseLimit)
+		out["pauseLimit"] = {{"pauses", pauseLimit->pauses}, {"seconds", pauseLimit->seconds}};
 	return out;
 }
 
