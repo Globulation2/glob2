@@ -22,6 +22,7 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <tuple>
 #include <SDL3_ttf/SDL_ttf.h>
 #include <SDL3_image/SDL_image.h>
 
@@ -295,7 +296,7 @@ namespace GAGCore
         // Include the local UI transform used by enlarged touch controls.
         // Unscaled software surfaces retain their authored raster size.
         if (!renderer && !(optionFlags & USEGPU)) return 1.0f;
-        const float outputScale = softwareTransform ? 1.0f : drawableScale();
+        const float outputScale = (softwareTransform || offscreenPass) ? 1.0f : drawableScale();
         const float scale = outputScale * (uiTransformActive ? uiTransformScale : 1.0f);
         if (std::fabs(scale - 1.0f) < 0.01f) return 1.0f;
         return std::clamp(scale, 0.25f, 8.0f);
@@ -1088,4 +1089,60 @@ namespace GAGCore
 			}
 		}
 	}
+}
+
+namespace GAGCore
+{
+void GraphicContext::drawToSurface(SDL_Surface* surface, float scale, const std::function<void()>& draw)
+{
+	if (!surface || !(scale > 0) || offscreenPass)
+		throw std::invalid_argument("Invalid or nested offscreen pass");
+	if (renderBatch) renderBatch->barrier();
+	Sprite::flushBatches(this);
+	if (renderer) renderer->flush();
+	auto backend = makeSoftwareRenderBackend(surface);
+	if (!backend) throw std::runtime_error("Cannot create offscreen backend");
+	auto savedBatch = std::move(renderBatch);
+	const auto savedRenderer = renderer;
+	const auto savedSurface = sdlsurface;
+	const auto savedClip = clipRect;
+	const auto savedFlags = optionFlags;
+	const auto savedNative = nativeDesktop;
+	const auto savedSoftware = nativeSoftware;
+	const auto savedTransform = softwareTransform;
+	const auto savedMap = mapTransformActive;
+	const auto savedUI = uiTransformActive;
+	const auto savedScale = mapScale;
+	const auto savedTargetScale = renderTargetScale;
+	const auto savedUiScale = uiScale;
+	const auto savedMapGeometry = std::make_tuple(mapTranslateX, mapTranslateY,
+		mapCopyTranslateX, mapCopyTranslateY, mapClipX, mapClipY, mapClipW, mapClipH, overlayScale, periodicCopy);
+	const auto savedUIGeometry = std::make_tuple(uiTransformScale, uiTransformX, uiTransformY, uiBounds, uiSavedClip);
+	const auto restore = [&] {
+		renderer = savedRenderer; sdlsurface = savedSurface; clipRect = savedClip;
+		optionFlags = savedFlags; nativeDesktop = savedNative; nativeSoftware = savedSoftware;
+		softwareTransform = savedTransform; mapTransformActive = savedMap; uiTransformActive = savedUI;
+		mapScale = savedScale; renderTargetScale = savedTargetScale; uiScale = savedUiScale;
+		std::tie(mapTranslateX, mapTranslateY, mapCopyTranslateX, mapCopyTranslateY,
+			mapClipX, mapClipY, mapClipW, mapClipH, overlayScale, periodicCopy) = savedMapGeometry;
+		std::tie(uiTransformScale, uiTransformX, uiTransformY, uiBounds, uiSavedClip) = savedUIGeometry;
+		renderBatch = std::move(savedBatch); offscreenPass = false;
+	};
+	sdlsurface = surface; renderer = backend.get(); optionFlags = 0;
+	nativeDesktop = nativeSoftware = softwareTransform = uiTransformActive = false;
+	mapTransformActive = true;
+	mapClipX = mapClipY = 0; mapClipW = surface->w; mapClipH = surface->h;
+	offscreenPass = true; uiScale = 1; renderTargetScale = 1; mapScale = scale;
+	mapTranslateX = mapTranslateY = mapCopyTranslateX = mapCopyTranslateY = 0;
+	periodicCopy = false;
+	clipRect = {0, 0, surface->w, surface->h};
+	try
+	{
+		backend->clip(&clipRect);
+		backend->transform(scale, 0, 0, &clipRect);
+		draw(); backend->flush();
+	}
+	catch (...) { restore(); throw; }
+	restore();
+}
 }

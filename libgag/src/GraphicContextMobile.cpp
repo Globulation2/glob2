@@ -12,7 +12,7 @@ namespace GAGCore {
     {
         // Desktop layout constants remain logical units; output density and
         // whole-view scaling are already applied by the native raster target.
-        if (nativeDesktop) return 1;
+        if (offscreenPass || nativeDesktop) return 1;
         float density=1;
         if (!windowW || !windowH || !sdlsurface) return 1;
         return density*uiScale / std::min(double(windowW)/sdlsurface->w, double(windowH)/sdlsurface->h);

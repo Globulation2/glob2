@@ -34,12 +34,16 @@ using std::shared_ptr;
 
 /// Engine is the backend of the game. It is responsible for loading and setting up games and players,
 /// and its run function is meant to run the game that has been loaded.
+namespace GameDiagnostics { class Session; }
 class Engine
 {
 	friend struct CustomGameSetupHarness;
 	friend struct HeadlessRunner;
+	friend class SimulationRunner;
 	friend struct MatchVerifier;
 	friend struct TurnClient;
+	std::shared_ptr<GameDiagnostics::Session> diagnostics;
+	bool diagnosticsPending() const;
 	std::string headlessOutput;
 	std::string initializationDiagnostic;
 	int headlessSaveInterval = 0;
@@ -165,7 +169,13 @@ public:
     bool stepSession(Uint64 now, const std::vector<SDL_Event>& events);
     // Stop a failed session before control returns to its host.
     void abortSession() noexcept;
-    void drawSession();
+    // Display-paced local hosts may draw between simulation ticks. Turn games
+    // retain their relay-controlled draw cadence.
+    void drawSession(bool everyFrame = false);
+    // Display-paced serial host: consume input once, then advance due ticks
+    // within a wall-time budget. A single tick is never interrupted.
+    bool serialClientFrame(Uint64 now, const std::vector<SDL_Event>& events, Uint32 budget);
+    bool presentationPaused() const;
     Uint32 sessionDelay(Uint64 now);
     /// Turn games: reads the relay connection between steps (see TURN_POLL_MS), so
     /// bundles are timed when they arrive rather than at the next frame. Nothing runs.
@@ -319,7 +329,7 @@ private:
 	/// game.syncStep. Called only from inside the !hardPause branch.
 	void executeOrdersAndStep(bool readyNow);
 
-	void drawFrame(MainLoopState& st);
+	void drawFrame(MainLoopState& st, bool everyFrame = false, const Scene* scene = nullptr);
 
 	/// Turn games: pumps the session each frame and handles its requests (reload,
 	/// desync flag). Called first in stepSessionImpl.

@@ -164,3 +164,40 @@ retaining the existing simulation continuation checks.
 
 Tournament workers retain these records in verified logs; their normal offline
 analysis exports typed JSONL and CSV. See [distributed telemetry](../tools/tournaments.md#gameplay-ai-and-performance-telemetry).
+
+## Maxima placement fields
+
+Structured offline runs can capture Maxima's per-tile placement inputs:
+
+```sh
+"$GLOB2_BIN" --run-game --load-game initial.game.gz --ticks 3000 \
+  --output-dir artifacts/placement --diagnostic-fields maxima \
+  --diagnostic-interval 1000 --diagnostic-png true
+```
+
+`--diagnostic-fields maxima` enables capture; the interval defaults to 2500
+simulation ticks, and PNGs default off. The first fresh placement world is
+captured, followed by the first fresh world after each interval. Incremental
+selection reuses older worlds and does not cause duplicate captures. Diagnostics
+never force a planner refresh or change its policy.
+
+Each completed `diagnostics/tick-NNNNNNN.playerP.teamT/` directory contains
+`threat`, `protectedness`, `foodOpportunity`, `farmCapacity` and `protectedYield`
+`.field` files, optional matching PNGs, and `capture.json`. Metadata records the
+simulation tick, AI-local planner tick, dimensions, controller, team, units and
+colours. AI-local ticks are not simulation ticks. PNGs use one owned Scene
+extracted after AI workers join, before the next orders execute.
+
+Capture buffers and their Scene have a 128 MiB budget. Oversized captures are
+skipped and reported; the interval also limits retries after failures. The
+threaded offline runner waits at a tick boundary while the graphics owner drains
+one batch. This can slow the run but does not advance simulation or change orders.
+Writes occur outside AI updates. A capture directory is published only after all
+requested outputs close successfully; failures are reported without stopping the
+game. `summary.json` counts completed, failed and skipped captures. Files from an
+interrupted write are never marked complete. Capture state is session-local and
+is neither saved nor included in simulation checksums.
+
+These options apply to `--run-game`, including loaded games, and require a Maxima
+controller. Interactive captures and environment-variable aliases are not
+provided. See [whole-map rendering](../map-generators/CLI.md#render-a-whole-game).

@@ -64,6 +64,8 @@ struct SceneSelectedBuilding
 {
 	static constexpr int FailReasons = 8; //!< Building::UnitCantWorkReasonSize (checked)
 	BuildingRef ref;
+	int verbose = 0;
+	std::vector<Uint16> debugGradient;
 	bool recordFailingUnits = false;
 	Sint32 desiredMaxUnitWorking = 0;
 	std::array<Uint32, FailReasons> unitsFailingRequirements{};

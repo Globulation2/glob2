@@ -53,6 +53,7 @@ ENGINE_TESTS = [
     'FetchApportionmentHarness.cpp',
     'GameGUISelectionHarness.cpp',
     'SceneExtractTest.cpp',
+    'GameDiagnosticsTest.cpp',
     ('ClientChannelsTest.cpp', dict(cxxflags=['-fno-access-control'])),
     'HiringBucketHarness.cpp',
     'HungryDefeatHarness.cpp',

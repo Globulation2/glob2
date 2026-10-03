@@ -261,6 +261,8 @@ var Module = {
   printErr(text) { Module.browserLog.push(String(text)); console.error(text); },
   preRun: [function() {
     ENV.HOME = '/home/web_user';
+    if (new URLSearchParams(location.search).get('gl-errors') === '1')
+      ENV.GLOB2_WEBGL_ERRORS = '1';
     FS.mkdirTree('/home/web_user');
     Module.storage = new Glob2Storage(callback => FS.syncfs(false, callback));
     glob2SnapshotPersistence(IDBFS);

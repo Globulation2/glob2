@@ -1,3 +1,4 @@
+#include <stdexcept>
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
@@ -220,10 +221,8 @@ void BuildingsTypes::loadSprites()
 {
 	// Resolve sprite pointers, replacing the lazy load that happened inside
 	// the old loadFromConfigFile. Skips the "null" default block (not in
-	// this table) and skips on headless runs, same as the original loader.
+	// this table). The caller explicitly requests artwork, including offline tools.
 	// GlobalContainer loads them with the rest of the game graphics.
-	if (globalContainer->runNoX)
-		return;
 	const std::size_t count = entryCount();
 	for (std::size_t i = 0; i < count; ++i)
 	{
@@ -231,8 +230,12 @@ void BuildingsTypes::loadSprites()
 		if (bt->type == "null")
 			continue;
 		bt->gameSpritePtr = Toolkit::getSprite(bt->gameSprite.c_str());
+		if (!bt->gameSpritePtr) throw std::runtime_error("Cannot load building sprite: " + bt->gameSprite);
 		if (bt->miniSpriteImage >= 0)
+		{
 			bt->miniSpritePtr = Toolkit::getSprite(bt->miniSprite.c_str());
+			if (!bt->miniSpritePtr) throw std::runtime_error("Cannot load building mini sprite: " + bt->miniSprite);
+		}
 	}
 }
 

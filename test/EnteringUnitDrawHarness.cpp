@@ -134,7 +134,7 @@ class EnteringUnitDrawHarness
 			game.drawMapGroundUnits(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H,
 				0, 0, 0, Game::DRAW_WHOLE_MAP, view, glob2test::sceneOf(game, view));
 			game.drawMapGroundBuildings(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H,
-				0, 0, 0, Game::DRAW_WHOLE_MAP, &visible, nullptr, glob2test::sceneOf(game));
+				0, 0, 0, Game::DRAW_WHOLE_MAP, &visible, nullptr, glob2test::sceneOf(game), nullptr);
 			save(grab(), "scene-delta" + std::to_string(delta));
 		}
 	}

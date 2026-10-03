@@ -199,6 +199,8 @@ CLIENT_SOURCES = (
     'GameUtilities.cpp',
     'Glob2.cpp',
     'MapCommand.cpp',
+    'MapRender.cpp',
+    'GameDiagnostics.cpp',
     'MapImage.cpp',
     'MapReport.cpp',
     'ui/FrontendUI.cpp',

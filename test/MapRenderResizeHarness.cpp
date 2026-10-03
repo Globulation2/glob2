@@ -167,7 +167,7 @@ void run(bool gpu)
 	game.drawMapGroundUnits(0,0,52,34,1600,1100,0,0,0,Game::DRAW_WHOLE_MAP,view, glob2test::sceneOf(game, view));
 	copies(96,96,32,32);
 	clear();
-	game.drawMapGroundBuildings(0,0,52,34,1600,1100,0,0,0,Game::DRAW_WHOLE_MAP,nullptr,nullptr, glob2test::sceneOf(game));
+	game.drawMapGroundBuildings(0,0,52,34,1600,1100,0,0,0,Game::DRAW_WHOLE_MAP,nullptr,nullptr, glob2test::sceneOf(game), nullptr);
 	copies(224,224,96,96);
 	std::cout << "PASS repeated unit/building sprites\n";
 
