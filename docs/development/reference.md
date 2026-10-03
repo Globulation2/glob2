@@ -831,6 +831,8 @@ also remains the headless default and the equivalence reference.
 - The simulation thread paces on the host's clock (`Engine::sessionClock`): the clock the
   host last passed in, advanced by real time. Time the application spent in the
   background is therefore not caught up after resuming, as in serial execution.
+  GUI updates use `SDL_GetTicks()` instead: touch event timestamps and momentum
+  must share the SDL clock, including after the session clock has been suspended.
 - Values the client sets while drawing and extraction reads (viewport, drawn map size,
   overlay, observed building) go through `ClientRequests`, never through `Game` or `Map`
   fields. To check for races, build with `CXXFLAGS="-g -fsanitize=thread"

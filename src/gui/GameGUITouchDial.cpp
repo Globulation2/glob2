@@ -20,7 +20,23 @@ using namespace GAGCore;
 
 bool GameGUITouch::usesDial() const
 {
-	return usesHUD() && !layout().persistentPanel;
+	return usesDial(layout());
+}
+
+bool GameGUITouch::usesDial(const MobileLayout &ui) const
+{
+	if (!usesHUD() || ui.persistentPanel)
+		return false;
+	// The minimum ring size preserves usable controls, but is not permission
+	// to cover the HUD or safe-area gutters. Fall back to scrolling rows when
+	// that minimum cannot fit. This policy never asks layout() to resolve itself.
+	const auto dial = dialLayout(ui);
+	const double unit = dial.geometry.unit;
+	const double radius = dial.geometry.rings[0].outer * unit;
+	const auto hud = hudLayout(ui);
+	return dial.geometry.center.y - radius >= hud.minimap.y + hud.minimap.h + 4 * unit &&
+		ui.safe.w >= radius + (InGameTouchTheme::dialChipWidth + 16) * unit &&
+		dial.chips.h >= InGameTouchTheme::dialChipHeight * unit && dialChips(dial).fits;
 }
 
 GameGUITouch::DialLayout GameGUITouch::dialLayout(const MobileLayout &ui) const
@@ -30,11 +46,14 @@ GameGUITouch::DialLayout GameGUITouch::dialLayout(const MobileLayout &ui) const
 	const ViewRect safe{ui.safe.x / unit, ui.safe.y / unit, ui.safe.w / unit, ui.safe.h / unit};
 	const double bottom = ui.actions.y / unit, margin = 8, header = InGameTouchTheme::inspectorHeader,
 				 chip = InGameTouchTheme::dialChipWidth;
-	const double minimapBottom = safe.y + (safe.h < 400 ? 80 : 104);
+	const auto hud = hudLayout(ui);
+	// Use the same geometry as drawing and minimap input: compact inspection
+	// can enlarge the minimap to leave room for two stat rows and the title.
+	const double minimapBottom = (hud.minimap.y + hud.minimap.h) / unit + 4;
 	DialLayout out;
 	out.portrait = safe.w <= safe.h;
-	// Portrait puts the read-only header under the minimap and a full-height chip
-	// column on the far side of the dial; landscape puts both beside the dial.
+	// Portrait keeps a full-height chip column on the far side of the dial;
+	// landscape puts the chips beside the dial.
 	double radius = out.portrait ? std::min({InGameTouchTheme::dialRadius, safe.w - chip - 2 * margin,
 											 bottom - minimapBottom - header - 2 * margin})
 								 : std::min({InGameTouchTheme::dialRadius, bottom - minimapBottom - margin,
@@ -54,21 +73,24 @@ GameGUITouch::DialLayout GameGUITouch::dialLayout(const MobileLayout &ui) const
 	}
 	g.sweepStart = InGameTouchTheme::dialSweepStart;
 	g.sweepEnd = InGameTouchTheme::dialSweepEnd;
-	ViewRect head, chips;
+	ViewRect chips;
 	if (out.portrait)
 	{
-		head = {safe.x, minimapBottom + margin, safe.w, header};
-		chips = {left ? safe.x + safe.w - margin - chip : safe.x + margin, head.y + header + margin, chip,
-				 bottom - margin - (head.y + header + margin)};
+		const double top = minimapBottom + header + 2 * margin;
+		chips = {left ? safe.x + safe.w - margin - chip : safe.x + margin, top, chip,
+				 bottom - margin - top};
 	}
 	else
 	{
 		const double farWidth = std::max(0.0, safe.w - radius - 3 * margin);
 		const double farX = left ? safe.x + radius + 2 * margin : safe.x + margin;
-		const double headWidth = std::min(farWidth, 360.0);
-		head = {left ? farX : farX + farWidth - headWidth, bottom - radius, headWidth, header};
-		chips = {farX, head.y + header + margin, farWidth, bottom - margin - (head.y + header + margin)};
+		const double top = bottom - radius + header + margin;
+		chips = {farX, top, farWidth, bottom - margin - top};
 	}
+	// The identity bar shares the stats column and the minimap's bottom edge.
+	// Allocation geometry above reserves clearance for this shared HUD.
+	const ViewRect head{hud.identity.x / unit, hud.identity.y / unit,
+			hud.identity.w / unit, hud.identity.h / unit};
 	const ViewRect quadrant{left ? safe.x : safe.x + safe.w - radius, bottom - radius, radius, radius};
 	auto scaled = [unit](ViewRect r) { return ViewRect{r.x * unit, r.y * unit, r.w * unit, r.h * unit}; };
 	const double x0 = std::min({quadrant.x, head.x, chips.x}), y0 = std::min({quadrant.y, head.y, chips.y});
@@ -78,6 +100,56 @@ GameGUITouch::DialLayout GameGUITouch::dialLayout(const MobileLayout &ui) const
 	out.chips = scaled(chips);
 	out.bounds = scaled({x0, y0, x1 - x0, y1 - y0});
 	return out;
+}
+
+GameGUITouch::DialChips GameGUITouch::dialChips(const DialLayout &dial) const
+{
+	// Shared by the fit policy, drawing and hit testing. Never call layout() or
+	// usesDial() here: layout itself needs this content measurement to choose
+	// between the dial and scrollable rows, including confirmation controls.
+	DialChips result;
+	std::vector<BuildingAction> options;
+	bool production = false;
+	for (const auto &row : buildingActions())
+	{
+		if (row.kind == 0)
+		{
+			if (row.value == 0)
+			{
+				production = true;
+				const auto ratios = dialRatios();
+				options.push_back({Toolkit::getStringTable()->getString("[Pause]"), 10, 0,
+					ratios[0] + ratios[1] + ratios[2] == 0});
+			}
+		}
+		else if (row.kind >= 3 && row.kind <= 5)
+			result.actions.push_back(row);
+		else if (row.kind != 6 && row.kind != 7 && row.kind != 8)
+			options.push_back(row);
+	}
+	// Actions sit nearest the toolbar: Destroy (or its confirmation) lowest.
+	std::stable_sort(result.actions.begin(), result.actions.end(), [](const BuildingAction &a, const BuildingAction &b)
+		{ return (a.kind == 3 ? 6 : a.kind) < (b.kind == 3 ? 6 : b.kind); });
+	result.actions.insert(result.actions.end(), options.begin(), options.end());
+	const double unit = dial.geometry.unit;
+	const double w = InGameTouchTheme::dialChipWidth * unit, h = InGameTouchTheme::dialChipHeight * unit,
+		space = 6 * unit;
+	const auto &area = dial.chips;
+	result.legend = {area.x, area.y, area.w, production ? (dial.portrait ? 72 : 24) * unit : 0};
+	const double top = area.y + result.legend.h + (production ? space : 0);
+	result.fits = top <= area.y + area.h;
+	const int columns = dial.portrait ? 1 : std::max(1, int((area.w + space) / (w + space)));
+	for (size_t i = 0; i < result.actions.size(); ++i)
+	{
+		const int row = int(i) / columns, column = int(i) % columns;
+		const double x = dial.portrait ? area.x : dial.geometry.mirrored
+			? area.x + column * (w + space) : area.x + area.w - (column + 1) * w - column * space;
+		const double y = area.y + area.h - (row + 1) * h - row * space;
+		const ViewRect box{x, y, dial.portrait ? area.w : w, h};
+		result.fits &= box.y >= top && box.x >= area.x && box.x + box.w <= area.x + area.w;
+		result.boxes.push_back(box);
+	}
+	return result;
 }
 
 std::vector<GameGUITouch::DialRegion> GameGUITouch::dialRegions() const
@@ -121,7 +193,6 @@ std::vector<GameGUITouch::DialRegion> GameGUITouch::dialRegions() const
 	};
 	// Fixed semantic lanes: optional controls never move workers or priority.
 	constexpr int workerRing = 0, sliderRing = 1, priorityRing = 2;
-	std::vector<BuildingAction> actions, options;
 	for (const auto &row : rows)
 	{
 		if (row.kind == 6)
@@ -162,39 +233,16 @@ std::vector<GameGUITouch::DialRegion> GameGUITouch::dialRegions() const
 				region.maximum = MAX_RATIO_RANGE;
 				region.box = boxAt(sliderRing, region.from, region.to);
 				regions.push_back(region);
-				const auto ratios = gui.displayedRatio(*b);
-				options.push_back({Toolkit::getStringTable()->getString("[Pause]"), 10, 0,
-								   ratios[0] + ratios[1] + ratios[2] == 0});
 			}
 		}
-		else if (row.kind >= 3 && row.kind <= 5)
-			actions.push_back(row);
-		else
-			options.push_back(row);
 	}
-	// Actions sit nearest the toolbar: Destroy (or its confirmation) lowest.
-	std::stable_sort(actions.begin(), actions.end(), [](const BuildingAction &a, const BuildingAction &b)
-					 { return (a.kind == 3 ? 6 : a.kind) < (b.kind == 3 ? 6 : b.kind); });
-	actions.insert(actions.end(), options.begin(), options.end());
-	const double w = InGameTouchTheme::dialChipWidth * unit, h = InGameTouchTheme::dialChipHeight * unit,
-				 space = 6 * unit;
-	const auto &area = dial.chips;
-	const int columns = dial.portrait ? 1 : std::max(1, int((area.w + space) / (w + space)));
-	const bool left = g.mirrored;
-	for (size_t i = 0; i < actions.size(); ++i)
+	const auto chips = dialChips(dial);
+	for (size_t i = 0; i < chips.actions.size(); ++i)
 	{
-		const int row = int(i) / columns, column = int(i) % columns;
-		// Fill from the bottom, starting next to the dial.
-		const double x = dial.portrait ? area.x
-						 : left		   ? area.x + column * (w + space)
-									   : area.x + area.w - (column + 1) * w - column * space;
-		const double y = area.y + area.h - (row + 1) * h - row * space;
-		if (y < area.y - 0.5)
-			break;
 		DialRegion region;
 		region.part = DialRegion::Chip;
-		region.action = actions[i];
-		region.box = {x, y, dial.portrait ? area.w : w, h};
+		region.action = chips.actions[i];
+		region.box = chips.boxes[i];
 		regions.push_back(region);
 	}
 	return regions;
@@ -315,6 +363,7 @@ void GameGUITouch::drawDial()
 	const auto &g = dial.geometry;
 	const double unit = g.unit;
 	const auto regions = dialRegions();
+	const auto legend = dialChips(dial).legend;
 	gfx->setClipRect();
 	if (regions.empty())
 	{
@@ -373,7 +422,7 @@ void GameGUITouch::drawDial()
 				TouchDial::fill(g, ring.inner, ring.outer, angle, next, colors[type]);
 				angle = next;
 				// Read-only legend: every share remains legible, including zero.
-				const auto &area = dial.chips;
+				const auto &area = legend;
 				const double width = area.w / (dial.portrait ? 1 : 3);
 				const ViewRect label{area.x + (dial.portrait ? 0 : type * width),
 					area.y + (dial.portrait ? type * 24 * unit : 0), width, 22 * unit};

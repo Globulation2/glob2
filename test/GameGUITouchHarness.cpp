@@ -13,6 +13,7 @@
 #include <set>
 #include "GameGUITouch.h"
 #include <MapCamera.h>
+#include <HostViewport.h>
 #include "InGameTouchTheme.h"
 #include "GameGUIDialog.h"
 #include "LoadSaveDialog.h"
@@ -25,6 +26,7 @@
 #include "GlobalContainer.h"
 #include "Order.h"
 #include "Unit.h"
+#include "Player.h"
 #include "ReplayWriter.h"
 #include "ReplayReader.h"
 #include "usl.h"
@@ -913,9 +915,9 @@ class GameGUITouchHarness
 			auto about = [](double a, double b) { return std::abs(a - b) < 0.5; };
 			for (int side : {int(Settings::THUMB_RIGHT), int(Settings::THUMB_LEFT)})
 			{
-				// The palette is a rail rising from the thumb corner, in both orientations.
+				// Toolboxes rise from the corner opposite the thumb, in both orientations.
 				globalContainer->settings.thumbSide = side;
-				const bool left = side == Settings::THUMB_LEFT;
+				const bool left = side == Settings::THUMB_RIGHT;
 				gui.displayMode = GameGUI::FLAG_VIEW;
 				gui.touch->panelOpen = true;
 				gui.touch->panelScroll = 0;
@@ -935,14 +937,14 @@ class GameGUITouchHarness
 				require(about(ui.panel.y + ui.panel.h, ui.actions.y), "The rail rises from the toolbar");
 				require(about(left ? ui.panel.x - ui.safe.x : ui.safe.x + ui.safe.w - ui.panel.x - ui.panel.w,
 							 InGameTouchTheme::railInset * unit),
-						"The rail hugs the thumb-side edge, clear of the back-gesture strip");
+						"The rail hugs the opposite edge, clear of the back-gesture strip");
 				require(about(firstFlag.y + firstFlag.h + gap, content.y + content.h) &&
 							about(left ? firstFlag.x - gap : firstFlag.x + firstFlag.w + gap,
 								 left ? content.x : content.x + content.w),
-						"The first choice sits nearest the thumb corner");
+						"The first choice sits nearest the toolbox corner");
 				const auto mini = gui.touch->minimapRect();
 				require(ui.panel.y >= mini.y + mini.h - 0.5, "The rail leaves the minimap visible");
-				require((gui.touch->confirmRect().x > gui.touch->cancelRect().x) == !left,
+				require((gui.touch->confirmRect().x > gui.touch->cancelRect().x) == left,
 						"Placement OK follows the thumb side");
 				gui.displayMode = GameGUI::CONSTRUCTION_VIEW;
 				gui.touch->panelScroll = 0;
@@ -953,7 +955,7 @@ class GameGUITouchHarness
 				const auto b0 = gui.touch->paletteItemRect(0), b1 = gui.touch->paletteItemRect(1),
 						   above = gui.touch->paletteItemRect(columns);
 				require(b1.y == b0.y && (left ? b1.x > b0.x : b1.x < b0.x),
-						"The second choice sits beside the first, away from the thumb");
+						"The second choice sits beside the first, toward the screen centre");
 				require(above.x == b0.x && above.y < b0.y, "Later rows rise above the first");
 				gui.touch->prepareDraw();
 				const int updates = gui.touch->gestureExclusionUpdates;
@@ -963,12 +965,31 @@ class GameGUITouchHarness
 							about(gui.touch->gestureExclusion[0].x, ui.panel.x) &&
 							about(gui.touch->gestureExclusion[0].h, ui.panel.h),
 						"The rail is excluded from system edge gestures, synchronised only on change");
-				if (left)
-				{
+				const std::string suffix = std::string(side == Settings::THUMB_RIGHT ? "right-thumb-" : "left-thumb-") +
+					(portrait ? "portrait.bmp" : "landscape.bmp");
+				auto capture = [&](const char *kind) {
 					gui.drawAll(0);
-					gfx->printScreen(portrait ? "touch-build-left-portrait.bmp" : "touch-build-left-landscape.bmp");
+					gfx->printScreen((std::string("opposite-") + kind + "-" + suffix).c_str());
 					gfx->nextFrame();
-				}
+				};
+				capture("build");
+				gui.displayMode = GameGUI::FLAG_VIEW;
+				capture("flags");
+				gui.setSelection(GameGUI::BRUSH_SELECTION);
+				const auto rail = gui.touch->brushHUD().rail;
+				require(about(left ? rail.x - ui.safe.x : ui.safe.x + ui.safe.w - rail.x - rail.w,
+					InGameTouchTheme::railInset * unit), "The zone toolbox sits opposite either thumb");
+				capture("zones");
+				gui.clearSelection();
+				gui.displayMode = GameGUI::STAT_TEXT_VIEW;
+				gui.touch->lensOpen = true;
+				const auto lens = gui.touch->lensRects(gui.touch->layout()).front();
+				require(about(left ? lens.x - ui.safe.x : ui.safe.x + ui.safe.w - lens.x - lens.w,
+					InGameTouchTheme::railInset * unit), "The tools toolbox sits opposite either thumb");
+				capture("tools");
+				gui.touch->lensOpen = false;
+				gui.displayMode = GameGUI::CONSTRUCTION_VIEW;
+				gui.touch->panelOpen = true;
 			}
 			globalContainer->settings.thumbSide = Settings::THUMB_RIGHT;
 			{
@@ -1086,6 +1107,98 @@ class GameGUITouchHarness
 					}
 				throw std::runtime_error("No empty ground visible in the phone world");
 			};
+			{
+				const auto checksum = gui.game.checkSum();
+				const auto dismissalCamera = gui.camera;
+				for (int menu = 0; menu < 5; ++menu)
+				{
+					gui.clearSelection();
+					gui.touch->panelOpen = menu < 2 || menu == 4;
+					gui.touch->lensOpen = menu == 2 || menu == 3;
+					gui.touch->statsOpen = menu == 3;
+					gui.touch->showStatistics = menu == 4;
+					gui.displayMode = menu == 0 ? GameGUI::CONSTRUCTION_VIEW : menu == 1 ? GameGUI::FLAG_VIEW : GameGUI::STAT_TEXT_VIEW;
+					gui.touch->restorePalette = false;
+					if (menu == 2)
+					{
+						const auto from = emptyGround();
+						finger(SDL_EVENT_FINGER_DOWN, 1, from.x, from.y);
+						finger(SDL_EVENT_FINGER_MOTION, 1, from.x + 32 * unit, from.y);
+						finger(SDL_EVENT_FINGER_UP, 1, from.x + 32 * unit, from.y);
+						require(gui.touch->lensOpen, "Panning the map must not dismiss Tools");
+						gui.touch->stopScrolling();
+					}
+					const auto spot = emptyGround();
+					gui.drawAll(0);
+					const std::string name = std::string("dismiss-") + std::to_string(menu) + (portrait ? "-portrait" : "-landscape");
+					gfx->printScreen(name + "-before.bmp");
+					gfx->nextFrame();
+					tap(spot.x, spot.y);
+					gui.drawAll(0); // Include deferred inspector restoration.
+					require(!gui.touch->panelOpen && !gui.touch->lensOpen && !gui.touch->statsOpen &&
+						!gui.touch->peekOpen && !gui.touch->showStatistics && !gui.touch->restorePalette &&
+						gui.selectionMode == GameGUI::NO_SELECTION, "A blank-map tap dismisses every transient panel");
+					gfx->printScreen(name + "-after.bmp");
+					gfx->nextFrame();
+					noOrder();
+				}
+				require(gui.game.checkSum() == checksum, "Panel dismissal does not change the simulation");
+				gui.camera = dismissalCamera;
+				gui.viewportX = gui.camera.tileX();
+				gui.viewportY = gui.camera.tileY();
+				gui.displayMode = GameGUI::CONSTRUCTION_VIEW;
+			}
+			{
+				// Resource taps inspect the tile instead of falling through to Tools.
+				gui.clearSelection();
+				gui.touch->panelOpen = false;
+				gui.touch->lensOpen = false;
+				const auto spot = emptyGround();
+				const int tx = (gui.mapMouseX(int(spot.x)) / 32 + gui.viewportX) & gui.game.map.getMaskW();
+				const int ty = (gui.mapMouseY(int(spot.y)) / 32 + gui.viewportY) & gui.game.map.getMaskH();
+				auto &resource = gui.game.map.getResource(tx, ty);
+				const auto saved = resource;
+				for (int type : {WOOD, WHEAT})
+				{
+					resource.type = type;
+					resource.variety = 0;
+					resource.amount = 3;
+					tap(spot.x, spot.y);
+					require(gui.touch->inspectingResource(), "Tapping a resource opens its inspector");
+					gui.drawAll(0);
+					const auto info = gui.touch->resourceInfo();
+					require(info && info->name == getResourceName(type) &&
+						info->amount == (globalContainer->resourcesTypes.get(type)->granular
+							? "3/" + std::to_string(globalContainer->resourcesTypes.get(type)->sizesCount) : ""),
+						"Resource inspection shows the selected tile's name and amount");
+					const auto panel = gui.touch->layout().panel;
+					require(panel.h <= 112 * unit && !gui.touch->lensVisible(), "Resource inspection is a compact card, not Tools");
+					gfx->printScreen(std::string("resource-") + (type == WOOD ? "wood-" : "wheat-") + (portrait ? "portrait.bmp" : "landscape.bmp"));
+					gfx->nextFrame();
+					tap(panel.x + panel.w / 2, panel.y + panel.h * .7);
+					require(!gui.touch->statsOpen && !gui.touch->showStatistics && gui.touch->inspectingResource(),
+						"Tapping resource information cannot activate the tactical menu");
+					noOrder();
+					const auto close = gui.touch->readOnlyCloseRect();
+					tap(close.x + close.w / 2, close.y + close.h / 2);
+					gui.touch->prepareDraw();
+					require(gui.selectionMode == GameGUI::NO_SELECTION && !gui.touch->panelOpen,
+						"Closing resource info dismisses the panel");
+				}
+				tap(spot.x, spot.y);
+				const auto bar = gui.touch->layout().actions;
+				tap(bar.x + bar.w * 2.5 / 6, bar.y + bar.h / 2);
+				gui.drawAll(0);
+				require(gui.touch->lensVisible() && !gui.touch->inspectingResource(), "Tools consistently opens the lens strip after resource inspection");
+				tap(bar.x + bar.w * 2.5 / 6, bar.y + bar.h / 2);
+				tap(spot.x, spot.y);
+				resource = saved;
+				gui.drawAll(0);
+				require(!gui.touch->inspectingResource(), "A depleted resource stops being inspected");
+				gui.clearSelection();
+				gui.touch->panelOpen = false;
+				gui.touch->lensOpen = false;
+			}
 			{
 				// One-finger zoom: tap, press again and drag; direction follows settings.
 				gui.clearSelection();
@@ -1294,7 +1407,7 @@ class GameGUITouchHarness
 				const auto ui = gui.touch->layout();
 				require(rail.rail.x + rail.rail.w <= ui.safe.x + ui.safe.w && rail.rail.y + rail.rail.h <= ui.actions.y &&
 							rail.rail.y >= gui.touch->minimapRect().y + gui.touch->minimapRect().h,
-						"The rail sits on the thumb edge between the minimap and the toolbar");
+						"The rail sits opposite the thumb between the minimap and the toolbar");
 				auto p = centre(rail.detents[7]);
 				tap(p.x, p.y);
 				require(gui.brush.getFigure() == 7, "Tapping a rail size selects it");
@@ -1333,9 +1446,9 @@ class GameGUITouchHarness
 				// A stroke held at a map edge pans and keeps painting.
 				gui.brush.setFigure(0);
 				const auto area = gui.touch->worldBounds();
-				const GAGCore::ViewPoint edge{area.x + 6 * unit, area.y + area.h / 2};
+				const GAGCore::ViewPoint edge{area.x + area.w - 6 * unit, area.y + area.h / 2};
 				require(gui.touch->interfaceRegion(edge) == 0, "Edge fixture must be on the map");
-				finger(SDL_EVENT_FINGER_DOWN, 1, edge.x + 30 * unit, edge.y);
+				finger(SDL_EVENT_FINGER_DOWN, 1, edge.x - 30 * unit, edge.y);
 				finger(SDL_EVENT_FINGER_MOTION, 1, edge.x, edge.y);
 				require(bool(gui.touch->strokeHold), "A painting contact is held for edge panning");
 				const int beforeEdge = gui.viewportX;
@@ -1458,8 +1571,8 @@ class GameGUITouchHarness
 								r.y >= mini.y + mini.h,
 							"Lenses sit between the minimap and the toolbar");
 				require(std::abs(rects[0].y + rects[0].h - (ui.actions.y - 8 * unit)) < 1 &&
-							rects[0].x + rects[0].w > ui.safe.x + ui.safe.w - 24 * unit,
-						"The first lens sits in the thumb corner");
+							rects[0].x < ui.safe.x + 24 * unit,
+						"The first lens sits opposite the thumb corner");
 				const auto checksum = gui.game.checkSum();
 				bool *flags[] = {&gui.showStarvingMap, &gui.showDamagedMap, &gui.showDefenseMap, &gui.showFertilityMap};
 				for (int k = 0; k < 4; ++k)
@@ -1543,7 +1656,7 @@ class GameGUITouchHarness
 				const GAGCore::ViewPoint outside{ui.world.x + 8 * unit, ui.world.y + 8 * unit};
 				require(!peek.contains(outside), "Outside fixture must miss the peek");
 				tap(outside.x, outside.y);
-				require(!gui.touch->peekOpen && gui.touch->lensVisible(), "A tap outside closes the peek");
+				require(!gui.touch->peekOpen && !gui.touch->lensVisible(), "A tap outside dismisses the peek and its underlying tools");
 				noOrder();
 				// A still press on the minimap opens the peek; its release does nothing.
 				gui.touch->lensOpen = false;
@@ -1819,6 +1932,7 @@ class GameGUITouchHarness
 			for (double zoom : {.33, .5, 1.})
 			{
 				gui.camera.zoom = zoom;
+				gui.updateCamera();
 				gui.camera.originX = gui.camera.originY = 0;
 				gui.viewportX = gui.viewportY = 0;
 				gui.updateCamera();
@@ -1916,8 +2030,8 @@ class GameGUITouchHarness
 			GAGCore::GraphicContext::translateMouseEvent(&resized);
 			gui.viewportResized(oldW, oldH, gfx->getW(), gfx->getH());
 			const float unit = gfx->logicalUnitsPerPoint();
-			// A completed empty-map tap dismisses inspection and restores the
-			// palette state from before inspection, in both phone orientations.
+			// A completed empty-map tap dismisses inspection without returning to
+			// the previous palette, in both phone orientations.
 			for (bool paletteWasOpen : {false, true})
 			{
 				gui.setSelection(GameGUI::BUILDING_SELECTION, building);
@@ -1943,16 +2057,16 @@ class GameGUITouchHarness
 						gui.touch->prepareDraw();
 						require(gui.selectionMode == GameGUI::NO_SELECTION,
 								"Empty map tap must dismiss the building inspector");
-						require(gui.touch->panelOpen == paletteWasOpen && gui.orderQueue.empty(),
-								"Dismissal must restore palette state without issuing an order");
+						require(!gui.touch->panelOpen && !gui.touch->restorePalette && gui.orderQueue.empty(),
+								"Dismissal must close the previous palette without issuing an order");
 						dismissed = true;
 					}
 				require(dismissed, "Inspector dismissal fixture needs exposed empty terrain");
 			}
 			gui.touch->panelOpen = false;
 			gui.setSelection(GameGUI::BUILDING_SELECTION, building);
-			// Info opens the inspector for the selected entity.
-			tap(gfx->getW() * 2.5f / 6, gfx->getH() - 24 * unit);
+			// Selection opens the inspector; Tools now explicitly replaces it.
+			gui.touch->panelOpen = true;
 			auto workerPoint = actionPoint(6, 0, 1);
 			const float plusX = workerPoint.x, rowY = workerPoint.y;
 			const int before = gui.displayedMaxUnitWorking(*building),
@@ -2164,7 +2278,26 @@ class GameGUITouchHarness
 			gui.touch->actionScroll = 0;
 			gui.orderQueue.clear();
 		};
-		for (auto [width, height] : {std::pair{320, 568}, {568, 320}})
+		auto checkFallbackHeader = [&] {
+			const auto ui = gui.touch->layout();
+			const auto hud = gui.touch->hudLayout(ui);
+			const auto header = gui.touch->allocationRect();
+			auto near = [](double a, double b) { return std::abs(a - b) < .5; };
+			require(near(header.x, hud.stats.x) && near(header.w, hud.stats.w) &&
+				near(header.y + header.h, hud.minimap.y + hud.minimap.h) &&
+				header.y >= hud.stats.y + hud.stats.h,
+				"Row fallback keeps the compact identity below stats beside the minimap");
+			const auto content = gui.touch->panelContent();
+			require(near(content.y, ui.panel.y) && near(content.h, ui.panel.h),
+				"Fallback rows use their full panel; identity consumes no row space");
+			const GAGCore::ViewPoint close{header.x + header.w - 24 * gfx->logicalUnitsPerPoint(),
+				header.y + header.h / 2};
+			require(gui.touch->interfaceRegion(close) == 38 &&
+				gui.touch->interfaceRegion({header.x + 4, header.y + header.h / 2}) == 3,
+				"The detached fallback title and close button both own their input");
+			return close;
+		};
+		for (auto [width, height] : {std::pair{400, 320}, {320, 568}, {568, 320}, {844, 390}})
 		{
 			const int oldW = gfx->getW(), oldH = gfx->getH();
 			SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()), width, height);
@@ -2175,9 +2308,72 @@ class GameGUITouchHarness
 			GAGCore::GraphicContext::translateMouseEvent(&resized);
 			gui.viewportResized(oldW, oldH, gfx->getW(), gfx->getH());
 			openActions(swarm);
+			if (width == 400)
+			{
+				gui.touch->confirmDestroy = true;
+				gui.drawAll(0);
+				const auto packed = gui.touch->dialChips(gui.touch->dialLayout(gui.touch->layout()));
+				require(!packed.fits && !gui.touch->usesDial(),
+					"Confirmation chips cannot overlap the production legend; use scrolling rows");
+				checkFallbackHeader();
+				const auto rows = gui.touch->buildingActions();
+				require(std::any_of(rows.begin(), rows.end(), [](const auto &r) { return r.kind == 5; }),
+					"The fallback retains the Cancel confirmation action");
+				gfx->printScreen("building-confirmation-row-fallback.bmp");
+				gfx->nextFrame();
+				pressAction(5);
+				require(!gui.touch->confirmDestroy && gui.orderQueue.empty(),
+					"Cancel stays reachable through the fallback without issuing an order");
+				continue;
+			}
+			if (width == 568)
+			{
+				const auto oldInsets = GAGCore::mobileSafeInsetsForTesting;
+				GAGCore::mobileSafeInsetsForTesting = GAGCore::SafeInsets{24, 20, 24, 20};
+				const auto constrained = gui.touch->layout();
+				require(!gui.touch->usesDial(), "Short safe viewport falls back to the row inspector");
+				const auto fallbackClose = checkFallbackHeader();
+				const auto mini = gui.touch->minimapRect();
+				require(constrained.panel.y >= mini.y + mini.h &&
+					constrained.panel.y + constrained.panel.h <= constrained.actions.y &&
+					constrained.panel.x >= constrained.safe.x &&
+					constrained.panel.x + constrained.panel.w <= constrained.safe.x + constrained.safe.w,
+					"Fallback inspector clears the minimap, toolbar and safe gutters");
+				const auto content = gui.touch->panelContent();
+				require(content.h > 0 && gui.touch->buildingActionsHeight(content.w / gfx->logicalUnitsPerPoint()) *
+					gfx->logicalUnitsPerPoint() > content.h, "Constrained actions use the existing scrollable rows");
+				gui.drawAll(0);
+				gfx->printScreen("building-header-safe-fallback.bmp");
+				gfx->nextFrame();
+				tap(fallbackClose.x, fallbackClose.y);
+				require(gui.selectionMode == GameGUI::NO_SELECTION && gui.orderQueue.empty(),
+					"The compact fallback title close dismisses without an order");
+				GAGCore::mobileSafeInsetsForTesting = oldInsets;
+				openActions(swarm);
+			}
 			if (gui.touch->usesDial())
 			{
 				const auto ui = gui.touch->layout();
+				const auto hud = gui.touch->hudLayout(ui);
+				const auto identity = gui.touch->allocationRect();
+				const auto dialGeometry = gui.touch->dialLayout(ui).geometry;
+				require(dialGeometry.center.y - dialGeometry.rings[0].outer * dialGeometry.unit >=
+						hud.minimap.y + hud.minimap.h,
+						"Allocation rings clear the actual inspector minimap bounds");
+				auto near = [](double a, double b) { return std::abs(a - b) < .5; };
+				require(near(identity.x, hud.stats.x) && near(identity.w, hud.stats.w),
+						"Building identity aligns with the rendered stats width");
+				require(near(identity.y + identity.h, hud.minimap.y + hud.minimap.h) &&
+						identity.y >= hud.stats.y + hud.stats.h && identity.x + identity.w < hud.minimap.x,
+						"Building identity sits below stats and beside the minimap, bottom aligned");
+				const double pointUnit = gfx->logicalUnitsPerPoint();
+				const GAGCore::ViewPoint close{identity.x + identity.w - 24 * pointUnit, identity.y + identity.h / 2};
+				require(gui.touch->interfaceRegion(close) == 38, "Moved identity close target follows its drawing");
+				gfx->printScreen(width < height ? "building-header-portrait.bmp" : width > 600 ? "building-header-wide.bmp" : "building-header-landscape.bmp");
+				gfx->nextFrame();
+				tap(close.x, close.y);
+				require(gui.selectionMode == GameGUI::NO_SELECTION && gui.orderQueue.empty(), "Moved close dismisses without an order");
+				openActions(swarm);
 				const auto regions = gui.touch->dialRegions();
 				require(regions.size() >= 3 + 1 + 3 + 1,
 						"Swarm dial offers workers, one shared production control, fixed priority and pause");
@@ -2204,6 +2400,10 @@ class GameGUITouchHarness
 				globalContainer->settings.thumbSide = Settings::THUMB_LEFT;
 				gui.drawAll(0);
 				const auto mirrored = gui.touch->dialLayout(gui.touch->layout());
+				require(near(mirrored.header.x, identity.x) && near(mirrored.header.y, identity.y) &&
+						near(mirrored.header.w, identity.w), "Header stays aligned with stats for either thumb side");
+				gfx->printScreen(width < height ? "building-header-left-portrait.bmp" : width > 600 ? "building-header-left-wide.bmp" : "building-header-left-landscape.bmp");
+				gfx->nextFrame();
 				require(mirrored.geometry.mirrored && std::abs(mirrored.geometry.center.x - ui.safe.x) < 0.5,
 						"A left thumb mirrors the dial into the bottom-left corner");
 				for (const auto &region : gui.touch->dialRegions())
@@ -2496,7 +2696,18 @@ class GameGUITouchHarness
 			const auto r = dialog->host().bounds(key);
 			tap(r.x + r.w / 2, r.y + r.h / 2);
 		};
-		for (auto [width, height] : {std::pair{320, 568}, {568, 320}})
+		const auto dialogGameHeader = gui.game.gameHeader;
+		std::array<Player *, 4> dialogPlayers{};
+		for (int i = 1; i < 4; ++i)
+		{
+			require(gui.game.teams[i], "Teams dialog fixture needs three rival teams");
+			dialogPlayers[i] = gui.game.players[i];
+			gui.game.players[i] = new Player(i, "Rival colony " + std::to_string(i), gui.game.teams[i], BasePlayer::P_IP);
+			gui.game.gameHeader.getBasePlayer(i) = BasePlayer(i, "Rival colony " + std::to_string(i), i, BasePlayer::P_IP);
+		}
+		gui.game.gameHeader.setNumberOfPlayers(4);
+		gui.game.gameHeader.setAllyTeamsFixed(true);
+		for (auto [width, height] : {std::pair{320, 568}, {568, 320}, {1024, 768}})
 		{
 			SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()), width, height);
 			GLOB2_REQUIRE(SDL_SyncWindow(SDL_GetWindowFromID(gfx->windowID())), "Window resize must settle before layout assertions");
@@ -2521,12 +2732,80 @@ class GameGUITouchHarness
 			pressDialog("ok");
 			require(!gui.inGameMenu, "Options footer remains reachable");
 			gui.openDialog(GameGUI::IGM_OBJECTIVES, std::make_unique<InGameObjectivesScreen>(&gui, false));
+			auto checkModal = [&](const char *name) {
+				gui.drawAll(0);
+				auto *dialog = gui.activeDialog();
+				const auto panel = dialog->panelBounds();
+				const auto &p = dialog->presentation();
+				const auto area = p.dialog;
+				const int margin = p.pt(16);
+				require(panel.x >= area.x + margin && panel.y >= area.y + margin &&
+					panel.right() <= area.right() - margin && panel.bottom() <= area.bottom() - margin,
+					"Gameplay modals leave a 16-point outer gutter on every side");
+				std::cout << "Modal " << name << " screen=" << width << "x" << height
+					<< " panel=" << panel.x << "," << panel.y << "," << panel.w << "," << panel.h << "\n";
+				gfx->printScreen((std::string("inset-") + name + "-" + std::to_string(width) + "x" + std::to_string(height) + ".bmp").c_str());
+				gfx->nextFrame();
+			};
+			checkModal("objectives");
 			auto *objectives = static_cast<InGameObjectivesScreen *>(gui.gameMenuScreen.get());
 			const int hintsTab = gui.game.missionBriefing.empty() ? 1 : 2;
 			pressDialog("objectives/tab/" + std::to_string(hintsTab));
 			require(objectives->tab() == InGameObjectivesScreen::HINTS, "Objectives tabs switch by touch");
+			checkModal("hints");
+			require(objectives->panelBounds().h < objectives->presentation().dialog.h * .8,
+				"A short hints page sizes to its content");
 			pressDialog("ok");
 			require(!gui.inGameMenu, "Objectives tabs and footer work by touch");
+			gui.openDialog(GameGUI::IGM_ALLIANCE, std::make_unique<InGameAllianceScreen>(&gui));
+			checkModal("teams");
+			pressDialog("ok");
+			require(!gui.inGameMenu, "Teams footer remains reachable inside the margins");
+			const auto savedHints = gui.game.gameHints;
+			for (int i = 0; i < 24; ++i)
+				gui.game.gameHints.addNewHint("A long mission hint with enough detail to wrap across multiple lines on a phone.", false, 1);
+			GAGCore::userTextScale = 1.5;
+			gui.openDialog(GameGUI::IGM_OBJECTIVES, std::make_unique<InGameObjectivesScreen>(&gui, false));
+			static_cast<InGameObjectivesScreen *>(gui.gameMenuScreen.get())->showTab(InGameObjectivesScreen::HINTS);
+			checkModal("long-hints-large-text");
+			require(gui.activeDialog()->host().find("objectives/scroll")->scrollMaximum() > 0,
+				"Long hints scroll within the inset dialog");
+			pressDialog("ok");
+			gui.game.gameHints = savedHints;
+			gui.openDialog(GameGUI::IGM_ALLIANCE, std::make_unique<InGameAllianceScreen>(&gui));
+			checkModal("teams-large-text");
+			auto *teams = static_cast<InGameAllianceScreen *>(gui.gameMenuScreen.get());
+			const auto chatBefore = teams->getChatMask();
+			pressDialog("ally/3/C");
+			require(teams->getChatMask() == (chatBefore ^ (1u << 3)), "The last rival remains reachable by scrolling at large text size");
+			pressDialog("ally/3/C");
+			pressDialog("ok");
+			GAGCore::userTextScale = 1;
+			if (width == 568)
+			{
+				GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "0", 1);
+				gui.openDialog(GameGUI::IGM_ALLIANCE, std::make_unique<InGameAllianceScreen>(&gui));
+				checkModal("desktop-short-teams");
+				require(gui.activeDialog()->host().find("ally/scroll")->scrollMaximum() > 0,
+					"Short classic Teams dialogs scroll their table and legend");
+				pressDialog("ok");
+				require(!gui.inGameMenu, "Short classic Teams keeps its footer reachable");
+				GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "1", 1);
+			}
+			if (width == 1024)
+			{
+				GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "0", 1);
+				gui.openDialog(GameGUI::IGM_OBJECTIVES, std::make_unique<InGameObjectivesScreen>(&gui, false));
+				checkModal("desktop-objectives");
+				require(gui.activeDialog()->panelBounds().h < gui.activeDialog()->presentation().dialog.h / 2,
+					"Short desktop objectives also size to their content");
+				pressDialog("ok");
+				gui.openDialog(GameGUI::IGM_ALLIANCE, std::make_unique<InGameAllianceScreen>(&gui));
+				checkModal("desktop-teams");
+				pressDialog("ok");
+				GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "1", 1);
+			}
+
 			gui.openDialog(GameGUI::IGM_SAVE,
 						   std::make_unique<LoadSaveDialog>("games", "game", false, tr("[save game]"), "Phone",
 															glob2FilenameToName, glob2NameToFilename));
@@ -2581,6 +2860,13 @@ class GameGUITouchHarness
 			require(!gui.typingInputScreen && gui.orderQueue.empty(),
 					"Closing the chat draft sends no message");
 		}
+
+		for (int i = 1; i < 4; ++i)
+		{
+			delete gui.game.players[i];
+			gui.game.players[i] = dialogPlayers[i];
+		}
+		gui.game.gameHeader = dialogGameHeader;
 
 		{
 			GAGGUI::ScreenStack stack(*gfx);
@@ -2803,6 +3089,244 @@ class GameGUITouchHarness
 	// Flags move by dragging them on touch. A contact on a flag, or within the
 	// 30-point reach that selects flags, carries the flag and never pans the map;
 	// a tap still selects; a second finger or an interruption puts the flag back.
+	static void unitSelection()
+	{
+		GameGUI gui;
+		auto header = Engine::loadMapHeader("maps/balanced.map");
+		GameHeader players;
+		players.setNumberOfPlayers(1);
+		players.getBasePlayer(0) = BasePlayer(0, "Touch", 0, BasePlayer::P_LOCAL);
+		require(gui.loadFromHeaders(header, players, true, true), "Unit fixture loads");
+		gui.localTeamNo = gui.localPlayer = 0;
+		gui.adjustLocalTeam();
+		auto *gfx = globalContainer->gfx;
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "1", 1);
+		gfx->setResponsiveViewport(true, 800, 600);
+		auto &map = gui.game.map;
+		for (int y = 30; y < 50; ++y)
+			for (int x = 30; x < 50; ++x) {
+				map.setUMTerrain(x,y,GRASS);
+				map.setNoResource(x,y,1);
+			}
+		auto *worker = gui.game.addUnit(40,40,0,WORKER,0,255,0,0);
+		require(worker, "Isolated worker exists");
+		globalContainer->replaying = true;
+		globalContainer->replayShowFog = false;
+		Uint32 now = 40000;
+		auto finger = [&](Uint32 type, double x, double y) {
+			SDL_Event e{}; e.type = type; e.tfinger.timestamp = SDL_MS_TO_NS(now += 400);
+			e.tfinger.touchID = 7; e.tfinger.fingerID = 1;
+			e.tfinger.x = x/gfx->getW(); e.tfinger.y = y/gfx->getH(); gui.processEvent(&e);
+		};
+		auto tap = [&](double x,double y) {finger(SDL_EVENT_FINGER_DOWN,x,y); finger(SDL_EVENT_FINGER_UP,x,y);};
+		for (auto [width,height] : {std::pair{390,844},std::pair{844,390}}) {
+			SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()),width,height);
+			require(SDL_SyncWindow(SDL_GetWindowFromID(gfx->windowID())), "Unit fixture resize settles");
+			SDL_Event resize{}; resize.type = SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED;
+			GAGCore::GraphicContext::translateMouseEvent(&resize);
+			gui.viewportResized(800,600,gfx->getW(),gfx->getH());
+			for (double zoom : {.33,.5,1.}) {
+				gui.clearSelection(); gui.touch->cancel(); gui.touch->panelOpen = false;
+				gui.camera.zoom = zoom;
+				gui.updateCamera();
+				gui.camera.originX = 40*32+16-gfx->getW()/2./gui.camera.zoom;
+				gui.camera.originY = 40*32+16-(gfx->getH()/2.)/gui.camera.zoom;
+				gui.viewportX = gui.camera.tileX(); gui.viewportY = gui.camera.tileY(); gui.updateCamera();
+				const auto c = std::pair{gfx->getW()/2.,gfx->getH()/2.};
+				const double scale = gfx->logicalUnitsPerPoint();
+				require(gui.touch->unitAt({c.first+28*scale,c.second}) == nullptr, "Near tap misses exact sprite");
+				require(gui.touch->unitAt({c.first+28*scale,c.second},30) == worker, "30 point halo works at every zoom");
+				require(gui.touch->unitAt({c.first+32*scale,c.second},30) == nullptr, "Outside unit halo stays empty");
+				globalContainer->replayShowFog = true; globalContainer->replayVisibleTeams = 0;
+				require(!gui.touch->unitAt({c.first,c.second},30), "Fog-hidden unit cannot be picked");
+				globalContainer->replayShowFog = false;
+				tap(c.first+28*scale,c.second);
+				require(gui.selectionMode == GameGUI::UNIT_SELECTION && gui.selectionUnit() == worker, "Real near-unit touch selects unit");
+				gui.drawAll(0);
+				require(gui.drawnScene().panels.unit.valid && gui.touch->unitInfoRows().size() >= 7, "Selected unit has scene-backed stats");
+				if (zoom == .5) { gfx->printScreen(width<height ? "unit-portrait.bmp" : "unit-landscape.bmp"); gfx->nextFrame(); }
+				const auto panel = gui.touch->layout().panel;
+				tap(panel.x+panel.w/2,panel.y+70*scale);
+				require(gui.selectionMode == GameGUI::UNIT_SELECTION && !gui.touch->showStatistics, "Stats body does not dispatch tactical menu actions");
+				finger(SDL_EVENT_FINGER_DOWN,panel.x+panel.w/2,panel.y+panel.h-10*scale);
+				finger(SDL_EVENT_FINGER_MOTION,panel.x+panel.w/2,panel.y+55*scale);
+				finger(SDL_EVENT_FINGER_UP,panel.x+panel.w/2,panel.y+55*scale);
+				gui.drawAll(0);
+				if (zoom == .5) { gfx->printScreen(width<height ? "unit-portrait-scrolled.bmp" : "unit-landscape-scrolled.bmp"); gfx->nextFrame(); }
+				tap(panel.x+panel.w-24*scale,panel.y+24*scale);
+				require(gui.selectionMode == GameGUI::NO_SELECTION && !gui.touch->panelOpen, "Close dismisses unit stats");
+				const auto origin = gui.camera.originX;
+				finger(SDL_EVENT_FINGER_DOWN,c.first+28*scale,c.second);
+				finger(SDL_EVENT_FINGER_MOTION,c.first+70*scale,c.second);
+				finger(SDL_EVENT_FINGER_UP,c.first+70*scale,c.second);
+				require(gui.selectionMode == GameGUI::NO_SELECTION && gui.camera.originX != origin, "Near-unit drag pans instead of selecting");
+				gui.touch->stopScrolling();
+				require(gui.orderQueue.empty(), "Inspection never issues simulation orders");
+			}
+		}
+		// The presented snapshot can differ from the live unit between ticks.
+		// Smooth motion must shift both the exact rectangle and forgiving halo.
+		gui.camera.zoom = 1;
+		gui.camera.originX = 40 * 32 + 16 - gfx->getW() / 2.;
+		gui.camera.originY = 40 * 32 + 16 - gfx->getH() / 2.;
+		gui.viewportX = gui.camera.tileX(); gui.viewportY = gui.camera.tileY(); gui.updateCamera();
+		gui.drawAll(0);
+		{
+			Scene displayed = gui.drawnScene();
+			auto shown = std::find_if(displayed.entities.units.begin(), displayed.entities.units.end(),
+				[&](const auto &u) { return u.gid == worker->gid; });
+			require(shown != displayed.entities.units.end(), "Motion fixture has a drawn worker");
+			shown->action = WALK; shown->dx = 1; shown->dy = 0;
+			shown->delta = 0; shown->stepSpeed = 128;
+			const auto *previousScene = gui.view.scene;
+			const float previousMotion = gui.view.render.unitMotion;
+			gui.view.scene = &displayed;
+			gui.view.render.unitMotion = 1;
+			const double reachUnit = gfx->logicalUnitsPerPoint();
+			const GAGCore::ViewPoint visibleCenter{gfx->getW() / 2. - 15, gfx->getH() / 2.};
+			require(gui.touch->unitAt({visibleCenter.x - 14, visibleCenter.y}) == worker,
+				"Exact touch follows the last rendered smooth-motion rectangle");
+			require(gui.touch->unitAt({visibleCenter.x - 28 * reachUnit, visibleCenter.y}, 30) == worker,
+				"Unit halo follows the last rendered smooth-motion centre");
+			require(!gui.touch->unitAt({visibleCenter.x - 32 * reachUnit, visibleCenter.y}, 30),
+				"Smooth motion does not enlarge the 30-point halo");
+			++shown->generation;
+			require(!gui.touch->unitAt(visibleCenter, 30),
+				"A stale displayed identity cannot select a replacement live unit");
+			gui.view.scene = previousScene;
+			gui.view.render.unitMotion = previousMotion;
+		}
+		// A crowded tile uses visual draw order, and a nearby exact hit beats a halo.
+		auto *flyer = gui.game.addUnit(40,40,0,EXPLORER,0,255,0,0);
+		require(flyer, "Flying unit overlaps the worker");
+		gui.camera.zoom = 1;
+		gui.camera.originX = 40*32+16-gfx->getW()/2.;
+		gui.camera.originY = 40*32+16-gfx->getH()/2.;
+		gui.viewportX = gui.camera.tileX(); gui.viewportY = gui.camera.tileY(); gui.updateCamera();
+		const GAGCore::ViewPoint center{gfx->getW()/2.,gfx->getH()/2.};
+		gui.drawAll(0); // Newly created units must be presented before they can be picked.
+		require(gui.touch->unitAt(center,30) == flyer, "Direct airborne sprite wins draw order over ground unit");
+		auto *nearby = gui.game.addUnit(42,40,0,WORKER,0,255,0,0);
+		require(nearby, "Nearby worker exists");
+		gui.drawAll(0);
+		require(gui.touch->unitAt({center.x+64,center.y},30) == nearby, "Exact unit beats neighbouring halo");
+		// A neighbouring resource is a direct target, not empty halo ground.
+		map.setResource(41, 40, WHEAT, 0);
+		map.setMapDiscovered(41, 40, gui.localTeam->me);
+		gui.touch->select({center.x + 28, center.y});
+		require(gui.selectionMode == GameGUI::RESOURCE_SELECTION,
+			"A unit halo cannot steal a direct discovered-resource tap");
+		gui.drawAll(0);
+		// Replacing a read-only card with a building is not navigation back to
+		// a toolbox. Its explicit close must leave the map unobstructed too.
+		const int innType = globalContainer->buildingsTypes.getTypeNum("inn", 0, false);
+		auto *inspected = gui.game.addBuilding(44, 40, innType, 0);
+		require(inspected, "Read-only transition fixture has a building");
+		const auto buildingPoint = gui.camera.worldToScreen(
+			(inspected->posX + inspected->type->width / 2.) * 32,
+			(inspected->posY + inspected->type->height / 2.) * 32);
+		for (bool resource : {false, true})
+		{
+			gui.touch->select({center.x + (resource ? 28 : 0), center.y});
+			gui.drawAll(0);
+			require(gui.touch->inspectingReadOnly() && gui.touch->panelOpen,
+				"Transition starts with an open read-only inspector");
+			gui.touch->select({buildingPoint.first, buildingPoint.second});
+			gui.drawAll(0);
+			require(gui.selectionMode == GameGUI::BUILDING_SELECTION && gui.selectionBuilding() == inspected,
+				"Building selection replaces the read-only inspector");
+			const auto title = gui.touch->allocationRect();
+			const double target = 48 * gfx->logicalUnitsPerPoint();
+			tap(title.x + title.w - target / 2, title.y + title.h / 2);
+			gui.drawAll(0); // Include deferred palette restoration.
+			require(gui.selectionMode == GameGUI::NO_SELECTION && !gui.touch->panelOpen &&
+				!gui.touch->restorePalette && !gui.touch->lensVisible(),
+				"Closing a building reached from a read-only inspector cannot reopen a toolbox");
+			require(gui.orderQueue.empty(), "Inspector transitions never issue simulation orders");
+		}
+		// Explicit navigation takes precedence over both deferred building
+		// restoration and invalidation by a client step before the next draw.
+		globalContainer->replaying = false;
+		for (bool invalidated : {false, true})
+			for (int button = 0; button < 3; ++button)
+			{
+				gui.touch->dismissMapPanels();
+				if (invalidated)
+				{
+					map.setResource(41, 40, WHEAT, 0);
+					gui.touch->select({center.x + 28, center.y});
+					gui.drawAll(0);
+					map.setNoResource(41, 40, 1);
+					gui.checkSelection();
+					require(gui.touch->readOnlyPanelShown && gui.selectionMode == GameGUI::NO_SELECTION,
+						"Client invalidation precedes toolbar navigation");
+				}
+				else
+				{
+					gui.setSelection(GameGUI::BUILDING_SELECTION, inspected);
+					gui.touch->panelOpen = gui.touch->restorePalette = true;
+					gui.touch->previousPanelOpen = false;
+					gui.touch->previousDisplayMode = GameGUI::STAT_TEXT_VIEW;
+					gui.drawAll(0);
+				}
+				const auto bar = gui.touch->layout().actions;
+				tap(bar.x + bar.w * (button + .5) / 6, bar.y + bar.h / 2);
+				gui.drawAll(0);
+				require(gui.selectionMode == GameGUI::NO_SELECTION && !gui.touch->restorePalette &&
+					!gui.touch->readOnlyPanelShown, "Navigation consumes inspector lifecycle state");
+				require(button == 2 ? gui.touch->lensVisible() :
+					gui.touch->panelOpen && gui.displayMode ==
+						(button == 0 ? GameGUI::CONSTRUCTION_VIEW : GameGUI::FLAG_VIEW),
+					"Chosen toolbox survives the next draw after inspector navigation");
+			}
+		gui.touch->dismissMapPanels();
+		globalContainer->replaying = true;
+		map.setResource(41, 40, WHEAT, 0);
+		for (int inspector = 0; inspector < 3; ++inspector)
+		{
+			gui.touch->dismissMapPanels();
+			if (inspector == 0)
+			{
+				gui.setSelection(GameGUI::BUILDING_SELECTION, inspected);
+				gui.touch->restorePalette = true;
+				gui.touch->previousPanelOpen = false;
+				gui.touch->previousDisplayMode = GameGUI::CONSTRUCTION_VIEW;
+			}
+			else if (inspector == 1)
+				gui.setSelection(GameGUI::UNIT_SELECTION, worker);
+			else
+				gui.setSelection(GameGUI::RESOURCE_SELECTION, unsigned(map.coordToIndex(41, 40)));
+			gui.touch->panelOpen = true;
+			gui.drawAll(0);
+			const auto bar = gui.touch->layout().actions;
+			tap(bar.x + bar.w * 4.5 / 6, bar.y + bar.h / 2);
+			gui.drawAll(0);
+			require(gui.selectionMode == GameGUI::NO_SELECTION && gui.touch->panelOpen &&
+				gui.displayMode == GameGUI::STAT_TEXT_VIEW && !gui.touch->restorePalette &&
+				!gui.touch->readOnlyPanelShown,
+				"Replay statistics replace every inspector and survive the next draw");
+		}
+		gui.touch->dismissMapPanels();
+		gui.touch->select({center.x + 28, center.y});
+		gui.drawAll(0);
+		map.setNoResource(41, 40, 1);
+		gui.checkSelection();
+		gui.touch->prepareDraw();
+		require(!gui.touch->panelOpen && !gui.touch->restorePalette,
+			"Pre-draw resource invalidation dismisses its read-only panel");
+		gui.setSelection(GameGUI::UNIT_SELECTION,worker);
+		gui.touch->panelOpen = true;
+		gui.drawAll(0);
+		const int id = Unit::GIDtoID(worker->gid);
+		gui.localTeam->myUnits[id] = nullptr;
+		gui.checkSelection(); // Threaded client steps invalidate before prepareDraw.
+		gui.touch->prepareDraw();
+		require(gui.selectionMode == GameGUI::NO_SELECTION && !gui.touch->panelOpen, "Removed unit dismisses its inspector");
+		gui.localTeam->myUnits[id] = worker;
+		globalContainer->replaying = false;
+		globalContainer->replayShowFog = true;
+	}
+
 	static void flagDragging()
 	{
 		GameGUI gui;
@@ -3066,6 +3590,12 @@ class GameGUITouchHarness
 			finger(SDL_EVENT_FINGER_UP, 1, start.x, start.y + 2 * tile);
 			settle();
 
+			// Spectators never carry flags: their drag pans the map.
+			globalContainer->liveSpectating = true;
+			require(!gui.touch->grabbableFlag(centre()), "A spectator cannot grab a flag");
+			globalContainer->liveSpectating = false;
+			require(gui.touch->grabbableFlag(centre()) == flag, "The player can grab the flag");
+
 			// Held at the map's edge, the carried flag pans the map and rides along.
 			start = centre();
 			const GAGCore::ViewPoint edge{area.x + 6 * unit, start.y};
@@ -3086,11 +3616,6 @@ class GameGUITouchHarness
 					"The flag lands where the edge pan took it");
 			settle();
 
-			// Spectators never carry flags: their drag pans the map.
-			globalContainer->liveSpectating = true;
-			require(!gui.touch->grabbableFlag(centre()), "A spectator cannot grab a flag");
-			globalContainer->liveSpectating = false;
-			require(gui.touch->grabbableFlag(centre()) == flag, "The player can grab the flag");
 			gui.localTeam->virtualBuildings.remove(flag);
 			gui.localTeam->myBuildings[Building::GIDtoID(flag->gid)] = nullptr;
 			delete flag;
@@ -3152,6 +3677,69 @@ class GameGUITouchHarness
 		};
 		const auto checksum = gui.game.checkSum();
 		require(!gui.touch->scrollAnimating(), "Nothing moves before a gesture");
+		// Tap jitter must not become a fling, even when it crosses the pan slop.
+		for (const auto delta : {ViewPoint{0, 0}, ViewPoint{1, 0}, ViewPoint{3, 0}, ViewPoint{2, 2}})
+		{
+			placeCamera(gui.localTeam->startPosX * 32.0 - 200, gui.localTeam->startPosY * 32.0 - 200);
+			frame(500); // separate taps from the double-tap gesture
+			flick(400, 300, delta.x, delta.y);
+			const auto released = gui.camera;
+			if (delta.x == 3)
+			{
+				gui.drawAll(0);
+				gfx->printScreen("momentum-jitter-released.bmp");
+				gfx->nextFrame();
+			}
+			frame(100);
+			if (delta.x == 3)
+			{
+				gui.drawAll(0);
+				gfx->printScreen("momentum-jitter-later.bmp");
+				gfx->nextFrame();
+			}
+			std::cout << "Jitter travel=" << std::hypot(delta.x, delta.y) * 4
+				<< " coast=" << gui.camera.originX - released.originX << ","
+				<< gui.camera.originY - released.originY << "\n";
+			require(!gui.touch->scrollAnimating(), "Small touch jitter must not launch momentum");
+			require(std::abs(gui.camera.originX - released.originX) < 1e-6 &&
+				std::abs(gui.camera.originY - released.originY) < 1e-6,
+				"A short touch stays at its release position");
+		}
+		// Total path length is not intent: repeated jitter can travel far while
+		// remaining within a small radius of the original contact.
+		frame(500);
+		finger(SDL_EVENT_FINGER_DOWN, 400, 300);
+		for (int i = 0; i < 8; ++i)
+		{
+			frame(16);
+			finger(SDL_EVENT_FINGER_MOTION, i % 2 ? 390 : 410, 300);
+		}
+		finger(SDL_EVENT_FINGER_UP, 390, 300);
+		require(!gui.touch->scrollAnimating(), "Oscillating jitter does not accumulate fling eligibility");
+		for (const auto delta : {ViewPoint{4, 0}, ViewPoint{3, 3}})
+		{
+			flick(400, 300, delta.x, delta.y);
+			require(gui.touch->scrollAnimating(), "A deliberate swipe at the threshold still coasts");
+			// Catching that coast and making a short movement must not inherit
+			// the previous gesture's eligibility.
+			flick(400, 300, 3, 0);
+			require(!gui.touch->scrollAnimating(), "Each touch must independently cross the dead zone");
+		}
+		// Fling intent is measured on the display, even when the same motion
+		// travels very different distances through the world at different zooms.
+		const double originalZoom = gui.camera.zoom;
+		for (double zoom : {gui.camera.minimumZoom(), MapCamera::MAX_ZOOM})
+		{
+			gui.camera.setZoom(zoom, 400, 300);
+			placeCamera(1000, 1000);
+			frame(500);
+			flick(400, 300, 3, 0);
+			require(!gui.touch->scrollAnimating(), "Zoom must not amplify jitter into fling intent");
+			flick(400, 300, 4, 0);
+			require(gui.touch->scrollAnimating(), "Zoom must not shrink a deliberate swipe below the threshold");
+			gui.touch->stopScrolling();
+		}
+		gui.camera.setZoom(originalZoom, 400, 300);
 		// A rightward flick moves the origin left; from 300 px it coasts past zero.
 		placeCamera(300, 300);
 		flick(400, 300, 40, 0);
@@ -3552,6 +4140,17 @@ TEST_SUITE("GameGUITouch")
 		GameGUITouchHarness::scaledDialogInput();
 	}
 
+	GLOB2_TEST_CASE("unit taps have a zoom independent halo and show unit stats", "[display][artifacts]")
+	{
+		glob2test::GlobalsOptions options{.display = true, .loadStrings = true, .width = 800, .height = 600,
+		                                  .screenFlags = GAGCore::GraphicContext::PORTABLEGPU};
+		glob2test::HeadlessGlobals globals(options);
+		REQUIRE(NET_Init());
+		GameGUITouchHarness::unitSelection();
+		NET_Quit();
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "0", 1);
+		glob2test::retainFromProfile(".bmp");
+	}
 	GLOB2_TEST_CASE("a touch on or near a flag drags the flag; not the map", "[display]")
 	{
 		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "0", 1);

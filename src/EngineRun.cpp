@@ -367,7 +367,7 @@ bool Engine::threadedClientFrame(Uint64 now, const std::vector<SDL_Event>& event
     publishSessionClock(now);
     runner->rethrowFailure();
     if (gui.isRunning)
-        runner->withGame([&] { clientStep(now, events); absorbSimulationTelemetry(); });
+        runner->withGame([&] { clientStep(events); absorbSimulationTelemetry(); });
     runner->rethrowFailure();
     return gui.isRunning && !runner->ended();
 }
@@ -822,7 +822,9 @@ bool Engine::stepSessionImpl(Uint64 now, const std::vector<SDL_Event>& events)
     for (const auto &event : events) sessionInput.push_back(event);
     return advanceSession(now, [&] {
         if (!globalContainer->runNoX && st.nextGuiStep == 0) {
-            gui.step(sessionInput.events(), now);
+            // Touch event timestamps use SDL time, which keeps advancing while
+            // the session clock is suspended in the background.
+            gui.step(sessionInput.events(), SDL_GetTicks());
             sessionInput.clear();
         }
     }, true);
@@ -836,14 +838,15 @@ bool Engine::simulationStep(Uint64 now)
     return advanceSession(now, [] {}, false);
 }
 
-void Engine::clientStep(Uint64 now, const std::vector<SDL_Event>& events)
+void Engine::clientStep(const std::vector<SDL_Event>& events)
 {
     if (!session) throw std::logic_error("No active engine session");
     // Headless sessions never run the GUI step; they only take the notices.
     if (globalContainer->runNoX)
         gui.consumeClientEvents();
     else
-        gui.threadedClientStep(events, now);
+        // Match SDL input timestamps, not the suspendable simulation clock.
+        gui.threadedClientStep(events, SDL_GetTicks());
     handleExitRequest();
 }
 
@@ -928,12 +931,13 @@ bool Engine::advanceSession(Uint64 now, const std::function<void()>& clientWork,
     return gui.isRunning;
 }
 
-bool Engine::advancePendingSave(Uint64 now, const std::vector<SDL_Event>& events)
+bool Engine::advancePendingSave(const std::vector<SDL_Event>& events)
 {
     // The UI may still need to capture a queued manual save. Stop the producer
     // before touching that state, and never resume simulation during teardown.
     stopSimulationThread();
-    if (gui.savePending()) gui.step(events, now);
+    // Save/retry dialogs share the SDL input clock, just like active gameplay.
+    if (gui.savePending()) gui.step(events, SDL_GetTicks());
     return gui.savePending();
 }
 

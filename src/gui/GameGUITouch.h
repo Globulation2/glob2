@@ -38,6 +38,7 @@ class GameGUITouch
 	void stopMapMotion() { mapMotion.interrupt(); }
 	// Stop every coasting or bouncing surface where it is.
 	void stopScrolling();
+	void dismissMapPanels();
 	bool scrollAnimating() const;
 	void prepareDraw();
 	void drawControls();
@@ -113,11 +114,17 @@ class GameGUITouch
 	void beginFlagDrag(Building &flag, TouchPlacementSession::Pointer pointer, GAGCore::ViewPoint point);
 	void advanceFlagDrag();
 	void releaseFlagDrag(bool restore);
-	Unit *unitAt(GAGCore::ViewPoint point) const;
+	Unit *unitAt(GAGCore::ViewPoint point, double reachPoints = 0) const;
 	void advancePlacement();
 	void updatePlacementPreview(GAGCore::ViewPoint point);
 	bool commitPlacement();
 	std::unique_ptr<Minimap> hudMinimap;
+	struct HudLayout
+	{
+		GAGCore::ViewRect minimap, stats, identity;
+		int columns;
+	};
+	HudLayout hudLayout(const GAGCore::MobileLayout &ui) const;
 	GAGCore::ViewRect minimapRect() const;
 	void drawMinimap();
 	void navigateMinimap(GAGCore::ViewPoint point);
@@ -157,8 +164,18 @@ class GameGUITouch
 	StatsLayout statsLayout() const;
 	void drawStats();
 	void drawBuildPalette();
+	bool inspectingResource() const;
+	struct ResourceInfo { std::string name, amount; int sprite = 0; };
+	std::optional<ResourceInfo> resourceInfo() const;
+	void drawResourceInfo();
 	std::vector<std::pair<std::string, int>> tacticalActions() const;
 	void drawTacticalPanel();
+	std::vector<std::string> unitInfoRows() const;
+	void drawUnitPanel();
+	bool inspectingReadOnly() const;
+	GAGCore::ViewRect readOnlyCloseRect() const;
+	// Survives selection invalidation before prepareDraw in threaded clients.
+	bool readOnlyPanelShown = false;
 	void tapBuildPalette(GAGCore::ViewPoint point);
 	struct BuildingAction
 	{
@@ -198,7 +215,16 @@ class GameGUITouch
 		double sliderFrom = 0, sliderTo = 0; // Sweep of the whole slider (Arc only).
 		GAGCore::ViewRect box;	// Chips; a thumb-sized box around ring regions.
 	};
+	struct DialChips
+	{
+		std::vector<BuildingAction> actions;
+		std::vector<GAGCore::ViewRect> boxes;
+		GAGCore::ViewRect legend;
+		bool fits = true;
+	};
+	DialChips dialChips(const DialLayout &dial) const;
 	bool usesDial() const;
+	bool usesDial(const GAGCore::MobileLayout &ui) const;
 	DialLayout dialLayout(const GAGCore::MobileLayout &ui) const;
 	std::vector<DialRegion> dialRegions() const;
 	std::optional<DialRegion> dialRegionAt(GAGCore::ViewPoint point) const;
@@ -243,6 +269,9 @@ class GameGUITouch
 	// the plain scroll variables in step.
 	GAGCore::TrackedScrollAxis panelAxis, actionAxis, tutorialAxis;
 	GAGCore::ScrollMotion mapMotion;
+	// Screen-point displacement, separate from the smaller pan/tap slop.
+	GAGCore::ViewPoint mapDragTravel{};
+	bool mapFlingArmed = false;
 	double tutorialMaximum() const;
 	Uint64 lastStepTime = 0;
 	// Momentum only follows real fingers; the synthetic mouse finger drags.
