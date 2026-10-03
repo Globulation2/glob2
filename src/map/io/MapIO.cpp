@@ -69,6 +69,7 @@ try
 	displayedForbiddenView.resize(size, false);
 	displayedGuardAreaView.resize(size, false);
 	displayedClearAreaView.resize(size, false);
+	displayedFarmAreaView.resize(size, false);
 	tiles.resize(size);
 	undermap = new Uint8[size];
 	listedAddr = new Uint8*[size];
@@ -96,6 +97,8 @@ try
         GAGCore::PackedArray::read<Uint32>(stream,size,[&](size_t i,Uint32 v){tiles[i].forbidden=v;});
         GAGCore::PackedArray::read<Uint32>(stream,size,[&](size_t i,Uint32 v){tiles[i].guardArea=v;});
         GAGCore::PackedArray::read<Uint32>(stream,size,[&](size_t i,Uint32 v){tiles[i].clearArea=v;});
+        if (versionMinor >= FILE_FORMAT_VERSION_FARM_AREA)
+            GAGCore::PackedArray::read<Uint32>(stream,size,[&](size_t i,Uint32 v){tiles[i].farmArea=v;});
         GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){tiles[i].scriptAreas=v;});
         GAGCore::PackedArray::read<Uint8>(stream,size,[&](size_t i,Uint8 v){tiles[i].canResourcesGrow=v;});
         GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){tiles[i].fertility=v;});
@@ -132,6 +135,8 @@ try
 			stream->readUint32("hiddenForbidden");
 		if (!packed) tiles[i].guardArea = stream->readUint32("guardArea");
 		if (!packed) tiles[i].clearArea = stream->readUint32("clearArea");
+		if (!packed && versionMinor >= FILE_FORMAT_VERSION_FARM_AREA)
+			tiles[i].farmArea = stream->readUint32("farmArea");
 		if (!packed) tiles[i].scriptAreas = stream->readUint16("scriptAreas");
 		if (!packed) tiles[i].canResourcesGrow = stream->readUint8("canRessourcesGrow");
 		if(!packed && versionMinor >= 63)
@@ -256,6 +261,7 @@ void Map::save(GAGCore::OutputStream *stream)
         GAGCore::PackedArray::write<Uint32>(stream,size,[&](size_t i){return tiles[i].forbidden;});
         GAGCore::PackedArray::write<Uint32>(stream,size,[&](size_t i){return tiles[i].guardArea;});
         GAGCore::PackedArray::write<Uint32>(stream,size,[&](size_t i){return tiles[i].clearArea;});
+        GAGCore::PackedArray::write<Uint32>(stream,size,[&](size_t i){return tiles[i].farmArea;});
         GAGCore::PackedArray::write<Uint16>(stream,size,[&](size_t i){return tiles[i].scriptAreas;});
         GAGCore::PackedArray::write<Uint8>(stream,size,[&](size_t i){return tiles[i].canResourcesGrow;});
         GAGCore::PackedArray::write<Uint16>(stream,size,[&](size_t i){return tiles[i].fertility;});
@@ -275,6 +281,7 @@ void Map::save(GAGCore::OutputStream *stream)
 		stream->writeUint32(tiles[i].forbidden, "forbidden");
 		stream->writeUint32(tiles[i].guardArea, "guardArea");
 		stream->writeUint32(tiles[i].clearArea, "clearArea");
+		stream->writeUint32(tiles[i].farmArea, "farmArea");
 		stream->writeUint16(tiles[i].scriptAreas, "scriptAreas");
 		stream->writeUint8(tiles[i].canResourcesGrow, "canRessourcesGrow");
 		stream->writeUint16(tiles[i].fertility, "fertility");

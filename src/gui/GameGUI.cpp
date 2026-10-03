@@ -210,6 +210,7 @@ void GameGUI::adjustLocalTeam()
 	game.map.computeDisplayedForbidden(localTeamNo);
 	game.map.computeDisplayedGuardArea(localTeamNo);
 	game.map.computeDisplayedClearArea(localTeamNo);
+	game.map.computeDisplayedFarmArea(localTeamNo);
 
 	// set default event position
 	eventGoPosX = localTeam->startPosX;

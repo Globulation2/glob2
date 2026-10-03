@@ -298,6 +298,7 @@ void GlobalContainer::loadGameGraphics(bool showProgress)
 	areaClearing = Toolkit::getSprite("data/gfx/area-clearing");
 	areaForbidden = Toolkit::getSprite("data/gfx/area-forbidden");
 	areaGuard = Toolkit::getSprite("data/gfx/area-guard");
+	areaFarm = Toolkit::getSprite("data/gfx/area-farm");
 	bullet = Toolkit::getSprite("data/gfx/bullet");
 	bulletExplosion = Toolkit::getSprite("data/gfx/explosion");
 	deathAnimation = Toolkit::getSprite("data/gfx/death"); 

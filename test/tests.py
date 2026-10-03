@@ -127,6 +127,7 @@ ENGINE_TESTS = [
     'SettingsGraphicsTest.cpp',
     'SettingsExperimentsTest.cpp',
     'GuardAreaBalanceTest.cpp',
+    ('FarmAreaTest.cpp', dict(cxxflags=['-fno-access-control'])),
     'GameSpeedTest.cpp',
     'UIPresentationHarness.cpp',
     'UIIconsTest.cpp',

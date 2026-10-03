@@ -48,6 +48,8 @@ std::shared_ptr<Order> Order::getOrder(const Uint8 *netData, int netDataLength, 
 		return OrderAlterGuardArea::deserialize(netData+1, netDataLength-1, versionMinor);
 	case ORDER_ALTER_CLEAR_AREA:
 		return OrderAlterClearArea::deserialize(netData+1, netDataLength-1, versionMinor);
+	case ORDER_ALTER_FARM_AREA:
+		return OrderAlterFarmArea::deserialize(netData+1, netDataLength-1, versionMinor);
 	case ORDER_NULL:
 		return std::shared_ptr<Order>(new NullOrder());
 	case ORDER_TEXT_MESSAGE:

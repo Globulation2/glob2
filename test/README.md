@@ -1155,6 +1155,15 @@ the default game's per-100-tick checksums with
 one-local-player header and seed they need. Design and numbers:
 [guard-area balancing](../docs/features/guard-area-balancing.md).
 
+`FarmAreas` (`glob2-engine-tests`, `python3 test/run_tests.py --filter
+'FarmAreas/*'`) covers the `farm-areas` experiment on the real `Map` and engine:
+the ripest-tile source, empty gaps, exhausted fields, the seed grain, wood and
+algae, another team's area, the original harvest off a farm, clearing targets,
+growth ignoring the mask, the brush refusing ground that cannot grow, the order
+being rejected and a painted mask being inert without the experiment, workers
+keeping every tile of a farmed field alive, and a save/load round trip. Design:
+[farm areas](../docs/features/farm-areas.md).
+
 ## JavaScript
 
 See the [scripting guide](../docs/development/javascript.md) and

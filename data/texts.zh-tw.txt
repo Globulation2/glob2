@@ -252,6 +252,8 @@ Caps Lock 鍵
 選擇一個地圖
 [clear area]
 清除區
+[farm area]
+耕種區
 [Clearing:]
 清除:
 [clearingflag explanation 2]
@@ -820,6 +822,8 @@ Scroll Lock 鍵
 選擇市場
 [select place clearing area]
 放置區域: 清除區
+[select place farm area]
+放置區域: 耕種區
 [select place clearingflag]
 放置旗幟: 清除旗幟
 [select place explorationflag]
@@ -3194,6 +3198,8 @@ CPU %0%
 守衛
 [Clear]
 清理
+[Farm]
+耕種
 [Paint]
 繪製
 [Erase]
@@ -3364,6 +3370,10 @@ CPU %0%
 警戒區均衡
 [experiment guard-area-balancing help]
 空閒的戰士會分散到各個已繪製的警戒區，而不是全部湧向最近的一個：更大的區域獲得更多戰士，過於擁擠的區域會逐漸向其他區域分流。
+[experiment farm-areas]
+耕種區
+[experiment farm-areas help]
+在區域筆刷中加入耕種區。在其中收割的工人會從相連田地中最成熟的格子取用，並在每一格留下一粒種子，讓田地重新生長，而不是從邊緣被吃光。長進耕種區的木材會被清除。
 [settings Touch scrolling]
 觸控捲動
 [settings List momentum]
