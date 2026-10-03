@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="/home/bradley/.codex/worktrees/3010/glob2/build/linux/client/release/test/glob2-engine-tests" errors="0" failures="0" tests="76756" time="9.41547" timestamp="2026-10-03T16:33:39Z" doctest_version="2.4.11">
+    <testcase classname="test/ScriptCompatibilityTest.cpp" name="JavaScript test environment scopes restore SDL and CRT readers" time="0" status="run"/>
+    <testcase classname="test/ScriptCompatibilityTest.cpp" name="JavaScript current text saves validate unused generation counters" time="2.89292" status="run"/>
+    <testcase classname="test/ScriptCompatibilityTest.cpp" name="Team-capacity change rejects released replays and enforces acceptance boundaries" time="0.132601" status="run"/>
+    <testcase classname="test/ScriptCompatibilityTest.cpp" name="JavaScript pass assigns valid identities to released saves" time="0.080293" status="run"/>
+    <testcase classname="test/ScriptCompatibilityTest.cpp" name="JavaScript upgrade retains genuine master124 experiments and continuation" time="0.069291" status="run"/>
+    <testcase classname="test/ScriptCompatibilityTest.cpp" name="JavaScript current saves reject truncated generation tables" time="0.100145" status="run"/>
+    <testcase classname="test/ScriptIntegrationTest.cpp" name="JavaScript observations visibility memory pagination and stale references" time="0.114672" status="run"/>
+    <testcase classname="test/ScriptIntegrationTest.cpp" name="JavaScript orders execute and survive save load" time="0.122395" status="run"/>
+    <testcase classname="test/ScriptIntegrationTest.cpp" name="JavaScript scenario effects commit atomically and resume" time="0.112889" status="run"/>
+    <testcase classname="test/ScriptIntegrationTest.cpp" name="JavaScript AI state RNG and disabled state survive continuation" time="0.127718" status="run"/>
+    <testcase classname="test/ScriptIntegrationTest.cpp" name="JavaScript large world observations respect work limits" time="0.125694" status="run"/>
+    <testcase classname="test/ScriptPresentationTest.cpp" name="JavaScript presentation publishes only changed localized messages" time="0.113942" status="run"/>
+    <testcase classname="test/ScriptPresentationTest.cpp" name="JavaScript load restores presentation without a callback or history entry" time="0.153307" status="run"/>
+    <testcase classname="test/ScriptPresentationTest.cpp" name="Leaving a JavaScript scenario resets choices before loading a legacy map" time="0.132006" status="run"/>
+    <testcase classname="test/ScriptPresentationTest.cpp" name="JavaScript leaves stored SGSL execution and victory conditions dormant" time="0.119117" status="run"/>
+    <testcase classname="test/ScriptPresentationTest.cpp" name="JavaScript does not advance or display a retained SGSL timer" time="0.120572" status="run"/>
+    <testcase classname="test/ScriptPresentationTest.cpp" name="Failed prepared map replacements preserve active globals and language" time="0.007543" status="run"/>
+    <testcase classname="test/ScriptPresentationTest.cpp" name="Prepared SGSL exchanges rebind stories in both runtimes" time="0.000518" status="run"/>
+    <testcase classname="test/ScriptRealisticTest.cpp" name="JavaScript realistic economic planner and scenario survey" time="0.016305" status="run"/>
+    <testcase classname="test/ScriptSessionTest.cpp" name="JavaScript fatal failure tears down a live engine session" time="0.128949" status="run"/>
+    <testcase classname="test/ScriptSessionTest.cpp" name="JavaScript deterministic scenario failure ends the engine session" time="0.131312" status="run"/>
+    <testcase classname="test/ScriptSessionTest.cpp" name="JavaScript initialization errors reach headless and UI load diagnostics" time="0.167069" status="run"/>
+    <testcase classname="test/ScriptSimulationTest.cpp" name="JavaScript original fixture executes, resumes and replays 256 ticks" time="1.16404" status="run"/>
+    <testcase classname="test/ScriptSimulationTest.cpp" name="JavaScript economic planners and map survey execute, resume and replay 256 ticks" time="1.89019" status="run"/>
+    <testcase classname="test/ScriptSimulationTest.cpp" name="JavaScript conversion boundary resumes globals RNG references and complete tick records" time="1.27485" status="run"/>
+    <testcase classname="test/TeamStatsSaveHarness.cpp" name="Scripting identity survives conversion and save load" time="0.012045" status="run"/>
+    <testcase classname="test/TeamStatsSaveHarness.cpp" name="Scripting level reset preserves generation counters" time="0.000594" status="run"/>
+    <testcase classname="test/TeamStatsSaveHarness.cpp" name="Scripting conversion allocates fresh identity in a reused destination slot" time="0.011381" status="run"/>
+    <testcase classname="test/TeamStatsSaveHarness.cpp" name="Scripting editor deletion and reuse never revive a reference" time="0.011504" status="run"/>
+    <testcase classname="test/TeamStatsSaveHarness.cpp" name="Scripting building completion upgrade and repair preserve identity" time="0.034058" status="run"/>
+    <testcase classname="test/TeamStatsSaveHarness.cpp" name="Scripting conversion back never resurrects the original reference" time="0.011218" status="run"/>
+    <testcase classname="test/TeamStatsSaveHarness.cpp" name="Scripting normal death invalidates lookup before cleanup and slot reuse" time="0.012019" status="run"/>
+    <testcase classname="test/TeamStatsSaveHarness.cpp" name="Compact identity tables preserve unused slots and reject invalid entries" time="0.024306" status="run"/>
+  </testsuite>
+</testsuites>

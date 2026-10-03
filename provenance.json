@@ -1,6 +1,6 @@
 {
-  "revision": "db9f9c22b285c5ff4afe9a7aa45e19134b9cdef3",
-  "tree": "3d99da9f9c42d32587398fa95c5b4f13de1987da",
+  "revision": "276c4858859881de7f0571bc860fb94ca2cd6b04",
+  "tree": "f7d41736dad449c51b0b85bd7a08e0200a013b77",
   "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
   "platform": "Linux x86_64",
   "release": true,
@@ -13,7 +13,7 @@
   "restacked_revision": "37ca1c335db50945f250ed0adea3b9eedf130ed4",
   "restacked_tree": "37f2a325d039327b533d57dcb30ac431b6fa0b2b",
   "merged_estimator": "b5e36ee5fbb3f8a7eec4c6857e4168932084d298",
-  "previous_validation": "fbc029483695550e3e1f652d9260b3b890eb6d5e",
+  "previous_validation": "db9f9c22b285c5ff4afe9a7aa45e19134b9cdef3",
   "integrated_master": "492818704b3b758c452d01d366df11c71d54eaee",
   "model_revision": "a78db3a58fa7f43afe0fe4f84046a1fc5dde73fe",
   "validation_commands": [
@@ -22,6 +22,7 @@
     "python3 test/run_tests.py --binary unit --no-display --junit artifacts/probability-unit.xml",
     "python3 test/test_cli_smoke.py --binary build/linux/client/release/src/glob2 --artifacts artifacts/probability-cli-master-refresh --junit artifacts/probability-cli.xml",
     "SDL_VIDEO_DRIVER=x11 DISPLAY=<authenticated Xvfb display> python3 test/run_tests.py --filter 'CustomGameSetup/custom game screens;*' --filter 'CustomGameSetup/probability statistics*' --junit artifacts/probability-screen.xml",
-    "python3 test/check_sim_revision.py --base origin/master"
+    "python3 test/check_sim_revision.py --base origin/master",
+    "python3 test/check_javascript_corpus.py --build-dir build/linux/client/release --output artifacts/probability-javascript-corpus-final"
   ]
 }

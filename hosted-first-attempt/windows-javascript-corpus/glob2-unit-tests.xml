@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="D:/a/glob2/glob2/build/mingw/client/release/test/glob2-unit-tests" errors="0" failures="0" tests="217" time="0.165691" timestamp="2026-10-03T16:29:05Z" doctest_version="2.4.11">
+    <testcase classname="test/ScriptNumericTest.cpp" name="JavaScript shared numeric corpus" time="0.046411" status="run"/>
+    <testcase classname="test/ScriptNumericTest.cpp" name="JavaScript shared saved global number corpus" time="0.003054" status="run"/>
+    <testcase classname="test/ScriptNumericTest.cpp" name="JavaScript caught host resource failures remain fatal" time="0.001091" status="run"/>
+    <testcase classname="test/ScriptNumericTest.cpp" name="JavaScript initialization rejects unsupported rounding mode" time="0" status="run"/>
+    <testcase classname="test/ScriptRuntimeTest.cpp" name="JavaScript persistent value encoding and Unicode" time="0.000905" status="run"/>
+    <testcase classname="test/ScriptRuntimeTest.cpp" name="JavaScript legacy draft callback argument" time="0.000886" status="run"/>
+    <testcase classname="test/ScriptRuntimeTest.cpp" name="JavaScript pinned Math bits and numeric edges" time="0.000885" status="run"/>
+    <testcase classname="test/ScriptRuntimeTest.cpp" name="JavaScript restricted capabilities and invalid values" time="0.01118" status="run"/>
+    <testcase classname="test/ScriptRuntimeTest.cpp" name="JavaScript generated native work is bounded" time="0.067792" status="run"/>
+    <testcase classname="test/ScriptRuntimeTest.cpp" name="JavaScript native tree bounds and parser depth" time="0.017859" status="run"/>
+    <testcase classname="test/ScriptRuntimeTest.cpp" name="JavaScript fatal native allocation is sticky" time="0.00019" status="run"/>
+    <testcase classname="test/ScriptRuntimeTest.cpp" name="JavaScript unavailable capabilities" time="0.000456" status="run"/>
+    <testcase classname="test/ScriptRuntimeTest.cpp" name="JavaScript hypot ARM64 and x86-64 regression" time="0.000524" status="run"/>
+    <testcase classname="test/ScriptRuntimeTest.cpp" name="JavaScript globals persist and restore without an explicit state object" time="0.001047" status="run"/>
+    <testcase classname="test/ScriptRuntimeTest.cpp" name="JavaScript main restores aliases cycles undefined and numeric globals" time="0.001996" status="run"/>
+    <testcase classname="test/ScriptRuntimeTest.cpp" name="JavaScript rejected callbacks roll back global mutations" time="0.001412" status="run"/>
+    <testcase classname="test/ScriptRuntimeTest.cpp" name="JavaScript global object descriptors survive save and restore" time="0.001493" status="run"/>
+    <testcase classname="test/ScriptRuntimeTest.cpp" name="JavaScript saved NaNs have canonical bits across architectures" time="0.001591" status="run"/>
+    <testcase classname="test/ScriptRuntimeTest.cpp" name="JavaScript unsaveable global values fail explicitly" time="0.003966" status="run"/>
+    <testcase classname="test/ScriptRuntimeTest.cpp" name="JavaScript persistent contexts can migrate between serial workers" time="0.000974" status="run"/>
+    <testcase classname="test/ScriptRuntimeTest.cpp" name="JavaScript malformed automatic global snapshots are rejected" time="0.001979" status="run"/>
+  </testsuite>
+</testsuites>
