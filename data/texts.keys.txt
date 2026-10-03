@@ -2319,6 +2319,8 @@
 [room map ready unnamed]
 [room map ready body]
 [game draw]
+[settings Show colony skins]
+[settings Turn off to use classic units, swarms and building colors on this device.]
 [settings Hive Mind]
 [settings Enable commander shortcuts]
 [settings Command your colony without opening a menu.]

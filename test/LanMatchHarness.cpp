@@ -539,6 +539,8 @@ TEST_SUITE("LanMatchHarness")
 	{
 		glob2test::HeadlessGlobals globals(harnessGlobals());
 		glob2test::ScopedEnvironment address("GLOB2_LAN_ADDRESS", "127.0.0.1");
+		REQUIRE(std::getenv("GLOB2_LAN_ADDRESS") != nullptr);
+		REQUIRE(std::string(std::getenv("GLOB2_LAN_ADDRESS")) == "127.0.0.1");
 		LanMatch m;
 		m.directory = glob2test::artifactDir() / "lan-match";
 		fs::remove_all(m.directory);
@@ -546,6 +548,7 @@ TEST_SUITE("LanMatchHarness")
 		const std::uint16_t port = testPort(0);
 		m.players.push_back(std::make_unique<LanPlayer>("Host", hostRoom(port, m.directory), 101));
 		const std::string endpoint = m.host().room->shareText();
+		INFO("LAN pairing endpoint=" << endpoint);
 		REQUIRE(endpoint.find("127.0.0.1:" + std::to_string(port) + "/yog#sha256=") != std::string::npos);
 		const fs::path cacheA = m.directory / "cache-a", cacheB = m.directory / "cache-b";
 		auto& host = m.hostSide();
@@ -772,6 +775,8 @@ TEST_SUITE("LanMatchHarness")
 	{
 		glob2test::HeadlessGlobals globals(harnessGlobals());
 		glob2test::ScopedEnvironment address("GLOB2_LAN_ADDRESS", "127.0.0.1");
+		REQUIRE(std::getenv("GLOB2_LAN_ADDRESS") != nullptr);
+		REQUIRE(std::string(std::getenv("GLOB2_LAN_ADDRESS")) == "127.0.0.1");
 		std::ostringstream table, stages;
 		table << "LAN input delay: time from a click (an order queued by the GUI at a random moment between "
 		         "frames) to its execution, host and one guest, FourSquares1 with one Nicowar AI, 25 s of play each.\n";
@@ -791,6 +796,7 @@ TEST_SUITE("LanMatchHarness")
 			fs::create_directories(m.directory);
 			m.players.push_back(std::make_unique<LanPlayer>("Host", hostRoom(testPort(offset++), m.directory, bundle), 201));
 			const std::string endpoint = m.host().room->shareText();
+			INFO("LAN pairing endpoint=" << endpoint);
 			m.players.push_back(std::make_unique<LanPlayer>(
 				"Guest", guestRoom(endpoint, "Guest", m.directory / "cache", oneWayMs * 1000), 202));
 			joinAndStart(m, {"nicowar"});

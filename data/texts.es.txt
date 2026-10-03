@@ -4636,6 +4636,10 @@ Inercia del mapa
 
 [game draw]
 
+[settings Show colony skins]
+Mostrar aspectos de las colonias
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Desactívalo para usar las unidades, los enjambres y los colores de edificios clásicos en este dispositivo.
 [settings Hive Mind]
 
 [settings Enable commander shortcuts]

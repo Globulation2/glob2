@@ -4634,6 +4634,10 @@ Emoji
 
 [game draw]
 
+[settings Show colony skins]
+Показывать облики колоний
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Отключите, чтобы использовать классические юниты, рои и цвета зданий на этом устройстве.
 [settings Hive Mind]
 
 [settings Enable commander shortcuts]

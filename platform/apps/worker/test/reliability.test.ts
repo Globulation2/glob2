@@ -225,10 +225,36 @@ describe('retention', () => {
     const oldGuest = await createAccount(db, 'Old guest', 'guest');
     const playedGuest = await createAccount(db, 'Played guest', 'guest');
     const freshGuest = await createAccount(db, 'Fresh guest', 'guest');
+    const reportingGuest = await createAccount(db, 'Reporting guest', 'guest');
+    await insertBlob(db, 'ac'.repeat(32), 10, 'image/png', 'private');
+    const reportedSkin = await db
+      .insertInto('colony_skins')
+      .values({ kind: 'preset', name: 'Reported paint', entitlement: 'skins:test' })
+      .returning('id')
+      .executeTakeFirstOrThrow();
+    const reportedVersion = await db
+      .insertInto('colony_skin_versions')
+      .values({
+        skin_id: reportedSkin.id,
+        texture_sha256: 'ac'.repeat(32),
+        layout: 'colony-v1',
+        building_color: 123,
+        manifest_sha256: 'ab'.repeat(32),
+      })
+      .returning('id')
+      .executeTakeFirstOrThrow();
+    await db
+      .insertInto('colony_skin_reports')
+      .values({
+        version_id: reportedVersion.id,
+        reporter_account_id: reportingGuest,
+        reason: 'Review paint',
+      })
+      .execute();
     await db
       .updateTable('accounts')
       .set({ created_at: old })
-      .where('id', 'in', [oldGuest, playedGuest])
+      .where('id', 'in', [oldGuest, playedGuest, reportingGuest])
       .execute();
     await createMatch(db, [
       { side: 0, accountId: playedGuest },
@@ -339,9 +365,11 @@ describe('retention', () => {
     const accounts = await db
       .selectFrom('accounts')
       .select('id')
-      .where('id', 'in', [oldGuest, playedGuest, freshGuest, registered])
+      .where('id', 'in', [oldGuest, playedGuest, freshGuest, registered, reportingGuest])
       .execute();
-    expect(accounts.map((a) => a.id).sort()).toEqual([playedGuest, freshGuest, registered].sort());
+    expect(accounts.map((a) => a.id).sort()).toEqual(
+      [playedGuest, freshGuest, registered, reportingGuest].sort(),
+    );
     const tokens = await db
       .selectFrom('refresh_tokens')
       .select('token_hash')
@@ -393,6 +421,22 @@ describe('blob garbage collection', () => {
         .where('id', '=', matchId)
         .execute();
 
+      const paint = await put('a published colony paint', 'old');
+      const skin = await database.db
+        .insertInto('colony_skins')
+        .values({ kind: 'preset', name: 'Test paint', entitlement: 'skins:test' })
+        .returning('id')
+        .executeTakeFirstOrThrow();
+      await database.db
+        .insertInto('colony_skin_versions')
+        .values({
+          skin_id: skin.id,
+          texture_sha256: paint.sha256,
+          layout: 'colony-v1',
+          building_color: 123,
+          manifest_sha256: 'ef'.repeat(32),
+        })
+        .execute();
       const studioMap = await put('a delivered AI map removed from the catalogue', 'old');
       const checkpoint = await put('a canonical AI revision source', 'old');
       const providerOutput = await put('a journaled provider image', 'old');
@@ -449,7 +493,15 @@ describe('blob garbage collection', () => {
       expect(result.deletedBlobs).toBeGreaterThanOrEqual(1);
       expect(await store.size(garbage.key)).toBeUndefined();
       expect(await store.size(orphanFile.key)).toBeUndefined();
-      for (const kept of [fresh, artifact, playedMap, studioMap, checkpoint, providerOutput]) {
+      for (const kept of [
+        fresh,
+        artifact,
+        playedMap,
+        paint,
+        studioMap,
+        checkpoint,
+        providerOutput,
+      ]) {
         expect(await store.size(kept.key)).toBeGreaterThan(0);
         expect(
           await database.db

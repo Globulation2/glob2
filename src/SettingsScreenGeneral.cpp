@@ -103,6 +103,7 @@ void SettingsScreen::buildGeneral()
 				commit();
 			});
 		};
+		effect("graphics.skins", "Show colony skins", "Turn off to use classic units, swarms and building colors on this device.", &Settings::showColonySkins);
 		effect("graphics.clouds", "Clouds", "Show cloud cover above the map.", &Settings::clouds);
 		effect("graphics.shadows", "Cloud shadows", "Show cloud shadows on the ground independently of cloud cover.", &Settings::cloudShadows);
 		effect("graphics.particles", "Building particles", "Show smoke and other building particles.", &Settings::buildingParticles);

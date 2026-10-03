@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "MapCopies.h"
+#include "ColonySkinPreview.h"
 
 #include "AICastor.h"
 #include "AINicowar.h"
@@ -239,6 +240,8 @@ void Game::drawSceneMap(const Scene& scene, int sx, int sy, int sw, int sh,
 	ViewState& view, Uint32 drawOptions, std::set<Uint16>* visibleBuildings,
 	const BuildingGuiStateMap* buildingGuiState, bool animationsPaused, int cloudGridLimit)
 {
+    view.render.skinPreview().setVisible(globalContainer->settings.showColonySkins);
+    view.render.skinPreview().poll();
 	const Scene* previous = view.scene;
 	view.scene = &scene;
 	struct RestoreScene { ViewState& view; const Scene* previous; ~RestoreScene() { view.scene = previous; } } restore{view, previous};
@@ -297,6 +300,9 @@ void Game::drawSceneMap(const Scene& scene, int sx, int sy, int sw, int sh,
 			scene.tick + unitMotionFraction(scene, SDL_GetTicks()));
 	else if (view.render.fogFade.active())
 		view.render.fogFade.reset();
+    view.render.skinPreview().prepare(frame.target, scene, left, top, right, bot,
+        viewportX, viewportY, localTeam, frame.visibleTeams, drawOptions & DRAW_WHOLE_MAP,
+        view.render.unitMotion, view.render.detail.unitSprite > 0, view.render.detail.buildingSprite > 0, &view.render.fogFade);
 	// Prepare coverage before water, keeping scene ordering independent of the
 	// cache's storage policy. Discovery uses exactly the uncached terrain rule.
 	// Native opaque tile copies beat blending mixed-alpha chunks. Cache only
@@ -364,7 +370,7 @@ void Game::drawSceneMap(const Scene& scene, int sx, int sy, int sw, int sh,
 	tilePass(&Game::drawMapTerritory, scene, view.render.detail.strategic);
 	scenePass(&Game::drawMapGroundUnits, view, scene);
 	scenePass(&Game::drawMapDebugAreas, view);
-	scenePass(&Game::drawMapGroundBuildings, visibleBuildings, buildingGuiState, scene, drawnRender);
+	scenePass(&Game::drawMapGroundBuildings, visibleBuildings, buildingGuiState, scene, drawnRender, &view);
 	scenePass(&Game::drawMapAirUnits, view, scene);
 	// Bars sit above every unit and building, and under the fog like them.
 	overlayPass.flush();

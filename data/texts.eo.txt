@@ -4634,6 +4634,10 @@ Inercio de la mapo
 
 [game draw]
 
+[settings Show colony skins]
+Montri aspektojn de kolonioj
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Malŝaltu por uzi klasikajn unuojn, svarmojn kaj konstruaĵajn kolorojn en ĉi tiu aparato.
 [settings Hive Mind]
 
 [settings Enable commander shortcuts]

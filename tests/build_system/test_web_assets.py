@@ -21,6 +21,13 @@ class WebAssetPlanTests(unittest.TestCase):
             for path in paths:
                 cls.owner.setdefault(path, name)
 
+    def test_skin_meshes_are_only_in_the_on_demand_package(self):
+        meshes = list((ROOT / 'data/skins/colony-v1').glob('*.gsk'))
+        self.assertEqual(len(meshes), 8)
+        for path in meshes:
+            self.assertEqual(self.owner[path.relative_to(ROOT).as_posix()], 'skins')
+        self.assertNotIn('data/skins/colony-v1/manifest.json', self.packages['core'])
+
     def test_simulation_data_starts_with_the_game(self):
         # The sim version key and the WebAssembly checksum traces read these files.
         for path in web_assets.sim_data_files(ROOT):

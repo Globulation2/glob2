@@ -122,7 +122,7 @@ struct Fixture
 	// Joins a room and answers with `state`.
 	std::shared_ptr<PlatformRoom> join(const Json &state)
 	{
-		auto r = PlatformRoom::join(client, maps, "KXQ742MNPR");
+		auto r = PlatformRoom::join(client, maps, storage, "KXQ742MNPR");
 		client.update();
 		auto request = world.socket().find("room.join");
 		REQUIRE(!request.is_null());

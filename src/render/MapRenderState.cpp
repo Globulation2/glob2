@@ -2,6 +2,7 @@
 #include "MapRenderState.h"
 
 #include "DynamicClouds.h"
+#include "ColonySkinPreview.h"
 #include "GlobalContainer.h"
 #include "SoftwareTerrainCache.h"
 
@@ -26,4 +27,15 @@ SoftwareTerrainCache &MapRenderState::terrainCache(Uint64 mapIdentity)
 		terrainCacheMap = mapIdentity;
 	}
 	return *terrainCache_;
+}
+
+ColonySkinPreview &MapRenderState::skinPreview()
+{
+	if (!skinPreview_) skinPreview_ = std::make_unique<ColonySkinPreview>();
+	return *skinPreview_;
+}
+
+void MapRenderState::swapSkinPreview(MapRenderState &other)
+{
+    skinPreview_.swap(other.skinPreview_);
 }

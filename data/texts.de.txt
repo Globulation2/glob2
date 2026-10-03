@@ -4636,6 +4636,10 @@ Karten-Schwung
 
 [game draw]
 
+[settings Show colony skins]
+Kolonie-Skins anzeigen
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Deaktivieren, um auf diesem Gerät klassische Einheiten, Schwärme und Gebäudefarben zu verwenden.
 [settings Hive Mind]
 
 [settings Enable commander shortcuts]

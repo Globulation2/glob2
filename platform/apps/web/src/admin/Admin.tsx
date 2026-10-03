@@ -1,5 +1,6 @@
+import { SkinReports } from '../skins/Moderation.tsx';
 // Minimal moderation (plan M8): accounts (search, rename, mute, ban), match
-// lookup and the map report queue. Moderators may rename and mute;
+// lookup and map/skin report queues. Moderators may rename and mute;
 // administrators may also ban. The API enforces the same rules.
 import { useState, type FormEvent } from 'react';
 import type { AdminAccount, MapReportInfo } from '@glob2/protocol';
@@ -21,6 +22,7 @@ const TABS = [
   { id: 'accounts', name: 'Accounts' },
   { id: 'matches', name: 'Matches' },
   { id: 'reports', name: 'Map reports' },
+  { id: 'skins', name: 'Skin reports' },
 ];
 
 const MUTES = [
@@ -381,6 +383,7 @@ export function Admin({ tab }: { tab: string | undefined }) {
       {current === 'accounts' && <Accounts isAdmin={account.role === 'admin'} />}
       {current === 'matches' && <Matches />}
       {current === 'reports' && <Reports />}
+      {current === 'skins' && <SkinReports />}
     </>
   );
 }

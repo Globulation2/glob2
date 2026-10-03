@@ -86,6 +86,15 @@ jobs:
           GLOB2_USER_DATA_DIR: ${{ runner.temp }}/tsan-profile
           GLOB2_TEST_SEED: '5'
           GLOB2_TEST_MAX_TICKS: '300'
+          GLOB2_SIM_THREAD: '1'
+          # Keep the game's simulation/UI concurrency instrumented, but render
+          # synchronously inside the uninstrumented Mesa driver. Its worker
+          # fence synchronization is invisible to TSan.
+          LP_NUM_THREADS: '0'
+          # A headless game does not need desktop-session services; keep their
+          # uninstrumented D-Bus shutdown locks outside this game-thread check.
+          DBUS_SESSION_BUS_ADDRESS: 'unix:path=/nonexistent/glob2-tsan-session-bus'
+          DBUS_SYSTEM_BUS_ADDRESS: 'unix:path=/nonexistent/glob2-tsan-system-bus'
           # No PulseAudio: its uninstrumented mainloop thread reports races
           # inside libpulse during audio startup, unrelated to the game threads.
           SDL_AUDIODRIVER: dummy
@@ -93,11 +102,6 @@ jobs:
           # Mesa/llvmpipe worker threads. GPU rendering has separate coverage.
           SDL_RENDER_DRIVER: software
           SDL_FRAMEBUFFER_ACCELERATION: '0'
-          # Mesa llvmpipe is uninstrumented and can report internal worker
-          # races at presentation. Render it synchronously while retaining
-          # the game's simulation, input, audio and presentation threads.
-          # https://docs.mesa3d.org/envvars.html#envvar-LP_NUM_THREADS
-          LP_NUM_THREADS: '0'
           # SDL3 leaves threads it created during startup unjoined at exit; that
           # is not a race between the game's threads, so thread leaks are not reported.
           TSAN_OPTIONS: halt_on_error=1 exitcode=66 second_deadlock_stack=1 report_thread_leaks=0 suppressions=${{ github.workspace }}/test/tsan.supp

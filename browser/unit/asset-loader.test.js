@@ -163,3 +163,30 @@ test('the loading page estimates remaining time from the rate so far', () => {
   assert.deepEqual(estimate(29e6, 30e6, 29000), {percent:96, text:'29 of 30 MB · a few seconds left'});
   assert.deepEqual(estimate(30e6, 30e6, 30000), {percent:100, text:'30 of 30 MB'});
 });
+
+
+test('on-demand requests share a load and throttle failed retries', async () => {
+  const environment = host();
+  const loader = new Loader(manifest(), environment);
+  let release;
+  let calls = 0;
+  environment.fetch = () => { calls++; return new Promise(resolve => { release = resolve; }); };
+  loader.request('core', 100);
+  loader.request('core', 200);
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(calls, 1);
+  assert.equal(loader.states.core, 'downloading');
+  release(response([], 503));
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(loader.states.core, 'failed');
+  loader.request('core', 10099);
+  assert.equal(calls, 1);
+  environment.fetch = async () => { calls++; return response(bodies['assets/core.aaaaaaaaaaaaaaaa.data']); };
+  loader.request('core', 10100);
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(calls, 2);
+  assert.equal(loader.states.core, 'ready');
+  loader.request('core', 99999);
+  assert.equal(calls, 2);
+  assert.equal(environment.files.get('/maps/b.map'), 'efghi');
+});

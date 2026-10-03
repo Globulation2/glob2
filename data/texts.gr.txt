@@ -4706,6 +4706,10 @@ CPU %0%
 
 [game draw]
 
+[settings Show colony skins]
+Εμφάνιση εμφανίσεων αποικιών
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Απενεργοποιήστε για να χρησιμοποιείτε κλασικές μονάδες, σμήνη και χρώματα κτιρίων σε αυτή τη συσκευή.
 [settings Hive Mind]
 
 [settings Enable commander shortcuts]

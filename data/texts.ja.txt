@@ -4632,6 +4632,10 @@ AIを追加
 
 [game draw]
 
+[settings Show colony skins]
+コロニーのスキンを表示
+[settings Turn off to use classic units, swarms and building colors on this device.]
+オフにすると、この端末では従来のユニット、群れ、建物の色を使用します。
 [settings Hive Mind]
 
 [settings Enable commander shortcuts]

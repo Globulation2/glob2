@@ -385,6 +385,14 @@ static int dumpWheatPlan(const std::string& mapName, int team)
 	return 0;
 }
 
+namespace
+{
+void closeGameResources()
+{
+	delete globalContainer;
+	globalContainer = nullptr;
+}
+} // namespace
 static void dumpTeams(const Game& game)
 {
 	for (int t = 0; t < game.mapHeader.getNumberOfTeams(); t++)
@@ -502,7 +510,7 @@ int Glob2::run(int argc, char *argv[])
 		else if (strcmp(argv[ai], "-dump-tiled") == 0 && ai + 5 < argc)
 		{
 			int ret = dumpTiled(argv[ai + 1], atoi(argv[ai + 2]), atoi(argv[ai + 3]), atoi(argv[ai + 4]), atoi(argv[ai + 5]));
-			delete globalContainer;
+			closeGameResources();
 			return ret;
 		}
 
@@ -519,7 +527,7 @@ int Glob2::run(int argc, char *argv[])
 	if (globalContainer->runTestGames)
 	{
 		int ret=runTestGames();
-		delete globalContainer;
+		closeGameResources();
 		return ret;
 	}
 	
@@ -531,14 +539,13 @@ int Glob2::run(int argc, char *argv[])
 	if (globalContainer->runNoX)
 	{
 		int ret=runNoX();
-		delete globalContainer;
+		closeGameResources();
 		return ret;
 	}
 
     GAGCore::ApplicationHost::run(std::make_unique<Application>(), [] {
         GAGCore::DrawableSurface::printFinishingText();
-        delete globalContainer;
-        globalContainer = nullptr;
+        closeGameResources();
         GAGCore::ApplicationHost::exited(0);
     });
     return HOSTED_RUN;

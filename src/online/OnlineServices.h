@@ -17,7 +17,8 @@
 // Online::pump() so sign-in, token refresh and keepalives continue while the
 // player moves between screens; destroyed when the application exits, which
 // closes the connection. Online objects take what they need explicitly
-// (OnlineMatch and PlatformRoom the map cache, QuickMatch the client); screens
+// (OnlineMatch and PlatformRoom the map cache and skin storage, QuickMatch the
+// client); screens
 // reach the application's services through services().
 namespace Online
 {

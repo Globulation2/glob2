@@ -4660,6 +4660,10 @@ Vaart van de kaart
 
 [game draw]
 
+[settings Show colony skins]
+Kolonie-uiterlijk tonen
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Schakel uit om op dit apparaat klassieke eenheden, zwermen en gebouwkleuren te gebruiken.
 [settings Hive Mind]
 
 [settings Enable commander shortcuts]

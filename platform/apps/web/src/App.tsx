@@ -1,3 +1,4 @@
+import { Skins } from './pages/Skins.tsx';
 import { CommanderCredits } from './pages/Commander.tsx';
 // The platform web app: home, leaderboards, player and match pages, the map
 // catalog and moderation. Client routes the game links to must stay stable:
@@ -37,6 +38,7 @@ interface Route {
 }
 
 export const ROUTES: Route[] = [
+  { pattern: '/skins', section: 'skins', title: 'Colony skins', render: () => <Skins /> },
   {
     pattern: '/map-studio',
     section: 'studio',
@@ -278,6 +280,7 @@ function Layout() {
     { to: '/leaderboard', id: 'leaderboard', name: 'Leaderboard', art: 'warFlag' },
     { to: '/matches', id: 'matches', name: 'Matches', art: 'swarm' },
     { to: '/maps', id: 'maps', name: 'Maps', art: 'explorationFlag' },
+    { to: '/skins', id: 'skins', name: 'Skins', art: 'swarm' },
     { to: '/map-studio', id: 'studio', name: 'AI Map Studio', art: 'explorationFlag' },
     ...(isModerator(account)
       ? [{ to: '/admin', id: 'admin', name: 'Moderation', art: 'hospital' as ArtName }]

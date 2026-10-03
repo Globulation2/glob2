@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "online/ReplayAppearance.h"
 #include "OnlineProfileScreen.h"
 
 #include "FormatableString.h"
@@ -208,10 +209,11 @@ void OnlineProfileScreen::replay(const std::string &matchId)
 		return;
 	status = tr("[profile downloading replay]");
 	invalidate();
+	const auto origin = Online::services().client.origin();
 	// The verified replay the server keeps for the match.
 	calls().restRaw(
 		HttpFetch::Method::Get, Online::Api::matchReplay(matchId), {}, {},
-		[this, matchId](const Online::PlatformClient::Response &file)
+		[this, matchId, origin](const Online::PlatformClient::Response &file)
 		{
 			if (!file.ok || file.body.empty())
 			{
@@ -229,6 +231,8 @@ void OnlineProfileScreen::replay(const std::string &matchId)
 			}
 			out->write(file.body.data(), file.body.size());
 			out.reset();
+            Online::writeReplayAppearance(*GAGCore::Toolkit::getFileManager(),path,
+                {origin,matchId});
 			status.clear();
 			invalidate();
 			flow.replay(path);

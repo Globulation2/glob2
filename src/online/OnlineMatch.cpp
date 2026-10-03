@@ -3,6 +3,7 @@
 
 #include "OnlineMatch.h"
 #include "PlatformApi.h"
+#include "SkinDownloads.h"
 
 #include "Engine.h"
 #include "MapCache.h"
@@ -251,8 +252,8 @@ const char *stepName(OnlineMatch::Step step)
 	return "?";
 }
 
-OnlineMatch::OnlineMatch(PlatformClient &client, MapCache &maps, Json assignment, Context context)
-	: client(client), maps(maps), calls(client), assignment(std::move(assignment)), ctx(std::move(context))
+OnlineMatch::OnlineMatch(PlatformClient &client, MapCache &maps, OnlineStorage &storage, Json assignment, Context context)
+	: client(client), maps(maps), storage(storage), calls(client), assignment(std::move(assignment)), ctx(std::move(context))
 {
 	makeTransport = [](const std::string &url) { return std::make_shared<RelayTransport>(url); };
 	parseAssignment();
@@ -459,6 +460,13 @@ std::unique_ptr<Engine> OnlineMatch::takeEngine()
 		return {};
 	run->accepted = true;
 	run->engine->setOnlineResult(outcome);
+    std::vector<SkinDownloads::Ticket> skins;
+    try {
+        if(assignment.contains("colonySkins") && assignment["colonySkins"].is_array() && assignment["colonySkins"].size()<=32)
+            for(const auto &skin:assignment["colonySkins"])
+                skins.push_back({skin.at("team").get<int>(),skin.at("assertion").get<std::string>()});
+    } catch(const std::exception &) { skins.clear(); }
+    run->engine->setColonySkins(std::make_unique<SkinDownloads>(storage,client.origin(),id,std::move(skins)));
 	auto engine = std::move(run->engine);
 	// The engine's session keeps its own reference to the transport.
 	run.reset();

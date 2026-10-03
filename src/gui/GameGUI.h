@@ -3,6 +3,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #pragma once
+namespace Online { class SkinDownloads; }
 #include <MapCamera.h>
 
 #include <InputState.h>
@@ -243,6 +244,8 @@ public:
 	Game game;
 	/// Live network games always use normal speed; replays remain adjustable.
 	bool canChangeGameSpeed() const;
+	void setColonySkins(std::unique_ptr<Online::SkinDownloads> downloads);
+    void swapColonyAppearance(MapRenderState &state);
 	/// Chevrons the HUD speed control lights for the current speed.
 	int litSpeedChevrons() const;
 	/// Step the HUD speed control: forwards to the next chevron (the last wraps

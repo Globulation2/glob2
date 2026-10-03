@@ -12,6 +12,7 @@
 #include <valarray>
 
 class DynamicClouds;
+class ColonySkinPreview;
 namespace GAGCore { class DrawableSurface; }
 class SoftwareTerrainCache;
 
@@ -55,6 +56,9 @@ struct MapRenderState
 
 	//! The cloud field for this view, created on first use.
 	DynamicClouds &clouds();
+	ColonySkinPreview &skinPreview();
+	// Keep match appearance while rebuilding the rest of a reconnect view.
+	void swapSkinPreview(MapRenderState &other);
 	//! The software terrain cache for map, rebuilt when the map was replaced.
 	//! May throw std::bad_alloc; callers fall back to uncached terrain.
 	SoftwareTerrainCache &terrainCache(Uint64 mapIdentity);
@@ -63,6 +67,7 @@ struct MapRenderState
 
 private:
 	std::unique_ptr<DynamicClouds> clouds_;
+	std::unique_ptr<ColonySkinPreview> skinPreview_;
 	std::unique_ptr<SoftwareTerrainCache> terrainCache_;
 	Uint64 terrainCacheMap = 0; //!< Map::identity() the cache was built for.
 };

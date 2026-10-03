@@ -4636,6 +4636,10 @@ Rozpęd mapy
 
 [game draw]
 
+[settings Show colony skins]
+Pokazuj skórki kolonii
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Wyłącz, aby na tym urządzeniu używać klasycznych jednostek, rojów i kolorów budynków.
 [settings Hive Mind]
 
 [settings Enable commander shortcuts]

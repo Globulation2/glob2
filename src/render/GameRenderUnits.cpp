@@ -27,6 +27,7 @@
 #include "UnitDrawGeometry.h"
 #include "UnitAnimation.h"
 #include "UnitMotion.h"
+#include "ColonySkinPreview.h"
 #include <algorithm>
 #include "UnitSkin.h"
 #include "scene/Scene.h"
@@ -127,9 +128,11 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	// Worker dots shrink further out, so a crowd reads as density.
 	const ZoomDetail &detail = view.render.detail;
 	// The sprite stays opaque under the marker fading in over it, and goes once
-	// the marker is solid: a translucent sprite would leave the unit batch. Only
-	// the few units fading at the edge of the fog draw translucent.
-	if (detail.unitSprite > 0)
+	// the marker is solid. Units at the fog edge fade, including painted meshes
+	// and their original ground shadows.
+	if (detail.unitSprite > 0 &&
+		!view.render.skinPreview().draw(*globalContainer->gfx, unit->typeNum, unit->team,
+			unit->action, dir, delta, px, py, unitSprite->baseFrame(imgid), fogAlpha))
 		globalContainer->gfx->drawSprite(px-decX, py-decY, unitSprite, imgid, fogAlpha);
 	if (detail.unitMarker > 0)
 	{

@@ -154,6 +154,7 @@ void Settings::load(std::string filename)
 		// Old profiles seed each missing effect; explicit choices win.
 		if (parsed.count("optionFlags"))
 			setGraphicsDetail(!(optionFlags & LEGACY_LOW_DETAIL));
+		READ_PARSED_INT(showColonySkins);
 		READ_PARSED_INT(clouds);
 		READ_PARSED_INT(cloudShadows);
 		READ_PARSED_INT(buildingParticles);
@@ -262,6 +263,7 @@ bool Settings::save(std::string filename)
 		Utilities::streamprintf(stream, "hiveMindEnabled=%d\n", hiveMindEnabled);
 		Utilities::streamprintf(stream, "hiveMindSupervision=%d\n", hiveMindSupervision);
 		Utilities::streamprintf(stream, "highResolutionArtwork=%d\n", highResolutionArtwork);
+		Utilities::streamprintf(stream, "showColonySkins=%d\n", showColonySkins);
 		Utilities::streamprintf(stream, "clouds=%d\n", clouds);
 		Utilities::streamprintf(stream, "cloudShadows=%d\n", cloudShadows);
 		Utilities::streamprintf(stream, "buildingParticles=%d\n", buildingParticles);

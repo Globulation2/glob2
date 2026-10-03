@@ -4648,6 +4648,10 @@ this map
 Create a room and invite your friends: the room plays this map.
 [game draw]
 Draw
+[settings Show colony skins]
+Show colony skins
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Turn off to use classic units, swarms and building colors on this device.
 [settings Hive Mind]
 Hive Mind
 [settings Enable commander shortcuts]

@@ -4646,6 +4646,10 @@ Kartans fart
 
 [game draw]
 
+[settings Show colony skins]
+Visa koloniernas utseenden
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Stäng av för att använda klassiska enheter, svärmar och byggnadsfärger på den här enheten.
 [settings Hive Mind]
 
 [settings Enable commander shortcuts]

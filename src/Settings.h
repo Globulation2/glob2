@@ -59,6 +59,7 @@ public:
 	bool hiveMindSupervision;
 	bool highResolutionArtwork;
 	// Local rendering preferences; never serialized into games or orders.
+	bool showColonySkins = true;
 	bool clouds;
 	bool cloudShadows;
 	bool buildingParticles;

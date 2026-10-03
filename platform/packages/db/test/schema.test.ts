@@ -13,6 +13,71 @@ type ColumnLists = { [T in keyof Database]: readonly (keyof Database[T] & string
 
 /** Every column of every table, as typed in src/schema.ts. */
 const typedColumns: ColumnLists = {
+  colony_skin_reports: [
+    'id',
+    'version_id',
+    'reporter_account_id',
+    'reason',
+    'created_at',
+    'resolution',
+    'resolved_at',
+    'resolved_by_account_id',
+    'resolution_reason',
+  ],
+  colony_skin_drafts: [
+    'account_id',
+    'revision',
+    'name',
+    'building_color',
+    'image',
+    'updated_at',
+    'skin_id',
+  ],
+  skin_purchases: [
+    'id',
+    'account_id',
+    'request_id',
+    'sku',
+    'entitlement',
+    'price_id',
+    'checkout_id',
+    'payment_intent_id',
+    'status',
+    'entitlement_id',
+    'created_at',
+    'updated_at',
+    'reconcile_after',
+    'recovery_cursor',
+  ],
+  skin_payment_events: ['id', 'event_type', 'purchase_id', 'processed_at'],
+  colony_skins: [
+    'id',
+    'owner_account_id',
+    'kind',
+    'name',
+    'entitlement',
+    'disabled_at',
+    'created_at',
+  ],
+  colony_skin_versions: [
+    'id',
+    'skin_id',
+    'texture_sha256',
+    'layout',
+    'building_color',
+    'manifest_sha256',
+    'created_at',
+  ],
+  colony_skin_equipment: ['account_id', 'version_id', 'updated_at', 'building_color'],
+  match_colony_skins: [
+    'building_color',
+    'match_id',
+    'team_index',
+    'account_id',
+    'version_id',
+    'assertion',
+    'created_at',
+  ],
   studio_threads: ['id', 'account_id', 'title', 'brief', 'created_at', 'updated_at'],
   studio_messages: ['id', 'thread_id', 'role', 'text', 'created_at'],
   studio_requests: [
@@ -339,6 +404,7 @@ const typedColumns: ColumnLists = {
   ],
   room_chat_messages: ['id', 'room_id', 'account_id', 'text', 'sent_at'],
   matches: [
+    'skins_frozen_at',
     'id',
     'sim_version',
     'origin',
@@ -610,6 +676,15 @@ describe('migrations', () => {
         '0020_hive',
         '0021_hive_supervision',
         '0022_map_studio',
+        '0023_colony_skins',
+        '0024_match_skin_snapshot',
+        '0025_skin_purchases',
+        '0026_skin_building_color',
+        '0027_skin_payment_reconciliation',
+        '0028_skin_checkout_recovery',
+        '0029_skin_drafts',
+        '0030_skin_draft_source',
+        '0031_skin_reports',
       ]);
       expect(
         (
@@ -649,6 +724,32 @@ describe('migrations', () => {
     expect(await migrateToLatest(database.db)).toEqual([]);
     const status = await createMigrator(database.db).getMigrations();
     expect(status.every((m) => m.executedAt instanceof Date)).toBe(true);
+  });
+
+  it('upgrades an existing platform database through all skin migrations', async () => {
+    const existing = await createTestDatabase({ migrate: false, role: 'migrator' });
+    try {
+      const old = await createMigrator(existing.db).migrateTo('0022_map_studio');
+      expect(old.error).toBeUndefined();
+      const account = await existing.db
+        .insertInto('accounts')
+        .values({ kind: 'registered', display_name: 'Existing colony' })
+        .returning('id')
+        .executeTakeFirstOrThrow();
+      const upgraded = await migrateToLatest(existing.db);
+      expect(upgraded).toHaveLength(9);
+      expect(upgraded.every((migration) => migration.status === 'Success')).toBe(true);
+      expect(
+        await existing.db
+          .selectFrom('accounts')
+          .select('display_name')
+          .where('id', '=', account.id)
+          .executeTakeFirstOrThrow(),
+      ).toEqual({ display_name: 'Existing colony' });
+      expect(await migrateToLatest(existing.db)).toEqual([]);
+    } finally {
+      await existing.drop();
+    }
   });
 
   it('match the typed schema column for column', async () => {

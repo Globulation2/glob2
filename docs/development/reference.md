@@ -453,6 +453,31 @@ Scope timings separately report CPU submission and overlap; do not sum inclusive
 scopes. The fixture is native OpenGL only; mobile uses the SDL portable renderer,
 so desktop results do not qualify Android/iOS hardware performance.
 
+The `skin-game-preview` diagnostic measures the colony-skin path through the real
+Scene renderer. Build it with `scons release=1 skin-game-preview`, then set
+`SKIN_PREVIEW_SAVE` to a two-colony saved game, `GLOB2_SKIN_PREVIEW_DIR` to a
+mesh directory containing `paint.png`, `SKIN_PREVIEW_CAPTURE` to a capture name,
+and `SKIN_PREVIEW_BENCHMARK` to a relative capture prefix. Run with `-g -m
+-s800x600` and an isolated `GLOB2_USER_DATA_DIR`. `SKIN_BENCH_FRAMES` and
+`SKIN_BENCH_WARMUP` control total and discarded warmup frames (defaults 45 and 5).
+The harness adds a crowded diagnostic colony, advances its animation phases,
+and checks that every draw preserves simulation checksums and that classic and
+skinned states match. It reports first-frame cost separately from warmed mean,
+p95, draw counts and `render.skins.*` preparation/geometry/raster/composite scopes.
+Set `SKIN_PREVIEW_ZOOM` (0.02–5.0, clamped by the map camera) to exercise adaptive
+zoom detail. Set `SKIN_PREVIEW_ADAPTIVE=0` to check skins with adaptive detail
+disabled. When only overview markers and building icons are visible, the
+diagnostic checks that hidden skin meshes are neither prepared nor drawn.
+Frame times include presentation; scope times measure CPU submission and driver
+work, not isolated GPU duration. Preserve the fixture, binaries, build inputs,
+resolution, driver, counters and captures for matched comparisons; run repeated
+alternating pairs without concurrent builds. Software GL results do not establish
+hardware performance. The smaller `skin-preview ASSET_DIRECTORY OUTPUT_PREFIX
+--validate-opacity` diagnostic captures opaque, half-opacity and invisible mesh/shadow
+composites and verifies that opacity changes reuse cached poses. The
+`--validate-cache` diagnostic checks cache hits, repainting, texture address reuse
+and atlas overflow, and saves images for pixel comparison.
+
 Cloud patches in the flat game and editor views now use a coarser, world-anchored
 lattice when zooming out to half size or smaller. Patches retain at most their configured
 1:1 size on screen; normal zoom keeps the original sampling. The field and animation

@@ -2,6 +2,7 @@
 #include "NetworkConfig.h"
 #include <boost/asio.hpp>
 #include <openssl/pem.h>
+#include <openssl/err.h>
 #include <openssl/rand.h>
 #include <openssl/x509v3.h>
 #include <set>
@@ -60,8 +61,9 @@ void provisionLanIdentity(NetworkConfig &config)
 	boost::system::error_code error;
 	for (const auto &entry : resolver.resolve(boost::asio::ip::host_name(), "0", error))
 	{
-		// Scoped IPv6 addresses are valid endpoints but not X.509 IP SANs.
 		const auto address = entry.endpoint().address().to_string();
+		// An IPv6 zone is local interface metadata, not an X.509 IP address.
+		// Match the Unix interface enumeration above and omit scoped entries.
 		if (address.find('%') == std::string::npos)
 			addresses.insert(address);
 	}
@@ -126,7 +128,12 @@ void provisionLanIdentity(NetworkConfig &config)
 		auto *value =
 			X509V3_EXT_conf_nid(nullptr, &context, extension.first, extension.second.c_str());
 		if (!value)
-			throw std::runtime_error("LAN identity extension failed");
+		{
+			char error[256];
+			ERR_error_string_n(ERR_get_error(), error, sizeof(error));
+			throw std::runtime_error(std::string("LAN identity extension ") +
+				OBJ_nid2sn(extension.first) + " failed: " + error);
+		}
 		const auto result = X509_add_ext(cert.get(), value, -1);
 		X509_EXTENSION_free(value);
 		if (!result)

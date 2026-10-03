@@ -4708,6 +4708,10 @@ CPU %0%
 
 [game draw]
 
+[settings Show colony skins]
+顯示殖民地外觀
+[settings Turn off to use classic units, swarms and building colors on this device.]
+關閉後，此裝置將使用經典單位、蟲群和建築顏色。
 [settings Hive Mind]
 
 [settings Enable commander shortcuts]

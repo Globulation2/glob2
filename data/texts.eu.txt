@@ -4646,6 +4646,10 @@ Maparen inertzia
 
 [game draw]
 
+[settings Show colony skins]
+Erakutsi kolonien itxurak
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Desaktibatu gailu honetan unitate, erle-saldo eta eraikinen kolore klasikoak erabiltzeko.
 [settings Hive Mind]
 
 [settings Enable commander shortcuts]

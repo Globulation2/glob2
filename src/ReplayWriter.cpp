@@ -16,6 +16,7 @@
 #include <algorithm>
 #include <array>
 #include <ios>
+#include <filesystem>
 
 // Write an Order to the stream, with the given checksum
 inline void writeOrder(GAGCore::OutputStream *stream, std::shared_ptr<Order> order, Uint32 checksum = 0)
@@ -48,6 +49,7 @@ ReplayWriter::~ReplayWriter()
 
 void ReplayWriter::init(const std::string &backend, GameGUI &gui)
 {
+	recordingPath = backend;
 	// Avoid trouble
 	checksum = 0;
 	game = gui.replayTelemetryGame();
@@ -148,6 +150,7 @@ void ReplayWriter::finish()
 
 	// Flush the buffer now
 	buffer->flush();
+	if (!recordingPath.empty()) notifySaved(recordingPath);
 
 	stepsSinceLastOrder = 0;
 }
@@ -182,10 +185,27 @@ bool ReplayWriter::write(const std::string &filename) const
     });
     // Atomic writer failures must not leave the live recording's cursor moved.
     bufferBackend->seekFromStart(pos);
+    if (saved) notifySaved(filename);
     return saved;
 }
 
 GAGCore::OutputStream* ReplayWriter::getBuffer() const
 {
 	return buffer;
+}
+
+void ReplayWriter::notifySaved(const std::string &filename) const
+{
+    try {
+        // A classic recording can overwrite an identical online recording. Remove
+        // its old companion even when the replay hash would still match.
+        if (auto *files = Toolkit::getFileManager()) {
+            auto path = std::filesystem::path(filename + ".appearance.json");
+            if (!path.is_absolute()) path = std::filesystem::path(files->getDir(0)) / path;
+            std::error_code ignored;
+            std::filesystem::remove(path, ignored);
+        }
+        if (saveObserver) saveObserver(filename);
+    }
+    catch (...) { /* Cosmetic metadata must never break replay saving or teardown. */ }
 }

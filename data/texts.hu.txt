@@ -4636,6 +4636,10 @@ Térkép lendülete
 
 [game draw]
 
+[settings Show colony skins]
+Kolóniák kinézetének megjelenítése
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Kikapcsolva ezen az eszközön a klasszikus egységek, rajok és épületszínek jelennek meg.
 [settings Hive Mind]
 
 [settings Enable commander shortcuts]
