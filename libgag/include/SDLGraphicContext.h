@@ -716,6 +716,8 @@ namespace GAGCore
 
 		friend class DrawableSurface;
 		// Support functions
+		//! Load every frame from the sheets listed in <filename>.sheet, return false and load nothing if there is no usable index
+		bool loadSheets(const std::string &filename);
 		//! Load a frame from two file pointers
 		void loadFrame(SDL_IOStream *frameStream, SDL_IOStream *rotatedStream);
 		//! Check if index is within bound and return true, assert false and return false otherwise

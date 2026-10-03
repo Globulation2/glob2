@@ -45,6 +45,15 @@ def install_export(exported, destination):
                 or hashlib.sha256(old.read_bytes()).hexdigest() == item["source_sha256"]
             ):
                 obsolete.add(item["source"])
+        # Frames now packed into a sheet: the loader prefers the sheet, so
+        # shipped copies left by an older install are dead weight.
+        for frame in item.get("packed_from", ()):
+            old = destination / frame["source"]
+            if old.is_file() and (
+                legacy_install
+                or hashlib.sha256(old.read_bytes()).hexdigest() == frame["sha256"]
+            ):
+                obsolete.add(frame["source"])
     for relative in obsolete:
         path = destination / relative
         if not path.resolve().is_relative_to(destination.resolve()):

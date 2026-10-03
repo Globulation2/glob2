@@ -86,7 +86,9 @@ python3 tools/unit-animation/render.py install --staged /path/to/work/staged
 
 The installer validates the complete filename set before copying and removes
 obsolete numbered shadow layers. It does not install the JSON report or change
-`unitmini*.png`.
+`unitmini*.png`. The repository keeps one file per frame; packaged builds pack
+them into sprite sheets (see "Release asset and bundle sizes" in
+`docs/development/reference.md`).
 
 The expanded layout has 1,792 consecutive recolorable frames and 1,024 shadow
 frames. Action bases in unit types and saves keep their existing values;
