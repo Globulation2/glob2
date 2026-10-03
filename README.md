@@ -103,3 +103,14 @@ Screenshots: `review/shots-3/` (prefixes: `A-`/`B-` two-guest browser journey, `
 - VoiceOver/TalkBack on the web app, invite and sign-in pages.
 - Desktop feel of Play online moved up the main menu (N-12) and of Leave match moved to the end of the in-game menu (N-8).
 - Decisions: N-15 (paper in-game panel/cards?), N-16 (which hub action is primary for guests), N-14 (hosted dialogs over the room).
+
+## Fix PRs
+
+- Web app: https://github.com/Globulation2/glob2/pull/642 (W-10, W-11, W-12, W-13, W-14, live-stat plurals)
+- Native/online screens: https://github.com/Globulation2/glob2/pull/644 (N-1 … N-13, N-17, N-18 partly)
+- Website: https://github.com/Globulation2/glob2-online-website/pull/5 (strip and search targets, hero note)
+- Evidence: branch `evidence/ux-review-3` (before/after screenshots, axe report)
+
+## Test data to clean up
+
+Password account **UxR3ReviewTest** (created through the guest → sign-in hand-off; it owns Guest-9335's matches); guests Guest-3913, Guest-5097 and the crawl's anonymous visits; closed room FQQ9PU46RZ and Guest-5097's room (abandoned); one room match on Marchland and one Casual match against Warrush on Plantations.
