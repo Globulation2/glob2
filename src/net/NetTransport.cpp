@@ -72,12 +72,6 @@ std::unique_ptr<NetTransport> makeNetTransport(const NetTlsConfig &tls, NetMessa
 #endif
 }
 
-std::string configuredYogEndpoint(const std::string &defaultEndpoint)
-{
-	const char *endpoint = std::getenv("GLOB2_YOG_URL");
-	return endpoint && *endpoint ? endpoint : defaultEndpoint;
-}
-
 std::unique_ptr<NetTransportListener> makeNetTransportListener(const NetListenConfig &config)
 {
 #ifndef __EMSCRIPTEN__

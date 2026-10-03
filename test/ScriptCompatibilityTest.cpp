@@ -3,12 +3,10 @@
 #include "EngineFixtures.h"
 #include "FileFormatVersions.h"
 #include "ScopedEnvironment.h"
-#include "AuthMessages.h"
 #include "OrderMessages.h"
 #include "Order.h"
 #include "ReplayReader.h"
 #include "Version.h"
-#include "YOGClient.h"
 #include <BinaryStream.h>
 #include <StreamBackend.h>
 #include <Toolkit.h>
@@ -89,36 +87,6 @@ TEST_CASE("JavaScript test environment scopes restore SDL and CRT readers" *
 	REQUIRE(_putenv_s(absent.c_str(), "") == 0);
 	REQUIRE(GAGCore::setProcessEnvironment(absent.c_str(), "", 1) == 0);
 #endif
-}
-
-TEST_CASE("Current clients enforce network protocol acceptance boundaries" *
-		  doctest::test_suite("JavaScriptCompatibility"))
-{
-	CHECK(NET_PROTOCOL_VERSION == 51);
-	CHECK(YOG_MIN_CLIENT_NET_PROTOCOL_VERSION == 51);
-	// Exercise the production client handshake branch; transport remains
-	// disconnected, and only the server-information message is injected.
-	for (Uint16 version : {50, 51, 52})
-	{
-		CAPTURE(version);
-		YOGClient client;
-		client.connectionState = YOGClient::WaitingForServerInformation;
-		auto info =
-			std::make_shared<NetSendServerInformation>(YOGAnonymousLogin, YOGMultipleGames, 19);
-		info->netVersion = version;
-		client.nc.received.push(info);
-		client.update();
-		if (version == NET_PROTOCOL_VERSION)
-		{
-			CHECK(client.getConnectionState() == YOGClient::WaitingForLoginInformation);
-			CHECK(client.getPlayerID() == 19);
-		}
-		else
-		{
-			CHECK(client.getConnectionState() == YOGClient::NotConnected);
-			CHECK(client.getLoginState() == YOGClientVersionTooOld);
-		}
-	}
 }
 
 TEST_CASE("JavaScript current text saves validate unused generation counters" *

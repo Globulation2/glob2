@@ -52,7 +52,7 @@ class NativeImageTests(unittest.TestCase):
         self.assertNotEqual(default_directory(baseline), default_directory(candidate))
         for arguments, host in (({'lean_images': '1'}, 'linux'),
                                 ({'lean_images': '1', 'release': '1'}, 'darwin'),
-                                ({'lean_images': '1', 'release': '1', 'server': '1'}, 'linux')):
+                                ({'lean_images': '1', 'release': '1', 'role': 'relay'}, 'linux')):
             with self.assertRaisesRegex(ValueError, 'lean_images'):
                 build_identity(arguments, host=host)
 

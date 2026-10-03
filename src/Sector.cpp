@@ -9,9 +9,7 @@
 #include "BuildingType.h"
 #include <Stream.h>
 
-#ifndef YOG_SERVER_ONLY
 #include "render/GameAnimations.h"
-#endif  // !YOG_SERVER_ONLY
 
 Sector::Sector(Game *game)
 {
@@ -75,7 +73,6 @@ bool Sector::load(GAGCore::InputStream *stream, Game *game, Sint32 versionMinor)
 	return true;
 }
 
-#ifndef YOG_SERVER_ONLY
 void Sector::step(void)
 {
 	assert(map);
@@ -156,4 +153,3 @@ void Sector::step(void)
 		}
 	}
 }
-#endif  // !YOG_SERVER_ONLY
