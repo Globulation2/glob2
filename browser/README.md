@@ -1,7 +1,7 @@
 # Browser platform development
 
 Globulation 2 runs in a full-page browser client with campaigns, tutorials,
-custom games, map editing, local saves and YOG cross-play.
+custom games, map editing, local saves and online play with desktop and mobile players.
 WebGL2 is the default where the browser accelerates it; otherwise the game uses
 the software renderer. `?renderer=webgl2` or `?renderer=software` forces either
 one. The pinned Emscripten 4.0.15 build
@@ -162,17 +162,17 @@ Continue on failure; Continue does not confirm a saved copy.
 ## Scope
 
 The browser client uses mouse and keyboard controls.
-The YOG entry uses native WSS lobby/router listeners. LAN joining requires a certificate trusted by the browser; browser hosting remains unavailable.
-The lobby uses YOG chat; the separate native IRC bridge is unavailable.
-See `docs/browser/gateway.md` for routing. Refreshing or disconnecting during a match ends that player's participation. Voice chat is a no-op; music uses the
+Online play goes through the online hub, as on desktop; matches run over the
+platform's relay. LAN joining requires a certificate trusted by the browser;
+browser hosting remains unavailable. See `docs/browser/gateway.md` for the transports. Refreshing or disconnecting during a match ends that player's participation. Voice chat is a no-op; music uses the
 existing Vorbis mixer. Map fertility is staged privately before publication. Landscape previews run
 on the shared native worker path in threaded builds and one candidate per UI
 timer in the serial fallback; an individual fallback roll remains synchronous. WebGL2 reuses the existing GPU renderer through Emscripten compatibility glue;
 there is no mobile UI adaptation.
 
-Browser and desktop multiplayer clients and YOG must use the same protocol
-(version 41). Update all components together. See the [admission contract](../docs/browser/protocol.md).
-Guests, invitations and coordinated refresh/reconnect recovery remain unfinished.
+Browser and desktop players in one match must run builds with the same sim
+version; the platform and relay check it (see the
+[turn protocol](../docs/multiplayer/turn-protocol.md)).
 
 ## Compatibility note
 
@@ -185,7 +185,7 @@ roll can pause the UI; see [ADR 005](../docs/browser/adr-005-generation-randomne
 Saved-game compatibility remains durable. Replays must meet the current
 `REPLAY_MINIMUM_VERSION_MINOR`; browser import tests use a separately recorded
 fixture under `browser/tests/fixtures`, without replacing shared determinism
-baselines. YOG distributes the host-selected map bytes to every player.
+baselines. Online and LAN players fetch the room's map by its hash.
 
 ## Automated tests
 

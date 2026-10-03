@@ -30,8 +30,6 @@ Počet jednotek příliš daleko od zdroje: %0
 Počet jednotek s příliš nízkou úrovní: %0
 [%0% Uploaded]
 Odesláno %0 %
-[%0's game]
-Hra hráče %0
 [%0's team unit got converted to your team]
 Jednotka týmu %0 přešla na vaši stranu
 [abreaviation explanation A]
@@ -48,8 +46,6 @@ V: Sdílet výhled všech budov
 Přidat mapu
 [add shortcut]
 Přidat zkratku
-[Add]
-Přidat
 [AI Descriptions]
 Popisy umělé inteligence
 [AI]
@@ -124,8 +120,6 @@ Audio
 Automatické ukládání
 [available lan games]
 Dostupné místní hry
-[awaiting players]
-Čeká se na hráče
 [away:]
 pryč:
 [Back]
@@ -140,8 +134,6 @@ Zlepšuje bojovou
 Cvičiště
 [beach size]
 Velikost pláží
-[Blocked Players]
-Blokovaní hráči
 [break]
 Break
 [briefing]
@@ -172,8 +164,6 @@ Kampaň
 Nelze se připojit, hostitel nenalezen
 [Can't host game, port %0 in use]
 Nelze hostit hru, port %0 je obsazen
-[Can't join game, game doesn't exist]
-Nelze se připojit, hra neexistuje
 [Can't join game, game has started]
 Nelze se připojit, hra již začala
 [Can't join game, game is full]
@@ -240,8 +230,6 @@ Pšenice
 počet kráterů
 [crater lakes terrain]
 Kráterová jezera
-[create game]
-Vytvoř hru
 [create map]
 Vytvořit mapu
 [credits]
@@ -290,14 +278,6 @@ Nedělat nic
 Nic nenesu
 [down]
 dolů
-[Download Map]
-Stáhnout mapu
-[Download Maps]
-Stáhnout mapy
-[downloaded %0]
-staženo %0
-[downloading map]
-Stahování mapy
 [edit map]
 Upravit mapu
 [editing map]
@@ -308,10 +288,6 @@ Zkratky editoru
 Editor
 [end]
 End
-[Enter your nickname :]
-Zadej přezdívku :
-[Enter your password :]
-Zadej heslo:
 [enter]
 Enter
 [equals]
@@ -466,12 +442,8 @@ Vybrat další objekt
 úkoly
 [join a game]
 Připojit se do hry
-[join]
-Připojit se
 [keyboard settings]
 Nastavení klávesnice
-[kick]
-Vyhodit
 [lan]
 Síťová hra
 [language incomplete]
@@ -482,8 +454,6 @@ cz
 Jazyk
 [language]
 Česky
-[Leave Game]
-Opustit hru
 [left meta]
 levá Meta
 [left super]
@@ -506,12 +476,6 @@ Načíst záznam hry
 Načíst skript
 [load]
 Nahrát
-[loading map list]
-Načítání seznamu map...
-[Lobby]
-Čekárna
-[login]
-Přihlásit
 [look around]
 Rozhlédnout se
 [Lost : %0 has more prestige than you]
@@ -530,30 +494,14 @@ Pozemní pošk.
 Popis
 [Map Discovered]
 Mapa prozkoumána
-[Map download failure: lost connection]
-Stažení mapy selhalo: spojení s YOG bylo ztraceno
-[Map name: %0]
-Jméno mapy: %0.
 [map name]
 Název
-[map rated]
-Mapa ohodnocena
 [map script]
 Skript mapy
 [map size x]
 Šířka mapy
 [map size y]
 Výška mapy
-[Map upload failure: connection lost]
-Odeslání mapy selhalo: spojení s YOG bylo ztraceno
-[Map upload failure: map name in use]
-Odeslání mapy selhalo. Název mapy se již používá.
-[Map upload failure: unknown reason]
-Odeslání mapy selhalo. Neznámá příčina.
-[Map Upload: Author Name]
-Jméno autora
-[Map Upload: Waiting for reply]
-Čekání na odpověď
 [mark map]
 Označit místo pro spojence
 [market explanation 2]
@@ -580,8 +528,6 @@ ztlumit
 Nová kampaň
 [new map]
 Nová
-[nick taken]
-Zvolená přezdívka se na síti freenode již používá. Budete moci komunikovat pouze přes YOG.
 [no fullscreen]
 * pouze v režimu okna
 [No Hints]
@@ -594,18 +540,10 @@ Zvolená přezdívka se na síti freenode již používá. Budete moci komunikov
 Bez růstu
 [No]
 Ne
-[Not Enough Ratings]
-Nedostatek hodnocení
-[not ready]
-nepřipraven
 [Number Of Buildings]
 Počet budov
-[number of players: %0 (%1 AI)]
-Počet hráčů: %0 (z toho %1 AI)
 [number of players: %0]
 %0 hráčů se připojilo.
-[number of teams: %0]
-%0 týmů.
 [number of teams]
 Počet týmů
 [Number Of Units]
@@ -664,8 +602,6 @@ Pause
 Pauza
 [player name]
 Jméno
-[player rating %0]
-Hodnocení hráče: %0
 [players]
 Hráči
 [please wait]
@@ -704,36 +640,22 @@ Zvyšuje rychlost
 Závodní dráha
 [range]
 Dosah
-[Rated %0]
-Hodnocení: %0
 [ratios]
 Poměry
-[ready?]
-připraven?
-[refresh map list]
-Obnovit seznam map
 [Register a new YOG user with password]
 Registrace nového YOG uživatele s heslem. (nezabezpečené)
-[Register]
-Zaregistrovat se
 [remember unit]
 Pamatovat počty jednotek
-[Remember YOG password localy]
-Zapamatovat heslo místně. (nezabezpečené)
 [remove map]
 Odebrat mapu
 [remove shortcut]
 Odebrat zkratku
-[Remove]
-Odebrat
 [repair building]
 Zahájit/zastavit opravu
 [repair]
 Opravit
 [repeat area]
 opakování stejné krajiny
-[Repeat your password :]
-Zopakujte heslo:
 [replay ended]
 Přehrávání skončilo
 [restore default shortcuts]
@@ -866,14 +788,6 @@ Zobrazit hlavní nabídku
 Zobrazení
 [smoothing]
 Vyhlazení
-[sort by name]
-Název
-[sort by rating]
-Hodnocení
-[sort by size]
-Velikost
-[Sort By]
-Seřadit podle
 [space]
 mezerník
 [start mission]
@@ -906,8 +820,6 @@ pasivní obrany
 Prvek
 [stonewall]
 Kamenná hradba
-[submit rating]
-Odeslat hodnocení
 [svr hostname]
 Název serveru
 [swamp terrain]
@@ -1004,10 +916,6 @@ Mapy
 Tržiště postaveno ...
 [the market is under attack]
 Tržiště je pod útokem
-[The player %0 has joined YOG]
-Hráč %0 se připojil k YOG.
-[The player %0 has left YOG]
-Hráč %0 se odpojil od YOG.
 [the racetrack is finished]
 Závodní dráha je postavena
 [the racetrack is under attack]
@@ -1096,10 +1004,6 @@ Zahájit/zastavit vylepšování
 Výchozí nastavení vylepšování
 [upgrade]
 Vylepšit
-[Upload Map]
-Odeslat mapu
-[upload map]
-Odeslat mapu
 [username]
 Jméno uživatele
 [Version]
@@ -1112,8 +1016,6 @@ Hlasitost hlasu
 Čeká se na %0
 [waiting for key]
 čekání na klávesu...
-[Waiting]
-Čekání
 [Walk]
 Chůze
 [warflag explanation 2]
@@ -1160,50 +1062,8 @@ Pracují
 Zraněných
 [Yes]
 Ano
-[YESTS_CONNECTING]
-Navazuji spojení s YOG metaserverem...
-[YESTS_CONNECTION_LOST]
-Spojení s YOG metaserverem bylo ztraceno.
-[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
-YOG metaserver odmítnul spojení, protože tato přezdívka je už zaregistovaná. Jestliže přezdívka je tvá, nezaškrtávej políčko "Registrace nového YOG uživatele s heslem".
-[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
-YOG metaserver odmítnul spojení, protože heslo nebylo zadáno správně.
-[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-YOG metaserver odmítnul spojení, protože tato přezdívka ještě nemá přidělené heslo. Pro registraci přezdívky s tímto heslem zaškrtni políčko "Registrace nového YOG uživatele s heslem" před připojením. Budeš potřebovat zaškrtnout toto políčko pouze jednou.
-[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
-Metaserver YOG odmítl spojení, protože tato IP adresa je dočasně zablokována. Počkejte na odblokování nebo kontaktujte správce.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 YOG metaserver odmítnul spojení, protože máš příliš starou verzi Globulation2.
-[YESTS_CONNECTION_REFUSED_UNEXPLAINED]
-YOG metaserver odmítnul spojení bez udání důvodu.
-[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
-YOG metaserver odmítnul spojení, protože Tvé jméno je již používáno jiným hráčem.
-[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
-Metaserver YOG odmítl spojení, protože toto uživatelské jméno je zablokováno. Kontaktujte správce.
-[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
-Metaserver YOG odmítl spojení, protože zadané uživatelské jméno je neplatné. Jméno smí obsahovat pouze písmena, číslice a podtržítka.
-[YESTS_CREATED]
-Systém připojení je připraven na kontakt s YOG metaserverem.
-[YESTS_PASSWORDS_DONT_MATCH]
-Zadaná hesla se neshodují. Zadejte je znovu.
-[YESTS_UNABLE_TO_CONNECT]
-Nelze se připojit. Zřejmě je YOG metaserver vypnut.
-[yog block command help]
-/block <playername>    Zablokuje hráče; jeho zprávy už neuvidíte.
-[yog block command player %0 already blocked]
-Hráč %0 je již zablokován
-[yog block command player %0 blocked]
-Hráč %0 byl zablokován
-[yog block command player %0 not found]
-Hráč %0 nebyl nalezen
-[yog command header]
-Seznam příkazů klienta YOG:
-[yog command unknown]
-Neznámý příkaz.
-[yog help command help]
-/help    Zobrazí tuto nápovědu
-[yog]
-Ysagoon Online Gaming
 [you have lost]
 Prohráli jste!
 [you have won]
@@ -1212,12 +1072,8 @@ Vyhrál jsi!
 Byli jste vyhozeni ze hry
 [Your %0 are under attack]
 Vaše jednotka je napadena: %0
-[Your IP address was temporarily banned]
-Vaše IP adresa byla dočasně zablokována. Počkejte na odblokování nebo kontaktujte správce.
 [Your unit got converted to %0's team]
 Vaše jednotka přešla do týmu hráče %0
-[Your username was banned]
-Vaše uživatelské jméno bylo zablokováno. Pro odblokování kontaktujte správce.
 [game speed]
 Rychlost hry
 [decrease game speed]
@@ -3050,8 +2906,6 @@ Postup tažení nebyl uložen. Zkuste to znovu nebo exportujte zálohu.
 Ukončit bez uložení
 [campaign import failed]
 Neplatný soubor postupu nebo jiná verze tažení
-[network release mismatch]
-Protokoly klienta a serveru se liší. Nainstalujte stejnou verzi Glob2 jako server.
 [settings continue]
 Pokračovat
 [settings save failed]
@@ -3414,8 +3268,6 @@ Budiž: %0
 %0 %1
 [resume game]
 Pokračovat ve hře
-[games]
-Hry
 [Add AI]
 Přidat počítač
 [settings Experiments]
@@ -3464,15 +3316,9 @@ Odraz seznamů
 
 [lan discovered host %0]
 
-[lan share pairing]
-
-[lan copy pairing]
-
 [lan connection unavailable]
 
 [lan connection verification failed %0]
-
-[network start refused]
 
 [lan lobby endpoint required]
 
@@ -3685,8 +3531,6 @@ Setrvačnost mapy
 [hub join]
 
 [hub leaderboard]
-
-[hub legacy server]
 
 [hub linked %0]
 

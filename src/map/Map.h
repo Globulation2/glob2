@@ -203,10 +203,8 @@ public:
 	void growResources(void);
 	void recordNaturalGrowth(int x, int y, int resourceType, int oldType, int oldAmount);
 	void rebuildGrowthCoverage();
-#ifndef YOG_SERVER_ONLY
 	//! Do a step associated with map (grow resources and process bullets)
 	void syncStep(Uint32 stepCounter);
-#endif  // !YOG_SERVER_ONLY
 	//! Switch the Fog of War bufferResourceType
 	void switchFogOfWar(void);
 
@@ -757,9 +755,7 @@ public:
 	//! gradient is descended, so the unit heads for the resource that is nearest for
 	//! fetching and carrying it there; without one, for the resource nearest to itself.
 	bool pathfindResource(int teamNumber, Uint8 resourceType, int swimClass, int x, int y, int *dx, int *dy, bool *stopWork, Building *target);
-#ifndef YOG_SERVER_ONLY
 	void pathfindRandom(Unit *unit);
-#endif  // !YOG_SERVER_ONLY
 
 	//! Initialize a fresh building field and retain its search frontier. Point
 	//! queries extend it on demand; buildingGradient returns a complete field.

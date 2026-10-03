@@ -5,18 +5,14 @@
 #include "Map.h"
 #include "gradient/GradientRuntime.h"
 #include "Game.h"
-#ifndef YOG_SERVER_ONLY
 #include "render/SoftwareTerrainCache.h"
-#endif
 #include "Utilities.h"
 #include "Unit.h"
 #include "MapInternal.h"
 #include "BuildingGradientSearch.h"
 #include <algorithm>
 
-#ifndef YOG_SERVER_ONLY
 #include "render/GameAnimations.h"
-#endif  // !YOG_SERVER_ONLY
 
 
 
@@ -287,7 +283,5 @@ void Map::setGame(Game *game)
 	assert(sectors);
 	for (int i=0; i<sizeSector; i++)
 		sectors[i].setGame(game);
-#ifndef YOG_SERVER_ONLY
 	game->animations->resize(sizeSector);
-#endif  // !YOG_SERVER_ONLY
 }

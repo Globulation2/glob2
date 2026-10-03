@@ -23,11 +23,9 @@
 	#define PACKAGE_VERSION "System Specific - not using autoconf"
 #endif
 #include "Version.h"
-#ifndef YOG_SERVER_ONLY
 #include "MapCommand.h"
 #include "OnlineServices.h"
 #include "OnlineHandoff.h"
-#endif
 
 namespace
 {
@@ -130,7 +128,6 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 {
 	for (int  i=1; i<argc; i++)
 	{
-#ifndef YOG_SERVER_ONLY
 		if (strcmp(argv[i], "-nox")==0 || strcmp(argv[i], "--nox")==0)
 		{
 			bool good=true;
@@ -155,21 +152,6 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 				printf("\n");
 				exit(0);
 			}
-		}
-		else if (strcmp(argv[i], "-daemon")==0)
-		{
-			runNoX=true;
-			hostServer=true;
-		}
-		else if (strcmp(argv[i], "-router")==0)
-		{
-			runNoX=true;
-			hostRouter=true;
-		}
-		else if (strcmp(argv[i], "-admin-router")==0)
-		{
-			runNoX=true;
-			adminRouter=true;
 		}
 		else if (strcmp(argv[i], "-test-games")==0 || strcmp(argv[i], "-test-games-nox")==0)
 		{
@@ -317,12 +299,6 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			replayFileName = requireStringArg(i, argc, argv,
 				"usage:\n-replay <replay file name>\n");
 		}
-		else if (strcmp(argv[i], "-y")==0)
-		{
-			// TODO: Let this option really change hostname.
-			yogHostName = requireStringArg(i, argc, argv,
-				"usage:\n-y <hostname>");
-		}
 		else if (strcmp(argv[i],"-s")==0)
 		{
 			if (i+1 < argc)
@@ -377,7 +353,6 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			i += consumed - 1;
 		}
 		else
-#endif  // !YOG_SERVER_ONLY
 		if (strcmp(argv[i], "-version")==0 || strcmp(argv[i], "--version")==0)
 		{
 			printf("\nGlobulation 2 - %s\n\n", PACKAGE_VERSION);
@@ -399,7 +374,6 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("\nGlobulation 2\n");
 			printf("Command line arguments:\n");
 			printf("switches:\n");
-#ifndef YOG_SERVER_ONLY
 			printf("-c/-C\tenable/disable custom cursor\n");
 			printf("-f/-F\tset/clear full screen\n");
 			printf("-g/-G\tenable/disable OpenGL acceleration (GPU use)\n");
@@ -416,11 +390,6 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("-u <username>\tspecify a user name\n");
 			printf("--join <invite link or code>\tjoin an online room (also: a glob2:// or https://<instance>/j/<code> link)\n");
 			printf("--instance <origin>\tthe instance of an invite code given to --join\n");
-#ifndef GLOB2_CHINA_RELEASE
-			printf("-y <hostname>\tspecify an alternative hostname for YOG server\n");
-			printf("-daemon\t runs the YOG server\n");
-			printf("-router\t runs the YOG game router\n");
-#endif
 			printf("-nox <game file name> \t runs the game without using the X server\n");
 			printf("-textshot <directory>\t takes pictures of various translation texts as they are drawn on the screen, requires the convert command\n");
 			printf("-test-games\tCreates random games with AI and tests them\n");
@@ -434,12 +403,8 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("\t\t(pair with GLOB2_TEST_SEED for a reproducible scenario)\n");
 			printMapCommandHelp();
 			printf("-test-map-gen\tGenerates random maps endlessly, without gui\n");
-#ifndef GLOB2_CHINA_RELEASE
-			printf("-admin-router Allows you to connect to a YOG router to do administration\n");
-#endif
 			printf("-vs <name>\tsave a videoshot as name\n");
 			printf("-replay <replay file name>\t replay the game stored in the specified file.\n");
-#endif  // !YOG_SERVER_ONLY
 			printf("-version\tprint the version and exit\n");
 			exit(0);
 		}

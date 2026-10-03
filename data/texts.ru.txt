@@ -30,8 +30,6 @@
 %0 юнитов слишком низкого уровня
 [%0% Uploaded]
 %0% загружено
-[%0's game]
-игра %0'а
 [%0's team unit got converted to your team]
 Юнит из команды %0 перешёл в вашу команду
 [abreaviation explanation A]
@@ -48,8 +46,6 @@ V: Показ поля зрения для всех зданий
 Доб. карту
 [add shortcut]
 Доб. гор. клавишу
-[Add]
-Добавить
 [AI Descriptions]
 Описание AI
 [AI]
@@ -124,8 +120,6 @@ alt-%0
 Автосохранение
 [available lan games]
 Доступные сетевые игры
-[awaiting players]
-Ожидание игроков
 [away:]
 отсутствует:
 [Back]
@@ -140,8 +134,6 @@ backspace
 Казармы
 [beach size]
 размер пляжей
-[Blocked Players]
-Блокированные игроки
 [break]
 break
 [briefing]
@@ -172,8 +164,6 @@ Ctrl + Тянуть = Линия
 Невозможно подключиться: хост не найден
 [Can't host game, port %0 in use]
 Невозможно создать игру, порт %0 занят
-[Can't join game, game doesn't exist]
-Невозможно присоединиться к игре: игра не существует
 [Can't join game, game has started]
 Невозможно присоединиться к игре: игра уже началась
 [Can't join game, game is full]
@@ -240,8 +230,6 @@ control-%0
 число кратеров
 [crater lakes terrain]
 Кратерные озера
-[create game]
-Создать игру
 [create map]
 Создать карту
 [credits]
@@ -290,14 +278,6 @@ Ctrl - Линия
 Ничего не несёт
 [down]
 вниз
-[Download Map]
-Скачать карту
-[Download Maps]
-Скачать карты
-[downloaded %0]
-%0 скачано
-[downloading map]
-Скачивание карты
 [edit map]
 Ред. карту
 [editing map]
@@ -308,10 +288,6 @@ Ctrl - Линия
 Редактор
 [end]
 end
-[Enter your nickname :]
-Введите Ваш ник:
-[Enter your password :]
-Введите Ваш пароль:
 [enter]
 enter
 [equals]
@@ -468,12 +444,8 @@ insert
 заданий
 [join a game]
 Присоединиться к игре
-[join]
-Присоединиться
 [keyboard settings]
 Клавиатура
-[kick]
-Выкинуть
 [lan]
 Сетевая игра
 [language incomplete]
@@ -484,8 +456,6 @@ ru
 Язык
 [language]
 Русский
-[Leave Game]
-Покинуть игру
 [left meta]
 левая Meta
 [left super]
@@ -510,12 +480,6 @@ ru
 Загр. скрипт
 [load]
 Загрузить
-[loading map list]
-Загрузка списка карт...
-[Lobby]
-Лобби
-[login]
-Вход
 [look around]
 Осмотреться
 [Lost : %0 has more prestige than you]
@@ -534,30 +498,14 @@ ru
 Описание
 [Map Discovered]
 Карта раскрыта
-[Map download failure: lost connection]
-Не удалось скачать карту: потеряно соединение с YOG
-[Map name: %0]
-Название карты: %0.
 [map name]
 Название
-[map rated]
-Рейтинг карты
 [map script]
 Скрипт карты
 [map size x]
 Ширина карты
 [map size y]
 Высота карты
-[Map upload failure: connection lost]
-Ошибка загрузки карты. Потеряно соединение с YOG.
-[Map upload failure: map name in use]
-Ошибка загрузки карты. Такое название карты уже используется.
-[Map upload failure: unknown reason]
-Ошибка загрузки карты. Причина неизвестна.
-[Map Upload: Author Name]
-Автор
-[Map Upload: Waiting for reply]
-Ожидание ответа
 [mark map]
 Пометить карту для союзников
 [market explanation 2]
@@ -584,8 +532,6 @@ meta-%0
 Новая кампания
 [new map]
 Новая карта
-[nick taken]
-К сожалению, выбранное имя уже занято на freenode, взаимодействие возможно только посредством YOG
 [no fullscreen]
 * только в оконном режиме
 [No Hints]
@@ -598,16 +544,8 @@ meta-%0
 Без роста
 [No]
 Нет
-[Not Enough Ratings]
-Недостаточный рейтинг
-[not ready]
-не готов
 [Number Of Buildings]
 Количество зданий
-[number of players: %0 (%1 AI)]
-%0 игроков (%1 AI)
-[number of teams: %0]
-%0 команд
 [number of teams]
 число команд
 [Number Of Units]
@@ -666,8 +604,6 @@ pause
 Пауза
 [player name]
 Имя игрока
-[player rating %0]
-Рейтинг игрока: %0
 [players]
 Игроки
 [please wait]
@@ -706,34 +642,20 @@ print screen
 Стадион
 [range]
 Расстояние
-[Rated %0]
-Рейтинг %0
 [ratios]
 Пропорции
-[ready?]
-готов?
-[refresh map list]
-Обновить список карт
-[Register]
-Регистрация
 [remember unit]
 Помнить число юнитов
-[Remember YOG password localy]
-Запомнить пароль локально.
 [remove map]
 Удал. карту
 [remove shortcut]
 Удал. гор. клавишу
-[Remove]
-Удалить
 [repair building]
 Начать/Остановить Починку
 [repair]
 Починка
 [repeat area]
 количество повторений ландшафта
-[Repeat your password :]
-Повторите пароль:
 [replay ended]
 Повтор окончен
 [restore default shortcuts]
@@ -866,14 +788,6 @@ V: зажать для речевой связи
 Отображение
 [smoothing]
 Сглаживание
-[sort by name]
-Имя
-[sort by rating]
-Рейтинг
-[sort by size]
-Размер
-[Sort By]
-Осортировать по
 [space]
 пробел
 [start mission]
@@ -906,8 +820,6 @@ V: зажать для речевой связи
 Элемент пассивной
 [stonewall]
 Каменная стена
-[submit rating]
-Опубликовать рейтинг
 [svr hostname]
 Имя хоста
 [swamp terrain]
@@ -1004,10 +916,6 @@ tab
 Рынок построен
 [the market is under attack]
 Рынок атакован
-[The player %0 has joined YOG]
-Игрок %0 подсоединился к YOG.
-[The player %0 has left YOG]
-Игрок %0 покинул YOG.
 [the racetrack is finished]
 Стадион построен
 [the racetrack is under attack]
@@ -1096,10 +1004,6 @@ tab
 Улучшения
 [upgrade]
 Улучшение
-[Upload Map]
-Загрузить карту
-[upload map]
-Загрузить карту
 [username]
 Имя пользователя
 [Version]
@@ -1112,8 +1016,6 @@ tab
 Ожидание %0
 [waiting for key]
 ожидание клавиши...
-[Waiting]
-Ожидание
 [Walk]
 Идёт
 [warflag explanation 2]
@@ -1160,50 +1062,8 @@ tab
 раненых
 [Yes]
 Да
-[YESTS_CONNECTING]
-Подключение к метасерверу YOG...
-[YESTS_CONNECTION_LOST]
-Соединение с YOG только что прервалось.
-[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
-Метасервер YOG отказал в соединении, потому что это имя уже было зарегистрировано с паролем. Если вы регистрировали этого пользователя, деактивируйте опцию "Регистрировать нового пользователя YOG с паролем" внизу.
-[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
-Метасервер YOG отказал в соединении, потому что вы указали неверный пароль.
-[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-Метасервер YOG отказал в соединении, потому что для данного пользователя не задан пароль. Вероятно, вы хотите зарегистрировать это имя с вашим паролем. Поэтому, активируйте опцию "Зарегистрировать нового пользователя YOG с паролем" перед тем, как соединяться. Вам придётся сделать это только один раз.
-[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
-Метасервер YOG отклонил соединение, так как этот IP адрес времено запрещен. Вам надо подождать пока он не будет разблокирован или связаться с администраторами.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 Метасервер YOG отказал в соединении, потому что ваша версия Globulation 2 устарела. Пожалуйста, возьмите последнюю версию с www.globulation2.org чтобы сыграть online.
-[YESTS_CONNECTION_REFUSED_UNEXPLAINED]
-Метасервер YOG отказал в соединении без объяснения причин!
-[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
-Метасервер YOG отказал в соединении, потому что ваше имя уже используется кем-то ещё.
-[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
-Метасервер YOG отклонил соединение, так как такое имя пользователя заблокировано. Пожалуйста, свяжитесь с администраторами.
-[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
-Метасервер YOG отклонил соединение, так как данное имя пользователя недопустимо. Имя пользователя может содержать только буквы, цифры и нижние подчёркивания.
-[YESTS_CREATED]
-Система соединения готова обратиться к метасерверу YOG за подключением.
-[YESTS_PASSWORDS_DONT_MATCH]
-Введён неверный пароль. Наберите снова.
-[YESTS_UNABLE_TO_CONNECT]
-Невозможно соединиться. Очевидно, метасервер YOG не работает.
-[yog block command help]
-/block <имя игрока>    Блокирует игрока, вы больше не увидите его сообщения
-[yog block command player %0 already blocked]
-Игрок %0 уже заблокирован
-[yog block command player %0 blocked]
-Игрок %0 заблокирован
-[yog block command player %0 not found]
-Игрок %0 не найден
-[yog command header]
-Текущий список команд YOG клиента:
-[yog command unknown]
-Неизвестная команда
-[yog help command help]
-/help    Показывает эту справку
-[yog]
-Ysagoon-игра в Интернете
 [you have lost]
 Вы проиграли!
 [you have won]
@@ -1212,12 +1072,8 @@ Ysagoon-игра в Интернете
 Вас выкинули из игры
 [Your %0 are under attack]
 %0 под ударом
-[Your IP address was temporarily banned]
-Ваш IP-адрес временно запрещён. Вам надо подождать пока он не будет разблокирован или связаться с администраторами.
 [Your unit got converted to %0's team]
 Ваш юнит перешёл в команду %0
-[Your username was banned]
-Ваше имя пользователя запрещено. Пожалуйста свяжитесь с администраторами, чтобы это изменить.
 [game speed]
 Скорость игры
 [decrease game speed]
@@ -3048,8 +2904,6 @@ Emoji
 Выйти без сохранения
 [campaign import failed]
 Недопустимый файл прогресса или другая версия кампании
-[network release mismatch]
-Протоколы клиента и сервера различаются. Установите ту же версию Glob2, что и на сервере.
 [settings continue]
 Продолжить
 [settings save failed]
@@ -3412,8 +3266,6 @@ Emoji
 %0 %1
 [resume game]
 Продолжить игру
-[games]
-Игры
 [Add AI]
 Добавить ИИ
 [settings Experiments]
@@ -3462,15 +3314,9 @@ Emoji
 
 [lan discovered host %0]
 
-[lan share pairing]
-
-[lan copy pairing]
-
 [lan connection unavailable]
 
 [lan connection verification failed %0]
-
-[network start refused]
 
 [lan lobby endpoint required]
 
@@ -3683,8 +3529,6 @@ Emoji
 [hub join]
 
 [hub leaderboard]
-
-[hub legacy server]
 
 [hub linked %0]
 

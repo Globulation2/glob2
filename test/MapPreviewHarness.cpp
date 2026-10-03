@@ -13,9 +13,6 @@
 #include "EngineFixtures.h"
 #include "GlobalContainer.h"
 #include "Map.h"
-#include "YOGClient.h"
-#include "YOGClientDownloadableMapList.h"
-#include "MapDatabaseMessages.h"
 #include "BinaryStream.h"
 #include "Toolkit.h"
 #include "StringTable.h"
@@ -175,54 +172,6 @@ struct MapPreviewHarness
 			}
 		std::cout << "PASS rectangular placement, positive/negative multi-period drags and inverse "
 					 "drags\n";
-	}
-	static void network()
-	{
-		REQUIRE(NET_Init());
-		YOGClient client;
-		YOGClientDownloadableMapList list(&client);
-		MapHeader header;
-		header.setMapName("Preview test");
-		YOGDownloadableMapInfo info(header);
-		info.setMapID(7);
-		info.setDimensions(512, 256);
-		info.setSize(100);
-		list.receiveMessage(
-			std::make_shared<NetDownloadableMapInfos>(std::vector<YOGDownloadableMapInfo>{info}));
-		using S = YOGClientDownloadableMapList::ThumbnailState;
-		REQUIRE(list.getThumbnailState("Preview test") == S::Empty);
-		list.requestThumbnail("Preview test");
-		REQUIRE(list.getThumbnailState("Preview test") == S::Loading);
-		list.thumbnailCache[7].requestedAt = SDL_GetTicks() - 100;
-		auto requested = list.thumbnailCache[7].requestedAt;
-		list.requestThumbnail("Preview test");
-		REQUIRE(list.thumbnailCache[7].requestedAt == requested);
-		list.thumbnailCache[7].requestedAt = SDL_GetTicks() - 8001;
-		REQUIRE(list.getThumbnailState("Preview test") == S::Failed);
-		list.requestThumbnail("Preview test", true);
-		REQUIRE(list.getThumbnailState("Preview test") == S::Loading);
-		list.receiveMessage(std::make_shared<NetSendMapThumbnail>(7, MapThumbnail()));
-		REQUIRE(list.getThumbnailState("Preview test") == S::Failed);
-		list.requestThumbnail("Preview test", true);
-		auto image = terrain(9, 8);
-		list.receiveMessage(std::make_shared<NetSendMapThumbnail>(7, image));
-		REQUIRE(list.getThumbnailState("Preview test") == S::Ready);
-		list.requestMapListUpdate();
-		list.receiveMessage(
-			std::make_shared<NetDownloadableMapInfos>(std::vector<YOGDownloadableMapInfo>{info}));
-		REQUIRE(list.getMapThumbnail("Preview test").pixels() == image.pixels());
-		info.setSize(101);
-		list.receiveMessage(
-			std::make_shared<NetDownloadableMapInfos>(std::vector<YOGDownloadableMapInfo>{info}));
-		REQUIRE(list.getThumbnailState("Preview test") == S::Empty);
-		for (int id = 0; id < 50; ++id)
-		{
-			info.setMapID(id);
-			list.thumbnailEntry(info);
-		}
-		REQUIRE(list.thumbnailCache.size() == 32);
-		std::cout << "PASS online deduplication, timeout/retry, failure, refresh cache, revision "
-					 "invalidation and eviction\n";
 	}
 	static void visuals(const std::string &output)
 	{
@@ -528,11 +477,6 @@ TEST_SUITE("MapPreview")
 	{
 		glob2test::HeadlessGlobals globals({.loadStrings = true});
 		MapPreviewHarness::codec();
-	}
-	TEST_CASE("map database messages and download previews")
-	{
-		glob2test::HeadlessGlobals globals({.loadStrings = true});
-		MapPreviewHarness::network();
 	}
 	TEST_CASE("native widget events and custom lobby captures [display][artifacts]")
 	{

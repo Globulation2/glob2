@@ -265,11 +265,8 @@ class ChangedPathsTest(unittest.TestCase):
 
     def test_windows_cache_writes_require_authorized_event_and_successful_build(self):
         workflow = (SCRIPT.parents[2] / ".github/workflows/build.yml").read_text()
-        for job, build in (("windows", "build_glob2_and_the_regression_harnesses"),
-                           ("windows-server", "build_the_yog_server")):
+        for job, build in (("windows", "build_glob2_and_the_regression_harnesses"),):
             block = workflow.split(f"  {job}:\n", 1)[1].split("\n  # The browser checks", 1)[0]
-            if job == "windows":
-                block = block.split("\n  windows-server:", 1)[0]
             for step in ("Drop cache entries this run did not use", "Save the compiler cache"):
                 guard = re.search(r"      - name: " + re.escape(step) +
                                   r"\n.*?        if: \$\{\{ (.*?) \}\}", block, re.S).group(1)
@@ -307,11 +304,8 @@ class ChangedPathsTest(unittest.TestCase):
 
     def test_windows_git_newline_policy_is_pinned_before_cache_and_build(self):
         workflow = (SCRIPT.parents[2] / ".github/workflows/build.yml").read_text()
-        for job, build in (("windows", "Build glob2 and the regression harnesses"),
-                           ("windows-server", "Build the YOG server")):
+        for job, build in (("windows", "Build glob2 and the regression harnesses"),):
             block = workflow.split(f"  {job}:\n", 1)[1].split("\n  # The browser checks", 1)[0]
-            if job == "windows":
-                block = block.split("\n  windows-server:", 1)[0]
             with self.subTest(job=job):
                 checkout = block.index("      - uses: actions/checkout@v4")
                 pin = block.index("        run: git config --local core.autocrlf true")
