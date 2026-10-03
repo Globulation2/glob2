@@ -116,9 +116,12 @@ void MapEdit::handleBrushClick(int mx, int my)
 		const bool add = (brushMode == BrushTool::MODE_ADD);
 		const AreaBrushTarget target = areaBrushTarget();
 		const Uint32 teamBit = 1u << team;
+		// The farm brush refuses ground nothing can grow on, as it does in game.
+		const bool honourFarmTerrain = add && brushType == FarmAreaBrush;
 		for (int y=startY; y<startY+height; y++)
 			for (int x=startX; x<startX+width; x++)
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstX, firstY))
+				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstX, firstY)
+					&& !(honourFarmTerrain && !game.map.canPaintFarmArea(x, y)))
 				{
 					Uint32& tileMask = game.map.getTile(x, y).*target.tileMask;
 					if (add)
@@ -146,6 +149,8 @@ MapEdit::AreaBrushTarget MapEdit::areaBrushTarget()
 		return {&Tile::guardArea, game.map.displayedGuardAreaView};
 	case ClearAreaBrush:
 		return {&Tile::clearArea, game.map.displayedClearAreaView};
+	case FarmAreaBrush:
+		return {&Tile::farmArea, game.map.displayedFarmAreaView};
 	default:
 		assert(false);
 		return {&Tile::forbidden, game.map.displayedForbiddenView};

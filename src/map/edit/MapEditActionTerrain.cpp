@@ -106,6 +106,11 @@ bool MapEdit::performTerrainAction(const std::string& action, float relMouseX, f
 	{
 		beginZonePlacement(GuardAreaBrush);
 	}
+	else if(action=="select farm zone")
+	{
+		if(farmingZone)
+			beginZonePlacement(FarmAreaBrush);
+	}
 	else if(action=="handle zone click")
 	{
 		if(brushType==NoBrush)
