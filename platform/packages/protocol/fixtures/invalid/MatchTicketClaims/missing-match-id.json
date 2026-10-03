@@ -1,0 +1,22 @@
+{
+  "iss": "https://play.example.org",
+  "aud": "glob2-relay",
+  "sub": "0b8f6f2e-3c4d-4e5f-8a9b-0c1d2e3f4a5b",
+  "jti": "a9b8c7d6-e5f4-4a3b-9c2d-1e0f9a8b7c6d",
+  "iat": 1790000000,
+  "nbf": 1790000000,
+  "exp": 1790000600,
+  "seat": 0,
+  "accountId": "0b8f6f2e-3c4d-4e5f-8a9b-0c1d2e3f4a5b",
+  "simVersion": {
+    "versionMinor": 125,
+    "netProtocol": 49,
+    "dataHash": "3f9a6c1e8b2d47a05e6f1c2b3a4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f"
+  },
+  "humanSeats": [
+    0,
+    1
+  ],
+  "relayUrl": "wss://relay-eu1.play.example.org/relay",
+  "entitlements": []
+}

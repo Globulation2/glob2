@@ -1,0 +1,579 @@
+import { sql } from 'kysely';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { STANDARD_RULES } from '@glob2/protocol';
+import { createMigrator, migrateToLatest, type Database } from '../src/index.ts';
+import { createTestDatabase, type TestDatabase } from './support.ts';
+
+type ColumnLists = { [T in keyof Database]: readonly (keyof Database[T] & string)[] };
+
+/** Every column of every table, as typed in src/schema.ts. */
+const typedColumns: ColumnLists = {
+  accounts: [
+    'id',
+    'kind',
+    'display_name',
+    'role',
+    'status',
+    'muted_until',
+    'created_at',
+    'updated_at',
+    'last_seen_at',
+  ],
+  identities: [
+    'id',
+    'account_id',
+    'provider',
+    'subject',
+    'email',
+    'password_hash',
+    'created_at',
+    'last_used_at',
+  ],
+  device_credentials: [
+    'id',
+    'account_id',
+    'credential_hash',
+    'platform',
+    'created_at',
+    'last_used_at',
+    'revoked_at',
+  ],
+  refresh_tokens: [
+    'id',
+    'account_id',
+    'family_id',
+    'token_hash',
+    'client_platform',
+    'issued_at',
+    'expires_at',
+    'rotated_at',
+    'revoked_at',
+  ],
+  signin_attempts: [
+    'id',
+    'confirmation_code',
+    'provider',
+    'status',
+    'requesting_account_id',
+    'account_id',
+    'created_at',
+    'expires_at',
+    'completed_at',
+  ],
+  entitlements: [
+    'id',
+    'account_id',
+    'entitlement',
+    'source',
+    'granted_at',
+    'expires_at',
+    'revoked_at',
+  ],
+  admin_audit_log: [
+    'id',
+    'actor_account_id',
+    'action',
+    'target_type',
+    'target_id',
+    'details',
+    'created_at',
+  ],
+  blobs: [
+    'sha256',
+    'size',
+    'content_type',
+    'storage_key',
+    'visibility',
+    'owner_account_id',
+    'created_at',
+  ],
+  relays: [
+    'id',
+    'public_url',
+    'region',
+    'build',
+    'turn_protocol',
+    'max_matches',
+    'active_matches',
+    'connections',
+    'cpu',
+    'draining',
+    'registered_at',
+    'last_heartbeat_at',
+  ],
+  engine_agents: ['id', 'sim_version', 'kinds', 'build', 'started_at', 'last_seen_at'],
+  engine_jobs: [
+    'id',
+    'kind',
+    'sim_version',
+    'payload',
+    'status',
+    'result',
+    'error',
+    'agent_id',
+    'created_at',
+    'completed_at',
+  ],
+  maps: [
+    'id',
+    'owner_account_id',
+    'title',
+    'description',
+    'visibility',
+    'hidden',
+    'hidden_reason',
+    'play_count',
+    'download_count',
+    'created_at',
+    'updated_at',
+  ],
+  map_versions: [
+    'id',
+    'map_id',
+    'hash',
+    'size',
+    'width',
+    'height',
+    'team_count',
+    'min_version_minor',
+    'preview_hash',
+    'validation',
+    'validation_error',
+    'created_at',
+  ],
+  map_likes: ['map_id', 'account_id', 'created_at'],
+  map_reports: [
+    'id',
+    'map_id',
+    'reporter_account_id',
+    'reason',
+    'details',
+    'status',
+    'resolved_by_account_id',
+    'created_at',
+    'resolved_at',
+  ],
+  rooms: [
+    'id',
+    'code',
+    'name',
+    'visibility',
+    'status',
+    'host_account_id',
+    'sim_version',
+    'settings',
+    'revision',
+    'match_id',
+    'created_at',
+    'updated_at',
+    'closed_at',
+  ],
+  room_members: ['room_id', 'account_id', 'connected', 'joined_at', 'last_seen_at'],
+  room_seats: ['room_id', 'seat', 'team', 'occupant', 'account_id', 'ai_id', 'ai_name', 'ready'],
+  room_chat_messages: ['id', 'room_id', 'account_id', 'text', 'sent_at'],
+  matches: [
+    'id',
+    'sim_version',
+    'origin',
+    'room_id',
+    'queue_id',
+    'rated',
+    'status',
+    'verification',
+    'setup',
+    'seed',
+    'map_hash',
+    'relay_id',
+    'end_reason',
+    'final_tick',
+    'desync_flagged',
+    'created_at',
+    'started_at',
+    'ended_at',
+  ],
+  rating_entities: ['id', 'kind', 'account_id', 'ai_id', 'ai_sim_version', 'created_at'],
+  ratings: [
+    'entity_id',
+    'ladder',
+    'mu',
+    'sigma',
+    'ordinal',
+    'games',
+    'wins',
+    'last_match_id',
+    'updated_at',
+  ],
+  match_participants: [
+    'match_id',
+    'seat',
+    'team',
+    'kind',
+    'account_id',
+    'ai_id',
+    'rating_entity_id',
+    'display_name',
+    'outcome',
+    'disconnects',
+    'quit_tick',
+    'rating_before',
+    'rating_after',
+  ],
+  match_team_stats: [
+    'match_id',
+    'team',
+    'outcome',
+    'prestige',
+    'eliminated_tick',
+    'statistics',
+    'timeline',
+  ],
+  match_artifacts: ['match_id', 'kind', 'blob_sha256', 'created_at'],
+  queue_tickets: [
+    'id',
+    'queue_id',
+    'account_id',
+    'sim_version',
+    'region_rtts',
+    'rating_mu',
+    'rating_sigma',
+    'status',
+    'match_id',
+    'created_at',
+    'updated_at',
+  ],
+};
+
+const SIM = `125-49-${'3f'.repeat(32)}`;
+const HASH = 'ab'.repeat(32);
+const HASH2 = 'cd'.repeat(32);
+
+let database: TestDatabase;
+
+beforeAll(async () => {
+  database = await createTestDatabase({ migrate: false });
+});
+
+afterAll(async () => {
+  await database?.drop();
+});
+
+describe('migrations', () => {
+  it('apply from an empty database and are idempotent', async () => {
+    const first = await migrateToLatest(database.db);
+    expect(first.map((r) => [r.migrationName, r.status])).toEqual([['0001_initial', 'Success']]);
+    expect(await migrateToLatest(database.db)).toEqual([]);
+    const status = await createMigrator(database.db).getMigrations();
+    expect(status.every((m) => m.executedAt instanceof Date)).toBe(true);
+  });
+
+  it('match the typed schema column for column', async () => {
+    const rows = await sql<{ table_name: string; column_name: string }>`
+      SELECT table_name, column_name FROM information_schema.columns
+      WHERE table_schema = 'public' AND table_name NOT LIKE 'platform_migrations%'
+      ORDER BY table_name, ordinal_position`.execute(database.db);
+    const actual: Record<string, string[]> = {};
+    for (const row of rows.rows) (actual[row.table_name] ??= []).push(row.column_name);
+    const expected = Object.fromEntries(
+      Object.entries(typedColumns).map(([table, columns]) => [table, [...columns].sort()]),
+    );
+    expect(Object.fromEntries(Object.entries(actual).map(([t, c]) => [t, [...c].sort()]))).toEqual(
+      expected,
+    );
+  });
+});
+
+describe('data model', () => {
+  it('stores and links a full match lifecycle through the typed interface', async () => {
+    const db = database.db;
+    const alice = await db
+      .insertInto('accounts')
+      .values({ kind: 'registered', display_name: 'Alice' })
+      .returningAll()
+      .executeTakeFirstOrThrow();
+    expect(alice.role).toBe('user');
+    expect(alice.created_at).toBeInstanceOf(Date);
+    const guest = await db
+      .insertInto('accounts')
+      .values({ kind: 'guest', display_name: 'Guest 4821' })
+      .returning('id')
+      .executeTakeFirstOrThrow();
+
+    await db
+      .insertInto('identities')
+      .values({
+        account_id: alice.id,
+        provider: 'google',
+        subject: '10769150350006150715113082367',
+      })
+      .execute();
+    await db
+      .insertInto('device_credentials')
+      .values({ account_id: guest.id, credential_hash: HASH, platform: 'android' })
+      .execute();
+    await db
+      .insertInto('refresh_tokens')
+      .values({
+        account_id: alice.id,
+        family_id: crypto.randomUUID(),
+        token_hash: HASH2,
+        expires_at: new Date(Date.now() + 86_400_000),
+      })
+      .execute();
+    await db
+      .insertInto('signin_attempts')
+      .values({ confirmation_code: 'KQ7M2X', expires_at: new Date(Date.now() + 600_000) })
+      .execute();
+    await db
+      .insertInto('admin_audit_log')
+      .values({
+        actor_account_id: alice.id,
+        action: 'grant-admin',
+        target_type: 'account',
+        target_id: alice.id,
+      })
+      .execute();
+
+    await db
+      .insertInto('blobs')
+      .values([
+        {
+          sha256: HASH,
+          size: 1234,
+          content_type: 'application/x-glob2-map',
+          storage_key: `blobs/ab/${HASH}`,
+        },
+        {
+          sha256: HASH2,
+          size: 99,
+          content_type: 'application/octet-stream',
+          storage_key: `blobs/cd/${HASH2}`,
+        },
+      ])
+      .execute();
+    await db
+      .insertInto('relays')
+      .values({
+        id: 'relay-1',
+        public_url: 'wss://relay.example.org/relay',
+        region: 'eu-west',
+        build: 'test',
+        turn_protocol: 1,
+        max_matches: 10,
+      })
+      .execute();
+    await db
+      .insertInto('engine_agents')
+      .values({
+        id: 'agent-1',
+        sim_version: SIM,
+        kinds: ['verify-match', 'generate-map'],
+        build: 'test',
+      })
+      .execute();
+    const agent = await db.selectFrom('engine_agents').selectAll().executeTakeFirstOrThrow();
+    expect(agent.kinds).toEqual(['verify-match', 'generate-map']);
+    await db
+      .insertInto('engine_jobs')
+      .values({
+        kind: 'generate-map',
+        sim_version: SIM,
+        payload: JSON.stringify({ generator: {} }),
+      })
+      .execute();
+
+    const map = await db
+      .insertInto('maps')
+      .values({ owner_account_id: alice.id, title: 'Four Corners', visibility: 'public' })
+      .returning('id')
+      .executeTakeFirstOrThrow();
+    await db
+      .insertInto('map_versions')
+      .values({ map_id: map.id, hash: HASH, size: 1234, width: 128, height: 128, team_count: 4 })
+      .execute();
+    await db.insertInto('map_likes').values({ map_id: map.id, account_id: guest.id }).execute();
+    await db
+      .insertInto('map_reports')
+      .values({ map_id: map.id, reporter_account_id: guest.id, reason: 'broken' })
+      .execute();
+
+    const room = await db
+      .insertInto('rooms')
+      .values({
+        code: 'K7QX2M',
+        name: "Alice's room",
+        visibility: 'link',
+        host_account_id: alice.id,
+        sim_version: SIM,
+        settings: JSON.stringify({ rules: STANDARD_RULES, teams: [], experiments: [] }),
+      })
+      .returningAll()
+      .executeTakeFirstOrThrow();
+    expect((room.settings as { rules: unknown }).rules).toEqual(STANDARD_RULES);
+    await db
+      .insertInto('room_members')
+      .values({ room_id: room.id, account_id: alice.id })
+      .execute();
+    await db
+      .insertInto('room_seats')
+      .values([
+        {
+          room_id: room.id,
+          seat: 0,
+          team: 0,
+          occupant: 'human',
+          account_id: alice.id,
+          ready: true,
+        },
+        { room_id: room.id, seat: 1, team: 1, occupant: 'ai', ai_id: 'cortex', ai_name: 'AI 2' },
+      ])
+      .execute();
+    await db
+      .insertInto('room_chat_messages')
+      .values({ room_id: room.id, account_id: alice.id, text: 'gl hf' })
+      .execute();
+
+    const match = await db
+      .insertInto('matches')
+      .values({
+        sim_version: SIM,
+        origin: 'queue',
+        queue_id: 'ranked-1v1',
+        rated: true,
+        setup: JSON.stringify({ schemaVersion: 1 }),
+        seed: 4294967295,
+        map_hash: HASH,
+        relay_id: 'relay-1',
+      })
+      .returningAll()
+      .executeTakeFirstOrThrow();
+    expect(match.seed).toBe(4294967295);
+    await db
+      .updateTable('rooms')
+      .set({ match_id: match.id, status: 'in_match' })
+      .where('id', '=', room.id)
+      .execute();
+
+    const [person, ai] = await db
+      .insertInto('rating_entities')
+      .values([
+        { kind: 'account', account_id: alice.id },
+        { kind: 'ai', ai_id: 'cortex', ai_sim_version: SIM },
+      ])
+      .returning('id')
+      .execute();
+    await db
+      .insertInto('ratings')
+      .values([
+        { entity_id: person!.id, ladder: 'ranked-1v1', mu: 25, sigma: 25 / 3 },
+        { entity_id: ai!.id, ladder: 'ranked-1v1', mu: 30, sigma: 4 },
+      ])
+      .execute();
+    const top = await db
+      .selectFrom('ratings')
+      .select(['entity_id', 'ordinal'])
+      .where('ladder', '=', 'ranked-1v1')
+      .orderBy('ordinal', 'desc')
+      .execute();
+    expect(top[0]!.entity_id).toBe(ai!.id);
+    expect(top[0]!.ordinal).toBeCloseTo(18);
+
+    await db
+      .insertInto('match_participants')
+      .values([
+        {
+          match_id: match.id,
+          seat: 0,
+          team: 0,
+          kind: 'human',
+          account_id: alice.id,
+          rating_entity_id: person!.id,
+          display_name: 'Alice',
+          outcome: 'won',
+        },
+        {
+          match_id: match.id,
+          seat: 1,
+          team: 1,
+          kind: 'ai',
+          ai_id: 'cortex',
+          rating_entity_id: ai!.id,
+          display_name: 'AI 2',
+          outcome: 'lost',
+        },
+      ])
+      .execute();
+    await db
+      .insertInto('match_team_stats')
+      .values({
+        match_id: match.id,
+        team: 0,
+        outcome: 'won',
+        prestige: 210,
+        statistics: JSON.stringify({ units: 61 }),
+      })
+      .execute();
+    await db
+      .insertInto('match_artifacts')
+      .values({ match_id: match.id, kind: 'record', blob_sha256: HASH2 })
+      .execute();
+    await db
+      .insertInto('queue_tickets')
+      .values({
+        queue_id: 'ranked-1v1',
+        account_id: guest.id,
+        sim_version: SIM,
+        region_rtts: JSON.stringify([{ region: 'eu-west', rttMs: 30 }]),
+      })
+      .execute();
+    await db
+      .insertInto('entitlements')
+      .values({ account_id: alice.id, entitlement: 'supporter', source: 'test' })
+      .execute();
+
+    const history = await db
+      .selectFrom('match_participants as p')
+      .innerJoin('matches as m', 'm.id', 'p.match_id')
+      .select(['m.id', 'p.outcome', 'm.queue_id'])
+      .where('p.account_id', '=', alice.id)
+      .execute();
+    expect(history).toEqual([{ id: match.id, outcome: 'won', queue_id: 'ranked-1v1' }]);
+  });
+
+  it('enforces the integrity rules', async () => {
+    const db = database.db;
+    const account = await db
+      .insertInto('accounts')
+      .values({ kind: 'guest', display_name: 'Rules' })
+      .returning('id')
+      .executeTakeFirstOrThrow();
+    // Bad hash domain.
+    await expect(
+      db
+        .insertInto('blobs')
+        .values({ sha256: 'XYZ', size: 1, content_type: 'x', storage_key: 'k' })
+        .execute(),
+    ).rejects.toThrow();
+    // An AI rating entity needs a sim version.
+    await expect(
+      db.insertInto('rating_entities').values({ kind: 'ai', ai_id: 'numbi' }).execute(),
+    ).rejects.toThrow();
+    // One waiting queue ticket per account.
+    await db
+      .insertInto('queue_tickets')
+      .values({ queue_id: 'q', account_id: account.id, sim_version: SIM })
+      .execute();
+    await expect(
+      db
+        .insertInto('queue_tickets')
+        .values({ queue_id: 'q2', account_id: account.id, sim_version: SIM })
+        .execute(),
+    ).rejects.toThrow(/queue_tickets_one_waiting_idx/);
+    // A queue match must name its queue.
+    await expect(
+      db
+        .insertInto('matches')
+        .values({ sim_version: SIM, origin: 'queue', setup: '{}', seed: 1, map_hash: HASH })
+        .execute(),
+    ).rejects.toThrow();
+  });
+});

@@ -17,8 +17,32 @@ SPEC.loader.exec_module(ci_changed_paths)
 
 
 class ChangedPathsTest(unittest.TestCase):
-    def assert_jobs(self, paths, **expected):
-        self.assertEqual(ci_changed_paths.classify(paths), expected)
+    def assert_jobs(self, paths, platform=None, **expected):
+        # The TypeScript platform job runs on platform/ changes and with full CI.
+        if platform is None:
+            platform = all(expected.values())
+        self.assertEqual(ci_changed_paths.classify(paths), {**expected, "platform": platform})
+
+    def test_platform_only(self):
+        self.assert_jobs(
+            ["platform/apps/api/src/app.ts", "platform/package-lock.json"],
+            native=False, browser=False, map_generators=False,
+            deployment=False, cross_platform=False, platform=True,
+        )
+
+    def test_platform_docs_only(self):
+        self.assert_jobs(
+            ["platform/README.md", "docs/multiplayer/architecture.md"],
+            native=False, browser=False, map_generators=False,
+            deployment=False, cross_platform=False, platform=False,
+        )
+
+    def test_protocol_fixtures_run_platform_and_native_contract_tests(self):
+        self.assert_jobs(
+            ["platform/packages/protocol/fixtures/valid/MatchSetup/catalog-1v1.json"],
+            native=True, browser=False, map_generators=False,
+            deployment=False, cross_platform=False, platform=True,
+        )
 
     def test_documentation_only(self):
         self.assert_jobs(
@@ -226,6 +250,14 @@ class ChangedPathsTest(unittest.TestCase):
                         }
                         # Evaluate only the exact, asserted expression above.
                         self.assertEqual(eval(expression, {"__builtins__": {}}, context), allowed)
+
+    def test_every_inline_build_checks_out_the_selected_revision(self):
+        workflow = (SCRIPT.parents[2] / ".github/workflows/build.yml").read_text()
+        checkouts = workflow.split("      - uses: actions/checkout@v4\n")[1:]
+        self.assertTrue(checkouts)
+        for checkout in checkouts:
+            step = checkout.split("\n      - ", 1)[0]
+            self.assertIn("ref: ${{ inputs.revision || github.sha }}", step)
 
     def test_windows_git_newline_policy_is_pinned_before_cache_and_build(self):
         workflow = (SCRIPT.parents[2] / ".github/workflows/build.yml").read_text()

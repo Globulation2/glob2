@@ -5,7 +5,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 FLAGS = ('native', 'browser', 'map_generators', 'deployment', 'cross_platform',
-         'android', 'windows', 'compatibility', 'variants', 'coverage', 'tsan', 'macos')
+         'android', 'windows', 'compatibility', 'variants', 'coverage', 'tsan', 'macos', 'platform')
 LABELS = {'ci:run', 'ci:full', 'ci:windows', 'ci:android', 'ci:browsers'}
 SIMULATION = ('src/ai/', 'src/unit/', 'src/building/', 'src/team/', 'src/map/',
               'src/sgsl/', 'src/sim/', 'src/Order')
@@ -55,6 +55,14 @@ def select(paths, labels=(), known=False):
         return full(), [{'path': None, 'checks': list(FLAGS), 'reason': 'diff unavailable'}]
     for path in paths:
         if cheap_path(path):
+            continue
+        if path.startswith('platform/'):
+            # The TypeScript platform has its own job. Generated contract fixtures
+            # are also consumed by the C++ contract tests.
+            if path.startswith('platform/packages/protocol/fixtures/'):
+                add(path, 'native', 'platform')
+            else:
+                add(path, 'platform')
             continue
         if path == 'test/map-generator-golden.txt':
             add(path, 'map_generators', 'compatibility')

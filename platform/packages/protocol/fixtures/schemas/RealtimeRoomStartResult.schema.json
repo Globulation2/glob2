@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:RealtimeRoomStartResult",
+  "title": "RealtimeRoomStartResult",
+  "type": "object",
+  "required": [
+    "matchId"
+  ],
+  "properties": {
+    "matchId": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "description": "Lowercase UUID."
+    }
+  }
+}

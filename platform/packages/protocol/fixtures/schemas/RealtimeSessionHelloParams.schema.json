@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:RealtimeSessionHelloParams",
+  "title": "RealtimeSessionHelloParams",
+  "type": "object",
+  "required": [
+    "protocol",
+    "client"
+  ],
+  "properties": {
+    "protocol": {
+      "type": "number",
+      "const": 1
+    },
+    "client": {
+      "type": "object",
+      "required": [
+        "platform",
+        "version",
+        "simVersion"
+      ],
+      "properties": {
+        "platform": {
+          "anyOf": [
+            {
+              "type": "string",
+              "const": "desktop"
+            },
+            {
+              "type": "string",
+              "const": "android"
+            },
+            {
+              "type": "string",
+              "const": "ios"
+            },
+            {
+              "type": "string",
+              "const": "browser"
+            }
+          ],
+          "description": "Kind of game client."
+        },
+        "version": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "simVersion": {
+          "type": "object",
+          "required": [
+            "versionMinor",
+            "netProtocol",
+            "dataHash"
+          ],
+          "properties": {
+            "versionMinor": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 65535,
+              "description": "VERSION_MINOR in src/Version.h (save and simulation format)."
+            },
+            "netProtocol": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 65535,
+              "description": "NET_PROTOCOL_VERSION in src/Version.h."
+            },
+            "dataHash": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$",
+              "description": "Lowercase hex SHA-256 over the build's simulation data files, as computed by the engine."
+            }
+          },
+          "additionalProperties": false,
+          "description": "Identity of a deterministic simulation build."
+        }
+      },
+      "additionalProperties": false
+    },
+    "accessToken": {
+      "type": "string",
+      "maxLength": 4096
+    }
+  },
+  "additionalProperties": false
+}
