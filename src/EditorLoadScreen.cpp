@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EditorLoadScreen.h"
 #include "MapEdit.h"
+#include "GlobalContainer.h"
 #include "Utilities.h"
 #include <iostream>
 #include <PerformanceTelemetry.h>
@@ -11,10 +12,18 @@ EditorLoadScreen::EditorLoadScreen(const std::string &filename, GAGCore::Coopera
 }
 EditorLoadScreen::EditorLoadScreen(Initializer initialize, const char *caption,
 								   GAGCore::CooperativeSlice slice)
-	: slice(std::move(slice)), previousRng(getSyncRandState()), editor(std::make_unique<MapEdit>())
+	: slice(std::move(slice)), previousRng(getSyncRandState())
 {
 	status = Glob2UI::tr(caption);
-	task.emplace(initialize(*editor));
+	task.emplace(prepare(std::move(initialize)));
+}
+GAGCore::CooperativeTask EditorLoadScreen::prepare(Initializer initialize)
+{
+	// The editor draws with the game sprites, which the browser may still be
+	// downloading; natively they are loaded and this does not suspend.
+	co_await globalContainer->gameGraphicsTask();
+	editor = std::make_unique<MapEdit>();
+	co_return co_await initialize(*editor);
 }
 Glob2UI::Element EditorLoadScreen::build(const Glob2UI::Presentation &p)
 {

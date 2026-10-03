@@ -16,6 +16,7 @@ class Glob2AssetLoader {
     this.progress = {};
     this.cache = null;
     this.cacheReady = null;
+    this.installed = [];
     for (const entry of manifest.packages) this.states[entry.name] = entry.optional ? 'idle' : 'pending';
   }
   static cacheName = 'glob2-assets-v1';
@@ -117,12 +118,18 @@ class Glob2AssetLoader {
           this.host.fs.createPath('/', directory.slice(1), true, true);
           directories.add(directory);
         }
+        // A later package may replace a file (the full font replaces the core
+        // package's subset); the game reopens it when told (takeInstalled).
+        if (this.host.fs.analyzePath(path).exists) this.host.fs.unlink(path);
         // The file system owns the slice; packages are never written back.
         this.host.fs.createDataFile(directory, path.slice(slash + 1), contents[index].subarray(start, end), true, true, true);
       }
     });
     this.states[name] = 'ready';
+    this.installed.push(name);
   }
+  // Packages installed since the last call (ApplicationHost::takeInstalledAssetPackages).
+  takeInstalled() { return this.installed.splice(0); }
   async load(name, between) {
     if (this.states[name] === 'ready') return;
     this.states[name] = 'downloading';
@@ -163,18 +170,40 @@ if (typeof Module !== 'undefined' && Module.glob2AssetManifest && typeof window 
   // Start the core download while the runtime and WebAssembly are still loading.
   const core = loader.download('core');
   loader.states.core = 'downloading';
+  // Startup packages are run dependencies, like --preload-file: main() waits for
+  // them. Core always; the page may add others (the full font for a Chinese,
+  // Japanese or Korean interface) until the runtime starts. They install in
+  // request order, so a later package can replace a core file.
+  const required = new Set(), queued = [];
+  let preRunDone = false, installing = Promise.resolve(), failed = false;
+  const fail = (name, error) => {
+    loader.states[name] = 'failed';
+    if (failed) return;
+    failed = true;
+    Module.printErr?.('Game data download failed: ' + (error?.message || error));
+    if (Module.glob2AssetError) Module.glob2AssetError(error);
+    else Module.setStatus?.('Game data download failed');
+  };
+  const requireNow = name => {
+    if (required.has(name) || loader.states[name] === 'ready' || !loader.manifest.packages.some(entry => entry.name === name)) return;
+    required.add(name);
+    const dependency = 'glob2-assets-' + name;
+    addRunDependency(dependency);
+    loader.states[name] = 'downloading';
+    const contents = name === 'core' ? core : loader.download(name);
+    installing = installing.then(async () => {
+      try {
+        loader.install(name, await contents);
+        removeRunDependency(dependency);
+        if (name === 'core') loader.prune();
+      } catch (error) { fail(name, error); }
+    });
+  };
+  Module.glob2RequireAsset = name => { if (preRunDone) requireNow(name); else queued.push(name); };
   if (typeof Module.preRun === 'function') Module.preRun = [Module.preRun];
   (Module.preRun ??= []).push(() => {
-    addRunDependency('glob2-assets-core');
-    core.then(contents => {
-      loader.install('core', contents);
-      removeRunDependency('glob2-assets-core');
-      loader.prune();
-    }, error => {
-      loader.states.core = 'failed';
-      Module.printErr?.('Game data download failed: ' + (error?.message || error));
-      if (Module.glob2AssetError) Module.glob2AssetError(error);
-      else Module.setStatus?.('Game data download failed');
-    });
+    preRunDone = true;
+    requireNow('core');
+    for (const name of queued.splice(0)) requireNow(name);
   });
 }

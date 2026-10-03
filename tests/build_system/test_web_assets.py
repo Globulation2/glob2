@@ -14,8 +14,12 @@ import web_assets
 class WebAssetPlanTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.packages, cls.skipped = web_assets.plan(ROOT)
-        cls.owner = {path: name for name, paths in cls.packages.items() for path in paths}
+        cls.packages, cls.skipped, cls.substitutes = web_assets.plan(ROOT)
+        # The first package a path is in (the font is in core and font-cjk).
+        cls.owner = {}
+        for name, paths in cls.packages.items():
+            for path in paths:
+                cls.owner.setdefault(path, name)
 
     def test_simulation_data_starts_with_the_game(self):
         # The sim version key and the WebAssembly checksum traces read these files.
@@ -30,11 +34,49 @@ class WebAssetPlanTests(unittest.TestCase):
 
     def test_runtime_files_the_menus_need_are_core(self):
         for path in ('data/fonts/sans.ttf', 'data/fonts/LICENSE-DejaVu.txt', 'data/texts.list.txt',
-                     'data/texts.keys.txt', 'data/authors.txt', 'data/zik/menu.ogg', 'data/gfx/menu-wordmark.png',
-                     'data/gfx/loading-wordmark.png', 'maps/FourSquares1.map.gz'):
+                     'data/texts.keys.txt', 'data/authors.txt', 'data/gfx/menu-wordmark.png',
+                     'data/gfx/menu-colony.png', 'data/gfx/loading-wordmark.png', 'data/gfx/guitheme0.png',
+                     'data/gfx/rotatingEarth0.png', 'data/menu/colony.bin',
+                     'data/gui/editor0.png', 'maps/FourSquares1.map.gz'):
             self.assertEqual(self.owner.get(path), 'core', path)
 
+    def test_in_game_sprites_follow_the_main_menu(self):
+        # GlobalContainer::loadGameGraphics, including every building's artwork.
+        for path in ('data/gfx/unit0r.png', 'data/gfx/unit1000.png', 'data/gfx/terrain0.png', 'data/gfx/water0.png', 'data/gfx/gamegui0.png',
+                     'data/gfx/ressource0.png', 'data/gfx/particle0.png', 'data/gfx/swarm0b0.png',
+                     'data/gfx/inn0b0r.png', 'data/gfx/racetrack2b0.png', 'data/gfx/minibuildingsite5.png',
+                     'data/gfx/explorationflag0r.png', 'data/gfx/wallc0.png'):
+            self.assertEqual(self.owner.get(path), 'game', path)
+        # The browser never draws the game cursor (it always shows the system one).
+        self.assertEqual(self.owner['data/gfx/cursor/normal0r.png'], 'game')
+        # Nothing else ends up there: every game file is a frame of a game sprite.
+        self.assertTrue(all(p.startswith('data/gfx/') and p.endswith('.png') for p in self.packages['game']))
+        self.assertFalse(web_assets.game_files(['data/gfx/unitmini0.png'], {'unit'}))
+        self.assertTrue(web_assets.game_files(['data/gfx/inn0b12r.png'], {'inn0b'}))
+
+    def test_core_ships_the_browser_copies_and_font_cjk_the_full_font(self):
+        self.assertEqual(sorted(self.substitutes), ['data/fonts/sans.ttf', 'data/gfx/menu-colony.png',
+                                                    'data/gfx/menu-wordmark.png'],
+                         'browser/assets is stale: run python3 browser/derive_assets.py')
+        self.assertEqual(self.packages['font-cjk'], ['data/fonts/sans.ttf'])
+        self.assertIn('data/fonts/sans.ttf', self.packages['core'])
+
+    def test_core_has_english_and_every_language_name(self):
+        self.assertEqual(self.owner['data/texts.en.txt'], 'core')
+        self.assertIn('data/texts.ja.txt', self.packages['translations'])
+        self.assertNotIn('data/texts.en.txt', self.packages['translations'])
+        stub = web_assets.contents(ROOT, 'core', 'data/texts.ja.txt', {}).decode()
+        lines = stub.split('\n')
+        pairs = dict(zip(lines[0::2], lines[1::2]))
+        self.assertEqual(pairs['[language-code]'], 'ja')
+        self.assertEqual(pairs['[language]'], '日本語')
+        self.assertEqual(set(pairs) - {''}, set(web_assets.STUB_KEYS))
+        full = web_assets.contents(ROOT, 'translations', 'data/texts.ja.txt', {})
+        self.assertEqual(full, (ROOT / 'data/texts.ja.txt').read_bytes())
+
     def test_music_and_artwork_the_game_reloads_per_match_are_optional(self):
+        self.assertEqual(self.owner['data/zik/intro.ogg'], 'menu-music')
+        self.assertEqual(self.owner['data/zik/menu.ogg'], 'menu-music')
         self.assertEqual(self.owner['data/zik/original/a1.ogg'], 'music')
         self.assertEqual(self.owner['data/highres/v1/frames.txt'], 'hd')
         self.assertTrue(all(p.startswith('data/highres/') for p in self.packages['hd']))
@@ -63,15 +105,68 @@ class WebAssetPackageTests(unittest.TestCase):
                 for part in entry['parts']:
                     blob = (output / part['url']).read_bytes()
                     self.assertEqual(len(blob), part['size'])
-                    if entry['optional']:
+                    if entry['optional'] and len(part['files']) > 1:
                         self.assertLessEqual(part['size'], web_assets.PART_BYTES + 2_000_000)
                     for path, start, end in part['files'][:50]:
-                        self.assertEqual(blob[start:end], (ROOT / path.lstrip('/')).read_bytes(), path)
+                        self.assertEqual(blob[start:end], web_assets.contents(ROOT, entry['name'], path.lstrip('/'),
+                                                                              web_assets.derived_assets(ROOT)), path)
             script = (output / 'asset-manifest.js').read_text()
             self.assertIn('Module["glob2AssetManifest"] ??= ', script)
             # A rebuild without changes writes the same names.
             again = web_assets.build(ROOT, output, output / 'asset-manifest.js')
             self.assertEqual(again, manifest)
+
+
+class BrowserCopyTests(unittest.TestCase):
+    def test_a_stale_copy_falls_back_to_the_original(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            texts = [p.relative_to(ROOT).as_posix() for p in (ROOT / 'data').glob('texts.*.txt')]
+            for path in texts + ['browser/derive_assets.py', 'browser/assets/sources.json',
+                         'data/gfx/menu-colony.png', 'data/gfx/menu-wordmark.png', 'data/fonts/sans.ttf',
+                         'browser/assets/sans-core.ttf', 'browser/assets/menu-colony.jpg', 'browser/assets/menu-wordmark.png']:
+                (root / path).parent.mkdir(parents=True, exist_ok=True)
+                (root / path).write_bytes((ROOT / path).read_bytes())
+            self.assertEqual(len(web_assets.derived_assets(root)), 3)
+            (root / 'data/gfx/menu-colony.png').write_bytes(b'changed')
+            self.assertEqual(sorted(web_assets.derived_assets(root)), ['data/fonts/sans.ttf', 'data/gfx/menu-wordmark.png'])
+
+    def test_a_copy_stands_in_for_a_re_encoded_export_when_smaller(self):
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory)
+            (source / 'data/gfx').mkdir(parents=True)
+            (source / 'data/gfx/menu-wordmark.webp').write_bytes(b'x' * 2_000_000)
+            (source / 'data/gfx/menu-colony.webp').write_bytes(b'x' * 1000)
+            files = ['data/gfx/menu-wordmark.webp', 'data/gfx/menu-colony.webp', 'data/fonts/sans.ttf']
+            derived = web_assets.derived_assets(ROOT)
+            self.assertEqual(web_assets.exported_substitutes(ROOT, source, files, derived),
+                             {'data/gfx/menu-wordmark.webp': 'browser/assets/menu-wordmark.png',
+                              'data/fonts/sans.ttf': 'browser/assets/sans-core.ttf'})
+
+    def test_the_core_font_has_every_glyph_but_the_appended_cjk_ones(self):
+        try:
+            from fontTools.pens.recordingPen import DecomposingRecordingPen
+            from fontTools.ttLib import TTFont
+        except ImportError:
+            self.skipTest('fontTools is not installed')
+        full = TTFont(ROOT / 'data/fonts/sans.ttf', lazy=True)
+        core = TTFont(ROOT / 'browser/assets/sans-core.ttf', lazy=True)
+        full_map, core_map = full.getBestCmap(), core.getBestCmap()
+        original = {cp for cp, name in full_map.items() if not name.startswith('cjk')}
+        self.assertLessEqual(original, set(core_map))
+        # Outlines and advances of the original glyphs are unchanged.
+        full_glyphs, core_glyphs = full.getGlyphSet(), core.getGlyphSet()
+        for cp in sorted(original)[::7]:
+            name, kept = full_map[cp], core_map[cp]
+            self.assertEqual(full['hmtx'][name], core['hmtx'][kept], hex(cp))
+            outlines = []
+            for glyphs, glyph in ((full_glyphs, name), (core_glyphs, kept)):
+                pen = DecomposingRecordingPen(glyphs)
+                glyphs[glyph].draw(pen)
+                outlines.append(pen.value)
+            self.assertEqual(outlines[0], outlines[1], hex(cp))
+        for table in ('GSUB', 'GPOS', 'kern', 'hhea', 'OS/2', 'fpgm', 'prep', 'cvt '):
+            self.assertEqual(table in full, table in core, table)
 
 
 class InstallWebClientTests(unittest.TestCase):

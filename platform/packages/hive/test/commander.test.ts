@@ -114,3 +114,54 @@ it('uncertain provider outcomes retain reservations and never retry automaticall
     ).rows[0]?.status,
   ).toBe('uncertain');
 });
+
+it('settles a late provider response after stop without reporting or executing its orders', async () => {
+  const { s, account, sessions } = await fixture(database.db);
+  const credits = new Credits(database.db);
+  await credits.adjust(account, randomUUID(), 100, 'grant');
+  await sessions.command(s.id, randomUUID(), 'Build an inn', false);
+  let entered!: () => void;
+  let release!: (value: ModelStep) => void;
+  const started = new Promise<void>((resolve) => {
+    entered = resolve;
+  });
+  const held = new Promise<ModelStep>((resolve) => {
+    release = resolve;
+  });
+  const commander = new Commander(
+    database.db,
+    {
+      step: async () => {
+        entered();
+        return held;
+      },
+    },
+    rate,
+    'test',
+  );
+  const running = commander.run(s.id);
+  await started;
+  await sessions.stop(s.id);
+  commander.stop(s.id);
+  release({
+    ...response,
+    text: 'The cancelled order is complete.',
+    calls: [{ input: { kind: 'list' } }],
+  });
+  await running;
+  expect((await credits.balance(account)).reserved).toBe(0);
+  expect((await credits.balance(account)).balance).toBeLessThan(100);
+  expect(
+    await database.db
+      .selectFrom('hive_operations')
+      .select('id')
+      .where('session_id', '=', s.id)
+      .execute(),
+  ).toEqual([]);
+  expect(
+    (await sessions.events(s.id)).some(
+      (event) => (event.body as { text?: string }).text === 'The cancelled order is complete.',
+    ),
+  ).toBe(false);
+  expect((await sessions.get(s.id)).pending_run).toBe(false);
+});

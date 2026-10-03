@@ -189,6 +189,8 @@ export class Sessions {
   async stop(id: string) {
     await this.db.transaction().execute(async (db) => {
       await this.get(id, db, true);
+      await sql`UPDATE hive_programs SET supervised=false WHERE session_id=${id}`.execute(db);
+      await sql`UPDATE hive_operations SET supervised=false WHERE session_id=${id}`.execute(db);
       await sql`UPDATE hive_sessions SET generation=generation+1,supervision=false,pending_run=false WHERE id=${id}`.execute(
         db,
       );
@@ -256,7 +258,7 @@ export class Sessions {
       ).rows[0];
       if (Number(queued?.count) >= 16)
         throw new HiveError('conflict', 'Wait for the current colony orders to finish.');
-      await sql`INSERT INTO hive_operations(id,session_id,generation,status,request) VALUES(${op},${id},${generation},'pending',${JSON.stringify(tool)}::jsonb)`.execute(
+      await sql`INSERT INTO hive_operations(id,session_id,generation,status,request,supervised) VALUES(${op},${id},${generation},'pending',${JSON.stringify(tool)}::jsonb,${session.supervision})`.execute(
         db,
       );
     });
@@ -281,6 +283,7 @@ export class Sessions {
           status: string;
           request: unknown;
           result: unknown;
+          supervised: boolean;
           lease: string;
         }>`SELECT * FROM hive_operations WHERE id=${operation} AND session_id=${id} FOR UPDATE`.execute(
           db,
@@ -305,8 +308,8 @@ export class Sessions {
         const tool = parse(HiveTool, op.request);
         if (tool.kind === 'install' || tool.kind === 'replace') {
           const p = tool.program;
-          await sql`INSERT INTO hive_programs(session_id,id,revision,definition,status) VALUES(${id},${p.id},${p.revision},${JSON.stringify(p)}::jsonb,'active')
-      ON CONFLICT(session_id,id) DO UPDATE SET revision=EXCLUDED.revision,definition=EXCLUDED.definition,status='active'`.execute(
+          await sql`INSERT INTO hive_programs(session_id,id,revision,definition,status,supervised) VALUES(${id},${p.id},${p.revision},${JSON.stringify(p)}::jsonb,'active',${op.supervised})
+      ON CONFLICT(session_id,id) DO UPDATE SET revision=EXCLUDED.revision,definition=EXCLUDED.definition,status='active',supervised=hive_programs.supervised OR EXCLUDED.supervised`.execute(
             db,
           );
         } else if (tool.kind === 'pause' || tool.kind === 'resume' || tool.kind === 'remove') {
@@ -326,11 +329,17 @@ export class Sessions {
       if (s.lease !== lease || !s.lease_until || +s.lease_until < Date.now())
         throw new HiveError('conflict', 'Commander connection expired.');
       const p = (
-        await sql`SELECT id FROM hive_programs WHERE session_id=${id} AND id=${wake.programId} AND revision=${wake.revision} AND status='active'`.execute(
+        await sql<{
+          supervised: boolean;
+        }>`SELECT supervised FROM hive_programs WHERE session_id=${id} AND id=${wake.programId} AND revision=${wake.revision} AND status='active'`.execute(
           db,
         )
       ).rows[0];
       if (!p || wake.tick > Number(s.tick) || wake.tick < Number(s.last_wake_tick ?? 0))
+        return false;
+      // A delivery retry must not create another report or consume the wake budget,
+      // even if it arrives with a later tick or a different coalescing key.
+      if (!(await this.event(id, `wake-receipt:${wake.eventId}`, 'wake_receipt', {}, db)))
         return false;
       if (
         !(await this.event(
@@ -343,15 +352,12 @@ export class Sessions {
       )
         return false;
       await this.report(id, wake.reason, db);
-      if (
-        !s.supervision ||
-        (s.last_wake_tick !== null && wake.tick - Number(s.last_wake_tick) < 25)
-      )
+      if (!p.supervised || (s.last_wake_tick !== null && wake.tick - Number(s.last_wake_tick) < 25))
         return false;
       const count = s.wake_window && Date.now() - +s.wake_window < 60000 ? s.wake_count : 0;
       if (count >= HIVE_LIMITS.wakesPerMinute) return false;
       // Credit check is advisory here; the runner reserves transactionally before every call.
-      const balance = await new Credits(this.db).balance(s.account_id);
+      const balance = await new Credits(this.db).balance(s.account_id, db);
       if (balance.available <= 0) return false;
       await this.event(id, `accepted:${wake.eventId}`, 'trigger', wake, db);
       await sql`UPDATE hive_sessions SET pending_run=true,last_wake_tick=${wake.tick},wake_count=${count + 1},
@@ -374,12 +380,24 @@ export class Sessions {
       if (events.length)
         await sql`UPDATE hive_sessions SET pending_run=false WHERE id=${id}`.execute(db);
       // Never replay stale alerts after a top-up or a long disconnection.
-      return s.supervision
-        ? events
-            .filter((e) => Date.now() - +e.created_at < 30000)
-            .slice(-8)
-            .map((e) => e.body)
-        : [];
+      const authorized = (
+        await sql<{
+          id: string;
+          revision: number;
+        }>`SELECT id,revision FROM hive_programs WHERE session_id=${id} AND supervised=true AND status='active'`.execute(
+          db,
+        )
+      ).rows;
+      return events
+        .filter((e) => {
+          const wake = e.body as HiveWake;
+          return (
+            Date.now() - +e.created_at < 30000 &&
+            authorized.some((p) => p.id === wake.programId && p.revision === wake.revision)
+          );
+        })
+        .slice(-8)
+        .map((e) => e.body);
     });
   }
   async events(id: string, after: string = '0') {

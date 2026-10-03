@@ -5,6 +5,7 @@
 #include <emscripten/threading.h>
 #include <BrowserTextInput.h>
 #include <InterfacePresentation.h>
+#include <algorithm>
 #include <map>
 #include <set>
 #include <cstdlib>
@@ -298,6 +299,39 @@ std::unique_ptr<FileSelection> selectFile(const std::string& extension) {
     return std::make_unique<BrowserFileSelection>(extension);
 }
 bool storageRestoreFailed() { return MAIN_THREAD_EM_ASM_INT({ return Module.storageRestore === 'failed'; }); }
+// Packages come from browser/asset-loader.js on the page's thread. A build without a package of that
+// name (for instance the test harness, which preloads everything) has the data.
+bool assetPackageReady(const char* name)
+{
+    return MAIN_THREAD_EM_ASM_INT({
+        const assets = Module.glob2Assets;
+        const name = UTF8ToString($0);
+        if (!assets || !assets.manifest.packages.some(entry => entry.name === name)) return 1;
+        return assets.states[name] === 'ready' ? 1 : 0;
+    }, name);
+}
+std::vector<std::string> takeInstalledAssetPackages()
+{
+    std::vector<std::string> names;
+    char* list = reinterpret_cast<char*>(MAIN_THREAD_EM_ASM_PTR({
+        const installed = Module.glob2Assets?.takeInstalled?.() || [];
+        if (!installed.length) return 0;
+        const text = installed.join('\n');
+        const size = lengthBytesUTF8(text) + 1;
+        const pointer = _malloc(size);
+        stringToUTF8(text, pointer, size);
+        return pointer;
+    }));
+    if (!list) return names;
+    std::string text(list);
+    std::free(list);
+    for (std::size_t start = 0; start <= text.size();) {
+        const std::size_t end = std::min(text.find('\n', start), text.size());
+        if (end > start) names.push_back(text.substr(start, end - start));
+        start = end + 1;
+    }
+    return names;
+}
 bool canExportFiles() { return true; }
 bool exportFile(const std::string& name, const std::vector<unsigned char>& bytes)
 {
