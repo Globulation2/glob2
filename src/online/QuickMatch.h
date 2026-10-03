@@ -118,8 +118,9 @@ class QuickMatch
 	void fail(const ApiError &error);
 
 	PlatformClient &client;
+	// Requests and listeners with handlers, cancelled with the search.
+	PlatformScope calls;
 	Environment env;
-	std::vector<PlatformClient::ListenerId> listeners;
 	Phase state = Phase::Idle;
 	std::optional<QueueInfo> chosen;
 	bool allowAi = true;

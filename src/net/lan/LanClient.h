@@ -39,9 +39,11 @@ namespace Lan
 		{
 			std::string endpoint; ///< the host's pairing string
 			std::string name;
-			/// Empty: downloaded maps go to the client's shared map cache
-			/// (Online::services().maps, online/maps/ in the user directory). Otherwise
-			/// a private Online::MapCache rooted at this absolute directory (tests).
+			/// Where downloaded maps go: this cache when set; else, with cacheDirectory
+			/// empty, the user directory's shared cache (Online::sharedMapCache(),
+			/// online/maps/, which never starts the online platform client); else a
+			/// private Online::MapCache rooted at that absolute directory (tests).
+			Online::MapCache* mapCache = nullptr;
 			std::string cacheDirectory;
 			/// While playing, how long the guest keeps trying to reach a vanished host.
 			std::uint64_t hostLossGiveUpMicros = 120000000;

@@ -137,6 +137,26 @@ doctest binary of its own (the relay role builds no engine or SDL code). Run it
 directly, then `python3 -m unittest discover -s tests/relay -v` for the end-to-end
 tests against the real binary. `test/fixtures/relay-tickets/` copies the protocol
 package's ticket fixtures. See [docs/multiplayer/relay.md](../docs/multiplayer/relay.md#tests).
+## Online screens and test switches
+
+Release builds have no switch that opens an online screen directly; players reach
+them through the online hub. To look at a screen offline, render its canned states:
+`test/OnlineUIFixtures.h` holds the fixtures (hub, room, match start, quick match,
+profile, maps) for the `UIPresentation` cases and `scons release=1 mobile-gallery`.
+`PlatformClientTest` in the unit binary covers the client's request lifetimes,
+including screens destroyed with requests in flight.
+
+Switches the online and LAN tests use:
+
+- `--instance <origin>`: the instance an invite code given with `--join <code>`
+  belongs to; a `glob2://` or `https://<instance>/j/<code>` argument works too.
+- `--turn-client`, `--verify-match`, `--sim-version`: headless relay client, match
+  verifier and sim version report ([headless replays](../docs/development/headless-replays.md)).
+- `GLOB2_LAN_ADDRESS=<ip>`: the address a LAN host advertises and puts in its
+  certificate, for machines with several interfaces.
+- `GLOB2_LAN_DELAY_BUNDLE=1`: only the one-tick-bundle rows of the LAN input delay
+  benchmark (below).
+
 ## Team capacity and format 127
 
 `TeamLimit` checks all sixteen controller/header slots, entity identifiers, packed

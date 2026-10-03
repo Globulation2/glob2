@@ -2,6 +2,7 @@
 // Copyright (C) 2026 glob2 contributors
 
 #include "PlatformRoom.h"
+#include "PlatformApi.h"
 
 #include "AINames.h"
 #include "CustomGameSetup.h"
@@ -55,21 +56,14 @@ struct PlatformRoom::MapFetch
 
 PlatformRoom::PlatformRoom(PlatformClient *client) : client(client)
 {
+	if (client)
+		calls = std::make_unique<PlatformScope>(*client);
 	if (client && client->account())
 		accountId = client->account()->id;
 }
 
-PlatformRoom::~PlatformRoom()
-{
-	*alive = false;
-	if (client)
-	{
-		for (auto id : listeners)
-			client->removeListener(id);
-		for (auto id : requests)
-			client->cancelRequest(id);
-	}
-}
+// calls (a member) cancels the room's requests and removes its listeners.
+PlatformRoom::~PlatformRoom() = default;
 
 std::shared_ptr<PlatformRoom> PlatformRoom::create(PlatformClient &client, const std::string &name, bool listed,
 												   const CustomGameSetup &setup)
@@ -142,13 +136,12 @@ std::shared_ptr<PlatformRoom> PlatformRoom::preview(Json roomState, std::string 
 
 void PlatformRoom::listen()
 {
-	auto keep = alive;
-	listeners.push_back(client->addListener("room.state", [this, keep](const std::string &, const Json &data) {
-		if (*keep && data.contains("room"))
+	calls->listen("room.state", [this](const std::string &, const Json &data) {
+		if (data.contains("room"))
 			adopt(data["room"]);
-	}));
-	listeners.push_back(client->addListener("room.chat", [this, keep](const std::string &, const Json &data) {
-		if (!*keep || !data.contains("message") || state.is_null())
+	});
+	calls->listen("room.chat", [this](const std::string &, const Json &data) {
+		if (!data.contains("message") || state.is_null())
 			return;
 		const Json &message = data["message"];
 		if (message.value("roomId", "") != state.value("id", ""))
@@ -158,9 +151,9 @@ void PlatformRoom::listen()
 		event.author = message.value("displayName", "");
 		event.text = message.value("text", "");
 		push(std::move(event));
-	}));
-	listeners.push_back(client->addListener("room.closed", [this, keep](const std::string &, const Json &data) {
-		if (!*keep || state.is_null() || data.value("roomId", "") != state.value("id", "") || finished)
+	});
+	calls->listen("room.closed", [this](const std::string &, const Json &data) {
+		if (state.is_null() || data.value("roomId", "") != state.value("id", "") || finished)
 			return;
 		finished = true;
 		const std::string reason = data.value("reason", "");
@@ -182,9 +175,9 @@ void PlatformRoom::listen()
 			event.text = text("[room expired]");
 		}
 		push(std::move(event));
-	}));
-	listeners.push_back(client->addListener("match.start", [this, keep](const std::string &, const Json &data) {
-		if (!*keep || state.is_null())
+	});
+	calls->listen("match.start", [this](const std::string &, const Json &data) {
+		if (state.is_null())
 			return;
 		// The room's match (or one the room is about to start).
 		const std::string matchId = data.value("matchId", "");
@@ -200,48 +193,42 @@ void PlatformRoom::listen()
 		Event event;
 		event.kind = Event::Launch;
 		push(std::move(event));
-	}));
+	});
 }
 
 void PlatformRoom::call(const std::string &method, Json params, std::function<void(const Json &)> done)
 {
 	if (!client)
 		return;
-	auto keep = alive;
-	auto id = std::make_shared<std::uint64_t>(0);
-	*id = client->request(method, std::move(params),
-						  [this, keep, id, method, done = std::move(done)](const PlatformClient::Response &response) {
-							  if (!*keep)
-								  return;
-							  requests.erase(*id);
-							  if (!response.ok)
-							  {
-								  problem = response.error.message.empty() ? response.error.code : response.error.message;
-								  if (method == "room.create" || method == "room.join")
-								  {
-									  finished = true;
-									  Event event;
-									  event.kind = Event::Finished;
-									  event.code = response.error.code == "update_required" ? GameRefused : ServerDisconnected;
-									  event.text = response.error.code == "not_found" ? text("[room invite not found]")
-												   : response.error.code == "update_required"
-													   ? text("[room update required]")
-													   : problem;
-									  push(std::move(event));
-								  }
-								  else
-								  {
-									  Event event;
-									  event.kind = Event::Changed;
-									  push(std::move(event));
-								  }
-								  return;
-							  }
-							  problem.clear();
-							  if (done)
-								  done(response.result);
-						  });
-	requests.insert(*id);
+	calls->request(method, std::move(params),
+				   [this, method, done = std::move(done)](const PlatformClient::Response &response) {
+					   if (!response.ok)
+					   {
+						   problem = response.error.message.empty() ? response.error.code : response.error.message;
+						   if (method == "room.create" || method == "room.join")
+						   {
+							   finished = true;
+							   Event event;
+							   event.kind = Event::Finished;
+							   event.code = response.error.code == "update_required" ? GameRefused : ServerDisconnected;
+							   event.text = response.error.code == "not_found" ? text("[room invite not found]")
+											: response.error.code == "update_required"
+												? text("[room update required]")
+												: problem;
+							   push(std::move(event));
+						   }
+						   else
+						   {
+							   Event event;
+							   event.kind = Event::Changed;
+							   push(std::move(event));
+						   }
+						   return;
+					   }
+					   problem.clear();
+					   if (done)
+						   done(response.result);
+				   });
 }
 
 void PlatformRoom::push(Event event)
@@ -962,15 +949,12 @@ void PlatformRoom::useMapBytes(std::string bytes, const std::string &title, cons
 		event.kind = Event::Changed;
 		push(std::move(event));
 	}
-	std::string path = "/api/v1/uploads?format=map&simVersion=" + urlEncode(SimVersion::local().key());
+	std::string path = Api::uploads("map", SimVersion::local().key());
 	if (!title.empty())
 		path += "&fileName=" + urlEncode(title.substr(0, 120) + ".map");
-	auto keep = alive;
-	client->restRaw(
+	calls->restRaw(
 		HttpFetch::Method::Post, path, std::move(bytes), "application/octet-stream",
-		[this, keep, title, rules = matchRules(setup), teams = setupTeams(setup)](const PlatformClient::Response &response) {
-			if (!*keep)
-				return;
+		[this, title, rules = matchRules(setup), teams = setupTeams(setup)](const PlatformClient::Response &response) {
 			uploading = false;
 			const std::string hash = response.ok ? response.result.value("sha256", "") : std::string();
 			const std::string status = response.ok ? response.result.value("status", "") : std::string();

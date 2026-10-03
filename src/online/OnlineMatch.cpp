@@ -2,6 +2,7 @@
 // Copyright (C) 2026 glob2 contributors
 
 #include "OnlineMatch.h"
+#include "PlatformApi.h"
 
 #include "Engine.h"
 #include "MapCache.h"
@@ -94,14 +95,7 @@ OnlineMatchResult::OnlineMatchResult(std::string origin, std::string matchId, st
 {
 }
 
-OnlineMatchResult::~OnlineMatchResult()
-{
-	*alive = false;
-	if (client && listener)
-		client->removeListener(listener);
-	if (client && rematchListener)
-		client->removeListener(rematchListener);
-}
+OnlineMatchResult::~OnlineMatchResult() = default;
 
 OnlineMatchResult::Phase OnlineMatchResult::phase() const
 {
@@ -131,14 +125,12 @@ bool OnlineMatchResult::poll(std::uint64_t nowMs)
 	{
 		lastPoll = nowMs;
 		polling = true;
-		client->rest(HttpFetch::Method::Get, "/api/v1/matches/" + matchId, Json(),
-					 [this, alive = alive](const PlatformClient::Response &response) {
-						 if (!*alive)
-							 return;
-						 polling = false;
-						 if (response.ok && response.result.contains("match"))
-							 apply(response.result["match"]);
-					 });
+		calls->rest(HttpFetch::Method::Get, Api::match(matchId), Json(),
+					[this](const PlatformClient::Response &response) {
+						polling = false;
+						if (response.ok && response.result.contains("match"))
+							apply(response.result["match"]);
+					});
 	}
 	if (changed)
 		++revision;
@@ -150,11 +142,12 @@ void OnlineMatchResult::listen(PlatformClient &platform)
 	if (client)
 		return;
 	client = &platform;
-	listener = platform.addListener("match.updated", [this](const std::string &, const Json &data) {
+	calls = std::make_unique<PlatformScope>(platform);
+	calls->listen("match.updated", [this](const std::string &, const Json &data) {
 		if (data.contains("match") && data["match"].is_object() && data["match"].value("id", "") == matchId)
 			apply(data["match"]);
 	});
-	rematchListener = platform.addListener("match.rematchOffered", [this](const std::string &, const Json &data) {
+	calls->listen("match.rematchOffered", [this](const std::string &, const Json &data) {
 		if (data.value("matchId", "") != matchId)
 			return;
 		rematchOfferedBy = data.value("host", "?");
@@ -260,7 +253,7 @@ const char *stepName(OnlineMatch::Step step)
 }
 
 OnlineMatch::OnlineMatch(PlatformClient &client, Json assignment, Context context)
-	: client(client), assignment(std::move(assignment)), ctx(std::move(context))
+	: client(client), calls(client), assignment(std::move(assignment)), ctx(std::move(context))
 {
 	makeTransport = [](const std::string &url) { return std::make_shared<RelayTransport>(url); };
 	parseAssignment();
@@ -288,11 +281,8 @@ OnlineMatch::OnlineMatch(PlatformClient &client, Json assignment, Context contex
 	outcome->listen(client);
 }
 
-OnlineMatch::~OnlineMatch()
-{
-	if (reconnectRequest)
-		client.cancelRequest(reconnectRequest);
-}
+// calls (a member) cancels the reconnect request.
+OnlineMatch::~OnlineMatch() = default;
 
 void OnlineMatch::parseAssignment()
 {
@@ -371,21 +361,21 @@ void OnlineMatch::reportRelayUnavailable()
 	++moves;
 	std::cerr << "Online match " << id << ": the relay refused the match as new; asking for another relay"
 			  << std::endl;
-	reconnectRequest = client.request("match.reconnect", Json{{"matchId", id}, {"relayUnavailable", true}},
-				   [this](const PlatformClient::Response &response) {
-					   reconnectPending = false;
-					   reconnectRequest = 0;
-					   if (!response.ok)
-					   {
-						   fail("no relay could take the match (" + response.error.code + ")");
-						   return;
-					   }
-					   assignment = response.result;
-					   reset();
-					   parseAssignment();
-					   if (current != Step::Failed)
-						   startMap();
-				   });
+	reconnectRequest = calls.request("match.reconnect", Json{{"matchId", id}, {"relayUnavailable", true}},
+				  [this](const PlatformClient::Response &response) {
+					  reconnectPending = false;
+					  reconnectRequest = 0;
+					  if (!response.ok)
+					  {
+						  fail("no relay could take the match (" + response.error.code + ")");
+						  return;
+					  }
+					  assignment = response.result;
+					  reset();
+					  parseAssignment();
+					  if (current != Step::Failed)
+						  startMap();
+				  });
 }
 
 void OnlineMatch::update(std::uint64_t nowMs)

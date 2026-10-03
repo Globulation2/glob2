@@ -17,6 +17,7 @@ class DrawableSurface;
 namespace Online
 {
 class PlatformClient;
+class PlatformScope;
 }
 
 // Shared pieces of the online screens (quick match, profile, maps): the wide
@@ -76,7 +77,9 @@ class PreviewImages
 		bool pending = false, failed = false;
 	};
 	std::map<std::string, Entry> entries;
-	std::shared_ptr<bool> alive = std::make_shared<bool>(true);
+	// Downloads in flight, cancelled with the cache (its screen).
+	std::unique_ptr<Online::PlatformScope> scope;
+	Online::PlatformScope &scopeFor(Online::PlatformClient &client);
 };
 
 // "0:42", "12:05", "1:02:03".

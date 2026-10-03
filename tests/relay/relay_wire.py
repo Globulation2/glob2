@@ -335,6 +335,9 @@ class FakePlatform:
         self.registrations, self.heartbeats, self.records, self.ends = [], [], {}, {}
         self.jwks_fetches = 0
         self.unauthorized = 0
+        # Setup lookups answered 503 before the real answer (a platform outage).
+        self.setup_outage = 0
+        self.setup_lookups = 0
         self.lock = threading.Condition()
         platform = self
 
@@ -372,6 +375,11 @@ class FakePlatform:
                     return
                 parts = self.path.strip('/').split('/')
                 if parts[:3] == ['internal', 'v1', 'matches'] and len(parts) == 5 and parts[4] == 'setup':
+                    with platform.lock:
+                        platform.setup_lookups += 1
+                        down = platform.setup_lookups <= platform.setup_outage
+                    if down:
+                        return self.reply(503, {'code': 'unavailable', 'message': 'outage'})
                     setup = platform.setups.get(parts[3])
                     return self.reply(200, setup) if setup else self.reply(404, {'code': 'not_found', 'message': ''})
                 self.reply(404)

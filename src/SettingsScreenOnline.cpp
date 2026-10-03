@@ -27,12 +27,10 @@ struct SettingsScreen::OnlineState
 	std::string checkedOrigin, checkProblem;
 	Json checked;
 	std::string notice;
-	std::uint64_t listener = 0;
-	~OnlineState()
-	{
-		if (listener && Online::servicesCreated())
-			Online::services().client.removeListener(listener);
-	}
+	// The category's platform calls and listener. The screen is the only
+	// owner of this state, so closing it cancels them: handlers capture the
+	// screen, never a copy of the state.
+	std::unique_ptr<Online::PlatformScope> calls;
 };
 
 namespace
@@ -86,21 +84,16 @@ void SettingsScreen::pollOnline()
 
 void SettingsScreen::unlinkProvider(const std::string &provider, const std::string &name)
 {
-	auto &platform = Online::services().client;
-	auto state = online;
-	platform.rest(HttpFetch::Method::Delete, "/api/v1/accounts/me/identities/" + Online::urlEncode(provider), Json(),
-				  [this, state, name](const Online::PlatformClient::Response &r) {
-					  if (state != online)
-						  return;
-					  online->notice = r.ok ? std::string(GAGCore::FormattableString(tr("%0 is no longer linked.")).arg(name))
-										   : r.error.message;
-					  invalidate();
-					  if (r.ok)
-						  Online::services().client.refreshAccount([this, state](const Online::PlatformClient::Response &) {
-							  if (state == online)
-								  invalidate();
-						  });
-				  });
+	if (!online || !online->calls)
+		return;
+	online->calls->rest(HttpFetch::Method::Delete, Online::Api::accountIdentity(provider), Json(),
+						[this, name](const Online::PlatformClient::Response &r) {
+							online->notice = r.ok ? std::string(GAGCore::FormattableString(tr("%0 is no longer linked.")).arg(name))
+												 : r.error.message;
+							invalidate();
+							if (r.ok)
+								online->calls->refreshAccount([this](const Online::PlatformClient::Response &) { invalidate(); });
+						});
 }
 
 void SettingsScreen::buildOnline()
@@ -111,7 +104,8 @@ void SettingsScreen::buildOnline()
 	if (!online)
 	{
 		online = std::make_shared<OnlineState>();
-		online->listener = client.addStateListener([this] { invalidate(); });
+		online->calls = std::make_unique<Online::PlatformScope>(client);
+		online->calls->onStateChange([this] { invalidate(); });
 	}
 	const std::string origin = client.origin().empty() ? config.selectedOrigin() : client.origin();
 	if (online->origin != origin)
@@ -124,12 +118,11 @@ void SettingsScreen::buildOnline()
 	if (online->info.is_null() && !online->fetchingInfo)
 	{
 		online->fetchingInfo = true;
-		auto state = online;
-		client.rest(HttpFetch::Method::Get, "/api/v1/instance", Json(), [this, state](const Online::PlatformClient::Response &r) {
-			state->fetchingInfo = false;
-			if (r.ok && state == online)
+		online->calls->instanceInfo([this](const Online::PlatformClient::Response &r) {
+			online->fetchingInfo = false;
+			if (r.ok)
 			{
-				state->info = r.result;
+				online->info = r.result;
 				invalidate();
 			}
 		});
@@ -197,7 +190,7 @@ void SettingsScreen::buildOnline()
 				return;
 			}
 			online->checkedOrigin = Online::currentOrigin(*normalized);
-			online->check = HttpFetch::start({HttpFetch::Method::Get, Online::apiUrl(online->checkedOrigin, "/api/v1/instance")});
+			online->check = HttpFetch::start({HttpFetch::Method::Get, Online::apiUrl(online->checkedOrigin, Online::Api::instance())});
 			invalidate();
 		};
 		TextFieldOptions options;
@@ -256,7 +249,7 @@ void SettingsScreen::buildOnline()
 				online->nameEdited = true;
 			}, options);
 			auto save = Glob2UI::button("online.name.save", tr("Save"), [this] {
-				Online::services().client.rename(online->nameDraft, [this](const Online::PlatformClient::Response &r) {
+				online->calls->rename(online->nameDraft, [this](const Online::PlatformClient::Response &r) {
 					online->notice = r.ok ? tr("Display name saved.") : r.error.message;
 					online->nameEdited = false;
 					invalidate();

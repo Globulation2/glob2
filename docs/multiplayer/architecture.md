@@ -67,9 +67,11 @@ from anywhere else.
 ## Simulation versions
 
 A sim version is the triple `VERSION_MINOR` + `NET_PROTOCOL_VERSION` (both in
-`src/Version.h`) + the build's simulation data hash (SHA-256 over the data files
-that affect simulation, computed by the engine). Two builds with the same sim
-version must produce identical games.
+`src/Version.h`) + the build's simulation hash (SHA-256 over `SIM_REVISION` from
+`src/SimRevision.h` and the data files that affect simulation, computed by the
+engine and by `deploy/sim_version.py`). Two builds with the same sim version must
+produce identical games; every simulation change bumps `SIM_REVISION`
+([turn protocol](turn-protocol.md#simulation-version)).
 
 - Protocol schema `SimVersion` is `{versionMinor, netProtocol, dataHash}`; its
   canonical string key is `simVersionKey()`: `<minor>-<net>-<dataHash>`, used in
@@ -364,7 +366,9 @@ header, after the engine has loaded the file. This small read in
 `engineCli.ts` is the only binary parsing in the platform. It is needed because
 the map report gives the engine's version, not the file's.
 
-**`--verify-match` output (assumed, being built in M1).** The agent expects:
+**`--verify-match` output.** The engine writes (see
+[headless replays](../development/headless-replays.md#verifying-a-match-record)), and
+the agent reads:
 
 - `<out>/verdict.json`: `{"verdict":"verified"|"diverged"|"unverifiable","seats"?,"reason"?}`;
 - `<out>/result.json`: the `HeadlessRunner` game result (team outcomes,

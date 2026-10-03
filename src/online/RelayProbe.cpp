@@ -2,6 +2,7 @@
 #include "RelayProbe.h"
 
 #include "InstanceConfig.h"
+#include "PlatformApi.h"
 
 #include <algorithm>
 #include <chrono>
@@ -23,7 +24,7 @@ RelayProbe::RelayProbe(std::string origin, FetchStarter startFetch, std::functio
 	  options(options)
 {
 	HttpFetch::Request request;
-	request.url = apiUrl(this->origin, "/api/v1/relays/regions");
+	request.url = apiUrl(this->origin, Api::relayRegions());
 	request.headers.emplace_back("Accept", "application/json");
 	request.timeout = std::chrono::milliseconds(this->options.requestTimeoutMs * 2);
 	request.responseLimit = 64 * 1024;

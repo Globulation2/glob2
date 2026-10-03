@@ -21,6 +21,7 @@
 // OnlineMatchResult outlives the game: the results screen shows the outcome and the
 // rating card, which match.updated events update live (verifying -> verified).
 
+#include "PlatformClient.h"
 #include "PlatformProtocol.h"
 
 #include <cstdint>
@@ -120,8 +121,8 @@ class OnlineMatchResult
 
   private:
 	PlatformClient *client = nullptr;
-	std::uint64_t listener = 0, rematchListener = 0;
-	std::shared_ptr<bool> alive = std::make_shared<bool>(true);
+	// The poll and the listeners, cancelled with the result.
+	std::unique_ptr<PlatformScope> calls;
 	std::uint64_t lastPoll = 0, phaseSince = 0;
 	Phase lastPhase = Phase::Waiting;
 	bool polling = false;
@@ -219,6 +220,8 @@ class OnlineMatch
 	void reset();
 
 	PlatformClient &client;
+	// The reconnect request, cancelled with the match.
+	PlatformScope calls;
 	Json assignment;
 	Context ctx;
 	Step current = Step::Seat;

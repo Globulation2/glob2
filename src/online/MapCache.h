@@ -31,8 +31,8 @@ class MapCache
 	// Same bound as imported maps (docs/browser/storage.md).
 	static constexpr std::size_t MAX_MAP_BYTES = 64 * 1024 * 1024;
 
-	// Where an instance serves a map blob. The endpoint arrives with M4; this
-	// is the one place that names it.
+	// Where an instance serves a map blob, GET /api/v1/blobs/maps/{hash}
+	// (Online::Api::mapBlob).
 	static std::string blobPath(const std::string &hash);
 
 	// startFetch is HttpFetch::start outside tests.

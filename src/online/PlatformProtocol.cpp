@@ -1,16 +1,35 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "PlatformProtocol.h"
+#include "PlatformApi.h"
 #include "Version.h"
 
 #include <algorithm>
 #include <cctype>
 #include <cmath>
+#include <cstdio>
 #ifdef __APPLE__
 #include <TargetConditionals.h>
 #endif
 
 namespace Online
 {
+std::string urlEncode(const std::string &text)
+{
+	std::string out;
+	for (unsigned char c : text)
+	{
+		if (std::isalnum(c) || c == '-' || c == '_' || c == '.' || c == '~')
+			out += static_cast<char>(c);
+		else
+		{
+			char buffer[4];
+			std::snprintf(buffer, sizeof buffer, "%%%02X", c);
+			out += buffer;
+		}
+	}
+	return out;
+}
+
 namespace
 {
 bool isMethodName(const std::string &name)

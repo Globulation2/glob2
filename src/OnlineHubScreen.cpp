@@ -125,8 +125,9 @@ OnlineHubScreen::OnlineHubScreen(GAGGUI::ScreenStack &screens, bool connect) : s
 	previewing = !connect;
 	if (connect && platform.connection() == Online::PlatformClient::Connection::Stopped)
 		platform.start(services.config.selectedOrigin());
-	stateListener = platform.addStateListener([this] { syncFromClient(); });
-	updateListener = platform.addListener("match.updated", [](const std::string &, const Json &data) {
+	calls = std::make_unique<Online::PlatformScope>(platform);
+	calls->onStateChange([this] { syncFromClient(); });
+	calls->listen("match.updated", [](const std::string &, const Json &data) {
 		if (data.contains("match"))
 			Online::rememberMatch(data["match"]);
 	});
@@ -153,11 +154,7 @@ OnlineHubScreen::~OnlineHubScreen()
 		Online::setMatchHandler({});
 		Online::setRematchHandler({});
 	}
-	if (Online::servicesCreated())
-	{
-		client().removeListener(stateListener);
-		client().removeListener(updateListener);
-	}
+	// calls (a member) cancels this screen's requests and listeners.
 }
 
 void OnlineHubScreen::startMatch(const Json &assignment)
@@ -266,11 +263,10 @@ void OnlineHubScreen::refresh(bool force)
 	if (!force && now - lastRefresh < REFRESH_MS)
 		return;
 	lastRefresh = now;
-	auto &platform = client();
 	if (!fetchingInstance && data.instanceName.empty())
 	{
 		fetchingInstance = true;
-		platform.rest(HttpFetch::Method::Get, "/api/v1/instance", Json(), [this](const Online::PlatformClient::Response &r) {
+		calls->instanceInfo([this](const Online::PlatformClient::Response &r) {
 			fetchingInstance = false;
 			if (!r.ok)
 				return;
@@ -287,15 +283,15 @@ void OnlineHubScreen::refresh(bool force)
 	if (!fetchingHistory && !data.accountId.empty())
 	{
 		fetchingHistory = true;
-		platform.rest(HttpFetch::Method::Get, "/api/v1/players/" + Online::urlEncode(data.accountId) + "/matches?limit=5", Json(),
-					  [this, account = data.accountId](const Online::PlatformClient::Response &r) {
-						  fetchingHistory = false;
-						  if (!r.ok || account != data.accountId)
-							  return;
-						  history = r.result.value("items", Json::array());
-						  data.recent = Online::mergeRecentMatches(history, Online::recentMatches(), 5);
-						  invalidate();
-					  });
+		calls->rest(HttpFetch::Method::Get, Online::Api::playerMatches(data.accountId, 5), Json(),
+					[this, account = data.accountId](const Online::PlatformClient::Response &r) {
+						fetchingHistory = false;
+						if (!r.ok || account != data.accountId)
+							return;
+						history = r.result.value("items", Json::array());
+						data.recent = Online::mergeRecentMatches(history, Online::recentMatches(), 5);
+						invalidate();
+					});
 	}
 	// The leaderboard teaser: the top five of the main queue (the first rated one).
 	if (!fetchingLeaderboard && data.queues.is_array() && !data.queues.empty())
@@ -312,21 +308,21 @@ void OnlineHubScreen::refresh(bool force)
 		{
 			fetchingLeaderboard = true;
 			data.leaderboardName = main->value("name", ladder);
-			platform.rest(HttpFetch::Method::Get, "/api/v1/leaderboards/" + Online::urlEncode(ladder) + "?limit=5", Json(),
-						  [this](const Online::PlatformClient::Response &r) {
-							  fetchingLeaderboard = false;
-							  if (!r.ok)
-								  return;
-							  data.leaderboard = r.result.value("entries", Json::array());
-							  invalidate();
-						  });
+			calls->rest(HttpFetch::Method::Get, Online::Api::leaderboard(ladder, 5), Json(),
+						[this](const Online::PlatformClient::Response &r) {
+							fetchingLeaderboard = false;
+							if (!r.ok)
+								return;
+							data.leaderboard = r.result.value("entries", Json::array());
+							invalidate();
+						});
 		}
 	}
 	if (!fetchingRooms)
 	{
 		fetchingRooms = true;
 		const std::string sim = Online::SimVersion::local().key();
-		platform.rest(HttpFetch::Method::Get, "/api/v1/rooms?simVersion=" + sim, Json(), [this](const Online::PlatformClient::Response &r) {
+		calls->rest(HttpFetch::Method::Get, Online::Api::rooms(sim), Json(), [this](const Online::PlatformClient::Response &r) {
 			fetchingRooms = false;
 			if (!r.ok)
 				return;

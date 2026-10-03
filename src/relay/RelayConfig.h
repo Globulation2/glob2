@@ -61,6 +61,9 @@ namespace Relay
 		std::string region = "default";
 		std::string spoolDirectory; ///< records are written here before upload
 		unsigned uploadAttempts = 8;
+		/// How long the setup lookup keeps retrying (a platform outage), at match
+		/// start and again when a match ends without its setup.
+		unsigned setupRetrySeconds = 600;
 
 		/// Reads the environment. Throws std::invalid_argument on a bad value.
 		static RelayConfig fromEnvironment();

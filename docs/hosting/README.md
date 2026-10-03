@@ -623,9 +623,10 @@ that starts with that id, or that finds the directory unclaimed, re-sends them.
 
 ### Sim versions and engine agents
 
-A sim version is `VERSION_MINOR`, `NET_PROTOCOL_VERSION` and a hash of the data files
-that affect the simulation (`python3 deploy/sim_version.py` prints it for a source
-tree). Players are only matched with the same version, and only an engine agent of
+A sim version is `VERSION_MINOR`, `NET_PROTOCOL_VERSION` and a hash of `SIM_REVISION`
+(`src/SimRevision.h`, bumped with every simulation change) and the data files that
+affect the simulation (`python3 deploy/sim_version.py` prints it for a source tree; a
+tree from before `SIM_REVISION` keeps its earlier key). Players are only matched with the same version, and only an engine agent of
 that version can generate maps for or verify their games.
 
 An upgrade that changes the sim version therefore needs care:

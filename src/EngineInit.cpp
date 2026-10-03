@@ -19,6 +19,7 @@
 #include "ReplayWriter.h"
 #include "OrderValidation.h"
 #include "TurnLockstep.h"
+#include "gui/ConnectionQuality.h"
 
 #include <cerrno>
 #include <cstdlib>
@@ -234,7 +235,7 @@ ConnectionSnapshot Engine::turnConnectionSnapshot()
     const int ownDelay = int((std::max<std::int64_t>(0, s.rttMicros()) / 2 + Uint64(s.targetTicks()) * period) / 1000);
     snapshot.inputDelayMs = ownDelay;
     snapshot.jitterMs = int(std::max<std::int64_t>(0, s.jitterMicros()) / 1000);
-    snapshot.ownUnstable = s.jitterMicros() > 60000;
+    snapshot.ownUnstable = s.jitterMicros() > std::int64_t(ConnectionQuality::UNSTABLE_JITTER_MS) * 1000;
     const GameHeader& header = gui.game.gameHeader;
     for (int p = 0; p < header.getNumberOfPlayers() && p < int(Turn::MAX_SEATS); ++p)
     {
@@ -308,7 +309,8 @@ ConnectionSnapshot Engine::turnConnectionSnapshot()
     const bool desync = s.rejoiningAfterDesync();
     const std::uint32_t behind = s.maxHorizon() > s.executedTick() ? s.maxHorizon() - s.executedTick() : 0;
     // Small lag closes by itself; the card shows only a real fast-forward.
-    if (s.state() == State::Running && (s.needsReload() || desync || (s.catchingUp() && behind > 50)))
+    const bool farBehind = Uint64(behind) * period > Uint64(ConnectionQuality::catchUpCardMs()) * 1000;
+    if (s.state() == State::Running && (s.needsReload() || desync || (s.catchingUp() && farBehind)))
     {
         if (!catchupActive || s.needsReload())
         {
@@ -353,7 +355,8 @@ std::vector<std::string> Engine::turnConnectionNotice()
     {
         if (s.needsReload())
             lines.push_back(strings.getString("[turn rejoining]"));
-        else if (s.catchingUp() && s.bufferedTicks() > 25)
+        else if (s.catchingUp() &&
+                 Uint64(s.bufferedTicks()) * std::max<Uint64>(1, s.tickPeriodMicros()) > Uint64(ConnectionQuality::catchUpLineMs()) * 1000)
             lines.push_back(GAGCore::FormattableString(strings.getString("[turn catching up %0]")).arg(s.bufferedTicks()));
     }
     for (int p = 0; p < gui.game.gameHeader.getNumberOfPlayers() && p < Turn::MAX_SEATS; ++p)

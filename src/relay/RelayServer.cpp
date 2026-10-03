@@ -697,10 +697,14 @@ asio::awaitable<void> RelayServer::Impl::admit(std::shared_ptr<Connection> conne
 		++metrics.matchesStarted;
 		metrics.matches = static_cast<std::int64_t>(matches.size());
 		logLine("info", "Match " + claims.matchId + " started (sim " + claims.simVersion.key() + ")");
+		// The record needs the setup to be verifiable. Keep asking through a platform
+		// outage while the match runs; finalize asks again if it ends first.
 		if (platform.enabled())
 			asio::co_spawn(io,
-			               [this, match]() -> asio::awaitable<void> {
-				               auto setup = co_await platform.fetchSetup(match->id);
+			               [self = shared_from_this(), match]() -> asio::awaitable<void> {
+				               auto setup = co_await self->platform.fetchSetup(
+					               match->id, std::chrono::steady_clock::now() + std::chrono::seconds(self->config.setupRetrySeconds),
+					               [match] { return !match->setupJson && !match->ended; });
 				               if (setup && !match->setupJson)
 					               match->setupJson = std::move(setup);
 			               },
@@ -732,7 +736,16 @@ void RelayServer::Impl::matchEnded(const std::shared_ptr<Match>& match)
 asio::awaitable<void> RelayServer::Impl::finalize(std::shared_ptr<Match> match)
 {
 	if (!match->setupJson && platform.enabled())
-		match->setupJson = co_await platform.fetchSetup(match->id);
+	{
+		// The record waits here (its upload is queued behind the setup) rather than
+		// going out unverifiable at the first failure.
+		logLine("warning", "Match " + match->id + " ended before its setup arrived; holding the record for up to " +
+		                       std::to_string(config.setupRetrySeconds) + " s");
+		match->setupJson = co_await platform.fetchSetup(
+			match->id, std::chrono::steady_clock::now() + std::chrono::seconds(config.setupRetrySeconds));
+		if (!match->setupJson)
+			logLine("error", "No setup for match " + match->id + "; its record cannot be verified");
+	}
 	std::array<std::uint8_t, 32> mapHash{};
 	std::string setup = match->setupJson.value_or("");
 	if (!setup.empty() && !setupMapHash(setup, mapHash))
