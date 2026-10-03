@@ -29,6 +29,10 @@ struct Services
 // client is not started: the hub calls client.start(origin).
 Services &services();
 bool servicesCreated();
+// The user directory's map cache (online/maps/), the same one as
+// services().maps, without creating the platform client or reading
+// online/instances.json: for LAN games.
+MapCache &sharedMapCache();
 // Advances the client and picks up invite links delivered while running
 // (macOS/iOS URL events arrive as SDL_EVENT_DROP_FILE through acceptDroppedText;
 // Android intents and iOS universal links are polled here). Cheap when the

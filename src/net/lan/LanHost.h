@@ -66,8 +66,8 @@ namespace Lan
 			bool broadcast = true;
 			/// Overrides the address in the pairing endpoint (tests: 127.0.0.1).
 			std::string advertisedAddress;
-			/// LAN relays send a bundle every tick (the online relay: every 2), which
-			/// takes about 40 ms off the input delay at negligible bandwidth.
+			/// LAN relays send a bundle every tick, like the online relay
+			/// (Turn::DEFAULT_BUNDLE_INTERVAL).
 			Turn::SequencerConfig sequencer = lanSequencerConfig();
 			/// How long the relay waits for every seat's first Hello before its clock
 			/// starts anyway.

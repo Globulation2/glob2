@@ -317,8 +317,10 @@ void LanClient::handleRoom(const nlohmann::json& message)
 
 Online::MapCache& LanClient::maps()
 {
+	if (options.mapCache)
+		return *options.mapCache;
 	if (options.cacheDirectory.empty())
-		return Online::services().maps;
+		return Online::sharedMapCache();
 	if (!privateMaps)
 	{
 		privateStorage = Online::makeDirectoryStorage(options.cacheDirectory);

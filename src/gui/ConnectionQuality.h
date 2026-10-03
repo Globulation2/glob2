@@ -82,6 +82,22 @@ constexpr const char *wordKey(Rating rating)
 	return rating == Rating::Good ? "[conn good]" : rating == Rating::Fair ? "[conn fair]" : "[conn poor]";
 }
 
+// Game-only thresholds of the in-match HUD, derived from the table above where a
+// metric covers them, so the HUD and the match page never disagree about "behind".
+/// Jitter above this marks your own Delay as unstable (the HUD's "varies" note).
+inline constexpr int UNSTABLE_JITTER_MS = 60;
+/// Behind by more than this: the HUD shows the catching-up card (a real
+/// fast-forward); less closes by itself.
+constexpr int catchUpCardMs()
+{
+	return limits(Metric::Behind).poorMs;
+}
+/// Buffered (received, not yet run) by more than this: the "catching up" line.
+constexpr int catchUpLineMs()
+{
+	return limits(Metric::Behind).fairMs;
+}
+
 /// The value with its unit, as every surface writes it: "42 ms", "1.4 s", "12 s".
 inline std::string format(Metric metric, int valueMs)
 {
