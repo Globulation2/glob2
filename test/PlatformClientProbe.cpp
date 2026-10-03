@@ -12,8 +12,6 @@
 #include "NetTransport.h"
 #include "OnlineStorage.h"
 #include "PlatformClient.h"
-#include <FileManager.h>
-#include <Toolkit.h>
 
 #include <chrono>
 #include <cstdio>
@@ -28,17 +26,6 @@
 using namespace Online;
 using Json = nlohmann::json;
 namespace fs = std::filesystem;
-
-// This probe has no game data; SimVersion::local() reports the unsupported
-// zero data hash, just as the other standalone online probe does.
-namespace GAGCore
-{
-FileManager *Toolkit::fileManager = nullptr;
-StreamBackend *FileManager::openInputStreamBackend(const std::string)
-{
-	return nullptr;
-}
-} // namespace GAGCore
 
 namespace
 {
