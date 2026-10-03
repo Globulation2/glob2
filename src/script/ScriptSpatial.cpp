@@ -530,7 +530,7 @@ Value Spatial::placement(const Value &spec, const Value &staged, const QueryBudg
 		Value spec;
 		std::vector<int> values;
 		bool hard;
-		int weight;
+		int weight, minimum, maximum;
 	};
 	std::vector<Metric> metrics;
 	for (const auto *list : {"constraints", "preferences"})
@@ -544,7 +544,16 @@ Value Spatial::placement(const Value &spec, const Value &staged, const QueryBudg
 				Metric m{term,
 						 {},
 						 std::string(list) == "constraints",
-						 number(term, "weight", 1, -1000000, 1000000)};
+						 number(term, "weight", 1, -1000000, 1000000),
+						 0,
+						 0x7fffffff};
+				// Validate once, even when no candidate has a buildable footprint.
+				// Malformed API arguments must not depend on the observed map.
+				if (m.hard)
+				{
+					m.minimum = number(term, "min", 0, -0x7fffffff, 0x7fffffff);
+					m.maximum = number(term, "max", 0x7fffffff, -0x7fffffff, 0x7fffffff);
+				}
 				const auto kind = text(term, "metric", "distance");
 				if (kind == "distance")
 				{
@@ -700,8 +709,7 @@ Value Spatial::placement(const Value &spec, const Value &staged, const QueryBudg
 				int value = m.values[i];
 				if (m.hard)
 				{
-					if (value < 0 || value < number(m.spec, "min", 0, -0x7fffffff, 0x7fffffff) ||
-						value > number(m.spec, "max", 0x7fffffff, -0x7fffffff, 0x7fffffff))
+					if (value < 0 || value < m.minimum || value > m.maximum)
 					{
 						valid = false;
 						break;

@@ -157,11 +157,25 @@ void Services::commit(const Value &commands, const Value &telemetry)
 		values.set(name, value);
 	if (values.fields.size() > 130)
 		throw std::runtime_error("AI telemetry field limit exceeded");
-	candidate.encode();
-	values.encode();
+	// Validate the exact persisted envelope before publishing any state. Separate
+	// queue/telemetry checks can each pass while their combined save exceeds the
+	// serialization limit, leaving a running controller that cannot be saved.
+	const unsigned candidateNext = next + unsigned(commands.items.size());
+	const auto serialized = Value::object()
+								.set("next", candidateNext)
+								.set("records", candidate)
+								.set("telemetry", values)
+								.encode();
+	// Dispatch/reconcile can add a building reference, two numeric tracking fields,
+	// a status and a short failure reason. Reserve their worst-case encoded growth
+	// (under 256 bytes per active record) before accepting a near-limit queue.
+	const auto active = std::count_if(candidate.items.begin(), candidate.items.end(),
+									  [](const auto &record) { return !terminal(record); });
+	if (serialized.size() > StateLimit - std::size_t(active) * 256)
+		throw std::runtime_error("AI action state exceeds save limit");
 	records = std::move(candidate);
 	diagnostics = std::move(values);
-	next += unsigned(commands.items.size());
+	next = candidateNext;
 }
 void Services::reconcile()
 {
@@ -316,14 +330,14 @@ Value Services::save() const
 }
 void Services::load(const Value &v)
 {
-	next = v.integer("next", 1, 0x7fffffff);
+	const unsigned candidateNext = v.integer("next", 1, 0x7fffffff);
 	if (v.get("records").kind != Value::Array || v.get("records").items.size() > 1024 ||
 		v.get("telemetry").kind != Value::Object || v.get("telemetry").fields.size() > 130)
 		throw std::runtime_error("Invalid saved AI services");
 	unsigned previous = 0;
 	for (const auto &r : v.get("records").items)
 	{
-		unsigned id = r.integer("id", 1, int(next) - 1);
+		unsigned id = r.integer("id", 1, int(candidateNext) - 1);
 		if (id <= previous || r.get("command").kind != Value::Object)
 			throw std::runtime_error("Invalid saved action identity");
 		if (r.get("command").get("actionId").number != id ||
@@ -351,7 +365,10 @@ void Services::load(const Value &v)
 			status != "completed" && status != "failed" && status != "cancelled")
 			throw std::runtime_error("Invalid saved action status");
 	}
-	records = v.get("records");
-	diagnostics = v.get("telemetry");
+	auto candidateRecords = v.get("records");
+	auto candidateDiagnostics = v.get("telemetry");
+	records = std::move(candidateRecords);
+	diagnostics = std::move(candidateDiagnostics);
+	next = candidateNext;
 }
 } // namespace Script

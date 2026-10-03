@@ -391,7 +391,7 @@ and initial global serialization. `--check-script` remains compile-only.
 
 [Profile 2 declarations](../../examples/javascript/glob2-v2.d.ts) extend the read
 API above. All imported code must be bundled into one ES module; runtime imports
-remain unavailable. The external [example repository](https://github.com/Globulation2/javascript-ai-example)
+remain unavailable. The external [example repository](https://github.com/Globulation2/glob2-javascript-ai-starter-exampler)
 contains modular authoring sources and the pinned, atomic esbuild build/watch wrapper.
 
 ### Managed properties and actions
@@ -433,7 +433,9 @@ property writes coalesce; replacing a pending edit retains its queue position.
 Flag coordinates form one move. One ordinary order is dispatched per AI poll;
 queued actions and construction tracking survive saves. Queue limits are 256
 pending operations, 256 newly staged operations per callback, and 1,024 history
-records. A script failure disables the controller and preserves the previous
+records. The combined action and telemetry state must fit the serialization limit,
+including reserved space for construction tracking. Oversized callbacks fail before
+any staged state is committed. A script failure disables the controller and preserves the previous
 committed globals and RNG.
 
 ### Synchronous spatial services

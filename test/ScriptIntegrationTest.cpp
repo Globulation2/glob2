@@ -846,61 +846,93 @@ TEST_CASE(
 
 #include "SettingsScreen.h"
 #include "GameGUIDialog.h"
+#include "ScopedEnvironment.h"
 #include <GraphicContext.h>
 TEST_CASE("JavaScript custom library and telemetry dialogs render [display:1280x800] [artifacts]" *
 		  doctest::test_suite("JavaScriptIntegration"))
 {
-	glob2test::HeadlessGlobals globals(
-		{.display = true, .loadStrings = true, .width = 1280, .height = 800});
-	auto storage = Online::makeUserDirectoryStorage();
-	Library library(*storage);
-	library.put("export function metadata(){return {apiVersion:2,name:'Readable "
+	for (bool phone : {false, true})
+	{
+		// Exercise the real touch presentation at a narrow surface, with the process
+		// override restored even if an assertion aborts this subcase.
+		glob2test::ScopedEnvironment mobileUI("GLOB2_MOBILE_UI", phone ? "1" : "0");
+		glob2test::HeadlessGlobals globals({.display = true,
+											.loadStrings = true,
+											.width = phone ? 390 : 1280,
+											.height = phone ? 760 : 800});
+		const std::string suffix = phone ? "-phone" : "";
+		auto storage = Online::makeUserDirectoryStorage();
+		Library library(*storage);
+		if (library.entries().empty())
+			library.put(
+				"export function metadata(){return {apiVersion:2,name:'Readable "
 				"Colony',version:'1.0.0',description:'A complete, commented starter AI.'}} export "
 				"function step(){}",
 				"example.js");
-	{
-		SettingsScreen settings;
-		settings.beginExecution(globals->gfx);
-		settings.selectCategory(SettingsScreen::Category::CustomAIs);
-		settings.paintFrame(0);
-		bool hasImport = false, validate = false;
-		for (const auto &row : settings.rows())
 		{
-			hasImport |= row.id == "ai.import";
-			validate |= row.id.rfind("ai.validate.", 0) == 0;
+			SettingsScreen settings;
+			settings.beginExecution(globals->gfx);
+			settings.selectCategory(SettingsScreen::Category::CustomAIs);
+			settings.paintFrame(0);
+			CHECK(settings.host().presentation().phone() == phone);
+			bool hasImport = false, validate = false;
+			int groupedActions = 0;
+			for (const auto &row : settings.rows())
+			{
+				hasImport |= row.id == "ai.import";
+				validate |= row.id.rfind("ai.validate.", 0) == 0;
+				// Missing translations render bracketed keys, not an English fallback.
+				CHECK(row.label.find('[') == std::string::npos);
+				if (row.id.rfind("ai.update.", 0) == 0 || row.id.rfind("ai.validate.", 0) == 0 ||
+					row.id.rfind("ai.remove.", 0) == 0)
+				{
+					++groupedActions;
+					CHECK(row.columns == 3);
+					CHECK(row.bounds.w > 0);
+					CHECK(row.bounds.x >= 0);
+					CHECK(row.bounds.x + row.bounds.w <= globals->gfx->getW());
+				}
+			}
+			CHECK(hasImport);
+			CHECK(validate);
+			CHECK(groupedActions == 3);
+			auto filename = "custom-ai-library" + suffix + ".bmp";
+			auto path = (glob2test::artifactDir() / filename).string();
+			globals->gfx->printScreen(glob2test::artifactDirFromWorkingDirectory() + "/" + filename);
+			settings.paintFrame(1);
+			globals->gfx->nextFrame();
+			CHECK(std::filesystem::exists(path));
 		}
-		CHECK(hasImport);
-		CHECK(validate);
-		auto path = (glob2test::artifactDir() / "custom-ai-library.bmp").string();
-		globals->gfx->printScreen(glob2test::artifactDirFromWorkingDirectory() + "/custom-ai-library.bmp");
-		settings.paintFrame(1);
+		glob2test::HeadlessGame world({.teams = 2, .discovered = true, .loadDefaultRace = true});
+		world.gui.init();
+		auto series = std::make_shared<AITelemetry::Series>();
+		series->player = 0;
+		series->playerName = "Readable Colony / Blue";
+		series->current.available = true;
+		series->named = {{"strategy.phase", "expansion", "", "Current strategic phase", 128},
+						 {"colony.population", "32", "units", "Own colony population", 128},
+						 {"runtime.pendingActions", "2", "orders", "Waiting for dispatch", 128}};
+		world.game.teams[0]->stats.aiTelemetry = {series};
+		world.gui.drawAll(0);
+		const auto before = world.checksum();
+		InGameAITelemetryScreen dialog(&world.gui);
+		dialog.attach(*globals->gfx);
+		dialog.update(0);
+		dialog.draw(0);
+		CHECK(dialog.host().presentation().phone() == phone);
+		const auto close = dialog.host().bounds("telemetry/close");
+		CHECK(close.w > 0);
+		CHECK(close.h > 0);
+		CHECK(dialog.host().presentation().viewport.contains(close));
+		CHECK(dialog.host().find("telemetry/player") != nullptr);
+		auto filename = "ai-telemetry" + suffix + ".bmp";
+		auto path = (glob2test::artifactDir() / filename).string();
+		globals->gfx->printScreen(glob2test::artifactDirFromWorkingDirectory() + "/" + filename);
+		dialog.draw(1);
 		globals->gfx->nextFrame();
 		CHECK(std::filesystem::exists(path));
+		CHECK(before == world.checksum());
 	}
-	glob2test::HeadlessGame world({.teams = 2, .discovered = true, .loadDefaultRace = true});
-	world.gui.init();
-	auto series = std::make_shared<AITelemetry::Series>();
-	series->player = 0;
-	series->playerName = "Readable Colony / Blue";
-	series->current.available = true;
-	series->named = {{"strategy.phase", "expansion", "", "Current strategic phase", 128},
-					 {"colony.population", "32", "units", "Own colony population", 128},
-					 {"runtime.pendingActions", "2", "orders", "Waiting for dispatch", 128}};
-	world.game.teams[0]->stats.aiTelemetry = {series};
-	world.gui.drawAll(0);
-	const auto before = world.checksum();
-	InGameAITelemetryScreen dialog(&world.gui);
-	dialog.attach(*globals->gfx);
-	dialog.update(0);
-	dialog.draw(0);
-	CHECK(dialog.host().bounds("telemetry/close").w > 0);
-	CHECK(dialog.host().find("telemetry/player") != nullptr);
-	auto path = (glob2test::artifactDir() / "ai-telemetry.bmp").string();
-	globals->gfx->printScreen(glob2test::artifactDirFromWorkingDirectory() + "/ai-telemetry.bmp");
-	dialog.draw(1);
-	globals->gfx->nextFrame();
-	CHECK(std::filesystem::exists(path));
-	CHECK(before == world.checksum());
 }
 
 TEST_CASE("JavaScript native spatial answers exclude hidden terrain resources and enemies" *
@@ -1102,4 +1134,60 @@ TEST_CASE("JavaScript placement reserves footprints and explains impossible cons
 	auto impossible = spatial.query("placement", {request, Value::array()}, {});
 	CHECK(impossible.get("found").number == 0);
 	CHECK(!impossible.get("reason").text.empty());
+	constraints.items[0].set("min", "invalid");
+	request.set("constraints", constraints);
+	CHECK_THROWS(spatial.query("placement", {request, Value::array()}, {}));
+	// The reservation eliminates every candidate, but must not hide bad arguments.
+	CHECK_THROWS(spatial.query("placement", {request, staged}, {}));
+}
+
+TEST_CASE("JavaScript services reject unsavable transactions without changing state" *
+		  doctest::test_suite("JavaScriptIntegration"))
+{
+	glob2test::HeadlessGlobals globals;
+	glob2test::HeadlessGame world({.discovered = true, .loadDefaultRace = true, .header = true});
+	auto *building = world.addBuilding("swarm", 5, 5);
+	REQUIRE(building);
+	Observations observations(world.game, 0);
+	observations.setProfile(2);
+	observations.observe();
+	Services services(world.game, 0, observations);
+	const auto before = services.save().encode();
+	Value commands = Value::array();
+	commands.items.push_back(Value::object()
+								 .set("type", "workers")
+								 .set("actionId", services.nextAction())
+								 .set("building", Value::object()
+													  .set("id", unsigned(building->gid))
+													  .set("generation", building->scriptIdentity))
+								 .set("workers", 4)
+								 .set("annotation", std::string(StateLimit - 8192, 'x')));
+	Value telemetry = Value::object();
+	for (int i = 0; i < 32; ++i)
+		telemetry.set("test." + std::to_string(i), Value::object()
+													   .set("value", std::string(512, 'y'))
+													   .set("updated", world.game.stepCounter));
+	// Each component fits separately; the complete services save does not.
+	CHECK_NOTHROW(commands.encode());
+	CHECK_NOTHROW(telemetry.encode());
+	CHECK_THROWS(services.commit(commands, telemetry));
+	CHECK(services.save().encode() == before);
+	// An envelope that barely fits now must also fit after dispatch adds tracking.
+	auto envelope = services.save();
+	Value records = Value::array();
+	records.items.push_back(Value::object()
+								.set("id", 1)
+								.set("command", commands.items[0])
+								.set("status", "pending")
+								.set("tick", world.game.stepCounter));
+	envelope.set("next", 2).set("records", records);
+	const auto remaining = StateLimit - envelope.encode().size();
+	commands.items[0].set("annotation", std::string(StateLimit - 8192 + remaining - 1, 'x'));
+	CHECK_THROWS(services.commit(commands, Value::object()));
+	CHECK(services.save().encode() == before);
+
+	auto malformed = services.save();
+	malformed.set("next", 100).set("records", "invalid");
+	CHECK_THROWS(services.load(malformed));
+	CHECK(services.save().encode() == before);
 }

@@ -24,7 +24,7 @@ The map scenario editor and developer commands also select JavaScript scripts.
 - [TypeScript declarations](../../examples/javascript/glob2.d.ts): editor/type
   information for the same boundary. Scripts themselves must be JavaScript.
 - [Profile 2 declarations](../../examples/javascript/glob2-v2.d.ts) and the
-  [complete starter project](https://github.com/Globulation2/javascript-ai-example)
+  [complete starter project](https://github.com/Globulation2/glob2-javascript-ai-starter-exampler)
   cover managed actions, spatial analysis, placement, and telemetry.
 - [AI example](../../examples/javascript/ai.js) and
   [scenario example](../../examples/javascript/scenario.js): standalone modules.
@@ -309,7 +309,7 @@ network acceptance gates remain independent of this draft profile.
 
 ## Installing custom AI controllers (profile 2)
 
-Start with the public [JavaScript AI template](https://github.com/Globulation2/javascript-ai-example).
+Start with the public [JavaScript AI template](https://github.com/Globulation2/glob2-javascript-ai-starter-exampler).
 It contains modular source, pinned build/watch tools, editor declarations, installation
 screenshots, and a compatible engine revision in `engine.json`.
 

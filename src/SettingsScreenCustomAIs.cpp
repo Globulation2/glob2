@@ -2,6 +2,14 @@
 #include "SettingsScreen.h"
 #include "ai/ScriptLibrary.h"
 
+namespace
+{
+std::string customAIText(const std::string &text)
+{
+	return Glob2UI::tr("[" + text + "]");
+}
+} // namespace
+
 namespace AH = GAGCore::ApplicationHost;
 struct SettingsScreen::CustomAIState
 {
@@ -21,7 +29,7 @@ void SettingsScreen::selectCustomAIFile(bool linked, const std::string &replace)
 	customAIs->linked = linked;
 	customAIs->picker = AH::selectFile("js");
 	if (!customAIs->picker)
-		customAIs->notice = "File selection is unavailable.";
+		customAIs->notice = customAIText("File selection is unavailable.");
 	invalidate();
 }
 void SettingsScreen::pollCustomAIs()
@@ -43,10 +51,10 @@ void SettingsScreen::pollCustomAIs()
 				s.library.put(std::string(file.bytes.begin(), file.bytes.end()), file.name,
 							  s.replace, s.linked ? file.externalPath : "");
 				s.persistence = AH::persistStorage();
-				s.notice = "Saving custom AI…";
+				s.notice = customAIText("Saving custom AI…");
 			}
 			else if (picker->state() == AH::FileSelectionState::Failed)
-				s.notice = "Could not read the selected JavaScript file.";
+				s.notice = customAIText("Could not read the selected JavaScript file.");
 			invalidate();
 		}
 		if (s.persistence && s.persistence->state() != AH::PersistenceState::Pending)
@@ -60,8 +68,9 @@ void SettingsScreen::pollCustomAIs()
 				s.library.collectUnusedSources();
 				s.errors.erase(s.replace);
 			}
-			s.notice = ok ? "Custom AI library saved."
-						  : "Storage could not be saved. The previous library is retained.";
+			s.notice =
+				ok ? customAIText("Custom AI library saved.")
+				   : customAIText("Storage could not be saved. The previous library is retained.");
 			invalidate();
 		}
 	}
@@ -84,44 +93,56 @@ void SettingsScreen::buildCustomAIs()
 		return;
 	}
 	auto &s = *customAIs;
-	info("Import a single JavaScript AI file, then select it when setting up a local game.");
+	info(customAIText(
+		"Import a single JavaScript AI file, then select it when setting up a local game."));
+	info(customAIText(
+		"Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep "
+		"their original AI."));
 	if (!s.notice.empty())
 		info(s.notice);
 	if (s.picker || s.persistence)
 	{
-		info("Waiting for file selection or storage…");
+		info(customAIText("Waiting for file selection or storage…"));
 		return;
 	}
-	button("ai.import", "Import JavaScript AI", [this] { selectCustomAIFile(false); });
+	button("ai.import", customAIText("Import JavaScript AI"),
+		   [this] { selectCustomAIFile(false); });
 #if !defined(__EMSCRIPTEN__) && !defined(GLOB2_MOBILE)
-	button("ai.link", "Link development file", [this] { selectCustomAIFile(true); });
-	info("Linked files are read at game start. Rebuild your file before starting a new game; "
-		 "running games keep their original source.");
+	button("ai.link", customAIText("Link development file"), [this] { selectCustomAIFile(true); });
+	info(customAIText(
+		"Linked files are read at game start. Rebuild before starting a new game. Removing a "
+		"link never deletes your file."));
 #endif
-	button("ai.example", "Example AI and authoring guide",
-		   [] { AH::openUrl("https://github.com/Globulation2/javascript-ai-example"); });
+	button(
+		"ai.example", customAIText("Example AI and authoring guide"), []
+		{ AH::openUrl("https://github.com/Globulation2/glob2-javascript-ai-starter-exampler"); });
+	if (s.library.entries().empty())
+		info(customAIText("No custom AIs yet. Import a bundled .js file to get started."));
 	for (const auto &entry : s.library.entries())
 	{
 		const auto id = entry.id;
-		info(entry.metadata.name + " · #" + entry.id +
-			 (entry.metadata.version.empty() ? "" : " · " + entry.metadata.version) +
-			 (entry.linked ? " · Linked" : " · Imported"));
+		add("", Kind::Section,
+			entry.metadata.name + " · #" + entry.id +
+				(entry.metadata.version.empty() ? "" : " · " + entry.metadata.version) +
+				(entry.linked ? " · " + customAIText("Linked") : " · " + customAIText("Imported")));
 		if (s.errors.contains(id))
 			info(s.errors[id]);
 		if (!entry.metadata.description.empty())
 			info(entry.metadata.description);
 		if (entry.linked)
 			info(entry.path);
-		button("ai.update." + id, entry.linked ? "Relink" : "Update",
+		const auto actionsStart = form.size();
+		button("ai.update." + id, entry.linked ? customAIText("Relink") : customAIText("Update"),
 			   [this, id, linked = entry.linked] { selectCustomAIFile(linked, id); });
-		button("ai.validate." + id, "Validate",
+		button("ai.validate." + id, customAIText("Validate"),
 			   [this, id]
 			   {
 				   try
 				   {
 					   customAIs->library.configuration(id);
 					   customAIs->errors.erase(id);
-					   customAIs->notice = "AI startup and persistent globals are valid.";
+					   customAIs->notice =
+						   customAIText("AI startup and persistent globals are valid.");
 				   }
 				   catch (const std::exception &e)
 				   {
@@ -130,13 +151,15 @@ void SettingsScreen::buildCustomAIs()
 				   }
 				   invalidate();
 			   });
-		button("ai.remove." + id, "Remove from library",
+		button("ai.remove." + id, customAIText("Remove from library"),
 			   [this, id]
 			   {
 				   try
 				   {
 					   customAIs->before = customAIs->library.checkpoint();
+					   customAIs->replace = id;
 					   customAIs->library.remove(id);
+					   customAIs->notice = customAIText("Saving custom AI…");
 					   customAIs->persistence = AH::persistStorage();
 				   }
 				   catch (const std::exception &e)
@@ -146,6 +169,12 @@ void SettingsScreen::buildCustomAIs()
 				   }
 				   invalidate();
 			   });
+		// Keep related actions together; the shared settings builder wraps them on phones.
+		for (size_t i = actionsStart; i < form.size(); ++i)
+		{
+			form[i].columns = 3;
+			form[i].column = int(i - actionsStart);
+		}
 	}
 }
 

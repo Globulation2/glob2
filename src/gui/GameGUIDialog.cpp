@@ -52,7 +52,7 @@ Element InGameMainScreen::build(const Presentation &p)
 		if (files && !replay && canSave)
 			buttons.push_back(classicButton("save", fe::tr("[save game]"), [this] { finish(SAVE_GAME); }));
 		buttons.push_back(
-			classicButton("telemetry", "AI telemetry", [this] { finish(AI_TELEMETRY); }));
+			classicButton("telemetry", fe::tr("[AI telemetry]"), [this] { finish(AI_TELEMETRY); }));
 		buttons.push_back(classicButton("options", fe::tr("[Options]"), [this] { finish(OPTIONS); }));
 		// Single player pauses with its key; a network match shows the rule here
 		// too, as the touch sheet does.
@@ -78,7 +78,7 @@ Element InGameMainScreen::build(const Presentation &p)
 		buttons.push_back(item("save", fe::tr("[save game]"), SAVE_GAME));
 	if (files)
 		buttons.push_back(item("load", loadLabel, LOAD_GAME));
-	buttons.push_back(item("telemetry", "AI telemetry", AI_TELEMETRY));
+	buttons.push_back(item("telemetry", fe::tr("[AI telemetry]"), AI_TELEMETRY));
 	buttons.push_back(item("options", fe::tr("[Options]"), OPTIONS));
 	buttons.push_back(item("quit", quitLabel, QUIT_GAME));
 	buttons.push_back(item("pause", pauseText, PAUSE_GAME, false, SDLK_UNKNOWN, pauseEnabled));
@@ -748,62 +748,85 @@ Element InGameAITelemetryScreen::build(const Presentation &p)
 	int selected = 0;
 	for (unsigned i = 0; i < records.size(); ++i)
 	{
-		names.push_back(records[i].name);
+		names.push_back(std::to_string(records[i].player + 1) + " · " + records[i].name);
 		if (records[i].player == player)
 			selected = int(i);
 	}
 	std::vector<Element> rows;
 	if (records.empty())
-		rows.push_back(fe::paragraph("No accessible AI telemetry."));
+		rows.push_back(fe::paragraph(fe::tr("[No accessible AI telemetry.]")));
 	else
 	{
 		player = records[selected].player;
-		rows.push_back(fe::choice("telemetry/player", names, selected,
-								  [this](int index)
-								  {
-									  const auto &values = gui->drawnScene().panels.aiTelemetry;
-									  if (index >= 0 && size_t(index) < values.size())
-										  player = values[index].player;
-									  invalidate();
-								  }));
-		rows.push_back(fe::field("Search fields", fe::textField("telemetry/search", search,
-																[this](const std::string &value)
-																{
-																	search = value;
-																	invalidate();
-																})));
+		rows.push_back(fe::field(fe::tr("[Player]"),
+								 fe::choice("telemetry/player", names, selected,
+											[this](int index)
+											{
+												const auto &values =
+													gui->drawnScene().panels.aiTelemetry;
+												if (index >= 0 && size_t(index) < values.size())
+													player = values[index].player;
+												invalidate();
+											})));
+		rows.push_back(
+			fe::field(fe::tr("[Search fields]"), fe::textField("telemetry/search", search,
+															 [this](const std::string &value)
+															 {
+																 search = value;
+																 invalidate();
+															 })));
 		const auto &record = records[selected];
 		if (!record.available)
 			rows.push_back(
-				fe::paragraph("Telemetry unavailable for this recording or controller."));
+				fe::paragraph(fe::tr("[Telemetry unavailable for this recording or controller.]")));
 		else
 		{
 			auto values = record.values;
 			std::sort(values.begin(), values.end(),
 					  [](const auto &a, const auto &b) { return a.name < b.name; });
+			// ASCII folding preserves UTF-8 bytes and makes common API field names easy to find.
+			auto folded = [](std::string text)
+			{
+				for (char &c : text)
+					if (c >= 'A' && c <= 'Z')
+						c += 'a' - 'A';
+				return text;
+			};
+			const auto query = folded(search);
+			bool matched = false;
 			std::string group;
 			for (const auto &value : values)
 			{
 				if (!search.empty() &&
-					(value.name + " " + value.meaning).find(search) == std::string::npos)
+					folded(value.name + " " + value.meaning + " " + value.value).find(query) ==
+						std::string::npos)
 					continue;
+				matched = true;
 				auto category = value.name.substr(0, value.name.find('.'));
 				if (category != group)
 				{
 					group = category;
 					rows.push_back(fe::paragraph(group, {fe::FontRole::Heading}));
 				}
-				rows.push_back(fe::paragraph(value.name + ": " + value.value +
-											 (value.unit.empty() ? "" : " " + value.unit) +
-											 "  (tick " + std::to_string(value.updated) + ")"));
+				rows.push_back(fe::paragraph(
+					value.name + ": " + value.value + (value.unit.empty() ? "" : " " + value.unit) +
+					"  · " +
+					std::string(GAGCore::FormattableString(fe::tr("[Updated at tick %0]"))
+									.arg(value.updated))));
 				if (!value.meaning.empty())
 					rows.push_back(fe::paragraph(value.meaning));
 			}
+			if (!matched)
+				rows.push_back(fe::paragraph(fe::tr(
+					search.empty() ? "[No values published yet.]" : "[No fields match your search.]")));
 		}
 	}
-	return fe::column(
-		{fe::paragraph("AI telemetry", {fe::FontRole::Heading}),
-		 fe::expanded(fe::footer(fe::scroll("telemetry/scroll", fe::column(std::move(rows), {p.pt(8)})),
-					fe::button("telemetry/close", "Close", [this] { finish(0); })))},
-		{p.pt(12)});
+	fe::ButtonOptions close;
+	close.shortcut = SDLK_ESCAPE;
+	return fe::column({fe::paragraph(fe::tr("[AI telemetry]"), {fe::FontRole::Heading}),
+					   fe::expanded(fe::footer(
+						   fe::scroll("telemetry/scroll", fe::column(std::move(rows), {p.pt(8)})),
+						   fe::button(
+							   "telemetry/close", fe::tr("[Close]"), [this] { finish(0); }, close)))},
+					  {p.pt(12)});
 }

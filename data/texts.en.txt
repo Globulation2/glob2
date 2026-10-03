@@ -4606,3 +4606,63 @@ Create a room and invite your friends: the room plays this map.
 Device busy %0%
 [game draw]
 Draw
+[File selection is unavailable.]
+File selection is unavailable.
+[Saving custom AI…]
+Saving custom AI…
+[Could not read the selected JavaScript file.]
+Could not read the selected JavaScript file.
+[Custom AI library saved.]
+Custom AI library saved.
+[Storage could not be saved. The previous library is retained.]
+Storage could not be saved. The previous library is retained.
+[Import a single JavaScript AI file, then select it when setting up a local game.]
+Import a single JavaScript AI file, then select it when setting up a local game.
+[Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.]
+Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.
+[Waiting for file selection or storage…]
+Waiting for file selection or storage…
+[Import JavaScript AI]
+Import JavaScript AI
+[Link development file]
+Link development file
+[Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.]
+Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.
+[Example AI and authoring guide]
+Example AI and authoring guide
+[No custom AIs yet. Import a bundled .js file to get started.]
+No custom AIs yet. Import a bundled .js file to get started.
+[Relink]
+Relink
+[Update]
+Update
+[Validate]
+Validate
+[AI startup and persistent globals are valid.]
+AI startup and persistent globals are valid.
+[Remove from library]
+Remove from library
+[AI telemetry]
+AI telemetry
+[No accessible AI telemetry.]
+No accessible AI telemetry.
+[Search fields]
+Search fields
+[Telemetry unavailable for this recording or controller.]
+Telemetry unavailable for this recording or controller.
+[Linked]
+Linked
+[Imported]
+Imported
+[Player]
+Player
+[Updated at tick %0]
+Updated at tick %0
+[No values published yet.]
+No values published yet.
+[No fields match your search.]
+No fields match your search.
+[Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]
+Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.
+[Missing custom AI]
+Missing custom AI

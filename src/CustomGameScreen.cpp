@@ -1226,6 +1226,8 @@ Element CustomGameScreen::playersTab(const Presentation &p, bool narrow)
 		cardOptions.padding = p.pt(10);
 		parts.push_back(fe::card(fe::column(std::move(body), {p.pt(6)}), cardOptions));
 	}
+	if (!forRoom)
+		parts.push_back(fe::caption(tr("Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.")));
 	return fe::scroll("lobby/players", fe::column(std::move(parts), {p.pt(8)}));
 }
 
@@ -1489,7 +1491,7 @@ std::string CustomGameScreen::aiLabel(int colony) const
 	catch (...)
 	{
 	}
-	return "Missing custom AI";
+	return tr("Missing custom AI");
 }
 void CustomGameScreen::freezeAIs()
 {
