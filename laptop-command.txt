@@ -1,0 +1,2 @@
+SDL_VIDEO_DRIVER=x11; WAYLAND_DISPLAY unset
+'xvfb-run' '-a' '-s' '-screen 0 2400x1920x24 -noreset' 'python3' 'test/run_tests.py' '--display-jobs' '1' '--fullscreen' '--keep-profiles' '--junit' 'artifacts/ux-team-review/verified/laptop.xml' '--artifacts' 'artifacts/ux-team-review/verified/laptop' '--filter' 'UIPresentation/*at laptop*'

@@ -1,0 +1,2 @@
+SDL_VIDEO_DRIVER and SDL_VIDEODRIVER unset
+'python3' 'test/run_tests.py' '--display-jobs' '1' '--fullscreen' '--keep-profiles' '--junit' 'artifacts/ux-team-review/verified/headless.xml' '--artifacts' 'artifacts/ux-team-review/verified/headless' '--filter' 'MobileInput/*' '--filter' 'EditorWidgetLayout/*' '--filter' 'EngineSession/incremental sessions*' '--filter' 'EngineSession/serial sessions*' '--filter' 'MapPreview/preview geometry' '--filter' 'MapPreview/map database*' '--filter' 'MapPreview/thumbnail*'

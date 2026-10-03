@@ -1,0 +1,10 @@
+PASS glob2-unit-tests MobileInput (2 cases) (0.0s)
+PASS glob2-unit-tests EditorWidgetLayout (3 cases) (0.0s)
+PASS MapPreview/preview geometry (0.1s)
+PASS MapPreview/map database messages and download previews (0.2s)
+PASS MapPreview/thumbnail codec; envelope limits and corrupt input (0.4s)
+PASS EngineSession/serial sessions retain chat text across skipped GUI frames (0.6s)
+PASS EngineSession/incremental sessions; editor decisions; fertility equivalence and cancellation [writes-preferences] (2.2s)
+
+7 passed, 0 failed, 0 skipped (3.6s of test time)
+[run_tests] JUnit report: artifacts/ux-team-review/verified/headless.xml (10 cases)

@@ -1,0 +1,4 @@
+PASS UIPresentation/every screen lays out; navigates and captures at small landscape across presentations and insets [display:1600x1400][artifacts][slow] (35.3s)
+
+1 passed, 0 failed, 0 skipped (35.3s of test time)
+[run_tests] JUnit report: artifacts/ux-team-review/verified/small-landscape.xml (1 cases)

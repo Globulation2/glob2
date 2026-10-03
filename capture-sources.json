@@ -1,0 +1,36 @@
+{
+  "source": "27cbb03c485f7328b7803294ca21ef5a2fce19a9",
+  "captures": {
+    "unit-portrait": "/tmp/glob2-test-oj_uulee",
+    "unit-landscape-scrolled": "/tmp/glob2-test-oj_uulee",
+    "momentum-jitter-released": "/tmp/glob2-test-kaf_nlpg",
+    "momentum-jitter-later": "/tmp/glob2-test-kaf_nlpg",
+    "building-header-portrait": "/tmp/glob2-test-a1smvwn_",
+    "building-header-landscape": "/tmp/glob2-test-a1smvwn_",
+    "building-header-wide": "/tmp/glob2-test-a1smvwn_",
+    "building-header-left-portrait": "/tmp/glob2-test-a1smvwn_",
+    "building-header-safe-fallback": "/tmp/glob2-test-a1smvwn_",
+    "building-confirmation-row-fallback": "/tmp/glob2-test-a1smvwn_",
+    "touch-proportions-portrait": "/tmp/glob2-test-a1smvwn_",
+    "touch-proportions-landscape": "/tmp/glob2-test-a1smvwn_",
+    "touch-proportions-left-portrait": "/tmp/glob2-test-a1smvwn_",
+    "resource-wood-portrait": "/tmp/glob2-test-a1smvwn_",
+    "resource-wheat-landscape": "/tmp/glob2-test-a1smvwn_",
+    "inset-objectives-320x568": "/tmp/glob2-test-a1smvwn_",
+    "inset-teams-320x568": "/tmp/glob2-test-a1smvwn_",
+    "inset-long-hints-large-text-568x320": "/tmp/glob2-test-a1smvwn_",
+    "inset-desktop-short-teams-568x320": "/tmp/glob2-test-a1smvwn_",
+    "touch-brush-rail-portrait": "/tmp/glob2-test-a1smvwn_",
+    "touch-brush-rail-landscape": "/tmp/glob2-test-a1smvwn_",
+    "touch-lenses-portrait": "/tmp/glob2-test-a1smvwn_",
+    "touch-double-tap-before-portrait": "/tmp/glob2-test-a1smvwn_",
+    "touch-double-tap-after-portrait": "/tmp/glob2-test-a1smvwn_",
+    "dismiss-2-portrait-before": "/tmp/glob2-test-a1smvwn_",
+    "dismiss-2-portrait-after": "/tmp/glob2-test-a1smvwn_"
+  },
+  "provenance": [
+    "output-glob2-test-oj_uulee.txt",
+    "output-glob2-test-kaf_nlpg.txt",
+    "output-glob2-test-a1smvwn_.txt"
+  ]
+}

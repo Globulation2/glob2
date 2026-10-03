@@ -1,0 +1,52 @@
+GLOB2_TEST_BUILD compiler=15.2.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "", "CPPDEFINES": "HAVE_CONFIG_H SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC -O3 -s", "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -O3 -s -fwhole-program -Wl,-rpath,/home/bradley/.codex/worktrees/colony-skins/glob2/artifacts/skins/sdk/lib -Wl,--enable-new-dtags"}, "revision": "27cbb03c485f7328b7803294ca21ef5a2fce19a9", "sourceStatus": [], "sourceTreeSha256": "c7860e34cc5b0a961352537aba39a8805f8d79c62e1a851e6bdbb6825971be44"}
+FileManager::writeAtomically: /tmp/glob2-test-a1smvwn_/profile/replays/blocked.replay: File replacement failed: iostream error
+PASS double tap 320x568: 0.75 -> 1.5; world anchor preserved
+PASS double tap 320x568: 1 -> 2; world anchor preserved
+PASS double tap 320x568: 2 -> 3; world anchor preserved
+PASS double tap 320x568: 3 -> 3; world anchor preserved
+PASS double tap 568x320: 0.75 -> 1.5; world anchor preserved
+PASS double tap 568x320: 1 -> 2; world anchor preserved
+PASS double tap 568x320: 2 -> 3; world anchor preserved
+PASS double tap 568x320: 3 -> 3; world anchor preserved
+PASS fixed priority and unified production proportions 320x568 thumb=0
+PASS fixed priority and unified production proportions 320x568 thumb=1
+PASS fixed priority and unified production proportions 568x320 thumb=0
+PASS fixed priority and unified production proportions 568x320 thumb=1
+PASS fixed priority and unified production proportions 844x390 thumb=0
+PASS fixed priority and unified production proportions 844x390 thumb=1
+Modal objectives screen=320x568 panel=40,455,720,509
+Modal hints screen=320x568 panel=40,500,720,420
+Modal teams screen=320x568 panel=40,40,720,1340
+Modal long-hints-large-text screen=320x568 panel=40,40,720,1340
+Modal teams-large-text screen=320x568 panel=40,40,720,1340
+Modal objectives screen=568x320 panel=30,109,1005,382
+Modal hints screen=568x320 panel=30,142,1005,315
+Modal teams screen=568x320 panel=30,30,1005,540
+Modal long-hints-large-text screen=568x320 panel=30,30,1005,540
+Modal teams-large-text screen=568x320 panel=30,30,1005,540
+Modal desktop-short-teams screen=568x320 panel=262,30,541,540
+Modal objectives screen=1024x768 panel=232,282,560,204
+Modal hints screen=1024x768 panel=232,300,560,168
+Modal teams screen=1024x768 panel=192,145,640,477
+Modal long-hints-large-text screen=1024x768 panel=232,16,560,736
+Modal teams-large-text screen=1024x768 panel=192,70,640,628
+Modal desktop-objectives screen=1024x768 panel=293,305,438,158
+Modal desktop-teams screen=1024x768 panel=368,200,288,368
+PASS: editor buffered paint, focus/second-finger cancellation, one-building drag and invalid/UI drops
+PASS: file dialog UTF-8/IME, shared filename commands, busy/error retry and scrolling
+PASS: editor area name IME, touch confirmation and cancellation
+PASS: editor buffered paint, focus/second-finger cancellation, one-building drag and invalid/UI drops
+PASS: file dialog UTF-8/IME, shared filename commands, busy/error retry and scrolling
+PASS: editor area name IME, touch confirmation and cancellation
+PASS: editor buffered paint, focus/second-finger cancellation, one-building drag and invalid/UI drops
+PASS: file dialog UTF-8/IME, shared filename commands, busy/error retry and scrolling
+PASS: editor area name IME, touch confirmation and cancellation
+PASS: editor buffered paint, focus/second-finger cancellation, one-building drag and invalid/UI drops
+PASS: file dialog UTF-8/IME, shared filename commands, busy/error retry and scrolling
+PASS: editor area name IME, touch confirmation and cancellation
+PASS localized German/Japanese inspectors and editor interactions in both phone orientations
+PASS: editor buffered paint, focus/second-finger cancellation, one-building drag and invalid/UI drops
+PASS: file dialog UTF-8/IME, shared filename commands, busy/error retry and scrolling
+PASS: editor area name IME, touch confirmation and cancellation
+PASS: actual gameplay touch, toroidal pan, preview, confirmation, validation, cancellation and duplicate suppression
