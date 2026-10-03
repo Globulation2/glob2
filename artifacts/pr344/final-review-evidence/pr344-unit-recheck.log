@@ -1,0 +1,4 @@
+PASS glob2-unit-tests (617 cases) (12.1s)
+
+1 passed, 0 failed, 12 skipped (12.1s of test time)
+[run_tests] JUnit report: artifacts/pr344/final-unit-recheck.xml (629 cases)

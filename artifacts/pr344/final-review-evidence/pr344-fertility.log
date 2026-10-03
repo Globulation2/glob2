@@ -1,0 +1,4 @@
+PASS glob2-unit-tests Maxima.Farming (1 cases) (0.4s)
+
+1 passed, 0 failed, 0 skipped (0.4s of test time)
+[run_tests] JUnit report: artifacts/pr344/final-fertility.xml (1 cases)
