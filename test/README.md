@@ -1329,8 +1329,13 @@ ownership and byte-capacity bounds; and compares deferred SHA1 and exact gzip by
 for incompressible input and compression levels zero, one, six and nine. It rejects
 truncated, bad-CRC, trailing and concatenated gzip inputs before game loading,
 injects allocation/finalization exceptions, checks atomic failure cleanup, and
-stalls an autosave writer to verify waiting before the next capture and exact
-saved ticks. The optional level-zero compatibility path retains whole buffers;
+stalls an autosave writer to verify nonblocking deferral and exact saved ticks
+at the later capture. It compares owned snapshot output against ordinary saves
+after mutating the live game, and exercises both native-thread and cooperative
+finalization, including failure and subsequent reuse. It checks mixed snapshot/legacy
+queues, exact cooperative gzip bytes at the default compression level, and manual save
+ordering through delayed capture and persistence, including terminal failures and
+exactly-once success callbacks. The optional level-zero compatibility path retains whole buffers;
 normal save-memory measurements use the default compression level.
 
 Run these alongside the existing placement, continuation and engine lifecycle suites.
@@ -1338,3 +1343,44 @@ For full-game checks, retain identical initial saves, seeds and orders, compare
 per-tick simulation state and replay/save bytes, and test continuation from populated
 checkpoints. The native paired CPU runner and profiling workflow are described in
 [the development reference](../docs/development/reference.md#native-simulation-memory-and-cpu-comparisons).
+
+## Save size measurements
+
+Build `scons release=1 server=0 save-size-harness`, then run:
+
+```sh
+python3 test/measure_save_sizes.py build/darwin/client/release/test/SaveSizeHarness \
+  artifacts/save-size/baseline maps/SmallForTwo.map.gz maps/Holiday_Island_2.map.gz \
+  games/gd-small-2ai.game.gz games/gd-large-4ai.game.gz
+```
+
+Use the native build directory for the host (or the explicit custom build path).
+Repeat with the comparison revision's harness, the same input files and a different
+output directory. Each invocation uses disposable profiles, retains gzip outputs
+and JSON section sizes, and reports median load/serialization/compression times
+from three processes. Input and harness hashes identify the measured inputs.
+Peak RSS is the process high-water mark through serialization/compression, including
+loading; it is not isolated serializer allocation. Independently compressed section
+sizes do not add up exactly to the final gzip size. Run the harness on its emitted
+files as well when comparing load times for the old and new encodings. Keep timing
+runs separate from concurrent builds/tests and compare matching compilers and flags.
+
+`PackedArray` checks all integer widths, wraparound, block boundaries and malformed
+payloads. `Maxima.Continuation` covers legacy and compact arrays, signed limits and
+nested archives. `Maxima.Placement` retains explicit noncanonical neighborhood
+contents. `TeamStatsSave` checks binary measurement/end-game histories and binary/text
+telemetry histories across two 256-sample batch boundaries;
+`TeamLimit`, `JavaScriptCompatibility`, `UntrustedFiles` and `SavegameSafety` cover
+sparse identities, format boundaries, decoded validation and save/load continuation.
+Run these together with the existing AI and gradient continuation suites. An encoding
+change must preserve decoded state and per-tick simulation records; old and new
+serialized bytes and header checksums are expected to differ.
+
+For interactive snapshot capture/finalization measurements, set
+`GLOB2_BENCH_SNAPSHOT=1` when running `test/measure_save_sizes.py`. The report
+separates `capture_ms` from `encode_ms`; `serialize_ms` is their sum. Compare with
+ordinary serialization using the same fixtures and build. Capture timing includes
+the immutable copy and its lightweight in-memory representation; encoding includes
+final array/history packing, offset relocation and hashing. The benchmark flattens
+the finished output for section-independent measurement, so its process peak is
+not an isolated allocation bound for the production writer.
