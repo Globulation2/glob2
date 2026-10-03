@@ -860,7 +860,7 @@ void GameGUITouch::actions(const std::vector<TouchAction> &changes)
 			// Back-and-forth jitter inside the dead zone cannot arm a fling.
 			mapDragTravel.x += action.point.x;
 			mapDragTravel.y += action.point.y;
-			mapFlingArmed |= std::hypot(mapDragTravel.x, mapDragTravel.y) >= mapFlingTravelPoints;
+			mapFlingArmed |= std::hypot(mapDragTravel.x, mapDragTravel.y) >= InGameTouchTheme::mapFlingTravelPoints;
 			// The same finger motion feeds the release velocity, in logical pixels.
 			if (!mapMotion.isDragging())
 				mapMotion.beginDrag(action.time);

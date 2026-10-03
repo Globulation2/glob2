@@ -245,7 +245,6 @@ class GameGUITouch
 	// Screen-point displacement, separate from the smaller pan/tap slop.
 	GAGCore::ViewPoint mapDragTravel{};
 	bool mapFlingArmed = false;
-	static constexpr double mapFlingTravelPoints = 16;
 	double tutorialMaximum() const;
 	Uint64 lastStepTime = 0;
 	// Momentum only follows real fingers; the synthetic mouse finger drags.

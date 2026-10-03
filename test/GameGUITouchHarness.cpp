@@ -3063,6 +3063,21 @@ class GameGUITouchHarness
 			flick(400, 300, 3, 0);
 			require(!gui.touch->scrollAnimating(), "Each touch must independently cross the dead zone");
 		}
+		// Fling intent is measured on the display, even when the same motion
+		// travels very different distances through the world at different zooms.
+		const double originalZoom = gui.camera.zoom;
+		for (double zoom : {gui.camera.minimumZoom(), MapCamera::MAX_ZOOM})
+		{
+			gui.camera.setZoom(zoom, 400, 300);
+			placeCamera(1000, 1000);
+			frame(500);
+			flick(400, 300, 3, 0);
+			require(!gui.touch->scrollAnimating(), "Zoom must not amplify jitter into fling intent");
+			flick(400, 300, 4, 0);
+			require(gui.touch->scrollAnimating(), "Zoom must not shrink a deliberate swipe below the threshold");
+			gui.touch->stopScrolling();
+		}
+		gui.camera.setZoom(originalZoom, 400, 300);
 		// A rightward flick moves the origin left; from 300 px it coasts past zero.
 		placeCamera(300, 300);
 		flick(400, 300, 40, 0);
