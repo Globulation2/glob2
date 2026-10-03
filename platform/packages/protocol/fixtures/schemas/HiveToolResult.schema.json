@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:HiveToolResult",
+  "title": "HiveToolResult",
+  "type": "object",
+  "required": [
+    "operationId",
+    "lease",
+    "tick",
+    "status",
+    "output"
+  ],
+  "properties": {
+    "operationId": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "description": "Lowercase UUID."
+    },
+    "lease": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "description": "Lowercase UUID."
+    },
+    "tick": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4294967295
+    },
+    "status": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "completed"
+        },
+        {
+          "type": "string",
+          "const": "failed"
+        },
+        {
+          "type": "string",
+          "const": "uncertain"
+        }
+      ]
+    },
+    "output": {
+      "type": "string",
+      "maxLength": 65536
+    }
+  },
+  "additionalProperties": false
+}
