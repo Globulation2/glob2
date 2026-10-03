@@ -142,6 +142,11 @@ export class RealtimeHub {
     }
   }
 
+  /** Accounts with a socket on this replica. */
+  accountIds(): string[] {
+    return [...this.byAccount.keys()];
+  }
+
   /** This replica's open sockets signed in as the account. */
   connectionsOf(accountId: string): RealtimeConnection[] {
     return [...(this.byAccount.get(accountId) ?? [])].filter((c) => c.open);

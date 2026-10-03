@@ -428,6 +428,8 @@ const typedColumns: ColumnLists = {
   account_name_scrubs: ['account_id', 'match_id', 'created_at'],
   leader_leases: ['name', 'epoch', 'holder', 'acquired_at', 'renewed_at'],
   notification_payloads: ['id', 'channel', 'payload', 'created_at'],
+  api_replicas: ['id', 'started_at', 'heartbeat_at'],
+  realtime_presence: ['account_id', 'replica_id', 'since'],
   match_results_view: [
     'match_id',
     'origin',
