@@ -96,7 +96,7 @@ with `version`.
 ## In-game connection notice
 
 Turn games replace the "waiting for X" box (`GameGUIDraw.cpp`) with connection lines
-from `Engine::turnConnectionNotice`, whenever there is something to report: the local
+from `TurnMatchPresenter::notice`, whenever there is something to report: the local
 connection being lost or everyone loading, a rejoin or catch-up of more than 25 turns,
 and other players who are reconnecting, lagging, catching up or not yet connected. The
 always-on connection panel of the multiplayer revamp will replace this box.
