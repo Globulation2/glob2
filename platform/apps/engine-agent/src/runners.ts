@@ -23,6 +23,7 @@ import {
   EngineOutputError,
   PREVIEW_SIZE_RANGE,
   readMapHeader,
+  savedPlayers,
   type EngineCatalog,
 } from './engineCli.ts';
 
@@ -194,12 +195,16 @@ export class HeadlessEngineRunner implements EngineRunner {
     if (problem) return invalid(problem);
     const mapHash = await this.options.blobs.write(bytes, CONTENT_TYPES[kind]);
     const title = (report.name ?? header.name).trim().slice(0, 128);
+    // Saves: who played, so a host can map returning players onto seats.
+    const players =
+      payload.format === 'save' ? savedPlayers(report.controllers, report.teamCount) : [];
     return {
       valid: true,
       mapHash,
       map: { width: report.width, height: report.height, teamCount: report.teamCount },
       versionMinor: header.versionMinor,
       ...(title ? { title } : {}),
+      ...(players.length > 0 ? { players } : {}),
     };
   }
 

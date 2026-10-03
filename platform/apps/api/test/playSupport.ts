@@ -82,7 +82,7 @@ export class FakeEngine {
       .selectFrom('engine_jobs')
       .select(['id', 'kind', 'payload'])
       .where('status', '=', 'queued')
-      .where('kind', 'in', ['generate-map', 'validate-map'])
+      .where('kind', 'in', ['generate-map', 'validate-map', 'render-preview'])
       .orderBy('created_at')
       .execute();
     for (const job of jobs) {
@@ -113,6 +113,25 @@ export class FakeEngine {
           size: stored.size,
           map: { width: 128, height: 128, teamCount: teams },
           chosenSeed: generator.seed,
+        },
+      };
+    }
+    if (kind === 'render-preview') {
+      const { mapHash, maxSizePx } = payload as { mapHash: string; maxSizePx: number };
+      const map = await this.blobs.get(`sha256/${mapHash.slice(0, 2)}/${mapHash}`);
+      let text = '';
+      for await (const chunk of map ?? []) text += String(chunk);
+      if (!text.startsWith('GLOB2MAP:')) {
+        return { ok: false, error: { code: 'bad_request', message: 'cannot load the map' } };
+      }
+      const png = await putContent(this.blobs, Buffer.from(`PNG:${mapHash}`));
+      return {
+        ok: true,
+        result: {
+          previewHash: png.sha256,
+          contentType: 'image/png',
+          width: maxSizePx,
+          height: maxSizePx,
         },
       };
     }

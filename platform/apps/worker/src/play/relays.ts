@@ -162,6 +162,13 @@ export async function relayHeartbeat(db: Db, heartbeat: RelayHeartbeat): Promise
     if (updated.numUpdatedRows === 0n) return { known: false };
     let nowRunning: string[] = [];
     if (heartbeat.activeMatchIds.length > 0) {
+      await trx
+        .updateTable('matches')
+        .set({ relay_seen_at: sql<Date>`now()` })
+        .where('id', 'in', heartbeat.activeMatchIds)
+        .where('status', 'in', ['starting', 'running'])
+        .where('relay_id', '=', heartbeat.relayId)
+        .execute();
       const rows = await trx
         .updateTable('matches')
         .set({ status: 'running', started_at: sql<Date>`coalesce(started_at, now())` })

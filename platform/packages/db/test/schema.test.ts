@@ -162,6 +162,12 @@ const typedColumns: ColumnLists = {
     'download_count',
     'created_at',
     'updated_at',
+    'made_with',
+    'generator',
+    'like_count',
+    'latest_version_id',
+    'hidden_at',
+    'hidden_by_account_id',
   ],
   map_versions: [
     'id',
@@ -176,6 +182,15 @@ const typedColumns: ColumnLists = {
     'validation',
     'validation_error',
     'created_at',
+    'sim_version',
+    'validate_job_id',
+    'preview_job_id',
+    'preview_status',
+    'preview_width',
+    'preview_height',
+    'file_title',
+    'uploader_account_id',
+    'notes',
   ],
   map_likes: ['map_id', 'account_id', 'created_at'],
   map_reports: [
@@ -188,6 +203,7 @@ const typedColumns: ColumnLists = {
     'resolved_by_account_id',
     'created_at',
     'resolved_at',
+    'resolution_note',
   ],
   rooms: [
     'id',
@@ -204,6 +220,8 @@ const typedColumns: ColumnLists = {
     'updated_at',
     'closed_at',
   ],
+  room_kicks: ['room_id', 'account_id', 'kicked_by_account_id', 'until', 'created_at'],
+  map_downloads: ['map_id', 'downloader', 'day'],
   room_members: ['room_id', 'account_id', 'connected', 'joined_at', 'last_seen_at', 'region_rtts'],
   room_seats: [
     'room_id',
@@ -243,6 +261,7 @@ const typedColumns: ColumnLists = {
     'relay_assigned_at',
     'relay_attempts',
     'end_report',
+    'relay_seen_at',
   ],
   rating_entities: ['id', 'kind', 'account_id', 'ai_id', 'ai_sim_version', 'created_at'],
   ratings: [

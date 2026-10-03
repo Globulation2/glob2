@@ -189,6 +189,13 @@ export interface MapsTable {
   download_count: Defaulted<number>;
   created_at: Timestamp;
   updated_at: Timestamp;
+  // 0007 map catalog
+  made_with: Defaulted<'hand' | 'generator'>;
+  generator: NullableJson<JsonValue>;
+  like_count: Defaulted<number>;
+  latest_version_id: Nullable<string>;
+  hidden_at: NullableTimestamp;
+  hidden_by_account_id: Nullable<string>;
 }
 
 export interface MapVersionsTable {
@@ -204,6 +211,16 @@ export interface MapVersionsTable {
   validation: Defaulted<'pending' | 'valid' | 'invalid'>;
   validation_error: Nullable<string>;
   created_at: Timestamp;
+  // 0007 map catalog
+  sim_version: Nullable<string>;
+  validate_job_id: Nullable<string>;
+  preview_job_id: Nullable<string>;
+  preview_status: Defaulted<'pending' | 'ready' | 'failed'>;
+  preview_width: Nullable<number>;
+  preview_height: Nullable<number>;
+  file_title: Nullable<string>;
+  uploader_account_id: Nullable<string>;
+  notes: Defaulted<string>;
 }
 
 export interface MapLikesTable {
@@ -222,6 +239,13 @@ export interface MapReportsTable {
   resolved_by_account_id: Nullable<string>;
   created_at: Timestamp;
   resolved_at: NullableTimestamp;
+  resolution_note: Nullable<string>;
+}
+
+export interface MapDownloadsTable {
+  map_id: string;
+  downloader: string;
+  day: Defaulted<string>;
 }
 
 export interface RoomsTable {
@@ -238,6 +262,14 @@ export interface RoomsTable {
   created_at: Timestamp;
   updated_at: Timestamp;
   closed_at: NullableTimestamp;
+}
+
+export interface RoomKicksTable {
+  room_id: string;
+  account_id: string;
+  kicked_by_account_id: Nullable<string>;
+  until: RequiredTimestamp;
+  created_at: Timestamp;
 }
 
 export interface RoomMembersTable {
@@ -295,6 +327,7 @@ export interface MatchesTable {
   relay_assigned_at: NullableTimestamp;
   relay_attempts: Defaulted<number>;
   end_report: NullableJson<JsonValue>;
+  relay_seen_at: NullableTimestamp;
 }
 
 export interface MapUploadsTable {
@@ -576,6 +609,8 @@ export interface Database {
   map_reports: MapReportsTable;
   rooms: RoomsTable;
   room_members: RoomMembersTable;
+  room_kicks: RoomKicksTable;
+  map_downloads: MapDownloadsTable;
   room_seats: RoomSeatsTable;
   room_chat_messages: RoomChatMessagesTable;
   matches: MatchesTable;

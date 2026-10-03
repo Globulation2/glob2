@@ -131,7 +131,7 @@ class AggregateGateTest(unittest.TestCase):
         code=workflow.split("          python3 - <<'PY'\n",1)[1].split('\n          PY',1)[0]
         import textwrap
         code=textwrap.dedent(code)
-        jobs=['android','macos','tsan','native-coverage','linux','linux-variants','linux-map-generators','windows','windows-server','web-build','web-native','web-deploy','web-test','browser-determinism','platform']
+        jobs=['android','macos','tsan','native-coverage','linux','linux-variants','linux-map-generators','windows','windows-server','web-build','web-native','web-deploy','web-test','browser-determinism','platform','platform-stack']
         selected={k:'true' for k in policy.FLAGS}
         needs={'changes':{'result':'success','outputs':selected},**{job:{'result':'success'} for job in jobs}}
         with patch.dict(os.environ,NEEDS_JSON=json.dumps(needs),GITHUB_EVENT_NAME='push'):

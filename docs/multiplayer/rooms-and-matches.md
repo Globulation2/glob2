@@ -46,6 +46,8 @@ are easy to change:
 | The host is ready by starting; there is no force start past unready players | yes |
 | Seats that must be taken to start | 2 |
 | The host leaving closes the room (`room.closed` `host_closed`) | yes |
+| The host can remove a member from an open room (`room.kick`) | yes |
+| A kicked player cannot rejoin that room for | 10 min |
 | Open room closes when its host has been disconnected for | 120 s |
 | Disconnected members are removed from open rooms after | 10 min |
 | Open rooms close after no change for | 12 h |
@@ -55,6 +57,13 @@ are easy to change:
 room has changed since then. Room settings are frozen (`conflict`) while the room is
 starting or in a match. When the match ends, or is cancelled because nobody reached
 the relay, the room reopens with every Ready cleared.
+
+**Kicking.** `room.kick {roomId, accountId}` is host only and works while the room is
+open (not while a match is starting or running). The member's seat opens, they get
+`room.closed` with reason `kicked`, and the other members get the new `room.state`.
+The ban is kept in `room_kicks`: `room.join` answers `forbidden` with
+`details.until` until it runs out, and the room sweep deletes expired bans. A ban
+is per room, so the player can still join other rooms by the same host.
 
 **Presence.** A member is connected while any API replica holds a socket for the
 account. When a replica's last socket for an account closes, it marks the account
@@ -83,7 +92,7 @@ load. Every participant downloads those bytes from
 
 | Source | How the room gets its hash and team count |
 | --- | --- |
-| Catalog `{kind: "catalog", hash}` | A valid `map_versions` row of a map that is not hidden and is public, unlisted or the host's own |
+| Catalog `{kind: "catalog", hash, mapId?}` | A valid `map_versions` row of a map that is not hidden and is public, unlisted or the host's own, saved by an engine no newer than the room's (`minVersionMinor`). See [Map catalog](architecture.md#map-catalog) |
 | Upload `{kind: "upload", format, hash}` | The host's own upload for the room's sim version, once validated |
 | Generator `{kind: "generated", generator}` | A `generate-map` job. `params.teams` is required and sets the team count. The hash is filled in when the job finishes |
 
@@ -112,15 +121,19 @@ resource with its status, map facts, and, for a save, the players recorded in it
   team count. Returning players take the seat of the team they played, because seat
   *i* is team *i*.
 
-**Downloads.** Public blobs, such as generated and catalog maps, need no sign-in.
-A private upload is served to an account that uploaded those bytes, a member of a
-room that uses them, or a participant of a match played on them. Every other
+**Downloads.** Public blobs, such as generated maps, and versions of public or
+unlisted catalog maps need no sign-in. A private upload or private catalog map is
+served to an account that uploaded those bytes (and, for catalog maps, to
+moderators), a member of a room that uses them, or a participant of a match played
+on them. Every other
 caller gets `404`. Responses carry `ETag: "<hash>"` and an immutable cache lifetime.
 
-**Warm maps.** Queue starts first ask a `WarmMapSource` for a pre-generated map of
-the queue, sim version and pool entry. The engine-agent work provides
-`takeWarmMap(db, queueId, simVersionKey, { entry })`. Without a pool, or when it is
-empty, the starter generates on demand and waits up to 60 s.
+**Warm maps.** Queue starts first take a pre-generated map of the queue, sim
+version and pool entry from the warm map pool (`takeWarmMap` in
+`apps/worker/src/warmMaps.ts`, wired in the worker's `main.ts`; see
+[Warm map pool](architecture.md#warm-map-pool)). Warm maps are generated with one
+team per queue seat, as on-demand maps are. When the pool is empty or turned off
+(`WARM_MAPS_PER_ENTRY=0`), the starter generates on demand and waits up to 60 s.
 
 ## Start sequence
 
@@ -230,10 +243,20 @@ Keys are compared in constant time.
 | Call | Body → response | Notes |
 | --- | --- | --- |
 | `POST /internal/v1/relays/register` | `RelayRegistration` → `RelayRegistrationResponse` (`heartbeatIntervalSeconds: 15`, `jwksUrl`) | Upsert. Re-registering resets load and drain state |
-| `POST /internal/v1/relays/heartbeat` | `RelayHeartbeat` → `{ok: true}`, or `404` `{ok: false, reregister: true}` for an unknown relay | Updates load and draining. Listed `starting` matches become `running` |
+| `POST /internal/v1/relays/heartbeat` | `RelayHeartbeat` → `{ok: true}`, or `404` `{ok: false, reregister: true}` for an unknown relay | Updates load and draining. Listed `starting` matches become `running`, and every listed match records `relay_seen_at` |
 | `GET /internal/v1/matches/{id}/setup` | → the stored `MatchSetup` | Semantically identical to what clients received. Key order may differ |
 | `PUT /internal/v1/matches/{id}/record` | G2MR bytes (`application/vnd.glob2.match-record`, up to `RECORD_MAX_BYTES`, 64 MiB) → `RelayRecordReceipt` | Stored as the match's `record` artifact. Repeatable. After the end report, only the reported bytes are accepted (`409` otherwise) |
 | `POST /internal/v1/matches/{id}/end` | `RelayMatchEnded` → `RelayMatchEndedResponse` | `409` before the record upload, or when `record.sha256` or `simVersion` differ. A repeat answers `{ok: true, duplicate: true}` and changes nothing |
+
+**Lost relays.** The worker's scheduler checks every 30 s for `running` matches
+that their relay has not listed in a heartbeat for 180 s
+(`LOST_MATCH_GRACE_SECONDS`, `abortMatchesOnLostRelays` in
+`apps/worker/src/play/intake.ts`). This covers a relay that died and one that
+restarted and forgot its matches. Such a match ends with end reason `aborted`,
+verification `not_applicable` and rating status `not_rated`, so it changes no
+rating. Its room reopens, and its players get `match.updated` with `endReason:
+"aborted"`. If the relay was alive after all and its end report arrives later,
+the report replaces the abort, and verification and ratings proceed as usual.
 
 **Match-end intake.** The first end report does the following:
 
@@ -275,15 +298,11 @@ so link previews get OpenGraph tags (`og:title`, `og:description`, `og:url`,
 - An unknown or expired code gets a `404` page that says so. It offers the app and
   the browser client without a code, and runs no script.
 
-Caddy must route `/j/*` to the API, as it routes `/api`, `/realtime` and
-`/internal`.
+Caddy routes `/j/*` to the API, as it routes `/api` and `/realtime`; `/internal`
+is never served publicly, and relays reach it on the backend network (see the
+[self-hosting guide](../hosting/README.md)).
 
 ## Not done yet
 
-- **Compose stack v2.** The relay service, `/internal` and `/j` routes in Caddy, and
-  `RELAY_KEYS` in the deployment are not done yet. Nothing here has run behind Caddy.
 - **Client side.** The room screen and the client side of `glob2://` and `?join=`
   wait for approved mock-ups and the client work.
-- **Kicking.** There is no kick method. The host can only empty a seat.
-- **Lost relays.** A relay that dies with matches running leaves them `running`
-  until its spool re-submits them. There is no sweep for that yet.

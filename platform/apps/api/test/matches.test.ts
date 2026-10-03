@@ -9,6 +9,7 @@ import {
   PgQueueNotifier,
   PlatformMatchStarter,
   StartError,
+  abortMatchesOnLostRelays,
   chooseRelay,
   createMatch,
   expireStartingMatches,
@@ -638,6 +639,110 @@ describe('match-end intake', () => {
     expect(room['id']).toBe(roomId);
     const late = await host.client.call('match.reconnect', { matchId });
     expect(late.error?.code).toBe('not_found');
+    await resetRelays();
+  });
+
+  it('aborts running matches its relay stopped reporting, without a rating change', async () => {
+    await registerRelay(a, 'relay-lost');
+    const host = await player(a);
+    const guest = await player(b);
+    const { matchId, roomId } = await startRoomMatch(host, guest);
+    const db = harness.database.db;
+    const beat = (activeMatchIds: string[]) =>
+      relayCall(a, 'POST', '/relays/heartbeat', {
+        relayId: 'relay-lost',
+        load: { matches: activeMatchIds.length, connections: 2 },
+        draining: false,
+        activeMatchIds,
+      });
+    // The relay reports the match: it runs, and it was seen just now.
+    await beat([matchId]);
+    const running = await db
+      .selectFrom('matches')
+      .select(['status', 'relay_seen_at'])
+      .where('id', '=', matchId)
+      .executeTakeFirstOrThrow();
+    expect(running.status).toBe('running');
+    expect(running.relay_seen_at).not.toBeNull();
+    // Within the grace nothing happens.
+    expect(await abortMatchesOnLostRelays(db)).toEqual([]);
+
+    // The relay restarts and keeps heartbeating, but no longer lists the match.
+    await beat([]);
+    await db
+      .updateTable('matches')
+      .set({ relay_seen_at: new Date(Date.now() - 600_000) })
+      .where('id', '=', matchId)
+      .execute();
+    host.client.clear();
+    guest.client.clear();
+    expect(await abortMatchesOnLostRelays(db)).toEqual([matchId]);
+    const match = await db
+      .selectFrom('matches')
+      .select(['status', 'end_reason', 'verification', 'rating_status', 'ended_at'])
+      .where('id', '=', matchId)
+      .executeTakeFirstOrThrow();
+    expect(match).toMatchObject({
+      status: 'ended',
+      end_reason: 'aborted',
+      verification: 'not_applicable',
+      rating_status: 'not_rated',
+    });
+    expect(match.ended_at).not.toBeNull();
+    // Nobody's rating moved, and no verify job was queued.
+    expect(
+      await db
+        .selectFrom('rating_history')
+        .select('entity_id')
+        .where('match_id', '=', matchId)
+        .execute(),
+    ).toEqual([]);
+    const jobs = await db
+      .selectFrom('engine_jobs')
+      .select('payload')
+      .where('kind', '=', 'verify-match')
+      .execute();
+    expect(jobs.some((j) => (j.payload as { matchId: string }).matchId === matchId)).toBe(false);
+
+    // Both players hear it (on either replica), and the room reopens.
+    for (const p of [host, guest]) {
+      const updated = await p.client.event('match.updated');
+      expect(check('RealtimeEventMatchUpdated', updated).stage).toBe('ok');
+      expect(updated['match']).toMatchObject({ status: 'ended', endReason: 'aborted' });
+    }
+    const reopened = await roomState(host.client, (r) => r['status'] === 'open');
+    expect(reopened['id']).toBe(roomId);
+    const gone = await host.client.call('match.reconnect', { matchId });
+    expect(gone.error?.code).toBe('not_found');
+    // A second sweep finds nothing more.
+    expect(await abortMatchesOnLostRelays(db)).toEqual([]);
+
+    // The relay was alive after all and reports the real end: it replaces the abort.
+    const record = new Uint8Array(Buffer.from('G2MR late record'));
+    const receipt = await json(await relayCall(a, 'PUT', `/matches/${matchId}/record`, record));
+    const ended = await relayCall(a, 'POST', `/matches/${matchId}/end`, {
+      matchId,
+      relayId: 'relay-lost',
+      simVersion: SIM,
+      startedAt: '2026-10-01T12:00:05Z',
+      endedAt: '2026-10-01T12:20:05Z',
+      finalTick: 30000,
+      reason: 'completed',
+      seats: [
+        { seat: 0, disconnects: 0, droppedForDesync: false },
+        { seat: 1, disconnects: 0, droppedForDesync: false },
+      ],
+      desync: { flagged: false, minoritySeats: [] },
+      record: { sha256: receipt['sha256'], size: record.length, formatVersion: 1 },
+    });
+    expect(await json(ended)).toEqual({ ok: true });
+    expect(
+      await db
+        .selectFrom('matches')
+        .select(['end_reason', 'verification', 'rating_status'])
+        .where('id', '=', matchId)
+        .executeTakeFirstOrThrow(),
+    ).toEqual({ end_reason: 'completed', verification: 'pending', rating_status: 'pending' });
     await resetRelays();
   });
 

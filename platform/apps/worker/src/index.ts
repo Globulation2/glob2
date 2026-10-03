@@ -18,3 +18,4 @@ export * from './play/relays.ts';
 export * from './play/maps.ts';
 export * from './play/start.ts';
 export * from './play/intake.ts';
+export * from './play/catalog.ts';

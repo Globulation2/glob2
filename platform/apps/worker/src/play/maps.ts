@@ -11,7 +11,9 @@ import {
   type GenerateMapResult,
   type GeneratorDescriptor,
   type ValidateMapResult,
+  type RenderPreviewResult,
 } from '@glob2/protocol';
+import { applyCatalogPreview, applyCatalogValidation } from './catalog.ts';
 import { notifyMapJob } from './notify.ts';
 
 type Db = Kysely<Database>;
@@ -277,13 +279,17 @@ export async function applyMapJobResult(db: Db, jobId: string): Promise<boolean>
         .set({ status: 'invalid', failure: reason.slice(0, 2000), completed_at: sql<Date>`now()` })
         .execute();
     }
+    await applyCatalogValidation(db, jobId, payload.blobHash, result ?? undefined, failure);
     await notifyMapJob(db, { jobId, kind: 'validate-map' });
     return true;
   }
 
-  if (job.kind === 'render-preview' && failure === undefined && job.result) {
-    const result = job.result as { previewHash: string };
-    await insertBlob(db, result.previewHash, null, 'image/png', 'public');
+  if (job.kind === 'render-preview') {
+    const result = job.result as unknown as RenderPreviewResult | null;
+    if (failure === undefined && result) {
+      await insertBlob(db, result.previewHash, null, 'image/png', 'public');
+    }
+    await applyCatalogPreview(db, jobId, failure === undefined && result ? result : undefined);
     return true;
   }
   return false;

@@ -29,6 +29,7 @@ import { signinRoutes } from './routes/signin.ts';
 import { internalRoutes } from './routes/internal.ts';
 import { inviteRoutes } from './routes/invite.ts';
 import { playRoutes } from './routes/play.ts';
+import { mapCatalogRoutes } from './maps/routes.ts';
 import { Assignments } from './play/assignments.ts';
 import { PlayRealtime } from './play/realtime.ts';
 import { RoomService } from './play/rooms.ts';
@@ -206,6 +207,7 @@ export async function buildApp(
   await adminRoutes(app, identity);
   await signinRoutes(app, identity);
   await playRoutes(app, identity, rooms);
+  await mapCatalogRoutes(app, identity);
   await inviteRoutes(app, rooms);
   await internalRoutes(app);
   await app.register(async (scope) =>

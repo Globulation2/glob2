@@ -53,8 +53,14 @@ import {
   LocalRegisterRequest,
   LocalSignInRequest,
   LeaderboardPage,
+  MapDetail,
+  MapHideRequest,
   MapInfo,
+  MapLikeResult,
   MapList,
+  MapReportInfo,
+  MapReportList,
+  MapReportReceipt,
   MapReportRequest,
   MapUpload,
   MapVersionInfo,
@@ -63,6 +69,7 @@ import {
   MatchSummary,
   PublicAccount,
   RefreshRequest,
+  ResolveMapReportRequest,
   RoomChatMessage,
   RoomList,
   RoomMapSelection,
@@ -71,6 +78,7 @@ import {
   SignInResponse,
   SignOutRequest,
   UpdateAccountRequest,
+  UpdateMapRequest,
 } from './resources.ts';
 import { SimVersion } from './simVersion.ts';
 import {
@@ -192,6 +200,14 @@ export const schemaRegistry: Record<string, RegisteredSchema> = {
   MapList: { schema: MapList },
   CreateMapRequest: { schema: CreateMapRequest },
   MapReportRequest: { schema: MapReportRequest },
+  MapDetail: { schema: MapDetail },
+  UpdateMapRequest: { schema: UpdateMapRequest },
+  MapLikeResult: { schema: MapLikeResult },
+  MapReportReceipt: { schema: MapReportReceipt },
+  MapReportInfo: { schema: MapReportInfo },
+  MapReportList: { schema: MapReportList },
+  ResolveMapReportRequest: { schema: ResolveMapReportRequest },
+  MapHideRequest: { schema: MapHideRequest },
   LeaderboardPage: { schema: LeaderboardPage },
   // Engine-agent jobs
   EngineJob: {

@@ -12,6 +12,7 @@
 import { createHash, randomInt, randomUUID } from 'node:crypto';
 import { sql, type Kysely } from 'kysely';
 import {
+  modeSeats,
   submitEngineJob,
   type JobQueue,
   type Logger,
@@ -113,7 +114,12 @@ export class WarmMapPool {
           if (count.recentFailures >= WARM_MAP_FAILURE_LIMIT) continue;
           for (let i = count.open; i < perEntry; i++) {
             const jobId = randomUUID();
-            const generator: GeneratorDescriptor = { ...entry, seed: this.seed() };
+            // One team per seat, as the on-demand path in play/start.ts generates.
+            const generator: GeneratorDescriptor = {
+              ...entry,
+              params: { ...entry.params, teams: modeSeats(q.mode) },
+              seed: this.seed(),
+            };
             await db
               .insertInto('warm_maps')
               .values({
