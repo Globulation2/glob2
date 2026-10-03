@@ -16,6 +16,9 @@ struct SceneRequest
 	ClientRequests::ClientView view;
 	BuildingRef selectedBuilding;
 	UnitRef selectedUnit;
+	//! When the latest tick finished and the interval to the next (see Scene).
+	Uint64 tickTime = 0;
+	Uint32 tickInterval = 0;
 };
 
 class OverlayArea;

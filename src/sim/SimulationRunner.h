@@ -4,6 +4,8 @@
 #include "scene/Scene.h"
 #include "scene/SceneBuffer.h"
 
+#include <PerformanceTelemetry.h>
+
 #include <atomic>
 #include <condition_variable>
 #include <exception>
@@ -51,6 +53,9 @@ public:
 	bool ended() const { return finished.load(); }
 	//! Rethrow a failure raised on the simulation thread, if any.
 	void rethrowFailure();
+	//! What the simulation thread measures (PerformanceTelemetry scopes). The main
+	//! thread absorbs it while the simulation is parked or after stop().
+	PerformanceTelemetry::Collector telemetry;
 
 private:
 	void run();

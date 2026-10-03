@@ -788,6 +788,8 @@ runs while the simulation advances on another thread.
 - Adding something drawn on the map: extract what the drawing needs in
   `SceneExtract.cpp` and read it from the `Scene` in the render pass. Never read
   `Game`, `Map`, `Team`, `Unit` or `Building` state from drawing code.
+  `tests/build_system/test_scene_boundary.py` rejects live entity reads in the render
+  passes, the minimap and `GameGUIDraw*`, and simulation includes in `src/scene/` headers.
 - Selection panels, the HUD, the top bar, statistics pages, the minimap and the building
   tool's placement preview also draw from the Scene (`ScenePanels`, `SceneMap`). Input
   handlers still act on the game, and validate against it before issuing an order.
@@ -827,8 +829,31 @@ also remains the headless default and the equivalence reference.
   LINKFLAGS="-fsanitize=thread"` and run a windowed `-test-games` session or a headless
   `--run-game` with `GLOB2_SIM_THREAD=1`. Build against the pinned SDL3 prefix
   with `GLOB2_SDL3_PREFIX`; sanitizer builds use the same native SDL3 dependency set.
+  `.github/workflows/thread-sanitizer.yml` runs both games under ThreadSanitizer nightly,
+  on demand and on pull requests that touch the code the threads share; add paths there
+  when new code becomes shared between them. It does not report thread leaks, because SDL3
+  leaves its own startup threads unjoined at exit, and uses the dummy audio driver, because
+  PulseAudio's uninstrumented mainloop thread reports races inside libpulse.
 - `SceneBuffer<T>` (`src/scene/SceneBuffer.h`) hands Scenes between the threads without
   either waiting for the other.
+
+### Smooth unit motion
+
+The experimental **Smooth unit motion** graphics setting (`Settings::unitInterpolation`,
+off by default) draws units between ticks, so threaded play at display rate uses all
+32 animation frames per direction instead of repeating one pose per tick.
+
+- A unit's drawn position and animation frame follow `delta`, which the simulation
+  advances by `SceneUnit::stepSpeed` each tick. Each frame, `GameGUI::drawAll` sets
+  `MapRenderState::unitMotion` to the elapsed fraction of the tick interval since the
+  Scene's tick (`Scene::tickTime`, `Scene::tickInterval`; `src/render/UnitMotion.h`).
+  Unit drawing, path lines, off-screen markers and worker circles add that fraction of
+  `stepSpeed` to `delta`, stopping at the end of the current action.
+- Motion is 0 when the setting is off, when the game is paused, and when the simulation
+  runs uncapped. At 0, drawing is identical to drawing the ticked state; keep it that way
+  so captures with the setting off stay comparable.
+- A unit that turns or stops at the next tick can jump back by at most one tick of motion.
+  Serial execution draws right after each tick, so the setting has almost no effect there.
 
 ## Software rendering architecture and profiling
 
@@ -917,7 +942,11 @@ so the workload does not change with monitor density. `PROFILE_NATIVE_DISPLAY=1`
 offsets; `PROFILE_FRACTION=1` adds a half-pixel horizontal offset. `PROFILE_VISIBLE=1`
 shows the window; omit `PROFILE_NO_PRESENT` to include presentation. `PROFILE_CAPTURE`
 names an output BMP. `PROFILE_TERRAIN_CACHE=0` isolates primitive performance without
-adding a user graphics setting. The harness reports population, wall-time mean/median/p95,
+adding a user graphics setting. `PROFILE_SELECT=building|flag|unit` selects the local
+team's first such entity, so frames include its selection panel and map markers;
+`PROFILE_TOOL=<building type>` (for example `inn`) activates the building tool with the
+cursor over the middle of the map view, so frames include the placement preview. Use them
+with `PROFILE_MODE=gui` for Scene parity captures against another revision. The harness reports population, wall-time mean/median/p95,
 process CPU time, optional thread CPU stage costs, backend operation counts, cache memory
 and cache hit/rebuild counts. It also checks that drawing preserves the simulation checksum.
 Run captured fixtures from early, mid and late games; keep generated saves and profiles

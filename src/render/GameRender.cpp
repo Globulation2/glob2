@@ -220,7 +220,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 						  localTeam,
 						  drawOptions,
 						  globalContainer->isViewingGame() ? globalContainer->replayVisibleTeams
-														   : teams[localTeam]->me,
+														   : scene.entities.teams[localTeam].me,
 						  !(globalContainer->gfx->getOptionFlags() &
 							(GraphicContext::USEGPU | GraphicContext::PORTABLEGPU))};
 	// Prepare coverage before water, keeping scene ordering independent of the
@@ -296,7 +296,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 			view.render.clouds().render(globalContainer->gfx, sw, sh, DynamicClouds::SHADOW);
 	}
 
-	scenePass(&Game::drawMapFogOfWar, scene.map);
+	scenePass(&Game::drawMapFogOfWar, scene);
 	scenePass(&Game::drawMapAreas, view, scene.map);
 	scenePass(&Game::drawMapOverlayMaps, view);
 
@@ -321,7 +321,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 			const SceneUnit *unit = entities.unit(worker);
 			if(unit && !isOnScreen(left, top, right, bot, viewportX, viewportY, unit->posX, unit->posY))
 			{
-				drawUnitOffScreen(0, topMargin, sw - rightMargin, sh-topMargin, viewportX, viewportY, *unit, drawOptions, scene);
+				drawUnitOffScreen(0, topMargin, sw - rightMargin, sh-topMargin, viewportX, viewportY, *unit, drawOptions, scene, view.render.unitMotion);
 			}
 		}
 	}
