@@ -134,6 +134,8 @@ def build(prefix, work, *, cc='cc', cxx='c++', ar='ar', ranlib='ranlib',
             for index,step in enumerate((command, ['make', '-j' + str(jobs)], ['make', 'install'])):
                 result = subprocess.run(step, cwd=directory, env=env, stdout=log, stderr=subprocess.STDOUT)
                 if result.returncode:
+                    log.flush()
+                    print('\n'.join((directory/'build.log').read_text(errors='replace').splitlines()[-60:]),flush=True)
                     raise RuntimeError('Recording dependency failed: ' + name + '; see ' + str(directory / 'build.log'))
                 if index == 0 and name == 'x264' and target == 'wasm':
                     # Upstream disables C vectorization when native assembler is

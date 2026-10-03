@@ -134,6 +134,21 @@ TEST_SUITE("GameplayRecording")
 		const auto pcm = read(raw);
 		const auto first = (callbackStart - epochHint) * AudioSampleRate / 1000000;
 		REQUIRE(pcm.size() >= std::size_t(first + 4096) * 4);
+		// The MP4's first video timestamp is zero. Detect the first audible window
+		// after AAC decoding; priming/edit-list handling must retain clock alignment.
+		std::int64_t onset = -1;
+		for (std::size_t at=0; at+128 <= pcm.size()/4; at+=128)
+		{
+			double energy = 0;
+			for (std::size_t i=at;i<at+128;++i)
+			{
+				const auto offset=i*4;
+				const auto sample=std::int16_t(std::uint16_t(static_cast<unsigned char>(pcm[offset])) | (std::uint16_t(static_cast<unsigned char>(pcm[offset+1]))<<8));
+				energy += std::abs(int(sample));
+			}
+			if (energy/128 > 2000) { onset=std::int64_t(at); break; }
+		}
+		REQUIRE(onset>=0); CHECK(std::abs(onset-first)*1000/AudioSampleRate <= 50);
 		// Inspect each chunk's interior, away from codec priming/transition samples.
 		for (int chunk = 0; chunk < 4; ++chunk)
 		{

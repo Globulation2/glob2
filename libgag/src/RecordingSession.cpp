@@ -185,7 +185,15 @@ struct Session::Impl
 		if (!media) return true;
 		auto duration = std::max<std::int64_t>(1,end-segmentStart);
 		if (!chapters.empty()) chapters.back().end = duration;
-		if (!encoderFailed) { bool flushed = encoder->finish(); drain(); if (!flushed) return false; }
+		if (!encoderFailed)
+		{
+			try { bool flushed = encoder->finish(); drain(); if (!flushed) return false; }
+			catch (const std::exception &e)
+			{
+				if (status.encoder == "libx264") throw;
+				status.fallbackReason = e.what(); forceSoftware = true; encoderFailed = true;
+			}
+		}
 		if (encoderFailed && !packets)
 		{
 			media.reset(); encoder.reset(); journal.reset();

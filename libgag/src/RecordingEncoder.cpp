@@ -290,7 +290,7 @@ std::unique_ptr<VideoEncoder> createVideoEncoder(const VideoConfiguration &confi
 	std::string failures = reason;
 	for (auto name : candidates)
 	{
-		try { return std::make_unique<FFmpegVideoEncoder>(configuration, name); }
+		try { auto encoder = std::make_unique<FFmpegVideoEncoder>(configuration, name); encoder->fallbackReason(failures); return encoder; }
 		catch (const std::exception &e) { if (!failures.empty()) failures += "; "; failures += std::string(name) + ": " + e.what(); }
 	}
 	auto software = std::make_unique<FFmpegVideoEncoder>(configuration, "libx264");

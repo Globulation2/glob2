@@ -49,13 +49,14 @@ class FailingHardware final : public VideoEncoder
 	std::unique_ptr<VideoEncoder> inner;
 	VideoDescription info;
 	int frames=0;
+	bool flushFailure=false;
   public:
-	explicit FailingHardware(VideoConfiguration configuration) : inner(createVideoEncoder(configuration)),info(inner->description()) { info.encoder="test-hardware"; }
+	explicit FailingHardware(VideoConfiguration configuration,bool flushFailure=false) : inner(createVideoEncoder(configuration)),info(inner->description()),flushFailure(flushFailure) { info.encoder="test-hardware"; }
 	const VideoDescription &description() const override { return info; }
 	void submit(const unsigned char *p,int w,int h,std::int64_t time) override
-	{ if (++frames==4) throw std::runtime_error("forced asynchronous device loss"); inner->submit(p,w,h,time); }
+	{ if (++frames==4 && !flushFailure) throw std::runtime_error("forced asynchronous device loss"); inner->submit(p,w,h,time); }
 	bool receive(VideoPacket &packet) override { return inner->receive(packet); }
-	bool finish() override { return inner->finish(); }
+	bool finish() override { if (flushFailure) throw std::runtime_error("forced asynchronous flush failure"); return inner->finish(); }
 };
 
 }
@@ -126,6 +127,15 @@ TEST_SUITE("RecordingSession")
 		CHECK(status.encoder=="libx264"); CHECK(status.fallbackReason=="forced asynchronous device loss");
 		CHECK(manifest(status.outputs.front()+".json")["encoder"]=="test-hardware");
 		CHECK(manifest(status.outputs.back()+".json")["encoder"]=="libx264");
+	}
+	TEST_CASE("hardware flush failure during resize continues with a software segment")
+	{
+		auto path=output("flush-loss"); auto files=nativeSessionStorage(); files.reserve(path); Status status;
+		Session session(path,{},files,[&](const Status &s) { status=s; },std::make_unique<FailingHardware>(VideoConfiguration{66,38,30,23,true},true));
+		for (int n=0;n<30;++n) { auto time=1000000+std::int64_t(n)*1000000/30; session.frame(pixels(time,n<6?65:69,n<6?37:41)); session.step(time+50000); }
+		session.stop(2000000); for (int n=0;n<10&&!session.step(2050000);++n) {}
+		REQUIRE(status.state==State::Complete); REQUIRE(status.outputs.size()==2);
+		CHECK(status.encoder=="libx264"); CHECK(status.fallbackReason=="forced asynchronous flush failure");
 	}
 	TEST_CASE("capture pressure rejects input within the three-frame budget")
 	{
