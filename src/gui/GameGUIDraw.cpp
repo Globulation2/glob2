@@ -904,16 +904,16 @@ void GameGUI::drawStatisticsPage(int y)
 		x + 4, y, globalContainer->littleFont,
 		Toolkit::getStringTable()->getString(measurementPage == 0 ? "[Stats page one]"
 													: measurementPage == 1 ? "[Stats page two]"
-													: "[Stats page three]"));
+													: measurementPage == 2 ? "[Stats page three]"
+													: "[Win chance]"));
 	if (measurementPage == 1)
 		teamStats->drawMeasurements(x, y + 16);
 	else if (measurementPage == 2)
 		teamStats->drawExpandedMeasurements(x, y + 16);
+	else if (measurementPage == 3)
+		drawWinProbabilities(x, y);
 	else
-	{
 		teamStats->drawText(x, y);
-		drawWinProbabilities(x, y + WIN_PROBABILITY_PANEL_YOFFSET);
-	}
 }
 
 void GameGUI::drawWinProbabilities(int x, int y)

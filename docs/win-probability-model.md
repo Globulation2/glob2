@@ -8,8 +8,8 @@ is the same kind of thing fitted to the same kind of evidence: games whose
 outcome we know, read at a point when the outcome was not yet known.
 
 The model supports three uses. The statistics screen shows it. An optional winning
-condition ends a match once it is sure enough. And the tournament harness can
-turn that condition on to stop playing out games that are already decided.
+condition ends a match once it is sure enough. Structured headless runs can
+turn that condition on to stop games early.
 
 ## What the model is
 
@@ -195,8 +195,8 @@ opening samples can look lopsided for reasons that mean nothing. It is placed
 last among the winning conditions, so an actual elimination or prestige win is
 always the reason a game ended when one is available on the same tick.
 
-Live spectators always see each side's chance under the existing worker and food
-figures, whether the rule is on or off. Allies share one figure, because the model
+Live spectators can open a fourth statistics page showing each side's chance,
+whether the rule is on or off. The separate page fits up to sixteen colonies. Allies share one figure, because the model
 rates the alliance. Players do not see the panel during a normal game.
 
 
@@ -253,8 +253,8 @@ about half of that. The remainder is not waste; it is genuine uncertainty.
 
 - [The fairness model](map-generators/FAIRNESS_MODEL.md) — the same estimator, on
   starting positions.
-- [Gameplay statistics](gameplay-statistics.md) — the diagnostic measurements,
+- [Gameplay statistics](ai/gameplay-statistics.md) — the diagnostic measurements,
   which this deliberately does not use.
-- [AI telemetry](ai-telemetry.md) — per-AI internals, likewise excluded.
-- [Distributed tournaments](tournaments.md) — where the games come from, and the
-  `win_probability_permille` experiment setting that turns the condition on.
+- [AI telemetry](ai/telemetry.md) — per-AI internals, likewise excluded.
+- [Distributed tournaments](tools/tournaments.md) — where the calibration games come from.
+- [Headless runs](development/headless-replays.md#probability-based-early-victory) — enable the rule with `--win-probability`.
