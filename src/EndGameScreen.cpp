@@ -94,18 +94,58 @@ EndGameScreen::EndGameScreen(GameGUI *gui) : UIScreen(fe::inGameTheme())
 	durationSeconds = game->stepCounter / 25;
 	if (Team *local = gui->getLocalTeam())
 	{
-		if (local->hasWon)
-			outcome = Outcome::Victory;
-		else if (local->hasLost || !local->isAlive)
-			outcome = Outcome::Defeat;
-		else if (!game->isGameEnded && !game->totalPrestigeReached)
-			outcome = Outcome::Left;
+		const Description described = describe(*game, *local);
+		outcome = described.outcome;
+		reason = described.reason;
 	}
 
 	sortAndSet(EndOfGameStat::TYPE_UNITS);
 }
 
 EndGameScreen::~EndGameScreen() = default;
+
+EndGameScreen::Description EndGameScreen::describe(const Game &game, const Team &local)
+{
+	Description d;
+	if (local.hasWon)
+		d.outcome = Outcome::Victory;
+	else if (local.hasLost || !local.isAlive)
+		d.outcome = Outcome::Defeat;
+	else if (!game.isGameEnded && !game.totalPrestigeReached)
+		d.outcome = Outcome::Left;
+	// Why: the people who left (their seat became AI `none` when their quit order
+	// ran; real AIs have an implementation), the prestige goal, or the fight.
+	const GameHeader &header = game.gameHeader;
+	std::vector<std::string> leftNames;
+	bool opponentPlayed = false;
+	for (int i = 0; i < header.getNumberOfPlayers(); ++i)
+	{
+		const BasePlayer &player = header.getBasePlayer(i);
+		const Uint32 mask = Team::teamNumberToMask(player.teamNumber);
+		if (player.type == BasePlayer::P_NONE || player.teamNumber == local.teamNumber || (local.allies & mask))
+			continue;
+		if (player.type == BasePlayer::P_AI && !player.name.empty())
+			leftNames.push_back(player.name);
+		else
+			opponentPlayed = true;
+	}
+	auto &strings = *GAGCore::Toolkit::getStringTable();
+	if (d.outcome == Outcome::Victory)
+	{
+		if (!leftNames.empty() && !opponentPlayed)
+			d.reason = leftNames.size() == 1 ? std::string(GAGCore::FormattableString(strings.getString("[conn notice left %0]")).arg(leftNames.front()))
+											 : strings.getString("[results reason opponents left]");
+		else if (game.totalPrestigeReached)
+			d.reason = strings.getString("[Total prestige reached]");
+		else
+			d.reason = strings.getString("[results reason victory]");
+	}
+	else if (d.outcome == Outcome::Defeat)
+		d.reason = strings.getString(game.totalPrestigeReached ? "[Total prestige reached]" : "[results reason defeat]");
+	else if (d.outcome == Outcome::Left)
+		d.reason = strings.getString("[results reason you left]");
+	return d;
+}
 
 
 void EndGameScreen::paintBackground(fe::Canvas &canvas)
@@ -269,11 +309,12 @@ Element EndGameScreen::onlineBanner(const Presentation &p)
 	else if (online->outcome == "lost" || online->outcome == "abandoned")
 		shown = Outcome::Defeat;
 	const bool draw = online->outcome == "draw";
-	const char *titleKey = draw							? "[results draw]"
-						   : shown == Outcome::Victory ? "[results victory]"
-						   : shown == Outcome::Defeat	? "[results defeat]"
-						   : shown == Outcome::Left		? "[results left]"
-														: "[results match over]";
+	// Leaving counts as a loss (the Leave match confirmation says so); the reason
+	// line says it was a departure.
+	const char *titleKey = draw														? "[results draw]"
+						   : shown == Outcome::Victory								? "[results victory]"
+						   : shown == Outcome::Defeat || shown == Outcome::Left ? "[results defeat]"
+																					: "[results match over]";
 	std::string subtitle = online->label;
 	if (!online->mapTitle.empty())
 		subtitle += " · " + online->mapTitle;
@@ -281,7 +322,14 @@ Element EndGameScreen::onlineBanner(const Presentation &p)
 	fe::IconOptions trophy;
 	trophy.size = p.touch ? 28 : 32;
 	trophy.color = fe::inGameTheme().palette.accent;
-	auto words = fe::column({fe::title(fe::tr(titleKey)), fe::caption(subtitle)}, {p.pt(2)});
+	std::vector<Element> lines{fe::title(fe::tr(titleKey))};
+	// The platform's verdict can differ from what this game saw (a draw); then the
+	// local reason would contradict the title.
+	const bool agrees = shown == outcome || (outcome == Outcome::Left && shown == Outcome::Defeat);
+	if (!reason.empty() && !draw && agrees)
+		lines.push_back(fe::paragraph(reason, {fe::FontRole::Body, true}));
+	lines.push_back(fe::caption(subtitle));
+	auto words = fe::column(std::move(lines), {p.pt(2)});
 	return fe::row({shown == Outcome::Victory && !draw ? fe::icon(fe::uiIcon(fe::UIIcon::Trophy), trophy) : nullptr,
 					fe::expanded(words)},
 				   {p.pt(10), fe::CrossAlign::Center});
@@ -304,6 +352,13 @@ Element EndGameScreen::ratingCard(const Presentation &p)
 	// While the match still runs on the relay (someone has not left yet) or the
 	// verifier replays it, say which, and say so when it takes longer than usual.
 	auto pending = [&](const char *key) {
+		// Whoever left already has their result (a loss); the others may play on for
+		// a long time, so the record follows without a spinner to wait on.
+		if (outcome == Outcome::Left && phase == Phase::Waiting)
+		{
+			lines.push_back(fe::paragraph(fe::tr("[results final after end]"), {fe::FontRole::Support, true}));
+			return;
+		}
 		lines.push_back(fe::row({fe::icon(fe::uiIcon(fe::UIIcon::Spinner), {16, palette.muted}),
 								 fe::label(fe::tr(key), {fe::FontRole::Body})},
 								{p.pt(4), fe::CrossAlign::Center}));

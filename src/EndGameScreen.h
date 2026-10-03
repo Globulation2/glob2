@@ -75,6 +75,16 @@ class EndGameScreen : public GAGGUI::ui::UIScreen
 		Left
 	};
 	void setOutcome(Outcome value) { outcome = value; invalidate(); }
+	//! The local outcome and its one-line reason ("Guest-5285 left the match.",
+	//! "Your colony was defeated."), from the finished game.
+	struct Description
+	{
+		Outcome outcome = Outcome::Ended;
+		std::string reason;
+	};
+	static Description describe(const Game &game, const Team &local);
+	Outcome shownOutcome() const { return outcome; }
+	const std::string &outcomeReason() const { return reason; }
 
   protected:
 	void paintBackground(Glob2UI::Canvas &canvas) override;
@@ -100,6 +110,8 @@ class EndGameScreen : public GAGGUI::ui::UIScreen
 	std::shared_ptr<Online::OnlineMatchResult> online;
 	unsigned onlineRevision = ~0u;
 	Outcome outcome = Outcome::Ended;
+	//! Why the match ended this way ("Guest-5285 left the match."), under the outcome.
+	std::string reason;
 	Uint32 durationSeconds = 0;
 	Glob2UI::Element onlineBanner(const Glob2UI::Presentation &p);
 	Glob2UI::Element ratingCard(const Glob2UI::Presentation &p);

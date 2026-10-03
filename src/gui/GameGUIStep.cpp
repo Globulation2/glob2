@@ -423,6 +423,17 @@ void GameGUI::checkWonConditions(void)
         return;
     }
 
+	// Turn-protocol matches (online and LAN) decided in this colony's favour go
+	// straight to the results, which say why (an opponent left, prestige, victory)
+	// and carry the rating; the classic "You have won!" dialog is for local games.
+	if (networkMatch.active && localTeam->hasWon)
+	{
+		hasEndOfGameDialogBeenShown = true;
+		if (inGameMenu != IGM_NONE)
+			closeDialog();
+		isRunning = false;
+		return;
+	}
 	if (game.totalPrestigeReached && game.isPrestigeWinCondition())
 	{
 		if (inGameMenu==IGM_NONE)

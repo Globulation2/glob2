@@ -32,6 +32,8 @@
 #include <set>
 #include <sstream>
 
+#include "ConnectionOverlay.h"
+#include "EndGameScreen.h"
 #include "Engine.h"
 #include "Game.h"
 #include "GameGUI.h"
@@ -927,6 +929,44 @@ TEST_SUITE("TurnEngineHarness")
 		const Verified v = verifyRecord(record, m, glob2test::artifactDir() / "quit");
 		CHECK(v.verdict.verdict == "verified");
 		requireSameOutcomes(v.result, liveTeams(*m.clients[0]));
+	}
+
+	// What the others see when someone leaves (docs/multiplayer/client.md): the leaver
+	// stays in the connection panel as Left, and the player left standing wins and is
+	// told why on the results.
+	GLOB2_TEST_CASE("a player who leaves stays listed as Left, and the one left standing learns why it won",
+	                "[network-sim]")
+	{
+		glob2test::HeadlessGlobals globals(harnessGlobals());
+		EngineMatch m("FourSquares1", {{20 * MS}, {30 * MS}}, {"closed", "closed"});
+		for (auto& c : m.clients)
+			c->orderRate = 0;
+		m.run(5 * SECOND);
+		auto& leaver = *m.clients[1];
+		const std::string leaverName = leaver.engine->gui.game.gameHeader.getBasePlayer(1).name;
+		REQUIRE_FALSE(leaverName.empty());
+		{
+			RngScope scope(leaver.rng);
+			leaver.engine->gui.orderQueue.push_back(std::make_shared<PlayerQuitsGameOrder>(leaver.seat));
+			leaver.engine->gui.flushOutgoingAndExit = true;
+		}
+		m.run(5 * SECOND);
+		CHECK(leaver.stopped);
+		auto& winner = *m.clients[0];
+		REQUIRE_FALSE(winner.stopped);
+		const ConnectionSnapshot snapshot = winner.engine->turnConnectionSnapshot();
+		const auto row = std::find_if(snapshot.rows.begin(), snapshot.rows.end(), [](const ConnectionRow& r) { return r.seat == 1; });
+		REQUIRE(row != snapshot.rows.end());
+		CHECK(row->state == ConnectionRow::State::Left);
+		CHECK(row->name == leaverName);
+		Game& game = winner.engine->gui.game;
+		REQUIRE(game.teams[0]->hasWon);
+		const auto described = EndGameScreen::describe(game, *game.teams[0]);
+		CHECK(described.outcome == EndGameScreen::Outcome::Victory);
+		CHECK(described.reason.find(leaverName) != std::string::npos);
+		// The leaver's own view of its game: it left, which counts as a loss.
+		Game& left = leaver.engine->gui.game;
+		CHECK(EndGameScreen::describe(left, *left.teams[1]).outcome == EndGameScreen::Outcome::Left);
 	}
 
 	// Online rooms send empty and locked seats as closed seats. A closed team has no

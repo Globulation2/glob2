@@ -4620,3 +4620,21 @@ Your device can't keep up with this match
 It replays the match more slowly than the match runs, so it will not catch up. You can leave the match, or lower the graphics settings and keep waiting.
 [conn card not gaining]
 not gaining
+[results reason opponents left]
+Your opponents left the match.
+[results reason victory]
+Every opposing colony was defeated.
+[results reason defeat]
+Your colony was defeated.
+[results reason you left]
+You left the match. It counts as a loss.
+[results final after end]
+Final result after the match ends.
+[pause none left]
+No pauses left
+[pause game left %0]
+Pause game (%0 left)
+[pause by %0]
+Paused by %0
+[pause by %0 resumes in %1]
+Paused by %0 · resumes in %1
