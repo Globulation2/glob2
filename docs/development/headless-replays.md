@@ -321,6 +321,8 @@ fields and gives escape fields an independent bounded refresh schedule. Replay
 versions before 123 used a different routing schedule. The current replay floor is
 127: the sixteen-team capacity changes Warrush's opening window from 24 to 32 ticks.
 Format 127 also counts Maxima opponents and script-generation team slots while
-keeping old saves loadable. Network protocol 50 rejects older and newer clients. Worker
+keeping old saves loadable. Format 128 losslessly packs save data without changing
+that replay floor. Network protocol 51 requires compact-map readers and rejects
+older and newer clients. Worker
 availability affects wall time only: the serial fallback publishes on the same
 ticks. Headless `--gradient-workers 0` is the deterministic serial control.

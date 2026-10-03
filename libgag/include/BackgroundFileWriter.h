@@ -9,6 +9,8 @@
 #include <memory>
 #include <string>
 #include <thread>
+#include <atomic>
+#include <CooperativeTask.h>
 
 namespace GAGCore
 {
@@ -23,7 +25,7 @@ namespace GAGCore
 	class BackgroundFileWriter
 	{
 	public:
-		explicit BackgroundFileWriter(FileManager *fileManager);
+		explicit BackgroundFileWriter(FileManager *fileManager, bool cooperativeOnly = false);
 		~BackgroundFileWriter();
 		BackgroundFileWriter(const BackgroundFileWriter &) = delete;
 		BackgroundFileWriter &operator=(const BackgroundFileWriter &) = delete;
@@ -35,10 +37,20 @@ namespace GAGCore
         //! Chunked snapshot; finish runs before compression, without flattening.
         void write(const std::string& filename, ChunkedBuffer contents, std::function<void(ChunkedBuffer&)> finish = {});
 		//! Returns once nothing is queued or being written; no worker thread remains.
-		void waitUntilIdle();
+        void waitUntilIdle();
+        bool busy();
+        struct Result { std::atomic<int> state{0}; }; // 0 pending, 1 success, -1 failure
+        // Non-replacing owned snapshot job. Caller checks busy before capture.
+        using Encode=std::function<CooperativeTask(ChunkedBuffer&)>;
+        std::shared_ptr<Result> submit(const std::string& filename, Encode encode);
+        void poll();
 
 	private:
-		void drain();
+        Encode pendingEncode;
+        std::unique_ptr<CooperativeTask> cooperative;
+        CooperativeTask runSnapshot(std::string filename,Encode encode,std::shared_ptr<Result> result);
+        std::shared_ptr<Result> pendingResult;
+        void drain();
 		void startWorker(std::unique_lock<std::mutex>& lock);
 		void publishMetrics(); // caller holds mutex, runs on the submitting thread
 		PerformanceTelemetry::Moments queueTimes, hashTimes, writeTimes;
@@ -46,6 +58,7 @@ namespace GAGCore
 		bool pendingMeasured = false;
 
 		FileManager *fileManager;
+        bool cooperativeOnly;
 		std::mutex mutex;
 		std::condition_variable idle;
 		std::string pendingName;

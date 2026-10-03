@@ -7,6 +7,7 @@
 #include <GAG.h>
 #include "gui/LoadSaveDialog.h"
 #include "Game.h"
+#include "SaveSnapshot.h"
 #include "GlobalContainer.h"
 #include "MapEdit.h"
 #include "FrontendTheme.h"
@@ -86,11 +87,16 @@ bool MapEdit::touchAnimating() const
 
 bool MapEdit::advanceEditing(const std::vector<SDL_Event>& events, Uint32 tick)
 {
+    if(saveWriter) saveWriter->poll();
     if (!editing || quitDecision || fertilityRequested || !pendingLoadFilename.empty()) return editing;
     const bool wasPersisting=showingSave && loadSaveScreen->isPersisting();
     if (showingSave && loadSaveScreen->pollPersistence()) {
         hasMapBeenModified = false;
         performAction("close save screen");
+    }
+    if(wasPersisting && showingSave && loadSaveScreen->isPersisting()) {
+        for(const auto& event:events) if(event.type==SDL_EVENT_QUIT) doFullQuit=true;
+        return true;
     }
     for (auto event : events) {
         if(!(phone && phone->event(event))) {
@@ -192,9 +198,14 @@ bool MapEdit::finishFertility(bool completed)
     if (!pendingSaveFilename.empty()) {
         if (completed) {
             try {
-                if (GAGCore::ApplicationHost::storageRestoreFailed() || !save(pendingSaveFilename, pendingSaveName))
-                    loadSaveScreen->showSaveFailure();
-                else loadSaveScreen->beginPersistence(GAGCore::ApplicationHost::persistStorage());
+                if (GAGCore::ApplicationHost::storageRestoreFailed()) loadSaveScreen->showSaveFailure();
+                else {
+                    if(!saveWriter) saveWriter=std::make_unique<GAGCore::BackgroundFileWriter>(Toolkit::getFileManager());
+                    const auto name=pendingSaveName;
+                    loadSaveScreen->beginPersistence(std::make_unique<SaveOperation>(*saveWriter,glob2GzipWritePath(pendingSaveFilename),
+                        [this,name]{return captureSave([&](OutputStream* stream,DeferredGameSHA1* sha){game.save(stream,true,name,sha);});},
+                        [this,name]{hasMapBeenModified=false;game.mapHeader.setMapName(name);game.mapHeader.setIsSavedGame(false);}));
+                }
             } catch (const std::exception&) { loadSaveScreen->showSaveFailure(); }
             // A local write is not a durable browser save. Keep the editor and
             // its quit intent until the shared save dialog acknowledges it.

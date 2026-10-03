@@ -10,7 +10,7 @@
 
 namespace GAGCore
 {
-	BackgroundFileWriter::BackgroundFileWriter(FileManager *fileManager) : fileManager(fileManager)
+	BackgroundFileWriter::BackgroundFileWriter(FileManager *fileManager, bool cooperativeOnly) : fileManager(fileManager), cooperativeOnly(cooperativeOnly || !ThreadSupport::available)
 	{
 	}
 
@@ -57,28 +57,95 @@ namespace GAGCore
         startWorker(lock);
     }
 
+    CooperativeTask BackgroundFileWriter::runSnapshot(std::string filename,Encode encode,std::shared_ptr<Result> result) {
+        const auto started=PerformanceTelemetry::now();
+        auto encodedAt=started;
+        const bool measured=pendingMeasured;
+        try {
+            ChunkedBuffer bytes;
+            if(!(co_await encode(bytes))) throw std::runtime_error("Save encoding failed");
+            encode={};encodedAt=PerformanceTelemetry::now();
+            result->state=(co_await fileManager->writeGzipTask(filename,bytes)) ? 1 : -1;
+        } catch(...) {result->state=-1;}
+        if(result->state<0) std::cerr << "BackgroundFileWriter: " << filename << " was not replaced; the previous file is kept\n";
+        if(measured) {
+            std::lock_guard<std::mutex> lock(mutex);
+            queueTimes.add(started-queuedAt);hashTimes.add(encodedAt-started);
+            writeTimes.add(PerformanceTelemetry::now()-encodedAt);
+            if(result->state==1) ++completedWrites;else ++failedWrites;
+        }
+        co_return result->state==1;
+    }
+    void BackgroundFileWriter::poll() {
+        if (cooperativeOnly) {
+            if(!cooperative) return;
+            const auto start=PerformanceTelemetry::now();
+            bool complete=false;
+            // Stop between bounded encoding/deflate steps after a 2ms budget.
+            do {complete=cooperative->advance();}
+            while(!complete && PerformanceTelemetry::now()-start<2000000);
+            if(complete) {
+                cooperative.reset();
+                std::lock_guard<std::mutex> lock(mutex);writing=false;idle.notify_all();
+            }
+        }
+    }
+
+    bool BackgroundFileWriter::busy() {
+        poll();
+        std::lock_guard<std::mutex> lock(mutex); return writing || pending;
+    }
+    std::shared_ptr<BackgroundFileWriter::Result> BackgroundFileWriter::submit(const std::string& filename, Encode encode) {
+        auto result=std::make_shared<Result>();
+        std::unique_lock<std::mutex> lock(mutex);
+        if(writing || pending) { result->state=-1; return result; }
+        pendingName=filename; pendingEncode=std::move(encode); pendingResult=result;
+        pending=true; pendingGzip=true; pendingMeasured=PerformanceTelemetry::collector().enabled;
+        queuedAt=PerformanceTelemetry::now();
+        startWorker(lock);
+        return result;
+    }
+
     void BackgroundFileWriter::startWorker(std::unique_lock<std::mutex>& lock)
     {
 		if (writing)
 			return; // the running worker takes the newest snapshot next
 		writing = true;
 		lock.unlock();
-		if constexpr (!ThreadSupport::available)
-		{
-			drain();
-		}
+        if (cooperativeOnly)
+        {
+            // Legacy byte-only callers retain their existing fallback. Snapshot
+            // jobs must never unexpectedly perform expensive work on the caller.
+            if(pendingResult) {
+                lock.lock();
+                auto result=pendingResult;
+                try {
+                    cooperative=std::make_unique<CooperativeTask>(runSnapshot(std::move(pendingName),std::move(pendingEncode),std::move(pendingResult)));
+                } catch(...) {
+                    result->state=-1;pendingResult.reset();pendingEncode={};writing=false;idle.notify_all();
+                }
+                pending=false;
+            } else drain();
+        }
 		else
 		{
 			// A previous worker cleared writing before exiting, so this join is short.
 			if (worker.joinable()) worker.join();
 			try { worker = ThreadSupport::launch([this] { drain(); }); }
-			catch (const std::exception &) { drain(); } // includes allocation failure
+			catch (const std::exception &) {
+                lock.lock();
+                if(pendingResult) pendingResult->state=-1;
+                pendingResult.reset(); pendingEncode={}; pendingChunks.reset();
+                pendingContents.clear(); pendingFinish={}; pendingChunkFinish={};
+                pending=false; writing=false; idle.notify_all();
+            }
 		}
 	}
 
 	void BackgroundFileWriter::waitUntilIdle()
 	{
 		PERF_SCOPE_TIME(SaveWait);
+        if (cooperativeOnly) while(cooperative) poll();
 		std::unique_lock<std::mutex> lock(mutex);
 		idle.wait(lock, [this] { return !writing; });
 		publishMetrics();
@@ -109,6 +176,8 @@ namespace GAGCore
 		{
 			const std::string name = std::move(pendingName);
 			const bool gzip = pendingGzip;
+            auto encode=std::move(pendingEncode);
+            auto result=std::move(pendingResult);
 			std::string contents = std::move(pendingContents);
 			const std::function<void(std::string &)> finish = std::move(pendingFinish);
             auto chunks = std::move(pendingChunks);
@@ -124,6 +193,11 @@ namespace GAGCore
             auto hashed = started;
             try
             {
+                if(encode) {
+                    chunks=std::make_unique<ChunkedBuffer>();
+                    if(!encode(*chunks).run()) throw std::runtime_error("Save encoding failed");
+                    encode={};
+                }
                 if (chunks) { if (chunkFinish) chunkFinish(*chunks); }
                 else if (finish) finish(contents);
                 hashed = measured ? PerformanceTelemetry::now() : 0;
@@ -137,6 +211,7 @@ namespace GAGCore
             catch (...) { std::cerr << "BackgroundFileWriter: finalization failed" << std::endl; }
             if (!written)
                 std::cerr << "BackgroundFileWriter: " << name << " was not replaced; the previous file is kept" << std::endl;
+            if(result) result->state=written ? 1 : -1;
             // Idle must mean that snapshot memory has actually been released.
             chunks.reset();
             std::string().swap(contents);

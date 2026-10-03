@@ -11,6 +11,7 @@
 #include <Toolkit.h>
 
 #include "Game.h"
+#include "SaveSnapshot.h"
 #include "GameGUI.h"
 #include "GameGUIDialog.h"
 #include "GameGUITouch.h"
@@ -86,17 +87,12 @@ void GameGUI::toggleHistory()
 
 void GameGUI::saveGameTo(LoadSaveDialog &dialog)
 {
-	waitForAutosave();
-	const std::string locationName = dialog.getFileName();
-	const std::string name = dialog.getName();
-	if (!Toolkit::getFileManager()->writeGzipAtomically(glob2GzipWritePath(locationName), [&](OutputStream &stream) { save(&stream, name); }))
-	{
-		std::cerr << "GGU: Save failed; previous file retained: " << locationName << std::endl;
-		dialog.showSaveFailure();
-		return;
-	}
-	defaultGameSaveName = name;
-	dialog.beginPersistence(GAGCore::ApplicationHost::persistStorage());
+    const std::string locationName=glob2GzipWritePath(dialog.getFileName());
+    const std::string name=dialog.getName();
+    if(!autosaveWriter) autosaveWriter=std::make_unique<BackgroundFileWriter>(Toolkit::getFileManager());
+    dialog.beginPersistence(std::make_unique<SaveOperation>(*autosaveWriter,locationName,
+        [this,name]{return captureSave([&](OutputStream* stream,DeferredGameSHA1* sha){save(stream,name,sha);});},
+        [this,name]{defaultGameSaveName=name;}));
 }
 
 // Feed the event to the open dialog and act on its result. Returns true when

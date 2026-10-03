@@ -90,6 +90,8 @@ void GameSessionScreen::updateExecutionImpl(Uint32 tick)
 		input.clear();
 		nextTick = clock + engine->sessionDelay(clock);
 	}
+    // Keep presenting frames while the final owned snapshot reaches disk.
+    if(!running && engine->savePending()) return;
 	if (!running)
 	{
 		if (auto request = engine->finishSessionForHost())

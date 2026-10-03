@@ -301,6 +301,63 @@ namespace GAGCore
 		return false;
 	}
 
+    CooperativeTask FileManager::writeGzipTask(std::string filename,const ChunkedBuffer& contents,int level)
+    {
+        if(contents.size()>MAX_EXPANDED_GAME_FILE_BYTES) co_return false;
+        std::vector<std::string> paths;
+        if(isAbsolutePath(filename)) paths.push_back(filename);
+        else for(const auto& directory:dirList) paths.push_back(directory+DIR_SEPARATOR+filename);
+        static std::atomic<unsigned long> sequence{0};
+        struct Temporary {
+            FILE* file=nullptr;std::string path;
+            ~Temporary(){if(file) fclose(file);if(!path.empty()) std::remove(path.c_str());}
+        } temporary;
+        std::string destination;
+        for(const auto& path:paths) {
+            for(unsigned attempt=0;attempt<100;++attempt) {
+                temporary.path=path+".save-job-"+std::to_string(sequence++);
+                temporary.file=openExclusive(temporary.path);
+                if(temporary.file || errno!=EEXIST) break;
+            }
+            if(temporary.file){destination=path;break;}
+            // Never remove a temporary owned by another process on collision.
+            temporary.path.clear();
+        }
+        if(!temporary.file) co_return false;
+        struct Deflater {
+            z_stream stream{};bool initialized=false;
+            ~Deflater(){if(initialized) deflateEnd(&stream);}
+        } zip;
+        if(deflateInit2(&zip.stream,level,Z_DEFLATED,15+16,8,Z_DEFAULT_STRATEGY)!=Z_OK) co_return false;
+        zip.initialized=true;
+        std::array<unsigned char,65536> input,output;
+        size_t offset=0,total=0;
+        int status=Z_OK;
+        while(status!=Z_STREAM_END) {
+            if(!zip.stream.avail_in && offset<contents.size()) {
+                const size_t n=std::min(input.size(),contents.size()-offset);
+                contents.readAt(offset,input.data(),n);offset+=n;
+                zip.stream.next_in=input.data();zip.stream.avail_in=n;
+            }
+            zip.stream.next_out=output.data();zip.stream.avail_out=output.size();
+            status=deflate(&zip.stream,offset==contents.size()?Z_FINISH:Z_NO_FLUSH);
+            if(status!=Z_OK && status!=Z_STREAM_END) co_return false;
+            const size_t n=output.size()-zip.stream.avail_out;total+=n;
+            if(total>MAX_COMPRESSED_GAME_FILE_BYTES || fwrite(output.data(),1,n,temporary.file)!=n) co_return false;
+            co_await CooperativeTask::checkpoint("Writing save");
+        }
+        if(fflush(temporary.file)!=0 || ferror(temporary.file)) co_return false;
+        FILE* file=std::exchange(temporary.file,nullptr);
+        if(fclose(file)!=0) co_return false;
+#ifdef WIN32
+        if(!MoveFileExA(temporary.path.c_str(),destination.c_str(),MOVEFILE_REPLACE_EXISTING)) co_return false;
+#else
+        if(std::rename(temporary.path.c_str(),destination.c_str())!=0) co_return false;
+#endif
+        temporary.path.clear();
+        co_return true;
+    }
+
 	bool FileManager::writeGzipAtomically(const std::string& filename, const std::function<void(OutputStream&)>& writer, int level)
 	{
 		try

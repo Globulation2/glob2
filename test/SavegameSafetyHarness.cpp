@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
+#include "SaveSnapshot.h"
 #include <vector>
 #include <string>
 #include <utility>
@@ -314,6 +315,41 @@ static void checkBackgroundWriter(FileManager& files, const fs::path& directory)
         REQUIRE(contents(path) == previous);
     }
 
+    for(bool cooperative:{false,true}) {
+        BackgroundFileWriter writer(&files,cooperative);
+        const auto owner=std::this_thread::get_id();
+        bool encoded=false;
+        auto job=writer.submit(path,[&](ChunkedBuffer& out)->CooperativeTask {
+            CHECK((std::this_thread::get_id()==owner)==cooperative);
+            for(unsigned i=0;i<8;++i) {
+                std::string block(65536,char(i));out.writeAt(out.size(),block.data(),block.size());
+                co_await CooperativeTask::checkpoint();
+            }
+            encoded=true;co_return true;
+        });
+        if(cooperative) CHECK(!encoded);
+        writer.waitUntilIdle();REQUIRE(job->state==1);REQUIRE(encoded);
+        std::string decoded;REQUIRE(gzipDecompress(contents(path),decoded));
+        REQUIRE(decoded.size()==8*65536);
+        for(unsigned i=0;i<8;++i) REQUIRE(decoded.substr(i*65536,65536)==std::string(65536,char(i)));
+        const auto prior=contents(path);
+        auto bad=writer.submit(path,[](ChunkedBuffer&)->CooperativeTask {throw std::runtime_error("injected snapshot failure");co_return false;});
+        writer.waitUntilIdle();REQUIRE(bad->state==-1);REQUIRE(contents(path)==prior);
+    }
+
+    {
+        const auto prior=contents(path);
+        ChunkedBuffer bytes;std::string raw(256*1024,'x');bytes.writeAt(0,raw.data(),raw.size());
+        {
+            auto task=files.writeGzipTask(path,bytes);
+            CHECK(!task.advance());CHECK(contents(path)==prior);
+            // Destroy a suspended write: its exclusive temporary must disappear.
+        }
+        CHECK(contents(path)==prior);
+        for(const auto& entry:fs::directory_iterator(directory))
+            CHECK(entry.path().filename().string().find(".save-job-")==std::string::npos);
+    }
+
 	for (const auto& entry : fs::directory_iterator(directory))
 		REQUIRE(entry.path().filename().string().find(".tmp-") == std::string::npos);
 	std::cout << "PASS background writes keep the newest snapshot with its finish step, finish on destruction and continue after a failure" << std::endl;
@@ -343,15 +379,18 @@ static void checkSlowAutosave(FileManager& files, const fs::path& directory)
     gui.syncStep();
     const bool waited = finalized.load();
     unblock.join();
-    REQUIRE(waited);
+    REQUIRE(!waited);
+    gui.waitForAutosave();
+    ++gui.game.stepCounter;
+    gui.syncStep();
     gui.waitForAutosave();
     BinaryInputStream stream(files.openInflatingInputStreamBackend(save.string()));
     GameGUI restored;
     REQUIRE(restored.load(&stream));
-    REQUIRE(restored.game.stepCounter == AUTOSAVE_PHASE_TICKS);
+    REQUIRE(restored.game.stepCounter == AUTOSAVE_PHASE_TICKS+1);
     globalContainer->settings.autosaveGames = false;
     fs::remove(save);
-    std::cout << "PASS slow prior autosave blocks the next capture and retains its exact tick" << std::endl;
+    std::cout << "PASS busy autosave defers capture without blocking and retains the later exact tick" << std::endl;
 #endif
 }
 
@@ -879,6 +918,15 @@ TEST_SUITE("SavegameSafety")
 				BinaryOutputStream initial(new MemoryStreamBackend());
 				gui.save(&initial, "Auto save");
 			}
+            {
+                auto encode=captureSave([&](OutputStream* out,DeferredGameSHA1* sha){gui.save(out,"Owned snapshot",sha);});
+                auto* memory=new MemoryStreamBackend;BinaryOutputStream reference(memory);
+                gui.save(&reference,"Owned snapshot");const auto expected=memory->takeContents();
+                const auto tick=gui.game.stepCounter;gui.game.stepCounter+=77;
+                ChunkedBuffer restored;REQUIRE(encode(restored).run());
+                std::string actual(restored.size(),'\0');restored.readAt(0,actual.data(),actual.size());
+                REQUIRE(actual==expected);gui.game.stepCounter=tick;
+            }
 			const fs::path save = directory / "games" / "Auto_save.game.gz";
 			gui.syncStep();
 			gui.waitForAutosave();
@@ -989,14 +1037,26 @@ TEST_SUITE("SavegameSafety")
 			const size_t offset = savedHeader.getMapOffset();
 			REQUIRE(bytes.substr(offset, 4) == "MapB");
 			const auto mapBytes = bytes.substr(offset);
-			const size_t cells = size_t(gui.game.map.getW()) * gui.game.map.getH();
-			const size_t cellsStart = 12 + cells;
-			const size_t cellsEnd = cellsStart + cells * 33;
-			const size_t mapEnd = mapBytes.find("MapE");
-			REQUIRE((mapEnd != std::string::npos && cellsEnd < mapEnd));
-			const size_t cuts[] = {0, 1, 3, 4, 7, 11, 12, cellsStart - 1, cellsStart,
-				cellsStart + 6, cellsStart + 7, cellsStart + 32, cellsEnd - 2171,
-				cellsEnd - 1, cellsEnd, cellsEnd + 1, mapEnd, mapEnd + 3};
+			struct CellBounds : BinaryOutputStream
+            {
+                using BinaryOutputStream::BinaryOutputStream;
+                size_t depth=0,cellDepth=0,start=0,end=0;
+                void writeEnterSection(const std::string name) override {
+                    ++depth;if(name=="cases") {start=getPosition();cellDepth=depth;}
+                }
+                void writeEnterSection(unsigned) override {++depth;}
+                void writeLeaveSection(size_t count=1) override {
+                    while(count--) {if(depth==cellDepth && cellDepth) {end=getPosition();cellDepth=0;} --depth;}
+                }
+            };
+            auto* measured=new MemoryStreamBackend;
+            CellBounds bounds(measured);gui.game.map.save(&bounds);
+            const size_t cellsStart=bounds.start,cellsEnd=bounds.end;
+            REQUIRE(measured->takeContents().substr(0,cellsEnd)==mapBytes.substr(0,cellsEnd));
+            const size_t mapEnd=mapBytes.find("MapE");
+            REQUIRE((mapEnd!=std::string::npos && cellsStart<cellsEnd && cellsEnd<mapEnd));
+            const size_t cuts[] = {0,1,3,4,7,11,12,cellsStart-1,cellsStart,
+                cellsStart+(cellsEnd-cellsStart)/2,cellsEnd-1,cellsEnd,cellsEnd+1,mapEnd,mapEnd+3};
 			int count = 0;
 			for (bool file : {false, true})
 				for (size_t cut : cuts)

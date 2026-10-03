@@ -897,6 +897,8 @@ bool Engine::advanceSession(Uint64 now, const std::function<void()>& clientWork,
     return gui.isRunning;
 }
 
+bool Engine::savePending() { return gui.savePending(); }
+
 std::optional<Engine::PendingLoad> Engine::finishSessionForHost()
 {
     if (!session) throw std::logic_error("No active engine session");

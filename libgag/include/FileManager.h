@@ -1,3 +1,4 @@
+#include <CooperativeTask.h>
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
@@ -86,6 +87,7 @@ namespace GAGCore
 		//! level always produce identical bytes on every platform.
 		bool writeGzipAtomic(const std::string& filename, const std::string& contents, int level = 6);
 		bool writeGzipAtomic(const std::string& filename, const ChunkedBuffer& contents, int level = 6);
+        CooperativeTask writeGzipTask(std::string filename,const ChunkedBuffer& contents,int level=6);
 		//! Serializes through writer into chunked memory first (so seek-based backpatching
 		//! works exactly as it does for uncompressed output), then gzip-compresses
 		//! and atomically replaces filename with the result.
