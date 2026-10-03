@@ -1,0 +1,9 @@
+
+Running 2 tests using 1 worker
+
+(node:2739905) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › browser/tests/colony-skins.spec.js:9:1 › live colony meshes render through WebGL2 and survive context restoration (42.7s)
+  ✓  2 [chromium] › browser/tests/skin-assets.spec.js:7:1 › unskinned menu and match never request the optional mesh package (40.5s)
+
+  2 passed (1.4m)
