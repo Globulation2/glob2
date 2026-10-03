@@ -45,6 +45,7 @@ namespace Online
 {
 class PlatformClient;
 class MapCache;
+class OnlineStorage;
 
 /// What the results screen shows about an online match, kept up to date from
 /// match.updated while it lives.
@@ -168,8 +169,9 @@ class OnlineMatch
 	using TransportFactory = std::function<std::shared_ptr<Turn::TurnTransport>(const std::string &relayUrl)>;
 
 	/// `client` provides the origin, the bearer token for the map download and
-	/// match.reconnect; `maps` caches the map by hash. Both must outlive this object.
-	OnlineMatch(PlatformClient &client, MapCache &maps, Json assignment, Context context = {});
+	/// match.reconnect; `maps` caches the map by hash; `storage` caches colony paints.
+	/// All three must outlive this object and the handed-off engine.
+	OnlineMatch(PlatformClient &client, MapCache &maps, OnlineStorage &storage, Json assignment, Context context = {});
 	~OnlineMatch();
 	OnlineMatch(const OnlineMatch &) = delete;
 	OnlineMatch &operator=(const OnlineMatch &) = delete;
@@ -222,6 +224,7 @@ class OnlineMatch
 
 	PlatformClient &client;
 	MapCache &maps;
+	OnlineStorage &storage;
 	// The reconnect request, cancelled with the match.
 	PlatformScope calls;
 	Json assignment;

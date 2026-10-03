@@ -590,7 +590,7 @@ describe('migrations', () => {
   it('upgrades an existing platform database through all skin migrations', async () => {
     const existing = await createTestDatabase({ migrate: false, role: 'migrator' });
     try {
-      const old = await createMigrator(existing.db).migrateTo('0017_retention');
+      const old = await createMigrator(existing.db).migrateTo('0019_warm_maps_over_generated');
       expect(old.error).toBeUndefined();
       const account = await existing.db
         .insertInto('accounts')

@@ -143,7 +143,7 @@ OnlineHubScreen::OnlineHubScreen(GAGGUI::ScreenStack &screens, bool connect) : s
 			startMatch(assignment.raw.is_object() ? assignment.raw : Json());
 		});
 		Online::setRematchHandler([this](const Online::RematchRequest &request) {
-			rematchRoom = Online::PlatformRoom::rematch(client(), Online::services().maps, request.matchId);
+			rematchRoom = Online::PlatformRoom::rematch(client(), Online::services().maps, Online::services().storage, request.matchId);
 		});
 		syncFromClient();
 		refresh(true);
@@ -181,7 +181,7 @@ void OnlineHubScreen::startMatch(const Json &assignment)
 		context.rated = queue->rated;
 		context.ladder = queue->id;
 	}
-	auto match = std::make_shared<Online::OnlineMatch>(client(), Online::services().maps, assignment, context);
+	auto match = std::make_shared<Online::OnlineMatch>(client(), Online::services().maps, Online::services().storage, assignment, context);
 	screens.push(std::make_unique<MatchStartScreen>(screens, match), [this](GAGGUI::Screen &, int) {
 		// Rematch from the results screen: its room opens once the match has closed.
 		if (auto room = std::move(rematchRoom))
@@ -394,7 +394,7 @@ void OnlineHubScreen::createRoom()
 	// colonies when more people join, until the host chooses a map.
 	const auto setup = Online::defaultRoomSetup(2, std::random_device{}());
 	const std::string name = formatted("[hub room name %0]", data.displayName);
-	enterRoom(Online::PlatformRoom::create(client(), Online::services().maps, name, false, setup, true));
+	enterRoom(Online::PlatformRoom::create(client(), Online::services().maps, Online::services().storage, name, false, setup, true));
 }
 
 void OnlineHubScreen::joinByCode(const std::string &codeOrLink)
@@ -417,7 +417,7 @@ void OnlineHubScreen::joinByCode(const std::string &codeOrLink)
 	}
 	joinDraft.clear();
 	joinField = false;
-	enterRoom(Online::PlatformRoom::join(client(), Online::services().maps, invite->code));
+	enterRoom(Online::PlatformRoom::join(client(), Online::services().maps, Online::services().storage, invite->code));
 }
 
 void OnlineHubScreen::acceptInvite(const std::string &origin, const std::string &code)

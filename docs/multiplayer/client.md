@@ -25,7 +25,7 @@ run (`Online::ServicesOwner`, its first member, so the services outlive every sc
 `Online::services()` creates them on first use, and they are destroyed when the game
 exits, which closes the connection. Tools and test harnesses that run without an
 `Application` get process-lifetime services instead. Online objects take what they
-need explicitly: `OnlineMatch` and `PlatformRoom` receive the map cache, and
+need explicitly: `OnlineMatch` and `PlatformRoom` receive the map cache and skin storage, and
 `QuickMatch` the client. `Services::addHook` returns an id for `removeHook`. The client
 is not started until a screen calls `client.start(origin)`.
 
