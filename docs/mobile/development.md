@@ -31,6 +31,14 @@ Mobile settings omit desktop window sizes, renderer selection and OpenGL-only
 options because the operating system manages the viewport and the mobile build
 uses the portable renderer.
 
+Objectives/Hints and Teams dialogs leave at least 16 screen points around the
+painted panel inside the safe, keyboard-adjusted area. Short objectives and hints
+size to their content; long pages scroll within the available height, with the
+action button kept reachable. The Teams table, heading and explanations scroll
+together in both touch and classic presentation, leaving its footer visible even
+on short desktop windows. Touch widths are capped at 560 points for
+Objectives/Hints and 640 for Teams.
+
 Gameplay map drags start after 8 screen points of travel. Release momentum requires
 reaching 16 points from the gesture start, so small touch jitter and short
 positioning drags stop on release. This distance is independent of map zoom and

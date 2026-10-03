@@ -25,6 +25,7 @@
 #include "GlobalContainer.h"
 #include "Order.h"
 #include "Unit.h"
+#include "Player.h"
 #include "ReplayWriter.h"
 #include "ReplayReader.h"
 #include "usl.h"
@@ -2515,7 +2516,18 @@ class GameGUITouchHarness
 			const auto r = dialog->host().bounds(key);
 			tap(r.x + r.w / 2, r.y + r.h / 2);
 		};
-		for (auto [width, height] : {std::pair{320, 568}, {568, 320}})
+		const auto dialogGameHeader = gui.game.gameHeader;
+		std::array<Player *, 4> dialogPlayers{};
+		for (int i = 1; i < 4; ++i)
+		{
+			require(gui.game.teams[i], "Teams dialog fixture needs three rival teams");
+			dialogPlayers[i] = gui.game.players[i];
+			gui.game.players[i] = new Player(i, "Rival colony " + std::to_string(i), gui.game.teams[i], BasePlayer::P_IP);
+			gui.game.gameHeader.getBasePlayer(i) = BasePlayer(i, "Rival colony " + std::to_string(i), i, BasePlayer::P_IP);
+		}
+		gui.game.gameHeader.setNumberOfPlayers(4);
+		gui.game.gameHeader.setAllyTeamsFixed(true);
+		for (auto [width, height] : {std::pair{320, 568}, {568, 320}, {1024, 768}})
 		{
 			SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()), width, height);
 			GLOB2_REQUIRE(SDL_SyncWindow(SDL_GetWindowFromID(gfx->windowID())), "Window resize must settle before layout assertions");
@@ -2540,12 +2552,80 @@ class GameGUITouchHarness
 			pressDialog("ok");
 			require(!gui.inGameMenu, "Options footer remains reachable");
 			gui.openDialog(GameGUI::IGM_OBJECTIVES, std::make_unique<InGameObjectivesScreen>(&gui, false));
+			auto checkModal = [&](const char *name) {
+				gui.drawAll(0);
+				auto *dialog = gui.activeDialog();
+				const auto panel = dialog->panelBounds();
+				const auto &p = dialog->presentation();
+				const auto area = p.dialog;
+				const int margin = p.pt(16);
+				require(panel.x >= area.x + margin && panel.y >= area.y + margin &&
+					panel.right() <= area.right() - margin && panel.bottom() <= area.bottom() - margin,
+					"Gameplay modals leave a 16-point outer gutter on every side");
+				std::cout << "Modal " << name << " screen=" << width << "x" << height
+					<< " panel=" << panel.x << "," << panel.y << "," << panel.w << "," << panel.h << "\n";
+				gfx->printScreen((std::string("inset-") + name + "-" + std::to_string(width) + "x" + std::to_string(height) + ".bmp").c_str());
+				gfx->nextFrame();
+			};
+			checkModal("objectives");
 			auto *objectives = static_cast<InGameObjectivesScreen *>(gui.gameMenuScreen.get());
 			const int hintsTab = gui.game.missionBriefing.empty() ? 1 : 2;
 			pressDialog("objectives/tab/" + std::to_string(hintsTab));
 			require(objectives->tab() == InGameObjectivesScreen::HINTS, "Objectives tabs switch by touch");
+			checkModal("hints");
+			require(objectives->panelBounds().h < objectives->presentation().dialog.h * .8,
+				"A short hints page sizes to its content");
 			pressDialog("ok");
 			require(!gui.inGameMenu, "Objectives tabs and footer work by touch");
+			gui.openDialog(GameGUI::IGM_ALLIANCE, std::make_unique<InGameAllianceScreen>(&gui));
+			checkModal("teams");
+			pressDialog("ok");
+			require(!gui.inGameMenu, "Teams footer remains reachable inside the margins");
+			const auto savedHints = gui.game.gameHints;
+			for (int i = 0; i < 24; ++i)
+				gui.game.gameHints.addNewHint("A long mission hint with enough detail to wrap across multiple lines on a phone.", false, 1);
+			GAGCore::userTextScale = 1.5;
+			gui.openDialog(GameGUI::IGM_OBJECTIVES, std::make_unique<InGameObjectivesScreen>(&gui, false));
+			static_cast<InGameObjectivesScreen *>(gui.gameMenuScreen.get())->showTab(InGameObjectivesScreen::HINTS);
+			checkModal("long-hints-large-text");
+			require(gui.activeDialog()->host().find("objectives/scroll")->scrollMaximum() > 0,
+				"Long hints scroll within the inset dialog");
+			pressDialog("ok");
+			gui.game.gameHints = savedHints;
+			gui.openDialog(GameGUI::IGM_ALLIANCE, std::make_unique<InGameAllianceScreen>(&gui));
+			checkModal("teams-large-text");
+			auto *teams = static_cast<InGameAllianceScreen *>(gui.gameMenuScreen.get());
+			const auto chatBefore = teams->getChatMask();
+			pressDialog("ally/3/C");
+			require(teams->getChatMask() == (chatBefore ^ (1u << 3)), "The last rival remains reachable by scrolling at large text size");
+			pressDialog("ally/3/C");
+			pressDialog("ok");
+			GAGCore::userTextScale = 1;
+			if (width == 568)
+			{
+				GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "0", 1);
+				gui.openDialog(GameGUI::IGM_ALLIANCE, std::make_unique<InGameAllianceScreen>(&gui));
+				checkModal("desktop-short-teams");
+				require(gui.activeDialog()->host().find("ally/scroll")->scrollMaximum() > 0,
+					"Short classic Teams dialogs scroll their table and legend");
+				pressDialog("ok");
+				require(!gui.inGameMenu, "Short classic Teams keeps its footer reachable");
+				GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "1", 1);
+			}
+			if (width == 1024)
+			{
+				GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "0", 1);
+				gui.openDialog(GameGUI::IGM_OBJECTIVES, std::make_unique<InGameObjectivesScreen>(&gui, false));
+				checkModal("desktop-objectives");
+				require(gui.activeDialog()->panelBounds().h < gui.activeDialog()->presentation().dialog.h / 2,
+					"Short desktop objectives also size to their content");
+				pressDialog("ok");
+				gui.openDialog(GameGUI::IGM_ALLIANCE, std::make_unique<InGameAllianceScreen>(&gui));
+				checkModal("desktop-teams");
+				pressDialog("ok");
+				GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "1", 1);
+			}
+
 			gui.openDialog(GameGUI::IGM_SAVE,
 						   std::make_unique<LoadSaveDialog>("games", "game", false, tr("[save game]"), "Phone",
 															glob2FilenameToName, glob2NameToFilename));
@@ -2600,6 +2680,13 @@ class GameGUITouchHarness
 			require(!gui.typingInputScreen && gui.orderQueue.empty(),
 					"Closing the chat draft sends no message");
 		}
+
+		for (int i = 1; i < 4; ++i)
+		{
+			delete gui.game.players[i];
+			gui.game.players[i] = dialogPlayers[i];
+		}
+		gui.game.gameHeader = dialogGameHeader;
 
 		{
 			GAGGUI::ScreenStack stack(*gfx);
