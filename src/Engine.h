@@ -16,6 +16,7 @@
 #include "Campaign.h"
 #include "MapHeader.h"
 #include "GameHeader.h"
+#include "LockstepSession.h"
 #include "NetEngine.h"
 #include "MultiplayerGame.h"
 #include "ChecksumSidecar.h"
@@ -256,7 +257,7 @@ private:
 	/// Called only from inside the !hardPause branch.
 	void gatherAndAdvanceOrders(bool wasReadyLastTick);
 
-	/// Once allOrdersReceived() is true for this tick, validate checksums,
+	/// Once tickReady() is true for this tick, validate checksums,
 	/// execute the matched orders, pump the replay reader, and run
 	/// game.syncStep. Called only from inside the !hardPause branch.
 	void executeOrdersAndStep(bool readyNow);
@@ -310,8 +311,9 @@ private:
 
 	//! The GUI, contains the whole game also
 	GameGUI gui;
-	//! The netGame, take care of order queuing and dispatching
-	std::unique_ptr<NetEngine> net;
+	//! The lockstep session: queues, exchanges and dispatches orders. A
+	//! NetEngine for single player, replays and legacy YOG/LAN games.
+	std::unique_ptr<LockstepSession> net;
 	//! Checksum sidecar writer for cross-replay debugging. Destroying it
 	//! closes the sidecar file (see ~ChecksumSidecarWriter), so the file is
 	//! flushed even when run() is never reached after initGame allocated it.

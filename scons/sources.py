@@ -550,6 +550,8 @@ CLIENT_SOURCES = (
     'net/LanIdentity.cpp',
     'net/ServerControl.cpp',
     'net/WssTransport.cpp',
+    'online/HttpFetch.cpp',
+    'online/HttpFetchCommon.cpp',
 )
 
 SERVER_SOURCES = (
@@ -746,4 +748,5 @@ INCLUDE_DIRECTORIES = (
     'src/map/generator/shared/legacy',
     'src/map/generator/compatibility', 'src/map/gradient', 'src/map/io', 'src/map/pathfind',
     'src/net', 'src/net/irc', 'src/net/message', 'src/net/turn', 'src/sgsl', 'src/team', 'src/unit',
+    'src/online', 'third_party/nlohmann-json/include',
 )
