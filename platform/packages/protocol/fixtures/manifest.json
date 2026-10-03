@@ -37,6 +37,8 @@
     "RealtimeEventMatchStart": "schemas/RealtimeEventMatchStart.schema.json",
     "RealtimeEventMatchUpdated": "schemas/RealtimeEventMatchUpdated.schema.json",
     "RealtimeEventQueueMatchFound": "schemas/RealtimeEventQueueMatchFound.schema.json",
+    "RealtimeEventQueueProposal": "schemas/RealtimeEventQueueProposal.schema.json",
+    "RealtimeEventQueueProposalEnded": "schemas/RealtimeEventQueueProposalEnded.schema.json",
     "RealtimeEventQueueStatus": "schemas/RealtimeEventQueueStatus.schema.json",
     "RealtimeEventRoomChat": "schemas/RealtimeEventRoomChat.schema.json",
     "RealtimeEventRoomClosed": "schemas/RealtimeEventRoomClosed.schema.json",
@@ -48,6 +50,8 @@
     "RealtimeQueueJoinResult": "schemas/RealtimeQueueJoinResult.schema.json",
     "RealtimeQueueLeaveParams": "schemas/RealtimeQueueLeaveParams.schema.json",
     "RealtimeQueueLeaveResult": "schemas/RealtimeQueueLeaveResult.schema.json",
+    "RealtimeQueueRespondParams": "schemas/RealtimeQueueRespondParams.schema.json",
+    "RealtimeQueueRespondResult": "schemas/RealtimeQueueRespondResult.schema.json",
     "RealtimeRequest": "schemas/RealtimeRequest.schema.json",
     "RealtimeResponse": "schemas/RealtimeResponse.schema.json",
     "RealtimeRoomChatParams": "schemas/RealtimeRoomChatParams.schema.json",
@@ -388,6 +392,30 @@
       "schema": "RealtimeQueueJoinParams",
       "valid": true,
       "note": "Join a queue with relay round-trip probes."
+    },
+    {
+      "file": "valid/RealtimeQueueJoinParams/no-ai-opponent.json",
+      "schema": "RealtimeQueueJoinParams",
+      "valid": true,
+      "note": "Join a queue but opt out of AI backfill."
+    },
+    {
+      "file": "valid/RealtimeQueueRespondParams/accept.json",
+      "schema": "RealtimeQueueRespondParams",
+      "valid": true,
+      "note": "Accept a proposed ranked match."
+    },
+    {
+      "file": "valid/RealtimeEventQueueProposal/ranked-accept.json",
+      "schema": "RealtimeEventQueueProposal",
+      "valid": true,
+      "note": "A ranked 1v1 group waiting for both players to accept."
+    },
+    {
+      "file": "valid/RealtimeEventQueueProposalEnded/removed-after-decline.json",
+      "schema": "RealtimeEventQueueProposalEnded",
+      "valid": true,
+      "note": "The client declined and is blocked from queueing for a minute."
     },
     {
       "file": "valid/RealtimeEventMatchStart/assignment.json",
