@@ -5,6 +5,7 @@
 #include "GlobalContainer.h"
 #include "ScrollTuning.h"
 #include "GameGUIKeyActions.h"
+#include <GameplayRecording.h>
 #include <GUIBase.h>
 #include "MapEditKeyActions.h"
 #include <Toolkit.h>
@@ -58,6 +59,7 @@ void SettingsScreen::buildKeyboard()
     auto& bindings=keyboard().getKeyboardShortcuts();
     const int count=shortcutMode==GameGUIShortcuts?int(GameGUIKeyActions::ActionSize):int(MapEditKeyActions::ActionSize);
     for(int action=0;action<count;++action){
+        if(shortcutMode==GameGUIShortcuts && action==GameGUIKeyActions::ToggleRecording && !GAGCore::Recording::supported())continue;
         auto name=shortcutMode==GameGUIShortcuts?GameGUIKeyActions::getName(action):MapEditKeyActions::getName(action);
         auto label=Toolkit::getStringTable()->getString("["+name+"]");
         int index=0;bool found=false;

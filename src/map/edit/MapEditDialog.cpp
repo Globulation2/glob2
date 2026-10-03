@@ -17,7 +17,7 @@ namespace fe = Glob2UI;
 using fe::Element;
 using fe::Presentation;
 
-MapEditMenuScreen::MapEditMenuScreen() = default;
+MapEditMenuScreen::MapEditMenuScreen() : InGameDialog(Glob2UI::Surface::Editor) {}
 
 Element MapEditMenuScreen::build(const Presentation &p)
 {
@@ -32,16 +32,6 @@ Element MapEditMenuScreen::build(const Presentation &p)
 						  {"teams", "[open teams editor]", OPEN_TEAMS_EDITOR, false}, {"share", "[maps share online]", SHARE_MAP, false},
 						  {"quit", "[quit the editor]", QUIT_EDITOR, false}};
 	std::vector<Element> buttons;
-	if (classic())
-	{
-		// The classic editor menu: gold buttons, Return first.
-		for (const auto &item : items)
-		{
-			const int code = item.code;
-			buttons.push_back(classicButton(item.key, fe::tr(item.label), [this, code] { finish(code); }, item.primary ? SDLK_ESCAPE : SDLK_UNKNOWN));
-		}
-		return fe::column(std::move(buttons), {p.pt(10)});
-	}
 	for (const auto &item : items)
 	{
 		fe::ButtonOptions options;
@@ -61,7 +51,7 @@ Element MapEditMenuScreen::build(const Presentation &p)
 }
 
 AskForTextInput::AskForTextInput(const std::string &aLabel, const std::string &aCurrent)
-	: labelText(aLabel), originalText(aCurrent), currentText(aCurrent)
+	: InGameDialog(Glob2UI::Surface::Editor), labelText(aLabel), originalText(aCurrent), currentText(aCurrent)
 {
 }
 
@@ -93,7 +83,7 @@ Element AskForTextInput::build(const Presentation &p)
 	return fe::footer(fe::column({fe::paragraph(fe::tr(labelText), {fe::FontRole::Heading}), field}, {p.pt(8)}), dialogActions(std::move(actions), p));
 }
 
-TeamsEditor::TeamsEditor(Game *game) : game(game)
+TeamsEditor::TeamsEditor(Game *game) : InGameDialog(Glob2UI::Surface::Editor), game(game)
 {
 	GameHeader &gameHeader = game->gameHeader;
 	MapHeader &mapHeader = game->mapHeader;
@@ -236,10 +226,6 @@ Element TeamsEditor::build(const Presentation &p)
 	std::vector<fe::MenuAction> actions;
 	actions.push_back({"ok", fe::tr("[ok]"), [this] { confirm(); }, true});
 	actions.push_back({"cancel", fe::tr("[Cancel]"), [this] { finish(CANCEL); }, false, SDLK_ESCAPE});
-	if (classic())
-		return fe::column({fe::paragraph(fe::tr("[teams editor]"), {fe::FontRole::Heading, false, fe::TextAlign::Center}),
-						   fe::column(std::move(rows), {p.pt(4)}), fe::spacer(p.pt(10)), dialogActions(std::move(actions), p)},
-						  {p.pt(10)});
 	return fe::column({fe::paragraph(fe::tr("[teams editor]"), {fe::FontRole::Heading, false, fe::TextAlign::Center}),
 					   fe::expanded(fe::footer(fe::scroll("teams/scroll", fe::column(std::move(rows), {p.pt(compact ? 8 : 4)})), dialogActions(std::move(actions), p)))},
 					  {p.pt(10)});

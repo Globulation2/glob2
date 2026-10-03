@@ -25,8 +25,8 @@ Element LANFindScreen::build(const Presentation &p)
 		field(tr("[lan pairing field]"), textField("server", serverName, [this](const std::string &v) { serverName = v; })),
 		field(tr("[player name]"), textField("player", playerName, [this](const std::string &v) { playerName = v; }, {false, 32})),
 	});
-	auto gameList = column({label(tr("[available lan games]")),
-        paragraph(tr(listener.isListening() ? "[lan discovery instructions]" : "[lan discovery unavailable]")),
+	auto gameList = column({heading(tr("[available lan games]")),
+							hint(tr(listener.isListening() ? "[lan discovery instructions]" : "[lan discovery unavailable]")),
 							listView("games", games, selectedGame,
 									 [this](int i)
 									 {

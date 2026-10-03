@@ -69,6 +69,22 @@ class Recorder
 std::int64_t timestamp();
 Recorder &recorder();
 bool supported();
+// Whether the configured FFmpeg can encode recordings (libx264 and AAC). The
+// first query starts a background probe; Checking lasts until it answers.
+enum class Encoder
+{
+	Unknown,
+	Checking,
+	Available,
+	Missing
+};
+Encoder encoder();
+// Why the encoder is Missing, otherwise empty.
+std::string encoderProblem();
+// Probes again (after the player installs FFmpeg); force restarts a finished probe.
+void probeEncoder(bool force = false);
+// Recording controls are offered: a supported host with a working encoder.
+bool available();
 // UI helper: unique profile output; returns false while finalization is pending.
 bool toggle();
 std::string controlLabel();

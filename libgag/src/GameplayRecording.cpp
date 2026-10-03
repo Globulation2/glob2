@@ -43,6 +43,18 @@ std::string utf8(const std::filesystem::path &path)
 	auto value = path.u8string();
 	return std::string(reinterpret_cast<const char *>(value.data()), value.size());
 }
+// Throws unless the encoder runs and provides libx264 and AAC; output goes to log.
+void checkEncoders(const std::string &ffmpeg, const std::string &log)
+{
+	Process probe;
+	probe.launch({ffmpeg, "-hide_banner", "-encoders"}, log, false);
+	if (probe.finish(5))
+		throw std::runtime_error("FFmpeg did not report its encoders");
+	std::ifstream input(std::filesystem::u8path(log));
+	std::string encoders((std::istreambuf_iterator<char>(input)), {});
+	if (encoders.find("libx264 ") == std::string::npos || encoders.find(" aac ") == std::string::npos)
+		throw std::runtime_error("FFmpeg must provide libx264 and AAC encoders");
+}
 using Detail::Context;
 using Detail::ffescape;
 using Detail::json;
@@ -132,6 +144,84 @@ bool supported()
 #else
 	return true;
 #endif
+}
+namespace
+{
+// One probe at a time; the destructor waits for it at exit.
+struct EncoderProbe
+{
+	std::mutex mutex;
+	Encoder state = Encoder::Unknown;
+	std::string problem;
+	std::thread worker;
+	~EncoderProbe()
+	{
+		if (worker.joinable())
+			worker.join();
+	}
+};
+EncoderProbe &encoderProbe()
+{
+	static EncoderProbe instance;
+	return instance;
+}
+} // namespace
+void probeEncoder(bool force)
+{
+	auto &probe = encoderProbe();
+	std::lock_guard<std::mutex> lock(probe.mutex);
+	if (!supported())
+	{
+		probe.state = Encoder::Missing;
+		probe.problem = "Recording is not supported on this platform";
+		return;
+	}
+	if (probe.state == Encoder::Checking || (!force && probe.state != Encoder::Unknown))
+		return;
+	if (probe.worker.joinable())
+		probe.worker.join();
+	probe.state = Encoder::Checking;
+	probe.problem.clear();
+	const std::string ffmpeg = recorder().options.ffmpeg;
+	probe.worker = std::thread(
+		[&probe, ffmpeg]
+		{
+			std::string problem;
+			std::filesystem::path log;
+			try
+			{
+				log = std::filesystem::temp_directory_path() /
+					  ("glob2-ffmpeg-probe-" + std::to_string(now()) + ".log");
+				checkEncoders(ffmpeg, utf8(log));
+			}
+			catch (const std::exception &error)
+			{
+				problem = error.what();
+			}
+			std::error_code ignored;
+			if (!log.empty())
+				std::filesystem::remove(log, ignored);
+			std::lock_guard<std::mutex> lock(probe.mutex);
+			probe.state = problem.empty() ? Encoder::Available : Encoder::Missing;
+			probe.problem = problem;
+		});
+}
+Encoder encoder()
+{
+	probeEncoder();
+	auto &probe = encoderProbe();
+	std::lock_guard<std::mutex> lock(probe.mutex);
+	return probe.state;
+}
+std::string encoderProblem()
+{
+	auto &probe = encoderProbe();
+	std::lock_guard<std::mutex> lock(probe.mutex);
+	return probe.problem;
+}
+bool available()
+{
+	return supported() && encoder() == Encoder::Available;
 }
 bool Recorder::start(const std::string &requestedPath)
 {
@@ -564,15 +654,7 @@ void Recorder::Impl::run(Options options)
 	{
 		if (!journal)
 			throw std::runtime_error("Cannot write recording event journal");
-		Process probe;
-		probe.launch({options.ffmpeg, "-hide_banner", "-encoders"}, work + "preflight.log", false);
-		if (probe.finish(5))
-			throw std::runtime_error("FFmpeg preflight failed; inspect preflight.log");
-		std::ifstream input(std::filesystem::u8path(work + "preflight.log"));
-		std::string encoders((std::istreambuf_iterator<char>(input)), {});
-		if (encoders.find("libx264 ") == std::string::npos ||
-			encoders.find(" aac ") == std::string::npos)
-			throw std::runtime_error("FFmpeg must provide libx264 and AAC encoders");
+		checkEncoders(options.ffmpeg, work + "preflight.log");
 		Frame latest;
 		{
 			std::unique_lock<std::mutex> lock(mutex);
