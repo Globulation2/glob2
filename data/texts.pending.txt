@@ -581,3 +581,6 @@
 [conn card cannot keep up]
 [conn card cannot keep up body]
 [conn card not gaining]
+[turn too many actions]
+[turn no pauses left]
+[turn pause time used %0]

@@ -105,6 +105,7 @@ const char* name(Reason reason)
 	case Reason::BadMode: return "bad_mode";
 	case Reason::BadVoice: return "bad_voice";
 	case Reason::BadState: return "bad_state";
+	case Reason::PauseLimit: return "pause_limit";
 	case Reason::Count: break;
 	}
 	return "unknown";
@@ -287,7 +288,9 @@ Result validate(const Game& game, int senderPlayer, Order& order)
 		return ownTeam(c, static_cast<MapMarkOrder&>(order).teamNumber);
 
 	case ORDER_PAUSE_GAME:
-		// Any player may pause and resume a multiplayer game, as in legacy games.
+		// Any player may pause and resume a multiplayer game, as in legacy games. A
+		// match's pause limit (MatchSetup::pauseLimit) is applied after this check by
+		// TurnLockstepSession, which keeps the pause bookkeeping.
 		return accepted();
 
 	case ORDER_PLAYER_QUIT_GAME:

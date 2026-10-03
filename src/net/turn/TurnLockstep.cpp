@@ -20,16 +20,83 @@ void TurnLockstepSession::advanceStep(Uint32 checksum)
 	session.advanceStep(checksum);
 }
 
+std::uint32_t TurnLockstepSession::pauseBudgetTicks() const
+{
+	return pauseLimit ? static_cast<std::uint32_t>(std::uint64_t(pauseLimit->seconds) * session.tickRateMilliHz() / 1000)
+	                  : 0;
+}
+
+OrderValidation::Result TurnLockstepSession::checkPause(int seat, bool pause)
+{
+	using namespace OrderValidation;
+	if (!pause)
+	{
+		// Anyone may resume.
+		pauses.paused = false;
+		pauses.by = -1;
+		return {};
+	}
+	if (pauses.paused)
+		return {}; // already paused: changes nothing, costs nothing
+	if (pauseLimit && seat >= 0 && seat < 32)
+	{
+		if (pauses.count[seat] >= pauseLimit->pauses || pauses.ticks[seat] >= pauseBudgetTicks())
+		{
+			if (onPauseNotice)
+				onPauseNotice(PauseNotice::Refused, seat);
+			return {Verdict::Stale, Reason::PauseLimit};
+		}
+		++pauses.count[seat];
+	}
+	pauses.paused = true;
+	pauses.by = seat;
+	return {};
+}
+
+std::shared_ptr<Order> TurnLockstepSession::takeForcedResume()
+{
+	if (!pauseLimit || !pauses.paused || pauses.by < 0 || pauses.ticks[pauses.by] < pauseBudgetTicks())
+		return nullptr;
+	const int seat = pauses.by;
+	pauses.paused = false;
+	pauses.by = -1;
+	if (onPauseNotice)
+		onPauseNotice(PauseNotice::Expired, seat);
+	auto order = std::make_shared<PauseGameOrder>(false);
+	order->sender = seat;
+	return order;
+}
+
+void TurnLockstepSession::clearTopOrders()
+{
+	// The tick that just executed counts against the seat whose pause held it.
+	if (pauses.paused && pauses.by >= 0)
+		++pauses.ticks[pauses.by];
+	session.clearTopOrders();
+}
+
 std::shared_ptr<Order> TurnLockstepSession::retrieveOrder(int playerNumber)
 {
 	int undecodableType = -1;
 	auto order = session.retrieveOrder(playerNumber, undecodableType);
 	const bool undecodable = undecodableType >= 0;
-	if (session.isHumanSeat(playerNumber) && (undecodable || (validator && order->getOrderType() != ORDER_NULL)))
+	const bool human = session.isHumanSeat(playerNumber);
+	const bool pause = human && !undecodable && order->getOrderType() == ORDER_PAUSE_GAME;
+	if (human && (undecodable || pause || (validator && order->getOrderType() != ORDER_NULL)))
 	{
 		using namespace OrderValidation;
 		const bool voice = (undecodable ? undecodableType : order->getOrderType()) == ORDER_VOICE_DATA;
-		const Result result = undecodable ? Result{Verdict::Rejected, Reason::Undecodable} : validator(playerNumber, *order);
+		Result result = undecodable ? Result{Verdict::Rejected, Reason::Undecodable}
+		                : validator ? validator(playerNumber, *order)
+		                            : Result{};
+		if (pause && result.verdict == Verdict::Accepted)
+		{
+			// The engine's codec decodes a PauseGameOrder; a test codec may not.
+			const auto* p = dynamic_cast<const PauseGameOrder*>(order.get());
+			const Uint8* data = p ? nullptr : order->getData();
+			const bool wantPause = p ? p->pause : (order->getDataLength() >= 1 && data && data[0]);
+			result = checkPause(playerNumber, wantPause);
+		}
 		const std::uint32_t tick = session.executedTick();
 		audit.record(playerNumber, tick, voice, result);
 		if (result.verdict != Verdict::Accepted)
