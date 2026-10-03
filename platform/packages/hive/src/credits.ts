@@ -70,12 +70,12 @@ export class Credits {
     );
     return { balance: Number(row.balance), reserved: Number(row.reserved) };
   }
-  async balance(account: string) {
+  async balance(account: string, db: Db = this.db) {
     const row = (
       await sql<{
         balance: string;
         reserved: string;
-      }>`SELECT balance,reserved FROM hive_wallets WHERE account_id=${account}`.execute(this.db)
+      }>`SELECT balance,reserved FROM hive_wallets WHERE account_id=${account}`.execute(db)
     ).rows[0];
     return {
       balance: Number(row?.balance ?? 0),

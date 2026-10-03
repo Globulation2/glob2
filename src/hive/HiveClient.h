@@ -42,7 +42,7 @@ class Client
 	struct Program
 	{
 		Json definition, state = nullptr, recent = nullptr;
-		bool initialized = false, paused = false;
+		bool initialized = false, paused = false, missingCheckpoint = false;
 		unsigned nextTick = 0, random = 1;
 	};
 	std::map<std::string, Program> programs;
@@ -59,6 +59,9 @@ class Client
 
   public:
 	std::vector<std::string> reports;
+	std::string commandDraft, retryCommandId, retryCommandText;
+	bool commandSending = false, retryCommandOngoing = false;
+	std::map<std::string, std::string> controlStatus;
 	std::string progress;
 	Json account = Json::object();
 	Client(GameGUI &gui, Online::PlatformClient &platform, std::string match, int seat,
