@@ -184,6 +184,19 @@ build/linux/client/release/src/skin-preview artifacts/skins/units artifacts/skin
 GLOB2_SKIN_PREVIEW_DIR="$PWD/artifacts/skins/units" build/linux/client/release/src/glob2
 ```
 
+Validate the installed package with `python3 tools/skins/test_export.py
+data/skins/colony-v1`. This checks retained source and mesh hashes, complete clip
+coverage, shared paint coordinates across actions, animation in all headings,
+unclipped geometry, normalized lighting normals, and identical designer models.
+The build-system test suite runs this check too.
+
+The modern Blender importer converts the legacy cyclic IPO key times to
+fractions. At exact direction boundaries its floating-point cycle reduction can
+select the previous heading. The exporter samples the first pose 0.001 original
+frames after each boundary and verifies the stepped heading throughout every
+clip. Other poses retain their quarter-frame times; canonical topology and UVs
+remain unchanged, so published paint stays attached to the same vertices.
+
 The comparison harness writes all seven action sheets with classic poses
 above live GPU-rendered poses, at three times logical size. Generated files stay
 under `artifacts/`. `make_paint.py --pattern stripes` and `--pattern spots` provide
