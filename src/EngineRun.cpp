@@ -822,7 +822,7 @@ void Engine::beginSession(Uint64 now)
     automaticGameStartTick = now;
 	if (!globalContainer->runNoX)
 		GAGCore::Recording::recorder().beginMatch(
-			globalContainer->replaying ? "replay" : (multiplayer ? "multiplayer" : "single_player"),
+			globalContainer->replaying ? "replay" : ((multiplayer || turn) ? "multiplayer" : "single_player"),
 			gui.game.mapHeader.getMapName(), gui.localTeamNo, gui.game.stepCounter);
 	auto &perf = PerformanceTelemetry::collector();
 	if (!perf.enabled && !perf.started)
