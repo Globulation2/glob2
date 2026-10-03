@@ -75,6 +75,10 @@ isolation headers before advertising it. `glob2Diagnostics.snapshot()` reports
 threads, excluding the application worker), and worker-owned `renderContext`
 metrics. Browser command-line hosts must await `Module.start(args)` for completion;
 `Module.callMain()` alone does not wait for a threaded command to finish.
+Threaded software presentation ignores unchanged canvas-size requests so a
+resize notification cannot clear a completed frame. Real size changes still
+resize the canvas through the SDK.
+
 ### Game data and loading
 
 The build packs the files the game reads at run time into content-addressed
