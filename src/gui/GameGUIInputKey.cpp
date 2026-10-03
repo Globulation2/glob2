@@ -255,7 +255,7 @@ void GameGUI::handleKey(SDL_KeyboardEvent key, bool pressed, bool repeat)
 				break;
 				case GameGUIKeyActions::PauseGame:
                     if(globalContainer->liveSpectating){hardPause=!hardPause;break;}
-					orderQueue.push_back(shared_ptr<Order>(new PauseGameOrder(!gamePaused)));
+					requestPause(!gamePaused);
 					break;
 				case GameGUIKeyActions::HardPause:
 					// Hard-pause freezes this client's entire order/checksum

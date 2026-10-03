@@ -186,7 +186,7 @@ void Game::executeOrderAndNotify(std::shared_ptr<Order> order, int localPlayer)
 		}
 		case ORDER_PAUSE_GAME:
 			// Client-only, like map marks.
-			publishClientEvent(ClientEvent::PauseChanged{std::static_pointer_cast<PauseGameOrder>(order)->pause});
+			publishClientEvent(ClientEvent::PauseChanged{std::static_pointer_cast<PauseGameOrder>(order)->pause, order->sender});
 			break;
 		case ORDER_CREATE:
 		{

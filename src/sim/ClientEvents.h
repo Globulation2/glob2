@@ -70,7 +70,7 @@ namespace ClientEvent
 	struct PlayerQuit { int player; std::string name; };
 	//! `markingTeamAllies` is the marking team's alliance mask at execution.
 	struct MapMark { std::shared_ptr<MapMarkOrder> order; Uint32 markingTeamAllies; };
-	struct PauseChanged { bool paused; };
+	struct PauseChanged { bool paused; int sender = -1; };
 	//! An ORDER_CREATE reached the simulation (whether or not it succeeded).
 	struct BuildingRequested { int team; Sint32 posX, posY; };
 	//! Any order finished executing; the client reconciles its pending shadows.

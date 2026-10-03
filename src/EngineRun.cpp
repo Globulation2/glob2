@@ -758,6 +758,7 @@ void Engine::pumpTurnSession(Uint64 now)
 	Turn::TurnSession& session = turn->turn();
 	turnNowMicros = now * 1000;
 	session.update(now * 1000);
+	gui.checkPauseBudget(Uint32(now));
 	printTurnTelemetrySamples();
 	if (session.needsReload())
 		reloadTurnInitialState();

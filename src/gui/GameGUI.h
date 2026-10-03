@@ -33,6 +33,7 @@
 #include "GameGUIGhostBuildingManager.h"
 #include "BuildingGuiState.h"
 #include "GameMusicController.h"
+#include "PauseBudget.h"
 #include "sim/ClientCommandSink.h"
 #include "sim/ClientEvents.h"
 #include "sim/ClientRequests.h"
@@ -308,6 +309,16 @@ public:
 	} networkMatch;
 	/// A one-line notice in the message list (connection changes).
 	void addNotice(const std::string &text);
+	/// Pausing in network matches (PauseBudget.h): quick matches give each player a
+	/// few pauses and a total time, rooms and LAN games pause freely. Presentation
+	/// only: it decides when the interface offers and sends pause orders.
+	PauseBudget pauseBudget;
+	/// The pause (or resume) the player asked for: sent unless their budget is spent.
+	void requestPause(bool pause);
+	/// Whether the menus offer Pause to this player now.
+	bool pauseAvailable() const;
+	/// Turn games, every frame: resumes a pause whose holder ran out of time.
+	void checkPauseBudget(Uint32 nowMs);
 private:
 	friend class GameGUISelectionHarness;
 	friend class SavegameSafetyHarness;
@@ -681,7 +692,9 @@ private:
 	std::string defaultGameSaveName;
 
 	bool hasEndOfGameDialogBeenShown;
-	
+	/// A resume for an expired pause was sent (once per pause).
+	bool pauseResumeSent = false;
+
 	GameGUIMessageManager messageManager;
 	std::unique_ptr<InGameScrollableHistory> scrollableText;
 
