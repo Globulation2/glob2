@@ -297,11 +297,12 @@ void GraphicContext::prepareSkinMeshes(const std::vector<SkinMeshRequest> &reque
     }
 }
 bool GraphicContext::drawSkinMesh(const SkinMesh &mesh, unsigned frame, DrawableSurface &texture,
-                                  float x, float y, float w, float h, DrawableSurface *underlay)
+                                  float x, float y, float w, float h, DrawableSurface *underlay, Uint8 alpha)
 {
     PERF_SCOPE_TIME(SkinComposite);
     const SkinMeshRequest request{&mesh, frame, &texture};
     if (!valid(request) || !texture.sdlsurface) return false;
+    if (alpha == 0) return true;
     const auto key = keyFor(request);
     auto &r = skinResources;
     auto found = r.slots.find(key);
@@ -314,7 +315,7 @@ bool GraphicContext::drawSkinMesh(const SkinMesh &mesh, unsigned frame, Drawable
     }
     // Draw the original ground shadow only after confirming the mesh can
     // render. A failed mesh draw must leave the classic fallback untouched.
-    if (underlay) drawSurface(x, y, w, h, underlay);
+    if (underlay) drawSurface(x, y, w, h, underlay, alpha);
     Sprite::flushBatches(this);
     const unsigned slot = *found, tile = slot % SlotsPerPage;
     const float u = float(tile%Columns)/Columns, v = float(tile/Columns)/Columns;
@@ -322,11 +323,13 @@ bool GraphicContext::drawSkinMesh(const SkinMesh &mesh, unsigned frame, Drawable
     glUseProgram(0); glState.doTexture(true); glState.setTexture(r.colors[slot/SlotsPerPage]);
     glState.doBlend(true); glState.blendFunc(GL_ONE,GL_ONE_MINUS_SRC_ALPHA);
     x-=w*(Padding-1)/2; y-=h*(Padding-1)/2; w*=Padding; h*=Padding;
+    // The atlas uses premultiplied alpha: fade RGB together with alpha.
+    const float opacity = alpha / 255.f;
     glBegin(GL_QUADS);
-    glColor4f(1,1,1,1); glTexCoord2f(u,v+extent); glVertex2f(x,y);
-    glColor4f(1,1,1,1); glTexCoord2f(u+extent,v+extent); glVertex2f(x+w,y);
-    glColor4f(1,1,1,1); glTexCoord2f(u+extent,v); glVertex2f(x+w,y+h);
-    glColor4f(1,1,1,1); glTexCoord2f(u,v); glVertex2f(x,y+h);
+    glColor4f(opacity,opacity,opacity,opacity); glTexCoord2f(u,v+extent); glVertex2f(x,y);
+    glColor4f(opacity,opacity,opacity,opacity); glTexCoord2f(u+extent,v+extent); glVertex2f(x+w,y);
+    glColor4f(opacity,opacity,opacity,opacity); glTexCoord2f(u+extent,v); glVertex2f(x+w,y+h);
+    glColor4f(opacity,opacity,opacity,opacity); glTexCoord2f(u,v); glVertex2f(x,y+h);
     glEnd(); glState.blendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA); ++drawCalls;
     return true;
 }
@@ -336,6 +339,6 @@ namespace GAGCore
 {
 void GraphicContext::destroySkinRenderer() { skinResources = {}; }
 void GraphicContext::prepareSkinMeshes(const std::vector<SkinMeshRequest> &) {}
-bool GraphicContext::drawSkinMesh(const SkinMesh &, unsigned, DrawableSurface &, float,float,float,float, DrawableSurface *) { return false; }
+bool GraphicContext::drawSkinMesh(const SkinMesh &, unsigned, DrawableSurface &, float,float,float,float, DrawableSurface *, Uint8) { return false; }
 }
 #endif

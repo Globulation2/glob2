@@ -820,6 +820,12 @@ private:
 		AIMaximaRuntime::Context& runtime);
 	void apply_farming_protection(AIMaximaRuntime::Context& runtime,
 		const FarmProtectionPlan& plan, int& added, int& removed);
+	/// With the farm-areas experiment: farm the managed wheat fields with a farm
+	/// area and take wheat out of the forbidden plan (docs/features/farm-areas.md).
+	void apply_farm_areas(AIMaximaRuntime::Context& runtime, FarmProtectionPlan& plan,
+		int& added, int& removed);
+	/// With the farm-areas experiment: erase every farm area this team painted.
+	void release_farm_areas(AIMaximaRuntime::Context& runtime);
 	Farming::ExactFertilityCache fertility_cache;
 	/// Terrain-only adjacency, built with fertility once per map load.
 	std::vector<Uint8> farming_shoreline_mask;

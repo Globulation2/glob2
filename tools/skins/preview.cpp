@@ -21,6 +21,31 @@ int main(int argc, char **argv)
     {
         DrawableSurface paint(std::string(argv[1])+"/paint.png");
         if (paint.getW() != 256 || paint.getH() != 256) return 3;
+        if (argc == 4 && std::string(argv[3]) == "--validate-opacity")
+        {
+            SkinMesh mesh; std::string error;
+            if (!mesh.load(std::string(argv[1])+"/worker-walk.gsk",error)) return 4;
+            gfx->prepareSkinMeshes({{&mesh,0,&paint}});
+            DrawableSurface shadow(256,256);
+            shadow.drawFilledRect(0,0,256,256,Color(90,70,50));
+            for (bool underlay : {false,true})
+                for (unsigned alpha : {255u,128u,0u})
+                {
+                    gfx->beginFrame(GraphicContext::FrameMode::FullRedraw);
+                    gfx->drawFilledRect(0,0,1024,960,Color(45,50,60));
+                    gfx->resetDrawCallCount();
+                    if (!gfx->drawSkinMesh(mesh,0,paint,80,80,256,256,
+                                          underlay ? &shadow : nullptr, Uint8(alpha))) return 13;
+                    // Opacity changes only the composite, never the cached pose.
+                    if (!underlay && gfx->getDrawCallCount() != (alpha ? 1u : 0u)) return 14;
+                    if (!alpha && gfx->getDrawCallCount() != 0) return 15;
+                    gfx->printScreen(std::string(argv[2])+(underlay ? "-shadow-" : "-mesh-")+
+                                     std::to_string(alpha)+".bmp");
+                    gfx->nextFrame();
+                }
+            std::cout << "Opacity composites reuse cached geometry; zero alpha draws nothing\n";
+            return 0;
+        }
         if (argc == 4 && std::string(argv[3]) == "--validate-cache")
         {
             SkinMesh mesh; std::string error;

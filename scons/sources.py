@@ -141,6 +141,7 @@ CLIENT_SOURCES = (
     'render/SoftwareTerrainCache.cpp',
     'render/MapOverlayQueue.cpp',
     'render/MapRenderState.cpp',
+    'render/FogFade.cpp',
     'scene/SceneMap.cpp',
     'scene/SceneExtract.cpp',
     'sim/SimulationRunner.cpp',

@@ -63,9 +63,29 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	Uint32 visibleTeams = entities.teams[localTeam].me;
 	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 
+	// A unit shows while its tile or the one it comes from is in sight. With the
+	// smooth fog fade it fades with the clearer of the two instead. Its opacity is
+	// linear in the fade level, unlike the shade's darkness, so the unit is gone
+	// exactly when its tile is fully fogged.
+	Uint8 fogAlpha = Color::ALPHA_OPAQUE;
 	if ((drawOptions & DRAW_WHOLE_MAP) == 0)
-		if ((!map.isFOWDiscovered(x+viewportX, y+viewportY, visibleTeams))&&(!map.isFOWDiscovered(x+viewportX-dx, y+viewportY-dy, visibleTeams)))
+	{
+		const FogFade &fade = view.render.fogFade;
+		if (fade.active())
+		{
+			const Uint8 level = std::min(fade.level(x+viewportX, y+viewportY),
+				fade.level(x+viewportX-dx, y+viewportY-dy));
+			fogAlpha = Uint8(FogFade::FOGGED - level);
+			if (fogAlpha == 0)
+				return;
+		}
+		else if ((!map.isFOWDiscovered(x+viewportX, y+viewportY, visibleTeams))&&(!map.isFOWDiscovered(x+viewportX-dx, y+viewportY-dy, visibleTeams)))
 			return;
+	}
+	// Everything drawn for the unit fades with it: `opacity` for the bars, pips and
+	// marker, which take a fraction, and faded() for alphas out of 255.
+	const float opacity = fogAlpha / 255.f;
+	const auto faded = [fogAlpha](unsigned alpha) { return Uint8(alpha * fogAlpha / 255); };
 
 	int imgid;
 	assert(unit->action>=0);
@@ -108,11 +128,12 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	// Worker dots shrink further out, so a crowd reads as density.
 	const ZoomDetail &detail = view.render.detail;
 	// The sprite stays opaque under the marker fading in over it, and goes once
-	// the marker is solid: a translucent sprite would leave the unit batch.
+	// the marker is solid. Units at the fog edge fade, including painted meshes
+	// and their original ground shadows.
 	if (detail.unitSprite > 0 &&
 		!view.render.skinPreview().draw(*globalContainer->gfx, unit->typeNum, unit->team,
-			unit->action, dir, delta, px, py, unitSprite->baseFrame(imgid)))
-		globalContainer->gfx->drawSprite(px-decX, py-decY, unitSprite, imgid);
+			unit->action, dir, delta, px, py, unitSprite->baseFrame(imgid), fogAlpha))
+		globalContainer->gfx->drawSprite(px-decX, py-decY, unitSprite, imgid, fogAlpha);
 	if (detail.unitMarker > 0)
 	{
 		const GAGCore::Color &color = entities.owner(*unit).color;
@@ -120,7 +141,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 		view.render.overlays.marker(*globalContainer->gfx, px+16, py+16,
 			warrior ? MapOverlayQueue::Triangle : explorer ? MapOverlayQueue::Diamond : MapOverlayQueue::Dot,
 			warrior ? 6.f : explorer ? 5.f : 3.f + 2.25f*detail.workerMarkerScale,
-			color.r, color.g, color.b, detail.unitMarker);
+			color.r, color.g, color.b, detail.unitMarker * opacity);
 	}
 
 	// Units the selected building could not hire wear the badge, the same one
@@ -144,13 +165,13 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	// draw selection
 	if (entities.isSelected(*unit))
 	{
-		globalContainer->gfx->drawCircle(px+16, py+16, 16, 0, 0, 255);
+		globalContainer->gfx->drawCircle(px+16, py+16, 16, 0, 0, 255, fogAlpha);
 		if (entities.owner(*unit).teamNumber == localTeam)
-			globalContainer->gfx->drawCircle(px+16, py+16, 16, 0, 0, 190);
+			globalContainer->gfx->drawCircle(px+16, py+16, 16, 0, 0, 190, fogAlpha);
 		else if ((entities.teams[localTeam].allies) & (entities.owner(*unit).me))
-			globalContainer->gfx->drawCircle(px+16, py+16, 16, 255, 196, 0);
+			globalContainer->gfx->drawCircle(px+16, py+16, 16, 255, 196, 0, fogAlpha);
 		else
-			globalContainer->gfx->drawCircle(px+16, py+16, 16, 190, 0, 0);
+			globalContainer->gfx->drawCircle(px+16, py+16, 16, 190, 0, 0, fogAlpha);
 	}
 
 	// draw xp animation. It and the magic effect belong to the sprite, and go
@@ -160,7 +181,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 		std::ostringstream oss;
 		oss << unit->experienceLevel;
 		globalContainer->standardFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 242, 131, 14));
-		globalContainer->gfx->drawString(px + 16 - (globalContainer->standardFont->getStringWidth(oss.str().c_str()) >> 1), py - 16 - 2 *( LEVEL_UP_ANIMATION_FRAME_COUNT - unit->levelUpAnimation), globalContainer->standardFont, oss.str(), 0, (255*unit->levelUpAnimation) / LEVEL_UP_ANIMATION_FRAME_COUNT);
+		globalContainer->gfx->drawString(px + 16 - (globalContainer->standardFont->getStringWidth(oss.str().c_str()) >> 1), py - 16 - 2 *( LEVEL_UP_ANIMATION_FRAME_COUNT - unit->levelUpAnimation), globalContainer->standardFont, oss.str(), 0, faded((255*unit->levelUpAnimation) / LEVEL_UP_ANIMATION_FRAME_COUNT));
 		globalContainer->standardFont->popStyle();
 	}
 
@@ -169,11 +190,11 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	{
 		if (!globalContainer->settings.fullMagicEffects)
 		{
-			globalContainer->gfx->drawSprite(px+16-(globalContainer->magiceffect->getW(0)>>1), py+16-(globalContainer->magiceffect->getH(0)>>1), globalContainer->magiceffect, 0);
+			globalContainer->gfx->drawSprite(px+16-(globalContainer->magiceffect->getW(0)>>1), py+16-(globalContainer->magiceffect->getH(0)>>1), globalContainer->magiceffect, 0, fogAlpha);
 		}
 		else
 		{
-			unsigned alpha = (unit->magicActionAnimation * 255) / MAGIC_ACTION_ANIMATION_FRAME_COUNT;
+			unsigned alpha = faded((unit->magicActionAnimation * 255) / MAGIC_ACTION_ANIMATION_FRAME_COUNT);
 			if (globalContainer->gfx->canDrawStretchedSprite())
 			{
 				int stretchW = ((MAGIC_ACTION_ANIMATION_FRAME_COUNT - unit->magicActionAnimation) * globalContainer->magiceffect->getW(0)) / (MAGIC_ACTION_ANIMATION_FRAME_COUNT * 2);
@@ -196,19 +217,19 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 		const int food=(unit->hungry*10)/Unit::HUNGRY_MAX;
 		const bool hungry=food<=1;
 		const bool hurt=unit->hp*10<=unit->performance[HP]*6;
-		anchorBars(px+16, py+25, hungry, drawnRender);
-		drawPointBar(px+1, py+25, LEFT_TO_RIGHT, 10, food, 80, 179, 223, 2, drawnRender);
+		anchorBars(px+16, py+25, hungry, drawnRender, opacity);
+		drawPointBar(px+1, py+25, LEFT_TO_RIGHT, 10, food, 80, 179, 223, 2, drawnRender, opacity);
 
 		// At or below the ratio where the health bar stops being green.
 		float hpRatio=(float)unit->hp/(float)unit->performance[HP];
-		anchorBars(px+16, py+25, hurt, drawnRender);
-		drawHealthBar(px+1, py+25+3, 10, 1+(int)(9*hpRatio), hpRatio, drawnRender);
+		anchorBars(px+16, py+25, hurt, drawnRender, opacity);
+		drawHealthBar(px+1, py+25+3, 10, 1+(int)(9*hpRatio), hpRatio, drawnRender, opacity);
 		if (hurt)
-			drawStatusPip(px+16, py+28, 255, 0, 0, drawnRender);
+			drawStatusPip(px+16, py+28, 255, 0, 0, drawnRender, opacity);
 		else if (hungry)
-			drawStatusPip(px+16, py+28, 80, 179, 223, drawnRender);
+			drawStatusPip(px+16, py+28, 80, 179, 223, drawnRender, opacity);
 
-		const int carriedAlpha=int(view.render.detail.barAll*255);
+		const int carriedAlpha=faded(unsigned(view.render.detail.barAll*255));
 		if ((unit->performance[HARVEST]) && (unit->carriedResource>=0) && carriedAlpha>0)
 			globalContainer->gfx->drawSprite(px+24, py, globalContainer->resourceMini, unit->carriedResource, carriedAlpha);
 		globalContainer->gfx->finishDrawingSprite(globalContainer->resourceMini, 255);
@@ -222,13 +243,13 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 		int accessH = globalContainer->littleFont->getStringHeight(oss.str().c_str());
 		int accessX = px+((32-accessW)>>1);
 		int accessY = py+((32-accessH)>>1);
-		globalContainer->gfx->drawFilledRect(accessX-4, accessY, accessW+8, accessH, Color(0, 0, 0, 127));
-		globalContainer->gfx->drawRect(accessX-4, accessY, accessW+8, accessH, Color(255, 255, 255, 127));
-		globalContainer->gfx->drawString(accessX, accessY, globalContainer->littleFont, oss.str());
+		globalContainer->gfx->drawFilledRect(accessX-4, accessY, accessW+8, accessH, Color(0, 0, 0, faded(127)));
+		globalContainer->gfx->drawRect(accessX-4, accessY, accessW+8, accessH, Color(255, 255, 255, faded(127)));
+		globalContainer->gfx->drawString(accessX, accessY, globalContainer->littleFont, oss.str(), 0, fogAlpha);
 	}
 	if(entities.highlightUnitType & (1<<unit->typeNum))
 	{
-		globalContainer->gfx->drawSprite(px, py-decY-32, globalContainer->gamegui, 36);
+		globalContainer->gfx->drawSprite(px, py-decY-32, globalContainer->gamegui, 36, fogAlpha);
 	}
 }
 

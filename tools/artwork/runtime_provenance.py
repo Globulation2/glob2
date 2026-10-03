@@ -26,9 +26,11 @@ def render():
     for frame in manifest['frames']:
         recipe = frame['recipe']
         original = recipe.startswith('recovered original')
-        category = 'Recovered original' if original else CATEGORIES[recipe]
+        authored = recipe.startswith('hand-authored SVG')
+        category = ('Recovered original' if original
+                    else 'Hand-authored vector' if authored else CATEGORIES[recipe])
         sources = frame.get('sources', [])
-        if original:
+        if original or authored:
             assert sources, frame['id']
         for source in sources:
             assert hashlib.sha256((ROOT / source['path']).read_bytes()).hexdigest() == source['sha256']
@@ -51,7 +53,7 @@ def render():
              'Unit frames use a fixed 128×128 runtime canvas regardless of their own logical size '
              '(4× for the 32px-native explorer set, ~3.37×/3.2× for the 38px/40px-native worker and warrior sets). '
              'Native canvas dimensions include transparent padding. '
-             '“Recovered original” includes deterministic resizing, matte extraction, layer separation and renders from original Blender rigs, without AI.', '',
+             '“Recovered original” includes deterministic resizing, matte extraction, layer separation and renders from original Blender rigs, without AI. “Hand-authored vector” frames are drawn by hand as SVG for glob2 (`datasrc/gfx/authored`) and rendered with librsvg by `tools/artwork/render_authored.py`, without AI or recolouring.', '',
              'Generated terrain combines selected generated materials with deterministic masks and edge correction. '
              'Mask resampling adds no invented texture detail. Unit animation textures are rendered from the original Blender rigs.', '',
              '| Source category | Frames |', '| --- | ---: |']

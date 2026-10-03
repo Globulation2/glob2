@@ -564,7 +564,7 @@ namespace GAGCore
         //! A sprite frame covering the `size`-pixel map square at (x, y), meeting
         //! its neighbours and drawMapTileFill exactly. In the software rasteriser
         //! its edges snap to the same pixels as theirs; elsewhere it is drawSprite.
-        void drawMapTileSprite(int x, int y, int size, Sprite *sprite, unsigned index);
+        void drawMapTileSprite(int x, int y, int size, Sprite *sprite, unsigned index, Uint8 alpha = Color::ALPHA_OPAQUE);
         // Repeat a presentation-only pass. Its primary invocation advances visual
         // state once; subsequent invocations must only draw.
         void drawMapCopies(int periodW,int periodH,int viewW,int viewH,const std::function<void()> &draw);
@@ -656,7 +656,7 @@ namespace GAGCore
         void prepareSkinMeshes(const std::vector<SkinMeshRequest> &requests);
         // Returns false without drawing when the backend or assets are unavailable.
         bool drawSkinMesh(const SkinMesh &mesh, unsigned frame, DrawableSurface &texture,
-                          float x, float y, float w, float h, DrawableSurface *underlay = nullptr);
+                          float x, float y, float w, float h, DrawableSurface *underlay = nullptr, Uint8 alpha = Color::ALPHA_OPAQUE);
 		
 		virtual void drawAlphaMap(const std::valarray<float> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
 		virtual void drawAlphaMap(const std::valarray<unsigned char> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);

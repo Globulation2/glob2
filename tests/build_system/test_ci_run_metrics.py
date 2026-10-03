@@ -25,6 +25,8 @@ class MetricsTest(unittest.TestCase):
         self.assertEqual(m.compare([run]*10, [dict(run, selection={'native': False})]*10), [])
         self.assertEqual(m.compare([run]*10, [dict(run, conclusion='failure')]*10), [])
         self.assertEqual(m.compare([run]*10, [run]*10)[0]['samples_per_side'], 10)
+        for mode in ('cheap-contracts', 'nightly-reused'):
+            self.assertEqual(m.compare([dict(run,verification_mode=mode)]*10, [dict(run,verification_mode=mode)]*10), [])
 
     def test_master_and_nightly_are_full_not_last_push_diff(self):
         workflow = (Path(__file__).resolve().parents[2] / '.github/workflows/build.yml').read_text()
@@ -60,3 +62,6 @@ class FeedbackTest(unittest.TestCase):
         self.assertFalse(result['targets_met'])
         self.assertTrue(m.feedback([row]*10)[0]['targets_met'])
         self.assertEqual(m.feedback([dict(row,draft=True)]*10),[])
+        self.assertTrue(m.feedback([dict(row,draft=True,verification_mode='affected')]*10))
+        for mode in ('cheap-contracts', 'nightly-reused'):
+            self.assertEqual(m.feedback([dict(row,verification_mode=mode)]*10), [])

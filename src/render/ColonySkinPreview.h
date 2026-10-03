@@ -5,6 +5,7 @@
 #include <memory>
 #include <optional>
 struct Scene;
+class FogFade;
 namespace Online { class SkinDownloads; }
 namespace GAGCore { class GraphicContext; class DrawableSurface; }
 
@@ -20,10 +21,10 @@ public:
     void setVisible(bool value) { visible = value; }
     void prepare(GAGCore::GraphicContext &gfx, const Scene &scene, int left, int top,
                  int right, int bottom, int viewportX, int viewportY,
-                 int localTeam, std::uint32_t visibleTeams, bool wholeMap, float unitMotion, bool drawUnits = true, bool drawBuildings = true);
+                 int localTeam, std::uint32_t visibleTeams, bool wholeMap, float unitMotion, bool drawUnits = true, bool drawBuildings = true, const FogFade *fogFade = nullptr);
     std::optional<std::uint32_t> buildingColor(int team) const;
     bool draw(GAGCore::GraphicContext &gfx, int type, int team, int action,
-              int direction, int delta, float x, float y, GAGCore::DrawableSurface *shadow = nullptr);
+              int direction, int delta, float x, float y, GAGCore::DrawableSurface *shadow = nullptr, std::uint8_t alpha = 255);
     bool drawSwarm(GAGCore::GraphicContext &gfx, int team, float x, float y,
                    float width, float height);
 private:

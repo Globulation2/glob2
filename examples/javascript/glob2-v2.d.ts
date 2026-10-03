@@ -189,7 +189,7 @@ export interface Actions {
   }): number;
   delete(spec: { building: EntityRef }): number;
   zone(
-    spec: Extract<Order, { type: "forbidden" | "guardArea" | "clearArea" }>,
+    spec: Extract<Order, { type: "forbidden" | "guardArea" | "clearArea" | "farmArea" }>,
   ): number;
   status(id: number): ActionStatus | null;
   cancel(id: number): number;

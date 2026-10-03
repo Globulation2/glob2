@@ -96,26 +96,45 @@ class PolicyTest(unittest.TestCase):
         before_activation,_=self.exercise('pull_request',paths,enabled=False)
         self.assertFalse(any(before_activation['selection'].values()))
 
-    def exercise(self,event,paths,draft=False,labels=(),enabled=True,checkpoint='old'):
+    def exercise(self,event,paths,draft=False,labels=(),enabled=True,reused_run=None,extra_env=None):
         with tempfile.TemporaryDirectory() as directory:
             payload=Path(directory)/'event.json'
             payload.write_text(json.dumps({'pull_request':{'draft':draft,'labels':[{'name':label} for label in labels]}}))
             old=Path.cwd()
             try:
                 os.chdir(directory)
-                with patch.dict(os.environ,{'GITHUB_EVENT_NAME':event,'GITHUB_EVENT_PATH':str(payload),'GITHUB_REPOSITORY':'o/r','GH_TOKEN':'token'},clear=True),patch.object(sys,'argv',['selector','--base','pr-base']),patch.object(selector,'changed_paths',return_value=paths) as diff,patch.object(baseline,'activated',return_value=enabled),patch.object(baseline,'master_checkpoint',return_value=checkpoint),redirect_stdout(io.StringIO()):
+                with patch.dict(os.environ,{'GITHUB_EVENT_NAME':event,'GITHUB_EVENT_PATH':str(payload),'GITHUB_REPOSITORY':'o/r','GH_TOKEN':'token','GITHUB_STEP_SUMMARY':str(Path(directory)/'summary'), **(extra_env or {})},clear=True),patch.object(sys,'argv',['selector','--base','pr-base']),patch.object(selector,'changed_paths',return_value=paths) as diff,patch.object(baseline,'activated',return_value=enabled),patch.object(baseline,'successful_full_run',return_value=reused_run),patch.object(selector.subprocess,'check_output',return_value='candidate-sha\n'),redirect_stdout(io.StringIO()):
                     selector.main()
-                return json.loads(Path('artifacts/ci-selection.json').read_text()),diff.call_args
+                report = json.loads(Path('artifacts/ci-selection.json').read_text())
+                summary = Path('summary').read_text()
+                self.assertIn(report['verification_mode'], summary)
+                if not any(report['selection'].values()):
+                    self.assertIn('does not establish engine verification or acceptance of PR evidence', summary)
+                return report,diff.call_args
             finally:
                 os.chdir(old)
 
-    def test_draft_ready_and_explicit_run_transitions(self):
-        draft,_=self.exercise('pull_request',['src/Game_sync.cpp'],draft=True)
-        self.assertFalse(any(draft['selection'].values()))
-        ready,_=self.exercise('pull_request',['src/Game_sync.cpp'])
-        forced,_=self.exercise('pull_request',['src/Game_sync.cpp'],draft=True,labels=['ci:run'])
-        self.assertEqual(ready['selection'],forced['selection'])
-        self.assertFalse(forced['draft'])
+    def test_pr_requests_and_label_removal(self):
+        for draft in (False, True):
+            for labels in ([], ['ci:windows'], ['ci:android', 'ci:browsers']):
+                report,_ = self.exercise('pull_request', ['src/Game_sync.cpp'], draft=draft, labels=labels)
+                self.assertFalse(any(report['selection'].values()))
+                self.assertEqual(report['verification_mode'], 'cheap-contracts')
+                self.assertEqual(report['draft'], draft)
+                self.assertFalse(report['checkpoint_eligible'])
+            report,_ = self.exercise('pull_request', ['src/Game_sync.cpp'], draft=draft, labels=['ci:run'])
+            self.assertTrue(report['selection']['native'])
+            self.assertEqual(report['verification_mode'], 'affected')
+            self.assertEqual(report['draft'], draft)
+            report,_ = self.exercise('pull_request', ['README.md'], draft=draft, labels=['ci:full'])
+            self.assertEqual(report['selection'], policy.full())
+            self.assertEqual(report['verification_mode'], 'full')
+            expanded,_ = self.exercise('pull_request', ['test/PathGradientHarness.cpp'], draft=draft,
+                                       labels=['ci:run', 'ci:windows', 'ci:android', 'ci:browsers'])
+            for flag in ('native', 'windows', 'android', 'browser'):
+                self.assertTrue(expanded['selection'][flag])
+        removed,_ = self.exercise('pull_request', ['src/Game_sync.cpp'], labels=['ci:windows'])
+        self.assertFalse(any(removed['selection'].values()))
 
     def test_timing_inventory_does_not_change_for_equivalent_policy_implementation(self):
         with patch.object(policy, 'fingerprint', return_value='implementation-one'):
@@ -125,16 +144,28 @@ class PolicyTest(unittest.TestCase):
         self.assertNotEqual(before['policy_fingerprint'],after['policy_fingerprint'])
         self.assertEqual(before['inventory_fingerprint'],after['inventory_fingerprint'])
 
-    def test_master_uses_successful_checkpoint_not_last_push(self):
-        report,call=self.exercise('push',['src/Game_sync.cpp'],checkpoint='last-success')
-        self.assertEqual(call.args,('last-success',))
-        self.assertEqual(report['checkpoint'],'last-success')
-        self.assertTrue(report['checkpoint_eligible'])
-        report,call=self.exercise('push',[],checkpoint=None)
-        self.assertIsNone(call)
+    def test_master_always_full_and_nightly_reuse_is_not_a_checkpoint(self):
+        for enabled in (False, True):
+            report,_ = self.exercise('push', ['README.md'], enabled=enabled)
+            self.assertEqual(report['selection'], policy.full())
+            self.assertTrue(report['checkpoint_eligible'])
+            self.assertEqual(report['verification_mode'], 'full')
+        report,_ = self.exercise('schedule', ['README.md'])
         self.assertTrue(report['full_matrix'])
-        report,_=self.exercise('schedule',['README.md'])
-        self.assertTrue(report['full_matrix'])
+        report,_ = self.exercise('schedule', [], reused_run=123)
+        self.assertFalse(any(report['selection'].values()))
+        self.assertFalse(report['full_matrix'])
+        self.assertFalse(report['checkpoint_eligible'])
+        self.assertEqual(report['verification_mode'], 'nightly-reused')
+        self.assertEqual(report['reused_run_id'], 123)
+        for event in ('workflow_dispatch', 'workflow_call'):
+            report,_ = self.exercise(event, [], extra_env={'CI_CALLED_FULL':'true'} if event == 'workflow_call' else {})
+            self.assertTrue(report['full_matrix'])
+        report,_ = self.exercise('workflow_dispatch', [], extra_env={'BROWSER_ONLY':'true'})
+        self.assertTrue(report['selection']['browser'])
+        self.assertTrue(report['selection']['deployment'])
+        self.assertFalse(report['full_matrix'])
+        self.assertFalse(report['checkpoint_eligible'])
 
     def test_checkpoint_never_uses_divergent_or_unattested_revision(self):
         runs=[{'id':1,'event':'push','head_sha':'future'},{'id':2,'event':'push','head_sha':'last-success'}]

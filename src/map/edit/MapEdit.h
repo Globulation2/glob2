@@ -26,6 +26,15 @@
 #define RIGHT_MENU_WIDTH 160
 #define RIGHT_MENU_OFFSET (160-128)/2
 
+//! Panel-local x of the flag view's zone button `index` of `count`. The same
+//! layout as the game's zone strip (zoneStripButtonX in gui/GameGUIInternal.h):
+//! three buttons at a 40px pitch from 8px inside the brush panel, or, with the
+//! farm-areas experiment's fourth, centred on the panel at a 38px pitch.
+constexpr int mapEditZoneButtonX(int index, int count)
+{
+	return count > 3 ? 7 + index * 38 : (RIGHT_MENU_OFFSET) + 8 + index * 40;
+}
+
 
 class MapEdit;
 class PhoneEditor;
@@ -136,7 +145,8 @@ public:
 };
 
 
-///This is a selector for a type of zone, like forbidden, guarding or clearing zone. Three of these are needed to be able to select any type of zone.
+///This is a selector for a type of zone: forbidden, guarding, clearing, or farming
+///(only offered when the player has the farm-areas experiment switched on).
 class ZoneSelector : public MapEditorWidget
 {
 public:
@@ -145,6 +155,7 @@ public:
 		ForbiddenZone,
 		GuardingZone,
 		ClearingZone,
+		FarmingZone,
 	};
 	
 	ZoneSelector(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, ZoneType zoneType);
@@ -598,6 +609,8 @@ private:
 	ZoneSelector* forbiddenZone;
 	ZoneSelector* guardZone;
 	ZoneSelector* clearingZone;
+	///Null unless Settings > Experiments > Farm areas was on when the editor opened
+	ZoneSelector* farmingZone = nullptr;
 	BrushSelector* zoneBrushSelector;
 	UnitSelector* worker;
 	UnitSelector* explorer;
@@ -772,6 +785,7 @@ private:
 		ForbiddenBrush,
 		GuardAreaBrush,
 		ClearAreaBrush,
+		FarmAreaBrush,
 		NoBrush,
 		
 	} brushType;

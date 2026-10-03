@@ -361,17 +361,19 @@ public:
 private:
 	/// Return whether there is no overlap between any buildings
 	bool checkBuildingsDoNotOverlapAndHealMissing();
-	static void anchorBars(int x, int y, bool exception = false, MapRenderState* drawnRender = nullptr);
-	static void drawStatusPip(int x, int y, Uint8 r, Uint8 g, Uint8 b, MapRenderState* drawnRender = nullptr);
-	static void drawPointBar(int x, int y, BarOrientation orientation, int maxLength, int actLength, Uint8 r, Uint8 g, Uint8 b, int barWidth=2, MapRenderState* drawnRender=nullptr)
+	//! `opacity` fades an entity's bars and pips with it, as a unit fading into the fog of war.
+	static void anchorBars(int x, int y, bool exception = false, MapRenderState* drawnRender = nullptr, float opacity = 1.f);
+	static void drawStatusPip(int x, int y, Uint8 r, Uint8 g, Uint8 b, MapRenderState* drawnRender = nullptr, float opacity = 1.f);
+	static void drawPointBar(int x, int y, BarOrientation orientation, int maxLength, int actLength, Uint8 r, Uint8 g, Uint8 b, int barWidth=2, MapRenderState* drawnRender=nullptr, float opacity = 1.f)
 	{
-		drawPointBar(x, y, orientation, maxLength, actLength, 0, r, g, b, r, g, b, barWidth, drawnRender);
+		drawPointBar(x, y, orientation, maxLength, actLength, 0, r, g, b, r, g, b, barWidth, drawnRender, opacity);
 	}
 
 	///draws a point bar. This can be health, hunger, fill level, etc. Point bars can have 2 sections of actLength and secondActLength, followed by black until maxLength. r/g/b is for the first section, r2/g2/b2 for the second
-	static void drawPointBar(int x, int y, BarOrientation orientation, int maxLength, int actLength, int secondActLength, Uint8 r, Uint8 g, Uint8 b, Uint8 r2, Uint8 g2, Uint8 b2, int barWidth=2, MapRenderState* drawnRender=nullptr);
+	//! With drawnRender the bar takes the opacity of the last anchorBars; without it, `opacity`.
+	static void drawPointBar(int x, int y, BarOrientation orientation, int maxLength, int actLength, int secondActLength, Uint8 r, Uint8 g, Uint8 b, Uint8 r2, Uint8 g2, Uint8 b2, int barWidth=2, MapRenderState* drawnRender=nullptr, float opacity = 1.f);
 	///draws an HP bar coloured green/yellow/red against the 0.6 / 0.3 hpRatio thresholds
-	static void drawHealthBar(int x, int y, int maxLength, int actLength, float hpRatio, MapRenderState* drawnRender=nullptr);
+	static void drawHealthBar(int x, int y, int maxLength, int actLength, float hpRatio, MapRenderState* drawnRender=nullptr, float opacity = 1.f);
 	///draws a building resource bar (food, bullets, ...) auto-shrinking to fit within (height*32)-10 pixels
 	static void drawBuildingResourceBar(int x, int y, BuildingType* type, int maxValue, int currentValue, Uint8 r, Uint8 g, Uint8 b, MapRenderState* drawnRender=nullptr);
 	///draws the flat per-tile colours that replace terrain and resources when zoomed far out
@@ -395,7 +397,7 @@ private:
 	static void drawMapAirUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view, const Scene& scene);
 	static void drawMapScriptAreas(int left, int top, int right, int bot, int viewportX, int viewportY, const SceneMap& map);
 	static void drawMapBulletsExplosionsDeathAnimations(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const Scene& scene);
-	static void drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const Scene& scene);
+	static void drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const MapRenderState& render, const Scene& scene);
 	static void drawMapOverlayMaps(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view);
 	static void drawUnitPathLines(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view, const Scene& scene);
 	static void drawUnitPathLine(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneUnit& unit, const Scene& scene, float unitMotion = 0);

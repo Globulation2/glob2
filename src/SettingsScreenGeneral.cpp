@@ -162,6 +162,7 @@ void SettingsScreen::buildGeneral()
 		effect("graphics.animation", "Decorative interface animation", "Animate victory artwork. Reduced motion also disables this animation.", &Settings::decorativeAnimations);
 		effect("graphics.zoomdetail", "Adaptive zoom detail", "Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.", &Settings::adaptiveZoomDetail);
 		effect("graphics.unitmotion", "Smooth unit motion", "Experimental: move and animate units between game ticks.", &Settings::unitInterpolation);
+		effect("graphics.smoothfog", "Smooth fog of war", "Fade the map into and out of the fog of war gradually.", &Settings::smoothFog);
 #ifndef GLOB2_MOBILE
 		if (!touchLayout || globalContainer->gfx->isNativeDesktop())
 		{

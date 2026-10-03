@@ -214,11 +214,11 @@ namespace GAGCore
             drawFilledRect(float(x1), float(y1), float(x2 - x1), float(y2 - y1), color);
     }
 
-    void GraphicContext::drawMapTileSprite(int x, int y, int size, Sprite *sprite, unsigned index)
+    void GraphicContext::drawMapTileSprite(int x, int y, int size, Sprite *sprite, unsigned index, Uint8 alpha)
     {
         if (!softwareTransform || !mapTransformActive)
         {
-            drawSprite(x, y, sprite, index);
+            drawSprite(x, y, sprite, index, alpha);
             return;
         }
         // The same snapping as drawMapSnappedRect, with one logical unit a pixel.
@@ -230,7 +230,7 @@ namespace GAGCore
         // Back to map coordinates, a quarter pixel inside each snapped edge so
         // the rasteriser's truncation lands on it rather than one short.
         drawSprite((left + 0.25f - offsetX) / mapScale, (top + 0.25f - offsetY) / mapScale,
-                   (right - left) / mapScale, (bottom - top) / mapScale, sprite, index);
+                   (right - left) / mapScale, (bottom - top) / mapScale, sprite, index, alpha);
     }
 
     void GraphicContext::drawMapSnappedRect(int x1, int y1, int x2, int y2, const Color& color, bool stroked, float maxStrokePoints)

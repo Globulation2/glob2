@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ColonySkinPreview.h"
+#include "FogFade.h"
 #include "GlobalContainer.h"
 #include "UnitConsts.h"
 #include "UnitAnimation.h"
@@ -97,7 +98,7 @@ std::optional<std::uint32_t> ColonySkinPreview::buildingColor(int team) const
 ColonySkinPreview::~ColonySkinPreview() = default;
 
 bool ColonySkinPreview::draw(GAGCore::GraphicContext &gfx, int type, int team,
-                            int action, int direction, int delta, float x, float y, GAGCore::DrawableSurface *shadow)
+                            int action, int direction, int delta, float x, float y, GAGCore::DrawableSurface *shadow, std::uint8_t alpha)
 {
     if (!visible || !ready || team < 0 || team >= 32 || !textures[team] || direction < 0 || direction > 8 || delta < 0 || delta > 255)
         return false;
@@ -106,7 +107,7 @@ bool ColonySkinPreview::draw(GAGCore::GraphicContext &gfx, int type, int team,
     const float size = mesh->logicalSize;
     const float offset = (size - 32) / 2;
     return gfx.drawSkinMesh(*mesh, unitAnimationFrame(0, direction, delta),
-                            *textures[team], x-offset, y-offset, size, size, shadow);
+                            *textures[team], x-offset, y-offset, size, size, shadow, alpha);
 }
 
 bool ColonySkinPreview::drawSwarm(GAGCore::GraphicContext &gfx, int team,
@@ -141,7 +142,7 @@ const GAGCore::SkinMesh *ColonySkinPreview::unitMesh(int type, int action) const
 }
 void ColonySkinPreview::prepare(GAGCore::GraphicContext &gfx, const Scene &scene,
     int left, int top, int right, int bottom, int viewportX, int viewportY,
-    int localTeam, std::uint32_t visibleTeams, bool wholeMap, float unitMotion, bool drawUnits, bool drawBuildings)
+    int localTeam, std::uint32_t visibleTeams, bool wholeMap, float unitMotion, bool drawUnits, bool drawBuildings, const FogFade *fogFade)
 {
     std::vector<GAGCore::SkinMeshRequest> requests;
     if (visible && ready && (drawUnits || drawBuildings))
@@ -156,8 +157,15 @@ void ColonySkinPreview::prepare(GAGCore::GraphicContext &gfx, const Scene &scene
                 {
                     const auto *unit = entities.unit(gid);
                     if (!unit || unit->team<0 || unit->team>=32 || !textures[unit->team]) continue;
-                    if (!wholeMap && !map.isFOWDiscovered(mx,my,visibleTeams) &&
-                        !map.isFOWDiscovered(mx-unit->dx,my-unit->dy,visibleTeams)) continue;
+                    if (!wholeMap)
+                    {
+                        if (fogFade && fogFade->active())
+                        {
+                            if (std::min(fogFade->level(mx,my), fogFade->level(mx-unit->dx,my-unit->dy)) == FogFade::FOGGED) continue;
+                        }
+                        else if (!map.isFOWDiscovered(mx,my,visibleTeams) &&
+                                 !map.isFOWDiscovered(mx-unit->dx,my-unit->dy,visibleTeams)) continue;
+                    }
                     const auto *mesh = unitMesh(unit->typeNum,unit->action);
                     if (mesh && unit->direction>=0 && unit->direction<=8 && unit->delta>=0 && unit->delta<=255)
                         requests.push_back({mesh, static_cast<unsigned>(unitAnimationFrame(0,unit->direction,drawnUnitDelta(*unit,unitMotion))), textures[unit->team].get()});
