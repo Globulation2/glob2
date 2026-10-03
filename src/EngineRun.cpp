@@ -931,6 +931,15 @@ bool Engine::advanceSession(Uint64 now, const std::function<void()>& clientWork,
     return gui.isRunning;
 }
 
+bool Engine::advancePendingSave(Uint64 now, const std::vector<SDL_Event>& events)
+{
+    // The UI may still need to capture a queued manual save. Stop the producer
+    // before touching that state, and never resume simulation during teardown.
+    stopSimulationThread();
+    if (gui.savePending()) gui.step(events, now);
+    return gui.savePending();
+}
+
 std::optional<Engine::PendingLoad> Engine::finishSessionForHost()
 {
     if (!session) throw std::logic_error("No active engine session");

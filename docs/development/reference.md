@@ -40,7 +40,10 @@ python3 test/run_tests.py      # run them; --list, --filter, --tag, --shard
   are in `vcpkg.json` and CI. Check the affected platform jobs rather than assuming
   a successful local build covers another compiler or operating system.
 - The **Steam Windows package** workflow runs manually, as a reusable workflow, or
-  when its packaging files change in a pull request. It builds the MinGW release
+  from the release workflows; it never runs on pull requests or master pushes, because
+  packaging checks are only needed when releasing. The same rule applies to the Mac App
+  Store build and to Android release-contract, store-listing and APK checks (pull
+  requests only build and smoke-test Android). It builds the MinGW release
   client and stages `glob2.exe`, its runtime DLL dependency closure, game assets,
   license, and attribution in one depot folder. A separate Windows job downloads
   that artifact and runs a short headless game without the build toolchain. Download
@@ -120,8 +123,15 @@ python3 test/run_tests.py      # run them; --list, --filter, --tag, --shard
   compatibility check run separately, so runtime shards do not wait for Clang.
   Each supported GCC build starts its own test shards and generator checks independently. The original `linux (...)` checks require every
   build and shard to pass, preserving their merge-blocking status. PRs compare
-  with their base commit; retained master pushes and scheduled runs always select
-  full CI. Unknown paths or unavailable PR diffs also select full CI.
+  with their base commit. Master pushes compare with the commit of the last master
+  build that ran to completion, so merges whose pending runs were superseded are
+  still covered; the nightly schedule and manual dispatch always select full CI and
+  provide the full-matrix baseline. Unknown paths, unavailable diffs or no completed
+  master build also select full CI.
+  Draft PRs run only the selector and its contract suites; the aggregate gate
+  passes with every check deferred. Marking a PR ready for review
+  (`ready_for_review`) runs the selected checks for that commit, so mark a PR ready
+  once it should be tested, and push to drafts as often as needed.
   Changes confined to the render-backend and pixel-raster implementation files
   retain native, browser and cross-platform checks without repeating independent
   map-generator sweeps or container deployment tests. Shared headers, file I/O and
@@ -132,6 +142,23 @@ python3 test/run_tests.py      # run them; --list, --filter, --tag, --shard
   changes to the runners themselves still select native checks.
   Steam packaging helper/workflow changes retain their packaging and smoke checks;
   editing this reference guide alone does not rebuild the Steam client.
+- CI run cancellation: every CI workflow declares a `concurrency` group keyed on
+  `github.ref` whose `cancel-in-progress` is true for `pull_request` events and
+  for pushes to non-default branches, so a newer revision cancels the older run.
+  Default-branch (master) runs are not cancelled once started; GitHub's
+  concurrency still replaces a pending master run with a newer one, so under
+  load only the newest queued master commit is verified. Release, publication
+  and deployment workflows keep non-cancelling groups. Call-only reusable
+  workflows declare no group (they inherit their caller's cancellation); a
+  reusable workflow that also runs on its own uses a literal group prefix,
+  because `github.workflow` names the caller and a shared group deadlocks it.
+  `.github/workflows/cancel-superseded.yml` covers what concurrency cannot: on
+  each pull request push or close it cancels that branch's runs of other CI
+  workflows (path-filtered ones a newer push no longer triggers, and all runs of
+  a closed PR). Its dispatch, or `.github/scripts/ci_cancel_superseded.py
+  --repo Globulation2/glob2 --dry-run` locally, sweeps every branch.
+  `tests/build_system/test_ci_concurrency.py` enforces these rules; classify a
+  new release workflow there.
 
 For headless games, use the client binary's `--nox <game-file> <steps> <runs>`
 option. `-test-games-nox` runs random AI games indefinitely unless bounded as
@@ -581,8 +608,9 @@ For timing and scheduling, start with `src/Game_sync.cpp` and `src/EngineRun.cpp
   for a historical serialized length. Save floor 58 remains unchanged.
   Warrush probes one capacity slot every two ticks (32 ticks for sixteen slots).
   Empty slots fall through to normal decisions, preserving smaller-match timing.
-  Replay floor 127 and network/YOG protocol 50 gate the new capacity and counted
-  state; older saves load into the current simulation.
+  Replay floor 127 gates the new capacity; network/YOG protocol 51 additionally
+  requires the format-128 compact save reader. Older saves load into the current
+  simulation.
 - Versioning rule: when the save format changes, bump `VERSION_MINOR` and preserve
   older saves through version-gated loading, or explicitly document an approved
   compatibility break. When simulation changes invalidate old replays or mixed-client
@@ -833,7 +861,9 @@ also remains the headless default and the equivalence reference.
   on demand and on pull requests that touch the code the threads share; add paths there
   when new code becomes shared between them. It does not report thread leaks, because SDL3
   leaves its own startup threads unjoined at exit, and uses the dummy audio driver, because
-  PulseAudio's uninstrumented mainloop thread reports races inside libpulse.
+  PulseAudio's uninstrumented mainloop thread reports races inside libpulse. Narrow, explained suppressions for
+  library shutdown races live in `test/tsan.supp`; never suppress game code there.
+  Draft PRs skip it.
 - `SceneBuffer<T>` (`src/scene/SceneBuffer.h`) hands Scenes between the threads without
   either waiting for the other.
 
@@ -1047,8 +1077,9 @@ platform/build/dependency changes, mixed changes and unknown paths retain full
 compatibility coverage. Browser/UI/rendering changes retain Firefox and WebKit.
 The full browser command inventory lives in `.github/scripts/ci_browser_matrix.json`.
 Android is called by the main build workflow, avoiding duplicate PR APK builds
-and including its selected result in the stable aggregate gate. Master and nightly
-run the complete matrix, including Android.
+and including its selected result in the stable aggregate gate. Nightly and manual
+runs use the complete matrix, including Android; master pushes select by path like
+PRs, keeping full compatibility and browser coverage for the areas they select.
 
 PR tier reductions start disabled. Set `CI_TIER_BASELINE_RUN_ID` to a successful
 full master build, then set `CI_TIERED_COVERAGE_ENABLED=true`. Before each reduced
@@ -1178,12 +1209,25 @@ headers or simulation state. Filename-based custom and campaign initialization
 reuse one validated input for both headers and the body, then release it before
 replay/network setup. Standalone header readers retain their existing interfaces.
 
-Manual/headless saves and autosaves serialize into the same chunked storage;
-header backpatches and deferred SHA1 operate on ranges without flattening it.
-Normal gzip compression uses bounded 256 KiB output buffers without flushing at
-input-block boundaries. Optional level-zero compression retains the legacy
-whole-buffer path to preserve zlib's stored-block byte layout; it is outside the
-normal-save memory bound. Save/replay/network version gates are unchanged.
+Interactive saves capture owned literals and bounded array/history batches at a
+consistent game boundary. A lightweight fixed integer representation bounds the
+capture memory; final array encoding and history transposition run on the worker.
+Final output uses chunked storage, with relocated header offsets and SHA1 ranges;
+headless callers can still serialize synchronously without changing saved bytes.
+A captured `DeferredStream::Snapshot` is consumed once: finalization releases its
+owned inputs as their output is produced. Append deferred fields in stream order;
+seeks may only backpatch fixed-size literals. Serialize stream positions with
+`OutputStream::writeOffset32`, which explicitly registers relocation on deferred
+streams and writes an ordinary uint32 on binary/text streams. Field names do not
+control relocation. SHA1 still covers the original header followed by the final
+body, preserving the existing pre-backpatch hash contract.
+
+Worker gzip compression uses bounded 256 KiB output buffers; cooperative gzip
+uses 64 KiB input/output steps. Neither flushes at input-block boundaries.
+Optional level-zero compression retains the legacy whole-buffer path to preserve
+zlib's stored-block byte layout; it is outside the normal-save memory bound.
+Background finalization does not add a wire-format change beyond compact format
+128 (save floor 58, replay floor 127, network/YOG protocol 51).
 
 For the 45,000-tick large-map fixture, the native macOS arm64 comparison measured
 1.93 GiB peak RSS for combined loading and saving, down from 3.96 GiB in the
@@ -1192,10 +1236,25 @@ default compression. This is a fixture-specific measurement, not a bound for
 arbitrary games or other platforms; preserve the commands, fixture hashes and
 raw measurements under ignored `artifacts/` when repeating it.
 
-Autosave waits for the previous writer before capturing a new snapshot at the
-current tick. Hashing and compression remain on the worker, which releases the
-snapshot before publishing idle. When writes fall behind, this can pause play;
-it prevents overlap of active, queued and newly captured autosave snapshots.
+Autosave defers capture while a previous writer is busy, then captures the current
+tick when the writer becomes idle. It never queues a second owned snapshot or
+waits for compression during a game tick. Manual game and editor saves keep their
+dialog pending while waiting for the worker, writing the file, and persisting
+browser storage; names and editor dirty state change only after success. Editor
+mutation is disabled while saving. A pending save dialog cannot be replaced by
+another panel. Normal session exit stops simulation and keeps presenting frames
+and polling the dialog through queued capture, file writing and browser storage
+completion. A failed save remains actionable for retry/export or cancellation;
+exiting does not silently discard that dialog.
+
+Native and threaded-browser jobs finalize arrays, transpose histories, hash,
+compress and replace files on the worker. Threadless builds advance bounded
+encoding and compression steps with a two-millisecond polling budget (individual
+steps can exceed the budget); snapshot capture still occurs synchronously.
+Worker-start failures fail the save rather than running encoding synchronously.
 Allocation, serialization and worker-finalization failures retain the previous
-file and allow subsequent writes. Other background string writers still keep
-the newest queued snapshot.
+file and allow subsequent writes. Browser persistence occurs after local atomic
+replacement: if it fails, the new local file remains available for export while
+the previously persisted browser copy remains intact. A retry creates a new save
+operation; each operation's terminal state is sticky and its success callback
+runs once. Other background string writers still keep the newest queued snapshot.
