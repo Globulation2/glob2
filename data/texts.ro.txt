@@ -4610,7 +4610,5 @@ Inerția hărții
 
 [room map ready body]
 
-[device busy %0]
-
 [game draw]
 

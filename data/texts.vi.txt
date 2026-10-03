@@ -4606,7 +4606,5 @@ Quán tính bản đồ
 
 [room map ready body]
 
-[device busy %0]
-
 [game draw]
 

@@ -172,6 +172,28 @@ TEST_CASE("settings screen; in-game slider; shortcuts and camera cadence [displa
         gui.processEvent(&key); REQUIRE(settings.gameSpeed==8);
         globalContainer->replaying=false;
         gui.game.gameHeader.getBasePlayer(0).type=BasePlayer::P_LOCAL;
+        // The top bar's chevrons: a left click steps through 1x, 2x, 4x, 8x and
+        // maximum and wraps; a right click steps back down.
+        settings.gameSpeed=-2;
+        REQUIRE(gui.litSpeedChevrons()==0);
+        SDL_Event click={}; click.type=SDL_EVENT_MOUSE_BUTTON_DOWN;
+        click.button.button=SDL_BUTTON_LEFT; click.button.x=gui.topBarSpeedX()+10; click.button.y=8;
+        int lit=1;
+        for(int expected:{0,3,5,7,10,0}) {
+            gui.processEvent(&click);
+            REQUIRE(settings.gameSpeed==expected);
+            REQUIRE(gui.litSpeedChevrons()==(lit>5?1:lit)); ++lit;
+        }
+        { Settings loaded; loaded.load(); REQUIRE(loaded.gameSpeed==0); }
+        settings.gameSpeed=6;
+        click.button.button=SDL_BUTTON_RIGHT;
+        for(int expected:{5,3,0,0}) { gui.processEvent(&click); REQUIRE(settings.gameSpeed==expected); }
+        gui.game.gameHeader.getBasePlayer(0).type=BasePlayer::P_IP;
+        click.button.button=SDL_BUTTON_LEFT;
+        gui.processEvent(&click); REQUIRE(settings.gameSpeed==0);
+        gui.game.gameHeader.getBasePlayer(0).type=BasePlayer::P_LOCAL;
+        REQUIRE(gui.targetTickRate()==25);
+        settings.gameSpeed=8;
         // The same elapsed time with different GUI call rates should scroll equally.
         int distance[2];
         for(int pass=0;pass<2;++pass) {

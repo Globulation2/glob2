@@ -4608,7 +4608,5 @@ Play %0
 this map
 [room map ready body]
 Create a room and invite your friends: the room plays this map.
-[device busy %0]
-Device busy %0%
 [game draw]
 Draw
