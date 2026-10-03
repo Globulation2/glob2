@@ -1,0 +1,8 @@
+
+Running 1 test using 1 worker
+
+(node:3994796) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › browser/tests/replay-skins.spec.js:7:1 › online replay uses fresh signed match appearance without a preview override (30.3s)
+
+  1 passed (34.5s)

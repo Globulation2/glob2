@@ -1,0 +1,74 @@
+
+Running 2 tests using 1 worker
+
+(node:3987845) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [chromium] › browser/tests/colony-skins.spec.js:9:1 › live colony meshes render through WebGL2 and survive context restoration (25.5s)
+(node:3988275) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  2 [chromium] › browser/tests/skin-assets.spec.js:7:1 › unskinned menu and match never request the optional mesh package (21.4s)
+
+
+  1) [chromium] › browser/tests/colony-skins.spec.js:9:1 › live colony meshes render through WebGL2 and survive context restoration 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: null
+
+      115 |     await expect.poll(() => page.evaluate(() => globalThis.skinMeshCounts), {timeout:60000}).toContain(manifest.meshes[name].triangles * 3);
+      116 |   expect((await state()).assets.skins).toBe('ready');
+    > 117 |   expect((await state()).renderContext.error).toBe(0);
+          |                                               ^
+      118 |   await page.screenshot({path:info.outputPath('colony-skins-webgl2.png')});
+      119 |   const batching = await page.evaluate(() => ({draws:globalThis.skinDraws,passes:globalThis.skinPasses}));
+      120 |   expect(batching.draws).toBeGreaterThan(batching.passes);
+        at /home/bradley/.codex/worktrees/colony-skins/glob2/browser/tests/colony-skins.spec.js:117:47
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    artifacts/skins/merge-validation/scene-gate/local-gate-chromium-serial/colony-skins-live-colony-m-60eea-survive-context-restoration-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: artifacts/skins/merge-validation/scene-gate/local-gate-chromium-serial/colony-skins-live-colony-m-60eea-survive-context-restoration-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    artifacts/skins/merge-validation/scene-gate/local-gate-chromium-serial/colony-skins-live-colony-m-60eea-survive-context-restoration-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace artifacts/skins/merge-validation/scene-gate/local-gate-chromium-serial/colony-skins-live-colony-m-60eea-survive-context-restoration-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [chromium] › browser/tests/skin-assets.spec.js:7:1 › unskinned menu and match never request the optional mesh package 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: null
+
+      27 |   expect((await state()).assets.skins).toBe('idle');
+      28 |   expect(requests.some(url => /\/assets\/skins(?:-\d+)?\./.test(url))).toBe(false);
+    > 29 |   expect((await state()).renderContext.error).toBe(0);
+         |                                               ^
+      30 |   expect(errors).toEqual([]);
+      31 | });
+      32 |
+        at /home/bradley/.codex/worktrees/colony-skins/glob2/browser/tests/skin-assets.spec.js:29:47
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    artifacts/skins/merge-validation/scene-gate/local-gate-chromium-serial/skin-assets-unskinned-menu-92545-t-the-optional-mesh-package-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: artifacts/skins/merge-validation/scene-gate/local-gate-chromium-serial/skin-assets-unskinned-menu-92545-t-the-optional-mesh-package-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    artifacts/skins/merge-validation/scene-gate/local-gate-chromium-serial/skin-assets-unskinned-menu-92545-t-the-optional-mesh-package-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace artifacts/skins/merge-validation/scene-gate/local-gate-chromium-serial/skin-assets-unskinned-menu-92545-t-the-optional-mesh-package-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    [chromium] › browser/tests/colony-skins.spec.js:9:1 › live colony meshes render through WebGL2 and survive context restoration 
+    [chromium] › browser/tests/skin-assets.spec.js:7:1 › unskinned menu and match never request the optional mesh package 

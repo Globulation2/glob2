@@ -35,7 +35,18 @@ Unit/engine sources built at 97a11b73d are identical to this head; the only
 subsequent code change adds adaptive-detail control to the preview tool, which
 was rebuilt and exercised in all four comparisons.
 
-Browser results are pending and will be added before merging.
+The serial/threaded browser package builds successfully. Skin rendering,
+context restoration, hide/show and lazy assets pass in Chromium serial,
+Chromium threaded, Firefox and WebKit (eight tests). Signed online replay
+rendering passes against the seeded real API (one test). The initial Chromium
+run correctly failed because master made GL error sampling opt-in; test-only
+commit 54825ab1fa8ae8af8c6febfd74d226ac93387f74 enables gl-errors=1 in all three
+skin specs, preserving their zero-error assertions. Product build inputs are
+unchanged by that commit. The first failure and final results are retained.
+Serial pacing passed. Threaded pacing timed out at tick 809 of the required
+1,500 while the next native build ran concurrently; this result is not a pass.
+The final integration gate will repeat it without an overlapping owned build. A subsequent map-repetition master merge will
+have separately identified integration evidence.
 
 Engine artifacts include match records, verdicts, per-tick checksums and
 recordings. Replays are losslessly gzip-compressed; BMP captures are converted

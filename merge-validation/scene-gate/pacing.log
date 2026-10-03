@@ -1,0 +1,45 @@
+
+Running 2 tests using 1 worker
+
+(node:4012972) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › browser/tests/pacing.spec.js:33:3 › display-paced match preserves tick execution and paused input (serial) (56.4s)
+  ✘  2 [chromium] › browser/tests/pacing.spec.js:33:3 › display-paced match preserves tick execution and paused input (threaded) (3.1m)
+
+
+  1) [chromium] › browser/tests/pacing.spec.js:33:3 › display-paced match preserves tick execution and paused input (threaded) 
+
+    Error: expect(received).toBeGreaterThan(expected)
+
+    Expected: > 1500
+    Received:   809
+
+    Call Log:
+    - Timeout 90000ms exceeded while waiting on the predicate
+
+      59 |     await expect.poll(async () => (await state(page)).tick).toBeGreaterThan(25);
+      60 |     for (let i = 0; i < 7; i++) await page.locator('#canvas').press('Control+=', {delay: 80});
+    > 61 |     await expect.poll(async () => (await state(page)).tick, {timeout: 90000}).toBeGreaterThan(1500);
+         |                                                                               ^
+      62 |     await page.locator('#canvas').press('p');
+      63 |     await expect.poll(async () => (await state(page)).paused).toBe(true);
+      64 |     const paused = await state(page);
+        at /home/bradley/.codex/worktrees/colony-skins/glob2/browser/tests/pacing.spec.js:61:79
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    artifacts/skins/merge-validation/scene-gate/pacing/pacing-display-paced-match-9ecda--and-paused-input-threaded--chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: artifacts/skins/merge-validation/scene-gate/pacing/pacing-display-paced-match-9ecda--and-paused-input-threaded--chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    artifacts/skins/merge-validation/scene-gate/pacing/pacing-display-paced-match-9ecda--and-paused-input-threaded--chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace artifacts/skins/merge-validation/scene-gate/pacing/pacing-display-paced-match-9ecda--and-paused-input-threaded--chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › browser/tests/pacing.spec.js:33:3 › display-paced match preserves tick execution and paused input (threaded) 
+  1 passed (4.4m)
