@@ -1,12 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Native HttpFetch: a Beast HTTP/1.1 client pumped from the caller's thread.
+// Native HttpFetch: NetHttp::Request (src/net/HttpExchange.h) pumped from the caller's thread.
 #include "HttpFetch.h"
+#include "HttpExchange.h"
 #include "TlsSetup.h"
 #include <boost/asio.hpp>
-#include <boost/beast/core.hpp>
-#include <boost/beast/http.hpp>
-#include <boost/beast/ssl.hpp>
-#include <optional>
 #include <stdexcept>
 
 #ifndef PACKAGE_VERSION
@@ -19,75 +16,40 @@ namespace
 {
 namespace asio = boost::asio;
 namespace ssl = asio::ssl;
-namespace beast = boost::beast;
-namespace http = beast::http;
-using tcp = asio::ip::tcp;
-using Error = boost::system::error_code;
 
+// The game's front end of NetHttp::Request: one io_context per request, pumped
+// by state() on the caller's thread.
 class NativeFetch final : public Fetch
 {
 	asio::io_context io;
-	tcp::resolver resolver{io};
-	asio::steady_timer deadline{io};
-	std::shared_ptr<ssl::context> tls;
-	std::optional<beast::tcp_stream> plain;
-	std::optional<beast::ssl_stream<beast::tcp_stream>> secure;
-	beast::flat_buffer buffer;
-	http::request<http::string_body> request;
-	std::optional<http::response_parser<http::string_body>> parser;
-	Url url;
+	std::shared_ptr<NetHttp::Request> exchange;
 	State status = State::Pending;
 	Response result;
 	std::string failure;
 
-	beast::tcp_stream &lowest()
-	{
-		return secure ? beast::get_lowest_layer(*secure) : *plain;
-	}
-	// Stops all I/O; the first terminal state wins.
-	void finish(State state, const std::string &why = {})
+	void finished(NetHttp::Result outcome)
 	{
 		if (status != State::Pending)
 			return;
-		status = state;
-		failure = why;
-		resolver.cancel();
-		deadline.cancel();
-		if (plain || secure)
+		switch (outcome.outcome)
 		{
-			Error ignored;
-			lowest().socket().close(ignored);
+		case NetHttp::Outcome::Done:
+			status = State::Done;
+			result.status = outcome.status;
+			result.headers = std::move(outcome.headers);
+			result.body = std::move(outcome.body);
+			return;
+		case NetHttp::Outcome::TimedOut:
+			status = State::TimedOut;
+			break;
+		case NetHttp::Outcome::Cancelled:
+			status = State::Cancelled;
+			break;
+		case NetHttp::Outcome::Failed:
+			status = State::Failed;
+			break;
 		}
-	}
-	bool ok(Error error)
-	{
-		if (status != State::Pending)
-			return false;
-		if (error)
-			finish(State::Failed, error.message());
-		return status == State::Pending;
-	}
-	template <class Stream> void exchange(Stream &stream)
-	{
-		http::async_write(stream, request,
-						  [this, &stream](Error error, size_t)
-						  {
-							  if (!ok(error))
-								  return;
-							  http::async_read(stream, buffer, *parser,
-											   [this](Error error, size_t)
-											   {
-												   if (!ok(error))
-													   return;
-												   auto message = parser->release();
-												   result.status = static_cast<int>(message.result_int());
-												   for (const auto &field : message)
-													   result.headers.emplace_back(std::string(field.name_string()),
-																				   std::string(field.value()));
-												   result.body = std::move(message.body());
-												   finish(State::Done);
-											   });
-						  });
+		failure = std::move(outcome.error);
 	}
 
   public:
@@ -95,84 +57,52 @@ class NativeFetch final : public Fetch
 	{
 		try
 		{
-			url = parseUrl(spec.url);
-			request.method(http::string_to_verb(methodName(spec.method)));
-			request.target(url.target);
-			request.version(11);
-			request.set(http::field::host, url.authority());
-			request.set(http::field::user_agent, std::string("Globulation2/") + PACKAGE_VERSION);
-			request.set(http::field::connection, "close");
-			for (const auto &field : spec.headers)
-			{
-				if (field.first.empty() ||
-					field.first.find_first_of(":\r\n") != std::string::npos ||
-					field.second.find_first_of("\r\n") != std::string::npos)
-					throw std::invalid_argument("Invalid request header");
-				request.set(field.first, field.second);
-			}
-			if (spec.method != Method::Get || !spec.body.empty())
-			{
-				request.body() = std::move(spec.body);
-				request.prepare_payload();
-			}
-			parser.emplace();
-			parser->body_limit(spec.responseLimit);
-			parser->header_limit(64 * 1024);
+			const Url url = parseUrl(spec.url);
+			NetHttp::Options options;
+			options.method = methodName(spec.method);
+			options.secure = url.secure;
+			options.host = url.host;
+			options.port = url.port;
+			options.target = url.target;
+			options.authority = url.authority();
+			options.userAgent = std::string("Globulation2/") + PACKAGE_VERSION;
+			options.headers = std::move(spec.headers);
+			options.sendBody = spec.method != Method::Get || !spec.body.empty();
+			options.body = std::move(spec.body);
+			options.timeout = spec.timeout;
+			options.responseLimit = spec.responseLimit;
+			options.headerLimit = 64 * 1024;
 			if (url.secure)
 			{
+				// The same trust as WssTransport: SSL_CERT_FILE, else the platform store.
 				const auto trust = NetTls::withEnvironmentTrust({});
-				tls = NetTls::contextFor(ssl::context::tls_client, trust);
-				secure.emplace(io, *tls);
-				secure->set_verify_mode(ssl::verify_peer);
-				NetTls::verifyServer(*secure, *tls, url.host, trust);
-				NetTls::serverName(*secure, url.host);
+				options.tls = NetTls::contextFor(ssl::context::tls_client, trust);
+				auto* context = options.tls.get();
+				options.prepareTls = [context, trust](NetHttp::TlsStream& stream, const std::string& host) {
+					stream.set_verify_mode(ssl::verify_peer);
+					NetTls::verifyServer(stream, *context, host, trust);
+					NetTls::serverName(stream, host);
+				};
 			}
-			else
-				plain.emplace(io);
+			exchange = NetHttp::Request::start(io.get_executor(), std::move(options),
+			                                   [this](NetHttp::Result outcome) { finished(std::move(outcome)); });
 		}
 		catch (const std::exception &error)
 		{
 			status = State::Failed;
 			failure = error.what();
-			return;
 		}
-		deadline.expires_after(spec.timeout);
-		deadline.async_wait(
-			[this](Error error)
-			{
-				if (!error)
-					finish(State::TimedOut, "HTTP request timed out");
-			});
-		resolver.async_resolve(
-			url.host, url.port,
-			[this](Error error, tcp::resolver::results_type results)
-			{
-				if (!ok(error))
-					return;
-				lowest().async_connect(
-					results,
-					[this](Error error, const tcp::endpoint &)
-					{
-						if (!ok(error))
-							return;
-						if (!secure)
-						{
-							exchange(*plain);
-							return;
-						}
-						secure->async_handshake(ssl::stream_base::client,
-												[this](Error error)
-												{
-													if (ok(error))
-														exchange(*secure);
-												});
-					});
-			});
 	}
 	~NativeFetch() override
 	{
-		// Pending handlers are destroyed with io without running.
-		finish(State::Cancelled);
+		cancel();
+		// Let the aborted operations complete, so the request is released before io
+		// (any handler still pending is destroyed with io without running).
+		io.restart();
+		while (io.poll_one())
+		{
+		}
+		exchange.reset();
 	}
 	State state() override
 	{
@@ -196,7 +126,10 @@ class NativeFetch final : public Fetch
 	}
 	void cancel() override
 	{
-		finish(State::Cancelled);
+		if (exchange)
+			exchange->cancel();
+		if (status == State::Pending)
+			status = State::Cancelled;
 	}
 };
 } // namespace
