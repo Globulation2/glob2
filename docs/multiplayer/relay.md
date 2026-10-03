@@ -253,8 +253,9 @@ see them, and every client transport (Beast, browsers) answers them itself. Fini
 matches also add their counters to the `glob2_relay_net_*` metrics at `/metrics`.
 
 **The setup lookup.** The record needs the match's setup to be verifiable, so the
-relay fetches it when the match starts and retries a failed lookup with backoff (1 s
-doubling to 30 s) for `GLOB2_RELAY_SETUP_RETRY_SECONDS` or until the match ends. A
+relay fetches it when the match starts and retries a failed lookup (a network error,
+a timeout, 5xx, 408 or 429; not a refusal such as 404 for an unknown match) with
+backoff (1 s doubling to 30 s) for `GLOB2_RELAY_SETUP_RETRY_SECONDS` or until the match ends. A
 match that ends before the setup arrived holds its record and asks again for the same
 window (shortened by a shutdown deadline) before uploading it; only then does a record
 go out without a setup, which the verifier can only call `unverifiable`.

@@ -63,7 +63,8 @@ namespace Relay
 		void stop();
 
 		/// GET /internal/v1/matches/{matchId}/setup: the MatchSetup document. A failed
-		/// lookup (platform down, restarting, overloaded) is retried with backoff, 1 s
+		/// lookup (platform down, restarting, overloaded, timing out; not a 4xx refusal
+		/// such as an unknown match) is retried with backoff, 1 s
 		/// doubling to 30 s, until it succeeds, giveUpAt or the shutdown deadline
 		/// passes, the link stops, or wanted() (when given) turns false.
 		boost::asio::awaitable<std::optional<std::string>> fetchSetup(
@@ -83,7 +84,8 @@ namespace Relay
 		boost::asio::awaitable<bool> heartbeat(bool& reregister);
 		boost::asio::awaitable<void> upload(FinishedMatch match);
 		boost::asio::awaitable<bool> uploadOnce(const FinishedMatch& match);
-		boost::asio::awaitable<std::optional<std::string>> fetchSetupOnce(const std::string& matchId);
+		/// final: set when the platform refused in a way a retry cannot change.
+		boost::asio::awaitable<std::optional<std::string>> fetchSetupOnce(const std::string& matchId, bool& final);
 		std::string url(const std::string& path) const { return config.platformUrl + path; }
 		std::map<std::string, std::string> authHeaders(const std::string& contentType) const;
 		std::string spoolPath(const std::string& matchId, const char* suffix) const;
