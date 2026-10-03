@@ -1178,11 +1178,11 @@ class GameGUITouchHarness
 					require(!gui.touch->statsOpen && !gui.touch->showStatistics && gui.touch->inspectingResource(),
 						"Tapping resource information cannot activate the tactical menu");
 					noOrder();
-					const auto close = gui.touch->resourceCloseRect();
+					const auto close = gui.touch->readOnlyCloseRect();
 					tap(close.x + close.w / 2, close.y + close.h / 2);
 					gui.touch->prepareDraw();
 					require(gui.selectionMode == GameGUI::NO_SELECTION && !gui.touch->panelOpen,
-						"Closing resource info restores the previous panel state");
+						"Closing resource info dismisses the panel");
 				}
 				tap(spot.x, spot.y);
 				const auto bar = gui.touch->layout().actions;
@@ -1931,6 +1931,7 @@ class GameGUITouchHarness
 			for (double zoom : {.33, .5, 1.})
 			{
 				gui.camera.zoom = zoom;
+				gui.updateCamera();
 				gui.camera.originX = gui.camera.originY = 0;
 				gui.viewportX = gui.viewportY = 0;
 				gui.updateCamera();
@@ -2063,8 +2064,8 @@ class GameGUITouchHarness
 			}
 			gui.touch->panelOpen = false;
 			gui.setSelection(GameGUI::BUILDING_SELECTION, building);
-			// Info opens the inspector for the selected entity.
-			tap(gfx->getW() * 2.5f / 6, gfx->getH() - 24 * unit);
+			// Selection opens the inspector; Tools now explicitly replaces it.
+			gui.touch->panelOpen = true;
 			auto workerPoint = actionPoint(6, 0, 1);
 			const float plusX = workerPoint.x, rowY = workerPoint.y;
 			const int before = gui.displayedMaxUnitWorking(*building),
@@ -3001,6 +3002,244 @@ class GameGUITouchHarness
 	// Flags move by dragging them on touch. A contact on a flag, or within the
 	// 30-point reach that selects flags, carries the flag and never pans the map;
 	// a tap still selects; a second finger or an interruption puts the flag back.
+	static void unitSelection()
+	{
+		GameGUI gui;
+		auto header = Engine::loadMapHeader("maps/balanced.map");
+		GameHeader players;
+		players.setNumberOfPlayers(1);
+		players.getBasePlayer(0) = BasePlayer(0, "Touch", 0, BasePlayer::P_LOCAL);
+		require(gui.loadFromHeaders(header, players, true, true), "Unit fixture loads");
+		gui.localTeamNo = gui.localPlayer = 0;
+		gui.adjustLocalTeam();
+		auto *gfx = globalContainer->gfx;
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "1", 1);
+		gfx->setResponsiveViewport(true, 800, 600);
+		auto &map = gui.game.map;
+		for (int y = 30; y < 50; ++y)
+			for (int x = 30; x < 50; ++x) {
+				map.setUMTerrain(x,y,GRASS);
+				map.setNoResource(x,y,1);
+			}
+		auto *worker = gui.game.addUnit(40,40,0,WORKER,0,255,0,0);
+		require(worker, "Isolated worker exists");
+		globalContainer->replaying = true;
+		globalContainer->replayShowFog = false;
+		Uint32 now = 40000;
+		auto finger = [&](Uint32 type, double x, double y) {
+			SDL_Event e{}; e.type = type; e.tfinger.timestamp = SDL_MS_TO_NS(now += 400);
+			e.tfinger.touchID = 7; e.tfinger.fingerID = 1;
+			e.tfinger.x = x/gfx->getW(); e.tfinger.y = y/gfx->getH(); gui.processEvent(&e);
+		};
+		auto tap = [&](double x,double y) {finger(SDL_EVENT_FINGER_DOWN,x,y); finger(SDL_EVENT_FINGER_UP,x,y);};
+		for (auto [width,height] : {std::pair{390,844},std::pair{844,390}}) {
+			SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()),width,height);
+			require(SDL_SyncWindow(SDL_GetWindowFromID(gfx->windowID())), "Unit fixture resize settles");
+			SDL_Event resize{}; resize.type = SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED;
+			GAGCore::GraphicContext::translateMouseEvent(&resize);
+			gui.viewportResized(800,600,gfx->getW(),gfx->getH());
+			for (double zoom : {.33,.5,1.}) {
+				gui.clearSelection(); gui.touch->cancel(); gui.touch->panelOpen = false;
+				gui.camera.zoom = zoom;
+				gui.updateCamera();
+				gui.camera.originX = 40*32+16-gfx->getW()/2./gui.camera.zoom;
+				gui.camera.originY = 40*32+16-(gfx->getH()/2.)/gui.camera.zoom;
+				gui.viewportX = gui.camera.tileX(); gui.viewportY = gui.camera.tileY(); gui.updateCamera();
+				const auto c = std::pair{gfx->getW()/2.,gfx->getH()/2.};
+				const double scale = gfx->logicalUnitsPerPoint();
+				require(gui.touch->unitAt({c.first+28*scale,c.second}) == nullptr, "Near tap misses exact sprite");
+				require(gui.touch->unitAt({c.first+28*scale,c.second},30) == worker, "30 point halo works at every zoom");
+				require(gui.touch->unitAt({c.first+32*scale,c.second},30) == nullptr, "Outside unit halo stays empty");
+				globalContainer->replayShowFog = true; globalContainer->replayVisibleTeams = 0;
+				require(!gui.touch->unitAt({c.first,c.second},30), "Fog-hidden unit cannot be picked");
+				globalContainer->replayShowFog = false;
+				tap(c.first+28*scale,c.second);
+				require(gui.selectionMode == GameGUI::UNIT_SELECTION && gui.selectionUnit() == worker, "Real near-unit touch selects unit");
+				gui.drawAll(0);
+				require(gui.drawnScene().panels.unit.valid && gui.touch->unitInfoRows().size() >= 7, "Selected unit has scene-backed stats");
+				if (zoom == .5) { gfx->printScreen(width<height ? "unit-portrait.bmp" : "unit-landscape.bmp"); gfx->nextFrame(); }
+				const auto panel = gui.touch->layout().panel;
+				tap(panel.x+panel.w/2,panel.y+70*scale);
+				require(gui.selectionMode == GameGUI::UNIT_SELECTION && !gui.touch->showStatistics, "Stats body does not dispatch tactical menu actions");
+				finger(SDL_EVENT_FINGER_DOWN,panel.x+panel.w/2,panel.y+panel.h-10*scale);
+				finger(SDL_EVENT_FINGER_MOTION,panel.x+panel.w/2,panel.y+55*scale);
+				finger(SDL_EVENT_FINGER_UP,panel.x+panel.w/2,panel.y+55*scale);
+				gui.drawAll(0);
+				if (zoom == .5) { gfx->printScreen(width<height ? "unit-portrait-scrolled.bmp" : "unit-landscape-scrolled.bmp"); gfx->nextFrame(); }
+				tap(panel.x+panel.w-24*scale,panel.y+24*scale);
+				require(gui.selectionMode == GameGUI::NO_SELECTION && !gui.touch->panelOpen, "Close dismisses unit stats");
+				const auto origin = gui.camera.originX;
+				finger(SDL_EVENT_FINGER_DOWN,c.first+28*scale,c.second);
+				finger(SDL_EVENT_FINGER_MOTION,c.first+70*scale,c.second);
+				finger(SDL_EVENT_FINGER_UP,c.first+70*scale,c.second);
+				require(gui.selectionMode == GameGUI::NO_SELECTION && gui.camera.originX != origin, "Near-unit drag pans instead of selecting");
+				gui.touch->stopScrolling();
+				require(gui.orderQueue.empty(), "Inspection never issues simulation orders");
+			}
+		}
+		// The presented snapshot can differ from the live unit between ticks.
+		// Smooth motion must shift both the exact rectangle and forgiving halo.
+		gui.camera.zoom = 1;
+		gui.camera.originX = 40 * 32 + 16 - gfx->getW() / 2.;
+		gui.camera.originY = 40 * 32 + 16 - gfx->getH() / 2.;
+		gui.viewportX = gui.camera.tileX(); gui.viewportY = gui.camera.tileY(); gui.updateCamera();
+		gui.drawAll(0);
+		{
+			Scene displayed = gui.drawnScene();
+			auto shown = std::find_if(displayed.entities.units.begin(), displayed.entities.units.end(),
+				[&](const auto &u) { return u.gid == worker->gid; });
+			require(shown != displayed.entities.units.end(), "Motion fixture has a drawn worker");
+			shown->action = WALK; shown->dx = 1; shown->dy = 0;
+			shown->delta = 0; shown->stepSpeed = 128;
+			const auto *previousScene = gui.view.scene;
+			const float previousMotion = gui.view.render.unitMotion;
+			gui.view.scene = &displayed;
+			gui.view.render.unitMotion = 1;
+			const double reachUnit = gfx->logicalUnitsPerPoint();
+			const GAGCore::ViewPoint visibleCenter{gfx->getW() / 2. - 15, gfx->getH() / 2.};
+			require(gui.touch->unitAt({visibleCenter.x - 14, visibleCenter.y}) == worker,
+				"Exact touch follows the last rendered smooth-motion rectangle");
+			require(gui.touch->unitAt({visibleCenter.x - 28 * reachUnit, visibleCenter.y}, 30) == worker,
+				"Unit halo follows the last rendered smooth-motion centre");
+			require(!gui.touch->unitAt({visibleCenter.x - 32 * reachUnit, visibleCenter.y}, 30),
+				"Smooth motion does not enlarge the 30-point halo");
+			++shown->generation;
+			require(!gui.touch->unitAt(visibleCenter, 30),
+				"A stale displayed identity cannot select a replacement live unit");
+			gui.view.scene = previousScene;
+			gui.view.render.unitMotion = previousMotion;
+		}
+		// A crowded tile uses visual draw order, and a nearby exact hit beats a halo.
+		auto *flyer = gui.game.addUnit(40,40,0,EXPLORER,0,255,0,0);
+		require(flyer, "Flying unit overlaps the worker");
+		gui.camera.zoom = 1;
+		gui.camera.originX = 40*32+16-gfx->getW()/2.;
+		gui.camera.originY = 40*32+16-gfx->getH()/2.;
+		gui.viewportX = gui.camera.tileX(); gui.viewportY = gui.camera.tileY(); gui.updateCamera();
+		const GAGCore::ViewPoint center{gfx->getW()/2.,gfx->getH()/2.};
+		gui.drawAll(0); // Newly created units must be presented before they can be picked.
+		require(gui.touch->unitAt(center,30) == flyer, "Direct airborne sprite wins draw order over ground unit");
+		auto *nearby = gui.game.addUnit(42,40,0,WORKER,0,255,0,0);
+		require(nearby, "Nearby worker exists");
+		gui.drawAll(0);
+		require(gui.touch->unitAt({center.x+64,center.y},30) == nearby, "Exact unit beats neighbouring halo");
+		// A neighbouring resource is a direct target, not empty halo ground.
+		map.setResource(41, 40, WHEAT, 0);
+		map.setMapDiscovered(41, 40, gui.localTeam->me);
+		gui.touch->select({center.x + 28, center.y});
+		require(gui.selectionMode == GameGUI::RESOURCE_SELECTION,
+			"A unit halo cannot steal a direct discovered-resource tap");
+		gui.drawAll(0);
+		// Replacing a read-only card with a building is not navigation back to
+		// a toolbox. Its explicit close must leave the map unobstructed too.
+		const int innType = globalContainer->buildingsTypes.getTypeNum("inn", 0, false);
+		auto *inspected = gui.game.addBuilding(44, 40, innType, 0);
+		require(inspected, "Read-only transition fixture has a building");
+		const auto buildingPoint = gui.camera.worldToScreen(
+			(inspected->posX + inspected->type->width / 2.) * 32,
+			(inspected->posY + inspected->type->height / 2.) * 32);
+		for (bool resource : {false, true})
+		{
+			gui.touch->select({center.x + (resource ? 28 : 0), center.y});
+			gui.drawAll(0);
+			require(gui.touch->inspectingReadOnly() && gui.touch->panelOpen,
+				"Transition starts with an open read-only inspector");
+			gui.touch->select({buildingPoint.first, buildingPoint.second});
+			gui.drawAll(0);
+			require(gui.selectionMode == GameGUI::BUILDING_SELECTION && gui.selectionBuilding() == inspected,
+				"Building selection replaces the read-only inspector");
+			const auto title = gui.touch->allocationRect();
+			const double target = 48 * gfx->logicalUnitsPerPoint();
+			tap(title.x + title.w - target / 2, title.y + title.h / 2);
+			gui.drawAll(0); // Include deferred palette restoration.
+			require(gui.selectionMode == GameGUI::NO_SELECTION && !gui.touch->panelOpen &&
+				!gui.touch->restorePalette && !gui.touch->lensVisible(),
+				"Closing a building reached from a read-only inspector cannot reopen a toolbox");
+			require(gui.orderQueue.empty(), "Inspector transitions never issue simulation orders");
+		}
+		// Explicit navigation takes precedence over both deferred building
+		// restoration and invalidation by a client step before the next draw.
+		globalContainer->replaying = false;
+		for (bool invalidated : {false, true})
+			for (int button = 0; button < 3; ++button)
+			{
+				gui.touch->dismissMapPanels();
+				if (invalidated)
+				{
+					map.setResource(41, 40, WHEAT, 0);
+					gui.touch->select({center.x + 28, center.y});
+					gui.drawAll(0);
+					map.setNoResource(41, 40, 1);
+					gui.checkSelection();
+					require(gui.touch->readOnlyPanelShown && gui.selectionMode == GameGUI::NO_SELECTION,
+						"Client invalidation precedes toolbar navigation");
+				}
+				else
+				{
+					gui.setSelection(GameGUI::BUILDING_SELECTION, inspected);
+					gui.touch->panelOpen = gui.touch->restorePalette = true;
+					gui.touch->previousPanelOpen = false;
+					gui.touch->previousDisplayMode = GameGUI::STAT_TEXT_VIEW;
+					gui.drawAll(0);
+				}
+				const auto bar = gui.touch->layout().actions;
+				tap(bar.x + bar.w * (button + .5) / 6, bar.y + bar.h / 2);
+				gui.drawAll(0);
+				require(gui.selectionMode == GameGUI::NO_SELECTION && !gui.touch->restorePalette &&
+					!gui.touch->readOnlyPanelShown, "Navigation consumes inspector lifecycle state");
+				require(button == 2 ? gui.touch->lensVisible() :
+					gui.touch->panelOpen && gui.displayMode ==
+						(button == 0 ? GameGUI::CONSTRUCTION_VIEW : GameGUI::FLAG_VIEW),
+					"Chosen toolbox survives the next draw after inspector navigation");
+			}
+		gui.touch->dismissMapPanels();
+		globalContainer->replaying = true;
+		map.setResource(41, 40, WHEAT, 0);
+		for (int inspector = 0; inspector < 3; ++inspector)
+		{
+			gui.touch->dismissMapPanels();
+			if (inspector == 0)
+			{
+				gui.setSelection(GameGUI::BUILDING_SELECTION, inspected);
+				gui.touch->restorePalette = true;
+				gui.touch->previousPanelOpen = false;
+				gui.touch->previousDisplayMode = GameGUI::CONSTRUCTION_VIEW;
+			}
+			else if (inspector == 1)
+				gui.setSelection(GameGUI::UNIT_SELECTION, worker);
+			else
+				gui.setSelection(GameGUI::RESOURCE_SELECTION, unsigned(map.coordToIndex(41, 40)));
+			gui.touch->panelOpen = true;
+			gui.drawAll(0);
+			const auto bar = gui.touch->layout().actions;
+			tap(bar.x + bar.w * 4.5 / 6, bar.y + bar.h / 2);
+			gui.drawAll(0);
+			require(gui.selectionMode == GameGUI::NO_SELECTION && gui.touch->panelOpen &&
+				gui.displayMode == GameGUI::STAT_TEXT_VIEW && !gui.touch->restorePalette &&
+				!gui.touch->readOnlyPanelShown,
+				"Replay statistics replace every inspector and survive the next draw");
+		}
+		gui.touch->dismissMapPanels();
+		gui.touch->select({center.x + 28, center.y});
+		gui.drawAll(0);
+		map.setNoResource(41, 40, 1);
+		gui.checkSelection();
+		gui.touch->prepareDraw();
+		require(!gui.touch->panelOpen && !gui.touch->restorePalette,
+			"Pre-draw resource invalidation dismisses its read-only panel");
+		gui.setSelection(GameGUI::UNIT_SELECTION,worker);
+		gui.touch->panelOpen = true;
+		gui.drawAll(0);
+		const int id = Unit::GIDtoID(worker->gid);
+		gui.localTeam->myUnits[id] = nullptr;
+		gui.checkSelection(); // Threaded client steps invalidate before prepareDraw.
+		gui.touch->prepareDraw();
+		require(gui.selectionMode == GameGUI::NO_SELECTION && !gui.touch->panelOpen, "Removed unit dismisses its inspector");
+		gui.localTeam->myUnits[id] = worker;
+		globalContainer->replaying = false;
+		globalContainer->replayShowFog = true;
+	}
+
 	static void flagDragging()
 	{
 		GameGUI gui;
@@ -3814,6 +4053,17 @@ TEST_SUITE("GameGUITouch")
 		GameGUITouchHarness::scaledDialogInput();
 	}
 
+	GLOB2_TEST_CASE("unit taps have a zoom independent halo and show unit stats", "[display][artifacts]")
+	{
+		glob2test::GlobalsOptions options{.display = true, .loadStrings = true, .width = 800, .height = 600,
+		                                  .screenFlags = GAGCore::GraphicContext::PORTABLEGPU};
+		glob2test::HeadlessGlobals globals(options);
+		REQUIRE(NET_Init());
+		GameGUITouchHarness::unitSelection();
+		NET_Quit();
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "0", 1);
+		glob2test::retainFromProfile(".bmp");
+	}
 	GLOB2_TEST_CASE("a touch on or near a flag drags the flag; not the map", "[display]")
 	{
 		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "0", 1);

@@ -114,7 +114,7 @@ class GameGUITouch
 	void beginFlagDrag(Building &flag, TouchPlacementSession::Pointer pointer, GAGCore::ViewPoint point);
 	void advanceFlagDrag();
 	void releaseFlagDrag(bool restore);
-	Unit *unitAt(GAGCore::ViewPoint point) const;
+	Unit *unitAt(GAGCore::ViewPoint point, double reachPoints = 0) const;
 	void advancePlacement();
 	void updatePlacementPreview(GAGCore::ViewPoint point);
 	bool commitPlacement();
@@ -161,10 +161,15 @@ class GameGUITouch
 	bool inspectingResource() const;
 	struct ResourceInfo { std::string name, amount; int sprite = 0; };
 	std::optional<ResourceInfo> resourceInfo() const;
-	GAGCore::ViewRect resourceCloseRect() const;
 	void drawResourceInfo();
 	std::vector<std::pair<std::string, int>> tacticalActions() const;
 	void drawTacticalPanel();
+	std::vector<std::string> unitInfoRows() const;
+	void drawUnitPanel();
+	bool inspectingReadOnly() const;
+	GAGCore::ViewRect readOnlyCloseRect() const;
+	// Survives selection invalidation before prepareDraw in threaded clients.
+	bool readOnlyPanelShown = false;
 	void tapBuildPalette(GAGCore::ViewPoint point);
 	struct BuildingAction
 	{

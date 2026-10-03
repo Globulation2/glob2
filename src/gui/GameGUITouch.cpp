@@ -20,6 +20,8 @@
 #include "Player.h"
 #include "TeamStat.h"
 #include "render/Minimap.h"
+#include "render/UnitMotion.h"
+#include "render/UnitDrawGeometry.h"
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <algorithm>
@@ -105,6 +107,13 @@ MobileLayout GameGUITouch::layout() const
 		result.panel.y = result.persistentPanel ? result.safe.y + 104 : result.actions.y - height;
 		result.panel.h = height;
 	}
+	if ((result.persistentPanel || panelOpen) && gui.selectionMode == GameGUI::UNIT_SELECTION)
+	{
+		const double width = std::min(300., result.safe.w - 24);
+		const double height = std::min({420., result.world.h - 104,
+			48 + unitInfoRows().size() * 48 * InGameTouchTheme::textGrowth()});
+		result.panel = ThumbSide::corner(result.safe, width, height, 12, result.actions.y, !ThumbSide::left());
+	}
 	if ((result.persistentPanel || panelOpen) && inspectingResource())
 	{
 		const double width = std::min(240.0, result.safe.w - 2 * InGameTouchTheme::railInset);
@@ -167,7 +176,9 @@ void GameGUITouch::clampScroll()
 			? std::ceil(paletteItems().size() / double(columns)) *
 					  (paletteRail(ui) ? InGameTouchTheme::paletteCell + InGameTouchTheme::gap : 60) +
 				  (paletteRail(ui) ? InGameTouchTheme::gap : 8)
-			: inspectingResource() ? 0 : tacticalActions().size() * 56;
+			: gui.selectionMode == GameGUI::UNIT_SELECTION
+				? unitInfoRows().size() * 48 * InGameTouchTheme::textGrowth()
+				: inspectingResource() ? 0 : tacticalActions().size() * 56;
 	panelAxis.sync(panelScroll, std::max(0.0, height - content.h / unit), content.h / unit);
 	tutorialAxis.sync(tutorialScroll, tutorialMaximum(), tutorialRect().h / unit);
 }
@@ -183,6 +194,7 @@ void GameGUITouch::dismissMapPanels()
 {
 	const bool hadPanels = panelOpen || lensOpen || statsOpen || peekOpen || showStatistics || restorePalette;
 	restorePalette = false;
+	readOnlyPanelShown = false;
 	panelOpen = lensOpen = statsOpen = peekOpen = showStatistics = false;
 	panelScroll = actionScroll = 0;
 	keyboardFocus = -1;
@@ -428,7 +440,7 @@ std::vector<ViewRect> GameGUITouch::keyboardTargets()
 	}
 	if (inspectingResource())
 	{
-		targets.push_back(resourceCloseRect());
+		targets.push_back(readOnlyCloseRect());
 		return targets;
 	}
 	const auto content = panelContent();
@@ -440,6 +452,10 @@ std::vector<ViewRect> GameGUITouch::keyboardTargets()
 			if (content.contains({rect.x + rect.w / 2, rect.y + rect.h / 2}))
 				targets.push_back(rect);
 		}
+	}
+	else if (gui.selectionMode == GameGUI::UNIT_SELECTION && ui.panel.h > 0)
+	{
+		targets.push_back(readOnlyCloseRect());
 	}
 	else if (inspecting() && usesDial())
 	{
@@ -1244,13 +1260,10 @@ void GameGUITouch::interfaceTap(ViewPoint point)
 			if ((button == 0 && (gui.hiddenGUIElements & GameGUI::HIDABLE_BUILDINGS_LIST)) ||
 				(button == 1 && (gui.hiddenGUIElements & GameGUI::HIDABLE_FLAGS_LIST)))
 				return;
-			if (inspectingResource())
-			{
-				// An explicit toolbox choice replaces resource inspection; do not
-				// let the deferred inspector restoration override that choice.
-				gui.clearSelection();
-				restorePalette = false;
-			}
+			// Explicit navigation wins over inspector restoration and pending
+			// invalidation, even when a client step already cleared selection.
+			if (inspecting() || inspectingReadOnly() || readOnlyPanelShown)
+				dismissMapPanels();
 			if (button < 2)
 			{
 				lensOpen = false;
@@ -1286,7 +1299,9 @@ void GameGUITouch::interfaceTap(ViewPoint point)
 		}
 		if (button == 4 && globalContainer->isViewingGame())
 		{
-			gui.clearSelection();
+			// Replay statistics are explicit navigation too: consume any
+			// inspector restoration or pending invalidation before opening.
+			dismissMapPanels();
 			gui.displayMode = GameGUI::STAT_TEXT_VIEW;
 			panelOpen = true;
 			panelScroll = 0;
@@ -1312,10 +1327,10 @@ void GameGUITouch::interfaceTap(ViewPoint point)
 					menuAction(items[i].action);
 			return;
 		}
-		if (inspectingResource())
+		if (inspectingReadOnly())
 		{
-			if (resourceCloseRect().contains(point)) gui.clearSelection();
-			return; // Resource readouts never dispatch tactical actions.
+			if (readOnlyCloseRect().contains(point)) dismissMapPanels();
+			return; // Read-only inspectors never dispatch tactical actions.
 		}
 		if (showsBuildPalette())
 			tapBuildPalette(point);
@@ -1358,43 +1373,70 @@ void GameGUITouch::interfaceTap(ViewPoint point)
 
 // The visible unit drawn under a screen point, matching draw order: ground units
 // first, then flying units, using their interpolated rectangles.
-Unit *GameGUITouch::unitAt(ViewPoint screenPoint) const
+Unit *GameGUITouch::unitAt(ViewPoint screenPoint, double reachPoints) const
 {
 	const ViewPoint point{double(gui.mapMouseX(int(screenPoint.x))), double(gui.mapMouseY(int(screenPoint.y)))};
-	Unit *found = nullptr;
-	const auto &map = gui.game.map;
-	const int mx = int(point.x) / 32 + gui.viewportX, my = int(point.y) / 32 + gui.viewportY;
-	const Uint32 visible =
-		globalContainer->replaying ? globalContainer->replayVisibleTeams : gui.localTeam->me;
-	const bool wholeMap = globalContainer->replaying && !globalContainer->replayShowFog;
-	// Match draw order: ground units first, then flying units, using their interpolated rectangles.
-	for (bool air : {false, true})
-		for (int y = my - 1; y <= my + 1; ++y)
-			for (int x = mx - 1; x <= mx + 1; ++x)
-			{
-				const Uint16 gid = air ? map.getAirUnit(x, y) : map.getGroundUnit(x, y);
-				if (gid == NOGUID)
-					continue;
-				auto *unit = gui.game.teams[Unit::GIDtoTeam(gid)]->myUnits[Unit::GIDtoID(gid)];
-				if (!unit)
-					continue;
-				if (!wholeMap && !map.isFOWDiscovered(x, y, visible) &&
-					!map.isFOWDiscovered(x - unit->dx, y - unit->dy, visible))
-					continue;
-				int px, py;
-				map.mapCaseToDisplayable(unit->posX, unit->posY, &px, &py, gui.viewportX,
-										 gui.viewportY);
-				if (unit->action < BUILD)
+	Unit *found = nullptr, *nearest = nullptr;
+	const double radius = reachPoints * globalContainer->gfx->logicalUnitsPerPoint() / gui.camera.zoom;
+	double nearestDistance = radius * radius;
+	const int tiles = 1 + int(std::ceil(radius / 32));
+	// Hit the positions presented to the player, including optional between-tick
+	// motion. Input runs with the simulation parked; resolve snapshot identities
+	// before returning so a dead/replaced unit can never be selected.
+	const Scene *scene = gui.view.scene;
+	if (scene && scene->map.identity() != gui.game.map.identity()) scene = nullptr;
+	auto scan = [&](const auto &map)
+	{
+		const int mx = int(point.x) / 32 + gui.viewportX, my = int(point.y) / 32 + gui.viewportY;
+		const Uint32 visible =
+			globalContainer->replaying ? globalContainer->replayVisibleTeams : gui.localTeam->me;
+		const bool wholeMap = globalContainer->replaying && !globalContainer->replayShowFog;
+		// Match draw order: ground units first, then flying units, using their interpolated rectangles.
+		for (bool air : {false, true})
+			for (int y = my - tiles; y <= my + tiles; ++y)
+				for (int x = mx - tiles; x <= mx + tiles; ++x)
 				{
-					px -= (unit->dx * (255 - unit->delta)) >> 3;
-					py -= (unit->dy * (255 - unit->delta)) >> 3;
+					const Uint16 gid = air ? map.getAirUnit(x, y) : map.getGroundUnit(x, y);
+					if (gid == NOGUID)
+						continue;
+					const SceneUnit *shown = scene ? scene->entities.unit(gid) : nullptr;
+					if (scene && !shown) continue;
+					auto *unit = shown ? gui.game.resolveUnit({shown->gid, shown->generation})
+						: gui.game.teams[Unit::GIDtoTeam(gid)]->myUnits[Unit::GIDtoID(gid)];
+					if (!unit)
+						continue;
+					const int ux = shown ? shown->posX : unit->posX, uy = shown ? shown->posY : unit->posY;
+					const int moveX = shown ? shown->dx : unit->dx, moveY = shown ? shown->dy : unit->dy;
+					const int action = shown ? shown->action : unit->action;
+					const int delta = shown ? drawnUnitDelta(*shown, gui.view.render.unitMotion) : unit->delta;
+					if (!wholeMap && !map.isFOWDiscovered(x, y, visible) &&
+						!map.isFOWDiscovered(x - moveX, y - moveY, visible))
+						continue;
+					int px = unitDrawTile(x - gui.viewportX, gui.viewportX, ux, map.getW()) * 32;
+					int py = unitDrawTile(y - gui.viewportY, gui.viewportY, uy, map.getH()) * 32;
+					if (action < BUILD)
+					{
+						px -= (moveX * (255 - delta)) >> 3;
+						py -= (moveY * (255 - delta)) >> 3;
+					}
+					const double dx = MapCamera::wrap(point.x - px - 16 + map.getW() * 16., map.getW() * 32.) - map.getW() * 16.;
+					const double dy = MapCamera::wrap(point.y - py - 16 + map.getH() * 16., map.getH() * 32.) - map.getH() * 16.;
+					const double distance = dx * dx + dy * dy;
+					if ((wholeMap || map.isFOWDiscovered(x, y, visible) || Unit::GIDtoTeam(gid) == gui.localTeamNo) &&
+						(distance < nearestDistance || (distance == nearestDistance && nearest && gid < nearest->gid)))
+					{
+						nearest = unit;
+						nearestDistance = distance;
+					}
+					if (point.x > px && point.x < px + 32 && point.y > py && point.y < py + 32 &&
+						(wholeMap || map.isFOWDiscovered(x, y, visible) ||
+						 Unit::GIDtoTeam(gid) == gui.localTeamNo))
+						found = unit;
 				}
-				if (point.x > px && point.x < px + 32 && point.y > py && point.y < py + 32 &&
-					(wholeMap || map.isFOWDiscovered(x, y, visible) ||
-					 Unit::GIDtoTeam(gid) == gui.localTeamNo))
-					found = unit;
-			}
-	return found;
+	};
+	if (scene) scan(scene->map);
+	else scan(gui.game.map); // Before the first frame, no presentation exists yet.
+	return found ? found : nearest;
 }
 
 void GameGUITouch::select(ViewPoint point)
@@ -1409,9 +1451,18 @@ void GameGUITouch::select(ViewPoint point)
 		gui.putMark = false;
 		return;
 	}
-	gui.view.mouseUnit = Game::refOf(unitAt(screenPoint));
-	const bool wasInspecting = inspecting() || inspectingResource();
-	const bool wasOpen = panelOpen;
+	auto *hitUnit = unitAt(screenPoint);
+	// Exact flags/buildings/resources retain precedence; the halo fills nearby ground.
+	const int tileX = int(point.x) / 32 + gui.viewportX, tileY = int(point.y) / 32 + gui.viewportY;
+	const bool resourceHit = gui.game.map.isResource(tileX, tileY) &&
+		gui.game.map.isMapDiscovered(tileX, tileY, gui.localTeam->me);
+	if (!hitUnit && usesHUD() && !resourceHit && gui.game.map.getBuilding(tileX, tileY) == NOGBID &&
+		!gui.flagAt(int(point.x), int(point.y), gui.flagReachAt(screenPoint.x, screenPoint.y)))
+		hitUnit = unitAt(screenPoint, InGameTouchTheme::flagReach);
+	gui.view.mouseUnit = Game::refOf(hitUnit);
+	const bool wasInspecting = inspecting();
+	// A read-only card is not a palette to restore after a building inspector.
+	const bool wasOpen = panelOpen && !inspectingReadOnly();
 	const int oldDisplay = gui.displayMode;
 	// Desktop selection deliberately sticks on empty terrain. A completed map
 	// tap on touch dismisses the inspector; the shared picker can immediately
@@ -1420,7 +1471,7 @@ void GameGUITouch::select(ViewPoint point)
 	if (usesHUD() && gui.selectionMode != GameGUI::TOOL_SELECTION &&
 		gui.selectionMode != GameGUI::BRUSH_SELECTION) gui.clearSelection();
 	gui.handleMapClick(int(screenPoint.x), int(screenPoint.y), SDL_BUTTON_LEFT);
-	if (!wasInspecting && (inspecting() || inspectingResource()))
+	if (!wasInspecting && inspecting())
 	{
 		restorePalette = true;
 		previousPanelOpen = wasOpen;
@@ -1435,7 +1486,13 @@ void GameGUITouch::select(ViewPoint point)
 	if (usesHUD() && gui.selectionMode != GameGUI::NO_SELECTION)
 	{
 		panelOpen = true;
-		panelScroll = inspectingResource() ? 0 : 144;
+		panelScroll = inspectingReadOnly() ? 0 : 144;
+		if (inspectingReadOnly())
+		{
+			restorePalette = false;
+			lensOpen = statsOpen = peekOpen = showStatistics = false;
+			readOnlyPanelShown = true;
+		}
 	}
 }
 
@@ -1444,6 +1501,11 @@ void GameGUITouch::prepareDraw()
 	if (!active())
 		return;
 	gui.checkSelection();
+	// The simulation/client step can invalidate selection before this method.
+	// Remember what was presented, rather than sampling the already-cleared mode.
+	if (readOnlyPanelShown && gui.selectionMode == GameGUI::NO_SELECTION)
+		dismissMapPanels();
+	readOnlyPanelShown = inspectingReadOnly();
 	advancePlacement();
 	advanceFlagDrag();
 	if (deferredStroke &&
@@ -1473,7 +1535,7 @@ void GameGUITouch::prepareDraw()
 			stroke.points.push_back({double(gui.mapMouseX(int(point.x)) + gui.viewportX * 32),
 									 double(gui.mapMouseY(int(point.y)) + gui.viewportY * 32)});
 	}
-	if (restorePalette && !inspecting() && !inspectingResource())
+	if (restorePalette && !inspecting() && !inspectingReadOnly())
 	{
 		panelOpen = previousPanelOpen;
 		gui.displayMode = static_cast<GameGUI::DisplayMode>(previousDisplayMode);
