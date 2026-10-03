@@ -131,7 +131,8 @@ on the right for a left thumb. `ThumbSide::toolboxLeft()` supplies that opposite
 side; the radial inspector and placement confirmation remain on the thumb side.
 
 When safe-area gutters or a short viewport leave too little room for the minimum
-thumb dial, the building inspector uses its scrollable row layout. Drawing and
+thumb dial and all action chips (including confirmation and the production
+legend), the building inspector uses its scrollable row layout. Drawing and
 input share this fit policy; allocation controls never expand over the minimap
 to satisfy the minimum ring radius.
 
@@ -155,7 +156,7 @@ Pause sets all three weights to zero; pressing it again resumes worker-only
 production, or dragging a divider establishes a new mix.
 
 Clearing resources, flag requirements, repair/upgrade and Destroy are action
-chips beside the dial, Destroy lowest. The read-only identity header sits below
+chips beside the dial, Destroy lowest. When the dial fits, the read-only identity header sits below
 the stats, matching their width and aligning its bottom with the minimap in both
 orientations. While inspecting a building on short screens with two stat rows,
 the minimap uses its larger size so the header fits without overlap. Rings shrink

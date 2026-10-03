@@ -2278,7 +2278,7 @@ class GameGUITouchHarness
 			gui.touch->actionScroll = 0;
 			gui.orderQueue.clear();
 		};
-		for (auto [width, height] : {std::pair{320, 568}, {568, 320}, {844, 390}})
+		for (auto [width, height] : {std::pair{400, 320}, {320, 568}, {568, 320}, {844, 390}})
 		{
 			const int oldW = gfx->getW(), oldH = gfx->getH();
 			SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()), width, height);
@@ -2289,6 +2289,23 @@ class GameGUITouchHarness
 			GAGCore::GraphicContext::translateMouseEvent(&resized);
 			gui.viewportResized(oldW, oldH, gfx->getW(), gfx->getH());
 			openActions(swarm);
+			if (width == 400)
+			{
+				gui.touch->confirmDestroy = true;
+				gui.drawAll(0);
+				const auto packed = gui.touch->dialChips(gui.touch->dialLayout(gui.touch->layout()));
+				require(!packed.fits && !gui.touch->usesDial(),
+					"Confirmation chips cannot overlap the production legend; use scrolling rows");
+				const auto rows = gui.touch->buildingActions();
+				require(std::any_of(rows.begin(), rows.end(), [](const auto &r) { return r.kind == 5; }),
+					"The fallback retains the Cancel confirmation action");
+				gfx->printScreen("building-confirmation-row-fallback.bmp");
+				gfx->nextFrame();
+				pressAction(5);
+				require(!gui.touch->confirmDestroy && gui.orderQueue.empty(),
+					"Cancel stays reachable through the fallback without issuing an order");
+				continue;
+			}
 			if (width == 568)
 			{
 				const auto oldInsets = GAGCore::mobileSafeInsetsForTesting;

@@ -215,6 +215,14 @@ class GameGUITouch
 		double sliderFrom = 0, sliderTo = 0; // Sweep of the whole slider (Arc only).
 		GAGCore::ViewRect box;	// Chips; a thumb-sized box around ring regions.
 	};
+	struct DialChips
+	{
+		std::vector<BuildingAction> actions;
+		std::vector<GAGCore::ViewRect> boxes;
+		GAGCore::ViewRect legend;
+		bool fits = true;
+	};
+	DialChips dialChips(const DialLayout &dial) const;
 	bool usesDial() const;
 	bool usesDial(const GAGCore::MobileLayout &ui) const;
 	DialLayout dialLayout(const GAGCore::MobileLayout &ui) const;
