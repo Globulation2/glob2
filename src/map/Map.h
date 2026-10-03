@@ -191,7 +191,7 @@ public:
 	//! Read the section written by saveExploredArea into freshly allocated
 	//! exploredArea arrays. With keep=false the data is consumed and dropped,
 	//! for loads that have no game to attach it to.
-	void loadExploredArea(GAGCore::InputStream *stream, int numberOfTeams, bool keep);
+	void loadExploredArea(GAGCore::InputStream *stream, int numberOfTeams, bool keep, int versionMinor);
 	
 	// add & remove teams, used by the map editor and the random map generator
 	// Have to be called *after* session.numberOfTeam has been changed.

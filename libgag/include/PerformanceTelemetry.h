@@ -34,6 +34,7 @@ struct Budget
 {
 	std::uint64_t count = 0, exceeded = 0, excess = 0, worst = 0, streak = 0, longest = 0;
 	void add(std::uint64_t duration, std::uint64_t budget);
+	void merge(const Budget &other);
 };
 struct Actor
 {
@@ -59,7 +60,13 @@ struct Collector
 	bool enabled = true, output = false, described = false, running = false;
 	std::string mode = "startup";
 	Clock clock = now;
+	//! Per scope: 1 = measured on this collector's thread, 2 = absorbed from the
+	//! simulation thread (see absorb); exported as the record's thread attribution.
+	std::array<std::uint8_t, ScopeCount> threads{};
 	void reset();
+	//! Move the simulation thread's current window into this collector and hand it
+	//! this session's budget and sampling phase. The other thread must be paused.
+	void absorb(Collector &other);
 	int actor(int player, int team, int implementation, std::uint32_t generation);
 	void record(Id id, std::uint64_t duration);
 	void merge(Id id, const Moments &durations);
@@ -71,6 +78,10 @@ struct Collector
 	void write(std::ostream &out, const char *record, std::uint64_t tick, bool cumulative);
 };
 Collector &collector();
+//! Make collector() return c on the calling thread (null restores its own). The
+//! simulation thread records into a collector its runner owns, so the main thread
+//! can absorb it while the simulation is parked and after the thread ends.
+void bindCollector(Collector *c);
 
 // Stack is thread-local; background workers publish explicit aggregates instead.
 class Scope

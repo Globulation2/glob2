@@ -166,6 +166,9 @@ def select(cases, args):
     kept, skipped = [], []
     display_ok = not args.no_display and not (os.name == 'nt')
     for case in cases:
+        compatibility = getattr(args, 'compatibility_filters', None)
+        if compatibility is not None and not any(fnmatch.fnmatchcase(case.label, pattern) for pattern in compatibility.get(case.binary + '_filters', [])):
+            continue
         if args.filter and not any(fnmatch.fnmatchcase(case.label.lower(), pattern.lower()) for pattern in args.filter):
             continue
         if args.tag and not all(case.has(tag) for tag in args.tag):
@@ -597,6 +600,8 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--build-dir', type=Path, default=None, help='native build directory (default: GLOB2_BUILD_DIR or build/<platform>/client/release)')
     parser.add_argument('--binary', choices=['engine', 'unit', 'all'], default='all')
+    parser.add_argument('--coverage-profile', choices=['full', 'compatibility'], default='full', help='secondary native compatibility inventory; primary Linux remains full')
+    parser.add_argument('--write-inventory', type=Path, help='retain eligible and assigned native cases for coverage auditing')
     parser.add_argument('--list', action='store_true', help='print the selected cases and exit')
     parser.add_argument('--filter', action='append', default=[], metavar='GLOB', help='suite/name glob, repeatable')
     parser.add_argument('--tag', action='append', default=[], help='only cases with this tag, repeatable')
@@ -631,7 +636,11 @@ def main(argv=None):
                 continue
             raise SystemExit(f'{binary} is not built; run: scons release=1 server=0 {kind}-tests')
         cases += list_cases(binary, kind)
+    if args.coverage_profile == 'compatibility':
+        args.compatibility_filters = json.loads((ROOT / 'test/ci-compatibility.json').read_text())
     kept, skipped = select(cases, args)
+    if args.coverage_profile == 'compatibility' and not kept and not skipped:
+        raise SystemExit('Compatibility inventory selected no cases; update test/ci-compatibility.json')
     if args.list:
         for case in sorted(kept, key=lambda c: c.label):
             print(case.label)
@@ -640,6 +649,17 @@ def main(argv=None):
     timings = load_timings(args.timing_profile)
     auxiliary = list(json.loads(args.auxiliary_jobs.read_text())) if args.auxiliary_jobs else []
     jobs = shard(make_jobs(kept, args, cases), args.shard, timings, auxiliary)
+    if args.write_inventory:
+        import hashlib
+        inventory = {'schema': 1, 'family': os.environ.get('CI_RUNNER_FAMILY'),
+                     'profile': args.coverage_profile, 'binary': args.binary, 'shard': args.shard,
+                     'eligible': sorted(case.label for case in kept),
+                     'assigned': sorted(case.label for job in jobs for case in job.cases),
+                     'excluded': sorted(case.label for case in cases if case not in kept),
+                     'jobs': [job.label for job in jobs]}
+        inventory['fingerprint'] = hashlib.sha256(json.dumps(inventory, sort_keys=True).encode()).hexdigest()
+        args.write_inventory.parent.mkdir(parents=True, exist_ok=True)
+        args.write_inventory.write_text(json.dumps(inventory, indent=2) + '\n')
     if args.timeout:
         Job.timeout = property(lambda self, t=args.timeout: t)
     network_lock = threading.Lock()

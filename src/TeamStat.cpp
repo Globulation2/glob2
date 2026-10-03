@@ -11,6 +11,7 @@
 #include <StringTable.h>
 #include <Stream.h>
 #include <BinaryStream.h>
+#include <PackedRecords.h>
 #include <stdexcept>
 #include <cstddef>
 #include <algorithm>
@@ -127,6 +128,17 @@ template <class Stream, class Stat> void measurementFields(Stream *stream, Stat 
 		statValue(stream, "growthReduction", stat.growthReduction);
 		statValue(stream, "growthGlobal", stat.growthGlobal);
 	}
+}
+
+size_t measurementRecordBytes()
+{
+    static const size_t bytes=[] {
+        GAGCore::BinaryOutputStream stream(new GAGCore::MemoryStreamBackend);
+        GameplayMeasurements value{};
+        measurementFields(&stream,value);
+        return stream.getPosition();
+    }();
+    return bytes;
 }
 
 template<class Stream, class Stat>
@@ -697,8 +709,8 @@ bool TeamStats::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 
 	bool stop=false;
 	
-	for (unsigned int i=0; i<size; i++)
-	{
+    const auto readEnd=[&](GAGCore::InputStream* stream,size_t i)
+    {
 		stream->readEnterSection(i);
 		Sint32 units = stream->readSint32("EndOfGameStat::TYPE_UNITS");
 		Sint32 buildings = stream->readSint32("EndOfGameStat::TYPE_BUILDINGS");
@@ -712,7 +724,10 @@ bool TeamStats::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		if(!stop)
 			endOfGameStats.push_back(EndOfGameStat(units, buildings, prestige, hp, attack, defense));
 		stream->readLeaveSection();
-	}
+    };
+    if(versionMinor>=FILE_FORMAT_VERSION_COMPACT_STATE && GAGCore::PackedArray::binary(stream))
+        GAGCore::PackedRecords::read(stream,size,24,readEnd);
+    else for(unsigned i=0;i<size;++i) readEnd(stream,i);
     if (versionMinor >= FILE_FORMAT_VERSION_LIVE_TEAM_STATS)
     {
         GAGCore::BinaryInputStream::CheckedReads checkedReads(stream);
@@ -751,8 +766,8 @@ bool TeamStats::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		if (measurements.tick < coverageStartTick || count > Uint64(measurements.tick) / 512 + 1)
 			throw std::runtime_error("Invalid gameplay statistics coverage");
 		measurementHistory.clear();
-		for (Uint32 i = 0; i < count; ++i)
-		{
+        const auto readMeasurement=[&](GAGCore::InputStream* stream,size_t i)
+        {
 			stream->readEnterSection(i);
 			GameplayMeasurements sample;
 			measurementFields(stream, sample, versionMinor >= FILE_FORMAT_VERSION_EXTENDED_GAMEPLAY_STATS);
@@ -762,7 +777,10 @@ bool TeamStats::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 				(!measurementHistory.empty() && sample.tick <= measurementHistory.back().tick))
 				throw std::runtime_error("Invalid gameplay statistics timestamp");
 			measurementHistory.push_back(sample);
-		}
+        };
+        if(versionMinor>=FILE_FORMAT_VERSION_COMPACT_STATE && GAGCore::PackedArray::binary(stream))
+            GAGCore::PackedRecords::read(stream,count,measurementRecordBytes(),readMeasurement);
+        else for(Uint32 i=0;i<count;++i) readMeasurement(stream,i);
 		needsMeasurementInitialization = false;
 		extendedCoverageStartTick = versionMinor >= FILE_FORMAT_VERSION_EXTENDED_GAMEPLAY_STATS
 			? stream->readUint32("extendedCoverageStartTick") : measurements.tick;
@@ -804,7 +822,7 @@ bool TeamStats::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	}
 
 	if (versionMinor >= FILE_FORMAT_VERSION_AI_TELEMETRY)
-		AITelemetry::load(stream, aiTelemetry);
+		AITelemetry::load(stream, aiTelemetry, versionMinor);
 	else
 		aiTelemetry.clear();
 	stream->readLeaveSection();
@@ -815,6 +833,11 @@ void TeamStats::save(GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("TeamStats");
 	stream->writeUint32(endOfGameStats.size(), "size");
+    if(GAGCore::PackedArray::binary(stream))
+        GAGCore::PackedRecords::write(stream,endOfGameStats.size(),24,[&](GAGCore::OutputStream* rows,size_t i) {
+            for(int k=0;k<6;++k) rows->writeSint32(endOfGameStats[i].value[k],"value");
+        });
+    else
 	for (unsigned int i=0; i<endOfGameStats.size(); i++)
 	{
 		stream->writeEnterSection(i);
@@ -848,6 +871,10 @@ void TeamStats::save(GAGCore::OutputStream *stream)
 	stream->writeUint32(coverageStartTick, "coverageStartTick");
 	measurementFields(stream, measurements);
 	stream->writeUint32(measurementHistory.size(), "measurementCount");
+    if(GAGCore::PackedArray::binary(stream))
+        GAGCore::PackedRecords::write(stream,measurementHistory.size(),measurementRecordBytes(),
+            [&](GAGCore::OutputStream* rows,size_t i){measurementFields(rows,measurementHistory[i]);});
+    else
 	for (unsigned i = 0; i < measurementHistory.size(); ++i)
 	{
 		stream->writeEnterSection(i);

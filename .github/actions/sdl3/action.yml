@@ -1,0 +1,37 @@
+name: Verified pinned SDL3 prefix
+description: Restore only matching compiler/dependency inputs and verify every installed file.
+inputs:
+  shell:
+    default: bash
+    description: Native compiler environment shell
+  cc:
+    default: gcc
+    description: C compiler
+  cxx:
+    default: g++
+    description: C++ compiler
+runs:
+  using: composite
+  steps:
+    - id: identity
+      shell: ${{ inputs.shell }}
+      run: python3 .github/scripts/ci_dependency_cache.py key --cc '${{ inputs.cc }}' --cxx '${{ inputs.cxx }}'
+    - uses: actions/cache/restore@v4
+      id: restore
+      with:
+        path: build/sdl3-ci/prefix
+        key: sdl3-prefix-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.identity.outputs.key }}
+    - shell: ${{ inputs.shell }}
+      run: python3 .github/scripts/ci_dependency_cache.py verify --key '${{ steps.identity.outputs.key }}'
+    - shell: ${{ inputs.shell }}
+      env:
+        CC: ${{ inputs.cc }}
+        CXX: ${{ inputs.cxx }}
+      run: |
+        python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+        python3 .github/scripts/ci_dependency_cache.py seal --key '${{ steps.identity.outputs.key }}'
+    - uses: actions/cache/save@v4
+      if: ${{ !cancelled() && github.ref == 'refs/heads/master' && github.event_name != 'pull_request' && steps.restore.outputs.cache-hit != 'true' }}
+      with:
+        path: build/sdl3-ci/prefix
+        key: sdl3-prefix-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.identity.outputs.key }}

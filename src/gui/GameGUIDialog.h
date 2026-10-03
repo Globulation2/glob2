@@ -103,7 +103,9 @@ class InGameAllianceScreen : public Glob2UI::InGameDialog
 
   protected:
 	void onEscape() override { finish(OK); }
-	double maxWidth() const override { return classic() ? (rows.size() > 8 ? 580 : 300) : -1; }
+	double maxWidth() const override { return classic() ? (rows.size() > 8 ? 580 : 300) : 640; }
+	GAGGUI::ui::Rect available(const Glob2UI::Presentation &p, const GAGGUI::ui::Metrics &m) override
+	{ return insetAvailable(p, m); }
 
   private:
 	GameGUI *gameGUI;
@@ -189,8 +191,9 @@ class InGameObjectivesScreen : public Glob2UI::InGameDialog
 
   protected:
 	void onEscape() override { finish(OK); }
-	bool fillHeight() const override { return !classic(); }
-	double maxWidth() const override { return classic() ? 450 : -1; }
+	double maxWidth() const override { return classic() ? 450 : 560; }
+	GAGGUI::ui::Rect available(const Glob2UI::Presentation &p, const GAGGUI::ui::Metrics &m) override
+	{ return insetAvailable(p, m); }
 
   private:
 	struct Line
