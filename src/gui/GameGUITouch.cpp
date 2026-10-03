@@ -187,6 +187,19 @@ void GameGUITouch::stopScrolling()
 	actionAxis.axis.interrupt();
 	tutorialAxis.axis.interrupt();
 }
+// A blank-map tap is a dismissal, not navigation back through inspector history.
+void GameGUITouch::dismissMapPanels()
+{
+	const bool hadPanels = panelOpen || lensOpen || statsOpen || peekOpen || showStatistics || restorePalette;
+	restorePalette = false;
+	panelOpen = lensOpen = statsOpen = peekOpen = showStatistics = false;
+	panelScroll = actionScroll = 0;
+	keyboardFocus = -1;
+	if (hadPanels) lastMapTapTicks.reset();
+	gui.clearSelection();
+	stopScrolling();
+}
+
 bool GameGUITouch::scrollAnimating() const
 {
 	return mapMotion.isAnimating() || panelAxis.axis.isAnimating() ||
@@ -1114,8 +1127,10 @@ void GameGUITouch::interfaceTap(ViewPoint point)
 			gui.zoomMap((region == 43 ? 1 : -1) * std::log(InGameTouchTheme::peekZoomStep) / std::log(1.1),
 						int(area.x + area.w / 2), int(area.y + area.h / 2));
 		}
+		else if (region == 44)
+			dismissMapPanels(); // Outside tap closes the whole transient UI.
 		else
-			peekOpen = false; // Done, or a tap outside the peek.
+			peekOpen = false; // Explicit Done returns to the tools.
 		return;
 	}
 	if (usesHUD() && interfaceRegion(point) == 38)
@@ -1440,8 +1455,8 @@ void GameGUITouch::select(ViewPoint point)
 	// tap on touch dismisses the inspector; the shared picker can immediately
 	// select the same building, another building, a unit or a resource instead.
 	// Pan/cancel/UI gestures never reach this selection path.
-	const bool wasUnit = gui.selectionMode == GameGUI::UNIT_SELECTION;
-	if (usesHUD() && (wasInspecting || wasUnit)) gui.clearSelection();
+	if (usesHUD() && gui.selectionMode != GameGUI::TOOL_SELECTION &&
+		gui.selectionMode != GameGUI::BRUSH_SELECTION) gui.clearSelection();
 	gui.handleMapClick(int(screenPoint.x), int(screenPoint.y), SDL_BUTTON_LEFT);
 	if (!wasInspecting && (inspecting() || inspectingResource()))
 	{
@@ -1450,7 +1465,11 @@ void GameGUITouch::select(ViewPoint point)
 		previousDisplayMode = oldDisplay;
 	}
 	gui.selectionPushed = false;
-	if (usesHUD() && wasUnit && gui.selectionMode == GameGUI::NO_SELECTION) panelOpen = restorePalette = false;
+	if (usesHUD() && gui.selectionMode == GameGUI::NO_SELECTION)
+	{
+		dismissMapPanels();
+		return;
+	}
 	if (usesHUD() && gui.selectionMode != GameGUI::NO_SELECTION)
 	{
 		panelOpen = true;

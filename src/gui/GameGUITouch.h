@@ -38,6 +38,7 @@ class GameGUITouch
 	void stopMapMotion() { mapMotion.interrupt(); }
 	// Stop every coasting or bouncing surface where it is.
 	void stopScrolling();
+	void dismissMapPanels();
 	bool scrollAnimating() const;
 	void prepareDraw();
 	void drawControls();

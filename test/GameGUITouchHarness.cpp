@@ -1137,6 +1137,47 @@ class GameGUITouchHarness
 				gui.touch->lensOpen = false;
 			}
 			{
+				const auto checksum = gui.game.checkSum();
+				const auto dismissalCamera = gui.camera;
+				for (int menu = 0; menu < 5; ++menu)
+				{
+					gui.clearSelection();
+					gui.touch->panelOpen = menu < 2 || menu == 4;
+					gui.touch->lensOpen = menu == 2 || menu == 3;
+					gui.touch->statsOpen = menu == 3;
+					gui.touch->showStatistics = menu == 4;
+					gui.displayMode = menu == 0 ? GameGUI::CONSTRUCTION_VIEW : menu == 1 ? GameGUI::FLAG_VIEW : GameGUI::STAT_TEXT_VIEW;
+					gui.touch->restorePalette = false;
+					if (menu == 2)
+					{
+						const auto from = emptyGround();
+						finger(SDL_EVENT_FINGER_DOWN, 1, from.x, from.y);
+						finger(SDL_EVENT_FINGER_MOTION, 1, from.x + 32 * unit, from.y);
+						finger(SDL_EVENT_FINGER_UP, 1, from.x + 32 * unit, from.y);
+						require(gui.touch->lensOpen, "Panning the map must not dismiss Tools");
+						gui.touch->stopScrolling();
+					}
+					const auto spot = emptyGround();
+					gui.drawAll(0);
+					const std::string name = std::string("dismiss-") + std::to_string(menu) + (portrait ? "-portrait" : "-landscape");
+					gfx->printScreen(name + "-before.bmp");
+					gfx->nextFrame();
+					tap(spot.x, spot.y);
+					gui.drawAll(0); // Include deferred inspector restoration.
+					require(!gui.touch->panelOpen && !gui.touch->lensOpen && !gui.touch->statsOpen &&
+						!gui.touch->peekOpen && !gui.touch->showStatistics && !gui.touch->restorePalette &&
+						gui.selectionMode == GameGUI::NO_SELECTION, "A blank-map tap dismisses every transient panel");
+					gfx->printScreen(name + "-after.bmp");
+					gfx->nextFrame();
+					noOrder();
+				}
+				require(gui.game.checkSum() == checksum, "Panel dismissal does not change the simulation");
+				gui.camera = dismissalCamera;
+				gui.viewportX = gui.camera.tileX();
+				gui.viewportY = gui.camera.tileY();
+				gui.displayMode = GameGUI::CONSTRUCTION_VIEW;
+			}
+			{
 				// One-finger zoom: tap, press again and drag; direction follows settings.
 				gui.clearSelection();
 				gui.touch->panelOpen = false;
@@ -1542,7 +1583,7 @@ class GameGUITouchHarness
 				const GAGCore::ViewPoint outside{ui.world.x + 8 * unit, ui.world.y + 8 * unit};
 				require(!peek.contains(outside), "Outside fixture must miss the peek");
 				tap(outside.x, outside.y);
-				require(!gui.touch->peekOpen && gui.touch->lensVisible(), "A tap outside closes the peek");
+				require(!gui.touch->peekOpen && !gui.touch->lensVisible(), "A tap outside dismisses the peek and its underlying tools");
 				noOrder();
 				// A still press on the minimap opens the peek; its release does nothing.
 				gui.touch->lensOpen = false;
@@ -1918,8 +1959,8 @@ class GameGUITouchHarness
 			GAGCore::GraphicContext::translateMouseEvent(&resized);
 			gui.viewportResized(oldW, oldH, gfx->getW(), gfx->getH());
 			const float unit = gfx->logicalUnitsPerPoint();
-			// A completed empty-map tap dismisses inspection and restores the
-			// palette state from before inspection, in both phone orientations.
+			// A completed empty-map tap dismisses inspection without returning to
+			// the previous palette, in both phone orientations.
 			for (bool paletteWasOpen : {false, true})
 			{
 				gui.setSelection(GameGUI::BUILDING_SELECTION, building);
@@ -1945,8 +1986,8 @@ class GameGUITouchHarness
 						gui.touch->prepareDraw();
 						require(gui.selectionMode == GameGUI::NO_SELECTION,
 								"Empty map tap must dismiss the building inspector");
-						require(gui.touch->panelOpen == paletteWasOpen && gui.orderQueue.empty(),
-								"Dismissal must restore palette state without issuing an order");
+						require(!gui.touch->panelOpen && !gui.touch->restorePalette && gui.orderQueue.empty(),
+								"Dismissal must close the previous palette without issuing an order");
 						dismissed = true;
 					}
 				require(dismissed, "Inspector dismissal fixture needs exposed empty terrain");
