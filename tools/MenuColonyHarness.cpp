@@ -219,9 +219,11 @@ template <class T> class Preview : public T
 		for (auto *node : this->GAGGUI::ui::UIScreen::host().interactiveNodes())
 		{
 			const auto r = node->bounds;
+			const std::string where = "control within screen: " + node->key + " at " + std::to_string(r.x) + "," +
+									  std::to_string(r.y) + " " + std::to_string(r.w) + "x" + std::to_string(r.h);
 			require(r.x >= 0 && r.y >= 0 && r.x + r.w <= globalContainer->gfx->getW() &&
 						r.y + r.h <= globalContainer->gfx->getH(),
-					"control within screen");
+					where.c_str());
 		}
 	}
 	void clickButton(const std::string &key)
@@ -361,14 +363,23 @@ void capture(const std::string &name, const std::string &path)
 		s.render();
 		s.checkBounds();
 	}
-	else if (name == "custom" || name == "custom-players" || name == "custom-rules")
+	else if (name == "custom" || name == "custom-players" || name == "custom-rules" || name == "custom-rules-all" ||
+			 name == "custom-rules-sandbox")
 	{
 		Preview<CustomGameScreen> s(screens);
 		s.prepare();
 		if (name == "custom-players")
 			s.selectTab(1);
-		if (name == "custom-rules")
+		if (name.rfind("custom-rules", 0) == 0)
 			s.selectTab(2);
+		// A ruleset away from Standard, and every rule.
+		if (name == "custom-rules-all")
+		{
+			s.selectRuleset("blitz");
+			s.setRulesView(1);
+		}
+		if (name == "custom-rules-sandbox")
+			s.selectRuleset("sandbox");
 		s.render();
 		s.checkBounds();
 	}

@@ -49,8 +49,10 @@ const std::vector<std::string>& defaultRoomGenerators();
 /// Rules only (MatchRules JSON), for read-only summaries.
 void applyRulesToSetup(const Json& rules, CustomGameSetup& setup);
 
-/// Name of the rule preset the draft matches ("Standard", "Quick clash", …), or
-/// "Custom rules".
+/// Id of the first ruleset (data/rulesets.json) whose room-carried rules the draft
+/// matches, or empty.
+std::string matchingRuleset(const CustomGameSetup& setup);
+/// That ruleset's translated name, or "Custom rules".
 std::string rulesetName(const CustomGameSetup& setup);
 /// "2 vs 2", "FFA" or "Custom teams" from the alliances of `teams` (SetupTeam list).
 std::string formatName(const Json& teams);

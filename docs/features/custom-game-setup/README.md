@@ -51,9 +51,18 @@ limits when their homes, resources or routes need more room.
   Medium difficulty. The seven existing AI implementations are retained;
 - All-AI matches launch live watching, with whole-map visibility, optional colony
   viewpoints, pause/speed/inspection, and no gameplay orders from the viewer.
-- Rules expose victory, terrain visibility, alliance changes, pace and generated
-  workers. Standard, Quick clash, Open book and Last colony standing are visible
-  presets. Session speed is restored when the match ends.
+- Game Rules starts from a ruleset (Standard, Quick clash, Blitz, Sandbox and the
+  others in `data/rulesets.json`) and lets the player tweak any rule from there. The
+  tab names the ruleset and how many rules differ from it ("Blitz + 2 changes"),
+  marks each changed rule with a dot and a reset, and offers Reset to the whole
+  ruleset. Undoing an edit removes the change: the count is derived, not a sticky
+  "Custom" state. Summary, the default view, shows the Match rules and any rule set
+  away from Standard or from the ruleset; All rules shows every rule in four groups:
+  Match, Start, Economy and Combat. Wide layouts list the rulesets beside the rules;
+  narrower ones open them as their own screen, and in All rules show one group at a
+  time. Turning Combat off disables the combat rules it makes moot, and a setup
+  that cannot end (combat off, conquest only, no time limit) shows a warning.
+  Session speed is restored when the match ends.
 - When the sudden-death timer or prestige goal ends a match with non-allied teams
   tied for the most prestige, the tied players and live watchers see **Draw**
   instead of a win. Allies that win together still see a win, and teams below the
@@ -82,10 +91,53 @@ and show the existing load error. Malformed or unsupported settings files, or an
 option value outside its control's range, fall back to the normal four-player
 setup. Writes replace the old file atomically.
 
-Preference format 3 also retains every economy and combat rule, Veteran/Fast start,
-and the sudden-death timer. Formats 1 and 2 remain readable; they did not store
-these choices, so those rules load at their normal defaults. Changing a rule
-only changes that control; it must not implicitly toggle No upgrades.
+Preference format 3 also retains every economy and combat rule, the starting unit
+level and the time limit. Formats 1 and 2 remain readable; they did not store
+these choices, so those rules load at their normal defaults. Format 5 stores the
+ruleset's id instead of its English name: older files load "Quick clash", "Open
+book" and "Last colony standing" as those rulesets and "Custom" as Standard, keeping
+the saved rule values, so they show as changes. An id this build does not have also
+loads as Standard rather than discarding the draft. Changing a rule only changes
+that control; it must not implicitly toggle another.
+
+## Adding or tweaking a ruleset
+
+Rulesets live in `data/rulesets.json`, in display order. Each entry lists only the
+rules it changes from Standard; every other rule keeps its Standard value:
+
+```json
+{
+  "id": "blitz",
+  "name": "[Blitz]",
+  "description": "[ruleset blitz description]",
+  "rules": { "speed": "2x", "workers": 8, "unitLevel": "veteran", "timeLimit": "45" }
+}
+```
+
+- `id` is stable: preferences store it, so renaming one resets players who chose it
+  to Standard. `standard` must exist, change nothing, and is always listed first.
+- `name` and `description` are text keys. Add each to `data/texts.keys.txt`, with
+  English in `data/texts.en.txt`, a blank line in every other catalog and the key in
+  `data/texts.pending.txt` (see the [UI framework](../../development/ui-framework.md)).
+  `data/check_translations.py` fails on a key the file uses but the catalogs lack.
+- Rule ids and values come from the registry in `src/CustomGameRules.cpp`. Toggles
+  take `true`/`false` (`combat`, `hunger`, `revealTerrain`, `alliancesChange`,
+  `instantConstruction`, `woundedRetreat`, `unitsCanDie`, `unitTraining`); `workers`
+  takes 1 to 8; the others take an option id: `victory` (`prestige`, `conquest`),
+  `timeLimit` (`off`, `30`, `45`, `60`, `90`), `speed` (`1x` to `40x`, `max`),
+  `unitLevel` (`standard`, `veteran`, `elite`, `legendary`), `stockpile` (`none`,
+  `50`, `150`, `300`), `regrowth` (`normal`, `slow`, `very-slow`, `rare`, `none`),
+  `glassCannon` (`off`, `x2`, `x3`) and `buildingStrength` (`normal`, `x5`, `x10`).
+- The game skips an invalid entry and reports why on standard error; a file that
+  does not parse leaves Standard alone. The `CustomGameSetup` harness requires the
+  shipped file to load without errors and to use every rule in some ruleset.
+
+Rulesets only choose values for rules that already exist, so adding or editing one
+changes no simulation code and needs no `SIM_REVISION` bump. Online rooms carry
+every rule except game speed, starting workers and unit level; a room shows the
+first ruleset that matches the rules it carries (Quick clash reads as Standard).
+A new *rule* is different: it needs a field in the setup and header, a registry
+entry, save and replay versioning, and a simulation version bump.
 
 Save/replay encodings are unchanged. Generated maps use owned temporary snapshots
 outside the map library; saves and replays remain self-contained after cleanup.

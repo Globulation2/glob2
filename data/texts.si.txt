@@ -1140,8 +1140,6 @@ Osnovna strategija: Proizvodnjo enot deli med gradnjo, nadgradnje, obrambo, napa
 Usklajuje rast kolonije in izurjene napade ter najprej cilja zdravljenje in hrano.
 [Algae]
 Alge
-[Alliances]
-Zavezništva
 [Beach size]
 Velikost plaže
 [Blue]
@@ -1230,8 +1228,6 @@ Zaklenjene ekipe
 Magenta
 [Map]
 Zemljevid
-[Map knowledge]
-Poznavanje zemljevida
 [Match finished]
 Tekma končana
 [Medium]
@@ -1278,8 +1274,6 @@ Rdeča
 Ponavljanje pokrajine
 [Resources]
 Viri
-[Restore standard rules]
-Obnovi standardna pravila
 [Revealed terrain does not reveal all enemy activity.]
 Razkriti teren ne razkrije vseh sovražnikovih aktivnosti.
 [River]
@@ -1310,8 +1304,6 @@ Ekipa
 Teren
 [Terrain revealed]
 Razkrit teren
-[Try a ruleset, then make it your own.]
-Preizkusite nabor pravil, nato pa ga naredite svojega.
 [Victory]
 Zmaga
 [Watch game]
@@ -1336,12 +1328,6 @@ Vi proti vsem
 Vaši zemljevidi
 [colonies]
 kolonije
-[* Changed from standard.]
-* Spremenjeno iz standarda.
-[World & diplomacy]
-Svet in diplomacija
-[Starting conditions & pace]
-Začetni pogoji in tempo
 [Inactive]
 Neaktiven
 [8 workers / 2x speed]
@@ -1364,8 +1350,6 @@ Začetne enote, določene na zemljevidu
 V tej knjižnici ni zemljevidov.
 [Premade maps retain their authored starting units.]
 Predizdelani zemljevidi ohranijo svoje avtorske začetne enote.
-[Premade: only speed changes (2x)]
-Pripravljen zemljevid: spremeni se le hitrost (2x)
 [Start with terrain known]
 Začnite z znanim terenom
 [This colony will not join the match.]
@@ -2132,18 +2116,10 @@ Statistika 2/3 >
 Stran (P)
 [Map preview choose another]
 Izberite zemljevid
-[Resources never grow or spread across the map.]
-Viri na zemljevidu nikoli ne rastejo ali se širijo.
 [Building sites complete immediately, skipping delivery.]
 Gradbišča se dokončajo takoj, brez faze dostave.
-[Units never grow hungry and never starve.]
-Enote nikoli ne postanejo lačne in nikoli ne umrejo od lakote.
-[Slows how often resources grow or spread across the map.]
-Upočasni, kako pogosto viri rastejo ali se širijo po zemljevidu.
 [Seeds each team's shared market/exchange resource pool at game start.]
 Ob začetku igre napolni skupno zalogo tržnice/menjave vsake ekipe.
-[Grow normally]
-Običajna rast
 [No growth]
 Brez rasti
 [Normal construction]
@@ -2154,16 +2130,12 @@ Takojšnja
 Enote postanejo lačne
 [No hunger]
 Brez lakote
-[Off (today's growth)]
-Izklopljeno (današnja rast)
 [Scarce (2x slower)]
 Redki (2x počasneje)
 [Very scarce (4x slower)]
 Zelo redki (4x počasneje)
 [Extremely scarce (8x slower)]
 Izjemno redki (8x počasneje)
-[None (today's default)]
-Brez (današnja privzeta vrednost)
 [Small (+50 each)]
 Majhna (+50 vsak)
 [Medium (+150 each)]
@@ -2174,20 +2146,8 @@ Velika (+300 vsak)
 Brez rasti virov
 [Economy]
 Gospodarstvo
-[Scarce resources]
-Redki viri
 [Instant construction]
 Takojšnja gradnja
-[Stockpile start]
-Začetna zaloga
-[Units still visit schools but never gain a level.]
-Enote še vedno obiskujejo šolo, vendar nikoli ne napredujejo na višjo stopnjo.
-[Units fight to the death instead of retreating to heal.]
-Enote se borijo do smrti namesto umika za zdravljenje.
-[Units are never permanently lost -- HP just stops at 1.]
-Enote nikoli niso trajno izgubljene -- zdravje se preprosto ustavi pri 1.
-[Disables all combat between every team.]
-Onemogoči ves boj med vsemi ekipami.
 [Higher tiers deal more damage but have less HP and armor.]
 Višje stopnje povzročijo več škode, a imajo manj zdravja in oklepa.
 [Higher tiers give every building much more HP.]
@@ -2210,14 +2170,10 @@ Brez trajne smrti
 Običajen boj
 [Peaceful mode]
 Miroljuben način
-[Off (today's balance)]
-Izklopljeno (današnje ravnotežje)
 [Glass cannon x2]
 Stekleni top x2
 [Glass cannon x3]
 Stekleni top x3
-[Off (today's HP)]
-Izklopljeno (današnje zdravje)
 [Fortress x5]
 Trdnjava x5
 [Fortress x10]
@@ -2232,10 +2188,6 @@ Legendarna
 Boj
 [Glass cannon]
 Stekleni top
-[Fortress buildings]
-Utrjene zgradbe
-[Veteran/Fast start]
-Veteran/Hiter začetek
 [Match ends at the timer; highest prestige at that instant wins.]
 Tekma se konča z odštevalnikom; zmaga tisti, ki ima v tistem trenutku največ ugleda.
 [Off (no timer)]
@@ -2248,8 +2200,6 @@ Izklopljeno (brez odštevalnika)
 45 minut
 [60 minutes]
 60 minut
-[Sudden-death timer]
-Odštevalnik nenadne smrti
 [Stats page three]
 Statistika 3/3 >
 [Stats blocked units]
@@ -2978,10 +2928,6 @@ Prostorna
 Več
 [No items]
 Ni elementov
-[Opponents]
-Nasprotniki
-[Review]
-Pregled
 [Review & Play]
 Preglej in igraj
 [Edit opponents]
@@ -3796,21 +3742,9 @@ Zagon zemljevida
 
 [room remove from room]
 
-[room rule conquest]
-
-[room rule fixed]
-
-[room rule free]
-
-[room rule hidden]
-
 [room rule off]
 
 [room rule on]
-
-[room rule prestige]
-
-[room rule revealed]
 
 [room rules changed]
 
@@ -4506,20 +4440,6 @@ Zagon zemljevida
 
 [room seats one person %0 %1]
 
-[room rule resources]
-
-[room rule construction]
-
-[room rule food]
-
-[room rule training]
-
-[room rule retreat]
-
-[room rule unit deaths]
-
-[room rule combat]
-
 [room rules otherwise standard]
 
 [room browser link]
@@ -4615,4 +4535,98 @@ Zagon zemljevida
 [room map ready body]
 
 [game draw]
+
+[Match]
+
+[Time limit]
+
+[Alliances can change]
+
+[Reveal terrain]
+
+[Starting unit level]
+
+[Starting stockpile]
+
+[Regrowth]
+
+[Building strength]
+
+[Wounded units retreat]
+
+[Units can die]
+
+[Unit training]
+
+[No stockpile]
+
+[No glass cannon]
+
+[How quickly harvested resources grow back and spread.]
+
+[Units must eat to keep working.]
+
+[Off: a peaceful match with no fighting between teams.]
+
+[Off: units fight to the death instead of retreating to heal.]
+
+[Off: units are never permanently lost; HP just stops at 1.]
+
+[Off: units still visit schools but never gain a level.]
+
+[Summary]
+
+[All rules]
+
+[Show all rules]
+
+[Choose a ruleset]
+
+[Reset to %0]
+
+[ruleset one change %0]
+
+[ruleset changes %0 %1]
+
+[No effect while combat is off.]
+
+[This match cannot end. Turn on prestige victory or set a time limit.]
+
+[Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
+
+[Blitz]
+
+[ruleset blitz description]
+
+[Gentle]
+
+[ruleset gentle description]
+
+[Sandbox]
+
+[ruleset sandbox description]
+
+[Bloodbath]
+
+[ruleset bloodbath description]
+
+[Siege]
+
+[ruleset siege description]
+
+[Lean years]
+
+[ruleset lean years description]
+
+[Gold rush]
+
+[ruleset gold rush description]
+
+[Elite ranks]
+
+[ruleset elite ranks description]
+
+[Shifting alliances]
+
+[ruleset shifting alliances description]
 

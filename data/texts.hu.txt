@@ -1140,8 +1140,6 @@ Alapstratégia: Elosztja az egységtermelést építkezés, fejlesztés, védele
 Összehangolja a növekedést és képzett támadásait; először gyógyítást és élelmet támad.
 [Algae]
 Alga
-[Alliances]
-Szövetségek
 [Beach size]
 Strand mérete
 [Blue]
@@ -1230,8 +1228,6 @@ Lezárt csapatok
 Magenta
 [Map]
 Térkép
-[Map knowledge]
-Térképismeret
 [Match finished]
 A mérkőzés befejeződött
 [Medium]
@@ -1278,8 +1274,6 @@ Piros
 Táj ismétlése
 [Resources]
 Erőforrások
-[Restore standard rules]
-Alapértelmezett szabályok visszaállítása
 [Revealed terrain does not reveal all enemy activity.]
 A feltárt terep nem fedi fel az összes ellenséges tevékenységet.
 [River]
@@ -1310,8 +1304,6 @@ Csapat
 Terep
 [Terrain revealed]
 Felfedett terep
-[Try a ruleset, then make it your own.]
-Próbáljon ki egy szabályrendszert, majd tegye a sajátjának.
 [Victory]
 Győzelem
 [Watch game]
@@ -1336,12 +1328,6 @@ Te mindenki ellen
 A térképeid
 [colonies]
 kolóniák
-[* Changed from standard.]
-* Eltér az alapértelmezettől.
-[World & diplomacy]
-Világ és diplomácia
-[Starting conditions & pace]
-Indulási feltételek és tempó
 [Inactive]
 Inaktív
 [8 workers / 2x speed]
@@ -1364,8 +1350,6 @@ A térképen meghatározott kezdő egységek
 Nincsenek térképek ebben a könyvtárban.
 [Premade maps retain their authored starting units.]
 Az előre elkészített térképek megtartják a kiindulási egységeiket.
-[Premade: only speed changes (2x)]
-Kész térkép: csak a sebesség változik (2x)
 [Start with terrain known]
 Kezdje ismert tereppel
 [This colony will not join the match.]
@@ -2132,18 +2116,10 @@ Statisztika 2/3 >
 Oldal (P)
 [Map preview choose another]
 Válasszon térképet
-[Resources never grow or spread across the map.]
-Az erőforrások soha nem nőnek és nem terjednek a térképen.
 [Building sites complete immediately, skipping delivery.]
 Az építkezések azonnal befejeződnek, a szállítási szakasz kihagyásával.
-[Units never grow hungry and never starve.]
-Az egységek soha nem éheznek és soha nem halnak éhen.
-[Slows how often resources grow or spread across the map.]
-Lassítja, hogy az erőforrások milyen gyakran nőnek vagy terjednek a térképen.
 [Seeds each team's shared market/exchange resource pool at game start.]
 A játék kezdetén feltölti minden csapat közös piaci/csere-erőforráskészletét.
-[Grow normally]
-Normál növekedés
 [No growth]
 Nincs növekedés
 [Normal construction]
@@ -2154,16 +2130,12 @@ Azonnali
 Az egységek megéheznek
 [No hunger]
 Nincs éhség
-[Off (today's growth)]
-Kikapcsolva (mai növekedés)
 [Scarce (2x slower)]
 Ritka (2x lassabb)
 [Very scarce (4x slower)]
 Nagyon ritka (4x lassabb)
 [Extremely scarce (8x slower)]
 Rendkívül ritka (8x lassabb)
-[None (today's default)]
-Nincs (mai alapértelmezett)
 [Small (+50 each)]
 Kicsi (+50 egyenként)
 [Medium (+150 each)]
@@ -2174,20 +2146,8 @@ Nagy (+300 egyenként)
 Nincs erőforrás-növekedés
 [Economy]
 Gazdaság
-[Scarce resources]
-Ritka erőforrások
 [Instant construction]
 Azonnali építkezés
-[Stockpile start]
-Kezdő készlet
-[Units still visit schools but never gain a level.]
-Az egységek továbbra is iskolába járnak, de sosem lépnek szintet.
-[Units fight to the death instead of retreating to heal.]
-Az egységek a halálig harcolnak ahelyett, hogy visszavonulnának gyógyulni.
-[Units are never permanently lost -- HP just stops at 1.]
-Az egységek soha nem vesznek el véglegesen -- az életpontjuk egyszerűen megáll 1-en.
-[Disables all combat between every team.]
-Kikapcsolja az összes harcot minden csapat között.
 [Higher tiers deal more damage but have less HP and armor.]
 A magasabb szintek több sebzést okoznak, de kevesebb életpontjuk és páncéljuk van.
 [Higher tiers give every building much more HP.]
@@ -2210,14 +2170,10 @@ Nincs végleges halál
 Normál harc
 [Peaceful mode]
 Békés mód
-[Off (today's balance)]
-Kikapcsolva (mai egyensúly)
 [Glass cannon x2]
 Üvegágyú x2
 [Glass cannon x3]
 Üvegágyú x3
-[Off (today's HP)]
-Kikapcsolva (mai életpont)
 [Fortress x5]
 Erőd x5
 [Fortress x10]
@@ -2232,10 +2188,6 @@ Legendás
 Harc
 [Glass cannon]
 Üvegágyú
-[Fortress buildings]
-Megerősített épületek
-[Veteran/Fast start]
-Veterán/Gyors kezdés
 [Match ends at the timer; highest prestige at that instant wins.]
 A mérkőzés az időzítő lejártával ér véget; ekkor a legnagyobb presztízzsel rendelkező nyer.
 [Off (no timer)]
@@ -2248,8 +2200,6 @@ Kikapcsolva (nincs időzítő)
 45 perc
 [60 minutes]
 60 perc
-[Sudden-death timer]
-Hirtelen halál időzítő
 [Stats page three]
 Statisztika 3/3 >
 [Stats blocked units]
@@ -2978,10 +2928,6 @@ Tágas
 Továbbiak
 [No items]
 Nincsenek elemek
-[Opponents]
-Ellenfelek
-[Review]
-Áttekintés
 [Review & Play]
 Ellenőrzés és játék
 [Edit opponents]
@@ -3796,21 +3742,9 @@ Térkép lendülete
 
 [room remove from room]
 
-[room rule conquest]
-
-[room rule fixed]
-
-[room rule free]
-
-[room rule hidden]
-
 [room rule off]
 
 [room rule on]
-
-[room rule prestige]
-
-[room rule revealed]
 
 [room rules changed]
 
@@ -4506,20 +4440,6 @@ Térkép lendülete
 
 [room seats one person %0 %1]
 
-[room rule resources]
-
-[room rule construction]
-
-[room rule food]
-
-[room rule training]
-
-[room rule retreat]
-
-[room rule unit deaths]
-
-[room rule combat]
-
 [room rules otherwise standard]
 
 [room browser link]
@@ -4615,4 +4535,98 @@ Térkép lendülete
 [room map ready body]
 
 [game draw]
+
+[Match]
+
+[Time limit]
+
+[Alliances can change]
+
+[Reveal terrain]
+
+[Starting unit level]
+
+[Starting stockpile]
+
+[Regrowth]
+
+[Building strength]
+
+[Wounded units retreat]
+
+[Units can die]
+
+[Unit training]
+
+[No stockpile]
+
+[No glass cannon]
+
+[How quickly harvested resources grow back and spread.]
+
+[Units must eat to keep working.]
+
+[Off: a peaceful match with no fighting between teams.]
+
+[Off: units fight to the death instead of retreating to heal.]
+
+[Off: units are never permanently lost; HP just stops at 1.]
+
+[Off: units still visit schools but never gain a level.]
+
+[Summary]
+
+[All rules]
+
+[Show all rules]
+
+[Choose a ruleset]
+
+[Reset to %0]
+
+[ruleset one change %0]
+
+[ruleset changes %0 %1]
+
+[No effect while combat is off.]
+
+[This match cannot end. Turn on prestige victory or set a time limit.]
+
+[Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
+
+[Blitz]
+
+[ruleset blitz description]
+
+[Gentle]
+
+[ruleset gentle description]
+
+[Sandbox]
+
+[ruleset sandbox description]
+
+[Bloodbath]
+
+[ruleset bloodbath description]
+
+[Siege]
+
+[ruleset siege description]
+
+[Lean years]
+
+[ruleset lean years description]
+
+[Gold rush]
+
+[ruleset gold rush description]
+
+[Elite ranks]
+
+[ruleset elite ranks description]
+
+[Shifting alliances]
+
+[ruleset shifting alliances description]
 

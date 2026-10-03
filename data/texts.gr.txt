@@ -1210,8 +1210,6 @@ Cortex
 Συντονίζει ανάπτυξη και εκπαιδευμένες επιθέσεις, στοχεύοντας πρώτα περίθαλψη και τροφή.
 [Algae]
 Φύκη
-[Alliances]
-Συμμαχίες
 [Beach size]
 Μέγεθος παραλίας
 [Blue]
@@ -1300,8 +1298,6 @@ Cortex
 Ματζέντα
 [Map]
 Χάρτης
-[Map knowledge]
-Γνώση χάρτη
 [Match finished]
 Ο αγώνας ολοκληρώθηκε
 [Medium]
@@ -1348,8 +1344,6 @@ Cortex
 Επανάληψη τοπίου
 [Resources]
 Πόροι
-[Restore standard rules]
-Επαναφέρετε τους τυπικούς κανόνες
 [Revealed terrain does not reveal all enemy activity.]
 Το αποκαλυπτόμενο έδαφος δεν αποκαλύπτει όλη την εχθρική δραστηριότητα.
 [River]
@@ -1380,8 +1374,6 @@ Cortex
 Έδαφος
 [Terrain revealed]
 Το έδαφος αποκαλύφθηκε
-[Try a ruleset, then make it your own.]
-Δοκιμάστε ένα σύνολο κανόνων και μετά κάντε το δικό σας.
 [Victory]
 Νίκη
 [Watch game]
@@ -1406,12 +1398,6 @@ Cortex
 Οι χάρτες σας
 [colonies]
 αποικίες
-[* Changed from standard.]
-* Άλλαξε από το τυπικό.
-[World & diplomacy]
-Κόσμος και διπλωματία
-[Starting conditions & pace]
-Συνθήκες και ρυθμός εκκίνησης
 [Inactive]
 Ανενεργό
 [8 workers / 2x speed]
@@ -1434,8 +1420,6 @@ Cortex
 Δεν υπάρχουν χάρτες σε αυτήν τη βιβλιοθήκη.
 [Premade maps retain their authored starting units.]
 Οι έτοιμοι χάρτες διατηρούν τις αρχικές μονάδες που όρισε ο δημιουργός τους.
-[Premade: only speed changes (2x)]
-Έτοιμος χάρτης: αλλάζει μόνο η ταχύτητα (2x)
 [Start with terrain known]
 Ξεκινήστε με γνωστό έδαφος
 [This colony will not join the match.]
@@ -2202,18 +2186,10 @@ Cortex
 Σελίδα (P)
 [Map preview choose another]
 Επιλέξτε χάρτη
-[Resources never grow or spread across the map.]
-Οι πόροι δεν αναπτύσσονται ούτε εξαπλώνονται ποτέ στον χάρτη.
 [Building sites complete immediately, skipping delivery.]
 Τα εργοτάξια ολοκληρώνονται αμέσως, χωρίς στάδιο παράδοσης.
-[Units never grow hungry and never starve.]
-Οι μονάδες δεν πεινούν ποτέ και δεν λιμοκτονούν ποτέ.
-[Slows how often resources grow or spread across the map.]
-Επιβραδύνει πόσο συχνά οι πόροι αναπτύσσονται ή εξαπλώνονται στον χάρτη.
 [Seeds each team's shared market/exchange resource pool at game start.]
 Γεμίζει το κοινό απόθεμα αγοράς/ανταλλαγής κάθε ομάδας στην έναρξη του παιχνιδιού.
-[Grow normally]
-Κανονική ανάπτυξη
 [No growth]
 Καμία ανάπτυξη
 [Normal construction]
@@ -2224,16 +2200,12 @@ Cortex
 Οι μονάδες πεινούν
 [No hunger]
 Χωρίς πείνα
-[Off (today's growth)]
-Ανενεργό (σημερινή ανάπτυξη)
 [Scarce (2x slower)]
 Σπάνιοι (2x πιο αργά)
 [Very scarce (4x slower)]
 Πολύ σπάνιοι (4x πιο αργά)
 [Extremely scarce (8x slower)]
 Εξαιρετικά σπάνιοι (8x πιο αργά)
-[None (today's default)]
-Κανένα (σημερινή προεπιλογή)
 [Small (+50 each)]
 Μικρό (+50 έκαστος)
 [Medium (+150 each)]
@@ -2244,20 +2216,8 @@ Cortex
 Καμία ανάπτυξη πόρων
 [Economy]
 Οικονομία
-[Scarce resources]
-Σπάνιοι πόροι
 [Instant construction]
 Άμεση κατασκευή
-[Stockpile start]
-Αρχικό απόθεμα
-[Units still visit schools but never gain a level.]
-Οι μονάδες συνεχίζουν να πηγαίνουν σχολείο, αλλά δεν ανεβαίνουν ποτέ επίπεδο.
-[Units fight to the death instead of retreating to heal.]
-Οι μονάδες πολεμούν μέχρι θανάτου αντί να υποχωρούν για να θεραπευτούν.
-[Units are never permanently lost -- HP just stops at 1.]
-Οι μονάδες δεν χάνονται ποτέ οριστικά -- τα HP απλώς σταματούν στο 1.
-[Disables all combat between every team.]
-Απενεργοποιεί κάθε μάχη μεταξύ όλων των ομάδων.
 [Higher tiers deal more damage but have less HP and armor.]
 Τα υψηλότερα επίπεδα προκαλούν περισσότερη ζημιά αλλά έχουν λιγότερα HP και θωράκιση.
 [Higher tiers give every building much more HP.]
@@ -2280,14 +2240,10 @@ Cortex
 Κανονική μάχη
 [Peaceful mode]
 Ειρηνικός τρόπος
-[Off (today's balance)]
-Ανενεργό (σημερινή ισορροπία)
 [Glass cannon x2]
 Γυάλινο κανόνι x2
 [Glass cannon x3]
 Γυάλινο κανόνι x3
-[Off (today's HP)]
-Ανενεργό (σημερινά HP)
 [Fortress x5]
 Φρούριο x5
 [Fortress x10]
@@ -2302,10 +2258,6 @@ Cortex
 Μάχη
 [Glass cannon]
 Γυάλινο κανόνι
-[Fortress buildings]
-Οχυρωμένα κτίρια
-[Veteran/Fast start]
-Βετεράνος/Γρήγορο ξεκίνημα
 [Match ends at the timer; highest prestige at that instant wins.]
 Ο αγώνας τελειώνει με το χρονόμετρο· όποιος έχει το μεγαλύτερο κύρος εκείνη τη στιγμή κερδίζει.
 [Off (no timer)]
@@ -2318,8 +2270,6 @@ Cortex
 45 λεπτά
 [60 minutes]
 60 λεπτά
-[Sudden-death timer]
-Χρονόμετρο ξαφνικού θανάτου
 [Stats page three]
 Στατιστικά 3/3 >
 [Stats blocked units]
@@ -3048,10 +2998,6 @@ Emoji
 Περισσότερα
 [No items]
 Δεν υπάρχουν στοιχεία
-[Opponents]
-Αντίπαλοι
-[Review]
-Επισκόπηση
 [Review & Play]
 Έλεγχος και παιχνίδι
 [Edit opponents]
@@ -3866,21 +3812,9 @@ CPU %0%
 
 [room remove from room]
 
-[room rule conquest]
-
-[room rule fixed]
-
-[room rule free]
-
-[room rule hidden]
-
 [room rule off]
 
 [room rule on]
-
-[room rule prestige]
-
-[room rule revealed]
 
 [room rules changed]
 
@@ -4576,20 +4510,6 @@ CPU %0%
 
 [room seats one person %0 %1]
 
-[room rule resources]
-
-[room rule construction]
-
-[room rule food]
-
-[room rule training]
-
-[room rule retreat]
-
-[room rule unit deaths]
-
-[room rule combat]
-
 [room rules otherwise standard]
 
 [room browser link]
@@ -4685,4 +4605,98 @@ CPU %0%
 [room map ready body]
 
 [game draw]
+
+[Match]
+
+[Time limit]
+
+[Alliances can change]
+
+[Reveal terrain]
+
+[Starting unit level]
+
+[Starting stockpile]
+
+[Regrowth]
+
+[Building strength]
+
+[Wounded units retreat]
+
+[Units can die]
+
+[Unit training]
+
+[No stockpile]
+
+[No glass cannon]
+
+[How quickly harvested resources grow back and spread.]
+
+[Units must eat to keep working.]
+
+[Off: a peaceful match with no fighting between teams.]
+
+[Off: units fight to the death instead of retreating to heal.]
+
+[Off: units are never permanently lost; HP just stops at 1.]
+
+[Off: units still visit schools but never gain a level.]
+
+[Summary]
+
+[All rules]
+
+[Show all rules]
+
+[Choose a ruleset]
+
+[Reset to %0]
+
+[ruleset one change %0]
+
+[ruleset changes %0 %1]
+
+[No effect while combat is off.]
+
+[This match cannot end. Turn on prestige victory or set a time limit.]
+
+[Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
+
+[Blitz]
+
+[ruleset blitz description]
+
+[Gentle]
+
+[ruleset gentle description]
+
+[Sandbox]
+
+[ruleset sandbox description]
+
+[Bloodbath]
+
+[ruleset bloodbath description]
+
+[Siege]
+
+[ruleset siege description]
+
+[Lean years]
+
+[ruleset lean years description]
+
+[Gold rush]
+
+[ruleset gold rush description]
+
+[Elite ranks]
+
+[ruleset elite ranks description]
+
+[Shifting alliances]
+
+[ruleset shifting alliances description]
 

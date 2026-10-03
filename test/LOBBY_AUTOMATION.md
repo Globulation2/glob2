@@ -59,6 +59,10 @@ GLOB2_PREVIEW_LANGUAGE=ko build/native-tests/test/MenuColonyHarness capture cust
 GLOB2_PREVIEW_LANGUAGE=ar build/native-tests/test/MenuColonyHarness capture custom artifacts/localized-lobby/ar-map.png 640 480
 ```
 
-These are static rendering checks. Use the custom setup harness above for
+`custom-rules-all` shows every rule starting from the Blitz ruleset and
+`custom-rules-sandbox` the Summary view of a ruleset away from Standard. The
+capture's bounds check counts controls scrolled out of view, so it fails when a
+list overflows the window; capture those at a larger size. These are static
+rendering checks. Use the custom setup harness above for
 interaction coverage. Font coverage and placeholder checks do not establish
 linguistic accuracy; translation changes also need a wording review.

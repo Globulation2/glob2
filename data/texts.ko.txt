@@ -1136,8 +1136,6 @@ AI 전략 및 대응
 식민지 성장과 훈련된 공격을 조율하며 치료와 식량을 먼저 노립니다.
 [Algae]
 해조류
-[Alliances]
-동맹
 [Beach size]
 해변 크기
 [Blue]
@@ -1226,8 +1224,6 @@ AI 전략 및 대응
 마젠타
 [Map]
 지도
-[Map knowledge]
-지형 공개 범위
 [Match finished]
 경기 종료
 [Medium]
@@ -1274,8 +1270,6 @@ AI 명령 없음
 지형 반복
 [Resources]
 자원
-[Restore standard rules]
-표준 규칙 복원
 [Revealed terrain does not reveal all enemy activity.]
 공개된 지형은 적의 모든 활동을 공개하지 않습니다.
 [River]
@@ -1306,8 +1300,6 @@ AI 명령 없음
 지형
 [Terrain revealed]
 지형 공개
-[Try a ruleset, then make it your own.]
-규칙 세트를 사용해 보고 자신만의 것으로 만들어 보세요.
 [Victory]
 승리
 [Watch game]
@@ -1332,12 +1324,6 @@ AI 명령 없음
 내 지도
 [colonies]
 식민지
-[* Changed from standard.]
-* 표준에서 변경되었습니다.
-[World & diplomacy]
-세계와 외교
-[Starting conditions & pace]
-시작 조건 및 속도
 [Inactive]
 비활성
 [8 workers / 2x speed]
@@ -1360,8 +1346,6 @@ AI 명령 없음
 이 목록에는 지도가 없습니다.
 [Premade maps retain their authored starting units.]
 미리 만들어진 지도는 제작된 시작 유닛을 유지합니다.
-[Premade: only speed changes (2x)]
-사전 제작: 속도 변경만 가능(2x)
 [Start with terrain known]
 알려진 지형부터 시작하세요
 [This colony will not join the match.]
@@ -2128,18 +2112,10 @@ Globulation 2 커서를 표시합니다.
 페이지 (P)
 [Map preview choose another]
 지도 선택
-[Resources never grow or spread across the map.]
-자원은 지도에서 절대 성장하거나 퍼지지 않습니다.
 [Building sites complete immediately, skipping delivery.]
 건설 현장은 배송 단계를 건너뛰고 즉시 완료됩니다.
-[Units never grow hungry and never starve.]
-유닛은 절대 배고파지지 않으며 절대 굶주리지 않습니다.
-[Slows how often resources grow or spread across the map.]
-자원이 지도에서 성장하거나 퍼지는 빈도를 늦춥니다.
 [Seeds each team's shared market/exchange resource pool at game start.]
 게임 시작 시 각 팀의 공유 시장/교환 자원 비축량을 채웁니다.
-[Grow normally]
-정상 성장
 [No growth]
 성장 없음
 [Normal construction]
@@ -2150,16 +2126,12 @@ Globulation 2 커서를 표시합니다.
 유닛이 배고파짐
 [No hunger]
 배고픔 없음
-[Off (today's growth)]
-꺼짐 (현재 성장 속도)
 [Scarce (2x slower)]
 희소 (2x 느림)
 [Very scarce (4x slower)]
 매우 희소 (4x 느림)
 [Extremely scarce (8x slower)]
 극도로 희소 (8x 느림)
-[None (today's default)]
-없음 (현재 기본값)
 [Small (+50 each)]
 소 (각 +50)
 [Medium (+150 each)]
@@ -2170,20 +2142,8 @@ Globulation 2 커서를 표시합니다.
 자원 성장 없음
 [Economy]
 경제
-[Scarce resources]
-희소 자원
 [Instant construction]
 즉시 건설
-[Stockpile start]
-시작 비축량
-[Units still visit schools but never gain a level.]
-유닛은 계속 학교에 다니지만 절대 레벨업하지 않습니다.
-[Units fight to the death instead of retreating to heal.]
-유닛은 치료를 위해 후퇴하는 대신 죽을 때까지 싸웁니다.
-[Units are never permanently lost -- HP just stops at 1.]
-유닛은 절대 영구적으로 사라지지 않습니다 -- 체력이 1에서 멈출 뿐입니다.
-[Disables all combat between every team.]
-모든 팀 간의 전투를 비활성화합니다.
 [Higher tiers deal more damage but have less HP and armor.]
 상위 등급은 더 많은 피해를 주지만 체력과 방어력이 낮습니다.
 [Higher tiers give every building much more HP.]
@@ -2206,14 +2166,10 @@ Globulation 2 커서를 표시합니다.
 일반 전투
 [Peaceful mode]
 평화 모드
-[Off (today's balance)]
-꺼짐 (현재 밸런스)
 [Glass cannon x2]
 유리 대포 x2
 [Glass cannon x3]
 유리 대포 x3
-[Off (today's HP)]
-꺼짐 (현재 체력)
 [Fortress x5]
 요새 x5
 [Fortress x10]
@@ -2228,10 +2184,6 @@ Globulation 2 커서를 표시합니다.
 전투
 [Glass cannon]
 유리 대포
-[Fortress buildings]
-요새화된 건물
-[Veteran/Fast start]
-베테랑/빠른 시작
 [Match ends at the timer; highest prestige at that instant wins.]
 경기는 타이머가 끝나면 종료되며, 그 순간 명성이 가장 높은 쪽이 승리합니다.
 [Off (no timer)]
@@ -2244,8 +2196,6 @@ Globulation 2 커서를 표시합니다.
 45분
 [60 minutes]
 60분
-[Sudden-death timer]
-서든데스 타이머
 [Stats page three]
 통계 3/3 >
 [Stats blocked units]
@@ -2974,10 +2924,6 @@ Emoji
 더 보기
 [No items]
 항목 없음
-[Opponents]
-상대
-[Review]
-검토
 [Review & Play]
 검토 후 플레이
 [Edit opponents]
@@ -3792,21 +3738,9 @@ AI 추가
 
 [room remove from room]
 
-[room rule conquest]
-
-[room rule fixed]
-
-[room rule free]
-
-[room rule hidden]
-
 [room rule off]
 
 [room rule on]
-
-[room rule prestige]
-
-[room rule revealed]
 
 [room rules changed]
 
@@ -4502,20 +4436,6 @@ AI 추가
 
 [room seats one person %0 %1]
 
-[room rule resources]
-
-[room rule construction]
-
-[room rule food]
-
-[room rule training]
-
-[room rule retreat]
-
-[room rule unit deaths]
-
-[room rule combat]
-
 [room rules otherwise standard]
 
 [room browser link]
@@ -4611,4 +4531,98 @@ AI 추가
 [room map ready body]
 
 [game draw]
+
+[Match]
+
+[Time limit]
+
+[Alliances can change]
+
+[Reveal terrain]
+
+[Starting unit level]
+
+[Starting stockpile]
+
+[Regrowth]
+
+[Building strength]
+
+[Wounded units retreat]
+
+[Units can die]
+
+[Unit training]
+
+[No stockpile]
+
+[No glass cannon]
+
+[How quickly harvested resources grow back and spread.]
+
+[Units must eat to keep working.]
+
+[Off: a peaceful match with no fighting between teams.]
+
+[Off: units fight to the death instead of retreating to heal.]
+
+[Off: units are never permanently lost; HP just stops at 1.]
+
+[Off: units still visit schools but never gain a level.]
+
+[Summary]
+
+[All rules]
+
+[Show all rules]
+
+[Choose a ruleset]
+
+[Reset to %0]
+
+[ruleset one change %0]
+
+[ruleset changes %0 %1]
+
+[No effect while combat is off.]
+
+[This match cannot end. Turn on prestige victory or set a time limit.]
+
+[Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
+
+[Blitz]
+
+[ruleset blitz description]
+
+[Gentle]
+
+[ruleset gentle description]
+
+[Sandbox]
+
+[ruleset sandbox description]
+
+[Bloodbath]
+
+[ruleset bloodbath description]
+
+[Siege]
+
+[ruleset siege description]
+
+[Lean years]
+
+[ruleset lean years description]
+
+[Gold rush]
+
+[ruleset gold rush description]
+
+[Elite ranks]
+
+[ruleset elite ranks description]
+
+[Shifting alliances]
+
+[ruleset shifting alliances description]
 

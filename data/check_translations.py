@@ -139,6 +139,19 @@ def audit(root=ROOT):
                 for key in LITERAL_LOOKUP.findall(line):
                     if key not in key_set:
                         errors.append(f'{path.relative_to(root)}:{number}: unknown translation key {key}')
+    # Ruleset names and descriptions are keys looked up at runtime from the data file.
+    rulesets = root / 'data' / 'rulesets.json'
+    if rulesets.exists():
+        try:
+            entries = json.loads(rulesets.read_text(encoding='utf-8')).get('rulesets', [])
+        except ValueError as error:
+            entries = []
+            errors.append(f'rulesets.json: {error}')
+        for entry in entries:
+            for field in ('name', 'description'):
+                key = entry.get(field) if isinstance(entry, dict) else None
+                if key not in key_set:
+                    errors.append(f'rulesets.json: unknown translation key {key!r} ({field} of {entry.get("id")!r})')
     return {'errors': errors, 'languages': languages}
 
 

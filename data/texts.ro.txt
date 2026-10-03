@@ -1140,8 +1140,6 @@ Strategie de bază: Împarte producția de unități între construcție, îmbun
 Coordonează creșterea coloniei și atacurile instruite, țintind întâi vindecarea și hrana.
 [Algae]
 Alge
-[Alliances]
-Alianţe
 [Beach size]
 Dimensiunea plajei
 [Blue]
@@ -1230,8 +1228,6 @@ Echipe blocate
 Magenta
 [Map]
 Hartă
-[Map knowledge]
-Cunoașterea hărților
 [Match finished]
 Meciul terminat
 [Medium]
@@ -1278,8 +1274,6 @@ Roșu
 Repetarea peisajului
 [Resources]
 Resurse
-[Restore standard rules]
-Restabiliți regulile standard
 [Revealed terrain does not reveal all enemy activity.]
 Terenul dezvăluit nu dezvăluie toată activitatea inamicului.
 [River]
@@ -1310,8 +1304,6 @@ Echipa
 Teren
 [Terrain revealed]
 Terenul dezvăluit
-[Try a ruleset, then make it your own.]
-Încearcă un set de reguli, apoi creează-l al tău.
 [Victory]
 Victorie
 [Watch game]
@@ -1336,12 +1328,6 @@ Tu împotriva tuturor
 Hărțile tale
 [colonies]
 colonii
-[* Changed from standard.]
-* Modificat de la standard.
-[World & diplomacy]
-Lumea și diplomația
-[Starting conditions & pace]
-Condiții de pornire și ritm
 [Inactive]
 Inactiv
 [8 workers / 2x speed]
@@ -1364,8 +1350,6 @@ Unități de pornire definite de hartă
 Nu există hărți în această bibliotecă.
 [Premade maps retain their authored starting units.]
 Hărțile prefabricate își păstrează unitățile de pornire ale autorului.
-[Premade: only speed changes (2x)]
-Hartă existentă: se schimbă doar viteza (2x)
 [Start with terrain known]
 Începeți cu terenul cunoscut
 [This colony will not join the match.]
@@ -2132,18 +2116,10 @@ Statistici 2/3 >
 Pagina (P)
 [Map preview choose another]
 Alege o hartă
-[Resources never grow or spread across the map.]
-Resursele nu cresc și nu se răspândesc niciodată pe hartă.
 [Building sites complete immediately, skipping delivery.]
 Șantierele se finalizează imediat, sărind peste livrare.
-[Units never grow hungry and never starve.]
-Unităților nu le este niciodată foame și nu mor niciodată de foame.
-[Slows how often resources grow or spread across the map.]
-Încetinește cât de des cresc sau se răspândesc resursele pe hartă.
 [Seeds each team's shared market/exchange resource pool at game start.]
 Alimentează rezerva comună de piață/schimb a fiecărei echipe la începutul jocului.
-[Grow normally]
-Creștere normală
 [No growth]
 Fără creștere
 [Normal construction]
@@ -2154,16 +2130,12 @@ Instantanee
 Unităților le este foame
 [No hunger]
 Fără foame
-[Off (today's growth)]
-Dezactivată (creșterea actuală)
 [Scarce (2x slower)]
 Rare (2x mai lente)
 [Very scarce (4x slower)]
 Foarte rare (4x mai lente)
 [Extremely scarce (8x slower)]
 Extrem de rare (8x mai lente)
-[None (today's default)]
-Nicio (valoarea implicită actuală)
 [Small (+50 each)]
 Mică (+50 fiecare)
 [Medium (+150 each)]
@@ -2174,20 +2146,8 @@ Mare (+300 fiecare)
 Fără creșterea resurselor
 [Economy]
 Economie
-[Scarce resources]
-Resurse rare
 [Instant construction]
 Construcție instantanee
-[Stockpile start]
-Rezervă inițială
-[Units still visit schools but never gain a level.]
-Unitățile încă merg la școală, dar nu mai urcă niciodată în nivel.
-[Units fight to the death instead of retreating to heal.]
-Unitățile luptă până la moarte în loc să se retragă pentru a se vindeca.
-[Units are never permanently lost -- HP just stops at 1.]
-Unitățile nu sunt niciodată pierdute definitiv -- viața se oprește pur și simplu la 1.
-[Disables all combat between every team.]
-Dezactivează toate luptele dintre toate echipele.
 [Higher tiers deal more damage but have less HP and armor.]
 Nivelurile superioare provoacă mai multe daune, dar au mai puțină viață și armură.
 [Higher tiers give every building much more HP.]
@@ -2210,14 +2170,10 @@ Fără moarte definitivă
 Luptă normală
 [Peaceful mode]
 Mod pașnic
-[Off (today's balance)]
-Dezactivat (echilibrul actual)
 [Glass cannon x2]
 Tun de sticlă x2
 [Glass cannon x3]
 Tun de sticlă x3
-[Off (today's HP)]
-Dezactivată (viața actuală)
 [Fortress x5]
 Fortăreață x5
 [Fortress x10]
@@ -2232,10 +2188,6 @@ Legendar
 Luptă
 [Glass cannon]
 Tun de sticlă
-[Fortress buildings]
-Clădiri fortificate
-[Veteran/Fast start]
-Veteran/Start rapid
 [Match ends at the timer; highest prestige at that instant wins.]
 Meciul se încheie la temporizator; câștigă cel cu cel mai mare prestigiu în acel moment.
 [Off (no timer)]
@@ -2248,8 +2200,6 @@ Dezactivat (fără temporizator)
 45 minute
 [60 minutes]
 60 minute
-[Sudden-death timer]
-Temporizator de moarte subită
 [Stats page three]
 Statistici 3/3 >
 [Stats blocked units]
@@ -2978,10 +2928,6 @@ Spațioasă
 Mai multe
 [No items]
 Niciun element
-[Opponents]
-Adversari
-[Review]
-Rezumat
 [Review & Play]
 Verifică și joacă
 [Edit opponents]
@@ -3796,21 +3742,9 @@ Inerția hărții
 
 [room remove from room]
 
-[room rule conquest]
-
-[room rule fixed]
-
-[room rule free]
-
-[room rule hidden]
-
 [room rule off]
 
 [room rule on]
-
-[room rule prestige]
-
-[room rule revealed]
 
 [room rules changed]
 
@@ -4506,20 +4440,6 @@ Inerția hărții
 
 [room seats one person %0 %1]
 
-[room rule resources]
-
-[room rule construction]
-
-[room rule food]
-
-[room rule training]
-
-[room rule retreat]
-
-[room rule unit deaths]
-
-[room rule combat]
-
 [room rules otherwise standard]
 
 [room browser link]
@@ -4615,4 +4535,98 @@ Inerția hărții
 [room map ready body]
 
 [game draw]
+
+[Match]
+
+[Time limit]
+
+[Alliances can change]
+
+[Reveal terrain]
+
+[Starting unit level]
+
+[Starting stockpile]
+
+[Regrowth]
+
+[Building strength]
+
+[Wounded units retreat]
+
+[Units can die]
+
+[Unit training]
+
+[No stockpile]
+
+[No glass cannon]
+
+[How quickly harvested resources grow back and spread.]
+
+[Units must eat to keep working.]
+
+[Off: a peaceful match with no fighting between teams.]
+
+[Off: units fight to the death instead of retreating to heal.]
+
+[Off: units are never permanently lost; HP just stops at 1.]
+
+[Off: units still visit schools but never gain a level.]
+
+[Summary]
+
+[All rules]
+
+[Show all rules]
+
+[Choose a ruleset]
+
+[Reset to %0]
+
+[ruleset one change %0]
+
+[ruleset changes %0 %1]
+
+[No effect while combat is off.]
+
+[This match cannot end. Turn on prestige victory or set a time limit.]
+
+[Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
+
+[Blitz]
+
+[ruleset blitz description]
+
+[Gentle]
+
+[ruleset gentle description]
+
+[Sandbox]
+
+[ruleset sandbox description]
+
+[Bloodbath]
+
+[ruleset bloodbath description]
+
+[Siege]
+
+[ruleset siege description]
+
+[Lean years]
+
+[ruleset lean years description]
+
+[Gold rush]
+
+[ruleset gold rush description]
+
+[Elite ranks]
+
+[ruleset elite ranks description]
+
+[Shifting alliances]
+
+[ruleset shifting alliances description]
 

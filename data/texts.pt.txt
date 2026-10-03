@@ -1146,8 +1146,6 @@ Estratégia central: Divide a produção de unidades entre construção, melhori
 Coordena crescimento e ataques treinados, visando primeiro cura e comida.
 [Algae]
 algas
-[Alliances]
-Alianças
 [Beach size]
 Tamanho da praia
 [Blue]
@@ -1236,8 +1234,6 @@ Equipas fixas
 Magenta
 [Map]
 Mapa
-[Map knowledge]
-Conhecimento do mapa
 [Match finished]
 Partida encerrada
 [Medium]
@@ -1284,8 +1280,6 @@ Vermelho
 Repetir paisagem
 [Resources]
 Recursos
-[Restore standard rules]
-Restaurar regras padrão
 [Revealed terrain does not reveal all enemy activity.]
 O terreno revelado não revela toda a atividade inimiga.
 [River]
@@ -1316,8 +1310,6 @@ Equipa
 Terreno
 [Terrain revealed]
 Terreno revelado
-[Try a ruleset, then make it your own.]
-Experimente um conjunto de regras e depois crie o seu próprio.
 [Victory]
 Vitória
 [Watch game]
@@ -1342,12 +1334,6 @@ Tu contra todos
 Os teus mapas
 [colonies]
 colónias
-[* Changed from standard.]
-* Alterado em relação ao padrão.
-[World & diplomacy]
-Mundo e diplomacia
-[Starting conditions & pace]
-Condições iniciais e ritmo
 [Inactive]
 Inativo
 [8 workers / 2x speed]
@@ -1370,8 +1356,6 @@ Unidades iniciais definidas no mapa
 Não há mapas nesta biblioteca.
 [Premade maps retain their authored starting units.]
 Os mapas prontos mantêm as unidades iniciais escolhidas pelo autor.
-[Premade: only speed changes (2x)]
-Mapa pronto: só a velocidade muda (2x)
 [Start with terrain known]
 Comece com terreno conhecido
 [This colony will not join the match.]
@@ -2138,18 +2122,10 @@ Estatísticas 2/3 >
 Página (P)
 [Map preview choose another]
 Escolha um mapa
-[Resources never grow or spread across the map.]
-Os recursos nunca crescem nem se espalham pelo mapa.
 [Building sites complete immediately, skipping delivery.]
 Os estaleiros de construção são concluídos de imediato, sem fase de entrega.
-[Units never grow hungry and never starve.]
-As unidades nunca ficam com fome nem passam fome.
-[Slows how often resources grow or spread across the map.]
-Reduz a frequência com que os recursos crescem ou se espalham pelo mapa.
 [Seeds each team's shared market/exchange resource pool at game start.]
 Define a reserva inicial do mercado/câmbio partilhado de cada equipa no início da partida.
-[Grow normally]
-Crescimento normal
 [No growth]
 Sem crescimento
 [Normal construction]
@@ -2160,16 +2136,12 @@ Instantânea
 As unidades sentem fome
 [No hunger]
 Sem fome
-[Off (today's growth)]
-Desativado (crescimento atual)
 [Scarce (2x slower)]
 Escasso (2x mais lento)
 [Very scarce (4x slower)]
 Muito escasso (4x mais lento)
 [Extremely scarce (8x slower)]
 Extremamente escasso (8x mais lento)
-[None (today's default)]
-Nenhum (padrão atual)
 [Small (+50 each)]
 Pequeno (+50 cada)
 [Medium (+150 each)]
@@ -2180,20 +2152,8 @@ Grande (+300 cada)
 Sem crescimento de recursos
 [Economy]
 Economia
-[Scarce resources]
-Recursos escassos
 [Instant construction]
 Construção instantânea
-[Stockpile start]
-Reserva inicial
-[Units still visit schools but never gain a level.]
-As unidades continuam a frequentar a escola, mas nunca sobem de nível.
-[Units fight to the death instead of retreating to heal.]
-As unidades lutam até à morte em vez de recuar para se curarem.
-[Units are never permanently lost -- HP just stops at 1.]
-As unidades nunca são perdidas definitivamente -- os PV simplesmente param em 1.
-[Disables all combat between every team.]
-Desativa todo o combate entre todas as equipas.
 [Higher tiers deal more damage but have less HP and armor.]
 Os níveis superiores causam mais dano, mas têm menos PV e armadura.
 [Higher tiers give every building much more HP.]
@@ -2216,14 +2176,10 @@ Sem morte definitiva
 Combate normal
 [Peaceful mode]
 Modo pacífico
-[Off (today's balance)]
-Desativado (equilíbrio atual)
 [Glass cannon x2]
 Canhão de vidro x2
 [Glass cannon x3]
 Canhão de vidro x3
-[Off (today's HP)]
-Desativado (PV atuais)
 [Fortress x5]
 Fortaleza x5
 [Fortress x10]
@@ -2238,10 +2194,6 @@ Lendário
 Combate
 [Glass cannon]
 Canhão de vidro
-[Fortress buildings]
-Edifícios fortificados
-[Veteran/Fast start]
-Veterano/Início rápido
 [Match ends at the timer; highest prestige at that instant wins.]
 A partida termina no temporizador; vence quem tiver mais prestígio nesse instante.
 [Off (no timer)]
@@ -2254,8 +2206,6 @@ Desativado (sem temporizador)
 45 minutos
 [60 minutes]
 60 minutos
-[Sudden-death timer]
-Temporizador de morte súbita
 [Stats page three]
 Estatísticas 3/3 >
 [Stats blocked units]
@@ -2984,10 +2934,6 @@ Espaçosa
 Mais
 [No items]
 Nenhum elemento
-[Opponents]
-Adversários
-[Review]
-Resumo
 [Review & Play]
 Rever e jogar
 [Edit opponents]
@@ -3802,21 +3748,9 @@ Inércia do mapa
 
 [room remove from room]
 
-[room rule conquest]
-
-[room rule fixed]
-
-[room rule free]
-
-[room rule hidden]
-
 [room rule off]
 
 [room rule on]
-
-[room rule prestige]
-
-[room rule revealed]
 
 [room rules changed]
 
@@ -4512,20 +4446,6 @@ Inércia do mapa
 
 [room seats one person %0 %1]
 
-[room rule resources]
-
-[room rule construction]
-
-[room rule food]
-
-[room rule training]
-
-[room rule retreat]
-
-[room rule unit deaths]
-
-[room rule combat]
-
 [room rules otherwise standard]
 
 [room browser link]
@@ -4621,4 +4541,98 @@ Inércia do mapa
 [room map ready body]
 
 [game draw]
+
+[Match]
+
+[Time limit]
+
+[Alliances can change]
+
+[Reveal terrain]
+
+[Starting unit level]
+
+[Starting stockpile]
+
+[Regrowth]
+
+[Building strength]
+
+[Wounded units retreat]
+
+[Units can die]
+
+[Unit training]
+
+[No stockpile]
+
+[No glass cannon]
+
+[How quickly harvested resources grow back and spread.]
+
+[Units must eat to keep working.]
+
+[Off: a peaceful match with no fighting between teams.]
+
+[Off: units fight to the death instead of retreating to heal.]
+
+[Off: units are never permanently lost; HP just stops at 1.]
+
+[Off: units still visit schools but never gain a level.]
+
+[Summary]
+
+[All rules]
+
+[Show all rules]
+
+[Choose a ruleset]
+
+[Reset to %0]
+
+[ruleset one change %0]
+
+[ruleset changes %0 %1]
+
+[No effect while combat is off.]
+
+[This match cannot end. Turn on prestige victory or set a time limit.]
+
+[Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
+
+[Blitz]
+
+[ruleset blitz description]
+
+[Gentle]
+
+[ruleset gentle description]
+
+[Sandbox]
+
+[ruleset sandbox description]
+
+[Bloodbath]
+
+[ruleset bloodbath description]
+
+[Siege]
+
+[ruleset siege description]
+
+[Lean years]
+
+[ruleset lean years description]
+
+[Gold rush]
+
+[ruleset gold rush description]
+
+[Elite ranks]
+
+[ruleset elite ranks description]
+
+[Shifting alliances]
+
+[ruleset shifting alliances description]
 

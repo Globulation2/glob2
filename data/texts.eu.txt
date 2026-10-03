@@ -1150,8 +1150,6 @@ Oinarrizko estrategia: Unitateen ekoizpena eraikuntzaren, hobekuntzen, defentsar
 Koloniaren hazkundea eta eraso entrenatuak koordinatzen ditu, sendaketa eta janaria lehenetsiz.
 [Algae]
 algak
-[Alliances]
-Aliantzak
 [Beach size]
 Hondartzaren tamaina
 [Blue]
@@ -1240,8 +1238,6 @@ Talde blokeatuak
 Magenta
 [Map]
 Mapa
-[Map knowledge]
-Maparen ezagutza
 [Match finished]
 Partidua amaitu da
 [Medium]
@@ -1288,8 +1284,6 @@ Gorria
 Errepikatu paisaia
 [Resources]
 Baliabideak
-[Restore standard rules]
-Arau estandarrak berreskuratu
 [Revealed terrain does not reveal all enemy activity.]
 Agerian dagoen lursailak ez du etsaien jarduera guztiak erakusten.
 [River]
@@ -1320,8 +1314,6 @@ Taldea
 Lurra
 [Terrain revealed]
 Lurra agerian
-[Try a ruleset, then make it your own.]
-Saiatu arau multzo bat, eta egin ezazu zeurea.
 [Victory]
 Garaipena
 [Watch game]
@@ -1346,12 +1338,6 @@ Zu denen aurka
 Zure mapak
 [colonies]
 koloniak
-[* Changed from standard.]
-* Estandarretik aldatuta.
-[World & diplomacy]
-Mundua eta diplomazia
-[Starting conditions & pace]
-Hasierako baldintzak eta erritmoa
 [Inactive]
 Inaktibo
 [8 workers / 2x speed]
@@ -1374,8 +1360,6 @@ Mapek definitutako hasierako unitateak
 Liburutegi honetan ez dago maparik.
 [Premade maps retain their authored starting units.]
 Aurrez egindako mapek beren egilearen hasierako unitateak gordetzen dituzte.
-[Premade: only speed changes (2x)]
-Aurrez egina: abiadura aldaketak bakarrik (2x)
 [Start with terrain known]
 Hasi lurra ezagututa
 [This colony will not join the match.]
@@ -2142,18 +2126,10 @@ Estatistikak 2/3 >
 Orria (P)
 [Map preview choose another]
 Aukeratu mapa bat
-[Resources never grow or spread across the map.]
-Baliabideak ez dira inoiz hazten ez eta mapan zehar zabaltzen ere.
 [Building sites complete immediately, skipping delivery.]
 Eraikuntza-guneak berehala amaitzen dira, banaketa saltatuz.
-[Units never grow hungry and never starve.]
-Unitateak ez dira inoiz gose izaten eta ez dira inoiz gosez hiltzen.
-[Slows how often resources grow or spread across the map.]
-Baliabideak mapan zehar hazi edo zabaltzeko maiztasuna moteltzen du.
 [Seeds each team's shared market/exchange resource pool at game start.]
 Talde bakoitzaren merkatu/truke baliabide-erreserba partekatua hasieratzen du jokoaren hasieran.
-[Grow normally]
-Hazkunde normala
 [No growth]
 Hazkunderik ez
 [Normal construction]
@@ -2164,16 +2140,12 @@ Berehalakoa
 Unitateak gose dira
 [No hunger]
 Gose gabe
-[Off (today's growth)]
-Desaktibatuta (gaurko hazkundea)
 [Scarce (2x slower)]
 Urria (2x motelagoa)
 [Very scarce (4x slower)]
 Oso urria (4x motelagoa)
 [Extremely scarce (8x slower)]
 Izugarri urria (8x motelagoa)
-[None (today's default)]
-Bat ere ez (gaurko lehenetsia)
 [Small (+50 each)]
 Txikia (+50 bakoitzeko)
 [Medium (+150 each)]
@@ -2184,20 +2156,8 @@ Handia (+300 bakoitzeko)
 Baliabide-hazkunderik ez
 [Economy]
 Ekonomia
-[Scarce resources]
-Baliabide urriak
 [Instant construction]
 Berehalako eraikuntza
-[Stockpile start]
-Hasierako erreserba
-[Units still visit schools but never gain a level.]
-Unitateek eskolara joaten jarraitzen dute, baina inoiz ez dute mailarik igotzen.
-[Units fight to the death instead of retreating to heal.]
-Unitateek heriotzaraino borrokatzen dute, sendatzeko erretiratu ordez.
-[Units are never permanently lost -- HP just stops at 1.]
-Unitateak ez dira inoiz behin betiko galtzen -- osotasuna 1ean gelditzen da besterik gabe.
-[Disables all combat between every team.]
-Talde guztien arteko borroka guztia desgaitzen du.
 [Higher tiers deal more damage but have less HP and armor.]
 Maila altuagoek kalte gehiago eragiten dute, baina osotasun eta armadura gutxiago dute.
 [Higher tiers give every building much more HP.]
@@ -2220,14 +2180,10 @@ Betiko heriotzarik ez
 Borroka normala
 [Peaceful mode]
 Modu baketsua
-[Off (today's balance)]
-Desaktibatuta (gaur egungo oreka)
 [Glass cannon x2]
 Beirazko kanoia x2
 [Glass cannon x3]
 Beirazko kanoia x3
-[Off (today's HP)]
-Desaktibatuta (gaur egungo osotasuna)
 [Fortress x5]
 Gotorleku x5
 [Fortress x10]
@@ -2242,10 +2198,6 @@ Legendarioa
 Borroka
 [Glass cannon]
 Beirazko kanoia
-[Fortress buildings]
-Eraikin gotortuak
-[Veteran/Fast start]
-Beterano/Hasiera azkarra
 [Match ends at the timer; highest prestige at that instant wins.]
 Partida tenporizadorean amaitzen da; unetxo horretan ospe handiena duenak irabazten du.
 [Off (no timer)]
@@ -2258,8 +2210,6 @@ Desaktibatuta (tenporizadorerik gabe)
 45 minutu
 [60 minutes]
 60 minutu
-[Sudden-death timer]
-Bat-bateko heriotzaren tenporizadorea
 [Stats page three]
 Estatistikak 3/3 >
 [Stats blocked units]
@@ -2988,10 +2938,6 @@ Zabala
 Gehiago
 [No items]
 Ez dago elementurik
-[Opponents]
-Aurkariak
-[Review]
-Laburpena
 [Review & Play]
 Berrikusi eta jokatu
 [Edit opponents]
@@ -3806,21 +3752,9 @@ Maparen inertzia
 
 [room remove from room]
 
-[room rule conquest]
-
-[room rule fixed]
-
-[room rule free]
-
-[room rule hidden]
-
 [room rule off]
 
 [room rule on]
-
-[room rule prestige]
-
-[room rule revealed]
 
 [room rules changed]
 
@@ -4516,20 +4450,6 @@ Maparen inertzia
 
 [room seats one person %0 %1]
 
-[room rule resources]
-
-[room rule construction]
-
-[room rule food]
-
-[room rule training]
-
-[room rule retreat]
-
-[room rule unit deaths]
-
-[room rule combat]
-
 [room rules otherwise standard]
 
 [room browser link]
@@ -4625,4 +4545,98 @@ Maparen inertzia
 [room map ready body]
 
 [game draw]
+
+[Match]
+
+[Time limit]
+
+[Alliances can change]
+
+[Reveal terrain]
+
+[Starting unit level]
+
+[Starting stockpile]
+
+[Regrowth]
+
+[Building strength]
+
+[Wounded units retreat]
+
+[Units can die]
+
+[Unit training]
+
+[No stockpile]
+
+[No glass cannon]
+
+[How quickly harvested resources grow back and spread.]
+
+[Units must eat to keep working.]
+
+[Off: a peaceful match with no fighting between teams.]
+
+[Off: units fight to the death instead of retreating to heal.]
+
+[Off: units are never permanently lost; HP just stops at 1.]
+
+[Off: units still visit schools but never gain a level.]
+
+[Summary]
+
+[All rules]
+
+[Show all rules]
+
+[Choose a ruleset]
+
+[Reset to %0]
+
+[ruleset one change %0]
+
+[ruleset changes %0 %1]
+
+[No effect while combat is off.]
+
+[This match cannot end. Turn on prestige victory or set a time limit.]
+
+[Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
+
+[Blitz]
+
+[ruleset blitz description]
+
+[Gentle]
+
+[ruleset gentle description]
+
+[Sandbox]
+
+[ruleset sandbox description]
+
+[Bloodbath]
+
+[ruleset bloodbath description]
+
+[Siege]
+
+[ruleset siege description]
+
+[Lean years]
+
+[ruleset lean years description]
+
+[Gold rush]
+
+[ruleset gold rush description]
+
+[Elite ranks]
+
+[ruleset elite ranks description]
+
+[Shifting alliances]
+
+[ruleset shifting alliances description]
 

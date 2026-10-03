@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "CustomGameRules.h"
 #include "CustomGameSetup.h"
 #include "MapHeader.h"
 #include "StartQuality.h"
@@ -28,6 +29,21 @@ class CustomGameChoiceScreen : public Glob2UI::Screen
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
 	void choose(int index) { selected = index; invalidate(); }
 	void use() { endExecute(selected); }
+
+  protected:
+	void onEscape() override { endExecute(-2); }
+};
+
+// The rulesets (data/rulesets.json) as a list of name-and-description cards, for layouts
+// too narrow to show them beside the rules. Ends with the chosen ruleset's catalog index.
+class RulesetChoiceScreen : public Glob2UI::Screen
+{
+	friend struct CustomGameSetupHarness;
+	std::string selected;
+
+  public:
+	explicit RulesetChoiceScreen(std::string selected) : selected(std::move(selected)) {}
+	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
 
   protected:
 	void onEscape() override { endExecute(-2); }
@@ -69,6 +85,11 @@ class CustomGameScreen : public Glob2UI::Screen
 	void selectTab(int tab);
 	int tab() const { return currentTab; }
 	void launch();
+	// Game Rules tab: start from a ruleset, show the summary (0) or every rule (1), or open
+	// the ruleset list used on narrow layouts.
+	void selectRuleset(const std::string &id);
+	void setRulesView(int view);
+	void chooseRuleset();
 
   protected:
 	void onEscape() override { endExecute(CANCEL); }
@@ -130,8 +151,13 @@ class CustomGameScreen : public Glob2UI::Screen
 		Glob2UI::Element identity, controller, ai, team;
 	};
 	ColonyFields colonyFields(int colony, const Glob2UI::Presentation &p);
+	// Game Rules tab view state: Summary (0) or All rules (1), and the group a narrow layout
+	// shows in All rules.
+	int rulesView = 0;
+	CustomGameRules::Group rulesGroup = CustomGameRules::Group::Match;
 	Glob2UI::Element rulesTab(const Glob2UI::Presentation &p, bool narrow);
-	Glob2UI::Element ruleControl(int index, const Glob2UI::Presentation &p, std::string &help);
+	Glob2UI::Element ruleRow(const CustomGameRules::Rule &rule, const Glob2UI::Presentation &p, bool help);
+	void setRuleValue(const CustomGameRules::Rule &rule, int value);
 	void setMapMode(bool random);
 	void showAIProfile(int colony);
 	void listMaps();

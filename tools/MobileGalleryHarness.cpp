@@ -509,6 +509,12 @@ struct MobileGallerySetup
 		frame(stack);
 		lobby->selectTab(2);
 		stackShot(stack, "setup-rules");
+		lobby->selectRuleset("blitz");
+		lobby->setRulesView(1);
+		stackShot(stack, "setup-rules-all");
+		lobby->selectRuleset("standard");
+		lobby->setRulesView(0);
+		screenShot(stack, "ruleset-picker", std::make_unique<RulesetChoiceScreen>("standard"));
 		std::vector<std::string> aiChoices;
 		for (int id : AINames::selectionOrder())
 			aiChoices.push_back(AINames::getAISelectorText(id));

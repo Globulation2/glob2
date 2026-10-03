@@ -1216,8 +1216,6 @@ Grundstrategi: Fordeler enhedsproduktion mellem byggeri, opgraderinger, forsvar,
 Koordinerer vækst og trænede angreb, først mod heling og mad.
 [Algae]
 Alger
-[Alliances]
-Alliancer
 [Beach size]
 Strandstørrelse
 [Blue]
@@ -1306,8 +1304,6 @@ Aflåste hold
 Magenta
 [Map]
 Kort
-[Map knowledge]
-Kortkendskab
 [Match finished]
 Kampen afsluttet
 [Medium]
@@ -1354,8 +1350,6 @@ Rød
 Gentag landskab
 [Resources]
 Ressourcer
-[Restore standard rules]
-Gendan standardregler
 [Revealed terrain does not reveal all enemy activity.]
 Afsløret terræn afslører ikke al fjendens aktivitet.
 [River]
@@ -1386,8 +1380,6 @@ Hold
 Terræn
 [Terrain revealed]
 Terræn afsløret
-[Try a ruleset, then make it your own.]
-Prøv et regelsæt, og gør det så til dit eget.
 [Victory]
 Sejr
 [Watch game]
@@ -1412,12 +1404,6 @@ Dig mod alle
 Dine kort
 [colonies]
 kolonier
-[* Changed from standard.]
-* Ændret fra standard.
-[World & diplomacy]
-Verden og diplomati
-[Starting conditions & pace]
-Startforhold og tempo
 [Inactive]
 Inaktiv
 [8 workers / 2x speed]
@@ -1440,8 +1426,6 @@ Kortdefinerede startenheder
 Ingen kort i dette bibliotek.
 [Premade maps retain their authored starting units.]
 Forudbyggede kort beholder deres oprettede startenheder.
-[Premade: only speed changes (2x)]
-Færdigt kort: kun hastigheden ændres (2x)
 [Start with terrain known]
 Start med kendt terræn
 [This colony will not join the match.]
@@ -2208,18 +2192,10 @@ Statistik 2/3 >
 Side (P)
 [Map preview choose another]
 Vælg et kort
-[Resources never grow or spread across the map.]
-Ressourcer vokser eller spreder sig aldrig på kortet.
 [Building sites complete immediately, skipping delivery.]
 Byggepladser færdiggøres med det samme uden leveringsfase.
-[Units never grow hungry and never starve.]
-Enheder bliver aldrig sultne og dør aldrig af sult.
-[Slows how often resources grow or spread across the map.]
-Sænker hvor ofte ressourcer vokser eller spreder sig på kortet.
 [Seeds each team's shared market/exchange resource pool at game start.]
 Fylder hvert holds fælles marked/byttehandel-ressourcepulje op ved spilstart.
-[Grow normally]
-Vokser normalt
 [No growth]
 Ingen vækst
 [Normal construction]
@@ -2230,16 +2206,12 @@ Normal opførelse
 Enheder bliver sultne
 [No hunger]
 Ingen sult
-[Off (today's growth)]
-Fra (dagens vækst)
 [Scarce (2x slower)]
 Sparsomt (2x langsommere)
 [Very scarce (4x slower)]
 Meget sparsomt (4x langsommere)
 [Extremely scarce (8x slower)]
 Ekstremt sparsomt (8x langsommere)
-[None (today's default)]
-Ingen (dagens standard)
 [Small (+50 each)]
 Lille (+50 pr. stk.)
 [Medium (+150 each)]
@@ -2250,20 +2222,8 @@ Stor (+300 pr. stk.)
 Ingen ressourcevækst
 [Economy]
 Økonomi
-[Scarce resources]
-Sparsomme ressourcer
 [Instant construction]
 Øjeblikkelig opførelse
-[Stockpile start]
-Startbeholdning
-[Units still visit schools but never gain a level.]
-Enheder går stadig i skole, men stiger aldrig i niveau.
-[Units fight to the death instead of retreating to heal.]
-Enheder kæmper til døden i stedet for at trække sig tilbage for at hele.
-[Units are never permanently lost -- HP just stops at 1.]
-Enheder går aldrig permanent tabt -- HP stopper bare ved 1.
-[Disables all combat between every team.]
-Deaktiverer al kamp mellem alle hold.
 [Higher tiers deal more damage but have less HP and armor.]
 Højere niveauer gør mere skade, men har mindre HP og rustning.
 [Higher tiers give every building much more HP.]
@@ -2286,14 +2246,10 @@ Ingen permanent død
 Normal kamp
 [Peaceful mode]
 Fredelig tilstand
-[Off (today's balance)]
-Fra (dagens balance)
 [Glass cannon x2]
 Glaskanon x2
 [Glass cannon x3]
 Glaskanon x3
-[Off (today's HP)]
-Fra (dagens HP)
 [Fortress x5]
 Fæstning x5
 [Fortress x10]
@@ -2308,10 +2264,6 @@ Legendarisk
 Kamp
 [Glass cannon]
 Glaskanon
-[Fortress buildings]
-Befæstede bygninger
-[Veteran/Fast start]
-Veteran/Hurtig start
 [Match ends at the timer; highest prestige at that instant wins.]
 Kampen slutter ved timeren; den med højest prestige på det tidspunkt vinder.
 [Off (no timer)]
@@ -2324,8 +2276,6 @@ Fra (ingen timer)
 45 minutter
 [60 minutes]
 60 minutter
-[Sudden-death timer]
-Sudden death-timer
 [Stats page three]
 Statistik 3/3 >
 [Stats blocked units]
@@ -3054,10 +3004,6 @@ Rummelig
 Mere
 [No items]
 Ingen elementer
-[Opponents]
-Modstandere
-[Review]
-Oversigt
 [Review & Play]
 Gennemgå og spil
 [Edit opponents]
@@ -3872,21 +3818,9 @@ Kortets fart
 
 [room remove from room]
 
-[room rule conquest]
-
-[room rule fixed]
-
-[room rule free]
-
-[room rule hidden]
-
 [room rule off]
 
 [room rule on]
-
-[room rule prestige]
-
-[room rule revealed]
 
 [room rules changed]
 
@@ -4582,20 +4516,6 @@ Kortets fart
 
 [room seats one person %0 %1]
 
-[room rule resources]
-
-[room rule construction]
-
-[room rule food]
-
-[room rule training]
-
-[room rule retreat]
-
-[room rule unit deaths]
-
-[room rule combat]
-
 [room rules otherwise standard]
 
 [room browser link]
@@ -4691,4 +4611,98 @@ Kortets fart
 [room map ready body]
 
 [game draw]
+
+[Match]
+
+[Time limit]
+
+[Alliances can change]
+
+[Reveal terrain]
+
+[Starting unit level]
+
+[Starting stockpile]
+
+[Regrowth]
+
+[Building strength]
+
+[Wounded units retreat]
+
+[Units can die]
+
+[Unit training]
+
+[No stockpile]
+
+[No glass cannon]
+
+[How quickly harvested resources grow back and spread.]
+
+[Units must eat to keep working.]
+
+[Off: a peaceful match with no fighting between teams.]
+
+[Off: units fight to the death instead of retreating to heal.]
+
+[Off: units are never permanently lost; HP just stops at 1.]
+
+[Off: units still visit schools but never gain a level.]
+
+[Summary]
+
+[All rules]
+
+[Show all rules]
+
+[Choose a ruleset]
+
+[Reset to %0]
+
+[ruleset one change %0]
+
+[ruleset changes %0 %1]
+
+[No effect while combat is off.]
+
+[This match cannot end. Turn on prestige victory or set a time limit.]
+
+[Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
+
+[Blitz]
+
+[ruleset blitz description]
+
+[Gentle]
+
+[ruleset gentle description]
+
+[Sandbox]
+
+[ruleset sandbox description]
+
+[Bloodbath]
+
+[ruleset bloodbath description]
+
+[Siege]
+
+[ruleset siege description]
+
+[Lean years]
+
+[ruleset lean years description]
+
+[Gold rush]
+
+[ruleset gold rush description]
+
+[Elite ranks]
+
+[ruleset elite ranks description]
+
+[Shifting alliances]
+
+[ruleset shifting alliances description]
 

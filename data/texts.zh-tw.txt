@@ -1212,8 +1212,6 @@ AI策略與對抗
 協調殖民地成長與訓練部隊的進攻，先破壞治療和食物。
 [Algae]
 海藻
-[Alliances]
-聯盟
 [Beach size]
 海灘尺寸
 [Blue]
@@ -1302,8 +1300,6 @@ AI策略與對抗
 洋紅色
 [Map]
 地圖
-[Map knowledge]
-地形可見性
 [Match finished]
 比賽結束
 [Medium]
@@ -1350,8 +1346,6 @@ AI策略與對抗
 重複地形
 [Resources]
 資源
-[Restore standard rules]
-恢復標準規則
 [Revealed terrain does not reveal all enemy activity.]
 揭示的地形並不能揭示所有敵人的活動。
 [River]
@@ -1382,8 +1376,6 @@ AI策略與對抗
 地形
 [Terrain revealed]
 地形顯露
-[Try a ruleset, then make it your own.]
-嘗試一個規則集，然後將其變成你自己的。
 [Victory]
 勝利
 [Watch game]
@@ -1408,12 +1400,6 @@ AI策略與對抗
 你的地圖
 [colonies]
 殖民地
-[* Changed from standard.]
-* 從標準更改。
-[World & diplomacy]
-世界與外交
-[Starting conditions & pace]
-起始條件和速度
 [Inactive]
 不活躍
 [8 workers / 2x speed]
@@ -1436,8 +1422,6 @@ AI策略與對抗
 此地圖清單為空。
 [Premade maps retain their authored starting units.]
 預製地圖保留作者設定的初始單位。
-[Premade: only speed changes (2x)]
-預製:僅速度變化 (2x)
 [Start with terrain known]
 從已知地形開始
 [This colony will not join the match.]
@@ -2204,18 +2188,10 @@ OpenGL 在此版本中不可用。
 頁面 (P)
 [Map preview choose another]
 選擇地圖
-[Resources never grow or spread across the map.]
-資源永遠不會在地圖上生長或擴散。
 [Building sites complete immediately, skipping delivery.]
 建築工地會立即完成，跳過運送階段。
-[Units never grow hungry and never starve.]
-單位永遠不會肚子餓，也不會挨餓。
-[Slows how often resources grow or spread across the map.]
-降低資源在地圖上生長或擴散的頻率。
 [Seeds each team's shared market/exchange resource pool at game start.]
 在遊戲開始時，為每支隊伍補滿共用的市場/交易資源儲備。
-[Grow normally]
-正常生長
 [No growth]
 不生長
 [Normal construction]
@@ -2226,16 +2202,12 @@ OpenGL 在此版本中不可用。
 單位會肚子餓
 [No hunger]
 沒有飢餓
-[Off (today's growth)]
-關閉（目前的生長速度）
 [Scarce (2x slower)]
 稀少（慢 2x）
 [Very scarce (4x slower)]
 非常稀少（慢 4x）
 [Extremely scarce (8x slower)]
 極度稀少（慢 8x）
-[None (today's default)]
-無（目前預設值）
 [Small (+50 each)]
 小（各 +50）
 [Medium (+150 each)]
@@ -2246,20 +2218,8 @@ OpenGL 在此版本中不可用。
 資源不生長
 [Economy]
 經濟
-[Scarce resources]
-資源稀少
 [Instant construction]
 立即建造
-[Stockpile start]
-起始儲備
-[Units still visit schools but never gain a level.]
-單位仍然會去學校上課，但永遠不會升級。
-[Units fight to the death instead of retreating to heal.]
-單位會戰鬥至死，而不是撤退治療。
-[Units are never permanently lost -- HP just stops at 1.]
-單位永遠不會永久消失——生命值只會停在1。
-[Disables all combat between every team.]
-停用所有隊伍之間的戰鬥。
 [Higher tiers deal more damage but have less HP and armor.]
 更高的等級會造成更多傷害，但生命值和護甲較低。
 [Higher tiers give every building much more HP.]
@@ -2282,14 +2242,10 @@ OpenGL 在此版本中不可用。
 正常戰鬥
 [Peaceful mode]
 和平模式
-[Off (today's balance)]
-關閉（目前的平衡）
 [Glass cannon x2]
 玻璃大炮 x2
 [Glass cannon x3]
 玻璃大炮 x3
-[Off (today's HP)]
-關閉（目前的生命值）
 [Fortress x5]
 堡壘 x5
 [Fortress x10]
@@ -2304,10 +2260,6 @@ OpenGL 在此版本中不可用。
 戰鬥
 [Glass cannon]
 玻璃大炮
-[Fortress buildings]
-堡壘化建築
-[Veteran/Fast start]
-老兵/快速開局
 [Match ends at the timer; highest prestige at that instant wins.]
 比賽在計時器歸零時結束；那一刻聲望最高者獲勝。
 [Off (no timer)]
@@ -2320,8 +2272,6 @@ OpenGL 在此版本中不可用。
 45 分鐘
 [60 minutes]
 60 分鐘
-[Sudden-death timer]
-驟死計時器
 [Stats page three]
 統計 3/3 >
 [Stats blocked units]
@@ -3050,10 +3000,6 @@ Emoji
 更多
 [No items]
 沒有項目
-[Opponents]
-對手
-[Review]
-總覽
 [Review & Play]
 檢查並開始遊戲
 [Edit opponents]
@@ -3868,21 +3814,9 @@ CPU %0%
 
 [room remove from room]
 
-[room rule conquest]
-
-[room rule fixed]
-
-[room rule free]
-
-[room rule hidden]
-
 [room rule off]
 
 [room rule on]
-
-[room rule prestige]
-
-[room rule revealed]
 
 [room rules changed]
 
@@ -4578,20 +4512,6 @@ CPU %0%
 
 [room seats one person %0 %1]
 
-[room rule resources]
-
-[room rule construction]
-
-[room rule food]
-
-[room rule training]
-
-[room rule retreat]
-
-[room rule unit deaths]
-
-[room rule combat]
-
 [room rules otherwise standard]
 
 [room browser link]
@@ -4687,4 +4607,98 @@ CPU %0%
 [room map ready body]
 
 [game draw]
+
+[Match]
+
+[Time limit]
+
+[Alliances can change]
+
+[Reveal terrain]
+
+[Starting unit level]
+
+[Starting stockpile]
+
+[Regrowth]
+
+[Building strength]
+
+[Wounded units retreat]
+
+[Units can die]
+
+[Unit training]
+
+[No stockpile]
+
+[No glass cannon]
+
+[How quickly harvested resources grow back and spread.]
+
+[Units must eat to keep working.]
+
+[Off: a peaceful match with no fighting between teams.]
+
+[Off: units fight to the death instead of retreating to heal.]
+
+[Off: units are never permanently lost; HP just stops at 1.]
+
+[Off: units still visit schools but never gain a level.]
+
+[Summary]
+
+[All rules]
+
+[Show all rules]
+
+[Choose a ruleset]
+
+[Reset to %0]
+
+[ruleset one change %0]
+
+[ruleset changes %0 %1]
+
+[No effect while combat is off.]
+
+[This match cannot end. Turn on prestige victory or set a time limit.]
+
+[Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
+
+[Blitz]
+
+[ruleset blitz description]
+
+[Gentle]
+
+[ruleset gentle description]
+
+[Sandbox]
+
+[ruleset sandbox description]
+
+[Bloodbath]
+
+[ruleset bloodbath description]
+
+[Siege]
+
+[ruleset siege description]
+
+[Lean years]
+
+[ruleset lean years description]
+
+[Gold rush]
+
+[ruleset gold rush description]
+
+[Elite ranks]
+
+[ruleset elite ranks description]
+
+[Shifting alliances]
+
+[ruleset shifting alliances description]
 

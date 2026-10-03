@@ -2,6 +2,7 @@
 #pragma once
 #include "CustomGameSetup.h"
 #include "LegacyGenerationDescriptor.h"
+#include "RulesetCatalog.h"
 #include "Settings.h"
 #include <FileManager.h>
 #include <Stream.h>
@@ -71,7 +72,7 @@ struct CustomGamePreferences
 		// stay unchanged regardless of which generator module is selected.
 		const auto legacy = toLegacyDescriptor(setup.generator);
 		std::ostringstream out;
-		out << "glob2-custom-game 4\n"
+		out << "glob2-custom-game 5\n"
 			<< "setup " << setup.random << ' ' << setup.capacity << ' '
 			<< setup.prestige << ' ' << setup.revealed << ' ' << setup.locked << ' '
 			<< setup.speed << ' ' << userMaps << '\n'
@@ -81,7 +82,7 @@ struct CustomGamePreferences
 			<< setup.unitsFearless << ' ' << setup.permadeathDisabled << ' ' << setup.peacefulMode << ' '
 			<< setup.buildingHpLevel << ' ' << setup.startingUnitLevel << ' '
 			<< setup.suddenDeathMinutes << '\n'
-			<< "labels " << std::quoted(setup.format) << ' ' << std::quoted(setup.ruleset) << '\n'
+			<< "labels " << std::quoted(setup.format) << ' ' << std::quoted(setup.rulesetId) << '\n'
 			<< "map " << std::quoted(setup.premadeMap) << '\n'
 			<< "libraries " << std::quoted(librarySelection[0]) << ' '
 			<< std::quoted(librarySelection[1]) << '\n'
@@ -108,6 +109,20 @@ struct CustomGamePreferences
 		out << "end\n";
 		return out.str();
 	}
+	// Versions 1-4 stored the ruleset's English name, "Custom" once edited; version 5 stores
+	// its id. The saved rule values are kept either way, so "Custom" reads as Standard with
+	// its changes. A ruleset this build does not have (a removed or local one) also falls
+	// back to Standard rather than discarding the whole draft.
+	static std::string rulesetIdFromLabel(int version, const std::string &label)
+	{
+		std::string id = label;
+		if (version < 5)
+			id = label == "Quick clash"			 ? "quick-clash"
+				 : label == "Open book"			 ? "open-book"
+				 : label == "Last colony standing" ? "last-colony-standing"
+												   : "standard";
+		return RulesetCatalog::shipped().find(id) ? id : "standard";
+	}
 	bool decode(const std::string &text)
 	{
 		if (text.size() > 65536) return false;
@@ -128,7 +143,7 @@ struct CustomGamePreferences
 			return true;
 		};
 		int version, random, prestige, revealed, locked, user, method, repeat;
-		if (!word("glob2-custom-game") || !number(version, 1, 4) || !word("setup") ||
+		if (!word("glob2-custom-game") || !number(version, 1, 5) || !word("setup") ||
 			!number(random, 0, 1) || !number(s.capacity, 1, Team::MAX_COUNT) ||
 			!number(prestige, 0, 1) || !number(revealed, 0, 1) || !number(locked, 0, 1) ||
 			!number(s.speed, 0, Settings::GAME_SPEED_MAXIMUM) || !number(user, 0, 1)) return false;
@@ -143,9 +158,10 @@ struct CustomGamePreferences
 			const auto &minutes = CustomGameSetup::suddenDeathMinuteChoices;
 			if (std::find(minutes.begin(), minutes.end(), s.suddenDeathMinutes) == minutes.end()) return false;
 		}
-		if (!word("labels") || !(in >> std::quoted(s.format) >> std::quoted(s.ruleset))) return false;
+		std::string ruleset;
+		if (!word("labels") || !(in >> std::quoted(s.format) >> std::quoted(ruleset))) return false;
 		if (s.format != "FFA" && s.format != "2 vs 2" && s.format != "You vs all" && s.format != "Custom teams") return false;
-		if (s.ruleset != "Standard" && s.ruleset != "Quick clash" && s.ruleset != "Open book" && s.ruleset != "Last colony standing" && s.ruleset != "Custom") return false;
+		s.rulesetId = rulesetIdFromLabel(version, ruleset);
 		if (!word("map") || !(in >> std::quoted(s.premadeMap)) || !word("libraries") ||
 			!(in >> std::quoted(draft.librarySelection[0]) >> std::quoted(draft.librarySelection[1])) ||
 			!word("sections")) return false;

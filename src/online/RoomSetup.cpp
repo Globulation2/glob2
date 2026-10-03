@@ -4,12 +4,16 @@
 #include "RoomSetup.h"
 
 #include "CustomGameSetup.h"
+#include "CustomGameRules.h"
+#include "RulesetCatalog.h"
 #include "GenerationService.h"
 #include "GeneratorDefinition.h"
 
 #include <map>
 #include <set>
 #include <stdexcept>
+#include <StringTable.h>
+#include <Toolkit.h>
 
 namespace Online
 {
@@ -157,7 +161,8 @@ void applyRulesToSetup(const Json& r, CustomGameSetup& s)
 	s.permadeathDisabled = flag(r, "permadeathDisabled", s.permadeathDisabled);
 	s.peacefulMode = flag(r, "peacefulMode", s.peacefulMode);
 	s.buildingHpLevel = integer(r, "buildingHpLevel", s.buildingHpLevel);
-	s.ruleset = rulesetName(s);
+	const std::string ruleset = matchingRuleset(s);
+	s.rulesetId = ruleset.empty() ? "standard" : ruleset;
 }
 
 bool applyRoomToSetup(const Json& room, CustomGameSetup& setup)
@@ -201,30 +206,25 @@ bool applyRoomToSetup(const Json& room, CustomGameSetup& setup)
 	return known;
 }
 
+std::string matchingRuleset(const CustomGameSetup& setup)
+{
+	// A room carries only some rules (no game speed, workers or unit level), so rulesets that
+	// differ only in those match the first of them: Quick clash reads as Standard.
+	for (const auto& ruleset : RulesetCatalog::shipped().rulesets)
+	{
+		bool same = true;
+		for (const auto& rule : CustomGameRules::rules())
+			same = same && (!rule.carriedInRooms || setup.ruleValue(rule) == ruleset.value(rule, setup));
+		if (same)
+			return ruleset.id;
+	}
+	return {};
+}
+
 std::string rulesetName(const CustomGameSetup& setup)
 {
-	static const char* names[] = {"Standard", "Quick clash", "Open book", "Last colony standing"};
-	for (int preset = 0; preset < 4; ++preset)
-	{
-		CustomGameSetup reference = setup;
-		reference.presetRules(preset);
-		// The room carries no game speed or worker count; compare the rules alone.
-		if (reference.prestige == setup.prestige && reference.revealed == setup.revealed &&
-			reference.locked == setup.locked && reference.noResourceGrowth == setup.noResourceGrowth &&
-			reference.resourceScarcity == setup.resourceScarcity &&
-			reference.instantConstruction == setup.instantConstruction &&
-			reference.stockpileStart == setup.stockpileStart && reference.noHunger == setup.noHunger &&
-			reference.unitUpgradesDisabled == setup.unitUpgradesDisabled &&
-			reference.glassCannonLevel == setup.glassCannonLevel &&
-			reference.unitsFearless == setup.unitsFearless &&
-			reference.permadeathDisabled == setup.permadeathDisabled &&
-			reference.peacefulMode == setup.peacefulMode && reference.buildingHpLevel == setup.buildingHpLevel &&
-			reference.suddenDeathMinutes == setup.suddenDeathMinutes &&
-			// Quick clash differs from Standard only by speed and workers.
-			preset != 1)
-			return names[preset];
-	}
-	return "Custom rules";
+	const auto* ruleset = RulesetCatalog::shipped().find(matchingRuleset(setup));
+	return GAGCore::Toolkit::getStringTable()->getString(ruleset ? ruleset->name.c_str() : "[Custom rules]");
 }
 
 std::string formatName(const Json& teams)

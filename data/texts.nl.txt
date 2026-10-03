@@ -1164,8 +1164,6 @@ Kernstrategie: Verdeelt productie over bouw, verbeteringen, verdediging, aanvall
 Coördineert groei en getrainde aanvallen en richt zich eerst op genezing en voedsel.
 [Algae]
 zeewier
-[Alliances]
-Allianties
 [Beach size]
 Strandgrootte
 [Blue]
@@ -1254,8 +1252,6 @@ Vaste teams
 Magenta
 [Map]
 Kaart
-[Map knowledge]
-Kaartkennis
 [Match finished]
 Wedstrijd afgelopen
 [Medium]
@@ -1302,8 +1298,6 @@ Rood
 Herhaal landschap
 [Resources]
 Hulpbronnen
-[Restore standard rules]
-Herstel standaardregels
 [Revealed terrain does not reveal all enemy activity.]
 Onthuld terrein onthult niet alle vijandelijke activiteiten.
 [River]
@@ -1334,8 +1328,6 @@ Team
 Terrein
 [Terrain revealed]
 Terrein onthuld
-[Try a ruleset, then make it your own.]
-Probeer een regelset en maak deze vervolgens uw eigen.
 [Victory]
 Overwinning
 [Watch game]
@@ -1360,12 +1352,6 @@ Jij tegen iedereen
 Jouw kaarten
 [colonies]
 kolonies
-[* Changed from standard.]
-* Gewijzigd ten opzichte van standaard.
-[World & diplomacy]
-Wereld & diplomatie
-[Starting conditions & pace]
-Startvoorwaarden & tempo
 [Inactive]
 Inactief
 [8 workers / 2x speed]
@@ -1388,8 +1374,6 @@ Kaartgedefinieerde starteenheden
 Geen kaarten in deze bibliotheek.
 [Premade maps retain their authored starting units.]
 Bestaande kaarten behouden de starteenheden die de maker heeft gekozen.
-[Premade: only speed changes (2x)]
-Bestaande kaart: alleen de snelheid verandert (2x)
 [Start with terrain known]
 Begin met bekend terrein
 [This colony will not join the match.]
@@ -2156,18 +2140,10 @@ Statistieken 2/3 >
 Pagina (P)
 [Map preview choose another]
 Kies een kaart
-[Resources never grow or spread across the map.]
-Grondstoffen groeien of verspreiden zich nooit over de kaart.
 [Building sites complete immediately, skipping delivery.]
 Bouwplaatsen worden onmiddellijk voltooid, zonder bezorgfase.
-[Units never grow hungry and never starve.]
-Eenheden krijgen nooit honger en verhongeren nooit.
-[Slows how often resources grow or spread across the map.]
-Vertraagt hoe vaak grondstoffen over de kaart groeien of zich verspreiden.
 [Seeds each team's shared market/exchange resource pool at game start.]
 Vult bij de start van het spel de gedeelde markt-/ruilvoorraad van elk team.
-[Grow normally]
-Normale groei
 [No growth]
 Geen groei
 [Normal construction]
@@ -2178,16 +2154,12 @@ Direct
 Eenheden krijgen honger
 [No hunger]
 Geen honger
-[Off (today's growth)]
-Uit (huidige groei)
 [Scarce (2x slower)]
 Schaars (2x langzamer)
 [Very scarce (4x slower)]
 Zeer schaars (4x langzamer)
 [Extremely scarce (8x slower)]
 Extreem schaars (8x langzamer)
-[None (today's default)]
-Geen (huidige standaard)
 [Small (+50 each)]
 Klein (+50 per stuk)
 [Medium (+150 each)]
@@ -2198,20 +2170,8 @@ Groot (+300 per stuk)
 Geen grondstoffengroei
 [Economy]
 Economie
-[Scarce resources]
-Schaarse grondstoffen
 [Instant construction]
 Directe bouw
-[Stockpile start]
-Startvoorraad
-[Units still visit schools but never gain a level.]
-Eenheden gaan nog steeds naar school, maar stijgen nooit in niveau.
-[Units fight to the death instead of retreating to heal.]
-Eenheden vechten tot de dood in plaats van zich terug te trekken om te genezen.
-[Units are never permanently lost -- HP just stops at 1.]
-Eenheden gaan nooit permanent verloren -- hun sterkte stopt gewoon bij 1.
-[Disables all combat between every team.]
-Schakelt alle gevechten tussen alle teams uit.
 [Higher tiers deal more damage but have less HP and armor.]
 Hogere niveaus doen meer schade, maar hebben minder sterkte en pantser.
 [Higher tiers give every building much more HP.]
@@ -2234,14 +2194,10 @@ Geen permanente dood
 Normaal gevecht
 [Peaceful mode]
 Vreedzame modus
-[Off (today's balance)]
-Uit (huidige balans)
 [Glass cannon x2]
 Glazen kanon x2
 [Glass cannon x3]
 Glazen kanon x3
-[Off (today's HP)]
-Uit (huidige sterkte)
 [Fortress x5]
 Fort x5
 [Fortress x10]
@@ -2256,10 +2212,6 @@ Legendarisch
 Gevecht
 [Glass cannon]
 Glazen kanon
-[Fortress buildings]
-Versterkte gebouwen
-[Veteran/Fast start]
-Veteraan/Snelle start
 [Match ends at the timer; highest prestige at that instant wins.]
 De partij eindigt bij de timer; wie op dat moment de meeste roem heeft, wint.
 [Off (no timer)]
@@ -2272,8 +2224,6 @@ Uit (geen timer)
 45 minuten
 [60 minutes]
 60 minuten
-[Sudden-death timer]
-Sudden-death-timer
 [Stats page three]
 Statistieken 3/3 >
 [Stats blocked units]
@@ -3002,10 +2952,6 @@ Ruim
 Meer
 [No items]
 Geen items
-[Opponents]
-Tegenstanders
-[Review]
-Overzicht
 [Review & Play]
 Controleren en spelen
 [Edit opponents]
@@ -3820,21 +3766,9 @@ Vaart van de kaart
 
 [room remove from room]
 
-[room rule conquest]
-
-[room rule fixed]
-
-[room rule free]
-
-[room rule hidden]
-
 [room rule off]
 
 [room rule on]
-
-[room rule prestige]
-
-[room rule revealed]
 
 [room rules changed]
 
@@ -4530,20 +4464,6 @@ Vaart van de kaart
 
 [room seats one person %0 %1]
 
-[room rule resources]
-
-[room rule construction]
-
-[room rule food]
-
-[room rule training]
-
-[room rule retreat]
-
-[room rule unit deaths]
-
-[room rule combat]
-
 [room rules otherwise standard]
 
 [room browser link]
@@ -4639,4 +4559,98 @@ Vaart van de kaart
 [room map ready body]
 
 [game draw]
+
+[Match]
+
+[Time limit]
+
+[Alliances can change]
+
+[Reveal terrain]
+
+[Starting unit level]
+
+[Starting stockpile]
+
+[Regrowth]
+
+[Building strength]
+
+[Wounded units retreat]
+
+[Units can die]
+
+[Unit training]
+
+[No stockpile]
+
+[No glass cannon]
+
+[How quickly harvested resources grow back and spread.]
+
+[Units must eat to keep working.]
+
+[Off: a peaceful match with no fighting between teams.]
+
+[Off: units fight to the death instead of retreating to heal.]
+
+[Off: units are never permanently lost; HP just stops at 1.]
+
+[Off: units still visit schools but never gain a level.]
+
+[Summary]
+
+[All rules]
+
+[Show all rules]
+
+[Choose a ruleset]
+
+[Reset to %0]
+
+[ruleset one change %0]
+
+[ruleset changes %0 %1]
+
+[No effect while combat is off.]
+
+[This match cannot end. Turn on prestige victory or set a time limit.]
+
+[Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
+
+[Blitz]
+
+[ruleset blitz description]
+
+[Gentle]
+
+[ruleset gentle description]
+
+[Sandbox]
+
+[ruleset sandbox description]
+
+[Bloodbath]
+
+[ruleset bloodbath description]
+
+[Siege]
+
+[ruleset siege description]
+
+[Lean years]
+
+[ruleset lean years description]
+
+[Gold rush]
+
+[ruleset gold rush description]
+
+[Elite ranks]
+
+[ruleset elite ranks description]
+
+[Shifting alliances]
+
+[ruleset shifting alliances description]
 

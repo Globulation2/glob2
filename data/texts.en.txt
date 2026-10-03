@@ -1132,8 +1132,6 @@ Core strategy: Shares unit production among construction, upgrades, defense, att
 Coordinates colony growth and trained attacks, targeting healing and food first.
 [Algae]
 Algae
-[Alliances]
-Alliances
 [Beach size]
 Beach size
 [Blue]
@@ -1222,8 +1220,6 @@ Locked teams
 Magenta
 [Map]
 Map
-[Map knowledge]
-Map knowledge
 [Match finished]
 Match finished
 [Medium]
@@ -1270,8 +1266,6 @@ Red
 Repeat landscape
 [Resources]
 Resources
-[Restore standard rules]
-Restore standard rules
 [Revealed terrain does not reveal all enemy activity.]
 Revealed terrain does not reveal all enemy activity.
 [River]
@@ -1302,8 +1296,6 @@ Team
 Terrain
 [Terrain revealed]
 Terrain revealed
-[Try a ruleset, then make it your own.]
-Try a ruleset, then make it your own.
 [Victory]
 Victory
 [Watch game]
@@ -1328,12 +1320,6 @@ You vs all
 Your maps
 [colonies]
 colonies
-[* Changed from standard.]
-* Changed from standard.
-[World & diplomacy]
-World & diplomacy
-[Starting conditions & pace]
-Starting conditions & pace
 [Inactive]
 Inactive
 [8 workers / 2x speed]
@@ -1356,8 +1342,6 @@ Map-defined starting units
 No maps in this library.
 [Premade maps retain their authored starting units.]
 Premade maps retain their authored starting units.
-[Premade: only speed changes (2x)]
-Premade: only speed changes (2x)
 [Start with terrain known]
 Start with terrain known
 [This colony will not join the match.]
@@ -2074,18 +2058,10 @@ Click to retry
 Please wait
 [Map preview choose another]
 Choose a map
-[Resources never grow or spread across the map.]
-Resources never grow or spread across the map.
 [Building sites complete immediately, skipping delivery.]
 Building sites complete immediately, skipping delivery.
-[Units never grow hungry and never starve.]
-Units never grow hungry and never starve.
-[Slows how often resources grow or spread across the map.]
-Slows how often resources grow or spread across the map.
 [Seeds each team's shared market/exchange resource pool at game start.]
 Seeds each team's shared market/exchange resource pool at game start.
-[Grow normally]
-Grow normally
 [No growth]
 No growth
 [Normal construction]
@@ -2096,16 +2072,12 @@ Instant
 Units get hungry
 [No hunger]
 No hunger
-[Off (today's growth)]
-Off (today's growth)
 [Scarce (2x slower)]
 Scarce (2x slower)
 [Very scarce (4x slower)]
 Very scarce (4x slower)
 [Extremely scarce (8x slower)]
 Extremely scarce (8x slower)
-[None (today's default)]
-None (today's default)
 [Small (+50 each)]
 Small (+50 each)
 [Medium (+150 each)]
@@ -2116,20 +2088,8 @@ Large (+300 each)
 No resource growth
 [Economy]
 Economy
-[Scarce resources]
-Scarce resources
 [Instant construction]
 Instant construction
-[Stockpile start]
-Stockpile start
-[Units still visit schools but never gain a level.]
-Units still visit schools but never gain a level.
-[Units fight to the death instead of retreating to heal.]
-Units fight to the death instead of retreating to heal.
-[Units are never permanently lost -- HP just stops at 1.]
-Units are never permanently lost -- HP just stops at 1.
-[Disables all combat between every team.]
-Disables all combat between every team.
 [Higher tiers deal more damage but have less HP and armor.]
 Higher tiers deal more damage but have less HP and armor.
 [Higher tiers give every building much more HP.]
@@ -2152,14 +2112,10 @@ No permadeath
 Normal combat
 [Peaceful mode]
 Peaceful mode
-[Off (today's balance)]
-Off (today's balance)
 [Glass cannon x2]
 Glass cannon x2
 [Glass cannon x3]
 Glass cannon x3
-[Off (today's HP)]
-Off (today's HP)
 [Fortress x5]
 Fortress x5
 [Fortress x10]
@@ -2174,10 +2130,6 @@ Legendary
 Combat
 [Glass cannon]
 Glass cannon
-[Fortress buildings]
-Fortress buildings
-[Veteran/Fast start]
-Veteran/Fast start
 [Match ends at the timer; highest prestige at that instant wins.]
 Match ends at the timer; highest prestige at that instant wins.
 [Off (no timer)]
@@ -2190,8 +2142,6 @@ Off (no timer)
 45 minutes
 [60 minutes]
 60 minutes
-[Sudden-death timer]
-Sudden-death timer
 [Stats births]
 Births
 [Stats deaths]
@@ -3002,10 +2952,6 @@ No overlay
 More
 [No items]
 No items
-[Opponents]
-Opponents
-[Review]
-Review
 [Review & Play]
 Review & Play
 [Edit opponents]
@@ -3794,22 +3740,10 @@ Ready
 ✓ Ready
 [room remove from room]
 Remove from room
-[room rule conquest]
-Last colony standing
-[room rule fixed]
-Fixed
-[room rule free]
-Free
-[room rule hidden]
-Hidden
 [room rule off]
 Off
 [room rule on]
 On
-[room rule prestige]
-Prestige or conquest
-[room rule revealed]
-Revealed
 [room rules changed]
 The rules changed.
 [room rules]
@@ -4504,20 +4438,6 @@ You have no pauses left in this match
 %0 has used all their pause time: the game resumes
 [room seats one person %0 %1]
 1 player · %0 AI · %1 open
-[room rule resources]
-Resources
-[room rule construction]
-Construction
-[room rule food]
-Food
-[room rule training]
-Training
-[room rule retreat]
-Retreat
-[room rule unit deaths]
-Unit deaths
-[room rule combat]
-Combat
 [room rules otherwise standard]
 Every other rule is as in Standard.
 [room browser link]
@@ -4614,3 +4534,97 @@ this map
 Create a room and invite your friends: the room plays this map.
 [game draw]
 Draw
+[Match]
+Match
+[Time limit]
+Time limit
+[Alliances can change]
+Alliances can change
+[Reveal terrain]
+Reveal terrain
+[Starting unit level]
+Starting unit level
+[Starting stockpile]
+Starting stockpile
+[Regrowth]
+Regrowth
+[Building strength]
+Building strength
+[Wounded units retreat]
+Wounded units retreat
+[Units can die]
+Units can die
+[Unit training]
+Unit training
+[No stockpile]
+None
+[No glass cannon]
+Off
+[How quickly harvested resources grow back and spread.]
+How quickly harvested resources grow back and spread.
+[Units must eat to keep working.]
+Units must eat to keep working.
+[Off: a peaceful match with no fighting between teams.]
+Off: a peaceful match with no fighting between teams.
+[Off: units fight to the death instead of retreating to heal.]
+Off: units fight to the death instead of retreating to heal.
+[Off: units are never permanently lost; HP just stops at 1.]
+Off: units are never permanently lost; HP just stops at 1.
+[Off: units still visit schools but never gain a level.]
+Off: units still visit schools but never gain a level.
+[Summary]
+Summary
+[All rules]
+All rules
+[Show all rules]
+Show all rules
+[Choose a ruleset]
+Choose a ruleset
+[Reset to %0]
+Reset to %0
+[ruleset one change %0]
+%0 + 1 change
+[ruleset changes %0 %1]
+%0 + %1 changes
+[No effect while combat is off.]
+No effect while combat is off.
+[This match cannot end. Turn on prestige victory or set a time limit.]
+This match cannot end. Turn on prestige victory or set a time limit.
+[Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
+Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.
+[Blitz]
+Blitz
+[ruleset blitz description]
+Rush start and a 45-minute buzzer.
+[Gentle]
+Gentle
+[ruleset gentle description]
+Forgiving rules for a first match.
+[Sandbox]
+Sandbox
+[ruleset sandbox description]
+No fighting, no starving, build anything.
+[Bloodbath]
+Bloodbath
+[ruleset bloodbath description]
+Fragile, fearless armies; fights end fast.
+[Siege]
+Siege
+[ruleset siege description]
+Fortress walls and long wars.
+[Lean years]
+Lean years
+[ruleset lean years description]
+Resources barely come back.
+[Gold rush]
+Gold rush
+[ruleset gold rush description]
+What's on the map is all there is.
+[Elite ranks]
+Elite ranks
+[ruleset elite ranks description]
+Start trained, train no further.
+[Shifting alliances]
+Shifting alliances
+[ruleset shifting alliances description]
+Teams can change; 60-minute prestige race.

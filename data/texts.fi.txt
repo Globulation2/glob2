@@ -1140,8 +1140,6 @@ Perusstrategia: Jakaa yksikkötuotannon rakentamisen, parannusten, puolustuksen,
 Yhdistää yhdyskunnan kasvun ja koulutetut hyökkäykset; iskee ensin hoitoon ja ruokaan.
 [Algae]
 Levä
-[Alliances]
-Liittoumat
 [Beach size]
 Rantakoko
 [Blue]
@@ -1230,8 +1228,6 @@ Lukitut joukkueet
 Magenta
 [Map]
 Kartta
-[Map knowledge]
-Kartan tuntemus
 [Match finished]
 Ottelu päättynyt
 [Medium]
@@ -1278,8 +1274,6 @@ Punainen
 Maiseman toisto
 [Resources]
 Resurssit
-[Restore standard rules]
-Palauta vakiosäännöt
 [Revealed terrain does not reveal all enemy activity.]
 Paljastettu maasto ei paljasta kaikkea vihollisen toimintaa.
 [River]
@@ -1310,8 +1304,6 @@ Joukkue
 Maasto
 [Terrain revealed]
 Maasto paljastettu
-[Try a ruleset, then make it your own.]
-Kokeile sääntökokoelmaa ja muokkaa sitä mielesi mukaan.
 [Victory]
 Voitto
 [Watch game]
@@ -1336,12 +1328,6 @@ Sinä kaikkia vastaan
 Omat kartat
 [colonies]
 siirtokuntia
-[* Changed from standard.]
-* Muutettu vakiosta.
-[World & diplomacy]
-Maailma ja diplomatia
-[Starting conditions & pace]
-Lähtöolosuhteet ja vauhti
 [Inactive]
 Ei-aktiivinen
 [8 workers / 2x speed]
@@ -1364,8 +1350,6 @@ Kartan määritetyt aloitusyksiköt
 Tässä kirjastossa ei ole karttoja.
 [Premade maps retain their authored starting units.]
 Valmiit kartat säilyttävät tekijänsä määrittämät aloitusyksiköt.
-[Premade: only speed changes (2x)]
-Valmis kartta: vain nopeus muuttuu (2x)
 [Start with terrain known]
 Aloita tiedossa olevasta maastosta
 [This colony will not join the match.]
@@ -2132,18 +2116,10 @@ Tilastot 2/3 >
 Sivu (P)
 [Map preview choose another]
 Valitse kartta
-[Resources never grow or spread across the map.]
-Resurssit eivät koskaan kasva tai leviä kartalla.
 [Building sites complete immediately, skipping delivery.]
 Rakennustyömaat valmistuvat heti ilman toimitusvaihetta.
-[Units never grow hungry and never starve.]
-Yksiköt eivät koskaan tunne nälkää eivätkä koskaan näänny nälkään.
-[Slows how often resources grow or spread across the map.]
-Hidastaa, kuinka usein resurssit kasvavat tai leviävät kartalla.
 [Seeds each team's shared market/exchange resource pool at game start.]
 Täyttää jokaisen joukkueen yhteisen markkina-/vaihtoresurssivaraston pelin alussa.
-[Grow normally]
-Normaali kasvu
 [No growth]
 Ei kasvua
 [Normal construction]
@@ -2154,16 +2130,12 @@ Välitön
 Yksiköt tulevat nälkäisiksi
 [No hunger]
 Ei nälkää
-[Off (today's growth)]
-Pois (nykyinen kasvu)
 [Scarce (2x slower)]
 Niukka (2x hitaampi)
 [Very scarce (4x slower)]
 Erittäin niukka (4x hitaampi)
 [Extremely scarce (8x slower)]
 Äärimmäisen niukka (8x hitaampi)
-[None (today's default)]
-Ei mitään (nykyinen oletus)
 [Small (+50 each)]
 Pieni (+50 kutakin)
 [Medium (+150 each)]
@@ -2174,20 +2146,8 @@ Suuri (+300 kutakin)
 Ei resurssien kasvua
 [Economy]
 Talous
-[Scarce resources]
-Niukat resurssit
 [Instant construction]
 Välitön rakentaminen
-[Stockpile start]
-Aloitusvarasto
-[Units still visit schools but never gain a level.]
-Yksiköt käyvät yhä koulua, mutta eivät koskaan nouse tasolle.
-[Units fight to the death instead of retreating to heal.]
-Yksiköt taistelevat kuolemaan asti sen sijaan, että vetäytyisivät parantumaan.
-[Units are never permanently lost -- HP just stops at 1.]
-Yksiköitä ei koskaan menetetä pysyvästi -- HP pysähtyy vain lukemaan 1.
-[Disables all combat between every team.]
-Poistaa käytöstä kaiken taistelun kaikkien joukkueiden välillä.
 [Higher tiers deal more damage but have less HP and armor.]
 Korkeammat tasot aiheuttavat enemmän vahinkoa, mutta niillä on vähemmän HP:ta ja panssaria.
 [Higher tiers give every building much more HP.]
@@ -2210,14 +2170,10 @@ Ei pysyvää kuolemaa
 Normaali taistelu
 [Peaceful mode]
 Rauhanomainen tila
-[Off (today's balance)]
-Pois (nykyinen tasapaino)
 [Glass cannon x2]
 Lasitykki x2
 [Glass cannon x3]
 Lasitykki x3
-[Off (today's HP)]
-Pois (nykyinen HP)
 [Fortress x5]
 Linnoitus x5
 [Fortress x10]
@@ -2232,10 +2188,6 @@ Legendaarinen
 Taistelu
 [Glass cannon]
 Lasitykki
-[Fortress buildings]
-Linnoitetut rakennukset
-[Veteran/Fast start]
-Veteraani/Nopea aloitus
 [Match ends at the timer; highest prestige at that instant wins.]
 Ottelu päättyy ajastimeen; eniten mainetta sillä hetkellä omaava voittaa.
 [Off (no timer)]
@@ -2248,8 +2200,6 @@ Pois (ei ajastinta)
 45 minuuttia
 [60 minutes]
 60 minuuttia
-[Sudden-death timer]
-Äkkikuoleman ajastin
 [Stats page three]
 Tilastot 3/3 >
 [Stats blocked units]
@@ -2978,10 +2928,6 @@ Väljä
 Lisää
 [No items]
 Ei kohteita
-[Opponents]
-Vastustajat
-[Review]
-Yhteenveto
 [Review & Play]
 Tarkista ja pelaa
 [Edit opponents]
@@ -3796,21 +3742,9 @@ Kartan liike-energia
 
 [room remove from room]
 
-[room rule conquest]
-
-[room rule fixed]
-
-[room rule free]
-
-[room rule hidden]
-
 [room rule off]
 
 [room rule on]
-
-[room rule prestige]
-
-[room rule revealed]
 
 [room rules changed]
 
@@ -4506,20 +4440,6 @@ Kartan liike-energia
 
 [room seats one person %0 %1]
 
-[room rule resources]
-
-[room rule construction]
-
-[room rule food]
-
-[room rule training]
-
-[room rule retreat]
-
-[room rule unit deaths]
-
-[room rule combat]
-
 [room rules otherwise standard]
 
 [room browser link]
@@ -4615,4 +4535,98 @@ Kartan liike-energia
 [room map ready body]
 
 [game draw]
+
+[Match]
+
+[Time limit]
+
+[Alliances can change]
+
+[Reveal terrain]
+
+[Starting unit level]
+
+[Starting stockpile]
+
+[Regrowth]
+
+[Building strength]
+
+[Wounded units retreat]
+
+[Units can die]
+
+[Unit training]
+
+[No stockpile]
+
+[No glass cannon]
+
+[How quickly harvested resources grow back and spread.]
+
+[Units must eat to keep working.]
+
+[Off: a peaceful match with no fighting between teams.]
+
+[Off: units fight to the death instead of retreating to heal.]
+
+[Off: units are never permanently lost; HP just stops at 1.]
+
+[Off: units still visit schools but never gain a level.]
+
+[Summary]
+
+[All rules]
+
+[Show all rules]
+
+[Choose a ruleset]
+
+[Reset to %0]
+
+[ruleset one change %0]
+
+[ruleset changes %0 %1]
+
+[No effect while combat is off.]
+
+[This match cannot end. Turn on prestige victory or set a time limit.]
+
+[Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
+
+[Blitz]
+
+[ruleset blitz description]
+
+[Gentle]
+
+[ruleset gentle description]
+
+[Sandbox]
+
+[ruleset sandbox description]
+
+[Bloodbath]
+
+[ruleset bloodbath description]
+
+[Siege]
+
+[ruleset siege description]
+
+[Lean years]
+
+[ruleset lean years description]
+
+[Gold rush]
+
+[ruleset gold rush description]
+
+[Elite ranks]
+
+[ruleset elite ranks description]
+
+[Shifting alliances]
+
+[ruleset shifting alliances description]
 
