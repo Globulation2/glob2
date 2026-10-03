@@ -16,6 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
+#include "field/UniformTraversal.h"
 #include "AITelemetryFields.h"
 #include "AIMaxima.h"
 #include "AIMaximaWorldHelpers.h"
@@ -137,7 +138,7 @@ namespace
 		std::vector<int>& distances)
 	{
 		distances.assign(w*h, PREEMPTIVE_UNREACHABLE);
-		std::deque<int> queue;
+		field::Frontier queue;
 		for(std::vector<int>::const_iterator source=sources.begin();
 			source!=sources.end(); ++source)
 		{
@@ -147,28 +148,7 @@ namespace
 			distances[*source]=0;
 			queue.push_back(*source);
 		}
-		while(!queue.empty())
-		{
-			const int index=queue.front();
-			queue.pop_front();
-			const int x=index%w;
-			const int y=index/w;
-			for(int dy=-1; dy<=1; ++dy)
-			{
-				for(int dx=-1; dx<=1; ++dx)
-				{
-					if(dx==0 && dy==0)
-						continue;
-					const int neighbor=((y+dy+h)%h)*w+((x+dx+w)%w);
-					if(walkable[neighbor]
-					   && distances[neighbor]==PREEMPTIVE_UNREACHABLE)
-					{
-						distances[neighbor]=distances[index]+1;
-						queue.push_back(neighbor);
-					}
-				}
-			}
-		}
+		field::expandDistances(distances,queue,{w,h},field::Surrounding,PREEMPTIVE_UNREACHABLE,[&](int next){return walkable[next]!=0;});
 	}
 
 	struct ResourceAccessObservation

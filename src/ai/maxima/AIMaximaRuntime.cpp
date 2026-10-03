@@ -1,3 +1,4 @@
+#include "field/UniformTraversal.h"
 #include "FileFormatVersions.h"
 #include <PerformanceTelemetry.h>
 #include "AITelemetryFields.h"
@@ -238,15 +239,15 @@ bool GradientInfo::load(GAGCore::InputStream* stream)
 
 Gradient::Gradient(const GradientInfo& info) : info(info),width(0),sourceCount(0) {}
 
-void Gradient::recalculate(Player* player)
+void Gradient::recalculate(Player* player, field::Frontier& frontier)
 {
 	Map* map=player->map;
 	width=map->getW();
 	const int height=map->getH();
 	values.assign(width*height,UnreachableCell);
 	sourceCount=0;
-	std::vector<int> queue;
-	queue.reserve(width*height);
+	auto& queue=frontier;
+	queue.clear();
 	for(int x=0;x<width;++x)
 		for(int y=0;y<height;++y)
 		{
@@ -254,24 +255,7 @@ void Gradient::recalculate(Player* player)
 			if(info.matches_source(player,x,y)) { values[at]=SourceCell; queue.push_back(at);++sourceCount; }
 			else if(info.matches_obstacle(player,x,y)) values[at]=ObstacleCell;
 		}
-	for(size_t head=0;head<queue.size();++head)
-	{
-		const int at=queue[head];
-		const int px=at%width;
-		const int py=at/width;
-		const Sint16 next=values[at]+1;
-		const int xs[3]={px==0?width-1:px-1,px,px+1==width?0:px+1};
-		const int ys[3]={py==0?height-1:py-1,py,py+1==height?0:py+1};
-		for(int dy=-1;dy<=1;++dy)
-			for(int dx=-1;dx<=1;++dx)
-			{
-				if(dx==0 && dy==0) continue;
-				const int nx=xs[dx+1];
-				const int ny=ys[dy+1];
-				Sint16& value=values[ny*width+nx];
-				if(value==UnreachableCell) { value=next; queue.push_back(ny*width+nx); }
-			}
-	}
+	field::expandDistances(values,queue,{width,height},field::Surrounding,UnreachableCell);
 }
 
 int Gradient::get_height(int x,int y) const
@@ -300,7 +284,7 @@ Gradient& GradientManager::get_gradient(const GradientInfo& info)
 	{
 		gradients.push_back(shared_ptr<Gradient>(new Gradient(info)));
 		ages.push_back(0); index=int(gradients.size())-1;
-		gradients[index]->recalculate(player);
+		gradients[index]->recalculate(player,frontier);
 	}
 	else if(ages[index]>150 && info.needs_updating())
 	{
@@ -336,7 +320,7 @@ void GradientManager::update(Uint32 step)
 	{
 		const int index=queued.front(); queued.pop();queuedIndexes.erase(index);
 		if(index>=0 && index<int(gradients.size()) && ages[index]>50)
-		{ gradients[index]->recalculate(player); ages[index]=0; }
+		{ gradients[index]->recalculate(player,frontier); ages[index]=0; }
 	}
 }
 void GradientManager::saveExecutionState(GAGCore::OutputStream* stream) const
