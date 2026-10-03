@@ -284,6 +284,12 @@ LAN guests store the maps they download from a host in the same cache.
 | `?join=<code>` | the web client's page; the instance is the page's origin |
 | `--join <link or code> [--instance <origin>]` | command line; a bare code without `--instance` means the official instance |
 
+"Play this map" on a web map page opens `/play/?map=<mapId>&version=<sha256>&title=<title>`;
+the browser shell passes `--room-map <mapId> <sha256> <title>`, which keeps the catalog
+map (`Online::useMapInRoom`) for the next online room the player hosts. The game opens
+Online and says so; the room screen takes the kept map once it is the host
+(`Online::takePendingRoomMap`).
+
 A link becomes the **pending join** (`Online::pendingJoin()`,
 `takePendingJoin()` in `InviteLink.h`). The online hub takes it, asks for trust
 when needed, connects to the instance and sends `room.join`. Links arrive:
