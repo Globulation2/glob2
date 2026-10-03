@@ -63,7 +63,7 @@ void toPng(const Scene& scene, const std::string& path, int maximumPixels, const
 	Surface canvas(SDL_CreateSurface(width, height, SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
 	if (!canvas) throw std::runtime_error(SDL_GetError());
 	globalContainer->loadOffscreenGraphics();
-	globalContainer->gfx->drawToSurface(canvas.get(), float(width)/fullW, [&] {
+	globalContainer->gfx->drawToSurface(canvas.get(), float(std::min(extent, maximumPixels))/extent, [&] {
 		Game::ViewState view;
 		view.scene = &scene;
 		Game::drawSceneMap(scene, 0, 0, fullW, fullH, 0, 0, 0, 0, 0, view,

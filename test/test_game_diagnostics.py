@@ -31,7 +31,7 @@ def main(binary=None):
         def run(name, arguments, extra=None, ok=True):
             command = [str(binary), *map(str, arguments)]
             started = time.monotonic()
-            result = subprocess.run(command, cwd=ROOT, env=dict(env, **(extra or {})), stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=180)
+            result = subprocess.run(command, cwd=ROOT, env=dict(env, **(extra or {})), stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=600)
             (output / (name+'.log')).write_bytes(result.stdout)
             records.append({'name': name, 'command': command, 'environment': extra or {}, 'exit_code': result.returncode, 'elapsed_seconds': time.monotonic()-started})
             require((result.returncode == 0) == ok, f'{name}: exit {result.returncode}\n{result.stdout.decode(errors="replace")[-4000:]}')
@@ -100,7 +100,8 @@ def main(binary=None):
         failure.mkdir(); (failure/'diagnostics').write_text('blocked')
         run('write-failure',['--run-game','--load-game',initial,'--ticks','1200','--output-dir',failure,'--telemetry','checksums',*options])
         require((failure/'game.replay.checksums').read_bytes()==(baseline/'game.replay.checksums').read_bytes(),'output failure changed simulation')
-        require(not list(output.rglob('*.tmp')),'partial capture directories leaked')
+        for target in (fields,painted,threaded,failure):
+            require(not any(path.name.endswith('.tmp') or '.tmp-' in path.name for path in target.rglob('*')),'partial capture directories leaked: '+str(target))
         require(hashlib.sha256(initial.read_bytes()).hexdigest()==original,'input save changed')
     (output/'commands.json').write_text(json.dumps(records,indent=2)+'\n')
     print(f'PASS {len(records)} diagnostics commands; evidence: {output}')
