@@ -197,3 +197,8 @@ returned provider model and response IDs in journals and rerun evaluation when
 updating the provider, prompt or API. Cache writes can have a separate rate; when
 omitted they use the published input rate. Evaluation selection records cost
 bounds when provider cache-write detail is unavailable.
+
+The account’s **Download my data** export includes its Hive credit wallet, ledger,
+purchases, provider usage, sessions, events, operations and standing programs.
+Rows are restricted to the account that owns the session. Internal client, lease
+and run capabilities are excluded.
