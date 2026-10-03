@@ -206,6 +206,14 @@ namespace GAGCore
         drawMapSnappedRect(x1, y1, x2, y2, color, false, 0);
     }
 
+    void GraphicContext::drawMapTileFill(int x1, int y1, int x2, int y2, const Color& color)
+    {
+        if (softwareTransform || !mapTransformActive)
+            drawMapSnappedRect(x1, y1, x2, y2, color, false, 0);
+        else
+            drawFilledRect(float(x1), float(y1), float(x2 - x1), float(y2 - y1), color);
+    }
+
     void GraphicContext::drawMapSnappedRect(int x1, int y1, int x2, int y2, const Color& color, bool stroked, float maxStrokePoints)
     {
 		if (renderer) prepareDraw();

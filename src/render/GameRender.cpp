@@ -341,7 +341,10 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 	if ((drawOptions & DRAW_SCRIPT_AREAS) != 0)
 		drawMapScriptAreas(left, top, right, bot, viewportX, viewportY);
 
-	scenePass(&Game::drawMapBulletsExplosionsDeathAnimations, scene);
+	// Bullets, explosions and death animations are unit-sized effects, and go
+	// with the unit sprites once units are only markers.
+	if (view.render.detail.unitSprite > 0)
+		scenePass(&Game::drawMapBulletsExplosionsDeathAnimations, scene);
 
 	// Compute once for the independently selected cloud layers.
 	if (globalContainer->settings.cloudShadows || (globalContainer->settings.clouds && !(drawOptions & DRAW_NO_CLOUD_LAYER)))

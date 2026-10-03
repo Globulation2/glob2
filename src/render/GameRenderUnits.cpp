@@ -115,7 +115,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 		const bool warrior = unit->typeNum==WARRIOR, explorer = unit->typeNum==EXPLORER;
 		view.render.overlays.marker(*globalContainer->gfx, px+16, py+16,
 			warrior ? MapOverlayQueue::Triangle : explorer ? MapOverlayQueue::Diamond : MapOverlayQueue::Dot,
-			warrior ? 6.f : explorer ? 5.f : 2.f + 1.5f*detail.workerMarkerScale,
+			warrior ? 6.f : explorer ? 5.f : 3.f + 2.25f*detail.workerMarkerScale,
 			color.r, color.g, color.b, detail.unitMarker);
 	}
 
@@ -149,8 +149,9 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 			globalContainer->gfx->drawCircle(px+16, py+16, 16, 190, 0, 0);
 	}
 
-	// draw xp animation
-	if (unit->levelUpAnimation)
+	// draw xp animation. It and the magic effect belong to the sprite, and go
+	// with it once the unit is only a marker.
+	if (unit->levelUpAnimation && detail.unitSprite > 0)
 	{
 		std::ostringstream oss;
 		oss << unit->experienceLevel;
@@ -160,7 +161,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	}
 
 	// draw magic animation
-	if (unit->magicActionAnimation)
+	if (unit->magicActionAnimation && detail.unitSprite > 0)
 	{
 		if (!globalContainer->settings.fullMagicEffects)
 		{

@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
 <style>.fill{fill:#fff;stroke:#12141e;stroke-width:1.5;stroke-linejoin:round;paint-order:stroke}.line{fill:none;stroke:#fff;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}.thin{stroke-width:2}.heavy{stroke-width:3.2}.cut{fill:none;stroke:#12141e;stroke-width:1.6;stroke-linecap:round}.edge.line{stroke:#12141e;stroke-width:5.2}.edge.thin{stroke-width:4.6}.edge.heavy{stroke-width:5.8}</style>
-<g><path d="M5.5 2.5v19" class="edge line heavy"/><path d="M5.5 3.5h15l-4 5 4 5h-15Z" class="fill"/></g>
-<g><path d="M5.5 2.5v19" class="line heavy"/><path d="M5.5 3.5h15l-4 5 4 5h-15Z" class="fill"/></g>
+<g></g>
+<g><path d="M12.00 1.40 L13.30 8.86 L17.80 6.20 L15.14 10.70 L22.60 12.00 L15.14 13.30 L17.80 17.80 L13.30 15.14 L12.00 22.60 L10.70 15.14 L6.20 17.80 L8.86 13.30 L1.40 12.00 L8.86 10.70 L6.20 6.20 L10.70 8.86Z" class="fill"/></g>
 </svg>

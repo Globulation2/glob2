@@ -253,7 +253,8 @@ static int run(int argc, char **argv)
             else populateSynthetic(gui.game, worldW, worldH);
             const int count = population(gui.game);
             const int cloudGridLimit = detailForZoom(gui.game, camera.zoom);
-            const Uint32 options = Game::DRAW_WHOLE_MAP | (std::getenv("GLOB2_BENCH_BARS") ? Game::DRAW_HEALTH_FOOD_BAR : 0)
+            // GLOB2_BENCH_FOG=1 draws the first team's fog of war instead of the whole map.
+            const Uint32 options = (std::getenv("GLOB2_BENCH_FOG") ? 0 : Game::DRAW_WHOLE_MAP) | (std::getenv("GLOB2_BENCH_BARS") ? Game::DRAW_HEALTH_FOOD_BAR : 0)
                 | (std::getenv("GLOB2_BENCH_AREAS") ? Game::DRAW_AREA : 0);
             std::printf("mapped_units=%d (excludes units inside buildings)\n", mappedPopulation(gui.game));
             std::printf("flat zoom=%.6f world=%dx%d total_units=%d shader=%d cloud_grid_limit=%d\n", camera.zoom, worldW, worldH, count, globalContainer->gfx->hasUnitShader(), cloudGridLimit);
@@ -286,7 +287,10 @@ static int run(int argc, char **argv)
                         drawW = std::min(drawW, gui.game.map.getW()*32);
                         drawH = std::min(drawH, gui.game.map.getH()*32);
                     }
-                    globalContainer->gfx->beginMapTransform(zoom, 0, 0, 0, 0, width, height);
+                    // GLOB2_BENCH_FRACTION shifts the map by that many map pixels, as a
+                    // camera between tiles does; seams between tiles only show then.
+                    const float fraction = std::getenv("GLOB2_BENCH_FRACTION") ? float(std::atof(std::getenv("GLOB2_BENCH_FRACTION"))) : 0.f;
+                    globalContainer->gfx->beginMapTransform(zoom, -fraction*zoom, -fraction*zoom, 0, 0, width, height);
                     const bool pausePresentation = std::getenv("GLOB2_BENCH_PAUSE_PRESENTATION");
                     if (pausePresentation) gui.view.render.animationTime = 22;
                     gui.game.drawMap(0, 0, drawW, drawH, 0, 0,

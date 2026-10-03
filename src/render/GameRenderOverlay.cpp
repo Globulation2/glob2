@@ -141,13 +141,14 @@ void Game::drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh
 		for (int y=top-1; y<=bot; y++)
 		{
 			// Whole squares of black or shade join into one fill per horizontal
-			// run, snapped to target pixels: at a fractional zoom, plain
-			// per-tile rectangles leave gaps and overlaps that show as a grid.
+			// run. In the software renderer, plain per-tile rectangles at a
+			// fractional zoom leave gaps and overlaps that show as a grid, so
+			// the fill snaps to pixels there; see drawMapTileFill.
 			int blackStart = INT_MIN, shadeStart = INT_MIN;
 			const auto flush = [&](int &start, int end, const GAGCore::Color &color)
 			{
 				if (start != INT_MIN)
-					globalContainer->gfx->drawMapFill((start<<5)+16, (y<<5)+16, (end<<5)+16, (y<<5)+48, color);
+					globalContainer->gfx->drawMapTileFill((start<<5)+16, (y<<5)+16, (end<<5)+16, (y<<5)+48, color);
 				start = INT_MIN;
 			};
 			const GAGCore::Color black(0, 0, 0), shade(0, 0, 0, 127);
