@@ -17,6 +17,7 @@
 #include "GameGUIInternal.h"
 #include "GameGUIKeyActions.h"
 #include "GameUtilities.h"
+#include "EngineTiming.h"
 #include "GlobalContainer.h"
 #include "Order.h"
 #include "Player.h"
@@ -89,12 +90,56 @@ bool GameGUI::canChangeGameSpeed() const
 	return globalContainer->replaying || !game.gameHeader.hasNetworkPlayer();
 }
 
+static_assert(GameSpeedControl::presets.front() == Settings::GAME_SPEED_NORMAL &&
+	GameSpeedControl::presets.back() == Settings::GAME_SPEED_MAXIMUM);
+
+int GameGUI::litSpeedChevrons() const
+{
+	if (globalContainer->replaying && globalContainer->replayFastForward)
+		return GameSpeedControl::CHEVRONS;
+	return GameSpeedControl::lit(globalContainer->settings.gameSpeed);
+}
+
+void GameGUI::cycleGameSpeed(bool forwards)
+{
+	if(!canChangeGameSpeed())
+		return;
+	// The chevrons replace a replay's fast-forward instead of hiding behind it.
+	if (globalContainer->replaying)
+		globalContainer->replayFastForward = false;
+	const int speed=globalContainer->settings.gameSpeed;
+	setGameSpeed(forwards ? GameSpeedControl::faster(speed) : GameSpeedControl::slower(speed));
+}
+
+double GameGUI::targetTickRate() const
+{
+	int stepMs = GAME_TICK_MS;
+	if (canChangeGameSpeed())
+		stepMs = (globalContainer->replaying && globalContainer->replayFastForward)
+			? REPLAY_FAST_FORWARD_MS : globalContainer->settings.getGameSpeedStepDuration();
+	return stepMs > 0 ? 1000.0 / stepMs : 0;
+}
+
+int GameGUI::tickRateShortfall() const
+{
+	const auto rate = tickRate.rate();
+	const double target = targetTickRate();
+	if (!rate || target <= 0 || gamePaused || hardPause)
+		return 0;
+	return *rate < target * .75 ? 2 : *rate < target * .9 ? 1 : 0;
+}
+
 void GameGUI::changeGameSpeed(int amount)
+{
+	setGameSpeed(globalContainer->settings.gameSpeed+amount);
+}
+
+void GameGUI::setGameSpeed(int speed)
 {
 	if(!canChangeGameSpeed())
 		return;
 	const int oldSpeed=globalContainer->settings.gameSpeed;
-	globalContainer->settings.changeGameSpeed(amount);
+	globalContainer->settings.changeGameSpeed(speed-oldSpeed);
 	if(oldSpeed!=globalContainer->settings.gameSpeed)
 		globalContainer->settings.save();
 	addMessage(Color(230, 230, 230), FormattableString("%0: %1")

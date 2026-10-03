@@ -300,6 +300,14 @@ void GameGUI::handleMouseButtonDown(SDL_MouseButtonEvent mouseEvent)
     {viewportX=camera.tileX();viewportY=camera.tileY();zoomControlPushed=true;return;}
 	int button=mouseEvent.button;
 
+	// The top bar's speed chevrons: left click speeds up, right click slows down.
+	if ((button==SDL_BUTTON_LEFT || button==SDL_BUTTON_RIGHT) && !touch->usesHUD() && canChangeGameSpeed()
+		&& mouseEvent.y<16 && mouseEvent.x>=topBarSpeedX()-4 && mouseEvent.x<topBarSpeedX()+TOP_BAR_SPEED_WIDTH-4)
+	{
+		cycleGameSpeed(button==SDL_BUTTON_LEFT);
+		return;
+	}
+
 	if (button==SDL_BUTTON_RIGHT)
 	{
 		handleRightClick();

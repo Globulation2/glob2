@@ -46,6 +46,7 @@ import {
   RelayRegistrationResponse,
 } from './relay.ts';
 import {
+  AccountExport,
   AuthTokens,
   CreateMapRequest,
   GuestSignInRequest,
@@ -179,6 +180,7 @@ export const schemaRegistry: Record<string, RegisteredSchema> = {
   InstanceInfo: { schema: InstanceInfo },
   PublicAccount: { schema: PublicAccount },
   SelfAccount: { schema: SelfAccount },
+  AccountExport: { schema: AccountExport },
   AuthTokens: { schema: AuthTokens },
   GuestSignInRequest: { schema: GuestSignInRequest },
   SignInResponse: { schema: SignInResponse },

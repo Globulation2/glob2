@@ -51,7 +51,8 @@ dated reports and pull-request artifacts do not belong here.
 - **Tools:** [distributed tournaments](tools/tournaments.md).
 
 - **Mobile platforms:** [builds, responsive UI and verification](mobile/development.md),
-  [Android privacy policy](mobile/privacy-policy.md), and
+  the [privacy policy](mobile/privacy-policy.md) for the Android and iOS apps and the
+  official online service, and the
   [Amazon Fire tablet privacy policy](mobile/amazon-privacy-policy.md).
 
 - **Online multiplayer:** [online client](multiplayer/client.md): platform

@@ -3374,6 +3374,10 @@ Emoji
 
 [settings Experimental: move and animate units between game ticks.]
 
+[settings Adaptive zoom detail]
+
+[settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
+
 [settings Text size]
 
 [settings Enlarge interface text without changing the map scale.]
@@ -4607,8 +4611,6 @@ Emoji
 [room map ready unnamed]
 
 [room map ready body]
-
-[device busy %0]
 
 [game draw]
 

@@ -241,13 +241,21 @@ static int run(int argc, char **argv)
             camera.zoom = camera.minimumZoom();
             if (std::getenv("GLOB2_BENCH_FULL_MAP"))
                 camera.zoom = std::min(double(width)/(gui.game.map.getW()*32), double(height)/(gui.game.map.getH()*32));
+            // GLOB2_BENCH_ZOOM measures one zoom level instead of the minimum;
+            // GLOB2_BENCH_ADAPTIVE_ZOOM=0 draws it with uniform scaling.
+            if (const char *zoom = std::getenv("GLOB2_BENCH_ZOOM"))
+                camera.zoom = std::clamp(std::atof(zoom), camera.minimumZoom(), MapCamera::MAX_ZOOM);
+            if (const char *adaptive = std::getenv("GLOB2_BENCH_ADAPTIVE_ZOOM"))
+                globalContainer->settings.adaptiveZoomDetail = std::atoi(adaptive) != 0;
             const int worldW = int(std::ceil(camera.visibleW()));
             const int worldH = int(std::ceil(camera.visibleH()));
             if (savedGame) warmupCheckpoint(gui);
             else populateSynthetic(gui.game, worldW, worldH);
             const int count = population(gui.game);
             const int cloudGridLimit = detailForZoom(gui.game, camera.zoom);
-            const Uint32 options = Game::DRAW_WHOLE_MAP | (std::getenv("GLOB2_BENCH_BARS") ? Game::DRAW_HEALTH_FOOD_BAR : 0);
+            // GLOB2_BENCH_FOG=1 draws the first team's fog of war instead of the whole map.
+            const Uint32 options = (std::getenv("GLOB2_BENCH_FOG") ? 0 : Game::DRAW_WHOLE_MAP) | (std::getenv("GLOB2_BENCH_BARS") ? Game::DRAW_HEALTH_FOOD_BAR : 0)
+                | (std::getenv("GLOB2_BENCH_AREAS") ? Game::DRAW_AREA : 0);
             std::printf("mapped_units=%d (excludes units inside buildings)\n", mappedPopulation(gui.game));
             std::printf("flat zoom=%.6f world=%dx%d total_units=%d shader=%d cloud_grid_limit=%d\n", camera.zoom, worldW, worldH, count, globalContainer->gfx->hasUnitShader(), cloudGridLimit);
             for (bool clouds : {false, true})
@@ -267,15 +275,22 @@ static int run(int argc, char **argv)
                     globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH(), GAGCore::Color(0, 0, 0));
                     const bool sweep = std::getenv("GLOB2_BENCH_CAMERA_SWEEP");
                     const double zoom = sweep ? camera.zoom * (1 + cameraFrame%8) : camera.zoom;
-                    const int panX = sweep ? (cameraFrame*37)%gui.game.map.getW() : 0;
-                    const int panY = sweep ? (cameraFrame*19)%gui.game.map.getH() : 0;
+                    // GLOB2_BENCH_PAN_X/Y place a fixed camera's top-left tile, so a
+                    // zoomed-in measurement can look at a colony instead of open water.
+                    const int fixedPanX = std::getenv("GLOB2_BENCH_PAN_X") ? std::atoi(std::getenv("GLOB2_BENCH_PAN_X")) : 0;
+                    const int fixedPanY = std::getenv("GLOB2_BENCH_PAN_Y") ? std::atoi(std::getenv("GLOB2_BENCH_PAN_Y")) : 0;
+                    const int panX = sweep ? (cameraFrame*37)%gui.game.map.getW() : fixedPanX;
+                    const int panY = sweep ? (cameraFrame*19)%gui.game.map.getH() : fixedPanY;
                     int drawW = int(std::ceil(width/zoom)), drawH = int(std::ceil(height/zoom));
                     if (!sweep && std::getenv("GLOB2_BENCH_FULL_MAP"))
                     {
                         drawW = std::min(drawW, gui.game.map.getW()*32);
                         drawH = std::min(drawH, gui.game.map.getH()*32);
                     }
-                    globalContainer->gfx->beginMapTransform(zoom, 0, 0, 0, 0, width, height);
+                    // GLOB2_BENCH_FRACTION shifts the map by that many map pixels, as a
+                    // camera between tiles does; seams between tiles only show then.
+                    const float fraction = std::getenv("GLOB2_BENCH_FRACTION") ? float(std::atof(std::getenv("GLOB2_BENCH_FRACTION"))) : 0.f;
+                    globalContainer->gfx->beginMapTransform(zoom, -fraction*zoom, -fraction*zoom, 0, 0, width, height);
                     const bool pausePresentation = std::getenv("GLOB2_BENCH_PAUSE_PRESENTATION");
                     if (pausePresentation) gui.view.render.animationTime = 22;
                     gui.game.drawMap(0, 0, drawW, drawH, 0, 0,

@@ -353,6 +353,14 @@ public:
 private:
 	/// Return whether there is no overlap between any buildings
 	bool checkBuildingsDoNotOverlapAndHealMissing();
+	//! Render state of the view drawMap is drawing, while adaptive zoom detail
+	//! queues its bars as constant-size overlays; null draws them with the map.
+	MapRenderState *drawnRender = nullptr;
+	//! Sets the map point the next bars keep fixed as they change size, and
+	//! whether they report a problem and so outlast ordinary bars when zoomed out.
+	void anchorBars(int x, int y, bool exception = false);
+	//! Marks an entity whose problem bars have faded out at this zoom.
+	void drawStatusPip(int x, int y, Uint8 r, Uint8 g, Uint8 b);
 	void drawPointBar(int x, int y, BarOrientation orientation, int maxLength, int actLength, Uint8 r, Uint8 g, Uint8 b, int barWidth=2)
 	{
 		drawPointBar(x, y, orientation, maxLength, actLength, 0, r, g, b, r, g, b, barWidth);
@@ -364,6 +372,10 @@ private:
 	void drawHealthBar(int x, int y, int maxLength, int actLength, float hpRatio);
 	///draws a building resource bar (food, bullets, ...) auto-shrinking to fit within (height*32)-10 pixels
 	void drawBuildingResourceBar(int x, int y, BuildingType* type, int maxValue, int currentValue, Uint8 r, Uint8 g, Uint8 b);
+	///draws the flat per-tile colours that replace terrain and resources when zoomed far out
+	void drawMapOverview(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& sceneMap, MapRenderState& render);
+	///draws a faint wash of each team's colour over the land around its buildings, in the strategic view
+	void drawMapTerritory(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const Scene& scene, float opacity);
 	///draws the overlay representing water
 	void drawMapWater(int sw, int sh, int viewportX, int viewportY, int time);
 	///draws the terrain tiles of sand and gras
@@ -377,7 +389,7 @@ private:
 	void drawMapGroundBuildings(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, std::set<Uint16> *visibleBuildings, const BuildingGuiStateMap* buildingGuiState, const Scene& scene);
 	void drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const Scene& scene);
 	void drawMapAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view, const SceneMap& sceneMap);
-	void drawMapArea(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& map, bool (SceneMap::*mapIs)(int, int) const, int areaAnimationTick, AreaType areaType);
+	void drawMapArea(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& map, bool (SceneMap::*mapIs)(int, int) const, int areaAnimationTick, AreaType areaType, const MapRenderState& render);
 	void drawMapAirUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view, const Scene& scene);
 	void drawMapScriptAreas(int left, int top, int right, int bot, int viewportX, int viewportY);
 	void drawMapBulletsExplosionsDeathAnimations(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const Scene& scene);

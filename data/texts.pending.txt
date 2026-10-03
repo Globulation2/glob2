@@ -27,6 +27,10 @@
 [settings Smooth unit motion]
 [settings Experimental: move and animate units between game ticks.]
 [settings Enlarge interface text without changing the map scale.]
+[settings Adaptive zoom detail]
+
+[settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
+
 [lan pairing field]
 [lan pairing connect]
 [lan discovery instructions]
@@ -649,7 +653,6 @@
 [room map ready title %0]
 [room map ready unnamed]
 [room map ready body]
-[device busy %0]
 [game draw]
 [settings Hive Mind]
 [settings Enable commander shortcuts]
