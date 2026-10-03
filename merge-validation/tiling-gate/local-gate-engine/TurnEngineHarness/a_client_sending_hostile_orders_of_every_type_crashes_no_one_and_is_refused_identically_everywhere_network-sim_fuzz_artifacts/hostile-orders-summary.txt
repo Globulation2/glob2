@@ -1,0 +1,54 @@
+seed 101
+end_tick 2326 turns 1591 flagged 0
+client seat lives reloads orders target_ticks rtt_ms catch_up_ticks catch_up_ms
+0 0 1 0 100 0 40 0 0
+1 1 1 0 106 5 315 0 0
+2 2 1 0 81 0 90 0 0
+hostile orders sent 1389; seat 1 accepted 176 stale 31 rejected 1203 voice-rejected 20
+  undecodable 512
+  not_permitted 0
+  wrong_team 129
+  wrong_player 0
+  foreign_building 304
+  bad_building_type 59
+  out_of_range 157
+  bad_mode 42
+  bad_voice 0
+  bad_state 31
+  pause_limit 0
+seed 202
+end_tick 2326 turns 1523 flagged 0
+client seat lives reloads orders target_ticks rtt_ms catch_up_ticks catch_up_ms
+0 0 1 0 100 0 40 0 0
+1 1 1 0 102 6 135 0 0
+2 2 1 0 81 0 85 0 0
+hostile orders sent 1359; seat 1 accepted 168 stale 20 rejected 1154 voice-rejected 27
+  undecodable 493
+  not_permitted 0
+  wrong_team 125
+  wrong_player 0
+  foreign_building 294
+  bad_building_type 52
+  out_of_range 154
+  bad_mode 36
+  bad_voice 0
+  bad_state 20
+  pause_limit 0
+seed 303
+end_tick 2326 turns 1556 flagged 0
+client seat lives reloads orders target_ticks rtt_ms catch_up_ticks catch_up_ms
+0 0 1 0 100 0 40 0 0
+1 1 1 0 95 5 120 0 0
+2 2 1 0 81 0 95 0 0
+hostile orders sent 1385; seat 1 accepted 163 stale 22 rejected 1190 voice-rejected 29
+  undecodable 506
+  not_permitted 0
+  wrong_team 123
+  wrong_player 0
+  foreign_building 287
+  bad_building_type 58
+  out_of_range 180
+  bad_mode 36
+  bad_voice 0
+  bad_state 22
+  pause_limit 0

@@ -1,0 +1,6 @@
+{"time_us":0,"kind":"capture_gap","dropped_frames":9,"dropped_audio_samples":0}
+{"time_us":0,"kind":"chapter","id":1,"phase":"menu","screen":"main_menu","dialog":"","match":0,"mode":"","map":"","team":-1}
+{"time_us":16666,"kind":"capture_gap","dropped_frames":4,"dropped_audio_samples":0}
+{"time_us":216666,"kind":"capture_gap","dropped_frames":1,"dropped_audio_samples":0}
+{"time_us":283333,"kind":"capture_gap","dropped_frames":1,"dropped_audio_samples":0}
+{"time_us":433333,"kind":"capture_gap","dropped_frames":1,"dropped_audio_samples":0}

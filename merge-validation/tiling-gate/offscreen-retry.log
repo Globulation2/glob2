@@ -1,0 +1,4 @@
+PASS GameDiagnostics/offscreen pass restores transformed drawing after exceptions [display] (3.6s)
+
+1 passed, 0 failed, 0 skipped (3.6s of test time)
+[run_tests] JUnit report: artifacts/skins/merge-validation/tiling-gate/offscreen-retry.xml (1 cases)

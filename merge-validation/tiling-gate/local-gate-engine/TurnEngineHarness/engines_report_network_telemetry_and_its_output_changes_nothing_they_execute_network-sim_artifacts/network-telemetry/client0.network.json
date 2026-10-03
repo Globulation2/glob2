@@ -1,0 +1,631 @@
+{
+ "catch_up": {
+  "episodes": 0,
+  "ticks": 0,
+  "wall_us": 0
+ },
+ "desync": {
+  "flagged": 0,
+  "rejoins": 0,
+  "resync_requests": 0
+ },
+ "elapsed_us": 38605000,
+ "input_delay_unmatched": 0,
+ "input_delay_us": {
+  "count": 39,
+  "max": 80000,
+  "mean": 80000.0,
+  "p50": 80000,
+  "p95": 80000
+ },
+ "jitter_buffer": {
+  "buffered_ticks": {
+   "count": 951,
+   "max": 1,
+   "mean": 0.001,
+   "p50": 0,
+   "p95": 0
+  },
+  "target_ticks": {
+   "count": 951,
+   "max": 0,
+   "mean": 0.0,
+   "p50": 0,
+   "p95": 0
+  }
+ },
+ "jitter_us": {
+  "count": 77,
+  "max": 0,
+  "mean": 0.0,
+  "p50": 0,
+  "p95": 0
+ },
+ "match": {
+  "final_tick": 951,
+  "human_seat_mask": 3,
+  "platform": "Linux",
+  "players": 3,
+  "relay_id": null,
+  "relay_region": null,
+  "seat": 0,
+  "sim_version": "130-52-44f9530d071fd587c5afa3e66c76f9c8f23c62e13af864da508faeb4a5a5f264",
+  "tick_rate_millihz": 25000,
+  "transport": "online"
+ },
+ "order_validation": {
+  "seats": [
+   {
+    "accepted": 39,
+    "rejected": 0,
+    "rejected_by_reason": {},
+    "seat": 0,
+    "stale": 0,
+    "voice_rejected": 0
+   },
+   {
+    "accepted": 31,
+    "rejected": 0,
+    "rejected_by_reason": {},
+    "seat": 1,
+    "stale": 0,
+    "voice_rejected": 0
+   }
+  ]
+ },
+ "orders": {
+  "coalesced": 0,
+  "dropped_local": 1865,
+  "frames_sent": 39,
+  "outstanding_max": 3,
+  "queue_dropped": 0,
+  "queued_max": 1,
+  "queued_offline": 0,
+  "resent": 0,
+  "submitted": 39
+ },
+ "presence": {
+  "seats": [
+   {
+    "final_state": "connected",
+    "seat": 0,
+    "time_us": {
+     "connected": 38525000,
+     "not_connected": 80000
+    },
+    "transitions": {
+     "connected": 1
+    }
+   },
+   {
+    "final_state": "connected",
+    "seat": 1,
+    "time_us": {
+     "connected": 35155000,
+     "lagging": 700000,
+     "not_connected": 280000,
+     "reconnecting": 2470000
+    },
+    "transitions": {
+     "connected": 2,
+     "lagging": 1,
+     "reconnecting": 1
+    }
+   }
+  ],
+  "transitions": 5
+ },
+ "reconnects": {
+  "count": 0,
+  "down_now": false,
+  "downtime_us": 0,
+  "longest_downtime_us": 0
+ },
+ "reloads": {
+  "count": 0,
+  "fast_forward_ticks": 0,
+  "fast_forward_us": 0,
+  "load_us": 0
+ },
+ "rtt_us": {
+  "count": 77,
+  "max": 40000,
+  "mean": 40000.0,
+  "p50": 40000,
+  "p95": 40000
+ },
+ "schema": "ClientNetworkSummary",
+ "schema_version": 1,
+ "series": {
+  "dropped_points": 0,
+  "interval_us": 5000000,
+  "points": [
+   {
+    "buffered_ticks": {
+     "count": 125,
+     "max": 1,
+     "mean": 0.008,
+     "p50": 0,
+     "p95": 0
+    },
+    "bytes_received": 2025,
+    "bytes_sent": 283,
+    "catch_up_ticks": 0,
+    "downtime_us": 0,
+    "end_tick": 125,
+    "end_us": 5000000,
+    "frames_received": 148,
+    "frames_sent": 20,
+    "input_delay_us": {
+     "count": 3,
+     "max": 80000,
+     "mean": 80000.0,
+     "p50": 80000,
+     "p95": 80000
+    },
+    "jitter_us": {
+     "count": 9,
+     "max": 0,
+     "mean": 0.0,
+     "p50": 0,
+     "p95": 0
+    },
+    "live_ticks": 125,
+    "mean_nudge": 0.002,
+    "orders_submitted": 4,
+    "presence_transitions": 2,
+    "reconnects": 0,
+    "rtt_us": {
+     "count": 9,
+     "max": 40000,
+     "mean": 40000.0,
+     "p50": 40000,
+     "p95": 40000
+    },
+    "stall_us": {
+     "count": 0,
+     "max": 0,
+     "mean": 0.0,
+     "p50": 0,
+     "p95": 0
+    },
+    "start_tick": 0,
+    "start_us": 0,
+    "target_ticks": {
+     "count": 125,
+     "max": 0,
+     "mean": 0.0,
+     "p50": 0,
+     "p95": 0
+    },
+    "ticks_executed": 125,
+    "ticks_faster": 14,
+    "ticks_slower": 0,
+    "voice_received": 0,
+    "voice_sent": 0
+   },
+   {
+    "buffered_ticks": {
+     "count": 125,
+     "max": 0,
+     "mean": 0.0,
+     "p50": 0,
+     "p95": 0
+    },
+    "bytes_received": 1947,
+    "bytes_sent": 243,
+    "catch_up_ticks": 0,
+    "downtime_us": 0,
+    "end_tick": 250,
+    "end_us": 10000000,
+    "frames_received": 145,
+    "frames_sent": 20,
+    "input_delay_us": {
+     "count": 6,
+     "max": 80000,
+     "mean": 80000.0,
+     "p50": 80000,
+     "p95": 80000
+    },
+    "jitter_us": {
+     "count": 10,
+     "max": 0,
+     "mean": 0.0,
+     "p50": 0,
+     "p95": 0
+    },
+    "live_ticks": 125,
+    "mean_nudge": 0.0,
+    "orders_submitted": 5,
+    "presence_transitions": 0,
+    "reconnects": 0,
+    "rtt_us": {
+     "count": 10,
+     "max": 40000,
+     "mean": 40000.0,
+     "p50": 40000,
+     "p95": 40000
+    },
+    "stall_us": {
+     "count": 0,
+     "max": 0,
+     "mean": 0.0,
+     "p50": 0,
+     "p95": 0
+    },
+    "start_tick": 125,
+    "start_us": 5000000,
+    "target_ticks": {
+     "count": 125,
+     "max": 0,
+     "mean": 0.0,
+     "p50": 0,
+     "p95": 0
+    },
+    "ticks_executed": 125,
+    "ticks_faster": 0,
+    "ticks_slower": 0,
+    "voice_received": 0,
+    "voice_sent": 0
+   },
+   {
+    "buffered_ticks": {
+     "count": 125,
+     "max": 0,
+     "mean": 0.0,
+     "p50": 0,
+     "p95": 0
+    },
+    "bytes_received": 1926,
+    "bytes_sent": 278,
+    "catch_up_ticks": 0,
+    "downtime_us": 0,
+    "end_tick": 375,
+    "end_us": 15000000,
+    "frames_received": 145,
+    "frames_sent": 20,
+    "input_delay_us": {
+     "count": 5,
+     "max": 80000,
+     "mean": 80000.0,
+     "p50": 80000,
+     "p95": 80000
+    },
+    "jitter_us": {
+     "count": 10,
+     "max": 0,
+     "mean": 0.0,
+     "p50": 0,
+     "p95": 0
+    },
+    "live_ticks": 125,
+    "mean_nudge": 0.0,
+    "orders_submitted": 5,
+    "presence_transitions": 0,
+    "reconnects": 0,
+    "rtt_us": {
+     "count": 10,
+     "max": 40000,
+     "mean": 40000.0,
+     "p50": 40000,
+     "p95": 40000
+    },
+    "stall_us": {
+     "count": 0,
+     "max": 0,
+     "mean": 0.0,
+     "p50": 0,
+     "p95": 0
+    },
+    "start_tick": 250,
+    "start_us": 10000000,
+    "target_ticks": {
+     "count": 125,
+     "max": 0,
+     "mean": 0.0,
+     "p50": 0,
+     "p95": 0
+    },
+    "ticks_executed": 125,
+    "ticks_faster": 0,
+    "ticks_slower": 0,
+    "voice_received": 0,
+    "voice_sent": 0
+   },
+   {
+    "buffered_ticks": {
+     "count": 125,
+     "max": 0,
+     "mean": 0.0,
+     "p50": 0,
+     "p95": 0
+    },
+    "bytes_received": 1946,
+    "bytes_sent": 348,
+    "catch_up_ticks": 0,
+    "downtime_us": 0,
+    "end_tick": 500,
+    "end_us": 20000000,
+    "frames_received": 145,
+    "frames_sent": 24,
+    "input_delay_us": {
+     "count": 9,
+     "max": 80000,
+     "mean": 80000.0,
+     "p50": 80000,
+     "p95": 80000
+    },
+    "jitter_us": {
+     "count": 10,
+     "max": 0,
+     "mean": 0.0,
+     "p50": 0,
+     "p95": 0
+    },
+    "live_ticks": 125,
+    "mean_nudge": 0.0,
+    "orders_submitted": 9,
+    "presence_transitions": 0,
+    "reconnects": 0,
+    "rtt_us": {
+     "count": 10,
+     "max": 40000,
+     "mean": 40000.0,
+     "p50": 40000,
+     "p95": 40000
+    },
+    "stall_us": {
+     "count": 0,
+     "max": 0,
+     "mean": 0.0,
+     "p50": 0,
+     "p95": 0
+    },
+    "start_tick": 375,
+    "start_us": 15000000,
+    "target_ticks": {
+     "count": 125,
+     "max": 0,
+     "mean": 0.0,
+     "p50": 0,
+     "p95": 0
+    },
+    "ticks_executed": 125,
+    "ticks_faster": 0,
+    "ticks_slower": 0,
+    "voice_received": 0,
+    "voice_sent": 0
+   },
+   {
+    "buffered_ticks": {
+     "count": 125,
+     "max": 0,
+     "mean": 0.0,
+     "p50": 0,
+     "p95": 0
+    },
+    "bytes_received": 1825,
+    "bytes_sent": 266,
+    "catch_up_ticks": 0,
+    "downtime_us": 0,
+    "end_tick": 625,
+    "end_us": 25000000,
+    "frames_received": 147,
+    "frames_sent": 19,
+    "input_delay_us": {
+     "count": 4,
+     "max": 80000,
+     "mean": 80000.0,
+     "p50": 80000,
+     "p95": 80000
+    },
+    "jitter_us": {
+     "count": 10,
+     "max": 0,
+     "mean": 0.0,
+     "p50": 0,
+     "p95": 0
+    },
+    "live_ticks": 125,
+    "mean_nudge": 0.0,
+    "orders_submitted": 4,
+    "presence_transitions": 3,
+    "reconnects": 0,
+    "rtt_us": {
+     "count": 10,
+     "max": 40000,
+     "mean": 40000.0,
+     "p50": 40000,
+     "p95": 40000
+    },
+    "stall_us": {
+     "count": 0,
+     "max": 0,
+     "mean": 0.0,
+     "p50": 0,
+     "p95": 0
+    },
+    "start_tick": 500,
+    "start_us": 20000000,
+    "target_ticks": {
+     "count": 125,
+     "max": 0,
+     "mean": 0.0,
+     "p50": 0,
+     "p95": 0
+    },
+    "ticks_executed": 125,
+    "ticks_faster": 0,
+    "ticks_slower": 0,
+    "voice_received": 0,
+    "voice_sent": 0
+   },
+   {
+    "buffered_ticks": {
+     "count": 125,
+     "max": 0,
+     "mean": 0.0,
+     "p50": 0,
+     "p95": 0
+    },
+    "bytes_received": 2103,
+    "bytes_sent": 373,
+    "catch_up_ticks": 0,
+    "downtime_us": 0,
+    "end_tick": 750,
+    "end_us": 30000000,
+    "frames_received": 145,
+    "frames_sent": 23,
+    "input_delay_us": {
+     "count": 7,
+     "max": 80000,
+     "mean": 80000.0,
+     "p50": 80000,
+     "p95": 80000
+    },
+    "jitter_us": {
+     "count": 10,
+     "max": 0,
+     "mean": 0.0,
+     "p50": 0,
+     "p95": 0
+    },
+    "live_ticks": 125,
+    "mean_nudge": 0.0,
+    "orders_submitted": 8,
+    "presence_transitions": 0,
+    "reconnects": 0,
+    "rtt_us": {
+     "count": 10,
+     "max": 40000,
+     "mean": 40000.0,
+     "p50": 40000,
+     "p95": 40000
+    },
+    "stall_us": {
+     "count": 0,
+     "max": 0,
+     "mean": 0.0,
+     "p50": 0,
+     "p95": 0
+    },
+    "start_tick": 625,
+    "start_us": 25000000,
+    "target_ticks": {
+     "count": 125,
+     "max": 0,
+     "mean": 0.0,
+     "p50": 0,
+     "p95": 0
+    },
+    "ticks_executed": 125,
+    "ticks_faster": 0,
+    "ticks_slower": 0,
+    "voice_received": 0,
+    "voice_sent": 0
+   },
+   {
+    "buffered_ticks": {
+     "count": 125,
+     "max": 0,
+     "mean": 0.0,
+     "p50": 0,
+     "p95": 0
+    },
+    "bytes_received": 2055,
+    "bytes_sent": 253,
+    "catch_up_ticks": 0,
+    "downtime_us": 0,
+    "end_tick": 875,
+    "end_us": 35000000,
+    "frames_received": 145,
+    "frames_sent": 19,
+    "input_delay_us": {
+     "count": 5,
+     "max": 80000,
+     "mean": 80000.0,
+     "p50": 80000,
+     "p95": 80000
+    },
+    "jitter_us": {
+     "count": 10,
+     "max": 0,
+     "mean": 0.0,
+     "p50": 0,
+     "p95": 0
+    },
+    "live_ticks": 125,
+    "mean_nudge": 0.0,
+    "orders_submitted": 4,
+    "presence_transitions": 0,
+    "reconnects": 0,
+    "rtt_us": {
+     "count": 10,
+     "max": 40000,
+     "mean": 40000.0,
+     "p50": 40000,
+     "p95": 40000
+    },
+    "stall_us": {
+     "count": 0,
+     "max": 0,
+     "mean": 0.0,
+     "p50": 0,
+     "p95": 0
+    },
+    "start_tick": 750,
+    "start_us": 30000000,
+    "target_ticks": {
+     "count": 125,
+     "max": 0,
+     "mean": 0.0,
+     "p50": 0,
+     "p95": 0
+    },
+    "ticks_executed": 125,
+    "ticks_faster": 0,
+    "ticks_slower": 0,
+    "voice_received": 0,
+    "voice_sent": 0
+   }
+  ]
+ },
+ "stalls": {
+  "count": 0,
+  "duration_us": {
+   "count": 0,
+   "max": 0,
+   "mean": 0.0,
+   "p50": 0,
+   "p95": 0
+  },
+  "longest_us": 0,
+  "total_us": 0
+ },
+ "tick_rate_nudge": {
+  "live_ticks": 951,
+  "max_abs": 0.02,
+  "mean": 0.0,
+  "ticks_faster": 14,
+  "ticks_slower": 0
+ },
+ "ticks": {
+  "executed": 951,
+  "live": 951
+ },
+ "traffic": {
+  "bundle_bytes": 12468,
+  "bundle_entries": 70,
+  "bundles_received": 950,
+  "bytes_received": 14903,
+  "bytes_sent": 2143,
+  "frames_received": 1112,
+  "frames_sent": 156
+ },
+ "voice": {
+  "received": 0,
+  "received_bytes": 0,
+  "sent": 0,
+  "sent_bytes": 0
+ }
+}
