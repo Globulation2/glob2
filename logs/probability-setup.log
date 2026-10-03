@@ -1,4 +1,0 @@
-PASS CustomGameSetup/preferences; landscapes; AI catalogue; snapshot round trip; engine; reload and session replay [slow][writes-preferences] (22.0s)
-
-1 passed, 0 failed, 0 skipped (22.0s of test time)
-[run_tests] JUnit report: artifacts/probability-setup.xml (1 cases)

@@ -2,7 +2,7 @@
   "args": [
     "--run-game",
     "--output-dir",
-    "/home/bradley/.codex/worktrees/3010/glob2/artifacts/probability-cli-master-refresh/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability",
+    "/home/bradley/.codex/worktrees/3010/glob2/artifacts/probability-cli-placement-final/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability",
     "--ticks",
     "64",
     "--compute-threads",
@@ -14,7 +14,7 @@
     "--save",
     "final",
     "--map-file",
-    "/home/bradley/.codex/worktrees/3010/glob2/artifacts/probability-cli-master-refresh/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/source.map.gz",
+    "/home/bradley/.codex/worktrees/3010/glob2/artifacts/probability-cli-placement-final/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/source.map.gz",
     "--game-seed",
     "713",
     "--player",
@@ -27,6 +27,6 @@
     "every:32"
   ],
   "status": 0,
-  "stdout": "nox::game started\ncheckpoint: wrote /home/bradley/.codex/worktrees/3010/glob2/artifacts/probability-cli-master-refresh/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability/checkpoint-32.game.gz\nnox::gui.game.checkSum() = e3a95ca5\ncheckpoint: wrote /home/bradley/.codex/worktrees/3010/glob2/artifacts/probability-cli-master-refresh/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability/checkpoint-64.game.gz\nautomaticEndingGame ended: 64 ticks, 0 minutes, 2 seconds\nGLOB2_GAME_END ticks=64 winner_team=-1 seed=713 map=\"source\" orders=8 players=team0:Castor,team1:Cortex\nfinal: wrote /home/bradley/.codex/worktrees/3010/glob2/artifacts/probability-cli-master-refresh/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability/final.game.gz\n",
+  "stdout": "nox::game started\ncheckpoint: wrote /home/bradley/.codex/worktrees/3010/glob2/artifacts/probability-cli-placement-final/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability/checkpoint-32.game.gz\nnox::gui.game.checkSum() = e2a95ca5\ncheckpoint: wrote /home/bradley/.codex/worktrees/3010/glob2/artifacts/probability-cli-placement-final/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability/checkpoint-64.game.gz\nautomaticEndingGame ended: 64 ticks, 0 minutes, 2 seconds\nGLOB2_GAME_END ticks=64 winner_team=-1 seed=713 map=\"source\" orders=8 players=team0:Castor,team1:Cortex\nfinal: wrote /home/bradley/.codex/worktrees/3010/glob2/artifacts/probability-cli-placement-final/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability/final.game.gz\n",
   "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\n"
 }

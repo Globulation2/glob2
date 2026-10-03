@@ -1,28 +1,25 @@
 {
-  "revision": "276c4858859881de7f0571bc860fb94ca2cd6b04",
-  "tree": "f7d41736dad449c51b0b85bd7a08e0200a013b77",
+  "revision": "509551aa758ce5e043e2d50fe405752c5966bcad",
+  "tree": "4371eb5ac3598f1d855a2ac17ec4b2343a132530",
+  "model_revision": "8f18b28afb49f6dba729c1193d757a507b4cb66e",
+  "integrated_master": "d46638d859e228a63e0471e2dd45108b112e9454",
   "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
   "platform": "Linux x86_64",
   "release": true,
   "dependencies": "existing SDL3 integrator prefix",
+  "save_format": 131,
+  "network_protocol": 53,
+  "sim_revision": 5,
+  "preference_format": 6,
+  "save_floor": 58,
   "prs": [
     358,
     361,
     363
   ],
-  "restacked_revision": "37ca1c335db50945f250ed0adea3b9eedf130ed4",
-  "restacked_tree": "37f2a325d039327b533d57dcb30ac431b6fa0b2b",
-  "merged_estimator": "b5e36ee5fbb3f8a7eec4c6857e4168932084d298",
-  "previous_validation": "db9f9c22b285c5ff4afe9a7aa45e19134b9cdef3",
-  "integrated_master": "492818704b3b758c452d01d366df11c71d54eaee",
-  "model_revision": "a78db3a58fa7f43afe0fe4f84046a1fc5dde73fe",
-  "validation_commands": [
-    "GLOB2_SDL3_PREFIX=<existing SDL3 integrator prefix> scons -j8 release=1 server=0 tests build/linux/client/release/src/glob2",
-    "python3 test/run_tests.py --filter 'WinProbability/*' --filter 'WinningCondition*/*' --filter 'SceneExtract/*' --filter 'TurnEngineHarness/the committed*' --filter 'CustomGameSetup/preferences;*' --no-display --junit artifacts/probability-native.xml",
-    "python3 test/run_tests.py --binary unit --no-display --junit artifacts/probability-unit.xml",
-    "python3 test/test_cli_smoke.py --binary build/linux/client/release/src/glob2 --artifacts artifacts/probability-cli-master-refresh --junit artifacts/probability-cli.xml",
-    "SDL_VIDEO_DRIVER=x11 DISPLAY=<authenticated Xvfb display> python3 test/run_tests.py --filter 'CustomGameSetup/custom game screens;*' --filter 'CustomGameSetup/probability statistics*' --junit artifacts/probability-screen.xml",
-    "python3 test/check_sim_revision.py --base origin/master",
-    "python3 test/check_javascript_corpus.py --build-dir build/linux/client/release --output artifacts/probability-javascript-corpus-final"
-  ]
+  "native_passed_cases": 1142,
+  "native_display_skips": 90,
+  "validation_script": "#!/bin/bash\nset -e\nwhile kill -0 3774891 2>/dev/null; do sleep 5; done\nrg -q 'scons: done building targets' artifacts/probability-build.log\nexport GLOB2_SDL3_PREFIX=/home/bradley/glob2-verify/integrator/sdl3/prefix\nscons -j8 release=1 server=0 tests build/linux/client/release/src/glob2 > artifacts/probability-final-build.log 2>&1\npython3 test/run_tests.py --update-fixtures --filter 'TurnEngineHarness/the committed*' --filter 'WinProbability/enabled rule*' --no-display --junit artifacts/probability-golden-update.xml > artifacts/probability-golden-update.log 2>&1\ngit add test/fixtures/multiplayer/FourSquares1.g2mr test/fixtures/multiplayer/FourSquares1.verify-trace.txt test/fixtures/win-probability/rule-trace.txt\nif ! git diff --cached --quiet; then git commit -m 'Regenerate optional probability rule records on current simulation'; fi\nscons -j8 release=1 server=0 tests build/linux/client/release/src/glob2 > artifacts/probability-final-build.log 2>&1\npython3 test/check_sim_revision.py --base origin/master > artifacts/probability-sim-version.log 2>&1\npython3 test/run_tests.py -j4 --timeout 1200 --no-display --junit artifacts/probability-full-native.xml > artifacts/probability-full-native.log 2>&1\npython3 test/test_cli_smoke.py --binary build/linux/client/release/src/glob2 --artifacts artifacts/probability-cli-placement-final --junit artifacts/probability-cli.xml > artifacts/probability-cli.log 2>&1\npython3 test/check_javascript_corpus.py --build-dir build/linux/client/release --output artifacts/probability-js-placement-final > artifacts/probability-javascript-corpus.log 2>&1\nenv -u WAYLAND_DISPLAY DISPLAY=:99 XAUTHORITY=/tmp/xvfb-run.R7Feqe/Xauthority SDL_VIDEO_DRIVER=x11 python3 test/run_tests.py --filter 'CustomGameSetup/custom game screens;*' --filter 'CustomGameSetup/probability statistics*' --junit artifacts/probability-screen.xml > artifacts/probability-screen.log 2>&1\n",
+  "tsan_validation_script": "#!/bin/bash\nset -e\nwhile kill -0 3774937 2>/dev/null; do sleep 5; done\nrg -q 'scons: done building targets' artifacts/probability-tsan-build.log\nexport TSAN_OPTIONS=\"halt_on_error=1 exitcode=66 second_deadlock_stack=1 suppressions=$PWD/test/tsan.supp\"\nGLOB2_SIM_THREAD=1 build/probability-tsan/src/glob2 --run-game --map-file \"$PWD/maps/balanced.map.gz\" --game-seed 7 --player maxima --player cortex --player warrush --player cabino --ticks 600 --replay true --output-dir \"$PWD/artifacts/probability-tsan-placement-headless\" > artifacts/probability-tsan-headless.log 2>&1\nenv -u WAYLAND_DISPLAY DISPLAY=:99 XAUTHORITY=/tmp/xvfb-run.R7Feqe/Xauthority SDL_VIDEO_DRIVER=x11 SDL_AUDIODRIVER=dummy SDL_RENDER_DRIVER=software SDL_FRAMEBUFFER_ACCELERATION=0 LP_NUM_THREADS=0 GLOB2_USER_DATA_DIR=\"$PWD/artifacts/probability-tsan-placement-profile\" GLOB2_TEST_SEED=5 GLOB2_TEST_MAX_TICKS=300 TSAN_OPTIONS=\"$TSAN_OPTIONS report_thread_leaks=0\" build/probability-tsan/src/glob2 -test-games 1 --map balanced --matchup maxima,cortex,maxima,cortex -G -m -s 1024x768 > artifacts/probability-tsan-windowed.log 2>&1\n",
+  "merge_authorization": "Maintainer explicitly authorized merging with all relevant local tests passing while hosted CI is impaired."
 }

@@ -2,7 +2,7 @@
   "args": [
     "--run-game",
     "--map-file",
-    "/home/bradley/.codex/worktrees/3010/glob2/artifacts/probability-cli-master-refresh/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/source.map.gz",
+    "/home/bradley/.codex/worktrees/3010/glob2/artifacts/probability-cli-placement-final/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/source.map.gz",
     "--player",
     "castor",
     "--player",
@@ -12,7 +12,7 @@
     "--win-probability",
     "500",
     "--output-dir",
-    "/home/bradley/.codex/worktrees/3010/glob2/artifacts/probability-cli-master-refresh/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-invalid-1"
+    "/home/bradley/.codex/worktrees/3010/glob2/artifacts/probability-cli-placement-final/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-invalid-1"
   ],
   "status": 2,
   "stdout": "",

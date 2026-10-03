@@ -1,0 +1,34 @@
+scons: Reading SConscript files ...
+Checking whether the C compiler works... (cached) yes
+Checking whether the C++ compiler works... (cached) yes
+Checking for C library SDL3... (cached) yes
+Checking for C library SDL3_ttf... (cached) yes
+Checking for C library SDL3_image... (cached) yes
+Checking for C library SDL3_net... (cached) yes
+Checking for C library speex... (cached) yes
+Checking for C++ header file speex/speex.h... (cached) yes
+Checking for C library vorbisfile... (cached) yes
+Checking for C library vorbis... (cached) yes
+Checking for C library ogg... (cached) yes
+Checking for C++ header file zlib.h... (cached) yes
+Checking for C library z... (cached) yes
+Checking for C++ header file regex.h... (cached) yes
+Checking for C++ header file openssl/ssl.h... (cached) yes
+Checking for C library ssl... (cached) yes
+Checking for C library crypto... (cached) yes
+Checking for C++ header file boost/beast/websocket.hpp... (cached) yes
+Checking for C++ header file boost/asio/ssl.hpp... (cached) yes
+Checking for C library GL... (cached) yes
+Checking for C++ header file GL/gl.h... (cached) yes
+Checking for C library GLU... (cached) yes
+Checking for C++ header file GL/glu.h... (cached) yes
+Checking for C library epoxy... (cached) yes
+Checking for C++ header file epoxy/gl.h... (cached) yes
+Checking for C library fribidi... (cached) yes
+Checking for C++ header file fribidi/fribidi.h... (cached) yes
+Checking for C library portaudio... (cached) no
+scons: done reading SConscript files.
+scons: Building targets ...
+scons: `tests' is up to date.
+scons: `build/linux/client/release/src/glob2' is up to date.
+scons: done building targets.

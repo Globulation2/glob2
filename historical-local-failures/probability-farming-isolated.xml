@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="1" failures="1" errors="0" skipped="0"><testsuite name="Maxima.Farming"><testcase classname="Maxima.Farming" name="corridor protection and fertility caches" time="0.336143" status="run">
+      <failure message="104001 &lt;  100000" type="REQUIRE">
+test/maxima/MaximaFarmingStandaloneTest.cpp:253:
+REQUIRE( cpuMicroseconds&lt;100000 ) is NOT correct!
+  values: REQUIRE( 104001 &lt;  100000 )
+
+      </failure>
+    </testcase>
+  </testsuite></testsuites>

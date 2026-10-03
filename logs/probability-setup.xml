@@ -1,3 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<testsuites tests="1" failures="0" errors="0" skipped="0"><testsuite name="CustomGameSetup"><testcase classname="CustomGameSetup" name="preferences; landscapes; AI catalogue; snapshot round trip; engine; reload and session replay [slow][writes-preferences]" time="21.9497" status="run" />
-  </testsuite></testsuites>

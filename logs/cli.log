@@ -8,6 +8,6 @@ test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_threshol
 test_structured_map_study_writes_report_map_and_manifest (__main__.CliSmoke.test_structured_map_study_writes_report_map_and_manifest) ... ok
 
 ----------------------------------------------------------------------
-Ran 8 tests in 2.306s
+Ran 8 tests in 2.708s
 
 OK

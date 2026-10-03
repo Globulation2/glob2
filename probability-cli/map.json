@@ -3,7 +3,7 @@
   "report_type": "map",
   "engine": {
     "version_major": 0,
-    "version_minor": 129
+    "version_minor": 131
   },
   "map": {
     "name": null,
@@ -15,7 +15,7 @@
     "player_slots": 2,
     "controller_count": 0,
     "saved_game": false,
-    "format_version_minor": 129,
+    "format_version_minor": 131,
     "tick": 0,
     "game_seed": 713,
     "colonies": [

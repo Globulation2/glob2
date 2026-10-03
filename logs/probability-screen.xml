@@ -1,4 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<testsuites tests="2" failures="0" errors="0" skipped="0"><testsuite name="CustomGameSetup"><testcase classname="CustomGameSetup" name="custom game screens; captures and translated keys [slow][display:1024x768][artifacts][writes-preferences]" time="64.0692" status="run" />
-  <testcase classname="CustomGameSetup" name="probability statistics fit sixteen colonies [display][artifacts]" time="0.789197" status="run" />
-  </testsuite></testsuites>

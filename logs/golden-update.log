@@ -1,0 +1,5 @@
+PASS WinProbability/enabled rule preserves the per-tick checksum trace across its decision boundary [golden][artifacts] (0.1s)
+PASS TurnEngineHarness/the committed match record verifies to the committed checksum trace [network-sim][golden] (1.9s)
+
+2 passed, 0 failed, 0 skipped (2.0s of test time)
+[run_tests] JUnit report: artifacts/probability-golden-update.xml (2 cases)
