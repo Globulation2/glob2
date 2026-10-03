@@ -8,6 +8,7 @@ class AIJavaScript : public AIImplementation
 {
 	Player *player;
 	std::string source;
+	std::string displayName = "JavaScript AI";
 	unsigned profile = 1;
 	Script::Value state = Script::Value::object();
 	bool initialized = false, disabled = false;

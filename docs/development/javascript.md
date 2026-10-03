@@ -309,6 +309,10 @@ network acceptance gates remain independent of this draft profile.
 
 ## Installing custom AI controllers (profile 2)
 
+Start with the public [JavaScript AI template](https://github.com/Globulation2/javascript-ai-example).
+It contains modular source, pinned build/watch tools, editor declarations, installation
+screenshots, and a compatible engine revision in `engine.json`.
+
 Open **Settings → Custom AIs** and import a bundled `.js` file. Imports are copied
 under `ais/` in the existing user-data directory. Entries have stable identities;
 duplicate display names are allowed. **Update** replaces an entry after validation.

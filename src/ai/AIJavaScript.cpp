@@ -16,8 +16,13 @@ AIJavaScript::AIJavaScript(Player *p)
 	source = Script::sourceFromConfig(player->game->gameHeader.getAIConfig(player->number));
 	profile = Script::profileFromConfig(player->game->gameHeader.getAIConfig(player->number));
 	runtime->validate(source);
-	if (profile == 2 && Script::inspectAI(source).apiVersion != 2)
-		throw std::runtime_error("Profile 2 AI requires metadata declaring apiVersion 2");
+	if (profile == 2)
+	{
+		const auto metadata = Script::inspectAI(source);
+		if (metadata.apiVersion != 2)
+			throw std::runtime_error("Profile 2 AI requires metadata declaring apiVersion 2");
+		displayName = metadata.name;
+	}
 	observations.setProfile(profile);
 	if (profile == 2)
 		services =
@@ -118,7 +123,7 @@ std::shared_ptr<Order> AIJavaScript::getOrder()
 		try
 		{
 			std::string diagnostic =
-				"tick " + std::to_string(player->game->stepCounter) + ": " +
+				displayName + " at tick " + std::to_string(player->game->stepCounter) + ": " +
 				std::string(ex.what(), std::min(std::strlen(ex.what()), std::size_t(16000)));
 			auto fallback = std::make_shared<NullOrder>();
 			error.swap(diagnostic);
