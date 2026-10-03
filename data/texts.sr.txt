@@ -30,8 +30,6 @@
 Јединице прениског нивоа: %0
 [%0% Uploaded]
 Отпремљено: %0 %
-[%0's game]
-Игра играча %0
 [%0's team unit got converted to your team]
 Јединица тима %0 је прешла на вашу страну
 [abreaviation explanation A]
@@ -48,8 +46,6 @@ V: Дели видљивост свих зграда
 Додај мапу
 [add shortcut]
 Додај пречицу
-[Add]
-Додај
 [AI Descriptions]
 Описи вештачке интелигенције
 [AI]
@@ -124,8 +120,6 @@ alt-%0
 Сними аутоматски
 [available lan games]
 Доступне локалне мрежне игре
-[awaiting players]
-Чекам играче
 [away:]
 одсутан:
 [Back]
@@ -140,8 +134,6 @@ Backspace
 Касарна
 [beach size]
 Величина плажа
-[Blocked Players]
-Блокирани играчи
 [break]
 Break
 [briefing]
@@ -172,8 +164,6 @@ Ctrl + превлачење = линија
 Повезивање није могуће: домаћин није пронађен
 [Can't host game, port %0 in use]
 Није могуће бити домаћин игре: порт %0 је заузет
-[Can't join game, game doesn't exist]
-Придруживање није могуће: игра не постоји
 [Can't join game, game has started]
 Придруживање није могуће: игра је већ почела
 [Can't join game, game is full]
@@ -240,8 +230,6 @@ control-%0
 број кратера
 [crater lakes terrain]
 Кратерска језера
-[create game]
-Направи игру
 [create map]
 Направи мапу
 [credits]
@@ -290,14 +278,6 @@ Ctrl – линија
 Не носи ништа
 [down]
 доле
-[Download Map]
-Преузми мапу
-[Download Maps]
-Преузми мапе
-[downloaded %0]
-преузето: %0
-[downloading map]
-Преузимање мапе
 [edit map]
 Уреди мапу
 [editing map]
@@ -308,10 +288,6 @@ Ctrl – линија
 Уређивач
 [end]
 End
-[Enter your nickname :]
-Унесите надимак :
-[Enter your password :]
-Унесите лозинку :
 [enter]
 Enter
 [equals]
@@ -466,12 +442,8 @@ Insert
 послови
 [join a game]
 Придружи се игри
-[join]
-Придружи се
 [keyboard settings]
 Подешавања тастатуре
-[kick]
-Избаци
 [lan]
 Игра у локалној мрежи
 [language incomplete]
@@ -482,8 +454,6 @@ sr
 Језик
 [language]
 Српски
-[Leave Game]
-Напусти игру
 [left meta]
 леви Meta
 [left super]
@@ -506,12 +476,6 @@ sr
 Учитај скрипту
 [load]
 Учитај
-[loading map list]
-Учитавање списка мапа...
-[Lobby]
-Чекаоница
-[login]
-Пријава
 [look around]
 Разгледај
 [Lost : %0 has more prestige than you]
@@ -530,30 +494,14 @@ sr
 Опис
 [Map Discovered]
 Мапа откривена
-[Map download failure: lost connection]
-Преузимање мапе није успело: веза са YOG је прекинута
-[Map name: %0]
-Име мапе: %0.
 [map name]
 Назив
-[map rated]
-Мапа је оцењена
 [map script]
 Скрипта мапе
 [map size x]
 Ширина мапе
 [map size y]
 Висина мапе
-[Map upload failure: connection lost]
-Отпремање мапе није успело: веза са YOG је прекинута
-[Map upload failure: map name in use]
-Отпремање мапе није успело. Назив мапе је већ у употреби.
-[Map upload failure: unknown reason]
-Отпремање мапе није успело. Разлог је непознат.
-[Map Upload: Author Name]
-Име аутора
-[Map Upload: Waiting for reply]
-Чекање одговора
 [mark map]
 Означи место савезницима
 [market explanation 2]
@@ -580,8 +528,6 @@ meta-%0
 Нова кампања
 [new map]
 Нова
-[nick taken]
-Изабрани надимак је већ у употреби на мрежи freenode. Моћи ћете да разговарате само преко YOG-а.
 [no fullscreen]
 * само у прозорском режиму
 [No Hints]
@@ -594,18 +540,10 @@ meta-%0
 Без раста
 [No]
 Не
-[Not Enough Ratings]
-Недовољно оцена
-[not ready]
-није спреман
 [Number Of Buildings]
 Број зграда
-[number of players: %0 (%1 AI)]
-Број играча: %0 (од тога %1 ВИ)
 [number of players: %0]
 Број присутних играча: %0.
-[number of teams: %0]
-Број екипа: %0.
 [number of teams]
 Број тимова
 [Number Of Units]
@@ -664,8 +602,6 @@ Pause
 Пауза
 [player name]
 Име играча
-[player rating %0]
-Оцена играча: %0
 [players]
 Играчи
 [please wait]
@@ -704,36 +640,22 @@ Print Screen
 Стадион
 [range]
 Домет
-[Rated %0]
-Оцена: %0
 [ratios]
 Односи
-[ready?]
-спреман?
-[refresh map list]
-Освежи списак мапа
 [Register a new YOG user with password]
 Пријави новог корисника на YOG са лозинком. (није шифровано)
-[Register]
-Региструј се
 [remember unit]
 Памти број јединица
-[Remember YOG password localy]
-Запамти лозинку у локалу (није шифровано)
 [remove map]
 Уклони мапу
 [remove shortcut]
 Уклони пречицу
-[Remove]
-Уклони
 [repair building]
 Покрени/заустави поправку
 [repair]
 Поправи
 [repeat area]
 понављања истог предела
-[Repeat your password :]
-Поновите лозинку:
 [replay ended]
 Репродукција је завршена
 [restore default shortcuts]
@@ -866,14 +788,6 @@ V: држите за говор
 Приказ
 [smoothing]
 Умекшавање
-[sort by name]
-Назив
-[sort by rating]
-Оцена
-[sort by size]
-Величина
-[Sort By]
-Поређај по
 [space]
 размак
 [start mission]
@@ -906,8 +820,6 @@ V: држите за говор
 Елемент пасивне
 [stonewall]
 Камени зид
-[submit rating]
-Пошаљи оцену
 [svr hostname]
 Име сервера
 [swamp terrain]
@@ -1004,10 +916,6 @@ Tab
 Пијаца је завршена
 [the market is under attack]
 Пијаца је нападнута
-[The player %0 has joined YOG]
-Играч %0 се пријавио на YOG
-[The player %0 has left YOG]
-Играч %0 је напустио YOG.
 [the racetrack is finished]
 Стадион је завршен
 [the racetrack is under attack]
@@ -1096,10 +1004,6 @@ Tab
 Подразумевана подешавања надоградње
 [upgrade]
 Догради
-[Upload Map]
-Отпреми мапу
-[upload map]
-Отпреми мапу
 [username]
 Корисничко име
 [Version]
@@ -1112,8 +1016,6 @@ Tab
 Чека се на %0
 [waiting for key]
 чекање тастера...
-[Waiting]
-Чекање
 [Walk]
 Ходање
 [warflag explanation 2]
@@ -1160,50 +1062,8 @@ Tab
 рањених
 [Yes]
 Да
-[YESTS_CONNECTING]
-Повезивање са YOG мета-сервером...
-[YESTS_CONNECTION_LOST]
-Веза са YOG је прекинута.
-[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
-YOG мета-сервер је одбио везу јер је ово корисничко име већ пријављено, али са лозинком. Ако корисничко име припада Вама, искључите опцију "Региструј новог корисника са лозинком"
-[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
-YOG мета-сервер је одбио везу јер лозинка коју сте уписали није исправна.
-[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-Метасервер YOG је одбио везу јер ово корисничко име још нема лозинку. Ако желите да га региструјете са унетом лозинком, пре повезивања укључите опцију "Пријави новог корисника на YOG са лозинком". Ово је потребно урадити само једном.
-[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
-Метасервер YOG је одбио везу јер је ова IP адреса привремено блокирана. Сачекајте да забрана истекне или се обратите администраторима.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 YOG мета-сервер је прекинуо везу јер је ваше издање Глобулације2 престаро.
-[YESTS_CONNECTION_REFUSED_UNEXPLAINED]
-YOG мета-сервер је одбио везу али није назначио разлог.
-[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
-YOG мета-сервер је одбио везу јер корисничко име које сте изабрали неко већ користи.
-[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
-Метасервер YOG је одбио везу јер је ово корисничко име блокирано. Обратите се администраторима.
-[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
-Метасервер YOG је одбио везу јер унето корисничко име није исправно. Име сме да садржи само слова, бројеве и доње црте.
-[YESTS_CREATED]
-Подсистем за повезивање је спреман за контакт са YOG метасервером.
-[YESTS_PASSWORDS_DONT_MATCH]
-Унете лозинке се не подударају. Унесите их поново.
-[YESTS_UNABLE_TO_CONNECT]
-Грешка при прикључењу. Изгледа да YOG сервер није покренут.
-[yog block command help]
-/block <playername>    Блокира играча; његове поруке више нећете видети.
-[yog block command player %0 already blocked]
-Играч %0 је већ блокиран
-[yog block command player %0 blocked]
-Играч %0 је блокиран
-[yog block command player %0 not found]
-Играч %0 није пронађен
-[yog command header]
-Списак наредби клијента YOG:
-[yog command unknown]
-Непозната наредба.
-[yog help command help]
-/help    Приказује ову помоћ
-[yog]
-Игра преко мреже (Ysagoon)
 [you have lost]
 Изгубили сте игру.
 [you have won]
@@ -1212,12 +1072,8 @@ YOG мета-сервер је одбио везу јер корисничко �
 Избачени сте из игре
 [Your %0 are under attack]
 Нападнута јединица: %0
-[Your IP address was temporarily banned]
-Ваша IP адреса је привремено блокирана. Сачекајте да забрана истекне или се обратите администраторима.
 [Your unit got converted to %0's team]
 Ваша јединица је прешла у тим играча %0
-[Your username was banned]
-Ваше корисничко име је блокирано. За укидање забране обратите се администраторима.
 [game speed]
 Брзина игре
 [decrease game speed]
@@ -3050,8 +2906,6 @@ Emoji
 Излаз без чувања
 [campaign import failed]
 Неважећа датотека напретка или друга верзија кампање
-[network release mismatch]
-Протоколи клијента и сервера се разликују. Инсталирајте исту верзију Glob2 као сервер.
 [settings continue]
 Настави
 [settings save failed]
@@ -3414,8 +3268,6 @@ Emoji
 %0 %1
 [resume game]
 Настави игру
-[games]
-Игре
 [Add AI]
 Додај ВИ
 [settings Experiments]
@@ -3464,15 +3316,9 @@ Emoji
 
 [lan discovered host %0]
 
-[lan share pairing]
-
-[lan copy pairing]
-
 [lan connection unavailable]
 
 [lan connection verification failed %0]
-
-[network start refused]
 
 [lan lobby endpoint required]
 
@@ -3685,8 +3531,6 @@ Emoji
 [hub join]
 
 [hub leaderboard]
-
-[hub legacy server]
 
 [hub linked %0]
 
