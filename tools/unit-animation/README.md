@@ -209,7 +209,9 @@ then camera-space position/normal float sextuples for each vertex of each pose.
 UVs use a top-left image origin. Directions and phases follow `unitAnimationFrame`.
 The renderer performs depth-tested mesh rasterization into a transparent GPU
 atlas, then composites into the existing sprite order. A visible-scene prepass
-shares identical pose/paint tiles and groups geometry uploads. The atlas uses
+shares identical pose/paint tiles across frames and groups geometry uploads.
+A bounded least-recently-used cache invalidates paint revisions, replaced textures
+and reloaded meshes, protecting visible tiles before eviction. The atlas uses
 128-pixel cells in up to four 2048-pixel pages, with a shared depth attachment.
 Units retain the source sprite's separate shadow layer under the live mesh; the
 source action, direction and phase select both together. This preserves ground
@@ -225,12 +227,17 @@ build/linux/client/release/src/skin-preview artifacts/skins/units artifacts/skin
 ```
 
 Both modes draw 512 units across four paint surfaces. The first uses 128 distinct
-pose/paint combinations; the second uses 512 combinations across two atlas pages.
-Each compares forced immediate rendering against the frame atlas using the same
+pose/paint combinations; the second uses 512 visible combinations. Additional
+animation phases can populate up to four persistent atlas pages. Each compares
+on-demand tile preparation against the visible-scene prepass using the same
 128-pixel raster resolution, warms up five frames, and measures forty frames.
 Draw-count assertions catch missing work, and final BMP captures permit pixel
 comparison. Report renderer/hardware and inspect captures alongside timings;
 these isolated measurements do not establish crowded-game performance.
+`--validate-cache` instead checks paint edits, texture address reuse and overflow;
+it saves cold/hit/repaint/eviction images for comparison. Identical cache hits
+should have identical pixels; moving a pose to another atlas cell can introduce
+small GPU interpolation rounding differences.
 
 For a full-map comparison, `scons release=1 skin-game-preview` builds a diagnostic
 harness. Set `SKIN_PREVIEW_SAVE` to a saved game with at least two colonies and
@@ -270,7 +277,12 @@ pointing to the exported mesh directory containing `paint.png`,
 The tool adds ground and flying units in a 16×16 area around the first colony,
 uses two paint variants, and renders the same changing poses with classic art
 and then live meshes. It reports mean and 95th-percentile frame time plus draw
-calls over 40 frames after five warm-up frames. Captures are written beneath
+calls over 40 frames after five warm-up frames by default. Set `SKIN_BENCH_FRAMES`
+and `SKIN_BENCH_WARMUP` for longer matched runs. First-frame cost and
+`render.skins.*` scopes are reported separately; every frame verifies unchanged
+simulation checksums and matching classic/skinned states. See the
+[profiling guidance](../../docs/development/reference.md) for comparison limits.
+Captures are written beneath
 the selected user-data directory as `crowd-classic.bmp` and `crowd-skinned.bmp`.
 Clouds and interpolation are disabled to isolate this comparison. This measures
 the real Scene/map/HUD drawing path with diagnostic unit placement, not an

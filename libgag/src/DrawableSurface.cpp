@@ -6,6 +6,7 @@
 #include <FileManager.h>
 #include <assert.h>
 #include <algorithm>
+#include <atomic>
 #include <string>
 #include <valarray>
 #include <SDL3_image/SDL_image.h>
@@ -20,6 +21,11 @@ namespace GAGCore
 #ifdef GLOB2_WEBGL2
     namespace { std::set<DrawableSurface*> gpuSurfaces; }
 #endif
+    std::uint64_t DrawableSurface::nextSurfaceIdentity()
+    {
+        static std::atomic<std::uint64_t> sequence{0};
+        return sequence.fetch_add(1, std::memory_order_relaxed) + 1;
+    }
 	SDL_Surface *DrawableSurface::convertForUpload(SDL_Surface *source)
 	{
 		// Color::pack/unpack and software drawing use _glFormat. A 32-bit

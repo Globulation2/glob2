@@ -6,6 +6,7 @@
 
 #include "GAGSys.h"
 #include "CursorManager.h"
+#include "SkinAtlasCache.h"
 #include <map>
 #include <vector>
 #include <string>
@@ -181,6 +182,8 @@ namespace GAGCore
 		// its own uploaded revision; raw pixel writes must call markPixelsChanged().
 		std::uint64_t glUploadedRevision = 0; // Revision uploaded to this surface's legacy GL texture.
         std::uint64_t pixelRevision = 1, opacityRevision = 0;
+        static std::uint64_t nextSurfaceIdentity();
+        const std::uint64_t surfaceIdentity = nextSurfaceIdentity();
         bool opaquePixels = false;
 		bool highResolutionSampling=false;
 		//! texture index if GPU (GL) is used
@@ -217,6 +220,8 @@ namespace GAGCore
 		DrawableSurface(int w, int h);
 		DrawableSurface(const SDL_Surface *sourceSurface);
 		DrawableSurface *clone(void);
+        DrawableSurface(const DrawableSurface&) = delete;
+        DrawableSurface& operator=(const DrawableSurface&) = delete;
 		virtual ~DrawableSurface(void);
 		
 		// modifiers
@@ -233,6 +238,7 @@ namespace GAGCore
 		virtual int getH(void) { if (textureInfo) return textureInfo->h; return sdlsurface->h; }
 		//! The raw software surface, e.g. to hand off to an SDL API that wants one directly
 		SDL_Surface *getSDLSurface(void) { return sdlsurface; }
+        std::uint64_t lifetimeIdentity() const { return surfaceIdentity; }
         std::uint64_t contentRevision() const { return pixelRevision; }
         virtual void prepareDraw() {}
         void markPixelsChanged() { ++pixelRevision; }
@@ -446,8 +452,8 @@ namespace GAGCore
         {
             unsigned program = 0, framebuffer = 0, depth = 0;
             std::vector<unsigned> colors;
-            using Key = std::tuple<std::uint64_t, unsigned, std::uintptr_t, std::uint64_t>;
-            std::map<Key, unsigned> slots;
+            using Key = SkinAtlasCache::Key;
+            SkinAtlasCache slots;
             unsigned poses = 0, uv = 0, indices = 0, vao = 0;
             std::uint64_t meshIdentity = 0;
             unsigned frame = ~0u;
