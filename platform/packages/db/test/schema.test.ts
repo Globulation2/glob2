@@ -562,8 +562,10 @@ describe('migrations', () => {
         .returning('id')
         .executeTakeFirstOrThrow();
       expect((await migrateToLatest(existing.db)).map((r) => r.migrationName)).toEqual([
-        '0018_hive',
-        '0019_hive_supervision',
+        '0018_realtime_presence',
+        '0019_warm_maps_over_generated',
+        '0020_hive',
+        '0021_hive_supervision',
       ]);
       expect(
         (
