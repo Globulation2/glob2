@@ -1,6 +1,7 @@
 # Telemetry PRs #360 / #343 evidence
 
-Base: master 4da094543. #360: d588446b6. #343: c10c2fa9a.
+Base: master 1d6b8ca09 for checksums, golden and suites. #360: 675665f78. #343: 962f11859.
+CPU benchmarks ran on the same PR code over base 4da094543.
 Linux x86_64, GCC 15.2, `scons release=1 server=0`, SDL3 3.4.16. The machine was shared and under load (load average about 28), so CPU timings are noisy.
 
 checksums/: `scripts/checksum_ab.py BASE PR OUT --ticks 15000` plays 6 maps x 2 seeds with all eight AIs.
