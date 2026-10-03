@@ -2356,3 +2356,8 @@
 [No fields match your search.]
 [Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]
 [Missing custom AI]
+[Map repetition failed]
+[repeat map horizontally]
+[repeat map vertically]
+[bases]
+[bases per colony]

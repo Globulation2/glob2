@@ -4718,3 +4718,13 @@ Desactívalo para usar las unidades, los enjambres y los colores de edificios cl
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+Repetir el mapa en horizontal
+[repeat map vertically]
+Repetir el mapa en vertical
+[bases]
+bases
+[bases per colony]
+Bases por colonia; una base es un equipo del mapa tal como está dibujado, con sus edificios y unidades

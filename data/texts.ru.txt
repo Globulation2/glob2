@@ -4716,3 +4716,13 @@ Emoji
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+Повторить карту по горизонтали
+[repeat map vertically]
+Повторить карту по вертикали
+[bases]
+базы
+[bases per colony]
+Баз на колонию; база — это одна команда карты в нарисованном виде, с её зданиями и юнитами

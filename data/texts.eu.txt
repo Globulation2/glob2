@@ -4728,3 +4728,13 @@ Desaktibatu gailu honetan unitate, erle-saldo eta eraikinen kolore klasikoak era
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+Errepikatu mapa horizontalki
+[repeat map vertically]
+Errepikatu mapa bertikalki
+[bases]
+baseak
+[bases per colony]
+Oinarriak koloniako; oinarria marraztutako maparen talde bat da, bere eraikin eta unitateekin

@@ -4718,3 +4718,13 @@ Deaktivieren, um auf diesem Gerät klassische Einheiten, Schwärme und Gebäudef
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+Karte horizontal wiederholen
+[repeat map vertically]
+Karte vertikal wiederholen
+[bases]
+Basen
+[bases per colony]
+Basen pro Kolonie; eine Basis ist ein Team der gezeichneten Karte mit seinen Gebäuden und Einheiten

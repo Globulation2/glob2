@@ -4,6 +4,8 @@
 #include "FileImport.h"
 #include "GUIMapPreview.h"
 #include "Game.h"
+#include "Team.h"
+#include <algorithm>
 #include "GlobalContainer.h"
 #include <ApplicationHost.h>
 #include <BinaryStream.h>
@@ -78,6 +80,11 @@ void ChooseMapScreen::clearSelection()
 {
 	validMapSelected = false;
 	selectedType = NONE;
+	tilingSource = {};
+	tileX = tileY = tileBases = 1;
+	tileTeams = 0;
+	showTiling = false;
+	tilingValid = true;
 	mapDate.clear();
 	mapExperiments.clear();
 	mapVersion.clear();
@@ -111,7 +118,21 @@ void ChooseMapScreen::select(int index)
 	invalidate();
 	if (index < 0 || index >= int(catalog.names().size()))
 		return;
-	const std::string mapFileName = catalog.path(catalog.names()[std::size_t(index)]);
+	selectFile(catalog.path(catalog.names()[std::size_t(index)]));
+}
+
+void ChooseMapScreen::editMapParameters(const std::string &path)
+{
+	parametersOnly = true;
+	title = tr("Size and parameters");
+	selectFile(path);
+	showTiling = true;
+}
+
+void ChooseMapScreen::selectFile(const std::string &mapFileName)
+{
+	clearSelection();
+	invalidate();
 	try
 	{
 		mapPreview->setMapThumbnail(mapFileName.c_str());
@@ -124,7 +145,9 @@ void ChooseMapScreen::select(int index)
 			validMapSelected = mapHeader.load(stream.get());
 			if (!validMapSelected)
 				selectedType = NONE;
-			mapHeader.setMapName(glob2FilenameToName(mapFileName));
+			mapHeader.setFileNameOverride(mapFileName);
+			if (!parametersOnly)
+				mapHeader.setMapName(glob2FilenameToName(mapFileName));
 			if (validMapSelected && activeType() == GAME)
 			{
 				// A save keeps the experiments it was started with, whatever the
@@ -148,6 +171,13 @@ void ChooseMapScreen::select(int index)
 				while (!mapDate.empty() && (mapDate.back() == '\n' || mapDate.back() == '\r'))
 					mapDate.pop_back();
 				selectedType = activeType();
+				if (selectedType == MAP)
+				{
+					tilingSource = MapTiling::readMapInfo(mapFileName);
+					tilingSource.header = mapHeader;
+					tilingSource.header.setFileNameOverride(mapFileName);
+					tileTeams = mapHeader.getNumberOfTeams();
+				}
 			}
 			else
 				std::cerr << "ChooseMapScreen: invalid map header for map " << mapFileName << std::endl;
@@ -209,8 +239,27 @@ void ChooseMapScreen::switchType()
 
 void ChooseMapScreen::accept()
 {
-	if (validMapSelected)
-		endExecute(OK);
+	if (!validMapSelected || !tilingValid || importBusy())
+		return;
+	if (tilingActive())
+	{
+		try
+		{
+			MapHeader written = MapTiling::writeTiledMap(tilingSource.header, tileX, tileY, tileTeams, tileBases);
+			if (written.getNumberOfTeams() == 0)
+			{
+				showStatus(tr("[Map repetition failed]"));
+				return;
+			}
+			mapHeader = std::move(written);
+		}
+		catch (const std::exception &)
+		{
+			showStatus(tr("[Map repetition failed]"));
+			return;
+		}
+	}
+	endExecute(OK);
 }
 
 void ChooseMapScreen::cancel()
@@ -329,6 +378,107 @@ void ChooseMapScreen::onTimer(Uint32)
 	}
 }
 
+
+bool ChooseMapScreen::tilingActive() const
+{
+	return selectedType == MAP && tilingSource.valid &&
+		(MapTiling::isActive(tileX, tileY, tileTeams, tilingSource.header.getNumberOfTeams()) ||
+		 tileTeams * tileBases < MapTiling::colonyCount(tilingSource.header.getNumberOfTeams(), tileX, tileY));
+}
+
+void ChooseMapScreen::refreshTiling()
+{
+	// Clamp dependent counts before rendering: every player gets an equal
+	// share, and reducing a repeat must never leave an impossible selection.
+	const int total = MapTiling::colonyCount(tilingSource.header.getNumberOfTeams(), tileX, tileY);
+	tileTeams = std::clamp(tileTeams, 1, std::min<int>(Team::MAX_COUNT, total));
+	tileBases = std::clamp(tileBases, 1, total / tileTeams);
+	tilingValid = true;
+	try
+	{
+		if (tilingActive())
+		{
+			MapThumbnail thumbnail;
+			tilingValid = MapTiling::tiledThumbnail(tilingSource.header, tileX, tileY, tileTeams, tileBases, thumbnail);
+			mapPreview->setMapThumbnail(thumbnail);
+			mapHeader = MapTiling::tiledHeader(tilingSource.header, tileX, tileY, tileTeams);
+		}
+		else
+		{
+			mapHeader = tilingSource.header;
+			mapPreview->setMapThumbnail(tilingSource.header.getFileName().c_str());
+		}
+	}
+	catch (const std::exception &)
+	{
+		tilingValid = false;
+		mapPreview->setMapThumbnail(MapThumbnail());
+	}
+	updateMapInformation();
+	if (tilingActive())
+	{
+		mapSize = GAGCore::FormattableString("%0 x %1 (%2 x %3)")
+			.arg(tilingSource.w * tileX).arg(tilingSource.h * tileY).arg(tilingSource.w).arg(tilingSource.h);
+		mapInfo += " / " + GAGCore::FormattableString("%0 %1")
+			.arg(MapTiling::placedColonyCount(total, tileTeams, tileBases)).arg(tr("[bases]"));
+	}
+	status = tilingValid ? title : tr("[Map repetition failed]");
+	invalidate();
+}
+
+Element ChooseMapScreen::tilingControls(const Presentation &p, bool busy)
+{
+	if (!validMapSelected || selectedType != MAP || !tilingSource.valid)
+		return empty();
+	ButtonOptions disclosure;
+	disclosure.selected = showTiling;
+	disclosure.enabled = !busy;
+	disclosure.flat = true;
+	disclosure.alignLeft = true;
+	std::vector<Element> controls;
+	if (!parametersOnly)
+		controls.push_back(button("tiling/parameters", tr("Size and parameters"),
+			[this] { showTiling = !showTiling; invalidate(); }, disclosure));
+	if (!showTiling)
+		return column(std::move(controls));
+	auto repeat = [this, busy](const char *key, const char *labelKey, int side, int current, bool horizontal)
+	{
+		const auto values = MapTiling::repeatOptions(side);
+		std::vector<std::string> labels;
+		for (int value : values)
+			labels.push_back(std::to_string(value));
+		ChoiceOptions options;
+		options.controlEnabled = !busy;
+		return field(tr(labelKey), choice(key, labels, int(std::find(values.begin(), values.end(), current) - values.begin()),
+			[this, values, horizontal](int index)
+			{
+				(horizontal ? tileX : tileY) = values.at(std::size_t(index));
+				// A new repeat defaults to one player per base, up to the engine limit.
+				const int total = MapTiling::colonyCount(tilingSource.header.getNumberOfTeams(), tileX, tileY);
+				tileTeams = std::min<int>(Team::MAX_COUNT, total);
+				tileBases = total / tileTeams;
+				refreshTiling();
+			}, options));
+	};
+	const int total = MapTiling::colonyCount(tilingSource.header.getNumberOfTeams(), tileX, tileY);
+	controls.push_back(field(tr("[colonies]"), stepper("tiling/teams", tileTeams, 1, std::min<int>(Team::MAX_COUNT, total),
+		[this](int value) { tileTeams = value; tileBases = 1; refreshTiling(); }, {1, !busy})));
+	controls.push_back(paragraph(tr("[bases per colony]"), {FontRole::Support, true}));
+	controls.push_back(field(tr("[bases]"), stepper("tiling/bases", tileBases, 1, total / tileTeams,
+		[this](int value) { tileBases = value; refreshTiling(); }, {1, !busy})));
+	// Ordinary colony settings come first; repeating terrain is an opt-in
+	// advanced adjustment at the bottom, starting at one in both directions.
+	controls.push_back(repeat("tiling/x", "[repeat map horizontally]", tilingSource.w, tileX, true));
+	controls.push_back(repeat("tiling/y", "[repeat map vertically]", tilingSource.h, tileY, false));
+	controls.push_back(button("tiling/reset", tr("Reset"), [this]
+		{
+			tileX = tileY = tileBases = 1;
+			tileTeams = tilingSource.header.getNumberOfTeams();
+			refreshTiling();
+		}, {false, false, !busy}));
+	return column(std::move(controls), {p.pt(8)});
+}
+
 Element ChooseMapScreen::build(const Presentation &p)
 {
 	auto &catalog = activeCatalog();
@@ -336,10 +486,15 @@ Element ChooseMapScreen::build(const Presentation &p)
 	auto list = listView("files", catalog.names(), activeSelection(), [this](int i) { select(i); },
 						 {{}, {}, {}, [this](int) { accept(); }, {}, 10, tr("[No items]")});
 	std::vector<Element> detailLines;
-	for (const auto &line : {mapName, mapSize, mapInfo, mapVersion, mapDate, mapExperiments})
+	const auto lines = parametersOnly ? std::vector<std::string>{mapName, mapSize, mapInfo}
+		: std::vector<std::string>{mapName, mapSize, mapInfo, mapVersion, mapDate, mapExperiments};
+	for (const auto &line : lines)
 		if (!line.empty())
 			detailLines.push_back(paragraph(line));
-	auto preview = Glob2UI::mapPreview("preview", *this->mapPreview, 160);
+	auto preview = Glob2UI::mapPreview("preview", *this->mapPreview, parametersOnly && p.touch ? 120 : 160);
+	auto controls = tilingControls(p, busy);
+	if (!parametersOnly)
+		detailLines.push_back(controls);
 	auto details = column(std::move(detailLines), {p.pt(4)});
 	std::vector<Element> tools;
 	if (alternate)
@@ -349,7 +504,7 @@ Element ChooseMapScreen::build(const Presentation &p)
 	if (canExport)
 		tools.push_back(button("export", tr("[export file]"), [this] { exportSelected(); }, {false, false, !busy && (validMapSelected || (fileImport && fileImport->canRetry()))}));
 	if (shareMap && activeType() == MAP)
-		tools.push_back(button("share", tr("[maps share online]"), [this] { shareMap(mapHeader.getFileName()); },
+		tools.push_back(button("share", tr("[maps share online]"), [this] { shareMap(tilingSource.valid ? tilingSource.header.getFileName() : mapHeader.getFileName()); },
 							   {false, false, !busy && validMapSelected}));
 	if (canDelete)
 		tools.push_back(button("delete", tr("[delete]"), [this] { deleteSelected(); }, {false, false, !busy && validMapSelected, false, false, true}));
@@ -359,12 +514,23 @@ Element ChooseMapScreen::build(const Presentation &p)
 		[list, preview, details, toolRow, statusLine](const LayoutContext &ctx, Size available)
 		{
 			if (available.w < ctx.presentation.pt(640))
-				return scroll("choose/scroll", column({statusLine, row({preview, expanded(details)}, {-1, CrossAlign::Start}), list, toolRow}));
-			auto side = column({align(Alignment::TopLeft, preview), details, statusLine});
+				return scroll("choose/scroll", column({statusLine, column({align(Alignment::TopLeft, preview), details}), list, toolRow}));
+			auto side = scroll("choose/details", column({align(Alignment::TopLeft, preview), details, statusLine}));
 			return column({expanded(row({width(ctx.presentation.pt(300), column({expanded(list), toolRow})), expanded(side)}, {-1, CrossAlign::Stretch}))});
 		});
+	if (parametersOnly)
+		body = adaptive([preview, details, controls, statusLine](const LayoutContext &ctx, Size available)
+		{
+			if (available.w < ctx.presentation.pt(640))
+				return scroll("choose/parameters", column({statusLine,
+					row({preview, expanded(details)}, {ctx.presentation.pt(12), CrossAlign::Start}), controls},
+					{ctx.presentation.pt(12)}));
+			return row({width(ctx.presentation.pt(240), scroll("choose/source", column({preview, details}))),
+				expanded(scroll("choose/parameters", column({statusLine, controls})))},
+				{ctx.presentation.pt(20), CrossAlign::Start});
+		});
 	return page(title, body,
-				actions({{"ok", tr("[ok]"), [this] { accept(); }, true, SDLK_RETURN, validMapSelected && !busy},
+				actions({{"ok", tr("[ok]"), [this] { accept(); }, true, SDLK_RETURN, validMapSelected && tilingValid && !busy},
 						 {"cancel", tr("[Cancel]"), [this] { cancel(); }, false, SDLK_ESCAPE}},
 						p),
 				p, 960);

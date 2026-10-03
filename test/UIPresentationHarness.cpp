@@ -167,6 +167,12 @@ std::vector<Fixture> fixtures()
 		{"campaign-saves", [](GAGGUI::ScreenStack &) { return std::make_unique<CampaignSelectorScreen>(true); }},
 		{"tutorial-missions", [](GAGGUI::ScreenStack &s) { return std::make_unique<CampaignMenuScreen>("campaigns/Tutorial_Campaign.txt", s); }},
 		{"campaign-editor", [](GAGGUI::ScreenStack &s) { return std::make_unique<CampaignEditor>("campaigns/Tutorial_Campaign.txt", s); }},
+		{"map-repeat", [](GAGGUI::ScreenStack &)
+		 {
+			 auto screen = std::make_unique<ChooseMapScreen>("maps", "map", false);
+			 screen->editMapParameters("maps/balanced_for_2.map.gz");
+			 return screen;
+		 }},
 		{"load-map", [](GAGGUI::ScreenStack &) { return std::make_unique<ChooseMapScreen>("maps", "map", true); }},
 		{"load-game", [](GAGGUI::ScreenStack &) { return std::make_unique<ChooseMapScreen>("games", "game", true, "replays", "replay", true); }},
 		{"lan-find", [](GAGGUI::ScreenStack &s) { return std::make_unique<LANFindScreen>(s); }},

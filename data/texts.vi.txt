@@ -4714,3 +4714,13 @@ Tắt để sử dụng đơn vị, bầy đàn và màu công trình cổ đi�
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+Lặp bản đồ theo chiều ngang
+[repeat map vertically]
+Lặp bản đồ theo chiều dọc
+[bases]
+căn cứ
+[bases per colony]
+Căn cứ mỗi thuộc địa; một căn cứ là một đội của bản đồ như đã vẽ, cùng các công trình và đơn vị của nó

@@ -4726,3 +4726,13 @@ Desactiva-ho per utilitzar les unitats, els eixams i els colors dels edificis cl
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+Repeteix el mapa horitzontalment
+[repeat map vertically]
+Repeteix el mapa verticalment
+[bases]
+bases
+[bases per colony]
+Bases per colònia; una base és un equip del mapa tal com està dibuixat, amb els seus edificis i unitats

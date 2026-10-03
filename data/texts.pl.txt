@@ -4718,3 +4718,13 @@ Wyłącz, aby na tym urządzeniu używać klasycznych jednostek, rojów i kolor�
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+Powtórz mapę w poziomie
+[repeat map vertically]
+Powtórz mapę w pionie
+[bases]
+bazy
+[bases per colony]
+Bazy na kolonię; baza to jedna drużyna mapy w narysowanej postaci, z jej budynkami i jednostkami

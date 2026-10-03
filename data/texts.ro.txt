@@ -4718,3 +4718,13 @@ Dezactivează pentru a folosi unități, roiuri și culori ale clădirilor clasi
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+Repetă harta pe orizontală
+[repeat map vertically]
+Repetă harta pe verticală
+[bases]
+baze
+[bases per colony]
+Baze pe colonie; o bază este o echipă a hărții așa cum a fost desenată, cu clădirile și unitățile ei

@@ -4716,3 +4716,13 @@ Emoji
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+كرر الخريطة أفقيًا
+[repeat map vertically]
+كرر الخريطة عموديًا
+[bases]
+قواعد
+[bases per colony]
+القواعد لكل مستعمرة؛ القاعدة فريق واحد من الخريطة كما رُسمت، بمبانيه ووحداته

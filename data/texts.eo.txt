@@ -4716,3 +4716,13 @@ Malŝaltu por uzi klasikajn unuojn, svarmojn kaj konstruaĵajn kolorojn en ĉi t
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+Ripeti la mapon horizontale
+[repeat map vertically]
+Ripeti la mapon vertikale
+[bases]
+bazoj
+[bases per colony]
+Bazoj po kolonio; bazo estas unu teamo de la mapo kiel desegnite, kun ĝiaj konstruaĵoj kaj unuoj

@@ -4714,3 +4714,13 @@ CPU %0%
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+水平重复地图
+[repeat map vertically]
+垂直重复地图
+[bases]
+基地
+[bases per colony]
+每个殖民地的基地数；一个基地是地图原样中的一支团队及其建筑和单位

@@ -4718,3 +4718,13 @@ Vypnutím obnovíte na tomto zařízení klasické jednotky, roje a barvy budov.
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+Opakovat mapu vodorovně
+[repeat map vertically]
+Opakovat mapu svisle
+[bases]
+základny
+[bases per colony]
+Základny na kolonii; základna je jeden tým mapy tak, jak byla nakreslena, s jeho budovami a jednotkami

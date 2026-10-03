@@ -4728,3 +4728,13 @@ Stäng av för att använda klassiska enheter, svärmar och byggnadsfärger på 
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+Upprepa kartan vågrätt
+[repeat map vertically]
+Upprepa kartan lodrätt
+[bases]
+baser
+[bases per colony]
+Baser per koloni; en bas är ett lag från kartan som den är ritad, med dess byggnader och enheter

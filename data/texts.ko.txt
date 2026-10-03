@@ -4714,3 +4714,13 @@ AI 추가
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+맵을 가로로 반복
+[repeat map vertically]
+맵을 세로로 반복
+[bases]
+기지
+[bases per colony]
+식민지당 기지 수; 기지는 그려진 맵의 한 팀과 그 건물 및 유닛입니다

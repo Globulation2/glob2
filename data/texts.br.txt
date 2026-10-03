@@ -4714,3 +4714,13 @@ Diweredekait evit implijout an unanennoù, an hedadoù ha livioù ar savadurioù
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+Repetir o mapa na horizontal
+[repeat map vertically]
+Repetir o mapa na vertical
+[bases]
+bases
+[bases per colony]
+Bases por colônia; uma base é um time do mapa como foi desenhado, com seus prédios e unidades
