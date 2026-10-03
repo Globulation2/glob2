@@ -2,7 +2,7 @@
 // providers, queues, access policy). Secrets stay in .env and are referenced
 // by environment-variable name.
 import { Type, type Static } from 'typebox';
-import { GeneratorDescriptor, HiveConfig, Strict } from '@glob2/protocol';
+import { GeneratorDescriptor, Strict } from '@glob2/protocol';
 
 const ProviderId = Type.String({ pattern: '^[a-z0-9][a-z0-9-]{0,31}$' });
 
@@ -102,7 +102,6 @@ export const QueueConfig = Strict({
 export type QueueConfig = Static<typeof QueueConfig>;
 
 export const InstanceConfig = Strict({
-  hiveMind: Type.Optional(HiveConfig),
   name: Type.String({ minLength: 1, maxLength: 128 }),
   guests: Strict({ enabled: Type.Boolean() }),
   auth: Strict({

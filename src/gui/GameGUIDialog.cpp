@@ -49,7 +49,6 @@ Element InGameMainScreen::build(const Presentation &p)
 			buttons.push_back(classicButton("load", loadLabel, [this] { finish(LOAD_GAME); }));
 		if (files && !replay && canSave)
 			buttons.push_back(classicButton("save", fe::tr("[save game]"), [this] { finish(SAVE_GAME); }));
-		if(hiveMind)buttons.push_back(classicButton("hive", "Hive Mind", [this]{finish(HIVE_MIND);}));
 		buttons.push_back(classicButton("options", fe::tr("[Options]"), [this] { finish(OPTIONS); }));
 		buttons.push_back(classicButton("quit", quitLabel, [this] { finish(QUIT_GAME); }));
 		buttons.push_back(classicButton("return", returnLabel, [this] { finish(RETURN_GAME); }, SDLK_ESCAPE));
@@ -69,7 +68,6 @@ Element InGameMainScreen::build(const Presentation &p)
 		buttons.push_back(item("save", fe::tr("[save game]"), SAVE_GAME));
 	if (files)
 		buttons.push_back(item("load", loadLabel, LOAD_GAME));
-	if(hiveMind)buttons.push_back(item("hive","Hive Mind",HIVE_MIND));
 	buttons.push_back(item("options", fe::tr("[Options]"), OPTIONS));
 	buttons.push_back(item("quit", quitLabel, QUIT_GAME));
 	buttons.push_back(item("pause", fe::tr(paused ? "[resume game]" : "[pause game]"), PAUSE_GAME));
@@ -674,7 +672,7 @@ Element InGameObjectivesScreen::build(const Presentation &p)
 	return fe::column({header, fe::expanded(fe::footer(body, ok))}, {p.pt(10)});
 }
 
-InGameTextInput::InGameTextInput(bool commander) : commander(commander) {}
+InGameTextInput::InGameTextInput() = default;
 
 GAGGUI::ui::Rect InGameTextInput::available(const GAGGUI::ui::Presentation &presentation, const GAGGUI::ui::Metrics &metrics)
 {
@@ -696,13 +694,13 @@ GAGGUI::ui::Rect InGameTextInput::place(GAGGUI::ui::Size measured, GAGGUI::ui::R
 Element InGameTextInput::build(const Presentation &p)
 {
 	fe::TextFieldOptions options;
-	options.maxLength = commander ? 2000 : 256;
+	options.maxLength = 256;
 	options.autoFocus = true;
-	options.placeholder = commander ? "Command your colony… Enter to send · Esc to close" : fe::tr("[Chat · recipients selected in Teams]");
+	options.placeholder = fe::tr("[Chat · recipients selected in Teams]");
 	options.submit = [this](const std::string &) { finish(0); };
 	auto entry = fe::textField("chat", text, [this](const std::string &value) { text = value; }, options);
 	if (classic())
-		return commander ? fe::column({fe::caption("Commander · Enter to send · Esc to close"),entry},{p.pt(4)}) : entry;
+		return entry;
 	fe::ButtonOptions sendOptions;
 	sendOptions.primary = true;
 	auto send = fe::compactButton(

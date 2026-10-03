@@ -26,15 +26,13 @@ class InGameMainScreen : public Glob2UI::InGameDialog
 		OPTIONS = 2,
 		RETURN_GAME = 5,
 		QUIT_GAME = 6,
-		PAUSE_GAME = 7,
-		HIVE_MIND = 8
+		PAUSE_GAME = 7
 	};
 	explicit InGameMainScreen(bool isReplay = false, bool canSave = true, bool paused = false);
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
 	/// A networked (turn-protocol) game: no Load or Save, and "Leave match" instead
 	/// of "Quit the game".
 	void setNetworked(bool value) { networked = value; }
-	void setHiveMind(bool value) { hiveMind = value; }
 
   protected:
 	void onEscape() override { finish(RETURN_GAME); }
@@ -42,7 +40,7 @@ class InGameMainScreen : public Glob2UI::InGameDialog
 
   private:
 	bool replay, canSave, paused;
-	bool networked = false, hiveMind = false;
+	bool networked = false;
 };
 
 /// A yes/no question over the game ("Leave match?"), Cancel on Escape.
@@ -175,7 +173,7 @@ class InGameOptionScreen : public Glob2UI::InGameDialog
 class InGameTextInput : public Glob2UI::InGameDialog
 {
   public:
-	explicit InGameTextInput(bool commander = false);
+	InGameTextInput();
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
 	std::string getText() const { return text; }
 	void setText(const std::string &value)
@@ -193,7 +191,6 @@ class InGameTextInput : public Glob2UI::InGameDialog
 
   private:
 	std::string text;
-	bool commander = false;
 };
 
 ///This screen shows the current objectives of the mission, a mission briefing, and

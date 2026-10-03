@@ -21,14 +21,6 @@
     "GenerateMapResult": "schemas/GenerateMapResult.schema.json",
     "GeneratorDescriptor": "schemas/GeneratorDescriptor.schema.json",
     "GuestSignInRequest": "schemas/GuestSignInRequest.schema.json",
-    "HiveCheckout": "schemas/HiveCheckout.schema.json",
-    "HiveClientPoll": "schemas/HiveClientPoll.schema.json",
-    "HiveCommand": "schemas/HiveCommand.schema.json",
-    "HiveContext": "schemas/HiveContext.schema.json",
-    "HiveProgram": "schemas/HiveProgram.schema.json",
-    "HiveTool": "schemas/HiveTool.schema.json",
-    "HiveToolResult": "schemas/HiveToolResult.schema.json",
-    "HiveWake": "schemas/HiveWake.schema.json",
     "IdentityConflict": "schemas/IdentityConflict.schema.json",
     "InstanceInfo": "schemas/InstanceInfo.schema.json",
     "InstanceStats": "schemas/InstanceStats.schema.json",
@@ -147,39 +139,6 @@
     "VerifyVerdict": "schemas/VerifyVerdict.schema.json"
   },
   "fixtures": [
-    {
-      "file": "valid/HiveTool/investigate.json",
-      "schema": "HiveTool",
-      "valid": true,
-      "note": "A one-shot player observation."
-    },
-    {
-      "file": "valid/HiveProgram/standing-order.json",
-      "schema": "HiveProgram",
-      "valid": true,
-      "note": "Minimum cadence is 25 simulation ticks."
-    },
-    {
-      "file": "invalid/HiveProgram/too-frequent.json",
-      "schema": "HiveProgram",
-      "valid": false,
-      "stage": "schema",
-      "note": "Intervals below 25 are rejected."
-    },
-    {
-      "file": "invalid/HiveTool/team-override.json",
-      "schema": "HiveTool",
-      "valid": false,
-      "stage": "schema",
-      "note": "The assigned team is never an agent tool argument."
-    },
-    {
-      "file": "invalid/HiveTool/replace-revision-required.json",
-      "schema": "HiveTool",
-      "valid": false,
-      "stage": "schema",
-      "note": "Replacement requires optimistic concurrency."
-    },
     {
       "file": "valid/SimVersion/current.json",
       "schema": "SimVersion",

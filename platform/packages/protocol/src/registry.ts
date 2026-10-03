@@ -1,4 +1,3 @@
-import { hiveSchemas } from './hive.ts';
 // Every schema exported as a JSON Schema file for non-TypeScript consumers,
 // by its stable name. Names are part of the contract: C++ tests and other
 // workstreams refer to fixtures/schemas/<Name>.schema.json.
@@ -138,7 +137,6 @@ realtimeEntries[realtimeSchemaName('match.start', 'Event')] = {
 };
 
 export const schemaRegistry: Record<string, RegisteredSchema> = {
-  ...Object.fromEntries(Object.entries(hiveSchemas).map(([name, schema]) => [name, { schema }])),
   // Simulation and match description
   SimVersion: { schema: SimVersion },
   GeneratorDescriptor: { schema: GeneratorDescriptor },

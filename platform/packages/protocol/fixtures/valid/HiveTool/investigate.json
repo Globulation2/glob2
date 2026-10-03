@@ -1,4 +1,0 @@
-{
-  "kind": "execute",
-  "source": "function step(ctx){return {output:ctx.tick}}"
-}

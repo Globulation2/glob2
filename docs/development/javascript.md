@@ -300,7 +300,3 @@ Profile 1 remains unpublished while these defects are corrected. The former
 platform-dependent `hypot` result is intentionally replaced by the pinned result;
 its ARM64/x86-64 reproducer is retained as a regression. Released save, replay and
 network acceptance gates remain independent of this draft profile.
-
-## Hive Mind host
-
-Online natural-language commands use a separate [Hive Mind host](../multiplayer/hive-mind.md). Its isolated interpreter receives copied player observations and returns batches through the normal player-order queue. It does not change the existing AI or map-script callback contracts, save format, or replay execution.

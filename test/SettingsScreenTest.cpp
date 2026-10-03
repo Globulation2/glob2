@@ -81,10 +81,6 @@ static void run(int width,int height,bool gl,bool expanded)
         for(auto category:screen.visibleCategories()){
             screen.selectCategory(category);
             for(const auto& r:screen.rows()){
-                if(category==SettingsScreen::Category::Online){
-                    CHECK(r.label.find("[settings ")==std::string::npos);
-                    CHECK(r.help.find("[settings ")==std::string::npos);
-                }
                 if(r.id.empty())continue;
                 if(!(r.control.w>0 && r.control.h>0)){std::cerr<<"row without bounds: "<<r.id<<"\n";
                     std::function<void(GAGGUI::ui::Node&,int)> dump=[&](GAGGUI::ui::Node& n,int d){std::cerr<<std::string(size_t(d)*2,' ')<<n.name()<<" "<<n.key<<" "<<n.bounds.x<<","<<n.bounds.y<<" "<<n.bounds.w<<"x"<<n.bounds.h<<"\n";for(auto& c:n.children)dump(*c,d+1);};
