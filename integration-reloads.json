@@ -1,0 +1,44 @@
+[
+  {
+    "ai": "econo",
+    "checksums_equal": true,
+    "orders_equal": true,
+    "save_equal": true
+  },
+  {
+    "ai": "nicowar",
+    "checksums_equal": true,
+    "orders_equal": true,
+    "save_equal": true
+  },
+  {
+    "ai": "cabino",
+    "checksums_equal": true,
+    "orders_equal": true,
+    "save_equal": true
+  },
+  {
+    "ai": "maxima",
+    "checksums_equal": true,
+    "orders_equal": true,
+    "save_equal": true
+  },
+  {
+    "ai": "cortex",
+    "checksums_equal": true,
+    "orders_equal": true,
+    "save_equal": true
+  },
+  {
+    "ai": "castor",
+    "checksums_equal": true,
+    "orders_equal": true,
+    "save_equal": true
+  },
+  {
+    "ai": "warrush",
+    "checksums_equal": true,
+    "orders_equal": true,
+    "save_equal": true
+  }
+]
