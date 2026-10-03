@@ -513,7 +513,7 @@ public:
 };
 
 //! Paints or erases a farm area (the farm-areas experiment). A game without the
-//! experiment rejects it in OrderValidation and ignores it in Game::executeOrder.
+//! experiment rejects it in OrderValidation and ignores it in Game::executeAlterFarmArea.
 class OrderAlterFarmArea:public OrderAlterArea
 {
 public:

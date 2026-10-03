@@ -213,9 +213,7 @@ void GameGUI::drawFlagView(void)
 	}
 
 	// draw brush help text
-	// The four-button strip starts left of the brush panel's inset.
-	const int stripLeft = zoneCount > 3 ? zoneStripButtonX(0, zoneCount) : dec;
-	if ((mouseX>panelLeft+stripLeft) && (mouseY>YPOS_BASE_FLAG+YOFFSET_BRUSH))
+	if ((mouseX>panelLeft+zoneStripLeft(zoneCount)) && (mouseY>YPOS_BASE_FLAG+YOFFSET_BRUSH))
 	{
 		int buildingInfoStart = globalContainer->gfx->getH()-50;
 		// Hovering the strip names the button under the cursor; below it, the

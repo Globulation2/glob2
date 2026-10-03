@@ -13,7 +13,7 @@ class Map;
 
 //! Immutable copy of the per-tile map layers the renderer reads: terrain,
 //! resources, discovery and fog of war for every team, and the locally displayed
-//! team's forbidden/guard/clear areas. Extracted from the simulation's Map at a
+//! team's forbidden/guard/clear/farm areas. Extracted from the simulation's Map at a
 //! tick boundary; afterwards it is only read, so the renderer can draw it while
 //! the simulation advances. The query functions match Map's exactly.
 class SceneMap

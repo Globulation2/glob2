@@ -212,9 +212,10 @@ std::optional<size_t> Map::pickFarmHarvestTile(int x, int y, int resourceType, U
 		// choice the same on every client.
 		//
 		// A tile at FARM_SEED_AMOUNT is this field's seed and is never taken. A
-		// field worked past its surplus stalls at one grain a tile and regrows,
-		// and the workers that arrive meanwhile go home empty. Seed tiles still
-		// carry the flood, so the field does not split as it is worked down.
+		// field worked past its surplus stalls at one grain a tile and regrows;
+		// a worker harvesting it meanwhile gets nothing and harvests again until
+		// a tile is back above its seed (Unit::handleDisplacement). Seed tiles
+		// still carry the flood, so the field does not split as it is worked down.
 		const Sint32 amount = tiles[index].resource.amount;
 		const Sint32 distance = warpDistSquare(x, y, tx, ty);
 		if (amount > FARM_SEED_AMOUNT

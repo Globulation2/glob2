@@ -19,8 +19,9 @@ farm keep itself clear of what it does not grow.
 - The brush refuses ground nothing can grow on. A farm on grass is a wheat farm
   and a farm on water is an alga farm; the terrain decides, so there is no extra
   setting.
-- Workers harvesting inside the farm stop at its rim instead of trampling into it,
-  the field keeps one grain on every tile, and trees growing into it are cut down.
+- Workers harvest from wherever they reach the field, but the grain comes off its
+  ripest tile, so the seedlings at the edge they stand next to survive. The field
+  keeps one grain on every tile, and trees growing into it are cut down.
 
 ## The rule
 
@@ -76,7 +77,8 @@ goal unless it is the crop that tile's terrain grows. Wood creeping into a wheat
 farm is cut down, and the field grows into the forest as the trees fall. It is the
 predicate the clearing-area gradient and `Unit::tryClaimClearingAreaForHarvesting`
 already used, widened by one case, so the existing claim bookkeeping still stops two
-workers taking the same tile.
+workers taking the same tile. Where a clearing area and a farm overlap, the
+clearing area wins: everything clearable there is cleared, the crop included.
 
 ## Which resources
 
@@ -102,8 +104,11 @@ A refused tile is never part of a field, so it cannot connect two patches.
 - **Growth.** `Map::growResources` does not read the farm mask.
 - **Clearing the touched tile.** Clearing paths call `Map::decResource` on the
   tile they touch and never go through `takeHarvest`.
-- **The AIs** and the **map editor**. No AI paints farm areas, and the editor has
-  no farm brush yet; both are follow-ups if the experiment graduates.
+- **The AIs**, the **map editor** and **scripts**. No AI paints farm areas, the
+  editor has no farm brush (it shows and preserves a painted mask), and the
+  JavaScript order API has no farm area type. These are follow-ups if the
+  experiment graduates, along with high-resolution frames for the `area-farm`
+  overlay, which renders at classic resolution when HD artwork is on.
 
 ## Compatibility
 
@@ -114,7 +119,7 @@ zero. The order is `ORDER_ALTER_FARM_AREA` (45); `OrderValidation` rejects it as
 `not_permitted` in a game without the experiment and `Game::executeAlterFarmArea`
 ignores it there. Network protocol 52 and simulation revision 2 come with the
 format change. Replays from formats 127 and 128 still play: none can contain the
-order or the experiment.
+farm order or this experiment.
 
 ## Where it lives
 

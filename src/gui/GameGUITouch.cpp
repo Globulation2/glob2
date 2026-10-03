@@ -1014,16 +1014,15 @@ void GameGUITouch::replayStroke(const TouchStrokeSession &completed)
 	std::vector<BrushCoverage::Cell> centres;
 	for (const auto &p : completed.points)
 		centres.push_back({(int(p.x) >> 5) & map.getMaskW(), (int(p.y) >> 5) & map.getMaskH()});
+	const auto zone = static_cast<GameGUIToolManager::ZoneType>(completed.zone);
+	const auto &view = gui.toolManager.displayedViewForZone(zone);
 	std::set<BrushCoverage::Cell> changed;
 	for (const auto &[cx, cy] : BrushCoverage::cells(completed.figure, centres))
 	{
 		const int x = cx & map.getMaskW(), y = cy & map.getMaskH();
-		const bool before = completed.zone == GameGUIToolManager::Forbidden ? map.isForbiddenInDisplayedView(x, y)
-							: completed.zone == GameGUIToolManager::Guard	? map.isGuardAreaInDisplayedView(x, y)
-							: completed.zone == GameGUIToolManager::Farm	? map.isFarmAreaInDisplayedView(x, y)
-																			: map.isClearAreaInDisplayedView(x, y);
+		const bool before = view.get(map.coordToIndex(x, y));
 		// The farm brush skips ground nothing can grow on, so those cells never change.
-		if (completed.zone == GameGUIToolManager::Farm && adding && !map.canPaintFarmArea(x, y))
+		if (zone == GameGUIToolManager::Farm && adding && !map.canPaintFarmArea(x, y))
 			continue;
 		if (before != adding)
 			changed.insert({x, y});
@@ -1058,15 +1057,8 @@ void GameGUITouch::replayStroke(const TouchStrokeSession &completed)
 		Utilities::BitArray mask(size_t(width * height));
 		for (const auto &[x, y] : cells)
 			mask.set(size_t((y - top) * width + (x - left)), true);
-		const Uint8 team = Uint8(gui.localTeamNo);
-		if (completed.zone == GameGUIToolManager::Forbidden)
-			undo.orders.push_back(std::make_shared<OrderAlterForbidden>(team, inverse, left, top, width, height, mask));
-		else if (completed.zone == GameGUIToolManager::Guard)
-			undo.orders.push_back(std::make_shared<OrderAlterGuardArea>(team, inverse, left, top, width, height, mask));
-		else if (completed.zone == GameGUIToolManager::Farm)
-			undo.orders.push_back(std::make_shared<OrderAlterFarmArea>(team, inverse, left, top, width, height, mask));
-		else
-			undo.orders.push_back(std::make_shared<OrderAlterClearArea>(team, inverse, left, top, width, height, mask));
+		undo.orders.push_back(GameGUIToolManager::makeZoneOrder(zone, Uint8(gui.localTeamNo), inverse,
+																left, top, width, height, mask));
 	}
 	zoneUndo = std::move(undo);
 }
@@ -1081,11 +1073,7 @@ void GameGUITouch::applyZoneUndo()
 		gui.orderQueue.push_back(pending);
 	for (const auto &order : zoneUndo->orders)
 		gui.orderQueue.push_back(order);
-	auto &map = gui.game.map;
-	auto &view = zoneUndo->zone == GameGUIToolManager::Forbidden ? map.displayedForbiddenView
-				 : zoneUndo->zone == GameGUIToolManager::Guard	 ? map.displayedGuardAreaView
-				 : zoneUndo->zone == GameGUIToolManager::Farm	 ? map.displayedFarmAreaView
-																 : map.displayedClearAreaView;
+	auto &view = gui.toolManager.displayedViewForZone(static_cast<GameGUIToolManager::ZoneType>(zoneUndo->zone));
 	for (const auto &[index, value] : zoneUndo->displayed)
 		view.set(index, value);
 	zoneUndo.reset();

@@ -237,6 +237,7 @@ TEST_SUITE("OrderValidation")
 			                              ORDER_MODIFY_SWARM, ORDER_MODIFY_FLAG, ORDER_MODIFY_CLEARING_FLAG,
 			                              ORDER_MODIFY_MIN_LEVEL_TO_FLAG, ORDER_MOVE_FLAG, ORDER_CHANGE_PRIORITY,
 			                              ORDER_ALTER_FORBIDDEN, ORDER_ALTER_GUARD_AREA, ORDER_ALTER_CLEAR_AREA,
+			                              ORDER_ALTER_FARM_AREA,
 			                              ORDER_TEXT_MESSAGE, ORDER_VOICE_DATA, ORDER_SET_ALLIANCE, ORDER_MAP_MARK,
 			                              ORDER_PAUSE_GAME, ORDER_PLAYER_QUIT_GAME, ORDER_ADJUST_LATENCY};
 			if (random() % 64)
@@ -284,6 +285,9 @@ TEST_SUITE("OrderValidation")
 			std::make_shared<OrderAlterGuardArea>(0, 9, 0, 0, 2, 2, fullMask(2, 2)),
 			std::make_shared<OrderAlterClearArea>(0, 0, 0, 0, 2, 2, fullMask(2, 2)),
 			std::make_shared<OrderAlterGuardArea>(250, BrushTool::MODE_ADD, 0, 0, 2, 2, fullMask(2, 2)),
+			// The fixture's game does not carry the farm-areas experiment.
+			std::make_shared<OrderAlterFarmArea>(0, BrushTool::MODE_ADD, 0, 0, 2, 2, fullMask(2, 2)),
+			std::make_shared<OrderAlterFarmArea>(0, 9, 0, 0, 2, 2, fullMask(2, 2)),
 			std::make_shared<SetAllianceOrder>(31, 0, 0, 0, 0, 0),
 			std::make_shared<PlayerQuitsGameOrder>(20),
 			std::make_shared<MessageOrder>(~0u, 77, "x"),

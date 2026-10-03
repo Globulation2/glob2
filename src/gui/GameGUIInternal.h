@@ -42,10 +42,11 @@ using namespace GAGGUI;
 
 #define YOFFSET_BRUSH 56
 
-// The flag view's zone-type strip (forbidden/guard/clearing, and farm with the
-// farm-areas experiment) sits at YPOS_BASE_FLAG+YOFFSET_BRUSH and is this tall; the brush tool panel starts
-// directly below it. Shared by the draw path (GameGUIDrawMiscPanels.cpp) and
-// the click path (GameGUIInputMenuClick.cpp) so they cannot drift apart.
+// The flag view's zone-type strip (forbidden/guard/clearing, plus farm with
+// the farm-areas experiment) sits at YPOS_BASE_FLAG+YOFFSET_BRUSH and is this
+// tall; the brush tool panel starts directly below it. Shared by the draw path
+// (GameGUIDrawMiscPanels.cpp) and the click path (GameGUIInputMenuClick.cpp) so
+// they cannot drift apart.
 constexpr int ZONE_STRIP_HEIGHT = 40;
 
 // Per-row pitches inside the building info panel resource/swarm sections.
@@ -75,18 +76,34 @@ constexpr int ZONE_STRIP_HEIGHT = 40;
 #define RIGHT_MENU_RIGHT_OFFSET (RIGHT_MENU_WIDTH - RIGHT_MENU_OFFSET)
 
 // The zone strip's buttons, one per GameGUIToolManager::ZoneType the game offers,
-// in that order, in panel-local x. Three sit at a 40px pitch from 8px inside the
-// brush panel, as they always have. A fourth (the farm-areas experiment) at that
-// pitch would run off the 160px panel, so four use a 38px pitch from 6, ending
-// at 152. Draw, hover and click all take positions from these two functions.
+// in that order, in panel-local x. Draw, hover and click all take positions from
+// the functions below, so the drawn and clickable grids cannot drift apart.
+//
+// Three buttons (the default game) sit at a 40px pitch from 8px inside the brush
+// panel, exactly where they always have. A fourth (the farm-areas experiment) at
+// that pitch would run off the panel, so four are centred on it at a 38px
+// pitch: 7, 45, 83 and 121, leaving 7px at each edge of the 160px panel.
+constexpr int ZONE_STRIP_BUTTON_SIZE = 32;
+constexpr int ZONE_STRIP_PITCH_3 = 40;
+constexpr int ZONE_STRIP_PITCH_4 = 38;
+constexpr int ZONE_STRIP_X0_3 = RIGHT_MENU_OFFSET + 8;
+constexpr int ZONE_STRIP_X0_4 = (RIGHT_MENU_WIDTH - 3 * ZONE_STRIP_PITCH_4 - ZONE_STRIP_BUTTON_SIZE) / 2;
+
 constexpr int zoneStripButtonX(int index, int count)
 {
-	return count > 3 ? 6 + index * 38 : RIGHT_MENU_OFFSET + 8 + index * 40;
+	return count > 3 ? ZONE_STRIP_X0_4 + index * ZONE_STRIP_PITCH_4 : ZONE_STRIP_X0_3 + index * ZONE_STRIP_PITCH_3;
+}
+
+//! Panel-local x where the strip's hover and click region starts.
+constexpr int zoneStripLeft(int count)
+{
+	return count > 3 ? ZONE_STRIP_X0_4 - (ZONE_STRIP_PITCH_4 - ZONE_STRIP_BUTTON_SIZE) / 2 : RIGHT_MENU_OFFSET;
 }
 
 //! The zone button under panel-local x, or -1 for none. With three buttons this
-//! is the strip's original hit test, which gives the space left of the first
-//! button to it; with four, the gaps are split between neighbours.
+//! is the strip's original hit test: each button owns 40px from 4px left of its
+//! sprite, and the space left of the first button belongs to it. With four, the
+//! 6px gaps are split between neighbours.
 constexpr int zoneStripButtonAt(int panelX, int count)
 {
 	if (count <= 3)
@@ -94,12 +111,23 @@ constexpr int zoneStripButtonAt(int panelX, int count)
 		const int x = panelX - RIGHT_MENU_OFFSET;
 		return x < 44 ? 0 : x < 84 ? 1 : x < 124 ? 2 : -1;
 	}
-	const int offset = panelX - 3;
+	const int offset = panelX - zoneStripLeft(count);
 	if (offset < 0)
 		return -1;
-	const int index = offset / 38;
+	const int index = offset / ZONE_STRIP_PITCH_4;
 	return index < count ? index : -1;
 }
+
+static_assert(RIGHT_MENU_OFFSET == (RIGHT_MENU_WIDTH - 128) / 2, "the three-button strip is anchored on the 128px brush panel");
+static_assert(zoneStripButtonX(0, 3) == RIGHT_MENU_OFFSET + 8 && zoneStripButtonX(2, 3) == RIGHT_MENU_OFFSET + 88,
+	"the default strip keeps its original positions");
+static_assert(zoneStripButtonX(0, 4) == RIGHT_MENU_WIDTH - (zoneStripButtonX(3, 4) + ZONE_STRIP_BUTTON_SIZE),
+	"four buttons are centred on the panel");
+static_assert(zoneStripButtonAt(zoneStripButtonX(0, 4) + ZONE_STRIP_BUTTON_SIZE - 1, 4) == 0
+	&& zoneStripButtonAt(zoneStripButtonX(1, 4), 4) == 1
+	&& zoneStripButtonAt(zoneStripButtonX(3, 4) + ZONE_STRIP_BUTTON_SIZE - 1, 4) == 3
+	&& zoneStripButtonAt(zoneStripLeft(4) - 1, 4) == -1 && zoneStripButtonAt(RIGHT_MENU_WIDTH, 4) == -1,
+	"every four-button sprite pixel hits its own button");
 
 // The exploration flag reuses Building::minLevelToFlag as a two-option choice
 // of which explorers may answer the flag (see Building::canUnitWorkHere):

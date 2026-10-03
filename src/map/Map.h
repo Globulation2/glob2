@@ -559,12 +559,13 @@ public:
 	//! map with no game (the editor, Map-only tools).
 	bool farmAreasEnabled() const;
 
-	//! Whether resourceType could ever grow at (x,y), by the same terrain probe
-	//! Map::growResources makes. Keep the two in step: growResources draws
-	//! offsets dwax, dway in [-15,15] and requires isWater(x+dwax, y+dway) for
-	//! wheat, wood and algae, with algae additionally needing
-	//! isSand(x+dway*2, y+dwax*2). A tile no draw of those offsets can satisfy
-	//! never grows anything, whatever else is true of it.
+	//! Whether resourceType could ever grow at (x,y): a necessary condition read
+	//! off Map::growResources's terrain probe, not a sufficient one. The probe
+	//! draws offsets dwax, dway in [-15,15] and needs isWater(x+dwax, y+dway) for
+	//! wheat, wood and algae, so a tile with no water in that box never grows.
+	//! Algae also need isSand(x+dway*2, y+dwax*2), checked here as "some sand in
+	//! the doubled box"; the joint draw and the wheat/wood !isSand test are not
+	//! modelled. Keep this in step if growResources' probe changes.
 	bool canResourceEverGrowHere(int x, int y, int resourceType) const;
 
 	//! The crop a farm grows on this tile's terrain: wheat on grass, algae on
@@ -576,7 +577,8 @@ public:
 	//! anything clearable inside a clearing area, and, with farm areas enabled,
 	//! anything clearable inside a farm area that is not the crop that tile's
 	//! terrain grows. A farm is kept clear of what it does not grow, so wood
-	//! creeping into a wheat field is cut down instead of overgrowing it.
+	//! creeping into a wheat field is cut down instead of overgrowing it. Where a
+	//! clearing area overlaps a farm the clearing area wins and the crop goes too.
 	//! farmAreas is farmAreasEnabled(), passed in so per-tile loops read it once.
 	bool isClearingTarget(size_t index, Uint32 teamMask, bool farmAreas) const;
 

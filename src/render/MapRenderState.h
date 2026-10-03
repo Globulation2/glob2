@@ -24,7 +24,7 @@ struct MapRenderState
 
 	//! Water and cloud phase, advanced once per drawn frame; frozen while paused.
 	int animationTime = 0;
-	//! Phase of the animated area (forbidden/guard/clear) markers.
+	//! Phase of the animated area (forbidden/guard/clear/farm) markers.
 	int areaAnimationTick = 0;
 	//! How far this frame draws units from their ticked state towards the next tick,
 	//! 0..1 (see UnitMotion.h); 0 draws exactly the simulated positions.
