@@ -1263,6 +1263,132 @@ TEST_SUITE("TurnSession")
 		CHECK(session.seatPresenceInfo(1).relayRttMicros == 0); // gone: not measured
 	}
 
+	// A link that goes quiet without the socket noticing (a phone between networks, a
+	// browser taken offline): the session says so within the stall threshold, drops the
+	// link after the reconnect threshold, and after a gap starts its delay estimate over.
+	struct QuietLink
+	{
+		ScriptedTransport link;
+		TurnSession session{1, link, TurnSessionConfig(), bytesOrderCodec()};
+		std::uint32_t horizon = 0;
+		std::uint64_t at = 0;
+		QuietLink()
+		{
+			link.linkState = TurnTransport::State::Connected;
+			session.update(0);
+			Welcome w;
+			w.seat = 0;
+			w.humanSeatMask = 1;
+			link.deliver(w);
+			session.update(1);
+		}
+		void bundle(std::uint64_t time)
+		{
+			TurnBundle b;
+			b.fromTick = horizon;
+			b.horizonTick = ++horizon;
+			link.deliver(b);
+			at = time;
+			session.update(time);
+		}
+		/// One bundle per tick, on time, for `length`.
+		void steady(std::uint64_t length)
+		{
+			const std::uint64_t end = at + length;
+			while (at + TICK_PERIOD <= end)
+				bundle(at + TICK_PERIOD);
+		}
+	};
+
+	TEST_CASE("a silent link shows as lost within the stall threshold and reconnects after five seconds")
+	{
+		QuietLink q;
+		// Players still loading: the relay sends nothing yet, and that is no trouble.
+		q.session.update(4 * SECOND);
+		CHECK_FALSE(q.session.linkStalled());
+		CHECK(q.session.state() == TurnSession::State::Running);
+		q.at = 4 * SECOND;
+		q.steady(2 * SECOND);
+		CHECK_FALSE(q.session.linkStalled());
+		const std::uint64_t last = q.at;
+		q.session.update(last + 1400 * MS);
+		CHECK_FALSE(q.session.linkStalled());
+		q.session.update(last + 1600 * MS);
+		CHECK(q.session.linkStalled());
+		CHECK(q.session.stalledForMicros() >= 1500 * MS);
+		CHECK(q.session.state() == TurnSession::State::Running);
+		CHECK(q.link.closeCalls == 0);
+		q.session.update(last + 5100 * MS);
+		CHECK(q.session.state() == TurnSession::State::Reconnecting);
+		CHECK(q.link.closeCalls == 1);
+		CHECK_FALSE(q.session.linkStalled());
+		// It reconnects at once and resumes from its horizon.
+		q.session.update(last + 5101 * MS);
+		CHECK(q.link.connectCalls >= 2);
+		q.link.linkState = TurnTransport::State::Connected;
+		q.link.sent.clear();
+		q.session.update(last + 5200 * MS);
+		auto hello = q.link.sentOf<Hello>(MSG_HELLO);
+		REQUIRE(hello.size() == 1);
+		CHECK(hello[0]->haveHorizon == q.horizon);
+	}
+
+	TEST_CASE("a horizon that stops moving shows as lost even while pongs arrive")
+	{
+		QuietLink q;
+		q.at = 1 * SECOND;
+		q.steady(1 * SECOND);
+		const std::uint64_t last = q.at;
+		for (std::uint64_t t = last + 100 * MS; t <= last + 2 * SECOND; t += 100 * MS)
+		{
+			Pong pong;
+			pong.nonce = 999;
+			q.link.deliver(pong);
+			q.session.update(t);
+		}
+		CHECK(q.session.linkStalled());
+		CHECK(q.session.state() == TurnSession::State::Running); // frames still arrive
+		q.bundle(last + 2100 * MS);
+		CHECK_FALSE(q.session.linkStalled());
+	}
+
+	TEST_CASE("after a stall the delay estimate starts over instead of keeping the gap")
+	{
+		QuietLink q;
+		q.at = 1 * SECOND;
+		q.steady(3 * SECOND);
+		const auto steadyTarget = q.session.targetTicks();
+		CHECK(q.session.jitterMicros() < 5 * MS);
+		// A ping goes out just before the link goes quiet; its pong arrives with the backlog.
+		q.link.sent.clear();
+		q.session.update(q.at + 600 * MS);
+		auto pings = q.link.sentOf<Ping>(MSG_PING);
+		REQUIRE_FALSE(pings.empty());
+		const std::uint64_t quietFrom = q.at;
+		q.session.update(quietFrom + 4 * SECOND);
+		CHECK(q.session.linkStalled());
+		// Twenty seconds of ticks arrive at once, with the stale pong.
+		const std::uint64_t back = quietFrom + 4500 * MS;
+		Pong stale;
+		stale.nonce = pings.back()->nonce;
+		q.link.deliver(stale);
+		const std::uint32_t backlog = std::uint32_t((back - quietFrom) / TICK_PERIOD);
+		for (std::uint32_t i = 0; i < backlog; ++i)
+		{
+			TurnBundle b;
+			b.fromTick = q.horizon;
+			b.horizonTick = ++q.horizon;
+			q.link.deliver(b);
+		}
+		q.session.update(back);
+		CHECK_FALSE(q.session.linkStalled());
+		CHECK(q.session.rttMicros() < 1 * SECOND); // the stale pong measured the gap, not the link
+		q.at = back;
+		q.steady(3 * SECOND);
+		CHECK(q.session.jitterMicros() < 5 * MS);
+		CHECK(q.session.targetTicks() <= steadyTarget + 1);
+	}
+
 	TEST_CASE("an older relay that refuses version 2 is offered version 1 once")
 	{
 		ScriptedTransport link;

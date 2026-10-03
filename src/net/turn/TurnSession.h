@@ -60,6 +60,18 @@ namespace Turn
 		std::uint64_t pingIntervalMicros = 500000;
 		std::uint64_t reconnectInitialMicros = 250000;
 		std::uint64_t reconnectMaxMicros = 5000000;
+		/// Once the match clock runs, the relay sends a bundle every bundle interval
+		/// (one tick) and answers every Ping, so silence this long, or a horizon that
+		/// stops moving this long, means the link is in trouble even if the socket
+		/// still looks open (a phone between networks, a browser gone offline).
+		/// linkStalled() reports it at once (presentation only).
+		std::uint64_t stallMicros = 1500000;
+		/// After this much silence the session drops the connection and reconnects
+		/// rather than waiting for TCP to notice; orders are resent on Welcome.
+		std::uint64_t silentReconnectMicros = 5000000;
+		/// Jitter samples are ignored this long after a stall ends: the backlog
+		/// arrives in one burst and says nothing about the link's usual jitter.
+		std::uint64_t recoveryQuietMicros = 1000000;
 		std::size_t jitterWindow = 128;
 		JitterBufferConfig jitter;
 		DelayControllerConfig delay;
@@ -197,6 +209,11 @@ namespace Turn
 		bool rejoiningAfterDesync() const { return desyncRejoin; }
 		/// Highest horizon seen, for catch-up progress.
 		std::uint32_t maxHorizon() const { return maxSeenHorizon; }
+		/// True while the link is up but nothing (or no new horizon) has arrived for
+		/// TurnSessionConfig::stallMicros since the match clock started.
+		bool linkStalled() const { return stallShown; }
+		/// How long the current stall has lasted (0 when not stalled).
+		std::uint64_t stalledForMicros() const { return stallShown && now > stallSince ? now - stallSince : 0; }
 
 	private:
 		struct Outstanding
@@ -211,6 +228,8 @@ namespace Turn
 		void onBundle(const TurnBundle& b);
 		void onDesync(const DesyncNotice& d);
 		void resetTurns();
+		void watchLink();
+		void forgetLinkHistory();
 		bool linkUp() const { return currentState == State::Running; }
 		bool isHuman(int player) const { return player >= 0 && player < 32 && (humanMask & (1u << player)); }
 
@@ -266,6 +285,13 @@ namespace Turn
 		StallStats stallCounters;
 		bool stalled = false;
 		std::uint64_t stallStart = 0;
+
+		// Link watchdog (watchLink): when a frame, and a new horizon, last arrived.
+		std::uint64_t lastFrameAt = 0;
+		std::uint64_t lastHorizonAt = 0;
+		bool stallShown = false;
+		std::uint64_t stallSince = 0;
+		std::uint64_t jitterQuietUntil = 0;
 
 		JitterEstimator jitter;
 		JitterBuffer buffer;

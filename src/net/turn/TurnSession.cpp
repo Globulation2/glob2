@@ -118,6 +118,14 @@ void TurnSession::update(std::uint64_t nowMicros)
 	std::vector<std::uint8_t> payload;
 	while (transport.receive(payload))
 	{
+		// The first frame after a silence: what was in flight across the gap (a
+		// pong, the backlog's arrival spread) measures the gap, not the link.
+		if (currentState == State::Running && maxSeenHorizon > 0 && now - std::min(now, lastFrameAt) >= config.stallMicros)
+		{
+			forgetLinkHistory();
+			jitterQuietUntil = now + config.recoveryQuietMicros;
+		}
+		lastFrameAt = now;
 		stats.frameReceived(payload.size());
 		auto message = TurnCodec::decode(payload);
 		if (message && message->getMessageType() == MSG_TURN_BUNDLE)
@@ -136,6 +144,11 @@ void TurnSession::update(std::uint64_t nowMicros)
 		if (currentState == State::Rejected)
 			return;
 	}
+	// After draining: a client that did not run for a while (a long frame, a hidden
+	// tab) finds what arrived meanwhile before it judges the link.
+	watchLink();
+	if (currentState == State::Reconnecting)
+		return;
 
 	if (currentState == State::Running && now - lastPingAt >= config.pingIntervalMicros)
 	{
@@ -153,6 +166,58 @@ void TurnSession::update(std::uint64_t nowMicros)
 	if (desyncRejoin && currentState == State::Running && !catchingUp())
 		desyncRejoin = false;
 	stats.catchUpState(catchingUp(), executed, now);
+}
+
+void TurnSession::watchLink()
+{
+	// Armed once the match clock runs (the first bundle): while players load the
+	// relay sends only presence.
+	if (currentState != State::Running || maxSeenHorizon == 0)
+	{
+		stallShown = false;
+		return;
+	}
+	const std::uint64_t silence = now - std::min(now, lastFrameAt);
+	const std::uint64_t starved = now - std::min(now, lastHorizonAt);
+	if (silence >= config.silentReconnectMicros)
+	{
+		// TCP can take minutes to notice a dead path; start over now. Unacknowledged
+		// orders and checksum reports go again after Welcome.
+		std::cerr << "Turn session: nothing from the relay for " << silence / 1000 << " ms; reconnecting\n";
+		stats.linkLost(now);
+		transport.close();
+		currentState = State::Reconnecting;
+		helloSent = false;
+		retryAt = now;
+		stallShown = false;
+		forgetLinkHistory();
+		return;
+	}
+	const bool trouble = silence >= config.stallMicros || starved >= config.stallMicros;
+	if (trouble && !stallShown)
+	{
+		stallShown = true;
+		stallSince = lastHorizonAt;
+	}
+	else if (!trouble && stallShown)
+	{
+		// The horizon moves again. After a silence the receive loop has already
+		// started the delay estimate over; a horizon that stalled while frames kept
+		// coming leaves a burst of ticks whose spread is no link jitter either.
+		stallShown = false;
+		jitter.clear();
+		buffer.reset();
+		jitterQuietUntil = std::max(jitterQuietUntil, now + config.recoveryQuietMicros);
+	}
+}
+
+void TurnSession::forgetLinkHistory()
+{
+	jitter.clear();
+	buffer.reset();
+	pingsInFlight.clear();
+	// The relay's next SeatLatency measures the link again.
+	seatRtt.fill(0);
 }
 
 void TurnSession::handle(const NetMessage& message)
@@ -252,7 +317,13 @@ void TurnSession::onWelcome(const Welcome& w)
 	}
 	resyncOutstanding = false;
 	liveThreshold = std::max(w.relayTick + 1, maxSeenHorizon);
-	jitter.clear();
+	// A new connection: measure it afresh (a reconnect follows a gap whose
+	// arrival times and pongs say nothing about the new link).
+	forgetLinkHistory();
+	if (maxSeenHorizon > 0)
+		jitterQuietUntil = now + config.recoveryQuietMicros;
+	lastFrameAt = lastHorizonAt = now;
+	stallShown = false;
 	nextSequence = std::max(nextSequence, w.lastClientSequence + 1);
 	while (!outstanding.empty() && outstanding.front().sequence <= w.lastClientSequence)
 		outstanding.pop_front();
@@ -283,6 +354,8 @@ void TurnSession::resetTurns()
 void TurnSession::onBundle(const TurnBundle& b)
 {
 	const std::uint32_t threshold = std::max(liveThreshold, maxSeenHorizon);
+	if (b.horizonTick > maxSeenHorizon)
+		lastHorizonAt = now;
 	maxSeenHorizon = std::max(maxSeenHorizon, b.horizonTick);
 	if (b.fromTick != horizonTick)
 	{
@@ -306,7 +379,7 @@ void TurnSession::onBundle(const TurnBundle& b)
 	horizonTick = b.horizonTick;
 	if (onHorizon && b.horizonTick > b.fromTick)
 		onHorizon(b.horizonTick);
-	if (b.horizonTick > threshold)
+	if (b.horizonTick > threshold && now >= jitterQuietUntil)
 		jitter.addSample(static_cast<std::int64_t>(now), b.horizonTick, tickPeriod);
 	delay.observe(bufferedTicks(), buffer.targetTicks());
 }

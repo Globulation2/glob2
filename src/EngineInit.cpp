@@ -235,23 +235,34 @@ ConnectionSnapshot Engine::turnConnectionSnapshot()
     snapshot.inputDelayMs = ownDelay;
     snapshot.jitterMs = int(std::max<std::int64_t>(0, s.jitterMicros()) / 1000);
     snapshot.ownUnstable = s.jitterMicros() > 60000;
+    // Without a link there is no delay to state; the card says what is going on.
+    if (s.linkStalled() || s.state() == Turn::TurnSession::State::Reconnecting)
+        snapshot.inputDelayMs = -1;
     const GameHeader& header = gui.game.gameHeader;
     for (int p = 0; p < header.getNumberOfPlayers() && p < int(Turn::MAX_SEATS); ++p)
     {
         const BasePlayer& player = header.getBasePlayer(p);
         // Closed seats are no players at all. AI `none` (the empty seat of a match
-        // from before closed seats, or a seat whose player quit) controls nothing.
-        if (player.type == BasePlayer::P_AI || player.type == BasePlayer::P_NONE)
+        // from before closed seats) controls nothing. A person who quit becomes AI
+        // `none` too, but stays listed as Left so everyone sees who left.
+        const bool humanSeat = s.humanSeatMask() & (1u << p);
+        if (player.type == BasePlayer::P_NONE || (player.type == BasePlayer::P_AI && !humanSeat))
             continue;
         ConnectionRow row;
         row.seat = p;
         row.name = gui.game.players[p] ? gui.game.players[p]->name : player.name;
         if (player.teamNumber >= 0 && player.teamNumber < gui.game.mapHeader.getNumberOfTeams() && gui.game.teams[player.teamNumber])
             row.color = gui.game.teams[player.teamNumber]->color;
-        const bool human = s.humanSeatMask() & (1u << p);
-        if (!human)
+        if (!humanSeat)
         {
             row.state = ConnectionRow::State::AI;
+            snapshot.rows.push_back(row);
+            continue;
+        }
+        if (player.type == BasePlayer::P_AI && p != s.localSeat())
+        {
+            // Their quit order has executed: they left, whatever presence says.
+            row.state = ConnectionRow::State::Left;
             snapshot.rows.push_back(row);
             continue;
         }
@@ -262,9 +273,15 @@ ConnectionSnapshot Engine::turnConnectionSnapshot()
             row.pingMs = own.relayRttMicros ? int(own.relayRttMicros / 1000)
                          : s.rttMicros() > 0 ? int(s.rttMicros() / 1000)
                                              : -1;
-            row.state = s.state() == Turn::TurnSession::State::Running ? ConnectionRow::State::Connected
-                        : s.state() == Turn::TurnSession::State::Reconnecting ? ConnectionRow::State::Reconnecting
-                                                                              : ConnectionRow::State::Waiting;
+            // A stalled link (nothing from the relay for a while) is our own
+            // connection trouble even before the socket notices; its last Ping
+            // is stale.
+            const bool lost = s.linkStalled() || s.state() == Turn::TurnSession::State::Reconnecting;
+            row.state = lost ? ConnectionRow::State::Reconnecting
+                        : s.state() == Turn::TurnSession::State::Running ? ConnectionRow::State::Connected
+                                                                         : ConnectionRow::State::Waiting;
+            if (lost)
+                row.pingMs = -1;
             snapshot.rows.push_back(row);
             continue;
         }
@@ -290,12 +307,14 @@ ConnectionSnapshot Engine::turnConnectionSnapshot()
     }
     // Centre cards: this client waits on the network.
     using State = Turn::TurnSession::State;
-    if (s.state() == State::Reconnecting)
+    if (s.state() == State::Reconnecting || s.linkStalled())
     {
         snapshot.card = ConnectionSnapshot::Card::Reconnecting;
         snapshot.attempt = std::max(1, s.reconnectAttempts());
+        // The loss began when the relay went quiet, which a stall reports before
+        // the socket does; a stall turning into a reconnect keeps counting.
         if (!connectionLostMicros)
-            connectionLostMicros = now;
+            connectionLostMicros = now - std::min<Uint64>(now, s.stalledForMicros());
         if (s.graceTicks())
         {
             const Uint64 grace = Uint64(s.graceTicks()) * period;
@@ -345,7 +364,7 @@ std::vector<std::string> Engine::turnConnectionNotice()
     using State = Turn::TurnSession::State;
     // Before the first Welcome the relay is waiting for every player to load.
     const bool welcomed = s.horizon() > 0 || s.executedTick() > 0;
-    if (s.state() == State::Reconnecting)
+    if (s.state() == State::Reconnecting || s.linkStalled())
         lines.push_back(strings.getString("[turn reconnecting]"));
     else if (s.state() == State::Connecting || s.state() == State::AwaitingWelcome)
         lines.push_back(strings.getString(welcomed ? "[turn reconnecting]" : "[turn waiting for players]"));
