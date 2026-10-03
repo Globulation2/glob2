@@ -42,8 +42,17 @@ structural errors. Platform files remain unchanged from 3de565d65; studio-gate
 contains 438 platform tests (six existing skips), lint/typecheck, six designer
 cases, four accessibility combinations and the production web build.
 
-Browser build and final checks are pending and will be recorded before merge.
-The prior map-repetition gate passed all eight skin and both pacing tests.
+Both serial/threaded release browser runtimes build. All 11 browser cases pass:
+eight skin/asset checks across Chromium serial/threaded, Firefox and WebKit;
+two 1,500-tick pacing/checksum and paused-input comparisons; one signed online
+replay using the seeded real API. The restored Chromium capture was visually
+inspected. All final browser runs exit cleanly with unchanged assertions.
+
+Final fetch finds master 138976153, adding separate win-probability HUD and
+optional victory features. Shared-file additions were reviewed: no mesh/fog
+rendering or skin-protocol changes. The merge tree is conflict-free
+(ac6f8ee0630809bd80b41e7da3feb37c6c3507d4). The binaries above validate the stated
+head and base, not a newly compiled merge result with these unrelated additions.
 
 Replays are losslessly gzip-compressed; BMPs are converted to PNG. Commands,
 match records, checksum traces, logs and captures are accessible in this folder.
