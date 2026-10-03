@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include <iomanip>
 #include <iostream>
+#include <utility>
 
 namespace PerformanceTelemetry
 {
@@ -109,10 +110,61 @@ void Budget::add(std::uint64_t duration, std::uint64_t budget)
 	else
 		streak = 0;
 }
+namespace
+{
+thread_local Collector *boundCollector = nullptr;
+}
 Collector &collector()
 {
 	static thread_local Collector c;
-	return c;
+	return boundCollector ? *boundCollector : c;
+}
+void bindCollector(Collector *c)
+{
+	boundCollector = c;
+}
+void Budget::merge(const Budget &other)
+{
+	count += other.count;
+	exceeded += other.exceeded;
+	excess += other.excess;
+	worst = std::max(worst, other.worst);
+	longest = std::max(longest, other.longest);
+	streak = other.streak;
+}
+void Collector::absorb(Collector &other)
+{
+	if (!enabled)
+		return;
+	for (unsigned i = 0; i < ScopeCount; ++i)
+	{
+		if (other.window[i].calls)
+		{
+			window[i].merge(other.window[i]);
+			threads[i] |= 2;
+		}
+		other.window[i] = {};
+	}
+	for (unsigned i = 0; i < other.actorCount; ++i)
+	{
+		auto &a = other.actors[i];
+		if (a.window.calls)
+		{
+			const int slot = actor(a.player, a.team, a.implementation, a.generation);
+			if (slot >= 0)
+				actors[unsigned(slot)].window.merge(a.window);
+		}
+		a.window = {};
+	}
+	workBudget.merge(other.workBudget);
+	totalWorkBudget.merge(other.workBudget);
+	const auto streak = other.workBudget.streak;
+	other.workBudget = {};
+	other.workBudget.streak = streak;
+	droppedScopes += std::exchange(other.droppedScopes, 0u);
+	droppedActors += std::exchange(other.droppedActors, 0u);
+	other.budgetNs = budgetNs;
+	other.phase = phase;
 }
 void Collector::reset()
 {
@@ -167,12 +219,14 @@ void Collector::record(Id id, std::uint64_t duration)
 	++m.calls;
 	m.time.add(duration);
 	m.self += duration;
+	threads[index(id)] |= 1;
 }
 void Collector::merge(Id id, const Moments &durations)
 {
 	if (!enabled)
 		return;
 	auto &m = window[index(id)];
+	threads[index(id)] |= 1;
 	m.calls += durations.count;
 	m.time.merge(durations);
 	m.self += durations.total;
@@ -254,7 +308,7 @@ void Collector::write(std::ostream &out, const char *record, std::uint64_t tick,
 		if (i == index(Id::SaveHash) || i == index(Id::SaveWrite) || i == index(Id::SaveQueue))
 			out << " thread=save_worker_or_fallback";
 		else
-			out << " thread=main";
+			out << " thread=" << (threads[i] == 2 ? "simulation" : threads[i] == 3 ? "main+simulation" : "main");
 		printMetric(out, m, descriptors[i].stride);
 		out << '\n';
 	}
@@ -337,6 +391,7 @@ Scope::Scope(Id scope, int actor) : id(scope), actorIndex(actor)
 	const auto i = index(id);
 	auto &m = c->window[i];
 	++m.calls;
+	c->threads[i] |= 1;
 	if (c->depth >= 64)
 	{
 		++c->droppedScopes;
