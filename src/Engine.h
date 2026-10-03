@@ -144,7 +144,8 @@ public:
     // Finalize without loading another game or entering a UI loop. The host
     // schedules a returned request, or presents the end screen when absent.
     std::optional<PendingLoad> finishSessionForHost();
-    bool savePending();
+    // Service save UI after simulation has stopped; false means safe to tear down.
+    bool advancePendingSave(Uint64 now, const std::vector<SDL_Event>& events);
     // Synchronous adapter for native command-line/headless hosts.
     bool finishSession();
 

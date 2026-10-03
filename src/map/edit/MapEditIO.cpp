@@ -90,21 +90,38 @@ bool MapEdit::advanceEditing(const std::vector<SDL_Event>& events, Uint32 tick)
     if(saveWriter) saveWriter->poll();
     if (!editing || quitDecision || fertilityRequested || !pendingLoadFilename.empty()) return editing;
     const bool wasPersisting=showingSave && loadSaveScreen->isPersisting();
+    const auto isQuitRequest = [](const SDL_Event& event) {
+        if (event.type == SDL_EVENT_QUIT) return true;
+#ifdef USE_OSX
+        if (event.type == SDL_EVENT_KEY_DOWN && event.key.key == SDLK_Q &&
+            (event.key.mod & SDL_KMOD_GUI)) return true;
+#endif
+#ifdef USE_WIN32
+        if (event.type == SDL_EVENT_KEY_DOWN && event.key.key == SDLK_F4 &&
+            (event.key.mod & SDL_KMOD_ALT)) return true;
+#endif
+        return false;
+    };
+    // Record close intent before polling: persistence may fail in this frame.
+    if (wasPersisting)
+        for (const auto& event : events)
+            if (isQuitRequest(event)) quitAfterSave = true;
     if (showingSave && loadSaveScreen->pollPersistence()) {
         hasMapBeenModified = false;
         performAction("close save screen");
     }
     if(wasPersisting && showingSave && loadSaveScreen->isPersisting()) {
-        for(const auto& event:events) if(event.type==SDL_EVENT_QUIT) doFullQuit=true;
         return true;
     }
     for (auto event : events) {
+        if (quitAfterSave && showingSave && isQuitRequest(event)) continue;
         if(!(phone && phone->event(event))) {
             GAGCore::GraphicContext::translateMouseEvent(&event);
             processEvent(event);
         }
         if (doFullQuit || doQuit || fertilityRequested || !pendingLoadFilename.empty() || (doQuitAfterLoadSave && !showingSave)) break;
     }
+    if (quitAfterSave && !showingSave) doFullQuit = true;
     if (doFullQuit) { editingResult = -1; editing = false; return false; }
     if (fertilityRequested || !pendingLoadFilename.empty()) return true;
 	// While processing events the user could've tried to load a map that failed.

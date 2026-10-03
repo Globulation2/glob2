@@ -11,7 +11,6 @@
 #include <GzipUtil.h>
 #include <chrono>
 #include <fstream>
-#include <iomanip>
 #include <iostream>
 #include <vector>
 #ifndef WIN32
@@ -21,6 +20,31 @@
 GlobalContainer* globalContainer = nullptr;
 using Clock = std::chrono::steady_clock;
 static double ms(Clock::time_point start) { return std::chrono::duration<double,std::milli>(Clock::now()-start).count(); }
+
+// std::quoted is a C++ literal formatter, not a JSON encoder: filenames can
+// contain tabs, newlines and other control bytes that JSON must escape.
+static std::string jsonString(const std::string& value)
+{
+    static constexpr char hex[] = "0123456789abcdef";
+    std::string result = "\"";
+    for (unsigned char byte : value)
+    {
+        if (byte == '"' || byte == '\\')
+        {
+            result += '\\';
+            result += char(byte);
+        }
+        else if (byte < 0x20)
+        {
+            result += "\\u00";
+            result += hex[byte >> 4];
+            result += hex[byte & 15];
+        }
+        else result += char(byte);
+    }
+    result += '"';
+    return result;
+}
 
 class MeasuredStream : public GAGCore::BinaryOutputStream
 {
@@ -84,7 +108,7 @@ try
     file.write(gzip.data(),gzip.size()); file.close(); if(!file) throw std::runtime_error("Cannot write output");
     const double writeMs=ms(start);
     std::ofstream report(prefix+".json");
-    report << "{\"version\":" << VERSION_MINOR << ",\"input\":" << std::quoted(argv[1])
+    report << "{\"version\":" << VERSION_MINOR << ",\"input\":" << jsonString(argv[1])
            << ",\"raw_bytes\":" << bytes.size() << ",\"gzip_bytes\":" << gzip.size()
            << ",\"write_ms\":" << writeMs << ",\"total_ms\":" << saveMs+gzipMs+writeMs
            << ",\"capture_ms\":" << captureMs << ",\"encode_ms\":" << encodeMs
@@ -105,7 +129,7 @@ try
         std::string packed;
         if(!GAGCore::gzipCompress(bytes.substr(section.start,section.end-section.start),6,packed)) throw std::runtime_error("Section compression failed");
         if(!first) report << ','; first=false;
-        report << "{\"name\":" << std::quoted(section.name) << ",\"raw_bytes\":" << section.end-section.start << ",\"gzip_bytes\":" << packed.size() << '}';
+        report << "{\"name\":" << jsonString(section.name) << ",\"raw_bytes\":" << section.end-section.start << ",\"gzip_bytes\":" << packed.size() << '}';
     }
     report << "]}\n";
     if(!report) throw std::runtime_error("Cannot write report");

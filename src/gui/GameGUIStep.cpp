@@ -401,7 +401,14 @@ void GameGUI::autosave()
     { std::cerr << "Autosave failed; previous file retained: " << error.what() << std::endl; }
 }
 
-bool GameGUI::savePending() { return autosaveWriter && autosaveWriter->busy(); }
+bool GameGUI::savePending()
+{
+    // A failed save remains actionable until retry succeeds or the user cancels.
+    // This also includes capture waiting behind an earlier autosave.
+    const bool dialog = inGameMenu == IGM_SAVE && gameMenuScreen;
+    const bool writing = autosaveWriter && autosaveWriter->busy();
+    return dialog || writing;
+}
 
 void GameGUI::waitForAutosave()
 {

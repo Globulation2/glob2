@@ -394,6 +394,8 @@ class MapEdit
     bool fertilityRequested = false;
     std::string pendingSaveFilename, pendingSaveName, pendingLoadFilename;
     std::unique_ptr<GAGCore::BackgroundFileWriter> saveWriter;
+    // Keep retry/export available if a save fails after a window-close request.
+    bool quitAfterSave = false;
 public:
 	MapEdit();
 	~MapEdit();

@@ -3479,7 +3479,9 @@ template<class Archive> void Planner::executionState(Archive& a)
         a("scoringNeighborhoodHeight",scoringNeighborhoodHeight);
         const bool dimensions=scoringNeighborhoodWidth>0 && scoringNeighborhoodHeight>0 &&
             uint64_t(scoringNeighborhoodWidth)*scoringNeighborhoodHeight<=16777216u/9;
-        unsigned mode=0; // absent, canonical geometry, or explicit legacy contents
+        // Wire tags: 0 absent, 1 exact canonical geometry, 2 explicit contents.
+        // Only exact equality permits reconstruction; stale/custom tables survive.
+        unsigned mode=0;
         if constexpr(std::is_same_v<Archive,AIMaximaContinuation::Writer>)
         {
             if(scoringNeighborhoodCache)

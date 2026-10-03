@@ -1332,7 +1332,10 @@ injects allocation/finalization exceptions, checks atomic failure cleanup, and
 stalls an autosave writer to verify nonblocking deferral and exact saved ticks
 at the later capture. It compares owned snapshot output against ordinary saves
 after mutating the live game, and exercises both native-thread and cooperative
-finalization, including failure and subsequent reuse. The optional level-zero compatibility path retains whole buffers;
+finalization, including failure and subsequent reuse. It checks mixed snapshot/legacy
+queues, exact cooperative gzip bytes at the default compression level, and manual save
+ordering through delayed capture and persistence, including terminal failures and
+exactly-once success callbacks. The optional level-zero compatibility path retains whole buffers;
 normal save-memory measurements use the default compression level.
 
 Run these alongside the existing placement, continuation and engine lifecycle suites.
@@ -1365,7 +1368,8 @@ runs separate from concurrent builds/tests and compare matching compilers and fl
 `PackedArray` checks all integer widths, wraparound, block boundaries and malformed
 payloads. `Maxima.Continuation` covers legacy and compact arrays, signed limits and
 nested archives. `Maxima.Placement` retains explicit noncanonical neighborhood
-contents. `TeamStatsSave` checks complete histories across the 256-sample boundary;
+contents. `TeamStatsSave` checks complete telemetry, measurement and end-game histories
+across two 256-sample batch boundaries;
 `TeamLimit`, `JavaScriptCompatibility`, `UntrustedFiles` and `SavegameSafety` cover
 sparse identities, format boundaries, decoded validation and save/load continuation.
 Run these together with the existing AI and gradient continuation suites. An encoding

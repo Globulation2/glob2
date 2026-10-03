@@ -136,8 +136,18 @@ public:
     void operator()(const char* name,const std::string& value) { stream->writeText(value,name); }
     template<class T,size_t N> void operator()(const char* name,const T (&value)[N])
     {
-        if(!compact_) if(auto* binary=dynamic_cast<GAGCore::BinaryOutputStream*>(stream))
-        {BufferedBinaryWriter packed(binary);packed(name,value);packed.flush();return;}
+        // The legacy buffered writer expands narrow fields to their old widths.
+        // Compact streams must traverse fields here so nested arrays are packed.
+        if (!compact_)
+        {
+            if (auto* binary = dynamic_cast<GAGCore::BinaryOutputStream*>(stream))
+            {
+                BufferedBinaryWriter packed(binary);
+                packed(name, value);
+                packed.flush();
+                return;
+            }
+        }
         stream->writeEnterSection(name);
         for(size_t i=0;i<N;++i) { stream->writeEnterSection(i); (*this)("value",value[i]); stream->writeLeaveSection(); }
         stream->writeLeaveSection();
@@ -146,8 +156,13 @@ public:
     void legacyVector(const char* name,const std::vector<T>& value,Encode encode,Decode decode)
     {
         if(compact_) { (*this)(name,value); return; }
-        if(!compact_) if(auto* binary=dynamic_cast<GAGCore::BinaryOutputStream*>(stream))
-        { BufferedBinaryWriter packed(binary); packed.legacyVector<Wire>(name,value,encode,decode); packed.flush(); return; }
+        if (auto* binary = dynamic_cast<GAGCore::BinaryOutputStream*>(stream))
+        {
+            BufferedBinaryWriter packed(binary);
+            packed.legacyVector<Wire>(name, value, encode, decode);
+            packed.flush();
+            return;
+        }
         stream->writeEnterSection(name); stream->writeUint32(value.size(),"size");
         for(size_t i=0;i<value.size();++i)
         { stream->writeEnterSection(i); const Wire wire=encode(value[i]); (*this)("value",wire); stream->writeLeaveSection(); }
@@ -169,8 +184,18 @@ public:
                 GAGCore::PackedArray::write<U>(stream,value.size(),[&](size_t i){return U(value[i]);});
                 return;
             }
-        if(!compact_) if(auto* binary=dynamic_cast<GAGCore::BinaryOutputStream*>(stream))
-        {BufferedBinaryWriter packed(binary);packed(name,value);packed.flush();return;}
+        // The legacy buffered writer expands narrow fields to their old widths.
+        // Compact streams must traverse fields here so nested arrays are packed.
+        if (!compact_)
+        {
+            if (auto* binary = dynamic_cast<GAGCore::BinaryOutputStream*>(stream))
+            {
+                BufferedBinaryWriter packed(binary);
+                packed(name, value);
+                packed.flush();
+                return;
+            }
+        }
         stream->writeEnterSection(name); stream->writeUint32(value.size(),"size");
         for(size_t i=0;i<value.size();++i) { stream->writeEnterSection(i); (*this)("value",value[i]); stream->writeLeaveSection(); }
         stream->writeLeaveSection();
@@ -188,8 +213,18 @@ public:
     template<class T> typename std::enable_if<!std::is_integral<T>::value && !std::is_enum<T>::value>::type
     operator()(const char* name,const T& value)
     {
-        if(!compact_) if(auto* binary=dynamic_cast<GAGCore::BinaryOutputStream*>(stream))
-        {BufferedBinaryWriter packed(binary);packed(name,value);packed.flush();return;}
+        // The legacy buffered writer expands narrow fields to their old widths.
+        // Compact streams must traverse fields here so nested arrays are packed.
+        if (!compact_)
+        {
+            if (auto* binary = dynamic_cast<GAGCore::BinaryOutputStream*>(stream))
+            {
+                BufferedBinaryWriter packed(binary);
+                packed(name, value);
+                packed.flush();
+                return;
+            }
+        }
         stream->writeEnterSection(name);
         // fields() is shared with Reader; Writer's operators never modify data.
         fields(*this,const_cast<T&>(value));

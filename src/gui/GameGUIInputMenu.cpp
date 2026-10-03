@@ -36,6 +36,9 @@ Glob2UI::InGameDialog *GameGUI::activeDialog() const
 
 void GameGUI::openDialog(InGameMenu menu, std::unique_ptr<Glob2UI::InGameDialog> dialog)
 {
+    // Panel icons must not destroy an operation before durable persistence ends.
+    if (inGameMenu == IGM_SAVE && gameMenuScreen &&
+        static_cast<LoadSaveDialog*>(gameMenuScreen.get())->isPersisting()) return;
 	if (touch)
 		touch->cancel(true);
 	inGameMenu = menu;
@@ -46,6 +49,8 @@ void GameGUI::openDialog(InGameMenu menu, std::unique_ptr<Glob2UI::InGameDialog>
 
 void GameGUI::closeDialog()
 {
+    if (inGameMenu == IGM_SAVE && gameMenuScreen &&
+        static_cast<LoadSaveDialog*>(gameMenuScreen.get())->isPersisting()) return;
 	inGameMenu = IGM_NONE;
 	gameMenuScreen.reset();
 }

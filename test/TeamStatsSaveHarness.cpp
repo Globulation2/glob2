@@ -1540,3 +1540,41 @@ TEST_CASE("Compact identity tables preserve unused slots and reject invalid entr
         CHECK_THROWS(loadBytes(bad));
     }
 }
+
+TEST_CASE("Compact team histories preserve samples across two batch boundaries" * doctest::test_suite("TeamStatsSave"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::GameOptions options; options.header = true;
+    glob2test::HeadlessGame world(options);
+    REQUIRE(world.game.sgslScript.compileScript(&world.game, "").type == ErrorReport::ET_OK);
+    auto& stats = world.team->stats;
+    // Drive the public sampling path, so the private end-game history is populated
+    // exactly as in play. Distinct counters catch misplaced rows and columns.
+    for (unsigned n = 0; n < 513; ++n)
+    {
+        world.game.stepCounter = n * 512;
+        world.team->prestige = n * 7;
+        stats.measurements.births[0] = Uint64(n) * 0x100000001ULL;
+        stats.measurements.deaths[1][GameplayMeasurements::COMBAT] = UINT64_MAX - n;
+        stats.step(world.team);
+    }
+    REQUIRE(stats.getEndOfGameStats().size() == 513);
+    REQUIRE(stats.measurementHistory.size() == 513);
+    for (bool text : {false, true})
+    {
+        auto* memory = new GAGCore::MemoryStreamBackend;
+        std::unique_ptr<GAGCore::OutputStream> out(text
+            ? static_cast<GAGCore::OutputStream*>(new GAGCore::TextOutputStream(memory))
+            : static_cast<GAGCore::OutputStream*>(new GAGCore::BinaryOutputStream(memory)));
+        world.game.save(out.get(), false, "history batch boundaries");
+        const auto bytes = memory->takeContents();
+        auto* source = new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size());
+        source->seekFromStart(0);
+        std::unique_ptr<GAGCore::InputStream> in(text
+            ? static_cast<GAGCore::InputStream*>(new GAGCore::TextInputStream(source))
+            : static_cast<GAGCore::InputStream*>(new GAGCore::BinaryInputStream(source)));
+        GameGUI restored;
+        REQUIRE(restored.game.load(in.get()));
+        compare(stats, restored.game.teams[0]->stats);
+    }
+}

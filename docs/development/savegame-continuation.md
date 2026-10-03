@@ -51,8 +51,15 @@ Text streams retain the readable scalar layout. Gzip level, extensions, atomic
 replacement are unchanged. Interactive saves defer final encoding, hashing and
 compression to owned background jobs; a busy autosave writer defers the next
 capture without blocking gameplay. Manual/editor dialogs stay pending through
-write and browser persistence completion. Threadless builds yield between bounded
-finalization steps. These scheduling changes do not alter the format-128 bytes.
-Size comparisons must
-use final gzip files, not only the size of the intermediate serialization. Use
-`save-size-harness` and `test/measure_save_sizes.py` as described in the test guide.
+write and browser persistence completion, including during normal session exit.
+Failures retain the dialog for retry or cancellation; a completed local file can
+also be exported after a browser-storage failure. Names and editor dirty state
+change only after the complete operation succeeds. Threadless builds yield
+between bounded finalization steps. These scheduling changes do not alter the
+format-128 bytes; see the
+[persistence implementation](reference.md#native-simulation-memory-and-cpu-comparisons)
+for snapshot ownership and offset relocation rules.
+
+Size comparisons must use final gzip files, not only the size of the intermediate
+serialization. Use `save-size-harness` and `test/measure_save_sizes.py` as described
+in the test guide.

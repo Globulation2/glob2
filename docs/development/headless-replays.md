@@ -323,6 +323,7 @@ versions before 123 used a different routing schedule. The current replay floor 
 Format 127 also counts Maxima opponents and script-generation team slots while
 keeping old saves loadable. Format 128 losslessly packs save data without changing
 that replay floor. Network protocol 51 requires compact-map readers and rejects
-older and newer clients. Worker
-availability affects wall time only: the serial fallback publishes on the same
-ticks. Headless `--gradient-workers 0` is the deterministic serial control.
+older and newer clients. Background save finalization owns a captured state and
+does not advance simulation; continuation checks must still compare the same
+captured tick, seed and orders. Routing worker availability affects wall time only:
+the serial fallback publishes on the same ticks. Headless `--gradient-workers 0` is the deterministic serial control.

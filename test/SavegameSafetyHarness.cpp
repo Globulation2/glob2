@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
 #include "SaveSnapshot.h"
+#include "LoadSaveDialog.h"
 #include <vector>
 #include <string>
 #include <utility>
@@ -17,6 +18,7 @@
 #include "Order.h"
 #include "Player.h"
 #include <BackgroundFileWriter.h>
+#include <ThreadSupport.h>
 #include <ChunkedStreamBackend.h>
 #include <future>
 #include <atomic>
@@ -49,6 +51,23 @@
 class SavegameSafetyHarness
 {
 public:
+    static void openSaveDialog(GameGUI& gui, std::unique_ptr<LoadSaveDialog> dialog)
+    {
+        gui.openDialog(GameGUI::IGM_SAVE, std::move(dialog));
+    }
+    static void closeDialog(GameGUI& gui) { gui.closeDialog(); }
+    static void pollSaveDialog(GameGUI& gui)
+    {
+        auto* dialog = static_cast<LoadSaveDialog*>(gui.gameMenuScreen.get());
+        if (dialog->pollPersistence()) gui.closeDialog();
+        else if (dialog->finished()) gui.processGameMenu(nullptr);
+    }
+    static void stop(GameGUI& gui)
+    {
+        gui.localTeam = gui.game.teams[0];
+        gui.isRunning = false;
+    }
+
     static GAGCore::BackgroundFileWriter& writer(GameGUI& gui, GAGCore::FileManager& files)
     {
         if (!gui.autosaveWriter) gui.autosaveWriter = std::make_unique<GAGCore::BackgroundFileWriter>(&files);
@@ -320,7 +339,7 @@ static void checkBackgroundWriter(FileManager& files, const fs::path& directory)
         const auto owner=std::this_thread::get_id();
         bool encoded=false;
         auto job=writer.submit(path,[&](ChunkedBuffer& out)->CooperativeTask {
-            CHECK((std::this_thread::get_id()==owner)==cooperative);
+            CHECK((std::this_thread::get_id()==owner)==(cooperative || !ThreadSupport::available));
             for(unsigned i=0;i<8;++i) {
                 std::string block(65536,char(i));out.writeAt(out.size(),block.data(),block.size());
                 co_await CooperativeTask::checkpoint();
@@ -328,13 +347,13 @@ static void checkBackgroundWriter(FileManager& files, const fs::path& directory)
             encoded=true;co_return true;
         });
         if(cooperative) CHECK(!encoded);
-        writer.waitUntilIdle();REQUIRE(job->state==1);REQUIRE(encoded);
+        writer.waitUntilIdle();REQUIRE(job->state==BackgroundFileWriter::State::Succeeded);REQUIRE(encoded);
         std::string decoded;REQUIRE(gzipDecompress(contents(path),decoded));
         REQUIRE(decoded.size()==8*65536);
         for(unsigned i=0;i<8;++i) REQUIRE(decoded.substr(i*65536,65536)==std::string(65536,char(i)));
         const auto prior=contents(path);
         auto bad=writer.submit(path,[](ChunkedBuffer&)->CooperativeTask {throw std::runtime_error("injected snapshot failure");co_return false;});
-        writer.waitUntilIdle();REQUIRE(bad->state==-1);REQUIRE(contents(path)==prior);
+        writer.waitUntilIdle();REQUIRE(bad->state==BackgroundFileWriter::State::Failed);REQUIRE(contents(path)==prior);
     }
 
     {
@@ -353,6 +372,173 @@ static void checkBackgroundWriter(FileManager& files, const fs::path& directory)
 	for (const auto& entry : fs::directory_iterator(directory))
 		REQUIRE(entry.path().filename().string().find(".tmp-") == std::string::npos);
 	std::cout << "PASS background writes keep the newest snapshot with its finish step, finish on destruction and continue after a failure" << std::endl;
+}
+
+static void checkSaveOperation(FileManager& files, const fs::path& directory)
+{
+    using State = ApplicationHost::PersistenceState;
+    struct ControlledPersistence final : ApplicationHost::Persistence
+    {
+        State& status;
+        explicit ControlledPersistence(State& status) : status(status) {}
+        State state() const override { return status; }
+    };
+    const auto path = (directory / "operation.game").string();
+    BackgroundFileWriter writer(&files, true);
+    bool releasePrior = false;
+    auto prior = writer.submit(path, [&](ChunkedBuffer& bytes) -> CooperativeTask {
+        while (!releasePrior) co_await CooperativeTask::checkpoint();
+        bytes.writeAt(0, "prior", 5);
+        co_return true;
+    });
+    unsigned captures = 0, persisted = 0, completed = 0;
+    State storage = State::Pending;
+    SaveOperation save(writer, path,
+        [&]() -> BackgroundFileWriter::Encode {
+            ++captures;
+            return [](ChunkedBuffer& bytes) -> CooperativeTask {
+                bytes.writeAt(0, "manual", 6);
+                co_return true;
+            };
+        }, [&] { ++completed; }, [&]() -> std::unique_ptr<ApplicationHost::Persistence> {
+            ++persisted;
+            std::string decoded;
+            REQUIRE(gzipDecompress(contents(path), decoded));
+            CHECK(decoded == "manual"); // Persistence cannot begin before replacement.
+            return std::make_unique<ControlledPersistence>(storage);
+        });
+    for (int i = 0; i < 3; ++i) CHECK(save.state() == State::Pending);
+    CHECK(captures == 0);
+    CHECK(persisted == 0);
+    releasePrior = true;
+    for (int i = 0; i < 100 && persisted == 0; ++i) CHECK(save.state() == State::Pending);
+    REQUIRE(persisted == 1);
+    CHECK(prior->state == BackgroundFileWriter::State::Succeeded);
+    CHECK(captures == 1);
+    CHECK(completed == 0);
+    storage = State::Succeeded;
+    for (int i = 0; i < 3; ++i) CHECK(save.state() == State::Succeeded);
+    CHECK(completed == 1);
+    CHECK(captures == 1);
+    CHECK(persisted == 1);
+
+    // Each failure is terminal for its operation. Retrying creates a new job;
+    // a failed persistence must never publish success or keep capturing state.
+    for (bool captureFailure : {false, true})
+    {
+        captures = persisted = completed = 0;
+        storage = State::Failed;
+        const auto previous = contents(path);
+        SaveOperation failed(writer, path,
+            [&]() -> BackgroundFileWriter::Encode {
+                ++captures;
+                if (captureFailure) throw std::runtime_error("injected capture failure");
+                return [](ChunkedBuffer& bytes) -> CooperativeTask {
+                    bytes.writeAt(0, "retry", 5);
+                    co_return true;
+                };
+            }, [&] { ++completed; }, [&]() -> std::unique_ptr<ApplicationHost::Persistence> {
+                ++persisted;
+                return std::make_unique<ControlledPersistence>(storage);
+            });
+        State status = State::Pending;
+        for (int i = 0; i < 100 && status == State::Pending; ++i) status = failed.state();
+        REQUIRE(status == State::Failed);
+        for (int i = 0; i < 3; ++i) CHECK(failed.state() == State::Failed);
+        CHECK(captures == 1);
+        CHECK(completed == 0);
+        CHECK(persisted == (captureFailure ? 0 : 1));
+        if (captureFailure) CHECK(contents(path) == previous);
+    }
+}
+
+static void checkSaveDialogExitLifecycle()
+{
+    using State = ApplicationHost::PersistenceState;
+    struct ControlledPersistence final : ApplicationHost::Persistence
+    {
+        State& status;
+        explicit ControlledPersistence(State& status) : status(status) {}
+        State state() const override { return status; }
+    };
+    glob2test::GameOptions options; options.header = true;
+    glob2test::HeadlessGame world(options);
+    auto dialog = std::make_unique<LoadSaveDialog>("games", "game", false);
+    auto* active = dialog.get();
+    State storage = State::Pending;
+    active->beginPersistence(std::make_unique<ControlledPersistence>(storage));
+    SavegameSafetyHarness::openSaveDialog(world.gui, std::move(dialog));
+    SavegameSafetyHarness::stop(world.gui);
+    REQUIRE(world.gui.savePending());
+    SavegameSafetyHarness::closeDialog(world.gui);
+    SavegameSafetyHarness::openSaveDialog(world.gui,
+        std::make_unique<LoadSaveDialog>("games", "game", false));
+    SavegameSafetyHarness::pollSaveDialog(world.gui);
+    CHECK(active->isPersisting()); // Pending operation survived both panel actions.
+    storage = State::Failed;
+    SavegameSafetyHarness::pollSaveDialog(world.gui);
+    CHECK(active->filePresentation().failed);
+    CHECK(world.gui.savePending()); // Session exit must retain retry/cancel UI.
+    storage = State::Pending;
+    active->beginPersistence(std::make_unique<ControlledPersistence>(storage));
+    SavegameSafetyHarness::pollSaveDialog(world.gui);
+    CHECK(world.gui.savePending());
+    storage = State::Succeeded;
+    SavegameSafetyHarness::pollSaveDialog(world.gui);
+    CHECK_FALSE(world.gui.savePending());
+
+    dialog = std::make_unique<LoadSaveDialog>("games", "game", false);
+    active = dialog.get();
+    storage = State::Failed;
+    active->beginPersistence(std::make_unique<ControlledPersistence>(storage));
+    SavegameSafetyHarness::openSaveDialog(world.gui, std::move(dialog));
+    SavegameSafetyHarness::pollSaveDialog(world.gui);
+    REQUIRE(world.gui.savePending());
+    active->cancelPresentedFile();
+    SavegameSafetyHarness::pollSaveDialog(world.gui);
+    CHECK_FALSE(world.gui.savePending());
+}
+
+static void checkCooperativeWriterCompatibility(FileManager& files, const fs::path& directory)
+{
+    const auto path = (directory / "cooperative-mixed.game").string();
+    BackgroundFileWriter writer(&files, true);
+    auto snapshot = writer.submit(path, [](ChunkedBuffer& bytes) -> CooperativeTask {
+        co_await CooperativeTask::checkpoint();
+        bytes.writeAt(0, "snapshot", 8);
+        co_return true;
+    });
+    writer.write(path, "queued legacy");
+    writer.waitUntilIdle();
+    CHECK(snapshot->state == BackgroundFileWriter::State::Succeeded);
+    CHECK_FALSE(writer.busy());
+    CHECK(contents(path) == "queued legacy");
+    writer.write(path, "legacy before snapshot");
+    writer.waitUntilIdle();
+    auto next = writer.submit(path, [](ChunkedBuffer& bytes) -> CooperativeTask {
+        bytes.writeAt(0, "next", 4);
+        co_return true;
+    });
+    writer.waitUntilIdle();
+    CHECK(next->state == BackgroundFileWriter::State::Succeeded);
+    std::string decoded;
+    REQUIRE(gzipDecompress(contents(path), decoded));
+    CHECK(decoded == "next");
+
+    const auto immediate = (directory / "immediate-gzip.game").string();
+    // Cross output/input-buffer boundaries, with both repetitive and random data.
+    std::string raw(300000, 'x');
+    Uint32 random = 42;
+    for (size_t i = 65500; i < 200000; ++i)
+    {
+        random ^= random << 13; random ^= random >> 17; random ^= random << 5;
+        raw[i] = char(random);
+    }
+    ChunkedBuffer bytes;
+    bytes.writeAt(0, raw.data(), raw.size());
+    REQUIRE(files.writeGzipAtomic(immediate, bytes));
+    REQUIRE(files.writeGzipTask(path, bytes).run());
+    CHECK(contents(path) == contents(immediate));
 }
 
 static void checkSlowAutosave(FileManager& files, const fs::path& directory)
@@ -885,6 +1071,9 @@ TEST_SUITE("SavegameSafety")
 		checkChunkedStreams();
 		checkGzipWrites(*globals->fileManager, directory);
 		checkBackgroundWriter(*globals->fileManager, directory);
+        checkSaveOperation(*globals->fileManager, directory);
+        checkSaveDialogExitLifecycle();
+        checkCooperativeWriterCompatibility(*globals->fileManager, directory);
 		checkSlowAutosave(*globals->fileManager, directory);
 	    checkPreferences(directory);
 		checkMapHeaders();
