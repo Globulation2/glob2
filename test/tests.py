@@ -40,6 +40,7 @@ ENGINE_TESTS = [
     ('CortexPolicyCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('ScriptCompatibilityTest.cpp', dict(cxxflags=['-fno-access-control'])),
     'ScriptIntegrationTest.cpp',
+    'HiveIntegrationTest.cpp',
     'ScriptPresentationTest.cpp',
     'ScriptEditorTest.cpp',
     'ScriptRealisticTest.cpp',
@@ -138,6 +139,7 @@ UNIT_TESTS = [
     'SurfaceCoverageTest.cpp',
     'ImageAssetTest.cpp',
     'ScriptRuntimeTest.cpp',
+    'HiveWorkerTest.cpp',
     'ScriptNumericTest.cpp',
     ('UnitDrawBatchTest.cpp', dict(require={'opengl'})),
     ('MapGeometryCacheTest.cpp', dict(require={'opengl'})),
@@ -249,6 +251,7 @@ UNIT_TESTS = [
 UNIT_PRODUCTION_SOURCES = [
     '#src/script/ScriptValue.cpp',
     '#src/script/ScriptRuntime.cpp',
+    '#src/hive/HiveWorker.cpp',
     '#src/BitArray.cpp',
     '#src/Brush.cpp',
     '#src/BrushCoverage.cpp',

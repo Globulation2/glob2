@@ -591,7 +591,97 @@ export interface AccountEconomyCurvesView {
   games_at_tick: View<number>;
 }
 
+// bigint values are strings under pg's default parser; convert only after safe-range checks.
+export interface HiveWalletsTable {
+  account_id: string;
+  balance: Defaulted<string>;
+  reserved: Defaulted<string>;
+}
+export interface HiveLedgerTable {
+  id: string;
+  account_id: string;
+  amount: string;
+  kind: string;
+  details: DefaultedJson<JsonValue>;
+  created_at: Timestamp;
+}
+export interface HiveCallsTable {
+  id: string;
+  account_id: string;
+  reserved: string;
+  status: string;
+  charged: Nullable<string>;
+  rate: Json<JsonValue>;
+  usage: NullableJson<JsonValue>;
+  created_at: Timestamp;
+}
+export interface HiveSessionsTable {
+  id: Generated<string>;
+  account_id: string;
+  match_id: string;
+  seat: number;
+  team: number;
+  client_id: Nullable<string>;
+  lease: Nullable<string>;
+  lease_until: NullableTimestamp;
+  tick: Defaulted<string>;
+  generation: Defaulted<number>;
+  supervision: Defaulted<boolean>;
+  pending_run: Defaulted<boolean>;
+  run_id: Nullable<string>;
+  run_until: NullableTimestamp;
+  last_wake_tick: Nullable<string>;
+  wake_window: NullableTimestamp;
+  wake_count: Defaulted<number>;
+  created_at: Timestamp;
+}
+export interface HiveEventsTable {
+  id: Generated<string>;
+  session_id: string;
+  dedup: string;
+  kind: string;
+  body: Json<JsonValue>;
+  created_at: Timestamp;
+}
+export interface HiveOperationsTable {
+  supervised: Defaulted<boolean>;
+  id: string;
+  session_id: string;
+  generation: number;
+  lease: Nullable<string>;
+  status: string;
+  request: Json<JsonValue>;
+  result: NullableJson<JsonValue>;
+  created_at: Timestamp;
+}
+export interface HiveProgramsTable {
+  supervised: Defaulted<boolean>;
+  session_id: string;
+  id: string;
+  revision: number;
+  definition: Json<JsonValue>;
+  status: string;
+}
+export interface HivePurchasesTable {
+  id: string;
+  account_id: string;
+  checkout_id: Nullable<string>;
+  payment_id: Nullable<string>;
+  pack: Json<JsonValue>;
+  paid: Defaulted<boolean>;
+  reversed: Defaulted<string>;
+  created_at: Timestamp;
+}
+
 export interface Database {
+  hive_wallets: HiveWalletsTable;
+  hive_ledger: HiveLedgerTable;
+  hive_calls: HiveCallsTable;
+  hive_sessions: HiveSessionsTable;
+  hive_events: HiveEventsTable;
+  hive_operations: HiveOperationsTable;
+  hive_programs: HiveProgramsTable;
+  hive_purchases: HivePurchasesTable;
   accounts: AccountsTable;
   identities: IdentitiesTable;
   device_credentials: DeviceCredentialsTable;

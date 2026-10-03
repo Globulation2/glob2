@@ -46,6 +46,10 @@ export interface AccessPolicy {
   canHost(subject: AccessSubject, request: HostRequest): Promise<AccessDecision>;
   canJoin(subject: AccessSubject, request: JoinRequest): Promise<AccessDecision>;
   canQueue(subject: AccessSubject, request: QueueRequest): Promise<AccessDecision>;
+  canUseHiveMind(
+    subject: AccessSubject,
+    request: { matchId: string; seat: number },
+  ): Promise<AccessDecision>;
 }
 
 const ALLOWED: AccessDecision = Object.freeze({ allowed: true });
@@ -55,6 +59,14 @@ export const allowAllPolicy: AccessPolicy = Object.freeze({
   canHost: async () => ALLOWED,
   canJoin: async () => ALLOWED,
   canQueue: async () => ALLOWED,
+  canUseHiveMind: async (subject: AccessSubject) =>
+    subject.kind === 'registered' && subject.entitlements.includes('hive-mind')
+      ? ALLOWED
+      : {
+          allowed: false,
+          reason: 'Add credits to enlist your commander.',
+          requiredEntitlement: 'hive-mind',
+        },
 });
 
 export class AccessDeniedError extends Error {

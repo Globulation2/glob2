@@ -190,6 +190,9 @@ class OnlineMatch
 	bool mapWasCached() const { return cachedMap; }
 	std::string mapTitle() const;
 	std::string mapFile() const { return mapPath; }
+	/// Load step: the engine's current loading stage key ("[Loading game graphics]"
+	/// while the browser is still downloading the game sprites), else empty.
+	std::string loadStage() const;
 	/// The relay moved the match (Reject 5) this many times.
 	int relayMoves() const { return moves; }
 	/// Seats with their progress, for the per-player rows.
