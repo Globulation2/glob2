@@ -65,11 +65,11 @@ class TierTest(unittest.TestCase):
                     observed=json.loads(Path('artifacts/ci-selection.json').read_text())
                     self.assertEqual(observed['selection']['native'],event=='push')
                     self.assertEqual(observed['selection']['android'],event=='push')
-                    self.assertFalse(observed['full_matrix'])
+                    self.assertEqual(observed['full_matrix'], event=='push')
                     self.assertFalse(observed['tiers_enabled'])
                 finally:
                     os.chdir(old_cwd)
-    def test_draft_pull_requests_defer_every_selected_check(self):
+    def test_default_pull_requests_defer_every_selected_check(self):
         paths=['src/Game_sync.cpp','src/gui/GameGUI.h','mobile/android.py']
         for draft in ['true','false']:
             with self.subTest(draft=draft),tempfile.TemporaryDirectory() as directory:
@@ -85,9 +85,9 @@ class TierTest(unittest.TestCase):
                     observed=json.loads(Path('artifacts/ci-selection.json').read_text())
                     outputs=dict(line.split('=',1) for line in Path('outputs').read_text().splitlines())
                     self.assertEqual(observed['draft'],draft=='true')
-                    self.assertEqual(observed['selection']['native'],draft=='false')
+                    self.assertFalse(observed['selection']['native'])
                     for key in ['native','browser','map_generators','deployment','cross_platform','android','compatibility']:
-                        self.assertEqual(outputs[key],'false' if draft=='true' else 'true',key)
+                        self.assertEqual(outputs[key],'false',key)
                 finally:
                     os.chdir(old_cwd)
         # A draft push is still deferred only for pull requests; master is always full.
@@ -123,6 +123,28 @@ class BaselineTest(unittest.TestCase):
         self.assertFalse(guard.validated_baseline('owner/repo','1','token',self.read(observed=dict(full_matrix=True,sha='wrong',selection={}))))
         self.assertFalse(guard.validated_baseline('owner/repo','not-a-run','token',self.read()))
 
+    def test_nightly_reuses_only_exact_full_available_evidence(self):
+        run = dict(id=1,name='build',head_branch='master',event='push',conclusion='success',head_sha='abc')
+        observed = dict(full_matrix=True,sha='abc',selection=policy.full(),policy_fingerprint=policy.fingerprint())
+        def lookup(run=run, observed=observed, expired=False):
+            artifact_read = self.read(run, observed, expired)
+            def read(path, token, binary=False):
+                if 'workflows/build.yml/runs?' in path:
+                    return {'workflow_runs': [run]}
+                return artifact_read(path, token, binary)
+            return guard.successful_full_run('owner/repo', 'abc', 'token', read)
+        self.assertEqual(lookup(), 1)
+        for change in ({'head_sha':'other'}, {'conclusion':'failure'}, {'event':'pull_request'}, {'head_branch':'feature'}):
+            self.assertIsNone(lookup(run=dict(run, **change)))
+        for change in ({'full_matrix':False}, {'sha':'other'}, {'selection':{}}, {'policy_fingerprint':'old'}):
+            self.assertIsNone(lookup(observed=dict(observed, **change)))
+        self.assertIsNone(lookup(expired=True))
+        for error in (OSError('API unavailable'), ValueError('invalid JSON'), zipfile.BadZipFile('invalid archive')):
+            with self.subTest(error=error), patch.object(guard, 'recent_successes', side_effect=error):
+                self.assertIsNone(guard.successful_full_run('owner/repo', 'abc', 'token'))
+        self.assertIsNone(guard.successful_full_run('owner/repo', '', 'token'))
+
+
 class AggregateGateTest(unittest.TestCase):
     def test_selected_failures_and_cancellations_cannot_pass(self):
         import re,os
@@ -141,6 +163,25 @@ class AggregateGateTest(unittest.TestCase):
                 modified=json.loads(json.dumps(needs));modified[job]['result']=result
                 with self.subTest(job=job,result=result),patch.dict(os.environ,NEEDS_JSON=json.dumps(modified),GITHUB_EVENT_NAME='push'):
                     with self.assertRaises(AssertionError):exec(code,{})
+    def test_cheap_contract_summary_and_missing_jobs(self):
+        import os, textwrap
+        workflow=(ROOT/'.github/workflows/build.yml').read_text().split('  ci-result:\n',1)[1]
+        code=textwrap.dedent(workflow.split("          python3 - <<'PY'\n",1)[1].split('\n          PY',1)[0])
+        jobs=['android','macos','tsan','native-coverage','linux','linux-variants','linux-map-generators','windows','web-build','web-native','web-deploy','web-test','browser-determinism','platform','platform-stack']
+        needs={'changes':{'result':'success','outputs':{k:'false' for k in policy.FLAGS}},
+               **{job:{'result':'skipped'} for job in jobs}}
+        with tempfile.TemporaryDirectory() as directory:
+            summary=Path(directory)/'summary'
+            with patch.dict(os.environ,NEEDS_JSON=json.dumps(needs),VERIFICATION_MODE='cheap-contracts',GITHUB_STEP_SUMMARY=str(summary)):
+                exec(code,{})
+            self.assertIn('does not establish engine verification or acceptance of PR evidence',summary.read_text())
+        del needs['windows']
+        with patch.dict(os.environ,NEEDS_JSON=json.dumps(needs)):
+            with self.assertRaises(KeyError):exec(code,{})
+        needs['changes']['result']='failure'
+        with patch.dict(os.environ,NEEDS_JSON=json.dumps(needs)):
+            with self.assertRaises(AssertionError):exec(code,{})
+
     def test_primary_gcc_gate_rejects_unexpected_compatibility_results(self):
         import subprocess,os
         workflow=(ROOT/'.github/workflows/build.yml').read_text().split('  linux-build:\n',1)[1].split('  linux-clang:\n',1)[0]
