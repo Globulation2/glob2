@@ -3946,7 +3946,9 @@ bool InnManager::load(GAGCore::InputStream *stream, Player *player, Sint32 versi
 		unsigned int gid=stream->readUint32("gid");
 		ir.pos=stream->readUint32("pos");
 		unsigned int size=stream->readCount("size");
-		if (!size || ir.pos >= size) return false;
+		// While the ring fills, pos is the next append index (equal to size).
+		// An empty record is valid too; a full ring must point inside the ring.
+		if (size > INN_RECORD_MAX || ir.pos > size || ir.pos >= INN_RECORD_MAX) return false;
 		for(unsigned int i=0; i<size; ++i)
 		{
 			stream->readEnterSection(i);

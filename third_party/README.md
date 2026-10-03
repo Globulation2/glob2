@@ -1,4 +1,24 @@
-# Vendored scripting dependencies
+# Vendored dependencies
+
+## JSON for Modern C++
+
+nlohmann/json v3.12.0 (MIT), from
+https://github.com/nlohmann/json/releases/tag/v3.12.0 (tag commit
+`65ee68451d8eb2b5f3a30b410476ab83deb3289b`). `nlohmann-json/include/nlohmann/`
+holds the release's unmodified single-header amalgamation, `json.hpp`
+(SHA256 `aaf127c04cb31c406e5b04a63f1ae89369fccde6d8fa7cdda1ed4f32dfc5de63`,
+identical to the release asset and to `single_include/` at the tag), and
+`json_fwd.hpp` from `single_include/` (SHA256
+`fb6aa70cbece087f37ab4685c182b287c53be54f785f981b9db9d30d2d028b37`), with the
+upstream `LICENSE.MIT`. Include it as `<nlohmann/json.hpp>`: native, browser and
+mobile builds share `third_party/nlohmann-json/include` through
+`INCLUDE_DIRECTORIES` in `scons/sources.py`. It is for platform JSON (realtime
+messages, REST bodies, match setup), never for simulation state, saves or
+replays. To update, replace both headers and the licence from a new release and
+record the new tag, commit and hashes here.
+
+## Scripting runtime
+
 
 QuickJS-NG v0.17.0 (MIT), from https://github.com/quickjs-ng/quickjs/releases/tag/v0.17.0.
 OpenLibm v0.8.8, from https://github.com/JuliaMath/openlibm/releases/tag/v0.8.8.

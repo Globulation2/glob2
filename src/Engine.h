@@ -16,6 +16,7 @@
 #include "Campaign.h"
 #include "MapHeader.h"
 #include "GameHeader.h"
+#include "LockstepSession.h"
 #include "NetEngine.h"
 #include "MultiplayerGame.h"
 #include "ChecksumSidecar.h"
@@ -23,6 +24,7 @@
 
 class MultiplayersJoin;
 class SimulationRunner;
+namespace PerformanceTelemetry { struct Collector; }
 class NetGame;
 
 using std::shared_ptr;
@@ -138,12 +140,16 @@ public:
     Uint64 sessionClock() const;
     bool simulationStep(Uint64 now);
     void extractScene(Scene& scene);
-    // Called on the main thread with the simulation parked.
-    void clientStep(Uint64 now, const std::vector<SDL_Event>& events);
+    // Called on the main thread with the simulation parked. GUI timing uses
+    // the SDL clock, independently of the host/session simulation clock.
+    void clientStep(const std::vector<SDL_Event>& events);
     struct PendingLoad { std::string filename; bool replay; };
     // Finalize without loading another game or entering a UI loop. The host
     // schedules a returned request, or presents the end screen when absent.
     std::optional<PendingLoad> finishSessionForHost();
+    // Service save UI on SDL time after simulation has stopped; false means
+    // safe to tear down. The suspendable session clock is not a GUI input.
+    bool advancePendingSave(const std::vector<SDL_Event>& events);
     // Synchronous adapter for native command-line/headless hosts.
     bool finishSession();
 
@@ -251,12 +257,17 @@ private:
 	/// Called only from inside the !hardPause branch.
 	void gatherAndAdvanceOrders(bool wasReadyLastTick);
 
-	/// Once allOrdersReceived() is true for this tick, validate checksums,
+	/// Once tickReady() is true for this tick, validate checksums,
 	/// execute the matched orders, pump the replay reader, and run
 	/// game.syncStep. Called only from inside the !hardPause branch.
 	void executeOrdersAndStep(bool readyNow);
 
 	void drawFrame(MainLoopState& st);
+	void saveVideoshot(MainLoopState& st);
+	void configureSessionTelemetry(MainLoopState& st, PerformanceTelemetry::Collector& perf);
+	//! Threaded: fold the simulation thread's measurements into the session collector
+	//! (called with the simulation parked).
+	void absorbSimulationTelemetry();
     std::optional<MainLoopState> session;
     std::unique_ptr<SimulationRunner> runner;
     //! Host clock minus SDL_GetTicks(), published by the main thread for sessionClock.
@@ -300,8 +311,9 @@ private:
 
 	//! The GUI, contains the whole game also
 	GameGUI gui;
-	//! The netGame, take care of order queuing and dispatching
-	std::unique_ptr<NetEngine> net;
+	//! The lockstep session: queues, exchanges and dispatches orders. A
+	//! NetEngine for single player, replays and legacy YOG/LAN games.
+	std::unique_ptr<LockstepSession> net;
 	//! Checksum sidecar writer for cross-replay debugging. Destroying it
 	//! closes the sidecar file (see ~ChecksumSidecarWriter), so the file is
 	//! flushed even when run() is never reached after initGame allocated it.

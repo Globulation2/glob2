@@ -59,6 +59,7 @@ ENGINE_TESTS = [
     'ResourceFetchTargetHarness.cpp',
     'RoundTripHungerGateHarness.cpp',
     'TerrainResourcesHarness.cpp',
+    'LockstepSessionTest.cpp',
     ('AISavePortabilityHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     'BuildingFootprintHarness.cpp',
     'ClearingFlagGradientTest.cpp',
@@ -79,6 +80,7 @@ ENGINE_TESTS = [
     'PortableGameHarness.cpp',
     'TeamStatsSaveHarness.cpp',
     ('EngineSessionHarness.cpp', dict(cxxflags=['-fno-access-control'])),
+    'TurnNetConnectionTest.cpp',
     ('MapRenderResizeHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     ('PointBarRenderTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('maxima/MaximaCombatIntegrationTest.cpp', dict(cxxflags=['-fno-access-control'])),
@@ -122,6 +124,7 @@ ENGINE_TESTS = [
 
 # glob2-unit-tests: libgag, libusl, the production sources below and stubs.
 UNIT_TESTS = [
+    'PackedArrayTest.cpp',
     'EventQueueTest.cpp',
     'MapGeneratorGoldenCoverageTest.cpp',
     'USLCoverageTest.cpp',
@@ -151,6 +154,8 @@ UNIT_TESTS = [
     'GradientBFSTest.cpp',
     'GradientTest.cpp',
     'HelloWorldTest.cpp',
+    'VendoredJsonTest.cpp',
+    'HttpFetchUrlTest.cpp',
     'KeyActionLookupTest.cpp',
     'MapQueryTest.cpp',
     'MessageRecipientsTest.cpp',
@@ -188,6 +193,8 @@ UNIT_TESTS = [
     'WinningConditionPrestigeToggleTest.cpp',
     'WinningConditionSuddenDeathToggleTest.cpp',
     'NetSendOrderDecodeTest.cpp',
+    'TurnProtocolTest.cpp',
+    'TurnHarnessTest.cpp',
     'OrderAlterateAreaTest.cpp',
     'ReplayStepCounterTest.cpp',
     'CampaignBoundsHarness.cpp',
@@ -267,11 +274,17 @@ UNIT_PRODUCTION_SOURCES = [
     '#src/map/io/MapExploredAreaIO.cpp',
     '#src/net/NetGamePlayerManager.cpp',
     '#src/net/NetReteamingInformation.cpp',
+    '#src/online/HttpFetchCommon.cpp',
     '#src/Campaign.cpp',
     '#src/SoundMixer.cpp',
     '#mobile/Documents.cpp',
     ('#mobile/CertificateTrust.cpp', dict(require={'wss'})),
     ('#mobile/TemporaryFiles.cpp', dict(require={'not-mingw'})),
+    '#src/net/turn/JitterBuffer.cpp',
+    '#src/net/turn/MatchRecord.cpp',
+    '#src/net/turn/TurnMessages.cpp',
+    '#src/net/turn/TurnSequencer.cpp',
+    '#src/net/turn/TurnSession.cpp',
     '#src/ReplayReader.cpp',
     '#src/ReplayWriter.cpp',
     # Without the client's Brush and Game surfaces: only the byte marshalers are wanted.
@@ -295,6 +308,7 @@ UNIT_STUBS = [
 # CI through their own runners; 'tools' are developer utilities and benchmarks. The
 # transport programs the browser tests drive stay in src/SConscript under 'transport-test'.
 PROGRAMS = [
+    ('SaveSizeHarness', 'SaveSizeHarness.cpp', 'save-size-harness', 'tools'),
     ('MapReportHarness', 'MapReportHarness.cpp', 'map-report-test', 'test'),
     ('MaximaStrategyDump', 'maxima/MaximaStrategyDump.cpp', 'maxima-strategy-dump', 'tools'),
     ('MenuColonyHarness', '#tools/MenuColonyHarness.cpp', 'menu-colony-harness', 'test'),

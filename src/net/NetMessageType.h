@@ -74,4 +74,10 @@ enum NetMessageType
 	MNetRequestMapThumbnail,
 	MNetSendMapThumbnail,
 	MNetSubmitRatingOnMap,
+
+	// 0xA0-0xBF is reserved for the turn protocol (src/net/turn/TurnProtocol.h,
+	// docs/multiplayer/turn-protocol.md). The values are explicit so changes to the
+	// YOG messages above never renumber it.
+	MNetTurnFirst = 0xA0,
+	MNetTurnLast = 0xBF,
 };

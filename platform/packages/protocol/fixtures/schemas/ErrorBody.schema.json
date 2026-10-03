@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:ErrorBody",
+  "title": "ErrorBody",
+  "type": "object",
+  "required": [
+    "code",
+    "message"
+  ],
+  "properties": {
+    "code": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "bad_request"
+        },
+        {
+          "type": "string",
+          "const": "unauthenticated"
+        },
+        {
+          "type": "string",
+          "const": "forbidden"
+        },
+        {
+          "type": "string",
+          "const": "access_denied"
+        },
+        {
+          "type": "string",
+          "const": "not_found"
+        },
+        {
+          "type": "string",
+          "const": "conflict"
+        },
+        {
+          "type": "string",
+          "const": "rate_limited"
+        },
+        {
+          "type": "string",
+          "const": "update_required"
+        },
+        {
+          "type": "string",
+          "const": "unsupported"
+        },
+        {
+          "type": "string",
+          "const": "unavailable"
+        },
+        {
+          "type": "string",
+          "const": "internal"
+        }
+      ]
+    },
+    "message": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "details": {}
+  },
+  "description": "Error payload: REST error responses and failed realtime responses."
+}

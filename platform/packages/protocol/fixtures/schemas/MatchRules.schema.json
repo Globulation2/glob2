@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:MatchRules",
+  "title": "MatchRules",
+  "type": "object",
+  "required": [
+    "prestigeVictory",
+    "suddenDeathMinutes",
+    "mapDiscovered",
+    "allyTeamsFixed",
+    "resourceGrowthDisabled",
+    "resourceScarcityLevel",
+    "instantConstruction",
+    "stockpileStartLevel",
+    "hungerDisabled",
+    "unitUpgradesDisabled",
+    "glassCannonLevel",
+    "unitsFearless",
+    "permadeathDisabled",
+    "peacefulMode",
+    "buildingHpLevel"
+  ],
+  "properties": {
+    "prestigeVictory": {
+      "type": "boolean",
+      "description": "Prestige winning condition enabled."
+    },
+    "suddenDeathMinutes": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1440,
+      "description": "Sudden-death timer in game minutes; 0 disables it."
+    },
+    "mapDiscovered": {
+      "type": "boolean"
+    },
+    "allyTeamsFixed": {
+      "type": "boolean",
+      "description": "Alliances cannot change during the game."
+    },
+    "resourceGrowthDisabled": {
+      "type": "boolean"
+    },
+    "resourceScarcityLevel": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 3
+    },
+    "instantConstruction": {
+      "type": "boolean"
+    },
+    "stockpileStartLevel": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 3
+    },
+    "hungerDisabled": {
+      "type": "boolean"
+    },
+    "unitUpgradesDisabled": {
+      "type": "boolean"
+    },
+    "glassCannonLevel": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 2
+    },
+    "unitsFearless": {
+      "type": "boolean"
+    },
+    "permadeathDisabled": {
+      "type": "boolean"
+    },
+    "peacefulMode": {
+      "type": "boolean"
+    },
+    "buildingHpLevel": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 2
+    }
+  },
+  "additionalProperties": false,
+  "description": "Custom-game rules, named after the GameHeader accessors they set."
+}

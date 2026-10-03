@@ -33,6 +33,8 @@ struct SceneUnit
 	int team = 0;
 	Race *race = nullptr; //!< static per-team unit definitions
 	Sint32 typeNum = 0, posX = 0, posY = 0, dx = 0, dy = 0, direction = 0, delta = 0;
+	//! How far delta advances next tick (unitActionStepSpeed).
+	Sint32 stepSpeed = 0;
 	Sint32 action = 0, hp = 0, hungry = 0, carriedResource = 0, experienceLevel = 0;
 	Sint32 levelUpAnimation = 0, magicActionAnimation = 0;
 	bool validTarget = false;

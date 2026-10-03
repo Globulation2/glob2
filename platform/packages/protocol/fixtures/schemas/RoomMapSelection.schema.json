@@ -1,0 +1,166 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:RoomMapSelection",
+  "title": "RoomMapSelection",
+  "anyOf": [
+    {
+      "type": "object",
+      "required": [
+        "kind",
+        "hash"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "const": "catalog"
+        },
+        "hash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "Lowercase hexadecimal SHA-256 digest."
+        },
+        "mapId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "description": "Lowercase UUID."
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
+        "kind",
+        "format",
+        "hash"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "const": "upload"
+        },
+        "format": {
+          "anyOf": [
+            {
+              "type": "string",
+              "const": "map"
+            },
+            {
+              "type": "string",
+              "const": "save"
+            }
+          ]
+        },
+        "hash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "Lowercase hexadecimal SHA-256 digest."
+        },
+        "reteaming": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "name",
+              "team"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 32,
+                "pattern": "^[^\\u0000-\\u001f\\u007f]+$",
+                "description": "Display name; at most 32 UTF-8 bytes (checked semantically)."
+              },
+              "team": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 11
+              },
+              "accountId": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+                "description": "Lowercase UUID."
+              }
+            },
+            "additionalProperties": false
+          },
+          "maxItems": 12,
+          "description": "For saves: which returning player takes which team."
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
+        "kind",
+        "generator"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "const": "generated"
+        },
+        "generator": {
+          "type": "object",
+          "required": [
+            "generatorId",
+            "revision",
+            "params",
+            "seed",
+            "candidates",
+            "startingUnitLevel"
+          ],
+          "properties": {
+            "generatorId": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$",
+              "description": "GeneratorDefinition::id, e.g. \"even-ground\"."
+            },
+            "revision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4294967295
+            },
+            "params": {
+              "type": "object",
+              "patternProperties": {
+                "^[A-Za-z0-9_-]{1,64}$": {
+                  "type": "integer"
+                }
+              },
+              "description": "Every control value by GeneratorControl::id, including the shared \"width\" and \"height\" (log2 of the size), \"teams\" and \"workers\"."
+            },
+            "seed": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4294967295
+            },
+            "candidates": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 64,
+              "description": "Number of seeded rolls; the best-scoring one is kept (GenerationService::bestSeed)."
+            },
+            "startingUnitLevel": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 3,
+              "description": "Level the generated starting workers spawn at (0 = standard)."
+            }
+          },
+          "additionalProperties": false,
+          "description": "Deterministic description of a generated map."
+        },
+        "hash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "Lowercase hexadecimal SHA-256 digest."
+        }
+      },
+      "additionalProperties": false
+    }
+  ],
+  "description": "Map chosen in a room. A generated map has a hash once its generation job finishes; a match cannot start before."
+}

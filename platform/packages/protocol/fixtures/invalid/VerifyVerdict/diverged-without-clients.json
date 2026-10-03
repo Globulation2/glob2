@@ -1,0 +1,22 @@
+{
+  "verdict": "diverged",
+  "clients": [],
+  "outcome": {
+    "finalTick": 45000,
+    "teams": [
+      {
+        "team": 0,
+        "outcome": "won",
+        "prestige": 210
+      },
+      {
+        "team": 1,
+        "outcome": "lost",
+        "eliminatedTick": 44990,
+        "prestige": 35
+      }
+    ],
+    "resultHash": "d00dd00dd00dd00dd00dd00dd00dd00dd00dd00dd00dd00dd00dd00dd00dd00d",
+    "replayHash": "c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4"
+  }
+}
