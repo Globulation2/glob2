@@ -2698,6 +2698,230 @@
       ]
     },
     {
+      "id": "area-farm0",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "hand-authored SVG area marker: rendered from datasrc/gfx/authored/area-farm.svg; eight-frame sequence",
+      "sources": [
+        {
+          "path": "datasrc/gfx/authored/area-farm.svg",
+          "sha256": "e9f6ca94a0d1da0194cfe1f0ac2eb8e13467be2f0070151dfb445de3e5339883",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ],
+      "layers": [
+        {
+          "file": "area-farm0.png",
+          "role": "base",
+          "sha256": "e5093c8e13f5e6c920af97e306b9821894f946b32d9252740de82cfda729bacb",
+          "source_sha256": "e5093c8e13f5e6c920af97e306b9821894f946b32d9252740de82cfda729bacb",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "edc0ceb21de2ab13595207038d9bc34241cd60fae8db2e59f27e6422a55a35f6"
+        }
+      ]
+    },
+    {
+      "id": "area-farm1",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "hand-authored SVG area marker: rendered from datasrc/gfx/authored/area-farm.svg; eight-frame sequence",
+      "sources": [
+        {
+          "path": "datasrc/gfx/authored/area-farm.svg",
+          "sha256": "e9f6ca94a0d1da0194cfe1f0ac2eb8e13467be2f0070151dfb445de3e5339883",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ],
+      "layers": [
+        {
+          "file": "area-farm1.png",
+          "role": "base",
+          "sha256": "5233ca8b8cddd055825872493c6933c71c78b910bac3148dce44f702273166ad",
+          "source_sha256": "5233ca8b8cddd055825872493c6933c71c78b910bac3148dce44f702273166ad",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "077b9743e972d57b226115f4dd408dc25dc97bab94c562107b8534c8f54ab82d"
+        }
+      ]
+    },
+    {
+      "id": "area-farm2",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "hand-authored SVG area marker: rendered from datasrc/gfx/authored/area-farm.svg; eight-frame sequence",
+      "sources": [
+        {
+          "path": "datasrc/gfx/authored/area-farm.svg",
+          "sha256": "e9f6ca94a0d1da0194cfe1f0ac2eb8e13467be2f0070151dfb445de3e5339883",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ],
+      "layers": [
+        {
+          "file": "area-farm2.png",
+          "role": "base",
+          "sha256": "224c7626195d47bcbd44838a58a36abc5dd9054175f09987c35b3d5ccbd9f233",
+          "source_sha256": "224c7626195d47bcbd44838a58a36abc5dd9054175f09987c35b3d5ccbd9f233",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "caddcc0b79fcaf6fb87106340c699adfd7a4342d00a6e08016c360e7a8981e15"
+        }
+      ]
+    },
+    {
+      "id": "area-farm3",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "hand-authored SVG area marker: rendered from datasrc/gfx/authored/area-farm.svg; eight-frame sequence",
+      "sources": [
+        {
+          "path": "datasrc/gfx/authored/area-farm.svg",
+          "sha256": "e9f6ca94a0d1da0194cfe1f0ac2eb8e13467be2f0070151dfb445de3e5339883",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ],
+      "layers": [
+        {
+          "file": "area-farm3.png",
+          "role": "base",
+          "sha256": "8874184248eade73730750945571b24c4e66e768270770b2fa7fa0e6b34f81cc",
+          "source_sha256": "8874184248eade73730750945571b24c4e66e768270770b2fa7fa0e6b34f81cc",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "10d3ba6bd99cdd90d8466f950ee05a138f9ee5aefb35a34e620d8d6d0af6a612"
+        }
+      ]
+    },
+    {
+      "id": "area-farm4",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "hand-authored SVG area marker: rendered from datasrc/gfx/authored/area-farm.svg; eight-frame sequence",
+      "sources": [
+        {
+          "path": "datasrc/gfx/authored/area-farm.svg",
+          "sha256": "e9f6ca94a0d1da0194cfe1f0ac2eb8e13467be2f0070151dfb445de3e5339883",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ],
+      "layers": [
+        {
+          "file": "area-farm4.png",
+          "role": "base",
+          "sha256": "33cc0ee2faebb7d0bf1989811ae1d601903ffcd48aaba4e46f386b06c678954e",
+          "source_sha256": "33cc0ee2faebb7d0bf1989811ae1d601903ffcd48aaba4e46f386b06c678954e",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "60737a1098a9190cfdb4ee8f3b7d9a7b02e0e837cb76fccc2b64e8402e07c7b6"
+        }
+      ]
+    },
+    {
+      "id": "area-farm5",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "hand-authored SVG area marker: rendered from datasrc/gfx/authored/area-farm.svg; eight-frame sequence",
+      "sources": [
+        {
+          "path": "datasrc/gfx/authored/area-farm.svg",
+          "sha256": "e9f6ca94a0d1da0194cfe1f0ac2eb8e13467be2f0070151dfb445de3e5339883",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ],
+      "layers": [
+        {
+          "file": "area-farm5.png",
+          "role": "base",
+          "sha256": "007ed9f6f3f2b8c08a8da4e59265216dc109eeed99b24d2340fb4758d6b3c987",
+          "source_sha256": "007ed9f6f3f2b8c08a8da4e59265216dc109eeed99b24d2340fb4758d6b3c987",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "bd9b5cd9b2b99d1184387e663e0686e02023339ed56f5b5a1306e07ed74beeb8"
+        }
+      ]
+    },
+    {
+      "id": "area-farm6",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "hand-authored SVG area marker: rendered from datasrc/gfx/authored/area-farm.svg; eight-frame sequence",
+      "sources": [
+        {
+          "path": "datasrc/gfx/authored/area-farm.svg",
+          "sha256": "e9f6ca94a0d1da0194cfe1f0ac2eb8e13467be2f0070151dfb445de3e5339883",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ],
+      "layers": [
+        {
+          "file": "area-farm6.png",
+          "role": "base",
+          "sha256": "d6a1b136577763c3cb37ece438cba28d2cb71065a0fa80da2ca4416989194844",
+          "source_sha256": "d6a1b136577763c3cb37ece438cba28d2cb71065a0fa80da2ca4416989194844",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "5030feae6bade1198eafb0d0aa705231d3abab941c4802e4c48d6ff47c24819d"
+        }
+      ]
+    },
+    {
+      "id": "area-farm7",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "hand-authored SVG area marker: rendered from datasrc/gfx/authored/area-farm.svg; eight-frame sequence",
+      "sources": [
+        {
+          "path": "datasrc/gfx/authored/area-farm.svg",
+          "sha256": "e9f6ca94a0d1da0194cfe1f0ac2eb8e13467be2f0070151dfb445de3e5339883",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ],
+      "layers": [
+        {
+          "file": "area-farm7.png",
+          "role": "base",
+          "sha256": "436550ced397e29fc46422d5f56f3ac1b0a0f9f6c6fd41db76ed0ba3fa965e4a",
+          "source_sha256": "436550ced397e29fc46422d5f56f3ac1b0a0f9f6c6fd41db76ed0ba3fa965e4a",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "9d9825da5f1ea604939c2376a46b85b0c4b7bc0f5fa604a71d09e27819142b36"
+        }
+      ]
+    },
+    {
       "id": "area-forbidden0",
       "width": 32,
       "height": 32,

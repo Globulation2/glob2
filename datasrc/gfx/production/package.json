@@ -262,6 +262,46 @@
       "sha256": "9c9a7f44af7807961c6da0a09882730f76408ec677da0376b4b01e7a79029f7b"
     },
     {
+      "runtime": "area-farm0.png",
+      "source": "authored/area-farm0.png",
+      "sha256": "e5093c8e13f5e6c920af97e306b9821894f946b32d9252740de82cfda729bacb"
+    },
+    {
+      "runtime": "area-farm1.png",
+      "source": "authored/area-farm1.png",
+      "sha256": "5233ca8b8cddd055825872493c6933c71c78b910bac3148dce44f702273166ad"
+    },
+    {
+      "runtime": "area-farm2.png",
+      "source": "authored/area-farm2.png",
+      "sha256": "224c7626195d47bcbd44838a58a36abc5dd9054175f09987c35b3d5ccbd9f233"
+    },
+    {
+      "runtime": "area-farm3.png",
+      "source": "authored/area-farm3.png",
+      "sha256": "8874184248eade73730750945571b24c4e66e768270770b2fa7fa0e6b34f81cc"
+    },
+    {
+      "runtime": "area-farm4.png",
+      "source": "authored/area-farm4.png",
+      "sha256": "33cc0ee2faebb7d0bf1989811ae1d601903ffcd48aaba4e46f386b06c678954e"
+    },
+    {
+      "runtime": "area-farm5.png",
+      "source": "authored/area-farm5.png",
+      "sha256": "007ed9f6f3f2b8c08a8da4e59265216dc109eeed99b24d2340fb4758d6b3c987"
+    },
+    {
+      "runtime": "area-farm6.png",
+      "source": "authored/area-farm6.png",
+      "sha256": "d6a1b136577763c3cb37ece438cba28d2cb71065a0fa80da2ca4416989194844"
+    },
+    {
+      "runtime": "area-farm7.png",
+      "source": "authored/area-farm7.png",
+      "sha256": "436550ced397e29fc46422d5f56f3ac1b0a0f9f6c6fd41db76ed0ba3fa965e4a"
+    },
+    {
       "runtime": "area-forbidden0.png",
       "source": "original-derived/area-forbidden0.png",
       "sha256": "17bc3f70afeffe7c0b1a7ebd27d77fa125a0c254c4b80ee46fb661faf33ade87"
@@ -14424,17 +14464,17 @@
     {
       "runtime": "manifest.json",
       "source": "pack-metadata/manifest.json",
-      "sha256": "3cc4559d69f356dd2794eaf145ed26e7790613004de0315c11ae5a55e4fc8e4b"
+      "sha256": "7b1677c6ff6e256d390d64322e3d00fc8f9b4c781a20dbf529d6f2d2f47b6f88"
     },
     {
       "runtime": "frames.txt",
       "source": "pack-metadata/frames.txt",
-      "sha256": "9792a19f3ebe9de4b2777e18c421c32c3ae4178abc41877384548d3af0786dfa"
+      "sha256": "2448ad403181fad2d3e82870ca061cae8bc042fb87b35f56e5fa7c044db747a0"
     },
     {
       "runtime": "README.md",
       "source": "pack-metadata/README.md",
-      "sha256": "c2cc02e4f758701623dfe67aba43e0758be4b2fead2d396c6e03debd07e6bd5a"
+      "sha256": "dfd73e24f43e5acd35f94d0aeb208f2be6325fdd0370180d403922dd355280dc"
     }
   ]
 }

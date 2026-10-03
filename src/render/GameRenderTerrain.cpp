@@ -454,7 +454,7 @@ void Game::drawMapArea(int left, int top, int right, int bot, int sw,
 		case ClearingArea: sprite = globalContainer->areaClearing; c = GAGCore::Color(255,255,0); break;
 		case ForbiddenArea: sprite = globalContainer->areaForbidden; c = GAGCore::Color(255,0,0); break;
 		case GuardArea: sprite = globalContainer->areaGuard; c = GAGCore::Color(0,0,255); break;
-		case FarmArea: sprite = globalContainer->areaFarm; c = GAGCore::Color(0,200,80); break;
+		case FarmArea: sprite = globalContainer->areaFarm; c = GAGCore::Color(110,240,120); break;
 		default: assert(false);
 	}
 	// Zoomed out, the pattern is noise and a one-pixel outline is most of a

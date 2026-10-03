@@ -108,9 +108,17 @@ A refused tile is never part of a field, so it cannot connect two patches.
 - **Clearing the touched tile.** Clearing paths call `Map::decResource` on the
   tile they touch and never go through `takeHarvest`.
 - **The AIs** and **scripts**. No AI paints farm areas, and the JavaScript order
-  API has no farm area type. These are follow-ups if the
-  experiment graduates, along with high-resolution frames for the `area-farm`
-  overlay, which renders at classic resolution when HD artwork is on.
+  API has no farm area type. These are follow-ups if the experiment graduates.
+
+## Artwork
+
+The overlay marker and its zone button are hand-authored SVG
+(`datasrc/gfx/authored/area-farm.svg`, `gamegui58.svg`): sparse seedlings that
+sway over eight frames, in the same family as the guard dots and clearing sickles.
+`python3 tools/artwork/render_authored.py` renders the classic 32px sprites and the
+128px high-resolution frames from the same source; `--check` verifies both are
+current and follow the marker rules. Zoomed out, the farm fades to the same flat
+tint as the other zones, a light green chosen to stand out from grass.
 
 ## Compatibility
 
