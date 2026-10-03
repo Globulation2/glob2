@@ -926,6 +926,24 @@
       "group": "Online play"
     },
     {
+      "id": "game-connection-left",
+      "title": "Connection panel: a player left",
+      "description": "The leaver stays listed as Left; the notice starts below the panel.",
+      "group": "Online play"
+    },
+    {
+      "id": "game-paused-online",
+      "title": "Paused under the pause limit",
+      "description": "Who paused and when the game resumes by itself, above the phone action bar.",
+      "group": "Online play"
+    },
+    {
+      "id": "game-menu-online",
+      "title": "In-game menu in a quick match",
+      "description": "Pause with the pauses left; no Load or Save; Leave match.",
+      "group": "Online play"
+    },
+    {
       "id": "game-results-verifying",
       "title": "Results: verifying",
       "description": "Victory with the provisional rating change greyed.",
@@ -941,6 +959,18 @@
       "id": "game-results-room",
       "title": "Results: room match draw",
       "description": "Unrated room match with a draw outcome.",
+      "group": "Online play"
+    },
+    {
+      "id": "game-results-opponent-left",
+      "title": "Results: the opponent left",
+      "description": "Victory with the reason, while the result is recorded.",
+      "group": "Online play"
+    },
+    {
+      "id": "game-results-left",
+      "title": "Results: you left",
+      "description": "The leaver's loss at once; the record follows when the match ends.",
       "group": "Online play"
     }
   ],

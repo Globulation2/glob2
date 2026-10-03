@@ -978,6 +978,33 @@ class MobileGalleryGameplay
 			capture("game-catching-up");
 			snapshot.card = ConnectionSnapshot::Card::Desync;
 			capture("game-out-of-sync");
+			// Someone left: still listed, as Left, and the notice below the panel.
+			snapshot.card = ConnectionSnapshot::Card::None;
+			snapshot.rows = four;
+			snapshot.rows[1].state = ConnectionRow::State::Left;
+			gui.addNotice("Violet colony left the match.");
+			capture("game-connection-left");
+			// A quick match paused by another player under the pause limit, and the
+			// menu with this player's pauses left.
+			snapshot.rows[1].state = ConnectionRow::State::Connected;
+			gui.networkMatch.active = true;
+			gui.pauseState = [] {
+				GameGUI::PauseState state;
+				state.limited = true;
+				state.pausesLeft = 2;
+				state.secondsLeft = 48;
+				state.pausedBy = 1;
+				state.pauserSecondsLeft = 42;
+				return state;
+			};
+			gui.gamePaused = true;
+			capture("game-paused-online");
+			gui.gamePaused = false;
+			gui.openMainMenu();
+			capture("game-menu-online");
+			gui.closeDialog();
+			gui.pauseState = {};
+			gui.networkMatch.active = false;
 			gui.connectionOverlay.reset();
 		}
 		{
@@ -1029,6 +1056,28 @@ class MobileGalleryGameplay
 			room->outcome = "draw";
 			view->setOnlineResult(room);
 			stackShot(stack, "game-results-room");
+			// The winner of a match the opponent left, before the platform settles
+			// it, and the player who left: their loss at once, the record later.
+			auto opponentLeft = std::make_shared<Online::OnlineMatchResult>("https://app.glob2online.com", "8f3k2q00-0000-4000-8000-000000000003", OnlineUIFixtures::HOST_ID);
+			opponentLeft->label = "Room · Bradley's room";
+			opponentLeft->mapTitle = "balanced for 2";
+			view->setOnlineResult(opponentLeft);
+			view->setOutcome(EndGameScreen::Outcome::Victory);
+			view->setReason("Ana_M left the match.");
+			stackShot(stack, "game-results-opponent-left");
+			auto leaver = std::make_shared<Online::OnlineMatchResult>("https://app.glob2online.com", "8f3k2q00-0000-4000-8000-000000000004", OnlineUIFixtures::GUEST_ID);
+			leaver->label = "1 vs 1 · Ranked";
+			leaver->mapTitle = "Even Ground 128×128";
+			leaver->fromRoom = false;
+			leaver->rated = true;
+			leaver->ladder = "1 vs 1";
+			leaver->ratingBefore = 1528;
+			leaver->ratingExpectedWin = 1543;
+			leaver->ratingExpectedLoss = 1514;
+			view->setOnlineResult(leaver);
+			view->setOutcome(EndGameScreen::Outcome::Left);
+			view->setReason("You left the match. It counts as a loss.");
+			stackShot(stack, "game-results-left");
 			view->endExecute(0);
 			frame(stack);
 		}

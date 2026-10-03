@@ -75,6 +75,8 @@ class EndGameScreen : public GAGGUI::ui::UIScreen
 		Left
 	};
 	void setOutcome(Outcome value) { outcome = value; invalidate(); }
+	//! Harness: the reason line the banner shows.
+	void setReason(std::string value) { reason = std::move(value); invalidate(); }
 	//! The local outcome and its one-line reason ("Guest-5285 left the match.",
 	//! "Your colony was defeated."), from the finished game.
 	struct Description
