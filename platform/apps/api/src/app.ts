@@ -215,7 +215,12 @@ export async function buildApp(
     origin: services.config.publicOrigin,
     logger: services.logger,
   });
-  const assignments = new Assignments(services.db, identity.keys, services.config.publicOrigin);
+  const assignments = new Assignments(
+    services.db,
+    identity.keys,
+    services.config.publicOrigin,
+    new Map(services.config.instance.queues.map((q) => [q.id, q.name])),
+  );
   const play = new PlayRealtime({
     config: services.config,
     access: services.access,

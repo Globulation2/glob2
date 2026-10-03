@@ -175,7 +175,9 @@ export function MatchRow({ match, accountId }: { match: MatchSummary; accountId?
         </div>
       </div>
       <span className="caption hide-phone" style={{ width: 120 }}>
-        {match.origin === 'queue' ? queueName(instance?.queues, match.queueId) : 'Room'}
+        {match.origin === 'queue'
+          ? queueName(instance?.queues, match.queueId, match.queueName)
+          : 'Room'}
       </span>
       <span className="caption num hide-phone" style={{ width: 70 }}>
         {duration(match.durationTicks)}

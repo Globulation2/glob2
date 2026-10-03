@@ -390,7 +390,7 @@ function Verification({ detail }: { detail: MatchDetail }) {
       </h2>
       <p style={{ margin: '0 0 6px' }}>{VERDICT_TEXT[detail.match.verification]}</p>
       {v?.reason && <p className="caption">Reason: {v.reason}</p>}
-      {v?.ratingNote && <p className="caption">Ratings: {v.ratingNote}</p>}
+      {v?.ratingNote && <p className="caption">{v.ratingNote}</p>}
       {v?.orderRejections && v.orderRejections.length > 0 && (
         <>
           <div className="caption" style={{ marginTop: 6 }}>
@@ -521,7 +521,8 @@ export function Match({ id }: { id: string }) {
     <Loaded load={load}>
       {(detail) => {
         const m = detail.match;
-        const kind = m.origin === 'queue' ? queueName(instance?.queues, m.queueId) : 'Room match';
+        const kind =
+          m.origin === 'queue' ? queueName(instance?.queues, m.queueId, m.queueName) : 'Room match';
         const map = detail.map;
         return (
           <>

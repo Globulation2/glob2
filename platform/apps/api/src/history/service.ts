@@ -40,6 +40,7 @@ import { PROVISIONAL_SIGMA, displayRating } from '@glob2/worker';
 import { hasRole } from '../auth/admin.ts';
 import { apiError } from '../errors.ts';
 import { participantNetwork, reportTickRate } from './network.ts';
+import { ratingNoteText } from './ratingNotes.ts';
 import {
   MATCH_TIME,
   UUID,
@@ -49,6 +50,7 @@ import {
   generatorLabel,
   generatorOf,
   summarize,
+  uploadTitles,
   type MatchRow,
 } from './summaries.ts';
 
@@ -416,12 +418,15 @@ export class HistoryService {
     ]);
     const t = totals.rows[0] ?? { games: 0, wins: 0, losses: 0 };
     const l = lengths.rows[0];
-    const titles = await catalogTitles(
-      this.db,
-      rates.filter((r) => r.dimension === 'map').map((r) => r.key),
-    );
+    const mapHashes = rates.filter((r) => r.dimension === 'map').map((r) => r.key);
+    const [titles, uploads] = await Promise.all([
+      catalogTitles(this.db, mapHashes),
+      uploadTitles(this.db, mapHashes),
+    ]);
     const winRates: WinRate[] = rates.map((row) => {
       const title = row.dimension === 'map' ? titles.get(row.key) : undefined;
+      // The player's own premade maps keep the name they uploaded them with.
+      const uploaded = row.dimension === 'map' ? uploads.get(row.key)?.get(accountId) : undefined;
       const label =
         row.dimension === 'queue'
           ? row.key === 'room'
@@ -429,7 +434,7 @@ export class HistoryService {
             : this.queueNames.get(row.key)
           : row.dimension === 'generator'
             ? generatorLabel(row.key)
-            : title?.title;
+            : (title?.title ?? uploaded?.title);
       return {
         dimension: row.dimension as WinRate['dimension'],
         key: row.key,
@@ -529,7 +534,7 @@ export class HistoryService {
     const page = rows.slice(0, limit);
     const last = page.at(-1);
     return {
-      items: await summarize(this.db, page),
+      items: await summarize(this.db, page, this.queueNames),
       ...(rows.length > limit && last
         ? {
             nextCursor: encodeCursor({
@@ -666,9 +671,9 @@ export class HistoryService {
 
   async matchDetail(id: string, viewer: Viewer | undefined): Promise<MatchDetail> {
     const match = await this.match(id);
-    const [summary] = await summarize(this.db, [match]);
+    const [summary] = await summarize(this.db, [match], this.queueNames);
     if (!summary) throw apiError('not_found', 'No such match.');
-    const [teams, artifacts, job, economy, titles, networkRows] = await Promise.all([
+    const [teams, artifacts, job, economy, titles, uploads, networkRows] = await Promise.all([
       this.db
         .selectFrom('match_team_stats')
         .selectAll()
@@ -693,6 +698,7 @@ export class HistoryService {
         .executeTakeFirst(),
       this.economyOf(id),
       catalogTitles(this.db, [match.map_hash]),
+      uploadTitles(this.db, [match.map_hash]),
       this.db
         .selectFrom('match_participants')
         .select(['seat', 'network'])
@@ -730,7 +736,7 @@ export class HistoryService {
         ? { reason: (verdict['reason'] as string).slice(0, 2000) }
         : {}),
       ...(rejections ? { orderRejections: rejections } : {}),
-      ...(match.rating_note ? { ratingNote: match.rating_note.slice(0, 500) } : {}),
+      ...(match.rating_note ? { ratingNote: ratingNoteText(match.rating_note).slice(0, 500) } : {}),
     };
     const setup = match.setup as unknown as MatchSetup;
     const generator = generatorOf(setup);
@@ -743,8 +749,14 @@ export class HistoryService {
           .limit(1)
           .executeTakeFirst()
       : undefined;
-    const width = catalog?.width ?? generated?.width ?? undefined;
-    const height = catalog?.height ?? generated?.height ?? undefined;
+    // A room host's premade map: the size the engine read from their upload.
+    const players = summary.participants.flatMap((p) => (p.accountId ? [p.accountId] : []));
+    const uploaded =
+      catalog || generator
+        ? undefined
+        : players.map((p) => uploads.get(match.map_hash)?.get(p)).find(Boolean);
+    const width = catalog?.width ?? generated?.width ?? uploaded?.width ?? undefined;
+    const height = catalog?.height ?? generated?.height ?? uploaded?.height ?? undefined;
     const map = {
       ...(summary?.mapTitle ? { title: summary.mapTitle } : {}),
       ...(catalog ? { mapId: catalog.mapId } : {}),

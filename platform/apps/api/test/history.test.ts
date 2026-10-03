@@ -186,6 +186,25 @@ describe('matches', () => {
     expect(summary.participants[0].rating.ladder).toBe('ranked-1v1');
     const room = list['items'].find((m: { id: string }) => m.id === seed.publicRoomMatch);
     expect(room.mapTitle).toBe('Marchland');
+    // Queue matches carry the queue's configured name, not just its id.
+    expect(summary.queueId).toBe('ranked-1v1');
+    expect(summary.queueName).toBe('1 vs 1 ranked');
+    expect(room.queueName).toBeUndefined();
+  });
+
+  it('names a room match on the host’s premade map after the uploaded title', async () => {
+    const detail = await ok(
+      `/api/v1/matches/${seed.linkRoomMatch}`,
+      'MatchDetail',
+      seed.userSession,
+    );
+    expect(detail['match'].mapTitle).toBe('balanced for 2');
+    expect(detail['map']).toMatchObject({ title: 'balanced for 2', width: 64, height: 64 });
+    // A non-player's private upload of the same bytes never names it.
+    expect(JSON.stringify(detail)).not.toContain('Kestrel secret');
+    const anas = await ok(`/api/v1/players/${seed.accounts.ana}/matches?queue=room`, 'MatchList');
+    const listed = anas['items'].find((m: { id: string }) => m.id === seed.linkRoomMatch);
+    expect(listed.mapTitle).toBe('balanced for 2');
   });
 
   it('shows match detail with teams, timelines, economy and verification detail', async () => {
