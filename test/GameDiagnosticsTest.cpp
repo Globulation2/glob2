@@ -103,6 +103,19 @@ TEST_CASE("capped scene export survives repeated graphics lifetimes and write fa
 		CHECK(world.game.checkSum()==checksum);
 	}
 }
+TEST_CASE("portrait exports cover the whole map after dimension rounding [artifacts]")
+{
+	glob2test::HeadlessGlobals globals;
+	glob2test::HeadlessGame world({.wDec=4,.hDec=6,.teams=1,.discovered=true,.loadDefaultRace=true});
+	Scene scene;SceneRequest request;request.includePanels=false;extractScene(world.game,request,scene);
+	const auto path=(glob2test::artifactDir()/"portrait.png").string();
+	MapRender::toPng(scene,path,9);
+	SDL_Surface* image=IMG_Load(path.c_str());REQUIRE(image);
+	CHECK(image->w==2);CHECK(image->h==9);
+	Uint8 red,green,blue,alpha;
+	REQUIRE(SDL_ReadSurfacePixel(image,0,8,&red,&green,&blue,&alpha));CHECK(alpha==255);
+	SDL_DestroySurface(image);
+}
 TEST_CASE("offscreen pass restores transformed drawing after exceptions [display]")
 {
 	for (const auto flags:{0u,unsigned(GAGCore::GraphicContext::PORTABLEGPU),unsigned(GAGCore::GraphicContext::USEGPU)})
