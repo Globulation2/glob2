@@ -58,8 +58,9 @@ The game is playable with one thumb. A completed map tap arms one-finger zoom fo
 the next contact that lands within 300 ms of the release and 24 points of the tap.
 Dragging that contact vertically zooms about the point where it landed, doubling
 per 180 points of travel, with the factor shown above the finger; releasing it
-without travel restores 1:1 zoom there. A contact that sets off mostly sideways
-pans instead, so a quick tap followed by a pan still pans. The drag direction
+without travel doubles the current zoom there, capped at 3×. The tapped world
+point stays under the finger, including across map seams. A contact that sets off
+mostly sideways pans instead, so a quick tap followed by a pan still pans. The drag direction
 follows the platform's map app (Android: drag down zooms in; iOS and desktop:
 drag up zooms in) unless the One-finger zoom setting overrides it. A second finger,
 focus loss or rotation ends the gesture and keeps the zoom reached so far;
@@ -224,8 +225,9 @@ strip and horizontally scrolling artwork palette. Terrain and Resources share
 brush operations; Buildings and Flags expose team and level beside the map.
 Individual artwork widgets are reused, never the composed desktop sidebar or
 its minimap. Done leaves the active tool and returns to object selection; Pan
-switches one-finger navigation. One-finger zoom, the 1:1 reset and held paint
-taps behave as in gameplay; taps that place buildings or units never arm zoom.
+switches one-finger navigation. One-finger zoom dragging and held paint taps
+behave as in gameplay. In the editor, a double tap without travel still resets
+to 1:1 zoom; taps that place buildings or units never arm zoom.
 Brush tools use the same rail as zone painting (Paint/Erase only where it applies,
 Pan, sizes). Zone, script-area and no-growth strokes offer Undo for six seconds,
 restoring the covered tiles and displayed zone bits exactly; terrain, resource

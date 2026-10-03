@@ -733,14 +733,15 @@ class GameGUITouchHarness
 		tap(200, 200);
 		tap(200, 200);
 		touchTickStep = separateTouchStep;
-		require(std::abs(gui.camera.zoom - 1) < 0.001,
-				"Double tap restores 1:1 map zoom");
+		require(std::abs(gui.camera.zoom - MapCamera::MAX_ZOOM) < 0.001,
+				"Double tap zooms in up to the camera limit");
 		const auto restoredAnchor = gui.camera.screenToWorld(200, 200);
 		require(std::abs(MapCamera::wrap(tapAnchor.first, gui.camera.mapWidth) -
 					MapCamera::wrap(restoredAnchor.first, gui.camera.mapWidth)) < 0.001 &&
 					std::abs(MapCamera::wrap(tapAnchor.second, gui.camera.mapHeight) -
 					MapCamera::wrap(restoredAnchor.second, gui.camera.mapHeight)) < 0.001,
 				"Double tap keeps the tapped world position anchored");
+		gui.zoomMap(std::log(1.0 / gui.camera.zoom) / std::log(1.1), 200, 200);
 		gui.clearSelection();
 		bool foundEmptyGround = false;
 		for (int y = 80; y < 480 && !foundEmptyGround; y += 32)
@@ -1098,6 +1099,55 @@ class GameGUITouchHarness
 						   std::abs(MapCamera::wrap(a.second, gui.camera.mapHeight) -
 									MapCamera::wrap(b.second, gui.camera.mapHeight)) < 1;
 				};
+				// A completed double tap zooms in around its map point, even at a seam.
+				const auto savedCamera = gui.camera;
+				for (double initial : {0.75, 1.0, 2.0, MapCamera::MAX_ZOOM})
+				{
+					gui.camera = savedCamera;
+					gui.camera.setZoom(initial, spot.x, spot.y);
+					if (initial != 1.0)
+					{
+						gui.camera.originX = gui.camera.mapWidth - 8;
+						gui.camera.originY = gui.camera.mapHeight - 8;
+					}
+					gui.viewportX = gui.camera.tileX();
+					gui.viewportY = gui.camera.tileY();
+					gui.updateCamera();
+					const auto zoomSpot = spot;
+					const double before = gui.camera.zoom;
+					const auto anchor = gui.camera.screenToWorld(zoomSpot.x, zoomSpot.y);
+					if (initial == 1.0)
+					{
+						gui.drawAll(0);
+						gfx->printScreen(width < height ? "touch-double-tap-before-portrait.bmp"
+														: "touch-double-tap-before-landscape.bmp");
+						gfx->nextFrame();
+					}
+					quickTouches();
+					tap(zoomSpot.x, zoomSpot.y);
+					tap(zoomSpot.x, zoomSpot.y);
+					touchTickStep = separateTouchStep;
+					require(std::abs(gui.camera.zoom - std::min(before * 2, MapCamera::MAX_ZOOM)) < 1e-9,
+							"Double tap doubles zoom and stays at the maximum instead of resetting");
+					require(wrapped(anchor, gui.camera.screenToWorld(zoomSpot.x, zoomSpot.y)),
+							"Double tap keeps the tapped world point anchored across map seams");
+					noOrder();
+					std::cout << "PASS double tap " << width << "x" << height << ": " << before
+							  << " -> " << gui.camera.zoom << "; world anchor preserved\n";
+					if (initial == 1.0)
+					{
+						gui.drawAll(0);
+						gfx->printScreen(width < height ? "touch-double-tap-after-portrait.bmp"
+														: "touch-double-tap-after-landscape.bmp");
+						gfx->nextFrame();
+					}
+					gui.clearSelection();
+					gui.touch->panelOpen = false;
+				}
+				gui.camera = savedCamera;
+				gui.viewportX = gui.camera.tileX();
+				gui.viewportY = gui.camera.tileY();
+				gui.updateCamera();
 				auto armedPress = [&]
 				{
 					gui.camera.setZoom(1, spot.x, spot.y);
@@ -1193,11 +1243,12 @@ class GameGUITouchHarness
 				tap(spot.x, spot.y);
 				touchTickStep = separateTouchStep;
 				require(!gui.touch->deferredStroke, "A double tap while painting must not paint");
-				require(std::abs(gui.camera.zoom - 1) < 0.001,
-						("A double tap while painting must reset zoom (zoom " + std::to_string(gui.camera.zoom) + ")").c_str());
+				require(std::abs(gui.camera.zoom - 3) < 0.001,
+						("A double tap while painting must zoom in (zoom " + std::to_string(gui.camera.zoom) + ")").c_str());
 				SDL_Delay(InGameTouchTheme::doubleTapWindowMs + 20);
 				gui.touch->prepareDraw();
 				noOrder();
+				gui.zoomMap(std::log(1.0 / gui.camera.zoom) / std::log(1.1), int(spot.x), int(spot.y));
 				gui.brush.setFigure(6); // 3x3, so the footprint capture is legible.
 				finger(SDL_EVENT_FINGER_DOWN, 1, spot.x, spot.y);
 				finger(SDL_EVENT_FINGER_MOTION, 1, spot.x + 40 * unit, spot.y);
@@ -1299,6 +1350,7 @@ class GameGUITouchHarness
 						"The panned stroke paints on release");
 				drain();
 				// Undo reverts exactly the cells the stroke changed.
+				gui.zoomMap(std::log(1.0 / gui.camera.zoom) / std::log(1.1), int(spot.x), int(spot.y));
 				gui.brush.setFigure(6); // 3x3
 				const auto target = emptyGround();
 				auto &map = gui.game.map;
