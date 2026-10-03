@@ -1,0 +1,357 @@
+// "Download my data" (GET /api/v1/accounts/me/export): the owner gets every
+// stored row about the account, other people's data and secrets stay out,
+// and every account column in the schema is either exported or deliberately
+// left out (so a new table cannot silently escape the export).
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { sql } from 'kysely';
+import { DEFAULT_INSTANCE_CONFIG } from '@glob2/core';
+import { ACCOUNT_EXPORT_FORMAT, AccountExport, schemaIssues } from '@glob2/protocol';
+import { EXPORTED_ACCOUNT_COLUMNS, UNEXPORTED_ACCOUNT_COLUMNS } from '../src/auth/accountExport.ts';
+import { registeredPlayer, type Player } from './playSupport.ts';
+import { SIM, createHarness, type Harness, type Instance } from './support.ts';
+
+let harness: Harness;
+let api: Instance;
+const SIM_KEY = `${SIM.versionMinor}-${SIM.netProtocol}-${SIM.dataHash}`;
+
+beforeAll(async () => {
+  harness = await createHarness();
+  api = await harness.start({
+    instance: {
+      auth: { ...DEFAULT_INSTANCE_CONFIG.auth, local: { enabled: true, allowRegistration: true } },
+    },
+  });
+});
+
+afterAll(async () => {
+  await harness?.close();
+});
+
+const exportOf = (player: Player) =>
+  fetch(`${api.url}/api/v1/accounts/me/export`, {
+    headers: { authorization: `Bearer ${player.accessToken}` },
+  });
+
+/** Stores one of everything about `owner`, with `other` in the same match and room. */
+async function seed(owner: Player, other: Player) {
+  const db = harness.database.db;
+  const setup = {
+    schemaVersion: 1,
+    seats: [owner, other].map((p, i) => ({
+      kind: 'human',
+      name: p.displayName,
+      accountId: p.accountId,
+      team: i,
+    })),
+  };
+  const match = await db
+    .insertInto('matches')
+    .values({
+      sim_version: SIM_KEY,
+      origin: 'room',
+      status: 'ended',
+      verification: 'verified',
+      rated: true,
+      setup: JSON.stringify(setup),
+      seed: 7,
+      map_hash: 'ab'.repeat(32),
+      end_reason: 'completed',
+    })
+    .returning('id')
+    .executeTakeFirstOrThrow();
+  const entity = await db
+    .insertInto('rating_entities')
+    .values({ kind: 'account', account_id: owner.accountId })
+    .returning('id')
+    .executeTakeFirstOrThrow();
+  await db
+    .insertInto('match_participants')
+    .values([
+      {
+        match_id: match.id,
+        seat: 0,
+        team: 0,
+        kind: 'human',
+        account_id: owner.accountId,
+        rating_entity_id: entity.id,
+        display_name: owner.displayName,
+        outcome: 'won',
+        rating_before: 1500,
+        rating_after: 1532,
+        network: JSON.stringify({ rttMs: 42 }),
+      },
+      {
+        match_id: match.id,
+        seat: 1,
+        team: 1,
+        kind: 'human',
+        account_id: other.accountId,
+        display_name: other.displayName,
+        outcome: 'lost',
+      },
+    ])
+    .execute();
+  await db
+    .insertInto('ratings')
+    .values({ entity_id: entity.id, ladder: 'ranked-1v1', mu: 27, sigma: 7, games: 1, wins: 1 })
+    .execute();
+  await db
+    .insertInto('rating_history')
+    .values({
+      match_id: match.id,
+      entity_id: entity.id,
+      ladder: 'ranked-1v1',
+      result: 'won',
+      mu_before: 25,
+      sigma_before: 8.3,
+      mu_after: 27,
+      sigma_after: 7,
+      display_before: 1500,
+      display_after: 1532,
+    })
+    .execute();
+
+  const room = await db
+    .insertInto('rooms')
+    .values({
+      code: `EXP${Math.floor(Math.random() * 1e6)}`,
+      name: 'Export room',
+      visibility: 'link',
+      host_account_id: owner.accountId,
+      sim_version: SIM_KEY,
+      settings: JSON.stringify({ speed: 'normal' }),
+    })
+    .returning('id')
+    .executeTakeFirstOrThrow();
+  await db
+    .insertInto('room_members')
+    .values([
+      { room_id: room.id, account_id: owner.accountId },
+      { room_id: room.id, account_id: other.accountId },
+    ])
+    .execute();
+  await db
+    .insertInto('room_chat_messages')
+    .values([
+      { room_id: room.id, account_id: owner.accountId, text: 'my own words' },
+      { room_id: room.id, account_id: other.accountId, text: 'someone else said this' },
+    ])
+    .execute();
+  await db
+    .insertInto('queue_tickets')
+    .values({
+      queue_id: 'ranked-1v1',
+      account_id: owner.accountId,
+      sim_version: SIM_KEY,
+      region_rtts: JSON.stringify([{ region: 'ca-central', rttMs: 31 }]),
+      status: 'cancelled',
+    })
+    .execute();
+
+  const blob = 'ef'.repeat(32);
+  await db
+    .insertInto('blobs')
+    .values({ sha256: blob, size: 10, content_type: 'application/octet-stream', storage_key: blob })
+    .execute();
+  const map = await db
+    .insertInto('maps')
+    .values({ owner_account_id: owner.accountId, title: 'My map', visibility: 'public' })
+    .returning('id')
+    .executeTakeFirstOrThrow();
+  await db
+    .insertInto('map_versions')
+    .values({ map_id: map.id, hash: blob, size: 10, notes: 'first cut' })
+    .execute();
+  await db
+    .insertInto('map_likes')
+    .values({ map_id: map.id, account_id: owner.accountId })
+    .execute();
+  await db
+    .insertInto('map_reports')
+    .values({ map_id: map.id, reporter_account_id: owner.accountId, reason: 'other', details: 'x' })
+    .execute();
+  await db
+    .insertInto('map_uploads')
+    .values({
+      owner_account_id: owner.accountId,
+      blob_sha256: blob,
+      format: 'map',
+      sim_version: SIM_KEY,
+      file_name: 'mine.map',
+    })
+    .execute();
+  await db
+    .insertInto('map_downloads')
+    .values([
+      { map_id: map.id, downloader: `a:${owner.accountId}` },
+      { map_id: map.id, downloader: `a:${other.accountId}` },
+    ])
+    .execute();
+  await db
+    .insertInto('admin_audit_log')
+    .values({
+      actor_account_id: other.accountId,
+      action: 'account.mute',
+      target_type: 'account',
+      target_id: owner.accountId,
+      details: JSON.stringify({ minutes: 10 }),
+    })
+    .execute();
+  return { matchId: match.id, roomId: room.id, mapId: map.id };
+}
+
+describe('downloading my data', () => {
+  it('needs a signed-in account', async () => {
+    const response = await fetch(`${api.url}/api/v1/accounts/me/export`);
+    expect(response.status).toBe(401);
+  });
+
+  it('returns everything stored about the account and nothing secret', async () => {
+    const owner = await registeredPlayer(api, 'Exporter');
+    const other = await registeredPlayer(api, 'Bystander');
+    const { matchId, roomId, mapId } = await seed(owner, other);
+
+    const response = await exportOf(owner);
+    expect(response.status).toBe(200);
+    expect(response.headers.get('content-type')).toMatch(/^application\/json/);
+    expect(response.headers.get('content-disposition')).toMatch(
+      /^attachment; filename="glob2-account-[0-9a-f]{8}-\d{4}-\d{2}-\d{2}\.json"$/,
+    );
+    expect(response.headers.get('cache-control')).toBe('no-store');
+    const text = await response.text();
+    const data = JSON.parse(text) as AccountExport;
+    expect(schemaIssues(AccountExport, data)).toEqual([]);
+
+    expect(data.format).toBe(ACCOUNT_EXPORT_FORMAT);
+    expect(data.instance).toBe(api.url);
+    expect(data.account).toMatchObject({
+      id: owner.accountId,
+      displayName: owner.displayName,
+      kind: 'registered',
+      role: 'user',
+      status: 'active',
+    });
+    expect(data.signIn.identities).toEqual([
+      expect.objectContaining({ provider: 'local', subject: expect.any(String) }),
+    ]);
+    expect(data.signIn.refreshTokens.length).toBeGreaterThan(0);
+    expect(data.moderation).toEqual([
+      expect.objectContaining({ action: 'account.mute', details: { minutes: 10 } }),
+    ]);
+
+    expect(data.matches).toEqual([
+      expect.objectContaining({
+        matchId,
+        seat: 0,
+        outcome: 'won',
+        ratingBefore: 1500,
+        ratingAfter: 1532,
+        network: { rttMs: 42 },
+        page: `${api.url}/matches/${matchId}`,
+      }),
+    ]);
+    expect(data.ratings).toEqual([
+      expect.objectContaining({ ladder: 'ranked-1v1', games: 1, wins: 1 }),
+    ]);
+    expect(data.ratingHistory).toEqual([
+      expect.objectContaining({ matchId, displayBefore: 1500, displayAfter: 1532 }),
+    ]);
+
+    expect(data.rooms.hosted).toEqual([
+      expect.objectContaining({ id: roomId, name: 'Export room', settings: { speed: 'normal' } }),
+    ]);
+    expect(data.rooms.memberships).toEqual([
+      expect.objectContaining({ roomId, roomName: 'Export room' }),
+    ]);
+    expect(data.rooms.chat).toEqual([expect.objectContaining({ roomId, text: 'my own words' })]);
+    expect(data.matchmaking.tickets).toEqual([
+      expect.objectContaining({
+        queueId: 'ranked-1v1',
+        regionRtts: [{ region: 'ca-central', rttMs: 31 }],
+      }),
+    ]);
+
+    expect(data.maps.published).toEqual([
+      expect.objectContaining({
+        id: mapId,
+        title: 'My map',
+        versions: [expect.objectContaining({ notes: 'first cut', size: 10 })],
+      }),
+    ]);
+    expect(data.maps.likes).toEqual([expect.objectContaining({ mapId })]);
+    expect(data.maps.reports).toEqual([expect.objectContaining({ mapId, reason: 'other' })]);
+    expect(data.maps.uploads).toEqual([expect.objectContaining({ fileName: 'mine.map' })]);
+    expect(data.maps.downloads).toEqual([
+      { mapId, day: expect.stringMatching(/^\d{4}-\d{2}-\d{2}$/) },
+    ]);
+
+    // Nothing secret, and nothing that belongs to the other player.
+    const db = harness.database.db;
+    const secrets = [
+      ...(
+        await db
+          .selectFrom('identities')
+          .select('password_hash')
+          .where('account_id', '=', owner.accountId)
+          .execute()
+      ).map((r) => r.password_hash),
+      ...(
+        await db
+          .selectFrom('refresh_tokens')
+          .select(['token_hash', 'family_id'])
+          .where('account_id', '=', owner.accountId)
+          .execute()
+      ).flatMap((r) => [r.token_hash, r.family_id]),
+    ].filter((s): s is string => !!s);
+    expect(secrets.length).toBeGreaterThan(1);
+    for (const secret of secrets) expect(text).not.toContain(secret);
+    expect(text).not.toMatch(
+      /passwordHash|tokenHash|credentialHash|resumeHash|bindingHash|confirmationCode|familyId/,
+    );
+    expect(text).not.toContain('someone else said this');
+    expect(text).not.toContain(other.accountId);
+    expect(text).not.toContain(owner.accessToken);
+
+    // The other player's export has their own seat, not the owner's.
+    const theirs = (await (await exportOf(other)).json()) as AccountExport;
+    expect(theirs.matches).toEqual([
+      expect.objectContaining({ matchId, seat: 1, outcome: 'lost' }),
+    ]);
+    expect(theirs.rooms.hosted).toEqual([]);
+    expect(theirs.rooms.chat).toEqual([
+      expect.objectContaining({ text: 'someone else said this' }),
+    ]);
+    expect(theirs.moderation).toEqual([]);
+
+    owner.client.close();
+    other.client.close();
+  });
+
+  it('is rate limited per account', async () => {
+    const player = await registeredPlayer(api, 'Hoarder');
+    const statuses: number[] = [];
+    for (let i = 0; i < 11; i++) statuses.push((await exportOf(player)).status);
+    expect(statuses.slice(0, 10).every((s) => s === 200)).toBe(true);
+    expect(statuses[10]).toBe(429);
+    player.client.close();
+  });
+
+  it('covers every column that refers to an account', async () => {
+    const { rows } = await sql<{ table: string; column: string }>`
+      SELECT c.conrelid::regclass::text AS table, a.attname AS column
+      FROM pg_constraint c
+      JOIN pg_attribute a ON a.attrelid = c.conrelid AND a.attnum = ANY (c.conkey)
+      WHERE c.contype = 'f' AND c.confrelid = 'accounts'::regclass
+      ORDER BY 1, 2`.execute(harness.database.db);
+    expect(rows.length).toBeGreaterThan(20);
+    const missing = rows
+      .map(({ table, column }) => `${table}.${column}`)
+      .filter((name) => {
+        const [table, column] = name.split('.') as [string, string];
+        return (
+          !EXPORTED_ACCOUNT_COLUMNS[table]?.includes(column) && !UNEXPORTED_ACCOUNT_COLUMNS[name]
+        );
+      });
+    expect(missing).toEqual([]);
+  });
+});

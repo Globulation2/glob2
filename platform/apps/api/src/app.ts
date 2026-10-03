@@ -236,7 +236,7 @@ export async function buildApp(
   });
 
   await authRoutes(app, identity);
-  await accountRoutes(app, identity);
+  await accountRoutes(app, identity, services.db);
   await adminRoutes(app, identity);
   await pageAssetRoutes(app);
   await signinRoutes(app, identity);

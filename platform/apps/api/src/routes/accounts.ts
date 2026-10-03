@@ -1,17 +1,30 @@
 // Account REST: the caller's own account, renames, unlinking sign-in methods,
-// self-service deletion, and public profiles.
+// downloading its data, self-service deletion, and public profiles.
 import type { FastifyInstance } from 'fastify';
+import type { Kysely } from 'kysely';
+import type { Database } from '@glob2/db';
 import {
   DeleteAccountRequest,
   UpdateAccountRequest,
   type PublicAccount,
   type SelfAccount,
 } from '@glob2/protocol';
+import { exportAccount } from '../auth/accountExport.ts';
 import { apiError } from '../errors.ts';
+import { SharedLimit, enforce } from '../http/rateLimits.ts';
 import { body } from '../http/validate.ts';
 import { clearSessionCookie, requireAccount, type Identity } from '../identity.ts';
 
-export async function accountRoutes(app: FastifyInstance, identity: Identity): Promise<void> {
+/** Data exports per account and hour: each reads every table about the account. */
+const EXPORTS_PER_HOUR = 10;
+
+export async function accountRoutes(
+  app: FastifyInstance,
+  identity: Identity,
+  db: Kysely<Database>,
+): Promise<void> {
+  const exports = new SharedLimit(db, 'account:export', EXPORTS_PER_HOUR, 3_600_000);
+
   app.get('/api/v1/accounts/me', async (request): Promise<SelfAccount> => {
     const { account } = await requireAccount(identity, request);
     return identity.accounts.selfView(account);
@@ -22,6 +35,30 @@ export async function accountRoutes(app: FastifyInstance, identity: Identity): P
     const { displayName } = body(UpdateAccountRequest, request.body);
     const renamed = await identity.accounts.rename(account, displayName);
     return identity.accounts.selfView(renamed);
+  });
+
+  // "Download my data" (privacy policy; GDPR/PIPEDA access requests): every
+  // stored row about the caller, as a JSON file. The web account page links
+  // here; the session cookie or a bearer token authenticates it.
+  app.get('/api/v1/accounts/me/export', async (request, reply) => {
+    const { account } = await requireAccount(identity, request);
+    await enforce(
+      exports,
+      account.id,
+      reply,
+      'You downloaded your data recently; try again later.',
+    );
+    const document = await exportAccount(db, account, identity.origin);
+    const day = document.exportedAt.slice(0, 10);
+    void reply
+      .header('content-type', 'application/json; charset=utf-8')
+      .header(
+        'content-disposition',
+        `attachment; filename="glob2-account-${account.id.slice(0, 8)}-${day}.json"`,
+      )
+      .header('cache-control', 'no-store')
+      .header('x-content-type-options', 'nosniff');
+    return JSON.stringify(document, null, 2);
   });
 
   // Deletes the caller's account (app stores and GDPR require it be
