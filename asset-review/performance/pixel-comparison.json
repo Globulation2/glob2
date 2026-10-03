@@ -1,0 +1,12 @@
+[
+  {
+    "image": "crowd-classic.bmp",
+    "changedPixels": 0,
+    "maximumChannelDelta": 0
+  },
+  {
+    "image": "crowd-skinned.bmp",
+    "changedPixels": 67,
+    "maximumChannelDelta": 6
+  }
+]

@@ -1,0 +1,186 @@
+[
+  {
+    "addedUnits": 488,
+    "checksumFrames": 180,
+    "coldMs": 1606.244704,
+    "drawsPerFrame": 1424.6216216216217,
+    "frames": 148,
+    "height": 600,
+    "meanMs": 42.30759303378379,
+    "mode": "classic",
+    "p95Ms": 54.587411,
+    "profile": {
+      "composite": {
+        "calls": 0,
+        "selfMs": 0.0,
+        "totalMs": 0.0
+      },
+      "geometry": {
+        "calls": 0,
+        "selfMs": 0.0,
+        "totalMs": 0.0
+      },
+      "prepare": {
+        "calls": 148,
+        "selfMs": 0.03976,
+        "totalMs": 0.03976
+      },
+      "present": {
+        "calls": 0,
+        "selfMs": 0.0,
+        "totalMs": 0.0
+      },
+      "raster": {
+        "calls": 0,
+        "selfMs": 0.0,
+        "totalMs": 0.0
+      },
+      "render": {
+        "calls": 148,
+        "selfMs": 864.460013,
+        "totalMs": 5423.403922
+      }
+    },
+    "warmup": 32,
+    "width": 800,
+    "binary": "baseline"
+  },
+  {
+    "addedUnits": 488,
+    "checksumFrames": 180,
+    "coldMs": 287.048078,
+    "drawsPerFrame": 1808.4864864864865,
+    "frames": 148,
+    "height": 600,
+    "meanMs": 271.5525595472972,
+    "mode": "skinned",
+    "p95Ms": 309.884997,
+    "profile": {
+      "composite": {
+        "calls": 73556,
+        "selfMs": 3241.240885,
+        "totalMs": 3241.240885
+      },
+      "geometry": {
+        "calls": 60656,
+        "selfMs": 685.879091,
+        "totalMs": 685.879091
+      },
+      "prepare": {
+        "calls": 148,
+        "selfMs": 1911.158026,
+        "totalMs": 33047.41025
+      },
+      "present": {
+        "calls": 0,
+        "selfMs": 0.0,
+        "totalMs": 0.0
+      },
+      "raster": {
+        "calls": 60656,
+        "selfMs": 30450.373133,
+        "totalMs": 30450.373133
+      },
+      "render": {
+        "calls": 148,
+        "selfMs": 734.337473,
+        "totalMs": 39469.087716
+      }
+    },
+    "warmup": 32,
+    "width": 800,
+    "binary": "baseline"
+  },
+  {
+    "addedUnits": 488,
+    "checksumFrames": 180,
+    "coldMs": 855.239899,
+    "drawsPerFrame": 1424.1216216216217,
+    "frames": 148,
+    "height": 600,
+    "meanMs": 42.075708236486456,
+    "mode": "classic",
+    "p95Ms": 50.846653,
+    "profile": {
+      "composite": {
+        "calls": 0,
+        "selfMs": 0.0,
+        "totalMs": 0.0
+      },
+      "geometry": {
+        "calls": 0,
+        "selfMs": 0.0,
+        "totalMs": 0.0
+      },
+      "prepare": {
+        "calls": 148,
+        "selfMs": 0.02853,
+        "totalMs": 0.02853
+      },
+      "present": {
+        "calls": 0,
+        "selfMs": 0.0,
+        "totalMs": 0.0
+      },
+      "raster": {
+        "calls": 0,
+        "selfMs": 0.0,
+        "totalMs": 0.0
+      },
+      "render": {
+        "calls": 148,
+        "selfMs": 721.671703,
+        "totalMs": 5495.714866
+      }
+    },
+    "warmup": 32,
+    "width": 800,
+    "binary": "optimized"
+  },
+  {
+    "addedUnits": 488,
+    "checksumFrames": 180,
+    "coldMs": 317.423034,
+    "drawsPerFrame": 1398.2162162162163,
+    "frames": 148,
+    "height": 600,
+    "meanMs": 42.960067466216216,
+    "mode": "skinned",
+    "p95Ms": 49.1758,
+    "profile": {
+      "composite": {
+        "calls": 73556,
+        "selfMs": 2253.47502,
+        "totalMs": 2253.47502
+      },
+      "geometry": {
+        "calls": 0,
+        "selfMs": 0.0,
+        "totalMs": 0.0
+      },
+      "prepare": {
+        "calls": 148,
+        "selfMs": 44.259674,
+        "totalMs": 44.259674
+      },
+      "present": {
+        "calls": 0,
+        "selfMs": 0.0,
+        "totalMs": 0.0
+      },
+      "raster": {
+        "calls": 0,
+        "selfMs": 0.0,
+        "totalMs": 0.0
+      },
+      "render": {
+        "calls": 148,
+        "selfMs": 1245.010351,
+        "totalMs": 5521.959966
+      }
+    },
+    "warmup": 32,
+    "width": 800,
+    "binary": "optimized"
+  }
+]

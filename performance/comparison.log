@@ -1,0 +1,21 @@
+optimized 1
+baseline 1
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/colony-skins/glob2/artifacts/skins/performance/compare.py", line 15, in <module>
+    assert a.size==b.size and ImageChops.difference(a,b).getbbox() is None,(run,name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: (1, 'crowd-skinned.bmp')
+baseline 2
+optimized 2
+/home/bradley/.codex/worktrees/colony-skins/glob2/artifacts/skins/performance/compare.py:17: DeprecationWarning: Image.Image.getdata is deprecated and will be removed in Pillow 14 (2027-10-15). Use get_flattened_data instead.
+  changed=sum(pixel!=(0,0,0) for pixel in d.getdata())
+Pixel comparison 2 crowd-classic.bmp changed 0 maxChannelDelta 0
+Pixel comparison 2 crowd-skinned.bmp changed 69 maxChannelDelta 6
+Matched pair passed checksum and bounded pixel comparison 2
+optimized 3
+baseline 3
+/home/bradley/.codex/worktrees/colony-skins/glob2/artifacts/skins/performance/compare.py:17: DeprecationWarning: Image.Image.getdata is deprecated and will be removed in Pillow 14 (2027-10-15). Use get_flattened_data instead.
+  changed=sum(pixel!=(0,0,0) for pixel in d.getdata())
+Pixel comparison 3 crowd-classic.bmp changed 0 maxChannelDelta 0
+Pixel comparison 3 crowd-skinned.bmp changed 69 maxChannelDelta 6
+Matched pair passed checksum and bounded pixel comparison 3

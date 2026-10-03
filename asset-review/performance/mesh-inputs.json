@@ -1,0 +1,10 @@
+{
+  "data/skins/colony-v1/explorer-fly.gsk": "7d1140f79d0b757b3e1a5806e47f3d8bb01b8a47d012671826d5d88ccfa3ef33",
+  "data/skins/colony-v1/swarm.gsk": "d80b808a1625a5970bbdffd12f9658dc6b6eb15937eafcc2170ade67c5f4fb88",
+  "data/skins/colony-v1/warrior-fight.gsk": "39d48bdf3955d619ba7e28f2830d8164469676ec98748dadd6d71d45a3802fbd",
+  "data/skins/colony-v1/warrior-swim.gsk": "760a2cdc28545affe5cb74eef948e38aef2326a674fa8dc45f9708bcba1efd47",
+  "data/skins/colony-v1/warrior-walk.gsk": "d8bd793135b43cf252797fc83a6130aa37f7b87bb381f382d7b1bf46133a89e3",
+  "data/skins/colony-v1/worker-harvest.gsk": "1ca1e12ece4c01583d79127535eb9c21183c0d2d3009cb08c8580f172a8f4feb",
+  "data/skins/colony-v1/worker-swim.gsk": "44f00c64dd4811ca36d84f7f6e0225e15d5d9ff64e1b57982660ad3ab2c14b26",
+  "data/skins/colony-v1/worker-walk.gsk": "08b1395ce6302ab848945b107c5efba6a93bb72260911350c3898e28042dc593"
+}

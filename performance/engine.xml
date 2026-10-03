@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="37" failures="0" errors="0" skipped="0"><testsuite name="MapRenderResize"><testcase classname="MapRenderResize" name="repeated map copies; settings and credits after resizing in OpenGL [display:1920x1200]" time="1.19673" status="run" />
+  <testcase classname="MapRenderResize" name="repeated map copies; settings and credits after resizing in software rendering" time="0.650097" status="run" />
+  </testsuite><testsuite name="PointBarRender"><testcase classname="PointBarRender" name="status-bar pixel bounds in OpenGL rendering [display]" time="1.41693" status="run" />
+  <testcase classname="PointBarRender" name="status-bar pixel bounds in software rendering" time="0.572826" status="run" />
+  </testsuite><testsuite name="PortableRenderer"><testcase classname="PortableRenderer" name="each accelerated backend uploads surface revisions independently [display]" time="0.380353" status="run" />
+  <testcase classname="PortableRenderer" name="live scale retains portable viewport ownership [display]" time="0.338529" status="run" />
+  <testcase classname="PortableRenderer" name="software targets resize and destroy safely during an active transform [display]" time="0.515407" status="run" />
+  <testcase classname="PortableRenderer" name="zone boundaries; UI transforms and portable rendering paths [display]" time="1.432" status="run" />
+  </testsuite><testsuite name="SceneExtract"><testcase classname="SceneExtract" name="overlay maps match a direct computation and refresh per 25-tick window or type change" time="0.00172" status="run" />
+  <testcase classname="SceneExtract" name="published scene retains old entity fields while subsequent scenes reflect changes" time="0.002061" status="run" />
+  <testcase classname="SceneExtract" name="smooth unit motion advances the drawn delta within the current action only" time="0.001699" status="run" />
+  <testcase classname="SceneExtract" name="stale selection generation never selects a replacement occupying the same gid" time="0.002086" status="run" />
+  <testcase classname="SceneExtract" name="units and buildings resolve by gid with their drawn fields and the selection" time="0.001789" status="run" />
+  </testsuite><testsuite name="Settings"><testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 1000x700 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="12.7457" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 1000x700 in software rendering [display:1600x1400][artifacts][writes-preferences]" time="9.28256" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 1280x900 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="12.8906" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 640x480 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="11.1159" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 800x600 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="12.2549" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization with expanded wording at 640x480 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="12.7786" status="run" />
+  </testsuite><testsuite name="SettingsExperiments"><testcase classname="SettingsExperiments" name="every experiment's label and help are in the string tables" time="0.114642" status="run" />
+  <testcase classname="SettingsExperiments" name="preferences keep the enabled experiments and drop unknown keys" time="0.00091" status="run" />
+  </testsuite><testsuite name="SettingsGraphics"><testcase classname="SettingsGraphics" name="legacy preferences migrate and independent effects round trip" time="0.002805" status="run" />
+  <testcase classname="SettingsGraphics" name="text size applies to desktop and touch independently of interface scale" time="0.000349" status="run" />
+  </testsuite><testsuite name="SoftwareRenderer"><testcase classname="SoftwareRenderer" name="fractional shared endpoints leave no seams; queued triangles obey direct writes" time="0.000187" status="run" />
+  <testcase classname="SoftwareRenderer" name="geometry-reference blits preserve mixed pixel formats and source modulation" time="0.000207" status="run" />
+  <testcase classname="SoftwareRenderer" name="integer transformed primitives retain SDL triangle blending exactly" time="0.000313" status="run" />
+  <testcase classname="SoftwareRenderer" name="large owned images retain SDL geometry sampling and overflow behavior" time="0.044478" status="run" />
+  <testcase classname="SoftwareRenderer" name="native display scaling preserves direct pixels through lazy geometry and target rotation" time="0.000133" status="run" />
+  <testcase classname="SoftwareRenderer" name="nearest blits retain sampling under destination clipping and restore source state" time="0.000107" status="run" />
+  <testcase classname="SoftwareRenderer" name="opacity classification follows content revisions; opaque copy matches alpha blending" time="0.004321" status="run" />
+  <testcase classname="SoftwareRenderer" name="opaque row copies retain SDL clipping and color modulation" time="0.000132" status="run" />
+  <testcase classname="SoftwareRenderer" name="presenter rotates full frames and preserves completed pixels during partial updates" time="0.000192" status="run" />
+  <testcase classname="SoftwareRenderer" name="terrain cache matches integer-transformed coastlines and discovery across wraps and mutations [display][artifacts]" time="1.04639" status="run" />
+  <testcase classname="SoftwareRenderer" name="translucent fills preserve colors on 32-bit targets without alpha" time="0.000111" status="run" />
+  </testsuite><testsuite name="TorusRender"><testcase classname="TorusRender" name="game rendering at triple UI scale in OpenGL [display:1920x1440][writes-preferences]" time="25.3214" status="run" />
+  <testcase classname="TorusRender" name="game rendering; picking and cache changes in OpenGL [display][writes-preferences]" time="25.1062" status="run" />
+  <testcase classname="TorusRender" name="game rendering; picking and cache changes in software rendering [writes-preferences]" time="0.587226" status="run" />
+  </testsuite></testsuites>

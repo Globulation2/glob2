@@ -1,0 +1,648 @@
+{
+  "summary": {
+    "baseline": {
+      "meanMs": 157.4923972837837,
+      "p95Ms": 172.156024,
+      "coldMs": 191.518102,
+      "drawsPerFrame": 1798.6891891891892,
+      "processPeakRssKiB": 887448,
+      "scopesMsPerFrame": {
+        "prepare": 131.3718272837838,
+        "geometry": 2.0491318513513517,
+        "raster": 125.56548567567566,
+        "composite": 12.801470121621623
+      }
+    },
+    "optimized": {
+      "meanMs": 23.87032177027026,
+      "p95Ms": 28.822206,
+      "coldMs": 203.505827,
+      "drawsPerFrame": 1388.8513513513512,
+      "processPeakRssKiB": 933624,
+      "scopesMsPerFrame": {
+        "prepare": 0.2075709391891892,
+        "geometry": 0.0,
+        "raster": 0.0,
+        "composite": 10.747470364864865
+      }
+    },
+    "meanReductionPercent": 84.84350852361551,
+    "note": "Three alternating process pairs; medians of per-run means/p95s, not pooled percentiles. llvmpipe software GL. CPU scope timing, no hardware GPU claim. Peak RSS covers classic plus skinned process lifetime. Each mode verifies 180 frame checksums, 32 warmup frames discarded."
+  },
+  "runs": [
+    {
+      "addedUnits": 488,
+      "checksumFrames": 180,
+      "coldMs": 732.902951,
+      "drawsPerFrame": 1393.7297297297298,
+      "frames": 148,
+      "height": 600,
+      "meanMs": 23.423386587837843,
+      "mode": "classic",
+      "p95Ms": 30.745486,
+      "profile": {
+        "composite": {
+          "calls": 0,
+          "selfMs": 0.0,
+          "totalMs": 0.0
+        },
+        "geometry": {
+          "calls": 0,
+          "selfMs": 0.0,
+          "totalMs": 0.0
+        },
+        "prepare": {
+          "calls": 148,
+          "selfMs": 0.04218,
+          "totalMs": 0.04218
+        },
+        "present": {
+          "calls": 0,
+          "selfMs": 0.0,
+          "totalMs": 0.0
+        },
+        "raster": {
+          "calls": 0,
+          "selfMs": 0.0,
+          "totalMs": 0.0
+        },
+        "render": {
+          "calls": 148,
+          "selfMs": 242.252166,
+          "totalMs": 3140.46792
+        }
+      },
+      "warmup": 32,
+      "width": 800,
+      "binary": "baseline",
+      "run": 1,
+      "processPeakRssKiB": 885972
+    },
+    {
+      "addedUnits": 488,
+      "checksumFrames": 180,
+      "coldMs": 213.731875,
+      "drawsPerFrame": 1798.6891891891892,
+      "frames": 148,
+      "height": 600,
+      "meanMs": 157.4923972837837,
+      "mode": "skinned",
+      "p95Ms": 174.056855,
+      "profile": {
+        "composite": {
+          "calls": 73556,
+          "selfMs": 1880.629617,
+          "totalMs": 1880.629617
+        },
+        "geometry": {
+          "calls": 60656,
+          "selfMs": 303.271514,
+          "totalMs": 303.271514
+        },
+        "prepare": {
+          "calls": 148,
+          "selfMs": 556.067044,
+          "totalMs": 19443.030438
+        },
+        "present": {
+          "calls": 0,
+          "selfMs": 0.0,
+          "totalMs": 0.0
+        },
+        "raster": {
+          "calls": 60656,
+          "selfMs": 18583.69188,
+          "totalMs": 18583.69188
+        },
+        "render": {
+          "calls": 148,
+          "selfMs": 92.980991,
+          "totalMs": 22787.832288
+        }
+      },
+      "warmup": 32,
+      "width": 800,
+      "binary": "baseline",
+      "run": 1,
+      "processPeakRssKiB": 885972
+    },
+    {
+      "addedUnits": 488,
+      "checksumFrames": 180,
+      "coldMs": 804.684903,
+      "drawsPerFrame": 1396.527027027027,
+      "frames": 148,
+      "height": 600,
+      "meanMs": 23.58122687162162,
+      "mode": "classic",
+      "p95Ms": 29.805272,
+      "profile": {
+        "composite": {
+          "calls": 0,
+          "selfMs": 0.0,
+          "totalMs": 0.0
+        },
+        "geometry": {
+          "calls": 0,
+          "selfMs": 0.0,
+          "totalMs": 0.0
+        },
+        "prepare": {
+          "calls": 148,
+          "selfMs": 0.02418,
+          "totalMs": 0.02418
+        },
+        "present": {
+          "calls": 0,
+          "selfMs": 0.0,
+          "totalMs": 0.0
+        },
+        "raster": {
+          "calls": 0,
+          "selfMs": 0.0,
+          "totalMs": 0.0
+        },
+        "render": {
+          "calls": 148,
+          "selfMs": 288.293636,
+          "totalMs": 3157.177237
+        }
+      },
+      "warmup": 32,
+      "width": 800,
+      "binary": "optimized",
+      "run": 1,
+      "processPeakRssKiB": 935736
+    },
+    {
+      "addedUnits": 488,
+      "checksumFrames": 180,
+      "coldMs": 204.337119,
+      "drawsPerFrame": 1388.8513513513512,
+      "frames": 148,
+      "height": 600,
+      "meanMs": 23.87032177027026,
+      "mode": "skinned",
+      "p95Ms": 28.799666,
+      "profile": {
+        "composite": {
+          "calls": 73556,
+          "selfMs": 1590.625614,
+          "totalMs": 1590.625614
+        },
+        "geometry": {
+          "calls": 0,
+          "selfMs": 0.0,
+          "totalMs": 0.0
+        },
+        "prepare": {
+          "calls": 148,
+          "selfMs": 30.720499,
+          "totalMs": 30.720499
+        },
+        "present": {
+          "calls": 0,
+          "selfMs": 0.0,
+          "totalMs": 0.0
+        },
+        "raster": {
+          "calls": 0,
+          "selfMs": 0.0,
+          "totalMs": 0.0
+        },
+        "render": {
+          "calls": 148,
+          "selfMs": 98.765832,
+          "totalMs": 2858.720768
+        }
+      },
+      "warmup": 32,
+      "width": 800,
+      "binary": "optimized",
+      "run": 1,
+      "processPeakRssKiB": 935736
+    },
+    {
+      "addedUnits": 488,
+      "checksumFrames": 180,
+      "coldMs": 784.014541,
+      "drawsPerFrame": 1394.337837837838,
+      "frames": 148,
+      "height": 600,
+      "meanMs": 21.72880892567567,
+      "mode": "classic",
+      "p95Ms": 27.886531,
+      "profile": {
+        "composite": {
+          "calls": 0,
+          "selfMs": 0.0,
+          "totalMs": 0.0
+        },
+        "geometry": {
+          "calls": 0,
+          "selfMs": 0.0,
+          "totalMs": 0.0
+        },
+        "prepare": {
+          "calls": 148,
+          "selfMs": 0.04094,
+          "totalMs": 0.04094
+        },
+        "present": {
+          "calls": 0,
+          "selfMs": 0.0,
+          "totalMs": 0.0
+        },
+        "raster": {
+          "calls": 0,
+          "selfMs": 0.0,
+          "totalMs": 0.0
+        },
+        "render": {
+          "calls": 148,
+          "selfMs": 243.982307,
+          "totalMs": 2897.162621
+        }
+      },
+      "warmup": 32,
+      "width": 800,
+      "binary": "baseline",
+      "run": 2,
+      "processPeakRssKiB": 890868
+    },
+    {
+      "addedUnits": 488,
+      "checksumFrames": 180,
+      "coldMs": 190.851605,
+      "drawsPerFrame": 1798.6891891891892,
+      "frames": 148,
+      "height": 600,
+      "meanMs": 156.56932707432435,
+      "mode": "skinned",
+      "p95Ms": 166.27694,
+      "profile": {
+        "composite": {
+          "calls": 73556,
+          "selfMs": 1906.140491,
+          "totalMs": 1906.140491
+        },
+        "geometry": {
+          "calls": 60656,
+          "selfMs": 301.04166,
+          "totalMs": 301.04166
+        },
+        "prepare": {
+          "calls": 148,
+          "selfMs": 546.841826,
+          "totalMs": 19260.350201
+        },
+        "present": {
+          "calls": 0,
+          "selfMs": 0.0,
+          "totalMs": 0.0
+        },
+        "raster": {
+          "calls": 60656,
+          "selfMs": 18412.466715,
+          "totalMs": 18412.466715
+        },
+        "render": {
+          "calls": 148,
+          "selfMs": 93.601075,
+          "totalMs": 22650.531136
+        }
+      },
+      "warmup": 32,
+      "width": 800,
+      "binary": "baseline",
+      "run": 2,
+      "processPeakRssKiB": 890868
+    },
+    {
+      "addedUnits": 488,
+      "checksumFrames": 180,
+      "coldMs": 724.599783,
+      "drawsPerFrame": 1394.027027027027,
+      "frames": 148,
+      "height": 600,
+      "meanMs": 21.53113087162162,
+      "mode": "classic",
+      "p95Ms": 27.579473,
+      "profile": {
+        "composite": {
+          "calls": 0,
+          "selfMs": 0.0,
+          "totalMs": 0.0
+        },
+        "geometry": {
+          "calls": 0,
+          "selfMs": 0.0,
+          "totalMs": 0.0
+        },
+        "prepare": {
+          "calls": 148,
+          "selfMs": 0.01789,
+          "totalMs": 0.01789
+        },
+        "present": {
+          "calls": 0,
+          "selfMs": 0.0,
+          "totalMs": 0.0
+        },
+        "raster": {
+          "calls": 0,
+          "selfMs": 0.0,
+          "totalMs": 0.0
+        },
+        "render": {
+          "calls": 148,
+          "selfMs": 228.431677,
+          "totalMs": 2873.839258
+        }
+      },
+      "warmup": 32,
+      "width": 800,
+      "binary": "optimized",
+      "run": 2,
+      "processPeakRssKiB": 933624
+    },
+    {
+      "addedUnits": 488,
+      "checksumFrames": 180,
+      "coldMs": 203.505827,
+      "drawsPerFrame": 1388.8513513513512,
+      "frames": 148,
+      "height": 600,
+      "meanMs": 24.277838871621622,
+      "mode": "skinned",
+      "p95Ms": 29.672939,
+      "profile": {
+        "composite": {
+          "calls": 73556,
+          "selfMs": 1617.947106,
+          "totalMs": 1617.947106
+        },
+        "geometry": {
+          "calls": 0,
+          "selfMs": 0.0,
+          "totalMs": 0.0
+        },
+        "prepare": {
+          "calls": 148,
+          "selfMs": 31.736852,
+          "totalMs": 31.736852
+        },
+        "present": {
+          "calls": 0,
+          "selfMs": 0.0,
+          "totalMs": 0.0
+        },
+        "raster": {
+          "calls": 0,
+          "selfMs": 0.0,
+          "totalMs": 0.0
+        },
+        "render": {
+          "calls": 148,
+          "selfMs": 101.651908,
+          "totalMs": 2897.027379
+        }
+      },
+      "warmup": 32,
+      "width": 800,
+      "binary": "optimized",
+      "run": 2,
+      "processPeakRssKiB": 933624
+    },
+    {
+      "addedUnits": 488,
+      "checksumFrames": 180,
+      "coldMs": 777.760307,
+      "drawsPerFrame": 1394.3783783783783,
+      "frames": 148,
+      "height": 600,
+      "meanMs": 21.909802689189195,
+      "mode": "classic",
+      "p95Ms": 28.554059,
+      "profile": {
+        "composite": {
+          "calls": 0,
+          "selfMs": 0.0,
+          "totalMs": 0.0
+        },
+        "geometry": {
+          "calls": 0,
+          "selfMs": 0.0,
+          "totalMs": 0.0
+        },
+        "prepare": {
+          "calls": 148,
+          "selfMs": 0.03579,
+          "totalMs": 0.03579
+        },
+        "present": {
+          "calls": 0,
+          "selfMs": 0.0,
+          "totalMs": 0.0
+        },
+        "raster": {
+          "calls": 0,
+          "selfMs": 0.0,
+          "totalMs": 0.0
+        },
+        "render": {
+          "calls": 148,
+          "selfMs": 251.902809,
+          "totalMs": 2922.652902
+        }
+      },
+      "warmup": 32,
+      "width": 800,
+      "binary": "baseline",
+      "run": 3,
+      "processPeakRssKiB": 887448
+    },
+    {
+      "addedUnits": 488,
+      "checksumFrames": 180,
+      "coldMs": 191.518102,
+      "drawsPerFrame": 1798.6891891891892,
+      "frames": 148,
+      "height": 600,
+      "meanMs": 158.5427264054054,
+      "mode": "skinned",
+      "p95Ms": 172.156024,
+      "profile": {
+        "composite": {
+          "calls": 73556,
+          "selfMs": 1894.617578,
+          "totalMs": 1894.617578
+        },
+        "geometry": {
+          "calls": 60656,
+          "selfMs": 311.457969,
+          "totalMs": 311.457969
+        },
+        "prepare": {
+          "calls": 148,
+          "selfMs": 549.488842,
+          "totalMs": 19559.19567
+        },
+        "present": {
+          "calls": 0,
+          "selfMs": 0.0,
+          "totalMs": 0.0
+        },
+        "raster": {
+          "calls": 60656,
+          "selfMs": 18698.248859,
+          "totalMs": 18698.248859
+        },
+        "render": {
+          "calls": 148,
+          "selfMs": 94.313363,
+          "totalMs": 22927.671147
+        }
+      },
+      "warmup": 32,
+      "width": 800,
+      "binary": "baseline",
+      "run": 3,
+      "processPeakRssKiB": 887448
+    },
+    {
+      "addedUnits": 488,
+      "checksumFrames": 180,
+      "coldMs": 743.702694,
+      "drawsPerFrame": 1393.945945945946,
+      "frames": 148,
+      "height": 600,
+      "meanMs": 23.89954352027028,
+      "mode": "classic",
+      "p95Ms": 28.888617,
+      "profile": {
+        "composite": {
+          "calls": 0,
+          "selfMs": 0.0,
+          "totalMs": 0.0
+        },
+        "geometry": {
+          "calls": 0,
+          "selfMs": 0.0,
+          "totalMs": 0.0
+        },
+        "prepare": {
+          "calls": 148,
+          "selfMs": 0.02184,
+          "totalMs": 0.02184
+        },
+        "present": {
+          "calls": 0,
+          "selfMs": 0.0,
+          "totalMs": 0.0
+        },
+        "raster": {
+          "calls": 0,
+          "selfMs": 0.0,
+          "totalMs": 0.0
+        },
+        "render": {
+          "calls": 148,
+          "selfMs": 241.165128,
+          "totalMs": 3215.689923
+        }
+      },
+      "warmup": 32,
+      "width": 800,
+      "binary": "optimized",
+      "run": 3,
+      "processPeakRssKiB": 933296
+    },
+    {
+      "addedUnits": 488,
+      "checksumFrames": 180,
+      "coldMs": 199.375319,
+      "drawsPerFrame": 1388.8513513513512,
+      "frames": 148,
+      "height": 600,
+      "meanMs": 22.65057305405406,
+      "mode": "skinned",
+      "p95Ms": 28.822206,
+      "profile": {
+        "composite": {
+          "calls": 73556,
+          "selfMs": 1477.133849,
+          "totalMs": 1477.133849
+        },
+        "geometry": {
+          "calls": 0,
+          "selfMs": 0.0,
+          "totalMs": 0.0
+        },
+        "prepare": {
+          "calls": 148,
+          "selfMs": 29.829484,
+          "totalMs": 29.829484
+        },
+        "present": {
+          "calls": 0,
+          "selfMs": 0.0,
+          "totalMs": 0.0
+        },
+        "raster": {
+          "calls": 0,
+          "selfMs": 0.0,
+          "totalMs": 0.0
+        },
+        "render": {
+          "calls": 148,
+          "selfMs": 94.365452,
+          "totalMs": 2668.836503
+        }
+      },
+      "warmup": 32,
+      "width": 800,
+      "binary": "optimized",
+      "run": 3,
+      "processPeakRssKiB": 933296
+    }
+  ],
+  "pixels": [
+    {
+      "run": 1,
+      "image": "crowd-classic.bmp",
+      "changed": 0,
+      "maximumChannelDelta": 0
+    },
+    {
+      "run": 1,
+      "image": "crowd-skinned.bmp",
+      "changed": 69,
+      "maximumChannelDelta": 6
+    },
+    {
+      "run": 2,
+      "image": "crowd-classic.bmp",
+      "changed": 0,
+      "maximumChannelDelta": 0
+    },
+    {
+      "run": 2,
+      "image": "crowd-skinned.bmp",
+      "changed": 69,
+      "maximumChannelDelta": 6
+    },
+    {
+      "run": 3,
+      "image": "crowd-classic.bmp",
+      "changed": 0,
+      "maximumChannelDelta": 0
+    },
+    {
+      "run": 3,
+      "image": "crowd-skinned.bmp",
+      "changed": 69,
+      "maximumChannelDelta": 6
+    }
+  ]
+}

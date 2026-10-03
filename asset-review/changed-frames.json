@@ -1,0 +1,100 @@
+[
+  {
+    "mesh": "worker-walk.gsk",
+    "changedFrames": [
+      0,
+      32,
+      64,
+      96,
+      128,
+      160,
+      192,
+      224
+    ],
+    "unchangedUVTopology": true
+  },
+  {
+    "mesh": "worker-swim.gsk",
+    "changedFrames": [
+      0,
+      32,
+      64,
+      96,
+      128,
+      160,
+      192,
+      224
+    ],
+    "unchangedUVTopology": true
+  },
+  {
+    "mesh": "worker-harvest.gsk",
+    "changedFrames": [
+      0,
+      32,
+      64,
+      96,
+      128,
+      160,
+      192,
+      224
+    ],
+    "unchangedUVTopology": true
+  },
+  {
+    "mesh": "warrior-walk.gsk",
+    "changedFrames": [
+      0,
+      32,
+      64,
+      96,
+      128,
+      160,
+      192,
+      224
+    ],
+    "unchangedUVTopology": true
+  },
+  {
+    "mesh": "warrior-swim.gsk",
+    "changedFrames": [
+      0,
+      32,
+      64,
+      96,
+      128,
+      160,
+      192,
+      224
+    ],
+    "unchangedUVTopology": true
+  },
+  {
+    "mesh": "warrior-fight.gsk",
+    "changedFrames": [
+      0,
+      32,
+      64,
+      96,
+      128,
+      160,
+      192,
+      224
+    ],
+    "unchangedUVTopology": true
+  },
+  {
+    "mesh": "explorer-fly.gsk",
+    "changedFrames": [
+      0,
+      32,
+      64,
+      96,
+      128,
+      160,
+      192,
+      224
+    ],
+    "unchangedUVTopology": true
+  }
+]
