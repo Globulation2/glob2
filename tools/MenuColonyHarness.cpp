@@ -220,6 +220,9 @@ template <class T> class Preview : public T
 		for (auto *node : this->GAGGUI::ui::UIScreen::host().interactiveNodes())
 		{
 			const auto r = node->bounds;
+			// Rows of the results' metric list scroll; those out of view are below it.
+			if (node->key.rfind("metric/", 0) == 0)
+				continue;
 			require(r.x >= 0 && r.y >= 0 && r.x + r.w <= globalContainer->gfx->getW() &&
 						r.y + r.h <= globalContainer->gfx->getH(),
 					"control within screen");
@@ -351,14 +354,48 @@ void capture(const std::string &name, const std::string &path)
 	else if (name == "results")
 	{
 		GameGUI gui;
-		BinaryInputStream in(
-			Toolkit::getFileManager()->openInputStreamBackend("data/menu/colony.bin"));
-		in.readText("format");
-		require(gui.game.load(&in), "load results fixture");
+		// GLOB2_PREVIEW_GAME names a saved game to show the results of, for charts
+		// with a real match behind them; the menu colony has no recorded history.
+		if (const char *saved = getenv("GLOB2_PREVIEW_GAME"))
+		{
+			BinaryInputStream in(glob2OpenMapOrSaveInputStreamBackend(*Toolkit::getFileManager(), saved));
+			require(gui.load(&in), "load saved game");
+		}
+		else
+		{
+			BinaryInputStream in(
+				Toolkit::getFileManager()->openInputStreamBackend("data/menu/colony.bin"));
+			in.readText("format");
+			require(gui.game.load(&in), "load results fixture");
+		}
 		gui.localTeamNo = 0;
 		gui.localPlayer = 0;
 		gui.adjustLocalTeam();
 		Preview<EndGameScreen> s(&gui);
+		// GLOB2_PREVIEW_METRIC names a metric of the catalog to chart instead of the
+		// overview; GLOB2_PREVIEW_VIEW may add "split", "total", "relative" or "share",
+		// and GLOB2_PREVIEW_HOVER a pointer position "x,y".
+		s.selectMetric(EndGameScreen::OVERVIEW);
+		if (const char *id = getenv("GLOB2_PREVIEW_METRIC"))
+		{
+			require(Stats::findMetric(id) >= 0, "known metric");
+			s.selectMetric(Stats::findMetric(id));
+			const std::string wanted = getenv("GLOB2_PREVIEW_VIEW") ? getenv("GLOB2_PREVIEW_VIEW") : "";
+			Stats::View view = s.currentView();
+			view.split |= wanted.find("split") != std::string::npos;
+			view.total |= wanted.find("total") != std::string::npos;
+			view.share |= wanted.find("share") != std::string::npos;
+			if (wanted.find("relative") != std::string::npos)
+				view.relative = !view.relative;
+			s.setView(view);
+		}
+		s.render();
+		if (const char *at = getenv("GLOB2_PREVIEW_HOVER"))
+		{
+			int x = 0, y = 0;
+			require(sscanf(at, "%d,%d", &x, &y) == 2, "hover position");
+			s.inspect(x, y);
+		}
 		s.render();
 		s.checkBounds();
 	}

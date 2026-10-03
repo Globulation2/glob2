@@ -45,6 +45,17 @@ static void require(bool ok, const char* message)
 	GLOB2_REQUIRE(ok, message);
 }
 
+// Totals as the metric catalog shows them: every unit born, and every new
+// building completed (the first band of "construction").
+static double birthsCounted(const GameplayMeasurements &m)
+{
+	return Stats::metricById("births").value(m);
+}
+static double buildingsCompleted(const GameplayMeasurements &m)
+{
+	return Stats::metricById("construction").bands[GameplayMeasurements::NEW_BUILDING].value(m);
+}
+
 // Named in friend declarations (Unit.h, Building.h), so it stays outside the anonymous namespace.
 struct TeamStatsMeasurementFixture
 {
@@ -410,9 +421,9 @@ static void measurementScenarios()
 		auto *t = w.game.teams[0];
 		for (int i = 0; i < NB_UNIT_TYPE; ++i)
 			w.unit(i, 20 + i, 20);
-		require(TeamStats::graphValue(t->stats.measurements, 0) == 0,
+		require(birthsCounted(t->stats.measurements) == 0,
 				"starting/editor units are not births");
-		require(TeamStats::graphValue(t->stats.measurements, 6) == 0,
+		require(buildingsCompleted(t->stats.measurements) == 0,
 				"starting/editor buildings are not completions");
 		swarm->ratio[0] = 1;
 		swarm->ratio[1] = swarm->ratio[2] = 0;
@@ -658,7 +669,7 @@ static void measurementScenarios()
 		require(w.game.teams[0]->stats.measurements.conversionsOut[EXPLORER] == 1 &&
 					w.game.teams[1]->stats.measurements.conversionsIn[EXPLORER] == 1,
 				"successful conversion tracked separately");
-		require(TeamStats::graphValue(w.game.teams[1]->stats.measurements, 0) == 0,
+		require(birthsCounted(w.game.teams[1]->stats.measurements) == 0,
 				"conversion is not a birth");
 	}
 	{
@@ -683,7 +694,7 @@ static void measurementScenarios()
 		require(
 			w.game.teams[0]->stats.measurements.removed[Measurements::DEMOLISHED][type][level] == 1,
 			"site cancellation counted as demolition");
-		require(TeamStats::graphValue(w.game.teams[0]->stats.measurements, 6) == 0,
+		require(buildingsCompleted(w.game.teams[0]->stats.measurements) == 0,
 				"cancelled site is not a completion");
 	}
 	{
@@ -1084,6 +1095,31 @@ static void aiTelemetryScenarios()
 			  "continuation and numeric corruption tests passed");
 }
 
+// The catalog joins a team's two recorded histories by tick: the sampled values,
+// which carry no tick of their own, and the measurements, which may start later.
+static void requireJoinedHistory(int team, const TeamStats &stats, bool measuredFromStart)
+{
+	const auto history = Stats::historyOf(team, stats);
+	const auto &sampled = stats.getEndOfGameStats();
+	require(history.team == team && history.points.size() == sampled.size(),
+			"a measurement taken with a sampled value shares its point");
+	std::size_t measured = 0;
+	for (std::size_t i = 0; i < history.points.size(); ++i)
+	{
+		const auto &point = history.points[i];
+		require(point.tick == i * Stats::SAMPLE_INTERVAL_TICKS && point.sampled == sampled[i].value,
+				"sampled values sit at their sample's tick");
+		if (!point.measurements)
+			continue;
+		require(point.measurements == &stats.measurementHistory[measured] && point.measurements->tick == point.tick,
+				"measurements join the sampled value of the same tick");
+		++measured;
+	}
+	require(measured == stats.measurementHistory.size() && measured > 0, "every measurement sample is joined");
+	require((history.points.front().measurements != nullptr) == measuredFromStart && history.points.back().measurements,
+			"points before measurement coverage have sampled values only");
+}
+
 static void measurementScreenshots(const std::string &directory)
 {
 	std::filesystem::create_directories(directory);
@@ -1108,6 +1144,7 @@ static void measurementScreenshots(const std::string &directory)
 			stats.measurements.completed[Measurements::NEW_BUILDING][0][0] = (t + 1) * tick / 512;
 			stats.measurements.damageDealt[Measurements::MELEE][Measurements::UNIT] =
 				(t + 1) * tick;
+			stats.getLatestStat()->totalUnit = 20 + (t + 1) * int(tick / 512);
 			stats.step(game.teams[t]);
 		}
 		if (t % 2)
@@ -1119,11 +1156,15 @@ static void measurementScreenshots(const std::string &directory)
 			sample.growthAmount[1][WHEAT] = Uint64(t+1) * sample.tick / 2;
 			sample.trappedUnits[1][WORKER] = t+1;
 			sample.lowFood[0][WORKER] = t+2;
+			sample.lowFood[1][WORKER] = t+6;
+			sample.lowFood[2][WORKER] = t+12;
+			sample.deaths[WORKER][Measurements::STARVATION] = Uint64(t) * sample.tick / 256;
 		}
 		stats.measurements.growthGlobal[1][WHEAT] = Uint64(t+1) * 4096;
 		stats.measurements.growthAmount[1][WHEAT] = Uint64(t+1) * 2048;
 		stats.measurements.trappedUnits[1][WORKER] = t+1;
 		stats.measurements.lowFood[0][WORKER] = t+2;
+		requireJoinedHistory(t, stats, t % 2 == 0);
 	}
 	gui.localTeamNo = 0;
 	gui.localPlayer = 0;
@@ -1136,30 +1177,41 @@ static void measurementScreenshots(const std::string &directory)
 		{
 			EndGameScreen screen(&gui);
 			screen.beginExecution(globalContainer->gfx);
-			for (int page = 0; page < 6; ++page)
+			// The overview, then one chart of each form: a level, a smoothed rate, a
+			// split counter, bands of the population, a net value and a global series.
+			const std::pair<const char *, bool> charts[] = {{"population", false}, {"births", false}, {"births", true},
+															{"hunger", false},	 {"net growth", false}, {"growth map", false}};
+			screen.selectMetric(EndGameScreen::OVERVIEW);
+			screen.paintFrame(0);
+			require(IMG_SavePNG(globalContainer->gfx->getSDLSurface(), (directory + "/overview-" + suffix).c_str()),
+					"save overview screenshot");
+			int page = 0;
+			for (const auto &[id, split] : charts)
 			{
-				screen.selectMetric(page*6);
+				screen.selectMetric(Stats::findMetric(id));
+				Stats::View view = screen.currentView();
+				view.split |= split;
+				screen.setView(view);
+				screen.paintFrame(0);
+				// Inspect the middle of the chart, so the readout is in the picture.
+				screen.inspect(size.first * 2 / 3, size.second / 2);
 				screen.paintFrame(0);
 				require(IMG_SavePNG(globalContainer->gfx->getSDLSurface(),
-									(directory + "/graphs-" + std::to_string(page) + "-" + suffix)
+									(directory + "/graphs-" + std::to_string(page++) + "-" + suffix)
 										.c_str()),
 						"save graph screenshot");
 			}
 		}
-		globalContainer->gfx->drawFilledRect(0, 0, size.first, size.second, 0, 0, 32);
-		globalContainer->gfx->drawString(size.first - 140, 195, globalContainer->littleFont,
-										 Toolkit::getStringTable()->getString("[Stats page two]"));
-		game.teams[0]->stats.drawMeasurements(size.first - 144, 211);
-		require(IMG_SavePNG(globalContainer->gfx->getSDLSurface(),
-							(directory + "/live-" + suffix).c_str()),
-			"save live panel screenshot");
-		globalContainer->gfx->drawFilledRect(0, 0, size.first, size.second, 0, 0, 32);
-		globalContainer->gfx->drawString(size.first - 140, 195, globalContainer->littleFont,
-									 Toolkit::getStringTable()->getString("[Stats page three]"));
-		game.teams[0]->stats.drawExpandedMeasurements(size.first - 144, 211);
-		require(IMG_SavePNG(globalContainer->gfx->getSDLSurface(),
-							(directory + "/live-expanded-" + suffix).c_str()),
-			"save expanded live panel screenshot");
+		// The in-game statistics panel: one page per group of the catalog.
+		for (const auto &[name, group] : {std::pair{"live-", Stats::Group::Food}, std::pair{"live-expanded-", Stats::Group::Map}})
+		{
+			globalContainer->gfx->drawFilledRect(0, 0, size.first, size.second, 0, 0, 32);
+			globalContainer->gfx->drawString(size.first - 140, 195, globalContainer->littleFont,
+											 Toolkit::getStringTable()->getString(Stats::groupKey(group)));
+			TeamStatChart::paintReadings(*globalContainer->gfx, size.first - 144, 211, 136, game.teams[0]->stats, group);
+			require(IMG_SavePNG(globalContainer->gfx->getSDLSurface(), (directory + "/" + name + suffix).c_str()),
+					"save live panel screenshot");
+		}
 	}
 }
 }
@@ -1235,7 +1287,7 @@ TEST_SUITE("TeamStatsSave")
 							"old measurements start at loaded tick");
 					require(game.teams[t]->stats.measurementHistory.empty(),
 							"old new-history is unavailable, not zero samples");
-					require(TeamStats::graphValue(game.teams[t]->stats.measurements, 0) == 0,
+					require(birthsCounted(game.teams[t]->stats.measurements) == 0,
 							"loading does not count births");
 				}
 				require(game.mapHeader.getVersionMinor() <= 88, "fixture is a genuine legacy format");
@@ -1272,7 +1324,7 @@ TEST_SUITE("TeamStatsSave")
 							"old measurements start at loaded tick");
 					require(game.teams[t]->stats.measurementHistory.empty(),
 							"old new-history is unavailable, not zero samples");
-					require(TeamStats::graphValue(game.teams[t]->stats.measurements, 0) == 0,
+					require(birthsCounted(game.teams[t]->stats.measurements) == 0,
 							"loading does not count births");
 				}
 				require(game.mapHeader.getVersionMinor() <= 88, "fixture is a genuine legacy format");

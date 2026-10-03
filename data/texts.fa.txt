@@ -4730,3 +4730,365 @@ Emoji
 پایگاه‌ها
 [bases per colony]
 پایگاه برای هر مستعمره؛ هر پایگاه یک تیم از نقشهٔ کشیده‌شده است، با ساختمان‌ها و واحدهایش
+[stat group population]
+
+[stat group food]
+
+[stat group resources]
+
+[stat group buildings]
+
+[stat group military]
+
+[stat group map]
+
+[stat group score]
+
+[stat overview]
+
+[stat overview about]
+
+[stat population]
+
+[stat population about]
+
+[stat births]
+
+[stat births about]
+
+[stat deaths]
+
+[stat deaths about]
+
+[stat net growth]
+
+[stat net growth about]
+
+[stat death causes]
+
+[stat death causes about]
+
+[stat conversions]
+
+[stat conversions about]
+
+[stat hunger]
+
+[stat hunger about]
+
+[stat health]
+
+[stat health about]
+
+[stat seeking food]
+
+[stat seeking food about]
+
+[stat in care]
+
+[stat in care about]
+
+[stat wheat harvested]
+
+[stat wheat harvested about]
+
+[stat wheat stored]
+
+[stat wheat stored about]
+
+[stat meals]
+
+[stat meals about]
+
+[stat starvation]
+
+[stat starvation about]
+
+[stat healing]
+
+[stat healing about]
+
+[stat gathered]
+
+[stat gathered about]
+
+[stat stored]
+
+[stat stored about]
+
+[stat spending]
+
+[stat spending about]
+
+[stat delivered]
+
+[stat delivered about]
+
+[stat traded]
+
+[stat traded about]
+
+[stat buildings]
+
+[stat buildings about]
+
+[stat construction]
+
+[stat construction about]
+
+[stat buildings lost]
+
+[stat buildings lost about]
+
+[stat blocked buildings]
+
+[stat blocked buildings about]
+
+[stat attack]
+
+[stat attack about]
+
+[stat defence]
+
+[stat defence about]
+
+[stat hit points]
+
+[stat hit points about]
+
+[stat damage dealt]
+
+[stat damage dealt about]
+
+[stat damage taken]
+
+[stat damage taken about]
+
+[stat damage traded]
+
+[stat damage traded about]
+
+[stat combat deaths]
+
+[stat combat deaths about]
+
+[stat accuracy]
+
+[stat accuracy about]
+
+[stat training]
+
+[stat training about]
+
+[stat skills]
+
+[stat skills about]
+
+[stat growth nearby]
+
+[stat growth nearby about]
+
+[stat growth map]
+
+[stat growth map about]
+
+[stat stranded]
+
+[stat stranded about]
+
+[stat cleared]
+
+[stat cleared about]
+
+[stat prestige]
+
+[stat prestige about]
+
+[stat band combat]
+
+[stat band starvation]
+
+[stat band clearing]
+
+[stat band trapped]
+
+[stat band other]
+
+[stat band starving]
+
+[stat band hungry]
+
+[stat band peckish]
+
+[stat band fed]
+
+[stat band critical]
+
+[stat band wounded]
+
+[stat band hurt]
+
+[stat band healthy]
+
+[stat band weakening]
+
+[stat band looking]
+
+[stat band eating]
+
+[stat band healing]
+
+[stat band meals]
+
+[stat band new units]
+
+[stat band ammunition]
+
+[stat band construction]
+
+[stat band upgrades]
+
+[stat band built]
+
+[stat band upgraded]
+
+[stat band repaired]
+
+[stat band destroyed]
+
+[stat band demolished]
+
+[stat band melee]
+
+[stat band magic]
+
+[stat band towers]
+
+[stat band within 8]
+
+[stat band 8 to 16]
+
+[stat band 16 to 32]
+
+[stat unit units]
+
+[stat unit wheat]
+
+[stat unit meals]
+
+[stat unit hit points]
+
+[stat unit resources]
+
+[stat unit buildings]
+
+[stat unit strength]
+
+[stat unit damage]
+
+[stat unit shots]
+
+[stat unit visits]
+
+[stat unit skills]
+
+[stat unit prestige]
+
+[stat axis percent of %0]
+
+[stat axis share of all teams]
+
+[stat axis percent of units]
+
+[stat axis %0 per minute per 100 units]
+
+[stat axis %0 per 100 units]
+
+[stat axis %0 per minute]
+
+[stat axis %0 so far]
+
+[stat axis %0 minute average]
+
+[stat view per minute]
+
+[stat view total]
+
+[stat view %0 min]
+
+[stat view split]
+
+[stat view percentages]
+
+[stat view percent of units]
+
+[stat view per 100 units]
+
+[stat view share]
+
+[stat view highlight none]
+
+[stat column peak units]
+
+[stat column born]
+
+[stat column lost]
+
+[stat column wheat]
+
+[stat column damage dealt]
+
+[stat column damage taken]
+
+[stat column built]
+
+[stat column buildings lost]
+
+[stat column prestige]
+
+[stat marker wiped out]
+
+[stat marker first combat death]
+
+[stat marker first building destroyed]
+
+[stat not recorded for this match]
+
+[results reason beyond doubt]
+
+[stat per minute short]
+
+[stat page colony]
+
+[stat page %0 of %1]
+
+[stat band workers]
+
+[stat band explorers]
+
+[stat band warriors]
+
+[stat unit deaths]
+
+[stat unit growth]
+
+[stat view by unit type]
+
+[stat view by state]
+
+[stat view by resource]
+
+[stat view by building]
+
+[stat view by work]
+
+[stat view by cause]
+
+[stat view by weapon]
+
+[stat view by distance]
+
+[stat nothing to show]
+
+[stat %0 nothing]
+

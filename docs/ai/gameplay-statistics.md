@@ -106,26 +106,57 @@ already emitted during the run. Formatting/output occurs only when enabled.
 `extended_coverage_start` marks when the new growth, blockage and threshold fields
 first became available. The current `trappedTick` marks the last blockage check.
 
-## Player views
+## What the player sees
 
-Click the page selector at the top of the existing text-statistics panel to cycle
-legacy statistics, gameplay measurements, and the expanded diagnostic page.
-The pages use the selected team in replay/spectator views.
-Wheat harvest and meal-consumption rates use the difference between the last two
-samples, in loads/minute and wheat resource units/minute at 25 ticks/second.
-They show unavailable until two samples exist. Large live-panel counts use
-scientific notation; saved totals and exports remain exact integers.
-The expanded page shows blocked counts as structural/current (`S/C`). The health
-lines show the cumulative 25/50/75% bands in that order; nearby growth shows
-positive amount changes within the three distance cutoffs.
+Everything shown to players comes from one table, the metric catalog
+(`src/stats/MetricCatalog.cpp`). Each entry names a metric, the group it belongs
+to (population, food and wellbeing, resources, buildings, military, land, score),
+where its numbers come from in the recorded history, and how it is shown. The
+arithmetic is in `src/stats/MetricSeries.cpp`. The catalog only reads history
+that is already recorded; adding a metric there changes neither the simulation
+nor the save format.
 
-Post-match graphs keep the six original metrics on page one. **P** cycles pages;
-**1–6** selects a metric on the current page. Team toggles stay associated with
-the same team across sorting/page changes. New graphs use timestamped samples,
-cumulative counters or stock values, and leave missing early history blank.
-Hover a recorded point for its exact 64-bit value. New labels use translation
-keys. Non-English catalogs use their translated unit, building, resource, HP,
-food and wheat terms with compact `S/C`, `+`, and distance/percentage notation.
+How a metric is shown follows from what it is:
+
+- A **counter** (units born, wheat harvested, damage dealt) is shown as a rate
+  per minute, averaged over the trailing 1, 2 (default) or 5 minutes of samples.
+  The running total is one toggle away.
+- A **level** (population, wheat in storage, attack strength) is shown as it was
+  sampled.
+- A **condition of the population** (hunger, health, units looking for food,
+  units unable to move) is shown as a percentage of the colony's units. The
+  recorded low-food and low-HP thresholds are nested (at or below 25%, 50%,
+  75%), so the catalog turns them into four disjoint bands that add up to the
+  population.
+- **Parts of a whole** (causes of death, what resources were spent on) are shown
+  as stacked bands normalised to 100%, one panel per team. Metrics with a
+  natural breakdown (births by unit type, harvest by resource, damage by weapon)
+  offer the same split in absolute units.
+- **Net** metrics (births minus deaths, damage dealt minus taken) run above and
+  below zero.
+- Population, buildings, attack, defence and damage dealt can also be shown as
+  each team's share of all teams.
+
+Samples from before a save gained measurement coverage are left out rather than
+drawn as zeros, and a metric with no covered samples says it was not recorded.
+
+The results screen after a match (`EndGameScreen`) opens on an overview of every
+team's whole-match figures, lists the metrics by group beside the chart (two
+drop-downs, group then metric, on narrow layouts), and explains the selected
+metric under the chart. Team chips above the chart show or hide teams; one team
+can be highlighted. Pointing at the chart reads out every shown team's value at
+that sample. On line charts, ticks on the time axis mark the first sample at
+which a colony lost its last unit, lost a unit in combat, or had a building
+destroyed; these are derived from the 512-tick samples, so they are accurate to
+about 20 seconds. The chart painter is `TeamStatChart`.
+
+In a match, the text-statistics panel pages through the colony summary and then
+one page per catalog group (click the page line to advance), giving each
+metric's current value: counters as their rate per minute over the last two
+minutes, conditions as a percentage of the colony's units. The score group has
+no page, since prestige is on the top bar; live spectators get the win chances
+as a last page. The pages use the selected team in replay and spectator views. The touch statistics sheet steps
+through the same metrics as charts of the player's own colony.
 
 ## Verification
 
@@ -134,6 +165,8 @@ new fields; both already run in Linux and Windows CI. Run locally with disposabl
 profiles as described in `test/README.md`. The statistics harness also accepts
 `--screenshots OUTPUT_DIRECTORY` to render graph pages and a live-panel fixture
 at 640×480 and 1024×768 with the supported maximum of 16 teams, large totals and partial legacy history.
+`test/MetricSeriesTest.cpp` (in `glob2-unit-tests`) covers the catalog and its
+arithmetic: rates, bands, percentages, coverage gaps and axes.
 `python3 test/check_telemetry_simulation.py build/src/glob2` compares the complete
 1,024-tick four-AI and 2,048-tick 12-team checksum sidecars against compressed
 version-121 fixtures, plus a 2,048-tick Numbi/Castor scenario. It also reloads a

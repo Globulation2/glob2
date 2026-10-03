@@ -217,10 +217,6 @@ public:
   void printMeasurements(int team, bool final = false) const;
   static void recordDamage(Team *source, Team *target, int kind, int targetKind, int hp,
 						   int damage);
-  void drawMeasurements(int x, int y);
-  void drawExpandedMeasurements(int x, int y);
-  static Uint64 graphValue(const GameplayMeasurements &m, int metric);
-  static const char *measurementLabel(int metric);
 
   TeamStats();
   virtual ~TeamStats(void);
@@ -249,10 +245,6 @@ private:
 	
 	int smoothedIndex;
 	TeamSmoothedStat smoothedStats[STATS_SMOOTH_SIZE];
-	
-	friend class EndGameStat;
-	friend class EndGameScreen;
-	friend class TeamStatChart;
 	
 	//! Those stats are used when player has ended the game
 	friend class Team;

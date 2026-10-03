@@ -274,28 +274,31 @@ void GameGUITouch::drawStats()
 		gfx->drawFilledRect(int(r.x), int(r.y), int(r.w), int(r.h), InGameTouchTheme::field);
 		drawPointLabel(r, text, 1.3);
 	}
-	drawPointLabel(l.title, TeamStatChart::metricName(statsMetric), 1.0);
-	const auto *stats = gui.teamStats->getLatestStat();
+	const auto &metrics = Stats::catalog();
+	const Stats::Metric &metric = metrics[std::size_t(std::clamp(statsMetric, 0, int(metrics.size()) - 1))];
 	auto tr = [](const char *key) { return std::string(Toolkit::getStringTable()->getString(key)); };
-	const std::string counters =
-		std::string(FormattableString(tr("[Units: %0]")).arg(stats->totalUnit)) + "   " +
-		std::string(FormattableString(tr("[Buildings: %0]")).arg(stats->totalBuilding)) + "   " +
-		std::string(FormattableString(tr("[Food: %0 / %1]")).arg(stats->totalFood).arg(stats->totalFoodCapacity)) +
-		"   " + std::string(FormattableString(tr("[Need food: %0]")).arg(stats->needFood)) + "   " +
-		std::string(FormattableString(tr("[Need healing: %0]")).arg(stats->needHeal));
+	drawPointLabel(l.title, tr(Stats::groupKey(metric.group)) + " · " + TeamStatChart::title(metric), 1.0);
+	// The colony now, read from the same catalog as the chart below.
+	const auto history = Stats::historyOf(gui.localTeamNo, *gui.teamStats);
+	std::string counters;
+	for (const char *id : {"population", "buildings", "hunger", "health", "wheat harvested"})
+	{
+		const Stats::Metric &shown = Stats::metricById(id);
+		const auto reading = Stats::latestReading(shown, Stats::defaultView(shown), history);
+		counters += (counters.empty() ? "" : "   ") + TeamStatChart::title(shown) + ": " + TeamStatChart::readingText(reading);
+	}
 	drawPointLabel(l.counters, counters, .7);
 	if (l.chart.w <= 0 || l.chart.h <= 0)
 		return;
 	// The chart is laid out in points and scaled with the rest of the HUD.
-	InGameTouchTheme::TextStyle littleText(globalContainer->littleFont);
-	InGameTouchTheme::TextStyle bodyText(globalContainer->standardFont);
 	SDL_Rect clip{int(l.chart.x), int(l.chart.y), int(l.chart.w), int(l.chart.h)};
 	gfx->setUITransform(unit, l.chart.x, l.chart.y, &clip);
 	TeamStatChart::Options options;
-	options.metric = statsMetric;
+	options.metric = &metric;
+	options.view = Stats::defaultView(metric);
 	const int own = gui.localTeamNo;
-	options.shown = [own](int team) { return team == own; };
-	TeamStatChart::paintCurves(gui.game, *gfx, 0, 0, int(l.chart.w / unit), int(l.chart.h / unit), options);
+	options.teams.push_back({own, gui.game.teams[own]->color, ""});
+	TeamStatChart::paint(gui.game, *gfx, 0, 0, int(l.chart.w / unit), int(l.chart.h / unit), options);
 	gfx->setUITransform();
 	gfx->setClipRect();
 }

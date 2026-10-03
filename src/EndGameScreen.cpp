@@ -6,6 +6,7 @@
 #include "ui/RecordingControls.h"
 #include "FrontendTheme.h"
 #include "TeamStatChart.h"
+#include "stats/MetricSeries.h"
 #include "GlobalContainer.h"
 #include "ReplayWriter.h"
 #include "Team.h"
@@ -22,10 +23,9 @@
 #include <StringTable.h>
 #include <Toolkit.h>
 #include <algorithm>
+#include <cassert>
 #include <cmath>
-#include <iomanip>
-#include <limits>
-#include <sstream>
+#include <iterator>
 #include <typeinfo>
 
 namespace fe = Glob2UI;
@@ -35,25 +35,59 @@ using GAGCore::Color;
 
 namespace
 {
-// The statistics chart keeps its dark plot (its curves and labels are drawn for it);
-// the page around it is the frontend's paper, like the Online hub and the room.
-const Color chartBackground(34, 24, 49);
-
-//! This function is used to sort the player array
-struct MoreScore
+//! A column of the overview: a team's figure for the whole match, and the metric
+//! whose chart shows how it came about.
+struct OverviewColumn
 {
-	int type;
-	bool operator()(const TeamEntry &t1, const TeamEntry &t2)
+	const char *key;	//!< Text key of the heading.
+	const char *metric; //!< Catalog id (Stats::metricById).
+	enum
 	{
-		if (t1.endVal[type] == t2.endVal[type])
-		{
-			if (t1.teamNum == t2.teamNum)
-				return t1.name > t2.name;
-			return t1.teamNum > t2.teamNum;
-		}
-		return t1.endVal[type] > t2.endVal[type];
-	}
+		Peak,  //!< Highest sampled value; the metric must be a sampled one.
+		Final, //!< Last sampled value; the metric must be a sampled one.
+		Total  //!< A counter's total at the end of the match.
+	} figure;
+	bool compact;	   //!< Kept on narrow layouts.
+	bool moreIsBetter; //!< The highest figure is picked out.
 };
+const OverviewColumn overviewColumns[] = {
+	{"[stat column peak units]", "population", OverviewColumn::Peak, true, true},
+	{"[stat column born]", "births", OverviewColumn::Total, true, true},
+	{"[stat column lost]", "deaths", OverviewColumn::Total, true, false},
+	{"[stat column wheat]", "wheat harvested", OverviewColumn::Total, false, true},
+	{"[stat column damage dealt]", "damage dealt", OverviewColumn::Total, false, true},
+	{"[stat column damage taken]", "damage taken", OverviewColumn::Total, false, false},
+	{"[stat column built]", "construction", OverviewColumn::Total, false, true},
+	{"[stat column buildings lost]", "buildings lost", OverviewColumn::Total, false, false},
+	{"[stat column prestige]", "prestige", OverviewColumn::Final, true, true},
+};
+//! The column the teams are listed by, largest first: the peak population.
+const std::size_t overviewSortColumn = 0;
+
+double overviewFigure(const OverviewColumn &column, const TeamStats &stats)
+{
+	const Stats::Metric &metric = Stats::metricById(column.metric);
+	if (column.figure == OverviewColumn::Total)
+	{
+		assert(metric.value);
+		return metric.value(stats.measurements);
+	}
+	assert(metric.sampled >= 0);
+	double figure = 0;
+	for (const auto &sample : stats.getEndOfGameStats())
+		figure = column.figure == OverviewColumn::Peak ? std::max(figure, double(sample.value[metric.sampled])) : sample.value[metric.sampled];
+	return figure;
+}
+
+//! Index into Stats::RATE_WINDOWS of `window`, or of the default window when a
+//! stored setting names one that is not offered.
+int rateWindowChoice(int window)
+{
+	const auto *found = std::find(std::begin(Stats::RATE_WINDOWS), std::end(Stats::RATE_WINDOWS), window);
+	if (found == std::end(Stats::RATE_WINDOWS))
+		found = std::find(std::begin(Stats::RATE_WINDOWS), std::end(Stats::RATE_WINDOWS), Stats::DEFAULT_RATE_WINDOW);
+	return int(found - std::begin(Stats::RATE_WINDOWS));
+}
 } // namespace
 
 //! LoadSaveDialog name-extractor callback for the save-replay dialog: turn a
@@ -80,13 +114,8 @@ EndGameScreen::EndGameScreen(GameGUI *gui) : UIScreen(fe::inGameTheme())
 		entry.name = gui->game.gameHeader.getBasePlayer(i).name;
 		entry.teamNum = gui->game.gameHeader.getBasePlayer(i).teamNumber;
 		entry.color = gui->game.teams[entry.teamNum]->color;
-		int endIndex = gui->game.teams[entry.teamNum]->stats.endOfGameStats.size() - 1;
-		for (int j = 0; j < EndOfGameStat::TYPE_NB_STATS; j++)
-		{
-			entry.endVal[j] = endIndex >= 0 ? gui->game.teams[entry.teamNum]->stats.endOfGameStats[endIndex].value[j] : 0;
-		}
-		for (int j = 0; j < 30; ++j)
-			entry.endVal[j + 6] = TeamStats::graphValue(gui->game.teams[entry.teamNum]->stats.measurements, j);
+		for (const auto &column : overviewColumns)
+			entry.summary.push_back(overviewFigure(column, gui->game.teams[entry.teamNum]->stats));
 		auto existing = std::find_if(teams.begin(), teams.end(), [&](const auto &team) { return team.teamNum == entry.teamNum; });
 		if (existing == teams.end())
 			teams.push_back(entry);
@@ -108,7 +137,24 @@ EndGameScreen::EndGameScreen(GameGUI *gui) : UIScreen(fe::inGameTheme())
 		reason = described.reason;
 	}
 
-	sortAndSet(EndOfGameStat::TYPE_UNITS);
+	// Largest colony first; the order then stays put whatever is charted.
+	std::stable_sort(teams.begin(), teams.end(),
+					 [](const TeamEntry &a, const TeamEntry &b) { return a.summary[overviewSortColumn] > b.summary[overviewSortColumn]; });
+	// Metrics with nothing to show in this match (no trade, no prestige) are
+	// marked in the picker, so the player need not open them to find out.
+	std::vector<Stats::TeamHistory> histories;
+	for (const auto &team : teams)
+		histories.push_back(Stats::historyOf(team.teamNum, game->teams[team.teamNum]->stats));
+	for (const auto &entry : Stats::catalog())
+		nothingToShow.push_back(!Stats::buildChart(entry, Stats::defaultView(entry), histories).any);
+	// Open on what the player last looked at; the overview the first time.
+	selectedMetric = Stats::findMetric(globalContainer->settings.statsMetric);
+	if (const auto *chosen = metric())
+	{
+		view = Stats::defaultView(*chosen);
+		view.window = globalContainer->settings.statsWindow;
+		view = Stats::validView(*chosen, view);
+	}
 }
 
 EndGameScreen::~EndGameScreen() = default;
@@ -146,11 +192,15 @@ EndGameScreen::Description EndGameScreen::describe(const Game &game, const Team 
 											 : strings.getString("[results reason opponents left]");
 		else if (game.totalPrestigeReached)
 			d.reason = strings.getString("[Total prestige reached]");
+		else if (local.winCondition == WCWinProbability)
+			d.reason = strings.getString("[results reason beyond doubt]");
 		else
 			d.reason = strings.getString("[results reason victory]");
 	}
 	else if (d.outcome == Outcome::Defeat)
-		d.reason = strings.getString(game.totalPrestigeReached ? "[Total prestige reached]" : "[results reason defeat]");
+		d.reason = strings.getString(game.totalPrestigeReached					? "[Total prestige reached]"
+									 : local.winCondition == WCWinProbability ? "[results reason beyond doubt]"
+																				: "[results reason defeat]");
 	else if (d.outcome == Outcome::Left)
 		d.reason = strings.getString("[results reason you left]");
 	return d;
@@ -177,26 +227,43 @@ void EndGameScreen::onEscape()
 		endExecute(QUIT);
 }
 
-std::string EndGameScreen::statTypeName(int type)
+const Stats::Metric *EndGameScreen::metric() const
 {
-	return TeamStatChart::metricName(type);
+	return selectedMetric >= 0 && selectedMetric < int(Stats::catalog().size()) ? &Stats::catalog()[std::size_t(selectedMetric)] : nullptr;
 }
 
-void EndGameScreen::sortAndSet(int type)
+void EndGameScreen::selectMetric(int chosen)
 {
-	// Selection belongs to team identity, not the visible rank or widget order.
-	MoreScore moreScore;
-	moreScore.type = type;
-	std::stable_sort(teams.begin(), teams.end(), moreScore);
-}
-
-void EndGameScreen::selectMetric(int metric)
-{
-	if (metric < 0 || metric >= 36)
+	if (chosen < OVERVIEW || chosen >= int(Stats::catalog().size()))
 		return;
-	GAGCore::Recording::recorder().event("statistics_metric", std::to_string(metric));
-	selectedMetric = metric;
-	sortAndSet(metric);
+	selectedMetric = chosen;
+	const auto *now = metric();
+	GAGCore::Recording::recorder().event("statistics_metric", now ? now->id : "overview");
+	globalContainer->settings.statsMetric = now ? now->id : "";
+	if (now)
+	{
+		// Each metric opens in the view that suits it; the averaging window is kept.
+		const int window = view.window;
+		view = Stats::defaultView(*now);
+		view.window = window;
+	}
+	hoverX = hoverY = -1;
+	invalidate();
+}
+
+void EndGameScreen::setView(Stats::View chosen)
+{
+	if (const auto *now = metric())
+	{
+		view = Stats::validView(*now, chosen);
+		globalContainer->settings.statsWindow = view.window;
+		invalidate();
+	}
+}
+
+void EndGameScreen::highlightTeam(int teamNum)
+{
+	highlighted = teamNum;
 	invalidate();
 }
 
@@ -235,60 +302,262 @@ void EndGameScreen::inspect(int x, int y)
 
 void EndGameScreen::activateResultControl(int action)
 {
-	if (action == 100)
+	if (action == OPEN_GROUP_LIST || action == OPEN_METRIC_LIST)
 	{
-		if (auto *node = host().find("metric"))
+		// The drop-downs of metricChoices(); absent on wide layouts.
+		if (auto *node = host().find(action == OPEN_GROUP_LIST ? "group" : "metric"))
 			host().tapAt({node->bounds.x + node->bounds.w / 2, node->bounds.y + node->bounds.h / 2});
 	}
-	else if (action == 101)
+	else if (action == TOGGLE_EXPANDED_CHART)
 		expandChart(!expandedChart);
-	else if (action == 102)
+	else if (action == TOGGLE_TEAM_FILTERS)
 		showTeamFilters(!teamFiltersOpen);
-	else if (action >= 200)
-		toggleTeam(action - 200);
+	else if (action >= TOGGLE_TEAM_FIRST)
+		toggleTeam(action - TOGGLE_TEAM_FIRST);
 	else if (action == QUIT)
 		endExecute(QUIT);
 	else if (action == SAVE_REPLAY)
 		saveReplay("replays", "replay");
-	else if (action >= TEAM_TOGGLE_FIRST && action < int(TEAM_TOGGLE_FIRST + teams.size()))
-		toggleTeam(action - TEAM_TOGGLE_FIRST);
-	else if (action >= STAT_BUTTON_FIRST && action < STAT_BUTTON_FIRST + EndOfGameStat::TYPE_NB_STATS)
-		selectMetric(action - STAT_BUTTON_FIRST);
 }
 
-bool EndGameScreen::teamEnabled(int teamNum) const
+int EndGameScreen::enabledTeams() const
 {
-	for (const auto &team : teams)
-		if (team.teamNum == teamNum)
-			return team.enabled;
-	return false;
+	return int(std::count_if(teams.begin(), teams.end(), [](const auto &team) { return team.enabled; }));
 }
 
 Element EndGameScreen::teamRows(const Presentation &p)
 {
-	// A summary table: each team's final units, buildings and prestige beside its
-	// chart toggle, so the outcome reads without the chart (where identical curves
-	// would hide each other).
-	const int stats[] = {EndOfGameStat::TYPE_UNITS, EndOfGameStat::TYPE_BUILDINGS, EndOfGameStat::TYPE_PRESTIGE};
-	const int column = p.pt(p.compact() ? 64 : 92);
-	fe::TextOptions head;
-	head.role = fe::FontRole::Support;
-	head.muted = true;
-	std::vector<Element> rows;
-	std::vector<Element> header{fe::expanded(fe::label(fe::tr("[results team]"), head))};
-	for (int stat : stats)
-		header.push_back(fe::width(column, fe::label(statTypeName(stat), head)));
-	rows.push_back(fe::row(std::move(header), {p.pt(6), fe::CrossAlign::Center}));
+	// The chart's legend and its filter in one: a chip per team, wrapping onto as
+	// many rows as the teams need, so a full match still leaves the chart its room.
+	std::vector<Element> chips;
 	for (std::size_t i = 0; i < teams.size(); ++i)
 	{
 		const auto &team = teams[i];
-		std::vector<Element> cells{fe::swatch(team.color, 12),
-								   fe::expanded(fe::toggle("team/" + std::to_string(i), team.name, team.enabled, [this, i](bool) { toggleTeam(int(i)); }))};
-		for (int stat : stats)
-			cells.push_back(fe::width(column, fe::label(std::to_string(team.endVal[stat]))));
-		rows.push_back(fe::row(std::move(cells), {p.pt(6), fe::CrossAlign::Center}));
+		chips.push_back(fe::row({fe::swatch(team.color, 12),
+								 fe::expanded(fe::toggle("team/" + std::to_string(i), team.name, team.enabled, [this, i](bool) { toggleTeam(int(i)); }))},
+								{p.pt(6), fe::CrossAlign::Center}));
 	}
-	return fe::column(std::move(rows), {p.pt(2)});
+	fe::WrapOptions wrap;
+	wrap.gap = p.pt(4);
+	wrap.minChildWidth = p.pt(190);
+	return fe::wrap(std::move(chips), wrap);
+}
+
+Element EndGameScreen::metricSidebar(const Presentation &p)
+{
+	// Every metric in view at once, under its group, with the overview on top.
+	std::vector<Element> rows;
+	auto entry = [&](int index, const std::string &title, const std::string &about)
+	{
+		fe::ButtonOptions options;
+		options.flat = options.alignLeft = true;
+		options.selected = selectedMetric == index;
+		options.minHeight = 22;
+		options.role = fe::FontRole::Support;
+		options.tooltip = about;
+		rows.push_back(fe::button("metric/" + std::to_string(index), title, [this, index] { selectMetric(index); }, options));
+	};
+	entry(OVERVIEW, fe::tr("[stat overview]"), fe::tr("[stat overview about]"));
+	Stats::Group group = Stats::Group::Count;
+	const auto &metrics = Stats::catalog();
+	for (std::size_t i = 0; i < metrics.size(); ++i)
+	{
+		if (metrics[i].group != group)
+		{
+			group = metrics[i].group;
+			rows.push_back(fe::spacer(p.pt(6)));
+			rows.push_back(fe::caption(fe::tr(Stats::groupKey(group))));
+		}
+		entry(int(i), pickerTitle(int(i)), TeamStatChart::about(metrics[i]));
+	}
+	fe::ScrollOptions scroll;
+	scroll.shrinkToContent = false;
+	return fe::scroll("metrics", fe::column(std::move(rows), {p.pt(1)}), scroll);
+}
+
+Element EndGameScreen::metricChoices(const Presentation &p)
+{
+	// Narrow layouts: the group, then the metrics of that group, so neither list
+	// is long. The metric list explains the selected metric.
+	const auto &metrics = Stats::catalog();
+	const auto *now = metric();
+	std::vector<std::string> groups{fe::tr("[stat overview]")};
+	for (int g = 0; g < int(Stats::Group::Count); ++g)
+		groups.push_back(fe::tr(Stats::groupKey(Stats::Group(g))));
+	auto first = [&metrics](Stats::Group group)
+	{
+		for (std::size_t i = 0; i < metrics.size(); ++i)
+			if (metrics[i].group == group)
+				return int(i);
+		return OVERVIEW;
+	};
+	std::vector<Element> controls;
+	controls.push_back(fe::expanded(fe::choice("group", groups, now ? int(now->group) + 1 : 0,
+											   [this, first](int chosen) { selectMetric(chosen == 0 ? OVERVIEW : first(Stats::Group(chosen - 1))); })));
+	if (now)
+	{
+		std::vector<std::string> names;
+		std::vector<int> indices;
+		for (std::size_t i = 0; i < metrics.size(); ++i)
+			if (metrics[i].group == now->group)
+			{
+				names.push_back(pickerTitle(int(i)));
+				indices.push_back(int(i));
+			}
+		const int selected = int(std::find(indices.begin(), indices.end(), selectedMetric) - indices.begin());
+		fe::ChoiceOptions options;
+		options.help = TeamStatChart::about(*now);
+		controls.push_back(fe::expanded(fe::choice("metric", names, selected, [this, indices](int chosen) { selectMetric(indices[std::size_t(chosen)]); }, options), 2));
+	}
+	// Side by side they would each be too narrow for their text on a phone.
+	if (p.dialog.w < p.pt(520))
+	{
+		for (auto &control : controls)
+			control = fe::row({std::move(control)});
+		return fe::column(std::move(controls), {p.pt(4)});
+	}
+	return fe::row(std::move(controls), {p.pt(8), fe::CrossAlign::Center});
+}
+
+std::string EndGameScreen::pickerTitle(int index) const
+{
+	const std::string title = TeamStatChart::title(Stats::catalog()[std::size_t(index)]);
+	return nothingToShow[std::size_t(index)] ? std::string(GAGCore::FormattableString(fe::tr("[stat %0 nothing]")).arg(title)) : title;
+}
+
+Element EndGameScreen::viewControls(const Presentation &p)
+{
+	const auto *now = metric();
+	if (!now)
+		return nullptr;
+	std::vector<Element> controls;
+	auto change = [this](auto edit)
+	{
+		return [this, edit](auto value)
+		{
+			Stats::View next = view;
+			edit(next, value);
+			setView(next);
+		};
+	};
+	if (Stats::canTotal(*now))
+		controls.push_back(fe::segments("view/measure", {fe::tr("[stat view per minute]"), fe::tr("[stat view total]")}, view.total ? 1 : 0,
+										change([](Stats::View &v, int chosen) { v.total = chosen == 1; })));
+	// Rates, and levels that are averaged like them, choose how far back.
+	if ((now->kind == Stats::Metric::Counter && !view.total) || now->smoothed)
+	{
+		std::vector<std::string> labels;
+		for (int window : Stats::RATE_WINDOWS)
+			labels.push_back(GAGCore::FormattableString(fe::tr("[stat view %0 min]")).arg(Stats::windowMinutes(window)));
+		controls.push_back(fe::segments("view/window", labels, rateWindowChoice(view.window),
+										change([](Stats::View &v, int chosen) { v.window = Stats::RATE_WINDOWS[chosen]; })));
+	}
+	if (Stats::canSplit(*now))
+		controls.push_back(fe::toggle("view/split", fe::tr(now->splitKey), view.split, change([](Stats::View &v, bool on) { v.split = on; })));
+	if (Stats::canRelative(*now, view))
+	{
+		const char *key = view.split ? "[stat view percentages]" : now->kind == Stats::Metric::Gauge ? "[stat view percent of units]" : "[stat view per 100 units]";
+		controls.push_back(fe::toggle("view/relative", fe::tr(key), view.relative, change([](Stats::View &v, bool on) { v.relative = on; })));
+	}
+	if (Stats::canShare(*now, view))
+		controls.push_back(fe::toggle("view/share", fe::tr("[stat view share]"), view.share, change([](Stats::View &v, bool on)
+																									   {
+																										   v.share = on;
+																										   v.relative = v.relative && !on;
+																									   })));
+	if (!view.split && !now->global && enabledTeams() > 2)
+	{
+		// With many lines, one can be picked out: drawn heavier, the rest dimmed.
+		std::vector<std::string> names{fe::tr("[stat view highlight none]")};
+		std::vector<int> numbers{-1};
+		int selected = 0;
+		for (const auto &team : teams)
+			if (team.enabled)
+			{
+				if (team.teamNum == highlighted)
+					selected = int(names.size());
+				names.push_back(team.name);
+				numbers.push_back(team.teamNum);
+			}
+		controls.push_back(fe::choice("view/highlight", names, selected, [this, numbers](int chosen) { highlightTeam(numbers[std::size_t(chosen)]); }));
+	}
+	if (controls.empty())
+		return nullptr;
+	fe::WrapOptions wrap;
+	wrap.gap = p.pt(8);
+	wrap.minChildWidth = p.pt(170);
+	return fe::wrap(std::move(controls), wrap);
+}
+
+Element EndGameScreen::overview(const Presentation &p, bool compact)
+{
+	// One row per team with its figures for the whole match; the best of each
+	// column stands out, and a column's heading opens its chart.
+	const int column = p.pt(compact ? 64 : 92), gap = p.pt(6);
+	// As many columns as fit beside a readable team name, the essential ones
+	// first. A column in which no team has anything (prestige in a match without
+	// prestige) is left out.
+	const int room = p.dialog.w - (compact ? 0 : p.pt(242)) - p.pt(compact ? 20 : 32) - p.pt(compact ? 110 : 170);
+	std::size_t fits = std::size_t(std::max(2, room / (column + gap)));
+	std::vector<bool> wanted(std::size(overviewColumns), false);
+	for (bool essential : {true, false})
+		for (std::size_t c = 0; c < std::size(overviewColumns) && fits > 0; ++c)
+			if (overviewColumns[c].compact == essential &&
+				std::any_of(teams.begin(), teams.end(), [c](const TeamEntry &team) { return team.summary[c] != 0; }))
+			{
+				wanted[c] = true;
+				--fits;
+			}
+	std::vector<std::size_t> shown;
+	for (std::size_t c = 0; c < wanted.size(); ++c)
+		if (wanted[c])
+			shown.push_back(c);
+	fe::TextOptions head;
+	head.role = fe::FontRole::Support;
+	head.muted = true;
+	std::vector<Element> header{fe::expanded(fe::label(fe::tr("[results team]"), head))};
+	for (std::size_t c : shown)
+	{
+		fe::ButtonOptions options;
+		options.flat = options.alignLeft = true;
+		options.role = fe::FontRole::Support;
+		options.minHeight = 24;
+		const int index = Stats::findMetric(overviewColumns[c].metric);
+		options.tooltip = TeamStatChart::about(Stats::metricById(overviewColumns[c].metric));
+		header.push_back(fe::width(column, fe::button("overview/" + std::to_string(c), fe::tr(overviewColumns[c].key), [this, index] { selectMetric(index); }, options)));
+	}
+	std::vector<Element> rows;
+	for (const auto &team : teams)
+	{
+		std::vector<Element> cells{fe::swatch(team.color, 12), fe::expanded(fe::label(team.name))};
+		for (std::size_t c : shown)
+		{
+			double best = 0;
+			for (const auto &other : teams)
+				best = std::max(best, other.summary[c]);
+			fe::TextOptions options;
+			if (overviewColumns[c].moreIsBetter && teams.size() > 1 && best > 0 && team.summary[c] == best)
+				options.color = theme().palette.success;
+			// Indented like the heading's button text, so figures sit under their heading.
+			cells.push_back(fe::width(column, fe::padding({p.pt(8), 0, 0, 0}, fe::label(Stats::valueText(team.summary[c], false), options))));
+		}
+		rows.push_back(fe::row(std::move(cells), {gap, fe::CrossAlign::Center}));
+	}
+	fe::ScrollOptions scroll;
+	scroll.shrinkToContent = false;
+	std::vector<Element> parts;
+	// How it ended and how long it took. Online matches say so in their banner.
+	if (!online)
+	{
+		const char *titleKey = outcome == Outcome::Victory ? "[results victory]" : outcome == Outcome::Ended ? "[results match over]" : "[results defeat]";
+		parts.push_back(fe::heading(fe::tr(titleKey)));
+		parts.push_back(fe::caption((reason.empty() ? std::string() : reason + " · ") + Glob2UI::durationText(durationSeconds)));
+	}
+	parts.push_back(fe::row(std::move(header), {gap, fe::CrossAlign::Center}));
+	parts.push_back(fe::divider());
+	parts.push_back(fe::expanded(fe::scroll("overview", fe::column(std::move(rows), {p.pt(6)}), scroll)));
+	parts.push_back(fe::paragraph(fe::tr("[stat overview about]"), {fe::FontRole::Support, true}));
+	return fe::column(std::move(parts), {p.pt(4)});
 }
 
 void EndGameScreen::setOnlineResult(std::shared_ptr<Online::OnlineMatchResult> result)
@@ -425,9 +694,69 @@ Element EndGameScreen::ratingCard(const Presentation &p)
 	return fe::card(fe::column(std::move(lines), {p.pt(2)}), options);
 }
 
+Element EndGameScreen::compactHeader(const Presentation &p)
+{
+	// The metric drop-downs, and beside them the way to the team filters, which
+	// compact layouts keep folded away.
+	std::vector<Element> header;
+	header.push_back(fe::expanded(metricChoices(p)));
+	if (metric())
+	{
+		fe::ButtonOptions teamOptions;
+		teamOptions.selected = teamFiltersOpen;
+		header.push_back(fe::button("teams", GAGCore::FormattableString(fe::tr("[Teams %0/%1]")).arg(enabledTeams()).arg(teams.size()),
+									[this] { showTeamFilters(!teamFiltersOpen); }, teamOptions));
+	}
+	return fe::row(std::move(header), {p.pt(8), fe::CrossAlign::Center});
+}
+
+Element EndGameScreen::chartCanvas(const Presentation &p)
+{
+	fe::CanvasOptions options;
+	options.accessibleText = TeamStatChart::title(*metric());
+	// The readout follows the pointer, and on touch the last tap.
+	auto inspectAt = [this](fe::Point local)
+	{
+		hoverX = local.x;
+		hoverY = local.y;
+	};
+	options.hover = inspectAt;
+	options.tap = [inspectAt](fe::Point local, fe::Host &) { inspectAt(local); };
+	return fe::canvas("chart", {p.pt(320), p.pt(160)}, [this](fe::Canvas &c, fe::Rect r, const fe::Frame &) { paintChart(c, r); }, options);
+}
+
+Element EndGameScreen::actionBar(const Presentation &p, bool compact)
+{
+	std::vector<fe::MenuAction> actions;
+	if (metric())
+		actions.push_back({"expand", fe::tr(expandedChart ? "[Back to chart]" : "[Expand chart]"), [this] { expandChart(!expandedChart); }});
+	if (globalContainer->replayWriter && globalContainer->replayWriter->isValid())
+		actions.push_back({"save-replay", fe::tr("[save replay]"), [this] { saveReplay("replays", "replay"); }});
+	// Wide layouts have the match page under the metric list.
+	if (online && compact)
+		actions.push_back({"match-page", fe::tr("[results match page]"), [this] { openMatchPage(); }});
+	// Rematch after a quick match (Q9): an unrated room with the same players; the
+	// others are invited, and one who asks after them joins the same room.
+	if (online && !online->fromRoom)
+		actions.push_back({"rematch",
+						   online->rematchOfferedBy.empty()
+							   ? fe::tr("[results rematch]")
+							   : std::string(GAGCore::FormattableString(fe::tr("[results join rematch %0]")).arg(online->rematchOfferedBy)),
+						   [this] { rematch(); }});
+	const char *quitKey = !online ? "[quit]" : online->fromRoom ? "[results back to room]" : "[results back to online]";
+	actions.push_back({"quit", fe::tr(quitKey), [this] { endExecute(QUIT); }, true, SDLK_RETURN});
+	return fe::actions(std::move(actions), p);
+}
+
+void EndGameScreen::openMatchPage()
+{
+	GAGCore::ApplicationHost::openUrl(online->matchPageUrl());
+}
+
 Element EndGameScreen::build(const Presentation &p)
 {
-	const bool compact = p.compact() || p.shortLandscape();
+	// Below about 900 points there is no room for the metric list beside the chart.
+	const bool compact = p.compact() || p.shortLandscape() || p.dialog.w < p.pt(900);
 	std::vector<Element> parts;
 	if (online && (!expandedChart || !compact))
 	{
@@ -440,68 +769,52 @@ Element EndGameScreen::build(const Presentation &p)
 			parts.push_back(fe::row({fe::expanded(onlineBanner(p)), fe::maxWidth(p.pt(420), ratingCard(p))},
 									{p.pt(12), fe::CrossAlign::Center}));
 	}
-	if (!expandedChart || !compact)
+	const auto *now = metric();
+	// The expanded chart gives up what surrounds it: the metric list and the team
+	// chips, and on compact layouts the online result and the view controls too.
+	const bool chartOnly = expandedChart && now;
+	std::vector<Element> content;
+	if (!chartOnly && compact)
+		content.push_back(compactHeader(p));
+	if (!now)
+		content.push_back(fe::expanded(overview(p, compact)));
+	else
 	{
-		std::vector<std::string> options;
-		for (int i = 0; i < 36; ++i)
-			options.push_back(statTypeName(i));
-		std::vector<Element> header;
-		header.push_back(fe::expanded(fe::choice("metric", options, selectedMetric, [this](int metric) { selectMetric(metric); })));
-		if (compact)
+		// A map-wide metric is one line for everybody: there are no teams to pick.
+		if (!chartOnly && !now->global && (!compact || teamFiltersOpen))
 		{
-			const int enabled = int(std::count_if(teams.begin(), teams.end(), [](const auto &t) { return t.enabled; }));
-			fe::ButtonOptions teamOptions;
-			teamOptions.selected = teamFiltersOpen;
-			header.push_back(fe::button("teams", GAGCore::FormattableString(fe::tr("[Teams %0/%1]")).arg(enabled).arg(teams.size()),
-										[this] { showTeamFilters(!teamFiltersOpen); }, teamOptions));
+			auto rows = teamRows(p);
+			if (compact)
+				content.push_back(fe::constrained({0, 0, fe::Constraints::Unbounded, p.pt(160)}, fe::scroll("teams/scroll", rows)));
+			else
+				content.push_back(rows);
 		}
-		if (online && !compact)
-			header.push_back(fe::button("match-page", fe::tr("[results match page]"), [this] { GAGCore::ApplicationHost::openUrl(online->matchPageUrl()); },
-										{.flat = true, .icon = fe::uiIcon(fe::UIIcon::ExternalLink), .iconSize = 16}));
-		parts.push_back(fe::row(std::move(header), {p.pt(8), fe::CrossAlign::Center}));
-	}
-	if (!expandedChart && (!compact || teamFiltersOpen))
-	{
-		auto rows = teamRows(p);
-		if (compact)
-			parts.push_back(fe::constrained({0, 0, fe::Constraints::Unbounded, p.pt(160)}, fe::scroll("teams/scroll", rows)));
+		// What the chart measures, in a sentence or two, above it like a title.
+		// Compact layouts keep the plot its room: their metric list explains it.
+		if (!chartOnly && !compact)
+			content.push_back(fe::column({fe::label(TeamStatChart::title(*now), {fe::FontRole::Body}),
+										  fe::paragraph(TeamStatChart::about(*now), {fe::FontRole::Support, true})},
+										 {p.pt(2)}));
 		else
-			parts.push_back(rows);
+			content.push_back(fe::caption(TeamStatChart::title(*now)));
+		if (!chartOnly || !compact)
+			content.push_back(viewControls(p));
+		content.push_back(fe::expanded(chartCanvas(p)));
 	}
-	fe::CanvasOptions chartOptions;
-	chartOptions.accessibleText = statTypeName(selectedMetric);
-	chartOptions.hover = [this](fe::Point local)
+	auto main = fe::column(std::move(content), {p.pt(8)});
+	if (compact || chartOnly)
+		parts.push_back(fe::expanded(main));
+	else
 	{
-		hoverX = local.x;
-		hoverY = local.y;
-	};
-	chartOptions.tap = [this](fe::Point local, fe::Host &)
-	{
-		hoverX = local.x;
-		hoverY = local.y;
-	};
-	parts.push_back(fe::expanded(fe::canvas("chart", {p.pt(320), p.pt(160)}, [this](fe::Canvas &c, fe::Rect r, const fe::Frame &) { paintChart(c, r); }, chartOptions)));
-	parts.push_back(fe::caption(GAGCore::FormattableString(fe::tr("[Elapsed time · %0]")).arg(statTypeName(selectedMetric))));
-	const bool save = globalContainer->replayWriter && globalContainer->replayWriter->isValid();
-	std::vector<fe::MenuAction> actions;
-	actions.push_back({"expand", fe::tr(expandedChart ? "[Back to chart]" : "[Expand chart]"), [this] { expandChart(!expandedChart); }});
-	if (save)
-		actions.push_back({"save-replay", fe::tr("[save replay]"), [this] { saveReplay("replays", "replay"); }});
-	if (online && compact)
-		actions.push_back({"match-page", fe::tr("[results match page]"), [this] { GAGCore::ApplicationHost::openUrl(online->matchPageUrl()); }});
-	// Rematch after a quick match (Q9): an unrated room with the same players; the
-	// others are invited, and one who asks after them joins the same room.
-	if (online && !online->fromRoom)
-		actions.push_back({"rematch",
-						   online->rematchOfferedBy.empty()
-							   ? fe::tr("[results rematch]")
-							   : std::string(GAGCore::FormattableString(fe::tr("[results join rematch %0]")).arg(online->rematchOfferedBy)),
-						   [this] { rematch(); }});
-	const char *quitKey = !online ? "[quit]" : online->fromRoom ? "[results back to room]" : "[results back to online]";
-	actions.push_back({"quit", fe::tr(quitKey), [this] { endExecute(QUIT); }, true, SDLK_RETURN});
+		std::vector<Element> side{fe::expanded(metricSidebar(p))};
+		if (online)
+			side.push_back(fe::button("match-page", fe::tr("[results match page]"), [this] { openMatchPage(); },
+									  {.flat = true, .icon = fe::uiIcon(fe::UIIcon::ExternalLink), .iconSize = 16}));
+		parts.push_back(fe::expanded(fe::row({fe::width(p.pt(230), fe::column(std::move(side), {p.pt(4)})), fe::expanded(main)}, {p.pt(12)})));
+	}
 	if (GAGCore::Recording::supported())
 		parts.push_back(fe::recordingControls());
-	parts.push_back(fe::actions(std::move(actions), p));
+	parts.push_back(actionBar(p, compact));
 	// A paper card over the colony background, as the Online hub and the room have.
 	fe::CardOptions page;
 	page.padding = p.pt(compact ? 10 : 16);
@@ -514,38 +827,30 @@ void EndGameScreen::paintChart(fe::Canvas &canvas, fe::Rect r)
 	auto *surface = canvas.surface();
 	if (!surface)
 		return;
-	canvas.fillRounded(r, 6, chartBackground);
+	canvas.fillRounded(r, 6, TeamStatChart::background);
 	if (std::none_of(teams.begin(), teams.end(), [](const auto &team) { return team.enabled; }))
 	{
 		canvas.text({r.x + 8, r.y + 8}, fe::FontRole::Body, fe::tr("[Select a team to show its history.]"), InGameTouchTheme::ink);
 		return;
 	}
-	// Leave room for the scale labels on the right and below.
-	const fe::Rect plot{r.x, r.y, std::max(1, r.w - 64), std::max(1, r.h - 24)};
-	InGameTouchTheme::TextStyle chartText(globalContainer->littleFont);
-	InGameTouchTheme::TextStyle chartLabels(globalContainer->standardFont);
 	canvas.pushClip(r);
-	if (selectedMetric >= 6)
-		paintMeasurements(*surface, {plot.x, plot.y, plot.w + 64, plot.h + 24});
-	else
-		paintCurves(*surface, {plot.x, plot.y, plot.w + 64, plot.h + 24});
+	TeamStatChart::paint(*game, *surface, r.x, r.y, r.w, r.h, chartOptions());
 	canvas.popClip();
 }
 
 // The chart itself is shared with the in-match statistics sheet.
 TeamStatChart::Options EndGameScreen::chartOptions() const
 {
-	return {selectedMetric, [this](int team) { return teamEnabled(team); }, hoverX, hoverY};
-}
-
-void EndGameScreen::paintCurves(GAGCore::DrawableSurface &surface, fe::Rect r)
-{
-	TeamStatChart::paintCurves(*game, surface, r.x, r.y, r.w, r.h, chartOptions());
-}
-
-void EndGameScreen::paintMeasurements(GAGCore::DrawableSurface &surface, fe::Rect r)
-{
-	TeamStatChart::paintMeasurements(*game, surface, r.x, r.y, r.w, r.h, chartOptions());
+	TeamStatChart::Options options;
+	options.metric = metric();
+	options.view = view;
+	for (const auto &team : teams)
+		if (team.enabled)
+			options.teams.push_back({team.teamNum, team.color, team.name});
+	options.highlighted = highlighted;
+	options.hoverX = hoverX;
+	options.hoverY = hoverY;
+	return options;
 }
 
 void EndGameScreen::saveReplay(const char *dir, const char *ext)

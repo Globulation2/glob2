@@ -91,6 +91,11 @@ public:
     // HUD. Local UI preference; never part of saves/orders. Replaces the former
     // mobileDialogTextPercent, which only compensated in-game dialogs and is ignored.
     int textSizePercent = 100;
+    // The statistic last looked at after a match (a metric catalog id; empty is the
+    // overview) and the rate averaging window in samples (Stats::DEFAULT_RATE_WINDOW,
+    // about two minutes). Local UI preference.
+    std::string statsMetric;
+    int statsWindow = 6;
     // Store and apply the text size (clamped) to every touch text surface.
     void setTextSizePercent(int percent);
     // Touch scroll feel, 0..100 each: 0 turns the effect off, 50 is the default.
