@@ -81,9 +81,11 @@ The build packs the files the game reads at run time into content-addressed
 packages under `assets/` (`scons/web_assets.py`); build scripts, translation
 tooling, documentation, icons and store screenshots stay out.
 `python3 scons/web_assets.py --report` lists the size of each category and package.
-`browser/asset-loader.js` downloads the `core` package while the WebAssembly
-module streams in, and the game starts once both are ready. `core` holds what
-the menus, the online hub and rooms need: the interface and menu sprites, the
+`browser/asset-loader.js` downloads `core` and `game` in parallel while the WebAssembly
+module streams in. The game starts once all three are ready, and prepares the
+live menu colony before hiding the loading page. This keeps the sprite download
+and decoding under visible progress instead of showing a motionless menu.
+`core` holds what the menus, the online hub and rooms need: the interface and menu sprites, the
 font, English and every language's own name, maps, campaigns, scripts and every
 simulation data file, so
 the sim version and checksum traces are unchanged. Three of its files are smaller
@@ -96,11 +98,6 @@ The loading page shows megabytes, a percentage and an estimate of the time left.
 
 The rest follows in the background once the main menu is up, most needed first:
 
-- `game`, the in-game sprites. Until they arrive the menu shows the colony still
-  instead of the live colony, and a match, the editor or a replay waits on its
-  loading screen ("Loading game graphics"; the online match checklist says the
-  same). The menu colony, the settings' building artwork and later matches pick
-  them up when they arrive. A `?replay=` link loads them before the game starts.
 - `menu-music`; the menu music starts when it arrives.
 - `font-cjk`, the full font. The game reopens its fonts when it arrives, so
   Chinese, Japanese and Korean player names and chat get their glyphs (the core
@@ -116,7 +113,7 @@ The rest follows in the background once the main menu is up, most needed first:
 
 Later packages download in parts of about 4 MB. Optional ones (music and
 artwork) pause while a match is running and are skipped when the browser asks to
-save data; `game`, `font-cjk` and `translations` are retried until they arrive. A package becomes
+save data; `font-cjk` and `translations` are retried until they arrive. A package becomes
 visible to the game only when complete. Native builds load everything at startup
 as before (`ApplicationHost::assetPackageReady` is always true there).
 `glob2Diagnostics.snapshot().assets` reports each package's state.
