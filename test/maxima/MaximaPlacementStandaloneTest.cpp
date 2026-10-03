@@ -1,4 +1,5 @@
 #include "Glob2Test.h"
+#include "AIMaximaContinuation.h"
 #include <vector>
 #include <string>
 #include <utility>
@@ -1302,4 +1303,37 @@ TEST_SUITE("Maxima.Placement")
 			<<" second="<<second.centerX<<","<<second.centerY
 			<<" campus_members="<<campus.campuses()[0].slots.size()<<"\n";
 	}
+}
+
+TEST_CASE("Explicit noncanonical neighborhood tables survive compact saves" * doctest::test_suite("Maxima.Placement"))
+{
+    class ExplicitTable : public GAGCore::BinaryOutputStream
+    {
+    public:
+        using BinaryOutputStream::BinaryOutputStream;
+        void writeUint32(const Uint32 value,const std::string name) override
+        {
+            BinaryOutputStream::writeUint32(name=="neighborhoodEncoding"?2:value,name);
+            if(name=="neighborhoodEncoding")
+            {
+                const std::vector<int> table={INT_MIN,-1,77,INT_MAX};
+                AIMaximaContinuation::Writer archive(this,true);
+                archive("scoringNeighborhoodCache",table);
+            }
+        }
+    };
+    auto* memory=new GAGCore::MemoryStreamBackend;
+    ExplicitTable out(memory);
+    AIMaximaPlacement::Planner original;
+    original.saveExecutionState(&out);
+    const auto bytes=memory->takeContents();
+    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+    input.seekFromStart(0);
+    GAGCore::BinaryInputStream::CheckedReads checked(&input);
+    AIMaximaPlacement::Planner restored;
+    restored.loadExecutionState(&input,VERSION_MINOR);
+    auto* result=new GAGCore::MemoryStreamBackend;
+    GAGCore::BinaryOutputStream writer(result);
+    restored.saveExecutionState(&writer);
+    CHECK(result->takeContents()==bytes);
 }

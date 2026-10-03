@@ -80,6 +80,9 @@ public:
 	bool translucentPathLines;
 	bool smoothProgressIndicators;
 	bool decorativeAnimations;
+	//! Experimental: draw units moving and animating between simulation ticks.
+	//! Off draws exactly the simulated positions. Not part of setGraphicsDetail.
+	bool unitInterpolation = false;
 	void setGraphicsDetail(bool full);
 	static constexpr Uint32 LEGACY_LOW_DETAIL = 0x1;
 	/// Periodically saves the game in progress as "Auto save".

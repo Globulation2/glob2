@@ -158,6 +158,9 @@ bool LoadSaveDialog::pollPersistence()
 	const auto state = persistence->state();
 	if (state == GAGCore::ApplicationHost::PersistenceState::Pending)
 		return false;
+    // Async encoding may create the gzip path after beginPersistence(). Resolve
+    // again so export after a browser storage failure uses the completed file.
+    exportPath = glob2PreferGzipReadPath(*GAGCore::Toolkit::getFileManager(), fileName);
 	persistence.reset();
 	if (state == GAGCore::ApplicationHost::PersistenceState::Failed)
 	{

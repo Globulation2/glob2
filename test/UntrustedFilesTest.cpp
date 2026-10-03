@@ -2,6 +2,7 @@
 #include "EngineFixtures.h"
 #include "Version.h"
 #include "AI.h"
+#include "AICabino.h"
 #include "NetEngine.h"
 #include "FileTransferMessages.h"
 #include "shared_runtime/Runtime.h"
@@ -134,15 +135,28 @@ TEST_CASE("terrain loaders reject invalid resources occupants and sector dimensi
     Fields out(backend);
     world.game.map.save(&out);
     const auto bytes = backend->takeContents();
-    const size_t cell = 12 + world.game.map.getW()*world.game.map.getH();
     auto header = world.game.mapHeader;
-    for (size_t offset : {size_t(12), cell+4, cell+8, cell+12, cell+14}) {
-        auto bad = bytes;
-        bad[offset] = char(0xfe);
-        auto stream = input(bad);
+    // Exercise semantic validation after decoding, independent of the tile encoding.
+    const auto original=world.game.map.tiles[0];
+    for(int field=0;field<5;++field) {
+        auto& tile=world.game.map.tiles[0]; tile=original;
+        if(field==0) tile.terrain=272;
+        if(field==1) tile.building=65534;
+        if(field==2) tile.resource.type=254;
+        if(field==3) tile.groundUnit=65534;
+        if(field==4) tile.airUnit=65534;
+        auto* storage=new GAGCore::MemoryStreamBackend;
+        GAGCore::BinaryOutputStream writer(storage);
+        world.game.map.save(&writer);
+        auto stream=input(storage->takeContents());
         Map restored;
-        CHECK_FALSE(restored.load(stream.get(), header, &world.game));
+        CHECK_FALSE(restored.load(stream.get(),header,&world.game));
     }
+    world.game.map.tiles[0]=original;
+    auto bad=bytes; bad[12]=char(254); // Invalid packed undermap encoding.
+    auto stream=input(bad);
+    Map restored;
+    CHECK_FALSE(restored.load(stream.get(),header,&world.game));
     for (const char* field : {"wSector", "hSector"}) {
         auto stream = input(poisoned(bytes, out, field, 0));
         Map restored;
@@ -271,4 +285,25 @@ TEST_CASE("invalid replay order references are ignored before indexing state") {
     alliance->sender = 0;
     CHECK_NOTHROW(world.game.executeOrder(alliance, 0));
 }
+}
+
+TEST_CASE("Cabino inn history accepts append positions and rejects invalid ring bounds" * doctest::test_suite("UntrustedFiles"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::GameOptions options;options.header=true;
+    glob2test::HeadlessGame world(options);
+    Cabino::AICabino controller(world.game.players[0]);
+    for(const auto [size,pos]:{std::pair<unsigned,unsigned>{0,0},{1,1},{9,9},{10,0},{10,9},{0,1},{9,10},{10,10},{11,0}})
+    {
+        CAPTURE(size);CAPTURE(pos);
+        auto* memory=new GAGCore::MemoryStreamBackend;
+        GAGCore::BinaryOutputStream out(memory);
+        out.writeUint32(1,"inns");out.writeUint32(0,"gid");out.writeUint32(pos,"pos");out.writeUint32(size,"size");
+        for(unsigned i=0;i<size;++i) out.writeUint32(i+20,"food_amount");
+        auto bytes=memory->takeContents();auto in=input(bytes);
+        auto* manager=new Cabino::InnManager(controller); // Registered with, and owned by, controller.
+        const bool valid=size<=10 && pos<=size && pos<10;
+        REQUIRE(manager->load(in.get(),world.game.players[0],VERSION_MINOR)==valid);
+        if(valid) {CHECK(manager->inns[0].pos==pos);CHECK(manager->inns[0].records.size()==size);}
+    }
 }
