@@ -172,3 +172,6 @@ static constexpr int FILE_FORMAT_VERSION_JAVASCRIPT = 125;
 
 //! Counted team-dependent state: Maxima opponents and JavaScript generation planes.
 static constexpr int FILE_FORMAT_VERSION_COUNTED_TEAM_STATE = 127;
+
+//! Lossless packed arrays and histories; existing save readers remain supported.
+static constexpr int FILE_FORMAT_VERSION_COMPACT_STATE = 128;
