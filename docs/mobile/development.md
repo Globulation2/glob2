@@ -4,6 +4,12 @@ Android and iOS use the shared game sources and SDL renderer. The mobile targets
 share pinned tool installations and validated dependency bundles across worktrees,
 with isolated build outputs and simulator state; they do not use host libraries or install into the desktop application's directories.
 
+Android builds have a Privacy policy entry in the main menu (under More on
+phones) that opens the store edition's policy. Google Play and iOS builds include
+online and LAN play; keep each store's data-safety and privacy declarations in
+step with the policies before distributing a build. The Amazon Fire edition has
+LAN play but no online play.
+
 The phone presentation shares simulation, game orders, settings persistence and
 lobby setup with desktop. `InterfacePresentation.h` selects the presentation;
 `GameGUITouch` owns gameplay gestures and phone panels. Menus and dialogs are
