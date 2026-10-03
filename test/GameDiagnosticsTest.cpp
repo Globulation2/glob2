@@ -52,7 +52,8 @@ TEST_CASE("controllers sharing a team publish distinct complete captures and rec
 		header.getBasePlayer(p)=BasePlayer(p,"diagnostics",0,BasePlayer::playerTypeFromImplementationID(AI::MAXIMA));
 	world.game.setGameHeader(header);
 	const auto path=glob2test::artifactDir()/"captures";
-	std::filesystem::create_directories(path);{std::ofstream blocked(path/"diagnostics");blocked<<"blocked";}
+	std::filesystem::remove_all(path);std::filesystem::create_directories(path);
+	{std::ofstream blocked(path/"diagnostics");REQUIRE(blocked);blocked<<"blocked";blocked.close();REQUIRE(blocked.good());}
 	GameDiagnostics::Session session(world.game,(path/"diagnostics").string(),10,false);
 	const auto capture=[&] {
 		session.beginTick(world.game);
