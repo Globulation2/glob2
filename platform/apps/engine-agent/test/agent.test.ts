@@ -81,7 +81,7 @@ describe('EngineAgent', () => {
     const row = await database.db.selectFrom('engine_agents').selectAll().executeTakeFirstOrThrow();
     expect(row.sim_version).toBe(simVersionKey(SIM));
     expect(Object.keys(agent.tasks()).sort()).toEqual(
-      ['generate-map', 'render-preview', 'validate-map', 'verify-match']
+      ['generate-map', 'import-ai-map', 'render-preview', 'validate-map', 'verify-match']
         .map((kind) => engineTaskIdentifier(kind as never, SIM))
         .sort(),
     );
