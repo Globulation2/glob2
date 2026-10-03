@@ -1,5 +1,7 @@
 #pragma once
 
+#include "field/UniformTraversal.h"
+
 #include <array>
 #include <vector>
 
@@ -51,20 +53,18 @@ struct Field
 				sources[variety][at]=at;
 				queue.push_back(at);
 			}
-			for(std::size_t head=0;head<queue.size();++head)
-			{
-				const int at=queue[head], x=at%width, y=at/width;
-				for(int dy=-1;dy<=1;++dy)
-					for(int dx=-1;dx<=1;++dx)
-					{
-						if(!dx && !dy)continue;
-						const int next=index(x+dx,y+dy);
-						if(!tiles[next].passable || distances[variety][next]>=0)continue;
-						distances[variety][next]=distances[variety][at]+1;
-						sources[variety][next]=sources[variety][at];
-						queue.push_back(next);
-					}
-			}
+			// Empty/default fields have no geometry to traverse. Keep their
+			// arrays initialized above, as for an initialized field without sources.
+			if(queue.empty())continue;
+			field::traverse(queue,{width,height},field::Surrounding,
+				[](int){ return field::Visit::Expand; },
+				[&](int at,int x,int y) {
+					const int next=index(x,y);
+					if(!tiles[next].passable || distances[variety][next]>=0)return;
+					distances[variety][next]=distances[variety][at]+1;
+					sources[variety][next]=sources[variety][at];
+					queue.push_back(next);
+				});
 		}
 	}
 

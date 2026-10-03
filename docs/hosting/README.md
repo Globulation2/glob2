@@ -336,6 +336,13 @@ added. The values the maintainer supplies:
 | Apple Team ID | The TestFlight workflow signs with team `CL2MNNYQX3`; confirm it on the Apple Developer account's Membership page. |
 | Associated Domains capability | Enable it on the `org.globulation2.glob2` App ID (Certificates, Identifiers & Profiles), so the App Store provisioning profile carries `com.apple.developer.associated-domains`. Check an exported build with `codesign -d --entitlements - Glob2.app`: it must list `applinks:app.glob2online.com`. |
 
+The release mirror's **App signing fingerprints** workflow reads these values with
+the release credentials, enables Associated Domains on the App ID when it is
+missing, and ends with a ready-to-paste `appLinks` block
+([signing fingerprints for invite links](../mobile/development.md#signing-fingerprints-for-invite-links)).
+Use the Play App Signing certificate it reports. The upload key and Amazon
+certificates are listed for reference only.
+
 Then add to the deployment's `instance.yaml` and recreate `platform-api`:
 
 ```yaml
@@ -847,9 +854,12 @@ live agent. Remove the service when the version is retired.
 ### Images
 
 The Dockerfile targets are `platform` (API, worker and CLI), `engine-agent`,
-`relay` and `caddy` (Caddy with the built web app). A `server-v*` tag runs
-`.github/workflows/server-image.yml`, which publishes all of them for linux/amd64 and linux/arm64 to
-`ghcr.io/<owner>/<repository>-<target>`, tagged with the Git tag and commit; engine
+`relay` and `caddy` (Caddy with the built web app). A `server-v*` tag pushed by
+the owner to the release mirror `genixpro/glob2-release` runs
+`.github/workflows/server-image.yml` (it skips every job in any other repository; a
+fork or self-hoster builds images with `deploy/compose.yaml` instead), which
+publishes all of them for linux/amd64 and linux/arm64 to
+`ghcr.io/genixpro/glob2-release-<target>`, tagged with the Git tag and commit; engine
 agents are also tagged `simver-<sim version>` and labelled
 `org.glob2.sim-version`. Pin digests in production:
 

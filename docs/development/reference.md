@@ -175,8 +175,8 @@ on `master`:
 the public `Globulation2/glob2` repository stores the workflow and build code for
 review, but dispatching it there cannot build, sign, upload or publish a release.
 The owner syncs the public changes into the public release mirror and starts each
-release there manually. Merge public `master` into the mirror's `master` so
-mirror-only release configuration stays in place. The workflow builds the existing MinGW x64
+release there manually. The mirror's `master` tracks public `master` exactly; see
+[the release mirror](releasing.md#the-release-mirror). The workflow builds the existing MinGW x64
 client, stages its runtime DLLs, game assets and GPL license, creates
 `MicrosoftGame.config`, shell logos and a 1920×1080 splash image, then
 uses the Microsoft GDK to produce an MSIXVC package. With `upload: false`, it
@@ -625,12 +625,42 @@ For timing and scheduling, start with `src/Game_sync.cpp` and `src/EngineRun.cpp
   publication are relevant checks.
 - Gradient field seeding lives in the area, building and resource source files.
   `MapGradientPropagation.cpp` starts eager fields through the private
-  `kernel/GradientPropagation.h` core; `BuildingGradientSearch.cpp` resumes
-  building fields. Both use `kernel/GradientRelaxation.h`. Keep their cell-cost
+  `src/field/GradientPropagation.h` core; `BuildingGradientSearch.cpp` resumes
+  building fields. Both use `src/field/GradientRelaxation.h`. Keep their cell-cost
   and queue ordering contracts shared when tuning architecture-specific kernels.
-  `GradientConstants.h` owns the field encoding; `Map` keeps its pipeline and
+  `src/field/GradientConstants.h` owns the field encoding; `Map` keeps its pipeline and
   per-executor scratch in an opaque `GradientRuntime`. Save/load reaches pending
   work through snapshot views, not the pipeline's mutable jobs.
+- `src/field/` is the Map-independent field library. Weighted paths retain
+  bucket queues and scalar/SSE2/NEON relaxation; uniform four/eight-neighbour
+  fields use an ordered FIFO with caller-owned payloads and admission rules.
+  Seed and neighbour order matter for first-discovery payloads and early stopping,
+  including Cortex wheat depth and Maxima food claims. Keep those searches ordered.
+  Callers own seeding, field encodings, transient scratch, cache ages and publication.
+  Sharing a solver does not make fields with different predicates interchangeable.
+- Choose the smallest field operation that preserves the caller's contract:
+
+  | Operation | Entry point | Caller responsibility |
+  | --- | --- | --- |
+  | Weighted path field | `gradient_kernel::propagateField` | Encode seeds/obstacles, supply stable terrain and a `GradientWorkspace`. |
+  | Resumable weighted paths | `gradient_kernel::expandBucket` | Preserve pending buckets and settle whole cost layers before pausing. |
+  | Uniform distance field | `field::expandDistances` | Seed equal distances, choose the unvisited sentinel and ordered stencil. |
+  | Ordered FIFO with payloads | `field::traverse` | Admit and enqueue neighbours; retain first-discovery payloads and stopping rules. |
+  | Domain heap search | `field::traversePriority` | Own costs, comparator, stale-entry checks and parent ties, including zero-cost edges. |
+  | Component stack/queue | `field::depthFirst` / `field::breadthFirst` | Own discovery and push order. |
+
+  `Grid::neighbors` supplies raw coordinates for bounds checks before wrapping;
+  `Grid::neighborIndices` supplies wrapped indices. Both retain stencil order and
+  aliases on thin grids. The vector FIFO keeps discovery history; `Frontier`
+  consumes entries and retains storage for the largest pending frontier. Clear
+  and seed either workspace at the owning caller. An early stop preserves writes
+  already made; grid traversal finishes the current neighbour stencil before
+  visiting the next entry. Use `breadthFirst` for stops during expansion.
+- Influence has two distinct contracts in `src/field/Influence.h`: convergent
+  maximum-contribution propagation and four directional sweeps. Castor requires
+  the latter's staggered scan order and byte arithmetic; replacing it with
+  convergence changes AI decisions. Map retains the cooperative checkpoints
+  around convergent rows. No solver depends on Map, AI, threading or serialization.
 - In `src/map/gradient/MapGradientChamfer.cpp` the chamfer distance transform's
   convergence-pass cap is bounded by the Uint8 value range (256), not by the
   Borgefors 1-pass result. Borgefors holds only on an obstacle-free grid; with

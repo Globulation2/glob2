@@ -168,6 +168,7 @@ UNIT_TESTS = [
     'GameMusicControllerTest.cpp',
     'GhostBuildingOverlapTest.cpp',
     'GradientBFSTest.cpp',
+    'FieldTraversalTest.cpp',
     'GradientTest.cpp',
     'HelloWorldTest.cpp',
     'Sha1Test.cpp',
