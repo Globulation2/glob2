@@ -7,7 +7,7 @@ Module.glob2Recording = {
     this.worker=new Worker(new URL('recording-worker.js',baseURL));
     this.worker.onmessage=event=>{
       const m=event.data;
-      if (m.type==='status') { this.status=m.status; if (m.status.state>=4) this.active=false; }
+      if (m.type==='status') { this.status=m.status; if (m.status.state>=4) this.active=false; if (m.status.state===5) Module.printErr?.('Recording: '+m.status.error); }
       else if (m.type==='ack' && m.kind==='frame') this.frames--;
       else if (m.type==='ack' && m.kind==='audio') this.audio-=m.samples;
       else if (m.type==='diagnostic') Module.printErr?.('Recording: '+m.value);

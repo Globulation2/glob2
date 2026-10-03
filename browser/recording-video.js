@@ -73,4 +73,3 @@ const recordingVideo = {
   },
   close(id) { const v=this.encoders.get(id); if (v) { try { v.codec.close(); } catch (_) {} this.encoders.delete(id); } }
 };
-

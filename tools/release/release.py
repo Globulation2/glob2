@@ -89,6 +89,7 @@ def archive(destination, tag=None):
         from sdl3_dependencies import download
         with tempfile.TemporaryDirectory(prefix='glob2-release-recording-') as temporary:
             download(Path(temporary),versions)
+            source.seek(0)
             with tarfile.open(fileobj=source,mode='a') as contents:
                 for spec in versions.values():
                     data=(Path(temporary)/spec['archive']).read_bytes()

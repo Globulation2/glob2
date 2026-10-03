@@ -160,7 +160,12 @@ def attach(env, prefix, target):
     env.Append(LIBS=[env.File(str(prefix / 'lib' / ('lib' + name + '.a'))) for name in LIBRARIES])
     if target in ('darwin', 'ios'):
         env.Append(FRAMEWORKS=['VideoToolbox', 'CoreMedia', 'CoreVideo', 'Foundation', 'AudioToolbox'])
-    elif target == 'android': env.Append(LIBS=['mediandk'])
+    elif target == 'android':
+        env.Append(LIBS=['mediandk'])
+        # Static FFmpeg assembly references private tables directly. Bind only
+        # codec archive symbols locally inside the JNI shared library; SDL's
+        # Java entry points must remain exported.
+        env.Append(LINKFLAGS=['-Wl,--exclude-libs=' + ':'.join('lib'+name+'.a' for name in LIBRARIES)])
     elif target == 'mingw32': env.Append(LIBS=['mfplat', 'mfuuid', 'ole32', 'strmiids', 'bcrypt'])
     elif target == 'linux':
         manifest = prefix / 'recording-manifest.json'

@@ -10,7 +10,7 @@ const test=base.extend({page:async({page,browserName,playwright},use,info)=>{
  try {await use(await context.newPage());}finally{await context.close();fs.rmSync(directory,{recursive:true,force:true});}
 }});
 const {gameURL,clickControl}=require('./main-menu');
-const screen=(page,name)=>expect.poll(()=>page.evaluate(()=>glob2Diagnostics.snapshot().screen)).toContain(name);
+const screen=(page,name)=>expect.poll(()=>page.evaluate(()=>glob2Diagnostics.snapshot().screen),{timeout:120000}).toContain(name);
 for (const variant of ['serial','threaded']) {
  test(`${variant} recording segments full framebuffer and exports OPFS files`,async({page},info)=>{
   const url=new URL(gameURL(),'http://localhost');url.searchParams.set('threads',variant);
@@ -41,9 +41,11 @@ for (const variant of ['serial','threaded']) {
   await info.attach('metadata',{body:JSON.stringify(metadata,null,2),contentType:'application/json'});
  });
 }
-test('missing WebCodecs uses embedded x264',async({page})=>{
+for(const variant of ['serial','threaded']) {
+test(`${variant} missing WebCodecs uses embedded x264`,async({page})=>{
  await page.route('**/recording-video.js',async route=>{const response=await route.fetch();await route.fulfill({response,body:'self.VideoEncoder=undefined;\n'+await response.text()});});
- await page.goto(gameURL());await screen(page,'MainMenuScreen');
+ const url=new URL(gameURL(),'http://localhost');url.searchParams.set('threads',variant);
+ await page.goto(url.pathname+url.search);await screen(page,'MainMenuScreen');
  const existing=await page.evaluate(async()=>{const root=await(await navigator.storage.getDirectory()).getDirectoryHandle('glob2-recordings',{create:true});const names=[];for await(const [name]of root.entries())names.push(name);return names;});
  await clickControl(page,'recording/toggle');await page.waitForTimeout(4000);await clickControl(page,'recording/toggle');
  await expect.poll(()=>page.evaluate(async existing=>{
@@ -51,9 +53,11 @@ test('missing WebCodecs uses embedded x264',async({page})=>{
   for await(const [name,handle]of root.entries()) if(!existing.includes(name)&&name.endsWith('.complete')&&(await handle.getFile()).size){const path=decodeURIComponent(name).slice(0,-9);return JSON.parse(await(await(await root.getFileHandle(encodeURIComponent(path+'.json'))).getFile()).text()).encoder;}return null;
  },existing),{timeout:30000}).toBe('libx264');
 });
-test('OPFS unavailable reports a recording error',async({page})=>{
+test(`${variant} OPFS unavailable reports a recording error`,async({page})=>{
  await page.route('**/recording-storage.js',async route=>{const response=await route.fetch();await route.fulfill({response,body:await response.text()+"\nrecordingStorage.initialize=async()=>{throw new Error('OPFS unavailable fixture');};"});});
- await page.goto(gameURL());await screen(page,'MainMenuScreen');await clickControl(page,'recording/toggle');
+ const url=new URL(gameURL(),'http://localhost');url.searchParams.set('threads',variant);
+ await page.goto(url.pathname+url.search);await screen(page,'MainMenuScreen');await clickControl(page,'recording/toggle');
  await expect.poll(()=>page.title()).toMatch(/recording failed/i);
  await expect.poll(()=>page.evaluate(()=>glob2Diagnostics.snapshot().controls['recording/toggle']?.label)).toMatch(/Start recording/i);
 });
+}

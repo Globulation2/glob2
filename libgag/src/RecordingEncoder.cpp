@@ -205,7 +205,7 @@ class FFmpegVideoEncoder final : public VideoEncoder
 			}
 		}
 		int result = avcodec_open2(encoder.get(), encoder->codec, &options.value);
-		
+
 		check(result, "Open H.264 encoder");
 		pixels->format = hardwareFrames ? AV_PIX_FMT_NV12 : c.pix_fmt;
 		pixels->width = c.width; pixels->height = c.height;
@@ -340,7 +340,7 @@ struct MediaWriter::Impl
 		Dictionary options;
 		av_dict_set(&options.value, "movflags", "+frag_keyframe+delay_moov+default_base_moof", 0);
 		av_dict_set(&options.value, "frag_duration", "1000000", 0);
-		int result = avformat_write_header(output.context, &options.value); 
+		int result = avformat_write_header(output.context, &options.value);
 		check(result, "Write fragmented MP4 header");
 	}
 	void drain()
@@ -473,7 +473,7 @@ void MediaWriter::finalize(const std::string &source, const std::string &destina
 	};
 	Dictionary options;
 	av_dict_set(&options.value,"movflags","+faststart",0);
-	int result = avformat_write_header(output.context,&options.value); 
+	int result = avformat_write_header(output.context,&options.value);
 	check(result,"Write final MP4 header");
 	auto p = packet();
 	for (;;)
