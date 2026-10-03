@@ -32,6 +32,20 @@ def open_source(model, clip):
     return path, scene
 
 
+def sample_pose(scene, direction, phase, heading_origin):
+    # Legacy IPO cycles are imported with fractional key times (e.g. 8/9).
+    # Modern cycle reduction can round an exact direction boundary backwards,
+    # selecting the previous constant heading and the wrong gait endpoint.
+    # Take the right-hand value; 0.001 original frames is 1/250 of one sample.
+    t = 1 + direction * 8 + phase / 4 + (0.001 if phase == 0 else 0)
+    scene.frame_set(int(t), subframe=t % 1)
+    heading = scene.objects.get('RotEmpty')
+    if heading:
+        error = math.remainder(heading.rotation_euler.z - heading_origin + direction * math.pi / 4, 2 * math.pi)
+        if abs(error) > 1e-4:
+            raise ValueError(f'Wrong legacy heading: direction={direction}, phase={phase}, angle={heading.rotation_euler.z}')
+
+
 def components(scene):
     result = sorted((o for o in scene.objects if o.type == 'META'), key=lambda o: o.name)
     if not result or any(len(o.data.elements) != 1 or o.data.elements[0].type not in ('BALL', 'ELLIPSOID') for o in result):
@@ -161,12 +175,13 @@ def export_model(output, model):
         scale = -camera[2, 3] * 32.0 / scene.camera.data.lens
         if scale <= 0:
             raise ValueError('Invalid legacy camera projection')
+        heading = scene.objects.get('RotEmpty')
+        heading_origin = float(heading.rotation_euler.z) if heading else 0
         frames, bounds = [], []
         model_view = camera.flatten().tolist()
         for direction in range(8):
             for phase in range(32):
-                t = 1 + direction * 8 + phase / 4
-                scene.frame_set(int(t), subframe=t % 1)
+                sample_pose(scene, direction, phase, heading_origin)
                 matrices = influence_matrices(parts)
                 positions = np.einsum('pvi,pv->vi', np.einsum('pij,pvj->pvi', matrices, local), weights)[:, :3]
                 n = normals(positions, triangles) @ camera[:3, :3].T
