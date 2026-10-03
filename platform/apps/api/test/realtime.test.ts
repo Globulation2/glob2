@@ -183,6 +183,8 @@ describe('realtime envelope', () => {
     expect(check('RealtimeSessionHelloResult', hello).stage).toBe('ok');
     expect(hello['account']).toBeUndefined();
     expect(hello['simSupported']).toBe(false);
+    // No engine agent has reported in, so the instance serves no sim version.
+    expect(hello['supportedSimVersions']).toEqual([]);
 
     const ping = await client.ok('session.ping');
     expect(typeof ping['serverTime']).toBe('string');

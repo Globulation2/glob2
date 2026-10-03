@@ -1321,6 +1321,18 @@ export const fixtureCases: FixtureCase[] = [
     },
   },
   {
+    schema: 'RealtimeSessionHelloResult',
+    name: 'server-behind',
+    valid: true,
+    note: 'Hello for a client newer than every sim version the instance serves.',
+    value: {
+      sessionId: '2a3b4c5d-6e7f-4a8b-9c0d-1e2f3a4b5c6d',
+      serverTime: NOW,
+      simSupported: false,
+      supportedSimVersions: [{ ...SIM_VERSION, versionMinor: SIM_VERSION.versionMinor - 1 }],
+    },
+  },
+  {
     schema: 'RealtimeAuthHandoffBeginResult',
     name: 'attempt',
     valid: true,

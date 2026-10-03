@@ -3,6 +3,7 @@
 
 #include "AITelemetryFields.h"
 #include "AINicowar.h"
+#include "AIStateSerialization.h"
 #include "FormatableString.h"
 #include <string>
 #include "Utilities.h"
@@ -47,6 +48,9 @@ NewNicowar::NewNicowar()
 
 bool NewNicowar::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
+	// Direct reloads must replace collections, rather than append to them.
+	*this = NewNicowar();
+	GAGCore::BinaryInputStream::CheckedReads checked(stream);
 	stream->readEnterSection("NewNicowar");
 	timer=stream->readUint32("timer");
 	if(versionMinor >= AI_NICOWAR_SAVE_FORMAT_V59)
@@ -55,7 +59,7 @@ bool NewNicowar::load(GAGCore::InputStream *stream, Player *player, Sint32 versi
 		{
 			std::string strategyName = stream->readText("strategy_name");
 			NicowarStrategyLoader loader;
-			strategy = loader.getParticularStrategy(strategyName);
+			if (!strategyName.empty()) strategy = loader.getParticularStrategy(strategyName);
 		}
 		else
 		{
@@ -143,9 +147,27 @@ bool NewNicowar::load(GAGCore::InputStream *stream, Player *player, Sint32 versi
 		}
 
 		exploration_on_fruit=stream->readUint8("exploration_on_fruit");
-		stream->readLeaveSection();
+		if (versionMinor >= AI_NICOWAR_SAVE_FORMAT_CONTINUATION)
+		{
+			const int defense = AIStateSerialization::readSint32(stream, "defend_explorers");
+			const int preparation = AIStateSerialization::readSint32(stream, "explorer_attack_preparation_phase");
+			const int attack = AIStateSerialization::readSint32(stream, "explorer_attack_phase");
+			if (defense < 0 || defense > 1 || preparation < 0 || preparation > 1 || attack < 0 || attack > 1)
+				return false;
+			defend_explorers = defense;
+			explorer_attack_preparation_phase = preparation;
+			explorer_attack_phase = attack;
+			starving_recovery_inns = AIStateSerialization::readSint32(stream, "starving_recovery_inns_full");
+			for (int n = 0; n < PlacementSize; ++n)
+			{
+				stream->readEnterSection(n);
+				buildings_under_construction_per_type[n] = AIStateSerialization::readSint32(stream, "construction_count_full");
+				stream->readLeaveSection();
+			}
+		}
 	}
-	return true;
+	stream->readLeaveSection();
+	return stream->isValid();
 }
 
 
@@ -229,6 +251,17 @@ void NewNicowar::save(GAGCore::OutputStream *stream)
 	stream->writeLeaveSection();
 
 	stream->writeUint8(exploration_on_fruit, "exploration_on_fruit");
+	stream->writeSint32(defend_explorers, "defend_explorers");
+	stream->writeSint32(explorer_attack_preparation_phase, "explorer_attack_preparation_phase");
+	stream->writeSint32(explorer_attack_phase, "explorer_attack_phase");
+	// Legacy byte fields above cannot represent all reachable queue counts.
+	stream->writeSint32(starving_recovery_inns, "starving_recovery_inns_full");
+	for (int n = 0; n < PlacementSize; ++n)
+	{
+		stream->writeEnterSection(n);
+		stream->writeSint32(buildings_under_construction_per_type[n], "construction_count_full");
+		stream->writeLeaveSection();
+	}
 	stream->writeLeaveSection();
 }
 

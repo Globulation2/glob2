@@ -799,7 +799,7 @@ void GameGUI::drawAll(int team)
 		connectionOverlay->draw(touch->usesHUD(), area, unit);
 	}
 
-	if (!torusView.active() && !touch->usesHUD()) drawMapZoomControls(camera, true, true);
+	if ((torusView.enabled() || !torusView.active()) && !touch->usesHUD()) drawMapZoomControls(camera, true, true);
 	// draw menu if any
 	if (inGameMenu)
 	{

@@ -318,7 +318,10 @@ void Game::drawMapOverview(int left, int top, int right, int bot, int viewportX,
 
 void Game::drawMapTerritory(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const Scene& scene, float opacity)
 {
-	const Uint8 alpha = Uint8(std::clamp(opacity, 0.f, 1.f) * 56);
+	// A wash strong enough to read over the terrain colours, inside a solid
+	// border: the edge of a colour shows where a faint tint of it does not.
+	opacity = std::clamp(opacity, 0.f, 1.f);
+	const Uint8 alpha = Uint8(opacity * 84), borderAlpha = Uint8(opacity * 235);
 	if (!alpha)
 		return;
 	PERF_SCOPE_TIME(Overlay);
@@ -363,7 +366,20 @@ void Game::drawMapTerritory(int left, int top, int right, int bot, int viewportX
 		const Uint16 cell = owner[size_t(std::min(cellY, gridH-1))*gridW + std::min(cellX, gridW-1)];
 		return cell==0xFFFF ? -1 : cell >> 8;
 	};
+	// Dark team colours vanish against dark ground, so every team's wash is
+	// brought up to the same brightness, keeping its hue.
+	const auto washColor = [&](int team, Uint8 a)
+	{
+		const GAGCore::Color &color = entities.teams[team].color;
+		const int brightest = std::max({int(color.r), int(color.g), int(color.b), 1});
+		const auto lift = [&](Uint8 channel) { return Uint8(std::min(255, 40 + channel * 215 / brightest)); };
+		return GAGCore::Color(lift(color.r), lift(color.g), lift(color.b), a);
+	};
+	// The border keeps its width on screen: two points, in map pixels.
+	GAGCore::GraphicContext *gfx = globalContainer->gfx;
+	const int border = std::clamp(int(std::lround(2 * gfx->logicalUnitsPerPoint() / gfx->mapTransformScale())), 1, 16);
 	for (int y=top; y<=bot; y++)
+	{
 		for (int x=left; x<=right;)
 		{
 			const int team = teamAt(x, y);
@@ -372,11 +388,33 @@ void Game::drawMapTerritory(int left, int top, int right, int bot, int viewportX
 				end++;
 			if (team>=0)
 			{
-				const GAGCore::Color &color = entities.teams[team].color;
-				globalContainer->gfx->drawMapFill(x*32, y*32, end*32, (y+1)*32, GAGCore::Color(color.r, color.g, color.b, alpha));
+				gfx->drawMapFill(x*32, y*32, end*32, (y+1)*32, washColor(team, alpha));
+				const GAGCore::Color edge = washColor(team, borderAlpha);
+				if (teamAt(x-1, y)!=team)
+					gfx->drawMapFill(x*32, y*32, x*32+border, (y+1)*32, edge);
+				if (teamAt(end, y)!=team)
+					gfx->drawMapFill(end*32-border, y*32, end*32, (y+1)*32, edge);
 			}
 			x = end;
 		}
+		// Top and bottom edges, in runs along the row.
+		for (int side=-1; side<=1; side+=2)
+			for (int x=left; x<=right;)
+			{
+				const int team = teamAt(x, y);
+				if (team<0 || teamAt(x, y+side)==team)
+				{
+					x++;
+					continue;
+				}
+				int end = x+1;
+				while (end<=right && teamAt(end, y)==team && teamAt(end, y+side)!=team)
+					end++;
+				const int edgeY = side<0 ? y*32 : (y+1)*32-border;
+				gfx->drawMapFill(x*32, edgeY, end*32, edgeY+border, washColor(team, borderAlpha));
+				x = end;
+			}
+	}
 }
 
 void Game::drawMapDebugAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view)

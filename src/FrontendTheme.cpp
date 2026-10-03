@@ -23,6 +23,15 @@ FrontendTheme::FrontendTheme() : original(Style::style)
 {
 	current = this;
 	colony = std::make_unique<MenuColony>();
+#ifdef __EMSCRIPTEN__
+	// Browser startup includes game sprites. Prepare the colony while the HTML
+	// loading page is still visible, before Launcher reveals the menu.
+	if (globalContainer->ensureGameGraphics())
+	{
+		attempted = true;
+		colony->load();
+	}
+#endif
 	const auto &palette = Glob2UI::frontendTheme().palette;
 	textColor = palette.ink;
 	highlightColor = palette.hover;
@@ -30,9 +39,12 @@ FrontendTheme::FrontendTheme() : original(Style::style)
 	backColor = palette.panel;
 	for (int i = 0; i < 3; ++i)
 		originalFonts[i] = Toolkit::getFont(fontNames[i])->getStyle();
-	fallback = std::make_unique<DrawableSurface>(1, 1);
-	if (!fallback->loadImage("data/gfx/menu-colony.png"))
-		fallback.reset();
+	if (!colony->ready())
+	{
+		fallback = std::make_unique<DrawableSurface>(1, 1);
+		if (!fallback->loadImage("data/gfx/menu-colony.png"))
+			fallback.reset();
+	}
 }
 FrontendTheme::~FrontendTheme()
 {
@@ -88,8 +100,7 @@ void FrontendTheme::onFrame()
 {
 	if (!painted)
 		return; // Present the still before doing any loading work.
-	// The colony draws with the game sprites, which the browser installs after
-	// the main menu; the still image stands in until then.
+	// Hosts without startup sprites keep the still image until graphics arrive.
 	if (!attempted && globalContainer->ensureGameGraphics())
 	{
 		attempted = true;

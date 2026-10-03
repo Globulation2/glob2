@@ -21,8 +21,16 @@ for (const name of [
 glob2ThreadedEGL.$setCanvasElementSizeCallingThread__postset = `
   var glob2OriginalCanvasResize = setCanvasElementSizeCallingThread;
   setCanvasElementSizeCallingThread = (target, width, height) => {
-    var canvas = findCanvasEventTarget(target);
-    canvas = canvas?.offscreenCanvas || canvas;
+    var targetCanvas = findCanvasEventTarget(target);
+    var canvas = targetCanvas?.offscreenCanvas || targetCanvas;
+    // Assigning identical DOM canvas dimensions clears its pixels. SDL can
+    // repeat these requests after presentation; keep software frames visible.
+    // Transferred/GPU canvases still need the SDK's viewport and owner handling.
+    if (canvas && !targetCanvas.offscreenCanvas && !targetCanvas.controlTransferredOffscreen &&
+        !canvas.GLctxObject && canvas.width === width && canvas.height === height &&
+        (!canvas.canvasSharedPtr ||
+         (HEAP32[canvas.canvasSharedPtr >> 2] === width &&
+          HEAP32[(canvas.canvasSharedPtr + 4) >> 2] === height))) return 0;
     var context = canvas?.GLctxObject;
     if (!context?.GLctx?.isContextLost())
       return glob2OriginalCanvasResize(target, width, height);

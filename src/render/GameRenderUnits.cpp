@@ -213,16 +213,16 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 
 	if ((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0 )
 	{
-		// A hungry or hurt unit keeps its bar further out than a healthy one.
+		// A hungry or hurt unit keeps a status pip once every bar has faded.
 		const int food=(unit->hungry*10)/Unit::HUNGRY_MAX;
 		const bool hungry=food<=1;
 		const bool hurt=unit->hp*10<=unit->performance[HP]*6;
-		anchorBars(px+16, py+25, hungry, drawnRender, opacity);
+		anchorBars(px+16, py+25, drawnRender, opacity);
 		drawPointBar(px+1, py+25, LEFT_TO_RIGHT, 10, food, 80, 179, 223, 2, drawnRender, opacity);
 
 		// At or below the ratio where the health bar stops being green.
 		float hpRatio=(float)unit->hp/(float)unit->performance[HP];
-		anchorBars(px+16, py+25, hurt, drawnRender, opacity);
+		anchorBars(px+16, py+25, drawnRender, opacity);
 		drawHealthBar(px+1, py+25+3, 10, 1+(int)(9*hpRatio), hpRatio, drawnRender, opacity);
 		if (hurt)
 			drawStatusPip(px+16, py+28, 255, 0, 0, drawnRender, opacity);

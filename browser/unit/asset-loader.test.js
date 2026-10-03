@@ -190,3 +190,44 @@ test('on-demand requests share a load and throttle failed retries', async () => 
   assert.equal(calls, 2);
   assert.equal(environment.files.get('/maps/b.map'), 'efghi');
 });
+
+// Exercise the actual Emscripten pre-js integration, with a delayed sprite
+// transfer. Core finishing must not release startup before game is installed.
+test('startup downloads core and game together and waits for both installations', async () => {
+  const packages = manifest();
+  packages.packages.push({name:'game', optional:true, size:3, parts:[
+    {url:'assets/game.ffffffffffffffff.data', size:3, files:[['/data/unit.txt', 0, 3]]}]});
+  const environment = host();
+  let release;
+  const gate = new Promise(resolve => { release = resolve; });
+  const dependencies = new Set();
+  const context = vm.createContext({
+    Module:{glob2AssetManifest:packages}, window:{}, document:{baseURI:'https://example.test/play/'},
+    URL, Uint8Array, Response:environment.Response, caches:environment.caches, FS:environment.fs,
+    fetch:async url => {
+      if (url.includes('/game.')) {
+        environment.requests.push(url);
+        await gate;
+        return response(['xyz']);
+      }
+      return environment.fetch(url);
+    },
+    addRunDependency:name => dependencies.add(name),
+    removeRunDependency:name => dependencies.delete(name),
+  });
+  vm.runInContext(readFileSync(path.join(__dirname, '../asset-loader.js'), 'utf8'), context);
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(environment.requests.length, 2, 'both downloads start before preRun');
+  context.Module.preRun.forEach(callback => callback());
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(context.Module.glob2Assets.states.core, 'ready');
+  assert.equal(context.Module.glob2Assets.states.game, 'downloading');
+  assert.deepEqual([...dependencies], ['glob2-assets-game']);
+  assert.equal(environment.files.has('/data/unit.txt'), false);
+  release();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(context.Module.glob2Assets.states.game, 'ready');
+  assert.equal(dependencies.size, 0);
+  assert.equal(environment.files.get('/data/unit.txt'), 'xyz');
+  assert.equal(environment.requests.length, 2, 'startup does not fetch either package twice');
+});

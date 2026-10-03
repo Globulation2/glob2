@@ -53,6 +53,13 @@ class OnlineHubScreen : public Glob2UI::Screen
 			Offline,
 			UpdateRequired
 		} link = Link::Connecting;
+		// With UpdateRequired: which side is out of date, when the server says.
+		enum class Outdated
+		{
+			Unknown,
+			Client,
+			Server
+		} outdated = Outdated::Unknown;
 		int retryInSeconds = 0;
 		std::string displayName, accountKind, accountId;
 		std::vector<std::string> linkedProviders;

@@ -14,6 +14,9 @@
 
 #pragma once
 
+// First format preserving all controller decision clocks/phase latches.
+static constexpr int AI_NUMBI_SAVE_FORMAT_CONTINUATION = 132;
+
 // ----------------------------------------------------------------------------
 // Phase / attack timer defaults (init values)
 // ----------------------------------------------------------------------------

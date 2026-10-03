@@ -158,6 +158,17 @@ class PlatformClient
 	{
 		return simIsSupported;
 	}
+	// Which side is out of date when the sim version is unsupported, from the
+	// versions the server listed in session.hello. Unknown when it listed none
+	// (an older server) or only versions that differ in data alone.
+	enum class SimMismatch
+	{
+		None,
+		ClientBehind,
+		ServerBehind,
+		Unknown
+	};
+	SimMismatch simMismatch() const;
 	const std::string &sessionId() const
 	{
 		return session;
@@ -316,6 +327,7 @@ class PlatformClient
 	Backoff backoff;
 	std::string session;
 	bool simIsSupported = false;
+	std::vector<SimVersion> servedSims;
 	std::string problem;
 
 	AuthTokens tokens;

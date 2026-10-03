@@ -34,7 +34,7 @@ is not started until a screen calls `client.start(origin)`.
 | `start(origin)` / `stop()` | Sign in and connect to an instance (normalized origin); `stop` closes everything and fails outstanding requests with `cancelled`. |
 | `connection()` | `Stopped`, `Connecting`, `Handshaking` (`session.hello` sent), `Online`, `Waiting` (backoff; `retryInMs()`, `retryNow()`). |
 | `auth()`, `account()` | `SignedOut`, `SigningIn`, `SignedIn`; the `SelfAccount` fields `id`, `displayName`, `kind`, `role`, plus `raw` JSON. |
-| `simSupported()`, `sessionId()`, `lastError()` | From `session.hello`; the last connection or sign-in problem for a status line. |
+| `simSupported()`, `simMismatch()`, `sessionId()`, `lastError()` | From `session.hello`, including whether this client or the server is behind when the sim version is not served; the last connection or sign-in problem for a status line. |
 | `request(method, params, handler, timeoutMs)` | A realtime request. Queued until the socket is online; the handler receives `{ok, result, error}` exactly once, or never after `cancelRequest(id)`. |
 | `addListener(event, handler)` | Server events by name (`""` for all), e.g. `room.state`, `match.start`. `addStateListener` fires on any connection, auth, account or handoff change. |
 | `rest(method, path, body, handler)` | An authenticated REST call (`Authorization: Bearer`). A 401 refreshes the token once and retries. `refreshAccount()` and `rename(name)` wrap `/api/v1/accounts/me`. |

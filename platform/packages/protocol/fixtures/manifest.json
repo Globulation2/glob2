@@ -576,6 +576,12 @@
       "note": "Hello answered for a signed-in guest."
     },
     {
+      "file": "valid/RealtimeSessionHelloResult/server-behind.json",
+      "schema": "RealtimeSessionHelloResult",
+      "valid": true,
+      "note": "Hello for a client newer than every sim version the instance serves."
+    },
+    {
       "file": "valid/RealtimeAuthHandoffBeginResult/attempt.json",
       "schema": "RealtimeAuthHandoffBeginResult",
       "valid": true,

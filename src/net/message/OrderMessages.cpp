@@ -2,6 +2,7 @@
 // Copyright (C) 2007 Bradley Arsenault
 
 #include "OrderMessages.h"
+#include <TextStream.h>
 #include <iostream>
 #include <sstream>
 #include <vector>
@@ -62,7 +63,7 @@ void NetSendOrder::decodeData(GAGCore::InputStream* stream)
 	// only as ios_base::failure and therefore miss) or waste a large
 	// allocation before the downstream "bad format" path fires. The buffer
 	// below is RAII-managed so any subsequent throw can't leak it.
-	if (size > MAX_NET_SEND_ORDER_SIZE)
+	if (size == 0 || size > MAX_NET_SEND_ORDER_SIZE)
 	{
 		std::ostringstream msg;
 		msg << "NetSendOrder size " << size << " exceeds max " << MAX_NET_SEND_ORDER_SIZE;
@@ -70,8 +71,14 @@ void NetSendOrder::decodeData(GAGCore::InputStream* stream)
 	}
 
 	std::vector<Uint8> buffer(size);
-	stream->read(buffer.data(), size, "data");
-	stream->readLeaveSection();
+	if (dynamic_cast<GAGCore::TextInputStream *>(stream))
+	{
+		// Binary streams concatenate orderType and data; named text fields do not.
+		buffer[0] = stream->readUint8("orderType");
+		stream->read(buffer.data()+1, size-1, "data");
+	}
+	else
+		stream->read(buffer.data(), size, "data");
 
 	order = Order::getOrder(buffer.data(), size, decodeVersionMinor);
 
@@ -81,6 +88,7 @@ void NetSendOrder::decodeData(GAGCore::InputStream* stream)
 
 	order->sender = stream->readUint8("sender");
 	order->gameCheckSum = stream->readUint32("checksum");
+	stream->readLeaveSection();
 }
 
 std::string NetSendOrder::format() const
