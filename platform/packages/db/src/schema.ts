@@ -31,6 +31,7 @@ export interface AccountsTable {
   updated_at: Timestamp;
   last_seen_at: NullableTimestamp;
   display_name_changed_at: NullableTimestamp;
+  deleted_at: NullableTimestamp;
 }
 
 export interface IdentitiesTable {
@@ -183,6 +184,12 @@ export interface EngineJobsTable {
   lease_token_hash: Nullable<string>;
   lease_expires_at: NullableTimestamp;
   reported_at: NullableTimestamp;
+}
+
+export interface AccountNameScrubsTable {
+  account_id: string;
+  match_id: string;
+  created_at: Timestamp;
 }
 
 export interface RateLimitsTable {
@@ -646,6 +653,7 @@ export interface Database {
   generated_maps: GeneratedMapsTable;
   warm_maps: WarmMapsTable;
   rate_limits: RateLimitsTable;
+  account_name_scrubs: AccountNameScrubsTable;
   match_results_view: MatchResultsView;
   recent_win_rates_view: RecentWinRatesView;
   recent_game_lengths_view: RecentGameLengthsView;

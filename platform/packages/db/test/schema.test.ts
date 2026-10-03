@@ -24,6 +24,7 @@ const typedColumns: ColumnLists = {
     'updated_at',
     'last_seen_at',
     'display_name_changed_at',
+    'deleted_at',
   ],
   identities: [
     'id',
@@ -419,6 +420,7 @@ const typedColumns: ColumnLists = {
     'taken_at',
   ],
   rate_limits: ['bucket', 'key', 'window_start', 'count', 'previous_count'],
+  account_name_scrubs: ['account_id', 'match_id', 'created_at'],
   match_results_view: [
     'match_id',
     'origin',

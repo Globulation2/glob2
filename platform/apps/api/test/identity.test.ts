@@ -519,7 +519,9 @@ describe('administration', () => {
       .orderBy('id')
       .execute();
     expect(audit.map((a) => a.action)).toEqual(['account.delete', 'account.delete']);
-    expect(audit[0]!.details).toMatchObject({ displayName: 'UxReviewTester', removedMaps: 1 });
+    // Ids, not names: the audit log keeps nothing that identifies the person.
+    expect(audit[0]!.details).toMatchObject({ kind: 'registered', removedMaps: 1 });
+    expect(JSON.stringify(audit)).not.toContain('UxReviewTester');
   });
 
   it('generates signing keys from the CLI', async () => {

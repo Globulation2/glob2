@@ -15,6 +15,7 @@ import {
 } from '@glob2/core';
 import { LeaderElection, createDatabase } from '@glob2/db';
 import { ENGINE_RESULT_TASK } from '@glob2/protocol';
+import { scrubSettledMatchNames } from './accountScrub.ts';
 import { runMaintenance } from './maintenance.ts';
 import { Matchmaker } from './matchmaking/matchmaker.ts';
 import { PgQueueNotifier } from './matchmaking/notifier.ts';
@@ -90,6 +91,12 @@ try {
       },
     },
     { name: 'rating sweep', intervalMs: 30_000, run: () => applyPendingRatings(database.db) },
+    {
+      // Names of deleted accounts in matches that have settled since.
+      name: 'deleted names',
+      intervalMs: 60_000,
+      run: async () => void (await scrubSettledMatchNames(database.db)),
+    },
     {
       // Engine jobs whose agent stopped answering on the last attempt.
       name: 'abandoned engine jobs',

@@ -130,6 +130,14 @@ export const SignOutRequest = Strict({
 /** PATCH /api/v1/accounts/me */
 export const UpdateAccountRequest = Strict({ displayName: DisplayName });
 
+/**
+ * DELETE /api/v1/accounts/me: deletes the caller's account for good. The
+ * caller types the account's current display name to confirm.
+ */
+export const DeleteAccountRequest = Strict({
+  confirmDisplayName: Type.String({ minLength: 1, maxLength: 64 }),
+});
+
 /** Local usernames: lowercase letters, digits, '.', '_' and '-'; compared case-insensitively. */
 export const LocalUsername = Type.String({ pattern: '^[A-Za-z0-9._-]{3,32}$' });
 export const LocalPassword = Type.String({ minLength: 10, maxLength: 256 });
@@ -727,6 +735,7 @@ export type LinkedIdentity = Static<typeof LinkedIdentity>;
 export type DeviceCredential = Static<typeof DeviceCredential>;
 export type RefreshRequest = Static<typeof RefreshRequest>;
 export type SignOutRequest = Static<typeof SignOutRequest>;
+export type DeleteAccountRequest = Static<typeof DeleteAccountRequest>;
 export type UpdateAccountRequest = Static<typeof UpdateAccountRequest>;
 export type AuthProviderInfo = Static<typeof AuthProviderInfo>;
 export type RoomVisibility = Static<typeof RoomVisibility>;

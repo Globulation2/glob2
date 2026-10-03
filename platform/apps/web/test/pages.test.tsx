@@ -232,6 +232,7 @@ beforeAll(async () => {
     import('../src/pages/Maps.tsx'),
     import('../src/pages/Match.tsx'),
     import('../src/pages/Player.tsx'),
+    import('../src/pages/Account.tsx'),
   ]);
 });
 
@@ -376,6 +377,39 @@ describe('pages', () => {
     expect(await screen.findByText('This page is for moderators.')).toBeTruthy();
     expect(screen.getByTestId('account-chip').textContent).toContain('Bob');
     expect(screen.queryByRole('link', { name: 'Moderation' })).toBeNull();
+  });
+
+  it('deletes the account only after the name is typed', async () => {
+    me = {
+      ...account(BOB, 'Bob'),
+      role: 'user',
+      status: 'active',
+      identities: [{ provider: 'local', linkedAt: NOW }],
+      entitlements: [],
+    };
+    const deletes: unknown[] = [];
+    type Fetch = (input: string, init?: RequestInit) => Promise<Response>;
+    const stub = vi.mocked(globalThis.fetch as unknown as Fetch);
+    const original = stub.getMockImplementation()!;
+    stub.mockImplementation(async (input: string, init?: RequestInit) => {
+      if (init?.method === 'DELETE' && input === '/api/v1/accounts/me') {
+        deletes.push(JSON.parse(String(init.body)));
+        me = undefined;
+        return new Response(null, { status: 204 });
+      }
+      return original(input, init);
+    });
+    open('/account');
+    expect(await screen.findByText('Delete my account')).toBeTruthy();
+    const button = screen.getByRole('button', { name: 'Delete my account for good' });
+    expect((button as HTMLButtonElement).disabled).toBe(true);
+    const input = screen.getByLabelText(/Type your name, Bob, to confirm/);
+    fireEvent.change(input, { target: { value: 'bob' } });
+    expect((button as HTMLButtonElement).disabled).toBe(true);
+    fireEvent.change(input, { target: { value: 'Bob' } });
+    fireEvent.click(button);
+    expect(await screen.findByText('Your account was deleted')).toBeTruthy();
+    expect(deletes).toEqual([{ confirmDisplayName: 'Bob' }]);
   });
 });
 

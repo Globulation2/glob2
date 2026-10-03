@@ -226,6 +226,18 @@ export async function applyGrants(client: Queryable): Promise<void> {
   if (tables.has('admin_audit_log')) {
     await client.query(`REVOKE UPDATE, DELETE, TRUNCATE ON admin_audit_log FROM ${ident(api)}`);
   }
+  // Only account deletion (the API) scrubs the audit log.
+  const { rows: scrub } = await client.query(
+    `SELECT 1 FROM pg_proc WHERE proname = 'scrub_audit_log_account'`,
+  );
+  if (scrub.length > 0) {
+    await client.query(
+      `REVOKE EXECUTE ON FUNCTION scrub_audit_log_account(uuid, text[]) FROM PUBLIC, ${ident(worker)}`,
+    );
+    await client.query(
+      `GRANT EXECUTE ON FUNCTION scrub_audit_log_account(uuid, text[]) TO ${ident(api)}`,
+    );
+  }
   for (const table of WORKER_DENIED_TABLES) {
     if (!tables.has(table)) continue;
     await client.query(`REVOKE ALL ON ${ident(table)} FROM ${ident(worker)}`);

@@ -19,6 +19,7 @@ const MapPage = lazy(() => import('./pages/Maps.tsx').then((m) => ({ default: m.
 const MapUpload = lazy(() => import('./pages/Maps.tsx').then((m) => ({ default: m.MapUpload })));
 const Match = lazy(() => import('./pages/Match.tsx').then((m) => ({ default: m.Match })));
 const Player = lazy(() => import('./pages/Player.tsx').then((m) => ({ default: m.Player })));
+const Account = lazy(() => import('./pages/Account.tsx').then((m) => ({ default: m.Account })));
 
 /** Where the game's source and artwork credits live. */
 const SOURCE_URL = 'https://github.com/Globulation2/glob2';
@@ -58,6 +59,7 @@ export const ROUTES: Route[] = [
     title: 'Match',
     render: (p) => <Match key={p['id']} id={p['id'] ?? ''} />,
   },
+  { pattern: '/account', section: 'account', title: 'Your account', render: () => <Account /> },
   { pattern: '/maps', section: 'maps', title: 'Maps', render: () => <Maps mine={false} /> },
   { pattern: '/maps/mine', section: 'maps', title: 'My maps', render: () => <Maps mine /> },
   { pattern: '/maps/new', section: 'maps', title: 'Upload a map', render: () => <MapUpload /> },
@@ -101,7 +103,7 @@ function AccountChip() {
   }
   return (
     <>
-      <Link className="chip" to={`/players/${account.id}`} data-testid="account-chip">
+      <Link className="chip" to="/account" data-testid="account-chip">
         <Avatar account={account} size="small" />
         <span>{account.displayName}</span>
       </Link>
