@@ -213,6 +213,15 @@ void LanLink::pump()
 	}
 }
 
+NetWaitStatus LanLink::waitHandles(std::vector<NetWaitHandle>& handles) const
+{
+	if (failed || !transport)
+		return NetWaitStatus::Idle;
+	if (!frames.empty())
+		return NetWaitStatus::Ready;
+	return transport->waitHandles(handles);
+}
+
 bool LanLink::receive(std::vector<std::uint8_t>& payload)
 {
 	if (frames.empty())

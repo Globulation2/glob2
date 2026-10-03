@@ -482,7 +482,7 @@ CLIENT_SOURCES = (
     'OnlineHubScreen.cpp',
     'RoomMapPickerScreen.cpp',
     'RoomScreen.cpp',
-    'net/NetTransport.cpp', 'net/TcpTransport.cpp',
+    'net/NetTransport.cpp', 'net/TcpTransport.cpp', 'net/NetWait.cpp',
     'net/NetworkConfig.cpp',
     'net/LanIdentity.cpp',
     'net/WssTransport.cpp',

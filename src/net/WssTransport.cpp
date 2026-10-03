@@ -46,6 +46,10 @@ class WssTransport final : public NetTransport
 		std::string host, authority, service, route, fingerprint, failure, peer;
 		beast::http::request_parser<beast::http::empty_body> request;
 		bool writing = false, readPaused = false;
+		// The last poll() ran its whole handler budget: more completions may be queued.
+		bool saturated = false;
+		// Accepted by a listener (rather than opened by this side).
+		bool accepted = false;
 		// Unread messages kept before reading pauses (with queueLimit bytes): about
 		// three minutes of relay bundles at 25 per second.
 		static constexpr size_t incomingMessageLimit = 4096;
@@ -131,6 +135,7 @@ class WssTransport final : public NetTransport
 				std::shared_ptr<ssl::context> serverContext)
 			: tls(std::move(serverContext)), mode(config.messageMode)
 		{
+			this->accepted = true;
 			peer = canonicalAddress(accepted.remote_endpoint().address());
 			const auto protocol = accepted.local_endpoint().protocol();
 			beast::get_lowest_layer(socket).socket().assign(protocol, accepted.release());
@@ -252,9 +257,40 @@ class WssTransport final : public NetTransport
 		void poll()
 		{
 			io.restart();
-			for (unsigned i = 0; i < 16 && io.poll_one(); ++i)
-			{
-			}
+			unsigned i = 0;
+			while (i < 16 && io.poll_one())
+				++i;
+			saturated = i == 16;
+		}
+		NetWaitStatus waitHandles(std::vector<NetWaitHandle> &out)
+		{
+#ifdef _WIN32
+			// Sockets complete through the I/O completion port, which a readiness
+			// poll does not see.
+			(void)out;
+			return NetWaitStatus::Unsupported;
+#else
+			poll();
+			if (status == State::Closed)
+				return NetWaitStatus::Idle;
+			if (saturated || !incoming.empty())
+				return NetWaitStatus::Ready;
+			// An outgoing connection resolves on asio's resolver thread and then
+			// waits for its own connect and handshake: poll it on a timer.
+			if (status == State::Connecting && !accepted)
+				return NetWaitStatus::Unsupported;
+			auto &lowest = beast::get_lowest_layer(socket).socket();
+			if (!lowest.is_open())
+				return NetWaitStatus::Idle;
+			NetWaitHandle handle;
+			handle.socket = static_cast<std::intptr_t>(lowest.native_handle());
+			// A handshaking server connection waits for the client's next message.
+			handle.read = status == State::Connecting || !readPaused;
+			handle.write = writing;
+			if (handle.read || handle.write)
+				out.push_back(handle);
+			return NetWaitStatus::Idle;
+#endif
 		}
 		void read()
 		{
@@ -451,6 +487,10 @@ class WssTransport final : public NetTransport
 	{
 		return mode == NetMessageMode::Binary && takeMessage(bytes);
 	}
+	NetWaitStatus waitHandles(std::vector<NetWaitHandle> &out) const override
+	{
+		return session ? session->waitHandles(out) : NetWaitStatus::Idle;
+	}
 	class Listener final : public NetTransportListener
 	{
 		asio::io_context io;
@@ -537,6 +577,39 @@ class WssTransport final : public NetTransport
 		bool listening() const override
 		{
 			return acceptor.is_open();
+		}
+		NetWaitStatus waitHandles(std::vector<NetWaitHandle> &out) const override
+		{
+#ifdef _WIN32
+			(void)out;
+			return NetWaitStatus::Unsupported;
+#else
+			NetWaitStatus result = NetWaitStatus::Idle;
+			size_t live = 0;
+			for (const auto &weak : activeSessions)
+			{
+				auto session = weak.lock();
+				if (session && session->status != State::Closed)
+					++live;
+			}
+			// At the connection limit, waiting connections stay in the backlog
+			// until accept() has room: do not wake for them.
+			if (acceptor.is_open() && live < config.connectionLimit)
+			{
+				NetWaitHandle handle;
+				handle.socket = static_cast<std::intptr_t>(
+					const_cast<tcp::acceptor &>(acceptor).native_handle());
+				handle.read = true;
+				out.push_back(handle);
+			}
+			for (const auto &session : pending)
+			{
+				if (session->waitHandles(out) != NetWaitStatus::Idle ||
+					session->status == State::Connected)
+					result = NetWaitStatus::Ready;
+			}
+			return result;
+#endif
 		}
 	};
 };
