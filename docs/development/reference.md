@@ -139,7 +139,8 @@ python3 test/run_tests.py      # run them; --list, --filter, --tag, --shard
   default-branch code, and cancels allowlisted event-triggered validation left
   behind by updates or closed/merged PRs, including forks. It never executes PR
   code or cancels manual releases. Its sweep can clear obsolete pending master
-  pushes but protects running master and scheduled runs. Closed-PR caches and old
+  pushes but protects master once any job has begun (including between jobs),
+  even when the workflow API reports it as queued, and protects scheduled runs. Closed-PR caches and old
   master cache generations are reclaimed on closure and in a daily sweep.
 
 For headless games, use the client binary's `--nox <game-file> <steps> <runs>`
