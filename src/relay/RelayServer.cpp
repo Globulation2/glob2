@@ -6,6 +6,7 @@
 #include "JwksStore.h"
 #include "MatchDirectory.h"
 #include "MatchReport.h"
+#include "NetFrame.h"
 #include "RelayLog.h"
 #include "RelayMetrics.h"
 #include "TicketVerifier.h"
@@ -413,10 +414,7 @@ public:
 			abort();
 			return;
 		}
-		auto frame = std::make_shared<std::vector<std::uint8_t>>(payload.size() + 2);
-		(*frame)[0] = static_cast<std::uint8_t>(payload.size() >> 8);
-		(*frame)[1] = static_cast<std::uint8_t>(payload.size() & 0xff);
-		std::copy(payload.begin(), payload.end(), frame->begin() + 2);
+		auto frame = std::make_shared<std::vector<std::uint8_t>>(NetFrame::encode(payload));
 		outBytes += frame->size();
 		outgoing.push_back(std::move(frame));
 		pump();
@@ -537,7 +535,7 @@ private:
 	asio::awaitable<void> readLoop()
 	{
 		beast::flat_buffer buffer;
-		std::vector<std::uint8_t> pending;
+		NetFrame::Reader pending;
 		for (;;)
 		{
 			buffer.clear();
@@ -551,25 +549,20 @@ private:
 			}
 			const auto data = buffer.data();
 			const auto* bytes = static_cast<const std::uint8_t*>(data.data());
-			if (pending.size() + data.size() > MAX_PENDING_BYTES)
+			if (!pending.append(bytes, data.size(), MAX_PENDING_BYTES))
 			{
 				reject(Turn::RejectReason::Malformed, "Frame stream overflow");
 				continue;
 			}
-			pending.insert(pending.end(), bytes, bytes + data.size());
-			std::size_t offset = 0;
-			while (!detached && pending.size() - offset >= 2)
+			std::vector<std::uint8_t> payload;
+			while (!detached && pending.next(payload))
 			{
-				const std::size_t length = (std::size_t(pending[offset]) << 8) | pending[offset + 1];
+				const std::size_t length = payload.size();
 				if (length == 0)
 				{
 					reject(Turn::RejectReason::Malformed, "Empty frame");
 					break;
 				}
-				if (pending.size() - offset - 2 < length)
-					break;
-				std::vector<std::uint8_t> payload(pending.begin() + offset + 2, pending.begin() + offset + 2 + length);
-				offset += length + 2;
 				++server.metrics.framesIn;
 				server.metrics.bytesIn += length;
 				if (!takeToken())
@@ -580,7 +573,6 @@ private:
 				}
 				co_await handleFrame(std::move(payload));
 			}
-			pending.erase(pending.begin(), pending.begin() + static_cast<std::ptrdiff_t>(std::min(offset, pending.size())));
 		}
 	}
 

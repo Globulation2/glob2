@@ -25,6 +25,7 @@
 #include <nlohmann/json.hpp>
 
 #include "MatchSetup.h"
+#include "NetFrame.h"
 #include "NetTransport.h"
 
 namespace Lan
@@ -95,7 +96,7 @@ namespace Lan
 	private:
 		void pump();
 		std::unique_ptr<NetTransport> transport;
-		std::vector<std::uint8_t> pending;
+		NetFrame::Reader reader;
 		std::deque<std::vector<std::uint8_t>> frames;
 		std::deque<std::vector<std::uint8_t>> outbox;
 		std::size_t outboxBytes = 0;
