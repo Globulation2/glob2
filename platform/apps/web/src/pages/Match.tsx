@@ -334,6 +334,9 @@ function Economy({ detail }: { detail: MatchDetail }) {
   const [pick, setPick] = useState(0);
   const curve = curves[pick];
   if (!curve) return null;
+  // Until the player has other matches the "average" is this match again:
+  // two identical lines that say nothing, so the section waits for history.
+  if (!curves.some((c) => c.points.some((p) => p.gamesAtTick > 1))) return null;
   const name =
     detail.match.participants.find((p) => p.accountId === curve.accountId)?.displayName ?? 'Player';
   return (
@@ -467,11 +470,59 @@ function Replay({ detail }: { detail: MatchDetail }) {
   );
 }
 
+/** Final statistics in reading order, with names a player recognises. */
+const STATISTICS: { key: string; label: string; yesNo?: boolean; sameAs?: string }[] = [
+  { key: 'alive', label: 'Colony still standing', yesNo: true },
+  { key: 'units', label: 'Globs' },
+  { key: 'totalUnits', label: 'Globs (all)', sameAs: 'units' },
+  { key: 'workers', label: 'Workers' },
+  { key: 'explorers', label: 'Explorers' },
+  { key: 'warriors', label: 'Warriors' },
+  { key: 'buildings', label: 'Buildings' },
+  { key: 'totalBuildings', label: 'Finished buildings', sameAs: 'buildings' },
+  { key: 'sites', label: 'Buildings under construction' },
+  { key: 'food', label: 'Food in inns' },
+  { key: 'foodCapacity', label: 'Inn capacity' },
+  { key: 'needFood', label: 'Hungry globs' },
+  { key: 'totalHp', label: 'Total health' },
+  { key: 'warriorHp', label: 'Warrior health' },
+  { key: 'warriorAttack', label: 'Warrior attack' },
+  { key: 'totalAttackPower', label: 'Attack power' },
+  { key: 'totalDefensePower', label: 'Defence power' },
+];
+
+/** "needFood" → "Need food", for statistics this page has no name for. */
+export function statisticLabel(key: string): string {
+  const words = key
+    .replace(/_/g, ' ')
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    .toLowerCase()
+    .trim();
+  return words.charAt(0).toUpperCase() + words.slice(1);
+}
+
 function Statistics({ detail }: { detail: MatchDetail }) {
   const count = teamCount(detail);
-  const keys = [...new Set(detail.teams.flatMap((t) => Object.keys(t.statistics)))].sort();
-  if (keys.length === 0) return null;
-  const label = (key: string) => key.replace(/([A-Z])/g, ' $1').toLowerCase();
+  const present = new Set(detail.teams.flatMap((t) => Object.keys(t.statistics)));
+  if (present.size === 0) return null;
+  const known = new Set(STATISTICS.map((s) => s.key));
+  const rows = [
+    ...STATISTICS.filter(
+      (s) =>
+        present.has(s.key) &&
+        // Skip a total that repeats another row for every team.
+        !(
+          s.sameAs &&
+          detail.teams.every((t) => t.statistics[s.key] === t.statistics[s.sameAs ?? ''])
+        ),
+    ),
+    ...[...present]
+      .filter((key) => !known.has(key))
+      .sort()
+      .map((key) => ({ key, label: statisticLabel(key), yesNo: false })),
+  ];
+  const value = (row: { key: string; yesNo?: boolean }, v: number | undefined) =>
+    v === undefined ? '–' : row.yesNo ? (v ? 'Yes' : 'No') : v;
   return (
     <>
       <h2>Final statistics</h2>
@@ -492,19 +543,19 @@ function Statistics({ detail }: { detail: MatchDetail }) {
           </thead>
           <tbody>
             <tr>
-              <td>prestige</td>
+              <td>Prestige</td>
               {detail.teams.map((t) => (
                 <td key={t.team} className="num">
                   {t.prestige}
                 </td>
               ))}
             </tr>
-            {keys.map((key) => (
-              <tr key={key}>
-                <td>{label(key)}</td>
+            {rows.map((row) => (
+              <tr key={row.key}>
+                <td>{row.label}</td>
                 {detail.teams.map((t) => (
                   <td key={t.team} className="num">
-                    {t.statistics[key] ?? '–'}
+                    {value(row, t.statistics[row.key])}
                   </td>
                 ))}
               </tr>
@@ -520,7 +571,7 @@ export function Match({ id }: { id: string }) {
   const { instance } = useSession();
   const load = useLoad((signal) => api.match(id, signal), [id]);
   return (
-    <Loaded load={load}>
+    <Loaded load={load} page="Match">
       {(detail) => {
         const m = detail.match;
         const kind =
