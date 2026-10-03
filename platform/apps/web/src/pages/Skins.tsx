@@ -424,7 +424,8 @@ function SkinDesigner() {
               <p>
                 {skin.kind === 'preset' ? 'Premade skin' : 'Your design'}{' '}
                 <span
-                  aria-label="Building color"
+                  role="img"
+                  aria-label={`Building color #${skin.buildingColor.toString(16).padStart(6, '0')}`}
                   style={{
                     display: 'inline-block',
                     width: 16,
