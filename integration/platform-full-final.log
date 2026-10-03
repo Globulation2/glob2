@@ -1,0 +1,13 @@
+
+> test
+> vitest run
+
+
+ RUN  v5.0.3 /home/bradley/.codex/worktrees/colony-skins/glob2/platform
+
+
+ Test Files  48 passed | 1 skipped (49)
+      Tests  362 passed | 5 skipped (367)
+   Start at  07:29:13
+   Duration  38.24s (tests 63%, import 20%, transform 16%, environment 1%)
+

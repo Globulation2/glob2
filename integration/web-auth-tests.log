@@ -1,0 +1,3 @@
+{"browser":"chromium","result":{"checked":20,"failed":0,"outstanding":0},"errors":[]}
+{"browser":"firefox","result":{"checked":20,"failed":0,"outstanding":0},"errors":[]}
+{"browser":"webkit","result":{"checked":20,"failed":0,"outstanding":0},"errors":[]}
