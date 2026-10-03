@@ -67,7 +67,7 @@ struct SheetFixture
 	}
 	void index(const std::string &name, const std::string &text)
 	{
-		std::ofstream(scratch.path / (name + ".sheet")) << text;
+		std::ofstream(scratch.path / (name + ".sheet"), std::ios::binary) << text;
 	}
 };
 }
@@ -79,7 +79,8 @@ TEST_CASE("sheet tiles load as the frames they were packed from") {
 	// and two plain 4x4 frames starting at frame 2 in a wider grid.
 	writePattern(fixture.scratch.path / "set-sheet-0.png", 0, 5, 2, 3);
 	writePattern(fixture.scratch.path / "set-sheet-1.png", 2, 2, 4, 4);
-	fixture.index("set", "# comment\n\nset-sheet-0.png rotated 0 5 3 3\nset-sheet-1.png image 2 2 4 4\n");
+	// Windows line endings, as a text-mode save on Windows writes them.
+	fixture.index("set", "# comment\r\n\r\nset-sheet-0.png rotated 0 5 3 3\r\nset-sheet-1.png image 2 2 4 4\r\n");
 	GAGCore::Sprite sprite;
 	REQUIRE(sprite.load("set"));
 	REQUIRE(sprite.getFrameCount() == 5);
