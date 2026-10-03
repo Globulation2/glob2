@@ -285,7 +285,7 @@ public:
 	void update(Uint32 worldStep);
 	void invalidate();
 	void saveExecutionState(GAGCore::OutputStream*) const;
-	void loadExecutionState(GAGCore::InputStream*);
+	void loadExecutionState(GAGCore::InputStream*, Sint32 versionMinor);
 private:
 	int find(const GradientInfo& info) const;
 	Player* player;

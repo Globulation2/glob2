@@ -44,6 +44,27 @@ double angleOf(int value, double from, double to, int maximum)
 {
 	return maximum <= 0 ? from : from + (to - from) * std::clamp(value, 0, maximum) / double(maximum);
 }
+std::array<int, 3> shares(const std::array<int, 3> &weights, int budget)
+{
+	const int total = weights[0] + weights[1] + weights[2];
+	if (total <= 0)
+		return {budget, 0, 0};
+	std::array<int, 3> result{}, remainder{};
+	int assigned = 0;
+	for (int i = 0; i < 3; ++i)
+	{
+		result[i] = weights[i] * budget / total;
+		remainder[i] = weights[i] * budget % total;
+		assigned += result[i];
+	}
+	while (assigned++ < budget)
+	{
+		const auto best = std::max_element(remainder.begin(), remainder.end());
+		++result[best - remainder.begin()];
+		*best = -1;
+	}
+	return result;
+}
 // Scanline spans: every row above the centre intersects an annular sector
 // inside one quadrant in a single interval, so no polygon primitive is needed.
 void fill(const Geometry &geometry, double inner, double outer, double from, double to, const Color &color)

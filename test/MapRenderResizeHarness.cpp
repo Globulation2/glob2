@@ -26,6 +26,17 @@
 #include "CreditScreen.h"
 #include <iostream>
 
+// GameGUI::drawAll extracts the frame's Scene before drawing overlays; do the
+// same when drawing them directly.
+static void drawOverlays(GameGUI &gui)
+{
+	Scene scene;
+	gui.extractScene(scene);
+	gui.setPublishedScene(&scene);
+	gui.drawOverlayInfos();
+	gui.setPublishedScene(nullptr);
+}
+
 namespace
 {
 static int colored(SDL_Surface *surface, int x, int y, int w, int h)
@@ -163,14 +174,14 @@ void run(bool gpu)
 	gui.setSelection(GameGUI::BUILDING_SELECTION,building);
 	gui.showUnitWorkingToBuilding=true;
 	building->unitsWorking.push_back(unit);
-	clear(); gui.drawOverlayInfos();
+	clear(); drawOverlays(gui);
 	copies(200,200,160,160);
 	copies(94,94,36,36);
 	// GUI overlay must not paint into the right-hand menu.
 	REQUIRE(colored(gfx->getSDLSurface(),gfx->getW()-128,80,128,600)==0);
 	building->unitsWorking.clear();
 	gui.setSelection(GameGUI::RESOURCE_SELECTION,static_cast<unsigned>(3+3*16));
-	clear(); gui.drawOverlayInfos(); copies(94,94,36,36);
+	clear(); drawOverlays(gui); copies(94,94,36,36);
 	gui.clearSelection();
 	std::cout << "PASS building, worker and resource selection copies\n";
 
@@ -263,7 +274,7 @@ void run(bool gpu)
 		{
 			gui.camera=MapCamera{}; gui.camera.zoom=zoom;
 			gui.viewportX=gui.viewportY=0;
-			clear(); gui.drawOverlayInfos(); capturePixels(gfx);
+			clear(); drawOverlays(gui); capturePixels(gfx);
 			const int start=int(96*zoom), diameter=int(32*zoom), period=int(512*zoom);
 			const int expected=colored(gfx->getSDLSurface(),start,start,diameter+1,diameter+1);
 			REQUIRE(expected>0);
@@ -327,7 +338,7 @@ void run(bool gpu)
 	{
 		resize(width);
 		gui.viewportX=14; gui.viewportY=14;
-		clear(); gui.drawOverlayInfos(); capturePixels(gfx);
+		clear(); drawOverlays(gui); capturePixels(gfx);
 		const int cx=((building->posX-14)&15)*32+building->type->width*16;
 		const int cy=((building->posY-14)&15)*32+building->type->height*16;
 		for(int y=cy;y+48<1100;y+=512) for(int x=cx;x+48<width-GAME_GUI_RIGHT_MENU_WIDTH;x+=512)
@@ -401,7 +412,7 @@ void run(bool gpu)
 			rectangular.camera=MapCamera{};
 			rectangular.viewportX=mapW-3; rectangular.viewportY=mapH-3;
 			rectangular.setSelection(GameGUI::RESOURCE_SELECTION,static_cast<unsigned>(mapW*mapH-1));
-			clear(); rectangular.drawOverlayInfos(); capturePixels(gfx);
+			clear(); drawOverlays(rectangular); capturePixels(gfx);
 			const int selectionPixels=colored(gfx->getSDLSurface(),64,64,34,34);
 			REQUIRE(selectionPixels>0);
 			for(int y=64;y+34<1100;y+=mapH*32)

@@ -12,6 +12,8 @@
 #include <cstdint>
 #include <iterator>
 #include "Engine.h"
+#include "gui/GameGUITouch.h"
+#include <GraphicContext.h>
 #include "Unit.h"
 #include "Building.h"
 #include "GameSessionScreen.h"
@@ -68,6 +70,79 @@ GAGCore::CooperativeSlice fixedSlice()
 
 TEST_SUITE("EngineSession")
 {
+	TEST_CASE("momentum uses the SDL clock after session suspension [display][artifacts]")
+	{
+		glob2test::ScopedEnvironment desktopUI("GLOB2_MOBILE_UI", "0");
+		glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.display = true, .loadStrings = true, .width = 800, .height = 600, .screenFlags = GAGCore::GraphicContext::PORTABLEGPU});
+		REQUIRE(NET_Init());
+		struct NetworkScope { ~NetworkScope() { NET_Quit(); } } network;
+		globalContainer->automaticEndingGame = false;
+		for (bool threaded : {false, true})
+		{
+			INFO("threaded client path=" << threaded);
+			Engine engine;
+			REQUIRE(engine.initCampaign("maps/balanced.map") == Engine::EE_NO_ERROR);
+			// A resumed session's clock trails SDL wall time. Keep it at zero
+			// while driving real timestamped touch events; no long sleep needed.
+			engine.beginSession(0);
+			engine.gui.gamePaused = true;
+			if (threaded)
+				REQUIRE(engine.startSimulationThread(0));
+			auto frame = [&](const std::vector<SDL_Event> &events = {}) {
+				REQUIRE(threaded ? engine.threadedClientFrame(0, events) : engine.stepSession(0, events));
+			};
+			auto finger = [&](Uint32 type, float x) {
+				SDL_Event event{};
+				event.type = type;
+				event.tfinger.timestamp = SDL_GetTicksNS();
+				event.tfinger.touchID = 7;
+				event.tfinger.fingerID = 1;
+				event.tfinger.x = x / 800;
+				event.tfinger.y = 300.f / 600;
+				frame({event});
+			};
+			for (int resume = 0; resume < 2; ++resume)
+			{
+				engine.suspendInput();
+				engine.suspendSimulation();
+				REQUIRE(!engine.gui.touch->scrollAnimating());
+				engine.resumeSimulation(0);
+				frame();
+				finger(SDL_EVENT_FINGER_DOWN, 300);
+				for (int move = 1; move <= 4; ++move)
+				{
+					SDL_Delay(16);
+					finger(SDL_EVENT_FINGER_MOTION, 300 + 30 * move);
+				}
+				finger(SDL_EVENT_FINGER_UP, 420);
+				const auto capture = [&](const char *phase) {
+					engine.gui.drawAll(0);
+					const std::string name = std::string("resume-") + (threaded ? "threaded-" : "serial-")
+						+ std::to_string(resume) + "-" + phase + ".bmp";
+					globalContainer->gfx->printScreen(name.c_str());
+					globalContainer->gfx->nextFrame();
+				};
+				const double released = engine.gui.camera.originX;
+				capture("released");
+				SDL_Delay(20);
+				frame();
+				capture("coasting");
+				const double coast = MapCamera::wrap(released - engine.gui.camera.originX,
+					engine.gui.game.map.getW() * 32.0);
+				std::cout << "Resume momentum: threaded=" << threaded << " cycle=" << resume
+					<< " session_ms=0 SDL_ms=" << SDL_GetTicks() << " coast_pixels=" << coast << "\n";
+				REQUIRE(coast > 1);
+				REQUIRE(coast < engine.gui.game.map.getW() * 16.0);
+			}
+			// Teardown's GUI-only service has no session-time argument and must
+			// park the producer even when there is no save left to finalize.
+			const auto stoppedTick = engine.gui.game.stepCounter;
+			REQUIRE_FALSE(engine.advancePendingSave({}));
+			REQUIRE_FALSE(engine.simulationThreaded());
+			REQUIRE(engine.gui.game.stepCounter == stoppedTick);
+			engine.abortSession();
+		}
+	}
 	TEST_CASE("serial sessions retain chat text across skipped GUI frames")
 	{
 		glob2test::ScopedEnvironment serialSession("GLOB2_SIM_THREAD", "0");

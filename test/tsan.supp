@@ -1,0 +1,6 @@
+# ThreadSanitizer suppressions for .github/workflows/thread-sanitizer.yml.
+# Keep each entry narrow and explain it; never suppress game code.
+
+# SDL3_net: NET_Quit runs from atexit and destroys the resolver's mutex while an
+# idle resolver thread (SDLNetRslv*) still waits on it. Process shutdown only.
+race:SDL_DestroyMutex_REAL

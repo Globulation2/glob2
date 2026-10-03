@@ -100,7 +100,7 @@ void MapHeader::save(GAGCore::OutputStream *stream, size_t *sha1Position) const
 	stream->writeSint32(VERSION_MAJOR, "versionMajor");
 	stream->writeSint32(VERSION_MINOR, "versionMinor");
 	stream->writeSint32(numberOfTeams, "numberOfTeams");
-	stream->writeUint32(mapOffset, "mapOffset");
+	stream->writeOffset32(mapOffset, "mapOffset");
 	stream->writeUint8(isSavedGame, "isSavedGame");
 	if (sha1Position)
 		*sha1Position = stream->getPosition();
