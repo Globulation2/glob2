@@ -4710,3 +4710,13 @@ Momentum peta
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+Ulangi peta secara horizontal
+[repeat map vertically]
+Ulangi peta secara vertikal
+[bases]
+markas
+[bases per colony]
+Markas per koloni; satu markas adalah satu tim dari peta seperti digambar, beserta bangunan dan unitnya

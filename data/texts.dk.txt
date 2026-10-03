@@ -4790,3 +4790,13 @@ Kortets fart
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+Gentag kortet vandret
+[repeat map vertically]
+Gentag kortet lodret
+[bases]
+baser
+[bases per colony]
+Baser pr. koloni; en base er ét hold fra kortet, som det er tegnet, med dets bygninger og enheder
