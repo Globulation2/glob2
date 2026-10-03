@@ -17,7 +17,7 @@ export default tseslint.config(
   },
   {
     // Tests and fixture scripts index into data they just built.
-    files: ['**/test/**/*.ts', '**/scripts/**/*.ts'],
+    files: ['**/test/**/*.{ts,tsx}', '**/scripts/**/*.ts'],
     rules: { '@typescript-eslint/no-non-null-assertion': 'off' },
   },
   {

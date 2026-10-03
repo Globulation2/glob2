@@ -143,6 +143,40 @@ export const InstanceConfig = Strict({
       browserClientUrl: Type.Optional(Type.String({ pattern: '^https?://[^\\s]+$' })),
     }),
   ),
+  /**
+   * Verified app links for invite URLs (/j/<code>): the files served at
+   * /.well-known/assetlinks.json (Android App Links) and
+   * /.well-known/apple-app-site-association (iOS universal links). Only the
+   * official instance's domain is built into the mobile apps, so self-hosted
+   * instances leave this out (both files then answer 404) and rely on glob2://.
+   * See docs/hosting/README.md, "Mobile app links".
+   */
+  appLinks: Type.Optional(
+    Strict({
+      android: Type.Optional(
+        Strict({
+          /** Application id (default org.globulation2.glob2). */
+          packageName: Type.Optional(
+            Type.String({ pattern: '^[A-Za-z][A-Za-z0-9_]*(\\.[A-Za-z][A-Za-z0-9_]*)+$' }),
+          ),
+          /** SHA-256 fingerprints of the signing certificates, AA:BB:… (32 bytes). */
+          sha256CertFingerprints: Type.Array(
+            Type.String({ pattern: '^([0-9A-F]{2}:){31}[0-9A-F]{2}$' }),
+            { minItems: 1, maxItems: 8 },
+          ),
+        }),
+      ),
+      ios: Type.Optional(
+        Strict({
+          /** <Team ID>.<bundle id>, e.g. ABCDE12345.org.globulation2.glob2. */
+          appIds: Type.Array(Type.String({ pattern: '^[A-Z0-9]{10}\\.[A-Za-z0-9.-]+$' }), {
+            minItems: 1,
+            maxItems: 8,
+          }),
+        }),
+      ),
+    }),
+  ),
   limits: Type.Optional(
     Strict({
       /** Sign-in, refresh and registration requests per client IP per minute (default 30). */

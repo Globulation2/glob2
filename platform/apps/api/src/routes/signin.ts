@@ -117,6 +117,7 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
             caller
               ? html`<div class="card">
                   <p>Signed in as <strong>${caller.account.display_name}</strong>.</p>
+                  <a class="button primary" href="/">Continue to ${identity.instanceName}</a>
                 </div>`
               : ''
           }
@@ -370,6 +371,7 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
       'Signed in',
       html`<div class="card">
         <p>You are signed in as <strong>${account.display_name}</strong>.</p>
+        <a class="button primary" href="/">Continue to ${identity.instanceName}</a>
       </div>`,
     );
   };

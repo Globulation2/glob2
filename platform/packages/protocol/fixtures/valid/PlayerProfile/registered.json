@@ -1,0 +1,58 @@
+{
+  "account": {
+    "id": "0b8f6f2e-3c4d-4e5f-8a9b-0c1d2e3f4a5b",
+    "displayName": "Alice",
+    "kind": "registered",
+    "createdAt": "2026-10-01T12:00:00Z"
+  },
+  "detail": "full",
+  "ratings": [
+    {
+      "ladder": "ranked-1v1",
+      "rating": 1532.4,
+      "mu": 27.1,
+      "sigma": 4.8,
+      "games": 11,
+      "wins": 7,
+      "provisional": false,
+      "rank": 3
+    }
+  ],
+  "ratingHistory": [
+    {
+      "ladder": "ranked-1v1",
+      "matchId": "7e3c1d2b-9a8f-4e6d-8c5b-4a3f2e1d0c9b",
+      "at": "2026-10-01T12:00:00Z",
+      "result": "won",
+      "before": 1500,
+      "after": 1532.4,
+      "provisional": false
+    }
+  ],
+  "recentMatches": [],
+  "aggregates": {
+    "windowDays": 90,
+    "games": 11,
+    "wins": 7,
+    "losses": 4,
+    "winRates": [
+      {
+        "dimension": "queue",
+        "key": "ranked-1v1",
+        "label": "1 vs 1 ranked",
+        "games": 11,
+        "wins": 7,
+        "winRate": 0.6364
+      },
+      {
+        "dimension": "generator",
+        "key": "evenGround",
+        "games": 5,
+        "wins": 4,
+        "winRate": 0.8
+      }
+    ],
+    "medianTicks": 36000,
+    "meanTicks": 37250.5
+  }
+}
