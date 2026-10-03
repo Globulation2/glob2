@@ -17,6 +17,7 @@
  */
 
 // Combat control for Maxima: objectives, waves, and defensive flags.
+#include "field/UniformTraversal.h"
 #include "AIMaxima.h"
 #include "AIMaximaWorldHelpers.h"
 #include "AITelemetryFields.h"
@@ -155,15 +156,11 @@ namespace
 			{
 				if(field[start]!=-1) continue;
 				queue.clear(); queue.push_back(start); field[start]=start;
-				for(size_t head=0; head<queue.size(); ++head)
-				{
-					const int x=queue[head]%w, y=queue[head]/w;
-					for(int dy=-1; dy<=1; ++dy) for(int dx=-1; dx<=1; ++dx)
-					{
-						const int next=((y+dy+h)%h)*w+(x+dx+w)%w;
-						if(field[next]==-1) { field[next]=start; queue.push_back(next); }
-					}
-				}
+				field::traverse(queue,{w,h},field::Surrounding,[](int){return field::Visit::Expand;},
+					[&](int,int x,int y) {
+						const int next=((y+h)%h)*w+(x+w)%w;
+						if(field[next]==-1){field[next]=start;queue.push_back(next);}
+					});
 			}
 		}
 	};
@@ -182,22 +179,23 @@ namespace
 		std::set<int> visited;
 		std::vector<std::pair<int,int>> queue;
 		queue.push_back(std::make_pair(x,y));visited.insert(map->coordToIndex(x,y));
-		for(size_t head=0;head<queue.size();++head)
-		{
-			const auto point=queue[head];
-			for(int dy=-1;dy<=1;++dy)for(int dx=-1;dx<=1;++dx)
-			{
-				const int px=map->normalizeX(point.first+dx),py=map->normalizeY(point.second+dy);
-				if(map->warpDistSquare(px,py,x,y)>radius*radius
-				   || !visited.insert(map->coordToIndex(px,py)).second)continue;
-				if(rally_walkable(map,team,px,py))
+		bool saturated=false;
+		field::breadthFirst(queue,[](const auto&){return field::Visit::Expand;},
+			[&](const auto& point) {
+				for(const auto d:field::Surrounding)
 				{
-					queue.push_back(std::make_pair(px,py));
-					if(int(queue.size())>=needed)return needed;
+					const int px=map->normalizeX(point.first+d.x),py=map->normalizeY(point.second+d.y);
+					if(map->warpDistSquare(px,py,x,y)>radius*radius
+					   ||!visited.insert(map->coordToIndex(px,py)).second)continue;
+					if(rally_walkable(map,team,px,py))
+					{
+						queue.push_back(std::make_pair(px,py));
+						if(int(queue.size())>=needed){saturated=true;return field::Visit::Stop;}
+					}
 				}
-			}
-		}
-		return int(queue.size());
+				return field::Visit::Expand;
+			});
+		return saturated?needed:int(queue.size());
 	}
 
 	struct PreemptiveBuilding
@@ -759,20 +757,21 @@ bool Maxima::control_offense_waves(Context& runtime)
 		};
 		for(int y=margin-1;y<=margin+home->type->height;++y)
 			for(int x=margin-1;x<=margin+home->type->width;++x)add(x,y);
-		for(size_t head=0;head<queue.size();++head)
-		{
-			const auto point=queue[head];
-			for(int dy=-1;dy<=1;++dy)for(int dx=-1;dx<=1;++dx)add(point.first+dx,point.second+dy);
-			const int x=map->normalizeX(home->posX+point.first-margin);
-			const int y=map->normalizeY(home->posY+point.second-margin);
-			const int distance=route.get_height(x,y);
-			if(distance<0)continue;
-			landHome=true;
-			if(bestSpace==2*capacity && distance>=bestDistance)continue;
-			const int space=rally_space(map,runtime.player->team->me,x,y,policy.muster_radius,2*capacity);
-			if(space<capacity || space<bestSpace || (space==bestSpace && distance>=bestDistance))continue;
-			rallyX=x;rallyY=y;bestDistance=distance;bestSpace=space;
-		}
+		field::breadthFirst(queue,[](const auto&){return field::Visit::Expand;},
+			[&](const auto& point) {
+				for(int dy=-1;dy<=1;++dy)for(int dx=-1;dx<=1;++dx)add(point.first+dx,point.second+dy);
+				const int x=map->normalizeX(home->posX+point.first-margin);
+				const int y=map->normalizeY(home->posY+point.second-margin);
+				const int distance=route.get_height(x,y);
+				if(distance<0)return field::Visit::Expand;
+				landHome=true;
+				if(bestSpace==2*capacity && distance>=bestDistance)return field::Visit::Expand;
+				const int space=rally_space(map,runtime.player->team->me,x,y,policy.muster_radius,2*capacity);
+				if(space<capacity || space<bestSpace || (space==bestSpace && distance>=bestDistance))return field::Visit::Expand;
+				rallyX=x;rallyY=y;bestDistance=distance;bestSpace=space;
+
+				return field::Visit::Expand;
+			});
 	}
 	if(rallyX<0 && !landHome)
 	{

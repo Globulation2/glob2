@@ -9,6 +9,7 @@
 #ifndef AI_MAXIMA_PLACEMENT_H
 #define AI_MAXIMA_PLACEMENT_H
 
+#include "field/Frontier.h"
 #include "AIMaximaFoodLedger.h"
 #include "AIMaximaDistanceField.h"
 #include <memory>
@@ -746,6 +747,7 @@ private:
 	mutable std::vector<int> routeParentCache[2];
 	mutable std::vector<uint8_t> waterMaskCache;
 	mutable DistanceField waterDistanceCache;
+	mutable field::Frontier distanceFrontiers[3]; // transient scratch
 	mutable DistanceField footprintDistanceCache;
 	mutable uint32_t footprintDistanceCacheSignature;
 	mutable std::vector<int8_t> resourceSourceCache;

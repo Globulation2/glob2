@@ -4,8 +4,9 @@
 #include <PerformanceTelemetry.h>
 #include "Map.h"
 #include "gradient/GradientRuntime.h"
-#include "kernel/GradientPropagation.h"
+#include "field/GradientPropagation.h"
 
+static_assert(std::size(gradient_kernel::WATER_STEP) == SWIM_CLASS_COUNT);
 static_assert(gradient_kernel::COST_LIMIT == Map::GRADIENT_COST_LIMIT);
 
 // Seeds are the cells above GRADIENT_UNREACHABLE; each starts at its own cost
@@ -18,6 +19,6 @@ void Map::propagateGradient(Uint16 *gradient, int swimClass, int maxCost)
 {
 	PERF_SCOPE_TIME(Propagation);
 	gradient_kernel::propagateField(gradient, swimClass, maxCost,
-		{size, wMask, hMask, wDec}, gradientRuntime->workspaces[compute.slot()],
+		{getW(), getH()}, gradientRuntime->workspaces[compute.slot()].propagation,
 		[this](size_t i) { return isWater(static_cast<unsigned>(i)); });
 }

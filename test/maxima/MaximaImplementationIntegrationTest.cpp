@@ -342,6 +342,13 @@ static void executionRegressions()
 static void fruitSupplyRoutes()
 {
     using namespace AIMaximaFruit;
+    Field empty;empty.build();
+    REQUIRE(empty.assessBuilding(0,0,1,1).available==0);
+    for(int variety=0;variety<3;++variety)
+    {
+        REQUIRE(empty.distances[variety].empty());
+        REQUIRE(empty.sources[variety].empty());
+    }
     Field field;field.width=64;field.height=64;field.tiles.resize(4096);
     for(auto& tile:field.tiles)tile.passable=true;
     field.tiles[field.index(10,10)].passable=false;

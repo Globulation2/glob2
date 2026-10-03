@@ -1,5 +1,6 @@
 #ifndef AI_MAXIMA_FOOD_SUPPLY_H
 #define AI_MAXIMA_FOOD_SUPPLY_H
+#include "field/UniformTraversal.h"
 #include "Map.h"
 #include "Building.h"
 #include "BuildingType.h"
@@ -56,22 +57,20 @@ inline long long distantFoodCapacity(Map* map,const std::vector<Building*>& buil
                     add(b->posX+dx,b->posY+dy,0);
     long long capacity=0;int stop=size;
     const int localRadius=std::max(1,radius);
-    for(size_t next=0;next<queue.size();++next)
-    {
-        const int index=queue[next],x=index%width,y=index/width,steps=distance[index];
-        if(steps>stop)break;
-        const Tile& tile=map->getTile(x,y);
-        if(map->isGrass(x,y) && tile.resource.type==WHEAT && tile.resource.amount>0)
-        {
-            if(stop==size)stop=std::min(size,steps+localRadius);
-            capacity+=(static_cast<long long>(fertility.at(x,y))
-                +wheatStockFertilityEquivalent(tile.resource.amount,stockHorizonTicks))*localRadius
-                /std::max(localRadius,steps);
-        }
-        if(steps>=stop)continue;
-        for(int dy=-1;dy<=1;++dy)for(int dx=-1;dx<=1;++dx)
-            if(dx || dy)add(x+dx,y+dy,steps+1);
-    }
+    field::traverse(queue,{width,map->getH()},field::Surrounding,
+        [&](int index) {
+            const int x=index%width,y=index/width,steps=distance[index];
+            if(steps>stop)return field::Visit::Stop;
+            const Tile& tile=map->getTile(x,y);
+            if(map->isGrass(x,y)&&tile.resource.type==WHEAT&&tile.resource.amount>0)
+            {
+                if(stop==size)stop=std::min(size,steps+localRadius);
+                capacity+=(static_cast<long long>(fertility.at(x,y))
+                    +wheatStockFertilityEquivalent(tile.resource.amount,stockHorizonTicks))*localRadius
+                    /std::max(localRadius,steps);
+            }
+            return steps>=stop?field::Visit::Skip:field::Visit::Expand;
+        },[&](int index,int px,int py){add(px,py,distance[index]+1);});
     return capacity;
 }
 
@@ -104,26 +103,19 @@ inline long long reachableFoodCapacity(Map* map, Building* building,
 				queue.push_back(index);
 		}
 	long long capacity=0;
-	for(size_t next=0;next<queue.size();++next)
-	{
-		const int index=queue[next], x=index%width, y=index/width;
-		const Tile& tile=map->getTile(x,y);
-		if(map->isGrass(x,y) && tile.resource.type==WHEAT
-		   && tile.resource.amount>0
-		   && (!shared_tiles || shared_tiles->insert(index).second))
-			capacity+=fertility.at(x,y)
-				+wheatStockFertilityEquivalent(tile.resource.amount,stockHorizonTicks);
-		if(distance[index]>=radius) continue;
-		for(int dy=-1;dy<=1;++dy) for(int dx=-1;dx<=1;++dx)
-		{
-			if(!dx && !dy) continue;
-			const int nx=map->normalizeX(x+dx), ny=map->normalizeY(y+dy);
-			const int adjacent=ny*width+nx;
-			if(accessible(nx,ny)
-			   && distance.insert(std::make_pair(adjacent,distance[index]+1)).second)
+	field::traverse(queue,{width,map->getH()},field::Surrounding,
+		[&](int index) {
+			const int x=index%width,y=index/width;
+			const Tile& tile=map->getTile(x,y);
+			if(map->isGrass(x,y)&&tile.resource.type==WHEAT&&tile.resource.amount>0
+			   &&(!shared_tiles||shared_tiles->insert(index).second))
+				capacity+=fertility.at(x,y)+wheatStockFertilityEquivalent(tile.resource.amount,stockHorizonTicks);
+			return distance[index]>=radius?field::Visit::Skip:field::Visit::Expand;
+		},[&](int index,int px,int py) {
+			const int nx=map->normalizeX(px),ny=map->normalizeY(py),adjacent=ny*width+nx;
+			if(accessible(nx,ny)&&distance.insert(std::make_pair(adjacent,distance[index]+1)).second)
 				queue.push_back(adjacent);
-		}
-	}
+		});
 	return capacity;
 }
 }

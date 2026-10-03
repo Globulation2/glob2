@@ -2,6 +2,7 @@
   Protected-wheat food ledger. See AIMaximaFoodLedger.h for the model.
  */
 
+#include "field/UniformTraversal.h"
 #include "AIMaximaFoodLedger.h"
 
 #include <algorithm>
@@ -177,27 +178,22 @@ void Ledger::walk(const Input& input, int centerX, int centerY, int left,
 	// Breadth-first expansion visits cells in nondecreasing distance, so the
 	// claim pass below consumes the nearest wheat first without sorting.
 	long long reached=0;
-	for(size_t head=0;head<queue.size();++head)
-	{
-		const ReachCell current=queue[head];
-		if(input.yield[current.index]>0)
-		{
-			reach.push_back(current);
-			// Preserve BFS order and the complete threshold-crossing cell. Later
-			// cells cannot affect a capped sum or a satisfied demand's quality.
-			if(residual && cap>0)
+	field::traverse(queue,{input.width,input.height},field::Surrounding,
+		[](const ReachCell& cell){return cell.index;},
+		[&](const ReachCell& current) {
+			if(input.yield[current.index]>0)
 			{
-				reached+=(*residual)[current.index];
-				if(reached>=cap)break;
+				reach.push_back(current);
+				if(residual && cap>0)
+				{
+					// Include the entire threshold-crossing cell before stopping;
+					// neither its residual nor the final reach entry is truncated.
+					reached+=(*residual)[current.index];
+					if(reached>=cap)return field::Visit::Stop;
+				}
 			}
-		}
-		if(current.distance>=input.policy.supplyRadius)continue;
-		const int x=current.index%input.width;
-		const int y=current.index/input.width;
-		for(int dy=-1;dy<=1;++dy)
-			for(int dx=-1;dx<=1;++dx)
-				if(dx||dy)visit(x+dx,y+dy,current.distance+1);
-	}
+			return current.distance>=input.policy.supplyRadius?field::Visit::Skip:field::Visit::Expand;
+		},[&](const ReachCell& current,int px,int py){visit(px,py,current.distance+1);});
 }
 
 void Ledger::evaluate(const Input& input, Result& result) const
