@@ -1178,11 +1178,11 @@ class GameGUITouchHarness
 					require(!gui.touch->statsOpen && !gui.touch->showStatistics && gui.touch->inspectingResource(),
 						"Tapping resource information cannot activate the tactical menu");
 					noOrder();
-					const auto close = gui.touch->resourceCloseRect();
+					const auto close = gui.touch->readOnlyCloseRect();
 					tap(close.x + close.w / 2, close.y + close.h / 2);
 					gui.touch->prepareDraw();
 					require(gui.selectionMode == GameGUI::NO_SELECTION && !gui.touch->panelOpen,
-						"Closing resource info restores the previous panel state");
+						"Closing resource info dismisses the panel");
 				}
 				tap(spot.x, spot.y);
 				const auto bar = gui.touch->layout().actions;
@@ -3089,11 +3089,24 @@ class GameGUITouchHarness
 		auto *nearby = gui.game.addUnit(42,40,0,WORKER,0,255,0,0);
 		require(nearby, "Nearby worker exists");
 		require(gui.touch->unitAt({center.x+64,center.y},30) == nearby, "Exact unit beats neighbouring halo");
+		// A neighbouring resource is a direct target, not empty halo ground.
+		map.setResource(41, 40, WHEAT, 0);
+		map.setMapDiscovered(41, 40, gui.localTeam->me);
+		gui.touch->select({center.x + 28, center.y});
+		require(gui.selectionMode == GameGUI::RESOURCE_SELECTION,
+			"A unit halo cannot steal a direct discovered-resource tap");
+		gui.drawAll(0);
+		map.setNoResource(41, 40, 1);
+		gui.checkSelection();
+		gui.touch->prepareDraw();
+		require(!gui.touch->panelOpen && !gui.touch->restorePalette,
+			"Pre-draw resource invalidation dismisses its read-only panel");
 		gui.setSelection(GameGUI::UNIT_SELECTION,worker);
 		gui.touch->panelOpen = true;
 		gui.drawAll(0);
 		const int id = Unit::GIDtoID(worker->gid);
 		gui.localTeam->myUnits[id] = nullptr;
+		gui.checkSelection(); // Threaded client steps invalidate before prepareDraw.
 		gui.touch->prepareDraw();
 		require(gui.selectionMode == GameGUI::NO_SELECTION && !gui.touch->panelOpen, "Removed unit dismisses its inspector");
 		gui.localTeam->myUnits[id] = worker;

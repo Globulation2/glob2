@@ -175,7 +175,7 @@ void GameGUITouch::clampScroll()
 					  (paletteRail(ui) ? InGameTouchTheme::paletteCell + InGameTouchTheme::gap : 60) +
 				  (paletteRail(ui) ? InGameTouchTheme::gap : 8)
 			: gui.selectionMode == GameGUI::UNIT_SELECTION
-				? 48 + unitInfoRows().size() * 48 * InGameTouchTheme::textGrowth()
+				? unitInfoRows().size() * 48 * InGameTouchTheme::textGrowth()
 				: inspectingResource() ? 0 : tacticalActions().size() * 56;
 	panelAxis.sync(panelScroll, std::max(0.0, height - content.h / unit), content.h / unit);
 	tutorialAxis.sync(tutorialScroll, tutorialMaximum(), tutorialRect().h / unit);
@@ -192,6 +192,7 @@ void GameGUITouch::dismissMapPanels()
 {
 	const bool hadPanels = panelOpen || lensOpen || statsOpen || peekOpen || showStatistics || restorePalette;
 	restorePalette = false;
+	readOnlyPanelShown = false;
 	panelOpen = lensOpen = statsOpen = peekOpen = showStatistics = false;
 	panelScroll = actionScroll = 0;
 	keyboardFocus = -1;
@@ -437,7 +438,7 @@ std::vector<ViewRect> GameGUITouch::keyboardTargets()
 	}
 	if (inspectingResource())
 	{
-		targets.push_back(resourceCloseRect());
+		targets.push_back(readOnlyCloseRect());
 		return targets;
 	}
 	const auto content = panelContent();
@@ -452,8 +453,7 @@ std::vector<ViewRect> GameGUITouch::keyboardTargets()
 	}
 	else if (gui.selectionMode == GameGUI::UNIT_SELECTION && ui.panel.h > 0)
 	{
-		const double size = 48 * globalContainer->gfx->logicalUnitsPerPoint();
-		targets.push_back({ui.panel.x + ui.panel.w - size, ui.panel.y, size, size});
+		targets.push_back(readOnlyCloseRect());
 	}
 	else if (inspecting() && usesDial())
 	{
@@ -1255,21 +1255,11 @@ void GameGUITouch::interfaceTap(ViewPoint point)
 		}
 		if (button < 3)
 		{
-			if (gui.selectionMode == GameGUI::UNIT_SELECTION)
-			{
-				gui.clearSelection();
-				restorePalette = false;
-			}
 			if ((button == 0 && (gui.hiddenGUIElements & GameGUI::HIDABLE_BUILDINGS_LIST)) ||
 				(button == 1 && (gui.hiddenGUIElements & GameGUI::HIDABLE_FLAGS_LIST)))
 				return;
-			if (inspectingResource())
-			{
-				// An explicit toolbox choice replaces resource inspection; do not
-				// let the deferred inspector restoration override that choice.
-				gui.clearSelection();
-				restorePalette = false;
-			}
+			// Explicit navigation replaces any read-only inspector.
+			if (inspectingReadOnly()) dismissMapPanels();
 			if (button < 2)
 			{
 				lensOpen = false;
@@ -1331,21 +1321,10 @@ void GameGUITouch::interfaceTap(ViewPoint point)
 					menuAction(items[i].action);
 			return;
 		}
-		if (gui.selectionMode == GameGUI::UNIT_SELECTION)
+		if (inspectingReadOnly())
 		{
-			const auto panel = layout().panel;
-			const double size = 48 * globalContainer->gfx->logicalUnitsPerPoint();
-			if (point.y < panel.y + size && point.x >= panel.x + panel.w - size)
-			{
-				gui.clearSelection();
-				panelOpen = restorePalette = false;
-			}
-			return;
-	}
-		if (inspectingResource())
-		{
-			if (resourceCloseRect().contains(point)) gui.clearSelection();
-			return; // Resource readouts never dispatch tactical actions.
+			if (readOnlyCloseRect().contains(point)) dismissMapPanels();
+			return; // Read-only inspectors never dispatch tactical actions.
 		}
 		if (showsBuildPalette())
 			tapBuildPalette(point);
@@ -1452,13 +1431,15 @@ void GameGUITouch::select(ViewPoint point)
 		return;
 	}
 	auto *hitUnit = unitAt(screenPoint);
-	// Exact flags/buildings retain precedence; the unit halo fills nearby ground.
+	// Exact flags/buildings/resources retain precedence; the halo fills nearby ground.
 	const int tileX = int(point.x) / 32 + gui.viewportX, tileY = int(point.y) / 32 + gui.viewportY;
-	if (!hitUnit && usesHUD() && gui.game.map.getBuilding(tileX, tileY) == NOGBID &&
+	const bool resourceHit = gui.game.map.isResource(tileX, tileY) &&
+		gui.game.map.isMapDiscovered(tileX, tileY, gui.localTeam->me);
+	if (!hitUnit && usesHUD() && !resourceHit && gui.game.map.getBuilding(tileX, tileY) == NOGBID &&
 		!gui.flagAt(int(point.x), int(point.y), gui.flagReachAt(screenPoint.x, screenPoint.y)))
 		hitUnit = unitAt(screenPoint, InGameTouchTheme::flagReach);
 	gui.view.mouseUnit = Game::refOf(hitUnit);
-	const bool wasInspecting = inspecting() || inspectingResource();
+	const bool wasInspecting = inspecting();
 	const bool wasOpen = panelOpen;
 	const int oldDisplay = gui.displayMode;
 	// Desktop selection deliberately sticks on empty terrain. A completed map
@@ -1468,7 +1449,7 @@ void GameGUITouch::select(ViewPoint point)
 	if (usesHUD() && gui.selectionMode != GameGUI::TOOL_SELECTION &&
 		gui.selectionMode != GameGUI::BRUSH_SELECTION) gui.clearSelection();
 	gui.handleMapClick(int(screenPoint.x), int(screenPoint.y), SDL_BUTTON_LEFT);
-	if (!wasInspecting && (inspecting() || inspectingResource()))
+	if (!wasInspecting && inspecting())
 	{
 		restorePalette = true;
 		previousPanelOpen = wasOpen;
@@ -1483,7 +1464,13 @@ void GameGUITouch::select(ViewPoint point)
 	if (usesHUD() && gui.selectionMode != GameGUI::NO_SELECTION)
 	{
 		panelOpen = true;
-		panelScroll = (gui.selectionMode == GameGUI::UNIT_SELECTION || inspectingResource()) ? 0 : 144;
+		panelScroll = inspectingReadOnly() ? 0 : 144;
+		if (inspectingReadOnly())
+		{
+			restorePalette = false;
+			lensOpen = statsOpen = peekOpen = showStatistics = false;
+			readOnlyPanelShown = true;
+		}
 	}
 }
 
@@ -1491,9 +1478,12 @@ void GameGUITouch::prepareDraw()
 {
 	if (!active())
 		return;
-	const bool hadUnit = gui.selectionMode == GameGUI::UNIT_SELECTION;
 	gui.checkSelection();
-	if (hadUnit && gui.selectionMode == GameGUI::NO_SELECTION) panelOpen = restorePalette = false;
+	// The simulation/client step can invalidate selection before this method.
+	// Remember what was presented, rather than sampling the already-cleared mode.
+	if (readOnlyPanelShown && gui.selectionMode == GameGUI::NO_SELECTION)
+		dismissMapPanels();
+	readOnlyPanelShown = inspectingReadOnly();
 	advancePlacement();
 	advanceFlagDrag();
 	if (deferredStroke &&
@@ -1523,7 +1513,7 @@ void GameGUITouch::prepareDraw()
 			stroke.points.push_back({double(gui.mapMouseX(int(point.x)) + gui.viewportX * 32),
 									 double(gui.mapMouseY(int(point.y)) + gui.viewportY * 32)});
 	}
-	if (restorePalette && !inspecting() && !inspectingResource() && gui.selectionMode != GameGUI::UNIT_SELECTION)
+	if (restorePalette && !inspecting() && !inspectingReadOnly())
 	{
 		panelOpen = previousPanelOpen;
 		gui.displayMode = static_cast<GameGUI::DisplayMode>(previousDisplayMode);

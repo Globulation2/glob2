@@ -33,8 +33,7 @@ uses the portable renderer.
 
 Tapping a resource in the touch HUD opens a compact information card with its
 localized name, resource sprite and current/maximum amount for granular resources.
-It sits opposite the selected thumb. Close dismisses it and restores the previous
-palette; choosing Build, Flags or Tools replaces it with that toolbox. A depleted
+It sits opposite the selected thumb. Close dismisses it; choosing Build, Flags or Tools replaces it with that toolbox. A depleted
 resource closes its inspector. Resource cards do not dispatch tactical commands.
 
 Objectives/Hints and Teams dialogs leave at least 16 screen points around the
@@ -102,10 +101,15 @@ does not override direct unit/building hits and chooses the nearest flag.
 Desktop mouse selection retains its original exact-tile hit area.
 Unit taps also accept a 30-point radius around the interpolated unit centre,
 independent of zoom. Exact unit hits win over nearby units; otherwise the nearest
-visible unit wins (ties use its ID). Building hits and existing flag targets keep
-their priority. Hidden units cannot be selected through fog. Unit selection opens
+visible unit wins (ties use its ID). Building hits, discovered resource hits and
+existing flag targets keep their priority. Hidden units cannot be selected through fog. Unit selection opens
 a scrollable stats card with a close button, identity, health, food, speed and
-abilities, using the published Scene. Dragging near a unit still pans the map.
+abilities, using the published Scene. Its fixed header stays above the scrollable
+body. Unit and resource cards share read-only inspection dismissal: close, a
+blank-map tap or an invalidated selection closes the card without restoring an
+older toolbox. Presentation tracks the last shown read-only card so invalidation
+in a threaded client step also closes it before rendering. Dragging near a unit
+still pans the map.
 On touch, a contact that lands on one of the player's flags, or within that
 same reach, carries the flag instead of panning the map, including straight
 after a tap. Below the tap threshold it is still a tap and selects the flag.

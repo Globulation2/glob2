@@ -467,7 +467,8 @@ ViewRect GameGUITouch::allocationRect() const
 ViewRect GameGUITouch::panelContent() const
 {
 	auto rect = layout().panel;
-	const double header = allocationRect().h;
+	const double header = gui.selectionMode == GameGUI::UNIT_SELECTION
+		? 48 * globalContainer->gfx->logicalUnitsPerPoint() : allocationRect().h;
 	rect.y += header;
 	rect.h = std::max(0.0, rect.h - header);
 	return rect;
@@ -686,7 +687,12 @@ std::optional<GameGUITouch::ResourceInfo> GameGUITouch::resourceInfo() const
 	return info;
 }
 
-ViewRect GameGUITouch::resourceCloseRect() const
+bool GameGUITouch::inspectingReadOnly() const
+{
+	return inspectingResource() || gui.selectionMode == GameGUI::UNIT_SELECTION;
+}
+
+ViewRect GameGUITouch::readOnlyCloseRect() const
 {
 	const auto panel = layout().panel;
 	const double target = 48 * globalContainer->gfx->logicalUnitsPerPoint();
@@ -701,7 +707,7 @@ void GameGUITouch::drawResourceInfo()
 	const double unit = gfx->logicalUnitsPerPoint();
 	const auto panel = layout().panel;
 	drawPointLabel({panel.x + 8 * unit, panel.y, panel.w - 56 * unit, 48 * unit}, info->name, .9);
-	drawPointLabel(resourceCloseRect(), "×");
+	drawPointLabel(readOnlyCloseRect(), "×");
 	const ViewRect icon{panel.x + 16 * unit, panel.y + 52 * unit, 48 * unit, 48 * unit};
 	auto *sprite = globalContainer->resources;
 	const double factor = std::min(icon.w / sprite->getW(info->sprite), icon.h / sprite->getH(info->sprite));
@@ -772,7 +778,7 @@ void GameGUITouch::drawUnitPanel()
 	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
 	const double row = 48 * unit * InGameTouchTheme::textGrowth();
 	const auto rows = unitInfoRows();
-	labelClip = ViewRect{panel.x, panel.y + 48 * unit, panel.w, std::max(0., panel.h - 48 * unit)};
+	labelClip = panelContent();
 	globalContainer->gfx->setClipRect(int(labelClip->x), int(labelClip->y), int(labelClip->w), int(labelClip->h));
 	for (size_t i = 0; i < rows.size(); ++i)
 		drawPointLabel({panel.x, panel.y + 48 * unit + i * row - panelScroll * unit, panel.w, row}, rows[i], .9, true);
@@ -780,5 +786,5 @@ void GameGUITouch::drawUnitPanel()
 	globalContainer->gfx->setClipRect();
 	if (gui.drawnScene().panels.unit.valid)
 		drawPointLabel({panel.x, panel.y, panel.w - 48 * unit, 48 * unit}, getUnitName(gui.drawnScene().panels.unit.typeNum), 1.0, true);
-	drawPointLabel({panel.x + panel.w - 48 * unit, panel.y, 48 * unit, 48 * unit}, "×", 1.2);
+	drawPointLabel(readOnlyCloseRect(), "×", 1.2);
 }
