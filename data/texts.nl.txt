@@ -4738,3 +4738,13 @@ Vaart van de kaart
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+Kaart horizontaal herhalen
+[repeat map vertically]
+Kaart verticaal herhalen
+[bases]
+bases
+[bases per colony]
+Bases per kolonie; een basis is één team van de kaart zoals getekend, met zijn gebouwen en eenheden

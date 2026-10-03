@@ -4724,3 +4724,13 @@ Rebond des listes
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+Répéter la carte horizontalement
+[repeat map vertically]
+Répéter la carte verticalement
+[bases]
+bases
+[bases per colony]
+Bases par colonie ; une base est une équipe de la carte telle que dessinée, avec ses bâtiments et ses unités

@@ -4722,3 +4722,13 @@ Zotrvačnosť mapy
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+Opakovať mapu vodorovne
+[repeat map vertically]
+Opakovať mapu zvislo
+[bases]
+základne
+[bases per colony]
+Základne na kolóniu; základňa je jeden tím mapy tak, ako bola nakreslená, s jeho budovami a jednotkami
