@@ -1368,8 +1368,8 @@ runs separate from concurrent builds/tests and compare matching compilers and fl
 `PackedArray` checks all integer widths, wraparound, block boundaries and malformed
 payloads. `Maxima.Continuation` covers legacy and compact arrays, signed limits and
 nested archives. `Maxima.Placement` retains explicit noncanonical neighborhood
-contents. `TeamStatsSave` checks complete telemetry, measurement and end-game histories
-across two 256-sample batch boundaries;
+contents. `TeamStatsSave` checks binary measurement/end-game histories and binary/text
+telemetry histories across two 256-sample batch boundaries;
 `TeamLimit`, `JavaScriptCompatibility`, `UntrustedFiles` and `SavegameSafety` cover
 sparse identities, format boundaries, decoded validation and save/load continuation.
 Run these together with the existing AI and gradient continuation suites. An encoding
