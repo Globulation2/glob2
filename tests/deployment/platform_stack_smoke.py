@@ -105,17 +105,16 @@ queues:
 # Runs inside a platform-api container: submits a generate-map job and waits
 # for the worker to apply the agent's result.
 SUBMIT_JOB = r"""
-import { contentKey, createBlobStore, createLogger, defaultMapPool, JobQueue, loadConfig, submitEngineJob } from '@glob2/core';
+import { contentKey, createBlobStore, defaultMapPool, loadConfig, submitEngineJob } from '@glob2/core';
 import { createDatabase } from '@glob2/db';
 import { parseSimVersionKey } from '@glob2/protocol';
 const config = loadConfig();
 const database = createDatabase({ connectionString: config.databaseUrl, maxConnections: 2 });
-const queue = await JobQueue.create(database.pool, createLogger('smoke', 'warn'));
 const simVersion = parseSimVersionKey(process.env.SMOKE_SIM_VERSION);
 const entry = defaultMapPool('1v1').find((e) => e.generatorId === 'even-ground') ?? defaultMapPool('1v1')[0];
 const generator = { ...entry, seed: 20261001 };
 const started = Date.now();
-const jobId = await submitEngineJob(database.db, queue, { kind: 'generate-map', simVersion, payload: { generator }, maxAttempts: 1 });
+const jobId = await submitEngineJob(database.db, { kind: 'generate-map', simVersion, payload: { generator }, maxAttempts: 1 });
 let row;
 for (;;) {
   row = await database.db.selectFrom('engine_jobs').selectAll().where('id', '=', jobId).executeTakeFirstOrThrow();
@@ -128,7 +127,6 @@ if (row.status === 'succeeded') {
   out.blobRow = await database.db.selectFrom('blobs').selectAll().where('sha256', '=', row.result.mapHash).executeTakeFirst() ?? null;
 }
 console.log(JSON.stringify(out));
-await queue.close();
 await database.close();
 """
 
