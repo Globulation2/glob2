@@ -1,0 +1,13 @@
+{
+  "revision": "fbc029483695550e3e1f652d9260b3b890eb6d5e",
+  "tree": "37f2a325d039327b533d57dcb30ac431b6fa0b2b",
+  "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "platform": "Linux x86_64",
+  "release": true,
+  "dependencies": "existing SDL3 integrator prefix",
+  "prs": [
+    358,
+    361,
+    363
+  ]
+}

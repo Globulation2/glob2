@@ -1,0 +1,5 @@
+PASS CustomGameSetup/probability statistics fit sixteen colonies [display][artifacts] (0.9s)
+PASS CustomGameSetup/custom game screens; captures and translated keys [slow][display:1024x768][artifacts][writes-preferences] (66.3s)
+
+2 passed, 0 failed, 0 skipped (67.2s of test time)
+[run_tests] JUnit report: artifacts/probability-screen.xml (2 cases)

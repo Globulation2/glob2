@@ -1,0 +1,21 @@
+{
+  "args": [
+    "--generate-map",
+    "river",
+    "--width",
+    "128",
+    "--height",
+    "128",
+    "--teams",
+    "2",
+    "--seed",
+    "713",
+    "--output",
+    "/home/bradley/.codex/worktrees/3010/glob2/artifacts/probability-cli-evidence/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/source.map",
+    "--json",
+    "/home/bradley/.codex/worktrees/3010/glob2/artifacts/probability-cli-evidence/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/map.json"
+  ],
+  "status": 0,
+  "stdout": "river revision 3 seed 713 [complete]: \nMap: /home/bradley/.codex/worktrees/3010/glob2/artifacts/probability-cli-evidence/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/source.map.gz\nMap report: /home/bradley/.codex/worktrees/3010/glob2/artifacts/probability-cli-evidence/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/map.json\n",
+  "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\n"
+}

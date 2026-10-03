@@ -1,0 +1,16 @@
+{
+  "args": [
+    "--run-game",
+    "--load-game",
+    "/home/bradley/.codex/worktrees/3010/glob2/artifacts/probability-cli-evidence/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability/final.game.gz",
+    "--ticks",
+    "96",
+    "--output-dir",
+    "/home/bradley/.codex/worktrees/3010/glob2/artifacts/probability-cli-evidence/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-resumed",
+    "--telemetry",
+    "checksums"
+  ],
+  "status": 0,
+  "stdout": "nox::game started\nnox::gui.game.checkSum() = 3e2f435a\nautomaticEndingGame ended: 96 ticks, 0 minutes, 3 seconds\nGLOB2_GAME_END ticks=96 winner_team=-1 seed=713 map=\"source\" orders=0 players=team0:Castor,team1:Cortex\n",
+  "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\n"
+}
