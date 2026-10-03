@@ -497,7 +497,14 @@ namespace
 			return -1;
 		if ((game->stepCounter & END_OF_GAME_STAT_INTERVAL_MASK) != 0)
 			return -1;
-		const std::vector<WinProbability::Slot> slots = WinProbability::slotsOf(*game, allianceOf);
+		// Outcomes assigned by this rule during wonSyncStep's two passes must
+		// not remove competitors from later evaluations of the same sample.
+		// Keep exclusions from other conditions, including scripted losses.
+		Uint32 ignoreLostTeams = 0;
+		for (int t = 0; t < game->teamsCount(); ++t)
+			if (game->teams[t] && game->teams[t]->winCondition == WCWinProbability)
+				ignoreLostTeams |= 1u << t;
+		const std::vector<WinProbability::Slot> slots = WinProbability::slotsOf(*game, allianceOf, ignoreLostTeams);
 		return WinProbability::decided(slots, (int)thresholdPermille);
 	}
 }

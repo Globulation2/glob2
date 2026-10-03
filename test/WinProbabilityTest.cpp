@@ -8,6 +8,8 @@
 #include "FileFormatVersions.h"
 #include "scene/SceneExtract.h"
 #include <map>
+#include <array>
+#include <algorithm>
 #include <sstream>
 
 TEST_SUITE("WinProbability")
@@ -63,6 +65,41 @@ TEST_SUITE("WinProbability")
         CHECK(game.teams[0]->hasWon);
         CHECK(game.teams[1]->hasWon);
         CHECK(game.teams[2]->hasLost);
+    }
+
+    TEST_CASE("calling an early loser cannot change later teams' decision inputs")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.teams = 3, .header = true});
+        auto &game = world.game;
+        std::array<int, 3> roles = {0, 1, 2};
+        do
+        {
+            int winner = -1;
+            for (int t = 0; t < 3; ++t)
+            {
+                auto *team = game.teams[t];
+                team->prestige = roles[t] == 0 ? 200 : 0;
+                team->stats.getLatestStat()->totalUnit = roles[t] == 0 ? 1 : roles[t] == 1 ? 1000 : 100;
+                team->stats.getLatestStat()->needFoodCritical = roles[t] == 1 ? 1000 : 0;
+                team->hasLost = team->hasWon = false;
+                team->winCondition = WCUnknown;
+                if (roles[t] == 0) winner = t;
+            }
+            std::vector<int> allianceOf;
+            const auto initial = WinProbability::permille(WinProbability::slotsOf(game, allianceOf));
+            REQUIRE(initial[winner] >= 970);
+            game.gameHeader.getWinningConditions().clear();
+            WinningCondition::setWinProbabilityWinCondition(game.gameHeader.getWinningConditions(), 970);
+            game.stepCounter = WinProbability::MINIMUM_DECISION_TICK;
+            game.wonSyncStep();
+            CHECK(game.isGameEnded);
+            for (int t = 0; t < 3; ++t)
+            {
+                CHECK(game.teams[t]->hasWon == (t == winner));
+                CHECK(game.teams[t]->hasLost == (t != winner));
+            }
+        } while (std::next_permutation(roles.begin(), roles.end()));
     }
 
     TEST_CASE("rule serialization gates the new tag and rejects ambiguous thresholds")
