@@ -22,6 +22,12 @@
 # (migrations are forward-only and must keep the previous release working), but
 # the script prints the restore command for the dump it took. See
 # docs/hosting/README.md, "Upgrades".
+#
+# The rollback target is the revision that is deployed now: each successful run
+# records its revision in GLOB2_DEPLOYED_REVISION_FILE (default: deployed-revision
+# next to the env file's directory). The checkout's HEAD is used only when there is
+# no record yet, so checking out the new ref before running the script (to run its
+# newest version) does not make the new revision the rollback target.
 set -eu
 root=$(cd "$(dirname "$0")/.." && pwd)
 env_file=$(cd "$(dirname "${1:?usage: deploy/update-host.sh <env-file> [git-ref]}")" && pwd)/$(basename "$1")
@@ -35,7 +41,21 @@ compose() {
 	docker compose -f deploy/compose.yaml --env-file "$env_file" "$@"
 }
 
-previous=$(git rev-parse HEAD)
+# The revision running now: the record of the last successful deployment.
+state=$(setting GLOB2_DEPLOYED_REVISION_FILE)
+state=${state:-$(cd "$(dirname "$env_file")/.." && pwd)/deployed-revision}
+previous=
+if [ -s "$state" ]; then
+	recorded=$(head -n 1 "$state")
+	if git cat-file -e "$recorded^{commit}" 2>/dev/null; then
+		previous=$(git rev-parse "$recorded^{commit}")
+	else
+		echo "update-host: $state names $recorded, which is not in this checkout; using HEAD" >&2
+	fi
+else
+	echo "update-host: no record of the deployed revision in $state; assuming the checkout's HEAD runs" >&2
+fi
+previous=${previous:-$(git rev-parse HEAD)}
 phase=checkout
 finish() {
 	status=$?
@@ -135,6 +155,7 @@ if [ -n "$web" ]; then
 	python3 deploy/install-web-client.py "$root/build/emscripten/client/release" "$web"
 fi
 phase=done
+git rev-parse HEAD > "$state.tmp" && mv "$state.tmp" "$state"
 compose ps --format 'table {{.Service}}\t{{.State}}\t{{.Health}}'
 docker image prune -f >/dev/null
 echo "update-host: $(git rev-parse --short HEAD) is running; backup in $backup"

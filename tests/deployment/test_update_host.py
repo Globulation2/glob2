@@ -128,6 +128,52 @@ class UpdateHostTests(unittest.TestCase):
         # The web client of the running release stays.
         self.assertEqual((self.web / 'index.html').read_text(), 'old index.html')
 
+    def head(self):
+        return subprocess.run(['git', '-C', str(self.repo), 'rev-parse', 'HEAD'], check=True,
+                              capture_output=True, text=True).stdout.strip()
+
+    def commit_next_release(self):
+        (self.repo / 'deploy' / 'compose.yaml').write_text('name: fake-next\n')
+        subprocess.run(['git', '-C', str(self.repo), '-c', 'user.email=t@example.org', '-c', 'user.name=t',
+                        'commit', '-qam', 'next release'], check=True)
+        self.log.with_name(self.log.name + '.up').unlink(missing_ok=True)
+
+    def test_records_the_deployed_revision(self):
+        self.assertEqual(self.run_script().returncode, 0)
+        self.assertEqual((self.dir / 'deployed-revision').read_text().strip(), self.head())
+
+    def test_rolls_back_to_the_deployed_revision_not_the_checked_out_one(self):
+        # The documented redeploy checks out the new release before running the
+        # script; the rollback must still restore the release that was running.
+        self.assertEqual(self.run_script().returncode, 0)
+        deployed = self.head()
+        self.commit_next_release()
+        self.assertNotEqual(self.head(), deployed)
+        result = self.run_script(FAKE_UP_FAIL='1')
+        self.assertEqual(result.returncode, 1)
+        self.assertIn(f'rolling back to {deployed[:7]}', result.stderr)
+        self.assertEqual(self.head(), deployed)
+        self.assertEqual((self.repo / 'deploy' / 'compose.yaml').read_text(), 'name: fake\n')
+        [*_, backup] = self.backups()
+        self.assertEqual((backup / 'revision').read_text().strip(), deployed)
+        # The record still names the release that runs.
+        self.assertEqual((self.dir / 'deployed-revision').read_text().strip(), deployed)
+
+    def test_a_failed_build_restores_the_deployed_checkout(self):
+        self.assertEqual(self.run_script().returncode, 0)
+        deployed = self.head()
+        self.commit_next_release()
+        result = self.run_script(FAKE_BUILD_FAIL='1')
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn(f'still {deployed[:7]}', result.stderr)
+        self.assertEqual(self.head(), deployed)
+
+    def test_without_a_record_the_checkout_is_assumed_to_run(self):
+        result = self.run_script(FAKE_UP_FAIL='1')
+        self.assertEqual(result.returncode, 1)
+        self.assertIn('no record of the deployed revision', result.stderr)
+        self.assertFalse((self.dir / 'deployed-revision').exists())
+
 
 if __name__ == '__main__':
     unittest.main()

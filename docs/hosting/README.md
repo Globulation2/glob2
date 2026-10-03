@@ -339,6 +339,7 @@ its default.
 | `ENGINE_CONCURRENCY`, `GLOB2_ENGINE_SCRATCH_SIZE` | `1`, `1g` | Jobs per agent, and its scratch tmpfs |
 | `WARM_MAPS_PER_ENTRY`, `WARM_MAPS_MAX_PER_ENTRY` | `2`, `8` | Pre-generated quick-match maps per map pool entry (0: off), and the ceiling the pool rises to while an entry is busy |
 | `GLOB2_BACKUP_DIR`, `GLOB2_BACKUP_KEEP` | `backups/` beside the env file's directory, `5` | Where `deploy/update-host.sh` keeps its pre-upgrade backups, and how many |
+| `GLOB2_DEPLOYED_REVISION_FILE` | `deployed-revision` beside the env file's directory | Where `deploy/update-host.sh` records the revision of each successful deployment, its rollback target |
 | `GLOB2_RELAY_REGION` | `default` | Region these relays report |
 | `GLOB2_RELAY_MAX_MATCHES` | `200` | Matches per relay |
 | `GLOB2_RELAY_DRAIN_SECONDS`, `GLOB2_RELAY_STOP_GRACE` | `1800`, `31m` | Longest relay drain, and Compose's stop timeout (keep it longer) |
@@ -558,7 +559,12 @@ one command, in an order that never leaves a half-upgraded instance:
    and engine agents behind it.
 
 If the new stack does not become healthy, the script starts the `:previous`
-images of the previous revision again and leaves the web client as it was. It
+images of the previous revision again and leaves the web client as it was. The
+previous revision is the one the last successful run recorded in
+`GLOB2_DEPLOYED_REVISION_FILE`, not the checkout's `HEAD`, so checking out the new
+ref before running the script (to run its newest version) is safe. Before the first
+recorded deployment the script assumes `HEAD` runs; on an instance deployed by
+hand, write the running commit to that file first. It
 does not restore the database: migrations are forward-only and must keep the
 previous release working (expand, then contract in a later release), so the
 previous release normally runs on the new schema. When it does not, restore the
