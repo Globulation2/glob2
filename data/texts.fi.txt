@@ -4714,3 +4714,13 @@ Kartan liike-energia
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+Toista kartta vaakasuunnassa
+[repeat map vertically]
+Toista kartta pystysuunnassa
+[bases]
+tukikohtaa
+[bases per colony]
+Tukikohtia siirtokuntaa kohden; tukikohta on piirretyn kartan yksi joukkue rakennuksineen ja yksiköineen

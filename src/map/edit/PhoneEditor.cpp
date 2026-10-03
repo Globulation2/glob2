@@ -92,9 +92,13 @@ void PhoneEditor::prepare()
 				 editor.swimmingpool, editor.barracks, editor.school,   editor.defencetower,
 				 editor.stonewall,    editor.market};
 	else
+	{
 		items = {editor.explorationflag, editor.warflag,   editor.clearingflag,
-				 editor.forbiddenZone,   editor.guardZone, editor.clearingZone,
-				 editor.worker,          editor.explorer,  editor.warrior};
+				 editor.forbiddenZone,   editor.guardZone, editor.clearingZone};
+		if (editor.farmingZone)
+			items.push_back(editor.farmingZone);
+		items.insert(items.end(), {editor.worker, editor.explorer, editor.warrior});
+	}
 	double extent = 4 * unit;
 	for (auto *w : items)
 	{

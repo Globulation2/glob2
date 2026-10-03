@@ -696,3 +696,4 @@
 [settings Custom AIs]
 [Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]
 [Missing custom AI]
+[Map repetition failed]

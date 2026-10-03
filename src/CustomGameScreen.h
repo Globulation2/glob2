@@ -152,6 +152,7 @@ class CustomGameScreen : public Glob2UI::Screen
 	LandscapePickerScreen *chooseLandscape();
 	void applyLandscape(int method, std::optional<std::uint32_t> seed, const GenerationRequest *shown = nullptr);
 	void resetParameters();
+	void repeatCurrentMap();
 	void randomizeParameters();
 	bool drawRandomParameters();
 	void showStartQuality();
