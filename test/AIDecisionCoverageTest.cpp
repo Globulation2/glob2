@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
 #include "AI.h"
+#include "shared_runtime/Runtime.h"
 #include "ExperimentalFeatures.h"
 #include "Order.h"
 #include "Player.h"
@@ -14,6 +15,7 @@ namespace
 {
 struct World
 {
+    Building* startingSwarm=nullptr;
     glob2test::HeadlessGame world{glob2test::GameOptions{
         .wDec=6, .hDec=6, .teams=2, .discovered=true, .clearImmobile=true, .loadDefaultRace=true}};
     // farmAreas: the game carries the farm-areas experiment, and each colony's
@@ -35,6 +37,7 @@ struct World
             world.game.teams[team]->startPosY=4+offset;
             world.game.teams[team]->startPosSet=Team::START_POS_FROM_UNIT;
             auto* swarm=world.addBuilding("swarm",4+offset,4+offset,0,team);
+            if (team==0) startingSwarm=swarm;
             auto* inn=world.addBuilding("inn",10+offset,4+offset,0,team);
             for (auto* building : {swarm,inn})
             {
@@ -193,6 +196,81 @@ TEST_SUITE("AIDecisionCoverage")
     {
         glob2test::HeadlessGlobals globals;
         for (int checkpoint : {64,256}) for (bool depleted : {false,true}) continuation(AI::NICOWAR,depleted,checkpoint);
+    }
+    TEST_CASE("Econo retains wheat-starved swarms while still retiring starved inns")
+    {
+        glob2test::HeadlessGlobals globals;
+        for (int wheat : {0,1})
+        {
+            CAPTURE(wheat);
+            World fixture(AI::ECONO,true,713);
+            auto& game=fixture.world.game;
+            auto* swarm=fixture.startingSwarm;
+            swarm->resources[WHEAT]=wheat;
+            AISharedRuntime::Runtime runtime(new AISharedRuntime::Econo,game.players[0]);
+            bool deletedInn=false;
+            // Keep the world fixed so starvation/death and new construction cannot
+            // hide the old deletion policy. Age the real trackers past its former
+            // 2500-tick threshold, including several 500-tick deletion scans.
+            for (int i=0; i<6000; ++i)
+            {
+                auto order=runtime.getOrder();
+                if (order->getOrderType()==ORDER_DELETE)
+                {
+                    auto deletion=std::static_pointer_cast<OrderDelete>(order);
+                    REQUIRE(deletion->gid!=swarm->gid);
+                    deletedInn=true;
+                }
+            }
+            CHECK(deletedInn);
+            bool checkedTracker=false;
+            for (int id : runtime.get_starting_buildings())
+            {
+                auto tracker=runtime.get_resource_tracker(id);
+                if (tracker && runtime.get_building_register().get_building(id)->gid==swarm->gid)
+                {
+                    CHECK(tracker->get_age()>2500);
+                    CHECK(tracker->get_total_level()<18);
+                    checkedTracker=true;
+                }
+            }
+            CHECK(checkedTracker);
+        }
+    }
+    TEST_CASE("Econo adds new swarms as its colony grows")
+    {
+        glob2test::HeadlessGlobals globals;
+        World fixture(AI::ECONO,false,713);
+        auto& game=fixture.world.game;
+        const auto original=fixture.startingSwarm->gid;
+        for (int i=0; i<12; ++i) fixture.world.addUnit(WORKER,20+i,12,0);
+        for (int i=0; i<64 && game.teams[0]->stats.getLatestStat()->totalUnit<24; ++i)
+            game.teams[0]->stats.step(game.teams[0]);
+        REQUIRE(game.teams[0]->stats.getLatestStat()->totalUnit==24);
+        AISharedRuntime::Runtime runtime(new AISharedRuntime::Econo,game.players[0]);
+        // Keep population fixed while advancing beyond the 2000-tick swarm
+        // build cycle. Apply orders so new construction sites enter the map.
+        for (int i=0; i<3500; ++i)
+        {
+            auto order=runtime.getOrder();
+            order->sender=0;
+            game.executeOrder(order,0);
+        }
+        int swarmCount=0;
+        bool retainedOriginal=false;
+        // Count construction sites too: adding a swarm does not require its
+        // workers to have finished construction within this short run.
+        for (int i=0; i<Building::MAX_COUNT; ++i)
+        {
+            const auto* building=game.teams[0]->myBuildings[i];
+            if (building && building->type->shortTypeNum==fixture.startingSwarm->type->shortTypeNum)
+            {
+                ++swarmCount;
+                retainedOriginal |= building->gid==original;
+            }
+        }
+        CHECK(swarmCount>1);
+        CHECK(retainedOriginal);
     }
     TEST_CASE("Econo shared runtime survives save-load")
     {

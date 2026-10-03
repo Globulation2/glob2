@@ -79,7 +79,7 @@ namespace AISharedRuntime
 		void tick_school_inland(Runtime& runtime);
 		void tick_upgrade_l1_to_l2(Runtime& runtime);
 		void tick_upgrade_l2_to_l3(Runtime& runtime);
-		void tick_delete_old_inns_swarms(Runtime& runtime);
+		void tick_delete_old_inns(Runtime& runtime);
 		void tick_farming_areas(Runtime& runtime);
 
 		int timer;
