@@ -52,6 +52,7 @@ export const UNEXPORTED_ACCOUNT_COLUMNS: Record<string, string> = {
   'room_kicks.kicked_by_account_id': 'the host who kicked someone',
   'signin_attempts.conflict_account_id': 'another account the sign-in collided with',
   'account_name_scrubs.account_id': 'only exists for deleted accounts',
+  'realtime_presence.account_id': 'which API server holds a live socket; cleared on disconnect',
 };
 
 type Row = Record<string, unknown>;
