@@ -5,6 +5,9 @@
 #include <Toolkit.h>
 #include <GAG.h>
 #include <GUIBase.h>
+#ifndef __EMSCRIPTEN__
+#include <SDL3_net/SDL_net.h>
+#endif
 
 #include "FileManager.h"
 #include "GameGUIKeyActions.h"
@@ -127,6 +130,12 @@ GlobalContainer::~GlobalContainer(void)
 #endif  // !YOG_SERVER_ONLY
 
 	// release resources
+#ifndef __EMSCRIPTEN__
+	// Join SDL_net's resolver threads before GraphicContext calls SDL_Quit().
+	// Waiting until the atexit fallback is too late: SDL has already cleared
+	// its thread registry, so NET_Quit cannot join those threads safely.
+	NET_Quit();
+#endif
 	Toolkit::close();
 
 	// Remaining owned members (replayReader, replayWriter, datasetWriter) are destroyed by the implicit member destruction that
