@@ -138,8 +138,9 @@ public:
     Uint64 sessionClock() const;
     bool simulationStep(Uint64 now);
     void extractScene(Scene& scene);
-    // Called on the main thread with the simulation parked.
-    void clientStep(Uint64 now, const std::vector<SDL_Event>& events);
+    // Called on the main thread with the simulation parked. GUI timing uses
+    // the SDL clock, independently of the host/session simulation clock.
+    void clientStep(const std::vector<SDL_Event>& events);
     struct PendingLoad { std::string filename; bool replay; };
     // Finalize without loading another game or entering a UI loop. The host
     // schedules a returned request, or presents the end screen when absent.
