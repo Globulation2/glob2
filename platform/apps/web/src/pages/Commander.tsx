@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { request } from '../api.ts';
+import { ApiError, request } from '../api.ts';
 interface Account {
   enabled: boolean;
   available: number;
@@ -24,10 +24,18 @@ export function CommanderCredits() {
     const refresh = () => {
       void request<Account>('GET', '/api/v1/hive/account')
         .then((a) => {
-          if (alive) setAccount(a);
+          if (alive) {
+            setAccount(a);
+            setError('');
+          }
         })
-        .catch(() => {
-          if (alive) setError('Sign in to view your commander and credits.');
+        .catch((error: unknown) => {
+          if (alive)
+            setError(
+              error instanceof ApiError && error.status === 401
+                ? 'Sign in to view your commander and credits.'
+                : 'Your account could not be refreshed. Please try again shortly.',
+            );
         });
     };
     refresh();
@@ -54,29 +62,37 @@ export function CommanderCredits() {
     }
   }
   return (
-    <main className="page">
+    <section aria-label="Commander account">
       <h1>Hive Mind</h1>
       <p>Give orders. Receive reports. Lead your colony.</p>
-      <p>Your commander is available inside online games, including ranked matches.</p>
+      <p>
+        Configure Hive Mind in Settings → Online. In a match, press Ctrl+Enter to give an order.
+        Assistance is permitted in ranked matches.
+      </p>
       {error && <p role="alert">{error}</p>}
       {account && (
         <>
           <h2>{account.available.toLocaleString()} credits available</h2>
+          {!account.enabled && <p>Hive Mind is not enabled on this instance.</p>}
           <p>
             Credits pay for your commander’s thinking and follow-ups. Standing orders keep running
             when credits run out.
           </p>
           <p>{account.reserved.toLocaleString()} credits reserved for work in progress.</p>
           {account.rate && (
-            <p>
-              Rate {account.rate.version}: {account.rate.input} credits per million input tokens,{' '}
-              {account.rate.cachedInput} for cached input,{' '}
-              {account.rate.cacheWrite ?? account.rate.input} for cache writes, and{' '}
-              {account.rate.output} for output including reasoning. Repairs and follow-ups use the
-              same rates.
-            </p>
+            <details>
+              <summary>Detailed usage rates</summary>
+              <p>
+                Rate {account.rate.version}: {account.rate.input} credits per million input tokens,{' '}
+                {account.rate.cachedInput} for cached input,{' '}
+                {account.rate.cacheWrite ?? account.rate.input} for cache writes, and{' '}
+                {account.rate.output} for output including reasoning. Repairs and follow-ups use the
+                same rates.
+              </p>
+            </details>
           )}
           <h2>Recent activity</h2>
+          {!account.usage.length && <p>No commander activity yet.</p>}
           <ul>
             {account.usage.map((entry) => (
               <li key={entry.id}>
@@ -107,6 +123,6 @@ export function CommanderCredits() {
           </p>
         </>
       )}
-    </main>
+    </section>
   );
 }

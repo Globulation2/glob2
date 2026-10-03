@@ -1,4 +1,5 @@
 #include "hive/HiveClient.h"
+#include "hive/HiveDialog.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
@@ -356,5 +357,8 @@ void GameGUI::updateCommander(bool caughtUp)
 {
  if(!hive)return;
  hive->update(caughtUp);
- if(inGameMenu==IGM_HIVE && gameMenuScreen)gameMenuScreen->invalidate();
+ if(!hiveCards && hive->available() && !globalContainer->runNoX) {
+ hiveCards=std::make_unique<Hive::Dialog>(hive); hiveCards->compose=[this]{openCommander();}; hiveCards->attach(*globalContainer->gfx);
+ }
+ if(hiveCards)hiveCards->invalidate();
 }

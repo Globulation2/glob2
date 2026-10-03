@@ -1,3 +1,4 @@
+#include "hive/HiveDialog.h"
 #include "MapZoomControls.h"
 #include "ConnectionOverlay.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
@@ -79,6 +80,16 @@ bool GameGUI::processTypingInput(SDL_Event *event)
 	if (!typingInputScreen->finished())
 		return consumed;
 
+	if(typingCommander)
+    {
+        if(hive) {
+            hive->commandDraft=typingInputScreen->getText();
+            if(typingInputScreen->result()==0)hive->command(hive->commandDraft, globalContainer->settings.hiveMindSupervision);
+        }
+        closeChat();
+        return true;
+    }
+
 	if (typingInputScreen->result()==0)
 	{
 		//Interpret message
@@ -114,6 +125,7 @@ bool GameGUI::processTypingInput(SDL_Event *event)
 void GameGUI::processEvent(SDL_Event *event)
 {
     inputState.observe(*event);
+    if(hiveCards && !activeDialog() && !inGameMenu && globalContainer->settings.hiveMindEnabled && hiveCards->handle(*event))return;
     if (connectionOverlay && !activeDialog() && !inGameMenu && connectionOverlay->handle(*event)) return;
     if (touch && !activeDialog() && touch->process(*event)) return;
     if ((event->type == SDL_EVENT_MOUSE_BUTTON_UP && event->button.button == SDL_BUTTON_MIDDLE) ||

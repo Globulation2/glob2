@@ -4618,3 +4618,9 @@ Your device can't keep up with this match
 It replays the match more slowly than the match runs, so it will not catch up. You can leave the match, or lower the graphics settings and keep waiting.
 [conn card not gaining]
 not gaining
+
+[open commander]
+Open commander
+
+[stop commander]
+Stop commander

@@ -2,74 +2,120 @@
 #include "HiveDialog.h"
 namespace Hive
 {
-Glob2UI::Element Dialog::build(const Glob2UI::Presentation &p)
+using namespace Glob2UI;
+Rect Dialog::available(const Presentation &p, const Metrics &m)
 {
-	namespace ui = Glob2UI;
-	std::string log;
-	for (auto &report : client->reports)
+	auto area = p.dialog.inset(m.padding);
+	area.w = std::min(area.w, p.pt(maxWidth()));
+	area.h = std::max(1, area.h - p.pt(composerOpen ? 112 : 32));
+	return area;
+}
+Rect Dialog::place(Size size, Rect area)
+{
+	const int h = std::min(area.h, size.h);
+	return {area.x, area.bottom() - h, area.w, h};
+}
+bool Dialog::handle(const SDL_Event &e)
+{
+	int x = 0, y = 0;
+	if (e.type == SDL_EVENT_MOUSE_BUTTON_DOWN || e.type == SDL_EVENT_MOUSE_BUTTON_UP)
 	{
-		if (!log.empty())
-			log += "\n\n";
-		log += report;
+		x = e.button.x;
+		y = e.button.y;
 	}
+	else if (e.type == SDL_EVENT_MOUSE_MOTION)
+	{
+		x = e.motion.x;
+		y = e.motion.y;
+	}
+	else if (e.type == SDL_EVENT_MOUSE_WHEEL)
+	{
+		x = e.wheel.mouse_x;
+		y = e.wheel.mouse_y;
+	}
+	else
+		return false;
+	const auto r = panelBounds();
+	const bool inside = x >= r.x && x < r.right() && y >= r.y && y < r.bottom();
+	if (!inside && !captured)
+		return false;
+	if (e.type == SDL_EVENT_MOUSE_BUTTON_DOWN)
+		captured = true;
+	eventLogical(e);
+	if (e.type == SDL_EVENT_MOUSE_BUTTON_UP)
+		captured = false;
+	return true;
+}
+Element Dialog::build(const Presentation &p)
+{
+	ButtonOptions small;
+	small.minHeight = 26;
+	small.role = FontRole::Caption;
+	CardOptions compact;
+	compact.padding = p.pt(8);
+	std::vector<Element> cards;
+	cards.push_back(row({button(
+							 "hive/compose", "Give order",
+							 [this]
+							 {
+								 if (compose)
+									 compose();
+							 },
+							 small),
+						 button(
+							 "hive/details", expanded ? "Less" : "Reports / details",
+							 [this]
+							 {
+								 expanded = !expanded;
+								 invalidate();
+							 },
+							 small)},
+						{p.pt(6)}));
 	if (!client->progress.empty())
-		log += "\n\n" + client->progress;
-	std::vector<ui::Element> items;
-	items.push_back(ui::paragraph("Hive Mind", {ui::FontRole::Heading}));
-	items.push_back(ui::paragraph("Give orders. Receive reports. Lead your colony."));
-	items.push_back(
-		ui::textEditor("hive/reports", log, [](const auto &) {}, {true, 7, false, true}));
-	items.push_back(ui::textField("hive/command", draft,
-								  [this](const auto &value)
-								  {
-									  draft = value;
-									  invalidate();
-								  }));
-	items.push_back(ui::toggle("hive/ongoing", "Keep overseeing this order", ongoing,
-							   [this](bool value)
-							   {
-								   ongoing = value;
-								   invalidate();
-							   }));
-	items.push_back(ui::row({ui::button("hive/send", "Give order",
-										[this]
-										{
-											client->command(draft, ongoing);
-											draft.clear();
-											invalidate();
-										}),
-							 ui::button("hive/stop", "Stop commander", [this] { client->stop(); })},
-							{p.pt(8)}));
-	items.push_back(ui::paragraph("Standing orders", {ui::FontRole::Heading}));
+		cards.push_back(
+			card(paragraph(client->progress.substr(0, 240), {FontRole::Caption}), compact));
+	else if (!client->reports.empty())
+		cards.push_back(card(
+			paragraph(expanded ? client->reports.back() : client->reports.back().substr(0, 180),
+					  {FontRole::Caption}),
+			compact));
 	for (auto &order : client->standingOrders())
 	{
-		const auto id = order.at("id").get<std::string>();
-		const bool paused = order.at("paused");
-		items.push_back(ui::paragraph(order.at("name").get<std::string>() +
-									  (paused ? " — Paused" : " — Active")));
-		items.push_back(ui::paragraph(order.at("description").get<std::string>()));
-		items.push_back(ui::row({ui::button("hive/toggle/" + id, paused ? "Resume" : "Pause",
-											[this, id, paused]
-											{
-												client->change(id, paused ? "resume" : "pause");
-												invalidate();
-											}),
-								 ui::button("hive/cancel/" + id, "Cancel order",
-											[this, id]
-											{
-												client->change(id, "remove");
-												invalidate();
-											})},
-								{p.pt(8)}));
+		const std::string id = order.at("id"), name = order.at("name"),
+						  status = order.value("controlStatus", std::string());
+		const bool paused = order.at("paused"), missing = order.value("missingCheckpoint", false),
+				   pending = status == "Updating…" || status == "Requested";
+		std::vector<Element> body{label(name), caption(missing  ? "Needs a fresh order"
+													   : paused ? "Paused"
+																: "Active")};
+		if (!status.empty())
+			body.push_back(caption(status));
+		if (expanded)
+			body.push_back(
+				paragraph(order.at("description").get<std::string>(), {FontRole::Caption}));
+		auto toggle = small;
+		toggle.enabled = !missing && !pending;
+		auto cancel = small;
+		cancel.enabled = !pending;
+		body.push_back(row({button(
+								"hive/toggle/" + id, paused ? "Resume" : "Pause",
+								[this, id, paused]
+								{
+									client->change(id, paused ? "resume" : "pause");
+									invalidate();
+								},
+								toggle),
+							button(
+								"hive/cancel/" + id, "Cancel",
+								[this, id]
+								{
+									client->change(id, "remove");
+									invalidate();
+								},
+								cancel)},
+						   {p.pt(6)}));
+		cards.push_back(card(column(std::move(body), {p.pt(2)}), compact));
 	}
-	items.push_back(
-		ui::paragraph("Credits: " + std::to_string(client->account.value("available", 0))));
-	items.push_back(ui::paragraph("Standing orders keep running when credits run out. Commander "
-								  "assistance is permitted in ranked play."));
-	items.push_back(
-		ui::row({ui::button("hive/credits", "Add credits", [this] { client->buyCredits(); }),
-				 ui::button("hive/close", "Return to colony", [this] { finish(0); })},
-				{p.pt(8)}));
-	return ui::scroll("hive/panel", ui::column(std::move(items), {p.pt(8)}));
+	return scroll("hive/cards", column(std::move(cards), {p.pt(6)}));
 }
 } // namespace Hive
