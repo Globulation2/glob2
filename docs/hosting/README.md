@@ -317,6 +317,49 @@ self-hosted instance leaves `appLinks` out (both files then answer 404) and its
 invites open the game through `glob2://`. Apple caches the file through its CDN;
 after a change, allow a day or reinstall the app.
 
+The apps take the domain from `scons/official_instance.py`: the Android build fills
+the App Link host (`officialInstanceHost` in `AndroidManifest.xml`) from it, and
+`mobile/ios.py` writes `applinks:<host>` into the iOS entitlements, both currently
+`app.glob2online.com`. The Amazon and China editions leave online play out, so they
+declare neither invite links nor associated domains.
+
+#### Setting up the official instance
+
+Before enabling `appLinks` on `app.glob2online.com`, the maintainer supplies:
+
+| Value | Where it comes from |
+| --- | --- |
+| Google Play app-signing certificate SHA-256 | Play Console > the app > Test and release > App integrity > App signing key certificate, "SHA-256 certificate fingerprint" (uppercase hex with colons, as the config expects). Play re-signs every installed copy with this key, so it is the one phones check; the upload key is not. |
+| Other Android signing keys (optional) | F-Droid signs its own APKs. Add F-Droid's certificate SHA-256 (`apksigner verify --print-certs <F-Droid APK>`) for F-Droid installs to get verified links; without it they open the invite page, whose "Open in the Globulation 2 app" button still works. Up to eight fingerprints are allowed. |
+| Apple Team ID | The TestFlight workflow signs with team `CL2MNNYQX3`; confirm it on the Apple Developer account's Membership page. |
+| Associated Domains capability | Enable it on the `org.globulation2.glob2` App ID (Certificates, Identifiers & Profiles), so the App Store provisioning profile carries `com.apple.developer.associated-domains`. Check an exported build with `codesign -d --entitlements - Glob2.app`: it must list `applinks:app.glob2online.com`. |
+
+Then add to the deployment's `instance.yaml` and recreate `platform-api`:
+
+```yaml
+appLinks:
+  android:
+    packageName: org.globulation2.glob2
+    sha256CertFingerprints:
+      - <Play app-signing SHA-256, AA:BB:… (32 bytes)>
+  ios:
+    appIds: [CL2MNNYQX3.org.globulation2.glob2]
+```
+
+Check the result:
+
+```sh
+curl -s https://app.glob2online.com/.well-known/assetlinks.json
+curl -s https://app.glob2online.com/.well-known/apple-app-site-association
+curl -s https://app-site-association.cdn-apple.com/a/v1/app.glob2online.com   # Apple's cached copy
+adb shell pm verify-app-links --re-verify org.globulation2.glob2
+adb shell pm get-app-links org.globulation2.glob2   # app.glob2online.com: verified
+```
+
+Android verifies when the app is installed or updated, so reinstall (or re-verify as
+above) after changing the file. Then open an invite link from another app on each
+phone; it should open the game at the room.
+
 ## Configuration
 
 Everything is configured in `deploy/.env` (Compose variables, and the environment of
@@ -735,8 +778,10 @@ at most 1000 rows per table and run) and collects blobs every six hours:
 | Spilled NOTIFY payloads | 1 hour |
 | Blobs | unreferenced ones (no map version, preview, match artifact, upload, generated map (warm pool maps included), or match played on the map) 7 days after creation; stored files no `blobs` row names, 7 days after they were written |
 
-Matches, participants, ratings, rating history, catalog maps and the audit log
-are kept.
+Matches, participants, ratings, rating history, catalog maps, map download counts
+(by account, or by IP address for downloads without an account) and the audit log
+are kept. The official instance's [privacy policy](../mobile/privacy-policy.md)
+states these periods to players; change it together with `maintenance.ts`.
 - Migrations: `docker compose run --rm --no-deps init node packages/db/src/cli.ts status`.
 - Stopping: `docker compose stop` drains relays (up to `GLOB2_RELAY_STOP_GRACE`);
   `docker compose down` keeps volumes; `down --volumes` deletes all data.

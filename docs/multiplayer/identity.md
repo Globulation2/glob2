@@ -278,13 +278,19 @@ There is no undo. What stays, and why:
 
 | Data | Kept |
 | --- | --- |
-| Refresh tokens | Until 30 days after they expire (reuse detection), then deleted. |
-| Web sessions | Until 30 days after they expire or are revoked. |
+| Refresh tokens | Rotated or revoked: 7 days (reuse detection); expired: 30 days after expiry. |
+| Web sessions | 30 days after they expire or are revoked. |
 | Provider sign-in flows | 24 hours after they expire. |
-| Browser sign-in attempts | A week after they expire. |
+| Browser sign-in attempts | 7 days once finished. |
 | Rate-limit counters | A day after their last use. |
-| Queue tickets | Expired after an hour of waiting. |
-| Guest accounts, chat, matches, maps | Until the player deletes the account (or a moderator does); no automatic expiry yet. |
+| Queue tickets | Expired after an hour of waiting; deleted 30 days after they finish. |
+| Guest accounts | Deleted when unused for 90 days if they never played a match, host no open room and own no catalog map. |
+| Room chat | 30 days. |
+| Registered accounts, matches, ratings, catalog maps | Until the player deletes the account (or a moderator does). |
+
+The worker deletes these (`apps/worker/src/maintenance.ts`); the full table, with jobs
+and blobs, is in [hosting: retention](../hosting/README.md#retention). The
+[privacy policy](../mobile/privacy-policy.md) states the same periods for players.
 
 ## Hardening
 

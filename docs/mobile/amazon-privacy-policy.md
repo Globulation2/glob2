@@ -2,11 +2,13 @@
 
 This policy applies to the Amazon Appstore edition of Globulation 2
 (`org.globulation2.glob2`) for Fire tablets. For privacy questions, contact
-[bradley.allen.arsenault@gmail.com](mailto:bradley.allen.arsenault@gmail.com).
+**[PLACEHOLDER: privacy contact address]**.
+
+Last updated: **[PLACEHOLDER: publication date]**.
 
 ## Data on your tablet
 
-The game stores settings, maps, and saved games on your tablet. It has no ads,
+The game stores settings, maps, saved games and replays on your tablet. It has no ads,
 analytics, or in-app purchases, and does not include a crash-reporting SDK. It
 does not request access to contacts, location, camera, or microphone. Android
 backup is disabled. You can delete local game data through the tablet's app
@@ -22,12 +24,18 @@ messages with the other participants. Other participants can retain data from a
 shared match on their own devices. The game does not collect this information
 for the Globulation 2 project.
 
-This edition does not offer online accounts or connect to the project's public
-YOG account service. The game does not send gameplay or diagnostic data to a
-project-operated server.
+## No online play
+
+This edition leaves out online play: it has no online accounts or sign-in, does
+not connect to the Globulation 2 online service at app.glob2online.com or to the
+older YOG lobby, and does not open invite links. The game does not send gameplay
+or diagnostic data to a project-operated server. The online service, and the
+editions that use it, are described in the
+[Globulation 2 privacy policy](privacy-policy.md).
 
 ## Retention and changes
 
 The project does not retain data from this edition on a project-operated server.
-Local game data remains until you delete it. We will revise this policy if the
-Fire tablet edition's data practices change.
+Local game data remains until you delete it. We will revise this policy, and the
+Appstore privacy questionnaire, before the Fire tablet edition's data practices
+change.
