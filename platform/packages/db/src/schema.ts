@@ -631,6 +631,18 @@ export interface LeaderLeasesTable {
   renewed_at: Timestamp;
 }
 
+export interface ApiReplicasTable {
+  id: string;
+  started_at: Timestamp;
+  heartbeat_at: Timestamp;
+}
+
+export interface RealtimePresenceTable {
+  account_id: string;
+  replica_id: string;
+  since: Timestamp;
+}
+
 export interface NotificationPayloadsTable {
   id: Generated<string>;
   channel: string;
@@ -680,6 +692,8 @@ export interface Database {
   account_name_scrubs: AccountNameScrubsTable;
   leader_leases: LeaderLeasesTable;
   notification_payloads: NotificationPayloadsTable;
+  api_replicas: ApiReplicasTable;
+  realtime_presence: RealtimePresenceTable;
   match_results_view: MatchResultsView;
   recent_win_rates_view: RecentWinRatesView;
   recent_game_lengths_view: RecentGameLengthsView;
