@@ -17,7 +17,7 @@ export interface Purchase {
   payment_id: string | null;
   pack: CreditPack;
   paid: boolean;
-  reversed: string;
+  reversed: number;
 }
 export class Checkout {
   readonly db: Kysely<Database>;

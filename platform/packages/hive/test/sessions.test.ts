@@ -352,3 +352,16 @@ it('enforces the simulation wake interval even when coalescing keys differ', asy
   ).toBe(true);
   expect(await sessions.takeTriggers(s.id, 0)).toHaveLength(2);
 });
+
+it('returns string event cursors that resume without repeating earlier reports', async () => {
+  const { s, sessions } = await fixture(database.db);
+  await sessions.report(s.id, 'First report');
+  const first = await sessions.events(s.id);
+  expect(first).toHaveLength(1);
+  expect(typeof first[0]!.id).toBe('string');
+  await sessions.report(s.id, 'Second report');
+  const later = await sessions.events(s.id, first[0]!.id);
+  expect(later).toHaveLength(1);
+  expect(later[0]!.body).toEqual({ text: 'Second report' });
+  expect(typeof later[0]!.id).toBe('string');
+});

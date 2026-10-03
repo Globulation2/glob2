@@ -61,8 +61,8 @@ export class Credits {
     const row = required(
       (
         await sql<{
-          balance: string;
-          reserved: string;
+          balance: number;
+          reserved: number;
         }>`SELECT balance,reserved FROM hive_wallets WHERE account_id=${account} FOR UPDATE`.execute(
           db,
         )
@@ -73,8 +73,8 @@ export class Credits {
   async balance(account: string, db: Db = this.db) {
     const row = (
       await sql<{
-        balance: string;
-        reserved: string;
+        balance: number;
+        reserved: number;
       }>`SELECT balance,reserved FROM hive_wallets WHERE account_id=${account}`.execute(db)
     ).rows[0];
     return {
@@ -96,7 +96,7 @@ export class Credits {
       const old = (
         await sql<{
           account_id: string;
-          amount: string;
+          amount: number;
         }>`SELECT account_id,amount FROM hive_ledger WHERE id=${id}`.execute(db)
       ).rows[0];
       if (old) {
@@ -122,7 +122,7 @@ export class Credits {
       const old = (
         await sql<{
           account_id: string;
-          reserved: string;
+          reserved: number;
           status: string;
           rate: RateCard;
         }>`SELECT * FROM hive_calls WHERE id=${id}`.execute(db)
@@ -174,10 +174,10 @@ export class Credits {
       const call = (
         await sql<{
           account_id: string;
-          reserved: string;
+          reserved: number;
           status: string;
           rate: RateCard;
-          charged: string | null;
+          charged: number | null;
           usage: Usage | null;
         }>`SELECT * FROM hive_calls WHERE id=${id} FOR UPDATE`.execute(db)
       ).rows[0];

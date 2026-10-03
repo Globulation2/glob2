@@ -555,6 +555,44 @@ afterAll(async () => {
 });
 
 describe('migrations', () => {
+  it('upgrades the online foundation without replacing account data', async () => {
+    const existing = await createTestDatabase({ migrate: false, role: 'migrator' });
+    try {
+      const foundation = await createMigrator(existing.db).migrateTo('0017_retention');
+      expect(foundation.error).toBeUndefined();
+      const account = await existing.db
+        .insertInto('accounts')
+        .values({ kind: 'registered', display_name: 'Existing commander' })
+        .returning('id')
+        .executeTakeFirstOrThrow();
+      expect((await migrateToLatest(existing.db)).map((r) => r.migrationName)).toEqual([
+        '0018_hive',
+        '0019_hive_supervision',
+      ]);
+      expect(
+        (
+          await existing.db
+            .selectFrom('accounts')
+            .select('display_name')
+            .where('id', '=', account.id)
+            .executeTakeFirstOrThrow()
+        ).display_name,
+      ).toBe('Existing commander');
+      await existing.db.insertInto('hive_wallets').values({ account_id: account.id }).execute();
+      expect(
+        (
+          await existing.db
+            .selectFrom('hive_wallets')
+            .select('balance')
+            .where('account_id', '=', account.id)
+            .executeTakeFirstOrThrow()
+        ).balance,
+      ).toBe(0);
+      expect(await migrateToLatest(existing.db)).toEqual([]);
+    } finally {
+      await existing.drop();
+    }
+  });
   it('apply from an empty database and are idempotent', async () => {
     const first = await migrateToLatest(database.db);
     const files = Object.keys(await new SqlFileMigrationProvider().getMigrations());

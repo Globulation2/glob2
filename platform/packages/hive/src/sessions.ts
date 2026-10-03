@@ -13,13 +13,13 @@ export interface Session {
   client_id: string | null;
   lease: string | null;
   lease_until: Date | null;
-  tick: string;
+  tick: number;
   generation: number;
   supervision: boolean;
   pending_run: boolean;
   run_id: string | null;
   run_until: Date | null;
-  last_wake_tick: string | null;
+  last_wake_tick: number | null;
   wake_window: Date | null;
   wake_count: number;
 }
@@ -406,7 +406,7 @@ export class Sessions {
         id: string;
         kind: string;
         body: unknown;
-      }>`SELECT id,kind,body FROM hive_events WHERE session_id=${id} AND id>${after}::bigint
+      }>`SELECT id::text AS id,kind,body FROM hive_events WHERE session_id=${id} AND id>${after}::bigint
    AND kind IN ('command','report','progress') ORDER BY id LIMIT 100`.execute(this.db)
     ).rows;
   }

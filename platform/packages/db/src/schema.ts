@@ -638,16 +638,16 @@ export interface NotificationPayloadsTable {
   created_at: Timestamp;
 }
 
-// bigint values are strings under pg's default parser; convert only after safe-range checks.
+// The shared database connection parses bounded bigint values as numbers.
 export interface HiveWalletsTable {
   account_id: string;
-  balance: Defaulted<string>;
-  reserved: Defaulted<string>;
+  balance: Defaulted<number>;
+  reserved: Defaulted<number>;
 }
 export interface HiveLedgerTable {
   id: string;
   account_id: string;
-  amount: string;
+  amount: number;
   kind: string;
   details: DefaultedJson<JsonValue>;
   created_at: Timestamp;
@@ -655,9 +655,9 @@ export interface HiveLedgerTable {
 export interface HiveCallsTable {
   id: string;
   account_id: string;
-  reserved: string;
+  reserved: number;
   status: string;
-  charged: Nullable<string>;
+  charged: Nullable<number>;
   rate: Json<JsonValue>;
   usage: NullableJson<JsonValue>;
   created_at: Timestamp;
@@ -671,19 +671,19 @@ export interface HiveSessionsTable {
   client_id: Nullable<string>;
   lease: Nullable<string>;
   lease_until: NullableTimestamp;
-  tick: Defaulted<string>;
+  tick: Defaulted<number>;
   generation: Defaulted<number>;
   supervision: Defaulted<boolean>;
   pending_run: Defaulted<boolean>;
   run_id: Nullable<string>;
   run_until: NullableTimestamp;
-  last_wake_tick: Nullable<string>;
+  last_wake_tick: Nullable<number>;
   wake_window: NullableTimestamp;
   wake_count: Defaulted<number>;
   created_at: Timestamp;
 }
 export interface HiveEventsTable {
-  id: Generated<string>;
+  id: Generated<number>;
   session_id: string;
   dedup: string;
   kind: string;
@@ -716,7 +716,7 @@ export interface HivePurchasesTable {
   payment_id: Nullable<string>;
   pack: Json<JsonValue>;
   paid: Defaulted<boolean>;
-  reversed: Defaulted<string>;
+  reversed: Defaulted<number>;
   created_at: Timestamp;
 }
 
