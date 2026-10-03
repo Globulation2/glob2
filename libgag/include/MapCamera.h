@@ -9,7 +9,7 @@
 class MapCamera
 {
 public:
-    static constexpr double MAX_ZOOM = 3.0;
+    static constexpr double MAX_ZOOM = 5.0;
 
     double zoom = 1, originX = 0, originY = 0;
     double width = 0, height = 0, mapWidth = 0, mapHeight = 0;

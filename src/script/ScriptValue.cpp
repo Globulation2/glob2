@@ -198,17 +198,22 @@ Value Value::decode(const std::string &bytes)
 		throw std::runtime_error("Trailing script data");
 	return v;
 }
-std::string config(const std::string &source)
+std::string config(const std::string &source, unsigned profile)
 {
-	if (source.size() > SourceLimit)
+	if (source.size() > SourceLimit || (profile != 1 && profile != 2))
 		throw std::runtime_error("Script source exceeds limit");
-	return "glob2-js/1\n" + source;
+	return "glob2-js/" + std::to_string(profile) + "\n" + source;
+}
+unsigned profileFromConfig(const std::string &text)
+{
+	if (text.size() < 11 || text.substr(0, 9) != "glob2-js/" ||
+		(text[9] != '1' && text[9] != '2') || text[10] != '\n' || text.size() - 11 > SourceLimit)
+		throw std::runtime_error("Unsupported JavaScript profile or oversized source");
+	return unsigned(text[9] - '0');
 }
 std::string sourceFromConfig(const std::string &text)
 {
-	const std::string prefix = "glob2-js/1\n";
-	if (text.compare(0, prefix.size(), prefix) != 0 || text.size() - prefix.size() > SourceLimit)
-		throw std::runtime_error("Unsupported JavaScript profile or oversized source");
-	return text.substr(prefix.size());
+	profileFromConfig(text);
+	return text.substr(11);
 }
 } // namespace Script

@@ -87,9 +87,10 @@ void testWideRoundTrip()
         });
 		writer.finish();
         CHECK(observed==1);
+        writer.finish();
+        CHECK(observed==1);
         writer.setSaveObserver({});
-		// ~ReplayWriter appends a second terminator; the reader stops at the
-		// first NullOrder, so it is harmless.
+		// finish is idempotent, including destruction after an explicit finish.
 	}
 
 	FILE* fp = std::fopen(path.c_str(), "r");
@@ -146,6 +147,8 @@ BinaryInputStream* writeReplayBody(Uint16 versionMinor, Uint32 firstCounter, Uin
 		writeOrderEnvelope(&ostream, order);
 		ostream.writeUint32(finalCounter, "replayStepsSinceLastOrder");
 		writeOrderEnvelope(&ostream, std::shared_ptr<Order>(new NullOrder()));
+		if (versionMinor >= FILE_FORMAT_VERSION_CUSTOM_AI)
+			ReplayTelemetry::Stream().write(&ostream);
 		readBackend = new MemoryStreamBackend(*writeBackend);
 	}
 	// ostream's destructor freed writeBackend; readBackend owns its own copy.

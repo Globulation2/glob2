@@ -44,6 +44,12 @@ int main(int argc, char **argv)
             gui.localPlayer = gui.localTeamNo = 0;
             gui.adjustLocalTeam();
             gui.adjustInitialViewport();
+            if (const char *zoom = std::getenv("SKIN_PREVIEW_ZOOM"))
+            {
+                const double value = std::stod(zoom);
+                if (!(value >= 0.02 && value <= 5.0)) throw std::runtime_error("Invalid preview zoom");
+                gui.camera.zoom = value;
+            }
             // A tick-zero map may have no units yet. Place a diagnostic row of
             // workers beside the colony to exercise both draw paths together.
             if (gui.game.mapHeader.getNumberOfTeams() < 2) throw std::runtime_error("Preview needs two colonies");
@@ -153,7 +159,13 @@ int main(int argc, char **argv)
                         scopes[name]={{"calls",metric.calls},
                             {"totalMs",metric.time.total/1e6},{"selfMs",metric.self/1e6}};
                     }
-                    std::cout << nlohmann::json{{"profile",scopes},{"coldMs",coldMs},{"warmup",warmup},{"mode",skinned?"skinned":"classic"},{"addedUnits",crowd.size()},
+                    if (skinned && gui.view.render.detail.unitSprite == 0 && gui.view.render.detail.buildingSprite == 0)
+                        for (const char *scope : {"geometry", "raster", "composite"})
+                            if (scopes[scope]["calls"].get<unsigned long>() != 0)
+                                throw std::runtime_error("Overview prepared or drew hidden skin meshes");
+                    std::cout << nlohmann::json{{"zoom",gui.camera.zoom},
+                        {"unitSprite",gui.view.render.detail.unitSprite},{"buildingSprite",gui.view.render.detail.buildingSprite},
+                        {"profile",scopes},{"coldMs",coldMs},{"warmup",warmup},{"mode",skinned?"skinned":"classic"},{"addedUnits",crowd.size()},
                         {"width",globalContainer->gfx->getW()},{"height",globalContainer->gfx->getH()},
                         {"frames",times.size()},{"checksumFrames",classicChecksums.size()},{"meanMs",sum/times.size()},{"p95Ms",times[std::min(times.size()-1,std::size_t(times.size()*0.95))]},
                         {"drawsPerFrame",double(draws)/times.size()}}.dump() << std::endl;

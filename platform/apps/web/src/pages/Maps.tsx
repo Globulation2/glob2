@@ -391,7 +391,7 @@ export function MapPage({ id }: { id: string }) {
   const [reported, setReported] = useState(false);
   const [error, setError] = useState<Error>();
   return (
-    <Loaded load={load}>
+    <Loaded load={load} page="Map">
       {(detail) => {
         const { map, viewer } = detail;
         const v = map.latestVersion;

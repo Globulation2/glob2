@@ -166,6 +166,7 @@ class SoftwareRenderBenchmark
 				throw std::runtime_error("Camera offsets must be finite");
 			gui.viewportX = gui.camera.tileX();
 			gui.viewportY = gui.camera.tileY();
+			gui.view.render.minimumZoom = gui.camera.minimumZoom();
 			printf("CAMERA zoom=%.4f fractional=%.4f,%.4f offset=%.4f,%.4f\n", gui.camera.zoom,
 				   gui.camera.fractionX(), gui.camera.fractionY(), gui.camera.offsetX,
 				   gui.camera.offsetY);
@@ -179,6 +180,10 @@ class SoftwareRenderBenchmark
 			const bool clouds = !(getenv("PROFILE_CLOUDS") && atoi(getenv("PROFILE_CLOUDS")) == 0);
 			globalContainer->settings.clouds = clouds;
 			globalContainer->settings.cloudShadows = clouds;
+			// PROFILE_ADAPTIVE_ZOOM=0 draws overlays scaled with the map, as before
+			// adaptive zoom detail, for before/after captures from one build.
+			if (const char *adaptive = getenv("PROFILE_ADAPTIVE_ZOOM"))
+				globalContainer->settings.adaptiveZoomDetail = atoi(adaptive) != 0;
 			printf("READY save=%s tick=%u map=%dx%d teams=%d units=%d buildings=%d surface=%dx%d "
 				   "camera=%d,%d mode=%s clouds=%d frames=%d driver=%s\n",
 				   path, gui.game.stepCounter, gui.game.map.getW(), gui.game.map.getH(),

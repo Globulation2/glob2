@@ -141,10 +141,10 @@ const GAGCore::SkinMesh *ColonySkinPreview::unitMesh(int type, int action) const
 }
 void ColonySkinPreview::prepare(GAGCore::GraphicContext &gfx, const Scene &scene,
     int left, int top, int right, int bottom, int viewportX, int viewportY,
-    int localTeam, std::uint32_t visibleTeams, bool wholeMap, float unitMotion)
+    int localTeam, std::uint32_t visibleTeams, bool wholeMap, float unitMotion, bool drawUnits, bool drawBuildings)
 {
     std::vector<GAGCore::SkinMeshRequest> requests;
-    if (visible && ready)
+    if (visible && ready && (drawUnits || drawBuildings))
     {
         const auto &map = scene.map;
         const auto &entities = scene.entities;
@@ -152,7 +152,7 @@ void ColonySkinPreview::prepare(GAGCore::GraphicContext &gfx, const Scene &scene
             for (int x=left-1; x<=right; ++x)
             {
                 const int mx=x+viewportX, my=y+viewportY;
-                for (auto gid : {map.getGroundUnit(mx,my), map.getAirUnit(mx,my)})
+                if (drawUnits) for (auto gid : {map.getGroundUnit(mx,my), map.getAirUnit(mx,my)})
                 {
                     const auto *unit = entities.unit(gid);
                     if (!unit || unit->team<0 || unit->team>=32 || !textures[unit->team]) continue;
@@ -162,6 +162,7 @@ void ColonySkinPreview::prepare(GAGCore::GraphicContext &gfx, const Scene &scene
                     if (mesh && unit->direction>=0 && unit->direction<=8 && unit->delta>=0 && unit->delta<=255)
                         requests.push_back({mesh, static_cast<unsigned>(unitAnimationFrame(0,unit->direction,drawnUnitDelta(*unit,unitMotion))), textures[unit->team].get()});
                 }
+                if (!drawBuildings) continue;
                 const auto *building = entities.building(map.getBuilding(mx,my));
                 if (!building || building->team<0 || building->team>=32 || !textures[building->team] ||
                     !swarm.identity || building->type->isBuildingSite ||

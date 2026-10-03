@@ -112,11 +112,53 @@ test('home shows the colony, ways in, live stats, ladders, maps and matches', as
   await expect(page.getByRole('link', { name: 'Sign in' })).toHaveAttribute('href', '/signin');
   // Live numbers come from GET /api/v1/stats: the seeded running match is live.
   const stats = page.getByTestId('live-stats');
-  await expect(stats).toContainText('players online');
+  await expect(stats).toContainText(/players? online/);
+  await expect(stats).toContainText(/match(es)? on now/);
   await expect(stats).not.toContainText('–');
   await expect(page.getByTestId('featured-maps').getByRole('link')).toHaveCount(4);
   await expect(page.getByTestId('featured-maps')).toContainText('Isles of Plenty');
   await check(page, info, 'home');
+});
+
+test('home: the website strip never covers the header over the hero', async ({ page }) => {
+  await page.goto('/');
+  // Each header control must be the topmost element at its own centre (the
+  // website strip used to sit on top of the brand, the nav and Sign in).
+  for (const target of [
+    page.locator('.site-header .brand'),
+    page.getByRole('navigation', { name: 'Main' }).getByRole('link').first(),
+    page.getByRole('link', { name: 'Sign in' }),
+  ]) {
+    await expect(target).toBeVisible();
+    const box = await target.boundingBox();
+    expect(box).not.toBeNull();
+    const x = (box?.x ?? 0) + (box?.width ?? 0) / 2;
+    const y = (box?.y ?? 0) + (box?.height ?? 0) / 2;
+    await target.evaluate((el) => el.setAttribute('data-hit-probe', ''));
+    const topmost = await inPage<boolean>(
+      page,
+      `(() => { const el = document.querySelector('[data-hit-probe]'); const hit = document.elementFromPoint(${x}, ${y}); el.removeAttribute('data-hit-probe'); return Boolean(hit && el.contains(hit)); })()`,
+    );
+    expect(topmost).toBe(true);
+  }
+  const site = page.getByRole('navigation', { name: 'Globulation 2 Online website' });
+  if ((await site.count()) > 0) {
+    const bar = await site.boundingBox();
+    const header = await page.locator('.site-header').boundingBox();
+    expect((header?.y ?? 0) + 0.5).toBeGreaterThanOrEqual((bar?.y ?? 0) + (bar?.height ?? 0));
+  }
+  // The hero card starts below the header.
+  const card = await page.locator('.hero-card').boundingBox();
+  const header = await page.locator('.site-header').boundingBox();
+  expect(card?.y ?? 0).toBeGreaterThanOrEqual((header?.y ?? 0) + (header?.height ?? 0));
+});
+
+test('missing pages and items have a heading and a title', async ({ page }) => {
+  await page.goto('/no-such-page');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Page not found');
+  await expect(page).toHaveTitle(/^Page not found · /);
+  await page.goto('/matches/00000000-0000-0000-0000-000000000000');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Match not found');
 });
 
 test('join with code opens the invite page; bad codes explain themselves', async ({ page }) => {

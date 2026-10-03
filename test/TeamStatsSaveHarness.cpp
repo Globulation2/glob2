@@ -22,6 +22,8 @@
 #include "Sector.h"
 #include "EndGameScreen.h"
 #include "ReplayReader.h"
+#include "ReplayTelemetry.h"
+#include "FileFormatVersions.h"
 #include "OrderMessages.h"
 #include "Order.h"
 #include "Player.h"
@@ -827,6 +829,8 @@ static void measurementReplayBoundaries()
 		writer.writeUint32(0, "replayStepCounter");
 		NetSendOrder message(std::make_shared<NullOrder>());
 		message.encodeData(&writer);
+		if (version >= FILE_FORMAT_VERSION_CUSTOM_AI)
+			ReplayTelemetry::Stream().write(&writer);
 		auto *copy = new GAGCore::MemoryStreamBackend(*bytes);
 		copy->seekFromStart(0);
 		ReplayReader reader;

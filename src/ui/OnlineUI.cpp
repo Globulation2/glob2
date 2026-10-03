@@ -274,6 +274,10 @@ std::string durationText(std::int64_t seconds)
 	seconds = std::max<std::int64_t>(0, seconds);
 	if (seconds < 60)
 		return GAGCore::FormattableString(tr("[online %0 s]")).arg(int(seconds));
+	// Short matches keep their seconds ("1 min 42 s"): rounding a 1:42 match to
+	// "1 min" or "2 min" depending on the screen read as two different matches.
+	if (seconds < 10 * 60 && seconds % 60)
+		return GAGCore::FormattableString(tr("[online %0 min %1 s]")).arg(int(seconds / 60)).arg(int(seconds % 60));
 	return GAGCore::FormattableString(tr("[results minutes %0]")).arg(int((seconds + 30) / 60));
 }
 
@@ -288,6 +292,39 @@ std::string queueDisplayName(const std::string &id, const std::string &name)
 	if (!readable.empty())
 		readable[0] = static_cast<char>(std::toupper(static_cast<unsigned char>(readable[0])));
 	return readable;
+}
+
+std::string regionDisplayName(const std::string &id)
+{
+	static const std::pair<const char *, const char *> places[] = {
+		{"ca", "Canada"}, {"us", "US"}, {"na", "North America"}, {"eu", "Europe"}, {"uk", "UK"},
+		{"ap", "Asia Pacific"}, {"asia", "Asia"}, {"au", "Australia"}, {"sa", "South America"},
+		{"me", "Middle East"}, {"af", "Africa"}, {"jp", "Japan"}, {"in", "India"}};
+	std::vector<std::string> words;
+	std::string word;
+	for (char c : id + "-")
+	{
+		if (c == '-' || c == '_' || c == ' ')
+		{
+			if (!word.empty())
+				words.push_back(word);
+			word.clear();
+		}
+		else
+			word += static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
+	}
+	if (words.empty())
+		return id;
+	std::string first = words.front();
+	for (const auto &[code, name] : places)
+		if (first == code)
+			first = name;
+	if (first == words.front())
+		first[0] = static_cast<char>(std::toupper(static_cast<unsigned char>(first[0])));
+	std::string out = first;
+	for (std::size_t i = 1; i < words.size(); ++i)
+		out += (i == 1 ? ", " : " ") + words[i];
+	return out;
 }
 
 std::string pairingCode(const std::string &pairing)

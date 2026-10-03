@@ -342,12 +342,16 @@ second launch joins directly. In-client "Join by code" covers the rest.
 | iOS | `CFBundleURLTypes` and `applinks:<official host>` (written by `mobile/ios.py`) |
 
 App Links and universal links cover the official domain only; self-hosted
-instances use `glob2://`. They need the instance to serve
+instances use `glob2://`. The Amazon and China editions have no online play and
+declare none of these (`mobile/android.py` strips the invite intent filters,
+`mobile/ios.py` the associated domain and URL scheme). They need the instance to serve
 `/.well-known/assetlinks.json` (the release signing certificate's SHA-256) and
 `/.well-known/apple-app-site-association` (team id plus
 `org.globulation2.glob2`, path `/j/*`). For the official instance that is
 `app.glob2online.com`; the public website at the apex serves neither file and
-redirects `/j/*` to the app, so an apex invite opens in the browser first.
+redirects `/j/*` to the app, so an apex invite opens in the browser first. What the
+maintainer supplies for these files is in
+[hosting: mobile app links](../hosting/README.md#mobile-app-links).
 
 ## Sim version
 

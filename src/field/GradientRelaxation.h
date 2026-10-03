@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 
-// Private pathfinding relaxation kernel shared by eager and resumed searches.
+// Pathfinding relaxation kernel shared by eager and resumed searches.
 // Each call settles one cost layer. The scalar, SSE2 and NEON paths must make
 // the same improvements; queue order within a layer may differ, but the final
 // field and the completed-layer boundary must not.
 #include "GradientCosts.h"
+#include "Grid.h"
 
 #include <algorithm>
 #include <cstddef>
@@ -42,13 +43,13 @@ namespace gradient_kernel
 	// The search runs backward from goals: when expanding i, each neighbor is a
 	// possible predecessor, so all eight edges charge the cost of entering i.
 	// Weighted layers read isWater(i) for that cost; uniform layers omit the read.
-	template<bool Weighted, typename IsWater>
-	void expandBucket(std::uint16_t *__restrict gradient, GradientBucket *queue, size_t &pending,
-		int cur, int limit, int widthMask, int heightMask, int widthShift, EntrySteps waterSteps, IsWater isWater)
+	template<bool Weighted, bool Masked, typename IsWater>
+	void expandBucketAddressed(std::uint16_t *__restrict gradient, GradientBucket *queue, size_t &pending,
+		int cur, int limit, const field::Grid& grid, EntrySteps waterSteps, IsWater isWater)
 	{
 		GradientBucket &bucket = queue[unsigned(cur) % BUCKETS];
-		const size_t wMask = size_t(widthMask), hMask = size_t(heightMask);
-		const unsigned wDec = unsigned(widthShift);
+		const size_t wMask = size_t(grid.width()-1), hMask = size_t(grid.height()-1);
+		const unsigned wDec = Masked ? unsigned(grid.widthShift()) : 0;
 		const std::uint16_t curValue = std::uint16_t(GRADIENT_AT_GOAL - cur);
 		// One is the unreachable sentinel. Returning it for an edge beyond the
 		// caller's cap makes that edge unable to improve any neighbor.
@@ -145,13 +146,13 @@ namespace gradient_kernel
 				const size_t i = cells[ci];
 				if (gradient[i] != curValue)
 					continue; // stale entry, a cheaper path was found later
-				const size_t x = i & wMask;
-				const size_t y = i >> wDec;
-				const size_t left = (x - 1) & wMask;
-				const size_t right = (x + 1) & wMask;
-				const size_t above = ((y - 1) & hMask) << wDec;
-				const size_t row = y << wDec;
-				const size_t below = ((y + 1) & hMask) << wDec;
+				const size_t x = Masked ? i & wMask : i % grid.width();
+				const size_t y = Masked ? i >> wDec : i / grid.width();
+				const size_t left = Masked ? (x - 1) & wMask : grid.wrapX(int(x)-1);
+				const size_t right = Masked ? (x + 1) & wMask : grid.wrapX(int(x)+1);
+				const size_t above = Masked ? ((y - 1) & hMask) << wDec : grid.wrapY(int(y)-1)*grid.width();
+				const size_t row = Masked ? y << wDec : y*grid.width();
+				const size_t below = Masked ? ((y + 1) & hMask) << wDec : grid.wrapY(int(y)+1)*grid.width();
 				// All reverse edges enter i, so they share its two terrain costs.
 				const bool water = Weighted && isWater(i);
 				const std::uint16_t cardinalValue = water ? waterCardinalValue : landCardinalValue;
@@ -192,7 +193,7 @@ namespace gradient_kernel
 						const __m128i merged = _mm_or_si128(_mm_and_si128(better, value), _mm_andnot_si128(better, g));
 						_mm_storel_epi64((__m128i *)aboveRun, merged);
 						_mm_storel_epi64((__m128i *)belowRun, _mm_unpackhi_epi64(merged, merged));
-						const std::uint32_t a = std::uint32_t(above | x), b = std::uint32_t(below | x);
+						const std::uint32_t a = std::uint32_t(above + x), b = std::uint32_t(below + x);
 						*diagonalEnd = a - 1; diagonalEnd += (mask >> 0) & 1;
 						*cardinalEnd = a; cardinalEnd += (mask >> 2) & 1;
 						*diagonalEnd = a + 1; diagonalEnd += (mask >> 4) & 1;
@@ -200,8 +201,8 @@ namespace gradient_kernel
 						*cardinalEnd = b; cardinalEnd += (mask >> 10) & 1;
 						*diagonalEnd = b + 1; diagonalEnd += (mask >> 12) & 1;
 					}
-					relax(row | right, cardinalValue, cardinalLimit, cardinalEnd);
-					relax(row | left, cardinalValue, cardinalLimit, cardinalEnd);
+					relax(row + right, cardinalValue, cardinalLimit, cardinalEnd);
+					relax(row + left, cardinalValue, cardinalLimit, cardinalEnd);
 				}
 				else
 #elif defined(GLOB2_GRADIENT_NEON)
@@ -228,7 +229,7 @@ namespace gradient_kernel
 						vst1_u16(aboveRun, vget_low_u16(merged));
 						vst1_u16(belowRun, vget_high_u16(merged));
 						vst1_u16(rowRun, vbsl_u16(betterRow, valueRow, gRow));
-						const std::uint32_t a = std::uint32_t(above | x), b = std::uint32_t(below | x), r = std::uint32_t(i);
+						const std::uint32_t a = std::uint32_t(above + x), b = std::uint32_t(below + x), r = std::uint32_t(i);
 						*diagonalEnd = a - 1; diagonalEnd += (mask >> 0) & 1;
 						*cardinalEnd = a; cardinalEnd += (mask >> 8) & 1;
 						*diagonalEnd = a + 1; diagonalEnd += (mask >> 16) & 1;
@@ -244,14 +245,14 @@ namespace gradient_kernel
 				{
 					// This also handles toroidal edges, where a four-cell
 					// vector load would cross a physical row boundary.
-					relax(above | left, diagonalValue, diagonalLimit, diagonalEnd);
-					relax(above | x, cardinalValue, cardinalLimit, cardinalEnd);
-					relax(above | right, diagonalValue, diagonalLimit, diagonalEnd);
-					relax(row | right, cardinalValue, cardinalLimit, cardinalEnd);
-					relax(below | right, diagonalValue, diagonalLimit, diagonalEnd);
-					relax(below | x, cardinalValue, cardinalLimit, cardinalEnd);
-					relax(below | left, diagonalValue, diagonalLimit, diagonalEnd);
-					relax(row | left, cardinalValue, cardinalLimit, cardinalEnd);
+					relax(above + left, diagonalValue, diagonalLimit, diagonalEnd);
+					relax(above + x, cardinalValue, cardinalLimit, cardinalEnd);
+					relax(above + right, diagonalValue, diagonalLimit, diagonalEnd);
+					relax(row + right, cardinalValue, cardinalLimit, cardinalEnd);
+					relax(below + right, diagonalValue, diagonalLimit, diagonalEnd);
+					relax(below + x, cardinalValue, cardinalLimit, cardinalEnd);
+					relax(below + left, diagonalValue, diagonalLimit, diagonalEnd);
+					relax(row + left, cardinalValue, cardinalLimit, cardinalEnd);
 				}
 				if (water)
 				{
@@ -278,4 +279,16 @@ namespace gradient_kernel
 		pending -= count;
 		bucket.clear();
 	}
+	// Choose geometry once for a complete layer; both paths share relaxation,
+	// bucket accounting and SIMD rules, including thin-grid aliasing.
+	template<bool Weighted, typename IsWater>
+	void expandBucket(std::uint16_t* gradient, GradientBucket* queue, size_t& pending,
+		int cur, int limit, const field::Grid& grid, EntrySteps waterSteps, IsWater isWater)
+	{
+		if(grid.powerOfTwo())
+			expandBucketAddressed<Weighted,true>(gradient,queue,pending,cur,limit,grid,waterSteps,isWater);
+		else
+			expandBucketAddressed<Weighted,false>(gradient,queue,pending,cur,limit,grid,waterSteps,isWater);
+	}
+
 }

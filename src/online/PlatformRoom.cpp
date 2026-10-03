@@ -636,16 +636,23 @@ std::string PlatformRoom::waitingFor() const
 	if (map == "failed")
 		return text("[room map failed]");
 	std::vector<std::string> waiting;
+	bool waitingForMe = false;
 	int occupied = 0;
 	for (const auto &slot : slots())
 	{
 		if (!slot.open && !slot.locked)
 			++occupied;
 		if (!slot.ai && !slot.open && !slot.locked && !slot.ready)
+		{
 			waiting.push_back(slot.name);
+			waitingForMe = waitingForMe || slot.local;
+		}
 	}
 	if (occupied < 2)
 		return text("[room needs two seats]");
+	// Speak to the player the room waits for, not about them.
+	if (waitingForMe)
+		return text("[room waiting for you]");
 	if (waiting.size() == 1)
 		return formatted("[room waiting for %0]", waiting.front());
 	if (!waiting.empty())

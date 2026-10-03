@@ -89,7 +89,9 @@ class PolicyTest(unittest.TestCase):
     def test_release_metadata_does_not_compile_engine(self):
         paths=['fdroid/metadata.yml','fastlane/metadata/title.txt','tools/package_steam_windows.py',
                '.github/workflows/steam-windows-package.yml','.github/workflows/mac-app-store.yml',
-               'mobile/android_release.py','tests/build_system/test_ci_policy.py']
+               'mobile/android_release.py','tests/build_system/test_ci_policy.py',
+               '.github/workflows/deploy-online.yml','deploy/online-deploy.sh','deploy/online_remote.py',
+               'tests/deployment/test_online_deploy.py']
         self.assertFalse(any(self.select(paths).values()))
         before_activation,_=self.exercise('pull_request',paths,enabled=False)
         self.assertFalse(any(before_activation['selection'].values()))

@@ -201,6 +201,43 @@ namespace
 			panels.localStats = std::make_shared<TeamStats>(local.stats);
 		else
 			*panels.localStats = local.stats;
+		panels.localStats->aiTelemetry.clear();
+
+		panels.aiTelemetry.clear();
+		for (int t = 0; t < game.mapHeader.getNumberOfTeams(); ++t)
+		{
+			// A unilateral diplomacy toggle must not reveal an opponent's plans.
+			const bool allied = (local.allies & (1u << t)) &&
+				(game.teams[t]->allies & local.me);
+			if (!request.spectating && t != request.localTeam && !allied)
+				continue;
+			for (const auto &series : game.teams[t]->stats.aiTelemetry)
+			{
+				if (!series->active)
+					continue;
+				SceneAITelemetry row;
+				row.team = t;
+				row.player = series->player;
+				row.name = series->playerName;
+				row.available = series->current.available;
+				if (row.available)
+				{
+					for (std::size_t i = 0;
+						 i < series->fields.size() && i < series->current.values.size(); ++i)
+					{
+						const auto &field = series->fields[i];
+						const auto &value = series->current.values[i];
+						if (i >= AITelemetry::OrderTypes && i < AITelemetry::Specific &&
+							(!value.valid || !value.bits))
+							continue;
+						row.values.push_back({field.name, AITelemetry::displayValue(field, value),
+											  field.unit, field.meaning, value.updated});
+					}
+					row.values.insert(row.values.end(), series->named.begin(), series->named.end());
+				}
+				panels.aiTelemetry.push_back(std::move(row));
+			}
+		}
 
 		SceneBuildingPanel &bp = panels.building;
 		bp = SceneBuildingPanel();

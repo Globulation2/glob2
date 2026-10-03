@@ -26,8 +26,8 @@ CI_TOOL_TESTS = {
     "tests/build_system/test_ci_concurrency.py",
 }
 def platform_stack_changed(paths):
-    from ci_policy import PLATFORM_STACK_PATHS
-    return any(path.startswith(PLATFORM_STACK_PATHS) and not path.endswith(".md") for path in paths)
+    from ci_policy import PLATFORM_STACK_PATHS, cheap_path
+    return any(path.startswith(PLATFORM_STACK_PATHS) and not cheap_path(path) for path in paths)
 
 
 TRANSPORT_TESTS = {

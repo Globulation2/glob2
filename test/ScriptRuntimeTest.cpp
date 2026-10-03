@@ -494,3 +494,92 @@ TEST_CASE("JavaScript malformed automatic global snapshots are rejected" *
 	CHECK_THROWS(makeRuntime()->invoke(source, corrupted, false, host));
 	CHECK(makeRuntime()->invoke(source, saved, false, host).effects.get("count").number == 2);
 }
+
+TEST_CASE("JavaScript profile two metadata and bundled export aliases" *
+		  doctest::test_suite("JavaScriptRuntime"))
+{
+	const std::string source = R"(
+ var memory={steps:0};
+ function metadata2(){return {apiVersion:2,name:'Bundled test',version:'1.0'};}
+ function step2(ctx){memory.steps++;ctx.telemetry.set('test.steps',memory.steps);}
+ export {metadata2 as metadata, step2 as step};
+ )";
+	auto metadata = inspectAI(source);
+	CHECK(metadata.apiVersion == 2);
+	CHECK(metadata.name == "Bundled test");
+	Host host;
+	host.profile = 2;
+	host.tick = 10;
+	host.team = 0;
+	host.random = [] { return 42u; };
+	host.query = [](const auto &, const auto &, const QueryBudget &) { return Value(); };
+	auto runtime = makeRuntime();
+	auto first = runtime->invoke(source, Value::object(), true, host);
+	CHECK(first.telemetry.get("test.steps").get("value").number == 1);
+	auto second = makeRuntime()->invoke(source, Value::decode(first.state.encode()), false, host);
+	CHECK(second.telemetry.get("test.steps").get("value").number == 2);
+	CHECK(profileFromConfig(config(source, 2)) == 2);
+	CHECK_THROWS(inspectAI(
+		"export function metadata(){return {apiVersion:99,name:'bad'}} export function step(){}"));
+	CHECK_THROWS(
+		inspectAI("export function metadata(){return {apiVersion:2}} export function step(){}"));
+	CHECK_THROWS(inspectAI("export function metadata(){return {apiVersion:2,name:Math.random()}} "
+						   "export function step(){}"));
+	CHECK(inspectAI("function step(){}").apiVersion == 1);
+	CHECK_THROWS(inspectAI("function bundledStep(){} export {bundledStep as step};"));
+}
+
+TEST_CASE("JavaScript managed properties coalesce and reject persistent handles" *
+		  doctest::test_suite("JavaScriptRuntime"))
+{
+	Host host;
+	host.profile = 2;
+	host.team = 0;
+	host.nextAction = 10;
+	host.query = [](const std::string &name, const auto &args, const QueryBudget &)
+	{
+		if (name == "building")
+			return Value::object()
+				.set("id", 0)
+				.set("generation", 1)
+				.set("team", 0)
+				.set("shortType", 8)
+				.set("virtual", true)
+				.set("x", 1)
+				.set("y", 2)
+				.set("workers", 3);
+		if (name == "desired")
+			return Value::object();
+		if (name == "validateAction" && args[0].get("type").text == "workers")
+			args[0].integer("workers", 0, 20);
+		return Value();
+	};
+	auto result = makeRuntime()->invoke(R"(export function step(ctx){
+  let a=ctx.game.building({id:0,generation:1}), b=ctx.game.building({id:0,generation:1});
+  if(a!==b)throw Error('identity');
+  a.x=8; a.y=9; a.workers=5;
+  try {a.workers=-1;} catch(e) {}
+  if(a.workers!==5 || a.observed.workers!==3)throw Error('desired');
+ })",
+										Value::object(), false, host);
+	CHECK(result.commands.items.size() == 2);
+	CHECK(result.commands.items[0].get("x").number == 8);
+	CHECK(result.commands.items[0].get("y").number == 9);
+	CHECK(result.commands.items[1].get("workers").number == 5);
+	CHECK_THROWS(makeRuntime()->invoke(
+		"let saved; export function step(ctx){saved=ctx.game.building({id:0,generation:1});}",
+		Value::object(), false, host));
+}
+
+TEST_CASE("JavaScript metadata cannot mutate game globals" *
+		  doctest::test_suite("JavaScriptRuntime"))
+{
+	const std::string source = "let counter=0; export function metadata(){counter=99;return "
+							   "{apiVersion:2,name:'Isolated'};} export function "
+							   "step(ctx){ctx.telemetry.set('test.counter',counter);}";
+	CHECK(inspectAI(source).apiVersion == 2);
+	Host host;
+	host.profile = 2;
+	auto result = makeRuntime()->invoke(source, Value::object(), true, host);
+	CHECK(result.telemetry.get("test.counter").get("value").number == 0);
+}

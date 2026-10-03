@@ -228,10 +228,23 @@ function Layout() {
   const name = instance?.name ?? 'Globulation 2';
   const home = section === 'home';
   const main = useRef<HTMLElement>(null);
+  const top = useRef<HTMLDivElement>(null);
+  // The home hero runs under the website strip and the header; it keeps its
+  // content clear of them by their measured height (they wrap on phones).
+  useEffect(() => {
+    const element = top.current;
+    if (!element || typeof ResizeObserver === 'undefined') return;
+    const observer = new ResizeObserver(() => {
+      document.documentElement.style.setProperty('--site-top-height', `${element.offsetHeight}px`);
+    });
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
   const first = useRef(true);
   useEffect(() => {
-    document.title = found?.route.title ? `${found.route.title} · ${name}` : name;
-  }, [found?.route.title, name]);
+    const title = found ? found.route.title : 'Page not found';
+    document.title = title ? `${title} · ${name}` : name;
+  }, [found, name]);
   // After in-app navigation, move focus to the new page for keyboard and screen reader users.
   useEffect(() => {
     if (first.current) {
@@ -256,7 +269,8 @@ function Layout() {
     <>
       <h1>Page not found</h1>
       <div className="notice">
-        Nothing here. <Link to="/">Go to the home page</Link>.
+        Nothing here: this page wandered off like an explorer glob.{' '}
+        <Link to="/">Go to the home page</Link>.
       </div>
     </>
   );
@@ -266,32 +280,34 @@ function Layout() {
         Skip to content
       </a>
       <div className="world-band" aria-hidden="true" />
-      <SiteBar />
-      <header className="site-header">
-        <div className="wrap">
-          <Link className="brand" to="/" aria-label={`${name}, home`}>
-            <img src={GLOB_ICON} width={34} height={34} alt="" />
-            <Wordmark label={null} />
-          </Link>
-          <nav className="nav" aria-label="Main">
-            {nav.map((item) => (
-              <Link
-                key={item.id}
-                to={item.to}
-                className={section === item.id ? 'on' : ''}
-                aria-current={section === item.id ? 'page' : undefined}
-              >
-                {item.art && <img src={ART[item.art]} width={26} height={26} alt="" />}
-                {item.name}
-              </Link>
-            ))}
-          </nav>
-          <div className="header-end">
-            <ThemeToggle />
-            <AccountChip />
+      <div className="site-top" ref={top}>
+        <SiteBar />
+        <header className="site-header">
+          <div className="wrap">
+            <Link className="brand" to="/" aria-label={`${name}, home`}>
+              <img src={GLOB_ICON} width={34} height={34} alt="" />
+              <Wordmark label={null} />
+            </Link>
+            <nav className="nav" aria-label="Main">
+              {nav.map((item) => (
+                <Link
+                  key={item.id}
+                  to={item.to}
+                  className={section === item.id ? 'on' : ''}
+                  aria-current={section === item.id ? 'page' : undefined}
+                >
+                  {item.art && <img src={ART[item.art]} width={26} height={26} alt="" />}
+                  {item.name}
+                </Link>
+              ))}
+            </nav>
+            <div className="header-end">
+              <ThemeToggle />
+              <AccountChip />
+            </div>
           </div>
-        </div>
-      </header>
+        </header>
+      </div>
       <main id="main" ref={main} tabIndex={-1}>
         <Suspense
           fallback={

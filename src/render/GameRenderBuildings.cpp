@@ -30,6 +30,7 @@
 
 
 #include "Brush.h"
+#include "IntBuildingType.h"
 
 
 // Building rendering. Split from Game_render.cpp.
@@ -103,12 +104,34 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
         color=GAGCore::Color((*chosen>>16)&255,(*chosen>>8)&255,*chosen&255);
     buildingSprite->setBaseColor(color);
 
-	// draw building
-	const bool skinned = view && type->shortTypeNum == IntBuildingType::SWARM_BUILDING
-		&& !type->isBuildingSite && view->render.skinPreview().drawSwarm(
-			*globalContainer->gfx, team->teamNumber, x+dx, y+dy,
-			buildingSprite->getW(imgid), buildingSprite->getH(imgid));
-	if (!skinned) globalContainer->gfx->drawSprite(x+dx, y+dy, buildingSprite, imgid);
+	// draw building. Zoomed far out, the sprite cross-fades to a chip in its
+	// team's colour carrying an icon of what the building is for; where chips
+	// would pile up the most important one stays.
+	const ZoomDetail *detail = drawnRender ? &drawnRender->detail : nullptr;
+	const float spriteOpacity = detail ? detail->buildingSprite : 1.f;
+	// The sprite stays opaque under the chip fading in over it, and goes once
+	// the chip is solid: a translucent sprite would leave the sprite batch.
+	if (spriteOpacity > 0)
+	{
+		const bool skinned = view && type->shortTypeNum == IntBuildingType::SWARM_BUILDING
+			&& !type->isBuildingSite && view->render.skinPreview().drawSwarm(
+				*globalContainer->gfx, team->teamNumber, x+dx, y+dy,
+				buildingSprite->getW(imgid), buildingSprite->getH(imgid));
+		if (!skinned) globalContainer->gfx->drawSprite(x+dx, y+dy, buildingSprite, imgid);
+	}
+	if (detail && detail->buildingIcon > 0)
+	{
+		// Icon frames follow IntBuildingType up to the clearing flag; the market comes last.
+		const int shortType = building->shortTypeNum;
+		const bool wall = shortType==IntBuildingType::STONE_WALL;
+		const int icon = shortType==IntBuildingType::MARKET_BUILDING ? 11 : std::clamp(shortType, 0, 10);
+		const bool hurt = type->hpMax && building->hp!=building->effectiveMaxHp && !type->isBuildingSite;
+		const int priority = hurt ? 200 : shortType==IntBuildingType::DEFENSE_BUILDING ? 150
+			: shortType==IntBuildingType::SWARM_BUILDING ? 120 : 100;
+		drawnRender->overlays.glyph(*globalContainer->gfx, x, y, x+type->width*32, y+type->height*32,
+			icon, wall ? MapOverlayQueue::Tile : MapOverlayQueue::Chip, type->level, type->isBuildingSite,
+			priority, color.r, color.g, color.b, detail->buildingIcon);
+	}
 	globalContainer->gfx->finishDrawingSprite(buildingSprite, 255);
 
 	if ((drawOptions & DRAW_BUILDING_RECT) != 0)
@@ -151,20 +174,35 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 			int decy=(type->height*32);
 			int healDecx=(type->width-(maxWidth>>3))*16+addDec;
 
+			anchorBars(x+type->width*16, y+decy, building->hp!=building->effectiveMaxHp);
 			if (building->hp!=building->effectiveMaxHp || !building->type->crossConnectMultiImage)
 				drawHealthBar(x+healDecx, y+decy-4, maxWidth, actWidth, hpRatio);
 		}
 
+		// Attention outlasts routine status when zoomed out: damage, a building
+		// with under half its workers, an inn without food, a tower without ammunition.
+		const bool damaged = type->hpMax && building->hp!=building->effectiveMaxHp;
+		const bool understaffed = building->maxUnitWorking>0 && building->unitsWorking*2<building->maxUnitWorking;
+		const bool unfed = type->canFeedUnit && building->resources[WHEAT]==0;
+		const bool unarmed = type->maxBullets && building->bullets==0;
+		anchorBars(x+type->width*32, y);
 		if (building->maxUnitInside>0)
 			drawPointBar(x+type->width*32-4, y+1, BOTTOM_TO_TOP, building->maxUnitInside, building->unitsInside, 255, 255, 255);
+		anchorBars(x+type->width*16, y, understaffed);
 		if (building->maxUnitWorking>0)
 			drawPointBar(x+type->width*16-((3*building->maxUnitWorking)>>1), y+1,LEFT_TO_RIGHT , building->maxUnitWorking, building->unitsWorking, 0, 255, 255, 255, 255, 64, 0);
 
+		anchorBars(x, y, unfed);
 		if ((type->canFeedUnit) || (type->unitProductionTime))
 			drawBuildingResourceBar(x+1, y+1, type, type->maxResource[WHEAT], building->resources[WHEAT], 255, 255, 120);
 
+		anchorBars(x, y, unarmed);
 		if (type->maxBullets)
 			drawBuildingResourceBar(x+1, y+1, type, type->maxBullets, building->bullets, 200, 200, 200);
+		if (damaged)
+			drawStatusPip(x+type->width*32-4, y+4, 255, 0, 0);
+		else if (understaffed || unfed || unarmed)
+			drawStatusPip(x+type->width*32-4, y+4, 255, 176, 0);
 	}
 
 	if (drawOptions & DRAW_ACCESSIBILITY)

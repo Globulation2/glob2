@@ -102,9 +102,25 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	unitSprite->setBaseColor(entities.owner(*unit).color);
 	int decX = (unitSprite->getW(imgid)-32)>>1;
 	int decY = (unitSprite->getH(imgid)-32)>>1;
-	if (!view.render.skinPreview().draw(*globalContainer->gfx, unit->typeNum, unit->team,
-		unit->action, dir, delta, px, py, unitSprite->baseFrame(imgid)))
+	// Too far out to make a unit out, it becomes a marker of constant size:
+	// a dot for a worker, a triangle for a warrior, a diamond for an explorer.
+	// Worker dots shrink further out, so a crowd reads as density.
+	const ZoomDetail &detail = view.render.detail;
+	// The sprite stays opaque under the marker fading in over it, and goes once
+	// the marker is solid: a translucent sprite would leave the unit batch.
+	if (detail.unitSprite > 0 &&
+		!view.render.skinPreview().draw(*globalContainer->gfx, unit->typeNum, unit->team,
+			unit->action, dir, delta, px, py, unitSprite->baseFrame(imgid)))
 		globalContainer->gfx->drawSprite(px-decX, py-decY, unitSprite, imgid);
+	if (detail.unitMarker > 0)
+	{
+		const GAGCore::Color &color = entities.owner(*unit).color;
+		const bool warrior = unit->typeNum==WARRIOR, explorer = unit->typeNum==EXPLORER;
+		view.render.overlays.marker(*globalContainer->gfx, px+16, py+16,
+			warrior ? MapOverlayQueue::Triangle : explorer ? MapOverlayQueue::Diamond : MapOverlayQueue::Dot,
+			warrior ? 6.f : explorer ? 5.f : 3.f + 2.25f*detail.workerMarkerScale,
+			color.r, color.g, color.b, detail.unitMarker);
+	}
 
 	// Units the selected building could not hire wear the badge, the same one
 	// shown next to the tally in the building panel. The panel asks the same
@@ -136,8 +152,9 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 			globalContainer->gfx->drawCircle(px+16, py+16, 16, 190, 0, 0);
 	}
 
-	// draw xp animation
-	if (unit->levelUpAnimation)
+	// draw xp animation. It and the magic effect belong to the sprite, and go
+	// with it once the unit is only a marker.
+	if (unit->levelUpAnimation && detail.unitSprite > 0)
 	{
 		std::ostringstream oss;
 		oss << unit->experienceLevel;
@@ -147,7 +164,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	}
 
 	// draw magic animation
-	if (unit->magicActionAnimation)
+	if (unit->magicActionAnimation && detail.unitSprite > 0)
 	{
 		if (!globalContainer->settings.fullMagicEffects)
 		{
@@ -174,13 +191,25 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 
 	if ((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0 )
 	{
-		drawPointBar(px+1, py+25, LEFT_TO_RIGHT, 10, (unit->hungry*10)/Unit::HUNGRY_MAX, 80, 179, 223);
+		// A hungry or hurt unit keeps its bar further out than a healthy one.
+		const int food=(unit->hungry*10)/Unit::HUNGRY_MAX;
+		const bool hungry=food<=1;
+		const bool hurt=unit->hp*10<=unit->performance[HP]*6;
+		anchorBars(px+16, py+25, hungry);
+		drawPointBar(px+1, py+25, LEFT_TO_RIGHT, 10, food, 80, 179, 223);
 
+		// At or below the ratio where the health bar stops being green.
 		float hpRatio=(float)unit->hp/(float)unit->performance[HP];
+		anchorBars(px+16, py+25, hurt);
 		drawHealthBar(px+1, py+25+3, 10, 1+(int)(9*hpRatio), hpRatio);
+		if (hurt)
+			drawStatusPip(px+16, py+28, 255, 0, 0);
+		else if (hungry)
+			drawStatusPip(px+16, py+28, 80, 179, 223);
 
-		if ((unit->performance[HARVEST]) && (unit->carriedResource>=0))
-			globalContainer->gfx->drawSprite(px+24, py, globalContainer->resourceMini, unit->carriedResource);
+		const int carriedAlpha=int(view.render.detail.barAll*255);
+		if ((unit->performance[HARVEST]) && (unit->carriedResource>=0) && carriedAlpha>0)
+			globalContainer->gfx->drawSprite(px+24, py, globalContainer->resourceMini, unit->carriedResource, carriedAlpha);
 		globalContainer->gfx->finishDrawingSprite(globalContainer->resourceMini, 255);
 	}
 

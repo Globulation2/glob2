@@ -67,6 +67,11 @@ constexpr int ZONE_STRIP_HEIGHT = 40;
 #define BOTTOM_BUTTON_SECONDARY_YOFFSET 52
 #define BOTTOM_BUTTON_HEIGHT 16
 
+// The speed chevrons in the top bar: spacing of the chevrons and the width
+// they take before the tick rate.
+#define TOP_BAR_CHEVRON_PITCH 7
+#define TOP_BAR_SPEED_WIDTH 40
+
 // The sidebar on the right
 #include "GameGUIViewport.h"
 #define RIGHT_MENU_WIDTH GAME_GUI_RIGHT_MENU_WIDTH

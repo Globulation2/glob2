@@ -240,6 +240,12 @@ void GameGUI::dispatchReplayDisplayModePanel(void)
 	}
 }
 
+int GameGUI::topBarSpeedX() const
+{
+	// After the three unit counters, prestige and conversions.
+	return ((globalContainer->gfx->getW()-640)>>2) + 10 + 3*70 + 90 + 70;
+}
+
 void GameGUI::drawTopScreenBar(void)
 {
     if (touch->usesHUD()) return;
@@ -308,26 +314,29 @@ void GameGUI::drawTopScreenBar(void)
 	// draw unit conversion stats
 	globalContainer->gfx->drawString(dec, 0, globalContainer->littleFont, FormattableString("+%0 / -%1").arg(drawnScene().panels.local.unitConversionGained).arg(drawnScene().panels.local.unitConversionLost).c_str());
 
-	// draw CPU load
-	dec += 70;
-	int cpuLoad=0;
-	for (unsigned i=0; i<SMOOTHED_CPU_SIZE; i++)
-		cpuLoad += smoothedCPULoad[i];
-
-	cpuLoad /= SMOOTHED_CPU_SIZE;
-
-	if (cpuLoad<50)
-		memcpy(actC, greenC, sizeof(greenC));
-	else if (cpuLoad<75)
-		memcpy(actC, yellowC, sizeof(yellowC));
-	else
-		memcpy(actC, redC, sizeof(redC));
-
-	int cpuLength = int(float(cpuLoad) / 100.0 * 40.0);
-
-	globalContainer->gfx->drawFilledRect(dec, 4, cpuLength, 8, actC[0], actC[1], actC[2]);
-	globalContainer->gfx->drawVertLine(dec, 2, 12, 200, 200, 200);
-	globalContainer->gfx->drawVertLine(dec+40, 2, 12, 200, 200, 200);
+	// draw the speed control and the simulation tick rate
+	dec = topBarSpeedX();
+	if (canChangeGameSpeed())
+	{
+		const int lit = litSpeedChevrons();
+		for (int i=0; i<GameSpeedControl::CHEVRONS; i++)
+		{
+			const Color color = i<lit ? Color(0, 200, 0) : Color(80, 80, 80);
+			for (int thickness=0; thickness<2; thickness++)
+			{
+				const int x = dec+i*TOP_BAR_CHEVRON_PITCH+thickness;
+				globalContainer->gfx->drawLine(x, 3, x+4, 7, color);
+				globalContainer->gfx->drawLine(x+4, 7, x, 11, color);
+			}
+		}
+		dec += TOP_BAR_SPEED_WIDTH;
+	}
+	const int shortfall = tickRateShortfall();
+	memcpy(actC, shortfall==0 ? whiteC : shortfall==1 ? yellowC : redC, sizeof(actC));
+	const auto rate = tickRate.rate();
+	globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, actC[0], actC[1], actC[2]));
+	globalContainer->gfx->drawString(dec, 0, globalContainer->littleFont, rate ? TickRateMeter::format(*rate).c_str() : "-");
+	globalContainer->littleFont->popStyle();
 
 	// draw window bar
 	int pos=globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-16;
@@ -596,7 +605,7 @@ void GameGUI::drawOverlayInfos(void)
 	if(!scrollableText)
 		messageManager.drawAllChatMessages(32, globalContainer->gfx->getH() - 165);
 
-	// Draw the bar continuing number of units, CPU load, etc...
+	// Draw the bar continuing number of units, game speed, etc...
 	drawTopScreenBar();
 }
 
@@ -638,8 +647,12 @@ void GameGUI::drawAll(int team)
 		sceneExtractor.extract(game, sceneRequest(), frameScene);
 	const Scene &scene = drawnScene();
 	view.scene = &scene;
+	view.render.zonesEmphasised = selectionMode==BRUSH_SELECTION;
+	view.render.minimumZoom = camera.minimumZoom();
 	view.render.unitMotion = globalContainer->settings.unitInterpolation && !gamePaused && !hardPause
 		? unitMotionFraction(scene, SDL_GetTicks()) : 0.f;
+	const Uint64 clock = tickClock;
+	tickRate.sample(Uint32(SDL_GetTicks()), Uint32(clock), Uint32(clock >> 32));
 	// Panels, the top bar and the statistics pages draw the scene's copy of the stats.
 	teamStats = scene.panels.localStats.get();
 	toolManager.setDrawnScene(&scene);
@@ -901,6 +914,7 @@ SceneRequest GameGUI::sceneRequest()
 {
 	SceneRequest request;
 	request.localTeam = localTeamNo;
+	request.spectating = globalContainer->isViewingGame();
 	request.view = clientRequests.latest();
 	if (selectionMode == BUILDING_SELECTION)
 		if (const BuildingRef *b = std::get_if<BuildingRef>(&selection))
@@ -921,4 +935,9 @@ void GameGUI::threadedClientStep(const std::vector<SDL_Event>& events, Uint64 no
 	checkSelection();
 	updateHighlightInGame();
 	step(events, now);
+}
+
+Game *GameGUI::replayTelemetryGame()
+{
+	return &game;
 }

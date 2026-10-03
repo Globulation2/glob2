@@ -607,7 +607,7 @@ page up
 [Papyrus]
 Papyrus
 [pause game]
-Pause Game
+Pause game
 [pause]
 pause
 [Paused]
@@ -3270,6 +3270,8 @@ Resume game
 Add AI
 [settings Experiments]
 Experiments
+[settings Custom AIs]
+Custom AIs
 [settings Try features we are still testing. They can change balance and pacing.]
 Try features we are still testing. They can change balance and pacing.
 [settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]
@@ -3360,6 +3362,10 @@ Animate victory artwork. Reduced motion also disables this animation.
 Smooth unit motion
 [settings Experimental: move and animate units between game ticks.]
 Experimental: move and animate units between game ticks.
+[settings Adaptive zoom detail]
+Adaptive zoom detail
+[settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
+Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.
 [settings Text size]
 Text size
 [settings Enlarge interface text without changing the map scale.]
@@ -3442,6 +3448,8 @@ Replaying the %0 you missed. The screen updates when you're back to the present.
 about %0 s left
 [conn connections]
 Connections
+[conn connection]
+Connection
 [conn delay explanation %0 %1]
 Delay: the time from your click until it happens, for everyone. It follows your own connection, not the other players'. Good under %0, poor from %1.
 [conn fair]
@@ -3501,7 +3509,7 @@ Can't reach %0.
 [hub change server]
 Change server…
 [hub check code]
-Your browser asks for this code. Type it there:
+When it asks for a code, enter this one:
 [hub code placeholder]
 Code or invite link
 [hub connecting to %0]
@@ -3513,7 +3521,7 @@ Create room
 [hub find match]
 Find match
 [hub finish in browser]
-Finish signing in in your browser.
+Finish signing in on the page that opened in your browser.
 [hub free seat]
 Free seat
 [hub get update]
@@ -3555,7 +3563,7 @@ Open the page again
 [hub open rooms]
 Open rooms
 [hub page opened at %0]
-The page opened at %0. Nothing to type here.
+Opened %0. Nothing to type in the game; it signs you in by itself.
 [hub queues unavailable]
 Quick match appears when the server answers.
 [hub quick match unavailable]
@@ -3581,13 +3589,13 @@ Room
 [hub server %0]
 Server: %0
 [hub sign in browser]
-Sign in in the browser
+Open the sign-in page
 [hub sign in conflict]
 That sign-in already belongs to another account.
 [hub sign in failed %0]
 Sign-in didn't finish (%0).
 [hub sign in intro]
-Choose how to sign in. Your guest matches move to the signed-in account.
+Sign in or create an account in your browser. Your guest matches come with you.
 [hub sign in]
 Sign in
 [hub sign out]
@@ -3765,7 +3773,7 @@ Room
 [room member ready %0]
 %0 is ready.
 [room needs two seats]
-At least two seats must be taken to start
+Invite a friend or add an AI to start
 [room no map]
 No map yet
 [room not ready]
@@ -3842,6 +3850,10 @@ This room plays another version of the game. Update to join it.
 Uploaded map
 [room waiting for %0]
 Waiting for %0 to be ready
+[room waiting for you]
+Press Ready when you're set
+[room match over]
+Match over. Ready up for another round!
 [room waiting for host]
 Waiting for the host to start
 [room waiting for players %0]
@@ -4439,7 +4451,7 @@ Room closed
 [room removed title]
 Removed from the room
 [room back to online]
-Back to Online
+Back to online
 [leave match]
 Leave match
 [leave match title]
@@ -4548,6 +4560,8 @@ under a minute
 about %0 min
 [online %0 s]
 %0 s
+[online %0 min %1 s]
+%0 min %1 s
 [qm ai opponent %0]
 AI opponent: %0
 [match relay connected]
@@ -4600,11 +4614,69 @@ Play %0
 this map
 [room map ready body]
 Create a room and invite your friends: the room plays this map.
-[device busy %0]
-Device busy %0%
 [game draw]
 Draw
 [settings Show colony skins]
 Show colony skins
 [settings Turn off to use classic units, swarms and building colors on this device.]
 Turn off to use classic units, swarms and building colors on this device.
+[File selection is unavailable.]
+File selection is unavailable.
+[Saving custom AI…]
+Saving custom AI…
+[Could not read the selected JavaScript file.]
+Could not read the selected JavaScript file.
+[Custom AI library saved.]
+Custom AI library saved.
+[Storage could not be saved. The previous library is retained.]
+Storage could not be saved. The previous library is retained.
+[Import a single JavaScript AI file, then select it when setting up a local game.]
+Import a single JavaScript AI file, then select it when setting up a local game.
+[Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.]
+Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.
+[Waiting for file selection or storage…]
+Waiting for file selection or storage…
+[Import JavaScript AI]
+Import JavaScript AI
+[Link development file]
+Link development file
+[Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.]
+Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.
+[Example AI and authoring guide]
+Example AI and authoring guide
+[No custom AIs yet. Import a bundled .js file to get started.]
+No custom AIs yet. Import a bundled .js file to get started.
+[Relink]
+Relink
+[Update]
+Update
+[Validate]
+Validate
+[AI startup and persistent globals are valid.]
+AI startup and persistent globals are valid.
+[Remove from library]
+Remove from library
+[AI telemetry]
+AI telemetry
+[No accessible AI telemetry.]
+No accessible AI telemetry.
+[Search fields]
+Search fields
+[Telemetry unavailable for this recording or controller.]
+Telemetry unavailable for this recording or controller.
+[Linked]
+Linked
+[Imported]
+Imported
+[Player]
+Player
+[Updated at tick %0]
+Updated at tick %0
+[No values published yet.]
+No values published yet.
+[No fields match your search.]
+No fields match your search.
+[Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]
+Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.
+[Missing custom AI]
+Missing custom AI

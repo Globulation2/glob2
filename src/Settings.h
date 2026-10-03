@@ -69,6 +69,8 @@ public:
 	//! Experimental: draw units moving and animating between simulation ticks.
 	//! Off draws exactly the simulated positions. Not part of setGraphicsDetail.
 	bool unitInterpolation = false;
+	//! Adapt bars, zones, units and terrain to the zoom instead of scaling them with the map.
+	bool adaptiveZoomDetail = true;
 	void setGraphicsDetail(bool full);
 	static constexpr Uint32 LEGACY_LOW_DETAIL = 0x1;
 	/// Periodically saves the game in progress as "Auto save".

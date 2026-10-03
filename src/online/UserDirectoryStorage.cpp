@@ -25,6 +25,7 @@ class UserDirectoryStorage final : public OnlineStorage
 		files.addWriteSubdir("online");
 		files.addWriteSubdir("online/maps");
 		files.addWriteSubdir("online/skins");
+		files.addWriteSubdir("ais");
 	}
 	bool read(const std::string &path, std::string &contents) override
 	{

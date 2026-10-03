@@ -5,7 +5,7 @@
 #include "Map.h"
 #include "MapInternal.h"
 #include "Utilities.h"
-#include "kernel/GradientCosts.h"
+#include "field/GradientCosts.h"
 
 #include <cstdlib>
 

@@ -464,13 +464,6 @@ Uint32 Engine::sessionDelay(Uint64 now)
 	//Any inconsistancies in the delays will be smoothed throughout the following frames,
 	Uint64 delay = std::max<Sint64>(0, st.needToBeTime - currentTime);
 
-
-	// we set CPU stats
-	// Convert slept time into CPU load for one game tick.
-	const int loadPercent = st.speed > 0
-		? static_cast<int>((std::max<Sint64>(0, static_cast<Sint64>(st.speed) - static_cast<Sint64>(delay)) * 100) / st.speed)
-		: 100;
-	gui.setCpuLoad(loadPercent);
     return delay > 0 ? delay : (!st.wasReadyLastTick ? 1 : 0);
 }
 

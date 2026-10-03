@@ -4,6 +4,7 @@
   "schemas": {
     "AccessTokenClaims": "schemas/AccessTokenClaims.schema.json",
     "AccessTokenHeader": "schemas/AccessTokenHeader.schema.json",
+    "AccountExport": "schemas/AccountExport.schema.json",
     "AdminAccount": "schemas/AdminAccount.schema.json",
     "AdminAccountList": "schemas/AdminAccountList.schema.json",
     "AdminBanRequest": "schemas/AdminBanRequest.schema.json",

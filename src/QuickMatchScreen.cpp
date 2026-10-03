@@ -304,10 +304,10 @@ Element QuickMatchScreen::searchPanel(const Presentation &p, bool phone)
 	if (queue.rated && status && status->ratingMin && status->ratingMax)
 		range = FormattableString(tr("[qm opponents rated %0 to %1]")).arg(*status->ratingMin).arg(*status->ratingMax);
 	if (status && !status->region.empty())
-		region = FormattableString(tr("[qm region %0]")).arg(status->region) +
+		region = FormattableString(tr("[qm region %0]")).arg(regionDisplayName(status->region)) +
 				 (status->rttMs ? " \xC2\xB7 " + estimate(*status->rttMs) : std::string());
 	else if (!model.regions().empty())
-		region = FormattableString(tr("[qm region %0]")).arg(model.regions().front().region) + " \xC2\xB7 " +
+		region = FormattableString(tr("[qm region %0]")).arg(regionDisplayName(model.regions().front().region)) + " \xC2\xB7 " +
 				 estimate(model.regions().front().rttMs);
 
 	std::string phaseText = tr("[qm searching]");
@@ -627,10 +627,10 @@ Element MatchFoundScreen::build(const Presentation &p)
 	std::string regionText;
 	if (!proposal->region.empty())
 	{
-		regionText = FormattableString(tr("[qm region %0]")).arg(proposal->region);
+		regionText = FormattableString(tr("[qm region %0]")).arg(regionDisplayName(proposal->region));
 		for (const auto &r : model.regions())
 			if (r.region == proposal->region)
-				regionText = FormattableString(tr("[qm region %0]")).arg(r.region) + " \xC2\xB7 " +
+				regionText = FormattableString(tr("[qm region %0]")).arg(regionDisplayName(r.region)) + " \xC2\xB7 " +
 							 ConnectionQuality::labelled(tr("[qm ping about]"),
 														 ConnectionQuality::Metric::Ping, r.rttMs,
 														 [](const char *key) { return tr(key); });

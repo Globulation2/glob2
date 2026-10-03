@@ -138,6 +138,65 @@ export const DeleteAccountRequest = Strict({
   confirmDisplayName: Type.String({ minLength: 1, maxLength: 64 }),
 });
 
+/** `format` of an AccountExport; the suffix changes only for incompatible layouts. */
+export const ACCOUNT_EXPORT_FORMAT = 'glob2-account-export/1';
+
+const ExportRecord = Type.Record(Type.String(), Type.Unknown());
+const ExportRows = Type.Array(ExportRecord);
+
+/**
+ * GET /api/v1/accounts/me/export ("download my data"): everything the instance
+ * stores about the caller's account. Rows keep the database's columns in
+ * camelCase, without nulls; secrets (password, credential and token hashes,
+ * confirmation codes) and other people's ids are left out. See
+ * docs/multiplayer/identity.md, "Downloading your data".
+ */
+export const AccountExport = Open(
+  {
+    format: Type.Literal(ACCOUNT_EXPORT_FORMAT),
+    exportedAt: Timestamp,
+    instance: Type.String({ description: 'Public origin of the instance.' }),
+    account: ExportRecord,
+    signIn: Open({
+      identities: ExportRows,
+      devices: ExportRows,
+      refreshTokens: ExportRows,
+      webSessions: ExportRows,
+      signInAttempts: ExportRows,
+    }),
+    entitlements: ExportRows,
+    moderation: Type.Array(ExportRecord, {
+      description: 'Moderation actions about the account (not who took them).',
+    }),
+    ratings: ExportRows,
+    ratingHistory: ExportRows,
+    matches: Type.Array(ExportRecord, {
+      description: 'Every match the account played, with its seat, result and rating change.',
+    }),
+    rooms: Open({
+      hosted: ExportRows,
+      memberships: ExportRows,
+      seats: ExportRows,
+      chat: ExportRows,
+      kicks: ExportRows,
+    }),
+    matchmaking: Open({
+      tickets: ExportRows,
+      cooldowns: ExportRows,
+      proposals: ExportRows,
+    }),
+    maps: Open({
+      published: ExportRows,
+      likes: ExportRows,
+      reports: ExportRows,
+      uploads: ExportRows,
+      downloads: ExportRows,
+    }),
+  },
+  { description: 'Everything the instance stores about the signed-in account.' },
+);
+export type AccountExport = Static<typeof AccountExport>;
+
 /** Local usernames: lowercase letters, digits, '.', '_' and '-'; compared case-insensitively. */
 export const LocalUsername = Type.String({ pattern: '^[A-Za-z0-9._-]{3,32}$' });
 export const LocalPassword = Type.String({ minLength: 10, maxLength: 256 });

@@ -729,7 +729,11 @@ class GameGUITouchHarness
 		require(std::abs(gui.camera.zoom - oldZoom * 1.5) < 0.001,
 				"Pinch uses the shared camera zoom");
 		noOrder();
-		gui.camera.setZoom(1.7, 200, 200);
+		// Within one double tap of the limit, so the tap has to clamp.
+		gui.camera.setZoom(MapCamera::MAX_ZOOM * 0.6, 200, 200);
+		// The camera was moved directly; keep the GUI's tile origin in step with it.
+		gui.viewportX = gui.camera.tileX();
+		gui.viewportY = gui.camera.tileY();
 		const auto tapAnchor = gui.camera.screenToWorld(200, 200);
 		touchTickStep = 50;
 		tap(200, 200);
