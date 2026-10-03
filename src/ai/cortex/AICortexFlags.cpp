@@ -14,6 +14,7 @@
 // gid) plus the multi-point DEFENSE flag set (an array of defense flags managed by gid).
 
 #include "AICortex.h"
+#include "AITelemetryFields.h"
 #include "CortexObservation.h"
 
 #include "Order.h"
@@ -217,6 +218,8 @@ void AICortex::clearAllOffenseFlags()
 	// Stand the whole offense pipeline down: delete every live wave flag and free its
 	// slot. Releases all committed warriors back to the pool (where the defense flag, or
 	// a fresh muster, can recruit them). Idempotent — a no-op on already-empty slots.
+	// Every offense teardown passes through here, so the diagnostic target ends with it.
+	telemetry.set(AITrace::AI6::offense_target_team, -1);
 	for (int i = 0; i < MAX_OFFENSE_FLAGS; i++)
 	{
 		clearOneFlag(offenseWaves[i].gid);

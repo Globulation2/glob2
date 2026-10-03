@@ -52,6 +52,7 @@ public:
   {
 	  return AITelemetry::schema(3);
   }
+  Uint32 telemetrySchemaVersion() const override { return 2; }
 	AIWarrush(Player *player);
 	AIWarrush(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 	~AIWarrush();

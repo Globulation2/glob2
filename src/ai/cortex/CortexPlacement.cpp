@@ -197,7 +197,7 @@ namespace Cortex
 	// index over other->myBuildings[] (never an std::set); ties break first by scan
 	// order (strict-greater insert) and finally by syncRand() — never rand(), never
 	// wall-clock — exactly as placeCandidates does.
-	int placeFlagTargets(Game* game, Team* team, BuildCandidate out[CORTEX_FLAG_TARGETS])
+	int placeFlagTargets(Game* game, Team* team, BuildCandidate out[CORTEX_FLAG_TARGETS], Sint32 outTeam[CORTEX_FLAG_TARGETS])
 	{
 		// Always leave the output well-defined, even on the error paths below.
 		for (int i = 0; i < CORTEX_FLAG_TARGETS; i++)
@@ -206,6 +206,7 @@ namespace Cortex
 			out[i].x = 0;
 			out[i].y = 0;
 			out[i].score = 0;
+			outTeam[i] = -1;
 		}
 
 		if (game == NULL || team == NULL)
@@ -246,6 +247,7 @@ namespace Cortex
 				spot.y = b->posY;
 				spot.score = score;
 				spot.distToColony = distToColony;
+				spot.team = other->teamNumber;
 				insertTopKBounded(heap, count, CORTEX_FLAG_TARGETS, spot);
 			}
 		}
@@ -274,6 +276,7 @@ namespace Cortex
 			out[i].x = heap[i].x;
 			out[i].y = heap[i].y;
 			out[i].score = heap[i].score;
+			outTeam[i] = heap[i].team;
 		}
 
 		return count;
