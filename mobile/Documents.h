@@ -11,6 +11,8 @@ std::unique_ptr<GAGCore::ApplicationHost::FileSelection> select(const std::strin
 void complete(Request request, GAGCore::ApplicationHost::FileSelectionState state,
               GAGCore::ApplicationHost::SelectedFile file = {});
 bool exportFile(const std::string& name, const std::vector<unsigned char>& bytes, const std::string& error);
+// Large media is streamed by the platform from app-private storage.
+bool platformExportPath(const std::string& path, const std::string& error);
 // Platform implementations own their UI and a copy of export bytes until completion.
 bool platformOpen(Request request, const std::string& extension);
 void platformCancel(Request request);

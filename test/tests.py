@@ -151,6 +151,8 @@ UNIT_TESTS = [
     'MapGeneratorGoldenCoverageTest.cpp',
 
     'GameplayRecordingTest.cpp',
+    'RecordingSessionTest.cpp',
+    'support/RecordingValidationProcess.cpp',
     'USLCoverageTest.cpp',
     'SurfaceCoverageTest.cpp',
     'ImageAssetTest.cpp',

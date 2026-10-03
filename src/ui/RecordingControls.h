@@ -15,6 +15,7 @@ inline Element recordingControls()
 	std::vector<Element> parts{button(
 		"recording/toggle", tr(GAGCore::Recording::controlLabel()),
 		[] { GAGCore::Recording::toggle(); }, options)};
+	parts.push_back(button("recording/files","Recordings",[] { GAGCore::Recording::requestFiles(); }));
 	if (!status.error.empty())
 		parts.push_back(paragraph(status.error, {FontRole::Body, false}));
 	return column(std::move(parts));

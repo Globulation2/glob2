@@ -39,12 +39,7 @@ TEST_SUITE("GameplayRecording.Integration")
 	TEST_CASE("production presentation records menus and gameplay without changing per-tick state "
 			  "[display][artifacts][recording]")
 	{
-		const char *encoder = SDL_getenv("GLOB2_TEST_FFMPEG");
-		if (!encoder || !GAGCore::Recording::supported())
-		{
-			MESSAGE("Set GLOB2_TEST_FFMPEG for production capture verification");
-			return;
-		}
+		if (!GAGCore::Recording::supported()) return;
 		const bool gpu = SDL_getenv("GLOB2_TEST_RECORD_GPU") != nullptr;
 		glob2test::HeadlessGlobals globals(
 			{.display = true,
@@ -75,10 +70,7 @@ TEST_SUITE("GameplayRecording.Integration")
 		auto run = [&](bool recording)
 		{
 			auto &recorder = GAGCore::Recording::recorder();
-			recorder.options.ffmpeg = encoder;
 			recorder.options.chapterTicks = 20;
-			recorder.options.width = 800;
-			recorder.options.height = 600;
 			if (recording)
 			{
 				REQUIRE(recorder.start(video.string()));
@@ -175,13 +167,11 @@ TEST_SUITE("GameplayRecording.Integration")
 	}
 	TEST_CASE("global recording shortcut toggles and shutdown awaits finalization [artifacts][writes-preferences]")
 	{
-		const char *encoder = SDL_getenv("GLOB2_TEST_FFMPEG");
-		if (!encoder || !GAGCore::Recording::supported())
+		if (!GAGCore::Recording::supported())
 			return;
 		glob2test::HeadlessGlobals globals(
 			{.display = true, .loadStrings = true, .width = 800, .height = 600});
 		auto &recorder = GAGCore::Recording::recorder();
-		recorder.options.ffmpeg = encoder;
 		Application application;
 		SDL_Event shortcut{};
 		shortcut.type = SDL_EVENT_KEY_DOWN;
@@ -229,8 +219,7 @@ TEST_SUITE("GameplayRecording.Integration")
 	TEST_CASE("threaded scene recording preserves baseline per-tick checksums "
 			  "[display][artifacts][recording]")
 	{
-		const char *encoder = SDL_getenv("GLOB2_TEST_FFMPEG");
-		if (!encoder || !GAGCore::Recording::supported())
+		if (!GAGCore::Recording::supported())
 			return;
 		glob2test::ScopedEnvironment threaded("GLOB2_SIM_THREAD", "1");
 		glob2test::ScopedEnvironment sidecars("GLOB2_CHECKSUM_SIDECAR", "1");
@@ -263,7 +252,6 @@ TEST_SUITE("GameplayRecording.Integration")
 				root / ("threaded-" + std::to_string(SDL_GetPerformanceCounter()) + ".mp4");
 			if (capture)
 			{
-				recorder.options.ffmpeg = encoder;
 				recorder.options.chapterTicks = 20;
 				REQUIRE(recorder.start(video.string()));
 			}

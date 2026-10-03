@@ -72,7 +72,7 @@
   {
     "name": "webkit",
     "browsers": "webkit",
-    "command": "xvfb-run -a npx playwright test runtime-build.spec.js threading.spec.js viewport.spec.js responsive-presentation.spec.js campaign-editor-storage.spec.js colony-skins.spec.js skin-assets.spec.js --project=webkit"
+    "command": "xvfb-run -a npx playwright test runtime-build.spec.js threading.spec.js viewport.spec.js responsive-presentation.spec.js campaign-editor-storage.spec.js colony-skins.spec.js skin-assets.spec.js recording.spec.js --project=webkit"
   },
   {
     "name": "webkit scripting",
@@ -87,7 +87,7 @@
   {
     "name": "firefox",
     "browsers": "firefox",
-    "command": "GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test runtime-build.spec.js threading.spec.js viewport.spec.js responsive-presentation.spec.js campaign-editor-storage.spec.js colony-skins.spec.js skin-assets.spec.js --project=firefox"
+    "command": "GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test runtime-build.spec.js threading.spec.js viewport.spec.js responsive-presentation.spec.js campaign-editor-storage.spec.js colony-skins.spec.js skin-assets.spec.js recording.spec.js --project=firefox"
   },
   {
     "name": "firefox WSS and simulation",

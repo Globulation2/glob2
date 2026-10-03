@@ -101,6 +101,27 @@ class BrowserPackageTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             module.verify(self.output)
 
+    def test_recording_assets_are_versioned_and_references_follow_them(self):
+        self.threaded_source()
+        assets = {"recording-worker.js": b"importScripts('recording-runtime.js','recording-storage.js','recording-video.js');",
+                  "recording-runtime.js": b"const wasm='recording-runtime.wasm';",
+                  "recording-storage.js": b"/* storage */", "recording-video.js": b"/* video */",
+                  "recording-runtime.wasm": b"codec wasm"}
+        for name, data in assets.items():
+            (self.source / name).write_bytes(data)
+        for script in (self.source / "index.js", self.source / "threaded/index.js"):
+            script.write_text(script.read_text() + "new Worker('recording-worker.js');")
+        version = module.package(self.source, self.output)
+        module.verify(self.output)
+        worker = f"recording-{version}-worker.js"
+        self.assertTrue((self.output / worker).is_file())
+        self.assertIn(f"recording-{version}-runtime.wasm", (self.output / f"recording-{version}-runtime.js").read_text())
+        for script in (self.output / f"index-{version}.js", self.output / f"threaded/index-{version}.js"):
+            self.assertIn(worker, script.read_text())
+        self.assertFalse((self.output / "recording-runtime.wasm").exists())
+        (self.source / "recording-runtime.wasm").write_bytes(b"new codec wasm")
+        self.assertNotEqual(version, module.package(self.source, self.output))
+
     def test_package_requires_game_data(self):
         self.package.unlink()
         with self.assertRaises(ValueError):

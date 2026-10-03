@@ -130,6 +130,7 @@ public final class Glob2Activity extends SDLActivity {
     private static final int MAX_DOCUMENT_BYTES = 64 * 1024 * 1024;
     private long documentRequest;
     private byte[] documentExport;
+    private java.io.File documentExportPath;
     private String documentError;
     private static native void documentResult(long request, int state, byte[] name, byte[] bytes);
 
@@ -164,6 +165,28 @@ public final class Glob2Activity extends SDLActivity {
         });
         return true;
     }
+    public boolean exportDocumentPath(byte[] path, byte[] error) {
+        final java.io.File file = new java.io.File(new String(path, java.nio.charset.StandardCharsets.UTF_8));
+        try {
+            // Only application-owned files may be exposed through this bridge.
+            String canonical = file.getCanonicalPath();
+            boolean privateFile = canonical.startsWith(getFilesDir().getCanonicalPath() + java.io.File.separator) ||
+                (getExternalFilesDir(null) != null && canonical.startsWith(getExternalFilesDir(null).getCanonicalPath() + java.io.File.separator));
+            if (!privateFile || !file.isFile() || !documentBusy.compareAndSet(false, true)) return false;
+        } catch (java.io.IOException e) { return false; }
+        runOnUiThread(() -> {
+            documentExportPath = file;
+            documentError = new String(error, java.nio.charset.StandardCharsets.UTF_8);
+            try {
+                android.content.Intent intent = new android.content.Intent(android.content.Intent.ACTION_CREATE_DOCUMENT);
+                intent.addCategory(android.content.Intent.CATEGORY_OPENABLE);
+                intent.setType(file.getName().endsWith(".mp4") ? "video/mp4" : "application/json");
+                intent.putExtra(android.content.Intent.EXTRA_TITLE, file.getName());
+                startActivityForResult(intent, DOCUMENT_REQUEST);
+            } catch (RuntimeException failure) { exportError(); clearDocument(); }
+        });
+        return true;
+    }
     public void cancelDocument(long request) {
         runOnUiThread(() -> {
             if (request != 0 && request == documentRequest) {
@@ -176,6 +199,7 @@ public final class Glob2Activity extends SDLActivity {
     private void clearDocument() {
         documentRequest = 0;
         documentExport = null;
+        documentExportPath = null;
         documentBusy.set(false);
     }
     private void exportError() {
@@ -188,21 +212,26 @@ public final class Glob2Activity extends SDLActivity {
         if (requestCode != DOCUMENT_REQUEST) { super.onActivityResult(requestCode, resultCode, data); return; }
         final long request = documentRequest;
         final byte[] outgoing = documentExport;
+        final java.io.File outgoingFile = documentExportPath;
         if (resultCode != RESULT_OK || data == null || data.getData() == null) {
             if (request != 0) documentResult(request, 2, null, null);
             clearDocument();
             return;
         }
         final android.net.Uri uri = data.getData();
-        if (outgoing == null && request == 0) { clearDocument(); return; }
+        if (outgoing == null && outgoingFile == null && request == 0) { clearDocument(); return; }
         // Keep the reservation while provider I/O runs. Never block the game/UI
         // thread on a cloud provider, and bound data even if its size is unknown.
         new Thread(() -> {
             try {
-                if (outgoing != null) {
+                if (outgoing != null || outgoingFile != null) {
                     try (java.io.OutputStream stream = getContentResolver().openOutputStream(uri, "wt")) {
                         if (stream == null) throw new java.io.IOException("No output stream");
-                        stream.write(outgoing);
+                        if (outgoing != null) stream.write(outgoing);
+                        else try (java.io.InputStream input = new java.io.FileInputStream(outgoingFile)) {
+                            byte[] buffer = new byte[65536];
+                            for (int count; (count = input.read(buffer)) != -1;) stream.write(buffer, 0, count);
+                        }
                         stream.flush();
                     }
                 } else {
@@ -228,7 +257,7 @@ public final class Glob2Activity extends SDLActivity {
                     }
                 }
             } catch (Exception | OutOfMemoryError failure) {
-                if (outgoing == null) documentResult(request, 3, null, null);
+                if (outgoing == null && outgoingFile == null) documentResult(request, 3, null, null);
                 else runOnUiThread(this::exportError);
             } finally { runOnUiThread(this::clearDocument); }
         }, "Glob2-document").start();

@@ -443,6 +443,7 @@ CLIENT_SOURCES = (
     'TorusViewRender.cpp',
     'gui/GameGUITorus.cpp',
     'SettingsScreen.cpp',
+    'RecordingFilesScreen.cpp',
     'SettingsScreenGeneral.cpp',
     'SettingsScreenBuildings.cpp',
     'SettingsScreenKeyboard.cpp',
@@ -563,7 +564,9 @@ RELAY_GAG_SOURCES = (
 GAG_SOURCES = (
     'GameplayRecording.cpp',
     'RecordingMetadata.cpp',
-    'RecordingProcess.cpp',
+    'RecordingEncoder.cpp',
+    'RecordingFiles.cpp',
+    'RecordingSession.cpp',
     'PerformanceTelemetry.cpp',
     'BackgroundFileWriter.cpp',
     'Sha1.cpp',

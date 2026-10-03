@@ -8,6 +8,7 @@
 #include "Building.h"
 #include "render/SoftwareTerrainCache.h"
 #include <RenderBackend.h>
+#include <GameplayRecording.h>
 #include <stdexcept>
 #include <cmath>
 #include "FileManager.h"
@@ -72,7 +73,7 @@ class SoftwareRenderBenchmark
 		const bool nativeDisplay = getenv("PROFILE_NATIVE_DISPLAY") != nullptr;
 		globalContainer = new GlobalContainer;
 		globalContainer->parseArgs(argc, argv);
-		globalContainer->settings.mute = 1;
+		globalContainer->settings.mute = getenv("PROFILE_AUDIO") ? 0 : 1;
 		globalContainer->settings.autosaveGames = false;
 		globalContainer->load();
 		auto *gfx = globalContainer->gfx;
@@ -84,7 +85,7 @@ class SoftwareRenderBenchmark
             SDL_VERSIONNUM_MINOR(version), SDL_VERSIONNUM_MICRO(version), SDL_GetRevision());
 		if (!getenv("PROFILE_VISIBLE"))
 			SDL_HideWindow(SDL_GetWindowFromID(gfx->windowID()));
-		if (gfx->getOptionFlags() & (GraphicContext::USEGPU | GraphicContext::PORTABLEGPU))
+		if (!getenv("PROFILE_RECORD") && (gfx->getOptionFlags() & (GraphicContext::USEGPU | GraphicContext::PORTABLEGPU)))
 			throw std::runtime_error("Benchmark requires the software backend (-G)");
 		{
 			GameGUI gui;
@@ -196,23 +197,35 @@ class SoftwareRenderBenchmark
 				PerformanceTelemetry::collector().clock = cpuClock;
 				PerformanceTelemetry::collector().reset();
 			}
+			auto &recorder = GAGCore::Recording::recorder();
+			if (const char *record = getenv("PROFILE_RECORD"); record && std::string(record) != "off")
+			{
+				if (getenv("PROFILE_RECORD_SOFTWARE")) recorder.options.encoder = GAGCore::Recording::EncoderPreference::Software;
+				if (!recorder.start(record)) throw std::runtime_error(recorder.status().error);
+				recorder.beginMatch("benchmark",path,0,gui.game.stepCounter);
+				recorder.matchFrame(gui.game.stepCounter,false,1);
+			}
+			const double seconds = getenv("PROFILE_SECONDS") ? std::stod(getenv("PROFILE_SECONDS")) : 0;
+			Uint64 measuredStart = 0;
 			std::vector<double> draw, present;
 			RenderOperations initialOps{};
 			std::uint64_t initialHits = 0, initialRebuilds = 0;
 			double c0 = 0;
 			double freq = SDL_GetPerformanceFrequency();
 			const auto checksum = gui.game.checkSum(nullptr, nullptr, nullptr, true);
-			for (int i = -warmup; i < frames; i++)
+			for (int i = -warmup; i < frames || (seconds > 0 && (i < 0 || (SDL_GetPerformanceCounter()-measuredStart)/freq < seconds)); i++)
 			{
 				SDL_PumpEvents();
 				if (i == 0)
 				{
-					c0 = cpu();
+					c0 = cpu(); measuredStart = SDL_GetPerformanceCounter();
 					initialOps = gfx->backendOperations();
 					initialHits = terrainCache.cacheHits();
 					initialRebuilds = terrainCache.cacheRebuilds();
 					PerformanceTelemetry::collector().reset();
 				}
+				if (getenv("PROFILE_PAN"))
+				{ gui.camera.originX += .25; gui.viewportX = gui.camera.tileX(); }
 				Uint64 a = SDL_GetPerformanceCounter();
 				// Isolate the retention-copy cost without a production graphics setting.
 				if (getenv("PROFILE_PRESERVE_FRAME"))
@@ -237,6 +250,25 @@ class SoftwareRenderBenchmark
 				}
 			}
 			double totalCpu = cpu() - c0;
+			const double elapsed = (SDL_GetPerformanceCounter()-measuredStart)/freq;
+			printf("render_fps=%.4f elapsed_seconds=%.4f frames=%zu\n",draw.size()/elapsed,elapsed,draw.size());
+			recorder.stop(); recorder.shutdown();
+			if (const char *record = getenv("PROFILE_RECORD"); record && std::string(record) != "off")
+			{
+				const auto status = recorder.status();
+				printf("recording encoder=%s dimensions=%dx%d dropped_frames=%llu dropped_audio_samples=%llu\n",status.encoder.c_str(),status.width,status.height,(unsigned long long)status.droppedFrames,(unsigned long long)status.droppedAudioSamples);
+				if (status.state != GAGCore::Recording::State::Complete) throw std::runtime_error(status.error);
+			}
+#ifndef WIN32
+			rusage memory{}; getrusage(RUSAGE_SELF,&memory);
+			printf("peak_rss_bytes=%llu\n",(unsigned long long)memory.ru_maxrss *
+#ifdef __APPLE__
+				1ull
+#else
+				1024ull
+#endif
+			);
+#endif
 			if (gui.game.checkSum(nullptr, nullptr, nullptr, true) != checksum)
 				throw std::runtime_error("rendering changed simulation checksum");
 			printf("simulation_checksum=%u\n", checksum);
@@ -251,7 +283,7 @@ class SoftwareRenderBenchmark
 			};
 			output("draw", draw);
 			output("present", present);
-			printf("process_cpu_ms_per_frame=%.4f\n", totalCpu * 1000 / frames);
+			printf("process_cpu_ms_per_frame=%.4f\n", totalCpu * 1000 / draw.size());
 			fflush(stdout);
 			auto ops = gfx->backendOperations();
 			printf("backend_ops blits=%llu fills=%llu triangles=%llu\n",

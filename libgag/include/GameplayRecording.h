@@ -4,15 +4,17 @@
 #include <cstdint>
 #include <memory>
 #include <string>
+#include <vector>
 
 namespace GAGCore::Recording
 {
 inline constexpr int AudioSampleRate = 44100;
 inline constexpr int AudioChannels = 2;
+enum class EncoderPreference { Auto, Software };
 struct Options
 {
-	std::string ffmpeg = "ffmpeg";
-	int fps = 60, width = 0, height = 0, crf = 18;
+	int fps = 30, crf = 23;
+	EncoderPreference encoder = EncoderPreference::Auto;
 	std::uint32_t chapterTicks = 10000;
 };
 enum class State
@@ -29,6 +31,10 @@ struct Status
 	State state = State::Idle;
 	std::string path, error;
 	std::uint64_t droppedFrames = 0, droppedAudioSamples = 0;
+	std::string encoder, fallbackReason;
+	unsigned segment = 0;
+	int width = 0, height = 0, sourceWidth = 0, sourceHeight = 0;
+	std::vector<std::string> outputs;
 };
 // One local client perspective. No simulation, network, or save-state ownership.
 // Options, context, frame submission, and controls belong to the main thread.
@@ -50,7 +56,7 @@ class Recorder
 	Status status() const;
 	bool active() const;
 	bool wantsFrame() const;
-	void frame(const SDL_Surface &pixels);
+	void frame(const SDL_Surface &pixels, bool bottomUp = false);
 	// Interleaved signed stereo samples at 44100 Hz; count includes both channels.
 	// Timestamp the first chunk once, then advance by frames for split SDL refills.
 	void audio(const std::int16_t *samples, std::size_t count, std::int64_t startUs);
@@ -72,4 +78,21 @@ bool supported();
 // UI helper: unique profile output; returns false while finalization is pending.
 bool toggle();
 std::string controlLabel();
+struct RecordingFileEntry
+{
+	std::string path;
+	bool recoverable = false;
+};
+struct RecordingFilesStatus
+{
+	bool busy = false;
+	std::string error;
+	std::vector<RecordingFileEntry> files;
+};
+void requestFiles();
+bool takeFilesRequest();
+void refreshFiles();
+RecordingFilesStatus filesStatus();
+void recoverFile(const std::string &path);
+void deleteFile(const std::string &path);
 } // namespace GAGCore::Recording

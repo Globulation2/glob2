@@ -190,3 +190,13 @@ retry, refresh and replay playback. The native session harness covers an invalid
 destination and byte-identical retry. Automatic `last_game.replay` recording and
 periodic autosaves remain background writes; abrupt tab/process termination is
 not a successful save acknowledgment. Use explicit saves/exports for backups.
+
+## Gameplay footage
+
+Gameplay video uses a separate lazily loaded recording worker and encoder WASM
+module in both game runtimes. Its synchronous OPFS handles stream media without
+putting recordings in IDBFS or retaining a whole video in WASM memory. The
+Recordings screen exports OPFS-backed files and metadata separately, and can
+recover completed fragments after an interrupted session. Clearing site storage
+deletes these recordings. See [gameplay footage](../features/gameplay-recording.md)
+for the timeline, resize and failure behavior.

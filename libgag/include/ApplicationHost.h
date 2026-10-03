@@ -76,6 +76,8 @@ void requestAssetPackage(const char *name);
 std::vector<std::string> takeInstalledAssetPackages();
 bool canExportFiles();
 bool exportLocalFile(const std::string &path);
+// File-backed export, without loading a potentially large recording into RAM.
+bool exportFilePath(const std::string &path);
 bool exportFile(const std::string &name, const std::vector<unsigned char> &bytes);
 
 // Persistence completion is owned by the caller; releasing it is safe while pending.

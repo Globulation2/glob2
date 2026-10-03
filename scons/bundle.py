@@ -48,6 +48,8 @@ def createBundle(target, source, env) :
     for directory in ('data', 'maps', 'campaigns', 'scripts'):
         if (assets/directory).is_dir():
             shutil.copytree(assets/directory, Path(bundleDir)/'Contents/Resources'/directory)
+    if env.get('RECORDING_PREFIX'):
+        shutil.copytree(Path(env['RECORDING_PREFIX'])/'share/licenses/recording',Path(bundleDir)/'Contents/Resources/licenses/recording',dirs_exist_ok=True)
     run('cp COPYING %s/Contents/Resources/' % bundleDir)
     run('cp data/javascript-licenses.txt %s/Contents/Resources/' % bundleDir)
     run('cp data/json-license.txt %s/Contents/Resources/' % bundleDir)

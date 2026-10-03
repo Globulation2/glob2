@@ -48,6 +48,18 @@ bool platformExport(const std::string& name, const std::vector<unsigned char>& c
     if (message) a.env->DeleteLocalRef(message);
     return accepted;
 }
+bool platformExportPath(const std::string& path, const std::string& error) {
+    Activity a;
+    if (!a.type) return false;
+    auto method = a.env->GetMethodID(a.type, "exportDocumentPath", "([B[B)Z");
+    auto filename = bytes(a.env, path.data(), path.size());
+    auto message = filename ? bytes(a.env, error.data(), error.size()) : nullptr;
+    bool accepted = method && filename && message && !a.env->ExceptionCheck() &&
+        a.env->CallBooleanMethod(a.object, method, filename, message) && !a.env->ExceptionCheck();
+    if (filename) a.env->DeleteLocalRef(filename);
+    if (message) a.env->DeleteLocalRef(message);
+    return accepted;
+}
 }
 extern "C" JNIEXPORT void JNICALL
 Java_org_globulation2_glob2_Glob2Activity_documentResult(JNIEnv* env, jclass, jlong request, jint status, jbyteArray name, jbyteArray data) {

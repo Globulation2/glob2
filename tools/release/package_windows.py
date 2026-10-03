@@ -38,6 +38,11 @@ def stage(binary, root, original_assets=False, runtime=None):
     if not list(root.glob("SDL3*.dll")):
         raise SystemExit("no SDL3 DLLs found in executable dependencies")
     stage_assets(Path.cwd(), root, original_assets)
+    prefix = os.environ.get("GLOB2_RECORDING_PREFIX")
+    if not prefix and os.environ.get("GLOB2_SDL3_PREFIX"):
+        prefix = str(Path(os.environ["GLOB2_SDL3_PREFIX"]) / "recording")
+    notices = (Path(prefix) if prefix else binary.resolve().parent.parent / "recording/prefix") / "share/licenses/recording"
+    if notices.is_dir(): shutil.copytree(notices,root/"licenses/recording")
 
     return root
 

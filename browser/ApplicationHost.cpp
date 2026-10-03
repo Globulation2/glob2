@@ -409,6 +409,25 @@ std::vector<std::string> takeInstalledAssetPackages()
     return names;
 }
 bool canExportFiles() { return true; }
+bool exportFilePath(const std::string& path)
+{
+    return MAIN_THREAD_EM_ASM_INT({
+        const name=UTF8ToString($0).split(/[\\/]/).pop();
+        (async()=>{
+            try {
+                const root=await (await navigator.storage.getDirectory()).getDirectoryHandle('glob2-recordings');
+                const handle=await root.getFileHandle(encodeURIComponent(name));
+                const file=await handle.getFile(); const url=URL.createObjectURL(file); const anchor=document.createElement('a');
+                anchor.href=url; anchor.download=name; anchor.click();
+                setTimeout(()=>URL.revokeObjectURL(url),60000);
+            } catch (error) {
+                Module.printErr?.('Recording export: '+error);
+                if (Module.glob2RecordingFilesUI) Module.glob2RecordingFilesUI.error=String(error.message || error);
+            }
+        })();
+        return 1;
+    },path.c_str());
+}
 bool exportFile(const std::string& name, const std::vector<unsigned char>& bytes)
 {
     return MAIN_THREAD_EM_ASM_INT({

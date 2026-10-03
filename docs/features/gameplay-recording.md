@@ -1,6 +1,6 @@
 # Gameplay footage
 
-Desktop Glob2 can record menus, loading screens, gameplay, in-game dialogs, and
+Glob2 can record menus, loading screens, gameplay, in-game dialogs, and
 final statistics as compressed MP4 footage. The same recorder supports players,
 replay capture, LAN and online multiplayer, and internal feature demonstrations.
 It records the local client's visible perspective and mixed game audio, including
@@ -8,9 +8,10 @@ received voice chat. It does not capture a new microphone input or other windows
 
 ## Recording
 
-Install an FFmpeg executable with `libx264` and AAC encoders and make it available
-on `PATH`, or select it with `--record-ffmpeg`. FFmpeg is optional: ordinary play
-does not require it. Browser and mobile recording are not supported yet.
+Recording uses embedded H.264 and AAC encoders; no FFmpeg executable is needed.
+Native builds prefer the platform hardware encoder and fall back to x264. Browser
+builds lazily load a dedicated recording worker, prefer WebCodecs after testing the
+actual configuration, and fall back to the same embedded software pipeline.
 
 Use **Start recording / Stop recording** in the main menu, in-game menu, or final
 statistics screen, or press **Ctrl+Shift+R**. Each UI start creates a unique MP4 in
@@ -22,7 +23,7 @@ For a complete session, start recording from the command line:
 
 ```sh
 glob2 -vs feature-demo
-glob2 --record artifacts/footage/feature-demo.mp4 --record-fps 30 --record-size 1920x1080
+glob2 --record artifacts/footage/feature-demo.mp4 --record-fps 30 --record-encoder software
 ```
 
 `-vs <name>` now produces `videoshots/<name>.mp4` in the profile, replacing its
@@ -33,34 +34,43 @@ replaced. Recording finishes when stopped or when the application exits normally
 
 | Option | Default | Meaning |
 | --- | --- | --- |
-| `--record <path.mp4>` | Off | Record a complete rendered session |
-| `--record-fps <1..240>` | 60 | Constant output frame rate |
-| `--record-size <WxH>` | Native framebuffer | Fixed output canvas |
-| `--record-crf <0..51>` | 18 | H.264 quality; lower values retain more detail |
-| `--record-chapter-ticks <N>` | 10000 | Gameplay-era width in simulation ticks |
-| `--record-ffmpeg <path>` | `ffmpeg` on `PATH` | Encoder executable |
+| `--record-fps` | 30 | Fixed recording rate, 1–240 FPS |
+| `--record-crf` | 23 | Software H.264 quality, 0–51 |
+| `--record-chapter-ticks` | 10000 | Gameplay chapter era length |
+| `--record-encoder` | auto | Hardware preference, or `software` for reproducibility |
 
-The video uses H.264/YUV420p and AAC stereo audio at 192 kbps. Native dimensions
-are fixed by the first captured frame and padded to even numbers. Subsequent
-resizes are scaled and letterboxed into that canvas. A HiDPI framebuffer can be
-larger than the logical game viewport; use `--record-size` to constrain exports.
+`--record-ffmpeg` and `--record-size` are obsolete and produce migration errors.
+Recording captures the full rendered framebuffer, including HiDPI pixels. Odd
+widths and heights are padded to even dimensions without scaling. Resolution
+changes settle for 250 ms before closing the current file and starting a numbered
+`.part0002.mp4` segment. Frame rate and quality remain fixed during a session.
 
 Output frame rate does not change game rendering cadence or simulation speed.
-When the game presents fewer unique frames, the recording repeats its latest
-frame. Pauses, minimization, mute, and multiplayer synchronization waits preserve
-elapsed recording time; absent audio becomes silence. The recorder never sends a
-network order or pauses the match to wait for the encoder. Native frame readback
-and copying still have a cost, especially at high resolutions; bounded queues
-skip capture frames under encoder pressure rather than accumulating raw images.
+When the game presents fewer unique frames, the recorder repeats its latest
+frame. Missing audio is filled with silence. Long execution suspension preserves
+a timestamp gap and resumes without a catch-up burst. Background execution still
+depends on the operating system and browser. Readback and copying have a cost;
+bounded queues reject excess input and report dropped frame/audio counters.
+
+The **Recordings** screen lists completed and interrupted files. Export video,
+metadata and events separately; recovery remuxes available completed fragments.
+Native files remain in the profile's `videoshots/` directory. Mobile recordings
+use app-private storage and native document pickers. Browser recordings stream
+to OPFS outside IDBFS and export a file-backed download; unavailable or exhausted
+storage produces an error. Do not clear browser site storage before exporting.
 
 ## Chapters and extraction
 
-A completed recording has three files:
+Each completed segment has three files:
 
 - `<name>.mp4`: compressed video/audio with embedded navigation chapters;
 - `<name>.mp4.json`: versioned manifest with chapter intervals and semantic context;
 - `<name>.mp4.events.jsonl`: chronological events, including chapters, pauses,
   speed changes, resizing, capture gaps, and statistics metric selections.
+
+A versioned `<name>.mp4.session.json` index lists completed segments and their
+session-relative start times. Per-file manifests retain version 1 and add optional
+session, segment, encoder and fallback fields.
 
 Chapter identifiers are occurrence IDs: visiting the same screen twice produces
 two intervals. Stable `screen` and `dialog` identifiers are independent of language
@@ -101,37 +111,48 @@ existing clips or sidecars.
 
 ## Failures and implementation
 
-During capture, `<name>.mp4.recording/` reserves the output and holds compressed
-video/audio tracks, the append-only event journal, and encoder logs. Finalization
-combines compressed tracks and chapter metadata without re-encoding. Successful
-completion removes the work directory. Metadata is staged first and completed
-files are published through atomic, no-replace hard links, with the video published
-last. This requires a filesystem supporting hard links (such as NTFS, APFS, or ext4);
-on unsupported filesystems, the finished intermediates are retained safely.
-If encoding, storage, or finalization
-fails, it retains available compressed tracks, logs, and an incomplete manifest
-for diagnosis. Abrupt process termination may leave only completed fragments;
-recovery is best effort. Keep this directory until useful footage is recovered.
+During capture, `<name>.mp4.recording/` reserves the output and holds a fragmented
+MP4 containing both streams, an append-only event journal and incomplete metadata.
+Finalization remuxes compressed packets into a fast-start MP4 with chapters.
+Native publication uses no-replace hard links; browser publication commits a
+completion marker after streaming bounded chunks into final OPFS files. Failures
+retain staging files and diagnostics. Forced termination can leave a partial last
+fragment, so recovery is best effort.
 
-The recorder lives in `libgag` and owns no game state. The shared presentation
-boundary submits completed frames before swap/clear. Game-side callers provide
-stable screen/dialog identifiers, match context, ticks, and events. The mixer
-copies final PCM into preallocated callback storage with a nonblocking lock.
-Workers handle encoding, timing, drift/gap correction, and metadata writes.
-SDL3 refill chunks share a timestamp that accounts for already queued PCM;
-within a refill, sample counts advance the timeline rather than callback wall time.
-Video buffering is bounded to three frames, audio to two seconds of samples.
-Shell-free subprocess launch uses native POSIX or Windows process APIs.
-The recorder owns lifecycle and bounded queues; `RecordingMetadata` owns stable
-context serialization and output publication, and `RecordingProcess` owns child
-process resources and deadlines. Control and context APIs belong to the main
-thread; audio submission is nonblocking, while explicit shutdown joins workers.
+The `libgag` session controller owns lifecycle, the shared monotonic timeline,
+three-frame capture budget, segments and semantic context. Video encoders return
+packets asynchronously through an interface with no FFmpeg types. AAC, audio
+alignment, MP4 writing and storage belong to the worker. Audio callbacks copy into
+preallocated storage with a nonblocking lock; they neither allocate nor wait.
+Workers handle color conversion, encoding and file operations. Normal stop is
+cooperative; native application shutdown joins outstanding workers.
+
+Software uses x264 ultrafast, CRF 23, one thread, zero latency, no B-frames and a
+two-second keyframe interval. AAC is stereo at 44.1 kHz and 192 kbps. Hardware
+settings stay inside the adapters: low latency, no B-frames, two-second keyframes
+and variable bitrate starting at `max(1 Mbps, width × height × fps × 0.12)`.
+
+| Platform | Hardware preference |
+| --- | --- |
+| macOS / iOS | VideoToolbox |
+| Android | MediaCodec |
+| Windows | Media Foundation, then NVENC |
+| Linux | VAAPI (when built with libva), then NVENC |
+| Browser | WebCodecs with advisory hardware preference |
+
+The pinned hashes are in `scons/recording-versions.json`; the minimal dependency
+recipe and cache validation are in `scons/recording_dependencies.py`. Only H.264
+encoders, AAC, MP4 muxing, MOV demuxing and required conversion/prerequisites are
+enabled. No decoders, filters, tools or network protocols are included. Release
+source archives include the original dependency archives for offline rebuilds,
+and packages include their license notices. Dependencies retain native/WASM SIMD;
+encoder optimization flags do not alter simulation compiler flags.
 
 Recording has no serialized state and changes no save, replay, or network version.
 Changes to recording still require simulation-checksum comparisons and platform
 coverage reporting, as described in the [development guide](../development/headless-replays.md).
 
-For verification, build unit tests and opt into the real encoder fixture:
+For verification, build unit tests; an external FFmpeg is used only for independent decoding:
 
 ```sh
 scons release=1 server=0 unit-tests
@@ -158,9 +179,36 @@ fixture for its documented palette.
 The multiplayer fixture runs two real LAN clients on the turn protocol through a
 match and results using the production session mode. It retains both videos and compares every executed
 tick’s checksum, written directly from each client’s lockstep callback.
-Use `--ffmpeg /path/to/ffmpeg` when the encoder is outside `PATH`.
 
 Use the equivalent build path on Linux or Windows. Test recordings and review
 evidence belong in ignored `artifacts/`, not committed documentation. Check
 rendered footage and multiplayer responsiveness through maintainer playtesting;
 codec inspection alone does not establish visual quality or gameplay feel.
+
+For matched local performance qualification, use the busy saved battle and keep
+rendering, camera movement, audio, runtime, dimensions and warmup identical:
+
+```sh
+node browser/benchmarks/recording.cjs http://127.0.0.1:8770 artifacts/recording-benchmark
+GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons release=1 software-render-benchmark
+PROFILE_SAVE=games/gd-bigarena-long.game.gz PROFILE_RECORD=off PROFILE_SECONDS=20 \
+  PROFILE_PAN=1 PROFILE_AUDIO=1 PROFILE_WARMUP=240 \
+  build/darwin/client/release/test/SoftwareRenderBenchmark -s 1920x1080
+PROFILE_SAVE=games/gd-bigarena-long.game.gz PROFILE_RECORD=artifacts/qualification.mp4 \
+  PROFILE_SECONDS=20 PROFILE_PAN=1 PROFILE_AUDIO=1 PROFILE_WARMUP=240 \
+  build/darwin/client/release/test/SoftwareRenderBenchmark -s 1920x1080
+```
+
+The browser fixture runs recorded/unrecorded pairs in both runtimes at 720p,
+1080p and a double-density display, with three repetitions. Its JSON retains the
+fixture hash, frame times, CPU, memory, recording metadata and dropped input.
+The native rendering fixture isolates a loaded battle scene without advancing
+simulation; active battle costs still require the browser fixture or live-game
+profiling. Native telemetry includes the `recording.capture` readback/submission
+scope. Use `PROFILE_RECORD_SOFTWARE=1` for x264 and `PROFILE_NATIVE_DISPLAY=1`
+for native display density; `PROFILE_VISIBLE=1` keeps the benchmark window visible.
+Do not measure while builds or unrelated workloads compete for CPU. Qualify
+realtime recording with no encoder-pressure drops and less than 5% game FPS
+regression. Report devices and resolutions that miss those targets; recording
+retains the selected full resolution and frame rate. Mobile hardware and sustained
+thermal qualification require physical devices.

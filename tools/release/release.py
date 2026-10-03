@@ -5,6 +5,8 @@ import argparse
 import gzip
 import hashlib
 import json
+import io
+import tempfile
 import re
 import struct
 import subprocess
@@ -76,6 +78,24 @@ def archive(destination, tag=None):
     prefix = f"glob2-{current}/"
     raw = subprocess.check_output(
         ["git", "archive", "--format=tar", f"--prefix={prefix}", "HEAD"], cwd=ROOT)
+    # Include exact codec sources for offline builds and redistribution.
+    source = io.BytesIO(raw)
+    with tarfile.open(fileobj=source, mode='r:') as contents:
+        lock = next((m for m in contents.getmembers() if m.name == prefix+'scons/recording-versions.json'),None)
+        versions = json.load(contents.extractfile(lock)) if lock else {}
+    if versions:
+        import sys
+        sys.path.insert(0,str(ROOT/'scons'))
+        from sdl3_dependencies import download
+        with tempfile.TemporaryDirectory(prefix='glob2-release-recording-') as temporary:
+            download(Path(temporary),versions)
+            with tarfile.open(fileobj=source,mode='a') as contents:
+                for spec in versions.values():
+                    data=(Path(temporary)/spec['archive']).read_bytes()
+                    entry=tarfile.TarInfo(prefix+'third_party/recording-sources/'+spec['archive'])
+                    entry.size=len(data); entry.mode=0o644; entry.mtime=0
+                    contents.addfile(entry,io.BytesIO(data))
+            raw=source.getvalue()
     target = destination / f"glob2-{current}.tar.gz"
     # A fixed gzip header makes repeat archives of the same commit byte-identical.
     with target.open("wb") as output:

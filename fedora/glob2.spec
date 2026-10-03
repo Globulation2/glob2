@@ -15,6 +15,8 @@ Source6:        https://files.pythonhosted.org/packages/18/5d/3bf57dcd21979b887f
 Source7:        https://files.pythonhosted.org/packages/a5/98/9118a0659646f1628c592ef9bb48e0056efa6bf27c951fd12a178e0136fb/pybind11-3.0.2.tar.gz
 Source8:        https://files.pythonhosted.org/packages/8c/21/c2bcdd5906101a30244eaffc1b6e6ce71a31bd0742a01eb89e660ebfac2d/pillow-12.2.0.tar.gz
 
+BuildRequires:  nasm
+BuildRequires:  libva-devel
 BuildRequires:  cmake
 BuildRequires:  make
 BuildRequires:  python3-devel
