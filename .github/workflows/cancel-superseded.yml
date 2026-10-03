@@ -1,0 +1,50 @@
+name: Cancel superseded CI runs
+
+# Workflow concurrency groups only replace runs of the same workflow. This
+# cancels the rest for a pull request: path-filtered workflows a newer push no
+# longer triggers, and every CI run of a pull request that was closed or merged.
+# Only CI workflows listed in .github/scripts/ci_cancel_superseded.py are
+# touched; release, publication and deployment runs never are. See "CI run
+# cancellation" in docs/development/reference.md.
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+  workflow_dispatch:
+    inputs:
+      include_default_branch:
+        description: Also cancel superseded default-branch runs (keeps the newest per workflow)
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  actions: write
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: cancel-superseded-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  cancel:
+    # Fork pull requests receive a read-only token; their runs are left to the
+    # per-workflow concurrency groups.
+    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: .github/scripts
+      - name: Cancel runs whose commit is no longer the head
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          INCLUDE_DEFAULT_BRANCH: ${{ inputs.include_default_branch }}
+        run: |
+          args=()
+          if [ -n "$HEAD_REF" ]; then args+=(--branch "$HEAD_REF"); fi
+          if [ "$INCLUDE_DEFAULT_BRANCH" = true ]; then args+=(--include-default-branch); fi
+          python3 .github/scripts/ci_cancel_superseded.py "${args[@]}"

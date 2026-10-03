@@ -6,6 +6,8 @@
 #include "AIMaximaDistanceField.h"
 #include <Stream.h>
 #include <BinaryStream.h>
+#include <PackedArray.h>
+#include <bit>
 #include <cstring>
 #include <algorithm>
 #include <cstdint>
@@ -110,8 +112,10 @@ public:
 class Writer
 {
     GAGCore::OutputStream* stream;
+    bool compact_;
 public:
-    explicit Writer(GAGCore::OutputStream* stream):stream(stream) {}
+    explicit Writer(GAGCore::OutputStream* stream,bool compact=false):stream(stream),compact_(compact && GAGCore::PackedArray::binary(stream)) {}
+    bool compact() const { return compact_; }
     template<class T> typename std::enable_if<std::is_integral<T>::value || std::is_enum<T>::value>::type
     operator()(const char* name,const T& value)
     {
@@ -132,8 +136,18 @@ public:
     void operator()(const char* name,const std::string& value) { stream->writeText(value,name); }
     template<class T,size_t N> void operator()(const char* name,const T (&value)[N])
     {
-        if(auto* binary=dynamic_cast<GAGCore::BinaryOutputStream*>(stream))
-        {BufferedBinaryWriter packed(binary);packed(name,value);packed.flush();return;}
+        // The legacy buffered writer expands narrow fields to their old widths.
+        // Compact streams must traverse fields here so nested arrays are packed.
+        if (!compact_)
+        {
+            if (auto* binary = dynamic_cast<GAGCore::BinaryOutputStream*>(stream))
+            {
+                BufferedBinaryWriter packed(binary);
+                packed(name, value);
+                packed.flush();
+                return;
+            }
+        }
         stream->writeEnterSection(name);
         for(size_t i=0;i<N;++i) { stream->writeEnterSection(i); (*this)("value",value[i]); stream->writeLeaveSection(); }
         stream->writeLeaveSection();
@@ -141,8 +155,14 @@ public:
     template<class Wire, class T, class Encode, class Decode>
     void legacyVector(const char* name,const std::vector<T>& value,Encode encode,Decode decode)
     {
-        if(auto* binary=dynamic_cast<GAGCore::BinaryOutputStream*>(stream))
-        { BufferedBinaryWriter packed(binary); packed.legacyVector<Wire>(name,value,encode,decode); packed.flush(); return; }
+        if(compact_) { (*this)(name,value); return; }
+        if (auto* binary = dynamic_cast<GAGCore::BinaryOutputStream*>(stream))
+        {
+            BufferedBinaryWriter packed(binary);
+            packed.legacyVector<Wire>(name, value, encode, decode);
+            packed.flush();
+            return;
+        }
         stream->writeEnterSection(name); stream->writeUint32(value.size(),"size");
         for(size_t i=0;i<value.size();++i)
         { stream->writeEnterSection(i); const Wire wire=encode(value[i]); (*this)("value",wire); stream->writeLeaveSection(); }
@@ -150,13 +170,32 @@ public:
     }
     void operator()(const char* name,const AIMaximaPlacement::DistanceField& value)
     {
+        if(compact_) { (*this)(name,value.storage()); return; }
         legacyVector<int32_t>(name,value.storage(),
             [](uint16_t x){return x==UINT16_MAX?INT_MAX:int(x);},[](int32_t){return uint16_t{};});
     }
     template<class T> void operator()(const char* name,const std::vector<T>& value)
     {
-        if(auto* binary=dynamic_cast<GAGCore::BinaryOutputStream*>(stream))
-        {BufferedBinaryWriter packed(binary);packed(name,value);packed.flush();return;}
+        if constexpr(std::is_integral_v<T>)
+            if(compact_)
+            {
+                using U=std::conditional_t<sizeof(T)==1,Uint8,std::conditional_t<sizeof(T)==2,Uint16,std::conditional_t<sizeof(T)==4,Uint32,Uint64>>>;
+                stream->writeUint32(value.size(),"size");
+                GAGCore::PackedArray::write<U>(stream,value.size(),[&](size_t i){return U(value[i]);});
+                return;
+            }
+        // The legacy buffered writer expands narrow fields to their old widths.
+        // Compact streams must traverse fields here so nested arrays are packed.
+        if (!compact_)
+        {
+            if (auto* binary = dynamic_cast<GAGCore::BinaryOutputStream*>(stream))
+            {
+                BufferedBinaryWriter packed(binary);
+                packed(name, value);
+                packed.flush();
+                return;
+            }
+        }
         stream->writeEnterSection(name); stream->writeUint32(value.size(),"size");
         for(size_t i=0;i<value.size();++i) { stream->writeEnterSection(i); (*this)("value",value[i]); stream->writeLeaveSection(); }
         stream->writeLeaveSection();
@@ -174,8 +213,18 @@ public:
     template<class T> typename std::enable_if<!std::is_integral<T>::value && !std::is_enum<T>::value>::type
     operator()(const char* name,const T& value)
     {
-        if(auto* binary=dynamic_cast<GAGCore::BinaryOutputStream*>(stream))
-        {BufferedBinaryWriter packed(binary);packed(name,value);packed.flush();return;}
+        // The legacy buffered writer expands narrow fields to their old widths.
+        // Compact streams must traverse fields here so nested arrays are packed.
+        if (!compact_)
+        {
+            if (auto* binary = dynamic_cast<GAGCore::BinaryOutputStream*>(stream))
+            {
+                BufferedBinaryWriter packed(binary);
+                packed(name, value);
+                packed.flush();
+                return;
+            }
+        }
         stream->writeEnterSection(name);
         // fields() is shared with Reader; Writer's operators never modify data.
         fields(*this,const_cast<T&>(value));
@@ -185,6 +234,7 @@ public:
 class Reader
 {
     GAGCore::InputStream* stream;
+    bool compact_;
     uint32_t count()
     {
         // Canonical nine-neighbor tables exceed the generic one-million limit
@@ -194,7 +244,8 @@ class Reader
         return size;
     }
 public:
-    explicit Reader(GAGCore::InputStream* stream):stream(stream) {}
+    explicit Reader(GAGCore::InputStream* stream,bool compact=false):stream(stream),compact_(compact && GAGCore::PackedArray::binary(stream)) {}
+    bool compact() const { return compact_; }
     template<class T> typename std::enable_if<std::is_integral<T>::value || std::is_enum<T>::value>::type
     operator()(const char* name,T& value)
     {
@@ -226,6 +277,7 @@ public:
     template<class Wire, class T, class Encode, class Decode>
     void legacyVector(const char* name,std::vector<T>& value,Encode,Decode decode)
     {
+        if(compact_) { (*this)(name,value); return; }
         stream->readEnterSection(name); value.clear(); value.resize(count());
         for(size_t i=0;i<value.size();++i)
         { stream->readEnterSection(i); Wire wire{}; (*this)("value",wire); value[i]=decode(wire); stream->readLeaveSection(); }
@@ -233,6 +285,7 @@ public:
     }
     void operator()(const char* name,AIMaximaPlacement::DistanceField& value)
     {
+        if(compact_) { (*this)(name,value.storage()); return; }
         legacyVector<int32_t>(name,value.storage(),[](uint16_t){return int32_t{};},
             [](int32_t x){
                 if(x==INT_MAX) return uint16_t(UINT16_MAX);
@@ -242,6 +295,17 @@ public:
     }
     template<class T> void operator()(const char* name,std::vector<T>& value)
     {
+        if constexpr(std::is_integral_v<T>)
+            if(compact_)
+            {
+                using U=std::conditional_t<sizeof(T)==1,Uint8,std::conditional_t<sizeof(T)==2,Uint16,std::conditional_t<sizeof(T)==4,Uint32,Uint64>>>;
+                value.clear(); value.resize(count());
+                GAGCore::PackedArray::read<U>(stream,value.size(),[&](size_t i,U v){
+                    if constexpr(std::is_same_v<T,bool>) { if(v>1) GAGCore::PackedArray::fail(); value[i]=v; }
+                    else value[i]=std::bit_cast<T>(v);
+                });
+                return;
+            }
         stream->readEnterSection(name); value.clear(); value.resize(count());
         for(size_t i=0;i<value.size();++i) { stream->readEnterSection(i); (*this)("value",value[i]); stream->readLeaveSection(); }
         stream->readLeaveSection();

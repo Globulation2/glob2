@@ -814,9 +814,10 @@ static void measurementAttributionFields()
 static void measurementReplayBoundaries()
 {
 	// Format 124 introduced experiments; format 125 adds JavaScript identities.
-	// Format 127 changes Warrush timing; protocol 50 prevents mixed clients.
-	require(REPLAY_MINIMUM_VERSION_MINOR == 127 && NET_PROTOCOL_VERSION == 50 &&
-				YOG_MIN_CLIENT_NET_PROTOCOL_VERSION == 50,
+	// Format 128 changes save encoding, retaining the format-127 replay floor.
+	// Protocol 51 prevents peers that cannot read compact map snapshots.
+	require(REPLAY_MINIMUM_VERSION_MINOR == 127 && NET_PROTOCOL_VERSION == 51 &&
+				YOG_MIN_CLIENT_NET_PROTOCOL_VERSION == 51,
 			"integrated simulation uses current replay and network gates");
 	for (int version : {98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 115, 119, 120, 121, 122, 123, 124, VERSION_MINOR, VERSION_MINOR+1})
 	{
@@ -1062,7 +1063,7 @@ static void aiTelemetryScenarios()
 		bool rejected = false;
 		try
 		{
-			load(&reader, copy);
+			load(&reader, copy, VERSION_MINOR);
 		}
 		catch (const std::runtime_error &)
 		{
@@ -1458,4 +1459,109 @@ TEST_CASE("Scripting normal death invalidates lookup before cleanup and slot reu
  auto loaded=roundTrip(world.game);
  Script::Observations restored(loaded->game,-1);
  CHECK(restored.query("unit",{reference}).kind==Script::Value::Null);
+}
+
+TEST_CASE("Compact telemetry retains every sample across chunk boundaries" * doctest::test_suite("TeamStatsSave"))
+{
+    using namespace AITelemetry;
+    auto series=std::make_shared<Series>();
+    series->fields=schema(0);
+    series->playerName="history fixture";
+    series->fields.push_back({"float_bits","bits","exact bit patterns",Real,Gauge});
+    for(unsigned n=0;n<513;++n)
+    {
+        Sample sample; sample.tick=n*512; sample.available=(n%3)!=0;
+        sample.values.resize(series->fields.size());
+        for(size_t f=0;f<sample.values.size();++f)
+        {
+            auto& v=sample.values[f];
+            v.bits=f%3==0?UINT64_MAX-n:f%3==1?Uint64(n)*0x123456789abcdefULL:0x8000000000000000ULL;
+            v.updated=n?n*512-1:0;v.valid=(f+n)%2;
+        }
+        series->history.push_back(std::move(sample));
+    }
+    series->current=series->history.back();
+    for(bool text:{false,true})
+    {
+        auto* memory=new GAGCore::MemoryStreamBackend;
+        std::unique_ptr<GAGCore::OutputStream> out(text?static_cast<GAGCore::OutputStream*>(new GAGCore::TextOutputStream(memory)):static_cast<GAGCore::OutputStream*>(new GAGCore::BinaryOutputStream(memory)));
+        save(out.get(),{series});
+        auto bytes=memory->takeContents();
+        auto* source=new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size());source->seekFromStart(0);
+        std::unique_ptr<GAGCore::InputStream> in(text?static_cast<GAGCore::InputStream*>(new GAGCore::TextInputStream(source)):static_cast<GAGCore::InputStream*>(new GAGCore::BinaryInputStream(source)));
+        std::vector<std::shared_ptr<Series>> restored;
+        load(in.get(),restored,VERSION_MINOR);
+        REQUIRE(restored.size()==1);
+        CHECK(restored[0]->fields==series->fields);
+        CHECK(restored[0]->current==series->current);
+        CHECK(restored[0]->history==series->history);
+    }
+}
+
+TEST_CASE("Compact identity tables preserve unused slots and reject invalid entries" * doctest::test_suite("JavaScriptCompatibility"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::GameOptions options; options.header=true;
+    glob2test::HeadlessGame world(options);
+    REQUIRE(world.game.sgslScript.compileScript(&world.game,"").type==ErrorReport::ET_OK);
+    world.game.scriptGenerations[7]=42;
+    world.game.scriptGenerations.back()=UINT32_MAX;
+    class IdentityFields : public GAGCore::BinaryOutputStream
+    {
+    public:
+        using BinaryOutputStream::BinaryOutputStream;
+        std::vector<size_t> indices,values;
+        bool identities=false;
+        void writeUint32(const Uint32 v,const std::string name) override
+        {
+            if(name=="nonzero") identities=true;
+            if(identities && name=="index") indices.push_back(getPosition());
+            if(identities && name=="value") values.push_back(getPosition());
+            BinaryOutputStream::writeUint32(v,name);
+        }
+    };
+    auto* memory=new GAGCore::MemoryStreamBackend;
+    IdentityFields out(memory);world.game.save(&out,false,"sparse identities");
+    const auto bytes=memory->takeContents();
+    REQUIRE(out.indices.size()==2);
+    const auto loadBytes=[&](const std::string& data) {
+        GAGCore::BinaryInputStream in(new GAGCore::MemoryStreamBackend(data.data(),data.size()));in.seekFromStart(0);
+        GameGUI restored;
+        REQUIRE(restored.game.load(&in));
+        CHECK(restored.game.scriptGenerations==world.game.scriptGenerations);
+    };
+    loadBytes(bytes);
+    for(int variant=0;variant<3;++variant)
+    {
+        auto bad=bytes;
+        const size_t offset=variant==2?out.values[0]:out.indices[1];
+        const Uint32 value=variant==0?7:variant==1?UINT32_MAX:0;
+        for(int b=0;b<4;++b) bad[offset+b]=char(value>>(24-8*b));
+        CHECK_THROWS(loadBytes(bad));
+    }
+}
+
+TEST_CASE("Compact team histories preserve samples across two batch boundaries" * doctest::test_suite("TeamStatsSave"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::GameOptions options; options.header = true;
+    glob2test::HeadlessGame world(options);
+    REQUIRE(world.game.sgslScript.compileScript(&world.game, "").type == ErrorReport::ET_OK);
+    auto& stats = world.team->stats;
+    // Drive the public sampling path, so the private end-game history is populated
+    // exactly as in play. Distinct counters catch misplaced rows and columns.
+    for (unsigned n = 0; n < 513; ++n)
+    {
+        world.game.stepCounter = n * 512;
+        world.team->prestige = n * 7;
+        stats.measurements.births[0] = Uint64(n) * 0x100000001ULL;
+        stats.measurements.deaths[1][GameplayMeasurements::COMBAT] = UINT64_MAX - n;
+        stats.step(world.team);
+    }
+    REQUIRE(stats.getEndOfGameStats().size() == 513);
+    REQUIRE(stats.measurementHistory.size() == 513);
+    // Exercise the compact binary format. Scalar text coverage stays in
+    // textRoundTrip; its legacy end-game labels are not valid text identifiers.
+    auto restored = roundTrip(world.game);
+    compare(stats, restored->game.teams[0]->stats);
 }

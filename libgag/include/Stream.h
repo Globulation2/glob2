@@ -37,6 +37,13 @@ namespace GAGCore
 		virtual void writeUint16(const Uint16 v, const std::string name) = 0;
 		virtual void writeSint32(const Sint32 v, const std::string name) = 0;
 		virtual void writeUint32(const Uint32 v, const std::string name) = 0;
+		//! A byte offset into this stream. Deferred encoders relocate the target
+		//! after expanding placeholders; ordinary binary/text streams write it
+		//! exactly as a uint32. Field names never determine relocation behavior.
+		virtual void writeOffset32(const Uint32 value, const std::string name)
+		{
+			writeUint32(value, name);
+		}
 		virtual void writeFloat(const float v, const std::string name) = 0;
 		virtual void writeDouble(const double v, const std::string name) = 0;
 		virtual void writeText(const std::string &v, const std::string name) = 0;
