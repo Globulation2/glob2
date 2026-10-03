@@ -64,7 +64,7 @@ describe('loadConfig', () => {
     });
     expect(config.publicOrigin).toBe('https://play.example.org');
     expect(config.instance.name).toBe('Test Instance');
-    expect(config.instance.queues[0]?.mapPool[0]?.generatorId).toBe('even-ground');
+    expect(config.instance.queues[0]?.mapPool?.[0]?.generatorId).toBe('even-ground');
   });
 
   it('accepts the shipped instance.example.yaml', () => {

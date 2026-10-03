@@ -133,6 +133,11 @@
           "aiBackfillSeconds": {
             "type": "integer",
             "minimum": 0
+          },
+          "acceptSeconds": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Accept prompt length for all-human groups; 0 = none."
           }
         }
       }

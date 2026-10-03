@@ -6,6 +6,7 @@ import { resolve } from 'node:path';
 import { parse as parseYaml } from 'yaml';
 import { schemaIssues } from '@glob2/protocol';
 import { DEFAULT_INSTANCE_CONFIG, InstanceConfig } from './instanceConfig.ts';
+import { resolveQueue } from './queueConfig.ts';
 
 export type LogLevel = 'fatal' | 'error' | 'warn' | 'info' | 'debug' | 'trace' | 'silent';
 
@@ -85,6 +86,11 @@ export function loadInstanceConfig(path: string): InstanceConfig {
   for (const queue of config.queues) {
     if (ids.has(queue.id)) throw new ConfigError(`${path}: duplicate queue id ${queue.id}`);
     ids.add(queue.id);
+    try {
+      resolveQueue(queue);
+    } catch (error) {
+      throw new ConfigError(`${path}: ${(error as Error).message}`);
+    }
   }
   return config;
 }

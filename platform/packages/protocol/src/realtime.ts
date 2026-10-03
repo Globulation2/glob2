@@ -183,8 +183,19 @@ export const realtimeMethods = {
         Strict({ region: RelayRegion, rttMs: Type.Integer({ minimum: 0, maximum: 60000 }) }),
         { maxItems: 32, description: 'Measured round trip to each relay region.' },
       ),
+      allowAiOpponent: Type.Optional(
+        Type.Boolean({
+          description:
+            '"Allow an AI opponent": the queue may fill empty seats with AIs after its backfill delay. Default true.',
+        }),
+      ),
     }),
     result: Open({ ticketId: Uuid, joinedAt: Timestamp }),
+  },
+  'queue.respond': {
+    description: 'Accept or decline a proposed ranked match (queue.proposal with requiresAccept).',
+    params: Strict({ proposalId: Uuid, accept: Type.Boolean() }),
+    result: EmptyResult,
   },
   'queue.leave': {
     description: 'Leave a queue.',
@@ -260,6 +271,35 @@ export const realtimeEvents = {
       waitedSeconds: Type.Integer({ minimum: 0 }),
       ratingWindow: Type.Optional(Type.Number({ minimum: 0 })),
       aiBackfillAt: Type.Optional(Timestamp),
+    }),
+  },
+  'queue.proposal': {
+    description:
+      'The queue grouped the client with other players. With requiresAccept the client must answer queue.respond before expiresAt; otherwise the match starts without a prompt.',
+    data: Open({
+      proposalId: Uuid,
+      ticketId: Uuid,
+      queueId: Type.String(),
+      requiresAccept: Type.Boolean(),
+      expiresAt: Type.Optional(Timestamp),
+      humans: Type.Integer({ minimum: 1, maximum: 12 }),
+      ais: Type.Integer({ minimum: 0, maximum: 12 }),
+    }),
+  },
+  'queue.proposalEnded': {
+    description:
+      'A proposal the client was in will not start. requeued: the ticket is waiting again at its original position; removed: the ticket left the queue (declined or did not answer) and joining again is blocked until cooldownUntil.',
+    data: Open({
+      proposalId: Uuid,
+      ticketId: Uuid,
+      outcome: Type.Union([Type.Literal('requeued'), Type.Literal('removed')]),
+      reason: Type.Union([
+        Type.Literal('declined'),
+        Type.Literal('timeout'),
+        Type.Literal('other_declined'),
+        Type.Literal('start_failed'),
+      ]),
+      cooldownUntil: Type.Optional(Timestamp),
     }),
   },
   'queue.matchFound': {
