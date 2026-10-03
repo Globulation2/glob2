@@ -157,6 +157,11 @@ class GameGUITouch
 	StatsLayout statsLayout() const;
 	void drawStats();
 	void drawBuildPalette();
+	bool inspectingResource() const;
+	struct ResourceInfo { std::string name, amount; int sprite = 0; };
+	std::optional<ResourceInfo> resourceInfo() const;
+	GAGCore::ViewRect resourceCloseRect() const;
+	void drawResourceInfo();
 	std::vector<std::pair<std::string, int>> tacticalActions() const;
 	void drawTacticalPanel();
 	std::vector<std::string> unitInfoRows() const;

@@ -10,6 +10,7 @@
 #include "BrushCoverage.h"
 #include "GameGUI.h"
 #include "GameGUIInternal.h"
+#include "GameUtilities.h"
 #include "GlobalContainer.h"
 #include "BuildingType.h"
 #include "TeamStat.h"
@@ -139,6 +140,11 @@ void GameGUITouch::drawPanel()
 			{panel.x, panel.y, panel.w, 48 * gfx->logicalUnitsPerPoint()},
 			GAGCore::Toolkit::getStringTable()->getString("[Paint on the map; two fingers move]"),
 			.75);
+		return;
+	}
+	if (inspectingResource())
+	{
+		drawResourceInfo();
 		return;
 	}
 	if (gui.selectionMode == GameGUI::UNIT_SELECTION)
@@ -661,6 +667,54 @@ std::vector<std::pair<std::string, int>> GameGUITouch::tacticalActions() const
 	}
 	return result;
 }
+bool GameGUITouch::inspectingResource() const
+{
+	return gui.selectionMode == GameGUI::RESOURCE_SELECTION;
+}
+
+std::optional<GameGUITouch::ResourceInfo> GameGUITouch::resourceInfo() const
+{
+	if (!inspectingResource()) return {};
+	const auto &r = gui.drawnScene().map.getResource(size_t(gui.selectionResource()));
+	if (r.type == NO_RES_TYPE) return {};
+	const auto *type = globalContainer->resourcesTypes.get(r.type);
+	ResourceInfo info;
+	info.name = getResourceName(r.type);
+	info.sprite = type->gfxId + r.variety * type->sizesCount + r.amount - (type->eternal ? 0 : 1);
+	if (type->granular)
+		info.amount = std::to_string(r.amount) + "/" + std::to_string(type->sizesCount);
+	return info;
+}
+
+ViewRect GameGUITouch::resourceCloseRect() const
+{
+	const auto panel = layout().panel;
+	const double target = 48 * globalContainer->gfx->logicalUnitsPerPoint();
+	return {panel.x + panel.w - target, panel.y, target, target};
+}
+
+void GameGUITouch::drawResourceInfo()
+{
+	const auto info = resourceInfo();
+	if (!info) return;
+	auto *gfx = globalContainer->gfx;
+	const double unit = gfx->logicalUnitsPerPoint();
+	const auto panel = layout().panel;
+	drawPointLabel({panel.x + 8 * unit, panel.y, panel.w - 56 * unit, 48 * unit}, info->name, .9);
+	drawPointLabel(resourceCloseRect(), "×");
+	const ViewRect icon{panel.x + 16 * unit, panel.y + 52 * unit, 48 * unit, 48 * unit};
+	auto *sprite = globalContainer->resources;
+	const double factor = std::min(icon.w / sprite->getW(info->sprite), icon.h / sprite->getH(info->sprite));
+	SDL_Rect clip{int(panel.x), int(panel.y), int(panel.w), int(panel.h)};
+	gfx->setUITransform(factor, icon.x + (icon.w - sprite->getW(info->sprite) * factor) / 2,
+		icon.y + (icon.h - sprite->getH(info->sprite) * factor) / 2, &clip);
+	gfx->drawSprite(0, 0, sprite, info->sprite);
+	gfx->setUITransform();
+	gfx->setClipRect();
+	if (!info->amount.empty())
+		drawPointLabel({icon.x + icon.w + 8 * unit, icon.y, panel.w - 88 * unit, icon.h}, info->amount);
+}
+
 void GameGUITouch::drawTacticalPanel()
 {
 	auto *gfx = globalContainer->gfx;
