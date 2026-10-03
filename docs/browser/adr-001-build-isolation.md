@@ -23,7 +23,7 @@ directory; different identities can build concurrently.
 
 Options are explicit on each command. The emitted options record is not loaded
 by another invocation. Existing native selectors remain available, including
-`server=1`, `mingw=1`, `mingwcross=1`, and `--build=PATH`. Their default output
+`role=relay`, `mingw=1`, `mingwcross=1`, and `--build=PATH`. Their default output
 paths move under the identity directory. macOS packaging is an explicit
 `package` target rather than a side effect of compiling release objects.
 

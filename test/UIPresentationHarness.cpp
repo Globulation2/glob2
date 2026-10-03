@@ -36,16 +36,6 @@
 #include "AINames.h"
 #include "GeneratorRegistry.h"
 #include "GenerationRequest.h"
-#include "YOGClient.h"
-#include "YOGClientMapUploadScreen.h"
-#include "YOGClientLobbyScreen.h"
-#include "YOGClientMapDownloadScreen.h"
-#include "YOGClientOptionsScreen.h"
-#include "MultiplayerGame.h"
-#include "MultiplayerGameScreen.h"
-#include "SessionTabsScreen.h"
-#include "YOGLoginScreen.h"
-#include "YOGRegisterScreen.h"
 #include "FrontendTheme.h"
 #include "test/OnlineUIFixtures.h"
 #include <ui/Screen.h>
@@ -86,69 +76,8 @@ struct Fixture
 	bool navigable = true;
 };
 
-// A network session hosting one tab the harness owns.
-template <class Tab> class SessionFixture final : public SessionTabsScreen
-{
-	std::shared_ptr<YOGClient> client;
-	std::shared_ptr<MultiplayerGame> game;
-	std::unique_ptr<Tab> tab;
-	// Offline, a session tab's timer notices the missing server and leaves or
-	// pushes a "connection lost" message over the fixture; the fixture shows
-	// the tab as it looks while connected instead.
-	bool timers;
-
-  public:
-	SessionFixture(std::shared_ptr<YOGClient> client, std::shared_ptr<MultiplayerGame> game, std::unique_ptr<Tab> tab, bool timers = true)
-		: client(std::move(client)), game(std::move(game)), tab(std::move(tab)), timers(timers)
-	{
-		addTab(this->tab.get(), true);
-	}
-	~SessionFixture() override { removeTab(tab.get()); }
-	void onTimer(Uint32 tick) override
-	{
-		if (timers)
-			SessionTabsScreen::onTimer(tick);
-	}
-};
-template <class Tab, class... Args> std::unique_ptr<GAGGUI::Screen> session(Args &&...args)
-{
-	auto client = std::make_shared<YOGClient>();
-	return std::make_unique<SessionFixture<Tab>>(client, nullptr, std::make_unique<Tab>(std::forward<Args>(args)..., client), false);
-}
-
-// Like offline session tabs above, show the connected upload form without an
-// unrelated connection-loss child covering it before its first layout. The real
-// form, controls and preview still render and receive navigation events.
-class MapUploadFixture final : public YOGClientMapUploadScreen
-{
-  public:
-	using YOGClientMapUploadScreen::YOGClientMapUploadScreen;
-	void onTimer(Uint32) override {}
-};
-std::unique_ptr<GAGGUI::Screen> gameRoom(GAGGUI::ScreenStack &s)
-{
-	auto client = std::make_shared<YOGClient>();
-	auto game = std::make_shared<MultiplayerGame>(client);
-	game->createNewGame("Harness game");
-	static MapHeader mapHeader = Engine().loadMapHeader("maps/balanced.map");
-	game->setMapHeader(mapHeader);
-	return std::make_unique<SessionFixture<MultiplayerGameScreen>>(client, game, std::make_unique<MultiplayerGameScreen>(s, game, client), false);
-}
-
 // A LAN room as its host sees it, offline (no listener): the host, one AI and the
-// open seats, through the same MultiplayerGameScreen and LanRoom backend as a game.
-class LanRoomFixture final : public SessionTabsScreen
-{
-	std::shared_ptr<Lan::LanRoom> room;
-	MultiplayerGameScreen tab;
-
-  public:
-	LanRoomFixture(GAGGUI::ScreenStack &s, std::shared_ptr<Lan::LanRoom> room) : room(room), tab(s, room)
-	{
-		addTab(&tab, true);
-	}
-	~LanRoomFixture() override { removeTab(&tab); }
-};
+// open seats, through the real LanRoom backend in the Room screen.
 std::unique_ptr<GAGGUI::Screen> lanRoom(GAGGUI::ScreenStack &s)
 {
 	Lan::LanHost::Options options;
@@ -158,7 +87,7 @@ std::unique_ptr<GAGGUI::Screen> lanRoom(GAGGUI::ScreenStack &s)
 	auto room = Lan::LanRoom::host(std::move(options));
 	room->addAI(AI::NICOWAR);
 	room->update();
-	return std::make_unique<LanRoomFixture>(s, room);
+	return std::make_unique<RoomScreen>(s, room);
 }
 
 std::vector<Fixture> fixtures()
@@ -241,19 +170,7 @@ std::vector<Fixture> fixtures()
 		{"load-map", [](GAGGUI::ScreenStack &) { return std::make_unique<ChooseMapScreen>("maps", "map", true); }},
 		{"load-game", [](GAGGUI::ScreenStack &) { return std::make_unique<ChooseMapScreen>("games", "game", true, "replays", "replay", true); }},
 		{"lan-find", [](GAGGUI::ScreenStack &s) { return std::make_unique<LANFindScreen>(s); }},
-		{"online-login", [](GAGGUI::ScreenStack &s) { return std::make_unique<YOGLoginScreen>(s, std::make_shared<YOGClient>()); }},
-		{"online-register", [](GAGGUI::ScreenStack &) { return std::make_unique<YOGRegisterScreen>(std::make_shared<YOGClient>()); }},
-		{"map-upload", [](GAGGUI::ScreenStack &s) { return std::make_unique<MapUploadFixture>(s, std::make_shared<YOGClient>(), "maps/balanced.map"); }},
-		{"game-room", gameRoom},
 		{"lan-room", lanRoom},
-		{"online-lobby", [](GAGGUI::ScreenStack &s)
-		 {
-			 auto client = std::make_shared<YOGClient>();
-			 return std::make_unique<SessionFixture<YOGClientLobbyScreen>>(
-				 client, nullptr, std::make_unique<YOGClientLobbyScreen>(s, client, false), false);
-		 }},
-		{"online-maps", [](GAGGUI::ScreenStack &s) { return session<YOGClientMapDownloadScreen>(s); }},
-		{"online-options", [](GAGGUI::ScreenStack &) { return session<YOGClientOptionsScreen>(); }},
 		{"online-hub", [](GAGGUI::ScreenStack &s) { return OnlineUIFixtures::hubFixture(s); }},
 		{"online-hub-signin", [](GAGGUI::ScreenStack &s)
 		 {

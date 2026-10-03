@@ -21,8 +21,6 @@
 #include "RoomScreen.h"
 #include "SettingsScreen.h"
 #include "SimVersion.h"
-#include "YOGClient.h"
-#include "YOGLoginScreen.h"
 #include "gui/ThumbSide.h"
 #include "ui/OnlineUI.h"
 #include <ApplicationHost.h>
@@ -554,11 +552,6 @@ void OnlineHubScreen::openSettings()
 	});
 }
 
-void OnlineHubScreen::openLegacyServer()
-{
-	screens.push(std::make_unique<YOGLoginScreen>(screens, std::make_shared<YOGClient>()));
-}
-
 void OnlineHubScreen::onEscape()
 {
 	if (trustPrompt)
@@ -961,10 +954,9 @@ Element OnlineHubScreen::build(const Presentation &p)
 			return row({expanded(scroll("hub/scroll", left), 3), expanded(scroll("hub/side", right), 2)}, {ctx.presentation.pt(18), CrossAlign::Stretch});
 		});
 	std::vector<MenuAction> buttons{{"settings", tr("[hub online settings]"), [this] { openSettings(); }},
-									{"legacy", tr("[hub legacy server]"), [this] { openLegacyServer(); }},
 									{"back", tr("[Back]"), [this] { onEscape(); }, false, SDLK_ESCAPE}};
 	// The game version identifies the build; the simulation version is for Settings.
-	// Where the three buttons and the version do not share a line (a portrait tablet
+	// Where the two buttons and the version do not share a line (a portrait tablet
 	// with large text), the version goes above the buttons.
 	auto footerRow = adaptive([version = caption(instance + " · " + PACKAGE_VERSION),
 							   footerActions = actions(std::move(buttons), p, ActionStyle::Compact)](const LayoutContext &ctx, Size available) -> Element {

@@ -76,7 +76,7 @@ public:
 	}
 
 	///True if any player in this game is a live network peer (BasePlayer::P_IP,
-	///covering both YOG and LAN). Used to disable local-only controls such as
+	///online or LAN). Used to disable local-only controls such as
 	///hard-pause that would desync a networked game if one client toggled them.
 	inline bool hasNetworkPlayer() const
 	{

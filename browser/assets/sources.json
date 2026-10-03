@@ -8,7 +8,7 @@
     "source": "data/gfx/menu-wordmark.png"
   },
   "browser/assets/sans-core.ttf": {
-    "languageNames": "61dbad27698fca6577c9b31c1f37a7d927e28929d543a0205b48a68e7b3694fa",
+    "languageNames": "b245939e613b98f336890df210048f306c53da14c1873af2ea8cc13a6267829b",
     "sha256": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1",
     "source": "data/fonts/sans.ttf"
   }

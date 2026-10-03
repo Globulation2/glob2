@@ -274,7 +274,7 @@ bool OrderMoveFlag::setData(const Uint8 *data, int dataLength, Uint32 versionMin
 
 // OrderAlterArea's code
 
-#ifndef YOG_SERVER_ONLY
+#ifndef GLOB2_ORDER_CODEC_ONLY
 OrderAlterArea::OrderAlterArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map)
 {
 	assert(acc);

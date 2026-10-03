@@ -32,20 +32,6 @@ public:
 	 */
 	void setUsername(std::string);
 
-	/**
-	 * Sets the password in the Settings object.
-	 * Provided an arbitrary string the password in the settings object is set
-	 * to the given value.
-	 * @param s The new password to use.
-	 */
-	std::string getPasswd();
-
-	/**
-	 * Returns the current password held in the Settings object.
-	 * @return the currently held password.
-	 */
-	void setPasswd(std::string);
-
 
 	/**
 	 * all variables should really be private, we're working on it
@@ -53,7 +39,6 @@ public:
 	 */
 private:
 	std::string username;
-	std::string password;
 
 public:
 	int screenWidth;

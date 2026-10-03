@@ -247,7 +247,6 @@ void testSuddenDeath()
 // ---------------- Script ----------------
 void testScript()
 {
-#ifndef YOG_SERVER_ONLY
 	constexpr int N = 3;
 	for (unsigned wMask = 0; wMask < (1u << N); ++wMask)
 	{
@@ -265,9 +264,6 @@ void testScript()
 			emitWonLost("Script", wc, N);
 		}
 	}
-#else
-	emit("Script/skipped (YOG_SERVER_ONLY)\n");
-#endif
 }
 
 // ---------------- OpponentsDefeated ----------------
