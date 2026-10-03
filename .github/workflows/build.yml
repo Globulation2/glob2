@@ -594,6 +594,10 @@ jobs:
         continue-on-error: true
         # The [map-generators] contract stays on Linux, as before this runner existed.
         run: python3 test/run_tests.py --binary engine --coverage-profile ${{ needs.changes.outputs.secondary_profile }} --write-inventory artifacts/tests/engine.inventory.json --build-dir build/mingw/client/release --exclude-tag map-generators --junit artifacts/tests/engine-junit.xml
+      - name: Capture Windows native crash backtraces
+        if: ${{ !cancelled() && steps.run_the_engine_tests.outcome == 'failure' }}
+        continue-on-error: true
+        run: python3 test/windows_crash_diagnostics.py --binary build/mingw/client/release/test/glob2-engine-tests.exe --junit artifacts/tests/engine-junit.xml --output artifacts/tests/crash-diagnostics
       - name: Upload native test results
         if: always()
         continue-on-error: true
