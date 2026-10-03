@@ -20,20 +20,29 @@ class PlatformScope;
 }
 class MapPreview;
 
-// Quick match (multiplayer mock-ups, screen group 3): the queue cards, and
-// while searching the search panel with the timer, rating window, relay
-// region and the AI backfill countdown with "Allow an AI opponent".
+// Quick match (multiplayer mock-ups, screen group 3): the search panel with
+// the timer, rating window, relay region and the AI backfill countdown with
+// "Allow an AI opponent".
 //
-// The hub embeds the same section (quickMatchSection); this screen shows it
-// on its own. The search itself lives in Online::quickMatch(), so it keeps
-// running while the player opens Profile or Maps, and the match-found prompt
+// The Online hub owns the queue cards and pushes this screen when a search
+// starts; it closes again (back to the hub) when the search ends or hands off
+// to a match, so the results lead back to the hub, not to a second Online
+// screen. The search itself lives in Online::quickMatch(), so it keeps running
+// while the player opens Profile or Maps from here, and the match-found prompt
 // appears over whichever screen is in front (QuickMatchPresenter).
 class QuickMatchScreen : public Glob2UI::Screen
 {
   public:
 	enum
 	{
-		BACK = 1
+		BACK = 1,
+		// The search handed off to a match; the hub starts it (handOff()).
+		MATCH_STARTED = 2,
+		// The search ended without a match (declined, timed out, cancelled
+		// elsewhere); noticeText() says why.
+		SEARCH_ENDED = 3,
+		// The account chip: the hub opens sign-in (guests) or the account menu.
+		ACCOUNT = 4
 	};
 	// The live screen on the shared search and the selected instance.
 	explicit QuickMatchScreen(GAGGUI::ScreenStack &screens);
@@ -49,6 +58,13 @@ class QuickMatchScreen : public Glob2UI::Screen
 	void cancelSearch();
 	void setAllowAi(bool allow);
 	void back();
+	// Closes without cancelling: the search has become a match.
+	void handOff();
+	void openProfile();
+	void openMaps();
+	void openAccount();
+	// The toast for the model's current notice; empty for none.
+	static std::string noticeText(const Online::QuickMatch &model);
 
   protected:
 	void onEscape() override;
@@ -68,6 +84,8 @@ class QuickMatchScreen : public Glob2UI::Screen
 	std::uint64_t seen = 0;
 	int shownSecond = -1;
 	Uint32 lastLoad = 0;
+	// A live search has run on this screen; once it ends the screen closes.
+	bool searched = false;
 	// This screen's platform calls, cancelled when it closes.
 	std::unique_ptr<Online::PlatformScope> calls;
 };

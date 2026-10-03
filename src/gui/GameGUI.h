@@ -308,6 +308,24 @@ public:
 	} networkMatch;
 	/// A one-line notice in the message list (connection changes).
 	void addNotice(const std::string &text);
+	/// Pausing in network matches. Queue matches limit pauses per seat; the turn
+	/// session enforces it deterministically (TurnLockstepSession::setPauseLimit).
+	/// This is what the menus and the Paused label show of it. Presentation only.
+	struct PauseState
+	{
+		bool limited = false;
+		int pausesLeft = -1;  ///< this player's, when limited
+		int secondsLeft = -1; ///< this player's pause time left, when limited
+		int pausedBy = -1;    ///< the player whose pause is running, or -1
+		int pauserSecondsLeft = -1; ///< their pause time left, when limited
+	};
+	/// Set by the engine for turn games; empty elsewhere (pausing is unlimited).
+	std::function<PauseState()> pauseState;
+	/// The pause (or resume) the player asked for; a pause they have none left of
+	/// is not sent, and says so.
+	void requestPause(bool pause);
+	/// Whether the menus offer Pause to this player now.
+	bool pauseAvailable() const;
 private:
 	friend class GameGUISelectionHarness;
 	friend class SavegameSafetyHarness;
@@ -681,7 +699,7 @@ private:
 	std::string defaultGameSaveName;
 
 	bool hasEndOfGameDialogBeenShown;
-	
+
 	GameGUIMessageManager messageManager;
 	std::unique_ptr<InGameScrollableHistory> scrollableText;
 

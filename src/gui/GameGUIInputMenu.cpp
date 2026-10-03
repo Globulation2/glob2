@@ -5,6 +5,7 @@
 #include <stdio.h>
 
 #include <BinaryStream.h>
+#include <FormatableString.h>
 #include <FileManager.h>
 #include <Stream.h>
 #include <StringTable.h>
@@ -53,6 +54,21 @@ void GameGUI::openMainMenu()
 {
 	auto menu = std::make_unique<InGameMainScreen>(globalContainer->replaying, !globalContainer->isViewingGame(), gamePaused);
 	menu->setNetworked(networkMatch.active);
+	if (networkMatch.active)
+	{
+		auto &strings = *Toolkit::getStringTable();
+		const PauseState state = pauseState ? pauseState() : PauseState();
+		std::string label;
+		if (gamePaused)
+			label = strings.getString("[resume game]");
+		else if (!state.limited)
+			label = strings.getString("[pause game]");
+		else if (pauseAvailable())
+			label = GAGCore::FormattableString(strings.getString("[pause game left %0]")).arg(state.pausesLeft);
+		else
+			label = strings.getString("[pause none left]");
+		menu->setPauseOffer(label, pauseAvailable());
+	}
 	openDialog(IGM_MAIN, std::move(menu));
 }
 
@@ -155,7 +171,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					if (globalContainer->replaying)
 						gamePaused = !gamePaused;
 					else if (!globalContainer->isViewingGame())
-						orderQueue.push_back(std::make_shared<PauseGameOrder>(!gamePaused));
+						requestPause(!gamePaused);
 					return true;
 				}
 				case InGameMainScreen::RETURN_GAME:

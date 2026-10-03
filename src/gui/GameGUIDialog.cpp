@@ -41,6 +41,7 @@ Element InGameMainScreen::build(const Presentation &p)
 	const std::string quitLabel = fe::tr(replay ? "[quit the replay]" : networked ? "[leave match]" : "[quit the game]");
 	// A networked match cannot be loaded over or saved: the relay owns its turns.
 	const bool files = !networked;
+	const std::string pauseText = !pauseLabel.empty() ? pauseLabel : fe::tr(paused ? "[resume game]" : "[pause game]");
 	if (classic())
 	{
 		// The classic desktop menu: a column of gold buttons, Return last.
@@ -50,17 +51,23 @@ Element InGameMainScreen::build(const Presentation &p)
 		if (files && !replay && canSave)
 			buttons.push_back(classicButton("save", fe::tr("[save game]"), [this] { finish(SAVE_GAME); }));
 		buttons.push_back(classicButton("options", fe::tr("[Options]"), [this] { finish(OPTIONS); }));
+		// Single player pauses with its key; a network match shows the rule here
+		// too, as the touch sheet does.
+		if (networked)
+			buttons.push_back(classicButton("pause", pauseText, [this] { finish(PAUSE_GAME); }, SDLK_UNKNOWN, pauseEnabled));
 		buttons.push_back(classicButton("quit", quitLabel, [this] { finish(QUIT_GAME); }));
 		buttons.push_back(classicButton("return", returnLabel, [this] { finish(RETURN_GAME); }, SDLK_ESCAPE));
 		return fe::column(std::move(buttons), {p.pt(10)});
 	}
 	// The touch sheet: titled, Return highlighted at the bottom.
-	auto item = [&](const char *key, const std::string &label, int code, bool selected = false, SDL_Keycode shortcut = SDLK_UNKNOWN)
+	auto item = [&](const char *key, const std::string &label, int code, bool selected = false, SDL_Keycode shortcut = SDLK_UNKNOWN,
+					bool enabled = true)
 	{
 		fe::ButtonOptions options;
 		options.selected = selected;
 		options.shortcut = shortcut;
 		options.minHeight = 44;
+		options.enabled = enabled;
 		return fe::button(key, label, [this, code] { finish(code); }, options);
 	};
 	std::vector<Element> buttons;
@@ -70,7 +77,7 @@ Element InGameMainScreen::build(const Presentation &p)
 		buttons.push_back(item("load", loadLabel, LOAD_GAME));
 	buttons.push_back(item("options", fe::tr("[Options]"), OPTIONS));
 	buttons.push_back(item("quit", quitLabel, QUIT_GAME));
-	buttons.push_back(item("pause", fe::tr(paused ? "[resume game]" : "[pause game]"), PAUSE_GAME));
+	buttons.push_back(item("pause", pauseText, PAUSE_GAME, false, SDLK_UNKNOWN, pauseEnabled));
 	// Return stays pinned below the list so it is always in reach.
 	return fe::column({fe::paragraph(fe::tr("[Menu]"), {fe::FontRole::Heading, false, fe::TextAlign::Center}),
 					   fe::footer(fe::scroll("menu/scroll", fe::column(std::move(buttons), {p.pt(8)})),

@@ -4698,6 +4698,24 @@ Kortets fart
 
 [conn card not gaining]
 
+[results reason opponents left]
+
+[results reason victory]
+
+[results reason defeat]
+
+[results reason you left]
+
+[results final after end]
+
+[pause none left]
+
+[pause game left %0]
+
+[pause by %0]
+
+[pause by %0 resumes in %1]
+
 [turn too many actions]
 
 [turn no pauses left]

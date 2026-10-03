@@ -33,6 +33,15 @@ body.ready #loading{opacity:0;pointer-events:none}
 #loading-note{max-width:min(360px,calc(100vw - 32px));margin:0;font-size:13px;line-height:1.45;color:#aeb79a}
 #loading-retry{font:600 15px system-ui,sans-serif;padding:10px 22px;min-height:44px;border:0;border-radius:6px;
   background:#e4c969;color:#173226;cursor:pointer}
+#open-link{position:fixed;z-index:3;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translateX(-50%);
+  box-sizing:border-box;width:max-content;max-width:calc(100vw - 32px);display:flex;align-items:center;gap:12px;padding:10px 10px 10px 16px;
+  border:1px solid #657363;border-radius:8px;background:#e8edcf;color:#173226;font:15px/1.35 system-ui,sans-serif;
+  box-shadow:0 6px 24px rgba(0,0,0,.45)}
+#open-link[hidden]{display:none}
+#open-link a{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:6px;background:#173226;color:#f2df94;
+  font-weight:600;text-decoration:none;white-space:nowrap}
+#open-link a:focus-visible,#open-link button:focus-visible{outline:3px solid #b28f41;outline-offset:2px}
+#open-link button{min-width:44px;min-height:44px;border:0;border-radius:6px;background:transparent;color:#173226;font:600 20px system-ui;cursor:pointer}
 @keyframes spin{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){.loader{animation:none;border-color:#e4c969}canvas,#loading,#loading-bar>span{transition:none}}
 </style>
@@ -49,6 +58,7 @@ body.ready #loading{opacity:0;pointer-events:none}
   <p id="loading-note" hidden>The first visit downloads the game once. Later visits start from this device's copy.</p>
 </div>
 <canvas id="canvas" width="800" height="600" tabindex="0" aria-label="Globulation 2" oncontextmenu="event.preventDefault()"></canvas>
+<div id="open-link" role="alert" hidden><span id="open-link-text"></span><a id="open-link-anchor" target="_blank" rel="noopener"></a><button type="button" id="open-link-close" aria-label="Close">×</button></div>
 <script>
 const canvas = document.getElementById('canvas');
 const loading = document.getElementById('loading');
@@ -405,6 +415,7 @@ Object.defineProperty(window, 'glob2Diagnostics', {value: Object.freeze({
       persistence:Module.storage?.state || 'restoring',
       audio:Module.SDL3?.audioContext?.state || 'inactive',
       assets:Module.glob2Assets?.state() || {},
+      opened:(Module.glob2Opened || []).map(entry => ({...entry})),
       controls:controls()});
   },
   saves() {
@@ -498,6 +509,36 @@ Module.textBridge = (() => {
       element.style.fontSize=Math.max(16,16*Math.min(sx,sy))+'px';
       element.style.clipPath=`inset(${Math.max(0,clip.y-rect.y)*sy}px ${Math.max(0,rect.x+rect.w-clip.x-clip.w)*sx}px ${Math.max(0,rect.y+rect.h-clip.y-clip.h)*sy}px ${Math.max(0,clip.x-rect.x)*sx}px)`;
     }
+  };
+})();
+// The game's "open a web page" buttons (sign in, leaderboard, match and map pages)
+// call this on the page's thread while their click still grants transient
+// activation. A browser that refuses the new tab anyway (Safari counts only the
+// DOM event itself as the gesture) gets a real link here, which the player taps.
+// Returns 1 when a tab opened, 2 when the link is offered instead.
+Module.glob2OpenUrl = (() => {
+  const card = document.getElementById('open-link');
+  const anchor = document.getElementById('open-link-anchor');
+  const hide = () => { card.hidden = true; };
+  anchor.addEventListener('click', () => { setTimeout(hide); Module.glob2Opened.push({url:anchor.href, via:'link'}); });
+  document.getElementById('open-link-close').addEventListener('click', () => { hide(); canvas.focus(); });
+  Module.glob2Opened = [];
+  return url => {
+    let opened = null;
+    try { opened = window.open(url, '_blank'); } catch (_) {}
+    if (opened) {
+      try { opened.opener = null; } catch (_) {}
+      hide();
+      Module.glob2Opened.push({url, via:'tab'});
+      return 1;
+    }
+    const target = new URL(url);
+    anchor.href = target.href;
+    anchor.textContent = 'Open ' + target.host + (target.pathname === '/' ? '' : target.pathname) + ' ↗';
+    document.getElementById('open-link-text').textContent = 'The browser kept the page from opening.';
+    card.hidden = false;
+    Module.glob2Opened.push({url, via:'offered'});
+    return 2;
   };
 })();
 const safeAreaProbe = document.createElement('div');

@@ -86,9 +86,15 @@ after that attempt finishes, with or without an account.
 `beginBrowserSignIn` asks for an attempt, keeps the resume token in memory only
 and opens the instance's sign-in page (never a page on another origin) through
 `GAGCore::ApplicationHost::openUrl`: `SDL_OpenURL` natively, `window.open` in
-the browser. Browsers allow `window.open` reliably only inside a click handler,
-so a web hub shows the code with an "Open sign-in page" button calling
-`openSignInPage()` when `browserOpened` is false. After a reconnect the client
+the browser. In the browser `openUrl` and `copyText` run on the page's thread
+(`MAIN_THREAD_EM_ASM`): the threaded runtime's application worker has no
+`window`, `document` or clipboard. They run synchronously, while the click
+still grants transient activation; a browser that refuses the new tab anyway
+(Safari counts only the DOM event itself) gets a real link at the bottom of
+the page (`glob2OpenUrl` in `browser/shell.html`), which the player taps.
+`glob2Diagnostics.snapshot().opened` lists what opened and how
+(`browser/tests/online-links.spec.js`). The hub also keeps an "Open page
+again" button calling `openSignInPage()`. After a reconnect the client
 sends `auth.handoff.resume`, so a phone that lost its socket while the browser
 was in front still receives `auth.handoff.completed`. Without a result the
 attempt fails locally as `expired` one minute after its expiry.
@@ -102,7 +108,7 @@ also offer **Share online…**.
 
 | Screen | File | What it does |
 | --- | --- | --- |
-| Quick match | `src/QuickMatchScreen.cpp` | Queue cards from `InstanceInfo.queues`; while searching, the timer, the opponent rating range, the relay region and round trip, the AI backfill countdown with the AI that would play and **Allow an AI opponent** (on by default). |
+| Quick match | `src/QuickMatchScreen.cpp` | The running search (the hub owns the queue cards): the timer, the opponent rating range, the relay region and round trip, the AI backfill countdown with the AI that would play and **Allow an AI opponent** (on by default), with Profile and Maps over the running search. It closes, back to the hub, when the search ends (the hub shows why) or becomes a match, so the match's results return to the hub; Back to online cancels the search, and the account chip opens sign-in or the account menu on the hub. |
 | Match found | `src/QuickMatchScreen.cpp` | Ranked queues: both players accept within the countdown, each player's answer shown live. AI-backfilled and casual matches: who you play, then a 3-second start countdown. |
 | Profile | `src/OnlineProfileScreen.cpp` | Rating of each queue with its trend and provisional flag, win rate, typical game length and best map over recent games, the match list (filters All, Ranked, Rooms, vs AI) with Replay and the match page. |
 | Maps | `src/OnlineMapsScreen.cpp` | Browse (search, size, colonies, sort, detail with the server preview, Use in a room, Like, map page, Report) and My maps (upload, checking, rejected with the reason, visibility, update, delete). |
@@ -215,8 +221,8 @@ mock-ups:
 | Online hub | `src/OnlineHubScreen.*` | "Play online" on the main menu. Starts the client (a guest is created on first contact), account chip with browser sign-in and the confirmation code, quick-match cards from `InstanceInfo.queues`, Create room, Join by code, public rooms (`GET /api/v1/rooms`), recent matches (`GET /api/v1/players/{id}/matches`, with `match.updated` summaries seen since merged over them; hidden when empty), Profile & history and Maps (the profile and map-catalog screens), a leaderboard teaser (top five of the first rated queue, `GET /api/v1/leaderboards/{queue}`), offline and update-required banners, and invite links (`takePendingJoin`) with the trust prompt for other instances. The legacy YOG lobby is reachable only through its "Legacy server" footer link until the cutover. |
 | Room | `src/RoomScreen.*` over `RoomBackend` | One screen for online rooms (`Online::PlatformRoom`) and LAN rooms (`Lan::LanRoom`): Map / Players & Teams / Game Rules tabs, seats with controller, team and remove, invite (or how to join on the network), chat and ready. Phones get a Seats / Map / Rules / Chat bar and Start or Ready in the thumb corner, mirrored by the thumb-side setting. The host edits map and rules with the custom-game screen in room mode (`CustomGameScreen::useForRoom`); the server generates a random map from the generator descriptor (`src/online/RoomSetup.*`), and a premade or own map is uploaded and played as `{kind: "upload"}`. Members without a seat are listed under the seats, and Ready says why it is unavailable. |
 | Starting match | `src/MatchStartScreen.*`, `src/online/OnlineMatch.*` | From `match.start` to the first tick: seat confirmed, map download by hash, engine load, relay connection (`Online::RelayTransport`), waiting for the other players' presence. A relay that refuses the match as new (Reject 5) is reported with `match.reconnect {relayUnavailable: true}` and the new assignment restarts the flow. |
-| In-game connection HUD | `src/gui/ConnectionOverlay.*` | Every turn game (online and LAN) shows a permanent panel with each player's state and latency where the "waiting for players" notice was, details on click or tap, one-line notices when a player drops or returns, and centre cards for this client's reconnect (with the grace time and Leave match), catch-up progress (with Leave match, and "can't keep up" once the gap has not shrunk for 15 s) and desync rejoin. In every turn game the in-game menu has no Load or Save, and Leave match asks for confirmation, saying what leaving costs. Presentation only: it reads `Engine::turnConnectionSnapshot()`. Rows show each player's Ping (the relay's round trip to them, `SeatLatency`) or, once they fall a second behind, how far Behind they are (`Presence.lagTicks`); the footer shows your own Delay. Names, units, words and thresholds are in [connection quality](connection-quality.md). |
-| Results | `src/EndGameScreen.*` | Online matches add the outcome banner and the rating card, which `match.updated` updates live and `GET /api/v1/matches/{id}` re-reads every 10 s while it is open. The card says where the result is: waiting for the other players to leave (the match still runs on the relay), recording or verifying (it ended; the verifier replays it), then verified, unverifiable, unrated room match or draw; after 45 s of waiting or 60 s of verifying it says that it is taking longer and that the result will appear in the history. A link opens `<origin>/matches/<id>`. Room matches return to the room; quick matches offer **Rematch** (`Online::requestRematch` → `match.rematch`, an unrated room with the same players; it reads "Join X's rematch" after `match.rematchOffered`). |
+| In-game connection HUD | `src/gui/ConnectionOverlay.*` | Every turn game (online and LAN) shows a permanent panel with each player's state and latency where the "waiting for players" notice was, details on click or tap, one-line notices when a player drops or returns, and centre cards for this client's reconnect (with the grace time and Leave match), catch-up progress (with Leave match, and "can't keep up" once the gap has not shrunk for 15 s) and desync rejoin. The reconnect card also shows when the socket still looks open but nothing has arrived from the relay for 1.5 s, or the horizon has not moved for 1.5 s (`TurnSession::linkStalled()`); after 5 s of silence the session drops the link and reconnects. After a gap or a reconnect the delay estimate starts over: in-flight pings, jitter samples, the buffer target and seat round trips are forgotten, and the backlog's arrival spread is ignored for a second. A player who left stays in the panel as Left; the message list starts below the panel. In every turn game the in-game menu has no Load or Save, and Leave match asks for confirmation, saying what leaving costs. Presentation only: it reads `Engine::turnConnectionSnapshot()`. Rows show each player's Ping (the relay's round trip to them, `SeatLatency`) or, once they fall a second behind, how far Behind they are (`Presence.lagTicks`); the footer shows your own Delay. Names, units, words and thresholds are in [connection quality](connection-quality.md). |
+| Results | `src/EndGameScreen.*` | A turn match this colony wins goes straight here (not to the classic "You have won!" dialog). Online matches add the outcome banner, with the reason (the opponent who left, the prestige goal, the fight; `EndGameScreen::describe`), and the rating card, which `match.updated` updates live and `GET /api/v1/matches/{id}` re-reads every 10 s while it is open. The card says where the result is: waiting for the other players to leave (the match still runs on the relay), recording or verifying (it ended; the verifier replays it), then verified, unverifiable, unrated room match or draw; after 45 s of waiting or 60 s of verifying it says that it is taking longer and that the result will appear in the history. Whoever left sees Defeat ("You left the match. It counts as a loss.") at once with "Final result after the match ends" instead of waiting for the others. A link opens `<origin>/matches/<id>`. Room matches return to the room; quick matches offer **Rematch** (`Online::requestRematch` → `match.rematch`, an unrated room with the same players; it reads "Join X's rematch" after `match.rematchOffered`). |
 | Settings › Online | `src/SettingsScreenOnline.cpp` | See above. |
 
 Quick-match cards start the shared search (`Online::quickMatch()`) and open
@@ -230,6 +236,14 @@ room".
 `MatchAssignment` carries `mapTitle` and, for rated queue matches,
 `ratingPreview {ladder, before, ifWon, ifLost, provisional}` for the greyed
 "1528 → 1543?" before verification.
+
+**Pausing.** Rooms and LAN games pause freely; queue matches carry a
+[pause limit](turn-protocol.md#pause-limit) that the turn session enforces.
+`GameGUI::pauseState` shows it: the menu (the touch sheet and, in network
+matches, the desktop menu too) offers "Pause game (N left)", or a disabled "No
+pauses left"; a pause the player has none left of is not sent. The Paused label
+names who paused and, under a limit, when the game resumes by itself, and sits
+above the phone HUD's action bar on a dark backing.
 
 Leaving a match sends `Quit` to the relay; the connection stays open after the
 game's session is gone until it is written (at most 3 s, and the shutdown screen

@@ -338,8 +338,9 @@ Element RoomScreen::header(const Presentation &p, bool phone)
 	if (room->canChangeVisibility())
 	{
 		cells.push_back(caption(tr("[room who can find it]")));
-		cells.push_back(segments("visibility", {tr("[room public]"), tr("[room invite only]")}, room->listed() ? 0 : 1,
-								 [this](int v) { room->setListed(v == 0); invalidate(); }));
+		// Wide enough for "Invite only" on one line.
+		cells.push_back(width(p.textPt(230), segments("visibility", {tr("[room public]"), tr("[room invite only]")}, room->listed() ? 0 : 1,
+														[this](int v) { room->setListed(v == 0); invalidate(); })));
 	}
 	else
 		cells.push_back(caption(badge));
@@ -792,7 +793,22 @@ Element RoomScreen::build(const Presentation &p)
 			if (item.tab == ChatTab && unread > 0)
 				text += " " + std::to_string(unread);
 			const int target = item.tab;
-			bar.push_back(expanded(button("bar/" + std::to_string(item.tab), text, [this, target] { selectTab(target); }, options)));
+			auto tabButton = button("bar/" + std::to_string(item.tab), text, [this, target] { selectTab(target); }, options);
+			bar.push_back(p.landscape() ? tabButton : expanded(tabButton));
+		}
+		// Landscape phones are short: the tabs and actions form a rail at the thumb
+		// side, scrolling if large text needs it, beside the full-height content.
+		if (p.landscape())
+		{
+			bottom.push_back(wrap(std::move(bar), {p.pt(4), p.pt(100), 2}));
+			bottom.push_back(primaryActions(p, true));
+			Element rail = width(p.pt(250), scroll("room/rail", column(std::move(bottom), {p.pt(6)})));
+			Element main = column({header(p, true), expanded(body)}, {p.pt(8)});
+			auto page = ThumbSide::left() ? row({rail, expanded(main)}, {p.pt(10), CrossAlign::Stretch})
+										  : row({expanded(main), rail}, {p.pt(10), CrossAlign::Stretch});
+			CardOptions options;
+			options.padding = p.pt(10);
+			return padding({p.pt(4), p.pt(4), p.pt(4), p.pt(4)}, card(page, options));
 		}
 		bottom.push_back(row(std::move(bar), {p.pt(4)}));
 		bottom.push_back(primaryActions(p, true));
@@ -805,10 +821,15 @@ Element RoomScreen::build(const Presentation &p)
 	Element content = currentTab == MapTab ? mapPanel(p, false) : currentTab == RulesTab ? rulesPanel(p) : seats(p, false);
 	auto left = column({tabs(p), expanded(scroll("room/tab/" + std::to_string(currentTab), content))}, {p.pt(10)});
 	auto right = column({invite(p, false), expanded(chatPanel(p, false))}, {p.pt(10)});
-	auto body = adaptive([left, right](const LayoutContext &ctx, Size available) -> Element {
+	// Stacked under the seats the side has little height: it scrolls, with the chat
+	// at a fixed height, rather than squeezing the chat's input.
+	auto stackedRight = scroll("room/side", column({invite(p, false), constrained({0, p.pt(240), Constraints::Unbounded, p.pt(240)}, chatPanel(p, false))}, {p.pt(10)}));
+	auto body = adaptive([left, right, stackedRight](const LayoutContext &ctx, Size available) -> Element {
 		if (available.w < ctx.presentation.pt(820))
-			return column({expanded(left, 3), expanded(right, 2)}, {ctx.presentation.pt(10)});
-		return row({expanded(left, 3), expanded(right, 2)}, {ctx.presentation.pt(16), CrossAlign::Stretch});
+			return column({expanded(left, 3), expanded(stackedRight, 2)}, {ctx.presentation.pt(10)});
+		// Short windows (a landscape tablet with large text) scroll the side too.
+		return row({expanded(left, 3), expanded(available.h < ctx.presentation.pt(560) ? stackedRight : right, 2)},
+				   {ctx.presentation.pt(16), CrossAlign::Stretch});
 	});
 	std::vector<Element> status{caption(room->setupSummary())};
 	if (!waiting.empty())

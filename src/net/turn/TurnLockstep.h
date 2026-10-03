@@ -82,6 +82,10 @@ namespace Turn
 		/// Pauses started and ticks paused by a seat so far (diagnostics, tests).
 		std::uint32_t pausesUsed(int seat) const { return seat >= 0 && seat < 32 ? pauses.count[seat] : 0; }
 		std::uint32_t pauseTicksUsed(int seat) const { return seat >= 0 && seat < 32 ? pauses.ticks[seat] : 0; }
+		/// The match's pause limit, if it has one (presentation: the menu and label).
+		const std::optional<PauseLimit>& currentPauseLimit() const { return pauseLimit; }
+		/// The seat whose pause is running, or -1.
+		int pausedBy() const { return pauses.paused ? pauses.by : -1; }
 		/// Presentation hook for the pause limit, with the seat concerned.
 		std::function<void(PauseNotice, int seat)> onPauseNotice;
 		/// Test hook: may replace the order retrieveOrder returns, after the check (a

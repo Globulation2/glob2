@@ -120,6 +120,9 @@ class ConnectionOverlay
 	/// Clicks and taps on the panel, the details and the cards; true when consumed.
 	bool handle(const SDL_Event &event);
 	bool detailsOpen() const { return details; }
+	/// Where the panel was last drawn (drawable pixels; empty before the first
+	/// frame), so the message list starts below it instead of under its header.
+	SDL_Rect panelBounds() const { return panelRect; }
 	void openDetails(bool open) { details = open; }
 	/// The last snapshot drawn (harness).
 	const ConnectionSnapshot &last() const { return snapshot; }

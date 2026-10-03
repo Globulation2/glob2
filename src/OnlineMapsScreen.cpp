@@ -766,12 +766,12 @@ Element OnlineMapsScreen::build(const Presentation &p)
 	panel.note = tab == Tab::Browse
 					 ? std::string(FormattableString(tr("[maps browse note %0]")).arg(originHost(data.instance)))
 					 : tr("[maps visibility note]");
-	panel.actions = {{"back", tr("[goto main menu]"), [this] { endExecute(BACK); }, false, SDLK_ESCAPE}};
+	panel.actions = {{"back", tr("[results back to online]"), [this] { endExecute(BACK); }, false, SDLK_ESCAPE}};
 	if (phone)
 	{
 		ButtonOptions backOptions;
 		backOptions.icon = uiIcon(UIIcon::Back);
-		backOptions.accessibleLabel = tr("[goto main menu]");
+		backOptions.accessibleLabel = tr("[results back to online]");
 		backOptions.shortcut = SDLK_ESCAPE;
 		Element backButton = width(p.pt(56), button("back", "", [this] { onEscape(); }, backOptions));
 		if (tab == Tab::Mine)

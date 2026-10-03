@@ -33,6 +33,13 @@ class InGameMainScreen : public Glob2UI::InGameDialog
 	/// A networked (turn-protocol) game: no Load or Save, and "Leave match" instead
 	/// of "Quit the game".
 	void setNetworked(bool value) { networked = value; }
+	/// Network matches: what the Pause item says and whether it can be used (a
+	/// queue match's pause limit, TurnLockstepSession). Pause shows on both looks there.
+	void setPauseOffer(std::string label, bool enabled)
+	{
+		pauseLabel = std::move(label);
+		pauseEnabled = enabled;
+	}
 
   protected:
 	void onEscape() override { finish(RETURN_GAME); }
@@ -41,6 +48,8 @@ class InGameMainScreen : public Glob2UI::InGameDialog
   private:
 	bool replay, canSave, paused;
 	bool networked = false;
+	std::string pauseLabel;
+	bool pauseEnabled = true;
 };
 
 /// A yes/no question over the game ("Leave match?"), Cancel on Escape.
