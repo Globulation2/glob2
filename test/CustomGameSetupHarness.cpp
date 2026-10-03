@@ -225,6 +225,7 @@ struct CustomGameSetupHarness
 			}
 			CustomGamePreferences fromOld;
 			REQUIRE((fromOld.decode(old) && fromOld.landscapeSortOrder == (version == 1 ? 0 : 1)));
+			REQUIRE(fromOld.setup.winProbabilityPermille == 0);
 			REQUIRE(fromOld.setup.premadeMap == original.setup.premadeMap);
 			REQUIRE(fromOld.setup.colonies[3].aiLibraryId.empty());
 			REQUIRE((fromOld.setup.unitUpgradesDisabled == (version >= 3) &&

@@ -139,7 +139,7 @@ TEST_CASE("Team-capacity change rejects released replays and enforces acceptance
 	ReplayReader released;
 	CHECK_FALSE(
 		released.loadReplay(glob2test::inflated("javascript/released-v123.replay.gz").string()));
-	const Uint16 versions[] = {122, 123, 124, 125, 126, 127, 128, VERSION_MINOR, VERSION_MINOR + 1};
+	const Uint16 versions[] = {122, 123, 124, 125, 126, 127, 128, FILE_FORMAT_VERSION_CUSTOM_AI, FILE_FORMAT_VERSION_FARM_AREA, VERSION_MINOR, VERSION_MINOR + 1};
 	for (Uint16 version : versions)
 	{
 		CAPTURE(version);
