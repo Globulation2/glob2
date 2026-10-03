@@ -48,7 +48,6 @@
 #include "YOGRegisterScreen.h"
 #include "FrontendTheme.h"
 #include "test/OnlineUIFixtures.h"
-#include "../tools/OnlineScreenFixtures.h"
 #include <ui/Screen.h>
 #include <HostViewport.h>
 #include <ScreenStack.h>
@@ -318,18 +317,18 @@ std::vector<Fixture> fixtures()
 			 return settings;
 		 }},
 		// Online screens (quick match, profile, maps) on canned data.
-		{"quick-match", [](GAGGUI::ScreenStack &s) { return OnlineScreenFixtures::quickMatch(s, false); }},
-		{"quick-match-searching", [](GAGGUI::ScreenStack &s) { return OnlineScreenFixtures::quickMatch(s, true); }},
-		{"match-found", [](GAGGUI::ScreenStack &) { return OnlineScreenFixtures::matchFound(true); }},
-		{"match-found-ai", [](GAGGUI::ScreenStack &) { return OnlineScreenFixtures::matchFound(false); }},
-		{"online-profile", [](GAGGUI::ScreenStack &s) { return OnlineScreenFixtures::profile(s); }},
+		{"quick-match", [](GAGGUI::ScreenStack &s) { return OnlineUIFixtures::quickMatch(s, false); }},
+		{"quick-match-searching", [](GAGGUI::ScreenStack &s) { return OnlineUIFixtures::quickMatch(s, true); }},
+		{"match-found", [](GAGGUI::ScreenStack &) { return OnlineUIFixtures::matchFound(true); }},
+		{"match-found-ai", [](GAGGUI::ScreenStack &) { return OnlineUIFixtures::matchFound(false); }},
+		{"online-profile", [](GAGGUI::ScreenStack &s) { return OnlineUIFixtures::profile(s); }},
 		{"online-maps", [](GAGGUI::ScreenStack &s)
-		 { return OnlineScreenFixtures::maps(s, OnlineMapsScreen::Tab::Browse, glob2test::sourceRoot().string() + "/"); }},
+		 { return OnlineUIFixtures::maps(s, OnlineMapsScreen::Tab::Browse, glob2test::sourceRoot().string() + "/"); }},
 		{"online-my-maps", [](GAGGUI::ScreenStack &s)
-		 { return OnlineScreenFixtures::maps(s, OnlineMapsScreen::Tab::Mine, glob2test::sourceRoot().string() + "/"); }},
-		{"map-share", [](GAGGUI::ScreenStack &) { return OnlineScreenFixtures::share(0); }},
-		{"map-share-checking", [](GAGGUI::ScreenStack &) { return OnlineScreenFixtures::share(1); }},
-		{"map-share-rejected", [](GAGGUI::ScreenStack &) { return OnlineScreenFixtures::share(2); }},
+		 { return OnlineUIFixtures::maps(s, OnlineMapsScreen::Tab::Mine, glob2test::sourceRoot().string() + "/"); }},
+		{"map-share", [](GAGGUI::ScreenStack &) { return OnlineUIFixtures::share(0); }},
+		{"map-share-checking", [](GAGGUI::ScreenStack &) { return OnlineUIFixtures::share(1); }},
+		{"map-share-rejected", [](GAGGUI::ScreenStack &) { return OnlineUIFixtures::share(2); }},
 		{"setup-options", [](GAGGUI::ScreenStack &)
 		 {
 			 static MapHeader mapHeader = Engine().loadMapHeader("maps/balanced.map");

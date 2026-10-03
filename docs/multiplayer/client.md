@@ -335,7 +335,7 @@ process that never initialized the Toolkit file system (some unit tests) reports
   declines with a cooldown, cancelling at every step, the share flow, catalog
   queries, hand-offs, and parsing of every protocol fixture the screens read.
 - The `UIPresentation` suite and the mobile gallery capture every online
-  screen state from canned data (`tools/OnlineScreenFixtures.h`).
+  screen state from canned data (`test/OnlineUIFixtures.h`).
 
 - `glob2-unit-tests` (`test/online/`): envelope codec, timestamps, token
   lifetimes and refresh scheduling, backoff, SHA-256 vectors, origin

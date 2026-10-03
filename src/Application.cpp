@@ -8,9 +8,6 @@
 #include "MusicTrack.h"
 #include "SoundMixer.h"
 #include "MainMenuScreen.h"
-#include "OnlineMapsScreen.h"
-#include "OnlineProfileScreen.h"
-#include "QuickMatchScreen.h"
 #include "MessageScreen.h"
 #include "CampaignMainMenu.h"
 #include "CampaignMenuScreen.h"
@@ -129,29 +126,7 @@ Application::Application()
 	else if (globalContainer->replaying)
 		singlePlayer.replay(globalContainer->replayFileName);
 	else
-	{
 		mainMenu();
-		openOnlineScreenForDevelopment();
-	}
-}
-
-// GLOB2_ONLINE_SCREEN=quick-match|profile|maps opens that online screen over
-// the main menu, for development and checks against an instance before the
-// online hub links to it.
-void Application::openOnlineScreenForDevelopment()
-{
-	const char *which = SDL_getenv("GLOB2_ONLINE_SCREEN");
-	if (!which || !*which)
-		return;
-	const std::string name = which;
-	if (name == "quick-match")
-		screens.push(std::make_unique<QuickMatchScreen>(screens));
-	else if (name == "profile")
-		screens.push(std::make_unique<OnlineProfileScreen>(screens));
-	else if (name == "maps")
-		screens.push(std::make_unique<OnlineMapsScreen>(screens));
-	else if (name == "my-maps")
-		screens.push(std::make_unique<OnlineMapsScreen>(screens, OnlineMapsScreen::Tab::Mine));
 }
 
 Application::~Application() = default;
