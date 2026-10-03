@@ -2,12 +2,10 @@
 // Copyright (C) 2026 glob2 contributors
 
 #include "HttpClient.h"
+#include "HttpExchange.h"
 
 #include <boost/asio.hpp>
 #include <boost/asio/ssl.hpp>
-#include <boost/beast/core.hpp>
-#include <boost/beast/http.hpp>
-#include <boost/beast/ssl.hpp>
 #include <openssl/ssl.h>
 
 #include <stdexcept>
@@ -16,9 +14,6 @@ namespace Relay
 {
 namespace asio = boost::asio;
 namespace ssl = asio::ssl;
-namespace beast = boost::beast;
-namespace http = beast::http;
-using tcp = asio::ip::tcp;
 
 Url Url::parse(const std::string& url)
 {
@@ -85,74 +80,67 @@ HttpClient::HttpClient(const std::string& caFile) : tls(std::make_shared<ssl::co
 
 HttpClient::~HttpClient() = default;
 
-namespace
-{
-	template <class Stream>
-	asio::awaitable<HttpResponse> exchange(Stream& stream, const Url& url, const HttpRequest& request)
-	{
-		http::request<http::string_body> req;
-		req.method(http::string_to_verb(request.method));
-		req.target(url.target);
-		req.version(11);
-		const bool defaultPort = (url.tls && url.port == "443") || (!url.tls && url.port == "80");
-		req.set(http::field::host, defaultPort ? url.host : url.host + ":" + url.port);
-		req.set(http::field::user_agent, "glob2-relay");
-		req.set(http::field::connection, "close");
-		for (const auto& h : request.headers)
-			req.set(h.first, h.second);
-		if (!request.body.empty() || request.method == "POST" || request.method == "PUT")
-		{
-			req.body() = request.body;
-			req.prepare_payload();
-		}
-		co_await http::async_write(stream, req, asio::use_awaitable);
-		beast::flat_buffer buffer;
-		http::response_parser<http::string_body> parser;
-		parser.body_limit(request.maxResponseBytes);
-		parser.header_limit(16 * 1024);
-		co_await http::async_read(stream, buffer, parser, asio::use_awaitable);
-		HttpResponse response;
-		response.status = static_cast<int>(parser.get().result_int());
-		response.body = std::move(parser.get().body());
-		co_return response;
-	}
-}
-
 asio::awaitable<HttpResponse> HttpClient::fetch(HttpRequest request)
 {
 	HttpResponse failure;
+	NetHttp::Options options;
 	try
 	{
 		const Url url = Url::parse(request.url);
-		auto executor = co_await asio::this_coro::executor;
-		tcp::resolver resolver(executor);
-		beast::tcp_stream tcpStream(executor);
-		tcpStream.expires_after(request.timeout);
-		const auto endpoints = co_await resolver.async_resolve(url.host, url.port, asio::use_awaitable);
-		co_await tcpStream.async_connect(endpoints, asio::use_awaitable);
-		if (!url.tls)
+		const bool defaultPort = (url.tls && url.port == "443") || (!url.tls && url.port == "80");
+		options.method = request.method;
+		options.secure = url.tls;
+		options.host = url.host;
+		options.port = url.port;
+		options.target = url.target;
+		options.authority = defaultPort ? url.host : url.host + ":" + url.port;
+		options.userAgent = "glob2-relay";
+		options.headers.assign(request.headers.begin(), request.headers.end());
+		options.sendBody = !request.body.empty() || request.method == "POST" || request.method == "PUT";
+		options.body = std::move(request.body);
+		options.timeout = request.timeout;
+		options.responseLimit = request.maxResponseBytes;
+		options.headerLimit = 16 * 1024;
+		if (url.tls)
 		{
-			auto response = co_await exchange(tcpStream, url, request);
-			beast::error_code ignored;
-			tcpStream.socket().shutdown(tcp::socket::shutdown_both, ignored);
-			co_return response;
+			options.tls = tls;
+			options.prepareTls = [](NetHttp::TlsStream& stream, const std::string& host) {
+				if (!SSL_set_tlsext_host_name(stream.native_handle(), host.c_str()))
+					throw std::runtime_error("Could not set TLS server name");
+				stream.set_verify_callback(ssl::host_name_verification(host));
+			};
 		}
-		beast::ssl_stream<beast::tcp_stream> stream(std::move(tcpStream), *tls);
-		beast::get_lowest_layer(stream).expires_after(request.timeout);
-		if (!SSL_set_tlsext_host_name(stream.native_handle(), url.host.c_str()))
-			throw std::runtime_error("Could not set TLS server name");
-		stream.set_verify_callback(ssl::host_name_verification(url.host));
-		co_await stream.async_handshake(ssl::stream_base::client, asio::use_awaitable);
-		auto response = co_await exchange(stream, url, request);
-		beast::get_lowest_layer(stream).expires_after(std::chrono::seconds(2));
-		boost::system::error_code ignored;
-		co_await stream.async_shutdown(asio::redirect_error(asio::use_awaitable, ignored));
-		co_return response;
 	}
 	catch (const std::exception& e)
 	{
 		failure.error = e.what();
+		co_return failure;
 	}
-	co_return failure;
+	auto executor = co_await asio::this_coro::executor;
+	NetHttp::Result result;
+	try
+	{
+		result = co_await asio::async_initiate<decltype(asio::use_awaitable), void(NetHttp::Result)>(
+			[&executor, &options](auto handler) {
+				auto shared = std::make_shared<decltype(handler)>(std::move(handler));
+				NetHttp::Request::start(executor, std::move(options),
+				                        [shared](NetHttp::Result r) { (*shared)(std::move(r)); });
+			},
+			asio::use_awaitable);
+	}
+	catch (const std::exception& e)
+	{
+		failure.error = e.what();
+		co_return failure;
+	}
+	if (result.outcome != NetHttp::Outcome::Done)
+	{
+		failure.error = result.error.empty() ? "HTTP request failed" : result.error;
+		co_return failure;
+	}
+	HttpResponse response;
+	response.status = result.status;
+	response.body = std::move(result.body);
+	co_return response;
 }
 }

@@ -3,10 +3,12 @@
 
 #pragma once
 
-// A small asynchronous HTTP/1.1 client for the relay's calls to the platform (JWKS,
-// registration, heartbeat, setup, record upload). Plain HTTP and HTTPS, one request
-// per connection, bounded response size and a total deadline. It runs as a C++20
-// coroutine on the relay's io_context; nothing blocks the event loop.
+// The relay's HTTP/1.1 client for its calls to the platform (JWKS, registration,
+// heartbeat, setup, record upload): the relay's front end of NetHttp::Request
+// (src/net/HttpExchange.h), the HTTP implementation the game's HttpFetch uses too.
+// Plain HTTP and HTTPS, one request per connection, bounded response size and a
+// whole-request deadline. An awaitable on the relay's io_context; nothing blocks
+// the event loop.
 
 #include <boost/asio/awaitable.hpp>
 #include <boost/asio/any_io_executor.hpp>
