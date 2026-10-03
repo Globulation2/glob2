@@ -549,6 +549,12 @@ attempts at most 16 geometry builds under a separate soft 2 ms budget; validated
 cache hits remain unrestricted. Deferred rows retain ordinary sprite batching.
 These time limits are soft because an individual driver call can exceed them.
 
+Native sprite atlases keep a one-texel extruded border around every frame,
+including equal-size terrain tiles. Fractional zoom and camera offsets can put
+a covered pixel arbitrarily close to a frame edge; the nearest-sampling tie
+bias must land in that frame's border rather than a neighboring frame. Keep
+the border copy unblended so transparent edges retain their original RGBA.
+
 Native array/cache optimizations require supported desktop OpenGL features.
 Software, portable SDL and unsupported native contexts retain their existing
 rendering paths. Desktop measurements must not be presented as phone performance.

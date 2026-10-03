@@ -13,6 +13,63 @@
 #include <epoxy/gl.h>
 #endif
 
+TEST_CASE("terrain atlas edges stay isolated at fractional overview zoom [display]")
+{
+    glob2test::ToolkitScope toolkit;
+    auto *gfx = GAGCore::Toolkit::initGraphic(320, 240,
+        GAGCore::GraphicContext::USEGPU, "terrain edge regression");
+    struct TestSprite : GAGCore::Sprite { using Sprite::images; } sprite;
+    for (int i = 0; i < 4; ++i)
+    {
+        auto *image = new GAGCore::DrawableSurface(32, 32);
+        image->drawFilledRect(0, 0, 32, 32,
+            i == 0 ? GAGCore::Color(31, 151, 83) : GAGCore::Color(255, 0, 255));
+        sprite.images.push_back(image);
+    }
+    auto draw = [&](float zoom, float offset, bool cached)
+    {
+        gfx->drawFilledRect(0, 0, 320, 240, 11, 23, 37);
+        gfx->beginMapTransform(zoom, offset, offset, 0, 0, 320, 240);
+        auto emit = [&]
+        {
+            for (int y = 0; y < 4; ++y)
+                for (int x = 0; x < 4; ++x)
+                    gfx->drawSurface(float(x * 32), float(y * 32), sprite.images[0]);
+            gfx->finishDrawingSprite(&sprite, 255);
+        };
+        if (cached)
+        {
+            auto& cache = gfx->getRenderBatch()->geometryCache();
+            GAGCore::MapGeometryCache::Layer layer(cache);
+            REQUIRE(cache.draw({&sprite, 0, 0, 0, 4, 4}, std::vector<int>(16, 0), emit));
+        }
+        else emit();
+        gfx->endMapTransform();
+        GLint viewport[4]; glGetIntegerv(GL_VIEWPORT, viewport);
+        std::vector<unsigned char> pixels(size_t(viewport[2]) * viewport[3] * 4);
+        glReadPixels(0, 0, viewport[2], viewport[3], GL_RGBA, GL_UNSIGNED_BYTE, pixels.data());
+        REQUIRE(glGetError() == GL_NO_ERROR);
+        return pixels;
+    };
+    // The last covered pixel can be arbitrarily close to the texture edge.
+    // The nearest-sampling tie bias must never reach the next atlas frame.
+    std::vector<std::vector<unsigned char>> reference;
+    for (float zoom : {.125f, .25f, .33f, .5f, .75f, 1.f})
+        for (float offset : {.50005f, .5002f, .501f, .25f})
+            reference.push_back(draw(zoom, offset, false));
+    REQUIRE(sprite.createTextureAtlas());
+    for (bool cached : {false, true})
+    {
+        size_t index = 0;
+        for (float zoom : {.125f, .25f, .33f, .5f, .75f, 1.f})
+            for (float offset : {.50005f, .5002f, .501f, .25f})
+            {
+                INFO("zoom=" << zoom << " offset=" << offset << " cached=" << cached);
+                REQUIRE(draw(zoom, offset, cached) == reference[index++]);
+            }
+    }
+}
+
 TEST_CASE("map geometry cache validates frames, texture lifetime and row ranges [display]")
 {
     SDL_SetHint(SDL_HINT_MAC_BACKGROUND_APP, "1");
