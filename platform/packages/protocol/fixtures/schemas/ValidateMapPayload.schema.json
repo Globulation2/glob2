@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:ValidateMapPayload",
+  "title": "ValidateMapPayload",
+  "type": "object",
+  "required": [
+    "blobHash",
+    "format"
+  ],
+  "properties": {
+    "blobHash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "Lowercase hexadecimal SHA-256 digest."
+    },
+    "format": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "map"
+        },
+        {
+          "type": "string",
+          "const": "save"
+        }
+      ]
+    }
+  },
+  "additionalProperties": false
+}

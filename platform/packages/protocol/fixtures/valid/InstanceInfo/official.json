@@ -1,0 +1,34 @@
+{
+  "name": "Globulation 2",
+  "origin": "https://play.example.org",
+  "realtimeUrl": "wss://play.example.org/realtime",
+  "supportedSimVersions": [
+    {
+      "versionMinor": 125,
+      "netProtocol": 49,
+      "dataHash": "3f9a6c1e8b2d47a05e6f1c2b3a4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f"
+    }
+  ],
+  "authProviders": [
+    {
+      "id": "google",
+      "kind": "oidc",
+      "displayName": "Google"
+    },
+    {
+      "id": "apple",
+      "kind": "apple",
+      "displayName": "Apple"
+    }
+  ],
+  "queues": [
+    {
+      "id": "ranked-1v1",
+      "name": "Ranked 1v1",
+      "mode": "1v1",
+      "rated": true,
+      "aiBackfillSeconds": 90
+    }
+  ],
+  "guestsAllowed": true
+}

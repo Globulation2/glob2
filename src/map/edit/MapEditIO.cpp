@@ -7,6 +7,7 @@
 #include <GAG.h>
 #include "gui/LoadSaveDialog.h"
 #include "Game.h"
+#include "SaveSnapshot.h"
 #include "GlobalContainer.h"
 #include "MapEdit.h"
 #include "FrontendTheme.h"
@@ -86,19 +87,41 @@ bool MapEdit::touchAnimating() const
 
 bool MapEdit::advanceEditing(const std::vector<SDL_Event>& events, Uint32 tick)
 {
+    if(saveWriter) saveWriter->poll();
     if (!editing || quitDecision || fertilityRequested || !pendingLoadFilename.empty()) return editing;
     const bool wasPersisting=showingSave && loadSaveScreen->isPersisting();
+    const auto isQuitRequest = [](const SDL_Event& event) {
+        if (event.type == SDL_EVENT_QUIT) return true;
+#ifdef USE_OSX
+        if (event.type == SDL_EVENT_KEY_DOWN && event.key.key == SDLK_Q &&
+            (event.key.mod & SDL_KMOD_GUI)) return true;
+#endif
+#ifdef USE_WIN32
+        if (event.type == SDL_EVENT_KEY_DOWN && event.key.key == SDLK_F4 &&
+            (event.key.mod & SDL_KMOD_ALT)) return true;
+#endif
+        return false;
+    };
+    // Record close intent before polling: persistence may fail in this frame.
+    if (wasPersisting)
+        for (const auto& event : events)
+            if (isQuitRequest(event)) quitAfterSave = true;
     if (showingSave && loadSaveScreen->pollPersistence()) {
         hasMapBeenModified = false;
         performAction("close save screen");
     }
+    if(wasPersisting && showingSave && loadSaveScreen->isPersisting()) {
+        return true;
+    }
     for (auto event : events) {
+        if (quitAfterSave && showingSave && isQuitRequest(event)) continue;
         if(!(phone && phone->event(event))) {
             GAGCore::GraphicContext::translateMouseEvent(&event);
             processEvent(event);
         }
         if (doFullQuit || doQuit || fertilityRequested || !pendingLoadFilename.empty() || (doQuitAfterLoadSave && !showingSave)) break;
     }
+    if (quitAfterSave && !showingSave) doFullQuit = true;
     if (doFullQuit) { editingResult = -1; editing = false; return false; }
     if (fertilityRequested || !pendingLoadFilename.empty()) return true;
 	// While processing events the user could've tried to load a map that failed.
@@ -192,9 +215,14 @@ bool MapEdit::finishFertility(bool completed)
     if (!pendingSaveFilename.empty()) {
         if (completed) {
             try {
-                if (GAGCore::ApplicationHost::storageRestoreFailed() || !save(pendingSaveFilename, pendingSaveName))
-                    loadSaveScreen->showSaveFailure();
-                else loadSaveScreen->beginPersistence(GAGCore::ApplicationHost::persistStorage());
+                if (GAGCore::ApplicationHost::storageRestoreFailed()) loadSaveScreen->showSaveFailure();
+                else {
+                    if(!saveWriter) saveWriter=std::make_unique<GAGCore::BackgroundFileWriter>(Toolkit::getFileManager());
+                    const auto name=pendingSaveName;
+                    loadSaveScreen->beginPersistence(std::make_unique<SaveOperation>(*saveWriter,glob2GzipWritePath(pendingSaveFilename),
+                        [this,name]{return captureSave([&](OutputStream* stream,DeferredGameSHA1* sha){game.save(stream,true,name,sha);});},
+                        [this,name]{hasMapBeenModified=false;game.mapHeader.setMapName(name);game.mapHeader.setIsSavedGame(false);}));
+                }
             } catch (const std::exception&) { loadSaveScreen->showSaveFailure(); }
             // A local write is not a durable browser save. Keep the editor and
             // its quit intent until the shared save dialog acknowledges it.

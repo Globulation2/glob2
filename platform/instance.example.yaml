@@ -1,0 +1,35 @@
+# Instance settings. Copy to instance.yaml (ignored by git). Secrets are not
+# written here: settings ending in Env name an environment variable instead.
+name: Globulation 2
+
+guests:
+  enabled: true
+
+auth:
+  providers:
+    - id: google
+      kind: oidc
+      preset: google
+      displayName: Google
+      clientId: your-client-id.apps.googleusercontent.com
+      clientSecretEnv: GOOGLE_CLIENT_SECRET
+  # Username and password accounts (argon2id), for instances without SSO.
+  local:
+    enabled: false
+
+# AccessPolicy implementation gating hosting, joining and queueing.
+access:
+  policy: allow-all
+
+queues:
+  - id: ranked-1v1
+    name: Ranked 1v1
+    mode: 1v1
+    rated: true
+    aiBackfillSeconds: 90
+    mapPool:
+      - generatorId: even-ground
+        revision: 1
+        params: { width: 7, height: 7, teams: 2 }
+        candidates: 5
+        startingUnitLevel: 0

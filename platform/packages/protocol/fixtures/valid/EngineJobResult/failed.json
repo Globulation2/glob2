@@ -1,0 +1,10 @@
+{
+  "jobId": "9f8e7d6c-5b4a-4392-8170-6f5e4d3c2b1a",
+  "kind": "generate-map",
+  "ok": false,
+  "error": {
+    "code": "internal",
+    "message": "generator refused the parameters"
+  },
+  "agent": "engine-agent-125-1"
+}

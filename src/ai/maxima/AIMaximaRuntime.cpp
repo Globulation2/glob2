@@ -1,3 +1,4 @@
+#include "FileFormatVersions.h"
 #include <PerformanceTelemetry.h>
 #include "AITelemetryFields.h"
 #include "AIMaximaRuntime.h"
@@ -341,7 +342,7 @@ void GradientManager::update(Uint32 step)
 void GradientManager::saveExecutionState(GAGCore::OutputStream* stream) const
 {
     stream->writeEnterSection("GradientExecution95");
-    AIMaximaContinuation::Writer archive(stream);
+    AIMaximaContinuation::Writer archive(stream,true);
     archive("lastWorldStep",lastWorldStep);
     archive("ages",ages);
     stream->writeUint32(gradients.size(),"size");
@@ -361,11 +362,11 @@ void GradientManager::saveExecutionState(GAGCore::OutputStream* stream) const
     archive("queued",pending);
     stream->writeLeaveSection();
 }
-void GradientManager::loadExecutionState(GAGCore::InputStream* stream)
+void GradientManager::loadExecutionState(GAGCore::InputStream* stream,Sint32 versionMinor)
 {
     invalidate();
     stream->readEnterSection("GradientExecution95");
-    AIMaximaContinuation::Reader archive(stream);
+    AIMaximaContinuation::Reader archive(stream,versionMinor>=FILE_FORMAT_VERSION_COMPACT_STATE);
     archive("lastWorldStep",lastWorldStep);
     archive("ages",ages);
     const Uint32 size=stream->readCount("size");
@@ -1332,7 +1333,7 @@ void Context::save(GAGCore::OutputStream* stream) const
 void Context::saveExecutionState(GAGCore::OutputStream* stream) const
 {
     stream->writeEnterSection("RuntimeExecution95");
-    AIMaximaContinuation::Writer archive(stream);
+    AIMaximaContinuation::Writer archive(stream,true);
     stream->writeUint32(buildingOrders.size(),"size");
     for(size_t i=0;i<buildingOrders.size();++i)
     {
@@ -1358,10 +1359,10 @@ void Context::saveExecutionState(GAGCore::OutputStream* stream) const
     stream->writeLeaveSection();
     stream->writeLeaveSection();
 }
-void Context::loadExecutionState(GAGCore::InputStream* stream, Sint32)
+void Context::loadExecutionState(GAGCore::InputStream* stream, Sint32 versionMinor)
 {
     stream->readEnterSection("RuntimeExecution95");
-    AIMaximaContinuation::Reader archive(stream);
+    AIMaximaContinuation::Reader archive(stream,versionMinor>=FILE_FORMAT_VERSION_COMPACT_STATE);
     const Uint32 size=stream->readCount("size");
     if(size!=buildingOrders.size()) throw std::runtime_error("Invalid building search continuation count");
     for(Uint32 i=0;i<size;++i)
@@ -1377,7 +1378,7 @@ void Context::loadExecutionState(GAGCore::InputStream* stream, Sint32)
         archive("searchActive",order.searchActive);
         stream->readLeaveSection();
     }
-    gradients.loadExecutionState(stream);
+    gradients.loadExecutionState(stream,versionMinor);
     {
         stream->readEnterSection("FoundBuildingExecution96");
         for(auto& entry:buildings.foundBuildings)
