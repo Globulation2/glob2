@@ -16,6 +16,9 @@ SCENE_INCLUDES = {
     'scene/Scene.h', 'scene/SceneEntities.h', 'scene/SceneMap.h', 'scene/ScenePanels.h',
     'sim/ClientRequests.h', 'sim/EntityRef.h', 'BitArray.h', 'Ressource.h', 'UnitConsts.h',
     'SDLGraphicContext.h', 'SDL_stdinc.h', 'SDL3/SDL_stdinc.h',
+    # Sampled telemetry rows are copied presentation data; this header does
+    # not include live simulation object definitions.
+    'ai/AITelemetry.h',
 }
 
 DRAWING = ('src/render/GameRender*.cpp', 'src/render/Minimap.cpp', 'src/gui/GameGUIDraw*.cpp')
