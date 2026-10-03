@@ -3,24 +3,12 @@ name: Steam Windows package
 on:
   workflow_dispatch:
   workflow_call:
-  pull_request:
-    paths:
-      - .github/workflows/steam-windows-package.yml
-      - SConstruct
-      - scons/**
-      - tools/release/windows_runtime.py
-      - tools/package_steam_windows.py
-      - tools/package_assets.py
-      - tools/asset-requirements.txt
-      - data/**
-      - test/test_steam_windows_package.py
-      - .github/workflows/steam-windows-upload.yml
 
-# Superseded PR packages are not release artifacts. Keep release calls/manual
-# packaging intact, while newer PR revisions reclaim their runner slots.
+# Packaging belongs to explicit release calls/dispatches. Its literal prefix
+# keeps callable packaging distinct from the release caller's concurrency group.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  group: steam-windows-package-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
 
 permissions:
   contents: read

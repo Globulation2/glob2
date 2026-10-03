@@ -2,12 +2,14 @@
 #pragma once
 #include <ViewportTransform.h>
 
-// Phone controls gather in the bottom corner under the player's thumb. Every
-// corner-anchored component mirrors through these helpers, never on its own.
+// The thumb preference anchors dials and confirmation controls; compact
+// toolboxes sit across the screen for a more comfortable thumb reach.
 namespace ThumbSide
 {
 //! True when the player chose the left thumb (Settings::thumbSide).
 bool left();
+//! Compact toolboxes sit opposite the selected thumb.
+inline bool toolboxLeft() { return !left(); }
 //! A w×h rectangle whose bottom edge is `bottom`, `inset` in from the thumb-side
 //! edge of `within`.
 inline GAGCore::ViewRect corner(GAGCore::ViewRect within, double w, double h, double inset, double bottom,

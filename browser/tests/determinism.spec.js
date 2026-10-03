@@ -50,6 +50,7 @@ test(`WebAssembly produces a complete per-tick simulation trace (${variant}/${th
   fs.writeFileSync(path.join(output, 'run.log'), (await page.evaluate(() => window.engineLog)).join('\n'));
   fs.writeFileSync(path.join(output, 'manifest.json'), JSON.stringify({
     fixture: 'games/cross-replay.game.gz', seed: 42, ticks: 1500, variant, threads,
+    project: info.project.name,
     fixture_sha256: crypto.createHash('sha256').update(fixture).digest('hex'),
     trace_sha256: crypto.createHash('sha256').update(trace).digest('hex'),
   }, null, 2) + '\n');
