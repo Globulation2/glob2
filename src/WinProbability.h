@@ -121,7 +121,11 @@ namespace WinProbability
 	/// Allies win and lose together, so they are one competitor: that is how the
 	/// model was fitted, and splitting them would ask it a question it was never
 	/// shown. `allianceOf` receives the same index back for each slot.
-	std::vector<Slot> slotsOf(const Game &game, std::vector<int> &allianceOf);
+	/// Loss flags in ignoreLostTeams are being assigned by the caller, rather
+	/// than describing a pre-existing elimination. They must not change the
+	/// inputs halfway through deciding one sample. Physically dead teams are
+	/// still excluded; ordinary readers leave the mask at zero.
+	std::vector<Slot> slotsOf(const Game &game, std::vector<int> &allianceOf, Uint32 ignoreLostTeams = 0);
 
 	/// Whether any alliance has reached `thresholdPermille`, and which.
 	/// Returns -1 when nobody has.

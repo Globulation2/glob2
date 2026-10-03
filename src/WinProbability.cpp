@@ -163,7 +163,7 @@ namespace WinProbability
 		return -1;
 	}
 
-	std::vector<Slot> slotsOf(const Game &game, std::vector<int> &allianceOf)
+	std::vector<Slot> slotsOf(const Game &game, std::vector<int> &allianceOf, Uint32 ignoreLostTeams)
 	{
 		const int count = game.teamsCount();
 		allianceOf.assign(count, 0);
@@ -191,7 +191,7 @@ namespace WinProbability
 			Slot &slot = slots[allianceOf[t]];
 			// An eliminated team contributes nothing and does not keep its
 			// alliance alive on its own; a surviving ally still can.
-			if (!team->isAlive || team->hasLost)
+			if (!team->isAlive || (team->hasLost && !(ignoreLostTeams & (1u << t))))
 				continue;
 			const TeamStat *stat = team->stats.getLatestStat();
 			slot.alive = true;
