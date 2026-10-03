@@ -71,7 +71,7 @@ struct CustomGamePreferences
 		// stay unchanged regardless of which generator module is selected.
 		const auto legacy = toLegacyDescriptor(setup.generator);
 		std::ostringstream out;
-		out << "glob2-custom-game 5\n"
+		out << "glob2-custom-game 6\n"
 			<< "setup " << setup.random << ' ' << setup.capacity << ' ' << setup.prestige << ' '
 			<< setup.revealed << ' ' << setup.locked << ' ' << setup.speed << ' ' << userMaps
 			<< '\n'
@@ -81,6 +81,7 @@ struct CustomGamePreferences
 			<< setup.unitsFearless << ' ' << setup.permadeathDisabled << ' ' << setup.peacefulMode
 			<< ' ' << setup.buildingHpLevel << ' ' << setup.startingUnitLevel << ' '
 			<< setup.suddenDeathMinutes << '\n'
+			<< "probability " << setup.winProbabilityPermille << '\n'
 			<< "labels " << std::quoted(setup.format) << ' ' << std::quoted(setup.ruleset) << '\n'
 			<< "map " << std::quoted(setup.premadeMap) << '\n'
 			<< "libraries " << std::quoted(librarySelection[0]) << ' '
@@ -128,7 +129,7 @@ struct CustomGamePreferences
 			return true;
 		};
 		int version, random, prestige, revealed, locked, user, method, repeat;
-		if (!word("glob2-custom-game") || !number(version, 1, 5) || !word("setup") ||
+		if (!word("glob2-custom-game") || !number(version, 1, 6) || !word("setup") ||
 			!number(random, 0, 1) || !number(s.capacity, 1, Team::MAX_COUNT) ||
 			!number(prestige, 0, 1) || !number(revealed, 0, 1) || !number(locked, 0, 1) ||
 			!number(s.speed, 0, Settings::GAME_SPEED_MAXIMUM) || !number(user, 0, 1))
@@ -143,6 +144,11 @@ struct CustomGamePreferences
 				!number(s.suddenDeathMinutes, 0, 90)) return false;
 			const auto &minutes = CustomGameSetup::suddenDeathMinuteChoices;
 			if (std::find(minutes.begin(), minutes.end(), s.suddenDeathMinutes) == minutes.end()) return false;
+		}
+		if (version >= 6) {
+			if (!word("probability") || !number(s.winProbabilityPermille, 0, 1000)) return false;
+			const auto &choices = CustomGameSetup::winProbabilityChoices;
+			if (std::find(choices.begin(), choices.end(), s.winProbabilityPermille) == choices.end()) return false;
 		}
 		if (!word("labels") || !(in >> std::quoted(s.format) >> std::quoted(s.ruleset))) return false;
 		if (s.format != "FFA" && s.format != "2 vs 2" && s.format != "You vs all" && s.format != "Custom teams") return false;

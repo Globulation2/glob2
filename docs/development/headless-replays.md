@@ -382,3 +382,11 @@ older and newer clients. Background save finalization owns a captured state and
 does not advance simulation; continuation checks must still compare the same
 captured tick, seed and orders. Routing worker availability affects wall time only:
 the serial fallback publishes on the same ticks. Headless `--gradient-workers 0` is the deterministic serial control.
+
+### Probability-based early victory
+
+Structured `--run-game` runs accept `--win-probability PERMILLE` (501–1000).
+This appends the optional rule after existing winning conditions; omit it to play
+the game out. Evaluation begins at tick 5120 and repeats every 512 ticks. Results
+called by the model report `termination: "win_probability"`. See the
+[model guide](../win-probability-model.md) for calibration and its limits.

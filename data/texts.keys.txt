@@ -1096,6 +1096,12 @@
 [45 minutes]
 [60 minutes]
 [Sudden-death timer]
+[Probability victory]
+[Off (play it out)]
+[95% sure]
+[97% sure]
+[99% sure]
+[Ends the match once the result is no longer in doubt. Spectators can always see each player's chance of winning in the statistics.]
 [Stats births]
 [Stats deaths]
 [Stats starvation]
@@ -2361,3 +2367,5 @@
 [repeat map vertically]
 [bases]
 [bases per colony]
+
+[Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]

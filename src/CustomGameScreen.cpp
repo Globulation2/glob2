@@ -1321,6 +1321,8 @@ Element CustomGameScreen::ruleControl(int index, const Presentation &p, std::str
 			setup.buildingHpLevel = value;
 		if (index == 17)
 			setup.suddenDeathMinutes = value;
+		if (index == 18)
+			setup.winProbabilityPermille = value;
 		setup.ruleset = "Custom";
 	};
 	const std::string id = "rule/" + std::to_string(index);
@@ -1413,6 +1415,15 @@ Element CustomGameScreen::ruleControl(int index, const Presentation &p, std::str
 							  setup.ruleset = "Custom";
 							  invalidatePreview();
 						  });
+	}
+	if (index == 18)
+	{
+		const auto options = localized({"Off (play it out)", "95% sure", "97% sure", "99% sure"});
+		const auto choices = CustomGameSetup::winProbabilityChoices;
+		const int current = int(std::find(choices.begin(), choices.end(), setup.winProbabilityPermille) - choices.begin());
+		help = tr("Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.");
+		return fe::choice("rule/winProbability", options, current < int(choices.size()) ? current : 0,
+			[apply, choices](int v) { apply(choices[v]); });
 	}
 	const auto &minutes = CustomGameSetup::suddenDeathMinuteChoices;
 	const int current = int(std::find(minutes.begin(), minutes.end(), setup.suddenDeathMinutes) - minutes.begin());

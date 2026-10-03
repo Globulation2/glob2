@@ -350,6 +350,15 @@ struct HeadlessRunner
 				if(!id) throw std::invalid_argument("unknown experiment: " + key);
 				header.getExperiments().set(*id);
 			}
+			// Added to the list in force rather than replacing it, so a real
+			// elimination or prestige win still ends the game first and only an
+			// otherwise-undecided match is stopped early.
+			if(options.count("--win-probability"))
+			{
+				const int permille=integer(one(options,"--win-probability","0"), 501, 1000);
+				WinningCondition::setWinProbabilityWinCondition(header.getWinningConditions(),
+					std::optional<Uint32>(static_cast<Uint32>(permille)));
+			}
 			std::map<int,std::string> overrides;
 			std::set<std::pair<int,std::string>> seen;
 			for(const auto &assignment : many(options,"--ai-param"))
@@ -460,6 +469,18 @@ struct HeadlessRunner
 		const auto pipelineResult = game.map.gradientPipelineStatus();
 		engine.trackTeamEliminations();
 		std::ostringstream result;
+		// A game the win probability model called is reported distinctly from one
+		// the rules actually decided. The two are not the same evidence: analysis
+		// may legitimately pool them or exclude them, but it must never mistake a
+		// model's opinion for an engine-declared win.
+		const char *termination="tick_cap";
+		if(game.isGameEnded || game.totalPrestigeReached)
+		{
+			termination="engine_end";
+			for(int t=0;t<game.teamsCount();++t)
+				if(game.teams[t] && game.teams[t]->winCondition==WCWinProbability)
+					termination="win_probability";
+		}
 		result << "{\"schema_version\":1,\"job_type\":\"game\",\"status\":\"completed\",\"ticks\":" << game.stepCounter
 			<< ",\"benchmark_setup_cpu_ns\":" << setupCpu
 			<< ",\"benchmark_run_cpu_ns\":" << runCpu
@@ -487,7 +508,7 @@ struct HeadlessRunner
 			<< ",\"compute_batch_ns\":" << game.map.computeExecutor().metrics().batchNs
 			<< ",\"compute_wait_ns\":" << game.map.computeExecutor().metrics().waitNs
 			<< ",\"game_seed\":" << game.gameHeader.getRandomSeed() << ",\"termination\":"
-			<< quote(game.isGameEnded || game.totalPrestigeReached ? "engine_end" : "tick_cap")
+			<< quote(termination)
 			<< ",\"resolved\":{\"tick_limit\":" << globals.automaticEndingSteps << ",\"map\":" << quote(game.mapHeader.getMapName())
 			<< ",\"save_version\":" << VERSION_MINOR << ",\"winning_conditions\":[";
 		bool comma=false;
@@ -551,7 +572,7 @@ int runHeadlessCommand(int argc,char **argv)
 			std::cout << "}" << std::endl;return 0;
 		}
 		const std::set<std::string> common={"--output-dir","--profile"};
-		const std::set<std::string> gameKeys={"--diagnostic-fields","--diagnostic-interval","--diagnostic-png","--benchmark-warmup","--ai-script","--map-script","--map-file","--load-game","--game-seed","--player","--ai-param","--alliance","--win-condition","--experiment","--ticks","--compute-threads","--compute-experiments","--gradient-workers","--gradient-delay","--save","--telemetry","--replay","--generator","--map-seed","--param","--candidates"};
+		const std::set<std::string> gameKeys={"--diagnostic-fields","--diagnostic-interval","--diagnostic-png","--benchmark-warmup","--ai-script","--map-script","--map-file","--load-game","--game-seed","--player","--ai-param","--alliance","--win-condition","--win-probability","--experiment","--ticks","--compute-threads","--compute-experiments","--gradient-workers","--gradient-delay","--save","--telemetry","--replay","--generator","--map-seed","--param","--candidates"};
 		const std::set<std::string> mapKeys={"--generator","--map-seed","--param","--candidates","--rotations","--write-map","--report","--perturb"};
 		Options options;
 		for(int i=2;i<argc;++i)

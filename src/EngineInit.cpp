@@ -269,6 +269,11 @@ namespace
 					WinningCondition::setSuddenDeathWinCondition(h.getWinningConditions(),
 						v ? std::optional<Uint32>(v) : std::nullopt);
 				}},
+			{"winProbabilityPermille", 1000, [](GameHeader& h, int v)
+				{
+					WinningCondition::setWinProbabilityWinCondition(h.getWinningConditions(),
+						v ? std::optional<Uint32>(v) : std::nullopt);
+				}},
 		};
 		// One 0/1 rule per experiment, named by its key (ExperimentalFeatures.cpp).
 		for (const auto& definition : experimentDefinitions())
@@ -287,7 +292,8 @@ namespace
 			errno = 0;
 			const long value = equals == std::string::npos ? -1 : strtol(item.c_str() + equals + 1, &end, 10);
 			if (!rule || equals == std::string::npos || errno || *end || end == item.c_str() + equals + 1
-				|| value < 0 || value > rule->maximum)
+				|| value < 0 || value > rule->maximum
+				|| (name == "winProbabilityPermille" && value != 0 && value < 501))
 			{
 				std::cerr << "GLOB2_TEST_RULES: invalid entry \"" << item << "\"" << std::endl;
 				exit(1);

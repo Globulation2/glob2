@@ -16,7 +16,8 @@
     "*ImageAsset*/*",
     "HiveMind*/*",
     "GameplayRecording*/*",
-    "GameDiagnostics/*"
+    "GameDiagnostics/*",
+    "WinProbability/*"
   ],
   "unit_filters": [
     "*"
