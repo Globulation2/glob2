@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:AdminRoleRequest",
+  "title": "AdminRoleRequest",
+  "type": "object",
+  "required": [
+    "role"
+  ],
+  "properties": {
+    "role": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "user"
+        },
+        {
+          "type": "string",
+          "const": "moderator"
+        },
+        {
+          "type": "string",
+          "const": "admin"
+        }
+      ]
+    }
+  },
+  "additionalProperties": false
+}

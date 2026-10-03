@@ -56,3 +56,57 @@ export const MatchTicketClaims = Open(
   },
 );
 export type MatchTicketClaims = Static<typeof MatchTicketClaims>;
+
+// ------------------------------------------------------------ access tokens
+
+/** `aud` claim of an access token: the platform's own API. */
+export const ACCESS_TOKEN_AUDIENCE = 'glob2-platform';
+
+export const AccessTokenHeader = Open(
+  {
+    alg: Type.Literal(PLATFORM_JWT_ALGORITHM),
+    typ: Type.Literal(ACCESS_TOKEN_TYPE),
+    kid: Type.String({ minLength: 1, maxLength: 128 }),
+  },
+  { description: 'JOSE header of an access token (RFC 9068 `at+jwt`).' },
+);
+export type AccessTokenHeader = Static<typeof AccessTokenHeader>;
+
+export const AccessTokenClaims = Open(
+  {
+    iss: Type.String({ description: 'Instance origin.' }),
+    aud: Type.Literal(ACCESS_TOKEN_AUDIENCE),
+    sub: Uuid,
+    jti: Uuid,
+    iat: Type.Integer({ minimum: 0 }),
+    exp: Type.Integer({ minimum: 0 }),
+    client_id: Type.String({ maxLength: 64, description: 'Client platform that signed in.' }),
+    sid: Uuid,
+    kind: Type.Union([Type.Literal('guest'), Type.Literal('registered')]),
+    role: Type.Union([Type.Literal('user'), Type.Literal('moderator'), Type.Literal('admin')]),
+  },
+  {
+    description:
+      'Claims of an access token. `sub` is the account id, `sid` the refresh-token family (one sign-in). The platform re-reads account status on use, so a ban takes effect before expiry.',
+  },
+);
+export type AccessTokenClaims = Static<typeof AccessTokenClaims>;
+
+/** One public Ed25519 key of the platform (RFC 8037 OKP JWK). */
+export const PlatformJwk = Open({
+  kty: Type.Literal('OKP'),
+  crv: Type.Literal('Ed25519'),
+  x: Type.String({ pattern: '^[A-Za-z0-9_-]{43}$' }),
+  kid: Type.String({ minLength: 1, maxLength: 128 }),
+  alg: Type.Literal(PLATFORM_JWT_ALGORITHM),
+  use: Type.Literal('sig'),
+});
+
+export const PlatformJwks = Open(
+  { keys: Type.Array(PlatformJwk) },
+  {
+    description:
+      'GET /.well-known/jwks.json: every key that may have signed a live access token or ticket, the signing key first.',
+  },
+);
+export type PlatformJwks = Static<typeof PlatformJwks>;

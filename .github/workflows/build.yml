@@ -1086,6 +1086,18 @@ jobs:
           echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
           GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons CXX=g++-13 role=router release=1 -j$(nproc)
+      - name: Build match relay
+        id: build_match_relay
+        continue-on-error: true
+        run: GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons CXX=g++-13 role=relay release=1 relay -j$(nproc)
+      - name: Test match relay
+        id: test_match_relay
+        continue-on-error: true
+        if: steps.build_match_relay.outcome == 'success'
+        run: |
+          python3 test/ci_run_commands.py \
+            --check 'relay unit tests' 'build/linux/relay/release/src/glob2-relay-tests' \
+            --check 'relay integration tests' 'python3 -m unittest discover -s tests/relay -v'
       - name: Build transport integration fixture
         id: build_transport_integration_fixture
         continue-on-error: true

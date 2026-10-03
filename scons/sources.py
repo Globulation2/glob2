@@ -666,6 +666,31 @@ SERVER_SOURCES = (
     'net/ServerControl.cpp',
 )
 
+# glob2-relay (role=relay): the match relay links only the turn core, the stream
+# classes its codecs use, OpenSSL and the header-only Boost.Beast; no SDL library.
+RELAY_SOURCES = (
+    'relay/HttpClient.cpp',
+    'relay/JwksStore.cpp',
+    'relay/MatchDirectory.cpp',
+    'relay/MatchReport.cpp',
+    'relay/PlatformLink.cpp',
+    'relay/RelayConfig.cpp',
+    'relay/RelayLog.cpp',
+    'relay/RelayMetrics.cpp',
+    'relay/RelayServer.cpp',
+    'relay/RelaySha1.cpp',
+    'relay/TicketVerifier.cpp',
+    'net/turn/MatchRecord.cpp',
+    'net/turn/TurnMessages.cpp',
+    'net/turn/TurnSequencer.cpp',
+)
+
+RELAY_GAG_SOURCES = (
+    'BinaryStream.cpp',
+    'Stream.cpp',
+    'StreamBackend.cpp',
+)
+
 GAG_SOURCES = (
     'PerformanceTelemetry.cpp',
     'BackgroundFileWriter.cpp',

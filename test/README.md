@@ -130,6 +130,14 @@ scripts compare full-game traces against retained fixtures and are documented wi
 the harness they accompany below. `tests/` at the repository root tests the build
 system and the browser services.
 
+## Match relay
+
+`scons role=relay release=1 relay` builds `glob2-relay` and `glob2-relay-tests`, a
+doctest binary of its own (the relay role builds no engine or SDL code). Run it
+directly, then `python3 -m unittest discover -s tests/relay -v` for the end-to-end
+tests against the real binary. `test/fixtures/relay-tickets/` copies the protocol
+package's ticket fixtures. See [docs/multiplayer/relay.md](../docs/multiplayer/relay.md#tests).
+
 ## Team capacity and format 127
 
 `TeamLimit` checks all sixteen controller/header slots, entity identifiers, packed

@@ -123,8 +123,8 @@ Enumerations:
 1. The client opens the transport and sends `Hello` with its ticket. `haveHorizon` is
    0 on a fresh start. After a transport loss without a restart, it is the horizon the
    client already holds.
-2. The relay calls its admission function (ticket verification is the relay
-   workstream's job) to get a seat. It refuses with `Reject` and closes when the ticket
+2. The relay calls its admission function to get a seat. In `glob2-relay` this is
+   the ticket check described in [the relay section](#relay). It refuses with `Reject` and closes when the ticket
    is bad, the protocol version differs, the seat has left, or the match is over. A
    valid `Hello` for a seat that still has a connection replaces that connection: the
    relay often learns that a socket is dead only after the client has reconnected.
@@ -514,6 +514,29 @@ runs: `Engine::initTurnMatch` with a `RecordTransport` that serves the record's 
 one relay would. Its contract is in
 [headless replays](../development/headless-replays.md#verifying-a-match-record).
 
+## Relay
+
+`glob2-relay` (`src/relay/`, operated as described in [relay.md](relay.md)) hosts
+`TurnSequencer` for online matches:
+
+- **Transport.** Clients connect over a WebSocket (`wss://…/relay`). The frames of
+  this protocol, each with its 2-byte length prefix, form a byte stream carried in
+  binary WebSocket messages, as `NetConnection` sends them over `WssTransport`.
+- **Matches.** One sequencer per match is created by the first valid ticket for its
+  `matchId`, with `humanSeatMask` taken from that ticket's `humanSeats`. Every
+  later ticket must carry the same `simVersion` and `humanSeats`. A match that has
+  ended cannot be started again by a late ticket.
+- **Admission.** The admission function is the Ed25519 ticket check. The relay
+  verifies the ticket before it passes the `Hello` to the sequencer, and refuses a
+  bad ticket with `Reject(2)`.
+- **New matches refused.** A draining or full relay refuses a new match with
+  `Reject(5)`, and still admits reconnects to its running matches.
+- **Timing and threads.** The relay calls `update` every 10 ms, and runs every
+  sequencer on one event-loop thread.
+- **End of a match.** The relay uploads the `MatchRecord` to the platform. A client
+  that sends `Quit` with reason 1 (game finished) marks the match as completed rather
+  than abandoned in the relay's report. The sequencer treats both reasons alike.
+
 ## Testing
 
 The unit tests in `test/TurnProtocolTest.cpp` (in `glob2-unit-tests`) use a fake clock
@@ -533,6 +556,9 @@ with incremental resume, a client restart with a full reload, and a desync that 
 majority repairs. It also checks that a stalled client never stalls the others, that
 each client's buffer follows its own link's jitter, and that each player's input delay
 follows their own connection. Summaries are written under `artifacts/tests/`.
+
+The relay's own tests (`glob2-relay-tests` and `tests/relay/`) run this protocol over
+real WebSockets against `glob2-relay`; see [relay.md](relay.md#tests).
 
 `test/TurnEngineHarness.cpp` (in `glob2-engine-tests`) runs the same network with 2–4
 real engines started by `Engine::initTurnMatch` on one MatchSetup, AI seats computed on
