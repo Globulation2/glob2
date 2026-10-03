@@ -88,6 +88,28 @@ class CliSmoke(unittest.TestCase):
             report=json.loads((output/'result.json').read_text())
             self.assertEqual(report['status'],'invalid_request'); self.assertTrue(report['diagnostic'])
 
+    def test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds(self):
+        source = self.generated()
+        output = self.root / 'probability'
+        first = self.game(output, source, extra=('--win-probability', '970', '--save', 'every:32'))
+        report = json.loads((output / 'result.json').read_text())
+        self.assertIn(7, report['resolved']['winning_conditions'])
+        continuation = self.game(self.root / 'probability-checkpoint', output / 'checkpoint-32.game.gz', saved=True)
+        self.assertEqual(continuation, {tick: record for tick, record in first.items() if tick in continuation})
+        self.assertEqual(len(continuation), 32)
+        resumed = self.root / 'probability-resumed'
+        self.command('--run-game', '--load-game', output / 'final.game.gz',
+                     '--ticks', '96', '--output-dir', resumed, '--telemetry', 'checksums')
+        loaded = json.loads((resumed / 'result.json').read_text())
+        self.assertIn(7, loaded['resolved']['winning_conditions'])
+        self.assertEqual(loaded['ticks'], 96)
+        for index, threshold in enumerate(('0', '500', '1001')):
+            invalid = self.root / f'probability-invalid-{index}'
+            self.command('--run-game', '--map-file', source, '--player', 'castor',
+                         '--player', 'cortex', '--ticks', '64', '--win-probability', threshold,
+                         '--output-dir', invalid, status=2)
+            self.assertEqual(json.loads((invalid / 'result.json').read_text())['status'], 'invalid_request')
+
     def test_corrupt_saved_game_fails_with_structured_diagnostic(self):
         source=self.root/'corrupt.game'; source.write_bytes(b'not a saved game')
         output=self.root/'corrupt-run'
