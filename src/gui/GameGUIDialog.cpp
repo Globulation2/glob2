@@ -272,8 +272,10 @@ Element InGameAllianceScreen::build(const Presentation &p)
 			parts.push_back(fe::paragraph(fe::tr("[Alliance and shared vision are fixed for this match.]"), {fe::FontRole::Support, true}));
 		parts.push_back(fe::spacer(p.pt(40)));
 		parts.push_back(notesColumn());
-		parts.push_back(classicButton("ok", fe::tr("[ok]"), [this] { finish(OK); }, SDLK_RETURN));
-		return fe::column(std::move(parts), {p.pt(10)});
+		// The outer gutter limits height on short desktop windows too. Keep the
+		// footer reachable while the full diplomacy table and its legend scroll.
+		auto ok = classicButton("ok", fe::tr("[ok]"), [this] { finish(OK); }, SDLK_RETURN);
+		return fe::footer(fe::scroll("ally/scroll", fe::column(std::move(parts), {p.pt(10)})), ok);
 	}
 	std::vector<Element> list;
 	for (auto &entry : rows)
@@ -319,7 +321,9 @@ Element InGameAllianceScreen::build(const Presentation &p)
 	okOptions.shortcut = SDLK_RETURN;
 	okOptions.minHeight = 44;
 	auto ok = fe::button("ok", fe::tr("[ok]"), [this] { finish(OK); }, okOptions);
-	return fe::column({fe::footer(fe::scroll("ally/scroll", fe::column(std::move(parts), {p.pt(10)})), ok)});
+	// Include the heading and explanation in the scrolling content so large
+	// text cannot consume the fixed footer's available space.
+	return fe::footer(fe::scroll("ally/scroll", fe::column(std::move(parts), {p.pt(10)})), ok);
 }
 
 int InGameAllianceScreen::countNumberPlayersForLocalTeam(GameHeader &gameHeader, int localteam)

@@ -2445,6 +2445,17 @@ class GameGUITouchHarness
 			pressDialog("ally/3/C");
 			pressDialog("ok");
 			GAGCore::userTextScale = 1;
+			if (width == 568)
+			{
+				GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "0", 1);
+				gui.openDialog(GameGUI::IGM_ALLIANCE, std::make_unique<InGameAllianceScreen>(&gui));
+				checkModal("desktop-short-teams");
+				require(gui.activeDialog()->host().find("ally/scroll")->scrollMaximum() > 0,
+					"Short classic Teams dialogs scroll their table and legend");
+				pressDialog("ok");
+				require(!gui.inGameMenu, "Short classic Teams keeps its footer reachable");
+				GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "1", 1);
+			}
 			if (width == 1024)
 			{
 				GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "0", 1);
