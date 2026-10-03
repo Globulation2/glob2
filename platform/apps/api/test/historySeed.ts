@@ -235,7 +235,11 @@ async function webSession(db: Db, accountId: string): Promise<string> {
 export async function seedHistory(
   db: Db,
   blobs: BlobStore,
-  options: { replayBytes?: Uint8Array } = {},
+  options: {
+    replayBytes?: Uint8Array;
+    /** A real preview image for the catalog map (the e2e server passes an engine render). */
+    mapPreview?: { png: Uint8Array; width: number; height: number };
+  } = {},
 ): Promise<SeededHistory> {
   const sim = SIM;
   await serveSim(db, sim);
@@ -279,7 +283,7 @@ export async function seedHistory(
       owner_account_id: accounts.mirelle,
     })
     .execute();
-  const preview = await putContent(blobs, previewPng(3, 96));
+  const preview = await putContent(blobs, options.mapPreview?.png ?? previewPng(3, 96));
   await db
     .insertInto('blobs')
     .values({
@@ -317,8 +321,8 @@ export async function seedHistory(
       validation: 'valid',
       preview_hash: preview.sha256,
       preview_status: 'ready',
-      preview_width: 96,
-      preview_height: 96,
+      preview_width: options.mapPreview?.width ?? 96,
+      preview_height: options.mapPreview?.height ?? 96,
       file_title: 'Even Ground Classic',
       uploader_account_id: accounts.mirelle,
     })

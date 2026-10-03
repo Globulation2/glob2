@@ -1,6 +1,7 @@
 // Browser smoke test of the built web app against a seeded API (server.ts).
 //   npm run build -w @glob2/web && npm run e2e -w @glob2/web
-// SCREENSHOT_DIR=<dir> also saves desktop and phone screenshots of each page.
+// SCREENSHOT_DIR=<dir> also saves desktop and phone screenshots of each page in
+// both themes; AXE_REPORT=<file> writes the axe results (smoke.spec.ts).
 import { defineConfig, devices } from '@playwright/test';
 
 const port = Number(process.env['PORT'] ?? 4280);
@@ -9,7 +10,7 @@ export default defineConfig({
   testDir: '.',
   testMatch: '*.spec.ts',
   outputDir: '../../../../artifacts/web-app/test-results',
-  timeout: 60_000,
+  timeout: 120_000,
   workers: 1,
   retries: 0,
   forbidOnly: Boolean(process.env['CI']),
