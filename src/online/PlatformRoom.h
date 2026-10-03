@@ -24,6 +24,7 @@
 namespace Online
 {
 class PlatformClient;
+class MapCache;
 class OnlineMatch;
 
 class PlatformRoom final : public RoomBackend
@@ -32,14 +33,16 @@ class PlatformRoom final : public RoomBackend
 	/// Creates a room hosted by the signed-in account.
 	/// `automaticMap`: the setup is the default room map (defaultRoomSetup), which grows
 	/// from two to four colonies when more people join, until the host picks a map.
-	static std::shared_ptr<PlatformRoom> create(PlatformClient &client, const std::string &name, bool listed,
-												const CustomGameSetup &setup, bool automaticMap = false);
+	/// Rooms download their maps into `maps`; client and cache must outlive the room.
+	static std::shared_ptr<PlatformRoom> create(PlatformClient &client, MapCache &maps, const std::string &name,
+												bool listed, const CustomGameSetup &setup, bool automaticMap = false);
 	/// Joins the room behind an invite code.
-	static std::shared_ptr<PlatformRoom> join(PlatformClient &client, const std::string &code);
+	static std::shared_ptr<PlatformRoom> join(PlatformClient &client, MapCache &maps, const std::string &code);
 	/// Opens (or joins) the unrated rematch room of a finished quick match
 	/// (match.rematch); the other players are invited by the platform.
-	static std::shared_ptr<PlatformRoom> rematch(PlatformClient &client, const std::string &matchId);
-	/// A room shown from a fixed state, without a connection (harness, gallery).
+	static std::shared_ptr<PlatformRoom> rematch(PlatformClient &client, MapCache &maps, const std::string &matchId);
+	/// A room shown from a fixed state, without a connection (harness, gallery); its
+	/// map is looked up in the user directory's cache (sharedMapCache()).
 	static std::shared_ptr<PlatformRoom> preview(Json room, std::string accountId,
 												 std::vector<std::pair<std::string, std::string>> chat = {});
 	~PlatformRoom() override;
@@ -123,7 +126,7 @@ class PlatformRoom final : public RoomBackend
 	const std::string &lastProblem() const { return problem; }
 
   private:
-	explicit PlatformRoom(PlatformClient *client);
+	PlatformRoom(PlatformClient *client, MapCache &maps);
 	void listen();
 	void adopt(const Json &room);
 	void call(const std::string &method, Json params, std::function<void(const Json &)> done = {});
@@ -138,6 +141,7 @@ class PlatformRoom final : public RoomBackend
 	void fetchMap();
 
 	PlatformClient *client;
+	MapCache &maps;
 	Json state;
 	std::string accountId;
 	std::deque<Event> events;

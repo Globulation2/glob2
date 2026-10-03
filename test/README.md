@@ -835,7 +835,10 @@ speed, through pause and hard pause, and plays the recorded replay back at 1x,
 maximum and fast-forward. The last case captures the engine's per-run checksums
 and requires the first four (speed and pause) and the last three (playback) to
 agree. `python3 test/run_tests.py --filter 'GameSpeed/settings*'` runs the settings
-case alone.
+case alone. That case also clicks the top bar's speed chevrons. The `GameSpeedControl`
+suite (`test/GameSpeedControlTest.cpp`, unit binary) covers the chevron presets and
+the tick-rate readout's window, one-second refresh, stall decay and formatting with
+explicit times.
 
 ## Pre-game map preview regression
 
@@ -1067,8 +1070,12 @@ Set `GLOB2_ZONE_EVIDENCE_DIR` to an existing ignored artifact directory to captu
 the 33% outline fixtures.
 
 Zone boundaries use `GraphicContext::drawMapBoundary`: positions snap to the
-active target's pixel grid and strokes remain at least one target pixel wide.
-Ordinary UI lines retain their existing sizing behavior.
+active target's pixel grid and strokes remain at least one target pixel wide,
+up to an optional cap in screen points. Ordinary UI lines retain their existing
+sizing behavior. With adaptive zoom detail the game fades these outlines out as
+the map zooms out and fills zones with `drawMapFill` instead; see
+[Adaptive zoom detail](../docs/development/reference.md#adaptive-zoom-detail).
+`ZoomDetail/*` in the unit tests covers the curves that decide when.
 
 ## Parallel compute prototype
 

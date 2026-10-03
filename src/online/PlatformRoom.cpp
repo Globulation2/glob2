@@ -54,7 +54,7 @@ struct PlatformRoom::MapFetch
 	std::string hash;
 };
 
-PlatformRoom::PlatformRoom(PlatformClient *client) : client(client)
+PlatformRoom::PlatformRoom(PlatformClient *client, MapCache &maps) : client(client), maps(maps)
 {
 	if (client)
 		calls = std::make_unique<PlatformScope>(*client);
@@ -65,10 +65,10 @@ PlatformRoom::PlatformRoom(PlatformClient *client) : client(client)
 // calls (a member) cancels the room's requests and removes its listeners.
 PlatformRoom::~PlatformRoom() = default;
 
-std::shared_ptr<PlatformRoom> PlatformRoom::create(PlatformClient &client, const std::string &name, bool listed,
-												   const CustomGameSetup &setup, bool automaticMap)
+std::shared_ptr<PlatformRoom> PlatformRoom::create(PlatformClient &client, MapCache &maps, const std::string &name,
+												   bool listed, const CustomGameSetup &setup, bool automaticMap)
 {
-	std::shared_ptr<PlatformRoom> room(new PlatformRoom(&client));
+	std::shared_ptr<PlatformRoom> room(new PlatformRoom(&client, maps));
 	room->automaticMap = automaticMap;
 	room->listen();
 	Json params{{"name", name.substr(0, 64)}, {"visibility", listed ? "public" : "link"}};
@@ -95,9 +95,9 @@ std::shared_ptr<PlatformRoom> PlatformRoom::create(PlatformClient &client, const
 	return room;
 }
 
-std::shared_ptr<PlatformRoom> PlatformRoom::join(PlatformClient &client, const std::string &code)
+std::shared_ptr<PlatformRoom> PlatformRoom::join(PlatformClient &client, MapCache &maps, const std::string &code)
 {
-	std::shared_ptr<PlatformRoom> room(new PlatformRoom(&client));
+	std::shared_ptr<PlatformRoom> room(new PlatformRoom(&client, maps));
 	room->listen();
 	room->call("room.join", Json{{"code", code}}, [room = room.get()](const Json &result) {
 		if (result.contains("room"))
@@ -106,9 +106,9 @@ std::shared_ptr<PlatformRoom> PlatformRoom::join(PlatformClient &client, const s
 	return room;
 }
 
-std::shared_ptr<PlatformRoom> PlatformRoom::rematch(PlatformClient &client, const std::string &matchId)
+std::shared_ptr<PlatformRoom> PlatformRoom::rematch(PlatformClient &client, MapCache &maps, const std::string &matchId)
 {
-	std::shared_ptr<PlatformRoom> room(new PlatformRoom(&client));
+	std::shared_ptr<PlatformRoom> room(new PlatformRoom(&client, maps));
 	room->listen();
 	room->call("match.rematch", Json{{"matchId", matchId}}, [room = room.get()](const Json &result) {
 		if (result.contains("room"))
@@ -120,7 +120,7 @@ std::shared_ptr<PlatformRoom> PlatformRoom::rematch(PlatformClient &client, cons
 std::shared_ptr<PlatformRoom> PlatformRoom::preview(Json roomState, std::string account,
 													std::vector<std::pair<std::string, std::string>> chat)
 {
-	std::shared_ptr<PlatformRoom> room(new PlatformRoom(nullptr));
+	std::shared_ptr<PlatformRoom> room(new PlatformRoom(nullptr, sharedMapCache()));
 	room->accountId = std::move(account);
 	room->adopt(roomState);
 	for (auto &line : chat)
@@ -190,7 +190,7 @@ void PlatformRoom::listen()
 		OnlineMatch::Context context;
 		context.label = text("[room match label]") + " · " + roomName();
 		context.fromRoom = true;
-		match = std::make_shared<OnlineMatch>(*client, data, context);
+		match = std::make_shared<OnlineMatch>(*client, maps, data, context);
 		Event event;
 		event.kind = Event::Launch;
 		push(std::move(event));
@@ -357,7 +357,7 @@ void PlatformRoom::fetchMap()
 	mapPath.clear();
 	if (!client)
 	{
-		if (auto path = services().maps.path(hash))
+		if (auto path = maps.path(hash))
 			mapPath = *path;
 		return;
 	}
@@ -366,7 +366,7 @@ void PlatformRoom::fetchMap()
 	HttpFetch::Headers headers;
 	if (!client->accessToken().empty())
 		headers.push_back({"Authorization", "Bearer " + client->accessToken()});
-	mapFetch->download = services().maps.fetch(client->origin(), hash, headers);
+	mapFetch->download = maps.fetch(client->origin(), hash, headers);
 }
 
 void PlatformRoom::update()
@@ -636,16 +636,23 @@ std::string PlatformRoom::waitingFor() const
 	if (map == "failed")
 		return text("[room map failed]");
 	std::vector<std::string> waiting;
+	bool waitingForMe = false;
 	int occupied = 0;
 	for (const auto &slot : slots())
 	{
 		if (!slot.open && !slot.locked)
 			++occupied;
 		if (!slot.ai && !slot.open && !slot.locked && !slot.ready)
+		{
 			waiting.push_back(slot.name);
+			waitingForMe = waitingForMe || slot.local;
+		}
 	}
 	if (occupied < 2)
 		return text("[room needs two seats]");
+	// Speak to the player the room waits for, not about them.
+	if (waitingForMe)
+		return text("[room waiting for you]");
 	if (waiting.size() == 1)
 		return formatted("[room waiting for %0]", waiting.front());
 	if (!waiting.empty())

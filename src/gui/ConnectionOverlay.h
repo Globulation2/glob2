@@ -18,7 +18,7 @@
 //   the fast-forward) and out of sync (rejoining after the relay's verdict).
 // - One-line notices in the message list when another player's state changes.
 //
-// Presentation only: it reads a ConnectionSnapshot (Engine builds it from the
+// Presentation only: it reads a ConnectionSnapshot (TurnMatchPresenter builds it from the
 // TurnSession) and is never simulated, networked or saved.
 
 #include <GraphicContext.h>

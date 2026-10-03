@@ -234,26 +234,15 @@ void GameGUITouch::drawHUD()
 			 .arg(gui.drawnScene().panels.hud.prestigeToReach)});
 	stats.push_back({"+" + std::to_string(gui.drawnScene().panels.local.unitConversionGained) + " / −" +
 					 std::to_string(gui.drawnScene().panels.local.unitConversionLost)});
-	int cpu = 0;
-	for (const auto &value : gui.smoothedCPULoad)
-		cpu += value;
-	cpu /= GameGUI::SMOOTHED_CPU_SIZE;
-	// The load reads as jargon ("CPU 100%") and alarms on a phone; it shows only when
-	// the device is struggling, in words.
-	if (cpu >= 75)
-		stats.push_back(
-			{GAGCore::FormattableString(GAGCore::Toolkit::getStringTable()->getString("[device busy %0]"))
-				 .arg(cpu),
-			 -1, true});
-	const int columns = hud.columns;
-	const double cell = (hud.stats.w + 3 * unit) / columns;
-	const double start = hud.stats.x;
+	// The last cell holds the speed chevrons and the simulation tick rate; where
+	// the speed is fixed (network games) the rate has the cell to itself.
+	const auto rate = gui.tickRate.rate();
+	const bool chevrons = gui.canChangeGameSpeed();
+	stats.push_back({rate ? TickRateMeter::format(*rate) : "-", -1, gui.tickRateShortfall() == 2});
 	for (size_t i = 0; i < stats.size(); ++i)
 	{
 		const auto &stat = stats[i];
-		const ViewRect r{start + (i % columns) * cell,
-						 hud.stats.y + (i / columns) * 28 * unit, cell - 3 * unit,
-						 24 * unit};
+		const ViewRect r = statRect(hud, int(i));
 		gfx->drawFilledRect(int(r.x), int(r.y), int(r.w), int(r.h), InGameTouchTheme::paper);
 		if (stat.warning)
 			gfx->drawRect(int(r.x), int(r.y), int(r.w), int(r.h), Color(230, 100, 95));
@@ -267,6 +256,23 @@ void GameGUITouch::drawHUD()
 			gfx->setUITransform();
 			gfx->setClipRect();
 			inset = 20 * unit;
+		}
+		if (chevrons && i + 1 == stats.size())
+		{
+			const int lit = gui.litSpeedChevrons();
+			const double middle = r.y + r.h / 2;
+			for (int c = 0; c < GameSpeedControl::CHEVRONS; ++c)
+			{
+				const Color color = c < lit ? Color(120, 230, 120) : Color(110, 95, 125);
+				// Half-pixel steps fill a stroke two points thick.
+				for (double stroke = 0; stroke < 2 * unit; stroke += .5)
+				{
+					const float x = float(r.x + (4 + c * 7.5) * unit + stroke);
+					gfx->drawLine(x, float(middle - 5 * unit), float(x + 4.5 * unit), float(middle), color);
+					gfx->drawLine(float(x + 4.5 * unit), float(middle), x, float(middle + 5 * unit), color);
+				}
+			}
+			inset = 42 * unit;
 		}
 		drawPointLabel({r.x + inset, r.y, r.w - inset, r.h}, stat.text, .72);
 	}
@@ -584,6 +590,26 @@ GameGUITouch::HudLayout GameGUITouch::hudLayout(const MobileLayout &ui) const
 	const double header = InGameTouchTheme::inspectorHeader * unit;
 	hud.identity = {hud.stats.x, hud.minimap.y + hud.minimap.h - header, hud.stats.w, header};
 	return hud;
+}
+
+ViewRect GameGUITouch::statRect(const HudLayout &hud, int index) const
+{
+	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
+	const double cell = (hud.stats.w + 3 * unit) / hud.columns;
+	return {hud.stats.x + (index % hud.columns) * cell,
+			hud.stats.y + (index / hud.columns) * 28 * unit, cell - 3 * unit, 24 * unit};
+}
+
+ViewRect GameGUITouch::speedRect() const
+{
+	if (!gui.canChangeGameSpeed())
+		return {};
+	const auto hud = hudLayout(layout());
+	auto rect = statRect(hud, 5);
+	// A thumb-sized target reaches below the cell unless the identity bar sits there.
+	if (!(inspecting() && !layout().persistentPanel))
+		rect.h = InGameTouchTheme::target * globalContainer->gfx->logicalUnitsPerPoint();
+	return rect;
 }
 
 ViewRect GameGUITouch::minimapRect() const

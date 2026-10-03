@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "field/Frontier.h"
 #include "shared_runtime/Position.h"
 #include "Map.h"
 
@@ -287,11 +288,11 @@ namespace AISharedRuntime
 			friend class ::RuntimeContinuationTest;
 
 			///Causes the gradient to be updated
-			void recalculate(Map* map);
+			void recalculate(Map* map, field::Frontier& frontier);
 			///Toroidal 8-connected BFS expansion from sources already seeded in `gradient`.
 			///Push order is fixed for deterministic networking; do not change without
-			///verifying lockstep behavior. Drains `positions`.
-			void expand_bfs(std::queue<position>& positions);
+			///verifying lockstep behavior. Clears `frontier`, retaining its capacity.
+			void expand_bfs(field::Frontier& frontier);
 			///Returns the gradient info for comparison
 			const GradientInfo& get_gradient_info() const { return gradient_info; }
 			int width;
@@ -327,6 +328,7 @@ namespace AISharedRuntime
 			static int increment(const int x) { return x+1; }
 			std::vector<std::shared_ptr<Gradient> > gradients;
 			std::queue<int> queuedGradients;
+			field::Frontier frontier; // transient, shared by this manager's fields
 			std::vector<int> ticks_since_update;
 			Map* map;
 			unsigned int cur_update;

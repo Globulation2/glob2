@@ -135,7 +135,8 @@ void TeamStatChart::paintCurves(const Game &game, GAGCore::DrawableSurface &surf
 		}
 		std::string valueText = getRightScaleText(value, max_digit_count - 1);
 		int height = globalContainer->littleFont->getStringHeight(valueText.c_str());
-		surface.drawString(x + e_width + 8, y + pos - height / 2, globalContainer->littleFont, valueText.c_str());
+		// The top value sits on the chart's top edge: keep it inside, not half cut off.
+		surface.drawString(x + e_width + 8, std::max(y, y + pos - height / 2), globalContainer->littleFont, valueText.c_str());
 	}
 
 	///Draw vertical lines to give the timescale

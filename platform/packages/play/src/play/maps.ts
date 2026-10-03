@@ -84,7 +84,20 @@ const GENERATION_RETRY_SECONDS = 60;
  */
 export async function requestGeneratedMap(
   db: Db,
-  jobs: JobQueue,
+  _jobs: JobQueue,
+  generator: GeneratorDescriptor,
+  simVersion: string,
+): Promise<GeneratedMapState> {
+  return requestGeneration(db, generator, simVersion);
+}
+
+/**
+ * requestGeneratedMap without a job queue (engine jobs are rows of
+ * engine_jobs): the one way every map source starts a generate-map job,
+ * including the warm pool. A failed submission marks the row failed and throws.
+ */
+export async function requestGeneration(
+  db: Db,
   generator: GeneratorDescriptor,
   simVersion: string,
 ): Promise<GeneratedMapState> {
@@ -173,11 +186,9 @@ export interface PooledMap {
 }
 
 /**
- * Pre-generated queue maps. The engine-agent work provides the real pool
- * (`takeWarmMap(db, queueId, simVersionKey, { entry })` in warmMaps.ts,
- * migration 0004): wire it as
- * `{ takeWarmMap: (q, s, o) => takeWarmMap(db, q, s, o) }`. Without a pool,
- * queue matches generate on demand.
+ * Pre-generated queue maps: the warm pool (`takeWarmMap(db, queueId,
+ * simVersionKey, { entry })` in warmMaps.ts, itself a layer over generated
+ * maps). Without a pool, queue matches generate on demand.
  */
 export interface WarmMapSource {
   /** Takes one ready map of the queue, sim version (and pool entry) out of the pool, if any. */

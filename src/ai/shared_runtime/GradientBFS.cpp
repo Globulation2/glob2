@@ -8,7 +8,7 @@
 #include <PerformanceTelemetry.h>
 #include "shared_runtime/Runtime.h"
 
-#include <queue>
+#include "field/UniformTraversal.h"
 
 using namespace AISharedRuntime;
 using namespace AISharedRuntime::Gradients;
@@ -33,52 +33,10 @@ Gradient::Gradient(const GradientInfo& gi)
 }
 
 
-void Gradient::expand_bfs(std::queue<position>& positions)
+void Gradient::expand_bfs(field::Frontier& frontier)
 {
 	PERF_SCOPE_TIME(AIGradient);
-	const int height = static_cast<int>(gradient.size()) / width;
-	while(!positions.empty())
-	{
-		position p=positions.front();
-		positions.pop();
-
-		int left=p.x-1;
-		if(left<0)
-			left+=width;
-		int right=p.x+1;
-		if(right>=width)
-			right-=width;
-		int up=p.y-1;
-		if(up<0)
-			up+=height;
-		int down=p.y+1;
-		if(down>=height)
-			down-=height;
-		const int center_h=p.x;
-		const int center_y=p.y;
-		const Sint16 n=gradient[get_pos(center_h, center_y)];
-
-		// 8-neighbor BFS step. Push order is fixed for deterministic networking
-		// (lockstep desyncs if any client sees the queue in a different order);
-		// do not reorder.
-		const position neighbors[8] = {
-			position(left,     up),
-			position(center_h, up),
-			position(right,    up),
-			position(left,     center_y),
-			position(right,    center_y),
-			position(left,     down),
-			position(center_h, down),
-			position(right,    down),
-		};
-		for (const position& nb : neighbors)
-		{
-			const int idx = get_pos(nb.x, nb.y);
-			if (gradient[idx] == 0)
-			{
-				gradient[idx] = n + 1;
-				positions.push(nb);
-			}
-		}
-	}
+	field::expandDistances(gradient,frontier,
+		{width,static_cast<int>(gradient.size())/width},field::Surrounding,Sint16(0));
+	frontier.clear();
 }

@@ -17,20 +17,14 @@
 
 namespace gradient_kernel
 {
-struct GradientGeometry
-{
-	// Width and height are powers of two. Each mask wraps a coordinate, and
-	// widthShift converts a row number to its flat-buffer offset.
-	std::size_t cells;
-	int widthMask, heightMask, widthShift;
-};
-
 // Seeds are already encoded as GRADIENT_AT_GOAL - starting cost. Values 0 and 1
 // are forbidden and unreachable cells, respectively. The caller reseeds before
 // every run; a completed field cannot be reused as its own seed buffer.
+// The cap limits propagation, not the supplied seed values. Preserve those
+// values even when a deferred seed lies beyond the last expandable cost layer.
 template<class IsWater>
 void propagateField(std::uint16_t *gradient, int swimClass, int maxCost,
-	GradientGeometry geometry, GradientWorkspace &workspace, IsWater isWater)
+	field::Grid geometry, GradientWorkspace &workspace, IsWater isWater)
 {
 	auto *buckets = workspace.buckets.data();
 	auto &deferredSeeds = workspace.deferredSeeds;
@@ -42,7 +36,7 @@ void propagateField(std::uint16_t *gradient, int swimClass, int maxCost,
 	std::size_t pending = 0;
 	// Seeds beyond the largest edge cost cannot enter the initial ring without
 	// aliasing a cheaper layer. Hold them sorted until the sweep reaches them.
-	for (std::size_t i = 0; i < geometry.cells; i++)
+	for (std::size_t i = 0; i < geometry.cells(); i++)
 		if (gradient[i] > GRADIENT_UNREACHABLE)
 		{
 			int cost = GRADIENT_AT_GOAL - gradient[i];
@@ -70,7 +64,7 @@ void propagateField(std::uint16_t *gradient, int swimClass, int maxCost,
 				pending++;
 			}
 			expandBucket<decltype(weighted)::value>(gradient, buckets, pending, cur, limit,
-				geometry.widthMask, geometry.heightMask, geometry.widthShift, waterSteps, waterAt);
+				geometry, waterSteps, waterAt);
 		}
 	};
 	if (!weightedClass(swimClass))

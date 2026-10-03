@@ -178,9 +178,6 @@ void GameGUI::init()
 
 	hiddenGUIElements=0;
 
- 	for (size_t i=0; i<SMOOTHED_CPU_SIZE; i++)
-		smoothedCPULoad[i]=0;
-	smoothedCPUPos=0;
 
 	campaign=NULL;
 	missionName="";

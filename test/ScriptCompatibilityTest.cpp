@@ -133,13 +133,13 @@ TEST_CASE("Team-capacity change rejects released replays and enforces acceptance
 	options.loadStrings = true;
 	glob2test::HeadlessGlobals globals(options);
 	CHECK(REPLAY_MINIMUM_VERSION_MINOR == 127);
-	CHECK(VERSION_MINOR == 129);
+	CHECK(VERSION_MINOR == 130);
 	CHECK(FILE_FORMAT_VERSION_JAVASCRIPT == 125);
 	CHECK(FILE_FORMAT_VERSION_EXPERIMENTS == 124);
 	ReplayReader released;
 	CHECK_FALSE(
 		released.loadReplay(glob2test::inflated("javascript/released-v123.replay.gz").string()));
-	for (Uint16 version : {122, 123, 124, 125, 126, 127, 128, 129, 130})
+	for (Uint16 version : {122, 123, 124, 125, 126, 127, 128, 129, 130, 131})
 	{
 		CAPTURE(version);
 		auto *memory = new GAGCore::MemoryStreamBackend;
@@ -148,6 +148,8 @@ TEST_CASE("Team-capacity change rejects released replays and enforces acceptance
 		output.writeUint16(version, "versionMinor");
 		output.writeUint32(0, "replayStepsSinceLastOrder");
 		NetSendOrder(std::make_shared<NullOrder>()).encodeData(&output);
+		if (version >= FILE_FORMAT_VERSION_CUSTOM_AI)
+			ReplayTelemetry::Stream().write(&output);
 		auto bytes = memory->takeContents();
 		auto *input = new GAGCore::BinaryInputStream(
 			new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size()));

@@ -11,6 +11,12 @@ permissions:
 
 jobs:
   verify:
+    if: >-
+      github.repository == 'genixpro/glob2-release' &&
+      github.repository_id == 1397722696 &&
+      github.ref == 'refs/heads/master' &&
+      (github.event_name == 'schedule' ||
+       (github.actor_id == 6193625 && github.triggering_actor == 'genixpro'))
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2

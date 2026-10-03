@@ -384,6 +384,8 @@ int GameGUITouch::interfaceRegion(ViewPoint point) const
 	{
 		if (minimapRect().contains(point))
 			return 8;
+		if (speedRect().contains(point))
+			return 49;
 		if (layout().actions.contains(point))
 			return 10 + std::min(5, int((point.x - layout().actions.x) / (layout().actions.w / 6)));
 		const auto header = allocationRect();
@@ -1149,6 +1151,11 @@ void GameGUITouch::interfaceTap(ViewPoint point)
 			dismissMapPanels(); // Outside tap closes the whole transient UI.
 		else
 			peekOpen = false; // Explicit Done returns to the tools.
+		return;
+	}
+	if (usesHUD() && interfaceRegion(point) == 49)
+	{
+		gui.cycleGameSpeed();
 		return;
 	}
 	if (usesHUD() && interfaceRegion(point) == 38)

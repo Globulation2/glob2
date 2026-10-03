@@ -26,6 +26,9 @@
 #include <FileManager.h>
 #include <Toolkit.h>
 #include "Application.h"
+#include "OnlineServices.h"
+#include "PlatformClient.h"
+#include "QuickMatch.h"
 #include "gui/LoadSaveDialog.h"
 #include "gui/GameGUIDialog.h"
 #include "FertilityCalculator.h"
@@ -268,6 +271,28 @@ TEST_SUITE("EngineSession")
 		        require(application.frame(SDL_GetTicks(), {}), "Shutdown must present its completion before releasing graphics");
 		        require(!application.frame(SDL_GetTicks(), {}), "Native shutdown must complete after persistence");
 		        std::cout << "PASS application quit waits for final persistence" << std::endl;
+		    }
+		    {
+		        // The application owns its online services: created on first use while it
+		        // runs, connecting, and released (connection closed) when it goes. Earlier
+		        // cases may have created the harness-wide fallback services.
+		        const bool fallback = Online::servicesCreated();
+		        {
+		            Application application;
+		            require(!Online::servicesCreated(), "A new application must not create online services");
+		            Online::Services& online = Online::services();
+		            require(Online::servicesCreated() && &Online::services() == &online, "services() must return the application's");
+		            online.client.start("https://127.0.0.1:9");
+		            Online::quickMatch();
+		            for (int i = 0; i < 20; ++i)
+		                Online::pump();
+		            SDL_Event quit{};
+		            quit.type = SDL_EVENT_QUIT;
+		            while (application.frame(SDL_GetTicks(), {quit}))
+		                Online::pump();
+		        }
+		        require(Online::servicesCreated() == fallback, "The application must release its online services");
+		        std::cout << "PASS the application owns and releases its online services" << std::endl;
 		    }
 		    {
 		        auto& gfx = *globalContainer->gfx;

@@ -1,0 +1,237 @@
+name: App signing fingerprints
+
+# Public source of truth. Mirror a reviewed commit to genixpro/glob2-release;
+# only that repository's owner can dispatch it, and every job is skipped in
+# Globulation2/glob2. Prints only public certificate SHA-256 fingerprints and the
+# Apple App ID's Team ID and capabilities, for invite-link verification
+# (docs/hosting/README.md#mobile-app-links). Never print keys or passwords.
+on:
+  workflow_dispatch:
+    inputs:
+      enable_associated_domains:
+        description: Enable Associated Domains on the org.globulation2.glob2 App ID if missing
+        required: true
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: app-signing-fingerprints
+  cancel-in-progress: false
+
+env:
+  GLOB2_DEV_MODE: isolated
+
+jobs:
+  android-play:
+    name: Play upload and app signing certificates
+    if: ${{ github.repository == 'genixpro/glob2-release' && github.repository_id == 1397722696 && github.actor == 'genixpro' && github.actor_id == 6193625 && github.triggering_actor == 'genixpro' && github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    environment: google-play-internal
+    permissions:
+      contents: read
+      id-token: write
+    outputs:
+      upload_sha256: ${{ steps.upload.outputs.upload_sha256 }}
+      play_sha256: ${{ steps.play.outputs.play_sha256 }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Confirm owner-controlled mirror release context
+        env:
+          RELEASE_REF: ${{ github.ref }}
+          RELEASE_REPOSITORY: ${{ github.repository }}
+          RELEASE_EVENT: ${{ github.event_name }}
+          RELEASE_ACTOR: ${{ github.actor }}
+          RELEASE_TRIGGERING_ACTOR: ${{ github.triggering_actor }}
+        run: |
+          test "$RELEASE_REPOSITORY" = genixpro/glob2-release
+          test "$RELEASE_REF" = refs/heads/master
+          test "$RELEASE_EVENT" = workflow_dispatch
+          test "$RELEASE_ACTOR" = genixpro
+          test "$RELEASE_TRIGGERING_ACTOR" = genixpro
+
+      - name: Install pinned JDK and apksigner
+        run: |
+          python3 mobile/setup_tools.py
+          python3 - <<'PY'
+          import json, os, pathlib, subprocess, sys
+          root = pathlib.Path.cwd()
+          sys.path.insert(0, str(root / 'scons'))
+          from dev_store import paths
+          dev = paths(root)
+          sdk = pathlib.Path(dev['android_sdk'])
+          lock = json.loads((root / 'mobile/toolchain.json').read_text())['android']
+          env = dict(os.environ, JAVA_HOME=dev['java_home'], ANDROID_HOME=str(sdk), ANDROID_SDK_ROOT=str(sdk))
+          manager = sdk / 'cmdline-tools/19.0/bin/sdkmanager'
+          subprocess.run([str(manager), f'--sdk_root={sdk}', '--licenses'], input='y\n' * 100, text=True, env=env, check=True)
+          subprocess.run([str(manager), f'--sdk_root={sdk}', f"build-tools;{lock['build_tools']}"], env=env, check=True)
+          PY
+
+      - name: Upload key certificate
+        id: upload
+        env:
+          GLOB2_PLAY_UPLOAD_KEYSTORE_BASE64: ${{ secrets.GLOB2_PLAY_UPLOAD_KEYSTORE_BASE64 }}
+          GLOB2_PLAY_STORE_PASSWORD: ${{ secrets.GLOB2_PLAY_STORE_PASSWORD }}
+        run: |
+          python3 mobile/app_link_fingerprints.py keystore --label 'Google Play upload key' \
+            --keystore-env GLOB2_PLAY_UPLOAD_KEYSTORE_BASE64 --password-env GLOB2_PLAY_STORE_PASSWORD \
+            --alias glob2-upload --output upload_sha256
+
+      - name: Authenticate to Google Play
+        id: auth
+        continue-on-error: true
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3.0.0
+        with:
+          workload_identity_provider: ${{ vars.GLOB2_PLAY_WIF_PROVIDER }}
+          service_account: ${{ vars.GLOB2_PLAY_SERVICE_ACCOUNT }}
+
+      - name: Install Google Play API client
+        if: steps.auth.outcome == 'success'
+        run: |
+          python3 -m venv build/play-api-venv
+          build/play-api-venv/bin/python -m pip install --disable-pip-version-check \
+            --require-hashes --only-binary=:all: -r mobile/play-api-requirements.txt
+
+      - name: Play App Signing certificate from the latest internal release
+        id: play
+        if: steps.auth.outcome == 'success'
+        continue-on-error: true
+        run: build/play-api-venv/bin/python mobile/app_link_fingerprints.py play
+
+      - name: Explain a missing Play App Signing certificate
+        if: steps.play.outcome != 'success'
+        env:
+          AUTH: ${{ steps.auth.outcome }}
+        run: |
+          {
+            echo '### Google Play App Signing certificate: not read'
+            echo
+            if [ "$AUTH" != success ]; then
+              echo 'Workload Identity Federation refused this workflow. Allow'
+              echo '`genixpro/glob2-release/.github/workflows/app-signing-fingerprints.yml@refs/heads/master`'
+              echo 'in the provider condition next to android-play-internal.yml (docs/mobile/development.md).'
+            else
+              echo 'The Play Developer API call failed; see the step log.'
+            fi
+            echo 'Fallback: Play Console > Test and release > App integrity > App signing key certificate.'
+          } >> "$GITHUB_STEP_SUMMARY"
+          exit 1
+
+  android-amazon:
+    name: Amazon Appstore certificate
+    if: ${{ github.repository == 'genixpro/glob2-release' && github.repository_id == 1397722696 && github.actor == 'genixpro' && github.actor_id == 6193625 && github.triggering_actor == 'genixpro' && github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    environment: amazon-appstore
+    outputs:
+      amazon_sha256: ${{ steps.amazon.outputs.amazon_sha256 }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Confirm owner-controlled mirror release context
+        env:
+          RELEASE_REF: ${{ github.ref }}
+          RELEASE_REPOSITORY: ${{ github.repository }}
+          RELEASE_EVENT: ${{ github.event_name }}
+          RELEASE_ACTOR: ${{ github.actor }}
+          RELEASE_TRIGGERING_ACTOR: ${{ github.triggering_actor }}
+        run: |
+          test "$RELEASE_REPOSITORY" = genixpro/glob2-release
+          test "$RELEASE_REF" = refs/heads/master
+          test "$RELEASE_EVENT" = workflow_dispatch
+          test "$RELEASE_ACTOR" = genixpro
+          test "$RELEASE_TRIGGERING_ACTOR" = genixpro
+
+      - name: Install pinned JDK
+        run: python3 mobile/setup_tools.py
+
+      - name: Amazon key certificate
+        id: amazon
+        env:
+          GLOB2_AMAZON_KEYSTORE_BASE64: ${{ secrets.GLOB2_AMAZON_KEYSTORE_BASE64 }}
+          GLOB2_AMAZON_STORE_PASSWORD: ${{ secrets.GLOB2_AMAZON_STORE_PASSWORD }}
+          GLOB2_AMAZON_CERT_SHA256: ${{ vars.GLOB2_AMAZON_CERT_SHA256 }}
+        run: |
+          python3 mobile/app_link_fingerprints.py keystore \
+            --label 'Amazon Appstore key (Fire edition has no invite links; not needed in instance.yaml)' \
+            --keystore-env GLOB2_AMAZON_KEYSTORE_BASE64 --password-env GLOB2_AMAZON_STORE_PASSWORD \
+            --alias glob2-amazon --expected "$GLOB2_AMAZON_CERT_SHA256" --output amazon_sha256
+
+  ios:
+    name: Apple App ID and Associated Domains
+    if: ${{ github.repository == 'genixpro/glob2-release' && github.repository_id == 1397722696 && github.actor == 'genixpro' && github.actor_id == 6193625 && github.triggering_actor == 'genixpro' && github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    environment: ios-testflight
+    outputs:
+      team_id: ${{ steps.appid.outputs.team_id }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Confirm owner-controlled mirror release context
+        env:
+          RELEASE_REF: ${{ github.ref }}
+          RELEASE_REPOSITORY: ${{ github.repository }}
+          RELEASE_EVENT: ${{ github.event_name }}
+          RELEASE_ACTOR: ${{ github.actor }}
+          RELEASE_TRIGGERING_ACTOR: ${{ github.triggering_actor }}
+        run: |
+          test "$RELEASE_REPOSITORY" = genixpro/glob2-release
+          test "$RELEASE_REF" = refs/heads/master
+          test "$RELEASE_EVENT" = workflow_dispatch
+          test "$RELEASE_ACTOR" = genixpro
+          test "$RELEASE_TRIGGERING_ACTOR" = genixpro
+
+      - name: Check App ID capabilities and profiles
+        id: appid
+        env:
+          ASC_KEY_ID: ${{ secrets.IOS_ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.IOS_ASC_ISSUER_ID }}
+          ASC_KEY_P8_BASE64: ${{ secrets.IOS_ASC_KEY_P8_BASE64 }}
+          ENABLE: ${{ inputs.enable_associated_domains }}
+        run: |
+          set -euo pipefail
+          key="$RUNNER_TEMP/glob2-ios-auth.p8"
+          trap 'rm -f "$key"' EXIT
+          python3 - <<'PY'
+          import base64, os
+          from pathlib import Path
+          for name in ('ASC_KEY_ID', 'ASC_ISSUER_ID', 'ASC_KEY_P8_BASE64'):
+              if not os.environ.get(name):
+                  raise SystemExit(f'Missing GitHub secret for {name}')
+          path = Path(os.environ['RUNNER_TEMP']) / 'glob2-ios-auth.p8'
+          path.write_bytes(base64.b64decode(os.environ['ASC_KEY_P8_BASE64'], validate=True))
+          path.chmod(0o600)
+          PY
+          flag=()
+          if [ "$ENABLE" != true ]; then flag=(--no-enable); fi
+          python3 mobile/app_link_fingerprints.py ios --key-path "$key" "${flag[@]}"
+
+  report:
+    name: instance.yaml snippet
+    needs: [android-play, android-amazon, ios]
+    if: ${{ always() && github.repository == 'genixpro/glob2-release' && github.repository_id == 1397722696 && github.actor == 'genixpro' && github.actor_id == 6193625 && github.triggering_actor == 'genixpro' && github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Write the instance.yaml appLinks block
+        env:
+          PLAY_SHA256: ${{ needs.android-play.outputs.play_sha256 }}
+          TEAM_ID: ${{ needs.ios.outputs.team_id }}
+        run: |
+          # Phones installed from Play see only the app signing certificate.
+          python3 mobile/app_link_fingerprints.py report --fingerprint "$PLAY_SHA256" --team-id "$TEAM_ID"

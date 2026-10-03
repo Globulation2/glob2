@@ -5,6 +5,7 @@
 #include "FormatableString.h"
 #include "ScrollTuning.h"
 #include "GameGUI.h"
+#include "scene/Scene.h"
 #include "GlobalContainer.h"
 #include "Player.h"
 #include "SoundMixer.h"
@@ -50,6 +51,8 @@ Element InGameMainScreen::build(const Presentation &p)
 			buttons.push_back(classicButton("load", loadLabel, [this] { finish(LOAD_GAME); }));
 		if (files && !replay && canSave)
 			buttons.push_back(classicButton("save", fe::tr("[save game]"), [this] { finish(SAVE_GAME); }));
+		buttons.push_back(
+			classicButton("telemetry", fe::tr("[AI telemetry]"), [this] { finish(AI_TELEMETRY); }));
 		buttons.push_back(classicButton("options", fe::tr("[Options]"), [this] { finish(OPTIONS); }));
 		// Single player pauses with its key; a network match shows the rule here
 		// too, as the touch sheet does.
@@ -75,9 +78,11 @@ Element InGameMainScreen::build(const Presentation &p)
 		buttons.push_back(item("save", fe::tr("[save game]"), SAVE_GAME));
 	if (files)
 		buttons.push_back(item("load", loadLabel, LOAD_GAME));
+	buttons.push_back(item("telemetry", fe::tr("[AI telemetry]"), AI_TELEMETRY));
 	buttons.push_back(item("options", fe::tr("[Options]"), OPTIONS));
-	buttons.push_back(item("quit", quitLabel, QUIT_GAME));
 	buttons.push_back(item("pause", pauseText, PAUSE_GAME, false, SDLK_UNKNOWN, pauseEnabled));
+	// Leaving ends the list, away from the everyday choices (it asks first).
+	buttons.push_back(item("quit", quitLabel, QUIT_GAME));
 	// Return stays pinned below the list so it is always in reach.
 	return fe::column({fe::paragraph(fe::tr("[Menu]"), {fe::FontRole::Heading, false, fe::TextAlign::Center}),
 					   fe::footer(fe::scroll("menu/scroll", fe::column(std::move(buttons), {p.pt(8)})),
@@ -719,4 +724,110 @@ Element InGameTextInput::build(const Presentation &p)
 	auto close =
 		fe::compactButton("close", fe::tr("[Close]"), fe::UIIcon::Close, [this] { finish(1); }, p);
 	return fe::row({fe::expanded(entry), send, close}, {p.pt(6), fe::CrossAlign::Center});
+}
+
+void InGameAITelemetryScreen::onUpdate(Uint32)
+{
+	const auto &scene = gui->drawnScene();
+	Uint32 players = 0;
+	for (const auto &record : scene.panels.aiTelemetry)
+		players |= Uint32(1) << record.player;
+	// Values are sampled every 32 ticks. Permission changes still refresh the
+	// dialog immediately, including when the viewer changes while paused.
+	if (sample != scene.tick / 32 || players != accessiblePlayers)
+	{
+		sample = scene.tick / 32;
+		accessiblePlayers = players;
+		invalidate();
+	}
+}
+
+Element InGameAITelemetryScreen::build(const Presentation &p)
+{
+	const auto &records = gui->drawnScene().panels.aiTelemetry;
+	std::vector<std::string> names;
+	int selected = 0;
+	for (unsigned i = 0; i < records.size(); ++i)
+	{
+		names.push_back(std::to_string(records[i].player + 1) + " · " + records[i].name);
+		if (records[i].player == player)
+			selected = int(i);
+	}
+	std::vector<Element> rows;
+	if (records.empty())
+		rows.push_back(fe::paragraph(fe::tr("[No accessible AI telemetry.]")));
+	else
+	{
+		player = records[selected].player;
+		rows.push_back(fe::field(fe::tr("[Player]"),
+								 fe::choice("telemetry/player", names, selected,
+											[this](int index)
+											{
+												const auto &values =
+													gui->drawnScene().panels.aiTelemetry;
+												if (index >= 0 && size_t(index) < values.size())
+													player = values[index].player;
+												invalidate();
+											})));
+		rows.push_back(
+			fe::field(fe::tr("[Search fields]"), fe::textField("telemetry/search", search,
+															 [this](const std::string &value)
+															 {
+																 search = value;
+																 invalidate();
+															 })));
+		const auto &record = records[selected];
+		if (!record.available)
+			rows.push_back(
+				fe::paragraph(fe::tr("[Telemetry unavailable for this recording or controller.]")));
+		else
+		{
+			auto values = record.values;
+			std::sort(values.begin(), values.end(),
+					  [](const auto &a, const auto &b) { return a.name < b.name; });
+			// ASCII folding preserves UTF-8 bytes and makes common API field names easy to find.
+			auto folded = [](std::string text)
+			{
+				for (char &c : text)
+					if (c >= 'A' && c <= 'Z')
+						c += 'a' - 'A';
+				return text;
+			};
+			const auto query = folded(search);
+			bool matched = false;
+			std::string group;
+			for (const auto &value : values)
+			{
+				if (!search.empty() &&
+					folded(value.name + " " + value.meaning + " " + value.value).find(query) ==
+						std::string::npos)
+					continue;
+				matched = true;
+				auto category = value.name.substr(0, value.name.find('.'));
+				if (category != group)
+				{
+					group = category;
+					rows.push_back(fe::paragraph(group, {fe::FontRole::Heading}));
+				}
+				rows.push_back(fe::paragraph(
+					value.name + ": " + value.value + (value.unit.empty() ? "" : " " + value.unit) +
+					"  · " +
+					std::string(GAGCore::FormattableString(fe::tr("[Updated at tick %0]"))
+									.arg(value.updated))));
+				if (!value.meaning.empty())
+					rows.push_back(fe::paragraph(value.meaning));
+			}
+			if (!matched)
+				rows.push_back(fe::paragraph(fe::tr(
+					search.empty() ? "[No values published yet.]" : "[No fields match your search.]")));
+		}
+	}
+	fe::ButtonOptions close;
+	close.shortcut = SDLK_ESCAPE;
+	return fe::column({fe::paragraph(fe::tr("[AI telemetry]"), {fe::FontRole::Heading}),
+					   fe::expanded(fe::footer(
+						   fe::scroll("telemetry/scroll", fe::column(std::move(rows), {p.pt(8)})),
+						   fe::button(
+							   "telemetry/close", fe::tr("[Close]"), [this] { finish(0); }, close)))},
+					  {p.pt(12)});
 }

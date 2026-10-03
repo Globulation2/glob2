@@ -1,3 +1,5 @@
+#include "field/PriorityTraversal.h"
+#include "field/UniformTraversal.h"
 #include "FileFormatVersions.h"
 #include "AIMaximaContinuation.h"
 #include "AIMaximaPlacementContinuation.h"
@@ -713,22 +715,12 @@ void Planner::prepareWaterDistanceCache(const WorldState& world) const
 	if(!changed&&int(waterDistanceCache.size())==size)return;
 
 	waterMaskCache.assign(size,0);waterDistanceCache.assign(size,INT_MAX);
-	std::vector<int> queue;queue.reserve(size);
+	auto& queue=distanceFrontiers[0];queue.clear();
 	for(int i=0;i<size;++i)if(world.tiles[i].water)
 	{
 		waterMaskCache[i]=1;waterDistanceCache[i]=0;queue.push_back(i);
 	}
-	for(size_t head=0;head<queue.size();++head)
-	{
-		const int current=queue[head],x=current%world.width,y=current/world.width;
-		const int neighbors[4]={world.index(x-1,y),world.index(x+1,y),
-			world.index(x,y-1),world.index(x,y+1)};
-		for(int d=0;d<4;++d)if(waterDistanceCache[neighbors[d]]==INT_MAX)
-		{
-			waterDistanceCache[neighbors[d]]=waterDistanceCache[current]+1;
-			queue.push_back(neighbors[d]);
-		}
-	}
+	field::expandDistances(waterDistanceCache,queue,{world.width,world.height},field::Cardinal,INT_MAX);
 }
 
 void Planner::prepareScoringCaches(const WorldState& world) const
@@ -769,8 +761,8 @@ void Planner::prepareScoringCaches(const WorldState& world) const
 		completedBuildingDistanceCache.assign(size,INT_MAX);
 		criticalBuildingDistanceCache.assign(size,INT_MAX);
 		towerBuildingDistanceCache.assign(size,INT_MAX);
-		std::vector<int> queues[3];
-		for(int field=0;field<3;++field)queues[field].reserve(size);
+		auto& queues=distanceFrontiers;
+		for(auto& queue:queues)queue.clear();
 		for(size_t i=0;i<world.buildings.size();++i)
 		{
 			const WorldBuilding& building=world.buildings[i];
@@ -791,20 +783,7 @@ void Planner::prepareScoringCaches(const WorldState& world) const
 		// A four-neighbour multi-source BFS is exactly wrapped Manhattan distance,
 		// which replaces a full building scan at every candidate coordinate.
 		for(int field=0;field<3;++field)
-			for(size_t head=0;head<queues[field].size();++head)
-			{
-				const int current=queues[field][head];
-				const int x=current%world.width,y=current/world.width;
-				const int neighbors[4]={world.index(x-1,y),world.index(x+1,y),
-					world.index(x,y-1),world.index(x,y+1)};
-				for(int direction=0;direction<4;++direction)
-					if((*fields[field])[neighbors[direction]]==INT_MAX)
-					{
-						(*fields[field])[neighbors[direction]]=
-							(*fields[field])[current]+1;
-						queues[field].push_back(neighbors[direction]);
-					}
-			}
+			field::expandDistances(*fields[field],queues[field],{world.width,world.height},field::Cardinal,INT_MAX);
 	}
 	// Footprint spacing changes only when a reservation or a building footprint
 	// changes. Most placement reviews see the same sources, so retain the
@@ -826,7 +805,7 @@ void Planner::prepareScoringCaches(const WorldState& world) const
 	   ||footprintDistanceCacheSignature!=footprintSignature)
 	{
 		footprintDistanceCache.assign(size,INT_MAX);
-		std::vector<int> footprintQueue;footprintQueue.reserve(size);
+		auto& footprintQueue=distanceFrontiers[0];footprintQueue.clear();
 		auto addFootprintSource=[&](int index)
 		{
 			if(index>=0&&index<size&&footprintDistanceCache[index]==INT_MAX)
@@ -849,20 +828,7 @@ void Planner::prepareScoringCaches(const WorldState& world) const
 				building.centerY,level->footprint);
 			for(size_t tile=0;tile<tiles.size();++tile)addFootprintSource(tiles[tile]);
 		}
-		for(size_t head=0;head<footprintQueue.size();++head)
-		{
-			const int current=footprintQueue[head];
-			const int x=current%world.width,y=current/world.width;
-			const int neighbors[4]={world.index(x-1,y),world.index(x+1,y),
-				world.index(x,y-1),world.index(x,y+1)};
-			for(int direction=0;direction<4;++direction)
-				if(footprintDistanceCache[neighbors[direction]]==INT_MAX)
-				{
-					footprintDistanceCache[neighbors[direction]]=
-						footprintDistanceCache[current]+1;
-					footprintQueue.push_back(neighbors[direction]);
-				}
-		}
+		field::expandDistances(footprintDistanceCache,footprintQueue,{world.width,world.height},field::Cardinal,INT_MAX);
 		footprintDistanceCacheSignature=footprintSignature;
 	}
 	bool changed=int(resourceSourceCache.size())!=size;
@@ -967,22 +933,10 @@ int Planner::resourceDistanceAt(const WorldState& world,int resourceType,
 		const int size=world.width*world.height;
 		DistanceField& distances=resourceDistanceCache[resourceType];
 		distances.assign(size,INT_MAX);
-		std::vector<int> queue;queue.reserve(size);
+		auto& queue=distanceFrontiers[0];queue.clear();
 		for(int i=0;i<size;++i)if(resourceSourceCache[i]==resourceType)
 		{distances[i]=0;queue.push_back(i);}
-		for(size_t head=0;head<queue.size();++head)
-		{
-			const int current=queue[head];
-			const int x=current%world.width,y=current/world.width;
-			const int neighbors[4]={world.index(x-1,y),world.index(x+1,y),
-				world.index(x,y-1),world.index(x,y+1)};
-			for(int d=0;d<4;++d)
-				if(distances[neighbors[d]]==INT_MAX)
-				{
-					distances[neighbors[d]]=distances[current]+1;
-					queue.push_back(neighbors[d]);
-				}
-		}
+		field::expandDistances(distances,queue,{world.width,world.height},field::Cardinal,INT_MAX);
 		resourceDistanceCacheValid[resourceType]=true;
 	}
 	return resourceDistanceCache[resourceType][index];
@@ -1036,14 +990,12 @@ std::vector<int> Planner::colonyFoodTiles(const WorldState& world, int x, int y,
 		for(int dx=-1;dx<=footprint.width;++dx)
 			if(dx==-1||dy==-1||dx==footprint.width||dy==footprint.height)
 				visit(x+footprint.left+dx,y+footprint.top+dy,0);
-	for(size_t head=0;head<queue.size();++head)
-	{
-		const int index=queue[head];
-		if(world.tiles[index].foodOpportunity>0)food.push_back(index);
-		if(distance[index]>=placementPolicy.colonySupplyRadius)continue;
-		for(int dy=-1;dy<=1;++dy)for(int dx=-1;dx<=1;++dx)
-			if(dx||dy)visit(index%world.width+dx,index/world.width+dy,distance[index]+1);
-	}
+	field::traverse(queue,{world.width,world.height},field::Surrounding,
+		[&](int index) {
+			if(world.tiles[index].foodOpportunity>0)food.push_back(index);
+			return distance[index]>=placementPolicy.colonySupplyRadius
+				?field::Visit::Skip:field::Visit::Expand;
+		},[&](int index,int px,int py) { visit(px,py,distance[index]+1); });
 	return food;
 }
 
@@ -1452,16 +1404,13 @@ void Planner::prepareRouteCache(const WorldState& world,int orientation) const
 		if(isCirculationReserved(index)&&isCirculationReserved(other))
 		{distance[index]=0;queue.push(QueueEntry(0,index));}
 	}
-	while(!queue.empty())
-	{
-		const int cost=queue.top().first,current=queue.top().second;queue.pop();
-		if(cost!=distance[current])continue;
-		const int x=current%world.width,y=current/world.width;
-		const int neighbors[4]={world.index(x-1,y),world.index(x+1,y),
-			world.index(x,y-1),world.index(x,y+1)};
-		for(int d=0;d<4;++d)
-		{
-			const int next=neighbors[d];
+	field::traversePriority(queue,{world.width,world.height},field::Cardinal,
+		[](const QueueEntry& entry){return entry.second;},
+		[&](const QueueEntry& entry){return entry.first==distance[entry.second]
+			?field::Visit::Expand:field::Visit::Skip;},
+		[&](const QueueEntry& entry,int px,int py) {
+			const int cost=entry.first,current=entry.second;
+			const int next=world.index(px,py);
 			const int nx=next%world.width,ny=next/world.width;
 			const int other=orientation==0?world.index(nx+1,ny):world.index(nx,ny+1);
 			const int pair[2]={next,other}; bool pass=true,pairAlreadyNetwork=true;
@@ -1483,7 +1432,7 @@ void Planner::prepareRouteCache(const WorldState& world,int orientation) const
 						? placementPolicy.routeFertilityCost : 0;
 				}
 			}
-			if(!pass)continue;
+			if(!pass)return;
 			if(pairAlreadyNetwork)stepCost=0;
 			const int nextCost=cost+stepCost;
 			if(nextCost<distance[next]
@@ -1493,8 +1442,7 @@ void Planner::prepareRouteCache(const WorldState& world,int orientation) const
 				distance[next]=nextCost;parent[next]=current;
 				queue.push(QueueEntry(nextCost,next));
 			}
-		}
-	}
+		});
 }
 
 bool Planner::routeArtery(const WorldState& world, const std::vector<int>& ring,

@@ -4,7 +4,7 @@ Farm areas are an [experimental feature](experimental-features.md) with the key
 `farm-areas`, off by default. A game that carries it offers a fourth painted area
 next to forbidden, guard and clearing areas: a per-team bitmask on every tile
 (`Tile::farmArea`), painted with the same brush and add/remove modes, and saved
-with the map from format 129. Without the experiment the brush has three zones,
+with the map from format 130. Without the experiment the brush has three zones,
 the farm order is refused, and a farm mask that reaches the game some other way
 (a map or save made with it) is inert.
 
@@ -112,13 +112,13 @@ A refused tile is never part of a field, so it cannot connect two patches.
 
 ## Compatibility
 
-Save format 129 (`FILE_FORMAT_VERSION_FARM_AREA`) adds the mask to the map
+Save format 130 (`FILE_FORMAT_VERSION_FARM_AREA`) adds the mask to the map
 section, packed or per tile; older maps and saves load with no farm painted.
 `Tile::farmArea` joins the heavy `Map::checkSum`, which is unchanged while it is
 zero. The order is `ORDER_ALTER_FARM_AREA` (45); `OrderValidation` rejects it as
 `not_permitted` in a game without the experiment and `Game::executeAlterFarmArea`
-ignores it there. Network protocol 52 and simulation revision 2 come with the
-format change. Replays from formats 127 and 128 still play: none can contain the
+ignores it there. Network protocol 52 and simulation revision 4 come with the
+format change. Replays from formats 127 to 129 still play: none can contain the
 farm order or this experiment.
 
 ## Where it lives

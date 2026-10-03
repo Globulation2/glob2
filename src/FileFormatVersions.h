@@ -176,6 +176,9 @@ static constexpr int FILE_FORMAT_VERSION_COUNTED_TEAM_STATE = 127;
 //! Lossless packed arrays and histories; existing save readers remain supported.
 static constexpr int FILE_FORMAT_VERSION_COMPACT_STATE = 128;
 
+//! Custom AI profile 2, named telemetry and replay diagnostic trailers.
+static constexpr int FILE_FORMAT_VERSION_CUSTOM_AI = 129;
+
 //! Tile::farmArea joins the per-tile area masks in the map section (MapIO.cpp),
 //! for the farm-areas experiment. Older maps and saves load with no farm painted.
-static constexpr int FILE_FORMAT_VERSION_FARM_AREA = 129;
+static constexpr int FILE_FORMAT_VERSION_FARM_AREA = 130;

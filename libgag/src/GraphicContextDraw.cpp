@@ -195,10 +195,47 @@ namespace GAGCore
 #endif
     }
 
-    void GraphicContext::drawMapBoundary(int x1, int y1, int x2, int y2, const Color& color)
+    void GraphicContext::drawMapBoundary(int x1, int y1, int x2, int y2, const Color& color, float maxStrokePoints)
+    {
+        assert(x1 == x2 || y1 == y2);
+        drawMapSnappedRect(x1, y1, x2, y2, color, true, maxStrokePoints);
+    }
+
+    void GraphicContext::drawMapFill(int x1, int y1, int x2, int y2, const Color& color)
+    {
+        drawMapSnappedRect(x1, y1, x2, y2, color, false, 0);
+    }
+
+    void GraphicContext::drawMapTileFill(int x1, int y1, int x2, int y2, const Color& color)
+    {
+        if (softwareTransform || !mapTransformActive)
+            drawMapSnappedRect(x1, y1, x2, y2, color, false, 0);
+        else
+            drawFilledRect(float(x1), float(y1), float(x2 - x1), float(y2 - y1), color);
+    }
+
+    void GraphicContext::drawMapTileSprite(int x, int y, int size, Sprite *sprite, unsigned index)
+    {
+        if (!softwareTransform || !mapTransformActive)
+        {
+            drawSprite(x, y, sprite, index);
+            return;
+        }
+        // The same snapping as drawMapSnappedRect, with one logical unit a pixel.
+        const float offsetX = mapTranslateX + mapCopyTranslateX, offsetY = mapTranslateY + mapCopyTranslateY;
+        const float left = std::round(x * mapScale + offsetX), top = std::round(y * mapScale + offsetY);
+        const float right = std::round((x + size) * mapScale + offsetX), bottom = std::round((y + size) * mapScale + offsetY);
+        if (right <= left || bottom <= top)
+            return;
+        // Back to map coordinates, a quarter pixel inside each snapped edge so
+        // the rasteriser's truncation lands on it rather than one short.
+        drawSprite((left + 0.25f - offsetX) / mapScale, (top + 0.25f - offsetY) / mapScale,
+                   (right - left) / mapScale, (bottom - top) / mapScale, sprite, index);
+    }
+
+    void GraphicContext::drawMapSnappedRect(int x1, int y1, int x2, int y2, const Color& color, bool stroked, float maxStrokePoints)
     {
 		if (renderer) prepareDraw();
-        assert(x1 == x2 || y1 == y2);
         // Snap in the actual raster target, then return to world coordinates.
         // Include periodic-copy translation: wrapped maps need the same pixel
         // alignment as the primary pass, even at fractional zoom and DPI.
@@ -211,7 +248,12 @@ namespace GAGCore
         const float top = std::round(std::min(y1, y2) * pixelsPerWorld + offsetY);
         const float right = std::round(std::max(x1, x2) * pixelsPerWorld + offsetX);
         const float bottom = std::round(std::max(y1, y2) * pixelsPerWorld + offsetY);
-        const float stroke = std::max(1.f, std::round(pixelsPerWorld));
+        // A boundary's stroke follows the map but never vanishes, and stops
+        // thickening at its cap. A fill has none: its far edges are exclusive,
+        // so neighbouring fills meet on the same snapped pixel without overlap.
+        float stroke = stroked ? std::max(1.f, std::round(pixelsPerWorld)) : 0.f;
+        if (stroked && maxStrokePoints > 0)
+            stroke = std::min(stroke, std::max(1.f, std::round(maxStrokePoints * raster * float(logicalUnitsPerPoint()))));
         // SDL's software geometry rasterizer truncates transformed coordinates.
         // Avoid a world->screen->world round trip there: tiny float errors can
         // otherwise move a snapped edge back across a pixel boundary.
@@ -230,6 +272,14 @@ namespace GAGCore
         drawFilledRect((left-offsetX)/pixelsPerWorld, (top-offsetY)/pixelsPerWorld,
                        (right-left+stroke)/pixelsPerWorld,
                        (bottom-top+stroke)/pixelsPerWorld, color);
+    }
+
+    void GraphicContext::mapToScreen(int x, int y, float &screenX, float &screenY) const
+    {
+        screenX = float(x); screenY = float(y);
+        if (!mapTransformActive) return;
+        screenX = x*mapScale + mapTranslateX + mapCopyTranslateX;
+        screenY = y*mapScale + mapTranslateY + mapCopyTranslateY;
     }
 
     void GraphicContext::beginScreenOverlay(int &x,int &y,int &sx,int &sy,int &sw,int &sh)

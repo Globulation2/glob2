@@ -31,6 +31,10 @@ std::shared_ptr<LanRoom> LanRoom::host(LanHost::Options options)
 		if (files && files->getDirCount())
 			options.recordPath = files->getDir(0) + "/replays/lan-last.g2mr";
 	}
+	if (!options.loadSaveHeader)
+		options.loadSaveHeader = [](const std::string& file) { return Engine::loadGameHeader(file); };
+	if (!options.applyExperiments)
+		options.applyExperiments = [](GameHeader& header, const MapHeader& map) { Engine::applyLocalExperiments(header, map); };
 	std::shared_ptr<LanRoom> room(new LanRoom);
 	room->hostRoom = std::make_shared<LanHost>(std::move(options));
 	room->hostState = room->hostRoom->state();

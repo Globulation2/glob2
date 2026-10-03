@@ -148,6 +148,13 @@ Run execute(const std::filesystem::path &input, const std::filesystem::path &dir
 				save(engine, directory / ("checkpoint-" + std::to_string(tick) + ".game"));
 		}
 		REQUIRE(engine.gui.game.stepCounter == 256);
+		if (!playback)
+			for (int p = 0; p < engine.gui.game.gameHeader.getNumberOfPlayers(); ++p)
+			{
+				auto *ai = engine.gui.game.players[p]->ai;
+				if (ai && ai->implementationID == AI::JAVASCRIPT)
+					CHECK_FALSE(static_cast<AIJavaScript *>(ai->aiImplementation)->disabled);
+			}
 		if (conversion || input.filename() == "conversion-0.game")
 		{
 			for (unsigned player = 0; player < 2; ++player)
@@ -331,4 +338,77 @@ function step(ctx) {
 	samePayload(resumed.finalSave, serial.finalSave);
 	const auto playback = execute(directory / "workers1/game.replay", directory / "playback", 1, true);
 	CHECK(playback.trace == serial.trace);
+}
+
+TEST_CASE("JavaScript profile two actions fields telemetry and construction survive save resume "
+		  "and worker counts" *
+		  doctest::test_suite("JavaScriptSimulation"))
+{
+	const auto directory = glob2test::artifactDir();
+	const auto initial = directory / "profile2-initial.game";
+	{
+		glob2test::GlobalsOptions options;
+		options.loadStrings = true;
+		options.seed = 19;
+		glob2test::HeadlessGlobals globals(options);
+		glob2test::HeadlessGame world({.teams = 2, .discovered = true, .loadDefaultRace = true});
+		world.gui.init();
+		world.gui.localPlayer = 0;
+		world.gui.localTeamNo = 0;
+		REQUIRE(world.game.sgslScript.compileScript(&world.game, "").type == ErrorReport::ET_OK);
+		world.addBuilding("swarm", 2, 2, 0, 0);
+		world.addBuilding("swarm", 24, 24, 0, 1);
+		world.addUnit(WORKER, 8, 8, 0);
+		world.addUnit(WORKER, 20, 20, 1);
+		GameHeader header;
+		header.setNumberOfPlayers(2);
+		header.setRandomSeed(19);
+		header.setMapDiscovered(true);
+		const std::string source = R"(
+var calls=0, project=null, reference=null;
+function metadata2(){return {apiVersion:2,name:'Profile two continuation'};}
+function step2(ctx){
+ calls++;
+ let b=ctx.game.buildings({team:ctx.myTeam})[0];if(!b)return;
+ reference=b.ref;b.workers=1+Math.floor(ctx.random()*4);b.priority=calls%2;
+ if(project===null){let t=ctx.game.buildingTypes().find(t=>t.name==='inn' && t.site && t.level===0);
+  project=ctx.actions.create({buildingType:t.id,x:(b.x+6)%ctx.game.map.width,y:b.y,workers:2,futureWorkers:2});}
+ let field=ctx.spatial.distanceField({sources:{points:[{x:b.x,y:b.y}]},metric:'manhattan'});
+ let at=ctx.spatial.fieldValue(field,b.x,b.y);
+ ctx.telemetry.set('strategy.calls',calls);ctx.telemetry.set('strategy.homeDistance',at.distance===null?-1:at.distance);
+}
+export {metadata2 as metadata,step2 as step};
+)";
+		for (unsigned p = 0; p < 2; ++p)
+		{
+			header.getBasePlayer(p) = BasePlayer(
+				p, "Profile two", p, BasePlayer::playerTypeFromImplementationID(AI::JAVASCRIPT));
+			header.setAIConfig(p, Script::config(source, 2));
+		}
+		world.game.setGameHeader(header);
+		GAGCore::BinaryOutputStream output(
+			GAGCore::Toolkit::getFileManager()->openOutputStreamBackend(initial.string()));
+		world.gui.save(&output, "Profile two continuation");
+	}
+	const auto serial = execute(initial, directory / "workers1", 1, false, true);
+	const auto parallel = execute(initial, directory / "workers4", 4);
+	CHECK(serial.trace == parallel.trace);
+	samePayload(serial.finalSave, parallel.finalSave);
+	CHECK(serial.replay == parallel.replay);
+	for (int checkpoint : {32, 128})
+	{
+		const auto resumed =
+			execute(directory / ("workers1/checkpoint-" + std::to_string(checkpoint) + ".game"),
+					directory / ("resume-" + std::to_string(checkpoint)), 4);
+		const auto complete = records(serial.trace);
+		for (const auto &[tick, record] : records(resumed.trace))
+		{
+			REQUIRE(complete.contains(tick));
+			CHECK(record == complete.at(tick));
+		}
+		samePayload(resumed.finalSave, serial.finalSave);
+	}
+	const auto replay =
+		execute(directory / "workers1/game.replay", directory / "playback", 1, true);
+	CHECK(replay.trace == serial.trace);
 }

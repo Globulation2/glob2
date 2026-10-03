@@ -114,13 +114,6 @@ void GameGUI::hideScriptText()
 	scriptTextUpdated = false;
 }
 
-void GameGUI::setCpuLoad(int s)
-{
-	const int pos = smoothedCPUPos;
-	smoothedCPULoad[pos] = s;
-	smoothedCPUPos = (pos + 1) % SMOOTHED_CPU_SIZE;
-}
-
 void GameGUI::setCampaignGame(Campaign &campaign, const std::string &missionName)
 {
 	this->campaign = &campaign;

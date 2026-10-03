@@ -17,7 +17,7 @@ namespace Script
 {
 std::string readSource(const std::string &path)
 {
-	std::ifstream file(path, std::ios::binary);
+	std::ifstream file(std::filesystem::u8path(path), std::ios::binary);
 	if (!file)
 		throw std::invalid_argument("Cannot open script: " + path);
 	std::string source;
@@ -39,10 +39,19 @@ int runScriptCommand(int argc, char **argv)
 	if (argc < 2)
 		return -1;
 	std::string command = argv[1];
-	if (command != "--check-script" && command != "--attach-map-script")
+	if (command != "--check-script" && command != "--check-ai" && command != "--attach-map-script")
 		return -1;
 	try
 	{
+		if (command == "--check-ai")
+		{
+			if (argc != 3)
+				throw std::invalid_argument("--check-ai source.js");
+			auto metadata = Script::inspectAI(Script::readSource(argv[2]));
+			std::cout << "JavaScript AI profile " << metadata.apiVersion << ": " << metadata.name
+					  << " — startup, callback and persistent globals validated\n";
+			return 0;
+		}
 		if (command == "--check-script")
 		{
 			if (argc != 3)

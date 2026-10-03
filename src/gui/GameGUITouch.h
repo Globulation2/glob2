@@ -127,6 +127,9 @@ class GameGUITouch
 		int columns;
 	};
 	HudLayout hudLayout(const GAGCore::MobileLayout &ui) const;
+	GAGCore::ViewRect statRect(const HudLayout &hud, int index) const;
+	// The speed chevrons' tap target (the last stat cell); empty where speed is fixed.
+	GAGCore::ViewRect speedRect() const;
 	GAGCore::ViewRect minimapRect() const;
 	void drawMinimap();
 	void navigateMinimap(GAGCore::ViewPoint point);

@@ -134,7 +134,8 @@ struct CustomGameSetupHarness
 		setExtraRules(original.setup);
 		original.setup.colonies[11].controller = CustomGameSetup::Closed;
 		REQUIRE(original.setup.setController(3, CustomGameSetup::Shared));
-		original.setup.colonies[3].ai = AI::CORTEX;
+		original.setup.colonies[3].ai = AI::JAVASCRIPT;
+		original.setup.colonies[3].aiLibraryId = "91";
 		original.setup.colonies[11].alliance = 7;
 		original.setup.colonies[11].ai = AI::NICOWAR;
 		CustomGamePreferences restored;
@@ -143,35 +144,55 @@ struct CustomGameSetupHarness
 		checkExtraRules(restored.setup);
 		REQUIRE(restored.setup.mapRevision == 0);
 		REQUIRE(restored.landscapeSortOrder == 1);
-		// All three older formats still load; omitted rules take their normal defaults.
-		for (int version : {1, 2, 3})
+		// Older formats omit library identities; their rules retain their defaults.
+		for (int version : {1, 2, 3, 4})
 		{
 			auto old = encoded;
-			auto removeLine = [&](const std::string &prefix) {
+			auto removeLine = [&](const std::string &prefix)
+			{
 				const auto at = old.find("\n" + prefix), eol = old.find('\n', at + 1);
 				REQUIRE((at != std::string::npos && eol != std::string::npos));
 				old.erase(at, eol - at);
 			};
-			if (version < 3) removeLine("rules ");
-			if (version == 1) removeLine("picker ");
-			old.replace(0, std::string("glob2-custom-game 4").size(),
-				"glob2-custom-game " + std::to_string(version));
+			if (version < 3)
+				removeLine("rules ");
+			if (version == 1)
+				removeLine("picker ");
+			old.replace(0, std::string("glob2-custom-game 5").size(),
+						"glob2-custom-game " + std::to_string(version));
 			// Reproduce the old twelve-record wire layout, including its draft capacity.
 			const auto coloniesAt = old.find("colonies 16\n");
 			REQUIRE(coloniesAt != std::string::npos);
-			old.replace(coloniesAt, std::string("colonies 16").size(), "colonies");
-			size_t recordsEnd = old.find('\n', coloniesAt) + 1;
-			for (int i = 0; i < 12; ++i) recordsEnd = old.find('\n', recordsEnd) + 1;
-			old.erase(recordsEnd, old.find("end\n", recordsEnd) - recordsEnd);
-			REQUIRE(old.find("setup 1 16") != std::string::npos);
-			old.replace(old.find("setup 1 16"), 10, "setup 1 12");
-			REQUIRE(old.find("nbTeams 16") != std::string::npos);
-			old.replace(old.find("nbTeams 16"), 10, "nbTeams 12");
+			// Formats 1–4 have exactly three numeric columns per colony.
+			size_t rowStart = old.find('\n', coloniesAt) + 1;
+			for (int i = 0; i < Team::MAX_COUNT; ++i)
+			{
+				auto rowEnd = old.find('\n', rowStart);
+				auto suffix = old.find(" \"", rowStart);
+				REQUIRE(suffix < rowEnd);
+				old.erase(suffix, rowEnd - suffix);
+				rowStart = suffix + 1;
+			}
+			if (version < 4)
+			{
+				old.replace(coloniesAt, std::string("colonies 16").size(), "colonies");
+				size_t recordsEnd = old.find('\n', coloniesAt) + 1;
+				for (int i = 0; i < 12; ++i)
+					recordsEnd = old.find('\n', recordsEnd) + 1;
+				old.erase(recordsEnd, old.find("end\n", recordsEnd) - recordsEnd);
+				REQUIRE(old.find("setup 1 16") != std::string::npos);
+				old.replace(old.find("setup 1 16"), 10, "setup 1 12");
+				REQUIRE(old.find("nbTeams 16") != std::string::npos);
+				old.replace(old.find("nbTeams 16"), 10, "nbTeams 12");
+			}
 			CustomGamePreferences fromOld;
 			REQUIRE((fromOld.decode(old) && fromOld.landscapeSortOrder == (version == 1 ? 0 : 1)));
 			REQUIRE(fromOld.setup.premadeMap == original.setup.premadeMap);
-			REQUIRE((fromOld.setup.unitUpgradesDisabled == (version >= 3) && fromOld.setup.noHunger == (version >= 3)));
-			REQUIRE((fromOld.setup.startingUnitLevel == (version >= 3 ? 3 : 0) && fromOld.setup.suddenDeathMinutes == (version >= 3 ? 90 : 0)));
+			REQUIRE(fromOld.setup.colonies[3].aiLibraryId.empty());
+			REQUIRE((fromOld.setup.unitUpgradesDisabled == (version >= 3) &&
+					 fromOld.setup.noHunger == (version >= 3)));
+			REQUIRE((fromOld.setup.startingUnitLevel == (version >= 3 ? 3 : 0) &&
+					 fromOld.setup.suddenDeathMinutes == (version >= 3 ? 90 : 0)));
 		}
 		for (size_t length : {size_t(0), size_t(10), encoded.size() / 2, encoded.size() - 5})
 		{
@@ -179,14 +200,18 @@ struct CustomGameSetupHarness
 			REQUIRE(restored.encode() == encoded);
 		}
 		for (const auto &replacement : std::vector<std::pair<std::string, std::string>>{
-			{"glob2-custom-game 4", "glob2-custom-game 5"},
-			{"rules 1 3", "rules 2 3"}, {"rules 1 3", "rules 1 4"},
-			{"2 3 90\nlabels", "2 4 90\nlabels"},
-			{"2 3 90\nlabels", "2 3 31\nlabels"},
-			{"wDec 9", "wDec 31"}, {"nbWorkers 8", "nbWorkers -1"},
-			{"generator 4 5", "generator 0 5"}, {"generator 4 5", "generator 4 100"},
-			{"colonies 16\n1 1 0", "colonies 16\n99 1 0"},
-			{"colonies 16", "colonies 17"}, {"colonies 16", "colonies 0"}})
+				 {"glob2-custom-game 5", "glob2-custom-game 6"},
+				 {"rules 1 3", "rules 2 3"},
+				 {"rules 1 3", "rules 1 4"},
+				 {"2 3 90\nlabels", "2 4 90\nlabels"},
+				 {"2 3 90\nlabels", "2 3 31\nlabels"},
+				 {"wDec 9", "wDec 31"},
+				 {"nbWorkers 8", "nbWorkers -1"},
+				 {"generator 4 5", "generator 0 5"},
+				 {"generator 4 5", "generator 4 100"},
+				 {"colonies 16\n1 1 0", "colonies 16\n99 1 0"},
+				 {"colonies 16", "colonies 17"},
+				 {"colonies 16", "colonies 0"}})
 		{
 			auto corrupt = encoded;
 			auto at = corrupt.find(replacement.first);
@@ -2000,6 +2025,12 @@ static void commonChecks()
 
 TEST_SUITE("CustomGameSetup")
 {
+	TEST_CASE("custom AI library identities and released preferences round trip")
+	{
+		glob2test::HeadlessGlobals globals(setupOptions(false));
+		CustomGameSetupHarness::preferencesModel();
+	}
+
 	TEST_CASE("preferences; landscapes; AI catalogue; snapshot round trip; engine; reload and session replay [slow][writes-preferences]")
 	{
 		glob2test::HeadlessGlobals globals(setupOptions(false));

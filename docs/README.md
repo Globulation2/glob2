@@ -18,6 +18,7 @@ dated reports and pull-request artifacts do not belong here.
 - **Assets:** [third-party attribution](assets/source-attribution.md) and
   [high-resolution artwork provenance](assets/high-resolution/README.md).
 - **Development:** [build and coding reference](development/reference.md),
+  [GOG releases](development/gog-release.md),
   [Mac App Store release](development/mac-app-store.md),
   [mainland China release](development/china-release.md),
   [menus and dialogs on the declarative UI framework](development/ui-framework.md),
@@ -51,7 +52,8 @@ dated reports and pull-request artifacts do not belong here.
 - **Tools:** [distributed tournaments](tools/tournaments.md).
 
 - **Mobile platforms:** [builds, responsive UI and verification](mobile/development.md),
-  [Android privacy policy](mobile/privacy-policy.md), and
+  the [privacy policy](mobile/privacy-policy.md) for the Android and iOS apps and the
+  official online service, and the
   [Amazon Fire tablet privacy policy](mobile/amazon-privacy-policy.md).
 
 - **Online multiplayer:** [online client](multiplayer/client.md): platform

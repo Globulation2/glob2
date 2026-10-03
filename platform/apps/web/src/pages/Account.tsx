@@ -1,13 +1,14 @@
 import { useState, type FormEvent } from 'react';
 import type { SelfAccount } from '@glob2/protocol';
-import { api } from '../api.ts';
+import { ACCOUNT_EXPORT_PATH, api } from '../api.ts';
 import { ErrorNotice } from '../components/common.tsx';
 import { Link } from '../router.tsx';
 import { useSession } from '../state.tsx';
 
 /**
- * The signed-in player's own account: what it is, and deleting it for good.
- * The game's settings ("Delete my account") open this page.
+ * The signed-in player's own account: what it is, downloading everything the
+ * instance stores about it, and deleting it for good. The game's settings
+ * ("Download or delete my data") open this page.
  */
 export function Account() {
   const { account, refresh } = useSession();
@@ -66,6 +67,17 @@ export function Account() {
             ))}
           </ul>
         )}
+      </div>
+      <div className="card">
+        <h2 className="card-title">Download my data</h2>
+        <p>
+          A JSON file with everything this server stores about your account: your profile, sign-in
+          methods (without passwords or keys), matches, ratings, rooms and chat, matchmaking, maps
+          and moderation records.
+        </p>
+        <a className="btn" href={ACCOUNT_EXPORT_PATH} download>
+          Download my data
+        </a>
       </div>
       <DeleteAccount
         account={account}
