@@ -195,11 +195,7 @@ void CustomGameScreen::launch()
 		endExecute(OK);
 		return;
 	}
-	// A random map still resolving in the background: the disabled Start button
-	// and its "Generating preview..." note explain why, instead of blocking here
-	// on finishPreview()'s busy-wait with no visible feedback.
-	if (setup.random && previewBusy())
-		return;
+	// A click during generation waits for the current preview before launching it.
 	if (setup.random && candidates)
 		finishPreview();
 	if (setup.random && (!validMap || previewRevision != setup.mapRevision))
@@ -918,16 +914,14 @@ Element CustomGameScreen::build(const Presentation &p)
 	std::string error = setup.validation();
 	if (!setup.random && !validMap)
 		error = tr("Select a valid map.");
-	else if (setup.random && previewBusy())
-		error = tr("Generating preview...");
 	const std::string summary = tr(setup.format) + "  /  " + std::to_string(setup.activeColonies()) + " " + tr("colonies") + "  /  " +
 								tr(setup.ruleset) + "  /  " + speed.getGameSpeedText();
-	const std::string note = error.empty() ? message : tr(error);
-	bool ready = error.empty() && (!narrow || (validMap && !previewBusy() && (!setup.random || previewRevision == setup.mapRevision)));
+	const std::string note = error.empty() ? (setup.random && previewBusy() ? tr("Generating preview...") : message) : tr(error);
+	bool ready = error.empty();
 	if (forRoom)
 		ready = setup.validation().empty() && (setup.random || validMap);
-	std::string startLabel = !setup.humanColony() ? tr(setup.random && !validMap ? "Generate & watch" : "Watch game")
-												: tr(setup.random ? (validMap ? "Play this map" : "Generate & play") : "Start game");
+	std::string startLabel = !setup.humanColony() ? tr("Watch game")
+												: tr(setup.random ? "Play this map" : "Start game");
 	if (forRoom)
 		startLabel = tr("Use in room");
 	std::vector<fe::MenuAction> footerActions;
