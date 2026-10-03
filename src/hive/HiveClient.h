@@ -62,6 +62,7 @@ class Client
 	std::string commandDraft, retryCommandId, retryCommandText;
 	bool commandSending = false, retryCommandOngoing = false;
 	std::map<std::string, std::string> controlStatus;
+	std::map<std::string, std::uint64_t> controlGeneration;
 	std::string progress;
 	Json account = Json::object();
 	Client(GameGUI &gui, Online::PlatformClient &platform, std::string match, int seat,

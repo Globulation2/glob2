@@ -300,6 +300,7 @@ void Client::finish(const Json &r)
 			{
 				const auto id = current["request"].at("programId").get<std::string>();
 				controlStatus.erase(id);
+				++controlGeneration[id];
 				if (kind == "remove")
 					programs.erase(id);
 				else
@@ -696,14 +697,15 @@ void Client::change(const std::string &id, const std::string &action)
 	}
 	save();
 	controlStatus[id] = "Updating…";
+	const auto generation = ++controlGeneration[id];
 	auto live = alive;
 	rest(HttpFetch::Method::Post, base + "/standing-orders",
 		 {{"programId", id},
 		  {"expectedRevision", it->second.definition.at("revision")},
 		  {"action", action}},
-		 [this, live, id](const auto &r)
+		 [this, live, id, generation](const auto &r)
 		 {
-			 if (!*live)
+			 if (!*live || controlGeneration[id] != generation)
 				 return;
 			 controlStatus[id] = r.ok ? "Requested" : "Update failed; try again";
 			 if (!r.ok)

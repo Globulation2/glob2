@@ -216,7 +216,9 @@ TEST_CASE("Hive Mind cadence replacement cancellation and lost acknowledgements"
 	Online::PlatformClient platform(config);
 	std::uint64_t clock = 1000;
 	std::atomic<int> invocations = 0;
-	bool dropResult = false, delayPoll = false, failCommand = false;
+	bool dropResult = false, delayPoll = false, failCommand = false, delayControl = false;
+	Online::PlatformClient::ResponseHandler heldControl;
+	Online::PlatformClient::Response controlResponse;
 	Json commandRequests = Json::array();
 	Online::PlatformClient::ResponseHandler heldPoll;
 	Online::PlatformClient::Response heldResponse;
@@ -266,6 +268,17 @@ TEST_CASE("Hive Mind cadence replacement cancellation and lost acknowledgements"
 		{
 			commandRequests.push_back(body);
 			response.ok = !failCommand;
+		}
+		if (delayControl && path.ends_with("/standing-orders"))
+		{
+			queued.push_back({{"id", lease},
+							  {"request",
+							   {{"kind", body.at("action")},
+								{"programId", body.at("programId")},
+								{"expectedRevision", body.at("expectedRevision")}}}});
+			heldControl = callback;
+			controlResponse = response;
+			return;
 		}
 		if (delayPoll && path.ends_with("/poll"))
 		{
@@ -318,11 +331,17 @@ TEST_CASE("Hive Mind cadence replacement cancellation and lost acknowledgements"
 	world.game.stepCounter = 225;
 	pump();
 	CHECK(invocations == 5); // old program survived
+	delayControl = true;
 	client.change(id, "pause");
 	world.game.stepCounter = 500;
 	pump();
 	CHECK(invocations == 5);
 	CHECK(client.standingOrders()[0]["paused"] == true);
+	REQUIRE(bool(heldControl));
+	heldControl(controlResponse);
+	heldControl = {};
+	delayControl = false;
+	CHECK_FALSE(client.controlStatus.contains(id));
 	CHECK(storage.persisted > 0);
 	// A delayed response must not restart the lease validity window.
 	delayPoll = true;
