@@ -47,6 +47,22 @@
 using std::shared_ptr;
 
 
+namespace
+{
+// Every host preserves the same failure cleanup and user-facing error contract.
+template<class Step>
+bool guardedSessionStep(Engine& engine, Step&& step)
+{
+    try { return step(); }
+    catch (const Script::SessionFailure&) { engine.abortSession(); throw; }
+    catch (const std::bad_alloc&)
+    {
+        engine.abortSession();
+        throw Script::HostFailure("Native allocation failed during the game session");
+    }
+}
+} // namespace
+
 void Engine::updateTickSpeedAndDrawCadence(MainLoopState& st, Uint64 now)
 {
 	const int previousSpeed = st.speed;
@@ -301,14 +317,16 @@ void Engine::executeOrdersAndStep(bool readyNow)
 	}
 }
 
-void Engine::drawFrame(MainLoopState& st)
+void Engine::drawFrame(MainLoopState& st, bool everyFrame, const Scene* scene)
 {
     GAGCore::ApplicationHost::matchFrame(gui.gamePaused);
-	const bool renderedFrame = st.nextGuiStep == 0;
+	const bool renderedFrame = everyFrame || st.nextGuiStep == 0;
 	if (renderedFrame)
 	{
-		GAGCore::Recording::recorder().matchFrame(gui.game.stepCounter,
-												  gui.gamePaused || gui.hardPause, st.speed);
+		// A threaded client records the immutable scene it presents, rather than
+		// reading the live simulation's tick or timing from the rendering thread.
+		GAGCore::Recording::recorder().matchFrame(scene ? scene->tick : gui.game.stepCounter,
+				gui.gamePaused || gui.hardPause, scene ? int(scene->tickInterval) : st.speed);
 		gui.drawAll(gui.localTeamNo);
 		{
 			PERF_SCOPE_TIME(Present);
@@ -319,14 +337,14 @@ void Engine::drawFrame(MainLoopState& st)
 
 }
 
-void Engine::drawSession()
+void Engine::drawSession(bool everyFrame)
 {
     if (!session) throw std::logic_error("No active engine session");
     if (globalContainer->runNoX) return;
     if (!runner)
     {
         if (turn && !std::exchange(turnDrawPending, false)) return;
-        drawFrame(*session);
+        drawFrame(*session, everyFrame && !turn);
         return;
     }
     // Threaded: draw the newest scene the simulation published, every frame.
@@ -334,16 +352,7 @@ void Engine::drawSession()
     if (!scene)
         return;
     gui.setPublishedScene(scene);
-    GAGCore::ApplicationHost::matchFrame(gui.gamePaused);
-	// Match the chapter to the immutable scene actually presented by this client.
-	GAGCore::Recording::recorder().matchFrame(scene->tick, gui.gamePaused || gui.hardPause,
-											  int(scene->tickInterval));
-	gui.drawAll(gui.localTeamNo);
-    {
-        PERF_SCOPE_TIME(Present);
-        globalContainer->gfx->nextFrame();
-    }
-    PerformanceTelemetry::collector().presented();
+    drawFrame(*session, true, scene);
 }
 
 bool Engine::startSimulationThread(Uint64 now)
@@ -863,13 +872,7 @@ bool Engine::stepSession(Uint64 now)
 
 bool Engine::stepSession(Uint64 now, const std::vector<SDL_Event>& events)
 {
- try { return stepSessionImpl(now,events); }
- catch(const Script::SessionFailure&) { abortSession(); throw; }
- catch(const std::bad_alloc&)
- {
-  abortSession();
-  throw Script::HostFailure("Native allocation failed during the game session");
- }
+    return guardedSessionStep(*this, [&] { return stepSessionImpl(now, events); });
 }
 
 void Engine::abortSession() noexcept
@@ -916,6 +919,30 @@ bool Engine::simulationStep(Uint64 now)
     if (!gui.isRunning) return false;
     // The client half runs on the main thread (clientStep), with the simulation parked.
     return advanceSession(now, [] {}, false);
+}
+
+bool Engine::presentationPaused() const { return gui.gamePaused || gui.hardPause; }
+
+bool Engine::serialClientFrame(Uint64 now, const std::vector<SDL_Event>& events, Uint32 budget)
+{
+    return guardedSessionStep(*this, [&]() -> bool {
+        if (!session) throw std::logic_error("No active engine session");
+        const Uint64 started = SDL_GetTicks();
+        clientStep(events);
+        // Apply speed/pause input before deciding whether a tick is due.
+        updateTickSpeedAndDrawCadence(*session, now);
+        bool advanced = false;
+        while (gui.isRunning)
+        {
+            const Uint64 elapsed = SDL_GetTicks() - started;
+            const Uint64 current = now + elapsed;
+            // Slow input/layout work must not starve an already due tick.
+            if (sessionDelay(current) != 0 || (advanced && elapsed >= budget)) break;
+            advanceSession(current, [] {}, false);
+            advanced = true;
+        }
+        return gui.isRunning;
+    });
 }
 
 void Engine::clientStep(const std::vector<SDL_Event>& events)
