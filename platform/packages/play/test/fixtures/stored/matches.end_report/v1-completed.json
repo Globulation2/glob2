@@ -1,0 +1,34 @@
+{
+  "matchId": "7e3c1d2b-9a8f-4e6d-8c5b-4a3f2e1d0c9b",
+  "relayId": "relay-eu1-a",
+  "simVersion": {
+    "versionMinor": 125,
+    "netProtocol": 49,
+    "dataHash": "3f9a6c1e8b2d47a05e6f1c2b3a4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f"
+  },
+  "startedAt": "2026-10-01T12:00:05Z",
+  "endedAt": "2026-10-01T12:30:05Z",
+  "finalTick": 45000,
+  "reason": "completed",
+  "seats": [
+    {
+      "seat": 0,
+      "disconnects": 0,
+      "droppedForDesync": false
+    },
+    {
+      "seat": 1,
+      "disconnects": 1,
+      "droppedForDesync": false
+    }
+  ],
+  "desync": {
+    "flagged": false,
+    "minoritySeats": []
+  },
+  "record": {
+    "sha256": "d00dd00dd00dd00dd00dd00dd00dd00dd00dd00dd00dd00dd00dd00dd00dd00d",
+    "size": 183422,
+    "formatVersion": 1
+  }
+}

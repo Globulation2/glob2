@@ -130,6 +130,14 @@ export const SignOutRequest = Strict({
 /** PATCH /api/v1/accounts/me */
 export const UpdateAccountRequest = Strict({ displayName: DisplayName });
 
+/**
+ * DELETE /api/v1/accounts/me: deletes the caller's account for good. The
+ * caller types the account's current display name to confirm.
+ */
+export const DeleteAccountRequest = Strict({
+  confirmDisplayName: Type.String({ minLength: 1, maxLength: 64 }),
+});
+
 /** Local usernames: lowercase letters, digits, '.', '_' and '-'; compared case-insensitively. */
 export const LocalUsername = Type.String({ pattern: '^[A-Za-z0-9._-]{3,32}$' });
 export const LocalPassword = Type.String({ minLength: 10, maxLength: 256 });
@@ -304,6 +312,13 @@ export const RoomState = Open(
     experiments: Type.Array(Type.String()),
     members: Type.Array(RoomMember),
     matchId: Type.Optional(Uuid),
+    notice: Type.Optional(
+      Type.String({
+        maxLength: 500,
+        description:
+          'Shown to every member of an open room: why the last start did not happen (e.g. the server was interrupted while starting). Cleared by the next start.',
+      }),
+    ),
     revision: Type.Integer({
       minimum: 0,
       description: 'Increases on every change; clients ignore stale room.state events.',
@@ -424,13 +439,20 @@ export const MatchOutcome = Type.Union(
   },
 );
 
-export const VerificationStatus = Type.Union([
-  Type.Literal('pending'),
-  Type.Literal('verified'),
-  Type.Literal('diverged'),
-  Type.Literal('unverifiable'),
-  Type.Literal('not_applicable'),
-]);
+export const VerificationStatus = Type.Union(
+  [
+    Type.Literal('pending'),
+    Type.Literal('verified'),
+    Type.Literal('diverged'),
+    Type.Literal('unverifiable'),
+    Type.Literal('not_applicable'),
+    Type.Literal('failed'),
+  ],
+  {
+    description:
+      'failed: the server could not run its check (the verify job failed or was lost); the match is not rated unless an operator re-runs verification. Clients that do not know a value treat it as pending.',
+  },
+);
 
 export const RatingChange = Open({
   ladder: Type.String({ maxLength: 64 }),
@@ -727,6 +749,7 @@ export type LinkedIdentity = Static<typeof LinkedIdentity>;
 export type DeviceCredential = Static<typeof DeviceCredential>;
 export type RefreshRequest = Static<typeof RefreshRequest>;
 export type SignOutRequest = Static<typeof SignOutRequest>;
+export type DeleteAccountRequest = Static<typeof DeleteAccountRequest>;
 export type UpdateAccountRequest = Static<typeof UpdateAccountRequest>;
 export type AuthProviderInfo = Static<typeof AuthProviderInfo>;
 export type RoomVisibility = Static<typeof RoomVisibility>;

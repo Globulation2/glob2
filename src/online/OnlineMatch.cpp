@@ -165,7 +165,9 @@ void OnlineMatchResult::apply(const Json &summary)
 		verification = Verification::Verified;
 	else if (status == "diverged")
 		verification = Verification::Diverged;
-	else if (status == "unverifiable")
+	// "failed": the server could not run its check (it may be re-run later); like
+	// an unverifiable result, it changes no rating.
+	else if (status == "unverifiable" || status == "failed")
 		verification = Verification::Unverifiable;
 	else if (status == "not_applicable")
 		verification = Verification::NotApplicable;

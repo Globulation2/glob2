@@ -15,6 +15,11 @@ ephemeral ports with its own .env and instance.yaml, and checks:
   7. a generate-map engine job end to end: submitted to the queue, run by the
      engine agent with the real glob2 binary, applied by the worker, and the
      map stored in the blob volume;
+  8. with --match-e2e: a rated quick match end to end (live_match_e2e.py --mode
+     queue). Two local accounts queue, accept and play through a relay with
+     headless clients run from the engine-agent image (so client and verifier
+     share one sim version); the relay uploads the record and reports the end,
+     the verify-match job judges it, and both ratings change;
 
 then tears the project down with its volumes. Python standard library only.
 
@@ -39,6 +44,7 @@ import urllib.request
 import ipaddress
 import json
 import os
+import shlex
 from pathlib import Path
 import socket
 import ssl
@@ -69,20 +75,46 @@ access:
 queues: []
 """
 
+# --match-e2e: local accounts (rated queues refuse guests) and one small rated
+# queue; its accept prompt is longer than the default so a slow runner can answer.
+E2E_QUEUE = 'e2e-ranked'
+INSTANCE_YAML_E2E = f"""\
+name: Smoke Test Instance
+guests:
+  enabled: true
+auth:
+  providers: []
+  local:
+    enabled: true
+access:
+  policy: allow-all
+queues:
+  - id: {E2E_QUEUE}
+    name: End-to-end ranked
+    mode: 1v1
+    rated: true
+    acceptSeconds: 60
+    mapPool:
+      - generatorId: even-ground
+        revision: 2
+        params: {{width: 7, height: 7, teams: 2}}
+        candidates: 1
+        startingUnitLevel: 0
+"""
+
 # Runs inside a platform-api container: submits a generate-map job and waits
 # for the worker to apply the agent's result.
 SUBMIT_JOB = r"""
-import { contentKey, createBlobStore, createLogger, defaultMapPool, JobQueue, loadConfig, submitEngineJob } from '@glob2/core';
+import { contentKey, createBlobStore, defaultMapPool, loadConfig, submitEngineJob } from '@glob2/core';
 import { createDatabase } from '@glob2/db';
 import { parseSimVersionKey } from '@glob2/protocol';
 const config = loadConfig();
 const database = createDatabase({ connectionString: config.databaseUrl, maxConnections: 2 });
-const queue = await JobQueue.create(database.pool, createLogger('smoke', 'warn'));
 const simVersion = parseSimVersionKey(process.env.SMOKE_SIM_VERSION);
 const entry = defaultMapPool('1v1').find((e) => e.generatorId === 'even-ground') ?? defaultMapPool('1v1')[0];
 const generator = { ...entry, seed: 20261001 };
 const started = Date.now();
-const jobId = await submitEngineJob(database.db, queue, { kind: 'generate-map', simVersion, payload: { generator }, maxAttempts: 1 });
+const jobId = await submitEngineJob(database.db, { kind: 'generate-map', simVersion, payload: { generator }, maxAttempts: 1 });
 let row;
 for (;;) {
   row = await database.db.selectFrom('engine_jobs').selectAll().where('id', '=', jobId).executeTakeFirstOrThrow();
@@ -95,7 +127,6 @@ if (row.status === 'succeeded') {
   out.blobRow = await database.db.selectFrom('blobs').selectAll().where('sha256', '=', row.result.mapHash).executeTakeFirst() ?? null;
 }
 console.log(JSON.stringify(out));
-await queue.close();
 await database.close();
 """
 
@@ -173,7 +204,7 @@ class Smoke:
         self.host, self.connect_host = 'localhost', '127.0.0.1'
         self.expected_replicas = {'platform-api': 2, 'relay': 2}
         (self.directory / '.env').write_text(''.join(f'{k}={v}\n' for k, v in settings.items()))
-        (self.directory / 'instance.yaml').write_text(INSTANCE_YAML)
+        (self.directory / 'instance.yaml').write_text(INSTANCE_YAML_E2E if arguments.match_e2e else INSTANCE_YAML)
         (self.directory / 'web-client').mkdir()
         (self.directory / 'web-client/index.html').write_text('<!doctype html><title>glob2 web client</title>')
         # A content-addressed data package with a precompressed copy, as
@@ -278,6 +309,7 @@ class Smoke:
         self.compose('up', '-d', '--wait', '--wait-timeout', '240', '--no-build', timeout=600)
         self.results['up_seconds'] = round(time.monotonic() - started)
         ca = self.compose('exec', '-T', 'caddy', 'cat', '/data/caddy/pki/authorities/local/root.crt')
+        self.ca_pem = ca
         self.tls = ssl.create_default_context(cadata=ca)
         return {'seconds': self.results['up_seconds']}
 
@@ -470,7 +502,7 @@ class Smoke:
         # Registration happens at start-up; allow a few heartbeats for retries. Only
         # live relays count: an attached, long-running deployment keeps the rows of
         # replaced relay containers, which the platform ignores once their heartbeat is
-        # older than RELAY_STALE_SECONDS (45 s, apps/worker/src/play/relays.ts).
+        # older than RELAY_STALE_SECONDS (45 s, packages/play/src/play/relays.ts).
         live = "last_heartbeat_at > now() - interval '45 seconds'"
         deadline = time.monotonic() + 90
         while time.monotonic() < deadline:
@@ -504,9 +536,13 @@ class Smoke:
                   'registered': registered}
         lines = [l.split('|', 1)[-1].strip() for l in logs.splitlines() if 'regist' in l.lower()]
         detail['registrationLog'] = lines[-4:]
-        expected = sorted(f'{r} {u}' for r, u in zip(relay_ids, detail['publicUrls']))
-        if sorted(registered) != expected:
-            raise Failure(f'relays registered as {registered}, expected {expected}; log: {lines[-4:]}')
+        # Stable ids (relay-1..N, slots on the spool volume) with URLs routed by host name.
+        expected_ids = sorted(f'relay-{n}' for n in range(1, len(relay_ids) + 1))
+        got_ids = sorted(r.split(' ', 1)[0] for r in registered)
+        got_urls = sorted(r.split(' ', 1)[-1] for r in registered)
+        if got_ids != expected_ids or got_urls != sorted(detail['publicUrls']):
+            raise Failure(f'relays registered as {registered}, expected ids {expected_ids} '
+                          f'with URLs {sorted(detail["publicUrls"])}; log: {lines[-4:]}')
         return detail
 
     def engine_job(self):
@@ -523,6 +559,40 @@ class Smoke:
         return {'generator': result['generator']['generatorId'], 'seconds': result['seconds'],
                 'agent': result['agent'], 'mapHash': facts['mapHash'], 'size': facts['size'], 'map': facts['map'],
                 'chosenSeed': facts.get('chosenSeed')}
+
+    def match_e2e(self):
+        """A rated quick match through relay, record upload, verification and ratings."""
+        out = (self.log_dir.resolve() if self.log_dir else self.directory) / 'match-e2e'
+        out.mkdir(parents=True, exist_ok=True)
+        ca = out / 'caddy-root.crt'
+        ca.write_text(self.ca_pem)
+        # The clients run from the engine-agent image: the same binary and data
+        # as the verifier. Host networking reaches Caddy on 127.0.0.1, the
+        # assignment's relay URL names localhost, and paths stay host paths.
+        engine = ['docker', 'run', '--rm', '--network', 'host', '--user', f'{os.getuid()}:{os.getgid()}',
+                  '-e', 'HOME=/tmp', '-e', f'SSL_CERT_FILE={ca}', '-v', f'{out}:{out}',
+                  '-w', '/opt/glob2/share', '--entrypoint', '/opt/glob2/bin/glob2',
+                  self.env_value('GLOB2_ENGINE_AGENT_IMAGE')]
+        psql = ['docker', 'compose', '-p', self.project, '-f', str(COMPOSE_FILE), '--env-file', str(self.env_file),
+                'exec', '-T', 'postgres', 'psql', '-U', 'glob2', '-d', 'glob2', '-At']
+        command = [sys.executable, str(ROOT / 'tests/deployment/live_match_e2e.py'), '--mode', 'queue',
+                   '--queue', E2E_QUEUE, '--origin', self.origin, '--ca-file', str(ca),
+                   '--engine-command', shlex.join(engine), '--psql', shlex.join(psql),
+                   '--out', str(out / 'run'), '--verify-timeout', '600']
+        log_path = out / 'live_match_e2e.log'
+        with open(log_path, 'w') as log_file:
+            code = subprocess.run(command, env=self.env, stdout=log_file, stderr=subprocess.STDOUT,
+                                  timeout=1800).returncode
+        results = json.loads((out / 'run/results.json').read_text()) if (out / 'run/results.json').exists() else {}
+        if code != 0:
+            failed = {k: v.get('error') for k, v in results.items() if not v.get('ok')}
+            tail = log_path.read_text().splitlines()[-15:]
+            raise Failure(f'live_match_e2e exited {code}: {failed or tail}')
+        record = results['record, verification and history']['detail']
+        return {'matchId': results['rated quick match']['detail']['matchId'],
+                'seconds': {k: v.get('seconds') for k, v in results.items()},
+                'verification': record['match'].get('verification'), 'endReason': record['match'].get('end_reason'),
+                'ratings': record['ratings']['history']}
 
     # ------------------------------------------------------------ run
 
@@ -543,7 +613,9 @@ class Smoke:
                                    ('instance and engine agent', self.instance),
                                    ('guest sign-in and realtime', self.guest_and_realtime), ('jwks', self.jwks),
                                    ('relays', self.relays), ('generate-map job', self.engine_job),
-                                   *((('public website', self.website),) if self.arguments.website else ())):
+                                   *((('public website', self.website),) if self.arguments.website else ()),
+                                   *((('rated quick match end to end', self.match_e2e),)
+                                     if self.arguments.match_e2e else ())):
                 ok = self.check(name, function) and ok
                 if name == 'guest sign-in and realtime' and not self.results[name]['ok']:
                     self.results['jwks'] = {'ok': False, 'error': 'skipped: no access token'}
@@ -573,7 +645,12 @@ def main():
     parser.add_argument('--sim-version', help='with --attach: expected sim version key (default: this checkout)')
     parser.add_argument('--website', metavar='ORIGIN',
                         help='with --attach: separately hosted public website whose old app paths redirect here')
-    smoke = Smoke(parser.parse_args())
+    parser.add_argument('--match-e2e', action='store_true',
+                        help='also play a rated quick match through relay, verification and ratings')
+    arguments = parser.parse_args()
+    if arguments.match_e2e and arguments.attach:
+        parser.error('--match-e2e needs a stack this script starts (see live_match_e2e.py for live instances)')
+    smoke = Smoke(arguments)
     ok = smoke.run()
     passed = [k for k, v in smoke.results.items() if isinstance(v, dict) and v.get('ok')]
     failed = [k for k, v in smoke.results.items() if isinstance(v, dict) and not v.get('ok') and not v.get('expected')]

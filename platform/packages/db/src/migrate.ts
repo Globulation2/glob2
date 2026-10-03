@@ -1,6 +1,7 @@
 import { readdir, readFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { Logger as GraphileLogger, runMigrations as runGraphileMigrations } from 'graphile-worker';
 import { sql, type Kysely } from 'kysely';
 import {
   Migrator,
@@ -8,6 +9,8 @@ import {
   type MigrationProvider,
   type MigrationResult,
 } from 'kysely/migration';
+import type pg from 'pg';
+import { applyGrants, rolesExist } from './roles.ts';
 
 export const MIGRATIONS_DIR = join(dirname(fileURLToPath(import.meta.url)), '..', 'migrations');
 
@@ -60,3 +63,29 @@ export async function migrateToLatest(db: AnyKysely): Promise<MigrationResult[]>
   }
   return results ?? [];
 }
+
+/**
+ * Brings a database fully up to date, as the migrator role: the platform's
+ * migrations, graphile-worker's job-queue schema, then the service roles'
+ * grants on whatever now exists (see roles.ts). Services never run DDL.
+ * Without the roles (a development database migrated by its superuser) the
+ * grants are skipped.
+ */
+export async function migrateDatabase(
+  handle: { db: AnyKysely; pool: pg.Pool },
+  options: { grants?: boolean } = {},
+): Promise<MigrationResult[]> {
+  const results = await migrateToLatest(handle.db);
+  await runGraphileMigrations({ pgPool: handle.pool, logger: SILENT_GRAPHILE_LOGGER });
+  if (options.grants !== false) {
+    const client = await handle.pool.connect();
+    try {
+      if (await rolesExist(client)) await applyGrants(client);
+    } finally {
+      client.release();
+    }
+  }
+  return results;
+}
+
+const SILENT_GRAPHILE_LOGGER = new GraphileLogger(() => () => undefined);

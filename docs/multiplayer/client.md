@@ -237,16 +237,13 @@ room".
 `ratingPreview {ladder, before, ifWon, ifLost, provisional}` for the greyed
 "1528 → 1543?" before verification.
 
-**Pausing** (`src/gui/PauseBudget.h`). Rooms and LAN games pause freely. Quick
-matches, rated or not, give each player three pauses and 60 s in all; anyone
-may resume. Pause orders carry their sender to the interface
-(`ClientEvent::PauseChanged`), so every client keeps every player's budget and
-any client sends the resume once the pause's holder has run out (or paused
-beyond the count). Pause orders and their validation are unchanged, so a
-modified client can still pause, and the others resume it at once. The menu
-(touch sheet and, in network matches, the desktop menu) shows the pauses
-left; the Paused label names who paused and the time left, above the phone
-HUD's action bar.
+**Pausing.** Rooms and LAN games pause freely; queue matches carry a
+[pause limit](turn-protocol.md#pause-limit) that the turn session enforces.
+`GameGUI::pauseState` shows it: the menu (the touch sheet and, in network
+matches, the desktop menu too) offers "Pause game (N left)", or a disabled "No
+pauses left"; a pause the player has none left of is not sent. The Paused label
+names who paused and, under a limit, when the game resumes by itself, and sits
+above the phone HUD's action bar on a dark backing.
 
 Leaving a match sends `Quit` to the relay; the connection stays open after the
 game's session is gone until it is written (at most 3 s, and the shutdown screen

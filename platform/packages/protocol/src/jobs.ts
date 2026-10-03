@@ -2,11 +2,12 @@
 // one simulation version: an engine-agent built from that version's glob2
 // binary runs only the task identifiers of its own sim version.
 //
-// Transport: graphile-worker. The platform enqueues an EngineJob under
-// engineTaskIdentifier(kind, simVersion); the agent runs it and enqueues an
-// EngineJobResult under ENGINE_RESULT_TASK, which apps/worker applies. Blobs
-// (maps, saves, records, previews, replays) are exchanged through the shared
-// blob store by SHA-256.
+// Transport: the platform records an EngineJob in the engine_jobs table; an
+// agent of that sim version leases it over platform-api's internal HTTP API
+// (below), runs it and reports its result, which platform-api enqueues as an
+// EngineJobResult under ENGINE_RESULT_TASK (graphile-worker) for apps/worker
+// to apply. Blobs (maps, saves, records, previews, replays) move through the
+// same HTTP API by SHA-256. engineTaskIdentifier names the job in logs.
 import { Type, type Static, type TSchema } from 'typebox';
 import { ErrorBody, Open, SeatIndex, Sha256Hex, Strict, TeamIndex, Uuid } from './common.ts';
 import { GeneratorDescriptor, MatchSetup } from './matchSetup.ts';
@@ -253,3 +254,72 @@ export type VerifyMatchPayload = Static<typeof VerifyMatchPayload>;
 export type VerifiedTeam = Static<typeof VerifiedTeam>;
 export type TeamTimelinePoint = Static<typeof TeamTimelinePoint>;
 export type VerifiedOutcome = Static<typeof VerifiedOutcome>;
+
+// ------------------------------------------------- engine-agent HTTP API
+//
+// Engine agents hold no database or blob-store credentials: they call
+// platform-api's /internal/v1/engine endpoints with a bearer agent key
+// (docs/multiplayer/architecture.md, "Engine agents"):
+//
+//   POST /internal/v1/engine/agents/heartbeat      EngineAgentHeartbeat
+//   DELETE /internal/v1/engine/agents/{agentId}
+//   POST /internal/v1/engine/jobs/lease            EngineLeaseRequest -> EngineLease | 204
+//   POST /internal/v1/engine/jobs/{jobId}/extend   EngineLeaseExtendRequest
+//   POST /internal/v1/engine/jobs/{jobId}/release  EngineLeaseReleaseRequest
+//   POST /internal/v1/engine/jobs/{jobId}/result   EngineJobReport
+//   GET  /internal/v1/engine/blobs/{sha256}        bytes of a blob the leased job names
+//   PUT  /internal/v1/engine/blobs?contentType=&visibility=   bytes -> EngineBlobReceipt
+//
+// Calls about a job carry its lease token in ENGINE_LEASE_HEADER.
+
+/** Header carrying the lease token on job and blob calls. */
+export const ENGINE_LEASE_HEADER = 'x-glob2-lease';
+
+export const EngineAgentId = Type.String({ pattern: '^[A-Za-z0-9._-]{1,128}$' });
+const LeaseSeconds = Type.Integer({ minimum: 10, maximum: 3600 });
+const JobKinds = Type.Array(JobKind, { minItems: 1, maxItems: 4, uniqueItems: true });
+
+export const EngineAgentHeartbeat = Strict({
+  agentId: EngineAgentId,
+  simVersion: SimVersion,
+  kinds: JobKinds,
+  build: Type.String({ minLength: 1, maxLength: 128 }),
+});
+
+export const EngineLeaseRequest = Strict({
+  agentId: EngineAgentId,
+  simVersion: SimVersion,
+  kinds: JobKinds,
+  leaseSeconds: LeaseSeconds,
+});
+
+export const EngineLease = Strict({
+  job: EngineJob,
+  leaseToken: Type.String({ minLength: 32, maxLength: 128 }),
+  attempt: Type.Integer({ minimum: 1 }),
+  maxAttempts: Type.Integer({ minimum: 1 }),
+  leaseExpiresAt: Type.String(),
+});
+
+export const EngineLeaseExtendRequest = Strict({ leaseSeconds: LeaseSeconds });
+
+export const EngineLeaseReleaseRequest = Strict({
+  retryAfterSeconds: Type.Integer({ minimum: 0, maximum: 3600 }),
+});
+
+export const EngineJobReport = Type.Union([
+  Strict({ ok: Type.Literal(true), result: Type.Object({}) }),
+  Strict({ ok: Type.Literal(false), error: ErrorBody }),
+]);
+
+export const EngineBlobReceipt = Strict({
+  sha256: Sha256Hex,
+  size: Type.Integer({ minimum: 0 }),
+});
+
+export type EngineAgentHeartbeat = Static<typeof EngineAgentHeartbeat>;
+export type EngineLeaseRequest = Static<typeof EngineLeaseRequest>;
+export type EngineLease = Omit<Static<typeof EngineLease>, 'job'> & { job: EngineJob };
+export type EngineJobReport =
+  { ok: true; result: unknown } | { ok: false; error: Static<typeof ErrorBody> };
+export type EngineBlobReceipt = Static<typeof EngineBlobReceipt>;

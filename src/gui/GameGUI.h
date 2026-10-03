@@ -33,7 +33,6 @@
 #include "GameGUIGhostBuildingManager.h"
 #include "BuildingGuiState.h"
 #include "GameMusicController.h"
-#include "PauseBudget.h"
 #include "sim/ClientCommandSink.h"
 #include "sim/ClientEvents.h"
 #include "sim/ClientRequests.h"
@@ -309,16 +308,24 @@ public:
 	} networkMatch;
 	/// A one-line notice in the message list (connection changes).
 	void addNotice(const std::string &text);
-	/// Pausing in network matches (PauseBudget.h): quick matches give each player a
-	/// few pauses and a total time, rooms and LAN games pause freely. Presentation
-	/// only: it decides when the interface offers and sends pause orders.
-	PauseBudget pauseBudget;
-	/// The pause (or resume) the player asked for: sent unless their budget is spent.
+	/// Pausing in network matches. Queue matches limit pauses per seat; the turn
+	/// session enforces it deterministically (TurnLockstepSession::setPauseLimit).
+	/// This is what the menus and the Paused label show of it. Presentation only.
+	struct PauseState
+	{
+		bool limited = false;
+		int pausesLeft = -1;  ///< this player's, when limited
+		int secondsLeft = -1; ///< this player's pause time left, when limited
+		int pausedBy = -1;    ///< the player whose pause is running, or -1
+		int pauserSecondsLeft = -1; ///< their pause time left, when limited
+	};
+	/// Set by the engine for turn games; empty elsewhere (pausing is unlimited).
+	std::function<PauseState()> pauseState;
+	/// The pause (or resume) the player asked for; a pause they have none left of
+	/// is not sent, and says so.
 	void requestPause(bool pause);
 	/// Whether the menus offer Pause to this player now.
 	bool pauseAvailable() const;
-	/// Turn games, every frame: resumes a pause whose holder ran out of time.
-	void checkPauseBudget(Uint32 nowMs);
 private:
 	friend class GameGUISelectionHarness;
 	friend class SavegameSafetyHarness;
@@ -692,8 +699,6 @@ private:
 	std::string defaultGameSaveName;
 
 	bool hasEndOfGameDialogBeenShown;
-	/// A resume for an expired pause was sent (once per pause).
-	bool pauseResumeSent = false;
 
 	GameGUIMessageManager messageManager;
 	std::unique_ptr<InGameScrollableHistory> scrollableText;

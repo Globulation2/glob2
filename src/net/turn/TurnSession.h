@@ -75,6 +75,23 @@ namespace Turn
 		std::size_t jitterWindow = 128;
 		JitterBufferConfig jitter;
 		DelayControllerConfig delay;
+
+		// Order pacing (docs/multiplayer/turn-protocol.md#order-pacing). The relay gives a
+		// seat at most one order per tick, so the session sends at most that many: a
+		// credit of `orderBurst` orders refilled at one per tick. Orders beyond it wait
+		// in a local queue, where a later order with the same target replaces an earlier
+		// one (latest wins), so a flag drag or a held key costs one order, not hundreds.
+		std::uint32_t orderBurst = 4;
+		/// Gameplay orders the local queue holds; a further one is dropped.
+		std::size_t maxQueuedOrders = 250;
+		/// Voice goes out only when no gameplay order is waiting, at most one packet
+		/// every this many ticks, so talking never delays a command by more than the
+		/// packet already on its way.
+		std::uint32_t voiceGapTicks = 3;
+		/// Voice packets the queue holds; the oldest is dropped beyond it.
+		std::size_t maxQueuedVoice = 8;
+		/// tooManyActions() while more than this many ticks of orders wait locally.
+		std::uint32_t busyQueueTicks = 25;
 	};
 
 	class TurnSession
@@ -122,13 +139,14 @@ namespace Turn
 		Uint32 getWaitingOnMask();
 		/// Always true: desyncs are arbitrated by the relay (see needsReload()).
 		bool matchCheckSums() { return true; }
-		/// Pushes any unsent local orders to the transport.
+		/// Sends the queued local orders the pacing budget allows now.
 		void flushAllOrders();
 		int getStep() const { return step; }
 		void setLocalPlayer(int) {}
 
 		// --- Turn-specific ---
-		/// Tells the relay we are leaving; it sequences our PlayerQuitsGameOrder.
+		/// Tells the relay we are leaving, after sending the orders still queued for the
+		/// pacing credit; it sequences our PlayerQuitsGameOrder after them.
 		void quit(QuitReason reason = QuitReason::PlayerQuit);
 		/// The engine must reload the initial state and call reloadDone(), after a rejoin
 		/// notice or a resume the relay could only serve from tick 0.
@@ -139,6 +157,14 @@ namespace Turn
 		/// Interval to the next tick after the +/-5% nudge; 0 while catching up.
 		std::uint64_t tickIntervalMicros() const;
 		bool desyncFlagged() const { return flagged; }
+
+		/// Local orders waiting for the pacing budget (gameplay orders, then voice).
+		std::size_t queuedOrders() const { return queued.size(); }
+		std::size_t queuedVoice() const { return voiceQueue.size(); }
+		/// The player is issuing orders faster than the relay sequences them: more than
+		/// busyQueueTicks of orders wait locally, or the queue dropped one in the last
+		/// two seconds. Presentation only ("Too many actions").
+		bool tooManyActions() const;
 
 		State state() const { return currentState; }
 		RejectReason rejectReason() const { return rejection; }
@@ -179,8 +205,9 @@ namespace Turn
 		const StallStats& stallStats() const { return stallCounters; }
 
 		/// Optional latency probes for tests and diagnostics; unset by default. Called
-		/// when a local order is submitted (with its client sequence), and when a
-		/// bundle raises the horizon.
+		/// when a local gameplay order (not voice) is sent to the relay, with its client
+		/// sequence (orders wait in the pacing queue first), and when a bundle raises
+		/// the horizon.
 		std::function<void(std::uint32_t sequence)> onSubmitted;
 		std::function<void(std::uint32_t horizon)> onHorizon;
 
@@ -221,6 +248,16 @@ namespace Turn
 			std::uint32_t sequence;
 			std::vector<std::uint8_t> bytes;
 		};
+		struct Queued
+		{
+			std::uint32_t key; ///< coalescing key, 0 for an order that never coalesces
+			std::vector<std::uint8_t> bytes;
+		};
+
+		/// Sends what the pacing credit allows: queued gameplay orders first, then voice.
+		void pump();
+		void refillCredit();
+		void sendOrder(std::vector<std::uint8_t> bytes);
 
 		void send(const NetMessage& message);
 		void handle(const NetMessage& message);
@@ -269,6 +306,16 @@ namespace Turn
 
 		std::uint32_t nextSequence = 1;
 		std::deque<Outstanding> outstanding;
+		std::deque<Queued> queued;
+		std::deque<std::vector<std::uint8_t>> voiceQueue;
+		/// Pacing credit in microseconds of relay ticks; one order costs one tick period.
+		std::int64_t credit = 0;
+		bool creditReady = false; ///< the credit starts full on first use
+		std::uint64_t creditAt = 0;
+		std::uint64_t lastVoiceAt = 0;
+		bool voiceSentOnce = false;
+		std::uint64_t lastQueueDropAt = 0;
+		bool queueDropped = false;
 		std::deque<ChecksumReport> unsentReports;
 		std::array<PresenceState, MAX_SEATS> seatPresence{};
 		std::array<SeatPresence, MAX_SEATS> seatDetails{};

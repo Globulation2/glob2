@@ -2,7 +2,7 @@
 // against a test database without listening on a port.
 //
 // Route prefixes: /api/v1 (public REST), /realtime (WebSocket), /internal
-// (relays), /.well-known (JWKS, mobile app-link files), the browser sign-in pages /signin and
+// (relays; /internal/v1/engine for engine agents), /.well-known (JWKS, mobile app-link files), the browser sign-in pages /signin and
 // /auth/<provider>/… (served here, so they share the API's origin and
 // cookies), and invite landing pages /j/<code>.
 import Fastify, { type FastifyBaseLogger, type FastifyError, type FastifyInstance } from 'fastify';
@@ -11,7 +11,7 @@ import formbody from '@fastify/formbody';
 import rateLimit from '@fastify/rate-limit';
 import websocket from '@fastify/websocket';
 import { sql, type Kysely } from 'kysely';
-import { readableSize, resolveQueue } from '@glob2/core';
+import { freshAgentSimVersions, readableSize, resolveQueue } from '@glob2/core';
 import type { Database } from '@glob2/db';
 import {
   MATCH_RECORD_CONTENT_TYPE,
@@ -28,6 +28,7 @@ import { adminRoutes } from './routes/admin.ts';
 import { authRoutes } from './routes/auth.ts';
 import { signinRoutes } from './routes/signin.ts';
 import { internalRoutes } from './routes/internal.ts';
+import { engineAgentRoutes } from './routes/engine.ts';
 import { inviteRoutes } from './routes/invite.ts';
 import { playRoutes } from './routes/play.ts';
 import { mapCatalogRoutes } from './maps/routes.ts';
@@ -54,9 +55,6 @@ export interface BuildOptions {
   /** Room sweep interval in ms (default 30 s; 0 disables, for tests). */
   roomSweepMs?: number;
 }
-
-/** An engine agent counts as available if it was seen this recently. */
-const AGENT_FRESHNESS_SECONDS = 300;
 
 function errorBodyFor(
   error: FastifyError,
@@ -91,18 +89,8 @@ function errorBodyFor(
 
 /** Sim versions with a recently seen engine agent: the versions this instance can serve. */
 export async function supportedSimVersions(db: Kysely<Database>): Promise<SimVersion[]> {
-  const rows = await db
-    .selectFrom('engine_agents')
-    .select('sim_version')
-    .distinct()
-    .where(
-      'last_seen_at',
-      '>',
-      sql<Date>`now() - make_interval(secs => ${AGENT_FRESHNESS_SECONDS})`,
-    )
-    .orderBy('sim_version')
-    .execute();
-  return rows.flatMap((row) => parseSimVersionKey(row.sim_version) ?? []);
+  const keys = await freshAgentSimVersions(db);
+  return keys.flatMap((key) => parseSimVersionKey(key) ?? []);
 }
 
 export async function buildApp(
@@ -162,9 +150,12 @@ export async function buildApp(
   // Liveness: the process is up.
   app.get('/healthz', { config: { rateLimit: false } }, async () => ({ status: 'ok' }));
 
-  // Readiness: the database answers. Load balancers route only to ready replicas.
+  // Readiness: the database answers and realtime fan-out is listening (a
+  // replica whose LISTEN connection is down would miss notifications for its
+  // sockets). Load balancers route only to ready replicas.
   app.get('/readyz', { config: { rateLimit: false } }, async (_request, reply) => {
     try {
+      if (!services.pubsub.connected) throw new Error('pub/sub listener is reconnecting');
       await sql`SELECT 1`.execute(services.db);
       return { status: 'ready' };
     } catch (error) {
@@ -217,6 +208,7 @@ export async function buildApp(
   });
   const assignments = new Assignments(services.db, identity.keys, services.config.publicOrigin);
   const play = new PlayRealtime({
+    db: services.db,
     config: services.config,
     access: services.access,
     pubsub: services.pubsub,
@@ -238,6 +230,7 @@ export async function buildApp(
   await appLinkRoutes(app);
   await inviteRoutes(app, rooms);
   await internalRoutes(app);
+  await engineAgentRoutes(app);
   await app.register(async (scope) =>
     realtimeRoutes(scope, identity, options.realtime, play.handlers),
   );

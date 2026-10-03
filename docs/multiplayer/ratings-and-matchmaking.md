@@ -1,7 +1,8 @@
 # Ratings and matchmaking
 
 Quick-match queues group players into matches, and engine-verified results of rated
-queue matches update a ladder per queue. Both run in `platform/apps/worker`; the
+queue matches update a ladder per queue. Both run in the worker (`platform/apps/worker`), on
+the shared match domain in `platform/packages/play`; the
 contracts they share with the API, the match starter and clients are listed at the
 end. The platform's overall design is in [architecture](architecture.md).
 
@@ -10,7 +11,7 @@ end. The platform's overall design is in [architecture](architecture.md).
 ### Model
 
 Ratings are OpenSkill (Weng–Lin) with the Plackett–Luce model, from the npm
-`openskill` package. Every option is pinned in `apps/worker/src/ratings/scale.ts`, so
+`openskill` package. Every option is pinned in `packages/play/src/ratings/scale.ts`, so
 a library default change cannot move a ladder:
 
 | Constant | Value | Meaning |
@@ -62,7 +63,8 @@ Sides are the `MatchSetup` alliances (`teams[].alliance`). A side wins if any of
 teams won. An AI side never "leaves". In a 2v2, a side leaves only when its last
 human leaves; one partner quitting while the other plays on is rated by the result.
 Participants marked `abandoned` by match intake count as having left at the final
-tick.
+tick. Intake marks only seats that quit before the end, and a verified winner is
+never left `abandoned` ([match intake](rooms-and-matches.md#internal-api-for-relays)).
 
 `diverged` results are not rated. The verifier's replay is authoritative, but a
 divergence can come from a broken client as easily as from tampering, so applying
@@ -128,8 +130,18 @@ in-game end screen applies the same rule (`WinningConditions` `isGameDrawn`).
 5. A scheduler sweep (`applyPendingRatings`, every 30 s) settles any match whose
    verification is known but whose ratings are still pending.
 
-A verify job that fails after its retries leaves the match `pending` for an operator
-to re-run.
+A verify job that fails after its retries (including a last lease that ran out
+without a report), or that the stale-job sweep gives up (its accepted report was
+lost before the worker applied it, or no agent serves its sim version),
+marks the match's verification `failed`; the rating note becomes
+`verification_failed` and nothing is rated. The worker logs it at error level. An
+administrator re-runs it with `platform matches reverify <match id>` (or `POST
+/api/v1/admin/matches/:id/reverify`, audited), which puts the match back to
+`pending` and submits a new verify job in one transaction; `platform matches
+failed` lists candidates. Re-verification is refused for verified or rated
+matches, and while a verify job is queued unless forced. At most one verify job
+per match is queued at a time (a partial unique index), so concurrent end-report
+retries submit one job.
 
 ### AI rating entities
 
@@ -204,14 +216,18 @@ pool, or engine agents of the new sim version will refuse the old revision.
 
 ## Matchmaker
 
-The matchmaker (`apps/worker/src/matchmaking/`) runs every second as a task of the
+The matchmaker (`apps/worker/src/matchmaking/matchmaker.ts`; grouping, tickets and
+proposals in `packages/play/src/matchmaking/`) runs every second as a task of the
 worker scheduler. The scheduler runs only on the replica holding the `scheduler`
 leader lock, a Postgres advisory lock. All state is in Postgres, so a new leader
 continues where the old one stopped.
 
 A dead leader may notice that it lost its session a moment after the new leader
-starts. During that overlap both may tick. Every step therefore moves rows only from
-an expected status, inside a transaction, and the match starter must be idempotent.
+starts. Every step therefore moves rows only from an expected status, inside a
+transaction, and the match starter must be idempotent. On top of that the leader
+connection uses keepalive and re-checks its lock, and every matchmaker transaction
+checks the scheduler's leader epoch first (`assertLease`), so an old leader's
+writes fail once a new leader holds the lease.
 
 Each tick:
 
@@ -259,7 +275,11 @@ Each tick:
      region and every seat: name, rating, AI id and accept answer, with `you` on
      the receiver's seat (`proposalView.ts`). After each `queue.respond` the API
      sends it again to everyone in the proposal, so the prompt shows who accepted.
-4. **Starts** `starting` proposals through `MatchStarter`.
+4. **Starts** `starting` proposals through `MatchStarter`, in the background:
+   a start may wait up to a minute for on-demand map generation, which must not
+   hold up proposals, grouping or progress for every queue. Each proposal has at
+   most one start in flight (up to 8 at once); a tick waits 250 ms for them and
+   counts the rest when they finish.
    - On success, the tickets become `matched` and each human gets
      `queue.matchFound`.
    - After three failed attempts the proposal fails and the players wait again
@@ -306,7 +326,7 @@ the connection, reports the fastest request as is.
   - new columns `allow_ai_opponent` and `proposal_id`;
   - the one-ticket-per-account index now covers `waiting` and `proposed`.
 
-**API realtime handlers** call the ticket operations exported by `@glob2/worker`
+**API realtime handlers** call the ticket operations exported by `@glob2/play`
 after their own `AccessPolicy.canQueue` and sim-version checks:
 
 - `joinQueue`: refuses guests in rated queues, active cooldowns and a second
@@ -318,7 +338,7 @@ The API forwards `NOTIFY queue_events {accountId, event, data}` to that account'
 sockets as the named realtime event. On `NOTIFY match_updates {matchId}` it re-reads
 the match and sends `match.updated`.
 
-**`MatchStarter`** (M4/M6) receives a `MatchProposal`. Its fields are the proposal
+**`MatchStarter`** receives a `MatchProposal`. Its fields are the proposal
 and queue ids, rated and backfilled flags, sim version, region, the map pool entry,
 and seats with slot, side, account or AI, rating entity and μ/σ. The starter must:
 
@@ -327,16 +347,18 @@ and seats with slot, side, account or AI, rating entity and μ/σ. The starter m
 - place seat = slot on map team = slot, with `teams[slot].alliance = side`, and
   copy `rating_entity_id` from the seat;
 - pick the seed and map: `takeWarmMap(db, queueId, simVersionKey, { entry })`
-  from `@glob2/worker` returns a pre-generated map of the proposal's pool entry
+  from `@glob2/play` returns a pre-generated map of the proposal's pool entry
   (descriptor with seed, map hash, map facts) or undefined, in which case the
   starter submits its own generate-map job; then allocate a relay in the region
   and push `match.start`;
 - be idempotent per proposal id, by looking the match up by `matches.proposal_id`;
 - throw when the match cannot start.
 
-`InMemoryMatchStarter` is the test double; given a database, it writes the rows a
-real starter would. Until M4 provides a starter, the worker's starter always fails,
-so queued players are requeued.
+The production starter is `PlatformMatchStarter`; its MatchSetup comes from
+`queueMatchSetup()`, the one builder for queue matches. The test double
+`InMemoryMatchStarter` (exported by `@glob2/play/testing`, not by the package
+index) writes the rows a real starter would through the same builder, with a
+placeholder map.
 
 **Match intake** (M4) sets `match_participants.quit_tick` from the relay's
 `RelayMatchEnded` report. It may mark a seat `outcome = 'abandoned'`. Ratings read
@@ -344,7 +366,8 @@ both fields.
 
 ## Tests
 
-`platform/apps/worker/test/ratings.test.ts` and `matchmaker.test.ts` run against a
+`platform/packages/play/test/ratings.test.ts` and
+`platform/apps/worker/test/matchmaker.test.ts` run against a
 real Postgres; see [architecture](architecture.md#working-on-the-platform) for the
 test database. They cover:
 

@@ -4716,3 +4716,9 @@ Kortets fart
 
 [pause by %0 resumes in %1]
 
+[turn too many actions]
+
+[turn no pauses left]
+
+[turn pause time used %0]
+

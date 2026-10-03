@@ -94,9 +94,14 @@ public:
 			{
 				if (orderRate > 0 && std::uniform_real_distribution<double>(0, 1)(rng) < orderRate)
 				{
-					trace.queued(net.now);
-					session->addLocalOrder(makeBytesOrder(randomOrder()));
-					submittedAt.push_back(net.now);
+					auto bytes = randomOrder();
+					// Input delay follows gameplay orders; voice has its own pace.
+					if (bytes[0] != ORDER_TYPE_VOICE)
+					{
+						trace.queued(net.now);
+						submittedAt.push_back(net.now);
+					}
+					session->addLocalOrder(makeBytesOrder(std::move(bytes)));
 				}
 			}
 			for (int ai : aiSeats)
@@ -120,7 +125,8 @@ public:
 				const auto bytes = wireBytes(*order);
 				if (p == seat)
 					trace.executed(tick, net.now);
-				if (bytes[0] != ORDER_TYPE_NULL && p == seat && !submittedAt.empty() && bytes[0] != ORDER_TYPE_PLAYER_QUIT)
+				if (bytes[0] != ORDER_TYPE_NULL && p == seat && !submittedAt.empty() && bytes[0] != ORDER_TYPE_PLAYER_QUIT &&
+				    bytes[0] != ORDER_TYPE_VOICE)
 				{
 					inputDelays.push_back(net.now - submittedAt.front());
 					submittedAt.pop_front();

@@ -1,31 +1,37 @@
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
 import { sql } from 'kysely';
 import { createLogger, resolveQueue, type ResolvedQueue } from '@glob2/core';
-import { LeaderElection } from '@glob2/db';
+import { LeaderElection, LeaderLostError } from '@glob2/db';
 import { createTestDatabase, type TestDatabase } from '@glob2/db/testing';
-import { FakeClock } from '../src/clock.ts';
+import { checkDocument } from '@glob2/protocol';
 import {
+  DISPLAY_PER_MU,
+  FakeClock,
+  MU0,
+  aiSeedRating,
   balanceSides,
   chooseRegion,
-  planGroups,
-  ratingWindow,
-  rttTolerance,
-  type WaitingTicket,
-} from '../src/matchmaking/grouping.ts';
-import { Matchmaker } from '../src/matchmaking/matchmaker.ts';
-import { RecordingQueueNotifier } from '../src/matchmaking/notifier.ts';
-import { InMemoryMatchStarter } from '../src/matchmaking/starter.ts';
-import {
   joinQueue,
   leaveQueue,
+  planGroups,
+  ratingWindow,
   respondToProposal,
+  rttTolerance,
+  sendProposal,
   updateTicket,
-} from '../src/matchmaking/tickets.ts';
-import { sendProposal } from '../src/matchmaking/proposalView.ts';
-import { checkDocument } from '@glob2/protocol';
-import { DISPLAY_PER_MU, MU0, aiSeedRating } from '../src/ratings/scale.ts';
+  type WaitingTicket,
+  type MatchProposal,
+} from '@glob2/play';
+import {
+  InMemoryMatchStarter,
+  RecordingQueueNotifier,
+  SIM_A,
+  SIM_B,
+  createAccount,
+  waitFor,
+} from '@glob2/play/testing';
+import { Matchmaker } from '../src/matchmaking/matchmaker.ts';
 import { runScheduler } from '../src/scheduler.ts';
-import { SIM_A, SIM_B, createAccount, waitFor } from './support.ts';
 
 const RANKED: ResolvedQueue = resolveQueue({
   id: 'ranked-1v1',
@@ -56,15 +62,15 @@ let database: TestDatabase;
 // Registered display names are unique (identity migration 0003).
 let players = 0;
 beforeAll(async () => {
-  database = await createTestDatabase();
+  database = await createTestDatabase({ role: 'worker' });
 });
 afterAll(async () => {
   await database?.drop();
 });
 afterEach(async () => {
-  // Each test starts with empty queues.
+  // Each test starts with empty queues (TRUNCATE is the schema owner's).
   await sql`TRUNCATE queue_tickets, match_proposals, match_proposal_seats, queue_cooldowns, matches CASCADE`.execute(
-    database.db,
+    database.as('migrator').db,
   );
 });
 
@@ -88,8 +94,27 @@ function harness(
     notifier,
     clock,
     random: () => 0,
+    // Starts run in the background; these tests count them in the tick that launched them.
+    startWaitMs: 60_000,
   });
   return { clock, notifier, starter, matchmaker };
+}
+
+/** A starter whose starts wait until released (a slow on-demand map generation). */
+class GatedStarter extends InMemoryMatchStarter {
+  private release: () => void = () => undefined;
+  private gate = new Promise<void>((resolve) => (this.release = resolve));
+  readonly entered: string[] = [];
+
+  override async start(proposal: MatchProposal) {
+    this.entered.push(proposal.id);
+    await this.gate;
+    return super.start(proposal);
+  }
+
+  open(): void {
+    this.release();
+  }
 }
 
 async function enqueue(
@@ -604,6 +629,63 @@ describe('matchmaker', () => {
     expect(await join(RANKED, guest)).toEqual({ ok: false, code: 'guest_not_allowed' });
     expect(await join(CASUAL, guest)).toMatchObject({ ok: true });
     expect(await join(CASUAL, guest)).toEqual({ ok: false, code: 'already_queued' });
+  });
+});
+
+describe('matchmaker liveness', () => {
+  it('keeps grouping while a start waits for its map, and starts each proposal once', async () => {
+    const clock = new FakeClock();
+    const starter = new GatedStarter(database.db);
+    const matchmaker = new Matchmaker({
+      db: database.db,
+      queues: [CASUAL],
+      starter,
+      notifier: new RecordingQueueNotifier(),
+      clock,
+      random: () => 0,
+      startWaitMs: 20,
+    });
+    const h = { clock } as Harness;
+    await enqueue(h, CASUAL);
+    await enqueue(h, CASUAL);
+    const began = Date.now();
+    expect(await matchmaker.tick()).toMatchObject({ proposed: 1, started: 0 });
+    expect(Date.now() - began).toBeLessThan(2000);
+    expect(matchmaker.startsInFlight).toBe(1);
+
+    // More players arrive while the first start is still waiting.
+    await enqueue(h, CASUAL);
+    await enqueue(h, CASUAL);
+    expect(await matchmaker.tick()).toMatchObject({ proposed: 1, started: 0 });
+    expect(await matchmaker.tick()).toMatchObject({ proposed: 0, started: 0 });
+    expect(matchmaker.startsInFlight).toBe(2);
+    expect(new Set(starter.entered).size).toBe(2);
+    expect(starter.entered).toHaveLength(2);
+
+    starter.open();
+    await matchmaker.waitForStarts();
+    expect(await matchmaker.tick()).toMatchObject({ started: 2 });
+    expect((await proposals()).map((p) => p.status)).toEqual(['started', 'started']);
+  });
+
+  it('commits nothing once the leader lease is lost', async () => {
+    const h = harness([CASUAL]);
+    const fenced = new Matchmaker({
+      db: database.db,
+      queues: [CASUAL],
+      starter: h.starter,
+      notifier: h.notifier,
+      clock: h.clock,
+      random: () => 0,
+      fence: async () => {
+        throw new LeaderLostError('scheduler epoch 3 is no longer current');
+      },
+    });
+    await enqueue(h, CASUAL);
+    await enqueue(h, CASUAL);
+    await expect(fenced.tick()).rejects.toBeInstanceOf(LeaderLostError);
+    expect(await proposals()).toEqual([]);
+    expect(h.notifier.events).toEqual([]);
   });
 });
 

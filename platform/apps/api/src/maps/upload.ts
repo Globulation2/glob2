@@ -3,7 +3,7 @@
 // gzip the way the game's loader does, check the header, and answer obvious
 // problems at once in words a player understands. The engine agent's check
 // still decides whether the game can really load the file.
-import { checkMapFile } from '@glob2/core';
+import { checkMapFileAsync } from '@glob2/core';
 import type { SimVersion } from '@glob2/protocol';
 import { apiError } from '../errors.ts';
 
@@ -16,13 +16,15 @@ export function newestSimVersion(versions: readonly SimVersion[]): SimVersion | 
 
 /**
  * The bytes to store and hash (decompressed), or an HTTP 400 whose message
- * says what is wrong and whose details carry a stable `problem` code.
+ * says what is wrong and whose details carry a stable `problem` code. Gzip is
+ * unpacked off the event loop, bounded in size and ratio; callers take the
+ * sender's upload quota first.
  */
-export function checkedUpload(
+export async function checkedUpload(
   body: unknown,
   format: 'map' | 'save',
   newestVersionMinor: number,
-): Buffer {
+): Promise<Buffer> {
   if (!(body instanceof Buffer) || body.length === 0) {
     throw apiError(
       'bad_request',
@@ -30,7 +32,7 @@ export function checkedUpload(
       { problem: 'empty' },
     );
   }
-  const check = checkMapFile(body, { format, newestVersionMinor });
+  const check = await checkMapFileAsync(body, { format, newestVersionMinor });
   if (!check.ok) throw apiError('bad_request', check.message, { problem: check.problem });
   return check.bytes;
 }

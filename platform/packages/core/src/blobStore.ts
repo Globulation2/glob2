@@ -4,7 +4,7 @@
 // Metadata (size, content type, ownership) lives in the `blobs` table.
 import { createHash, randomBytes } from 'node:crypto';
 import { createReadStream } from 'node:fs';
-import { mkdir, rename, rm, stat, writeFile } from 'node:fs/promises';
+import { mkdir, opendir, rename, rm, stat, writeFile } from 'node:fs/promises';
 import { dirname, join, resolve, sep } from 'node:path';
 import type { Readable } from 'node:stream';
 import type { BlobStoreConfig } from './config.ts';
@@ -17,7 +17,19 @@ export interface BlobStore {
   get(key: string): Promise<Readable | undefined>;
   /** Size in bytes, or undefined when absent. */
   size(key: string): Promise<number | undefined>;
+  /** Deletes a blob; deleting an absent key is not an error. */
   delete(key: string): Promise<void>;
+  /**
+   * Every stored key under `prefix` with its last modification, for garbage
+   * collection of bytes no `blobs` row names. Optional: stores that cannot
+   * list cheaply leave it out and only rows are collected.
+   */
+  list?(prefix: string): AsyncIterable<StoredBlob>;
+}
+
+export interface StoredBlob {
+  key: string;
+  modifiedAt: Date;
 }
 
 const KEY_PATTERN = /^[a-z0-9][a-z0-9/_.-]{0,255}$/;
@@ -96,6 +108,29 @@ export class FsBlobStore implements BlobStore {
   async delete(key: string): Promise<void> {
     await rm(this.path(key), { force: true });
   }
+
+  async *list(prefix: string): AsyncIterable<StoredBlob> {
+    const start = prefix.replace(/\/+$/, '');
+    const root = start ? this.path(start) : this.root;
+    const walk = async function* (dir: string, keyPrefix: string): AsyncIterable<StoredBlob> {
+      let handle;
+      try {
+        handle = await opendir(dir);
+      } catch (error) {
+        if ((error as NodeJS.ErrnoException).code === 'ENOENT') return;
+        throw error;
+      }
+      for await (const entry of handle) {
+        // Temporary files of a put in progress start with a dot.
+        if (entry.name.startsWith('.')) continue;
+        const path = join(dir, entry.name);
+        const key = keyPrefix ? `${keyPrefix}/${entry.name}` : entry.name;
+        if (entry.isDirectory()) yield* walk(path, key);
+        else if (entry.isFile()) yield { key, modifiedAt: (await stat(path)).mtime };
+      }
+    };
+    yield* walk(root, start);
+  }
 }
 
 /**
@@ -121,6 +156,8 @@ export class S3BlobStore implements BlobStore {
   delete(): Promise<void> {
     throw new Error('unreachable');
   }
+  // An S3 implementation lists with ListObjectsV2 (prefix, continuation token)
+  // and reports LastModified; until then only rows are collected.
 }
 
 export function createBlobStore(config: BlobStoreConfig): BlobStore {

@@ -204,7 +204,44 @@ GAGCore::CooperativeTask Engine::initTurnMatchTask(TurnMatchStart start)
     // client and in the verifier alike (OrderValidation.h).
     session->validator = [this](int player, Order& order) { return OrderValidation::validate(gui.game, player, order); };
     session->onLocalQuit = [this] { leaveTurnMatch(); };
+    if (start.setup.pauseLimit)
+        session->setPauseLimit({static_cast<std::uint32_t>(start.setup.pauseLimit->pauses),
+                                static_cast<std::uint32_t>(start.setup.pauseLimit->seconds)});
+    session->onPauseNotice = [this](Turn::PauseNotice notice, int seat) {
+        auto& strings = *Toolkit::getStringTable();
+        if (notice == Turn::PauseNotice::Refused)
+        {
+            if (seat == gui.localPlayer)
+                gui.addNotice(strings.getString("[turn no pauses left]"));
+        }
+        else if (seat >= 0 && seat < gui.game.gameHeader.getNumberOfPlayers() && gui.game.players[seat])
+            gui.addNotice(GAGCore::FormattableString(strings.getString("[turn pause time used %0]"))
+                              .arg(gui.game.players[seat]->name));
+    };
     turn = session.get();
+    // What the menus and the Paused label show of the pause limit.
+    gui.pauseState = [this] {
+        GameGUI::PauseState state;
+        if (!turn)
+            return state;
+        const auto period = std::max<std::uint64_t>(1, turn->turn().tickPeriodMicros());
+        const auto secondsLeft = [&](int seat) {
+            const std::uint64_t budget = std::uint64_t(turn->currentPauseLimit()->seconds) * 1000000;
+            const std::uint64_t used = std::uint64_t(turn->pauseTicksUsed(seat)) * period;
+            return int((budget > used ? budget - used : 0) / 1000000);
+        };
+        state.pausedBy = turn->pausedBy();
+        if (const auto& limit = turn->currentPauseLimit())
+        {
+            state.limited = true;
+            const int seat = gui.localPlayer;
+            state.pausesLeft = int(limit->pauses > turn->pausesUsed(seat) ? limit->pauses - turn->pausesUsed(seat) : 0);
+            state.secondsLeft = secondsLeft(seat);
+            if (state.pausedBy >= 0)
+                state.pauserSecondsLeft = secondsLeft(state.pausedBy);
+        }
+        return state;
+    };
     net = std::move(session);
     const char* envReplayPath = getenv("GLOB2_REPLAY_PATH");
     state.replayPath = envReplayPath ? envReplayPath : "replays/last_game.replay";
@@ -377,6 +414,8 @@ std::vector<std::string> Engine::turnConnectionNotice()
         else if (s.catchingUp() &&
                  Uint64(s.bufferedTicks()) * std::max<Uint64>(1, s.tickPeriodMicros()) > Uint64(ConnectionQuality::catchUpLineMs()) * 1000)
             lines.push_back(GAGCore::FormattableString(strings.getString("[turn catching up %0]")).arg(s.bufferedTicks()));
+        if (s.tooManyActions())
+            lines.push_back(strings.getString("[turn too many actions]"));
     }
     for (int p = 0; p < gui.game.gameHeader.getNumberOfPlayers() && p < Turn::MAX_SEATS; ++p)
     {

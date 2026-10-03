@@ -599,6 +599,11 @@
           "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
           "description": "Lowercase UUID."
         },
+        "notice": {
+          "type": "string",
+          "maxLength": 500,
+          "description": "Shown to every member of an open room: why the last start did not happen (e.g. the server was interrupted while starting). Cleared by the next start."
+        },
         "revision": {
           "type": "integer",
           "minimum": 0,

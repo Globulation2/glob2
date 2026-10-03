@@ -132,6 +132,19 @@
       "note": "A room with seats 1 and 3 empty: the players keep their map teams (0 and 2) and come first; the empty teams are closed."
     },
     {
+      "file": "valid/MatchSetup/queue-pause-limit.json",
+      "schema": "MatchSetup",
+      "valid": true,
+      "note": "A queue match: each human may pause 3 times for 60 s in total."
+    },
+    {
+      "file": "invalid/MatchSetup/pause-limit-out-of-range.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "schema",
+      "note": "A pause limit allows at most 100 pauses and 3600 s."
+    },
+    {
       "file": "invalid/MatchSetup/closed-seat-with-name.json",
       "schema": "MatchSetup",
       "valid": false,

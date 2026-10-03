@@ -34,7 +34,7 @@ class InGameMainScreen : public Glob2UI::InGameDialog
 	/// of "Quit the game".
 	void setNetworked(bool value) { networked = value; }
 	/// Network matches: what the Pause item says and whether it can be used (a
-	/// quick match's pause budget, PauseBudget.h). Pause shows on both looks there.
+	/// queue match's pause limit, TurnLockstepSession). Pause shows on both looks there.
 	void setPauseOffer(std::string label, bool enabled)
 	{
 		pauseLabel = std::move(label);

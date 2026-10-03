@@ -42,6 +42,8 @@ const VERDICT_TEXT: Record<string, string> = {
     'A player’s game disagreed with the server’s replay of the match; the server’s result counts.',
   unverifiable: 'The server could not reproduce this match, so it changes no rating.',
   not_applicable: 'This match is not checked.',
+  failed:
+    'The server could not finish checking this match, so it changes no rating for now. An administrator can run the check again.',
 };
 
 /** Teams on the match's map: the engine colours teams by this count. */

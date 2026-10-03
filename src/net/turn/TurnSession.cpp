@@ -6,10 +6,47 @@
 #include <algorithm>
 #include <iostream>
 
+#include "NetConsts.h"
 #include "Version.h"
 
 namespace Turn
 {
+namespace
+{
+/// Coalescing key of an order whose effect is an absolute setting: of one building or
+/// flag (its id is the first two bytes after the type, in every one of these
+/// encodings), or of the pause state. A later queued order with the same key makes an
+/// earlier unsent one redundant. 0 for orders that must all execute (creating,
+/// deleting, upgrading, brush strokes, chat, alliances, map marks, quitting).
+std::uint32_t coalesceKey(const std::vector<std::uint8_t>& b)
+{
+	if (b.empty())
+		return 0;
+	switch (b[0])
+	{
+	case ORDER_MOVE_FLAG:
+	case ORDER_MODIFY_BUILDING:
+	case ORDER_MODIFY_EXCHANGE:
+	case ORDER_MODIFY_SWARM:
+	case ORDER_MODIFY_FLAG:
+	case ORDER_MODIFY_CLEARING_FLAG:
+	case ORDER_MODIFY_MIN_LEVEL_TO_FLAG:
+	case ORDER_CHANGE_PRIORITY:
+		if (b.size() < 3)
+			return 0;
+		return (1u << 24) | (std::uint32_t(b[0]) << 16) | (std::uint32_t(b[1]) << 8) | b[2];
+	case ORDER_PAUSE_GAME:
+		return (1u << 24) | (std::uint32_t(b[0]) << 16) | 0xFFFFu;
+	default:
+		return 0;
+	}
+}
+
+/// OrderMoveFlag's wire layout: type, gid (2), x (4), y (4), drop (1).
+constexpr std::size_t MOVE_FLAG_BYTES = 12;
+constexpr std::size_t MOVE_FLAG_DROP_OFFSET = 11;
+}
+
 OrderCodec defaultOrderCodec()
 {
 	OrderCodec codec;
@@ -141,7 +178,7 @@ void TurnSession::update(std::uint64_t nowMicros)
 			return;
 		}
 		handle(*message);
-		if (currentState == State::Rejected)
+		if (currentState == State::Rejected || currentState == State::Reconnecting)
 			return;
 	}
 	// After draining: a client that did not run for a while (a long frame, a hidden
@@ -161,6 +198,7 @@ void TurnSession::update(std::uint64_t nowMicros)
 		send(ping);
 		lastPingAt = now;
 	}
+	pump();
 	buffer.update(jitter.jitterMicros(), tickPeriod, now);
 	delay.observe(bufferedTicks(), buffer.targetTicks());
 	if (desyncRejoin && currentState == State::Running && !catchingUp())
@@ -242,6 +280,18 @@ void TurnSession::handle(const NetMessage& message)
 			currentState = State::Reconnecting;
 			helloSent = false;
 			retryAt = now;
+			break;
+		}
+		if (static_cast<const Reject&>(message).reason == RejectReason::Flooding)
+		{
+			// The relay closed us for sending too much. The seat is still ours: come
+			// back after the usual backoff, which also lets its limit refill.
+			std::cerr << "Turn session: relay says we sent too much; reconnecting\n";
+			stats.linkLost(now);
+			transport.close();
+			currentState = State::Reconnecting;
+			helloSent = false;
+			retryAt = now + backoff;
 			break;
 		}
 		rejection = static_cast<const Reject&>(message).reason;
@@ -334,8 +384,11 @@ void TurnSession::onWelcome(const Welcome& w)
 	currentState = State::Running;
 	stats.welcomed(now);
 	backoff = config.reconnectInitialMicros;
+	refillCredit();
 	for (const auto& o : outstanding)
 	{
+		// Resent orders take relay ticks like new ones; the credit may go negative.
+		credit -= static_cast<std::int64_t>(tickPeriod);
 		OrderSubmit submit;
 		submit.clientSequence = o.sequence;
 		submit.order = o.bytes;
@@ -448,20 +501,110 @@ void TurnSession::addLocalOrder(std::shared_ptr<Order> order)
 		return;
 	}
 	stats.orderSubmitted(bytes[0], bytes.size(), linkUp());
-	stats.pendingInput(bytes.data(), bytes.size(), executed, now);
-	Outstanding o{nextSequence++, std::move(bytes)};
-	if (onSubmitted)
-		onSubmitted(o.sequence);
-	if (linkUp())
+	if (bytes[0] == ORDER_TYPE_VOICE)
 	{
-		OrderSubmit submit;
-		submit.clientSequence = o.sequence;
-		submit.order = o.bytes;
-		send(submit);
-		stats.orderFrameSent(false);
+		// Audio that waits too long is useless: keep the newest packets.
+		if (voiceQueue.size() >= config.maxQueuedVoice)
+			voiceQueue.pop_front();
+		voiceQueue.push_back(std::move(bytes));
+		pump();
+		return;
 	}
+	stats.pendingInput(bytes.data(), bytes.size(), executed, now);
+	const std::uint32_t key = coalesceKey(bytes);
+	if (key)
+	{
+		for (auto it = queued.begin(); it != queued.end(); ++it)
+			if (it->key == key)
+			{
+				// Latest wins, and moves to the back: everything queued between was
+				// issued before it. A flag drop is kept, as the drop also refreshes the
+				// flag's gradients.
+				if (bytes[0] == ORDER_MOVE_FLAG && bytes.size() == MOVE_FLAG_BYTES &&
+				    it->bytes.size() == MOVE_FLAG_BYTES && it->bytes[MOVE_FLAG_DROP_OFFSET])
+					bytes[MOVE_FLAG_DROP_OFFSET] = 1;
+				stats.orderCoalesced(it->bytes.data(), it->bytes.size());
+				queued.erase(it);
+				break;
+			}
+	}
+	if (queued.size() >= config.maxQueuedOrders)
+	{
+		// Only a player (or a script) far beyond what the relay can sequence gets here.
+		if (!queueDropped || now >= lastQueueDropAt + 2000000)
+			std::cerr << "Turn session: too many queued orders; dropping the newest\n";
+		stats.orderQueueDropped();
+		queueDropped = true;
+		lastQueueDropAt = now;
+		return;
+	}
+	queued.push_back({key, std::move(bytes)});
+	stats.queuedDepth(queued.size());
+	pump();
+}
+
+void TurnSession::refillCredit()
+{
+	const std::int64_t period = static_cast<std::int64_t>(tickPeriod);
+	const std::int64_t cap = period * std::max<std::uint32_t>(1, config.orderBurst);
+	if (!creditReady)
+	{
+		creditReady = true;
+		credit = cap;
+		creditAt = now;
+		return;
+	}
+	if (now > creditAt)
+	{
+		credit = std::min<std::int64_t>(cap, credit + static_cast<std::int64_t>(now - creditAt));
+		creditAt = now;
+	}
+}
+
+void TurnSession::sendOrder(std::vector<std::uint8_t> bytes)
+{
+	credit -= static_cast<std::int64_t>(tickPeriod);
+	Outstanding o{nextSequence++, std::move(bytes)};
+	if (onSubmitted && !o.bytes.empty() && o.bytes[0] != ORDER_TYPE_VOICE)
+		onSubmitted(o.sequence);
+	OrderSubmit submit;
+	submit.clientSequence = o.sequence;
+	submit.order = o.bytes;
+	send(submit);
+	stats.orderFrameSent(false);
 	outstanding.push_back(std::move(o));
 	stats.outstandingDepth(outstanding.size());
+}
+
+void TurnSession::pump()
+{
+	if (!linkUp())
+		return;
+	refillCredit();
+	const std::int64_t period = static_cast<std::int64_t>(tickPeriod);
+	while (!queued.empty() && credit >= period)
+	{
+		auto bytes = std::move(queued.front().bytes);
+		queued.pop_front();
+		sendOrder(std::move(bytes));
+	}
+	const std::uint64_t voiceGap = std::uint64_t(config.voiceGapTicks) * tickPeriod;
+	if (queued.empty() && !voiceQueue.empty() && credit >= period &&
+	    (!voiceSentOnce || now >= lastVoiceAt + voiceGap))
+	{
+		auto bytes = std::move(voiceQueue.front());
+		voiceQueue.pop_front();
+		lastVoiceAt = now;
+		voiceSentOnce = true;
+		sendOrder(std::move(bytes));
+	}
+}
+
+bool TurnSession::tooManyActions() const
+{
+	if (queueDropped && now < lastQueueDropAt + 2000000)
+		return true;
+	return queued.size() > config.busyQueueTicks;
 }
 
 void TurnSession::pushOrder(std::shared_ptr<Order> order, int playerNumber, bool)
@@ -602,8 +745,9 @@ Uint32 TurnSession::getWaitingOnMask()
 
 void TurnSession::flushAllOrders()
 {
-	// Orders are sent as soon as they are added while the link is up; after a loss
-	// they are resent on Welcome. Nothing is held back here.
+	// Orders leave as soon as the pacing credit allows (addLocalOrder and update call
+	// pump too); sent ones are resent on Welcome after a loss.
+	pump();
 }
 
 void TurnSession::quit(QuitReason reason)
@@ -612,6 +756,14 @@ void TurnSession::quit(QuitReason reason)
 		return;
 	if (linkUp())
 	{
+		// Orders still waiting for the pacing credit go first, so a last chat line or
+		// command is not lost; the relay sequences them before the seat's quit.
+		while (!queued.empty())
+		{
+			auto bytes = std::move(queued.front().bytes);
+			queued.pop_front();
+			sendOrder(std::move(bytes));
+		}
 		Quit q;
 		q.reason = reason;
 		send(q);

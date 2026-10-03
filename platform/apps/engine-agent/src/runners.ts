@@ -17,7 +17,7 @@ import {
 } from '@glob2/protocol';
 import { checkMapFile } from '@glob2/core';
 import { EngineJobError, type EngineRunner } from './agent.ts';
-import { CONTENT_TYPES, decompressIfGzip, type AgentBlobs } from './blobs.ts';
+import { CONTENT_TYPES, decompressIfGzip, type JobBlobs } from './blobs.ts';
 import { EngineCrashError, type GlobEngine } from './engine.ts';
 import {
   EngineInputError,
@@ -46,7 +46,8 @@ export interface HeadlessRunnerOptions {
   engine: GlobEngine;
   catalog: EngineCatalog;
   simVersion: SimVersion;
-  blobs: AgentBlobs;
+  /** Blob access for run() calls that pass none (tests); the agent passes each lease's own. */
+  blobs?: JobBlobs;
   limits?: Partial<RunnerLimits>;
 }
 
@@ -81,21 +82,23 @@ export class HeadlessEngineRunner implements EngineRunner {
     this.limits = { ...DEFAULT_RUNNER_LIMITS, ...options.limits };
   }
 
-  async run(job: EngineJob, signal: AbortSignal): Promise<unknown> {
+  async run(job: EngineJob, signal: AbortSignal, jobBlobs?: JobBlobs): Promise<unknown> {
+    const blobs = jobBlobs ?? this.options.blobs;
+    if (!blobs) throw new Error('no blob access for this job');
     let result: unknown;
     try {
       switch (job.kind) {
         case 'generate-map':
-          result = await this.generateMap(job.payload, signal);
+          result = await this.generateMap(job.payload, signal, blobs);
           break;
         case 'validate-map':
-          result = await this.validateMap(job.payload, signal);
+          result = await this.validateMap(job.payload, signal, blobs);
           break;
         case 'render-preview':
-          result = await this.renderPreview(job.payload, signal);
+          result = await this.renderPreview(job.payload, signal, blobs);
           break;
         case 'verify-match':
-          result = await this.verifyMatch(job.payload, signal);
+          result = await this.verifyMatch(job.payload, signal, blobs);
           break;
       }
     } catch (error) {
@@ -134,6 +137,7 @@ export class HeadlessEngineRunner implements EngineRunner {
   async generateMap(
     payload: EngineJobPayload<'generate-map'>,
     signal: AbortSignal,
+    blobs: JobBlobs,
   ): Promise<EngineJobOutput<'generate-map'>> {
     const generated = await this.options.engine.generateMap(
       payload.generator,
@@ -147,7 +151,7 @@ export class HeadlessEngineRunner implements EngineRunner {
         `generated map is ${generated.bytes.byteLength} bytes; limit ${this.limits.maxMapBytes}`,
       );
     }
-    const mapHash = await this.options.blobs.write(generated.bytes, CONTENT_TYPES.map, 'public');
+    const mapHash = await blobs.write(generated.bytes, CONTENT_TYPES.map, 'public');
     return {
       mapHash,
       size: generated.bytes.byteLength,
@@ -160,6 +164,7 @@ export class HeadlessEngineRunner implements EngineRunner {
   async validateMap(
     payload: EngineJobPayload<'validate-map'>,
     signal: AbortSignal,
+    blobs: JobBlobs,
   ): Promise<EngineJobOutput<'validate-map'>> {
     // Reasons are shown to players (map pages, the room's upload): plain words first.
     const kind = payload.format === 'save' ? 'save' : 'map';
@@ -167,7 +172,7 @@ export class HeadlessEngineRunner implements EngineRunner {
     const invalid = (reason: string) => ({ valid: false as const, reason: message(reason) });
     let stored: Uint8Array;
     try {
-      stored = await this.options.blobs.read(payload.blobHash, this.limits.maxMapBytes);
+      stored = await blobs.read(payload.blobHash, this.limits.maxMapBytes);
     } catch (error) {
       if (error instanceof EngineInputError && !/not found/.test(error.message)) {
         return invalid(`This ${what} is too big to check. (${error.message})`);
@@ -199,7 +204,7 @@ export class HeadlessEngineRunner implements EngineRunner {
       return invalid('This file is a map, not a saved game.');
     const problem = this.checkFacts(report);
     if (problem) return invalid(problem);
-    const mapHash = await this.options.blobs.write(bytes, CONTENT_TYPES[kind]);
+    const mapHash = await blobs.write(bytes, CONTENT_TYPES[kind]);
     const title = (report.name ?? header.name).trim().slice(0, 128);
     // Saves: who played, so a host can map returning players onto seats.
     const players =
@@ -217,6 +222,7 @@ export class HeadlessEngineRunner implements EngineRunner {
   async renderPreview(
     payload: EngineJobPayload<'render-preview'>,
     signal: AbortSignal,
+    blobs: JobBlobs,
   ): Promise<EngineJobOutput<'render-preview'>> {
     if (payload.maxSizePx < PREVIEW_SIZE_RANGE.min) {
       throw new EngineInputError(
@@ -224,7 +230,7 @@ export class HeadlessEngineRunner implements EngineRunner {
       );
     }
     const bytes = decompressIfGzip(
-      await this.options.blobs.read(payload.mapHash, this.limits.maxMapBytes),
+      await blobs.read(payload.mapHash, this.limits.maxMapBytes),
       this.limits.maxMapBytes,
     );
     const { png } = await this.options.engine.inspect(bytes, {
@@ -233,22 +239,23 @@ export class HeadlessEngineRunner implements EngineRunner {
     });
     if (!png) throw new EngineOutputError('no preview written');
     const size = pngSize(png);
-    const previewHash = await this.options.blobs.write(png, CONTENT_TYPES.png, 'public');
+    const previewHash = await blobs.write(png, CONTENT_TYPES.png, 'public');
     return { previewHash, contentType: 'image/png', width: size.width, height: size.height };
   }
 
   async verifyMatch(
     payload: EngineJobPayload<'verify-match'>,
     signal: AbortSignal,
+    blobs: JobBlobs,
   ): Promise<EngineJobOutput<'verify-match'>> {
     if (!sameSimVersion(payload.setup.simVersion, this.options.simVersion)) {
       throw new EngineInputError(
         `match setup is for ${simVersionKey(payload.setup.simVersion)}, this verifier runs ${simVersionKey(this.options.simVersion)}`,
       );
     }
-    const record = await this.options.blobs.read(payload.recordHash, this.limits.maxRecordBytes);
+    const record = await blobs.read(payload.recordHash, this.limits.maxRecordBytes);
     const map = decompressIfGzip(
-      await this.options.blobs.read(payload.setup.map.hash, this.limits.maxMapBytes),
+      await blobs.read(payload.setup.map.hash, this.limits.maxMapBytes),
       this.limits.maxMapBytes,
     );
     const verification = await this.options.engine.verifyMatch(record, map, signal);
@@ -261,8 +268,8 @@ export class HeadlessEngineRunner implements EngineRunner {
     const { result, replay } = verification;
     if (!result || !replay) throw new EngineOutputError('verifier output incomplete');
     const [resultHash, replayHash] = [
-      await this.options.blobs.write(result.json, CONTENT_TYPES.result, 'public'),
-      await this.options.blobs.write(replay, CONTENT_TYPES.replay, 'public'),
+      await blobs.write(result.json, CONTENT_TYPES.result, 'public'),
+      await blobs.write(replay, CONTENT_TYPES.replay, 'public'),
     ];
     const outcome: VerifiedOutcome = {
       finalTick: result.game.finalTick,

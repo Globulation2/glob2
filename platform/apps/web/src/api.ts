@@ -91,6 +91,9 @@ export const api = {
   stats: (signal?: AbortSignal) => get<InstanceStats>('/api/v1/stats', undefined, signal),
   me: (signal?: AbortSignal) => get<SelfAccount>('/api/v1/accounts/me', undefined, signal),
   signOut: () => request<undefined>('POST', '/api/v1/auth/web/sign-out', { body: {} }),
+  /** Deletes the signed-in account for good; the current display name confirms it. */
+  deleteAccount: (confirmDisplayName: string) =>
+    request<undefined>('DELETE', '/api/v1/accounts/me', { body: { confirmDisplayName } }),
 
   leaderboard: (ladder: string, query: Query = {}, signal?: AbortSignal) =>
     get<LeaderboardPage>(`/api/v1/leaderboards/${encodeURIComponent(ladder)}`, query, signal),

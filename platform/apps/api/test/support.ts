@@ -17,6 +17,7 @@ import {
   prepareJobQueue,
   type AccessPolicy,
   type InstanceConfig,
+  type EngineAgentKey,
   type PlatformConfig,
   type RelayKey,
 } from '@glob2/core';
@@ -51,6 +52,7 @@ export interface Harness {
     build?: BuildOptions;
     access?: AccessPolicy;
     relayKeys?: RelayKey[];
+    engineAgentKeys?: EngineAgentKey[];
   }): Promise<Instance>;
   close(): Promise<void>;
 }
@@ -79,10 +81,23 @@ export async function createHarness(): Promise<Harness> {
         http: { host: '127.0.0.1', port: 0 },
         blobs: { kind: 'fs', directory: blobDir },
         shutdownGraceSeconds: 1,
-        instance: { ...DEFAULT_INSTANCE_CONFIG, name: 'Test Instance', ...options.instance },
+        instance: {
+          ...DEFAULT_INSTANCE_CONFIG,
+          name: 'Test Instance',
+          // Rate limits are shared by every replica on the test database, so
+          // tests get generous ones unless they test the limits themselves.
+          limits: {
+            authPerMinute: 10_000,
+            guestsPerHour: 10_000,
+            signinAttemptsPerHour: 10_000,
+            signinAttemptsPerMinuteTotal: 10_000,
+          },
+          ...options.instance,
+        },
         instanceConfigPath: undefined,
         secrets: options.secrets ?? {},
         relayKeys: options.relayKeys ?? [],
+        engineAgentKeys: options.engineAgentKeys ?? [],
       };
       // The origin must be known before building (cookies, redirect URIs), but
       // the port only after listening: reserve one first.

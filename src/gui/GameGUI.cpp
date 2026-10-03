@@ -53,48 +53,22 @@ void GameGUI::addNotice(const std::string &text)
 	addMessage(GAGCore::Color(200, 200, 200), text, false);
 }
 
-namespace
-{
-// Quick matches (rated or not) limit pauses; rooms and LAN games do not.
-PauseBudget::Rules pauseRules(const GameGUI::NetworkMatch &match)
-{
-	PauseBudget::Rules rules;
-	rules.limited = match.active && match.online && !match.fromRoom;
-	return rules;
-}
-} // namespace
-
 bool GameGUI::pauseAvailable() const
 {
-	if (gamePaused)
-		return true; // anyone may resume
-	if (!networkMatch.active)
-		return true;
-	PauseBudget budget = pauseBudget;
-	budget.setRules(pauseRules(networkMatch));
-	return budget.canPause(localPlayer);
+	if (gamePaused || !networkMatch.active || !pauseState)
+		return true; // anyone may resume; elsewhere pausing is unlimited
+	const PauseState state = pauseState();
+	return !state.limited || (state.pausesLeft > 0 && state.secondsLeft > 0);
 }
 
 void GameGUI::requestPause(bool pause)
 {
-	pauseBudget.setRules(pauseRules(networkMatch));
-	if (pause && networkMatch.active && !pauseBudget.canPause(localPlayer))
+	if (pause && !pauseAvailable())
 	{
-		addNotice(Toolkit::getStringTable()->getString("[pause none left]"));
+		addNotice(Toolkit::getStringTable()->getString("[turn no pauses left]"));
 		return;
 	}
 	orderQueue.push_back(std::make_shared<PauseGameOrder>(pause));
-}
-
-void GameGUI::checkPauseBudget(Uint32 nowMs)
-{
-	pauseBudget.setRules(pauseRules(networkMatch));
-	if (!gamePaused || pauseResumeSent || !pauseBudget.expired(nowMs))
-		return;
-	// Out of pause time (or over the count): whichever client sees it first resumes;
-	// a second resume changes nothing.
-	pauseResumeSent = true;
-	orderQueue.push_back(std::make_shared<PauseGameOrder>(false));
 }
 
 GameGUI::~GameGUI()
@@ -179,9 +153,6 @@ void GameGUI::init()
 	teamStats=NULL;
 
 	hasEndOfGameDialogBeenShown=false;
-	// A reload replays the match's pause orders; they are counted again from here.
-	pauseBudget = PauseBudget();
-	pauseResumeSent = false;
 	panPushed=false;
 	mapPanPushed=false;
 

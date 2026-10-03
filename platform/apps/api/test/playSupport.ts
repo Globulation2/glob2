@@ -15,7 +15,7 @@ import {
   type SimVersion,
 } from '@glob2/protocol';
 import { verifyJwt } from '@glob2/protocol/node';
-import { handleEngineJobResult } from '@glob2/worker';
+import { handleEngineJobResult } from '@glob2/play';
 import { RealtimeClient, SIM, json, postJson, type Instance } from './support.ts';
 
 export const RELAY_KEY = `relay-key-${'k'.repeat(32)}`;

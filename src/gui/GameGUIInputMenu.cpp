@@ -57,14 +57,14 @@ void GameGUI::openMainMenu()
 	if (networkMatch.active)
 	{
 		auto &strings = *Toolkit::getStringTable();
-		pauseBudget.setRules({networkMatch.online && !networkMatch.fromRoom});
+		const PauseState state = pauseState ? pauseState() : PauseState();
 		std::string label;
 		if (gamePaused)
 			label = strings.getString("[resume game]");
-		else if (!pauseBudget.limited())
+		else if (!state.limited)
 			label = strings.getString("[pause game]");
 		else if (pauseAvailable())
-			label = GAGCore::FormattableString(strings.getString("[pause game left %0]")).arg(pauseBudget.pausesLeft(localPlayer));
+			label = GAGCore::FormattableString(strings.getString("[pause game left %0]")).arg(state.pausesLeft);
 		else
 			label = strings.getString("[pause none left]");
 		menu->setPauseOffer(label, pauseAvailable());

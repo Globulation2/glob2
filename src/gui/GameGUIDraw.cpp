@@ -707,12 +707,13 @@ void GameGUI::drawAll(int team)
 		std::string detail;
 		if (networkMatch.active && !globalContainer->replaying)
 		{
-			const int holder = pauseBudget.pauser();
+			const PauseState state = pauseState ? pauseState() : PauseState();
+			const int holder = state.pausedBy;
 			const std::string name = holder >= 0 && holder < game.gameHeader.getNumberOfPlayers() && game.players[holder]
 										 ? game.players[holder]->name : std::string();
-			if (pauseBudget.limited() && holder >= 0)
+			if (state.limited && holder >= 0 && state.pauserSecondsLeft >= 0)
 			{
-				const Uint32 left = (pauseBudget.timeLeftMs(holder, SDL_GetTicks()) + 999) / 1000;
+				const Uint32 left = Uint32(state.pauserSecondsLeft);
 				detail = FormattableString(Toolkit::getStringTable()->getString("[pause by %0 resumes in %1]"))
 							 .arg(name).arg(FormattableString("%0:%1").arg(left / 60).arg(left % 60, 2, 10, '0'));
 			}

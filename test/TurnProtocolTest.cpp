@@ -551,7 +551,7 @@ TEST_SUITE("TurnSequencer")
 		CHECK(entries[2].tick == 7);
 	}
 
-	TEST_CASE("duplicates, nulls and latency adjustments are dropped; floods are refused")
+	TEST_CASE("duplicates, nulls and latency adjustments are dropped; a flood is dropped, not the seat")
 	{
 		RelayFixture f(0b11);
 		f.join(1, 0);
@@ -569,12 +569,25 @@ TEST_SUITE("TurnSequencer")
 		CHECK(f.out.bundleEntries(1).size() == 1);
 		CHECK(f.relay.presence(1) == PresenceState::Connected);
 
-		for (std::uint32_t i = 0; i < 300 && !f.out.wasClosed(2); ++i)
+		// 300 orders at once: the seat's queue may reach 250 ticks past the clock;
+		// the rest are dropped, and the seat keeps its connection.
+		for (std::uint32_t i = 0; i < 300; ++i)
 			f.submit(2, 10 + i, order(20, 4));
-		CHECK(f.out.wasClosed(2));
-		auto rejects = f.out.take<Reject>(2, MSG_REJECT);
-		REQUIRE(rejects.size() == 1);
-		CHECK(rejects[0]->reason == RejectReason::Flooding);
+		CHECK_FALSE(f.out.wasClosed(2));
+		CHECK(f.out.take<Reject>(2, MSG_REJECT).empty());
+		CHECK(f.relay.presence(1) == PresenceState::Connected);
+		const std::uint64_t flooded = f.relay.stats().ordersFlooded;
+		CHECK(flooded == 50);
+		CHECK(f.relay.telemetry().seats[1].floodRejections == flooded);
+		// Once the queue drains the seat is sequenced as usual again.
+		f.atTick(400);
+		f.out.inbox[2].clear();
+		f.submit(2, 1000, order(20, 4, 9));
+		f.atTick(402);
+		const auto entries = f.out.bundleEntries(2);
+		REQUIRE(entries.size() == 1);
+		CHECK(entries[0].tick == 401);
+		CHECK(entries[0].order[1] == 9);
 	}
 
 	TEST_CASE("admission: tickets, versions, first message and seat takeover")
@@ -714,61 +727,185 @@ TEST_SUITE("TurnSequencer")
 		CHECK(f.relay.turnLog()[0].seat == 1);
 	}
 
-	TEST_CASE("a decided game ends when nobody is connected, without waiting out grace")
+	TEST_CASE("one client's GameFinished decides nothing: the others keep their grace")
 	{
 		SequencerConfig config;
 		config.graceMicros = 180 * 1000 * MS;
-		// The guest closed its window without a Quit, then the host leaves the results
-		// screen with Quit(GameFinished): the match ends at once.
+		Quit finished;
+		finished.reason = QuitReason::GameFinished;
+		// The guest's link drops; the host leaves claiming the game is over. The guest
+		// keeps its full grace, and the match is not reported as completed.
 		{
 			RelayFixture f(0b11, config);
 			f.join(1, 0);
 			f.join(2, 1);
 			f.atTick(100);
 			f.relay.onDisconnect(2, f.now);
-			CHECK(f.relay.presence(1) == PresenceState::Reconnecting);
 			f.atTick(120);
-			Quit finished;
-			finished.reason = QuitReason::GameFinished;
 			f.raw(1, finished);
-			CHECK(f.relay.gameDecided());
-			CHECK(f.relay.matchOver());
-			CHECK(f.relay.presence(0) == PresenceState::Left);
-			CHECK(f.relay.presence(1) == PresenceState::Left);
-			const auto record = f.relay.buildRecord("m", "v", "{}", {});
-			CHECK((record.flags & MatchRecord::FLAG_INCOMPLETE) == 0);
-			std::size_t byGrace = 0;
-			for (const auto& e : record.events)
-				byGrace += e.kind == MatchEventKind::LeftByGrace && e.seat == 1;
-			CHECK(byGrace == 1);
-		}
-		// The other order: the winner leaves first while the guest still watches the end;
-		// the guest's later disconnect ends the match.
-		{
-			RelayFixture f(0b11, config);
-			f.join(1, 0);
-			f.join(2, 1);
-			f.atTick(100);
-			Quit finished;
-			finished.reason = QuitReason::GameFinished;
-			f.raw(1, finished);
-			CHECK_FALSE(f.relay.matchOver());
-			f.atTick(150);
-			f.relay.onDisconnect(2, f.now);
-			CHECK(f.relay.matchOver());
-		}
-		// A plain PlayerQuit decides nothing: a disconnected seat keeps its grace.
-		{
-			RelayFixture f(0b11, config);
-			f.join(1, 0);
-			f.join(2, 1);
-			f.atTick(100);
-			f.relay.onDisconnect(2, f.now);
-			f.raw(1, Quit());
+			CHECK(f.relay.finishedSeats() == 0b01);
 			CHECK_FALSE(f.relay.gameDecided());
 			CHECK_FALSE(f.relay.matchOver());
 			CHECK(f.relay.presence(1) == PresenceState::Reconnecting);
+			// It comes back within grace and plays on; the host's claim is spent.
+			f.at(120 * TICK + 60 * 1000 * MS);
+			f.join(3, 1, f.relay.horizon());
+			CHECK(f.relay.presence(1) == PresenceState::Connected);
+			f.atTick(120 + 60 * 25 + 500);
+			CHECK_FALSE(f.relay.matchOver());
+			f.raw(3, Quit()); // and leaves without a finished game
+			CHECK(f.relay.matchOver());
+			CHECK_FALSE(f.relay.gameDecided());
 		}
+		// Grace runs out: still not completed.
+		{
+			RelayFixture f(0b11, config);
+			f.join(1, 0);
+			f.join(2, 1);
+			f.atTick(100);
+			f.relay.onDisconnect(2, f.now);
+			f.raw(1, finished);
+			f.at(100 * TICK + 179 * 1000 * MS);
+			CHECK_FALSE(f.relay.matchOver());
+			f.at(100 * TICK + 181 * 1000 * MS);
+			CHECK(f.relay.matchOver());
+			CHECK_FALSE(f.relay.gameDecided());
+			std::size_t byGrace = 0;
+			for (const auto& e : f.relay.buildRecord("m", "v", "{}", {}).events)
+				byGrace += e.kind == MatchEventKind::LeftByGrace && e.seat == 1;
+			CHECK(byGrace == 1);
+		}
+	}
+
+	TEST_CASE("a game is decided when every seat still playing reports it finished")
+	{
+		Quit finished;
+		finished.reason = QuitReason::GameFinished;
+		// Both report it, in either order and with the other still watching.
+		{
+			RelayFixture f(0b11);
+			f.join(1, 0);
+			f.join(2, 1);
+			f.atTick(100);
+			f.raw(1, finished);
+			CHECK_FALSE(f.relay.matchOver());
+			CHECK_FALSE(f.relay.gameDecided());
+			f.atTick(150);
+			f.raw(2, finished);
+			CHECK(f.relay.matchOver());
+			CHECK(f.relay.gameDecided());
+		}
+		// A seat that left before the first claim does not have to agree; one that was
+		// still playing does.
+		{
+			RelayFixture f(0b111);
+			f.join(1, 0);
+			f.join(2, 1);
+			f.join(3, 2);
+			f.atTick(50);
+			f.raw(3, Quit()); // resigned mid-game
+			f.atTick(100);
+			f.raw(1, finished);
+			f.raw(2, finished);
+			CHECK(f.relay.matchOver());
+			CHECK(f.relay.gameDecided());
+		}
+		{
+			RelayFixture f(0b111);
+			f.join(1, 0);
+			f.join(2, 1);
+			f.join(3, 2);
+			f.atTick(100);
+			f.raw(1, finished);
+			f.raw(2, finished);
+			f.raw(3, Quit()); // still in the match at the first claim, leaves without one
+			CHECK(f.relay.matchOver());
+			CHECK_FALSE(f.relay.gameDecided());
+		}
+		// A plain PlayerQuit claims nothing.
+		{
+			RelayFixture f(0b11);
+			f.join(1, 0);
+			f.join(2, 1);
+			f.raw(1, Quit());
+			f.raw(2, Quit());
+			CHECK(f.relay.matchOver());
+			CHECK_FALSE(f.relay.gameDecided());
+			CHECK(f.relay.finishedSeats() == 0);
+		}
+	}
+
+	TEST_CASE("the next wake: a bundle while connected, grace while empty, now for presence")
+	{
+		SequencerConfig config;
+		config.graceMicros = 30 * 1000 * MS;
+		RelayFixture f(0b11, config);
+		f.join(1, 0);
+		f.join(2, 1);
+		f.atTick(10);
+		CHECK(f.relay.nextWakeMicros() == f.relay.nextBundleMicros());
+		CHECK(f.relay.nextWakeMicros() > f.now);
+		CHECK(f.relay.nextWakeMicros() <= f.now + TICK);
+		f.relay.onDisconnect(1, f.now);
+		CHECK(f.relay.nextWakeMicros() == f.now); // a presence change to broadcast
+		f.atTick(11);
+		CHECK(f.relay.nextWakeMicros() == f.relay.nextBundleMicros()); // seat 1 is still here
+		f.relay.onDisconnect(2, f.now);
+		f.atTick(12);
+		// Nobody connected: a second at most, or the first grace expiry.
+		CHECK(f.relay.nextWakeMicros() == f.now + 1000 * MS);
+		const std::uint64_t graceEnd = 1000000 + 10 * TICK + 1 * MS + 30 * 1000 * MS;
+		// A host that slept meanwhile: one update catches the horizon up.
+		const std::uint32_t before = f.relay.horizon();
+		f.at(graceEnd - 1000000 - 500 * MS);
+		CHECK(f.relay.horizon() > before + 700);
+		CHECK(f.relay.nextWakeMicros() == graceEnd);
+		f.at(graceEnd - 1000000);
+		CHECK(f.relay.presence(0) == PresenceState::Left);
+		CHECK_FALSE(f.relay.matchOver());
+		f.at(graceEnd - 1000000 + TICK + 1 * MS);
+		CHECK(f.relay.matchOver());
+		CHECK(f.relay.nextWakeMicros() == UINT64_MAX);
+	}
+
+	TEST_CASE("arbitration stays incremental over a long match and the record keeps every report")
+	{
+		// A 60-minute four-player match with a checksum every 25 ticks, one seat
+		// skipping some: every tick is arbitrated once, in time, and the record still
+		// has each seat's first report.
+		RelayFixture f(0b1111);
+		for (int s = 0; s < 4; ++s)
+			f.join(PeerId(s + 1), s);
+		const std::uint32_t end = 60 * 60 * 25;
+		std::size_t reported = 0;
+		for (std::uint32_t tick = 1; tick <= end; ++tick)
+		{
+			f.atTick(tick);
+			if (tick % 25 == 0)
+			{
+				const std::uint32_t t = tick - 25;
+				for (int s = 0; s < 4; ++s)
+					if (!(s == 3 && (t / 25) % 10 == 0)) // seat 3 skips one report in ten
+					{
+						f.report(PeerId(s + 1), t, t * 7 + 1);
+						++reported;
+					}
+			}
+			if (tick % 1000 == 0)
+				for (int s = 0; s < 4; ++s)
+					f.out.inbox[PeerId(s + 1)].clear();
+		}
+		std::size_t agreed = 0;
+		for (std::uint32_t t = 0; t + 275 < end; t += 25)
+			if (auto a = f.relay.agreedChecksum(t))
+			{
+				CHECK(*a == t * 7 + 1);
+				++agreed;
+			}
+		CHECK(agreed == (end - 276) / 25 + 1);
+		CHECK_FALSE(f.relay.desyncFlagged());
+		CHECK(f.relay.buildRecord("m", "v", "{}", {}).reports.size() == reported);
+		CHECK(f.relay.telemetry().timedOut > 0);
 	}
 
 	TEST_CASE("three clients: the majority wins and the minority rejoins")
@@ -1446,6 +1583,153 @@ TEST_SUITE("TurnSession")
 		again.update(4);
 		CHECK(again.state() == TurnSession::State::Rejected);
 		CHECK(again.rejectReason() == RejectReason::ProtocolVersion);
+	}
+
+	/// The wire bytes of OrderMoveFlag(gid, x, y, drop).
+	std::vector<std::uint8_t> moveFlag(std::uint16_t gid, std::uint8_t x, bool drop = false)
+	{
+		return {35, std::uint8_t(gid >> 8), std::uint8_t(gid), 0, 0, 0, x, 0, 0, 0, 1, std::uint8_t(drop)};
+	}
+
+	TurnSessionConfig seatZero(TurnSessionConfig config = {})
+	{
+		config.ticket = "seat:0";
+		return config;
+	}
+
+	/// A one-seat session past its Welcome at time 2, with nothing sent yet.
+	struct RunningSession
+	{
+		ScriptedTransport link;
+		TurnSession session;
+		explicit RunningSession(TurnSessionConfig config = {}) : session(1, link, seatZero(config), bytesOrderCodec())
+		{
+			link.linkState = TurnTransport::State::Connected;
+			session.update(1);
+			Welcome w;
+			w.humanSeatMask = 1;
+			link.deliver(w);
+			session.update(2);
+			link.sent.clear();
+		}
+		std::vector<std::shared_ptr<OrderSubmit>> submits() { return link.sentOf<OrderSubmit>(MSG_ORDER_SUBMIT); }
+	};
+
+	TEST_CASE("orders go out at one per tick after a burst; a later move of the same flag replaces a waiting one")
+	{
+		RunningSession r;
+		// A drag: 60 moves of flag 5 within a frame, one of flag 6, and a building order.
+		for (int i = 0; i < 30; ++i)
+			r.session.addLocalOrder(makeBytesOrder(moveFlag(5, std::uint8_t(i))));
+		r.session.addLocalOrder(makeBytesOrder(moveFlag(6, 1)));
+		r.session.addLocalOrder(makeBytesOrder(order(20, 9, 3)));
+		for (int i = 30; i < 60; ++i)
+			r.session.addLocalOrder(makeBytesOrder(moveFlag(5, std::uint8_t(i), i == 45)));
+		auto sent = r.submits();
+		REQUIRE(sent.size() == 4); // the burst
+		for (int i = 0; i < 4; ++i)
+			CHECK(sent[i]->order == moveFlag(5, std::uint8_t(i)));
+		// Waiting: flag 6, the building order, and one move of flag 5 (the latest, at the
+		// back, keeping the drop one of the replaced moves had).
+		CHECK(r.session.queuedOrders() == 3);
+		CHECK(r.session.telemetry().totals().ordersCoalesced == 55);
+		r.link.sent.clear();
+		r.session.update(2 + TICK);
+		sent = r.submits();
+		REQUIRE(sent.size() == 1);
+		CHECK(sent[0]->order == moveFlag(6, 1));
+		r.link.sent.clear();
+		r.session.update(2 + 3 * TICK);
+		sent = r.submits();
+		REQUIRE(sent.size() == 2);
+		CHECK(sent[0]->order == order(20, 9, 3));
+		CHECK(sent[1]->order == moveFlag(5, 59, true));
+		CHECK(sent[1]->clientSequence == 7);
+		CHECK(r.session.queuedOrders() == 0);
+		CHECK_FALSE(r.session.tooManyActions());
+	}
+
+	TEST_CASE("orders that must all execute are paced but never merged")
+	{
+		RunningSession r;
+		for (int i = 0; i < 20; ++i)
+			r.session.addLocalOrder(makeBytesOrder(order(20, 9, std::uint8_t(i)))); // OrderCreate
+		std::vector<std::uint8_t> fills;
+		for (const auto& s : r.submits())
+			fills.push_back(s->order[1]);
+		CHECK(fills.size() == 4);
+		CHECK(r.session.queuedOrders() == 16);
+		for (std::uint64_t t = 1; t <= 20; ++t)
+			r.session.update(2 + t * TICK);
+		for (const auto& s : r.submits())
+			fills.push_back(s->order[1]);
+		REQUIRE(fills.size() == 20);
+		for (int i = 0; i < 20; ++i)
+			CHECK(fills[i] == i);
+	}
+
+	TEST_CASE("voice waits for gameplay orders and keeps its own gap")
+	{
+		RunningSession r;
+		for (int i = 0; i < 3; ++i)
+			r.session.addLocalOrder(makeBytesOrder(order(72, 300, std::uint8_t(i))));
+		for (int i = 0; i < 5; ++i)
+			r.session.addLocalOrder(makeBytesOrder(order(20, 9, std::uint8_t(i))));
+		// The first packet left while nothing else waited; then orders take the burst,
+		// and voice waits until none does and its gap has passed.
+		for (std::uint64_t t = 1; t <= 12; ++t)
+			r.session.update(2 + t * TICK);
+		std::vector<std::uint8_t> types;
+		for (const auto& s : r.submits())
+			types.push_back(s->order[0]);
+		const std::vector<std::uint8_t> expected = {72, 20, 20, 20, 20, 20, 72, 72};
+		CHECK(types == expected);
+		CHECK(r.session.queuedVoice() == 0);
+	}
+
+	TEST_CASE("the local queue is bounded and says so")
+	{
+		TurnSessionConfig config;
+		config.maxQueuedOrders = 10;
+		RunningSession r(config);
+		for (int i = 0; i < 30; ++i)
+			r.session.addLocalOrder(makeBytesOrder(order(71, 9, std::uint8_t(i)))); // chat
+		CHECK(r.submits().size() == 4);
+		CHECK(r.session.queuedOrders() == 10);
+		CHECK(r.session.telemetry().totals().ordersQueueDropped == 16);
+		CHECK(r.session.tooManyActions());
+		for (std::uint64_t t = 1; t <= 75; ++t)
+			r.session.update(2 + t * TICK);
+		CHECK(r.session.queuedOrders() == 0);
+		CHECK(r.submits().size() == 10); // the four of the burst were taken above
+		CHECK_FALSE(r.session.tooManyActions());
+	}
+
+	TEST_CASE("quitting sends the orders still waiting, then Quit")
+	{
+		RunningSession r;
+		for (int i = 0; i < 10; ++i)
+			r.session.addLocalOrder(makeBytesOrder(order(71, 9, std::uint8_t(i))));
+		CHECK(r.session.queuedOrders() == 6);
+		r.session.quit(QuitReason::PlayerQuit);
+		CHECK(r.submits().size() == 10);
+		CHECK(r.link.sentOf<Quit>(MSG_QUIT).size() == 1);
+		CHECK(r.session.state() == TurnSession::State::Ended);
+	}
+
+	TEST_CASE("a flooding reject reconnects instead of ending the match")
+	{
+		RunningSession r;
+		Reject flood;
+		flood.reason = RejectReason::Flooding;
+		r.link.deliver(flood);
+		r.session.update(3);
+		CHECK(r.session.state() == TurnSession::State::Reconnecting);
+		r.link.linkState = TurnTransport::State::Disconnected;
+		r.session.update(300000);
+		r.link.linkState = TurnTransport::State::Connected;
+		r.session.update(300001);
+		CHECK(r.link.sentOf<Hello>(MSG_HELLO).size() == 1);
 	}
 
 	TEST_CASE("a reject ends the session")

@@ -731,6 +731,21 @@ export const fixtureCases: FixtureCase[] = [
   },
   {
     schema: 'MatchSetup',
+    name: 'queue-pause-limit',
+    valid: true,
+    note: 'A queue match: each human may pause 3 times for 60 s in total.',
+    value: { ...SETUP_CATALOG_1V1, pauseLimit: { pauses: 3, seconds: 60 } },
+  },
+  {
+    schema: 'MatchSetup',
+    name: 'pause-limit-out-of-range',
+    valid: false,
+    stage: 'schema',
+    note: 'A pause limit allows at most 100 pauses and 3600 s.',
+    value: { ...SETUP_CATALOG_1V1, pauseLimit: { pauses: 3, seconds: 3601 } },
+  },
+  {
+    schema: 'MatchSetup',
     name: 'closed-seat-with-name',
     valid: false,
     stage: 'schema',

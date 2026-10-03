@@ -213,7 +213,6 @@ UNIT_TESTS = [
     'TurnHarnessTest.cpp',
     'TurnTelemetryTest.cpp',
     'ConnectionQualityTest.cpp',
-    'PauseBudgetTest.cpp',
     'OrderAlterateAreaTest.cpp',
     'ReplayStepCounterTest.cpp',
     'CampaignBoundsHarness.cpp',

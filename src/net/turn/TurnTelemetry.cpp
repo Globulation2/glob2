@@ -168,6 +168,8 @@ void SessionTelemetry::Counters::merge(const Counters& o)
 	ordersResent += o.ordersResent;
 	ordersQueuedOffline += o.ordersQueuedOffline;
 	ordersDroppedLocal += o.ordersDroppedLocal;
+	ordersCoalesced += o.ordersCoalesced;
+	ordersQueueDropped += o.ordersQueueDropped;
 	voiceSent += o.voiceSent;
 	voiceSentBytes += o.voiceSentBytes;
 	voiceReceived += o.voiceReceived;
@@ -270,6 +272,21 @@ void SessionTelemetry::pendingInput(const std::uint8_t* bytes, std::size_t size,
 	if (pendingInputs.size() >= MAX_PENDING_INPUTS)
 		pendingInputs.erase(pendingInputs.begin());
 	pendingInputs.push_back({nowMicros, executedTick, fnv1a(bytes, size), static_cast<std::uint32_t>(size)});
+}
+
+void SessionTelemetry::orderCoalesced(const std::uint8_t* bytes, std::size_t size)
+{
+	for (Counters* c : {&window, &all})
+		++c->ordersCoalesced;
+	if (!size)
+		return;
+	const std::uint32_t h = fnv1a(bytes, size);
+	for (std::size_t i = pendingInputs.size(); i-- > 0;)
+		if (pendingInputs[i].hash == h && pendingInputs[i].size == size)
+		{
+			pendingInputs.erase(pendingInputs.begin() + static_cast<std::ptrdiff_t>(i));
+			return;
+		}
 }
 
 void SessionTelemetry::outstandingDepth(std::size_t depth)
@@ -541,6 +558,7 @@ void SessionTelemetry::writeFields(std::ostream& out, const Counters& c)
 	    << " bundle_entries=" << c.bundleEntries << " orders_submitted=" << c.ordersSubmitted
 	    << " order_frames_sent=" << c.orderFramesSent << " orders_resent=" << c.ordersResent
 	    << " orders_queued_offline=" << c.ordersQueuedOffline << " orders_dropped_local=" << c.ordersDroppedLocal
+	    << " orders_coalesced=" << c.ordersCoalesced << " orders_queue_dropped=" << c.ordersQueueDropped
 	    << " voice_sent=" << c.voiceSent << " voice_sent_bytes=" << c.voiceSentBytes
 	    << " voice_received=" << c.voiceReceived << " voice_received_bytes=" << c.voiceReceivedBytes
 	    << " ticks_executed=" << c.ticksExecuted << " live_ticks=" << c.liveTicks << " ticks_faster=" << c.ticksFaster
@@ -597,7 +615,10 @@ json SessionTelemetry::toJson(std::uint64_t nowMicros, bool includeSeries) const
 	               {"resent", c.ordersResent},
 	               {"queued_offline", c.ordersQueuedOffline},
 	               {"dropped_local", c.ordersDroppedLocal},
-	               {"outstanding_max", outstandingPeak}};
+	               {"outstanding_max", outstandingPeak},
+	               {"coalesced", c.ordersCoalesced},
+	               {"queue_dropped", c.ordersQueueDropped},
+	               {"queued_max", queuedPeak}};
 	j["voice"] = {{"sent", c.voiceSent},
 	              {"sent_bytes", c.voiceSentBytes},
 	              {"received", c.voiceReceived},

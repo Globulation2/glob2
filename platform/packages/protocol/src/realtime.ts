@@ -42,7 +42,7 @@ export const RequestId = Type.String({ minLength: 1, maxLength: 64 });
 const EmptyResult = Open({});
 
 /** Measured round trips to relay regions; the platform places matches on the closest relay. */
-const RegionRtts = Type.Array(
+export const RegionRtts = Type.Array(
   Strict({ region: RelayRegion, rttMs: Type.Integer({ minimum: 0, maximum: 60000 }) }),
   { maxItems: 32, description: 'Measured round trip to each relay region.' },
 );

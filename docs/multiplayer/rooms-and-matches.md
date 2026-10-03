@@ -11,7 +11,7 @@ relay work adds. Queues and ratings are covered in
 
 Code: `platform/apps/api/src/play/` (rooms, tickets, realtime delivery),
 `platform/apps/api/src/routes/{play,internal,invite}.ts`, and
-`platform/apps/worker/src/play/` (start sequence, relay placement, map sources,
+`platform/packages/play/src/play/` (start sequence, relay placement, map sources,
 match-end intake), which both the API and the worker use. Data: migration
 `0005_rooms_matches.sql`.
 
@@ -151,7 +151,7 @@ caller gets `404`. Responses carry `ETag: "<hash>"` and an immutable cache lifet
 
 **Warm maps.** Queue starts first take a pre-generated map of the queue, sim
 version and pool entry from the warm map pool (`takeWarmMap` in
-`apps/worker/src/warmMaps.ts`, wired in the worker's `main.ts`; see
+`packages/play/src/warmMaps.ts`, wired in the worker's `main.ts`; see
 [Warm map pool](architecture.md#warm-map-pool)). Warm maps are generated with one
 team per queue seat, as on-demand maps are. When the pool is empty or turned off
 (`WARM_MAPS_PER_ENTRY=0`), the starter generates on demand and waits up to 60 s.
@@ -159,7 +159,7 @@ team per queue seat, as on-demand maps are. When the pool is empty or turned off
 ## Start sequence
 
 Rooms (`room.start`, in the API) and queues (`PlatformMatchStarter`, in the worker)
-share one sequence, `createMatch()` in `platform/apps/worker/src/play/start.ts`:
+share one sequence, `createMatch()` in `platform/packages/play/src/play/start.ts`:
 
 1. **AccessPolicy.** For rooms, the host is checked with `canHost`, and every
    other seated human with `canJoin`, again at start. For queues, every human is
@@ -195,6 +195,16 @@ concurrent starts.
 A match is `starting` until its relay lists it in a heartbeat's `activeMatchIds`,
 which makes it `running`. A match still `starting` after 10 minutes is cancelled by
 the worker's scheduler, and its room reopens.
+
+A room start is several transactions (`starting`, then the match, then
+`in_match`). If the API process dies between them, the room sweep
+(`RoomService.recoverStarting`, every 30 s on each replica) finds rooms still
+`starting` after two minutes (`rooms.starting_since`): a room whose match was
+created since it started is resumed (`in_match`, and its players get
+`match.start` again; clients ignore a repeat), any other reopens with
+`RoomState.notice` telling the members to start again. A start that fails for
+any other reason than access or readiness also reopens the room with a notice;
+the next start clears it.
 
 ## Match tickets
 
@@ -272,7 +282,7 @@ Keys are compared in constant time.
 **Lost relays.** The worker's scheduler checks every 30 s for `running` matches
 that their relay has not listed in a heartbeat for 180 s
 (`LOST_MATCH_GRACE_SECONDS`, `abortMatchesOnLostRelays` in
-`apps/worker/src/play/intake.ts`). This covers a relay that died and one that
+`packages/play/src/play/intake.ts`). This covers a relay that died and one that
 restarted and forgot its matches. Such a match ends with end reason `aborted`,
 verification `not_applicable` and rating status `not_rated`, so it changes no
 rating. Its room reopens, and its players get `match.updated` with `endReason:
@@ -287,8 +297,13 @@ the report replaces the abort, and verification and ratings proceed as usual.
   entry of `network` (the relay's `RelayNetworkSummary`) in
   `match_participants.network` (migration 0009). A `network` that does not
   validate is dropped with a warning; it never makes the report fail.
-- When the reason is `abandoned`, every seat with a quit tick gets the outcome
-  `abandoned`.
+- When the reason is `abandoned`, every seat that quit before the report's final
+  tick gets the outcome `abandoned`; a seat that left at the end did not abandon.
+  The verdict refines this (`recordVerification`): seats of a verified winning
+  (or drawing) team keep `won` (`draw`), and a seat that quit at or after the
+  verified final tick takes its team's outcome. Turn protocol 2 reports a game
+  whose loser dropped at the end as `abandoned` once the loser's reconnect grace
+  runs out, after the winner has already left the finished game.
 - It reopens the room and NOTIFYs `match_updates`, so participants get
   `match.updated`.
 - It then submits a `verify-match` job with the setup and the record's hash. A
@@ -301,7 +316,7 @@ The API handles `queue.join`, `queue.leave` and `queue.respond`.
 
 - `queue.join` checks the sim version (`update_required`) and
   `AccessPolicy.canQueue` (`access_denied`) first, then calls `joinQueue` from
-  `@glob2/worker`.
+  `@glob2/play`.
 - Errors map to codes: guest in a rated queue → `forbidden`; already queued →
   `conflict`; decline cooldown → `rate_limited`, with `until` in `details`; unknown
   queue → `not_found`.

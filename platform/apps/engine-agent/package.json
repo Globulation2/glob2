@@ -10,9 +10,10 @@
   },
   "dependencies": {
     "@glob2/core": "0.1.0",
-    "@glob2/db": "^0.1.0",
-    "@glob2/protocol": "0.1.0",
-    "graphile-worker": "^0.18.0",
-    "kysely": "^0.29.6"
+    "@glob2/protocol": "0.1.0"
+  },
+  "devDependencies": {
+    "@glob2/api": "0.1.0",
+    "@glob2/db": "0.1.0"
   }
 }

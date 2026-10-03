@@ -194,9 +194,6 @@ void GameGUI::handleClientEvent(ClientEventVariant&& event)
 		else if constexpr (std::is_same_v<T, ClientEvent::PauseChanged>)
 		{
 			gamePaused=e.paused;
-			pauseBudget.executed(e.sender, e.paused, SDL_GetTicks());
-			if (!e.paused)
-				pauseResumeSent = false;
 		}
 		else if constexpr (std::is_same_v<T, ClientEvent::BuildingRequested>)
 		{

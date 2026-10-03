@@ -10,20 +10,21 @@ import { randomInt } from 'node:crypto';
 import { sql, type Kysely } from 'kysely';
 import type { AccessPolicy, JobQueue, Logger } from '@glob2/core';
 import type { Account, Database } from '@glob2/db';
+import { Type, type Static } from 'typebox';
 import {
+  MatchRules,
+  RoomMapSelection,
   STANDARD_RULES,
+  SetupTeam,
   parseSimVersionKey,
   simVersionKey,
   type AiId,
-  type MatchRules,
-  type MatchSetup,
   type RoomChatMessage,
-  type RoomMapSelection,
+  type MatchSetup,
   type RoomSeat,
   type RoomState,
   type RoomSummary,
   type Seat,
-  type SetupTeam,
   type SimVersion,
 } from '@glob2/protocol';
 import {
@@ -36,8 +37,13 @@ import {
   requestGeneratedMap,
   storedSimVersion,
   truncateUtf8,
+  STORED_MATCH_SETUP,
+  readRegionRtts,
+  readStored,
+  tryReadStored,
   type RegionRtt,
-} from '@glob2/worker';
+  type StoredFormat,
+} from '@glob2/play';
 import { apiError } from '../errors.ts';
 import { catalogTitles, uploadTitle } from '../history/summaries.ts';
 
@@ -74,7 +80,17 @@ export const ROOM_RULES = {
   codeLength: 10,
   /** A kicked player cannot rejoin the room for this long. */
   kickBanSeconds: 600,
+  /**
+   * A room still 'starting' after this long was left there by a crash between
+   * the start steps: the sweep resumes it (its match exists) or reopens it.
+   * Longer than any start: createMatch waits up to a minute for a relay.
+   */
+  startingTimeoutSeconds: 120,
 } as const;
+
+/** RoomState.notice after the sweep reopened a room whose start was interrupted. */
+export const START_INTERRUPTED_NOTICE =
+  'The match could not be started because the server was interrupted. Start it again.';
 
 /** Unambiguous code alphabet (no 0/O, 1/I). */
 const CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -90,18 +106,37 @@ export function normalizeCode(code: string): string {
   return code.toUpperCase();
 }
 
-/** Room settings as stored in rooms.settings. */
-export interface RoomSettings {
-  map?: RoomMapSelection;
-  mapStatus?: 'ready' | 'pending' | 'failed';
-  mapProblem?: string;
+/**
+ * Room settings as stored in rooms.settings, built from the protocol's room
+ * and MatchSetup schemas. Unknown properties are tolerated so that a replica
+ * still on the previous release can read rows a newer one wrote during a
+ * rolling upgrade; an incompatible change needs a `schemaVersion` and an
+ * upgrade step in STORED_ROOM_SETTINGS (see @glob2/play stored.ts).
+ */
+export const RoomSettings = Type.Object({
+  map: Type.Optional(RoomMapSelection),
+  mapStatus: Type.Optional(
+    Type.Union([Type.Literal('ready'), Type.Literal('pending'), Type.Literal('failed')]),
+  ),
+  mapProblem: Type.Optional(Type.String()),
   /** Engine job the map waits for (generated map or upload validation). */
-  mapJobId?: string;
-  teams: SetupTeam[];
-  rules: MatchRules;
-  experiments: string[];
+  mapJobId: Type.Optional(Type.String()),
+  teams: Type.Array(SetupTeam),
+  rules: MatchRules,
+  experiments: Type.Array(Type.String()),
   /** The quick match this room is the rematch of (match.rematch). */
-  rematchOf?: string;
+  rematchOf: Type.Optional(Type.String()),
+});
+export type RoomSettings = Static<typeof RoomSettings>;
+
+export const STORED_ROOM_SETTINGS: StoredFormat<typeof RoomSettings> = {
+  what: 'rooms.settings',
+  schema: RoomSettings,
+  current: 1,
+};
+
+function readRoomSettings(stored: unknown): RoomSettings {
+  return readStored(STORED_ROOM_SETTINGS, stored);
 }
 
 export interface MapResolution {
@@ -208,7 +243,7 @@ export class RoomService {
       .where('id', '=', roomId)
       .executeTakeFirst();
     if (!room) return undefined;
-    const settings = room.settings as unknown as RoomSettings;
+    const settings = readRoomSettings(room.settings);
     const seats = await db
       .selectFrom('room_seats as s')
       .leftJoin('accounts as a', 'a.id', 's.account_id')
@@ -281,6 +316,7 @@ export class RoomService {
         ...(seatOf.has(m.account_id) ? { seat: must(seatOf.get(m.account_id), 'seat') } : {}),
       })),
       ...(room.match_id ? { matchId: room.match_id } : {}),
+      ...(room.notice && room.status === 'open' ? { notice: room.notice } : {}),
       revision: room.revision,
       createdAt: room.created_at.toISOString(),
     };
@@ -391,21 +427,30 @@ export class RoomService {
     const page = rows.slice(0, limit);
     const last = page[page.length - 1];
     return {
-      items: page.map((row) => {
-        const settings = row.settings as unknown as RoomSettings;
-        return {
-          id: row.id,
-          code: row.code,
-          name: row.name,
-          hostDisplayName: row.display_name,
-          simVersion: storedSimVersion(row.sim_version),
-          status: row.status,
-          seatsTotal: row.seats_total ?? 0,
-          seatsTaken: row.seats_taken ?? 0,
-          ...(settings.map?.kind === 'generated'
-            ? { mapTitle: settings.map.generator.generatorId }
-            : {}),
-        };
+      // A room whose stored settings no longer decode is left out of the
+      // public list rather than failing it for everyone.
+      items: page.flatMap((row) => {
+        const decoded = tryReadStored(STORED_ROOM_SETTINGS, row.settings);
+        if (!decoded.ok) {
+          this.logger.error({ err: decoded.error, room: row.id }, 'unreadable room settings');
+          return [];
+        }
+        const settings = decoded.value;
+        return [
+          {
+            id: row.id,
+            code: row.code,
+            name: row.name,
+            hostDisplayName: row.display_name,
+            simVersion: storedSimVersion(row.sim_version),
+            status: row.status,
+            seatsTotal: row.seats_total ?? 0,
+            seatsTaken: row.seats_taken ?? 0,
+            ...(settings.map?.kind === 'generated'
+              ? { mapTitle: settings.map.generator.generatorId }
+              : {}),
+          },
+        ];
       }),
       ...(rows.length > limit && last ? { next: { updatedAt: last.updated_at, id: last.id } } : {}),
     };
@@ -549,7 +594,7 @@ export class RoomService {
     for (const { id } of rooms) {
       await this.db.transaction().execute(async (trx) => {
         const room = await this.lock(trx, id);
-        const settings = room.settings as unknown as RoomSettings;
+        const settings = readRoomSettings(room.settings);
         if (room.status === 'closed' || settings.mapStatus !== 'pending' || !settings.map) return;
         let resolution: MapResolution;
         try {
@@ -830,7 +875,7 @@ export class RoomService {
         others,
       };
     }
-    const setup = match.setup as unknown as MatchSetup;
+    const setup = readStored(STORED_MATCH_SETUP, match.setup);
     const source = setup.map;
     const map: RoomMapSelection =
       source.kind === 'generated'
@@ -852,7 +897,7 @@ export class RoomService {
     });
     await this.db.transaction().execute(async (trx) => {
       const locked = await this.lock(trx, room.id);
-      const settings = locked.settings as unknown as RoomSettings;
+      const settings = readRoomSettings(locked.settings);
       await this.writeSettings(trx, room.id, { ...settings, rematchOf: matchId });
     });
     return { room, created: true, others };
@@ -1084,7 +1129,7 @@ export class RoomService {
           revision: room.revision,
         });
       }
-      let settings = room.settings as unknown as RoomSettings;
+      let settings = readRoomSettings(room.settings);
       let clearReady = false;
       const updates: { name?: string; visibility?: 'public' | 'link' } = {};
       if (changes.name !== undefined) updates.name = changes.name;
@@ -1094,7 +1139,7 @@ export class RoomService {
       }
       if (resolution) {
         await this.applyMap(trx, roomId, settings, resolution);
-        settings = (await this.lock(trx, roomId)).settings as unknown as RoomSettings;
+        settings = readRoomSettings((await this.lock(trx, roomId)).settings);
         clearReady = true;
       }
       if (changes.teams) {
@@ -1296,7 +1341,7 @@ export class RoomService {
         throw apiError('forbidden', 'Only the host can start the match.');
       }
       if (room.status !== 'open') throw apiError('conflict', 'The room is already starting.');
-      const settings = room.settings as unknown as RoomSettings;
+      const settings = readRoomSettings(room.settings);
       if (!settings.map) throw apiError('conflict', 'Choose a map first.');
       if (settings.mapStatus !== 'ready' || !settings.map.hash) {
         throw apiError(
@@ -1327,7 +1372,11 @@ export class RoomService {
           seats: unready.map((s) => s.seat),
         });
       }
-      await trx.updateTable('rooms').set({ status: 'starting' }).where('id', '=', roomId).execute();
+      await trx
+        .updateTable('rooms')
+        .set({ status: 'starting', starting_since: sql<Date>`now()`, notice: null })
+        .where('id', '=', roomId)
+        .execute();
       await this.bump(trx, roomId);
       return { room, settings, seats };
     });
@@ -1398,12 +1447,12 @@ export class RoomService {
         origin: 'room',
         roomId,
         rated: false,
-        placement: { players: probes.map((p) => p.region_rtts as unknown as RegionRtt[]) },
+        placement: { players: probes.map((p) => readRegionRtts(p.region_rtts)) },
       });
       await this.db.transaction().execute(async (trx) => {
         await trx
           .updateTable('rooms')
-          .set({ status: 'in_match', match_id: created.matchId })
+          .set({ status: 'in_match', match_id: created.matchId, starting_since: null })
           .where('id', '=', roomId)
           .where('status', '=', 'starting')
           .execute();
@@ -1419,7 +1468,15 @@ export class RoomService {
       await this.db.transaction().execute(async (trx) => {
         const reverted = await trx
           .updateTable('rooms')
-          .set({ status: 'open' })
+          .set({
+            status: 'open',
+            starting_since: null,
+            // Players see why; access and readiness problems go to the host.
+            notice:
+              error instanceof StartError
+                ? null
+                : 'The match could not be started. Try again in a moment.',
+          })
           .where('id', '=', roomId)
           .where('status', '=', 'starting')
           .executeTakeFirst();
@@ -1464,7 +1521,8 @@ export class RoomService {
    * and removes long-disconnected members. Guarded updates make it safe on
    * every replica at once.
    */
-  async sweep(): Promise<{ closed: number; removed: number }> {
+  async sweep(): Promise<{ closed: number; removed: number; recovered: number }> {
+    const recovered = await this.recoverStarting();
     const stale = await this.db
       .selectFrom('rooms as r')
       .leftJoin('room_members as h', (join) =>
@@ -1541,7 +1599,65 @@ export class RoomService {
       .deleteFrom('room_kicks')
       .where('until', '<=', sql<Date>`now()`)
       .execute();
-    return { closed, removed: gone.length };
+    return { closed, removed: gone.length, recovered };
+  }
+
+  /**
+   * Rooms stuck in 'starting' (the process running the start died between
+   * its steps): a room whose match was created since it started is resumed
+   * (in_match, players get match.start again, idempotently); any other is
+   * reopened with a notice. Guarded by the room lock, safe on every replica.
+   */
+  async recoverStarting(
+    timeoutSeconds: number = ROOM_RULES.startingTimeoutSeconds,
+  ): Promise<number> {
+    const stuck = await this.db
+      .selectFrom('rooms')
+      .select('id')
+      .where('status', '=', 'starting')
+      .where(
+        sql<Date>`COALESCE(starting_since, updated_at)`,
+        '<',
+        sql<Date>`now() - make_interval(secs => ${timeoutSeconds})`,
+      )
+      .execute();
+    let recovered = 0;
+    for (const { id } of stuck) {
+      const outcome = await this.db.transaction().execute(async (trx) => {
+        const room = await this.lock(trx, id);
+        if (room.status !== 'starting') return undefined;
+        const since = room.starting_since ?? room.updated_at;
+        const match = await trx
+          .selectFrom('matches')
+          .select('id')
+          .where('room_id', '=', id)
+          .where('status', 'in', ['starting', 'running'])
+          .where('created_at', '>=', since)
+          .orderBy('created_at', 'desc')
+          .executeTakeFirst();
+        if (match) {
+          await trx
+            .updateTable('rooms')
+            .set({ status: 'in_match', match_id: match.id, starting_since: null })
+            .where('id', '=', id)
+            .execute();
+          await this.bump(trx, id);
+          await publishPlay(trx, { t: 'matchStart', matchId: match.id });
+          return { resumed: match.id };
+        }
+        await trx
+          .updateTable('rooms')
+          .set({ status: 'open', starting_since: null, notice: START_INTERRUPTED_NOTICE })
+          .where('id', '=', id)
+          .execute();
+        await this.bump(trx, id);
+        return { reopened: true };
+      });
+      if (!outcome) continue;
+      recovered++;
+      this.logger.warn({ room: id, ...outcome }, 'recovered a room stuck starting');
+    }
+    return recovered;
   }
 }
 

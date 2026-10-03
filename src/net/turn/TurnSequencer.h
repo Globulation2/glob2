@@ -14,6 +14,7 @@
 #include <functional>
 #include <map>
 #include <optional>
+#include <set>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -32,7 +33,9 @@ namespace Turn
 		std::uint8_t bundleInterval = DEFAULT_BUNDLE_INTERVAL;
 		std::uint16_t checksumInterval = DEFAULT_CHECKSUM_INTERVAL;
 		std::uint64_t graceMicros = DEFAULT_GRACE_MICROS;
-		std::uint32_t maxAheadTicks = 250;            ///< flood limit on a seat's order queue
+		/// Flood limit on a seat's order queue: an order that would land further ahead of
+		/// the relay clock is dropped (the connection stays open).
+		std::uint32_t maxAheadTicks = 250;
 		std::uint32_t arbitrationTimeoutTicks = 250;  ///< arbitrate with partial reports after this
 		std::uint32_t lagThresholdTicks = 50;         ///< connected seat shown as lagging beyond this
 		std::uint32_t presenceRefreshTicks = 25;
@@ -70,6 +73,7 @@ namespace Turn
 		{
 			std::uint64_t ordersSequenced = 0;
 			std::uint64_t ordersDropped = 0;
+			std::uint64_t ordersFlooded = 0; ///< dropped by the flood limit (also in ordersDropped)
 			std::uint64_t bundlesSent = 0;
 			std::uint64_t peersRejected = 0;
 		};
@@ -100,6 +104,13 @@ namespace Turn
 		/// When the clock started, in the host's microseconds (creation time without a
 		/// barrier).
 		std::uint64_t clockStartMicros() const { return start; }
+		/// When update() next has work to do, in the host's microseconds: now while a
+		/// presence change waits to be broadcast; the load-barrier deadline while it
+		/// holds; the next bundle while any seat is connected; otherwise the earliest
+		/// grace expiry (at most a second away). Nothing is due between these, so a host
+		/// that sleeps until then, and calls update() after every event, wakes once per
+		/// tick for a running match and rarely for an empty one. UINT64_MAX once over.
+		std::uint64_t nextWakeMicros() const;
 		/// When the next live bundle is due. A host that calls update() at this time
 		/// (rather than on a coarse timer) sends every bundle on its tick boundary, so
 		/// its timer adds no jitter to the clients' buffers.
@@ -115,9 +126,13 @@ namespace Turn
 		bool desyncFlagged() const { return flagged; }
 		/// True once every human seat has left.
 		bool matchOver() const { return over; }
-		/// True once a client has left with Quit(GameFinished): its engine declared
-		/// the game over.
-		bool gameDecided() const { return decided; }
+		/// True when the players agree the game is over: some client left with
+		/// Quit(GameFinished), and so did every other human seat still in the match at
+		/// that moment. One client's claim alone decides nothing (a seat that lost its
+		/// connection keeps its full grace). The relay reports such a match as completed.
+		bool gameDecided() const { return finishedClaims && !(inMatchAtFirstClaim & ~finishedClaims); }
+		/// Seats that left with Quit(GameFinished).
+		std::uint32_t finishedSeats() const { return finishedClaims; }
 		std::optional<std::uint32_t> agreedChecksum(std::uint32_t tick) const;
 		const Stats& stats() const { return counters; }
 		/// Network telemetry of this match (docs/development/network-telemetry.md).
@@ -183,9 +198,6 @@ namespace Turn
 		void handleResync(PeerId peer, int seat, std::uint32_t fromTick);
 		bool assign(std::uint8_t seat, std::vector<std::uint8_t> order, std::uint32_t currentTick, bool floodLimit = true);
 		void sequenceQuit(std::uint8_t seat, MatchEventKind why, std::uint64_t now);
-		/// Once a client has reported the game finished, a match with no human still
-		/// connected ends now instead of waiting out reconnect grace.
-		void endIfDecided(std::uint64_t now);
 		void emitUpTo(std::uint32_t newHorizon);
 		void sendLog(PeerId peer, std::uint32_t fromTick);
 		void arbitrate(std::uint32_t tick, bool timedOut = false);
@@ -221,6 +233,9 @@ namespace Turn
 		std::map<std::uint32_t, std::size_t> pendingBytes;
 		std::vector<TurnEntry> log;
 		std::map<std::uint32_t, TickReports> reports;
+		/// Ticks of `reports` not yet arbitrated (few: those within the timeout), so no
+		/// update walks the whole match's reports.
+		std::set<std::uint32_t> openReports;
 		std::vector<MatchEvent> events;
 		std::uint32_t sentHorizon = 0;
 		std::uint32_t lastPresenceTick = 0;
@@ -228,7 +243,8 @@ namespace Turn
 		bool flagged = false;
 		bool over = false;
 		bool incomplete = false;
-		bool decided = false; ///< a client sent Quit(GameFinished)
+		std::uint32_t finishedClaims = 0;     ///< seats that sent Quit(GameFinished)
+		std::uint32_t inMatchAtFirstClaim = 0; ///< human seats not yet left at the first claim
 		Stats counters;
 		SequencerTelemetry net;
 		std::uint64_t pendingEntries = 0, pendingTotalBytes = 0;

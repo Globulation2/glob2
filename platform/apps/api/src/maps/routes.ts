@@ -25,10 +25,11 @@ import {
   type MapVersionInfo,
   type SimVersion,
 } from '@glob2/protocol';
-import { MAP_CONTENT_TYPE, insertBlob, refreshLatestVersions } from '@glob2/worker';
+import { MAP_CONTENT_TYPE, insertBlob, refreshLatestVersions } from '@glob2/play';
 import { supportedSimVersions } from '../app.ts';
 import { apiError } from '../errors.ts';
-import { WindowCounter, body } from '../http/validate.ts';
+import { body } from '../http/validate.ts';
+import { SharedLimit, enforce } from '../http/rateLimits.ts';
 import { authenticate, requireAccount, requireRole, type Identity } from '../identity.ts';
 import { checkedUpload, newestSimVersion } from './upload.ts';
 import {
@@ -92,11 +93,11 @@ type ReportRow = {
 
 export async function mapCatalogRoutes(app: FastifyInstance, identity: Identity): Promise<void> {
   const { services } = app;
-  const { db, blobs, jobs } = services;
+  const { db, blobs } = services;
   const origin = services.config.publicOrigin;
-  const created = new WindowCounter(CATALOG_RULES.mapsPerHour, 3_600_000);
-  const uploads = new WindowCounter(CATALOG_RULES.versionsPerHour, 3_600_000);
-  const reports = new WindowCounter(CATALOG_RULES.reportsPerHour, 3_600_000);
+  const created = new SharedLimit(db, 'catalog-map', CATALOG_RULES.mapsPerHour, 3_600_000);
+  const uploads = new SharedLimit(db, 'catalog-version', CATALOG_RULES.versionsPerHour, 3_600_000);
+  const reports = new SharedLimit(db, 'catalog-report', CATALOG_RULES.reportsPerHour, 3_600_000);
 
   const viewerOf = async (request: FastifyRequest): Promise<Viewer | undefined> => {
     const caller = await authenticate(identity, request);
@@ -300,9 +301,7 @@ export async function mapCatalogRoutes(app: FastifyInstance, identity: Identity)
     if (input.generator && input.madeWith === 'hand') {
       throw apiError('bad_request', 'A hand-made map has no generator.');
     }
-    if (!created.take(viewer.account.id)) {
-      throw apiError('rate_limited', 'Too many new maps; wait a while.');
-    }
+    await enforce(created, viewer.account.id, undefined, 'Too many new maps; wait a while.');
     const row = await db
       .insertInto('maps')
       .values({
@@ -379,11 +378,11 @@ export async function mapCatalogRoutes(app: FastifyInstance, identity: Identity)
           throw apiError('unavailable', 'No engine agent can validate maps right now.');
       }
       const notes = (request.query.notes ?? '').slice(0, 2000);
+      // The quota is taken before the file is unpacked, so a flood of
+      // compressed files costs the sender, not the server.
+      await enforce(uploads, viewer.account.id, reply, 'Too many uploads; wait a while.');
       // Unpacked when gzip (.map.gz): the stored bytes are the ones the game loads.
-      const bytes = checkedUpload(request.body, 'map', simVersion.versionMinor);
-      if (!uploads.take(viewer.account.id)) {
-        throw apiError('rate_limited', 'Too many uploads; wait a while.');
-      }
+      const bytes = await checkedUpload(request.body, 'map', simVersion.versionMinor);
       const sim = simVersionKey(simVersion);
       const stored = await putContent(blobs, bytes);
       // Catalog bytes are private blobs; catalog rules decide who may fetch them.
@@ -497,7 +496,7 @@ export async function mapCatalogRoutes(app: FastifyInstance, identity: Identity)
       // Jobs are submitted after the row names them, so a fast result always
       // finds the version it completes.
       if (!same && !checked) {
-        await submitEngineJob(db, jobs, {
+        await submitEngineJob(db, {
           kind: 'validate-map',
           simVersion,
           payload: { blobHash: stored.sha256, format: 'map' },
@@ -505,7 +504,7 @@ export async function mapCatalogRoutes(app: FastifyInstance, identity: Identity)
         });
       }
       if (!reusePreview) {
-        await submitEngineJob(db, jobs, {
+        await submitEngineJob(db, {
           kind: 'render-preview',
           simVersion,
           payload: { mapHash: stored.sha256, maxSizePx: CATALOG_RULES.previewSizePx },
@@ -663,9 +662,7 @@ export async function mapCatalogRoutes(app: FastifyInstance, identity: Identity)
       .where('status', '=', 'open')
       .executeTakeFirst();
     if (open) return { id: open.id, status: open.status } satisfies MapReportReceipt;
-    if (!reports.take(viewer.account.id)) {
-      throw apiError('rate_limited', 'Too many reports; wait a while.');
-    }
+    await enforce(reports, viewer.account.id, undefined, 'Too many reports; wait a while.');
     const row = await db
       .insertInto('map_reports')
       .values({

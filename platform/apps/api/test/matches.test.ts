@@ -13,10 +13,11 @@ import {
   chooseRelay,
   createMatch,
   expireStartingMatches,
+  handleEngineJobResult,
   queueMatchSetup,
   type MatchProposal,
   type RelayCandidate,
-} from '@glob2/worker';
+} from '@glob2/play';
 import {
   FakeEngine,
   PINNED_KEY,
@@ -854,6 +855,112 @@ describe('match-end intake', () => {
       key: PINNED_KEY,
     });
     expect(pinned.status).toBe(403);
+    await resetRelays();
+  });
+
+  it('keeps a verified winner who left at the end won; only early leavers abandoned', async () => {
+    // With turn protocol 2, a game whose loser dropped at the very end is
+    // reported abandoned once the loser's reconnect grace runs out, after the
+    // winner already left the finished game.
+    await registerRelay(a, 'relay-late-quit');
+    const [host, guest] = [await player(b), await player(b)];
+    const { matchId } = await startRoomMatch(host, guest);
+    const put = await json(
+      await relayCall(a, 'PUT', `/matches/${matchId}/record`, new Uint8Array(Buffer.from('end'))),
+    );
+    const ended = await relayCall(a, 'POST', `/matches/${matchId}/end`, {
+      matchId,
+      relayId: 'relay-late-quit',
+      simVersion: SIM,
+      startedAt: '2026-10-01T12:00:05Z',
+      endedAt: '2026-10-01T12:20:05Z',
+      finalTick: 30_000,
+      reason: 'abandoned',
+      seats: [
+        // The loser dropped near the end and never came back.
+        { seat: 0, disconnects: 1, quitTick: 28_500, droppedForDesync: false },
+        // The winner left the finished game; the record ends with the grace.
+        { seat: 1, disconnects: 0, quitTick: 29_000, droppedForDesync: false },
+      ],
+      desync: { flagged: false, minoritySeats: [] },
+      record: { sha256: put['sha256'], size: 3, formatVersion: 1 },
+    });
+    expect(ended.status).toBe(200);
+    const outcomes = () =>
+      harness.database.db
+        .selectFrom('match_participants')
+        .select('outcome')
+        .where('match_id', '=', matchId)
+        .orderBy('seat')
+        .execute()
+        .then((rows) => rows.map((r) => r.outcome));
+    // Before the verdict both left before the end of the record.
+    expect(await outcomes()).toEqual(['abandoned', 'abandoned']);
+    const job = await harness.database.db
+      .selectFrom('engine_jobs')
+      .select('id')
+      .where('match_id', '=', matchId)
+      .where('kind', '=', 'verify-match')
+      .executeTakeFirstOrThrow();
+    await handleEngineJobResult(harness.database.db, {
+      jobId: job.id,
+      kind: 'verify-match',
+      ok: true,
+      agent: 'agent-test',
+      result: {
+        verdict: 'verified',
+        outcome: {
+          finalTick: 30_000,
+          teams: [
+            { team: 0, outcome: 'lost', prestige: 0, eliminatedTick: 27_900 },
+            { team: 1, outcome: 'won', prestige: 40 },
+          ],
+          resultHash: 'cd'.repeat(32),
+          replayHash: 'cd'.repeat(32),
+        },
+      },
+    });
+    expect(await outcomes()).toEqual(['abandoned', 'won']);
+    host.client.close();
+    guest.client.close();
+    await resetRelays();
+  });
+
+  it('does not mark a seat that left at the final tick as abandoned', async () => {
+    await registerRelay(a, 'relay-final-tick');
+    const [host, guest] = [await player(b), await player(b)];
+    const { matchId } = await startRoomMatch(host, guest);
+    const put = await json(
+      await relayCall(a, 'PUT', `/matches/${matchId}/record`, new Uint8Array(Buffer.from('fin'))),
+    );
+    const ended = await relayCall(a, 'POST', `/matches/${matchId}/end`, {
+      matchId,
+      relayId: 'relay-final-tick',
+      simVersion: SIM,
+      startedAt: '2026-10-01T12:00:05Z',
+      endedAt: '2026-10-01T12:02:05Z',
+      finalTick: 3000,
+      reason: 'abandoned',
+      seats: [
+        { seat: 0, disconnects: 0, quitTick: 1200, droppedForDesync: false },
+        { seat: 1, disconnects: 0, quitTick: 3000, droppedForDesync: false },
+      ],
+      desync: { flagged: false, minoritySeats: [] },
+      record: { sha256: put['sha256'], size: 3, formatVersion: 1 },
+    });
+    expect(ended.status).toBe(200);
+    const rows = await harness.database.db
+      .selectFrom('match_participants')
+      .select(['outcome', 'quit_tick'])
+      .where('match_id', '=', matchId)
+      .orderBy('seat')
+      .execute();
+    expect(rows).toEqual([
+      { outcome: 'abandoned', quit_tick: 1200 },
+      { outcome: null, quit_tick: 3000 },
+    ]);
+    host.client.close();
+    guest.client.close();
     await resetRelays();
   });
 });

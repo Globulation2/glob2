@@ -483,6 +483,7 @@ describe('sim versions and invite codes', () => {
   });
 
   it('rate-limits failed invite-code lookups', async () => {
+    await harness.database.db.deleteFrom('rate_limits').execute();
     const prober = await player(a);
     for (let i = 0; i < 10; i++) {
       const miss = await prober.client.call('room.join', {
@@ -490,8 +491,15 @@ describe('sim versions and invite codes', () => {
       });
       expect(miss.error?.code).toBe('not_found');
     }
+    // The budget is shared: the other replica refuses the same address too.
+    const elsewhere = await player(b);
     const limited = await prober.client.call('room.join', { code: 'NOPE9999' });
     expect(limited.error?.code).toBe('rate_limited');
+    expect((await elsewhere.client.call('room.join', { code: 'NOPE9998' })).error?.code).toBe(
+      'rate_limited',
+    );
+    // Leave the shared counters clean for the other tests on this address.
+    await harness.database.db.deleteFrom('rate_limits').execute();
   });
 });
 

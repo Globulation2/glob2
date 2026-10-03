@@ -131,8 +131,10 @@ void Engine::gatherAndAdvanceOrders(bool wasReadyLastTick)
 		// We get and push local orders
 		localOrder = gui.getOrder();
 	}
-	// A turn game hands every queued order to the relay as soon as the GUI makes it,
-	// even while waiting for a bundle: the relay gives each its own tick.
+	// A turn game hands every queued order to the session as soon as the GUI makes it,
+	// even while waiting for a bundle. The session sends them at the rate the relay
+	// sequences them (one per tick) and lets a later order replace a waiting one for
+	// the same flag or building, so a drag or a held key costs no input delay.
 	if (turn)
 	{
 		if (localOrder)
@@ -247,6 +249,11 @@ void Engine::executeOrdersAndStep(bool readyNow)
 					gui.executeOrder(order);
 				}
 			}
+			// A match with a pause limit resumes by itself when the seat that paused
+			// has used its time, at the same tick on every client and in the verifier.
+			if (turn)
+				if (auto resume = turn->takeForcedResume())
+					gui.executeOrder(resume);
 			net->clearTopOrders();
 		}
 	}
@@ -758,7 +765,6 @@ void Engine::pumpTurnSession(Uint64 now)
 	Turn::TurnSession& session = turn->turn();
 	turnNowMicros = now * 1000;
 	session.update(now * 1000);
-	gui.checkPauseBudget(Uint32(now));
 	printTurnTelemetrySamples();
 	if (session.needsReload())
 		reloadTurnInitialState();

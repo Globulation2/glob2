@@ -130,8 +130,13 @@
             {
               "type": "string",
               "const": "not_applicable"
+            },
+            {
+              "type": "string",
+              "const": "failed"
             }
-          ]
+          ],
+          "description": "failed: the server could not run its check (the verify job failed or was lost); the match is not rated unless an operator re-runs verification. Clients that do not know a value treat it as pending."
         },
         "mapHash": {
           "type": "string",

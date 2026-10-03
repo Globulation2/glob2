@@ -47,6 +47,7 @@ namespace OrderValidation
 		BadMode,          ///< an unknown brush mode or message type
 		BadVoice,         ///< a voice packet larger than the recorder produces
 		BadState,         ///< the building is not in a state the order applies to
+		PauseLimit,       ///< a pause beyond the seat's pause limit (TurnLockstepSession)
 		Count
 	};
 	constexpr std::size_t REASON_COUNT = static_cast<std::size_t>(Reason::Count);

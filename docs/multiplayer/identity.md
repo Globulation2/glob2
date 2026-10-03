@@ -87,19 +87,22 @@ phones and the web client, and needs no loopback server in the game.
 1. The client, connected to `/realtime`, sends `auth.handoff.begin` (optionally
    naming a provider, and a `mode`). The platform records a `signin_attempts`
    row and answers with `attemptId`, a `signInUrl` (`<origin>/signin?attempt=…`),
-   an 8-character `confirmationCode`, an expiry (`auth.handoffMinutes`, default
+   a 6-character `confirmationCode`, an expiry (`auth.handoffMinutes`, default
    10) and a `resumeToken`.
 2. The client opens the system browser at `signInUrl` and shows the code.
 3. `/signin` (server-rendered by the API, no scripts, strict CSP, no cross-site Referer)
-   shows the same code with a warning to continue only if the player started
-   the sign-in, the provider buttons and, if enabled, the local password forms
+   first asks the player to **type the code the game shows** (`POST
+   /signin/confirm`; case, spaces and dashes do not matter) and offers nothing
+   else until they do. The page never shows the code itself. The right code binds
+   the attempt to that browser (a random cookie whose hash is stored on the
+   attempt; other browsers are then refused with `409`); five wrong codes fail the
+   attempt (`denied`). Then the page offers the provider buttons and, if enabled, the local password forms
    (separate Sign in and Create account forms, `current-password` and
    `new-password`). A problem with a local form (short password, invalid or taken
-   username, unknown username, wrong password) re-renders this page, code
-   included, with the message on the field and the username kept, never the
-   password; the status is still `400`, `401`, `403` or `409`. Other sign-in
-   problems get a page that links back to `/signin`. The first browser to open the link is bound to the attempt (a random cookie
-   whose hash is stored on the attempt); other browsers are refused.
+   username, unknown username, wrong password) re-renders this page with the
+   message on the field and the username kept, never the password; the status is
+   still `400`, `401`, `403` or `409`. Other sign-in problems get a page that links
+   back to `/signin`.
 4. The player signs in at the provider; the callback resolves the identity:
    - on an authenticated socket (mode `link`, the default there) a new identity
      is linked to that account, upgrading a guest in place;
@@ -122,11 +125,17 @@ NOTIFY. Phones often lose the socket while the browser is in front: pending
 attempts survive a closed socket, and `auth.handoff.resume {attemptId,
 resumeToken}` on a new socket (any replica) re-attaches it, delivering at once
 if the attempt already finished. At most three attempts may be pending per
-socket. The worker's maintenance marks attempts past their expiry.
+socket. The worker's maintenance marks attempts past their expiry and deletes
+them a week later.
 
-The confirmation code is the defence against a link sent by someone else:
-whoever completes the sign-in signs the game that started it in. Players must
-check the code; the page says so.
+Typing the code is the defence against a link sent by someone else (RFC 8628
+§5.4): whoever completes the sign-in signs the game that started it in, so an
+attacker could start an attempt and send its link to a victim. With only the
+link the victim's browser offers no way to sign in; the attacker would also have
+to talk them into typing a code, which the page warns against. Starting attempts
+needs no account, so they are limited per address
+(`limits.signinAttemptsPerHour`, 30) and in total
+(`limits.signinAttemptsPerMinuteTotal`, 300), on every replica.
 
 ## Tokens
 
@@ -145,9 +154,14 @@ check the code; the page says so.
   lifetime `auth.refreshTokenDays`, default 60). Each sign-in starts a family;
   presenting an already-rotated token is treated as theft and revokes the whole
   family, including its access tokens, and sockets authenticated with it get
-  `session.revoked`. Sign-out revokes the presented token's family. Clients must
-  therefore serialise refreshes per sign-in. Expired tokens are deleted 30 days
-  after expiry.
+  `session.revoked`. Sign-out revokes the presented token's family.
+  Concurrent refreshes are expected (two sockets, a retry after a timeout): for
+  30 s after a rotation, the token just rotated is accepted again while its
+  successor is still unused, and returns another token of the family (at most
+  five times). Any later use, or a use after the successor was itself rotated,
+  is reuse. Clients should still serialise refreshes per sign-in where they can.
+  Rotated and revoked tokens are deleted after 7 days (until then their reuse is
+  detected), expired ones 30 days after expiry.
 - **Web sessions** (the browser after `/signin`) are a random secret in an
   HttpOnly `SameSite=Lax` cookie (`__Host-glob2_session` over HTTPS), stored
   hashed in `web_sessions` (`auth.webSessionDays`, default 30). Cookie-
@@ -219,28 +233,75 @@ Nobody can change their own role or ban themselves, and mutes and bans apply
 only to accounts of a lower role. Every action is recorded in
 `admin_audit_log` (a null actor is the command line).
 
-**Deleting an account** (guest or registered; `AdminService.deleteAccount`) keeps
-the row, marked `deleted`, because matches, ratings and the audit log refer to it.
-In one transaction it:
+### Deleting an account
 
-- renames it "Deleted player", also on its past match participations;
-- removes its sign-in identities (so a username can be registered again) and device
-  credentials, and revokes its refresh tokens and web sessions (open sockets get
-  `session.revoked` when the API runs the deletion);
+Players delete their own account on the web account page (`/account`; the game's
+Settings link "Delete my account" opens it), which calls `DELETE
+/api/v1/accounts/me` with `{"confirmDisplayName": "<current display name>"}`
+(`DeleteAccountRequest`; a mismatch is `400` with `reason: confirmation_mismatch`).
+Moderators use `DELETE /api/v1/admin/accounts/{id}` or `platform admin delete`.
+Both run `AdminService.deleteAccount`, which keeps the row, marked `deleted` with
+`deleted_at`, because matches, ratings and the audit log refer to it by id. In one
+transaction it:
+
+- renames it "Deleted player", also on its past match participations and its
+  seats in stored match setups (`matches.setup` and the copy in the match's
+  verify-match job). A match still running or awaiting its verdict keeps the
+  setup the relay recorded until it is settled; the worker then scrubs it
+  (`account_name_scrubs`, at most a week later);
+- deletes its room chat messages and replaces every name it went by (current,
+  in past matches, and in renames) with "Deleted player" in other players'
+  messages in rooms it was in and in the names of rooms it hosted (whole words,
+  ignoring case);
+- replaces those names in the free text of audit-log entries about it (the
+  entries, actors, ids and times stay; the log is otherwise append-only, see
+  [database roles](../hosting/README.md#database-roles)); the deletion's own entry
+  records no name;
+- removes its sign-in identities (so a username can be registered again; e-mail
+  addresses go with them) and device credentials, and revokes its refresh tokens
+  and web sessions (open sockets get `session.revoked` and close);
 - deletes its catalog maps, like a map deletion (versions, likes, reports and
   download counts go; the bytes stay for matches played on them), its likes of
-  other maps, and its queue tickets.
+  other maps, its uploads, and its queue tickets.
 
-Matches, rating rows (deleted accounts are already left out of leaderboards and
-player pages), uploaded blobs and rooms it is in stay; the presence sweep drops it
-from rooms once its sockets close. There is no undo.
+There is no undo. What stays, and why:
+
+| Kept | Why |
+| --- | --- |
+| The account row (id, kind, creation time, `deleted` status) | Matches, ratings and audit entries refer to it. |
+| Match history and rating rows, by account id, as "Deleted player" | Other players' history and ratings depend on them; deleted accounts are left out of leaderboards and player pages. |
+| Binary match records and replays (blobs) | The verified record of games other people played too. The engine wrote each player's in-game name into them, and they are content-addressed, so the name there stays. |
+| Uploaded file bytes (blobs) | Matches played on them refer to them by hash. |
+| Map reports it filed, audit entries about it (scrubbed) | Moderation records. |
+
+### Data retention
+
+| Data | Kept |
+| --- | --- |
+| Refresh tokens | Until 30 days after they expire (reuse detection), then deleted. |
+| Web sessions | Until 30 days after they expire or are revoked. |
+| Provider sign-in flows | 24 hours after they expire. |
+| Browser sign-in attempts | A week after they expire. |
+| Rate-limit counters | A day after their last use. |
+| Queue tickets | Expired after an hour of waiting. |
+| Guest accounts, chat, matches, maps | Until the player deletes the account (or a moderator does); no automatic expiry yet. |
 
 ## Hardening
 
-- Rate limits per client address and API replica (`@fastify/rate-limit`, in
-  memory): every sign-in route (`limits.authPerMinute`, default 30 per route),
-  new guests (`limits.guestsPerHour`, default 20), all other routes
-  (`limits.apiPerMinute`, default 600). Realtime sockets: a token bucket per
+- Rate limits per client address that hold across every API replica (sliding
+  windows in Postgres, `rate_limits`): each sign-in route (`limits.authPerMinute`,
+  default 30 per route and address), new guests (`limits.guestsPerHour`, 20),
+  browser sign-in attempts (above), uploads (30 per account per hour), map
+  catalog writes, invite-code misses and chat. Wrong local passwords count per
+  username (`limits.passwordFailuresPerAccount`, 10 per 15 minutes; past that the
+  username is locked for the rest of the window, even for the right password) and
+  per address (`limits.passwordFailuresPerIp`, 50 per hour, over all usernames);
+  a correct password clears its username's count. The general cap on other
+  routes (`limits.apiPerMinute`, default 600) is per replica, in memory.
+
+## Hardening
+
+- Realtime sockets: a token bucket per
   socket (`realtimePerSecond` 10, `realtimeBurst` 40; excess requests answer
   `rate_limited`, persistent excess closes the socket), at most
   `realtimeConnectionsPerIp` (20) sockets per address, frames up to 64 KiB, text
@@ -253,6 +314,8 @@ from rooms once its sockets close. There is no undo.
   carries it; it authenticates nothing by itself.
 - The API sits behind a reverse proxy (`trustProxy`), which must route
   `/api`, `/realtime`, `/signin`, `/auth/` and `/.well-known/` to it.
+- Uploads are checked against the account's quota before they are unpacked;
+  gzip is unpacked off the event loop, up to 64 MiB and 256 times the packed size.
 - Logs redact authorization headers, cookies, tokens, device credentials,
   passwords and tickets.
 - Credentials are per instance: a client connected to a self-hosted instance
@@ -265,7 +328,9 @@ replicas and an in-test OpenID Connect issuer (`mockIssuer.ts`): guest creation
 and return, token rotation and reuse detection, JWKS verification, key
 rotation, local registration and sign-in, renames, admin CLI and role checks,
 rate limits, the realtime envelope, origin checks, heartbeat, cross-replica
-fan-out, and the handoff (link, conflict and switch, browser binding, refusal,
+fan-out, shared rate limits and password lockout across replicas (`abuse.test.ts`),
+self-service deletion and name scrubbing (`deletion.test.ts`), and the handoff
+(code entry and wrong-code lockout, link, conflict and switch, browser binding, refusal,
 cancellation, resume after a dropped socket, expiry, Apple `form_post` with a
 verified ES256 client secret, local passwords on the page). Against the real
 Google and Microsoft endpoints only discovery and the authorization redirect
