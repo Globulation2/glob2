@@ -37,10 +37,15 @@ def build(prefix, work, *, cc='cc', cxx='c++', ar='ar', ranlib='ranlib',
             if probe.returncode == 0: vaapi = probe.stdout.strip()
         except FileNotFoundError:
             pass
+    assembler = None
+    if target != 'wasm' and arch in ('x86_64', 'amd64', 'i686', 'i386'):
+        if not shutil.which('nasm', path=env.get('PATH')):
+            raise RuntimeError('Embedded x264 requires NASM 2.13 or newer on x86 targets; install nasm and retry.')
+        assembler = subprocess.check_output(['nasm', '--version'], env=env, text=True).strip()
     compiler = subprocess.check_output(shlex.split(str(cc)) + ['--version'], env=env, text=True)
     identity = dict(configuration=1, versions=versions, target=target, arch=arch,
                     compiler=compiler, cc=str(cc), ar=str(ar), flags=[cflags, ldflags],
-                    vaapi_api=vaapi, sdk=sdk_identity, environment={name:env.get(name,'') for name in ('CFLAGS','CXXFLAGS','CPPFLAGS','LDFLAGS','SDKROOT','MACOSX_DEPLOYMENT_TARGET','DEVELOPER_DIR')}, recipe=hashlib.sha256(Path(__file__).read_bytes()).hexdigest())
+                    vaapi_api=vaapi, assembler=assembler, sdk=sdk_identity, environment={name:env.get(name,'') for name in ('CFLAGS','CXXFLAGS','CPPFLAGS','LDFLAGS','SDKROOT','MACOSX_DEPLOYMENT_TARGET','DEVELOPER_DIR')}, recipe=hashlib.sha256(Path(__file__).read_bytes()).hexdigest())
     manifest = prefix / 'recording-manifest.json'
     archives = [prefix / 'lib' / ('lib' + name + '.a') for name in LIBRARIES]
     if manifest.exists():
@@ -80,7 +85,9 @@ def build(prefix, work, *, cc='cc', cxx='c++', ar='ar', ranlib='ranlib',
     else: env.pop('PKG_CONFIG_LIBDIR', None)
     extra_c = shlex.join(['-O3', '-fPIC'] + cflags)
     extra_ld = shlex.join(ldflags)
-    x264 = ['sh', (sources['x264'] / 'configure').as_posix(), '--prefix=' + prefix.as_posix(),
+    # x264's configure uses brace expansion to create architecture output
+    # directories. /bin/sh is dash on Linux and silently creates wrong paths.
+    x264 = ['bash', (sources['x264'] / 'configure').as_posix(), '--prefix=' + prefix.as_posix(),
             '--enable-static', '--enable-pic', '--disable-cli', '--disable-opencl',
             '--disable-avs', '--disable-lavf', '--disable-swscale', '--disable-ffms',
             '--bit-depth=8', '--chroma-format=420', '--extra-cflags=' + extra_c,
