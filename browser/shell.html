@@ -103,7 +103,11 @@ var Module = {
     // SwiftShader, costs several CPU cores where software rendering needs a fraction of
     // one, so it counts as unavailable unless ?renderer=webgl2 asks for it.
     const gpu = Module.renderer === 'webgl2';
-    Module.start(['-s', width + 'x' + height, '-F', '-C', gpu ? '-g' : '-G']).catch(error => Module.onAbort(String(error)));
+    // Invite links land here as ?join=<code> (see docs/multiplayer/client.md); the
+    // instance serving this page is the one to join.
+    const join = new URLSearchParams(location.search).get('join');
+    const invite = join && /^[A-Za-z0-9]{6,16}$/.test(join) ? ['--join', join, '--instance', location.origin] : [];
+    Module.start(['-s', width + 'x' + height, '-F', '-C', gpu ? '-g' : '-G', ...invite]).catch(error => Module.onAbort(String(error)));
   },
   onApplicationStarted() {
     document.body.classList.add('ready');

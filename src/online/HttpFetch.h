@@ -28,7 +28,9 @@ enum class Method
 {
 	Get,
 	Post,
-	Put
+	Put,
+	Patch,
+	Delete
 };
 
 using Headers = std::vector<std::pair<std::string, std::string>>;
@@ -38,7 +40,7 @@ struct Request
 	Method method = Method::Get;
 	std::string url;
 	Headers headers;
-	// Sent as the request body for POST and PUT; set Content-Type in headers.
+	// Sent as the request body (POST, PUT, PATCH); set Content-Type in headers.
 	std::string body;
 	// Whole-request deadline: name resolution, connection, TLS and transfer.
 	std::chrono::milliseconds timeout{30000};

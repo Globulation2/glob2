@@ -554,8 +554,17 @@ CLIENT_SOURCES = (
     'net/WssTransport.cpp',
     'online/HttpFetch.cpp',
     'online/HttpFetchCommon.cpp',
-    'online/MatchSetup.cpp',
+    'online/InstanceConfig.cpp',
+    'online/InviteLink.cpp',
+    'online/MapCache.cpp',
+    'online/MemoryStorage.cpp',
+    'online/OnlineServices.cpp',
+    'online/PlatformClient.cpp',
+    'online/PlatformClientNative.cpp',
+    'online/PlatformProtocol.cpp',
     'online/Sha256.cpp',
+    'online/UserDirectoryStorage.cpp',
+    'online/MatchSetup.cpp',
     'online/SimVersion.cpp',
 )
 
