@@ -17,3 +17,12 @@ Initial integration failures were fixed: duplicated relay event consumption,
 new shared rate-limit API, migration ordering and shared/browser code boundary.
 Retention/deletion/GC regression coverage was added. The new accessibility
 sweep exposed a swatch-label issue; its correction and final results follow.
+
+Both final serial/threaded browser builds and their two skin runtime tests pass
+at 7c6df8d7a (render/hide/context restoration and no unskinned mesh download).
+The focused repair from PR630 is integrated as cf3aada7c; both online probes
+link and all seven runtime-package tests pass. Native client lifecycle against
+a real isolated API passes after updating its integration helper for the
+current refresh grace and browser confirmation-code flow (8458d92fe).
+The distro Node lacks compiled-in TypeScript support, so this local probe test
+uses the already-installed tsx loader through NODE_OPTIONS.
