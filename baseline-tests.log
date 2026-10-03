@@ -1,0 +1,4 @@
+PASS GameGUITouch/actual gameplay touch; toroidal pan; preview; confirmation; validation; cancellation and duplicate suppression [display][artifacts][writes-preferences] (13.1s)
+
+1 passed, 0 failed, 0 skipped (13.1s of test time)
+[run_tests] JUnit report: artifacts/radial/before.xml (1 cases)
