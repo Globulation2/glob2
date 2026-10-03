@@ -10,8 +10,8 @@
 // Invisible maps answer 404, never 403, so their existence does not leak.
 import { sql, type Kysely } from 'kysely';
 import type { Account, Database } from '@glob2/db';
-import type { GeneratorDescriptor, MapInfo, MapVersionInfo, PublicAccount } from '@glob2/protocol';
-import { storedSimVersion } from '@glob2/worker';
+import type { MapInfo, MapVersionInfo, PublicAccount } from '@glob2/protocol';
+import { STORED_GENERATOR, readStored, storedSimVersion } from '@glob2/play';
 import { hasRole } from '../auth/admin.ts';
 import { apiError } from '../errors.ts';
 
@@ -232,7 +232,7 @@ export function mapView(
     hidden: row.hidden,
     ...(row.hidden && privileged && row.hidden_reason ? { hiddenReason: row.hidden_reason } : {}),
     madeWith: row.made_with,
-    ...(row.generator ? { generator: row.generator as GeneratorDescriptor } : {}),
+    ...(row.generator ? { generator: readStored(STORED_GENERATOR, row.generator) } : {}),
     ...(latest ? { latestVersion: versionView(origin, latest) } : {}),
     stats: { plays: row.play_count, downloads: row.download_count, likes: row.like_count },
     createdAt: row.created_at.toISOString(),

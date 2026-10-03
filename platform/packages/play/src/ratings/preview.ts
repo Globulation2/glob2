@@ -6,6 +6,7 @@
 import type { Kysely } from 'kysely';
 import type { Database } from '@glob2/db';
 import type { MatchRatingPreview, MatchSetup } from '@glob2/protocol';
+import { STORED_MATCH_SETUP, readStored } from '../stored.ts';
 import type { Rating } from 'openskill';
 import { DEFAULT_RATING, aiSeedRating, displayRating, isProvisional, rateSides } from './scale.ts';
 import type { RatedAi } from './entities.ts';
@@ -74,7 +75,7 @@ export async function matchRatingPreview(
     .where('id', '=', matchId)
     .executeTakeFirst();
   if (!match || !match.rated || match.origin !== 'queue' || !match.queue_id) return undefined;
-  const setup = match.setup as unknown as MatchSetup;
+  const setup = readStored(STORED_MATCH_SETUP, match.setup);
   const mine = setup.seats.find((s) => s.kind === 'human' && s.accountId === accountId);
   if (!mine) return undefined;
   const ratings = await seatRatings(db, setup, match.sim_version, match.queue_id);

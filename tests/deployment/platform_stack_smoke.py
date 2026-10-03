@@ -470,7 +470,7 @@ class Smoke:
         # Registration happens at start-up; allow a few heartbeats for retries. Only
         # live relays count: an attached, long-running deployment keeps the rows of
         # replaced relay containers, which the platform ignores once their heartbeat is
-        # older than RELAY_STALE_SECONDS (45 s, apps/worker/src/play/relays.ts).
+        # older than RELAY_STALE_SECONDS (45 s, packages/play/src/play/relays.ts).
         live = "last_heartbeat_at > now() - interval '45 seconds'"
         deadline = time.monotonic() + 90
         while time.monotonic() < deadline:

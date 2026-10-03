@@ -26,7 +26,6 @@ import {
   type MatchArtifactInfo,
   type MatchDetail,
   type MatchList,
-  type MatchSetup,
   type MatchTeamStats,
   type OrderRejection,
   type PlayerProfile,
@@ -36,7 +35,14 @@ import {
   type VerificationDetail,
   type WinRate,
 } from '@glob2/protocol';
-import { PROVISIONAL_SIGMA, displayRating } from '@glob2/worker';
+import {
+  PROVISIONAL_SIGMA,
+  STORED_MATCH_SETUP,
+  STORED_VERIFY_VERDICT,
+  displayRating,
+  readStored,
+  tryReadStored,
+} from '@glob2/play';
 import { hasRole } from '../auth/admin.ts';
 import { apiError } from '../errors.ts';
 import { participantNetwork, reportTickRate } from './network.ts';
@@ -717,22 +723,23 @@ export class HistoryService {
         sha256: artifact.sha256,
       });
     }
-    const verdict = (job?.result ?? undefined) as Record<string, unknown> | undefined;
-    const diverged = Array.isArray(verdict?.['clients'])
-      ? (verdict['clients'] as unknown[]).filter(
-          (s): s is number => typeof s === 'number' && s >= 0 && s <= 11,
-        )
-      : undefined;
-    const rejections = orderRejections(verdict?.['orderRejections']);
+    // The verification detail is optional on the page: a verdict that no
+    // longer decodes shows none rather than failing the match page.
+    const decodedVerdict = job ? tryReadStored(STORED_VERIFY_VERDICT, job.result) : undefined;
+    const verdict = decodedVerdict?.ok ? decodedVerdict.value : undefined;
+    const diverged = verdict?.verdict === 'diverged' ? verdict.clients : undefined;
+    // orderRejections is an engine extension the open verdict schema carries
+    // through; orderRejections() checks it field by field.
+    const rejections = orderRejections(
+      verdict && 'orderRejections' in verdict ? verdict['orderRejections'] : undefined,
+    );
     const verificationDetail: VerificationDetail = {
       ...(diverged && diverged.length > 0 ? { divergedSeats: diverged } : {}),
-      ...(typeof verdict?.['reason'] === 'string'
-        ? { reason: (verdict['reason'] as string).slice(0, 2000) }
-        : {}),
+      ...(verdict?.verdict === 'unverifiable' ? { reason: verdict.reason.slice(0, 2000) } : {}),
       ...(rejections ? { orderRejections: rejections } : {}),
       ...(match.rating_note ? { ratingNote: match.rating_note.slice(0, 500) } : {}),
     };
-    const setup = match.setup as unknown as MatchSetup;
+    const setup = readStored(STORED_MATCH_SETUP, match.setup);
     const generator = generatorOf(setup);
     const catalog = titles.get(match.map_hash);
     const generated = generator

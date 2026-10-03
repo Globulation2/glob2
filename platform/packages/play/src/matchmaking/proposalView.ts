@@ -3,10 +3,10 @@
 // proposal, so the matchmaker (new proposals) and the API (after a
 // queue.respond, so everyone sees who has accepted) send the same event.
 import type { Kysely } from 'kysely';
-import type { MapPoolEntry } from '@glob2/core';
 import type { Database } from '@glob2/db';
 import type { AiId, ProposalSeat, RealtimeEventData } from '@glob2/protocol';
 import { aiDisplayName } from '../play/start.ts';
+import { readMapPoolEntry } from '../stored.ts';
 import { displayRating, isProvisional } from '../ratings/scale.ts';
 import type { QueueNotifier } from './notifier.ts';
 
@@ -53,7 +53,7 @@ export async function loadProposalView(
     .where('match_proposal_seats.proposal_id', '=', proposalId)
     .orderBy('match_proposal_seats.slot')
     .execute();
-  const map = proposal.map as unknown as MapPoolEntry;
+  const map = readMapPoolEntry(proposal.map);
   const width = side(map.params?.width);
   const height = side(map.params?.height);
   const humans = rows.filter((r) => r.kind === 'human').length;
