@@ -1266,8 +1266,10 @@ void GameGUITouch::interfaceTap(ViewPoint point)
 			if ((button == 0 && (gui.hiddenGUIElements & GameGUI::HIDABLE_BUILDINGS_LIST)) ||
 				(button == 1 && (gui.hiddenGUIElements & GameGUI::HIDABLE_FLAGS_LIST)))
 				return;
-			// Explicit navigation replaces any read-only inspector.
-			if (inspectingReadOnly()) dismissMapPanels();
+			// Explicit navigation wins over inspector restoration and pending
+			// invalidation, even when a client step already cleared selection.
+			if (inspecting() || inspectingReadOnly() || readOnlyPanelShown)
+				dismissMapPanels();
 			if (button < 2)
 			{
 				lensOpen = false;

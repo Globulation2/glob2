@@ -2065,8 +2065,8 @@ class GameGUITouchHarness
 			}
 			gui.touch->panelOpen = false;
 			gui.setSelection(GameGUI::BUILDING_SELECTION, building);
-			// Info opens the inspector for the selected entity.
-			tap(gfx->getW() * 2.5f / 6, gfx->getH() - 24 * unit);
+			// Selection opens the inspector; Tools now explicitly replaces it.
+			gui.touch->panelOpen = true;
 			auto workerPoint = actionPoint(6, 0, 1);
 			const float plusX = workerPoint.x, rowY = workerPoint.y;
 			const int before = gui.displayedMaxUnitWorking(*building),
@@ -3169,6 +3169,44 @@ class GameGUITouchHarness
 				"Closing a building reached from a read-only inspector cannot reopen a toolbox");
 			require(gui.orderQueue.empty(), "Inspector transitions never issue simulation orders");
 		}
+		// Explicit navigation takes precedence over both deferred building
+		// restoration and invalidation by a client step before the next draw.
+		globalContainer->replaying = false;
+		for (bool invalidated : {false, true})
+			for (int button = 0; button < 3; ++button)
+			{
+				gui.touch->dismissMapPanels();
+				if (invalidated)
+				{
+					map.setResource(41, 40, WHEAT, 0);
+					gui.touch->select({center.x + 28, center.y});
+					gui.drawAll(0);
+					map.setNoResource(41, 40, 1);
+					gui.checkSelection();
+					require(gui.touch->readOnlyPanelShown && gui.selectionMode == GameGUI::NO_SELECTION,
+						"Client invalidation precedes toolbar navigation");
+				}
+				else
+				{
+					gui.setSelection(GameGUI::BUILDING_SELECTION, inspected);
+					gui.touch->panelOpen = gui.touch->restorePalette = true;
+					gui.touch->previousPanelOpen = false;
+					gui.touch->previousDisplayMode = GameGUI::STAT_TEXT_VIEW;
+					gui.drawAll(0);
+				}
+				const auto bar = gui.touch->layout().actions;
+				tap(bar.x + bar.w * (button + .5) / 6, bar.y + bar.h / 2);
+				gui.drawAll(0);
+				require(gui.selectionMode == GameGUI::NO_SELECTION && !gui.touch->restorePalette &&
+					!gui.touch->readOnlyPanelShown, "Navigation consumes inspector lifecycle state");
+				require(button == 2 ? gui.touch->lensVisible() :
+					gui.touch->panelOpen && gui.displayMode ==
+						(button == 0 ? GameGUI::CONSTRUCTION_VIEW : GameGUI::FLAG_VIEW),
+					"Chosen toolbox survives the next draw after inspector navigation");
+			}
+		gui.touch->dismissMapPanels();
+		globalContainer->replaying = true;
+		map.setResource(41, 40, WHEAT, 0);
 		gui.touch->select({center.x + 28, center.y});
 		gui.drawAll(0);
 		map.setNoResource(41, 40, 1);

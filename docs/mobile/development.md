@@ -74,7 +74,9 @@ statistics and inspection together, without reopening a previous palette. An
 outside tap on the map peek likewise dismisses its underlying tools; its explicit
 Done button can return to them. Tapping another object switches selection;
 panning, cancelled gestures and taps inside the inspector do not dismiss it.
-Painting and placement keep their tool-specific map gestures.
+Painting and placement keep their tool-specific map gestures. Choosing Build,
+Flags or Tools explicitly replaces the current inspector; deferred restoration or
+selection invalidation cannot override that toolbox choice on the next frame.
 The game is playable with one thumb. A completed map tap arms one-finger zoom for
 the next contact that lands within 300 ms of the release and 24 points of the tap.
 Dragging that contact vertically zooms about the point where it landed, doubling
