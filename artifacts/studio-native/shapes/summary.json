@@ -1,0 +1,443 @@
+[
+  {
+    "width": 128,
+    "height": 128,
+    "players": 2,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 128,
+    "height": 128,
+    "players": 3,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 128,
+    "height": 128,
+    "players": 4,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 128,
+    "height": 128,
+    "players": 5,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 128,
+    "height": 128,
+    "players": 6,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 128,
+    "height": 128,
+    "players": 7,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 128,
+    "height": 128,
+    "players": 8,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 128,
+    "height": 256,
+    "players": 2,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 128,
+    "height": 256,
+    "players": 3,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 128,
+    "height": 256,
+    "players": 4,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 128,
+    "height": 256,
+    "players": 5,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 128,
+    "height": 256,
+    "players": 6,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 128,
+    "height": 256,
+    "players": 7,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 128,
+    "height": 256,
+    "players": 8,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 128,
+    "height": 512,
+    "players": 2,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 128,
+    "height": 512,
+    "players": 3,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 128,
+    "height": 512,
+    "players": 4,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 128,
+    "height": 512,
+    "players": 5,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 128,
+    "height": 512,
+    "players": 6,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 128,
+    "height": 512,
+    "players": 7,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 128,
+    "height": 512,
+    "players": 8,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 256,
+    "height": 128,
+    "players": 2,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 256,
+    "height": 128,
+    "players": 3,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 256,
+    "height": 128,
+    "players": 4,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 256,
+    "height": 128,
+    "players": 5,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 256,
+    "height": 128,
+    "players": 6,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 256,
+    "height": 128,
+    "players": 7,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 256,
+    "height": 128,
+    "players": 8,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 256,
+    "height": 256,
+    "players": 2,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 256,
+    "height": 256,
+    "players": 3,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 256,
+    "height": 256,
+    "players": 4,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 256,
+    "height": 256,
+    "players": 5,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 256,
+    "height": 256,
+    "players": 6,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 256,
+    "height": 256,
+    "players": 7,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 256,
+    "height": 256,
+    "players": 8,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 256,
+    "height": 512,
+    "players": 2,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 256,
+    "height": 512,
+    "players": 3,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 256,
+    "height": 512,
+    "players": 4,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 256,
+    "height": 512,
+    "players": 5,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 256,
+    "height": 512,
+    "players": 6,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 256,
+    "height": 512,
+    "players": 7,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 256,
+    "height": 512,
+    "players": 8,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 512,
+    "height": 128,
+    "players": 2,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 512,
+    "height": 128,
+    "players": 3,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 512,
+    "height": 128,
+    "players": 4,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 512,
+    "height": 128,
+    "players": 5,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 512,
+    "height": 128,
+    "players": 6,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 512,
+    "height": 128,
+    "players": 7,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 512,
+    "height": 128,
+    "players": 8,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 512,
+    "height": 256,
+    "players": 2,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 512,
+    "height": 256,
+    "players": 3,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 512,
+    "height": 256,
+    "players": 4,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 512,
+    "height": 256,
+    "players": 5,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 512,
+    "height": 256,
+    "players": 6,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 512,
+    "height": 256,
+    "players": 7,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 512,
+    "height": 256,
+    "players": 8,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 512,
+    "height": 512,
+    "players": 2,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 512,
+    "height": 512,
+    "players": 3,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 512,
+    "height": 512,
+    "players": 4,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 512,
+    "height": 512,
+    "players": 5,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 512,
+    "height": 512,
+    "players": 6,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 512,
+    "height": 512,
+    "players": 7,
+    "imported": true,
+    "reloaded": true
+  },
+  {
+    "width": 512,
+    "height": 512,
+    "players": 8,
+    "imported": true,
+    "reloaded": true
+  }
+]

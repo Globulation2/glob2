@@ -1,0 +1,77 @@
+{
+  "featureCommit": "0acac2294e33ce67b914389a85b2f03a810397aa",
+  "platformTests": {
+    "files": 47,
+    "passed": 340,
+    "skipped": 0,
+    "lint": "passed",
+    "typecheck": "passed"
+  },
+  "browser": {
+    "desktop": "passed",
+    "phone": "passed",
+    "axe": "passed",
+    "horizontalOverflow": 0
+  },
+  "nativeGeometry": {
+    "cases": 63,
+    "import": "passed",
+    "reload": "passed",
+    "corpus": "Synthetic all-grass maps test import geometry, not playability."
+  },
+  "nativeDelivery": {
+    "provider": "Deterministic identity reference-image stub; no live requests.",
+    "initial": "passed",
+    "revision": "passed",
+    "creditsCharged": 2,
+    "mapsPrivate": true
+  },
+  "gameplay": {
+    "reference": "marchland",
+    "generatorSeed": 101,
+    "importSeed": 19,
+    "gameSeed": 421,
+    "ticks": 30000,
+    "status": "completed",
+    "teams": [
+      {
+        "team": 0,
+        "alive": true,
+        "workers": 75,
+        "buildings": 20
+      },
+      {
+        "team": 1,
+        "alive": true,
+        "workers": 22,
+        "buildings": 26
+      },
+      {
+        "team": 2,
+        "alive": true,
+        "workers": 54,
+        "buildings": 19
+      },
+      {
+        "team": 3,
+        "alive": true,
+        "workers": 280,
+        "buildings": 28
+      }
+    ]
+  },
+  "platform": "macOS ARM64",
+  "simVersion": {
+    "dataHash": "11d035432aa0afce666a6ac473c1f828ab5a6b3a5ba0e75ae318b10eeb9dc901",
+    "netProtocol": 50,
+    "versionMinor": 127
+  },
+  "binarySha256": "7a7ef79add803b27c4c4cf29ffe7c1ab3d3d3db37b56821ac396670ebe2f7233",
+  "limits": [
+    "No live image-provider quality/cost qualification.",
+    "No live Stripe checkout/webhook qualification.",
+    "Compose configuration validated; Docker daemon unavailable for image startup.",
+    "No cross-platform checksum comparison or human multiplayer playtest.",
+    "Generation and sales disabled by default."
+  ]
+}
