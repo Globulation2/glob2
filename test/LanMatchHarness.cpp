@@ -16,6 +16,7 @@
 
 #include "EngineFixtures.h"
 #include "Environment.h"
+#include "ScopedEnvironment.h"
 
 #include <algorithm>
 #include <chrono>
@@ -526,7 +527,7 @@ TEST_SUITE("LanMatchHarness")
 	                "[network][slow][artifacts]")
 	{
 		glob2test::HeadlessGlobals globals(harnessGlobals());
-		GAGCore::setProcessEnvironment("GLOB2_LAN_ADDRESS", "127.0.0.1", 1);
+		glob2test::ScopedEnvironment address("GLOB2_LAN_ADDRESS", "127.0.0.1");
 		LanMatch m;
 		m.directory = glob2test::artifactDir() / "lan-match";
 		fs::remove_all(m.directory);
@@ -688,7 +689,7 @@ TEST_SUITE("LanMatchHarness")
 	GLOB2_TEST_CASE("LAN input delay on loopback and on emulated slower links", "[network][slow][benchmark][artifacts]")
 	{
 		glob2test::HeadlessGlobals globals(harnessGlobals());
-		GAGCore::setProcessEnvironment("GLOB2_LAN_ADDRESS", "127.0.0.1", 1);
+		glob2test::ScopedEnvironment address("GLOB2_LAN_ADDRESS", "127.0.0.1");
 		std::ostringstream table, stages;
 		table << "LAN input delay: time from a click (an order queued by the GUI at a random moment between "
 		         "frames) to its execution, host and one guest, FourSquares1 with one Nicowar AI, 25 s of play each.\n";
