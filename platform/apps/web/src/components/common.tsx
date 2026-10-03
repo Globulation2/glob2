@@ -63,10 +63,34 @@ export function ErrorNotice({ error }: { error: Error }) {
   );
 }
 
-/** Renders a Load<T>: spinner, error, or `children(data)`. */
-export function Loaded<T>({ load, children }: { load: Load<T>; children: (data: T) => ReactNode }) {
+/**
+ * Renders a Load<T>: spinner, error, or `children(data)`. A page-level load
+ * passes `page` (what the page shows, "Match") so a missing item still gets a
+ * page heading for screen readers and the tab title.
+ */
+export function Loaded<T>({
+  load,
+  children,
+  page,
+}: {
+  load: Load<T>;
+  children: (data: T) => ReactNode;
+  page?: string;
+}) {
   if (load.status === 'loading') return <Loading />;
-  if (load.status === 'error') return <ErrorNotice error={load.error} />;
+  if (load.status === 'error') {
+    if (!page) return <ErrorNotice error={load.error} />;
+    const notFound = load.error instanceof ApiError && load.error.status === 404;
+    return (
+      <>
+        <h1>{notFound ? `${page} not found` : `Could not load this ${page.toLowerCase()}`}</h1>
+        <ErrorNotice error={load.error} />
+        <p>
+          <Link to="/">Go to the home page</Link>
+        </p>
+      </>
+    );
+  }
   return <>{children(load.data)}</>;
 }
 
