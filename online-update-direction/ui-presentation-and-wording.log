@@ -1,0 +1,12 @@
+PASS OnlineWording/a pairing link's fingerprint becomes a short code (0.1s)
+PASS OnlineWording/menus read larger on big desktop windows that follow the desktop scale (0.1s)
+PASS OnlineWording/queue names, durations and estimates read the same everywhere (0.5s)
+PASS OnlineWording/an unrated search shows no ratings; a ranked one explains its range [display] (2.7s)
+PASS OnlineWording/an unserved version blames the side that is out of date [display] (2.8s)
+PASS OnlineWording/the room reads positively and hides seeds and pairing strings [display] (2.8s)
+PASS UIPresentation/every screen lays out; navigates and captures at small landscape across presentations and insets [display:1600x1400][artifacts][slow] (60.0s)
+PASS UIPresentation/every screen lays out; navigates and captures at small portrait across presentations and insets [display:1600x1400][artifacts][slow] (64.2s)
+PASS UIPresentation/every screen lays out; navigates and captures at tablet landscape across presentations and insets [display:1600x1400][artifacts][slow] (168.2s)
+
+9 passed, 0 failed, 0 skipped (301.5s of test time)
+[run_tests] JUnit report: /Users/bradley/glob2-claude/.claude/worktrees/bridge-cse_019WpmjG4JK4fR4XGhWYjnj8/artifacts/tests/junit.xml (9 cases)

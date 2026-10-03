@@ -1,0 +1,6 @@
+PASS glob2-unit-tests QuickMatch (9 cases) (0.1s)
+PASS glob2-unit-tests OnlineResources (5 cases) (0.1s)
+PASS glob2-unit-tests PlatformClient (24 cases) (0.1s)
+
+3 passed, 0 failed, 0 skipped (0.2s of test time)
+[run_tests] JUnit report: /Users/bradley/glob2-claude/.claude/worktrees/bridge-cse_019WpmjG4JK4fR4XGhWYjnj8/artifacts/tests/junit.xml (38 cases)
