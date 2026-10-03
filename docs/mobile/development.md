@@ -58,8 +58,9 @@ The game is playable with one thumb. A completed map tap arms one-finger zoom fo
 the next contact that lands within 300 ms of the release and 24 points of the tap.
 Dragging that contact vertically zooms about the point where it landed, doubling
 per 180 points of travel, with the factor shown above the finger; releasing it
-without travel restores 1:1 zoom there. A contact that sets off mostly sideways
-pans instead, so a quick tap followed by a pan still pans. The drag direction
+without travel doubles the current zoom there, capped at 3×. The tapped world
+point stays under the finger, including across map seams. A contact that sets off
+mostly sideways pans instead, so a quick tap followed by a pan still pans. The drag direction
 follows the platform's map app (Android: drag down zooms in; iOS and desktop:
 drag up zooms in) unless the One-finger zoom setting overrides it. A second finger,
 focus loss or rotation ends the gesture and keeps the zoom reached so far;
@@ -96,17 +97,29 @@ placement bar; corner-anchored components mirror through `ThumbSide`, never on
 their own.
 
 On compact layouts the building inspector is a thumb dial: concentric quarter
-rings centred on the thumb's bottom corner, assigned outward-in by presence —
-workers (0–20), then a swarm's unit ratio or a flag's range, then priority as three
-segments (Low at the bottom, High at the top). Sliders run from the toolbar end
-(zero) toward the top, stopping short of the screen edge, with − and + pads at
-their ends; a drag previews the value above the thumb and sends one order on
-release, and a thin ink arc on the worker ring shows who is assigned. Unit-type
-choices (which ratio the slider edits), clearing resources, flag requirements,
-repair/upgrade and Destroy (with its confirmation) are chips on the far side of
-the dial, Destroy lowest. The read-only identity header sits under the minimap in
-portrait and beside the dial in landscape. Rings shrink to fit small screens; the
-map stays visible and tappable between rings. `dialRegions()` is the single
+rings centred on the thumb's bottom corner. Their roles never move: workers
+(0–20) outside, production proportions or flag range in the middle, and priority
+inside (Low at the bottom, High at the top), even when a building has no middle
+control. Thinner bands, narrower gaps and a larger preferred radius move the
+controls away from the corner. Worker and range sliders have −/+ pads and commit
+once on release; a thin ink arc shows assigned workers.
+
+Swarm production is one arc divided into worker, explorer and warrior shares.
+Drag either white divider to transfer share between its neighbors. The two grips
+are staggered across the band so a zero-width share remains recoverable. All
+three percentages are visible in a read-only color legend and sum to 100%.
+An edit rounds the initial weights to 16 total parts (largest remainder rounding)
+and preserves that total; the unchanged third share retains its rounded value.
+A stationary touch does nothing. Dragging previews locally and sends one existing
+swarm-ratio order on release; interruption or release away from the ring cancels.
+Pause sets all three weights to zero; pressing it again resumes worker-only
+production, or dragging a divider establishes a new mix.
+
+Clearing resources, flag requirements, repair/upgrade and Destroy are action
+chips beside the dial, Destroy lowest. The read-only identity header sits under
+the minimap in portrait and beside the dial in landscape. Rings shrink to fit
+small screens; the map stays visible and is tappable outside the controls. Thin bands retain
+expanded touch areas, with the nearest band winning where targets overlap. `dialRegions()` is the single
 source for drawing, hit testing, keyboard focus and the harness, and every change
 uses the same requests and orders as the Spacious row inspector, whose rows group
 production ratios side by side and share one set of action boxes for drawing, hit
@@ -162,7 +175,7 @@ that a drag out of the rail places a building rather than navigating back.
   reading pending values through `GameGUI::displayed*` and using shared request
   methods for allocation, priority, range, construction and destruction. Enemy
   and replay selections are read-only. Specialized controls share the same panel.
-  Slider drags (workers, and on the dial a unit ratio or flag range) own a local
+  Slider drags (workers, and on the dial production dividers or flag range) own a local
   allocation session and emit one command on release; a second contact, selection
   change, focus loss or rotation cancels the preview. `GameGUITouchDial.cpp` and
   `TouchDial.h` hold the dial's layout, regions and sector drawing.
@@ -212,8 +225,9 @@ strip and horizontally scrolling artwork palette. Terrain and Resources share
 brush operations; Buildings and Flags expose team and level beside the map.
 Individual artwork widgets are reused, never the composed desktop sidebar or
 its minimap. Done leaves the active tool and returns to object selection; Pan
-switches one-finger navigation. One-finger zoom, the 1:1 reset and held paint
-taps behave as in gameplay; taps that place buildings or units never arm zoom.
+switches one-finger navigation. One-finger zoom dragging and held paint taps
+behave as in gameplay. In the editor, a double tap without travel still resets
+to 1:1 zoom; taps that place buildings or units never arm zoom.
 Brush tools use the same rail as zone painting (Paint/Erase only where it applies,
 Pan, sizes). Zone, script-area and no-growth strokes offer Undo for six seconds,
 restoring the covered tiles and displayed zone bits exactly; terrain, resource

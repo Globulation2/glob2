@@ -590,8 +590,9 @@ For timing and scheduling, start with `src/Game_sync.cpp` and `src/EngineRun.cpp
   for a historical serialized length. Save floor 58 remains unchanged.
   Warrush probes one capacity slot every two ticks (32 ticks for sixteen slots).
   Empty slots fall through to normal decisions, preserving smaller-match timing.
-  Replay floor 127 and network/YOG protocol 50 gate the new capacity and counted
-  state; older saves load into the current simulation.
+  Replay floor 127 gates the new capacity; network/YOG protocol 51 additionally
+  requires the format-128 compact save reader. Older saves load into the current
+  simulation.
 - Versioning rule: when the save format changes, bump `VERSION_MINOR` and preserve
   older saves through version-gated loading, or explicitly document an approved
   compatibility break. When simulation changes invalidate old replays or mixed-client
@@ -841,7 +842,9 @@ also remains the headless default and the equivalence reference.
   for code shared by threads; add boundaries in `.github/scripts/ci_policy.py`
   when new code becomes shared between them. Drafts defer it. It does not report thread leaks, because SDL3
   leaves its own startup threads unjoined at exit, and uses the dummy audio driver, because
-  PulseAudio's uninstrumented mainloop thread reports races inside libpulse.
+  PulseAudio's uninstrumented mainloop thread reports races inside libpulse. Narrow, explained suppressions for
+  library shutdown races live in `test/tsan.supp`; never suppress game code there.
+  Draft PRs skip it.
 - `SceneBuffer<T>` (`src/scene/SceneBuffer.h`) hands Scenes between the threads without
   either waiting for the other.
 
@@ -1215,12 +1218,25 @@ headers or simulation state. Filename-based custom and campaign initialization
 reuse one validated input for both headers and the body, then release it before
 replay/network setup. Standalone header readers retain their existing interfaces.
 
-Manual/headless saves and autosaves serialize into the same chunked storage;
-header backpatches and deferred SHA1 operate on ranges without flattening it.
-Normal gzip compression uses bounded 256 KiB output buffers without flushing at
-input-block boundaries. Optional level-zero compression retains the legacy
-whole-buffer path to preserve zlib's stored-block byte layout; it is outside the
-normal-save memory bound. Save/replay/network version gates are unchanged.
+Interactive saves capture owned literals and bounded array/history batches at a
+consistent game boundary. A lightweight fixed integer representation bounds the
+capture memory; final array encoding and history transposition run on the worker.
+Final output uses chunked storage, with relocated header offsets and SHA1 ranges;
+headless callers can still serialize synchronously without changing saved bytes.
+A captured `DeferredStream::Snapshot` is consumed once: finalization releases its
+owned inputs as their output is produced. Append deferred fields in stream order;
+seeks may only backpatch fixed-size literals. Serialize stream positions with
+`OutputStream::writeOffset32`, which explicitly registers relocation on deferred
+streams and writes an ordinary uint32 on binary/text streams. Field names do not
+control relocation. SHA1 still covers the original header followed by the final
+body, preserving the existing pre-backpatch hash contract.
+
+Worker gzip compression uses bounded 256 KiB output buffers; cooperative gzip
+uses 64 KiB input/output steps. Neither flushes at input-block boundaries.
+Optional level-zero compression retains the legacy whole-buffer path to preserve
+zlib's stored-block byte layout; it is outside the normal-save memory bound.
+Background finalization does not add a wire-format change beyond compact format
+128 (save floor 58, replay floor 127, network/YOG protocol 51).
 
 For the 45,000-tick large-map fixture, the native macOS arm64 comparison measured
 1.93 GiB peak RSS for combined loading and saving, down from 3.96 GiB in the
@@ -1229,10 +1245,25 @@ default compression. This is a fixture-specific measurement, not a bound for
 arbitrary games or other platforms; preserve the commands, fixture hashes and
 raw measurements under ignored `artifacts/` when repeating it.
 
-Autosave waits for the previous writer before capturing a new snapshot at the
-current tick. Hashing and compression remain on the worker, which releases the
-snapshot before publishing idle. When writes fall behind, this can pause play;
-it prevents overlap of active, queued and newly captured autosave snapshots.
+Autosave defers capture while a previous writer is busy, then captures the current
+tick when the writer becomes idle. It never queues a second owned snapshot or
+waits for compression during a game tick. Manual game and editor saves keep their
+dialog pending while waiting for the worker, writing the file, and persisting
+browser storage; names and editor dirty state change only after success. Editor
+mutation is disabled while saving. A pending save dialog cannot be replaced by
+another panel. Normal session exit stops simulation and keeps presenting frames
+and polling the dialog through queued capture, file writing and browser storage
+completion. A failed save remains actionable for retry/export or cancellation;
+exiting does not silently discard that dialog.
+
+Native and threaded-browser jobs finalize arrays, transpose histories, hash,
+compress and replace files on the worker. Threadless builds advance bounded
+encoding and compression steps with a two-millisecond polling budget (individual
+steps can exceed the budget); snapshot capture still occurs synchronously.
+Worker-start failures fail the save rather than running encoding synchronously.
 Allocation, serialization and worker-finalization failures retain the previous
-file and allow subsequent writes. Other background string writers still keep
-the newest queued snapshot.
+file and allow subsequent writes. Browser persistence occurs after local atomic
+replacement: if it fails, the new local file remains available for export while
+the previously persisted browser copy remains intact. A retry creates a new save
+operation; each operation's terminal state is sticky and its success callback
+runs once. Other background string writers still keep the newest queued snapshot.

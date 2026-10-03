@@ -74,7 +74,7 @@ jobs:
       - name: Headless game on the simulation thread
         env:
           GLOB2_SIM_THREAD: '1'
-          TSAN_OPTIONS: halt_on_error=1 exitcode=66 second_deadlock_stack=1
+          TSAN_OPTIONS: halt_on_error=1 exitcode=66 second_deadlock_stack=1 suppressions=${{ github.workspace }}/test/tsan.supp
         run: |
           mkdir -p artifacts/tsan
           build/tsan/src/glob2 --run-game --map-file "$PWD/maps/balanced.map.gz" --game-seed 7 \
@@ -91,7 +91,7 @@ jobs:
           SDL_AUDIODRIVER: dummy
           # SDL3 leaves threads it created during startup unjoined at exit; that
           # is not a race between the game's threads, so thread leaks are not reported.
-          TSAN_OPTIONS: halt_on_error=1 exitcode=66 second_deadlock_stack=1 report_thread_leaks=0
+          TSAN_OPTIONS: halt_on_error=1 exitcode=66 second_deadlock_stack=1 report_thread_leaks=0 suppressions=${{ github.workspace }}/test/tsan.supp
         run: |
           mkdir -p artifacts/tsan
           xvfb-run -a -s '-screen 0 1280x1024x24' \

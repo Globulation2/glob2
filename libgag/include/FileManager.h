@@ -4,6 +4,7 @@
 #pragma once
 
 #include "GAGSys.h"
+#include <CooperativeTask.h>
 #include <vector>
 #include <fstream>
 #include <string>
@@ -86,6 +87,9 @@ namespace GAGCore
 		//! level always produce identical bytes on every platform.
 		bool writeGzipAtomic(const std::string& filename, const std::string& contents, int level = 6);
 		bool writeGzipAtomic(const std::string& filename, const ChunkedBuffer& contents, int level = 6);
+        // Cooperative normal-save encoder: level 6, byte-identical to writeGzipAtomic
+        // at that level. Bounded steps never flatten the owned input buffer.
+        CooperativeTask writeGzipTask(std::string filename, const ChunkedBuffer& contents);
 		//! Serializes through writer into chunked memory first (so seek-based backpatching
 		//! works exactly as it does for uncompressed output), then gzip-compresses
 		//! and atomically replaces filename with the result.

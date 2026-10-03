@@ -35,6 +35,8 @@ class GameSessionScreen : public GAGGUI::Screen
 	std::unique_ptr<Engine> engine;
 	GAGCore::EventQueue input;
 	bool started = false, finished = false, resetClock = false;
+	// Once simulation ends, keep the save dialog alive through durable persistence.
+	bool finishingSession = false;
 	Uint32 lastTick = 0;
 	//! Host tick at which the last threaded frame started (frame-rate cap).
 	Uint32 frameStarted = 0;

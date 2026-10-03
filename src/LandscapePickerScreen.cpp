@@ -424,54 +424,14 @@ Element LandscapePickerScreen::tile(int i, const Presentation &p, bool compact)
 	{
 		auto *widget = tileState.widget;
 		widget->markerSize = compact ? 12 : 14;
-		fe::CanvasOptions options;
-		options.pointer = [this, widget, i](fe::PointerPhase phase, fe::Point local, fe::Host &)
-		{
-			// Image presses select; drags pan the preview. A drag never launches a choice.
-			SDL_Event event{};
-			const fe::Point at{widget->getLeft() + local.x, widget->getTop() + local.y};
-			if (phase == fe::PointerPhase::Down)
-			{
-				if (i != selected)
-				{
-					selected = i;
-					reveal = false;
-					invalidate();
-				}
-				event.type = SDL_EVENT_MOUSE_BUTTON_DOWN;
-				event.button.button = SDL_BUTTON_LEFT;
-				event.button.x = at.x;
-				event.button.y = at.y;
-			}
-			else if (phase == fe::PointerPhase::Move)
-			{
-				event.type = SDL_EVENT_MOUSE_MOTION;
-				event.motion.state = SDL_BUTTON_LMASK;
-				event.motion.x = at.x;
-				event.motion.y = at.y;
-			}
-			else if (phase == fe::PointerPhase::Up)
-			{
-				event.type = SDL_EVENT_MOUSE_BUTTON_UP;
-				event.button.button = SDL_BUTTON_LEFT;
-				event.button.x = at.x;
-				event.button.y = at.y;
-			}
-			else
-			{
-				widget->cancelDrag();
-				return;
-			}
-			widget->handlePreviewEvent(&event);
-		};
+		// Passive images let the card handle taps and the grid handle swipes.
 		picture = fe::canvas("landscape/image/" + std::to_string(i), {image, image},
 							 [widget](fe::Canvas &c, fe::Rect r, const fe::Frame &)
 							 {
 								 widget->setScreenRectangle(r.x, r.y, r.w, r.h);
 								 if (auto *surface = c.surface()) // null on a recording canvas
 									 widget->paint(surface);
-							 },
-							 options);
+							 });
 		note = std::to_string(widget->getLastWidth()) + " x " + std::to_string(widget->getLastHeight()) + "  /  " +
 			   std::to_string(widget->starts.size()) + " " + tr("colonies");
 	}

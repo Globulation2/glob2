@@ -16,6 +16,10 @@ concurrency:
   cancel-in-progress: false
 jobs:
   measure:
+    # Cancelled (usually superseded) builds are excluded from comparisons, so
+    # do not spend a runner measuring them. Each remaining run measures a
+    # distinct build, so this workflow has no cancelling concurrency group.
+    if: ${{ github.event.workflow_run.conclusion != 'cancelled' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
