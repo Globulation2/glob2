@@ -150,8 +150,10 @@ export async function hiveRoutes(app: FastifyInstance) {
           'credits',
           'Your commander needs more credits. Standing orders remain active.',
         );
-      commander?.stop(s.id);
-      if (await sessions.command(s.id, command.id, command.text, command.ongoing)) launch(s.id);
+      if (await sessions.command(s.id, command.id, command.text, command.ongoing)) {
+        commander?.stop(s.id);
+        launch(s.id);
+      }
       return { accepted: true };
     }),
   );

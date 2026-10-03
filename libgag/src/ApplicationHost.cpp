@@ -78,6 +78,9 @@ bool exportFile(const std::string &, const std::vector<unsigned char> &)
 }
 #endif
 bool storageRestoreFailed() { return false; }
+// Native and mobile builds ship every data file with the application.
+bool assetPackageReady(const char *) { return true; }
+std::vector<std::string> takeInstalledAssetPackages() { return {}; }
 
 namespace
 {

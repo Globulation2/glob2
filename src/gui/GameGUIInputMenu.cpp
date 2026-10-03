@@ -54,7 +54,7 @@ void GameGUI::openMainMenu()
 {
 	auto menu = std::make_unique<InGameMainScreen>(globalContainer->replaying, !globalContainer->isViewingGame(), gamePaused);
 	menu->setNetworked(networkMatch.active);
-	menu->setHiveMind(hive && hive->available());
+	// Commander is opened from its shortcut, not the game menu.
 	openDialog(IGM_MAIN, std::move(menu));
 }
 
@@ -81,9 +81,20 @@ void GameGUI::openChat()
 		typingInputScreen->attach(*globalContainer->gfx);
 }
 
+void GameGUI::openCommander()
+{
+ if(!hive || !hive->available() || !globalContainer->settings.hiveMindEnabled || typingInputScreen)return;
+ if(touch)touch->cancel(true);
+ typingCommander=true;
+ typingInputScreen=std::make_unique<InGameTextInput>(true);
+ typingInputScreen->setText(hive->commandDraft);
+ if(!globalContainer->runNoX)typingInputScreen->attach(*globalContainer->gfx);
+}
+
 void GameGUI::closeChat()
 {
 	typingInputScreen.reset();
+	typingCommander=false;
 }
 
 void GameGUI::toggleHistory()

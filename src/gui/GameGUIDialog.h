@@ -175,7 +175,7 @@ class InGameOptionScreen : public Glob2UI::InGameDialog
 class InGameTextInput : public Glob2UI::InGameDialog
 {
   public:
-	InGameTextInput();
+	explicit InGameTextInput(bool commander = false);
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
 	std::string getText() const { return text; }
 	void setText(const std::string &value)
@@ -193,6 +193,7 @@ class InGameTextInput : public Glob2UI::InGameDialog
 
   private:
 	std::string text;
+	bool commander = false;
 };
 
 ///This screen shows the current objectives of the mission, a mission briefing, and

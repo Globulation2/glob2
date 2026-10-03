@@ -12,8 +12,10 @@ test('Hive worker matches native results and rejects forbidden capabilities',asy
   'function step(){return {output:fetch("https://example.com")}}',
   'function step(){while(true){}}',
  ];
- for(const source of cases){
-  const input={source,snapshot};
+ // Malformed snapshots/types exercise C++ exception recovery in the isolated
+ // runtime as well as ordinary JavaScript failures and resource exhaustion.
+ for(const input of [...cases.map(source=>({source,snapshot})),
+  {source:cases[0],snapshot:{}},{source:42,snapshot}]){
   const web=await page.evaluate(input=>new Promise((resolve,reject)=>{
    const worker=new Worker('/hive-worker.js');const timer=setTimeout(()=>{worker.terminate();reject(new Error('Worker deadline'));},10000);
    worker.onmessage=e=>{clearTimeout(timer);worker.terminate();resolve(e.data)};
