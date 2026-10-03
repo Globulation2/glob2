@@ -3,8 +3,7 @@
 This policy applies to the Amazon Appstore edition of Globulation 2
 (`org.globulation2.glob2`) for Fire tablets. It is published by Bradley Arsenault,
 a sole proprietor, 349 Wheat Boom Drive, Unit 346, Oakville, Ontario L6H 7X5,
-Canada. For privacy questions, contact **[PLACEHOLDER: privacy contact e-mail
-address]** or write to that address.
+Canada. For privacy questions, contact **bradley.allen.arsenault@gmail.com** or write to that address.
 
 Last updated: 3 October 2026.
 

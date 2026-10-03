@@ -8,7 +8,7 @@ Fire tablets has no online play and its own
 
 The online service is operated by Bradley Arsenault, a sole proprietor, 349 Wheat
 Boom Drive, Unit 346, Oakville, Ontario L6H 7X5, Canada ("we"). For privacy
-questions and requests, contact **[PLACEHOLDER: privacy contact e-mail address]**
+questions and requests, contact **bradley.allen.arsenault@gmail.com**
 or write to that address.
 
 Last updated: 3 October 2026.
