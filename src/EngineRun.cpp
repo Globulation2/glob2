@@ -284,8 +284,14 @@ void Engine::drawFrame(MainLoopState& st)
 		PerformanceTelemetry::collector().presented();
 	}
 
+	if (renderedFrame)
+		saveVideoshot(st);
+}
+
+void Engine::saveVideoshot(MainLoopState& st)
+{
 	// if required, save videoshot
-	if (renderedFrame && !(globalContainer->videoshotName.empty()) &&
+	if (!(globalContainer->videoshotName.empty()) &&
 		!(globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)
 		)
 	{
@@ -293,7 +299,6 @@ void Engine::drawFrame(MainLoopState& st)
 		printf("printing video shot %s\n", fileName.c_str());
 		globalContainer->gfx->printScreen(fileName.c_str());
 	}
-
 }
 
 void Engine::drawSession()
@@ -310,12 +315,14 @@ void Engine::drawSession()
     if (!scene)
         return;
     gui.setPublishedScene(scene);
+    GAGCore::ApplicationHost::matchFrame(gui.gamePaused);
     gui.drawAll(gui.localTeamNo);
     {
         PERF_SCOPE_TIME(Present);
         globalContainer->gfx->nextFrame();
     }
     PerformanceTelemetry::collector().presented();
+    saveVideoshot(*session);
 }
 
 bool Engine::startSimulationThread(Uint64 now)
@@ -345,6 +352,8 @@ void Engine::stopSimulationThread()
 {
     if (!runner) return;
     runner->stop();
+    // The simulation's measurements since the last client frame.
+    PerformanceTelemetry::collector().absorb(runner->telemetry);
     runner.reset();
     gui.simulationThreaded = false;
     gui.setPublishedScene(nullptr);
@@ -358,7 +367,7 @@ bool Engine::threadedClientFrame(Uint64 now, const std::vector<SDL_Event>& event
     publishSessionClock(now);
     runner->rethrowFailure();
     if (gui.isRunning)
-        runner->withGame([&] { clientStep(events); });
+        runner->withGame([&] { clientStep(events); absorbSimulationTelemetry(); });
     runner->rethrowFailure();
     return gui.isRunning && !runner->ended();
 }
@@ -841,25 +850,43 @@ void Engine::clientStep(const std::vector<SDL_Event>& events)
     handleExitRequest();
 }
 
+void Engine::configureSessionTelemetry(MainLoopState& st, PerformanceTelemetry::Collector& perf)
+{
+	const bool paused = gui.gamePaused || gui.hardPause;
+	const int renderRatio = paused ? 1
+							: (globalContainer->replaying && globalContainer->replayFastForward)
+								? REPLAY_FAST_FORWARD_DRAW_RATIO
+							: st.adjustableGameSpeed
+								? globalContainer->settings.getGameSpeedRenderInterval()
+								: 1;
+	const auto budget = globalContainer->runNoX ? 0ULL : std::uint64_t(st.speed) * 1000000ULL;
+	// Threaded drawing presents every display frame; budget it against 60 Hz.
+	const auto frameBudget = gui.simulationThreaded ? 16666667ULL : budget * renderRatio;
+	perf.configure(gui.game.stepCounter, budget, frameBudget,
+				   paused                       ? "paused"
+				   : globalContainer->runNoX    ? "headless"
+				   : globalContainer->replaying ? "replay"
+				   : !st.wasReadyLastTick       ? "waiting"
+												: "live");
+}
+
+void Engine::absorbSimulationTelemetry()
+{
+	auto &perf = PerformanceTelemetry::collector();
+	perf.absorb(runner->telemetry);
+	configureSessionTelemetry(*session, perf);
+	perf.capture(gui.game.stepCounter);
+}
+
 bool Engine::advanceSession(Uint64 now, const std::function<void()>& clientWork, bool handleExit)
 {
     auto& st = *session;
     updateTickSpeedAndDrawCadence(st, now);
     auto &perf = PerformanceTelemetry::collector();
-		const bool paused = gui.gamePaused || gui.hardPause;
-		const int renderRatio = paused ? 1
-								: (globalContainer->replaying && globalContainer->replayFastForward)
-									? REPLAY_FAST_FORWARD_DRAW_RATIO
-								: st.adjustableGameSpeed
-									? globalContainer->settings.getGameSpeedRenderInterval()
-									: 1;
-		const auto budget = globalContainer->runNoX ? 0ULL : std::uint64_t(st.speed) * 1000000ULL;
-		perf.configure(gui.game.stepCounter, budget, budget * renderRatio,
-					   paused                       ? "paused"
-					   : globalContainer->runNoX    ? "headless"
-					   : globalContainer->replaying ? "replay"
-					   : !st.wasReadyLastTick       ? "waiting"
-													: "live");
+		// Threaded, the main thread configures and captures the session collector
+		// after absorbing this thread's window (absorbSimulationTelemetry).
+		if (!gui.simulationThreaded)
+			configureSessionTelemetry(st, perf);
 		PerformanceTelemetry::Scope loopTime(PerformanceTelemetry::Id::Loop);
 		PerformanceTelemetry::Scope workTime(PerformanceTelemetry::Id::Work);
 
@@ -872,7 +899,10 @@ bool Engine::advanceSession(Uint64 now, const std::function<void()>& clientWork,
             gui.isRunning = false;
         gatherAndAdvanceOrders(st.wasReadyLastTick);
         readyNow = net->allOrdersReceived();
+        const Uint32 tickBefore = gui.game.stepCounter;
         executeOrdersAndStep(readyNow);
+        if (gui.game.stepCounter != tickBefore)
+            gui.recordTick(SDL_GetTicks(), Uint32(st.speed));
     }
     if (globalContainer->automaticEndingGame && (int)gui.game.stepCounter == sessionEndingTarget) {
         gui.isRunning = false;
@@ -896,7 +926,8 @@ bool Engine::advanceSession(Uint64 now, const std::function<void()>& clientWork,
     if (handleExit) handleExitRequest();
     workTime.stop();
     loopTime.stop();
-    perf.capture(gui.game.stepCounter);
+    if (!gui.simulationThreaded)
+        perf.capture(gui.game.stepCounter);
     return gui.isRunning;
 }
 

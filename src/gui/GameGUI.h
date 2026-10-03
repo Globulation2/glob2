@@ -255,6 +255,9 @@ public:
 	void threadedClientStep(const std::vector<SDL_Event>& events, Uint64 now);
 	/// True while the simulation runs on its own thread.
 	bool simulationThreaded = false;
+	/// When the latest tick finished and the interval to the next (ms; 0 = uncapped),
+	/// recorded by the engine next to the simulation and copied into extracted Scenes.
+	void recordTick(Uint64 time, Uint32 interval) { lastTickTime = time; tickInterval = interval; }
 	/// Water and cloud animation phase of this GUI's map view (presentation only).
 	int mapAnimationTime() const { return view.render.animationTime; }
 	friend class Game;
@@ -733,6 +736,8 @@ private:
 	Game::ViewState view;
 	///The scene drawn this frame, extracted from `game` at the start of drawAll.
 	Scene frameScene;
+	Uint64 lastTickTime = 0;
+	Uint32 tickInterval = 0;
 	///Scene published by the simulation thread, or null when drawAll extracts
 	///frameScene itself (serial execution).
 	const Scene* publishedScene = nullptr;
