@@ -255,7 +255,7 @@ class GameGUITouch
 	GAGCore::ViewPoint touchStart{}, touchPoint{};
 	bool touchTravelled = false;
 	bool zoomTapArmed(Uint32 ticks, GAGCore::ViewPoint point) const;
-	bool resetZoom(GAGCore::ViewPoint point);
+	bool zoomIn(GAGCore::ViewPoint point);
 	std::string zoomReadout() const;
 	std::vector<std::pair<SDL_TouchID, SDL_FingerID>> fingers;
 	bool touchActive = false, interfaceGesture = false, dispatching = false;
