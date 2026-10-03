@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:ValidateMapResult",
+  "title": "ValidateMapResult",
+  "anyOf": [
+    {
+      "type": "object",
+      "required": [
+        "valid",
+        "mapHash",
+        "map",
+        "versionMinor"
+      ],
+      "properties": {
+        "valid": {
+          "type": "boolean",
+          "const": true
+        },
+        "mapHash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "Lowercase hexadecimal SHA-256 digest."
+        },
+        "map": {
+          "type": "object",
+          "required": [
+            "width",
+            "height",
+            "teamCount"
+          ],
+          "properties": {
+            "width": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "height": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "teamCount": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 12
+            }
+          }
+        },
+        "versionMinor": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Format version the file was saved with."
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 128
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "valid",
+        "reason"
+      ],
+      "properties": {
+        "valid": {
+          "type": "boolean",
+          "const": false
+        },
+        "reason": {
+          "type": "string",
+          "maxLength": 2000
+        }
+      }
+    }
+  ]
+}

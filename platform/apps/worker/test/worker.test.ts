@@ -1,0 +1,108 @@
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { createTestDatabase, type TestDatabase } from '@glob2/db/testing';
+import { createLogger } from '@glob2/core';
+import { runMaintenance } from '../src/maintenance.ts';
+import { runScheduler } from '../src/scheduler.ts';
+
+const SIM = `125-49-${'ab'.repeat(32)}`;
+let database: TestDatabase;
+
+beforeAll(async () => {
+  database = await createTestDatabase();
+});
+
+afterAll(async () => {
+  await database?.drop();
+});
+
+describe('maintenance', () => {
+  it('expires stale sign-ins and queue tickets and purges old refresh tokens', async () => {
+    const db = database.db;
+    const account = await db
+      .insertInto('accounts')
+      .values({ kind: 'guest', display_name: 'Guest 1' })
+      .returning('id')
+      .executeTakeFirstOrThrow();
+    const other = await db
+      .insertInto('accounts')
+      .values({ kind: 'guest', display_name: 'Guest 2' })
+      .returning('id')
+      .executeTakeFirstOrThrow();
+    const hour = 3_600_000;
+    await db
+      .insertInto('signin_attempts')
+      .values([
+        { confirmation_code: 'OLD111', expires_at: new Date(Date.now() - hour) },
+        { confirmation_code: 'NEW222', expires_at: new Date(Date.now() + hour) },
+      ])
+      .execute();
+    await db
+      .insertInto('queue_tickets')
+      .values([
+        {
+          queue_id: 'q',
+          account_id: account.id,
+          sim_version: SIM,
+          created_at: new Date(Date.now() - 2 * hour),
+        },
+        { queue_id: 'q', account_id: other.id, sim_version: SIM },
+      ])
+      .execute();
+    await db
+      .insertInto('refresh_tokens')
+      .values([
+        {
+          account_id: account.id,
+          family_id: crypto.randomUUID(),
+          token_hash: '11'.repeat(32),
+          expires_at: new Date(Date.now() - 40 * 24 * hour),
+        },
+        {
+          account_id: account.id,
+          family_id: crypto.randomUUID(),
+          token_hash: '22'.repeat(32),
+          expires_at: new Date(Date.now() - 24 * hour),
+        },
+      ])
+      .execute();
+
+    expect(await runMaintenance(db)).toEqual({
+      expiredSigninAttempts: 1,
+      expiredQueueTickets: 1,
+      deletedRefreshTokens: 1,
+    });
+    expect(await runMaintenance(db)).toEqual({
+      expiredSigninAttempts: 0,
+      expiredQueueTickets: 0,
+      deletedRefreshTokens: 0,
+    });
+  });
+});
+
+describe('scheduler', () => {
+  it('repeats tasks until aborted and survives failures', async () => {
+    const controller = new AbortController();
+    let ok = 0;
+    let failing = 0;
+    const done = runScheduler(
+      [
+        { name: 'ok', intervalMs: 10, run: async () => ok++ },
+        {
+          name: 'failing',
+          intervalMs: 10,
+          run: async () => {
+            failing++;
+            throw new Error('boom');
+          },
+        },
+      ],
+      controller.signal,
+      createLogger('test', 'silent'),
+    );
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    controller.abort();
+    await done;
+    expect(ok).toBeGreaterThan(2);
+    expect(failing).toBeGreaterThan(2);
+  });
+});

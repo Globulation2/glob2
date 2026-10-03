@@ -1,3 +1,4 @@
+#include "FileFormatVersions.h"
 #include "AIMaximaContinuation.h"
 #include "AIMaximaPlacementContinuation.h"
 /* Maxima deterministic development and placement planner. */
@@ -3472,6 +3473,40 @@ template<class Archive> void Planner::executionState(Archive& a)
 	a("scoringReservedGeneration",scoringReservedGeneration);
 	a("scoringAffectedGeneration",scoringAffectedGeneration);
 	a("scoringBlockedNeighbors",scoringBlockedNeighbors);
+    if(a.compact())
+    {
+        a("scoringNeighborhoodWidth",scoringNeighborhoodWidth);
+        a("scoringNeighborhoodHeight",scoringNeighborhoodHeight);
+        const bool dimensions=scoringNeighborhoodWidth>0 && scoringNeighborhoodHeight>0 &&
+            uint64_t(scoringNeighborhoodWidth)*scoringNeighborhoodHeight<=16777216u/9;
+        // Wire tags: 0 absent, 1 exact canonical geometry, 2 explicit contents.
+        // Only exact equality permits reconstruction; stale/custom tables survive.
+        unsigned mode=0;
+        if constexpr(std::is_same_v<Archive,AIMaximaContinuation::Writer>)
+        {
+            if(scoringNeighborhoodCache)
+            {
+                mode=2;
+                if(dimensions && scoringNeighborhoodCache->size()==size_t(scoringNeighborhoodWidth)*scoringNeighborhoodHeight*9 &&
+                   *scoringNeighborhoodCache==*neighborhoodTable(scoringNeighborhoodWidth,scoringNeighborhoodHeight)) mode=1;
+            }
+        }
+        a("neighborhoodEncoding",mode);
+        if(mode>2 || (mode==1 && !dimensions)) throw std::runtime_error("Invalid neighborhood table");
+        if constexpr(std::is_same_v<Archive,AIMaximaContinuation::Reader>)
+        {
+            if(mode==0) scoringNeighborhoodCache.reset();
+            else if(mode==1) scoringNeighborhoodCache=neighborhoodTable(scoringNeighborhoodWidth,scoringNeighborhoodHeight);
+            else
+            {
+                std::vector<int> table; a("scoringNeighborhoodCache",table);
+                scoringNeighborhoodCache=std::make_shared<const std::vector<int>>(std::move(table));
+            }
+        }
+        else if(mode==2) a("scoringNeighborhoodCache",*scoringNeighborhoodCache);
+    }
+    else
+    {
 	// Retain the legacy vector encoding, including empty/uninitialized state.
 	std::vector<int> emptyNeighborhood;
 	if constexpr(std::is_same_v<Archive,AIMaximaContinuation::Reader>)
@@ -3482,6 +3517,7 @@ template<class Archive> void Planner::executionState(Archive& a)
 	else a("scoringNeighborhoodCache",scoringNeighborhoodCache ? *scoringNeighborhoodCache : emptyNeighborhood);
 	a("scoringNeighborhoodWidth",scoringNeighborhoodWidth);
 	a("scoringNeighborhoodHeight",scoringNeighborhoodHeight);
+    }
 	a("scoringReservedScratch",scoringReservedScratch);
 	a("scoringAffectedScratch",scoringAffectedScratch);
 	a("scoringGeneration",scoringGeneration);
@@ -3509,14 +3545,14 @@ template<class Archive> void Planner::executionState(Archive& a)
 void Planner::saveExecutionState(GAGCore::OutputStream* stream) const
 {
     stream->writeEnterSection("PlacementExecution95");
-    AIMaximaContinuation::Writer archive(stream);
+    AIMaximaContinuation::Writer archive(stream,true);
     const_cast<Planner*>(this)->executionState(archive);
     stream->writeLeaveSection();
 }
-void Planner::loadExecutionState(GAGCore::InputStream* stream,int)
+void Planner::loadExecutionState(GAGCore::InputStream* stream,int versionMinor)
 {
     stream->readEnterSection("PlacementExecution95");
-    AIMaximaContinuation::Reader archive(stream);
+    AIMaximaContinuation::Reader archive(stream,versionMinor>=FILE_FORMAT_VERSION_COMPACT_STATE);
     executionState(archive);
     if(scoringNeighborhoodCache && !scoringNeighborhoodCache->empty()
        && scoringNeighborhoodWidth>0 && scoringNeighborhoodHeight>0

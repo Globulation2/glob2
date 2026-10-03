@@ -1,0 +1,26 @@
+{
+  "jobId": "9f8e7d6c-5b4a-4392-8170-6f5e4d3c2b1a",
+  "kind": "generate-map",
+  "simVersion": {
+    "versionMinor": 125,
+    "netProtocol": 49,
+    "dataHash": "3f9a6c1e8b2d47a05e6f1c2b3a4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f"
+  },
+  "payload": {
+    "generator": {
+      "generatorId": "even-ground",
+      "revision": 3,
+      "params": {
+        "width": 7,
+        "height": 7,
+        "teams": 4,
+        "workers": 4,
+        "wheat": 100,
+        "wood": 120
+      },
+      "seed": 987654321,
+      "candidates": 5,
+      "startingUnitLevel": 0
+    }
+  }
+}

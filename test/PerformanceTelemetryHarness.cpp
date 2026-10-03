@@ -5,6 +5,7 @@
 #include <PerformanceTelemetry.h>
 #include <cmath>
 #include <sstream>
+#include <thread>
 using namespace PerformanceTelemetry;
 static std::uint64_t timeNs;
 static unsigned clockReads;
@@ -131,5 +132,61 @@ TEST_CASE("moments; nesting; work/sleep/present separation; budgets; jitter; sam
 	MESSAGE("Collector bytes: " << sizeof(Collector));
 	c.reset();
 	c.clock = originalClock;
+}
+TEST_CASE("a bound simulation collector is absorbed with thread attribution, actors and budget")
+{
+	auto &main = collector();
+	const auto originalClock = main.clock;
+	main.clock = fakeClock;
+	timeNs = 1000;
+	main.reset();
+	main.output = false;
+	main.configure(0, 5, 16, "live");
+	Collector simulation;
+	simulation.clock = fakeClock;
+	simulation.reset();
+	// The simulation thread records into the collector bound for it.
+	std::thread([&] {
+		bindCollector(&simulation);
+		REQUIRE(&collector() == &simulation);
+		const int ai = collector().actor(1, 1, 2, 0);
+		{
+			Scope work(Id::Work);
+			Scope tick(Id::Tasks, ai);
+			timeNs += 7;
+		}
+		bindCollector(nullptr);
+	}).join();
+	REQUIRE(&collector() == &main);
+	{
+		Scope draw(Id::Present);
+		timeNs += 2;
+	}
+	main.absorb(simulation);
+	CHECK(main.window[unsigned(Id::Tasks)].calls == 1);
+	CHECK(main.window[unsigned(Id::Work)].calls == 1);
+	CHECK(simulation.window[unsigned(Id::Tasks)].calls == 0);
+	CHECK(main.workBudget.exceeded == 0); // the simulation had no budget yet
+	CHECK(simulation.budgetNs == main.budgetNs);
+	REQUIRE(main.actorCount == 1);
+	CHECK((main.actors[0].player == 1 && main.actors[0].window.calls == 1));
+	CHECK(simulation.actors[0].window.calls == 0);
+	std::ostringstream out;
+	main.write(out, "TEST", 0, false);
+	CHECK(out.str().find("scope=simulation.tasks thread=simulation") != std::string::npos);
+	CHECK(out.str().find("scope=render.present thread=main") != std::string::npos);
+	// With the budget handed over, simulation work is judged against it.
+	std::thread([&] {
+		bindCollector(&simulation);
+		{
+			Scope work(Id::Work);
+			timeNs += 9;
+		}
+		bindCollector(nullptr);
+	}).join();
+	main.absorb(simulation);
+	CHECK(main.workBudget.exceeded == 1);
+	main.reset();
+	main.clock = originalClock;
 }
 }

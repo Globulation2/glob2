@@ -1,0 +1,111 @@
+name: thread sanitizer
+
+# ThreadSanitizer over the simulation thread and the main thread (input, GUI,
+# drawing from the extracted Scene). Nightly and on demand, and on pull
+# requests that touch the code the two threads share, so it does not add a
+# sanitizer build to every pull request.
+on:
+  workflow_call:
+    inputs:
+      revision:
+        type: string
+        default: ""
+  workflow_dispatch:
+
+
+permissions:
+  contents: read
+
+env:
+  GLOB2_DEV_MODE: isolated
+
+jobs:
+  tsan:
+    name: thread sanitizer (threaded games)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - name: Install dependencies
+        timeout-minutes: 15
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          sudo tee /etc/apt/apt.conf.d/80-ci-network >/dev/null <<'EOF'
+          Acquire::By-Hash "force";
+          Acquire::Retries "3";
+          Acquire::http::Timeout "30";
+          Acquire::https::Timeout "30";
+          EOF
+          sudo apt-get update -qq
+          sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+            ca-certificates git g++-13 python3 python3-venv scons pkg-config \
+            cmake libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev \
+            libvorbis-dev libogg-dev libspeex-dev \
+            libboost-dev libssl-dev \
+            zlib1g-dev libfribidi-dev libpcre3-dev \
+            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth
+
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.revision || github.sha }}
+
+      - uses: ./.github/actions/sdl3
+        with:
+          cc: gcc-13
+          cxx: g++-13
+      - name: Build pinned SDL3 dependencies
+        run: |
+          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+          echo "LD_LIBRARY_PATH=$PWD/build/sdl3-ci/prefix/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" >> "$GITHUB_ENV"
+
+      - name: Build glob2 with ThreadSanitizer
+        run: |
+          export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons CC=gcc-13 CXX=g++-13 -j$(nproc) release=0 server=0 \
+            --build=build/tsan \
+            CXXFLAGS='-g -fsanitize=thread' LINKFLAGS='-fsanitize=thread' \
+            build/tsan/src/glob2
+
+      # Newer runner kernels randomize more address bits than TSan's shadow
+      # memory layout accepts.
+      - name: Allow the ThreadSanitizer memory layout
+        run: sudo sysctl vm.mmap_rnd_bits=28
+
+      - name: Headless game on the simulation thread
+        env:
+          GLOB2_SIM_THREAD: '1'
+          TSAN_OPTIONS: halt_on_error=1 exitcode=66 second_deadlock_stack=1 suppressions=${{ github.workspace }}/test/tsan.supp
+        run: |
+          mkdir -p artifacts/tsan
+          build/tsan/src/glob2 --run-game --map-file "$PWD/maps/balanced.map.gz" --game-seed 7 \
+            --player maxima --player cortex --player warrush --player cabino --ticks 600 --replay true \
+            --output-dir "$PWD/artifacts/tsan/headless" > artifacts/tsan/headless.log 2>&1
+
+      - name: Windowed game (simulation thread, input and drawing)
+        env:
+          GLOB2_USER_DATA_DIR: ${{ runner.temp }}/tsan-profile
+          GLOB2_TEST_SEED: '5'
+          GLOB2_TEST_MAX_TICKS: '300'
+          # No PulseAudio: its uninstrumented mainloop thread reports races
+          # inside libpulse during audio startup, unrelated to the game threads.
+          SDL_AUDIODRIVER: dummy
+          # SDL3 leaves threads it created during startup unjoined at exit; that
+          # is not a race between the game's threads, so thread leaks are not reported.
+          TSAN_OPTIONS: halt_on_error=1 exitcode=66 second_deadlock_stack=1 report_thread_leaks=0 suppressions=${{ github.workspace }}/test/tsan.supp
+        run: |
+          mkdir -p artifacts/tsan
+          xvfb-run -a -s '-screen 0 1280x1024x24' \
+            build/tsan/src/glob2 -test-games 1 --map balanced --matchup maxima,cortex,maxima,cortex \
+            -m -s 1024x768 > artifacts/tsan/windowed.log 2>&1
+
+      - name: Show sanitizer reports
+        if: failure()
+        run: |
+          grep -h -A40 'WARNING: ThreadSanitizer' artifacts/tsan/*.log | head -400 || true
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: thread-sanitizer
+          path: artifacts/tsan/*.log
+          if-no-files-found: ignore

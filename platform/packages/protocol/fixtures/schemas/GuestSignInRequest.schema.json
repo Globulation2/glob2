@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:GuestSignInRequest",
+  "title": "GuestSignInRequest",
+  "type": "object",
+  "required": [
+    "platform"
+  ],
+  "properties": {
+    "deviceCredential": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{43}$"
+    },
+    "displayName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 32,
+      "pattern": "^[^\\u0000-\\u001f\\u007f]+$",
+      "description": "Display name; at most 32 UTF-8 bytes (checked semantically)."
+    },
+    "platform": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "desktop"
+        },
+        {
+          "type": "string",
+          "const": "android"
+        },
+        {
+          "type": "string",
+          "const": "ios"
+        },
+        {
+          "type": "string",
+          "const": "browser"
+        }
+      ],
+      "description": "Kind of game client."
+    }
+  },
+  "additionalProperties": false,
+  "description": "Signs in a guest. Without a device credential a new guest account is created and its credential returned once."
+}

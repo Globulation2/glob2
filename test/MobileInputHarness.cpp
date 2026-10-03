@@ -202,8 +202,8 @@ TEST_CASE("zoom anchoring; seams; rotation; safe layouts; gestures and cancellat
 		require(touch.move(1, 1, {100, 295}).empty(), "Zoom slop changed zoom");
 		require(!touch.zoomDragging(), "Zoom feedback shown inside slop");
 		actions = touch.up(1, 1, {100, 295});
-		require(actions.size() == 1 && actions[0].kind == TouchActionKind::ZoomReset,
-				"Double-tap without travel must request the 1:1 reset");
+		require(actions.size() == 1 && actions[0].kind == TouchActionKind::DoubleTap,
+				"Double-tap without travel must report the gesture without choosing a zoom policy");
 		near(actions[0].point.x, 100);
 		near(actions[0].point.y, 300);
 		touch.setMode(TouchMode::ZoomDrag);
