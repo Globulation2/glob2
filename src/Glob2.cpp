@@ -377,6 +377,20 @@ static int dumpWheatPlan(const std::string& mapName, int team)
 	return 0;
 }
 
+namespace
+{
+void closeGameResources()
+{
+#ifndef __EMSCRIPTEN__
+	// Join SDL_net's resolver threads while SDL is still alive. The graphics
+	// context owned by GlobalContainer calls SDL_Quit during its destruction.
+	NET_Quit();
+#endif
+	delete globalContainer;
+	globalContainer = nullptr;
+}
+} // namespace
+
 int Glob2::run(int argc, char *argv[])
 {
 	// --generate-map has a native file/report interface and a structured job interface.
@@ -420,6 +434,7 @@ int Glob2::run(int argc, char *argv[])
 		fprintf(stderr, "Couldn't initialize net: %s\n", SDL_GetError());
 		exit(1);
 	}
+	// Fallback for exceptional exits; a normal shutdown has already quit net.
 	atexit(NET_Quit);
 #endif
 
@@ -427,7 +442,7 @@ int Glob2::run(int argc, char *argv[])
 	if (globalContainer->runTestGames)
 	{
 		int ret=runTestGames();
-		delete globalContainer;
+		closeGameResources();
 		return ret;
 	}
 	
@@ -439,14 +454,13 @@ int Glob2::run(int argc, char *argv[])
 	if (globalContainer->runNoX)
 	{
 		int ret=runNoX();
-		delete globalContainer;
+		closeGameResources();
 		return ret;
 	}
 
     GAGCore::ApplicationHost::run(std::make_unique<Application>(), [] {
         GAGCore::DrawableSurface::printFinishingText();
-        delete globalContainer;
-        globalContainer = nullptr;
+        closeGameResources();
         GAGCore::ApplicationHost::exited(0);
     });
     return HOSTED_RUN;
