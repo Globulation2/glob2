@@ -28,6 +28,10 @@ CI_WORKFLOWS = {
     '.github/workflows/steam-windows-package.yml',
     '.github/workflows/thread-sanitizer.yml',
 }
+LEGACY_RELEASE_WORKFLOWS = {
+    '.github/workflows/steam-windows-package.yml',
+    '.github/workflows/mac-app-store.yml',
+}
 CANCELLABLE_EVENTS = {'pull_request', 'push'}
 DEFAULT_BRANCH_EVENTS = {'push'}
 ACTIVE_STATUSES = ('queued', 'in_progress', 'waiting', 'pending', 'requested')
@@ -60,6 +64,9 @@ def select_superseded(runs, heads, current_run_id=None, default_branch='master',
         if run.get('status') == 'completed' or str(run.get('id')) == str(current_run_id):
             continue
         if workflow_path(run) not in CI_WORKFLOWS:
+            continue
+        if workflow_path(run) in LEGACY_RELEASE_WORKFLOWS and run.get('event') == 'pull_request':
+            selected.append(run)
             continue
         key = head_key(run)
         on_default = key[1:] == (repository, default_branch) and run.get('event') in DEFAULT_BRANCH_EVENTS

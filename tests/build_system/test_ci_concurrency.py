@@ -149,6 +149,13 @@ class SelectionTest(unittest.TestCase):
                 run(5, 'old', path='.github/workflows/build.yml@refs/heads/feature')]
         self.assertEqual(self.select(runs, heads), [5])
 
+    def test_legacy_release_pr_runs_are_retired_even_at_the_current_head(self):
+        rows=[run(1,'current',path='.github/workflows/steam-windows-package.yml',status='in_progress'),
+              run(2,'current',path='.github/workflows/mac-app-store.yml'),
+              run(3,'current',path='.github/workflows/steam-windows-package.yml',event='workflow_dispatch'),
+              run(4,'current',path='.github/workflows/mac-app-store.yml',event='workflow_dispatch')]
+        self.assertEqual(self.select(rows,{('pr','o/r','feature'):'current'}),[1,2])
+
     def test_default_branch_is_opt_in_and_keeps_its_newest_run(self):
         runs = [run(1, 'a', branch='master', event='push'), run(2, 'b', branch='master', event='push'),
                 run(3, 'c', branch='master', event='schedule')]
