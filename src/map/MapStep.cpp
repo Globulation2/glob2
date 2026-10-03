@@ -4,7 +4,7 @@
 #include <PerformanceTelemetry.h>
 #include "Map.h"
 #include "gradient/GradientRuntime.h"
-#include "kernel/GradientPropagation.h"
+#include "field/GradientPropagation.h"
 #include "Game.h"
 #include "Utilities.h"
 #include "GlobalContainer.h"
@@ -246,7 +246,7 @@ void Map::configureGradientPipeline(unsigned workers, unsigned delay)
 {
 	if (workers>16 || delay<1 || delay>16) throw std::invalid_argument("Invalid gradient pipeline configuration");
 	gradientRuntime->pipeline.configure(workers, delay, size, [this](GradientPipeline::Job &job, GradientWorkspace &scratch) {
-		const gradient_kernel::GradientGeometry geometry{size, wMask, hMask, wDec};
+		const field::Grid geometry{getW(), getH()};
 		if (!job.water)
 			gradient_kernel::propagateField(job.data.get(), job.swim, GRADIENT_COST_LIMIT,
 				geometry, scratch, [this](size_t i) { return isWater(static_cast<unsigned>(i)); });

@@ -24,6 +24,7 @@ class Observations
 	};
 	Game &game;
 	int team;
+	unsigned profile = 1;
 	// Lazily allocated indexed chunks avoid tree lookups without allocating an
 	// entire map per controller before it has explored any terrain.
 	using Chunk = std::array<RememberedTile, 256>;
@@ -39,6 +40,26 @@ class Observations
 	Value tile(int x, int y) const;
 
   public:
+	struct Cell
+	{
+		unsigned tick = 0;
+		unsigned short terrain = 0, fertility = 0;
+		unsigned char resource = 255, amount = 0;
+		bool known = false, visible = false, forbidden = false, building = false;
+		bool operator==(const Cell &) const = default;
+	};
+	Cell cell(int x, int y) const;
+	struct SpatialEntity
+	{
+		int team, type, x, y, hp, attack;
+		bool isVirtual;
+	};
+	// The native spatial view shares the script visibility predicate, without
+	// allocating complete JavaScript records for every unit in a density query.
+	void visitSpatialEntities(bool units, int filter,
+							  const std::function<void(const SpatialEntity &)> &visit,
+							  const QueryBudget &budget) const;
+	void setProfile(unsigned value) { profile = value; }
 	Observations(Game &game, int team) : game(game), team(team) {}
 	void observe();
 	Value query(const std::string &name, const std::vector<Value> &args,

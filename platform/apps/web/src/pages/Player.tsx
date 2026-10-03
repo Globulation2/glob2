@@ -269,7 +269,7 @@ export function Player({ id }: { id: string }) {
   const { instance, account } = useSession();
   const load = useLoad((signal) => api.player(id, signal), [id]);
   return (
-    <Loaded load={load}>
+    <Loaded load={load} page="Player">
       {(profile) => {
         const ladderNames = [...new Set(profile.ratingHistory.map((p) => p.ladder))].map((l) =>
           queueName(instance?.queues, l),

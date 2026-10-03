@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 The Globulation 2 Authors
 
+#include "field/UniformTraversal.h"
 #include "CortexWater.h"
 #include "CortexTypes.h"
 
@@ -83,44 +84,21 @@ namespace Cortex
 				}
 
 			int count = 0;
-			for (size_t head = 0; head < frontier.size(); head++)
-			{
-				const int cur = frontier[head];
-				const int x = cur % w;
-				const int y = cur / w;
-				count++;
-
-				for (int dy = -1; dy <= 1; dy++)
-					for (int dx = -1; dx <= 1; dx++)
-					{
-						if (dx == 0 && dy == 0)
-							continue;
-						const int nx = map.normalizeX(x + dx);
-						const int ny = map.normalizeY(y + dy);
-						// Shore-harvest probe: this neighbour of the reachable tile we just
-						// popped is a discovered, takeable ALGA tile, so a worker standing on
-						// that reachable tile could harvest it with no swimming pool. Tested
-						// BEFORE the gates below: algae sits on water (never itself a reachable
-						// tile, so the passability gate would reject it) and may lie one step
-						// past the reach radius while still harvestable from inside it.
-						if (algaeAdjacent != NULL && !*algaeAdjacent
-						 && map.isResourceTakeable(nx, ny, ALGA)
-						 && map.isMapDiscovered(nx, ny, team->allies))
-							*algaeAdjacent = true;
-						// Stay within the colony vicinity ("relative proximity"): a
-						// far-off lake the colony will never work must not by itself
-						// argue for a pool.
-						if (map.warpDistMax(cx, cy, nx, ny) > R)
-							continue;
-						const size_t idx = static_cast<size_t>(ny) * w + nx;
-						if (visited[idx])
-							continue;
-						if (!map.isHardSpaceForGroundUnit(nx, ny, canSwim, me))
-							continue;
-						visited[idx] = 1;
-						frontier.push_back(static_cast<int>(idx));
-					}
-			}
+			field::traverse(frontier,{w,h},field::Surrounding,
+				[](int) { return field::Visit::Expand; },
+				[&](int,int px,int py) {
+					const int nx=map.normalizeX(px),ny=map.normalizeY(py);
+					// Probe shore resources before the radius and passability gates:
+					// harvestable algae can sit beside reachable ground.
+					if(algaeAdjacent!=NULL && !*algaeAdjacent
+					   && map.isResourceTakeable(nx,ny,ALGA)
+					   && map.isMapDiscovered(nx,ny,team->allies))*algaeAdjacent=true;
+					if(map.warpDistMax(cx,cy,nx,ny)>R)return;
+					const size_t idx=static_cast<size_t>(ny)*w+nx;
+					if(visited[idx] || !map.isHardSpaceForGroundUnit(nx,ny,canSwim,me))return;
+					visited[idx]=1;frontier.push_back(static_cast<int>(idx));
+				});
+			count=static_cast<int>(frontier.size());
 			return count;
 		}
 	} // namespace
@@ -228,28 +206,14 @@ namespace Cortex
 					frontier.push_back(static_cast<int>(idx));
 				}
 
-			for (size_t head = 0; head < frontier.size(); head++)
-			{
-				const int cur = frontier[head];
-				const int x = cur % w;
-				const int y = cur / w;
-				const int nd = dist[cur] + 1;
-				for (int dy = -1; dy <= 1; dy++)
-					for (int dx = -1; dx <= 1; dx++)
-					{
-						if (dx == 0 && dy == 0)
-							continue;
-						const int nx = map.normalizeX(x + dx);
-						const int ny = map.normalizeY(y + dy);
-						const size_t idx = static_cast<size_t>(ny) * w + nx;
-						if (dist[idx] >= 0)
-							continue;
-						if (!map.isHardSpaceForGroundUnit(nx, ny, canSwim, me))
-							continue;
-						dist[idx] = nd;
-						frontier.push_back(static_cast<int>(idx));
-					}
-			}
+			field::traverse(frontier,{w,h},field::Surrounding,
+				[](int) { return field::Visit::Expand; },
+				[&](int current,int px,int py) {
+					const int nx=map.normalizeX(px),ny=map.normalizeY(py);
+					const size_t idx=static_cast<size_t>(ny)*w+nx;
+					if(dist[idx]>=0 || !map.isHardSpaceForGroundUnit(nx,ny,canSwim,me))return;
+					dist[idx]=dist[current]+1;frontier.push_back(static_cast<int>(idx));
+				});
 		}
 
 		// Smallest hop distance among the 8 tiles adjacent to (tx, ty) in `dist`. The

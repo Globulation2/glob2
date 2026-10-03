@@ -16,6 +16,7 @@ namespace
 {
 struct Environment
 {
+#include "ScriptRuntimeV2.inc"
 	JSRuntime *runtime = nullptr;
 	JSContext *ctx = nullptr;
 	JSValue recordPrototype = JS_NULL;
@@ -43,6 +44,7 @@ struct Environment
 	{
 		if (ctx)
 		{
+			clearManaged();
 			JS_FreeValue(ctx, recordPrototype);
 			JS_FreeContext(ctx);
 			ctx = nullptr;
@@ -157,6 +159,7 @@ struct Environment
 		// AI work can move between workers. Calls on one runtime are serial,
 		// but QuickJS's physical-stack guard must use the calling thread.
 		JS_UpdateStackTop(runtime);
+		clearManaged();
 		host = next;
 		fuel = FuelLimit;
 		dataBytes = nativeBytes = 0;
@@ -207,6 +210,17 @@ struct Environment
 		std::string message =
 			text.get() ? std::string(text.get(), std::min(text.length, std::size_t(16384)))
 					   : "JavaScript execution failed";
+		if (JS_IsObject(exception.get()))
+		{
+			JSValueOwner stack(ctx, JS_GetPropertyStr(ctx, exception.get(), "stack"));
+			if (JS_IsString(stack.get()))
+			{
+				JSStringOwner detail(ctx, stack.get());
+				if (detail.get())
+					message += "\n" + std::string(detail.get(),
+												  std::min(detail.length, std::size_t(8192)));
+			}
+		}
 		if (!fuel)
 			message = "JavaScript work budget exhausted";
 		throw std::runtime_error(message);
@@ -330,6 +344,10 @@ struct Environment
 		chargeNative(NativeValueCost);
 		if (depth > DepthLimit)
 			throw std::runtime_error("Script data nesting limit exceeded");
+		if (JS_IsObject(value) && ephemeral.contains(JS_VALUE_GET_PTR(value)))
+			for (const auto &[key, entity] : managed)
+				if (JS_VALUE_GET_PTR(entity.object) == JS_VALUE_GET_PTR(value))
+					return entity.observed.get("ref");
 		if (JS_IsNull(value))
 			return {};
 		if (JS_IsBool(value))
@@ -443,12 +461,22 @@ struct Environment
 			}
 			if (magic == 1 || magic == 2)
 				e.charge(32 * 1024);
-			return e.toJS(e.host->query(names[magic], args,
-										[&e](std::size_t work, std::size_t bytes)
-										{
-											e.charge(work);
-											e.chargeNative(bytes);
-										}));
+			auto result = e.hostQuery(names[magic], args);
+			if (e.host->profile == 2 && magic == 4)
+				return e.managedBuilding(result);
+			if (e.host->profile == 2 && magic == 2)
+			{
+				JSValueOwner list(ctx, JS_NewArray(ctx));
+				for (unsigned i = 0; i < result.items.size(); ++i)
+					if (JS_SetPropertyUint32(ctx, list.get(), i,
+											 e.managedBuilding(result.items[i])) < 0)
+						e.fail();
+				return list.release();
+			}
+			auto value = e.toJS(result);
+			if (e.host->profile == 2 && JS_IsObject(value))
+				e.readonly(value);
+			return value;
 		}
 		catch (const std::bad_alloc &)
 		{
@@ -486,6 +514,8 @@ struct Environment
 		set(map.get(), "height", JS_NewUint32(ctx, host->height));
 		set(game.get(), "map", map.release());
 		set(context.get(), "game", game.release());
+		if (host->profile == 2)
+			services(context.get());
 		return context.release();
 	}
 	JSValue compile(const std::string &source)
@@ -571,6 +601,9 @@ class GlobalsCodec
 			reference.items = {Value("function"), Value(function->second)};
 			return reference;
 		}
+		if (e.ephemeral.contains(identity))
+			throw std::runtime_error("Managed entities cannot be saved; store building.ref and "
+									 "reacquire it in step(ctx)");
 		if (e.frozen.contains(identity))
 			throw std::runtime_error("Persistent globals cannot retain built-ins or function-owned "
 									 "objects; use independent top-level data");
@@ -856,6 +889,60 @@ class QuickRuntime : public Runtime
 		}
 	}
 	void discard() noexcept override { live.reset(); }
+	Metadata inspect(const std::string &source)
+	{
+		Live temporary(source);
+		auto &e = temporary.environment;
+		JSValueOwner bindings(e.ctx, JS_Glob2ModuleBindings(e.ctx, temporary.module));
+		bool callback = false, localCallback = false;
+		for (const char *name : {"step", "main"})
+		{
+			JSValueOwner exported(e.ctx, e.get(temporary.exports->get(), name));
+			JSValueOwner local(e.ctx, e.get(bindings.get(), name));
+			callback |= JS_IsFunction(e.ctx, exported.get()) || JS_IsFunction(e.ctx, local.get());
+			localCallback |= JS_IsFunction(e.ctx, local.get());
+		}
+		if (!callback)
+			throw std::runtime_error("AI must define step(ctx) or main(ctx)");
+		Metadata metadata;
+		JSValueOwner exported(e.ctx, e.get(temporary.exports->get(), "metadata"));
+		JSValueOwner local(e.ctx, e.get(bindings.get(), "metadata"));
+		JSValue function = JS_IsUndefined(exported.get()) ? local.get() : exported.get();
+		if (!JS_IsUndefined(function))
+		{
+			if (!JS_IsFunction(e.ctx, function))
+				throw std::runtime_error("metadata must be a function");
+			JSValueOwner value(e.ctx, JS_Call(e.ctx, function, JS_UNDEFINED, 0, nullptr));
+			if (JS_IsException(value.get()))
+				e.fail();
+			const auto data = e.fromJS(value.get());
+			metadata.apiVersion = data.integer("apiVersion", 1, 2);
+			metadata.name = data.string("name");
+			if (metadata.name.empty() || metadata.name.size() > 128)
+				throw std::runtime_error("AI name must contain 1..128 UTF-8 bytes");
+			for (auto field : {std::pair{"description", &metadata.description},
+							   {"version", &metadata.version},
+							   {"author", &metadata.author}})
+				if (data.get(field.first).kind != Value::Null)
+				{
+					*field.second = data.string(field.first);
+					if (field.second->size() > 4096)
+						throw std::runtime_error("AI metadata field exceeds limit");
+				}
+		}
+		if (metadata.apiVersion == 1 && !localCallback)
+			throw std::runtime_error("Renamed callback exports require API profile 2 metadata");
+		// metadata is deliberately separate from the gameplay runtime. Validate
+		// fresh source globals as well, rather than metadata's mutated bindings.
+		Live startup(source);
+		GlobalsCodec codec(startup.environment, startup.definitions->get());
+		JSValueOwner initial(startup.environment.ctx,
+							 JS_Glob2ModuleBindings(startup.environment.ctx, startup.module));
+		auto saved = codec.capture(initial.get());
+		saved.encode();
+		JSValueOwner restored(startup.environment.ctx, codec.restore(saved));
+		return metadata;
+	}
 	Value inspectGlobals() override
 	{
 		if (!live)
@@ -942,11 +1029,22 @@ class QuickRuntime : public Runtime
 				if (!JS_IsUndefined(result.get()) && !JS_IsNull(result.get()))
 					throw std::runtime_error("init must not return effects");
 			}
-			auto effects = call(e, live->exports->get(), "__glob2_step", context.get(),
-								scriptState.get(), false);
+			const char *entry = "__glob2_step";
+			if (host.profile == 2)
+				for (const char *name : {"step", "main"})
+				{
+					JSValueOwner exported(ctx, e.get(live->exports->get(), name));
+					if (JS_IsFunction(ctx, exported.get()))
+					{
+						entry = name;
+						break;
+					}
+				}
+			auto effects =
+				call(e, live->exports->get(), entry, context.get(), scriptState.get(), false);
 			if (e.hostFailed || JS_Glob2HostFailure(e.runtime))
 				throw HostFailure("JavaScript native resource limit exhausted");
-			if (!e.fuel)
+			if (!e.fuel || (host.profile == 2 && !e.nativeFuel))
 				throw std::runtime_error("JavaScript work budget exhausted");
 			Result result{e.fromJS(scriptState.get()),
 						  JS_IsUndefined(effects.get()) ? Value() : e.fromJS(effects.get())};
@@ -956,6 +1054,20 @@ class QuickRuntime : public Runtime
 			result.state.set("__glob2_globals", codec.capture(bindings.get()));
 			live->candidate = result.state.encode();
 			result.effects.encode();
+			if (host.profile == 2)
+			{
+				result.commands = e.commands;
+				result.telemetry = e.diagnosticValues;
+				result.telemetry.set("runtime.queryWork",
+									 Value::object()
+										 .set("value", double(16000000 - e.nativeFuel))
+										 .set("updated", host.tick));
+				result.telemetry.set(
+					"runtime.placementFailures",
+					Value::object().set("value", e.placementFailures).set("updated", host.tick));
+				result.commands.encode();
+				result.telemetry.encode();
+			}
 			e.host = nullptr;
 			return result;
 		}
@@ -975,5 +1087,9 @@ class QuickRuntime : public Runtime
 std::unique_ptr<Runtime> makeRuntime()
 {
 	return std::make_unique<QuickRuntime>();
+}
+Metadata inspectAI(const std::string &source)
+{
+	return QuickRuntime().inspect(source);
 }
 } // namespace Script

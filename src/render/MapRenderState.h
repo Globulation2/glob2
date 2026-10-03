@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 
+#include "MapOverlayQueue.h"
+#include "ZoomDetail.h"
 #include "scene/Scene.h"
 
 #include <SDL3/SDL_stdinc.h>
@@ -9,6 +11,7 @@
 #include <valarray>
 
 class DynamicClouds;
+namespace GAGCore { class DrawableSurface; }
 class SoftwareTerrainCache;
 
 //! Presentation state one map view keeps between frames: animation phases, the
@@ -31,6 +34,17 @@ struct MapRenderState
 	float unitMotion = 0;
 	//! Reused alpha buffer for overlay maps, kept to avoid per-frame allocation.
 	std::valarray<unsigned char> overlayAlphas;
+	//! How this frame's zoom draws each map element; set by Game::drawMap.
+	ZoomDetail detail;
+	//! The terrain overview's image, one pixel per visible tile, kept between frames.
+	std::unique_ptr<GAGCore::DrawableSurface> overview;
+	//! The furthest this view's camera can zoom out, set by its owner; 0 when
+	//! unknown. It anchors the far end of the detail curves (ZoomDetail::rampTile).
+	double minimumZoom = 0;
+	//! The player is painting zones, so they keep their full strength zoomed out.
+	bool zonesEmphasised = false;
+	//! Constant-size overlays queued by this frame's map passes.
+	MapOverlayQueue overlays;
 	//! Scene this view extracts for itself when drawn without a published one.
 	Scene ownScene;
 

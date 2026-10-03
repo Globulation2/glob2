@@ -193,5 +193,25 @@ class AndroidReleaseTests(unittest.TestCase):
 
 
 
+class InviteLinkManifestTests(unittest.TestCase):
+    """Editions without online play (Amazon, China) must not claim invite links."""
+
+    def test_offline_editions_drop_both_invite_filters(self):
+        import android
+        manifest = (ROOT / "mobile/android/app/src/main/AndroidManifest.xml").read_text()
+        self.assertIn('android:autoVerify="true"', manifest)
+        self.assertIn('android:host="${officialInstanceHost}" android:pathPrefix="/j/"', manifest)
+        stripped = android.without_invite_links(manifest)
+        for gone in ("android.intent.action.VIEW", 'android:scheme="glob2"', "autoVerify", "officialInstanceHost"):
+            self.assertNotIn(gone, stripped)
+        for kept in ("android.intent.category.LAUNCHER", "android.permission.INTERNET", "</activity>"):
+            self.assertIn(kept, stripped)
+
+    def test_unexpected_layout_is_refused(self):
+        import android
+        with self.assertRaisesRegex(ValueError, "invite links"):
+            android.without_invite_links("<manifest><intent-filter><action android:name=\"android.intent.action.VIEW\"/>")
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -20,15 +20,26 @@ interface Props {
   zeroBased?: boolean;
   /** Mark each point (sparse series such as ratings). */
   dots?: boolean;
+  /** Whole-number y values (counts, ratings): ticks on whole steps only. */
+  integer?: boolean;
 }
 
 const PAD = { left: 44, right: 12, top: 10, bottom: 24 };
 
-function niceTicks(min: number, max: number, count: number): number[] {
+/**
+ * Round tick values. Integer axes (counts, ratings) only use whole steps from
+ * 1, 2, 5, 10, so a small range never shows rounded duplicates ("0, 1, 1")
+ * or uneven labels ("0, 3, 5, 8").
+ */
+export function niceTicks(min: number, max: number, count: number, integer = false): number[] {
   if (min === max) return [min];
   const raw = (max - min) / count;
   const magnitude = 10 ** Math.floor(Math.log10(raw));
-  const step = ([1, 2, 2.5, 5, 10].find((m) => m * magnitude >= raw) ?? 10) * magnitude;
+  const steps = integer ? [1, 2, 5, 10] : [1, 2, 2.5, 5, 10];
+  // Whole steps are coarser, so they may run a little under the target spacing.
+  const want = integer ? raw * 0.75 : raw;
+  let step = (steps.find((m) => m * magnitude >= want) ?? 10) * magnitude;
+  if (integer) step = Math.max(1, Math.round(step));
   const ticks = [];
   for (let v = Math.ceil(min / step) * step; v <= max + step / 1e6; v += step) {
     ticks.push(Math.round(v / step) * step);
@@ -44,6 +55,7 @@ export function LineChart({
   yFormat = (y) => String(Math.round(y)),
   zeroBased = true,
   dots = false,
+  integer = true,
 }: Props) {
   const id = useId();
   const box = useRef<HTMLElement>(null);
@@ -82,7 +94,7 @@ export function LineChart({
     } else {
       yMax += span * 0.05;
     }
-    const yTicks = niceTicks(yMin, yMax, 4);
+    const yTicks = niceTicks(yMin, yMax, 4, integer);
     const xTicks = niceTicks(xMin, xMax, Math.max(2, Math.floor(WIDTH / 120)));
     const sx = (x: number) =>
       PAD.left +
@@ -91,7 +103,7 @@ export function LineChart({
       PAD.top + (1 - (y - yMin) / (yMax - yMin)) * (height - PAD.top - PAD.bottom);
     const allX = [...new Set(xs)].sort((a, b) => a - b);
     return { sx, sy, yTicks, xTicks, allX, xMin, xMax };
-  }, [series, height, zeroBased, WIDTH]);
+  }, [series, height, zeroBased, integer, WIDTH]);
 
   if (!geometry) return <div className="chart empty">No data yet.</div>;
   const { sx, sy, yTicks, xTicks, allX } = geometry;

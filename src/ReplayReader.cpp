@@ -8,6 +8,7 @@
 #include "OrderMessages.h"
 #include "GameGUI.h"
 #include "Version.h"
+#include "FileFormatVersions.h"
 #include "Toolkit.h"
 #include "FileManager.h"
 
@@ -36,6 +37,7 @@ bool ReplayReader::loadReplay(GAGCore::InputStream *inputStream, bool skipToOrde
 {
 	// Reset checksum
 	checksum = 0;
+	telemetry = {};
 
 	// Make sure the given stream is valid
 	if (inputStream == NULL) return false;
@@ -87,6 +89,8 @@ bool ReplayReader::loadReplay(GAGCore::InputStream *inputStream, bool skipToOrde
 			++numOrders;
 			if (msg.getOrder()->getOrderType() == ORDER_NULL) break;
 		}
+		if (versionMinor >= FILE_FORMAT_VERSION_CUSTOM_AI)
+			telemetry.read(stream);
 		stream->seekFromStart(pos);
 		stepsUntilNextOrder = stream->readUint32("replayStepCounter");
 		return true;

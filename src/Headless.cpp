@@ -2,6 +2,7 @@
 #include <Environment.h>
 #include "Headless.h"
 #include "script/ScriptCommand.h"
+#include "script/ScriptRuntime.h"
 #include "script/ScriptValue.h"
 #include "PerformanceTelemetry.h"
 #include "Engine.h"
@@ -374,7 +375,8 @@ struct HeadlessRunner
 				const auto colon=assignment.find(':');if(colon==std::string::npos)throw std::invalid_argument("Expected --ai-script player:source.js");
 				int p=integer(assignment.substr(0,colon),0,players.size()-1);
 				if(!scriptedPlayers.insert(p).second || BasePlayer::implementationIdFromPlayerType(header.getBasePlayer(p).type)!=AI::JAVASCRIPT)throw std::invalid_argument("AI script requires a unique JavaScript player");
-				header.setAIConfig(p,Script::config(Script::readSource(assignment.substr(colon+1))));
+				const auto source = Script::readSource(assignment.substr(colon + 1));
+				header.setAIConfig(p, Script::config(source, Script::inspectAI(source).apiVersion));
 			}
 			for(size_t p=0;p<players.size();++p)if(BasePlayer::implementationIdFromPlayerType(header.getBasePlayer(p).type)==AI::JAVASCRIPT && !scriptedPlayers.count(p))throw std::invalid_argument("JavaScript player requires --ai-script");
 			engine.gui.localPlayer=0;engine.gui.localTeamNo=0;

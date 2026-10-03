@@ -401,6 +401,10 @@ describe('pages', () => {
     });
     open('/account');
     expect(await screen.findByText('Delete my account')).toBeTruthy();
+    // Download my data is a plain download link to the export endpoint.
+    const download = screen.getByRole('link', { name: 'Download my data' });
+    expect(download.getAttribute('href')).toBe('/api/v1/accounts/me/export');
+    expect(download.hasAttribute('download')).toBe(true);
     const button = screen.getByRole('button', { name: 'Delete my account for good' });
     expect((button as HTMLButtonElement).disabled).toBe(true);
     const input = screen.getByLabelText(/Type your name, Bob, to confirm/);

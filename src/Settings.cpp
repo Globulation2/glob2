@@ -161,6 +161,7 @@ void Settings::load(std::string filename)
 		READ_PARSED_INT(smoothProgressIndicators);
 		READ_PARSED_INT(decorativeAnimations);
 		READ_PARSED_INT(unitInterpolation);
+		READ_PARSED_INT(adaptiveZoomDetail);
 
 		READ_PARSED_INT(automaticTorus);
 		READ_PARSED_STRING(language);
@@ -263,6 +264,7 @@ bool Settings::save(std::string filename)
 		Utilities::streamprintf(stream, "smoothProgressIndicators=%d\n", smoothProgressIndicators);
 		Utilities::streamprintf(stream, "decorativeAnimations=%d\n", decorativeAnimations);
 		Utilities::streamprintf(stream, "unitInterpolation=%d\n", unitInterpolation);
+		Utilities::streamprintf(stream, "adaptiveZoomDetail=%d\n", adaptiveZoomDetail);
 		Utilities::streamprintf(stream, "autosaveGames=%d\n", autosaveGames);
 		Utilities::streamprintf(stream, "experiments=%s\n", experiments.toText().c_str());
 		Utilities::streamprintf(stream, "gameSpeed=%d\n", gameSpeed);

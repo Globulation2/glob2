@@ -6,7 +6,8 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 128
+#define VERSION_MINOR 129
+// version 129 adds profile-2 AI services and named/replay AI diagnostics.
 // version 128 losslessly packs map, routing, statistics and Maxima save state.
 // version 127 supports 16 teams and counts Maxima opponents and script generation planes.
 // Older saves remain loadable; Warrush probes all sixteen slots within 32 ticks.

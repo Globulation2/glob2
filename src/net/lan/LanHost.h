@@ -27,6 +27,7 @@
 #include <vector>
 
 #include "AI.h"
+#include "GameHeader.h"
 #include "LanProtocol.h"
 #include "MapHeader.h"
 #include "TurnSequencer.h"
@@ -36,7 +37,6 @@ class NetBroadcaster;
 class NetTransportListener;
 class NetWaker;
 struct NetWaitHandle;
-class GameHeader;
 
 namespace Lan
 {
@@ -77,6 +77,12 @@ namespace Lan
 			std::string recordPath;
 			/// Service the network on a thread (network hosts only).
 			bool thread = true;
+			/// The game's header loaders, so the network layer does not depend on the
+			/// engine: a save's GameHeader (Engine::loadGameHeader), and the host's
+			/// experiment settings applied to a new map's header
+			/// (Engine::applyLocalExperiments). LanRoom::host fills them in.
+			std::function<GameHeader(const std::string& file)> loadSaveHeader;
+			std::function<void(GameHeader& header, const MapHeader& map)> applyExperiments;
 		};
 
 		/// Throws std::exception when the listener cannot start or the map cannot be read.

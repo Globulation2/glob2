@@ -25,6 +25,7 @@
 #include "MarkManager.h"
 #include "GameGUIMessageManager.h"
 #include "GameGUIDialog.h"
+#include "GameSpeedControl.h"
 #include "render/Minimap.h"
 #include "OverlayAreas.h"
 #include "scene/SceneExtract.h"
@@ -164,9 +165,6 @@ public:
 	void showScriptTextTr(const std::string &text, const std::string &lang) override;
 	void hideScriptText() override;
 
-	// Stats for engine
-	void setCpuLoad(int s);
-
 	/// Sets this game as a campaign game from the provided campaign and the provided mission
 	void setCampaignGame(Campaign& campaign, const std::string& missionName);
 	
@@ -244,8 +242,21 @@ public:
 	Game game;
 	/// Live network games always use normal speed; replays remain adjustable.
 	bool canChangeGameSpeed() const;
+	/// Chevrons the HUD speed control lights for the current speed.
+	int litSpeedChevrons() const;
+	/// Step the HUD speed control: forwards to the next chevron (the last wraps
+	/// to normal speed), backwards to the previous one.
+	void cycleGameSpeed(bool forwards = true);
+	/// Ticks per second the simulation is paced at; 0 when uncapped.
+	double targetTickRate() const;
+	/// The measured tick rate against its target: 0 on pace (or paused, uncapped
+	/// or not yet measured), 1 below 90% of it, 2 below 75%.
+	int tickRateShortfall() const;
+	/// Where the top bar draws the speed control and the tick rate.
+	int topBarSpeedX() const;
 	/// The scene this frame draws: the simulation's published scene when the
 	/// simulation runs on its own thread, else the one drawAll extracted.
+	Game *replayTelemetryGame();
 	const Scene& drawnScene() const { return publishedScene ? *publishedScene : frameScene; }
 	/// Draw scenes published by the simulation thread (null: extract in drawAll).
 	void setPublishedScene(const Scene* scene) { publishedScene = scene; }
@@ -261,7 +272,12 @@ public:
 	bool simulationThreaded = false;
 	/// When the latest tick finished and the interval to the next (ms; 0 = uncapped),
 	/// recorded by the engine next to the simulation and copied into extracted Scenes.
-	void recordTick(Uint64 time, Uint32 interval) { lastTickTime = time; tickInterval = interval; }
+	void recordTick(Uint64 time, Uint32 interval)
+	{
+		lastTickTime = time;
+		tickInterval = interval;
+		tickClock = (((tickClock >> 32) + 1) << 32) | Uint32(time);
+	}
 	/// Water and cloud animation phase of this GUI's map view (presentation only).
 	int mapAnimationTime() const { return view.render.animationTime; }
 	friend class Game;
@@ -363,6 +379,7 @@ private:
 	void handleKeyAlways(void);
 	void handleKeyDump(SDL_KeyboardEvent key);
 	void changeGameSpeed(int amount);
+	void setGameSpeed(int speed);
 	void handleKeySwitchToAreaBrush(int figure);
 	void handleKeySelectConstruct(const char *buildingName);
 	void handleKeySelectPlaceFlag(const char *flagName);
@@ -673,7 +690,7 @@ private:
 	// menu related functions
 	enum InGameMenu
 	{
-		IGM_NONE=0,
+		IGM_NONE = 0,
 		IGM_MAIN,
 		IGM_LOAD,
 		IGM_SAVE,
@@ -681,7 +698,8 @@ private:
 		IGM_ALLIANCE,
 		IGM_OBJECTIVES,
 		IGM_END_OF_GAME,
-		IGM_CONFIRM_LEAVE
+		IGM_CONFIRM_LEAVE,
+		IGM_TELEMETRY
 	} inGameMenu;
 	// The dialog receiving input, if any: the menu, the chat composer or the history.
 	Glob2UI::InGameDialog *activeDialog() const;
@@ -760,11 +778,11 @@ private:
 	//! add a minimap mark
 	void addMark(std::shared_ptr<MapMarkOrder> mmo);
 	
-	// records CPU usage percentages 
-	static const unsigned SMOOTHED_CPU_SIZE=32;
-	// Written by the simulation's pacing, read by the top bar.
-	std::atomic<int> smoothedCPULoad[SMOOTHED_CPU_SIZE];
-	std::atomic<int> smoothedCPUPos{0};
+	// Executed ticks (high half) and when the latest finished (low half, ms).
+	// Written by the simulation next to each tick, sampled by drawAll.
+	std::atomic<Uint64> tickClock{0};
+	// The smoothed simulation tick rate the HUD shows.
+	TickRateMeter tickRate;
 
 	// Stuff for the correct working of the campaign
 	Campaign* campaign;

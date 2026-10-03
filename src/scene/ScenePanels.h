@@ -3,6 +3,7 @@
 
 #include "Ressource.h"
 #include "UnitConsts.h"
+#include "ai/AITelemetry.h"
 #include "scene/SceneEntities.h"
 
 #include <array>
@@ -95,8 +96,16 @@ struct SceneHud
 	int legacyScriptTimer = 0;
 };
 
+struct SceneAITelemetry
+{
+	int team = 0, player = 0;
+	std::string name;
+	bool available = false;
+	std::vector<AITelemetry::NamedValue> values;
+};
 struct ScenePanels
 {
+	std::vector<SceneAITelemetry> aiTelemetry;
 	ScenePanelLocal local;
 	SceneBuildingPanel building;
 	SceneUnitPanel unit;

@@ -88,6 +88,13 @@ TEST_SUITE("OnlineWording")
 		CHECK(Glob2UI::aboutText(100) == "about 2 min");
 		CHECK(Glob2UI::durationText(42) == "42 s");
 		CHECK(Glob2UI::durationText(12 * 60 + 10) == "12 min");
+		// Short matches keep their seconds, so results and Recent matches agree.
+		CHECK(Glob2UI::durationText(102) == "1 min 42 s");
+		CHECK(Glob2UI::durationText(180) == "3 min");
+		// Relay regions read as places, never as raw ids.
+		CHECK(Glob2UI::regionDisplayName("ca-central") == "Canada, central");
+		CHECK(Glob2UI::regionDisplayName("eu-west") == "Europe, west");
+		CHECK(Glob2UI::regionDisplayName("home-lab") == "Home, lab");
 	}
 
 	TEST_CASE("an unrated search shows no ratings; a ranked one explains its range [display]")

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
-#include "kernel/GradientWorkspace.h"
+#include "field/GradientWorkspace.h"
 #include <atomic>
 #include <algorithm>
 #include <chrono>

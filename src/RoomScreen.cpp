@@ -327,6 +327,16 @@ void RoomScreen::onTimer(Uint32 tick)
 		invalidate();
 }
 
+void RoomScreen::noteMatchOver()
+{
+	// A line in the chat between this match and the next, so "X is ready." from
+	// before the match does not read as the current state.
+	chat.push_back(ChatLine{"", tr("[room match over]"), true});
+	while (chat.size() > CHAT_HISTORY)
+		chat.pop_front();
+	invalidate();
+}
+
 void RoomScreen::launch()
 {
 	if (launched)
@@ -340,6 +350,8 @@ void RoomScreen::launch()
 			room->gameEnded(result == QUIT_APPLICATION);
 			if (result == QUIT_APPLICATION)
 				endExecute(QUIT_APPLICATION);
+			else
+				noteMatchOver();
 			invalidate();
 		});
 		return;
@@ -365,6 +377,8 @@ void RoomScreen::launch()
 									  room->gameEnded(result == QUIT_APPLICATION);
 									  if (result == QUIT_APPLICATION)
 										  endExecute(QUIT_APPLICATION);
+									  else
+										  noteMatchOver();
 								  });
 				 });
 }
@@ -657,13 +671,19 @@ Element RoomScreen::seats(const Presentation &p, bool phone)
 			more.tooltip = more.accessibleLabel;
 			std::vector<Element> line{number, expanded(who)};
 			const bool editable = room->canSetOccupant(slot) || room->canChangeTeam(slot) || room->canKick(slot) || room->canTakeSeat(slot);
+			// The seat's action (Take seat, Add AI) goes on its own line under the seat,
+			// so the name and "Anyone with the invite can take it" keep the full width
+			// instead of a cut-off name beside four wrapped lines.
+			Element action;
 			if (slot.open && room->canTakeSeat(slot) && !room->canSetOccupant(slot))
-				line.push_back(button(id + "/take", tr("[room take seat]"), [this, index] { room->takeSeat(index); }));
+				action = button(id + "/take", tr("[room take seat]"), [this, index] { room->takeSeat(index); });
 			else if (slot.open && room->canSetOccupant(slot))
-				line.push_back(button(id + "/add-ai", tr("[Add AI]"), [this, index] { room->setOccupant(index, RoomBackend::Occupant::AI, "nicowar"); }));
+				action = button(id + "/add-ai", tr("[Add AI]"), [this, index] { room->setOccupant(index, RoomBackend::Occupant::AI, "nicowar"); });
 			if (editable)
 				line.push_back(width(p.pt(48), button(id + "/more", "", [this, index] { openSeat(index); }, more)));
 			std::vector<Element> card{row(std::move(line), {p.pt(8), CrossAlign::Center})};
+			if (action)
+				card.push_back(row({spacer(p.pt(26)), expanded(action)}, {p.pt(8), CrossAlign::Center}));
 			if (selectedSeat == slot.index)
 				card.push_back(seatControls(slot, p, true));
 			CardOptions options;
@@ -693,7 +713,8 @@ Element RoomScreen::seats(const Presentation &p, bool phone)
 	}
 	if (rows.empty())
 		rows.push_back(paragraph(tr("[room connecting]"), {FontRole::Body, true}));
-	if (!phone && room->kind() == RoomBackend::Kind::Online)
+	// Only the host can change teams, so only the host gets the hint about it.
+	if (!phone && room->kind() == RoomBackend::Kind::Online && room->isHost())
 		rows.push_back(paragraph(tr("[room seat hint]"), {FontRole::Support, true}));
 	return column(std::move(rows), {p.pt(phone ? 6 : 6)});
 }
@@ -938,7 +959,7 @@ Element RoomScreen::build(const Presentation &p)
 			ButtonOptions mapRow;
 			mapRow.alignLeft = true;
 			mapRow.icon = uiIcon(UIIcon::Map);
-			parts.push_back(button("map/summary", room->mapName() + "  ›", [this] { selectTab(MapTab); }, mapRow));
+			parts.push_back(button("map/summary", room->mapName() + " ›", [this] { selectTab(MapTab); }, mapRow));
 			if (room->kind() != RoomBackend::Kind::Online)
 				parts.push_back(invite(p, true));
 			body = scroll("room/seats", column(std::move(parts), {p.pt(8)}));
@@ -954,8 +975,9 @@ Element RoomScreen::build(const Presentation &p)
 			bottom.push_back(manual);
 		if (tab != ChatTab && !chat.empty() && lastChatAt && now - lastChatAt < CHAT_TOAST_MS && !chat.back().system)
 			bottom.push_back(label(chat.back().author + ": " + chat.back().text, {FontRole::Support}));
+		// What the room waits for is an instruction: wrap it, never ellipsize it.
 		if (!waiting.empty())
-			bottom.push_back(label(waiting, waitingText));
+			bottom.push_back(paragraph(waiting, waitingText));
 		// Seats · Map · Rules · Chat at the thumb.
 		struct Item
 		{

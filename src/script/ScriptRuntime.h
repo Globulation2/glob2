@@ -25,6 +25,8 @@ class ScenarioFailure : public SessionFailure
 };
 struct Host
 {
+	unsigned profile = 1;
+	unsigned nextAction = 1;
 	unsigned tick = 0;
 	unsigned width = 0, height = 0;
 	int team = -1;
@@ -35,6 +37,12 @@ struct Host
 struct Result
 {
 	Value state, effects;
+	Value commands = Value::array(), telemetry = Value::object();
+};
+struct Metadata
+{
+	unsigned apiVersion = 1;
+	std::string name, description, version, author;
 };
 class Runtime
 {
@@ -48,4 +56,7 @@ class Runtime
 	virtual Value inspectGlobals() { return Value::object(); }
 };
 std::unique_ptr<Runtime> makeRuntime();
+// Evaluates in a disposable runtime, with neither world access nor randomness.
+// Also checks callback resolution and the initial automatic globals snapshot.
+Metadata inspectAI(const std::string &source);
 } // namespace Script

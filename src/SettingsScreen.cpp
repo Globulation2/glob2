@@ -85,7 +85,9 @@ void SettingsScreen::resetScroll()
 
 std::string SettingsScreen::categoryName(Category category) const
 {
-	const char *names[] = {"Display & graphics", "Audio", "Gameplay", "Building defaults", "Controls", "Language & player", "Online", "Experiments"};
+	const char *names[] = {
+		"Display & graphics", "Audio",  "Gameplay",    "Building defaults", "Controls",
+		"Language & player",  "Online", "Experiments", "Custom AIs"};
 	return tr(names[int(category)]);
 }
 
@@ -100,6 +102,8 @@ void SettingsScreen::buildRows()
 		buildKeyboard();
 	else if (current == Category::Online)
 		buildOnline();
+	else if (current == Category::CustomAIs)
+		buildCustomAIs();
 	else
 		buildGeneral();
 	if (current == Category::Buildings && touchLayout)
@@ -187,6 +191,7 @@ std::vector<SettingsScreen::Category> SettingsScreen::visibleCategories() const
 	result.push_back(Category::Online);
 #endif
 	result.push_back(Category::Experiments);
+	result.push_back(Category::CustomAIs);
 	return result;
 }
 
@@ -265,6 +270,8 @@ void SettingsScreen::finishInteraction()
 
 void SettingsScreen::done()
 {
+	if (customAIBusy())
+		return;
 	host().closePopup();
 	host().endEditing();
 	// Always confirm durability on close, not just when something in this
@@ -283,6 +290,8 @@ void SettingsScreen::done()
 
 void SettingsScreen::abandon()
 {
+	if (customAIBusy())
+		return;
 	// Always closes in one click, whether or not anything is dirty or
 	// failed: every change is already live and auto-saved as it's made, so
 	// there is nothing to discard.
@@ -357,6 +366,7 @@ bool SettingsScreen::interceptEvent(const SDL_Event &event)
 void SettingsScreen::onTimer(Uint32 tick)
 {
 	lastTick = tick;
+	pollCustomAIs();
 	if (current == Category::Online)
 		pollOnline();
 	if (saveAt && Sint32(tick - saveAt) >= 0)
@@ -465,10 +475,12 @@ Element SettingsScreen::categoryNavigation(const Presentation &p, bool sidebar)
 			options.selected = category == current && modal == Modal::None;
 			options.minHeight = 42;
 			// One icon per Category, in its order.
-			static constexpr UIIcon icons[] = {UIIcon::Display,   UIIcon::Audio,    UIIcon::Gameplay,
-											   UIIcon::Buildings, UIIcon::Controls, UIIcon::Player,
-											   UIIcon::Online,    UIIcon::Experiments};
-			static_assert(std::size(icons) == std::size_t(Category::Experiments) + 1, "an icon for every settings category");
+			static constexpr UIIcon icons[] = {
+				UIIcon::Display,   UIIcon::Audio,       UIIcon::Gameplay,
+				UIIcon::Buildings, UIIcon::Controls,    UIIcon::Player,
+				UIIcon::Online,    UIIcon::Experiments, UIIcon::Gameplay};
+			static_assert(std::size(icons) == std::size_t(Category::CustomAIs) + 1,
+						  "an icon for every settings category");
 			options.icon = uiIcon(icons[int(category)]);
 			items.push_back(Glob2UI::button("nav." + std::to_string(int(category)), categoryName(category),
 											[this, category] { selectCategory(category); }, options));

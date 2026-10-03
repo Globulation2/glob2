@@ -50,6 +50,8 @@ struct SelectedFile
 {
 	std::string name;
 	std::vector<unsigned char> bytes;
+	// Desktop only; browser/mobile imports deliberately expose no external path.
+	std::string externalPath;
 };
 class FileSelection
 {
