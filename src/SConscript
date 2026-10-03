@@ -3,6 +3,27 @@ source_files = list(CLIENT_SOURCES)
 from sources import SERVER_SOURCES
 server_source_files = list(SERVER_SOURCES)
 Import('env')
+if env.get('role') == 'relay':
+    # The relay role builds glob2-relay and its tests only.
+    from sources import RELAY_SOURCES, RELAY_GAG_SOURCES
+    relay_env = env.Clone()
+    relay_env.Append(CPPPATH=['#src/relay'])
+    relay_env['LIBS'] = [lib for lib in relay_env.get('LIBS', []) if lib in ('ssl', 'crypto', 'pthread')]
+    relay_objects = [relay_env.Object(source) for source in RELAY_SOURCES]
+    relay_objects += [relay_env.Object('relay-gag-' + source.replace('.cpp', '.o'), '#libgag/src/' + source)
+                      for source in RELAY_GAG_SOURCES]
+    relay = relay_env.Program('glob2-relay', relay_objects + [relay_env.Object('relay/RelayMain.cpp')])
+    relay_env.Default(relay)
+    relay_env.Alias('relay', relay)
+    tests_env = relay_env.Clone()
+    tests_env.Append(CPPPATH=['#test/third_party'])
+    tests_env.Append(CPPDEFINES=[('RELAY_FIXTURE_DIR', '\\"%s\\"' % Dir('#test/fixtures/relay-tickets').abspath)])
+    relay_tests = tests_env.Program('glob2-relay-tests', relay_objects + [
+        tests_env.Object('relay-test-' + name + '.o', '#test/relay/' + name + '.cpp')
+        for name in ('RelayTestMain', 'RelayTicketTest', 'RelayAdmissionTest')])
+    tests_env.Alias('relay-tests', relay_tests)
+    tests_env.Alias('relay', relay_tests)
+    Return()
 if not env.get('wss', True):
     source_files.remove('net/WssTransport.cpp')
     source_files.remove('online/HttpFetch.cpp')
