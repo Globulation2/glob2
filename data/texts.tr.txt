@@ -1154,8 +1154,6 @@ Mavi
 Kahverengi
 [Built-in maps]
 Yerleşik haritalar
-[Can change in game]
-Oyunda değişebilir
 [Closed]
 Kapalı
 [Colonies]
@@ -1184,8 +1182,6 @@ Camgöbeği
 Çöl ağırlığı
 [Easy]
 Kolay
-[Explore as you play]
-Oynarken keşfedin
 [Extra colony assignments are retained for larger maps.]
 Daha büyük haritalar için ekstra koloni atamaları korunur.
 [Extra islands]
@@ -1228,8 +1224,6 @@ Manzara
 Ayakta kalan son koloni
 [Layout]
 Düzen
-[Locked teams]
-Kilitli takımlar
 [Magenta]
 Macenta
 [Map]
@@ -1280,8 +1274,6 @@ Kırmızı
 Manzarayı tekrarla
 [Resources]
 Kaynaklar
-[Revealed terrain does not reveal all enemy activity.]
-Ortaya çıkan arazi, düşmanın tüm faaliyetlerini ortaya çıkarmaz.
 [River]
 Nehir
 [River width]
@@ -1308,8 +1300,6 @@ Bataklık
 Takım
 [Terrain]
 Arazi
-[Terrain revealed]
-Arazi açık
 [Victory]
 Zafer
 [Watch game]
@@ -2124,14 +2114,8 @@ Sayfa (P)
 Bir harita seçin
 [Building sites complete immediately, skipping delivery.]
 İnşaat alanları, teslimat aşaması atlanarak hemen tamamlanır.
-[Seeds each team's shared market/exchange resource pool at game start.]
-Oyun başlangıcında her takımın ortak pazar/takas kaynak havuzunu doldurur.
 [No growth]
 Büyüme yok
-[Normal construction]
-Normal inşaat
-[Instant]
-Anında
 [Units get hungry]
 Birimler acıkır
 [No hunger]
@@ -2154,28 +2138,14 @@ Kaynak büyümesi yok
 Ekonomi
 [Instant construction]
 Anında inşaat
-[Higher tiers deal more damage but have less HP and armor.]
-Daha yüksek seviyeler daha fazla hasar verir ama daha az can ve zırha sahiptir.
 [Higher tiers give every building much more HP.]
 Daha yüksek seviyeler her binaya çok daha fazla can verir.
 [Starting units spawn already leveled up. Changes the generated map.]
 Başlangıç birimleri zaten seviye atlamış olarak ortaya çıkar. Oluşturulan haritayı değiştirir.
-[Trains normally]
-Normal şekilde eğitilir
 [No upgrades]
 Yükseltme yok
-[Retreats when damaged]
-Hasar aldığında geri çekilir
-[Fearless]
-Korkusuz
-[Can die permanently]
-Kalıcı olarak ölebilir
 [No permadeath]
 Kalıcı ölüm yok
-[Normal combat]
-Normal savaş
-[Peaceful mode]
-Barışçıl mod
 [Glass cannon x2]
 Cam top x2
 [Glass cannon x3]
@@ -3375,8 +3345,6 @@ Harita ivmesi
 [play online]
 
 [Use in room]
-
-[Custom rules]
 
 [conn ai]
 
@@ -4678,14 +4646,6 @@ Koloni başına üs; üs, haritanın çizildiği hâliyle bir takımı, binalar�
 
 [Units must eat to keep working.]
 
-[Off: a peaceful match with no fighting between teams.]
-
-[Off: units fight to the death instead of retreating to heal.]
-
-[Off: units are never permanently lost; HP just stops at 1.]
-
-[Off: units still visit schools but never gain a level.]
-
 [Summary]
 
 [All rules]
@@ -4699,8 +4659,6 @@ Koloni başına üs; üs, haritanın çizildiği hâliyle bir takımı, binalar�
 [ruleset one change %0]
 
 [ruleset changes %0 %1]
-
-[No effect while combat is off.]
 
 [This match cannot end. Turn on prestige victory or set a time limit.]
 
@@ -4753,4 +4711,24 @@ Koloni başına üs; üs, haritanın çizildiği hâliyle bir takımı, binalar�
 [99% sure]
 
 [Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
+
+[Changed from %0: %1]
+
+[Combat is off, so the rules below have no effect.]
+
+[%0 more rules are at their Standard values.]
+
+[Players see the map's terrain from the start; enemy units stay hidden.]
+
+[Each team starts with extra resources in its shared pool.]
+
+[Units hit harder but have less HP and armor.]
+
+[Teams can attack each other. Turn off for a peaceful match.]
+
+[Hurt units go back to heal instead of fighting to the death.]
+
+[Units die when they run out of HP. Turn off to stop them at 1 HP.]
+
+[Units gain levels at schools.]
 

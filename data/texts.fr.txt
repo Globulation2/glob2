@@ -1154,8 +1154,6 @@ Bleu
 Marron
 [Built-in maps]
 Cartes intégrées
-[Can change in game]
-Modifiables en partie
 [Closed]
 Fermé
 [Colonies]
@@ -1184,8 +1182,6 @@ Cyan
 Poids du désert
 [Easy]
 Facile
-[Explore as you play]
-Explorez en jouant
 [Extra colony assignments are retained for larger maps.]
 Les affectations de colonies supplémentaires sont conservées pour les cartes plus grandes.
 [Extra islands]
@@ -1228,8 +1224,6 @@ Paysage
 Dernière colonie survivante
 [Layout]
 Disposition
-[Locked teams]
-Équipes verrouillées
 [Magenta]
 Magenta
 [Map]
@@ -1280,8 +1274,6 @@ Rouge
 Répéter le paysage
 [Resources]
 Ressources
-[Revealed terrain does not reveal all enemy activity.]
-Le terrain révélé ne révèle pas toutes les activités ennemies.
 [River]
 Rivière
 [River width]
@@ -1308,8 +1300,6 @@ Marais
 Équipe
 [Terrain]
 Terrain
-[Terrain revealed]
-Terrain révélé
 [Victory]
 Victoire
 [Watch game]
@@ -2124,14 +2114,8 @@ Page suiv. (P)
 Choisissez une carte
 [Building sites complete immediately, skipping delivery.]
 Les chantiers se terminent immédiatement, sans étape de livraison.
-[Seeds each team's shared market/exchange resource pool at game start.]
-Alimente la réserve commune de marché/échange de chaque équipe au début de la partie.
 [No growth]
 Aucune croissance
-[Normal construction]
-Construction normale
-[Instant]
-Instantanée
 [Units get hungry]
 Les unités ont faim
 [No hunger]
@@ -2154,28 +2138,14 @@ Aucune croissance des ressources
 Économie
 [Instant construction]
 Construction instantanée
-[Higher tiers deal more damage but have less HP and armor.]
-Les niveaux supérieurs infligent plus de dégâts mais ont moins de PV et d'armure.
 [Higher tiers give every building much more HP.]
 Les niveaux supérieurs donnent beaucoup plus de PV à chaque bâtiment.
 [Starting units spawn already leveled up. Changes the generated map.]
 Les unités de départ apparaissent déjà montées en niveau. Modifie la carte générée.
-[Trains normally]
-S'entraîne normalement
 [No upgrades]
 Pas de montée en niveau
-[Retreats when damaged]
-Se replie quand elle est blessée
-[Fearless]
-Sans peur
-[Can die permanently]
-Peut mourir définitivement
 [No permadeath]
 Pas de mort définitive
-[Normal combat]
-Combat normal
-[Peaceful mode]
-Mode pacifique
 [Glass cannon x2]
 Canon de verre x2
 [Glass cannon x3]
@@ -3375,8 +3345,6 @@ Rebond des listes
 [play online]
 
 [Use in room]
-
-[Custom rules]
 
 [conn ai]
 
@@ -4678,14 +4646,6 @@ Bases par colonie ; une base est une équipe de la carte telle que dessinée, av
 
 [Units must eat to keep working.]
 
-[Off: a peaceful match with no fighting between teams.]
-
-[Off: units fight to the death instead of retreating to heal.]
-
-[Off: units are never permanently lost; HP just stops at 1.]
-
-[Off: units still visit schools but never gain a level.]
-
 [Summary]
 
 [All rules]
@@ -4699,8 +4659,6 @@ Bases par colonie ; une base est une équipe de la carte telle que dessinée, av
 [ruleset one change %0]
 
 [ruleset changes %0 %1]
-
-[No effect while combat is off.]
 
 [This match cannot end. Turn on prestige victory or set a time limit.]
 
@@ -4753,4 +4711,24 @@ Bases par colonie ; une base est une équipe de la carte telle que dessinée, av
 [99% sure]
 
 [Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
+
+[Changed from %0: %1]
+
+[Combat is off, so the rules below have no effect.]
+
+[%0 more rules are at their Standard values.]
+
+[Players see the map's terrain from the start; enemy units stay hidden.]
+
+[Each team starts with extra resources in its shared pool.]
+
+[Units hit harder but have less HP and armor.]
+
+[Teams can attack each other. Turn off for a peaceful match.]
+
+[Hurt units go back to heal instead of fighting to the death.]
+
+[Units die when they run out of HP. Turn off to stop them at 1 HP.]
+
+[Units gain levels at schools.]
 

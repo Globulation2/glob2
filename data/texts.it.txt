@@ -1154,8 +1154,6 @@ Blu
 Marrone
 [Built-in maps]
 Mappe integrate
-[Can change in game]
-Può cambiare nel gioco
 [Closed]
 Chiuso
 [Colonies]
@@ -1184,8 +1182,6 @@ Ciano
 Peso del deserto
 [Easy]
 Facile
-[Explore as you play]
-Esplora mentre giochi
 [Extra colony assignments are retained for larger maps.]
 Le assegnazioni di colonie extra vengono mantenute per le mappe più grandi.
 [Extra islands]
@@ -1228,8 +1224,6 @@ Paesaggio
 Ultima colonia rimasta
 [Layout]
 Disposizione
-[Locked teams]
-Squadre bloccate
 [Magenta]
 Magenta
 [Map]
@@ -1280,8 +1274,6 @@ Rosso
 Ripeti il paesaggio
 [Resources]
 Risorse
-[Revealed terrain does not reveal all enemy activity.]
-Il terreno rivelato non rivela tutta l'attività nemica.
 [River]
 Fiume
 [River width]
@@ -1308,8 +1300,6 @@ Palude
 Squadra
 [Terrain]
 Terreno
-[Terrain revealed]
-Terreno rivelato
 [Victory]
 Vittoria
 [Watch game]
@@ -2124,14 +2114,8 @@ Pagina (P)
 Scegli una mappa
 [Building sites complete immediately, skipping delivery.]
 I cantieri si completano immediatamente, saltando la consegna.
-[Seeds each team's shared market/exchange resource pool at game start.]
-Rifornisce la riserva condivisa di mercato/scambio di ogni squadra all'inizio della partita.
 [No growth]
 Nessuna crescita
-[Normal construction]
-Costruzione normale
-[Instant]
-Istantanea
 [Units get hungry]
 Le unità hanno fame
 [No hunger]
@@ -2154,28 +2138,14 @@ Nessuna crescita delle risorse
 Economia
 [Instant construction]
 Costruzione istantanea
-[Higher tiers deal more damage but have less HP and armor.]
-I livelli superiori infliggono più danni ma hanno meno PV e armatura.
 [Higher tiers give every building much more HP.]
 I livelli superiori danno molti più PV a ogni edificio.
 [Starting units spawn already leveled up. Changes the generated map.]
 Le unità iniziali compaiono già con livelli avanzati. Cambia la mappa generata.
-[Trains normally]
-Si allena normalmente
 [No upgrades]
 Nessun avanzamento
-[Retreats when damaged]
-Si ritira quando è ferita
-[Fearless]
-Senza paura
-[Can die permanently]
-Può morire definitivamente
 [No permadeath]
 Nessuna morte definitiva
-[Normal combat]
-Combattimento normale
-[Peaceful mode]
-Modalità pacifica
 [Glass cannon x2]
 Cannone di vetro x2
 [Glass cannon x3]
@@ -3375,8 +3345,6 @@ Inerzia della mappa
 [play online]
 
 [Use in room]
-
-[Custom rules]
 
 [conn ai]
 
@@ -4678,14 +4646,6 @@ Basi per colonia; una base è una squadra della mappa così come è disegnata, c
 
 [Units must eat to keep working.]
 
-[Off: a peaceful match with no fighting between teams.]
-
-[Off: units fight to the death instead of retreating to heal.]
-
-[Off: units are never permanently lost; HP just stops at 1.]
-
-[Off: units still visit schools but never gain a level.]
-
 [Summary]
 
 [All rules]
@@ -4699,8 +4659,6 @@ Basi per colonia; una base è una squadra della mappa così come è disegnata, c
 [ruleset one change %0]
 
 [ruleset changes %0 %1]
-
-[No effect while combat is off.]
 
 [This match cannot end. Turn on prestige victory or set a time limit.]
 
@@ -4753,4 +4711,24 @@ Basi per colonia; una base è una squadra della mappa così come è disegnata, c
 [99% sure]
 
 [Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
+
+[Changed from %0: %1]
+
+[Combat is off, so the rules below have no effect.]
+
+[%0 more rules are at their Standard values.]
+
+[Players see the map's terrain from the start; enemy units stay hidden.]
+
+[Each team starts with extra resources in its shared pool.]
+
+[Units hit harder but have less HP and armor.]
+
+[Teams can attack each other. Turn off for a peaceful match.]
+
+[Hurt units go back to heal instead of fighting to the death.]
+
+[Units die when they run out of HP. Turn off to stop them at 1 HP.]
+
+[Units gain levels at schools.]
 

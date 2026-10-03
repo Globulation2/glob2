@@ -1154,8 +1154,6 @@ AI策略与对抗
 棕色
 [Built-in maps]
 内置地图
-[Can change in game]
-游戏中可以改变
 [Closed]
 关闭
 [Colonies]
@@ -1184,8 +1182,6 @@ AI策略与对抗
 沙漠权重
 [Easy]
 简单
-[Explore as you play]
-边玩边探索
 [Extra colony assignments are retained for larger maps.]
 多余的殖民地设置会保留，以便切回更大的地图时恢复。
 [Extra islands]
@@ -1228,8 +1224,6 @@ AI策略与对抗
 最后的殖民地
 [Layout]
 布局
-[Locked teams]
-锁定队伍
 [Magenta]
 洋红色
 [Map]
@@ -1280,8 +1274,6 @@ AI策略与对抗
 重复地形
 [Resources]
 资源
-[Revealed terrain does not reveal all enemy activity.]
-揭示的地形并不能揭示所有敌人的活动。
 [River]
 河流
 [River width]
@@ -1308,8 +1300,6 @@ AI策略与对抗
 队伍
 [Terrain]
 地形
-[Terrain revealed]
-地形显露
 [Victory]
 胜利
 [Watch game]
@@ -2124,14 +2114,8 @@ OpenGL 在此版本中不可用。
 选择地图
 [Building sites complete immediately, skipping delivery.]
 建筑工地会立即完成，跳过运送阶段。
-[Seeds each team's shared market/exchange resource pool at game start.]
-在游戏开始时，为每支队伍补满共享的市场/交易资源储备。
 [No growth]
 不生长
-[Normal construction]
-正常建造
-[Instant]
-立即
 [Units get hungry]
 单位会挨饿
 [No hunger]
@@ -2154,28 +2138,14 @@ OpenGL 在此版本中不可用。
 经济
 [Instant construction]
 立即建造
-[Higher tiers deal more damage but have less HP and armor.]
-更高的等级会造成更多伤害，但生命值和护甲较低。
 [Higher tiers give every building much more HP.]
 更高的等级会让每座建筑物获得更多生命值。
 [Starting units spawn already leveled up. Changes the generated map.]
 初始单位一开始就已经升级。会改变生成的地图。
-[Trains normally]
-正常训练
 [No upgrades]
 不升级
-[Retreats when damaged]
-受伤时撤退
-[Fearless]
-无畏
-[Can die permanently]
-可能永久死亡
 [No permadeath]
 不会永久死亡
-[Normal combat]
-正常战斗
-[Peaceful mode]
-和平模式
 [Glass cannon x2]
 玻璃大炮 x2
 [Glass cannon x3]
@@ -3375,8 +3345,6 @@ CPU %0%
 [play online]
 
 [Use in room]
-
-[Custom rules]
 
 [conn ai]
 
@@ -4678,14 +4646,6 @@ CPU %0%
 
 [Units must eat to keep working.]
 
-[Off: a peaceful match with no fighting between teams.]
-
-[Off: units fight to the death instead of retreating to heal.]
-
-[Off: units are never permanently lost; HP just stops at 1.]
-
-[Off: units still visit schools but never gain a level.]
-
 [Summary]
 
 [All rules]
@@ -4699,8 +4659,6 @@ CPU %0%
 [ruleset one change %0]
 
 [ruleset changes %0 %1]
-
-[No effect while combat is off.]
 
 [This match cannot end. Turn on prestige victory or set a time limit.]
 
@@ -4753,4 +4711,24 @@ CPU %0%
 [99% sure]
 
 [Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
+
+[Changed from %0: %1]
+
+[Combat is off, so the rules below have no effect.]
+
+[%0 more rules are at their Standard values.]
+
+[Players see the map's terrain from the start; enemy units stay hidden.]
+
+[Each team starts with extra resources in its shared pool.]
+
+[Units hit harder but have less HP and armor.]
+
+[Teams can attack each other. Turn off for a peaceful match.]
+
+[Hurt units go back to heal instead of fighting to the death.]
+
+[Units die when they run out of HP. Turn off to stop them at 1 HP.]
+
+[Units gain levels at schools.]
 

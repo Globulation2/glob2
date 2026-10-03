@@ -1148,8 +1148,6 @@ Blue
 Brown
 [Built-in maps]
 Built-in maps
-[Can change in game]
-Can change in game
 [Closed]
 Closed
 [Colonies]
@@ -1178,8 +1176,6 @@ Cyan
 Desert weight
 [Easy]
 Easy
-[Explore as you play]
-Explore as you play
 [Extra colony assignments are retained for larger maps.]
 Extra colony assignments are retained for larger maps.
 [Extra islands]
@@ -1222,8 +1218,6 @@ Landscape
 Last colony standing
 [Layout]
 Layout
-[Locked teams]
-Locked teams
 [Magenta]
 Magenta
 [Map]
@@ -1274,8 +1268,6 @@ Red
 Repeat landscape
 [Resources]
 Resources
-[Revealed terrain does not reveal all enemy activity.]
-Revealed terrain does not reveal all enemy activity.
 [River]
 River
 [River width]
@@ -1302,8 +1294,6 @@ Swamp
 Team
 [Terrain]
 Terrain
-[Terrain revealed]
-Terrain revealed
 [Victory]
 Victory
 [Watch game]
@@ -2068,14 +2058,8 @@ Please wait
 Choose a map
 [Building sites complete immediately, skipping delivery.]
 Building sites complete immediately, skipping delivery.
-[Seeds each team's shared market/exchange resource pool at game start.]
-Seeds each team's shared market/exchange resource pool at game start.
 [No growth]
 No growth
-[Normal construction]
-Normal construction
-[Instant]
-Instant
 [Units get hungry]
 Units get hungry
 [No hunger]
@@ -2098,28 +2082,14 @@ No resource growth
 Economy
 [Instant construction]
 Instant construction
-[Higher tiers deal more damage but have less HP and armor.]
-Higher tiers deal more damage but have less HP and armor.
 [Higher tiers give every building much more HP.]
 Higher tiers give every building much more HP.
 [Starting units spawn already leveled up. Changes the generated map.]
 Starting units spawn already leveled up. Changes the generated map.
-[Trains normally]
-Trains normally
 [No upgrades]
 No upgrades
-[Retreats when damaged]
-Retreats when damaged
-[Fearless]
-Fearless
-[Can die permanently]
-Can die permanently
 [No permadeath]
 No permadeath
-[Normal combat]
-Normal combat
-[Peaceful mode]
-Peaceful mode
 [Glass cannon x2]
 Glass cannon x2
 [Glass cannon x3]
@@ -3388,8 +3358,6 @@ Unable to host a LAN game: %0
 Play online
 [Use in room]
 Use in room
-[Custom rules]
-Custom rules
 [conn ai]
 AI
 [conn behind %0]
@@ -4690,14 +4658,6 @@ Off
 How quickly harvested resources grow back and spread.
 [Units must eat to keep working.]
 Units must eat to keep working.
-[Off: a peaceful match with no fighting between teams.]
-Off: a peaceful match with no fighting between teams.
-[Off: units fight to the death instead of retreating to heal.]
-Off: units fight to the death instead of retreating to heal.
-[Off: units are never permanently lost; HP just stops at 1.]
-Off: units are never permanently lost; HP just stops at 1.
-[Off: units still visit schools but never gain a level.]
-Off: units still visit schools but never gain a level.
 [Summary]
 Summary
 [All rules]
@@ -4712,8 +4672,6 @@ Reset to %0
 %0 + 1 change
 [ruleset changes %0 %1]
 %0 + %1 changes
-[No effect while combat is off.]
-No effect while combat is off.
 [This match cannot end. Turn on prestige victory or set a time limit.]
 This match cannot end. Turn on prestige victory or set a time limit.
 [Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
@@ -4721,36 +4679,56 @@ Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends
 [Blitz]
 Blitz
 [ruleset blitz description]
-Rush start; ends at 45 minutes or once the winner is clear.
+Fast start, early finish
 [Gentle]
 Gentle
 [ruleset gentle description]
-Forgiving rules for a first match.
+Forgiving rules for a first match
 [Sandbox]
 Sandbox
 [ruleset sandbox description]
-No fighting, no starving, build anything.
+No fighting, no starving, build anything
 [Bloodbath]
 Bloodbath
 [ruleset bloodbath description]
-Fragile, fearless armies; fights end fast.
+Fragile, fearless armies
 [Siege]
 Siege
 [ruleset siege description]
-Fortress walls and long wars.
+Fortress walls and long wars
 [Lean years]
 Lean years
 [ruleset lean years description]
-Resources barely come back.
+Resources barely come back
 [Gold rush]
 Gold rush
 [ruleset gold rush description]
-What's on the map is all there is.
+What's on the map is all there is
 [Elite ranks]
 Elite ranks
 [ruleset elite ranks description]
-Start trained, train no further.
+Start trained, train no further
 [Shifting alliances]
 Shifting alliances
 [ruleset shifting alliances description]
-Teams can change; 60-minute prestige race.
+Teams can change in a 60-minute race
+[Changed from %0: %1]
+Changed from %0: %1
+[Combat is off, so the rules below have no effect.]
+Combat is off, so the rules below have no effect.
+[%0 more rules are at their Standard values.]
+%0 more rules are at their Standard values.
+[Players see the map's terrain from the start; enemy units stay hidden.]
+Players see the map's terrain from the start; enemy units stay hidden.
+[Each team starts with extra resources in its shared pool.]
+Each team starts with extra resources in its shared pool.
+[Units hit harder but have less HP and armor.]
+Units hit harder but have less HP and armor.
+[Teams can attack each other. Turn off for a peaceful match.]
+Teams can attack each other. Turn off for a peaceful match.
+[Hurt units go back to heal instead of fighting to the death.]
+Hurt units go back to heal instead of fighting to the death.
+[Units die when they run out of HP. Turn off to stop them at 1 HP.]
+Units die when they run out of HP. Turn off to stop them at 1 HP.
+[Units gain levels at schools.]
+Units gain levels at schools.

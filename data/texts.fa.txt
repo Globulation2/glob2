@@ -1154,8 +1154,6 @@ Cortex
 قهوه ای
 [Built-in maps]
 نقشه های داخلی
-[Can change in game]
-می تواند در بازی تغییر کند
 [Closed]
 بسته
 [Colonies]
@@ -1184,8 +1182,6 @@ Cortex
 سهم بیابان
 [Easy]
 آسان
-[Explore as you play]
-در حین بازی کاوش کنید
 [Extra colony assignments are retained for larger maps.]
 تنظیمات مستعمره‌های اضافی برای بازگشت به نقشه‌های بزرگ‌تر حفظ می‌شود.
 [Extra islands]
@@ -1228,8 +1224,6 @@ Cortex
 آخرین مستعمره باقی‌مانده
 [Layout]
 طرح بندی
-[Locked teams]
-تیم های قفل شده
 [Magenta]
 سرخابی
 [Map]
@@ -1280,8 +1274,6 @@ Cortex
 منظره را تکرار کنید
 [Resources]
 منابع
-[Revealed terrain does not reveal all enemy activity.]
-زمین آشکار شده همه فعالیت های دشمن را آشکار نمی کند.
 [River]
 رودخانه
 [River width]
@@ -1308,8 +1300,6 @@ Cortex
 تیم
 [Terrain]
 زمین
-[Terrain revealed]
-زمین آشکار شد
 [Victory]
 پیروزی
 [Watch game]
@@ -2124,14 +2114,8 @@ OpenGL در این بیلد موجود نیست.
 یک نقشه انتخاب کنید
 [Building sites complete immediately, skipping delivery.]
 محل‌های ساخت بلافاصله تکمیل می‌شوند و مرحله تحویل را نادیده می‌گیرند.
-[Seeds each team's shared market/exchange resource pool at game start.]
-در آغاز بازی، ذخیره مشترک بازار/مبادله هر تیم را پر می‌کند.
 [No growth]
 بدون رشد
-[Normal construction]
-ساخت‌وساز عادی
-[Instant]
-آنی
 [Units get hungry]
 واحدها گرسنه می‌شوند
 [No hunger]
@@ -2154,28 +2138,14 @@ OpenGL در این بیلد موجود نیست.
 اقتصاد
 [Instant construction]
 ساخت‌وساز آنی
-[Higher tiers deal more damage but have less HP and armor.]
-رتبه‌های بالاتر آسیب بیشتری وارد می‌کنند اما سلامتی و قدرت دفاع کمتری دارند.
 [Higher tiers give every building much more HP.]
 رتبه‌های بالاتر به هر ساختمان سلامتی بسیار بیشتری می‌دهند.
 [Starting units spawn already leveled up. Changes the generated map.]
 واحدهای اولیه از قبل با رتبه بالا ظاهر می‌شوند. نقشهٔ تولیدشده را تغییر می‌دهد.
-[Trains normally]
-به‌طور عادی آموزش می‌بیند
 [No upgrades]
 بدون ارتقا
-[Retreats when damaged]
-هنگام آسیب دیدن عقب‌نشینی می‌کند
-[Fearless]
-بی‌باک
-[Can die permanently]
-می‌تواند برای همیشه بمیرد
 [No permadeath]
 بدون مرگ همیشگی
-[Normal combat]
-نبرد عادی
-[Peaceful mode]
-حالت مسالمت‌آمیز
 [Glass cannon x2]
 توپ شیشه‌ای x2
 [Glass cannon x3]
@@ -3375,8 +3345,6 @@ Emoji
 [play online]
 
 [Use in room]
-
-[Custom rules]
 
 [conn ai]
 
@@ -4678,14 +4646,6 @@ Emoji
 
 [Units must eat to keep working.]
 
-[Off: a peaceful match with no fighting between teams.]
-
-[Off: units fight to the death instead of retreating to heal.]
-
-[Off: units are never permanently lost; HP just stops at 1.]
-
-[Off: units still visit schools but never gain a level.]
-
 [Summary]
 
 [All rules]
@@ -4699,8 +4659,6 @@ Emoji
 [ruleset one change %0]
 
 [ruleset changes %0 %1]
-
-[No effect while combat is off.]
 
 [This match cannot end. Turn on prestige victory or set a time limit.]
 
@@ -4753,4 +4711,24 @@ Emoji
 [99% sure]
 
 [Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
+
+[Changed from %0: %1]
+
+[Combat is off, so the rules below have no effect.]
+
+[%0 more rules are at their Standard values.]
+
+[Players see the map's terrain from the start; enemy units stay hidden.]
+
+[Each team starts with extra resources in its shared pool.]
+
+[Units hit harder but have less HP and armor.]
+
+[Teams can attack each other. Turn off for a peaceful match.]
+
+[Hurt units go back to heal instead of fighting to the death.]
+
+[Units die when they run out of HP. Turn off to stop them at 1 HP.]
+
+[Units gain levels at schools.]
 

@@ -1154,8 +1154,6 @@ AIの戦略と対抗策
 茶色
 [Built-in maps]
 内蔵マップ
-[Can change in game]
-ゲーム内で変更可能
 [Closed]
 参加しない
 [Colonies]
@@ -1184,8 +1182,6 @@ AIの戦略と対抗策
 砂漠の割合
 [Easy]
 簡単
-[Explore as you play]
-探索して地形を発見
 [Extra colony assignments are retained for larger maps.]
 入りきらないコロニーの設定は、より大きなマップに戻したときのために保持されます。
 [Extra islands]
@@ -1228,8 +1224,6 @@ AIの戦略と対抗策
 最後まで生き残るコロニー
 [Layout]
 レイアウト
-[Locked teams]
-チーム固定
 [Magenta]
 マゼンタ
 [Map]
@@ -1280,8 +1274,6 @@ AIの命令なし
 地形の繰り返し
 [Resources]
 資源
-[Revealed terrain does not reveal all enemy activity.]
-地形が明らかになったからといって、敵の活動がすべて明らかになるわけではありません。
 [River]
 川
 [River width]
@@ -1308,8 +1300,6 @@ AIの命令なし
 チーム
 [Terrain]
 地形
-[Terrain revealed]
-地形を最初から公開
 [Victory]
 勝利
 [Watch game]
@@ -2124,14 +2114,8 @@ Globulation 2 のカーソルを表示します。
 マップを選択
 [Building sites complete immediately, skipping delivery.]
 建設現場は配送段階を省略し、即座に完成します。
-[Seeds each team's shared market/exchange resource pool at game start.]
-ゲーム開始時に、各チームの共有市場/交換資源プールを補充します。
 [No growth]
 成長なし
-[Normal construction]
-通常の建設
-[Instant]
-即時
 [Units get hungry]
 ユニットが空腹になる
 [No hunger]
@@ -2154,28 +2138,14 @@ Globulation 2 のカーソルを表示します。
 経済
 [Instant construction]
 即時建設
-[Higher tiers deal more damage but have less HP and armor.]
-上位のティアはより多くのダメージを与えますが、体力と装甲が低くなります。
 [Higher tiers give every building much more HP.]
 上位のティアはすべての建物の体力を大幅に増加させます。
 [Starting units spawn already leveled up. Changes the generated map.]
 開始時のユニットは最初からレベルが上がった状態で出現します。生成されるマップが変わります。
-[Trains normally]
-通常どおり訓練する
 [No upgrades]
 レベルアップなし
-[Retreats when damaged]
-ダメージを受けると撤退する
-[Fearless]
-恐れ知らず
-[Can die permanently]
-永久に死亡することがある
 [No permadeath]
 永久死亡なし
-[Normal combat]
-通常の戦闘
-[Peaceful mode]
-平和モード
 [Glass cannon x2]
 ガラスの大砲 x2
 [Glass cannon x3]
@@ -3375,8 +3345,6 @@ AIを追加
 [play online]
 
 [Use in room]
-
-[Custom rules]
 
 [conn ai]
 
@@ -4678,14 +4646,6 @@ AIを追加
 
 [Units must eat to keep working.]
 
-[Off: a peaceful match with no fighting between teams.]
-
-[Off: units fight to the death instead of retreating to heal.]
-
-[Off: units are never permanently lost; HP just stops at 1.]
-
-[Off: units still visit schools but never gain a level.]
-
 [Summary]
 
 [All rules]
@@ -4699,8 +4659,6 @@ AIを追加
 [ruleset one change %0]
 
 [ruleset changes %0 %1]
-
-[No effect while combat is off.]
 
 [This match cannot end. Turn on prestige victory or set a time limit.]
 
@@ -4753,4 +4711,24 @@ AIを追加
 [99% sure]
 
 [Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
+
+[Changed from %0: %1]
+
+[Combat is off, so the rules below have no effect.]
+
+[%0 more rules are at their Standard values.]
+
+[Players see the map's terrain from the start; enemy units stay hidden.]
+
+[Each team starts with extra resources in its shared pool.]
+
+[Units hit harder but have less HP and armor.]
+
+[Teams can attack each other. Turn off for a peaceful match.]
+
+[Hurt units go back to heal instead of fighting to the death.]
+
+[Units die when they run out of HP. Turn off to stop them at 1 HP.]
+
+[Units gain levels at schools.]
 

@@ -125,7 +125,7 @@ std::vector<Fixture> fixtures()
 			 auto lobby = std::make_unique<CustomGameScreen>(s);
 			 lobby->selectTab(2);
 			 lobby->selectRuleset("blitz");
-			 lobby->setRulesView(1);
+			 lobby->setRulesView(CustomGameScreen::RulesView::All);
 			 return lobby;
 		 }},
 		{"ruleset-choice", [](GAGGUI::ScreenStack &) { return std::make_unique<RulesetChoiceScreen>("blitz"); }},

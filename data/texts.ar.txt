@@ -1154,8 +1154,6 @@ Cortex
 بني
 [Built-in maps]
 الخرائط المضمنة
-[Can change in game]
-يمكن أن تتغير في اللعبة
 [Closed]
 مغلق
 [Colonies]
@@ -1184,8 +1182,6 @@ Cortex
 نسبة الصحراء
 [Easy]
 سهل
-[Explore as you play]
-استكشف أثناء اللعب
 [Extra colony assignments are retained for larger maps.]
 تُحفظ إعدادات المستعمرات الزائدة لاستعادتها عند اختيار خريطة أكبر.
 [Extra islands]
@@ -1228,8 +1224,6 @@ Cortex
 آخر مستعمرة باقية
 [Layout]
 التخطيط
-[Locked teams]
-فرق مغلقة
 [Magenta]
 أرجواني
 [Map]
@@ -1280,8 +1274,6 @@ Cortex
 كرر المشهد
 [Resources]
 الموارد
-[Revealed terrain does not reveal all enemy activity.]
-كشف التضاريس لا يكشف جميع أنشطة العدو.
 [River]
 ﻧﻬﺮ
 [River width]
@@ -1308,8 +1300,6 @@ Cortex
 فريق
 [Terrain]
 التضاريس
-[Terrain revealed]
-تضاريس مكشوفة
 [Victory]
 النصر
 [Watch game]
@@ -2124,14 +2114,8 @@ OpenGL غير متوفر في هذا الإصدار.
 اختر خريطة
 [Building sites complete immediately, skipping delivery.]
 تكتمل مواقع البناء فورًا، متجاوزةً مرحلة التوصيل.
-[Seeds each team's shared market/exchange resource pool at game start.]
-يهيئ رصيد مورد السوق/التبادل المشترك لكل فريق عند بداية اللعبة.
 [No growth]
 بدون نمو
-[Normal construction]
-بناء عادي
-[Instant]
-فوري
 [Units get hungry]
 الوحدات تجوع
 [No hunger]
@@ -2154,28 +2138,14 @@ OpenGL غير متوفر في هذا الإصدار.
 الاقتصاد
 [Instant construction]
 بناء فوري
-[Higher tiers deal more damage but have less HP and armor.]
-المستويات الأعلى تُلحق ضررًا أكبر لكنها تملك نقاط صحة ودرعًا أقل.
 [Higher tiers give every building much more HP.]
 المستويات الأعلى تمنح كل مبنى نقاط صحة أكبر بكثير.
 [Starting units spawn already leveled up. Changes the generated map.]
 تظهر الوحدات الأولية وهي بالفعل في مستوى أعلى. يغيّر الخريطة المولَّدة.
-[Trains normally]
-تتدرب بشكل طبيعي
 [No upgrades]
 بلا ترقيات
-[Retreats when damaged]
-تتراجع عند الإصابة
-[Fearless]
-بلا خوف
-[Can die permanently]
-يمكن أن تموت نهائيًا
 [No permadeath]
 بلا موت نهائي
-[Normal combat]
-قتال عادي
-[Peaceful mode]
-وضع سلمي
 [Glass cannon x2]
 مدفع زجاجي x2
 [Glass cannon x3]
@@ -3375,8 +3345,6 @@ Emoji
 [play online]
 
 [Use in room]
-
-[Custom rules]
 
 [conn ai]
 
@@ -4678,14 +4646,6 @@ Emoji
 
 [Units must eat to keep working.]
 
-[Off: a peaceful match with no fighting between teams.]
-
-[Off: units fight to the death instead of retreating to heal.]
-
-[Off: units are never permanently lost; HP just stops at 1.]
-
-[Off: units still visit schools but never gain a level.]
-
 [Summary]
 
 [All rules]
@@ -4699,8 +4659,6 @@ Emoji
 [ruleset one change %0]
 
 [ruleset changes %0 %1]
-
-[No effect while combat is off.]
 
 [This match cannot end. Turn on prestige victory or set a time limit.]
 
@@ -4753,4 +4711,24 @@ Emoji
 [99% sure]
 
 [Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
+
+[Changed from %0: %1]
+
+[Combat is off, so the rules below have no effect.]
+
+[%0 more rules are at their Standard values.]
+
+[Players see the map's terrain from the start; enemy units stay hidden.]
+
+[Each team starts with extra resources in its shared pool.]
+
+[Units hit harder but have less HP and armor.]
+
+[Teams can attack each other. Turn off for a peaceful match.]
+
+[Hurt units go back to heal instead of fighting to the death.]
+
+[Units die when they run out of HP. Turn off to stop them at 1 HP.]
+
+[Units gain levels at schools.]
 

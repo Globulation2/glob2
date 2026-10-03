@@ -1154,8 +1154,6 @@ Blua
 Bruna
 [Built-in maps]
 Enkonstruitaj mapoj
-[Can change in game]
-Povas ŝanĝiĝi en la ludo
 [Closed]
 Fermita
 [Colonies]
@@ -1184,8 +1182,6 @@ Cejana
 Dezerta pezo
 [Easy]
 Facila
-[Explore as you play]
-Esploru dum vi ludas
 [Extra colony assignments are retained for larger maps.]
 Asignoj de pliaj kolonioj estas konservataj por pli grandaj mapoj.
 [Extra islands]
@@ -1228,8 +1224,6 @@ Pejzaĝo
 Lasta kolonio staranta
 [Layout]
 Aranĝo
-[Locked teams]
-Ŝlositaj teamoj
 [Magenta]
 Magenta
 [Map]
@@ -1280,8 +1274,6 @@ Ruĝa
 Ripetu pejzaĝon
 [Resources]
 Rimedoj
-[Revealed terrain does not reveal all enemy activity.]
-Rivelita tereno ne malkaŝas ĉiun malamikan agadon.
 [River]
 Rivero
 [River width]
@@ -1308,8 +1300,6 @@ Marĉo
 Teamo
 [Terrain]
 Tereno
-[Terrain revealed]
-Tereno malkaŝita
 [Victory]
 Venko
 [Watch game]
@@ -2124,14 +2114,8 @@ Paĝo (P)
 Elektu mapon
 [Building sites complete immediately, skipping delivery.]
 Konstruejoj kompletiĝas tuj, preterlasante la liveradon.
-[Seeds each team's shared market/exchange resource pool at game start.]
-Provizas la komunan komercejan/interŝanĝan rimedrezervon de ĉiu teamo je la komenco de la ludo.
 [No growth]
 Neniu kresko
-[Normal construction]
-Normala konstruado
-[Instant]
-Tuja
 [Units get hungry]
 Unuoj malsatiĝas
 [No hunger]
@@ -2154,28 +2138,14 @@ Neniu rimedkresko
 Ekonomio
 [Instant construction]
 Tuja konstruado
-[Higher tiers deal more damage but have less HP and armor.]
-Pli altaj niveloj kaŭzas pli da difekto sed havas malpli da VPo kaj defendpovo.
 [Higher tiers give every building much more HP.]
 Pli altaj niveloj donas multe pli da VPo al ĉiu konstruaĵo.
 [Starting units spawn already leveled up. Changes the generated map.]
 Komencaj globuloj aperas jam altnivelaj. Ŝanĝas la generitan mapon.
-[Trains normally]
-Trejniĝas normale
 [No upgrades]
 Neniuj plibonigoj
-[Retreats when damaged]
-Retiriĝas kiam vundita
-[Fearless]
-Sentima
-[Can die permanently]
-Povas morti por ĉiam
 [No permadeath]
 Neniu porĉiama morto
-[Normal combat]
-Normala batalo
-[Peaceful mode]
-Paca reĝimo
 [Glass cannon x2]
 Vitra kanono x2
 [Glass cannon x3]
@@ -3375,8 +3345,6 @@ Inercio de la mapo
 [play online]
 
 [Use in room]
-
-[Custom rules]
 
 [conn ai]
 
@@ -4678,14 +4646,6 @@ Bazoj po kolonio; bazo estas unu teamo de la mapo kiel desegnite, kun ĝiaj kons
 
 [Units must eat to keep working.]
 
-[Off: a peaceful match with no fighting between teams.]
-
-[Off: units fight to the death instead of retreating to heal.]
-
-[Off: units are never permanently lost; HP just stops at 1.]
-
-[Off: units still visit schools but never gain a level.]
-
 [Summary]
 
 [All rules]
@@ -4699,8 +4659,6 @@ Bazoj po kolonio; bazo estas unu teamo de la mapo kiel desegnite, kun ĝiaj kons
 [ruleset one change %0]
 
 [ruleset changes %0 %1]
-
-[No effect while combat is off.]
 
 [This match cannot end. Turn on prestige victory or set a time limit.]
 
@@ -4753,4 +4711,24 @@ Bazoj po kolonio; bazo estas unu teamo de la mapo kiel desegnite, kun ĝiaj kons
 [99% sure]
 
 [Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
+
+[Changed from %0: %1]
+
+[Combat is off, so the rules below have no effect.]
+
+[%0 more rules are at their Standard values.]
+
+[Players see the map's terrain from the start; enemy units stay hidden.]
+
+[Each team starts with extra resources in its shared pool.]
+
+[Units hit harder but have less HP and armor.]
+
+[Teams can attack each other. Turn off for a peaceful match.]
+
+[Hurt units go back to heal instead of fighting to the death.]
+
+[Units die when they run out of HP. Turn off to stop them at 1 HP.]
+
+[Units gain levels at schools.]
 

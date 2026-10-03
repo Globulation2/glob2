@@ -1154,8 +1154,6 @@ Blå
 Brun
 [Built-in maps]
 Indbyggede kort
-[Can change in game]
-Kan ændre sig i spillet
 [Closed]
 Lukket
 [Colonies]
@@ -1184,8 +1182,6 @@ Cyan
 Ørkenvægt
 [Easy]
 Let
-[Explore as you play]
-Udforsk, mens du spiller
 [Extra colony assignments are retained for larger maps.]
 Ekstra kolonitildelinger bibeholdes for større kort.
 [Extra islands]
@@ -1228,8 +1224,6 @@ Landskab
 Sidste overlevende koloni
 [Layout]
 Layout
-[Locked teams]
-Aflåste hold
 [Magenta]
 Magenta
 [Map]
@@ -1280,8 +1274,6 @@ Rød
 Gentag landskab
 [Resources]
 Ressourcer
-[Revealed terrain does not reveal all enemy activity.]
-Afsløret terræn afslører ikke al fjendens aktivitet.
 [River]
 Flod
 [River width]
@@ -1308,8 +1300,6 @@ Sump
 Hold
 [Terrain]
 Terræn
-[Terrain revealed]
-Terræn afsløret
 [Victory]
 Sejr
 [Watch game]
@@ -2124,14 +2114,8 @@ Side (P)
 Vælg et kort
 [Building sites complete immediately, skipping delivery.]
 Byggepladser færdiggøres med det samme uden leveringsfase.
-[Seeds each team's shared market/exchange resource pool at game start.]
-Fylder hvert holds fælles marked/byttehandel-ressourcepulje op ved spilstart.
 [No growth]
 Ingen vækst
-[Normal construction]
-Normal opførelse
-[Instant]
-Øjeblikkelig
 [Units get hungry]
 Enheder bliver sultne
 [No hunger]
@@ -2154,28 +2138,14 @@ Ingen ressourcevækst
 Økonomi
 [Instant construction]
 Øjeblikkelig opførelse
-[Higher tiers deal more damage but have less HP and armor.]
-Højere niveauer gør mere skade, men har mindre HP og rustning.
 [Higher tiers give every building much more HP.]
 Højere niveauer giver hver bygning meget mere HP.
 [Starting units spawn already leveled up. Changes the generated map.]
 Startenheder starter allerede på et højere niveau. Ændrer det genererede kort.
-[Trains normally]
-Træner normalt
 [No upgrades]
 Ingen opgraderinger
-[Retreats when damaged]
-Trækker sig tilbage, når den er skadet
-[Fearless]
-Frygtløs
-[Can die permanently]
-Kan dø permanent
 [No permadeath]
 Ingen permanent død
-[Normal combat]
-Normal kamp
-[Peaceful mode]
-Fredelig tilstand
 [Glass cannon x2]
 Glaskanon x2
 [Glass cannon x3]
@@ -3375,8 +3345,6 @@ Kortets fart
 [play online]
 
 [Use in room]
-
-[Custom rules]
 
 [conn ai]
 
@@ -4678,14 +4646,6 @@ Baser pr. koloni; en base er ét hold fra kortet, som det er tegnet, med dets by
 
 [Units must eat to keep working.]
 
-[Off: a peaceful match with no fighting between teams.]
-
-[Off: units fight to the death instead of retreating to heal.]
-
-[Off: units are never permanently lost; HP just stops at 1.]
-
-[Off: units still visit schools but never gain a level.]
-
 [Summary]
 
 [All rules]
@@ -4699,8 +4659,6 @@ Baser pr. koloni; en base er ét hold fra kortet, som det er tegnet, med dets by
 [ruleset one change %0]
 
 [ruleset changes %0 %1]
-
-[No effect while combat is off.]
 
 [This match cannot end. Turn on prestige victory or set a time limit.]
 
@@ -4753,4 +4711,24 @@ Baser pr. koloni; en base er ét hold fra kortet, som det er tegnet, med dets by
 [99% sure]
 
 [Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
+
+[Changed from %0: %1]
+
+[Combat is off, so the rules below have no effect.]
+
+[%0 more rules are at their Standard values.]
+
+[Players see the map's terrain from the start; enemy units stay hidden.]
+
+[Each team starts with extra resources in its shared pool.]
+
+[Units hit harder but have less HP and armor.]
+
+[Teams can attack each other. Turn off for a peaceful match.]
+
+[Hurt units go back to heal instead of fighting to the death.]
+
+[Units die when they run out of HP. Turn off to stop them at 1 HP.]
+
+[Units gain levels at schools.]
 

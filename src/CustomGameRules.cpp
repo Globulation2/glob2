@@ -12,16 +12,17 @@ namespace CustomGameRules
 {
 namespace
 {
-std::string text(const std::string &key)
+// Registry text keys are stored without brackets.
+std::string translate(const std::string &key)
 {
 	return GAGCore::Toolkit::getStringTable()->getString("[" + key + "]");
 }
 
-int minuteIndex(int minutes)
+// Position of `value` in a choices table, or -1 when the table does not offer it.
+template <std::size_t N> int indexOf(const std::array<int, N> &choices, int value)
 {
-	const auto &choices = CustomGameSetup::suddenDeathMinuteChoices;
-	const auto found = std::find(choices.begin(), choices.end(), minutes);
-	return found == choices.end() ? 0 : int(found - choices.begin());
+	const auto found = std::find(choices.begin(), choices.end(), value);
+	return found == choices.end() ? -1 : int(found - choices.begin());
 }
 
 const GeneratorControl &workerControl(const CustomGameSetup &setup)
@@ -33,76 +34,173 @@ std::vector<Rule> makeRules()
 {
 	using S = CustomGameSetup;
 	return {
-		{"victory", Group::Match, Kind::Segments, "Victory", "Conquest only removes prestige victory; map scripts still apply.",
-		 {"prestige", "conquest"}, {"Conquest or prestige", "Conquest only"}, false, true, false, false,
-		 [](const S &s) { return s.prestige ? 0 : 1; }, [](S &s, int v) { s.prestige = v == 0; }},
-		{"timeLimit", Group::Match, Kind::Choice, "Time limit", "Match ends at the timer; highest prestige at that instant wins.",
-		 {"off", "30", "45", "60", "90"}, {"Off (no timer)", "30 minutes", "45 minutes", "60 minutes", "90 minutes"}, false, true, false, false,
-		 [](const S &s) { return minuteIndex(s.suddenDeathMinutes); },
-		 [](S &s, int v) { s.suddenDeathMinutes = S::suddenDeathMinuteChoices[std::size_t(v)]; }},
-		// Rooms do not carry it (MatchRules has no field for it yet), so the room editor hides it.
-		{"winProbability", Group::Match, Kind::Choice, "Probability victory",
-		 "Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.",
-		 {"off", "95", "97", "99"}, {"Off (play it out)", "95% sure", "97% sure", "99% sure"}, false, false, true, false,
-		 [](const S &s)
-		 {
-			 const auto &choices = S::winProbabilityChoices;
-			 const auto found = std::find(choices.begin(), choices.end(), s.winProbabilityPermille);
-			 return found == choices.end() ? 0 : int(found - choices.begin());
-		 },
-		 [](S &s, int v) { s.winProbabilityPermille = S::winProbabilityChoices[std::size_t(v)]; }},
-		{"alliancesChange", Group::Match, Kind::Toggle, "Alliances can change", "Choose whether teams can change during the match.",
-		 {"off", "on"}, {"Locked teams", "Can change in game"}, false, true, false, false,
-		 [](const S &s) { return int(!s.locked); }, [](S &s, int v) { s.locked = !v; }},
-		{"speed", Group::Match, Kind::Choice, "Game speed", "Changes the pace of the whole simulation.",
-		 {"1x", "1.25x", "1.6x", "2x", "2.5x", "4x", "5x", "8x", "13x", "40x", "max"}, {}, false, false, true, false,
-		 [](const S &s) { return s.speed; }, [](S &s, int v) { s.speed = v; }},
-		{"revealTerrain", Group::Start, Kind::Toggle, "Reveal terrain", "Revealed terrain does not reveal all enemy activity.",
-		 {"off", "on"}, {"Explore as you play", "Terrain revealed"}, false, true, false, false,
-		 [](const S &s) { return int(s.revealed); }, [](S &s, int v) { s.revealed = v; }},
-		{"workers", Group::Start, Kind::Stepper, "Starting workers", "More workers jump-start colony growth. Changes the generated map.",
-		 {}, {}, true, false, false, false,
-		 [](const S &s) { return s.generator.nbWorkers; }, [](S &s, int v) { s.generator.nbWorkers = v; }},
-		{"unitLevel", Group::Start, Kind::Choice, "Starting unit level", "Starting units spawn already leveled up. Changes the generated map.",
-		 {"standard", "veteran", "elite", "legendary"}, {"Standard", "Veteran", "Elite", "Legendary"}, true, false, true, false,
-		 [](const S &s) { return s.startingUnitLevel; }, [](S &s, int v) { s.startingUnitLevel = v; }},
-		{"stockpile", Group::Start, Kind::Choice, "Starting stockpile", "Seeds each team's shared market/exchange resource pool at game start.",
-		 {"none", "50", "150", "300"}, {"No stockpile", "Small (+50 each)", "Medium (+150 each)", "Large (+300 each)"}, false, true, false, false,
-		 [](const S &s) { return s.stockpileStart; }, [](S &s, int v) { s.stockpileStart = v; }},
-		// One axis over two stored fields: resources regrow at a scarcity divisor, or never.
-		{"regrowth", Group::Economy, Kind::Choice, "Regrowth", "How quickly harvested resources grow back and spread.",
-		 {"normal", "slow", "very-slow", "rare", "none"},
-		 {"Normal", "Scarce (2x slower)", "Very scarce (4x slower)", "Extremely scarce (8x slower)", "No growth"}, false, true, false, false,
-		 [](const S &s) { return s.noResourceGrowth ? 4 : s.resourceScarcity; },
-		 [](S &s, int v)
+		// Match: how the game is won, how long it lasts and how fast it runs.
+		{.id = "victory",
+		 .group = Group::Match,
+		 .kind = Kind::Segments,
+		 .label = "Victory",
+		 .help = "Conquest only removes prestige victory; map scripts still apply.",
+		 .optionIds = {"prestige", "conquest"},
+		 .optionLabels = {"Conquest or prestige", "Conquest only"},
+		 .get = [](const S &s) { return s.prestige ? 0 : 1; },
+		 .set = [](S &s, int v) { s.prestige = v == 0; }},
+		{.id = "timeLimit",
+		 .group = Group::Match,
+		 .kind = Kind::Choice,
+		 .label = "Time limit",
+		 .help = "Match ends at the timer; highest prestige at that instant wins.",
+		 .optionIds = {"off", "30", "45", "60", "90"},
+		 .optionLabels = {"Off (no timer)", "30 minutes", "45 minutes", "60 minutes", "90 minutes"},
+		 .get = [](const S &s) { return indexOf(S::suddenDeathMinuteChoices, s.suddenDeathMinutes); },
+		 .set = [](S &s, int v) { s.suddenDeathMinutes = S::suddenDeathMinuteChoices[std::size_t(v)]; }},
+		{.id = "winProbability",
+		 .group = Group::Match,
+		 .kind = Kind::Choice,
+		 .label = "Probability victory",
+		 .help = "Ends the match when the model reaches the selected confidence. Spectators can see the predicted "
+				 "win chances in statistics.",
+		 .optionIds = {"off", "95", "97", "99"},
+		 .optionLabels = {"Off (play it out)", "95% sure", "97% sure", "99% sure"},
+		 .inRooms = InRooms::Hidden,
+		 .get = [](const S &s) { return indexOf(S::winProbabilityChoices, s.winProbabilityPermille); },
+		 .set = [](S &s, int v) { s.winProbabilityPermille = S::winProbabilityChoices[std::size_t(v)]; }},
+		{.id = "alliancesChange",
+		 .group = Group::Match,
+		 .kind = Kind::Toggle,
+		 .label = "Alliances can change",
+		 .help = "Choose whether teams can change during the match.",
+		 .get = [](const S &s) { return int(!s.locked); },
+		 .set = [](S &s, int v) { s.locked = !v; }},
+		// Game speed ids are the multipliers Settings::getGameSpeedText shows, so they need no
+		// labels of their own; the last one is "maximum".
+		{.id = "speed",
+		 .group = Group::Match,
+		 .kind = Kind::Choice,
+		 .label = "Game speed",
+		 .help = "Changes the pace of the whole simulation.",
+		 .optionIds = {"1x", "1.25x", "1.6x", "2x", "2.5x", "4x", "5x", "8x", "13x", "40x", "max"},
+		 .inRooms = InRooms::Hidden,
+		 .get = [](const S &s) { return s.speed; },
+		 .set = [](S &s, int v) { s.speed = v; }},
+		// Start: what every colony begins with.
+		{.id = "revealTerrain",
+		 .group = Group::Start,
+		 .kind = Kind::Toggle,
+		 .label = "Reveal terrain",
+		 .help = "Players see the map's terrain from the start; enemy units stay hidden.",
+		 .get = [](const S &s) { return int(s.revealed); },
+		 .set = [](S &s, int v) { s.revealed = v; }},
+		{.id = "workers",
+		 .group = Group::Start,
+		 .kind = Kind::Stepper,
+		 .label = "Starting workers",
+		 .help = "More workers jump-start colony growth. Changes the generated map.",
+		 .affectsMap = true,
+		 .inRooms = InRooms::Shown,
+		 .get = [](const S &s) { return s.generator.nbWorkers; },
+		 .set = [](S &s, int v) { s.generator.nbWorkers = v; }},
+		{.id = "unitLevel",
+		 .group = Group::Start,
+		 .kind = Kind::Choice,
+		 .label = "Starting unit level",
+		 .help = "Starting units spawn already leveled up. Changes the generated map.",
+		 .optionIds = {"standard", "veteran", "elite", "legendary"},
+		 .optionLabels = {"Standard", "Veteran", "Elite", "Legendary"},
+		 .affectsMap = true,
+		 .inRooms = InRooms::Hidden,
+		 .get = [](const S &s) { return s.startingUnitLevel; },
+		 .set = [](S &s, int v) { s.startingUnitLevel = v; }},
+		{.id = "stockpile",
+		 .group = Group::Start,
+		 .kind = Kind::Choice,
+		 .label = "Starting stockpile",
+		 .help = "Each team starts with extra resources in its shared pool.",
+		 .optionIds = {"none", "50", "150", "300"},
+		 .optionLabels = {"No stockpile", "Small (+50 each)", "Medium (+150 each)", "Large (+300 each)"},
+		 .get = [](const S &s) { return s.stockpileStart; },
+		 .set = [](S &s, int v) { s.stockpileStart = v; }},
+		// Economy. Regrowth is one axis over two stored fields: resources regrow at a
+		// scarcity divisor, or never (scarcity has no effect then, so it reads as None).
+		{.id = "regrowth",
+		 .group = Group::Economy,
+		 .kind = Kind::Choice,
+		 .label = "Regrowth",
+		 .help = "How quickly harvested resources grow back and spread.",
+		 .optionIds = {"normal", "slow", "very-slow", "rare", "none"},
+		 .optionLabels = {"Normal", "Scarce (2x slower)", "Very scarce (4x slower)", "Extremely scarce (8x slower)", "No growth"},
+		 .get = [](const S &s) { return s.noResourceGrowth ? 4 : s.resourceScarcity; },
+		 .set =
+			 [](S &s, int v)
 		 {
 			 s.noResourceGrowth = v == 4;
 			 s.resourceScarcity = v == 4 ? 0 : v;
 		 }},
-		{"instantConstruction", Group::Economy, Kind::Toggle, "Instant construction", "Building sites complete immediately, skipping delivery.",
-		 {"off", "on"}, {"Normal construction", "Instant"}, false, true, false, false,
-		 [](const S &s) { return int(s.instantConstruction); }, [](S &s, int v) { s.instantConstruction = v; }},
-		{"hunger", Group::Economy, Kind::Toggle, "Units get hungry", "Units must eat to keep working.",
-		 {"off", "on"}, {"No hunger", "Units get hungry"}, false, true, false, false,
-		 [](const S &s) { return int(!s.noHunger); }, [](S &s, int v) { s.noHunger = !v; }},
-		{"combat", Group::Combat, Kind::Toggle, "Combat", "Off: a peaceful match with no fighting between teams.",
-		 {"off", "on"}, {"Peaceful mode", "Normal combat"}, false, true, false, false,
-		 [](const S &s) { return int(!s.peacefulMode); }, [](S &s, int v) { s.peacefulMode = !v; }},
-		{"glassCannon", Group::Combat, Kind::Choice, "Glass cannon", "Higher tiers deal more damage but have less HP and armor.",
-		 {"off", "x2", "x3"}, {"No glass cannon", "Glass cannon x2", "Glass cannon x3"}, false, true, false, true,
-		 [](const S &s) { return s.glassCannonLevel; }, [](S &s, int v) { s.glassCannonLevel = v; }},
-		{"buildingStrength", Group::Combat, Kind::Choice, "Building strength", "Higher tiers give every building much more HP.",
-		 {"normal", "x5", "x10"}, {"Normal", "Fortress x5", "Fortress x10"}, false, true, false, true,
-		 [](const S &s) { return s.buildingHpLevel; }, [](S &s, int v) { s.buildingHpLevel = v; }},
-		{"woundedRetreat", Group::Combat, Kind::Toggle, "Wounded units retreat", "Off: units fight to the death instead of retreating to heal.",
-		 {"off", "on"}, {"Fearless", "Retreats when damaged"}, false, true, false, true,
-		 [](const S &s) { return int(!s.unitsFearless); }, [](S &s, int v) { s.unitsFearless = !v; }},
-		{"unitsCanDie", Group::Combat, Kind::Toggle, "Units can die", "Off: units are never permanently lost; HP just stops at 1.",
-		 {"off", "on"}, {"No permadeath", "Can die permanently"}, false, true, false, true,
-		 [](const S &s) { return int(!s.permadeathDisabled); }, [](S &s, int v) { s.permadeathDisabled = !v; }},
-		{"unitTraining", Group::Combat, Kind::Toggle, "Unit training", "Off: units still visit schools but never gain a level.",
-		 {"off", "on"}, {"No upgrades", "Trains normally"}, false, true, false, true,
-		 [](const S &s) { return int(!s.unitUpgradesDisabled); }, [](S &s, int v) { s.unitUpgradesDisabled = !v; }},
+		{.id = "instantConstruction",
+		 .group = Group::Economy,
+		 .kind = Kind::Toggle,
+		 .label = "Instant construction",
+		 .help = "Building sites complete immediately, skipping delivery.",
+		 .get = [](const S &s) { return int(s.instantConstruction); },
+		 .set = [](S &s, int v) { s.instantConstruction = v; }},
+		{.id = "hunger",
+		 .group = Group::Economy,
+		 .kind = Kind::Toggle,
+		 .label = "Units get hungry",
+		 .help = "Units must eat to keep working.",
+		 .get = [](const S &s) { return int(!s.noHunger); },
+		 .set = [](S &s, int v) { s.noHunger = !v; }},
+		// Combat. Turning combat off makes the rest of the group moot (needsCombat).
+		{.id = "combat",
+		 .group = Group::Combat,
+		 .kind = Kind::Toggle,
+		 .label = "Combat",
+		 .help = "Teams can attack each other. Turn off for a peaceful match.",
+		 .get = [](const S &s) { return int(!s.peacefulMode); },
+		 .set = [](S &s, int v) { s.peacefulMode = !v; }},
+		{.id = "glassCannon",
+		 .group = Group::Combat,
+		 .kind = Kind::Choice,
+		 .label = "Glass cannon",
+		 .help = "Units hit harder but have less HP and armor.",
+		 .optionIds = {"off", "x2", "x3"},
+		 .optionLabels = {"No glass cannon", "Glass cannon x2", "Glass cannon x3"},
+		 .needsCombat = true,
+		 .get = [](const S &s) { return s.glassCannonLevel; },
+		 .set = [](S &s, int v) { s.glassCannonLevel = v; }},
+		{.id = "buildingStrength",
+		 .group = Group::Combat,
+		 .kind = Kind::Choice,
+		 .label = "Building strength",
+		 .help = "Higher tiers give every building much more HP.",
+		 .optionIds = {"normal", "x5", "x10"},
+		 .optionLabels = {"Normal", "Fortress x5", "Fortress x10"},
+		 .needsCombat = true,
+		 .get = [](const S &s) { return s.buildingHpLevel; },
+		 .set = [](S &s, int v) { s.buildingHpLevel = v; }},
+		{.id = "woundedRetreat",
+		 .group = Group::Combat,
+		 .kind = Kind::Toggle,
+		 .label = "Wounded units retreat",
+		 .help = "Hurt units go back to heal instead of fighting to the death.",
+		 .needsCombat = true,
+		 .get = [](const S &s) { return int(!s.unitsFearless); },
+		 .set = [](S &s, int v) { s.unitsFearless = !v; }},
+		{.id = "unitsCanDie",
+		 .group = Group::Combat,
+		 .kind = Kind::Toggle,
+		 .label = "Units can die",
+		 .help = "Units die when they run out of HP. Turn off to stop them at 1 HP.",
+		 .needsCombat = true,
+		 .get = [](const S &s) { return int(!s.permadeathDisabled); },
+		 .set = [](S &s, int v) { s.permadeathDisabled = !v; }},
+		{.id = "unitTraining",
+		 .group = Group::Combat,
+		 .kind = Kind::Toggle,
+		 .label = "Unit training",
+		 .help = "Units gain levels at schools.",
+		 .needsCombat = true,
+		 .get = [](const S &s) { return int(!s.unitUpgradesDisabled); },
+		 .set = [](S &s, int v) { s.unitUpgradesDisabled = !v; }},
 	};
 }
 } // namespace
@@ -144,7 +242,9 @@ int minimum(const Rule &rule, const CustomGameSetup &setup)
 
 int maximum(const Rule &rule, const CustomGameSetup &setup)
 {
-	return rule.kind == Kind::Stepper ? workerControl(setup).maximum : int(rule.optionIds.size()) - 1;
+	if (rule.kind == Kind::Stepper)
+		return workerControl(setup).maximum;
+	return rule.kind == Kind::Toggle ? 1 : int(rule.optionIds.size()) - 1;
 }
 
 int standardValue(const Rule &rule, const CustomGameSetup &setup)
@@ -158,16 +258,31 @@ int standardValue(const Rule &rule, const CustomGameSetup &setup)
 
 std::string optionText(const Rule &rule, int value)
 {
-	if (rule.kind == Kind::Stepper)
+	switch (rule.kind)
+	{
+	case Kind::Stepper:
 		return std::to_string(value);
-	// Game speed ids are the multipliers the game shows (Settings::getGameSpeedText).
+	case Kind::Toggle:
+		return translate(value ? "room rule on" : "room rule off");
+	default:
+		break;
+	}
 	if (std::string_view(rule.id) == "speed")
-		return value >= Settings::GAME_SPEED_MAXIMUM ? text("maximum game speed")
+		return value >= Settings::GAME_SPEED_MAXIMUM ? translate("maximum game speed")
 			   : value >= 0 && value < int(rule.optionIds.size()) ? rule.optionIds[std::size_t(value)]
 																   : std::string();
 	if (value < 0 || value >= int(rule.optionLabels.size()))
 		return {};
-	return text(rule.optionLabels[std::size_t(value)]);
+	return translate(rule.optionLabels[std::size_t(value)]);
+}
+
+std::string valueText(const Rule &rule, const CustomGameSetup &setup)
+{
+	const int value = rule.get(setup);
+	// A room can set any time limit, not only the lobby's menu choices.
+	if (value < 0 && std::string_view(rule.id) == "timeLimit")
+		return GAGCore::FormattableString(translate("results minutes %0")).arg(setup.suddenDeathMinutes);
+	return optionText(rule, value);
 }
 
 bool appliesTo(const Rule &rule, const CustomGameSetup &setup)
@@ -176,8 +291,9 @@ bool appliesTo(const Rule &rule, const CustomGameSetup &setup)
 }
 } // namespace CustomGameRules
 
-// Ruleset state on the setup ----------------------------------------------------------
+// Ruleset state on the setup (declared in CustomGameSetup.h) ---------------------------
 
+using CustomGameRules::InRooms;
 using CustomGameRules::Rule;
 
 int CustomGameSetup::ruleValue(const Rule &rule) const
@@ -218,9 +334,7 @@ const Ruleset &CustomGameSetup::baseRuleset() const
 
 bool CustomGameSetup::ruleCounts(const Rule &rule, bool room) const
 {
-	if (!CustomGameRules::appliesTo(rule, *this))
-		return false;
-	return !room || (rule.carriedInRooms && !rule.hiddenInRooms);
+	return CustomGameRules::appliesTo(rule, *this) && (!room || rule.inRooms == InRooms::Carried);
 }
 
 bool CustomGameSetup::ruleChanged(const Rule &rule, bool room) const
@@ -244,12 +358,12 @@ std::vector<const Rule *> CustomGameSetup::rulesetDiff(bool room) const
 
 std::string CustomGameSetup::rulesetTitle(bool room) const
 {
-	const std::string name = GAGCore::Toolkit::getStringTable()->getString(baseRuleset().name.c_str());
+	auto *strings = GAGCore::Toolkit::getStringTable();
+	const std::string name = strings->getString(baseRuleset().name.c_str());
 	const auto changes = rulesetDiff(room).size();
 	if (changes == 0)
 		return name;
-	const char *key = changes == 1 ? "[ruleset one change %0]" : "[ruleset changes %0 %1]";
-	GAGCore::FormattableString title(GAGCore::Toolkit::getStringTable()->getString(key));
+	GAGCore::FormattableString title(strings->getString(changes == 1 ? "[ruleset one change %0]" : "[ruleset changes %0 %1]"));
 	title.arg(name);
 	if (changes > 1)
 		title.arg(int(changes));

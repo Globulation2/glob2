@@ -1154,8 +1154,6 @@ Blå
 Brun
 [Built-in maps]
 Inbyggda kartor
-[Can change in game]
-Kan förändras i spelet
 [Closed]
 Stängt
 [Colonies]
@@ -1184,8 +1182,6 @@ Cyan
 Ökenvikt
 [Easy]
 Lätt
-[Explore as you play]
-Utforska medan du spelar
 [Extra colony assignments are retained for larger maps.]
 Extra kolonitilldelningar behålls för större kartor.
 [Extra islands]
@@ -1228,8 +1224,6 @@ Landskap
 Sista överlevande kolonin
 [Layout]
 Layout
-[Locked teams]
-Låsta lag
 [Magenta]
 Magenta
 [Map]
@@ -1280,8 +1274,6 @@ Röd
 Upprepning av landskap
 [Resources]
 Resurser
-[Revealed terrain does not reveal all enemy activity.]
-Avslöjad terräng avslöjar inte all fiendeaktivitet.
 [River]
 Flod
 [River width]
@@ -1308,8 +1300,6 @@ Träsk
 Lag
 [Terrain]
 Terräng
-[Terrain revealed]
-Terräng avslöjad
 [Victory]
 Seger
 [Watch game]
@@ -2124,14 +2114,8 @@ Sida (P)
 Välj en karta
 [Building sites complete immediately, skipping delivery.]
 Byggarbetsplatser slutförs omedelbart, utan leveranssteg.
-[Seeds each team's shared market/exchange resource pool at game start.]
-Fyller på varje lags delade marknads-/bytesresurspool vid spelstart.
 [No growth]
 Ingen tillväxt
-[Normal construction]
-Normalt byggande
-[Instant]
-Omedelbart
 [Units get hungry]
 Enheter blir hungriga
 [No hunger]
@@ -2154,28 +2138,14 @@ Ingen resurstillväxt
 Ekonomi
 [Instant construction]
 Omedelbart byggande
-[Higher tiers deal more damage but have less HP and armor.]
-Högre nivåer gör mer skada men har mindre hälsopoäng och pansar.
 [Higher tiers give every building much more HP.]
 Högre nivåer ger varje byggnad mycket mer hälsopoäng.
 [Starting units spawn already leveled up. Changes the generated map.]
 Startenheter dyker upp redan uppnivåerade. Ändrar den genererade kartan.
-[Trains normally]
-Tränar normalt
 [No upgrades]
 Inga uppgraderingar
-[Retreats when damaged]
-Drar sig tillbaka vid skada
-[Fearless]
-Orädd
-[Can die permanently]
-Kan dö permanent
 [No permadeath]
 Ingen permanent död
-[Normal combat]
-Normal strid
-[Peaceful mode]
-Fredligt läge
 [Glass cannon x2]
 Glaskanon x2
 [Glass cannon x3]
@@ -3375,8 +3345,6 @@ Kartans fart
 [play online]
 
 [Use in room]
-
-[Custom rules]
 
 [conn ai]
 
@@ -4678,14 +4646,6 @@ Baser per koloni; en bas är ett lag från kartan som den är ritad, med dess by
 
 [Units must eat to keep working.]
 
-[Off: a peaceful match with no fighting between teams.]
-
-[Off: units fight to the death instead of retreating to heal.]
-
-[Off: units are never permanently lost; HP just stops at 1.]
-
-[Off: units still visit schools but never gain a level.]
-
 [Summary]
 
 [All rules]
@@ -4699,8 +4659,6 @@ Baser per koloni; en bas är ett lag från kartan som den är ritad, med dess by
 [ruleset one change %0]
 
 [ruleset changes %0 %1]
-
-[No effect while combat is off.]
 
 [This match cannot end. Turn on prestige victory or set a time limit.]
 
@@ -4753,4 +4711,24 @@ Baser per koloni; en bas är ett lag från kartan som den är ritad, med dess by
 [99% sure]
 
 [Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
+
+[Changed from %0: %1]
+
+[Combat is off, so the rules below have no effect.]
+
+[%0 more rules are at their Standard values.]
+
+[Players see the map's terrain from the start; enemy units stay hidden.]
+
+[Each team starts with extra resources in its shared pool.]
+
+[Units hit harder but have less HP and armor.]
+
+[Teams can attack each other. Turn off for a peaceful match.]
+
+[Hurt units go back to heal instead of fighting to the death.]
+
+[Units die when they run out of HP. Turn off to stop them at 1 HP.]
+
+[Units gain levels at schools.]
 

@@ -50,10 +50,9 @@ const std::vector<std::string>& defaultRoomGenerators();
 void applyRulesToSetup(const Json& rules, CustomGameSetup& setup);
 
 /// Id of the first ruleset (data/rulesets.json) whose room-carried rules the draft
-/// matches, or empty.
+/// matches, or empty. applyRulesToSetup() bases a room's draft on it (Standard when none
+/// matches), so a room reads "Blitz" or "Standard + 2 changes" like the lobby.
 std::string matchingRuleset(const CustomGameSetup& setup);
-/// That ruleset's translated name, or "Custom rules".
-std::string rulesetName(const CustomGameSetup& setup);
 /// "2 vs 2", "FFA" or "Custom teams" from the alliances of `teams` (SetupTeam list).
 std::string formatName(const Json& teams);
 } // namespace Online

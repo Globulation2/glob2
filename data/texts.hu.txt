@@ -1154,8 +1154,6 @@ Kék
 Barna
 [Built-in maps]
 Beépített térképek
-[Can change in game]
-Változhat a játékban
 [Closed]
 Zárva
 [Colonies]
@@ -1184,8 +1182,6 @@ Cián
 Sivatag súlyozása
 [Easy]
 Könnyű
-[Explore as you play]
-Fedezze fel játék közben
 [Extra colony assignments are retained for larger maps.]
 Az extra kolónia-hozzárendelések megmaradnak a nagyobb térképeknél.
 [Extra islands]
@@ -1228,8 +1224,6 @@ Táj
 Utolsó túlélő kolónia
 [Layout]
 Elrendezés
-[Locked teams]
-Lezárt csapatok
 [Magenta]
 Magenta
 [Map]
@@ -1280,8 +1274,6 @@ Piros
 Táj ismétlése
 [Resources]
 Erőforrások
-[Revealed terrain does not reveal all enemy activity.]
-A feltárt terep nem fedi fel az összes ellenséges tevékenységet.
 [River]
 Folyó
 [River width]
@@ -1308,8 +1300,6 @@ Mocsár
 Csapat
 [Terrain]
 Terep
-[Terrain revealed]
-Felfedett terep
 [Victory]
 Győzelem
 [Watch game]
@@ -2124,14 +2114,8 @@ Oldal (P)
 Válasszon térképet
 [Building sites complete immediately, skipping delivery.]
 Az építkezések azonnal befejeződnek, a szállítási szakasz kihagyásával.
-[Seeds each team's shared market/exchange resource pool at game start.]
-A játék kezdetén feltölti minden csapat közös piaci/csere-erőforráskészletét.
 [No growth]
 Nincs növekedés
-[Normal construction]
-Normál építkezés
-[Instant]
-Azonnali
 [Units get hungry]
 Az egységek megéheznek
 [No hunger]
@@ -2154,28 +2138,14 @@ Nincs erőforrás-növekedés
 Gazdaság
 [Instant construction]
 Azonnali építkezés
-[Higher tiers deal more damage but have less HP and armor.]
-A magasabb szintek több sebzést okoznak, de kevesebb életpontjuk és páncéljuk van.
 [Higher tiers give every building much more HP.]
 A magasabb szintek sokkal több életpontot adnak minden épületnek.
 [Starting units spawn already leveled up. Changes the generated map.]
 A kezdő egységek már feljebb léptetve jelennek meg. Megváltoztatja a generált térképet.
-[Trains normally]
-Normálisan képződik
 [No upgrades]
 Nincs fejlesztés
-[Retreats when damaged]
-Visszavonul sérüléskor
-[Fearless]
-Rettenthetetlen
-[Can die permanently]
-Véglegesen meghalhat
 [No permadeath]
 Nincs végleges halál
-[Normal combat]
-Normál harc
-[Peaceful mode]
-Békés mód
 [Glass cannon x2]
 Üvegágyú x2
 [Glass cannon x3]
@@ -3375,8 +3345,6 @@ Térkép lendülete
 [play online]
 
 [Use in room]
-
-[Custom rules]
 
 [conn ai]
 
@@ -4678,14 +4646,6 @@ Bázisok kolóniánként; egy bázis a megrajzolt térkép egy csapata, épület
 
 [Units must eat to keep working.]
 
-[Off: a peaceful match with no fighting between teams.]
-
-[Off: units fight to the death instead of retreating to heal.]
-
-[Off: units are never permanently lost; HP just stops at 1.]
-
-[Off: units still visit schools but never gain a level.]
-
 [Summary]
 
 [All rules]
@@ -4699,8 +4659,6 @@ Bázisok kolóniánként; egy bázis a megrajzolt térkép egy csapata, épület
 [ruleset one change %0]
 
 [ruleset changes %0 %1]
-
-[No effect while combat is off.]
 
 [This match cannot end. Turn on prestige victory or set a time limit.]
 
@@ -4753,4 +4711,24 @@ Bázisok kolóniánként; egy bázis a megrajzolt térkép egy csapata, épület
 [99% sure]
 
 [Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
+
+[Changed from %0: %1]
+
+[Combat is off, so the rules below have no effect.]
+
+[%0 more rules are at their Standard values.]
+
+[Players see the map's terrain from the start; enemy units stay hidden.]
+
+[Each team starts with extra resources in its shared pool.]
+
+[Units hit harder but have less HP and armor.]
+
+[Teams can attack each other. Turn off for a peaceful match.]
+
+[Hurt units go back to heal instead of fighting to the death.]
+
+[Units die when they run out of HP. Turn off to stop them at 1 HP.]
+
+[Units gain levels at schools.]
 

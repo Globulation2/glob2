@@ -1154,8 +1154,6 @@ Niebieski
 Brązowy
 [Built-in maps]
 Wbudowane mapy
-[Can change in game]
-Możliwość zmiany w grze
 [Closed]
 Zamknięte
 [Colonies]
@@ -1184,8 +1182,6 @@ Cyjan
 Waga pustyni
 [Easy]
 Łatwy
-[Explore as you play]
-Eksploruj podczas gry
 [Extra colony assignments are retained for larger maps.]
 Dodatkowe przydziały kolonii są zachowywane w przypadku większych map.
 [Extra islands]
@@ -1228,8 +1224,6 @@ Krajobraz
 Ostatnia ocalała kolonia
 [Layout]
 Układ
-[Locked teams]
-Stałe drużyny
 [Magenta]
 Magenta
 [Map]
@@ -1280,8 +1274,6 @@ Czerwony
 Powtarzanie krajobrazu
 [Resources]
 Zasoby
-[Revealed terrain does not reveal all enemy activity.]
-Odkryty teren nie ujawnia całej aktywności wroga.
 [River]
 Rzeka
 [River width]
@@ -1308,8 +1300,6 @@ Bagno
 Drużyna
 [Terrain]
 Teren
-[Terrain revealed]
-Teren ujawniony
 [Victory]
 Zwycięstwo
 [Watch game]
@@ -2124,14 +2114,8 @@ Strona (P)
 Wybierz mapę
 [Building sites complete immediately, skipping delivery.]
 Place budowy kończą się natychmiast, pomijając dostawę.
-[Seeds each team's shared market/exchange resource pool at game start.]
-Na początku gry zasila wspólną pulę zasobów bazaru/wymiany każdej drużyny.
 [No growth]
 Brak wzrostu
-[Normal construction]
-Normalna budowa
-[Instant]
-Natychmiastowa
 [Units get hungry]
 Jednostki odczuwają głód
 [No hunger]
@@ -2154,28 +2138,14 @@ Brak wzrostu zasobów
 Gospodarka
 [Instant construction]
 Natychmiastowa budowa
-[Higher tiers deal more damage but have less HP and armor.]
-Wyższe poziomy zadają więcej obrażeń, ale mają mniej punktów życia i zbroi.
 [Higher tiers give every building much more HP.]
 Wyższe poziomy dają każdemu budynkowi znacznie więcej punktów życia.
 [Starting units spawn already leveled up. Changes the generated map.]
 Jednostki startowe pojawiają się już na wyższym poziomie. Zmienia wygenerowaną mapę.
-[Trains normally]
-Trenuje normalnie
 [No upgrades]
 Brak ulepszeń
-[Retreats when damaged]
-Wycofuje się, gdy jest ranna
-[Fearless]
-Nieustraszona
-[Can die permanently]
-Może zginąć na stałe
 [No permadeath]
 Bez trwałej śmierci
-[Normal combat]
-Normalna walka
-[Peaceful mode]
-Tryb pokojowy
 [Glass cannon x2]
 Szklane działo x2
 [Glass cannon x3]
@@ -3375,8 +3345,6 @@ Rozpęd mapy
 [play online]
 
 [Use in room]
-
-[Custom rules]
 
 [conn ai]
 
@@ -4678,14 +4646,6 @@ Bazy na kolonię; baza to jedna drużyna mapy w narysowanej postaci, z jej budyn
 
 [Units must eat to keep working.]
 
-[Off: a peaceful match with no fighting between teams.]
-
-[Off: units fight to the death instead of retreating to heal.]
-
-[Off: units are never permanently lost; HP just stops at 1.]
-
-[Off: units still visit schools but never gain a level.]
-
 [Summary]
 
 [All rules]
@@ -4699,8 +4659,6 @@ Bazy na kolonię; baza to jedna drużyna mapy w narysowanej postaci, z jej budyn
 [ruleset one change %0]
 
 [ruleset changes %0 %1]
-
-[No effect while combat is off.]
 
 [This match cannot end. Turn on prestige victory or set a time limit.]
 
@@ -4753,4 +4711,24 @@ Bazy na kolonię; baza to jedna drużyna mapy w narysowanej postaci, z jej budyn
 [99% sure]
 
 [Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
+
+[Changed from %0: %1]
+
+[Combat is off, so the rules below have no effect.]
+
+[%0 more rules are at their Standard values.]
+
+[Players see the map's terrain from the start; enemy units stay hidden.]
+
+[Each team starts with extra resources in its shared pool.]
+
+[Units hit harder but have less HP and armor.]
+
+[Teams can attack each other. Turn off for a peaceful match.]
+
+[Hurt units go back to heal instead of fighting to the death.]
+
+[Units die when they run out of HP. Turn off to stop them at 1 HP.]
+
+[Units gain levels at schools.]
 

@@ -55,12 +55,10 @@ std::vector<std::pair<std::string, std::string>> ruleLines(const CustomGameSetup
 	std::vector<std::pair<std::string, std::string>> lines;
 	for (const auto &rule : CustomGameRules::rules())
 	{
-		if (!rule.carriedInRooms || !(allRules || rule.group == CustomGameRules::Group::Match || s.ruleNonStandard(rule, true)))
+		if (rule.inRooms != CustomGameRules::InRooms::Carried ||
+			!(allRules || rule.group == CustomGameRules::Group::Match || s.ruleNonStandard(rule, true)))
 			continue;
-		const int value = s.ruleValue(rule);
-		lines.push_back({tr("[" + std::string(rule.label) + "]"),
-						 rule.kind == CustomGameRules::Kind::Toggle ? tr(value ? "[room rule on]" : "[room rule off]")
-																	: CustomGameRules::optionText(rule, value)});
+		lines.push_back({tr("[" + std::string(rule.label) + "]"), CustomGameRules::valueText(rule, s)});
 	}
 	return lines;
 }

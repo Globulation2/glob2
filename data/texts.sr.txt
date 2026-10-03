@@ -1154,8 +1154,6 @@ Cortex
 Браон
 [Built-in maps]
 Уграђене мапе
-[Can change in game]
-Може се променити у игри
 [Closed]
 Затворено
 [Colonies]
@@ -1184,8 +1182,6 @@ Cortex
 Удео пустиње
 [Easy]
 Лако
-[Explore as you play]
-Истражујте док играте
 [Extra colony assignments are retained for larger maps.]
 Додатни задаци колонија се задржавају за веће мапе.
 [Extra islands]
@@ -1228,8 +1224,6 @@ Cortex
 Последња преживела колонија
 [Layout]
 Распоред
-[Locked teams]
-Закључани тимови
 [Magenta]
 Магента
 [Map]
@@ -1280,8 +1274,6 @@ Cortex
 Понављање пејзажа
 [Resources]
 Ресурси
-[Revealed terrain does not reveal all enemy activity.]
-Откривени терен не открива сву непријатељску активност.
 [River]
 Река
 [River width]
@@ -1308,8 +1300,6 @@ Cortex
 Тим
 [Terrain]
 Терен
-[Terrain revealed]
-Терен откривен
 [Victory]
 Победа
 [Watch game]
@@ -2124,14 +2114,8 @@ OpenGL није доступан у овој верзији.
 Изаберите мапу
 [Building sites complete immediately, skipping delivery.]
 Градилишта се завршавају одмах, без фазе испоруке.
-[Seeds each team's shared market/exchange resource pool at game start.]
-Пуни заједничку резерву пијаце/размене сваког тима на почетку игре.
 [No growth]
 Без раста
-[Normal construction]
-Нормална градња
-[Instant]
-Тренутна
 [Units get hungry]
 Јединице гладују
 [No hunger]
@@ -2154,28 +2138,14 @@ OpenGL није доступан у овој верзији.
 Привреда
 [Instant construction]
 Тренутна градња
-[Higher tiers deal more damage but have less HP and armor.]
-Виши нивои задају више штете, али имају мање здравља и оклопа.
 [Higher tiers give every building much more HP.]
 Виши нивои дају свакој згради много више здравља.
 [Starting units spawn already leveled up. Changes the generated map.]
 Почетне јединице се појављују већ на вишем нивоу. Мења генерисану мапу.
-[Trains normally]
-Тренира се нормално
 [No upgrades]
 Без надоградњи
-[Retreats when damaged]
-Повлачи се када је повређена
-[Fearless]
-Неустрашива
-[Can die permanently]
-Може трајно да умре
 [No permadeath]
 Без трајне смрти
-[Normal combat]
-Нормална борба
-[Peaceful mode]
-Мирољубиви режим
 [Glass cannon x2]
 Стаклени топ x2
 [Glass cannon x3]
@@ -3375,8 +3345,6 @@ Emoji
 [play online]
 
 [Use in room]
-
-[Custom rules]
 
 [conn ai]
 
@@ -4678,14 +4646,6 @@ Emoji
 
 [Units must eat to keep working.]
 
-[Off: a peaceful match with no fighting between teams.]
-
-[Off: units fight to the death instead of retreating to heal.]
-
-[Off: units are never permanently lost; HP just stops at 1.]
-
-[Off: units still visit schools but never gain a level.]
-
 [Summary]
 
 [All rules]
@@ -4699,8 +4659,6 @@ Emoji
 [ruleset one change %0]
 
 [ruleset changes %0 %1]
-
-[No effect while combat is off.]
 
 [This match cannot end. Turn on prestige victory or set a time limit.]
 
@@ -4753,4 +4711,24 @@ Emoji
 [99% sure]
 
 [Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
+
+[Changed from %0: %1]
+
+[Combat is off, so the rules below have no effect.]
+
+[%0 more rules are at their Standard values.]
+
+[Players see the map's terrain from the start; enemy units stay hidden.]
+
+[Each team starts with extra resources in its shared pool.]
+
+[Units hit harder but have less HP and armor.]
+
+[Teams can attack each other. Turn off for a peaceful match.]
+
+[Hurt units go back to heal instead of fighting to the death.]
+
+[Units die when they run out of HP. Turn off to stop them at 1 HP.]
+
+[Units gain levels at schools.]
 

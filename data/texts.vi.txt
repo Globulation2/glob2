@@ -1154,8 +1154,6 @@ Xanh dương
 Nâu
 [Built-in maps]
 Bản đồ tích hợp
-[Can change in game]
-Có thể thay đổi trong trò chơi
 [Closed]
 Đã đóng
 [Colonies]
@@ -1184,8 +1182,6 @@ Lục lam
 Trọng số sa mạc
 [Easy]
 Dễ dàng
-[Explore as you play]
-Khám phá khi bạn chơi
 [Extra colony assignments are retained for larger maps.]
 Thiết lập của các thuộc địa dư ra được giữ lại để khôi phục khi chọn bản đồ lớn hơn.
 [Extra islands]
@@ -1228,8 +1224,6 @@ Kiểu địa hình
 Thuộc địa cuối cùng sống sót
 [Layout]
 Bố cục
-[Locked teams]
-Đội bị khóa
 [Magenta]
 Đỏ tía
 [Map]
@@ -1280,8 +1274,6 @@ Bản đồ ngẫu nhiên
 Lặp lại phong cảnh
 [Resources]
 Tài nguyên
-[Revealed terrain does not reveal all enemy activity.]
-Địa hình được tiết lộ không tiết lộ tất cả hoạt động của kẻ thù.
 [River]
 Sông
 [River width]
@@ -1308,8 +1300,6 @@ Công nhân ban đầu: thẻ Luật chơi.
 Đội
 [Terrain]
 Địa hình
-[Terrain revealed]
-Địa hình được tiết lộ
 [Victory]
 Chiến thắng
 [Watch game]
@@ -2124,14 +2114,8 @@ Trang (P)
 Chọn bản đồ
 [Building sites complete immediately, skipping delivery.]
 Công trường hoàn thành ngay lập tức, bỏ qua giai đoạn vận chuyển.
-[Seeds each team's shared market/exchange resource pool at game start.]
-Cấp đầy kho tài nguyên chợ/trao đổi chung của mỗi đội khi bắt đầu trận đấu.
 [No growth]
 Không mọc
-[Normal construction]
-Xây dựng bình thường
-[Instant]
-Tức thì
 [Units get hungry]
 Đơn vị bị đói
 [No hunger]
@@ -2154,28 +2138,14 @@ Tài nguyên không mọc
 Kinh tế
 [Instant construction]
 Xây dựng tức thì
-[Higher tiers deal more damage but have less HP and armor.]
-Cấp cao hơn gây nhiều sát thương hơn nhưng có ít máu và giáp hơn.
 [Higher tiers give every building much more HP.]
 Cấp cao hơn cho mỗi công trình nhiều máu hơn hẳn.
 [Starting units spawn already leveled up. Changes the generated map.]
 Đơn vị khởi đầu xuất hiện với cấp độ đã được nâng sẵn. Thay đổi bản đồ được tạo ra.
-[Trains normally]
-Huấn luyện bình thường
 [No upgrades]
 Không nâng cấp
-[Retreats when damaged]
-Rút lui khi bị thương
-[Fearless]
-Không sợ hãi
-[Can die permanently]
-Có thể chết vĩnh viễn
 [No permadeath]
 Không chết vĩnh viễn
-[Normal combat]
-Giao chiến bình thường
-[Peaceful mode]
-Chế độ hòa bình
 [Glass cannon x2]
 Đại bác thủy tinh x2
 [Glass cannon x3]
@@ -3375,8 +3345,6 @@ Quán tính bản đồ
 [play online]
 
 [Use in room]
-
-[Custom rules]
 
 [conn ai]
 
@@ -4678,14 +4646,6 @@ Căn cứ mỗi thuộc địa; một căn cứ là một đội của bản đ�
 
 [Units must eat to keep working.]
 
-[Off: a peaceful match with no fighting between teams.]
-
-[Off: units fight to the death instead of retreating to heal.]
-
-[Off: units are never permanently lost; HP just stops at 1.]
-
-[Off: units still visit schools but never gain a level.]
-
 [Summary]
 
 [All rules]
@@ -4699,8 +4659,6 @@ Căn cứ mỗi thuộc địa; một căn cứ là một đội của bản đ�
 [ruleset one change %0]
 
 [ruleset changes %0 %1]
-
-[No effect while combat is off.]
 
 [This match cannot end. Turn on prestige victory or set a time limit.]
 
@@ -4753,4 +4711,24 @@ Căn cứ mỗi thuộc địa; một căn cứ là một đội của bản đ�
 [99% sure]
 
 [Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
+
+[Changed from %0: %1]
+
+[Combat is off, so the rules below have no effect.]
+
+[%0 more rules are at their Standard values.]
+
+[Players see the map's terrain from the start; enemy units stay hidden.]
+
+[Each team starts with extra resources in its shared pool.]
+
+[Units hit harder but have less HP and armor.]
+
+[Teams can attack each other. Turn off for a peaceful match.]
+
+[Hurt units go back to heal instead of fighting to the death.]
+
+[Units die when they run out of HP. Turn off to stop them at 1 HP.]
+
+[Units gain levels at schools.]
 

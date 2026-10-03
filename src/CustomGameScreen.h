@@ -42,10 +42,12 @@ class RulesetChoiceScreen : public Glob2UI::Screen
 {
 	friend struct CustomGameSetupHarness;
 	std::string selected;
+	bool revealed = false;
 
   public:
 	explicit RulesetChoiceScreen(std::string selected) : selected(std::move(selected)) {}
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
+	void onTimer(Uint32 tick) override;
 
   protected:
 	void onEscape() override { endExecute(-2); }
@@ -88,10 +90,15 @@ class CustomGameScreen : public Glob2UI::Screen
 	void selectTab(int tab);
 	int tab() const { return currentTab; }
 	void launch();
-	// Game Rules tab: start from a ruleset, show the summary (0) or every rule (1), or open
-	// the ruleset list used on narrow layouts.
+	// Game Rules tab: the Match rules and anything changed, or every rule.
+	enum class RulesView
+	{
+		Summary,
+		All
+	};
+	// Start from a ruleset, switch the view, or open the ruleset list narrow layouts use.
 	void selectRuleset(const std::string &id);
-	void setRulesView(int view);
+	void setRulesView(RulesView view);
 	void chooseRuleset();
 
   protected:
@@ -162,12 +169,13 @@ class CustomGameScreen : public Glob2UI::Screen
 		Glob2UI::Element identity, controller, ai, team;
 	};
 	ColonyFields colonyFields(int colony, const Glob2UI::Presentation &p);
-	// Game Rules tab view state: Summary (0) or All rules (1), and the group a narrow layout
-	// shows in All rules.
-	int rulesView = 0;
+	// Game Rules tab view state, and the one group a narrow layout shows in All rules.
+	RulesView rulesView = RulesView::Summary;
 	CustomGameRules::Group rulesGroup = CustomGameRules::Group::Match;
 	Glob2UI::Element rulesTab(const Glob2UI::Presentation &p, bool narrow);
-	Glob2UI::Element ruleRow(const CustomGameRules::Rule &rule, const Glob2UI::Presentation &p, bool help);
+	// One rule's label, control, notes and reset. `help` adds its description; `resetColumn`
+	// keeps room for a reset button so every row's control lines up.
+	Glob2UI::Element ruleRow(const CustomGameRules::Rule &rule, const Glob2UI::Presentation &p, bool help, bool resetColumn);
 	void setRuleValue(const CustomGameRules::Rule &rule, int value);
 	void setMapMode(bool random);
 	void showAIProfile(int colony);

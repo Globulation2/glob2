@@ -1154,8 +1154,6 @@ AI 전략 및 대응
 갈색
 [Built-in maps]
 내장된 지도
-[Can change in game]
-게임 내에서 변경 가능
 [Closed]
 참가 안 함
 [Colonies]
@@ -1184,8 +1182,6 @@ AI 전략 및 대응
 사막 비중
 [Easy]
 쉬움
-[Explore as you play]
-플레이하면서 탐험해보세요
 [Extra colony assignments are retained for larger maps.]
 남은 식민지 설정은 더 큰 지도로 돌아올 때를 위해 보관됩니다.
 [Extra islands]
@@ -1228,8 +1224,6 @@ AI 전략 및 대응
 마지막까지 살아남은 식민지
 [Layout]
 레이아웃
-[Locked teams]
-팀 고정
 [Magenta]
 마젠타
 [Map]
@@ -1280,8 +1274,6 @@ AI 명령 없음
 지형 반복
 [Resources]
 자원
-[Revealed terrain does not reveal all enemy activity.]
-공개된 지형은 적의 모든 활동을 공개하지 않습니다.
 [River]
 강
 [River width]
@@ -1308,8 +1300,6 @@ AI 명령 없음
 팀
 [Terrain]
 지형
-[Terrain revealed]
-지형 공개
 [Victory]
 승리
 [Watch game]
@@ -2124,14 +2114,8 @@ Globulation 2 커서를 표시합니다.
 지도 선택
 [Building sites complete immediately, skipping delivery.]
 건설 현장은 배송 단계를 건너뛰고 즉시 완료됩니다.
-[Seeds each team's shared market/exchange resource pool at game start.]
-게임 시작 시 각 팀의 공유 시장/교환 자원 비축량을 채웁니다.
 [No growth]
 성장 없음
-[Normal construction]
-일반 건설
-[Instant]
-즉시
 [Units get hungry]
 유닛이 배고파짐
 [No hunger]
@@ -2154,28 +2138,14 @@ Globulation 2 커서를 표시합니다.
 경제
 [Instant construction]
 즉시 건설
-[Higher tiers deal more damage but have less HP and armor.]
-상위 등급은 더 많은 피해를 주지만 체력과 방어력이 낮습니다.
 [Higher tiers give every building much more HP.]
 상위 등급은 모든 건물에 훨씬 더 많은 체력을 부여합니다.
 [Starting units spawn already leveled up. Changes the generated map.]
 시작 유닛이 이미 레벨업된 상태로 등장합니다. 생성되는 지도가 바뀝니다.
-[Trains normally]
-정상적으로 훈련함
 [No upgrades]
 업그레이드 없음
-[Retreats when damaged]
-피해를 입으면 후퇴함
-[Fearless]
-두려움 없음
-[Can die permanently]
-영구적으로 죽을 수 있음
 [No permadeath]
 영구 사망 없음
-[Normal combat]
-일반 전투
-[Peaceful mode]
-평화 모드
 [Glass cannon x2]
 유리 대포 x2
 [Glass cannon x3]
@@ -3375,8 +3345,6 @@ AI 추가
 [play online]
 
 [Use in room]
-
-[Custom rules]
 
 [conn ai]
 
@@ -4678,14 +4646,6 @@ AI 추가
 
 [Units must eat to keep working.]
 
-[Off: a peaceful match with no fighting between teams.]
-
-[Off: units fight to the death instead of retreating to heal.]
-
-[Off: units are never permanently lost; HP just stops at 1.]
-
-[Off: units still visit schools but never gain a level.]
-
 [Summary]
 
 [All rules]
@@ -4699,8 +4659,6 @@ AI 추가
 [ruleset one change %0]
 
 [ruleset changes %0 %1]
-
-[No effect while combat is off.]
 
 [This match cannot end. Turn on prestige victory or set a time limit.]
 
@@ -4753,4 +4711,24 @@ AI 추가
 [99% sure]
 
 [Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
+
+[Changed from %0: %1]
+
+[Combat is off, so the rules below have no effect.]
+
+[%0 more rules are at their Standard values.]
+
+[Players see the map's terrain from the start; enemy units stay hidden.]
+
+[Each team starts with extra resources in its shared pool.]
+
+[Units hit harder but have less HP and armor.]
+
+[Teams can attack each other. Turn off for a peaceful match.]
+
+[Hurt units go back to heal instead of fighting to the death.]
+
+[Units die when they run out of HP. Turn off to stop them at 1 HP.]
+
+[Units gain levels at schools.]
 

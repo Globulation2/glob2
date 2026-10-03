@@ -3,17 +3,15 @@
 
 #include "RoomSetup.h"
 
-#include "CustomGameSetup.h"
 #include "CustomGameRules.h"
-#include "RulesetCatalog.h"
+#include "CustomGameSetup.h"
 #include "GenerationService.h"
 #include "GeneratorDefinition.h"
+#include "RulesetCatalog.h"
 
 #include <map>
 #include <set>
 #include <stdexcept>
-#include <StringTable.h>
-#include <Toolkit.h>
 
 namespace Online
 {
@@ -208,23 +206,18 @@ bool applyRoomToSetup(const Json& room, CustomGameSetup& setup)
 
 std::string matchingRuleset(const CustomGameSetup& setup)
 {
-	// A room carries only some rules (no game speed, workers or unit level), so rulesets that
-	// differ only in those match the first of them: Quick clash reads as Standard.
+	// A room carries only some rules (see CustomGameRules::InRooms), so rulesets that differ
+	// only in the others match the first of them: Quick clash reads as Standard.
 	for (const auto& ruleset : RulesetCatalog::shipped().rulesets)
 	{
 		bool same = true;
 		for (const auto& rule : CustomGameRules::rules())
-			same = same && (!rule.carriedInRooms || setup.ruleValue(rule) == ruleset.value(rule, setup));
+			same = same && (rule.inRooms != CustomGameRules::InRooms::Carried ||
+							setup.ruleValue(rule) == ruleset.value(rule, setup));
 		if (same)
 			return ruleset.id;
 	}
 	return {};
-}
-
-std::string rulesetName(const CustomGameSetup& setup)
-{
-	const auto* ruleset = RulesetCatalog::shipped().find(matchingRuleset(setup));
-	return GAGCore::Toolkit::getStringTable()->getString(ruleset ? ruleset->name.c_str() : "[Custom rules]");
 }
 
 std::string formatName(const Json& teams)

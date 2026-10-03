@@ -1154,8 +1154,6 @@ Biru
 Cokelat
 [Built-in maps]
 Peta bawaan
-[Can change in game]
-Dapat berubah dalam permainan
 [Closed]
 Tertutup
 [Colonies]
@@ -1184,8 +1182,6 @@ Sian
 Bobot gurun
 [Easy]
 Mudah
-[Explore as you play]
-Jelajahi sambil bermain
 [Extra colony assignments are retained for larger maps.]
 Penugasan koloni tambahan dipertahankan untuk peta yang lebih besar.
 [Extra islands]
@@ -1228,8 +1224,6 @@ Lanskap
 Koloni terakhir yang bertahan
 [Layout]
 Tata Letak
-[Locked teams]
-Tim yang terkunci
 [Magenta]
 Merah keunguan
 [Map]
@@ -1280,8 +1274,6 @@ Merah
 Ulangi lanskap
 [Resources]
 Sumber daya
-[Revealed terrain does not reveal all enemy activity.]
-Medan yang terungkap tidak mengungkapkan semua aktivitas musuh.
 [River]
 Sungai
 [River width]
@@ -1308,8 +1300,6 @@ Rawa
 Tim
 [Terrain]
 Medan
-[Terrain revealed]
-Medan terungkap
 [Victory]
 Kemenangan
 [Watch game]
@@ -2124,14 +2114,8 @@ Halaman (P)
 Pilih peta
 [Building sites complete immediately, skipping delivery.]
 Lokasi pembangunan selesai langsung, tanpa tahap pengiriman.
-[Seeds each team's shared market/exchange resource pool at game start.]
-Mengisi cadangan pasar/pertukaran bersama tiap tim di awal permainan.
 [No growth]
 Tidak tumbuh
-[Normal construction]
-Konstruksi normal
-[Instant]
-Instan
 [Units get hungry]
 Unit menjadi lapar
 [No hunger]
@@ -2154,28 +2138,14 @@ Tidak ada pertumbuhan sumber daya
 Ekonomi
 [Instant construction]
 Konstruksi instan
-[Higher tiers deal more damage but have less HP and armor.]
-Tingkat yang lebih tinggi memberikan lebih banyak kerusakan tetapi memiliki lebih sedikit HP dan zirah.
 [Higher tiers give every building much more HP.]
 Tingkat yang lebih tinggi memberikan HP jauh lebih banyak pada setiap bangunan.
 [Starting units spawn already leveled up. Changes the generated map.]
 Unit awal muncul dengan tingkat yang sudah dinaikkan. Mengubah peta yang dihasilkan.
-[Trains normally]
-Berlatih secara normal
 [No upgrades]
 Tanpa peningkatan
-[Retreats when damaged]
-Mundur saat terluka
-[Fearless]
-Tak kenal takut
-[Can die permanently]
-Bisa mati secara permanen
 [No permadeath]
 Tanpa kematian permanen
-[Normal combat]
-Pertarungan normal
-[Peaceful mode]
-Mode damai
 [Glass cannon x2]
 Meriam kaca x2
 [Glass cannon x3]
@@ -3375,8 +3345,6 @@ Momentum peta
 [play online]
 
 [Use in room]
-
-[Custom rules]
 
 [conn ai]
 
@@ -4678,14 +4646,6 @@ Markas per koloni; satu markas adalah satu tim dari peta seperti digambar, beser
 
 [Units must eat to keep working.]
 
-[Off: a peaceful match with no fighting between teams.]
-
-[Off: units fight to the death instead of retreating to heal.]
-
-[Off: units are never permanently lost; HP just stops at 1.]
-
-[Off: units still visit schools but never gain a level.]
-
 [Summary]
 
 [All rules]
@@ -4699,8 +4659,6 @@ Markas per koloni; satu markas adalah satu tim dari peta seperti digambar, beser
 [ruleset one change %0]
 
 [ruleset changes %0 %1]
-
-[No effect while combat is off.]
 
 [This match cannot end. Turn on prestige victory or set a time limit.]
 
@@ -4753,4 +4711,24 @@ Markas per koloni; satu markas adalah satu tim dari peta seperti digambar, beser
 [99% sure]
 
 [Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
+
+[Changed from %0: %1]
+
+[Combat is off, so the rules below have no effect.]
+
+[%0 more rules are at their Standard values.]
+
+[Players see the map's terrain from the start; enemy units stay hidden.]
+
+[Each team starts with extra resources in its shared pool.]
+
+[Units hit harder but have less HP and armor.]
+
+[Teams can attack each other. Turn off for a peaceful match.]
+
+[Hurt units go back to heal instead of fighting to the death.]
+
+[Units die when they run out of HP. Turn off to stop them at 1 HP.]
+
+[Units gain levels at schools.]
 

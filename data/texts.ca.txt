@@ -1154,8 +1154,6 @@ Blau
 Marró
 [Built-in maps]
 Mapes integrats
-[Can change in game]
-Pot canviar en el joc
 [Closed]
 Tancat
 [Colonies]
@@ -1184,8 +1182,6 @@ Cian
 Pes del desert
 [Easy]
 Fàcil
-[Explore as you play]
-Explora mentre jugues
 [Extra colony assignments are retained for larger maps.]
 Les assignacions de colònies addicionals es conserven per a mapes més grans.
 [Extra islands]
@@ -1228,8 +1224,6 @@ Paisatge
 Última colònia en peu
 [Layout]
 Disseny
-[Locked teams]
-Equips tancats
 [Magenta]
 Magenta
 [Map]
@@ -1280,8 +1274,6 @@ Vermell
 Repetir paisatge
 [Resources]
 Recursos
-[Revealed terrain does not reveal all enemy activity.]
-El terreny revelat no revela tota l'activitat de l'enemic.
 [River]
 riu
 [River width]
@@ -1308,8 +1300,6 @@ pantà
 Equip
 [Terrain]
 Terreny
-[Terrain revealed]
-Terreny revelat
 [Victory]
 Victòria
 [Watch game]
@@ -2124,14 +2114,8 @@ Pàgina (P)
 Tria un mapa
 [Building sites complete immediately, skipping delivery.]
 Les obres es completen immediatament, sense fase de repartiment.
-[Seeds each team's shared market/exchange resource pool at game start.]
-Estableix la reserva inicial del mercat/intercanvi compartit de cada equip a l'inici de la partida.
 [No growth]
 Sense creixement
-[Normal construction]
-Construcció normal
-[Instant]
-Instantània
 [Units get hungry]
 Les unitats passen gana
 [No hunger]
@@ -2154,28 +2138,14 @@ Sense creixement de recursos
 Economia
 [Instant construction]
 Construcció instantània
-[Higher tiers deal more damage but have less HP and armor.]
-Els nivells superiors infligeixen més mal però tenen menys vida i armadura.
 [Higher tiers give every building much more HP.]
 Els nivells superiors donen molta més vida a cada edifici.
 [Starting units spawn already leveled up. Changes the generated map.]
 Les unitats inicials apareixen ja amb el nivell pujat. Canvia el mapa generat.
-[Trains normally]
-S'entrena normalment
 [No upgrades]
 Sense millores
-[Retreats when damaged]
-Es retira quan està ferida
-[Fearless]
-Sense por
-[Can die permanently]
-Pot morir definitivament
 [No permadeath]
 Sense mort definitiva
-[Normal combat]
-Combat normal
-[Peaceful mode]
-Mode pacífic
 [Glass cannon x2]
 Canó de vidre x2
 [Glass cannon x3]
@@ -3375,8 +3345,6 @@ Inèrcia del mapa
 [play online]
 
 [Use in room]
-
-[Custom rules]
 
 [conn ai]
 
@@ -4678,14 +4646,6 @@ Bases per colònia; una base és un equip del mapa tal com està dibuixat, amb e
 
 [Units must eat to keep working.]
 
-[Off: a peaceful match with no fighting between teams.]
-
-[Off: units fight to the death instead of retreating to heal.]
-
-[Off: units are never permanently lost; HP just stops at 1.]
-
-[Off: units still visit schools but never gain a level.]
-
 [Summary]
 
 [All rules]
@@ -4699,8 +4659,6 @@ Bases per colònia; una base és un equip del mapa tal com està dibuixat, amb e
 [ruleset one change %0]
 
 [ruleset changes %0 %1]
-
-[No effect while combat is off.]
 
 [This match cannot end. Turn on prestige victory or set a time limit.]
 
@@ -4753,4 +4711,24 @@ Bases per colònia; una base és un equip del mapa tal com està dibuixat, amb e
 [99% sure]
 
 [Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
+
+[Changed from %0: %1]
+
+[Combat is off, so the rules below have no effect.]
+
+[%0 more rules are at their Standard values.]
+
+[Players see the map's terrain from the start; enemy units stay hidden.]
+
+[Each team starts with extra resources in its shared pool.]
+
+[Units hit harder but have less HP and armor.]
+
+[Teams can attack each other. Turn off for a peaceful match.]
+
+[Hurt units go back to heal instead of fighting to the death.]
+
+[Units die when they run out of HP. Turn off to stop them at 1 HP.]
+
+[Units gain levels at schools.]
 

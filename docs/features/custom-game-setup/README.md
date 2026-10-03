@@ -52,17 +52,22 @@ limits when their homes, resources or routes need more room.
 - All-AI matches launch live watching, with whole-map visibility, optional colony
   viewpoints, pause/speed/inspection, and no gameplay orders from the viewer.
 - Game Rules starts from a ruleset (Standard, Quick clash, Blitz, Sandbox and the
-  others in `data/rulesets.json`) and lets the player tweak any rule from there. The
-  tab names the ruleset and how many rules differ from it ("Blitz + 2 changes"),
-  marks each changed rule with a dot and a reset, and offers Reset to the whole
-  ruleset. Undoing an edit removes the change: the count is derived, not a sticky
-  "Custom" state. Summary, the default view, shows the Match rules and any rule set
-  away from Standard or from the ruleset; All rules shows every rule in four groups:
-  Match, Start, Economy and Combat. Wide layouts list the rulesets beside the rules;
-  narrower ones open them as their own screen, and in All rules show one group at a
-  time. Turning Combat off disables the combat rules it makes moot, and a setup
-  that cannot end (combat off, conquest only, no time limit) shows a warning.
-  Session speed is restored when the match ends.
+  others in `data/rulesets.json`) and lets the player tweak any rule from there.
+  - The tab names the ruleset and how many rules differ from it ("Blitz + 2
+    changes"). Each changed rule says, in words, what the ruleset had ("Changed from
+    Blitz: 8") and has a Reset; a second Reset restores the whole ruleset. Undoing an
+    edit removes the change: the count is derived, not a sticky "Custom" state.
+  - Summary, the default view, shows the Match rules and any rule set away from
+    Standard or from the ruleset, and says how many others it leaves out. All rules
+    shows every rule in four groups: Match, Start, Economy and Combat.
+  - Windows at least 900 points wide list the rulesets beside the rules. Narrower
+    ones show the current ruleset as a card that opens the list as its own screen;
+    phones and short landscape screens also show All rules one group at a time.
+    Segmented choices become menus when they would not fit on one line.
+  - Turning Combat off dims the combat rules it makes moot and says so once, under
+    Combat. A setup that cannot end (combat off, conquest only, no time limit, no
+    probability victory) shows a warning, as does a 30-minute limit.
+  - Session speed is restored when the match ends.
 - When the sudden-death timer or prestige goal ends a match with non-allied teams
   tied for the most prestige, the tied players and live watchers see **Draw**
   instead of a win. Allies that win together still see a win, and teams below the
@@ -93,8 +98,9 @@ setup. Writes replace the old file atomically.
 
 Preference format 3 also retains every economy and combat rule, the starting unit
 level and the time limit. Formats 1 and 2 remain readable; they did not store
-these choices, so those rules load at their normal defaults. Format 5 adds custom
-AI library identities and format 6 probability victory. Format 7 stores the
+these choices, so those rules load at their normal defaults. Format 4 counts the
+colony records, format 5 adds custom AI library identities and format 6
+probability victory. Format 7 stores the
 ruleset's id instead of its English name: older files load "Quick clash", "Open
 book" and "Last colony standing" as those rulesets and "Custom" as Standard, keeping
 the saved rule values, so they show as changes. An id this build does not have also
@@ -104,14 +110,15 @@ that control; it must not implicitly toggle another.
 ## Adding or tweaking a ruleset
 
 Rulesets live in `data/rulesets.json`, in display order. Each entry lists only the
-rules it changes from Standard; every other rule keeps its Standard value:
+rules it changes from Standard; every other rule keeps its Standard value. Blitz,
+abridged:
 
 ```json
 {
   "id": "blitz",
   "name": "[Blitz]",
   "description": "[ruleset blitz description]",
-  "rules": { "speed": "2x", "workers": 8, "unitLevel": "veteran", "timeLimit": "45" }
+  "rules": { "speed": "2x", "workers": 8, "unitLevel": "veteran", "timeLimit": "45", "winProbability": "97" }
 }
 ```
 
@@ -122,24 +129,26 @@ rules it changes from Standard; every other rule keeps its Standard value:
   `data/texts.pending.txt` (see the [UI framework](../../development/ui-framework.md)).
   `data/check_translations.py` fails on a key the file uses but the catalogs lack.
 - Rule ids and values come from the registry in `src/CustomGameRules.cpp`. Toggles
-  take `true`/`false` (`combat`, `hunger`, `revealTerrain`, `alliancesChange`,
+  take only `true`/`false` (`combat`, `hunger`, `revealTerrain`, `alliancesChange`,
   `instantConstruction`, `woundedRetreat`, `unitsCanDie`, `unitTraining`); `workers`
   takes 1 to 8; the others take an option id: `victory` (`prestige`, `conquest`),
   `timeLimit` (`off`, `30`, `45`, `60`, `90`), `winProbability` (`off`, `95`, `97`,
-  `99`), `speed` (`1x` to `40x`, `max`),
-  `unitLevel` (`standard`, `veteran`, `elite`, `legendary`), `stockpile` (`none`,
+  `99`), `speed` (`1x` to `40x`, `max`), `unitLevel` (`standard`, `veteran`, `elite`, `legendary`), `stockpile` (`none`,
   `50`, `150`, `300`), `regrowth` (`normal`, `slow`, `very-slow`, `rare`, `none`),
   `glassCannon` (`off`, `x2`, `x3`) and `buildingStrength` (`normal`, `x5`, `x10`).
 - The game skips an invalid entry and reports why on standard error; a file that
-  does not parse leaves Standard alone. The `CustomGameSetup` harness requires the
-  shipped file to load without errors and to use every rule in some ruleset.
+  does not parse loads only Standard. A `version` other than 1 is reported, and the
+  file is still read. The `CustomGameSetup` harness requires the shipped file to
+  load without errors and to use every rule in some ruleset.
 
 Rulesets only choose values for rules that already exist, so adding or editing one
 changes no simulation code and needs no `SIM_REVISION` bump. Online rooms carry
-every rule except game speed, starting workers, unit level and probability victory; a room shows the
-first ruleset that matches the rules it carries (Quick clash reads as Standard).
-A new *rule* is different: it needs a field in the setup and header, a registry
-entry, save and replay versioning, and a simulation version bump.
+every rule except game speed, starting workers, unit level and probability
+victory (`CustomGameRules::InRooms`); the room editor hides the ones it cannot
+carry. A room reads as the first ruleset whose carried rules it matches, plus its
+changes, so Quick clash reads as Standard and an unmatched room as "Standard + N
+changes". A new *rule* is different: it needs a field in the setup and header, a
+registry entry, save and replay versioning, and a simulation version bump.
 
 Save/replay encodings are unchanged. Generated maps use owned temporary snapshots
 outside the map library; saves and replays remain self-contained after cleanup.

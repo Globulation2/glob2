@@ -1154,8 +1154,6 @@ Tab
 Коричневий
 [Built-in maps]
 Вбудовані карти
-[Can change in game]
-Може змінюватися в грі
 [Closed]
 Закрито
 [Colonies]
@@ -1184,8 +1182,6 @@ Tab
 Вага пустелі
 [Easy]
 Легкий
-[Explore as you play]
-Досліджуйте під час гри
 [Extra colony assignments are retained for larger maps.]
 Додаткові призначення колоній зберігаються для великих карт.
 [Extra islands]
@@ -1228,8 +1224,6 @@ Tab
 Остання вціліла колонія
 [Layout]
 Розташування
-[Locked teams]
-Заблоковані команди
 [Magenta]
 Маджента
 [Map]
@@ -1280,8 +1274,6 @@ Tab
 Повторення ландшафту
 [Resources]
 Ресурси
-[Revealed terrain does not reveal all enemy activity.]
-Виявлена місцевість не виявляє всієї активності противника.
 [River]
 Річка
 [River width]
@@ -1308,8 +1300,6 @@ Tab
 Команда
 [Terrain]
 Рельєф місцевості
-[Terrain revealed]
-Розкрито місцевість
 [Victory]
 Перемога
 [Watch game]
@@ -2124,14 +2114,8 @@ OpenGL недоступний у цій збірці.
 Виберіть мапу
 [Building sites complete immediately, skipping delivery.]
 Будмайданчики завершуються одразу, без етапу доставки.
-[Seeds each team's shared market/exchange resource pool at game start.]
-Наповнює спільний запас ринку/обміну кожної команди на початку гри.
 [No growth]
 Без росту
-[Normal construction]
-Звичайне будівництво
-[Instant]
-Миттєве
 [Units get hungry]
 Істоти голодують
 [No hunger]
@@ -2154,28 +2138,14 @@ OpenGL недоступний у цій збірці.
 Економіка
 [Instant construction]
 Миттєве будівництво
-[Higher tiers deal more damage but have less HP and armor.]
-Вищі рівні завдають більше шкоди, але мають менше здоров'я та броні.
 [Higher tiers give every building much more HP.]
 Вищі рівні дають кожній будівлі набагато більше здоров'я.
 [Starting units spawn already leveled up. Changes the generated map.]
 Стартові істоти з'являються вже прокачаними. Змінює згенеровану карту.
-[Trains normally]
-Тренується як зазвичай
 [No upgrades]
 Без покращень
-[Retreats when damaged]
-Відступає, коли поранена
-[Fearless]
-Безстрашна
-[Can die permanently]
-Може загинути назавжди
 [No permadeath]
 Без остаточної смерті
-[Normal combat]
-Звичайний бій
-[Peaceful mode]
-Мирний режим
 [Glass cannon x2]
 Скляна гармата x2
 [Glass cannon x3]
@@ -3375,8 +3345,6 @@ Emoji
 [play online]
 
 [Use in room]
-
-[Custom rules]
 
 [conn ai]
 
@@ -4678,14 +4646,6 @@ Emoji
 
 [Units must eat to keep working.]
 
-[Off: a peaceful match with no fighting between teams.]
-
-[Off: units fight to the death instead of retreating to heal.]
-
-[Off: units are never permanently lost; HP just stops at 1.]
-
-[Off: units still visit schools but never gain a level.]
-
 [Summary]
 
 [All rules]
@@ -4699,8 +4659,6 @@ Emoji
 [ruleset one change %0]
 
 [ruleset changes %0 %1]
-
-[No effect while combat is off.]
 
 [This match cannot end. Turn on prestige victory or set a time limit.]
 
@@ -4753,4 +4711,24 @@ Emoji
 [99% sure]
 
 [Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
+
+[Changed from %0: %1]
+
+[Combat is off, so the rules below have no effect.]
+
+[%0 more rules are at their Standard values.]
+
+[Players see the map's terrain from the start; enemy units stay hidden.]
+
+[Each team starts with extra resources in its shared pool.]
+
+[Units hit harder but have less HP and armor.]
+
+[Teams can attack each other. Turn off for a peaceful match.]
+
+[Hurt units go back to heal instead of fighting to the death.]
+
+[Units die when they run out of HP. Turn off to stop them at 1 HP.]
+
+[Units gain levels at schools.]
 

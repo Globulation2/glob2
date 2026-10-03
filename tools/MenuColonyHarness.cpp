@@ -377,7 +377,7 @@ void capture(const std::string &name, const std::string &path)
 		if (name == "custom-rules-all")
 		{
 			s.selectRuleset("blitz");
-			s.setRulesView(1);
+			s.setRulesView(CustomGameScreen::RulesView::All);
 		}
 		if (name == "custom-rules-sandbox")
 			s.selectRuleset("sandbox");

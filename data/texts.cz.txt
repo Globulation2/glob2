@@ -1154,8 +1154,6 @@ Modrá
 Hnědá
 [Built-in maps]
 Vestavěné mapy
-[Can change in game]
-Může se změnit ve hře
 [Closed]
 Zavřeno
 [Colonies]
@@ -1184,8 +1182,6 @@ Azurová
 Váha pouště
 [Easy]
 Lehká
-[Explore as you play]
-Prozkoumejte během hraní
 [Extra colony assignments are retained for larger maps.]
 Přiřazení dalších kolonií zůstávají uložená pro větší mapy.
 [Extra islands]
@@ -1228,8 +1224,6 @@ Krajina
 Poslední přeživší kolonie
 [Layout]
 Rozložení
-[Locked teams]
-Zamčené týmy
 [Magenta]
 Purpurová
 [Map]
@@ -1280,8 +1274,6 @@ Náhodná mapa
 Opakování krajiny
 [Resources]
 Zdroje
-[Revealed terrain does not reveal all enemy activity.]
-Odhalený terén neodhalí veškerou nepřátelskou aktivitu.
 [River]
 Řeka
 [River width]
@@ -1308,8 +1300,6 @@ Bažina
 Tým
 [Terrain]
 Terén
-[Terrain revealed]
-Terén odhalen
 [Victory]
 Vítězství
 [Watch game]
@@ -2124,14 +2114,8 @@ Stránka (P)
 Vyberte mapu
 [Building sites complete immediately, skipping delivery.]
 Staveniště se dokončí okamžitě, bez fáze dovozu materiálu.
-[Seeds each team's shared market/exchange resource pool at game start.]
-Na začátku hry naplní sdílenou zásobu tržiště/burzy každého týmu.
 [No growth]
 Bez růstu
-[Normal construction]
-Normální stavba
-[Instant]
-Okamžitá
 [Units get hungry]
 Jednotky mají hlad
 [No hunger]
@@ -2154,28 +2138,14 @@ Bez růstu zdrojů
 Ekonomika
 [Instant construction]
 Okamžitá stavba
-[Higher tiers deal more damage but have less HP and armor.]
-Vyšší úrovně způsobují více poškození, ale mají méně životů a brnění.
 [Higher tiers give every building much more HP.]
 Vyšší úrovně dávají každé budově mnohem více životů.
 [Starting units spawn already leveled up. Changes the generated map.]
 Počáteční jednotky se objeví už s vyšší úrovní. Mění vygenerovanou mapu.
-[Trains normally]
-Trénuje normálně
 [No upgrades]
 Žádná vylepšení
-[Retreats when damaged]
-Stáhne se při zranění
-[Fearless]
-Nebojácná
-[Can die permanently]
-Může trvale zemřít
 [No permadeath]
 Žádná trvalá smrt
-[Normal combat]
-Normální boj
-[Peaceful mode]
-Mírový režim
 [Glass cannon x2]
 Skleněné dělo x2
 [Glass cannon x3]
@@ -3375,8 +3345,6 @@ Setrvačnost mapy
 [play online]
 
 [Use in room]
-
-[Custom rules]
 
 [conn ai]
 
@@ -4678,14 +4646,6 @@ Základny na kolonii; základna je jeden tým mapy tak, jak byla nakreslena, s j
 
 [Units must eat to keep working.]
 
-[Off: a peaceful match with no fighting between teams.]
-
-[Off: units fight to the death instead of retreating to heal.]
-
-[Off: units are never permanently lost; HP just stops at 1.]
-
-[Off: units still visit schools but never gain a level.]
-
 [Summary]
 
 [All rules]
@@ -4699,8 +4659,6 @@ Základny na kolonii; základna je jeden tým mapy tak, jak byla nakreslena, s j
 [ruleset one change %0]
 
 [ruleset changes %0 %1]
-
-[No effect while combat is off.]
 
 [This match cannot end. Turn on prestige victory or set a time limit.]
 
@@ -4753,4 +4711,24 @@ Základny na kolonii; základna je jeden tým mapy tak, jak byla nakreslena, s j
 [99% sure]
 
 [Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
+
+[Changed from %0: %1]
+
+[Combat is off, so the rules below have no effect.]
+
+[%0 more rules are at their Standard values.]
+
+[Players see the map's terrain from the start; enemy units stay hidden.]
+
+[Each team starts with extra resources in its shared pool.]
+
+[Units hit harder but have less HP and armor.]
+
+[Teams can attack each other. Turn off for a peaceful match.]
+
+[Hurt units go back to heal instead of fighting to the death.]
+
+[Units die when they run out of HP. Turn off to stop them at 1 HP.]
+
+[Units gain levels at schools.]
 

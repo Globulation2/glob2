@@ -148,8 +148,11 @@ def audit(root=ROOT):
             entries = []
             errors.append(f'rulesets.json: {error}')
         for entry in entries:
+            if not isinstance(entry, dict):
+                errors.append(f'rulesets.json: ruleset entry is not an object: {entry!r}')
+                continue
             for field in ('name', 'description'):
-                key = entry.get(field) if isinstance(entry, dict) else None
+                key = entry.get(field)
                 if key not in key_set:
                     errors.append(f'rulesets.json: unknown translation key {key!r} ({field} of {entry.get("id")!r})')
     return {'errors': errors, 'languages': languages}

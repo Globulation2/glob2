@@ -1154,8 +1154,6 @@ Modra
 Rjava
 [Built-in maps]
 Vgrajeni zemljevidi
-[Can change in game]
-Lahko se spremeni v igri
 [Closed]
 Zaprto
 [Colonies]
@@ -1184,8 +1182,6 @@ Cian
 Utež puščave
 [Easy]
 Lahko
-[Explore as you play]
-Raziskujte med igranjem
 [Extra colony assignments are retained for larger maps.]
 Dodatne dodelitve kolonij se ohranijo za večje zemljevide.
 [Extra islands]
@@ -1228,8 +1224,6 @@ Pokrajina
 Zadnja preživela kolonija
 [Layout]
 Postavitev
-[Locked teams]
-Zaklenjene ekipe
 [Magenta]
 Magenta
 [Map]
@@ -1280,8 +1274,6 @@ Rdeča
 Ponavljanje pokrajine
 [Resources]
 Viri
-[Revealed terrain does not reveal all enemy activity.]
-Razkriti teren ne razkrije vseh sovražnikovih aktivnosti.
 [River]
 Reka
 [River width]
@@ -1308,8 +1300,6 @@ Močvirje
 Ekipa
 [Terrain]
 Teren
-[Terrain revealed]
-Razkrit teren
 [Victory]
 Zmaga
 [Watch game]
@@ -2124,14 +2114,8 @@ Stran (P)
 Izberite zemljevid
 [Building sites complete immediately, skipping delivery.]
 Gradbišča se dokončajo takoj, brez faze dostave.
-[Seeds each team's shared market/exchange resource pool at game start.]
-Ob začetku igre napolni skupno zalogo tržnice/menjave vsake ekipe.
 [No growth]
 Brez rasti
-[Normal construction]
-Običajna gradnja
-[Instant]
-Takojšnja
 [Units get hungry]
 Enote postanejo lačne
 [No hunger]
@@ -2154,28 +2138,14 @@ Brez rasti virov
 Gospodarstvo
 [Instant construction]
 Takojšnja gradnja
-[Higher tiers deal more damage but have less HP and armor.]
-Višje stopnje povzročijo več škode, a imajo manj zdravja in oklepa.
 [Higher tiers give every building much more HP.]
 Višje stopnje dajo vsaki zgradbi veliko več zdravja.
 [Starting units spawn already leveled up. Changes the generated map.]
 Začetne enote se pojavijo že na višji stopnji. Spremeni ustvarjeni zemljevid.
-[Trains normally]
-Trenira normalno
 [No upgrades]
 Brez izboljšav
-[Retreats when damaged]
-Umakne se ob poškodbi
-[Fearless]
-Neustrašna
-[Can die permanently]
-Lahko trajno umre
 [No permadeath]
 Brez trajne smrti
-[Normal combat]
-Običajen boj
-[Peaceful mode]
-Miroljuben način
 [Glass cannon x2]
 Stekleni top x2
 [Glass cannon x3]
@@ -3375,8 +3345,6 @@ Zagon zemljevida
 [play online]
 
 [Use in room]
-
-[Custom rules]
 
 [conn ai]
 
@@ -4678,14 +4646,6 @@ Baze na kolonijo; baza je ena ekipa zemljevida, kot je narisan, z njenimi zgradb
 
 [Units must eat to keep working.]
 
-[Off: a peaceful match with no fighting between teams.]
-
-[Off: units fight to the death instead of retreating to heal.]
-
-[Off: units are never permanently lost; HP just stops at 1.]
-
-[Off: units still visit schools but never gain a level.]
-
 [Summary]
 
 [All rules]
@@ -4699,8 +4659,6 @@ Baze na kolonijo; baza je ena ekipa zemljevida, kot je narisan, z njenimi zgradb
 [ruleset one change %0]
 
 [ruleset changes %0 %1]
-
-[No effect while combat is off.]
 
 [This match cannot end. Turn on prestige victory or set a time limit.]
 
@@ -4753,4 +4711,24 @@ Baze na kolonijo; baza je ena ekipa zemljevida, kot je narisan, z njenimi zgradb
 [99% sure]
 
 [Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
+
+[Changed from %0: %1]
+
+[Combat is off, so the rules below have no effect.]
+
+[%0 more rules are at their Standard values.]
+
+[Players see the map's terrain from the start; enemy units stay hidden.]
+
+[Each team starts with extra resources in its shared pool.]
+
+[Units hit harder but have less HP and armor.]
+
+[Teams can attack each other. Turn off for a peaceful match.]
+
+[Hurt units go back to heal instead of fighting to the death.]
+
+[Units die when they run out of HP. Turn off to stop them at 1 HP.]
+
+[Units gain levels at schools.]
 
