@@ -33,7 +33,7 @@ cutover milestone (M9), when they are deleted. There is no data import from YOG.
 | Part | Code | Role |
 | --- | --- | --- |
 | `platform-api` | `platform/apps/api` | Public REST (`/api/v1`), realtime WebSocket (`/realtime`), browser sign-in pages (`/signin`, `/auth/<provider>/…`), JWKS (`/.well-known/jwks.json`), internal endpoints for relays and agents (`/internal`), health (`/healthz`, `/readyz`). Stateless; run any number of replicas. |
-| `platform-worker` | `platform/apps/worker` | Applies engine-job results (recording verify-match verdicts and history, and applying ratings); runs the scheduler (maintenance, matchmaker, rating sweep, warm map pool) on the one replica holding the leader lock. |
+| `platform-worker` | `platform/apps/worker` | Applies engine-job results (recording verify-match verdicts and history, applying ratings, completing map jobs); runs the scheduler (maintenance, matchmaker, rating sweep, warm map pool, relay sweep) on the one replica holding the leader lock. |
 | `engine-agent` | `platform/apps/engine-agent` | Runs engine jobs for exactly one sim version with its glob2 binary; see [Engine agents](#engine-agents). |
 | web app | `platform/apps/web` | Sign-in pages, invite landing, profiles, leaderboards, maps (React + Vite). |
 | relay | `src/relay/` (M2) | Clock and turn sequencing for matches; trusts only signed tickets. |

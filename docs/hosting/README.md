@@ -83,10 +83,12 @@ cp ../platform/instance.example.yaml instance.yaml
    [Sign-in providers](#sign-in-providers)), whether guests may play, and the
    quick-match queues.
 3. Optionally build the WebAssembly client to serve "Play in browser" at `/play/`:
-   `scons target=web release=1` from the repository root (see
-   [browser/README.md](../../browser/README.md)), then set
-   `GLOB2_WEB_CLIENT_DIR=../build/emscripten/client/release` in `.env`. Without it
-   `/play/` answers 404 and everything else works.
+   `scons target=web release=1` then `python3 browser/package-static.py` from the
+   repository root (see [browser/README.md](../../browser/README.md)), and set
+   `GLOB2_WEB_CLIENT_DIR=../build/browser-static` in `.env`. Caddy serves it with
+   the cross-origin isolation headers the threaded client needs and negotiates
+   the packaged gzip sidecars. Without it `/play/` answers 404 and everything
+   else works.
 4. Build and start:
 
    ```sh
@@ -442,6 +444,11 @@ docker buildx build -f deploy/Dockerfile --target engine-agent \
   -t glob2-engine-agent:simver-$(python3 deploy/sim_version.py ../glob2-0.9.25) --load .
 ```
 
+The engine stage builds the pinned SDL3 family with `scons/sdl3_dependencies.py`
+from the engine source, so this works for releases from the SDL3 migration on. An
+SDL2-era release (before #487) has no such helper; build its agent from that
+release's own Dockerfile and dependencies instead.
+
 The verifier must compute byte-identical games to the release's clients, so build
 it with the compiler and flags of that release where they differ, and check it
 against a recorded game ([replay verification](../development/headless-replays.md))
@@ -459,7 +466,12 @@ The Dockerfile targets are `platform` (API, worker and CLI), `engine-agent`,
 `server` and `proxy`) for linux/amd64 and linux/arm64 to
 `ghcr.io/<owner>/<repository>-<target>`, tagged with the Git tag and commit; engine
 agents are also tagged `simver-<sim version>` and labelled
-`org.glob2.sim-version`. Pin digests in production:
+`org.glob2.sim-version`. The workflow first builds this stack from the tagged
+commit and runs `tests/deployment/platform_stack_smoke.py` against it. Then it
+pushes every image under a `candidate-<commit>` tag only, and adds the release
+tags once all of them have built for both architectures. A failed smoke test or
+build therefore publishes no release tag. The smoke test runs on amd64 only.
+Pin digests in production:
 
 ```dotenv
 GLOB2_PLATFORM_IMAGE=ghcr.io/<owner>/<repository>-platform@sha256:…
