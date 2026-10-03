@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:RealtimeRoomJoinParams",
+  "title": "RealtimeRoomJoinParams",
+  "type": "object",
+  "required": [
+    "code"
+  ],
+  "properties": {
+    "code": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9]{6,16}$"
+    }
+  },
+  "additionalProperties": false
+}

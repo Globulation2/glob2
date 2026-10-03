@@ -46,6 +46,7 @@ jobs:
       map_generators: ${{ steps.select.outputs.map_generators }}
       deployment: ${{ steps.select.outputs.deployment }}
       cross_platform: ${{ steps.select.outputs.cross_platform }}
+      platform: ${{ steps.select.outputs.platform }}
       compatibility: ${{ steps.select.outputs.compatibility }}
       browsers_all: ${{ steps.select.outputs.browsers_all }}
       android: ${{ steps.select.outputs.android }}
@@ -1353,9 +1354,67 @@ jobs:
           path: artifacts/ci-observation/
           if-no-files-found: ignore
 
+  # The TypeScript platform (platform/): lint, type checks, the web build, and
+  # unit and integration tests against a real Postgres.
+  platform:
+    name: platform (TypeScript)
+    needs: changes
+    if: ${{ needs.changes.outputs.platform == 'true' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: glob2
+          POSTGRES_PASSWORD: glob2
+          POSTGRES_DB: glob2
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U glob2"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      TEST_DATABASE_URL: postgres://glob2:glob2@localhost:5432/postgres
+    defaults:
+      run:
+        working-directory: platform
+    steps:
+      - uses: actions/checkout@v4
+        id: actions_checkout_v4_1
+      - uses: actions/setup-node@v4
+        id: actions_setup_node_v4_1
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: platform/package-lock.json
+      - name: Install platform dependencies
+        id: install_platform_dependencies
+        run: npm ci
+      - name: Lint and check formatting
+        id: lint_and_check_formatting
+        run: npm run lint
+      - name: Type check
+        id: type_check
+        run: npm run typecheck
+      - name: Build the web app
+        id: build_the_web_app
+        run: npm run build -w @glob2/web
+      - name: Run tests
+        id: run_tests
+        run: npm test
+      - name: Apply migrations with the CLI
+        id: apply_migrations_with_the_cli
+        env:
+          DATABASE_URL: postgres://glob2:glob2@localhost:5432/glob2
+        run: |
+          npm run migrate -- latest
+          npm run migrate -- status
+
   ci-result:
     name: Relevant checks passed
-    needs: [changes, android, macos, tsan, native-coverage, linux, linux-variants, linux-map-generators, windows, windows-server, web-build, web-native, web-deploy, web-test, browser-determinism]
+    needs: [changes, android, macos, tsan, native-coverage, linux, linux-variants, linux-map-generators, windows, windows-server, web-build, web-native, web-deploy, web-test, browser-determinism, platform]
     if: ${{ !cancelled() }}
     runs-on: ubuntu-24.04
     env:
@@ -1385,6 +1444,7 @@ jobs:
               'web-deploy': selected['deployment'] == 'true',
               'web-test': selected['browser'] == 'true',
               'browser-determinism': selected['cross_platform'] == 'true',
+              'platform': selected['platform'] == 'true',
           }
           for job, should_run in expected.items():
               required = 'success' if should_run else 'skipped'

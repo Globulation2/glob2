@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:RealtimeAuthHandoffBeginParams",
+  "title": "RealtimeAuthHandoffBeginParams",
+  "type": "object",
+  "properties": {
+    "provider": {
+      "type": "string",
+      "maxLength": 64
+    }
+  },
+  "additionalProperties": false
+}

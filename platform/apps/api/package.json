@@ -1,0 +1,19 @@
+{
+  "name": "@glob2/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Platform HTTP API, realtime WebSocket and internal relay/agent endpoints.",
+  "license": "GPL-3.0-or-later",
+  "scripts": {
+    "start": "node src/main.ts",
+    "dev": "node --watch src/main.ts"
+  },
+  "dependencies": {
+    "@glob2/core": "0.1.0",
+    "@glob2/db": "0.1.0",
+    "@glob2/protocol": "0.1.0",
+    "fastify": "^5.12.5",
+    "kysely": "^0.29.6"
+  }
+}

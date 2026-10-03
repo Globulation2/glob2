@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:MapVersionInfo",
+  "title": "MapVersionInfo",
+  "type": "object",
+  "required": [
+    "hash",
+    "size",
+    "width",
+    "height",
+    "teamCount",
+    "minVersionMinor",
+    "validation",
+    "downloadUrl",
+    "createdAt"
+  ],
+  "properties": {
+    "hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "Lowercase hexadecimal SHA-256 digest."
+    },
+    "size": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "width": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "height": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "teamCount": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 12
+    },
+    "minVersionMinor": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "validation": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "pending"
+        },
+        {
+          "type": "string",
+          "const": "valid"
+        },
+        {
+          "type": "string",
+          "const": "invalid"
+        }
+      ]
+    },
+    "previewUrl": {
+      "type": "string",
+      "pattern": "^(https|wss|http|ws)://[^\\s]+$",
+      "maxLength": 2048
+    },
+    "downloadUrl": {
+      "type": "string",
+      "pattern": "^(https|wss|http|ws)://[^\\s]+$",
+      "maxLength": 2048
+    },
+    "createdAt": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+      "description": "RFC 3339 date-time."
+    }
+  }
+}

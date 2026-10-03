@@ -9,7 +9,7 @@ import subprocess
 import sys
 
 
-JOBS = ("native", "browser", "map_generators", "deployment", "cross_platform")
+JOBS = ("native", "browser", "map_generators", "deployment", "cross_platform", "platform")
 # Implementation-only drawing changes retain native, browser, and equivalence
 # checks. Shared headers, file I/O, fonts and unknown library paths stay full CI.
 RENDER_IMPLEMENTATIONS = {
@@ -40,13 +40,19 @@ def classify(paths):
         return {job: True for job in JOBS}
 
     from ci_policy import cheap_path
-    native = browser = map_generators = deployment = cross_platform = False
+    native = browser = map_generators = deployment = cross_platform = platform = False
     for path in paths:
         # These Python suites execute directly in the selector job, without
         # compiling a client or launching platform/browser regressions.
         if path in CI_TOOL_TESTS or cheap_path(path):
             continue
         if path.startswith("docs/") or path.endswith(".md"):
+            continue
+        if path.startswith("platform/"):
+            # Selected by ci_policy's platform flag; protocol fixtures also feed
+            # the C++ contract tests.
+            platform = True
+            native = native or path.startswith("platform/packages/protocol/fixtures/")
             continue
         if path == "test/map-generator-golden.txt":
             map_generators = True
@@ -92,6 +98,7 @@ def classify(paths):
         "map_generators": map_generators,
         "deployment": deployment,
         "cross_platform": cross_platform,
+        "platform": platform,
     }
 
 

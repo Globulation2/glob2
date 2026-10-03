@@ -1,0 +1,83 @@
+{
+  "type": "response",
+  "id": "7",
+  "ok": true,
+  "result": {
+    "room": {
+      "id": "5d4c3b2a-1f0e-4d9c-8b7a-6f5e4d3c2b1a",
+      "code": "K7QX2M",
+      "inviteUrl": "https://play.example.org/j/K7QX2M",
+      "name": "Alice's room",
+      "visibility": "link",
+      "status": "open",
+      "hostAccountId": "0b8f6f2e-3c4d-4e5f-8a9b-0c1d2e3f4a5b",
+      "simVersion": {
+        "versionMinor": 125,
+        "netProtocol": 49,
+        "dataHash": "3f9a6c1e8b2d47a05e6f1c2b3a4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f"
+      },
+      "map": {
+        "kind": "catalog",
+        "hash": "a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f90"
+      },
+      "teams": [
+        {
+          "team": 0,
+          "alliance": 0
+        },
+        {
+          "team": 1,
+          "alliance": 1
+        }
+      ],
+      "seats": [
+        {
+          "seat": 0,
+          "team": 0,
+          "occupant": {
+            "kind": "human",
+            "accountId": "0b8f6f2e-3c4d-4e5f-8a9b-0c1d2e3f4a5b",
+            "displayName": "Alice",
+            "ready": true
+          }
+        },
+        {
+          "seat": 1,
+          "team": 1,
+          "occupant": {
+            "kind": "open"
+          }
+        }
+      ],
+      "rules": {
+        "prestigeVictory": true,
+        "suddenDeathMinutes": 0,
+        "mapDiscovered": false,
+        "allyTeamsFixed": true,
+        "resourceGrowthDisabled": false,
+        "resourceScarcityLevel": 0,
+        "instantConstruction": false,
+        "stockpileStartLevel": 0,
+        "hungerDisabled": false,
+        "unitUpgradesDisabled": false,
+        "glassCannonLevel": 0,
+        "unitsFearless": false,
+        "permadeathDisabled": false,
+        "peacefulMode": false,
+        "buildingHpLevel": 0
+      },
+      "experiments": [],
+      "members": [
+        {
+          "accountId": "0b8f6f2e-3c4d-4e5f-8a9b-0c1d2e3f4a5b",
+          "displayName": "Alice",
+          "kind": "registered",
+          "connected": true,
+          "seat": 0
+        }
+      ],
+      "revision": 4,
+      "createdAt": "2026-10-01T12:00:00Z"
+    }
+  }
+}

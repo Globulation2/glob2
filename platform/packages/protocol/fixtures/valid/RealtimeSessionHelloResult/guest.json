@@ -1,0 +1,15 @@
+{
+  "sessionId": "2a3b4c5d-6e7f-4a8b-9c0d-1e2f3a4b5c6d",
+  "serverTime": "2026-10-01T12:00:00Z",
+  "simSupported": true,
+  "account": {
+    "id": "0b8f6f2e-3c4d-4e5f-8a9b-0c1d2e3f4a5b",
+    "displayName": "Alice",
+    "kind": "guest",
+    "createdAt": "2026-10-01T12:00:00Z",
+    "role": "user",
+    "status": "active",
+    "identities": [],
+    "entitlements": []
+  }
+}
