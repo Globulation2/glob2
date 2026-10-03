@@ -17,3 +17,9 @@ Additional archive SHA256: d6cb17a2332e78779349efccd75ad0c1dcc97242d32f68459a2f5
 ## Corrected menu capture
 
 The original isolated menu fixture omitted Application’s FrontendTheme, producing a plain backdrop. The fixture now owns the real theme and asserts that the colony loads and advances while captured. The additional archive contains OpenGL footage and checksum comparisons with the colony visible; all three integration cases pass (69 assertions). `corrected-menu.png` is decoded directly from the new MP4. Changes are in source commit bd7446027; runtime evidence was captured immediately before committing the identical fixture.
+
+## Final pre-merge validation
+
+Source 5bd86c012, integrated with master eea70c0e1. Clean source builds all client and test targets. All 597 unit cases, three recording integration cases under software and OpenGL, the two-peer legacy LAN recording fixture, the menu-colony presentation/keyboard harness, and eight decoded-media Python cases pass. All 256 build-system tests pass with one optional fontTools check skipped locally. Strict translations pass. The final archive contains current footage, checksum comparisons, initial states and logs; corrected-menu.png is from the current OpenGL video. Hosted platform verification remains pending at publication.
+
+Final archive SHA256: fb935132c44b6fd8ee608d89640d63fdbc4a5382828b36310b5593800bbb865e
