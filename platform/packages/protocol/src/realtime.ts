@@ -23,6 +23,7 @@ import {
 } from './common.ts';
 import { AiId, MatchRules, MatchSetup, SetupTeam } from './matchSetup.ts';
 import {
+  IdentityConflict,
   MatchSummary,
   RoomChatMessage,
   RoomMapSelection,
@@ -93,15 +94,45 @@ export const realtimeMethods = {
     params: Strict({ accessToken: Type.String({ minLength: 1, maxLength: 4096 }) }),
     result: Open({ account: SelfAccount }),
   },
+  'session.ping': {
+    description:
+      'Application-level keepalive for clients that cannot send WebSocket pings (browsers). The server also pings every socket.',
+    params: Strict({}),
+    result: Open({ serverTime: Timestamp }),
+  },
   'auth.handoff.begin': {
     description:
-      'Start a browser sign-in; the client opens signInUrl and shows confirmationCode. Completion arrives as auth.handoff.completed.',
-    params: Strict({ provider: Type.Optional(Type.String({ maxLength: 64 })) }),
+      'Start a browser sign-in; the client opens signInUrl and shows confirmationCode. Completion arrives as auth.handoff.completed. On an authenticated socket the provider is linked to that account (a guest becomes registered).',
+    params: Strict({
+      provider: Type.Optional(Type.String({ maxLength: 64 })),
+      mode: Type.Optional(
+        Type.Union([Type.Literal('link'), Type.Literal('signin')], {
+          description:
+            'link (default on an authenticated socket): attach the identity to the current account. signin: switch to the account owning the identity, creating one if new.',
+        }),
+      ),
+    }),
     result: Open({
       attemptId: Uuid,
       signInUrl: HttpsOrWssUrl,
       confirmationCode: Type.String({ pattern: '^[A-Z0-9]{4,12}$' }),
       expiresAt: Timestamp,
+      resumeToken: Type.String({
+        pattern: '^[A-Za-z0-9_-]{43}$',
+        description:
+          'Secret for auth.handoff.resume if the socket drops while the browser is open (common on phones). Keep it in memory only.',
+      }),
+    }),
+  },
+  'auth.handoff.resume': {
+    description:
+      'Re-attach a pending (or finished but undelivered) browser sign-in to this socket after a reconnect; its result then arrives as usual.',
+    params: Strict({
+      attemptId: Uuid,
+      resumeToken: Type.String({ pattern: '^[A-Za-z0-9_-]{43}$' }),
+    }),
+    result: Open({
+      status: Type.Union([Type.Literal('pending'), Type.Literal('finished')]),
     }),
   },
   'auth.handoff.cancel': {
@@ -183,8 +214,19 @@ export const realtimeMethods = {
         Strict({ region: RelayRegion, rttMs: Type.Integer({ minimum: 0, maximum: 60000 }) }),
         { maxItems: 32, description: 'Measured round trip to each relay region.' },
       ),
+      allowAiOpponent: Type.Optional(
+        Type.Boolean({
+          description:
+            '"Allow an AI opponent": the queue may fill empty seats with AIs after its backfill delay. Default true.',
+        }),
+      ),
     }),
     result: Open({ ticketId: Uuid, joinedAt: Timestamp }),
+  },
+  'queue.respond': {
+    description: 'Accept or decline a proposed ranked match (queue.proposal with requiresAccept).',
+    params: Strict({ proposalId: Uuid, accept: Type.Boolean() }),
+    result: EmptyResult,
   },
   'queue.leave': {
     description: 'Leave a queue.',
@@ -218,8 +260,16 @@ export const realtimeEvents = {
     data: Open({ reason: Type.String({ maxLength: 200 }) }),
   },
   'auth.handoff.completed': {
-    description: 'A browser sign-in this socket started has completed.',
-    data: Open({ attemptId: Uuid, session: SignInResponse }),
+    description:
+      'A browser sign-in this socket started has completed. The socket is now authenticated as session.account.',
+    data: Open({
+      attemptId: Uuid,
+      session: SignInResponse,
+      linked: Type.Boolean({
+        description:
+          'True: the identity was linked to the account the socket was signed in as. False: the socket switched to (or signed in as) another account.',
+      }),
+    }),
   },
   'auth.handoff.failed': {
     description: 'A browser sign-in this socket started will not complete.',
@@ -229,8 +279,10 @@ export const realtimeEvents = {
         Type.Literal('expired'),
         Type.Literal('denied'),
         Type.Literal('cancelled'),
+        Type.Literal('conflict'),
         Type.Literal('error'),
       ]),
+      conflict: Type.Optional(IdentityConflict),
     }),
   },
   'room.state': {
@@ -260,6 +312,35 @@ export const realtimeEvents = {
       waitedSeconds: Type.Integer({ minimum: 0 }),
       ratingWindow: Type.Optional(Type.Number({ minimum: 0 })),
       aiBackfillAt: Type.Optional(Timestamp),
+    }),
+  },
+  'queue.proposal': {
+    description:
+      'The queue grouped the client with other players. With requiresAccept the client must answer queue.respond before expiresAt; otherwise the match starts without a prompt.',
+    data: Open({
+      proposalId: Uuid,
+      ticketId: Uuid,
+      queueId: Type.String(),
+      requiresAccept: Type.Boolean(),
+      expiresAt: Type.Optional(Timestamp),
+      humans: Type.Integer({ minimum: 1, maximum: 12 }),
+      ais: Type.Integer({ minimum: 0, maximum: 12 }),
+    }),
+  },
+  'queue.proposalEnded': {
+    description:
+      'A proposal the client was in will not start. requeued: the ticket is waiting again at its original position; removed: the ticket left the queue (declined or did not answer) and joining again is blocked until cooldownUntil.',
+    data: Open({
+      proposalId: Uuid,
+      ticketId: Uuid,
+      outcome: Type.Union([Type.Literal('requeued'), Type.Literal('removed')]),
+      reason: Type.Union([
+        Type.Literal('declined'),
+        Type.Literal('timeout'),
+        Type.Literal('other_declined'),
+        Type.Literal('start_failed'),
+      ]),
+      cooldownUntil: Type.Optional(Timestamp),
     }),
   },
   'queue.matchFound': {

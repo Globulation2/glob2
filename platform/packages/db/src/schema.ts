@@ -30,6 +30,7 @@ export interface AccountsTable {
   created_at: Timestamp;
   updated_at: Timestamp;
   last_seen_at: NullableTimestamp;
+  display_name_changed_at: NullableTimestamp;
 }
 
 export interface IdentitiesTable {
@@ -75,6 +76,38 @@ export interface SigninAttemptsTable {
   created_at: Timestamp;
   expires_at: RequiredTimestamp;
   completed_at: NullableTimestamp;
+  resume_hash: Nullable<string>;
+  mode: Defaulted<'link' | 'signin'>;
+  client_platform: Defaulted<'desktop' | 'android' | 'ios' | 'browser'>;
+  browser_binding_hash: Nullable<string>;
+  conflict_account_id: Nullable<string>;
+  failure_reason: Nullable<'expired' | 'denied' | 'cancelled' | 'conflict' | 'error'>;
+  linked: Nullable<boolean>;
+  delivered_at: NullableTimestamp;
+}
+
+export interface WebSessionsTable {
+  id: Generated<string>;
+  account_id: string;
+  token_hash: string;
+  created_at: Timestamp;
+  expires_at: RequiredTimestamp;
+  last_used_at: NullableTimestamp;
+  revoked_at: NullableTimestamp;
+}
+
+export interface AuthFlowsTable {
+  id: Generated<string>;
+  state_hash: string;
+  provider: string;
+  code_verifier: string;
+  nonce: string;
+  purpose: 'handoff' | 'web';
+  attempt_id: Nullable<string>;
+  browser_binding_hash: Nullable<string>;
+  created_at: Timestamp;
+  expires_at: RequiredTimestamp;
+  consumed_at: NullableTimestamp;
 }
 
 export interface EntitlementsTable {
@@ -253,6 +286,10 @@ export interface MatchesTable {
   created_at: Timestamp;
   started_at: NullableTimestamp;
   ended_at: NullableTimestamp;
+  rating_status: Defaulted<'pending' | 'applied' | 'unchanged' | 'not_rated'>;
+  rating_note: Nullable<string>;
+  ratings_applied_at: NullableTimestamp;
+  proposal_id: Nullable<string>;
 }
 
 export interface RatingEntitiesTable {
@@ -274,6 +311,21 @@ export interface RatingsTable {
   wins: Defaulted<number>;
   last_match_id: Nullable<string>;
   updated_at: Timestamp;
+  seed_source: Nullable<string>;
+}
+
+export interface RatingHistoryTable {
+  match_id: string;
+  entity_id: string;
+  ladder: string;
+  result: 'won' | 'lost';
+  mu_before: number;
+  sigma_before: number;
+  mu_after: number;
+  sigma_after: number;
+  display_before: number;
+  display_after: number;
+  created_at: Timestamp;
 }
 
 export type Outcome = 'won' | 'lost' | 'unresolved' | 'abandoned';
@@ -319,10 +371,58 @@ export interface QueueTicketsTable {
   region_rtts: DefaultedJson<JsonValue>;
   rating_mu: Nullable<number>;
   rating_sigma: Nullable<number>;
-  status: Defaulted<'waiting' | 'matched' | 'cancelled' | 'expired'>;
+  status: Defaulted<QueueTicketStatus>;
   match_id: Nullable<string>;
   created_at: Timestamp;
   updated_at: Timestamp;
+  allow_ai_opponent: Defaulted<boolean>;
+  proposal_id: Nullable<string>;
+}
+
+export type QueueTicketStatus =
+  'waiting' | 'proposed' | 'matched' | 'cancelled' | 'declined' | 'expired';
+
+export type ProposalStatus = 'pending' | 'starting' | 'started' | 'cancelled' | 'failed';
+
+export interface MatchProposalsTable {
+  id: Generated<string>;
+  queue_id: string;
+  sim_version: string;
+  region: Nullable<string>;
+  rated: boolean;
+  backfilled: Defaulted<boolean>;
+  status: ProposalStatus;
+  map: Json<JsonValue>;
+  expires_at: NullableTimestamp;
+  match_id: Nullable<string>;
+  start_attempts: Defaulted<number>;
+  failure: Nullable<string>;
+  created_at: Timestamp;
+  resolved_at: NullableTimestamp;
+}
+
+export type ProposalResponse = 'pending' | 'accepted' | 'declined' | 'timeout' | 'not_required';
+
+export interface MatchProposalSeatsTable {
+  proposal_id: string;
+  slot: number;
+  side: number;
+  kind: 'human' | 'ai';
+  ticket_id: Nullable<string>;
+  account_id: Nullable<string>;
+  ai_id: Nullable<string>;
+  rating_entity_id: Nullable<string>;
+  mu: number;
+  sigma: number;
+  response: Defaulted<ProposalResponse>;
+  responded_at: NullableTimestamp;
+}
+
+export interface QueueCooldownsTable {
+  account_id: string;
+  until: RequiredTimestamp;
+  reason: 'declined' | 'timeout';
+  created_at: Timestamp;
 }
 
 export interface Database {
@@ -331,6 +431,8 @@ export interface Database {
   device_credentials: DeviceCredentialsTable;
   refresh_tokens: RefreshTokensTable;
   signin_attempts: SigninAttemptsTable;
+  web_sessions: WebSessionsTable;
+  auth_flows: AuthFlowsTable;
   entitlements: EntitlementsTable;
   admin_audit_log: AdminAuditLogTable;
   blobs: BlobsTable;
@@ -352,6 +454,10 @@ export interface Database {
   match_team_stats: MatchTeamStatsTable;
   match_artifacts: MatchArtifactsTable;
   queue_tickets: QueueTicketsTable;
+  rating_history: RatingHistoryTable;
+  match_proposals: MatchProposalsTable;
+  match_proposal_seats: MatchProposalSeatsTable;
+  queue_cooldowns: QueueCooldownsTable;
 }
 
 export type Account = Selectable<AccountsTable>;

@@ -6,6 +6,7 @@ import { resolve } from 'node:path';
 import { parse as parseYaml } from 'yaml';
 import { schemaIssues } from '@glob2/protocol';
 import { DEFAULT_INSTANCE_CONFIG, InstanceConfig } from './instanceConfig.ts';
+import { resolveQueue } from './queueConfig.ts';
 
 export type LogLevel = 'fatal' | 'error' | 'warn' | 'info' | 'debug' | 'trace' | 'silent';
 
@@ -19,6 +20,18 @@ export interface BlobStoreConfig {
   region?: string;
 }
 
+/**
+ * Where the platform's Ed25519 signing keys come from. A directory holds
+ * `<kid>.pem` files (PKCS#8 private keys; a `<kid>.pub.pem` public key keeps a
+ * retired key verifiable). JWT_PRIVATE_KEY (PEM) with JWT_KEY_ID adds one key
+ * from the environment. JWT_ACTIVE_KID picks the signing key when several exist.
+ */
+export interface SigningKeysConfig {
+  directory: string | undefined;
+  inline: { kid: string; pem: string } | undefined;
+  activeKid: string | undefined;
+}
+
 export interface PlatformConfig {
   /** Public origin clients use, e.g. https://play.example.org (no trailing slash). */
   publicOrigin: string;
@@ -30,6 +43,17 @@ export interface PlatformConfig {
   shutdownGraceSeconds: number;
   instance: InstanceConfig;
   instanceConfigPath: string | undefined;
+  keys?: SigningKeysConfig;
+  /** Environment that secrets named in instance.yaml (`...Env` settings) are read from. */
+  secrets?: Record<string, string | undefined>;
+}
+
+/** Reads a secret named by an instance.yaml `...Env` setting. */
+export function readSecret(config: PlatformConfig, name: string): string {
+  const value = (config.secrets ?? process.env)[name];
+  if (!value)
+    throw new ConfigError(`environment variable ${name} (named in instance.yaml) is not set`);
+  return value;
 }
 
 export class ConfigError extends Error {
@@ -85,6 +109,11 @@ export function loadInstanceConfig(path: string): InstanceConfig {
   for (const queue of config.queues) {
     if (ids.has(queue.id)) throw new ConfigError(`${path}: duplicate queue id ${queue.id}`);
     ids.add(queue.id);
+    try {
+      resolveQueue(queue);
+    } catch (error) {
+      throw new ConfigError(`${path}: ${(error as Error).message}`);
+    }
   }
   return config;
 }
@@ -144,5 +173,13 @@ export function loadConfig(options: LoadConfigOptions = {}): PlatformConfig {
     shutdownGraceSeconds: integer(env, 'SHUTDOWN_GRACE_SECONDS', 25, 0, 3600),
     instance,
     instanceConfigPath,
+    keys: {
+      directory: env['JWT_KEYS_DIR'] ? resolve(cwd, env['JWT_KEYS_DIR']) : undefined,
+      inline: env['JWT_PRIVATE_KEY']
+        ? { kid: required(env, 'JWT_KEY_ID'), pem: env['JWT_PRIVATE_KEY'].replace(/\\n/g, '\n') }
+        : undefined,
+      activeKid: env['JWT_ACTIVE_KID'] || undefined,
+    },
+    secrets: env,
   };
 }

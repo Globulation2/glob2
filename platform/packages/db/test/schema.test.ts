@@ -1,7 +1,12 @@
 import { sql } from 'kysely';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { STANDARD_RULES } from '@glob2/protocol';
-import { createMigrator, migrateToLatest, type Database } from '../src/index.ts';
+import {
+  SqlFileMigrationProvider,
+  createMigrator,
+  migrateToLatest,
+  type Database,
+} from '../src/index.ts';
 import { createTestDatabase, type TestDatabase } from './support.ts';
 
 type ColumnLists = { [T in keyof Database]: readonly (keyof Database[T] & string)[] };
@@ -18,6 +23,7 @@ const typedColumns: ColumnLists = {
     'created_at',
     'updated_at',
     'last_seen_at',
+    'display_name_changed_at',
   ],
   identities: [
     'id',
@@ -59,6 +65,36 @@ const typedColumns: ColumnLists = {
     'created_at',
     'expires_at',
     'completed_at',
+    'resume_hash',
+    'mode',
+    'client_platform',
+    'browser_binding_hash',
+    'conflict_account_id',
+    'failure_reason',
+    'linked',
+    'delivered_at',
+  ],
+  web_sessions: [
+    'id',
+    'account_id',
+    'token_hash',
+    'created_at',
+    'expires_at',
+    'last_used_at',
+    'revoked_at',
+  ],
+  auth_flows: [
+    'id',
+    'state_hash',
+    'provider',
+    'code_verifier',
+    'nonce',
+    'purpose',
+    'attempt_id',
+    'browser_binding_hash',
+    'created_at',
+    'expires_at',
+    'consumed_at',
   ],
   entitlements: [
     'id',
@@ -190,6 +226,10 @@ const typedColumns: ColumnLists = {
     'created_at',
     'started_at',
     'ended_at',
+    'rating_status',
+    'rating_note',
+    'ratings_applied_at',
+    'proposal_id',
   ],
   rating_entities: ['id', 'kind', 'account_id', 'ai_id', 'ai_sim_version', 'created_at'],
   ratings: [
@@ -202,6 +242,7 @@ const typedColumns: ColumnLists = {
     'wins',
     'last_match_id',
     'updated_at',
+    'seed_source',
   ],
   match_participants: [
     'match_id',
@@ -240,7 +281,53 @@ const typedColumns: ColumnLists = {
     'match_id',
     'created_at',
     'updated_at',
+    'allow_ai_opponent',
+    'proposal_id',
   ],
+  rating_history: [
+    'match_id',
+    'entity_id',
+    'ladder',
+    'result',
+    'mu_before',
+    'sigma_before',
+    'mu_after',
+    'sigma_after',
+    'display_before',
+    'display_after',
+    'created_at',
+  ],
+  match_proposals: [
+    'id',
+    'queue_id',
+    'sim_version',
+    'region',
+    'rated',
+    'backfilled',
+    'status',
+    'map',
+    'expires_at',
+    'match_id',
+    'start_attempts',
+    'failure',
+    'created_at',
+    'resolved_at',
+  ],
+  match_proposal_seats: [
+    'proposal_id',
+    'slot',
+    'side',
+    'kind',
+    'ticket_id',
+    'account_id',
+    'ai_id',
+    'rating_entity_id',
+    'mu',
+    'sigma',
+    'response',
+    'responded_at',
+  ],
+  queue_cooldowns: ['account_id', 'until', 'reason', 'created_at'],
 };
 
 const SIM = `125-49-${'3f'.repeat(32)}`;
@@ -260,7 +347,15 @@ afterAll(async () => {
 describe('migrations', () => {
   it('apply from an empty database and are idempotent', async () => {
     const first = await migrateToLatest(database.db);
-    expect(first.map((r) => [r.migrationName, r.status])).toEqual([['0001_initial', 'Success']]);
+    const files = Object.keys(await new SqlFileMigrationProvider().getMigrations());
+    expect(files.slice(0, 3)).toEqual([
+      '0001_initial',
+      '0002_ratings_matchmaking',
+      '0003_identity',
+    ]);
+    expect(first.map((r) => [r.migrationName, r.status])).toEqual(
+      files.map((name) => [name, 'Success']),
+    );
     expect(await migrateToLatest(database.db)).toEqual([]);
     const status = await createMigrator(database.db).getMigrations();
     expect(status.every((m) => m.executedAt instanceof Date)).toBe(true);
@@ -567,7 +662,7 @@ describe('data model', () => {
         .insertInto('queue_tickets')
         .values({ queue_id: 'q2', account_id: account.id, sim_version: SIM })
         .execute(),
-    ).rejects.toThrow(/queue_tickets_one_waiting_idx/);
+    ).rejects.toThrow(/queue_tickets_one_active_idx/);
     // A queue match must name its queue.
     await expect(
       db

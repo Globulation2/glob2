@@ -11,13 +11,6 @@
       "type": "string",
       "pattern": "^[A-Za-z0-9_-]{43}$"
     },
-    "displayName": {
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 32,
-      "pattern": "^[^\\u0000-\\u001f\\u007f]+$",
-      "description": "Display name; at most 32 UTF-8 bytes (checked semantically)."
-    },
     "platform": {
       "anyOf": [
         {
@@ -41,5 +34,5 @@
     }
   },
   "additionalProperties": false,
-  "description": "Signs in a guest. Without a device credential a new guest account is created and its credential returned once."
+  "description": "Signs in a guest. Without a device credential a new guest account (with a generated Guest-NNNN name) is created and its credential returned once."
 }

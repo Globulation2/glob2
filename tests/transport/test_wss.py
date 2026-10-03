@@ -36,6 +36,7 @@ class Peer(socketserver.BaseRequestHandler):
                 key = values[b'Sec-WebSocket-Key'].strip()
                 accept = base64.b64encode(hashlib.sha1(key + b'258EAFA5-E914-47DA-95CA-C5AB0DC85B11').digest())
                 sock.sendall(b'HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: ' + accept + b'\r\n\r\n')
+                message, first = b'', None
                 while True:
                     flags, length = receive(sock, 2)
                     if not length & 128:
@@ -46,8 +47,14 @@ class Peer(socketserver.BaseRequestHandler):
                     mask = receive(sock, 4)
                     body = receive(sock, length)
                     body = bytes(b ^ mask[i % 4] for i, b in enumerate(body))
+                    # Echo whole messages, with the opcode the client used.
+                    first = first or flags & 15
+                    message += body
+                    if not flags & 128:
+                        continue
+                    body, received, message, first = message, first, b'', None
                     if self.server.mode == 'oversized': body = bytes(65537)
-                    opcode = 1 if self.server.mode == 'text' else 2
+                    opcode = {'text': 1, 'binary': 2}.get(self.server.mode, received)
                     if len(body) < 126: header = bytes([128 | opcode, len(body)])
                     elif len(body) < 65536: header = bytes([128 | opcode, 126]) + struct.pack('!H', len(body))
                     else: header = bytes([128 | opcode, 127]) + struct.pack('!Q', len(body))
@@ -134,6 +141,12 @@ class WssTests(unittest.TestCase):
     def test_text_and_oversized_messages_close(self):
         self.run_peer(mode='text', probe='badframe')
         self.run_peer(mode='oversized', probe='badframe')
+
+    def test_text_mode_echoes_whole_messages(self):
+        self.run_peer(probe='text')
+
+    def test_text_mode_rejects_binary_messages(self):
+        self.run_peer(mode='binary', probe='textbadframe')
 
     def test_stalled_tls_can_be_cancelled(self):
         self.run_peer(mode='stall', probe='cancel')

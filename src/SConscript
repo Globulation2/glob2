@@ -5,6 +5,7 @@ server_source_files = list(SERVER_SOURCES)
 Import('env')
 if not env.get('wss', True):
     source_files.remove('net/WssTransport.cpp')
+    source_files.remove('online/HttpFetch.cpp')
 local = env.Clone()
 platform_trust_sources = []
 if env['PLATFORM'] in ('darwin', 'win32') or env.get('mingw') or env.get('mingwcross'):
@@ -88,6 +89,10 @@ if not env['server']:
             'net/NetTransport.cpp', 'net/TcpTransport.cpp', 'net/WssTransport.cpp', 'net/NetworkConfig.cpp', 'net/LanIdentity.cpp',
             local.Object('WssListenerHarness.o', '#test/WssListenerHarness.cpp')] + platform_trust_sources)
         local.Alias('transport-test', listener_test)
+        http_test = local.Program('http-fetch-test', [
+            'online/HttpFetch.cpp', 'online/HttpFetchCommon.cpp',
+            local.Object('HttpFetchHarness.o', '#test/HttpFetchHarness.cpp')] + platform_trust_sources)
+        local.Alias('transport-test', http_test)
 
 #Add libgag, not as a library, but as an object
 server_source_files.append("../libgag/src/libgag_server.a")

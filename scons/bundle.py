@@ -50,6 +50,7 @@ def createBundle(target, source, env) :
             shutil.copytree(assets/directory, Path(bundleDir)/'Contents/Resources'/directory)
     run('cp COPYING %s/Contents/Resources/' % bundleDir)
     run('cp data/javascript-licenses.txt %s/Contents/Resources/' % bundleDir)
+    run('cp data/json-license.txt %s/Contents/Resources/' % bundleDir)
     run('cp docs/assets/source-attribution.md %s/Contents/Resources/' % bundleDir)
     # write Info.plist -- TODO actually write it not copy it
     plistFile = env['BUNDLE_PLIST']

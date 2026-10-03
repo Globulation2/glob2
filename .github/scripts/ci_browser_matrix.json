@@ -92,12 +92,12 @@
   {
     "name": "firefox WSS and simulation",
     "browsers": "firefox",
-    "command": "GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test multiplayer.spec.js determinism.spec.js --project=firefox --grep='YOG admission enforces|browser and native players|WebAssembly produces'"
+    "command": "GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test multiplayer.spec.js determinism.spec.js --project=firefox --grep='YOG admission enforces|browser and native players|WebAssembly produces|WebAssembly verifies'"
   },
   {
     "name": "webkit WSS and simulation",
     "browsers": "webkit",
-    "command": "xvfb-run -a npx playwright test multiplayer.spec.js determinism.spec.js --project=webkit --grep='YOG admission enforces|browser and native players|WebAssembly produces'"
+    "command": "xvfb-run -a npx playwright test multiplayer.spec.js determinism.spec.js --project=webkit --grep='YOG admission enforces|browser and native players|WebAssembly produces|WebAssembly verifies'"
   },
   {
     "name": "firefox scripting",

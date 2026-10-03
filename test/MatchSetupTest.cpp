@@ -1,0 +1,378 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2026 glob2 contributors
+//
+// Contract tests for MatchSetup -> GameHeader and the simulation version.
+//
+// The fixtures are the JSON contract of the platform's protocol package
+// (platform/packages/protocol/fixtures, the source of truth). test/fixtures/protocol
+// holds a copy of the MatchSetup and SimVersion entries so these tests run before the
+// platform workspace is on this branch; once it is, the tests read the source and
+// also check that the copy has not drifted from it.
+
+#include "EngineFixtures.h"
+
+#include <filesystem>
+#include <nlohmann/json.hpp>
+#include <set>
+
+#include "AI.h"
+#include "AINames.h"
+#include "BasePlayer.h"
+#include "ExperimentalFeatures.h"
+#include "GameHeader.h"
+#include "MapHeader.h"
+#include "MatchSetup.h"
+#include "Sha256.h"
+#include "SimVersion.h"
+#include "Version.h"
+#include "WinningConditions.h"
+
+namespace fs = std::filesystem;
+using nlohmann::json;
+using namespace Online;
+
+namespace
+{
+fs::path fixtureRoot()
+{
+	const fs::path source = glob2test::sourceRoot() / "platform/packages/protocol/fixtures";
+	if (fs::exists(source / "manifest.json"))
+		return source;
+	return glob2test::fixture("protocol");
+}
+
+struct Fixture
+{
+	std::string file, schema, stage;
+	bool valid;
+};
+
+std::vector<Fixture> fixtures(const std::set<std::string>& schemas)
+{
+	const json manifest = json::parse(glob2test::readFile(fixtureRoot() / "manifest.json"));
+	std::vector<Fixture> out;
+	for (const auto& entry : manifest.at("fixtures"))
+		if (schemas.count(entry.at("schema").get<std::string>()))
+			out.push_back({entry.at("file").get<std::string>(), entry.at("schema").get<std::string>(),
+			               entry.value("stage", ""), entry.at("valid").get<bool>()});
+	return out;
+}
+
+MapHeader mapWithTeams(int teams, bool saved = false)
+{
+	MapHeader map;
+	map.setNumberOfTeams(teams);
+	map.setIsSavedGame(saved);
+	return map;
+}
+
+bool hasCondition(GameHeader& header, WinningConditionType type)
+{
+	for (const auto& condition : header.getWinningConditions())
+		if (condition->getType() == type)
+			return true;
+	return false;
+}
+
+std::string sha256Hex(const std::string& text)
+{
+	return toHex(Sha256::of(text));
+}
+}
+
+TEST_SUITE("MatchSetup")
+{
+	TEST_CASE("SHA-256 matches the FIPS 180-4 test vectors")
+	{
+		CHECK(sha256Hex("") == "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
+		CHECK(sha256Hex("abc") == "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad");
+		CHECK(sha256Hex("abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq") ==
+		      "248d6a61d20638b8e5c026930c3e6039a33ce45964ff2167f6ecedd419db06c1");
+		Sha256 million;
+		const std::string chunk(1000, 'a');
+		for (int i = 0; i < 1000; ++i)
+			million.update(chunk);
+		CHECK(toHex(million.finish()) == "cdc76e5c9914fb9281a1c7e284d73e67f1809a48a497200e046d39ccc7112cd0");
+		Sha256::Digest digest;
+		CHECK(parseSha256Hex(sha256Hex("abc"), digest));
+		CHECK_FALSE(parseSha256Hex("BA7816BF8F01CFEA414140DE5DAE2223B00361A396177A9CB410FF61F20015AD", digest));
+		CHECK_FALSE(parseSha256Hex("abc", digest));
+	}
+
+	TEST_CASE("every MatchSetup and SimVersion contract fixture is accepted or rejected at its stage")
+	{
+		glob2test::HeadlessGlobals globals;
+		const auto cases = fixtures({"MatchSetup", "SimVersion"});
+		REQUIRE(cases.size() >= 20);
+		int valid = 0, schema = 0, semantic = 0;
+		for (const auto& f : cases)
+		{
+			INFO(f.file);
+			const std::string text = glob2test::readFile(fixtureRoot() / f.file);
+			const json document = json::parse(text);
+			if (f.schema == "SimVersion")
+			{
+				if (f.valid)
+				{
+					const SimVersion v = SimVersion::fromJson(document);
+					CHECK(v.toJson() == document);
+					SimVersion parsed;
+					CHECK(SimVersion::parseKey(v.key(), parsed));
+					CHECK(parsed == v);
+					++valid;
+				}
+				else
+				{
+					CHECK_THROWS_AS(SimVersion::fromJson(document), MatchSetupError);
+					++schema;
+				}
+				continue;
+			}
+			if (f.valid)
+			{
+				MatchSetup setup;
+				CHECK_NOTHROW(setup = MatchSetup::parse(text));
+				// The canonical form round-trips to the same document.
+				CHECK(setup.toJson() == document);
+				CHECK(MatchSetup::parse(setup.dump()).toJson() == document);
+				++valid;
+				continue;
+			}
+			try
+			{
+				MatchSetup::parse(text);
+				FAIL("accepted an invalid fixture");
+			}
+			catch (const MatchSetupError& error)
+			{
+				INFO(error.what());
+				if (f.stage == "schema")
+				{
+					CHECK(error.stage == MatchSetupError::Stage::Schema);
+					++schema;
+				}
+				else
+				{
+					CHECK(f.stage == "semantic");
+					CHECK(error.stage == MatchSetupError::Stage::Semantic);
+					// The schema stage alone accepts it: the stages are distinct.
+					CHECK_NOTHROW(MatchSetup::fromJsonSchemaOnly(document));
+					++semantic;
+				}
+			}
+		}
+		CHECK(valid >= 4);
+		CHECK(schema >= 10);
+		CHECK(semantic >= 6);
+	}
+
+	TEST_CASE("the vendored fixtures match the protocol package when it is present")
+	{
+		const fs::path source = glob2test::sourceRoot() / "platform/packages/protocol/fixtures";
+		if (!fs::exists(source / "manifest.json"))
+			return; // the platform workspace is not on this branch yet
+		const fs::path copy = glob2test::fixture("protocol");
+		// The copy holds the MatchSetup and SimVersion cases only; other schemas may
+		// gain fixtures without touching it.
+		auto entries = [](const fs::path& root) {
+			std::vector<json> out;
+			for (const auto& entry : json::parse(glob2test::readFile(root / "manifest.json")).at("fixtures"))
+				if (entry.at("schema") == "MatchSetup" || entry.at("schema") == "SimVersion")
+					out.push_back(entry);
+			return out;
+		};
+		CHECK(entries(copy) == entries(source));
+		for (const auto& entry : fs::recursive_directory_iterator(copy))
+			if (entry.is_regular_file() && entry.path().filename() != "manifest.json")
+			{
+				const auto relative = fs::relative(entry.path(), copy);
+				INFO(relative.generic_string());
+				CHECK(glob2test::readFile(entry.path()) == glob2test::readFile(source / relative));
+			}
+	}
+
+	TEST_CASE("valid setups become the GameHeader every client and the verifier run")
+	{
+		glob2test::HeadlessGlobals globals;
+		for (const auto& f : fixtures({"MatchSetup"}))
+		{
+			if (!f.valid)
+				continue;
+			INFO(f.file);
+			const MatchSetup setup = MatchSetup::parse(glob2test::readFile(fixtureRoot() / f.file));
+			const bool save = setup.map.kind == MapSource::Kind::Upload && setup.map.format == MapSource::Format::Save;
+			const MapHeader map = mapWithTeams(static_cast<int>(setup.teams.size()), save);
+			GameHeader header = setup.toGameHeader(map);
+			REQUIRE(header.getNumberOfPlayers() == static_cast<int>(setup.seats.size()));
+			CHECK(header.getRandomSeed() == setup.seed);
+			for (const auto& seat : setup.seats)
+			{
+				const BasePlayer& bp = header.getBasePlayer(seat.seat);
+				CHECK(bp.number == seat.seat);
+				CHECK(bp.teamNumber == seat.team);
+				CHECK(bp.name == seat.name);
+				if (seat.human)
+					CHECK(bp.type == BasePlayer::P_IP); // never P_LOCAL, on any client
+				else
+				{
+					REQUIRE(bp.type >= BasePlayer::P_AI);
+					const int id = BasePlayer::implementationIdFromPlayerType(bp.type);
+					CHECK(seat.ai == (id == AI::NONE ? std::string("none") : AINames::getCLIName(id)));
+					CHECK(header.getAIConfig(seat.seat) == seat.aiConfig.value_or(""));
+				}
+			}
+			for (const auto& team : setup.teams)
+				CHECK(header.getAllyTeamNumber(team.team) == team.alliance + 1);
+			const MatchRules& r = setup.rules;
+			CHECK(hasCondition(header, WCPrestige) == r.prestigeVictory);
+			CHECK(hasCondition(header, WCSuddenDeath) == (r.suddenDeathMinutes != 0));
+			for (const auto& condition : header.getWinningConditions())
+				if (condition->getType() == WCSuddenDeath)
+					CHECK(static_cast<const WinningConditionSuddenDeath&>(*condition).endStepTick ==
+					      Uint32(r.suddenDeathMinutes) * 60 * 25);
+			CHECK(header.isMapDiscovered() == r.mapDiscovered);
+			CHECK(header.areAllyTeamsFixed() == r.allyTeamsFixed);
+			CHECK(header.isResourceGrowthDisabled() == r.resourceGrowthDisabled);
+			CHECK(header.getResourceScarcityLevel() == r.resourceScarcityLevel);
+			CHECK(header.isInstantConstructionEnabled() == r.instantConstruction);
+			CHECK(header.getStockpileStartLevel() == r.stockpileStartLevel);
+			CHECK(header.isHungerDisabled() == r.hungerDisabled);
+			CHECK(header.isUnitUpgradesDisabled() == r.unitUpgradesDisabled);
+			CHECK(header.getGlassCannonLevel() == r.glassCannonLevel);
+			CHECK(header.isUnitsFearless() == r.unitsFearless);
+			CHECK(header.isPermadeathDisabled() == r.permadeathDisabled);
+			CHECK(header.isPeacefulModeEnabled() == r.peacefulMode);
+			CHECK(header.getBuildingHpLevel() == r.buildingHpLevel);
+			CHECK(header.getExperiments().keys() == setup.experiments);
+
+			// GameHeader -> MatchSetup recreates the setup, apart from account ids,
+			// which a GameHeader does not carry.
+			MatchSetup back = MatchSetup::fromGameHeader(header, map, setup.map, setup.simVersion);
+			MatchSetup expected = setup;
+			for (auto& seat : expected.seats)
+				seat.accountId.reset();
+			CHECK(back.toJson() == expected.toJson());
+
+			// The map must have exactly the listed teams, and be a save exactly when
+			// the source says so.
+			CHECK_THROWS_AS(setup.toGameHeader(mapWithTeams(static_cast<int>(setup.teams.size()) + 1, save)),
+			                MatchSetupError);
+			CHECK_THROWS_AS(setup.toGameHeader(mapWithTeams(static_cast<int>(setup.teams.size()), !save)),
+			                MatchSetupError);
+		}
+	}
+
+	TEST_CASE("unknown experiments, JavaScript AIs and unexpressible headers are refused")
+	{
+		glob2test::HeadlessGlobals globals;
+		json document = json::parse(glob2test::readFile(fixtureRoot() / "valid/MatchSetup/catalog-1v1.json"));
+		json unknown = document;
+		unknown["experiments"] = {"no-such-experiment"};
+		try
+		{
+			MatchSetup::parse(unknown.dump());
+			FAIL("accepted an unknown experiment");
+		}
+		catch (const MatchSetupError& error)
+		{
+			CHECK(error.stage == MatchSetupError::Stage::Semantic);
+			CHECK(error.path == "/experiments/0");
+		}
+		for (const auto& definition : experimentDefinitions())
+		{
+			json known = document;
+			known["experiments"] = {definition.key};
+			CHECK_NOTHROW(MatchSetup::parse(known.dump()));
+		}
+
+		const MatchSetup setup = MatchSetup::parse(document.dump());
+		const MapHeader map = mapWithTeams(2);
+		GameHeader header = setup.toGameHeader(map);
+		header.getBasePlayer(1).type = BasePlayer::playerTypeFromImplementationID(AI::JAVASCRIPT);
+		CHECK_THROWS_AS(MatchSetup::fromGameHeader(header, map, setup.map, setup.simVersion), MatchSetupError);
+		header = setup.toGameHeader(map);
+		WinningCondition::setSuddenDeathWinCondition(header.getWinningConditions(), 1234);
+		CHECK_THROWS_AS(MatchSetup::fromGameHeader(header, map, setup.map, setup.simVersion), MatchSetupError);
+		header = setup.toGameHeader(map);
+		header.getWinningConditions().pop_front();
+		CHECK_THROWS_AS(MatchSetup::fromGameHeader(header, map, setup.map, setup.simVersion), MatchSetupError);
+		// Human seats map to P_IP whatever the source header used.
+		header = setup.toGameHeader(map);
+		header.getBasePlayer(0).type = BasePlayer::P_LOCAL;
+		const MatchSetup fromLocal = MatchSetup::fromGameHeader(header, map, setup.map, setup.simVersion);
+		CHECK(fromLocal.seats[0].human);
+		CHECK(fromLocal.toGameHeader(map).getBasePlayer(0).type == BasePlayer::P_IP);
+	}
+
+	TEST_CASE("a map file is found and checked by the hash of its decompressed bytes")
+	{
+		glob2test::HeadlessGlobals globals;
+		const std::string path = (glob2test::sourceRoot() / "maps/SmallForTwo.map.gz").string();
+		const std::string hash = mapContentHash(path);
+		REQUIRE(hash.size() == 64);
+		const fs::path inflated = glob2test::inflated("maps/SmallForTwo.map.gz");
+		CHECK(mapContentHash(inflated.string()) == hash);
+		CHECK(hash == toHex(Sha256::of(glob2test::readFile(inflated))));
+
+		MatchSetup setup = MatchSetup::parse(glob2test::readFile(fixtureRoot() / "valid/MatchSetup/catalog-1v1.json"));
+		setup.map.hash = hash;
+		CHECK(resolveMatchMap(setup, path) == path);
+		glob2test::TempDir cache("map-cache");
+		fs::copy_file(path, cache.path / (hash + ".map.gz"));
+		CHECK(resolveMatchMap(setup, "", cache.path.string()) == (cache.path / (hash + ".map.gz")).string());
+		setup.map.hash = std::string(64, '0');
+		CHECK_THROWS_AS(resolveMatchMap(setup, path), MatchSetupError);
+		CHECK_THROWS_AS(resolveMatchMap(setup, "", cache.path.string()), MatchSetupError);
+	}
+
+	TEST_CASE("the simulation data hash covers every data file the simulation loads")
+	{
+		glob2test::HeadlessGlobals globals;
+		// The list is complete: every strategy, Nicowar and USL runtime file.
+		std::set<std::string> onDisk;
+		const fs::path root = glob2test::sourceRoot();
+		for (const char* directory : {"data/maxima", "data/usl/Language/Runtime", "data/usl/Glob2/Runtime"})
+			for (const auto& entry : fs::directory_iterator(root / directory))
+			{
+				const auto extension = entry.path().extension().string();
+				if (extension == ".strategy" || extension == ".usl")
+					onDisk.insert(fs::relative(entry.path(), root).generic_string());
+			}
+		onDisk.insert("data/nicowar.default.txt");
+		onDisk.insert("data/nicowar.txt");
+		const auto& listed = simDataFiles();
+		CHECK(std::set<std::string>(listed.begin(), listed.end()) == onDisk);
+		CHECK(std::is_sorted(listed.begin(), listed.end()));
+
+		// The encoding: line endings are normalised, and missing differs from empty.
+		CHECK(simDataHashOf({{"a", "x\r\ny\n"}}) == simDataHashOf({{"a", "x\ny\n"}}));
+		CHECK(simDataHashOf({{"a", "x\ry\n"}}) != simDataHashOf({{"a", "x\ny\n"}}));
+		CHECK(simDataHashOf({{"a", "", false}}) != simDataHashOf({{"a", ""}}));
+		CHECK(simDataHashOf({{"a", "1"}, {"b", "2"}}) != simDataHashOf({{"a", "12"}, {"b", ""}}));
+		std::string expected;
+		{
+			Sha256 h;
+			h.update(std::string("a", 1));
+			const std::uint8_t encoding[] = {0, 0, 0, 0, 0, 0, 0, 0, 1, 'x'};
+			h.update(encoding, sizeof encoding);
+			expected = toHex(h.finish());
+		}
+		CHECK(simDataHashOf({{"a", "x"}}) == expected);
+
+		// This build's version: the real files, and the same value every time.
+		std::vector<SimDataFile> files;
+		for (const auto& path : listed)
+			files.push_back({path, glob2test::readFile(root / path)});
+		const SimVersion version = currentSimVersion();
+		CHECK(version.versionMinor == VERSION_MINOR);
+		CHECK(version.netProtocol == NET_PROTOCOL_VERSION);
+		CHECK(version.dataHash == simDataHashOf(files));
+		CHECK(currentSimVersion() == version);
+		SimVersion parsed;
+		REQUIRE(SimVersion::parseKey(version.key(), parsed));
+		CHECK(parsed == version);
+		CHECK_FALSE(SimVersion::parseKey("125-49-ABC", parsed));
+		CHECK_FALSE(SimVersion::parseKey("125-" + version.dataHash, parsed));
+		MESSAGE("sim version " << version.key());
+	}
+}

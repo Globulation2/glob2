@@ -1,0 +1,9 @@
+{
+  "proposalId": "0b6a7f6e-8d1c-4a59-9a43-2f0c3d1e5b77",
+  "ticketId": "5d0f2c43-6a3e-4c8e-b8f1-9e2a7c4d3b10",
+  "queueId": "ranked-1v1",
+  "requiresAccept": true,
+  "expiresAt": "2026-10-01T12:00:10Z",
+  "humans": 2,
+  "ais": 0
+}

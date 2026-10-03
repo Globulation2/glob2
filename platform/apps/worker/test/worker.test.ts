@@ -66,15 +66,48 @@ describe('maintenance', () => {
       ])
       .execute();
 
+    await db
+      .insertInto('auth_flows')
+      .values(
+        [2, -48].map((hours, i) => ({
+          state_hash: String(i + 3).repeat(64),
+          provider: 'google',
+          code_verifier: 'v',
+          nonce: 'n',
+          purpose: 'web' as const,
+          expires_at: new Date(Date.now() + hours * hour),
+        })),
+      )
+      .execute();
+    await db
+      .insertInto('web_sessions')
+      .values([
+        {
+          account_id: account.id,
+          token_hash: '55'.repeat(32),
+          expires_at: new Date(Date.now() + hour),
+        },
+        {
+          account_id: account.id,
+          token_hash: '66'.repeat(32),
+          expires_at: new Date(Date.now() - 31 * 24 * hour),
+        },
+      ])
+      .execute();
+
     expect(await runMaintenance(db)).toEqual({
       expiredSigninAttempts: 1,
       expiredQueueTickets: 1,
       deletedRefreshTokens: 1,
+      deletedAuthFlows: 1,
+      deletedWebSessions: 1,
     });
     expect(await runMaintenance(db)).toEqual({
       expiredSigninAttempts: 0,
       expiredQueueTickets: 0,
       deletedRefreshTokens: 0,
+      deletedAuthFlows: 0,
+      deletedWebSessions: 0,
     });
   });
 });
