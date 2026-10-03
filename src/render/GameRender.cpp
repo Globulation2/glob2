@@ -32,6 +32,7 @@
 
 #include "GameRenderInternal.h"
 #include "SoftwareTerrainCache.h"
+#include "UnitMotion.h"
 #include "scene/SceneExtract.h"
 #include "PerformanceTelemetry.h"
 
@@ -46,6 +47,9 @@ void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength,
 	// drawing a status bar must not abort gameplay or spill outside the bar.
 	actLength = std::clamp(actLength, 0, maxLength);
 	secondActLength = std::clamp(secondActLength, 0, maxLength - actLength);
+	const Uint8 alpha = Uint8(std::lround(std::clamp(drawnOpacity, 0.f, 1.f) * 255));
+	if (!alpha)
+		return;
 	if (drawnRender)
 	{
 		drawnRender->overlays.bar(x, y, orientation==TOP_TO_BOTTOM || orientation==BOTTOM_TO_TOP,
@@ -57,52 +61,52 @@ void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength,
 
 	if ((orientation==LEFT_TO_RIGHT) || (orientation==RIGHT_TO_LEFT))
 	{
-		globalContainer->gfx->drawFilledRect(x, y, maxLength*3+1, barWidth+2, 0, 0, 0);
+		globalContainer->gfx->drawFilledRect(x, y, maxLength*3+1, barWidth+2, 0, 0, 0, alpha);
 
 		if (orientation==LEFT_TO_RIGHT)
 		{
 			int i;
 			for (i=0; i<actLength; i++)
-				globalContainer->gfx->drawFilledRect(x+i*3+1, y+1, 2, barWidth, r, g, b);
+				globalContainer->gfx->drawFilledRect(x+i*3+1, y+1, 2, barWidth, r, g, b, alpha);
 			for (; i<secondActLength+actLength; i++)
-				globalContainer->gfx->drawFilledRect(x+i*3+1, y+1, 2, barWidth, r2, g2, b2);
+				globalContainer->gfx->drawFilledRect(x+i*3+1, y+1, 2, barWidth, r2, g2, b2, alpha);
 			for (; i<maxLength; i++)
-				globalContainer->gfx->drawRect(x+i*3, y, 4, barWidth+2, r/3, g/3, b/3);
+				globalContainer->gfx->drawRect(x+i*3, y, 4, barWidth+2, r/3, g/3, b/3, alpha);
 		}
 		else
 		{
 			int i;
 			for (i=0; i<maxLength-secondActLength-actLength; i++)
-				globalContainer->gfx->drawRect(x+i*3, y, 4, barWidth+2, r/3, g/3, b/3);
+				globalContainer->gfx->drawRect(x+i*3, y, 4, barWidth+2, r/3, g/3, b/3, alpha);
 			for (; i<maxLength-actLength; i++)
-				globalContainer->gfx->drawFilledRect(x+i*3+1, y+1, 2, barWidth, r2, g2, b2);
+				globalContainer->gfx->drawFilledRect(x+i*3+1, y+1, 2, barWidth, r2, g2, b2, alpha);
 			for (; i<maxLength; i++)
-				globalContainer->gfx->drawFilledRect(x+i*3+1, y+1, 2, barWidth, r, g, b);
+				globalContainer->gfx->drawFilledRect(x+i*3+1, y+1, 2, barWidth, r, g, b, alpha);
 		}
 	}
 	else if ((orientation==BOTTOM_TO_TOP) || (orientation==TOP_TO_BOTTOM))
 	{
-		globalContainer->gfx->drawFilledRect(x, y, barWidth+2, maxLength*3+1, 0, 0, 0);
+		globalContainer->gfx->drawFilledRect(x, y, barWidth+2, maxLength*3+1, 0, 0, 0, alpha);
 
 		if (orientation==TOP_TO_BOTTOM)
 		{
 			int i;
 			for (i=0; i<actLength; i++)
-				globalContainer->gfx->drawFilledRect(x+1, y+i*3+1, barWidth, 2, r, g, b);
+				globalContainer->gfx->drawFilledRect(x+1, y+i*3+1, barWidth, 2, r, g, b, alpha);
 			for (; i<secondActLength+actLength; i++)
-				globalContainer->gfx->drawFilledRect(x+1, y+i*3+1, barWidth, 2, r2, g2, b2);
+				globalContainer->gfx->drawFilledRect(x+1, y+i*3+1, barWidth, 2, r2, g2, b2, alpha);
 			for (; i<maxLength; i++)
-				globalContainer->gfx->drawRect(x, y+i*3, 4, barWidth+2, r/3, g/3, b/3);
+				globalContainer->gfx->drawRect(x, y+i*3, 4, barWidth+2, r/3, g/3, b/3, alpha);
 		}
 		else
 		{
 			int i;
 			for (i=0; i<maxLength-secondActLength-actLength; i++)
-				globalContainer->gfx->drawRect(x, y+i*3, 4, barWidth+2, r/3, g/3, b/3);
+				globalContainer->gfx->drawRect(x, y+i*3, 4, barWidth+2, r/3, g/3, b/3, alpha);
 			for (; i<maxLength-actLength; i++)
-				globalContainer->gfx->drawFilledRect(x+1, y+i*3+1, barWidth, 2, r2, g2, b2);
+				globalContainer->gfx->drawFilledRect(x+1, y+i*3+1, barWidth, 2, r2, g2, b2, alpha);
 			for (; i<maxLength; i++)
-				globalContainer->gfx->drawFilledRect(x+1, y+i*3+1, barWidth, 2, r, g, b);
+				globalContainer->gfx->drawFilledRect(x+1, y+i*3+1, barWidth, 2, r, g, b, alpha);
 		}
 	}
 	else
@@ -114,14 +118,14 @@ void Game::anchorBars(int x, int y, bool exception)
 {
 	if (drawnRender)
 		drawnRender->overlays.anchor(*globalContainer->gfx, x, y,
-			exception ? drawnRender->detail.barException : drawnRender->detail.barAll);
+			(exception ? drawnRender->detail.barException : drawnRender->detail.barAll) * drawnOpacity);
 }
 
 
 void Game::drawStatusPip(int x, int y, Uint8 r, Uint8 g, Uint8 b)
 {
 	if (drawnRender)
-		drawnRender->overlays.pip(*globalContainer->gfx, x, y, r, g, b, drawnRender->detail.statusPip);
+		drawnRender->overlays.pip(*globalContainer->gfx, x, y, r, g, b, drawnRender->detail.statusPip * drawnOpacity);
 }
 
 
@@ -231,6 +235,14 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 
 	if (!animationsPaused)
 		time++;
+	view.render.fogFading = globalContainer->settings.smoothFog && (drawOptions & DRAW_WHOLE_MAP) == 0;
+	if (view.render.fogFading)
+	{
+		Uint32 visibleTeams = scene.entities.teams[localTeam].me;
+		if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
+		view.render.fogFade.update(scene.map, visibleTeams, scene.tick);
+		view.render.fogTime = scene.tick + unitMotionFraction(scene, SDL_GetTicks());
+	}
 	view.render.detail = ZoomDetail::forView(globalContainer->gfx->mapTransformScale(),
 		globalContainer->gfx->logicalUnitsPerPoint(), globalContainer->settings.adaptiveZoomDetail,
 		view.render.minimumZoom);
@@ -356,7 +368,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 			view.render.clouds().render(globalContainer->gfx, sw, sh, DynamicClouds::SHADOW);
 	}
 
-	scenePass(&Game::drawMapFogOfWar, scene);
+	scenePass(&Game::drawMapFogOfWar, view.render, scene);
 	scenePass(&Game::drawMapAreas, view, scene.map);
 	scenePass(&Game::drawMapOverlayMaps, view);
 

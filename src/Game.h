@@ -356,6 +356,9 @@ private:
 	//! Render state of the view drawMap is drawing, while adaptive zoom detail
 	//! queues its bars as constant-size overlays; null draws them with the map.
 	MapRenderState *drawnRender = nullptr;
+	//! Opacity of the unit drawUnit is decorating: below 1 while it fades into the
+	//! fog of war. Bars and status pips drawn meanwhile take it on.
+	float drawnOpacity = 1.f;
 	//! Sets the map point the next bars keep fixed as they change size, and
 	//! whether they report a problem and so outlast ordinary bars when zoomed out.
 	void anchorBars(int x, int y, bool exception = false);
@@ -393,7 +396,7 @@ private:
 	void drawMapAirUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view, const Scene& scene);
 	void drawMapScriptAreas(int left, int top, int right, int bot, int viewportX, int viewportY);
 	void drawMapBulletsExplosionsDeathAnimations(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const Scene& scene);
-	void drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const Scene& scene);
+	void drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const MapRenderState& render, const Scene& scene);
 	void drawMapOverlayMaps(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view);
 	void drawUnitPathLines(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view, const Scene& scene);
 	void drawUnitPathLine(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneUnit& unit, const Scene& scene, float unitMotion = 0);

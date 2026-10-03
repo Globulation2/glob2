@@ -47,6 +47,8 @@ public:
 	{
 		return (fogOfWar[coordToIndex(x, y)] & visionMask) != 0;
 	}
+	//! The fog of war of every tile, indexed like coordToIndex: y * getW() + x.
+	const Uint32 *fogOfWarData() const { return fogOfWar.data(); }
 	bool isForbiddenInDisplayedView(int x, int y) const { return forbiddenView.get(coordToIndex(x, y)); }
 	bool isGuardAreaInDisplayedView(int x, int y) const { return guardAreaView.get(coordToIndex(x, y)); }
 	bool isClearAreaInDisplayedView(int x, int y) const { return clearAreaView.get(coordToIndex(x, y)); }

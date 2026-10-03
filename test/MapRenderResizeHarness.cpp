@@ -220,6 +220,104 @@ void run(bool gpu)
 	game.map.getSector(0)->bullets.clear(); delete bullet;
 	std::cout << "PASS repeated bullets, explosions and deaths\n";
 
+	{
+		// The fog shade over a white map: columns 8 and up fogged, the rest in sight.
+		const auto discovered=game.map.mapDiscovered;
+		const std::vector<Uint32> fog(game.map.fogOfWar, game.map.fogOfWar+game.map.getW()*game.map.getH());
+		const Uint32 me=game.teams[0]->me;
+		game.map.setMapDiscovered();
+		const auto setFog = [&](bool fogRight)
+		{
+			for(int y=0;y<game.map.getH();++y) for(int x=0;x<game.map.getW();++x)
+				game.map.fogOfWar[game.map.coordToIndex(x,y)] = (fogRight && x>=8) ? 0 : me;
+		};
+		MapRenderState render;
+		Scene fogScene;
+		const auto drawFog = [&]() -> std::vector<Uint8>
+		{
+			gfx->setClipRect();
+			gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),255,255,255);
+			game.drawMapFogOfWar(0,0,52,34,1600,1100,0,0,0,0,render,fogScene);
+			capturePixels(gfx);
+			SDL_Surface *surface=gfx->getSDLSurface();
+			std::vector<Uint8> red(size_t(surface->w)*surface->h);
+			for(int y=0;y<surface->h;++y) for(int x=0;x<surface->w;++x)
+			{
+				Uint32 pixel;
+				memcpy(&pixel, static_cast<char*>(surface->pixels)+y*surface->pitch+x*4, 4);
+				Uint8 r,g,b;
+				SDL_GetRGB(pixel, SDL_GetPixelFormatDetails(surface->format), SDL_GetSurfacePalette(surface),&r,&g,&b);
+				red[size_t(y)*surface->w+x]=r;
+			}
+			return red;
+		};
+		// Inside the drawn square whose four corners are tiles (x,5),(x+1,5),(x,6),(x+1,6).
+		const auto at = [&](const std::vector<Uint8> &red, int tileX) { return int(red[size_t(5*32+24)*gfx->getW()+tileX*32+24]); };
+		const auto extract = [&] { glob2test::sceneOf(game, view, 0, &fogScene); };
+
+		setFog(true); extract();
+		const auto binary=drawFog();
+		REQUIRE(at(binary,2)==255);
+		const int fogged=at(binary,12);
+		REQUIRE((fogged>=118 && fogged<=138));
+		// Settled, the fade draws exactly the binary shade, edges included.
+		render.fogFading=true;
+		render.fogFade.update(fogScene.map,me,100);
+		render.fogTime=100.5;
+		REQUIRE(drawFog()==binary);
+		// Halfway into the fog, the newly fogged columns are between the two.
+		setFog(false); extract();
+		render.fogFade.update(fogScene.map,me,200);
+		setFog(true); extract();
+		render.fogFade.update(fogScene.map,me,201);
+		render.fogTime=201+FogFade::DARKEN_TICKS/2.0;
+		const auto halfway=drawFog();
+		REQUIRE(at(halfway,2)==255);
+		REQUIRE(at(halfway,12)>fogged+20);
+		REQUIRE(at(halfway,12)<255-20);
+		render.fogTime=201+FogFade::DARKEN_TICKS;
+		REQUIRE(std::abs(at(drawFog(),12)-fogged)<=1);
+
+		// A unit halfway into the fog queues its bars at the opacity of its fade,
+		// and none once it is fully fogged.
+		const auto fogAll = [&](bool fogged)
+		{
+			for(int y=0;y<game.map.getH();++y) for(int x=0;x<game.map.getW();++x)
+				game.map.fogOfWar[game.map.coordToIndex(x,y)] = fogged ? 0 : me;
+		};
+		Game::ViewState fadeView;
+		fadeView.render.fogFading=true;
+		fogAll(false); extract();
+		fadeView.render.fogFade.update(fogScene.map,me,300);
+		fogAll(true); extract();
+		fadeView.render.fogFade.update(fogScene.map,me,301);
+		const auto queuedBars = [&](double fogTime)
+		{
+			fadeView.render.fogTime=fogTime;
+			fadeView.render.overlays.bars.clear();
+			fadeView.render.overlays.pips.clear();
+			game.drawnRender=&fadeView.render;
+			game.drawMapGroundUnits(0,0,52,34,1600,1100,0,0,0,Game::DRAW_HEALTH_FOOD_BAR,fadeView,fogScene);
+			game.drawnRender=nullptr;
+			REQUIRE(game.drawnOpacity==1.f);
+			return fadeView.render.overlays.bars;
+		};
+		const double unitHalfway=301+FogFade::DARKEN_TICKS/2.0;
+		const int unitAlpha=FogFade::FOGGED-fadeView.render.fogFade.level(3,3,unitHalfway);
+		REQUIRE((unitAlpha>100 && unitAlpha<155));
+		const auto halfBars=queuedBars(unitHalfway);
+		// Two bars, food and health, for each repeat of the small map in the view.
+		REQUIRE((!halfBars.empty() && halfBars.size()%2==0));
+		for (const auto &bar : halfBars)
+			REQUIRE(std::abs(int(bar.alpha)-unitAlpha)<=1);
+		REQUIRE(queuedBars(301+FogFade::DARKEN_TICKS).empty());
+		fadeView.render.overlays.markers.clear();
+
+		game.map.mapDiscovered=discovered;
+		std::copy(fog.begin(), fog.end(), game.map.fogOfWar);
+	}
+	std::cout << "PASS fog of war shade fades between in sight and fogged\n";
+
 	clear();
 	gui.ghostManager.addBuilding(building->typeNum,7,7);
 	gui.ghostManager.drawAll(0,0,0);
