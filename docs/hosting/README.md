@@ -473,7 +473,12 @@ sed -i '/^RELAY_KEYS=/d' .env && docker compose up -d platform-api
 Change the replica counts in `.env` and run `docker compose up -d`.
 
 - **platform-api** is stateless; Caddy re-resolves the replicas every few seconds.
-  Realtime sockets on a removed replica reconnect to another.
+  Realtime sockets on a removed replica reconnect to another. Room presence is
+  shared: each replica registers in `api_replicas`, heartbeats every 10 seconds and
+  records its sockets' accounts in `realtime_presence`, so a player counts as
+  connected while any replica holds a socket of theirs. A replica that stops
+  heartbeating for 45 seconds (crashed, or cut off from the database) is expired by
+  the others, and its players are marked disconnected in their rooms.
 - **platform-worker** can run several replicas: every replica applies job results,
   one at a time holds the scheduler (matchmaker, ratings, warm maps).
 - **engine-agent** replicas lease jobs from the same queue (`engine_jobs`, through
@@ -728,7 +733,7 @@ at most 1000 rows per table and run) and collects blobs every six hours:
 | Match proposals, finished queue tickets | 30 days |
 | Engine agents not seen | 7 days |
 | Spilled NOTIFY payloads | 1 hour |
-| Blobs | unreferenced ones (no map version, preview, match artifact, upload, generated or warm map, or match played on the map) 7 days after creation; stored files no `blobs` row names, 7 days after they were written |
+| Blobs | unreferenced ones (no map version, preview, match artifact, upload, generated map (warm pool maps included), or match played on the map) 7 days after creation; stored files no `blobs` row names, 7 days after they were written |
 
 Matches, participants, ratings, rating history, catalog maps and the audit log
 are kept.

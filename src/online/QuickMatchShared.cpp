@@ -60,12 +60,6 @@ QuickMatch::Environment QuickMatch::Environment::native()
 
 QuickMatch &quickMatch()
 {
-	static QuickMatch *shared = nullptr;
-	if (!shared)
-	{
-		shared = new QuickMatch(services().client, QuickMatch::Environment::native());
-		addPumpHook([] { shared->update(); });
-	}
-	return *shared;
+	return services().quickMatch();
 }
 } // namespace Online

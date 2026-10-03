@@ -45,6 +45,7 @@ import {
   type StoredFormat,
 } from '@glob2/play';
 import { apiError } from '../errors.ts';
+import type { ReplicaPresence } from '../realtime/presence.ts';
 import { catalogTitles, generatorLabel, uploadTitle } from '../history/summaries.ts';
 
 type Db = Kysely<Database>;
@@ -154,6 +155,11 @@ export interface RoomServiceOptions {
   access: AccessPolicy;
   origin: string;
   logger: Logger;
+  /**
+   * Socket presence across API replicas. Without it, presence is this
+   * process's view alone (one replica, or tests of a single service).
+   */
+  presence?: ReplicaPresence;
 }
 
 type SeatRow = {
@@ -217,6 +223,7 @@ export class RoomService {
   private readonly access: AccessPolicy;
   private readonly origin: string;
   private readonly logger: Logger;
+  private readonly presence: ReplicaPresence | undefined;
 
   constructor(options: RoomServiceOptions) {
     this.db = options.db;
@@ -224,6 +231,7 @@ export class RoomService {
     this.access = options.access;
     this.origin = options.origin;
     this.logger = options.logger;
+    this.presence = options.presence;
   }
 
   get database(): Db {
@@ -1490,9 +1498,16 @@ export class RoomService {
 
   // --------------------------------------------------------------- presence
 
-  /** Marks the account connected in its rooms; returns rooms that changed. */
+  /**
+   * This replica holds a socket of the account: records it and marks the
+   * account connected in its rooms.
+   */
   async markConnected(accountId: string): Promise<void> {
     await this.db.transaction().execute(async (trx) => {
+      if (this.presence) {
+        await this.presence.lockAccount(trx, accountId);
+        await this.presence.add(trx, accountId);
+      }
       const rows = await trx
         .updateTable('room_members')
         .set({ connected: true, last_seen_at: sql<Date>`now()` })
@@ -1504,8 +1519,25 @@ export class RoomService {
     });
   }
 
-  async markDisconnected(accountId: string): Promise<void> {
+  /**
+   * This replica no longer holds a socket of the account (or the replica that
+   * held one expired). The account is marked disconnected in its rooms only
+   * when no live replica still holds a socket of it, and not if `stillHere`
+   * says a socket on this replica came back meanwhile.
+   */
+  async markDisconnected(
+    accountId: string,
+    options: { stillHere?: () => boolean } = {},
+  ): Promise<void> {
     await this.db.transaction().execute(async (trx) => {
+      if (this.presence) {
+        await this.presence.lockAccount(trx, accountId);
+        if (options.stillHere?.()) return;
+        await this.presence.remove(trx, accountId);
+        if (await this.presence.present(trx, accountId)) return;
+      } else if (options.stillHere?.()) {
+        return;
+      }
       const rows = await trx
         .updateTable('room_members')
         .set({ connected: false, last_seen_at: sql<Date>`now()` })

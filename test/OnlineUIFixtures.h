@@ -258,7 +258,7 @@ inline std::shared_ptr<Online::OnlineMatch> startingMatch()
 	context.fromRoom = false;
 	context.rated = true;
 	context.ladder = "1v1";
-	auto match = std::make_shared<Online::OnlineMatch>(Online::services().client, assignment, context);
+	auto match = std::make_shared<Online::OnlineMatch>(Online::services().client, Online::services().maps, assignment, context);
 	Online::OnlineMatch::Player you, other;
 	you.seat = 0;
 	you.name = "Bradley";

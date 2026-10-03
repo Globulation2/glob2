@@ -9,41 +9,9 @@
 
 namespace Online
 {
-void RelayFrameReader::append(const std::uint8_t* data, std::size_t size)
-{
-	if (offset > 0 && offset == buffer.size())
-		clear();
-	buffer.insert(buffer.end(), data, data + size);
-}
-
-bool RelayFrameReader::next(std::vector<std::uint8_t>& payload)
-{
-	if (buffer.size() - offset < 2)
-		return false;
-	const std::size_t length = (std::size_t(buffer[offset]) << 8) | buffer[offset + 1];
-	if (buffer.size() - offset - 2 < length)
-		return false;
-	payload.assign(buffer.begin() + offset + 2, buffer.begin() + offset + 2 + length);
-	offset += 2 + length;
-	// Compact once the consumed prefix dominates, so the buffer does not grow forever.
-	if (offset > 65536 && offset * 2 > buffer.size())
-	{
-		buffer.erase(buffer.begin(), buffer.begin() + offset);
-		offset = 0;
-	}
-	return true;
-}
-
 std::vector<std::uint8_t> relayFrame(const std::vector<std::uint8_t>& payload)
 {
-	if (payload.size() > 0xFFFF)
-		return {};
-	std::vector<std::uint8_t> frame;
-	frame.reserve(payload.size() + 2);
-	frame.push_back(static_cast<std::uint8_t>(payload.size() >> 8));
-	frame.push_back(static_cast<std::uint8_t>(payload.size() & 0xFF));
-	frame.insert(frame.end(), payload.begin(), payload.end());
-	return frame;
+	return NetFrame::encode(payload);
 }
 
 RelayTransport::RelayTransport(std::string relayUrl, Factory factory)

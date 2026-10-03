@@ -56,7 +56,9 @@ pause the simulation in the usual way, and ticks keep counting while it is pause
 Each message is a frame payload: one message-type byte followed by the body. The
 payload is the content of one `NetConnection` frame, so TCP (LAN) and WSS connections
 reuse the existing 2-byte big-endian length prefix and the 65,535-byte frame limit
-unchanged. All integers are big-endian, as in `GAGCore::BinaryOutputStream`.
+unchanged. One implementation, `NetFrame` (`src/net/NetFrame.h`), writes and reassembles
+these frames for `NetConnection`, `LanLink`, the client's `RelayTransport` and the relay.
+All integers are big-endian, as in `GAGCore::BinaryOutputStream`.
 `bytes16` is a `u16` length followed by that many bytes. `text32` is the
 `BinaryOutputStream::writeText` encoding: a `u32` length followed by the bytes.
 
