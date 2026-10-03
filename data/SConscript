@@ -34,6 +34,7 @@ if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
 SConscript("maxima/SConscript")
 SConscript("fonts/SConscript")
 SConscript("gfx/SConscript")
+SConscript("skins/SConscript")
 SConscript("gui/SConscript")
 SConscript("icons/SConscript")
 SConscript("zik/SConscript")

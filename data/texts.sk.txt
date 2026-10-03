@@ -3400,6 +3400,10 @@ Odraz zoznamov
 
 [settings Experimental: move and animate units between game ticks.]
 
+[settings Smooth fog of war]
+
+[settings Fade the map into and out of the fog of war gradually.]
+
 [settings Adaptive zoom detail]
 
 [settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
@@ -4656,6 +4660,10 @@ Zotrvačnosť mapy
 
 [game draw]
 
+[settings Show colony skins]
+Zobrazovať vzhľady kolónií
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Vypnutím obnovíte na tomto zariadení klasické jednotky, roje a farby budov.
 [settings Hive Mind]
 
 [settings Enable commander shortcuts]
@@ -4738,3 +4746,13 @@ Zotrvačnosť mapy
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+Opakovať mapu vodorovne
+[repeat map vertically]
+Opakovať mapu zvislo
+[bases]
+základne
+[bases per colony]
+Základne na kolóniu; základňa je jeden tím mapy tak, ako bola nakreslená, s jeho budovami a jednotkami

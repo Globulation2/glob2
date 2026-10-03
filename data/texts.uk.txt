@@ -3388,6 +3388,10 @@ Emoji
 
 [settings Experimental: move and animate units between game ticks.]
 
+[settings Smooth fog of war]
+
+[settings Fade the map into and out of the fog of war gradually.]
+
 [settings Adaptive zoom detail]
 
 [settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
@@ -4644,6 +4648,10 @@ Emoji
 
 [game draw]
 
+[settings Show colony skins]
+Показувати образи колоній
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Вимкніть, щоб використовувати класичні юніти, рої та кольори будівель на цьому пристрої.
 [settings Hive Mind]
 
 [settings Enable commander shortcuts]
@@ -4726,3 +4734,13 @@ Emoji
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+Повторити мапу по горизонталі
+[repeat map vertically]
+Повторити мапу по вертикалі
+[bases]
+бази
+[bases per colony]
+Баз на колонію; база — це одна команда мапи в намальованому вигляді, з її будівлями та юнітами

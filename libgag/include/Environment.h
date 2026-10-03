@@ -14,8 +14,9 @@ inline int setProcessEnvironment(const char *name, const char *value, int overwr
 		return -1;
 	const char *actual = SDL_getenv_unsafe(name);
 #ifdef _WIN32
-	// SDL updates the Win32 environment, while the C runtime retains its own
-	// table. Keep getenv callers in the same process in sync as well.
+	// SDL uses SetEnvironmentVariable on Windows. That updates the OS copy,
+	// but not the application CRT table read by std::getenv. Synchronize it
+	// here, including when overwrite=false preserved an existing OS value.
 	if (actual && _putenv_s(name, actual) != 0)
 		return -1;
 #endif

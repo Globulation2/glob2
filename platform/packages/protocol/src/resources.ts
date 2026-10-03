@@ -164,6 +164,17 @@ export const AccountExport = Open(
       webSessions: ExportRows,
       signInAttempts: ExportRows,
     }),
+    skins: Type.Optional(
+      Open({
+        published: ExportRows,
+        equipment: ExportRows,
+        drafts: ExportRows,
+        matches: ExportRows,
+        purchases: ExportRows,
+        paymentEvents: ExportRows,
+        reports: ExportRows,
+      }),
+    ),
     entitlements: ExportRows,
     moderation: Type.Array(ExportRecord, {
       description: 'Moderation actions about the account (not who took them).',

@@ -2,6 +2,8 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "scene/Scene.h"
+#include "ColonySkinPreview.h"
+#include "IntBuildingType.h"
 #include <PerformanceTelemetry.h>
 #include <iostream>
 
@@ -46,7 +48,7 @@ struct BuildingPosComp
 };
 
 
-void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const Scene& scene, MapRenderState* drawnRender)
+void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const Scene& scene, MapRenderState* drawnRender, ViewState* view)
 {
 	const SceneEntities &entities = scene.entities;
 	const SceneMap &map = scene.map; // the extracted map, not Game::map
@@ -97,7 +99,10 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 	Sprite *buildingSprite = type->gameSpritePtr;
 	dx = (type->width<<5)-buildingSprite->getW(imgid);
 	dy = (type->height<<5)-buildingSprite->getH(imgid);
-	buildingSprite->setBaseColor(team->color);
+	auto color=team->color;
+    if(view)if(const auto chosen=view->render.skinPreview().buildingColor(team->teamNumber))
+        color=GAGCore::Color((*chosen>>16)&255,(*chosen>>8)&255,*chosen&255);
+    buildingSprite->setBaseColor(color);
 
 	// draw building. Zoomed far out, the sprite cross-fades to a chip in its
 	// team's colour carrying an icon of what the building is for; where chips
@@ -107,7 +112,13 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 	// The sprite stays opaque under the chip fading in over it, and goes once
 	// the chip is solid: a translucent sprite would leave the sprite batch.
 	if (spriteOpacity > 0)
-		globalContainer->gfx->drawSprite(x+dx, y+dy, buildingSprite, imgid);
+	{
+		const bool skinned = view && type->shortTypeNum == IntBuildingType::SWARM_BUILDING
+			&& !type->isBuildingSite && view->render.skinPreview().drawSwarm(
+				*globalContainer->gfx, team->teamNumber, x+dx, y+dy,
+				buildingSprite->getW(imgid), buildingSprite->getH(imgid));
+		if (!skinned) globalContainer->gfx->drawSprite(x+dx, y+dy, buildingSprite, imgid);
+	}
 	if (detail && detail->buildingIcon > 0)
 	{
 		// Icon frames follow IntBuildingType up to the clearing flag; the market comes last.
@@ -119,7 +130,7 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 			: shortType==IntBuildingType::SWARM_BUILDING ? 120 : 100;
 		drawnRender->overlays.glyph(*globalContainer->gfx, x, y, x+type->width*32, y+type->height*32,
 			icon, wall ? MapOverlayQueue::Tile : MapOverlayQueue::Chip, type->level, type->isBuildingSite,
-			priority, team->color.r, team->color.g, team->color.b, detail->buildingIcon);
+			priority, color.r, color.g, color.b, detail->buildingIcon);
 	}
 	globalContainer->gfx->finishDrawingSprite(buildingSprite, 255);
 
@@ -214,7 +225,7 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 }
 
 
-void Game::drawMapGroundBuildings(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, std::set<Uint16> *visibleBuildings, const BuildingGuiStateMap* buildingGuiState, const Scene& scene, MapRenderState* drawnRender)
+void Game::drawMapGroundBuildings(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, std::set<Uint16> *visibleBuildings, const BuildingGuiStateMap* buildingGuiState, const Scene& scene, MapRenderState* drawnRender, ViewState* view)
 {
 	PERF_SCOPE_TIME(GroundBuildings);
 	const SceneEntities &entities = scene.entities;
@@ -252,7 +263,7 @@ void Game::drawMapGroundBuildings(int left, int top, int right, int bot, int sw,
 						const Sint32 dispY = buildingGuiState ? displayedPosY(*buildingGuiState, building->gid, building->posY) : building->posY;
 						px = originX * 32 + (dispX - building->posX) * 32;
 						py = originY * 32 + (dispY - building->posY) * 32;
-						drawMapBuilding(px, py, gid, viewportX, viewportY, localTeam, drawOptions, scene, drawnRender);
+						drawMapBuilding(px, py, gid, viewportX, viewportY, localTeam, drawOptions, scene, drawnRender, view);
 						drawnCopies.insert(copy);
 						drawnBuildings.insert(building->gid);
 					}

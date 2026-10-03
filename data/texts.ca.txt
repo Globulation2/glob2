@@ -3400,6 +3400,10 @@ Rebot de les llistes
 
 [settings Experimental: move and animate units between game ticks.]
 
+[settings Smooth fog of war]
+
+[settings Fade the map into and out of the fog of war gradually.]
+
 [settings Adaptive zoom detail]
 
 [settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
@@ -4656,6 +4660,10 @@ Inèrcia del mapa
 
 [game draw]
 
+[settings Show colony skins]
+Mostra els aspectes de les colònies
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Desactiva-ho per utilitzar les unitats, els eixams i els colors dels edificis clàssics en aquest dispositiu.
 [settings Hive Mind]
 
 [settings Enable commander shortcuts]
@@ -4738,3 +4746,13 @@ Inèrcia del mapa
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+Repeteix el mapa horitzontalment
+[repeat map vertically]
+Repeteix el mapa verticalment
+[bases]
+bases
+[bases per colony]
+Bases per colònia; una base és un equip del mapa tal com està dibuixat, amb els seus edificis i unitats

@@ -272,7 +272,7 @@ namespace GAGCore
 		releaseFrameCache();
 		freeOwnedSurface();
 #ifdef HAVE_OPENGL
-		if (context) destroyUnitShader();
+		if (context) { destroySkinRenderer(); destroyUnitShader(); }
 #endif
 		if (context) SDL_GL_DestroyContext(context);
 		if (window) SDL_DestroyWindow(window);
@@ -765,7 +765,7 @@ namespace GAGCore
 		watchingEvents = false;
 		releaseFrameCache();
 #ifdef HAVE_OPENGL
-		if (context) destroyUnitShader();
+		if (context) { destroySkinRenderer(); destroyUnitShader(); }
 #endif
 		if (context) SDL_GL_DestroyContext(context);
 		context = nullptr;

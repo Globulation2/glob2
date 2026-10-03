@@ -4,6 +4,7 @@
 #include "GUIMapPreview.h"
 #include "Game.h"
 #include "GenerationContext.h"
+#include "GeneratorControls.h"
 #include "GenerationService.h"
 #include "GenerationValidation.h"
 #include "LandscapePickerScreen.h"
@@ -130,7 +131,7 @@ Element NewMapScreen::build(const Presentation &p)
 		};
 		for (const auto &c : GenerationRequest::sharedControls())
 			if (!blank || c.id == "width" || c.id == "height")
-				control(c);
+				control(editorSizeControl(c));
 		if (!blank)
 			for (const auto &c : registry.at(descriptor.method).controls)
 				control(c);

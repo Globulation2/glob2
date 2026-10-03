@@ -3388,6 +3388,10 @@ Nảy của danh sách
 
 [settings Experimental: move and animate units between game ticks.]
 
+[settings Smooth fog of war]
+
+[settings Fade the map into and out of the fog of war gradually.]
+
 [settings Adaptive zoom detail]
 
 [settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
@@ -4644,6 +4648,10 @@ Quán tính bản đồ
 
 [game draw]
 
+[settings Show colony skins]
+Hiển thị diện mạo thuộc địa
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Tắt để sử dụng đơn vị, bầy đàn và màu công trình cổ điển trên thiết bị này.
 [settings Hive Mind]
 
 [settings Enable commander shortcuts]
@@ -4726,3 +4734,13 @@ Quán tính bản đồ
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+Lặp bản đồ theo chiều ngang
+[repeat map vertically]
+Lặp bản đồ theo chiều dọc
+[bases]
+căn cứ
+[bases per colony]
+Căn cứ mỗi thuộc địa; một căn cứ là một đội của bản đồ như đã vẽ, cùng các công trình và đơn vị của nó

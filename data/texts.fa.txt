@@ -3390,6 +3390,10 @@ Emoji
 
 [settings Experimental: move and animate units between game ticks.]
 
+[settings Smooth fog of war]
+
+[settings Fade the map into and out of the fog of war gradually.]
+
 [settings Adaptive zoom detail]
 
 [settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
@@ -4646,6 +4650,10 @@ Emoji
 
 [game draw]
 
+[settings Show colony skins]
+نمایش ظاهر کلونی‌ها
+[settings Turn off to use classic units, swarms and building colors on this device.]
+برای استفاده از واحدها، ازدحام‌ها و رنگ ساختمان‌های کلاسیک در این دستگاه، این گزینه را خاموش کنید.
 [settings Hive Mind]
 
 [settings Enable commander shortcuts]
@@ -4728,3 +4736,13 @@ Emoji
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+تکرار نقشه به صورت افقی
+[repeat map vertically]
+تکرار نقشه به صورت عمودی
+[bases]
+پایگاه‌ها
+[bases per colony]
+پایگاه برای هر مستعمره؛ هر پایگاه یک تیم از نقشهٔ کشیده‌شده است، با ساختمان‌ها و واحدهایش

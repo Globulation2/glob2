@@ -3392,6 +3392,10 @@ Odboj seznamov
 
 [settings Experimental: move and animate units between game ticks.]
 
+[settings Smooth fog of war]
+
+[settings Fade the map into and out of the fog of war gradually.]
+
 [settings Adaptive zoom detail]
 
 [settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
@@ -4648,6 +4652,10 @@ Zagon zemljevida
 
 [game draw]
 
+[settings Show colony skins]
+Prikaži preobleke kolonij
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Izklopite za uporabo klasičnih enot, rojev in barv stavb v tej napravi.
 [settings Hive Mind]
 
 [settings Enable commander shortcuts]
@@ -4730,3 +4738,13 @@ Zagon zemljevida
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+Ponovi zemljevid vodoravno
+[repeat map vertically]
+Ponovi zemljevid navpično
+[bases]
+baze
+[bases per colony]
+Baze na kolonijo; baza je ena ekipa zemljevida, kot je narisan, z njenimi zgradbami in enotami

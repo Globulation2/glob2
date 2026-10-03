@@ -57,7 +57,9 @@ def main():
         observed = json.loads(path.read_text())
         measured.add(identity)
         results.pop(str(run['id']), None)
-        if observed['draft'] or not any((observed.get('selection') or {}).get(flag) for flag in ('native','browser','android','map_generators')):
+        if ((observed['draft'] and observed.get('verification_mode') is None) or
+                observed.get('verification_mode') in ('cheap-contracts', 'nightly-reused') or
+                not any((observed.get('selection') or {}).values())):
             path.unlink()
         else:
             results[str(run['id'])] = {key: value for key, value in observed.items() if key not in ('jobs', 'cache_observations')}

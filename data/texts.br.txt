@@ -3388,6 +3388,10 @@ Quique das listas
 
 [settings Experimental: move and animate units between game ticks.]
 
+[settings Smooth fog of war]
+
+[settings Fade the map into and out of the fog of war gradually.]
+
 [settings Adaptive zoom detail]
 
 [settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
@@ -4644,6 +4648,10 @@ Inércia do mapa
 
 [game draw]
 
+[settings Show colony skins]
+Diskouez neuzioù ar cʼholoniennoù
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Diweredekait evit implijout an unanennoù, an hedadoù ha livioù ar savadurioù klasel war an trevnad-mañ.
 [settings Hive Mind]
 
 [settings Enable commander shortcuts]
@@ -4726,3 +4734,13 @@ Inércia do mapa
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+Repetir o mapa na horizontal
+[repeat map vertically]
+Repetir o mapa na vertical
+[bases]
+bases
+[bases per colony]
+Bases por colônia; uma base é um time do mapa como foi desenhado, com seus prédios e unidades

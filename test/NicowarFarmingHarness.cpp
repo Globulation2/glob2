@@ -17,6 +17,7 @@
 #include <tuple>
 #include <vector>
 #include "AINicowar.h"
+#include "ExperimentalFeatures.h"
 #include <cstdio>
 #include <cstdlib>
 
@@ -31,8 +32,10 @@ struct Fixture
 {
 	Game game{nullptr};
 	std::unique_ptr<AISharedRuntime::Runtime> runtime;
-	Fixture()
+	explicit Fixture(bool farmAreas = false)
 	{
+		if (farmAreas)
+			game.gameHeader.getExperiments().set(ExperimentId::FarmAreas);
 		game.map.setSize(6, 6, GRASS);
 		game.map.setGame(&game);
 		game.addTeam();
@@ -115,5 +118,37 @@ TEST_SUITE("NicowarFarming")
 			require(!f.clearing(63,20), "cleanup survives loss of neighboring wheat");
 			require(f.clearing(63,29), "preserve diagonal building clearance across seam");
 		}
+	}
+
+	TEST_CASE("with the farm-areas experiment wheat is farmed with a farm area, wood keeps forbidden spots outside it")
+	{
+		glob2test::HeadlessGlobals globals;
+		Fixture f(true);
+		auto& map = f.game.map;
+		// A lake down the left edge; a wheat field beside it with a tree in it,
+		// and a wood stand on its own further along the shore.
+		for (int y=0; y<64; ++y) for (int x=0; x<6; ++x) map.setUMatPos(x, y, WATER, 1);
+		for (int y=10; y<14; ++y) for (int x=9; x<13; ++x) map.setResource(x, y, WHEAT, 0);
+		map.setResource(11, 11, WOOD, 0);
+		map.addForbidden(9, 11, 0); // stale forbidden paint from before the switch
+		for (int y=30; y<34; ++y) for (int x=9; x<13; ++x) map.setResource(x, y, WOOD, 0);
+		f.update();
+		const Uint32 me = f.game.teams[0]->me;
+		for (int y=10; y<14; ++y) for (int x=9; x<13; ++x)
+		{
+			CAPTURE(x); CAPTURE(y);
+			require(map.isFarmArea(x, y, me), "the wheat field is a farm area");
+			require(!map.isForbidden(x, y, me), "no forbidden paint inside the farm");
+		}
+		require(map.isFarmArea(13, 9, me) && map.isFarmArea(13, 14, me), "the farm covers the ring the field grows into");
+		require(!map.isFarmArea(15, 11, me), "the farm ends one tile beyond the wheat");
+		require(!f.clearing(11, 11), "the farm clears its own wood, without a clearing area");
+		require(map.isForbidden(9, 31, me), "wood outside farms keeps its forbidden spots");
+		require(!map.isFarmArea(9, 31, me), "a wood stand is not farmed");
+
+		// The field is gone: the farm is released.
+		for (int y=8; y<16; ++y) for (int x=7; x<15; ++x) map.setNoResource(x, y, 0);
+		f.update();
+		require(!map.isFarmArea(10, 11, me), "an emptied field releases its farm");
 	}
 }

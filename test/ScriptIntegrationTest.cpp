@@ -1191,3 +1191,83 @@ TEST_CASE("JavaScript services reject unsavable transactions without changing st
 	CHECK_THROWS(services.load(malformed));
 	CHECK(services.save().encode() == before);
 }
+
+#include "ExperimentalFeatures.h"
+#include "OrderValidation.h"
+TEST_CASE("JavaScript farm areas: experiments query, farmArea order and tile field" *
+		  doctest::test_suite("JavaScriptIntegration"))
+{
+	glob2test::HeadlessGlobals globals;
+	auto run = [](bool experiment)
+	{
+		glob2test::GameOptions options;
+		options.header = true;
+		if (experiment)
+			options.experiments.set(ExperimentId::FarmAreas);
+		glob2test::HeadlessGame world(options);
+		auto &game = world.game;
+		// Water down the left edge, so the grass beside it can grow wheat.
+		for (int y = 0; y < game.map.getH(); ++y)
+			for (int x = 0; x < 8; ++x)
+				game.map.setUMatPos(x, y, WATER, 1);
+		Value mask = Value::array();
+		for (int i = 0; i < 4; ++i)
+			mask.items.emplace_back(true);
+		auto order = Script::order(game, 0,
+								   Value::object()
+									   .set("type", "farmArea")
+									   .set("x", 12)
+									   .set("y", 12)
+									   .set("width", 2)
+									   .set("height", 2)
+									   .set("mode", 1)
+									   .set("mask", mask));
+		REQUIRE(order);
+		CHECK(order->getOrderType() == ORDER_ALTER_FARM_AREA);
+		const auto verdict = OrderValidation::validate(game, 0, *order);
+		if (verdict.verdict == OrderValidation::Verdict::Accepted)
+		{
+			order->sender = 0;
+			game.executeOrder(order, 0);
+		}
+		game.map.setMapDiscovered(12, 12, game.teams[0]->me);
+		game.map.setMapDiscovered(20, 20, game.teams[0]->me);
+		game.stepCounter++;
+
+		Observations observations(game, 0);
+		observations.observe(); // see the tiles, as a script's step does
+		Host host;
+		host.width = game.map.getW();
+		host.height = game.map.getH();
+		host.team = 0;
+		host.random = [] { return 0u; };
+		host.query = [&](const auto &name, const auto &args, const QueryBudget &budget)
+		{ return observations.query(name, args, budget); };
+		auto result = makeRuntime()->invoke(
+			"export function step(c,s){"
+			"s.keys=c.game.experiments();"
+			"const t=c.game.map.tile(12,12);s.explored=t.explored;s.farm=t.farmArea===true;"
+			"s.hasField='farmArea' in t;"
+			"s.plain='farmArea' in c.game.map.tile(20,20);}",
+			Value::object(), false, host);
+		struct
+		{
+			OrderValidation::Verdict verdict;
+			Value state;
+		} out{verdict.verdict, result.state};
+		return out;
+	};
+
+	const auto on = run(true);
+	REQUIRE(on.state.get("explored").number != 0);
+	CHECK(on.verdict == OrderValidation::Verdict::Accepted);
+	REQUIRE(on.state.get("keys").items.size() == 1);
+	CHECK(on.state.get("keys").items[0].text == "farm-areas");
+	CHECK(on.state.get("farm").number != 0);
+	CHECK(on.state.get("plain").number == 0);
+
+	const auto off = run(false);
+	CHECK(off.verdict == OrderValidation::Verdict::Rejected);
+	CHECK(off.state.get("keys").items.empty());
+	CHECK(off.state.get("hasField").number == 0);
+}

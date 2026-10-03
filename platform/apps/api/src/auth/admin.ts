@@ -184,6 +184,14 @@ export class AdminService {
     if (target.status === 'deleted') throw apiError('not_found', 'No such account.');
     const result = await this.db.transaction().execute(async (tx) => {
       const id = target.id;
+      // Skin publication and draft saves lock this account before committing.
+      const current = await tx
+        .selectFrom('accounts')
+        .select('status')
+        .where('id', '=', id)
+        .forUpdate()
+        .executeTakeFirstOrThrow();
+      if (current.status === 'deleted') throw apiError('not_found', 'No such account.');
       // Every name the account went by: now, in its matches, and in renames.
       const pastNames = await tx
         .selectFrom('match_participants')
@@ -206,6 +214,14 @@ export class AdminService {
       names.delete(DELETED_NAME);
       const nameList = [...names].filter((n) => n.trim().length > 0);
 
+      await tx.deleteFrom('colony_skin_drafts').where('account_id', '=', id).execute();
+      await tx.deleteFrom('colony_skin_equipment').where('account_id', '=', id).execute();
+      // Keep immutable version ids for match history, but stop serving the paint.
+      await tx
+        .updateTable('colony_skins')
+        .set({ name: 'Deleted skin', disabled_at: sql<Date>`now()` })
+        .where('owner_account_id', '=', id)
+        .execute();
       const maps = await tx.deleteFrom('maps').where('owner_account_id', '=', id).execute();
       const liked = await tx
         .deleteFrom('map_likes')

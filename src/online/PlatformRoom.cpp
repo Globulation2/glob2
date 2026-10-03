@@ -54,7 +54,7 @@ struct PlatformRoom::MapFetch
 	std::string hash;
 };
 
-PlatformRoom::PlatformRoom(PlatformClient *client, MapCache &maps) : client(client), maps(maps)
+PlatformRoom::PlatformRoom(PlatformClient *client, MapCache &maps, OnlineStorage *storage) : client(client), maps(maps), storage(storage)
 {
 	if (client)
 		calls = std::make_unique<PlatformScope>(*client);
@@ -65,10 +65,10 @@ PlatformRoom::PlatformRoom(PlatformClient *client, MapCache &maps) : client(clie
 // calls (a member) cancels the room's requests and removes its listeners.
 PlatformRoom::~PlatformRoom() = default;
 
-std::shared_ptr<PlatformRoom> PlatformRoom::create(PlatformClient &client, MapCache &maps, const std::string &name,
+std::shared_ptr<PlatformRoom> PlatformRoom::create(PlatformClient &client, MapCache &maps, OnlineStorage &storage, const std::string &name,
 												   bool listed, const CustomGameSetup &setup, bool automaticMap)
 {
-	std::shared_ptr<PlatformRoom> room(new PlatformRoom(&client, maps));
+	std::shared_ptr<PlatformRoom> room(new PlatformRoom(&client, maps, &storage));
 	room->automaticMap = automaticMap;
 	room->listen();
 	Json params{{"name", name.substr(0, 64)}, {"visibility", listed ? "public" : "link"}};
@@ -95,9 +95,9 @@ std::shared_ptr<PlatformRoom> PlatformRoom::create(PlatformClient &client, MapCa
 	return room;
 }
 
-std::shared_ptr<PlatformRoom> PlatformRoom::join(PlatformClient &client, MapCache &maps, const std::string &code)
+std::shared_ptr<PlatformRoom> PlatformRoom::join(PlatformClient &client, MapCache &maps, OnlineStorage &storage, const std::string &code)
 {
-	std::shared_ptr<PlatformRoom> room(new PlatformRoom(&client, maps));
+	std::shared_ptr<PlatformRoom> room(new PlatformRoom(&client, maps, &storage));
 	room->listen();
 	room->call("room.join", Json{{"code", code}}, [room = room.get()](const Json &result) {
 		if (result.contains("room"))
@@ -106,9 +106,9 @@ std::shared_ptr<PlatformRoom> PlatformRoom::join(PlatformClient &client, MapCach
 	return room;
 }
 
-std::shared_ptr<PlatformRoom> PlatformRoom::rematch(PlatformClient &client, MapCache &maps, const std::string &matchId)
+std::shared_ptr<PlatformRoom> PlatformRoom::rematch(PlatformClient &client, MapCache &maps, OnlineStorage &storage, const std::string &matchId)
 {
-	std::shared_ptr<PlatformRoom> room(new PlatformRoom(&client, maps));
+	std::shared_ptr<PlatformRoom> room(new PlatformRoom(&client, maps, &storage));
 	room->listen();
 	room->call("match.rematch", Json{{"matchId", matchId}}, [room = room.get()](const Json &result) {
 		if (result.contains("room"))
@@ -120,7 +120,7 @@ std::shared_ptr<PlatformRoom> PlatformRoom::rematch(PlatformClient &client, MapC
 std::shared_ptr<PlatformRoom> PlatformRoom::preview(Json roomState, std::string account,
 													std::vector<std::pair<std::string, std::string>> chat)
 {
-	std::shared_ptr<PlatformRoom> room(new PlatformRoom(nullptr, sharedMapCache()));
+	std::shared_ptr<PlatformRoom> room(new PlatformRoom(nullptr, sharedMapCache(), nullptr));
 	room->accountId = std::move(account);
 	room->adopt(roomState);
 	for (auto &line : chat)
@@ -190,7 +190,7 @@ void PlatformRoom::listen()
 		OnlineMatch::Context context;
 		context.label = text("[room match label]") + " · " + roomName();
 		context.fromRoom = true;
-		match = std::make_shared<OnlineMatch>(*client, maps, data, context);
+		match = std::make_shared<OnlineMatch>(*client, maps, *storage, data, context);
 		Event event;
 		event.kind = Event::Launch;
 		push(std::move(event));

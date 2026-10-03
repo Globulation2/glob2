@@ -3402,6 +3402,10 @@ Listornas studs
 
 [settings Experimental: move and animate units between game ticks.]
 
+[settings Smooth fog of war]
+
+[settings Fade the map into and out of the fog of war gradually.]
+
 [settings Adaptive zoom detail]
 
 [settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
@@ -4658,6 +4662,10 @@ Kartans fart
 
 [game draw]
 
+[settings Show colony skins]
+Visa koloniernas utseenden
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Stäng av för att använda klassiska enheter, svärmar och byggnadsfärger på den här enheten.
 [settings Hive Mind]
 
 [settings Enable commander shortcuts]
@@ -4740,3 +4748,13 @@ Kartans fart
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+Upprepa kartan vågrätt
+[repeat map vertically]
+Upprepa kartan lodrätt
+[bases]
+baser
+[bases per colony]
+Baser per koloni; en bas är ett lag från kartan som den är ritad, med dess byggnader och enheter

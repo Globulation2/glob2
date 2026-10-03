@@ -3388,6 +3388,10 @@ AIを追加
 
 [settings Experimental: move and animate units between game ticks.]
 
+[settings Smooth fog of war]
+
+[settings Fade the map into and out of the fog of war gradually.]
+
 [settings Adaptive zoom detail]
 
 [settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
@@ -4644,6 +4648,10 @@ AIを追加
 
 [game draw]
 
+[settings Show colony skins]
+コロニーのスキンを表示
+[settings Turn off to use classic units, swarms and building colors on this device.]
+オフにすると、この端末では従来のユニット、群れ、建物の色を使用します。
 [settings Hive Mind]
 
 [settings Enable commander shortcuts]
@@ -4726,3 +4734,13 @@ AIを追加
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+マップを横に繰り返す
+[repeat map vertically]
+マップを縦に繰り返す
+[bases]
+拠点
+[bases per colony]
+コロニーあたりの拠点数。拠点とは描かれたマップの1チームで、その建物とユニットを含みます

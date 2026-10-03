@@ -3388,6 +3388,10 @@ AI 추가
 
 [settings Experimental: move and animate units between game ticks.]
 
+[settings Smooth fog of war]
+
+[settings Fade the map into and out of the fog of war gradually.]
+
 [settings Adaptive zoom detail]
 
 [settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
@@ -4644,6 +4648,10 @@ AI 추가
 
 [game draw]
 
+[settings Show colony skins]
+군체 스킨 표시
+[settings Turn off to use classic units, swarms and building colors on this device.]
+끄면 이 기기에서 기본 유닛, 무리 및 건물 색상을 사용합니다.
 [settings Hive Mind]
 
 [settings Enable commander shortcuts]
@@ -4726,3 +4734,13 @@ AI 추가
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+맵을 가로로 반복
+[repeat map vertically]
+맵을 세로로 반복
+[bases]
+기지
+[bases per colony]
+식민지당 기지 수; 기지는 그려진 맵의 한 팀과 그 건물 및 유닛입니다

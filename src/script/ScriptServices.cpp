@@ -346,7 +346,8 @@ void Services::load(const Value &v)
 			throw std::runtime_error("Invalid saved action descriptor");
 		const auto &command = r.get("command");
 		const auto type = command.string("type");
-		if (type == "create" || type == "forbidden" || type == "guardArea" || type == "clearArea")
+		if (type == "create" || type == "forbidden" || type == "guardArea" || type == "clearArea" ||
+			type == "farmArea")
 			order(game, team, command); // Validate types and bounds without executing it.
 		else if (type == "cancel")
 			command.integer("target", 1, 0x7fffffff);

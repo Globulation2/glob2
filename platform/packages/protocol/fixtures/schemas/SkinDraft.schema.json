@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:SkinDraft",
+  "title": "SkinDraft",
+  "type": "object",
+  "required": [
+    "revision",
+    "name",
+    "imageBase64",
+    "buildingColor"
+  ],
+  "properties": {
+    "skinId": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "description": "Lowercase UUID."
+    },
+    "revision": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "description": "Lowercase UUID."
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "imageBase64": {
+      "type": "string",
+      "minLength": 4,
+      "maxLength": 349528
+    },
+    "buildingColor": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 16777215
+    }
+  }
+}

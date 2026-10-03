@@ -3462,6 +3462,10 @@ CPU %0%
 
 [settings Experimental: move and animate units between game ticks.]
 
+[settings Smooth fog of war]
+
+[settings Fade the map into and out of the fog of war gradually.]
+
 [settings Adaptive zoom detail]
 
 [settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
@@ -4718,6 +4722,10 @@ CPU %0%
 
 [game draw]
 
+[settings Show colony skins]
+Εμφάνιση εμφανίσεων αποικιών
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Απενεργοποιήστε για να χρησιμοποιείτε κλασικές μονάδες, σμήνη και χρώματα κτιρίων σε αυτή τη συσκευή.
 [settings Hive Mind]
 
 [settings Enable commander shortcuts]
@@ -4800,3 +4808,13 @@ CPU %0%
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+Επανάληψη χάρτη οριζόντια
+[repeat map vertically]
+Επανάληψη χάρτη κάθετα
+[bases]
+βάσεις
+[bases per colony]
+Βάσεις ανά αποικία· βάση είναι μία ομάδα του χάρτη όπως σχεδιάστηκε, με τα κτίρια και τις μονάδες της

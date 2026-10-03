@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
+#include "ExperimentalFeatures.h"
 #include "MapEdit.h"
 #include "Race.h"
 #include <filesystem>
@@ -182,6 +183,45 @@ TEST_SUITE("EditorActionCoverage")
         REQUIRE(editor.save(filename,"zone brushes")); MapEdit restored; REQUIRE(restored.load(filename));
         CHECK(restored.game.map.getTile(6,6).guardArea==editor.game.map.getTile(6,6).guardArea);
         CHECK(restored.game.map.getTile(0,31).guardArea==2);
+    }
+
+    TEST_CASE("farm brush is offered only with the farm-areas experiment and refuses ground that cannot grow [display][artifacts]")
+    {
+        glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{
+            .display=true,.width=1024,.height=768,.screenFlags=GAGCore::GraphicContext::PORTABLEGPU});
+        {
+            MapEdit editor; blank(editor);
+            CHECK(editor.farmingZone==nullptr);
+            editor.performAction("select farm zone");
+            CHECK(editor.brushType!=MapEdit::FarmAreaBrush);
+        }
+        globalContainer->settings.experiments.set(ExperimentId::FarmAreas);
+        MapEdit editor; blank(editor); editor.performAction("add team"); editor.team=0;
+        REQUIRE(editor.farmingZone!=nullptr);
+        // Water down the left edge, so the grass beside it can grow wheat.
+        for (int y=0; y<32; ++y) for (int x=0; x<8; ++x) editor.game.map.setUMatPos(x,y,WATER,1);
+        editor.game.map.getTile(20,12).canResourcesGrow=0;
+        editor.performAction("select farm zone"); editor.brush.setFigure(1); editor.brush.mode=BrushTool::MODE_ADD;
+        REQUIRE(editor.brushType==MapEdit::FarmAreaBrush);
+        cursor(editor,12,12); editor.performAction("zone drag start"); editor.performAction("zone drag end");
+        CHECK((editor.game.map.getTile(12,12).farmArea & 1)!=0);
+        CHECK(editor.game.map.isFarmAreaInDisplayedView(12,12));
+        cursor(editor,20,12); editor.performAction("zone drag start"); editor.performAction("zone drag end");
+        CHECK(editor.game.map.getTile(20,12).farmArea==0);
+        CHECK((editor.game.map.getTile(19,12).farmArea & 1)!=0);
+        glob2test::TempDir scratch; const auto filename=(scratch.path/"farm.map").string();
+        REQUIRE(editor.save(filename,"farm brush")); MapEdit restored; REQUIRE(restored.load(filename));
+        CHECK(restored.game.map.getTile(12,12).farmArea==editor.game.map.getTile(12,12).farmArea);
+        CHECK(restored.game.map.isFarmAreaInDisplayedView(12,12));
+        editor.brush.mode=BrushTool::MODE_DEL;
+        cursor(editor,12,12); editor.performAction("zone drag start"); editor.performAction("zone drag end");
+        CHECK(editor.game.map.getTile(12,12).farmArea==0);
+        // The flag view with its four zone buttons and the painted farm beside the water.
+        editor.performAction("switch to flag view");
+        editor.performAction("select farm zone");
+        editor.draw(SDL_GetTicks());
+        globals->gfx->printScreen(glob2test::artifactDirFromWorkingDirectory()+"/editor-farm-brush.bmp");
+        globals->gfx->nextFrame();
     }
 
     TEST_CASE("resource brushes add erase and retain painted wheat through editor save-load [display]")

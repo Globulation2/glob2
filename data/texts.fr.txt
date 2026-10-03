@@ -3402,6 +3402,10 @@ Rebond des listes
 
 [settings Experimental: move and animate units between game ticks.]
 
+[settings Smooth fog of war]
+
+[settings Fade the map into and out of the fog of war gradually.]
+
 [settings Adaptive zoom detail]
 
 [settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
@@ -4658,6 +4662,10 @@ Rebond des listes
 
 [game draw]
 
+[settings Show colony skins]
+Afficher les apparences des colonies
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Désactivez pour utiliser les unités, les essaims et les couleurs de bâtiments classiques sur cet appareil.
 [settings Hive Mind]
 
 [settings Enable commander shortcuts]
@@ -4740,3 +4748,13 @@ Rebond des listes
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+Répéter la carte horizontalement
+[repeat map vertically]
+Répéter la carte verticalement
+[bases]
+bases
+[bases per colony]
+Bases par colonie ; une base est une équipe de la carte telle que dessinée, avec ses bâtiments et ses unités

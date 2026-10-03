@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 // Copyright (C) 2005 Eli Dupree
 
+#include "AIFarmAreas.h"
 #include "AITelemetryFields.h"
 #include "AIWarrush.h"
 #include "AIWarrushTuning.h"
@@ -497,6 +498,7 @@ std::shared_ptr<Order> AIWarrush::placeGuardAreas()
 					{
 						if((map->getBuilding(b->posX, b->posY)!=NOGBID)&&(team->enemies & game->teams[Building::GIDtoTeam(map->getBuilding(b->posX, b->posY))]->me)) //paranoia
 						{
+							telemetry.set(AITrace::AI3::AIWarrush_placeGuardAreas_last_team, i);
 							for(int x = 0; x < bt->width; x++)
 							{
 								for(int y = 0; y < bt->height; y++)
@@ -548,10 +550,32 @@ std::shared_ptr<Order> AIWarrush::farm()
 	BrushAccumulator add_acc;
 	BrushAccumulator clr_del_acc;
 	BrushAccumulator clr_add_acc;
+	// With the farm-areas experiment, wheat near water is farmed with a farm
+	// area instead of the wheat checkerboard; the farm also clears wood in it.
+	const bool farms = map->farmAreasEnabled();
+	BrushAccumulator farm_del_acc;
+	BrushAccumulator farm_add_acc;
 	for(int x=0;x<map->w;x++)
 	{
 		for(int y=0;y<map->h;y++)
 		{
+			bool wheat_farm = false;
+			if(farms && map->isMapDiscovered(x, y, team->me))
+			{
+				wheat_farm = AIFarmAreas::wantsFarm(*map, x, y)
+					&& water_gradient(x, y) > (AI_WARRUSH_GRADIENT_MAX - AI_WARRUSH_WATER_NEAR_OFFSET);
+				const bool farmed = map->isFarmArea(x, y, team->me);
+				if(wheat_farm && !farmed)
+					farm_add_acc.applyBrush(BrushApplication(x, y, 0), map);
+				else if(!wheat_farm && farmed)
+					farm_del_acc.applyBrush(BrushApplication(x, y, 0), map);
+				// The farm replaces forbidden paint on wheat and on anything inside it.
+				if(map->isForbidden(x, y, team->me)
+				   && (map->isResourceTakeable(x, y, WHEAT)
+				       || (wheat_farm && map->isResourceTakeable(x, y, WOOD))))
+					del_acc.applyBrush(BrushApplication(x, y, 0), map);
+			}
+
 			if((!map->isResourceTakeable(x, y, WOOD) && !map->isResourceTakeable(x, y, WHEAT)))
 			{
 				if(map->isForbidden(x, y, team->me))
@@ -588,7 +612,8 @@ std::shared_ptr<Order> AIWarrush::farm()
 			}
 
 			//we clear wood if it's next to nice stuff like wheat or buildings
-			if(map->isResourceTakeable(x, y, WOOD))
+			//(a farm clears the wood inside it by itself)
+			if(map->isResourceTakeable(x, y, WOOD) && !wheat_farm)
 			{
 				if(!map->isClearArea(x, y, team->me) && map->isMapDiscovered(x, y, team->me))
 				{
@@ -613,7 +638,7 @@ std::shared_ptr<Order> AIWarrush::farm()
 
 			if(x%2==1 && ((y%2==1 && x%4==1) || (y%2==0 && x%4==3)))
 			{
-				if(map->isResourceTakeable(x, y, WOOD))
+				if(map->isResourceTakeable(x, y, WOOD) && !wheat_farm)
 				{
 					if(!map->isForbidden(x, y, team->me) && !map->isClearArea(x, y, team->me) && map->isMapDiscovered(x, y, team->me) && water_gradient(x, y) > (AI_WARRUSH_GRADIENT_MAX - AI_WARRUSH_WATER_NEAR_OFFSET))
 					{
@@ -622,7 +647,7 @@ std::shared_ptr<Order> AIWarrush::farm()
 				}
 			}
 
-			if(x%2==y%2)
+			if(x%2==y%2 && !farms)
 			{
 				if(map->isResourceTakeable(x, y, WHEAT))
 				{
@@ -666,6 +691,14 @@ std::shared_ptr<Order> AIWarrush::farm()
 			AITrace::AI3::AIWarrush_farm_result,
 			shared_ptr<Order>(
 				new OrderAlterClearArea(team->teamNumber, BrushTool::MODE_ADD, &clr_add_acc, map)));
+	if(farm_del_acc.getApplicationCount()>0)
+		return telemetry.returnedOrder(AITrace::AI3::AIWarrush_farm_result,
+									   shared_ptr<Order>(new OrderAlterFarmArea(
+										   team->teamNumber, BrushTool::MODE_DEL, &farm_del_acc, map)));
+	if(farm_add_acc.getApplicationCount()>0)
+		return telemetry.returnedOrder(AITrace::AI3::AIWarrush_farm_result,
+									   shared_ptr<Order>(new OrderAlterFarmArea(
+										   team->teamNumber, BrushTool::MODE_ADD, &farm_add_acc, map)));
 
 	//nothing to do...
 	return telemetry.returnedOrder(AITrace::AI3::AIWarrush_farm_result,

@@ -3468,6 +3468,10 @@ Listers tilbageslag
 
 [settings Experimental: move and animate units between game ticks.]
 
+[settings Smooth fog of war]
+
+[settings Fade the map into and out of the fog of war gradually.]
+
 [settings Adaptive zoom detail]
 
 [settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
@@ -4724,6 +4728,10 @@ Kortets fart
 
 [game draw]
 
+[settings Show colony skins]
+Vis koloniernes udseender
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Slå fra for at bruge klassiske enheder, sværme og bygningsfarver på denne enhed.
 [settings Hive Mind]
 
 [settings Enable commander shortcuts]
@@ -4806,3 +4814,13 @@ Kortets fart
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+Gentag kortet vandret
+[repeat map vertically]
+Gentag kortet lodret
+[bases]
+baser
+[bases per colony]
+Baser pr. koloni; en base er ét hold fra kortet, som det er tegnet, med dets bygninger og enheder

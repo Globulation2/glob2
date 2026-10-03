@@ -170,22 +170,37 @@ void Econo::tick_farming_areas(Runtime& runtime)
 		gi_water.add_source(new Entities::Water);
 		Gradient& gradient=runtime.get_gradient_manager().get_gradient(gi_water);
 		MapInfo mi(runtime);
+		// With the farm-areas experiment, wheat near water is farmed with a farm
+		// area; the lattice of forbidden spots then protects wood outside farms.
+		const bool farms = mi.farm_areas_enabled();
+		AddArea* mo_farm=farms ? new AddArea(FarmArea) : nullptr;
+		RemoveArea* mo_non_farm=farms ? new RemoveArea(FarmArea) : nullptr;
 		for(int x=0; x<mi.get_width(); ++x)
 		{
 			for(int y=0; y<mi.get_height(); ++y)
 			{
+				bool wheat_farm = false;
+				if(farms && mi.is_discovered(x, y))
+				{
+					wheat_farm = mi.wants_farm(x, y) &&
+						gradient.within_dist(x, y, AI_SHARED_RUNTIME_RTI_FARMING_WATER_MAX_DIST);
+					if(wheat_farm && !mi.is_farm_area(x, y))
+						mo_farm->add_location(x, y);
+					else if(!wheat_farm && mi.is_farm_area(x, y))
+						mo_non_farm->add_location(x, y);
+				}
 				if((x%AI_SHARED_RUNTIME_RTI_FARMING_PATTERN_STRIDE==1 && y%AI_SHARED_RUNTIME_RTI_FARMING_PATTERN_STRIDE==1))
 				{
-					if((!mi.is_resource(x, y, WOOD) &&
-					    !mi.is_resource(x, y, WHEAT)) &&
-					    mi.is_forbidden_area(x, y))
+					const bool protected_resource = farms
+						? mi.is_resource(x, y, WOOD) && !wheat_farm
+						: mi.is_resource(x, y, WOOD) || mi.is_resource(x, y, WHEAT);
+					if(!protected_resource && mi.is_forbidden_area(x, y))
 					{
 						mo_non_farming->add_location(x, y);
 					}
 					else
 					{
-						if((mi.is_resource(x, y, WOOD) ||
-						    mi.is_resource(x, y, WHEAT)) &&
+						if(protected_resource &&
 						    mi.is_discovered(x, y) &&
 						    !mi.is_forbidden_area(x, y) &&
 						    gradient.within_dist(x, y, AI_SHARED_RUNTIME_RTI_FARMING_WATER_MAX_DIST))
@@ -198,5 +213,10 @@ void Econo::tick_farming_areas(Runtime& runtime)
 		}
 		runtime.add_management_order(mo_farming);
 		runtime.add_management_order(mo_non_farming);
+		if(farms)
+		{
+			runtime.add_management_order(mo_farm);
+			runtime.add_management_order(mo_non_farm);
+		}
 	}
 }

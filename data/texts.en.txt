@@ -2202,6 +2202,18 @@ Off (no timer)
 60 minutes
 [Sudden-death timer]
 Sudden-death timer
+[Probability victory]
+Probability victory
+[Off (play it out)]
+Off (play it out)
+[95% sure]
+95% sure
+[97% sure]
+97% sure
+[99% sure]
+99% sure
+[Ends the match once the result is no longer in doubt. Spectators can always see each player's chance of winning in the statistics.]
+Ends the match once the result is no longer in doubt. Spectators can always see each player's chance of winning in the statistics.
 [Stats births]
 Births
 [Stats deaths]
@@ -3378,6 +3390,10 @@ Animate victory artwork. Reduced motion also disables this animation.
 Smooth unit motion
 [settings Experimental: move and animate units between game ticks.]
 Experimental: move and animate units between game ticks.
+[settings Smooth fog of war]
+Smooth fog of war
+[settings Fade the map into and out of the fog of war gradually.]
+Fade the map into and out of the fog of war gradually.
 [settings Adaptive zoom detail]
 Adaptive zoom detail
 [settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
@@ -4648,6 +4664,10 @@ this map
 Create a room and invite your friends: the room plays this map.
 [game draw]
 Draw
+[settings Show colony skins]
+Show colony skins
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Turn off to use classic units, swarms and building colors on this device.
 [settings Hive Mind]
 Hive Mind
 [settings Enable commander shortcuts]
@@ -4728,3 +4748,16 @@ No fields match your search.
 Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.
 [Missing custom AI]
 Missing custom AI
+[Map repetition failed]
+Cannot repeat this map. Use an unscripted starting map, or reduce the repeats and bases.
+[repeat map horizontally]
+Repeat map horizontally
+[repeat map vertically]
+Repeat map vertically
+[bases]
+bases
+[bases per colony]
+Bases per colony; a base is one team of the map as drawn, its buildings and units
+
+[Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
+Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.

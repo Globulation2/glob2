@@ -86,6 +86,8 @@ struct ScenePanelLocal
 //! Game-wide values the HUD shows.
 struct SceneHud
 {
+	struct WinChance { std::string name; GAGCore::Color color; int permille = 0; bool alive = false; };
+	std::vector<WinChance> winChances;
 	int totalPrestige = 0, prestigeToReach = 0;
 	bool anyPlayerWaited = false;
 	Uint32 maskAwayPlayer = 0;

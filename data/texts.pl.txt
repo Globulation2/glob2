@@ -3392,6 +3392,10 @@ Odbicie list
 
 [settings Experimental: move and animate units between game ticks.]
 
+[settings Smooth fog of war]
+
+[settings Fade the map into and out of the fog of war gradually.]
+
 [settings Adaptive zoom detail]
 
 [settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
@@ -4648,6 +4652,10 @@ Rozpęd mapy
 
 [game draw]
 
+[settings Show colony skins]
+Pokazuj skórki kolonii
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Wyłącz, aby na tym urządzeniu używać klasycznych jednostek, rojów i kolorów budynków.
 [settings Hive Mind]
 
 [settings Enable commander shortcuts]
@@ -4730,3 +4738,13 @@ Rozpęd mapy
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+Powtórz mapę w poziomie
+[repeat map vertically]
+Powtórz mapę w pionie
+[bases]
+bazy
+[bases per colony]
+Bazy na kolonię; baza to jedna drużyna mapy w narysowanej postaci, z jej budynkami i jednostkami

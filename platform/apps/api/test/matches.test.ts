@@ -434,6 +434,12 @@ describe('relays', () => {
       .where('id', '=', matchId)
       .executeTakeFirstOrThrow();
     expect(placed.relay_id).toBe('relay-1');
+    // room.start replies before asynchronous match.start delivery. Consume and
+    // verify that initial delivery before testing the subsequent failover.
+    for (const client of [host.client, guest.client]) {
+      const initial = await client.event('match.start');
+      expect(initial['relayUrl']).toBe('wss://relay-1.relays.test/relay');
+    }
 
     // relay-1 refuses the new match (Reject 5); relay-2 stopped draining.
     const heartbeat = await relayCall(a, 'POST', '/relays/heartbeat', {
@@ -443,9 +449,6 @@ describe('relays', () => {
       activeMatchIds: [],
     });
     expect(await json(heartbeat)).toEqual({ ok: true });
-    // The first start's pushes may still be in flight: take them before clearing.
-    await host.client.event('match.start');
-    await guest.client.event('match.start');
     host.client.clear();
     guest.client.clear();
     const moved = await guest.client.ok('match.reconnect', { matchId, relayUnavailable: true });

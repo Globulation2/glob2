@@ -3388,6 +3388,10 @@ Pantulan daftar
 
 [settings Experimental: move and animate units between game ticks.]
 
+[settings Smooth fog of war]
+
+[settings Fade the map into and out of the fog of war gradually.]
+
 [settings Adaptive zoom detail]
 
 [settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
@@ -4644,6 +4648,10 @@ Momentum peta
 
 [game draw]
 
+[settings Show colony skins]
+Tampilkan tampilan koloni
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Nonaktifkan untuk menggunakan unit, kawanan, dan warna bangunan klasik di perangkat ini.
 [settings Hive Mind]
 
 [settings Enable commander shortcuts]
@@ -4726,3 +4734,13 @@ Momentum peta
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+Ulangi peta secara horizontal
+[repeat map vertically]
+Ulangi peta secara vertikal
+[bases]
+markas
+[bases per colony]
+Markas per koloni; satu markas adalah satu tim dari peta seperti digambar, beserta bangunan dan unitnya

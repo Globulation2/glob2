@@ -53,6 +53,7 @@ ctx.game.buildings({team, offset, limit})
 ctx.game.unit({id, generation})
 ctx.game.building({id, generation})
 ctx.game.buildingTypes()
+ctx.game.experiments()
 ```
 
 The filter record and all its fields are optional. `team` is a current team ID;
@@ -192,6 +193,18 @@ const site = ctx.game.buildingTypes().find(
 );
 ```
 
+### Experiments
+
+`experiments()` returns the keys of the
+[experimental features](../features/experimental-features.md) this game carries,
+as an array of strings in a fixed order, for example `["farm-areas"]`. It is empty
+in a default game. The set is fixed for the game's whole life, so a script can read
+it once. Both script capabilities may call it.
+
+```javascript
+const farms = ctx.game.experiments().includes('farm-areas');
+```
+
 ## Map queries
 
 ```javascript
@@ -217,6 +230,7 @@ callback budget. For example, a 256×256 request exceeds the work budget.
 | `groundUnit`, `airUnit`, `building` | Present only when currently visible; permitted occupant ID or `65535` for empty/hidden occupant |
 | `fertility` | Map scripts only; raw `0..65535` wheat-growth fertility value |
 | `forbidden` | AI scripts only, on explored tiles; current own-team forbidden-area boolean, even if terrain is remembered |
+| `farmArea` | AI scripts only, on explored tiles, in a game with the `farm-areas` experiment; `true` where the own team painted a [farm area](../features/farm-areas.md), absent otherwise |
 
 An unexplored AI tile is exactly `{x, y, visible: false, explored: false}`.
 A remembered tile has no occupant fields. Map-script tiles are always visible
@@ -297,7 +311,7 @@ generation. A returned entity record is acceptable as that reference.
 | `minimumLevel` | Virtual `building`, `level`: `0..3` |
 | `moveFlag` | Virtual `building`, canonical `x`, `y` |
 | `clearingResources` | Clearing-flag `building`, `resources`: exactly five booleans; index `3` (stone) must be false |
-| `forbidden`, `guardArea`, `clearArea` | Canonical `x`, `y`; `width`, `height`: `1..256`; `mode`: add `1` or remove `2`; `mask`: exactly `width * height` booleans in row-major order |
+| `forbidden`, `guardArea`, `clearArea`, `farmArea` | Canonical `x`, `y`; `width`, `height`: `1..256`; `mode`: add `1` or remove `2`; `mask`: exactly `width * height` booleans in row-major order |
 
 Creation accepts level-zero construction sites or virtual flags. The engine
 still decides whether an accepted order can execute: placement, occupancy,
@@ -307,6 +321,10 @@ Order coordinates **do not** use the read API's signed/wrapped input convention.
 Area-mask `(0,0)` is anchored at `(x,y)` and the engine wraps affected tiles.
 `false` mask entries leave tiles unchanged; mode adds/removes the selected area
 on true entries. Guard/clear zones are not exposed by the tile read API yet.
+`farmArea` is accepted only in a game with the `farm-areas` experiment
+(`ctx.game.experiments()`); elsewhere validation rejects it as `not_permitted`.
+The engine refuses farm paint on ground nothing can grow on, so check the tile
+`farmArea` field afterwards rather than assuming every masked tile took.
 
 ## Map-script records and effects
 

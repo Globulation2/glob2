@@ -220,19 +220,24 @@ class PlatformClientIntegration(unittest.TestCase):
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         lines = []
         deadline = time.time() + timeout
-        for raw in process.stdout:
-            line = json.loads(raw)
-            lines.append(line)
-            self.transcript.append({'scenario': scenario, **line})
-            if on_line:
-                on_line(line)
-            if time.time() > deadline:
+        try:
+            for raw in process.stdout:
+                line = json.loads(raw)
+                lines.append(line)
+                self.transcript.append({'scenario': scenario, **line})
+                if on_line:
+                    on_line(line)
+                if time.time() > deadline:
+                    process.kill()
+                    break
+            process.wait(timeout=30)
+            errors = process.stderr.read()
+        finally:
+            if process.poll() is None:
                 process.kill()
-                break
-        process.wait(timeout=30)
-        errors = process.stderr.read()
-        process.stdout.close()
-        process.stderr.close()
+                process.wait(timeout=30)
+            process.stdout.close()
+            process.stderr.close()
         self.write_evidence()
         self.assertEqual(process.returncode, 0, f'{lines}\n{errors}')
         return {line['event']: line for line in lines}
@@ -268,25 +273,23 @@ class PlatformClientIntegration(unittest.TestCase):
             return error.code
 
     def browser_sign_in(self, sign_in_url, username, code):
-        """Registers a local account on the sign-in page, as a browser would."""
+        """Confirms the game's code, then registers through the bound browser."""
         context = ssl.create_default_context(cafile=str(self.cert))
-        browser = urllib.request.build_opener(
-            urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()),
-            urllib.request.HTTPSHandler(context=context))
-        with browser.open(sign_in_url, timeout=20) as page:
+        opener = urllib.request.build_opener(
+            urllib.request.HTTPSHandler(context=context),
+            urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()))
+        with opener.open(sign_in_url, timeout=20) as page:
             body = page.read().decode()
         attempt = urllib.parse.parse_qs(urllib.parse.urlparse(sign_in_url).query)['attempt'][0]
-        confirm = urllib.request.Request(self.origin + '/signin/confirm',
-            data=urllib.parse.urlencode({'attempt': attempt, 'code': code}).encode(),
-            headers={'Content-Type': 'application/x-www-form-urlencoded', 'Origin': self.origin})
-        with browser.open(confirm, timeout=20) as confirmed:
-            self.assertEqual(confirmed.status, 200)
-        form = urllib.parse.urlencode({'attempt': attempt, 'username': username,
-                                       'password': 'correct horse battery', 'action': 'register'})
-        request = urllib.request.Request(self.origin + '/signin/local', data=form.encode(), method='POST',
-                                         headers={'Content-Type': 'application/x-www-form-urlencoded',
-                                                  'Origin': self.origin})
-        with browser.open(request, timeout=20) as reply:
+        def post(path, values):
+            return opener.open(urllib.request.Request(
+                self.origin + path, data=urllib.parse.urlencode(values).encode(), method='POST',
+                headers={'Content-Type': 'application/x-www-form-urlencoded',
+                         'Origin': self.origin}), timeout=20)
+        with post('/signin/confirm', {'attempt': attempt, 'code': code}) as confirmed:
+            self.assertIn('Code accepted', confirmed.read().decode())
+        with post('/signin/local', {'attempt': attempt, 'username': username,
+                                   'password': 'correct horse battery', 'action': 'register'}) as reply:
             return body, reply.status, reply.read().decode()
 
     def test_client_lifecycle(self):
@@ -326,7 +329,9 @@ class PlatformClientIntegration(unittest.TestCase):
         second = self.probe('returning')['online']
         self.assertEqual((second['auth'], second['accountId']), ('signed-in', account))
         self.assertNotEqual(self.stored()['refreshToken'], before)
-        # Concurrent retries are accepted while the new successor is unused.
+        # The immediately previous token remains valid during the server's
+        # bounded concurrent-refresh grace. Older tokens still revoke the
+        # family below once their successor has itself been rotated.
         self.assertEqual(self.refresh_status(before), 200)
 
         # 3. Presenting a rotated refresh token revokes its family; the client
@@ -350,8 +355,8 @@ class PlatformClientIntegration(unittest.TestCase):
                 pages['page'], pages['status'], pages['result'] = self.browser_sign_in(line['signInUrl'], 'probe.player', line['confirmationCode'])
                 pages['code'] = line['confirmationCode']
         linked = self.probe('link', browser)['handoff-finished']
-        self.assertIn('Code from the game', pages['page'])
-        self.assertNotIn(pages['code'], pages['page'])  # the browser asks for the code; never supplies it
+        self.assertIn('name="code"', pages['page'])
+        self.assertNotIn(pages['code'], pages['page'])  # only the game reveals the code
         self.assertEqual(pages['status'], 200)
         self.assertTrue(linked['completed'], linked)
         self.assertTrue(linked['linked'])

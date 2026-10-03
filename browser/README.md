@@ -139,6 +139,12 @@ Use Tutorial, Campaign, Custom Game or Editor. Clicking the canvas focuses
 keyboard input and enables music. Live resize updates the internal resolution
 at frame boundaries in scheduled browser flows.
 Add `?renderer=software` or `?renderer=webgl2` to the URL to force a renderer.
+Colony skin meshes are a separate `skins` package. It is requested only when
+visible colony paint is available, so unskinned games and the initial menu do
+not download the models. The game continues with classic units while the package
+loads. Repeated frames share the request, and failed downloads retry no more than
+once every ten seconds. Native installations already contain these assets.
+
 `?replay=<url>` downloads a replay while the game loads and opens it in the replay
 viewer (the platform's "Watch in browser"; see
 [match history and the web app](../docs/multiplayer/history-and-web.md#watch-in-browser)).
@@ -233,6 +239,14 @@ Use `npm test -- --project=chromium` for a focused run. The package lock pins th
 test runner and its browser revisions. Failures retain traces and screenshots
 under `build/browser-test-results`. WebKit automation does not substitute for
 release testing in actual Safari, nor Chromium for Edge.
+
+The colony-skin replay integration test needs the seeded platform e2e server
+(`platform/apps/web/e2e/server.ts`) serving the current browser build. Set
+`GLOB2_TEST_URL` to that server's origin and `GLOB2_SKIN_REPLAY_API=1`, then run
+`replay-skins.spec.js`. It opens the match's actual replay route and requires
+fresh appearance, JWKS and texture requests plus live mesh draws. It does not
+use the developer paint override. The ordinary browser server has no platform
+API, so this case is explicitly skipped there.
 
 Use `GLOB2_TEST_RENDERER=webgl2` or `software` for renderer-sensitive tests.
 Dedicated renderer-contract tests select their own renderer explicitly.

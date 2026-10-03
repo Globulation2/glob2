@@ -3392,6 +3392,10 @@ Reculul listelor
 
 [settings Experimental: move and animate units between game ticks.]
 
+[settings Smooth fog of war]
+
+[settings Fade the map into and out of the fog of war gradually.]
+
 [settings Adaptive zoom detail]
 
 [settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
@@ -4648,6 +4652,10 @@ Inerția hărții
 
 [game draw]
 
+[settings Show colony skins]
+Arată aspectele coloniilor
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Dezactivează pentru a folosi unități, roiuri și culori ale clădirilor clasice pe acest dispozitiv.
 [settings Hive Mind]
 
 [settings Enable commander shortcuts]
@@ -4730,3 +4738,13 @@ Inerția hărții
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+Repetă harta pe orizontală
+[repeat map vertically]
+Repetă harta pe verticală
+[bases]
+baze
+[bases per colony]
+Baze pe colonie; o bază este o echipă a hărții așa cum a fost desenată, cu clădirile și unitățile ei

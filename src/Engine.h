@@ -130,6 +130,7 @@ public:
 	Turn::TurnLockstepSession* turnLockstep() { return turn; }
 	/// Online matches: what the results screen shows (outcome, verification, rating).
 	/// The results card of an online match; also tells the in-game menu what leaving costs.
+	void setColonySkins(std::unique_ptr<Online::SkinDownloads> downloads);
 	void setOnlineResult(std::shared_ptr<Online::OnlineMatchResult> result);
 	const std::shared_ptr<Online::OnlineMatchResult>& getOnlineResult() const { return onlineResult; }
 	/// A team of the loaded game, or null.

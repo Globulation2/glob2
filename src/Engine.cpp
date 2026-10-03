@@ -15,6 +15,9 @@
 #include "EngineTiming.h"
 #include "GlobalContainer.h"
 #include "OnlineMatch.h"
+#include "online/SkinDownloads.h"
+#include "online/ReplayAppearance.h"
+#include <Toolkit.h>
 #include "ReplayWriter.h"
 #include "SoundMixer.h"
 
@@ -137,4 +140,16 @@ int Engine::run(void)
     const int result = endScreen ? endScreen->execute(globalContainer->gfx, GAME_TICK_MS) : -1;
     restoreCursor();
     return result == -1 ? -1 : EE_NO_ERROR;
+}
+
+void Engine::setColonySkins(std::unique_ptr<Online::SkinDownloads> downloads)
+{
+    if (downloads && globalContainer->replayWriter)
+    {
+        const Online::ReplayAppearance context{downloads->origin(),downloads->matchId()};
+        globalContainer->replayWriter->setSaveObserver([context](const std::string &filename) {
+            Online::writeReplayAppearance(*GAGCore::Toolkit::getFileManager(),filename,context);
+        });
+    }
+    gui.setColonySkins(std::move(downloads));
 }

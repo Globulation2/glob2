@@ -3392,6 +3392,10 @@ Listojen kimmoisuus
 
 [settings Experimental: move and animate units between game ticks.]
 
+[settings Smooth fog of war]
+
+[settings Fade the map into and out of the fog of war gradually.]
+
 [settings Adaptive zoom detail]
 
 [settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
@@ -4648,6 +4652,10 @@ Kartan liike-energia
 
 [game draw]
 
+[settings Show colony skins]
+Näytä siirtokuntien ulkoasut
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Poista käytöstä, jos haluat tällä laitteella klassiset yksiköt, parvet ja rakennusten värit.
 [settings Hive Mind]
 
 [settings Enable commander shortcuts]
@@ -4730,3 +4738,13 @@ Kartan liike-energia
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+Toista kartta vaakasuunnassa
+[repeat map vertically]
+Toista kartta pystysuunnassa
+[bases]
+tukikohtaa
+[bases per colony]
+Tukikohtia siirtokuntaa kohden; tukikohta on piirretyn kartan yksi joukkue rakennuksineen ja yksiköineen

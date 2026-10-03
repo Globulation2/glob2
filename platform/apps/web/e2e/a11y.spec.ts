@@ -44,6 +44,8 @@ const pages = (): { name: string; path: string; signedIn?: boolean }[] => [
   { name: 'matches', path: '/matches' },
   { name: 'match', path: `/matches/${seed.featuredMatch}` },
   { name: 'player', path: `/players/${seed.accounts.bradley}` },
+  { name: 'skins-signed-out', path: '/skins' },
+  { name: 'skins', path: '/skins', signedIn: true },
   { name: 'maps', path: '/maps' },
   { name: 'map', path: `/maps/${seed.mapId}` },
   { name: 'upload-signed-out', path: '/maps/new' },

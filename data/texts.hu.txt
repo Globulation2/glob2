@@ -3392,6 +3392,10 @@ Listák visszapattanása
 
 [settings Experimental: move and animate units between game ticks.]
 
+[settings Smooth fog of war]
+
+[settings Fade the map into and out of the fog of war gradually.]
+
 [settings Adaptive zoom detail]
 
 [settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
@@ -4648,6 +4652,10 @@ Térkép lendülete
 
 [game draw]
 
+[settings Show colony skins]
+Kolóniák kinézetének megjelenítése
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Kikapcsolva ezen az eszközön a klasszikus egységek, rajok és épületszínek jelennek meg.
 [settings Hive Mind]
 
 [settings Enable commander shortcuts]
@@ -4730,3 +4738,13 @@ Térkép lendülete
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+Térkép ismétlése vízszintesen
+[repeat map vertically]
+Térkép ismétlése függőlegesen
+[bases]
+bázis
+[bases per colony]
+Bázisok kolóniánként; egy bázis a megrajzolt térkép egy csapata, épületeivel és egységeivel

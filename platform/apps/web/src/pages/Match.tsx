@@ -1,3 +1,4 @@
+import { MatchSkinLooks } from '../skins/Reporting.tsx';
 import { useState, type CSSProperties } from 'react';
 import {
   CONNECTION_METRICS,
@@ -600,6 +601,7 @@ export function Match({ id }: { id: string }) {
             </div>
             <TeamCards detail={detail} />
             <Participants detail={detail} />
+            <MatchSkinLooks matchId={id} />
             <div className="grid2" style={{ marginTop: 'var(--sp-4)' }}>
               <Replay detail={detail} />
               <Verification detail={detail} />

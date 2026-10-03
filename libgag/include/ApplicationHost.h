@@ -70,6 +70,8 @@ bool storageRestoreFailed();
 // Hosts that ship all data with the application answer true for every package
 // and never report an installation.
 bool assetPackageReady(const char *name);
+// Start an optional package without blocking the game; readiness is polled.
+void requestAssetPackage(const char *name);
 // Packages installed since the previous call, oldest first.
 std::vector<std::string> takeInstalledAssetPackages();
 bool canExportFiles();

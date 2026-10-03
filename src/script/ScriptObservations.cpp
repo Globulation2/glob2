@@ -219,7 +219,13 @@ Value Observations::tile(int x, int y) const
 			.set("building", buildingId);
 	}
 	if (team >= 0)
+	{
 		v.set("forbidden", bool(game.map.getForbidden(x, y) & game.teams[team]->me));
+		// Only present where the team painted a farm (the farm-areas experiment), so
+		// tile records in games without it are unchanged.
+		if (game.map.farmAreasEnabled() && game.map.isFarmArea(x, y, game.teams[team]->me))
+			v.set("farmArea", true);
+	}
 	return v;
 }
 Value Observations::query(const std::string &name, const std::vector<Value> &args,
@@ -230,6 +236,17 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
 		if (budget)
 			budget(nodes, nodes * NativeValueCost + bytes);
 	};
+	if (name == "experiments")
+	{
+		// Keys of the experiments this game carries (ExperimentalFeatures.h).
+		Value a = Value::array();
+		for (const auto &key : game.gameHeader.getExperiments().keys())
+		{
+			charge(1, key.size());
+			a.items.push_back(Value(key));
+		}
+		return a;
+	}
 	if (name == "buildingTypes")
 	{
 		Value a = Value::array();

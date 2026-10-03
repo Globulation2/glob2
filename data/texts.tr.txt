@@ -3400,6 +3400,10 @@ Liste sekmesi
 
 [settings Experimental: move and animate units between game ticks.]
 
+[settings Smooth fog of war]
+
+[settings Fade the map into and out of the fog of war gradually.]
+
 [settings Adaptive zoom detail]
 
 [settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
@@ -4656,6 +4660,10 @@ Harita ivmesi
 
 [game draw]
 
+[settings Show colony skins]
+Koloni görünümlerini göster
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Bu cihazda klasik birimleri, sürüleri ve bina renklerini kullanmak için kapatın.
 [settings Hive Mind]
 
 [settings Enable commander shortcuts]
@@ -4738,3 +4746,13 @@ Harita ivmesi
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+Haritayı yatay olarak tekrarla
+[repeat map vertically]
+Haritayı dikey olarak tekrarla
+[bases]
+üs
+[bases per colony]
+Koloni başına üs; üs, haritanın çizildiği hâliyle bir takımı, binaları ve birimleriyle birlikte

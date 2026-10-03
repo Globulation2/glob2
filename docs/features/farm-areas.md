@@ -16,6 +16,9 @@ farm keep itself clear of what it does not grow.
 - Switch on **Settings → Experiments → Farm areas**, then start or host a new
   game. The flag panel's zone strip gains a fourth, green button; the touch brush
   bar and flag palette gain a **Farm** choice. `<a>-<w>` selects it from the keyboard.
+- With the setting on, the map editor (desktop and phone) also offers the farm
+  brush, with the same refusal of ground that cannot grow. Maps do not carry
+  experiments: a painted farm only takes effect in games that have the experiment.
 - The brush refuses ground nothing can grow on. A farm on grass is a wheat farm
   and a farm on water is an alga farm; the terrain decides, so there is no extra
   setting.
@@ -104,11 +107,35 @@ A refused tile is never part of a field, so it cannot connect two patches.
 - **Growth.** `Map::growResources` does not read the farm mask.
 - **Clearing the touched tile.** Clearing paths call `Map::decResource` on the
   tile they touch and never go through `takeHarvest`.
-- **The AIs**, the **map editor** and **scripts**. No AI paints farm areas, the
-  editor has no farm brush (it shows and preserves a painted mask), and the
-  JavaScript order API has no farm area type. These are follow-ups if the
-  experiment graduates, along with high-resolution frames for the `area-farm`
-  overlay, which renders at classic resolution when HD artwork is on.
+
+## Artwork
+
+The overlay marker and its zone button are hand-authored SVG
+(`datasrc/gfx/authored/area-farm.svg`, `gamegui58.svg`): sparse seedlings that
+sway over eight frames, in the same family as the guard dots and clearing sickles.
+`python3 tools/artwork/render_authored.py` renders the classic 32px sprites and the
+128px high-resolution frames from the same source; `--check` verifies both are
+current and follow the marker rules. Zoomed out, the farm fades to the same flat
+tint as the other zones, a light green chosen to stand out from grass.
+
+## AIs
+
+In a game with the experiment, every AI that farms wheat paints a farm area
+instead of its forbidden-zone pattern: Nicowar, Econo, Maxima, Cortex, Cabino and
+Warrush. Each keeps its own idea of which fields to farm (near water, within its
+managed territory) and adds the shared rule `AIFarmAreas::wantsFarm`
+(`src/ai/AIFarmAreas.h`): ground the farm can grow on that holds wheat or touches
+it, so the farm covers the field and the ring it grows into. Forbidden paint stays
+for wood outside farms, and an AI removes its old wheat paint when it switches.
+Cortex erases its farm for a wheat blitz, and Maxima when farming is disabled.
+Without the experiment every AI farms exactly as before.
+
+## Scripts
+
+JavaScript AIs and map scripts see the experiment through
+`ctx.game.experiments()`, paint and erase farms with the `farmArea` order (same
+fields as the other area orders), and read `farmArea: true` on own-team farm
+tiles. See the [JavaScript API](../development/javascript-api.md).
 
 ## Compatibility
 
@@ -117,8 +144,9 @@ section, packed or per tile; older maps and saves load with no farm painted.
 `Tile::farmArea` joins the heavy `Map::checkSum`, which is unchanged while it is
 zero. The order is `ORDER_ALTER_FARM_AREA` (45); `OrderValidation` rejects it as
 `not_permitted` in a game without the experiment and `Game::executeAlterFarmArea`
-ignores it there. Network protocol 52 and simulation revision 4 come with the
-format change. Replays from formats 127 to 129 still play: none can contain the
+ignores it there. Network protocol 52 came with the format change, and each
+change to what the experiment simulates (the rule, scripts, the AIs) bumps
+`SIM_REVISION` like any other simulation change. Replays from formats 127 to 129 still play: none can contain the
 farm order or this experiment.
 
 ## Where it lives

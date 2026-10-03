@@ -121,6 +121,83 @@ describe('deleting my account', () => {
     player.client.close();
   });
 
+  it('removes private drafts and disables published skins while preserving immutable versions', async () => {
+    const db = harness.database.db;
+    const painter = await registeredPlayer(api, 'LeavingPainter');
+    const preset = await db
+      .selectFrom('colony_skin_versions')
+      .selectAll()
+      .executeTakeFirstOrThrow();
+    const skin = await db
+      .insertInto('colony_skins')
+      .values({
+        owner_account_id: painter.accountId,
+        kind: 'custom',
+        name: 'Personal paint',
+        entitlement: 'skins:designer',
+      })
+      .returning('id')
+      .executeTakeFirstOrThrow();
+    const version = await db
+      .insertInto('colony_skin_versions')
+      .values({
+        skin_id: skin.id,
+        texture_sha256: preset.texture_sha256,
+        layout: 'colony-v1',
+        building_color: 123,
+        manifest_sha256: 'fe'.repeat(32),
+      })
+      .returning('id')
+      .executeTakeFirstOrThrow();
+    await db
+      .insertInto('colony_skin_equipment')
+      .values({ account_id: painter.accountId, version_id: version.id })
+      .execute();
+    await db
+      .insertInto('colony_skin_drafts')
+      .values({
+        account_id: painter.accountId,
+        revision: crypto.randomUUID(),
+        name: 'Private paint',
+        building_color: 123,
+        image: Buffer.from('private draft'),
+      })
+      .execute();
+    expect((await deleteMe(painter, painter.displayName)).status).toBe(204);
+    expect(
+      await db
+        .selectFrom('colony_skin_drafts')
+        .selectAll()
+        .where('account_id', '=', painter.accountId)
+        .execute(),
+    ).toEqual([]);
+    expect(
+      await db
+        .selectFrom('colony_skin_equipment')
+        .selectAll()
+        .where('account_id', '=', painter.accountId)
+        .execute(),
+    ).toEqual([]);
+    expect(
+      await db
+        .selectFrom('colony_skins')
+        .select(['name', 'disabled_at'])
+        .where('id', '=', skin.id)
+        .executeTakeFirstOrThrow(),
+    ).toEqual({ name: 'Deleted skin', disabled_at: expect.any(Date) });
+    expect((await fetch(`${api.url}/api/v1/skins/versions/${version.id}/texture`)).status).toBe(
+      404,
+    );
+    expect(
+      await db
+        .selectFrom('colony_skin_versions')
+        .select('id')
+        .where('id', '=', version.id)
+        .executeTakeFirst(),
+    ).toBeDefined();
+    painter.client.close();
+  });
+
   it('signs out everywhere and scrubs the name, keeping ids', async () => {
     const db = harness.database.db;
     const leaver = await registeredPlayer(api, 'Leaver');

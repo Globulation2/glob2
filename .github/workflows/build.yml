@@ -10,7 +10,7 @@ on:
         required: true
         type: string
   pull_request:
-    # ready_for_review runs the checks a draft deferred (see ci_changed_paths.py).
+    # PRs run cheap contracts unless ci:run or ci:full requests hosted verification.
     types: [opened, synchronize, reopened, ready_for_review, converted_to_draft, labeled, unlabeled]
   schedule:
     - cron: '0 6 * * *'
@@ -61,6 +61,7 @@ jobs:
       secondary_profile: ${{ steps.select.outputs.secondary_profile }}
       full_matrix: ${{ steps.select.outputs.full_matrix }}
       draft: ${{ steps.select.outputs.draft }}
+      verification_mode: ${{ steps.select.outputs.verification_mode }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -1359,6 +1360,7 @@ jobs:
     runs-on: ubuntu-24.04
     env:
       NEEDS_JSON: ${{ toJSON(needs) }}
+      VERIFICATION_MODE: ${{ needs.changes.outputs.verification_mode }}
     steps:
       - name: Verify all selected jobs completed successfully
         run: |
@@ -1367,6 +1369,13 @@ jobs:
           import os
 
           needs = json.loads(os.environ['NEEDS_JSON'])
+          mode = os.environ.get('VERIFICATION_MODE', 'unknown')
+          summary = os.environ.get('GITHUB_STEP_SUMMARY')
+          if summary:
+              with open(summary, 'a') as target:
+                  target.write(f'Verification mode: **{mode}**.\n')
+                  if mode in ('cheap-contracts', 'nightly-reused'):
+                      target.write('This run checked cheap contracts only; success does not establish engine verification or acceptance of PR evidence.\n')
           assert needs['changes']['result'] == 'success', 'Change detection failed'
           selected = needs['changes']['outputs']
           expected = {

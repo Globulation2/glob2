@@ -3388,6 +3388,10 @@ CPU %0%
 
 [settings Experimental: move and animate units between game ticks.]
 
+[settings Smooth fog of war]
+
+[settings Fade the map into and out of the fog of war gradually.]
+
 [settings Adaptive zoom detail]
 
 [settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
@@ -4644,6 +4648,10 @@ CPU %0%
 
 [game draw]
 
+[settings Show colony skins]
+显示殖民地外观
+[settings Turn off to use classic units, swarms and building colors on this device.]
+关闭后，此设备将使用经典单位、虫群和建筑颜色。
 [settings Hive Mind]
 
 [settings Enable commander shortcuts]
@@ -4726,3 +4734,13 @@ CPU %0%
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+水平重复地图
+[repeat map vertically]
+垂直重复地图
+[bases]
+基地
+[bases per colony]
+每个殖民地的基地数；一个基地是地图原样中的一支团队及其建筑和单位

@@ -3392,6 +3392,10 @@ Emoji
 
 [settings Experimental: move and animate units between game ticks.]
 
+[settings Smooth fog of war]
+
+[settings Fade the map into and out of the fog of war gradually.]
+
 [settings Adaptive zoom detail]
 
 [settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
@@ -4648,6 +4652,10 @@ Emoji
 
 [game draw]
 
+[settings Show colony skins]
+Прикажи изгледе колонија
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Искључите да бисте на овом уређају користили класичне јединице, ројеве и боје зграда.
 [settings Hive Mind]
 
 [settings Enable commander shortcuts]
@@ -4730,3 +4738,13 @@ Emoji
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+Понови мапу водоравно
+[repeat map vertically]
+Понови мапу усправно
+[bases]
+базе
+[bases per colony]
+Базе по колонији; база је једна екипа мапе онако како је нацртана, са својим зградама и јединицама

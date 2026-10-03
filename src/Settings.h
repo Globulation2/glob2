@@ -59,6 +59,7 @@ public:
 	bool hiveMindSupervision;
 	bool highResolutionArtwork;
 	// Local rendering preferences; never serialized into games or orders.
+	bool showColonySkins = true;
 	bool clouds;
 	bool cloudShadows;
 	bool buildingParticles;
@@ -72,6 +73,8 @@ public:
 	bool unitInterpolation = false;
 	//! Adapt bars, zones, units and terrain to the zoom instead of scaling them with the map.
 	bool adaptiveZoomDetail = true;
+	//! Fade tiles into and out of the fog of war instead of switching them.
+	bool smoothFog = true;
 	void setGraphicsDetail(bool full);
 	static constexpr Uint32 LEGACY_LOW_DETAIL = 0x1;
 	/// Periodically saves the game in progress as "Auto save".

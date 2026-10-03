@@ -103,6 +103,7 @@ void SettingsScreen::buildGeneral()
 				commit();
 			});
 		};
+		effect("graphics.skins", "Show colony skins", "Turn off to use classic units, swarms and building colors on this device.", &Settings::showColonySkins);
 		effect("graphics.clouds", "Clouds", "Show cloud cover above the map.", &Settings::clouds);
 		effect("graphics.shadows", "Cloud shadows", "Show cloud shadows on the ground independently of cloud cover.", &Settings::cloudShadows);
 		effect("graphics.particles", "Building particles", "Show smoke and other building particles.", &Settings::buildingParticles);
@@ -161,6 +162,7 @@ void SettingsScreen::buildGeneral()
 		effect("graphics.animation", "Decorative interface animation", "Animate victory artwork. Reduced motion also disables this animation.", &Settings::decorativeAnimations);
 		effect("graphics.zoomdetail", "Adaptive zoom detail", "Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.", &Settings::adaptiveZoomDetail);
 		effect("graphics.unitmotion", "Smooth unit motion", "Experimental: move and animate units between game ticks.", &Settings::unitInterpolation);
+		effect("graphics.smoothfog", "Smooth fog of war", "Fade the map into and out of the fog of war gradually.", &Settings::smoothFog);
 #ifndef GLOB2_MOBILE
 		if (!touchLayout || globalContainer->gfx->isNativeDesktop())
 		{

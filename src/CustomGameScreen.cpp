@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "CustomGameScreen.h"
+#include "ChooseMapScreen.h"
 #include "AINames.h"
 #include "CustomGamePreferences.h"
 #include "Engine.h"
@@ -390,6 +391,51 @@ void CustomGameScreen::applyLandscape(int method, std::optional<std::uint32_t> s
 	invalidatePreview();
 	// An explicit choice, not an edit in progress: preview it now rather than after the debounce.
 	previewDue = SDL_GetTicks();
+}
+
+void CustomGameScreen::repeatCurrentMap()
+{
+	if (!validMap || previewBusy())
+		return;
+	std::string path = source;
+	if (generatedSnapshot)
+	{
+		// Freeze the previewed roll before opening the advanced dialog. The
+		// repeated result becomes a premade map: rerolling it would lose the
+		// source the player just configured. Use portable profile storage.
+		auto &files = *Toolkit::getFileManager();
+		files.addWriteSubdir("generated");
+		path = files.getDir(0) + "/generated/source-" + std::to_string(SDL_GetPerformanceCounter()) + ".map";
+		if (!files.writeFileAtomic(path, *generatedSnapshot))
+		{
+			message = tr("Could not load this map. Choose another map or retry.");
+			invalidate();
+			return;
+		}
+	}
+	auto dialog = std::make_unique<ChooseMapScreen>("maps", "map", false);
+	dialog->editMapParameters(path);
+	const bool temporarySource = generatedSnapshot != nullptr;
+	screens.push(std::move(dialog), [this, path, temporarySource](GAGGUI::Screen &screen, int result)
+	{
+		const auto repeated = result == ChooseMapScreen::OK
+			? static_cast<ChooseMapScreen &>(screen).getMapHeader().getFileName() : std::string();
+		// Cancel or accepting unchanged settings leaves the original draft and
+		// preview intact. Only the accepted repeated file needs to outlive us.
+		if (temporarySource && repeated != path)
+			Toolkit::getFileManager()->remove(path);
+		if (result != ChooseMapScreen::OK || repeated == path)
+		{
+			if (temporarySource && repeated == path)
+				Toolkit::getFileManager()->remove(path);
+			return;
+		}
+		setup.random = false;
+		quality = {};
+		++setup.mapRevision;
+		loadMap(repeated);
+		invalidate();
+	});
 }
 
 void CustomGameScreen::resetParameters()
@@ -969,6 +1015,9 @@ Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 										invalidate();
 									},
 									listOptions));
+		if (validMap)
+			left.push_back(fe::button("map/parameters", tr("Size and parameters"), [this] { repeatCurrentMap(); },
+				{false, false, !previewBusy(), true, true}));
 	}
 	else
 	{
@@ -1066,6 +1115,11 @@ Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 			}
 			if (!any)
 				left.push_back(fe::caption(tr(section == 1 ? "This landscape uses fixed resource placement." : "Dimensions and colony count are set above.")));
+			// Repetition transforms the completed roll, not the landscape's
+			// construction settings. Keep it after the advanced layout fields.
+			if (section == 2 && !forRoom)
+				left.push_back(fe::button("generator/repeat", tr("Size and parameters"), [this] { repeatCurrentMap(); },
+					{false, false, validMap && !previewBusy(), true, true}));
 		}
 	}
 	auto leftParts = left;
@@ -1086,7 +1140,7 @@ Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 		std::snprintf(summary, sizeof summary, "%s %.2f", tr("Fairness").c_str(), quality.fairness);
 		infoRow.push_back(fe::caption(summary));
 		infoRow.push_back(p.touch ? fe::compactButton(
-										"quality/info", tr("[Start quality]"), fe::UIIcon::Info,
+										"quality/info", tr("Start quality"), fe::UIIcon::Info,
 										[this] { showStartQuality(); }, p)
 								  : fe::button("quality/info", "i", [this] { showStartQuality(); },
 											   {false, false, true, false, false, false,
@@ -1267,6 +1321,8 @@ Element CustomGameScreen::ruleControl(int index, const Presentation &p, std::str
 			setup.buildingHpLevel = value;
 		if (index == 17)
 			setup.suddenDeathMinutes = value;
+		if (index == 18)
+			setup.winProbabilityPermille = value;
 		setup.ruleset = "Custom";
 	};
 	const std::string id = "rule/" + std::to_string(index);
@@ -1359,6 +1415,15 @@ Element CustomGameScreen::ruleControl(int index, const Presentation &p, std::str
 							  setup.ruleset = "Custom";
 							  invalidatePreview();
 						  });
+	}
+	if (index == 18)
+	{
+		const auto options = localized({"Off (play it out)", "95% sure", "97% sure", "99% sure"});
+		const auto choices = CustomGameSetup::winProbabilityChoices;
+		const int current = int(std::find(choices.begin(), choices.end(), setup.winProbabilityPermille) - choices.begin());
+		help = tr("Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.");
+		return fe::choice("rule/winProbability", options, current < int(choices.size()) ? current : 0,
+			[apply, choices](int v) { apply(choices[v]); });
 	}
 	const auto &minutes = CustomGameSetup::suddenDeathMinuteChoices;
 	const int current = int(std::find(minutes.begin(), minutes.end(), setup.suddenDeathMinutes) - minutes.begin());

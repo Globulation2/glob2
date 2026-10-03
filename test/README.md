@@ -351,6 +351,20 @@ To poke `cases[i].terrain` directly (`regenerateMap` is protected): grass < 16, 
 - Adding regression tests around any Map state mutator before refactoring it.
 - **Don't use** for behaviors that genuinely need real `Game` / `Team` / `Unit` / `Building` wiring (e.g. `doesUnitTouchEnemy` reaches into `game->teams[]->myBuildings[]`) — those need either a different stub set or a refactor to decouple first.
 
+## Map repetition regression
+
+```sh
+scons -j8 release=1 tests
+python3 test/run_tests.py --filter 'MapTiling/*'
+```
+
+The registered engine cases repeat a compressed source map, verify its buildings,
+units, seam-wrapped forbidden/guard/clearing areas and clearing flag settings, and
+write and reload an ordinary map in the profile's `generated/` directory. They
+also cover invalid repeat factors, scripted-map refusal, automatic player counts,
+equal shares and the editor-only 32-tile size. `UIPresentation` includes the
+advanced repetition dialog across desktop/touch viewports, safe insets and text sizes.
+
 ## Real LAN session regression
 
 The direct transport/security checks use `scons release=1 transport-test`,
@@ -862,6 +876,12 @@ worker queues, immutable builds and offline statistical policies using stdlib fi
 `python3 test/test_map_fairness_tournament.py` retains the fairness estimator and repeat-selection regressions.
 `python3 test/test_map_generation_study.py` checks structured map-study result classification,
 timeouts, temporary-profile cleanup, catalog lookup and per-subject telemetry preservation.
+It also covers a persistent daemon hot-reloading `host.json` after a `configure` RPC
+(no restart required); `audit`/`reap` cross-host worker discovery and staleness
+flagging (dead daemon, or alive but idle past `--stale-hours`); and `ai_comparison`'s
+`sample_games` mode (a bounded random sample -- each game independently drawing its
+own format/matchup/generator/size via inline generation -- as an alternative to the
+exhaustive cross product, reusing the same Planner and analysis pipeline).
 `python3 test/test_fairness_model.py` checks the fitted [fairness model](../docs/map-generators/FAIRNESS_MODEL.md):
 that the fit recovers coefficients from a tournament simulated out of the model itself, that a
 measurement deciding nothing is fitted near zero, that the fairness definition reads the same at

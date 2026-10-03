@@ -3398,6 +3398,10 @@ Ressalto das listas
 
 [settings Experimental: move and animate units between game ticks.]
 
+[settings Smooth fog of war]
+
+[settings Fade the map into and out of the fog of war gradually.]
+
 [settings Adaptive zoom detail]
 
 [settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
@@ -4654,6 +4658,10 @@ Inércia do mapa
 
 [game draw]
 
+[settings Show colony skins]
+Mostrar visuais das colónias
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Desative para usar unidades, enxames e cores de edifícios clássicos neste dispositivo.
 [settings Hive Mind]
 
 [settings Enable commander shortcuts]
@@ -4736,3 +4744,13 @@ Inércia do mapa
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+Repetir o mapa na horizontal
+[repeat map vertically]
+Repetir o mapa na vertical
+[bases]
+bases
+[bases per colony]
+Bases por colónia; uma base é uma equipa do mapa tal como foi desenhado, com os seus edifícios e unidades

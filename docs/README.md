@@ -76,3 +76,5 @@ dedicated evidence branch. Preserve only conclusions that remain useful after th
 change merges, and add those conclusions to the appropriate durable guide above.
 
 - [AI ratings](ai/ratings.md): measured opponent strength and interpretation.
+
+- [Win probability model](win-probability-model.md): fitted live-state predictions, calibration limits and optional early victory.

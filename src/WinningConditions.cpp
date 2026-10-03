@@ -4,8 +4,12 @@
 #include "WinningConditions.h"
 #include "Game.h"
 #include "Player.h"
+#include "TeamStat.h"
+#include "WinProbability.h"
+#include <vector>
 #include <algorithm>
 #include "Stream.h"
+#include "FileFormatVersions.h"
 
 namespace
 {
@@ -65,6 +69,14 @@ std::shared_ptr<WinningCondition> WinningCondition::getWinningCondition(GAGCore:
 		case WCScript:            return decodeAs<WinningConditionScript>(stream, versionMinor);
 		case WCOpponentsDefeated: return decodeAs<WinningConditionOpponentsDefeated>(stream, versionMinor);
 		case WCSuddenDeath:       return decodeAs<WinningConditionSuddenDeath>(stream, versionMinor);
+		case WCWinProbability:
+			if (versionMinor < FILE_FORMAT_VERSION_WIN_PROBABILITY_RULE)
+				return {};
+			{
+				auto condition = decodeAs<WinningConditionWinProbability>(stream, versionMinor);
+				const auto threshold = static_cast<WinningConditionWinProbability&>(*condition).thresholdPermille;
+				return threshold >= 501 && threshold <= 1000 ? condition : nullptr;
+			}
 		case WCUnknown:
 		default:
 			// Unrecognized tag: corrupt or truncated input, not a broken
@@ -173,6 +185,34 @@ void WinningCondition::setSuddenDeathWinCondition(std::list<std::shared_ptr<Winn
 	// condition has already had its say that tick.
 	auto condition = std::make_shared<WinningConditionSuddenDeath>();
 	condition->endStepTick = *endStepTick;
+	conditions.push_back(condition);
+}
+
+
+
+void WinningCondition::setWinProbabilityWinCondition(std::list<std::shared_ptr<WinningCondition> >& conditions, std::optional<Uint32> thresholdPermille)
+{
+	const auto isWinProbability = [](const std::shared_ptr<WinningCondition>& condition)
+	{
+		return condition->getType() == WCWinProbability;
+	};
+	const auto existing = std::find_if(conditions.begin(), conditions.end(), isWinProbability);
+
+	if (!thresholdPermille)
+	{
+		if (existing != conditions.end())
+			conditions.erase(existing);
+		return;
+	}
+	if (existing != conditions.end())
+	{
+		static_cast<WinningConditionWinProbability&>(**existing).thresholdPermille = *thresholdPermille;
+		return;
+	}
+	// Appended last, like sudden death: if a real elimination or prestige win is
+	// available on the same tick, that must be the reason the game ended.
+	auto condition = std::make_shared<WinningConditionWinProbability>();
+	condition->thresholdPermille = *thresholdPermille;
 	conditions.push_back(condition);
 }
 
@@ -442,6 +482,35 @@ Uint32 contestedTeamsMask(const Game* game)
 
 
 
+namespace
+{
+	/// Which alliance slot has reached the threshold this tick, or -1.
+	///
+	/// Recomputed rather than cached. It runs only on the 512-tick sample
+	/// boundary, over at most a handful of competitors, so the cost is nothing
+	/// next to the risk: a cache is state that two machines could disagree
+	/// about, and this decides the outcome of the game.
+	int decidedAlliance(const Game* game, Uint32 thresholdPermille, std::vector<int>& allianceOf)
+	{
+		if (thresholdPermille < 501 || thresholdPermille > 1000 ||
+			game->stepCounter < (Uint32)WinProbability::MINIMUM_DECISION_TICK)
+			return -1;
+		if ((game->stepCounter & END_OF_GAME_STAT_INTERVAL_MASK) != 0)
+			return -1;
+		// Outcomes assigned by this rule during wonSyncStep's two passes must
+		// not remove competitors from later evaluations of the same sample.
+		// Keep exclusions from other conditions, including scripted losses.
+		Uint32 ignoreLostTeams = 0;
+		for (int t = 0; t < game->teamsCount(); ++t)
+			if (game->teams[t] && game->teams[t]->winCondition == WCWinProbability)
+				ignoreLostTeams |= 1u << t;
+		const std::vector<WinProbability::Slot> slots = WinProbability::slotsOf(*game, allianceOf, ignoreLostTeams);
+		return WinProbability::decided(slots, (int)thresholdPermille);
+	}
+}
+
+
+
 TeamOutcome classifyTeamOutcome(const Game* game, int team, Uint32 contestedTeams)
 {
 	const Team* self = game->teams[team];
@@ -455,6 +524,13 @@ TeamOutcome classifyTeamOutcome(const Game* game, int team, Uint32 contestedTeam
 	return TeamOutcome::Won;
 }
 
+bool WinningConditionWinProbability::hasTeamWon(int team, const Game* game) const
+{
+	std::vector<int> allianceOf;
+	const int winner = decidedAlliance(game, thresholdPermille, allianceOf);
+	return winner >= 0 && allianceOf[team] == winner;
+}
+
 
 
 bool isGameDrawn(const Game* game, Uint32 contestedTeams)
@@ -463,4 +539,39 @@ bool isGameDrawn(const Game* game, Uint32 contestedTeams)
 		if ((contestedTeams & (1u << i)) && classifyTeamOutcome(game, i, contestedTeams) == TeamOutcome::Draw)
 			return true;
 	return false;
+}
+
+bool WinningConditionWinProbability::hasTeamLost(int team, const Game* game) const
+{
+	// Everyone outside the called alliance has lost, otherwise nothing sets
+	// isGameEnded and the game would carry on with a declared winner.
+	std::vector<int> allianceOf;
+	const int winner = decidedAlliance(game, thresholdPermille, allianceOf);
+	return winner >= 0 && allianceOf[team] != winner;
+}
+
+
+
+WinningConditionType WinningConditionWinProbability::getType() const
+{
+	return WCWinProbability;
+}
+
+
+
+void WinningConditionWinProbability::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeUint8(getType(), "type");
+	stream->writeEnterSection("WinningConditionWinProbability");
+	stream->writeUint32(thresholdPermille, "thresholdPermille");
+	stream->writeLeaveSection();
+}
+
+
+
+void WinningConditionWinProbability::decodeData(GAGCore::InputStream* stream, Uint32 versionMinor)
+{
+	stream->readEnterSection("WinningConditionWinProbability");
+	thresholdPermille = stream->readUint32("thresholdPermille");
+	stream->readLeaveSection();
 }

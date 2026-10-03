@@ -57,6 +57,7 @@ EXCLUDED_DIRECTORIES = ('data/icons/', 'data/screenshots/')
 # (package, path prefixes) in download order after `game`, which game_files()
 # selects. Files in no other package go to `core`.
 OPTIONAL = (
+    ('skins', ('data/skins/',)),
     ('font-cjk', ('data/fonts/sans.ttf',)),
     ('menu-music', ('data/zik/intro.ogg', 'data/zik/menu.ogg')),
     ('translations', ('data/texts.',)),
