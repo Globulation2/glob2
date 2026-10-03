@@ -189,6 +189,13 @@ InGameDialog::InGameDialog()
 {
 }
 
+Rect InGameDialog::insetAvailable(const Presentation &p, const Metrics &m)
+{
+	// UIDialog adds its internal padding back when painting the panel.
+	// Reserve the outer gutter separately so it cannot be consumed by content.
+	return UIDialog::available(p, m).inset(p.pt(16));
+}
+
 void InGameDialog::paintPanel(Canvas &canvas, Rect panel)
 {
 	if (!classicLook)

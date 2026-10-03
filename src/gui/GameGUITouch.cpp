@@ -77,7 +77,7 @@ MobileLayout GameGUITouch::layout() const
 		}
 		else
 		{
-			// A rail rising from the thumb corner; taller palettes scroll.
+			// A rail opposite the thumb corner; taller palettes scroll.
 			const double width = std::min(result.safe.w - InGameTouchTheme::railInset,
 										  columns * stride + InGameTouchTheme::gap);
 			const double height =
@@ -85,7 +85,7 @@ MobileLayout GameGUITouch::layout() const
 						 std::min(rows, double(InGameTouchTheme::railMaximumRows)) * stride +
 							 InGameTouchTheme::gap);
 			result.panel = ThumbSide::corner(result.safe, width, height, InGameTouchTheme::railInset,
-											 result.actions.y, ThumbSide::left());
+											 result.actions.y, ThumbSide::toolboxLeft());
 		}
 	}
 	// Compact inspectors are the thumb dial; its bounds are set once the layout
@@ -104,6 +104,12 @@ MobileLayout GameGUITouch::layout() const
 			InGameTouchTheme::inspectorHeader + buildingActionsHeight(result.panel.w));
 		result.panel.y = result.persistentPanel ? result.safe.y + 104 : result.actions.y - height;
 		result.panel.h = height;
+	}
+	if ((result.persistentPanel || panelOpen) && inspectingResource())
+	{
+		const double width = std::min(240.0, result.safe.w - 2 * InGameTouchTheme::railInset);
+		result.panel = ThumbSide::corner(result.safe, width, 112, InGameTouchTheme::railInset,
+			result.actions.y - 8, !ThumbSide::left());
 	}
 	if (gui.selectionMode == GameGUI::BRUSH_SELECTION)
 		result.panel = {}; // Brush controls live in the bottom toolbar.
@@ -161,7 +167,7 @@ void GameGUITouch::clampScroll()
 			? std::ceil(paletteItems().size() / double(columns)) *
 					  (paletteRail(ui) ? InGameTouchTheme::paletteCell + InGameTouchTheme::gap : 60) +
 				  (paletteRail(ui) ? InGameTouchTheme::gap : 8)
-			: tacticalActions().size() * 56;
+			: inspectingResource() ? 0 : tacticalActions().size() * 56;
 	panelAxis.sync(panelScroll, std::max(0.0, height - content.h / unit), content.h / unit);
 	tutorialAxis.sync(tutorialScroll, tutorialMaximum(), tutorialRect().h / unit);
 }
@@ -420,6 +426,11 @@ std::vector<ViewRect> GameGUITouch::keyboardTargets()
 				targets.push_back(r);
 		return targets;
 	}
+	if (inspectingResource())
+	{
+		targets.push_back(resourceCloseRect());
+		return targets;
+	}
 	const auto content = panelContent();
 	if (showsBuildPalette())
 	{
@@ -433,7 +444,7 @@ std::vector<ViewRect> GameGUITouch::keyboardTargets()
 	else if (inspecting() && usesDial())
 	{
 		for (const auto &region : dialRegions())
-			if (region.part != DialRegion::Arc)
+			if (region.part != DialRegion::Arc && region.part != DialRegion::Proportions)
 				targets.push_back(region.box);
 	}
 	else if (inspecting())
@@ -618,6 +629,8 @@ bool GameGUITouch::process(SDL_Event &event)
 			GAGCore::ScrollPhysicsConfig mapConfig = ScrollPresets::mapViewport();
 			mapConfig.momentum = mapConfig.momentum && fingerIsTouch;
 			mapMotion.setConfig(mapConfig);
+			mapDragTravel = {};
+			mapFlingArmed = false;
 			const auto hud = fingerIsTouch ? ScrollPresets::hudPanel() : ScrollPresets::mouse();
 			panelAxis.axis.setConfig(hud);
 			actionAxis.axis.setConfig(hud);
@@ -867,23 +880,32 @@ void GameGUITouch::actions(const std::vector<TouchAction> &changes)
 			gui.viewportX = gui.camera.tileX();
 			gui.viewportY = gui.camera.tileY();
 			gui.viewportChanged(oldX, gui.viewportX, oldY, gui.viewportY);
+			// Accumulate displacement in screen points, not world or raster pixels.
+			// Back-and-forth jitter inside the dead zone cannot arm a fling.
+			mapDragTravel.x += action.point.x;
+			mapDragTravel.y += action.point.y;
+			mapFlingArmed |= std::hypot(mapDragTravel.x, mapDragTravel.y) >= InGameTouchTheme::mapFlingTravelPoints;
 			// The same finger motion feeds the release velocity, in logical pixels.
 			if (!mapMotion.isDragging())
 				mapMotion.beginDrag(action.time);
 			mapMotion.drag(action.time, -point.x, -point.y);
 		}
 		else if (action.kind == TouchActionKind::PanEnd)
+		{
 			mapMotion.endDrag(action.time);
+			if (!mapFlingArmed)
+				mapMotion.interrupt();
+		}
 		else if (action.kind == TouchActionKind::Zoom)
 		{
 			lastMapTapTicks.reset();
 			if (action.factor > 0)
 				gui.zoomMap(std::log(action.factor) / std::log(1.1), int(point.x), int(point.y));
 		}
-		else if (action.kind == TouchActionKind::ZoomReset)
+		else if (action.kind == TouchActionKind::DoubleTap)
 		{
 			// Without a zoomable renderer the second tap still selects, as before.
-			if (!resetZoom(point) && world().contains(point))
+			if (!zoomIn(point) && world().contains(point))
 				select(point);
 		}
 		else if (action.kind == TouchActionKind::Preview && world().contains(point) &&
@@ -938,10 +960,9 @@ bool GameGUITouch::zoomTapArmed(Uint32 ticks, ViewPoint point) const
 		   world().contains(point) && !controls().contains(point);
 }
 
-bool GameGUITouch::resetZoom(ViewPoint point)
+bool GameGUITouch::zoomIn(ViewPoint point)
 {
-	gui.updateCamera();
-	return gui.zoomMap(std::log(1.0 / gui.camera.zoom) / std::log(1.1), int(point.x), int(point.y));
+	return gui.zoomMap(std::log(InGameTouchTheme::doubleTapZoomFactor) / std::log(1.1), int(point.x), int(point.y));
 }
 
 std::string GameGUITouch::zoomReadout() const
@@ -1044,7 +1065,7 @@ BrushHUD::Layout GameGUITouch::brushHUD() const
 	const auto mini = minimapRect();
 	const double top = mini.y + mini.h + 8 * unit, inset = InGameTouchTheme::railInset * unit;
 	return BrushHUD::layout({ui.safe.x + inset, top, ui.safe.w - 2 * inset, ui.actions.y - 8 * unit - top},
-							ThumbSide::left(), unit, true, true, bool(zoneUndo));
+							ThumbSide::toolboxLeft(), unit, true, true, bool(zoneUndo));
 }
 
 // Zone choices then Done, with Done under the thumb.
@@ -1223,6 +1244,13 @@ void GameGUITouch::interfaceTap(ViewPoint point)
 			if ((button == 0 && (gui.hiddenGUIElements & GameGUI::HIDABLE_BUILDINGS_LIST)) ||
 				(button == 1 && (gui.hiddenGUIElements & GameGUI::HIDABLE_FLAGS_LIST)))
 				return;
+			if (inspectingResource())
+			{
+				// An explicit toolbox choice replaces resource inspection; do not
+				// let the deferred inspector restoration override that choice.
+				gui.clearSelection();
+				restorePalette = false;
+			}
 			if (button < 2)
 			{
 				lensOpen = false;
@@ -1236,7 +1264,7 @@ void GameGUITouch::interfaceTap(ViewPoint point)
 			else if (gui.selectionMode == GameGUI::NO_SELECTION && !globalContainer->isViewingGame() &&
 					 !layout().persistentPanel)
 			{
-				// Compact: Tools opens the lens strip in the thumb corner.
+				// Compact: Tools opens the lens strip opposite the thumb corner.
 				lensOpen = !(lensOpen && !panelOpen && gui.displayMode == GameGUI::STAT_TEXT_VIEW);
 				panelOpen = false;
 				gui.displayMode = GameGUI::STAT_TEXT_VIEW;
@@ -1283,6 +1311,11 @@ void GameGUITouch::interfaceTap(ViewPoint point)
 				if (rects[i].contains(point))
 					menuAction(items[i].action);
 			return;
+		}
+		if (inspectingResource())
+		{
+			if (resourceCloseRect().contains(point)) gui.clearSelection();
+			return; // Resource readouts never dispatch tactical actions.
 		}
 		if (showsBuildPalette())
 			tapBuildPalette(point);
@@ -1377,7 +1410,7 @@ void GameGUITouch::select(ViewPoint point)
 		return;
 	}
 	gui.view.mouseUnit = Game::refOf(unitAt(screenPoint));
-	const bool wasInspecting = inspecting();
+	const bool wasInspecting = inspecting() || inspectingResource();
 	const bool wasOpen = panelOpen;
 	const int oldDisplay = gui.displayMode;
 	// Desktop selection deliberately sticks on empty terrain. A completed map
@@ -1387,7 +1420,7 @@ void GameGUITouch::select(ViewPoint point)
 	if (usesHUD() && gui.selectionMode != GameGUI::TOOL_SELECTION &&
 		gui.selectionMode != GameGUI::BRUSH_SELECTION) gui.clearSelection();
 	gui.handleMapClick(int(screenPoint.x), int(screenPoint.y), SDL_BUTTON_LEFT);
-	if (!wasInspecting && inspecting())
+	if (!wasInspecting && (inspecting() || inspectingResource()))
 	{
 		restorePalette = true;
 		previousPanelOpen = wasOpen;
@@ -1402,7 +1435,7 @@ void GameGUITouch::select(ViewPoint point)
 	if (usesHUD() && gui.selectionMode != GameGUI::NO_SELECTION)
 	{
 		panelOpen = true;
-		panelScroll = 144;
+		panelScroll = inspectingResource() ? 0 : 144;
 	}
 }
 
@@ -1440,7 +1473,7 @@ void GameGUITouch::prepareDraw()
 			stroke.points.push_back({double(gui.mapMouseX(int(point.x)) + gui.viewportX * 32),
 									 double(gui.mapMouseY(int(point.y)) + gui.viewportY * 32)});
 	}
-	if (restorePalette && !inspecting())
+	if (restorePalette && !inspecting() && !inspectingResource())
 	{
 		panelOpen = previousPanelOpen;
 		gui.displayMode = static_cast<GameGUI::DisplayMode>(previousDisplayMode);
@@ -1452,7 +1485,6 @@ void GameGUITouch::prepareDraw()
 	{
 		confirmDestroy = false;
 		actionScroll = 0;
-		ratioType = 0;
 		lastInspectedBuilding = inspected;
 	}
 	if (usesHUD())

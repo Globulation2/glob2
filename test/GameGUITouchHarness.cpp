@@ -25,6 +25,7 @@
 #include "GlobalContainer.h"
 #include "Order.h"
 #include "Unit.h"
+#include "Player.h"
 #include "ReplayWriter.h"
 #include "ReplayReader.h"
 #include "usl.h"
@@ -733,14 +734,15 @@ class GameGUITouchHarness
 		tap(200, 200);
 		tap(200, 200);
 		touchTickStep = separateTouchStep;
-		require(std::abs(gui.camera.zoom - 1) < 0.001,
-				"Double tap restores 1:1 map zoom");
+		require(std::abs(gui.camera.zoom - MapCamera::MAX_ZOOM) < 0.001,
+				"Double tap zooms in up to the camera limit");
 		const auto restoredAnchor = gui.camera.screenToWorld(200, 200);
 		require(std::abs(MapCamera::wrap(tapAnchor.first, gui.camera.mapWidth) -
 					MapCamera::wrap(restoredAnchor.first, gui.camera.mapWidth)) < 0.001 &&
 					std::abs(MapCamera::wrap(tapAnchor.second, gui.camera.mapHeight) -
 					MapCamera::wrap(restoredAnchor.second, gui.camera.mapHeight)) < 0.001,
 				"Double tap keeps the tapped world position anchored");
+		gui.zoomMap(std::log(1.0 / gui.camera.zoom) / std::log(1.1), 200, 200);
 		gui.clearSelection();
 		bool foundEmptyGround = false;
 		for (int y = 80; y < 480 && !foundEmptyGround; y += 32)
@@ -912,9 +914,9 @@ class GameGUITouchHarness
 			auto about = [](double a, double b) { return std::abs(a - b) < 0.5; };
 			for (int side : {int(Settings::THUMB_RIGHT), int(Settings::THUMB_LEFT)})
 			{
-				// The palette is a rail rising from the thumb corner, in both orientations.
+				// Toolboxes rise from the corner opposite the thumb, in both orientations.
 				globalContainer->settings.thumbSide = side;
-				const bool left = side == Settings::THUMB_LEFT;
+				const bool left = side == Settings::THUMB_RIGHT;
 				gui.displayMode = GameGUI::FLAG_VIEW;
 				gui.touch->panelOpen = true;
 				gui.touch->panelScroll = 0;
@@ -934,14 +936,14 @@ class GameGUITouchHarness
 				require(about(ui.panel.y + ui.panel.h, ui.actions.y), "The rail rises from the toolbar");
 				require(about(left ? ui.panel.x - ui.safe.x : ui.safe.x + ui.safe.w - ui.panel.x - ui.panel.w,
 							 InGameTouchTheme::railInset * unit),
-						"The rail hugs the thumb-side edge, clear of the back-gesture strip");
+						"The rail hugs the opposite edge, clear of the back-gesture strip");
 				require(about(firstFlag.y + firstFlag.h + gap, content.y + content.h) &&
 							about(left ? firstFlag.x - gap : firstFlag.x + firstFlag.w + gap,
 								 left ? content.x : content.x + content.w),
-						"The first choice sits nearest the thumb corner");
+						"The first choice sits nearest the toolbox corner");
 				const auto mini = gui.touch->minimapRect();
 				require(ui.panel.y >= mini.y + mini.h - 0.5, "The rail leaves the minimap visible");
-				require((gui.touch->confirmRect().x > gui.touch->cancelRect().x) == !left,
+				require((gui.touch->confirmRect().x > gui.touch->cancelRect().x) == left,
 						"Placement OK follows the thumb side");
 				gui.displayMode = GameGUI::CONSTRUCTION_VIEW;
 				gui.touch->panelScroll = 0;
@@ -952,7 +954,7 @@ class GameGUITouchHarness
 				const auto b0 = gui.touch->paletteItemRect(0), b1 = gui.touch->paletteItemRect(1),
 						   above = gui.touch->paletteItemRect(columns);
 				require(b1.y == b0.y && (left ? b1.x > b0.x : b1.x < b0.x),
-						"The second choice sits beside the first, away from the thumb");
+						"The second choice sits beside the first, toward the screen centre");
 				require(above.x == b0.x && above.y < b0.y, "Later rows rise above the first");
 				gui.touch->prepareDraw();
 				const int updates = gui.touch->gestureExclusionUpdates;
@@ -962,12 +964,31 @@ class GameGUITouchHarness
 							about(gui.touch->gestureExclusion[0].x, ui.panel.x) &&
 							about(gui.touch->gestureExclusion[0].h, ui.panel.h),
 						"The rail is excluded from system edge gestures, synchronised only on change");
-				if (left)
-				{
+				const std::string suffix = std::string(side == Settings::THUMB_RIGHT ? "right-thumb-" : "left-thumb-") +
+					(portrait ? "portrait.bmp" : "landscape.bmp");
+				auto capture = [&](const char *kind) {
 					gui.drawAll(0);
-					gfx->printScreen(portrait ? "touch-build-left-portrait.bmp" : "touch-build-left-landscape.bmp");
+					gfx->printScreen((std::string("opposite-") + kind + "-" + suffix).c_str());
 					gfx->nextFrame();
-				}
+				};
+				capture("build");
+				gui.displayMode = GameGUI::FLAG_VIEW;
+				capture("flags");
+				gui.setSelection(GameGUI::BRUSH_SELECTION);
+				const auto rail = gui.touch->brushHUD().rail;
+				require(about(left ? rail.x - ui.safe.x : ui.safe.x + ui.safe.w - rail.x - rail.w,
+					InGameTouchTheme::railInset * unit), "The zone toolbox sits opposite either thumb");
+				capture("zones");
+				gui.clearSelection();
+				gui.displayMode = GameGUI::STAT_TEXT_VIEW;
+				gui.touch->lensOpen = true;
+				const auto lens = gui.touch->lensRects(gui.touch->layout()).front();
+				require(about(left ? lens.x - ui.safe.x : ui.safe.x + ui.safe.w - lens.x - lens.w,
+					InGameTouchTheme::railInset * unit), "The tools toolbox sits opposite either thumb");
+				capture("tools");
+				gui.touch->lensOpen = false;
+				gui.displayMode = GameGUI::CONSTRUCTION_VIEW;
+				gui.touch->panelOpen = true;
 			}
 			globalContainer->settings.thumbSide = Settings::THUMB_RIGHT;
 			{
@@ -1127,6 +1148,57 @@ class GameGUITouchHarness
 				gui.displayMode = GameGUI::CONSTRUCTION_VIEW;
 			}
 			{
+				// Resource taps inspect the tile instead of falling through to Tools.
+				gui.clearSelection();
+				gui.touch->panelOpen = false;
+				gui.touch->lensOpen = false;
+				const auto spot = emptyGround();
+				const int tx = (gui.mapMouseX(int(spot.x)) / 32 + gui.viewportX) & gui.game.map.getMaskW();
+				const int ty = (gui.mapMouseY(int(spot.y)) / 32 + gui.viewportY) & gui.game.map.getMaskH();
+				auto &resource = gui.game.map.getResource(tx, ty);
+				const auto saved = resource;
+				for (int type : {WOOD, WHEAT})
+				{
+					resource.type = type;
+					resource.variety = 0;
+					resource.amount = 3;
+					tap(spot.x, spot.y);
+					require(gui.touch->inspectingResource(), "Tapping a resource opens its inspector");
+					gui.drawAll(0);
+					const auto info = gui.touch->resourceInfo();
+					require(info && info->name == getResourceName(type) &&
+						info->amount == (globalContainer->resourcesTypes.get(type)->granular
+							? "3/" + std::to_string(globalContainer->resourcesTypes.get(type)->sizesCount) : ""),
+						"Resource inspection shows the selected tile's name and amount");
+					const auto panel = gui.touch->layout().panel;
+					require(panel.h <= 112 * unit && !gui.touch->lensVisible(), "Resource inspection is a compact card, not Tools");
+					gfx->printScreen(std::string("resource-") + (type == WOOD ? "wood-" : "wheat-") + (portrait ? "portrait.bmp" : "landscape.bmp"));
+					gfx->nextFrame();
+					tap(panel.x + panel.w / 2, panel.y + panel.h * .7);
+					require(!gui.touch->statsOpen && !gui.touch->showStatistics && gui.touch->inspectingResource(),
+						"Tapping resource information cannot activate the tactical menu");
+					noOrder();
+					const auto close = gui.touch->resourceCloseRect();
+					tap(close.x + close.w / 2, close.y + close.h / 2);
+					gui.touch->prepareDraw();
+					require(gui.selectionMode == GameGUI::NO_SELECTION && !gui.touch->panelOpen,
+						"Closing resource info restores the previous panel state");
+				}
+				tap(spot.x, spot.y);
+				const auto bar = gui.touch->layout().actions;
+				tap(bar.x + bar.w * 2.5 / 6, bar.y + bar.h / 2);
+				gui.drawAll(0);
+				require(gui.touch->lensVisible() && !gui.touch->inspectingResource(), "Tools consistently opens the lens strip after resource inspection");
+				tap(bar.x + bar.w * 2.5 / 6, bar.y + bar.h / 2);
+				tap(spot.x, spot.y);
+				resource = saved;
+				gui.drawAll(0);
+				require(!gui.touch->inspectingResource(), "A depleted resource stops being inspected");
+				gui.clearSelection();
+				gui.touch->panelOpen = false;
+				gui.touch->lensOpen = false;
+			}
+			{
 				// One-finger zoom: tap, press again and drag; direction follows settings.
 				gui.clearSelection();
 				gui.touch->panelOpen = false;
@@ -1139,6 +1211,55 @@ class GameGUITouchHarness
 						   std::abs(MapCamera::wrap(a.second, gui.camera.mapHeight) -
 									MapCamera::wrap(b.second, gui.camera.mapHeight)) < 1;
 				};
+				// A completed double tap zooms in around its map point, even at a seam.
+				const auto savedCamera = gui.camera;
+				for (double initial : {0.75, 1.0, 2.0, MapCamera::MAX_ZOOM})
+				{
+					gui.camera = savedCamera;
+					gui.camera.setZoom(initial, spot.x, spot.y);
+					if (initial != 1.0)
+					{
+						gui.camera.originX = gui.camera.mapWidth - 8;
+						gui.camera.originY = gui.camera.mapHeight - 8;
+					}
+					gui.viewportX = gui.camera.tileX();
+					gui.viewportY = gui.camera.tileY();
+					gui.updateCamera();
+					const auto zoomSpot = spot;
+					const double before = gui.camera.zoom;
+					const auto anchor = gui.camera.screenToWorld(zoomSpot.x, zoomSpot.y);
+					if (initial == 1.0)
+					{
+						gui.drawAll(0);
+						gfx->printScreen(width < height ? "touch-double-tap-before-portrait.bmp"
+														: "touch-double-tap-before-landscape.bmp");
+						gfx->nextFrame();
+					}
+					quickTouches();
+					tap(zoomSpot.x, zoomSpot.y);
+					tap(zoomSpot.x, zoomSpot.y);
+					touchTickStep = separateTouchStep;
+					require(std::abs(gui.camera.zoom - std::min(before * 2, MapCamera::MAX_ZOOM)) < 1e-9,
+							"Double tap doubles zoom and stays at the maximum instead of resetting");
+					require(wrapped(anchor, gui.camera.screenToWorld(zoomSpot.x, zoomSpot.y)),
+							"Double tap keeps the tapped world point anchored across map seams");
+					noOrder();
+					std::cout << "PASS double tap " << width << "x" << height << ": " << before
+							  << " -> " << gui.camera.zoom << "; world anchor preserved\n";
+					if (initial == 1.0)
+					{
+						gui.drawAll(0);
+						gfx->printScreen(width < height ? "touch-double-tap-after-portrait.bmp"
+														: "touch-double-tap-after-landscape.bmp");
+						gfx->nextFrame();
+					}
+					gui.clearSelection();
+					gui.touch->panelOpen = false;
+				}
+				gui.camera = savedCamera;
+				gui.viewportX = gui.camera.tileX();
+				gui.viewportY = gui.camera.tileY();
+				gui.updateCamera();
 				auto armedPress = [&]
 				{
 					gui.camera.setZoom(1, spot.x, spot.y);
@@ -1234,11 +1355,12 @@ class GameGUITouchHarness
 				tap(spot.x, spot.y);
 				touchTickStep = separateTouchStep;
 				require(!gui.touch->deferredStroke, "A double tap while painting must not paint");
-				require(std::abs(gui.camera.zoom - 1) < 0.001,
-						("A double tap while painting must reset zoom (zoom " + std::to_string(gui.camera.zoom) + ")").c_str());
+				require(std::abs(gui.camera.zoom - 3) < 0.001,
+						("A double tap while painting must zoom in (zoom " + std::to_string(gui.camera.zoom) + ")").c_str());
 				SDL_Delay(InGameTouchTheme::doubleTapWindowMs + 20);
 				gui.touch->prepareDraw();
 				noOrder();
+				gui.zoomMap(std::log(1.0 / gui.camera.zoom) / std::log(1.1), int(spot.x), int(spot.y));
 				gui.brush.setFigure(6); // 3x3, so the footprint capture is legible.
 				finger(SDL_EVENT_FINGER_DOWN, 1, spot.x, spot.y);
 				finger(SDL_EVENT_FINGER_MOTION, 1, spot.x + 40 * unit, spot.y);
@@ -1284,7 +1406,7 @@ class GameGUITouchHarness
 				const auto ui = gui.touch->layout();
 				require(rail.rail.x + rail.rail.w <= ui.safe.x + ui.safe.w && rail.rail.y + rail.rail.h <= ui.actions.y &&
 							rail.rail.y >= gui.touch->minimapRect().y + gui.touch->minimapRect().h,
-						"The rail sits on the thumb edge between the minimap and the toolbar");
+						"The rail sits opposite the thumb between the minimap and the toolbar");
 				auto p = centre(rail.detents[7]);
 				tap(p.x, p.y);
 				require(gui.brush.getFigure() == 7, "Tapping a rail size selects it");
@@ -1323,9 +1445,9 @@ class GameGUITouchHarness
 				// A stroke held at a map edge pans and keeps painting.
 				gui.brush.setFigure(0);
 				const auto area = gui.touch->worldBounds();
-				const GAGCore::ViewPoint edge{area.x + 6 * unit, area.y + area.h / 2};
+				const GAGCore::ViewPoint edge{area.x + area.w - 6 * unit, area.y + area.h / 2};
 				require(gui.touch->interfaceRegion(edge) == 0, "Edge fixture must be on the map");
-				finger(SDL_EVENT_FINGER_DOWN, 1, edge.x + 30 * unit, edge.y);
+				finger(SDL_EVENT_FINGER_DOWN, 1, edge.x - 30 * unit, edge.y);
 				finger(SDL_EVENT_FINGER_MOTION, 1, edge.x, edge.y);
 				require(bool(gui.touch->strokeHold), "A painting contact is held for edge panning");
 				const int beforeEdge = gui.viewportX;
@@ -1340,6 +1462,7 @@ class GameGUITouchHarness
 						"The panned stroke paints on release");
 				drain();
 				// Undo reverts exactly the cells the stroke changed.
+				gui.zoomMap(std::log(1.0 / gui.camera.zoom) / std::log(1.1), int(spot.x), int(spot.y));
 				gui.brush.setFigure(6); // 3x3
 				const auto target = emptyGround();
 				auto &map = gui.game.map;
@@ -1447,8 +1570,8 @@ class GameGUITouchHarness
 								r.y >= mini.y + mini.h,
 							"Lenses sit between the minimap and the toolbar");
 				require(std::abs(rects[0].y + rects[0].h - (ui.actions.y - 8 * unit)) < 1 &&
-							rects[0].x + rects[0].w > ui.safe.x + ui.safe.w - 24 * unit,
-						"The first lens sits in the thumb corner");
+							rects[0].x < ui.safe.x + 24 * unit,
+						"The first lens sits opposite the thumb corner");
 				const auto checksum = gui.game.checkSum();
 				bool *flags[] = {&gui.showStarvingMap, &gui.showDamagedMap, &gui.showDefenseMap, &gui.showFertilityMap};
 				for (int k = 0; k < 4; ++k)
@@ -1736,11 +1859,9 @@ class GameGUITouchHarness
 		{
 			if (gui.touch->usesDial())
 			{
-				// The phone dial: ratios apply to the unit type chosen at its chips.
+				// The phone dial uses the same action regions as rendering.
 				gui.drawAll(0);
 				gfx->nextFrame();
-				if (kind == 0)
-					gui.touch->ratioType = value;
 				const auto p = gui.touch->dialActionPoint(kind, value, side);
 				require(p.x >= 0, "Building action must be on the dial");
 				return p;
@@ -2170,8 +2291,8 @@ class GameGUITouchHarness
 			{
 				const auto ui = gui.touch->layout();
 				const auto regions = gui.touch->dialRegions();
-				require(regions.size() >= 3 + 3 + 3 + NB_UNIT_TYPE,
-						"Swarm dial offers workers, a ratio slider, priority and unit choices");
+				require(regions.size() >= 3 + 1 + 3 + 1,
+						"Swarm dial offers workers, one shared production control, fixed priority and pause");
 				for (const auto &region : regions)
 				{
 					const auto &box = region.box;
@@ -2204,14 +2325,15 @@ class GameGUITouchHarness
 				gfx->nextFrame();
 				globalContainer->settings.thumbSide = Settings::THUMB_RIGHT;
 				gui.drawAll(0);
-				// Choosing a unit type at its chip points the ratio slider at it.
-				for (int type = NB_UNIT_TYPE - 1; type >= 0; --type)
+				const auto priority = gui.touch->dialActionPoint(7, 0, 0);
+				for (auto *other : {building, rangeFlag, clearing, exploring})
 				{
-					const auto chip = gui.touch->dialActionPoint(9, type, 0);
-					tap(chip.x, chip.y);
-					require(gui.touch->ratioType == type && gui.orderQueue.empty(),
-							"A unit chip selects the ratio the dial edits, without an order");
+					openActions(other);
+					const auto p = gui.touch->dialActionPoint(7, 0, 0);
+					require(std::hypot(p.x - priority.x, p.y - priority.y) < .01,
+							"Priority stays at the same position for every building");
 				}
+				openActions(swarm);
 			}
 			else
 			{
@@ -2226,34 +2348,89 @@ class GameGUITouchHarness
 			gfx->printScreen(width < height ? "touch-swarm-portrait.bmp"
 											: "touch-swarm-landscape.bmp");
 			const auto checksum = gui.game.checkSum();
-			for (int type = 0; type < NB_UNIT_TYPE; ++type)
+			if (gui.touch->usesDial())
+			for (int thumbSide : {int(Settings::THUMB_RIGHT), int(Settings::THUMB_LEFT)})
 			{
-				const auto before = gui.displayedRatio(*swarm);
-				pressAction(0, type, 1);
-				pressAction(0, type, 1);
-				require(gui.orderQueue.size() == 2,
-						"Rapid production taps queue exactly two orders");
-				for (int delta : {1, 2})
-				{
-					auto order =
-						std::dynamic_pointer_cast<OrderModifySwarm>(gui.orderQueue.front());
-					gui.orderQueue.pop_front();
-					require(order && order->gid == swarm->gid,
-							"Production uses the shared order and building");
-					for (int i = 0; i < NB_UNIT_TYPE; ++i)
-						require(order->ratio[i] == before[i] + (i == type ? delta : 0),
-								"Ratio edits preserve other pending values");
-				}
-				auto values = gui.displayedRatio(*swarm);
-				values[type] = MAX_RATIO_RANGE;
-				gui.pendingFor(swarm->gid).pendingRatio = values;
-				pressAction(0, type, 1);
-				require(gui.orderQueue.empty(), "Maximum ratio tap emits no order");
-				values[type] = 0;
-				gui.pendingFor(swarm->gid).pendingRatio = values;
-				pressAction(0, type, -1);
-				require(gui.orderQueue.empty(), "Zero ratio tap emits no order");
+				globalContainer->settings.thumbSide = thumbSide;
+				gui.drawAll(0);
+				require(TouchDial::shares({6, 2, 2}, 16) == std::array<int, 3>{10, 3, 3},
+						"Relative weights round to a complete production budget");
+				require(TouchDial::shares({1, 1, 1}, 100) == std::array<int, 3>{34, 33, 33},
+						"Displayed percentages always total 100");
+				const auto g = gui.touch->dialLayout(gui.touch->layout()).geometry;
+				const auto &ring = g.rings[1];
+				auto at = [&](int value, int divider) {
+					return TouchDial::point(g, divider == 0 ? ring.inner + 4 : ring.outer - 4,
+						TouchDial::angleOf(value, g.sweepStart, g.sweepEnd, 16));
+				};
+				auto drag = [&](int divider, int from, int to, bool cancel = false) {
+					const auto start = at(from, divider), end = at(to, divider);
+					finger(SDL_EVENT_FINGER_DOWN, 1, start.x, start.y);
+					require(gui.touch->allocation && gui.touch->allocation->divider == divider,
+							("Production divider " + std::to_string(divider) + " at " + std::to_string(from) + " picked " + std::to_string(gui.touch->allocation ? gui.touch->allocation->divider : -2)).c_str());
+					finger(SDL_EVENT_FINGER_MOTION, 1, end.x, end.y);
+					require(gui.orderQueue.empty(), "Proportion dragging previews without orders");
+					if (cancel)
+						gui.suspendInput();
+					finger(SDL_EVENT_FINGER_UP, 1, end.x, end.y);
+				};
+				gui.pendingFor(swarm->gid).pendingRatio = std::array<int, 3>{8, 4, 4};
+				drag(0, 8, 4);
+				require(gui.orderQueue.size() == 1 && gui.displayedRatio(*swarm) == std::array<int, 3>{4, 8, 4},
+						"One release transfers production between neighbors in one order");
+				const auto order = std::dynamic_pointer_cast<OrderModifySwarm>(gui.orderQueue.front());
+				require(order && order->gid == swarm->gid && order->ratio[0] == 4 && order->ratio[1] == 8 && order->ratio[2] == 4,
+						"Production proportions use the existing swarm order");
+				gui.orderQueue.clear();
+				drag(1, 12, 8, true);
+				require(gui.orderQueue.empty() && gui.displayedRatio(*swarm) == std::array<int, 3>{4, 8, 4},
+						"Interrupted production adjustment is discarded");
+				const auto held = at(4, 0), moved = at(8, 0);
+				finger(SDL_EVENT_FINGER_DOWN, 1, held.x, held.y);
+				finger(SDL_EVENT_FINGER_MOTION, 1, moved.x, moved.y);
+				finger(SDL_EVENT_FINGER_DOWN, 2, moved.x, moved.y);
+				finger(SDL_EVENT_FINGER_UP, 1, moved.x, moved.y);
+				finger(SDL_EVENT_FINGER_UP, 2, moved.x, moved.y);
+				require(gui.orderQueue.empty() && !gui.touch->allocation &&
+					gui.displayedRatio(*swarm) == std::array<int, 3>{4, 8, 4},
+					"A second finger cancels production adjustment without changing shares");
+				finger(SDL_EVENT_FINGER_DOWN, 1, held.x, held.y);
+				finger(SDL_EVENT_FINGER_MOTION, 1, moved.x, moved.y);
+				const auto wrongRing = TouchDial::point(g, g.rings[0].middle(), (g.sweepStart + g.sweepEnd) / 2);
+				finger(SDL_EVENT_FINGER_UP, 1, wrongRing.x, wrongRing.y);
+				require(gui.orderQueue.empty() && gui.displayedRatio(*swarm) == std::array<int, 3>{4, 8, 4},
+					"Releasing on a neighboring thin ring cancels the production edit");
+				gui.pendingFor(swarm->gid).pendingRatio = std::array<int, 3>{16, 0, 0};
+				drag(0, 16, 8);
+				require(gui.displayedRatio(*swarm) == std::array<int, 3>{8, 8, 0}, "A zero middle share can be restored");
+				gui.orderQueue.clear();
+				drag(1, 16, 12);
+				require(gui.displayedRatio(*swarm) == std::array<int, 3>{8, 4, 4}, "A zero last share can be restored");
+				gui.orderQueue.clear();
+				gui.pendingFor(swarm->gid).pendingRatio = std::array<int, 3>{0, 8, 8};
+				drag(0, 0, 4);
+				require(gui.displayedRatio(*swarm) == std::array<int, 3>{4, 4, 8}, "A zero first share can be restored");
+				gui.orderQueue.clear();
+				gui.pendingFor(swarm->gid).pendingRatio = std::array<int, 3>{8, 4, 4};
+				const auto stationary = at(8, 0);
+				tap(stationary.x, stationary.y);
+				require(gui.orderQueue.empty(), "A stationary production touch is a no-op");
+				pressAction(10, 0);
+				require(gui.displayedRatio(*swarm) == std::array<int, 3>{0, 0, 0}, "Production can still be paused");
+				gui.orderQueue.clear();
+				drag(1, 0, 8);
+				require(gui.orderQueue.size() == 1, "A paused production arc can resume by dragging");
+				gui.orderQueue.clear();
+				gui.pendingFor(swarm->gid).pendingRatio = std::array<int, 3>{8, 4, 4};
+				gui.drawAll(0);
+				gfx->printScreen(thumbSide == Settings::THUMB_LEFT
+					? (width < height ? "touch-proportions-left-portrait.bmp" : "touch-proportions-left-landscape.bmp")
+					: (width < height ? "touch-proportions-portrait.bmp" : "touch-proportions-landscape.bmp"));
+				gfx->nextFrame();
+				std::cout << "PASS fixed priority and unified production proportions " << width << "x" << height << " thumb=" << thumbSide << "\n";
 			}
+			globalContainer->settings.thumbSide = Settings::THUMB_RIGHT;
+
 			require(gui.game.checkSum() == checksum, "Ratio UI does not mutate the simulation");
 			gui.drawAll(0);
 			gfx->printScreen(width < height ? "touch-actions-portrait.bmp"
@@ -2375,6 +2552,37 @@ class GameGUITouchHarness
 			require(gui.touch->layout().persistentPanel && !gui.touch->usesDial() &&
 						gui.touch->buildingActionRect(0).w > 0,
 					"Spacious layouts keep the rectangular inspector");
+			const auto checksum = gui.game.checkSum();
+			gui.pendingFor(swarm->gid).pendingRatio = std::array<int, 3>{6, 2, 2};
+			for (int type = 0; type < NB_UNIT_TYPE; ++type)
+			{
+				const auto before = gui.displayedRatio(*swarm);
+				pressAction(0, type, 1);
+				pressAction(0, type, 1);
+				require(gui.orderQueue.size() == 2,
+						"Rapid production taps queue exactly two orders");
+				for (int delta : {1, 2})
+				{
+					auto order =
+						std::dynamic_pointer_cast<OrderModifySwarm>(gui.orderQueue.front());
+					gui.orderQueue.pop_front();
+					require(order && order->gid == swarm->gid,
+							"Production uses the shared order and building");
+					for (int i = 0; i < NB_UNIT_TYPE; ++i)
+						require(order->ratio[i] == before[i] + (i == type ? delta : 0),
+								"Ratio edits preserve other pending values");
+				}
+				auto values = gui.displayedRatio(*swarm);
+				values[type] = MAX_RATIO_RANGE;
+				gui.pendingFor(swarm->gid).pendingRatio = values;
+				pressAction(0, type, 1);
+				require(gui.orderQueue.empty(), "Maximum ratio tap emits no order");
+				values[type] = 0;
+				gui.pendingFor(swarm->gid).pendingRatio = values;
+				pressAction(0, type, -1);
+				require(gui.orderQueue.empty(), "Zero ratio tap emits no order");
+			}
+			require(gui.game.checkSum() == checksum, "Spacious ratio editing only queues orders");
 			gui.clearSelection();
 			gui.touch->panelOpen = false;
 			GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "1", 1);
@@ -2400,7 +2608,18 @@ class GameGUITouchHarness
 			const auto r = dialog->host().bounds(key);
 			tap(r.x + r.w / 2, r.y + r.h / 2);
 		};
-		for (auto [width, height] : {std::pair{320, 568}, {568, 320}})
+		const auto dialogGameHeader = gui.game.gameHeader;
+		std::array<Player *, 4> dialogPlayers{};
+		for (int i = 1; i < 4; ++i)
+		{
+			require(gui.game.teams[i], "Teams dialog fixture needs three rival teams");
+			dialogPlayers[i] = gui.game.players[i];
+			gui.game.players[i] = new Player(i, "Rival colony " + std::to_string(i), gui.game.teams[i], BasePlayer::P_IP);
+			gui.game.gameHeader.getBasePlayer(i) = BasePlayer(i, "Rival colony " + std::to_string(i), i, BasePlayer::P_IP);
+		}
+		gui.game.gameHeader.setNumberOfPlayers(4);
+		gui.game.gameHeader.setAllyTeamsFixed(true);
+		for (auto [width, height] : {std::pair{320, 568}, {568, 320}, {1024, 768}})
 		{
 			SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()), width, height);
 			GLOB2_REQUIRE(SDL_SyncWindow(SDL_GetWindowFromID(gfx->windowID())), "Window resize must settle before layout assertions");
@@ -2425,12 +2644,80 @@ class GameGUITouchHarness
 			pressDialog("ok");
 			require(!gui.inGameMenu, "Options footer remains reachable");
 			gui.openDialog(GameGUI::IGM_OBJECTIVES, std::make_unique<InGameObjectivesScreen>(&gui, false));
+			auto checkModal = [&](const char *name) {
+				gui.drawAll(0);
+				auto *dialog = gui.activeDialog();
+				const auto panel = dialog->panelBounds();
+				const auto &p = dialog->presentation();
+				const auto area = p.dialog;
+				const int margin = p.pt(16);
+				require(panel.x >= area.x + margin && panel.y >= area.y + margin &&
+					panel.right() <= area.right() - margin && panel.bottom() <= area.bottom() - margin,
+					"Gameplay modals leave a 16-point outer gutter on every side");
+				std::cout << "Modal " << name << " screen=" << width << "x" << height
+					<< " panel=" << panel.x << "," << panel.y << "," << panel.w << "," << panel.h << "\n";
+				gfx->printScreen((std::string("inset-") + name + "-" + std::to_string(width) + "x" + std::to_string(height) + ".bmp").c_str());
+				gfx->nextFrame();
+			};
+			checkModal("objectives");
 			auto *objectives = static_cast<InGameObjectivesScreen *>(gui.gameMenuScreen.get());
 			const int hintsTab = gui.game.missionBriefing.empty() ? 1 : 2;
 			pressDialog("objectives/tab/" + std::to_string(hintsTab));
 			require(objectives->tab() == InGameObjectivesScreen::HINTS, "Objectives tabs switch by touch");
+			checkModal("hints");
+			require(objectives->panelBounds().h < objectives->presentation().dialog.h * .8,
+				"A short hints page sizes to its content");
 			pressDialog("ok");
 			require(!gui.inGameMenu, "Objectives tabs and footer work by touch");
+			gui.openDialog(GameGUI::IGM_ALLIANCE, std::make_unique<InGameAllianceScreen>(&gui));
+			checkModal("teams");
+			pressDialog("ok");
+			require(!gui.inGameMenu, "Teams footer remains reachable inside the margins");
+			const auto savedHints = gui.game.gameHints;
+			for (int i = 0; i < 24; ++i)
+				gui.game.gameHints.addNewHint("A long mission hint with enough detail to wrap across multiple lines on a phone.", false, 1);
+			GAGCore::userTextScale = 1.5;
+			gui.openDialog(GameGUI::IGM_OBJECTIVES, std::make_unique<InGameObjectivesScreen>(&gui, false));
+			static_cast<InGameObjectivesScreen *>(gui.gameMenuScreen.get())->showTab(InGameObjectivesScreen::HINTS);
+			checkModal("long-hints-large-text");
+			require(gui.activeDialog()->host().find("objectives/scroll")->scrollMaximum() > 0,
+				"Long hints scroll within the inset dialog");
+			pressDialog("ok");
+			gui.game.gameHints = savedHints;
+			gui.openDialog(GameGUI::IGM_ALLIANCE, std::make_unique<InGameAllianceScreen>(&gui));
+			checkModal("teams-large-text");
+			auto *teams = static_cast<InGameAllianceScreen *>(gui.gameMenuScreen.get());
+			const auto chatBefore = teams->getChatMask();
+			pressDialog("ally/3/C");
+			require(teams->getChatMask() == (chatBefore ^ (1u << 3)), "The last rival remains reachable by scrolling at large text size");
+			pressDialog("ally/3/C");
+			pressDialog("ok");
+			GAGCore::userTextScale = 1;
+			if (width == 568)
+			{
+				GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "0", 1);
+				gui.openDialog(GameGUI::IGM_ALLIANCE, std::make_unique<InGameAllianceScreen>(&gui));
+				checkModal("desktop-short-teams");
+				require(gui.activeDialog()->host().find("ally/scroll")->scrollMaximum() > 0,
+					"Short classic Teams dialogs scroll their table and legend");
+				pressDialog("ok");
+				require(!gui.inGameMenu, "Short classic Teams keeps its footer reachable");
+				GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "1", 1);
+			}
+			if (width == 1024)
+			{
+				GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "0", 1);
+				gui.openDialog(GameGUI::IGM_OBJECTIVES, std::make_unique<InGameObjectivesScreen>(&gui, false));
+				checkModal("desktop-objectives");
+				require(gui.activeDialog()->panelBounds().h < gui.activeDialog()->presentation().dialog.h / 2,
+					"Short desktop objectives also size to their content");
+				pressDialog("ok");
+				gui.openDialog(GameGUI::IGM_ALLIANCE, std::make_unique<InGameAllianceScreen>(&gui));
+				checkModal("desktop-teams");
+				pressDialog("ok");
+				GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "1", 1);
+			}
+
 			gui.openDialog(GameGUI::IGM_SAVE,
 						   std::make_unique<LoadSaveDialog>("games", "game", false, tr("[save game]"), "Phone",
 															glob2FilenameToName, glob2NameToFilename));
@@ -2485,6 +2772,13 @@ class GameGUITouchHarness
 			require(!gui.typingInputScreen && gui.orderQueue.empty(),
 					"Closing the chat draft sends no message");
 		}
+
+		for (int i = 1; i < 4; ++i)
+		{
+			delete gui.game.players[i];
+			gui.game.players[i] = dialogPlayers[i];
+		}
+		gui.game.gameHeader = dialogGameHeader;
 
 		{
 			GAGGUI::ScreenStack stack(*gfx);
@@ -2970,6 +3264,12 @@ class GameGUITouchHarness
 			finger(SDL_EVENT_FINGER_UP, 1, start.x, start.y + 2 * tile);
 			settle();
 
+			// Spectators never carry flags: their drag pans the map.
+			globalContainer->liveSpectating = true;
+			require(!gui.touch->grabbableFlag(centre()), "A spectator cannot grab a flag");
+			globalContainer->liveSpectating = false;
+			require(gui.touch->grabbableFlag(centre()) == flag, "The player can grab the flag");
+
 			// Held at the map's edge, the carried flag pans the map and rides along.
 			start = centre();
 			const GAGCore::ViewPoint edge{area.x + 6 * unit, start.y};
@@ -2990,11 +3290,6 @@ class GameGUITouchHarness
 					"The flag lands where the edge pan took it");
 			settle();
 
-			// Spectators never carry flags: their drag pans the map.
-			globalContainer->liveSpectating = true;
-			require(!gui.touch->grabbableFlag(centre()), "A spectator cannot grab a flag");
-			globalContainer->liveSpectating = false;
-			require(gui.touch->grabbableFlag(centre()) == flag, "The player can grab the flag");
 			gui.localTeam->virtualBuildings.remove(flag);
 			gui.localTeam->myBuildings[Building::GIDtoID(flag->gid)] = nullptr;
 			delete flag;
@@ -3056,6 +3351,69 @@ class GameGUITouchHarness
 		};
 		const auto checksum = gui.game.checkSum();
 		require(!gui.touch->scrollAnimating(), "Nothing moves before a gesture");
+		// Tap jitter must not become a fling, even when it crosses the pan slop.
+		for (const auto delta : {ViewPoint{0, 0}, ViewPoint{1, 0}, ViewPoint{3, 0}, ViewPoint{2, 2}})
+		{
+			placeCamera(gui.localTeam->startPosX * 32.0 - 200, gui.localTeam->startPosY * 32.0 - 200);
+			frame(500); // separate taps from the double-tap gesture
+			flick(400, 300, delta.x, delta.y);
+			const auto released = gui.camera;
+			if (delta.x == 3)
+			{
+				gui.drawAll(0);
+				gfx->printScreen("momentum-jitter-released.bmp");
+				gfx->nextFrame();
+			}
+			frame(100);
+			if (delta.x == 3)
+			{
+				gui.drawAll(0);
+				gfx->printScreen("momentum-jitter-later.bmp");
+				gfx->nextFrame();
+			}
+			std::cout << "Jitter travel=" << std::hypot(delta.x, delta.y) * 4
+				<< " coast=" << gui.camera.originX - released.originX << ","
+				<< gui.camera.originY - released.originY << "\n";
+			require(!gui.touch->scrollAnimating(), "Small touch jitter must not launch momentum");
+			require(std::abs(gui.camera.originX - released.originX) < 1e-6 &&
+				std::abs(gui.camera.originY - released.originY) < 1e-6,
+				"A short touch stays at its release position");
+		}
+		// Total path length is not intent: repeated jitter can travel far while
+		// remaining within a small radius of the original contact.
+		frame(500);
+		finger(SDL_EVENT_FINGER_DOWN, 400, 300);
+		for (int i = 0; i < 8; ++i)
+		{
+			frame(16);
+			finger(SDL_EVENT_FINGER_MOTION, i % 2 ? 390 : 410, 300);
+		}
+		finger(SDL_EVENT_FINGER_UP, 390, 300);
+		require(!gui.touch->scrollAnimating(), "Oscillating jitter does not accumulate fling eligibility");
+		for (const auto delta : {ViewPoint{4, 0}, ViewPoint{3, 3}})
+		{
+			flick(400, 300, delta.x, delta.y);
+			require(gui.touch->scrollAnimating(), "A deliberate swipe at the threshold still coasts");
+			// Catching that coast and making a short movement must not inherit
+			// the previous gesture's eligibility.
+			flick(400, 300, 3, 0);
+			require(!gui.touch->scrollAnimating(), "Each touch must independently cross the dead zone");
+		}
+		// Fling intent is measured on the display, even when the same motion
+		// travels very different distances through the world at different zooms.
+		const double originalZoom = gui.camera.zoom;
+		for (double zoom : {gui.camera.minimumZoom(), MapCamera::MAX_ZOOM})
+		{
+			gui.camera.setZoom(zoom, 400, 300);
+			placeCamera(1000, 1000);
+			frame(500);
+			flick(400, 300, 3, 0);
+			require(!gui.touch->scrollAnimating(), "Zoom must not amplify jitter into fling intent");
+			flick(400, 300, 4, 0);
+			require(gui.touch->scrollAnimating(), "Zoom must not shrink a deliberate swipe below the threshold");
+			gui.touch->stopScrolling();
+		}
+		gui.camera.setZoom(originalZoom, 400, 300);
 		// A rightward flick moves the origin left; from 300 px it coasts past zero.
 		placeCamera(300, 300);
 		flick(400, 300, 40, 0);

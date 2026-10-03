@@ -158,6 +158,11 @@ class GameGUITouch
 	StatsLayout statsLayout() const;
 	void drawStats();
 	void drawBuildPalette();
+	bool inspectingResource() const;
+	struct ResourceInfo { std::string name, amount; int sprite = 0; };
+	std::optional<ResourceInfo> resourceInfo() const;
+	GAGCore::ViewRect resourceCloseRect() const;
+	void drawResourceInfo();
 	std::vector<std::pair<std::string, int>> tacticalActions() const;
 	void drawTacticalPanel();
 	void tapBuildPalette(GAGCore::ViewPoint point);
@@ -192,7 +197,7 @@ class GameGUITouch
 	};
 	struct DialRegion
 	{
-		enum Part { Arc, Minus, Plus, Segment, Chip } part = Chip;
+		enum Part { Arc, Minus, Plus, Segment, Proportions, Chip } part = Chip;
 		BuildingAction action;
 		int ring = -1, maximum = 0;
 		double from = 0, to = 0; // Sweep angles covered by the region.
@@ -206,7 +211,8 @@ class GameGUITouch
 	GAGCore::ViewPoint dialActionPoint(int kind, int value, int side) const;
 	void tapDial(Building &building, const DialRegion &region, GAGCore::ViewPoint point);
 	void drawDial();
-	int ratioType = 0; // Unit type whose swarm ratio the dial's inner ring edits.
+	std::array<int, 3> dialRatios() const;
+	void commitRatios(Building &building, const std::array<int, 3> &ratios);
 	int heldActionKind = -1, heldActionValue = 0;
 	std::string heldActionLabel;
 	bool heldActionConfirmation = false;
@@ -243,6 +249,9 @@ class GameGUITouch
 	// the plain scroll variables in step.
 	GAGCore::TrackedScrollAxis panelAxis, actionAxis, tutorialAxis;
 	GAGCore::ScrollMotion mapMotion;
+	// Screen-point displacement, separate from the smaller pan/tap slop.
+	GAGCore::ViewPoint mapDragTravel{};
+	bool mapFlingArmed = false;
 	double tutorialMaximum() const;
 	Uint64 lastStepTime = 0;
 	// Momentum only follows real fingers; the synthetic mouse finger drags.
@@ -256,7 +265,7 @@ class GameGUITouch
 	GAGCore::ViewPoint touchStart{}, touchPoint{};
 	bool touchTravelled = false;
 	bool zoomTapArmed(Uint32 ticks, GAGCore::ViewPoint point) const;
-	bool resetZoom(GAGCore::ViewPoint point);
+	bool zoomIn(GAGCore::ViewPoint point);
 	std::string zoomReadout() const;
 	std::vector<std::pair<SDL_TouchID, SDL_FingerID>> fingers;
 	bool touchActive = false, interfaceGesture = false, dispatching = false;
