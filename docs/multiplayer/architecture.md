@@ -569,10 +569,12 @@ Tests create and drop their own databases on the server named by
 `TEST_DATABASE_URL` (default `postgres://glob2:glob2@127.0.0.1:55432/postgres`).
 CI runs the `platform` job in `.github/workflows/build.yml` against a Postgres
 service whenever `platform/` changes; generated protocol fixtures also select the
-native jobs, which hold the C++ contract tests. The same job runs the web app's
-Playwright suites (`apps/web/e2e`: smoke and axe accessibility checks) against a
-seeded API. The deployed stack is gated separately; see
-[CI for the deployed stack](../hosting/README.md#ci-for-the-deployed-stack).
+native jobs, which hold the C++ contract tests. The web app's Playwright suites
+(`apps/web/e2e`: page smoke tests and axe accessibility checks) run locally with
+`npm run build -w @glob2/web && npm run e2e -w @glob2/web` against a seeded API
+on the test Postgres. The whole deployed stack, including a rated match, has its
+own one-command test; see
+[End-to-end test of the stack](../hosting/README.md#end-to-end-test-of-the-stack).
 
 ## Delivery milestones
 

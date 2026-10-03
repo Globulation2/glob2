@@ -30,8 +30,8 @@ Python standard library only.
   python3 tests/deployment/live_match_e2e.py --origin https://play.example.org \\
       --glob2 build/darwin/client/release/src/glob2 --out artifacts/live-e2e [--psql ...]
 
-CI runs the queue mode against a fresh Compose stack (platform_stack_smoke.py
---match-e2e).
+platform_stack_smoke.py --match-e2e runs the queue mode against a fresh Compose
+stack: the one-command local end-to-end test (docs/hosting/README.md).
 """
 import argparse
 import base64

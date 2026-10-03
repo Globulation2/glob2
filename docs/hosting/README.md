@@ -625,8 +625,10 @@ token's `kid`; each relay registered with the platform under its public URL,
 reachable at `/relay/<id>`, and unknown ids refused; and a `generate-map` job run by the engine agent
 with the real binary, applied by the worker and stored as a blob. It then removes
 the project and its volumes. `--no-build --tag <tag>` reuses built images; `--keep`
-leaves the stack running. `--match-e2e` also plays a rated quick match through
-the stack (below).
+leaves the stack running. CI runs it when `deploy/`, `tests/deployment/`,
+`src/relay/`, migrations or platform dependencies change, and on full runs.
+`--match-e2e` also plays a rated quick match through the stack; see
+[End-to-end test of the stack](#end-to-end-test-of-the-stack).
 
 On a running deployment, the same checks run against the public origin with a
 publicly trusted certificate, the deployed web client and the replica counts in
@@ -659,36 +661,43 @@ that both players' ratings on the queue's ladder changed. `--engine-command`
 replaces `--glob2` with a command prefix, for example a `docker run` of the
 engine-agent image, and `--ca-file` trusts a private CA.
 
-### CI for the deployed stack
+### End-to-end test of the stack
 
-The `platform-stack` job of `.github/workflows/build.yml` gates every pull
-request that changes the deployment (`deploy/`, `tests/deployment/`), the
-platform's server code or schema, platform dependencies, the relay, or the
-engine's online match path (turn protocol, online client, turn client,
-verifier); full runs always include it. It is part of the "Relevant checks
-passed" aggregate, and any failed check fails it. It runs
+One command builds the stack from this checkout, starts it, plays a rated quick
+match through it and tears it down again. It needs a Linux machine with Docker
+(Compose v2) and Python 3; the clients use host networking, so Docker Desktop on
+macOS does not work.
 
 ```sh
-python3 tests/deployment/platform_stack_smoke.py --jobs 4 --log-dir artifacts/platform-stack --match-e2e
+python3 tests/deployment/platform_stack_smoke.py --jobs 8 --log-dir artifacts/stack-e2e --match-e2e
 ```
 
-which builds the images, runs the smoke checks above, and then
-`live_match_e2e.py --mode queue` against the fresh stack: a small rated queue
-(`e2e-ranked`, one 128×128 generated map) on an instance with local sign-in, two
-headless clients run from the engine-agent image (so client, relay and verifier
-share one build and sim version) over the stack's relay, the record upload and
-end report, the verify-match job, and the rating update. Compose logs, the
-smoke results, the clients' logs and results, and the e2e `results.json` are
-uploaded as the `platform-stack-smoke` artifact.
+After the smoke checks above, it runs `live_match_e2e.py --mode queue` against the
+fresh stack:
 
-The engine and relay compile inside BuildKit cache mounts. The job restores them
-from the GitHub Actions cache before the build and saves them after a successful
-run (`tests/deployment/buildkit_cache.py`), so later builds are incremental. A
-missing or broken cache only makes the build cold again.
+1. The instance has local sign-in and a small rated queue (`e2e-ranked`, one
+   128×128 generated map).
+2. Two new local accounts join the queue, get the ranked accept prompt and accept.
+3. Two headless clients (`glob2 --turn-client`) play the match through a relay. They
+   run from the engine-agent image, so client, relay and verifier share one build
+   and sim version. Their per-tick checksums must agree.
+4. Player A quits after 40 s and player B 30 s later. The relay uploads the match
+   record and reports the end.
+5. The verify-match job must judge the match `verified`. The worker must then apply
+   ratings: `rating_status = applied`, and one won and one lost `rating_history` row
+   on the `e2e-ranked` ladder, both with changed μ.
+
+The first run builds every image (about 15 minutes on 4 cores); later runs on the
+same Docker host reuse the BuildKit caches. The match adds about three minutes.
+Everything ends up in the log directory: the compose logs, `results.json` of the
+smoke checks, and under `match-e2e/` the clients' logs, results and checksum
+traces, plus the end-to-end `results.json`. The exit status is 0 only if every
+check passed. Add `--keep` to leave the stack running for inspection.
 
 The web app's browser suites (`platform/apps/web/e2e`: page smoke tests and axe
-accessibility checks on desktop and phone) run in the `platform` job against a
-seeded API.
+accessibility checks on desktop and phone) run separately, against a seeded API:
+`npm run build -w @glob2/web && npm run e2e -w @glob2/web` in `platform/`, with the
+test Postgres running.
 
 ## Example: one virtual machine on Google Cloud
 
