@@ -200,20 +200,20 @@ bool presentationMetrics(ViewportMetrics& metrics,InputCapabilities& input)
     }
     return false;
 }
+// window, document and the clipboard belong to the page. In the threaded runtime
+// this code runs on the application worker, which has none of them, so both calls
+// run on the page's thread, synchronously, while the click that caused them still
+// grants transient activation. If a browser refuses the new tab anyway, the page
+// offers a link the player taps instead (glob2OpenUrl in shell.html).
 bool openUrl(const std::string& url)
 {
     if (url.rfind("https://", 0) != 0 && url.rfind("http://", 0) != 0)
         return false;
-    return EM_ASM_INT({
-        const opened = window.open(UTF8ToString($0), '_blank');
-        if (!opened) return 0;
-        try { opened.opener = null; } catch (error) {}
-        return 1;
-    }, url.c_str());
+    return MAIN_THREAD_EM_ASM_INT({ return Module.glob2OpenUrl(UTF8ToString($0)); }, url.c_str()) != 0;
 }
 bool copyText(const std::string& text)
 {
-    return EM_ASM_INT({
+    return MAIN_THREAD_EM_ASM_INT({
         const value = UTF8ToString($0);
         Module.glob2LastCopy = value;
         // A textarea and execCommand: older browsers and pages without the
