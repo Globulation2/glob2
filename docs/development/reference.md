@@ -137,9 +137,11 @@ python3 test/run_tests.py      # run them; --list, --filter, --tag, --shard
   prefix distinct from their caller to prevent deadlocks. The trusted
   `cancel-superseded.yml` workflow uses `pull_request_target`, checks out only
   default-branch code, and cancels allowlisted event-triggered validation left
-  behind by updates or closed/merged PRs, including forks. It never executes PR
+  behind by updates or closed/merged PRs, including forks. Legacy Steam/App Store
+  PR runs from older workflow definitions are retired even at the current PR head. It never executes PR
   code or cancels manual releases. Its sweep can clear obsolete pending master
-  pushes but protects running master and scheduled runs. Closed-PR caches and old
+  pushes but protects master once any job has begun (including between jobs),
+  even when the workflow API reports it as queued, and protects scheduled runs. Closed-PR caches and old
   master cache generations are reclaimed on closure and in a daily sweep.
 
 For headless games, use the client binary's `--nox <game-file> <steps> <runs>`

@@ -28,6 +28,10 @@ CI_WORKFLOWS = {
     '.github/workflows/steam-windows-package.yml',
     '.github/workflows/thread-sanitizer.yml',
 }
+LEGACY_RELEASE_WORKFLOWS = {
+    '.github/workflows/steam-windows-package.yml',
+    '.github/workflows/mac-app-store.yml',
+}
 CANCELLABLE_EVENTS = {'pull_request', 'push'}
 DEFAULT_BRANCH_EVENTS = {'push'}
 ACTIVE_STATUSES = ('queued', 'in_progress', 'waiting', 'pending', 'requested')
@@ -61,10 +65,13 @@ def select_superseded(runs, heads, current_run_id=None, default_branch='master',
             continue
         if workflow_path(run) not in CI_WORKFLOWS:
             continue
+        if workflow_path(run) in LEGACY_RELEASE_WORKFLOWS and run.get('event') == 'pull_request':
+            selected.append(run)
+            continue
         key = head_key(run)
         on_default = key[1:] == (repository, default_branch) and run.get('event') in DEFAULT_BRANCH_EVENTS
         if on_default:
-            if not include_default_branch or run.get('status') == 'in_progress':
+            if not include_default_branch or (run.get('status') == 'in_progress' or run.get('_execution_started')):
                 continue
             path = workflow_path(run)
             if path not in newest_default or run['id'] > newest_default[path]['id']:
@@ -107,6 +114,27 @@ def active_runs(repo, branch=None):
         for run in gh_pages(query, 'workflow_runs'):
             runs[run['id']] = run
     return list(runs.values())
+
+
+def master_execution_started(repo, run, read=None):
+    """Run status can say queued while jobs execute; any begun work is protected."""
+    read = read or gh_pages
+    attempt = run.get('run_attempt', 1)
+    try:
+        jobs = read(f'repos/{repo}/actions/runs/{run["id"]}/attempts/{attempt}/jobs', 'jobs')
+        return any(job.get('status') == 'in_progress' or job.get('runner_id') or
+                   any(step.get('started_at') for step in job.get('steps', []))
+                   for job in jobs)
+    except (subprocess.CalledProcessError, OSError, ValueError, KeyError, TypeError):
+        # API failure is not evidence that master has never started.
+        return True
+
+
+def protect_started_master(repo, runs, default_branch):
+    for run in runs:
+        if (workflow_path(run) in CI_WORKFLOWS and run.get('event') == 'push' and
+                head_key(run)[1:] == (repo, default_branch) and run.get('status') != 'completed'):
+            run['_execution_started'] = master_execution_started(repo, run)
 
 
 def branch_head(repo, branch):
@@ -152,6 +180,8 @@ def main():
         parser.error('--repo or GITHUB_REPOSITORY is required')
 
     runs = active_runs(args.repo, args.branch)
+    if args.include_default_branch:
+        protect_started_master(args.repo, runs, args.default_branch)
     heads = resolve_heads(args.repo, runs)
     selected = select_superseded(runs, heads, args.current_run_id, args.default_branch, args.repo,
                                  args.include_default_branch)
@@ -160,6 +190,11 @@ def main():
         label = f"{run['id']} {workflow_path(run)} {run['event']} {run['head_branch']}@{run['head_sha'][:9]} ({run['status']})"
         if args.dry_run:
             print(f'would cancel {label}')
+            continue
+        # Recheck just before mutation: allocation may have happened during the sweep.
+        if (run.get('event') == 'push' and head_key(run)[1:] == (args.repo, args.default_branch)
+                and master_execution_started(args.repo, run)):
+            print(f'protected started master {label}')
             continue
         try:
             gh_json('-X', 'POST', f"repos/{args.repo}/actions/runs/{run['id']}/cancel")

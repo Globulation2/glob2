@@ -1,0 +1,17 @@
+{
+  "name": "@glob2/worker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Background work: matchmaker, rating updates, engine-job results and schedules.",
+  "license": "GPL-3.0-or-later",
+  "scripts": {
+    "start": "node src/main.ts"
+  },
+  "dependencies": {
+    "@glob2/core": "0.1.0",
+    "@glob2/db": "0.1.0",
+    "@glob2/protocol": "0.1.0",
+    "kysely": "^0.29.6"
+  }
+}

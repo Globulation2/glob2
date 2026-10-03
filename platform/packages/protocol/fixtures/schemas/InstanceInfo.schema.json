@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:InstanceInfo",
+  "title": "InstanceInfo",
+  "type": "object",
+  "required": [
+    "name",
+    "origin",
+    "realtimeUrl",
+    "supportedSimVersions",
+    "authProviders",
+    "queues",
+    "guestsAllowed"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "maxLength": 128
+    },
+    "origin": {
+      "type": "string",
+      "pattern": "^(https|wss|http|ws)://[^\\s]+$",
+      "maxLength": 2048
+    },
+    "realtimeUrl": {
+      "type": "string",
+      "pattern": "^(https|wss|http|ws)://[^\\s]+$",
+      "maxLength": 2048
+    },
+    "supportedSimVersions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "versionMinor",
+          "netProtocol",
+          "dataHash"
+        ],
+        "properties": {
+          "versionMinor": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 65535,
+            "description": "VERSION_MINOR in src/Version.h (save and simulation format)."
+          },
+          "netProtocol": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 65535,
+            "description": "NET_PROTOCOL_VERSION in src/Version.h."
+          },
+          "dataHash": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$",
+            "description": "Lowercase hex SHA-256 over the build's simulation data files, as computed by the engine."
+          }
+        },
+        "additionalProperties": false,
+        "description": "Identity of a deterministic simulation build."
+      }
+    },
+    "authProviders": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "kind",
+          "displayName"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "kind": {
+            "anyOf": [
+              {
+                "type": "string",
+                "const": "oidc"
+              },
+              {
+                "type": "string",
+                "const": "apple"
+              },
+              {
+                "type": "string",
+                "const": "local"
+              }
+            ]
+          },
+          "displayName": {
+            "type": "string",
+            "maxLength": 64
+          }
+        }
+      }
+    },
+    "queues": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "mode",
+          "rated"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]{0,31}$"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "mode": {
+            "anyOf": [
+              {
+                "type": "string",
+                "const": "1v1"
+              },
+              {
+                "type": "string",
+                "const": "2v2"
+              }
+            ]
+          },
+          "rated": {
+            "type": "boolean"
+          },
+          "aiBackfillSeconds": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    },
+    "guestsAllowed": {
+      "type": "boolean"
+    }
+  },
+  "description": "Public description of a platform instance."
+}

@@ -1,0 +1,25 @@
+{
+  "name": "@glob2/db",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Postgres schema, migrations, typed Kysely access, pub/sub and leader locks.",
+  "license": "GPL-3.0-or-later",
+  "exports": {
+    ".": "./src/index.ts",
+    "./testing": "./test/support.ts"
+  },
+  "bin": {
+    "glob2-migrate": "./src/cli.ts"
+  },
+  "scripts": {
+    "migrate": "node src/cli.ts"
+  },
+  "dependencies": {
+    "kysely": "^0.29.6",
+    "pg": "^8.23.1"
+  },
+  "devDependencies": {
+    "@types/pg": "^8.23.1"
+  }
+}
