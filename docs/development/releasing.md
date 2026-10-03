@@ -1,29 +1,51 @@
 # Release packaging
 
-The public `.github/workflows/release.yml` builds packages without publishing.
-The public desktop publication workflows are mirrored to the owner-controlled,
-public `genixpro/glob2-release` repository. Configure release credentials as
-restricted GitHub environment secrets there. Keep the workflow and packaging
-definitions public here, and mirror only reviewed commits to the release
-repository.
+## The release mirror
+
+Release pipelines run only in the release mirror, the owner-controlled public
+`genixpro/glob2-release` repository. Every release, publication and deployment
+workflow is defined here, in `Globulation2/glob2`, but each of its root jobs
+has a job-level `if:` that requires the mirror's name and numeric repository ID
+(`1397722696`), plus the owner and the expected ref. Anywhere else, including
+this repository and forks, every job is skipped before a runner starts. None of
+these workflows has a pull request trigger.
+`tests/build_system/test_release_guards.py` enforces this for every workflow in
+the release set in `tests/build_system/test_ci_concurrency.py`, and fails if a
+workflow that uses deployment environments, named secrets or write tokens is
+missing from that set. Add a new release workflow to that set and give its root
+jobs the same guard.
+
+The mirror's `master` has exactly the same files as `Globulation2/glob2`
+`master`: each sync is a merge commit whose tree is upstream's, and the mirror
+carries no changes of its own. The mirror's older history has its own merge
+commits, so syncs cannot be fast-forwards, and its `master` refuses force
+pushes. A change needed
+for releasing, including a workflow or packaging fix, is made here first,
+through a normal pull request, and reaches the mirror with the next sync.
+Configure release credentials only as restricted GitHub environment secrets in
+the mirror.
+
+## Desktop publication
+
+The `.github/workflows/release.yml` package build does not publish; the
+publication workflows below call it.
 Run `publish-desktop.yml` manually with the public `vVERSION` tag to publish the
 GitHub release, publish Snap stable, and propose the Flathub update in that
 order. Each channel retains a separate manual workflow for retries; no
 publication workflow runs on ordinary pushes or pull requests.
-Each publication workflow fails before building packages unless it is manually
-dispatched from the release repository's `master` branch by the owner account;
-the same check applies to a re-run's initiator. It then
+Each publication workflow skips every job unless it is manually dispatched
+from the release repository's `master` branch by the owner account; the same
+check applies to a re-run's initiator. It then
 checks its required release-repository secret (and the Flathub fork variable)
-and fails if any are missing. The public `release.yml` remains a build-only
-workflow and does not use publication credentials.
+and fails if any are missing. `release.yml` is a build-only workflow and does
+not use publication credentials.
 The release repository permits only an explicit list of SHA-pinned actions.
 When changing a release workflow's actions, pin each action to a reviewed
 commit and add only that exact reference to the release repository's allowed
 actions list before running it there.
 The selected public `vVERSION` tag supplies the game source for every
 publication build. The release mirror's `master` supplies the reviewed workflow
-and the secrets; its HEAD can differ from the public tag because the mirror has
-owner-only changes. Desktop publication uses `tools/release/release.py check
+and the secrets; its HEAD can be newer than the public tag. Desktop publication uses `tools/release/release.py check
 --tag` to verify the checked-out public source and tag identify the same commit;
 browser publication checks the tag commit and game version directly. Mirror only reviewed public
 commits. Review of workflow changes is essential:
@@ -109,8 +131,8 @@ The release script checks that it contains the build files and essential assets.
 `.gitattributes` omits the historical `debian/` directory from this archive so
 Debian's maintained packaging can supply its own files.
 Installed packages are checked for the executable, desktop integration, game
-data, maps, campaigns and scripts. Build-only runs can be started from a branch;
-publication requires the exact version tag on the checked-out commit. The
+data, maps, campaigns and scripts. Build-only runs (no tag) are dispatched from
+the mirror's `master` like every release workflow; publication requires the exact version tag on the checked-out commit. The
 source checksum on a build-only run is for testing, not a release announcement.
 
 ## Store setup
@@ -238,7 +260,7 @@ rotation, lifecycle, keyboard, touch, and editor results under `artifacts/` for
 review. For each ABI, run `python3 mobile/compare_fdroid_apks.py --arch ABI
 --github-apk GITHUB_APK --fdroid-apk FDROID_APK` and review any native library
 differences against the retained symbol/build records. The daily
-`fdroid-publication.yml` workflow checks F-Droid's package API
+`fdroid-publication.yml` workflow in the release mirror checks F-Droid's package API
 for all three codes after the GitHub release and opens one tracking issue when
 publication remains incomplete after 72 hours.
 

@@ -175,8 +175,8 @@ on `master`:
 the public `Globulation2/glob2` repository stores the workflow and build code for
 review, but dispatching it there cannot build, sign, upload or publish a release.
 The owner syncs the public changes into the public release mirror and starts each
-release there manually. Merge public `master` into the mirror's `master` so
-mirror-only release configuration stays in place. The workflow builds the existing MinGW x64
+release there manually. The mirror's `master` tracks public `master` exactly; see
+[the release mirror](releasing.md#the-release-mirror). The workflow builds the existing MinGW x64
 client, stages its runtime DLLs, game assets and GPL license, creates
 `MicrosoftGame.config`, shell logos and a 1920×1080 splash image, then
 uses the Microsoft GDK to produce an MSIXVC package. With `upload: false`, it
