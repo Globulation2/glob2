@@ -170,6 +170,7 @@ exports.clickSettingsDone = page => exports.clickControl(page, 'done');
 // abandon()), which closes at once. Done after a failed restore fails the same
 // way and offers it.
 exports.clickSettingsCancel = async page => {
+  await control(page, 'done', {enabled: false});
   const offered = await page.evaluate(() => Boolean(glob2Diagnostics.snapshot().controls.cancel));
   if (!offered) await exports.clickControl(page, 'done');
   return exports.clickControl(page, 'cancel');

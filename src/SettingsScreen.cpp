@@ -661,7 +661,8 @@ Element SettingsScreen::build(const Presentation &p)
 	const std::string scrollKey = modal != Modal::None ? "settings/modal" : "settings/" + std::to_string(int(current));
 	auto body = scroll(scrollKey, column(std::move(content), {p.pt(10)}));
 
-	std::string status = failed ? tr("Could not save") : settingsDirty ? tr("Saving…") : restartRequired() ? tr("Saved — restart required") : tr("Changes saved automatically");
+	const bool cannotSave = failed || GAGCore::ApplicationHost::storageRestoreFailed();
+	std::string status = cannotSave ? tr("Could not save") : settingsDirty ? tr("Saving…") : restartRequired() ? tr("Saved — restart required") : tr("Changes saved automatically");
 	std::vector<MenuAction> buttons;
 	if (phonePage())
 	{
@@ -673,8 +674,9 @@ Element SettingsScreen::build(const Presentation &p)
 	{
 		// Every change applies and saves as it is made ("Changes saved
 		// automatically"), so there is nothing for a Cancel to undo: Done closes.
-		// Only a failed save offers leaving without retrying.
-		if (modal == Modal::None && failed)
+		// Only when saving fails (or cannot last: the browser's storage did not
+		// restore) is there a way to leave without trying again.
+		if (modal == Modal::None && cannotSave)
 			buttons.push_back({"cancel", tr("continue"), [this] { abandon(); }});
 		buttons.push_back({"done", tr(modal == Modal::None ? "Done" : "Cancel"), [this] { dismiss(); }, true});
 	}
