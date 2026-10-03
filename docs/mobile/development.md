@@ -33,8 +33,8 @@ uses the portable renderer.
 
 Tapping a resource in the touch HUD opens a compact information card with its
 localized name, resource sprite and current/maximum amount for granular resources.
-It sits opposite the selected thumb. Close dismisses it; choosing Build, Flags or Tools replaces it with that toolbox. A depleted
-resource closes its inspector. Resource cards do not dispatch tactical commands.
+It sits opposite the selected thumb. Close dismisses it; choosing Build, Flags or
+Tools replaces it with that toolbox. A depleted resource closes its inspector. Resource cards do not dispatch tactical commands.
 
 Objectives/Hints and Teams dialogs leave at least 16 screen points around the
 painted panel inside the safe, keyboard-adjusted area. Short objectives and hints
@@ -78,7 +78,8 @@ Painting and placement keep their tool-specific map gestures. Choosing Build,
 Flags or Tools explicitly replaces the current inspector; deferred restoration or
 selection invalidation cannot override that toolbox choice on the next frame.
 The game is playable with one thumb. A completed map tap that does not dismiss
-a panel arms one-finger zoom for the next contact that lands within 300 ms of the release and 24 points of the tap.
+a panel arms one-finger zoom for the next contact that lands within 300 ms of the
+release and 24 points of the tap.
 Dragging that contact vertically zooms about the point where it landed, doubling
 per 180 points of travel, with the factor shown above the finger; releasing it
 without travel doubles the current zoom there, capped at 3×. The tapped world
@@ -191,11 +192,11 @@ that a drag out of the rail places a building rather than navigating back.
 ### Gameplay responsibilities and action flow
 
 - `GameGUITouch` composes explicit bounds, routes input ownership, presents the HUD,
-  and restores the previous palette after explicit inspector closure (an empty-map
-  tap dismisses both). It never draws the desktop
+  and restores the previous palette after explicit building-inspector closure
+  (an empty-map tap dismisses both; read-only cards never restore a palette). It never draws the desktop
   sidebar or forwards touch controls to its pixel hit tests.
 - `GameGUITouchPalette.cpp` reads available building/flag choices and draws artwork
-  in the thumb-corner rail (compact) or the side grid (Spacious). Zone entries enter painting mode instead of placement.
+  in the opposite-thumb rail (compact) or the side grid (Spacious). Zone entries enter painting mode instead of placement.
 - `GameGUITouchView.cpp` draws independently bounded HUD components, the minimap,
   tutorial, tactical panel and contextual headers. It shares primitives, not the
   desktop sidebar composition.
