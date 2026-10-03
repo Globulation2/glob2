@@ -7,7 +7,7 @@ from the map alone. This one asks who is *ahead*, from the state of play, and it
 is the same kind of thing fitted to the same kind of evidence: games whose
 outcome we know, read at a point when the outcome was not yet known.
 
-It is used three ways. The statistics screen shows it. An optional winning
+The model supports three uses. The statistics screen shows it. An optional winning
 condition ends a match once it is sure enough. And the tournament harness can
 turn that condition on to stop playing out games that are already decided.
 
@@ -54,6 +54,10 @@ win; it does not say that building barracks causes victory. A term can be a
 symptom rather than a cause.
 
 ## Where the coefficients come from
+
+The following measurements describe the original calibration campaign. They
+have not been rerun against the current simulation; changes to AI and game rules
+can change calibration and the savings available from early adjudication.
 
 1,110 games, sampled every 512 ticks, giving 131,630 training samples. The games
 are a uniform random draw over all eight AIs, all three formats (1v1, 2v2,
@@ -181,7 +185,6 @@ test asserts it.
 
 ## The winning condition
 
-![The rule in the custom game's Victory section](win-probability/custom-game-rule.png)
 
 Off by default. A normal game is unchanged: the model has no say in the outcome.
 
@@ -196,7 +199,6 @@ Live spectators always see each side's chance under the existing worker and food
 figures, whether the rule is on or off. Allies share one figure, because the model
 rates the alliance. Players do not see the panel during a normal game.
 
-![Each side's chance of winning, under the statistics](win-probability/in-game-panel.png)
 
 The threshold is the only dial:
 

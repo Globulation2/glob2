@@ -21,7 +21,6 @@
 #include "GameGUI.h"
 #include "GameGUITouch.h"
 #include "GameGUIInternal.h"
-#include "WinProbability.h"
 #include "GlobalContainer.h"
 #include "PanelButtonHit.h"
 #include "Player.h"
@@ -924,32 +923,25 @@ void GameGUI::drawWinProbabilities(int x, int y)
 	if (!globalContainer->liveSpectating)
 		return;
 
-	std::vector<int> allianceOf;
-	const std::vector<WinProbability::Slot> slots = WinProbability::slotsOf(game, allianceOf);
-	const std::vector<int> chances = WinProbability::permille(slots);
 
 	Font *font = globalContainer->littleFont;
 	globalContainer->gfx->drawString(x + 4, y, font,
 		Toolkit::getStringTable()->getString("[Win chance]"));
 	const int inc = 14;
 	int row = 0;
-	for (int i = 0; i < game.teamsCount(); i++)
+	const Scene &scene = drawnScene();
+	for (const auto &chance : scene.panels.hud.winChances)
 	{
-		const Team *team = game.teams[i];
-		if (!team)
-			continue;
-		// Allies share one chance, because they win or lose together: the model
-		// rates the alliance, not the player.
-		const int permille = chances[allianceOf[i]];
+		const int permille = chance.permille;
 		const int top = y + 16 + row * inc;
 		// The name is clipped rather than allowed to run into the figure: player
 		// names are arbitrary length and the panel is narrow.
 		const int percentX = x + RIGHT_MENU_WIDTH - RIGHT_MENU_OFFSET - 40;
-		globalContainer->gfx->drawFilledRect(x + 4, top + 3, 8, 8, team->color);
-		globalContainer->gfx->drawString(x + 16, top, font, displayPlayerName(*team).c_str(),
+		globalContainer->gfx->drawFilledRect(x + 4, top + 3, 8, 8, chance.color);
+		globalContainer->gfx->drawString(x + 16, top, font, chance.name.c_str(),
 			percentX - (x + 16) - 4);
 		globalContainer->gfx->drawString(percentX, top, font,
-			FormattableString(slots[allianceOf[i]].alive ? "%0%" : "-")
+			FormattableString(chance.alive ? "%0%" : "-")
 				.arg(permille / 10).c_str());
 		++row;
 	}

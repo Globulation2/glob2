@@ -12,6 +12,7 @@
 #include "Player.h"
 #include "UnitTiming.h"
 #include "TeamStat.h"
+#include "WinProbability.h"
 #include "Unit.h"
 #include "ai/AITelemetry.h"
 #include "render/GameAnimations.h"
@@ -192,6 +193,14 @@ namespace
 			local.prestige, local.unitConversionGained, local.unitConversionLost, local.noMoreBuildingSitesCountdown};
 
 		SceneHud &hud = panels.hud;
+		std::vector<int> allianceOf;
+		const auto slots = WinProbability::slotsOf(game, allianceOf);
+		const auto chances = WinProbability::permille(slots);
+		hud.winChances.clear();
+		for (int t = 0; t < game.teamsCount(); ++t)
+			if (const Team *team = game.teams[t])
+				hud.winChances.push_back({firstPlayerName(game, *team), team->color,
+					chances[allianceOf[t]], slots[allianceOf[t]].alive});
 		hud.totalPrestige = game.totalPrestige;
 		hud.prestigeToReach = game.prestigeToReach;
 		hud.anyPlayerWaited = game.anyPlayerWaited;
