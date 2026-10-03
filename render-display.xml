@@ -1,3 +1,3 @@
 <?xml version='1.0' encoding='utf-8'?>
-<testsuites tests="1" failures="0" errors="0" skipped="0"><testsuite name="MapRenderResize"><testcase classname="MapRenderResize" name="repeated map copies; settings and credits after resizing in OpenGL [display:1920x1200]" time="8.29117" status="run" />
+<testsuites tests="1" failures="0" errors="0" skipped="0"><testsuite name="MapRenderResize"><testcase classname="MapRenderResize" name="repeated map copies; settings and credits after resizing in OpenGL [display:1920x1200]" time="7.48782" status="run" />
   </testsuite></testsuites>

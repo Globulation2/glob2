@@ -1,4 +1,4 @@
-PASS UIPresentation/every screen lays out; navigates and captures at tablet landscape across presentations and insets [display:1600x1400][artifacts][slow] (119.0s)
+PASS UIPresentation/every screen lays out; navigates and captures at tablet landscape across presentations and insets [display:1600x1400][artifacts][slow] (152.5s)
 
-1 passed, 0 failed, 0 skipped (119.0s of test time)
-[run_tests] JUnit report: artifacts/ux-team-review/merge-final/tablet-landscape.xml (1 cases)
+1 passed, 0 failed, 0 skipped (152.5s of test time)
+[run_tests] JUnit report: artifacts/ux-team-review/merge-latest/tablet-landscape.xml (1 cases)

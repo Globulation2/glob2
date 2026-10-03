@@ -1,12 +1,12 @@
 <?xml version='1.0' encoding='utf-8'?>
-<testsuites tests="10" failures="0" errors="0" skipped="0"><testsuite name="CustomGameSetup"><testcase classname="CustomGameSetup" name="custom game screens; captures and translated keys [slow][display:1024x768][artifacts][writes-preferences]" time="68.8413" status="run" />
-  <testcase classname="CustomGameSetup" name="landscape preview performance [display][artifacts]" time="3.48738" status="run" />
-  <testcase classname="CustomGameSetup" name="landscape preview stays responsive [display][artifacts]" time="3.1597" status="run" />
-  </testsuite><testsuite name="EngineSession"><testcase classname="EngineSession" name="momentum uses the SDL clock after session suspension [display][artifacts]" time="1.73411" status="run" />
-  </testsuite><testsuite name="GameGUITouch"><testcase classname="GameGUITouch" name="a touch on or near a flag drags the flag; not the map [display]" time="0.912613" status="run" />
-  <testcase classname="GameGUITouch" name="actual gameplay touch; toroidal pan; preview; confirmation; validation; cancellation and duplicate suppression [display][artifacts][writes-preferences]" time="19.1143" status="run" />
-  <testcase classname="GameGUITouch" name="scaled gameplay dialog input is translated once [display]" time="1.07184" status="run" />
-  <testcase classname="GameGUITouch" name="touch scroll momentum on the map; the HUD palette and the editor [display]" time="1.15127" status="run" />
-  <testcase classname="GameGUITouch" name="unit taps have a zoom independent halo and show unit stats [display][artifacts]" time="2.12343" status="run" />
-  </testsuite><testsuite name="MapPreview"><testcase classname="MapPreview" name="native widget events and custom lobby captures [display][artifacts]" time="1.97844" status="run" />
+<testsuites tests="10" failures="0" errors="0" skipped="0"><testsuite name="CustomGameSetup"><testcase classname="CustomGameSetup" name="custom game screens; captures and translated keys [slow][display:1024x768][artifacts][writes-preferences]" time="69.4692" status="run" />
+  <testcase classname="CustomGameSetup" name="landscape preview performance [display][artifacts]" time="2.9959" status="run" />
+  <testcase classname="CustomGameSetup" name="landscape preview stays responsive [display][artifacts]" time="2.85517" status="run" />
+  </testsuite><testsuite name="EngineSession"><testcase classname="EngineSession" name="momentum uses the SDL clock after session suspension [display][artifacts]" time="1.85241" status="run" />
+  </testsuite><testsuite name="GameGUITouch"><testcase classname="GameGUITouch" name="a touch on or near a flag drags the flag; not the map [display]" time="1.04363" status="run" />
+  <testcase classname="GameGUITouch" name="actual gameplay touch; toroidal pan; preview; confirmation; validation; cancellation and duplicate suppression [display][artifacts][writes-preferences]" time="20.4684" status="run" />
+  <testcase classname="GameGUITouch" name="scaled gameplay dialog input is translated once [display]" time="1.34613" status="run" />
+  <testcase classname="GameGUITouch" name="touch scroll momentum on the map; the HUD palette and the editor [display]" time="1.2211" status="run" />
+  <testcase classname="GameGUITouch" name="unit taps have a zoom independent halo and show unit stats [display][artifacts]" time="2.30701" status="run" />
+  </testsuite><testsuite name="MapPreview"><testcase classname="MapPreview" name="native widget events and custom lobby captures [display][artifacts]" time="2.0379" status="run" />
   </testsuite></testsuites>

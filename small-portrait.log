@@ -1,4 +1,4 @@
-PASS UIPresentation/every screen lays out; navigates and captures at small portrait across presentations and insets [display:1600x1400][artifacts][slow] (46.9s)
+PASS UIPresentation/every screen lays out; navigates and captures at small portrait across presentations and insets [display:1600x1400][artifacts][slow] (45.1s)
 
-1 passed, 0 failed, 0 skipped (46.9s of test time)
-[run_tests] JUnit report: artifacts/ux-team-review/merge-final/small-portrait.xml (1 cases)
+1 passed, 0 failed, 0 skipped (45.1s of test time)
+[run_tests] JUnit report: artifacts/ux-team-review/merge-latest/small-portrait.xml (1 cases)

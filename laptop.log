@@ -1,4 +1,4 @@
-PASS UIPresentation/every screen lays out; navigates and captures at laptop across presentations and insets [display:1600x1400][artifacts][slow] (123.9s)
+PASS UIPresentation/every screen lays out; navigates and captures at laptop across presentations and insets [display:1600x1400][artifacts][slow] (158.7s)
 
-1 passed, 0 failed, 0 skipped (123.9s of test time)
-[run_tests] JUnit report: artifacts/ux-team-review/merge-final/laptop.xml (1 cases)
+1 passed, 0 failed, 0 skipped (158.7s of test time)
+[run_tests] JUnit report: artifacts/ux-team-review/merge-latest/laptop.xml (1 cases)

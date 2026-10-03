@@ -1,4 +1,4 @@
-PASS UIPresentation/every screen lays out; navigates and captures at fullhd across presentations and insets [display:2200x1400][artifacts][slow] (131.1s)
+PASS UIPresentation/every screen lays out; navigates and captures at fullhd across presentations and insets [display:2200x1400][artifacts][slow] (185.0s)
 
-1 passed, 0 failed, 0 skipped (131.1s of test time)
-[run_tests] JUnit report: artifacts/ux-team-review/merge-final/fullhd.xml (1 cases)
+1 passed, 0 failed, 0 skipped (185.0s of test time)
+[run_tests] JUnit report: artifacts/ux-team-review/merge-latest/fullhd.xml (1 cases)

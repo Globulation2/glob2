@@ -1,20 +1,21 @@
 <?xml version='1.0' encoding='utf-8'?>
-<testsuites tests="18" failures="0" errors="0" skipped="0"><testsuite name="EngineSession"><testcase classname="EngineSession" name="incremental sessions; editor decisions; fertility equivalence and cancellation [writes-preferences]" time="2.82466" status="run" />
-  <testcase classname="EngineSession" name="serial sessions retain chat text across skipped GUI frames" time="0.698014" status="run" />
-  </testsuite><testsuite name="MapPreview"><testcase classname="MapPreview" name="map database messages and download previews" time="0.230922" status="run" />
-  <testcase classname="MapPreview" name="preview geometry" time="0.121152" status="run" />
-  <testcase classname="MapPreview" name="thumbnail codec; envelope limits and corrupt input" time="0.509673" status="run" />
-  </testsuite><testsuite name="MapRenderResize"><testcase classname="MapRenderResize" name="repeated map copies; settings and credits after resizing in software rendering" time="0.65209" status="run" />
-  </testsuite><testsuite name="SceneExtract"><testcase classname="SceneExtract" name="overlay maps match a direct computation and refresh per 25-tick window or type change" time="0.001979" status="run" />
-  <testcase classname="SceneExtract" name="published scene retains old entity fields while subsequent scenes reflect changes" time="0.003035" status="run" />
-  <testcase classname="SceneExtract" name="smooth unit motion advances the drawn delta within the current action only" time="0.00221" status="run" />
-  <testcase classname="SceneExtract" name="stale selection generation never selects a replacement occupying the same gid" time="0.002285" status="run" />
-  <testcase classname="SceneExtract" name="units and buildings resolve by gid with their drawn fields and the selection" time="0.001956" status="run" />
+<testsuites tests="19" failures="0" errors="0" skipped="0"><testsuite name="EngineSession"><testcase classname="EngineSession" name="incremental sessions; editor decisions; fertility equivalence and cancellation [writes-preferences]" time="2.22523" status="run" />
+  <testcase classname="EngineSession" name="serial sessions retain chat text across skipped GUI frames" time="0.60192" status="run" />
+  </testsuite><testsuite name="MapPreview"><testcase classname="MapPreview" name="map database messages and download previews" time="0.18939" status="run" />
+  <testcase classname="MapPreview" name="preview geometry" time="0.099834" status="run" />
+  <testcase classname="MapPreview" name="thumbnail codec; envelope limits and corrupt input" time="0.55207" status="run" />
+  </testsuite><testsuite name="MapRenderResize"><testcase classname="MapRenderResize" name="repeated map copies; settings and credits after resizing in software rendering" time="0.65183" status="run" />
+  </testsuite><testsuite name="SavegameSafety"><testcase classname="SavegameSafety" name="autosave defaults; atomic and background writes; truncated and malformed loads; imports and campaign progress [save-format][writes-preferences]" time="10.4935" status="run" />
+  </testsuite><testsuite name="SceneExtract"><testcase classname="SceneExtract" name="overlay maps match a direct computation and refresh per 25-tick window or type change" time="0.001976" status="run" />
+  <testcase classname="SceneExtract" name="published scene retains old entity fields while subsequent scenes reflect changes" time="0.002874" status="run" />
+  <testcase classname="SceneExtract" name="smooth unit motion advances the drawn delta within the current action only" time="0.001978" status="run" />
+  <testcase classname="SceneExtract" name="stale selection generation never selects a replacement occupying the same gid" time="0.001756" status="run" />
+  <testcase classname="SceneExtract" name="units and buildings resolve by gid with their drawn fields and the selection" time="0.00185" status="run" />
   </testsuite><testsuite name="EditorWidgetLayout"><testcase classname="EditorWidgetLayout" name="ResizeKeepsClickCoordinatesAndEdges" time="0" status="run" />
     <testcase classname="EditorWidgetLayout" name="RepeatedResizeDoesNotDrift" time="0" status="run" />
     <testcase classname="EditorWidgetLayout" name="OrdinaryRectanglesStayAbsolute" time="0" status="run" />
-  </testsuite><testsuite name="MobileInput"><testcase classname="MobileInput" name="zoom anchoring; seams; rotation; safe layouts; gestures and cancellation" time="0.000103" status="run" />
+  </testsuite><testsuite name="MobileInput"><testcase classname="MobileInput" name="zoom anchoring; seams; rotation; safe layouts; gestures and cancellation" time="0.000104" status="run" />
     <testcase classname="MobileInput" name="opaque SDL3 touch identifiers retain their high bits" time="0" status="run" />
-  </testsuite><testsuite name="PerformanceTelemetry"><testcase classname="PerformanceTelemetry" name="moments; nesting; work/sleep/present separation; budgets; jitter; sampling; identity; capture and disabled control" time="0.000308" status="run" />
-    <testcase classname="PerformanceTelemetry" name="a bound simulation collector is absorbed with thread attribution, actors and budget" time="0.000611" status="run" />
+  </testsuite><testsuite name="PerformanceTelemetry"><testcase classname="PerformanceTelemetry" name="moments; nesting; work/sleep/present separation; budgets; jitter; sampling; identity; capture and disabled control" time="0.000201" status="run" />
+    <testcase classname="PerformanceTelemetry" name="a bound simulation collector is absorbed with thread attribution, actors and budget" time="0.000444" status="run" />
   </testsuite></testsuites>

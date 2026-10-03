@@ -1,4 +1,4 @@
-PASS MapRenderResize/repeated map copies; settings and credits after resizing in OpenGL [display:1920x1200] (8.4s)
+PASS MapRenderResize/repeated map copies; settings and credits after resizing in OpenGL [display:1920x1200] (7.6s)
 
-1 passed, 0 failed, 0 skipped (8.4s of test time)
-[run_tests] JUnit report: artifacts/ux-team-review/merge-final/render-display.xml (1 cases)
+1 passed, 0 failed, 0 skipped (7.6s of test time)
+[run_tests] JUnit report: artifacts/ux-team-review/merge-latest/render-display.xml (1 cases)
