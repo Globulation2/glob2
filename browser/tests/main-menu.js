@@ -171,7 +171,10 @@ exports.clickSettingsDone = page => exports.clickControl(page, 'done');
 // way and offers it.
 exports.clickSettingsCancel = async page => {
   await control(page, 'done', {enabled: false});
-  const offered = await page.evaluate(() => Boolean(glob2Diagnostics.snapshot().controls.cancel));
+  // A save that has just failed shows "continue" at the next layout.
+  let offered = false;
+  for (const end = Date.now() + 2000; !offered && Date.now() < end; await page.waitForTimeout(100))
+    offered = await page.evaluate(() => Boolean(glob2Diagnostics.snapshot().controls.cancel));
   if (!offered) await exports.clickControl(page, 'done');
   return exports.clickControl(page, 'cancel');
 };

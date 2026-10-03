@@ -592,7 +592,8 @@ Element OnlineHubScreen::accountChip(const Presentation &p)
 	ButtonOptions chip;
 	chip.flat = true;
 	chip.alignLeft = true;
-	std::vector<Element> cells{initial, column(std::move(words), {0}),
+	// Narrow phones drop the initial so the menu button stays on screen.
+	std::vector<Element> cells{p.compact() ? nullptr : initial, column(std::move(words), {0}),
 							   button("account/menu", "", [this] { openAccountMenu(!accountMenu); },
 									  {.flat = true, .tooltip = tr("[hub account menu]"), .accessibleLabel = tr("[hub account menu]"), .icon = uiIcon(UIIcon::More)})};
 	if (guest && !p.compact() && !data.displayName.empty())
@@ -677,7 +678,8 @@ Element OnlineHubScreen::roomList(const Presentation &p, bool phone)
 		rows.push_back(paragraph(tr("[hub no rooms]"), {FontRole::Support, true}));
 	std::vector<Element> head{expanded(heading(tr("[hub open rooms]")))};
 	if (!phone)
-		head.push_back(segments("rooms/filter", {tr("[hub all rooms]"), tr("[hub free seat]")}, roomFilter, [this](int v) { roomFilter = v; invalidate(); }));
+		// A width that holds both labels on one line ("Free seat" used to wrap, H-1).
+		head.push_back(width(p.textPt(220), segments("rooms/filter", {tr("[hub all rooms]"), tr("[hub free seat]")}, roomFilter, [this](int v) { roomFilter = v; invalidate(); })));
 	ButtonOptions reload;
 	reload.icon = uiIcon(UIIcon::Refresh);
 	reload.accessibleLabel = tr("[hub refresh]");
@@ -882,8 +884,8 @@ Element OnlineHubScreen::build(const Presentation &p)
 			page.push_back(t);
 		if (!overlay && p.landscape())
 			// Landscape: the thumb block becomes the right-hand (thumb-side) rail.
-			page.push_back(expanded(ThumbSide::left() ? row({width(p.pt(250), thumbBlock(p)), expanded(body)}, {p.pt(10), CrossAlign::End})
-													  : row({expanded(body), width(p.pt(250), thumbBlock(p))}, {p.pt(10), CrossAlign::End})));
+			page.push_back(expanded(ThumbSide::left() ? row({width(p.pt(250), scroll("hub/thumb", thumbBlock(p))), expanded(body)}, {p.pt(10), CrossAlign::End})
+													  : row({expanded(body), width(p.pt(250), scroll("hub/thumb", thumbBlock(p)))}, {p.pt(10), CrossAlign::End})));
 		else
 		{
 			page.push_back(expanded(body));
@@ -916,7 +918,9 @@ Element OnlineHubScreen::build(const Presentation &p)
 	rightColumn.push_back(leaderboardTeaser(p));
 	Element body;
 	if (overlay)
-		body = center(maxWidth(p.pt(480), overlay));
+		// Scrolls rather than squeezing its buttons or overlapping the footer when
+		// large text makes it taller than the window.
+		body = center(maxWidth(p.pt(480), scroll("hub/overlay", overlay)));
 	else
 		body = adaptive([left = column(std::move(leftColumn), {p.pt(12)}), right = column(std::move(rightColumn), {p.pt(8)})](const LayoutContext &ctx, Size available) -> Element {
 			if (available.w < ctx.presentation.pt(860))
