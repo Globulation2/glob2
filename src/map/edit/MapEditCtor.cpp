@@ -3,6 +3,7 @@
 // Copyright (C) 2006 Bradley Arsenault
 
 #include <GAG.h>
+#include "ExperimentalFeatures.h"
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "MapEdit.h"
@@ -98,9 +99,16 @@ MapEdit::MapEdit()
 	explorationflag = new BuildingSelectorWidget(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+5+decX, 128+32+7, 32, 32), "flag view", "explorationflag", "set place building selection explorationflag", "explorationflag", false);
 	warflag = new BuildingSelectorWidget(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+5+42+decX, 128+32+7, 32, 32), "flag view", "warflag", "set place building selection warflag", "warflag", false);
 	clearingflag = new BuildingSelectorWidget(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+5+84+decX, 128+32+7, 32, 32), "flag view", "clearingflag", "set place building selection clearingflag", "clearingflag", false);
-	forbiddenZone = new ZoneSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 216, 32, 32), "flag view", "forbidden zone", "select forbidden zone", ZoneSelector::ForbiddenZone);
-	guardZone = new ZoneSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+40+decX, 216, 32, 32), "flag view", "guard zone", "select guard zone", ZoneSelector::GuardingZone);
-	clearingZone = new ZoneSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+80+decX, 216, 32, 32), "flag view", "clearing zone", "select clearing zone", ZoneSelector::ClearingZone);
+	// Farm areas are an experiment: the editor offers the brush only to a player
+	// who has it switched on, since only their games will read the mask.
+	const bool farmZone = globalContainer->settings.experiments.has(ExperimentId::FarmAreas);
+	const int zoneCount = farmZone ? 4 : 3;
+	const int panelLeft = globalContainer->gfx->getW()-RIGHT_MENU_WIDTH;
+	forbiddenZone = new ZoneSelector(*this, widgetRectangle(panelLeft+mapEditZoneButtonX(0, zoneCount), 216, 32, 32), "flag view", "forbidden zone", "select forbidden zone", ZoneSelector::ForbiddenZone);
+	guardZone = new ZoneSelector(*this, widgetRectangle(panelLeft+mapEditZoneButtonX(1, zoneCount), 216, 32, 32), "flag view", "guard zone", "select guard zone", ZoneSelector::GuardingZone);
+	clearingZone = new ZoneSelector(*this, widgetRectangle(panelLeft+mapEditZoneButtonX(2, zoneCount), 216, 32, 32), "flag view", "clearing zone", "select clearing zone", ZoneSelector::ClearingZone);
+	if (farmZone)
+		farmingZone = new ZoneSelector(*this, widgetRectangle(panelLeft+mapEditZoneButtonX(3, zoneCount), 216, 32, 32), "flag view", "farming zone", "select farm zone", ZoneSelector::FarmingZone);
 	deleteButton = new BlueButton(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH + 8+decX, 216+40, 112, 16), "flag view", "delete button", "select delete objects", "[delete]");
 	zoneBrushSelector = new BrushSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+decX, 216+65, BrushTool::WIDTH, BrushTool::HEIGHT), "flag view", "zone brush selector", "handle zone click", brush);
 	worker = new UnitSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 385, 38, 38), "flag view", "worker selector", "select worker", WORKER);
@@ -117,6 +125,8 @@ MapEdit::MapEdit()
 	addWidget(forbiddenZone);
 	addWidget(guardZone);
 	addWidget(clearingZone);
+	if (farmingZone)
+		addWidget(farmingZone);
 	addWidget(deleteButton);
 	addWidget(zoneBrushSelector);
 	addWidget(worker);

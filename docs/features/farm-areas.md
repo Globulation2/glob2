@@ -16,6 +16,9 @@ farm keep itself clear of what it does not grow.
 - Switch on **Settings → Experiments → Farm areas**, then start or host a new
   game. The flag panel's zone strip gains a fourth, green button; the touch brush
   bar and flag palette gain a **Farm** choice. `<a>-<w>` selects it from the keyboard.
+- With the setting on, the map editor (desktop and phone) also offers the farm
+  brush, with the same refusal of ground that cannot grow. Maps do not carry
+  experiments: a painted farm only takes effect in games that have the experiment.
 - The brush refuses ground nothing can grow on. A farm on grass is a wheat farm
   and a farm on water is an alga farm; the terrain decides, so there is no extra
   setting.
@@ -104,9 +107,8 @@ A refused tile is never part of a field, so it cannot connect two patches.
 - **Growth.** `Map::growResources` does not read the farm mask.
 - **Clearing the touched tile.** Clearing paths call `Map::decResource` on the
   tile they touch and never go through `takeHarvest`.
-- **The AIs**, the **map editor** and **scripts**. No AI paints farm areas, the
-  editor has no farm brush (it shows and preserves a painted mask), and the
-  JavaScript order API has no farm area type. These are follow-ups if the
+- **The AIs** and **scripts**. No AI paints farm areas, and the JavaScript order
+  API has no farm area type. These are follow-ups if the
   experiment graduates, along with high-resolution frames for the `area-farm`
   overlay, which renders at classic resolution when HD artwork is on.
 
