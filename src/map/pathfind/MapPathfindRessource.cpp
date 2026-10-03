@@ -12,7 +12,6 @@
 
 // Resource pathfinding for units (pathfindResource, pathfindRandom)
 
-#ifndef YOG_SERVER_ONLY
 bool Map::pathfindResource(int teamNumber, Uint8 resourceType, int swimClass, int x, int y, int *dx, int *dy, bool *stopWork, Building *target)
 {
 	PERF_SCOPE_TIME(PathResource);
@@ -113,4 +112,3 @@ void Map::pathfindRandom(Unit *unit)
 		assert(false);
 	}
 }
-#endif  // !YOG_SERVER_ONLY

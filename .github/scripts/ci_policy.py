@@ -159,5 +159,5 @@ def browser_matrix(selected, paths, complete=False):
     # not repeat unrelated presentation/storage test files.
     return [dict(name=f'{browser} compatibility', browsers=browser,
                  command=(('GLOB2_FIREFOX_HEADED=1 ' if browser == 'firefox' else '') +
-                          f'xvfb-run -a npx playwright test determinism.spec.js' + (' multiplayer.spec.js' if selected['deployment'] else '') + f' --project={browser}'))
+                          f'xvfb-run -a npx playwright test determinism.spec.js --project={browser}'))
             for browser in ('chromium', 'firefox', 'webkit')]

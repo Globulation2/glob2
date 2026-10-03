@@ -18,8 +18,7 @@
 # service that uses it.
 #
 # Configuration: deploy/.env (copy .env.example) and deploy/instance.yaml
-# (copy platform/instance.example.yaml). The legacy YOG stack is
-# deploy/compose.legacy.yaml until the M9 cutover.
+# (copy platform/instance.example.yaml).
 name: glob2-platform
 
 x-hardening: &hardening

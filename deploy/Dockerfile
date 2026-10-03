@@ -1,16 +1,14 @@
 # syntax=docker/dockerfile:1.7
 #
-# Images for the self-hosted stack (deploy/compose.yaml) and, until the YOG
-# cutover (M9), the legacy YOG stack (deploy/compose.legacy.yaml).
+# Images for the self-hosted stack (deploy/compose.yaml).
 #
 #   target        image                         contents
 #   platform      glob2-platform                platform-api, platform-worker and the operator CLI
 #   engine-agent  glob2-engine-agent:<simver>   engine-agent + headless glob2 + data (one per sim version)
 #   relay         glob2-relay                   glob2-relay
 #   caddy         glob2-caddy                   Caddy + Caddyfile + built apps/web
-#   server/proxy  legacy YOG lobby/router and its proxy
 #
-# Build stages: source → cpp-base → relay-build / build (legacy); engine-source
+# Build stages: source → cpp-base → relay-build; engine-source
 # → engine-build; node-deps → web-build / platform-runtime-deps.
 
 ARG NODE_IMAGE=node:22-bookworm-slim
@@ -37,20 +35,6 @@ WORKDIR /source
 FROM cpp-deps AS cpp-base
 COPY --from=source / /source
 RUN source-identity
-
-# Legacy YOG lobby and router (until M9).
-FROM cpp-base AS build
-ARG JOBS=4
-ARG TARGETARCH
-ENV GLOB2_SDL3_PREFIX=/source/build/sdl3/prefix
-RUN --mount=type=cache,id=glob2-server-build-${TARGETARCH},target=/source/build,sharing=locked \
-    python3 scons/sdl3_dependencies.py --prefix "$GLOB2_SDL3_PREFIX" --work /source/build/sdl3/sources --jobs ${JOBS} && \
-    scons role=server release=1 -j${JOBS} && \
-    scons role=router release=1 -j${JOBS} && \
-    mkdir -p /output && \
-    cp build/linux/server/release/src/glob2-server build/linux/router/release/src/glob2-router /output/ && \
-    cp -a build/sdl3/prefix/lib/libSDL3* /output/ && \
-    cp -a build/sdl3/prefix/share/licenses /output/licenses
 
 FROM cpp-base AS relay-build
 ARG JOBS=4
@@ -79,7 +63,7 @@ ARG GLOB2_SIM_VERSION=
 COPY --from=engine-source / /source
 COPY deploy/sim_version.py /usr/local/bin/glob2-sim-version
 RUN source-identity
-# Like the legacy server image: the pinned SDL3 family is built into a prefix
+# The pinned SDL3 family is built into a prefix
 # and shipped next to the binary, which finds it through $ORIGIN/../lib/glob2.
 ENV GLOB2_SDL3_PREFIX=/source/build/sdl3/prefix
 RUN --mount=type=cache,id=glob2-engine-build-${TARGETARCH},target=/source/build,sharing=locked \
@@ -202,30 +186,9 @@ USER 10001:10001
 ENTRYPOINT ["/usr/local/bin/glob2-engine-agent-entrypoint"]
 CMD ["node", "apps/engine-agent/src/main.ts"]
 
-# Legacy YOG proxy (until M9) and base of the new one.
-FROM ${CADDY_IMAGE} AS proxy
+FROM ${CADDY_IMAGE} AS caddy
 RUN setcap -r /usr/bin/caddy && chown -R 10001:10001 /data /config
 USER 10001:10001
-
-FROM proxy AS caddy
 COPY deploy/Caddyfile /etc/caddy/Caddyfile
 COPY --from=web-build /app/platform/apps/web/dist /srv/web
 # The WebAssembly client is mounted at /srv/play (see docs/hosting/README.md).
-
-FROM ${UBUNTU_IMAGE} AS server
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates python3 libssl3t64 zlib1g libfreetype6 libvorbisfile3 libspeex1 \
-    libfribidi0 libpcre3 libepoxy0 \
-    && rm -rf /var/lib/apt/lists/* \
-    && useradd --uid 10001 --create-home glob2 \
-    && mkdir -p /var/lib/glob2 && chown glob2:glob2 /var/lib/glob2
-COPY --from=build /output/glob2-server /usr/local/bin/
-COPY --from=build /output/glob2-router /usr/local/bin/
-COPY --from=build /output/libSDL3* /usr/local/lib/glob2/
-COPY --from=build /output/licenses /usr/local/share/licenses
-COPY data /opt/glob2/data
-COPY deploy/healthcheck.py /usr/local/bin/glob2-healthcheck
-ENV GLOB2_USER_DATA_DIR=/var/lib/glob2
-USER 10001:10001
-WORKDIR /opt/glob2
-CMD ["glob2-server"]

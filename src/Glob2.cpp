@@ -12,6 +12,9 @@
 #endif
 
 #include <ApplicationHost.h>
+#ifndef __EMSCRIPTEN__
+#include <SDL3_net/SDL_net.h>
+#endif
 #include <cstdlib>
 #ifdef GLOB2_MOBILE
 #include "mobile/MobilePaths.h"
@@ -20,12 +23,7 @@
 #endif
 #include "Glob2.h"
 #include "GlobalContainer.h"
-#include "YOGServer.h"
-#ifdef GLOB2_ROUTER_ONLY
-#include "YOGServerRouter.h"
-#endif
 
-#ifndef YOG_SERVER_ONLY
 
 #include "CampaignMenuScreen.h"
 #include "CampaignMainMenu.h"
@@ -47,10 +45,6 @@
 #include "SettingsScreen.h"
 #include <StringTable.h>
 #include "Utilities.h"
-#include "YOGClient.h"
-#include "YOGLoginScreen.h"
-#include "YOGServerRouter.h"
-#include "YOGClientRouterAdministrator.h"
 
 
 #include <Stream.h>
@@ -66,7 +60,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#endif  // !YOG_SERVER_ONLY
 
 #ifndef WIN32
 #	include <unistd.h>
@@ -74,10 +67,8 @@
 #	include <time.h>
 #endif
 
-#ifndef YOG_SERVER_ONLY
 #include "FrontendTheme.h"
 #include "MapCommand.h"
-#endif
 
 using std::shared_ptr;
 
@@ -97,7 +88,6 @@ using std::shared_ptr;
 GlobalContainer *globalContainer=NULL;
 
 
-#ifndef YOG_SERVER_ONLY
 
 int Glob2::runNoX()
 {
@@ -184,10 +174,8 @@ int Glob2::runTestMapGeneration()
 	}
 	return 0;
 }
-#endif  // !YOG_SERVER_ONLY
 
 
-#ifndef YOG_SERVER_ONLY
 // Headless tooling: dump a map's wheat layout and team start positions as
 // ASCII, to sanity-check AI wheat-protection field geometry. Reuses the real
 // Game::load path so the data matches what the engine sees. Not a gameplay feature.
@@ -390,11 +378,9 @@ static int dumpWheatPlan(const std::string& mapName, int team)
 	}
 	return 0;
 }
-#endif  // !YOG_SERVER_ONLY
 
 int Glob2::run(int argc, char *argv[])
 {
-#ifndef YOG_SERVER_ONLY
 	// --generate-map has a native file/report interface and a structured job interface.
 	// The latter is selected explicitly by --output-dir; preserve native CLI parsing.
 	bool structuredMap = false;
@@ -406,23 +392,11 @@ int Glob2::run(int argc, char *argv[])
 	if(scriptCommand>=0)return scriptCommand;
 	const int headless = runHeadlessCommand(argc, argv);
 	if (headless >= 0) return headless;
-#endif
 	srand(time(NULL));
 
 	globalContainer=new GlobalContainer();
 	globalContainer->parseArgs(argc, argv);
 	globalContainer->load();
-#ifdef GLOB2_CHINA_RELEASE
-	if (globalContainer->hostServer || globalContainer->hostRouter || globalContainer->adminRouter)
-	{
-		std::cerr << "The China client does not run public lobby or router services.\n";
-		delete globalContainer;
-		globalContainer = nullptr;
-		return 1;
-	}
-#endif
-
-#ifndef YOG_SERVER_ONLY
 	// Headless tooling hook (AI wheat-protection sanity check): -dump-resources <map>
 	for (int ai = 1; ai + 1 < argc; ai++)
 		if (strcmp(argv[ai], "-dump-resources") == 0)
@@ -441,7 +415,6 @@ int Glob2::run(int argc, char *argv[])
 			delete globalContainer;
 			return ret;
 		}
-#endif  // !YOG_SERVER_ONLY
 
 #ifndef __EMSCRIPTEN__
 	if ( !NET_Init() )
@@ -453,37 +426,6 @@ int Glob2::run(int argc, char *argv[])
 #endif
 
 
-#ifdef GLOB2_ROUTER_ONLY
-	YOGServerRouter router;
-	int routerResult = router.run();
-	delete globalContainer;
-	return routerResult;
-#endif
-	if (globalContainer->hostServer)
-	{
-		const char* externalRouter = std::getenv("GLOB2_EXTERNAL_ROUTER");
-		YOGServer server(YOGRequirePassword, YOGMultipleGames,
-		    !(externalRouter && std::string(externalRouter) == "1"));
-		int rc = server.run();
-		delete globalContainer;
-		return rc;
-	}
-
-// Glob2::run ends here for server.
-#ifndef YOG_SERVER_ONLY
-
-	if (globalContainer->hostRouter)
-	{
-		YOGServerRouter router;
-		int rc = router.run();
-		return rc;	
-	}
-	if(globalContainer->adminRouter)
-	{
-		YOGClientRouterAdministrator admin;
-		return admin.execute();
-	}
-	
 	if (globalContainer->runTestGames)
 	{
 		int ret=runTestGames();
@@ -511,7 +453,6 @@ int Glob2::run(int argc, char *argv[])
     });
     return HOSTED_RUN;
 
-#endif  // !YOG_SERVER_ONLY
 
 	return 0;
 }
@@ -539,7 +480,7 @@ int main(int argc, char *argv[])
 	setvbuf(stderr, NULL, _IOLBF, 0);
 	setvbuf(stdout, NULL, _IOLBF, 0);
 
-#if defined(__APPLE__) && !defined(YOG_SERVER_ONLY) && !defined(GLOB2_MOBILE)
+#if defined(__APPLE__) && !defined(GLOB2_MOBILE)
 	// Map tools resolve input and output paths relative to the caller.
 	if (!(argc > 1 && (isMapCommand(argv[1]) || std::string(argv[1])=="--check-script" || std::string(argv[1])=="--attach-map-script")))
 	{

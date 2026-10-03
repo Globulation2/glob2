@@ -61,9 +61,8 @@ unchanged. All integers are big-endian, as in `GAGCore::BinaryOutputStream`.
 `BinaryOutputStream::writeText` encoding: a `u32` length followed by the bytes.
 
 Turn messages use the reserved message-type range `0xA0`–`0xBF`, which is assigned
-explicitly in `NetMessageType.h`. Legacy YOG message ids are numbered implicitly and
-can never reach this range, so deleting YOG messages at cutover does not renumber the
-turn protocol. `NetMessage::getNetMessage` decodes turn messages too, so a
+explicitly in `NetMessageType.h`; the YOG lobby messages that once used the low
+values were deleted at the cutover without touching it. `NetMessage::getNetMessage` decodes turn messages too, so a
 `NetConnection` can carry them. The relay and `TurnSession` use the narrower
 `TurnCodec::decode`, which accepts only turn messages.
 

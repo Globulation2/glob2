@@ -19,8 +19,8 @@ class Map;
 
 //! "Checksum not yet set" sentinel for Order::gameCheckSum. The Order is
 //! sent before the receiving end has computed its post-tick checksum, so
-//! this value means "skip the cross-check this tick". See Order.cpp:9,
-//! MultiplayerGame.cpp:522, NetEngine.cpp:158, 211, 217-219.
+//! this value means "skip the cross-check this tick". See Order.cpp and
+//! NetEngine::flushAllOrders.
 static constexpr Uint32 ORDER_CHECKSUM_NONE = static_cast<Uint32>(-1);
 
 //! "Sender unset" sentinel for Order::sender (set by NetGame::getOrder()
@@ -42,9 +42,7 @@ static constexpr Sint32 ORDER_CREATE_NO_FLAG_RADIUS = -1;
 static constexpr int NET_FRAME_LENGTH_PREFIX_BYTES = 2;
 
 //! Maximum chat-message text length (including NUL terminator) used by
-//! MessageOrder when validating wire-side text payloads, and matched by
-//! the MultiplayerGameScreen TextInput widget's max-length.
-//! See OrderMisc.cpp:37, 73; MultiplayerGameScreen.cpp:115.
+//! MessageOrder when validating wire-side text payloads. See OrderMisc.cpp.
 static constexpr int ORDER_TEXT_MESSAGE_MAX_LEN = 256;
 
 //! Maximum width or height (in tiles) for the bounding box of an
@@ -408,7 +406,7 @@ class OrderAlterArea:public OrderModify
 {
 public:
 	OrderAlterArea() = default;
-	#ifndef YOG_SERVER_ONLY
+	#ifndef GLOB2_ORDER_CODEC_ONLY
 	OrderAlterArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map);
 	#endif
 	//! An explicit row-major mask over the width x height box whose top-left
@@ -470,7 +468,7 @@ class OrderAlterForbidden:public OrderAlterArea
 {
 public:
 	OrderAlterForbidden() = default;
-	#ifndef YOG_SERVER_ONLY
+	#ifndef GLOB2_ORDER_CODEC_ONLY
 	OrderAlterForbidden(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map) : OrderAlterArea(teamNumber, type, acc, map) { }
 	#endif
 	OrderAlterForbidden(Uint8 teamNumber, Uint8 type, Sint16 centerX, Sint16 centerY, Sint16 width, Sint16 height,
@@ -486,7 +484,7 @@ class OrderAlterGuardArea:public OrderAlterArea
 {
 public:
 	OrderAlterGuardArea() = default;
-	#ifndef YOG_SERVER_ONLY
+	#ifndef GLOB2_ORDER_CODEC_ONLY
 	OrderAlterGuardArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map) : OrderAlterArea(teamNumber, type, acc, map) { }
 	#endif
 	OrderAlterGuardArea(Uint8 teamNumber, Uint8 type, Sint16 centerX, Sint16 centerY, Sint16 width, Sint16 height,
@@ -502,7 +500,7 @@ class OrderAlterClearArea:public OrderAlterArea
 {
 public:
 	OrderAlterClearArea() = default;
-	#ifndef YOG_SERVER_ONLY
+	#ifndef GLOB2_ORDER_CODEC_ONLY
 	OrderAlterClearArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map) : OrderAlterArea(teamNumber, type, acc, map) { }
 	#endif
 	OrderAlterClearArea(Uint8 teamNumber, Uint8 type, Sint16 centerX, Sint16 centerY, Sint16 width, Sint16 height,

@@ -13,7 +13,7 @@ class ScreenStack;
 }
 
 // Owns a LAN room: shows progress while a guest connects to the host, then the room
-// (MultiplayerGameScreen on the LanRoom backend). A hosted room is ready at once.
+// (RoomScreen on the LanRoom backend). A hosted room is ready at once.
 // When the room ends with an explanation (the host left, a refusal, a lost
 // connection), the screen shows it before returning.
 class LANSessionScreen : public Glob2UI::Screen

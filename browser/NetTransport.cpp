@@ -214,20 +214,3 @@ std::unique_ptr<NetTransport> makeNetTransport(const NetTlsConfig&, NetMessageMo
 std::unique_ptr<NetTransportListener> makeNetTransportListener(const NetListenConfig&) {
     throw std::runtime_error("Browser LAN hosting is unavailable");
 }
-
-#include "ServerControl.h"
-struct ServerControl::Impl {};
-ServerControl::ServerControl(const std::string&, unsigned short) { throw std::runtime_error("Native server required"); }
-ServerControl::~ServerControl() = default;
-void ServerControl::update(const ServerStatus&) {}
-void ServerControl::installSignals() {}
-bool ServerControl::shutdownRequested() { return false; }
-struct ServerDataLock::Impl {};
-ServerDataLock::ServerDataLock(const std::string&) { throw std::runtime_error("Native server required"); }
-ServerDataLock::~ServerDataLock() = default;
-
-std::string configuredYogEndpoint(const std::string&) {
-    char* value = reinterpret_cast<char*>(MAIN_THREAD_EM_ASM_PTR({
-        return stringToNewUTF8(globalThis.glob2Config?.yogEndpoint || ('wss://' + location.host + '/yog'));
-    })); std::string result(value); std::free(value); return result;
-}

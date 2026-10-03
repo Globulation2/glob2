@@ -30,8 +30,6 @@
 %0 ﻣﻦ ﺍﻟﻮﺣﺪﺍﺕ ﻣﺴﺘﻮﻳﺎﺗﻬﺎ ﻣﻨﺨﻔﻀﺔ
 [%0% Uploaded]
 ﺗﻢ ﺭﻓﻊ %0%
-[%0's game]
-ﻟﻌﺒﺔ %0
 [%0's team unit got converted to your team]
 ﺗﺤﻮﻟﺖ ﻭﺣﺪﺓ ﻣﻦ ﻓﺮﻳﻖ %0 ﺇﻟﻰ ﻓﺮﻳﻘﻚ
 [abreaviation explanation A]
@@ -48,8 +46,6 @@ V: ﺇﺗﺎﺣﺔ ﺍﻟﺮﺅﻳﺔ ﻟﺠﻤﻴﻊ ﺍﻟﻤﺒﺎﻧﻲ
 ﺃﺿِﻒ ﺧﺎﺭﻃﺔ
 [add shortcut]
 ﺃﺿِﻒ ﺍﺧﺘﺼﺎﺭًﺍ
-[Add]
-ﺃﺿِﻒ
 [AI Descriptions]
 ﺃﻭﺻﺎﻑ ﺍﻵﻟﻴﻴﻦ
 [AI]
@@ -124,8 +120,6 @@ alt-%0
 ﺍﻟﺤﻔﻆ ﺍﻟﺘﻠﻘﺎﺋﻲ
 [available lan games]
 ﺃﻟﻌﺎﺏ ﺍﻟﺸﺒﻜﺔ ﺍﻟﺪﺍﺧﻠﻴﺔ ﺍﻟﻤﺘﺎﺣﺔ
-[awaiting players]
-ﺑﺎﻧﺘﻈﺎﺭ ﺍﻟﻼﻋﺒﻴﻦ
 [away:]
 بعيدا:
 [Back]
@@ -140,8 +134,6 @@ backspace
 ﺛﻜﻨﺔ
 [beach size]
 ﺣﺠﻢ ﺍﻟﺸﺎﻃﺊ
-[Blocked Players]
-ﺍﻟﻼﻋﺒﻮﻥ ﺍﻟﻤﻤﻨﻮﻋﻮﻥ
 [break]
 break
 [briefing]
@@ -172,8 +164,6 @@ break
 ﺗﻌﺬﺭ ﺍﻻﺗﺼﺎﻝ، ﺗﻌﺬﺭ ﺇﻳﺠﺎﺩ ﻣﻀﻴﻒ
 [Can't host game, port %0 in use]
 ﺗﻌﺬﺭ ﺍﻟﺘﻀﻴﻴﻒ، ﺍﻟﻤﻨﻔﺬ %0 ﻗﻴﺪ ﺍﻻﺳﺘﺨﺪﺍﻡ
-[Can't join game, game doesn't exist]
-ﺗﻌﺬﺭ ﺍﻻﻧﻀﻤﺎﻡ ﺇﻟﻰ ﺍﻟﻠﻌﺒﺔ، ﺍﻟﻠﻌﺒﺔ ﻏﻴﺮ ﻣﻮﺟﻮﺩﺓ
 [Can't join game, game has started]
 ﺗﻌﺬﺭ ﺍﻻﻧﻀﻤﺎﻡ ﺇﻟﻰ ﺍﻟﻠﻌﺒﺔ، ﺑﺪﺃﺕ ﺍﻟﻠﻌﺒﺔ
 [Can't join game, game is full]
@@ -240,8 +230,6 @@ control-%0
 ﻋﺪﺩ ﺍﻟﻔﻮﻫﺎﺕ
 [crater lakes terrain]
 ﺑﺤﻴﺮﺍﺕ ﻓﻮﻫﺎﺕ
-[create game]
-ﺃﻧﺸﺊ ﻟﻌﺒﺔ
 [create map]
 ﺃﻧﺸﺊ ﺧﺎﺭﻃﺔ
 [credits]
@@ -290,14 +278,6 @@ control-%0
 ﻻ ﻳﺤﻤﻞ ﺷﻴﺌًﺎ
 [down]
 ﺃﺳﻔﻞ
-[Download Map]
-ﻧﺰِّﻝ ﺍﻟﺨﺎﺭﻃﺔ
-[Download Maps]
-ﻧﺰِّﻝ ﺧﺮﺍﺋﻂ
-[downloaded %0]
-ﻧُﺰِّﻝ %0
-[downloading map]
-ﻳﻨﺰِّﻝ ﺍﻟﺨﺎﺭﻃﺔ
 [edit map]
 ﺣﺮِّﺭ ﺍﻟﺨﺎﺭﻃﺔ
 [editing map]
@@ -308,10 +288,6 @@ control-%0
 ﺍﻟﻤﺤﺮﺭ
 [end]
 end
-[Enter your nickname :]
-ﺃﺩﺧِﻞ ﻛﻨﻴﺘﻚ:
-[Enter your password :]
-ﺃﺩﺧِﻞ ﻛﻠﻤﺔ ﺍﻟﺴﺮ:
 [enter]
 ﺇﺩﺧﺎﻝ
 [equals]
@@ -468,12 +444,8 @@ insert
 ﺍﻟﻮﻇﺎﺋﻒ
 [join a game]
 ﺍﻧﻀﻢ ﺇﻟﻰ ﻟﻌﺒﺔ
-[join]
-ﺍﻧﻀﻢ
 [keyboard settings]
 ﺇﻋﺪﺍﺩﺍﺕ ﻟﻮﺣﺔ ﺍﻟﻤﻔﺎﺗﻴﺢ
-[kick]
-ﺍﻃﺮﺩ
 [lan]
 ﻟﻌﺒﺔ ﺷﺒﻜﺔ ﺩﺍﺧﻠﻴﺔ
 [language incomplete]
@@ -484,8 +456,6 @@ ar
 ﺍﻟﻠﻐﺔ
 [language]
 ﺍﻟﻌﺮﺑﻴﺔ
-[Leave Game]
-ﻏﺎﺩﺭ ﺍﻟﻠﻌﺒﺔ
 [left meta]
 مفتاح ميتا الأيسر
 [left super]
@@ -510,12 +480,6 @@ ar
 ﺣﻤﻞ ﺍﻟﻨﺺ
 [load]
 ﺣﻤِّﻞ
-[loading map list]
-ﻳﺤﻤﻞ ﻻﺋﺤﺔ ﺍﻟﺨﺮﺍﺋﻂ ...
-[Lobby]
-ﺍﻟﺼﺎﻟﺔ
-[login]
-ﻟُﺞ
 [look around]
 ﺍﻧﻈﺮ ﺣﻮﻟﻚ
 [Lost : %0 has more prestige than you]
@@ -534,30 +498,14 @@ ar
 ﺍﻟﻮﺻﻒ
 [Map Discovered]
 ﺍﻟﺨﺎﺭﻃﺔ ﻣﻜﺘﺸَﻔﺔ
-[Map download failure: lost connection]
-ﻓﺸﻞ ﺗﻨﺰﻳﻞ ﺍﻟﺨﺎﺭﻃﺔ: ﻓُﻘﺪ ﺍﻻﺗﺼﺎﻝ ﺑYOG.
-[Map name: %0]
-ﺍﺳﻢ ﺍﻟﺨﺎﺭﻃﺔ: %0.
 [map name]
 ﺍﻻﺳﻢ
-[map rated]
-ﺍﻟﺨﺎﺭﻃﺔ ﻣﻘﻴﻤﺔ
 [map script]
 ﻧﺺ ﺍﻟﺨﺎﺭﻃﺔ
 [map size x]
 ﻋﺮﺽ ﺍﻟﺨﺎﺭﻃﺔ
 [map size y]
 ﻃﻮﻝ ﺍﻟﺨﺎﺭﻃﺔ
-[Map upload failure: connection lost]
-ﻓﺸﻞ ﺭﻓﻊ ﺍﻟﺨﺎﺭﻃﺔ: ﻓُﻘﺪ ﺍﻻﺗﺼﺎﻝ ﺑYOG.
-[Map upload failure: map name in use]
-ﻓﺸﻞ ﺭﻓﻊ ﺍﻟﺨﺎﺭﻃﺔ: ﺍﺳﻢ ﺍﻟﺨﺎﺭﻃﺔ ﻣﺴﺘﺨﺪَﻡ.
-[Map upload failure: unknown reason]
-ﻓﺸﻞ ﺭﻓﻊ ﺍﻟﺨﺎﺭﻃﺔ. ﺍﻟﺴﺒﺐ ﻣﺠﻬﻮﻝ.
-[Map Upload: Author Name]
-ﺍﺳﻢ ﺍﻟﺼﺎﻧﻊ
-[Map Upload: Waiting for reply]
-ﺑﺎﻧﺘﻈﺎﺭ ﺭﺩ
 [mark map]
 ﻭﺿﻊ ﻋﻼﻣﺔ ﻋﻠﻰ ﺍﻟﺨﺮﻳﻄﺔ ﻟﻠﺤﻠﻔﺎﺀ
 [market explanation 2]
@@ -584,8 +532,6 @@ meta-%0
 ﺣﻤﻠﺔ ﺟﺪﻳﺪﺓ
 [new map]
 ﺧﺎﺭﻃﺔ ﺟﺪﻳﺪﺓ
-[nick taken]
-ﻧﻌﺘﺬﺭ ﻛﺜﻴﺮًﺍ ﻭﻟﻜﻦ ﺍﻻﺳﻢ ﺍﻟﺬﻱ ﺍﺧﺘﺮﺗﻪ ﻣﺘﺴﺨﺪَﻡ ﻣﺴﺒﻘًﺎ ﻋﻠﻰ ﺧﺎﺩﻭﻡ freenode، ﻭﻟﻜﻨﻚ ﺳﺘﺴﺘﻄﻴﻊ ﺍﻟﺘﺤﺪﺙ ﻓﻘﻂ ﺧﻼﻝ YOG
 [no fullscreen]
 * ﻻ ﻳﺘﻮﻓﺮ ﻓﻲ ﻃﻮﺭ ﻣﻞء ﺍﻟﺸﺎﺷﺔ
 [No Hints]
@@ -598,16 +544,8 @@ meta-%0
 ﻣﻨﺎﻃﻖ ﻋﺪﻡ ﺍﻟﻨﻤﻮ
 [No]
 ﻻ
-[Not Enough Ratings]
-ﻻ ﺗﺘﻮﻓﺮ ﺗﻘﻴﻴﻤﺎﺕ ﻛﺎﻓﻴﺔ
-[not ready]
-ﻏﻴﺮ ﻣﺴﺘﻌﺪ
 [Number Of Buildings]
 ﻋﺪﺩ ﺍﻟﻤﺒﺎﻧﻲ
-[number of players: %0 (%1 AI)]
-ﻋﺪﺩ ﺍﻟﻼﻋﺒﻴﻦ: %0 (%1 ﻣﻦ ﺍﻵﻟﻴﻴﻦ)
-[number of teams: %0]
-ﻋﺪﺩ ﺍﻟﻔﺮﻕ: %0
 [number of teams]
 ﻋﺪﺩ ﺍﻟﻔﺮﻕ
 [Number Of Units]
@@ -666,8 +604,6 @@ meta-%0
 ﺍﻟﻠﻌﺒﺔ ﻣﺘﻮﻗﻔﺔ
 [player name]
 ﺍﺳﻢ ﺍﻟﻼﻋﺐ
-[player rating %0]
-ﺗﻘﻴﻴﻢ ﺍﻟﻼﻋﺐ: %0
 [players]
 ﺍﻟﻼﻋﺒﻮﻥ
 [please wait]
@@ -706,34 +642,20 @@ print screen
 ﻣﻴﺪﺍﻥ ﺳﺒﺎﻕ
 [range]
 ﺍﻟﻨﻄﺎﻕ
-[Rated %0]
-ﻣﻘﻴﻤﺔ ﺑ%0
 [ratios]
 ﺍﻟﻨِﺴَﺐ
-[ready?]
-ﻣﺴﺘﻌﺪ؟
-[refresh map list]
-ﺃﻋِﺪ ﺗﺤﻤﻴﻞ ﻗﺎﺋﻤﺔ ﺍﻟﺨﺮﺍﺋﻂ
-[Register]
-ﺳﺠِّﻞ
 [remember unit]
 ﺣﻔﻆ ﺃﻋﺪﺍﺩ ﺍﻟﻮﺣﺪﺍﺕ
-[Remember YOG password localy]
-ﺗﺬﻛَّﺮ ﻛﻠﻤﺔ ﺍﻟﺴﺮ ﻣﺤﻠﻴًﺎ.
 [remove map]
 ﺃﺯِﻝ ﺍﻟﺨﺎﺭﻃﺔ
 [remove shortcut]
 ﺃﺯِﻝ ﺍﻻﺧﺘﺼﺎﺭ
-[Remove]
-ﺃﺯِﻝ
 [repair building]
 ﺍﺑﺪﺃ ﺃﻭ ﺃﻭﻗﻒ ﺍﻟﺘﺮﻣﻴﻢ
 [repair]
 ﺭﻣِّﻢ
 [repeat area]
 ﻋﺪﺩ ﻣﺮﺍﺕ ﺗﻜﺮﺍﺭ ﻣﻨﻈﺮ ﺍﻷﺭﺽ
-[Repeat your password :]
-ﻛﺮِّﺭ ﻛﻠﻤﺔ ﺍﻟﺴﺮ:
 [replay ended]
 ﺍﻧﺘﻬﺖ ﺍﻹﻋﺎﺩﺓ
 [restore default shortcuts]
@@ -866,14 +788,6 @@ shift-%0
 ﺍﻟﻌﺮﺽ
 [smoothing]
 ﺍﻟﺘﻨﻌﻴﻢ
-[sort by name]
-ﺍﻻﺳﻢ
-[sort by rating]
-ﺍﻟﺘﻘﻴﻴﻢ
-[sort by size]
-ﺍﻟﺤﺠﻢ
-[Sort By]
-ﺍﻓﺮﺯ ﺑﺤﺴﺐ
 [space]
 ﺍﻟﻤﺴﺎﻓﺔ
 [start mission]
@@ -906,8 +820,6 @@ shift-%0
 ﻋﻨﺼﺮ ﺩﻓﺎﻋﻲ
 [stonewall]
 ﺣﺎﺋﻂ ﺣﺠﺮﻱ
-[submit rating]
-ﺍﺭﻓﻊ ﺍﻟﺘﻘﻴﻴﻢ
 [svr hostname]
 ﺍﺳﻢ ﺍﻟﻤﻀﻴﻒ
 [swamp terrain]
@@ -1004,10 +916,6 @@ tab
 ﺗﻢ ﺑﻨﺎء ﺳﻮﻕ
 [the market is under attack]
 ﻳﺘﻌﺮﺽ ﺳﻮﻕ ﻟﻠﻬﺠﻮﻡ!
-[The player %0 has joined YOG]
-ﺍﻧﻀﻢ %0 ﺇﻟﻰ ﺷﺒﻜﺔ YOG.
-[The player %0 has left YOG]
-ﺗﺮﻙ %0 ﺷﺒﻜﺔ YOG.
 [the racetrack is finished]
 ﺗﻢ ﺑﻨﺎء ﻣﻴﺪﺍﻥ ﺳﺒﺎﻕ
 [the racetrack is under attack]
@@ -1096,10 +1004,6 @@ tab
 ﺍﻓﺘﺮﺍﺿﻴﺎﺕ ﺍﻟﺘﺮﻗﻴﺔ
 [upgrade]
 ﺭﻕِّ
-[Upload Map]
-ﺍﺭﻓﻊ ﺍﻟﺨﺎﺭﻃﺔ
-[upload map]
-ﺍﺭﻓﻊ ﺧﺎﺭﻃﺔ
 [username]
 ﺍﺳﻢ ﺍﻟﻤﺴﺘﺨﺪﻡ
 [Version]
@@ -1112,8 +1016,6 @@ tab
 ﺑﺎﻧﺘﻈﺎﺭ %0
 [waiting for key]
 ﺑﺎﻧﺘﻈﺎﺭ ﺍﻟﻤﻔﺘﺎﺡ ...
-[Waiting]
-ﺑﺎﻻﻧﺘﻈﺎﺭ
 [Walk]
 ﺍﻟﻤﺸﻲ
 [warflag explanation 2]
@@ -1160,50 +1062,8 @@ tab
 ﺟﺮﻳﺢ
 [Yes]
 ﻧﻌﻢ
-[YESTS_CONNECTING]
-ﻳﺆﺳﺲ ﺍﻻﺗﺼﺎﻝ ﺑﻤﺨﺪﻡ YOG...
-[YESTS_CONNECTION_LOST]
-ﻓُﻘﺪ ﺍﺗﺼﺎﻟﻚ ﺑYOG.
-[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
-ﺭﻓﺾ ﻣﺨﺪﻡ YOG ﺍﻻﺗﺼﺎﻝ ﻷﻥ ﺍﺳﻢ ﺍﻟﻤﺴﺘﺨﺪﻡ ﻫﺬﺍ ﻣﺴﺠﻞ ﻓﻌﻠًﺎ. ﺇﻥ ﻛﺎﻥ ﻫﺬﺍ ﺍﻻﺳﻢ ﻟﻚ ﻓﺄﺯﻝ ﺍﻟﺘﺤﺪﻳﺪ ﻋﻦ ﺍﻟﺨﻴﺎﺭ "ﺳﺠِّﻞ ﻣﺴﺘﺨﺪﻡ YOG ﺟﺪﻳﺪ ﺑﻜﻠﻤﺔ ﺳﺮ".
-[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
-ﺭﻓﺾ ﻣﺨﺪﻡ YOG ﺍﻻﺗﺼﺎﻝ ﻷﻥ ﻛﻠﻤﺔ ﺍﻟﺴﺮ ﺍﻟﻤﻘﺪﻣﺔ ﻟﻢ ﺗﻜﻦ ﺻﺤﻴﺤﺔ.
-[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-ﺭﻓﺾ ﻣﺨﺪﻡ YOG ﺍﻻﺗﺼﺎﻝ ﻷﻧﻪ ﻻ ﺗﻮﺟﺪ ﻛﻠﻤﺔ ﺳﺮ ﻻﺳﻢ ﺍﻟﻤﺴﺘﺨﺪﻡ ﻫﺬﺍ ﺑﻌﺪ. ﺭﺑﻤﺎ ﺗﻮﺩ ﺗﺴﺠﻴﻞ ﺍﺳﻢ ﺍﻟﻤﺴﺘﺨﺪﻡ ﻟﻚ، ﺇﻥ ﻛﺎﻥ ﺍﻷﻣﺮ ﻛﺬﻟﻚ ﻓﻌﻠﻴﻚ ﺗﻔﻌﻴﻞ ﺍﻟﺨﻴﺎﺭ "ﺳﺠِّﻞ ﻣﺴﺘﺨﺪﻡ YOG ﺟﺪﻳﺪ ﺑﻜﻠﻤﺔ ﺳﺮ" ﻗﺒﻞ ﺍﻻﺗﺼﺎﻝ. ﺳﺘﺤﺘﺎﺝ ﻟﺘﻔﻌﻴﻞ ﻫﺬﺍ ﺍﻟﺨﻴﺎﺭ ﻓﻲ ﺍﻟﻤﺮﺓ ﺍﻷﻭﻟﻰ ﻓﻘﻂ.
-[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
-ﺭﻓﺾ ﻣﺨﺪﻡ YOG ﺍﻻﺗﺼﺎﻝ ﻷﻥ ﻋﻨﻮﺍﻥ IP ﻫﺬﺍ ﻣﺤﻈﻮﺭ ﻣﺆﻗﺘًﺎ. ﻋﻠﻴﻚ ﺃﻥ ﺗﻨﺘﻈﺮ ﺑﺼﺒﺮ ﺣﺘﻰ ﻳﻨﺘﻬﻲ ﺍﻟﺤﻈﺮ ﺃﻭ ﺃﻥ ﺗﺘﻮﺍﺻﻞ ﻣﻊ ﺍﻟﻤﺪﺭﺍء.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 ﺭﻓﺾ ﻣﺨﺪﻡ YOG ﺍﻻﺗﺼﺎﻝ ﻷﻥ ﻋﻤﻴﻞ ﻟﻌﺒﺔ ﺷﻘﺎﻟﺐ ٢ ﻟﺪﻳﻚ ﻗﺪﻳﻢ. ﻳُﺮﺟﻰ ﺍﻟﺤﺼﻮﻝ ﻋﻠﻰ ﺁﺧﺮ ﻧﺴﺨﺔ ﻣﻦ www.globulation2.org ﻟﻠﻌﺐ ﻋﻠﻰ ﺍﻹﻧﺘﺮﻧﺖ.
-[YESTS_CONNECTION_REFUSED_UNEXPLAINED]
-ﺭﻓﺾ ﻣﺨﺪﻡ YOG ﺍﻻﺗﺼﺎﻝ ﺑﻼ ﺗﻔﺴﻴﺮ!
-[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
-ﺭﻓﺾ ﻣﺨﺪﻡ YOG ﺍﻻﺗﺼﺎﻝ ﻷﻥ ﺍﺳﻢ ﺍﻟﻤﺴﺘﺨﺪﻡ ﺍﻟﻤﻄﻠﻮﺏ ﻣﺴﺘﺨﺪﻡ ﻣﻦ ﻗِﺒﻞ ﺷﺨﺺ ﺁﺧﺮ.
-[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
-ﺭﻓﺾ ﻣﺨﺪﻡ YOG ﺍﻻﺗﺼﺎﻝ ﻷﻥ ﺍﺳﻢ ﺍﻟﻤﺴﺘﺨﺪﻡ ﻫﺬﺍ ﻣﺤﻈﻮﺭ. ﻳُﺮﺟﻰ ﺍﻟﺘﻮﺍﺻﻞ ﻣﻊ ﺍﻟﻤﺪﺭﺍء.
-[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
-ﺭﻓﺾ ﻣﺨﺪﻡ YOG ﺍﻻﺗﺼﺎﻝ ﻷﻥ ﺍﺳﻢ ﺍﻟﻤﺴﺘﺨﺪﻡ ﻏﻴﺮ ﺻﺎﻟﺢ. ﻳﺠﺐ ﺃﻥ ﻻ ﻳﺤﺘﻮﻱ ﺍﺳﻢ ﺍﻟﻤﺴﺘﺨﺪﻡ ﺳﻮﻯ ﻋﻠﻰ ﺍﻷﺣﺮﻑ، ﻭﺍﻷﺭﻗﺎﻡ، ﻭﺍﻟﺸﺮﻃﺎﺕ ﺍﻟﺴﻔﻠﻰ.
-[YESTS_CREATED]
-ﻧﻈﺎﻡ ﺍﻻﺗﺼﺎﻝ ﺟﺎﻫﺰ ﻟﻼﺗﺼﺎﻝ ﺑﻤﺨﺪﻡ YOG.
-[YESTS_PASSWORDS_DONT_MATCH]
-ﻻ ﺗﺘﻔﻖ ﻛﻠﻤﺘﺎ ﺍﻟﺴﺮ ﺍﻟﻤﻘﺪﻣﺘﺎﻥ. ﻳُﺮﺟﻰ ﺇﻋﺎﺩﺓ ﺇﺩﺧﺎﻟﻬﻤﺎ.
-[YESTS_UNABLE_TO_CONNECT]
-ﺗﻌﺬﺭ ﺍﻻﺗﺼﺎﻝ. ﻳﺒﺪﻭ ﺃﻥ ﻣﺨﺪﻡ YOG ﻣﻌﻄﻞ.
-[yog block command help]
-ﺍﻷﻣﺮ /block <ﺍﺳﻢ ﺍﻟﻼﻋﺐ>    ﻳﻤﻨﻊ ﻫﺬﺍ ﺍﻷﻣﺮ ﺍﻟﻼﻋﺒﻴﻦ، ﻓﻼ ﺗﺮﻯ ﻛﺘﺎﺑﺎﺗﻬﻢ ﺛﺎﻧﻴﺔً
-[yog block command player %0 already blocked]
-ﺍﻟﻼﻋﺐ %0 ﻣﻤﻨﻮﻉ ﺳﺎﺑﻘًﺎ
-[yog block command player %0 blocked]
-ﻣُﻨﻊ ﺍﻟﻼﻋﺐ %0
-[yog block command player %0 not found]
-ﺗﻌﺬﺭ ﺇﻳﺠﺎﺩ ﺍﻟﻼﻋﺐ %0
-[yog command header]
-ﺃﻭﺍﻣﺮ YOG ﺍﻟﻤﺘﺎﺣﺔ ﺣﺎﻟﻴًﺎ ﻫﻲ:
-[yog command unknown]
-ﺃﻣﺮ ﻣﺠﻬﻮﻝ.
-[yog help command help]
-ﺍﻷﻣﺮ /help    ﻳﻈﻬﺮ ﺭﺳﺎﻟﺔ ﺍﻟﻤﺴﺎﻋﺪﺓ ﻫﺬﻩ
-[yog]
-ﺷﺒﻜﺔ YsagoonOnlineGaming
 [you have lost]
 ﻟﻘﺪ ﺧﺴﺮﺕ!
 [you have won]
@@ -1212,12 +1072,8 @@ tab
 ﻟﻘﺪ ﻃُﺮﺩﺕ ﻣﻦ ﺍﻟﻠﻌﺒﺔ
 [Your %0 are under attack]
 ﻳﺘﻌﺮﺽ %0 ﻟﻠﻬﺠﻮﻡ!
-[Your IP address was temporarily banned]
-ﺣُﻈﺮ ﻋﻨﻮﺍﻥ IP ﺍﻟﺨﺎﺹ ﺑﻚ ﻣﺆﻗﺘًﺎ. ﻳُﺮﺟﻰ ﺍﻻﻧﺘﻈﺎﺭ ﺑﺼﺒﺮ ﺣﺘﻰ ﻳﻨﺘﻬﻲ ﺍﻟﺤﻈﺮ ﺃﻭ ﺗﻮﺍﺻﻞ ﻣﻊ ﺍﻟﻤﺪﺭﺍء.
 [Your unit got converted to %0's team]
 ﺗﺤﻮﻟﺖ ﻭﺣﺪﺗﻚ ﺇﻟﻰ ﻓﺮﻳﻖ %0
-[Your username was banned]
-ﺣُﻈﺮ ﺍﺳﻢ ﺍﻟﻤﺴﺘﺨﺪﻡ ﺍﻟﺨﺎﺹ ﺑﻚ. ﻳُﺮﺟﻰ ﺍﻟﺘﻮﺍﺻﻞ ﻣﻊ ﺍﻟﻤﺪﺭﺍء ﻟﺘﻐﻴﻴﺮ ﻫﺬﺍ.
 [game speed]
 ﺳﺮﻋﺔ ﺍﻟﻠﻌﺒﺔ
 [decrease game speed]
@@ -3048,8 +2904,6 @@ Emoji
 الخروج دون حفظ
 [campaign import failed]
 ملف تقدم غير صالح أو إصدار حملة مختلف
-[network release mismatch]
-بروتوكولا العميل والخادم مختلفان. ثبّت نفس إصدار Glob2 المثبت على الخادم.
 [settings continue]
 متابعة
 [settings save failed]
@@ -3412,8 +3266,6 @@ Emoji
 %0 %1
 [resume game]
 استئناف اللعبة
-[games]
-الألعاب
 [Add AI]
 إضافة لاعب آلي
 [settings Experiments]
@@ -3462,15 +3314,9 @@ Emoji
 
 [lan discovered host %0]
 
-[lan share pairing]
-
-[lan copy pairing]
-
 [lan connection unavailable]
 
 [lan connection verification failed %0]
-
-[network start refused]
 
 [lan lobby endpoint required]
 
@@ -3683,8 +3529,6 @@ Emoji
 [hub join]
 
 [hub leaderboard]
-
-[hub legacy server]
 
 [hub linked %0]
 

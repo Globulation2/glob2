@@ -147,7 +147,7 @@ OpenGL. This acceptance pass required no production code changes.
   team, unit, and building checksum records. The host recorded 7,276 ticks in
   total because it continued after the guest departed. There were zero shared
   tick mismatches. This establishes recovery for the tested LAN session; it
-  does not simulate Internet latency, packet loss, or a public YOG server.
+  does not simulate Internet latency, packet loss, or a public server.
 - The Introduction and Basics tutorial passed in software and Mesa GL: grow to
   1000 pixels wide, shrink to 640 x 480, maximize, drag the maximized title bar
   down to restore, and advance messages with Space. Tutorial text, units, and

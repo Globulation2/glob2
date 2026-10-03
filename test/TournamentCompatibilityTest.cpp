@@ -8,11 +8,9 @@
 #include "Game.h"
 #include "Player.h"
 #include "GenerationService.h"
-#include "GameHeaderMessages.h"
 #include "ai/cortex/AICortex.h"
 #include "AIMaxima.h"
 #include "AIMaximaStrategy.h"
-#include "YOGConsts.h"
 #include "Version.h"
 #include <BinaryStream.h>
 #include <StreamBackend.h>
@@ -29,7 +27,7 @@ static void require(bool value,const char* label)
 
 TEST_SUITE("TournamentCompatibility")
 {
-	TEST_CASE("per-player AI configuration survives construction and partial network headers")
+	TEST_CASE("per-player AI configuration survives construction and partial headers")
 	{
 		glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings = true});
 		Game game(nullptr);
@@ -70,18 +68,13 @@ TEST_SUITE("TournamentCompatibility")
 		{
 			GAGCore::MemoryStreamBackend* memory=new GAGCore::MemoryStreamBackend;
 			GAGCore::BinaryOutputStream out(memory);
-			std::unique_ptr<NetMessage> sent(form==0 ? static_cast<NetMessage*>(new NetSendGameHeader(header))
-				: static_cast<NetMessage*>(new NetSendGamePlayerInfo(header)));
-			sent->encodeData(&out);out.flush();memory->seekFromStart(0);
+			if(form==0) header.saveWithoutPlayerInfo(&out); else header.savePlayerInfo(&out);
+			out.flush();memory->seekFromStart(0);
 			GAGCore::BinaryInputStream in(new GAGCore::MemoryStreamBackend(*memory));
 			GameHeader received;
-			if(form==0){NetSendGameHeader message;message.decodeData(&in);message.downloadToGameHeader(received);}
-			else{NetSendGamePlayerInfo message;message.decodeData(&in);message.downloadToGameHeader(received);}
-			for(int p=0;p<4;++p)require(received.getAIConfig(p)==header.getAIConfig(p),"network partial header preserves resolved configuration");
+			require(form==0 ? received.loadWithoutPlayerInfo(&in,VERSION_MINOR) : received.loadPlayerInfo(&in,VERSION_MINOR),"partial header loads");
+			for(int p=0;p<4;++p)require(received.getAIConfig(p)==header.getAIConfig(p),"partial header preserves resolved configuration");
 		}
-		require(!isSupportedYOGClientVersion(NET_PROTOCOL_VERSION-1),"old client rejected at protocol boundary");
-		require(isSupportedYOGClientVersion(NET_PROTOCOL_VERSION),"current client accepted at protocol boundary");
-		require(!isSupportedYOGClientVersion(NET_PROTOCOL_VERSION+1),"future client rejected at protocol boundary");
 		Cortex::CortexTuning values;std::string error;
 		require(!Cortex::applyTuning(values,"tierMidDiv=0",error),"invalid Cortex divisor rejected");
 		require(!Cortex::applyTuning(values,"unknown=1",error),"unknown Cortex parameter rejected");
