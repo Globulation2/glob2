@@ -13,6 +13,7 @@
 // histograms updated at existing protocol events, no per-event allocation, no extra
 // messages. The time series keeps one point per interval and is bounded.
 
+#include <algorithm>
 #include <array>
 #include <cstdint>
 #include <iosfwd>
@@ -84,6 +85,8 @@ namespace Turn
 			std::uint64_t ordersResent = 0;      ///< resent after a reconnect
 			std::uint64_t ordersQueuedOffline = 0; ///< submitted while the link was down
 			std::uint64_t ordersDroppedLocal = 0;  ///< null, latency-adjust or oversized
+			std::uint64_t ordersCoalesced = 0;     ///< replaced by a later order with the same target
+			std::uint64_t ordersQueueDropped = 0;  ///< dropped because the local queue was full
 			std::uint64_t voiceSent = 0, voiceSentBytes = 0, voiceReceived = 0, voiceReceivedBytes = 0;
 			std::uint64_t ticksExecuted = 0;     ///< every executed tick
 			std::uint64_t liveTicks = 0;         ///< executed outside catch-up
@@ -139,6 +142,13 @@ namespace Turn
 		/// Orders submitted but not yet acknowledged by the relay.
 		void outstandingDepth(std::size_t depth);
 		void orderDropped() { ++window.ordersDroppedLocal; ++all.ordersDroppedLocal; }
+		/// A queued order was replaced by a later one with the same target (latest wins):
+		/// the replaced one never executes, so it leaves the input-delay match.
+		void orderCoalesced(const std::uint8_t* bytes, std::size_t size);
+		/// The local order queue was full and an order was dropped.
+		void orderQueueDropped() { ++window.ordersQueueDropped; ++all.ordersQueueDropped; }
+		/// Orders waiting in the local queue for the pacing budget.
+		void queuedDepth(std::size_t depth) { queuedPeak = std::max<std::uint64_t>(queuedPeak, depth); }
 		void orderFrameSent(bool resend);
 		/// The local seat's own order executed; matched FIFO against submissions.
 		void ownOrderExecuted(const std::uint8_t* bytes, std::size_t size, std::uint32_t tick, std::uint64_t nowMicros);
@@ -170,6 +180,7 @@ namespace Turn
 		std::uint64_t reloadFastForwardTicks() const { return reloadFfTicks; }
 		std::uint64_t reloadFastForwardMicros() const { return reloadFfMicros; }
 		std::uint64_t outstandingMax() const { return outstandingPeak; }
+		std::uint64_t queuedMax() const { return queuedPeak; }
 		std::uint64_t unmatchedInputDelay() const { return pendingInputs.size(); }
 		std::uint64_t elapsedMicros(std::uint64_t nowMicros) const { return nowMicros > startMicros ? nowMicros - startMicros : 0; }
 		/// Transitions into each presence state, per seat.
@@ -207,6 +218,7 @@ namespace Turn
 		static constexpr std::size_t MAX_PENDING_INPUTS = 1024;
 		std::vector<PendingInput> pendingInputs;
 		std::uint64_t outstandingPeak = 0;
+		std::uint64_t queuedPeak = 0;
 
 		bool stalled = false;
 		bool everReady = false;
