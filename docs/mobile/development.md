@@ -31,6 +31,12 @@ Mobile settings omit desktop window sizes, renderer selection and OpenGL-only
 options because the operating system manages the viewport and the mobile build
 uses the portable renderer.
 
+Tapping a resource in the touch HUD opens a compact information card with its
+localized name, resource sprite and current/maximum amount for granular resources.
+It sits opposite the selected thumb. Close dismisses it and restores the previous
+palette; choosing Build, Flags or Tools replaces it with that toolbox. A depleted
+resource closes its inspector. Resource cards do not dispatch tactical commands.
+
 Objectives/Hints and Teams dialogs leave at least 16 screen points around the
 painted panel inside the safe, keyboard-adjusted area. Short objectives and hints
 size to their content; long pages scroll within the available height, with the

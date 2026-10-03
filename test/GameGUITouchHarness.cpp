@@ -1107,6 +1107,57 @@ class GameGUITouchHarness
 				throw std::runtime_error("No empty ground visible in the phone world");
 			};
 			{
+				// Resource taps inspect the tile instead of falling through to Tools.
+				gui.clearSelection();
+				gui.touch->panelOpen = false;
+				gui.touch->lensOpen = false;
+				const auto spot = emptyGround();
+				const int tx = (gui.mapMouseX(int(spot.x)) / 32 + gui.viewportX) & gui.game.map.getMaskW();
+				const int ty = (gui.mapMouseY(int(spot.y)) / 32 + gui.viewportY) & gui.game.map.getMaskH();
+				auto &resource = gui.game.map.getResource(tx, ty);
+				const auto saved = resource;
+				for (int type : {WOOD, WHEAT})
+				{
+					resource.type = type;
+					resource.variety = 0;
+					resource.amount = 3;
+					tap(spot.x, spot.y);
+					require(gui.touch->inspectingResource(), "Tapping a resource opens its inspector");
+					gui.drawAll(0);
+					const auto info = gui.touch->resourceInfo();
+					require(info && info->name == getResourceName(type) &&
+						info->amount == (globalContainer->resourcesTypes.get(type)->granular
+							? "3/" + std::to_string(globalContainer->resourcesTypes.get(type)->sizesCount) : ""),
+						"Resource inspection shows the selected tile's name and amount");
+					const auto panel = gui.touch->layout().panel;
+					require(panel.h <= 112 * unit && !gui.touch->lensVisible(), "Resource inspection is a compact card, not Tools");
+					gfx->printScreen(std::string("resource-") + (type == WOOD ? "wood-" : "wheat-") + (portrait ? "portrait.bmp" : "landscape.bmp"));
+					gfx->nextFrame();
+					tap(panel.x + panel.w / 2, panel.y + panel.h * .7);
+					require(!gui.touch->statsOpen && !gui.touch->showStatistics && gui.touch->inspectingResource(),
+						"Tapping resource information cannot activate the tactical menu");
+					noOrder();
+					const auto close = gui.touch->resourceCloseRect();
+					tap(close.x + close.w / 2, close.y + close.h / 2);
+					gui.touch->prepareDraw();
+					require(gui.selectionMode == GameGUI::NO_SELECTION && !gui.touch->panelOpen,
+						"Closing resource info restores the previous panel state");
+				}
+				tap(spot.x, spot.y);
+				const auto bar = gui.touch->layout().actions;
+				tap(bar.x + bar.w * 2.5 / 6, bar.y + bar.h / 2);
+				gui.drawAll(0);
+				require(gui.touch->lensVisible() && !gui.touch->inspectingResource(), "Tools consistently opens the lens strip after resource inspection");
+				tap(bar.x + bar.w * 2.5 / 6, bar.y + bar.h / 2);
+				tap(spot.x, spot.y);
+				resource = saved;
+				gui.drawAll(0);
+				require(!gui.touch->inspectingResource(), "A depleted resource stops being inspected");
+				gui.clearSelection();
+				gui.touch->panelOpen = false;
+				gui.touch->lensOpen = false;
+			}
+			{
 				// One-finger zoom: tap, press again and drag; direction follows settings.
 				gui.clearSelection();
 				gui.touch->panelOpen = false;
