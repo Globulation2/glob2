@@ -313,13 +313,13 @@ Element InGameAllianceScreen::build(const Presentation &p)
 		body.push_back(fe::divider());
 		body.push_back(notesColumn());
 	}
-	parts.push_back(fe::scroll("ally/scroll", fe::column(std::move(body), {p.pt(8)})));
+	parts.push_back(fe::column(std::move(body), {p.pt(8)}));
 	fe::ButtonOptions okOptions;
 	okOptions.primary = true;
 	okOptions.shortcut = SDLK_RETURN;
 	okOptions.minHeight = 44;
 	auto ok = fe::button("ok", fe::tr("[ok]"), [this] { finish(OK); }, okOptions);
-	return fe::column({fe::footer(fe::column(std::move(parts), {p.pt(10)}), ok)});
+	return fe::column({fe::footer(fe::scroll("ally/scroll", fe::column(std::move(parts), {p.pt(10)})), ok)});
 }
 
 int InGameAllianceScreen::countNumberPlayersForLocalTeam(GameHeader &gameHeader, int localteam)
@@ -624,14 +624,14 @@ Element InGameObjectivesScreen::build(const Presentation &p)
 	if (classic())
 	{
 		auto ok = classicButton("ok", fe::tr("[ok]"), [this] { finish(OK); }, SDLK_RETURN);
-		return fe::column({header, fe::height(p.pt(300), body), ok}, {p.pt(10)});
+		return fe::column({header, fe::footer(body, ok)}, {p.pt(10)});
 	}
 	fe::ButtonOptions okOptions;
 	okOptions.primary = true;
 	okOptions.shortcut = SDLK_RETURN;
 	okOptions.minHeight = 44;
 	auto ok = fe::button("ok", fe::tr("[ok]"), [this] { finish(OK); }, okOptions);
-	return fe::column({header, fe::expanded(fe::footer(body, ok))}, {p.pt(10)});
+	return fe::column({header, fe::footer(body, ok)}, {p.pt(10)});
 }
 
 InGameTextInput::InGameTextInput() = default;

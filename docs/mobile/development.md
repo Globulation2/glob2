@@ -31,6 +31,12 @@ Mobile settings omit desktop window sizes, renderer selection and OpenGL-only
 options because the operating system manages the viewport and the mobile build
 uses the portable renderer.
 
+Objectives/Hints and Teams dialogs leave at least 16 screen points around the
+painted panel inside the safe, keyboard-adjusted area. Short objectives and hints
+size to their content; long pages scroll within the available height, with the
+action button kept reachable. Touch widths are capped at 560 points for
+Objectives/Hints and 640 for Teams.
+
 The gameplay toolbar opens build choices, flags/zones, tactical tools, objectives,
 alliances and the session menu. The minimap is a separate top-right HUD component.
 Tapping it centres the camera there; dragging keeps steering the camera and clamps
