@@ -28,9 +28,7 @@
 [settings Experimental: move and animate units between game ticks.]
 [settings Enlarge interface text without changing the map scale.]
 [settings Adaptive zoom detail]
-
 [settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
-
 [lan pairing field]
 [lan pairing connect]
 [lan discovery instructions]
@@ -664,7 +662,6 @@
 [settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
 [open commander]
 [stop commander]
-
 [File selection is unavailable.]
 [Saving custom AI…]
 [Could not read the selected JavaScript file.]

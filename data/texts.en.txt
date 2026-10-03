@@ -4636,7 +4636,6 @@ Manage credits and purchases in your browser. Commander assistance is permitted 
 Open commander
 [stop commander]
 Stop commander
-
 [File selection is unavailable.]
 File selection is unavailable.
 [Saving custom AI…]
