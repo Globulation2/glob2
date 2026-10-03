@@ -358,7 +358,7 @@ bool Engine::threadedClientFrame(Uint64 now, const std::vector<SDL_Event>& event
     publishSessionClock(now);
     runner->rethrowFailure();
     if (gui.isRunning)
-        runner->withGame([&] { clientStep(now, events); });
+        runner->withGame([&] { clientStep(events); });
     runner->rethrowFailure();
     return gui.isRunning && !runner->ended();
 }
@@ -829,7 +829,7 @@ bool Engine::simulationStep(Uint64 now)
     return advanceSession(now, [] {}, false);
 }
 
-void Engine::clientStep(Uint64 /*now*/, const std::vector<SDL_Event>& events)
+void Engine::clientStep(const std::vector<SDL_Event>& events)
 {
     if (!session) throw std::logic_error("No active engine session");
     // Headless sessions never run the GUI step; they only take the notices.
