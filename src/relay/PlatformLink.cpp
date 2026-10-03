@@ -173,7 +173,34 @@ void PlatformLink::stop()
 	wake.cancel();
 }
 
-asio::awaitable<std::optional<std::string>> PlatformLink::fetchSetup(const std::string& matchId)
+asio::awaitable<std::optional<std::string>> PlatformLink::fetchSetup(const std::string& matchId,
+                                                                     std::chrono::steady_clock::time_point giveUpAt,
+                                                                     std::function<bool()> wanted)
+{
+	std::chrono::seconds backoff(1);
+	for (unsigned attempt = 1;; ++attempt)
+	{
+		if (auto setup = co_await fetchSetupOnce(matchId))
+		{
+			if (attempt > 1)
+				logLine("info", "Setup of match " + matchId + " arrived on attempt " + std::to_string(attempt));
+			co_return setup;
+		}
+		auto limit = giveUpAt;
+		if (shutdownDeadline)
+			limit = std::min(limit, *shutdownDeadline);
+		if (stopped || (wanted && !wanted()) || std::chrono::steady_clock::now() + backoff > limit)
+			co_return std::nullopt;
+		asio::steady_timer timer(executor, backoff);
+		boost::system::error_code ignored;
+		co_await timer.async_wait(asio::redirect_error(asio::use_awaitable, ignored));
+		backoff = std::min(backoff * 2, std::chrono::seconds(30));
+		if (stopped || (wanted && !wanted()))
+			co_return std::nullopt;
+	}
+}
+
+asio::awaitable<std::optional<std::string>> PlatformLink::fetchSetupOnce(const std::string& matchId)
 {
 	if (!enabled())
 		co_return std::nullopt;

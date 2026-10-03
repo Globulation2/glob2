@@ -80,6 +80,7 @@ secrets.
 | `GLOB2_RELAY_REGION` | `default` | Region id, `^[a-z0-9][a-z0-9-]{0,31}$` |
 | `GLOB2_RELAY_SPOOL_DIR` | unset | Directory where records wait until they are uploaded |
 | `GLOB2_RELAY_UPLOAD_ATTEMPTS` | `8` | Upload attempts per match, with backoff from 1 s up to 60 s |
+| `GLOB2_RELAY_SETUP_RETRY_SECONDS` | `600` | How long a failed setup lookup is retried (at match start, and again when a match ends without its setup) |
 
 At least one of `GLOB2_RELAY_JWKS_FILE`, `GLOB2_RELAY_JWKS_URL` or
 `GLOB2_RELAY_PLATFORM_URL` must be set. The JWKS location is the first of these that
@@ -250,6 +251,13 @@ records the matching pong's round trip for the seat (`rtt_us` in the summary). P
 are transport control frames: the turn protocol, the record and the simulation never
 see them, and every client transport (Beast, browsers) answers them itself. Finished
 matches also add their counters to the `glob2_relay_net_*` metrics at `/metrics`.
+
+**The setup lookup.** The record needs the match's setup to be verifiable, so the
+relay fetches it when the match starts and retries a failed lookup with backoff (1 s
+doubling to 30 s) for `GLOB2_RELAY_SETUP_RETRY_SECONDS` or until the match ends. A
+match that ends before the setup arrived holds its record and asks again for the same
+window (shortened by a shutdown deadline) before uploading it; only then does a record
+go out without a setup, which the verifier can only call `unverifiable`.
 
 **Retries and the spool.** Uploads retry with backoff up to
 `GLOB2_RELAY_UPLOAD_ATTEMPTS` times. With `GLOB2_RELAY_SPOOL_DIR` set, the relay
