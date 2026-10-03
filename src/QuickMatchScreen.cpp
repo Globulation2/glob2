@@ -385,11 +385,11 @@ Element QuickMatchScreen::searchPanel(const Presentation &p, bool phone)
 	std::vector<Element> parts{row({width(p.pt(150), timer), expanded(summary)}, {p.pt(12), CrossAlign::Start}), divider()};
 	for (auto &part : backfill)
 		parts.push_back(part);
-	std::vector<Element> controls{expanded(allowAi)};
+	parts.push_back(row({expanded(allowAi), cancel}, {p.pt(8), CrossAlign::Center}));
+	// Its own line: beside the toggle and Cancel it squeezed the toggle's label to a
+	// word per line on a portrait tablet.
 	if (queue.rated && queue.aiBackfillSeconds)
-		controls.insert(controls.begin() + 1, caption(tr("[qm ais are rated]")));
-	controls.push_back(cancel);
-	parts.push_back(row(std::move(controls), {p.pt(8), CrossAlign::Center}));
+		parts.push_back(caption(tr("[qm ais are rated]")));
 	CardOptions options;
 	options.shadow = false;
 	options.border = palette.accent;
