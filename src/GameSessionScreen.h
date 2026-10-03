@@ -23,11 +23,14 @@ class GameSessionScreen : public GAGGUI::Screen
 	void handleExecutionEvent(SDL_Event event) override;
 	void drawExecution() override;
 	Uint32 executionDelay(Uint32 now, Uint32 fallback) override;
+	ExecutionWait executionWait() const override;
 
     bool supportsCompactViewport() const override { return true; }
     bool usesResponsiveViewport() const override { return GAGCore::phonePresentationRequested(); }
     std::pair<int,int> minimumViewportSize() const override { return {800,600}; }
     void cancelExecutionInput() override { suspendExecution(); }
+    // The running engine, for harnesses that watch the game and its turn session.
+    Engine *runningEngine() const { return engine.get(); }
 
   private:
     void updateExecutionImpl(Uint32 tick);

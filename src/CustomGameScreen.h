@@ -61,6 +61,12 @@ class CustomGameScreen : public Glob2UI::Screen
 		invalidate();
 	}
 	int selectedSpeed() const { return setup.speed; }
+	// Room setup (RoomScreen): edit an online room's map and rules with this screen.
+	// Start becomes "Use in room" and ends with OK without generating or launching;
+	// the room's server generates the map.
+	void useForRoom(const CustomGameSetup &draft, int tab);
+	bool roomMode() const { return forRoom; }
+	const CustomGameSetup &draft() const { return setup; }
 	// Semantic entry points shared with the harnesses.
 	void selectTab(int tab);
 	int tab() const { return currentTab; }
@@ -112,6 +118,7 @@ class CustomGameScreen : public Glob2UI::Screen
 	int landscapeSortOrder = 0;
 	bool separateMapLibraries = true;
 	int currentTab = 0;
+	bool forRoom = false;
 	std::unique_ptr<LobbyMapPreview> preview;
 	std::vector<std::string> mapPaths, mapNames;
 	std::string librarySelection[2];

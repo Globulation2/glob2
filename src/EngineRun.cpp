@@ -132,6 +132,17 @@ void Engine::gatherAndAdvanceOrders(bool wasReadyLastTick)
 		// We get and push local orders
 		localOrder = gui.getOrder();
 	}
+	// A turn game hands every queued order to the session as soon as the GUI makes it,
+	// even while waiting for a bundle. The session sends them at the rate the relay
+	// sequences them (one per tick) and lets a later order replace a waiting one for
+	// the same flag or building, so a drag or a held key costs no input delay.
+	if (turn)
+	{
+		if (localOrder)
+			net->addLocalOrder(std::exchange(localOrder, std::make_shared<NullOrder>()));
+		for (auto order = gui.getOrder(); order->getOrderType() != ORDER_NULL; order = gui.getOrder())
+			net->addLocalOrder(order);
+	}
 
 	const bool localAI = wasReadyLastTick && globalContainer->liveSpectating &&
 		gui.game.players[orderPlayer]->ai;
@@ -239,6 +250,11 @@ void Engine::executeOrdersAndStep(bool readyNow)
 					gui.executeOrder(order);
 				}
 			}
+			// A match with a pause limit resumes by itself when the seat that paused
+			// has used its time, at the same tick on every client and in the verifier.
+			if (turn)
+				if (auto resume = turn->takeForcedResume())
+					gui.executeOrder(resume);
 			net->clearTopOrders();
 		}
 	}
@@ -310,6 +326,7 @@ void Engine::drawSession()
     if (globalContainer->runNoX) return;
     if (!runner)
     {
+        if (turn && !std::exchange(turnDrawPending, false)) return;
         drawFrame(*session);
         return;
     }
@@ -341,6 +358,9 @@ bool Engine::startSimulationThread(Uint64 now)
     const char* simThread = std::getenv("GLOB2_SIM_THREAD");
     if (simThread && std::string(simThread) == "0") return false;
     if (globalContainer->runNoX && !simThread) return false;
+    // Turn games stay serial: the relay connection is polled between steps on the
+    // main thread (pollTurnSession), where the connection panel also reads it.
+    if (turn) return false;
     publishSessionClock(now);
     auto started = std::make_unique<SimulationRunner>(*this);
     gui.simulationThreaded = true;
@@ -401,6 +421,18 @@ Uint64 Engine::sessionClock() const
 void Engine::extractScene(Scene& scene)
 {
     gui.extractScene(scene);
+}
+
+void Engine::pollTurnSession(Uint64 now)
+{
+	if (turn && session)
+		turn->turn().update(now * 1000);
+}
+
+Uint32 Engine::sessionPollDelay(Uint64 now)
+{
+	const Uint32 delay = sessionDelay(now);
+	return turn ? std::min<Uint32>(delay, TURN_POLL_MS) : delay;
 }
 
 Uint32 Engine::sessionDelay(Uint64 now)
@@ -701,6 +733,8 @@ void Engine::teardownSession()
 
 	if (multiplayer) multiplayer->setNetEngine(nullptr);
 	leaveTurnMatch();
+	gui.connectionOverlay.reset();
+	exportTurnTelemetry();
 	turn = nullptr;
 	turnMatch.reset();
 	net.reset();
@@ -714,9 +748,12 @@ void Engine::leaveTurnMatch()
 	Turn::TurnSession& session = turn->turn();
 	if (session.state() == Turn::TurnSession::State::Ended || session.state() == Turn::TurnSession::State::Rejected)
 		return;
+	// GameFinished means the game itself is decided (the relay may then end the match
+	// as soon as nobody is connected): the end condition fired, or this colony won. A
+	// colony that lost while others play on leaves like any other player.
 	const bool finished = gui.game.isGameEnded || gui.game.totalPrestigeReached ||
 		(gui.localTeamNo >= 0 && gui.localTeamNo < gui.game.mapHeader.getNumberOfTeams() &&
-		 gui.game.teams[gui.localTeamNo] && (gui.game.teams[gui.localTeamNo]->hasWon || gui.game.teams[gui.localTeamNo]->hasLost));
+		 gui.game.teams[gui.localTeamNo] && gui.game.teams[gui.localTeamNo]->hasWon);
 	session.quit(finished ? Turn::QuitReason::GameFinished : Turn::QuitReason::PlayerQuit);
 }
 
@@ -725,7 +762,9 @@ void Engine::pumpTurnSession(Uint64 now)
 	if (!turn)
 		return;
 	Turn::TurnSession& session = turn->turn();
+	turnNowMicros = now * 1000;
 	session.update(now * 1000);
+	printTurnTelemetrySamples();
 	if (session.needsReload())
 		reloadTurnInitialState();
 	if (session.desyncFlagged() && turnMatch && !turnMatch->flagReported)
@@ -779,6 +818,9 @@ void Engine::reloadTurnInitialState()
 	teamEliminatedTick.clear();
 	if (session)
 		session->wasReadyLastTick = true;
+	turn->resetOrderAudit();
+	turn->turn().telemetry().reloadLoad(static_cast<std::uint64_t>(
+		std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - started).count()));
 	turn->turn().reloadDone();
 	std::cerr << "Turn session: reloaded the initial state in "
 		<< std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - started).count()
@@ -850,6 +892,7 @@ void Engine::beginSession(Uint64 now)
 			metadata << " build=" << std::quoted(label);
 		perf.describe(metadata.str());
 	}
+	printTurnTelemetrySession();
 
 }
 
@@ -912,6 +955,7 @@ bool Engine::stepSessionImpl(Uint64 now, const std::vector<SDL_Event>& events)
     if (!session) throw std::logic_error("No active engine session");
     if (!gui.isRunning) return false;
     auto& st = *session;
+    turnDrawPending = true;
     --st.nextGuiStep;
     for (const auto &event : events) sessionInput.push_back(event);
     return advanceSession(now, [&] {
@@ -1016,6 +1060,15 @@ bool Engine::advanceSession(Uint64 now, const std::function<void()>& clientWork,
 					"checkpoint", gui.game.mapHeader.getMapName());
 		}
 
+    // A turn game that waited for a late bundle moves its schedule back by up to one
+    // tick instead of bursting through the ticks it owes: a bundle that is a little
+    // late becomes a little more buffer, which the delay controller drains at up to
+    // 5% speed. A longer wait still catches up the rest at once.
+    if (turn && readyNow && !st.wasReadyLastTick && !turn->turn().catchingUp())
+    {
+        const Sint64 late = static_cast<Sint64>(now - st.startTime) - st.needToBeTime;
+        if (late > 0) st.needToBeTime += std::min<Sint64>(late, st.speed);
+    }
     st.wasReadyLastTick = readyNow;
     // A turn game's budget advances only with executed ticks, so frames spent
     // waiting for the relay poll quickly instead of sleeping a whole tick.
@@ -1109,9 +1162,17 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
         stepSession(SDL_GetTicks());
         drawSession();
         if (!globalContainer->runNoX) {
-            PerformanceTelemetry::Scope delayTime(session->wasReadyLastTick
-                ? PerformanceTelemetry::Id::Sleep : PerformanceTelemetry::Id::NetworkSleep);
-            GAGCore::ApplicationHost::wait(sessionDelay(SDL_GetTicks()));
+            PerformanceTelemetry::Scope delayTime(waitingOnNetwork()
+                ? PerformanceTelemetry::Id::NetworkSleep : PerformanceTelemetry::Id::Sleep);
+            Uint32 delay = sessionDelay(SDL_GetTicks());
+            // A turn game reads its relay connection while it waits.
+            while (turn && delay > TURN_POLL_MS && gui.isRunning)
+            {
+                GAGCore::ApplicationHost::wait(TURN_POLL_MS);
+                pollTurnSession(SDL_GetTicks());
+                delay = sessionDelay(SDL_GetTicks());
+            }
+            GAGCore::ApplicationHost::wait(delay);
         }
     }
     doRunOnceAgain = finishSession();

@@ -5,6 +5,10 @@
   "type": "module",
   "description": "Platform HTTP API, realtime WebSocket and internal relay/agent endpoints.",
   "license": "GPL-3.0-or-later",
+  "exports": {
+    ".": "./src/app.ts",
+    "./testing": "./test/support.ts"
+  },
   "bin": {
     "platform": "./src/cli.ts"
   },
@@ -20,6 +24,7 @@
     "@fastify/websocket": "^11.3.1",
     "@glob2/core": "0.1.0",
     "@glob2/db": "0.1.0",
+    "@glob2/play": "0.1.0",
     "@glob2/protocol": "0.1.0",
     "@node-rs/argon2": "^2.2.1",
     "fastify": "^5.12.5",

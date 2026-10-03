@@ -1,0 +1,35 @@
+{
+  "proposalId": "0b6a7f6e-8d1c-4a59-9a43-2f0c3d1e5b77",
+  "ticketId": "5d0f2c43-6a3e-4c8e-b8f1-9e2a7c4d3b10",
+  "queueId": "ranked-1v1",
+  "requiresAccept": false,
+  "humans": 1,
+  "ais": 1,
+  "rated": true,
+  "backfilled": true,
+  "map": {
+    "generatorId": "symmetric-arena",
+    "width": 128,
+    "height": 128
+  },
+  "seats": [
+    {
+      "slot": 0,
+      "side": 0,
+      "kind": "human",
+      "displayName": "Bradley",
+      "rating": 1528,
+      "response": "not_required",
+      "you": true
+    },
+    {
+      "slot": 1,
+      "side": 1,
+      "kind": "ai",
+      "displayName": "Cortex",
+      "ai": "cortex",
+      "rating": 1601,
+      "response": "not_required"
+    }
+  ]
+}

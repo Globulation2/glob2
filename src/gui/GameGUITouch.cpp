@@ -1646,7 +1646,7 @@ void GameGUITouch::menuAction(int action)
 		if (globalContainer->replaying)
 			gui.gamePaused = !gui.gamePaused;
 		else if (!globalContainer->isViewingGame())
-			gui.orderQueue.push_back(std::make_shared<PauseGameOrder>(!gui.gamePaused));
+			gui.requestPause(!gui.gamePaused);
 		break;
 	case 1:
 		gui.openChat();

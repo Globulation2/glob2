@@ -137,11 +137,27 @@ export const AiSeat = Strict({
 });
 
 /**
- * A player record (BasePlayer). Several seats may share a team: a human plus an
- * AI on one team is the custom-game "shared control" mode, and several humans
- * may control one team together.
+ * A closed team: a room's empty or locked seat. It is not a player. Its colony is
+ * removed at the start, exactly like a "Closed" colony in a custom game, so it
+ * has lost from the first step and never blocks a victory. Closed seats follow
+ * every human and AI seat (players keep the numbers 0..p-1) and each closes a
+ * different team that no player seat controls. A team that no seat names at all
+ * is closed in the same way; a closed seat states it explicitly.
  */
-export const Seat = Type.Union([HumanSeat, AiSeat]);
+export const ClosedSeat = Strict({
+  seat: SeatIndex,
+  kind: Type.Literal('closed'),
+  team: TeamIndex,
+});
+
+/**
+ * A human or AI seat is a player record (BasePlayer number = seat). Several
+ * seats may share a team: a human plus an AI on one team is the custom-game
+ * "shared control" mode, and several humans may control one team together.
+ * AI `none` is an idle player whose colony stays on the map; rooms send empty
+ * seats as `closed` instead.
+ */
+export const Seat = Type.Union([HumanSeat, AiSeat, ClosedSeat]);
 export type Seat = Static<typeof Seat>;
 
 export const MatchRules = Strict(
@@ -170,6 +186,30 @@ export const MatchRules = Strict(
 );
 export type MatchRules = Static<typeof MatchRules>;
 
+export const PauseLimit = Strict(
+  {
+    pauses: Type.Integer({
+      minimum: 0,
+      maximum: 100,
+      description: 'Pauses each human seat may start.',
+    }),
+    seconds: Type.Integer({
+      minimum: 0,
+      maximum: 3600,
+      description:
+        'Total time each human seat may keep the game paused; the game resumes by itself when the seat that paused runs out.',
+    }),
+  },
+  {
+    description:
+      'Limit on pausing, enforced identically by every client and the verifier. Absent: unlimited (rooms, LAN). Older clients refuse a setup that has it.',
+  },
+);
+export type PauseLimit = Static<typeof PauseLimit>;
+
+/** The pause limit of queue (quick and rated) matches. */
+export const QUEUE_PAUSE_LIMIT: PauseLimit = { pauses: 3, seconds: 60 };
+
 export const MatchSetup = Strict(
   {
     schemaVersion: Type.Literal(MATCH_SETUP_SCHEMA_VERSION),
@@ -188,7 +228,8 @@ export const MatchSetup = Strict(
     seats: Type.Array(Seat, {
       minItems: 1,
       maxItems: MAX_TEAMS,
-      description: 'Player records in BasePlayer number order 0..k-1.',
+      description:
+        'Player records (human and AI seats) in BasePlayer number order 0..p-1, then any closed seats.',
     }),
     rules: MatchRules,
     experiments: Type.Array(Type.String({ pattern: '^[a-z0-9]+(-[a-z0-9]+)*$', maxLength: 64 }), {
@@ -197,6 +238,7 @@ export const MatchSetup = Strict(
       description:
         'Experimental-feature keys (ExperimentalFeatures.cpp); unknown keys are an error.',
     }),
+    pauseLimit: Type.Optional(PauseLimit),
   },
   { description: 'Complete engine-independent description of a match.' },
 );
@@ -255,7 +297,7 @@ export function matchSetupProblems(setup: MatchSetup): SetupProblem[] {
         message: `team ${seat.team} is not one of the ${teamCount} teams`,
       });
     }
-    if (utf8ByteLength(seat.name) > MAX_PLAYER_NAME_BYTES) {
+    if (seat.kind !== 'closed' && utf8ByteLength(seat.name) > MAX_PLAYER_NAME_BYTES) {
       problems.push({
         path: `/seats/${index}/name`,
         message: `name exceeds ${MAX_PLAYER_NAME_BYTES} UTF-8 bytes`,
@@ -274,6 +316,33 @@ export function matchSetupProblems(setup: MatchSetup): SetupProblem[] {
       humanAccounts.add(seat.accountId);
     }
   });
+  // Closed seats follow the players and each closes a team no player controls.
+  const players = playerSeats(setup);
+  const playedTeams = new Set(players.map((seat) => seat.team));
+  if (players.length === 0) {
+    problems.push({ path: '/seats', message: 'a match needs at least one human or AI seat' });
+  }
+  const closedTeams = new Set<number>();
+  setup.seats.forEach((seat, index) => {
+    if (seat.kind !== 'closed') {
+      if (index >= players.length) {
+        problems.push({
+          path: `/seats/${index}`,
+          message: 'closed seats must come after every human and AI seat',
+        });
+      }
+      return;
+    }
+    if (playedTeams.has(seat.team)) {
+      problems.push({
+        path: `/seats/${index}/team`,
+        message: `team ${seat.team} is played by another seat`,
+      });
+    } else if (closedTeams.has(seat.team)) {
+      problems.push({ path: `/seats/${index}/team`, message: `team ${seat.team} is closed twice` });
+    }
+    closedTeams.add(seat.team);
+  });
   if (setup.map.kind === 'generated') {
     const teams = setup.map.generator.params['teams'];
     if (teams !== undefined && teams !== teamCount) {
@@ -291,3 +360,11 @@ export type UploadedMapSource = Static<typeof UploadedMapSource>;
 export type GeneratedMapSource = Static<typeof GeneratedMapSource>;
 export type HumanSeat = Static<typeof HumanSeat>;
 export type AiSeat = Static<typeof AiSeat>;
+export type ClosedSeat = Static<typeof ClosedSeat>;
+/** A human or AI seat: a player. */
+export type PlayerSeat = HumanSeat | AiSeat;
+
+/** The human and AI seats of a setup (BasePlayer records 0..p-1), in seat order. */
+export function playerSeats(setup: { seats: readonly Seat[] }): PlayerSeat[] {
+  return setup.seats.filter((seat): seat is PlayerSeat => seat.kind !== 'closed');
+}

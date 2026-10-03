@@ -11,6 +11,7 @@ import { ProviderRegistry } from './auth/providers.ts';
 import { TokenService } from './auth/tokens.ts';
 import { WebSessionService } from './auth/webSessions.ts';
 import { apiError } from './errors.ts';
+import { SharedLimit } from './http/rateLimits.ts';
 import { RealtimeHub } from './realtime/hub.ts';
 
 export interface Limits {
@@ -20,6 +21,18 @@ export interface Limits {
   realtimePerSecond: number;
   realtimeBurst: number;
   realtimeConnectionsPerIp: number;
+}
+
+/** Limits shared by every replica (Postgres counters; see http/rateLimits.ts). */
+export interface SharedLimits {
+  /** New guest accounts per client address per hour. */
+  guests: SharedLimit;
+  /** Browser sign-ins started per client address per hour, and by everyone per minute. */
+  handoffPerAddress: SharedLimit;
+  handoffTotal: SharedLimit;
+  /** Wrong passwords per username (15 minutes) and per client address (an hour). */
+  passwordFailuresPerAccount: SharedLimit;
+  passwordFailuresPerAddress: SharedLimit;
 }
 
 export interface Identity {
@@ -32,9 +45,12 @@ export interface Identity {
   admin: AdminService;
   hub: RealtimeHub;
   origin: string;
+  /** Instance display name, for server-rendered pages. */
+  instanceName: string;
   allowedOrigins: Set<string>;
   secureCookies: boolean;
   limits: Limits;
+  shared: SharedLimits;
   localAuth: { enabled: boolean; allowRegistration: boolean };
   handoffSeconds: number;
 }
@@ -73,8 +89,36 @@ export function createIdentity(services: ApiServices): Identity {
     admin,
     hub,
     origin: config.publicOrigin,
+    instanceName: config.instance.name,
     allowedOrigins: new Set([config.publicOrigin, ...(config.instance.web?.allowedOrigins ?? [])]),
     secureCookies: config.publicOrigin.startsWith('https://'),
+    shared: {
+      guests: new SharedLimit(db, 'guest-create', limits.guestsPerHour ?? 20, 3_600_000),
+      handoffPerAddress: new SharedLimit(
+        db,
+        'signin-attempt',
+        limits.signinAttemptsPerHour ?? 30,
+        3_600_000,
+      ),
+      handoffTotal: new SharedLimit(
+        db,
+        'signin-attempt-total',
+        limits.signinAttemptsPerMinuteTotal ?? 300,
+        60_000,
+      ),
+      passwordFailuresPerAccount: new SharedLimit(
+        db,
+        'password-fail-account',
+        limits.passwordFailuresPerAccount ?? 10,
+        15 * 60_000,
+      ),
+      passwordFailuresPerAddress: new SharedLimit(
+        db,
+        'password-fail-address',
+        limits.passwordFailuresPerIp ?? 50,
+        3_600_000,
+      ),
+    },
     limits: {
       authPerMinute: limits.authPerMinute ?? 30,
       guestsPerHour: limits.guestsPerHour ?? 20,

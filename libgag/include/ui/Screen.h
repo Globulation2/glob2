@@ -41,6 +41,9 @@ class UIScreen : public Screen
 	virtual Rect available(const Presentation &presentation, const Metrics &metrics);
 	virtual Rect place(Size measured, Rect available) { return available; }
 	virtual void onEscape() {}
+	// Last word on the frame's presentation (for instance a larger reading size on
+	// big desktop windows); the default keeps what the context resolved.
+	virtual void adjustPresentation(Presentation &) {}
 	// Hooks around each frame for themes with per-frame work.
 	virtual void beforePaint() {}
 	virtual void afterPaint(Canvas &) {}

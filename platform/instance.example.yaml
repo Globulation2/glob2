@@ -48,13 +48,36 @@ auth:
 
 # Extra browser origins allowed to use /realtime and cookie sessions (the
 # PUBLIC_ORIGIN is always allowed; native clients send no Origin).
+# Invite pages (/j/<code>) link "Play in browser" to the browser build of the
+# game with ?join=<code> (default <PUBLIC_ORIGIN>/play/).
 # web:
 #   allowedOrigins: [https://web.example.org]
+#   browserClientUrl: https://play.example.org/play/
 
-# Per-replica limits (defaults shown).
+# Verified mobile app links for invite URLs (/j/<code>), served at
+# /.well-known/assetlinks.json and /.well-known/apple-app-site-association.
+# Only the official instance's domain is built into the mobile apps; leave this
+# out on self-hosted instances (invites still open the app via glob2://).
+# Replace the placeholders with the release signing certificate fingerprint
+# (Play Console > App integrity, or `keytool -list -v -keystore <release.jks>`)
+# and the Apple Developer Team ID; see docs/hosting/README.md.
+# appLinks:
+#   android:
+#     packageName: org.globulation2.glob2
+#     sha256CertFingerprints:
+#       - 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
+#   ios:
+#     appIds: [TEAMID0000.org.globulation2.glob2]
+
+# Limits (defaults shown). apiPerMinute and the realtime limits are per API
+# replica; the others are shared by all replicas.
 # limits:
 #   authPerMinute: 30
 #   guestsPerHour: 20
+#   signinAttemptsPerHour: 30
+#   signinAttemptsPerMinuteTotal: 300
+#   passwordFailuresPerAccount: 10
+#   passwordFailuresPerIp: 50
 #   apiPerMinute: 600
 #   realtimePerSecond: 10
 #   realtimeBurst: 40

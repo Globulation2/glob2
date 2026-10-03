@@ -111,11 +111,13 @@ jobs:
               assert gzip.decompress(Path(str(original)+".gz").read_bytes()) == original.read_bytes()
           PYTHON
           test -s index.html
-          for ext in js wasm data; do
+          for ext in js wasm; do
             mapfile -t files < <(find . -maxdepth 1 -type f -name "index-*.$ext")
             test "${#files[@]}" -eq 1
             test -s "${files[0]}"
           done
+          mapfile -t packages < <(find assets -maxdepth 1 -type f -name '*.data')
+          test "${#packages[@]}" -ge 1
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3.0.0
         with:
           workload_identity_provider: ${{ vars.GLOB2_BROWSER_WIF_PROVIDER }}

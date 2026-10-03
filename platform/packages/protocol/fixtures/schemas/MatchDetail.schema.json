@@ -72,6 +72,11 @@
         "queueId": {
           "type": "string"
         },
+        "queueName": {
+          "type": "string",
+          "maxLength": 64,
+          "description": "The queue as players know it (\"Casual 1v1\"), from the instance config."
+        },
         "rated": {
           "type": "boolean"
         },
@@ -95,6 +100,23 @@
             }
           ]
         },
+        "endReason": {
+          "anyOf": [
+            {
+              "type": "string",
+              "const": "completed"
+            },
+            {
+              "type": "string",
+              "const": "abandoned"
+            },
+            {
+              "type": "string",
+              "const": "aborted"
+            }
+          ],
+          "description": "Why an ended match ended. aborted: the match was lost (for example with its relay) and changes no rating."
+        },
         "verification": {
           "anyOf": [
             {
@@ -116,8 +138,13 @@
             {
               "type": "string",
               "const": "not_applicable"
+            },
+            {
+              "type": "string",
+              "const": "failed"
             }
-          ]
+          ],
+          "description": "failed: the server could not run its check (the verify job failed or was lost); the match is not rated unless an operator re-runs verification. Clients that do not know a value treat it as pending."
         },
         "mapHash": {
           "type": "string",
@@ -241,13 +268,18 @@
                   },
                   {
                     "type": "string",
+                    "const": "draw"
+                  },
+                  {
+                    "type": "string",
                     "const": "unresolved"
                   },
                   {
                     "type": "string",
                     "const": "abandoned"
                   }
-                ]
+                ],
+                "description": "draw: a win shared by teams of more than one alliance (a prestige or sudden-death tie at the top). Draws are not rated."
               },
               "disconnects": {
                 "type": "integer",
@@ -616,12 +648,37 @@
                   }
                 },
                 "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "required": [
+                  "seat",
+                  "kind",
+                  "team"
+                ],
+                "properties": {
+                  "seat": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 11
+                  },
+                  "kind": {
+                    "type": "string",
+                    "const": "closed"
+                  },
+                  "team": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 11
+                  }
+                },
+                "additionalProperties": false
               }
             ]
           },
           "minItems": 1,
           "maxItems": 12,
-          "description": "Player records in BasePlayer number order 0..k-1."
+          "description": "Player records (human and AI seats) in BasePlayer number order 0..p-1, then any closed seats."
         },
         "rules": {
           "type": "object",
@@ -715,6 +772,29 @@
           "maxItems": 64,
           "uniqueItems": true,
           "description": "Experimental-feature keys (ExperimentalFeatures.cpp); unknown keys are an error."
+        },
+        "pauseLimit": {
+          "type": "object",
+          "required": [
+            "pauses",
+            "seconds"
+          ],
+          "properties": {
+            "pauses": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100,
+              "description": "Pauses each human seat may start."
+            },
+            "seconds": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 3600,
+              "description": "Total time each human seat may keep the game paused; the game resumes by itself when the seat that paused runs out."
+            }
+          },
+          "additionalProperties": false,
+          "description": "Limit on pausing, enforced identically by every client and the verifier. Absent: unlimited (rooms, LAN). Older clients refuse a setup that has it."
         }
       },
       "additionalProperties": false,
@@ -749,13 +829,18 @@
               },
               {
                 "type": "string",
+                "const": "draw"
+              },
+              {
+                "type": "string",
                 "const": "unresolved"
               },
               {
                 "type": "string",
                 "const": "abandoned"
               }
-            ]
+            ],
+            "description": "draw: a win shared by teams of more than one alliance (a prestige or sudden-death tie at the top). Draws are not rated."
           },
           "prestige": {
             "type": "integer"
@@ -776,12 +861,43 @@
           "timeline": {
             "type": "array",
             "items": {
-              "type": "array",
-              "items": {
-                "type": "number"
-              }
+              "type": "object",
+              "required": [
+                "tick",
+                "units",
+                "buildings",
+                "prestige",
+                "hp",
+                "attack",
+                "defense"
+              ],
+              "properties": {
+                "tick": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "units": {
+                  "type": "integer"
+                },
+                "buildings": {
+                  "type": "integer"
+                },
+                "prestige": {
+                  "type": "integer"
+                },
+                "hp": {
+                  "type": "integer"
+                },
+                "attack": {
+                  "type": "integer"
+                },
+                "defense": {
+                  "type": "integer"
+                }
+              },
+              "description": "One sample of the engine's end-of-game statistics, taken every 512 ticks."
             },
-            "description": "End-of-game statistics history rows (result.json teams[].history)."
+            "description": "Team history from the verifier result (one sample per 512 ticks), oldest first."
           }
         }
       }
@@ -829,6 +945,287 @@
           }
         }
       }
+    },
+    "map": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "mapId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "description": "Lowercase UUID."
+        },
+        "generatorId": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "width": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "verificationDetail": {
+      "type": "object",
+      "properties": {
+        "divergedSeats": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 11
+          }
+        },
+        "reason": {
+          "type": "string",
+          "maxLength": 2000
+        },
+        "orderRejections": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "seat",
+              "rejected",
+              "stale",
+              "reasons"
+            ],
+            "properties": {
+              "seat": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 11
+              },
+              "rejected": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "stale": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "reasons": {
+                "type": "object",
+                "patternProperties": {
+                  "^.*$": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                }
+              },
+              "firstRejectedTick": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          }
+        },
+        "ratingNote": {
+          "type": "string",
+          "maxLength": 500,
+          "description": "Why ratings did or did not change."
+        }
+      }
+    },
+    "economy": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "matchId",
+          "accountId",
+          "points"
+        ],
+        "properties": {
+          "matchId": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "description": "Lowercase UUID."
+          },
+          "accountId": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "description": "Lowercase UUID."
+          },
+          "seat": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 11
+          },
+          "points": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "tick",
+                "units",
+                "buildings",
+                "prestige",
+                "averageUnits",
+                "averageBuildings",
+                "averagePrestige",
+                "gamesAtTick"
+              ],
+              "properties": {
+                "tick": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "units": {
+                  "type": "integer"
+                },
+                "buildings": {
+                  "type": "integer"
+                },
+                "prestige": {
+                  "type": "integer"
+                },
+                "averageUnits": {
+                  "type": "number"
+                },
+                "averageBuildings": {
+                  "type": "number"
+                },
+                "averagePrestige": {
+                  "type": "number"
+                },
+                "gamesAtTick": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              }
+            }
+          }
+        }
+      },
+      "description": "Each human player's curve in this match next to their own recent average."
+    },
+    "network": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "seat",
+          "quality",
+          "disconnects",
+          "offlineMs",
+          "ordersSequenced",
+          "ordersDeferred",
+          "rejoins"
+        ],
+        "properties": {
+          "seat": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 11
+          },
+          "quality": {
+            "anyOf": [
+              {
+                "type": "string",
+                "const": "good"
+              },
+              {
+                "type": "string",
+                "const": "fair"
+              },
+              {
+                "type": "string",
+                "const": "poor"
+              }
+            ],
+            "description": "A rough label from the numbers below (docs/development/network-telemetry.md, match page)."
+          },
+          "rttMs": {
+            "anyOf": [
+              {
+                "type": "object",
+                "required": [
+                  "p50",
+                  "p95"
+                ],
+                "properties": {
+                  "p50": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "p95": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                }
+              }
+            ],
+            "description": "Round trip to the relay (median and 95th percentile). Absent if not measured."
+          },
+          "lagMs": {
+            "anyOf": [
+              {
+                "type": "object",
+                "required": [
+                  "p50",
+                  "p95"
+                ],
+                "properties": {
+                  "p50": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "p95": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                }
+              }
+            ],
+            "description": "How far the player’s game ran behind the relay clock: input delay plus any stall."
+          },
+          "disconnects": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "offlineMs": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Time disconnected and inside the reconnect grace period."
+          },
+          "ordersSequenced": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "ordersDeferred": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Orders placed later than requested (one order per player per tick)."
+          },
+          "rejoins": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Times the relay told the game to reload after its state disagreed."
+          },
+          "leftBy": {
+            "anyOf": [
+              {
+                "type": "string",
+                "const": "quit"
+              },
+              {
+                "type": "string",
+                "const": "grace"
+              }
+            ]
+          }
+        },
+        "description": "Connection quality of one player in a match."
+      },
+      "description": "Per human player, from the relay’s report; absent when the relay sent none."
     }
   },
   "description": "GET /api/v1/matches/{id}."

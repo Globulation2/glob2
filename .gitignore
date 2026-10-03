@@ -47,3 +47,7 @@ gha-creds-*.json
 
 # Deployment TLS keys are local secrets, never release assets.
 /deploy/secrets/
+/deploy/.env
+/deploy/instance.yaml
+/deploy/web-client/
+/deploy/compose.override.yaml

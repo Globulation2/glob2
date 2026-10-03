@@ -108,11 +108,24 @@
         "units": 61
       },
       "timeline": [
-        [
-          1,
-          2,
-          3
-        ]
+        {
+          "tick": 0,
+          "units": 6,
+          "buildings": 1,
+          "prestige": 0,
+          "hp": 0,
+          "attack": 0,
+          "defense": 0
+        },
+        {
+          "tick": 512,
+          "units": 9,
+          "buildings": 3,
+          "prestige": 4,
+          "hp": 120,
+          "attack": 0,
+          "defense": 0
+        }
       ]
     },
     {
@@ -127,9 +140,85 @@
   "artifacts": [
     {
       "kind": "replay",
-      "url": "https://play.example.org/api/v1/blobs/c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4",
+      "url": "https://play.example.org/api/v1/matches/7e3c1d2b-9a8f-4e6d-8c5b-4a3f2e1d0c9b/artifacts/replay",
       "size": 90211,
       "sha256": "c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4"
+    }
+  ],
+  "map": {
+    "title": "Even Ground",
+    "mapId": "2a1b0c9d-8e7f-4a6b-9c5d-3e2f1a0b9c8d",
+    "width": 128,
+    "height": 128
+  },
+  "verificationDetail": {
+    "orderRejections": [
+      {
+        "seat": 1,
+        "rejected": 2,
+        "stale": 0,
+        "reasons": {
+          "foreign_unit": 2
+        },
+        "firstRejectedTick": 812
+      }
+    ]
+  },
+  "economy": [
+    {
+      "matchId": "7e3c1d2b-9a8f-4e6d-8c5b-4a3f2e1d0c9b",
+      "accountId": "0b8f6f2e-3c4d-4e5f-8a9b-0c1d2e3f4a5b",
+      "seat": 0,
+      "points": [
+        {
+          "tick": 512,
+          "units": 9,
+          "buildings": 3,
+          "prestige": 4,
+          "averageUnits": 8.5,
+          "averageBuildings": 3,
+          "averagePrestige": 2,
+          "gamesAtTick": 4
+        }
+      ]
+    }
+  ],
+  "network": [
+    {
+      "seat": 0,
+      "quality": "good",
+      "rttMs": {
+        "p50": 41,
+        "p95": 52
+      },
+      "lagMs": {
+        "p50": 280,
+        "p95": 360
+      },
+      "disconnects": 0,
+      "offlineMs": 0,
+      "ordersSequenced": 812,
+      "ordersDeferred": 9,
+      "rejoins": 0,
+      "leftBy": "quit"
+    },
+    {
+      "seat": 1,
+      "quality": "poor",
+      "rttMs": {
+        "p50": 115,
+        "p95": 242
+      },
+      "lagMs": {
+        "p50": 400,
+        "p95": 760
+      },
+      "disconnects": 1,
+      "offlineMs": 6230,
+      "ordersSequenced": 640,
+      "ordersDeferred": 31,
+      "rejoins": 1,
+      "leftBy": "quit"
     }
   ]
 }

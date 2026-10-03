@@ -16,6 +16,12 @@ using namespace Glob2UI;
 
 SettingsScreen::SettingsScreen() : gameKeys(GameGUIShortcuts), editorKeys(MapEditShortcuts) {}
 
+void SettingsScreen::custom(const std::string &id, std::function<Element(const Presentation &)> render)
+{
+	auto &r = add(id, Kind::Custom, "");
+	r.render = std::move(render);
+}
+
 SettingsScreen::~SettingsScreen()
 {
 	if (settingsDirty || keyboardDirty[0] || keyboardDirty[1])
@@ -79,7 +85,7 @@ void SettingsScreen::resetScroll()
 
 std::string SettingsScreen::categoryName(Category category) const
 {
-	const char *names[] = {"Display & graphics", "Audio", "Gameplay", "Building defaults", "Controls", "Language & player", "Experiments"};
+	const char *names[] = {"Display & graphics", "Audio", "Gameplay", "Building defaults", "Controls", "Language & player", "Online", "Experiments"};
 	return tr(names[int(category)]);
 }
 
@@ -92,6 +98,8 @@ void SettingsScreen::buildRows()
 		buildBuildings();
 	else if (current == Category::Controls)
 		buildKeyboard();
+	else if (current == Category::Online)
+		buildOnline();
 	else
 		buildGeneral();
 	if (current == Category::Buildings && touchLayout)
@@ -175,6 +183,9 @@ std::vector<SettingsScreen::Category> SettingsScreen::visibleCategories() const
 	if (!touchLayout)
 		result.push_back(Category::Controls);
 	result.push_back(Category::Player);
+#if !defined(GLOB2_CHINA_RELEASE) && !defined(GLOB2_AMAZON_RELEASE)
+	result.push_back(Category::Online);
+#endif
 	result.push_back(Category::Experiments);
 	return result;
 }
@@ -346,6 +357,8 @@ bool SettingsScreen::interceptEvent(const SDL_Event &event)
 void SettingsScreen::onTimer(Uint32 tick)
 {
 	lastTick = tick;
+	if (current == Category::Online)
+		pollOnline();
 	if (saveAt && Sint32(tick - saveAt) >= 0)
 		persist();
 	if (persistence)
@@ -454,7 +467,7 @@ Element SettingsScreen::categoryNavigation(const Presentation &p, bool sidebar)
 			// One icon per Category, in its order.
 			static constexpr UIIcon icons[] = {UIIcon::Display,   UIIcon::Audio,    UIIcon::Gameplay,
 											   UIIcon::Buildings, UIIcon::Controls, UIIcon::Player,
-											   UIIcon::Experiments};
+											   UIIcon::Online,    UIIcon::Experiments};
 			static_assert(std::size(icons) == std::size_t(Category::Experiments) + 1, "an icon for every settings category");
 			options.icon = uiIcon(icons[int(category)]);
 			items.push_back(Glob2UI::button("nav." + std::to_string(int(category)), categoryName(category),
@@ -569,6 +582,8 @@ Element SettingsScreen::rowElement(const Row &r, const Presentation &p)
 			return control;
 		return row({sized({p.pt(56), p.pt(56)}, sprite(artwork, frame, Size{p.pt(56), p.pt(56)})), expanded(control)}, {-1, CrossAlign::Center});
 	}
+	case Kind::Custom:
+		return r.render ? r.render(p) : empty();
 	case Kind::Binding:
 	{
 		ButtonOptions options;
@@ -646,7 +661,8 @@ Element SettingsScreen::build(const Presentation &p)
 	const std::string scrollKey = modal != Modal::None ? "settings/modal" : "settings/" + std::to_string(int(current));
 	auto body = scroll(scrollKey, column(std::move(content), {p.pt(10)}));
 
-	std::string status = failed ? tr("Could not save") : settingsDirty ? tr("Saving…") : restartRequired() ? tr("Saved — restart required") : tr("Changes saved automatically");
+	const bool cannotSave = failed || GAGCore::ApplicationHost::storageRestoreFailed();
+	std::string status = cannotSave ? tr("Could not save") : settingsDirty ? tr("Saving…") : restartRequired() ? tr("Saved — restart required") : tr("Changes saved automatically");
 	std::vector<MenuAction> buttons;
 	if (phonePage())
 	{
@@ -656,8 +672,12 @@ Element SettingsScreen::build(const Presentation &p)
 	}
 	else
 	{
-		if (modal == Modal::None)
-			buttons.push_back({"cancel", tr(failed ? "continue" : "Cancel"), [this] { abandon(); }});
+		// Every change applies and saves as it is made ("Changes saved
+		// automatically"), so there is nothing for a Cancel to undo: Done closes.
+		// Only when saving fails (or cannot last: the browser's storage did not
+		// restore) is there a way to leave without trying again.
+		if (modal == Modal::None && cannotSave)
+			buttons.push_back({"cancel", tr("continue"), [this] { abandon(); }});
 		buttons.push_back({"done", tr(modal == Modal::None ? "Done" : "Cancel"), [this] { dismiss(); }, true});
 	}
 	auto footerRow = row({expanded(paragraph(status, {FontRole::Support, true})), actions(std::move(buttons), p, ActionStyle::Compact)}, {-1, CrossAlign::Center});

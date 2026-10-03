@@ -37,6 +37,15 @@
       "pattern": "^(https|wss|http|ws)://[^\\s]+$",
       "maxLength": 2048
     },
+    "relayId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._-]{1,64}$",
+      "description": "The relay the match runs on, for network telemetry (ClientNetworkSummary)."
+    },
+    "relayRegion": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{0,31}$"
+    },
     "setup": {
       "type": "object",
       "required": [
@@ -370,12 +379,37 @@
                   }
                 },
                 "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "required": [
+                  "seat",
+                  "kind",
+                  "team"
+                ],
+                "properties": {
+                  "seat": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 11
+                  },
+                  "kind": {
+                    "type": "string",
+                    "const": "closed"
+                  },
+                  "team": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 11
+                  }
+                },
+                "additionalProperties": false
               }
             ]
           },
           "minItems": 1,
           "maxItems": 12,
-          "description": "Player records in BasePlayer number order 0..k-1."
+          "description": "Player records (human and AI seats) in BasePlayer number order 0..p-1, then any closed seats."
         },
         "rules": {
           "type": "object",
@@ -469,6 +503,29 @@
           "maxItems": 64,
           "uniqueItems": true,
           "description": "Experimental-feature keys (ExperimentalFeatures.cpp); unknown keys are an error."
+        },
+        "pauseLimit": {
+          "type": "object",
+          "required": [
+            "pauses",
+            "seconds"
+          ],
+          "properties": {
+            "pauses": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100,
+              "description": "Pauses each human seat may start."
+            },
+            "seconds": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 3600,
+              "description": "Total time each human seat may keep the game paused; the game resumes by itself when the seat that paused runs out."
+            }
+          },
+          "additionalProperties": false,
+          "description": "Limit on pausing, enforced identically by every client and the verifier. Absent: unlimited (rooms, LAN). Older clients refuse a setup that has it."
         }
       },
       "additionalProperties": false,
@@ -478,6 +535,41 @@
       "type": "string",
       "pattern": "^(https|wss|http|ws)://[^\\s]+$",
       "maxLength": 2048
+    },
+    "mapTitle": {
+      "type": "string",
+      "maxLength": 128,
+      "description": "Display name of the map (catalog title, or the generator name)."
+    },
+    "ratingPreview": {
+      "type": "object",
+      "required": [
+        "ladder",
+        "before",
+        "ifWon",
+        "ifLost",
+        "provisional"
+      ],
+      "properties": {
+        "ladder": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "before": {
+          "type": "number"
+        },
+        "ifWon": {
+          "type": "number"
+        },
+        "ifLost": {
+          "type": "number"
+        },
+        "provisional": {
+          "type": "boolean",
+          "description": "The rating before the match is provisional."
+        }
+      },
+      "description": "Rating preview of a rated match (MatchAssignment.ratingPreview)."
     }
   },
   "description": "Everything a client needs to connect to the relay and load the match."

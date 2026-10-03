@@ -175,8 +175,8 @@ Outputs in `<dir>`:
 
 | File | Contents |
 | --- | --- |
-| `verdict.json` | `{"verdict": "verified" \| "diverged" \| "unverifiable", "seats": [...], "reason": "..."}`; `seats` only when diverged, `reason` only when unverifiable. It also carries the protocol package's `VerifyVerdict` members: `clients` (the same seats) and, unless unverifiable, `outcome` (`finalTick`, per-team `outcome`, `prestige` and `eliminatedTick`, and the SHA-256 of `result.json` and `match.replay`). |
-| `result.json` | The `--run-game` result format (`players`, `teams` with outcomes, `standard_statistics` and the 512-tick `history`, `winning_teams`) with `"job_type": "verify_match"`, the match id, both sim versions, the record flags, and a `verification` object (verdict, compared reports, first divergent tick per seat). It has no wall-clock fields, so a record verifies to the same bytes everywhere. |
+| `verdict.json` | `{"verdict": "verified" \| "diverged" \| "unverifiable", "seats": [...], "reason": "..."}`; `seats` only when diverged, `reason` only when unverifiable. It also carries the protocol package's `VerifyVerdict` members: `clients` (the same seats) and, unless unverifiable, `outcome` (`finalTick`, per-team `outcome`, `prestige` and `eliminatedTick`, and the SHA-256 of `result.json` and `match.replay`). `orderRejections` lists each human seat that sequenced orders the engine refused: `seat`, `rejected`, `stale`, per-reason counts and `firstRejectedTick` (see order validation in `docs/multiplayer/turn-protocol.md`). |
+| `result.json` | The `--run-game` result format (`players`, `teams` with outcomes, `standard_statistics` and the 512-tick `history`, `winning_teams`) with `"job_type": "verify_match"`, the match id, both sim versions, the record flags, and a `verification` object (verdict, compared reports, first divergent tick per seat, and `order_checks`: per human seat, the orders accepted, stale and rejected, with reasons). It has no wall-clock fields, so a record verifies to the same bytes everywhere. |
 | `checksums.txt` | One `tick checksum` line (hexadecimal) for every tick from 0 to `endTick`. |
 | `match.replay` | A standard replay of the verified match, written by `ReplayWriter`. |
 | `artifacts.json` | The file manifest, as for `--run-game`. |
@@ -199,8 +199,10 @@ partition verification jobs by it; the definition of the data hash is in the
 CI verifies `test/fixtures/multiplayer/FourSquares1.g2mr` on Linux, Windows and in
 three browsers (`test/run-browser-determinism.py` and `browser/tests/determinism.spec.js`)
 and requires the six `checksums.txt` traces to be identical. The committed
-`FourSquares1.verify-trace.txt` is the expected trace; the engine test that checks it
-also regenerates both files under `--update-fixtures`.
+`FourSquares1.verify-trace.txt` is the expected trace, and CI fails when the platforms
+agree on a different one; the engine test that checks it also regenerates both files
+under `--update-fixtures`. A change that moves the trace changed the simulation and
+must bump `SIM_REVISION` ([simulation version](../multiplayer/turn-protocol.md#simulation-version)).
 
 ## AI-Trainer Dataset Output
 

@@ -69,8 +69,33 @@ public final class Glob2Activity extends SDLActivity {
         }
         return false;
     }
+    // Invite links (glob2://join?... and the official https://.../j/... App
+    // Link). The game thread takes the newest one with takeLaunchLink().
+    private static final Object launchLinkLock = new Object();
+    private static String launchLink;
+    public static String takeLaunchLink() {
+        synchronized (launchLinkLock) {
+            String link = launchLink;
+            launchLink = null;
+            return link;
+        }
+    }
+    private static void keepLaunchLink(android.content.Intent intent) {
+        if (intent == null || !android.content.Intent.ACTION_VIEW.equals(intent.getAction()) || intent.getData() == null) return;
+        String link = intent.getData().toString();
+        if (link.length() > 2048) return;
+        synchronized (launchLinkLock) { launchLink = link; }
+    }
+    @Override
+    protected void onNewIntent(android.content.Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        keepLaunchLink(intent);
+    }
+
     @Override
     protected void onCreate(Bundle state) {
+        keepLaunchLink(getIntent());
         super.onCreate(state);
         if (mLayout == null) return;
         mLayout.setOnApplyWindowInsetsListener((view, insets) -> {

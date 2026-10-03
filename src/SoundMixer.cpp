@@ -35,6 +35,10 @@ using namespace GAGCore;
 #define INTERPOLATION_RANGE 65535
 #define INTERPOLATION_BITS 16
 #define SPEEX_FRAME_SIZE 160
+//! Voice samples queued per player beyond which new packets are dropped: about ten
+//! seconds (2000 samples are 200 ms). One speaker talking in real time stays far
+//! below it; a client flooding voice orders would otherwise grow the queue forever.
+#define MAX_VOICE_BACKLOG_SAMPLES 100000
 
 #if SDL_BYTEORDER == SDL_LIL_ENDIAN
 #define OGG_BYTEORDER 0
@@ -359,6 +363,8 @@ SoundMixer::~SoundMixer()
 	
 	for (size_t i=0; i<tracks.size(); i++)
 	{
+		if (!tracks[i])
+			continue;
 		ov_clear(tracks[i]);
 		delete tracks[i];
 	}
@@ -392,8 +398,18 @@ int SoundMixer::loadTrack(const std::string name, int index)
 	SDL_LockAudioStream(audioStream);
 	if (index >= 0 && index< (int)tracks.size())
 	{
-		ov_clear(tracks[index]);
-		delete tracks[index];
+		if (tracks[index])
+		{
+			ov_clear(tracks[index]);
+			delete tracks[index];
+		}
+		tracks[index] = oggFile.release();
+	}
+	else if (index >= 0)
+	{
+		// A slot whose earlier tracks are missing (the browser installs the
+		// menu music after startup) keeps its index; empty slots never play.
+		tracks.resize(index + 1, nullptr);
 		tracks[index] = oggFile.release();
 	}
 	else
@@ -410,7 +426,7 @@ int SoundMixer::loadTrack(const std::string name, int index)
 // can resume it when the user unmutes.
 void SoundMixer::setNextTrack(unsigned i, bool earlyChange)
 {
-	if (i >= tracks.size())
+	if (i >= tracks.size() || !tracks[i])
 		return;
 
 	bool resume = false;
@@ -535,6 +551,11 @@ void SoundMixer::addVoiceData(std::shared_ptr<OrderVoiceData> order)
 		SDL_LockAudioStream(audioStream);
 		// get or create the voice
 		PlayerVoice &pv = voices[order->sender];
+		if (pv.voiceData.size() >= MAX_VOICE_BACKLOG_SAMPLES)
+		{
+			SDL_UnlockAudioStream(audioStream);
+			return;
+		}
 		// insert 200 ms silence to let packets come if we aer the first
 		if (pv.voiceData.empty())
 		{

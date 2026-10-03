@@ -25,6 +25,7 @@ class EditorLoadScreen : public Glob2UI::Screen
 					 GAGCore::CooperativeSlice slice = GAGCore::CooperativeSlice());
 
   private:
+	GAGCore::CooperativeTask prepare(Initializer initialize);
 	GAGCore::CooperativeSlice slice;
 	std::string previousRng;
 	std::unique_ptr<MapEdit> editor;

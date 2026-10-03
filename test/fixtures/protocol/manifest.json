@@ -126,6 +126,53 @@
       "note": "Uploaded save; human + AI share team 0; every rule non-default; an experiment; non-ASCII name."
     },
     {
+      "file": "valid/MatchSetup/room-closed-seats.json",
+      "schema": "MatchSetup",
+      "valid": true,
+      "note": "A room with seats 1 and 3 empty: the players keep their map teams (0 and 2) and come first; the empty teams are closed."
+    },
+    {
+      "file": "valid/MatchSetup/queue-pause-limit.json",
+      "schema": "MatchSetup",
+      "valid": true,
+      "note": "A queue match: each human may pause 3 times for 60 s in total."
+    },
+    {
+      "file": "invalid/MatchSetup/pause-limit-out-of-range.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "schema",
+      "note": "A pause limit allows at most 100 pauses and 3600 s."
+    },
+    {
+      "file": "invalid/MatchSetup/closed-seat-with-name.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "schema",
+      "note": "A closed seat is not a player: it has no name or AI."
+    },
+    {
+      "file": "invalid/MatchSetup/closed-seat-before-player.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "semantic",
+      "note": "Closed seats follow every human and AI seat, so players keep the numbers 0..p-1."
+    },
+    {
+      "file": "invalid/MatchSetup/closed-team-played.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "semantic",
+      "note": "A closed seat cannot close a team that a player seat controls."
+    },
+    {
+      "file": "invalid/MatchSetup/only-closed-seats.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "semantic",
+      "note": "A match needs at least one human or AI seat."
+    },
+    {
       "file": "invalid/MatchSetup/missing-rules.json",
       "schema": "MatchSetup",
       "valid": false,

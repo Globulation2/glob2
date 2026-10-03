@@ -14,10 +14,18 @@
 
 #include "MatchSetup.h"
 #include "Sha256.h"
+#include "SimRevision.h"
 #include "Version.h"
 
 namespace Online
 {
+// Defined here rather than in MatchSetup.cpp so that SimVersion (used by the online
+// client) links without the engine-side MatchSetup conversion.
+MatchSetupError::MatchSetupError(Stage stage, std::string path, const std::string& message)
+	: std::runtime_error((path.empty() ? std::string("/") : path) + ": " + message), stage(stage), path(std::move(path))
+{
+}
+
 namespace
 {
 bool lowercaseHex64(const std::string& text)
@@ -158,12 +166,17 @@ std::string simDataHashOf(const std::vector<SimDataFile>& files)
 	return toHex(hash.finish());
 }
 
+SimDataFile simRevisionEntry(int revision)
+{
+	return {"#sim-revision", std::to_string(revision)};
+}
+
 const std::string& simDataHash()
 {
 	static std::once_flag once;
 	static std::string value;
 	std::call_once(once, [] {
-		std::vector<SimDataFile> files;
+		std::vector<SimDataFile> files{simRevisionEntry()};
 		for (const auto& path : simDataFiles())
 		{
 			SimDataFile file;
@@ -185,5 +198,18 @@ SimVersion currentSimVersion()
 	version.netProtocol = NET_PROTOCOL_VERSION;
 	version.dataHash = simDataHash();
 	return version;
+}
+
+SimVersion SimVersion::local()
+{
+	if (!GAGCore::Toolkit::getFileManager())
+	{
+		SimVersion version;
+		version.versionMinor = VERSION_MINOR;
+		version.netProtocol = NET_PROTOCOL_VERSION;
+		version.dataHash = std::string(64, '0');
+		return version;
+	}
+	return currentSimVersion();
 }
 }

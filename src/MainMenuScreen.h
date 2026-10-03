@@ -14,7 +14,7 @@ class MainMenuScreen : public Glob2UI::Screen
 		TUTORIAL,
 		LOAD_GAME,
 		CUSTOM,
-		MULTIPLAYERS_YOG,
+		PLAY_ONLINE,
 		MULTIPLAYERS_LAN,
 		GAME_SETUP,
 		EDITOR,

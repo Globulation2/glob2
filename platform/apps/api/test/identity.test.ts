@@ -1,6 +1,7 @@
 // REST identity flows against a real Postgres: guests, tokens and JWKS, local
 // passwords, renames, admin CLI and role checks, rate limits.
-import { createPublicKey, verify } from 'node:crypto';
+import { createHash, createPublicKey, verify } from 'node:crypto';
+import { sql } from 'kysely';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { checkDocument } from '@glob2/protocol';
 import { runCli } from '../src/cli.ts';
@@ -144,6 +145,50 @@ describe('tokens', () => {
     }
   });
 
+  /** Moves a refresh token's rotation into the past (beyond the reuse grace). */
+  async function ageRotation(token: string, seconds: number) {
+    const hash = createHash('sha256').update(token).digest('hex');
+    await sql`UPDATE refresh_tokens SET rotated_at = rotated_at - make_interval(secs => ${seconds})
+              WHERE token_hash = ${hash}`.execute(harness.database.db);
+  }
+
+  it('accepts concurrent refreshes with the just-rotated token inside the grace', async () => {
+    const session = await newGuest();
+    const first = session.tokens.refreshToken;
+    // Two clients (or a retry) refresh with the same token at once.
+    const [a, b] = await Promise.all([
+      postJson(`${api.url}/api/v1/auth/refresh`, { refreshToken: first }),
+      postJson(`${api.url}/api/v1/auth/refresh`, { refreshToken: first }),
+    ]);
+    expect([a.status, b.status]).toEqual([200, 200]);
+    const [ta, tb] = [await json(a), await json(b)];
+    expect(ta['refreshToken']).not.toBe(tb['refreshToken']);
+    expect(decode(ta['accessToken'] as string).claims.sid).toBe(
+      decode(tb['accessToken'] as string).claims.sid,
+    );
+    // Both successors keep working.
+    for (const token of [ta, tb]) {
+      const next = await postJson(`${api.url}/api/v1/auth/refresh`, {
+        refreshToken: token['refreshToken'],
+      });
+      expect(next.status).toBe(200);
+    }
+  });
+
+  it('treats a rotated token as stolen once its successor was used', async () => {
+    const session = await newGuest();
+    const first = session.tokens.refreshToken;
+    const second = (
+      await json(await postJson(`${api.url}/api/v1/auth/refresh`, { refreshToken: first }))
+    )['refreshToken'] as string;
+    const third = await postJson(`${api.url}/api/v1/auth/refresh`, { refreshToken: second });
+    expect(third.status).toBe(200);
+    // `first` is no longer the immediately previous token: reuse, even inside the grace.
+    const reuse = await postJson(`${api.url}/api/v1/auth/refresh`, { refreshToken: first });
+    expect(reuse.status).toBe(401);
+    expect((await json(reuse))['details']).toEqual({ reason: 'reused' });
+  });
+
   it('rotates refresh tokens and revokes the family when a rotated token is reused', async () => {
     const session = await newGuest();
     const first = session.tokens.refreshToken;
@@ -157,7 +202,8 @@ describe('tokens', () => {
       decode(session.tokens.accessToken).claims.sid,
     );
 
-    // The old token is presented again: theft is assumed, the family dies.
+    // The old token is presented again after the grace: theft is assumed, the family dies.
+    await ageRotation(first, 120);
     const reuse = await postJson(`${api.url}/api/v1/auth/refresh`, { refreshToken: first });
     expect(reuse.status).toBe(401);
     expect((await json(reuse))['details']).toEqual({ reason: 'reused' });
@@ -260,6 +306,50 @@ describe('local accounts', () => {
       platform: 'desktop',
     });
     expect(taken.status).toBe(409);
+  });
+
+  it('unlinks a sign-in method but never the last one', async () => {
+    const registered = await json(
+      await postJson(`${api.url}/api/v1/auth/local/register`, {
+        username: 'carol_u',
+        password: 'a long password',
+        displayName: 'Carol',
+        platform: 'desktop',
+      }),
+    );
+    const accountId = (registered['account'] as { id: string }).id;
+    const token = (registered['tokens'] as { accessToken: string }).accessToken;
+    const unlink = (provider: string, auth: Record<string, string> = bearer(token)) =>
+      fetch(`${api.url}/api/v1/accounts/me/identities/${provider}`, {
+        method: 'DELETE',
+        headers: auth,
+      });
+
+    // The only method: refused, and still linked.
+    const last = await unlink('local');
+    expect(last.status).toBe(409);
+    expect(((await json(last))['details'] as Record<string, unknown>)['reason']).toBe(
+      'last_sign_in_method',
+    );
+    expect(await unlink('google').then((r) => r.status)).toBe(404);
+    expect(await unlink('Bad Provider!').then((r) => r.status)).toBe(400);
+    expect(await unlink('local', {}).then((r) => r.status)).toBe(401);
+
+    // With a second method, either one may go, but not both.
+    await harness.database.db
+      .insertInto('identities')
+      .values({ account_id: accountId, provider: 'google', subject: 'carol-google-1' })
+      .execute();
+    expect(await unlink('local').then((r) => r.status)).toBe(204);
+    const self = await json(
+      await fetch(`${api.url}/api/v1/accounts/me`, { headers: bearer(token) }),
+    );
+    expect(self['identities']).toEqual([expect.objectContaining({ provider: 'google' })]);
+    expect(await unlink('google').then((r) => r.status)).toBe(409);
+
+    // A guest has nothing to unlink.
+    const guest = await newGuest();
+    expect(await unlink('local', bearer(guest.tokens.accessToken)).then((r) => r.status)).toBe(404);
   });
 
   it('keeps registered display names unique and limits renames', async () => {
@@ -395,6 +485,91 @@ describe('administration', () => {
     expect(audit[3]!.actor_account_id).toBe(id(boss));
   });
 
+  it('deletes accounts from the CLI and the admin API, freeing the username', async () => {
+    const register = async (username: string) =>
+      json(
+        await postJson(`${api.url}/api/v1/auth/local/register`, {
+          username,
+          password: 'a long password',
+          displayName: username,
+          platform: 'desktop',
+        }),
+      );
+    const id = (session: Record<string, unknown>) => (session['account'] as { id: string }).id;
+    const token = (session: Record<string, unknown>) =>
+      (session['tokens'] as { accessToken: string }).accessToken;
+    const io = {
+      lines: [] as string[],
+      out: (l: string) => io.lines.push(l),
+      err: (l: string) => io.lines.push(l),
+    };
+    const env = { DATABASE_URL: harness.database.url };
+    const chief = await register('chief');
+    expect(await runCli(['admin', 'grant', id(chief)], io, env)).toBe(0);
+
+    // A test account with a catalog map, deleted from the server's command line.
+    const tester = await register('UxReviewTester');
+    const map = await json(
+      await postJson(
+        `${api.url}/api/v1/maps`,
+        { title: 'Test map (please ignore)', visibility: 'unlisted' },
+        bearer(token(tester)),
+      ),
+    );
+    expect(
+      await runCli(['admin', 'delete', 'UxReviewTester', '--reason', 'test data'], io, env),
+    ).toBe(0);
+    expect(io.lines.at(-1)).toMatch(
+      /^deleted UxReviewTester \(.*registered\); removed 1 catalog map/,
+    );
+    expect(await runCli(['admin', 'delete', id(tester)], io, env)).toBe(1);
+    const row = await harness.database.db
+      .selectFrom('accounts')
+      .selectAll()
+      .where('id', '=', id(tester))
+      .executeTakeFirstOrThrow();
+    expect(row).toMatchObject({ status: 'deleted', display_name: 'Deleted player' });
+    expect((await fetch(`${api.url}/api/v1/maps/${map['id'] as string}`)).status).toBe(404);
+    expect(
+      (await fetch(`${api.url}/api/v1/accounts/me`, { headers: bearer(token(tester)) })).status,
+    ).toBe(401);
+    expect(
+      (
+        await postJson(`${api.url}/api/v1/auth/local/sign-in`, {
+          username: 'UxReviewTester',
+          password: 'a long password',
+          platform: 'desktop',
+        })
+      ).status,
+    ).toBe(401);
+    // The username can be registered again.
+    expect(id(await register('UxReviewTester'))).not.toBe(id(tester));
+
+    // A guest, deleted by an administrator over the API.
+    const guest = await json(
+      await postJson(`${api.url}/api/v1/auth/guest`, { platform: 'desktop' }),
+    );
+    const remove = (who: Record<string, unknown>, target: string) =>
+      fetch(`${api.url}/api/v1/admin/accounts/${target}?reason=test`, {
+        method: 'DELETE',
+        headers: bearer(token(who)),
+      });
+    expect((await remove(guest, id(chief))).status).toBe(403);
+    expect((await remove(chief, id(chief))).status).toBe(403);
+    expect((await remove(chief, id(guest))).status).toBe(204);
+    expect((await remove(chief, id(guest))).status).toBe(404);
+    const audit = await harness.database.db
+      .selectFrom('admin_audit_log')
+      .select(['action', 'details'])
+      .where('target_id', 'in', [id(tester), id(guest)])
+      .orderBy('id')
+      .execute();
+    expect(audit.map((a) => a.action)).toEqual(['account.delete', 'account.delete']);
+    // Ids, not names: the audit log keeps nothing that identifies the person.
+    expect(audit[0]!.details).toMatchObject({ kind: 'registered', removedMaps: 1 });
+    expect(JSON.stringify(audit)).not.toContain('UxReviewTester');
+  });
+
   it('generates signing keys from the CLI', async () => {
     const io = {
       lines: [] as string[],
@@ -412,6 +587,8 @@ describe('administration', () => {
 
 describe('rate limits', () => {
   it('limits sign-in requests and new guests per address', async () => {
+    // Counters are shared by every replica: start from none.
+    await harness.database.db.deleteFrom('rate_limits').execute();
     const limited = await harness.start({
       instance: { limits: { authPerMinute: 3, guestsPerHour: 2 } },
     });

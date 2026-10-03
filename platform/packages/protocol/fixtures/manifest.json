@@ -10,7 +10,9 @@
     "AdminMuteRequest": "schemas/AdminMuteRequest.schema.json",
     "AdminRenameRequest": "schemas/AdminRenameRequest.schema.json",
     "AdminRoleRequest": "schemas/AdminRoleRequest.schema.json",
+    "AiLeaderboard": "schemas/AiLeaderboard.schema.json",
     "AuthTokens": "schemas/AuthTokens.schema.json",
+    "ClientNetworkSummary": "schemas/ClientNetworkSummary.schema.json",
     "CreateMapRequest": "schemas/CreateMapRequest.schema.json",
     "EngineJob": "schemas/EngineJob.schema.json",
     "EngineJobResult": "schemas/EngineJobResult.schema.json",
@@ -21,13 +23,22 @@
     "GuestSignInRequest": "schemas/GuestSignInRequest.schema.json",
     "IdentityConflict": "schemas/IdentityConflict.schema.json",
     "InstanceInfo": "schemas/InstanceInfo.schema.json",
+    "InstanceStats": "schemas/InstanceStats.schema.json",
+    "InviteInfo": "schemas/InviteInfo.schema.json",
     "LeaderboardPage": "schemas/LeaderboardPage.schema.json",
     "LocalRegisterRequest": "schemas/LocalRegisterRequest.schema.json",
     "LocalSignInRequest": "schemas/LocalSignInRequest.schema.json",
+    "MapDetail": "schemas/MapDetail.schema.json",
+    "MapHideRequest": "schemas/MapHideRequest.schema.json",
     "MapInfo": "schemas/MapInfo.schema.json",
+    "MapLikeResult": "schemas/MapLikeResult.schema.json",
     "MapList": "schemas/MapList.schema.json",
+    "MapReportInfo": "schemas/MapReportInfo.schema.json",
+    "MapReportList": "schemas/MapReportList.schema.json",
+    "MapReportReceipt": "schemas/MapReportReceipt.schema.json",
     "MapReportRequest": "schemas/MapReportRequest.schema.json",
     "MapSource": "schemas/MapSource.schema.json",
+    "MapUpload": "schemas/MapUpload.schema.json",
     "MapVersionInfo": "schemas/MapVersionInfo.schema.json",
     "MatchAssignment": "schemas/MatchAssignment.schema.json",
     "MatchDetail": "schemas/MatchDetail.schema.json",
@@ -38,6 +49,7 @@
     "MatchTicketClaims": "schemas/MatchTicketClaims.schema.json",
     "MatchTicketHeader": "schemas/MatchTicketHeader.schema.json",
     "PlatformJwks": "schemas/PlatformJwks.schema.json",
+    "PlayerProfile": "schemas/PlayerProfile.schema.json",
     "PublicAccount": "schemas/PublicAccount.schema.json",
     "RealtimeAuthHandoffBeginParams": "schemas/RealtimeAuthHandoffBeginParams.schema.json",
     "RealtimeAuthHandoffBeginResult": "schemas/RealtimeAuthHandoffBeginResult.schema.json",
@@ -48,6 +60,7 @@
     "RealtimeEvent": "schemas/RealtimeEvent.schema.json",
     "RealtimeEventAuthHandoffCompleted": "schemas/RealtimeEventAuthHandoffCompleted.schema.json",
     "RealtimeEventAuthHandoffFailed": "schemas/RealtimeEventAuthHandoffFailed.schema.json",
+    "RealtimeEventMatchRematchOffered": "schemas/RealtimeEventMatchRematchOffered.schema.json",
     "RealtimeEventMatchStart": "schemas/RealtimeEventMatchStart.schema.json",
     "RealtimeEventMatchUpdated": "schemas/RealtimeEventMatchUpdated.schema.json",
     "RealtimeEventQueueMatchFound": "schemas/RealtimeEventQueueMatchFound.schema.json",
@@ -60,12 +73,16 @@
     "RealtimeEventSessionRevoked": "schemas/RealtimeEventSessionRevoked.schema.json",
     "RealtimeMatchReconnectParams": "schemas/RealtimeMatchReconnectParams.schema.json",
     "RealtimeMatchReconnectResult": "schemas/RealtimeMatchReconnectResult.schema.json",
+    "RealtimeMatchRematchParams": "schemas/RealtimeMatchRematchParams.schema.json",
+    "RealtimeMatchRematchResult": "schemas/RealtimeMatchRematchResult.schema.json",
     "RealtimeQueueJoinParams": "schemas/RealtimeQueueJoinParams.schema.json",
     "RealtimeQueueJoinResult": "schemas/RealtimeQueueJoinResult.schema.json",
     "RealtimeQueueLeaveParams": "schemas/RealtimeQueueLeaveParams.schema.json",
     "RealtimeQueueLeaveResult": "schemas/RealtimeQueueLeaveResult.schema.json",
     "RealtimeQueueRespondParams": "schemas/RealtimeQueueRespondParams.schema.json",
     "RealtimeQueueRespondResult": "schemas/RealtimeQueueRespondResult.schema.json",
+    "RealtimeQueueUpdateParams": "schemas/RealtimeQueueUpdateParams.schema.json",
+    "RealtimeQueueUpdateResult": "schemas/RealtimeQueueUpdateResult.schema.json",
     "RealtimeRequest": "schemas/RealtimeRequest.schema.json",
     "RealtimeResponse": "schemas/RealtimeResponse.schema.json",
     "RealtimeRoomChatParams": "schemas/RealtimeRoomChatParams.schema.json",
@@ -74,6 +91,8 @@
     "RealtimeRoomCreateResult": "schemas/RealtimeRoomCreateResult.schema.json",
     "RealtimeRoomJoinParams": "schemas/RealtimeRoomJoinParams.schema.json",
     "RealtimeRoomJoinResult": "schemas/RealtimeRoomJoinResult.schema.json",
+    "RealtimeRoomKickParams": "schemas/RealtimeRoomKickParams.schema.json",
+    "RealtimeRoomKickResult": "schemas/RealtimeRoomKickResult.schema.json",
     "RealtimeRoomLeaveParams": "schemas/RealtimeRoomLeaveParams.schema.json",
     "RealtimeRoomLeaveResult": "schemas/RealtimeRoomLeaveResult.schema.json",
     "RealtimeRoomSetReadyParams": "schemas/RealtimeRoomSetReadyParams.schema.json",
@@ -95,10 +114,15 @@
     "RelayHeartbeat": "schemas/RelayHeartbeat.schema.json",
     "RelayHeartbeatResponse": "schemas/RelayHeartbeatResponse.schema.json",
     "RelayMatchEnded": "schemas/RelayMatchEnded.schema.json",
+    "RelayMatchEndedResponse": "schemas/RelayMatchEndedResponse.schema.json",
+    "RelayNetworkSummary": "schemas/RelayNetworkSummary.schema.json",
+    "RelayRecordReceipt": "schemas/RelayRecordReceipt.schema.json",
+    "RelayRegionList": "schemas/RelayRegionList.schema.json",
     "RelayRegistration": "schemas/RelayRegistration.schema.json",
     "RelayRegistrationResponse": "schemas/RelayRegistrationResponse.schema.json",
     "RenderPreviewPayload": "schemas/RenderPreviewPayload.schema.json",
     "RenderPreviewResult": "schemas/RenderPreviewResult.schema.json",
+    "ResolveMapReportRequest": "schemas/ResolveMapReportRequest.schema.json",
     "RoomChatMessage": "schemas/RoomChatMessage.schema.json",
     "RoomList": "schemas/RoomList.schema.json",
     "RoomMapSelection": "schemas/RoomMapSelection.schema.json",
@@ -108,6 +132,7 @@
     "SignOutRequest": "schemas/SignOutRequest.schema.json",
     "SimVersion": "schemas/SimVersion.schema.json",
     "UpdateAccountRequest": "schemas/UpdateAccountRequest.schema.json",
+    "UpdateMapRequest": "schemas/UpdateMapRequest.schema.json",
     "ValidateMapPayload": "schemas/ValidateMapPayload.schema.json",
     "ValidateMapResult": "schemas/ValidateMapResult.schema.json",
     "VerifyMatchPayload": "schemas/VerifyMatchPayload.schema.json",
@@ -144,6 +169,53 @@
       "schema": "MatchSetup",
       "valid": true,
       "note": "Uploaded save; human + AI share team 0; every rule non-default; an experiment; non-ASCII name."
+    },
+    {
+      "file": "valid/MatchSetup/room-closed-seats.json",
+      "schema": "MatchSetup",
+      "valid": true,
+      "note": "A room with seats 1 and 3 empty: the players keep their map teams (0 and 2) and come first; the empty teams are closed."
+    },
+    {
+      "file": "valid/MatchSetup/queue-pause-limit.json",
+      "schema": "MatchSetup",
+      "valid": true,
+      "note": "A queue match: each human may pause 3 times for 60 s in total."
+    },
+    {
+      "file": "invalid/MatchSetup/pause-limit-out-of-range.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "schema",
+      "note": "A pause limit allows at most 100 pauses and 3600 s."
+    },
+    {
+      "file": "invalid/MatchSetup/closed-seat-with-name.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "schema",
+      "note": "A closed seat is not a player: it has no name or AI."
+    },
+    {
+      "file": "invalid/MatchSetup/closed-seat-before-player.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "semantic",
+      "note": "Closed seats follow every human and AI seat, so players keep the numbers 0..p-1."
+    },
+    {
+      "file": "invalid/MatchSetup/closed-team-played.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "semantic",
+      "note": "A closed seat cannot close a team that a player seat controls."
+    },
+    {
+      "file": "invalid/MatchSetup/only-closed-seats.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "semantic",
+      "note": "A match needs at least one human or AI seat."
     },
     {
       "file": "invalid/MatchSetup/missing-rules.json",
@@ -310,10 +382,86 @@
       "note": "reason is completed, abandoned or aborted."
     },
     {
+      "file": "valid/RelayMatchEnded/with-network.json",
+      "schema": "RelayMatchEnded",
+      "valid": true,
+      "note": "A relay that measures the network adds its RelayNetworkSummary (optional)."
+    },
+    {
+      "file": "valid/RelayNetworkSummary/one-vs-one.json",
+      "schema": "RelayNetworkSummary",
+      "valid": true,
+      "note": "Per-seat relay measurements of a 30-minute match; seat 1 reconnected once."
+    },
+    {
+      "file": "valid/RelayNetworkSummary/lan-host-without-rtt.json",
+      "schema": "RelayNetworkSummary",
+      "valid": true,
+      "note": "rtt_us is optional: a LAN host measures no round trip. Unknown fields are allowed (newer engines)."
+    },
+    {
+      "file": "invalid/RelayNetworkSummary/version-2.json",
+      "schema": "RelayNetworkSummary",
+      "valid": false,
+      "stage": "schema",
+      "note": "Version 1 readers refuse other versions; a v2 changes field meanings."
+    },
+    {
+      "file": "invalid/RelayNetworkSummary/negative-count.json",
+      "schema": "RelayNetworkSummary",
+      "valid": false,
+      "stage": "schema",
+      "note": "Counters are non-negative integers."
+    },
+    {
+      "file": "valid/ClientNetworkSummary/online-seat.json",
+      "schema": "ClientNetworkSummary",
+      "valid": true,
+      "note": "A client summary as the engine writes it next to the replay. Not uploaded anywhere."
+    },
+    {
+      "file": "valid/ClientNetworkSummary/without-series.json",
+      "schema": "ClientNetworkSummary",
+      "valid": true,
+      "note": "GLOB2_NET_SUMMARY leaves the series out; order_validation is null without the order check."
+    },
+    {
+      "file": "invalid/ClientNetworkSummary/unknown-transport.json",
+      "schema": "ClientNetworkSummary",
+      "valid": false,
+      "stage": "schema",
+      "note": "transport is lan or online."
+    },
+    {
+      "file": "valid/RelayRecordReceipt/stored.json",
+      "schema": "RelayRecordReceipt",
+      "valid": true,
+      "note": "Answer to PUT /internal/v1/matches/{matchId}/record."
+    },
+    {
+      "file": "valid/RelayMatchEndedResponse/duplicate.json",
+      "schema": "RelayMatchEndedResponse",
+      "valid": true,
+      "note": "A repeated end report (relay spool retry) is acknowledged without changes."
+    },
+    {
       "file": "valid/RealtimeRequest/hello.json",
       "schema": "RealtimeRequest",
       "valid": true,
       "note": "The first frame on a socket."
+    },
+    {
+      "file": "valid/RealtimeRoomKickParams/kick.json",
+      "schema": "RealtimeRoomKickParams",
+      "valid": true,
+      "note": "The host removes a member; they cannot rejoin the room for 10 minutes."
+    },
+    {
+      "file": "invalid/RealtimeRoomKickParams/missing-account.json",
+      "schema": "RealtimeRoomKickParams",
+      "valid": false,
+      "stage": "schema",
+      "note": "A kick names the member."
     },
     {
       "file": "invalid/RealtimeRequest/missing-id.json",
@@ -385,6 +533,12 @@
       "note": "Join by invite code."
     },
     {
+      "file": "valid/RealtimeRoomJoinParams/with-regions.json",
+      "schema": "RealtimeRoomJoinParams",
+      "valid": true,
+      "note": "Join by invite code, reporting relay round trips for match placement."
+    },
+    {
       "file": "invalid/RealtimeRoomJoinParams/code-with-punctuation.json",
       "schema": "RealtimeRoomJoinParams",
       "valid": false,
@@ -402,6 +556,25 @@
       "schema": "RealtimeRoomSetSeatParams",
       "valid": true,
       "note": "Host puts an AI in seat 1."
+    },
+    {
+      "file": "valid/RealtimeRoomSetSeatParams/lock.json",
+      "schema": "RealtimeRoomSetSeatParams",
+      "valid": true,
+      "note": "Host closes an empty seat."
+    },
+    {
+      "file": "invalid/RealtimeRoomSetSeatParams/human-for-someone-else.json",
+      "schema": "RealtimeRoomSetSeatParams",
+      "valid": false,
+      "stage": "schema",
+      "note": "Nobody can seat another player; players take seats themselves (kind self)."
+    },
+    {
+      "file": "valid/RealtimeMatchReconnectParams/relay-refused.json",
+      "schema": "RealtimeMatchReconnectParams",
+      "valid": true,
+      "note": "The assigned relay refused the new match (Reject 5); ask for another relay."
     },
     {
       "file": "valid/RealtimeQueueJoinParams/with-regions.json",
@@ -428,6 +601,55 @@
       "note": "A ranked 1v1 group waiting for both players to accept."
     },
     {
+      "file": "valid/RealtimeEventQueueProposal/ranked-accept-with-seats.json",
+      "schema": "RealtimeEventQueueProposal",
+      "valid": true,
+      "note": "The same prompt with the map and seats the client shows; resent when someone accepts."
+    },
+    {
+      "file": "valid/RealtimeEventQueueProposal/ai-backfill.json",
+      "schema": "RealtimeEventQueueProposal",
+      "valid": true,
+      "note": "No person was found: an AI takes the seat and the match starts without a prompt."
+    },
+    {
+      "file": "invalid/RealtimeEventQueueProposal/seat-bad-response.json",
+      "schema": "RealtimeEventQueueProposal",
+      "valid": false,
+      "stage": "schema",
+      "note": "Seat responses are pending, accepted, declined, timeout or not_required."
+    },
+    {
+      "file": "valid/RealtimeEventQueueStatus/searching.json",
+      "schema": "RealtimeEventQueueStatus",
+      "valid": true,
+      "note": "Search progress with the rating range, region and the AI that would fill the seat."
+    },
+    {
+      "file": "valid/RealtimeQueueUpdateParams/disallow-ai.json",
+      "schema": "RealtimeQueueUpdateParams",
+      "valid": true,
+      "note": "Untick \"Allow an AI opponent\" while searching."
+    },
+    {
+      "file": "valid/RealtimeMatchRematchParams/after-quick-match.json",
+      "schema": "RealtimeMatchRematchParams",
+      "valid": true,
+      "note": "Ask for (or join) the rematch room of a quick match."
+    },
+    {
+      "file": "valid/RealtimeEventMatchRematchOffered/offered.json",
+      "schema": "RealtimeEventMatchRematchOffered",
+      "valid": true,
+      "note": "The other player opened the rematch room."
+    },
+    {
+      "file": "valid/RelayRegionList/two-regions.json",
+      "schema": "RelayRegionList",
+      "valid": true,
+      "note": "Regions a client probes before queueing."
+    },
+    {
       "file": "valid/RealtimeEventQueueProposalEnded/removed-after-decline.json",
       "schema": "RealtimeEventQueueProposalEnded",
       "valid": true,
@@ -438,6 +660,25 @@
       "schema": "RealtimeEventMatchStart",
       "valid": true,
       "note": "match.start pushed to a seated client."
+    },
+    {
+      "file": "valid/RealtimeEventMatchStart/assignment-rated-preview.json",
+      "schema": "RealtimeEventMatchStart",
+      "valid": true,
+      "note": "A rated queue match: the map title and the rating preview the results screen greys out until verified."
+    },
+    {
+      "file": "invalid/RealtimeEventMatchStart/assignment-preview-missing-ifLost.json",
+      "schema": "RealtimeEventMatchStart",
+      "valid": false,
+      "stage": "schema",
+      "note": "A rating preview carries both outcomes."
+    },
+    {
+      "file": "valid/RealtimeEventMatchStart/assignment-with-relay.json",
+      "schema": "RealtimeEventMatchStart",
+      "valid": true,
+      "note": "Newer servers name the relay and its region (network telemetry context)."
     },
     {
       "file": "invalid/RealtimeEventMatchStart/assignment-with-bad-setup.json",
@@ -472,10 +713,111 @@
       "note": "A room."
     },
     {
+      "file": "valid/RoomState/generating-map-locked-seat.json",
+      "schema": "RoomState",
+      "valid": true,
+      "note": "A three-colony generated map still generating; the host locked seat 2."
+    },
+    {
+      "file": "valid/InviteInfo/open-room.json",
+      "schema": "InviteInfo",
+      "valid": true,
+      "note": "What an invite link points at."
+    },
+    {
+      "file": "valid/MapVersionInfo/pending.json",
+      "schema": "MapVersionInfo",
+      "valid": true,
+      "note": "A catalog version just uploaded: no map facts until an engine agent validated it."
+    },
+    {
+      "file": "valid/MapDetail/public-map.json",
+      "schema": "MapDetail",
+      "valid": true,
+      "note": "GET /api/v1/maps/{id}: a public map with one valid, previewed version."
+    },
+    {
+      "file": "invalid/MapInfo/unknown-visibility.json",
+      "schema": "MapInfo",
+      "valid": false,
+      "stage": "schema",
+      "note": "Maps are public, unlisted or private."
+    },
+    {
+      "file": "valid/CreateMapRequest/title-only.json",
+      "schema": "CreateMapRequest",
+      "valid": true,
+      "note": "Everything but the title is optional; visibility defaults to unlisted."
+    },
+    {
+      "file": "invalid/CreateMapRequest/unknown-field.json",
+      "schema": "CreateMapRequest",
+      "valid": false,
+      "stage": "schema",
+      "note": "Request bodies are strict."
+    },
+    {
+      "file": "valid/ResolveMapReportRequest/resolve-and-hide.json",
+      "schema": "ResolveMapReportRequest",
+      "valid": true,
+      "note": "A moderator upholds a report and hides the map."
+    },
+    {
+      "file": "valid/MapUpload/valid-save.json",
+      "schema": "MapUpload",
+      "valid": true,
+      "note": "A validated save with its players, for reteaming."
+    },
+    {
+      "file": "invalid/MapUpload/unknown-format.json",
+      "schema": "MapUpload",
+      "valid": false,
+      "stage": "schema",
+      "note": "Uploads are maps or saves."
+    },
+    {
       "file": "valid/MatchDetail/verified.json",
       "schema": "MatchDetail",
       "valid": true,
       "note": "A verified rated match."
+    },
+    {
+      "file": "invalid/MatchDetail/array-timeline.json",
+      "schema": "MatchDetail",
+      "valid": false,
+      "stage": "schema",
+      "note": "Timelines are sample objects, not bare rows."
+    },
+    {
+      "file": "valid/InstanceStats/home.json",
+      "schema": "InstanceStats",
+      "valid": true,
+      "note": "The home page numbers."
+    },
+    {
+      "file": "invalid/InstanceStats/negative-count.json",
+      "schema": "InstanceStats",
+      "valid": false,
+      "stage": "schema",
+      "note": "Counts are never negative."
+    },
+    {
+      "file": "valid/PlayerProfile/registered.json",
+      "schema": "PlayerProfile",
+      "valid": true,
+      "note": "A registered player with a rating, its history and aggregates."
+    },
+    {
+      "file": "valid/PlayerProfile/guest.json",
+      "schema": "PlayerProfile",
+      "valid": true,
+      "note": "Guests get a minimal profile."
+    },
+    {
+      "file": "valid/AiLeaderboard/one-version.json",
+      "schema": "AiLeaderboard",
+      "valid": true,
+      "note": "AI entities of a ladder grouped by sim version."
     },
     {
       "file": "valid/LeaderboardPage/with-ai.json",
@@ -579,10 +921,28 @@
       "note": "An agent reports a failure."
     },
     {
+      "file": "valid/ValidateMapResult/save-with-players.json",
+      "schema": "ValidateMapResult",
+      "valid": true,
+      "note": "A valid save: map facts plus the players recorded in it (for reteaming)."
+    },
+    {
+      "file": "valid/ValidateMapResult/invalid.json",
+      "schema": "ValidateMapResult",
+      "valid": true,
+      "note": "The engine could not load the file."
+    },
+    {
       "file": "valid/VerifyVerdict/verified.json",
       "schema": "VerifyVerdict",
       "valid": true,
       "note": "Every client agreed with the verifier."
+    },
+    {
+      "file": "valid/VerifyVerdict/verified-with-history.json",
+      "schema": "VerifyVerdict",
+      "valid": true,
+      "note": "Teams may carry final counters and the 512-tick timeline from the verifier result."
     },
     {
       "file": "valid/VerifyVerdict/diverged.json",

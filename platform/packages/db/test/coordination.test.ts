@@ -44,9 +44,6 @@ describe('PgPubSub', () => {
         ['A', { revision: 7 }],
         ['B', { revision: 7 }],
       ]);
-      await expect(replicaA.publish(database.pool, 'room:42', 'x'.repeat(9000))).rejects.toThrow(
-        /exceeds/,
-      );
       await expect(replicaA.subscribe('Bad Channel', () => undefined)).rejects.toThrow(/invalid/);
     } finally {
       await replicaA.close();

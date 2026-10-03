@@ -1,24 +1,37 @@
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
 import { sql } from 'kysely';
 import { createLogger, resolveQueue, type ResolvedQueue } from '@glob2/core';
-import { LeaderElection } from '@glob2/db';
+import { LeaderElection, LeaderLostError } from '@glob2/db';
 import { createTestDatabase, type TestDatabase } from '@glob2/db/testing';
-import { FakeClock } from '../src/clock.ts';
+import { checkDocument } from '@glob2/protocol';
 import {
+  DISPLAY_PER_MU,
+  FakeClock,
+  MU0,
+  aiSeedRating,
   balanceSides,
   chooseRegion,
+  joinQueue,
+  leaveQueue,
   planGroups,
   ratingWindow,
+  respondToProposal,
   rttTolerance,
+  sendProposal,
+  updateTicket,
   type WaitingTicket,
-} from '../src/matchmaking/grouping.ts';
+  type MatchProposal,
+} from '@glob2/play';
+import {
+  InMemoryMatchStarter,
+  RecordingQueueNotifier,
+  SIM_A,
+  SIM_B,
+  createAccount,
+  waitFor,
+} from '@glob2/play/testing';
 import { Matchmaker } from '../src/matchmaking/matchmaker.ts';
-import { RecordingQueueNotifier } from '../src/matchmaking/notifier.ts';
-import { InMemoryMatchStarter } from '../src/matchmaking/starter.ts';
-import { joinQueue, leaveQueue, respondToProposal } from '../src/matchmaking/tickets.ts';
-import { DISPLAY_PER_MU, MU0, aiSeedRating } from '../src/ratings/scale.ts';
 import { runScheduler } from '../src/scheduler.ts';
-import { SIM_A, SIM_B, createAccount, waitFor } from './support.ts';
 
 const RANKED: ResolvedQueue = resolveQueue({
   id: 'ranked-1v1',
@@ -49,15 +62,15 @@ let database: TestDatabase;
 // Registered display names are unique (identity migration 0003).
 let players = 0;
 beforeAll(async () => {
-  database = await createTestDatabase();
+  database = await createTestDatabase({ role: 'worker' });
 });
 afterAll(async () => {
   await database?.drop();
 });
 afterEach(async () => {
-  // Each test starts with empty queues.
+  // Each test starts with empty queues (TRUNCATE is the schema owner's).
   await sql`TRUNCATE queue_tickets, match_proposals, match_proposal_seats, queue_cooldowns, matches CASCADE`.execute(
-    database.db,
+    database.as('migrator').db,
   );
 });
 
@@ -81,8 +94,27 @@ function harness(
     notifier,
     clock,
     random: () => 0,
+    // Starts run in the background; these tests count them in the tick that launched them.
+    startWaitMs: 60_000,
   });
   return { clock, notifier, starter, matchmaker };
+}
+
+/** A starter whose starts wait until released (a slow on-demand map generation). */
+class GatedStarter extends InMemoryMatchStarter {
+  private release: () => void = () => undefined;
+  private gate = new Promise<void>((resolve) => (this.release = resolve));
+  readonly entered: string[] = [];
+
+  override async start(proposal: MatchProposal) {
+    this.entered.push(proposal.id);
+    await this.gate;
+    return super.start(proposal);
+  }
+
+  open(): void {
+    this.release();
+  }
 }
 
 async function enqueue(
@@ -355,7 +387,16 @@ describe('matchmaker', () => {
     expect(status.data).toMatchObject({
       waitedSeconds: 89,
       aiBackfillAt: '2026-10-01T12:01:30.000Z',
+      region: 'eu-west',
+      rttMs: 30,
+      allowAiOpponent: true,
+      backfillAi: { ai: 'nicowar' },
     });
+    const range = status.data.ratingRange!;
+    expect(range.min).toBeLessThan(1650);
+    expect(range.max).toBeGreaterThan(1650);
+    expect(Math.round((range.max - range.min) / 2)).toBe(status.data.ratingWindow);
+    expect(checkDocument('RealtimeEventQueueStatus', status.data).stage).toBe('ok');
     h.clock.advance(1);
     expect(await h.matchmaker.tick()).toMatchObject({ proposed: 1, started: 1 });
     const call = h.starter.calls[0]!;
@@ -363,10 +404,22 @@ describe('matchmaker', () => {
     const ai = call.seats.find((s) => s.kind === 'ai')!;
     expect(ai.ai).toBe('nicowar'); // 1653 is closest to 1650
     expect(ai.mu).toBeCloseTo(aiSeedRating('nicowar').mu, 9);
-    expect(h.notifier.of('queue.proposal', solo.accountId)[0]!.data).toMatchObject({
+    const shown = h.notifier.of('queue.proposal', solo.accountId)[0]!.data;
+    expect(shown).toMatchObject({
       requiresAccept: false,
       ais: 1,
+      rated: true,
+      backfilled: true,
+      map: { width: 128, height: 128 },
     });
+    expect(shown.seats).toHaveLength(2);
+    expect(shown.seats!.find((s) => s.kind === 'ai')).toMatchObject({
+      displayName: 'Nicowar',
+      ai: 'nicowar',
+      response: 'not_required',
+    });
+    expect(shown.seats!.find((s) => s.you)?.kind).toBe('human');
+    expect(checkDocument('RealtimeEventQueueProposal', shown).stage).toBe('ok');
     const match = await database.db
       .selectFrom('matches')
       .select(['rated', 'proposal_id'])
@@ -422,9 +475,38 @@ describe('matchmaker', () => {
     h.clock.advance(3);
     expect(await h.matchmaker.tick()).toMatchObject({ started: 0 });
     await respondToProposal(database.db, b.accountId, proposal!.id, true, h.clock.now());
+    // The API resends the prompt after each answer: both seats now show accepted.
+    h.notifier.clear();
+    await sendProposal(database.db, h.notifier, proposal!.id);
+    const resent = h.notifier.of('queue.proposal', b.accountId)[0]!.data;
+    expect(resent.seats!.map((s) => s.response)).toEqual(['accepted', 'accepted']);
+    expect(resent.seats!.filter((s) => s.you)).toHaveLength(1);
+    expect(h.notifier.of('queue.proposal', a.accountId)).toHaveLength(1);
     expect(await h.matchmaker.tick()).toMatchObject({ started: 1 });
     expect(h.notifier.of('queue.matchFound', b.accountId)).toHaveLength(1);
     expect((await ticketStatus(a.ticketId)).status).toBe('matched');
+    // Later searchers see the typical wait of matched tickets.
+    const c = await enqueue(h, RANKED);
+    h.clock.advance(5);
+    await h.matchmaker.tick();
+    expect(h.notifier.of('queue.status', c.accountId).at(-1)!.data.typicalWaitSeconds).toBe(3);
+  });
+
+  it('changes "Allow an AI opponent" without losing the queue position', async () => {
+    const h = harness();
+    const solo = await enqueue(h, RANKED);
+    expect(await updateTicket(database.db, solo.accountId, solo.ticketId, false)).toBe('updated');
+    h.clock.advance(3600);
+    expect(await h.matchmaker.tick()).toMatchObject({ proposed: 0 });
+    expect(await updateTicket(database.db, solo.accountId, solo.ticketId, true)).toBe('updated');
+    h.clock.advance(1);
+    expect(await h.matchmaker.tick()).toMatchObject({ proposed: 1 });
+    expect(await updateTicket(database.db, solo.accountId, solo.ticketId, false)).toBe(
+      'not_waiting',
+    );
+    expect(await updateTicket(database.db, solo.accountId, crypto.randomUUID(), false)).toBe(
+      'not_found',
+    );
   });
 
   it('removes a decliner with a cooldown and requeues the others at their original position', async () => {
@@ -547,6 +629,63 @@ describe('matchmaker', () => {
     expect(await join(RANKED, guest)).toEqual({ ok: false, code: 'guest_not_allowed' });
     expect(await join(CASUAL, guest)).toMatchObject({ ok: true });
     expect(await join(CASUAL, guest)).toEqual({ ok: false, code: 'already_queued' });
+  });
+});
+
+describe('matchmaker liveness', () => {
+  it('keeps grouping while a start waits for its map, and starts each proposal once', async () => {
+    const clock = new FakeClock();
+    const starter = new GatedStarter(database.db);
+    const matchmaker = new Matchmaker({
+      db: database.db,
+      queues: [CASUAL],
+      starter,
+      notifier: new RecordingQueueNotifier(),
+      clock,
+      random: () => 0,
+      startWaitMs: 20,
+    });
+    const h = { clock } as Harness;
+    await enqueue(h, CASUAL);
+    await enqueue(h, CASUAL);
+    const began = Date.now();
+    expect(await matchmaker.tick()).toMatchObject({ proposed: 1, started: 0 });
+    expect(Date.now() - began).toBeLessThan(2000);
+    expect(matchmaker.startsInFlight).toBe(1);
+
+    // More players arrive while the first start is still waiting.
+    await enqueue(h, CASUAL);
+    await enqueue(h, CASUAL);
+    expect(await matchmaker.tick()).toMatchObject({ proposed: 1, started: 0 });
+    expect(await matchmaker.tick()).toMatchObject({ proposed: 0, started: 0 });
+    expect(matchmaker.startsInFlight).toBe(2);
+    expect(new Set(starter.entered).size).toBe(2);
+    expect(starter.entered).toHaveLength(2);
+
+    starter.open();
+    await matchmaker.waitForStarts();
+    expect(await matchmaker.tick()).toMatchObject({ started: 2 });
+    expect((await proposals()).map((p) => p.status)).toEqual(['started', 'started']);
+  });
+
+  it('commits nothing once the leader lease is lost', async () => {
+    const h = harness([CASUAL]);
+    const fenced = new Matchmaker({
+      db: database.db,
+      queues: [CASUAL],
+      starter: h.starter,
+      notifier: h.notifier,
+      clock: h.clock,
+      random: () => 0,
+      fence: async () => {
+        throw new LeaderLostError('scheduler epoch 3 is no longer current');
+      },
+    });
+    await enqueue(h, CASUAL);
+    await enqueue(h, CASUAL);
+    await expect(fenced.tick()).rejects.toBeInstanceOf(LeaderLostError);
+    expect(await proposals()).toEqual([]);
+    expect(h.notifier.events).toEqual([]);
   });
 });
 

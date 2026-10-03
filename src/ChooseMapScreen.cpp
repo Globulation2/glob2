@@ -348,6 +348,9 @@ Element ChooseMapScreen::build(const Presentation &p)
 		tools.push_back(button("import", tr(fileImport && fileImport->canRetry() ? "[retry save]" : "[import file]"), [this] { beginImport(); }, {false, false, !busy}));
 	if (canExport)
 		tools.push_back(button("export", tr("[export file]"), [this] { exportSelected(); }, {false, false, !busy && (validMapSelected || (fileImport && fileImport->canRetry()))}));
+	if (shareMap && activeType() == MAP)
+		tools.push_back(button("share", tr("[maps share online]"), [this] { shareMap(mapHeader.getFileName()); },
+							   {false, false, !busy && validMapSelected}));
 	if (canDelete)
 		tools.push_back(button("delete", tr("[delete]"), [this] { deleteSelected(); }, {false, false, !busy && validMapSelected, false, false, true}));
 	auto toolRow = tools.empty() ? empty() : wrap(std::move(tools), {-1, p.pt(140)});

@@ -38,6 +38,9 @@ namespace GAGCore
 		static void loadFont(const std::string filename, unsigned size, const std::string name);
 		static Font *getFont(const std::string name);
 		static void releaseFont(const std::string name);
+		//! Reopen every loaded font from its file, keeping the Font objects; used
+		//! when the browser replaces the font file with its CJK version.
+		static void reloadFonts(void);
 		
 		#endif
 		static FileManager *getFileManager(void) { return fileManager; }

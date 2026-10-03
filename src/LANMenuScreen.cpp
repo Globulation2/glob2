@@ -7,9 +7,8 @@
 #include "GlobalContainer.h"
 #include "LANFindScreen.h"
 #include "LANSessionScreen.h"
+#include "LanRoom.h"
 #include "MessageScreen.h"
-#include "YOGClient.h"
-#include "YOGServer.h"
 #include <ScreenStack.h>
 
 using namespace Glob2UI;
@@ -39,27 +38,22 @@ void LANMenuScreen::host()
 		{
 			if (result != ChooseMapScreen::OK)
 				return;
-			auto client = std::make_shared<YOGClient>();
-			std::shared_ptr<YOGServer> server;
-            try { server = std::make_shared<YOGServer>(YOGAnonymousLogin, YOGSingleGame); }
-            catch (const std::exception& error) {
-                screens.push(std::make_unique<MessageScreen>("Unable to host a secure LAN game: " + std::string(error.what()),
-                    std::vector<std::string>{tr("[ok]")}));
-                return;
-            }
-			if (!server->isListening())
+			Lan::LanHost::Options options;
+			options.hostName = globalContainer->settings.getUsername();
+			options.map = static_cast<ChooseMapScreen &>(selection).getMapHeader();
+			std::shared_ptr<Lan::LanRoom> room;
+			try
+			{
+				room = Lan::LanRoom::host(std::move(options));
+			}
+			catch (const std::exception &error)
 			{
 				screens.push(std::make_unique<MessageScreen>(
-					FormattableString(tr("[Can't host game, port %0 in use]")).arg(YOG_SERVER_PORT),
+					FormattableString(tr("[lan cannot host %0]")).arg(error.what()),
 					std::vector<std::string>{tr("[ok]")}));
 				return;
 			}
-			server->enableLANBroadcasting();
-			client->attachGameServer(server);
-			client->connect(server->networkConfig().lobbyEndpoint);
-			screens.push(std::make_unique<LANSessionScreen>(
-							 screens, client, globalContainer->settings.getUsername(),
-							 static_cast<ChooseMapScreen &>(selection).getMapHeader()),
+			screens.push(std::make_unique<LANSessionScreen>(screens, room),
 						 [this](GAGGUI::Screen &, int) { endExecute(HostedGame); });
 		});
 }

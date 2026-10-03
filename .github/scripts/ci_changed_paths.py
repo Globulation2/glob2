@@ -9,7 +9,7 @@ import subprocess
 import sys
 
 
-JOBS = ("native", "browser", "map_generators", "deployment", "cross_platform", "platform")
+JOBS = ("native", "browser", "map_generators", "deployment", "cross_platform", "platform", "platform_stack")
 # Implementation-only drawing changes retain native, browser, and equivalence
 # checks. Shared headers, file I/O, fonts and unknown library paths stay full CI.
 RENDER_IMPLEMENTATIONS = {
@@ -25,6 +25,11 @@ CI_TOOL_TESTS = {
     "tests/build_system/test_ci_run_metrics.py",
     "tests/build_system/test_ci_concurrency.py",
 }
+def platform_stack_changed(paths):
+    from ci_policy import PLATFORM_STACK_PATHS
+    return any(path.startswith(PLATFORM_STACK_PATHS) and not path.endswith(".md") for path in paths)
+
+
 TRANSPORT_TESTS = {
     "test/NetConnectionHarness.cpp",
     "test/NativeMultiplayerPeer.cpp",
@@ -41,6 +46,7 @@ def classify(paths):
 
     from ci_policy import cheap_path
     native = browser = map_generators = deployment = cross_platform = platform = False
+    platform_stack = platform_stack_changed(paths)
     for path in paths:
         # These Python suites execute directly in the selector job, without
         # compiling a client or launching platform/browser regressions.
@@ -84,6 +90,10 @@ def classify(paths):
         if path.startswith(("tests/transport/",)):
             browser = True
             continue
+        # The match relay builds and runs in the native-programs job only.
+        if path.startswith(("src/relay/", "tests/relay/", "test/relay/", "test/fixtures/relay-tickets/")):
+            browser = True
+            continue
         if path.startswith("test/") and path not in {
             "test/run-browser-determinism.py",
         } and not Path(path).name.startswith("MapGenerator"):
@@ -95,7 +105,7 @@ def classify(paths):
         if path.startswith(("src/net/", "src/yog/")):
             native = browser = deployment = cross_platform = True
             continue
-        return {job: True for job in JOBS}
+        return {**{job: True for job in JOBS}, "platform_stack": platform_stack}
 
     return {
         "native": native,
@@ -104,6 +114,7 @@ def classify(paths):
         "deployment": deployment,
         "cross_platform": cross_platform,
         "platform": platform,
+        "platform_stack": platform_stack,
     }
 
 

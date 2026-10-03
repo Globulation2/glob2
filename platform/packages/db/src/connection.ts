@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { Kysely, PostgresDialect } from 'kysely';
 import pg from 'pg';
 import type { Database } from './schema.ts';
@@ -57,4 +58,24 @@ export function createDatabase(options: DatabaseOptions): DatabaseHandle {
     // Kysely's destroy() ends the pool it was given.
     close: () => db.destroy(),
   };
+}
+
+/**
+ * The connection string a service uses: DATABASE_URL, with the password read
+ * from DATABASE_PASSWORD_FILE when that is set (the deployment keeps each
+ * role's password in its own secret file, never in the environment).
+ */
+export function databaseUrlFromEnv(
+  env: Record<string, string | undefined>,
+  names: { url?: string; passwordFile?: string } = {},
+): string | undefined {
+  const raw = env[names.url ?? 'DATABASE_URL'];
+  if (!raw) return undefined;
+  const file = env[names.passwordFile ?? 'DATABASE_PASSWORD_FILE'];
+  if (!file) return raw;
+  const password = readFileSync(file, 'utf8').trim();
+  if (!password) throw new Error(`${file} is empty`);
+  const url = new URL(raw);
+  url.password = encodeURIComponent(password);
+  return url.toString();
 }

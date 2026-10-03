@@ -31,6 +31,7 @@ export interface AccountsTable {
   updated_at: Timestamp;
   last_seen_at: NullableTimestamp;
   display_name_changed_at: NullableTimestamp;
+  deleted_at: NullableTimestamp;
 }
 
 export interface IdentitiesTable {
@@ -64,6 +65,8 @@ export interface RefreshTokensTable {
   expires_at: RequiredTimestamp;
   rotated_at: NullableTimestamp;
   revoked_at: NullableTimestamp;
+  replaced_by: Nullable<string>;
+  grace_uses: Defaulted<number>;
 }
 
 export interface SigninAttemptsTable {
@@ -84,6 +87,8 @@ export interface SigninAttemptsTable {
   failure_reason: Nullable<'expired' | 'denied' | 'cancelled' | 'conflict' | 'error'>;
   linked: Nullable<boolean>;
   delivered_at: NullableTimestamp;
+  code_confirmed_at: NullableTimestamp;
+  code_failures: Defaulted<number>;
 }
 
 export interface WebSessionsTable {
@@ -175,6 +180,28 @@ export interface EngineJobsTable {
   agent_id: Nullable<string>;
   created_at: Timestamp;
   completed_at: NullableTimestamp;
+  attempts: Defaulted<number>;
+  max_attempts: Defaulted<number>;
+  leased_by: Nullable<string>;
+  lease_token_hash: Nullable<string>;
+  lease_expires_at: NullableTimestamp;
+  reported_at: NullableTimestamp;
+  /** The match a verify-match job checks (from its payload). */
+  match_id: Nullable<string>;
+}
+
+export interface AccountNameScrubsTable {
+  account_id: string;
+  match_id: string;
+  created_at: Timestamp;
+}
+
+export interface RateLimitsTable {
+  bucket: string;
+  key: string;
+  window_start: RequiredTimestamp;
+  count: Defaulted<number>;
+  previous_count: Defaulted<number>;
 }
 
 export interface MapsTable {
@@ -189,6 +216,13 @@ export interface MapsTable {
   download_count: Defaulted<number>;
   created_at: Timestamp;
   updated_at: Timestamp;
+  // 0007 map catalog
+  made_with: Defaulted<'hand' | 'generator'>;
+  generator: NullableJson<JsonValue>;
+  like_count: Defaulted<number>;
+  latest_version_id: Nullable<string>;
+  hidden_at: NullableTimestamp;
+  hidden_by_account_id: Nullable<string>;
 }
 
 export interface MapVersionsTable {
@@ -204,6 +238,16 @@ export interface MapVersionsTable {
   validation: Defaulted<'pending' | 'valid' | 'invalid'>;
   validation_error: Nullable<string>;
   created_at: Timestamp;
+  // 0007 map catalog
+  sim_version: Nullable<string>;
+  validate_job_id: Nullable<string>;
+  preview_job_id: Nullable<string>;
+  preview_status: Defaulted<'pending' | 'ready' | 'failed'>;
+  preview_width: Nullable<number>;
+  preview_height: Nullable<number>;
+  file_title: Nullable<string>;
+  uploader_account_id: Nullable<string>;
+  notes: Defaulted<string>;
 }
 
 export interface MapLikesTable {
@@ -222,6 +266,13 @@ export interface MapReportsTable {
   resolved_by_account_id: Nullable<string>;
   created_at: Timestamp;
   resolved_at: NullableTimestamp;
+  resolution_note: Nullable<string>;
+}
+
+export interface MapDownloadsTable {
+  map_id: string;
+  downloader: string;
+  day: Defaulted<string>;
 }
 
 export interface RoomsTable {
@@ -238,6 +289,16 @@ export interface RoomsTable {
   created_at: Timestamp;
   updated_at: Timestamp;
   closed_at: NullableTimestamp;
+  starting_since: NullableTimestamp;
+  notice: Nullable<string>;
+}
+
+export interface RoomKicksTable {
+  room_id: string;
+  account_id: string;
+  kicked_by_account_id: Nullable<string>;
+  until: RequiredTimestamp;
+  created_at: Timestamp;
 }
 
 export interface RoomMembersTable {
@@ -246,6 +307,7 @@ export interface RoomMembersTable {
   connected: Defaulted<boolean>;
   joined_at: Timestamp;
   last_seen_at: Timestamp;
+  region_rtts: DefaultedJson<JsonValue>;
 }
 
 export interface RoomSeatsTable {
@@ -257,6 +319,7 @@ export interface RoomSeatsTable {
   ai_id: Nullable<string>;
   ai_name: Nullable<string>;
   ready: Defaulted<boolean>;
+  locked: Defaulted<boolean>;
 }
 
 export interface RoomChatMessagesTable {
@@ -267,6 +330,9 @@ export interface RoomChatMessagesTable {
   sent_at: Timestamp;
 }
 
+export type MatchVerification =
+  'pending' | 'verified' | 'diverged' | 'unverifiable' | 'not_applicable' | 'failed';
+
 export interface MatchesTable {
   id: Generated<string>;
   sim_version: string;
@@ -275,7 +341,7 @@ export interface MatchesTable {
   queue_id: Nullable<string>;
   rated: Defaulted<boolean>;
   status: Defaulted<'starting' | 'running' | 'ended' | 'cancelled'>;
-  verification: Defaulted<'pending' | 'verified' | 'diverged' | 'unverifiable' | 'not_applicable'>;
+  verification: Defaulted<MatchVerification>;
   setup: Json<JsonValue>;
   seed: number;
   map_hash: string;
@@ -290,6 +356,45 @@ export interface MatchesTable {
   rating_note: Nullable<string>;
   ratings_applied_at: NullableTimestamp;
   proposal_id: Nullable<string>;
+  relay_assigned_at: NullableTimestamp;
+  relay_attempts: Defaulted<number>;
+  end_report: NullableJson<JsonValue>;
+  relay_seen_at: NullableTimestamp;
+}
+
+export interface MapUploadsTable {
+  id: Generated<string>;
+  owner_account_id: string;
+  blob_sha256: string;
+  format: 'map' | 'save';
+  sim_version: string;
+  file_name: Nullable<string>;
+  status: Defaulted<'pending' | 'valid' | 'invalid'>;
+  job_id: Nullable<string>;
+  width: Nullable<number>;
+  height: Nullable<number>;
+  team_count: Nullable<number>;
+  version_minor: Nullable<number>;
+  title: Nullable<string>;
+  players: NullableJson<JsonValue>;
+  failure: Nullable<string>;
+  created_at: Timestamp;
+  completed_at: NullableTimestamp;
+}
+
+export interface GeneratedMapsTable {
+  descriptor_hash: string;
+  sim_version: string;
+  descriptor: Json<JsonValue>;
+  status: Defaulted<'pending' | 'ready' | 'failed'>;
+  job_id: Nullable<string>;
+  map_hash: Nullable<string>;
+  width: Nullable<number>;
+  height: Nullable<number>;
+  team_count: Nullable<number>;
+  failure: Nullable<string>;
+  created_at: Timestamp;
+  completed_at: NullableTimestamp;
 }
 
 export interface RatingEntitiesTable {
@@ -328,7 +433,7 @@ export interface RatingHistoryTable {
   created_at: Timestamp;
 }
 
-export type Outcome = 'won' | 'lost' | 'unresolved' | 'abandoned';
+export type Outcome = 'won' | 'lost' | 'draw' | 'unresolved' | 'abandoned';
 
 export interface MatchParticipantsTable {
   match_id: string;
@@ -342,6 +447,8 @@ export interface MatchParticipantsTable {
   outcome: Nullable<Outcome>;
   disconnects: Defaulted<number>;
   quit_tick: Nullable<number>;
+  /** The relay's RelayNetworkSummary seat entry (0009); null without one. */
+  network: NullableJson<JsonValue>;
   rating_before: Nullable<number>;
   rating_after: Nullable<number>;
 }
@@ -425,6 +532,112 @@ export interface QueueCooldownsTable {
   created_at: Timestamp;
 }
 
+export interface WarmMapsTable {
+  id: Generated<string>;
+  queue_id: string;
+  sim_version: string;
+  entry_key: string;
+  generator: Json<JsonValue>;
+  status: Defaulted<'generating' | 'ready' | 'taken' | 'failed'>;
+  job_id: Nullable<string>;
+  map_hash: Nullable<string>;
+  map_facts: NullableJson<JsonValue>;
+  failure: Nullable<string>;
+  match_id: Nullable<string>;
+  created_at: Timestamp;
+  ready_at: NullableTimestamp;
+  taken_at: NullableTimestamp;
+}
+
+// ------------------------------------------------- read-only views (0004)
+
+/** Read-only column of a view. */
+type View<T> = ColumnType<T, never, never>;
+
+export interface MatchResultsView {
+  match_id: View<string>;
+  origin: View<'room' | 'queue'>;
+  queue_id: View<string | null>;
+  rated: View<boolean>;
+  sim_version: View<string>;
+  map_hash: View<string>;
+  generator_id: View<string | null>;
+  final_tick: View<number | null>;
+  ended_at: View<Date>;
+  seat: View<number>;
+  team: View<number>;
+  kind: View<'human' | 'ai'>;
+  account_id: View<string | null>;
+  ai_id: View<string | null>;
+  rating_entity_id: View<string | null>;
+  outcome: View<Outcome | null>;
+  won: View<boolean | null>;
+}
+
+export interface RecentWinRatesView {
+  account_id: View<string | null>;
+  ai_id: View<string | null>;
+  ai_sim_version: View<string | null>;
+  dimension: View<'queue' | 'map' | 'generator'>;
+  key: View<string>;
+  games: View<number>;
+  wins: View<number>;
+  win_rate: View<number>;
+  last_played_at: View<Date>;
+}
+
+export interface RecentGameLengthsView {
+  dimension: View<'queue' | 'generator'>;
+  key: View<string>;
+  games: View<number>;
+  mean_ticks: View<number>;
+  median_ticks: View<number>;
+  p90_ticks: View<number>;
+  max_ticks: View<number>;
+}
+
+export interface TeamTimelineView {
+  match_id: View<string>;
+  team: View<number>;
+  tick: View<number>;
+  units: View<number>;
+  buildings: View<number>;
+  prestige: View<number>;
+  hp: View<number>;
+  attack: View<number>;
+  defense: View<number>;
+}
+
+export interface AccountEconomyCurvesView {
+  account_id: View<string>;
+  match_id: View<string>;
+  queue_id: View<string | null>;
+  ended_at: View<Date>;
+  tick: View<number>;
+  units: View<number>;
+  buildings: View<number>;
+  prestige: View<number>;
+  average_units: View<number>;
+  average_buildings: View<number>;
+  average_prestige: View<number>;
+  games_at_tick: View<number>;
+}
+
+export interface LeaderLeasesTable {
+  name: string;
+  epoch: number;
+  holder: string;
+  acquired_at: Timestamp;
+  renewed_at: Timestamp;
+}
+
+export interface NotificationPayloadsTable {
+  id: Generated<string>;
+  channel: string;
+  payload: Json<JsonValue>;
+  created_at: Timestamp;
+}
+
 export interface Database {
   accounts: AccountsTable;
   identities: IdentitiesTable;
@@ -445,6 +658,8 @@ export interface Database {
   map_reports: MapReportsTable;
   rooms: RoomsTable;
   room_members: RoomMembersTable;
+  room_kicks: RoomKicksTable;
+  map_downloads: MapDownloadsTable;
   room_seats: RoomSeatsTable;
   room_chat_messages: RoomChatMessagesTable;
   matches: MatchesTable;
@@ -458,6 +673,18 @@ export interface Database {
   match_proposals: MatchProposalsTable;
   match_proposal_seats: MatchProposalSeatsTable;
   queue_cooldowns: QueueCooldownsTable;
+  map_uploads: MapUploadsTable;
+  generated_maps: GeneratedMapsTable;
+  warm_maps: WarmMapsTable;
+  rate_limits: RateLimitsTable;
+  account_name_scrubs: AccountNameScrubsTable;
+  leader_leases: LeaderLeasesTable;
+  notification_payloads: NotificationPayloadsTable;
+  match_results_view: MatchResultsView;
+  recent_win_rates_view: RecentWinRatesView;
+  recent_game_lengths_view: RecentGameLengthsView;
+  team_timeline_view: TeamTimelineView;
+  account_economy_curves_view: AccountEconomyCurvesView;
 }
 
 export type Account = Selectable<AccountsTable>;
@@ -466,3 +693,4 @@ export type AccountUpdate = Updateable<AccountsTable>;
 export type Match = Selectable<MatchesTable>;
 export type NewMatch = Insertable<MatchesTable>;
 export type Room = Selectable<RoomsTable>;
+export type WarmMap = Selectable<WarmMapsTable>;

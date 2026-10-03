@@ -41,10 +41,52 @@ export const RequestId = Type.String({ minLength: 1, maxLength: 64 });
 
 const EmptyResult = Open({});
 
+/** Measured round trips to relay regions; the platform places matches on the closest relay. */
+export const RegionRtts = Type.Array(
+  Strict({ region: RelayRegion, rttMs: Type.Integer({ minimum: 0, maximum: 60000 }) }),
+  { maxItems: 32, description: 'Measured round trip to each relay region.' },
+);
+
 const ExperimentKeys = Type.Array(Type.String({ pattern: '^[a-z0-9]+(-[a-z0-9]+)*$' }), {
   maxItems: 64,
   uniqueItems: true,
 });
+
+/**
+ * The player's displayed rating on the match's ladder and what it would become
+ * if their side won or lost, computed at the start with the same rating model
+ * as the verified update. Rated matches only; a preview, not a promise.
+ */
+export const MatchRatingPreview = Open(
+  {
+    ladder: Type.String({ maxLength: 64 }),
+    before: Type.Number(),
+    ifWon: Type.Number(),
+    ifLost: Type.Number(),
+    provisional: Type.Boolean({ description: 'The rating before the match is provisional.' }),
+  },
+  { description: 'Rating preview of a rated match (MatchAssignment.ratingPreview).' },
+);
+export type MatchRatingPreview = Static<typeof MatchRatingPreview>;
+/** One seat of a queue proposal, as shown in the match-found prompt. */
+export const ProposalSeat = Open({
+  slot: Type.Integer({ minimum: 0, maximum: 11 }),
+  side: Type.Integer({ minimum: 0, maximum: 1 }),
+  kind: Type.Union([Type.Literal('human'), Type.Literal('ai')]),
+  displayName: Type.String({ maxLength: 64 }),
+  ai: Type.Optional(AiId),
+  rating: Type.Optional(Type.Number({ description: 'Displayed rating on the queue ladder.' })),
+  provisional: Type.Optional(Type.Boolean()),
+  response: Type.Union([
+    Type.Literal('pending'),
+    Type.Literal('accepted'),
+    Type.Literal('declined'),
+    Type.Literal('timeout'),
+    Type.Literal('not_required'),
+  ]),
+  you: Type.Optional(Type.Boolean({ description: 'The seat of the receiving client.' })),
+});
+export type ProposalSeat = Static<typeof ProposalSeat>;
 
 /** The match a client has been placed in, with its ticket for the relay. */
 export const MatchAssignment = Open(
@@ -54,8 +96,22 @@ export const MatchAssignment = Open(
     ticket: Type.String({ description: 'Match ticket JWT (see MatchTicketClaims).' }),
     ticketExpiresAt: Timestamp,
     relayUrl: HttpsOrWssUrl,
+    relayId: Type.Optional(
+      Type.String({
+        pattern: '^[A-Za-z0-9._-]{1,64}$',
+        description: 'The relay the match runs on, for network telemetry (ClientNetworkSummary).',
+      }),
+    ),
+    relayRegion: Type.Optional(Type.String({ pattern: '^[a-z0-9][a-z0-9-]{0,31}$' })),
     setup: MatchSetup,
     mapUrl: HttpsOrWssUrl,
+    mapTitle: Type.Optional(
+      Type.String({
+        maxLength: 128,
+        description: 'Display name of the map (catalog title, or the generator name).',
+      }),
+    ),
+    ratingPreview: Type.Optional(MatchRatingPreview),
   },
   { description: 'Everything a client needs to connect to the relay and load the match.' },
 );
@@ -148,12 +204,14 @@ export const realtimeMethods = {
       map: Type.Optional(RoomMapSelection),
       rules: Type.Optional(MatchRules),
       experiments: Type.Optional(ExperimentKeys),
+      regions: Type.Optional(RegionRtts),
     }),
     result: Open({ room: RoomState }),
   },
   'room.join': {
-    description: 'Join a room by invite code (AccessPolicy.canJoin).',
-    params: Strict({ code: InviteCode }),
+    description:
+      "Join a room by invite code (AccessPolicy.canJoin). The room must be for the caller's sim version (update_required otherwise). Joining a room the caller is already in returns its state.",
+    params: Strict({ code: InviteCode, regions: Type.Optional(RegionRtts) }),
     result: Open({ room: RoomState }),
   },
   'room.leave': {
@@ -179,7 +237,8 @@ export const realtimeMethods = {
     result: Open({ room: RoomState }),
   },
   'room.setSeat': {
-    description: 'Take or leave a seat (self), or as host open a seat or put an AI in it.',
+    description:
+      'self: take an open, unlocked seat (moving from the current one). open: leave your own seat, or (host) empty or unlock any seat. ai (host): put an AI in an open or AI seat. locked (host): close an empty seat so nobody takes it.',
     params: Strict({
       roomId: Uuid,
       seat: SeatIndex,
@@ -187,8 +246,15 @@ export const realtimeMethods = {
         Strict({ kind: Type.Literal('self') }),
         Strict({ kind: Type.Literal('open') }),
         Strict({ kind: Type.Literal('ai'), ai: AiId, name: Type.Optional(DisplayName) }),
+        Strict({ kind: Type.Literal('locked') }),
       ]),
     }),
+    result: Open({ room: RoomState }),
+  },
+  'room.kick': {
+    description:
+      'Host removes a member from an open room. The member receives room.closed {reason: "kicked"} and cannot rejoin that room for 10 minutes (room.join answers forbidden with details.until).',
+    params: Strict({ roomId: Uuid, accountId: Uuid }),
     result: Open({ room: RoomState }),
   },
   'room.setReady': {
@@ -202,7 +268,8 @@ export const realtimeMethods = {
     result: Open({ message: RoomChatMessage }),
   },
   'room.start': {
-    description: 'Host starts the match; every member then receives match.start.',
+    description:
+      'Host starts the match once every seated human is ready (the host counts as ready); every seated member then receives match.start.',
     params: Strict({ roomId: Uuid }),
     result: Open({ matchId: Uuid }),
   },
@@ -210,10 +277,7 @@ export const realtimeMethods = {
     description: 'Enter a quick-match queue (AccessPolicy.canQueue).',
     params: Strict({
       queueId: Type.String({ pattern: '^[a-z0-9][a-z0-9-]{0,31}$' }),
-      regions: Type.Array(
-        Strict({ region: RelayRegion, rttMs: Type.Integer({ minimum: 0, maximum: 60000 }) }),
-        { maxItems: 32, description: 'Measured round trip to each relay region.' },
-      ),
+      regions: RegionRtts,
       allowAiOpponent: Type.Optional(
         Type.Boolean({
           description:
@@ -228,14 +292,35 @@ export const realtimeMethods = {
     params: Strict({ proposalId: Uuid, accept: Type.Boolean() }),
     result: EmptyResult,
   },
+  'queue.update': {
+    description:
+      'Change a waiting ticket without losing its place: "Allow an AI opponent" can be toggled while searching.',
+    params: Strict({ ticketId: Uuid, allowAiOpponent: Type.Boolean() }),
+    result: EmptyResult,
+  },
   'queue.leave': {
     description: 'Leave a queue.',
     params: Strict({ ticketId: Uuid }),
     result: EmptyResult,
   },
+  'match.rematch': {
+    description:
+      'Rematch after a quick match (Q9): an unrated link room with the same map, rules and players. The first player to ask hosts it and every other human player of the match gets match.rematchOffered; asking again, or after someone else did, joins that room.',
+    params: Strict({ matchId: Uuid, regions: Type.Optional(RegionRtts) }),
+    result: Open({ room: RoomState }),
+  },
   'match.reconnect': {
-    description: 'Get a fresh ticket for a running match the caller is seated in.',
-    params: Strict({ matchId: Uuid }),
+    description:
+      'Get a fresh ticket for a starting or running match the caller is seated in (also the way to fetch a missed match.start).',
+    params: Strict({
+      matchId: Uuid,
+      relayUnavailable: Type.Optional(
+        Type.Boolean({
+          description:
+            'The assigned relay refused the match as new (Reject 5: draining or full). While no relay has reported the match running, the platform moves it to another relay and sends every player a new match.start.',
+        }),
+      ),
+    }),
     result: MatchAssignment,
   },
 } as const satisfies Record<string, MethodContract>;
@@ -312,6 +397,33 @@ export const realtimeEvents = {
       waitedSeconds: Type.Integer({ minimum: 0 }),
       ratingWindow: Type.Optional(Type.Number({ minimum: 0 })),
       aiBackfillAt: Type.Optional(Timestamp),
+      ratingRange: Type.Optional(
+        Strict(
+          { min: Type.Number(), max: Type.Number() },
+          {
+            description:
+              'Opponent ratings the matchmaker accepts now (display scale): your skill ± ratingWindow.',
+          },
+        ),
+      ),
+      rating: Type.Optional(
+        Type.Number({ description: "Your displayed rating on this queue's ladder." }),
+      ),
+      provisional: Type.Optional(Type.Boolean()),
+      region: Type.Optional(RelayRegion),
+      rttMs: Type.Optional(
+        Type.Integer({ minimum: 0, description: 'Your round trip to region, as you probed it.' }),
+      ),
+      allowAiOpponent: Type.Optional(Type.Boolean()),
+      backfillAi: Type.Optional(
+        Open(
+          { ai: AiId, rating: Type.Number() },
+          { description: 'The AI that would take the empty seat now (closest skill).' },
+        ),
+      ),
+      typicalWaitSeconds: Type.Optional(
+        Type.Integer({ minimum: 0, description: 'Median wait of recent matched tickets.' }),
+      ),
     }),
   },
   'queue.proposal': {
@@ -325,6 +437,23 @@ export const realtimeEvents = {
       expiresAt: Type.Optional(Timestamp),
       humans: Type.Integer({ minimum: 1, maximum: 12 }),
       ais: Type.Integer({ minimum: 0, maximum: 12 }),
+      rated: Type.Optional(Type.Boolean()),
+      backfilled: Type.Optional(Type.Boolean()),
+      region: Type.Optional(RelayRegion),
+      map: Type.Optional(
+        Open({
+          generatorId: Type.String({ maxLength: 64 }),
+          width: Type.Optional(Type.Integer({ minimum: 1 })),
+          height: Type.Optional(Type.Integer({ minimum: 1 })),
+        }),
+      ),
+      seats: Type.Optional(
+        Type.Array(ProposalSeat, {
+          maxItems: 12,
+          description:
+            'Who is in the proposal. With requiresAccept the event is sent again whenever someone answers.',
+        }),
+      ),
     }),
   },
   'queue.proposalEnded': {
@@ -346,6 +475,11 @@ export const realtimeEvents = {
   'queue.matchFound': {
     description: 'The queue placed the client in a match; match.start follows.',
     data: Open({ ticketId: Uuid, matchId: Uuid }),
+  },
+  'match.rematchOffered': {
+    description:
+      'Another player of a quick match opened its rematch room; join it with room.join {code} (or match.rematch).',
+    data: Open({ matchId: Uuid, roomId: Uuid, code: InviteCode, host: DisplayName }),
   },
   'match.start': {
     description: 'Connect to the relay with the ticket and load the setup.',

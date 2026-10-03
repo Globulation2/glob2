@@ -5,6 +5,7 @@
 #include <emscripten/threading.h>
 #include <BrowserTextInput.h>
 #include <InterfacePresentation.h>
+#include <algorithm>
 #include <map>
 #include <set>
 #include <cstdlib>
@@ -199,6 +200,47 @@ bool presentationMetrics(ViewportMetrics& metrics,InputCapabilities& input)
     }
     return false;
 }
+// window, document and the clipboard belong to the page. In the threaded runtime
+// this code runs on the application worker, which has none of them, so both calls
+// run on the page's thread, synchronously, while the click that caused them still
+// grants transient activation. If a browser refuses the new tab anyway, the page
+// offers a link the player taps instead (glob2OpenUrl in shell.html).
+bool openUrl(const std::string& url)
+{
+    if (url.rfind("https://", 0) != 0 && url.rfind("http://", 0) != 0)
+        return false;
+    return MAIN_THREAD_EM_ASM_INT({ return Module.glob2OpenUrl(UTF8ToString($0)); }, url.c_str()) != 0;
+}
+bool copyText(const std::string& text)
+{
+    return MAIN_THREAD_EM_ASM_INT({
+        const value = UTF8ToString($0);
+        Module.glob2LastCopy = value;
+        // A textarea and execCommand: older browsers and pages without the
+        // Clipboard API (http: origins); it also needs the click's activation.
+        const fallback = () => {
+            try {
+                const area = document.createElement('textarea');
+                area.value = value;
+                area.setAttribute('readonly', '');
+                area.style.cssText = 'position:fixed;left:-9999px;top:0;opacity:0';
+                document.body.appendChild(area);
+                area.select();
+                const copied = document.execCommand('copy');
+                area.remove();
+                return copied;
+            } catch (_) { return false; }
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(value).then(() => { Module.glob2CopyState = 'copied'; },
+                () => { Module.glob2CopyState = fallback() ? 'copied' : 'failed'; });
+            return 1;
+        }
+        const copied = fallback();
+        Module.glob2CopyState = copied ? 'copied' : 'failed';
+        return copied ? 1 : 0;
+    }, text.c_str());
+}
 bool takeViewportSize(int& width, int& height)
 {
     return MAIN_THREAD_EM_ASM_INT({
@@ -257,6 +299,39 @@ std::unique_ptr<FileSelection> selectFile(const std::string& extension) {
     return std::make_unique<BrowserFileSelection>(extension);
 }
 bool storageRestoreFailed() { return MAIN_THREAD_EM_ASM_INT({ return Module.storageRestore === 'failed'; }); }
+// Packages come from browser/asset-loader.js on the page's thread. A build without a package of that
+// name (for instance the test harness, which preloads everything) has the data.
+bool assetPackageReady(const char* name)
+{
+    return MAIN_THREAD_EM_ASM_INT({
+        const assets = Module.glob2Assets;
+        const name = UTF8ToString($0);
+        if (!assets || !assets.manifest.packages.some(entry => entry.name === name)) return 1;
+        return assets.states[name] === 'ready' ? 1 : 0;
+    }, name);
+}
+std::vector<std::string> takeInstalledAssetPackages()
+{
+    std::vector<std::string> names;
+    char* list = reinterpret_cast<char*>(MAIN_THREAD_EM_ASM_PTR({
+        const installed = Module.glob2Assets?.takeInstalled?.() || [];
+        if (!installed.length) return 0;
+        const text = installed.join('\n');
+        const size = lengthBytesUTF8(text) + 1;
+        const pointer = _malloc(size);
+        stringToUTF8(text, pointer, size);
+        return pointer;
+    }));
+    if (!list) return names;
+    std::string text(list);
+    std::free(list);
+    for (std::size_t start = 0; start <= text.size();) {
+        const std::size_t end = std::min(text.find('\n', start), text.size());
+        if (end > start) names.push_back(text.substr(start, end - start));
+        start = end + 1;
+    }
+    return names;
+}
 bool canExportFiles() { return true; }
 bool exportFile(const std::string& name, const std::vector<unsigned char>& bytes)
 {
@@ -349,11 +424,11 @@ void endBrowserTextFrame() {
     browserTextVisible.clear();
 }
 void browserTextInput(const void* owner,SDL_Rect rect,int width,int height,const std::string& value,
-    bool password,size_t maximum,BrowserTextChange changed,const SDL_Rect* clip) {
+    bool password,size_t maximum,BrowserTextChange changed,const SDL_Rect* clip,bool selectAll) {
     browserTextVisible.insert(owner);browserTextCallbacks[owner]=std::move(changed);
     const SDL_Rect visible=clip ? *clip : SDL_Rect{0,0,width,height};
-    MAIN_THREAD_EM_ASM({ Module.textBridge?.field($0,{x:$1,y:$2,w:$3,h:$4},$5,$6,UTF8ToString($7),!!$8,$9,{x:$10,y:$11,w:$12,h:$13}); },
-        owner,rect.x,rect.y,rect.w,rect.h,width,height,value.c_str(),password,maximum,visible.x,visible.y,visible.w,visible.h);
+    MAIN_THREAD_EM_ASM({ Module.textBridge?.field($0,{x:$1,y:$2,w:$3,h:$4},$5,$6,UTF8ToString($7),!!$8,$9,{x:$10,y:$11,w:$12,h:$13},!!$14); },
+        owner,rect.x,rect.y,rect.w,rect.h,width,height,value.c_str(),password,maximum,visible.x,visible.y,visible.w,visible.h,selectAll);
 }
 bool hasBrowserTextInput(const void* owner) { return browserTextCallbacks.count(owner)>0; }
 }

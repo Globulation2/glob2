@@ -1,0 +1,15 @@
+{
+  "browser/assets/menu-colony.jpg": {
+    "sha256": "42af3e40fdb860aa3ca67cb212944a8768948786b4d5ce15cc1adf5dcad8bfe7",
+    "source": "data/gfx/menu-colony.png"
+  },
+  "browser/assets/menu-wordmark.png": {
+    "sha256": "020f34e218f137b34f9af53c85532662a9efebcf7b4b8f955b761b07528cd32d",
+    "source": "data/gfx/menu-wordmark.png"
+  },
+  "browser/assets/sans-core.ttf": {
+    "languageNames": "61dbad27698fca6577c9b31c1f37a7d927e28929d543a0205b48a68e7b3694fa",
+    "sha256": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1",
+    "source": "data/fonts/sans.ttf"
+  }
+}

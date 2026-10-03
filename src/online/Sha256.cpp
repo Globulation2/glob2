@@ -140,4 +140,20 @@ bool parseSha256Hex(const std::string& text, Sha256::Digest& out)
 	}
 	return true;
 }
+
+std::string Sha256::toHex(const Digest& digest)
+{
+	return Online::toHex(digest.data(), digest.size());
+}
+
+std::string Sha256::hex(std::string_view data)
+{
+	return toHex(digest(data));
+}
+
+bool Sha256::isHexDigest(std::string_view text)
+{
+	Digest ignored;
+	return parseSha256Hex(std::string(text), ignored);
+}
 }

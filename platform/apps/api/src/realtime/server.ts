@@ -1,6 +1,6 @@
 // The /realtime WebSocket: upgrade checks (Origin allow-list, connections per
 // address), heartbeat, and the session and sign-in methods. Room, queue and
-// match methods answer `unsupported` until their milestones land.
+// match methods come from play/realtime.ts (`extraHandlers`).
 import type { FastifyInstance } from 'fastify';
 import type { WebSocket } from 'ws';
 import {
@@ -11,6 +11,7 @@ import {
 } from '@glob2/protocol';
 import { supportedSimVersions } from '../app.ts';
 import { apiError } from '../errors.ts';
+import { enforce } from '../http/rateLimits.ts';
 import type { Identity } from '../identity.ts';
 import { RealtimeConnection, type MethodHandler } from './connection.ts';
 
@@ -27,6 +28,7 @@ export async function realtimeRoutes(
   app: FastifyInstance,
   identity: Identity,
   options: RealtimeOptions = {},
+  extraHandlers: Partial<Record<RealtimeMethod, MethodHandler>> = {},
 ): Promise<void> {
   const { services } = app;
   const { hub } = identity;
@@ -89,6 +91,7 @@ export async function realtimeRoutes(
   }
 
   const handlers: Partial<Record<RealtimeMethod, MethodHandler>> = {
+    ...extraHandlers,
     'session.hello': async (connection, raw) => {
       const params = raw as RealtimeParams<'session.hello'>;
       if (params.protocol !== REALTIME_PROTOCOL_VERSION) {
@@ -135,6 +138,20 @@ export async function realtimeRoutes(
       if (connection.pendingAttempts.size >= MAX_PENDING_ATTEMPTS) {
         throw apiError('rate_limited', 'Too many sign-ins in progress on this connection.');
       }
+      // Anyone may start one without an account, so bound them per address
+      // and in total, on every replica (each is a signin_attempts row).
+      await enforce(
+        identity.shared.handoffPerAddress,
+        connection.ip,
+        undefined,
+        'Too many sign-ins started from this address. Wait a while and try again.',
+      );
+      await enforce(
+        identity.shared.handoffTotal,
+        'all',
+        undefined,
+        'Signing in is busy right now. Try again in a minute.',
+      );
       const mode = params.mode ?? (connection.account ? 'link' : 'signin');
       const attempt = await identity.handoff.begin({
         provider: params.provider,

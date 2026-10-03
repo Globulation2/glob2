@@ -199,6 +199,13 @@ TEST_SUITE("TurnMessages")
 		p.seats.push_back({5, PresenceState::Reconnecting, 4000, 80});
 		roundTrip(p);
 
+		SeatLatency l;
+		l.seats.push_back({0, 41000});
+		l.seats.push_back({4, 0});
+		l.seats.push_back({31, UINT32_MAX});
+		CHECK(roundTrip(l)->seats == l.seats);
+		roundTrip(SeatLatency());
+
 		ResyncRequest rr;
 		rr.fromTick = 88;
 		roundTrip(rr);
@@ -255,6 +262,13 @@ TEST_SUITE("TurnMessages")
 		CHECK_FALSE(TurnCodec::decode(legacy));
 		const std::vector<std::uint8_t> reserved = {0xBF};
 		CHECK_FALSE(TurnCodec::decode(reserved));
+		// SeatLatency: seats below 32, unique and ascending.
+		const std::vector<std::uint8_t> latencyOk = {MSG_SEAT_LATENCY, 2, 1, 0, 0, 0, 9, 3, 0, 0, 0, 9};
+		CHECK(TurnCodec::decode(latencyOk));
+		const std::vector<std::uint8_t> latencyDisorder = {MSG_SEAT_LATENCY, 2, 3, 0, 0, 0, 9, 1, 0, 0, 0, 9};
+		CHECK_FALSE(TurnCodec::decode(latencyDisorder));
+		const std::vector<std::uint8_t> latencySeat = {MSG_SEAT_LATENCY, 1, 32, 0, 0, 0, 9};
+		CHECK_FALSE(TurnCodec::decode(latencySeat));
 		std::vector<std::uint8_t> huge(MAX_FRAME_BYTES + 1, 0);
 		huge[0] = MSG_PING;
 		CHECK_FALSE(TurnCodec::decode(huge));
@@ -351,9 +365,27 @@ TEST_SUITE("TurnMessages")
 
 TEST_SUITE("TurnSequencer")
 {
-	TEST_CASE("bundles every two ticks from match start, empty or not")
+	TEST_CASE("bundles every tick by default, empty or not")
 	{
 		RelayFixture f(0b1);
+		f.join(1, 0);
+		f.out.inbox.clear();
+		for (std::uint32_t tick = 0; tick < 4; ++tick)
+		{
+			f.atTick(tick);
+			auto bundles = f.out.take<TurnBundle>(1, MSG_TURN_BUNDLE);
+			REQUIRE(bundles.size() == 1);
+			CHECK(bundles[0]->fromTick == tick);
+			CHECK(bundles[0]->horizonTick == tick + 1);
+			CHECK(f.relay.nextBundleMicros() == 1000000 + (tick + 1) * TICK);
+		}
+	}
+
+	TEST_CASE("bundles every two ticks from match start, empty or not")
+	{
+		SequencerConfig config;
+		config.bundleInterval = 2;
+		RelayFixture f(0b1, config);
 		f.join(1, 0);
 		f.out.inbox.clear();
 		f.atTick(0);
@@ -378,6 +410,94 @@ TEST_SUITE("TurnSequencer")
 		CHECK(gap[0]->fromTick == 4);
 		CHECK(gap[0]->horizonTick == 21);
 		CHECK(f.relay.horizon() == 21);
+	}
+
+	TEST_CASE("the load barrier holds the clock until every human seat has connected")
+	{
+		SequencerConfig config;
+		config.startBarrierMicros = 60 * 1000 * MS;
+		config.graceMicros = 10 * 1000 * MS;
+		RelayFixture f(0b11, config);
+		f.join(1, 0);
+		auto welcome = f.out.take<Welcome>(1, MSG_WELCOME);
+		REQUIRE(welcome.size() == 1);
+		CHECK(welcome[0]->relayTick == 0);
+		f.out.inbox[1].clear();
+		// Seat 1 is still loading for 20 s: no bundle, no clock, and no grace runs out.
+		for (std::uint64_t second = 1; second <= 20; ++second)
+		{
+			f.at(second * 1000 * MS);
+			CHECK(f.out.take<TurnBundle>(1, MSG_TURN_BUNDLE).empty());
+		}
+		CHECK_FALSE(f.relay.clockStarted());
+		CHECK(f.relay.horizon() == 0);
+		CHECK(f.relay.relayTick(f.now) == 0);
+		CHECK(f.relay.presence(1) == PresenceState::NotConnected);
+		// The last seat arrives: the clock starts from that moment, at tick 0.
+		f.join(2, 1);
+		CHECK(f.out.take<Welcome>(2, MSG_WELCOME).at(0)->relayTick == 0);
+		const std::uint64_t arrived = f.now;
+		f.at(arrived - 1000000 + 1 * MS);
+		CHECK(f.relay.clockStarted());
+		CHECK(f.relay.clockStartMicros() == arrived + 1 * MS);
+		f.at(arrived - 1000000 + 1 * MS + 2 * TICK + 1 * MS);
+		std::uint32_t horizon = 0;
+		f.out.bundleEntries(1, &horizon);
+		CHECK(horizon == 3);
+		CHECK(f.relay.horizon() == 3);
+	}
+
+	TEST_CASE("the load barrier gives up after its timeout; the late seat gets grace from the start")
+	{
+		SequencerConfig config;
+		config.startBarrierMicros = 30 * 1000 * MS;
+		config.graceMicros = 10 * 1000 * MS;
+		RelayFixture f(0b11, config);
+		f.join(1, 0);
+		f.at(29 * 1000 * MS);
+		CHECK_FALSE(f.relay.clockStarted());
+		f.at(30 * 1000 * MS);
+		CHECK(f.relay.clockStarted());
+		CHECK(f.relay.presence(1) == PresenceState::NotConnected);
+		// Without the barrier's reset the seat would already be out of grace (40 s
+		// since creation); it has 10 s from the start.
+		f.at(39 * 1000 * MS);
+		CHECK(f.relay.presence(1) == PresenceState::NotConnected);
+		f.join(2, 1);
+		CHECK(f.relay.presence(1) == PresenceState::Connected);
+		// It joined late: the relay is 9 s (225 ticks) in and sends it the log.
+		CHECK(f.out.take<Welcome>(2, MSG_WELCOME).at(0)->relayTick == 225);
+		CHECK_FALSE(f.out.take<TurnBundle>(2, MSG_TURN_BUNDLE).empty());
+	}
+
+	TEST_CASE("without a barrier the clock starts when the sequencer is created")
+	{
+		RelayFixture f(0b11);
+		CHECK(f.relay.clockStarted());
+		f.join(1, 0);
+		f.atTick(3);
+		CHECK(f.relay.horizon() == 4);
+	}
+
+	TEST_CASE("an order takes the earliest tick not yet broadcast, whatever the relay clock")
+	{
+		SequencerConfig config;
+		config.bundleInterval = 2;
+		RelayFixture f(0b1, config);
+		f.join(1, 0);
+		f.atTick(9);
+		REQUIRE(f.relay.horizon() == 10);
+		f.atTick(10);
+		REQUIRE(f.relay.horizon() == 10); // the next bundle is due at relay tick 11
+		CHECK(f.relay.nextBundleMicros() == 1000000 + 11 * TICK);
+		f.submit(1, 1, order(20, 4)); // arrives during relay tick 10
+		f.submit(1, 2, order(20, 5));
+		f.out.inbox[1].clear();
+		f.atTick(11);
+		const auto entries = f.out.bundleEntries(1);
+		REQUIRE(entries.size() == 2);
+		CHECK(entries[0].tick == 10); // not 11: no client may run tick 10 yet
+		CHECK(entries[1].tick == 11);
 	}
 
 	TEST_CASE("orders execute the tick after arrival, one per seat per tick")
@@ -431,7 +551,7 @@ TEST_SUITE("TurnSequencer")
 		CHECK(entries[2].tick == 7);
 	}
 
-	TEST_CASE("duplicates, nulls and latency adjustments are dropped; floods are refused")
+	TEST_CASE("duplicates, nulls and latency adjustments are dropped; a flood is dropped, not the seat")
 	{
 		RelayFixture f(0b11);
 		f.join(1, 0);
@@ -449,12 +569,25 @@ TEST_SUITE("TurnSequencer")
 		CHECK(f.out.bundleEntries(1).size() == 1);
 		CHECK(f.relay.presence(1) == PresenceState::Connected);
 
-		for (std::uint32_t i = 0; i < 300 && !f.out.wasClosed(2); ++i)
+		// 300 orders at once: the seat's queue may reach 250 ticks past the clock;
+		// the rest are dropped, and the seat keeps its connection.
+		for (std::uint32_t i = 0; i < 300; ++i)
 			f.submit(2, 10 + i, order(20, 4));
-		CHECK(f.out.wasClosed(2));
-		auto rejects = f.out.take<Reject>(2, MSG_REJECT);
-		REQUIRE(rejects.size() == 1);
-		CHECK(rejects[0]->reason == RejectReason::Flooding);
+		CHECK_FALSE(f.out.wasClosed(2));
+		CHECK(f.out.take<Reject>(2, MSG_REJECT).empty());
+		CHECK(f.relay.presence(1) == PresenceState::Connected);
+		const std::uint64_t flooded = f.relay.stats().ordersFlooded;
+		CHECK(flooded == 50);
+		CHECK(f.relay.telemetry().seats[1].floodRejections == flooded);
+		// Once the queue drains the seat is sequenced as usual again.
+		f.atTick(400);
+		f.out.inbox[2].clear();
+		f.submit(2, 1000, order(20, 4, 9));
+		f.atTick(402);
+		const auto entries = f.out.bundleEntries(2);
+		REQUIRE(entries.size() == 1);
+		CHECK(entries[0].tick == 401);
+		CHECK(entries[0].order[1] == 9);
 	}
 
 	TEST_CASE("admission: tickets, versions, first message and seat takeover")
@@ -533,6 +666,7 @@ TEST_SUITE("TurnSequencer")
 		// Seat 2 never connects: it is quit when the grace period from match start ends.
 		f.at(9 * 1000 * MS);
 		CHECK(f.relay.presence(2) == PresenceState::NotConnected);
+		const std::uint32_t firstUnsent = f.relay.horizon();
 		f.at(10 * 1000 * MS);
 		CHECK(f.relay.presence(2) == PresenceState::Left);
 		// Seat 1 drops, returns within grace, drops again and stays away.
@@ -555,7 +689,7 @@ TEST_SUITE("TurnSequencer")
 				quits.push_back(e);
 		REQUIRE(quits.size() == 2);
 		CHECK(quits[0].seat == 2);
-		CHECK(quits[0].tick == 251); // the tick after expiry at relay tick 250
+		CHECK(quits[0].tick == firstUnsent); // the first tick not yet broadcast at expiry
 		CHECK(quits[1].seat == 1);
 		std::uint8_t expected[5];
 		encodePlayerQuitOrder(1, expected);
@@ -591,6 +725,187 @@ TEST_SUITE("TurnSequencer")
 		REQUIRE(f.relay.turnLog().size() == 1);
 		CHECK(f.relay.turnLog()[0].tick == 5);
 		CHECK(f.relay.turnLog()[0].seat == 1);
+	}
+
+	TEST_CASE("one client's GameFinished decides nothing: the others keep their grace")
+	{
+		SequencerConfig config;
+		config.graceMicros = 180 * 1000 * MS;
+		Quit finished;
+		finished.reason = QuitReason::GameFinished;
+		// The guest's link drops; the host leaves claiming the game is over. The guest
+		// keeps its full grace, and the match is not reported as completed.
+		{
+			RelayFixture f(0b11, config);
+			f.join(1, 0);
+			f.join(2, 1);
+			f.atTick(100);
+			f.relay.onDisconnect(2, f.now);
+			f.atTick(120);
+			f.raw(1, finished);
+			CHECK(f.relay.finishedSeats() == 0b01);
+			CHECK_FALSE(f.relay.gameDecided());
+			CHECK_FALSE(f.relay.matchOver());
+			CHECK(f.relay.presence(1) == PresenceState::Reconnecting);
+			// It comes back within grace and plays on; the host's claim is spent.
+			f.at(120 * TICK + 60 * 1000 * MS);
+			f.join(3, 1, f.relay.horizon());
+			CHECK(f.relay.presence(1) == PresenceState::Connected);
+			f.atTick(120 + 60 * 25 + 500);
+			CHECK_FALSE(f.relay.matchOver());
+			f.raw(3, Quit()); // and leaves without a finished game
+			CHECK(f.relay.matchOver());
+			CHECK_FALSE(f.relay.gameDecided());
+		}
+		// Grace runs out: still not completed.
+		{
+			RelayFixture f(0b11, config);
+			f.join(1, 0);
+			f.join(2, 1);
+			f.atTick(100);
+			f.relay.onDisconnect(2, f.now);
+			f.raw(1, finished);
+			f.at(100 * TICK + 179 * 1000 * MS);
+			CHECK_FALSE(f.relay.matchOver());
+			f.at(100 * TICK + 181 * 1000 * MS);
+			CHECK(f.relay.matchOver());
+			CHECK_FALSE(f.relay.gameDecided());
+			std::size_t byGrace = 0;
+			for (const auto& e : f.relay.buildRecord("m", "v", "{}", {}).events)
+				byGrace += e.kind == MatchEventKind::LeftByGrace && e.seat == 1;
+			CHECK(byGrace == 1);
+		}
+	}
+
+	TEST_CASE("a game is decided when every seat still playing reports it finished")
+	{
+		Quit finished;
+		finished.reason = QuitReason::GameFinished;
+		// Both report it, in either order and with the other still watching.
+		{
+			RelayFixture f(0b11);
+			f.join(1, 0);
+			f.join(2, 1);
+			f.atTick(100);
+			f.raw(1, finished);
+			CHECK_FALSE(f.relay.matchOver());
+			CHECK_FALSE(f.relay.gameDecided());
+			f.atTick(150);
+			f.raw(2, finished);
+			CHECK(f.relay.matchOver());
+			CHECK(f.relay.gameDecided());
+		}
+		// A seat that left before the first claim does not have to agree; one that was
+		// still playing does.
+		{
+			RelayFixture f(0b111);
+			f.join(1, 0);
+			f.join(2, 1);
+			f.join(3, 2);
+			f.atTick(50);
+			f.raw(3, Quit()); // resigned mid-game
+			f.atTick(100);
+			f.raw(1, finished);
+			f.raw(2, finished);
+			CHECK(f.relay.matchOver());
+			CHECK(f.relay.gameDecided());
+		}
+		{
+			RelayFixture f(0b111);
+			f.join(1, 0);
+			f.join(2, 1);
+			f.join(3, 2);
+			f.atTick(100);
+			f.raw(1, finished);
+			f.raw(2, finished);
+			f.raw(3, Quit()); // still in the match at the first claim, leaves without one
+			CHECK(f.relay.matchOver());
+			CHECK_FALSE(f.relay.gameDecided());
+		}
+		// A plain PlayerQuit claims nothing.
+		{
+			RelayFixture f(0b11);
+			f.join(1, 0);
+			f.join(2, 1);
+			f.raw(1, Quit());
+			f.raw(2, Quit());
+			CHECK(f.relay.matchOver());
+			CHECK_FALSE(f.relay.gameDecided());
+			CHECK(f.relay.finishedSeats() == 0);
+		}
+	}
+
+	TEST_CASE("the next wake: a bundle while connected, grace while empty, now for presence")
+	{
+		SequencerConfig config;
+		config.graceMicros = 30 * 1000 * MS;
+		RelayFixture f(0b11, config);
+		f.join(1, 0);
+		f.join(2, 1);
+		f.atTick(10);
+		CHECK(f.relay.nextWakeMicros() == f.relay.nextBundleMicros());
+		CHECK(f.relay.nextWakeMicros() > f.now);
+		CHECK(f.relay.nextWakeMicros() <= f.now + TICK);
+		f.relay.onDisconnect(1, f.now);
+		CHECK(f.relay.nextWakeMicros() == f.now); // a presence change to broadcast
+		f.atTick(11);
+		CHECK(f.relay.nextWakeMicros() == f.relay.nextBundleMicros()); // seat 1 is still here
+		f.relay.onDisconnect(2, f.now);
+		f.atTick(12);
+		// Nobody connected: a second at most, or the first grace expiry.
+		CHECK(f.relay.nextWakeMicros() == f.now + 1000 * MS);
+		const std::uint64_t graceEnd = 1000000 + 10 * TICK + 1 * MS + 30 * 1000 * MS;
+		// A host that slept meanwhile: one update catches the horizon up.
+		const std::uint32_t before = f.relay.horizon();
+		f.at(graceEnd - 1000000 - 500 * MS);
+		CHECK(f.relay.horizon() > before + 700);
+		CHECK(f.relay.nextWakeMicros() == graceEnd);
+		f.at(graceEnd - 1000000);
+		CHECK(f.relay.presence(0) == PresenceState::Left);
+		CHECK_FALSE(f.relay.matchOver());
+		f.at(graceEnd - 1000000 + TICK + 1 * MS);
+		CHECK(f.relay.matchOver());
+		CHECK(f.relay.nextWakeMicros() == UINT64_MAX);
+	}
+
+	TEST_CASE("arbitration stays incremental over a long match and the record keeps every report")
+	{
+		// A 60-minute four-player match with a checksum every 25 ticks, one seat
+		// skipping some: every tick is arbitrated once, in time, and the record still
+		// has each seat's first report.
+		RelayFixture f(0b1111);
+		for (int s = 0; s < 4; ++s)
+			f.join(PeerId(s + 1), s);
+		const std::uint32_t end = 60 * 60 * 25;
+		std::size_t reported = 0;
+		for (std::uint32_t tick = 1; tick <= end; ++tick)
+		{
+			f.atTick(tick);
+			if (tick % 25 == 0)
+			{
+				const std::uint32_t t = tick - 25;
+				for (int s = 0; s < 4; ++s)
+					if (!(s == 3 && (t / 25) % 10 == 0)) // seat 3 skips one report in ten
+					{
+						f.report(PeerId(s + 1), t, t * 7 + 1);
+						++reported;
+					}
+			}
+			if (tick % 1000 == 0)
+				for (int s = 0; s < 4; ++s)
+					f.out.inbox[PeerId(s + 1)].clear();
+		}
+		std::size_t agreed = 0;
+		for (std::uint32_t t = 0; t + 275 < end; t += 25)
+			if (auto a = f.relay.agreedChecksum(t))
+			{
+				CHECK(*a == t * 7 + 1);
+				++agreed;
+			}
+		CHECK(agreed == (end - 276) / 25 + 1);
+		CHECK_FALSE(f.relay.desyncFlagged());
+		CHECK(f.relay.buildRecord("m", "v", "{}", {}).reports.size() == reported);
+		CHECK(f.relay.telemetry().timedOut > 0);
 	}
 
 	TEST_CASE("three clients: the majority wins and the minority rejoins")
@@ -711,11 +1026,62 @@ TEST_SUITE("TurnSequencer")
 		const auto& seats = presence.back()->seats;
 		REQUIRE(seats.size() == 2);
 		CHECK(seats[0].state == PresenceState::Connected);
-		CHECK(seats[0].lagTicks == 3);
+		// The lag when the Ping arrived, not grown by the time since (Pings come every
+		// 500 ms; staleness counts only after a second without one).
+		CHECK(seats[0].lagTicks == 2);
 		CHECK(seats[1].state == PresenceState::Reconnecting);
 		CHECK(seats[1].graceRemainingTicks == 4500 - 1);
-		f.atTick(200);
+		f.atTick(120);
+		CHECK(f.relay.presence(0) == PresenceState::Connected);
+		f.atTick(200); // no Ping for 100 ticks: 2 + 100 - 25 behind
 		CHECK(f.relay.presence(0) == PresenceState::Lagging);
+		f.out.inbox[1].clear();
+		f.atTick(230);
+		auto later = f.out.take<Presence>(1, MSG_PRESENCE);
+		REQUIRE(!later.empty());
+		CHECK(later.back()->seats[0].lagTicks == 2 + 130 - 25);
+	}
+
+	TEST_CASE("versions 1 and 2 are both served; only version 2 receives seat round trips")
+	{
+		RelayFixture f(0b111);
+		f.relay.onConnect(1, f.now);
+		Hello v1;
+		v1.protocolVersion = 1;
+		v1.ticket = "seat:0";
+		f.raw(1, v1);
+		auto w1 = f.out.take<Welcome>(1, MSG_WELCOME);
+		REQUIRE(w1.size() == 1);
+		CHECK(w1[0]->protocolVersion == 1);
+		f.join(2, 1); // PROTOCOL_VERSION
+		auto w2 = f.out.take<Welcome>(2, MSG_WELCOME);
+		REQUIRE(w2.size() == 1);
+		CHECK(w2[0]->protocolVersion == PROTOCOL_VERSION);
+		CHECK(f.out.take<SeatLatency>(2, MSG_SEAT_LATENCY).size() == 1); // with the first Presence
+
+		// Round trips the relay measured: smoothed, per seat; seat 2 never connected.
+		f.relay.transportRoundTrip(1, 40000);
+		f.relay.transportRoundTrip(2, 100000);
+		f.relay.transportRoundTrip(2, 200000);
+		f.out.inbox.clear();
+		f.atTick(30); // presence refresh every 25 ticks
+		CHECK(f.out.take<SeatLatency>(1, MSG_SEAT_LATENCY).empty());
+		CHECK_FALSE(f.out.take<Presence>(1, MSG_PRESENCE).empty());
+		auto latency = f.out.take<SeatLatency>(2, MSG_SEAT_LATENCY);
+		REQUIRE(!latency.empty());
+		const auto& seats = latency.back()->seats;
+		REQUIRE(seats.size() == 2);
+		CHECK(seats[0].seat == 0);
+		CHECK(seats[0].rttMicros == 40000);
+		CHECK(seats[1].seat == 1);
+		CHECK(seats[1].rttMicros == (3 * 100000 + 200000) / 4);
+
+		f.relay.onConnect(3, f.now);
+		Hello future;
+		future.protocolVersion = PROTOCOL_VERSION + 1;
+		future.ticket = "seat:2";
+		f.raw(3, future);
+		CHECK(f.out.take<Reject>(3, MSG_REJECT).at(0)->reason == RejectReason::ProtocolVersion);
 	}
 }
 
@@ -741,26 +1107,52 @@ TEST_SUITE("TurnJitterBuffer")
 	TEST_CASE("the target rises at once and falls one tick per hold period")
 	{
 		JitterBuffer b;
-		CHECK(b.requiredTicks(0, TICK) == 2);
-		CHECK(b.requiredTicks(1, TICK) == 3);
-		CHECK(b.requiredTicks(130 * MS, TICK) == 6);
+		// Jitter within the 10 ms tolerance needs no buffer; above it, the jitter in
+		// whole ticks plus one safety tick.
+		CHECK(b.requiredTicks(0, TICK) == 0);
+		CHECK(b.requiredTicks(10 * MS, TICK) == 0);
+		CHECK(b.requiredTicks(10 * MS + 1, TICK) == 2);
+		CHECK(b.requiredTicks(40 * MS, TICK) == 2);
+		CHECK(b.requiredTicks(41 * MS, TICK) == 3);
+		CHECK(b.requiredTicks(130 * MS, TICK) == 5);
 		CHECK(b.requiredTicks(100000 * MS, TICK) == 50);
 		std::uint64_t t = 0;
-		CHECK(b.update(0, TICK, t) == 2);
-		CHECK(b.update(130 * MS, TICK, t += 100 * MS) == 6);
+		CHECK(b.update(0, TICK, t) == 0);
+		CHECK(b.update(130 * MS, TICK, t += 100 * MS) == 5);
 		// Jitter vanishes: hold, then one tick per 5 s.
-		CHECK(b.update(0, TICK, t += 100 * MS) == 6);
-		CHECK(b.update(0, TICK, t += 4900 * MS) == 6);
 		CHECK(b.update(0, TICK, t += 100 * MS) == 5);
-		CHECK(b.update(0, TICK, t += 4999 * MS) == 5);
-		CHECK(b.update(0, TICK, t += 1 * MS) == 4);
+		CHECK(b.update(0, TICK, t += 4900 * MS) == 5);
+		CHECK(b.update(0, TICK, t += 100 * MS) == 4);
+		CHECK(b.update(0, TICK, t += 4999 * MS) == 4);
+		CHECK(b.update(0, TICK, t += 1 * MS) == 3);
 		// A burst during the hold restarts it.
-		CHECK(b.update(50 * MS, TICK, t += 4 * 1000 * MS) == 4);
-		CHECK(b.update(0, TICK, t += 4 * 1000 * MS) == 4);
-		CHECK(b.update(0, TICK, t += 1000 * MS) == 4);
-		CHECK(b.update(0, TICK, t += 4000 * MS) == 3);
-		CHECK(b.update(0, TICK, t += 5000 * MS) == 2);
-		CHECK(b.update(0, TICK, t += 50000 * MS) == 2);
+		CHECK(b.update(70 * MS, TICK, t += 4 * 1000 * MS) == 3);
+		CHECK(b.update(0, TICK, t += 4 * 1000 * MS) == 3);
+		CHECK(b.update(0, TICK, t += 1000 * MS) == 3);
+		CHECK(b.update(0, TICK, t += 4000 * MS) == 2);
+		CHECK(b.update(0, TICK, t += 5000 * MS) == 1);
+		CHECK(b.update(0, TICK, t += 5000 * MS) == 0);
+		CHECK(b.update(0, TICK, t += 50000 * MS) == 0);
+	}
+
+	TEST_CASE("with bundles every few ticks the controller holds the sawtooth's mean")
+	{
+		// Two-tick bundles: sampled after each tick the level alternates L+1, L.
+		DelayController d;
+		d.setBundleInterval(2);
+		for (int i = 0; i < 400; ++i)
+			d.onTick(i % 2, 0);
+		CHECK(d.rateMultiplier(0) == 1.0);
+		for (int i = 0; i < 400; ++i)
+			d.onTick(2 + i % 2, 0);
+		CHECK(d.rateMultiplier(0) == doctest::Approx(1.04));
+		DelayController one; // one-tick bundles: the level itself
+		for (int i = 0; i < 400; ++i)
+			one.onTick(0, 0);
+		CHECK(one.rateMultiplier(0) == 1.0);
+		for (int i = 0; i < 400; ++i)
+			one.onTick(1, 0);
+		CHECK(one.rateMultiplier(0) == doctest::Approx(1.02));
 	}
 
 	TEST_CASE("the delay controller nudges by at most five percent and catches up")
@@ -979,6 +1371,365 @@ TEST_SUITE("TurnSession")
 		session.update(4);
 		CHECK(session.desyncFlagged());
 		CHECK_FALSE(session.needsReload());
+	}
+
+	TEST_CASE("seat round trips from the relay reach the connection panel")
+	{
+		ScriptedTransport link;
+		TurnSessionConfig config;
+		config.ticket = "seat:0";
+		TurnSession session(2, link, config, bytesOrderCodec());
+		link.linkState = TurnTransport::State::Connected;
+		session.update(0);
+		Welcome w;
+		w.seat = 0;
+		w.humanSeatMask = 0b11;
+		link.deliver(w);
+		SeatLatency l;
+		l.seats.push_back({0, 30000});
+		l.seats.push_back({1, 120000});
+		link.deliver(l);
+		session.update(1);
+		CHECK(session.protocolVersion() == PROTOCOL_VERSION);
+		CHECK(session.seatPresenceInfo(0).relayRttMicros == 30000);
+		CHECK(session.seatPresenceInfo(1).relayRttMicros == 120000);
+		SeatLatency onlyUs;
+		onlyUs.seats.push_back({0, 31000});
+		link.deliver(onlyUs);
+		session.update(2);
+		CHECK(session.seatPresenceInfo(1).relayRttMicros == 0); // gone: not measured
+	}
+
+	// A link that goes quiet without the socket noticing (a phone between networks, a
+	// browser taken offline): the session says so within the stall threshold, drops the
+	// link after the reconnect threshold, and after a gap starts its delay estimate over.
+	struct QuietLink
+	{
+		ScriptedTransport link;
+		TurnSession session{1, link, TurnSessionConfig(), bytesOrderCodec()};
+		std::uint32_t horizon = 0;
+		std::uint64_t at = 0;
+		QuietLink()
+		{
+			link.linkState = TurnTransport::State::Connected;
+			session.update(0);
+			Welcome w;
+			w.seat = 0;
+			w.humanSeatMask = 1;
+			link.deliver(w);
+			session.update(1);
+		}
+		void bundle(std::uint64_t time)
+		{
+			TurnBundle b;
+			b.fromTick = horizon;
+			b.horizonTick = ++horizon;
+			link.deliver(b);
+			at = time;
+			session.update(time);
+		}
+		/// One bundle per tick, on time, for `length`.
+		void steady(std::uint64_t length)
+		{
+			const std::uint64_t end = at + length;
+			while (at + TICK_PERIOD <= end)
+				bundle(at + TICK_PERIOD);
+		}
+	};
+
+	TEST_CASE("a silent link shows as lost within the stall threshold and reconnects after five seconds")
+	{
+		QuietLink q;
+		// Players still loading: the relay sends nothing yet, and that is no trouble.
+		q.session.update(4 * SECOND);
+		CHECK_FALSE(q.session.linkStalled());
+		CHECK(q.session.state() == TurnSession::State::Running);
+		q.at = 4 * SECOND;
+		q.steady(2 * SECOND);
+		CHECK_FALSE(q.session.linkStalled());
+		const std::uint64_t last = q.at;
+		q.session.update(last + 1400 * MS);
+		CHECK_FALSE(q.session.linkStalled());
+		q.session.update(last + 1600 * MS);
+		CHECK(q.session.linkStalled());
+		CHECK(q.session.stalledForMicros() >= 1500 * MS);
+		CHECK(q.session.state() == TurnSession::State::Running);
+		CHECK(q.link.closeCalls == 0);
+		q.session.update(last + 5100 * MS);
+		CHECK(q.session.state() == TurnSession::State::Reconnecting);
+		CHECK(q.link.closeCalls == 1);
+		CHECK_FALSE(q.session.linkStalled());
+		// It reconnects at once and resumes from its horizon.
+		q.session.update(last + 5101 * MS);
+		CHECK(q.link.connectCalls >= 2);
+		q.link.linkState = TurnTransport::State::Connected;
+		q.link.sent.clear();
+		q.session.update(last + 5200 * MS);
+		auto hello = q.link.sentOf<Hello>(MSG_HELLO);
+		REQUIRE(hello.size() == 1);
+		CHECK(hello[0]->haveHorizon == q.horizon);
+	}
+
+	TEST_CASE("a horizon that stops moving shows as lost even while pongs arrive")
+	{
+		QuietLink q;
+		q.at = 1 * SECOND;
+		q.steady(1 * SECOND);
+		const std::uint64_t last = q.at;
+		for (std::uint64_t t = last + 100 * MS; t <= last + 2 * SECOND; t += 100 * MS)
+		{
+			Pong pong;
+			pong.nonce = 999;
+			q.link.deliver(pong);
+			q.session.update(t);
+		}
+		CHECK(q.session.linkStalled());
+		CHECK(q.session.state() == TurnSession::State::Running); // frames still arrive
+		q.bundle(last + 2100 * MS);
+		CHECK_FALSE(q.session.linkStalled());
+	}
+
+	TEST_CASE("after a stall the delay estimate starts over instead of keeping the gap")
+	{
+		QuietLink q;
+		q.at = 1 * SECOND;
+		q.steady(3 * SECOND);
+		const auto steadyTarget = q.session.targetTicks();
+		CHECK(q.session.jitterMicros() < 5 * MS);
+		// A ping goes out just before the link goes quiet; its pong arrives with the backlog.
+		q.link.sent.clear();
+		q.session.update(q.at + 600 * MS);
+		auto pings = q.link.sentOf<Ping>(MSG_PING);
+		REQUIRE_FALSE(pings.empty());
+		const std::uint64_t quietFrom = q.at;
+		q.session.update(quietFrom + 4 * SECOND);
+		CHECK(q.session.linkStalled());
+		// Twenty seconds of ticks arrive at once, with the stale pong.
+		const std::uint64_t back = quietFrom + 4500 * MS;
+		Pong stale;
+		stale.nonce = pings.back()->nonce;
+		q.link.deliver(stale);
+		const std::uint32_t backlog = std::uint32_t((back - quietFrom) / TICK_PERIOD);
+		for (std::uint32_t i = 0; i < backlog; ++i)
+		{
+			TurnBundle b;
+			b.fromTick = q.horizon;
+			b.horizonTick = ++q.horizon;
+			q.link.deliver(b);
+		}
+		// The relay's own measurement of this seat spans the gap too.
+		SeatLatency staleRelay;
+		staleRelay.seats.push_back({0, 4000000});
+		q.link.deliver(staleRelay);
+		q.session.update(back);
+		CHECK_FALSE(q.session.linkStalled());
+		CHECK(q.session.rttMicros() < 1 * SECOND); // the stale pong measured the gap, not the link
+		CHECK(q.session.seatPresenceInfo(0).relayRttMicros == 0);
+		q.at = back;
+		q.steady(3 * SECOND);
+		CHECK(q.session.jitterMicros() < 5 * MS);
+		CHECK(q.session.targetTicks() <= steadyTarget + 1);
+		q.steady(1 * SECOND);
+		SeatLatency fresh;
+		fresh.seats.push_back({0, 40000});
+		q.link.deliver(fresh);
+		q.bundle(q.at + TICK_PERIOD);
+		CHECK(q.session.seatPresenceInfo(0).relayRttMicros == 40000);
+	}
+
+	TEST_CASE("an older relay that refuses version 2 is offered version 1 once")
+	{
+		ScriptedTransport link;
+		TurnSession session(1, link, TurnSessionConfig(), bytesOrderCodec());
+		link.linkState = TurnTransport::State::Connected;
+		session.update(0);
+		auto first = link.sentOf<Hello>(MSG_HELLO);
+		REQUIRE(first.size() == 1);
+		CHECK(first[0]->protocolVersion == PROTOCOL_VERSION);
+		Reject r;
+		r.reason = RejectReason::ProtocolVersion;
+		link.deliver(r);
+		session.update(1);
+		CHECK(session.state() == TurnSession::State::Reconnecting);
+		CHECK(link.closeCalls == 1);
+		link.linkState = TurnTransport::State::Disconnected;
+		session.update(2);
+		link.linkState = TurnTransport::State::Connected;
+		session.update(3);
+		auto second = link.sentOf<Hello>(MSG_HELLO);
+		REQUIRE(second.size() == 1);
+		CHECK(second[0]->protocolVersion == MIN_PROTOCOL_VERSION);
+		Welcome w;
+		w.protocolVersion = MIN_PROTOCOL_VERSION;
+		w.seat = 0;
+		w.humanSeatMask = 1;
+		link.deliver(w);
+		session.update(4);
+		CHECK(session.state() == TurnSession::State::Running);
+		CHECK(session.protocolVersion() == MIN_PROTOCOL_VERSION);
+
+		// A second refusal is final.
+		ScriptedTransport link2;
+		TurnSession again(1, link2, TurnSessionConfig(), bytesOrderCodec());
+		link2.linkState = TurnTransport::State::Connected;
+		again.update(0);
+		link2.deliver(r);
+		again.update(1);
+		link2.linkState = TurnTransport::State::Disconnected;
+		again.update(2);
+		link2.linkState = TurnTransport::State::Connected;
+		again.update(3);
+		link2.deliver(r);
+		again.update(4);
+		CHECK(again.state() == TurnSession::State::Rejected);
+		CHECK(again.rejectReason() == RejectReason::ProtocolVersion);
+	}
+
+	/// The wire bytes of OrderMoveFlag(gid, x, y, drop).
+	std::vector<std::uint8_t> moveFlag(std::uint16_t gid, std::uint8_t x, bool drop = false)
+	{
+		return {35, std::uint8_t(gid >> 8), std::uint8_t(gid), 0, 0, 0, x, 0, 0, 0, 1, std::uint8_t(drop)};
+	}
+
+	TurnSessionConfig seatZero(TurnSessionConfig config = {})
+	{
+		config.ticket = "seat:0";
+		return config;
+	}
+
+	/// A one-seat session past its Welcome at time 2, with nothing sent yet.
+	struct RunningSession
+	{
+		ScriptedTransport link;
+		TurnSession session;
+		explicit RunningSession(TurnSessionConfig config = {}) : session(1, link, seatZero(config), bytesOrderCodec())
+		{
+			link.linkState = TurnTransport::State::Connected;
+			session.update(1);
+			Welcome w;
+			w.humanSeatMask = 1;
+			link.deliver(w);
+			session.update(2);
+			link.sent.clear();
+		}
+		std::vector<std::shared_ptr<OrderSubmit>> submits() { return link.sentOf<OrderSubmit>(MSG_ORDER_SUBMIT); }
+	};
+
+	TEST_CASE("orders go out at one per tick after a burst; a later move of the same flag replaces a waiting one")
+	{
+		RunningSession r;
+		// A drag: 60 moves of flag 5 within a frame, one of flag 6, and a building order.
+		for (int i = 0; i < 30; ++i)
+			r.session.addLocalOrder(makeBytesOrder(moveFlag(5, std::uint8_t(i))));
+		r.session.addLocalOrder(makeBytesOrder(moveFlag(6, 1)));
+		r.session.addLocalOrder(makeBytesOrder(order(20, 9, 3)));
+		for (int i = 30; i < 60; ++i)
+			r.session.addLocalOrder(makeBytesOrder(moveFlag(5, std::uint8_t(i), i == 45)));
+		auto sent = r.submits();
+		REQUIRE(sent.size() == 4); // the burst
+		for (int i = 0; i < 4; ++i)
+			CHECK(sent[i]->order == moveFlag(5, std::uint8_t(i)));
+		// Waiting: flag 6, the building order, and one move of flag 5 (the latest, at the
+		// back, keeping the drop one of the replaced moves had).
+		CHECK(r.session.queuedOrders() == 3);
+		CHECK(r.session.telemetry().totals().ordersCoalesced == 55);
+		r.link.sent.clear();
+		r.session.update(2 + TICK);
+		sent = r.submits();
+		REQUIRE(sent.size() == 1);
+		CHECK(sent[0]->order == moveFlag(6, 1));
+		r.link.sent.clear();
+		r.session.update(2 + 3 * TICK);
+		sent = r.submits();
+		REQUIRE(sent.size() == 2);
+		CHECK(sent[0]->order == order(20, 9, 3));
+		CHECK(sent[1]->order == moveFlag(5, 59, true));
+		CHECK(sent[1]->clientSequence == 7);
+		CHECK(r.session.queuedOrders() == 0);
+		CHECK_FALSE(r.session.tooManyActions());
+	}
+
+	TEST_CASE("orders that must all execute are paced but never merged")
+	{
+		RunningSession r;
+		for (int i = 0; i < 20; ++i)
+			r.session.addLocalOrder(makeBytesOrder(order(20, 9, std::uint8_t(i)))); // OrderCreate
+		std::vector<std::uint8_t> fills;
+		for (const auto& s : r.submits())
+			fills.push_back(s->order[1]);
+		CHECK(fills.size() == 4);
+		CHECK(r.session.queuedOrders() == 16);
+		for (std::uint64_t t = 1; t <= 20; ++t)
+			r.session.update(2 + t * TICK);
+		for (const auto& s : r.submits())
+			fills.push_back(s->order[1]);
+		REQUIRE(fills.size() == 20);
+		for (int i = 0; i < 20; ++i)
+			CHECK(fills[i] == i);
+	}
+
+	TEST_CASE("voice waits for gameplay orders and keeps its own gap")
+	{
+		RunningSession r;
+		for (int i = 0; i < 3; ++i)
+			r.session.addLocalOrder(makeBytesOrder(order(72, 300, std::uint8_t(i))));
+		for (int i = 0; i < 5; ++i)
+			r.session.addLocalOrder(makeBytesOrder(order(20, 9, std::uint8_t(i))));
+		// The first packet left while nothing else waited; then orders take the burst,
+		// and voice waits until none does and its gap has passed.
+		for (std::uint64_t t = 1; t <= 12; ++t)
+			r.session.update(2 + t * TICK);
+		std::vector<std::uint8_t> types;
+		for (const auto& s : r.submits())
+			types.push_back(s->order[0]);
+		const std::vector<std::uint8_t> expected = {72, 20, 20, 20, 20, 20, 72, 72};
+		CHECK(types == expected);
+		CHECK(r.session.queuedVoice() == 0);
+	}
+
+	TEST_CASE("the local queue is bounded and says so")
+	{
+		TurnSessionConfig config;
+		config.maxQueuedOrders = 10;
+		RunningSession r(config);
+		for (int i = 0; i < 30; ++i)
+			r.session.addLocalOrder(makeBytesOrder(order(71, 9, std::uint8_t(i)))); // chat
+		CHECK(r.submits().size() == 4);
+		CHECK(r.session.queuedOrders() == 10);
+		CHECK(r.session.telemetry().totals().ordersQueueDropped == 16);
+		CHECK(r.session.tooManyActions());
+		for (std::uint64_t t = 1; t <= 75; ++t)
+			r.session.update(2 + t * TICK);
+		CHECK(r.session.queuedOrders() == 0);
+		CHECK(r.submits().size() == 10); // the four of the burst were taken above
+		CHECK_FALSE(r.session.tooManyActions());
+	}
+
+	TEST_CASE("quitting sends the orders still waiting, then Quit")
+	{
+		RunningSession r;
+		for (int i = 0; i < 10; ++i)
+			r.session.addLocalOrder(makeBytesOrder(order(71, 9, std::uint8_t(i))));
+		CHECK(r.session.queuedOrders() == 6);
+		r.session.quit(QuitReason::PlayerQuit);
+		CHECK(r.submits().size() == 10);
+		CHECK(r.link.sentOf<Quit>(MSG_QUIT).size() == 1);
+		CHECK(r.session.state() == TurnSession::State::Ended);
+	}
+
+	TEST_CASE("a flooding reject reconnects instead of ending the match")
+	{
+		RunningSession r;
+		Reject flood;
+		flood.reason = RejectReason::Flooding;
+		r.link.deliver(flood);
+		r.session.update(3);
+		CHECK(r.session.state() == TurnSession::State::Reconnecting);
+		r.link.linkState = TurnTransport::State::Disconnected;
+		r.session.update(300000);
+		r.link.linkState = TurnTransport::State::Connected;
+		r.session.update(300001);
+		CHECK(r.link.sentOf<Hello>(MSG_HELLO).size() == 1);
 	}
 
 	TEST_CASE("a reject ends the session")

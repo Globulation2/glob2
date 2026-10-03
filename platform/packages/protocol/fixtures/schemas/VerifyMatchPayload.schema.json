@@ -347,12 +347,37 @@
                   }
                 },
                 "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "required": [
+                  "seat",
+                  "kind",
+                  "team"
+                ],
+                "properties": {
+                  "seat": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 11
+                  },
+                  "kind": {
+                    "type": "string",
+                    "const": "closed"
+                  },
+                  "team": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 11
+                  }
+                },
+                "additionalProperties": false
               }
             ]
           },
           "minItems": 1,
           "maxItems": 12,
-          "description": "Player records in BasePlayer number order 0..k-1."
+          "description": "Player records (human and AI seats) in BasePlayer number order 0..p-1, then any closed seats."
         },
         "rules": {
           "type": "object",
@@ -446,6 +471,29 @@
           "maxItems": 64,
           "uniqueItems": true,
           "description": "Experimental-feature keys (ExperimentalFeatures.cpp); unknown keys are an error."
+        },
+        "pauseLimit": {
+          "type": "object",
+          "required": [
+            "pauses",
+            "seconds"
+          ],
+          "properties": {
+            "pauses": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100,
+              "description": "Pauses each human seat may start."
+            },
+            "seconds": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 3600,
+              "description": "Total time each human seat may keep the game paused; the game resumes by itself when the seat that paused runs out."
+            }
+          },
+          "additionalProperties": false,
+          "description": "Limit on pausing, enforced identically by every client and the verifier. Absent: unlimited (rooms, LAN). Older clients refuse a setup that has it."
         }
       },
       "additionalProperties": false,

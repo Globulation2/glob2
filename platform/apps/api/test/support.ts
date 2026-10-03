@@ -1,5 +1,8 @@
 // Test harness: API instances on a per-file test database, a realtime client
 // and a cookie-keeping "browser".
+import { mkdtempSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import type { AddressInfo } from 'node:net';
 import type { FastifyInstance } from 'fastify';
 import WebSocket from 'ws';
@@ -12,8 +15,11 @@ import {
   allowAllPolicy,
   createLogger,
   prepareJobQueue,
+  type AccessPolicy,
   type InstanceConfig,
+  type EngineAgentKey,
   type PlatformConfig,
+  type RelayKey,
 } from '@glob2/core';
 import { buildApp, type BuildOptions } from '../src/app.ts';
 import { SigningKeys } from '../src/auth/keys.ts';
@@ -36,12 +42,17 @@ export interface Harness {
   database: TestDatabase;
   keys: SigningKeys;
   jobs: JobQueue;
+  /** Blob store shared by every replica of the harness (a temporary directory). */
+  blobs: FsBlobStore;
   /** Starts an API replica listening on a free port. `origin` defaults to the replica's own URL. */
   start(options?: {
     instance?: Partial<InstanceConfig>;
     origin?: string;
     secrets?: Record<string, string>;
     build?: BuildOptions;
+    access?: AccessPolicy;
+    relayKeys?: RelayKey[];
+    engineAgentKeys?: EngineAgentKey[];
   }): Promise<Instance>;
   close(): Promise<void>;
 }
@@ -51,11 +62,14 @@ export async function createHarness(): Promise<Harness> {
   await prepareJobQueue(database.pool, logger);
   const jobs = await JobQueue.create(database.pool, logger);
   const keys = SigningKeys.ephemeral('test-1');
+  const blobDir = mkdtempSync(join(tmpdir(), 'glob2-blobs-'));
+  const blobs = new FsBlobStore(blobDir);
   const instances: Instance[] = [];
   return {
     database,
     keys,
     jobs,
+    blobs,
     async start(options = {}) {
       const pubsub = new PgPubSub({ connectionString: database.url });
       // Replicas of one instance share an origin; tests that need a fixed one pass it.
@@ -65,11 +79,25 @@ export async function createHarness(): Promise<Harness> {
         databaseUrl: database.url,
         logLevel: 'silent',
         http: { host: '127.0.0.1', port: 0 },
-        blobs: { kind: 'fs', directory: '/tmp/unused' },
+        blobs: { kind: 'fs', directory: blobDir },
         shutdownGraceSeconds: 1,
-        instance: { ...DEFAULT_INSTANCE_CONFIG, name: 'Test Instance', ...options.instance },
+        instance: {
+          ...DEFAULT_INSTANCE_CONFIG,
+          name: 'Test Instance',
+          // Rate limits are shared by every replica on the test database, so
+          // tests get generous ones unless they test the limits themselves.
+          limits: {
+            authPerMinute: 10_000,
+            guestsPerHour: 10_000,
+            signinAttemptsPerHour: 10_000,
+            signinAttemptsPerMinuteTotal: 10_000,
+          },
+          ...options.instance,
+        },
         instanceConfigPath: undefined,
         secrets: options.secrets ?? {},
+        relayKeys: options.relayKeys ?? [],
+        engineAgentKeys: options.engineAgentKeys ?? [],
       };
       // The origin must be known before building (cookies, redirect URIs), but
       // the port only after listening: reserve one first.
@@ -88,11 +116,11 @@ export async function createHarness(): Promise<Harness> {
           db: database.db,
           pubsub,
           jobs,
-          blobs: new FsBlobStore('/tmp/unused'),
-          access: allowAllPolicy,
+          blobs,
+          access: options.access ?? allowAllPolicy,
           keys,
         },
-        options.build,
+        { roomSweepMs: 0, ...options.build },
       );
       const listenPort = options.origin ? 0 : Number(new URL(resolvedOrigin).port);
       await app.listen({ host: '127.0.0.1', port: listenPort });
@@ -113,6 +141,7 @@ export async function createHarness(): Promise<Harness> {
       for (const instance of instances) await instance.close().catch(() => undefined);
       await jobs.close();
       await database.drop();
+      rmSync(blobDir, { recursive: true, force: true });
     },
   };
 }
@@ -214,12 +243,17 @@ export class RealtimeClient {
     return response.result!;
   }
 
-  hello(accessToken?: string) {
+  hello(accessToken?: string, simVersion: object = SIM) {
     return this.ok('session.hello', {
       protocol: 1,
-      client: { platform: 'desktop', version: 'test', simVersion: SIM },
+      client: { platform: 'desktop', version: 'test', simVersion },
       ...(accessToken ? { accessToken } : {}),
     });
+  }
+
+  /** Drops frames received so far (events from earlier steps). */
+  clear() {
+    this.frames.length = 0;
   }
 
   close() {

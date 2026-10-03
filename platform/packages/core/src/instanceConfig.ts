@@ -136,6 +136,45 @@ export const InstanceConfig = Strict({
       allowedOrigins: Type.Optional(
         Type.Array(Type.String({ pattern: '^https?://[^/\\s]+$' }), { maxItems: 32 }),
       ),
+      /**
+       * Where the browser build of the game is served; invite pages link to it
+       * with `?join=<code>`. Default `<PUBLIC_ORIGIN>/play/`.
+       */
+      browserClientUrl: Type.Optional(Type.String({ pattern: '^https?://[^\\s]+$' })),
+    }),
+  ),
+  /**
+   * Verified app links for invite URLs (/j/<code>): the files served at
+   * /.well-known/assetlinks.json (Android App Links) and
+   * /.well-known/apple-app-site-association (iOS universal links). Only the
+   * official instance's domain is built into the mobile apps, so self-hosted
+   * instances leave this out (both files then answer 404) and rely on glob2://.
+   * See docs/hosting/README.md, "Mobile app links".
+   */
+  appLinks: Type.Optional(
+    Strict({
+      android: Type.Optional(
+        Strict({
+          /** Application id (default org.globulation2.glob2). */
+          packageName: Type.Optional(
+            Type.String({ pattern: '^[A-Za-z][A-Za-z0-9_]*(\\.[A-Za-z][A-Za-z0-9_]*)+$' }),
+          ),
+          /** SHA-256 fingerprints of the signing certificates, AA:BB:… (32 bytes). */
+          sha256CertFingerprints: Type.Array(
+            Type.String({ pattern: '^([0-9A-F]{2}:){31}[0-9A-F]{2}$' }),
+            { minItems: 1, maxItems: 8 },
+          ),
+        }),
+      ),
+      ios: Type.Optional(
+        Strict({
+          /** <Team ID>.<bundle id>, e.g. ABCDE12345.org.globulation2.glob2. */
+          appIds: Type.Array(Type.String({ pattern: '^[A-Z0-9]{10}\\.[A-Za-z0-9.-]+$' }), {
+            minItems: 1,
+            maxItems: 8,
+          }),
+        }),
+      ),
     }),
   ),
   limits: Type.Optional(
@@ -151,6 +190,13 @@ export const InstanceConfig = Strict({
       realtimeBurst: Type.Optional(Type.Integer({ minimum: 1 })),
       /** Open realtime sockets per client IP per replica (default 20). */
       realtimeConnectionsPerIp: Type.Optional(Type.Integer({ minimum: 1 })),
+      /** Browser sign-ins a client IP may start per hour (default 30), all clients per minute (default 300). */
+      signinAttemptsPerHour: Type.Optional(Type.Integer({ minimum: 1 })),
+      signinAttemptsPerMinuteTotal: Type.Optional(Type.Integer({ minimum: 1 })),
+      /** Wrong passwords per username per 15 minutes before it is locked for the rest of the window (default 10). */
+      passwordFailuresPerAccount: Type.Optional(Type.Integer({ minimum: 1 })),
+      /** Wrong passwords per client IP per hour, over all usernames (default 50). */
+      passwordFailuresPerIp: Type.Optional(Type.Integer({ minimum: 1 })),
     }),
   ),
   access: Strict({

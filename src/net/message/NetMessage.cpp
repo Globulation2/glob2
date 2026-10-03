@@ -229,8 +229,3 @@ std::shared_ptr<NetMessage> NetMessage::getNetMessage(GAGCore::InputStream* stre
 	message->decodeData(stream);
 	return message;
 }
-
-bool NetMessage::operator!=(const NetMessage& rhs) const
-{
-	return !(*this == rhs);
-}

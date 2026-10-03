@@ -58,6 +58,14 @@ bool canImportFiles();
 std::unique_ptr<FileSelection> selectFile(const std::string &extension);
 
 bool storageRestoreFailed();
+
+// Staged game data. The browser host installs some data packages (game sprites,
+// the CJK font, menu music) after the main menu is up; see scons/web_assets.py.
+// Hosts that ship all data with the application answer true for every package
+// and never report an installation.
+bool assetPackageReady(const char *name);
+// Packages installed since the previous call, oldest first.
+std::vector<std::string> takeInstalledAssetPackages();
 bool canExportFiles();
 bool exportLocalFile(const std::string &path);
 bool exportFile(const std::string &name, const std::vector<unsigned char> &bytes);
@@ -76,6 +84,16 @@ class Persistence
 	virtual PersistenceState state() const = 0;
 };
 std::unique_ptr<Persistence> persistStorage();
+
+// Opens an http(s) URL in the system browser (a new tab on the web). Returns
+// false when the host cannot, or a popup blocker refused it; browsers allow it
+// reliably only while handling a click.
+bool openUrl(const std::string &url);
+// Puts text on the system clipboard. In the browser this is the asynchronous
+// Clipboard API (with a fallback for browsers without it), which needs the
+// transient activation of a recent click; SDL's own clipboard does not reach
+// the page there. Returns false when the host certainly could not copy.
+bool copyText(const std::string &text);
 
 // Read-only diagnostics; hosts decide whether and how to publish them.
 void screenChanged(const char *name);

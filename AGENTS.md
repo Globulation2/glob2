@@ -16,7 +16,7 @@ appear as plain text in a checkout, read `AGENTS.md` and `.agents/skills/` direc
 | Map state and pathfinding | `src/map/`, especially `gradient/` and `pathfind/` |
 | AI implementations | `src/ai/`, behind `AIImplementation` |
 | Rendering, menus and editor | `src/render/`, `src/gui/`, `src/*Screen*`, `src/map/edit/`; drawing reads only the extracted Scene in `src/scene/`, see [Scene renderer](docs/development/reference.md#scene-renderer); menu/dialog framework in `libgag/include/ui/` and `src/ui/`, see [UI framework](docs/development/ui-framework.md) |
-| Network and multiplayer service | `src/net/`, `src/yog/` |
+| Network and multiplayer service | `src/net/` (turn netcode in `src/net/turn/`), `src/yog/`, match relay in `src/relay/` ([relay](docs/multiplayer/relay.md)) |
 | Online platform (TypeScript: accounts, rooms, matches, JSON contracts) | `platform/`, [platform architecture](docs/multiplayer/architecture.md) |
 | Graphics/UI and scripting libraries | `libgag/`, `libusl/`, `src/sgsl/` |
 | Builds and platform coverage | `SConstruct`, `src/SConscript`, `scons/`, `.github/workflows/build.yml`, `vcpkg.json` |
@@ -75,6 +75,13 @@ permanent docs.
   without changing a single saved byte. Check `src/ReplayReader.h`, `src/Version.h`
   and `src/yog/` for replay acceptance and network/YOG version gates, and test the
   affected acceptance boundaries directly.
+- Online play groups players, AI ratings and match verifiers by sim version, and only
+  `SIM_REVISION` in `src/SimRevision.h` ties that version to simulation code. Bump it
+  in every change that can alter what the simulation computes from the same setup and
+  orders (rules, units, AI, order validation, map loading, random number use), even
+  when saves and replays stay compatible, and regenerate the golden match record in the
+  same change. CI fails when the committed `--verify-match` trace moves without a new
+  sim version; see [Simulation version](docs/multiplayer/turn-protocol.md#simulation-version).
 
 ## Preserving feel
 

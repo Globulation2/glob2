@@ -1,0 +1,405 @@
+/* Page frame: header over a band of the game's world, the paper page, footer. */
+
+.wrap {
+  width: 100%;
+  max-width: calc(var(--content) + 2 * var(--gutter));
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ------------------------------------------------------------- the world */
+
+/* Every page sits on the colony, like the game's menus do. */
+.world-band {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 260px;
+  overflow: hidden;
+  z-index: 0;
+  background: var(--grass) url('../art/colony-960.webp') 50% 62% / cover no-repeat;
+}
+.world-band::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(10, 20, 12, 0.45), rgba(10, 20, 12, 0.1) 45%, var(--bg) 100%),
+    linear-gradient(0deg, var(--hero-tint), var(--hero-tint));
+}
+
+.site {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* -------------------------------------------- website strip (site bar) */
+
+/* Joins the app and the public website: the same strip, the same look, on both. */
+.site-bar {
+  position: relative;
+  z-index: 6;
+  background: rgba(12, 26, 16, 0.82);
+  color: var(--on-grass);
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+.site-bar .wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--sp-1);
+}
+.site-bar a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 var(--sp-2);
+  color: var(--on-grass);
+  text-decoration: none;
+  border-radius: var(--r-sm);
+}
+.site-bar a:hover {
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+}
+.site-bar a:focus-visible {
+  outline-color: var(--accent);
+  outline-offset: -3px;
+}
+
+/* ---------------------------------------------------------------- header */
+
+.site-header {
+  position: relative;
+  z-index: 5;
+  padding: var(--sp-3) 0;
+}
+.site-header .wrap {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3) var(--sp-4);
+  flex-wrap: wrap;
+}
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: var(--target);
+  padding: 4px 14px 4px 6px;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  border-radius: var(--r-pill);
+  box-shadow: var(--shadow-md);
+  text-decoration: none;
+  color: var(--ink);
+  backdrop-filter: blur(6px);
+}
+.brand img {
+  width: 34px;
+  height: 34px;
+  display: block;
+}
+.brand .wordmark {
+  height: 22px;
+}
+
+.nav {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  border-radius: var(--r-pill);
+  box-shadow: var(--shadow-md);
+  backdrop-filter: blur(6px);
+  overflow-x: auto;
+  scrollbar-width: none;
+  max-width: 100%;
+}
+.nav::-webkit-scrollbar {
+  display: none;
+}
+.nav a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 0 14px 0 10px;
+  border-radius: var(--r-pill);
+  color: var(--ink);
+  font-weight: 700;
+  font-size: var(--text-sm);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.nav a img {
+  width: 26px;
+  height: 26px;
+  margin: -4px 0;
+}
+.nav a:hover {
+  background: var(--surface-3);
+}
+.nav a.on {
+  background: var(--accent);
+  color: var(--accent-ink);
+  box-shadow: 0 1px 0 var(--accent-edge);
+}
+.header-end {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.header-end .chip,
+.header-end .btn {
+  box-shadow: var(--shadow-md);
+}
+.theme-toggle {
+  width: var(--target);
+  padding: 0;
+  box-shadow: var(--shadow-md);
+}
+.theme-toggle svg {
+  width: 22px;
+  height: 22px;
+}
+
+/* ------------------------------------------------------------------ page */
+
+main {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+}
+main:focus {
+  outline: none;
+}
+.page {
+  background: var(--bg);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-lg);
+  padding: var(--sp-5) var(--sp-5) var(--sp-6);
+  margin-top: var(--sp-4);
+  min-height: 60vh;
+}
+
+.page-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3) var(--sp-4);
+  flex-wrap: wrap;
+  margin-bottom: var(--sp-5);
+}
+.page-head .grow {
+  flex: 1;
+  min-width: 0;
+}
+.page-head h1 + .caption,
+.page-head .sub {
+  margin-top: var(--sp-1);
+  font-size: var(--text-md);
+  color: var(--ink-2);
+  max-width: 70ch;
+}
+.page-head .head-art {
+  width: 72px;
+  height: 72px;
+  flex: none;
+  margin: -8px 0;
+}
+
+.section-head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-3);
+  margin: var(--sp-7) 0 var(--sp-3);
+}
+.section-head h2 {
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+}
+.section-head a {
+  font-weight: 700;
+  font-size: var(--text-sm);
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target);
+}
+
+/* ---------------------------------------------------------------- footer */
+
+.site-footer {
+  position: relative;
+  margin-top: var(--sp-8);
+  padding: var(--sp-7) 0 var(--sp-5);
+  color: var(--on-grass-2);
+  background:
+    radial-gradient(120% 70% at 50% 0%, rgba(255, 255, 255, 0.07), transparent 60%),
+    linear-gradient(180deg, var(--grass), var(--grass-deep));
+  font-size: var(--text-sm);
+}
+/* A scalloped meadow edge. */
+.site-footer::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -22px;
+  height: 24px;
+  background: radial-gradient(circle at 18px 26px, var(--grass) 17px, transparent 18px) 0 0 / 36px
+    24px repeat-x;
+}
+.site-footer .decor {
+  position: absolute;
+  top: -40px;
+  right: max(var(--gutter), calc(50% - var(--content) / 2));
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  pointer-events: none;
+}
+.site-footer .decor img {
+  width: 56px;
+  height: 56px;
+}
+.site-footer .wrap {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: var(--sp-5);
+}
+.site-footer h2 {
+  font-size: var(--text-md);
+  color: var(--on-grass);
+  margin: 0 0 var(--sp-2);
+}
+.site-footer ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.site-footer li a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+}
+.site-footer a {
+  color: var(--on-grass);
+  text-decoration-color: rgba(249, 232, 187, 0.5);
+}
+.site-footer a:focus-visible {
+  outline-color: var(--on-grass);
+}
+.site-footer .wordmark {
+  height: 28px;
+  --wm-ink: var(--on-grass);
+  margin-bottom: var(--sp-2);
+}
+.site-footer .fine {
+  grid-column: 1 / -1;
+  border-top: 1px solid rgba(249, 232, 187, 0.18);
+  padding-top: var(--sp-3);
+  color: var(--on-grass-2);
+}
+
+/* --------------------------------------------------------------- wordmark */
+
+/* The game's wordmark as two masks (art/build_art.py) so it takes any colours. */
+.wordmark {
+  --wm-ink: var(--ink);
+  --wm-two: #e2b85f;
+  position: relative;
+  display: inline-block;
+  height: 40px;
+  aspect-ratio: 900 / 131;
+  flex: none;
+}
+.wordmark::before,
+.wordmark::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  -webkit-mask: url('../art/wordmark-letters.webp') 0 0 / 100% 100% no-repeat;
+  mask: url('../art/wordmark-letters.webp') 0 0 / 100% 100% no-repeat;
+  background: var(--wm-ink);
+}
+.wordmark::after {
+  -webkit-mask-image: url('../art/wordmark-two.webp');
+  mask-image: url('../art/wordmark-two.webp');
+  background: var(--wm-two);
+}
+@media (forced-colors: active) {
+  .wordmark::before,
+  .wordmark::after {
+    background: CanvasText;
+  }
+}
+
+/* ------------------------------------------------------------ phone width */
+
+@media (max-width: 760px) {
+  .grid2,
+  .grid3 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .tiles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .tile .v {
+    font-size: 1.6rem;
+  }
+  .page {
+    border-radius: var(--r-md);
+    padding: var(--sp-4) var(--sp-4) var(--sp-5);
+    margin-left: calc(-1 * var(--gutter) + 8px);
+    margin-right: calc(-1 * var(--gutter) + 8px);
+  }
+  .hide-phone {
+    display: none !important;
+  }
+  .site-footer .wrap {
+    grid-template-columns: 1fr 1fr;
+  }
+  .site-footer .wrap > :first-child {
+    grid-column: 1 / -1;
+  }
+  .map-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--sp-3);
+  }
+  .toolbar > h2.grow {
+    flex-basis: 100%;
+  }
+}
+
+/* Header on phones: brand and account on one row, the nav full width below. */
+@media (max-width: 860px) {
+  .nav {
+    order: 3;
+    width: 100%;
+  }
+  .nav a {
+    flex: 1 0 auto;
+    justify-content: center;
+    min-height: var(--target);
+  }
+}
+@media (max-width: 400px) {
+  .nav a img {
+    display: none;
+  }
+  .nav a {
+    padding: 0 10px;
+  }
+  .brand .wordmark {
+    height: 17px;
+  }
+  .brand {
+    padding-right: 10px;
+  }
+  .chip {
+    max-width: 120px;
+  }
+}

@@ -6,6 +6,7 @@
 #include "ui/FileListing.h"
 #include "ui/FrontendUI.h"
 #include <ApplicationHost.h>
+#include <functional>
 #include <memory>
 #include <optional>
 #include <string>
@@ -59,6 +60,8 @@ class ChooseMapScreen : public Glob2UI::Screen
 	bool hasPreview() const;
 
 	void select(int index);
+	/// Adds "Share online…" for maps: called with the selected map's file.
+	void enableSharing(std::function<void(const std::string &)> share) { shareMap = std::move(share); invalidate(); }
 
   protected:
 	void onEscape() override { endExecute(CANCEL); }
@@ -88,6 +91,7 @@ class ChooseMapScreen : public Glob2UI::Screen
 	std::unique_ptr<FileImport> fileImport;
 	std::string importExtension;
 	bool canImport = false, canExport = false, canDelete = false;
+	std::function<void(const std::string &)> shareMap;
 
 	Glob2UI::FileCatalog &activeCatalog();
 	int &activeSelection() { return selection[showingAlternate ? 1 : 0]; }

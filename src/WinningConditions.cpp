@@ -3,6 +3,7 @@
 
 #include "WinningConditions.h"
 #include "Game.h"
+#include "Player.h"
 #include <algorithm>
 #include "Stream.h"
 
@@ -436,3 +437,44 @@ void WinningConditionSuddenDeath::decodeData(GAGCore::InputStream* stream, Uint3
 }
 
 
+
+Uint32 contestedTeamsMask(const Game* game)
+{
+	Uint32 mask = 0;
+	const int teams = game->mapHeader.getNumberOfTeams();
+	for (int p = 0; p < game->gameHeader.getNumberOfPlayers(); ++p)
+	{
+		const Player* player = game->players[p];
+		if (!player || player->teamNumber < 0 || player->teamNumber >= teams)
+			continue;
+		if (player->type == BasePlayer::P_NONE || player->type == BasePlayer::playerTypeFromImplementationID(AI::NONE))
+			continue;
+		mask |= 1u << player->teamNumber;
+	}
+	return mask ? mask : ~Uint32(0);
+}
+
+
+
+TeamOutcome classifyTeamOutcome(const Game* game, int team, Uint32 contestedTeams)
+{
+	const Team* self = game->teams[team];
+	if (self->hasLost)
+		return TeamOutcome::Lost;
+	if (!self->hasWon)
+		return TeamOutcome::Undecided;
+	for (int i = 0; i < game->mapHeader.getNumberOfTeams(); ++i)
+		if (i != team && (contestedTeams & (1u << i)) && game->teams[i]->hasWon && !teamsAreMutuallyAllied(game, team, i))
+			return TeamOutcome::Draw;
+	return TeamOutcome::Won;
+}
+
+
+
+bool isGameDrawn(const Game* game, Uint32 contestedTeams)
+{
+	for (int i = 0; i < game->mapHeader.getNumberOfTeams(); ++i)
+		if ((contestedTeams & (1u << i)) && classifyTeamOutcome(game, i, contestedTeams) == TeamOutcome::Draw)
+			return true;
+	return false;
+}

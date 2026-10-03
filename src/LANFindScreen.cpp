@@ -4,7 +4,7 @@
 #include "LANFindScreen.h"
 #include "GlobalContainer.h"
 #include "LANSessionScreen.h"
-#include "YOGClient.h"
+#include "LanRoom.h"
 #include "MessageScreen.h"
 #include "FormatableString.h"
 #include <stdexcept>
@@ -63,10 +63,11 @@ void LANFindScreen::connect()
         screens.push(std::make_unique<MessageScreen>(error.what(), std::vector<std::string>{tr("[ok]")}));
         return;
     }
-    auto client = std::make_shared<YOGClient>();
-	client->connect(serverName);
+	Lan::LanClient::Options options;
+	options.endpoint = serverName;
+	options.name = playerName;
 	listener.disableListening();
-	screens.push(std::make_unique<LANSessionScreen>(screens, client, playerName),
+	screens.push(std::make_unique<LANSessionScreen>(screens, Lan::LanRoom::join(std::move(options))),
 				 [this](GAGGUI::Screen &, int result)
 				 {
 					 listener.enableListening();

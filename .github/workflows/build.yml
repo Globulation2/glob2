@@ -47,6 +47,7 @@ jobs:
       deployment: ${{ steps.select.outputs.deployment }}
       cross_platform: ${{ steps.select.outputs.cross_platform }}
       platform: ${{ steps.select.outputs.platform }}
+      platform_stack: ${{ steps.select.outputs.platform_stack }}
       compatibility: ${{ steps.select.outputs.compatibility }}
       browsers_all: ${{ steps.select.outputs.browsers_all }}
       android: ${{ steps.select.outputs.android }}
@@ -73,6 +74,12 @@ jobs:
             --check 'native runner contracts' 'python3 -m unittest discover -s test -p test_run_tests.py -v' \
             --check 'failure aggregation contracts' 'python3 -m unittest discover -s test -p test_ci_failure_aggregation.py -v' \
             --check 'recording extraction contracts' 'python3 test/test_recording_tool.py'
+      - name: Check that the sim version follows the simulation
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          python3 -m unittest discover -s test -p test_check_sim_revision.py -v
+          python3 test/check_sim_revision.py --base "$BASE_SHA"
       - name: Verify pinned scripting vendors once
         run: python3 tools/javascript/verify-vendor.py
       - name: Select checks for changed paths
@@ -966,6 +973,7 @@ jobs:
             build/emscripten/client/release/threaded/index.data
             build/emscripten/client/release/index.js
             build/emscripten/client/release/index.wasm
+            build/emscripten/client/release/assets/
             build/emscripten/client/release/index.data
             build/emscripten/client/release/script-tests.js
             build/emscripten/client/release/script-tests.wasm
@@ -987,6 +995,7 @@ jobs:
             build/emscripten/client/release/threaded/index.data
             build/emscripten/client/release/index.js
             build/emscripten/client/release/index.wasm
+            build/emscripten/client/release/assets/
             build/emscripten/client/release/index.data
 
       - name: Summarize CI failures
@@ -1087,6 +1096,18 @@ jobs:
           echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
           GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons CXX=g++-13 role=router release=1 -j$(nproc)
+      - name: Build match relay
+        id: build_match_relay
+        continue-on-error: true
+        run: GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons CXX=g++-13 role=relay release=1 relay -j$(nproc)
+      - name: Test match relay
+        id: test_match_relay
+        continue-on-error: true
+        if: steps.build_match_relay.outcome == 'success'
+        run: |
+          python3 test/ci_run_commands.py \
+            --check 'relay unit tests' 'build/linux/relay/release/src/glob2-relay-tests' \
+            --check 'relay integration tests' 'python3 -m unittest discover -s tests/relay -v'
       - name: Build transport integration fixture
         id: build_transport_integration_fixture
         continue-on-error: true
@@ -1184,7 +1205,7 @@ jobs:
         run: |
           python3 browser/package-static.py
           python3 browser/package-static.py --verify build/browser-static
-          docker compose -f deploy/compose.yaml build lobby web
+          docker compose -f deploy/compose.legacy.yaml build lobby web
           python3 -m unittest discover -s tests/deployment -v
 
       - name: Summarize CI failures
@@ -1341,9 +1362,12 @@ jobs:
           for trace in traces[1:]:
               assert trace.read_bytes().replace(b'\r\n', b'\n') == reference, f'Verification differs: {trace}'
           committed = Path('test/fixtures/multiplayer/FourSquares1.verify-trace.txt').read_bytes()
-          if committed.replace(b'\r\n', b'\n') != reference:
-              print('::warning::Every platform agrees, but not with the committed trace; '
-                    'regenerate test/fixtures/multiplayer with run_tests.py --update-fixtures')
+          # Every platform agreeing on a different trace means the simulation changed:
+          # that needs a new sim version (test/check_sim_revision.py checks the bump).
+          assert committed.replace(b'\r\n', b'\n') == reference, (
+              'Every platform agrees, but not with the committed trace: the simulation changed. '
+              'Bump SIM_REVISION in src/SimRevision.h and regenerate test/fixtures/multiplayer with '
+              "python3 test/run_tests.py --update-fixtures --filter 'TurnEngineHarness/the committed*'")
           print('All six --verify-match traces match')
           PY
 
@@ -1433,9 +1457,38 @@ jobs:
           npm run migrate -- latest
           npm run migrate -- status
 
+  platform-stack:
+    name: self-hosted platform stack
+    needs: changes
+    if: ${{ needs.changes.outputs.platform_stack == 'true' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        id: actions_checkout_v4_1
+        with:
+          ref: ${{ inputs.revision || github.sha }}
+      - name: Build the images and smoke-test deploy/compose.yaml
+        id: smoke_test_the_platform_stack
+        continue-on-error: true
+        run: python3 tests/deployment/platform_stack_smoke.py --jobs 4 --log-dir artifacts/platform-stack
+      - uses: actions/upload-artifact@v4
+        if: always()
+        id: upload_platform_stack_logs
+        continue-on-error: true
+        with:
+          name: platform-stack-smoke
+          path: artifacts/platform-stack
+          if-no-files-found: ignore
+      - name: Summarize CI failures
+        if: always()
+        env:
+          CI_STEPS_JSON: ${{ toJSON(steps) }}
+        run: python3 test/ci_step_summary.py
+
   ci-result:
     name: Relevant checks passed
-    needs: [changes, android, macos, tsan, native-coverage, linux, linux-variants, linux-map-generators, windows, windows-server, web-build, web-native, web-deploy, web-test, browser-determinism, platform]
+    needs: [changes, android, macos, tsan, native-coverage, linux, linux-variants, linux-map-generators, windows, windows-server, web-build, web-native, web-deploy, web-test, browser-determinism, platform, platform-stack]
     if: ${{ !cancelled() }}
     runs-on: ubuntu-24.04
     env:
@@ -1466,6 +1519,7 @@ jobs:
               'web-test': selected['browser'] == 'true',
               'browser-determinism': selected['cross_platform'] == 'true',
               'platform': selected['platform'] == 'true',
+              'platform-stack': selected['platform_stack'] == 'true',
           }
           for job, should_run in expected.items():
               required = 'success' if should_run else 'skipped'
