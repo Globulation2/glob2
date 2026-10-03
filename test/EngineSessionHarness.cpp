@@ -134,6 +134,12 @@ TEST_SUITE("EngineSession")
 				REQUIRE(coast > 1);
 				REQUIRE(coast < engine.gui.game.map.getW() * 16.0);
 			}
+			// Teardown's GUI-only service has no session-time argument and must
+			// park the producer even when there is no save left to finalize.
+			const auto stoppedTick = engine.gui.game.stepCounter;
+			REQUIRE_FALSE(engine.advancePendingSave({}));
+			REQUIRE_FALSE(engine.simulationThreaded());
+			REQUIRE(engine.gui.game.stepCounter == stoppedTick);
 			engine.abortSession();
 		}
 	}
