@@ -12,7 +12,7 @@ class YOGClient;
 class YOGClientOptionsScreen : public SessionTab
 {
   public:
-    const char* recordingId() const override { return "yogclient_options"; }
+	const char *recordingId() const override { return "yogclient_options"; }
 	explicit YOGClientOptionsScreen(std::shared_ptr<YOGClient> client);
 	std::string title() const override;
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;

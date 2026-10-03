@@ -8,7 +8,7 @@
 class MessageScreen : public Glob2UI::Screen
 {
   public:
-    const char* recordingId() const override { return "message"; }
+	const char *recordingId() const override { return "message"; }
 	MessageScreen(const std::string &message, const std::vector<std::string> &captions);
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
 

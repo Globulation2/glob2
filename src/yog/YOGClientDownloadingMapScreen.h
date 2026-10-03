@@ -17,7 +17,7 @@ class ScreenStack;
 class YOGClientDownloadingMapScreen : public Glob2UI::Screen
 {
   public:
-    const char* recordingId() const override { return "yogclient_downloading_map"; }
+	const char *recordingId() const override { return "yogclient_downloading_map"; }
 	YOGClientDownloadingMapScreen(GAGGUI::ScreenStack &screens, std::shared_ptr<YOGClient> client, const YOGDownloadableMapInfo &info);
 	~YOGClientDownloadingMapScreen() override;
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;

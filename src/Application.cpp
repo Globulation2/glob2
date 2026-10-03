@@ -87,7 +87,9 @@ class ShutdownScreen : public Glob2UI::Screen
 		// Present the final message for one frame before releasing graphics.
 		if (closing)
 		{
-            if (GAGCore::Recording::recorder().status().state == GAGCore::Recording::State::Finalizing) return;
+			if (GAGCore::Recording::recorder().status().state ==
+				GAGCore::Recording::State::Finalizing)
+				return;
 			endExecute(0);
 			return;
 		}
@@ -180,15 +182,20 @@ void Application::choose(int choice)
 bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event> &events)
 {
 	lastFrame = tick;
-    auto filtered = events;
-    std::erase_if(filtered, [](const SDL_Event& event) {
-        if ((event.type == SDL_EVENT_KEY_DOWN || event.type == SDL_EVENT_KEY_UP) && event.key.key == SDLK_R &&
-            (event.key.mod & SDL_KMOD_CTRL) && (event.key.mod & SDL_KMOD_SHIFT) && GAGCore::Recording::supported()) {
-            if (event.type == SDL_EVENT_KEY_DOWN && !event.key.repeat) GAGCore::Recording::toggle();
-            return true;
-        }
-        return false;
-    });
+	auto filtered = events;
+	std::erase_if(filtered,
+				  [](const SDL_Event &event)
+				  {
+					  if ((event.type == SDL_EVENT_KEY_DOWN || event.type == SDL_EVENT_KEY_UP) &&
+						  event.key.key == SDLK_R && (event.key.mod & SDL_KMOD_CTRL) &&
+						  (event.key.mod & SDL_KMOD_SHIFT) && GAGCore::Recording::supported())
+					  {
+						  if (event.type == SDL_EVENT_KEY_DOWN && !event.key.repeat)
+							  GAGCore::Recording::toggle();
+						  return true;
+					  }
+					  return false;
+				  });
 	if (GAGCore::ApplicationHost::takeVisibilityChange(hidden))
 		screens.suspendExecution();
 	if (hidden)
@@ -219,7 +226,7 @@ bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event> &events
 	{
 		if (screens.result() == GAGGUI::Screen::QUIT_APPLICATION)
 		{
-            GAGCore::Recording::recorder().stop();
+			GAGCore::Recording::recorder().stop();
 			quitting = true;
 			shutdownScreens.push(std::make_unique<ShutdownScreen>());
 			return true;

@@ -8,7 +8,7 @@
 class CampaignMainMenu : public Glob2UI::Screen
 {
   public:
-    const char* recordingId() const override { return "campaign_main_menu"; }
+	const char *recordingId() const override { return "campaign_main_menu"; }
 	explicit CampaignMainMenu(GAGGUI::ScreenStack &screens);
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
 	//! Values returned by execution. Callers may also receive

@@ -69,9 +69,9 @@ private:
 class InGameScrollableHistory : public Glob2UI::InGameDialog
 {
   public:
-    const char* recordingId() const override { return "in_game_scrollable_history"; }
+	const char *recordingId() const override { return "in_game_scrollable_history"; }
 
-public:
+  public:
 	explicit InGameScrollableHistory(const std::list<InGameMessage>& messageHistory);
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
 

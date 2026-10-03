@@ -49,7 +49,8 @@ Element InGameMainScreen::build(const Presentation &p)
 			buttons.push_back(classicButton("save", fe::tr("[save game]"), [this] { finish(SAVE_GAME); }));
 		buttons.push_back(classicButton("options", fe::tr("[Options]"), [this] { finish(OPTIONS); }));
 		buttons.push_back(classicButton("quit", quitLabel, [this] { finish(QUIT_GAME); }));
-        if (GAGCore::Recording::supported()) buttons.push_back(fe::recordingControls());
+		if (GAGCore::Recording::supported())
+			buttons.push_back(fe::recordingControls());
 		buttons.push_back(classicButton("return", returnLabel, [this] { finish(RETURN_GAME); }, SDLK_ESCAPE));
 		return fe::column(std::move(buttons), {p.pt(10)});
 	}
@@ -69,7 +70,8 @@ Element InGameMainScreen::build(const Presentation &p)
 	buttons.push_back(item("options", fe::tr("[Options]"), OPTIONS));
 	buttons.push_back(item("quit", quitLabel, QUIT_GAME));
 	buttons.push_back(item("pause", fe::tr(paused ? "[resume game]" : "[pause game]"), PAUSE_GAME));
-	if (GAGCore::Recording::supported()) buttons.push_back(fe::recordingControls());
+	if (GAGCore::Recording::supported())
+		buttons.push_back(fe::recordingControls());
 	// Return stays pinned below the list so it is always in reach.
 	return fe::column({fe::paragraph(fe::tr("[Menu]"), {fe::FontRole::Heading, false, fe::TextAlign::Center}),
 					   fe::footer(fe::scroll("menu/scroll", fe::column(std::move(buttons), {p.pt(8)})),

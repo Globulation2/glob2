@@ -104,7 +104,11 @@ existing clips or sidecars.
 During capture, `<name>.mp4.recording/` reserves the output and holds compressed
 video/audio tracks, the append-only event journal, and encoder logs. Finalization
 combines compressed tracks and chapter metadata without re-encoding. Successful
-completion removes the work directory. If encoding, storage, or finalization
+completion removes the work directory. Metadata is staged first and completed
+files are published through atomic, no-replace hard links, with the video published
+last. This requires a filesystem supporting hard links (such as NTFS, APFS, or ext4);
+on unsupported filesystems, the finished intermediates are retained safely.
+If encoding, storage, or finalization
 fails, it retains available compressed tracks, logs, and an incomplete manifest
 for diagnosis. Abrupt process termination may leave only completed fragments;
 recovery is best effort. Keep this directory until useful footage is recovered.
@@ -114,8 +118,14 @@ boundary submits completed frames before swap/clear. Game-side callers provide
 stable screen/dialog identifiers, match context, ticks, and events. The mixer
 copies final PCM into preallocated callback storage with a nonblocking lock.
 Workers handle encoding, timing, drift/gap correction, and metadata writes.
+SDL3 refill chunks share a timestamp that accounts for already queued PCM;
+within a refill, sample counts advance the timeline rather than callback wall time.
 Video buffering is bounded to three frames, audio to two seconds of samples.
 Shell-free subprocess launch uses native POSIX or Windows process APIs.
+The recorder owns lifecycle and bounded queues; `RecordingMetadata` owns stable
+context serialization and output publication, and `RecordingProcess` owns child
+process resources and deadlines. Control and context APIs belong to the main
+thread; audio submission is nonblocking, while explicit shutdown joins workers.
 
 Recording has no serialized state and changes no save, replay, or network version.
 Changes to recording still require simulation-checksum comparisons and platform
@@ -127,13 +137,25 @@ For verification, build unit tests and opt into the real encoder fixture:
 scons release=1 server=0 unit-tests
 GLOB2_TEST_FFMPEG=ffmpeg build/darwin/client/release/test/glob2-unit-tests -ts=GameplayRecording
 python3 test/test_recording_tool.py
+scons release=1 server=0 engine-tests
+GLOB2_TEST_FFMPEG=ffmpeg build/darwin/client/release/test/glob2-engine-tests -ts=GameplayRecording.Integration
+GLOB2_TEST_FFMPEG=ffmpeg GLOB2_TEST_FFPROBE=ffprobe \
+  GLOB2_RECORDING_FIXTURE=artifacts/path/to/recording-sections.mp4 \
+  python3 test/test_recording_tool.py
 scons release=1 server=0 recording-multiplayer-test
 python3 test/run_recording_multiplayer.py \
   build/darwin/client/release/test/recording-multiplayer-peer \
   --output artifacts/multiplayer-recording
 ```
 
-The multiplayer fixture runs two real LAN clients through a match and results,
+The encoder unit suite also decodes consecutive callback chunks and checks fatal
+capture errors and late output collisions. The integration suite compares both
+serial and threaded capture against unrecorded per-tick baselines. The optional
+Python media checks inspect codecs, embedded chapters, chronological events, and
+decoded first frames of extracted clips; use the generated `recording-sections-*`
+fixture for its documented palette.
+
+The multiplayer fixture runs two real LAN clients through a threaded match and results,
 retains footage and replays, and compares their full per-tick checksum sidecars.
 Use `--ffmpeg /path/to/ffmpeg` when the encoder is outside `PATH`.
 

@@ -274,12 +274,11 @@ void Engine::executeOrdersAndStep(bool readyNow)
 void Engine::drawFrame(MainLoopState& st)
 {
     GAGCore::ApplicationHost::matchFrame(gui.gamePaused);
-    // Match the chapter to the immutable scene actually presented by this client.
-    GAGCore::Recording::recorder().matchFrame(scene->tick, gui.gamePaused || gui.hardPause, int(scene->tickInterval));
 	const bool renderedFrame = st.nextGuiStep == 0;
 	if (renderedFrame)
 	{
-        GAGCore::Recording::recorder().matchFrame(gui.game.stepCounter, gui.gamePaused || gui.hardPause, st.speed);
+		GAGCore::Recording::recorder().matchFrame(gui.game.stepCounter,
+												  gui.gamePaused || gui.hardPause, st.speed);
 		gui.drawAll(gui.localTeamNo);
 		{
 			PERF_SCOPE_TIME(Present);
@@ -305,15 +304,15 @@ void Engine::drawSession()
         return;
     gui.setPublishedScene(scene);
     GAGCore::ApplicationHost::matchFrame(gui.gamePaused);
-    // Match the chapter to the immutable scene actually presented by this client.
-    GAGCore::Recording::recorder().matchFrame(scene->tick, gui.gamePaused || gui.hardPause, int(scene->tickInterval));
-    gui.drawAll(gui.localTeamNo);
+	// Match the chapter to the immutable scene actually presented by this client.
+	GAGCore::Recording::recorder().matchFrame(scene->tick, gui.gamePaused || gui.hardPause,
+											  int(scene->tickInterval));
+	gui.drawAll(gui.localTeamNo);
     {
         PERF_SCOPE_TIME(Present);
         globalContainer->gfx->nextFrame();
     }
     PerformanceTelemetry::collector().presented();
-
 }
 
 bool Engine::startSimulationThread(Uint64 now)
@@ -699,7 +698,7 @@ void Engine::teardownSession()
 //   5. (gate flip) readyNow = net->allOrdersReceived()
 //   6. executeOrdersAndStep       - run matched orders, replay reader, sim syncStep
 //   7. automatic-ending step-count check
-//   8. drawSession / sessionDelay  - draw, videoshot, host pacing
+//   8. drawSession / sessionDelay  - draw, gameplay capture, host pacing
 //   9. handleExitRequest           - drain on exit request
 //
 // Track order readiness separately for the previous and current ticks.
@@ -721,9 +720,10 @@ void Engine::beginSession(Uint64 now)
     session = st;
     randomRequirement.emplace();
     automaticGameStartTick = now;
-    if (!globalContainer->runNoX)
-        GAGCore::Recording::recorder().beginMatch(globalContainer->replaying ? "replay" : (multiplayer ? "multiplayer" : "single_player"),
-            gui.game.mapHeader.getMapName(), gui.localTeamNo, gui.game.stepCounter);
+	if (!globalContainer->runNoX)
+		GAGCore::Recording::recorder().beginMatch(
+			globalContainer->replaying ? "replay" : (multiplayer ? "multiplayer" : "single_player"),
+			gui.game.mapHeader.getMapName(), gui.localTeamNo, gui.game.stepCounter);
 	auto &perf = PerformanceTelemetry::collector();
 	if (!perf.enabled && !perf.started)
 		perf.reset();

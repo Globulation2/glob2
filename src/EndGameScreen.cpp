@@ -263,7 +263,8 @@ Element EndGameScreen::build(const Presentation &p)
 	if (save)
 		actions.push_back({"save-replay", fe::tr("[save replay]"), [this] { saveReplay("replays", "replay"); }});
 	actions.push_back({"quit", fe::tr("[quit]"), [this] { endExecute(QUIT); }, true, SDLK_RETURN});
-	if (GAGCore::Recording::supported()) parts.push_back(fe::recordingControls());
+	if (GAGCore::Recording::supported())
+		parts.push_back(fe::recordingControls());
 	parts.push_back(fe::actions(std::move(actions), p));
 	return fe::column(std::move(parts), {p.pt(8)});
 }

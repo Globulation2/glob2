@@ -17,7 +17,7 @@ class MapPreview;
 class ChooseMapScreen : public Glob2UI::Screen
 {
   public:
-    const char* recordingId() const override { return "choose_map"; }
+	const char *recordingId() const override { return "choose_map"; }
 	/// Directory is the source of the listed files and extension the file
 	/// extension to show; an alternate directory adds a switch button.
 	ChooseMapScreen(const char *directory, const char *extension, bool recurse,

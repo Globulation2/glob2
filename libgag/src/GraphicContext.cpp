@@ -915,47 +915,74 @@ namespace GAGCore
 		}
 	}
 
-    void GraphicContext::captureRecordingFrame()
-    {
-        auto& capture = Recording::recorder();
-        if (!Recording::supported()) return;
-        const auto state = capture.status().state;
-        const char* suffix = state == Recording::State::Starting || state == Recording::State::Recording ? " — Recording"
-            : state == Recording::State::Finalizing ? " — Finalizing recording"
-            : state == Recording::State::Failed ? " — Recording failed (see recording controls/log)" : "";
-        const auto title = windowTitle + suffix;
-        if (window && title != SDL_GetWindowTitle(window)) SDL_SetWindowTitle(window, title.c_str());
-        if (!capture.wantsFrame()) return;
-        try {
-            std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> pixels(nullptr, SDL_DestroySurface);
-            if (renderer) { renderer->flush(); pixels.reset(renderer->capture()); }
+	void GraphicContext::captureRecordingFrame()
+	{
+		auto &capture = Recording::recorder();
+		if (!Recording::supported())
+			return;
+		const auto state = capture.status().state;
+		const char *suffix =
+			state == Recording::State::Starting || state == Recording::State::Recording
+				? " — Recording"
+			: state == Recording::State::Finalizing ? " — Finalizing recording"
+			: state == Recording::State::Failed ? " — Recording failed (see recording controls/log)"
+												: "";
+		const auto title = windowTitle + suffix;
+		if (window && title != SDL_GetWindowTitle(window))
+			SDL_SetWindowTitle(window, title.c_str());
+		if (!capture.wantsFrame())
+			return;
+		try
+		{
+			std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> pixels(nullptr,
+																			   SDL_DestroySurface);
+			if (renderer)
+			{
+				renderer->flush();
+				pixels.reset(renderer->capture());
+			}
 #if defined(HAVE_OPENGL) && !defined(GLOB2_WEBGL2)
-            else if (optionFlags & USEGPU) {
-                GLint viewport[4], alignment, rowLength;
-                glGetIntegerv(GL_VIEWPORT, viewport);
-                if (viewport[2] <= 0 || viewport[3] <= 0) return;
-                pixels.reset(SDL_CreateSurface(viewport[2], viewport[3], SDL_PIXELFORMAT_RGBA32));
-                if (!pixels) throw std::runtime_error(SDL_GetError());
-                glGetIntegerv(GL_PACK_ALIGNMENT, &alignment); glGetIntegerv(GL_PACK_ROW_LENGTH, &rowLength);
-                glPixelStorei(GL_PACK_ALIGNMENT, 1); glPixelStorei(GL_PACK_ROW_LENGTH, pixels->pitch / 4);
-                glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_RGBA, GL_UNSIGNED_BYTE, pixels->pixels);
-                glPixelStorei(GL_PACK_ALIGNMENT, alignment); glPixelStorei(GL_PACK_ROW_LENGTH, rowLength);
-                std::vector<unsigned char> row(pixels->pitch);
-                auto* data = static_cast<unsigned char*>(pixels->pixels);
-                for(int y = 0; y < pixels->h / 2; ++y) {
-                    auto* top = data + y * pixels->pitch; auto* bottom = data + (pixels->h - y - 1) * pixels->pitch;
-                    std::memcpy(row.data(), top, row.size()); std::memcpy(top, bottom, row.size()); std::memcpy(bottom, row.data(), row.size());
-                }
-            }
+			else if (optionFlags & USEGPU)
+			{
+				GLint viewport[4], alignment, rowLength;
+				glGetIntegerv(GL_VIEWPORT, viewport);
+				if (viewport[2] <= 0 || viewport[3] <= 0)
+					return;
+				pixels.reset(SDL_CreateSurface(viewport[2], viewport[3], SDL_PIXELFORMAT_RGBA32));
+				if (!pixels)
+					throw std::runtime_error(SDL_GetError());
+				glGetIntegerv(GL_PACK_ALIGNMENT, &alignment);
+				glGetIntegerv(GL_PACK_ROW_LENGTH, &rowLength);
+				glPixelStorei(GL_PACK_ALIGNMENT, 1);
+				glPixelStorei(GL_PACK_ROW_LENGTH, pixels->pitch / 4);
+				glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_RGBA,
+							 GL_UNSIGNED_BYTE, pixels->pixels);
+				glPixelStorei(GL_PACK_ALIGNMENT, alignment);
+				glPixelStorei(GL_PACK_ROW_LENGTH, rowLength);
+				std::vector<unsigned char> row(pixels->pitch);
+				auto *data = static_cast<unsigned char *>(pixels->pixels);
+				for (int y = 0; y < pixels->h / 2; ++y)
+				{
+					auto *top = data + y * pixels->pitch;
+					auto *bottom = data + (pixels->h - y - 1) * pixels->pitch;
+					std::memcpy(row.data(), top, row.size());
+					std::memcpy(top, bottom, row.size());
+					std::memcpy(bottom, row.data(), row.size());
+				}
+			}
 #endif
-            else pixels.reset(SDL_ConvertSurface(sdlsurface, SDL_PIXELFORMAT_RGBA32));
-            if (!pixels) throw std::runtime_error(SDL_GetError());
-            capture.frame(*pixels);
-        } catch (const std::exception& error) {
-            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Recording frame capture: %s", error.what());
-            capture.event("capture_error", error.what()); capture.stop();
-        }
-    }
+			else
+				pixels.reset(SDL_ConvertSurface(sdlsurface, SDL_PIXELFORMAT_RGBA32));
+			if (!pixels)
+				throw std::runtime_error(SDL_GetError());
+			capture.frame(*pixels);
+		}
+		catch (const std::exception &error)
+		{
+			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Recording frame capture: %s", error.what());
+			capture.abort(error.what());
+		}
+	}
 
 	void GraphicContext::nextFrame(void)
 	{

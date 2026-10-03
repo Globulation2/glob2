@@ -21,13 +21,11 @@
 /// stays valid regardless of how the sheet was browsed.
 class LandscapePickerScreen : public Glob2UI::Screen
 {
-  public:
-    const char* recordingId() const override { return "landscape_picker"; }
-
 	friend struct CustomGameSetupHarness;
 	friend struct MobileGallerySetup;
 
   public:
+	const char *recordingId() const override { return "landscape_picker"; }
 	enum
 	{
 		CANCEL = -2

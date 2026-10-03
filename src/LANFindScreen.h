@@ -14,7 +14,7 @@ class ScreenStack;
 class LANFindScreen : public Glob2UI::Screen
 {
   public:
-    const char* recordingId() const override { return "lanfind"; }
+	const char *recordingId() const override { return "lanfind"; }
 	explicit LANFindScreen(GAGGUI::ScreenStack &screens);
 	~LANFindScreen() override;
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;

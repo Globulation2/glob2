@@ -26,12 +26,10 @@ struct TeamEntry
 //! with the teams to show chosen by the player, and a replay save.
 class EndGameScreen : public GAGGUI::ui::UIScreen
 {
-  public:
-    const char* recordingId() const override { return "end_game"; }
-
 	friend class GameGUITouchHarness;
 
   public:
+	const char *recordingId() const override { return "end_game"; }
 	//! Return values passed by the screen's buttons
 	enum ButtonId
 	{

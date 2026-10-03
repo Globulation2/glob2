@@ -13,7 +13,7 @@ class ScreenStack;
 class YOGLoginScreen : public YOGConnectionScreen
 {
   public:
-    const char* recordingId() const override { return "yoglogin"; }
+	const char *recordingId() const override { return "yoglogin"; }
 	YOGLoginScreen(GAGGUI::ScreenStack &screens, std::shared_ptr<YOGClient> client);
 	~YOGLoginScreen() override;
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;

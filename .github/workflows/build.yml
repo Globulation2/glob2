@@ -71,7 +71,8 @@ jobs:
         run: |
           python3 test/ci_run_commands.py \
             --check 'native runner contracts' 'python3 -m unittest discover -s test -p test_run_tests.py -v' \
-            --check 'failure aggregation contracts' 'python3 -m unittest discover -s test -p test_ci_failure_aggregation.py -v'
+            --check 'failure aggregation contracts' 'python3 -m unittest discover -s test -p test_ci_failure_aggregation.py -v' \
+            --check 'recording extraction contracts' 'python3 test/test_recording_tool.py'
       - name: Verify pinned scripting vendors once
         run: python3 tools/javascript/verify-vendor.py
       - name: Select checks for changed paths

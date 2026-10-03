@@ -12,22 +12,34 @@ import sys
 def load_recording(source: Path) -> tuple[Path, dict]:
     manifest_path = source if source.suffix == ".json" else Path(str(source) + ".json")
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    if manifest.get("version") != 1:
+    if not isinstance(manifest, dict) or type(manifest.get("version")) is not int or manifest["version"] != 1:
         raise ValueError("Unsupported recording manifest version")
     name = manifest.get("video", "")
-    if not name or Path(name).name != name or "/" in name or "\\" in name:
+    if not isinstance(name, str) or not name or Path(name).name != name or "/" in name or "\\" in name:
         raise ValueError("Manifest video must be a filename beside the manifest")
     video = manifest_path.parent / name
+    chapters = manifest.get("chapters")
+    if not isinstance(chapters, list):
+        raise ValueError("Manifest chapters must be a list")
     last_end = 0
     ids = set()
-    for chapter in manifest.get("chapters", []):
+    for chapter in chapters:
+        if not isinstance(chapter, dict):
+            raise ValueError("Chapter must be an object")
         start, end = chapter["start_us"], chapter["end_us"]
-        if not isinstance(start, int) or not isinstance(end, int) or start < last_end or end <= start:
+        if type(start) is not int or type(end) is not int or start < last_end or end <= start:
             raise ValueError("Invalid or overlapping chapter intervals")
+        if type(chapter["id"]) is not int or chapter["id"] < 1:
+            raise ValueError("Chapter IDs must be positive integers")
+        if not isinstance(chapter.get("title"), str) or not isinstance(chapter.get("screen"), str):
+            raise ValueError("Chapter title and screen must be strings")
         if chapter["id"] in ids:
             raise ValueError("Duplicate chapter ID")
         ids.add(chapter["id"])
         last_end = end
+    duration = manifest.get("duration_us")
+    if duration is not None and (type(duration) is not int or duration < last_end):
+        raise ValueError("Chapter exceeds recording duration")
     return video, manifest
 
 

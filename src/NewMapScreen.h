@@ -14,7 +14,7 @@ class LandscapePickerScreen;
 class NewMapScreen : public Glob2UI::Screen
 {
   public:
-    const char* recordingId() const override { return "new_map"; }
+	const char *recordingId() const override { return "new_map"; }
 	enum
 	{
 		OK = 1,

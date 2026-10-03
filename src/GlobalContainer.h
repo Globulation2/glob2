@@ -90,7 +90,7 @@ public:
 	ResourcesTypes resourcesTypes;
 
 	std::string videoshotName; //!< Legacy -vs shorthand for compressed capture.
-    std::string recordingPath;
+	std::string recordingPath;
 	bool runNoX;
 	bool structuredHeadless = false;
 	bool headlessReplay = false;

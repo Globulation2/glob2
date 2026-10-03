@@ -15,7 +15,7 @@ class MapPreview;
 class CampaignMenuScreen : public Glob2UI::Screen
 {
   public:
-    const char* recordingId() const override { return "campaign_menu"; }
+	const char *recordingId() const override { return "campaign_menu"; }
 	CampaignMenuScreen(const std::string &name, GAGGUI::ScreenStack &screens);
 	~CampaignMenuScreen() override;
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;

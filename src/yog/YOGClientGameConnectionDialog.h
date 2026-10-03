@@ -11,7 +11,7 @@
 class YOGClientGameConnectionDialog : public Glob2UI::Screen, public MultiplayerGameEventListener
 {
   public:
-    const char* recordingId() const override { return "yogclient_game_connection_dialog"; }
+	const char *recordingId() const override { return "yogclient_game_connection_dialog"; }
 	explicit YOGClientGameConnectionDialog(std::shared_ptr<MultiplayerGame> game);
 	~YOGClientGameConnectionDialog() override;
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;

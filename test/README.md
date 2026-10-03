@@ -1406,7 +1406,9 @@ not an isolated allocation bound for the production writer.
 
 ## Gameplay recording
 
-The `GameplayRecording` unit suite checks lifecycle failures and output protection.
+The `GameplayRecording` unit suite checks lifecycle failures, output protection,
+and decoded callback audio bursts. `GameplayRecording.Integration` compares serial
+and threaded recordings against unrecorded per-tick baselines.
 Set `GLOB2_TEST_FFMPEG=ffmpeg` to also encode real video/audio and chapter fixtures.
 Run `python3 test/test_recording_tool.py` for manifest selection and extraction
 argument tests. See [gameplay recording](../docs/features/gameplay-recording.md).

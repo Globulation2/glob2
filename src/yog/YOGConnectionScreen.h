@@ -12,7 +12,7 @@ class YOGClient;
 class YOGConnectionScreen : public Glob2UI::Screen, public YOGClientEventListener
 {
   public:
-    const char* recordingId() const override { return "yogconnection"; }
+	const char *recordingId() const override { return "yogconnection"; }
 	///Construct with the given YOG client, which should not yet be connected.
 	explicit YOGConnectionScreen(std::shared_ptr<YOGClient> client);
 	~YOGConnectionScreen() override;

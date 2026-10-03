@@ -6,7 +6,7 @@
 class FertilityScreen : public Glob2UI::Screen
 {
   public:
-    const char* recordingId() const override { return "fertility"; }
+	const char *recordingId() const override { return "fertility"; }
 	explicit FertilityScreen(Map &map);
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
 	void onTimer(Uint32) override;
