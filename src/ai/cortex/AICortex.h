@@ -41,6 +41,7 @@ public:
   {
 	  return AITelemetry::schema(6);
   }
+  Uint32 telemetrySchemaVersion() const override { return 2; }
 	explicit AICortex(Player* player);
 	AICortex(GAGCore::InputStream* stream, Player* player, Sint32 versionMinor);
 	~AICortex();

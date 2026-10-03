@@ -341,6 +341,9 @@ namespace Cortex
 		// commit gate compares this against the tuned attack range; reading our OWN
 		// buildings is not a fog cheat.
 		Sint32 flagTargetSupportDist[CORTEX_FLAG_TARGETS];
+		// Enemy team owning flagTargets[i], -1 for invalid slots. Telemetry only:
+		// no policy or ranking code reads it.
+		Sint32 flagTargetTeam[CORTEX_FLAG_TARGETS];
 		// DEFENSE targets (v18, multi-point): up to CORTEX_MAX_DEFENSE_FLAGS friendly
 		// buildings currently taking fire, worst-first (highest underAttackTimer in
 		// slot 0 — the old single defenseTarget), each at least

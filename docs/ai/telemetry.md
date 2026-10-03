@@ -129,6 +129,29 @@ replays show telemetry as unavailable. Replay presentation schemas also survive 
 headless final-state save. This telemetry is local diagnostic state, not network
 traffic, and is excluded from gameplay checksums.
 
+## Offense target team
+
+To study how much a free-for-all or 2v2 result depends on who was attacked first,
+each AI that attacks exposes the enemy team its offense is aimed at. These fields
+are diagnostics like every other field here: no AI decision reads them, and
+neither does the [win probability model](../win-probability-model.md).
+
+| AI | Field | Meaning |
+| --- | --- | --- |
+| Maxima | `state.budget.tactical_target_team`, `state.campaign.target_team` | Set only by offense planning; cleared during defensive emergencies |
+| Nicowar | `state.target` | Offense target; defense flag placement never changes it |
+| Castor | `state.strikeTeam` | Valid while `state.strikeTeamSelected` is 1 |
+| Cabino | `module.PrioritizedBuildingAttack.target_team` | The attack module's current enemy; defense modules never pick an enemy team |
+| Cortex | `offense.target_team` | Team owning the flag target the offense last committed to; `-1` once the offense is stood down for any reason |
+| Numbi | `AINumbi.mayAttack.enemy_team` | The highest-numbered enemy team, which `mayAttack` always searches: not a ranked choice |
+| Warrush | `AIWarrush.placeGuardAreas.last_team` | Team of the last enemy building given a guard area; one call can guard several teams, so this is not a single target |
+
+Econo builds no warriors and has no offense field. `-1` means no current target;
+`na` means the AI has not reached the code that sets the field. The Cortex value
+is written when the decision is made, so it is saved with the series and survives a
+reload. Cabino, Cortex, Numbi and Warrush use schema version 2 for these fields;
+series from older saves close and new ones begin, as described above.
+
 ## Adding fields or an AI
 
 For an existing AI, append an `AI_FIELD` declaration to its section in the catalog.

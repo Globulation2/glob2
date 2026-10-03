@@ -2,6 +2,7 @@
 // Copyright (C) 2026 The Globulation 2 Authors
 
 #include "AICortex.h"
+#include "AITelemetryFields.h"
 #include "CortexObservation.h"
 #include "CortexWheat.h"
 
@@ -217,6 +218,7 @@ void AICortex::translateActionPlaceWarFlag(const Cortex::CortexAction& action, c
 		return;
 	}
 	const Cortex::BuildCandidate& target = obs.flagTargets[slot];
+	telemetry.set(AITrace::AI6::offense_target_team, obs.flagTargetTeam[slot]);
 
 	// Arm the hold window on a FRESH commit (a posture transition INTO offense), so a
 	// minor-harassment defensive recall is ignored while the first wave forms and
