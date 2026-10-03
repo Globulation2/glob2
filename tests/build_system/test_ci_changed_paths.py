@@ -49,12 +49,9 @@ class ChangedPathsTest(unittest.TestCase):
             if path.startswith("tests/build_system/"):
                 self.assertTrue(Path(path).match("tests/build_system/test_ci*.py"))
         package = (root / ".github/workflows/steam-windows-package.yml").read_text()
-        paths = package.split("    paths:\n", 1)[1].split("\npermissions:", 1)[0]
-        self.assertNotIn("docs/development/reference.md", paths)
-        self.assertIn("cancel-in-progress: ${{ github.event_name == 'pull_request' }}", package)
-        for filename in ("tools/package_steam_windows.py", "test/test_steam_windows_package.py",
-                         ".github/workflows/steam-windows-package.yml"):
-            self.assertIn(filename, paths)
+        self.assertNotIn('  pull_request:', package)
+        self.assertIn('  workflow_call:', package)
+        self.assertIn('cancel-in-progress: false', package)
 
     def test_browser_shell_only(self):
         self.assert_jobs(
@@ -251,9 +248,9 @@ class ChangedPathsTest(unittest.TestCase):
         for gcc in ('11', '13'):
             block = workflow.split(f'  linux-gcc{gcc}:\n', 1)[1].split('\n  linux-', 1)[0]
             self.assertIn('run_tests: true', block)
-            self.assertIn('needs: changes', block)
+            self.assertIn('needs: changes' if gcc == '11' else 'needs: [changes, linux-gcc13-producer]', block)
         tests = helper.split('  tests:\n', 1)[1]
-        self.assertIn('needs: build', tests)
+        self.assertIn('needs: [build, reuse]', tests)
         self.assertNotIn('linux-clang', tests)
         gate = workflow.split('  linux:\n', 1)[1].split('  linux-variants:\n', 1)[0]
         self.assertIn('needs: [changes, linux-build, linux-clang]', gate)

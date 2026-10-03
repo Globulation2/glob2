@@ -50,10 +50,15 @@ def measure(run, jobs, observations):
     starts = [s['started_at'] for j in jobs for s in j.get('steps', []) if s.get('started_at')]
     ends = [j['completed_at'] for j in jobs if j.get('completed_at')]
     selection = next((o for o in observations if 'selection' in o), {})
+    import hashlib
+    inventories = sorted({json.dumps({'family': o.get('family'), 'profile': o.get('profile'), 'binary': o.get('binary'), 'eligible': o['eligible']}, sort_keys=True) for o in observations if 'eligible' in o})
+    coverage_fingerprint = hashlib.sha256(json.dumps([selection.get('inventory_fingerprint'), inventories], sort_keys=True).encode()).hexdigest() if selection.get('inventory_fingerprint') else None
     span = seconds(min(starts), max(ends)) if starts and ends else None
     active = active_seconds(jobs) if starts else None
-    return {'metrics_schema': 2, 'run_id': run['id'], 'sha': run['head_sha'], 'event': run['event'],
+    return {'metrics_schema': 3, 'run_id': run['id'], 'sha': run['head_sha'], 'event': run['event'],
             'conclusion': run.get('conclusion'), 'selection': selection.get('selection'),
+            'inventory_fingerprint': coverage_fingerprint,
+            'draft': selection.get('draft', False),
             'queue_seconds': seconds(run['created_at'], min(starts)) if starts else None,
             'execution_seconds': active, 'execution_span_seconds': span,
             'idle_after_start_seconds': max(0, span - active) if span is not None else None,
@@ -70,7 +75,7 @@ def compare(before, after):
         for run in runs:
             if run.get('conclusion') != 'success' or run.get('selection') is None:
                 continue
-            key = json.dumps([run.get('metrics_schema'), run['event'], run['selection']], sort_keys=True)
+            key = json.dumps([run.get('metrics_schema'), run['event'], run.get('inventory_fingerprint'), run['selection']], sort_keys=True)
             cohorts.setdefault(key, {'before': [], 'after': []})[side].append(run)
     result = []
     for key, group in cohorts.items():

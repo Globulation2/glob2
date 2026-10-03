@@ -108,7 +108,9 @@ class AndroidReleaseTests(unittest.TestCase):
 
     def test_workflows_keep_publication_preflight_strict(self):
         mobile = (ROOT / ".github/workflows/mobile.yml").read_text()
-        self.assertIn("python3 mobile/android_release.py check --development\n", mobile)
+        self.assertNotIn("python3 mobile/android_release.py check --development\n", mobile)
+        self.assertNotIn("python3 mobile/android_release.py check-listing", mobile)
+        self.assertNotIn("python3 mobile/android_release.py verify-apk", mobile)
         for name in ("release.yml", "fdroid-release-validation.yml"):
             workflow = (ROOT / ".github/workflows" / name).read_text()
             self.assertIn("python3 mobile/android_release.py ${{ inputs.tag && 'check' || 'check-candidate' }}\n", workflow)
