@@ -12,6 +12,8 @@ void publishControls(const void *owner, const Host &host);
 // A screen whose whole content is one element tree rebuilt from its model.
 class UIScreen : public Screen
 {
+	int recordingState = -1;
+
   public:
 	explicit UIScreen(const Theme &theme);
 	~UIScreen() override;
@@ -63,9 +65,12 @@ class UIScreen : public Screen
 // A modal panel hosted by another screen or by gameplay; no nested loop.
 class UIDialog
 {
+	int recordingState = -1;
+
   public:
 	explicit UIDialog(const Theme &theme);
 	virtual ~UIDialog();
+	virtual const char *recordingId() const { return "dialog"; }
 	virtual Element build(const Presentation &presentation) = 0;
 	void attach(GAGCore::DrawableSurface &surface);
 	//! Mouse coordinates must already be in the owning surface's logical space.

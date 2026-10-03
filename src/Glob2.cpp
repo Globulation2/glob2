@@ -5,6 +5,7 @@
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>
 #endif
+#include <GameplayRecording.h>
 
 #ifdef __APPLE__
 #	include <CoreFoundation/CoreFoundation.h>
@@ -381,11 +382,6 @@ namespace
 {
 void closeGameResources()
 {
-#ifndef __EMSCRIPTEN__
-	// Join SDL_net's resolver threads while SDL is still alive. The graphics
-	// context owned by GlobalContainer calls SDL_Quit during its destruction.
-	NET_Quit();
-#endif
 	delete globalContainer;
 	globalContainer = nullptr;
 }
@@ -409,6 +405,32 @@ int Glob2::run(int argc, char *argv[])
 	globalContainer=new GlobalContainer();
 	globalContainer->parseArgs(argc, argv);
 	globalContainer->load();
+	if (!globalContainer->recordingPath.empty() || !globalContainer->videoshotName.empty())
+	{
+		if (globalContainer->runNoX)
+		{
+			fprintf(stderr, "Video recording requires a rendered session\n");
+			delete globalContainer;
+			return 1;
+		}
+		auto path = globalContainer->recordingPath;
+		if (path.empty())
+		{
+			const auto &name = globalContainer->videoshotName;
+			if (name == "." || name == ".." || name.find_first_of("/\\") != std::string::npos)
+			{
+				fprintf(stderr, "-vs requires a bare recording name\n");
+				delete globalContainer;
+				return 1;
+			}
+			path = globalContainer->fileManager->getDir(0) + "/videoshots/" + name + ".mp4";
+		}
+		if (!GAGCore::Recording::recorder().start(path))
+		{
+			delete globalContainer;
+			return 1;
+		}
+	}
 	// Headless tooling hook (AI wheat-protection sanity check): -dump-resources <map>
 	for (int ai = 1; ai + 1 < argc; ai++)
 		if (strcmp(argv[ai], "-dump-resources") == 0)
@@ -434,8 +456,7 @@ int Glob2::run(int argc, char *argv[])
 		fprintf(stderr, "Couldn't initialize net: %s\n", SDL_GetError());
 		exit(1);
 	}
-	// Fallback for exceptional exits; a normal shutdown has already quit net.
-	atexit(NET_Quit);
+	globalContainer->networkInitialized = true;
 #endif
 
 

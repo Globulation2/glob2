@@ -1,5 +1,11 @@
 [AI strategy]
 AI 戰術
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 平衡可持續發展與訓練，然後集結軍隊發動波次進攻。
 [AIMaxima-Profile]

@@ -1,5 +1,11 @@
 [AI strategy]
 تكتيكات AI
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 يوازن النمو المستدام والتدريب، ثم يجمع الجيوش في موجات.
 [AIMaxima-Profile]

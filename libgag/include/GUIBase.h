@@ -50,6 +50,7 @@ namespace GAGGUI
 
 		Screen();
 		virtual ~Screen();
+		virtual const char *recordingId() const { return "screen"; }
 
 		//! Method called for each timer's tick
 		virtual void onTimer(Uint32 tick) { }

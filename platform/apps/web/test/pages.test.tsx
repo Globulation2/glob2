@@ -356,7 +356,9 @@ describe('pages', () => {
 
   it('clicking a match row navigates without reloading', async () => {
     open(`/players/${ALICE}`);
-    fireEvent.click((await screen.findAllByTestId('match-row'))[0]!);
+    await screen.findAllByTestId('match-row');
+    // Session loading can replace the row while the async query resolves.
+    fireEvent.click(screen.getAllByTestId('match-row')[0]!);
     expect(await screen.findByTestId('match-title')).toBeTruthy();
     expect(window.location.pathname).toBe(`/matches/${MATCH}`);
   });

@@ -1,5 +1,11 @@
 [AI strategy]
 YZ stratejisi
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 Sürdürülebilir büyümeyle eğitimi dengeler, sonra orduları dalgalar hâlinde toplar.
 [AIMaxima-Profile]

@@ -60,6 +60,10 @@ class WebAssetPlanTests(unittest.TestCase):
         self.assertTrue(all(p.startswith('data/gfx/') and p.endswith('.png') for p in self.packages['game']))
         self.assertFalse(web_assets.game_files(['data/gfx/unitmini0.png'], {'unit'}))
         self.assertTrue(web_assets.game_files(['data/gfx/inn0b12r.png'], {'inn0b'}))
+        # The runtime export's sheets (tools/package_assets.py) replace a sprite's frames.
+        self.assertEqual(web_assets.game_files(['data/gfx/unit.sheet', 'data/gfx/unit-sheet-3.webp',
+                                                'data/gfx/unitmini.sheet', 'data/gfx/unitmini-sheet-0.png'], {'unit'}),
+                         {'data/gfx/unit.sheet', 'data/gfx/unit-sheet-3.webp'})
 
     def test_core_ships_the_browser_copies_and_font_cjk_the_full_font(self):
         self.assertEqual(sorted(self.substitutes), ['data/fonts/sans.ttf', 'data/gfx/menu-colony.png',

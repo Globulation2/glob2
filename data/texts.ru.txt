@@ -1,5 +1,11 @@
 [AI strategy]
 Стратегия ИИ
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 Уравновешивает устойчивый рост и обучение, затем собирает армии в волны.
 [AIMaxima-Profile]

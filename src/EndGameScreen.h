@@ -33,6 +33,7 @@ class EndGameScreen : public GAGGUI::ui::UIScreen
 	friend class GameGUITouchHarness;
 
   public:
+	const char *recordingId() const override { return "end_game"; }
 	//! Return values passed by the screen's buttons
 	enum ButtonId
 	{

@@ -1,5 +1,11 @@
 [AI strategy]
 AIの戦略
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 持続可能な成長と訓練を両立させ、軍を集めて波状攻撃を行います。
 [AIMaxima-Profile]

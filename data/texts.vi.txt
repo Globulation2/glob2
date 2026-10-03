@@ -1,5 +1,11 @@
 [AI strategy]
 Chiến thuật AI
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 Cân bằng tăng trưởng bền vững và huấn luyện, rồi tập hợp quân thành từng đợt.
 [AIMaxima-Profile]

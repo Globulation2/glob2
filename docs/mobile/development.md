@@ -673,15 +673,19 @@ To sync from a local clone of the release mirror, configure `upstream` once as
 `https://github.com/Globulation2/glob2.git`, then use:
 
 ```sh
+git fetch origin master
 git fetch upstream master
-git checkout master
-git merge upstream/master
-git push origin master
+git checkout --detach upstream/master
+git merge -s ours --no-edit -m "Merge public glob2 master into release mirror" origin/master
+git diff --exit-code upstream/master   # the tree must equal upstream's
+git push origin HEAD:master
 ```
 
-The release mirror has release-specific commits, so merging may require
-conflict resolution. Inspect the commits and resulting tree before pushing.
-Do not force-push a release branch.
+The merge keeps the mirror's history (so the push is not a force push) while
+taking upstream's files exactly; the release mirror never carries its own
+changes. Make any release-specific change upstream first; see
+[the release mirror](../development/releasing.md#the-release-mirror). Inspect
+the new commits before pushing. Do not force-push a release branch.
 
 After syncing, run **Actions → Android Play internal release → Run workflow**
 in the mirror. The optional release notes are shown to internal testers. The

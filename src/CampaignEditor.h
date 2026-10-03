@@ -12,6 +12,7 @@
 class CampaignEditor : public Glob2UI::Screen
 {
   public:
+	const char *recordingId() const override { return "campaign_editor"; }
 	CampaignEditor(const std::string &name, GAGGUI::ScreenStack &screens);
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
 	void onTimer(Uint32 tick) override;
@@ -47,6 +48,7 @@ class CampaignEditor : public Glob2UI::Screen
 class CampaignMapEntryEditor : public Glob2UI::Screen
 {
   public:
+	const char *recordingId() const override { return "campaign_map_entry_editor"; }
 	CampaignMapEntryEditor(Campaign &campaign, CampaignMapEntry &mapEntry);
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
 	/// The description as edited so far; the entry changes only on OK.

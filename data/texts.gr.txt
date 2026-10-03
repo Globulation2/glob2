@@ -1,5 +1,11 @@
 [AI strategy]
 Στρατηγική ΤΝ
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 Ισορροπεί βιώσιμη ανάπτυξη και εκπαίδευση και έπειτα συγκεντρώνει στρατούς σε κύματα.
 [AIMaxima-Profile]

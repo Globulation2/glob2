@@ -68,7 +68,10 @@ private:
 ///The scrolling chat history, shown above the chat area until closed.
 class InGameScrollableHistory : public Glob2UI::InGameDialog
 {
-public:
+  public:
+	const char *recordingId() const override { return "in_game_scrollable_history"; }
+
+  public:
 	explicit InGameScrollableHistory(const std::list<InGameMessage>& messageHistory);
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
 

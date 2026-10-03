@@ -1,5 +1,11 @@
 [%0 has left the game]
 %0 has quit the game.
+[start recording]
+Start recording
+[stop recording]
+Stop recording
+[finalizing recording]
+Finalizing recording…
 [%0 level %1]
 %0 Level %1
 [%0 units can't access building]

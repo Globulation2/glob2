@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "GameGUIDialog.h"
+#include "ui/RecordingControls.h"
 #include "FormatableString.h"
 #include "ScrollTuning.h"
 #include "GameGUI.h"
@@ -59,6 +60,8 @@ Element InGameMainScreen::build(const Presentation &p)
 		if (networked)
 			buttons.push_back(classicButton("pause", pauseText, [this] { finish(PAUSE_GAME); }, SDLK_UNKNOWN, pauseEnabled));
 		buttons.push_back(classicButton("quit", quitLabel, [this] { finish(QUIT_GAME); }));
+		if (GAGCore::Recording::supported())
+			buttons.push_back(fe::recordingControls());
 		buttons.push_back(classicButton("return", returnLabel, [this] { finish(RETURN_GAME); }, SDLK_ESCAPE));
 		return fe::column(std::move(buttons), {p.pt(10)});
 	}
@@ -81,6 +84,8 @@ Element InGameMainScreen::build(const Presentation &p)
 	buttons.push_back(item("telemetry", fe::tr("[AI telemetry]"), AI_TELEMETRY));
 	buttons.push_back(item("options", fe::tr("[Options]"), OPTIONS));
 	buttons.push_back(item("pause", pauseText, PAUSE_GAME, false, SDLK_UNKNOWN, pauseEnabled));
+	if (GAGCore::Recording::supported())
+		buttons.push_back(fe::recordingControls());
 	// Leaving ends the list, away from the everyday choices (it asks first).
 	buttons.push_back(item("quit", quitLabel, QUIT_GAME));
 	// Return stays pinned below the list so it is always in reach.
