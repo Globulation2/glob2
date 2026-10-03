@@ -1,0 +1,18 @@
+{
+  "completed": 2,
+  "failed": 2,
+  "issue_samples": [
+    {
+      "player": 0,
+      "reason": "filesystem error: cannot create directories: Not a directory [/home/bradley/.codex/worktrees/colony-skins/glob2/artifacts/skins/merge-validation/fog-gate/local-gate-engine/GameDiagnostics/controllers_sharing_a_team_publish_distinct_complete_captures_and_recover_after_failures_artifacts/captures/diagnostics]",
+      "simulation_tick": 0
+    },
+    {
+      "player": 1,
+      "reason": "filesystem error: cannot create directories: Not a directory [/home/bradley/.codex/worktrees/colony-skins/glob2/artifacts/skins/merge-validation/fog-gate/local-gate-engine/GameDiagnostics/controllers_sharing_a_team_publish_distinct_complete_captures_and_recover_after_failures_artifacts/captures/diagnostics]",
+      "simulation_tick": 0
+    }
+  ],
+  "schema_version": 1,
+  "skipped": 0
+}

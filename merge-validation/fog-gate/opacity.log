@@ -1,0 +1,19 @@
+libdecor-gtk-WARNING: Failed to initialize GTK
+Failed to load plugin 'libdecor-gtk.so': failed to init
+No plugins found, falling back on no decorations
+libEGL warning: pci id for fd 21: 10de:1e84, driver (null)
+
+pci id for fd 24: 10de:1e84, driver (null)
+pci id for fd 25: 10de:1e84, driver (null)
+libEGL warning: egl: failed to create dri2 screen
+pci id for fd 24: 10de:1e84, driver (null)
+pci id for fd 25: 10de:1e84, driver (null)
+libEGL warning: egl: failed to create dri2 screen
+Opacity composites reuse cached geometry; zero alpha draws nothing
+/home/bradley/.codex/worktrees/colony-skins/glob2/docs/.work/verify-skins-opacity.py:12: DeprecationWarning: Image.Image.getdata is deprecated and will be removed in Pillow 14 (2027-10-15). Use get_flattened_data instead.
+  if alpha==0: assert all(pixel==bg for pixel in im.getdata()),f'{kind} at zero opacity changed pixels'
+/home/bradley/.codex/worktrees/colony-skins/glob2/docs/.work/verify-skins-opacity.py:13: DeprecationWarning: Image.Image.getdata is deprecated and will be removed in Pillow 14 (2027-10-15). Use get_flattened_data instead.
+  opaque=list(images['mesh',255].getdata()); half=list(images['mesh',128].getdata())
+PASS 9796 mesh pixels; half-opacity maximum channel error 1.063/255
+PASS 53708 shadow-only pixels; maximum channel error 0.588/255
+PASS both zero-opacity captures equal the background exactly

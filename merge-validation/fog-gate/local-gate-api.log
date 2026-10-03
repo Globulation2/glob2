@@ -1,0 +1,6 @@
+test_client_lifecycle (test_platform_client.PlatformClientIntegration.test_client_lifecycle) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 42.395s
+
+OK
