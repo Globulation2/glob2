@@ -1,3 +1,4 @@
+#include <climits>
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
@@ -135,13 +136,24 @@ void Game::drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh
 	if ((drawOptions & DRAW_WHOLE_MAP) == 0)
 	{
 		// we have decrease on because we do unaligned lookup
+		Uint32 visibleTeams = scene.entities.teams[localTeam].me;
+		if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 		for (int y=top-1; y<=bot; y++)
+		{
+			// Whole squares of black or shade join into one fill per horizontal
+			// run, snapped to target pixels: at a fractional zoom, plain
+			// per-tile rectangles leave gaps and overlaps that show as a grid.
+			int blackStart = INT_MIN, shadeStart = INT_MIN;
+			const auto flush = [&](int &start, int end, const GAGCore::Color &color)
+			{
+				if (start != INT_MIN)
+					globalContainer->gfx->drawMapFill((start<<5)+16, (y<<5)+16, (end<<5)+16, (y<<5)+48, color);
+				start = INT_MIN;
+			};
+			const GAGCore::Color black(0, 0, 0), shade(0, 0, 0, 127);
 			for (int x=left-1; x<=right; x++)
 			{
 				unsigned i0, i1, i2, i3;
-
-				Uint32 visibleTeams = scene.entities.teams[localTeam].me;
-				if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 
 				// first draw black
 				i0=!sceneMap.isMapDiscovered(x+viewportX+1, y+viewportY+1, visibleTeams) ? 1 : 0;
@@ -149,28 +161,37 @@ void Game::drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh
 				i2=!sceneMap.isMapDiscovered(x+viewportX+1, y+viewportY, visibleTeams) ? 1 : 0;
 				i3=!sceneMap.isMapDiscovered(x+viewportX, y+viewportY, visibleTeams) ? 1 : 0;
 				unsigned blackValue = i0 + (i1<<1) + (i2<<2) + (i3<<3);
-				// Whole squares snap to target pixels: at a fractional zoom, plain
-				// rectangles leave gaps and overlaps that show as a grid in the shade.
 				if (blackValue==15)
-					globalContainer->gfx->drawMapFill((x<<5)+16, (y<<5)+16, (x<<5)+48, (y<<5)+48, GAGCore::Color(0, 0, 0));
-				else if (blackValue)
+				{
+					if (blackStart == INT_MIN)
+						blackStart = x;
+					flush(shadeStart, x, shade);
+					continue;
+				}
+				flush(blackStart, x, black);
+				if (blackValue)
 					globalContainer->gfx->drawSprite((x<<5)+16, (y<<5)+16, globalContainer->terrainBlack, blackValue);
 
 				// then if it isn't full black, draw shade
-				if (blackValue!=15)
-				{
-					i0=!sceneMap.isFOWDiscovered(x+viewportX+1, y+viewportY+1, visibleTeams) ? 1 : 0;
-					i1=!sceneMap.isFOWDiscovered(x+viewportX, y+viewportY+1, visibleTeams) ? 1 : 0;
-					i2=!sceneMap.isFOWDiscovered(x+viewportX+1, y+viewportY, visibleTeams) ? 1 : 0;
-					i3=!sceneMap.isFOWDiscovered(x+viewportX, y+viewportY, visibleTeams) ? 1 : 0;
-					unsigned shadeValue = i0 + (i1<<1) + (i2<<2) + (i3<<3);
+				i0=!sceneMap.isFOWDiscovered(x+viewportX+1, y+viewportY+1, visibleTeams) ? 1 : 0;
+				i1=!sceneMap.isFOWDiscovered(x+viewportX, y+viewportY+1, visibleTeams) ? 1 : 0;
+				i2=!sceneMap.isFOWDiscovered(x+viewportX+1, y+viewportY, visibleTeams) ? 1 : 0;
+				i3=!sceneMap.isFOWDiscovered(x+viewportX, y+viewportY, visibleTeams) ? 1 : 0;
+				unsigned shadeValue = i0 + (i1<<1) + (i2<<2) + (i3<<3);
 
-					if (shadeValue==15)
-						globalContainer->gfx->drawMapFill((x<<5)+16, (y<<5)+16, (x<<5)+48, (y<<5)+48, GAGCore::Color(0, 0, 0, 127));
-					else if (shadeValue)
-						globalContainer->gfx->drawSprite((x<<5)+16, (y<<5)+16, globalContainer->terrainShader, shadeValue);
+				if (shadeValue==15)
+				{
+					if (shadeStart == INT_MIN)
+						shadeStart = x;
+					continue;
 				}
+				flush(shadeStart, x, shade);
+				if (shadeValue)
+					globalContainer->gfx->drawSprite((x<<5)+16, (y<<5)+16, globalContainer->terrainShader, shadeValue);
 			}
+			flush(blackStart, right+1, black);
+			flush(shadeStart, right+1, shade);
+		}
 		globalContainer->gfx->finishDrawingSprite(globalContainer->terrainBlack, 255);
 		globalContainer->gfx->finishDrawingSprite(globalContainer->terrainShader, 255);
 	}

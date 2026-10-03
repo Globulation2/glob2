@@ -330,7 +330,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 
 	if (!overviewOnly)
 		tilePass(&Game::drawMapResources, scene.map);
-	tilePass(&Game::drawMapOverview, scene.map, view.render.detail.terrainOverview);
+	tilePass(&Game::drawMapOverview, scene.map, view.render);
 	tilePass(&Game::drawMapTerritory, scene, view.render.detail.strategic);
 	scenePass(&Game::drawMapGroundUnits, view, scene);
 	scenePass(&Game::drawMapDebugAreas, view);
@@ -436,7 +436,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 					// of constant size sooner than a building does.
 					const float flagIcon = drawnRender ? view.render.detail.flagIcon : 0.f;
 					if (flagIcon < 1)
-						globalContainer->gfx->drawSprite(x, y, buildingSprite, imgid, int((1-flagIcon)*255));
+						globalContainer->gfx->drawSprite(x, y, buildingSprite, imgid);
 					if (flagIcon > 0)
 						view.render.overlays.glyph(*globalContainer->gfx, x, y, x+32, y+32,
 							std::clamp(int(building->shortTypeNum), 0, 10), MapOverlayQueue::Disc, 0, false, 180,

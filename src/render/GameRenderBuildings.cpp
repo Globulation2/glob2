@@ -104,10 +104,10 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 	// would pile up the most important one stays.
 	const ZoomDetail *detail = drawnRender ? &drawnRender->detail : nullptr;
 	const float spriteOpacity = detail ? detail->buildingSprite : 1.f;
-	if (spriteOpacity >= 1)
+	// The sprite stays opaque under the chip fading in over it, and goes once
+	// the chip is solid: a translucent sprite would leave the sprite batch.
+	if (spriteOpacity > 0)
 		globalContainer->gfx->drawSprite(x+dx, y+dy, buildingSprite, imgid);
-	else if (spriteOpacity > 0)
-		globalContainer->gfx->drawSprite(x+dx, y+dy, buildingSprite, imgid, int(spriteOpacity*255));
 	if (detail && detail->buildingIcon > 0)
 	{
 		// Icon frames follow IntBuildingType up to the clearing flag; the market comes last.

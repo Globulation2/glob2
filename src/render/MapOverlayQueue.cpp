@@ -141,30 +141,34 @@ void MapOverlayQueue::flush(GraphicContext &gfx, GAGCore::Sprite *icons, double 
 				continue;
 			placed.push_back(box);
 			const int left = int(std::lround(box.x)), top = int(std::lround(box.y));
-			// The chip, one row at a time: a disc, or a square with rounded
-			// corners; first a dark rim, then the team's colour inside it.
-			// A construction site is a paler chip.
+			// The chip: a dark rim, then the team's colour inside it. A
+			// construction site is a paler chip. A square chip has its corners
+			// cut, which at these sizes reads as rounded and takes three
+			// rectangles a layer; only the few flag discs are drawn by rows.
 			const Uint8 fill = glyph.site ? Uint8(glyph.alpha * 3 / 5) : glyph.alpha;
-			const int corner = std::max(2, size / 5);
-			const auto inset = [&](int row, int total, int radius) -> int
+			const int corner = std::max(1, size / 7);
+			const auto layer = [&](int inset, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 			{
-				const int edge = std::min(row, total - 1 - row);
-				if (edge >= radius)
-					return 0;
-				const float dy = radius - edge - 0.5f;
-				return radius - int(std::lround(std::sqrt(std::max(0.f, radius * radius - dy * dy))));
+				const int edge = size - 2 * inset;
+				if (glyph.shape == Disc)
+				{
+					const float radius = edge / 2.f;
+					for (int row = 0; row < edge; row++)
+					{
+						const float dy = row + 0.5f - radius;
+						const int half = int(std::lround(std::sqrt(std::max(0.f, radius * radius - dy * dy))));
+						if (half > 0)
+							gfx.drawFilledRect(left + size / 2 - half, top + inset + row, 2 * half, 1, r, g, b, a);
+					}
+					return;
+				}
+				const int cut = std::max(1, corner - inset);
+				gfx.drawFilledRect(left + inset + cut, top + inset, edge - 2 * cut, cut, r, g, b, a);
+				gfx.drawFilledRect(left + inset, top + inset + cut, edge, edge - 2 * cut, r, g, b, a);
+				gfx.drawFilledRect(left + inset + cut, top + size - inset - cut, edge - 2 * cut, cut, r, g, b, a);
 			};
-			const int radius = glyph.shape == Disc ? size / 2 : corner;
-			for (int row = 0; row < size; row++)
-			{
-				const int skip = inset(row, size, radius);
-				gfx.drawFilledRect(left + skip, top + row, size - 2 * skip, 1, 12, 14, 22, glyph.alpha);
-			}
-			for (int row = 1; row < size - 1; row++)
-			{
-				const int skip = inset(row - 1, size - 2, std::max(1, radius - 1)) + 1;
-				gfx.drawFilledRect(left + skip, top + row, size - 2 * skip, 1, glyph.r, glyph.g, glyph.b, fill);
-			}
+			layer(0, 12, 14, 22, glyph.alpha);
+			layer(1, glyph.r, glyph.g, glyph.b, fill);
 			if (!icons)
 				continue;
 			// The largest icon frame that fits inside the chip, drawn pixel for pixel.

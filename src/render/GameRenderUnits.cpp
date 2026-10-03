@@ -105,10 +105,10 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	// a dot for a worker, a triangle for a warrior, a diamond for an explorer.
 	// Worker dots shrink further out, so a crowd reads as density.
 	const ZoomDetail &detail = view.render.detail;
-	if (detail.unitSprite >= 1)
+	// The sprite stays opaque under the marker fading in over it, and goes once
+	// the marker is solid: a translucent sprite would leave the unit batch.
+	if (detail.unitSprite > 0)
 		globalContainer->gfx->drawSprite(px-decX, py-decY, unitSprite, imgid);
-	else if (detail.unitSprite > 0)
-		globalContainer->gfx->drawSprite(px-decX, py-decY, unitSprite, imgid, int(detail.unitSprite*255));
 	if (detail.unitMarker > 0)
 	{
 		const GAGCore::Color &color = entities.owner(*unit).color;

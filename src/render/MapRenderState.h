@@ -11,6 +11,7 @@
 #include <valarray>
 
 class DynamicClouds;
+namespace GAGCore { class DrawableSurface; }
 class SoftwareTerrainCache;
 
 //! Presentation state one map view keeps between frames: animation phases, the
@@ -35,6 +36,8 @@ struct MapRenderState
 	std::valarray<unsigned char> overlayAlphas;
 	//! How this frame's zoom draws each map element; set by Game::drawMap.
 	ZoomDetail detail;
+	//! The terrain overview's image, one pixel per visible tile, kept between frames.
+	std::unique_ptr<GAGCore::DrawableSurface> overview;
 	//! The player is painting zones, so they keep their full strength zoomed out.
 	bool zonesEmphasised = false;
 	//! Constant-size overlays queued by this frame's map passes.

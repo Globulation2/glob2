@@ -912,11 +912,14 @@ it is saved, checksummed or read by the simulation.
 - Zones cross-fade from pattern sprites with an outline to a flat translucent tint
   without one: an area keeps its shape at any scale where a one-pixel line cannot.
   `GraphicContext::drawMapFill` snaps fill edges to target pixels so translucent
-  neighbours tile without seams; the fog-of-war shade uses it for the same reason.
+  neighbours tile without seams; the fog-of-war shade uses it for the same reason,
+  one fill per horizontal run of whole squares.
   The outline stroke stops thickening at two points.
 - Below 12 points per tile `Game::drawMapOverview` fades in one flat colour per tile
   (terrain, or the resource's minimap colour over it); at 5 points it replaces the
-  water, terrain and resource passes.
+  water, terrain and resource passes. It is one image, a pixel per visible tile,
+  stretched over the map in a single draw: as per-tile translucent fills it cost
+  more than the terrain it covered during the cross-fade.
 - Units cross-fade to team-coloured markers (dot worker, triangle warrior, diamond
   explorer). Below 8 points per tile building sprites cross-fade to chips in the
   team's colour carrying a white icon of the building's purpose, with a pip per
@@ -936,6 +939,11 @@ When tuning, capture the same save across zooms with `SoftwareRenderBenchmark`
 (`PROFILE_ZOOM`, `PROFILE_CAPTURE`); `PROFILE_ADAPTIVE_ZOOM=0` draws uniform scaling
 from the same build for a before/after pair. Set it explicitly on every run: the
 benchmark saves preferences, so the last value otherwise carries into the next run.
+`torus-render-benchmark` takes `GLOB2_BENCH_ZOOM`, `GLOB2_BENCH_PAN_X`/`_Y` (the
+camera's top-left tile), `GLOB2_BENCH_AREAS=1` (zones) and
+`GLOB2_BENCH_ADAPTIVE_ZOOM=0|1` for the same comparison on OpenGL. Sprites stay
+opaque while markers and chips fade in over them, since a translucent sprite leaves
+its batch; check draw calls as well as time when changing a cross-fade.
 
 ## Software rendering architecture and profiling
 

@@ -273,9 +273,9 @@ void Game::drawMapResources(int left, int top, int right, int bot, int viewportX
 	globalContainer->gfx->finishDrawingSprite(globalContainer->resources, 255);
 }
 
-void Game::drawMapOverview(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& sceneMap, float opacity)
+void Game::drawMapOverview(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& sceneMap, MapRenderState& render)
 {
-	const Uint8 alpha = Uint8(std::clamp(opacity, 0.f, 1.f) * 255);
+	const Uint8 alpha = Uint8(std::clamp(render.detail.terrainOverview, 0.f, 1.f) * 255);
 	if (!alpha)
 		return;
 	PERF_SCOPE_TIME(Terrain);
@@ -300,18 +300,20 @@ void Game::drawMapOverview(int left, int top, int right, int bot, int viewportX,
 		}
 		return Uint32(r) << 16 | Uint32(g) << 8 | Uint32(b);
 	};
+	// One pixel per tile, stretched over the map in a single draw: thousands of
+	// translucent rectangles a frame cost more than the terrain they cover.
+	const int columns = right-left+1, rows = bot-top+1;
+	if (!render.overview)
+		render.overview = std::make_unique<GAGCore::DrawableSurface>(columns, rows);
+	else if (render.overview->getW()!=columns || render.overview->getH()!=rows)
+		render.overview->setRes(columns, rows);
 	for (int y=top; y<=bot; y++)
-		for (int x=left; x<=right;)
+		for (int x=left; x<=right; x++)
 		{
-			// One snapped fill per horizontal run of equal colour.
 			const Uint32 color = colorOf(x, y);
-			int end = x+1;
-			while (end<=right && colorOf(end, y)==color)
-				end++;
-			globalContainer->gfx->drawMapFill(x*32, y*32, end*32, (y+1)*32,
-				GAGCore::Color(Uint8(color >> 16), Uint8(color >> 8), Uint8(color), alpha));
-			x = end;
+			render.overview->drawPixel(x-left, y-top, Uint8(color >> 16), Uint8(color >> 8), Uint8(color), 255);
 		}
+	globalContainer->gfx->drawSurface(left*32, top*32, columns*32, rows*32, render.overview.get(), alpha);
 }
 
 void Game::drawMapTerritory(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const Scene& scene, float opacity)
