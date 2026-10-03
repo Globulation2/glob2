@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2006 Bradley Arsenault
 
+#include "AIFarmAreas.h"
 #include "shared_runtime/Runtime.h"
 
 using namespace AISharedRuntime;
@@ -44,6 +45,27 @@ bool MapInfo::is_guard_area(int x, int y)
 bool MapInfo::is_clearing_area(int x, int y)
 {
 	return runtime.player->map->isClearArea(x, y, runtime.player->team->me);
+}
+
+
+
+bool MapInfo::is_farm_area(int x, int y)
+{
+	return runtime.player->map->isFarmArea(x, y, runtime.player->team->me);
+}
+
+
+
+bool MapInfo::farm_areas_enabled()
+{
+	return runtime.player->map->farmAreasEnabled();
+}
+
+
+
+bool MapInfo::wants_farm(int x, int y)
+{
+	return AIFarmAreas::wantsFarm(*runtime.player->map, x, y);
 }
 
 

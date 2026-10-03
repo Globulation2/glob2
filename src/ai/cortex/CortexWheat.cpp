@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 The Globulation 2 Authors
 
+#include "AIFarmAreas.h"
 #include "field/UniformTraversal.h"
 #include "CortexWheat.h"
 
@@ -101,6 +102,7 @@ namespace Cortex
 				if (isField(x, y))
 					fieldTiles.push_back(static_cast<int>(map.coordToIndex(x, y)));
 		res.fieldTileCount = static_cast<Sint32>(fieldTiles.size());
+		res.field = fieldTiles;
 		if (wantDebug)
 		{
 			res.classOf.assign(static_cast<size_t>(w) * h, WC_NONE);
@@ -366,6 +368,7 @@ namespace Cortex
 
 		out.addCount = r.addCount;
 		out.delCount = r.delCount;
+		out.field = std::move(r.field);
 		if (buildMasks)
 		{
 			// Accumulate the ADD/DEL tile lists (already in index order) into the
@@ -375,6 +378,48 @@ namespace Cortex
 				out.add.applyBrush(BrushApplication(idx % w, idx / w, 0), &map);
 			for (int idx : r.del)
 				out.del.applyBrush(BrushApplication(idx % w, idx / w, 0), &map);
+		}
+		return out;
+	}
+
+	FarmReconcile reconcileWheatFarm(Player* player, const std::vector<int>& field, bool liftAll,
+	                                 bool buildMasks)
+	{
+		FarmReconcile out;
+		if (player == NULL || player->team == NULL || player->team->game == NULL)
+			return out;
+		Map& map = player->team->game->map;
+		const int w = map.getW();
+		const int size = w * map.getH();
+		const Uint32 me = player->team->me;
+		std::vector<Uint8> desired(static_cast<size_t>(size), 0);
+		if (!liftAll)
+			for (int idx : field)
+				for (int dy = -1; dy <= 1; dy++)
+					for (int dx = -1; dx <= 1; dx++)
+					{
+						const int x = (idx % w + dx) & map.getMaskW();
+						const int y = (idx / w + dy) & map.getMaskH();
+						if (AIFarmAreas::wantsFarm(map, x, y))
+							desired[map.coordToIndex(x, y)] = 1;
+					}
+		for (int idx = 0; idx < size; idx++)
+		{
+			const bool actual = map.isFarmArea(idx % w, idx / w, me);
+			if (desired[idx] == actual)
+				continue;
+			if (desired[idx])
+			{
+				out.addCount++;
+				if (buildMasks)
+					out.add.applyBrush(BrushApplication(idx % w, idx / w, 0), &map);
+			}
+			else
+			{
+				out.delCount++;
+				if (buildMasks)
+					out.del.applyBrush(BrushApplication(idx % w, idx / w, 0), &map);
+			}
 		}
 		return out;
 	}

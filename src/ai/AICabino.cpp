@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2005-2007 Bradley Arsenault
 
+#include "AIFarmAreas.h"
 #include "field/UniformTraversal.h"
 #include "AITelemetryFields.h"
 #include <Stream.h>
@@ -4638,17 +4639,36 @@ bool Farmer::updateFarm()
 
 	BrushAccumulator del_acc;
 	BrushAccumulator add_acc;
+	// With the farm-areas experiment, wheat near water is farmed with a farm
+	// area; the forbidden pattern then protects only wood outside farms.
+	const bool farms=ai.map->farmAreasEnabled();
+	BrushAccumulator farm_del_acc;
+	BrushAccumulator farm_add_acc;
 	for(unsigned int x=0; static_cast<int>(x)<ai.map->getW(); ++x)
 	{
 		for(unsigned int y=0; static_cast<int>(y)<ai.map->getH(); ++y)
 		{
+			bool wheat_farm=false;
+			if(farms && ai.map->isMapDiscovered(x, y, ai.team->me))
+			{
+				wheat_farm=AIFarmAreas::wantsFarm(*ai.map, x, y)
+					&& water_gradient.getHeight(x, y)<=static_cast<int>(MAX_DISTANCE_FROM_WATER+2);
+				const bool farmed=ai.map->isFarmArea(x, y, ai.team->me);
+				if(wheat_farm && !farmed)
+					farm_add_acc.applyBrush(BrushApplication(x, y, 0), ai.map);
+				else if(!wheat_farm && farmed)
+					farm_del_acc.applyBrush(BrushApplication(x, y, 0), ai.map);
+			}
 
 			if( ((x%2!=y%2) && FARMING_METHOD==CheckerBoard) ||
 				((x%2==1 && y%2==1) && FARMING_METHOD==CrossSpacing) ||
 				((x%6<4 && y%3==0) && FARMING_METHOD==Row4) ||
 				((x%3==0 && y%6<4) && FARMING_METHOD==Column4))
 			{
-				if((!ai.map->isResourceTakeable(x, y, WOOD) && !ai.map->isResourceTakeable(x, y, WHEAT)) || ai.map->isClearArea(x, y, ai.team->me))
+				const bool protectable=farms
+					? ai.map->isResourceTakeable(x, y, WOOD) && !wheat_farm
+					: ai.map->isResourceTakeable(x, y, WOOD) || ai.map->isResourceTakeable(x, y, WHEAT);
+				if(!protectable || ai.map->isClearArea(x, y, ai.team->me))
 				{
 					if(resources.find(point(x, y))!=resources.end())
 					{
@@ -4672,6 +4692,10 @@ bool Farmer::updateFarm()
 		ai.orders.push(std::shared_ptr<Order>(new OrderAlterForbidden(ai.team->teamNumber, BrushTool::MODE_DEL, &del_acc, ai.map)));
 	if(add_acc.getApplicationCount()>0)
 		ai.orders.push(std::shared_ptr<Order>(new OrderAlterForbidden(ai.team->teamNumber, BrushTool::MODE_ADD, &add_acc, ai.map)));
+	if(farm_del_acc.getApplicationCount()>0)
+		ai.orders.push(std::shared_ptr<Order>(new OrderAlterFarmArea(ai.team->teamNumber, BrushTool::MODE_DEL, &farm_del_acc, ai.map)));
+	if(farm_add_acc.getApplicationCount()>0)
+		ai.orders.push(std::shared_ptr<Order>(new OrderAlterFarmArea(ai.team->teamNumber, BrushTool::MODE_ADD, &farm_add_acc, ai.map)));
 	return ai.telemetry.returnedBool(AITrace::AI8::Farmer_updateFarm_result,
 									 AITrace::AI8::Farmer_updateFarm_true, false);
 }
