@@ -1,0 +1,23 @@
+[WebServer] 127.0.0.1 - - [02/Oct/2026 20:43:30] "GET / HTTP/1.1" 200 -
+
+Running 2 tests using 1 worker
+
+(node:1803771) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 127.0.0.1 - - [02/Oct/2026 20:43:31] "GET /test-host-a97d2834-af15-43b0-a1af-9a113e9deb4b.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 20:43:31] "GET /script-tests.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 20:43:31] "GET /script-tests.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 20:43:31] "GET /script-tests.wasm HTTP/1.1" 200 -
+  ✓  1 [chromium] › tests/determinism.spec.js:106:1 › WebAssembly executes the shared scripting corpus (serial) (1.4m)
+[WebServer] 127.0.0.1 - - [02/Oct/2026 20:44:55] "GET /test-host-a9f20cbe-e7df-4102-a2f3-d18aa80194c4.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 20:44:55] "GET /threaded/script-tests.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 20:44:55] "GET /script-tests.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 20:44:55] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 20:44:55] "GET /threaded/script-tests.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 20:44:55] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 20:44:55] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 20:44:55] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 20:45:42] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+  ✓  2 [chromium] › tests/determinism.spec.js:106:1 › WebAssembly executes the shared scripting corpus (threaded) (1.6m)
+
+  2 passed (3.0m)

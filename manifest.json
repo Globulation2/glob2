@@ -1,0 +1,82 @@
+{
+  "eval/gpt-6-luna.json": {
+    "bytes": 30789,
+    "sha256": "079900f1959c4fb0c68f39d193e1c05953b5a83d9ee47248169b41b4d0450d2b"
+  },
+  "eval/gpt-6.1-sol.json": {
+    "bytes": 28841,
+    "sha256": "ae9c45326a772bf0ae63e0289a7d837a58ff702386134b19c0c9c2185ac804f5"
+  },
+  "eval/gpt-6-astra.json": {
+    "bytes": 29021,
+    "sha256": "d1f9870cab3f0714b2369562a1c3c062de59fda593044ee78a80a0a442a6cd38"
+  },
+  "eval/selection.json": {
+    "bytes": 1448,
+    "sha256": "e05d0398ac26bfda9f279e1d02429247745fd1a512474033883de50322e144b7"
+  },
+  "commander.png": {
+    "bytes": 445266,
+    "sha256": "fa0e4b5b7798ae323c0e09bac065b2687bfe5ff0c150e3e489d4b52a3722b624"
+  },
+  "replay-comparison.json": {
+    "bytes": 569,
+    "sha256": "75bbe1cb54e6447f5c6c73fe8559fef5cc9810d1e9c144704d57865fb22d4c36"
+  },
+  "replays/native/native.replay.checksums": {
+    "bytes": 3647512,
+    "sha256": "4838173acd91d4768a0cd7f3e681cb3ea630de093e27c117994030a8ad31de43"
+  },
+  "replays/native/verify-match.checksums.txt": {
+    "bytes": 9094,
+    "sha256": "de96467a87b046dc6722c9b7d51722f49adfdb84c3cba28beb840cc60aea3302"
+  },
+  "replays/browser/serial-1.checksums": {
+    "bytes": 3647512,
+    "sha256": "4838173acd91d4768a0cd7f3e681cb3ea630de093e27c117994030a8ad31de43"
+  },
+  "replays/browser/threaded-1.checksums": {
+    "bytes": 3647512,
+    "sha256": "4838173acd91d4768a0cd7f3e681cb3ea630de093e27c117994030a8ad31de43"
+  },
+  "replays/browser/threaded-2.checksums": {
+    "bytes": 3647512,
+    "sha256": "4838173acd91d4768a0cd7f3e681cb3ea630de093e27c117994030a8ad31de43"
+  },
+  "replays/browser/threaded-4.checksums": {
+    "bytes": 3647512,
+    "sha256": "4838173acd91d4768a0cd7f3e681cb3ea630de093e27c117994030a8ad31de43"
+  },
+  "replays/browser/verify-match.checksums.txt": {
+    "bytes": 9094,
+    "sha256": "de96467a87b046dc6722c9b7d51722f49adfdb84c3cba28beb840cc60aea3302"
+  },
+  "logs/final-platform.log": {
+    "bytes": 505,
+    "sha256": "f12839ae2266726be00b8ad7ca73e6f723a1a33264e61d6064b3c5f22efff764"
+  },
+  "logs/native-final.log": {
+    "bytes": 537,
+    "sha256": "0784450efc13ae08b7ea36c8918fe0f9a6a3ea33d66f5e934bcfb5b7cd1049ae"
+  },
+  "logs/javascript-tests.log": {
+    "bytes": 3620,
+    "sha256": "997e6c4e6fd6da5771dc87683904dbfce4a5332c7c805a223188c93b75c9be1f"
+  },
+  "logs/browser-corpus.log": {
+    "bytes": 1816,
+    "sha256": "ea78bb6f18d45aa258889d9c869582cf003579a12903956bfa65131a62a68794"
+  },
+  "logs/package.log": {
+    "bytes": 101,
+    "sha256": "ce60cfc2a71691043ad936ec79c15b3fb4394365bb1c23cb24189b339db7451b"
+  },
+  "logs/browser-parity.log": {
+    "bytes": 5435,
+    "sha256": "8ef420a1c85d1ab646a71d74bb700e99ac0f3c578400c56702595b46602be6d5"
+  },
+  "README.md": {
+    "bytes": 2656,
+    "sha256": "05e46e2b45fa0c826f5483c3cb240dd652a345251659b2110021e06745676f85"
+  }
+}
