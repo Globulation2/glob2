@@ -404,7 +404,17 @@ struct LanMatch
 				return true;
 			step();
 		}
-		return done();
+		if (done())
+			return true;
+		// Preserve connection and map-transfer errors when an asynchronous phase
+		// times out, rather than reporting only that its predicate stayed false.
+		MESSAGE("LAN host state: " << hostSide().state().toJson().dump());
+		for (const auto& player : players)
+			if (const auto* guest = player->room->guestSide())
+				MESSAGE(player->name << ": phase=" << static_cast<int>(guest->phase())
+				        << " reason=" << guest->closeReason() << " detail=" << guest->closeDetail()
+				        << " map=" << guest->downloadPercent());
+		return false;
 	}
 };
 
@@ -522,8 +532,9 @@ DelayStats stats(std::vector<double> values)
 
 TEST_SUITE("LanMatchHarness")
 {
-	GLOB2_TEST_CASE("a LAN host and two guests over loopback WSS play with AIs through a drop, a restart and the host "
-	                "leaving, and agree at every tick",
+	// The case name becomes an artifact directory; leave room for the 64-byte
+	// map hash and cache suffix under Windows' legacy file-path limit.
+	GLOB2_TEST_CASE("LAN WSS drop, restart and host departure",
 	                "[network][slow][artifacts]")
 	{
 		glob2test::HeadlessGlobals globals(harnessGlobals());
@@ -686,7 +697,7 @@ TEST_SUITE("LanMatchHarness")
 		}
 	}
 
-	GLOB2_TEST_CASE("LAN input delay on loopback and on emulated slower links", "[network][slow][benchmark][artifacts]")
+	GLOB2_TEST_CASE("LAN input delay on loopback and delayed links", "[network][slow][benchmark][artifacts]")
 	{
 		glob2test::HeadlessGlobals globals(harnessGlobals());
 		glob2test::ScopedEnvironment address("GLOB2_LAN_ADDRESS", "127.0.0.1");
