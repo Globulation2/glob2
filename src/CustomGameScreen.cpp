@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "CustomGameScreen.h"
+#include "ChooseMapScreen.h"
 #include "AINames.h"
 #include "CustomGamePreferences.h"
 #include "Engine.h"
@@ -390,6 +391,51 @@ void CustomGameScreen::applyLandscape(int method, std::optional<std::uint32_t> s
 	invalidatePreview();
 	// An explicit choice, not an edit in progress: preview it now rather than after the debounce.
 	previewDue = SDL_GetTicks();
+}
+
+void CustomGameScreen::repeatCurrentMap()
+{
+	if (!validMap || previewBusy())
+		return;
+	std::string path = source;
+	if (generatedSnapshot)
+	{
+		// Freeze the previewed roll before opening the advanced dialog. The
+		// repeated result becomes a premade map: rerolling it would lose the
+		// source the player just configured. Use portable profile storage.
+		auto &files = *Toolkit::getFileManager();
+		files.addWriteSubdir("generated");
+		path = files.getDir(0) + "/generated/source-" + std::to_string(SDL_GetPerformanceCounter()) + ".map";
+		if (!files.writeFileAtomic(path, *generatedSnapshot))
+		{
+			message = tr("Could not load this map. Choose another map or retry.");
+			invalidate();
+			return;
+		}
+	}
+	auto dialog = std::make_unique<ChooseMapScreen>("maps", "map", false);
+	dialog->editMapParameters(path);
+	const bool temporarySource = generatedSnapshot != nullptr;
+	screens.push(std::move(dialog), [this, path, temporarySource](GAGGUI::Screen &screen, int result)
+	{
+		const auto repeated = result == ChooseMapScreen::OK
+			? static_cast<ChooseMapScreen &>(screen).getMapHeader().getFileName() : std::string();
+		// Cancel or accepting unchanged settings leaves the original draft and
+		// preview intact. Only the accepted repeated file needs to outlive us.
+		if (temporarySource && repeated != path)
+			Toolkit::getFileManager()->remove(path);
+		if (result != ChooseMapScreen::OK || repeated == path)
+		{
+			if (temporarySource && repeated == path)
+				Toolkit::getFileManager()->remove(path);
+			return;
+		}
+		setup.random = false;
+		quality = {};
+		++setup.mapRevision;
+		loadMap(repeated);
+		invalidate();
+	});
 }
 
 void CustomGameScreen::resetParameters()
@@ -969,6 +1015,9 @@ Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 										invalidate();
 									},
 									listOptions));
+		if (validMap)
+			left.push_back(fe::button("map/parameters", tr("Size and parameters"), [this] { repeatCurrentMap(); },
+				{false, false, !previewBusy(), true, true}));
 	}
 	else
 	{
@@ -1066,6 +1115,11 @@ Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 			}
 			if (!any)
 				left.push_back(fe::caption(tr(section == 1 ? "This landscape uses fixed resource placement." : "Dimensions and colony count are set above.")));
+			// Repetition transforms the completed roll, not the landscape's
+			// construction settings. Keep it after the advanced layout fields.
+			if (section == 2 && !forRoom)
+				left.push_back(fe::button("generator/repeat", tr("Size and parameters"), [this] { repeatCurrentMap(); },
+					{false, false, validMap && !previewBusy(), true, true}));
 		}
 	}
 	auto leftParts = left;

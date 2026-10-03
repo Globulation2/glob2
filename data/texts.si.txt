@@ -4714,3 +4714,13 @@ Zagon zemljevida
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+Ponovi zemljevid vodoravno
+[repeat map vertically]
+Ponovi zemljevid navpično
+[bases]
+baze
+[bases per colony]
+Baze na kolonijo; baza je ena ekipa zemljevida, kot je narisan, z njenimi zgradbami in enotami

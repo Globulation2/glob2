@@ -71,6 +71,7 @@ ENGINE_TESTS = [
     ('LanMatchHarness.cpp', dict(require={'wss'}, cxxflags=['-fno-access-control'])),
     ('AISavePortabilityHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     'BuildingFootprintHarness.cpp',
+    'MapTilingHarness.cpp',
     'ClearingFlagGradientTest.cpp',
     'CortexGeometryHarness.cpp',
     'EnteringUnitSaveHarness.cpp',

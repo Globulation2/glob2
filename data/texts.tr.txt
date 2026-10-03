@@ -4722,3 +4722,13 @@ Harita ivmesi
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+Haritayı yatay olarak tekrarla
+[repeat map vertically]
+Haritayı dikey olarak tekrarla
+[bases]
+üs
+[bases per colony]
+Koloni başına üs; üs, haritanın çizildiği hâliyle bir takımı, binaları ve birimleriyle birlikte

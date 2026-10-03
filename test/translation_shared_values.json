@@ -77,7 +77,8 @@
       "Script",
       "Total",
       "Tutorial",
-      "Tutorial ▸"
+      "Tutorial ▸",
+      "bases"
     ],
     "texts.ca.txt": [
       "= Normal",
@@ -100,7 +101,8 @@
       "Total",
       "Tutorial",
       "Tutorial ▸",
-      "desert"
+      "desert",
+      "bases"
     ],
     "texts.cz.txt": [
       "Audio",
@@ -203,7 +205,8 @@
       "Script",
       "Total",
       "Tutorial",
-      "Tutorial ▸"
+      "Tutorial ▸",
+      "bases"
     ],
     "texts.eu.txt": [
       "Asia",
@@ -261,7 +264,8 @@
       "Total",
       "Version",
       "colonies",
-      "options"
+      "options",
+      "bases"
     ],
     "texts.gr.txt": [
       "CPU %0%"
@@ -350,7 +354,8 @@
       "Teams %0/%1",
       "Tutorial",
       "Water",
-      "element"
+      "element",
+      "bases"
     ],
     "texts.pl.txt": [
       "Audio",
@@ -376,7 +381,8 @@
       "Script",
       "Total",
       "Tutorial",
-      "Tutorial ▸"
+      "Tutorial ▸",
+      "bases"
     ],
     "texts.ro.txt": [
       "Africa",

@@ -4784,3 +4784,13 @@ CPU %0%
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+Επανάληψη χάρτη οριζόντια
+[repeat map vertically]
+Επανάληψη χάρτη κάθετα
+[bases]
+βάσεις
+[bases per colony]
+Βάσεις ανά αποικία· βάση είναι μία ομάδα του χάρτη όπως σχεδιάστηκε, με τα κτίρια και τις μονάδες της
