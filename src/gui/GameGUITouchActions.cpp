@@ -504,9 +504,19 @@ void GameGUITouch::setRatio(Building &building, int type, int value)
 	if (next == values[type])
 		return;
 	values[type] = next;
-	gui.pendingFor(building.gid).pendingRatio = values;
-	gui.orderQueue.push_back(std::make_shared<OrderModifySwarm>(building.gid, values.data()));
+	commitRatios(building, values);
 }
+// Both inspector presentations share the pending UI value and send exactly one
+// existing simulation order. Drawing and drag previews never mutate the building.
+void GameGUITouch::commitRatios(Building &building, const std::array<int, 3> &values)
+{
+	if (values == gui.displayedRatio(building))
+		return;
+	gui.pendingFor(building.gid).pendingRatio = values;
+	auto wire = values;
+	gui.orderQueue.push_back(std::make_shared<OrderModifySwarm>(building.gid, wire.data()));
+}
+
 // Clearing resources, flag requirements, construction and destruction: the
 // same orders from the row list and the dial.
 void GameGUITouch::applyDiscreteAction(Building &building, const BuildingAction &row)

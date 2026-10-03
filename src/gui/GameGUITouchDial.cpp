@@ -12,7 +12,6 @@
 #include "GlobalContainer.h"
 #include "BuildingType.h"
 #include "UnitDisplayNames.h"
-#include "Order.h"
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <algorithm>
@@ -304,15 +303,6 @@ std::array<int, 3> GameGUITouch::dialRatios() const
 	if (const auto *b = inspectedBuilding())
 		return gui.displayedRatio(*b);
 	return {};
-}
-
-void GameGUITouch::commitRatios(Building &building, const std::array<int, 3> &values)
-{
-	if (values == gui.displayedRatio(building))
-		return;
-	gui.pendingFor(building.gid).pendingRatio = values;
-	auto wire = values;
-	gui.orderQueue.push_back(std::make_shared<OrderModifySwarm>(building.gid, wire.data()));
 }
 
 void GameGUITouch::drawDial()
