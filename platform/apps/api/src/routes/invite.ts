@@ -96,11 +96,15 @@ export async function inviteRoutes(app: FastifyInstance, rooms: RoomService): Pr
       const code = request.params.code;
       const room = /^[A-Za-z0-9]{6,16}$/.test(code) ? await rooms.byCode(code) : undefined;
       const live = room && room.status !== 'closed' ? room : undefined;
+      // A real room that has closed says so; only unknown codes are "not found".
+      const closed = room && !live ? room : undefined;
       const pageUrl = `${origin}/j/${encodeURIComponent(live?.code ?? code)}`;
-      const title = live ? 'You’re invited' : 'Invite not found';
+      const title = live ? 'You’re invited' : closed ? 'This room has closed' : 'Invite not found';
       const description = live
         ? `${live.host_display_name} invited you to their Globulation 2 room${onInstance}.`
-        : `This invite has expired or does not exist. Ask for a new link.`;
+        : closed
+          ? `${closed.host_display_name}’s room has closed, so this invite no longer works. Ask them for a new link, or start a game of your own.`
+          : `This invite has expired or does not exist. Ask for a new link.`;
       const browserLink = browserJoinLink(clientUrl, live?.code);
       const glob2Link = live
         ? appJoinLink(origin, live.code)
@@ -183,10 +187,24 @@ export async function inviteRoutes(app: FastifyInstance, rooms: RoomService): Pr
             </p>
             <div class="code">${live.code}</div>`
         : html`<div class="card">
+            ${
+              closed
+                ? html`<p class="eyebrow">Room invite</p>
+                    <p class="room">${closed.name}</p>`
+                : ''
+            }
             <p>${description}</p>
             <a class="button primary" href="${browserJoinLink(clientUrl, undefined)}"
-              >Play in browser</a
+              >${closed ? 'Create your own room' : 'Play in browser'}</a
             >
+            ${
+              closed
+                ? html`<p class="muted">
+                    In the game, choose <strong>Play online</strong>: create a room and invite your
+                    friends, or find a quick match.
+                  </p>`
+                : ''
+            }
             <a class="button" href="${`${origin}/`}">Go to ${instanceName}</a>
           </div>`;
       return sendPage(reply, title, body, live ? 200 : 404, {

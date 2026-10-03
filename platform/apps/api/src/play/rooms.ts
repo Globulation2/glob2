@@ -39,7 +39,7 @@ import {
   type RegionRtt,
 } from '@glob2/worker';
 import { apiError } from '../errors.ts';
-import { catalogTitles, uploadTitle } from '../history/summaries.ts';
+import { catalogTitles, generatorLabel, uploadTitle } from '../history/summaries.ts';
 
 type Db = Kysely<Database>;
 
@@ -403,7 +403,7 @@ export class RoomService {
           seatsTotal: row.seats_total ?? 0,
           seatsTaken: row.seats_taken ?? 0,
           ...(settings.map?.kind === 'generated'
-            ? { mapTitle: settings.map.generator.generatorId }
+            ? { mapTitle: generatorLabel(settings.map.generator.generatorId) }
             : {}),
         };
       }),
@@ -869,8 +869,9 @@ export class RoomService {
       .select(['id', 'status', 'sim_version', 'host_account_id'])
       .where('code', '=', normalizeCode(code))
       .executeTakeFirst();
-    if (!found || found.status === 'closed') {
-      throw apiError('not_found', 'This invite has expired or does not exist.');
+    if (!found) throw apiError('not_found', 'This invite has expired or does not exist.');
+    if (found.status === 'closed') {
+      throw apiError('not_found', 'This room has closed. Ask the host for a new invite.');
     }
     if (found.sim_version !== simVersionKey(simVersion)) {
       throw apiError('update_required', 'This room is for another game version.', {
@@ -909,7 +910,7 @@ export class RoomService {
     await this.db.transaction().execute(async (trx) => {
       const room = await this.lock(trx, found.id);
       if (room.status === 'closed') {
-        throw apiError('not_found', 'This invite has expired or does not exist.');
+        throw apiError('not_found', 'This room has closed. Ask the host for a new invite.');
       }
       if (!already) {
         const count = await trx

@@ -43,6 +43,15 @@ function MapCard({ map }: { map: MapInfo }) {
   );
 }
 
+/**
+ * The browser game with this catalog version kept for the next room the player
+ * creates (browser/shell.html turns the query into --room-map).
+ */
+export function playMapUrl(mapId: string, hash: string, title: string): string {
+  const query = new URLSearchParams({ map: mapId, version: hash, title: title.slice(0, 128) });
+  return `/play/?${query.toString()}`;
+}
+
 const SORTS = [
   { id: 'recent', name: 'Newest' },
   { id: 'likes', name: 'Most liked' },
@@ -91,6 +100,7 @@ export function Maps({ mine }: { mine: boolean }) {
     setQuery(q.trim());
     setMore(0);
   };
+  const filtered = Boolean(query || teams || size || madeWith);
   return (
     <>
       <div className="page-head">
@@ -173,7 +183,24 @@ export function Maps({ mine }: { mine: boolean }) {
             {(data) =>
               data.items.length === 0 ? (
                 <Empty art="explorationFlag">
-                  {mine ? 'You have not shared any maps yet.' : 'No maps match.'}
+                  {filtered
+                    ? 'No maps match these filters.'
+                    : mine
+                      ? 'You have not shared any maps yet.'
+                      : 'No shared maps yet. Be the first to share one.'}
+                  {!filtered && (
+                    <p>
+                      {account ? (
+                        <Link className="btn primary" to="/maps/new">
+                          Upload a map
+                        </Link>
+                      ) : (
+                        <a className="btn" href="/signin">
+                          Sign in to upload a map
+                        </a>
+                      )}
+                    </p>
+                  )}
                 </Empty>
               ) : (
                 <>
@@ -444,9 +471,18 @@ export function MapPage({ id }: { id: string }) {
                 )}
                 <div className="toolbar" style={{ marginTop: 'var(--sp-4)' }}>
                   {v && v.validation === 'valid' && (
-                    <a className="btn primary" href={v.downloadUrl} download>
-                      Download
-                    </a>
+                    <>
+                      <a
+                        className="btn primary"
+                        href={playMapUrl(map.id, v.hash, map.title)}
+                        aria-describedby="play-map-note"
+                      >
+                        Play this map
+                      </a>
+                      <a className="btn" href={v.downloadUrl} download>
+                        Download
+                      </a>
+                    </>
                   )}
                   {account ? (
                     <>
@@ -473,6 +509,11 @@ export function MapPage({ id }: { id: string }) {
                     </button>
                   )}
                 </div>
+                {v && v.validation === 'valid' && (
+                  <p className="caption" id="play-map-note">
+                    Opens the game in your browser; the next room you create plays this map.
+                  </p>
+                )}
                 {error && <ErrorNotice error={error} />}
                 {reporting && !reported && (
                   <ReportForm

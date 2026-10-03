@@ -607,9 +607,15 @@ describe('room REST and the invite page', () => {
       await official.close();
     }
 
-    // A closed room's code is expired.
+    // A closed room's code no longer works, and the page says the room closed
+    // (not "expired or does not exist") with a way to start a game.
     await host.client.ok('room.leave', { roomId: room.id });
     await waitUntil(async () => (await fetch(`${a.url}/j/${room.code}`)).status === 404);
+    const closedHtml = await (await fetch(`${a.url}/j/${room.code}`)).text();
+    expect(closedHtml).toContain('<meta property="og:title" content="This room has closed"');
+    expect(closedHtml).toContain('room has closed, so this invite no longer works');
+    expect(closedHtml).not.toContain('expired or does not exist');
+    expect(closedHtml).toContain('Create your own room');
   });
 });
 
