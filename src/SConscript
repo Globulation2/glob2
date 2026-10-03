@@ -108,17 +108,17 @@ if env.get('wss', True):
     local.Alias('transport-test', http_test)
     platform_probe = local.Program('platform-client-probe', [
         'online/HttpFetch.cpp', 'online/HttpFetchCommon.cpp', 'online/InstanceConfig.cpp',
-        'online/MemoryStorage.cpp', 'online/PlatformClient.cpp', 'online/PlatformProtocol.cpp',
-        'net/NetTransport.cpp', 'net/WssTransport.cpp', 'net/NetworkConfig.cpp', 'net/LanIdentity.cpp',
-        local.Object('PlatformClientProbe.o', '#test/PlatformClientProbe.cpp')] + platform_trust_sources)
+        'online/SimVersion.cpp', 'online/Sha256.cpp', 'online/MemoryStorage.cpp', 'online/PlatformClient.cpp', 'online/PlatformProtocol.cpp',
+        'net/NetTransport.cpp', 'net/TcpTransport.cpp', 'net/WssTransport.cpp', 'net/NetworkConfig.cpp', 'net/LanIdentity.cpp',
+        local.Object('PlatformClientProbe.o', '#test/PlatformClientProbe.cpp')] + platform_trust_sources + ['../libgag/src/libgag.a'])
     local.Alias('transport-test', platform_probe)
     screens_probe = local.Program('online-screens-probe', [
         'online/HttpFetch.cpp', 'online/HttpFetchCommon.cpp', 'online/InstanceConfig.cpp',
         'online/MemoryStorage.cpp', 'online/PlatformClient.cpp', 'online/PlatformProtocol.cpp',
         'online/OnlineResources.cpp', 'online/QuickMatch.cpp', 'online/RelayProbe.cpp',
         'online/MapCatalog.cpp', 'online/SimVersion.cpp', 'online/Sha256.cpp',
-        'net/NetTransport.cpp', 'net/WssTransport.cpp', 'net/NetworkConfig.cpp', 'net/LanIdentity.cpp',
-        local.Object('OnlineScreensProbe.o', '#test/OnlineScreensProbe.cpp')] + platform_trust_sources)
+        'net/NetTransport.cpp', 'net/TcpTransport.cpp', 'net/WssTransport.cpp', 'net/NetworkConfig.cpp', 'net/LanIdentity.cpp',
+        local.Object('OnlineScreensProbe.o', '#test/OnlineScreensProbe.cpp')] + platform_trust_sources + ['../libgag/src/libgag.a'])
     local.Alias('online-screens-probe', screens_probe)
 
 local.Default(p1)

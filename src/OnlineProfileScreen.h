@@ -29,6 +29,7 @@ class PlatformScope;
 class OnlineProfileScreen : public Glob2UI::Screen
 {
   public:
+	const char *recordingId() const override { return "online_profile"; }
 	enum
 	{
 		BACK = 1

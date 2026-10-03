@@ -9,6 +9,7 @@
 class EditorMainMenu : public Glob2UI::Screen
 {
   public:
+	const char *recordingId() const override { return "editor_main_menu"; }
 	enum
 	{
 		NEWMAP = 1,

@@ -1,5 +1,11 @@
 [AI strategy]
 Strategia SI
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 Równoważy trwały wzrost i szkolenie, a następnie zbiera armie w fale.
 [AIMaxima-Profile]

@@ -1462,3 +1462,12 @@ the immutable copy and its lightweight in-memory representation; encoding includ
 final array/history packing, offset relocation and hashing. The benchmark flattens
 the finished output for section-independent measurement, so its process peak is
 not an isolated allocation bound for the production writer.
+
+## Gameplay recording
+
+The `GameplayRecording` unit suite checks lifecycle failures, output protection,
+and decoded callback audio bursts. `GameplayRecording.Integration` compares serial
+and threaded recordings against unrecorded per-tick baselines.
+Set `GLOB2_TEST_FFMPEG=ffmpeg` to also encode real video/audio and chapter fixtures.
+Run `python3 test/test_recording_tool.py` for manifest selection and extraction
+argument tests. See [gameplay recording](../docs/features/gameplay-recording.md).

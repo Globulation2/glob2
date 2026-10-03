@@ -19,6 +19,7 @@ class GameHeader;
 class InGameMainScreen : public Glob2UI::InGameDialog
 {
   public:
+	const char *recordingId() const override { return "in_game_main"; }
 	enum
 	{
 		LOAD_GAME = 0,
@@ -76,6 +77,7 @@ class InGameConfirmScreen : public Glob2UI::InGameDialog
 class InGameEndOfGameScreen : public Glob2UI::InGameDialog
 {
   public:
+	const char *recordingId() const override { return "in_game_end_of_game"; }
 	enum
 	{
 		QUIT = 0,
@@ -100,6 +102,7 @@ class InGameEndOfGameScreen : public Glob2UI::InGameDialog
 class InGameAllianceScreen : public Glob2UI::InGameDialog
 {
   public:
+	const char *recordingId() const override { return "in_game_alliance"; }
 	enum
 	{
 		OK = 0
@@ -157,6 +160,7 @@ class InGameAllianceScreen : public Glob2UI::InGameDialog
 class InGameOptionScreen : public Glob2UI::InGameDialog
 {
   public:
+	const char *recordingId() const override { return "in_game_option"; }
 	enum
 	{
 		OK = 0,
@@ -185,6 +189,7 @@ class InGameOptionScreen : public Glob2UI::InGameDialog
 class InGameTextInput : public Glob2UI::InGameDialog
 {
   public:
+	const char *recordingId() const override { return "in_game_text_input"; }
 	InGameTextInput();
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
 	std::string getText() const { return text; }
@@ -210,6 +215,7 @@ class InGameTextInput : public Glob2UI::InGameDialog
 class InGameObjectivesScreen : public Glob2UI::InGameDialog
 {
   public:
+	const char *recordingId() const override { return "in_game_objectives"; }
 	enum
 	{
 		OBJECTIVES = 1,

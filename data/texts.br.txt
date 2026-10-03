@@ -1,5 +1,11 @@
 [AI strategy]
 Estratégia IA
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 Equilibra crescimento sustentável e treinamento, depois reúne exércitos em ondas.
 [AIMaxima-Profile]

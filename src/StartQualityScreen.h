@@ -12,6 +12,7 @@
 class StartQualityScreen : public Glob2UI::Screen
 {
   public:
+	const char *recordingId() const override { return "start_quality"; }
 	enum
 	{
 		BACK = -2

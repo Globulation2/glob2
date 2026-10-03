@@ -8,6 +8,8 @@
 #include <sstream>
 #include <cerrno>
 #include <cstdlib>
+#include <charconv>
+#include <string_view>
 
 #include <Toolkit.h>
 
@@ -24,6 +26,7 @@
 #endif
 #include "Version.h"
 #include "MapCommand.h"
+#include <GameplayRecording.h>
 #include "OnlineServices.h"
 #include "OnlineHandoff.h"
 
@@ -45,6 +48,23 @@ namespace
 	// because they have their own bug entries (BH-096, BH-097) — see the
 	// per-helper notes — and fixing them is a behaviour change, out of scope
 	// for this cleanup. The genuinely one-off flags (-nox, -s) stay inline.
+
+	// New recording flags use a strict failure status without changing the
+	// historical missing-argument behavior of legacy options below.
+	const char *requireRecordingArg(int &i, int argc, char *argv[])
+	{
+		if (i + 1 < argc)
+			return argv[++i];
+		fprintf(stderr, "%s requires an argument\n", argv[i]);
+		exit(1);
+	}
+
+	bool recordingDimension(std::string_view text, int &dimension)
+	{
+		const auto result = std::from_chars(text.data(), text.data() + text.size(), dimension);
+		return result.ec == std::errc{} && result.ptr == text.data() + text.size() &&
+			   dimension >= 1 && dimension <= 16384;
+	}
 
 	// Consume and return the token after argv[i], advancing i past it. If no
 	// token follows, print `usageMessage` verbatim to stdout and exit(0). The
@@ -227,6 +247,46 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			videoshotName = requireStringArg(i, argc, argv,
 				"usage:\n-vs <videoshot name>");
 		}
+		else if (strcmp(argv[i], "--record") == 0)
+			recordingPath = requireRecordingArg(i, argc, argv);
+		else if (strcmp(argv[i], "--record-ffmpeg") == 0)
+			GAGCore::Recording::recorder().options.ffmpeg = requireRecordingArg(i, argc, argv);
+		else if (strcmp(argv[i], "--record-size") == 0)
+		{
+			const std::string_view value = requireRecordingArg(i, argc, argv);
+			auto &settings = GAGCore::Recording::recorder().options;
+			const auto separator = value.find('x');
+			if (separator == std::string_view::npos ||
+				!recordingDimension(value.substr(0, separator), settings.width) ||
+				!recordingDimension(value.substr(separator + 1), settings.height))
+			{
+				fprintf(stderr, "Invalid recording size\n");
+				exit(1);
+			}
+		}
+		else if (strcmp(argv[i], "--record-fps") == 0 || strcmp(argv[i], "--record-crf") == 0 ||
+				 strcmp(argv[i], "--record-chapter-ticks") == 0)
+		{
+			std::string flag = argv[i];
+			const char *value = requireRecordingArg(i, argc, argv);
+			char *end;
+			errno = 0;
+			long number = strtol(value, &end, 10);
+			long minimum = flag == "--record-crf" ? 0 : 1;
+			long maximum = flag == "--record-crf" ? 51 : flag == "--record-fps" ? 240 : 1000000000;
+			if (errno || end == value || *end || number < minimum || number > maximum)
+			{
+				fprintf(stderr, "Invalid %s\n", flag.c_str());
+				exit(1);
+			}
+			auto &settings = GAGCore::Recording::recorder().options;
+			if (flag == "--record-fps")
+				settings.fps = int(number);
+			else if (flag == "--record-crf")
+				settings.crf = int(number);
+			else
+				settings.chapterTicks = unsigned(number);
+		}
 		else if (strcmp(argv[i], "-textshot")==0)
 		{
 			GAGCore::DrawableSurface::translationPicturesDirectory =
@@ -403,7 +463,14 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("\t\t(pair with GLOB2_TEST_SEED for a reproducible scenario)\n");
 			printMapCommandHelp();
 			printf("-test-map-gen\tGenerates random maps endlessly, without gui\n");
-			printf("-vs <name>\tsave a videoshot as name\n");
+			printf("-vs <name>\trecord compressed footage to videoshots/<name>.mp4\n");
+			printf("--record <path.mp4>\trecord menus, gameplay, and results with automatic "
+				   "chapters\n");
+			printf("--record-fps <1..240>\toutput frame rate (default 60)\n");
+			printf("--record-size <WxH>\toutput canvas (default native framebuffer size)\n");
+			printf("--record-crf <0..51>\tH.264 quality (default 18)\n");
+			printf("--record-chapter-ticks <N>\tera length (default 10000)\n");
+			printf("--record-ffmpeg <path>\tFFmpeg executable (default PATH)\n");
 			printf("-replay <replay file name>\t replay the game stored in the specified file.\n");
 			printf("-version\tprint the version and exit\n");
 			exit(0);

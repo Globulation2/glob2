@@ -1,5 +1,11 @@
 [AI strategy]
 MI-stratégia
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 Egyensúlyozza a fenntartható növekedést és képzést, majd hullámokba gyűjti seregeit.
 [AIMaxima-Profile]

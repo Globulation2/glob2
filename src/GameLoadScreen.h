@@ -10,6 +10,7 @@ class Engine;
 class GameLoadScreen : public Glob2UI::Screen
 {
   public:
+	const char *recordingId() const override { return "game_load"; }
 	using Initializer = std::function<GAGCore::CooperativeTask(Engine &)>;
 	explicit GameLoadScreen(Initializer initialize,
 							GAGCore::CooperativeSlice slice = GAGCore::CooperativeSlice());

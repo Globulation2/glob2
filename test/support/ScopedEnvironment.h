@@ -47,7 +47,11 @@ private:
 		_putenv_s(name.c_str(), originalCRT ? originalCRT->c_str() : "");
 #endif
 		if (original)
-			GAGCore::setProcessEnvironment(name.c_str(), original->c_str(), 1);
+			{
+			// Preserve the independently captured CRT and process views.
+			SDL_setenv_unsafe(name.c_str(), original->c_str(), 1);
+			SDL_SetEnvironmentVariable(SDL_GetEnvironment(), name.c_str(), original->c_str(), true);
+		}
 		else
 		{
 #ifdef _WIN32

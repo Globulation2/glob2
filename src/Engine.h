@@ -297,7 +297,6 @@ private:
 		int nextGuiStep;      ///< Fast-forward draw countdown
 		Sint64 needToBeTime;  ///< Expected elapsed time for pacing, in ms
 		Uint64 startTime;
-		unsigned frameNumber;
 		bool wasReadyLastTick;
 		bool adjustableGameSpeed; ///< Speed presets apply; live network games stay at GAME_TICK_MS
 	};

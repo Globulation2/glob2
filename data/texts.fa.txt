@@ -1,5 +1,11 @@
 [AI strategy]
 راهبرد AI
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 رشد پایدار و آموزش را متعادل می‌کند، سپس ارتش را به شکل موج جمع می‌کند.
 [AIMaxima-Profile]
