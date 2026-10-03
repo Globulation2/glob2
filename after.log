@@ -1,0 +1,9 @@
+PASS GameGUITouch/a touch on or near a flag drags the flag; not the map [display] (1.0s)
+PASS GameGUITouch/touch scroll momentum on the map; the HUD palette and the editor [display] (1.0s)
+PASS GameGUITouch/scaled gameplay dialog input is translated once [display] (1.1s)
+PASS GameGUITouch/actual gameplay touch; toroidal pan; preview; confirmation; validation; cancellation and duplicate suppression [display][artifacts][writes-preferences] (14.9s)
+PASS UIPresentation/every screen lays out; navigates and captures at small landscape across presentations and insets [display:1600x1400][artifacts][slow] (38.9s)
+PASS UIPresentation/every screen lays out; navigates and captures at small portrait across presentations and insets [display:1600x1400][artifacts][slow] (43.4s)
+
+6 passed, 0 failed, 0 skipped (100.4s of test time)
+[run_tests] JUnit report: artifacts/inset-dialogs/evidence/after.xml (6 cases)
