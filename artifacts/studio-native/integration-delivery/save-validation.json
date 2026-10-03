@@ -1,0 +1,23 @@
+{
+  "valid": true,
+  "mapHash": "9c1da193ee6ed6463825e2d5a0f696212c906c19bccfb26ba0e1142ffcbbd647",
+  "map": {
+    "width": 64,
+    "height": 64,
+    "teamCount": 2
+  },
+  "versionMinor": 128,
+  "title": "balanced for 2",
+  "players": [
+    {
+      "name": "AI 1",
+      "team": 0,
+      "kind": "ai"
+    },
+    {
+      "name": "AI 2",
+      "team": 1,
+      "kind": "ai"
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "featureCommit": "544bceb2b565f5010d1aef7c6459e7592cecd325",
+  "foundationCommit": "bc8543f273228fe9dabcfac28a423e02453bb848",
+  "platform": {
+    "passed": 412,
+    "skipped": 0,
+    "files": 57,
+    "lint": "passed",
+    "typecheck": "passed"
+  },
+  "nativeDelivery": {
+    "initial": "passed",
+    "revision": "passed",
+    "transport": "Real leased HTTP API and worker result callback",
+    "workerRole": "glob2_worker",
+    "provider": "Deterministic identity reference-image fixture; no paid requests",
+    "credits": 2,
+    "private": true
+  },
+  "simVersion": {
+    "dataHash": "446492266f9626345c402729944b80382878290aaad6d649b9d46e56644ac5f4",
+    "netProtocol": 51,
+    "versionMinor": 128
+  },
+  "browser": {
+    "desktop": "passed",
+    "phone": "passed",
+    "axe": "passed"
+  },
+  "compose": "AI worker uses mounted worker-role credentials; no agent/relay key files",
+  "limitations": [
+    "Real provider quality and costs",
+    "Signed live Stripe payment flows",
+    "Container startup",
+    "Human multiplayer play and competitive balance"
+  ],
+  "nativeBuildSource": "70a644e4dd5f1e6ee40cdeb5143b4fbf8c709756",
+  "nativeBuildInputs": "Subsequent foundation changes affect web fixtures, runtime packaging and standalone probes; engine/map/library sources and simulation versions are unchanged.",
+  "nativeGeometry": {
+    "cases": 63,
+    "import": "passed",
+    "reload": "passed",
+    "log": "artifacts/merge-native-shapes.log"
+  }
+}

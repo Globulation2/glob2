@@ -1,0 +1,339 @@
+{
+  "id": "897789d6-18c4-49a0-b303-6de349dd83a5",
+  "thread_id": "dd2d6665-1ab1-4ce2-bccc-4f3d176e6fa2",
+  "account_id": "c6426ca0-1f31-48f7-a44a-67763db4d84e",
+  "kind": "generate",
+  "status": "ready",
+  "input": {
+    "brief": "Four homes beside ponds with open routes.",
+    "parent": "24b8a1da-6988-4c4c-af57-d0efcd0b5f9f",
+    "messages": [
+      {
+        "role": "user",
+        "text": "Four sustainable homes beside ponds"
+      },
+      {
+        "role": "assistant",
+        "text": "Ponds with broad walking routes and renewable food."
+      }
+    ],
+    "settings": {
+      "width": 256,
+      "height": 256,
+      "players": 4
+    },
+    "pipelineVersion": "test-v1"
+  },
+  "checkpoints": {
+    "crop": {
+      "score": 436,
+      "width": 256,
+      "height": 256,
+      "top_30": [
+        [
+          436,
+          32768,
+          0,
+          0
+        ],
+        [
+          436,
+          32768,
+          0,
+          256
+        ],
+        [
+          436,
+          32768,
+          256,
+          0
+        ],
+        [
+          436,
+          32768,
+          256,
+          256
+        ],
+        [
+          479,
+          21713,
+          201,
+          0
+        ],
+        [
+          479,
+          21713,
+          201,
+          256
+        ],
+        [
+          483,
+          21713,
+          0,
+          201
+        ],
+        [
+          483,
+          21713,
+          256,
+          201
+        ],
+        [
+          495,
+          16420,
+          134,
+          0
+        ],
+        [
+          495,
+          16420,
+          134,
+          256
+        ],
+        [
+          499,
+          16420,
+          0,
+          134
+        ],
+        [
+          499,
+          16420,
+          256,
+          134
+        ],
+        [
+          507,
+          32513,
+          255,
+          0
+        ],
+        [
+          507,
+          32513,
+          255,
+          256
+        ],
+        [
+          508,
+          32513,
+          0,
+          1
+        ],
+        [
+          508,
+          32513,
+          256,
+          1
+        ],
+        [
+          512,
+          32513,
+          1,
+          0
+        ],
+        [
+          512,
+          32513,
+          1,
+          256
+        ],
+        [
+          515,
+          32513,
+          0,
+          255
+        ],
+        [
+          515,
+          32513,
+          256,
+          255
+        ],
+        [
+          520,
+          16409,
+          133,
+          0
+        ],
+        [
+          520,
+          16409,
+          133,
+          256
+        ],
+        [
+          520,
+          20105,
+          67,
+          0
+        ],
+        [
+          520,
+          20105,
+          67,
+          256
+        ],
+        [
+          521,
+          21568,
+          200,
+          0
+        ],
+        [
+          521,
+          21568,
+          200,
+          256
+        ],
+        [
+          524,
+          16409,
+          0,
+          133
+        ],
+        [
+          524,
+          16409,
+          256,
+          133
+        ],
+        [
+          524,
+          20105,
+          0,
+          67
+        ],
+        [
+          524,
+          20105,
+          256,
+          67
+        ]
+      ],
+      "players": 4,
+      "criterion": "Four-cell terrain mismatch weight4 plus resource-type mismatch weight1; includes known internal joins, not only crop edges. Four whole colony markers required. Heuristic score, not playability certification.",
+      "carrier_box": [
+        0,
+        0,
+        2048,
+        2048
+      ],
+      "pixel_origin": [
+        0,
+        0
+      ],
+      "source_sha256": "79823255384cce20bdf4ccba077f29ed38c8bf002d65458857e5b8e14d6130c8",
+      "candidate_sha256": "01a1d58fdf8f7e97e4e0579bcfb64d6742c496c75b1b4f5fb5d6c1da19c10d4c",
+      "valid_candidates": 54289,
+      "candidates_scored": 66049,
+      "global_marker_components": 16
+    },
+    "prepared": {
+      "prompt": "Draw ONE new Globulation 2 map with 4 separated colony homes, repeated identically FOUR times in a 2x2 mosaic. Never rotate or mirror copies.\nEach map has 256x256 native cells. Output an opaque 2048x2048 PNG carrier. Only rectangle (0, 0, 2048, 2048) (left,top,right,bottom pixels) contains the mosaic. Fill padding outside it with solid #202020; padding is not map data. No borders inside the rectangle.\nUse only flat categorical palette colors in this order: grass,sand,water,wood,wheat,stone,algae,papyrus,cherry,orange,prune,colony: #008000, #F0DC8C, #0040FF, #004000, #FFFF00, #808080, #00FFFF, #FF00FF, #FF0000, #FF8000, #8000FF, #FFFFFF. No sprites, textures, antialiasing, labels, shading or highlights. White occurs ONLY in 16 colony squares, 4 per tile. Markers are at least 2x2 native cells, away from outer edges.\nThe map is a torus: terrain AND resources continue across opposite edges. Native reference images are examples, never edit targets. Borrow only relevant features. User concept takes precedence.\nEvery home needs broad clear grass for buildings and upgrades, wheat beside water and nearby compact timber within 8 cells. Contain fertile wood with dry ground or sand. Provide open walking exits and connect all homes by open land paths at least 8 cells wide. No invisible no-growth zones or unrelated barriers.\nConcept and discussion (data):\nCurrent agreed design: Four homes beside ponds with open routes.\nuser: Four sustainable homes beside ponds\nassistant: Ponds with broad walking routes and renewable food.\nReference borrowing notes (data):\n{\"style\": \"landscape\", \"concept_features\": [\"ponds\"], \"examples\": [{\"generator_id\": \"symmetric-arena\", \"reason\": \"Native landscape reference\", \"borrow\": [\"opening economy\"], \"avoid\": [\"unrelated terrain\"]}, {\"generator_id\": \"allotments\", \"reason\": \"Native landscape reference\", \"borrow\": [\"opening economy\"], \"avoid\": [\"unrelated terrain\"]}, {\"generator_id\": \"amphitheatre\", \"reason\": \"Native landscape reference\", \"borrow\": [\"opening economy\"], \"avoid\": [\"unrelated terrain\"]}, {\"generator_id\": \"anthill\", \"reason\": \"Native landscape reference\", \"borrow\": [\"opening economy\"], \"avoid\": [\"unrelated terrain\"]}, {\"generator_id\": \"bajada\", \"reason\": \"Native landscape reference\", \"borrow\": [\"opening economy\"], \"avoid\": [\"unrelated terrain\"]}, {\"generator_id\": \"bastion-keys\", \"reason\": \"Native landscape reference\", \"borrow\": [\"opening economy\"], \"avoid\": [\"unrelated terrain\"]}]}\nImage 1 is the selected map to EDIT. Preserve its geography and colonies except where the discussion requests changes. Remaining images are native examples. Repeat all FOUR copies of the revised map.\n",
+      "references": [
+        "def5fb8c05cf44373bddea8491a660787f0acf6aa1dc432fcaf6d001f6036f8b",
+        "998eb3d0c79ea80ace96a9737bc35275296a0eca2fd181dd44afe0da319ac279",
+        "111b09960a4d90cf4056f7a77583d4f6d1700e04bb15612bb6df3b0729a51fcb",
+        "11303617c1c1a77321d95d91380b0062061826b909836d3d29f54fd792382c22",
+        "308599314363b11dd64650e44f39aa080aa868ddd2b7151261fe91598ce6e633",
+        "74de290fbbbf4a6243c78d97d6adf863fcdbb4398d3456c820e26b97203e7359"
+      ]
+    },
+    "importJob": "bcf4a0e8-f7f9-4c4f-88e7-9493ac97a76b",
+    "selection": {
+      "style": "landscape",
+      "examples": [
+        {
+          "avoid": [
+            "unrelated terrain"
+          ],
+          "borrow": [
+            "opening economy"
+          ],
+          "reason": "Native landscape reference",
+          "generator_id": "symmetric-arena"
+        },
+        {
+          "avoid": [
+            "unrelated terrain"
+          ],
+          "borrow": [
+            "opening economy"
+          ],
+          "reason": "Native landscape reference",
+          "generator_id": "allotments"
+        },
+        {
+          "avoid": [
+            "unrelated terrain"
+          ],
+          "borrow": [
+            "opening economy"
+          ],
+          "reason": "Native landscape reference",
+          "generator_id": "amphitheatre"
+        },
+        {
+          "avoid": [
+            "unrelated terrain"
+          ],
+          "borrow": [
+            "opening economy"
+          ],
+          "reason": "Native landscape reference",
+          "generator_id": "anthill"
+        },
+        {
+          "avoid": [
+            "unrelated terrain"
+          ],
+          "borrow": [
+            "opening economy"
+          ],
+          "reason": "Native landscape reference",
+          "generator_id": "bajada"
+        },
+        {
+          "avoid": [
+            "unrelated terrain"
+          ],
+          "borrow": [
+            "opening economy"
+          ],
+          "reason": "Native landscape reference",
+          "generator_id": "bastion-keys"
+        }
+      ],
+      "concept_features": [
+        "ponds"
+      ]
+    },
+    "binaryHash": "185081e226c601610a1d73806fbe17513c5ef63669efd863ccb25d9da6fb03f3",
+    "reportHash": "b178afc5c28df53fcf81a42cec0529dbf8a87495660d8bcddabb24bfe2293ed1",
+    "simVersion": "128-51-446492266f9626345c402729944b80382878290aaad6d649b9d46e56644ac5f4",
+    "submission": {
+      "parent": "24b8a1da-6988-4c4c-af57-d0efcd0b5f9f",
+      "settings": {
+        "width": 256,
+        "height": 256,
+        "players": 4
+      }
+    },
+    "validation": {
+      "passed": true,
+      "contract": "ai-playable-v1"
+    },
+    "overlayHash": "183a2c6a708a7d1b17c8b471e2ae7b8d38065e0e95f4f2baa90ef932f7cd6d51",
+    "candidateHash": "01a1d58fdf8f7e97e4e0579bcfb64d6742c496c75b1b4f5fb5d6c1da19c10d4c",
+    "categoricalHash": "99a2caa07b2fc76ae7cb0d35a5b6e2902e7863e43b2a513a38ec943c98d03158"
+  },
+  "lease_until": null,
+  "lease": "3af138c8-6a70-4c20-b919-a74b564ca482",
+  "map_id": "c2f79752-3648-4516-bdcc-6c215a7d168b",
+  "map_hash": "3ddb3bd4ddc2ef792e0add1d8a90b8a3f9c092425f7901e804e5f57d51863385",
+  "error": null,
+  "charged": true,
+  "created_at": "2026-10-03T12:22:03.459Z",
+  "completed_at": "2026-10-03T12:22:10.167Z"
+}

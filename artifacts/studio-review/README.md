@@ -1,5 +1,7 @@
 # AI Map Studio review evidence
 
+Current integration is recorded in `integration-verification.json`, `artifacts/merge-native-check.log` (412 passed, no skips), `artifacts/merge-browser.log`, and `artifacts/studio-native/integration-delivery/`. Native delivery uses the rebuilt engine, real HTTP leases and worker-role result application. `artifacts/studio-native/integration-shapes/` repeats all 63 geometry cases against this engine. Current screenshots are in `artifacts/studio-web/integration/`. The original evidence below remains historical, tied to its recorded engine version.
+
 The feature source is on `codex/ai-map-studio`, stacked on the preserved Hive feature (#605). This branch keeps transient evidence separate from maintained documentation.
 
 - `artifacts/studio-review/verification.json`: checks, seeds, engine hash and qualification limits.
