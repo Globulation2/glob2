@@ -912,9 +912,9 @@ class GameGUITouchHarness
 			auto about = [](double a, double b) { return std::abs(a - b) < 0.5; };
 			for (int side : {int(Settings::THUMB_RIGHT), int(Settings::THUMB_LEFT)})
 			{
-				// The palette is a rail rising from the thumb corner, in both orientations.
+				// Toolboxes rise from the corner opposite the thumb, in both orientations.
 				globalContainer->settings.thumbSide = side;
-				const bool left = side == Settings::THUMB_LEFT;
+				const bool left = side == Settings::THUMB_RIGHT;
 				gui.displayMode = GameGUI::FLAG_VIEW;
 				gui.touch->panelOpen = true;
 				gui.touch->panelScroll = 0;
@@ -934,14 +934,14 @@ class GameGUITouchHarness
 				require(about(ui.panel.y + ui.panel.h, ui.actions.y), "The rail rises from the toolbar");
 				require(about(left ? ui.panel.x - ui.safe.x : ui.safe.x + ui.safe.w - ui.panel.x - ui.panel.w,
 							 InGameTouchTheme::railInset * unit),
-						"The rail hugs the thumb-side edge, clear of the back-gesture strip");
+						"The rail hugs the opposite edge, clear of the back-gesture strip");
 				require(about(firstFlag.y + firstFlag.h + gap, content.y + content.h) &&
 							about(left ? firstFlag.x - gap : firstFlag.x + firstFlag.w + gap,
 								 left ? content.x : content.x + content.w),
-						"The first choice sits nearest the thumb corner");
+						"The first choice sits nearest the toolbox corner");
 				const auto mini = gui.touch->minimapRect();
 				require(ui.panel.y >= mini.y + mini.h - 0.5, "The rail leaves the minimap visible");
-				require((gui.touch->confirmRect().x > gui.touch->cancelRect().x) == !left,
+				require((gui.touch->confirmRect().x > gui.touch->cancelRect().x) == left,
 						"Placement OK follows the thumb side");
 				gui.displayMode = GameGUI::CONSTRUCTION_VIEW;
 				gui.touch->panelScroll = 0;
@@ -952,7 +952,7 @@ class GameGUITouchHarness
 				const auto b0 = gui.touch->paletteItemRect(0), b1 = gui.touch->paletteItemRect(1),
 						   above = gui.touch->paletteItemRect(columns);
 				require(b1.y == b0.y && (left ? b1.x > b0.x : b1.x < b0.x),
-						"The second choice sits beside the first, away from the thumb");
+						"The second choice sits beside the first, toward the screen centre");
 				require(above.x == b0.x && above.y < b0.y, "Later rows rise above the first");
 				gui.touch->prepareDraw();
 				const int updates = gui.touch->gestureExclusionUpdates;
@@ -962,12 +962,31 @@ class GameGUITouchHarness
 							about(gui.touch->gestureExclusion[0].x, ui.panel.x) &&
 							about(gui.touch->gestureExclusion[0].h, ui.panel.h),
 						"The rail is excluded from system edge gestures, synchronised only on change");
-				if (left)
-				{
+				const std::string suffix = std::string(side == Settings::THUMB_RIGHT ? "right-thumb-" : "left-thumb-") +
+					(portrait ? "portrait.bmp" : "landscape.bmp");
+				auto capture = [&](const char *kind) {
 					gui.drawAll(0);
-					gfx->printScreen(portrait ? "touch-build-left-portrait.bmp" : "touch-build-left-landscape.bmp");
+					gfx->printScreen((std::string("opposite-") + kind + "-" + suffix).c_str());
 					gfx->nextFrame();
-				}
+				};
+				capture("build");
+				gui.displayMode = GameGUI::FLAG_VIEW;
+				capture("flags");
+				gui.setSelection(GameGUI::BRUSH_SELECTION);
+				const auto rail = gui.touch->brushHUD().rail;
+				require(about(left ? rail.x - ui.safe.x : ui.safe.x + ui.safe.w - rail.x - rail.w,
+					InGameTouchTheme::railInset * unit), "The zone toolbox sits opposite either thumb");
+				capture("zones");
+				gui.clearSelection();
+				gui.displayMode = GameGUI::STAT_TEXT_VIEW;
+				gui.touch->lensOpen = true;
+				const auto lens = gui.touch->lensRects(gui.touch->layout()).front();
+				require(about(left ? lens.x - ui.safe.x : ui.safe.x + ui.safe.w - lens.x - lens.w,
+					InGameTouchTheme::railInset * unit), "The tools toolbox sits opposite either thumb");
+				capture("tools");
+				gui.touch->lensOpen = false;
+				gui.displayMode = GameGUI::CONSTRUCTION_VIEW;
+				gui.touch->panelOpen = true;
 			}
 			globalContainer->settings.thumbSide = Settings::THUMB_RIGHT;
 			{
@@ -1243,7 +1262,7 @@ class GameGUITouchHarness
 				const auto ui = gui.touch->layout();
 				require(rail.rail.x + rail.rail.w <= ui.safe.x + ui.safe.w && rail.rail.y + rail.rail.h <= ui.actions.y &&
 							rail.rail.y >= gui.touch->minimapRect().y + gui.touch->minimapRect().h,
-						"The rail sits on the thumb edge between the minimap and the toolbar");
+						"The rail sits opposite the thumb between the minimap and the toolbar");
 				auto p = centre(rail.detents[7]);
 				tap(p.x, p.y);
 				require(gui.brush.getFigure() == 7, "Tapping a rail size selects it");
@@ -1282,9 +1301,9 @@ class GameGUITouchHarness
 				// A stroke held at a map edge pans and keeps painting.
 				gui.brush.setFigure(0);
 				const auto area = gui.touch->worldBounds();
-				const GAGCore::ViewPoint edge{area.x + 6 * unit, area.y + area.h / 2};
+				const GAGCore::ViewPoint edge{area.x + area.w - 6 * unit, area.y + area.h / 2};
 				require(gui.touch->interfaceRegion(edge) == 0, "Edge fixture must be on the map");
-				finger(SDL_EVENT_FINGER_DOWN, 1, edge.x + 30 * unit, edge.y);
+				finger(SDL_EVENT_FINGER_DOWN, 1, edge.x - 30 * unit, edge.y);
 				finger(SDL_EVENT_FINGER_MOTION, 1, edge.x, edge.y);
 				require(bool(gui.touch->strokeHold), "A painting contact is held for edge panning");
 				const int beforeEdge = gui.viewportX;
@@ -1406,8 +1425,8 @@ class GameGUITouchHarness
 								r.y >= mini.y + mini.h,
 							"Lenses sit between the minimap and the toolbar");
 				require(std::abs(rects[0].y + rects[0].h - (ui.actions.y - 8 * unit)) < 1 &&
-							rects[0].x + rects[0].w > ui.safe.x + ui.safe.w - 24 * unit,
-						"The first lens sits in the thumb corner");
+							rects[0].x < ui.safe.x + 24 * unit,
+						"The first lens sits opposite the thumb corner");
 				const auto checksum = gui.game.checkSum();
 				bool *flags[] = {&gui.showStarvingMap, &gui.showDamagedMap, &gui.showDefenseMap, &gui.showFertilityMap};
 				for (int k = 0; k < 4; ++k)
@@ -2929,6 +2948,12 @@ class GameGUITouchHarness
 			finger(SDL_EVENT_FINGER_UP, 1, start.x, start.y + 2 * tile);
 			settle();
 
+			// Spectators never carry flags: their drag pans the map.
+			globalContainer->liveSpectating = true;
+			require(!gui.touch->grabbableFlag(centre()), "A spectator cannot grab a flag");
+			globalContainer->liveSpectating = false;
+			require(gui.touch->grabbableFlag(centre()) == flag, "The player can grab the flag");
+
 			// Held at the map's edge, the carried flag pans the map and rides along.
 			start = centre();
 			const GAGCore::ViewPoint edge{area.x + 6 * unit, start.y};
@@ -2949,11 +2974,6 @@ class GameGUITouchHarness
 					"The flag lands where the edge pan took it");
 			settle();
 
-			// Spectators never carry flags: their drag pans the map.
-			globalContainer->liveSpectating = true;
-			require(!gui.touch->grabbableFlag(centre()), "A spectator cannot grab a flag");
-			globalContainer->liveSpectating = false;
-			require(gui.touch->grabbableFlag(centre()) == flag, "The player can grab the flag");
 			gui.localTeam->virtualBuildings.remove(flag);
 			gui.localTeam->myBuildings[Building::GIDtoID(flag->gid)] = nullptr;
 			delete flag;
