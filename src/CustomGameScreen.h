@@ -16,6 +16,9 @@ class LobbyMapPreview;
 // A titled list of choices with a description for the selected one (AI profiles).
 class CustomGameChoiceScreen : public Glob2UI::Screen
 {
+  public:
+    const char* recordingId() const override { return "custom_game_choice"; }
+
 	friend struct CustomGameSetupHarness;
 	std::string title;
 	std::vector<std::string> choices;
@@ -36,6 +39,7 @@ class CustomGameChoiceScreen : public Glob2UI::Screen
 class CustomGameScreen : public Glob2UI::Screen
 {
   public:
+    const char* recordingId() const override { return "custom_game"; }
 	enum
 	{
 		OK = 1,

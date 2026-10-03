@@ -9,6 +9,7 @@
 class CreditScreen : public Glob2UI::Screen
 {
   public:
+    const char* recordingId() const override { return "credit"; }
 	CreditScreen();
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
 	void onTimer(Uint32 tick) override;

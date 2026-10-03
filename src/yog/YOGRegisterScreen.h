@@ -6,6 +6,7 @@
 class YOGRegisterScreen : public YOGConnectionScreen
 {
   public:
+    const char* recordingId() const override { return "yogregister"; }
 	///Construct with the given YOG client, which should not yet be connected.
 	explicit YOGRegisterScreen(std::shared_ptr<YOGClient> client);
 	~YOGRegisterScreen() override;

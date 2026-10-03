@@ -89,7 +89,8 @@ public:
 #endif  // !YOG_SERVER_ONLY
 	ResourcesTypes resourcesTypes;
 
-	std::string videoshotName; //!< the name of videoshot to record. If empty, do not record videoshot
+	std::string videoshotName; //!< Legacy -vs shorthand for compressed capture.
+    std::string recordingPath;
 	bool runNoX;
 	bool structuredHeadless = false;
 	bool headlessReplay = false;

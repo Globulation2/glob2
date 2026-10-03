@@ -9,6 +9,7 @@
 class CustomGameOtherOptions : public Glob2UI::Screen
 {
   public:
+    const char* recordingId() const override { return "custom_game_other_options"; }
 	/// Constructor, edits the given game header and map header
 	CustomGameOtherOptions(GameHeader &gameHeader, MapHeader &mapHeader, bool readOnly);
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;

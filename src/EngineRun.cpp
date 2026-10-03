@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <GameplayRecording.h>
 #include <PerformanceTelemetry.h>
 #include <EventQueue.h>
 #include <ApplicationHost.h>
@@ -273,9 +274,12 @@ void Engine::executeOrdersAndStep(bool readyNow)
 void Engine::drawFrame(MainLoopState& st)
 {
     GAGCore::ApplicationHost::matchFrame(gui.gamePaused);
+    // Match the chapter to the immutable scene actually presented by this client.
+    GAGCore::Recording::recorder().matchFrame(scene->tick, gui.gamePaused || gui.hardPause, int(scene->tickInterval));
 	const bool renderedFrame = st.nextGuiStep == 0;
 	if (renderedFrame)
 	{
+        GAGCore::Recording::recorder().matchFrame(gui.game.stepCounter, gui.gamePaused || gui.hardPause, st.speed);
 		gui.drawAll(gui.localTeamNo);
 		{
 			PERF_SCOPE_TIME(Present);
@@ -284,21 +288,6 @@ void Engine::drawFrame(MainLoopState& st)
 		PerformanceTelemetry::collector().presented();
 	}
 
-	if (renderedFrame)
-		saveVideoshot(st);
-}
-
-void Engine::saveVideoshot(MainLoopState& st)
-{
-	// if required, save videoshot
-	if (!(globalContainer->videoshotName.empty()) &&
-		!(globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)
-		)
-	{
-		FormattableString fileName = FormattableString("videoshots/%0.%1.bmp").arg(globalContainer->videoshotName).arg(st.frameNumber++, 10, 10, '0');
-		printf("printing video shot %s\n", fileName.c_str());
-		globalContainer->gfx->printScreen(fileName.c_str());
-	}
 }
 
 void Engine::drawSession()
@@ -316,13 +305,15 @@ void Engine::drawSession()
         return;
     gui.setPublishedScene(scene);
     GAGCore::ApplicationHost::matchFrame(gui.gamePaused);
+    // Match the chapter to the immutable scene actually presented by this client.
+    GAGCore::Recording::recorder().matchFrame(scene->tick, gui.gamePaused || gui.hardPause, int(scene->tickInterval));
     gui.drawAll(gui.localTeamNo);
     {
         PERF_SCOPE_TIME(Present);
         globalContainer->gfx->nextFrame();
     }
     PerformanceTelemetry::collector().presented();
-    saveVideoshot(*session);
+
 }
 
 bool Engine::startSimulationThread(Uint64 now)
@@ -730,6 +721,9 @@ void Engine::beginSession(Uint64 now)
     session = st;
     randomRequirement.emplace();
     automaticGameStartTick = now;
+    if (!globalContainer->runNoX)
+        GAGCore::Recording::recorder().beginMatch(globalContainer->replaying ? "replay" : (multiplayer ? "multiplayer" : "single_player"),
+            gui.game.mapHeader.getMapName(), gui.localTeamNo, gui.game.stepCounter);
 	auto &perf = PerformanceTelemetry::collector();
 	if (!perf.enabled && !perf.started)
 		perf.reset();

@@ -24,6 +24,7 @@ class ScreenStack;
 class MultiplayerGameScreen : public SessionTab, public YOGClientChatListener, public MultiplayerGameEventListener
 {
   public:
+    const char* recordingId() const override { return "multiplayer_game"; }
 	MultiplayerGameScreen(GAGGUI::ScreenStack &screens, std::shared_ptr<MultiplayerGame> game, std::shared_ptr<YOGClient> client,
 						  std::shared_ptr<IRCTextMessageHandler> ircChat = std::shared_ptr<IRCTextMessageHandler>());
 	~MultiplayerGameScreen() override;

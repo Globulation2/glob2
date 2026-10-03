@@ -1,5 +1,11 @@
 [AI strategy]
 AI 전략
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 지속 가능한 성장과 훈련의 균형을 맞춘 뒤 군대를 모아 파상 공격합니다.
 [AIMaxima-Profile]

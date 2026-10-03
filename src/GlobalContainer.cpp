@@ -2,6 +2,9 @@
 // Copyright (C) 2001-2007 Stephane Magnenat & Luc-Olivier de Charrière
 
 
+#ifndef YOG_SERVER_ONLY
+#include <GameplayRecording.h>
+#endif
 #include <Toolkit.h>
 #include <GAG.h>
 #include <GUIBase.h>
@@ -111,6 +114,7 @@ GlobalContainer::GlobalContainer(const char *profileName)
 GlobalContainer::~GlobalContainer(void)
 {
 #ifndef YOG_SERVER_ONLY
+    GAGCore::Recording::recorder().shutdown();
 	// unlink GUI style
 	if (!runNoX)
 		delete Style::style;

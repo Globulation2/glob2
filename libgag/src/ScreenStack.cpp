@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <GameplayRecording.h>
 #include <ScreenStack.h>
 #include <BrowserTextInput.h>
 #include <ApplicationHost.h>
@@ -173,7 +174,10 @@ void ScreenStack::frame(Uint32 tick, const std::vector<SDL_Event> &events)
 	// Constructing a child can change presentation immediately. Keep the last
 	// completed frame until the child is admitted at the next boundary.
 	if (!stopped && pending.empty() && screen.isExecutionRunning())
+    {
+        GAGCore::Recording::recorder().screen(screen.recordingId());
 		screen.drawExecution();
+    }
 	if (stopped)
 		boundary();
 }

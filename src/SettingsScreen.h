@@ -16,6 +16,7 @@
 class SettingsScreen : public Glob2UI::Screen
 {
   public:
+    const char* recordingId() const override { return "settings"; }
 	enum class Category
 	{
 		Display,

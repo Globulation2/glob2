@@ -15,6 +15,7 @@ class ScreenStack;
 class LANSessionScreen : public Glob2UI::Screen
 {
   public:
+    const char* recordingId() const override { return "lansession"; }
 	LANSessionScreen(GAGGUI::ScreenStack &screens, std::shared_ptr<YOGClient> client,
 					 std::string username, std::optional<MapHeader> hostedMap = {});
 	~LANSessionScreen() override;

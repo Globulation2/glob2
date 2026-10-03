@@ -18,6 +18,7 @@ class MapScriptSGSL;
 class ScriptEditorScreen : public Glob2UI::InGameDialog
 {
   public:
+    const char* recordingId() const override { return "script_editor"; }
 	enum
 	{
 		OK = 0,

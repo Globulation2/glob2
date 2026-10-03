@@ -653,6 +653,8 @@ SERVER_SOURCES = (
 )
 
 GAG_SOURCES = (
+    'GameplayRecording.cpp',
+    'RecordingProcess.cpp',
     'PerformanceTelemetry.cpp',
     'BackgroundFileWriter.cpp',
     'RenderBackend.cpp',

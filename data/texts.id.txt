@@ -1,5 +1,11 @@
 [AI strategy]
 Strategi AI
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 Menyeimbangkan pertumbuhan berkelanjutan dan pelatihan, lalu mengumpulkan tentara dalam gelombang.
 [AIMaxima-Profile]

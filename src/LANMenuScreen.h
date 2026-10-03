@@ -12,6 +12,7 @@ class ScreenStack;
 class LANMenuScreen : public Glob2UI::Screen
 {
   public:
+    const char* recordingId() const override { return "lanmenu"; }
 	explicit LANMenuScreen(GAGGUI::ScreenStack &screens);
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
 

@@ -1,5 +1,11 @@
 [AI strategy]
 Стратегија ВИ
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 Уравнотежује одржив раст и обуку, а затим окупља војске у таласе.
 [AIMaxima-Profile]

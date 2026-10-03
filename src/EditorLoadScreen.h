@@ -9,6 +9,7 @@ class MapEdit;
 class EditorLoadScreen : public Glob2UI::Screen
 {
   public:
+    const char* recordingId() const override { return "editor_load"; }
 	explicit EditorLoadScreen(const std::string &filename,
 							  GAGCore::CooperativeSlice slice = GAGCore::CooperativeSlice());
 	~EditorLoadScreen() override;

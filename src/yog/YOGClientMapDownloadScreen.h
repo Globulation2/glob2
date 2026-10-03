@@ -19,6 +19,7 @@ class YOGDownloadableMapInfo;
 class YOGClientMapDownloadScreen : public SessionTab, public YOGClientDownloadableMapListener
 {
   public:
+    const char* recordingId() const override { return "yogclient_map_download"; }
 	YOGClientMapDownloadScreen(GAGGUI::ScreenStack &screens, std::shared_ptr<YOGClient> client);
 	~YOGClientMapDownloadScreen() override;
 	std::string title() const override;

@@ -25,6 +25,7 @@
 #include "Version.h"
 #ifndef YOG_SERVER_ONLY
 #include "MapCommand.h"
+#include <GameplayRecording.h>
 #endif
 
 namespace
@@ -243,6 +244,30 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			videoshotName = requireStringArg(i, argc, argv,
 				"usage:\n-vs <videoshot name>");
 		}
+        else if (strcmp(argv[i], "--record") == 0)
+            recordingPath = requireStringArg(i, argc, argv, "--record <path.mp4> requires an argument\n");
+        else if (strcmp(argv[i], "--record-ffmpeg") == 0)
+            GAGCore::Recording::recorder().options.ffmpeg = requireStringArg(i, argc, argv, "--record-ffmpeg <path> requires an argument\n");
+        else if (strcmp(argv[i], "--record-size") == 0) {
+            const auto value = requireStringArg(i, argc, argv, "--record-size <WxH> requires an argument\n");
+            auto& settings = GAGCore::Recording::recorder().options;
+            char extra;
+            if (sscanf(value, "%dx%d%c", &settings.width, &settings.height, &extra) != 2 || settings.width < 1 || settings.height < 1 || settings.width > 16384 || settings.height > 16384) {
+                fprintf(stderr, "Invalid recording size\n"); exit(1);
+            }
+        }
+        else if (strcmp(argv[i], "--record-fps") == 0 || strcmp(argv[i], "--record-crf") == 0 || strcmp(argv[i], "--record-chapter-ticks") == 0) {
+            std::string flag = argv[i];
+            const char* value = requireStringArg(i, argc, argv, "Recording option requires an integer\n");
+            char* end; errno = 0; long number = strtol(value, &end, 10);
+            long minimum = flag == "--record-crf" ? 0 : 1;
+            long maximum = flag == "--record-crf" ? 51 : flag == "--record-fps" ? 240 : 1000000000;
+            if (errno || end == value || *end || number < minimum || number > maximum) { fprintf(stderr, "Invalid %s\n", flag.c_str()); exit(1); }
+            auto& settings = GAGCore::Recording::recorder().options;
+            if (flag == "--record-fps") settings.fps = int(number);
+            else if (flag == "--record-crf") settings.crf = int(number);
+            else settings.chapterTicks = unsigned(number);
+        }
 		else if (strcmp(argv[i], "-textshot")==0)
 		{
 			GAGCore::DrawableSurface::translationPicturesDirectory =
@@ -422,7 +447,13 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 #ifndef GLOB2_CHINA_RELEASE
 			printf("-admin-router Allows you to connect to a YOG router to do administration\n");
 #endif
-			printf("-vs <name>\tsave a videoshot as name\n");
+			printf("-vs <name>\trecord compressed footage to videoshots/<name>.mp4\n");
+            printf("--record <path.mp4>\trecord menus, gameplay, and results with automatic chapters\n");
+            printf("--record-fps <1..240>\toutput frame rate (default 60)\n");
+            printf("--record-size <WxH>\toutput canvas (default native framebuffer size)\n");
+            printf("--record-crf <0..51>\tH.264 quality (default 18)\n");
+            printf("--record-chapter-ticks <N>\tera length (default 10000)\n");
+            printf("--record-ffmpeg <path>\tFFmpeg executable (default PATH)\n");
 			printf("-replay <replay file name>\t replay the game stored in the specified file.\n");
 #endif  // !YOG_SERVER_ONLY
 			printf("-version\tprint the version and exit\n");

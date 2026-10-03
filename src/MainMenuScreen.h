@@ -7,6 +7,7 @@
 class MainMenuScreen : public Glob2UI::Screen
 {
   public:
+    const char* recordingId() const override { return "main_menu"; }
 	enum
 	{
 		CAMPAIGN,

@@ -1,5 +1,11 @@
 [AI strategy]
 Tekoälytaktiikka
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 Tasapainottaa kestävän kasvun ja koulutuksen ja kokoaa sitten armeijat aalloiksi.
 [AIMaxima-Profile]

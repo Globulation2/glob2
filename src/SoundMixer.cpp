@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <GameplayRecording.h>
 #include "SoundMixer.h"
 #include "Order.h"
 #include <Toolkit.h>
@@ -273,6 +274,7 @@ static void SDLCALL streamAudio(void *userdata, SDL_AudioStream *stream, int add
             std::fill(buffer.begin(), buffer.begin() + aligned, 0);
         else
             mixaudio(mixer, buffer.data(), aligned);
+        GAGCore::Recording::recorder().audio(reinterpret_cast<const std::int16_t*>(buffer.data()), unsigned(aligned) / 2);
         if (!SDL_PutAudioStreamData(stream, buffer.data(), aligned)) return;
         additional -= aligned;
     }
@@ -280,6 +282,8 @@ static void SDLCALL streamAudio(void *userdata, SDL_AudioStream *stream, int add
 
 void SoundMixer::openAudio(void)
 {
+    // Initialize recording callback storage before the audio device starts.
+    GAGCore::Recording::recorder();
     const SDL_AudioSpec spec{SDL_AUDIO_S16, 2, 44100};
     audioStream = SDL_OpenAudioDeviceStream(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &spec, streamAudio, this);
     soundEnabled = audioStream != nullptr;

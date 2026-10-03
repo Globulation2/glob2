@@ -105,7 +105,19 @@ Run only as a YOG game host text-based server.
 .IP "\fB-nox \fIgame_file\fP\fP         " 20
 Run the game without using the X server.
 .IP "\fB-vs \fIname\fP\fP         " 20
-Save a videoshot as name.
+Record compressed MP4 footage with automatic chapters as videoshots/name.mp4 (requires FFmpeg).
+.IP "\fB--record \fIpath.mp4\fP\fP         " 20
+Record menus, gameplay and results to the specified MP4 path. Existing files are not overwritten.
+.IP "\fB--record-fps \fI1..240\fP\fP         " 20
+Set the constant output frame rate (default 60).
+.IP "\fB--record-size \fIWxH\fP\fP         " 20
+Set a fixed recording canvas (default native framebuffer dimensions).
+.IP "\fB--record-crf \fI0..51\fP\fP         " 20
+Set H.264 quality (default 18; lower values retain more detail).
+.IP "\fB--record-chapter-ticks \fIN\fP\fP         " 20
+Set the number of simulation ticks per gameplay chapter (default 10000).
+.IP "\fB--record-ffmpeg \fIpath\fP\fP         " 20
+Select the FFmpeg executable (default ffmpeg on PATH). It must provide libx264 and AAC encoders.
 .IP "\fB-version\fP         " 20
 Print the version and exit.
 .SH "AUTHOR"

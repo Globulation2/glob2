@@ -5,6 +5,9 @@
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>
 #endif
+#ifndef YOG_SERVER_ONLY
+#include <GameplayRecording.h>
+#endif
 
 #ifdef __APPLE__
 #	include <CoreFoundation/CoreFoundation.h>
@@ -410,6 +413,18 @@ int Glob2::run(int argc, char *argv[])
 	globalContainer=new GlobalContainer();
 	globalContainer->parseArgs(argc, argv);
 	globalContainer->load();
+#ifndef YOG_SERVER_ONLY
+    if (!globalContainer->recordingPath.empty() || !globalContainer->videoshotName.empty()) {
+        if (globalContainer->runNoX) { fprintf(stderr, "Video recording requires a rendered session\n"); delete globalContainer; return 1; }
+        auto path = globalContainer->recordingPath;
+        if (path.empty()) {
+            const auto& name = globalContainer->videoshotName;
+            if (name == "." || name == ".." || name.find_first_of("/\\") != std::string::npos) { fprintf(stderr, "-vs requires a bare recording name\n"); delete globalContainer; return 1; }
+            path = globalContainer->fileManager->getDir(0) + "/videoshots/" + name + ".mp4";
+        }
+        if (!GAGCore::Recording::recorder().start(path)) { delete globalContainer; return 1; }
+    }
+#endif
 #ifdef GLOB2_CHINA_RELEASE
 	if (globalContainer->hostServer || globalContainer->hostRouter || globalContainer->adminRouter)
 	{

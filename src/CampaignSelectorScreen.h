@@ -9,6 +9,7 @@
 class CampaignSelectorScreen : public Glob2UI::Screen
 {
   public:
+    const char* recordingId() const override { return "campaign_selector"; }
 	explicit CampaignSelectorScreen(bool isSelectingSave = false);
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
 	std::string getCampaignName() const;

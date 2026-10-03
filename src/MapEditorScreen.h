@@ -10,6 +10,7 @@ class MapEdit;
 class MapEditorScreen : public GAGGUI::Screen
 {
   public:
+    const char* recordingId() const override { return "map_editor"; }
 	MapEditorScreen(GAGGUI::ScreenStack &screens, std::unique_ptr<MapEdit> editor);
 	~MapEditorScreen() override;
 	void updateExecution(Uint32 tick) override;

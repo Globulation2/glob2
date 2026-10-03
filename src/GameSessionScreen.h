@@ -14,6 +14,7 @@ class Engine;
 class GameSessionScreen : public GAGGUI::Screen
 {
   public:
+    const char* recordingId() const override { return "game_session"; }
 	GameSessionScreen(GAGGUI::ScreenStack &stack, std::unique_ptr<Engine> engine);
 	~GameSessionScreen() override;
 	void updateExecution(Uint32 tick) override;

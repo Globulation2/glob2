@@ -15,6 +15,7 @@ class SessionTab
 {
   public:
 	virtual ~SessionTab() = default;
+    virtual const char* recordingId() const { return "session_tab"; }
 	virtual std::string title() const = 0;
 	virtual Glob2UI::Element build(const Glob2UI::Presentation &presentation) = 0;
 	virtual void onTimer(Uint32) {}
@@ -40,6 +41,7 @@ class SessionTab
 class SessionTabsScreen : public Glob2UI::Screen
 {
   public:
+    const char* recordingId() const override { return active ? active->recordingId() : "session_tabs"; }
 	SessionTabsScreen();
 	~SessionTabsScreen() override;
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;

@@ -427,6 +427,7 @@ namespace GAGCore
 		} frameCache;
 		void reportFrameCacheFailure(const char *reason);
 		void releaseFrameCache();
+		void captureRecordingFrame();
 		void cacheFrame();
         std::unique_ptr<SoftwareFramePresenter> softwarePresenter;
         void prepareDraw() override;

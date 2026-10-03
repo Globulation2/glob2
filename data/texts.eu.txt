@@ -1,5 +1,11 @@
 [AI strategy]
 AAren taktika
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 Hazkunde iraunkorra eta entrenamendua orekatzen ditu, eta gero armadak olatuetan biltzen ditu.
 [AIMaxima-Profile]

@@ -3,6 +3,7 @@
 // Copyright (C) 2006 Bradley Arsenault
 
 #include "EndGameScreen.h"
+#include "ui/RecordingControls.h"
 #include "TeamStatChart.h"
 #include "GlobalContainer.h"
 #include "ReplayWriter.h"
@@ -128,6 +129,7 @@ void EndGameScreen::selectMetric(int metric)
 {
 	if (metric < 0 || metric >= 36)
 		return;
+	GAGCore::Recording::recorder().event("statistics_metric", std::to_string(metric));
 	selectedMetric = metric;
 	sortAndSet(metric);
 	invalidate();
@@ -261,6 +263,7 @@ Element EndGameScreen::build(const Presentation &p)
 	if (save)
 		actions.push_back({"save-replay", fe::tr("[save replay]"), [this] { saveReplay("replays", "replay"); }});
 	actions.push_back({"quit", fe::tr("[quit]"), [this] { endExecute(QUIT); }, true, SDLK_RETURN});
+	if (GAGCore::Recording::supported()) parts.push_back(fe::recordingControls());
 	parts.push_back(fe::actions(std::move(actions), p));
 	return fe::column(std::move(parts), {p.pt(8)});
 }

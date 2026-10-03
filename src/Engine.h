@@ -262,7 +262,6 @@ private:
 	void executeOrdersAndStep(bool readyNow);
 
 	void drawFrame(MainLoopState& st);
-	void saveVideoshot(MainLoopState& st);
 	void configureSessionTelemetry(MainLoopState& st, PerformanceTelemetry::Collector& perf);
 	//! Threaded: fold the simulation thread's measurements into the session collector
 	//! (called with the simulation parked).
