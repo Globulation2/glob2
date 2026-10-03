@@ -92,22 +92,23 @@ function LiveStats() {
   const stats: InstanceStats | undefined = load.status === 'ready' ? load.data : undefined;
   if (load.status === 'error') return null;
   const value = (n: number | undefined) => (n === undefined ? '–' : n.toLocaleString());
+  const plural = (n: number | undefined, one: string, many: string) => (n === 1 ? one : many);
   return (
     <ul className="stats" data-testid="live-stats" aria-busy={!stats}>
       <li className="stat">
         <span className="glob-icon" aria-hidden="true" />
         <span className="v">{value(stats?.playersOnline)}</span>
-        <span className="k">players online</span>
+        <span className="k">{plural(stats?.playersOnline, 'player online', 'players online')}</span>
       </li>
       <li className="stat">
         <GameArt name="warFlag" size={34} />
         <span className="v">{value(stats?.liveMatches)}</span>
-        <span className="k">playing now</span>
+        <span className="k">{plural(stats?.liveMatches, 'match on now', 'matches on now')}</span>
       </li>
       <li className="stat">
         <GameArt name="swarm" size={34} />
         <span className="v">{value(stats?.matchesToday)}</span>
-        <span className="k">matches today</span>
+        <span className="k">{plural(stats?.matchesToday, 'match today', 'matches today')}</span>
       </li>
     </ul>
   );

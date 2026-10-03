@@ -112,7 +112,8 @@ test('home shows the colony, ways in, live stats, ladders, maps and matches', as
   await expect(page.getByRole('link', { name: 'Sign in' })).toHaveAttribute('href', '/signin');
   // Live numbers come from GET /api/v1/stats: the seeded running match is live.
   const stats = page.getByTestId('live-stats');
-  await expect(stats).toContainText('players online');
+  await expect(stats).toContainText(/players? online/);
+  await expect(stats).toContainText(/match(es)? on now/);
   await expect(stats).not.toContainText('–');
   await expect(page.getByTestId('featured-maps').getByRole('link')).toHaveCount(4);
   await expect(page.getByTestId('featured-maps')).toContainText('Isles of Plenty');
