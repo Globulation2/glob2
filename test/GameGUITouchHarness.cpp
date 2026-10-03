@@ -3096,6 +3096,35 @@ class GameGUITouchHarness
 		require(gui.selectionMode == GameGUI::RESOURCE_SELECTION,
 			"A unit halo cannot steal a direct discovered-resource tap");
 		gui.drawAll(0);
+		// Replacing a read-only card with a building is not navigation back to
+		// a toolbox. Its explicit close must leave the map unobstructed too.
+		const int innType = globalContainer->buildingsTypes.getTypeNum("inn", 0, false);
+		auto *inspected = gui.game.addBuilding(44, 40, innType, 0);
+		require(inspected, "Read-only transition fixture has a building");
+		const auto buildingPoint = gui.camera.worldToScreen(
+			(inspected->posX + inspected->type->width / 2.) * 32,
+			(inspected->posY + inspected->type->height / 2.) * 32);
+		for (bool resource : {false, true})
+		{
+			gui.touch->select({center.x + (resource ? 28 : 0), center.y});
+			gui.drawAll(0);
+			require(gui.touch->inspectingReadOnly() && gui.touch->panelOpen,
+				"Transition starts with an open read-only inspector");
+			gui.touch->select({buildingPoint.first, buildingPoint.second});
+			gui.drawAll(0);
+			require(gui.selectionMode == GameGUI::BUILDING_SELECTION && gui.selectionBuilding() == inspected,
+				"Building selection replaces the read-only inspector");
+			const auto title = gui.touch->allocationRect();
+			const double target = 48 * gfx->logicalUnitsPerPoint();
+			tap(title.x + title.w - target / 2, title.y + title.h / 2);
+			gui.drawAll(0); // Include deferred palette restoration.
+			require(gui.selectionMode == GameGUI::NO_SELECTION && !gui.touch->panelOpen &&
+				!gui.touch->restorePalette && !gui.touch->lensVisible(),
+				"Closing a building reached from a read-only inspector cannot reopen a toolbox");
+			require(gui.orderQueue.empty(), "Inspector transitions never issue simulation orders");
+		}
+		gui.touch->select({center.x + 28, center.y});
+		gui.drawAll(0);
 		map.setNoResource(41, 40, 1);
 		gui.checkSelection();
 		gui.touch->prepareDraw();
