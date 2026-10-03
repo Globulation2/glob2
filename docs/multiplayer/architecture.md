@@ -238,13 +238,15 @@ document of every version, so an old row can never silently stop reading.
 
 ## Coordination
 
-- **Job queue.** graphile-worker tables in the same database. Engine jobs use
-  the task identifier `engine:<kind>:<simVersionKey>`, so an agent only ever
-  receives jobs for its own version. `submitEngineJob()` records the job in
-  `engine_jobs` and enqueues it; the agent enqueues its result under
-  `platform:engine-job-result`; the worker validates it against the kind's result
-  schema and completes the row (a result that breaks the contract is recorded as
-  a failure). Deterministic engine failures are reported, other errors retry.
+- **Job queue.** graphile-worker tables in the same database carry platform jobs
+  such as `platform:engine-job-result`. Engine jobs are rows of `engine_jobs`
+  instead: `submitEngineJob()` inserts one (so a job submitted in a transaction
+  exists exactly when it commits), and an agent of that sim version leases it
+  through `platform-api` ([Engine agents](#engine-agents)). Its report is enqueued
+  under `platform:engine-job-result` in the same transaction; the worker validates
+  it against the kind's result schema and completes the row (a result that breaks
+  the contract is recorded as a failure). Deterministic engine failures are
+  reported, other errors retry.
 - **Pub/sub.** `PgPubSub` keeps one listening connection per process,
   reconnects with backoff and re-listens; payloads are limited to 8000 bytes, so
   publish identifiers and re-read state. Delivery is at most once; `onReconnect`
@@ -273,8 +275,23 @@ that runs all of them, with Caddy and Postgres, is described in the
 
 An engine agent (`platform/apps/engine-agent`) wraps one glob2 binary and runs
 the jobs that need the engine. It runs each job as a separate headless process
-and exchanges files through the blob store. It never shares the platform's
-database credentials or environment with that process.
+with a stripped environment. Because that process loads uploaded maps, saves and
+match records with the legacy C++ loader, the agent holds no database or blob-store
+credentials at all: it reaches the platform only through `platform-api`'s internal
+engine API, with a bearer agent key (`ENGINE_AGENT_KEYS`/`ENGINE_AGENT_KEYS_FILE`
+on the API, `ENGINE_AGENT_KEY_FILE` on the agent; shapes in the protocol package's
+`jobs.ts`):
+
+| Call | Purpose |
+| --- | --- |
+| `POST /internal/v1/engine/agents/heartbeat`, `DELETE …/agents/{id}` | Announce the agent's sim version and kinds (`engine_agents`). |
+| `POST /internal/v1/engine/jobs/lease` | The oldest queued job of the agent's sim version and kinds, with a lease token, or `204`. |
+| `POST …/jobs/{id}/extend`, `…/release` | Keep the lease while the engine runs; give the job back for a retry. |
+| `POST …/jobs/{id}/result` | Report the result or failure (idempotent per lease). |
+| `GET /internal/v1/engine/blobs/{sha256}` | A blob whose hash the leased job's payload contains, and no other. |
+| `PUT /internal/v1/engine/blobs?contentType=&visibility=` | Store an output blob by content (known content types only). |
+
+Calls about a job carry its lease token in `X-Glob2-Lease`.
 
 ### Sim version and partitioning
 
@@ -293,10 +310,9 @@ configuration, so a mislabelled image cannot serve the wrong version:
   the hash. Any value that disagrees with what the binary reports stops the
   agent at startup.
 
-The agent then registers in `engine_agents` and listens only on
-`engine:<kind>:<simVersionKey>`. A job can therefore reach only a binary that
-computes the same games. A job that reaches the wrong version anyway is a routing
-bug and fails loudly.
+The agent then registers and leases only jobs of its own sim version. A job can
+therefore reach only a binary that computes the same games. A job that reaches
+the wrong version anyway is a routing bug and fails loudly.
 
 ### Job contracts
 
@@ -353,8 +369,8 @@ change to the engine's command line or output files changes only that module
 
 - Input problems (`bad_request`) and contract breaks (`internal`) are reported at
   once.
-- Timeouts, crashes and store errors are thrown, and graphile-worker retries
-  them.
+- Timeouts, crashes and transfer errors give the job back (released with a
+  backoff of 5 s, 10 s, 20 s …) for another lease.
 - On a job's last attempt, any remaining error is reported as `internal`, so the
   platform is never left waiting for a result.
 
@@ -423,13 +439,16 @@ one definition both this pool and the API's served-version list use.
 
 ### Scaling and operation
 
-- **More throughput:** run more agents of the same image. They share the
-  version's task identifiers, and each runs `ENGINE_CONCURRENCY` jobs at once.
+- **More throughput:** run more agents of the same image. They lease from the
+  same queue (`FOR UPDATE SKIP LOCKED`), and each runs `ENGINE_CONCURRENCY` jobs at
+  once, polling every `ENGINE_POLL_MS` when idle.
   Verification is the costly kind, since it runs whole games, so size
   `ENGINE_TIMEOUT_VERIFY_S` and the replica count for the longest games played.
-- **An agent dies mid-job:** graphile-worker unlocks the job after its four-hour lock
-  timeout and another agent retries it. Results are applied once, keyed by job
-  id.
+- **An agent dies mid-job:** its lease (two minutes, renewed every 40 seconds while
+  the engine runs) runs out and another agent leases the job; each lease counts
+  as an attempt (three by default). When the last attempt's lease runs out, the
+  worker's scheduler reports the job failed (`failAbandonedEngineJobs`), so nothing
+  waits forever. Results are applied once, keyed by job id.
 - **Serving an older sim version** (a verifier image for an old version, so its
   matches can still be verified and its rooms still get maps):
   1. Build the engine at that version's tag, with the same compiler image and

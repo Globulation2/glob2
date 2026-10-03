@@ -44,6 +44,12 @@ export default tseslint.config(
     rules: { '@typescript-eslint/no-non-null-assertion': 'off' },
   },
   {
+    // The engine agent's end-to-end test runs a real platform-api replica
+    // (its test harness) to exercise the internal engine API over HTTP.
+    files: ['apps/engine-agent/test/queue.test.ts'],
+    rules: { 'no-restricted-imports': 'off' },
+  },
+  {
     files: ['apps/web/**/*.{ts,tsx}'],
     languageOptions: { globals: globals.browser },
     plugins: { 'react-hooks': reactHooks },

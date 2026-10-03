@@ -519,7 +519,9 @@ describe('administration', () => {
       .orderBy('id')
       .execute();
     expect(audit.map((a) => a.action)).toEqual(['account.delete', 'account.delete']);
-    expect(audit[0]!.details).toMatchObject({ displayName: 'UxReviewTester', removedMaps: 1 });
+    // Ids, not names: the audit log keeps nothing that identifies the person.
+    expect(audit[0]!.details).toMatchObject({ kind: 'registered', removedMaps: 1 });
+    expect(JSON.stringify(audit)).not.toContain('UxReviewTester');
   });
 
   it('generates signing keys from the CLI', async () => {
@@ -539,6 +541,8 @@ describe('administration', () => {
 
 describe('rate limits', () => {
   it('limits sign-in requests and new guests per address', async () => {
+    // Counters are shared by every replica: start from none.
+    await harness.database.db.deleteFrom('rate_limits').execute();
     const limited = await harness.start({
       instance: { limits: { authPerMinute: 3, guestsPerHour: 2 } },
     });

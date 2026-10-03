@@ -2,6 +2,9 @@
 // socket, opens /signin?attempt=… in the system browser, and the platform
 // pushes the result to the waiting socket on whichever replica holds it.
 //
+// Before the browser offers any sign-in method, the player types the code the
+// game shows (confirmCode): a link someone else started is useless without it.
+//
 // Attempt rows move pending → completed | failed | cancelled | expired once;
 // `delivered_at` makes delivery to the socket happen exactly once, so tokens
 // are minted only by the replica that hands them over.
@@ -10,6 +13,14 @@ import type { Account, Database } from '@glob2/db';
 import type { ClientPlatform, IdentityConflict } from '@glob2/protocol';
 import type { AccountService } from './accounts.ts';
 import { confirmationCode, randomSecret, safeEqual, sha256Hex } from './secrets.ts';
+
+/** Wrong codes allowed before a browser sign-in fails. */
+export const CODE_ATTEMPTS = 5;
+
+/** The code as typed: case, spaces and separators do not matter. */
+export function normalizeCode(code: string): string {
+  return code.toUpperCase().replace(/[^A-Z0-9]/g, '');
+}
 
 export type FailureReason = 'expired' | 'denied' | 'cancelled' | 'conflict' | 'error';
 
@@ -49,7 +60,7 @@ export class HandoffService {
       .insertInto('signin_attempts')
       .values({
         resume_hash: sha256Hex(resumeToken),
-        confirmation_code: confirmationCode(),
+        confirmation_code: confirmationCode(6),
         provider: options.provider ?? null,
         mode: options.mode,
         requesting_account_id: options.requestingAccountId ?? null,
@@ -90,16 +101,54 @@ export class HandoffService {
     return attempt;
   }
 
-  /** Binds the attempt to one browser (first visit wins). Returns whether `hash` is the bound browser. */
-  async bindBrowser(id: string, hash: string): Promise<boolean> {
-    await this.db
+  /**
+   * Checks the code the player typed into the browser against the one their
+   * game shows. The right code binds the attempt to this browser (the first
+   * browser to enter it wins); wrong codes count, and the attempt fails after
+   * CODE_ATTEMPTS of them so the code cannot be guessed.
+   */
+  async confirmCode(
+    id: string,
+    typed: string,
+    bindingHash: string,
+  ): Promise<'confirmed' | 'wrong' | 'locked' | 'other_browser' | 'gone'> {
+    const attempt = await this.pending(id);
+    if (!attempt) return 'gone';
+    if (attempt.browser_binding_hash && attempt.browser_binding_hash !== bindingHash) {
+      return 'other_browser';
+    }
+    if (attempt.code_failures >= CODE_ATTEMPTS) return 'locked';
+    if (safeEqual(normalizeCode(typed), normalizeCode(attempt.confirmation_code))) {
+      const bound = await this.db
+        .updateTable('signin_attempts')
+        .set({
+          browser_binding_hash: bindingHash,
+          code_confirmed_at: sql<Date>`coalesce(code_confirmed_at, now())`,
+        })
+        .where('id', '=', id)
+        .where('status', '=', 'pending')
+        .where('code_failures', '<', CODE_ATTEMPTS)
+        .where((eb) =>
+          eb.or([
+            eb('browser_binding_hash', 'is', null),
+            eb('browser_binding_hash', '=', bindingHash),
+          ]),
+        )
+        .executeTakeFirst();
+      return Number(bound.numUpdatedRows) === 1 ? 'confirmed' : 'other_browser';
+    }
+    const counted = await this.db
       .updateTable('signin_attempts')
-      .set({ browser_binding_hash: hash })
+      .set({ code_failures: sql<number>`code_failures + 1` })
       .where('id', '=', id)
-      .where('browser_binding_hash', 'is', null)
-      .execute();
-    const attempt = await this.get(id);
-    return attempt?.browser_binding_hash === hash;
+      .where('status', '=', 'pending')
+      .returning('code_failures')
+      .executeTakeFirst();
+    if ((counted?.code_failures ?? CODE_ATTEMPTS) >= CODE_ATTEMPTS) {
+      await this.fail(id, 'denied');
+      return 'locked';
+    }
+    return 'wrong';
   }
 
   async recordConflict(id: string, accountId: string): Promise<void> {

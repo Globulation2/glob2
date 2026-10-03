@@ -7,6 +7,7 @@ import {
   Shutdown,
   createAccessPolicy,
   createLogger,
+  failAbandonedEngineJobs,
   loadConfig,
   prepareJobQueue,
   resolveQueue,
@@ -23,6 +24,7 @@ import {
   applyPendingRatings,
   expireStartingMatches,
   handleEngineJobResult,
+  scrubSettledMatchNames,
   takeWarmMap,
 } from '@glob2/play';
 import { Matchmaker } from './matchmaking/matchmaker.ts';
@@ -94,6 +96,21 @@ try {
       },
     },
     { name: 'rating sweep', intervalMs: 30_000, run: () => applyPendingRatings(database.db) },
+    {
+      // Names of deleted accounts in matches that have settled since.
+      name: 'deleted names',
+      intervalMs: 60_000,
+      run: async () => void (await scrubSettledMatchNames(database.db)),
+    },
+    {
+      // Engine jobs whose agent stopped answering on the last attempt.
+      name: 'abandoned engine jobs',
+      intervalMs: 30_000,
+      run: async () => {
+        const failed = await failAbandonedEngineJobs(database.db);
+        if (failed > 0) logger.warn({ failed }, 'failed engine jobs abandoned by their agent');
+      },
+    },
   ];
   if (queues.length > 0) {
     scheduled.push({ name: 'matchmaker', intervalMs: 1000, run: () => matchmaker.tick() });
@@ -104,7 +121,7 @@ try {
   if (!Number.isInteger(perEntry) || perEntry < 0 || perEntry > 16) {
     throw new ConfigError('WARM_MAPS_PER_ENTRY must be an integer from 0 to 16');
   }
-  const warmMaps = new WarmMapPool({ db: database.db, queue: jobs, queues, perEntry, logger });
+  const warmMaps = new WarmMapPool({ db: database.db, queues, perEntry, logger });
   scheduled.push({ name: 'warm maps', intervalMs: 10_000, run: () => warmMaps.refill() });
   const leader = new LeaderElection({
     connectionString: config.databaseUrl,

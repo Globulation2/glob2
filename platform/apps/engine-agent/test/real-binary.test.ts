@@ -13,7 +13,6 @@ import { gunzipSync } from 'node:zlib';
 import { fileURLToPath } from 'node:url';
 import { randomUUID } from 'node:crypto';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { createTestDatabase, type TestDatabase } from '@glob2/db/testing';
 import { contentKey, defaultMapPool } from '@glob2/core';
 import { engineJobs, schemaIssues, type EngineJob, type EngineJobKind } from '@glob2/protocol';
 import { createRunner, SIM, type RunnerHarness } from './support.ts';
@@ -25,18 +24,15 @@ const GENERATORS = ['symmetric-arena', 'even-ground', 'marchland'];
 const evidence = process.env['GLOB2_EVIDENCE_DIR'];
 
 describe.runIf(binary)('real glob2 binary', () => {
-  let database: TestDatabase;
   let h: RunnerHarness;
   const signal = new AbortController().signal;
 
   beforeAll(async () => {
-    database = await createTestDatabase();
-    h = await createRunner(database.db, { binary: binary!, workdir });
+    h = await createRunner({ binary: binary!, workdir });
   });
 
   afterAll(async () => {
     await h?.close();
-    await database?.drop();
   });
 
   async function run(kind: EngineJobKind, payload: unknown): Promise<Record<string, unknown>> {

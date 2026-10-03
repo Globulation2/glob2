@@ -1,9 +1,10 @@
 // Browser sign-in: /signin pages (the handoff target and plain web sign-in),
 // provider redirects and callbacks, and local password forms.
 //
-// Handoff attempts are bound to the first browser that opens them (a cookie
-// whose hash is stored on the attempt); every later step checks the binding,
-// and state-changing forms also check Origin.
+// A handoff attempt first asks the player to type the code their game shows
+// (so a sign-in link someone sent them leads nowhere), then binds the attempt
+// to that browser (a cookie whose hash is stored on the attempt); every later
+// step checks the binding, and state-changing forms also check Origin.
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { sql } from 'kysely';
 import type { Database } from '@glob2/db';
@@ -23,6 +24,7 @@ import {
 } from '../identity.ts';
 import { localSignIn } from './auth.ts';
 import { html, sendPage, type Html } from '../web/pages.ts';
+import { SharedLimit } from '../http/rateLimits.ts';
 
 type Attempt = Selectable<Database['signin_attempts']>;
 
@@ -49,7 +51,22 @@ interface LocalFormState {
 
 export async function signinRoutes(app: FastifyInstance, identity: Identity): Promise<void> {
   const { db } = app.services;
-  const authLimit = { rateLimit: { max: identity.limits.authPerMinute, timeWindow: 60_000 } };
+  // Per client address and route, across replicas.
+  const authLimit = (route: string) => {
+    const limit = new SharedLimit(db, `auth:${route}`, identity.limits.authPerMinute, 60_000);
+    return {
+      preHandler: async (request: FastifyRequest, reply: FastifyReply) => {
+        const check = await limit.take(request.ip);
+        if (check.allowed) return;
+        void reply.header('retry-after', String(check.retryAfterSeconds));
+        return errorPage(
+          reply,
+          'Too many sign-in attempts from here. Wait a minute and try again.',
+          429,
+        );
+      },
+    };
+  };
 
   // Never a dead end: every problem page offers a way back.
   const errorPage = (reply: FastifyReply, message: string, status = 400) =>
@@ -73,8 +90,38 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
     const attempt = await identity.handoff.pending(attemptId);
     const hash = bindingHash(request);
     if (!attempt || !hash || attempt.browser_binding_hash !== hash) return null;
+    if (!attempt.code_confirmed_at) return null;
     return attempt;
   };
+
+  /** Asks for the code the game shows; nothing else is offered before it. */
+  const codePage = (reply: FastifyReply, attempt: Attempt, problem?: string, status = 200) =>
+    sendPage(
+      reply,
+      'Enter the code from your game',
+      html`<div class="card">
+        <p>
+          Globulation 2 shows a code on its sign-in screen. Type it here to continue signing in.
+        </p>
+        <form method="post" action="/signin/confirm" novalidate>
+          <input type="hidden" name="attempt" value="${attempt.id}" />
+          ${field({
+            id: 'code',
+            label: 'Code from the game',
+            name: 'code',
+            error: problem,
+            attrs: html`autocomplete="one-time-code" autocapitalize="characters" spellcheck="false"
+            required maxlength="16"`,
+          })}
+          <button class="primary" type="submit">Continue</button>
+        </form>
+        <p class="muted warn">
+          Only type a code that your own game is showing you right now. If someone sent you this
+          link or told you a code, close this page: they are trying to get into your account.
+        </p>
+      </div>`,
+      status,
+    );
 
   const providerButtons = (attempt: Attempt | undefined) => {
     const query = attempt ? `?attempt=${encodeURIComponent(attempt.id)}` : '';
@@ -215,12 +262,7 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
         reply,
         'Sign in to Globulation 2',
         html`<div class="card">
-            <p>Check that the game shows this code:</p>
-            <div class="code">${attempt.confirmation_code}</div>
-            <p class="muted warn">
-              Only continue if you started signing in from Globulation 2 yourself just now. Anyone
-              who sent you this link could otherwise use your account.
-            </p>
+            <p>Code accepted. Choose how to sign in to the game:</p>
             ${providerButtons(attempt)}
           </div>
           ${localForms(attempt, form)}
@@ -270,13 +312,57 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
         410,
       );
     }
-    let cookie = request.cookies[bindingCookieName(identity)];
-    if (!cookie || !/^[A-Za-z0-9_-]{43}$/.test(cookie)) cookie = randomSecret();
-    if (!(await identity.handoff.bindBrowser(attempt.id, sha256Hex(cookie)))) {
+    const hash = bindingHash(request);
+    if (attempt.browser_binding_hash && attempt.browser_binding_hash !== hash) {
       return errorPage(reply, 'This sign-in was already opened in another browser.', 409);
     }
-    setBindingCookie(identity, reply, cookie);
+    if (!attempt.code_confirmed_at) return codePage(reply, attempt);
     return signinPage(reply, { attempt });
+  });
+
+  app.post<{ Body: Form }>('/signin/confirm', authLimit('confirm'), async (request, reply) => {
+    if (!sameOriginRequest(identity, request))
+      return errorPage(reply, 'Cross-site request refused.', 403);
+    const attemptId = request.body?.attempt;
+    const attempt = attemptId ? await identity.handoff.pending(attemptId) : undefined;
+    if (!attempt) {
+      return errorPage(
+        reply,
+        'This sign-in link has expired or was already used. Start signing in again from the game.',
+        410,
+      );
+    }
+    const typed = (request.body?.code ?? '').slice(0, 64);
+    if (!typed.trim()) return codePage(reply, attempt, 'Type the code your game shows.', 400);
+    let cookie = request.cookies[bindingCookieName(identity)];
+    if (!cookie || !/^[A-Za-z0-9_-]{43}$/.test(cookie)) cookie = randomSecret();
+    const outcome = await identity.handoff.confirmCode(attempt.id, typed, sha256Hex(cookie));
+    switch (outcome) {
+      case 'confirmed':
+        setBindingCookie(identity, reply, cookie);
+        return reply.redirect(`/signin?attempt=${encodeURIComponent(attempt.id)}`, 303);
+      case 'wrong':
+        return codePage(
+          reply,
+          attempt,
+          'That is not the code your game shows. Check it and try again.',
+          400,
+        );
+      case 'locked':
+        return errorPage(
+          reply,
+          'Too many wrong codes, so this sign-in was stopped. Start signing in again from the game.',
+          410,
+        );
+      case 'other_browser':
+        return errorPage(reply, 'This sign-in was already opened in another browser.', 409);
+      case 'gone':
+        return errorPage(
+          reply,
+          'This sign-in has expired. Start signing in again from the game.',
+          410,
+        );
+    }
   });
 
   app.post<{ Body: Form }>('/signin/cancel', async (request, reply) => {
@@ -295,7 +381,7 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
 
   app.get<{ Params: { provider: string }; Querystring: { attempt?: string } }>(
     '/auth/:provider/start',
-    { config: authLimit },
+    authLimit('provider-start'),
     async (request, reply) => {
       const provider = identity.providers.get(request.params.provider);
       if (!provider) return errorPage(reply, 'Unknown sign-in provider.', 404);
@@ -400,14 +486,14 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
 
   app.get<{ Params: { provider: string } }>(
     '/auth/:provider/callback',
-    { config: authLimit },
+    authLimit('provider-callback'),
     (request, reply) =>
       callback(request, reply, new URL(request.url, identity.origin).searchParams),
   );
   // form_post (Sign in with Apple): a cross-site POST protected by `state`.
   app.post<{ Params: { provider: string }; Body: Form }>(
     '/auth/:provider/callback',
-    { config: authLimit },
+    authLimit('provider-callback'),
     (request, reply) => {
       const params = new URLSearchParams();
       for (const [key, value] of Object.entries(request.body ?? {})) {
@@ -532,7 +618,7 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
 
   // ------------------------------------------------------ local passwords
 
-  app.post<{ Body: Form }>('/signin/local', { config: authLimit }, async (request, reply) => {
+  app.post<{ Body: Form }>('/signin/local', authLimit('local'), async (request, reply) => {
     if (!identity.localAuth.enabled)
       return errorPage(reply, 'Local accounts are not enabled.', 404);
     if (!sameOriginRequest(identity, request))
@@ -613,7 +699,7 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
       );
     }
     try {
-      await localSignIn(identity, username, password);
+      await localSignIn(identity, username, password, request.ip);
     } catch (error) {
       if (error instanceof HttpError) {
         return error.statusCode === 401 && error.body.message === 'Wrong username or password.'

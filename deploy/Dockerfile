@@ -137,8 +137,10 @@ RUN rm -rf packages/*/test apps/*/test && \
 # and the operator CLI (`platform …`).
 FROM ${NODE_IMAGE} AS platform
 RUN groupadd --gid 10001 glob2 && useradd --uid 10001 --gid 10001 --no-create-home --home-dir /nonexistent glob2 && \
-    mkdir -p /var/lib/glob2/blobs /var/lib/glob2/keys /var/lib/glob2/relay /etc/glob2 && \
-    chown -R 10001:10001 /var/lib/glob2 && chmod 700 /var/lib/glob2/keys /var/lib/glob2/relay
+    mkdir -p /var/lib/glob2/blobs /var/lib/glob2/keys /var/lib/glob2/relay /var/lib/glob2/engine-agent \
+      /var/lib/glob2/db/migrator /var/lib/glob2/db/api /var/lib/glob2/db/worker /etc/glob2 && \
+    chown -R 10001:10001 /var/lib/glob2 && \
+    chmod 700 /var/lib/glob2/keys /var/lib/glob2/relay /var/lib/glob2/engine-agent /var/lib/glob2/db/*
 COPY --from=platform-runtime-deps /app/platform /app/platform
 COPY deploy/platform-init.sh /usr/local/bin/glob2-platform-init
 RUN printf '#!/bin/sh\nexec node /app/platform/apps/api/src/cli.ts "$@"\n' > /usr/local/bin/platform && \
@@ -179,7 +181,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
     libgl1 libglu1-mesa libssl3t64 zlib1g \
     && rm -rf /var/lib/apt/lists/* \
     && groupadd --gid 10001 glob2 && useradd --uid 10001 --gid 10001 --no-create-home --home-dir /nonexistent glob2 \
-    && mkdir -p /var/lib/glob2/blobs && chown 10001:10001 /var/lib/glob2/blobs
+    && mkdir -p /var/lib/glob2/engine-agent && chown 10001:10001 /var/lib/glob2/engine-agent \
+    && chmod 700 /var/lib/glob2/engine-agent
 COPY --from=node-binary /usr/local/bin/node /usr/local/bin/node
 COPY --from=platform-runtime-deps /app/platform /app/platform
 COPY --from=engine-build /output/bin/glob2 /opt/glob2/bin/glob2
@@ -190,8 +193,6 @@ COPY --from=engine-build /output/sim-version /output/sim-data-hash /opt/glob2/
 COPY deploy/engine-agent-entrypoint.sh /usr/local/bin/glob2-engine-agent-entrypoint
 LABEL org.glob2.sim-version="${GLOB2_SIM_VERSION}"
 ENV NODE_ENV=production \
-    BLOB_STORE=fs \
-    BLOB_DIR=/var/lib/glob2/blobs \
     ENGINE_BINARY=/opt/glob2/bin/glob2 \
     ENGINE_WORKDIR=/opt/glob2/share \
     ENGINE_SCRATCH_DIR=/tmp

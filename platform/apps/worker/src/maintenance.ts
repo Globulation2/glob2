@@ -7,6 +7,8 @@ export interface MaintenanceResult {
   deletedRefreshTokens: number;
   deletedAuthFlows: number;
   deletedWebSessions: number;
+  deletedSigninAttempts: number;
+  deletedRateLimits: number;
 }
 
 /** Queue tickets waiting longer than this are expired (the client re-queues). */
@@ -18,6 +20,10 @@ export const REFRESH_TOKEN_RETENTION_DAYS = 30;
 export const AUTH_FLOW_RETENTION_HOURS = 24;
 /** Web sessions are kept this long after expiry or revocation, then deleted. */
 export const WEB_SESSION_RETENTION_DAYS = 30;
+/** Browser sign-in attempts are kept this long after they expire, then deleted. */
+export const SIGNIN_ATTEMPT_RETENTION_DAYS = 7;
+/** Rate-limit counters idle this long are deleted (the longest window is an hour). */
+export const RATE_LIMIT_IDLE_HOURS = 24;
 
 /** Housekeeping that must run on exactly one worker (the scheduler leader). */
 export async function runMaintenance(db: Kysely<Database>): Promise<MaintenanceResult> {
@@ -70,7 +76,21 @@ export async function runMaintenance(db: Kysely<Database>): Promise<MaintenanceR
       ]),
     )
     .executeTakeFirst();
+  const attempts = await db
+    .deleteFrom('signin_attempts')
+    .where(
+      'expires_at',
+      '<',
+      sql<Date>`now() - make_interval(days => ${SIGNIN_ATTEMPT_RETENTION_DAYS})`,
+    )
+    .executeTakeFirst();
+  const counters = await db
+    .deleteFrom('rate_limits')
+    .where('window_start', '<', sql<Date>`now() - make_interval(hours => ${RATE_LIMIT_IDLE_HOURS})`)
+    .executeTakeFirst();
   return {
+    deletedSigninAttempts: Number(attempts.numDeletedRows),
+    deletedRateLimits: Number(counters.numDeletedRows),
     deletedAuthFlows: Number(flows.numDeletedRows),
     deletedWebSessions: Number(webSessions.numDeletedRows),
     expiredSigninAttempts: Number(signins.numUpdatedRows),

@@ -24,6 +24,7 @@ const typedColumns: ColumnLists = {
     'updated_at',
     'last_seen_at',
     'display_name_changed_at',
+    'deleted_at',
   ],
   identities: [
     'id',
@@ -73,6 +74,8 @@ const typedColumns: ColumnLists = {
     'failure_reason',
     'linked',
     'delivered_at',
+    'code_confirmed_at',
+    'code_failures',
   ],
   web_sessions: [
     'id',
@@ -149,6 +152,12 @@ const typedColumns: ColumnLists = {
     'agent_id',
     'created_at',
     'completed_at',
+    'attempts',
+    'max_attempts',
+    'leased_by',
+    'lease_token_hash',
+    'lease_expires_at',
+    'reported_at',
   ],
   maps: [
     'id',
@@ -410,6 +419,8 @@ const typedColumns: ColumnLists = {
     'ready_at',
     'taken_at',
   ],
+  rate_limits: ['bucket', 'key', 'window_start', 'count', 'previous_count'],
+  account_name_scrubs: ['account_id', 'match_id', 'created_at'],
   match_results_view: [
     'match_id',
     'origin',
@@ -483,7 +494,7 @@ const HASH2 = 'cd'.repeat(32);
 let database: TestDatabase;
 
 beforeAll(async () => {
-  database = await createTestDatabase({ migrate: false });
+  database = await createTestDatabase({ migrate: false, role: 'migrator' });
 });
 
 afterAll(async () => {

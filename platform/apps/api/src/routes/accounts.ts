@@ -1,10 +1,15 @@
 // Account REST: the caller's own account, renames, unlinking sign-in methods,
-// and public profiles.
+// self-service deletion, and public profiles.
 import type { FastifyInstance } from 'fastify';
-import { UpdateAccountRequest, type PublicAccount, type SelfAccount } from '@glob2/protocol';
+import {
+  DeleteAccountRequest,
+  UpdateAccountRequest,
+  type PublicAccount,
+  type SelfAccount,
+} from '@glob2/protocol';
 import { apiError } from '../errors.ts';
 import { body } from '../http/validate.ts';
-import { requireAccount, type Identity } from '../identity.ts';
+import { clearSessionCookie, requireAccount, type Identity } from '../identity.ts';
 
 export async function accountRoutes(app: FastifyInstance, identity: Identity): Promise<void> {
   app.get('/api/v1/accounts/me', async (request): Promise<SelfAccount> => {
@@ -17,6 +22,22 @@ export async function accountRoutes(app: FastifyInstance, identity: Identity): P
     const { displayName } = body(UpdateAccountRequest, request.body);
     const renamed = await identity.accounts.rename(account, displayName);
     return identity.accounts.selfView(renamed);
+  });
+
+  // Deletes the caller's account (app stores and GDPR require it be
+  // self-service). The web account page and the game's settings lead here.
+  app.delete('/api/v1/accounts/me', async (request, reply): Promise<void> => {
+    const { account } = await requireAccount(identity, request);
+    const { confirmDisplayName } = body(DeleteAccountRequest, request.body);
+    if (confirmDisplayName.trim() !== account.display_name) {
+      throw apiError('bad_request', 'Type your display name exactly to confirm.', {
+        reason: 'confirmation_mismatch',
+      });
+    }
+    await identity.admin.deleteAccount(account, account, undefined, { self: true });
+    request.log.info({ account: account.id }, 'account deleted by its owner');
+    clearSessionCookie(identity, reply);
+    reply.code(204);
   });
 
   app.delete<{ Params: { provider: string } }>(

@@ -4,7 +4,8 @@
 // matchmaker, match updates from ratings and intake, finished map jobs).
 import type { Logger } from '@glob2/core';
 import { resolveQueue, type AccessPolicy, type PlatformConfig } from '@glob2/core';
-import type { PgPubSub } from '@glob2/db';
+import type { Kysely } from 'kysely';
+import type { Database, PgPubSub } from '@glob2/db';
 import {
   simVersionKey,
   type RealtimeMethod,
@@ -29,13 +30,14 @@ import {
 import { apiError } from '../errors.ts';
 
 const queueNotifier = new PgQueueNotifier();
-import { WindowCounter } from '../http/validate.ts';
+import { SharedLimit } from '../http/rateLimits.ts';
 import type { RealtimeConnection, MethodHandler } from '../realtime/connection.ts';
 import type { RealtimeHub } from '../realtime/hub.ts';
 import type { Assignments } from './assignments.ts';
 import type { RoomService } from './rooms.ts';
 
 export interface PlayRealtimeOptions {
+  db: Kysely<Database>;
   config: PlatformConfig;
   access: AccessPolicy;
   pubsub: PgPubSub;
@@ -56,12 +58,19 @@ const CHAT_PER_WINDOW = 8;
 export class PlayRealtime {
   readonly handlers: Partial<Record<RealtimeMethod, MethodHandler>>;
   private readonly options: PlayRealtimeOptions;
-  private readonly codeFailures = new WindowCounter(CODE_FAILURES_PER_WINDOW, CODE_WINDOW_MS);
-  private readonly chatLimit = new WindowCounter(CHAT_PER_WINDOW, 10_000);
+  private readonly codeFailures: SharedLimit;
+  private readonly chatLimit: SharedLimit;
   private readonly unsubscribe: (() => Promise<void>)[] = [];
   private sweepTimer: NodeJS.Timeout | undefined;
 
   constructor(options: PlayRealtimeOptions) {
+    this.codeFailures = new SharedLimit(
+      options.db,
+      'invite-code-failure',
+      CODE_FAILURES_PER_WINDOW,
+      CODE_WINDOW_MS,
+    );
+    this.chatLimit = new SharedLimit(options.db, 'chat', CHAT_PER_WINDOW, 10_000);
     this.options = options;
     this.handlers = this.buildHandlers();
   }
@@ -218,14 +227,16 @@ export class PlayRealtime {
         const account = connection.requireAccount();
         const sim = this.requireSim(connection);
         const keys = [`a:${account.id}`, `ip:${connection.ip}`];
-        if (keys.some((key) => this.codeFailures.exhausted(key))) {
-          throw apiError('rate_limited', 'Too many unknown invite codes; try again later.');
+        for (const key of keys) {
+          if (await this.codeFailures.exhausted(key)) {
+            throw apiError('rate_limited', 'Too many unknown invite codes; try again later.');
+          }
         }
         try {
           return { room: await rooms.join(account, sim, params.code, params.regions) };
         } catch (error) {
           if ((error as { body?: { code?: string } }).body?.code === 'not_found') {
-            for (const key of keys) this.codeFailures.take(key);
+            for (const key of keys) await this.codeFailures.take(key);
           }
           throw error;
         }
@@ -276,7 +287,7 @@ export class PlayRealtime {
       'room.chat': async (connection, raw) => {
         const params = raw as RealtimeParams<'room.chat'>;
         const account = connection.requireAccount();
-        if (!this.chatLimit.take(account.id)) {
+        if (!(await this.chatLimit.take(account.id)).allowed) {
           throw apiError('rate_limited', 'You are sending messages too quickly.');
         }
         return { message: await rooms.chat(account, params.roomId, params.text) };

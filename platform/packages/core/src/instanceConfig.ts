@@ -190,6 +190,13 @@ export const InstanceConfig = Strict({
       realtimeBurst: Type.Optional(Type.Integer({ minimum: 1 })),
       /** Open realtime sockets per client IP per replica (default 20). */
       realtimeConnectionsPerIp: Type.Optional(Type.Integer({ minimum: 1 })),
+      /** Browser sign-ins a client IP may start per hour (default 30), all clients per minute (default 300). */
+      signinAttemptsPerHour: Type.Optional(Type.Integer({ minimum: 1 })),
+      signinAttemptsPerMinuteTotal: Type.Optional(Type.Integer({ minimum: 1 })),
+      /** Wrong passwords per username per 15 minutes before it is locked for the rest of the window (default 10). */
+      passwordFailuresPerAccount: Type.Optional(Type.Integer({ minimum: 1 })),
+      /** Wrong passwords per client IP per hour, over all usernames (default 50). */
+      passwordFailuresPerIp: Type.Optional(Type.Integer({ minimum: 1 })),
     }),
   ),
   access: Strict({

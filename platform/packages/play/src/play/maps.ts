@@ -117,7 +117,7 @@ export async function requestGeneratedMap(
       .executeTakeFirst());
   if (claimed) {
     try {
-      const jobId = await submitEngineJob(db, jobs, {
+      const jobId = await submitEngineJob(db, {
         kind: 'generate-map',
         simVersion: version,
         payload: { generator },

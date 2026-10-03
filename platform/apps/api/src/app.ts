@@ -2,7 +2,7 @@
 // against a test database without listening on a port.
 //
 // Route prefixes: /api/v1 (public REST), /realtime (WebSocket), /internal
-// (relays), /.well-known (JWKS, mobile app-link files), the browser sign-in pages /signin and
+// (relays; /internal/v1/engine for engine agents), /.well-known (JWKS, mobile app-link files), the browser sign-in pages /signin and
 // /auth/<provider>/… (served here, so they share the API's origin and
 // cookies), and invite landing pages /j/<code>.
 import Fastify, { type FastifyBaseLogger, type FastifyError, type FastifyInstance } from 'fastify';
@@ -28,6 +28,7 @@ import { adminRoutes } from './routes/admin.ts';
 import { authRoutes } from './routes/auth.ts';
 import { signinRoutes } from './routes/signin.ts';
 import { internalRoutes } from './routes/internal.ts';
+import { engineAgentRoutes } from './routes/engine.ts';
 import { inviteRoutes } from './routes/invite.ts';
 import { playRoutes } from './routes/play.ts';
 import { mapCatalogRoutes } from './maps/routes.ts';
@@ -204,6 +205,7 @@ export async function buildApp(
   });
   const assignments = new Assignments(services.db, identity.keys, services.config.publicOrigin);
   const play = new PlayRealtime({
+    db: services.db,
     config: services.config,
     access: services.access,
     pubsub: services.pubsub,
@@ -225,6 +227,7 @@ export async function buildApp(
   await appLinkRoutes(app);
   await inviteRoutes(app, rooms);
   await internalRoutes(app);
+  await engineAgentRoutes(app);
   await app.register(async (scope) =>
     realtimeRoutes(scope, identity, options.realtime, play.handlers),
   );

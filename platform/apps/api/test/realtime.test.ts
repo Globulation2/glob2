@@ -112,9 +112,13 @@ async function guestSocket() {
 /** A browser that reaches the instance through replica B. */
 const browserViaB = () => new Browser({ [ORIGIN]: b.url });
 
+/** Codes the "game" shows, by attempt: what the player types into the browser. */
+const codes = new Map<string, string>();
+
 async function beginHandoff(client: RealtimeClient, params: object = {}) {
   const result = await client.ok('auth.handoff.begin', params);
   expect(check('RealtimeAuthHandoffBeginResult', result).stage).toBe('ok');
+  codes.set(result['attemptId'] as string, result['confirmationCode'] as string);
   return result as {
     attemptId: string;
     signInUrl: string;
@@ -123,11 +127,34 @@ async function beginHandoff(client: RealtimeClient, params: object = {}) {
   };
 }
 
-/** Runs the provider sign-in in the browser; returns the final page. */
-async function providerSignIn(browser: Browser, signInUrl: string, provider = 'mock') {
+/**
+ * Opens the sign-in link and types the game's code, as the player does;
+ * returns the page that offers the sign-in methods.
+ */
+async function enterCode(browser: Browser, signInUrl: string, code?: string) {
+  const attempt = new URL(signInUrl).searchParams.get('attempt')!;
+  const ask = await browser.get(signInUrl);
+  expect(ask.status).toBe(200);
+  const askText = await ask.text();
+  // The browser never shows the code: the player brings it from the game.
+  expect(askText).toContain('Enter the code from your game');
+  expect(askText).not.toContain(codes.get(attempt));
+  const typed =
+    code ??
+    codes
+      .get(attempt)!
+      .toLowerCase()
+      .replace(/^(...)/, '$1 ');
+  const confirm = await browser.post(`${ORIGIN}/signin/confirm`, { attempt, code: typed });
+  expect(confirm.status).toBe(303);
   const page = await browser.get(signInUrl);
   expect(page.status).toBe(200);
-  const html = await page.text();
+  return page.text();
+}
+
+/** Runs the provider sign-in in the browser; returns the final page. */
+async function providerSignIn(browser: Browser, signInUrl: string, provider = 'mock') {
+  const html = await enterCode(browser, signInUrl);
   const attempt = new URL(signInUrl).searchParams.get('attempt')!;
   const start = await browser.get(`${ORIGIN}/auth/${provider}/start?attempt=${attempt}`);
   expect(start.status).toBe(302);
@@ -253,11 +280,11 @@ describe('browser sign-in handoff', () => {
     const { client, session } = await guestSocket();
     const attempt = await beginHandoff(client, { provider: 'mock' });
     expect(attempt.signInUrl).toBe(`${ORIGIN}/signin?attempt=${attempt.attemptId}`);
-    expect(attempt.confirmationCode).toMatch(/^[A-Z2-9]{8}$/);
+    expect(attempt.confirmationCode).toMatch(/^[A-HJKMNP-Z2-9]{6}$/);
 
     const browser = browserViaB();
     const { html, final, text } = await providerSignIn(browser, attempt.signInUrl);
-    expect(html).toContain(attempt.confirmationCode);
+    expect(html).toContain('Code accepted');
     expect(final.status).toBe(200);
     expect(text).toContain('Alice Example');
     expect(final.headers.get('content-security-policy')).toContain("default-src 'none'");
@@ -360,15 +387,82 @@ describe('browser sign-in handoff', () => {
     client.close();
   });
 
-  it('binds an attempt to the first browser that opens it', async () => {
+  it('offers nothing before the code, and binds the attempt to the browser that enters it', async () => {
     const { client } = await guestSocket();
     const attempt = await beginHandoff(client);
-    expect((await browserViaB().get(attempt.signInUrl)).status).toBe(200);
+    const victim = browserViaB();
+    // A link alone (say, one a phisher sent) offers no way to sign in.
+    const page = await (await victim.get(attempt.signInUrl)).text();
+    expect(page).not.toContain('/auth/mock/start');
+    expect(page).not.toContain('action="/signin/local"');
+    expect(
+      (await victim.get(`${ORIGIN}/auth/mock/start?attempt=${attempt.attemptId}`)).status,
+    ).toBe(410);
+    expect(
+      (
+        await victim.post(`${ORIGIN}/signin/local`, {
+          attempt: attempt.attemptId,
+          username: 'phished',
+          password: 'a long enough password',
+          action: 'register',
+        })
+      ).status,
+    ).toBe(410);
+    // A cross-site form cannot confirm, even with the code.
+    expect(
+      (
+        await victim.post(
+          `${ORIGIN}/signin/confirm`,
+          { attempt: attempt.attemptId, code: attempt.confirmationCode },
+          'https://evil.example',
+        )
+      ).status,
+    ).toBe(403);
+
+    const player = browserViaB();
+    await enterCode(player, attempt.signInUrl);
     const other = browserViaB();
     expect((await other.get(attempt.signInUrl)).status).toBe(409);
+    expect(
+      (
+        await other.post(`${ORIGIN}/signin/confirm`, {
+          attempt: attempt.attemptId,
+          code: attempt.confirmationCode,
+        })
+      ).status,
+    ).toBe(409);
     expect((await other.get(`${ORIGIN}/auth/mock/start?attempt=${attempt.attemptId}`)).status).toBe(
       410,
     );
+    client.close();
+  });
+
+  it('stops a sign-in after too many wrong codes', async () => {
+    const { client } = await guestSocket();
+    const attempt = await beginHandoff(client);
+    const guesser = browserViaB();
+    const statuses = [];
+    for (let i = 0; i < 5; i++) {
+      statuses.push(
+        (
+          await guesser.post(`${ORIGIN}/signin/confirm`, {
+            attempt: attempt.attemptId,
+            code: 'AAAAAA',
+          })
+        ).status,
+      );
+    }
+    expect(statuses).toEqual([400, 400, 400, 400, 410]);
+    // Even the right code is refused now, and the game hears that it failed.
+    expect(
+      (
+        await guesser.post(`${ORIGIN}/signin/confirm`, {
+          attempt: attempt.attemptId,
+          code: attempt.confirmationCode,
+        })
+      ).status,
+    ).toBe(410);
+    expect((await client.event('auth.handoff.failed'))['reason']).toBe('denied');
     client.close();
   });
 
@@ -479,7 +573,7 @@ describe('browser sign-in handoff', () => {
     const { client, session } = await guestSocket();
     const attempt = await beginHandoff(client);
     const browser = browserViaB();
-    const page = await (await browser.get(attempt.signInUrl)).text();
+    const page = await enterCode(browser, attempt.signInUrl);
     expect(page).toContain('Create account');
     const short = await browser.post(`${ORIGIN}/signin/local`, {
       attempt: attempt.attemptId,
@@ -488,10 +582,10 @@ describe('browser sign-in handoff', () => {
       action: 'register',
     });
     expect(short.status).toBe(400);
-    // Not a dead end: the same page again, the code still shown, the problem
+    // Not a dead end: the same page again, still for this sign-in, the problem
     // on the password field and the username kept (never the password).
     const shortPage = await short.text();
-    expect(shortPage).toContain(attempt.confirmationCode);
+    expect(shortPage).toContain('Code accepted');
     expect(shortPage).toContain(
       'This password is too short: it has 5 characters, and passwords need at least 10.',
     );

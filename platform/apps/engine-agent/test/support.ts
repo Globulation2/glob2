@@ -4,11 +4,10 @@ import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { Kysely } from 'kysely';
-import { FsBlobStore } from '@glob2/core';
-import type { Database } from '@glob2/db';
+import { FsBlobStore, contentKey, putContent } from '@glob2/core';
 import type { SimVersion } from '@glob2/protocol';
-import { AgentBlobs } from '../src/blobs.ts';
+import { checkBlob, type JobBlobs } from '../src/blobs.ts';
+import { EngineInputError } from '../src/engineCli.ts';
 import { DEFAULT_LIMITS, GlobEngine, type EngineOptions } from '../src/engine.ts';
 import { HeadlessEngineRunner, type RunnerLimits } from '../src/runners.ts';
 
@@ -50,16 +49,49 @@ export function fakeMap(options: {
   return buffer;
 }
 
+/**
+ * Blob access over a local store, as platform-api gives it to an agent:
+ * stored blobs are registered with their content type and visibility.
+ */
+export class LocalBlobs implements JobBlobs {
+  readonly registered = new Map<string, { contentType: string; visibility: string }>();
+  readonly store: FsBlobStore;
+  constructor(store: FsBlobStore) {
+    this.store = store;
+  }
+
+  async read(sha256: string, maxBytes: number): Promise<Uint8Array> {
+    const key = contentKey(sha256);
+    const size = await this.store.size(key);
+    if (size === undefined) throw new EngineInputError(`blob ${sha256} not found`);
+    if (size > maxBytes)
+      throw new EngineInputError(`blob ${sha256} is ${size} bytes; limit ${maxBytes}`);
+    const stream = await this.store.get(key);
+    const chunks: Buffer[] = [];
+    for await (const chunk of stream!) chunks.push(chunk as Buffer);
+    return checkBlob(sha256, Buffer.concat(chunks));
+  }
+
+  async write(
+    bytes: Uint8Array,
+    contentType: string,
+    visibility: 'public' | 'private' = 'private',
+  ): Promise<string> {
+    const { sha256 } = await putContent(this.store, bytes);
+    if (!this.registered.has(sha256)) this.registered.set(sha256, { contentType, visibility });
+    return sha256;
+  }
+}
+
 export interface RunnerHarness {
   runner: HeadlessEngineRunner;
   engine: GlobEngine;
-  blobs: AgentBlobs;
+  blobs: LocalBlobs;
   store: FsBlobStore;
   close(): Promise<void>;
 }
 
 export async function createRunner(
-  db: Kysely<Database>,
   options: {
     binary?: string;
     workdir?: string;
@@ -79,7 +111,7 @@ export async function createRunner(
     ...options.engine,
   });
   const catalog = await engine.catalog();
-  const blobs = new AgentBlobs(store, db);
+  const blobs = new LocalBlobs(store);
   const runner = new HeadlessEngineRunner({
     engine,
     catalog,

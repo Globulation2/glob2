@@ -31,6 +31,7 @@ export interface AccountsTable {
   updated_at: Timestamp;
   last_seen_at: NullableTimestamp;
   display_name_changed_at: NullableTimestamp;
+  deleted_at: NullableTimestamp;
 }
 
 export interface IdentitiesTable {
@@ -84,6 +85,8 @@ export interface SigninAttemptsTable {
   failure_reason: Nullable<'expired' | 'denied' | 'cancelled' | 'conflict' | 'error'>;
   linked: Nullable<boolean>;
   delivered_at: NullableTimestamp;
+  code_confirmed_at: NullableTimestamp;
+  code_failures: Defaulted<number>;
 }
 
 export interface WebSessionsTable {
@@ -175,6 +178,26 @@ export interface EngineJobsTable {
   agent_id: Nullable<string>;
   created_at: Timestamp;
   completed_at: NullableTimestamp;
+  attempts: Defaulted<number>;
+  max_attempts: Defaulted<number>;
+  leased_by: Nullable<string>;
+  lease_token_hash: Nullable<string>;
+  lease_expires_at: NullableTimestamp;
+  reported_at: NullableTimestamp;
+}
+
+export interface AccountNameScrubsTable {
+  account_id: string;
+  match_id: string;
+  created_at: Timestamp;
+}
+
+export interface RateLimitsTable {
+  bucket: string;
+  key: string;
+  window_start: RequiredTimestamp;
+  count: Defaulted<number>;
+  previous_count: Defaulted<number>;
 }
 
 export interface MapsTable {
@@ -629,6 +652,8 @@ export interface Database {
   map_uploads: MapUploadsTable;
   generated_maps: GeneratedMapsTable;
   warm_maps: WarmMapsTable;
+  rate_limits: RateLimitsTable;
+  account_name_scrubs: AccountNameScrubsTable;
   match_results_view: MatchResultsView;
   recent_win_rates_view: RecentWinRatesView;
   recent_game_lengths_view: RecentGameLengthsView;

@@ -8,7 +8,7 @@ const SIM = `125-49-${'ab'.repeat(32)}`;
 let database: TestDatabase;
 
 beforeAll(async () => {
-  database = await createTestDatabase();
+  database = await createTestDatabase({ role: 'worker' });
 });
 
 afterAll(async () => {
@@ -17,7 +17,8 @@ afterAll(async () => {
 
 describe('maintenance', () => {
   it('expires stale sign-ins and queue tickets and purges old refresh tokens', async () => {
-    const db = database.db;
+    // Fixtures are written as the API writes them; maintenance runs as the worker.
+    const db = database.as('api').db;
     const account = await db
       .insertInto('accounts')
       .values({ kind: 'guest', display_name: 'Guest 1' })
@@ -34,6 +35,14 @@ describe('maintenance', () => {
       .values([
         { confirmation_code: 'OLD111', expires_at: new Date(Date.now() - hour) },
         { confirmation_code: 'NEW222', expires_at: new Date(Date.now() + hour) },
+        { confirmation_code: 'GONE33', expires_at: new Date(Date.now() - 8 * 24 * hour) },
+      ])
+      .execute();
+    await db
+      .insertInto('rate_limits')
+      .values([
+        { bucket: 'auth:guest', key: '192.0.2.1', window_start: new Date(Date.now() - 25 * hour) },
+        { bucket: 'auth:guest', key: '192.0.2.2', window_start: new Date() },
       ])
       .execute();
     await db
@@ -95,19 +104,23 @@ describe('maintenance', () => {
       ])
       .execute();
 
-    expect(await runMaintenance(db)).toEqual({
-      expiredSigninAttempts: 1,
+    expect(await runMaintenance(database.db)).toEqual({
+      expiredSigninAttempts: 2,
       expiredQueueTickets: 1,
       deletedRefreshTokens: 1,
       deletedAuthFlows: 1,
       deletedWebSessions: 1,
+      deletedSigninAttempts: 1,
+      deletedRateLimits: 1,
     });
-    expect(await runMaintenance(db)).toEqual({
+    expect(await runMaintenance(database.db)).toEqual({
       expiredSigninAttempts: 0,
       expiredQueueTickets: 0,
       deletedRefreshTokens: 0,
       deletedAuthFlows: 0,
       deletedWebSessions: 0,
+      deletedSigninAttempts: 0,
+      deletedRateLimits: 0,
     });
   });
 });
