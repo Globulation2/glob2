@@ -132,6 +132,23 @@ def derived_assets(root):
     return current
 
 
+def exported_substitutes(root, source, files, derived):
+    """{packaged path: browser copy}. The runtime export may have re-encoded an
+    image (menu-wordmark.png as .webp); its browser copy then stands in for the
+    exported file when smaller. SDL_image reads either format whatever the name."""
+    tree = Path(source or root)
+    result = {}
+    for path in files:
+        stem, suffix = os.path.splitext(path)
+        original = path if path in derived else (stem + '.png' if suffix in IMAGE_SUFFIXES else None)
+        if original not in derived:
+            continue
+        copy = Path(root) / derived[original]
+        if path == original or copy.stat().st_size < (tree / path).stat().st_size:
+            result[path] = derived[original]
+    return result
+
+
 def game_sprites(root):
     """Names of the sprites GlobalContainer::loadGameGraphics loads, buildings included."""
     root = Path(root)
@@ -175,7 +192,7 @@ def plan(root, source=None):
     for path in source_files(source or root):
         (skipped if excluded(path) else files).append(path)
     game = game_files(files, game_sprites(root))
-    substitutes = derived_assets(root)
+    substitutes = exported_substitutes(root, source, files, derived_assets(root))
     for path in files:
         name = 'game' if path in game or path.startswith(GAME_EXTRA) else next(
             (name for name, prefixes in OPTIONAL if path.startswith(prefixes)), 'core')

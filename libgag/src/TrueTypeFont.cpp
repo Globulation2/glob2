@@ -113,8 +113,8 @@ bool TrueTypeFont::reload(void)
 {
 	if (!font)
 		return false;
-	SDL_RWops *stream = Toolkit::getFileManager()->open(fontFilename, "rb");
-	TTF_Font *replacement = stream ? TTF_OpenFontRW(stream, 1, baseSize) : NULL;
+	SDL_IOStream *stream = Toolkit::getFileManager()->open(fontFilename, "rb");
+	TTF_Font *replacement = stream ? TTF_OpenFontIO(stream, 1, baseSize) : NULL;
 	if (!replacement)
 		return false;
 	clearCache();

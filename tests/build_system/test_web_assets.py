@@ -131,6 +131,18 @@ class BrowserCopyTests(unittest.TestCase):
             (root / 'data/gfx/menu-colony.png').write_bytes(b'changed')
             self.assertEqual(sorted(web_assets.derived_assets(root)), ['data/fonts/sans.ttf', 'data/gfx/menu-wordmark.png'])
 
+    def test_a_copy_stands_in_for_a_re_encoded_export_when_smaller(self):
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory)
+            (source / 'data/gfx').mkdir(parents=True)
+            (source / 'data/gfx/menu-wordmark.webp').write_bytes(b'x' * 2_000_000)
+            (source / 'data/gfx/menu-colony.webp').write_bytes(b'x' * 1000)
+            files = ['data/gfx/menu-wordmark.webp', 'data/gfx/menu-colony.webp', 'data/fonts/sans.ttf']
+            derived = web_assets.derived_assets(ROOT)
+            self.assertEqual(web_assets.exported_substitutes(ROOT, source, files, derived),
+                             {'data/gfx/menu-wordmark.webp': 'browser/assets/menu-wordmark.png',
+                              'data/fonts/sans.ttf': 'browser/assets/sans-core.ttf'})
+
     def test_the_core_font_has_every_glyph_but_the_appended_cjk_ones(self):
         try:
             from fontTools.pens.recordingPen import DecomposingRecordingPen
