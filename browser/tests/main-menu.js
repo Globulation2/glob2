@@ -165,9 +165,15 @@ exports.clickMainMenu = async (page, action) => {
 };
 
 exports.clickSettingsDone = page => exports.clickControl(page, 'done');
-// Always visible, and always closes Settings in one click regardless of any
-// save failure — see SettingsScreen::abandon().
-exports.clickSettingsCancel = page => exports.clickControl(page, 'cancel');
+// Leaves Settings without claiming a durable save. Changes save as they are made,
+// so the footer has only Done; a failed save adds "continue" (SettingsScreen::
+// abandon()), which closes at once. Done after a failed restore fails the same
+// way and offers it.
+exports.clickSettingsCancel = async page => {
+  const offered = await page.evaluate(() => Boolean(glob2Diagnostics.snapshot().controls.cancel));
+  if (!offered) await exports.clickControl(page, 'done');
+  return exports.clickControl(page, 'cancel');
+};
 
 // The lobby's Start ignores input while its preview is pending; wait for the
 // same ready state the lobby publishes.

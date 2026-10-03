@@ -671,8 +671,11 @@ Element SettingsScreen::build(const Presentation &p)
 	}
 	else
 	{
-		if (modal == Modal::None)
-			buttons.push_back({"cancel", tr(failed ? "continue" : "Cancel"), [this] { abandon(); }});
+		// Every change applies and saves as it is made ("Changes saved
+		// automatically"), so there is nothing for a Cancel to undo: Done closes.
+		// Only a failed save offers leaving without retrying.
+		if (modal == Modal::None && failed)
+			buttons.push_back({"cancel", tr("continue"), [this] { abandon(); }});
 		buttons.push_back({"done", tr(modal == Modal::None ? "Done" : "Cancel"), [this] { dismiss(); }, true});
 	}
 	auto footerRow = row({expanded(paragraph(status, {FontRole::Support, true})), actions(std::move(buttons), p, ActionStyle::Compact)}, {-1, CrossAlign::Center});
