@@ -32,9 +32,13 @@ reports zero structural errors. Platform source is unchanged from 3de565d65:
 full-page accessibility combinations and the production web build are recorded
 in the adjacent studio-gate evidence.
 
-Browser integration validation remains pending; it will be recorded before merge.
-The prior Scene gate documents eight passing browser skin cases and a signed
-online replay case, plus a threaded pacing timeout that the final gate repeats.
+The serial/threaded browser package builds and all ten selected browser cases
+pass: live skins and lazy assets in Chromium serial/threaded, Firefox and
+WebKit, plus serial/threaded 1,500-tick pacing/checksum and paused-input tests.
+The threaded pacing retry passes with the original time limit and assertions.
+Signed online replay is covered by the preceding Scene gate; the final fog
+integration will repeat it against the rebuilt runtime. These results belong
+to the map-repetition revision, not the subsequent smooth-fog integration.
 
 Replays are losslessly gzip-compressed; BMP images are converted to PNG.
 Commands, match records, verifier verdicts and checksum traces are attached.
