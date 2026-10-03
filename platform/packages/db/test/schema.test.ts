@@ -416,6 +416,7 @@ const typedColumns: ColumnLists = {
     'ready_at',
     'taken_at',
   ],
+  rate_limits: ['bucket', 'key', 'window_start', 'count', 'previous_count'],
   match_results_view: [
     'match_id',
     'origin',

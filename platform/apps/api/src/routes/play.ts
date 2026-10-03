@@ -23,7 +23,7 @@ import {
 } from '@glob2/worker';
 import { supportedSimVersions } from '../app.ts';
 import { apiError } from '../errors.ts';
-import { WindowCounter } from '../http/validate.ts';
+import { SharedLimit, enforce } from '../http/rateLimits.ts';
 import { authenticate, requireAccount, type Identity } from '../identity.ts';
 import { mapUrl } from '../play/assignments.ts';
 import type { RoomService } from '../play/rooms.ts';
@@ -78,7 +78,7 @@ export async function playRoutes(
   const { services } = app;
   const { db, blobs } = services;
   const origin = services.config.publicOrigin;
-  const uploads = new WindowCounter(UPLOADS_PER_HOUR, 3_600_000);
+  const uploads = new SharedLimit(db, 'upload', UPLOADS_PER_HOUR, 3_600_000);
 
   function uploadView(row: UploadRow, size: number): MapUpload {
     const simVersion = storedSimVersion(row.sim_version);
@@ -172,10 +172,11 @@ export async function playRoutes(
           throw apiError('unavailable', 'No engine agent can check files right now.');
       }
       const fileName = request.query.fileName?.slice(0, 255);
+      // The quota is taken before the file is unpacked, so a flood of
+      // compressed files costs the sender, not the server.
+      await enforce(uploads, account.id, reply, 'Too many uploads; wait a while.');
       // Unpacked when gzip (.map.gz): the stored bytes are the ones the game loads.
-      const bytes = checkedUpload(request.body, format, simVersion.versionMinor);
-      if (!uploads.take(account.id))
-        throw apiError('rate_limited', 'Too many uploads; wait a while.');
+      const bytes = await checkedUpload(request.body, format, simVersion.versionMinor);
       const sim = simVersionKey(simVersion);
       const stored = await putContent(blobs, bytes);
       await insertBlob(

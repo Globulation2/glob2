@@ -4,10 +4,18 @@
 // every client hashes after loading a file. These checks run before anything
 // is stored, so a file that is obviously not a map gets a plain-language
 // answer at once instead of a catalog entry that turns invalid later.
-import { gunzipSync } from 'node:zlib';
+import { gunzip, gunzipSync } from 'node:zlib';
 
 /** Largest decompressed map or save the platform accepts (the engine agent's default limit). */
 export const MAX_DECOMPRESSED_MAP_BYTES = 64 * 1024 * 1024;
+
+/**
+ * Largest unpacked-to-packed ratio accepted for an upload. The game's own
+ * .map.gz files unpack to 8–25 times their size; a file claiming far more is
+ * a decompression bomb. Small files may always unpack to MIN_UNPACKED_ALLOWANCE.
+ */
+export const MAX_GZIP_RATIO = 256;
+export const MIN_UNPACKED_ALLOWANCE = 4 * 1024 * 1024;
 
 /** VERSION_MAJOR and MINIMUM_VERSION_MINOR in src/Version.h: older files no longer load. */
 export const MAP_VERSION_MAJOR = 0;
@@ -45,6 +53,29 @@ export function gunzipBounded(bytes: Uint8Array, maxBytes: number): Buffer {
     }
     throw new GzipError(`corrupt gzip data: ${(error as Error).message}`, false);
   }
+}
+
+/** What an upload of `packed` bytes may unpack to: the size limit and the ratio cap. */
+export function unpackedAllowance(packed: number, maxBytes: number): number {
+  return Math.min(maxBytes, Math.max(MIN_UNPACKED_ALLOWANCE, packed * MAX_GZIP_RATIO));
+}
+
+/**
+ * Decompresses gzip data on zlib's thread pool (not the event loop), refusing
+ * output over maxBytes or over MAX_GZIP_RATIO times the input.
+ */
+export function gunzipBoundedAsync(bytes: Uint8Array, maxBytes: number): Promise<Buffer> {
+  const limit = unpackedAllowance(bytes.byteLength, maxBytes);
+  return new Promise((resolve, reject) => {
+    gunzip(bytes, { maxOutputLength: limit }, (error, result) => {
+      if (!error) return resolve(result);
+      const code = (error as NodeJS.ErrnoException).code;
+      if (code === 'ERR_BUFFER_TOO_LARGE' || /larger than/i.test(error.message)) {
+        return reject(new GzipError(`decompressed file exceeds ${limit} bytes`, true));
+      }
+      reject(new GzipError(`corrupt gzip data: ${error.message}`, false));
+    });
+  });
 }
 
 /**
@@ -120,20 +151,61 @@ export function checkMapFile(
     try {
       bytes = gunzipBounded(bytes, maxBytes);
     } catch (error) {
-      if (error instanceof GzipError && error.tooLarge) {
-        return {
-          ok: false,
-          problem: 'too_large',
-          message: `This ${what} is too big: unpacked, it is over the ${readableSize(maxBytes)} limit.`,
-        };
-      }
-      return {
-        ok: false,
-        problem: 'corrupt_gzip',
-        message: `This file is damaged: it is compressed, but it could not be unpacked. Save the ${what} again in the game and upload the new file.`,
-      };
+      return gzipProblem(error, what, maxBytes);
     }
-  } else if (bytes.byteLength > maxBytes) {
+  }
+  return checkUnpacked(bytes, compressed, options);
+}
+
+/**
+ * checkMapFile for uploads to the API: the same checks, with gzip unpacked off
+ * the event loop and bounded by MAX_GZIP_RATIO as well as the size limit.
+ */
+export async function checkMapFileAsync(
+  input: Uint8Array,
+  options: { format: 'map' | 'save'; newestVersionMinor: number; maxBytes?: number },
+): Promise<MapFileCheck> {
+  const maxBytes = options.maxBytes ?? MAX_DECOMPRESSED_MAP_BYTES;
+  const what = options.format === 'save' ? 'saved game' : 'map';
+  if (input.byteLength === 0) {
+    return { ok: false, problem: 'empty', message: 'This file is empty.' };
+  }
+  let bytes = Buffer.from(input.buffer, input.byteOffset, input.byteLength);
+  const compressed = isGzip(bytes);
+  if (compressed) {
+    try {
+      bytes = await gunzipBoundedAsync(bytes, maxBytes);
+    } catch (error) {
+      return gzipProblem(error, what, unpackedAllowance(input.byteLength, maxBytes));
+    }
+  }
+  return checkUnpacked(bytes, compressed, options);
+}
+
+function gzipProblem(error: unknown, what: string, limit: number): MapFileCheck {
+  if (error instanceof GzipError && error.tooLarge) {
+    return {
+      ok: false,
+      problem: 'too_large',
+      message: `This ${what} is too big: unpacked, it is over the ${readableSize(limit)} limit.`,
+    };
+  }
+  return {
+    ok: false,
+    problem: 'corrupt_gzip',
+    message: `This file is damaged: it is compressed, but it could not be unpacked. Save the ${what} again in the game and upload the new file.`,
+  };
+}
+
+/** The header checks shared by checkMapFile and checkMapFileAsync. */
+function checkUnpacked(
+  bytes: Buffer,
+  compressed: boolean,
+  options: { format: 'map' | 'save'; newestVersionMinor: number; maxBytes?: number },
+): MapFileCheck {
+  const maxBytes = options.maxBytes ?? MAX_DECOMPRESSED_MAP_BYTES;
+  const what = options.format === 'save' ? 'saved game' : 'map';
+  if (!compressed && bytes.byteLength > maxBytes) {
     return {
       ok: false,
       problem: 'too_large',

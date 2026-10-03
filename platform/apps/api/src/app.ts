@@ -218,6 +218,7 @@ export async function buildApp(
   });
   const assignments = new Assignments(services.db, identity.keys, services.config.publicOrigin);
   const play = new PlayRealtime({
+    db: services.db,
     config: services.config,
     access: services.access,
     pubsub: services.pubsub,

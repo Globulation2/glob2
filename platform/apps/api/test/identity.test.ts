@@ -539,6 +539,8 @@ describe('administration', () => {
 
 describe('rate limits', () => {
   it('limits sign-in requests and new guests per address', async () => {
+    // Counters are shared by every replica: start from none.
+    await harness.database.db.deleteFrom('rate_limits').execute();
     const limited = await harness.start({
       instance: { limits: { authPerMinute: 3, guestsPerHour: 2 } },
     });

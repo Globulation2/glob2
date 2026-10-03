@@ -183,6 +183,14 @@ export interface EngineJobsTable {
   reported_at: NullableTimestamp;
 }
 
+export interface RateLimitsTable {
+  bucket: string;
+  key: string;
+  window_start: RequiredTimestamp;
+  count: Defaulted<number>;
+  previous_count: Defaulted<number>;
+}
+
 export interface MapsTable {
   id: Generated<string>;
   owner_account_id: string;
@@ -635,6 +643,7 @@ export interface Database {
   map_uploads: MapUploadsTable;
   generated_maps: GeneratedMapsTable;
   warm_maps: WarmMapsTable;
+  rate_limits: RateLimitsTable;
   match_results_view: MatchResultsView;
   recent_win_rates_view: RecentWinRatesView;
   recent_game_lengths_view: RecentGameLengthsView;

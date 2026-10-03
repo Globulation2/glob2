@@ -12,7 +12,8 @@ import {
 } from '@glob2/protocol';
 import type { Account } from '@glob2/db';
 import { apiError } from '../errors.ts';
-import { body, WindowCounter } from '../http/validate.ts';
+import { body } from '../http/validate.ts';
+import { SharedLimit, enforce, perAddress } from '../http/rateLimits.ts';
 import { authenticate, clearSessionCookie, sessionCookieName, type Identity } from '../identity.ts';
 import {
   LOCAL_PROVIDER,
@@ -37,8 +38,12 @@ export async function signInResponse(
 
 export async function authRoutes(app: FastifyInstance, identity: Identity): Promise<void> {
   const { services } = app;
-  const authLimit = { rateLimit: { max: identity.limits.authPerMinute, timeWindow: 60_000 } };
-  const newGuests = new WindowCounter(identity.limits.guestsPerHour, 3_600_000);
+  // Per client address and route, across replicas.
+  const authLimit = (route: string) => ({
+    preHandler: perAddress(
+      new SharedLimit(services.db, `auth:${route}`, identity.limits.authPerMinute, 60_000),
+    ),
+  });
 
   app.get('/.well-known/jwks.json', async (_request, reply): Promise<PlatformJwks> => {
     void reply.header('cache-control', 'public, max-age=300');
@@ -47,8 +52,8 @@ export async function authRoutes(app: FastifyInstance, identity: Identity): Prom
 
   app.post(
     '/api/v1/auth/guest',
-    { config: authLimit },
-    async (request): Promise<SignInResponse> => {
+    authLimit('guest'),
+    async (request, reply): Promise<SignInResponse> => {
       if (!services.config.instance.guests.enabled) {
         throw apiError('forbidden', 'Guest accounts are disabled on this instance.');
       }
@@ -62,16 +67,19 @@ export async function authRoutes(app: FastifyInstance, identity: Identity): Prom
         await identity.accounts.touch(account.id);
         return signInResponse(identity, account, input.platform);
       }
-      if (!newGuests.take(request.ip)) {
-        throw apiError('rate_limited', 'Too many new guest accounts from this address.');
-      }
+      await enforce(
+        identity.shared.guests,
+        request.ip,
+        reply,
+        'Too many new guest accounts from this address.',
+      );
       const { account, credential } = await identity.accounts.createGuest(input.platform);
       request.log.info({ account: account.id }, 'guest account created');
       return signInResponse(identity, account, input.platform, credential);
     },
   );
 
-  app.post('/api/v1/auth/refresh', { config: authLimit }, async (request): Promise<AuthTokens> => {
+  app.post('/api/v1/auth/refresh', authLimit('refresh'), async (request): Promise<AuthTokens> => {
     const { refreshToken } = body(RefreshRequest, request.body);
     const outcome = await identity.tokens.refresh(refreshToken);
     if (outcome.ok) return outcome.tokens;
@@ -93,7 +101,7 @@ export async function authRoutes(app: FastifyInstance, identity: Identity): Prom
     });
   });
 
-  app.post('/api/v1/auth/sign-out', { config: authLimit }, async (request, reply) => {
+  app.post('/api/v1/auth/sign-out', authLimit('sign-out'), async (request, reply) => {
     const { refreshToken } = body(SignOutRequest, request.body);
     const revoked = await identity.tokens.revokeByToken(refreshToken);
     if (revoked) {
@@ -121,7 +129,7 @@ export async function authRoutes(app: FastifyInstance, identity: Identity): Prom
 
   app.post(
     '/api/v1/auth/local/register',
-    { config: authLimit },
+    authLimit('register'),
     async (request): Promise<SignInResponse> => {
       if (!identity.localAuth.allowRegistration) {
         throw apiError('unsupported', 'Local accounts are not enabled on this instance.');
@@ -146,22 +154,48 @@ export async function authRoutes(app: FastifyInstance, identity: Identity): Prom
 
   app.post(
     '/api/v1/auth/local/sign-in',
-    { config: authLimit },
+    authLimit('local-sign-in'),
     async (request): Promise<SignInResponse> => {
       if (!identity.localAuth.enabled) {
         throw apiError('unsupported', 'Local accounts are not enabled on this instance.');
       }
       const input = body(LocalSignInRequest, request.body);
-      const account = await localSignIn(identity, input.username, input.password);
+      const account = await localSignIn(identity, input.username, input.password, request.ip);
       return signInResponse(identity, account, input.platform);
     },
   );
 }
 
-/** Verifies a local username and password; the same error for every failure. */
-export async function localSignIn(identity: Identity, username: string, password: string) {
-  const row = await identity.accounts.localIdentity(normalizeUsername(username));
+/**
+ * Verifies a local username and password; the same error for every wrong
+ * password. Failures count per username and per client address, on every
+ * replica: a username with too many recent failures is locked for the rest of
+ * its 15-minute window (whoever guesses), and so is an address guessing many
+ * usernames. A correct password clears its username's count.
+ */
+export async function localSignIn(
+  identity: Identity,
+  username: string,
+  password: string,
+  address: string,
+) {
+  const subject = normalizeUsername(username);
+  const { passwordFailuresPerAccount: perAccount, passwordFailuresPerAddress: perAddress } =
+    identity.shared;
+  if ((await perAccount.exhausted(subject)) || (await perAddress.exhausted(address))) {
+    throw apiError(
+      'rate_limited',
+      'Too many wrong passwords. Wait 15 minutes and try again, or sign in another way.',
+      { reason: 'password_attempts' },
+    );
+  }
+  const row = await identity.accounts.localIdentity(subject);
   const ok = await verifyPassword(row?.password_hash, password);
-  if (!row || !ok) throw apiError('unauthenticated', 'Wrong username or password.');
+  if (!row || !ok) {
+    await perAccount.take(subject);
+    await perAddress.take(address);
+    throw apiError('unauthenticated', 'Wrong username or password.');
+  }
+  await perAccount.reset(subject);
   return identity.accounts.requireUsable(row.account_id);
 }

@@ -35,6 +35,14 @@ describe('maintenance', () => {
       .values([
         { confirmation_code: 'OLD111', expires_at: new Date(Date.now() - hour) },
         { confirmation_code: 'NEW222', expires_at: new Date(Date.now() + hour) },
+        { confirmation_code: 'GONE33', expires_at: new Date(Date.now() - 8 * 24 * hour) },
+      ])
+      .execute();
+    await db
+      .insertInto('rate_limits')
+      .values([
+        { bucket: 'auth:guest', key: '192.0.2.1', window_start: new Date(Date.now() - 25 * hour) },
+        { bucket: 'auth:guest', key: '192.0.2.2', window_start: new Date() },
       ])
       .execute();
     await db
@@ -97,11 +105,13 @@ describe('maintenance', () => {
       .execute();
 
     expect(await runMaintenance(database.db)).toEqual({
-      expiredSigninAttempts: 1,
+      expiredSigninAttempts: 2,
       expiredQueueTickets: 1,
       deletedRefreshTokens: 1,
       deletedAuthFlows: 1,
       deletedWebSessions: 1,
+      deletedSigninAttempts: 1,
+      deletedRateLimits: 1,
     });
     expect(await runMaintenance(database.db)).toEqual({
       expiredSigninAttempts: 0,
@@ -109,6 +119,8 @@ describe('maintenance', () => {
       deletedRefreshTokens: 0,
       deletedAuthFlows: 0,
       deletedWebSessions: 0,
+      deletedSigninAttempts: 0,
+      deletedRateLimits: 0,
     });
   });
 });

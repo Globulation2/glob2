@@ -23,6 +23,7 @@ import {
 } from '../identity.ts';
 import { localSignIn } from './auth.ts';
 import { html, sendPage, type Html } from '../web/pages.ts';
+import { SharedLimit } from '../http/rateLimits.ts';
 
 type Attempt = Selectable<Database['signin_attempts']>;
 
@@ -49,7 +50,22 @@ interface LocalFormState {
 
 export async function signinRoutes(app: FastifyInstance, identity: Identity): Promise<void> {
   const { db } = app.services;
-  const authLimit = { rateLimit: { max: identity.limits.authPerMinute, timeWindow: 60_000 } };
+  // Per client address and route, across replicas.
+  const authLimit = (route: string) => {
+    const limit = new SharedLimit(db, `auth:${route}`, identity.limits.authPerMinute, 60_000);
+    return {
+      preHandler: async (request: FastifyRequest, reply: FastifyReply) => {
+        const check = await limit.take(request.ip);
+        if (check.allowed) return;
+        void reply.header('retry-after', String(check.retryAfterSeconds));
+        return errorPage(
+          reply,
+          'Too many sign-in attempts from here. Wait a minute and try again.',
+          429,
+        );
+      },
+    };
+  };
 
   // Never a dead end: every problem page offers a way back.
   const errorPage = (reply: FastifyReply, message: string, status = 400) =>
@@ -295,7 +311,7 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
 
   app.get<{ Params: { provider: string }; Querystring: { attempt?: string } }>(
     '/auth/:provider/start',
-    { config: authLimit },
+    authLimit('provider-start'),
     async (request, reply) => {
       const provider = identity.providers.get(request.params.provider);
       if (!provider) return errorPage(reply, 'Unknown sign-in provider.', 404);
@@ -400,14 +416,14 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
 
   app.get<{ Params: { provider: string } }>(
     '/auth/:provider/callback',
-    { config: authLimit },
+    authLimit('provider-callback'),
     (request, reply) =>
       callback(request, reply, new URL(request.url, identity.origin).searchParams),
   );
   // form_post (Sign in with Apple): a cross-site POST protected by `state`.
   app.post<{ Params: { provider: string }; Body: Form }>(
     '/auth/:provider/callback',
-    { config: authLimit },
+    authLimit('provider-callback'),
     (request, reply) => {
       const params = new URLSearchParams();
       for (const [key, value] of Object.entries(request.body ?? {})) {
@@ -532,7 +548,7 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
 
   // ------------------------------------------------------ local passwords
 
-  app.post<{ Body: Form }>('/signin/local', { config: authLimit }, async (request, reply) => {
+  app.post<{ Body: Form }>('/signin/local', authLimit('local'), async (request, reply) => {
     if (!identity.localAuth.enabled)
       return errorPage(reply, 'Local accounts are not enabled.', 404);
     if (!sameOriginRequest(identity, request))
@@ -613,7 +629,7 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
       );
     }
     try {
-      await localSignIn(identity, username, password);
+      await localSignIn(identity, username, password, request.ip);
     } catch (error) {
       if (error instanceof HttpError) {
         return error.statusCode === 401 && error.body.message === 'Wrong username or password.'
